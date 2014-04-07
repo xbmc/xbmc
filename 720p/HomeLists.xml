@@ -392,54 +392,13 @@
 			<posy>0</posy>
 			<width>890</width>
 			<height>720</height>
-			<!-- play queue visibility test -->
-			<control type="group">
-				<visible>[Control.IsVisible(11005) | Control.IsVisible(11006) | Control.IsVisible(11007)]</visible>
-				<posy>400</posy>
-				<posx>10</posx>
-				<control type="label">
-					<width>353</width>
-					<height>0</height>
-					<label>Video Play Queue</label>
-					<align>left</align>
-					<aligny>center</aligny>
-					<font>Bold-36</font>
-					<textcolor>orange</textcolor>
-					<shadowcolor>FF222222</shadowcolor>
-					<visible>Control.IsVisible(11005)</visible>
-				</control>
-				<control type="label">
-					<posy>60</posy>
-					<width>353</width>
-					<height>0</height>
-					<label>Music Play Queue</label>
-					<align>left</align>
-					<aligny>center</aligny>
-					<font>Bold-36</font>
-					<textcolor>orange</textcolor>
-					<shadowcolor>FF222222</shadowcolor>
-					<visible>Control.IsVisible(11006)</visible>
-				</control>
-				<control type="label">
-					<posy>120</posy>
-					<width>353</width>
-					<height>0</height>
-					<label>Photo Play Queue</label>
-					<align>left</align>
-					<aligny>center</aligny>
-					<font>Bold-36</font>
-					<textcolor>orange</textcolor>
-					<shadowcolor>FF222222</shadowcolor>
-					<visible>Control.IsVisible(11007)</visible>
-				</control>
-			</control>
 			<!-- list titles & bg's & arrows (see includes on top for formatting) -->
 			<control type="group">
-				<!-- "on deck" & "queue" -->
+				<!-- "on deck" & "queue" & "play queue video/music" -->
 				<control type="group">
-					<!-- with "recently added" or "recommended" -->
+					<!-- with "recently added" or "recommended" or "play queue photos" -->
 					<control type="group">
-						<visible>[Control.IsVisible(11000) + Control.IsVisible(11001)] | [Control.IsVisible(11003) + Control.IsVisible(11004)]</visible>
+						<visible>[Control.IsVisible(11000) + Control.IsVisible(11001)] | [Control.IsVisible(11003) + Control.IsVisible(11004)] | [[Control.IsVisible(11005) | Control.IsVisible(11006)] + Control.IsVisible(11007)]</visible>
 						<posy>215</posy>
 						<control type="image">
 							<include>ListBgTop</include>
@@ -457,10 +416,20 @@
 							<label>Queue</label>
 							<visible>[Control.IsVisible(11003) + Control.IsVisible(11004)]</visible>
 						</control>
+						<control type="label" id="8002">
+							<include>ListTitle</include>
+							<label>Video</label>
+							<visible>[Control.IsVisible(11005) + Control.IsVisible(11007)]</visible>
+						</control>
+						<control type="label" id="8002">
+							<include>ListTitle</include>
+							<label>Music</label>
+							<visible>[Control.IsVisible(11006) + Control.IsVisible(11007)]</visible>
+						</control>
 					</control>
 					<!-- alone -->
 					<control type="group">
-						<visible>[!Control.IsVisible(11000) + Control.IsVisible(11001)] | [Control.IsVisible(11003) + !Control.IsVisible(11004)]</visible>
+						<visible>[!Control.IsVisible(11000) + Control.IsVisible(11001)] | [Control.IsVisible(11003) + !Control.IsVisible(11004)] | [[Control.IsVisible(11005) | Control.IsVisible(11006)] + !Control.IsVisible(11007)]</visible>
 						<posy>320</posy>
 						<control type="image">
 							<include>ListBgTop</include>
@@ -478,6 +447,16 @@
 							<label>Queue</label>
 							<visible>[Control.IsVisible(11003) + !Control.IsVisible(11004)]</visible>
 						</control>
+						<control type="label" id="8002">
+							<include>ListTitle</include>
+							<label>Video</label>
+							<visible>[Control.IsVisible(11005) + !Control.IsVisible(11007)]</visible>
+						</control>
+						<control type="label" id="8002">
+							<include>ListTitle</include>
+							<label>Music</label>
+							<visible>[Control.IsVisible(11006) + !Control.IsVisible(11007)]</visible>
+						</control>
 						<!-- arrow -->
 						<control type="group">
 							<posy>243</posy>
@@ -485,12 +464,12 @@
 						</control>
 					</control>
 				</control>
-				<!-- "recently added" & "recently used" & "recommendations" -->
+				<!-- "recently added" & "recently used" & "recommendations" & "play queue photo" -->
 				<control type="group">
-					<visible>Control.IsVisible(11000) | Control.IsVisible(11002) | Control.IsVisible(11003) | Control.IsVisible(11004)</visible>
-					<!-- with "on deck" or "queue + recommendations" -->
+					<visible>Control.IsVisible(11000) | Control.IsVisible(11002) | Control.IsVisible(11003) | Control.IsVisible(11004) | !Control.IsVisible(11007)</visible>
+					<!-- with "on deck" or "queue + recommendations" & "play queue video/music" -->
 					<control type="group">
-						<visible>Control.IsVisible(11001) | [Control.IsVisible(11003) + Control.IsVisible(11004)]</visible>
+						<visible>Control.IsVisible(11001) | [Control.IsVisible(11003) + Control.IsVisible(11004)] | Control.IsVisible(11007)</visible>
 						<posy>666</posy>
 						<control type="image">
 							<include>ListBgBottom</include>
@@ -511,7 +490,7 @@
 					</control>
 					<!-- alone -->
 					<control type="group">
-						<visible>[Control.IsVisible(11000) + !Control.IsVisible(11001)] | [Control.IsVisible(11003) + !Control.IsVisible(11004)] | [!Control.IsVisible(11003) + Control.IsVisible(11004)] | Control.IsVisible(11002)</visible>
+						<visible>[Control.IsVisible(11000) + !Control.IsVisible(11001)] | [Control.IsVisible(11003) + !Control.IsVisible(11004)] | [!Control.IsVisible(11003) + Control.IsVisible(11004)] | Control.IsVisible(11002) | [![Control.IsVisible(11005) | Control.IsVisible(11006)] + Control.IsVisible(11007)]</visible>
 						<posy>563</posy>
 						<control type="image">
 							<include>ListBgBottom</include>
@@ -933,6 +912,196 @@
 							</control>
 						</focusedlayout>
 						<height>200</height>
+					</control>
+				</control>
+			</control>
+			<!-- "Play Queues" -->
+			<control type="grouplist" id="5400">
+				<visible>true</visible>
+				<posx>-3</posx>
+				<posy>84</posy>
+				<width>890</width>
+				<height>720</height>
+				<ondown>5200</ondown>
+				<onup>310</onup>
+				<onright>350</onright>
+				<onleft>350</onleft>
+				<orientation>vertical</orientation>
+				<!-- Video (11005) -->
+				<control type="group" id="7005">
+					<height>230</height>
+					<control type="fixedlist" id="11005">
+						<visible allowhiddenfocus="false">false</visible>
+						<orientation>horizontal</orientation>
+						<ondown condition="Control.IsVisible(11007)">7007</ondown>
+						<ondown condition="!Control.IsVisible(11000)">300</ondown>
+						<onup>300</onup>
+						<onright>-</onright>
+						<onleft>300</onleft>
+						<posx>0</posx>
+						<posy>129</posy>
+						<width>860</width>
+						<height>330</height>
+						<itemlayout width="139" height="330">
+							<!-- movie & episode when both lists are visible -->
+							<control type="group">
+								<posy>-3</posy>
+								<visible>[ListItem.Type(episode) | ListItem.Type(movie)] + Control.IsVisible(11007)</visible>
+								<animation effect="fade" start="100" end="50" time="300" condition="ControlGroup(7007).HasFocus">Conditional</animation>
+								<control type="group">
+									<include>ListItemPoster</include>
+									<include>ListItemInProgress</include>
+								</control>
+								<control type="group">
+									<visible>ListItem.Type(episode)</visible>
+									<include>ListItemPosterCard</include>
+									<include>ListItemPosterTitleTV2</include>
+									<include>ListItemInProgress</include>
+								</control>
+								<control type="image">
+									<visible>ControlGroup(7007).HasFocus</visible>
+									<include>ListItemPosterDimmer</include>
+								</control>
+							</control>
+							<!-- movie & episode when only this list is visible -->
+							<control type="group">
+								<posy>100</posy>
+								<visible>[ListItem.Type(episode) | ListItem.Type(movie)] + !Control.IsVisible(11007)</visible>
+								<animation effect="fade" start="100" end="50" time="300" condition="ControlGroup(7007).HasFocus">Conditional</animation>
+								<control type="group">
+									<include>ListItemPoster</include>
+									<include>ListItemInProgress</include>
+								</control>
+								<control type="group">
+									<visible>ListItem.Type(episode)</visible>
+									<include>ListItemPosterCard</include>
+									<include>ListItemPosterTitleTV2</include>
+									<include>ListItemInProgress</include>
+								</control>
+								<control type="image">
+									<visible>ControlGroup(7007).HasFocus</visible>
+									<include>ListItemPosterDimmer</include>
+								</control>
+							</control>
+						</itemlayout>
+						<focusedlayout width="139" height="330">
+							<!-- movie & episode when both lists are visible -->
+							<control type="group">
+								<posy>-3</posy>
+								<visible>[ListItem.Type(episode) | ListItem.Type(movie)] + Control.IsVisible(11007)</visible>
+								<include>ListItemPoster</include>
+								<include>ListItemPosterSelectedBorder</include>
+							</control>
+							<!-- movie & episode when only this list is visible -->
+							<control type="group">
+								<posy>100</posy>
+								<visible>[ListItem.Type(episode) | ListItem.Type(movie)] + !Control.IsVisible(11007)</visible>
+								<include>ListItemPoster</include>
+								<include>ListItemPosterSelectedBorder</include>
+							</control>
+						</focusedlayout>
+					</control>
+				</control>
+				<!-- Music (11006) -->
+				<control type="group" id="7006">
+					<height>230</height>
+					<control type="fixedlist" id="11006">
+						<visible allowhiddenfocus="false">false</visible>
+						<orientation>horizontal</orientation>
+						<ondown condition="Control.IsVisible(11007)">7007</ondown>
+						<ondown condition="!Control.IsVisible(11007)">300</ondown>
+						<onup>300</onup>
+						<onright>-</onright>
+						<onleft>300</onleft>
+						<posx>0</posx>
+						<posy>-110</posy>
+						<width>860</width>
+						<height>330</height>
+						<itemlayout width="139" height="330">
+							<!-- music when both lists are visible -->
+							<control type="group">
+								<posy>0</posy>
+								<visible>Control.IsVisible(11007)</visible>
+							<control type="group">
+								<include>ListItemSquareCard</include>
+								<include>ListItemSquare</include>
+								<include>ListItemSquareTitleArtist</include>
+								<include>ListItemSquareTitleAlbum</include>
+							</control>
+							</control>
+							<!-- music when only this list is visible -->
+							<control type="group">
+								<posy>108</posy>
+								<visible>!Control.IsVisible(11007)</visible>
+								<include>ListItemSquareCard</include>
+								<include>ListItemSquare</include>
+								<include>ListItemSquareTitleArtist</include>
+								<include>ListItemSquareTitleAlbum</include>
+							</control>
+						</itemlayout>
+						<focusedlayout width="139" height="330">
+							<!-- music when both lists are visible -->
+							<control type="group">
+								<posy>0</posy>
+								<visible>Control.IsVisible(11007)</visible>
+							<control type="group">
+								<include>ListItemSquareCard</include>
+								<include>ListItemSquare</include>
+								<include>ListItemSquareTitleArtist</include>
+								<include>ListItemSquareTitleAlbum</include>
+								<include>ListItemSquareSelectedBorder</include>
+							</control>
+							</control>
+							<!-- music when only this list is visible -->
+							<control type="group">
+								<posy>108</posy>
+								<visible>!Control.IsVisible(11007)</visible>
+								<include>ListItemSquareCard</include>
+								<include>ListItemSquare</include>
+								<include>ListItemSquareTitleArtist</include>
+								<include>ListItemSquareTitleAlbum</include>
+								<include>ListItemSquareSelectedBorder</include>
+							</control>
+						</focusedlayout>
+					</control>
+				</control>
+				<!-- Photo (11007) -->
+				<control type="group" id="7007">
+					<visible allowhiddenfocus="false">true</visible>
+					<height>230</height>
+					<control type="fixedlist" id="11007">
+						<visible allowhiddenfocus="false">false</visible>
+						<orientation>horizontal</orientation>
+						<ondown>300</ondown>
+						<onup condition="Control.IsVisible(11005)">7005</onup>
+						<onup condition="Control.IsVisible(11006)">7006</onup>
+						<onup condition="!Control.IsVisible(11001)">300</onup>
+						<onright>-</onright>
+						<onleft>300</onleft>
+						<posx>0</posx>
+						<posy>6</posy>
+						<width>860</width>
+						<height>330</height>
+						<itemlayout width="139" height="230">
+							<!-- photos -->
+							<control type="group">
+								<visible>ListItem.Type(photo)</visible>
+								<include>ListItemSquareCard</include>
+								<include>ListItemSquare</include>
+								<include>ListItemSquareTitle</include>
+							</control>
+						</itemlayout>
+						<focusedlayout width="139" height="230">
+							<animation effect="fade" start="100" end="50" time="300" condition="ControlGroup(7005).HasFocus | ControlGroup(7006).HasFocus">Conditional</animation>
+							<!-- photos -->
+							<control type="group">
+								<visible>ListItem.Type(photo)</visible>
+								<include>ListItemSquareCard</include>
+								<include>ListItemSquare</include>
+								<include>ListItemSquareTitle</include>
+								<include>ListItemSquareSelectedBorder</include>
+							</control>
+						</focusedlayout>
 					</control>
 				</control>
 			</control>
