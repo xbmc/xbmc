@@ -1,2 +1,20 @@
-find_all_sources(. dvdinputstreams_SRCS)
+set(dvdinputstreams_SRCS
+	DVDFactoryInputStream.cpp
+	DVDFactoryInputStream.h
+	DVDInputStream.cpp
+	DVDInputStream.h
+	DVDInputStreamFFmpeg.cpp
+	DVDInputStreamFFmpeg.h
+	DVDInputStreamFile.cpp
+	DVDInputStreamFile.h
+	DVDInputStreamStack.cpp
+	DVDInputStreamStack.h
+	DVDStateSerializer.cpp
+	DVDStateSerializer.h
+	DVDInputStreamRTMP.cpp
+	DVDInputStreamRTMP.h
+	DVDInputStreamNavigator.cpp
+	DVDInputStreamNavigator.h
+)
+
 add_sources(${dvdinputstreams_SRCS})

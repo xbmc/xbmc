@@ -2389,11 +2389,13 @@ void CDVDPlayer::HandleMessages()
         if (speed != DVD_PLAYSPEED_PAUSE && m_playSpeed != DVD_PLAYSPEED_PAUSE && speed != m_playSpeed)
           m_callback.OnPlayBackSpeedChanged(speed / DVD_PLAYSPEED_NORMAL);
 
+#ifndef __PLEX__
         if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) && speed != m_playSpeed)
         {
           CDVDInputStreamPVRManager* pvrinputstream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
           pvrinputstream->Pause( speed == 0 );
         }
+#endif
 
         // if playspeed is different then DVD_PLAYSPEED_NORMAL or DVD_PLAYSPEED_PAUSE
         // audioplayer, stops outputing audio to audiorendere, but still tries to
