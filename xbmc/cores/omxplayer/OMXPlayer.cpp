@@ -612,17 +612,9 @@ bool COMXPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
 #endif
 
     Create();
-    if(!m_ready.WaitMSec(g_advancedSettings.m_videoBusyDialogDelay_ms))
-    {
-      CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-      if(dialog)
-      {
-        dialog->Show();
-        while(!m_ready.WaitMSec(1))
-          g_windowManager.ProcessRenderLoop(false);
-        dialog->Close();
-      }
-    }
+
+    // wait for the ready event
+    CGUIDialogBusy::WaitOnEvent(m_ready, g_advancedSettings.m_videoBusyDialogDelay_ms, false);
 
     // Playback might have been stopped due to some error
     if (m_bStop || m_bAbortRequest)
