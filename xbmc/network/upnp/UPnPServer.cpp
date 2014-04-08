@@ -1090,7 +1090,7 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
     m_logger->info("OnUpdateObject: {} from {}", path,
                    (const char*)context.GetRemoteAddress().GetIpAddress().ToString());
 
-    NPT_String playCount, position;
+    NPT_String playCount, position, lastPlayed;
     int err;
     const char* msg = NULL;
     bool updatelisting(false);
@@ -1131,6 +1131,8 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
 
         position = new_vals["lastPlaybackPosition"];
         playCount = new_vals["playCount"];
+        lastPlayed = new_vals["lastPlaybackTime"];
+
 
         if (!position.IsEmpty()
               && position.Compare(current_vals["lastPlaybackPosition"]) != 0) {
@@ -1162,7 +1164,13 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
 
             NPT_UInt32 count;
             NPT_CHECK_LABEL(playCount.ToInteger32(count), args);
-            db.SetPlayCount(updated, count);
+
+            CDateTime lastPlayedObj;
+            if (!lastPlayed.IsEmpty() &&
+                lastPlayed.Compare(current_vals["lastPlaybackTime"]) != 0)
+                lastPlayedObj.SetFromW3CDateTime(lastPlayed.GetChars());
+
+            db.SetPlayCount(updated, count, lastPlayedObj);
             updatelisting = true;
         }
 
