@@ -340,7 +340,15 @@ if test "$platform_os" == "android"; then
   fi
 
   if [ ! test -f $use_sdk_path/tools/zipalign ]; then
-    AC_MSG_ERROR(verify sdk path)
+    sdk_host=`uname -a | grep Darwin`
+    if test -z "$sdk_host"; then
+      sdk_host=linux
+    else
+      sdk_host=darwin
+    fi
+    if ! test -f $use_sdk_path/tools/$sdk_host/zipalign; then
+      AC_MSG_ERROR(verify sdk path)
+    fi
   fi
 
   if [ ! test -f $use_ndk/sources/android/native_app_glue/android_native_app_glue.h ]; then
