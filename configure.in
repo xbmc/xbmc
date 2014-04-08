@@ -686,7 +686,7 @@ case $host in
   powerpc64-*-linux-gnu*|powerpc64-*-linux-uclibc*)
      ARCH="powerpc64-linux"
      ;;
-  arm*-*-linux-gnu*)
+  arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
      ARCH="arm"
      use_arch="arm"
      ffmpeg_target_os=linux
