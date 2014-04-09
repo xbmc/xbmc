@@ -82,15 +82,10 @@ void CPlexSectionFanout::ShowPlayQueue()
 
   for (int i = currentSong; i < playlist.size(); i ++)
   {
-    try
-    {
-      list->Add(playlist[i]);
-    }
-    catch (...)
-    {
-      CLog::Log(LOGWARNING, "CPlexSectionFanout::ShowPlayQueue failed to read playlist");
-      return;
-    }
+    CFileItemPtr item = playlist[i];
+    if (i == currentSong)
+      item->SetProperty("currentPlayQueueItem", "1");
+    list->Add(item);
   }
 
   m_fileLists[listType] = list;
