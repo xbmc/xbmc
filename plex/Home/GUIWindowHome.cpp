@@ -82,7 +82,8 @@
 #include "GUI/GUIPlexMediaWindow.h"
 #include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
-
+#include "PlayQueueManager.h"
+#include "music/tags/MusicInfoTag.h"
 
 using namespace std;
 using namespace XFILE;
@@ -153,7 +154,8 @@ bool CGUIWindowHome::OnAction(const CAction &action)
         HideAllLists();
         m_lastSelectedItem = GetCurrentItemName();
         m_lastSelectedSubItem.Empty();
-        g_plexApplication.timer->SetTimeout(200, this);
+        if (g_plexApplication.timer)
+          g_plexApplication.timer->SetTimeout(200, this);
       }
 
       if (action.GetID() == ACTION_SELECT_ITEM && pItem->HasProperty("sectionPath") &&
@@ -209,121 +211,218 @@ CFileItem* CGUIWindowHome::GetCurrentFileItem()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CGUIWindowHome::OnPopupMenu()
+CFileItemPtr CGUIWindowHome::GetCurrentFanoutItem()
 {
-  if (!GetFocusedControl())
-    return false;
-  
-  int controlId = GetFocusedControl()->GetID();
-  if (controlId == MAIN_MENU || controlId == POWER_MENU)
+  int focusedControl = GetFocusedControlID();
+  if (focusedControl >= CONTENT_LIST_RECENTLY_ADDED &&
+      focusedControl <= CONTENT_LIST_PLAYQUEUE_PHOTO)
   {
-    CContextButtons buttons;
-    buttons.Add(CONTEXT_BUTTON_QUIT, 13009);
-
-    if(g_powerManager.CanSuspend())
-      buttons.Add(CONTEXT_BUTTON_SLEEP, 13011);
-
-    if (g_powerManager.CanPowerdown())
-      buttons.Add(CONTEXT_BUTTON_SHUTDOWN, 13005);
-
-    int choice = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
-
-    if (choice == CONTEXT_BUTTON_SLEEP)
-      CApplicationMessenger::Get().Suspend();
-
-    if (choice == CONTEXT_BUTTON_QUIT)
-      CApplicationMessenger::Get().Quit();
-
-    if (choice == CONTEXT_BUTTON_SHUTDOWN)
-      CApplicationMessenger::Get().Shutdown();
-
-  }
-  else if (controlId == CONTENT_LIST_ON_DECK ||
-           controlId == CONTENT_LIST_RECENTLY_ADDED ||
-           controlId == CONTENT_LIST_QUEUE ||
-           controlId == CONTENT_LIST_RECOMMENDATIONS)
-  {
-    CGUIBaseContainer *container = (CGUIBaseContainer*)GetControl(controlId);
-    CGUIListItemPtr item = container->GetListItem(0);
-    if (item->IsFileItem())
+    CGUIBaseContainer* container = (CGUIBaseContainer*)(GetControl(focusedControl));
+    if (container)
     {
-      CFileItemPtr fileItem = boost::static_pointer_cast<CFileItem>(item);
-      CContextButtons buttons;
-      EPlexDirectoryType type = (EPlexDirectoryType)fileItem->GetPlexDirectoryType();
-
-      if (((fileItem->IsRemoteSharedPlexMediaServerLibrary() == false) &&
-          (fileItem->GetProperty("HasWatchedState").asBoolean() == true)) ||
-          fileItem->HasProperty("ratingKey"))
-      {
-        CStdString viewOffset = item->GetProperty("viewOffset").asString();
-
-        if (fileItem->GetVideoInfoTag()->m_playCount > 0 || viewOffset.size() > 0)
-          buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104);
-        if (fileItem->GetVideoInfoTag()->m_playCount == 0 || viewOffset.size() > 0)
-          buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);
-      }
-
-      CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(fileItem->GetProperty("plexserver").asString());
-      if (server && server->SupportsDeletion())
-        buttons.Add(CONTEXT_BUTTON_DELETE, 117);
-
-      int choice = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
-
-      if (choice == CONTEXT_BUTTON_MARK_UNWATCHED)
-      {
-        bool sendMsg = false;
-        if (controlId == CONTENT_LIST_ON_DECK && fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE)
-        {
-          std::vector<CGUIListItemPtr> items = container->GetItems();
-          int idx = std::distance(items.begin(), std::find(items.begin(), items.end(), fileItem));
-          CGUIMessage msg(GUI_MSG_LIST_REMOVE_ITEM, GetID(), controlId, idx+1, 0);
-          OnMessage(msg);
-        }
-        else if (controlId == CONTENT_LIST_ON_DECK && fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE)
-        {
-          SectionNeedsRefresh(GetCurrentItemName());
-          sendMsg = true;
-        }
-        fileItem->MarkAsUnWatched(sendMsg);
-      }
-      else if (choice == CONTEXT_BUTTON_MARK_WATCHED)
-      {
-        bool sendMsg = false;
-        if (controlId == CONTENT_LIST_RECENTLY_ADDED ||
-            (controlId == CONTENT_LIST_ON_DECK && fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE))
-        {
-          /* marking as watched and is on the on deck list, we need to remove it then */
-          std::vector<CGUIListItemPtr> items = container->GetItems();
-          int idx = std::distance(items.begin(), std::find(items.begin(), items.end(), fileItem));
-          CGUIMessage msg(GUI_MSG_LIST_REMOVE_ITEM, GetID(), controlId, idx+1, 0);
-          OnMessage(msg);
-        }
-        else if (controlId == CONTENT_LIST_ON_DECK && fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE)
-        {
-          SectionNeedsRefresh(GetCurrentItemName());
-          sendMsg = true;
-        }
-
-        fileItem->MarkAsWatched(sendMsg);
-      }
-      else if (choice == CONTEXT_BUTTON_DELETE)
-      {
-        // Confirm.
-        if (!CGUIDialogYesNo::ShowAndGetInput(750, 125, 0, 0))
-          return true;
-
-        g_plexApplication.mediaServerClient->deleteItem(fileItem);
-
-        /* marking as watched and is on the on deck list, we need to remove it then */
-        std::vector<CGUIListItemPtr> items = container->GetItems();
-        int idx = std::distance(items.begin(), std::find(items.begin(), items.end(), fileItem));
-        CGUIMessage msg(GUI_MSG_LIST_REMOVE_ITEM, GetID(), controlId, idx+1, 0);
-        OnMessage(msg);
-      }
-      return true;
+      CGUIListItemPtr listItem = container->GetListItem(0);
+      if (listItem && listItem->IsFileItem())
+        return boost::static_pointer_cast<CFileItem>(listItem);
     }
   }
-  return false;
+  return CFileItemPtr();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowHome::GetSleepContextMenu(CContextButtons& buttons)
+{
+  buttons.Add(CONTEXT_BUTTON_QUIT, 13009);
+
+  if(g_powerManager.CanSuspend())
+    buttons.Add(CONTEXT_BUTTON_SLEEP, 13011);
+
+  if (g_powerManager.CanPowerdown())
+    buttons.Add(CONTEXT_BUTTON_SHUTDOWN, 13005);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowHome::GetItemContextMenu(CContextButtons& buttons, const CFileItem& item)
+{
+  if (item.GetProperty("HasWatchedState").asBoolean() ||
+      item.HasProperty("ratingKey"))
+  {
+    CStdString viewOffset = item.GetProperty("viewOffset").asString();
+
+    if (item.GetVideoInfoTag()->m_playCount > 0 || viewOffset.size() > 0)
+      buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104);
+    if (item.GetVideoInfoTag()->m_playCount == 0 || viewOffset.size() > 0)
+      buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);
+  }
+
+  CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(item.GetProperty("plexserver").asString());
+  if (server && server->SupportsDeletion())
+    buttons.Add(CONTEXT_BUTTON_DELETE, 117);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowHome::GetPlayQueueContextMenu(CContextButtons& buttons, const CFileItem& item)
+{
+  // Remove from Queue
+  buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 1210);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowHome::GetContextMenu(CContextButtons& buttons)
+{
+  if (!GetFocusedControl())
+    return;
+
+  int controlId = GetFocusedControl()->GetID();
+  CFileItemPtr fileItem = GetCurrentFanoutItem();
+
+  if (controlId == MAIN_MENU || controlId == POWER_MENU)
+  {
+    GetSleepContextMenu(buttons);
+  }
+  else if (fileItem != NULL)
+  {
+    if (controlId == CONTENT_LIST_ON_DECK ||
+        controlId == CONTENT_LIST_RECENTLY_ADDED ||
+        controlId == CONTENT_LIST_QUEUE ||
+        controlId == CONTENT_LIST_RECOMMENDATIONS)
+      GetItemContextMenu(buttons, *fileItem);
+
+    else if (controlId == CONTENT_LIST_PLAYQUEUE_MUSIC ||
+             controlId == CONTENT_LIST_PLAYQUEUE_PHOTO ||
+             controlId == CONTENT_LIST_PLAYQUEUE_VIDEO)
+      GetPlayQueueContextMenu(buttons, *fileItem);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowHome::ChangeWatchState(int choice)
+{
+  CFileItemPtr fileItem = GetCurrentFanoutItem();
+  if (!fileItem)
+    return;
+
+  int controlId = GetFocusedControl()->GetID();
+  CGUIBaseContainer *container = (CGUIBaseContainer*)GetControl(controlId);
+  std::vector<CGUIListItemPtr> items = container->GetItems();
+
+  int indexInContainer = std::distance(items.begin(),
+                                       std::find(items.begin(), items.end(), fileItem));
+
+  CGUIMessage msg(GUI_MSG_LIST_REMOVE_ITEM, GetID(), controlId, indexInContainer+1, 0);
+
+  if (choice == CONTEXT_BUTTON_MARK_UNWATCHED)
+  {
+    bool sendMsg = false;
+
+    if (controlId == CONTENT_LIST_ON_DECK &&
+        fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE)
+    {
+      OnMessage(msg);
+    }
+    else if (controlId == CONTENT_LIST_ON_DECK &&
+             fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE)
+    {
+      SectionNeedsRefresh(GetCurrentItemName());
+      sendMsg = true;
+    }
+
+    fileItem->MarkAsUnWatched(sendMsg);
+  }
+  else if (choice == CONTEXT_BUTTON_MARK_WATCHED)
+  {
+    bool sendMsg = false;
+    if (controlId == CONTENT_LIST_RECENTLY_ADDED ||
+        (controlId == CONTENT_LIST_ON_DECK &&
+         fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE))
+    {
+      OnMessage(msg);
+    }
+
+    else if (controlId == CONTENT_LIST_ON_DECK &&
+             fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE)
+    {
+      SectionNeedsRefresh(GetCurrentItemName());
+      sendMsg = true;
+    }
+
+    fileItem->MarkAsWatched(sendMsg);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowHome::HandleItemDelete()
+{
+  CFileItemPtr fileItem = GetCurrentFanoutItem();
+  if (!fileItem)
+    return;
+
+  // Confirm.
+  if (!CGUIDialogYesNo::ShowAndGetInput(750, 125, 0, 0))
+    return;
+
+  g_plexApplication.mediaServerClient->deleteItem(fileItem);
+
+  /* marking as watched and is on the on deck list, we need to remove it then */
+  CGUIBaseContainer *container = (CGUIBaseContainer*)GetFocusedControl();
+  if (container)
+  {
+    std::vector<CGUIListItemPtr> items = container->GetItems();
+    int idx = std::distance(items.begin(), std::find(items.begin(), items.end(), fileItem));
+    CGUIMessage msg(GUI_MSG_LIST_REMOVE_ITEM, GetID(), GetFocusedControlID(), idx+1, 0);
+    OnMessage(msg);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowHome::RemoveFromPlayQueue()
+{
+  CFileItemPtr fileItem = GetCurrentFanoutItem();
+  if (fileItem)
+    g_plexApplication.playQueueManager->removeItemFromCurrentPlayQueue(fileItem);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIWindowHome::OnPopupMenu()
+{
+
+  CContextButtons buttons;
+  GetContextMenu(buttons);
+
+  int choice = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
+
+  if (choice == -1)
+    return false;
+
+  switch (choice)
+  {
+    case CONTEXT_BUTTON_SLEEP:
+      CApplicationMessenger::Get().Suspend();
+      break;
+    case CONTEXT_BUTTON_QUIT:
+      CApplicationMessenger::Get().Quit();
+      break;
+    case CONTEXT_BUTTON_SHUTDOWN:
+      CApplicationMessenger::Get().Shutdown();
+      break;
+
+    case CONTEXT_BUTTON_MARK_UNWATCHED:
+    case CONTEXT_BUTTON_MARK_WATCHED:
+      ChangeWatchState(choice);
+      break;
+
+    case CONTEXT_BUTTON_DELETE:
+      HandleItemDelete();
+      break;
+
+    case CONTEXT_BUTTON_REMOVE_SOURCE:
+      RemoveFromPlayQueue();
+      break;
+
+    default:
+      CLog::Log(LOGWARNING, "CGUIWindowHome::OnPopupMenu can't handle choice %d", choice);
+      return false;
+  }
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -383,8 +482,10 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     }
 
     case GUI_MSG_PLAYLIST_CHANGED:
+    case GUI_MSG_PLAYLISTPLAYER_CHANGED:
     {
-      RefreshSection("plexserver://playqueue", CPlexSectionFanout::SECTION_TYPE_PLAYQUEUE);
+      if (PlexUtils::IsPlayingPlaylist())
+        RefreshSection("plexserver://playqueue/", CPlexSectionFanout::SECTION_TYPE_PLAYQUEUE);
       return true;
     }
       
@@ -402,6 +503,9 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         RefreshAllSections(false);
       else if (message.GetMessage() == GUI_MSG_PLEX_SERVER_DATA_LOADED)
         RefreshSectionsForServer(message.GetStringParam());
+
+      if (PlexUtils::IsPlayingPlaylist())
+        RefreshSection("plexserver://playqueue/", CPlexSectionFanout::SECTION_TYPE_PLAYQUEUE);
 
       break;
     }
@@ -496,25 +600,29 @@ bool CGUIWindowHome::OnClick(const CGUIMessage& message)
 {
   m_lastSelectedItem = GetCurrentItemName();
 
-  int iControl = message.GetSenderId();
   int iAction = message.GetParam1();
+  int currentContainer = GetFocusedControlID();
 
-  CGUIBaseContainer *container = (CGUIBaseContainer*)GetControl(iControl);
-  if (container)
+  CFileItemPtr fileItem = GetCurrentFanoutItem();
+
+  if (fileItem)
   {
-    CGUIListItemPtr litem = container->GetListItem(0);
-    CFileItemPtr item;
-    if (litem->IsFileItem())
-      item = boost::static_pointer_cast<CFileItem>(litem);
-
-    if (!item)
-      return false;
-
-    if (iAction == ACTION_SELECT_ITEM && PlexUtils::CurrentSkinHasPreplay() &&
-        item->GetPlexDirectoryType() != PLEX_DIR_TYPE_PHOTO)
-      OpenItem(item);
+    if (fileItem->HasMusicInfoTag() &&
+        (currentContainer == CONTENT_LIST_PLAYQUEUE_MUSIC ||
+         currentContainer == CONTENT_LIST_PLAYQUEUE_PHOTO ||
+         currentContainer == CONTENT_LIST_PLAYQUEUE_VIDEO))
+    {
+      CApplicationMessenger::Get().PlayListPlayerPlaySongId(
+            fileItem->GetMusicInfoTag()->GetDatabaseId());
+    }
     else
-      PlayFileFromContainer(container);
+    {
+      if (iAction == ACTION_SELECT_ITEM && PlexUtils::CurrentSkinHasPreplay() &&
+          fileItem->GetPlexDirectoryType() != PLEX_DIR_TYPE_PHOTO)
+        OpenItem(fileItem);
+      else
+        PlayPlexItem(fileItem, (CGUIBaseContainer*)GetFocusedControl());
+    }
   }
   else
   {

@@ -37,13 +37,13 @@
 #include "Utility/PlexTimer.h"
 #include "PlexNavigationHelper.h"
 #include "PlexGlobalTimer.h"
-
 #include "PlexSectionFanout.h"
+#include "dialogs/GUIDialogContextMenu.h"
 
 // List IDs.
-#define CONTEXT_BUTTON_SLEEP 1
-#define CONTEXT_BUTTON_QUIT 2
-#define CONTEXT_BUTTON_SHUTDOWN 3
+#define CONTEXT_BUTTON_SLEEP (CONTEXT_BUTTON_RATING + 1)
+#define CONTEXT_BUTTON_QUIT (CONTEXT_BUTTON_RATING + 2)
+#define CONTEXT_BUTTON_SHUTDOWN (CONTEXT_BUTTON_RATING + 3)
 
 class CGUIWindowHome;
 
@@ -54,9 +54,9 @@ public:
   virtual ~CGUIWindowHome(void) {}
   virtual bool OnMessage(CGUIMessage& message);
 
-  private:
+
+private:
   virtual bool OnAction(const CAction &action);
-  virtual bool OnPopupMenu();
   virtual bool CheckTimer(const CStdString& strExisting, const CStdString& strNew, int title, int line1, int line2);
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 
@@ -86,6 +86,17 @@ public:
 
   CStdString GetCurrentItemName(bool onlySections=false);
   CFileItem* GetCurrentFileItem();
+  CFileItemPtr GetCurrentFanoutItem();
+
+  // Context menu
+  virtual bool OnPopupMenu();
+  void GetContextMenu(CContextButtons &buttons);
+  void GetSleepContextMenu(CContextButtons &buttons);
+  void GetItemContextMenu(CContextButtons &buttons, const CFileItem &item);
+  void GetPlayQueueContextMenu(CContextButtons &buttons, const CFileItem &item);
+  void ChangeWatchState(int choice);
+  void HandleItemDelete();
+  void RemoveFromPlayQueue();
 
   void UpdateSections();
   CGUIStaticItemPtr ItemToSection(CFileItemPtr item);
