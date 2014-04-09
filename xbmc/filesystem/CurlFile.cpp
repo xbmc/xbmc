@@ -1195,14 +1195,23 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
   long response = m_state->Connect(m_bufferSize);
   if(response < 0 && (m_state->m_fileSize == 0 || m_state->m_fileSize != m_state->m_filePos))
   {
-    m_seekable = false;
-    if(m_multisession && m_oldState)
+    if(m_multisession)
     {
-      delete m_state;
-      m_state = m_oldState;
-      m_oldState = NULL;
+      if (m_oldState)
+      {
+        delete m_state;
+        m_state     = m_oldState;
+        m_oldState  = NULL;
+      }
+      // Retry without mutlisession
+      m_multisession = false;
+      return Seek(iFilePosition, iWhence);
     }
-    return -1;
+    else
+    {
+      m_seekable = false;
+      return -1;
+    } 
   }
 
   SetCorrectHeaders(m_state);
