@@ -1169,11 +1169,10 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
   if(!m_seekable)
     return -1;
 
-  CReadState* oldstate = NULL;
   if(m_multisession)
   {
     CURL url(m_url);
-    oldstate = m_oldState;
+    delete m_oldState;
     m_oldState = m_state;
     m_state = new CReadState();
 
@@ -1201,13 +1200,12 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
     {
       delete m_state;
       m_state = m_oldState;
-      m_oldState = oldstate;
+      m_oldState = NULL;
     }
     return -1;
   }
 
   SetCorrectHeaders(m_state);
-  delete oldstate;
 
   return m_state->m_filePos;
 }
