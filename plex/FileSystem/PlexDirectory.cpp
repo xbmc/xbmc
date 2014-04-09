@@ -103,6 +103,14 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     httpSuccess = m_file.Get(m_url.Get(), m_data);
   else if (m_verb == "PUT")
     httpSuccess = m_file.Put(m_url.Get(), m_data);
+  else if (m_verb == "DELETE")
+    httpSuccess = m_file.Delete(m_url.Get(), m_data);
+  else
+  {
+    CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory UNKNOWN VERB %s :-(", m_verb.c_str());
+    return false;
+  }
+
 
   if (!httpSuccess)
   {
