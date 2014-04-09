@@ -15,6 +15,7 @@ public:
                        int limit = 0);
 
   bool addItemToCurrentPlayQueue(const CFileItemPtr& item, bool playNext);
+  bool removeItemFromCurrentPlayQueue(const CFileItemPtr& item);
   bool createPlayQueueFromItem(const CPlexServerPtr& server, const CFileItemPtr& item,
                                bool shuffle = false, bool continuous = false, int limit = 0);
 

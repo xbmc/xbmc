@@ -13,6 +13,7 @@
 #include "ApplicationMessenger.h"
 #include "PlexApplication.h"
 #include "Client/PlexServerManager.h"
+#include "Application.h"
 
 #include "dialogs/GUIDialogOK.h"
 
@@ -270,6 +271,12 @@ void CPlayQueueManager::OnJobComplete(unsigned int jobID, bool success, CJob* jo
       CLog::Log(LOGDEBUG, "CPlayQueueManager::OnJobComplete refreshing current playlist %d",
                 playQueueID);
       reconcilePlayQueueChanges(playlist, fj->m_items);
+
+      // now we need to check if the current playing item is still in the list, otherwise we'll
+      // advance the playlist.
+      if (g_playlistPlayer.GetCurrentSong() == -1)
+        CApplicationMessenger::Get().PlayListPlayerNext();
+
       return;
     }
 
@@ -304,4 +311,24 @@ void CPlayQueueManager::OnJobComplete(unsigned int jobID, bool success, CJob* jo
     CGUIDialogOK::ShowAndGetInput("Error creating the Play Queue",
                                   "The server was unable to create the Play Queue", "", "");
   }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlayQueueManager::removeItemFromCurrentPlayQueue(const CFileItemPtr& item)
+{
+  if (!item || !item->HasProperty("playQueueItemID"))
+    return false;
+
+  CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(item);
+  if (!server)
+    return false;
+
+  CStdString path;
+  path.Format("/playQueues/%d/items/%d", m_currentPlayQueueId, item->GetProperty("playQueueItemID").asInteger());
+  CURL u = server->BuildPlexURL(path);
+
+  CPlexDirectoryFetchJob* job = new CPlexDirectoryFetchJob(u);
+  job->m_dir.SetHTTPVerb("DELETE");
+  CJobManager::GetInstance().AddJob(job, this);
+  return true;
 }
