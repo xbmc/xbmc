@@ -152,6 +152,11 @@ CPlexDirectoryTypeParserTrack::Process(CFileItem &item, CFileItem &mediaContaine
   }
 
   item.SetFromSong(song);
+
+  if (item.HasProperty("playQueueItemID"))
+    item.GetMusicInfoTag()->SetDatabaseId(item.GetProperty("playQueueItemID").asInteger(), "song");
+  else
+    item.GetMusicInfoTag()->SetDatabaseId(item.GetProperty("ratingKey").asInteger(), "song");
 }
 
 void CPlexDirectoryTypeParserArtist::Process(CFileItem &item, CFileItem &mediaContainer, XML_ELEMENT *itemElement)
@@ -186,4 +191,6 @@ void CPlexDirectoryTypeParserArtist::Process(CFileItem &item, CFileItem &mediaCo
     else if (tagItem && tagItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_THUMB)
       item.SetArt(PLEX_ART_THUMB, thumbIdx ++, tagItem->GetPath());
   }
+
+  item.GetMusicInfoTag()->SetDatabaseId(item.GetProperty("ratingKey").asInteger(), "artist");
 }

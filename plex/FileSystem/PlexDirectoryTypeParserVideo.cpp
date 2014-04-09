@@ -16,6 +16,8 @@
 #include "AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"
 
+#include "music/tags/MusicInfoTag.h"
+
 #include <boost/foreach.hpp>
 
 using namespace XFILE;
@@ -152,6 +154,12 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
   
   item.SetProperty("selectedAudioStream", PlexUtils::GetPrettyStreamName(item, true));
   item.SetProperty("selectedSubtitleStream", PlexUtils::GetPrettyStreamName(item, false));
+
+  // We misuse the MusicInfoTag a bit here so we can call PlayListPlayer::PlaySongId()
+  if (item.HasProperty("playQueueItemID"))
+    item.GetMusicInfoTag()->SetDatabaseId(item.GetProperty("playQueueItemID").asInteger(), "video");
+  else
+    item.GetMusicInfoTag()->SetDatabaseId(item.GetProperty("ratingKey").asInteger(), "video");
   
   //DebugPrintVideoItem(item);
 }
