@@ -39,7 +39,7 @@ public:
   /* stop a transcode session */
   void StopTranscodeSession(CPlexServerPtr server);
   
-  void deleteItem(const CFileItemPtr &item);
+  void deleteItem(const CFileItemPtr& item);
   void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
   void share(const CFileItemPtr &item, const CStdString &network, const CStdString &message);
