@@ -125,7 +125,6 @@ void CNfsConnection::clearMembers()
 {
     m_exportPath.clear();
     m_hostName.clear();
-    m_exportList.clear();
     m_writeChunkSize = 0;
     m_readChunkSize = 0;  
     m_pNfsContext = NULL;
