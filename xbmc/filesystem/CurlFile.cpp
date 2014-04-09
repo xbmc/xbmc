@@ -1134,6 +1134,10 @@ bool CCurlFile::Exists(const CURL& url)
 int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
 {
   int64_t nextPos = m_state->m_filePos;
+  
+  if(!m_seekable)
+    return -1;
+
   switch(iWhence)
   {
     case SEEK_SET:
@@ -1158,27 +1162,31 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
   if(m_state->Seek(nextPos))
     return nextPos;
 
-  if (m_oldState && m_oldState->Seek(nextPos))
+  if (m_multisession)
   {
-    CReadState *tmp = m_state;
-    m_state = m_oldState;
-    m_oldState = tmp;
-    return nextPos;
-  }
+    if (!m_oldState)
+    {
+      CURL url(m_url);
+      m_oldState          = m_state;
+      m_state             = new CReadState();
+      m_state->m_fileSize = m_oldState->m_fileSize;
+      g_curlInterface.easy_aquire(url.GetProtocol(),
+                                  url.GetHostName(),
+                                  &m_state->m_easyHandle,
+                                  &m_state->m_multiHandle );
+    }
+    else
+    {
+      CReadState *tmp;
+      tmp         = m_state;
+      m_state     = m_oldState;
+      m_oldState  = tmp;
 
-  if(!m_seekable)
-    return -1;
-
-  if(m_multisession)
-  {
-    CURL url(m_url);
-    delete m_oldState;
-    m_oldState = m_state;
-    m_state = new CReadState();
-
-    g_curlInterface.easy_aquire(url.GetProtocol(), url.GetHostName(), &m_state->m_easyHandle, &m_state->m_multiHandle );
-
-    m_state->m_fileSize = m_oldState->m_fileSize;
+      if (m_state->Seek(nextPos))
+        return nextPos;
+      
+      m_state->Disconnect();
+    }
   }
   else
     m_state->Disconnect();
