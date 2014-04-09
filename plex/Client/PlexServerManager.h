@@ -41,6 +41,7 @@ public:
 
   CPlexServerPtr FindByUUID(const CStdString &uuid);
   CPlexServerPtr FindFromItem(CFileItemPtr item);
+  CPlexServerPtr FindFromItem(const CFileItem& item);
 
   PlexServerList GetAllServers(CPlexServerOwnedModifier modifier = SERVER_ALL) const;
 

@@ -63,16 +63,19 @@ CPlexServerManager::CPlexServerManager(const CPlexServerPtr &server) : m_stopped
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CPlexServerPtr CPlexServerManager::FindFromItem(CFileItemPtr item)
+CPlexServerPtr CPlexServerManager::FindFromItem(const CFileItem& item)
 {
-  if (!item)
-    return CPlexServerPtr();
-
-  CStdString uuid = item->GetProperty("plexserver").asString();
+  CStdString uuid = item.GetProperty("plexserver").asString();
   if (uuid.empty())
     return CPlexServerPtr();
 
   return FindByUUID(uuid);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CPlexServerPtr CPlexServerManager::FindFromItem(CFileItemPtr item)
+{
+  return FindFromItem(*item);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -171,7 +174,7 @@ void CPlexServerManager::UpdateFromDiscovery(CPlexServerPtr server)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-PlexServerPtr CPlexServerManager::MergeServer(CPlexServerPtr server)
+CPlexServerPtr CPlexServerManager::MergeServer(CPlexServerPtr server)
 {
   CSingleLock lk(m_serverManagerLock);
 
