@@ -401,4 +401,208 @@
 			</control>
 		</control>
 	</include>
+	<!-- Currently Playing Testing Suite, to DELETE later on -->
+	<variable name="CurrentlyPlayingTitle1">
+		<value condition="Player.HasAudio">$INFO[MusicPlayer.Artist]</value>
+		<value condition="Player.HasVideo">$INFO[VideoPlayer.Title]</value>
+	</variable>
+	<variable name="CurrentlyPlayingTitle2">
+		<value condition="Player.HasAudio">$INFO[MusicPlayer.Album]</value>
+		<value condition="Player.HasVideo + !IsEmpty(VideoPlayer.TVShowTitle)">$INFO[VideoPlayer.TVShowTitle]</value>
+		<value condition="Player.HasVideo + IsEmpty(VideoPlayer.TVShowTitle) + !IsEmpty(VideoPlayer.Episode)">TVShowTitle is EMPTY</value>
+	</variable>
+	<variable name="CurrentlyPlayingTitle3">
+		<value condition="Player.HasAudio">$INFO[MusicPlayer.Title]</value>
+		<value condition="Player.HasVideo + !IsEmpty(VideoPlayer.Episode)">S$INFO[VideoPlayer.Season]&#xB7;E$INFO[VideoPlayer.Episode]</value>
+	</variable>
+	<variable name="CurrentlyPlayingTitle4">
+		<value condition="Player.HasAudio">$INFO[MusicPlayer.Time] / $INFO[MusicPlayer.Duration]</value>
+		<value condition="Player.HasVideo">$INFO[VideoPlayer.Time] / $INFO[VideoPlayer.Duration]</value>
+	</variable>
+	<variable name="NextPlayingTitle1">
+		<value condition="MusicPlayer.HasNext">$INFO[MusicPlayer.Offset(1).Artist]</value>
+		<value condition="Player.HasVideo">$INFO[VideoPlayer.Offset(1).Title]</value>
+	</variable>
+	<variable name="NextPlayingTitle2">
+		<value condition="MusicPlayer.HasNext">$INFO[MusicPlayer.Offset(1).Album]</value>
+		<value condition="Player.HasVideo + !IsEmpty(VideoPlayer.Offset(1).TVShowTitle)">$INFO[VideoPlayer.Offset(1).TVShowTitle]</value>
+		<value condition="Player.HasVideo + IsEmpty(VideoPlayer.Offset(1).TVShowTitle) + !IsEmpty(VideoPlayer.Offset(1).Episode)">TVShowTitle is EMPTY</value>
+	</variable>
+	<variable name="NextPlayingTitle3">
+		<value condition="MusicPlayer.HasNext">$INFO[MusicPlayer.Offset(1).Title]</value>
+		<value condition="Player.HasVideo + !IsEmpty(VideoPlayer.Offset(1).Episode)">S$INFO[VideoPlayer.Offset(1).Season]&#xB7;E$INFO[VideoPlayer.Offset(1).Episode]</value>
+	</variable>
+	<variable name="NextPlayingTitle4">
+		<value condition="MusicPlayer.HasNext">$INFO[MusicPlayer.Offset(1).Duration]</value>
+		<value condition="Player.HasVideo + !IsEmpty(VideoPlayer.Offset(1).Duration)">$INFO[VideoPlayer.Offset(1).Time] / $INFO[VideoPlayer.Offset(1).Duration]</value>
+	</variable>
+	<include name="CurrentlyPlaying">
+		<control type="group">
+			<!-- background -->
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>100</height>
+				<include>Black</include>
+				<animation effect="fade" start="0" end="60" condition="true">Conditional</animation>
+				<visible>Player.HasVideo | Player.HasAudio</visible>
+			</control>
+			<!-- music covers -->
+			<control type="group">
+				<posy>10</posy>
+				<posx>555</posx>
+				<control type="group">
+					<visible>Player.HasAudio</visible>
+					<control type="image">
+						<width>80</width>
+						<height>80</height>
+						<texture>default-square-big.png</texture>
+					</control>
+					<control type="image">
+						<width>80</width>
+						<height>80</height>
+						<texture diffuse="mask-square-big.png">$INFO[MusicPlayer.Cover]</texture>
+						<aspectratio scalediffuse="false">scale</aspectratio>
+					</control>					
+				</control>
+				<control type="group">
+					<posx>90</posx>
+					<visible>MusicPlayer.HasNext</visible>
+					<control type="image">
+						<width>80</width>
+						<height>80</height>
+						<texture>default-square-small.png</texture>
+					</control>
+					<control type="image">
+						<width>80</width>
+						<height>80</height>
+						<texture diffuse="mask-square.png">$INFO[MusicPlayer.Offset(1).Cover]</texture>
+						<aspectratio scalediffuse="false">scale</aspectratio>
+					</control>					
+				</control>
+			</control>
+			<!-- video posters -->
+			<control type="group">
+				<posy>10</posy>
+				<posx>555</posx>
+				<control type="group">
+					<visible>Player.HasVideo</visible>
+					<control type="image">
+						<width>53</width>
+						<height>80</height>
+						<texture background="true">default-poster-middle.png</texture>
+					</control>
+					<control type="image">
+						<width>53</width>
+						<height>80</height>
+						<texture background="true" diffuse="mask-poster-middle.png">$INFO[Player.Art(poster)]</texture>
+						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+					</control>					
+				</control>
+				<control type="group">
+					<posx>90</posx>
+					<visible>Player.HasVideo</visible>
+					<control type="image">
+						<width>53</width>
+						<height>80</height>
+						<texture background="true" diffuse="mask-poster-middle.png">$INFO[Player.Offset(1).Art(poster)]</texture>
+						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+					</control>					
+				</control>
+			</control>
+			<!-- current video PiP -->
+			<control type="group">
+				<control type="videowindow" id="1">
+					<description>Video Preview</description>
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>284</width>
+					<height>80</height>
+				</control>
+			</control>
+			<!-- infos -->
+			<control type="group">
+				<posy>10</posy>
+				<!-- currently playing -->
+				<control type="group">
+					<animation effect="slide" start="0" end="545" time="0" condition="Player.HasAudio">Conditional</animation>
+					<animation effect="slide" start="0" end="545" time="0" condition="Player.HasVideo">Conditional</animation>
+					<control type="label">
+						<posy>10</posy>
+						<width>800</width>
+						<font>Bold-18</font>
+						<textcolor>white</textcolor>
+						<label>$VAR[CurrentlyPlayingTitle1]</label>
+						<shadowcolor>ff222222</shadowcolor>
+						<align>right</align>
+					</control>
+					<control type="label">
+						<posy>30</posy>
+						<width>800</width>
+						<font>Regular-16</font>
+						<textcolor>greyLighter</textcolor>
+						<label>$VAR[CurrentlyPlayingTitle2]</label>
+						<shadowcolor>ff222222</shadowcolor>
+						<align>right</align>
+					</control>
+					<control type="label">
+						<posy>50</posy>
+						<width>800</width>
+						<font>Regular-16</font>
+						<textcolor>greyLighter</textcolor>
+						<label>$VAR[CurrentlyPlayingTitle3]</label>
+						<shadowcolor>ff222222</shadowcolor>
+						<align>right</align>
+					</control>
+					<control type="label">
+						<posy>70</posy>
+						<width>500</width>
+						<textcolor>white</textcolor>
+						<font>Regular-16</font>
+						<label>$VAR[CurrentlyPlayingTitle4]</label>
+						<shadowcolor>ff222222</shadowcolor>
+						<align>right</align>
+					</control>
+				</control>
+				<!-- next playing -->
+				<control type="group">
+					<animation effect="slide" start="0" end="735" time="0" condition="MusicPlayer.HasNext">Conditional</animation>
+					<animation effect="slide" start="0" end="710" time="0" condition="Player.HasVideo">Conditional</animation>
+					<control type="label">
+						<posy>10</posy>
+						<width>800</width>
+						<font>Bold-18</font>
+						<textcolor>white</textcolor>
+						<label>$VAR[NextPlayingTitle1]</label>
+						<shadowcolor>ff222222</shadowcolor>
+					</control>
+					<control type="label">
+						<posy>30</posy>
+						<width>800</width>
+						<font>Regular-16</font>
+						<textcolor>greyLighter</textcolor>
+						<label>$VAR[NextPlayingTitle2]</label>
+						<shadowcolor>ff222222</shadowcolor>
+					</control>
+					<control type="label">
+						<posy>50</posy>
+						<width>800</width>
+						<font>Regular-16</font>
+						<textcolor>greyLighter</textcolor>
+						<label>$VAR[NextPlayingTitle3]</label>
+						<shadowcolor>ff222222</shadowcolor>
+					</control>
+					<control type="label">
+						<posy>70</posy>
+						<width>500</width>
+						<textcolor>white</textcolor>
+						<font>Regular-16</font>
+						<label>$VAR[NextPlayingTitle4]</label>
+						<shadowcolor>ff222222</shadowcolor>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
 </includes>
