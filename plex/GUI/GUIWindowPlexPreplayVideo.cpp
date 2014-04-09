@@ -14,10 +14,13 @@
 #include "PlexThemeMusicPlayer.h"
 
 #include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogKeyboardGeneric.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "PlexJobs.h"
 #include "Client/PlexServerManager.h"
+#include "guilib/GUIWindowManager.h"
+#include "LocalizeStrings.h"
 
 #include "DirectoryCache.h"
 
