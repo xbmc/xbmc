@@ -114,14 +114,11 @@ class CAAudioUnitSink
     static void sessionPropertyCallback(void *inClientData,
                   AudioSessionPropertyID inID, UInt32 inDataSize, const void *inData);
 
-    static void sessionInterruptionCallback(void *inClientData, UInt32 inInterruption);
-
     static OSStatus renderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
                   const AudioTimeStamp *inTimeStamp, UInt32 inOutputBusNumber, UInt32 inNumberFrames,
                   AudioBufferList *ioData);
 
     bool                m_setup;
-    bool                m_initialized;
     bool                m_activated;
     AudioUnit           m_audioUnit;
     AudioStreamBasicDescription m_outputFormat;
@@ -142,8 +139,7 @@ class CAAudioUnitSink
 };
 
 CAAudioUnitSink::CAAudioUnitSink()
-: m_initialized(false)
-, m_activated(false)
+: m_activated(false)
 , m_buffer(NULL)
 , m_playing(false)
 , m_playing_saved(false)
@@ -335,25 +331,12 @@ bool CAAudioUnitSink::setupAudio()
   if (m_setup && m_audioUnit)
     return true;
 
-  // Audio Session Setup
-  UInt32 sessionCategory = kAudioSessionCategory_MediaPlayback;
-  status = AudioSessionSetProperty(kAudioSessionProperty_AudioCategory,
-                                   sizeof(sessionCategory), &sessionCategory);
-  if (status != noErr)
-  {
-    CLog::Log(LOGERROR, "%s error setting sessioncategory (error: %d)", __PRETTY_FUNCTION__, (int)status);
-    return false;
-  }
-
   AudioSessionAddPropertyListener(kAudioSessionProperty_AudioRouteChange,
     sessionPropertyCallback, this);
 
   AudioSessionAddPropertyListener(kAudioSessionProperty_CurrentHardwareOutputVolume,
     sessionPropertyCallback, this);
  
-  if (AudioSessionSetActive(true) != noErr)
-    return false;
-
   // Audio Unit Setup
   // Describe a default output unit.
   AudioComponentDescription description = {};
@@ -458,17 +441,6 @@ bool CAAudioUnitSink::activateAudioSession()
 {
   if (!m_activated)
   {
-    if (!m_initialized)
-    {
-      OSStatus osstat = AudioSessionInitialize(NULL, kCFRunLoopDefaultMode, sessionInterruptionCallback, this);
-      if (osstat == kAudioSessionNoError || osstat == kAudioSessionAlreadyInitialized)
-        m_initialized = true;
-      else
-      {
-        CLog::Log(LOGERROR, "%s error initializing audio session (error: %d)", __PRETTY_FUNCTION__, (int)osstat);
-        return false;
-      }
-    }
     if (checkAudioRoute() && setupAudio())
       m_activated = true;
   }
@@ -483,7 +455,6 @@ void CAAudioUnitSink::deactivateAudioSession()
     pause();
     AudioUnitUninitialize(m_audioUnit);
     AudioComponentInstanceDispose(m_audioUnit), m_audioUnit = NULL;
-    AudioSessionSetActive(false);
     AudioSessionRemovePropertyListenerWithUserData(kAudioSessionProperty_AudioRouteChange,
       sessionPropertyCallback, this);
     AudioSessionRemovePropertyListenerWithUserData(kAudioSessionProperty_CurrentHardwareOutputVolume,
@@ -508,27 +479,6 @@ void CAAudioUnitSink::sessionPropertyCallback(void *inClientData,
   {
     if (inData && inDataSize == 4)
       sink->m_outputVolume = *(float*)inData;
-  }
-}
-
-void CAAudioUnitSink::sessionInterruptionCallback(void *inClientData, UInt32 inInterruption)
-{    
-  CAAudioUnitSink *sink = (CAAudioUnitSink*)inClientData;
-
-  if (inInterruption == kAudioSessionBeginInterruption)
-  {
-    CLog::Log(LOGDEBUG, "Bgn interuption");
-    sink->m_playing_saved = sink->m_playing;
-    sink->pause();
-  }
-  else if (inInterruption == kAudioSessionEndInterruption)
-  {
-    CLog::Log(LOGDEBUG, "End interuption");
-    if (sink->m_playing_saved)
-    {
-      sink->m_playing_saved = false;
-      sink->play(sink->m_mute);
-    }
   }
 }
 

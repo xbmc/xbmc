@@ -167,7 +167,7 @@ CActiveAE::~CActiveAE()
 
 void CActiveAE::Dispose()
 {
-#if defined(HAS_GLX) || defined(TARGET_DARWIN_OSX)
+#if defined(HAS_GLX) || defined(TARGET_DARWIN)
   g_Windowing.Unregister(this);
 #endif
 
@@ -2152,7 +2152,7 @@ bool CActiveAE::Initialize()
   }
 
   // hook into windowing for receiving display reset events
-#if defined(HAS_GLX) || defined(TARGET_DARWIN_OSX)
+#if defined(HAS_GLX) || defined(TARGET_DARWIN) 
   g_Windowing.Register(this);
 #endif
 
