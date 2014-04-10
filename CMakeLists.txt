@@ -60,6 +60,7 @@ add_subdirectory(lib)
 include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_BINARY_DIR}/xbmc
+  ${root}/lib/gtest/include
 
   ${dependdir}/include
   ${dependdir}/include/libcec
