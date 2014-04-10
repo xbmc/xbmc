@@ -75,6 +75,9 @@ CPlexServerPtr CPlexServerManager::FindFromItem(const CFileItem& item)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexServerPtr CPlexServerManager::FindFromItem(CFileItemPtr item)
 {
+  if (!item)
+    return CPlexServerPtr();
+
   return FindFromItem(*item);
 }
 

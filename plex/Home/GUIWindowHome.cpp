@@ -484,8 +484,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     case GUI_MSG_PLAYLIST_CHANGED:
     case GUI_MSG_PLAYLISTPLAYER_CHANGED:
     {
-      if (PlexUtils::IsPlayingPlaylist())
-        RefreshSection("plexserver://playqueue/", CPlexSectionFanout::SECTION_TYPE_PLAYQUEUE);
+      RefreshSection("plexserver://playqueue/", CPlexSectionFanout::SECTION_TYPE_PLAYQUEUE);
       return true;
     }
       
@@ -504,8 +503,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       else if (message.GetMessage() == GUI_MSG_PLEX_SERVER_DATA_LOADED)
         RefreshSectionsForServer(message.GetStringParam());
 
-      if (PlexUtils::IsPlayingPlaylist())
-        RefreshSection("plexserver://playqueue/", CPlexSectionFanout::SECTION_TYPE_PLAYQUEUE);
+      RefreshSection("plexserver://playqueue/", CPlexSectionFanout::SECTION_TYPE_PLAYQUEUE);
 
       break;
     }
@@ -612,8 +610,13 @@ bool CGUIWindowHome::OnClick(const CGUIMessage& message)
          currentContainer == CONTENT_LIST_PLAYQUEUE_PHOTO ||
          currentContainer == CONTENT_LIST_PLAYQUEUE_VIDEO))
     {
-      CApplicationMessenger::Get().PlayListPlayerPlaySongId(
-            fileItem->GetMusicInfoTag()->GetDatabaseId());
+      int playlist = GetPlayQueueType();
+      if (playlist != PLAYLIST_NONE)
+      {
+        g_playlistPlayer.SetCurrentPlaylist(playlist);
+        CApplicationMessenger::Get().PlayListPlayerPlaySongId(
+              fileItem->GetMusicInfoTag()->GetDatabaseId());
+      }
     }
     else
     {
@@ -689,10 +692,16 @@ static bool _sortLabels(const CGUIListItemPtr& item1, const CGUIListItemPtr& ite
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 int CGUIWindowHome::GetPlayQueueType()
 {
-  if (!g_application.IsPlaying())
-    return PLAYLIST_NONE;
-
   int playlist = g_playlistPlayer.GetCurrentPlaylist();
+
+  if (playlist == PLAYLIST_NONE)
+  {
+    // playlistPlayer gives use PLAYLIST_NONE if we stop
+    // playback, but we want to show something still, so
+    // ask the playQueueManager if it knows what was playing
+    // recently
+    playlist = g_plexApplication.playQueueManager->getCurrentPlayQueueType();
+  }
 
   if (g_playlistPlayer.GetPlaylist(playlist).size() > 0)
     return playlist;
@@ -864,7 +873,7 @@ void CGUIWindowHome::UpdateSections()
 void CGUIWindowHome::AddPlayQueue(std::vector<CGUIListItemPtr>& list, bool& updated)
 {
   int type = g_playlistPlayer.GetCurrentPlaylist();
-  if (type == PLAYLIST_NONE || !g_application.IsPlaying())
+  if (type == PLAYLIST_NONE)
     return;
 
   PLAYLIST::CPlayList playlist = g_playlistPlayer.GetPlaylist(type);

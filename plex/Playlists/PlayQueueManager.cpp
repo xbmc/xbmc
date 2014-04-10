@@ -16,6 +16,7 @@
 #include "Application.h"
 
 #include "dialogs/GUIDialogOK.h"
+#include "settings/GUISettings.h"
 
 using namespace PLAYLIST;
 
@@ -23,6 +24,27 @@ using namespace PLAYLIST;
 CPlayQueueManager::CPlayQueueManager()
   : m_currentPlayQueueId(-1), m_currentPlayQueuePlaylist(PLAYLIST_NONE)
 {
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlayQueueManager::loadMostRecentPlayQueue()
+{
+  if (g_guiSettings.GetString("system.mostrecentplayqueue").empty())
+    return;
+
+  CURL playQueueURL(g_guiSettings.GetString("system.mostrecentplayqueue"));
+
+  CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(playQueueURL.GetHostName());
+  if (!server)
+  {
+    CLog::Log(
+          LOGDEBUG,
+          "CPlayQueueManager::loadMostRecentPlayQueue wanted server %s, but it's not available.",
+          playQueueURL.GetHostName().c_str());
+    return;
+  }
+
+  CJobManager::GetInstance().AddJob(new CPlexPlayQueueFetchJob(playQueueURL, false), this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,13 +105,13 @@ void CPlayQueueManager::reconcilePlayQueueChanges(int playlistType, const CFileI
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlayQueueManager::getPlayQueue(CPlexServerPtr server, int id)
+void CPlayQueueManager::getPlayQueue(CPlexServerPtr server, int id, bool startPlaying)
 {
   CStdString path;
   path.Format("/playQueues/%d", id);
 
   CURL u = server->BuildPlexURL(path);
-  CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(u), this);
+  CJobManager::GetInstance().AddJob(new CPlexPlayQueueFetchJob(u, startPlaying), this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -183,6 +205,9 @@ CURL CPlayQueueManager::getPlayQueueURL(const CPlexServerPtr& server, ePlexMedia
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlayQueueManager::addItemToCurrentPlayQueue(const CFileItemPtr& item, bool playNext)
 {
+  if (!verifyServerInItem(item))
+    return false;
+
   CStdString uri = getURIFromItem(*item);
   CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(item);
 
@@ -194,7 +219,7 @@ bool CPlayQueueManager::addItemToCurrentPlayQueue(const CFileItemPtr& item, bool
     if (u.Get().empty())
       return false;
 
-    CPlexDirectoryFetchJob* job = new CPlexDirectoryFetchJob(u);
+    CPlexPlayQueueFetchJob* job = new CPlexPlayQueueFetchJob(u, true);
     job->m_dir.SetHTTPVerb("PUT");
     CJobManager::GetInstance().AddJob(job, this);
     return true;
@@ -213,7 +238,7 @@ bool CPlayQueueManager::createPlayQueue(const CPlexServerPtr& server, ePlexMedia
   if (u.Get().empty())
     return false;
 
-  CPlexDirectoryFetchJob* job = new CPlexDirectoryFetchJob(u);
+  CPlexPlayQueueFetchJob* job = new CPlexPlayQueueFetchJob(u, true);
   job->m_dir.SetHTTPVerb("POST");
   CJobManager::GetInstance().AddJob(job, this);
   return true;
@@ -253,13 +278,13 @@ void CPlayQueueManager::refreshPlayQueue(const CFileItemPtr& item)
 
   CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(item);
   if (server)
-    getPlayQueue(server, item->GetProperty("playQueueID").asInteger());
+    getPlayQueue(server, item->GetProperty("playQueueID").asInteger(), false);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlayQueueManager::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
-  CPlexDirectoryFetchJob* fj = static_cast<CPlexDirectoryFetchJob*>(job);
+  CPlexPlayQueueFetchJob* fj = static_cast<CPlexPlayQueueFetchJob*>(job);
   if (fj && success)
   {
     int playlist = getPlaylistFromType(PlexUtils::GetMediaTypeFromItem(fj->m_items));
@@ -301,10 +326,23 @@ void CPlayQueueManager::OnJobComplete(unsigned int jobID, bool success, CJob* jo
     g_playlistPlayer.SetCurrentPlaylist(playlist);
     CApplicationMessenger::Get().PlayListPlayerClear(playlist);
     CApplicationMessenger::Get().PlayListPlayerAdd(playlist, fj->m_items);
-    CApplicationMessenger::Get().PlayListPlayerPlay(selectedOffset);
+    g_playlistPlayer.SetCurrentSong(selectedOffset);
+
+    if (fj->m_startPlaying)
+      CApplicationMessenger::Get().PlayListPlayerPlay();
 
     m_currentPlayQueuePlaylist = playlist;
     m_currentPlayQueueId = playQueueID;
+
+    CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(fj->m_items);
+    if (server)
+    {
+      CStdString path;
+      path.Format("/playQueues/%d", m_currentPlayQueueId);
+      g_guiSettings.SetString("system.mostrecentplayqueue", server->BuildPlexURL(path).Get());
+      m_currentPlayQueueServer = server;
+    }
+
   }
   else
   {
@@ -314,18 +352,31 @@ void CPlayQueueManager::OnJobComplete(unsigned int jobID, bool success, CJob* jo
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CPlayQueueManager::removeItemFromCurrentPlayQueue(const CFileItemPtr& item)
+bool CPlayQueueManager::verifyServerInItem(const CFileItemPtr& item)
 {
-  if (!item || !item->HasProperty("playQueueItemID"))
+  if (!item)
     return false;
 
   CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(item);
   if (!server)
     return false;
 
+  return server->Equals(m_currentPlayQueueServer);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlayQueueManager::removeItemFromCurrentPlayQueue(const CFileItemPtr& item)
+{
+  if (!verifyServerInItem(item))
+    return false;
+
+  if (!item || !item->HasProperty("playQueueItemID"))
+    return false;
+
   CStdString path;
-  path.Format("/playQueues/%d/items/%d", m_currentPlayQueueId, item->GetProperty("playQueueItemID").asInteger());
-  CURL u = server->BuildPlexURL(path);
+  path.Format("/playQueues/%d/items/%d", m_currentPlayQueueId,
+              item->GetProperty("playQueueItemID").asInteger());
+  CURL u = m_currentPlayQueueServer->BuildPlexURL(path);
 
   CPlexDirectoryFetchJob* job = new CPlexDirectoryFetchJob(u);
   job->m_dir.SetHTTPVerb("DELETE");

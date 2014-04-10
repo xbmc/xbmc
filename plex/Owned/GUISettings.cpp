@@ -1012,6 +1012,7 @@ void CGUISettings::Initialize()
 
   AddString(NULL, "system.uuid", 99999, s.str().c_str(), SPIN_CONTROL_TEXT);
   AddBool(NULL, "system.firstrunwizard", 0, false, 1);
+  AddString(NULL, "system.mostrecentplayqueue", 0, "", SPIN_CONTROL_TEXT);
 }
 
 CGUISettings::~CGUISettings(void)

@@ -62,6 +62,19 @@ public:
   CURL m_url;
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+class CPlexPlayQueueFetchJob : public CPlexDirectoryFetchJob
+{
+public:
+  CPlexPlayQueueFetchJob(const CURL& url, bool startPlaying = true)
+    : CPlexDirectoryFetchJob(url), m_startPlaying(startPlaying)
+  {
+
+  }
+
+  bool m_startPlaying;
+};
+
 ////////////////////////////////////////////////////////////////////////////////////////
 class CPlexCachedDirectoryFetchJob : public CPlexDirectoryFetchJob
 {

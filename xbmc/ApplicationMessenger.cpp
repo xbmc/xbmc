@@ -1339,5 +1339,4 @@ void CApplicationMessenger::Hide()
   ThreadMessage tMsg = {TMSG_HIDE};
   SendMessage(tMsg, true);
 }
-
 /* END PLEX */

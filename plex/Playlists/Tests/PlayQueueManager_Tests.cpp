@@ -6,6 +6,7 @@
 #include "Client/PlexConnection.h"
 
 #include "PlayListPlayer.h"
+#include "Tests/PlexTestUtils.h"
 
 static const CFileItem& getURIItem()
 {
@@ -74,9 +75,25 @@ static CPlexServerPtr getServer()
   return server;
 }
 
-static CPlayQueueManager manager;
+class PlayQueueManagerTest : public PlexServerManagerTestUtility
+{
+protected:
+  virtual void SetUp()
+  {
+    PlexServerManagerTestUtility::SetUp();
+    manager = CPlayQueueManager();
+  }
 
-TEST(PlayQueueManagerGetPlayQueueURL, validItem)
+  virtual void TearDown()
+  {
+    g_playlistPlayer.Clear();
+    PlexServerManagerTestUtility::TearDown();
+  }
+
+  CPlayQueueManager manager;
+};
+
+TEST_F(PlayQueueManagerTest, GetPlayQueueURL_validItem)
 {
   CPlexServerPtr server = getServer();
 
@@ -95,7 +112,7 @@ TEST(PlayQueueManagerGetPlayQueueURL, validItem)
   EXPECT_FALSE(u.HasOption("next"));
 }
 
-TEST(PlayQueueManagerGetPlayQueueURL, limit)
+TEST_F(PlayQueueManagerTest, GetPlayQueueURL_limit)
 {
   CPlexServerPtr server = getServer();
 
@@ -109,20 +126,20 @@ TEST(PlayQueueManagerGetPlayQueueURL, limit)
   EXPECT_STREQ(u.GetOption("limit"), "10");
 }
 
-TEST(PlayQueueManagerGetPlayQueueURL, invalidServer)
+TEST_F(PlayQueueManagerTest, GetPlayQueueURL_invalidServer)
 {
   CURL u = manager.getPlayQueueURL(CPlexServerPtr(), PLEX_MEDIA_TYPE_MUSIC, "");
   EXPECT_TRUE(u.Get().empty());
 }
 
-TEST(PlayQueueManagerGetPlayQueueURL, haveKey)
+TEST_F(PlayQueueManagerTest, GetPlayQueueURL_haveKey)
 {
   CPlexServerPtr server = getServer();
   CURL u = manager.getPlayQueueURL(server, PLEX_MEDIA_TYPE_MUSIC, "uri", "item");
   EXPECT_STREQ(u.GetOption("key"), "item");
 }
 
-TEST(PlayQueueManagerGetPlayQueueURL, hasNext)
+TEST_F(PlayQueueManagerTest, GetPlayQueueURL_hasNext)
 {
   CPlexServerPtr server = getServer();
   CURL u =
@@ -131,7 +148,7 @@ TEST(PlayQueueManagerGetPlayQueueURL, hasNext)
   EXPECT_TRUE(u.HasOption("next"));
 }
 
-TEST(CPlayQueueManagerGetPlaylistFromString, basic)
+TEST_F(PlayQueueManagerTest, GetPlaylistFromString_basic)
 {
   EXPECT_EQ(PLAYLIST_MUSIC, manager.getPlaylistFromString("audio"));
   EXPECT_EQ(PLAYLIST_VIDEO, manager.getPlaylistFromString("video"));
@@ -146,7 +163,7 @@ TEST(CPlayQueueManagerGetPlaylistFromString, basic)
     list.Add(item);                                                                                \
   }
 
-TEST(CPlayQueueManagerReconcilePlayQueueChanges, basic)
+TEST_F(PlayQueueManagerTest, ReconcilePlayQueueChanges_basic)
 {
   CFileItemList list;
   newItem(list, "1");
@@ -169,11 +186,9 @@ TEST(CPlayQueueManagerReconcilePlayQueueChanges, basic)
   EXPECT_STREQ(playlist[0]->GetProperty("unprocessed_key").asString().c_str(), "2");
   EXPECT_STREQ(playlist[1]->GetProperty("unprocessed_key").asString().c_str(), "3");
   EXPECT_STREQ(playlist[2]->GetProperty("unprocessed_key").asString().c_str(), "4");
-
-  g_playlistPlayer.Clear();
 }
 
-TEST(CPlayQueueManagerReconcilePlayQueueChanges, noMatching)
+TEST_F(PlayQueueManagerTest, ReconcilePlayQueueChanges_noMatching)
 {
   CFileItemList list;
   newItem(list, "1");
@@ -189,11 +204,9 @@ TEST(CPlayQueueManagerReconcilePlayQueueChanges, noMatching)
   EXPECT_EQ(playlist.size(), 2);
   EXPECT_STREQ(playlist[0]->GetProperty("unprocessed_key").asString().c_str(), "2");
   EXPECT_STREQ(playlist[1]->GetProperty("unprocessed_key").asString().c_str(), "3");
-
-  g_playlistPlayer.Clear();
 }
 
-TEST(CPlayQueueManagerReconcilePlayQueueChanges, gapInMiddle)
+TEST_F(PlayQueueManagerTest, ReconcilePlayQueueChanges_gapInMiddle)
 {
   CFileItemList list;
   newItem(list, "1");
@@ -211,13 +224,30 @@ TEST(CPlayQueueManagerReconcilePlayQueueChanges, gapInMiddle)
   EXPECT_STREQ(playlist[0]->GetProperty("unprocessed_key").asString().c_str(), "1");
   EXPECT_STREQ(playlist[1]->GetProperty("unprocessed_key").asString().c_str(), "2");
   EXPECT_STREQ(playlist[2]->GetProperty("unprocessed_key").asString().c_str(), "4");
-
-  g_playlistPlayer.Clear();
 }
 
-TEST(CPlayQueueManagerGetPlaylistFromType, basic)
+TEST_F(PlayQueueManagerTest, GetPlaylistFromType_basic)
 {
   EXPECT_EQ(manager.getPlaylistFromType(PLEX_MEDIA_TYPE_MUSIC), PLAYLIST_MUSIC);
   EXPECT_EQ(manager.getPlaylistFromType(PLEX_MEDIA_TYPE_VIDEO), PLAYLIST_VIDEO);
   EXPECT_EQ(manager.getPlaylistFromType(PLEX_MEDIA_TYPE_PHOTO), PLAYLIST_NONE);
+}
+
+TEST_F(PlayQueueManagerTest, VerifyServerInItem_basic)
+{
+  manager.m_currentPlayQueueServer = server;
+  CFileItemPtr item = CFileItemPtr(new CFileItem);
+  item->SetProperty("plexserver", "abc123");
+  EXPECT_TRUE(manager.verifyServerInItem(item));
+}
+
+TEST_F(PlayQueueManagerTest, VerifyServerInItem_noItem)
+{
+  EXPECT_FALSE(manager.verifyServerInItem(CFileItemPtr()));
+}
+
+TEST_F(PlayQueueManagerTest, VerifyServerInItem_noPlexServer)
+{
+  CFileItemPtr item = CFileItemPtr(new CFileItem);
+  EXPECT_FALSE(manager.verifyServerInItem(item));
 }
