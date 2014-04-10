@@ -27,6 +27,9 @@
 #include "windowing/WinSystem.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GlobalsHandling.h"
+#include "threads/CriticalSection.h"
+
+class IDispResource;
 
 class CWinSystemIOS : public CWinSystemBase, public CRenderSystemGLES
 {
@@ -56,12 +59,18 @@ public:
 
   virtual bool BeginRender();
   virtual bool EndRender();
+  
+  virtual void Register(IDispResource *resource);
+  virtual void Unregister(IDispResource *resource);
+  
   virtual int GetNumScreens();    
   virtual int GetCurrentScreen();
   
           void InitDisplayLink(void);
           void DeinitDisplayLink(void);
           double GetDisplayLinkFPS(void);
+          void OnAppFocusChange(bool focus);
+          bool IsBackgrounded() const { return m_bIsBackgrounded; }
 
 protected:
   virtual bool PresentRenderImpl(const CDirtyRegionList &dirty);
@@ -72,6 +81,9 @@ protected:
   bool         m_bWasFullScreenBeforeMinimize;
   CStdString   m_eglext;
   int          m_iVSyncErrors;
+  CCriticalSection             m_resourceSection;
+  std::vector<IDispResource*>  m_resources;
+  bool         m_bIsBackgrounded;
   
 private:
   bool GetScreenResolution(int* w, int* h, double* fps, int screenIdx);
