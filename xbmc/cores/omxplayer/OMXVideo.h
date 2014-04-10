@@ -38,7 +38,7 @@
 
 #define CLASSNAME "COMXVideo"
 
-typedef void (*ResolutionUpdateCallBackFn)(void *ctx, uint32_t width, uint32_t height, float display_aspect);
+typedef void (*ResolutionUpdateCallBackFn)(void *ctx, uint32_t width, uint32_t height, float framerate, float display_aspect);
 
 class COMXVideo
 {

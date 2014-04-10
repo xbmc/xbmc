@@ -171,22 +171,6 @@ bool COMXVideo::PortSettingsChanged()
     CLog::Log(LOGERROR, "%s::%s - error m_omx_decoder.GetParameter(OMX_IndexParamBrcmPixelAspectRatio) omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
   }
 
-  // let OMXPlayerVideo know about resolution so it can inform RenderManager
-  if (m_res_callback)
-  {
-    float display_aspect = 0.0f;
-    if (pixel_aspect.nX && pixel_aspect.nY)
-      display_aspect = (float)pixel_aspect.nX * port_image.format.video.nFrameWidth /
-        ((float)pixel_aspect.nY * port_image.format.video.nFrameHeight);
-    m_res_callback(m_res_ctx, port_image.format.video.nFrameWidth, port_image.format.video.nFrameHeight, display_aspect);
-  }
-
-  if (m_settings_changed)
-  {
-    m_omx_decoder.EnablePort(m_omx_decoder.GetOutputPort(), true);
-    return true;
-  }
-
   OMX_CONFIG_INTERLACETYPE interlace;
   OMX_INIT_STRUCTURE(interlace);
   interlace.nPortIndex = m_omx_decoder.GetOutputPort();
@@ -199,14 +183,31 @@ bool COMXVideo::PortSettingsChanged()
   else
     m_deinterlace = interlace.eMode != OMX_InterlaceProgressive;
 
+    CLog::Log(LOGDEBUG, "%s::%s - %dx%d@%.2f interlace:%d deinterlace:%d", CLASSNAME, __func__,
+      port_image.format.video.nFrameWidth, port_image.format.video.nFrameHeight,
+      port_image.format.video.xFramerate / (float)(1<<16), interlace.eMode, m_deinterlace);
+
+  // let OMXPlayerVideo know about resolution so it can inform RenderManager
+  if (m_res_callback)
+  {
+    float display_aspect = 0.0f;
+    if (pixel_aspect.nX && pixel_aspect.nY)
+      display_aspect = (float)pixel_aspect.nX * port_image.format.video.nFrameWidth /
+        ((float)pixel_aspect.nY * port_image.format.video.nFrameHeight);
+    m_res_callback(m_res_ctx, port_image.format.video.nFrameWidth, port_image.format.video.nFrameHeight,
+        port_image.format.video.xFramerate / (float)(1<<16), display_aspect);
+  }
+
+  if (m_settings_changed)
+  {
+    m_omx_decoder.EnablePort(m_omx_decoder.GetOutputPort(), true);
+    return true;
+  }
+
   if(!m_omx_render.Initialize("OMX.broadcom.video_render", OMX_IndexParamVideoInit))
     return false;
 
   m_omx_render.ResetEos();
-
-  CLog::Log(LOGDEBUG, "%s::%s - %dx%d@%.2f interlace:%d deinterlace:%d", CLASSNAME, __func__,
-      port_image.format.video.nFrameWidth, port_image.format.video.nFrameHeight,
-      port_image.format.video.xFramerate / (float)(1<<16), interlace.eMode, m_deinterlace);
 
   if(!m_omx_sched.Initialize("OMX.broadcom.video_scheduler", OMX_IndexParamVideoInit))
     return false;

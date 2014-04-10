@@ -695,7 +695,7 @@ void OMXPlayerVideo::RenderUpdateCallBack(const void *ctx, const CRect &SrcRect,
   player->SetVideoRect(SrcRect, DestRect);
 }
 
-void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, float display_aspect)
+void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, float framerate, float display_aspect)
 {
   RESOLUTION res  = g_graphicsContext.GetVideoResolution();
   uint32_t video_width   = CDisplaySettings::Get().GetResolutionInfo(res).iScreenWidth;
@@ -744,6 +744,8 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, f
   else if( display_aspect != 0.0f )
     iDisplayWidth = (int) (iDisplayHeight * display_aspect);
 
+  m_fFrameRate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE / framerate);
+
   CLog::Log(LOGDEBUG,"%s - change configuration. video:%dx%d. framerate: %4.2f. %dx%d format: BYPASS",
       __FUNCTION__, video_width, video_height, m_fFrameRate, iDisplayWidth, iDisplayHeight);
 
@@ -758,9 +760,9 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, f
   g_renderManager.RegisterRenderUpdateCallBack((const void*)this, RenderUpdateCallBack);
 }
 
-void OMXPlayerVideo::ResolutionUpdateCallBack(void *ctx, uint32_t width, uint32_t height, float display_aspect)
+void OMXPlayerVideo::ResolutionUpdateCallBack(void *ctx, uint32_t width, uint32_t height, float framerate, float display_aspect)
 {
   OMXPlayerVideo *player = static_cast<OMXPlayerVideo*>(ctx);
-  player->ResolutionUpdateCallBack(width, height, display_aspect);
+  player->ResolutionUpdateCallBack(width, height, framerate, display_aspect);
 }
 
