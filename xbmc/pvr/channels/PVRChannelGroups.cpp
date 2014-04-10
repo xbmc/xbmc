@@ -294,8 +294,9 @@ bool CPVRChannelGroups::Load(void)
     return false;
   }
 
-  // set the internal group as selected at startup
-  SetSelectedGroup(internalChannels);
+  // set the last played group as selected group at startup
+  CPVRChannelGroupPtr lastPlayedGroup = GetLastPlayedGroup();
+  SetSelectedGroup(lastPlayedGroup ? lastPlayedGroup : internalChannels);
 
   CLog::Log(LOGDEBUG, "PVR - %s - %d %s channel groups loaded", __FUNCTION__, (int) m_groups.size(), m_bRadio ? "radio" : "TV");
 
