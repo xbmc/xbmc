@@ -71,6 +71,6 @@ private:
 
   void DestroyDispmaxWindow();
   int FindMatchingResolution(const RESOLUTION_INFO &res, const std::vector<RESOLUTION_INFO> &resolutions);
-  int AddUniqueResolution(const RESOLUTION_INFO &res, std::vector<RESOLUTION_INFO> &resolutions);
+  int AddUniqueResolution(RESOLUTION_INFO &res, std::vector<RESOLUTION_INFO> &resolutions);
 #endif
 };

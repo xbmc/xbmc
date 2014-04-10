@@ -556,15 +556,6 @@ bool OMXPlayerVideo::OpenDecoder()
         m_omxVideo.GetDecoderName().c_str() , m_hints.width, m_hints.height, m_hints.profile, m_fFrameRate);
 
     m_codecname = m_omxVideo.GetDecoderName();
-
-    // if we are closer to ntsc version of framerate, let gpu know
-    int   iFrameRate  = (int)(m_fFrameRate + 0.5f);
-    bool  bNtscFreq  = fabs(m_fFrameRate * 1001.0f / 1000.0f - iFrameRate) < fabs(m_fFrameRate - iFrameRate);
-    char  response[80], command[80];
-    sprintf(command, "hdmi_ntsc_freqs %d", bNtscFreq);
-    CLog::Log(LOGINFO, "OMXPlayerVideo::OpenDecoder fps: %f %s\n", m_fFrameRate, command);
-    m_DllBcmHost.vc_gencmd(response, sizeof response, command);
-
     m_av_clock->SetRefreshRate(m_fFrameRate);
   }
 
