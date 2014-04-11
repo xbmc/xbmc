@@ -365,7 +365,7 @@ void CGUIWindowPlexSearch::ProcessResults(CFileItemList* results)
   }
   else
   {
-    CLog::Log(LOGDEBUG, "CGUIWindowPlexSearch::ProcessResults got response from a non server?");
+    CLog::Log(LOGDEBUG, "CGUIWindowPlexSearch::ProcessResults got response from a non server URL: %s?", results->GetPath().c_str());
     return;
   }
 
@@ -422,7 +422,9 @@ void CGUIWindowPlexSearch::ProcessResults(CFileItemList* results)
       SET_CONTROL_VISIBLE(container->GetID() - 2000);
     }
     else
+    {
       CLog::Log(LOGDEBUG, "CGUIWindowPlexSearch::ProcessResults Could not find container %d", m_resultMap[pair.first]);
+    }
   }
 
   delete results;
