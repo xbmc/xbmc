@@ -11,9 +11,9 @@
 #include "Client/PlexTranscoderClient.h"
 #include "ApplicationMessenger.h"
 #include "music/tags/MusicInfoTag.h"
-#include "client/PlexServerVersion.h"
-#include "client/PlexServerManager.h"
-#include "client/PlexServer.h"
+#include "Client/PlexServerVersion.h"
+#include "Client/PlexServerManager.h"
+#include "Client/PlexServer.h"
 #include "PlexApplication.h"
 #include "Playlists/PlayQueueManager.h"
 
