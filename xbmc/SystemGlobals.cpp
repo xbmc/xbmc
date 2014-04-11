@@ -56,7 +56,7 @@
 #endif
 
 /* PLEX */
-#include "Plex/Playlists/PlexPlaylistPlayer.h"
+#include "plex/Playlists/PlexPlaylistPlayer.h"
 /* END PLEX */
 
   CSettings          g_settings;

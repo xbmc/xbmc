@@ -204,5 +204,5 @@ protected:
 #ifndef __PLEX__
 extern PLAYLIST::CPlayListPlayer g_playlistPlayer;
 #else
-#include "Plex/Playlists/PlexPlaylistPlayer.h"
+#include "plex/Playlists/PlexPlaylistPlayer.h"
 #endif
