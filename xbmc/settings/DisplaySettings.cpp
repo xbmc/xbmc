@@ -225,7 +225,16 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
     if (settingId == "videoscreen.resolution")
       newRes = (RESOLUTION)((CSettingInt*)setting)->GetValue();
     else if (settingId == "videoscreen.screen")
+    {
+      int screen = ((CSettingInt*)setting)->GetValue();
+
+      // if triggered by a change of screenmode, screen may not have changed
+      if (screen == GetCurrentDisplayMode())
+        return true;
+
+      // get desktop resolution for screen
       newRes = GetResolutionForScreen();
+    }
 
     string screenmode = GetStringFromResolution(newRes);
     CSettings::Get().SetString("videoscreen.screenmode", screenmode);
