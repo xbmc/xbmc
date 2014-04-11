@@ -93,7 +93,7 @@ VOID GetLocalTime(LPSYSTEMTIME sysTime)
   const time_t t = time(NULL);
   struct tm now;
 
-#ifndef __PLEX__
+#ifndef TARGET_DARWIN_OSX
   localtime_r(&t, &now);
 #else
   plex_localtime(&t, &now);
