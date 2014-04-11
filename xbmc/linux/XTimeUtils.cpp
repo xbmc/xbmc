@@ -93,11 +93,13 @@ VOID GetLocalTime(LPSYSTEMTIME sysTime)
   const time_t t = time(NULL);
   struct tm now;
 
+/* PLEX */
 #ifndef TARGET_DARWIN_OSX
   localtime_r(&t, &now);
 #else
   plex_localtime(&t, &now);
 #endif
+/* END PLEX */
   sysTime->wYear = now.tm_year + 1900;
   sysTime->wMonth = now.tm_mon + 1;
   sysTime->wDayOfWeek = now.tm_wday;
