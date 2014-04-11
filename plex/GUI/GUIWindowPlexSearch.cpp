@@ -355,9 +355,14 @@ void CGUIWindowPlexSearch::InitWindow()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowPlexSearch::ProcessResults(CFileItemList* results)
 {
-  CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(results->Get(0));
+  if (!results)
+    return;
+
+  CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(*results);
   if (server)
+  {
     CLog::Log(LOGDEBUG, "CGUIWindowPlexSearch::ProcessResults got response from %s", server->toString().c_str());
+  }
   else
   {
     CLog::Log(LOGDEBUG, "CGUIWindowPlexSearch::ProcessResults got response from a non server?");
