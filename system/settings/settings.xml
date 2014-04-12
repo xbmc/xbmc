@@ -2009,6 +2009,7 @@
       </group>
     </category>
     <category id="upnp" label="20187" help="36322">
+      <requirement>HAS_UPNP</requirement>
       <group id="1">
         <setting id="services.upnpserver" type="boolean" label="21360" help="36323">
           <level>0</level>
