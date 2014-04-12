@@ -1743,7 +1743,7 @@ bool CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath, CVideoIn
 }
 
 //********************************************************************************************************************************
-bool CVideoDatabase::GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& details, int idTvShow /* = -1 */)
+bool CVideoDatabase::GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& details, int idTvShow /* = -1 */, CFileItem *item /* = NULL */)
 {
   try
   {
@@ -1754,7 +1754,7 @@ bool CVideoDatabase::GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& det
     CStdString sql = PrepareSQL("SELECT * FROM tvshowview WHERE idShow=%i", idTvShow);
     if (!m_pDS->query(sql.c_str()))
       return false;
-    details = GetDetailsForTvShow(m_pDS, true);
+    details = GetDetailsForTvShow(m_pDS, true, item);
     return !details.IsEmpty();
   }
   catch (...)
