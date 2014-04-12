@@ -223,11 +223,12 @@ namespace XBMCAddon
      * playSFX(filename) -- Plays a wav file by filename
      * 
      * filename       : string - filename of the wav file to play.
+     * useCached      : [opt] bool - False = Dump any previously cached wav associated with filename
      * 
      * example:
      *   - xbmc.playSFX('special://xbmc/scripts/dingdong.wav')
      */
-    void playSFX(const char* filename);
+    void playSFX(const char* filename, bool useCached = true);
 
     /**
      * stopSFX() -- Stops wav file

@@ -325,7 +325,7 @@ namespace XBMCAddon
       return g_infoManager.GetImage(ret, WINDOW_INVALID);
     }
 
-    void playSFX(const char* filename)
+    void playSFX(const char* filename, bool useCached)
     {
       XBMC_TRACE;
       if (!filename)
@@ -333,7 +333,7 @@ namespace XBMCAddon
 
       if (XFILE::CFile::Exists(filename))
       {
-        g_audioManager.PlayPythonSound(filename);
+        g_audioManager.PlayPythonSound(filename,useCached);
       }
     }
 
