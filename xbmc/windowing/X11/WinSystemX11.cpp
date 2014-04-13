@@ -243,15 +243,17 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     }
 
     // only call xrandr if mode changes
-    if (currmode.w != mode.w || currmode.h != mode.h ||
-        currmode.hz != mode.hz || currmode.id != mode.id)
+    if (m_mainWindow)
     {
-      CLog::Log(LOGNOTICE, "CWinSystemX11::SetFullScreen - calling xrandr");
-      OnLostDevice();
-      m_bIsInternalXrr = true;
-      g_xrandr.SetMode(out, mode);
-      if (m_mainWindow)
+      if (currmode.w != mode.w || currmode.h != mode.h ||
+          currmode.hz != mode.hz || currmode.id != mode.id)
+      {
+        CLog::Log(LOGNOTICE, "CWinSystemX11::SetFullScreen - calling xrandr");
+        OnLostDevice();
+        m_bIsInternalXrr = true;
+        g_xrandr.SetMode(out, mode);
         return true;
+      }
     }
   }
 #endif
