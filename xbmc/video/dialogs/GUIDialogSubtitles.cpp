@@ -73,8 +73,6 @@ public:
   virtual bool DoWork()
   {
     CDirectory::GetDirectory(m_url.Get(), *m_items);
-    // Sort items by path so they properly order for eg. stacks
-    m_items->Sort(SortByPath, SortOrderAscending);
     return true;
   }
   virtual bool operator==(const CJob *job) const
