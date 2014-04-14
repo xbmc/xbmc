@@ -69,7 +69,9 @@ protected:
 
   CRect                     m_src_rect;
   CRect                     m_dst_rect;
-
+  RENDER_STEREO_MODE        m_video_stereo_mode;
+  RENDER_STEREO_MODE        m_display_stereo_mode;
+  bool                      m_StereoInvert;
   uint32_t                  m_history_valid_pts;
   DllBcmHost                m_DllBcmHost;
 
