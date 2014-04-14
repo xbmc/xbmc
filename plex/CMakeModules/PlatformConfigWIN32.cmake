@@ -1,12 +1,11 @@
 set(dependdir ${root}/project/BuildDependencies)
 
-######################### Compiler CFLAGS
-
 ######################### Linker flags
 set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "c:/Windows/System32" "${dependdir}/lib" CACHE STRING "")
 link_directories(${dependdir}/lib)
 set(ENV{LIBS} "$ENV{LIBS};${dependdir}/lib")
 
+######################### Compiler CFLAGS
 # C4800 = 'unsigned int' : forcing value to bool 'true' or 'false' (performance warning)
 # C4996 = 'strcmpi': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _strcmpi. See online help for details
 # C4244 = 'initializing' : conversion from 'int64_t' to 'int', possible loss of data
@@ -88,38 +87,6 @@ set(LIBPATH .)
 set(BINPATH .)
 set(RESOURCEPATH .)
 
-
-#debug flags
-# TARGET_WINDOWS
-#_WINDOWS
-#_MSVC
-#WIN32
-#_DEBUG
-#_WIN32_WINNT=0x0501
-#NTDDI_VERSION=0x05010300
-#NOMINMAX
-#_USE_32BIT_TIME_T
-#HAS_DX
-#D3D_DEBUG_INFO
-#__STDC_CONSTANT_MACROS
-#_SECURE_SCL=0
-#_HAS_ITERATOR_DEBUGGING=0
-#TAGLIB_STATIC
-
-#release flags
-#TARGET_WINDOWS
-#_WINDOWS
-#_MSVC
-#WIN32
-#NDEBUG
-#_WIN32_WINNT=0x0501
-#NTDDI_VERSION=0x05010300
-#NOMINMAX
-#_USE_32BIT_TIME_T
-#HAS_DX
-#__STDC_CONSTANT_MACROS
-#TAGLIB_STATIC
-
 ############## definitions
 add_definitions(
   -DTARGET_WINDOWS
@@ -135,5 +102,6 @@ add_definitions(
   -DNTDDI_VERSION=0x05010300
   -D_WIN32_WINNT=0x0501
   -DBOOST_NO_0X_HDR_INITIALIZER_LIST
+  -D_VARIADIC_MAX=10
 )
 
