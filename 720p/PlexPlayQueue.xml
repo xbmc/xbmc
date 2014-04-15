@@ -1,0 +1,22 @@
+<window id="10094">
+	<defaultcontrol always="true">102</defaultcontrol>
+	<views>58</views>
+	<allowoverlay>no</allowoverlay>
+	<onload>Skin.SetString(SectionType,playqueue)</onload>
+	<onunload>Skin.Reset(SectionType)</onunload>
+	<controls>
+		<!-- bg's (Backgrounds.xml) -->
+		<include>BGGrainy</include>
+		<include>BGFanart</include>
+		<include>BGOverlay</include>
+		<!-- List ID 58 -->
+		<include>List</include>
+		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
+		<include>LeftSideMenuPreplay</include>
+		<!--<include>TopBar</include>-->
+		<include>debugInfos</include>
+		<include>Grid</include>
+		<include>CurrentlyPlaying</include>
+		<include>WindowFade</include>
+	</controls>
+</window>
