@@ -2569,7 +2569,9 @@ msgctxt "#598"
 msgid "Audiobooks"
 msgstr ""
 
-#empty string with id 599
+msgctxt "#599"
+msgid "This is an audiobook"
+msgstr ""
 
 msgctxt "#600"
 msgid "Rip audio CD"
