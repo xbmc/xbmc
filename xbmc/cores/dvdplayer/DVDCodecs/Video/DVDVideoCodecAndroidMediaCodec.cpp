@@ -598,12 +598,6 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
         xbmc_jnienv()->ExceptionClear();
       }
     }
-    else
-    {
-      // Bad, we don't have input buffers left. Let's Reset...
-      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Decode Cannot dequeue input buffer");
-      return VC_FLUSHED;
-    }
   }
 
   return rtn;
