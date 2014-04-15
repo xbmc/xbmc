@@ -5922,3 +5922,20 @@ bool CMusicDatabase::GetResumeBookmarkForAudioBook(const std::string& path, int&
   bookmark = m_pDS->fv(0).get_asInt();
   return true;
 }
+
+bool CMusicDatabase::GetAudioBooks(CFileItemList& items)
+{
+  std::string strSQL = PrepareSQL("SELECT strBook, strAuthor, file FROM audiobook");
+  if (!m_pDS->query(strSQL.c_str()) || m_pDS->num_rows() == 0)
+    return false;
+
+  while (!m_pDS->eof())
+  {
+    CFileItemPtr item(new CFileItem(m_pDS->fv(2).get_asString(), false));
+    item->SetLabel(m_pDS->fv(0).get_asString());
+    items.Add(item);
+    m_pDS->next();
+  }
+
+  return true;
+}

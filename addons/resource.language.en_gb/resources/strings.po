@@ -2565,7 +2565,11 @@ msgctxt "#597"
 msgid "Repeat: All"
 msgstr ""
 
-#empty strings from id 598 to 599
+msgctxt "#598"
+msgid "Audiobooks"
+msgstr ""
+
+#empty string with id 599
 
 msgctxt "#600"
 msgid "Rip audio CD"
