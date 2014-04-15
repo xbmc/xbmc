@@ -822,7 +822,7 @@ unsigned int CAEConvert::Float_S24NE4H(float *data, const unsigned int samples, 
   /* work around invalid alignment */
   while ((((uintptr_t)data & 0xF) || ((uintptr_t)dest & 0xF)) && count > 0)
   {
-    dst[0] = (safeRound(data[0] * ((float)INT24_MAX+.5f)) & 0xFFFFFF) << 8;
+    dst[0] = safeRound(data[0] * ((float)INT24_MAX+.5f)) << 8;
     ++data;
     ++dst;
     --count;
@@ -841,7 +841,7 @@ unsigned int CAEConvert::Float_S24NE4H(float *data, const unsigned int samples, 
   {
     const uint32_t odd = count - even;
     if (odd == 1)
-      dst[0] = (safeRound(data[0] * ((float)INT24_MAX+.5f)) & 0xFFFFFF) << 8;
+      dst[0] = safeRound(data[0] * ((float)INT24_MAX+.5f)) << 8;
     else
     {
       __m128 in;
