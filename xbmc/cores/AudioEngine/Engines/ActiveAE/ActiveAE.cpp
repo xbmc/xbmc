@@ -2643,6 +2643,9 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
 
 IAEStream *CActiveAE::MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int encodedSampleRate, CAEChannelInfo channelLayout, unsigned int options)
 {
+  if (IsSuspended())
+    return NULL;
+
   //TODO: pass number of samples in audio packet
 
   AEAudioFormat format;
