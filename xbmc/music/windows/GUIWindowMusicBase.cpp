@@ -848,14 +848,21 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
   case CONTEXT_BUTTON_RESUME_ITEM: //audiobooks
     {
-      Update(item->GetPath());
+      CFileItem resItem(*item);
       int bookmark;
       m_musicdatabase.GetResumeBookmarkForAudioBook(item->GetPath(), bookmark);
-      int i=0;
-      while (i < m_vecItems->Size() && bookmark > m_vecItems->Get(i)->m_lEndOffset)
-        ++i;
-      CFileItem resItem(*m_vecItems->Get(i));
-      resItem.SetProperty("StartPercent", ((double)bookmark-resItem.m_lStartOffset)/(resItem.m_lEndOffset-resItem.m_lStartOffset)*100);
+      if (item->IsType(".m4b"))
+      {
+        Update(item->GetPath());
+        int i=0;
+        while (i < m_vecItems->Size() && bookmark > m_vecItems->Get(i)->m_lEndOffset)
+          ++i;
+        resItem = *m_vecItems->Get(i);
+        resItem.SetProperty("StartPercent", ((double)bookmark-resItem.m_lStartOffset)/(resItem.m_lEndOffset-resItem.m_lStartOffset)*100);
+      }
+      else
+        resItem.SetProperty("StartPercent", 100.0*bookmark/(75*item->GetMusicInfoTag()->GetDuration()));
+
       g_application.PlayFile(resItem, false);
     }
 
