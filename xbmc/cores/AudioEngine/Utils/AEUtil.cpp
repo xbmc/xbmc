@@ -125,7 +125,7 @@ const unsigned int CAEUtil::DataFormatToBits(const enum AEDataFormat dataFormat)
 
 const unsigned int CAEUtil::DataFormatToUsedBits(const enum AEDataFormat dataFormat)
 {
-  if (dataFormat == AE_FMT_S24BE4 || dataFormat == AE_FMT_S24LE4 || dataFormat == AE_FMT_S24NE4)
+  if (dataFormat == AE_FMT_S24BE4H || dataFormat == AE_FMT_S24LE4H || dataFormat == AE_FMT_S24NE4H)
     return 24;
   else
     return DataFormatToBits(dataFormat);
@@ -149,9 +149,9 @@ const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
     "AE_FMT_S32LE",
     "AE_FMT_S32NE",
     
-    "AE_FMT_S24BE4",
-    "AE_FMT_S24LE4",
-    "AE_FMT_S24NE4",  /* S24 in 4 bytes */
+    "AE_FMT_S24BE4H",
+    "AE_FMT_S24LE4H",
+    "AE_FMT_S24NE4H",  /* S24 in 4 bytes */
     
     "AE_FMT_S24BE3",
     "AE_FMT_S24LE3",
@@ -173,7 +173,7 @@ const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
     "AE_FMT_U8P",
     "AE_FMT_S16NEP",
     "AE_FMT_S32NEP",
-    "AE_FMT_S24NE4P",
+    "AE_FMT_S24NE4HP",
     "AE_FMT_S24NE3P",
     "AE_FMT_DOUBLEP",
     "AE_FMT_FLOATP"

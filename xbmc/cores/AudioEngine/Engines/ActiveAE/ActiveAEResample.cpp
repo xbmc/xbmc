@@ -277,14 +277,14 @@ AVSampleFormat CActiveAEResample::GetAVSampleFormat(AEDataFormat format)
   if      (format == AE_FMT_U8)     return AV_SAMPLE_FMT_U8;
   else if (format == AE_FMT_S16NE)  return AV_SAMPLE_FMT_S16;
   else if (format == AE_FMT_S32NE)  return AV_SAMPLE_FMT_S32;
-  else if (format == AE_FMT_S24NE4) return AV_SAMPLE_FMT_S32;
+  else if (format == AE_FMT_S24NE4H) return AV_SAMPLE_FMT_S32;
   else if (format == AE_FMT_FLOAT)  return AV_SAMPLE_FMT_FLT;
   else if (format == AE_FMT_DOUBLE) return AV_SAMPLE_FMT_DBL;
 
   else if (format == AE_FMT_U8P)     return AV_SAMPLE_FMT_U8P;
   else if (format == AE_FMT_S16NEP)  return AV_SAMPLE_FMT_S16P;
   else if (format == AE_FMT_S32NEP)  return AV_SAMPLE_FMT_S32P;
-  else if (format == AE_FMT_S24NE4P) return AV_SAMPLE_FMT_S32P;
+  else if (format == AE_FMT_S24NE4HP) return AV_SAMPLE_FMT_S32P;
   else if (format == AE_FMT_FLOATP)  return AV_SAMPLE_FMT_FLTP;
   else if (format == AE_FMT_DOUBLEP) return AV_SAMPLE_FMT_DBLP;
 
@@ -296,14 +296,14 @@ AEDataFormat CActiveAEResample::GetAESampleFormat(AVSampleFormat format, int bit
   if      (format == AV_SAMPLE_FMT_U8)   return AE_FMT_U8;
   else if (format == AV_SAMPLE_FMT_S16)  return AE_FMT_S16NE;
   else if (format == AV_SAMPLE_FMT_S32 && bits == 32)  return AE_FMT_S32NE;
-  else if (format == AV_SAMPLE_FMT_S32 && bits == 24)  return AE_FMT_S24NE4;
+  else if (format == AV_SAMPLE_FMT_S32 && bits == 24)  return AE_FMT_S24NE4H;
   else if (format == AV_SAMPLE_FMT_FLT)  return AE_FMT_FLOAT;
   else if (format == AV_SAMPLE_FMT_DBL)  return AE_FMT_DOUBLE;
 
   else if (format == AV_SAMPLE_FMT_U8P)   return AE_FMT_U8P;
   else if (format == AV_SAMPLE_FMT_S16P)  return AE_FMT_S16NEP;
   else if (format == AV_SAMPLE_FMT_S32P && bits == 32)  return AE_FMT_S32NEP;
-  else if (format == AV_SAMPLE_FMT_S32P && bits == 24)  return AE_FMT_S24NE4P;
+  else if (format == AV_SAMPLE_FMT_S32P && bits == 24)  return AE_FMT_S24NE4HP;
   else if (format == AV_SAMPLE_FMT_FLTP)  return AE_FMT_FLOATP;
   else if (format == AV_SAMPLE_FMT_DBLP)  return AE_FMT_DOUBLEP;
 
