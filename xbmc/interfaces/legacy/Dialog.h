@@ -66,6 +66,7 @@ namespace XBMCAddon
        * autoclose      : [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)\n
        * \n
        * *Note, Returns True if 'Yes' was pressed, else False.\n
+       * *Note, Optionally line1 can be sent as multi-line text. In this case line2 and line3 must be omitted.\n
        * \n
        * example:\n
        *   - dialog = xbmcgui.Dialog()\n
@@ -102,6 +103,7 @@ namespace XBMCAddon
        * line3          : [opt] string or unicode - line #3 text.\n
        * \n
        * *Note, Returns True if 'Ok' was pressed, else False.\n
+       * *Note: Optionally line1 can be sent as multi-line text. In this case line2 and line3 must be omitted.\n
        * \n
        * example:\n
        *   - dialog = xbmcgui.Dialog()\n
@@ -310,6 +312,7 @@ namespace XBMCAddon
        * line2          : [opt] string or unicode - line #2 text.\n
        * line3          : [opt] string or unicode - line #3 text.\n
        * \n
+       * *Note, Optionally line1 can be sent as multi-line text. In this case line2 and line3 must be omitted.\n
        * *Note, Use update() to update lines and progressbar.\n
        * \n
        * example:
@@ -321,13 +324,14 @@ namespace XBMCAddon
                   const String& line3 = emptyString) throw (WindowException);
 
       /**
-       * update(percent[, line1, line2, line3]) -- Update's the progress dialog.\n
+       * update(percent[, line1, line2, line3]) -- Updates the progress dialog.\n
        * \n
        * percent        : integer - percent complete. (0:100)\n
        * line1          : [opt] string or unicode - line #1 text.\n
        * line2          : [opt] string or unicode - line #2 text.\n
        * line3          : [opt] string or unicode - line #3 text.\n
        * \n
+       * *Note, Optionally line1 can be sent as multi-line text. In this case line2 and line3 must be omitted.\n
        * *Note, If percent == 0, the progressbar will be hidden.\n
        * \n
        * example:
@@ -373,13 +377,13 @@ namespace XBMCAddon
 
 
       /**
-       * create(heading[, message]) -- Create and show a background progress dialog.n\n
+       * create(heading[, message]) -- Create and show a background progress dialog.\n
        *
-       * heading     : string or unicode - dialog headingn\n
-       * message     : [opt] string or unicode - message textn\n
+       * heading     : string or unicode - dialog heading.\n
+       * message     : [opt] string or unicode - message text.\n
        *
-       * *Note, 'heading' is used for the dialog's id. Use a unique heading.n\n
-       *        Use update() to update heading, message and progressbar.n\n
+       * *Note, 'heading' is used for the dialog's id. Use a unique heading.\n
+       *        Use  update() to update heading, message and progressbar.\n
        *
        * example:
        * - pDialog = xbmcgui.DialogProgressBG()
@@ -391,8 +395,8 @@ namespace XBMCAddon
        * update([percent, heading, message]) -- Updates the background progress dialog.
        *
        * percent     : [opt] integer - percent complete. (0:100)\n
-       * heading     : [opt] string or unicode - dialog heading\n
-       * message     : [opt] string or unicode - message text\n
+       * heading     : [opt] string or unicode - dialog heading.\n
+       * message     : [opt] string or unicode - message text.\n
        *
        * *Note, To clear heading or message, you must pass a blank character.\n
        *
