@@ -18,6 +18,11 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD ${IGNOREERRS}")
 set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} /MD ${IGNOREERRS}")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /MD ${IGNOREERRS}")
 
+# /MP means that we use all the cores to compile the code
+# which is a great things these days
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MP")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+
 set(IGNORELIBS
 libc.lib
 libcmt.lib
