@@ -853,6 +853,9 @@ void CSettings::InitializeConditions()
 {
   // add basic conditions
   m_settingsManager->AddCondition("true");
+#ifdef HAS_UPNP
+  m_settingsManager->AddCondition("has_upnp");
+#endif
 #ifdef HAS_AIRPLAY
   m_settingsManager->AddCondition("has_airplay");
 #endif
