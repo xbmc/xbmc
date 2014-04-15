@@ -403,8 +403,10 @@ void CNetworkServices::OnSettingChanged(const CSetting *setting)
 void CNetworkServices::Start()
 {
   StartZeroconf();
+#ifdef HAS_WEB_SERVER
   if (CSettings::Get().GetBool("services.webserver") && !StartWebserver())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33101), g_localizeStrings.Get(33100));
+#endif // HAS_WEB_SERVER
   StartUPnP();
   if (CSettings::Get().GetBool("services.esenabled") && !StartEventServer())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
