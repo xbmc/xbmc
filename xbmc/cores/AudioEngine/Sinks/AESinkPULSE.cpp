@@ -80,9 +80,9 @@ static pa_sample_format AEFormatToPulseFormat(AEDataFormat format)
     case AE_FMT_S24LE3: return PA_SAMPLE_S24LE;
     case AE_FMT_S24BE3: return PA_SAMPLE_S24BE;
     case AE_FMT_S24NE3: return PA_SAMPLE_S24NE;
-    case AE_FMT_S24LE4H: return PA_SAMPLE_S24_32LE;
-    case AE_FMT_S24BE4H: return PA_SAMPLE_S24_32BE;
-    case AE_FMT_S24NE4H: return PA_SAMPLE_S24_32NE;
+    case AE_FMT_S24LE4L: return PA_SAMPLE_S24_32LE;
+    case AE_FMT_S24BE4L: return PA_SAMPLE_S24_32BE;
+    case AE_FMT_S24NE4L: return PA_SAMPLE_S24_32NE;
     case AE_FMT_S32BE : return PA_SAMPLE_S32BE;
     case AE_FMT_S32LE : return PA_SAMPLE_S32LE;
     case AE_FMT_S32NE : return PA_SAMPLE_S32NE;
@@ -119,9 +119,9 @@ static AEDataFormat defaultDataFormats[] = {
   AE_FMT_S24LE3,
   AE_FMT_S24BE3,
   AE_FMT_S24NE3,
-  AE_FMT_S24LE4H,
-  AE_FMT_S24BE4H,
-  AE_FMT_S24NE4H,
+  AE_FMT_S24LE4L,
+  AE_FMT_S24BE4L,
+  AE_FMT_S24NE4L,
   AE_FMT_S32BE,
   AE_FMT_S32LE,
   AE_FMT_S32NE,
