@@ -139,6 +139,8 @@ protected:
     NEED_CONVERT,
     NEED_BYTESWAP,
     SKIP_CONVERT,
+    NEED_RSHIFT8,
+    SKIP_OUTPUT
   } m_convertState;
 
   std::string m_deviceFriendlyName;

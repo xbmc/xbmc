@@ -278,6 +278,7 @@ AVSampleFormat CActiveAEResample::GetAVSampleFormat(AEDataFormat format)
   else if (format == AE_FMT_S16NE)  return AV_SAMPLE_FMT_S16;
   else if (format == AE_FMT_S32NE)  return AV_SAMPLE_FMT_S32;
   else if (format == AE_FMT_S24NE4H) return AV_SAMPLE_FMT_S32;
+  else if (format == AE_FMT_S24NE4L) return AV_SAMPLE_FMT_S32;
   else if (format == AE_FMT_FLOAT)  return AV_SAMPLE_FMT_FLT;
   else if (format == AE_FMT_DOUBLE) return AV_SAMPLE_FMT_DBL;
 
@@ -285,6 +286,7 @@ AVSampleFormat CActiveAEResample::GetAVSampleFormat(AEDataFormat format)
   else if (format == AE_FMT_S16NEP)  return AV_SAMPLE_FMT_S16P;
   else if (format == AE_FMT_S32NEP)  return AV_SAMPLE_FMT_S32P;
   else if (format == AE_FMT_S24NE4HP) return AV_SAMPLE_FMT_S32P;
+  else if (format == AE_FMT_S24NE4LP) return AV_SAMPLE_FMT_S32P;
   else if (format == AE_FMT_FLOATP)  return AV_SAMPLE_FMT_FLTP;
   else if (format == AE_FMT_DOUBLEP) return AV_SAMPLE_FMT_DBLP;
 
