@@ -5956,3 +5956,33 @@ bool CMusicDatabase::MakeAudioBook(int idSong)
 
   return ExecuteQuery(strSQL);
 }
+
+int CMusicDatabase::GetAudiobookCount(const Filter &filter)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return 0;
+    if (NULL == m_pDS.get()) return 0;
+
+    std::string strSQL = "select count(idBook) as NumSongs from audiobook";
+    if (!CDatabase::BuildSQL(strSQL, filter, strSQL))
+      return false;
+
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    if (m_pDS->num_rows() == 0)
+    {
+      m_pDS->close();
+      return 0;
+    }
+
+    int iNumSongs = m_pDS->fv("NumSongs").get_asInt();
+    // cleanup
+    m_pDS->close();
+    return iNumSongs;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, filter.where.c_str());
+  }
+  return 0;
+}

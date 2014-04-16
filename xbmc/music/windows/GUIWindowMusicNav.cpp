@@ -116,7 +116,8 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         return false;
 
       //  base class has opened the database, do our check
-      DisplayEmptyDatabaseMessage(m_musicdatabase.GetSongsCount() <= 0);
+      DisplayEmptyDatabaseMessage(m_musicdatabase.GetSongsCount() <= 0 &&
+                                  m_musicdatabase.GetAudiobookCount() <= 0);
 
       if (m_bDisplayEmptyDatabaseMessage)
       {
