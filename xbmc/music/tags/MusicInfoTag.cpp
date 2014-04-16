@@ -116,6 +116,7 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_cuesheet = tag.m_cuesheet;
   m_lastPlayed = tag.m_lastPlayed;
   m_bCompilation = tag.m_bCompilation;
+  m_bChapters = tag.m_bChapters;
   m_iDuration = tag.m_iDuration;
   m_iTrack = tag.m_iTrack;
   m_bLoaded = tag.m_bLoaded;
@@ -139,6 +140,7 @@ bool CMusicInfoTag::operator !=(const CMusicInfoTag& tag) const
   if (m_strURL != tag.m_strURL) return true;
   if (m_strTitle != tag.m_strTitle) return true;
   if (m_bCompilation != tag.m_bCompilation) return true;
+  if (m_bChapters != tag.m_bChapters) return true;
   if (m_artist != tag.m_artist) return true;
   if (m_albumArtist != tag.m_albumArtist) return true;
   if (m_strAlbum != tag.m_strAlbum) return true;
@@ -271,6 +273,11 @@ const CDateTime &CMusicInfoTag::GetLastPlayed() const
 bool CMusicInfoTag::GetCompilation() const
 {
   return m_bCompilation;
+}
+
+bool CMusicInfoTag::HasChapters() const
+{
+  return m_bChapters;
 }
 
 const EmbeddedArtInfo &CMusicInfoTag::GetCoverArtInfo() const
@@ -432,6 +439,11 @@ void CMusicInfoTag::SetLastPlayed(const CDateTime& lastplayed)
 void CMusicInfoTag::SetCompilation(bool compilation)
 {
   m_bCompilation = compilation;
+}
+
+void CMusicInfoTag::SetChapters(bool chapters)
+{
+  m_bChapters = chapters;
 }
 
 void CMusicInfoTag::SetLoaded(bool bOnOff)
@@ -606,6 +618,7 @@ void CMusicInfoTag::Serialize(CVariant& value) const
     value["releasetype"] = CAlbum::ReleaseTypeToString(m_albumReleaseType);
   else if (m_type.compare(MediaTypeSong) == 0)
     value["albumreleasetype"] = CAlbum::ReleaseTypeToString(m_albumReleaseType);
+  value["haschapters"] = m_bChapters;
 }
 
 void CMusicInfoTag::ToSortable(SortItem& sortable, Field field) const
@@ -671,6 +684,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_coverArt;
     ar << m_cuesheet;
     ar << static_cast<int>(m_albumReleaseType);
+    ar << m_bChapters;
   }
   else
   {
@@ -706,6 +720,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     int albumReleaseType;
     ar >> albumReleaseType;
     m_albumReleaseType = static_cast<CAlbum::ReleaseType>(albumReleaseType);
+    ar >> m_bChapters;
   }
 }
 
@@ -727,6 +742,7 @@ void CMusicInfoTag::Clear()
   m_bLoaded = false;
   m_lastPlayed.Reset();
   m_bCompilation = false;
+  m_bChapters = false;
   m_strComment.clear();
   m_strMood.clear();
   m_cuesheet.clear();
