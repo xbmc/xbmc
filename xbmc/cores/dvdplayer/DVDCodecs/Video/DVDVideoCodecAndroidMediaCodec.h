@@ -117,6 +117,7 @@ protected:
   CDVDStreamInfo  m_hints;
   std::string     m_mime;
   std::string     m_codecname;
+  int             m_colorFormat;
   const char     *m_formatname;
   bool            m_opened;
   bool            m_drop;
