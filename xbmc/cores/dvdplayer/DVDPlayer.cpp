@@ -477,7 +477,10 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
             s.name += " - ";
           s.name += type;
         }
-        s.channels = ((CDemuxStreamAudio*)stream)->iChannels;
+        if(((CDemuxStreamAudio*)stream)->bExtendedStreamInfo)
+          s.channels = ((CDemuxStreamAudio*)stream)->iExtendedChannels;
+        else
+          s.channels = ((CDemuxStreamAudio*)stream)->iChannels;
       }
       Update(s);
     }

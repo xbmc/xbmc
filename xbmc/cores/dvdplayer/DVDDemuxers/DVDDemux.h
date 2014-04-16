@@ -184,6 +184,10 @@ public:
     iBlockAlign = 0;
     iBitRate = 0;
     iBitsPerSample = 0;
+    bExtendedStreamInfo = false;
+    iExtendedChannels = 0;
+    //iExtendedSampleRate = 0;
+    //iExtendedBitRate = 0;
     type = STREAM_AUDIO;
   }
 
@@ -191,11 +195,18 @@ public:
 
   void GetStreamType(std::string& strInfo);
 
+  virtual void GetExtendedStreamInfo();
+  
   int iChannels;
   int iSampleRate;
   int iBlockAlign;
   int iBitRate;
   int iBitsPerSample;
+  
+  bool bExtendedStreamInfo;
+  int iExtendedChannels;
+  //int iExtendedSampleRate;
+  //int iExtendedBitRate;
 };
 
 class CDemuxStreamSubtitle : public CDemuxStream

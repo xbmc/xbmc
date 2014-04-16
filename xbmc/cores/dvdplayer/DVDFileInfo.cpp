@@ -421,7 +421,11 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
     else if (stream->type == STREAM_AUDIO)
     {
       CStreamDetailAudio *p = new CStreamDetailAudio();
-      p->m_iChannels = ((CDemuxStreamAudio *)stream)->iChannels;
+      if(((CDemuxStreamAudio *)stream)->bExtendedStreamInfo)
+        p->m_iChannels = ((CDemuxStreamAudio *)stream)->iExtendedChannels;
+      else
+        p->m_iChannels = ((CDemuxStreamAudio *)stream)->iChannels;
+      
       p->m_strLanguage = stream->language;
       pDemux->GetStreamCodecName(iStream, p->m_strCodec);
       details.AddStream(p);

@@ -46,11 +46,15 @@ void CDemuxStreamAudio::GetStreamType(std::string& strInfo)
   else if (codec == AV_CODEC_ID_TRUEHD) strcpy(sInfo, "Dolby TrueHD ");
   else strcpy(sInfo, "");
 
-  if (iChannels == 1) strcat(sInfo, "Mono");
-  else if (iChannels == 2) strcat(sInfo, "Stereo");
-  else if (iChannels == 6) strcat(sInfo, "5.1");
-  else if (iChannels == 8) strcat(sInfo, "7.1");
-  else if (iChannels != 0)
+  int ilocalChannels = iChannels;
+  if(bExtendedStreamInfo)
+      ilocalChannels = iExtendedChannels;
+  
+  if (ilocalChannels == 1) strcat(sInfo, "Mono");
+  else if (ilocalChannels == 2) strcat(sInfo, "Stereo");
+  else if (ilocalChannels == 6) strcat(sInfo, "5.1");
+  else if (ilocalChannels == 8) strcat(sInfo, "7.1");
+  else if (ilocalChannels != 0)
   {
     char temp[32];
     sprintf(temp, " %d%s", iChannels, "-chs");
@@ -58,6 +62,14 @@ void CDemuxStreamAudio::GetStreamType(std::string& strInfo)
   }
   strInfo = sInfo;
 }
+
+  void CDemuxStreamAudio::GetExtendedStreamInfo()
+  {
+     bExtendedStreamInfo = false;
+     iExtendedChannels = 0;
+     //iExtendedSampleRate = 0;
+     //iExtendedBitRate = 0;
+  }
 
 int CDVDDemux::GetNrOfAudioStreams()
 {

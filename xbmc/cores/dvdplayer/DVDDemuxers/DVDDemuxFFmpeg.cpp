@@ -57,6 +57,16 @@ void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
   char temp[128];
   m_parent->m_dllAvCodec.avcodec_string(temp, 128, m_stream->codec, 0);
   strInfo = temp;
+  if(bExtendedStreamInfo)
+  {
+     std::string strExtendedInfo = " - Extended : ";
+     //TODO add lfe ...
+     if (iExtendedChannels == 6) strExtendedInfo += " 5.1";
+     else if (iExtendedChannels == 8) strExtendedInfo += "7.1";
+     else strExtendedInfo = StringUtils::Format("%s %d", strExtendedInfo.c_str(), iExtendedChannels);
+  
+     strInfo += strExtendedInfo;
+  }
 }
 
 void CDemuxStreamAudioFFmpeg::GetStreamName(std::string& strInfo)
@@ -67,6 +77,15 @@ void CDemuxStreamAudioFFmpeg::GetStreamName(std::string& strInfo)
   else
     CDemuxStream::GetStreamName(strInfo);
 }
+
+  void CDemuxStreamAudioFFmpeg::GetExtendedStreamInfo()
+  {
+      //TESTING
+     bExtendedStreamInfo = true;
+     iExtendedChannels = 8;
+     //iExtendedSampleRate = 96000;
+     //iExtendedBitRate = 99999;
+  }
 
 void CDemuxStreamSubtitleFFmpeg::GetStreamName(std::string& strInfo)
 {
@@ -1083,7 +1102,13 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
 	
         if(m_dllAvUtil.av_dict_get(pStream->metadata, "title", NULL, 0))
           st->m_description = m_dllAvUtil.av_dict_get(pStream->metadata, "title", NULL, 0)->value;
-
+        
+        //TODO : if (profile == FF_PROFILE_DTS_HD_HRA)
+        if(pStream->codec->profile == FF_PROFILE_DTS_HD_MA)
+        {
+            st->GetExtendedStreamInfo();
+        }
+        
         break;
       }
     case AVMEDIA_TYPE_VIDEO:
