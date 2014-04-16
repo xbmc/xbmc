@@ -79,7 +79,7 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items) const
 
   for (unsigned int i = 0; i < sizeof(OverviewChildren) / sizeof(Node); ++i)
   {
-    if ((i == 3 && !showSingles) // singles
+    if (i == 3 && !hasSingles) // singles
       continue;
     else if (i == 9 && !hasCompilations) // compilations
       continue;
