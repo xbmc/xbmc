@@ -116,7 +116,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   if (!CWakeOnAccess::Get().WakeUpHost(url))
     return NULL;
 
-  CFileItem item(url.Get(), false);
+  CFileItem item(url.Get(), true);
   IFileDirectory* pDir=CFileDirectoryFactory::Create(url, &item);
   if (pDir)
     return pDir;
