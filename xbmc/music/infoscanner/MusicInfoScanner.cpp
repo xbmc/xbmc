@@ -445,6 +445,11 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
   // load subfolder
   CFileItemList items;
   CDirectory::GetDirectory(strDirectory, items, g_advancedSettings.GetMusicExtensions() + "|.jpg|.tbn|.lrc|.cdg");
+  for (int i=0;i<items.Size();++i)
+  {
+    if (items[i]->IsAudioBook())
+      items[i]->m_bIsFolder = false;
+  }
 
   // sort and get the path hash.  Note that we don't filter .cue sheet items here as we want
   // to detect changes in the .cue sheet as well.  The .cue sheet items only need filtering
@@ -498,7 +503,8 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
     if (m_bStop)
       break;
     // if we have a directory item (non-playlist) we then recurse into that folder
-    if (pItem->m_bIsFolder && !pItem->IsParentFolder() && !pItem->IsPlayList())
+    if (pItem->m_bIsFolder && !pItem->IsParentFolder() && !pItem->IsPlayList()
+        && !pItem->IsAudioBook())
     {
       std::string strPath=pItem->GetPath();
       if (!DoScan(strPath))
@@ -577,6 +583,12 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
   {
     CMusicInfoTag& tag = *items[i]->GetMusicInfoTag();
     CSong song(*items[i]);
+
+    if (items[i]->IsAudioBook())
+    {
+      songsByAlbumNames["audiobook"].push_back(song);
+      continue;
+    }
 
     // keep the db-only fields intact on rescan...
     if (songsMap != NULL)
@@ -769,6 +781,16 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
     // mark albums without a title as singles
     if (album->strAlbum.empty())
       album->releaseType = CAlbum::Single;
+    if (album->strAlbum == "audiobook")
+    {
+      // add each "song" as an audiobook
+      for (VECSONGS::iterator song  = album->songs.begin();
+                              song != album->songs.end();
+                              song++)
+        m_musicDatabase.AddAudioBook(CFileItem(*song));
+
+      continue;
+    }
 
     album->strPath = strDirectory;
     m_musicDatabase.AddAlbum(*album);
@@ -857,7 +879,7 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const std::string &p
    the folder art.
    */
   std::string albumArt;
-  if (albums.size() == 1)
+  if (albums.size() == 1 && albums.front().strAlbum != "audiobook")
   {
     CFileItem album(path, true);
     albumArt = album.GetUserMusicThumb(true);
