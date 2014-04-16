@@ -621,6 +621,7 @@ int  CStageFrightVideo::Decode(uint8_t *pData, int iSize, double dts, double pts
     }
 
     fast_memcpy(frame->medbuf->data(), demuxer_content, demuxer_bytes);
+    frame->medbuf->set_range(0, demuxer_bytes);
     frame->medbuf->meta_data()->clear();
     frame->medbuf->meta_data()->setInt64(kKeyTime, frame->pts);
 
