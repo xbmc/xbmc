@@ -982,7 +982,8 @@ bool CFileItem::IsAndroidApp() const
 bool CFileItem::IsAudioBook() const
 {
   return     IsType(".m4b") || HasProperty("audiobook")
-         || (IsType(".mp3") && m_bIsFolder == true);
+         || (IsType(".mp3") && m_bIsFolder == true)
+         || (HasMusicInfoTag() && GetMusicInfoTag()->HasChapters()); // a bit zealous?
 }
 
 bool CFileItem::IsStack() const
