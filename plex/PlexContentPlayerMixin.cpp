@@ -15,7 +15,7 @@
 #include "Client/PlexServerManager.h"
 #include "Client/PlexServer.h"
 #include "PlexApplication.h"
-#include "Playlists/PlayQueueManager.h"
+#include "Playlists/PlexPlayQueueManager.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void PlexContentPlayerMixin::PlayFileFromContainer(const CGUIControl* control)
@@ -56,68 +56,9 @@ CFileItemPtr PlexContentPlayerMixin::GetNextUnwatched(const std::string& contain
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void PlexContentPlayerMixin::PlayLocalPlaylist(const CFileItemPtr& file)
-{
-  CFileItemList fileItems;
-  int itemIndex = 0;
-  EPlexDirectoryType type = file->GetPlexDirectoryType();
-
-  // Get the most interesting container, for a track this means
-  // the album, for a album it means... the album :) and for
-  // a artist we just play everything by that artist.
-  CStdString key;
-  if (type == PLEX_DIR_TYPE_TRACK)
-  {
-    if (file->HasProperty("parentPath"))
-      key = file->GetProperty("parentPath").asString();
-    else if (file->HasProperty("parentKey"))
-      key = file->GetProperty("parentKey").asString();
-  }
-  else if (type == PLEX_DIR_TYPE_ALBUM)
-  {
-    key = file->GetProperty("key").asString();
-  }
-  else if (type == PLEX_DIR_TYPE_ARTIST)
-  {
-    CURL p(file->GetPath());
-    PlexUtils::AppendPathToURL(p, "allLeaves");
-    key = p.Get();
-  }
-
-  XFILE::CPlexDirectory plexDir;
-  plexDir.GetDirectory(key, fileItems);
-
-  for (int i = 0; i < fileItems.Size(); ++i)
-  {
-    CFileItemPtr fileItem = fileItems[i];
-    if (fileItem->GetProperty("unprocessed_key") == file->GetProperty("unprocessed_key"))
-    {
-      itemIndex = i;
-      break;
-    }
-  }
-
-  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-  CApplicationMessenger::Get().PlayListPlayerClear(PLAYLIST_MUSIC);
-  CApplicationMessenger::Get().PlayListPlayerAdd(PLAYLIST_MUSIC, fileItems);
-  if (file->HasMusicInfoTag())
-    CApplicationMessenger::Get().PlayListPlayerPlaySongId(file->GetMusicInfoTag()->GetDatabaseId());
-  else
-    CApplicationMessenger::Get().PlayListPlayerPlay();
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 void PlexContentPlayerMixin::PlayMusicPlaylist(const CFileItemPtr& file)
 {
-  CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(file);
-  if (server)
-  {
-    CPlexServerVersion version(server->GetVersion());
-    if (!server->IsSecondary() && (version.isValid && version > CPlexServerVersion("0.9.9.6.0")))
-      g_plexApplication.playQueueManager->createPlayQueueFromItem(server, file);
-    else
-      PlayLocalPlaylist(file);
-  }
+  g_plexApplication.playQueueManager->create(*file);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

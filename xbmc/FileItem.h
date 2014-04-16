@@ -466,11 +466,11 @@ private:
   PVR::CPVRTimerInfoTag * m_pvrTimerInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   bool m_bIsAlbum;
-  EPlexDirectoryType m_plexDirectoryType;
 
   /* PLEX */
 protected:
   std::vector<CFileItemPtr> m_chainedProviders;
+  EPlexDirectoryType m_plexDirectoryType;
   /* END PLEX */
 };
 
@@ -641,6 +641,7 @@ public:
   void ClearSortState();
 
   /* PLEX */
+  int IndexOfItem(const CStdString &path);
   void Insert(int iIndex, CFileItemPtr pItem);
   virtual bool IsPlexMediaServerMusic() const;
   bool m_wasListingCancelled;

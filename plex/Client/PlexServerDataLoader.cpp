@@ -3,6 +3,7 @@
 #include "GUIWindowManager.h"
 #include "GUIMessage.h"
 #include "settings/GUISettings.h"
+#include "Playlists/PlexPlayQueueManager.h"
 
 #include "PlexTypes.h"
 
@@ -230,6 +231,11 @@ bool CPlexServerDataLoaderJob::DoWork()
     myPlexSection->SetPlexDirectoryType(PLEX_DIR_TYPE_PLAYLIST);
     m_sectionList->Add(myPlexSection);
   }
+
+  CURL playQueueURL(g_guiSettings.GetString("system.mostrecentplayqueue"));
+  if (playQueueURL.GetHostName() == m_server->GetUUID())
+    g_plexApplication.playQueueManager->loadSavedPlayQueue();
+
   return true;
 }
 

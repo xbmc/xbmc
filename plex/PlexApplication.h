@@ -64,8 +64,8 @@ typedef boost::shared_ptr<CPlexProfiler> CPlexProfilerPtr;
 
 class CPlexExtraInfoLoader;
 
-class CPlayQueueManager;
-typedef boost::shared_ptr<CPlayQueueManager> CPlayQueueManagerPtr;
+class CPlexPlayQueueManager;
+typedef boost::shared_ptr<CPlexPlayQueueManager> CPlexPlayQueueManagerPtr;
 
 ///
 /// The hub of all Plex goodness.
@@ -116,7 +116,7 @@ public:
   CPlexProfilerPtr profiler;
   CPlexGlobalTimerPtr timer;
   CPlexExtraInfoLoader* extraInfo;
-  CPlayQueueManagerPtr playQueueManager;
+  CPlexPlayQueueManagerPtr playQueueManager;
 
   void setNetworkLogging(bool);
   void OnTimeout();

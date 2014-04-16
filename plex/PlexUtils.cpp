@@ -5,6 +5,7 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/random.hpp>
 
 #include "Utility/sha1.hpp"
 

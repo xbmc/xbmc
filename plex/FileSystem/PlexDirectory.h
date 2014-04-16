@@ -46,6 +46,9 @@ namespace XFILE
     /* plexserver://channeldirectory */
     bool GetOnlineChannelDirectory(CFileItemList& items);
 
+    /* plexserver://playqueue */
+    bool GetPlayQueueDirectory(CFileItemList& items);
+
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items)
     {
       return GetDirectory(CURL(strPath), items);

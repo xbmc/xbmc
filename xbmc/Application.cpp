@@ -362,6 +362,7 @@
 #include "video/dialogs/GUIDialogVideoOSD.h"
 #include "plex/GUI/GUIPlexScreenSaverPhoto.h"
 #include "plex/Client/PlexTranscoderClient.h"
+#include "plex/GUI/GUIWindowPlexPlayQueue.h"
 /* END PLEX */
 
 #if defined(TARGET_ANDROID)
@@ -1516,6 +1517,7 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIWindowPlexStartupHelper);
     g_windowManager.Add(new CGUIPlexPictureWindow);
     g_windowManager.Add(new CGUIPlexScreenSaverPhoto);
+    g_windowManager.Add(new CGUIWindowPlexPlayQueue);
     /* END PLEX */
 
     /* window id's 3000 - 3100 are reserved for python */

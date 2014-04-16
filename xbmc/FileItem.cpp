@@ -63,6 +63,7 @@
 #include "PlexApplication.h"
 #include "filesystem/DirectoryCache.h"
 #include "FileSystem/PlexFile.h"
+#include <boost/foreach.hpp>
 /* END PLEX */
 
 using namespace std;
@@ -1854,6 +1855,7 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   m_displayMessageTitle = itemlist.m_displayMessageTitle;
   m_displayMessageContents = itemlist.m_displayMessageContents;
   m_chainedProviders = itemlist.m_chainedProviders;
+  m_plexDirectoryType = itemlist.m_plexDirectoryType;
   /* END PLEX */
 }
 
@@ -1877,6 +1879,7 @@ bool CFileItemList::Copy(const CFileItemList& items, bool copyItems /* = true */
   m_displayMessage = items.m_displayMessage;
   m_displayMessageTitle = items.m_displayMessageTitle;
   m_displayMessageContents = items.m_displayMessageContents;
+  m_plexDirectoryType = items.m_plexDirectoryType;
   /* END PLEX */
 
   if (copyItems)
@@ -3566,6 +3569,20 @@ void CFileItemList::Insert(int iIndex, CFileItemPtr pItem)
   {
     m_map.insert(MAPFILEITEMSPAIR(pItem->GetPath(), pItem));
   }
+}
+
+int CFileItemList::IndexOfItem(const CStdString& path)
+{
+  CSingleLock lk(m_lock);
+  int i = 0;
+  BOOST_FOREACH(CFileItemPtr item, m_items)
+  {
+    if (item->GetPath() == path)
+      return i;
+    i ++;
+  }
+
+  return -1;
 }
 
 /* END PLEX */

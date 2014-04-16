@@ -7,9 +7,8 @@
 #include "VideoThumbLoader.h"
 #include "Key.h"
 #include "guilib/GUIWindowManager.h"
-
+#include "Playlists/PlexPlayQueueManager.h"
 #include "PlayListPlayer.h"
-#include "playlists/PlayList.h"
 
 using namespace XFILE;
 using namespace std;
@@ -62,33 +61,26 @@ CStdString CPlexSectionFanout::GetBestServerUrl(const CStdString& extraUrl)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexSectionFanout::ShowPlayQueue()
 {
-  int type = g_playlistPlayer.GetCurrentPlaylist();
-  PLAYLIST::CPlayList playlist = g_playlistPlayer.GetPlaylist(type);
-  if (playlist.size() < 1)
+  CFileItemList pqList;
+  if (!g_plexApplication.playQueueManager->getCurrentPlayQueue(pqList))
     return;
+
+  int type = g_plexApplication.playQueueManager->getCurrentPlayQueuePlaylist();
 
   int listType = (type == PLAYLIST_VIDEO) ?
                    CONTENT_LIST_PLAYQUEUE_VIDEO : CONTENT_LIST_PLAYQUEUE_MUSIC;
 
-  if (m_fileLists.find(listType) != m_fileLists.end() &&
-      m_fileLists[listType])
-    delete m_fileLists[listType];
+  std::pair<int, CFileItemList*> p;
+  BOOST_FOREACH(p, m_fileLists)
+    delete p.second;
+
+  m_fileLists.clear();
 
   CFileItemList* list = new CFileItemList;
-
-  int currentSong = g_playlistPlayer.GetCurrentSong();
-  if (currentSong == -1)
-    currentSong = 0;
-
-  for (int i = currentSong; i < playlist.size(); i ++)
-  {
-    CFileItemPtr item = playlist[i];
-    if (i == currentSong)
-      item->SetProperty("currentPlayQueueItem", "1");
-    list->Add(item);
-  }
-
+  list->Assign(pqList);
   m_fileLists[listType] = list;
+
+  CLog::Log(LOGDEBUG, "CPlexSectionFanout::ShowPlayQueue showing playqueue %d with %d items", listType, list->Size());
 
   CGUIMessage msg(GUI_MSG_PLEX_SECTION_LOADED, WINDOW_HOME, 300, m_sectionType);
   msg.SetStringParam(m_url.Get());

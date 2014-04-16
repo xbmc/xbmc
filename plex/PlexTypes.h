@@ -84,6 +84,7 @@ enum ePlexMediaState {
 #define WINDOW_PLEX_PREPLAY_MUSIC         10091
 #define WINDOW_PLEX_MYCHANNELS            10092
 #define WINDOW_PLEX_STARTUP_HELPER        10093
+#define WINDOW_PLEX_PLAY_QUEUE            10094
 #define WINDOW_MYPLEX_LOGIN                 10203
 
 // Dialogs.
@@ -172,8 +173,9 @@ class CMusicThumbLoader;
 #define PLAYER_HAS_MUSIC_PLAYLIST   90
 
 // Message Ids for ApplicationMessenger
-#define TMSG_MEDIA_RESTART_WITH_NEW_PLAYER 208
-#define TMSG_HIDE                 911
+#define TMSG_MEDIA_RESTART_WITH_NEW_PLAYER 2000
+#define TMSG_HIDE                          2001
+#define TMSG_PLEX_PLAY_QUEUE_UPDATED       2002
 
 #define CONF_FLAGS_RGB           0x20
 

@@ -248,10 +248,10 @@ public:
   bool DestroyDisplay();
 
   /* PLEX */
-  void MediaOpenComplete(bool bStatus, const CStdString& error = "");
   void Hide();
   void RestartWithNewPlayer(CGUIDialogCache* dlg, const std::string& newURL);
-  void PictureSlideShow(std::string pathname, bool addTBN = false, const std::string& index="");
+  void PlexUpdatePlayQueue(ePlexMediaType type, bool startPlaying);
+  void PictureSlideShow(std::string pathname, bool addTBN, const std::string &index);
   /* END PLEX */
 
   virtual ~CApplicationMessenger();

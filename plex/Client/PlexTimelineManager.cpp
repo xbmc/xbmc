@@ -18,7 +18,7 @@
 
 #include "Client/PlexServer.h"
 #include "Client/PlexServerManager.h"
-#include "Playlists/PlayQueueManager.h"
+#include "Playlists/PlexPlayQueueManager.h"
 
 #include "FileItem.h"
 #include "DirectoryCache.h"
@@ -157,8 +157,8 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &newItem, ePlexMedi
 
     if (timeline->getItem()->GetProperty("playQueueID").asBoolean())
     {
-      // we got a new item with playQueueID so we need to refresh the PlayQueue
-      g_plexApplication.playQueueManager->refreshPlayQueue(timeline->getItem());
+      if (g_plexApplication.playQueueManager->current())
+        g_plexApplication.playQueueManager->current()->refreshCurrent();
     }
   }
 

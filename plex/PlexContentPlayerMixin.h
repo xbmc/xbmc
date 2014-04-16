@@ -20,7 +20,6 @@ protected:
 
 public:
   static CFileItemPtr GetNextUnwatched(const std::string& container);
-  static void PlayLocalPlaylist(const CFileItemPtr& file);
   static void PlayMusicPlaylist(const CFileItemPtr& file);
   static void PlayPlexItem(const CFileItemPtr file, CGUIBaseContainer* container = NULL);
   static bool ProcessResumeChoice(CFileItem* file);

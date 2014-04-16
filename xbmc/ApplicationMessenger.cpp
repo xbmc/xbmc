@@ -66,6 +66,11 @@
 
 #include "utils/GlobalsHandling.h"
 
+/* PLEX */
+#include "PlexApplication.h"
+#include "Playlists/PlexPlayQueueManager.h"
+/* END PLEX */
+
 using namespace PVR;
 using namespace std;
 using namespace MUSIC_INFO;
@@ -825,6 +830,12 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         g_application.Hide();
       }
       break;
+    case TMSG_PLEX_PLAY_QUEUE_UPDATED:
+    {
+      g_plexApplication.playQueueManager->playQueueUpdated((ePlexMediaType)pMsg->dwParam1,
+                                                           (bool)pMsg->dwParam2);
+      break;
+    }
     /* END PLEX */
 
   }
@@ -1073,18 +1084,6 @@ void CApplicationMessenger::PictureSlideShow(string pathname, bool addTBN /* = f
   tMsg.dwParam1 = addTBN ? 1 : 0;
   SendMessage(tMsg);
 }
-
-/* PLEX */
-void CApplicationMessenger::PictureSlideShow(string pathname, bool addTBN, const string& index)
-{
-  DWORD dwMessage = TMSG_PICTURE_SLIDESHOW;
-  ThreadMessage tMsg = {dwMessage};
-  tMsg.strParam = pathname;
-  tMsg.dwParam1 = addTBN ? 1 : 0;
-  tMsg.params.push_back(index);
-  SendMessage(tMsg);
-}
-/* END PLEX */
 
 void CApplicationMessenger::SetGUILanguage(const std::string &strLanguage)
 {
@@ -1338,5 +1337,23 @@ void CApplicationMessenger::Hide()
 {
   ThreadMessage tMsg = {TMSG_HIDE};
   SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::PlexUpdatePlayQueue(ePlexMediaType type, bool startPlaying)
+{
+  ThreadMessage tMsg = {TMSG_PLEX_PLAY_QUEUE_UPDATED};
+  tMsg.dwParam1 = (int)type;
+  tMsg.dwParam2 = (int)startPlaying;
+  SendMessage(tMsg, false);
+}
+
+void CApplicationMessenger::PictureSlideShow(string pathname, bool addTBN, const string& index)
+{
+  DWORD dwMessage = TMSG_PICTURE_SLIDESHOW;
+  ThreadMessage tMsg = {dwMessage};
+  tMsg.strParam = pathname;
+  tMsg.dwParam1 = addTBN ? 1 : 0;
+  tMsg.params.push_back(index);
+  SendMessage(tMsg);
 }
 /* END PLEX */
