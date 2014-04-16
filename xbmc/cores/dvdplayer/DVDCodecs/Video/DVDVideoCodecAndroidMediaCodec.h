@@ -73,6 +73,7 @@ private:
 
   long                m_refs;
   bool                m_valid;
+  bool                m_isReleased;
   int                 m_index;
   unsigned int        m_texture;
   int64_t             m_timestamp;
