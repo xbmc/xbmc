@@ -38,7 +38,7 @@ class CVideoDatabase;
 class CThumbExtractor : public CJob
 {
 public:
-  CThumbExtractor(const CFileItem& item, const std::string& listpath, bool thumb, const std::string& strTarget="");
+  CThumbExtractor(const CFileItem& item, const std::string& listpath, bool thumb, const std::string& strTarget="", int64_t pos = -1);
   virtual ~CThumbExtractor();
 
   /*!
@@ -57,6 +57,7 @@ public:
   std::string m_listpath; ///< path used in fileitem list
   CFileItem  m_item;
   bool       m_thumb; ///< extract thumb?
+  int64_t    m_pos; ///< position to extract thumb from
 };
 
 class CVideoThumbLoader : public CThumbLoader, public CJobQueue
