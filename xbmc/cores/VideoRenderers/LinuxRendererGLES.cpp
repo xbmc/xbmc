@@ -886,7 +886,13 @@ void CLinuxRendererGLES::ReleaseBuffer(int idx)
 #if defined(TARGET_ANDROID)
   if ( m_renderMethod & RENDER_MEDIACODEC )
   {
-    SAFE_RELEASE(buf.mediacodec);
+    if (buf.mediacodec)
+    {
+      // The media buffer has been queued to the SurfaceView but we didn't render it
+      // We have to do to the updateTexImage or it will get stuck
+      buf.mediacodec->UpdateTexImage();
+      SAFE_RELEASE(buf.mediacodec);
+    }
   }
 #endif
 }
