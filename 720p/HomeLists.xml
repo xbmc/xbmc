@@ -1026,7 +1026,7 @@
 								<include>ListItemSquareCard</include>
 								<include>ListItemSquare</include>
 								<include>ListItemSquareTitleArtist</include>
-								<include>ListItemSquareTitleAlbum</include>
+								<include>ListItemSquareTitle</include>
 							</control>
 							</control>
 							<!-- music when only this list is visible -->
@@ -1036,7 +1036,7 @@
 								<include>ListItemSquareCard</include>
 								<include>ListItemSquare</include>
 								<include>ListItemSquareTitleArtist</include>
-								<include>ListItemSquareTitleAlbum</include>
+								<include>ListItemSquareTitle</include>
 							</control>
 						</itemlayout>
 						<focusedlayout width="139" height="330">
@@ -1048,7 +1048,7 @@
 								<include>ListItemSquareCard</include>
 								<include>ListItemSquare</include>
 								<include>ListItemSquareTitleArtist</include>
-								<include>ListItemSquareTitleAlbum</include>
+								<include>ListItemSquareTitle</include>
 								<include>ListItemSquareSelectedBorder</include>
 							</control>
 							</control>
@@ -1059,7 +1059,7 @@
 								<include>ListItemSquareCard</include>
 								<include>ListItemSquare</include>
 								<include>ListItemSquareTitleArtist</include>
-								<include>ListItemSquareTitleAlbum</include>
+								<include>ListItemSquareTitle</include>
 								<include>ListItemSquareSelectedBorder</include>
 							</control>
 						</focusedlayout>
