@@ -240,6 +240,7 @@ public:
   bool GetResumeBookmarkForAudioBook(const std::string& path, int& bookmark);
 
   bool GetAudioBooks(CFileItemList& items);
+  int GetAudiobookCount(const Filter &filter = Filter());
 
   /*! \brief Checks if the given path is inside a folder that has already been scanned into the library
    \param path the path we want to check
