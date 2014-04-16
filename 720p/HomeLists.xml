@@ -1014,9 +1014,9 @@
 						<onright>-</onright>
 						<onleft>300</onleft>
 						<posx>0</posx>
-						<posy>-110</posy>
+						<posy>-113</posy>
 						<width>860</width>
-						<height>330</height>
+						<height>340</height>
 						<itemlayout width="139" height="330">
 							<!-- music when both lists are visible -->
 							<control type="group">
