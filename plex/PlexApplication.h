@@ -86,7 +86,7 @@ public:
   }
 
   /// Handle internal messages.
-  virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnMessage(CGUIMessage& message) { return false; };
 
   void OnWakeUp();
 

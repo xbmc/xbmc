@@ -100,31 +100,7 @@ void PlexApplication::Start()
   myPlexManager->Create();
 }
 
-////////////////////////////////////////////////////////////////////////////////
-bool PlexApplication::OnMessage(CGUIMessage& message)
-{
-  switch (message.GetMessage())
-  {
-    case GUI_MSG_APP_ACTIVATED:
-    case GUI_MSG_APP_DEACTIVATED:
-    {
-      CLog::Log(LOGDEBUG, "Plex Application: Handling message %d", message.GetMessage());
-      return true;
-    }
-    case GUI_MSG_BG_MUSIC_SETTINGS_UPDATED:
-    {
-      return true;
-    }
-    case GUI_MSG_BG_MUSIC_THEME_UPDATED:
-    {
-      //      g_plexApplication.backgroundMusicPlayer->SetTheme(message.GetStringParam());
-      return true;
-    }
-  }
-
-  return false;
-}
-
+///////////////////////////////////////////////////////////////////////////////////////////////////
 #ifdef TARGET_DARWIN_OSX
 // Hack
 class CRemoteRestartThread : public CThread

@@ -5259,12 +5259,7 @@ bool CApplication::IsIdleShutdownInhibited() const
 
 bool CApplication::OnMessage(CGUIMessage& message)
 {
-  /* PLEX */
-  if (g_plexApplication.OnMessage(message))
-    return true;
-  /* END PLEX */
-
-  switch ( message.GetMessage() )
+ switch ( message.GetMessage() )
   {
   case GUI_MSG_NOTIFY_ALL:
     {
