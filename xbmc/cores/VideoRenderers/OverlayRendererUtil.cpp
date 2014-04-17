@@ -198,15 +198,15 @@ bool convert_quad(ASS_Image* images, SQuads& quads)
     if((img->color & 0xff) == 0xff || img->w == 0 || img->h == 0)
       continue;
 
-    quads.size_x += img->w;
+    quads.size_x += img->w + 1;
     quads.count++;
   }
 
   if (quads.count == 0)
     return false;
 
-  while(quads.size_x > (int)g_Windowing.GetMaxTextureSize())
-    quads.size_x /= 2;
+  if (quads.size_x > (int)g_Windowing.GetMaxTextureSize())
+    quads.size_x = g_Windowing.GetMaxTextureSize();
 
   int curr_x = 0;
   int curr_y = 0;
