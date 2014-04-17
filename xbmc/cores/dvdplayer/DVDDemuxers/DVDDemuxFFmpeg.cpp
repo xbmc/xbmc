@@ -49,6 +49,7 @@
 #include "threads/SystemClock.h"
 #include "utils/TimeUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/fastmemcpy.h"
 #include "URL.h"
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
@@ -78,9 +79,16 @@ void CDemuxStreamAudioFFmpeg::GetStreamName(std::string& strInfo)
     CDemuxStream::GetStreamName(strInfo);
 }
 
-  void CDemuxStreamAudioFFmpeg::GetExtendedStreamInfo()
+  void CDemuxStreamAudioFFmpeg::GetExtendedStreamInfo(pFrame pframe )
   {
-      //TESTING
+      if(pframe == __null)
+          return;
+      
+      //FILE * audio_dst_file = fopen("test.bin", "wb");
+      //fwrite(pframe->data, 1, pframe->size, audio_dst_file);
+      //fclose(audio_dst_file);
+     
+     //TESTING
      bExtendedStreamInfo = true;
      iExtendedChannels = 8;
      //iExtendedSampleRate = 96000;
@@ -194,6 +202,31 @@ static int dvd_file_open(URLContext *h, const char *filename, int flags)
   return -1;
 }
 */
+
+static AVPacket* get_single_frame( AVFormatContext* fmt_ctx, int streamid)
+{
+  static AVPacket pkt;
+  int _continue = 1;
+    
+  av_init_packet(&pkt);
+  pkt.data = NULL;
+  pkt.size = 0;
+ 
+  do 
+  {
+    if(av_read_frame(fmt_ctx, &pkt) >= 0)
+    {
+      if(pkt.stream_index == streamid)
+      {					
+        _continue = 0;
+      }
+    }
+    else
+      _continue = 0;
+    } while (_continue == 1);  
+    
+  return &pkt;
+}
 
 static int dvd_file_read(void *h, uint8_t* buf, int size)
 {
@@ -1106,7 +1139,20 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         //TODO : if (profile == FF_PROFILE_DTS_HD_HRA)
         if(pStream->codec->profile == FF_PROFILE_DTS_HD_MA)
         {
-            st->GetExtendedStreamInfo();
+          CLog::Log(LOGINFO, "%s : Searching for extended stream info", __FUNCTION__);
+          AVPacket* pkt = get_single_frame( m_pFormatContext, iId);
+          if(pkt->data != NULL)
+          {
+            Frame frame;
+            frame.size = pkt->size;
+            frame.data = (unsigned char *)malloc(frame.size * sizeof(unsigned char));
+            fast_memcpy(frame.data, pkt->data, frame.size);
+            st->GetExtendedStreamInfo(&frame);
+            free(frame.data);
+            av_free_packet(pkt);
+          }
+          else
+            CLog::Log(LOGINFO, "%s : No frame returned by get_single_frame", __FUNCTION__);
         }
         
         break;

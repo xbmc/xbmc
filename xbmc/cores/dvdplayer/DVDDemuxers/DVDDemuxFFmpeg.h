@@ -61,7 +61,7 @@ public:
 
   virtual void GetStreamInfo(std::string& strInfo);
   virtual void GetStreamName(std::string& strInfo);
-  virtual void GetExtendedStreamInfo();
+  virtual void GetExtendedStreamInfo(pFrame pframe = NULL);
 };
 
 class CDemuxStreamSubtitleFFmpeg

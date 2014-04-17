@@ -63,7 +63,7 @@ void CDemuxStreamAudio::GetStreamType(std::string& strInfo)
   strInfo = sInfo;
 }
 
-  void CDemuxStreamAudio::GetExtendedStreamInfo()
+  void CDemuxStreamAudio::GetExtendedStreamInfo(pFrame pframe )
   {
      bExtendedStreamInfo = false;
      iExtendedChannels = 0;

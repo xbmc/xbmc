@@ -31,6 +31,10 @@ class CDVDInputStream;
 #pragma warning(disable:4244)
 #endif
 
+#if !defined(TARGET_WINDOWS) && !defined(__ppc__) && !defined(__powerpc__) && !defined(__arm__) 
+#include <stddef.h>
+#endif
+
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
@@ -61,6 +65,8 @@ enum StreamSource {
 };
 
 #define STREAM_SOURCE_MASK(a) ((a) & 0xf00)
+
+typedef struct { unsigned char * data; int size; } Frame, *pFrame;
 
 /*
  * CDemuxStream
@@ -195,7 +201,7 @@ public:
 
   void GetStreamType(std::string& strInfo);
 
-  virtual void GetExtendedStreamInfo();
+  virtual void GetExtendedStreamInfo(pFrame pframe = NULL);
   
   int iChannels;
   int iSampleRate;
