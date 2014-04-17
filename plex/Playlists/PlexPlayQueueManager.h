@@ -47,7 +47,7 @@ public:
   static CStdString getURIFromItem(const CFileItem& item, const CStdString& uri = "");
   static int getPlaylistFromType(ePlexMediaType type);
 
-  void playQueueUpdated(const ePlexMediaType& type, bool startPlaying);
+  void playQueueUpdated(const ePlexMediaType& type, bool startPlaying, int id = -1);
 
   ePlexMediaType getCurrentPlayQueueType() const
   {
@@ -61,6 +61,7 @@ public:
 
   bool getCurrentPlayQueue(CFileItemList& list);
   void loadSavedPlayQueue();
+  void playCurrentId(int id);
 
 private:
   IPlexPlayQueueBasePtr getImpl(const CFileItem &container);

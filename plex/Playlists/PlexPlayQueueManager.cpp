@@ -44,7 +44,16 @@ int CPlexPlayQueueManager::getPlaylistFromType(ePlexMediaType type)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool startPlaying)
+void CPlexPlayQueueManager::playCurrentId(int id)
+{
+  if (!m_currentImpl)
+    return;
+  ePlexMediaType type = getCurrentPlayQueueType();
+  playQueueUpdated(type, true, id);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool startPlaying, int id)
 {
   if (!m_currentImpl)
     return;
@@ -59,9 +68,12 @@ void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool st
   }
 
   int pqID = m_currentImpl->getCurrentID();
+
   CFileItemList list;
   if (!m_currentImpl->getCurrent(list))
     return;
+
+  int selectedOffset;
 
   if (g_playlistPlayer.GetCurrentPlaylist() == playlist && playlistItem &&
       playlistItem->GetProperty("playQueueID").asInteger() == pqID)
@@ -70,15 +82,11 @@ void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool st
   }
   else
   {
-    int selectedOffset = list.GetProperty("playQueueSelectedItemOffset").asInteger(0);
-    CApplicationMessenger::Get().MediaStop(true);
+    selectedOffset = list.GetProperty("playQueueSelectedItemOffset").asInteger(0);
+    //CApplicationMessenger::Get().MediaStop(true);
     g_playlistPlayer.SetCurrentPlaylist(playlist);
     g_playlistPlayer.ClearPlaylist(playlist);
     g_playlistPlayer.Add(playlist, list);
-    g_playlistPlayer.SetCurrentSong(selectedOffset);
-
-    if (startPlaying)
-      g_playlistPlayer.Play();
 
     saveCurrentPlayQueue(m_currentImpl->server(), list);
 
@@ -86,6 +94,12 @@ void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool st
               "CPlexPlayQueueManager::PlayQueueUpdated now playing PlayQueue of type %d",
               type);
   }
+
+  if (startPlaying && id == -1)
+    g_playlistPlayer.Play(selectedOffset);
+  else if (startPlaying)
+    g_playlistPlayer.PlaySongId(id);
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

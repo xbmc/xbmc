@@ -613,13 +613,7 @@ bool CGUIWindowHome::OnClick(const CGUIMessage& message)
          currentContainer == CONTENT_LIST_PLAYQUEUE_PHOTO ||
          currentContainer == CONTENT_LIST_PLAYQUEUE_VIDEO))
     {
-      int playlist = GetPlayQueueType();
-      if (playlist != PLAYLIST_NONE)
-      {
-        g_playlistPlayer.SetCurrentPlaylist(playlist);
-        CApplicationMessenger::Get().PlayListPlayerPlaySongId(
-              fileItem->GetMusicInfoTag()->GetDatabaseId());
-      }
+      g_plexApplication.playQueueManager->playCurrentId(fileItem->GetMusicInfoTag()->GetDatabaseId());
     }
     else
     {
