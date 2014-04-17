@@ -154,13 +154,7 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &newItem, ePlexMedi
 
       ReportProgress(oldTimeline, true);
     }
-
-    if (timeline->getItem()->GetProperty("playQueueID").asBoolean())
-    {
-      if (g_plexApplication.playQueueManager->current())
-        g_plexApplication.playQueueManager->current()->refreshCurrent();
-    }
-  }
+ }
 
   /* now we need to check the other types because we can start
    * playing a video when music is playing which will stop the music
@@ -194,13 +188,7 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &newItem, ePlexMedi
     if (timeline->getItem())
       g_directoryCache.ClearDirWithFile(timeline->getItem()->GetProperty("key").asString());
 
-    if (timeline->getItem()->GetProperty("playQueueID").asBoolean())
-    {
-      if (g_plexApplication.playQueueManager->current())
-        g_plexApplication.playQueueManager->current()->refreshCurrent();
-    }
-
-    ResetTimeline(type);
+     ResetTimeline(type);
   }
 }
 

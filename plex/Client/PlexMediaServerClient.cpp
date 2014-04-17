@@ -36,6 +36,7 @@
 #include "PlexServer.h"
 #include "PlexFile.h"
 #include "NetworkInterface.h"
+#include "PlexPlayQueueManager.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CURL CPlexMediaServerClient::GetItemURL(CFileItemPtr item)
@@ -57,17 +58,35 @@ CURL CPlexMediaServerClient::GetItemURL(CFileItemPtr item)
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexMediaServerClient::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  CPlexMediaServerClientJob *clientJob = static_cast<CPlexMediaServerClientJob*>(job);
-
-  if (success && clientJob->m_msg.GetMessage() != 0)
+  if (stricmp(job->GetType(), "mediaServerClientJob") == 0)
   {
-    /* give us a small breathing room to make sure PMS is up-to-date before reloading */
-    Sleep(500);
-    g_windowManager.SendThreadMessage(clientJob->m_msg);
+    CPlexMediaServerClientJob *clientJob = static_cast<CPlexMediaServerClientJob*>(job);
+
+    if (success && clientJob->m_msg.GetMessage() != 0)
+    {
+      /* give us a small breathing room to make sure PMS is up-to-date before reloading */
+      Sleep(500);
+      g_windowManager.SendThreadMessage(clientJob->m_msg);
+    }
+    else if (!success && clientJob->m_errorMsg)
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(257),
+                                            g_localizeStrings.Get(clientJob->m_errorMsg));
   }
-  else if (!success && clientJob->m_errorMsg)
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(257), g_localizeStrings.Get(clientJob->m_errorMsg));
-  
+  else if (stricmp(job->GetType(), "mediaServerClientTimelineJob") == 0)
+  {
+    CPlexMediaServerClientTimelineJob* tljob = static_cast<CPlexMediaServerClientTimelineJob*>(job);
+    if (tljob && success)
+    {
+      CFileItemPtr item = tljob->m_item;
+      if (item->HasProperty("playQueueID"))
+      {
+        IPlexPlayQueueBasePtr impl = g_plexApplication.playQueueManager->current();
+        if (impl->getCurrentID() == item->GetProperty("playQueueID").asInteger())
+          impl->refreshCurrent();
+      }
+    }
+  }
+
   CJobQueue::OnJobComplete(jobID, success, job);
 }
 
@@ -206,7 +225,7 @@ void CPlexMediaServerClient::SendServerTimeline(const CFileItemPtr &item, const 
   u.SetFileName(":/timeline");
   u.AddOptions(options);
 
-  AddJob(new CPlexMediaServerClientJob(u));
+  AddJob(new CPlexMediaServerClientTimelineJob(u, item));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

@@ -73,6 +73,8 @@ bool CPlexPlayQueueServer::refreshCurrent()
 {
   int id = getCurrentID();
 
+  CLog::Log(LOGDEBUG, "CPlexPlayQueueServer::refreshCurrent refreshing playQueue %d", id);
+
   CStdString path;
   path.Format("/playQueues/%d", id);
 
@@ -184,6 +186,9 @@ void CPlexPlayQueueServer::OnJobComplete(unsigned int jobID, bool success, CJob*
     {
       CSingleLock lk(m_mapLock);
       m_list = pqCopy;
+      if (m_list->Get(0) && m_list->Get(m_list->Size()-1))
+        CLog::Log(LOGDEBUG, "CPlexPlayQueueServer::OnJobComplete new list %s => %s",
+                  m_list->Get(0)->GetLabel().c_str(), m_list->Get(m_list->Size() - 1)->GetLabel().c_str());
     }
     CApplicationMessenger::Get().PlexUpdatePlayQueue(type, fj->m_startPlaying);
   }

@@ -125,6 +125,8 @@ public:
 
   virtual void Cancel() { m_http.Cancel(); }
 
+  virtual const char* GetType() const { return "mediaServerClientJob"; }
+
   /* set this to the shared ptr if we are calling this from the
    * mediaServerClient, otherwise just don't bother */
   CPlexMediaServerClientPtr m_mediaServerClient;
@@ -136,6 +138,18 @@ public:
       return true;
     return false;
   }
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+class CPlexMediaServerClientTimelineJob : public CPlexMediaServerClientJob
+{
+public:
+  CPlexMediaServerClientTimelineJob(const CURL& url, const CFileItemPtr& item)
+    : CPlexMediaServerClientJob(url), m_item(item)
+  {}
+
+  virtual const char* GetType() const { return "mediaServerClientTimelineJob"; }
+  CFileItemPtr m_item;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////
