@@ -741,6 +741,14 @@ bool CApplication::Create()
   CLog::Log(LOGNOTICE, "Running on Android %d-bit API level %d (%s, %s)", g_sysinfo.GetKernelBitness(), CJNIBuild::SDK_INT, g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str());
 #elif defined(TARGET_POSIX)
   CLog::Log(LOGNOTICE, "Running on Linux %d-bit (%s, %s)", g_sysinfo.GetKernelBitness(), g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str());
+  CLog::Log(LOGNOTICE, "FFmpeg version: %s, statically linked: %d", FFMPEG_VERSION, USE_STATIC_FFMPEG);
+if (!strstr(FFMPEG_VERSION, FFMPEG_VER_SHA))
+{
+  if (strstr(FFMPEG_VERSION, "xbmc"))
+    CLog::Log(LOGNOTICE, "WARNING: unknown ffmpeg-xbmc version detected");
+  else
+    CLog::Log(LOGNOTICE, "WARNING: unsupported ffmpeg version detected");
+}
 #elif defined(TARGET_WINDOWS)
   CLog::Log(LOGNOTICE, "Running on %s", g_sysinfo.GetKernelVersion().c_str());
 #endif

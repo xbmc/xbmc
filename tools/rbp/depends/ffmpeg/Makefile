@@ -8,7 +8,7 @@ DEPS= ../../Makefile.include ../depends.mk ../../../depends/target/ffmpeg/FFMPEG
 APPLY_PATCHES=no
 
 # configuration settings
-ffmpg_config = --sysroot=$(SYSROOT) --prefix=$(PREFIX)
+ffmpg_config = --sysroot=$(SYSROOT) --prefix=$(PREFIX) --extra-version="xbmc-$(VERSION)"
 ffmpg_config += --enable-cross-compile --target-os=linux --cpu=arm1176jzf-s --arch=arm
 ffmpg_config += --cc=$(CC) --cxx=$(CXX)
 ffmpg_config += --disable-devices --disable-doc

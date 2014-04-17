@@ -126,6 +126,7 @@ tar --strip-components=1 -xf ../${ARCHIVE}
 
 CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" \
 ./configure --prefix=$FFMPEG_PREFIX \
+	--extra-version="xbmc-${VERSION}" \
 	--disable-devices \
 	--disable-ffplay \
 	--disable-ffmpeg \

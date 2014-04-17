@@ -1714,6 +1714,10 @@ FFMPEG_LIBNAMES="libavcodec >= 55.39.101
                  libswscale >= 2.5.101
                  libswresample >= 0.17.104"
 
+ffmpeg_build="${abs_top_srcdir}/tools/depends/target/ffmpeg"
+FFMPEG_VER_SHA=$(grep "VERSION=" ${ffmpeg_build}/FFMPEG-VERSION | sed 's/VERSION=//g')
+AC_DEFINE_UNQUOTED([FFMPEG_VER_SHA], ["$FFMPEG_VER_SHA"], [FFmpeg version hash])
+
 if test "$with_ffmpeg" = "shared"; then
   # allow linking against shared ffmpeg libs
   # a proper version must be installed, we won't build ffmpeg
@@ -1734,7 +1738,6 @@ if test "${USE_STATIC_FFMPEG}" = "1"; then
   fi
 
   if test "$cross_compiling" != "yes"; then
-    ffmpeg_build="${abs_top_srcdir}/tools/depends/target/ffmpeg"
     if test "$use_debug" != "yes"; then
       FFMPEG_OPTS="-r"
     fi
