@@ -73,7 +73,7 @@ public:
   bool Equals(const CPlexServerPtr& otherServer) { return m_uuid.Equals(otherServer->m_uuid); }
 
   /* ConnTestThread */
-  void OnConnectionTest(CPlexConnectionPtr conn, int state);
+  void OnConnectionTest(CPlexServerConnTestThread *thread, CPlexConnectionPtr conn, int state);
 
   void GetConnections(std::vector<CPlexConnectionPtr> &conns);
   int GetNumConnections() const;

@@ -43,7 +43,7 @@ void CPlexServerConnTestThread::Process()
     CLog::Log(LOGDEBUG, "CPlexServerConnTestJob:DoWork took %lld sec, Connection FAILURE %s ~ localConn: %s conn: %s",
               t.elapsed(), m_server->GetName().c_str(), m_conn->IsLocal() ? "YES" : "NO", m_conn->GetAddress().Get().c_str());
 
-  m_server->OnConnectionTest(m_conn, state);
+  m_server->OnConnectionTest(this, m_conn, state);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -264,18 +264,13 @@ CStdString CPlexServer::GetAccessToken() const
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexServer::OnConnectionTest(CPlexConnectionPtr conn, int state)
+void CPlexServer::OnConnectionTest(CPlexServerConnTestThread* thread, CPlexConnectionPtr conn,
+                                   int state)
 {
+  if (thread)
   {
     CSingleLock lk(m_connTestThreadLock);
-    BOOST_FOREACH(CPlexServerConnTestThread* thread, m_connTestThreads)
-    {
-      if (thread->m_conn->Equals(conn))
-      {
-        m_connTestThreads.erase(std::remove(m_connTestThreads.begin(), m_connTestThreads.end(), thread));
-        break;
-      }
-    }
+    m_connTestThreads.erase(std::remove(m_connTestThreads.begin(), m_connTestThreads.end(), thread));
   }
 
   CSingleLock tlk(m_testingLock);
