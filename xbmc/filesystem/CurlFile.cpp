@@ -1167,11 +1167,21 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
   if(!m_seekable)
     return -1;
 
-  CReadState* oldstate = NULL;
-  if(m_multisession)
+  // XXX: note the relationship between m_oldState & m_multisession
+  //      when m_multisession is true, m_oldState could be NULL or non-NULL
+  //      when m_multisession is false, m_oldState always be NULL
+  //      when m_oldState is non-NULL, m_multisession always be true
+  if (m_oldState)
+  {
+    // use m_oldState seek to new position.
+    CReadState *tmp = m_state;
+    m_state = m_oldState;
+    m_oldState = tmp;
+    m_state->Disconnect();
+  }
+  else if (m_multisession)
   {
     CURL url(m_url);
-    oldstate = m_oldState;
     m_oldState = m_state;
     m_state = new CReadState();
 
@@ -1192,20 +1202,27 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
   m_state->m_sendRange = true;
 
   long response = m_state->Connect(m_bufferSize);
+
   if(response < 0 && (m_state->m_fileSize == 0 || m_state->m_fileSize != m_state->m_filePos))
   {
-    m_seekable = false;
-    if(m_multisession && m_oldState)
+    if (!m_oldState)
     {
-      delete m_state;
-      m_state = m_oldState;
-      m_oldState = oldstate;
+      // single session seek failure, mark not seekable.
+      m_seekable = false;
+      return -1;
     }
-    return -1;
+
+    delete m_state;
+    m_state = m_oldState;
+    m_oldState = NULL;
+
+    // fail the multisession flag, server may limit the concurrent session count.
+    m_multisession = false;
+    // try it again with single session mode.
+    return this->Seek(iFilePosition, iWhence);
   }
 
   SetCorrectHeaders(m_state);
-  delete oldstate;
 
   return m_state->m_filePos;
 }
