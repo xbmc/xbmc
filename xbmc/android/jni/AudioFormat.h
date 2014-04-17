@@ -29,6 +29,9 @@ class CJNIAudioFormat
 
     static int ENCODING_PCM_16BIT;
     static int CHANNEL_OUT_STEREO;
+
+    // OUYA-specific
+    static int ENCODING_IEC61937_16BIT;
 };
 
 };

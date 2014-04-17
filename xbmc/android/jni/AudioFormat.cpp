@@ -27,6 +27,9 @@ using namespace jni;
 int CJNIAudioFormat::ENCODING_PCM_16BIT = 0x00000002;
 int CJNIAudioFormat::CHANNEL_OUT_STEREO = 0x0000000c;
 
+// OUYA-specific
+int CJNIAudioFormat::ENCODING_IEC61937_16BIT = -1;
+
 void CJNIAudioFormat::PopulateStaticFields()
 {
   int sdk = CJNIBase::GetSDKVersion();
@@ -36,6 +39,13 @@ void CJNIAudioFormat::PopulateStaticFields()
     CJNIAudioFormat::ENCODING_PCM_16BIT = get_static_field<int>(c, "ENCODING_PCM_16BIT");
     if (sdk >= 5)
       CJNIAudioFormat::CHANNEL_OUT_STEREO = get_static_field<int>(c, "CHANNEL_OUT_STEREO");
+
+    // OUYA-specific
+    jfieldID id = get_static_field_id<jclass>(c, "ENCODING_IEC61937_16BIT", "I");
+    if (id != NULL)
+      CJNIAudioFormat::ENCODING_IEC61937_16BIT = get_static_field<int>(c, "ENCODING_IEC61937_16BIT");
+    else
+      xbmc_jnienv()->ExceptionClear();
   }
 }
 
