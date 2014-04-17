@@ -12,14 +12,15 @@
 
 using namespace std;
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexServerConnTestThread::CPlexServerConnTestThread(CPlexConnectionPtr conn, CPlexServerPtr server)
   : CThread("ConnectionTest: " + conn->GetAddress().GetHostName()), m_conn(conn), m_server(server)
 {
   Create(true);
 }
 
-void
-CPlexServerConnTestThread::Process()
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexServerConnTestThread::Process()
 {
   CPlexTimer t;
 
@@ -45,19 +46,21 @@ CPlexServerConnTestThread::Process()
   m_server->OnConnectionTest(m_conn, state);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexServerConnTestThread::Cancel()
 {
   m_conn->m_http.Cancel();
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexServer::CPlexServer(CPlexConnectionPtr connection)
 {
   AddConnection(connection);
   m_activeConnection = connection;
 }
 
-bool
-CPlexServer::CollectDataFromRoot(const CStdString xmlData)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexServer::CollectDataFromRoot(const CStdString xmlData)
 {
   CSingleLock lk(m_serverLock);
 
@@ -118,8 +121,8 @@ CPlexServer::CollectDataFromRoot(const CStdString xmlData)
   return true;
 }
 
-bool
-CPlexServer::HasActiveLocalConnection() const
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexServer::HasActiveLocalConnection() const
 {
   CSingleLock lk(m_serverLock);
   return (m_activeConnection != NULL && m_activeConnection->IsLocal());
@@ -141,16 +144,16 @@ CPlexConnectionPtr CPlexServer::GetLocalConnection() const
   return CPlexConnectionPtr();
 }
 
-void
-CPlexServer::MarkAsRefreshing()
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexServer::MarkAsRefreshing()
 {
   CSingleLock lk(m_serverLock);
   BOOST_FOREACH(CPlexConnectionPtr conn, m_connections)
     conn->SetRefreshed(false);
 }
 
-bool
-CPlexServer::MarkUpdateFinished(int connType)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexServer::MarkUpdateFinished(int connType)
 {
   vector<CPlexConnectionPtr> connsToRemove;
   
@@ -167,7 +170,8 @@ CPlexServer::MarkUpdateFinished(int connType)
 
   BOOST_FOREACH(CPlexConnectionPtr conn, connsToRemove)
   {
-    CLog::Log(LOGDEBUG, "CPlexServer::MarkUpdateFinished Removing connection for %s after update finished for type %d: %s", m_name.c_str(), connType, conn->toString().c_str());
+    CLog::Log(LOGDEBUG, "CPlexServer::MarkUpdateFinished Removing connection for %s after update finished for type %d: %s",
+              m_name.c_str(), connType, conn->toString().c_str());
     vector<CPlexConnectionPtr>::iterator it = find(m_connections.begin(), m_connections.end(), conn);
     m_connections.erase(it);
 
@@ -181,16 +185,16 @@ CPlexServer::MarkUpdateFinished(int connType)
   return m_connections.size() > 0;
 }
 
-bool
-ConnectionSortFunction(CPlexConnectionPtr c1, CPlexConnectionPtr c2)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool ConnectionSortFunction(CPlexConnectionPtr c1, CPlexConnectionPtr c2)
 {
   if (c1->IsLocal() && !c2->IsLocal()) return true;
   if (!c1->IsLocal() && c2->IsLocal()) return false;
   return c1->GetAddress().Get() < c2->GetAddress().Get();
 }
 
-bool
-CPlexServer::UpdateReachability()
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexServer::UpdateReachability()
 {
   if (m_connections.size() == 0)
     return false;
@@ -238,6 +242,7 @@ CPlexServer::UpdateReachability()
   return (bool)m_bestConnection;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexServer::CancelReachabilityTests()
 {
   CSingleLock lk(m_connTestThreadLock);
@@ -246,6 +251,7 @@ void CPlexServer::CancelReachabilityTests()
     thread->Cancel();
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CStdString CPlexServer::GetAccessToken() const
 {
   CSingleLock lk(m_serverLock);
@@ -257,6 +263,7 @@ CStdString CPlexServer::GetAccessToken() const
   return CStdString();
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexServer::OnConnectionTest(CPlexConnectionPtr conn, int state)
 {
   {
@@ -295,8 +302,8 @@ void CPlexServer::OnConnectionTest(CPlexConnectionPtr conn, int state)
   }
 }
 
-void
-CPlexServer::Merge(CPlexServerPtr otherServer)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexServer::Merge(CPlexServerPtr otherServer)
 {
   CSingleLock lk(m_serverLock);
 
@@ -330,26 +337,26 @@ CPlexServer::Merge(CPlexServerPtr otherServer)
   }
 }
 
-void
-CPlexServer::GetConnections(std::vector<CPlexConnectionPtr> &conns)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexServer::GetConnections(std::vector<CPlexConnectionPtr> &conns)
 {
   conns = m_connections;
 }
 
-int
-CPlexServer::GetNumConnections() const
+///////////////////////////////////////////////////////////////////////////////////////////////////
+int CPlexServer::GetNumConnections() const
 {
   return m_connections.size();
 }
 
-CPlexConnectionPtr
-CPlexServer::GetActiveConnection() const
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CPlexConnectionPtr CPlexServer::GetActiveConnection() const
 {
   return m_activeConnection;
 }
 
-CURL
-CPlexServer::GetActiveConnectionURL() const
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CURL CPlexServer::GetActiveConnectionURL() const
 {
   if (!m_activeConnection)
     return CURL();
@@ -357,8 +364,8 @@ CPlexServer::GetActiveConnectionURL() const
   return m_activeConnection->GetAddress();
 }
 
-CURL
-CPlexServer::BuildPlexURL(const CStdString& path) const
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CURL CPlexServer::BuildPlexURL(const CStdString& path) const
 {
   CURL url;
   url.SetProtocol("plexserver");
@@ -367,8 +374,8 @@ CPlexServer::BuildPlexURL(const CStdString& path) const
   return url.Get();
 }
 
-CURL
-CPlexServer::BuildURL(const CStdString &path, const CStdString &options) const
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CURL CPlexServer::BuildURL(const CStdString &path, const CStdString &options) const
 {
   CPlexConnectionPtr connection = m_activeConnection;
 
@@ -407,6 +414,7 @@ CPlexServer::BuildURL(const CStdString &path, const CStdString &options) const
   return url;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexServer::HasAuthToken() const
 {
   BOOST_FOREACH(CPlexConnectionPtr conn, m_connections)
@@ -417,6 +425,7 @@ bool CPlexServer::HasAuthToken() const
   return false;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 string CPlexServer::GetAnyToken() const
 {
   BOOST_FOREACH(CPlexConnectionPtr conn, m_connections)
@@ -427,8 +436,8 @@ string CPlexServer::GetAnyToken() const
   return string();
 }
 
-void
-CPlexServer::AddConnection(CPlexConnectionPtr connection)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexServer::AddConnection(CPlexConnectionPtr connection)
 {
   m_connections.push_back(connection);
 }
