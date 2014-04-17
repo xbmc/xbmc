@@ -127,6 +127,19 @@ std::vector<CStdString> CPosixMountProvider::GetDiskUsage()
   return result;
 }
 
+bool CPosixMountProvider::Eject(CStdString mountpath)
+{
+  // just go ahead and try to umount the disk
+  // if it does umount, life is good, if not, no loss.
+  std::string cmd = "umount \"" + mountpath + "\"";
+  int status = system(cmd.c_str());
+
+  if (status == 0)
+    return true;
+
+  return false;
+}
+
 bool CPosixMountProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 {
   VECSOURCES drives;
