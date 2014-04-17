@@ -194,6 +194,12 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &newItem, ePlexMedi
     if (timeline->getItem())
       g_directoryCache.ClearDirWithFile(timeline->getItem()->GetProperty("key").asString());
 
+    if (timeline->getItem()->GetProperty("playQueueID").asBoolean())
+    {
+      if (g_plexApplication.playQueueManager->current())
+        g_plexApplication.playQueueManager->current()->refreshCurrent();
+    }
+
     ResetTimeline(type);
   }
 }

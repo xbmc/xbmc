@@ -77,7 +77,7 @@ bool CPlexPlayQueueServer::refreshCurrent()
   path.Format("/playQueues/%d", id);
 
   CURL u = m_server->BuildPlexURL(path);
-  CPlexPlayQueueFetchJob* job = new CPlexPlayQueueFetchJob(u);
+  CPlexPlayQueueFetchJob* job = new CPlexPlayQueueFetchJob(u, false);
   job->m_caller = shared_from_this();
   CJobManager::GetInstance().AddJob(job, this);
   return true;

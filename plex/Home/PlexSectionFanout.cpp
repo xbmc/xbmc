@@ -77,10 +77,19 @@ void CPlexSectionFanout::ShowPlayQueue()
   m_fileLists.clear();
 
   CFileItemList* list = new CFileItemList;
-  list->Assign(pqList);
+  list->Copy(pqList, false);
+
+  int currentPos = g_playlistPlayer.GetCurrentSong();
+  if (currentPos == -1)
+    currentPos = pqList.GetProperty("playQueueSelectedItemOffset").asInteger(0);
+
+  for (int i = currentPos; i < pqList.Size(); i ++)
+    list->Add(pqList.Get(i));
+
   m_fileLists[listType] = list;
 
-  CLog::Log(LOGDEBUG, "CPlexSectionFanout::ShowPlayQueue showing playqueue %d with %d items", listType, list->Size());
+  CLog::Log(LOGDEBUG, "CPlexSectionFanout::ShowPlayQueue showing playqueue %d with %d items",
+            listType, list->Size());
 
   CGUIMessage msg(GUI_MSG_PLEX_SECTION_LOADED, WINDOW_HOME, 300, m_sectionType);
   msg.SetStringParam(m_url.Get());
