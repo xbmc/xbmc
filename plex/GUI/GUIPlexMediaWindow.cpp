@@ -929,7 +929,7 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
 
   UpdateSectionTitle();
 
-  /* try to restore section a bit better */
+  /* try to restore selection a bit better */
   int idx = 0;
   CURL u(m_vecItems->GetPath());
   if (m_lastSelectedIndex.find(u.GetUrlWithoutOptions()) != m_lastSelectedIndex.end())
