@@ -655,6 +655,11 @@ ePlexMediaType PlexUtils::GetMediaTypeFromItem(const CFileItem& item)
 {
   EPlexDirectoryType plexType = item.GetPlexDirectoryType();
 
+  // If we get a channel here we need to check the property channelType for
+  // the real type (video/music etc)
+  if (plexType == PLEX_DIR_TYPE_CHANNEL && item.HasProperty("channelType"))
+    plexType = (EPlexDirectoryType)item.GetProperty("channelType").asInteger();
+
   switch(plexType)
   {
     case PLEX_DIR_TYPE_TRACK:

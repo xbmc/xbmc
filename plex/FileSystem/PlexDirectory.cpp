@@ -558,6 +558,9 @@ bool CPlexDirectory::ReadMediaContainer(XML_ELEMENT* root, CFileItemList& mediaC
       boost::starts_with(m_url.GetFileName(), "music") ||
       boost::starts_with(m_url.GetFileName(), "photos"))
   {
+    // store the original value somewhere.
+    mediaContainer.SetProperty("channelType", (int)mediaContainer.GetPlexDirectoryType());
+
     if (mediaContainer.HasProperty("message"))
       mediaContainer.SetPlexDirectoryType(PLEX_DIR_TYPE_MESSAGE);
     else
