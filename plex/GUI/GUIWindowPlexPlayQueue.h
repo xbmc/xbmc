@@ -10,6 +10,9 @@ public:
   {
   }
 
+  bool OnSelect(int iItem);
+  bool OnMessage(CGUIMessage &message);
+
 };
 
 #endif // GUIWINDOWPLEXPLAYQUEUE_H

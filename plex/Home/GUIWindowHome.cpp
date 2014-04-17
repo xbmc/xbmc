@@ -484,8 +484,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       return true;
     }
 
-    case GUI_MSG_PLAYLIST_CHANGED:
-    case GUI_MSG_PLAYLISTPLAYER_CHANGED:
+    case GUI_MSG_PLEX_PLAYQUEUE_UPDATED:
     {
       RefreshSection("plexserver://playqueue/", CPlexSectionFanout::SECTION_TYPE_PLAYQUEUE);
       return true;
@@ -495,9 +494,6 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     case GUI_MSG_PLEX_SERVER_DATA_LOADED:
     case GUI_MSG_PLEX_SERVER_DATA_UNLOADED:
     case GUI_MSG_UPDATE:
-    case GUI_MSG_PLAYLISTPLAYER_STARTED:
-    case GUI_MSG_PLAYLISTPLAYER_STOPPED:
-    case GUI_MSG_PLAYBACK_STARTED:
     {
       UpdateSections();
       
