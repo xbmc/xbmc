@@ -1,5 +1,5 @@
 <window id="10094">
-	<defaultcontrol always="true">102</defaultcontrol>
+	<defaultcontrol>777</defaultcontrol>
 	<views>58</views>
 	<allowoverlay>no</allowoverlay>
 	<onload>Skin.SetString(SectionType,playqueue)</onload>
@@ -11,6 +11,8 @@
 		<include>BGOverlay</include>
 		<!-- List ID 58 -->
 		<include>List</include>
+		<!-- Item Full Info -->
+		<include>ListItemFullInfo</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 		<include>LeftSideMenuPreplay</include>
 		<!--<include>TopBar</include>-->
