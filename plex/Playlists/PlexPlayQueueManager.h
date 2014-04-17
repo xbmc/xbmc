@@ -32,6 +32,7 @@ class CPlexPlayQueueManager
   FRIEND_TEST(PlayQueueManagerTest, ReconcilePlayQueueChanges_basic);
   FRIEND_TEST(PlayQueueManagerTest, ReconcilePlayQueueChanges_noMatching);
   FRIEND_TEST(PlayQueueManagerTest, ReconcilePlayQueueChanges_gapInMiddle);
+  FRIEND_TEST(PlayQueueManagerTest, ReconcilePlayQueueChanges_largedataset);
 
 public:
   CPlexPlayQueueManager();
@@ -65,7 +66,7 @@ public:
 
 private:
   IPlexPlayQueueBasePtr getImpl(const CFileItem &container);
-  void reconcilePlayQueueChanges(int playlistType, const CFileItemList& list);
+  bool reconcilePlayQueueChanges(int playlistType, const CFileItemList& list);
   void saveCurrentPlayQueue(const CPlexServerPtr& server, const CFileItemList& list);
 
   IPlexPlayQueueBasePtr m_currentImpl;

@@ -9,6 +9,7 @@
 #include "Client/PlexServerManager.h"
 #include "PlexPlayQueueLocal.h"
 #include "settings/GUISettings.h"
+#include "guilib/GUIWindowManager.h"
 
 using namespace PLAYLIST;
 
@@ -78,7 +79,11 @@ void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool st
   if (g_playlistPlayer.GetCurrentPlaylist() == playlist && playlistItem &&
       playlistItem->GetProperty("playQueueID").asInteger() == pqID)
   {
-    reconcilePlayQueueChanges(type, list);
+    if (reconcilePlayQueueChanges(type, list))
+    {
+      CGUIMessage msg(GUI_MSG_PLEX_PLAYQUEUE_UPDATED, PLEX_PLAYQUEUE_MANAGER, 0);
+      g_windowManager.SendThreadMessage(msg);
+    }
   }
   else
   {
@@ -153,11 +158,12 @@ CStdString CPlexPlayQueueManager::getURIFromItem(const CFileItem& item, const CS
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexPlayQueueManager::reconcilePlayQueueChanges(int playlistType, const CFileItemList& list)
+bool CPlexPlayQueueManager::reconcilePlayQueueChanges(int playlistType, const CFileItemList& list)
 {
   bool firstCommon = false;
   int listCursor = 0;
   int playlistCursor = 0;
+  bool hasChanged = false;
 
   CPlayList playlist(g_playlistPlayer.GetPlaylist(playlistType));
 
@@ -183,10 +189,16 @@ void CPlexPlayQueueManager::reconcilePlayQueueChanges(int playlistType, const CF
       {
         // remove the item at in the playlist.
         g_playlistPlayer.Remove(playlistType, playlistCursor);
-        CLog::Log(
-        LOGDEBUG,
-        "CPlexPlayQueueManager::reconcilePlayQueueChanges removing item %d from playlist %d",
-        playlistCursor, playlistType);
+
+        // we also need to remove it from the list we are iterating to make sure the
+        // offsets match up
+        playlist.Remove(playlistCursor);
+
+        hasChanged = true;
+        CLog::Log(LOGDEBUG,
+                  "CPlexPlayQueueManager::reconcilePlayQueueChanges removing item %d from playlist %d",
+                  playlistCursor, playlistType);
+        continue;
       }
     }
     else if (playlistPath.empty())
@@ -194,7 +206,12 @@ void CPlexPlayQueueManager::reconcilePlayQueueChanges(int playlistType, const CF
       CLog::Log(LOGDEBUG,
                 "CPlexPlayQueueManager::reconcilePlayQueueChanges adding item %s to playlist %d",
                 listPath.c_str(), playlistType);
+
       g_playlistPlayer.Add(playlistType, list.Get(listCursor));
+      // add it to the local copy just to make sure they match up.
+      playlist.Add(list.Get(listCursor));
+
+      hasChanged = true;
       listCursor++;
     }
     else if (playlistPath == listPath)
@@ -204,10 +221,15 @@ void CPlexPlayQueueManager::reconcilePlayQueueChanges(int playlistType, const CF
     else
     {
       g_playlistPlayer.Remove(playlistType, playlistCursor);
+      playlist.Remove(playlistCursor);
+      hasChanged = true;
+      continue;
     }
 
     playlistCursor++;
   }
+
+  return hasChanged;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

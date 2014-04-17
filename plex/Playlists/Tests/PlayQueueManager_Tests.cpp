@@ -173,6 +173,38 @@ TEST_F(PlayQueueManagerTest, ReconcilePlayQueueChanges_gapInMiddle)
   EXPECT_STREQ(playlist[2]->GetProperty("unprocessed_key").asString().c_str(), "4");
 }
 
+TEST_F(PlayQueueManagerTest, ReconcilePlayQueueChanges_largedataset)
+{
+  CFileItemList list;
+  for (int i = 0; i < 100; i ++)
+  {
+    CStdString name;
+    name.Format("%d", i);
+    newItem(list, name);
+  }
+
+  g_playlistPlayer.Add(PLAYLIST_MUSIC, list);
+
+  list.Clear();
+
+  for (int i = 60; i < 160; i ++)
+  {
+    CStdString name;
+    name.Format("%d", i);
+    newItem(list, name);
+  }
+
+  manager.reconcilePlayQueueChanges(PLAYLIST_MUSIC, list);
+  PLAYLIST::CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+  EXPECT_EQ(playlist.size(), 100);
+  for (int i = 60; i < 160; i++)
+  {
+    CStdString name;
+    name.Format("%d", i);
+    EXPECT_STREQ(playlist[i - 60]->GetProperty("unprocessed_key").asString().c_str(), name);
+  }
+}
+
 TEST_F(PlayQueueManagerTest, GetPlaylistFromType_basic)
 {
   EXPECT_EQ(manager.getPlaylistFromType(PLEX_MEDIA_TYPE_MUSIC), PLAYLIST_MUSIC);
