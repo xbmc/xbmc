@@ -11509,6 +11509,14 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "用于给资料库加入音乐电视的默认刮削器。"
 
+msgctxt "#36201"
+msgid "Settings for PVR/Live TV features."
+msgstr "设置 PVR或直播电视功能"
+
+msgctxt "#36202"
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "PVR/直播电视功能常用设置功能区。"
+
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr "启用 XBMC 的个人视频录像机（PVR）功能。需要至少安装有一个 PVR 插件。"

@@ -5481,6 +5481,10 @@ msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "停止擷取CD"
 
+msgctxt "#14101"
+msgid "Acceleration"
+msgstr "加速"
+
 msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "無法取得的來源"
@@ -8597,6 +8601,10 @@ msgctxt "#20411"
 msgid "Flatten"
 msgstr "連續播放"
 
+msgctxt "#20412"
+msgid "Flatten TV show seasons"
+msgstr "自動跨季連續播放電視劇"
+
 msgctxt "#20413"
 msgid "Get fanart"
 msgstr "取得 Fanart"
@@ -11013,6 +11021,10 @@ msgctxt "#36101"
 msgid "Change the look and feel of the user interface."
 msgstr "改變使用者介面的視覺風格。"
 
+msgctxt "#36102"
+msgid "Category containing all Skin related settings."
+msgstr "此分類包含全部和佈景主題相關的設定。"
+
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
 msgstr "修改特定佈景主題的設定，可用的選項依所使用的佈景主題而定"
@@ -11025,6 +11037,10 @@ msgctxt "#36106"
 msgid "Change the colours of your selected skin."
 msgstr "改變你所選佈景主題的顏色設定"
 
+msgctxt "#36108"
+msgid "Resize the view of the user interface."
+msgstr "重新調整使用者介面的外觀。"
+
 msgctxt "#36109"
 msgid "Select the media window that XBMC displays on startup."
 msgstr "選擇XBMC啟動時要顯示的媒體視窗"
@@ -11036,6 +11052,10 @@ msgstr "關閉此選項可移除RSS新聞跑馬燈"
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "編輯 RSS 來源。"
+
+msgctxt "#36113"
+msgid "Category containing all locale/regional settings."
+msgstr "此分類包含全部和語言、地區相關的設定。"
 
 msgctxt "#36114"
 msgid "Chooses the language of the user interface."
@@ -11065,6 +11085,10 @@ msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
 msgstr "當影片提供多種語言的字幕時，選取預設的字幕"
 
+msgctxt "#36121"
+msgid "Category containing settings related to how file lists are displayed."
+msgstr "此分類包含如何顯示檔案列表的設定。"
+
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
 msgstr "在列表中顯示(..)用以回到上層資料夾"
@@ -11073,6 +11097,10 @@ msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr "顯示媒體檔的副檔名，比如說：「浪人情歌.mp3」會被簡化顯示為「浪人情歌」"
 
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
+msgstr "排序時忽略某些單字。如 'The Simpsons' 會被當作 'Simpsons' 來排序。"
+
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "允許在使用者介面中透過內容選單 (例如鍵盤上的 C 可以開啟這個選單) 刪除或重新命名檔案。"
@@ -11080,6 +11108,10 @@ msgstr "允許在使用者介面中透過內容選單 (例如鍵盤上的 C 可�
 msgctxt "#36127"
 msgid "Show hidden files and directories when listing files."
 msgstr "列出檔案時顯示隱藏的檔案和目錄。"
+
+msgctxt "#36128"
+msgid "Category containing all screensaver settings."
+msgstr "此分類包含全部螢幕保護程式相關的設定。"
 
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
@@ -11117,6 +11149,10 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "無可用資訊。"
 
+msgctxt "#36139"
+msgid "Category containing the settings for how the video library is handled."
+msgstr "此分類包含如何處理影片資料庫的設定。"
+
 msgctxt "#36140"
 msgid "Enable the video library."
 msgstr "啟用影片資料庫。"
@@ -11153,6 +11189,10 @@ msgctxt "#36150"
 msgid "Import a XML file into the Video Library database."
 msgstr "匯入一個 XML 檔案到影片資料庫中。"
 
+msgctxt "#36151"
+msgid "Category containing settings for how video playback is handled."
+msgstr "此分類包含如何處理影片播放的設定。"
+
 msgctxt "#36152"
 msgid "Enable automatic playback of the next file in the list."
 msgstr "播放結束後自動播放清單中的下一個檔案。"
@@ -11160,6 +11200,34 @@ msgstr "播放結束後自動播放清單中的下一個檔案。"
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "調整處理和播放影片的方法。"
+
+msgctxt "#36156"
+msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
+msgstr "啟用影片檔案 VAAPI 硬體解碼，主要使用在 Intel 和部份 AMD 的圖形處理器。"
+
+msgctxt "#36158"
+msgid "Enable DXVA2 hardware decoding of video files."
+msgstr "啟用影片檔案 DXVA2 硬體解碼。"
+
+msgctxt "#36159"
+msgid "Enable CrystalHD decoding of video files."
+msgstr "啟用影片檔案 CrystalHD 硬體解碼。"
+
+msgctxt "#36160"
+msgid "Enable VDA hardware decoding of video files."
+msgstr "啟用影片檔案 VDA 硬體解碼。"
+
+msgctxt "#36161"
+msgid "Enable OpenMax hardware decoding of video files."
+msgstr "啟用影片檔案 OpenMax 硬體解碼。"
+
+msgctxt "#36162"
+msgid "Enable VideoToolbox hardware decoding of video files."
+msgstr "啟用影片檔案 VideoToolbox 硬體解碼。"
+
+msgctxt "#36163"
+msgid "Enable decoding of video files using pixel buffer objects."
+msgstr "啟用影片檔案使用像素緩衝對象 (PBO) 解碼。"
 
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
@@ -11177,6 +11245,10 @@ msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "選擇 4:3 影片在寬螢幕播放時的放大等級。"
 
+msgctxt "#36173"
+msgid "Enable upscaling using VDPAU."
+msgstr "使用 VDPAU 放大"
+
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
 msgstr "觀賞電視直播時啟用電傳文訊"
@@ -11184,6 +11256,10 @@ msgstr "觀賞電視直播時啟用電傳文訊"
 msgctxt "#36175"
 msgid "Scale Teletext to 4:3 ratio."
 msgstr "將電傳文訊比例調為 4:3。"
+
+msgctxt "#36176"
+msgid "Category containing settings for how video file lists are handled."
+msgstr "此分類包含如何處理影片檔案列表的設定。"
 
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
@@ -11193,9 +11269,33 @@ msgctxt "#36181"
 msgid "No info available yet."
 msgstr "無可用資訊。"
 
+msgctxt "#36184"
+msgid "Category containing settings for how subtitles are handled."
+msgstr "此分類包含如何處理字幕的設定。"
+
 msgctxt "#36185"
 msgid "Set the font type to be used for subtitles."
 msgstr "設定字幕使用的字型。"
+
+msgctxt "#36186"
+msgid "Set the font size to be used for subtitles."
+msgstr "設定字幕使用的字型大小。"
+
+msgctxt "#36187"
+msgid "Set the font style to be used for subtitles."
+msgstr "設定字幕使用的字型樣式。"
+
+msgctxt "#36188"
+msgid "Set the font colour to be used for subtitles."
+msgstr "設定字幕使用的字型顏色。"
+
+msgctxt "#36189"
+msgid "Set the font character set to be used for subtitles."
+msgstr "設定字幕使用的字元集。"
+
+msgctxt "#36190"
+msgid "Override ASS/SSA subtitles fonts."
+msgstr "覆蓋 ASS/SSA 字幕的字型。"
 
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
@@ -11204,6 +11304,10 @@ msgstr "自訂存放字幕的資料夾。它可以是一個分享資料夾。"
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr "字幕在螢幕中的位置。"
+
+msgctxt "#36193"
+msgid "Category containing settings for how DVDs are handled."
+msgstr "此分類包含如何處理 DVD 的設定。"
 
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
@@ -11257,6 +11361,14 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "刪除頻道/電子節目表資料庫，然後從後段重新匯入。"
 
+msgctxt "#36212"
+msgid "Display programming information when changing channels, such as the current TV show."
+msgstr "當切換頻道時顯示節目資訊，如正在播放的節目。"
+
+msgctxt "#36213"
+msgid "Hide the programming information automatically after a few seconds, defined below."
+msgstr "在下面定義的秒數之後自動隱藏節目資訊。"
+
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
 msgstr "要用來儲存頻道圖示的資料夾。"
@@ -11268,6 +11380,14 @@ msgstr "掃描缺少的頻道圖示"
 msgctxt "#36219"
 msgid "Default electronic programming guide window to show."
 msgstr "預設要顯示的電子節目表。"
+
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends."
+msgstr "從後端匯入電子節目表的天數。"
+
+msgctxt "#36221"
+msgid "Time between EPG data imports from backends."
+msgstr "從後端匯入電子節目表的時間間隔。"
 
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
@@ -11281,6 +11401,10 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "當找不到頻道的電子節目表時隱藏 \"找不到資訊\" 的標籤。"
 
+msgctxt "#36228"
+msgid "Continue with the last viewed channel on startup."
+msgstr "啟動時切換到上次收看的頻道。"
+
 msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "在編碼資訊中顯示訊號品質資訊 (如果附加元件和後端都支援的話)。"
@@ -11288,6 +11412,10 @@ msgstr "在編碼資訊中顯示訊號品質資訊 (如果附加元件和後端�
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "在全螢幕模式按下數字鍵時跳到 1 秒之內所輸入的頻道號碼。"
+
+msgctxt "#36243"
+msgid "The command to execute."
+msgstr "要執行的命令。"
 
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
@@ -11337,6 +11465,10 @@ msgctxt "#36263"
 msgid "Import a XML file into the Music Library database."
 msgstr "匯入一個 XML 檔到你的音樂資料庫。"
 
+msgctxt "#36264"
+msgid "Category containing settings for how music playback is handled."
+msgstr "此分類包含如何處理音樂播放的設定。"
+
 msgctxt "#36267"
 msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
 msgstr "XBMC 會讀取音樂檔案中經過如 MP3Gain 等程式編碼過的回放增益資訊，並依此來調整輸出的音量。"
@@ -11345,9 +11477,17 @@ msgctxt "#36270"
 msgid "Reduce the volume of the file if clipping will occur."
 msgstr "如果會發生 Clipping 的話降低檔案的音量。"
 
+msgctxt "#36272"
+msgid "Allow crossfading to occur when both tracks are from the same album."
+msgstr "當兩首歌在同一張專輯時允許交叉淡出淡入效果。"
+
 msgctxt "#36273"
 msgid "Select the visualisation that will be displayed while listening to music."
 msgstr "選擇播放音樂時要顯示的視覺效果。"
+
+msgctxt "#36282"
+msgid "Category containing settings for how CDs are handled."
+msgstr "此分類包含如何處理 CD 的設定。"
 
 msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
@@ -11376,6 +11516,10 @@ msgstr "FLAC 壓縮等級，預設為 5。"
 msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr "擷取完成後自動退出光碟。"
+
+msgctxt "#36292"
+msgid "Category containing the settings for how karaoke is handled."
+msgstr "此分類包含如何處理卡啦 OK 的設定。"
 
 msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
@@ -11409,6 +11553,10 @@ msgctxt "#36303"
 msgid "No info available yet."
 msgstr "無可用資訊。"
 
+msgctxt "#36305"
+msgid "Category containing settings for how picture file lists are handled."
+msgstr "此分類包含如何處理圖片檔案列表的設定。"
+
 msgctxt "#36306"
 msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
 msgstr "如果 EXIF 資訊存在 (日期、時間、使用的相機等等) 的話將會被顯示。"
@@ -11425,6 +11573,10 @@ msgctxt "#36310"
 msgid "No info available yet."
 msgstr "無可用資訊。"
 
+msgctxt "#36311"
+msgid "Category containing settings for how picture slideshows are handled."
+msgstr "此分類包含如何處理圖片幻燈片秀的設定。"
+
 msgctxt "#36312"
 msgid "Select the amount of time that each image is displayed in a slideshow."
 msgstr "選擇幻燈片秀每張圖片顯示的時間。"
@@ -11437,6 +11589,10 @@ msgctxt "#36314"
 msgid "View slideshow images in a random order."
 msgstr "幻燈片秀以亂序的方式顯示圖片。"
 
+msgctxt "#36316"
+msgid "Category containing settings for how weather addons are handled."
+msgstr "此分類包含如何處理天氣附加元件的設定。"
+
 msgctxt "#36317"
 msgid "Select up to three locations for which the weather can be displayed."
 msgstr "選擇要顯示天氣資訊的地區，最多三個。"
@@ -11445,13 +11601,37 @@ msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
 msgstr "指定預設的天氣資訊來源。附加元件管理員中有更多選項。"
 
+msgctxt "#36320"
+msgid "Category containing settings used for all services."
+msgstr "此分類包含全部服務相關的設定。"
+
 msgctxt "#36321"
 msgid "Display name of the XBMC installation when using various network services."
 msgstr "當使用各種網路服務時，用來表示這個 XBMC 的名稱。"
 
+msgctxt "#36322"
+msgid "Category containing settings for how the UPnP service is handled."
+msgstr "此分類包含如何處理 UPnP 服務的設定。"
+
+msgctxt "#36323"
+msgid "Enable the UPnP server. This allows you to stream media to a UPnP client."
+msgstr "啟用 UPnP 伺服器。這將允許你串流媒體到 UPnP 客戶端。"
+
 msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
 msgstr "當手動或自動發生資料庫更新時，通知 UPnP 客戶端。"
+
+msgctxt "#36325"
+msgid "Enable the UPnP client. This allows you to stream media from any UPnP server with a control point and control playback from that server."
+msgstr "啟用 UPnP 客戶端。這將允許你從任何 UPnP 伺服器串流媒體且包含播放控制的功能。"
+
+msgctxt "#36326"
+msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from XBMC."
+msgstr "啟用 UPnP 控制點。這將允許你從任何 UPnP 伺服器串流媒體且可以從 XBMC 做播放控制。"
+
+msgctxt "#36327"
+msgid "Category containing settings for how the webserver service is handled."
+msgstr "此分類包含如何處理網頁伺服器服務的設定。"
 
 msgctxt "#36328"
 msgid "Enable remote users to control XBMC through the built-in webserver."
@@ -11473,6 +11653,10 @@ msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "從附加元件管理員選擇一個已安裝的網頁介面。"
 
+msgctxt "#36333"
+msgid "Category containing settings for how the remote control service is handled."
+msgstr "此分類包含如何處理遠端遙控服務的設定。"
+
 msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
 msgstr "允許這個電腦上的程式透過網路介面或者 JSON-RPC 介面協定控制 XBMC。"
@@ -11480,6 +11664,10 @@ msgstr "允許這個電腦上的程式透過網路介面或者 JSON-RPC 介面�
 msgctxt "#36335"
 msgid "Define the remote control port."
 msgstr "設定遠端遙控的連接埠。"
+
+msgctxt "#36336"
+msgid "Define the remote control port range."
+msgstr "設定遠端遙控的連接埠範圍。"
 
 msgctxt "#36337"
 msgid "Define the maximum number of clients that can connect."
@@ -11497,6 +11685,10 @@ msgctxt "#36340"
 msgid "Continuous repeat delay (ms)."
 msgstr "連續重複延遲(毫秒)"
 
+msgctxt "#36341"
+msgid "Category containing settings for how the zeroconf network discovery service is handled, required for AirPlay."
+msgstr "此分類包含如何處理 AirPlay 所需要的 zeroconf 網路發現服務的設定。"
+
 msgctxt "#36342"
 msgid "Allows applications on the network to discover XBMC's running services."
 msgstr "允許網路上的應用程式發現 XBMC 正在執行的服務。"
@@ -11512,6 +11704,10 @@ msgstr "啟用 AirPlay 密碼保護"
 msgctxt "#36345"
 msgid "Sets the AirPlay password."
 msgstr "設定 AirPlay 的密碼。"
+
+msgctxt "#36346"
+msgid "Category containing settings for how the SMB Client (samba) service is handled."
+msgstr "此分類包含如何處理 SMB 客戶端 (samba) 服務的設定。"
 
 msgctxt "#36347"
 msgid "If a WINS server is running on the network, enter its IP address here. Otherwise, leave blank."
@@ -11537,6 +11733,14 @@ msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
 msgstr "在多螢幕設置中，用來顯示 XBMC 以外的螢幕會變全黑。"
 
+msgctxt "#36359"
+msgid "Use limited colour range (16-235) instead of full colour range (0-255). Limited range should be used if your display is a regular HDMI TV and doesn't have a PC or other mode to display full range colour, however if your display is a PC monitor then leave this disabled to get proper blacks."
+msgstr "使用受限的顏色範圍 (16-235) 而非使用完整的顏色範圍(0-255)。如果你的顯示器是普通的 HDMI 電視而且沒有沒有 PC 或其他模式可以顯示完整的顏色範圍請啟用受限的顏色範圍。如果你的顯示器是電腦螢幕的話，請停用這個選項以顯示真正的黑色。"
+
+msgctxt "#36360"
+msgid "Category containing settings for how audio output is handled."
+msgstr "此分類包含如何處理音效輸出的設定。"
+
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "加強被下降混合成雙聲道的 AC3 串流"
@@ -11561,9 +11765,25 @@ msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "如果你的接收器有能力解碼 DTS-HD 串流則選擇這個選項。"
 
+msgctxt "#36371"
+msgid "Select the device to be used for playback of audio that has been decoded such as mp3."
+msgstr "選擇要播放解碼後音效的裝置。"
+
+msgctxt "#36374"
+msgid "Category containing settings for how input devices are handled."
+msgstr "此分類包含輸入裝置如何被處理的設定。"
+
+msgctxt "#36375"
+msgid "Configure any attached peripheral devices."
+msgstr "設定已連接的週邊裝置。"
+
 msgctxt "#36378"
 msgid "Use a joystick to control XBMC."
 msgstr "使用遊戲手把控制 XBMC。"
+
+msgctxt "#36379"
+msgid "Category containing settings for internet access."
+msgstr "此分類包含網際網路連接的設定。"
 
 msgctxt "#36380"
 msgid "If your internet connection uses a proxy, configure it here."
@@ -11589,6 +11809,14 @@ msgctxt "#36385"
 msgid "Configure the proxy server password."
 msgstr "設定代理伺服器的密碼。"
 
+msgctxt "#36387"
+msgid "Category containing settings for power saving."
+msgstr "此分類包含省電的設定。"
+
+msgctxt "#36388"
+msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected."
+msgstr "閒置時關閉顯示器。當電視偵測不到訊號時，會自"
+
 msgctxt "#36389"
 msgid "Define how long XBMC should idle before shutting down."
 msgstr "設定 XBMC 要在閒置多久的時間之後關閉。"
@@ -11596,6 +11824,10 @@ msgstr "設定 XBMC 要在閒置多久的時間之後關閉。"
 msgctxt "#36390"
 msgid "Define what action XBMC should do when it has been idle for a long period of time."
 msgstr "設定 XBMC 在長時間閒置時要執行的動作。"
+
+msgctxt "#36391"
+msgid "Category containing settings for debugging functions."
+msgstr "此分類包含除錯功能的設定。"
 
 msgctxt "#36392"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
@@ -11609,17 +11841,25 @@ msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
 msgstr "指定要被包含進除錯訊息的額外的函式庫。"
 
+msgctxt "#36395"
+msgid "Category containing settings for the master lock function."
+msgstr "此分類包含管理員密碼的設定。"
+
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
 msgstr "設定管理員密碼。"
 
 msgctxt "#36397"
 msgid "If enabled, the master lock code is required to unlock XBMC on startup."
-msgstr "如果啟用的話，當 XBMC 啟動時會要求輸入主密碼。"
+msgstr "如果啟用的話，當 XBMC 啟動時會要求輸入管理員密碼。"
 
 msgctxt "#36398"
 msgid "Define the maximum number of retries before XBMC is closed down."
 msgstr "設定最多重試次數，達到這個次數 XBMC 將會關閉。"
+
+msgctxt "#36399"
+msgid "Category containing settings for the cache function."
+msgstr "此分類包含快取功能的設定。"
 
 msgctxt "#36400"
 msgid "Enable cache for playback of Video, Audio or DVDs from hard disk."
@@ -11821,6 +12061,10 @@ msgctxt "#36537"
 msgid "Set playback mode of stereoscopic 3D videos."
 msgstr "設定 3D 立體影片的播放模式。"
 
+msgctxt "#36540"
+msgid "The preferred stereoscopic 3D mode."
+msgstr "偏好的 3D 立體模式。"
+
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
 msgstr "允許 AirPlay 客戶端控制音量。"
@@ -11841,9 +12085,29 @@ msgctxt "#36545"
 msgid "Subtitle stereoscopic depth"
 msgstr "字幕立體效果深度"
 
+msgctxt "#36546"
+msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
+msgstr "設定 3D 立體影片中字幕的視覺深度。愈高的值字幕感覺會愈接近觀眾。"
+
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
 msgstr "限制使用者介面的解析度以節省記憶體。這不會影響影片播放。使用 1080 為不限制。需要重新啟動 XBMC。"
+
+msgctxt "#36600"
+msgid "Category containing the settings for how the music library is handled."
+msgstr "此分類包含如何處理音樂資料庫的設定。"
+
+msgctxt "#36601"
+msgid "Category containing settings for how music file lists are handled."
+msgstr "此分類包含如何處理音樂檔案列表的設定。"
+
+msgctxt "#36602"
+msgid "Category containing settings for how the AirPlay service is handled."
+msgstr "此分類包含如何處理 AirPlay 服務的設定。"
+
+msgctxt "#36603"
+msgid "Category containing settings for how video output is handled."
+msgstr "此分類包含如何處理影像輸出的設定。"
 
 msgctxt "#37001"
 msgid "(Directors Comments)"
@@ -11876,6 +12140,10 @@ msgstr "雙聲音輸出"
 msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "下降混合時加強中間聲道"
+
+msgctxt "#37019"
+msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen."
+msgstr "在全螢幕時啟用如 printscreen、alt-tab 和音量控制等系統按鍵。"
 
 msgctxt "#37021"
 msgid "Set GUI resolution limit"

@@ -11509,6 +11509,14 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Numatytasis skreperis naudojamas pridedant muzikinius vaizdo įrašus į jūsų biblioteką."
 
+msgctxt "#36201"
+msgid "Settings for PVR/Live TV features."
+msgstr "PVR/Live TV funkcijų nustatymai."
+
+msgctxt "#36202"
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Kategorija, -Bendras PVR/Live TV funkcijų nustatymas."
+
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr "Įjungti Personal Video Recorder (PVR) funkcijos paleidžiant XBMC. Tai reikalauja, kad bent vienas PVR priedas būtų įdiegtas."

@@ -8349,6 +8349,10 @@ msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "การกระทำนี้จะคืนกลับค่าเดิมของการปรับเทียบ สำหรับ %s"
 
+msgctxt "#20327"
+msgid "to its default values."
+msgstr "ไปยังค่าเริ่มต้น."
+
 msgctxt "#20328"
 msgid "Browse for destination"
 msgstr "เรียกดูเป้าหมาย"
@@ -8681,6 +8685,10 @@ msgctxt "#20411"
 msgid "Flatten"
 msgstr "เรียบง่าย"
 
+msgctxt "#20412"
+msgid "Flatten TV show seasons"
+msgstr "รวม ฤดูของรายการทีวี"
+
 msgctxt "#20413"
 msgid "Get fanart"
 msgstr "รับ Fanart"
@@ -8980,6 +8988,10 @@ msgstr "ไดเร็กทอรี่ภาพยนต์ & คำบรร
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
 msgstr "แทนที่แบบอักษรคำบรรยาย ASS / SSA"
+
+msgctxt "#21369"
+msgid "Enable mouse and touch screen support"
+msgstr "เปิดใช้งาน การรองรับเมาส์และหน้าจอสัมผัส"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -9336,6 +9348,10 @@ msgstr "จัดกลุ่ม โดย"
 msgctxt "#21459"
 msgid "mixed"
 msgstr "ผสม"
+
+msgctxt "#21460"
+msgid "Subtitle position on screen"
+msgstr "ตำแหน่งของคำบรรยายบนหน้าจอ"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -10237,6 +10253,10 @@ msgctxt "#24105"
 msgid "Pause when searching for subtitles"
 msgstr "หยุดชั่วขณะ เมื่อทำการต้นหาคำบรรยาย"
 
+msgctxt "#24106"
+msgid "Specify where downloaded subtitles should be saved, the same location as the video or a custom location."
+msgstr "กำหนดตำแหน่งบันทึกคำบรรยายที่ถูกดาวน์โหลด, ในที่เดียวกับวิดีโอ หรือตำแหน่งที่กำหนดเอง."
+
 msgctxt "#24107"
 msgid "Searching for subtitles ..."
 msgstr "ทำการค้นหา คำบรรยาย"
@@ -10269,13 +10289,25 @@ msgctxt "#24114"
 msgid "No subtitle services installed"
 msgstr "ไม่มีบริการคำบรรยายติดตั้งอยู่"
 
+msgctxt "#24115"
+msgid "Subtitle storage location"
+msgstr "ตำแหน่งของแหล่งเก็บคำบรรยาย"
+
 msgctxt "#24116"
 msgid "Default TV Service"
 msgstr "ค่าเริ่มต้น บริการทีวี"
 
+msgctxt "#24117"
+msgid "Select service that will be used as default to search for TV Show subtitles."
+msgstr "เลือกบริการที่จะใช้เป็นค่าเริ่มต้น ในการค้นหาคำบรรยายสำหรับรายการทีวี."
+
 msgctxt "#24118"
 msgid "Default Movie Service"
 msgstr "ค่าเริ่มต้น บริการภาพยนตร์"
+
+msgctxt "#24119"
+msgid "Select service that will be used as default to search for Movie subtitles."
+msgstr "เลือกบริการที่จะใช้เป็นค่าเริ่มต้น ในการค้นหาคำบรรยายสำหรับภาพยนตร์."
 
 msgctxt "#24120"
 msgid "Manual search string"
@@ -10288,6 +10320,18 @@ msgstr "ป้อนคำค้น"
 msgctxt "#24122"
 msgid "Update all"
 msgstr "อัพเดททั้งหมด"
+
+msgctxt "#24123"
+msgid "Pause the current video while searching for subtitles and resume once the subtitle is available."
+msgstr "หยุดวิดีโอชั่วคราว ในขณะที่กำลังค้นหาคำบรรยาย และเล่นต่ออีกครั้ง เมื่อมีคำบรรยาย."
+
+msgctxt "#24124"
+msgid "Next to the video"
+msgstr "ถัดไปยังวิดีโอ"
+
+msgctxt "#24125"
+msgid "Custom location"
+msgstr "ตำแหน่งที่กำหนดเอง"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -11053,6 +11097,18 @@ msgctxt "#36042"
 msgid "Use limited colour range (16-235)"
 msgstr "ใช้เฉดสีแบบจำกัด (16-235)"
 
+msgctxt "#36101"
+msgid "Change the look and feel of the user interface."
+msgstr "เปลี่ยนรูปลักษณ์และอารมณ์ ของส่วนติดต่อผู้ใช้."
+
+msgctxt "#36102"
+msgid "Category containing all Skin related settings."
+msgstr "หมวดหมู่ที่ประกอบด้วย การปรับแต่งทั้งหมดที่เกี่ยวกับสกิน."
+
+msgctxt "#36103"
+msgid "Select the skin for the user interface. This will define the look and feel of XBMC."
+msgstr "เลือกหน้าตาของส่วนติดต่อผู้ใช้. ซึ่งจะกำหนดรูปลักษณ์และอารมณ์ของ XBMC."
+
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
 msgstr "เปลี่ยนการตั้งค่าเฉพาะของสกิน. ตัวเลือกที่มีจะขึ้นอยู่กับสกินที่ใช้อยู่."
@@ -11065,9 +11121,21 @@ msgctxt "#36106"
 msgid "Change the colours of your selected skin."
 msgstr "เปลี่ยนสีของสกินที่คุณเลือกใช้."
 
+msgctxt "#36107"
+msgid "Choose the fonts displayed in the user interface. The font sets are configured by your skin."
+msgstr "เลือกแบบอักษรที่แสดงในส่วนติดต่อผู้ใช้. ซึ่งชุดตัวอักษรจะถูกกำหนดค่าโดยสกินของคุณ."
+
+msgctxt "#36108"
+msgid "Resize the view of the user interface."
+msgstr "ปรับขนาดมุมมองของส่วนติดต่อผู้ใช้."
+
 msgctxt "#36109"
 msgid "Select the media window that XBMC displays on startup."
 msgstr "เลือกหน้าต่างของสื่อ ที่ XBMC จะแสดงในตอนเริ่มระบบ."
+
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the user interface."
+msgstr "เลือกหรือปิด รูปแบบเสียงที่ใช้ในส่วนติดต่อผู้ใช้."
 
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
@@ -11077,9 +11145,21 @@ msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "แก้ไข RSS feeds."
 
+msgctxt "#36113"
+msgid "Category containing all locale/regional settings."
+msgstr "หมวดหมู่ที่ประกอบด้วย การตั้งค่าทั้งหมดของ ท้องถิ่น/ภูมิภาค."
+
+msgctxt "#36114"
+msgid "Chooses the language of the user interface."
+msgstr "เลือกภาษาของส่วนติดต่อผู้ใช้."
+
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
 msgstr "เลือกรูปแบบของอุณหภูมิ, เวลาและวันที่. ตัวเลือกที่มีขึ้นอยู่กับภาษาที่เลือกไว้."
+
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the user interface."
+msgstr "เลือกชุดอักขระที่จะนำไปใช้ สำหรับการแสดงผลตัวอักษรในส่วนติดต่อผู้ใช้."
 
 msgctxt "#36117"
 msgid "Select country location."
@@ -11096,6 +11176,10 @@ msgstr "เลือกแทร็คเสียงเริ่มต้น �
 msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
 msgstr "เลือกคำบรรยายเริ่มต้น เมื่อมีภาษาที่แตกต่างกัน"
+
+msgctxt "#36121"
+msgid "Category containing settings related to how file lists are displayed."
+msgstr "หมวดหมู่ที่ประกอบด้วย การตั้งต่าที่เกียวข้องในวิธีการแสดงรายการแฟ้ม."
 
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."

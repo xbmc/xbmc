@@ -43,7 +43,7 @@ msgstr "XBMC SVN"
 
 msgctxt "#7"
 msgid "File manager"
-msgstr "Archivos"
+msgstr "Gestor de archivos"
 
 msgctxt "#8"
 msgid "Weather"
@@ -391,7 +391,7 @@ msgstr "Confirmar mover"
 
 msgctxt "#122"
 msgid "Confirm file delete?"
-msgstr "Confirmar eliminacion"
+msgstr "Confirmar eliminación"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -491,7 +491,7 @@ msgstr "Tipo:"
 
 msgctxt "#147"
 msgid "Static"
-msgstr "IP estática"
+msgstr "Estática"
 
 msgctxt "#148"
 msgid "DHCP"
@@ -647,7 +647,7 @@ msgstr "Seleccionar todo"
 
 msgctxt "#189"
 msgid "Scanning media info"
-msgstr "Obteniendo información de medios"
+msgstr "Analizando información de medios"
 
 msgctxt "#190"
 msgid "Save"
@@ -775,7 +775,7 @@ msgstr "Probar patrones..."
 
 msgctxt "#227"
 msgid "Lookup audio CD track names from freedb.org"
-msgstr "Consultar CDs de audio en Internet"
+msgstr "Consultar títulos de pistas de CDs en freedb.org"
 
 msgctxt "#228"
 msgid "Shuffle playlist on load"
@@ -839,7 +839,7 @@ msgstr "Ventana"
 
 msgctxt "#243"
 msgid "Refresh Rate"
-msgstr "Frecuencia de actualización"
+msgstr "Frecuencia de refresco"
 
 msgctxt "#244"
 msgid "Full screen"
@@ -847,7 +847,7 @@ msgstr "Pantalla completa"
 
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
-msgstr "Ajustando tamaño: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Píxeles: %2.2f:1)  (VShift: %2.2f)"
+msgstr "Ajustando tamaño: (%i,%i)->(%i,%i) (Zoom x%2.2f) RA:%2.2f:1 (Píxeles: %2.2f:1)  (DespV: %2.2f)"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -971,7 +971,7 @@ msgstr "Mueva la flecha para variar la cantidad de imagen perdida por los lados"
 
 msgctxt "#277"
 msgid "Adjust the bar to change the subtitles position"
-msgstr "Modifique la barra para variar la posición de los subtítulos"
+msgstr "Ajuste la barra para cambiar la posición de los subtítulos"
 
 msgctxt "#278"
 msgid "Adjust the rectangle so it is perfectly square"
@@ -991,7 +991,7 @@ msgstr "Por favor, compruebe los archivos .xml"
 
 msgctxt "#282"
 msgid "Found %i items"
-msgstr "Encontrados %i elementos"
+msgstr "%i elementos encontrados"
 
 msgctxt "#283"
 msgid "Search results"
@@ -1007,7 +1007,7 @@ msgstr "Idioma de audio preferido"
 
 msgctxt "#286"
 msgid "Preferred subtitle language"
-msgstr "Idioma de subtitulos preferido"
+msgstr "Idioma de subtítulos preferido"
 
 msgctxt "#287"
 msgid "Subtitles"
@@ -1095,7 +1095,7 @@ msgstr "(0=auto)"
 
 msgctxt "#313"
 msgid "Cleaning database"
-msgstr "Limpieza de la base de datos"
+msgstr "Limpiando la base de datos"
 
 msgctxt "#314"
 msgid "Preparing..."
@@ -1111,7 +1111,7 @@ msgstr "Buscando canciones..."
 
 msgctxt "#317"
 msgid "Cleaned database successfully"
-msgstr "Limpieza completada con éxito"
+msgstr "Base de datos limpiada con éxito"
 
 msgctxt "#318"
 msgid "Cleaning songs..."
@@ -1175,11 +1175,11 @@ msgstr "Error comprimiendo la base de datos"
 
 msgctxt "#333"
 msgid "Do you want to clean the library?"
-msgstr "¿Quieres limpiar la base de datos de la colección?"
+msgstr "¿Quieres limpiar la colección?"
 
 msgctxt "#334"
 msgid "Clean library..."
-msgstr "Limpiar la base de datos de la colección..."
+msgstr "Limpiar la colección..."
 
 msgctxt "#335"
 msgid "Start"
@@ -1239,7 +1239,7 @@ msgstr "Habilitar passthrough"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
-msgstr "Receptor compatible con True-HD"
+msgstr "Receptor compatible con TrueHD"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1327,11 +1327,11 @@ msgstr "Tormenta"
 
 msgctxt "#371"
 msgid "Partly"
-msgstr "En parte"
+msgstr "Parcialmente"
 
 msgctxt "#372"
 msgid "Mostly"
-msgstr "Sobre todo"
+msgstr "Mayormente"
 
 msgctxt "#373"
 msgid "Sunny"
@@ -1427,7 +1427,7 @@ msgstr "Bruma"
 
 msgctxt "#396"
 msgid "Select location"
-msgstr "Seleccione un lugar"
+msgstr "Seleccione ubicación"
 
 msgctxt "#397"
 msgid "Refresh time"
@@ -1527,7 +1527,7 @@ msgstr "Eliminar información del álbum"
 
 msgctxt "#423"
 msgid "Delete CD information"
-msgstr "Eliminar información CDDB"
+msgstr "Eliminar la información del CD"
 
 msgctxt "#424"
 msgid "Select"
@@ -1539,7 +1539,7 @@ msgstr "No se encontró información del álbum."
 
 msgctxt "#426"
 msgid "No CD information found"
-msgstr "No se encontró información CDDB."
+msgstr "No se encontró información del CD"
 
 msgctxt "#427"
 msgid "Disc"
@@ -1707,7 +1707,7 @@ msgstr "Tipo"
 
 msgctxt "#468"
 msgid "Move the bar to change the OSD position"
-msgstr "Mueva la barra para variar la posición del OSD"
+msgstr "Mueva la barra para cambiar la posición del OSD"
 
 msgctxt "#469"
 msgid "OSD position"
@@ -1767,7 +1767,7 @@ msgstr "Repetir uno"
 
 msgctxt "#488"
 msgid "Repeat folder"
-msgstr "Repetir directorio"
+msgstr "Repetir carpeta"
 
 msgctxt "#489"
 msgid "Play the next song automatically"
@@ -11508,6 +11508,14 @@ msgstr "Selecciona la fuente de información por defecto para los programas de t
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Scraper por defecto para agregar vídeos musicales a la biblioteca."
+
+msgctxt "#36201"
+msgid "Settings for PVR/Live TV features."
+msgstr "Configuración de PVR/televisión en vivo"
+
+msgctxt "#36202"
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Categoría de la configuración general de las funciones de PVR/TV en vivo."
 
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."

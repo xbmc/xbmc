@@ -1,0 +1,1866 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Armenian (http://www.transifex.com/projects/p/xbmc-main/language/hy/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hy\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#0"
+msgid "Programs"
+msgstr "Ծրագրեր"
+
+msgctxt "#1"
+msgid "Pictures"
+msgstr "Նկարներ"
+
+msgctxt "#2"
+msgid "Music"
+msgstr "Երգ-Երաժշտություն"
+
+msgctxt "#3"
+msgid "Videos"
+msgstr "Տեսանյութեր"
+
+msgctxt "#4"
+msgid "TV-Guide"
+msgstr "TV-գիդ"
+
+msgctxt "#5"
+msgid "Settings"
+msgstr "Կարգավորումներ"
+
+msgctxt "#6"
+msgid "XBMC SVN"
+msgstr "XBMC SVN"
+
+msgctxt "#7"
+msgid "File manager"
+msgstr "Ֆայլերի մենեջեր"
+
+msgctxt "#8"
+msgid "Weather"
+msgstr "Եղանակ"
+
+msgctxt "#9"
+msgid "xbmc media center"
+msgstr "XBMC մեդիա կենտրոն"
+
+msgctxt "#11"
+msgid "Monday"
+msgstr "Երկուշաբթի"
+
+msgctxt "#12"
+msgid "Tuesday"
+msgstr "Երեքշաբթի"
+
+msgctxt "#13"
+msgid "Wednesday"
+msgstr "Չորեքշաբթի"
+
+msgctxt "#14"
+msgid "Thursday"
+msgstr "Հինգշաբթի"
+
+msgctxt "#15"
+msgid "Friday"
+msgstr "Ուրբաթ"
+
+msgctxt "#16"
+msgid "Saturday"
+msgstr "Շաբաթ"
+
+msgctxt "#17"
+msgid "Sunday"
+msgstr "Կիրակի"
+
+msgctxt "#21"
+msgid "January"
+msgstr "Հունվար"
+
+msgctxt "#22"
+msgid "February"
+msgstr "Փետրվար"
+
+msgctxt "#23"
+msgid "March"
+msgstr "Մարտ"
+
+msgctxt "#24"
+msgid "April"
+msgstr "Ապրիլ"
+
+msgctxt "#25"
+msgid "May"
+msgstr "Մայիս"
+
+msgctxt "#26"
+msgid "June"
+msgstr "Հունիս"
+
+msgctxt "#27"
+msgid "July"
+msgstr "Հուլիս"
+
+msgctxt "#28"
+msgid "August"
+msgstr "Օգոստոս"
+
+msgctxt "#29"
+msgid "September"
+msgstr "Սեպտեմբեր"
+
+msgctxt "#30"
+msgid "October"
+msgstr "Հոկտեմբեր"
+
+msgctxt "#31"
+msgid "November"
+msgstr "Նոյեմբեր"
+
+msgctxt "#32"
+msgid "December"
+msgstr "Դեկտեմբեր"
+
+msgctxt "#41"
+msgid "Mon"
+msgstr "Երկ"
+
+msgctxt "#42"
+msgid "Tue"
+msgstr "Երք"
+
+msgctxt "#43"
+msgid "Wed"
+msgstr "Չրք"
+
+msgctxt "#44"
+msgid "Thu"
+msgstr "Հնգ"
+
+msgctxt "#45"
+msgid "Fri"
+msgstr "Ուրբ"
+
+msgctxt "#46"
+msgid "Sat"
+msgstr "Շբթ"
+
+msgctxt "#47"
+msgid "Sun"
+msgstr "Կիր"
+
+msgctxt "#51"
+msgid "Jan"
+msgstr "Հուն"
+
+msgctxt "#52"
+msgid "Feb"
+msgstr "Փետ"
+
+msgctxt "#53"
+msgid "Mar"
+msgstr "Մարտ"
+
+msgctxt "#54"
+msgid "Apr"
+msgstr "Ապր"
+
+msgctxt "#55"
+msgid "May"
+msgstr "Մայ"
+
+msgctxt "#56"
+msgid "Jun"
+msgstr "Հուն"
+
+msgctxt "#57"
+msgid "Jul"
+msgstr "Հուլ"
+
+msgctxt "#58"
+msgid "Aug"
+msgstr "Օգոս"
+
+msgctxt "#59"
+msgid "Sep"
+msgstr "Սեպտ"
+
+msgctxt "#60"
+msgid "Oct"
+msgstr "Հոկտ"
+
+msgctxt "#61"
+msgid "Nov"
+msgstr "Նոյեմ"
+
+msgctxt "#62"
+msgid "Dec"
+msgstr "Դեկ"
+
+msgctxt "#88"
+msgid "South"
+msgstr "Հարավ"
+
+msgctxt "#89"
+msgid "North"
+msgstr "Հյուսիս"
+
+msgctxt "#90"
+msgid "West"
+msgstr "Արևմուտք"
+
+msgctxt "#91"
+msgid "East"
+msgstr "Արևելք"
+
+msgctxt "#92"
+msgid "Variable"
+msgstr "Փոփոխական"
+
+msgctxt "#98"
+msgid "View: Auto"
+msgstr "Տեսք. Ավտոմատ"
+
+msgctxt "#99"
+msgid "View: Auto big"
+msgstr "Տեսք. Ավտոմատ մեծ"
+
+msgctxt "#100"
+msgid "View: Icons"
+msgstr "Տեսք. Նշաններ"
+
+msgctxt "#101"
+msgid "View: List"
+msgstr "Տեսք. Ցուցակ"
+
+msgctxt "#102"
+msgid "Scan"
+msgstr "Զննում"
+
+msgctxt "#103"
+msgid "Sort by: Name"
+msgstr "Դասավորել ըստ՝ Անվան"
+
+msgctxt "#104"
+msgid "Sort by: Date"
+msgstr "Դասավորել ըստ՝ Ժամանակի"
+
+msgctxt "#105"
+msgid "Sort by: Size"
+msgstr "Դասավորել ըստ՝ Չափի"
+
+msgctxt "#106"
+msgid "No"
+msgstr "Ոչ"
+
+msgctxt "#107"
+msgid "Yes"
+msgstr "Այո"
+
+msgctxt "#108"
+msgid "Slideshow"
+msgstr "Հաջորդական ցուցադրում"
+
+msgctxt "#109"
+msgid "Create thumbs"
+msgstr "Ստեղծել էսքիզ"
+
+msgctxt "#110"
+msgid "Create thumbnails"
+msgstr "Ստեղծել էսքիզ"
+
+msgctxt "#111"
+msgid "Shortcuts"
+msgstr "Հղումներ"
+
+msgctxt "#112"
+msgid "Paused"
+msgstr "Կանգնեցված"
+
+msgctxt "#113"
+msgid "Update failed"
+msgstr "Թարմեցումը ձախողվեց"
+
+msgctxt "#114"
+msgid "Installation failed"
+msgstr "Ծրագրի ներդրումը ձախողվեց"
+
+msgctxt "#115"
+msgid "Copy"
+msgstr "Պատճեն"
+
+msgctxt "#116"
+msgid "Move"
+msgstr "Տեղափոխում"
+
+msgctxt "#117"
+msgid "Delete"
+msgstr "Ջնջել"
+
+msgctxt "#118"
+msgid "Rename"
+msgstr "Վերանվանել"
+
+msgctxt "#119"
+msgid "New folder"
+msgstr "Նոր թղթապանակ"
+
+msgctxt "#120"
+msgid "Confirm file copy"
+msgstr "Հաստատել ֆայլի պատճենը"
+
+msgctxt "#121"
+msgid "Confirm file move"
+msgstr "Հաստատել ֆայլի տեղափոխումը"
+
+msgctxt "#122"
+msgid "Confirm file delete?"
+msgstr "Հաստատե՞լ ֆայլի ջնջումը"
+
+msgctxt "#123"
+msgid "Copy these files?"
+msgstr "Պատճենե՞լ այս ֆայլերը"
+
+msgctxt "#124"
+msgid "Move these files?"
+msgstr "Տեղափոխե՞լ այս ֆայլերը"
+
+msgctxt "#125"
+msgid "Delete these files? - Deleting files cannot be undone!"
+msgstr "Ջնջե՞լ այս ֆայլերը: - Ջնջված ֆայլերը չեն վերականգնվում:"
+
+msgctxt "#126"
+msgid "Status"
+msgstr "Վիճակ"
+
+msgctxt "#127"
+msgid "Objects"
+msgstr "Առարկա"
+
+msgctxt "#128"
+msgid "General"
+msgstr "Գլխավոր"
+
+msgctxt "#129"
+msgid "Slideshow"
+msgstr "Հաջորդական ցուցադրում"
+
+msgctxt "#130"
+msgid "System info"
+msgstr "Համակարգի մանրամասները"
+
+msgctxt "#131"
+msgid "Display"
+msgstr "Էկրան"
+
+msgctxt "#132"
+msgid "Albums"
+msgstr "Ալբոմներ"
+
+msgctxt "#133"
+msgid "Artists"
+msgstr "Կատարողներ"
+
+msgctxt "#134"
+msgid "Songs"
+msgstr "Կատարումներ"
+
+msgctxt "#135"
+msgid "Genres"
+msgstr "Ժանրեր"
+
+msgctxt "#136"
+msgid "Playlists"
+msgstr "Նվագացանկ"
+
+msgctxt "#137"
+msgid "Search"
+msgstr "Որոնել"
+
+msgctxt "#138"
+msgid "System Information"
+msgstr "Համակարգի տվյալները"
+
+msgctxt "#139"
+msgid "Temperatures:"
+msgstr "Ջերմաստիճան."
+
+msgctxt "#140"
+msgid "CPU:"
+msgstr "CPU:"
+
+msgctxt "#141"
+msgid "GPU:"
+msgstr "GPU:"
+
+msgctxt "#142"
+msgid "Time:"
+msgstr "Ժամանակ."
+
+msgctxt "#143"
+msgid "Current:"
+msgstr "Ընթացիկ."
+
+msgctxt "#144"
+msgid "Build:"
+msgstr "Կառուցել."
+
+msgctxt "#145"
+msgid "Network:"
+msgstr "Ցանց."
+
+msgctxt "#146"
+msgid "Type:"
+msgstr "Տեսակ."
+
+msgctxt "#147"
+msgid "Static"
+msgstr "Անփոփոխ"
+
+msgctxt "#148"
+msgid "DHCP"
+msgstr "DHCP"
+
+msgctxt "#149"
+msgid "MAC address"
+msgstr "MAC հասցե"
+
+msgctxt "#150"
+msgid "IP address"
+msgstr "IP հասցե"
+
+msgctxt "#151"
+msgid "Link:"
+msgstr "Միացում."
+
+msgctxt "#152"
+msgid "Half duplex"
+msgstr "Կես դուպլեքս"
+
+msgctxt "#153"
+msgid "Full duplex"
+msgstr "Դուպլեքս"
+
+msgctxt "#154"
+msgid "Storage"
+msgstr "Շտեմարան"
+
+msgctxt "#155"
+msgid "Drive"
+msgstr "Սկավառակ"
+
+msgctxt "#156"
+msgid "Free"
+msgstr "Ազատ"
+
+msgctxt "#157"
+msgid "Video"
+msgstr "Տեսադարան"
+
+msgctxt "#158"
+msgid "Free memory"
+msgstr "Ազատ հիշողություն"
+
+msgctxt "#159"
+msgid "No link"
+msgstr "Չկա հղում"
+
+msgctxt "#160"
+msgid "Free"
+msgstr "Ազատ"
+
+msgctxt "#161"
+msgid "Unavailable"
+msgstr "Անհասանելի"
+
+msgctxt "#162"
+msgid "Tray open"
+msgstr "Կրիչը բաց է"
+
+msgctxt "#163"
+msgid "Reading"
+msgstr "Կարդում է"
+
+msgctxt "#164"
+msgid "No disc"
+msgstr "Սկավառակը բացակայում է"
+
+msgctxt "#165"
+msgid "Disc present"
+msgstr "Սկավառակը առկա է"
+
+msgctxt "#166"
+msgid "Skin"
+msgstr "Տեսք"
+
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr "Ընդհատել ֆայլի գործողությունները"
+
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%ներ-%ներ"
+
+msgctxt "#169"
+msgid "Resolution"
+msgstr "Լուծում"
+
+msgctxt "#170"
+msgid "Adjust display refresh rate to match video"
+msgstr "Համատեղել էկրանի թարմեցման հաճախականությունը տեսանյութի հետ"
+
+msgctxt "#172"
+msgid "Release date"
+msgstr "Թողարկման ամսաթիվը"
+
+msgctxt "#173"
+msgid "Display 4:3 videos as"
+msgstr "Ցուցադրել 4:3 տեսանյութերը որպես"
+
+msgctxt "#175"
+msgid "Moods"
+msgstr "Տոնայնությունը"
+
+msgctxt "#176"
+msgid "Styles"
+msgstr "Ոճ"
+
+msgctxt "#179"
+msgid "Song"
+msgstr "Երգ"
+
+msgctxt "#180"
+msgid "Duration"
+msgstr "Տևողություն"
+
+msgctxt "#181"
+msgid "Select album"
+msgstr "Ընտրել ալբոմը"
+
+msgctxt "#182"
+msgid "Tracks"
+msgstr "Ձայնուղի"
+
+msgctxt "#183"
+msgid "Review"
+msgstr "Տեսություն"
+
+msgctxt "#184"
+msgid "Refresh"
+msgstr "Թարմեցնել"
+
+msgctxt "#185"
+msgid "Searching album"
+msgstr "Ալբոմի որոնում"
+
+msgctxt "#186"
+msgid "OK"
+msgstr "Լավ"
+
+msgctxt "#187"
+msgid "No albums found!"
+msgstr "Ալբոմներ չեն գտնվել"
+
+msgctxt "#188"
+msgid "Select all"
+msgstr "Նշել բոլորը"
+
+msgctxt "#189"
+msgid "Scanning media info"
+msgstr "Զննել կրիչը"
+
+msgctxt "#190"
+msgid "Save"
+msgstr "Հիշել"
+
+msgctxt "#191"
+msgid "Shuffle"
+msgstr "Խառնել"
+
+msgctxt "#192"
+msgid "Clear"
+msgstr "Մաքրել"
+
+msgctxt "#193"
+msgid "Scan"
+msgstr "Զննում"
+
+msgctxt "#194"
+msgid "Searching..."
+msgstr "Որոնում է..."
+
+msgctxt "#195"
+msgid "No info found!"
+msgstr "Ոչինչ չգտնվեց"
+
+msgctxt "#196"
+msgid "Select movie:"
+msgstr "Ընտրել ֆիլմը."
+
+msgctxt "#197"
+msgid "Querying %s info"
+msgstr "Հարցման %ների մանրամասներ"
+
+msgctxt "#198"
+msgid "Loading movie details"
+msgstr "Բեռնել ֆիլմի մանրամասները"
+
+msgctxt "#202"
+msgid "Tagline"
+msgstr "Կարգախոս"
+
+msgctxt "#203"
+msgid "Plot outline"
+msgstr "Շրջագիծ"
+
+msgctxt "#205"
+msgid "Votes"
+msgstr "Քվեներ"
+
+msgctxt "#207"
+msgid "Plot"
+msgstr "Տարածք"
+
+msgctxt "#208"
+msgid "Play"
+msgstr "Նվագարկել"
+
+msgctxt "#209"
+msgid "Next"
+msgstr "Հաջորդ"
+
+msgctxt "#210"
+msgid "Previous"
+msgstr "Նախորդ"
+
+msgctxt "#213"
+msgid "Calibrate user interface..."
+msgstr "Հարմարավետության տեսքի շտկում"
+
+msgctxt "#214"
+msgid "Video calibration..."
+msgstr "Տեսանյութի շտկում"
+
+msgctxt "#216"
+msgid "Zoom amount"
+msgstr "Քանակի ավելացում"
+
+msgctxt "#219"
+msgid "Please insert disc"
+msgstr "Խնդրում ենք, դնել սկավառակը"
+
+msgctxt "#221"
+msgid "Network is not connected"
+msgstr "Ցանցը միացված չէ"
+
+msgctxt "#222"
+msgid "Cancel"
+msgstr "Չեղարկել"
+
+msgctxt "#224"
+msgid "Speed"
+msgstr "Արագություն"
+
+msgctxt "#225"
+msgid "Vertical Shift"
+msgstr "Ուղղահայաց փոփոխում"
+
+msgctxt "#226"
+msgid "Test patterns..."
+msgstr "Փորձարկման հրահանգներ"
+
+msgctxt "#230"
+msgid "Video filters"
+msgstr "Տեսանյութերի զտիչներ"
+
+msgctxt "#231"
+msgid "None"
+msgstr "Ոչինչ"
+
+msgctxt "#232"
+msgid "Point"
+msgstr "Կետ"
+
+msgctxt "#233"
+msgid "Linear"
+msgstr "Գծային"
+
+msgctxt "#234"
+msgid "Anisotropic"
+msgstr "Անիզոտրոպ"
+
+msgctxt "#235"
+msgid "Quincunx"
+msgstr "Շախմատաձև"
+
+msgctxt "#236"
+msgid "Gaussian cubic"
+msgstr "Գաուսյան խորանարդ"
+
+msgctxt "#237"
+msgid "Minification"
+msgstr "Փոքրացում"
+
+msgctxt "#238"
+msgid "Magnification"
+msgstr "Մեծացում"
+
+msgctxt "#239"
+msgid "Clear playlist on finish"
+msgstr "Ավարտին մաքրել ցանկը"
+
+msgctxt "#241"
+msgid "Full Screen #%d"
+msgstr "Ամբոզջ էկրանով #%ն"
+
+msgctxt "#242"
+msgid "Windowed"
+msgstr "Պատուհանային"
+
+msgctxt "#243"
+msgid "Refresh Rate"
+msgstr "Թարմեցման հաճախականություն"
+
+msgctxt "#244"
+msgid "Full screen"
+msgstr "Ամբողջ էկրանով"
+
+msgctxt "#245"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Շտկում. (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+
+msgctxt "#248"
+msgid "Language"
+msgstr "Լեզու"
+
+msgctxt "#249"
+msgid "Music"
+msgstr "Երաժշտություն"
+
+msgctxt "#253"
+msgid "Number of channels"
+msgstr "Ալիքների քանակը"
+
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "DTS ընդունակ ընդունիչ"
+
+msgctxt "#255"
+msgid "CDDB"
+msgstr "CDDB"
+
+msgctxt "#257"
+msgid "Error"
+msgstr "Սխալ"
+
+msgctxt "#259"
+msgid "Opening"
+msgstr "Բացում"
+
+msgctxt "#261"
+msgid "Waiting for start..."
+msgstr "Սկսելու սպասում..."
+
+msgctxt "#263"
+msgid "Allow control of XBMC via HTTP"
+msgstr "Թույլ տալ XBMC վերահսկողությունը HTTP միջոցով"
+
+msgctxt "#264"
+msgid "Record"
+msgstr "Ձայնագրում"
+
+msgctxt "#265"
+msgid "Stop Rec."
+msgstr "Կանգնեցնել ձայնագրումը"
+
+msgctxt "#266"
+msgid "Sort by: Track"
+msgstr "Դասավորել ըստ՝ ձայնուղու"
+
+msgctxt "#267"
+msgid "Sort by: Time"
+msgstr "Դասավորել ըստ՝ ժամանակի"
+
+msgctxt "#268"
+msgid "Sort by: Title"
+msgstr "Դասավորել ըստ՝ անվանակարգի"
+
+msgctxt "#269"
+msgid "Sort by: Artist"
+msgstr "Դասավորել ըստ՝ կատարողների"
+
+msgctxt "#270"
+msgid "Sort by: Album"
+msgstr "Դասավորել ըստ՝ ալբոմների"
+
+msgctxt "#271"
+msgid "Top 100"
+msgstr "Լավագույն 100"
+
+msgctxt "#274"
+msgid "Subtitle positioning"
+msgstr "Ենթավերնագրերի դիրքը"
+
+msgctxt "#277"
+msgid "Adjust the bar to change the subtitles position"
+msgstr "Կարգավորել սանդղակը՝ ենթավերնագրերի դիրքը փոխելու համար"
+
+msgctxt "#278"
+msgid "Adjust the rectangle so it is perfectly square"
+msgstr "Կարգավորել ուղղանկյունը, որ դառնա կատարյալ քառակուսի"
+
+msgctxt "#279"
+msgid "Unable to load settings"
+msgstr "Հնարավոր չէ բեռնել կարգավորումները"
+
+msgctxt "#280"
+msgid "Using default settings"
+msgstr "Օգտագործել սկզբնական կարգավորումները"
+
+msgctxt "#281"
+msgid "Please check the XML files"
+msgstr "Խնդրում ենք ստուգել XML ֆայլերը"
+
+msgctxt "#282"
+msgid "Found %i items"
+msgstr "Գտնվել է %-ի նյութ"
+
+msgctxt "#283"
+msgid "Search results"
+msgstr "Որոնել արդյունքները"
+
+msgctxt "#284"
+msgid "No results found"
+msgstr "Ոչինչ չգտնվեց"
+
+msgctxt "#285"
+msgid "Preferred audio language"
+msgstr "Նախընտրելի ձայնային լեզու"
+
+msgctxt "#286"
+msgid "Preferred subtitle language"
+msgstr "Նախընտրելի ենթավերնագրերի լեզու"
+
+msgctxt "#287"
+msgid "Subtitles"
+msgstr "Ենթավերնագրեր"
+
+msgctxt "#288"
+msgid "Font"
+msgstr "Տառաշար"
+
+msgctxt "#289"
+msgid "Size"
+msgstr "Չափս"
+
+msgctxt "#291"
+msgid "Video"
+msgstr "Տեսադարան"
+
+msgctxt "#292"
+msgid "Audio"
+msgstr "Ձայնադարան"
+
+msgctxt "#293"
+msgid "Browse for subtitles"
+msgstr "Ենթավերնագրերի թերթում"
+
+msgctxt "#294"
+msgid "Create bookmark"
+msgstr "Ստեղծել էջանշան"
+
+msgctxt "#296"
+msgid "Clear bookmarks"
+msgstr "Ջնջել էջանշանները"
+
+msgctxt "#297"
+msgid "Audio offset"
+msgstr "Ձայնային շեղում"
+
+msgctxt "#298"
+msgid "Bookmarks"
+msgstr "Էջանշաններ"
+
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "MP1 ընդունակ ընդունիչ"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "MP2 ընդունակ ընդունիչ"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "MP3 ընդունակ ընդունիչ"
+
+msgctxt "#303"
+msgid "Delay"
+msgstr "Ուշացում"
+
+msgctxt "#304"
+msgid "Language"
+msgstr "Լեզու"
+
+msgctxt "#305"
+msgid "Enabled"
+msgstr "Միացված"
+
+msgctxt "#308"
+msgid "Original stream's language"
+msgstr "Հոսքի բնօրինակ լեզուն"
+
+msgctxt "#312"
+msgid "(0=auto)"
+msgstr "(0=auto)"
+
+msgctxt "#313"
+msgid "Cleaning database"
+msgstr "Տվյալներ շտեմարանի մաքրում"
+
+msgctxt "#314"
+msgid "Preparing..."
+msgstr "Նախապատրաստում..."
+
+msgctxt "#315"
+msgid "Database error"
+msgstr "Տվյալների շտեմարանի սխալ"
+
+msgctxt "#316"
+msgid "Searching songs..."
+msgstr "Երգերի որոնում"
+
+msgctxt "#317"
+msgid "Cleaned database successfully"
+msgstr "Տվյալների շտեմարանը հաջողությամբ մաքրվեց"
+
+msgctxt "#318"
+msgid "Cleaning songs..."
+msgstr "Երգի մաքրում..."
+
+msgctxt "#319"
+msgid "Error cleaning songs"
+msgstr "Երգի մաքրման սխալ"
+
+msgctxt "#320"
+msgid "Cleaning artists..."
+msgstr "Կատարողների մաքրում..."
+
+msgctxt "#321"
+msgid "Error cleaning artists"
+msgstr "Կատարողների մաքրման սխալ"
+
+msgctxt "#322"
+msgid "Cleaning genres..."
+msgstr "Ժանրերի մաքրում..."
+
+msgctxt "#323"
+msgid "Error cleaning genres"
+msgstr "Ժանրերի մաքրման սխալ"
+
+msgctxt "#324"
+msgid "Cleaning paths..."
+msgstr "Ուղիների մաքրում..."
+
+msgctxt "#325"
+msgid "Error cleaning paths"
+msgstr "Ուղիների մաքրման սխալ"
+
+msgctxt "#326"
+msgid "Cleaning albums..."
+msgstr "Ալբոմների մաքրում..."
+
+msgctxt "#327"
+msgid "Error cleaning albums"
+msgstr "Ալբոմների մաքրման սխալ"
+
+msgctxt "#328"
+msgid "Writing changes..."
+msgstr "Գրելու փոփոխություններ..."
+
+msgctxt "#329"
+msgid "Error writing changes"
+msgstr "Գրելու փոփոխությունների սխալ"
+
+msgctxt "#330"
+msgid "This may take some time..."
+msgstr "Դա կարող է տևել որոշ ժամանակ..."
+
+msgctxt "#331"
+msgid "Compressing database..."
+msgstr "Տվյալների շտեմարանի սեղմում..."
+
+msgctxt "#332"
+msgid "Error compressing database"
+msgstr "Տվյալների շտեմարանի սեղման սխալ"
+
+msgctxt "#333"
+msgid "Do you want to clean the library?"
+msgstr "Ցանկանու՞մ եք մաքրել դրադարանը"
+
+msgctxt "#334"
+msgid "Clean library..."
+msgstr "Գրադարանի մաքրում..."
+
+msgctxt "#335"
+msgid "Start"
+msgstr "Սկիզբ"
+
+msgctxt "#340"
+msgid "Various artists"
+msgstr "Տարբեր կատարողներ"
+
+msgctxt "#341"
+msgid "Play disc"
+msgstr "Նվագարկել սկավառակը"
+
+msgctxt "#342"
+msgid "Movies"
+msgstr "Ֆիլմեր"
+
+msgctxt "#343"
+msgid "Adjust framerate"
+msgstr "Կադրերի հաճախականության կարգավորում"
+
+msgctxt "#344"
+msgid "Actors"
+msgstr "Դերասաններ"
+
+msgctxt "#345"
+msgid "Year"
+msgstr "Տարեթիվ"
+
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "DTS-HD ընդունակ ընդունիչ"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "TrueHD ընդունակ ընդունիչ"
+
+msgctxt "#350"
+msgid "Programs"
+msgstr "Ծրագրեր"
+
+msgctxt "#351"
+msgid "Off"
+msgstr "Անջատել"
+
+msgctxt "#352"
+msgid "Dim"
+msgstr "Խավար"
+
+msgctxt "#353"
+msgid "Black"
+msgstr "Սև"
+
+msgctxt "#354"
+msgid "Matrix trails"
+msgstr "Մատրիքս արահետներ"
+
+msgctxt "#357"
+msgid "Shutdown function timer"
+msgstr "Ժամանակի անջատման ֆունկցիա"
+
+msgctxt "#358"
+msgid "All albums"
+msgstr "Բոլոր ալբոմները"
+
+msgctxt "#359"
+msgid "Recently added albums"
+msgstr "Վերջերս ավելացված ալբոմներ"
+
+msgctxt "#363"
+msgid "Sort by: File"
+msgstr "Դասավորել ըստ՝ Ֆայլերի"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Dolby Digital (AC3) ընդունակ ընդունիչ"
+
+msgctxt "#365"
+msgid "Sort by: Name"
+msgstr "Դասավորել ըստ՝ Անվան"
+
+msgctxt "#366"
+msgid "Sort by: Year"
+msgstr "Դասավորել ըստ՝ Տարիների"
+
+msgctxt "#367"
+msgid "Sort by: Rating"
+msgstr "Դասավորել ըստ՝ Ճանաչվածության"
+
+msgctxt "#369"
+msgid "Title"
+msgstr "Վերնագիր"
+
+msgctxt "#373"
+msgid "Sunny"
+msgstr "Արևոտ"
+
+msgctxt "#374"
+msgid "Cloudy"
+msgstr "Ամպոտ"
+
+msgctxt "#375"
+msgid "Snow"
+msgstr "Ձյուն"
+
+msgctxt "#376"
+msgid "Rain"
+msgstr "Անձրև"
+
+msgctxt "#377"
+msgid "Light"
+msgstr "Թեթև"
+
+msgctxt "#378"
+msgid "AM"
+msgstr "AM"
+
+msgctxt "#379"
+msgid "PM"
+msgstr "PM"
+
+msgctxt "#381"
+msgid "Few"
+msgstr "Միքանի"
+
+msgctxt "#382"
+msgid "Scattered"
+msgstr "Ցրված"
+
+msgctxt "#383"
+msgid "Wind"
+msgstr "Քամի"
+
+msgctxt "#384"
+msgid "Strong"
+msgstr "Խիստ"
+
+msgctxt "#386"
+msgid "Clear"
+msgstr "Մաքրել"
+
+msgctxt "#387"
+msgid "Clouds"
+msgstr "Ամպեր"
+
+msgctxt "#388"
+msgid "Early"
+msgstr "Վաղ"
+
+msgctxt "#391"
+msgid "Low"
+msgstr "Ցածր"
+
+msgctxt "#392"
+msgid "Medium"
+msgstr "Միջին"
+
+msgctxt "#393"
+msgid "High"
+msgstr "Բարձր"
+
+msgctxt "#394"
+msgid "Fog"
+msgstr "Մառախուղ"
+
+msgctxt "#395"
+msgid "Haze"
+msgstr "Մշուշ"
+
+msgctxt "#396"
+msgid "Select location"
+msgstr "Նշել տեղայնքը"
+
+msgctxt "#397"
+msgid "Refresh time"
+msgstr "Թարմենցնել ժամանակը"
+
+msgctxt "#398"
+msgid "Temperature units"
+msgstr "Ջերմաստիճանի չափանիշ"
+
+msgctxt "#399"
+msgid "Speed units"
+msgstr "Արագության միավոր"
+
+msgctxt "#400"
+msgid "Weather"
+msgstr "Եղանակ"
+
+msgctxt "#401"
+msgid "Temp"
+msgstr "Ջերմաստիճան"
+
+msgctxt "#402"
+msgid "Feels like"
+msgstr "Զգացմունքներով"
+
+msgctxt "#403"
+msgid "UV index"
+msgstr "UV ինդեքս"
+
+msgctxt "#404"
+msgid "Wind"
+msgstr "Քամի"
+
+msgctxt "#405"
+msgid "Dew point"
+msgstr "Հալման ջերմաստիճան"
+
+msgctxt "#406"
+msgid "Humidity"
+msgstr "Խոնավություն"
+
+msgctxt "#409"
+msgid "Defaults"
+msgstr "Նախնական"
+
+msgctxt "#410"
+msgid "Accessing weather service"
+msgstr "Եղանակի տեսություն հարցում"
+
+msgctxt "#411"
+msgid "Getting weather for:"
+msgstr "Եղանակի հարցում."
+
+msgctxt "#412"
+msgid "Unable to get weather data"
+msgstr "Հնարավոր չէ ստանալ եղանակի տեսություն"
+
+msgctxt "#413"
+msgid "Manual"
+msgstr "Ձեռքով"
+
+msgctxt "#414"
+msgid "No review for this album"
+msgstr "Այս ալբոմի համար կարծիք չկա"
+
+msgctxt "#415"
+msgid "Downloading thumbnail..."
+msgstr "Մանրանկարների ներբեռնում"
+
+msgctxt "#416"
+msgid "Not available"
+msgstr "Հասանելի չէ"
+
+msgctxt "#417"
+msgid "View: Big icons"
+msgstr "Ցուցադրել: Մեծ նշաններով"
+
+msgctxt "#418"
+msgid "Low"
+msgstr "Ցածր"
+
+msgctxt "#419"
+msgid "High"
+msgstr "Բարձր"
+
+msgctxt "#422"
+msgid "Delete album info"
+msgstr "Ջնջել ալբոմի տեղեկություններ"
+
+msgctxt "#423"
+msgid "Delete CD information"
+msgstr "Ջնջել CD տեղեկություններ"
+
+msgctxt "#424"
+msgid "Select"
+msgstr "Նշել"
+
+msgctxt "#425"
+msgid "No album information found"
+msgstr "Չկա տեղեկություն ալբոմի մասին"
+
+msgctxt "#426"
+msgid "No CD information found"
+msgstr "Չկա տեղեկություն CD-ի մասին"
+
+msgctxt "#427"
+msgid "Disc"
+msgstr "Սկավառակ"
+
+msgctxt "#428"
+msgid "Insert correct CD/DVD"
+msgstr "Տեղադրեք աշխատունակ CD/DVD"
+
+msgctxt "#429"
+msgid "Please insert the following disc:"
+msgstr "Խնդրում եմ տեղադրել հետևյալ սկավառակը."
+
+msgctxt "#430"
+msgid "Sort by: DVD#"
+msgstr "Շարել ըստ. DVD#"
+
+msgctxt "#431"
+msgid "No cache"
+msgstr "No cache"
+
+msgctxt "#432"
+msgid "Remove movie from library"
+msgstr "Հեռացնել ֆիլմը շտեմարանից"
+
+msgctxt "#433"
+msgid "Really remove '%s'?"
+msgstr "Իրոգ հեռացնել '%s'?"
+
+msgctxt "#434"
+msgid "From %s at %i %s"
+msgstr "%s at %i %s -ից"
+
+msgctxt "#435"
+msgid "No optical disc drive detected"
+msgstr "Չի գտնվել ոչ մի CD/DVD սարք"
+
+msgctxt "#436"
+msgid "You need an optical disc drive to play this video"
+msgstr "Հարկավոր է CD/DVD սարք՝ տեսանյութը դիտելու համար"
+
+msgctxt "#437"
+msgid "Removable disk"
+msgstr "Ճկուն սկավառակ"
+
+msgctxt "#438"
+msgid "Opening file"
+msgstr "Ֆայլը բացվում է"
+
+msgctxt "#441"
+msgid "UDF"
+msgstr "UDF"
+
+msgctxt "#442"
+msgid "Local network"
+msgstr "Լոկալ ցանց"
+
+msgctxt "#443"
+msgid "Internet"
+msgstr "Ինտերնետ"
+
+msgctxt "#444"
+msgid "Video"
+msgstr "Տեսադարան"
+
+msgctxt "#445"
+msgid "Audio"
+msgstr "Ձայնադարան"
+
+msgctxt "#446"
+msgid "DVD"
+msgstr "DVD"
+
+msgctxt "#449"
+msgid "Enabled"
+msgstr "Միացված"
+
+msgctxt "#450"
+msgid "Columns"
+msgstr "Սյուներ"
+
+msgctxt "#451"
+msgid "Row 1 address"
+msgstr "Տողի 1 հասցե"
+
+msgctxt "#452"
+msgid "Row 2 address"
+msgstr "Տողի 2 հասցե"
+
+msgctxt "#453"
+msgid "Row 3 address"
+msgstr "Տողի 3 հասցե"
+
+msgctxt "#454"
+msgid "Row 4 address"
+msgstr "Տողի 4 հասցե"
+
+msgctxt "#455"
+msgid "Rows"
+msgstr "Տողեր"
+
+msgctxt "#456"
+msgid "Mode"
+msgstr "Կարգավիճակ"
+
+msgctxt "#461"
+msgid "[active]"
+msgstr "[ակտիվ]"
+
+msgctxt "#462"
+msgid "Subtitle"
+msgstr "Ենթավերնագիր"
+
+msgctxt "#463"
+msgid "Backlight"
+msgstr "Հետին լուսավորում"
+
+msgctxt "#464"
+msgid "Brightness"
+msgstr "Պայծառություն"
+
+msgctxt "#466"
+msgid "Gamma"
+msgstr "Գամմա"
+
+msgctxt "#467"
+msgid "Type"
+msgstr "Տիպ"
+
+msgctxt "#474"
+msgid "Off"
+msgstr "Անջատել"
+
+msgctxt "#475"
+msgid "Music only"
+msgstr "Միայն երաժշտություն"
+
+msgctxt "#476"
+msgid "Music & video"
+msgstr "Երաժշտություն և տեսադարան "
+
+msgctxt "#477"
+msgid "Unable to load playlist"
+msgstr "Հնարավոր չէ բեռնել երգացանկը"
+
+msgctxt "#478"
+msgid "OSD"
+msgstr "OSD"
+
+msgctxt "#485"
+msgid "Delete album"
+msgstr "Ջնջել ալբոմը"
+
+msgctxt "#486"
+msgid "Repeat"
+msgstr "Կրկնել"
+
+msgctxt "#487"
+msgid "Repeat one"
+msgstr "Կրկնել մեկը"
+
+msgctxt "#488"
+msgid "Repeat folder"
+msgstr "Կրկնել թղթապանակը"
+
+msgctxt "#489"
+msgid "Play the next song automatically"
+msgstr "Հաջորդ երգը նվագարկել ավտոմատ"
+
+msgctxt "#491"
+msgid "- Use big icons"
+msgstr "-Օգտագործել մեծ նշանները"
+
+msgctxt "#496"
+msgid "Calibration"
+msgstr "Շտկում"
+
+msgctxt "#498"
+msgid "Sort by: Type"
+msgstr "Դասավորել ըստ՝ Ոճի"
+
+msgctxt "#501"
+msgid "Looking for album names..."
+msgstr "Ալբոմների անունների որոնում"
+
+msgctxt "#502"
+msgid "Open"
+msgstr "Բացել"
+
+msgctxt "#503"
+msgid "Busy"
+msgstr "Զբաղված"
+
+msgctxt "#504"
+msgid "Empty"
+msgstr "Դադարկ"
+
+msgctxt "#505"
+msgid "Loading media info from files..."
+msgstr "Տեղեկատվության բեռնում ֆայլերից..."
+
+msgctxt "#507"
+msgid "Sort by: Usage"
+msgstr "Դասավորել ըստ՝ Օգտագործման"
+
+msgctxt "#512"
+msgid "Startup window"
+msgstr "Մեկնարկի պատուհան"
+
+msgctxt "#513"
+msgid "Home window"
+msgstr "Գլխավոր պատուհան"
+
+msgctxt "#515"
+msgid "Genre"
+msgstr "Ժանր"
+
+msgctxt "#543"
+msgid "DVD"
+msgstr "DVD"
+
+msgctxt "#551"
+msgid "Name"
+msgstr "Անվանում"
+
+msgctxt "#552"
+msgid "Date"
+msgstr "Ամսաթիվ"
+
+msgctxt "#553"
+msgid "Size"
+msgstr "Չափս"
+
+msgctxt "#556"
+msgid "Title"
+msgstr "Վերնագիր"
+
+msgctxt "#557"
+msgid "Artist"
+msgstr "Կատարող"
+
+msgctxt "#558"
+msgid "Album"
+msgstr "Ալբոմ"
+
+msgctxt "#559"
+msgid "Playlist"
+msgstr "Նվագացանկ"
+
+msgctxt "#560"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "#561"
+msgid "File"
+msgstr "Ֆայլ"
+
+msgctxt "#562"
+msgid "Year"
+msgstr "Տարեթիվ"
+
+msgctxt "#564"
+msgid "Type"
+msgstr "Տիպ"
+
+msgctxt "#569"
+msgid "Comment"
+msgstr "Մեկնաբանություն"
+
+msgctxt "#574"
+msgid "Country"
+msgstr "Երկիր"
+
+msgctxt "#575"
+msgid "In progress"
+msgstr "Կատարվում է"
+
+msgctxt "#581"
+msgid "Sort method"
+msgstr "Դասավորման ձևը"
+
+msgctxt "#582"
+msgid "View mode"
+msgstr "Ցուցադրման ձևը"
+
+msgctxt "#586"
+msgid "Edit playlist"
+msgstr "Խմբագրել նվագացանկը"
+
+msgctxt "#587"
+msgid "Filter"
+msgstr "Զտիչ"
+
+msgctxt "#590"
+msgid "Random"
+msgstr "Խառը"
+
+msgctxt "#591"
+msgid "Off"
+msgstr "Անջատել"
+
+msgctxt "#592"
+msgid "One"
+msgstr "Մեկ"
+
+msgctxt "#593"
+msgid "All"
+msgstr "Բոլորը"
+
+msgctxt "#594"
+msgid "Off"
+msgstr "Անջատել"
+
+msgctxt "#595"
+msgid "Repeat: Off"
+msgstr "Հետդարձ. Անջատված"
+
+msgctxt "#596"
+msgid "Repeat: One"
+msgstr "Հետդարձ. Մեկ"
+
+msgctxt "#597"
+msgid "Repeat: All"
+msgstr "Հետդարձ. Բոլորը"
+
+msgctxt "#601"
+msgid "Medium"
+msgstr "Միջին"
+
+msgctxt "#602"
+msgid "Standard"
+msgstr "Ստանդարտ"
+
+msgctxt "#603"
+msgid "Extreme"
+msgstr "Եքստրեմալ"
+
+msgctxt "#607"
+msgid "To:"
+msgstr "Դեպի."
+
+msgctxt "#611"
+msgid "Enter number"
+msgstr "Մուտքագրել համար"
+
+msgctxt "#622"
+msgid "Quality"
+msgstr "Որակ"
+
+msgctxt "#629"
+msgid "View mode"
+msgstr "Ցուցադրման ձևը"
+
+msgctxt "#630"
+msgid "Normal"
+msgstr "Նորմալ"
+
+msgctxt "#631"
+msgid "Zoom"
+msgstr "Խոշորացում"
+
+msgctxt "#719"
+msgid "IP address"
+msgstr "IP հասցե"
+
+msgctxt "#738"
+msgid "Normal"
+msgstr "Նորմալ"
+
+msgctxt "#1006"
+msgid "IP address"
+msgstr "IP հասցե"
+
+msgctxt "#1211"
+msgid "Music"
+msgstr "Երգ-Երաժշտություն"
+
+msgctxt "#1212"
+msgid "Video"
+msgstr "Տեսադարան"
+
+msgctxt "#1213"
+msgid "Pictures"
+msgstr "Նկարներ"
+
+msgctxt "#1403"
+msgid "Sun"
+msgstr "Կիր"
+
+msgctxt "#10001"
+msgid "Programs"
+msgstr "Ծրագրեր"
+
+msgctxt "#10002"
+msgid "Pictures"
+msgstr "Նկարներ"
+
+msgctxt "#10003"
+msgid "File manager"
+msgstr "Ֆայլերի մենեջեր"
+
+msgctxt "#10004"
+msgid "Settings"
+msgstr "Կարգավորումներ"
+
+msgctxt "#10005"
+msgid "Music"
+msgstr "Երգ-Երաժշտություն"
+
+msgctxt "#10006"
+msgid "Videos"
+msgstr "Տեսանյութեր"
+
+msgctxt "#10025"
+msgid "Videos"
+msgstr "Տեսանյութեր"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Ստանդարտ"
+
+msgctxt "#10506"
+msgid "Programs"
+msgstr "Ծրագրեր"
+
+msgctxt "#10511"
+msgid "System info"
+msgstr "Համակարգի մանրամասները"
+
+msgctxt "#12600"
+msgid "Weather"
+msgstr "Եղանակ"
+
+msgctxt "#13277"
+msgid "Storage"
+msgstr "Շտեմարան"
+
+msgctxt "#13280"
+msgid "Video"
+msgstr "Տեսադարան"
+
+msgctxt "#13350"
+msgid "Current playlist"
+msgstr "Ընթացիկ նվագացանկ"
+
+msgctxt "#13398"
+msgid "Shortcuts"
+msgstr "Հղումներ"
+
+msgctxt "#13507"
+msgid "Medium"
+msgstr "Միջին"
+
+msgctxt "#13508"
+msgid "High"
+msgstr "Բարձր"
+
+msgctxt "#13551"
+msgid "Off"
+msgstr "Անջատել"
+
+msgctxt "#13611"
+msgid "Standard"
+msgstr "Ստանդարտ"
+
+msgctxt "#14098"
+msgid "Play"
+msgstr "Նվագարկել"
+
+msgctxt "#15109"
+msgid "Skin default"
+msgstr "Հիմնական տեսք"
+
+msgctxt "#16000"
+msgid "General"
+msgstr "Գլխավոր"
+
+msgctxt "#16018"
+msgid "None"
+msgstr "Ոչինչ"
+
+msgctxt "#16039"
+msgid "Off"
+msgstr "Անջատել"
+
+msgctxt "#19031"
+msgid "Next"
+msgstr "Հաջորդ"
+
+msgctxt "#19099"
+msgid "Service"
+msgstr "Ծառայություն"
+
+msgctxt "#20109"
+msgid "Zoom"
+msgstr "Խոշորացում"
+
+msgctxt "#20331"
+msgid "File"
+msgstr "Ֆայլ"
+
+msgctxt "#20342"
+msgid "Movies"
+msgstr "Ֆիլմեր"
+
+msgctxt "#21375"
+msgid "Normal"
+msgstr "Նորմալ"
+
+msgctxt "#21385"
+msgid "Open"
+msgstr "Բացել"
+
+msgctxt "#21417"
+msgid "Settings"
+msgstr "Կարգավորումներ"
+
+msgctxt "#21805"
+msgid "Resolution"
+msgstr "Լուծում"
+
+msgctxt "#21806"
+msgid "Comment"
+msgstr "Մեկնաբանություն"
+
+msgctxt "#21875"
+msgid "Country"
+msgstr "Երկիր"
+
+msgctxt "#22030"
+msgid "Font"
+msgstr "Տառաշար"
+
+msgctxt "#22031"
+msgid "Size"
+msgstr "Չափս"
+
+msgctxt "#24012"
+msgid "Subtitles"
+msgstr "Ենթավերնագրեր"
+
+msgctxt "#24013"
+msgid "Lyrics"
+msgstr "Երգի բառեր"
+
+msgctxt "#24027"
+msgid "Weather"
+msgstr "Եղանակ"
+
+msgctxt "#33063"
+msgid "Options"
+msgstr "Տարբերակներ"
+
+msgctxt "#33068"
+msgid "Background"
+msgstr "Ֆոն"
+
+msgctxt "#33081"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Այս ֆայլը կտրատված է: Ընտրեք հատված՝ նվագարկելու համար:"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Ալիքների քանակը"
+
+msgctxt "#35500"
+msgid "Location"
+msgstr "Տեղը"
+
+msgctxt "#35502"
+msgid "Name"
+msgstr "Անվանում"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Ձայնագրում"
+
+msgctxt "#36502"
+msgid "None"
+msgstr "Ոչինչ"
