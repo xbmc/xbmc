@@ -1169,7 +1169,9 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
 
   // resample buffers for sink
   if (m_sinkBuffers && 
-     (!CompareFormat(m_sinkBuffers->m_format,m_sinkFormat) || !CompareFormat(m_sinkBuffers->m_inputFormat, sinkInputFormat)))
+     (!CompareFormat(m_sinkBuffers->m_format,m_sinkFormat) ||
+      !CompareFormat(m_sinkBuffers->m_inputFormat, sinkInputFormat) ||
+      m_sinkBuffers->m_format.m_frames != m_sinkFormat.m_frames))
   {
     m_discardBufferPools.push_back(m_sinkBuffers);
     m_sinkBuffers = NULL;
