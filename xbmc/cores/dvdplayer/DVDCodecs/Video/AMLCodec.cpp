@@ -1580,11 +1580,16 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
         am_private->gcodec.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
       break;
     case VFORMAT_H264_4K2K:
-      am_private->gcodec.format = VIDEO_DEC_FORMAT_H264_4K2K;
-      am_private->gcodec.param  = (void*)EXTERNAL_PTS;
-      // h264 in an avi file
-      if (m_hints.ptsinvalid)
-        am_private->gcodec.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
+      if (aml_get_cputype() >= 8) {
+        am_private->gcodec.format = VIDEO_DEC_FORMAT_H264_4K2K;
+        am_private->gcodec.param  = (void*)EXTERNAL_PTS;
+        // h264 in an avi file
+        if (m_hints.ptsinvalid)
+          am_private->gcodec.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
+      } else {
+        CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder codec init failed, 4K supported only on Meson8.");
+        return false;
+      }
       break; 
     case VFORMAT_REAL:
       am_private->stream_type = AM_STREAM_RM;
@@ -1626,6 +1631,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
     CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder codec init failed, ret=0x%x", -ret);
     return false;
   }
+
   am_private->dumpdemux = false;
   dumpfile_open(am_private);
 
