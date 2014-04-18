@@ -169,6 +169,8 @@ int aml_get_cputype()
       aml_cputype = 3;
     else if (cpu_hardware.find("Meson6") != std::string::npos)
       aml_cputype = 6;
+    else if (cpu_hardware.find("Meson8") != std::string::npos)
+      aml_cputype = 8;
   }
 
   return aml_cputype;
