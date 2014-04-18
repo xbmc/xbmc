@@ -38,7 +38,7 @@ msgstr "Máxima"
 
 msgctxt "#30005"
 msgid "Nervous Mode [more mode changes]"
-msgstr "Modo Nervoso [mais mudanças de modo]"
+msgstr "Modo Nervoso [mais alterações do modo]"
 
 msgctxt "#30006"
 msgid "Speed [skip some frames]"

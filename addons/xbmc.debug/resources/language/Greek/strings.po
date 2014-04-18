@@ -43,3 +43,7 @@ msgstr "Αναλυτική καταγραφή για τις κλήσεις DBUS"
 msgctxt "#30006"
 msgid "Verbose logging for JSON-RPC requests"
 msgstr "Αναλυτική καταγραφή για αιτήματα JSON-RPC"
+
+msgctxt "#30007"
+msgid "Verbose logging for AUDIO component"
+msgstr "Αναλυτική καταγραφή για στοιχείο AUDIO"

@@ -39,3 +39,11 @@ msgstr "Utförlig loggning av RTMP-bibliotek"
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
 msgstr "Utförlig loggning av DBUS-anrop"
+
+msgctxt "#30006"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Utförlig loggning av JSON-RPC förfrågningar"
+
+msgctxt "#30007"
+msgid "Verbose logging for AUDIO component"
+msgstr "Utförlig loggning av AUDIO-komponent"

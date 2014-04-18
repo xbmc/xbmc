@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.dim"
        name="Dim"
-       version="1.0.19"
+       version="1.0.20"
        provider-name="Team XBMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -20,7 +20,7 @@
     <summary lang="en_AU">Screensaver that dims your screen</summary>
     <summary lang="en_NZ">Screensaver that dims your screen</summary>
     <summary lang="en_US">Screensaver that dims your screen</summary>
-    <summary lang="es">Un salvapantallas que oscurece tu pantalla</summary>
+    <summary lang="es">Un salvapantallas que atenúa tu pantalla</summary>
     <summary lang="es_AR">Un protector de pantalla que oscurece su pantalla</summary>
     <summary lang="es_MX">Protector de pantalla que obscurece su pantalla</summary>
     <summary lang="es_VE">Protector de pantalla que disminuirá el brillo de tu pantalla</summary>
@@ -45,7 +45,7 @@
     <summary lang="nl">Schermbeveiliging die je scherm dimt</summary>
     <summary lang="no">Skjermsparer som demper skjermen din</summary>
     <summary lang="pl">Wygaszacz ekranu przyciemniający ekran</summary>
-    <summary lang="pt">Protecção que esvanece o seu ecrã</summary>
+    <summary lang="pt">Protetor de ecrã que obscurece o seu ecrã</summary>
     <summary lang="pt_BR">Protetor de tela que escurece sua tela</summary>
     <summary lang="ro">Screensaver ce întunecă ecranul</summary>
     <summary lang="ru">Заставка, постепенно затемняющая экран</summary>
@@ -76,7 +76,7 @@
     <description lang="en_AU">The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% .</description>
     <description lang="en_NZ">The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% .</description>
     <description lang="en_US">The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a settable value between 20 and 100% .</description>
-    <description lang="es">Dim es un sencillo salvapantallas que oscurece tu pantalla. El valor es configurable entre el 20% y el 100%.</description>
+    <description lang="es">Dim es un sencillo salvapantallas que atenúa tu pantalla. El valor es configurable entre el 20% y el 100%.</description>
     <description lang="es_AR">Dim es un sencillo protector de pantalla que oscurece la misma. El valor es configurable entre el 20% y el 100%.</description>
     <description lang="es_MX">El protector de pantalla de obscurecimiento, es un protector simple que obscurece (fade out) su pantalla en un valor entre 20 y 100%</description>
     <description lang="es_VE">El protector de pantalla "Dim" es un simple protector de pantalla que disminuirá la intensidad (atenuará) tu pantalla en un valor que puedes colocar entre 20 y 100%</description>
@@ -101,7 +101,7 @@
     <description lang="nl">De Dim-schermbeveiliging is een eenvoudige schermbeveiliging die uw scherm geleidelijk dimt. U kan een waarde gaande van 20 tot 100% instellen.</description>
     <description lang="no">Dim er en enkel skjermsparer som demper skjermen din til en justerbar verdi mellom 20-100%</description>
     <description lang="pl">Wygaszacz Przyciemnienie jest prostym wygaszaczem, który płynnie przyciemnia (wygasza) ekran do ustawionego poziomu między 20-100%.</description>
-    <description lang="pt">Esta protecção de ecrã esvanecente permite-lhe diminuir a intensidade luminosa do seu ecrã. Pode ser configurada para valores entre 20 e 100% .</description>
+    <description lang="pt">O protetor de ecrã "Obscurecer" é um protetor simples que obscurece (diminui) o seu ecrã para um valor definível entre 20 e 100%.</description>
     <description lang="pt_BR">O Dim ("Escurecer") é um protetor de tela simples que diminui a intensidade da luz de sua tela (escurece), com um valor selecionável entre 20 e 100%.</description>
     <description lang="ro">Dim este un screensaver simplu care va întuneca (reduce intensitatea luminii) ecranului dumneavoastră la o valoare configurabilă cuprinsă între 20 și 100% .</description>
     <description lang="ru">Эта заставка постепенно затемняет изображение на экране до заданного значения (от 20% до 100%).</description>

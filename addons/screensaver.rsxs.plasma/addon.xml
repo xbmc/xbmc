@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.plasma"
-  version="1.0.19"
+  version="1.0.20"
   name="Plasma"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -48,7 +48,7 @@
     <summary lang="nl">Waarschijnlijk de op één na meest psychedelische schermbeveiliging ooit</summary>
     <summary lang="no">Helt sikkert den nest psykadeliske skjermsparern som fins</summary>
     <summary lang="pl">Prawdopodobnie drugi, najbardziej psychodeliczny wygaszacz na świecie</summary>
-    <summary lang="pt">Este é, provavelmente, o segundo melhor protector de ecrã psicadélico de sempre.</summary>
+    <summary lang="pt">Este é provavelmente o segundo melhor protetor de ecrã psicadélico de sempre</summary>
     <summary lang="pt_BR">Provavelmente o segundo protetor de tela mais psicodélico</summary>
     <summary lang="ro">Probabil al doilea cel mai năucitor screensaver care a existat vreodată</summary>
     <summary lang="ru">Наверное, вторая из самых психоделических заставок в мире</summary>

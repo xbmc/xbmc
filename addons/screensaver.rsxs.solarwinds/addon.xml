@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.solarwinds"
-  version="1.0.19"
+  version="1.0.20"
   name="Solarwinds"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -26,7 +26,7 @@
     <summary lang="en_AU">A mesmerising particle effects screensaver</summary>
     <summary lang="en_NZ">A mesmerising particle effects screensaver</summary>
     <summary lang="en_US">A mesmerizing particle effects screensaver</summary>
-    <summary lang="es">Un salvapatallas con unos efectos de partículas hipnotizantes</summary>
+    <summary lang="es">Un salvapantallas con unos efectos de partículas hipnotizantes</summary>
     <summary lang="es_AR">Un protector de pantalla con unos efectos de partículas hipnotizantes</summary>
     <summary lang="es_MX">Un sorprendente protector de pantalla de partículas</summary>
     <summary lang="es_VE">Un protector de pantalla con efectos de partículas bastante hipnotizante</summary>
@@ -77,7 +77,7 @@
     <description lang="en_AU">This is a very mesmerising particle effects screensaver. You'll find that you can achieve an amazing number of different patterns.</description>
     <description lang="en_NZ">This is a very mesmerising particle effects screensaver. You'll find that you can achieve an amazing number of different patterns.</description>
     <description lang="en_US">This is a very mesmerizing particle effects screensaver. You'll find that you can achieve an amazing number of different patterns.</description>
-    <description lang="es">Este es un salvapatallas con unos efectos de partículas hipnotizantes. Descubrirás que puedes obtener un número increíble de patrones diferentes.</description>
+    <description lang="es">Este es un salvapantallas con unos efectos de partículas hipnotizantes. Descubrirás que puedes obtener un número increíble de patrones diferentes.</description>
     <description lang="es_AR">Este es un protector de pantalla con unos efectos de partículas hipnotizantes. Descubrirás que puedes obtener un número increíble de patrones diferentes.</description>
     <description lang="es_MX">Éste es un sorprendente protector de pantalla de partículas.  Encontrará que puede obtener un gran número de patrones diferentes.</description>
     <description lang="es_VE">Este es un protector de pantalla con efectos de partículas bastante hipnotizante. Te darás cuenta que podrás lograr un gran número de patrones diferentes.</description>
