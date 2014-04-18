@@ -11509,6 +11509,14 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Standard Scraper der benutzt wird um Musik und Videos zur Bibliothek hinzuzufügen."
 
+msgctxt "#36201"
+msgid "Settings for PVR/Live TV features."
+msgstr "Einstellungen für die PVR/Live-TV-Funktionen."
+
+msgctxt "#36202"
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Kategorie für allgemeine Einstellungen der PVR/Live-TV-Funktionen."
+
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr "Aktiviere die Personal Video Recorder (PVR) Funktionen in XBMC. Dies erfordert die Installation von mindestens einem PVR-Addon."
@@ -11704,6 +11712,10 @@ msgstr "Erneut nach dem PIN-Code fragen, wenn versucht wird, auf einen gesperrte
 msgctxt "#36251"
 msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
 msgstr "Kategorie für PVR Backend spezifische Einstellungen, sofern das PVR Backend diese Änderungen in XBMC zulässt."
+
+msgctxt "#36252"
+msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
+msgstr "Diese option zeigt alle spezifischen Einstellungen für das gewählte PVR Backend an, wenn das PVR Backend das ändern von Einstellungen unterstützt."
 
 msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."

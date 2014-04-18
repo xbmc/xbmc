@@ -599,7 +599,7 @@ msgstr "Afficher les vidéos 4:3 en tant que"
 
 msgctxt "#175"
 msgid "Moods"
-msgstr "Humeurs"
+msgstr "Ambiances"
 
 msgctxt "#176"
 msgid "Styles"
@@ -4507,7 +4507,7 @@ msgstr "Activer l'inversement bidirectionnel des textes"
 
 msgctxt "#13305"
 msgid "Show RSS news feeds"
-msgstr "Afficher les fils d'actualité  RSS"
+msgstr "Afficher les flux d'actualité RSS"
 
 msgctxt "#13306"
 msgid "Show parent folder items"
@@ -11508,6 +11508,14 @@ msgstr "Choisir la source d'informations par défaut pour les séries télé. Vo
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Extracteur de contenu par défaut utilisé pour ajouter les vidéos musicales dans votre vidéothèque."
+
+msgctxt "#36201"
+msgid "Settings for PVR/Live TV features."
+msgstr "Paramètres des fonctions de numériscope/télé en direct."
+
+msgctxt "#36202"
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Catégorie pour les paramètres généraux des fonctions de numériscope/télé en direct."
 
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."

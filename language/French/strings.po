@@ -623,7 +623,7 @@ msgstr "Pistes"
 
 msgctxt "#183"
 msgid "Review"
-msgstr "Revue"
+msgstr "Critique"
 
 msgctxt "#184"
 msgid "Refresh"
@@ -695,7 +695,7 @@ msgstr "Accroche"
 
 msgctxt "#203"
 msgid "Plot outline"
-msgstr "Intrigue"
+msgstr "Résumé"
 
 msgctxt "#205"
 msgid "Votes"
@@ -951,11 +951,11 @@ msgstr "Top 100"
 
 msgctxt "#272"
 msgid "Top-Left overscan compensation"
-msgstr "Compensation de la taille d'affichage : Haut gauche"
+msgstr "Compensation de la taille d'affichage : haut-gauche"
 
 msgctxt "#273"
 msgid "Bottom-Right overscan compensation"
-msgstr "Compensation de la taille d'affichage : Bas droite"
+msgstr "Compensation de la taille d'affichage : bas-droite"
 
 msgctxt "#274"
 msgid "Subtitle positioning"
@@ -1035,7 +1035,7 @@ msgstr "Audio"
 
 msgctxt "#293"
 msgid "Browse for subtitles"
-msgstr "Rechercher des Sous-titres"
+msgstr "Rechercher des sous-titres"
 
 msgctxt "#294"
 msgid "Create bookmark"
@@ -1095,7 +1095,7 @@ msgstr "(0=auto)"
 
 msgctxt "#313"
 msgid "Cleaning database"
-msgstr "Épurement de la base de données"
+msgstr "Nettoyage de la base de données"
 
 msgctxt "#314"
 msgid "Preparing..."
@@ -1111,47 +1111,47 @@ msgstr "Recherche des titres..."
 
 msgctxt "#317"
 msgid "Cleaned database successfully"
-msgstr "Succès de l'épurement de la base de données"
+msgstr "Base de données nettoyée avec succès"
 
 msgctxt "#318"
 msgid "Cleaning songs..."
-msgstr "Épurement des titres..."
+msgstr "Nettoyage des titres..."
 
 msgctxt "#319"
 msgid "Error cleaning songs"
-msgstr "Erreur pendant l'épurement des titres"
+msgstr "Erreur pendant le nettoyage des titres"
 
 msgctxt "#320"
 msgid "Cleaning artists..."
-msgstr "Épurement des artistes"
+msgstr "Nettoyage des artistes"
 
 msgctxt "#321"
 msgid "Error cleaning artists"
-msgstr "Erreur durant l'épurement des artistes"
+msgstr "Erreur durant le nettoyage des artistes"
 
 msgctxt "#322"
 msgid "Cleaning genres..."
-msgstr "Épurement des genres..."
+msgstr "Nettoyage des genres..."
 
 msgctxt "#323"
 msgid "Error cleaning genres"
-msgstr "Erreur durant l'épurement des genres"
+msgstr "Erreur durant le nettoyage des genres"
 
 msgctxt "#324"
 msgid "Cleaning paths..."
-msgstr "Épurement des chemins de fichier..."
+msgstr "Nettoyage des chemins de fichier..."
 
 msgctxt "#325"
 msgid "Error cleaning paths"
-msgstr "Erreur durant l'épurement des chemins de fichier"
+msgstr "Erreur durant le nettoyage des chemins de fichier"
 
 msgctxt "#326"
 msgid "Cleaning albums..."
-msgstr "Épurement des albums..."
+msgstr "Nettoyage des albums..."
 
 msgctxt "#327"
 msgid "Error cleaning albums"
-msgstr "Erreur durant l'épurement des albums"
+msgstr "Erreur durant le nettoyage des albums"
 
 msgctxt "#328"
 msgid "Writing changes..."
@@ -1175,11 +1175,11 @@ msgstr "Erreur durant la compression de la base de données"
 
 msgctxt "#333"
 msgid "Do you want to clean the library?"
-msgstr "Voulez-vous épurer la médiathèque ?"
+msgstr "Voulez-vous nettoyer la médiathèque ?"
 
 msgctxt "#334"
 msgid "Clean library..."
-msgstr "Épurer la médiathèque..."
+msgstr "Nettoyer la médiathèque..."
 
 msgctxt "#335"
 msgid "Start"
@@ -1687,7 +1687,7 @@ msgstr "Sous-titres"
 
 msgctxt "#463"
 msgid "Backlight"
-msgstr "Contre-jour"
+msgstr "Rétroéclairage"
 
 msgctxt "#464"
 msgid "Brightness"
@@ -1707,11 +1707,11 @@ msgstr "Type"
 
 msgctxt "#468"
 msgid "Move the bar to change the OSD position"
-msgstr "Déplacez la barre pour changer la position de la présentation à l'écran"
+msgstr "Déplacez la barre pour changer la position des menus à l'écran"
 
 msgctxt "#469"
 msgid "OSD position"
-msgstr "Position de la présentation à l'écran"
+msgstr "Position des menus à l'écran"
 
 msgctxt "#470"
 msgid "Credits"
@@ -1735,7 +1735,7 @@ msgstr "Impossible de charger la playliste"
 
 msgctxt "#478"
 msgid "OSD"
-msgstr "Menu à écran"
+msgstr "Menu à l'écran"
 
 msgctxt "#479"
 msgid "Skin & language"
@@ -1747,7 +1747,7 @@ msgstr "Apparence"
 
 msgctxt "#481"
 msgid "Audio options"
-msgstr "Options Audio"
+msgstr "Options audio"
 
 msgctxt "#482"
 msgid "About XBMC"
@@ -1795,7 +1795,7 @@ msgstr "Ajuster les vidéos à la résolution de l'interface"
 
 msgctxt "#496"
 msgid "Calibration"
-msgstr "Calibrage"
+msgstr "Étalonnage"
 
 msgctxt "#497"
 msgid "Show file extensions"
@@ -2091,7 +2091,7 @@ msgstr "En cours"
 
 msgctxt "#576"
 msgid "Times played"
-msgstr "Nombre de Lectures"
+msgstr "Nombre de lectures"
 
 msgctxt "#577"
 msgid "Date Taken"
@@ -2131,7 +2131,7 @@ msgstr "Filtre"
 
 msgctxt "#588"
 msgid "Cancel party mode"
-msgstr "Annuler le Mix de soirée"
+msgstr "Annuler le mix de soirée"
 
 msgctxt "#589"
 msgid "Party mode"
@@ -2203,7 +2203,7 @@ msgstr "Impossible d'importer le CD ou la piste"
 
 msgctxt "#609"
 msgid "CDDARipPath is not set."
-msgstr "Le chemin CDDA d'importation n'est pas défini."
+msgstr "Le chemin d'importation des CD audio (CDDARipPath) n'est pas défini."
 
 msgctxt "#610"
 msgid "Rip audio track"
@@ -2279,7 +2279,7 @@ msgstr "Étirée 16:9"
 
 msgctxt "#635"
 msgid "Original Size"
-msgstr "Taille Originale"
+msgstr "Taille originale"
 
 msgctxt "#636"
 msgid "Custom"
@@ -3455,11 +3455,11 @@ msgstr "Paramètres - Écran"
 
 msgctxt "#10010"
 msgid "Settings - Appearance - GUI Calibration"
-msgstr "Paramètres - Apparence - Calibration d'interface"
+msgstr "Paramètres - Apparence - Étalonnage d'interface"
 
 msgctxt "#10011"
 msgid "Settings - Videos - Screen Calibration"
-msgstr "Paramètres - Vidéos - Calibration d'écran"
+msgstr "Paramètres - Vidéos - Étalonnage d'écran"
 
 msgctxt "#10012"
 msgid "Settings - Pictures"
@@ -5823,19 +5823,19 @@ msgstr "Toutes les vidéos"
 
 msgctxt "#16101"
 msgid "Unwatched"
-msgstr "Non vues"
+msgstr "Non vu"
 
 msgctxt "#16102"
 msgid "Watched"
-msgstr "Vues"
+msgstr "Vu"
 
 msgctxt "#16103"
 msgid "Mark as watched"
-msgstr "Marquer comme vue"
+msgstr "Marquer comme vu"
 
 msgctxt "#16104"
 msgid "Mark as unwatched"
-msgstr "Marquer comme non vue"
+msgstr "Marquer comme non vu"
 
 msgctxt "#16105"
 msgid "Edit title"
@@ -6055,7 +6055,7 @@ msgstr "Nom de Chemin Universel"
 
 msgctxt "#19012"
 msgid "PVR Backend"
-msgstr "Traitement de l'Enregistreur Vidéo "
+msgstr "Serveur de l'Enregistreur Vidéo "
 
 msgctxt "#19013"
 msgid "Free to air"
@@ -6071,7 +6071,7 @@ msgstr "Brouillage"
 
 msgctxt "#19016"
 msgid "PVR Backend %i - %s"
-msgstr "Traitement d'Enregistreur Vidéo %i - %s"
+msgstr "Serveur de l'Enregistreur Vidéo %i - %s"
 
 msgctxt "#19017"
 msgid "TV recordings"
@@ -6159,7 +6159,7 @@ msgstr "Afficher la qualité du signal"
 
 msgctxt "#19038"
 msgid "Not supported by the PVR backend."
-msgstr "Non supporté par le traitement de l'Enregistreur Vidéo."
+msgstr "Non supporté par le serveur de l'Enregistreur Vidéo."
 
 msgctxt "#19039"
 msgid "Are you sure you want to hide this channel?"
@@ -6439,7 +6439,7 @@ msgstr "Erreur inconnue. Consulter le journal pour plus de détails."
 
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
-msgstr "Erreur du traitement de l'Enregistreur Vidéo. Consulter le journal pour plus de détails."
+msgstr "Erreur du serveur de l'Enregistreur Vidéo. Consulter le journal pour plus de détails."
 
 msgctxt "#19114"
 msgid "Version"
@@ -6571,7 +6571,7 @@ msgstr "Groupes"
 
 msgctxt "#19147"
 msgid "The PVR backend does not support this action. Check the log for details."
-msgstr "Le traitement de l'Enregistreur Vidéo ne permet pas cette action. Consulter le journal pour plus de détails."
+msgstr "Le serveur de l'Enregistreur Vidéo ne permet pas cette action. Consulter le journal pour plus de détails."
 
 msgctxt "#19148"
 msgid "Channel"
@@ -6755,7 +6755,7 @@ msgstr "Actions du client"
 
 msgctxt "#19196"
 msgid "PVR client specific actions"
-msgstr "Actions spécifiques pour l'Enregistreur Vidéo client"
+msgstr "Actions spécifiques pour le client de l'Enregistreur Vidéo"
 
 msgctxt "#19197"
 msgid "Recording started on: %s"
@@ -6831,7 +6831,7 @@ msgstr "Saisir une URL valide pour la nouvelle chaîne"
 
 msgctxt "#19215"
 msgid "The PVR backend does not support timers."
-msgstr "Le traitement de l'Enregistreur Vidéo ne gère pas les minuteries"
+msgstr "Le serveur de l'Enregistreur Vidéo ne gère pas les minuteries"
 
 msgctxt "#19216"
 msgid "All radio channels"
@@ -7063,7 +7063,7 @@ msgstr "Vous avez besoin d'un tuner, d'un logiciel applicatif et d'une"
 
 msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
-msgstr "extension de traitement pour utiliser l'Enregistreur Vidéo."
+msgstr "extension pour le serveur pour utiliser l'Enregistreur Vidéo."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -8351,11 +8351,11 @@ msgstr "Lecture partie..."
 
 msgctxt "#20325"
 msgid "Calibration reset"
-msgstr "Calibrage par défaut"
+msgstr "Étalonnage par défaut"
 
 msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
-msgstr "Ceci remettra à zéro les valeurs de calibrage pour %s"
+msgstr "Ceci remettra à zéro les valeurs d'étalonnage pour %s"
 
 msgctxt "#20327"
 msgid "to its default values."
@@ -8519,7 +8519,7 @@ msgstr "* Toutes les saisons"
 
 msgctxt "#20367"
 msgid "Hide watched"
-msgstr "Masquer vue(s)"
+msgstr "Masquer ce qui a été vu"
 
 msgctxt "#20368"
 msgid "Prod code"
@@ -9283,7 +9283,7 @@ msgstr "Dossier racine"
 
 msgctxt "#21441"
 msgid "Watched count"
-msgstr "Compteur des vues"
+msgstr "Compteur des vus"
 
 msgctxt "#21442"
 msgid "Episode title"
@@ -11509,13 +11509,21 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Scraper par défaut utilisé pour ajouter les vidéos musicales dans votre bibliothèque."
 
+msgctxt "#36201"
+msgid "Settings for PVR/Live TV features."
+msgstr "Paramètres pour les fonctions Enregistreur Vidéo/TV en direct."
+
+msgctxt "#36202"
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Catégorie pour les réglages généraux des fonctions de l'Enregistreur Vidéo/TV en direct."
+
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr "Activer les fonctionnalités de magnétoscope numérique (PVR) dans XBMC. Cela nécessite au moins une extension compatible installée."
 
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
-msgstr "Importer les groupes de chaînes depuis le programme de magnétoscope numérique (si supporté). Les groupes créés par les utilisateurs seront supprimés si ils ne sont pas trouvés dans l'import."
+msgstr "Importer les groupes de chaînes depuis le serveur de l'Enregistreur Vidéo (si supporté). Les groupes créés par les utilisateurs seront supprimés si ils ne sont pas trouvés dans l'import."
 
 msgctxt "#36205"
 msgid "Sort the channels by channel number on the backend, but use XBMC's own numbering for channels."
@@ -12127,7 +12135,7 @@ msgstr "Calibre l'interface utilisateur en ajustant le surbalayage. Utiliser cet
 
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
-msgstr "Motifs de test pour la calibration du matériel d'affichage."
+msgstr "Motifs de test pour l'étalonnage du matériel d'affichage."
 
 msgctxt "#36359"
 msgid "Use limited colour range (16-235) instead of full colour range (0-255). Limited range should be used if your display is a regular HDMI TV and doesn't have a PC or other mode to display full range colour, however if your display is a PC monitor then leave this disabled to get proper blacks."

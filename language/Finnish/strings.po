@@ -1073,6 +1073,10 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Alkuperäisen lähteen kieli"
 
+msgctxt "#309"
+msgid "User interface language"
+msgstr "Käyttöliittymän kieli"
+
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=auto)"
@@ -1173,9 +1177,17 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Kuvataajuuden muunto"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "Ulostulo asetukset"
+
 msgctxt "#338"
 msgid "Fixed"
 msgstr "Kiinteä"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "Optimoitu"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -3057,6 +3069,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Julkista nämä palvelut toisiin järjestelmiin Zeroconf-julkaisujärjestelmän kautta"
 
+msgctxt "#1269"
+msgid "Allow volume control"
+msgstr "Salli äänenvoimakkuuden säätö"
+
 msgctxt "#1270"
 msgid "Allow XBMC to receive AirPlay content"
 msgstr "Salli XBMC:n vastaanottaa AirPlay-sisältöä"
@@ -3437,6 +3453,10 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Resetoida"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Perus"
+
 msgctxt "#10037"
 msgid "Standard"
 msgstr "Normaali"
@@ -3444,6 +3464,14 @@ msgstr "Normaali"
 msgctxt "#10038"
 msgid "Advanced"
 msgstr "Lisäasetukset"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Expertti"
+
+msgctxt "#10041"
+msgid "Reset above settings to default"
+msgstr "Resetoi ylläolevat asetukset vakioihin."
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -3456,6 +3484,10 @@ msgstr "Ohje"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "Ohjetta ei ole saatavilla"
+
+msgctxt "#10100"
+msgid "Yes/No dialogue"
+msgstr "Kyllä/Ei -dialogi"
 
 msgctxt "#10126"
 msgid "File browser"
@@ -3597,9 +3629,17 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "Elokuvatiedot"
 
+msgctxt "#12000"
+msgid "Select dialogue"
+msgstr "Valitse dialogi"
+
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "Musiikki/Tiedot"
+
+msgctxt "#12002"
+msgid "Dialogue OK"
+msgstr "Dialogi OK"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -4881,6 +4921,14 @@ msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f sekunniksi"
 
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d Minuutti"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d Minuutit"
+
 msgctxt "#13600"
 msgid "Apple remote"
 msgstr "Apple remote -kauko-ohjain"
@@ -5256,6 +5304,10 @@ msgstr "Poista CD kun rippaus on valmis"
 msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "Lopeta CD:n rippaus"
+
+msgctxt "#14101"
+msgid "Acceleration"
+msgstr "Kiihdytys"
 
 msgctxt "#15014"
 msgid "Keep"
@@ -5936,6 +5988,10 @@ msgstr "Mene loppuun"
 msgctxt "#19065"
 msgid "Default EPG window"
 msgstr "Ohjelmaoppaan oletusnäkymä"
+
+msgctxt "#19066"
+msgid "Channel icons"
+msgstr "Kanavakuvakkeet"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
@@ -6701,6 +6757,22 @@ msgctxt "#19281"
 msgid "Confirm channel switches by pressing OK"
 msgstr "Vahvista kanavien vaihto painamalla OK"
 
+msgctxt "#19282"
+msgid "Current icon"
+msgstr "Nykyinen kuvake"
+
+msgctxt "#19283"
+msgid "No icon"
+msgstr "Ei kuvakkeita"
+
+msgctxt "#19284"
+msgid "Choose icon"
+msgstr "Valitse kuvake"
+
+msgctxt "#19285"
+msgid "Browse for icon"
+msgstr "Hae kuvake"
+
 msgctxt "#19499"
 msgid "Other/Unknown"
 msgstr "Muu/Tuntematon"
@@ -6985,6 +7057,10 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Autoilu"
 
+msgctxt "#19648"
+msgid "Fitness & Health"
+msgstr "Kuntoilu ja terveys"
+
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Ruuanlaitto"
@@ -7004,6 +7080,10 @@ msgstr "Erikoisominaisuudet"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Alkuperäisellä kielellä"
+
+msgctxt "#19662"
+msgid "Black & White"
+msgstr "Mustavalkoinen"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -7904,6 +7984,10 @@ msgstr "Skannataan artisteja lähteestä %s"
 msgctxt "#20321"
 msgid "Scanning albums using %s"
 msgstr "Skannataan albumeja lähteestä %s"
+
+msgctxt "#20323"
+msgid "Movie plot"
+msgstr "Elokuvan juoni"
 
 msgctxt "#20324"
 msgid "Play part..."
@@ -8865,6 +8949,10 @@ msgctxt "#21458"
 msgid "Group by"
 msgstr "Ryhmitys"
 
+msgctxt "#21460"
+msgid "Subtitle position on screen"
+msgstr "Tekstityksen paikka ruudulla"
+
 msgctxt "#21461"
 msgid "Fixed"
 msgstr "Kiinteä"
@@ -9577,6 +9665,10 @@ msgctxt "#24048"
 msgid "Rollback"
 msgstr "Palauta"
 
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr "Yhteensopimaton"
+
 msgctxt "#24050"
 msgid "Available Add-ons"
 msgstr "Saatavilla olevat lisäosat"
@@ -9717,9 +9809,33 @@ msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "Kuosista puuttuu tiedostoja"
 
+msgctxt "#24105"
+msgid "Pause when searching for subtitles"
+msgstr "Laita tauolle kun haetaan tekstityksiä"
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Etsitään tekstityksiä ..."
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "%d tekstityksiä löytyi"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "Tekstityksiä ei löytynyt"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "Ladataan tekstityksiä ..."
+
 msgctxt "#24121"
 msgid "Enter search string"
 msgstr "Anna hakusana"
+
+msgctxt "#24122"
+msgid "Update all"
+msgstr "Päivitä kaikki"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -9733,6 +9849,10 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Valitse kaikista otsakkeista"
 
+msgctxt "#25003"
+msgid "Show Blu-ray menus"
+msgstr "Näytä Blu-ray-valikot"
+
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Toista pääotsikko: %d"
@@ -9744,6 +9864,10 @@ msgstr "Otsikko: %d"
 msgctxt "#25006"
 msgid "Select playback item"
 msgstr "Valitse toistettavat tiedostot"
+
+msgctxt "#25008"
+msgid "Playback of Blu-ray failed"
+msgstr "Blu-rayn toisto ei onnistu"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -10473,9 +10597,17 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
+msgctxt "#36146"
+msgid "Check for new media files on XBMC startup."
+msgstr "Etsi uusia mediatiedostoja XBMC:n käynnistyessä."
+
 msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36191"
+msgid "Set a custom directory for your subtitles. This can be a file share."
+msgstr "Aseta oma hakemisto tekstityksillesi. Tämä voi olla jakokansio."
 
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
@@ -10489,6 +10621,10 @@ msgctxt "#36195"
 msgid "Force a region for DVD playback."
 msgstr "Pakota alue DVD-toistoa varten."
 
+msgctxt "#36196"
+msgid "Attempt to skip 'unskippable' introductions before DVD menu."
+msgstr "Ohita ennen DVD-valikkoa olevat \"ohittamattomat\" esittelyt"
+
 msgctxt "#36197"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
@@ -10497,17 +10633,57 @@ msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr "Aktivoi videotallennusominaisuudet (PVR) XBMC:ssä. Ainakin yhden PVR-lisäosan on oltava asennettu tätä varten."
 
+msgctxt "#36217"
+msgid "Scan for missing channel icons."
+msgstr "Hae puuttuvat kanavakuvakkeet"
+
 msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "Näytä signaalin voimakkuustiedot codecin infoikkunassa (mikäli lisäosa ja backend tukee tätä ominaisuutta)."
+
+msgctxt "#36245"
+msgid "Execute the wakeup command every day at the given time."
+msgstr "Suorita herätyskomento joka päivä ilmoitettuun aikaan."
+
+msgctxt "#36246"
+msgid "When to execute the daily wakeup command."
+msgstr "Koska suorittaa päivittäinen herätyskomento."
+
+msgctxt "#36249"
+msgid "Enter a new pin code to unlock parental locked channels."
+msgstr "Syötä uusi pin-koodi avataksesi lapsilukitut kanavat."
+
+msgctxt "#36254"
+msgid "Enable the music library."
+msgstr "Salli musiikkikirjasto"
+
+msgctxt "#36259"
+msgid "Check for new and removed media files on XBMC startup."
+msgstr "Tarkista uudet ja poistetut mediatiedostot XBMC:n käynnistyessä."
 
 msgctxt "#36260"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
+msgctxt "#36263"
+msgid "Import a XML file into the Music Library database."
+msgstr "Tuo XML-tiedosto Musiikkikirjaston tietokantaan."
+
+msgctxt "#36268"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "Oletuksena on 89dB. Muuta varoen."
+
+msgctxt "#36269"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "Oletuksena on 89dB. Muuta varoen."
+
 msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
 msgstr "Käynnistä CD-levyt automaattisesti, kun levy syötetään asemaan."
+
+msgctxt "#36291"
+msgid "Auto eject disc after rip is complete."
+msgstr "Poista CD automaattisesti kun rippaus on valmis."
 
 msgctxt "#36301"
 msgid "No info available yet."
@@ -10532,6 +10708,26 @@ msgstr "Määritä web-palvelimen portti."
 msgctxt "#36330"
 msgid "Define the webserver username."
 msgstr "Määritä web-palvelimen käyttäjätunnus."
+
+msgctxt "#36331"
+msgid "Define the webserver password."
+msgstr "Määritä web-palvelimen salasana."
+
+msgctxt "#36335"
+msgid "Define the remote control port."
+msgstr "Määritä kauko-ohjaimen portti."
+
+msgctxt "#36344"
+msgid "Enable AirPlay password protection."
+msgstr "Salli AirPlay salasanasuojaus."
+
+msgctxt "#36345"
+msgid "Sets the AirPlay password."
+msgstr "Aseta AirPlay salasana."
+
+msgctxt "#36378"
+msgid "Use a joystick to control XBMC."
+msgstr "Käytä ohjainta ohjataksesi XBMC:tä."
 
 msgctxt "#36380"
 msgid "If your internet connection uses a proxy, configure it here."
@@ -10585,6 +10781,10 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
+msgctxt "#36416"
+msgid "Specify the type of remote used."
+msgstr "Määritä käytettävän ohjaimen malli."
+
 msgctxt "#36426"
 msgid "Switch to channel"
 msgstr "Vaihda kanavalle"
@@ -10592,6 +10792,30 @@ msgstr "Vaihda kanavalle"
 msgctxt "#36428"
 msgid "Record"
 msgstr "Nauhoita"
+
+msgctxt "#36504"
+msgid "Side by side"
+msgstr "Vierekkäin"
+
+msgctxt "#36521"
+msgid "Ask me"
+msgstr "Kysy minulta"
+
+msgctxt "#36532"
+msgid "Same as movie"
+msgstr "Sama kuin elokuva"
+
+msgctxt "#37001"
+msgid "(Directors Comments)"
+msgstr "(Ohjaajan kommentit)"
+
+msgctxt "#37012"
+msgid "(Forced)"
+msgstr "(Pakotettu)"
+
+msgctxt "#37013"
+msgid "(Directors Comments)"
+msgstr "(Ohjaajan kommentit)"
 
 msgctxt "#37014"
 msgid "Last used profile"

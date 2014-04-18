@@ -1085,6 +1085,10 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Originálny jazyk Streamu"
 
+msgctxt "#309"
+msgid "User interface language"
+msgstr "Jazyk používateľského prostredia"
+
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=auto)"
@@ -10208,6 +10212,10 @@ msgstr "Manuálne hľadanie reťazca"
 msgctxt "#24121"
 msgid "Enter search string"
 msgstr "Zadajte hľadaný výraz"
+
+msgctxt "#24122"
+msgid "Update all"
+msgstr "Aktualizovať všetko"
 
 msgctxt "#25000"
 msgid "Notifications"

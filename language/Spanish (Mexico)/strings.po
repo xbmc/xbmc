@@ -10297,6 +10297,10 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Seleccionar de todos los títulos ..."
 
+msgctxt "#25003"
+msgid "Show Blu-ray menus"
+msgstr "Mostrar menus del Blu-ray"
+
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Reproducir título principal: %d"
@@ -10312,6 +10316,14 @@ msgstr "Seleccionar ítem de reproducción"
 msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr "Capítulos: %u - duración: %s"
+
+msgctxt "#25008"
+msgid "Playback of Blu-ray failed"
+msgstr "Reproduccion del Blu-ray fallida"
+
+msgctxt "#25009"
+msgid "The menu of this Blu-ray is not supported"
+msgstr "El menu de este Blu-ray no esta soportado"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11313,6 +11325,14 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Borra la base de datos de canales/EPG y seguidamente reimporta los datos desde el backend."
 
+msgctxt "#36216"
+msgid "Folder where channel icons are stored."
+msgstr "Carpeta donde los iconos de los canales son guardados."
+
+msgctxt "#36217"
+msgid "Scan for missing channel icons."
+msgstr "Escanear los iconos de canales faltantes."
+
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "No importar los datos de EPG mientras miras TV para disminuir el uso del CPU."
@@ -11452,6 +11472,18 @@ msgstr "Auto expulsar disco al completarse el ripeo."
 msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
 msgstr "Cuando se reproduce cualquier archivo de musica, XBMC buscara un archivo .cdg que coincida y mostrara sus graficos. "
+
+msgctxt "#36295"
+msgid "Select the font type used during karaoke."
+msgstr "Elije el tipo de letra usada durante el karaoke."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karaoke."
+msgstr "Elije el tamaño de la letra usada durante el karaoke."
+
+msgctxt "#36297"
+msgid "Select the font colour used during karaoke."
+msgstr "Elije el color de la letra usada durante el karaoke."
 
 msgctxt "#36301"
 msgid "No info available yet."
