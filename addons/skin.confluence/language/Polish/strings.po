@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Change Your"
-msgstr "Zmień"
+msgstr "Konfiguracja ustawień"
 
 msgctxt "#31003"
 msgid "Power Options"
@@ -30,7 +30,7 @@ msgstr "Praca w toku..."
 
 msgctxt "#31005"
 msgid "Hide Information"
-msgstr "Ukryj informacje"
+msgstr "Ukrywaj informacje"
 
 msgctxt "#31006"
 msgid "View Options"
@@ -50,7 +50,7 @@ msgstr "Muzyka - Pliki"
 
 msgctxt "#31023"
 msgid "Playing"
-msgstr "Odtwarzanie"
+msgstr "Odtwarzanie w toku"
 
 msgctxt "#31024"
 msgid "Page"
@@ -58,11 +58,11 @@ msgstr "Strona"
 
 msgctxt "#31025"
 msgid "Items"
-msgstr "Pozycji"
+msgstr "Pozycje"
 
 msgctxt "#31026"
 msgid "Misc Options"
-msgstr "Różne opcje"
+msgstr "Opcje dodatkowe"
 
 msgctxt "#31027"
 msgid "Location"
@@ -70,19 +70,19 @@ msgstr "Lokalizacja"
 
 msgctxt "#31028"
 msgid "Poster Wrap"
-msgstr "Obramowany plakat"
+msgstr "Kolejka plakatów"
 
 msgctxt "#31029"
 msgid "Fanart"
-msgstr "Fangraf"
+msgstr "Tapeta"
 
 msgctxt "#31031"
 msgid "Pic Thumbs"
-msgstr "Miniatury obrazów"
+msgstr "Miniatury"
 
 msgctxt "#31032"
 msgid "Image Wrap"
-msgstr "Obramowany obraz"
+msgstr "Kolejka obrazów"
 
 msgctxt "#31033"
 msgid "Info"
@@ -98,7 +98,7 @@ msgstr "Teraz odtwarzane"
 
 msgctxt "#31042"
 msgid "PLAYING"
-msgstr "ODTWARZANIE"
+msgstr "ODTWARZANIE W TOKU"
 
 msgctxt "#31043"
 msgid "PAUSED"
@@ -106,11 +106,11 @@ msgstr "PAUZA"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
-msgstr "PRZEWIŃ"
+msgstr "DO PRZODU"
 
 msgctxt "#31045"
 msgid "REWIND"
-msgstr "COFNIJ"
+msgstr "DO TYŁU"
 
 msgctxt "#31046"
 msgid "SEEKING"
@@ -118,7 +118,7 @@ msgstr "PRZESZUKIWANIE"
 
 msgctxt "#31048"
 msgid "Visualisation Presets"
-msgstr "Predefiniowane ustawienia wizualizacji"
+msgstr "Szablony wizualizacji"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -154,7 +154,7 @@ msgstr "Aktualna lista odtwarzania"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
-msgstr "Plik jest wynikiem złączenia. Wybierz, którą część chcesz odtwarzać."
+msgstr "Plik jest wynikiem scalania, wybierz część do odtwarzania."
 
 msgctxt "#31061"
 msgid "Current Selected"
@@ -170,31 +170,31 @@ msgstr "Tło"
 
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
-msgstr "Wyświetlaj \"Pauza\" podczas pokazu slajdów"
+msgstr "Pokazuj \"Pauza\" podczas pokazu slajdów"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
-msgstr "Odtwarzaj zwiastuny w oknie [COLOR=grey3](tylko w oknie Informacji o wideo)[/COLOR]"
+msgstr "Odtwarzaj zwiastuny w oknie [COLOR=grey3](tylko w oknie informacji o wideo)[/COLOR]"
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
-msgstr "Inne opcje"
+msgstr "Opcje dodatkowe"
 
 msgctxt "#31107"
 msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
-msgstr "Ukrywaj znaczniki mediów z nazw pliku [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Ukrywaj znaczniki mediów wczytane z nazw pliku [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
-msgstr "Ukrywaj przyciski menu startowego"
+msgstr "Ukrywanie przycisków menu startowego"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr "Aktywuj zdefiniowane tło"
+msgstr "Używaj własnych obrazów tła"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr "Ścieżka do tła"
+msgstr "Ścieżka do folderu obrazów tła:"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -218,19 +218,19 @@ msgstr "Podmenu Programy ekranu startowego"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
-msgstr "Ukrywaj tło fangrafu"
+msgstr "Nie używaj tapet w roli tła"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
-msgstr "Pokazuj aktualnie odtwarzane wideo w tle"
+msgstr "Używaj odtwarzane wideo w roli tła"
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualisation"
-msgstr "Pokazuj tło wizualizacji \"Teraz Odtwarzane\" "
+msgstr "Używaj wizualizacji muzyki w roli tła"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Odtwarzaj motywy muzyczne w bibliotece (wtyczka TvTunes)"
+msgstr "Odtwarzaj motywy muzyczne w bibliotece wideo (wtyczka TvTunes)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -238,15 +238,15 @@ msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
-msgstr "Teksty piosenek"
+msgstr "Teksty utworów"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualisation"
-msgstr "Ukrywaj Fangraf w trybie pełnoekranowym "
+msgstr "Ukrywaj tapety podczas pełnoekranowej wizualizacji"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
-msgstr "Wtyczka Teksty piosenek"
+msgstr "Wtyczka tekstów utworów"
 
 msgctxt "#31134"
 msgid "Home Page Videos Sub-menu"
@@ -262,11 +262,11 @@ msgstr "Podmenu Obrazy ekranu startowego"
 
 msgctxt "#31140"
 msgid "Music OSD"
-msgstr "Muzyka - Menu ekranowe"
+msgstr "Menu ekranowe muzyki"
 
 msgctxt "#31141"
 msgid "Video OSD"
-msgstr "Wideo - Menu ekranowe"
+msgstr "Menu ekranowe wideo"
 
 msgctxt "#31142"
 msgid "Settings level"
@@ -278,11 +278,11 @@ msgstr "Skróty"
 
 msgctxt "#31203"
 msgid "Choose Your Song"
-msgstr "Wybierz swoją piosenkę"
+msgstr "Wybierz swój utwór"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
-msgstr "Źródło tekstów piosenek"
+msgstr "Źródło tekstów utworów"
 
 msgctxt "#31206"
 msgid "Found"
@@ -310,7 +310,7 @@ msgstr "Dostawca danych"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
-msgstr "Ukrywaj fangraf"
+msgstr "Ukrywaj tapety"
 
 msgctxt "#31308"
 msgid "Movie Details"
@@ -326,15 +326,15 @@ msgstr "Numer ścieżki"
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
-msgstr "Fangraf[CR][CR]niedostępny[CR][CR] Wciśnij przycisk, aby dodać"
+msgstr "Tapeta[CR][CR]niedostępna[CR][CR] Wciśnij przycisk, aby dodać"
 
 msgctxt "#31312"
 msgid "Current Scraper"
-msgstr "Aktualny Ekstraktor"
+msgstr "Aktualny ekstraktor"
 
 msgctxt "#31313"
 msgid "Choose a Scraper"
-msgstr "Wybierz Ekstraktor"
+msgstr "Wybierz ekstraktor"
 
 msgctxt "#31314"
 msgid "Content Scanning Options"
@@ -342,7 +342,7 @@ msgstr "Opcje skanowania zawartości"
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
-msgstr "Wskaż ścieżkę fangrafu"
+msgstr "Ustaw ścieżkę do tapety"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -354,11 +354,11 @@ msgstr "Ostatnio zalogowany"
 
 msgctxt "#31321"
 msgid "Karaoke Song Selector"
-msgstr "Wybór piosenki karaoke"
+msgstr "Selektor utworów Karaoke"
 
 msgctxt "#31322"
 msgid "Aired"
-msgstr "Premiery"
+msgstr "Premiera"
 
 msgctxt "#31325"
 msgid "Playlist Options"
@@ -382,7 +382,7 @@ msgstr "[B]Zaplanowano zamknięcie![/B] [COLOR=grey2] - Zamknięcie systemu za[/
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
-msgstr "Wciśnij przycisk, aby[CR][CR]odtworzyć zwiastun"
+msgstr "Wciśnij przycisk, aby[CR][CR]odtwarzać zwiastun"
 
 msgctxt "#31331"
 msgid "Album Details"
@@ -438,39 +438,39 @@ msgstr "Bazujące na Arialu"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]KONFIGURUJ USTAWIENIA WYGLĄDU[/B][CR][CR]Skóra · Język · Listy plików[CR]Wygaszacz ekranu"
+msgstr "[B]KONFIGURACJA WYGLĄDU[/B][CR][CR]Wybór skóry · Język · Listy plików · Wygaszacz ekranu"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]KONFIGURUJ USTAWIENIA WIDEO[/B][CR][CR]Biblioteka wideo · Odtwarzanie · Akceleracja[CR]Listy wideo · Napisy"
+msgstr "[B]KONFIGURACJA WIDEO[/B][CR][CR]Biblioteka wideo · Odtwarzanie · Akceleracja · Listy wideo · Napisy"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]KONFIGURUJ USTAWIENIA MUZYKI[/B][CR][CR]Biblioteka muzyki · Odtwarzanie · Listy utworów[CR]CD-Audio · Karaoke"
+msgstr "[B]KONFIGURACJA MUZYKI[/B][CR][CR]Biblioteka muzyki · Odtwarzanie · Listy utworów · CD-Audio · Karaoke"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
-msgstr "[B]KONFIGURUJ USTAWIENIA OBRAZU[/B][CR][CR]Listy obrazów · Pokaz slajdów"
+msgstr "[B]KONFIGURACJA OBRAZÓW[/B][CR][CR]Listy obrazów · Pokaz slajdów"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
-msgstr "[B]KONFIGURUJ USTAWIENIA POGODY[/B][CR][CR]Ustaw lokalizacje, dla których będą pobierane informacje pogodowe"
+msgstr "[B]KONFIGURACJA POGODY[/B][CR][CR]Wybór wtyczki · Wybór miast, dla których będą pobierane informacje pogodowe"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
-msgstr "[B]KONFIGURUJ USTAWIENIA SYSTEMU[/B][CR][CR]Wyświetlanie obrazu · Odtwarzanie dźwięku · Urządzenia wejściowe[CR]Zdalne sterowanie · Oszczędzanie energii · Diagnozowanie błędów · Blokady"
+msgstr "[B]KONFIGURACJA SYSTEMU[/B][CR][CR]Wyświetlanie obrazu · Odtwarzanie dźwięku · Urządzenia wejściowe · Zdalne sterowanie[CR]Oszczędzanie energii · Diagnozowanie błędów · Blokady"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]KONFIGURUJ USTAWIENIA WTYCZEK[/B][CR][CR]Zarządzanie wtyczkami · Instalowanie wtyczek[CR]Ustawienia wtyczek"
+msgstr "[B]KONFIGURACJA WTYCZEK[/B][CR][CR]Zarządzanie wtyczkami · Instalowanie wtyczek · Ustawienia wtyczek"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]Skonfiguruj opcje TV[/B][CR][CR]Menu ekranowe · Przewodnik TV · Nagrywanie"
+msgstr "[B]KONFIGURACJA TELEWIZJI[/B][CR][CR]Menu ekranowe · Przewodnik TV · Nagrywanie"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]KONFIGURUJ USTAWIENIA USŁUG[/B][CR][CR]Kontrola XBMC przez UPnP i HTTP · Współdzielenie plików[CR]Aktywacja Zeroconf · Ustawienia AirPlay"
+msgstr "[B]KONFIGURACJA USŁUG[/B][CR][CR]Kontrola XBMC przez UPnP i HTTP · Współdzielenie plików[CR]Aktywacja Zeroconf · Ustawienia AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -482,7 +482,7 @@ msgstr "Ta zakładka oznacza iż za krawędzią tego okna jest menu, które zawi
 
 msgctxt "#31413"
 msgid "Local subtitle available"
-msgstr "Znaleziono napisy na dysku"
+msgstr "Dostępne lokalne napisy"
 
 msgctxt "#31420"
 msgid "Login"
@@ -522,7 +522,7 @@ msgstr "Usuń grupę"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
-msgstr "Dostępne[CR]Grupy"
+msgstr "Dostępne[CR]grupy"
 
 msgctxt "#31509"
 msgid "Channel Group"
@@ -530,7 +530,7 @@ msgstr "Grupa kanałów"
 
 msgctxt "#31510"
 msgid "Timer Set"
-msgstr "Zaplanowano zamknięcie"
+msgstr "Zaplanowane zamknięcie"
 
 msgctxt "#31511"
 msgid "Channel Options"

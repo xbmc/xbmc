@@ -178,7 +178,7 @@ msgstr "Reproducir trailers en ventana [COLOR=grey3](Sólo diálogo de informaci
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
-msgstr "Opciones de miscelánea"
+msgstr "Opciones varias"
 
 msgctxt "#31107"
 msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
@@ -230,7 +230,7 @@ msgstr "Mostrar vídeo en reproducción en el fondo"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Reproducir canciones de series en la colección de vídeo (complemento TvTunes)"
+msgstr "Reproducir sintonías en la colección de vídeo (complemento TvTunes)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -310,7 +310,7 @@ msgstr "Proveedor de Datos"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
-msgstr "Ocultar fanarts"
+msgstr "Ocultar Fanart"
 
 msgctxt "#31308"
 msgid "Movie Details"
@@ -326,7 +326,7 @@ msgstr "Pista número"
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
-msgstr "Imagen fanart[CR][CR]no disponible[CR][CR]Click para elegir"
+msgstr "Imagen fanart[CR][CR]no disponible[CR][CR] Click para elegir"
 
 msgctxt "#31312"
 msgid "Current Scraper"
@@ -338,11 +338,11 @@ msgstr "Elige un scraper"
 
 msgctxt "#31314"
 msgid "Content Scanning Options"
-msgstr "Opciones de escanéo de contenido"
+msgstr "Opciones de escaneo de contenido"
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
-msgstr "Selecciona ruta del fanart"
+msgstr "Seleccionar ruta del fanart"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -358,7 +358,7 @@ msgstr "Selector de canción de karaoke"
 
 msgctxt "#31322"
 msgid "Aired"
-msgstr "Estrenado"
+msgstr "Emitido"
 
 msgctxt "#31325"
 msgid "Playlist Options"
@@ -442,7 +442,7 @@ msgstr "[B]Configura las opciones de APARIENCIA[/B][CR][CR]Cambia la skin - Camb
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]Configura las opciones de VÍDEO[/B][CR][CR]Administra su colección de vídeo - Ajusta reproducción de vídeo - Cambia opciones de listas de vídeo[CR]Configura fuentes de subtítulos"
+msgstr "[B]Configura las opciones de VÍDEO[/B][CR][CR]Administra tu colección de vídeo - Ajusta reproducción de vídeo - Cambia opciones de listas de vídeo[CR]Configura fuentes de subtítulos"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
@@ -466,11 +466,11 @@ msgstr "[B]Configura los ADD-ONS[/B][CR][CR]Administra tus addons instalados · 
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]CONFIGURAR OPCIONES DE TV[/B][CR][CR]Cambiar info pantalla completa ·  Especificar datos de guía EPG"
+msgstr "[B]Configura las opciones de TV[/B][CR][CR]Cambiar info pantalla completa ·  Especificar datos de guía EPG"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]AJUSTES DEL SERVICIO[/B][CR][CR]Ajustes para controlar XBMC por UPnP y HTTP - Ajustes de compartición de archivos[CR]Activar Zeroconf - Ajustes de AirPlay"
+msgstr "[B]Ajustes del SERVICIO[/B][CR][CR]Ajustes para controlar XBMC por UPnP y HTTP - Ajustes de compartición de archivos[CR]Activar Zeroconf - Ajustes de AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -478,7 +478,7 @@ msgstr "Ayuda para la primera vez..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
-msgstr "Esta pestaña significa que hay un menú a un lado de esta ventana que contiene opciones adicionales para esta sección. Para acceder al menú, desplácese a la izquierda con el mando a distancia o el teclado o sitúe el puntero del ratón sobre la pestaña. [CR][CR] Haga clic en \"Aceptar\" para cerrar este cuadro de diálogo. No volverá a aparecer."
+msgstr "Esta pestaña significa que hay un menú a un lado de esta ventana que contiene opciones adicionales para esta sección. Para acceder al menú, desplácese a la izquierda con el mando a distancia o el teclado, o sitúe el puntero del ratón sobre la pestaña. [CR][CR]Haga clic en \"Aceptar\" para cerrar este cuadro de diálogo. No volverá a aparecer."
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -510,7 +510,7 @@ msgstr "TV en directo"
 
 msgctxt "#31503"
 msgid "Add Group"
-msgstr "Añdadir Grupo"
+msgstr "Añadir Grupo"
 
 msgctxt "#31504"
 msgid "Rename Group"
