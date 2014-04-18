@@ -418,10 +418,9 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
   CStdString strDestPath;
   std::vector<CStdString> vecFiles;
 
-  CStdString strCurrentFilePath = URIUtils::GetDirectory(strCurrentFile);
+  CStdString strCurrentFilePath;
   if (StringUtils::StartsWith(strCurrentFilePath, "http://"))
   {
-    strCurrentFilePath = "";
     strCurrentFile = "TempSubtitle";
     vecFiles.push_back(strCurrentFile);
   }
@@ -430,6 +429,15 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
     CStdString subPath = CSpecialProtocol::TranslatePath("special://subtitles");
     if (!subPath.empty())
       strDownloadPath = subPath;
+
+    /* Get item's folder for sub storage, special case for RAR/ZIP items
+       TODO: We need some way to avoid special casing this all over the place
+             for rar/zip (perhaps modify GetDirectory?)
+     */
+    if (URIUtils::IsInRAR(strCurrentFile) || URIUtils::IsInZIP(strCurrentFile))
+      strCurrentFilePath = URIUtils::GetDirectory(CURL(strCurrentFile).GetHostName());
+    else
+      strCurrentFilePath = URIUtils::GetDirectory(strCurrentFile);
 
     // Handle stacks
     if (g_application.CurrentFileItem().IsStack() && items->Size() > 1)
