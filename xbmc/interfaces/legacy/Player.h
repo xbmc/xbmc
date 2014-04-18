@@ -306,10 +306,10 @@ namespace XBMCAddon
       InfoTagMusic* getMusicInfoTag() throw (PlayerException);
 
       /**
-       *getTotalTime() -- Returns the total time of the current playing media in
-       *                  seconds.  This is only accurate to the full second.
+       * getTotalTime() -- Returns the total time of the current playing media in
+       *                   seconds.  This is only accurate to the full second.
        *
-       *Throws: Exception, if player is not playing a file.
+       * Throws: Exception, if player is not playing a file.
        */
       double getTotalTime() throw (PlayerException);
 

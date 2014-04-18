@@ -54,7 +54,7 @@ namespace XBMCAddon
        * listitem       : [opt] listitem - used with setInfo() to set different infolabels.\n
        * index          : [opt] integer - position to add playlist item. (default=end)
        * 
-       * *Note, You can use the above as keywords for arguments and skip certain optional arguments.
+       * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
        *        Once you use a keyword, all following arguments require the keyword.
        * 
        * example:
