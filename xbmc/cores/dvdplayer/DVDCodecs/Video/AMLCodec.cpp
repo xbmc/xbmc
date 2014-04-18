@@ -1069,7 +1069,7 @@ int pre_header_feeding(am_private_t *para, am_packet_t *pkt)
             }
         }
 
-        if (VFORMAT_H264 == para->video_format /*|| VFORMAT_H264MVC == para->video_format*/) {
+        if (VFORMAT_H264 == para->video_format || VFORMAT_H264_4K2K == para->video_format) {
             ret = h264_write_header(para, pkt);
             if (ret != PLAYER_SUCCESS) {
                 return ret;
@@ -1512,6 +1512,11 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
     am_private->video_rotation_degree = 3;
   // handle extradata
   am_private->video_format      = codecid_to_vformat(hints.codec);
+  if (am_private->video_format == VFORMAT_H264) {
+      if (hints.width > 1920 || hints.height > 1088) {
+        am_private->video_format = VFORMAT_H264_4K2K;
+      }
+  }
   switch (am_private->video_format)
   {
     default:
@@ -1574,6 +1579,13 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
       if (m_hints.ptsinvalid)
         am_private->gcodec.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
       break;
+    case VFORMAT_H264_4K2K:
+      am_private->gcodec.format = VIDEO_DEC_FORMAT_H264_4K2K;
+      am_private->gcodec.param  = (void*)EXTERNAL_PTS;
+      // h264 in an avi file
+      if (m_hints.ptsinvalid)
+        am_private->gcodec.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
+      break; 
     case VFORMAT_REAL:
       am_private->stream_type = AM_STREAM_RM;
       am_private->vcodec.noblock = 1;
@@ -1871,7 +1883,7 @@ void CAMLCodec::SetSpeed(int speed)
       break;
     default:
       m_dll->codec_resume(&am_private->vcodec);
-      if (am_private->video_format == VFORMAT_H264)
+      if ((am_private->video_format == VFORMAT_H264) || (am_private->video_format == VFORMAT_H264_4K2K))
         m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_FFFB);
       else
         m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_I);
