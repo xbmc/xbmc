@@ -126,11 +126,11 @@ msgstr "Échéance"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Tri : Ascendant"
+msgstr "Tri : ascendant"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Tri : Descendant"
+msgstr "Tri : descendant"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -174,7 +174,7 @@ msgstr "Afficher « Pause » dans le diaporama d'images"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
-msgstr "Lire les bandes annonces dans une fenêtre [COLOR=grey3](Ecran d'information sur la vidéo uniquement)[/COLOR]"
+msgstr "Lire les bandes annonces dans une fenêtre [COLOR=grey3](Écran d'information sur la vidéo uniquement)[/COLOR]"
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
@@ -214,7 +214,7 @@ msgstr "Afficher les vidéos récemment ajoutées"
 
 msgctxt "#31118"
 msgid "Home Page Programs Sub-menu"
-msgstr "Page d'accueil du sous menu Programmes"
+msgstr "Page d'accueil du sous-menu Programmes"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
@@ -230,7 +230,7 @@ msgstr "Afficher la visualisation en cours de lecture en arrière-plan"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Jouer les génériques TV dans la médiathèque vidéo (extension TvTunes)"
+msgstr "Jouer les génériques TV dans la vidéothèque (extension TvTunes)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -242,7 +242,7 @@ msgstr "Paroles"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualisation"
-msgstr "Cacher Fanart en mode plein ecran"
+msgstr "Cacher Fanart en mode plein écran"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -250,15 +250,15 @@ msgstr "Extension gérant les paroles"
 
 msgctxt "#31134"
 msgid "Home Page Videos Sub-menu"
-msgstr "Page d'accueil du sous menu Vidéos"
+msgstr "Page d'accueil du sous-menu Vidéos"
 
 msgctxt "#31135"
 msgid "Home Page Music Sub-menu"
-msgstr "Page d'accueil du sous menu Musiques"
+msgstr "Page d'accueil du sous-menu Musique"
 
 msgctxt "#31136"
 msgid "Home Page Pictures Sub-menu"
-msgstr "Page d'accueil du sous menu Images"
+msgstr "Page d'accueil du sous-menu Images"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -334,7 +334,7 @@ msgstr "Scraper actuel"
 
 msgctxt "#31313"
 msgid "Choose a Scraper"
-msgstr "Choisissez un scraper"
+msgstr "Choisissez un Scraper"
 
 msgctxt "#31314"
 msgid "Content Scanning Options"
@@ -406,7 +406,7 @@ msgstr "Retour rapide"
 
 msgctxt "#31355"
 msgid "Movie menu"
-msgstr "Menu film"
+msgstr "Menu Film"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
@@ -466,7 +466,7 @@ msgstr "[B]CONFIGURATION DES EXTENSIONS[/B][CR][CR]Gérer les extensions install
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]CONFIGURER RÉGLAGES TV[/B][CR][CR]Changer les informations de plein écran · Gérer les données du Guide des Programmes"
+msgstr "[B]CONFIGURER RÉGLAGES TV[/B][CR][CR]Changer les informations de plein écran · Gérer les données du guide des programmes"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
@@ -510,15 +510,15 @@ msgstr "TV Direct"
 
 msgctxt "#31503"
 msgid "Add Group"
-msgstr "Ajouter un Groupe"
+msgstr "Ajouter un groupe"
 
 msgctxt "#31504"
 msgid "Rename Group"
-msgstr "Renommer le Groupe"
+msgstr "Renommer le groupe"
 
 msgctxt "#31505"
 msgid "Delete Group"
-msgstr "Supprimer le Groupe"
+msgstr "Supprimer le groupe"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
@@ -526,7 +526,7 @@ msgstr "Groupes[CR]disponibles"
 
 msgctxt "#31509"
 msgid "Channel Group"
-msgstr "Groupe des Chaînes"
+msgstr "Groupe des chaînes"
 
 msgctxt "#31510"
 msgid "Timer Set"
@@ -534,7 +534,7 @@ msgstr "Réglage de la minuterie"
 
 msgctxt "#31511"
 msgid "Channel Options"
-msgstr "Options des Chaînes"
+msgstr "Options des chaînes"
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"
@@ -566,11 +566,11 @@ msgstr "Récupération des prévisions météo…"
 
 msgctxt "#31910"
 msgid "Map & Alerts"
-msgstr "Carte & Alertes"
+msgstr "Carte & alertes"
 
 msgctxt "#31950"
 msgid "WEATHER"
-msgstr "METEO"
+msgstr "MÉTÉO"
 
 msgctxt "#31951"
 msgid "PICTURES"
@@ -582,7 +582,7 @@ msgstr "TV DIRECT"
 
 msgctxt "#31953"
 msgid "VIDEOS"
-msgstr "VIDEOS"
+msgstr "VIDÉOS"
 
 msgctxt "#31954"
 msgid "MOVIES"
@@ -590,7 +590,7 @@ msgstr "FILMS"
 
 msgctxt "#31955"
 msgid "TV SHOWS"
-msgstr "SERIES TV"
+msgstr "SÉRIES TV"
 
 msgctxt "#31956"
 msgid "MUSIC"
@@ -606,4 +606,4 @@ msgstr "LIRE LE DISQUE"
 
 msgctxt "#31959"
 msgid "SYSTEM"
-msgstr "SYSTEME"
+msgstr "SYSTÈME"

@@ -230,7 +230,7 @@ msgstr "배경에 \"지금 재생중\" 시각화 보기"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "라이브러리 모드에서 TV 주제음악 재생 (TvTunes 추가기능)"
+msgstr "라이브러리 모드에서 TV 주제음악 재생 (TvTunes 애드온)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -246,7 +246,7 @@ msgstr "전체 화면 시각화에서 팬아트 숨기기"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
-msgstr "가사 추가기능"
+msgstr "가사 애드온"
 
 msgctxt "#31134"
 msgid "Home Page Videos Sub-menu"
@@ -406,7 +406,7 @@ msgstr "되감기"
 
 msgctxt "#31355"
 msgid "Movie menu"
-msgstr "자막 추가기능"
+msgstr "자막 애드온"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
@@ -462,7 +462,7 @@ msgstr "[B]시스템 설정[/B][CR][CR]화면 설정 및 조정 · 오디오 출
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]추가기능 설정[/B][CR][CR]설치한 추가기능 관리 · xbmc.org에서 추가기능 찾기 및 설치[CR]추가기능 설정 변경"
+msgstr "[B] 애드온 설정[/B][CR][CR]설치한 애드온 관리 · xbmc.org에서 애드온 찾기 및 설치[CR] 애드온 설정 변경"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"

@@ -190,7 +190,7 @@ msgstr "Ocultar botões do Menu Principal"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr "Ativar imagem de fundo customizado"
+msgstr "Ativar imagem de fundo personalizada"
 
 msgctxt "#31110"
 msgid "Background path:"
@@ -518,7 +518,7 @@ msgstr "Renomear Grupo"
 
 msgctxt "#31505"
 msgid "Delete Group"
-msgstr "Deletar Grupo"
+msgstr "Excluir grupo"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
@@ -590,7 +590,7 @@ msgstr "FILMES"
 
 msgctxt "#31955"
 msgid "TV SHOWS"
-msgstr "SERIADOS"
+msgstr "SÉRIES DE TV"
 
 msgctxt "#31956"
 msgid "MUSIC"
