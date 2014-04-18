@@ -2,6 +2,7 @@ abs_top_srcdir=@abs_top_srcdir@
 
 TOOLCHAIN=@use_toolchain@
 NDKROOT=@use_ndk@
+NDK_VER=@use_ndk_ver@
 SDKROOT=@use_sdk_path@
 XBMCROOT=$(abspath $(abs_top_srcdir)/../../)
 TARBALLS_LOCATION=@use_tarballs@
@@ -47,10 +48,10 @@ READELF=@READELF@
 OBJDUMP=@OBJDUMP@
 
 CMAKE=@prefix@/@tool_dir@/bin/cmake -DCMAKE_TOOLCHAIN_FILE=$(PREFIX)/share/Toolchain.cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX)
-CFLAGS=@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include
+CFLAGS=@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include -DNDK_VER=@use_ndk_ver@
 LDFLAGS=-L@prefix@/@deps_dir@/lib @platform_ldflags@
-CXXFLAGS=@platform_cxxflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include
-CPPFLAGS=@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include
+CXXFLAGS=@platform_cxxflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include -DNDK_VER=@use_ndk_ver@
+CPPFLAGS=@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include -DNDK_VER=@use_ndk_ver@
 
 PATH:=@prefix@/@tool_dir@/bin:$(PATH)
 ifneq (@use_build_toolchain@,)
