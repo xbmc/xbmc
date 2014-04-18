@@ -16,6 +16,10 @@ msgstr ""
 "Language: es_AR\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "Detalles [Alto uso de CPU]"
+
 msgctxt "#30001"
 msgid "Low"
 msgstr "Min"
@@ -32,6 +36,14 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "Extrema"
 
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Modo nervioso [más cambios de modo]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Velocidad [saltea algunos cuadros]"
+
 msgctxt "#30007"
 msgid "Very Low"
 msgstr "Muy lenta"
@@ -47,3 +59,7 @@ msgstr "Normal"
 msgctxt "#30010"
 msgid "High"
 msgstr "Alto"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Usar persistencia en archivo [arranque más rápido]"

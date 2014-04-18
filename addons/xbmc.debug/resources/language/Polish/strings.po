@@ -18,28 +18,32 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Verbose logging for SMB library"
-msgstr "Pełne diagnozowanie biblioteki SMB"
+msgstr "Szczegółowa diagnostyka biblioteki SMB"
 
 msgctxt "#30001"
 msgid "Verbose logging for CURL library (http, dav)"
-msgstr "Pełne diagnozowanie biblioteki CURL (http, dav)"
+msgstr "Szczegółowa diagnostyka biblioteki CURL (http, dav)"
 
 msgctxt "#30002"
 msgid "Verbose logging for CMYTH library"
-msgstr "Pełne diagnozowanie biblioteki CMYTH"
+msgstr "Szczegółowa diagnostyka biblioteki CMYTH"
 
 msgctxt "#30003"
 msgid "Verbose logging for FFMPEG libraries"
-msgstr "Pełne diagnozowanie  bibliotek FFMPEG"
+msgstr "Szczegółowa diagnostyka bibliotek FFMPEG"
 
 msgctxt "#30004"
 msgid "Verbose logging for RTMP library"
-msgstr "Pełne diagnozowanie biblioteki RTMP"
+msgstr "Szczegółowa diagnostyka biblioteki RTMP"
 
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
-msgstr "Pełne diagnozowanie wywołań DBUS"
+msgstr "Szczegółowa diagnostyka wywołań DBUS"
 
 msgctxt "#30006"
 msgid "Verbose logging for JSON-RPC requests"
-msgstr "Pełne diagnozowanie żądań JSON-RPC"
+msgstr "Szczegółowa diagnostyka żądań JSON-RPC"
+
+msgctxt "#30007"
+msgid "Verbose logging for AUDIO component"
+msgstr "Szczegółowa diagnostyka komponentu AUDIO"

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.2.13"
+  version="2.2.14"
   name="Default"
   provider-name="Team XBMC">
   <requires>
@@ -119,7 +119,7 @@
     <description lang="sk">Predvolené webové rozhranie pre XBMC; Navrhnuté pre zariadenia zobrazujúce v akomkoľvek rozlíšení</description>
     <description lang="sl">Privzet spletni vmesnik za XBMC, ustvarjen za naprave vseh ločljivosti</description>
     <description lang="sr">Подразумевани веб интерфејс XBMC-а, намењен уређајима свих резолуција</description>
-    <description lang="sv">Standardwebbgränssnitt för XBMC; Designat för enheter med alla upplösningar</description>
+    <description lang="sv">Standardwebbgränssnitt för XBMC; Utformat för alla enheter oavsett skärmupplösning</description>
     <description lang="ta_IN">XBMC முன்னிருப்பு இணைய இடைமுகம்; அனைத்து சாதனங்களின் தெளிவிற்காக வடிவமைக்கப்பட்டுள்ளது</description>
     <description lang="tg">Интерфейси веби пешфарз барои XBMC; Барои ҳар гуна дастгоҳ бо возеҳии экранаш гуногун эҷод карда шудааст</description>
     <description lang="th">ส่วนประสานหน้าเว็บพื้นฐานสำหรับ XBMC ได้ออกแบบรองรับความละเอียดหน้าจอของอุปกรณ์ทั้งหมด</description>

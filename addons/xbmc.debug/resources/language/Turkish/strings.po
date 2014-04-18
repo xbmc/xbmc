@@ -43,3 +43,7 @@ msgstr "DBUS çağrıları için ayrıntılı günlük"
 msgctxt "#30006"
 msgid "Verbose logging for JSON-RPC requests"
 msgstr "JSON-RPC istekleri için ayrıntılı günlük"
+
+msgctxt "#30007"
+msgid "Verbose logging for AUDIO component"
+msgstr "SES bileşeni için ayrıntılı günlük"
