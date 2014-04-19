@@ -558,7 +558,9 @@ bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItem
   
   bool ret = CGUIMediaWindow::GetDirectory(u.Get(), items);
 
+#ifndef TARGET_RASPBERRY_PI
   m_thumbCache.Load(items);
+#endif
 
   CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(u.GetHostName());
   if (server && server->GetActiveConnection() && server->GetActiveConnection()->IsLocal())
