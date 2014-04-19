@@ -574,7 +574,9 @@ CAnimation CAnimation::CreateFader(float start, float end, unsigned int delay, u
 {
   CAnimation anim;
   anim.m_type = type;
-  anim.AddEffect(new CFadeEffect(start, end, delay, length));
+  anim.m_delay = delay;
+  anim.m_length = length;
+  anim.m_effects.push_back(new CFadeEffect(start, end, delay, length));
   return anim;
 }
 
@@ -698,19 +700,6 @@ void CAnimation::AddEffect(const CStdString &type, const TiXmlElement *node, con
 
   if (effect)
     m_effects.push_back(effect);
-}
-
-void CAnimation::AddEffect(CAnimEffect *effect)
-{
-  m_effects.push_back(effect);
-  unsigned int total = m_delay + m_length;
-  // our delay is the minimum of all the effect delays
-  if (effect->GetDelay() < m_delay)
-    m_delay = effect->GetDelay();
-  // our total length is the maximum of all the effect lengths
-  if (effect->GetLength() > total)
-    total = effect->GetLength();
-  m_length = total - m_delay;
 }
 
 CScroller::CScroller(unsigned int duration /* = 200 */, boost::shared_ptr<Tweener> tweener /* = NULL */)
