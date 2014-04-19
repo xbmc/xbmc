@@ -179,6 +179,8 @@ void CAdvancedSettings::Initialize()
   m_stagefrightConfig.useSwRenderer = false;
   m_stagefrightConfig.useInputDTS = false;
 
+  m_mediacodecForceSoftwareRendring = false;
+
   m_videoDefaultLatency = 0.0;
   m_videoDisableHi10pMultithreading = false;
 
@@ -614,6 +616,8 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
       XMLUtils::GetBoolean(pStagefrightElem,"useswrenderer",m_stagefrightConfig.useSwRenderer);
       XMLUtils::GetBoolean(pStagefrightElem,"useinputdts",m_stagefrightConfig.useInputDTS);
     }
+
+    XMLUtils::GetBoolean(pElement,"mediacodecforcesoftwarerendering",m_mediacodecForceSoftwareRendring);
 
     TiXmlElement* pAdjustRefreshrate = pElement->FirstChildElement("adjustrefreshrate");
     if (pAdjustRefreshrate)
