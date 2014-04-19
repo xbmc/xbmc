@@ -546,6 +546,13 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
     // try to fetch an input buffer
     int64_t timeout_us = 5000;
     int index = m_codec->dequeueInputBuffer(timeout_us);
+    if (xbmc_jnienv()->ExceptionOccurred())
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Decode ExceptionOccurred");
+      xbmc_jnienv()->ExceptionDescribe();
+      xbmc_jnienv()->ExceptionClear();
+      return VC_ERROR;
+    }
     if (index >= 0)
     {
       // docs lie, getInputBuffers should be good after
@@ -785,6 +792,13 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
   int64_t timeout_us = 5000;
   CJNIMediaCodecBufferInfo bufferInfo;
   int index = m_codec->dequeueOutputBuffer(bufferInfo, timeout_us);
+  if (xbmc_jnienv()->ExceptionOccurred())
+  {
+    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture ExceptionOccurred");
+    xbmc_jnienv()->ExceptionDescribe();
+    xbmc_jnienv()->ExceptionClear();
+    return 0;
+  }
   if (index >= 0)
   {
     if (m_drop)
