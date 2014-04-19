@@ -653,7 +653,6 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
       m_repeatAnim = ANIM_REPEAT_LOOP;
   }
 
-  m_delay = 0xffffffff;
   if (!effect)
   { // old layout:
     // <animation effect="fade" start="0" end="100" delay="10" time="2000" condition="blahdiblah" reversible="false">focus</animation>
@@ -670,6 +669,15 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
     AddEffect(type, effect, rect);
     effect = effect->NextSiblingElement("effect");
   }
+  // compute the minimum delay and maximum length
+  m_delay = 0xffffffff;
+  unsigned int total = 0;
+  for (vector<CAnimEffect*>::const_iterator i = m_effects.begin(); i != m_effects.end(); ++i)
+  {
+    m_delay = min(m_delay, (*i)->GetDelay());
+    total   = max(total, (*i)->GetLength());
+  }
+  m_length = total - m_delay;
 }
 
 void CAnimation::AddEffect(const CStdString &type, const TiXmlElement *node, const CRect &rect)
@@ -689,18 +697,20 @@ void CAnimation::AddEffect(const CStdString &type, const TiXmlElement *node, con
     effect = new CZoomEffect(node, rect);
 
   if (effect)
-    AddEffect(effect);
+    m_effects.push_back(effect);
 }
 
 void CAnimation::AddEffect(CAnimEffect *effect)
 {
   m_effects.push_back(effect);
+  unsigned int total = m_delay + m_length;
   // our delay is the minimum of all the effect delays
   if (effect->GetDelay() < m_delay)
     m_delay = effect->GetDelay();
-  // our length is the maximum of all the effect lengths
-  if (effect->GetLength() > m_delay + m_length)
-    m_length = effect->GetLength() - m_delay;
+  // our total length is the maximum of all the effect lengths
+  if (effect->GetLength() > total)
+    total = effect->GetLength();
+  m_length = total - m_delay;
 }
 
 CScroller::CScroller(unsigned int duration /* = 200 */, boost::shared_ptr<Tweener> tweener /* = NULL */)
