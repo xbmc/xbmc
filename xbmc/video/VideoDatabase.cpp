@@ -2100,7 +2100,7 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
       idMovie = GetMovieId(strFilenameAndPath);
 
     if (idMovie > -1)
-      DeleteMovie(strFilenameAndPath, true, idMovie); // true to keep the table entry
+      DeleteMovie(idMovie, true); // true to keep the table entry
     else
     {
       // only add a new movie if we don't already have a valid idMovie
@@ -2361,7 +2361,7 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
       idEpisode = GetEpisodeId(strFilenameAndPath);
 
     if (idEpisode > 0)
-      DeleteEpisode(strFilenameAndPath, idEpisode, true); // true to keep the table entry
+      DeleteEpisode(idEpisode, true); // true to keep the table entry
     else
     {
       // only add a new episode if we don't already have a valid idEpisode
@@ -2471,7 +2471,7 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
       idMVideo = GetMusicVideoId(strFilenameAndPath);
 
     if (idMVideo > -1)
-      DeleteMusicVideo(strFilenameAndPath, true, idMVideo); // Keep id
+      DeleteMusicVideo(idMVideo, true); // Keep id
     else
     {
       // only add a new musicvideo if we don't already have a valid idMVideo
@@ -2948,29 +2948,22 @@ void CVideoDatabase::DeleteBookMarkForEpisode(const CVideoInfoTag& tag)
 }
 
 //********************************************************************************************************************************
+void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKeepId /* = false */)
+{
+  int idMovie = GetMovieId(strFilenameAndPath);
+  if (idMovie > -1)
+    DeleteMovie(idMovie, bKeepId);
+}
+
 void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */)
 {
   if (idMovie < 0)
     return;
 
-  CStdString path;
-  GetFilePathById(idMovie, path, VIDEODB_CONTENT_MOVIES);
-  if (!path.empty())
-    DeleteMovie(path, bKeepId, idMovie);
-}
-
-void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKeepId /* = false */, int idMovie /* = -1 */)
-{
   try
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    if (idMovie < 0)
-    {
-      idMovie = GetMovieId(strFilenameAndPath);
-      if (idMovie < 0)
-        return;
-    }
 
     BeginTransaction();
 
@@ -2993,14 +2986,17 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKee
     strSQL=PrepareSQL("delete from writerlinkmovie where idMovie=%i", idMovie);
     m_pDS->exec(strSQL.c_str());
 
-    DeleteStreamDetails(GetFileId(strFilenameAndPath));
+    // TODO: Why are we deleting stream details here?
+    int idFile = GetDbId(PrepareSQL("SELECT idFile FROM movie WHERE idMovie=%i", idMovie));
+    DeleteStreamDetails(idFile);
 
     // keep the movie table entry, linking to tv shows, and bookmarks
     // so we can update the data in place
     // the ancilliary tables are still purged
     if (!bKeepId)
     {
-      ClearBookMarksOfFile(strFilenameAndPath);
+      // TODO: Why are we clearing bookmarks here?
+      ClearBookMarksOfFile(idFile);
 
       strSQL=PrepareSQL("delete from movie where idMovie=%i", idMovie);
       m_pDS->exec(strSQL.c_str());
@@ -3008,9 +3004,10 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKee
       strSQL=PrepareSQL("delete from movielinktvshow where idMovie=%i", idMovie);
       m_pDS->exec(strSQL.c_str());
 
-      CStdString strPath, strFileName;
-      SplitPath(strFilenameAndPath,strPath,strFileName);
-      InvalidatePathHash(strPath);
+      // TODO: Why are we invalidating paths here?
+      std::string path = GetSingleValue(PrepareSQL("SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i", idFile));
+      if (!path.empty())
+        InvalidatePathHash(path);
     }
 
     //TODO: move this below CommitTransaction() once UPnP doesn't rely on this anymore
@@ -3053,15 +3050,11 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
 
     BeginTransaction();
 
-    CStdString strSQL=PrepareSQL("select episode.idEpisode,path.strPath,files.strFileName from episode,path,files where episode.idShow=%i and episode.idFile=files.idFile and files.idPath=path.idPath",idTvShow);
+    CStdString strSQL=PrepareSQL("SELECT episode.idEpisode FROM episode WHERE episode.idShow=%i",idTvShow);
     m_pDS2->query(strSQL.c_str());
     while (!m_pDS2->eof())
     {
-      CStdString strFilenameAndPath;
-      CStdString strPath = m_pDS2->fv("path.strPath").get_asString();
-      CStdString strFileName = m_pDS2->fv("files.strFilename").get_asString();
-      ConstructPath(strFilenameAndPath, strPath, strFileName);
-      DeleteEpisode(strFilenameAndPath, m_pDS2->fv(0).get_asInt(), bKeepId);
+      DeleteEpisode(m_pDS2->fv(0).get_asInt(), bKeepId);
       m_pDS2->next();
     }
 
@@ -3094,7 +3087,7 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strPath.c_str());
+    CLog::Log(LOGERROR, "%s (%d) failed", __FUNCTION__, idTvShow);
     RollbackTransaction();
   }
 }
@@ -3113,21 +3106,13 @@ void CVideoDatabase::DeleteSeason(int idSeason, bool bKeepId /* = false */)
 
     BeginTransaction();
 
-    CStdString strSQL = PrepareSQL("SELECT episode.idEpisode, path.strPath, files.strFileName FROM episode "
-                                   "JOIN seasons ON seasons.idSeason = %d AND episode.idShow = seasons.idShow AND episode.c%02d = seasons.season "
-                                   "JOIN files ON files.idFile = episode.idFile "
-                                   "JOIN path ON path.idPath = files.idPath",
+    CStdString strSQL = PrepareSQL("SELECT episode.idEpisode FROM episode "
+                                   "JOIN seasons ON seasons.idSeason = %d AND episode.idShow = seasons.idShow AND episode.c%02d = seasons.season ",
                                    idSeason, VIDEODB_ID_EPISODE_SEASON);
     m_pDS2->query(strSQL.c_str());
     while (!m_pDS2->eof())
     {
-      CStdString strPath = m_pDS2->fv("path.strPath").get_asString();
-      CStdString strFileName = m_pDS2->fv("files.strFilename").get_asString();
-
-      CStdString strFilenameAndPath;
-      ConstructPath(strFilenameAndPath, strPath, strFileName);
-
-      DeleteEpisode(strFilenameAndPath, m_pDS2->fv(0).get_asInt(), bKeepId);
+      DeleteEpisode(m_pDS2->fv(0).get_asInt(), bKeepId);
       m_pDS2->next();
     }
 
@@ -3142,31 +3127,22 @@ void CVideoDatabase::DeleteSeason(int idSeason, bool bKeepId /* = false */)
   }
 }
 
+void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, bool bKeepId /* = false */)
+{
+  int idEpisode = GetEpisodeId(strFilenameAndPath);
+  if (idEpisode > -1)
+    DeleteEpisode(idEpisode, bKeepId);
+}
+
 void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
 {
   if (idEpisode < 0)
     return;
 
-  CStdString path;
-  GetFilePathById(idEpisode, path, VIDEODB_CONTENT_EPISODES);
-  if (!path.empty())
-    DeleteEpisode(path, idEpisode, bKeepId);
-}
-
-void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, int idEpisode /* = -1 */, bool bKeepId /* = false */)
-{
   try
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    if (idEpisode < 0)
-    {
-      idEpisode = GetEpisodeId(strFilenameAndPath);
-      if (idEpisode < 0)
-      {
-        return ;
-      }
-    }
 
     //TODO: move this below CommitTransaction() once UPnP doesn't rely on this anymore
     if (!bKeepId)
@@ -3182,13 +3158,16 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, int idE
     strSQL=PrepareSQL("delete from writerlinkepisode where idEpisode=%i", idEpisode);
     m_pDS->exec(strSQL.c_str());
 
-    DeleteStreamDetails(GetFileId(strFilenameAndPath));
+    // TODO: Why are we deleting stream details here?
+    int idFile = GetDbId(PrepareSQL("SELECT idFile FROM episode WHERE idEpisode=%i", idEpisode));
+    DeleteStreamDetails(idFile);
 
     // keep episode table entry and bookmarks so we can update the data in place
     // the ancilliary tables are still purged
     if (!bKeepId)
     {
-      ClearBookMarksOfFile(strFilenameAndPath);
+      // TODO: Why are we clearing bookmarks here?
+      ClearBookMarksOfFile(idFile);
 
       strSQL=PrepareSQL("delete from episode where idEpisode=%i", idEpisode);
       m_pDS->exec(strSQL.c_str());
@@ -3197,33 +3176,26 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, int idE
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "%s (%d) failed", __FUNCTION__, idEpisode);
   }
 }
 
-void CVideoDatabase::DeleteMusicVideo(int idMusicVideo, bool bKeepId /* = false */)
+void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath, bool bKeepId /* = false */)
 {
-  if (idMusicVideo < 0)
-    return;
-
-  CStdString path;
-  GetFilePathById(idMusicVideo, path, VIDEODB_CONTENT_MUSICVIDEOS);
-  if (!path.empty())
-    DeleteMusicVideo(path, bKeepId, idMusicVideo);
+  int idMVideo = GetMusicVideoId(strFilenameAndPath);
+  if (idMVideo > -1)
+    DeleteMusicVideo(idMVideo, bKeepId);
 }
 
-void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath, bool bKeepId /* = false */, int idMVideo /* = -1 */)
+void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
 {
+  if (idMVideo < 0)
+    return;
+
   try
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    if (idMVideo < 0)
-    {
-      idMVideo = GetMusicVideoId(strFilenameAndPath);
-      if (idMVideo < 0)
-        return;
-    }
 
     BeginTransaction();
 
@@ -3240,20 +3212,24 @@ void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath, bool
     strSQL=PrepareSQL("delete from studiolinkmusicvideo where idMVideo=%i", idMVideo);
     m_pDS->exec(strSQL.c_str());
 
-    DeleteStreamDetails(GetFileId(strFilenameAndPath));
+    // TODO: Why are we deleting stream details here?
+    int idFile = GetDbId(PrepareSQL("SELECT idFile FROM musicvideo WHERE idMVideo=%i", idMVideo));
+    DeleteStreamDetails(idFile);
 
     // keep the music video table entry and bookmarks so we can update data in place
     // the ancilliary tables are still purged
     if (!bKeepId)
     {
-      ClearBookMarksOfFile(strFilenameAndPath);
+      // TODO: Why are we clearing bookmarks here?
+      ClearBookMarksOfFile(idFile);
 
       strSQL=PrepareSQL("delete from musicvideo where idMVideo=%i", idMVideo);
       m_pDS->exec(strSQL.c_str());
 
-      CStdString strPath, strFileName;
-      SplitPath(strFilenameAndPath,strPath,strFileName);
-      InvalidatePathHash(strPath);
+      // TODO: Why are we invalidating paths here?
+      std::string path = GetSingleValue(PrepareSQL("SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i", idFile));
+      if (!path.empty())
+        InvalidatePathHash(path);
     }
 
     //TODO: move this below CommitTransaction() once UPnP doesn't rely on this anymore

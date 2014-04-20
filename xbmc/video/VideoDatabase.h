@@ -477,14 +477,14 @@ public:
                       const std::string &conditionName = "", int conditionValue = -1);
 
   void DeleteMovie(int idMovie, bool bKeepId = false);
-  void DeleteMovie(const CStdString& strFilenameAndPath, bool bKeepId = false, int idMovie = -1);
+  void DeleteMovie(const CStdString& strFilenameAndPath, bool bKeepId = false);
   void DeleteTvShow(int idTvShow, bool bKeepId = false);
   void DeleteTvShow(const CStdString& strPath, bool bKeepId = false, int idTvShow = -1);
   void DeleteSeason(int idSeason, bool bKeepId = false);
   void DeleteEpisode(int idEpisode, bool bKeepId = false);
-  void DeleteEpisode(const CStdString& strFilenameAndPath, int idEpisode = -1, bool bKeepId = false);
+  void DeleteEpisode(const CStdString& strFilenameAndPath, bool bKeepId = false);
   void DeleteMusicVideo(int idMusicVideo, bool bKeepId = false);
-  void DeleteMusicVideo(const CStdString& strFilenameAndPath, bool bKeepId = false, int idMVideo = -1);
+  void DeleteMusicVideo(const CStdString& strFilenameAndPath, bool bKeepId = false);
   void DeleteDetailsForTvShow(const CStdString& strPath, int idTvShow = -1);
   void RemoveContentForPath(const CStdString& strPath,CGUIDialogProgress *progress = NULL);
   void UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE type);
