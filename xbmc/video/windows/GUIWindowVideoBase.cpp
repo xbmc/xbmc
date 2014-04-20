@@ -657,9 +657,9 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
         if (info->Content() == CONTENT_TVSHOWS && item->m_bIsFolder)
         {
           if (pDlgInfo->RefreshAll())
-            m_database.DeleteTvShow(item->GetPath());
+            m_database.DeleteTvShow(movieDetails.m_iDbId);
           else
-            m_database.DeleteDetailsForTvShow(item->GetPath());
+            m_database.DeleteDetailsForTvShow(movieDetails.m_iDbId);
         }
       }
       if (scanner.RetrieveVideoInfo(list,settings.parent_name_root,info->Content(),!ignoreNfo,&scrUrl,pDlgInfo->RefreshAll(),pDlgProgress))

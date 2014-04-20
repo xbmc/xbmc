@@ -1289,7 +1289,7 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
       database.DeleteEpisode(item->GetVideoInfoTag()->m_iDbId);
       break;
     case VIDEODB_CONTENT_TVSHOWS:
-      database.DeleteTvShow(path);
+      database.DeleteTvShow(item->GetVideoInfoTag()->m_iDbId);
       break;
     case VIDEODB_CONTENT_MUSICVIDEOS:
       database.DeleteMusicVideo(item->GetVideoInfoTag()->m_iDbId);
