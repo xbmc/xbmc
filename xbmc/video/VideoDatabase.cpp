@@ -2247,54 +2247,41 @@ int CVideoDatabase::GetMatchingTvShow(const CVideoInfoTag &details)
 
 int CVideoDatabase::SetDetailsForTvShow(const vector< pair<string, string> > &paths, const CVideoInfoTag& details, const map<string, string> &artwork, const map<int, map<string, string> > &seasonArt, int idTvShow /*= -1 */)
 {
-  try
+
+  /*
+   The steps are as follows.
+   1. Check if the tvshow is found on any of the given paths.  If found, we have the show id.
+   2. Search for a matching show.  If found, we have the show id.
+   3. If we don't have the id, add a new show.
+   4. Add the paths to the show.
+   5. Add details for the show.
+   */
+
+  if (idTvShow < 0)
   {
-    if (!m_pDB.get() || !m_pDS.get())
-    {
-      CLog::Log(LOGERROR, "%s: called without database open", __FUNCTION__);
-      return -1;
-    }
-
-    /*
-     The steps are as follows.
-     1. Check if the tvshow is found on any of the given paths.  If found, we have the show id.
-     2. Search for a matching show.  If found, we have the show id.
-     3. If we don't have the id, add a new show.
-     4. Add the paths to the show.
-     5. Add details for the show.
-     */
-
-    if (idTvShow < 0)
-    {
-      for (vector< pair<string, string> >::const_iterator i = paths.begin(); i != paths.end(); ++i)
-      {
-        idTvShow = GetTvShowId(i->first);
-        if (idTvShow > -1)
-          break;
-      }
-    }
-    if (idTvShow < 0)
-      idTvShow = GetMatchingTvShow(details);
-    if (idTvShow < 0)
-    {
-      idTvShow = AddTvShow();
-      if (idTvShow < 0)
-        return -1;
-    }
-
-    // add any paths to the tvshow
     for (vector< pair<string, string> >::const_iterator i = paths.begin(); i != paths.end(); ++i)
-      AddPathToTvShow(idTvShow, i->first, i->second);
-
-    UpdateDetailsForTvShow(idTvShow, details, artwork, seasonArt);
-
-    return idTvShow;
+    {
+      idTvShow = GetTvShowId(i->first);
+      if (idTvShow > -1)
+        break;
+    }
   }
-  catch (...)
+  if (idTvShow < 0)
+    idTvShow = GetMatchingTvShow(details);
+  if (idTvShow < 0)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    idTvShow = AddTvShow();
+    if (idTvShow < 0)
+      return -1;
   }
-  return -1;
+
+  // add any paths to the tvshow
+  for (vector< pair<string, string> >::const_iterator i = paths.begin(); i != paths.end(); ++i)
+    AddPathToTvShow(idTvShow, i->first, i->second);
+
+  UpdateDetailsForTvShow(idTvShow, details, artwork, seasonArt);
+
+  return idTvShow;
 }
 
 bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow, const CVideoInfoTag &details, const map<string, string> &artwork, const map<int, map<string, string> > &seasonArt)
@@ -2303,40 +2290,40 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow, const CVideoInfoTag &d
 
   DeleteDetailsForTvShow(idTvShow);
 
-    vector<int> vecDirectors;
-    vector<int> vecGenres;
-    vector<int> vecStudios;
-    AddGenreAndDirectorsAndStudios(details,vecDirectors,vecGenres,vecStudios);
+  vector<int> vecDirectors;
+  vector<int> vecGenres;
+  vector<int> vecStudios;
+  AddGenreAndDirectorsAndStudios(details,vecDirectors,vecGenres,vecStudios);
 
-    AddCast(idTvShow, "tvshow", "show", details.m_cast);
+  AddCast(idTvShow, "tvshow", "show", details.m_cast);
 
-    unsigned int i;
-    for (i = 0; i < vecGenres.size(); ++i)
-      AddGenreToTvShow(idTvShow, vecGenres[i]);
+  unsigned int i;
+  for (i = 0; i < vecGenres.size(); ++i)
+    AddGenreToTvShow(idTvShow, vecGenres[i]);
 
-    for (i = 0; i < vecDirectors.size(); ++i)
-      AddDirectorToTvShow(idTvShow, vecDirectors[i]);
+  for (i = 0; i < vecDirectors.size(); ++i)
+    AddDirectorToTvShow(idTvShow, vecDirectors[i]);
 
-    for (i = 0; i < vecStudios.size(); ++i)
-      AddStudioToTvShow(idTvShow, vecStudios[i]);
+  for (i = 0; i < vecStudios.size(); ++i)
+    AddStudioToTvShow(idTvShow, vecStudios[i]);
 
-    // add tags...
-    for (unsigned int i = 0; i < details.m_tags.size(); i++)
-    {
-      int idTag = AddTag(details.m_tags[i]);
-      AddTagToItem(idTvShow, idTag, MediaTypeTvShow);
-    }
+  // add tags...
+  for (unsigned int i = 0; i < details.m_tags.size(); i++)
+  {
+    int idTag = AddTag(details.m_tags[i]);
+    AddTagToItem(idTvShow, idTag, MediaTypeTvShow);
+  }
 
-    // add "all seasons" - the rest are added in SetDetailsForEpisode
-    AddSeason(idTvShow, -1);
+  // add "all seasons" - the rest are added in SetDetailsForEpisode
+  AddSeason(idTvShow, -1);
 
-    SetArtForItem(idTvShow, MediaTypeTvShow, artwork);
-    for (map<int, map<string, string> >::const_iterator i = seasonArt.begin(); i != seasonArt.end(); ++i)
-    {
-      int idSeason = AddSeason(idTvShow, i->first);
-      if (idSeason > -1)
-        SetArtForItem(idSeason, MediaTypeSeason, i->second);
-    }
+  SetArtForItem(idTvShow, MediaTypeTvShow, artwork);
+  for (map<int, map<string, string> >::const_iterator i = seasonArt.begin(); i != seasonArt.end(); ++i)
+  {
+    int idSeason = AddSeason(idTvShow, i->first);
+    if (idSeason > -1)
+      SetArtForItem(idSeason, MediaTypeSeason, i->second);
+  }
 
   // and insert the new row
   std::string sql = "UPDATE tvshow SET " + GetValueString(details, VIDEODB_ID_TV_MIN, VIDEODB_ID_TV_MAX, DbTvShowOffsets);
