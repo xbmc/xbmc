@@ -27,6 +27,7 @@
 #include "NfoFile.h"
 #include "utils/RegExp.h"
 #include "utils/md5.h"
+#include "filesystem/MultiPathDirectory.h"
 #include "filesystem/StackDirectory.h"
 #include "VideoInfoDownloader.h"
 #include "GUIInfoManager.h"
@@ -1100,7 +1101,19 @@ namespace VIDEO
             for (map<string, string>::iterator j = i->second.begin(); j != i->second.end(); ++j)
               CTextureCache::Get().BackgroundCacheImage(j->second);
         }
-        lResult = m_database.SetDetailsForTvShow(pItem->GetPath(), movieDetails, art, seasonArt);
+
+        /*
+         multipaths are not stored in the database, so in the case we have one,
+         we split the paths, and compute the parent paths in each case.
+         */
+        vector<string> multipath;
+        if (!URIUtils::IsMultiPath(pItem->GetPath()) || !CMultiPathDirectory::GetPaths(pItem->GetPath(), multipath))
+          multipath.push_back(pItem->GetPath());
+        vector< pair<string, string> > paths;
+        for (vector<string>::const_iterator i = multipath.begin(); i != multipath.end(); ++i)
+          paths.push_back(make_pair(*i, URIUtils::GetParentPath(*i)));
+
+        lResult = m_database.SetDetailsForTvShow(paths, movieDetails, art, seasonArt);
         movieDetails.m_iDbId = lResult;
         movieDetails.m_type = MediaTypeTvShow;
       }

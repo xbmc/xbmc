@@ -461,7 +461,18 @@ public:
 
   int SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idMovie = -1);
   int SetDetailsForMovieSet(const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idSet = -1);
-  int SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, const std::map<int, std::map<std::string, std::string> > &seasonArt, int idTvShow = -1);
+
+  /*! \brief add a tvshow to the library, setting metdata detail
+   First checks for whether this TV Show is already in the database (based on idTvShow, or via GetMatchingTvShow)
+   and if present adds the paths to the show.  If not present, we add a new show and set the show metadata.
+   \param paths a vector<string,string> list of the path(s) and parent path(s) for the show.
+   \param details a CVideoInfoTag filled with the metadata for the show.
+   \param artwork the artwork map for the show.
+   \param seasonArt the artwork map for seasons.
+   \param idTvShow the database id of the tvshow if known (defaults to -1)
+   \return the id of the tvshow.
+   */
+  int SetDetailsForTvShow(const std::vector< std::pair<std::string, std::string> > &paths, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, const std::map<int, std::map<std::string, std::string> > &seasonArt, int idTvShow = -1);
   bool UpdateDetailsForTvShow(int idTvShow, const CVideoInfoTag &details, const std::map<std::string, std::string> &artwork, const std::map<int, std::map<std::string, std::string> > &seasonArt);
   int SetDetailsForSeason(const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idShow, int idSeason = -1);
   int SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idShow, int idEpisode=-1);
@@ -763,11 +774,11 @@ protected:
 
   /*! \brief Adds a path to the tvshow link table.
    \param idShow the id of the show.
-   \param path the path to add.
-   \param idParentPath the identifier of the parent path.
+   \param path   the path to add to the show.
+   \param parentPath the parent path of the item.
    \return true if successfully added, false otherwise.
    */
-  bool AddPathToTvShow(int idShow, const std::string &path, int idParentPath);
+  bool AddPathToTvShow(int idShow, const std::string &path, const std::string &parentPath);
 
   /*! \brief Check whether a show is already in the library.
    Matches on unique identifier or matching title and premiered date.
