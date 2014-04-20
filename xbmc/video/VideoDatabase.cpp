@@ -4341,6 +4341,15 @@ public:
   string ident;
 };
 
+// used for database update to v84
+class CShowLink
+{
+public:
+  int show;
+  int pathId;
+  std::string path;
+};
+
 void CVideoDatabase::UpdateTables(int iVersion)
 {
   if (iVersion < 61)
@@ -4564,11 +4573,40 @@ void CVideoDatabase::UpdateTables(int iVersion)
       m_pDS->exec("DELETE FROM seasons WHERE idSeason NOT IN (SELECT min(idSeason) FROM seasons GROUP BY idShow,season)");
     }
   }
+  if (iVersion < 84)
+  { // replace any multipaths in tvshowlinkpath table
+    m_pDS->query("SELECT idShow, tvshowlinkpath.idPath, strPath FROM tvshowlinkpath JOIN path ON tvshowlinkpath.idPath=path.idPath WHERE path.strPath LIKE 'multipath://%'");
+    vector<CShowLink> shows;
+    while (!m_pDS->eof())
+    {
+      CShowLink link;
+      link.show   = m_pDS->fv(0).get_asInt();
+      link.pathId = m_pDS->fv(1).get_asInt();
+      link.path   = m_pDS->fv(2).get_asString();
+      shows.push_back(link);
+      m_pDS->next();
+    }
+    m_pDS->close();
+    // update these
+    for (vector<CShowLink>::const_iterator i = shows.begin(); i != shows.end(); ++i)
+    {
+      vector<string> paths;
+      CMultiPathDirectory::GetPaths(i->path, paths);
+      for (vector<string>::const_iterator j = paths.begin(); j != paths.end(); ++j)
+      {
+        int idPath = AddPath(*j);
+        // multipaths have the wrong parent path id set
+        int idParentPath = AddPath(URIUtils::GetParentPath(*j));
+        m_pDS->exec(PrepareSQL("REPLACE INTO tvshowlinkpath(idShow, idPath, idParentPath) VALUES(%i,%i,%i)", i->show, idPath, idParentPath));
+      }
+      m_pDS->exec(PrepareSQL("DELETE FROM tvshowlinkpath WHERE idShow=%i AND idPath=%i", i->show, i->pathId));
+    }
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 83;
+  return 84;
 }
 
 bool CVideoDatabase::LookupByFolders(const CStdString &path, bool shows)
@@ -8548,10 +8586,6 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
           return;
         }
       }
-
-      // tvshow paths can be multipaths, and writing to a multipath is indeterminate.
-      if (URIUtils::IsMultiPath(tvshow.m_strPath))
-        tvshow.m_strPath = CMultiPathDirectory::GetFirstPath(tvshow.m_strPath);
 
       CFileItem item(tvshow.m_strPath, true);
       if (singleFiles && CUtil::SupportsWriteFileOperations(tvshow.m_strPath))
