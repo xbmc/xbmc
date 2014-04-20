@@ -580,6 +580,27 @@ bool CVideoDatabase::GetPaths(set<CStdString> &paths)
   return false;
 }
 
+bool CVideoDatabase::GetPathsLinkedToTvShow(int idShow, vector<string> &paths)
+{
+  string sql;
+  try
+  {
+    sql = PrepareSQL("SELECT strPath FROM path JOIN tvshowlinkpath ON tvshowlinkpath.idPath=path.idPath WHERE idShow=%i", idShow);
+    m_pDS->query(sql.c_str());
+    while (!m_pDS->eof())
+    {
+      paths.push_back(m_pDS->fv(0).get_asString());
+      m_pDS->next();
+    }
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s error during query: %s",__FUNCTION__, sql.c_str());
+  }
+  return false;
+}
+
 bool CVideoDatabase::GetPathsForTvShow(int idShow, set<int>& paths)
 {
   CStdString strSQL;

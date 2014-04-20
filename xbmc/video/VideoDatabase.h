@@ -568,6 +568,13 @@ public:
   bool GetPaths(std::set<CStdString> &paths);
   bool GetPathsForTvShow(int idShow, std::set<int>& paths);
 
+  /*! \brief return the paths linked to a tvshow.
+   \param idShow the id of the tvshow.
+   \param paths [out] the list of paths associated with the show.
+   \return true on success, false on failure.
+   */
+  bool GetPathsLinkedToTvShow(int idShow, std::vector<std::string> &paths);
+
   /*! \brief retrieve subpaths of a given path.  Assumes a heirarchical folder structure
    \param basepath the root path to retrieve subpaths for
    \param subpaths the returned subpaths
