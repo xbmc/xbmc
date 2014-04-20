@@ -1717,19 +1717,19 @@ bool CVideoDatabase::HasMusicVideoInfo(const CStdString& strFilenameAndPath)
   return false;
 }
 
-void CVideoDatabase::DeleteDetailsForTvShow(const CStdString& strPath, int idTvShow /* = -1 */)
+void CVideoDatabase::DeleteDetailsForTvShow(const CStdString& strPath)
+{
+  int idTvShow = GetTvShowId(strPath);
+  if (idTvShow >= 0)
+    DeleteDetailsForTvShow(idTvShow);
+}
+
+void CVideoDatabase::DeleteDetailsForTvShow(int idTvShow)
 {
   try
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-
-    if (idTvShow < 0)
-    {
-      idTvShow = GetTvShowId(strPath);
-      if (idTvShow < 0)
-        return;
-    }
 
     CStdString strSQL;
     strSQL=PrepareSQL("delete from genrelinktvshow where idShow=%i", idTvShow);
@@ -1758,7 +1758,7 @@ void CVideoDatabase::DeleteDetailsForTvShow(const CStdString& strPath, int idTvS
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strPath.c_str());
+    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idTvShow);
   }
 }
 
@@ -2254,7 +2254,7 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
       idTvShow = GetTvShowId(strPath);
 
     if (idTvShow > -1)
-      DeleteDetailsForTvShow(strPath, idTvShow);
+      DeleteDetailsForTvShow(idTvShow);
     else
     {
       idTvShow = AddTvShow(strPath);
@@ -3024,29 +3024,22 @@ void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */)
   }
 }
 
+void CVideoDatabase::DeleteTvShow(const CStdString& strPath)
+{
+  int idTvShow = GetTvShowId(strPath);
+  if (idTvShow >= 0)
+    DeleteTvShow(idTvShow);
+}
+
 void CVideoDatabase::DeleteTvShow(int idTvShow, bool bKeepId /* = false */)
 {
   if (idTvShow < 0)
     return;
 
-  CStdString path;
-  GetFilePathById(idTvShow, path, VIDEODB_CONTENT_TVSHOWS);
-  if (!path.empty())
-    DeleteTvShow(path, bKeepId, idTvShow);
-}
-
-void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = false */, int idTvShow /* = -1 */)
-{
   try
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    if (idTvShow < 0)
-    {
-      idTvShow = GetTvShowId(strPath);
-      if (idTvShow < 0)
-        return;
-    }
 
     BeginTransaction();
 
@@ -3058,7 +3051,7 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
       m_pDS2->next();
     }
 
-    DeleteDetailsForTvShow(strPath, idTvShow);
+    DeleteDetailsForTvShow(idTvShow);
 
     strSQL=PrepareSQL("delete from seasons where idShow=%i", idTvShow);
     m_pDS->exec(strSQL.c_str());
@@ -3075,8 +3068,16 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
       strSQL=PrepareSQL("delete from movielinktvshow where idShow=%i", idTvShow);
       m_pDS->exec(strSQL.c_str());
 
-      InvalidatePathHash(strPath);
-   }
+      // TODO: why do we invalidate the path hash here??
+      set<int> paths;
+      GetPathsForTvShow(idTvShow, paths);
+      for (set<int>::const_iterator i = paths.begin(); i != paths.end(); ++i)
+      {
+        std::string path = GetSingleValue(PrepareSQL("SELECT strPath FROM path WHERE idPath=%i", *i));
+        if (!path.empty())
+          InvalidatePathHash(path);
+      }
+    }
 
     //TODO: move this below CommitTransaction() once UPnP doesn't rely on this anymore
     if (!bKeepId)
