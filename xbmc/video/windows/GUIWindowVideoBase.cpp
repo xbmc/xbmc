@@ -646,14 +646,14 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
       pDlgProgress->SetLine(2, "");
       pDlgProgress->StartModal();
       pDlgProgress->Progress();
-      if (bHasInfo)
+      if (bHasInfo && movieDetails.m_iDbId != -1)
       {
         if (info->Content() == CONTENT_MOVIES)
-          m_database.DeleteMovie(item->GetPath());
+          m_database.DeleteMovie(movieDetails.m_iDbId);
         if (info->Content() == CONTENT_TVSHOWS && !item->m_bIsFolder)
-          m_database.DeleteEpisode(item->GetPath(),movieDetails.m_iDbId);
+          m_database.DeleteEpisode(movieDetails.m_iDbId);
         if (info->Content() == CONTENT_MUSICVIDEOS)
-          m_database.DeleteMusicVideo(item->GetPath());
+          m_database.DeleteMusicVideo(movieDetails.m_iDbId);
         if (info->Content() == CONTENT_TVSHOWS && item->m_bIsFolder)
         {
           if (pDlgInfo->RefreshAll())
