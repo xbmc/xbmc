@@ -1293,12 +1293,7 @@ bool CVideoDatabase::AddPathToTvShow(int idShow, const std::string &path, const 
     idPath = AddPath(path, parentPath, dateAdded.GetAsDBDateTime());
   }
 
-  // is the path added to the show?
-  string sql = PrepareSQL("SELECT idShow FROM tvshowlinkpath WHERE idShow=%i AND idPath=%i", idShow, idPath);
-  if (!GetSingleValue(sql).empty())
-    return true;
-
-  return ExecuteQuery(PrepareSQL("INSERT INTO tvshowlinkpath(idShow, idPath) VALUES (%i,%i)", idShow, idPath));
+  return ExecuteQuery(PrepareSQL("REPLACE INTO tvshowlinkpath(idShow, idPath) VALUES (%i,%i)", idShow, idPath));
 }
 
 int CVideoDatabase::AddTvShow()
@@ -2261,7 +2256,7 @@ int CVideoDatabase::GetMatchingTvShow(const CVideoInfoTag &details)
   return id;
 }
 
-int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details, const map<string, string> &artwork, const map<int, map<string, string> > &seasonArt, int idTvShow /*= -1 */)
+int CVideoDatabase::SetDetailsForTvShow(const vector< pair<string, string> > &paths, const CVideoInfoTag& details, const map<string, string> &artwork, const map<int, map<string, string> > &seasonArt, int idTvShow /*= -1 */)
 {
   try
   {
@@ -2271,18 +2266,24 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
       return -1;
     }
 
-
     /*
      The steps are as follows.
-     1. Check if the tvshow is found on the given path.  If found, we have the show id.
+     1. Check if the tvshow is found on any of the given paths.  If found, we have the show id.
      2. Search for a matching show.  If found, we have the show id.
      3. If we don't have the id, add a new show.
-     4. Add the path to the show.
+     4. Add the paths to the show.
      5. Add details for the show.
      */
 
     if (idTvShow < 0)
-      idTvShow = GetTvShowId(strPath);
+    {
+      for (vector< pair<string, string> >::const_iterator i = paths.begin(); i != paths.end(); ++i)
+      {
+        idTvShow = GetTvShowId(i->first);
+        if (idTvShow > -1)
+          break;
+      }
+    }
     if (idTvShow < 0)
       idTvShow = GetMatchingTvShow(details);
     if (idTvShow < 0)
@@ -2293,7 +2294,8 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
     }
 
     // add any paths to the tvshow
-    AddPathToTvShow(idTvShow, strPath, URIUtils::GetParentPath(strPath));
+    for (vector< pair<string, string> >::const_iterator i = paths.begin(); i != paths.end(); ++i)
+      AddPathToTvShow(idTvShow, i->first, i->second);
 
     UpdateDetailsForTvShow(idTvShow, details, artwork, seasonArt);
 
@@ -2301,7 +2303,7 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strPath.c_str());
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
   return -1;
 }
