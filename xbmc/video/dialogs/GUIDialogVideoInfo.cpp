@@ -1269,15 +1269,7 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
   CVideoDatabase database;
   database.Open();
 
-  if (type == VIDEODB_CONTENT_MOVIE_SETS)
-  {
-    database.DeleteSet(item->GetVideoInfoTag()->m_iDbId);
-    return true;
-  }
-
-  CStdString path;
-  database.GetFilePathById(item->GetVideoInfoTag()->m_iDbId, path, type);
-  if (path.empty())
+  if (item->GetVideoInfoTag()->m_iDbId < 0)
     return false;
 
   switch (type)
@@ -1294,15 +1286,22 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
     case VIDEODB_CONTENT_MUSICVIDEOS:
       database.DeleteMusicVideo(item->GetVideoInfoTag()->m_iDbId);
       break;
-  
+    case VIDEODB_CONTENT_MOVIE_SETS:
+      database.DeleteSet(item->GetVideoInfoTag()->m_iDbId);
+      return true; // no need to invalidate path hashes
     default:
       return false;
   }
 
-  if (type == VIDEODB_CONTENT_TVSHOWS)
-    database.SetPathHash(path,"");
-  else
-    database.SetPathHash(URIUtils::GetDirectory(path), "");
+  CStdString path;
+  database.GetFilePathById(item->GetVideoInfoTag()->m_iDbId, path, type);
+  if (!path.empty())
+  {
+    if (type == VIDEODB_CONTENT_TVSHOWS)
+      database.SetPathHash(path,"");
+    else
+      database.SetPathHash(URIUtils::GetDirectory(path), "");
+  }
 
   return true;
 }
