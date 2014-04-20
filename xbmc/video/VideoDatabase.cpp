@@ -2271,7 +2271,6 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
       return -1;
     }
 
-    BeginTransaction();
 
     /*
      The steps are as follows.
@@ -2290,14 +2289,28 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
     {
       idTvShow = AddTvShow();
       if (idTvShow < 0)
-      {
-        RollbackTransaction();
-        return idTvShow;
-      }
+        return -1;
     }
 
     // add any paths to the tvshow
     AddPathToTvShow(idTvShow, strPath, URIUtils::GetParentPath(strPath));
+
+    UpdateDetailsForTvShow(idTvShow, details, artwork, seasonArt);
+
+    return idTvShow;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strPath.c_str());
+  }
+  return -1;
+}
+
+bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow, const CVideoInfoTag &details, const map<string, string> &artwork, const map<int, map<string, string> > &seasonArt)
+{
+  BeginTransaction();
+
+  DeleteDetailsForTvShow(idTvShow);
 
     vector<int> vecDirectors;
     vector<int> vecGenres;
@@ -2334,21 +2347,16 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
         SetArtForItem(idSeason, MediaTypeSeason, i->second);
     }
 
-    // and insert the new row
-    CStdString sql = "update tvshow set " + GetValueString(details, VIDEODB_ID_TV_MIN, VIDEODB_ID_TV_MAX, DbTvShowOffsets);
-    sql += PrepareSQL(" where idShow=%i", idTvShow);
-    m_pDS->exec(sql.c_str());
-
-    CommitTransaction();
-
-    return idTvShow;
-  }
-  catch (...)
+  // and insert the new row
+  std::string sql = "UPDATE tvshow SET " + GetValueString(details, VIDEODB_ID_TV_MIN, VIDEODB_ID_TV_MAX, DbTvShowOffsets);
+  sql += PrepareSQL(" WHERE idShow=%i", idTvShow);
+  if (ExecuteQuery(sql))
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strPath.c_str());
+    CommitTransaction();
+    return true;
   }
   RollbackTransaction();
-  return -1;
+  return false;
 }
 
 int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idShow, int idSeason /* = -1 */)
