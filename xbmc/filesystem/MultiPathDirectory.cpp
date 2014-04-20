@@ -177,6 +177,25 @@ bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>
   return true;
 }
 
+bool CMultiPathDirectory::GetPaths(const std::string& path, vector<string>& paths)
+{
+  paths.clear();
+
+  // remove multipath:// from path and any trailing / (so that the last path doesn't get any more than it originally had)
+  std::string path1 = path.substr(12);
+  path1.erase(path1.find_last_not_of('/')+1);
+
+  // split on "/"
+  vector<string> temp = StringUtils::Split(path1, "/");
+  if (temp.size() == 0)
+    return false;
+
+  // URL decode each item
+  paths.resize(temp.size());
+  std::transform(temp.begin(), temp.end(), paths.begin(), CURL::Decode);
+  return true;
+}
+
 bool CMultiPathDirectory::HasPath(const CStdString& strPath, const CStdString& strPathToFind)
 {
   // remove multipath:// from path and any trailing / (so that the last path doesn't get any more than it originally had)
