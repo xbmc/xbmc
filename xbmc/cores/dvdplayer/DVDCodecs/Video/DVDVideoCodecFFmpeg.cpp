@@ -94,6 +94,14 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
 #ifdef HAS_DX
   if(DXVA::CDecoder::Supports(*cur) && CSettings::Get().GetBool("videoplayer.usedxva2"))
   {
+    // throw away any current DXVA2 hardware context
+    // this should help DXVA hardware that can't be opened more than once without error
+    IHardwareDecoder *currentDec = ctx->GetHardware();
+    if (currentDec && currentDec->Name() == "dxva2")
+    {
+      ctx->SetHardware(NULL);
+    }
+
     DXVA::CDecoder* dec = new DXVA::CDecoder();
     if(dec->Open(avctx, *cur, ctx->m_uSurfacesCount))
     {
