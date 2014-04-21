@@ -79,22 +79,6 @@ void CDemuxStreamAudioFFmpeg::GetStreamName(std::string& strInfo)
     CDemuxStream::GetStreamName(strInfo);
 }
 
-  void CDemuxStreamAudioFFmpeg::GetExtendedStreamInfo(pFrame pframe )
-  {
-      if(pframe == __null)
-          return;
-      
-      //FILE * audio_dst_file = fopen("test.bin", "wb");
-      //fwrite(pframe->data, 1, pframe->size, audio_dst_file);
-      //fclose(audio_dst_file);
-     
-     //TESTING
-     bExtendedStreamInfo = true;
-     iExtendedChannels = 8;
-     //iExtendedSampleRate = 96000;
-     //iExtendedBitRate = 99999;
-  }
-
 void CDemuxStreamSubtitleFFmpeg::GetStreamName(std::string& strInfo)
 {
   if(!m_stream) return;
@@ -1154,7 +1138,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
               frame.size = pkt->size;
               frame.data = (unsigned char *)malloc(frame.size * sizeof(unsigned char));
               fast_memcpy(frame.data, pkt->data, frame.size);
-              st->GetExtendedStreamInfo(&frame);
+              st->GetExtendedStreamInfo(AV_CODEC_ID_DTS , &frame);
               free(frame.data);
               av_free_packet(pkt);
             }

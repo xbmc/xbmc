@@ -63,14 +63,44 @@ void CDemuxStreamAudio::GetStreamType(std::string& strInfo)
   strInfo = sInfo;
 }
 
-  void CDemuxStreamAudio::GetExtendedStreamInfo(pFrame pframe )
+  void CDemuxStreamAudio::GetExtendedStreamInfo(AVCodecID codectype, pFrame pframe )
   {
-     bExtendedStreamInfo = false;
-     iExtendedChannels = 0;
-     //iExtendedSampleRate = 0;
-     //iExtendedBitRate = 0;
+    if(pframe == NULL)
+      return;
+    
+    bool bset_default_value = true;
+    if(codectype == AV_CODEC_ID_DTS)
+    {
+      if(this->Parse_dts_audio_header(pframe))
+      {
+        CLog::Log(LOGINFO, "%s : Correctly detected DTS-HD MA extended info", __FUNCTION__);
+        bset_default_value = false;
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "%s : DTS-HD MA extended info not correctly detected", __FUNCTION__);
+      }
+    }
+    
+    if(bset_default_value)
+    {
+      bExtendedStreamInfo = false;
+      iExtendedChannels = 0;
+      lfe_channel = UNKNOW;
+      iExtendedSampleRate = 0;
+      iExtendedResolution = 0;
+      iExtendedBitRate = 0;
+    }
   }
 
+  bool CDemuxStreamAudio::Parse_dts_audio_header(pFrame pframe)
+  {
+      //TESTING
+      bExtendedStreamInfo = true;
+      iExtendedChannels = 8;
+      return true;
+  }
+  
 int CDVDDemux::GetNrOfAudioStreams()
 {
   int iCounter = 0;

@@ -68,6 +68,11 @@ enum StreamSource {
 
 typedef struct { unsigned char * data; int size; } Frame, *pFrame;
 
+enum LFE_Channel {
+  UNKNOW        = 0,
+  PRESENT         = 1,
+  NOT_PRESENT = 2,
+};
 /*
  * CDemuxStream
  * Base class for all demuxer streams
@@ -190,18 +195,22 @@ public:
     iBlockAlign = 0;
     iBitRate = 0;
     iBitsPerSample = 0;
+    
     bExtendedStreamInfo = false;
     iExtendedChannels = 0;
-    //iExtendedSampleRate = 0;
-    //iExtendedBitRate = 0;
+    lfe_channel = UNKNOW;
+    iExtendedSampleRate = 0;
+    iExtendedResolution = 0;
+    iExtendedBitRate = 0;
+    
     type = STREAM_AUDIO;
   }
 
   virtual ~CDemuxStreamAudio() {}
 
   void GetStreamType(std::string& strInfo);
-
-  virtual void GetExtendedStreamInfo(pFrame pframe = NULL);
+  
+  virtual void GetExtendedStreamInfo(AVCodecID codectype = AV_CODEC_ID_NONE, pFrame pframe = NULL);
   
   int iChannels;
   int iSampleRate;
@@ -211,8 +220,14 @@ public:
   
   bool bExtendedStreamInfo;
   int iExtendedChannels;
-  //int iExtendedSampleRate;
-  //int iExtendedBitRate;
+  LFE_Channel lfe_channel;
+  int iExtendedSampleRate;
+  int iExtendedResolution;
+  int iExtendedBitRate;
+  
+protected:
+    bool Parse_dts_audio_header(pFrame pframe); 
+
 };
 
 class CDemuxStreamSubtitle : public CDemuxStream
