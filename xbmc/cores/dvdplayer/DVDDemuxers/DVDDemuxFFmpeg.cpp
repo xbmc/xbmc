@@ -196,12 +196,6 @@ static int interrupt_cb(void* ctx)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
-/*
-static int dvd_file_open(URLContext *h, const char *filename, int flags)
-{
-  return -1;
-}
-*/
 
 static AVPacket* get_single_frame( AVFormatContext* fmt_ctx, int streamid)
 {
@@ -227,6 +221,13 @@ static AVPacket* get_single_frame( AVFormatContext* fmt_ctx, int streamid)
     
   return &pkt;
 }
+
+/*
+static int dvd_file_open(URLContext *h, const char *filename, int flags)
+{
+  return -1;
+}
+*/
 
 static int dvd_file_read(void *h, uint8_t* buf, int size)
 {
@@ -541,6 +542,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   CreateStreams();
 
+  //Needed cause we picked some frame for dts-hd ma extended info ....
+  SeekTime(0,false);
+  
   return true;
 }
 
