@@ -198,6 +198,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   if( right.type == STREAM_AUDIO )
   {
     const CDemuxStreamAudio *stream = static_cast<const CDemuxStreamAudio*>(&right);
+    //REM: not necessary to assign dts-hd-ma extendedchannel here
     channels      = stream->iChannels;
     samplerate    = stream->iSampleRate;
     blockalign    = stream->iBlockAlign;
