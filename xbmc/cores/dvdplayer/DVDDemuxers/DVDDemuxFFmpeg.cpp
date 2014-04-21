@@ -61,11 +61,35 @@ void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
   if(bExtendedStreamInfo)
   {
      std::string strExtendedInfo = " - Extended : ";
-     //TODO add lfe ...
-     if (iExtendedChannels == 6) strExtendedInfo += " 5.1";
+     
+     if(iExtendedChannels == 3)
+     {
+       if(lfe_channel == PRESENT)
+         strExtendedInfo += " 2.1";
+       else
+         strExtendedInfo += " 3.0";
+     }
+     else if (iExtendedChannels == 6) strExtendedInfo += " 5.1";
      else if (iExtendedChannels == 8) strExtendedInfo += "7.1";
      else strExtendedInfo = StringUtils::Format("%s %d", strExtendedInfo.c_str(), iExtendedChannels);
   
+     if(iExtendedSampleRate != 0)
+     {
+       std::string sFormat;
+       if(iExtendedSampleRate % 100)
+         sFormat = " / %3.2f Khz";
+       else if(iExtendedSampleRate % 10)
+         sFormat = " / %3.1f Khz";
+       else
+         sFormat = " / %g Khz";
+                 
+       strExtendedInfo += StringUtils::Format(sFormat.c_str(), (float)(iExtendedSampleRate / 1000));
+     }
+       
+     
+     if(iExtendedResolution != 0)
+      strExtendedInfo += StringUtils::Format(" / %d Bits", iExtendedResolution);
+     
      strInfo += strExtendedInfo;
   }
 }

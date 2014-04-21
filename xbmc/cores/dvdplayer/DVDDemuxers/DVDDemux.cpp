@@ -52,6 +52,13 @@ void CDemuxStreamAudio::GetStreamType(std::string& strInfo)
   
   if (ilocalChannels == 1) strcat(sInfo, "Mono");
   else if (ilocalChannels == 2) strcat(sInfo, "Stereo");
+  else if (ilocalChannels == 3 && bExtendedStreamInfo) 
+  {
+    if(lfe_channel == PRESENT)
+      strcat(sInfo, "2.1");
+    else
+      strcat(sInfo, "3.0");
+  }
   else if (ilocalChannels == 6) strcat(sInfo, "5.1");
   else if (ilocalChannels == 8) strcat(sInfo, "7.1");
   else if (ilocalChannels != 0)
@@ -406,11 +413,11 @@ void CDemuxStreamAudio::GetStreamType(std::string& strInfo)
       int bits_to_crc = ((FSIZE + nuExtSSHeaderSize) * 8)  - ibyteread - 16;
       CBitstreamConverter::skip_bits( &bitstream, bits_to_crc); ibyteread += bits_to_crc;
       //nCRC16ExtSSHeader = ExtractBits(16);
-      unsigned short nCRC16ExtSSHeader  = CBitstreamConverter::read_bits( &bitstream, 16) ;  ibyteread += 16;
+      uint16_t nCRC16ExtSSHeader  = CBitstreamConverter::read_bits( &bitstream, 16) ;  ibyteread += 16;
       const AVCRC *ctx;
       ctx = av_crc_get_table(AV_CRC_16_CCITT);	
       uint16_t crc =  av_crc(ctx, 0xffff, pframe->data + FSIZE + 5 ,  nuExtSSHeaderSize - 2 - 5);
-      crc = (crc << 8) & 0xFF00 + (crc >> 8); //crc = htons(crc);
+      crc = ((crc << 8) & 0xFF00) + (crc >> 8); //crc = htons(crc);
       CLog::Log(LOGDEBUG, "%s : calculated CRC16 checksum : %04x", __FUNCTION__, crc);
       if( nCRC16ExtSSHeader != crc)
       {
@@ -426,7 +433,7 @@ void CDemuxStreamAudio::GetStreamType(std::string& strInfo)
       iExtendedSampleRate = DTS_HD_MaxSampleRate[nuMaxSampleRate];
       
       if(LFF == 0)
-        lfe_channel = PRESENT;
+        lfe_channel = NOT_PRESENT;
       else if(LFF == 1 || LFF == 2)
         lfe_channel = PRESENT;
       else
