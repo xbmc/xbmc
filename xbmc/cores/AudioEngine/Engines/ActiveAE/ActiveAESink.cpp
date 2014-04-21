@@ -796,6 +796,12 @@ void CActiveAESink::ReturnBuffers()
   }
 }
 
+static inline void RShift8_32_buf(uint32_t *src, uint32_t *dst, uint32_t count)
+{
+  while (count--)
+    *dst++ = *src++ >> 8;
+}
+
 unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
 {
   uint8_t *buffer = samples->pkt->data[0];
@@ -816,14 +822,22 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
   case NEED_BYTESWAP:
     Endian_Swap16_buf((uint16_t *)buffer, (uint16_t *)buffer, frames * samples->pkt->config.channels);
     break;
+  case NEED_RSHIFT8:
+    RShift8_32_buf((uint32_t *)buffer, (uint32_t *)buffer, frames * samples->pkt->config.channels);
+    break;
   case CHECK_CONVERT:
     ConvertInit(samples);
     if (m_convertState == NEED_CONVERT)
       buffer = Convert(samples);
     else if (m_convertState == NEED_BYTESWAP)
       Endian_Swap16_buf((uint16_t *)buffer, (uint16_t *)buffer, frames * samples->pkt->config.channels);
+    else if (m_convertState == NEED_RSHIFT8)
+      RShift8_32_buf((uint32_t *)buffer, (uint32_t *)buffer, frames * samples->pkt->config.channels);
+    else if (m_convertState == SKIP_OUTPUT)
+      frames = 0;
     break;
-  default:
+  case SKIP_OUTPUT:
+    frames = 0;
     break;
   }
 
@@ -862,15 +876,38 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
 
 void CActiveAESink::ConvertInit(CSampleBuffer* samples)
 {
-  if (CActiveAEResample::GetAESampleFormat(samples->pkt->config.fmt, samples->pkt->config.bits_per_sample) != m_sinkFormat.m_dataFormat)
+  AEDataFormat srcFmt = CActiveAEResample::GetAESampleFormat(samples->pkt->config.fmt, samples->pkt->config.bits_per_sample);
+  
+  if (srcFmt != m_sinkFormat.m_dataFormat)
   {
-    m_convertFn = CAEConvert::FrFloat(m_sinkFormat.m_dataFormat);
-    if (m_convertBuffer)
-      _aligned_free(m_convertBuffer);
-    m_convertBufferSampleSize = samples->pkt->max_nb_samples;
-    m_convertBuffer = (uint8_t*)_aligned_malloc(samples->pkt->max_nb_samples * m_sinkFormat.m_channelLayout.Count() * m_sinkFormat.m_frameSize, 16);
-    memset(m_convertBuffer, 0, samples->pkt->max_nb_samples * m_sinkFormat.m_channelLayout.Count() * m_sinkFormat.m_frameSize);
-    m_convertState = NEED_CONVERT;
+    switch (srcFmt)
+    {
+    case AE_FMT_FLOAT:
+    case AE_FMT_FLOATP:
+      m_convertFn = CAEConvert::FrFloat(m_sinkFormat.m_dataFormat);
+      if (m_convertBuffer)
+        _aligned_free(m_convertBuffer);
+      m_convertBufferSampleSize = samples->pkt->max_nb_samples;
+      m_convertBuffer = (uint8_t*)_aligned_malloc(samples->pkt->max_nb_samples * m_sinkFormat.m_channelLayout.Count() * m_sinkFormat.m_frameSize, 16);
+      memset(m_convertBuffer, 0, samples->pkt->max_nb_samples * m_sinkFormat.m_channelLayout.Count() * m_sinkFormat.m_frameSize);
+      m_convertState = NEED_CONVERT;
+      break;
+    case AE_FMT_S24NE4H:
+      m_convertState = (m_sinkFormat.m_dataFormat == AE_FMT_S24NE4L) ? NEED_RSHIFT8 : SKIP_OUTPUT;
+      break;
+    case AE_FMT_S24NE4HP:
+      m_convertState = (m_sinkFormat.m_dataFormat == AE_FMT_S24NE4LP) ? NEED_RSHIFT8 : SKIP_OUTPUT;
+      break;
+    default:
+      m_convertState = SKIP_OUTPUT;
+      break;
+    }
+
+    if (m_convertState == SKIP_OUTPUT)
+    {
+      CLog::Log(LOGERROR, "CActiveAESink::ConvertInit - cannot convert from %s to %s",
+                CAEUtil::DataFormatToStr(srcFmt), CAEUtil::DataFormatToStr(m_sinkFormat.m_dataFormat));
+    }
   }
   else if (AE_IS_RAW(m_requestedFormat.m_dataFormat) && CAEUtil::S16NeedsByteSwap(AE_FMT_S16NE, m_sinkFormat.m_dataFormat))
   {

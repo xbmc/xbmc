@@ -69,18 +69,22 @@ CAEConvert::AEConvertToFn CAEConvert::ToFloat(enum AEDataFormat dataFormat)
 #ifdef __BIG_ENDIAN__
     case AE_FMT_S16NE : return &S16BE_Float;
     case AE_FMT_S32NE : return &S32BE_Float;
-    case AE_FMT_S24NE4: return &S24BE4_Float;
+    case AE_FMT_S24NE4H: return &S24BE4H_Float;
+    case AE_FMT_S24NE4L: return &S24BE4L_Float;
     case AE_FMT_S24NE3: return &S24BE3_Float;
 #else
     case AE_FMT_S16NE : return &S16LE_Float;
     case AE_FMT_S32NE : return &S32LE_Float;
-    case AE_FMT_S24NE4: return &S24LE4_Float;
+    case AE_FMT_S24NE4H: return &S24LE4H_Float;
+    case AE_FMT_S24NE4L: return &S24LE4L_Float;
     case AE_FMT_S24NE3: return &S24LE3_Float;
 #endif
     case AE_FMT_S16LE : return &S16LE_Float;
     case AE_FMT_S16BE : return &S16BE_Float;
-    case AE_FMT_S24LE4: return &S24LE4_Float;
-    case AE_FMT_S24BE4: return &S24BE4_Float;
+    case AE_FMT_S24LE4H: return &S24LE4H_Float;
+    case AE_FMT_S24LE4L: return &S24LE4L_Float;
+    case AE_FMT_S24BE4H: return &S24BE4H_Float;
+    case AE_FMT_S24BE4L: return &S24BE4L_Float;
     case AE_FMT_S24LE3: return &S24LE3_Float;
     case AE_FMT_S24BE3: return &S24BE3_Float;
 #if defined(__ARM_NEON__)
@@ -112,7 +116,8 @@ CAEConvert::AEConvertFrFn CAEConvert::FrFloat(enum AEDataFormat dataFormat)
 #endif
     case AE_FMT_S16LE : return &Float_S16LE;
     case AE_FMT_S16BE : return &Float_S16BE;
-    case AE_FMT_S24NE4: return &Float_S24NE4;
+    case AE_FMT_S24NE4H: return &Float_S24NE4H;
+    case AE_FMT_S24NE4L: return &Float_S24NE4L;
     case AE_FMT_S24NE3: return &Float_S24NE3;
 #if defined(__ARM_NEON__)
     case AE_FMT_S32LE : return &Float_S32LE_Neon;
@@ -210,7 +215,17 @@ unsigned int CAEConvert::S16BE_Float(uint8_t* data, const unsigned int samples, 
   return samples;
 }
 
-unsigned int CAEConvert::S24LE4_Float(uint8_t *data, const unsigned int samples, float *dest)
+unsigned int CAEConvert::S24LE4H_Float(uint8_t *data, const unsigned int samples, float *dest)
+{
+  for (unsigned int i = 0; i < samples; ++i, data += 4)
+  {
+    int s = (data[3] << 24) | (data[2] << 16) | (data[1] << 8);
+    *dest++ = (float)s * INT32_SCALE;
+  }
+  return samples;
+}
+
+unsigned int CAEConvert::S24LE4L_Float(uint8_t *data, const unsigned int samples, float *dest)
 {
   for (unsigned int i = 0; i < samples; ++i, data += 4)
   {
@@ -220,11 +235,21 @@ unsigned int CAEConvert::S24LE4_Float(uint8_t *data, const unsigned int samples,
   return samples;
 }
 
-unsigned int CAEConvert::S24BE4_Float(uint8_t *data, const unsigned int samples, float *dest)
+unsigned int CAEConvert::S24BE4H_Float(uint8_t *data, const unsigned int samples, float *dest)
 {
   for (unsigned int i = 0; i < samples; ++i, data += 4)
   {
     int s = (data[0] << 24) | (data[1] << 16) | (data[2] << 8);
+    *dest++ = (float)s * INT32_SCALE;
+  }
+  return samples;
+}
+
+unsigned int CAEConvert::S24BE4L_Float(uint8_t *data, const unsigned int samples, float *dest)
+{
+  for (unsigned int i = 0; i < samples; ++i, data += 4)
+  {
+    int s = (data[1] << 24) | (data[2] << 16) | (data[3] << 8);
     *dest++ = (float)s * INT32_SCALE;
   }
   return samples;
@@ -786,7 +811,7 @@ unsigned int CAEConvert::Float_S16BE(float *data, const unsigned int samples, ui
   return samples << 1;
 }
 
-unsigned int CAEConvert::Float_S24NE4(float *data, const unsigned int samples, uint8_t *dest)
+unsigned int CAEConvert::Float_S24NE4H(float *data, const unsigned int samples, uint8_t *dest)
 {
   int32_t *dst = (int32_t*)dest;
   #ifdef __SSE2__
@@ -797,7 +822,7 @@ unsigned int CAEConvert::Float_S24NE4(float *data, const unsigned int samples, u
   /* work around invalid alignment */
   while ((((uintptr_t)data & 0xF) || ((uintptr_t)dest & 0xF)) && count > 0)
   {
-    dst[0] = (safeRound(data[0] * ((float)INT24_MAX+.5f)) & 0xFFFFFF) << 8;
+    dst[0] = safeRound(data[0] * ((float)INT24_MAX+.5f)) << 8;
     ++data;
     ++dst;
     --count;
@@ -816,7 +841,7 @@ unsigned int CAEConvert::Float_S24NE4(float *data, const unsigned int samples, u
   {
     const uint32_t odd = count - even;
     if (odd == 1)
-      dst[0] = (safeRound(data[0] * ((float)INT24_MAX+.5f)) & 0xFFFFFF) << 8;
+      dst[0] = safeRound(data[0] * ((float)INT24_MAX+.5f)) << 8;
     else
     {
       __m128 in;
@@ -841,7 +866,69 @@ unsigned int CAEConvert::Float_S24NE4(float *data, const unsigned int samples, u
   _mm_empty();
   #else /* no SSE2 */
   for (uint32_t i = 0; i < samples; ++i)
-    *dst++ = safeRound(*data++ * ((float)INT24_MAX+.5f)) & 0x00FFFFFF;
+    *dst++ = safeRound(*data++ * ((float)INT24_MAX+.5f)) << 8;
+  #endif
+
+  return samples << 2;
+}
+
+unsigned int CAEConvert::Float_S24NE4L(float *data, const unsigned int samples, uint8_t *dest)
+{
+  int32_t *dst = (int32_t*)dest;
+  #ifdef __SSE2__
+
+  const __m128i msk = _mm_set1_epi32(0xFFFFFF);
+  const __m128 mul = _mm_set_ps1((float)INT24_MAX+.5f);
+  unsigned int count = samples;
+
+  /* work around invalid alignment */
+  while ((((uintptr_t)data & 0xF) || ((uintptr_t)dest & 0xF)) && count > 0)
+  {
+    dst[0] = safeRound(data[0] * ((float)INT24_MAX+.5f)) & 0xFFFFFF;
+    ++data;
+    ++dst;
+    --count;
+  }
+
+  const uint32_t even = count & ~0x3;
+  for (uint32_t i = 0; i < even; i += 4, data += 4, dst += 4)
+  {
+    __m128  in  = _mm_mul_ps(_mm_load_ps(data), mul);
+    __m128i con = _mm_cvtps_epi32(in);
+    con         = _mm_and_si128(con, msk);
+    memcpy(dst, &con, sizeof(int32_t) * 4);
+  }
+
+  if (count != even)
+  {
+    const uint32_t odd = count - even;
+    if (odd == 1)
+      dst[0] = safeRound(data[0] * ((float)INT24_MAX+.5f)) & 0xFFFFFF;
+    else
+    {
+      __m128 in;
+      if (odd == 2)
+      {
+        in = _mm_setr_ps(data[0], data[1], 0, 0);
+        in = _mm_mul_ps(in, mul);
+        __m128i con = _mm_cvtps_epi32(in);
+        con         = _mm_and_si128(con, msk);
+        memcpy(dst, &con, sizeof(int32_t) * 2);
+      }
+      else
+      {
+        in = _mm_setr_ps(data[0], data[1], data[2], 0);
+        in = _mm_mul_ps(in, mul);
+        __m128i con = _mm_cvtps_epi32(in);
+        con         = _mm_and_si128(con, msk);
+        memcpy(dst, &con, sizeof(int32_t) * 3);
+      }
+    }
+  }
+  _mm_empty();
+  #else /* no SSE2 */
+  for (uint32_t i = 0; i < samples; ++i)
+    *dst++ = safeRound(*data++ * ((float)INT24_MAX+.5f)) & 0xFFFFFF;
   #endif
 
   return samples << 2;
