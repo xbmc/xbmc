@@ -542,8 +542,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   CreateStreams();
 
-  //Needed cause we picked some frame for dts-hd ma extended info ....
-  SeekTime(0,false);
+  if(g_advancedSettings.m_searchextendedstreaminfo)
+    //Needed cause we picked some frame for dts-hd ma extended info ....
+    SeekTime(0,false);
   
   return true;
 }
@@ -1140,25 +1141,27 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         if(m_dllAvUtil.av_dict_get(pStream->metadata, "title", NULL, 0))
           st->m_description = m_dllAvUtil.av_dict_get(pStream->metadata, "title", NULL, 0)->value;
         
-        //TODO : if (profile == FF_PROFILE_DTS_HD_HRA)
-        if(pStream->codec->profile == FF_PROFILE_DTS_HD_MA)
+        if(g_advancedSettings.m_searchextendedstreaminfo)
         {
-          CLog::Log(LOGINFO, "%s : Searching for extended stream info", __FUNCTION__);
-          AVPacket* pkt = get_single_frame( m_pFormatContext, iId);
-          if(pkt->data != NULL)
+          //TODO : if (profile == FF_PROFILE_DTS_HD_HRA)
+          if(pStream->codec->profile == FF_PROFILE_DTS_HD_MA)
           {
-            Frame frame;
-            frame.size = pkt->size;
-            frame.data = (unsigned char *)malloc(frame.size * sizeof(unsigned char));
-            fast_memcpy(frame.data, pkt->data, frame.size);
-            st->GetExtendedStreamInfo(&frame);
-            free(frame.data);
-            av_free_packet(pkt);
+            CLog::Log(LOGINFO, "%s : Searching for extended stream info", __FUNCTION__);
+            AVPacket* pkt = get_single_frame( m_pFormatContext, iId);
+            if(pkt->data != NULL)
+            {
+              Frame frame;
+              frame.size = pkt->size;
+              frame.data = (unsigned char *)malloc(frame.size * sizeof(unsigned char));
+              fast_memcpy(frame.data, pkt->data, frame.size);
+              st->GetExtendedStreamInfo(&frame);
+              free(frame.data);
+              av_free_packet(pkt);
+            }
+            else
+              CLog::Log(LOGINFO, "%s : No frame returned by get_single_frame", __FUNCTION__);
           }
-          else
-            CLog::Log(LOGINFO, "%s : No frame returned by get_single_frame", __FUNCTION__);
-        }
-        
+        }   
         break;
       }
     case AVMEDIA_TYPE_VIDEO:
