@@ -94,12 +94,20 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
 #ifdef HAS_DX
   if(DXVA::CDecoder::Supports(*cur) && CSettings::Get().GetBool("videoplayer.usedxva2"))
   {
-    // throw away any current DXVA2 hardware context
-    // this should help DXVA hardware that can't be opened more than once without error
     IHardwareDecoder *currentDec = ctx->GetHardware();
     if (currentDec && currentDec->Name() == "dxva2")
     {
+      // throw away any current DXVA2 hardware context
+      // this should help DXVA hardware that can't be opened more than once without error
       ctx->SetHardware(NULL);
+
+      // reset the hardware hooks, in case the open fails.
+      // TODO: It would be nicer if this was in the error handling, but getting the pointers
+      // available in the right place is tricky.  An alternate would be to change the 
+      // static get/release buffers in the DXVA code to handle null hardware, and call
+      // into CDVDVideoCodecFFmpeg, and bounce around that way.
+      avctx->get_buffer = ctx->m_dllAvCodec.avcodec_default_get_buffer;
+      avctx->release_buffer = ctx->m_dllAvCodec.avcodec_default_release_buffer;
     }
 
     DXVA::CDecoder* dec = new DXVA::CDecoder();
