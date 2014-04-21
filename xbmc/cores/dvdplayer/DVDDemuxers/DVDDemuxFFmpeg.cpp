@@ -1127,7 +1127,8 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         
         if(g_advancedSettings.m_searchextendedstreaminfo)
         {
-          //TODO : if (profile == FF_PROFILE_DTS_HD_HRA)
+          //REM: ffmpeg correctly detects channel number for 
+          //        DTS_HD_HRA, however still me be usefull for more accurate lfe/bitrate/resolution ... 
           if(pStream->codec->profile == FF_PROFILE_DTS_HD_MA)
           {
             CLog::Log(LOGINFO, "%s : Searching for extended stream info", __FUNCTION__);

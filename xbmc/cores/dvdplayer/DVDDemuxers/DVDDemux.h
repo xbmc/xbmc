@@ -21,6 +21,7 @@
  */
 
 #include "utils/StdString.h"
+#include "utils/BitstreamConverter.h"
 #include "system.h"
 #include "DVDDemuxPacket.h"
 
@@ -201,7 +202,6 @@ public:
     lfe_channel = UNKNOW;
     iExtendedSampleRate = 0;
     iExtendedResolution = 0;
-    iExtendedBitRate = 0;
     
     type = STREAM_AUDIO;
   }
@@ -219,15 +219,15 @@ public:
   int iBitsPerSample;
   
   bool bExtendedStreamInfo;
-  int iExtendedChannels;
+  uint8_t iExtendedChannels;
   LFE_Channel lfe_channel;
-  int iExtendedSampleRate;
-  int iExtendedResolution;
-  int iExtendedBitRate;
+  uint8_t iExtendedSampleRate;
+  uint8_t iExtendedResolution;
   
 protected:
-    bool Parse_dts_audio_header(pFrame pframe); 
-
+    int DTS_HD_MaxSampleRate[16]= {   8000, 16000, 32000, 64000, 128000, 22050, 44100, 88200,
+                                                            176400, 352800, 12000, 24000, 48000, 96000, 192000, 384000};
+    bool Parse_dts_audio_header(pFrame pframe);
 };
 
 class CDemuxStreamSubtitle : public CDemuxStream
