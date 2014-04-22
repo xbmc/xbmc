@@ -89,7 +89,6 @@ void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool st
   {
     selectedOffset = list.GetProperty("playQueueSelectedItemOffset").asInteger(0);
     //CApplicationMessenger::Get().MediaStop(true);
-    g_playlistPlayer.SetCurrentPlaylist(playlist);
     g_playlistPlayer.ClearPlaylist(playlist);
     g_playlistPlayer.Add(playlist, list);
 
@@ -100,11 +99,14 @@ void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool st
               type);
   }
 
-  if (startPlaying && id == -1)
-    g_playlistPlayer.Play(selectedOffset);
-  else if (startPlaying)
-    g_playlistPlayer.PlaySongId(id);
-
+  if (startPlaying)
+  {
+    g_playlistPlayer.SetCurrentPlaylist(playlist);
+    if (id == -1)
+      g_playlistPlayer.Play(selectedOffset);
+    else
+      g_playlistPlayer.PlaySongId(id);
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
