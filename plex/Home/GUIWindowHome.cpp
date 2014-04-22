@@ -243,8 +243,8 @@ void CGUIWindowHome::GetSleepContextMenu(CContextButtons& buttons)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowHome::GetItemContextMenu(CContextButtons& buttons, const CFileItem& item)
 {
-  if (item.GetProperty("HasWatchedState").asBoolean() ||
-      item.HasProperty("ratingKey"))
+  if ((item.GetProperty("HasWatchedState").asBoolean() ||
+      item.HasProperty("ratingKey")) && item.HasVideoInfoTag())
   {
     CStdString viewOffset = item.GetProperty("viewOffset").asString();
 
