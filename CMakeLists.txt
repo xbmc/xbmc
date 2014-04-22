@@ -61,6 +61,7 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_BINARY_DIR}/xbmc
   ${root}/lib/gtest/include
+  ${root}/plex/Third-Party/gmock/include
 
   ${dependdir}/include
   ${dependdir}/include/libcec
