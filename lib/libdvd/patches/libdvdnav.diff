@@ -149,6 +149,16 @@ diff -uwr ../libdvdnav-4.2.1/src/dvdnav/dvdnav.h lib/libdvd/libdvdnav/src/dvdnav
  
  /*
   * Stop playing the current position and start playback of the title
+  * from the specified timecode.
+  *
+@@ -695,6 +697,7 @@
+  */
+ int8_t dvdnav_is_domain_vts(dvdnav_t *self);
+ 
++void dvdnav_free(void* pdata);
+ 
+ #ifdef __cplusplus
+ }
 diff -uwr ../libdvdnav-4.2.1/src/dvdnav.c lib/libdvd/libdvdnav/src/dvdnav.c
 --- ../libdvdnav-4.2.1/src/dvdnav.c	Thu Oct  3 23:39:38 2013
 +++ lib/libdvd/libdvdnav/src/dvdnav.c	Fri Feb  7 19:24:42 2014
@@ -282,6 +292,11 @@ diff -uwr ../libdvdnav-4.2.1/src/dvdnav.c lib/libdvd/libdvdnav/src/dvdnav.c
 +  }
 +  
 +  return 0;
++}
++
++void dvdnav_free(void* pdata)
++{
++  free(pdata);
 +}
 +
 +#undef printerr

@@ -1230,6 +1230,11 @@ int dvdnav_get_button_info(dvdnav_t* this, int alpha[2][4], int color[2][4])
   return 0;
 }
 
+void dvdnav_free(void* pdata)
+{
+  free(pdata);
+}
+
 #undef printerr
 #define printerr(str) strncpy(self->err_str, str, MAX_ERR_LEN);
 
