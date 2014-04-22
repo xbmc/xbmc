@@ -85,8 +85,7 @@ void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
                  
        strExtendedInfo += StringUtils::Format(sFormat.c_str(), (float)(iExtendedSampleRate / 1000));
      }
-       
-     
+
      if(iExtendedResolution != 0)
       strExtendedInfo += StringUtils::Format(" / %d Bits", iExtendedResolution);
      

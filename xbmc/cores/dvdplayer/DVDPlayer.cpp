@@ -3981,7 +3981,8 @@ void CDVDPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
     CDemuxStreamAudio* stream = static_cast<CDemuxStreamAudio*>(m_pDemuxer->GetStreamFromAudioId(index));
     if (stream)
     {
-      if(stream->bExtendedStreamInfo && stream->iExtendedChannels != 0)
+      //For videoplayer.audiochannels
+      if(stream->bExtendedStreamInfo)
         info.channels = stream->iExtendedChannels;
       else
         info.channels = stream->iChannels;

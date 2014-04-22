@@ -225,9 +225,9 @@ public:
   uint8_t iExtendedResolution;
   
 protected:
-    const int DTS_HD_MaxSampleRate[16]= {   8000, 16000, 32000, 64000, 128000, 22050, 44100, 88200,
+  const int DTS_HD_MaxSampleRate[16]= {   8000, 16000, 32000, 64000, 128000, 22050, 44100, 88200,
                                                             176400, 352800, 12000, 24000, 48000, 96000, 192000, 384000};
-    bool Parse_dts_audio_header(pFrame pframe);
+  bool Parse_dts_audio_header(pFrame pframe);
 };
 
 class CDemuxStreamSubtitle : public CDemuxStream
