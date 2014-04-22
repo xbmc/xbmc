@@ -55,18 +55,10 @@ bool CGUIWindowNowPlaying::OnAction(const CAction &action)
     g_windowManager.PreviousWindow();
     return true;
   }
-  else if (action.GetID() == ACTION_CONTEXT_MENU || action.GetID() == ACTION_SHOW_INFO)
-  {
-    return true;
-  }
   else if (action.GetID() == ACTION_SHOW_GUI ||
            action.GetID() == ACTION_NAV_BACK)
   {
     g_windowManager.PreviousWindow();
-    return true;
-  }
-  else if (strAction == "activatewindow(playercontrols)")
-  {
     return true;
   }
   
