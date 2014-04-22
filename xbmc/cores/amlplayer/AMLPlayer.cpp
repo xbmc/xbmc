@@ -727,18 +727,18 @@ void CAMLPlayer::Seek(bool bPlus, bool bLargeStep)
 
   // try chapter seeking first, chapter_index is ones based.
   int chapter_index = GetChapter();
-  if (bLargeStep)
+  if (bLargeStep && chapter_index > 0)
   {
-    // seek to next chapter
-    if (bPlus && (chapter_index < GetChapterCount()))
+    if (!bPlus)
     {
-      SeekChapter(chapter_index + 1);
+      // seek to previous chapter
+      SeekChapter(chapter_index - 1);
       return;
     }
-    // seek to previous chapter
-    if (!bPlus && chapter_index)
+    else if (chapter_index < GetChapterCount())
     {
-      SeekChapter(chapter_index - 1);
+      // seek to next chapter
+      SeekChapter(chapter_index + 1);
       return;
     }
   }

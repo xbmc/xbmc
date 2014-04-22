@@ -3,7 +3,7 @@ include ../depends.mk
 
 # lib name, version
 LIBNAME=libnfs
-VERSION=1.3.0
+VERSION=1.6.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
@@ -24,6 +24,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); ./bootstrap
+	cd $(SOURCE); patch -p0 < ../timeval.patch
 	cd $(SOURCE); $(CONFIGURE)
 
 $(SO_NAME): $(SOURCE)

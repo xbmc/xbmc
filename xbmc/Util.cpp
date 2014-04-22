@@ -1631,6 +1631,15 @@ bool CUtil::Command(const CStdStringArray& arrArgs, bool waitExit)
   int n = 0;
   if (child == 0)
   {
+    if (!waitExit)
+    {
+      // fork again in order not to leave a zombie process
+      child = fork();
+      if (child == -1)
+        _exit(2);
+      else if (child != 0)
+        _exit(0);
+    }
     close(0);
     close(1);
     close(2);
@@ -1645,7 +1654,7 @@ bool CUtil::Command(const CStdStringArray& arrArgs, bool waitExit)
   }
   else
   {
-    if (waitExit) waitpid(child, &n, 0);
+    waitpid(child, &n, 0);
   }
 
   return (waitExit) ? (WEXITSTATUS(n) == 0) : true;

@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([xbmc], [12.2], [http://trac.xbmc.org])
+AC_INIT([xbmc], [12.3], [http://trac.xbmc.org])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
 m4_include([m4/ax_python_devel.m4])
@@ -833,7 +833,7 @@ AC_CHECK_SIZEOF([size_t])
 
 # Check for intrinsics
 AC_MSG_CHECKING([for __sync_add_and_fetch(temp, 1)])
-AC_TRY_COMPILE([],[long* temp=0; __sync_add_and_fetch(temp, 1);],
+AC_TRY_LINK([],[long* temp=0; long ret=__sync_add_and_fetch(temp, 1);],
                 [have_builtin_sync_add_and_fetch=yes],
                 [have_builtin_sync_add_and_fetch=no])
 AC_MSG_RESULT($have_builtin_sync_add_and_fetch)
@@ -843,7 +843,7 @@ if test "x$have_builtin_sync_add_and_fetch" = "xyes"; then
 fi
 
 AC_MSG_CHECKING([for __sync_sub_and_fetch(temp, 1)])
-AC_TRY_COMPILE([],[long* temp=0; __sync_sub_and_fetch(temp, 1);],
+AC_TRY_LINK([],[long* temp=0; long ret=__sync_sub_and_fetch(temp, 1);],
                 [have_builtin_sync_sub_and_fetch=yes],
                 [have_builtin_sync_sub_and_fetch=no])
 AC_MSG_RESULT($have_builtin_sync_sub_and_fetch)
@@ -853,7 +853,7 @@ if test "x$have_builtin_sync_sub_and_fetch" = "xyes"; then
 fi
 
 AC_MSG_CHECKING([for __sync_val_compare_and_swap(temp, 1, 1)])
-AC_TRY_COMPILE([],[long *temp = 0; __sync_val_compare_and_swap(temp, 1, 1);],
+AC_TRY_LINK([],[long *temp = 0; long ret=__sync_val_compare_and_swap(temp, 1, 1);],
                 [have_builtin_sync_val_compare_and_swap=yes],
                 [have_builtin_sync_val_compare_and_swap=no])
 AC_MSG_RESULT($have_builtin_sync_val_compare_and_swap)

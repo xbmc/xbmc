@@ -120,6 +120,16 @@ public:
     virtual bool OnMouseClick(const CPoint &point) = 0;
     virtual bool IsInMenu() = 0;
     virtual double GetTimeStampCorrection() = 0;
+    virtual bool GetState(std::string &xmlstate)        { return false; }
+    virtual bool SetState(const std::string &xmlstate)  { return false; }
+  };
+
+  class ISeekable
+  {
+    public:
+    virtual ~ISeekable() {};
+    virtual bool CanSeek()  = 0;
+    virtual bool CanPause() = 0;
   };
 
   enum ENextStream

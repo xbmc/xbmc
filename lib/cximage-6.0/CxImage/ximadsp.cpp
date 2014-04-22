@@ -1374,6 +1374,7 @@ bool CxImage::Median(long Ksize)
 
 	CxImage tmp(*this);
 	if (!tmp.IsValid()){
+		free(kernel);
 		strcpy(info.szLastError,tmp.GetLastError());
 		return false;
 	}
@@ -2424,11 +2425,15 @@ bool CxImage::TextBlur(BYTE threshold, BYTE decay, BYTE max_depth, bool bBlurHor
 		pPalette = new RGBQUAD[head.biClrUsed];
 		memcpy(pPalette, GetPalette(),GetPaletteSize());
 		if (!IncreaseBpp(24))
+		{
+			delete [] pPalette;
 			return false;
+		}
 	}
 
 	CxImage tmp(*this);
 	if (!tmp.IsValid()){
+		delete [] pPalette;
 		strcpy(info.szLastError,tmp.GetLastError());
 		return false;
 	}
@@ -2484,12 +2489,16 @@ bool CxImage::GaussianBlur(float radius /*= 1.0f*/, CxImage* iDst /*= 0*/)
 		pPalette = new RGBQUAD[head.biClrUsed];
 		memcpy(pPalette, GetPalette(),GetPaletteSize());
 		if (!IncreaseBpp(24))
+		{
+			delete [] pPalette;
 			return false;
+		}
 	}
 
 	CxImage tmp_x(*this, false, true, true);
 	if (!tmp_x.IsValid()){
 		strcpy(info.szLastError,tmp_x.GetLastError());
+		delete [] pPalette;
 		return false;
 	}
 
@@ -2508,7 +2517,7 @@ bool CxImage::GaussianBlur(float radius /*= 1.0f*/, CxImage* iDst /*= 0*/)
 	double dbScaler = 50.0f/head.biHeight;
 
 	// blur the rows
-    for (y=0;y<head.biHeight;y++)
+	for (y=0;y<head.biHeight;y++)
 	{
 		if (info.nEscape) break;
 		info.nProgress = (long)(y*dbScaler);
@@ -2518,6 +2527,7 @@ bool CxImage::GaussianBlur(float radius /*= 1.0f*/, CxImage* iDst /*= 0*/)
 
 	CxImage tmp_y(tmp_x, false, true, true);
 	if (!tmp_y.IsValid()){
+		delete [] pPalette;
 		strcpy(info.szLastError,tmp_y.GetLastError());
 		return false;
 	}
@@ -2525,8 +2535,8 @@ bool CxImage::GaussianBlur(float radius /*= 1.0f*/, CxImage* iDst /*= 0*/)
 	CImageIterator itDst(&tmp_y);
 
 	// blur the cols
-    BYTE* cur_col = (BYTE*)malloc(bypp*head.biHeight);
-    BYTE* dest_col = (BYTE*)malloc(bypp*head.biHeight);
+	BYTE* cur_col = (BYTE*)malloc(bypp*head.biHeight);
+	BYTE* dest_col = (BYTE*)malloc(bypp*head.biHeight);
 
 	dbScaler = 50.0f/head.biWidth;
 
@@ -2594,11 +2604,15 @@ bool CxImage::SelectiveBlur(float radius, BYTE threshold, CxImage* iDst)
 		pPalette = new RGBQUAD[head.biClrUsed];
 		memcpy(pPalette, GetPalette(),GetPaletteSize());
 		if (!Tmp.IncreaseBpp(24))
+		{
+			delete [] pPalette;
 			return false;
+		}
 	}
 
 	CxImage Dst(Tmp, true, true, true);
 	if (!Dst.IsValid()){
+		delete [] pPalette;
 		strcpy(info.szLastError,Dst.GetLastError());
 		return false;
 	}
@@ -2608,6 +2622,7 @@ bool CxImage::SelectiveBlur(float radius, BYTE threshold, CxImage* iDst)
 	BYTE thresh_up = (BYTE)min(255,(int)(128 + threshold));
 	long kernel[]={-100,-100,-100,-100,801,-100,-100,-100,-100};
 	if (!Tmp.Filter(kernel,3,800,128)){
+		delete [] pPalette;
 		strcpy(info.szLastError,Tmp.GetLastError());
 		return false;
 	}
@@ -2644,6 +2659,7 @@ bool CxImage::SelectiveBlur(float radius, BYTE threshold, CxImage* iDst)
 	//blur the image (only in the selected pixels)
 	Dst.SelectionCopy(Tmp);
 	if (!Dst.GaussianBlur(radius)){
+		delete [] pPalette;
 		strcpy(info.szLastError,Dst.GetLastError());
 		return false;
 	}
@@ -3493,12 +3509,18 @@ bool CxImage::FloodFill(const long xStart, const long yStart, const RGBQUAD cFil
 		pPalette = new RGBQUAD[head.biClrUsed];
 		memcpy(pPalette, GetPalette(),GetPaletteSize());
 		if (!IncreaseBpp(24))
+		{
+			delete [] pPalette;
 			return false;
+		}
 	}
 
 	BYTE* pFillMask = (BYTE*)calloc(head.biWidth * head.biHeight,1);
 	if (!pFillMask)
+	{
+		delete [] pPalette;
 		return false;
+	}
 
 //------------------------------------- Begin of Flood Fill
 	POINT offset[4] = {{-1,0},{0,-1},{1,0},{0,1}};

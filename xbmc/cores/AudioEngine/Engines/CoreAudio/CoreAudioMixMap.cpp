@@ -26,6 +26,7 @@
 
 
 #include <AudioToolbox/AudioToolbox.h>
+#include <sstream>
 
 CCoreAudioMixMap::CCoreAudioMixMap() :
   m_isValid(false)
@@ -65,17 +66,20 @@ void CCoreAudioMixMap::Rebuild(AudioChannelLayout& inLayout, AudioChannelLayout&
   // Try and get a predefined mixmap
   ret = AudioFormatGetProperty(kAudioFormatProperty_MatrixMixMap,
     sizeof(layouts), layouts, &propSize, m_pMap);
-  if (!ret)
+  if (ret)
   {
-    // Nothing else to do...a map already exists
-    m_isValid = true;
-    return;
+    // If we for some reason don't find a predefined matrix let's build a diagonal matrix,
+    // basically guessing here, but we need to have a mixmap that matches the output and input
+    CLog::Log(LOGDEBUG, "CCoreAudioMixMap::CreateMap: No pre-defined mapping from %d to %d channels, building diagonal matrix.", m_inChannels, m_outChannels);
+    for (UInt32 chan = 0; chan < std::min(m_inChannels, m_outChannels); ++chan)
+    {
+      Float32 *vol = m_pMap + (chan * m_outChannels + chan);
+      CLog::Log(LOGDEBUG, "CCoreAudioMixMap::Rebuild %d = %f", chan, *vol);
+      *vol = 1.;
+    }
   }
 
-  // No predefined mixmap was available. Going to have to build it manually
-  CLog::Log(LOGDEBUG, "CCoreAudioMixMap::CreateMap: Unable to locate pre-defined mixing matrix");
-
-  m_isValid = false;
+  m_isValid = true;
 }
 
 CCoreAudioMixMap *CCoreAudioMixMap::CreateMixMap(CAUOutputDevice  *audioUnit, AEAudioFormat &format, AudioChannelLayoutTag layoutTag)
@@ -183,18 +187,8 @@ CCoreAudioMixMap *CCoreAudioMixMap::CreateMixMap(CAUOutputDevice  *audioUnit, AE
   //  deviceLayout.CopyLayout(guiLayout);
 
   // TODO: Skip matrix mixer if input/output are compatible
-
-  AudioChannelLayout* layoutCandidates[] = {(AudioChannelLayout*)deviceLayout, (AudioChannelLayout*)userLayout, NULL};
-
-  // Try to construct a mapping matrix for the mixer.
-  // Work through the layout candidates and see if any will work
   CCoreAudioMixMap *mixMap = new CCoreAudioMixMap();
-  for (AudioChannelLayout** pLayout = layoutCandidates; *pLayout != NULL; pLayout++)
-  {
-    mixMap->Rebuild(*sourceLayout, **pLayout);
-    if (mixMap->IsValid())
-      break;
-  }
+  mixMap->Rebuild(*sourceLayout, *(AudioChannelLayout*)deviceLayout);
   return mixMap;
 }
 
@@ -232,21 +226,44 @@ bool CCoreAudioMixMap::SetMixingMatrix(CAUMatrixMixer *mixerUnit,
   }
 
   // Configure the mixing matrix
+  // The return from kAudioFormatProperty_MatrixMixMap (See Rebuild above) 
+  // is a Float32* which is laid out like this:
+  //
+  // mapping 2 chan -> 2 chan
+  // 1 0 0 1
+  //
+  // or better represented in a tow dimensional array:
+  //
+  // 1 0
+  // 0 1
+  //
+  // mapping 6 chan -> 6 chan:
+  // 1 0 0 0 0 0
+  // 0 1 0 0 0 0
+  // 0 0 1 0 0 0
+  // ....
+
   Float32* val = (Float32*)*mixMap;
   for (UInt32 i = 0; i < inputFormat->mChannelsPerFrame; ++i)
   {
     UInt32 j = 0;
+    std::stringstream layoutStr;
     for (; j < fmt->mChannelsPerFrame; ++j)
     {
+      Float32 *vol = val + (i * mixMap->m_outChannels + j);
+      layoutStr << *vol << ", ";
       AudioUnitSetParameter(mixerUnit->GetUnit(),
-        kMatrixMixerParam_Volume, kAudioUnitScope_Global, ( (i + channelOffset) << 16 ) | j, *val++, 0);
+        kMatrixMixerParam_Volume, kAudioUnitScope_Global, ( (i + channelOffset) << 16 ) | j, *vol, 0);
     }
     // zero out additional outputs from this input
     for (; j < dims[1]; ++j)
     {
       AudioUnitSetParameter(mixerUnit->GetUnit(),
         kMatrixMixerParam_Volume, kAudioUnitScope_Global, ( (i + channelOffset) << 16 ) | j, 0.0f, 0);
+      layoutStr << "0, ";
     }
+
+    CLog::Log(LOGDEBUG, "CCoreAudioMixMap::SetMixingMatrix channel %d = [%s]", i, layoutStr.str().c_str());
   }
 
   CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: "

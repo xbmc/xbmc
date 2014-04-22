@@ -81,7 +81,7 @@ using namespace MUSIC_INFO;
 CGUIWindowMusicBase::CGUIWindowMusicBase(int id, const CStdString &xmlFile)
     : CGUIMediaWindow(id, xmlFile)
 {
-
+  m_dlgProgress = NULL;
 }
 
 CGUIWindowMusicBase::~CGUIWindowMusicBase ()

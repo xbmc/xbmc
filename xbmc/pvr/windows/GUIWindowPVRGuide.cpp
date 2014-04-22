@@ -242,7 +242,11 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(bool bUpdateSelectedFile)
   CDateTime gridStart = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
   CDateTime firstDate(g_EpgContainer.GetFirstEPGDate());
   CDateTime lastDate(g_EpgContainer.GetLastEPGDate());
-  m_parent->m_guideGrid->SetStartEnd(firstDate > gridStart ? firstDate : gridStart, lastDate);
+  if (!firstDate.IsValid() || firstDate < gridStart)
+    firstDate = gridStart;
+  if (!lastDate.IsValid() || lastDate < firstDate)
+    lastDate = firstDate;
+  m_parent->m_guideGrid->SetStartEnd(firstDate, lastDate);
 
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19032));
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19032));

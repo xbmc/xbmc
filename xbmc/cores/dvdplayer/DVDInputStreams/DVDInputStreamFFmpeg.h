@@ -22,7 +22,9 @@
 
 #include "DVDInputStream.h"
 
-class CDVDInputStreamFFmpeg : public CDVDInputStream
+class CDVDInputStreamFFmpeg
+  : public CDVDInputStream
+  , public CDVDInputStream::ISeekable
 {
 public:
   CDVDInputStreamFFmpeg();
@@ -38,6 +40,11 @@ public:
   virtual void    Abort()    { m_aborted = true;  }
   bool            Aborted()  { return m_aborted;  }
 
+  bool            CanSeek()  { return m_can_seek; }
+  bool            CanPause() { return m_can_pause; }
+
 protected:
   bool m_aborted;
+  bool m_can_pause;
+  bool m_can_seek;
 };

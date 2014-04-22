@@ -61,6 +61,7 @@ CGUIWindowPictures::CGUIWindowPictures(void)
 {
   m_thumbLoader.SetObserver(this);
   m_slideShowStarted = false;
+  m_dlgProgress = NULL;
 }
 
 void CGUIWindowPictures::OnInitWindow()

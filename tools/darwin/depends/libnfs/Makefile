@@ -3,14 +3,12 @@ include ../config.site.mk
 
 # lib name, version
 LIBNAME=libnfs
-VERSION=1.3.0
+VERSION=1.6.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX)
-
-RPC_HEADERS=rpcinc/auth.h rpcinc/auth_unix.h rpcinc/clnt.h rpcinc/pmap_clnt.h rpcinc/pmap_prot.h rpcinc/pmap_rmt.h rpcinc/rpc.h rpcinc/rpc_msg.h rpcinc/svc.h rpcinc/svc_auth.h rpcinc/types.h rpcinc/xdr.h
 
 LIBDYLIB=$(SOURCE)/lib/$(DYLIBNAME)
 
@@ -26,8 +24,8 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	mkdir -p $(PREFIX)/include/rpc
-	install -c -m 644  $(RPC_HEADERS) $(PREFIX)/include/rpc/
 	cd $(SOURCE); ./bootstrap
+	cd $(SOURCE); patch -p0 < ../timeval.patch
 	cd $(SOURCE); $(CONFIGURE)
 
 $(LIBDYLIB): $(SOURCE)

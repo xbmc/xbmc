@@ -354,6 +354,7 @@ void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, v
   {
     uint32_t newStyle = 0;
     color_t newColor = currentColor;
+    bool colorTagChange = false;
     bool newLine = false;
     // have a [ - check if it's an ON or OFF switch
     bool on(true);
@@ -401,21 +402,36 @@ void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, v
     { // color
       size_t finish = text.Find(L']', pos + 5);
       if (on && finish != CStdString::npos && (size_t)text.Find(L"[/COLOR]",finish) != CStdString::npos)
-      { // create new color
-        newColor = colors.size();
-        colors.push_back(g_colorManager.GetColor(text.Mid(pos + 5, finish - pos - 5)));
+      {
+        color_t color = g_colorManager.GetColor(text.Mid(pos + 5, finish - pos - 5));
+        vecColors::const_iterator it = std::find(colors.begin(), colors.end(), color);
+        if (it == colors.end())
+        { // create new color
+          if (colors.size() <= 0xFF)
+          {
+            newColor = colors.size();
+            colors.push_back(color);
+          }
+          else // we have only 8 bits for color index, fallback to first color if reach max.
+            newColor = 0;
+        }
+        else
+          // reuse existing color
+          newColor = it - colors.begin();
         colorStack.push(newColor);
+        colorTagChange = true;
       }
       else if (!on && finish == pos + 5 && colorStack.size() > 1)
       { // revert to previous color
         colorStack.pop();
         newColor = colorStack.top();
+        colorTagChange = true;
       }
       if (finish != CStdString::npos)
         pos = finish + 1;
     }
 
-    if (newStyle || newColor != currentColor || newLine)
+    if (newStyle || colorTagChange || newLine)
     { // we have a new style or a new color, so format up the previous segment
       CStdStringW subText = text.Mid(startPos, endPos - startPos);
       if (currentStyle & FONT_STYLE_UPPERCASE)

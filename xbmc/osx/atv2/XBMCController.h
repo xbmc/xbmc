@@ -62,6 +62,7 @@
 - (void) setGlView:(id)view;
 - (BOOL) ATVClientEventFromBREvent:(id)event Repeatable:(bool *)isRepeatable ButtonState:(bool *)isPressed Result:(int *)xbmc_ir_key;
 - (void) setUserEvent:(int) eventId withHoldTime:(unsigned int) holdTime;
+- (unsigned int) appleModKeyToXbmcModKey: (unsigned int) appleModifier;
 - (void) startKeyPressTimer:(int) keyId;
 - (void) stopKeyPressTimer;
 - (void) setSystemSleepTimeout:(id) timeout;

@@ -3242,7 +3242,18 @@ bool CApplication::ProcessEventServer(float frameTime)
   {
     CPoint pos;
     if (es->GetMousePos(pos.x, pos.y) && g_Mouse.IsEnabled())
+    {
+      XBMC_Event newEvent;
+      newEvent.type = XBMC_MOUSEMOTION;
+      newEvent.motion.xrel = 0;
+      newEvent.motion.yrel = 0;
+      newEvent.motion.state = 0;
+      newEvent.motion.which = 0x10;  // just a different value to distinguish between mouse and event client device.
+      newEvent.motion.x = pos.x;
+      newEvent.motion.y = pos.y;
+      OnEvent(newEvent);  // had to call this to update g_Mouse position
       return OnAction(CAction(ACTION_MOUSE_MOVE, pos.x, pos.y));
+    }
   }
 #endif
   return false;

@@ -902,15 +902,13 @@ long iso9660::ReadFile(HANDLE hFile, BYTE *pBuffer, long lSize)
   if ( pContext->m_bUseMode2 )
     sectorSize = MODE2_DATA_SIZE;
 
-  while (lSize > 0 && pContext->m_dwFilePos <= pContext->m_dwFileSize)
+  while (lSize > 0 && pContext->m_dwFilePos < pContext->m_dwFileSize)
   {
     pContext->m_dwCurrentBlock = (DWORD) (pContext->m_dwFilePos / sectorSize);
     int64_t iOffsetInBuffer = pContext->m_dwFilePos - (sectorSize * pContext->m_dwCurrentBlock);
     pContext->m_dwCurrentBlock += pContext->m_dwStartBlock;
 
-    //char szBuf[256];
-    //sprintf(szBuf,"pos:%i cblk:%i sblk:%i off:%i",(long)m_dwFilePos, (long)m_dwCurrentBlock,(long)m_dwStartBlock,(long)iOffsetInBuffer);
-    //DBG(szBuf);
+    // CLog::Log(LOGDEBUG, "pos:%li cblk:%li sblk:%li off:%li",(long)pContext->m_dwFilePos, (long)pContext->m_dwCurrentBlock,(long)pContext->m_dwStartBlock,(long)iOffsetInBuffer);
 
     BYTE* pSector;
     bError = !ReadSectorFromCache(pContext, pContext->m_dwCurrentBlock, &pSector);

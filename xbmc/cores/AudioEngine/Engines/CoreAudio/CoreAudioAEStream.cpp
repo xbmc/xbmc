@@ -106,7 +106,8 @@ CCoreAudioAEStream::CCoreAudioAEStream(enum AEDataFormat dataFormat, unsigned in
   m_fadeRunning     (false),
   m_frameSize       (0    ),
   m_doRemap         (true ),
-  m_firstInput      (true )
+  m_firstInput      (true ),
+  m_flushRequested  (false)
 {
   m_ssrcData.data_out             = NULL;
 
@@ -331,7 +332,7 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
   unsigned int addsize  = size;
   unsigned int channelsInBuffer = m_chLayoutCountStream;
 
-  if (!m_valid || size == 0 || data == NULL || !m_Buffer)
+  if (!m_valid || size == 0 || data == NULL || !m_Buffer || m_flushRequested)
     return 0;
 
   // if the stream is draining
@@ -439,11 +440,18 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
   return size;
 }
 
+// this is only called on the context of the coreaudio thread!
 unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
 {
   // if we have been deleted
   if (!m_valid || m_delete || !m_Buffer || m_paused)
     return 0;
+  
+  if (m_flushRequested)
+  {
+    InternalFlush();
+    return 0;
+  }
 
   unsigned int readsize = std::min(m_Buffer->GetReadSize(), size);
   m_Buffer->Read(buffer, readsize);
@@ -611,7 +619,8 @@ bool CCoreAudioAEStream::IsDrained()
 
 void CCoreAudioAEStream::Flush()
 {
-  InternalFlush();
+  if (m_Buffer)
+    m_flushRequested = true;
 }
 
 float CCoreAudioAEStream::GetVolume()
@@ -664,6 +673,7 @@ void CCoreAudioAEStream::InternalFlush()
     }
   }
 
+  m_flushRequested = false;
   //if (m_Buffer)
   //  m_Buffer->Reset();
 }
