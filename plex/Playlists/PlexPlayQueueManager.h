@@ -35,8 +35,6 @@ class CPlexPlayQueueManager
   FRIEND_TEST(PlayQueueManagerTest, ReconcilePlayQueueChanges_largedataset);
 
 public:
-  CPlexPlayQueueManager();
-
   void create(const CFileItem& container, const CStdString& uri = "",
               const CStdString& startItemKey = "", bool shuffle = false);
 
