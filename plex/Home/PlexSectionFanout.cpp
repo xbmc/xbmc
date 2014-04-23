@@ -266,7 +266,7 @@ void CPlexSectionFanout::Show()
 //////////////////////////////////////////////////////////////////////////////
 bool CPlexSectionFanout::NeedsRefresh()
 {
-  if (m_needsRefresh)
+  if (m_needsRefresh || m_sectionType == SECTION_TYPE_PLAYQUEUE)
   {
     m_needsRefresh = false;
     return true;
