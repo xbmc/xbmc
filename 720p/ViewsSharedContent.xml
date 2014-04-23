@@ -27,33 +27,9 @@
 		<control type="image">
 			<posx>13</posx>
 			<posy>13</posy>
-			<width>119</width>
-			<height>119</height>
-			<texture background="true" diffuse="mask-4leaf1.png">$INFO[ListItem(0).Thumb0]</texture>
-			<aspectratio scalediffuse="false" align="center" aligny="middle">scale</aspectratio>
-		</control>
-		<control type="image">
-			<posx>132</posx>
-			<posy>13</posy>
-			<width>119</width>
-			<height>119</height>
-			<texture background="true" diffuse="mask-4leaf2.png">$INFO[ListItem(0).Thumb1]</texture>
-			<aspectratio scalediffuse="false" align="center" aligny="middle">scale</aspectratio>
-		</control>
-		<control type="image">
-			<posx>13</posx>
-			<posy>132</posy>
-			<width>119</width>
-			<height>119</height>
-			<texture background="true" diffuse="mask-4leaf3.png">$INFO[ListItem(0).Thumb2]</texture>
-			<aspectratio scalediffuse="false" align="center" aligny="middle">scale</aspectratio>
-		</control>
-		<control type="image">
-			<posx>132</posx>
-			<posy>132</posy>
-			<width>119</width>
-			<height>119</height>
-			<texture background="true" diffuse="mask-4leaf4.png">$INFO[ListItem(0).Thumb3]</texture>
+			<width>238</width>
+			<height>238</height>
+			<texture background="true" diffuse="mask-4leaf1.png">$INFO[ListItem.CompositeImage(width=720;height=720;cols=2;rows=2)]</texture>
 			<aspectratio scalediffuse="false" align="center" aligny="middle">scale</aspectratio>
 		</control>
 	</include>
