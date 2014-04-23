@@ -514,6 +514,10 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
         return OnContextButton(m_viewControl.GetSelectedItem(), CONTEXT_BUTTON_MARK_UNWATCHED);
     }
   }
+  else if (action.GetID() == ACTION_PLEX_PLAY_ALL)
+    PlayAll(false);
+  else if (action.GetID() == ACTION_PLEX_SHUFFLE_ALL)
+    PlayAll(true);
 
   bool ret = CGUIMediaWindow::OnAction(action);
 

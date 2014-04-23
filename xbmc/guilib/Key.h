@@ -321,6 +321,8 @@
 #define ACTION_CLEAR_FILTERS          302
 #define ACTION_PLEX_CYCLE_PRIMARY_FILTER 303
 #define ACTION_PLEX_TOGGLE_UNWATCHED_FILTER 304
+#define ACTION_PLEX_PLAY_ALL          305
+#define ACTION_PLEX_SHUFFLE_ALL       306
 /* END PLEX */
 
 // Window ID defines to make the code a bit more readable

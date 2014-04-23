@@ -117,6 +117,8 @@ const BUILT_IN commands[] = {
   { "ToggleDisplayBlanking",      false,  "Toggle display blanking" },
   #endif
   { "UpdateAndRestart",           false,  "Update PHT and restart" },
+  { "PlayAll",                    false,  "Play all files in this container" },
+  { "ShuffleAll",                 false,  "Shuffle all files in this container" },
   /* END PLEX */
   { "Help",                       false,  "This help message" },
   { "Reboot",                     false,  "Reboot the system" },
@@ -1672,9 +1674,11 @@ int CBuiltins::Execute(const CStdString& execString)
 #endif
   }
   else if (execute.Equals("togglewatched"))
-  {
     g_application.OnAction(CAction(ACTION_TOGGLE_WATCHED));
-  }
+  else if (execute.Equals("playall"))
+    g_application.OnAction(CAction(ACTION_PLEX_PLAY_ALL));
+  else if (execute.Equals("shuffleall"))
+    g_application.OnAction(CAction(ACTION_PLEX_PLAY_ALL));
 #endif
   /* PLEX */
   else
