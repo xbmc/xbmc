@@ -204,6 +204,12 @@ void CGUIDialogSubtitles::Process(unsigned int currentTime, CDirtyRegionList &di
     {
       CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_SUBLIST, 0, 0, &subs);
       OnMessage(message);
+      if (!subs.IsEmpty())
+      {
+        // focus subtitles list
+        CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), CONTROL_SUBLIST);
+        OnMessage(msg);
+      }
       m_updateSubsList = false;
     }
     
