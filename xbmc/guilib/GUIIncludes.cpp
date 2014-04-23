@@ -50,11 +50,13 @@ CGUIIncludes::CGUIIncludes()
   m_constantNodes.insert("posx");
   m_constantNodes.insert("posy");
   m_constantNodes.insert("left");
+  m_constantNodes.insert("centerleft");
   m_constantNodes.insert("right");
-  m_constantNodes.insert("centerx");
+  m_constantNodes.insert("centerright");
   m_constantNodes.insert("top");
+  m_constantNodes.insert("centertop");
   m_constantNodes.insert("bottom");
-  m_constantNodes.insert("centery");
+  m_constantNodes.insert("centerbottom");
   m_constantNodes.insert("width");
   m_constantNodes.insert("height");
   m_constantNodes.insert("offsetx");
@@ -218,9 +220,9 @@ void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node, std::map<INFO::Inf
       {
         std::string value = tag->ValueStr();
         bool skip(false);
-        if (hasPosX && (value == "left" || value == "right" || value == "centerx"))
+        if (hasPosX && (value == "left" || value == "right" || value == "centerleft" || value == "centerright"))
           skip = true;
-        if (hasPosY && (value == "top" || value == "bottom" || value == "centery"))
+        if (hasPosY && (value == "top" || value == "bottom" || value == "centertop" || value == "centerbottom"))
           skip = true;
         // we insert at the end of block
         if (!skip)

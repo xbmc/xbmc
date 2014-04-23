@@ -18,11 +18,11 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Random Presets"
-msgstr "Preajuste aleatorio"
+msgstr "Preset aleatorio"
 
 msgctxt "#30001"
 msgid "Time Between Presets"
-msgstr "Tiempo entre preajustes"
+msgstr "Tiempo entre Presets"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
@@ -30,7 +30,7 @@ msgstr "Tiempo aleatorio adicional"
 
 msgctxt "#30003"
 msgid "Lock Preset"
-msgstr "Bloquear preajuste"
+msgstr "Bloquear Preset"
 
 msgctxt "#30004"
 msgid "Enable Transitions"
@@ -38,7 +38,7 @@ msgstr "Activar Transiciones"
 
 msgctxt "#30005"
 msgid "Stop first preset"
-msgstr "Detener el primer preajuste"
+msgstr "Detener en el primer Preset"
 
 msgctxt "#30006"
 msgid "Show FPS"

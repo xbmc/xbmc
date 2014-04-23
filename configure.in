@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([xbmc], [12.9.83], [http://issues.xbmc.org])
+AC_INIT([xbmc], [12.9.84], [http://issues.xbmc.org])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
 m4_include([m4/ax_prog_cc_for_build.m4])
@@ -686,7 +686,7 @@ case $host in
   powerpc64-*-linux-gnu*|powerpc64-*-linux-uclibc*)
      ARCH="powerpc64-linux"
      ;;
-  arm*-*-linux-gnu*)
+  arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
      ARCH="arm"
      use_arch="arm"
      ffmpeg_target_os=linux
@@ -2856,7 +2856,6 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --enable-pthreads \
       --enable-runtime-cpudetect \
       `if test "$use_hardcoded_tables" = "yes"; then echo --enable-hardcoded-tables; else echo --disable-hardcoded-tables; fi`\
-      `if test "$target_platform" = "target_android" && test "$host_cpu" = "i686"; then echo --disable-mmx; fi #workaround for gcc 4.6 bug` \
       `if test "$target_platform" = "target_android"; then echo "--custom-libname-with-major=\\$(SLIBPREF)\\$(FULLNAME)-\\$(LIBMAJOR)-${ARCH}\\$(SLIBSUF)"; \
        else echo "--custom-libname-with-major=\\$(FULLNAME)-\\$(LIBMAJOR)-${ARCH}\\$(SLIBSUF)"; fi` \
       `case $host_cpu in i?86*) echo --disable-pic ;; *) echo --enable-pic ;; esac` \

@@ -36,6 +36,10 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "Vysoké"
 
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Nervozita Mod  [větší změny modu]"
+
 msgctxt "#30006"
 msgid "Speed [skip some frames]"
 msgstr "Rychlost [přeskakuje některé snímky]"
@@ -55,3 +59,7 @@ msgstr "Normální"
 msgctxt "#30010"
 msgid "High"
 msgstr "Vysoká"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Použij trvalý soubor [rychlejší start]"

@@ -815,12 +815,12 @@ int  CMusicDatabase::UpdateAlbum(int idAlbum,
                       " strAlbum = '%s', strArtists = '%s', strGenres = '%s', "
                       " strMoods = '%s', strStyles = '%s', strThemes = '%s', "
                       " strReview = '%s', strImage = '%s', strLabel = '%s', "
-                      " strType = '%s',"
+                      " strType = '%s', iRating = %i,"
                       " iYear = %i, bCompilation = %i, lastScraped = '%s'",
                       strAlbum.c_str(), strArtist.c_str(), strGenre.c_str(),
                       strMoods.c_str(), strStyles.c_str(), strThemes.c_str(),
                       strReview.c_str(), strImage.c_str(), strLabel.c_str(),
-                      strType.c_str(),
+                      strType.c_str(), iRating,
                       iYear, bCompilation,
                       CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str());
   if (strMusicBrainzAlbumID.empty())

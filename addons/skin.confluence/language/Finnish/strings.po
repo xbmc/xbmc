@@ -444,9 +444,21 @@ msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr "Paikallinen tekstitys saatavilla"
 
+msgctxt "#31420"
+msgid "Login"
+msgstr "Kirjaudu"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Valitse XBMC-käyttäjäprofiili[CR]kirjautuaksesi sisään"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Näytä tai piilota kirjautumisruutu käynnistyksessä."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Valitse se profiili, jota käytetään käynnistyksessä, kun kirjautumisruutu on poiskytketty."
 
 msgctxt "#31501"
 msgid "Scheduled Time"

@@ -22,7 +22,7 @@ msgstr "Ändra din"
 
 msgctxt "#31003"
 msgid "Power Options"
-msgstr "Strömalternativ"
+msgstr "Energialternativ"
 
 msgctxt "#31004"
 msgid "Working..."
@@ -34,7 +34,7 @@ msgstr "Dölj information"
 
 msgctxt "#31006"
 msgid "View Options"
-msgstr "Visa alternativ"
+msgstr "Vy alternativ"
 
 msgctxt "#31008"
 msgid "Full screen"
@@ -114,11 +114,11 @@ msgstr "SPOLA BAKÅT"
 
 msgctxt "#31046"
 msgid "SEEKING"
-msgstr "LETAR"
+msgstr "SÖKER"
 
 msgctxt "#31048"
 msgid "Visualisation Presets"
-msgstr "Visualiserings val"
+msgstr "Visualiseringsval"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -174,7 +174,7 @@ msgstr "Visa \"Pausad\" i bildspel"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
-msgstr "Spela Trailers i ett fönster [COLOR=grey3](Endast Video Informations Dialog)[/COLOR]"
+msgstr "Spela trailers i ett fönster [COLOR=grey3](Endast Video Informations Dialog)[/COLOR]"
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
@@ -242,7 +242,7 @@ msgstr "Sångtexter"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualisation"
-msgstr "Dölj Fanart i fullskärmsvisualisering"
+msgstr "Dölj fanart i fullskärmsvisualisering"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -342,7 +342,7 @@ msgstr "Innehållsskrapealternativ"
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
-msgstr "Sätt fanartsökväg"
+msgstr "Ange fanartsökväg"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -350,11 +350,11 @@ msgstr "Vald profil"
 
 msgctxt "#31320"
 msgid "Last Logged In"
-msgstr "Sist inloggad"
+msgstr "Senast inloggad"
 
 msgctxt "#31321"
 msgid "Karaoke Song Selector"
-msgstr "Karaokelåtväljare"
+msgstr "Karaoke-låtväljare"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -430,7 +430,7 @@ msgstr "Skalets standard"
 
 msgctxt "#31391"
 msgid "Skin default with no Caps"
-msgstr "Skalets standard utan VERSAL"
+msgstr "Skalets standard utan VERSALER"
 
 msgctxt "#31392"
 msgid "Arial based"
@@ -442,11 +442,11 @@ msgstr "[B]KONFIGURERA UTSEENDEINSTÄLLNINGAR[/B][CR][CR]Ändra skalet · Ange s
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]KONFIGURERA GRAFIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt filmbibliotek · Ange filmuppspelningsalternativ[CR]Ändra videoförteckningsalternativ · Konfigurera undertextfonter"
+msgstr "[B]KONFIGURERA GRAFIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt filmbibliotek · Ange filmuppspelningsalternativ[CR]Ändra videoförteckningsalternativ · Konfigurera undertexttypsnitt"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]KONFIGURERA MUSIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt musikbibliotek · Ange musikuppspelningsalternativ[CR]Ändra musiklistningsalternativ · Ange låtinskickning · Ange karaokealternativ"
+msgstr "[B]KONFIGURERA MUSIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt musikbibliotek · Ange musikuppspelningsalternativ[CR]Ändra musiklistningsalternativ · Ange låtinskickning · Ange karaoke-alternativ"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
@@ -470,7 +470,7 @@ msgstr "[B]KONFIGURERA TV-INSTÄLLNINGAR[/B][CR][CR]Ändra fullskärmslägesinfo
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]KONFIGURERA SERVICEINSTÄLLNINGAR[/B][CR][CR]Ställ in kontroll av XBMC via UPnP och HTTP · Konfigurera fildelning[CR]Aktivera Zeroconf · Konfigurera AirPlay"
+msgstr "[B]KONFIGURERA TJÄNSTINSTÄLLNINGAR[/B][CR][CR]Ställ in kontroll av XBMC via UPnP och HTTP · Konfigurera fildelning[CR]Aktivera Zeroconf · Konfigurera AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -490,7 +490,7 @@ msgstr "Logga in"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Välj din XBMC användarprofil[CR]för att logga in och fortsätta"
+msgstr "Välj din XBMC-användarprofil[CR]för att logga in och fortsätta"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
@@ -506,7 +506,7 @@ msgstr "Schemalagd tid"
 
 msgctxt "#31502"
 msgid "Live TV"
-msgstr "Live TV"
+msgstr "Live-TV"
 
 msgctxt "#31503"
 msgid "Add Group"
@@ -518,7 +518,7 @@ msgstr "Döp om grupp"
 
 msgctxt "#31505"
 msgid "Delete Group"
-msgstr "Ta bort grupp"
+msgstr "Radera grupp"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
@@ -566,7 +566,7 @@ msgstr "Hämtar prognosinfo..."
 
 msgctxt "#31910"
 msgid "Map & Alerts"
-msgstr "Kartor & varningar"
+msgstr "Karta & varningar"
 
 msgctxt "#31950"
 msgid "WEATHER"

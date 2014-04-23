@@ -58,7 +58,7 @@ msgstr "Conjunto de presets"
 
 msgctxt "#30010"
 msgid "User Preset Folder        "
-msgstr "Carpeta de presets del usuario"
+msgstr "Carpeta de presets de usuario"
 
 msgctxt "#30011"
 msgid "Preset Shuffle Mode"

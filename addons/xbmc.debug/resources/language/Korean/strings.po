@@ -43,3 +43,7 @@ msgstr "DBUS 콜을 자세히 로깅"
 msgctxt "#30006"
 msgid "Verbose logging for JSON-RPC requests"
 msgstr "JSON-RPC 요청을 자세히 로깅"
+
+msgctxt "#30007"
+msgid "Verbose logging for AUDIO component"
+msgstr "오디오 구성 요소를 자세히 로깅"

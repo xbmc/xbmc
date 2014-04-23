@@ -3091,7 +3091,7 @@ msgstr "Изключено"
 
 msgctxt "#1226"
 msgid "Files & music & video"
-msgstr "Файлове. музика и видео"
+msgstr "Файлове, музика и видео"
 
 msgctxt "#1227"
 msgid "Files & pictures & music"
@@ -5607,7 +5607,7 @@ msgstr "Звуци при навигиране"
 
 msgctxt "#15109"
 msgid "Skin default"
-msgstr "От облика"
+msgstr "Стандартната (за облика)"
 
 msgctxt "#15111"
 msgid "Theme"
@@ -7168,6 +7168,14 @@ msgstr "Документален"
 msgctxt "#19520"
 msgid "Discussion/Interview/Debate"
 msgstr "Дискусии/Интервюта/Дебати"
+
+msgctxt "#19532"
+msgid "Show/Game Show"
+msgstr "Шоу/Гейм шоу"
+
+msgctxt "#19533"
+msgid "Game Show/Quiz/Contest"
+msgstr "Гейм шоу/Викторина/Конкурс"
 
 msgctxt "#19535"
 msgid "Talk Show"
@@ -11492,6 +11500,14 @@ msgstr "Изберете стандартния източник на инфор
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Стандартен източник на инф, за музикалните видео файлове в библиотеката."
+
+msgctxt "#36201"
+msgid "Settings for PVR/Live TV features."
+msgstr "Настройки за ПВР/ТВ функциите."
+
+msgctxt "#36202"
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Категория с общите настройки на ПВР/ТВ."
 
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.pvr-ios.xbmc.org"
 		name="XBMC.org PVR Add-ons"
-		version="1.1.7"
+		version="1.1.8"
 		provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -27,6 +27,7 @@
 		<summary lang="en">Install PVR Add-ons from XBMC.org</summary>
 		<summary lang="en_AU">Install PVR Add-ons from XBMC.org</summary>
 		<summary lang="en_NZ">Install PVR Add-ons from XBMC.org</summary>
+		<summary lang="en_US">Install PVR Add-ons from XBMC.org</summary>
 		<summary lang="es">Instalar Complementos de PVR de XBMC.org</summary>
 		<summary lang="es_AR">Instalar complemento PVR desde XBMC.org</summary>
 		<summary lang="es_MX">Instalar Complementos PVR de XBMC.org</summary>
@@ -42,7 +43,7 @@
 		<summary lang="hu">PVR kiegészítők telepítése az XBMC.org-ról</summary>
 		<summary lang="id">Pasang Pengaya PVR dari XBMC.org</summary>
 		<summary lang="it">Installa add-on da XBMC.org</summary>
-		<summary lang="ko">XBMC.org에서 PVR 추가기능 설치</summary>
+		<summary lang="ko">XBMC.org에서 PVR 애드온 설치</summary>
 		<summary lang="lt">Įdiekite PVR priedą iš XBMC.org</summary>
 		<summary lang="lv">Instalēt PVR pielikumus no XBMC.org</summary>
 		<summary lang="nl">Installeer PVR Add-ons van XBMC.org</summary>
@@ -67,6 +68,7 @@
 		<description lang="en">Download and install PVR add-ons from the Official XBMC.org add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team XBMC so we can take any action needed.</description>
 		<description lang="en_AU">Download and install PVR add-ons from the Official XBMC.org add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have undergone basic testing, if you find a broken or not working add-on please report it to Team XBMC so we can take any action needed.</description>
 		<description lang="en_NZ">Download and install PVR add-ons from the Official XBMC.org add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team XBMC so we can take any action needed.</description>
+		<description lang="en_US">Download and install PVR add-ons from the Official XBMC.org add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team XBMC so we can take any action needed.</description>
 		<description lang="es">Descarga e instala complementos de PVR desde el repositorio oficial de XBMC.[CR] Usando el repositorio oficial tendrás las ventajas de nuestro servicio de mirrors para ayudarte a conseguir unas descargas más rápidas de un sitio cercano a ti.[CR] Todos los complementos en este repositorio han pasado por un periodo de pruebas básico, pero si encuentras algún complemento que no funciona, por favor informa de ello al equipo de XBMC para solucionar el problema.</description>
 		<description lang="es_AR">Descarga e instala el complemento desde el repositorio oficial de XBMC.org.[CR] Usando el repositorio oficial tendrá las ventajas de nuestro servicio de réplicas para ayudarle a conseguir unas descargas más rápidas de un sitio cercano a su región.[CR] Todos los complementos en este repositorio han pasado por un periodo de pruebas básico, pero si encuentra algún complemento que no funciona, por favor infórmelo al equipo de XBMC para que podamos tomar las acciones necesarias.</description>
 		<description lang="es_MX">Descarga e instala complementos del repositorio oficial XBMC.org.[CR] Al usar el repositorio oficial, tendrá la ventaja de nuestro servicio extenso de espejos para ayudarle a tener descargas mas rapidas desde una region mas cerca de usted.[CR] Todos los complementos en este repositorio se han probado de manera básica, si encuentra alguno que no funciona o roto, favor de reportarlo al Equipo de XBMC para poder tomar las medidas necesarias.</description>
@@ -79,7 +81,7 @@
 		<description lang="hu">PVR Kiegészítők letöltése és telepítése a hivatalos XBMC.org tárolóhelyről.[CR] A hivatalos tárolóhely használatával kihasználhatod szerteágazó tükör-kiszolgáló hálózatunkat, ami segít a gyorsabb letöltésben egy hozzád közelebb eső körzet használatával.[CR]  Minden kiegészítő ezen a tárolóhelyen átment egy alaptesztelésen. Ha mégis hibás vagy nem működő kiegészítőt találsz, kérünk jelezd az XBMC csapatnak, hogy megtegyük a szükséges lépéseket.</description>
 		<description lang="id">Unduh dan pasang pengaya dari repositori pengaya resmi XBMC.org. [CR] Dengan menggunakan repositori resmi anda akan mendapat keuntungan dari miror berkas kami yang luas dimana dapat membantu anda untuk lebih cepat mengunduh dari daerah yang dekat dengan anda. [CR] Semua pengaya pada repository telah melalui uji coba standar, jika anda menemukan pengaya yang rusak atau tidak bekerja tolong laporkan kepada tim XBMC agar kami bisa menindak lanjutinya.</description>
 		<description lang="it">Scarica ed installa gli add-on dalla libreria ufficiale di XBMC.org[CR]  Usando la libreria ufficiale avrai il vantaggio di ottenere download più veloci con mirror più vicini alla tua località.[CR]  Tutti gli add-on in questa libreria sono stati sottoposti a test di base, se ne trovi uno non funzionante o corrotto, per favore riporta il problema al team di XBMC così potremmo prendere provvedimenti.</description>
-		<description lang="ko">공식 XBMC.org 추가기능 저장소에서 PVR 추가기능을 다운로드하여 설치합니다.[CR] 공식 저장소를 사용하면 파일 미러링 서비스를 통해 사용자와 가까운 곳에서 빠르게 다운로드할 수 있습니다.[CR] 저장소의 모든 추가기능은 기본 테스트를 거치지만 작동이 되지 않거나 손상된 추가기능을 발견하면 필요한 조치를 취할 수 있게 Team XBMC로 알려주시기 바랍니다.</description>
+		<description lang="ko">공식 XBMC.org 애드온 저장소에서 PVR 애드온을 다운로드하여 설치합니다.[CR] 공식 저장소를 사용하면 파일 미러링 서비스를 통해 사용자와 가까운 곳에서 빠르게 다운로드할 수 있습니다.[CR] 저장소의 모든 애드온은 기본 테스트를 거치지만 작동이 되지 않거나 손상된 추가기능을 발견하면 필요한 조치를 취할 수 있게 Team XBMC로 알려주시기 바랍니다.</description>
 		<description lang="lt">Atsisiųskite ir įdiekite PVR priedą iš oficialios XBMC.org priedų saugyklos. [Cr] Naudojant oficialią saugyklą galėsite pasinaudoti mūsų  failų Veidrodine saugyklos paslauga katra padės jums greičiau parsisiųsti iš artimiausios vietos šalia jūsų. [CR] Visi priedai šioje saugykloje yra perėję pagrindinį testavimą, jei atsisiuntėte neveikiantį ar/arba sugadintą priedą praneškite 'Team XBMC', kad galėtume imtis visų būtinų priemonių klaidai ištaisyti.</description>
 		<description lang="lv">Lejupielādējiet un instalējiet PVR pielikumus no oficiālā XBMC.org pielikumu repozitorija.[CR]  Izmantojot oficiālo repozitoriju, varēsiet izmantot mūsu plašo spoguļu pakalpojumu, lai iegūtu ātrākas lejupielādes no reģiona, kas vistuvāk.[CR]  Visi pielikumi šajā repozitorijā ir izgājuši pamata testēšanu, bet, ja atrodat saplīsušu vai nestrādājošu pielikumu, lūdzu, ziņojiet par to Team XBMC, lai varam izpildīt nepieciešamās labošanas darbības.</description>
 		<description lang="nl">Download en installeer PVR add-ons van het officiële XBMC.org add-on depot.[CR] Wanneer u het officiële depot gebruikt beschikt u over onze uitgebreide mirrorservice, waardoor u snel kan downloaden van locaties in uw buurt.[CR] Alle add-ons in dit depot ondergingen standaardtests; indien u een defecte of niet-werkende add-on vindt, meld dit dan aan Team XBMC zodat zij actie kunnen ondernemen.</description>
@@ -110,7 +112,7 @@
 		<disclaimer lang="en_AU">Team XBMC did not make all the add-ons on this repository and are not responsible for their content</disclaimer>
 		<disclaimer lang="en_NZ">Team XBMC did not make all the add-ons on this repository and are not responsible for their content</disclaimer>
 		<disclaimer lang="en_US">Team XBMC did not make all the add-ons on this repository and are not responsible for their content</disclaimer>
-		<disclaimer lang="es">El equipo de XBMC no ha hecho todos los Addons en este repositorio y no son responsables de su contenido</disclaimer>
+		<disclaimer lang="es">El equipo de XBMC no ha hecho todos los Complementos en este repositorio y no son responsables de su contenido</disclaimer>
 		<disclaimer lang="es_AR">No todos los add-ons en este repositorio han sido creados por el equipo de XBMC y este no es responsable de su contenido</disclaimer>
 		<disclaimer lang="es_MX">El equipo de XBMC no hizo todos los add-ons en este repositorio y no es responsable de su contenido</disclaimer>
 		<disclaimer lang="es_VE">El equipo de XBMC no creó todos los add-ons en este repositorio y no son responsables por su contenido</disclaimer>
@@ -127,7 +129,7 @@
 		<disclaimer lang="is">XBMC teymið gerir ekki allar þessar viðbætur og er ekki ábyrgt fyrir innihaldi þeirra.</disclaimer>
 		<disclaimer lang="it">Il team di XBMC non ha creato tutti gli add-on di questa libreria e non è responsabile per il loro contenuto</disclaimer>
 		<disclaimer lang="ja">XBMC チームが、このリポジトリ上の全アドオンを作ったわけではありません。また、その内容についても責任は負いかねます。</disclaimer>
-		<disclaimer lang="ko">Team XBMC는 이 저장소의 모든 추가기능을 제작하지 않았으며, 추가기능 컨텐츠에 대한 책임이 없습니다.</disclaimer>
+		<disclaimer lang="ko">Team XBMC는 이 저장소의 모든 애드온을 제작하지 않았으며, 애드온 컨텐츠에 대한 책임이 없습니다.</disclaimer>
 		<disclaimer lang="ku">تیمی XBMC هەموو پێوەکراوەکانی دروست نەکردووە بۆیە بەرپرسیار نیە لە پێکهاتە و ناوەڕۆکەکانی</disclaimer>
 		<disclaimer lang="lt">XBMC komanda netestavo priedų šioje saugykloje ir neatsako arba nėra atsakinga už jų turinį</disclaimer>
 		<disclaimer lang="lv">XBMC komanda nav izveidojusi visus šīs krātuves paplašinājumus un nav atbildīga par to saturu</disclaimer>

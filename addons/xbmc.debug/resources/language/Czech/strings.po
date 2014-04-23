@@ -39,3 +39,11 @@ msgstr "Podrobný záznam knihovny RTMP"
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
 msgstr "Podrobný záznam volání DBUS"
+
+msgctxt "#30006"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Podrobné logování pro JSON-RPC požadavky"
+
+msgctxt "#30007"
+msgid "Verbose logging for AUDIO component"
+msgstr "Podrobné logování pro AUDIO komponent"

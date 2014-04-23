@@ -3857,6 +3857,10 @@ msgctxt "#14098"
 msgid "Play"
 msgstr "ማጫወቻ "
 
+msgctxt "#15014"
+msgid "Keep"
+msgstr "ማስቀመጫ"
+
 msgctxt "#15015"
 msgid "Remove"
 msgstr "ማስወገጃ "

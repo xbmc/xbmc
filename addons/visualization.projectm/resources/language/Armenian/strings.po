@@ -1,6 +1,6 @@
 # XBMC Media Center language file
-# Addon Name: OpenGL Spectrum
-# Addon id: visualization.glspectrum
+# Addon Name: projectM
+# Addon id: visualization.projectm
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
@@ -9,13 +9,21 @@ msgstr ""
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Vietnamese (Viet Nam) (http://www.transifex.com/projects/p/xbmc-main/language/vi_VN/)\n"
+"Language-Team: Armenian (http://www.transifex.com/projects/p/xbmc-main/language/hy/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: vi_VN\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: hy\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "#30009"
-msgid "Speed"
-msgstr "Tốc độ"
+msgctxt "#30001"
+msgid "Low"
+msgstr "Ցածր"
+
+msgctxt "#30002"
+msgid "Medium"
+msgstr "Միջին"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "Բարձր"

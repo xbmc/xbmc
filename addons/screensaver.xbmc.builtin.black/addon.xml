@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.black"
        name="Black"
-       version="1.0.19"
+       version="1.0.20"
        provider-name="Team XBMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -45,7 +45,7 @@
     <summary lang="nl">Schermbeveiliging die uw scherm op zwart zet</summary>
     <summary lang="no">Skjermsparer som gjør skjermen din svart</summary>
     <summary lang="pl">Wygaszacz ekranu wyświetlający czarny ekran</summary>
-    <summary lang="pt">Protecção que escurece o seu ecrã.</summary>
+    <summary lang="pt">Protetor de ecrã que coloca o seu ecrã negro</summary>
     <summary lang="pt_BR">Protetor de tela que deixa sua tela preta</summary>
     <summary lang="ro">Screensaver care afișează un ecran negru</summary>
     <summary lang="ru">Заставка «чёрный экран»</summary>
@@ -101,7 +101,7 @@
     <description lang="nl">Black is een eenvoudige schermbeveiliging die uw scherm op zwart zet.</description>
     <description lang="no">Black er en enkel skjermsparer som gjør skjermen din svart.</description>
     <description lang="pl">Ten wygaszacz ekranu wyświetla czarny ekran. Staraj się używać go na wyświetlaczach CRT i unikaj na LCD.</description>
-    <description lang="pt">Black é uma protecção simples que escurece o seu ecrã.</description>
+    <description lang="pt">Negro é um protetor de ecrã simples que coloca o seu ecrã negro.</description>
     <description lang="pt_BR">Black é um protetor de tela que vai deixar sua tela preta</description>
     <description lang="ro">Black este un screensaver simplu care afișează negru pe ecran.</description>
     <description lang="ru">Это простая заставка, которая делает экран чёрным.</description>

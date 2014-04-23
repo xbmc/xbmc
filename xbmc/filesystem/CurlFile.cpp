@@ -25,6 +25,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "File.h"
+#include "threads/SystemClock.h"
 
 #include <vector>
 #include <climits>
@@ -49,9 +50,6 @@ using namespace XCURL;
 
 #define XMIN(a,b) ((a)<(b)?(a):(b))
 #define FITS_INT(a) (((a) <= INT_MAX) && ((a) >= INT_MIN))
-
-#define dllselect select
-
 
 curl_proxytype proxyType2CUrlProxyType[] = {
   CURLPROXY_HTTP,
@@ -396,6 +394,7 @@ CCurlFile::CCurlFile()
   m_username = "";
   m_password = "";
   m_httpauth = "";
+  m_cipherlist = "DEFAULT";
   m_proxytype = PROXY_HTTP;
   m_state = new CReadState();
   m_oldState = NULL;
@@ -607,6 +606,9 @@ void CCurlFile::SetCommonOptions(CReadState* state)
     // the 302 response's body length, which cause the next read request failed, so we ignore
     // content-length for shoutcast file to workaround this.
     g_curlInterface.easy_setopt(h, CURLOPT_IGNORE_CONTENT_LENGTH, 1);
+
+  // Setup allowed TLS/SSL ciphers. New versions of cURL may deprecate things that are still in use.
+  g_curlInterface.easy_setopt(h, CURLOPT_SSL_CIPHER_LIST, m_cipherlist.c_str());
 }
 
 void CCurlFile::SetRequestHeaders(CReadState* state)
@@ -772,6 +774,8 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
           SetAcceptCharset(value);
         else if (name.Equals("HttpProxy"))
           SetStreamProxy(value, PROXY_HTTP);
+        else if (name.Equals("SSLCipherList"))
+          m_cipherlist = value;
         else
           SetRequestHeader(name, value);
       }
@@ -1128,6 +1132,10 @@ bool CCurlFile::Exists(const CURL& url)
 int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
 {
   int64_t nextPos = m_state->m_filePos;
+  
+  if(!m_seekable)
+    return -1;
+
   switch(iWhence)
   {
     case SEEK_SET:
@@ -1152,28 +1160,31 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
   if(m_state->Seek(nextPos))
     return nextPos;
 
-  if (m_oldState && m_oldState->Seek(nextPos))
+  if (m_multisession)
   {
-    CReadState *tmp = m_state;
-    m_state = m_oldState;
-    m_oldState = tmp;
-    return nextPos;
-  }
+    if (!m_oldState)
+    {
+      CURL url(m_url);
+      m_oldState          = m_state;
+      m_state             = new CReadState();
+      m_state->m_fileSize = m_oldState->m_fileSize;
+      g_curlInterface.easy_aquire(url.GetProtocol(),
+                                  url.GetHostName(),
+                                  &m_state->m_easyHandle,
+                                  &m_state->m_multiHandle );
+    }
+    else
+    {
+      CReadState *tmp;
+      tmp         = m_state;
+      m_state     = m_oldState;
+      m_oldState  = tmp;
 
-  if(!m_seekable)
-    return -1;
-
-  CReadState* oldstate = NULL;
-  if(m_multisession)
-  {
-    CURL url(m_url);
-    oldstate = m_oldState;
-    m_oldState = m_state;
-    m_state = new CReadState();
-
-    g_curlInterface.easy_aquire(url.GetProtocol(), url.GetHostName(), &m_state->m_easyHandle, &m_state->m_multiHandle );
-
-    m_state->m_fileSize = m_oldState->m_fileSize;
+      if (m_state->Seek(nextPos))
+        return nextPos;
+      
+      m_state->Disconnect();
+    }
   }
   else
     m_state->Disconnect();
@@ -1190,18 +1201,26 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
   long response = m_state->Connect(m_bufferSize);
   if(response < 0 && (m_state->m_fileSize == 0 || m_state->m_fileSize != m_state->m_filePos))
   {
-    m_seekable = false;
-    if(m_multisession && m_oldState)
+    if(m_multisession)
     {
-      delete m_state;
-      m_state = m_oldState;
-      m_oldState = oldstate;
+      if (m_oldState)
+      {
+        delete m_state;
+        m_state     = m_oldState;
+        m_oldState  = NULL;
+      }
+      // Retry without mutlisession
+      m_multisession = false;
+      return Seek(iFilePosition, iWhence);
     }
-    return -1;
+    else
+    {
+      m_seekable = false;
+      return -1;
+    } 
   }
 
   SetCorrectHeaders(m_state);
-  delete oldstate;
 
   return m_state->m_filePos;
 }
@@ -1505,14 +1524,33 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
         if (CURLM_OK != g_curlInterface.multi_timeout(m_multiHandle, &timeout) || timeout == -1)
           timeout = 200;
 
-        struct timeval t = { timeout / 1000, (timeout % 1000) * 1000 };
+        XbmcThreads::EndTime endTime(timeout);
+        int rc;
 
-        /* Wait until data is available or a timeout occurs.
-           We call dllselect(maxfd + 1, ...), specially in case of (maxfd == -1),
-           we call dllselect(0, ...), which is basically equal to sleep. */
-        if (SOCKET_ERROR == dllselect(maxfd + 1, &fdread, &fdwrite, &fdexcep, &t))
+        do
         {
-          CLog::Log(LOGERROR, "CCurlFile::FillBuffer - Failed with socket error");
+          unsigned int time_left = endTime.MillisLeft();
+          struct timeval t = { time_left / 1000, (time_left % 1000) * 1000 };
+
+          // Wait until data is available or a timeout occurs.
+          rc = select(maxfd + 1, &fdread, &fdwrite, &fdexcep, &t);
+#ifdef TARGET_WINDOWS
+        } while(rc == SOCKET_ERROR && WSAGetLastError() == WSAEINTR);
+#else
+        } while(rc == SOCKET_ERROR && errno == EINTR);
+#endif
+
+        if(rc == SOCKET_ERROR)
+        {
+#ifdef TARGET_WINDOWS
+          char buf[256];
+          strerror_s(buf, 256, WSAGetLastError());
+          CLog::Log(LOGERROR, "CCurlFile::FillBuffer - Failed with socket error:%s", buf);
+#else
+          char const * str = strerror(errno);
+          CLog::Log(LOGERROR, "CCurlFile::FillBuffer - Failed with socket error:%s", str);
+#endif
+
           return false;
         }
       }

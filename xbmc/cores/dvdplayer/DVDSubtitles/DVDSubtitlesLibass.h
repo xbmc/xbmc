@@ -39,7 +39,7 @@ public:
 
   bool DecodeHeader(char* data, int size);
   bool DecodeDemuxPkt(char* data, int size, double start, double duration);
-  bool CreateTrack(char* buf, int size);
+  bool CreateTrack(char* buf, size_t size);
 
 private:
   DllLibass m_dll;

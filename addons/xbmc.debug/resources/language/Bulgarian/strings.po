@@ -43,3 +43,7 @@ msgstr "Подробно описване в дневника на DBUS обаж
 msgctxt "#30006"
 msgid "Verbose logging for JSON-RPC requests"
 msgstr "Подробно описване в дневника на JSON-RPC заявките"
+
+msgctxt "#30007"
+msgid "Verbose logging for AUDIO component"
+msgstr "Подробно описване в дневника на AUDIO компонента"

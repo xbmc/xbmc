@@ -350,7 +350,7 @@ msgstr "Избран профил"
 
 msgctxt "#31320"
 msgid "Last Logged In"
-msgstr "Последно вписване"
+msgstr "Последно влизане"
 
 msgctxt "#31321"
 msgid "Karaoke Song Selector"
@@ -522,7 +522,7 @@ msgstr "Изтрий групата"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
-msgstr "Налични[CR]Групи"
+msgstr "Налични[CR]групи"
 
 msgctxt "#31509"
 msgid "Channel Group"

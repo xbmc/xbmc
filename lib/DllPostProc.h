@@ -97,7 +97,9 @@ public:
   // DLL faking.
   virtual bool ResolveExports() { return true; }
   virtual bool Load() {
+#if !defined(TARGET_DARWIN) && !defined(USE_STATIC_FFMPEG)
     CLog::Log(LOGDEBUG, "DllPostProc: Using libpostproc system library");
+#endif
     return true;
   }
   virtual void Unload() {}

@@ -22,7 +22,7 @@
 namespace JSONRPC
 {
   const char* const JSONRPC_SERVICE_ID          = "http://xbmc.org/jsonrpc/ServiceDescription.json";
-  const char* const JSONRPC_SERVICE_VERSION     = "6.14.1";
+  const char* const JSONRPC_SERVICE_VERSION     = "6.14.3";
   const char* const JSONRPC_SERVICE_DESCRIPTION = "JSON-RPC API of XBMC";
 
   const char* const JSONRPC_SERVICE_TYPES[] = {  
@@ -1327,7 +1327,7 @@ namespace JSONRPC
                 "\"xbmc.player.musicviz\", \"xbmc.python.pluginsource\", \"xbmc.python.script\", \"xbmc.python.weather\","
                 "\"xbmc.python.subtitles\", \"xbmc.python.lyrics\", \"xbmc.gui.skin\", \"xbmc.gui.webinterface\","
                 "\"xbmc.pvrclient\", \"xbmc.addon.video\", \"xbmc.addon.audio\", \"xbmc.addon.image\", \"xbmc.addon.executable\","
-                "\"xbmc.service\" ],"
+                "\"xbmc.service\", \"xbmc.subtitle.module\" ],"
       "\"default\": \"unknown\""
     "}",
     "\"Addon.Content\": {"
@@ -4326,6 +4326,24 @@ namespace JSONRPC
     "\"Input.OnInputFinished\": {"
       "\"type\": \"notification\","
       "\"description\": \"The user has provided the requested input.\","
+      "\"params\": ["
+        "{ \"name\": \"sender\", \"type\": \"string\", \"required\": true },"
+        "{ \"name\": \"data\", \"type\": \"null\", \"required\": true }"
+      "],"
+      "\"returns\": null"
+    "}",
+    "\"GUI.OnScreensaverActivated\": {"
+      "\"type\": \"notification\","
+      "\"description\": \"The screensaver has been activated.\","
+      "\"params\": ["
+        "{ \"name\": \"sender\", \"type\": \"string\", \"required\": true },"
+        "{ \"name\": \"data\", \"type\": \"null\", \"required\": true }"
+      "],"
+      "\"returns\": null"
+    "}",
+    "\"GUI.OnScreensaverDeactivated\": {"
+      "\"type\": \"notification\","
+      "\"description\": \"The screensaver has been deactivated.\","
       "\"params\": ["
         "{ \"name\": \"sender\", \"type\": \"string\", \"required\": true },"
         "{ \"name\": \"data\", \"type\": \"null\", \"required\": true }"

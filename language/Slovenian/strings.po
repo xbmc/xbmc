@@ -5145,6 +5145,10 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Napaka upravljalnika Apple"
 
+msgctxt "#13621"
+msgid "Apple Remote support could not be enabled."
+msgstr "Ne morem omogočiti Apple oddaljene pomoči."
+
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Združi"
@@ -6432,6 +6436,10 @@ msgstr "Išči nove programe"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "Med iskanjem funkcij PVR ni mogoče uporabljati."
+
+msgctxt "#19119"
+msgid "On which server do you want to search?"
+msgstr "Na katerem strežniku želite sprožiti iskanje?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -10281,6 +10289,10 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Izberi med vsemi naslovi ..."
 
+msgctxt "#25003"
+msgid "Show Blu-ray menus"
+msgstr "Prikaži menije Blu-ray-ja"
+
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Predvajaj glavni naslov: %d"
@@ -10296,6 +10308,10 @@ msgstr "Izberite predmet predvajanja"
 msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr "Poglavja: %u - trajanje: %s"
+
+msgctxt "#25008"
+msgid "Playback of Blu-ray failed"
+msgstr "Predvajanje Blu-ray-ja je spodletelo"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11281,6 +11297,14 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Izbrišite bazo programov/EPG in ponovno uvozite podatke iz hrbtenic."
 
+msgctxt "#36216"
+msgid "Folder where channel icons are stored."
+msgstr "Mapa kjer so shranjene ikone kanalov."
+
+msgctxt "#36217"
+msgid "Scan for missing channel icons."
+msgstr "Išči manjkajoče ikone za kanale."
+
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "Ne uvažajte programskega vodiča med predvajanjem TV in s tem zmanjšajte porabo CPU-ja."
@@ -11404,6 +11428,22 @@ msgstr "Samodejno izvrzite ploščo po končanem zajemanju."
 msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
 msgstr "Ob predvajanju katerikoli glasbene datoteke bo XBMC preveril za pripadajočo .cdg datoteko in prikazal pripadajočo grafiko."
+
+msgctxt "#36295"
+msgid "Select the font type used during karaoke."
+msgstr "Izberite tip pisave za prikazovanje med karaokami."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karaoke."
+msgstr "Izberite velikost pisave za prikazovanje med karaokami."
+
+msgctxt "#36297"
+msgid "Select the font colour used during karaoke."
+msgstr "Izberite barvo pisave za prikazovanje med karaokami."
+
+msgctxt "#36298"
+msgid "Select the character set used during karaoke."
+msgstr "Izberite nabor znakov za prikazovanje med karaokami."
 
 msgctxt "#36301"
 msgid "No info available yet."
@@ -11728,6 +11768,14 @@ msgstr "Stereoskopski način videa"
 msgctxt "#36536"
 msgid "Stereoscopic mode inverted"
 msgstr "Stereoskopski način obrnjen"
+
+msgctxt "#36539"
+msgid "Changes the stereoscopic 3D mode of the user interface."
+msgstr "Spremeni stereoskopski 3D način uporabniškega vmesnika."
+
+msgctxt "#36540"
+msgid "The preferred stereoscopic 3D mode."
+msgstr "Prednostni stereoskopski 3D način."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."

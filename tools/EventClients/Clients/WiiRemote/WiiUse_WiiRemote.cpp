@@ -130,6 +130,7 @@ int connectWiimote(wiimote** wiimotes)
     wiiuse_set_leds(wm, WIIMOTE_LED_1);
     wiiuse_rumble(wm, 1);
     wiiuse_set_orient_threshold(wm,1);
+    DisableMotionSensing(wm);
     #ifndef WIN32
       usleep(200000);
     #else
@@ -221,6 +222,7 @@ int main(int argc, char** argv)
       for (int i = 0; i < MAX_WIIMOTES; ++i)
       //MAX_WIIMOTES hardcoded at 1.
       {
+        DisableMotionSensing(wm);
         switch (wiimotes[i]->event) 
         {
         case WIIUSE_EVENT:
@@ -231,7 +233,6 @@ int main(int argc, char** argv)
           {
             //Prepare to repeat or hold. Do this only once.
             timeout = getTicks();
-            EnableMotionSensing(wm);
             controller.m_abs_roll = 0;
             controller.m_abs_pitch = 0;
             controller.m_start_roll = 0;

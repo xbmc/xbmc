@@ -48,7 +48,8 @@ namespace XBMCAddon
      * \n
      * Text is written to the log for the following conditions.\n
      *           XBMC loglevel == -1 (NONE, nothing at all is logged)\n
-     *           XBMC loglevel == 0 (NORMAL, shows LOGNOTICE, LOGERROR, LOGSEVERE and LOGFATAL)     *           XBMC loglevel == 1 (DEBUG, shows all)\n
+     *           XBMC loglevel == 0 (NORMAL, shows LOGNOTICE, LOGERROR, LOGSEVERE and LOGFATAL)     
+     *           XBMC loglevel == 1 (DEBUG, shows all)\n
      *           See pydocs for valid values for level.\n
      *           
      *           example:
@@ -220,15 +221,25 @@ namespace XBMCAddon
     String getInfoImage(const char * infotag);
 
     /**
-     * playSFX(filename) -- Plays a wav file by filename
+     * playSFX(filename,[useCached]) -- Plays a wav file by filename
      * 
      * filename       : string - filename of the wav file to play.
+     * useCached      : [opt] bool - False = Dump any previously cached wav associated with filename
      * 
      * example:
-     *   - xbmc.playSFX('special://xbmc/scripts/dingdong.wav')
+     *   - xbmc.playSFX('special://xbmc/scripts/dingdong.wav')\n
+     *   - xbmc.playSFX('special://xbmc/scripts/dingdong.wav',False)
      */
-    void playSFX(const char* filename);
+    void playSFX(const char* filename, bool useCached = true);
 
+    /**
+     * stopSFX() -- Stops wav file
+     *
+     * example:
+     *   - xbmc.stopSFX()
+     */
+    void stopSFX();
+    
     /**
      * enableNavSounds(yesNo) -- Enables/Disables nav sounds
      * 

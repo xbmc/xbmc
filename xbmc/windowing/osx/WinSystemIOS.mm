@@ -34,6 +34,8 @@
 #include "guilib/GraphicContext.h"
 #include "guilib/Texture.h"
 #include "utils/StringUtils.h"
+#include "guilib/DispResource.h"
+#include "threads/SingleLock.h"
 #include <vector>
 #undef BOOL
 
@@ -54,6 +56,7 @@ CWinSystemIOS::CWinSystemIOS() : CWinSystemBase()
   m_eWindowSystem = WINDOW_SYSTEM_IOS;
 
   m_iVSyncErrors = 0;
+  m_bIsBackgrounded = false;
 }
 
 CWinSystemIOS::~CWinSystemIOS()
@@ -316,6 +319,29 @@ bool CWinSystemIOS::EndRender()
 
   rtn = CRenderSystemGLES::EndRender();
   return rtn;
+}
+
+void CWinSystemIOS::Register(IDispResource *resource)
+{
+  CSingleLock lock(m_resourceSection);
+  m_resources.push_back(resource);
+}
+
+void CWinSystemIOS::Unregister(IDispResource* resource)
+{
+  CSingleLock lock(m_resourceSection);
+  std::vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
+  if (i != m_resources.end())
+    m_resources.erase(i);
+}
+
+void CWinSystemIOS::OnAppFocusChange(bool focus)
+{
+  CSingleLock lock(m_resourceSection);
+  m_bIsBackgrounded = !focus;
+  CLog::Log(LOGDEBUG, "CWinSystemIOS::OnAppFocusChange: %d", focus ? 1 : 0);
+  for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+    (*i)->OnAppFocusChange(focus);
 }
 
 void CWinSystemIOS::InitDisplayLink(void)

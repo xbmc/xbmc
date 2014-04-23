@@ -37,7 +37,6 @@
 #include "VideoShaders/YUV2RGBShader.h"
 #include "VideoShaders/VideoFilterShader.h"
 #include "windowing/WindowingFactory.h"
-#include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/Texture.h"
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
@@ -919,7 +918,6 @@ void CLinuxRendererGL::UpdateVideoFilter()
     break;
   }
 
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(34400), g_localizeStrings.Get(34401));
   CLog::Log(LOGERROR, "GL: Falling back to bilinear due to failure to init scaler");
   if (m_pVideoFilterShader)
   {

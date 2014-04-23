@@ -625,7 +625,7 @@
 						<onright>602</onright>
 						<onup>9003</onup>
 						<ondown>9000</ondown>
-						<onclick>XBMC.PlayerControl(Previous)</onclick>
+						<onclick>ChannelDown</onclick>
 					</control>
 					<control type="button" id="602">
 						<left>40</left>
@@ -639,7 +639,7 @@
 						<onright>603</onright>
 						<onup>9003</onup>
 						<ondown>9000</ondown>
-						<onclick>XBMC.PlayerControl(Next)</onclick>
+						<onclick>ChannelUp</onclick>
 					</control>
 					<control type="button" id="603">
 						<left>70</left>

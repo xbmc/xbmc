@@ -39,3 +39,11 @@ msgstr "Registro con verborragia para la biblioteca RTMP"
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
 msgstr "Registro con verborragia para las llamadas DBUS"
+
+msgctxt "#30006"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Registro con verborragia para la pedidos JSON-RPC"
+
+msgctxt "#30007"
+msgid "Verbose logging for AUDIO component"
+msgstr "Registro con verborragia para componente AUDIO"

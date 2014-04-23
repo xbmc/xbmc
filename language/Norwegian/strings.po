@@ -299,7 +299,7 @@ msgstr "Visning: Auto"
 
 msgctxt "#99"
 msgid "View: Auto big"
-msgstr "Visning: Auto stor"
+msgstr "Visning: Auto (stor)"
 
 msgctxt "#100"
 msgid "View: Icons"
@@ -335,7 +335,7 @@ msgstr "Ja"
 
 msgctxt "#108"
 msgid "Slideshow"
-msgstr "Lysbildefremvisning"
+msgstr "Bildefremvisning"
 
 msgctxt "#109"
 msgid "Create thumbs"
@@ -391,7 +391,7 @@ msgstr "Bekreft flytting"
 
 msgctxt "#122"
 msgid "Confirm file delete?"
-msgstr "Bekrefte sletting av fil?"
+msgstr "Bekreft sletting av fil"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -431,7 +431,7 @@ msgstr "Skjerm"
 
 msgctxt "#132"
 msgid "Albums"
-msgstr "Albumer"
+msgstr "Album"
 
 msgctxt "#133"
 msgid "Artists"
@@ -443,7 +443,7 @@ msgstr "Låter"
 
 msgctxt "#135"
 msgid "Genres"
-msgstr "Sjanger"
+msgstr "Sjangre"
 
 msgctxt "#136"
 msgid "Playlists"
@@ -895,7 +895,7 @@ msgstr "Feil"
 
 msgctxt "#258"
 msgid "Enable tag reading"
-msgstr "Aktiver knagginformasjon"
+msgstr "Aktiver tagginformasjon"
 
 msgctxt "#259"
 msgid "Opening"
@@ -967,7 +967,7 @@ msgstr "Justering av pikselforhold"
 
 msgctxt "#276"
 msgid "Adjust the arrow to change the amount of overscan"
-msgstr "Juster pilen for å endre mengden overskanning"
+msgstr "Juster pilen for å endre overskanning"
 
 msgctxt "#277"
 msgid "Adjust the bar to change the subtitles position"
@@ -1043,7 +1043,7 @@ msgstr "Lag bokmerke"
 
 msgctxt "#296"
 msgid "Clear bookmarks"
-msgstr "Tøm bokmerker"
+msgstr "Slett bokmerker"
 
 msgctxt "#297"
 msgid "Audio offset"
@@ -1159,7 +1159,7 @@ msgstr "Skriver endringer..."
 
 msgctxt "#329"
 msgid "Error writing changes"
-msgstr "Feil under endringsskriving"
+msgstr "Feil under skriving"
 
 msgctxt "#330"
 msgid "This may take some time..."
@@ -1279,7 +1279,7 @@ msgstr "Alle album"
 
 msgctxt "#359"
 msgid "Recently added albums"
-msgstr "Album lagt til nylig"
+msgstr "Album nylig lagt til"
 
 msgctxt "#360"
 msgid "Screensaver"
@@ -1387,7 +1387,7 @@ msgstr "lettskyet"
 
 msgctxt "#386"
 msgid "Clear"
-msgstr "Tøm"
+msgstr "klart"
 
 msgctxt "#387"
 msgid "Clouds"
@@ -2087,7 +2087,7 @@ msgstr "Land"
 
 msgctxt "#575"
 msgid "In progress"
-msgstr "Igangsatt"
+msgstr "Pågår"
 
 msgctxt "#576"
 msgid "Times played"
@@ -2251,7 +2251,7 @@ msgstr "Alle låter fra"
 
 msgctxt "#626"
 msgid "In progress TV shows"
-msgstr "Igangsatte TV-serier"
+msgstr "TV-serier som pågår"
 
 msgctxt "#629"
 msgid "View mode"
@@ -2403,7 +2403,7 @@ msgstr "Komprimeringsnivå"
 
 msgctxt "#666"
 msgid "Verbose logging..."
-msgstr "Omstendig logging..."
+msgstr "Detaljert logging..."
 
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
@@ -2699,11 +2699,11 @@ msgstr "Nettverksenheten startet ikke korrekt."
 
 msgctxt "#787"
 msgid "Interface disabled"
-msgstr "Grensesnitt deaktivert"
+msgstr "Enheten deaktivert"
 
 msgctxt "#788"
 msgid "Network interface disabled successfully."
-msgstr "Nettverksgrensesnittet deaktivert uten feil."
+msgstr "Nettverksenheten deaktivert uten feil."
 
 msgctxt "#789"
 msgid "Wireless network name (ESSID)"
@@ -2751,7 +2751,7 @@ msgstr "Bibliotekoppdatering"
 
 msgctxt "#800"
 msgid "Music library needs to rescan tags from files."
-msgstr "Musikkbiblioteket trenger å hente knagginformasjon på nytt"
+msgstr "Musikkbiblioteket trenger å hente filinformasjon på nytt"
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
@@ -2895,7 +2895,7 @@ msgstr "Rediger %s-kilde"
 
 msgctxt "#1029"
 msgid "Enter the new label"
-msgstr "Skriv inn ett nytt plateselskap"
+msgstr "Skriv inn en ny etikett"
 
 msgctxt "#1030"
 msgid "Browse for image"
@@ -3523,7 +3523,7 @@ msgstr "Nullstill"
 
 msgctxt "#10036"
 msgid "Basic"
-msgstr "Grunnleggende"
+msgstr "Enkel"
 
 msgctxt "#10037"
 msgid "Standard"
@@ -3571,7 +3571,7 @@ msgstr "Forsøk å bytte innstillingsnivået for å gjøre ytterligere kategorie
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
-msgstr "Ja/Nei dialog"
+msgstr "Ja/Nei-dialog"
 
 msgctxt "#10101"
 msgid "Progress dialogue"
@@ -3671,7 +3671,7 @@ msgstr "Topp 100 låter"
 
 msgctxt "#10505"
 msgid "Top 100 albums"
-msgstr "Topp 100 albumer"
+msgstr "Topp 100 album"
 
 msgctxt "#10506"
 msgid "Programs"
@@ -4455,7 +4455,7 @@ msgstr "Prosessorhastighet:"
 
 msgctxt "#13286"
 msgid "Video encoder:"
-msgstr "Videoprosessor:"
+msgstr "Videokoder:"
 
 msgctxt "#13287"
 msgid "Screen resolution:"
@@ -4663,7 +4663,7 @@ msgstr "Filminformasjon"
 
 msgctxt "#13347"
 msgid "Queue item"
-msgstr "Legg oppføring i kø"
+msgstr "Legg i kø"
 
 msgctxt "#13348"
 msgid "Search IMDb..."
@@ -4683,7 +4683,7 @@ msgstr "Albuminformasjon"
 
 msgctxt "#13352"
 msgid "Scan item to library"
-msgstr "Skann oppføring til bibliotek"
+msgstr "Skann til bibliotek"
 
 msgctxt "#13353"
 msgid "Stop scanning"
@@ -4707,7 +4707,7 @@ msgstr "Høykvalitets pikselshader"
 
 msgctxt "#13358"
 msgid "Play item"
-msgstr "Spill av oppføring"
+msgstr "Spill av"
 
 msgctxt "#13359"
 msgid "Set artist thumb"
@@ -4819,7 +4819,7 @@ msgstr "Snarveier"
 
 msgctxt "#13399"
 msgid "Ignore articles when sorting (e.g. \"the\")"
-msgstr "Ignorer «the» ved sortering"
+msgstr "Ignorer artikler ved sortering (f.eks. «the»)"
 
 msgctxt "#13400"
 msgid "Crossfade between songs on the same album"
@@ -5819,7 +5819,7 @@ msgstr "Administrere..."
 
 msgctxt "#16107"
 msgid "Edit sort title"
-msgstr "Rediger sorter tittel"
+msgstr "Rediger sorteringstittel"
 
 msgctxt "#16200"
 msgid "Operation was aborted"
@@ -8171,7 +8171,7 @@ msgstr "Nedlasting av artistinformasjon mislyktes"
 
 msgctxt "#20220"
 msgid "Override song tags with online information"
-msgstr "Tilsidesett sangknagg med nettinfomasjon"
+msgstr "Tilsidesett sangtagg med nettinfomasjon"
 
 msgctxt "#20240"
 msgid "Android music"
@@ -8659,7 +8659,7 @@ msgstr "Slå sammen"
 
 msgctxt "#20412"
 msgid "Flatten TV show seasons"
-msgstr "Slå sammen TV-serie sesonger"
+msgstr "Slå sammen sesonger av TV-serier"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -8847,7 +8847,7 @@ msgstr "Grupper filmer i samlinger"
 
 msgctxt "#20459"
 msgid "Tags"
-msgstr "Knagger"
+msgstr "Merkelapper"
 
 msgctxt "#20460"
 msgid "Add %s"
@@ -8859,11 +8859,11 @@ msgstr "Fjern %s"
 
 msgctxt "#20462"
 msgid "New tag..."
-msgstr "Ny knagg..."
+msgstr "Ny merkelapp..."
 
 msgctxt "#20463"
 msgid "A tag with the name '%s' already exists."
-msgstr "En knagg med navnet «%s» eksisterer alt."
+msgstr "En merkelapp med navnet «%s» eksisterer allerede."
 
 msgctxt "#20464"
 msgid "Select %s"
@@ -8871,7 +8871,7 @@ msgstr "Merk %s"
 
 msgctxt "#20465"
 msgid "Manage movie set"
-msgstr "Håndter filmsamling"
+msgstr "Rediger filmsamling"
 
 msgctxt "#20466"
 msgid "Select movie set"
@@ -10067,7 +10067,7 @@ msgstr "Tilbakestill"
 
 msgctxt "#24049"
 msgid "Incompatible"
-msgstr "Uforenelig"
+msgstr "Ikke kompatibel"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
@@ -10187,7 +10187,7 @@ msgstr "(svartelistet)"
 
 msgctxt "#24096"
 msgid "Add-on is incompatible or has been marked broken in repository."
-msgstr "Tillegg er uforenelig eller har blitt markert ødelagt i pakkebrønn."
+msgstr "Tillegg er ikke kompatibelt eller har blitt markert ødelagt i pakkebrønn."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -10219,7 +10219,7 @@ msgstr "Skallet mangler noen filer"
 
 msgctxt "#24104"
 msgid "Add-on is incompatible due to unmet dependencies."
-msgstr "Tillegg er uforenelig på grunn av uinnfridde avhengigheter."
+msgstr "Tillegg er ikke kompatibel på grunn av uinnfridde avhengigheter."
 
 msgctxt "#24105"
 msgid "Pause when searching for subtitles"
@@ -11067,7 +11067,7 @@ msgstr "* Oppføringsmappe"
 
 msgctxt "#36042"
 msgid "Use limited colour range (16-235)"
-msgstr "Bruk begrenset fargemodus (16-235)"
+msgstr "Bruk begrenset fargeområde (16-235)"
 
 msgctxt "#36101"
 msgid "Change the look and feel of the user interface."
@@ -11515,7 +11515,7 @@ msgstr "Tidspunktet våkne opp kommandoen skal kjøres."
 
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
-msgstr "Spør etter en PIN-kode for å få tilgang til låste kanaler. Kanaler kan bli markert som låste i kanalhåndtereren på generelt-fanen. Låste kanaler kan ikke spilles av eller bli tatt opp uten å oppgi en pin-kode, og for disse kanalene er EPG-informasjonen skjult."
+msgstr "Be om PIN-kode for å få tilgang til låste kanaler. Kanaler kan bli markert som låst i kanalbehandleren i «generelt»-fanen. Låste kanaler kan ikke spilles av eller bli tatt opp uten å oppgi en pin-kode, og for disse kanalene er EPG-informasjonen skjult."
 
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
@@ -11575,7 +11575,7 @@ msgstr "Velg visualiseringen som vil bli vist mens musikk spilles av."
 
 msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
-msgstr "Les knagginformasjonen fra låtfiler. For store mapper kan dette øke lesetiden betraktelig, spesielt over et nettverk."
+msgstr "Les tagginformasjonen fra låtfiler. For store mapper kan dette øke lesetiden betraktelig, spesielt over et nettverk."
 
 msgctxt "#36281"
 msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
@@ -11635,7 +11635,7 @@ msgstr "Automatisk skap bildeminiatyrer når en bildemappe åpnes."
 
 msgctxt "#36308"
 msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
-msgstr "Bilder vil automatisk bli rotert i henhold til informasjonen i EXIF-knaggen, hvis dette finnes."
+msgstr "Bilder vil automatisk bli rotert i henhold til informasjonen i EXIF-taggen, hvis dette finnes."
 
 msgctxt "#36310"
 msgid "No info available yet."
@@ -11855,7 +11855,7 @@ msgstr "Velg steder som brukes for å hente værinfo."
 
 msgctxt "#36425"
 msgid "Show context menu"
-msgstr "Vis kontekstmeny"
+msgstr "Vis hurtigmeny"
 
 msgctxt "#36426"
 msgid "Switch to channel"

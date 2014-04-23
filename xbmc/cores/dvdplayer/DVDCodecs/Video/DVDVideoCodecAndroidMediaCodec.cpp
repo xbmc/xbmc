@@ -162,6 +162,7 @@ CDVDMediaCodecInfo::CDVDMediaCodecInfo(
 )
 : m_refs(1)
 , m_valid(true)
+, m_isReleased(true)
 , m_index(index)
 , m_texture(texture)
 , m_timestamp(0)
@@ -185,6 +186,7 @@ CDVDMediaCodecInfo::~CDVDMediaCodecInfo()
 CDVDMediaCodecInfo* CDVDMediaCodecInfo::Retain()
 {
   AtomicIncrement(&m_refs);
+  m_isReleased = false;
 
   return this;
 }
@@ -192,11 +194,10 @@ CDVDMediaCodecInfo* CDVDMediaCodecInfo::Retain()
 long CDVDMediaCodecInfo::Release()
 {
   long count = AtomicDecrement(&m_refs);
-  if (count == 0)
-  {
+  if (count == 1)
     ReleaseOutputBuffer(false);
+  if (count == 0)
     delete this;
-  }
 
   return count;
 }
@@ -212,7 +213,7 @@ void CDVDMediaCodecInfo::ReleaseOutputBuffer(bool render)
 {
   CSingleLock lock(m_section);
 
-  if (!m_valid)
+  if (!m_valid || m_isReleased)
     return;
 
   // release OutputBuffer and render if indicated
@@ -222,6 +223,7 @@ void CDVDMediaCodecInfo::ReleaseOutputBuffer(bool render)
     m_frameready->Reset();
 
   m_codec->releaseOutputBuffer(m_index, render);
+  m_isReleased = true;
 
   if (xbmc_jnienv()->ExceptionOccurred())
   {
@@ -273,8 +275,8 @@ void CDVDMediaCodecInfo::UpdateTexImage()
   // wait, then video playback gets jerky. To optomize this,
   // we hook the SurfaceTexture OnFrameAvailable callback
   // using CJNISurfaceTextureOnFrameAvailableListener and wait
-  // on a CEvent to fire. 20ms seems to be a good max fallback.
-  m_frameready->WaitMSec(20);
+  // on a CEvent to fire. 50ms seems to be a good max fallback.
+  m_frameready->WaitMSec(50);
 
   m_surfacetexture->updateTexImage();
   if (xbmc_jnienv()->ExceptionOccurred())
@@ -374,7 +376,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   // CJNIMediaCodec::createDecoderByXXX doesn't handle errors nicely,
   // it crashes if the codec isn't found. This is fixed in latest AOSP,
   // but not in current 4.1 devices. So 1st search for a matching codec, then create it.
-  bool hasSupportedColorFormat = false;
+  m_colorFormat = -1;
   int num_codecs = CJNIMediaCodecList::getCodecCount();
   for (int i = 0; i < num_codecs; i++)
   {
@@ -404,13 +406,13 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
           m_codec.reset();
           continue;
         }
-        hasSupportedColorFormat = false;
+
         for (size_t k = 0; k < color_formats.size(); ++k)
         {
           CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open "
             "m_codecname(%s), colorFormat(%d)", m_codecname.c_str(), color_formats[k]);
           if (IsSupportedColorFormat(color_formats[k]))
-            hasSupportedColorFormat = true;
+            m_colorFormat = color_formats[k]; // Save color format for initial output configuration
         }
         break;
       }
@@ -429,20 +431,13 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   m_render_sw = !CanSurfaceRenderWhiteList(m_codecname);
   if (m_render_sw)
   {
-    if (!hasSupportedColorFormat)
+    if (m_colorFormat == -1)
     {
       CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec:: No supported color format");
       m_codec.reset();
       SAFE_DELETE(m_bitstream);
       return false;
     }
-  }
-
-  if (!ConfigureMediaCodec())
-  {
-    m_codec.reset();
-    SAFE_DELETE(m_bitstream);
-    return false;
   }
 
   // setup a YUV420P DVDVideoPicture buffer.
@@ -459,6 +454,13 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   // these will get reset to crop values later
   m_videobuffer.iDisplayWidth  = m_hints.width;
   m_videobuffer.iDisplayHeight = m_hints.height;
+
+  if (!ConfigureMediaCodec())
+  {
+    m_codec.reset();
+    SAFE_DELETE(m_bitstream);
+    return false;
+  }
 
   CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec:: "
     "Open Android MediaCodec %s", m_codecname.c_str());
@@ -773,6 +775,10 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
     return false;
   }
 
+  // There is no guarantee we'll get an INFO_OUTPUT_FORMAT_CHANGED (up to Android 4.3)
+  // Configure the output with defaults
+  ConfigureOutputFormat(&mediaformat);
+
   return true;
 }
 
@@ -886,7 +892,8 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
   }
   else if (index == CJNIMediaCodec::INFO_OUTPUT_FORMAT_CHANGED)
   {
-    OutputFormatChanged();
+    CJNIMediaFormat mediaformat = m_codec->getOutputFormat();
+    ConfigureOutputFormat(&mediaformat);
   }
   else if (index == CJNIMediaCodec::INFO_TRY_AGAIN_LATER)
   {
@@ -902,19 +909,17 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
   return rtn;
 }
 
-void CDVDVideoCodecAndroidMediaCodec::OutputFormatChanged(void)
+void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat* mediaformat)
 {
-  CJNIMediaFormat mediaformat = m_codec->getOutputFormat();
-
-  int width       = mediaformat.getInteger("width");
-  int height      = mediaformat.getInteger("height");
-  int stride      = mediaformat.getInteger("stride");
-  int slice_height= mediaformat.getInteger("slice-height");
-  int color_format= mediaformat.getInteger("color-format");
-  int crop_left   = mediaformat.getInteger("crop-left");
-  int crop_top    = mediaformat.getInteger("crop-top");
-  int crop_right  = mediaformat.getInteger("crop-right");
-  int crop_bottom = mediaformat.getInteger("crop-bottom");
+  int width       = mediaformat->getInteger("width");
+  int height      = mediaformat->getInteger("height");
+  int stride      = mediaformat->getInteger("stride");
+  int slice_height= mediaformat->getInteger("slice-height");
+  int color_format= mediaformat->getInteger("color-format");
+  int crop_left   = mediaformat->getInteger("crop-left");
+  int crop_top    = mediaformat->getInteger("crop-top");
+  int crop_right  = mediaformat->getInteger("crop-right");
+  int crop_bottom = mediaformat->getInteger("crop-bottom");
 
   CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: "
     "width(%d), height(%d), stride(%d), slice-height(%d), color-format(%d)",
@@ -938,8 +943,15 @@ void CDVDVideoCodecAndroidMediaCodec::OutputFormatChanged(void)
       width = stride = m_hints.width;
       height = slice_height = m_hints.height;
     }
+    // No color-format? Initialize with the one we detected as valid earlier
+    if (color_format == 0)
+      color_format = m_colorFormat;
     if (stride <= width)
-        stride = width;
+      stride = width;
+    if (!crop_right)
+      crop_right = width-1;
+    if (!crop_bottom)
+      crop_bottom = height-1;
     if (slice_height <= height)
     {
       slice_height = height;

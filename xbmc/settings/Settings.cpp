@@ -853,6 +853,9 @@ void CSettings::InitializeConditions()
 {
   // add basic conditions
   m_settingsManager->AddCondition("true");
+#ifdef HAS_UPNP
+  m_settingsManager->AddCondition("has_upnp");
+#endif
 #ifdef HAS_AIRPLAY
   m_settingsManager->AddCondition("has_airplay");
 #endif
@@ -1017,6 +1020,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("videoscreen.screen");
   settingSet.insert("videoscreen.resolution");
   settingSet.insert("videoscreen.screenmode");
+  settingSet.insert("videoscreen.vsync");
   m_settingsManager->RegisterCallback(&CDisplaySettings::Get(), settingSet);
 
   settingSet.clear();

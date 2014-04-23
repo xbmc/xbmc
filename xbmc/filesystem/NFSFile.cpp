@@ -123,9 +123,11 @@ bool CNfsConnection::HandleDyLoad()
 
 void CNfsConnection::clearMembers()
 {
+    // NOTE - DON'T CLEAR m_exportList HERE!
+    // splitUrlIntoExportAndPath checks for m_exportList.empty()
+    // and would query the server in an excessive unwanted fashion
     m_exportPath.clear();
     m_hostName.clear();
-    m_exportList.clear();
     m_writeChunkSize = 0;
     m_readChunkSize = 0;  
     m_pNfsContext = NULL;

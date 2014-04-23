@@ -39,3 +39,11 @@ msgstr "Journalisation détaillée pour la librairie RTMP"
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
 msgstr "Journalisation détaillée pour les appels DBUS"
+
+msgctxt "#30006"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Journalisation détaillée pour les requêtes JSON-RPC"
+
+msgctxt "#30007"
+msgid "Verbose logging for AUDIO component"
+msgstr "Journalisation détaillée pour le composant AUDIO"

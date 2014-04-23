@@ -174,6 +174,8 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { XBMCK_MEDIA_PREV_TRACK,       0,    0, XBMCVK_MEDIA_PREV_TRACK,    "prev_track" }
 , { XBMCK_MEDIA_STOP,             0,    0, XBMCVK_MEDIA_STOP,          "stop" }
 , { XBMCK_MEDIA_PLAY_PAUSE,       0,    0, XBMCVK_MEDIA_PLAY_PAUSE,    "play_pause" }
+, { XBMCK_MEDIA_REWIND,           0,    0, XBMCVK_MEDIA_REWIND,        "rewind" }
+, { XBMCK_MEDIA_FASTFORWARD,      0,    0, XBMCVK_MEDIA_FASTFORWARD,   "fastforward" }
 , { XBMCK_LAUNCH_MAIL,            0,    0, XBMCVK_LAUNCH_MAIL,         "launch_mail" }
 , { XBMCK_LAUNCH_MEDIA_SELECT,    0,    0, XBMCVK_LAUNCH_MEDIA_SELECT, "launch_media_select" }
 , { XBMCK_LAUNCH_APP1,            0,    0, XBMCVK_LAUNCH_APP1,         "launch_app1_pc_icon" }

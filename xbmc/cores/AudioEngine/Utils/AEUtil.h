@@ -108,7 +108,17 @@ public:
    */
   static inline const float GainToScale(const float dB)
   {
-    return pow(10.0f, dB/20);
+    float val = 0.0f; 
+    // we need to make sure that our lowest db returns plain zero
+    if (dB > -60.0f) 
+      val = pow(10.0f, dB/20); 
+
+    // in order to not introduce computing overhead for nearly zero
+    // values of dB e.g. -0.01 or -0.001 we clamp to top
+    if (val >= 0.99f)
+      val = 1.0f;
+
+    return val;
   }
 
   /*! \brief convert a scale factor to dB gain for audio manipulation
