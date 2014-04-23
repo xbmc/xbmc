@@ -777,3 +777,23 @@ bool PlexUtils::IsPlayingPlaylist()
 
   return false;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+string PlexUtils::GetCompositeImageUrl(const CFileItem &item, const CStdString &args)
+{
+  if (!item.HasProperty("composite"))
+    return "";
+
+  CURL newURL(item.GetProperty("composite").asString());
+  CStdStringArray argList = StringUtils::SplitString(args, ";", 0);
+  if (argList.size() > 0)
+  {
+    BOOST_FOREACH(CStdString arg, argList)
+    {
+      CStdStringArray kv = StringUtils::SplitString(arg, "=", 2);
+      if (kv.size() == 2)
+        newURL.SetOption(kv[0], kv[1]);
+    }
+  }
+  return newURL.Get();
+}

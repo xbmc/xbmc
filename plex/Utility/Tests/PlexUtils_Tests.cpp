@@ -2,6 +2,7 @@
 #include "FileItem.h"
 
 #include "PlexUtils.h"
+#include "URL.h"
 
 static CFileItemPtr getSubtitleStream()
 {
@@ -141,4 +142,57 @@ TEST(PlexUtilsGetMediaTypeFromItem, photo)
   EXPECT_TYPE(PLEX_DIR_TYPE_IMAGE, PLEX_MEDIA_TYPE_PHOTO);
   EXPECT_TYPE(PLEX_DIR_TYPE_PHOTO, PLEX_MEDIA_TYPE_PHOTO);
   EXPECT_TYPE(PLEX_DIR_TYPE_PHOTOALBUM, PLEX_MEDIA_TYPE_PHOTO);
+}
+
+TEST(PlexUtilsGetCompositeImageUrl, basic)
+{
+  CFileItem item;
+  item.SetProperty("composite", "plexserver://abc123/composite");
+
+  CURL url(PlexUtils::GetCompositeImageUrl(item, "key=value;key2=value2"));
+  EXPECT_FALSE(url.Get().empty());
+  EXPECT_EQ(url.GetFileName(), "composite");
+  EXPECT_EQ(url.GetOption("key"), "value");
+  EXPECT_EQ(url.GetOption("key2"), "value2");
+}
+
+TEST(PlexUtilsGetCompositeImageUrl, noComposite)
+{
+  CFileItem item;
+  CStdString urlStr = PlexUtils::GetCompositeImageUrl(item, "key=value");
+  EXPECT_TRUE(urlStr.empty());
+}
+
+TEST(PlexUtilsGetCompositeImageUrl, noArgs)
+{
+  CFileItem item;
+  item.SetProperty("composite", "plexserver://abc123/composite");
+
+  CURL url(PlexUtils::GetCompositeImageUrl(item, ""));
+  EXPECT_FALSE(url.Get().empty());
+  EXPECT_EQ(url.Get(), "plexserver://abc123/composite");
+}
+
+TEST(PlexUtilsGetCompositeImageUrl, malformattedArgs)
+{
+  CFileItem item;
+  item.SetProperty("composite", "plexserver://abc123/composite");
+  CURL url(PlexUtils::GetCompositeImageUrl(item, "value"));
+  EXPECT_EQ(url.Get(), "plexserver://abc123/composite");
+}
+
+TEST(PlexUtilsGetCompositeImageUrl, oneArg)
+{
+  CFileItem item;
+  item.SetProperty("composite", "plexserver://abc123/composite");
+  CURL url(PlexUtils::GetCompositeImageUrl(item, "key=value"));
+  EXPECT_EQ(url.Get(), "plexserver://abc123/composite?key=value");
+}
+
+TEST(PlexUtilsGetCompositeImageUrl, lotOfEquals)
+{
+  CFileItem item;
+  item.SetProperty("composite", "plexserver://abc123/composite");
+  std::string url = PlexUtils::GetCompositeImageUrl(item, "key==value");
+  EXPECT_EQ(url, "plexserver://abc123/composite?key=%3dvalue");
 }

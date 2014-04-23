@@ -292,6 +292,7 @@ static AttributeMap g_attributeMap = boost::assign::list_of<AttributePair>
                                      ("parentKey", g_parserKey)
                                      ("parentRatingKey", g_parserKey)
                                      ("grandparentKey", g_parserKey)
+                                     ("composite", g_parserKey)
 
                                      ("thumb", g_parserMediaUrl)
                                      ("art", g_parserMediaUrl)
@@ -753,6 +754,9 @@ bool CPlexDirectory::GetSharedServerDirectory(CFileItemList &items)
     item->SetProperty("sourceTitle", server->GetOwner());
     item->SetProperty("serverName", server->GetName());
     item->SetPlexDirectoryType(sectionItem->GetPlexDirectoryType());
+
+    if (sectionItem->HasProperty("composite"))
+      item->SetProperty("composite", sectionItem->GetProperty("composite"));
 
     if (sectionMap.find(server->GetUUID()) != sectionMap.end())
     {

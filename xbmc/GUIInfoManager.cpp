@@ -519,6 +519,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "stardiffuse",      LISTITEM_STAR_DIFFUSE },
                                   { "grandparentthumb", LISTITEM_GRANDPARENT_THUMB },
                                   { "durationstr",      LISTITEM_DURATION_STRING },
+                                  { "compositeimage",   LISTITEM_COMPOSITE_IMAGE },
                                   /* END PLEX */
                                   { "icon",             LISTITEM_ICON },
                                   { "actualicon",       LISTITEM_ACTUAL_ICON },
@@ -803,6 +804,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     return 0;
 
   const Property &cat = info[0];
+
+
   if (info.size() == 1)
   { // single category
     if (cat.name == "false" || cat.name == "no" || cat.name == "off")
@@ -1101,6 +1104,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       int offset = atoi(cat.param().c_str());
       int ret = TranslateListItem(prop);
 
+      /* PLEX */
+      if (ret == LISTITEM_COMPOSITE_IMAGE)
+        return AddMultiInfo(GUIInfo(ret, ConditionalStringParameter(prop.param())));
+      /* END PLEX */
+
       if (ret == LISTITEM_TYPE || ret == LISTITEM_STATUS)
       {
         return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_WRAP, ConditionalStringParameter(prop.param())));
@@ -1249,7 +1257,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         return AddMultiInfo(GUIInfo(value, 1, position));
       }
     }
-    else if (info[0].name == "container")
+   else if (info[0].name == "container")
     {
       int id = atoi(info[0].param().c_str());
       int offset = atoi(info[1].param().c_str());
@@ -3320,7 +3328,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
         return window->CurrentDirectory().GetLabel();
     }
   }
-  /* END PLEX */
+ /* END PLEX */
 
   return StringUtils::EmptyString;
 }
@@ -4563,6 +4571,18 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
 {
   if (!item) return "";
 
+  /* PLEX */
+  if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
+  {
+    const GUIInfo multiInfo = m_multiInfo[info - MULTI_INFO_START];
+    if (multiInfo.m_info == LISTITEM_COMPOSITE_IMAGE)
+    {
+      CStdString args = m_stringParameters[multiInfo.GetData1()];
+      return PlexUtils::GetCompositeImageUrl(*item, args);
+    }
+  }
+  /* END PLEX */
+
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
     return GetSkinVariableString(info, false, item);
 
@@ -4800,6 +4820,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       else
         return GetItemLabel(item, LISTITEM_DURATION);
     }
+
   case LISTITEM_DURATION:
     {
       CStdString duration;
