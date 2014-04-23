@@ -140,10 +140,11 @@ bool CGUIDialogSubtitles::OnMessage(CGUIMessage& message)
       OnMessage(msg);
 
       int item = msg.GetParam1();
-      if (item >= 0 && item < m_serviceItems->Size() &&
-          SetService(m_serviceItems->Get(item)->GetProperty("Addon.ID").asString()))
+      if (item >= 0 && item < m_serviceItems->Size())
+      {
+        SetService(m_serviceItems->Get(item)->GetProperty("Addon.ID").asString());
         Search();
-
+      }
       return true;
     }
     else if (iControl == CONTROL_MANUALSEARCH)
