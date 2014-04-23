@@ -5926,7 +5926,7 @@ bool CMusicDatabase::GetResumeBookmarkForAudioBook(const std::string& path, int&
 
 bool CMusicDatabase::GetAudioBooks(CFileItemList& items)
 {
-  std::string strSQL = PrepareSQL("SELECT strBook, strAuthor, file, duration FROM audiobook");
+  std::string strSQL = PrepareSQL("SELECT strBook, strAuthor, file, duration, bookmark FROM audiobook");
   if (!m_pDS->query(strSQL.c_str()) || m_pDS->num_rows() == 0)
     return false;
 
@@ -5936,6 +5936,7 @@ bool CMusicDatabase::GetAudioBooks(CFileItemList& items)
     item->SetLabel(m_pDS->fv(0).get_asString());
     item->SetProperty("audiobook", "1");
     item->GetMusicInfoTag()->SetDuration(m_pDS->fv(3).get_asInt());
+    item->GetMusicInfoTag()->SetBookmark(m_pDS->fv(4).get_asInt());
     items.Add(item);
     m_pDS->next();
   }
