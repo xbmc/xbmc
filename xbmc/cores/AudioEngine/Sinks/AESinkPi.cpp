@@ -186,7 +186,7 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
   unsigned int sample_size = CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3;
   format.m_frameSize     = sample_size * channels;
   format.m_sampleRate    = std::max(8000U, std::min(192000U, format.m_sampleRate));
-  format.m_frames        = format.m_sampleRate * AUDIO_PLAYBUFFER;
+  format.m_frames        = format.m_sampleRate * AUDIO_PLAYBUFFER / NUM_OMX_BUFFERS;
   format.m_frameSamples  = format.m_frames * channels;
 
   SetAudioProps(m_passthrough, GetChannelMap(format, m_passthrough));
@@ -232,7 +232,7 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
     CLog::Log(LOGERROR, "%s:%s - error get OMX_IndexParamPortDefinition (input) omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
 
   port_param.nBufferCountActual = std::max((unsigned int)port_param.nBufferCountMin, (unsigned int)NUM_OMX_BUFFERS);
-  port_param.nBufferSize = m_format.m_frameSize * m_format.m_frames / port_param.nBufferCountActual;
+  port_param.nBufferSize = m_format.m_frameSize * m_format.m_frames;
 
   omx_err = m_omx_render.SetParameter(OMX_IndexParamPortDefinition, &port_param);
   if (omx_err != OMX_ErrorNone)
@@ -306,61 +306,43 @@ double CAESinkPi::GetCacheTotal()
 
 unsigned int CAESinkPi::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
 {
-  unsigned int sent = 0;
   uint8_t *buffer = data[0]+offset*m_format.m_frameSize;
 
-  if (!m_Initialized)
+  if (!m_Initialized || !frames)
     return frames;
 
   OMX_ERRORTYPE omx_err   = OMX_ErrorNone;
   OMX_BUFFERHEADERTYPE *omx_buffer = NULL;
-  while (sent < frames)
+
+  AEDelayStatus status;
+  GetDelay(status);
+  double delay = status.GetDelay();
+  if (delay <= 0.0 && m_submitted)
+    CLog::Log(LOGNOTICE, "%s:%s Underrun (delay:%.2f frames:%d)", CLASSNAME, __func__, delay, frames);
+
+  omx_buffer = m_omx_render.GetInputBuffer(1000);
+  if (omx_buffer == NULL)
   {
-    AEDelayStatus status;
-    GetDelay(status);
-    double delay = status.GetDelay();
-    double ideal_submission_time = AUDIO_PLAYBUFFER - delay;
-    // ideal amount of audio we'd like submit (to make delay match AUDIO_PLAYBUFFER)
-    int timeout = 1000;
-    int ideal_submission_samples = ideal_submission_time / (m_sinkbuffer_sec_per_byte * m_format.m_frameSize);
-    // if we are almost full then sleep (to avoid repeatedly sending a few samples)
-    bool too_laggy = ideal_submission_time < 0.25 * AUDIO_PLAYBUFFER;
-    int sleeptime = (int)(AUDIO_PLAYBUFFER * 0.25 * 1000.0);
-    if (too_laggy)
-    {
-      Sleep(sleeptime);
-      continue;
-    }
-    omx_buffer = m_omx_render.GetInputBuffer(timeout);
-    if (omx_buffer == NULL)
-    {
-      CLog::Log(LOGERROR, "COMXAudio::Decode timeout");
-      break;
-    }
-
-    unsigned int space = omx_buffer->nAllocLen / m_format.m_frameSize;
-    unsigned int samples = std::min(std::min(space, (unsigned int)ideal_submission_samples), frames - sent);
-
-    omx_buffer->nFilledLen = samples * m_format.m_frameSize;
-    omx_buffer->nTimeStamp = ToOMXTime(0);
-    omx_buffer->nFlags = 0;
-    memcpy(omx_buffer->pBuffer, (uint8_t *)buffer + sent * m_format.m_frameSize, omx_buffer->nFilledLen);
-
-    sent += samples;
-
-    if (sent == frames)
-      omx_buffer->nFlags |= OMX_BUFFERFLAG_ENDOFFRAME;
-
-    if (delay <= 0.0 && m_submitted)
-      CLog::Log(LOGNOTICE, "%s:%s Underrun (delay:%.2f frames:%d)", CLASSNAME, __func__, delay, frames);
-
-    omx_err = m_omx_render.EmptyThisBuffer(omx_buffer);
-    if (omx_err != OMX_ErrorNone)
-      CLog::Log(LOGERROR, "%s:%s frames=%d err=%x", CLASSNAME, __func__, frames, omx_err);
-    m_submitted++;
+    CLog::Log(LOGERROR, "CAESinkPi::AddPackets timeout");
+    return 0;
   }
 
-  return sent;
+  omx_buffer->nFilledLen = frames * m_format.m_frameSize;
+  // must be true
+  assert(omx_buffer->nFilledLen <= omx_buffer->nAllocLen);
+  omx_buffer->nTimeStamp = ToOMXTime(0);
+  omx_buffer->nFlags = OMX_BUFFERFLAG_ENDOFFRAME;
+  memcpy(omx_buffer->pBuffer, buffer, omx_buffer->nFilledLen);
+
+  omx_err = m_omx_render.EmptyThisBuffer(omx_buffer);
+  if (omx_err != OMX_ErrorNone)
+    CLog::Log(LOGERROR, "%s:%s frames=%d err=%x", CLASSNAME, __func__, frames, omx_err);
+  m_submitted++;
+  GetDelay(status);
+  delay = status.GetDelay();
+  if (delay > AUDIO_PLAYBUFFER)
+    Sleep((int)(1000.0f * (delay - AUDIO_PLAYBUFFER)));
+  return frames;
 }
 
 void CAESinkPi::Drain()
