@@ -138,10 +138,11 @@ bool CGUIDialogSubtitles::OnMessage(CGUIMessage& message)
       OnMessage(msg);
 
       int item = msg.GetParam1();
-      if (item >= 0 && item < m_serviceItems->Size() &&
-          SetService(m_serviceItems->Get(item)->GetProperty("Addon.ID").asString()))
+      if (item >= 0 && item < m_serviceItems->Size())
+      {
+        SetService(m_serviceItems->Get(item)->GetProperty("Addon.ID").asString());
         Search();
-
+      }
       return true;
     }
     else if (iControl == CONTROL_MANUALSEARCH)
@@ -202,6 +203,12 @@ void CGUIDialogSubtitles::Process(unsigned int currentTime, CDirtyRegionList &di
     {
       CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_SUBLIST, 0, 0, &subs);
       OnMessage(message);
+      if (!subs.IsEmpty())
+      {
+        // focus subtitles list
+        CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), CONTROL_SUBLIST);
+        OnMessage(msg);
+      }
       m_updateSubsList = false;
     }
     
