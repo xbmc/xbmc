@@ -122,6 +122,7 @@ float CEngineStats::GetCacheTotal(CActiveAEStream *stream)
 
 float CEngineStats::GetWaterLevel()
 {
+  CSingleLock lock(m_lock);
   return (float)m_bufferedSamples / m_sinkSampleRate;
 }
 
