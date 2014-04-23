@@ -668,6 +668,16 @@ void OMXPlayerVideo::SetVideoRect(const CRect &InSrcRect, const CRect &InDestRec
     DestRect.SetRect(0, 0, 0, 0);
   }
 
+  // fix up transposed video
+  if (m_hints.orientation == 90 || m_hints.orientation == 270)
+  {
+    float diff = (DestRect.Height() - DestRect.Width()) * 0.5f;
+    DestRect.x1 -= diff;
+    DestRect.x2 += diff;
+    DestRect.y1 += diff;
+    DestRect.y2 -= diff;
+  }
+
   // check if destination rect or video view mode has changed
   if (m_dst_rect != DestRect || m_src_rect != SrcRect)
   {
