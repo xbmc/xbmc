@@ -7,6 +7,11 @@
           <visible>false</visible>
         </setting>
       </group>
+      <group id="3">
+        <setting id="videoscreen.vsync">
+          <default>3</default> <!-- VSYNC_DRIVER -->
+        </setting>
+      </group>
     </category>
     <category id="input">
       <group id="2">

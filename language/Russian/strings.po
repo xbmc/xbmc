@@ -10319,7 +10319,7 @@ msgstr "Выбор службы, используемой по умолчани�
 
 msgctxt "#24120"
 msgid "Manual search string"
-msgstr "Заданная строка поиска"
+msgstr "Поисковый запрос"
 
 msgctxt "#24121"
 msgid "Enter search string"
@@ -11508,6 +11508,14 @@ msgstr "Выберите используемый по умолчанию ист
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Источник сведений, используемый по умолчанию при добавлении музыкальных видео в медиатеку."
+
+msgctxt "#36201"
+msgid "Settings for PVR/Live TV features."
+msgstr "Настройки просмотра и записи ТВ"
+
+msgctxt "#36202"
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Общие настройки просмотра и записи ТВ."
 
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."

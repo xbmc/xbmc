@@ -18,23 +18,23 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Change Your"
-msgstr "Mude as suas"
+msgstr "Altere o Seu"
 
 msgctxt "#31003"
 msgid "Power Options"
-msgstr "Opções de energia"
+msgstr "Opções de Energia"
 
 msgctxt "#31004"
 msgid "Working..."
-msgstr "Processando..."
+msgstr "A processar ..."
 
 msgctxt "#31005"
 msgid "Hide Information"
-msgstr "Ocultar Info"
+msgstr "Ocultar Informação"
 
 msgctxt "#31006"
 msgid "View Options"
-msgstr "Opções de Vista"
+msgstr "Opções da Visualização"
 
 msgctxt "#31008"
 msgid "Full screen"
@@ -42,7 +42,7 @@ msgstr "Ecrã cheio"
 
 msgctxt "#31009"
 msgid "Total Duration"
-msgstr "Duração total"
+msgstr "Duração Total"
 
 msgctxt "#31022"
 msgid "Music - Files"
@@ -62,7 +62,7 @@ msgstr "Itens"
 
 msgctxt "#31026"
 msgid "Misc Options"
-msgstr "Várias opções"
+msgstr "Opções Diversas"
 
 msgctxt "#31027"
 msgid "Location"
@@ -86,7 +86,7 @@ msgstr "Imagens"
 
 msgctxt "#31033"
 msgid "Info"
-msgstr "Info"
+msgstr "Informação"
 
 msgctxt "#31039"
 msgid "Actions"
@@ -94,19 +94,19 @@ msgstr "Acções"
 
 msgctxt "#31040"
 msgid "Now Playing"
-msgstr "A reproduzir"
+msgstr "A Reproduzir"
 
 msgctxt "#31042"
 msgid "PLAYING"
-msgstr "REPRODUZINDO"
+msgstr "A REPRODUZIR"
 
 msgctxt "#31043"
 msgid "PAUSED"
-msgstr "PAUSADO"
+msgstr "PAUSADA"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
-msgstr "AVANÇAR"
+msgstr "AVANÇAR RÁPIDO"
 
 msgctxt "#31045"
 msgid "REWIND"
@@ -114,7 +114,7 @@ msgstr "RETROCEDER "
 
 msgctxt "#31046"
 msgid "SEEKING"
-msgstr "PROCURANDO"
+msgstr "A PROCURAR"
 
 msgctxt "#31048"
 msgid "Visualisation Presets"
@@ -126,23 +126,23 @@ msgstr "Termina às"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Orientar: Ascendente"
+msgstr "Ordem: Ascendente"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Orientar: Descendente"
+msgstr "Ordem: Descendente"
 
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "Abrir Lista Reprodução"
+msgstr "Abrir Lista de Reprodução"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "Guardar Lista Reprodução"
+msgstr "Guardar Lista de Reprodução"
 
 msgctxt "#31057"
 msgid "Close playlist"
-msgstr "Fechar Lista Reprodução"
+msgstr "Fechar Lista de Reprodução"
 
 msgctxt "#31058"
 msgid "System music files"
@@ -150,7 +150,7 @@ msgstr "Ficheiros de música do sistema"
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "Lista de Reprodução actual"
+msgstr "Lista de Reprodução Atual"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
@@ -374,7 +374,7 @@ msgstr "Resolução"
 
 msgctxt "#31328"
 msgid "Recently Added"
-msgstr "Recentes"
+msgstr "Adicionados Recentemente"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
@@ -418,7 +418,7 @@ msgstr "Ver em 2D"
 
 msgctxt "#31361"
 msgid "Change mode"
-msgstr "Alterar modo"
+msgstr "Modo de Alteração"
 
 msgctxt "#31362"
 msgid "Enabled"
@@ -426,11 +426,11 @@ msgstr "Activado"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Padrão do tema"
+msgstr "Tema predefinido"
 
 msgctxt "#31391"
 msgid "Skin default with no Caps"
-msgstr "Padrão do tema sem 'CAPS'"
+msgstr "Tema predefinido sem 'Caps'"
 
 msgctxt "#31392"
 msgid "Arial based"
@@ -438,7 +438,7 @@ msgstr "Baseada em Arial"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]CONFIGURAÇÕES DE VISUAL[/B][CR][CR]Mudar o Tema · Definir Idioma e Região · Opções de listagem de ficheiros[CR]Definir protector de ecrã"
+msgstr "[B]CONFIGURAR AJUSTES DA VISUALIZAÇÃO[/B][CR][CR]Alterar o tema · Definir o idioma e a região · Alterar as opções da listagem de ficheiros[CR]Definir um protetor de ecrã"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
@@ -462,11 +462,11 @@ msgstr "[B]CONFIGURAÇÕES DE SISTEMA[/B][CR][CR]Configurar e calibrar ecrãs ·
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]CONFIGURAR ADD-ONS[/B][CR][CR]Gerir Add-ons instalados · Procurar e instalar Add-ons de xbmc.org[CR]Alterar opções dos Add-ons"
+msgstr "[B]CONFIGURAÇÃO dos ADD-ONS[/B][CR][CR]Gerir os seus Add-ons instalados · Procurar e instalar os Add-ons a partir de xbmc.org[CR]Modificar as definições dos Add-ons"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]CONFIGURAR DEFINIÇÕES DE TV[/B][CR][CR]Alterar informações em ecrã cheio · Gerir definições de dados do EPG"
+msgstr "[B]CONFIGURAÇÃO das DEFINIÇÕES da TV[/B][CR][CR]Alterar Informação em Ecrã Completo · Gerir as Definições dos Dados EPG"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"

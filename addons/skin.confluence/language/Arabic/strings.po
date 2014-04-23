@@ -464,6 +464,10 @@ msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
 msgstr "اظهار أو اخفاء شاشة تسجيل الدخول عند بدء التشغيل"
 
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "اختر الحساب الذي سوف يتم استخدامه عند تعطيل شاشة تسجيل الدخول"
+
 msgctxt "#31501"
 msgid "Scheduled Time"
 msgstr "جدول الزمن"

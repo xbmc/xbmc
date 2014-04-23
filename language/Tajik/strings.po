@@ -11381,6 +11381,10 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Инфоресурси пешфарз барои иловаунии видеоҳои мусиқӣ ба китобхонаи худ."
 
+msgctxt "#36202"
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Категория дорои танзимоти умумӣ барои хусустяҳои PVR/Live TV."
+
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr "Фаъол кардани хусусиятҳои Сабткунандаи видеоии шахсӣ (PVR) дар системаи XBMC. Шумо бояд ақаллан ак барномаи иловагии PVR-ро насб кунед."

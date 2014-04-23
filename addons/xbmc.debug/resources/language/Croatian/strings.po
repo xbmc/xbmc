@@ -39,3 +39,11 @@ msgstr "Opširnije zapisivanje za RTMP knjižnicu"
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
 msgstr "Opširnije zapisivanje za DBUS pozive"
+
+msgctxt "#30006"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Opširnije zapisivanje za JSON-RPC zahtjeve"
+
+msgctxt "#30007"
+msgid "Verbose logging for AUDIO component"
+msgstr "Opširnije zapisivanje za ZVUČNE komponente"

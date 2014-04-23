@@ -42,7 +42,6 @@
 #include "VideoShaders/YUV2RGBShader.h"
 #include "VideoShaders/VideoFilterShader.h"
 #include "windowing/WindowingFactory.h"
-#include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/Texture.h"
 #include "lib/DllSwScale.h"
 #include "../dvdplayer/DVDCodecs/Video/OpenMaxVideo.h"
@@ -690,7 +689,6 @@ void CLinuxRendererGLES::UpdateVideoFilter()
     break;
   }
 
-  CGUIDialogKaiToast::QueueNotification("Video Renderering", "Failed to init video filters/scalers, falling back to bilinear scaling");
   CLog::Log(LOGERROR, "GL: Falling back to bilinear due to failure to init scaler");
   if (m_pVideoFilterShader)
   {
@@ -936,7 +934,13 @@ void CLinuxRendererGLES::ReleaseBuffer(int idx)
 #if defined(TARGET_ANDROID)
   if ( m_renderMethod & RENDER_MEDIACODEC )
   {
-    SAFE_RELEASE(buf.mediacodec);
+    if (buf.mediacodec)
+    {
+      // The media buffer has been queued to the SurfaceView but we didn't render it
+      // We have to do to the updateTexImage or it will get stuck
+      buf.mediacodec->UpdateTexImage();
+      SAFE_RELEASE(buf.mediacodec);
+    }
   }
 #endif
 }

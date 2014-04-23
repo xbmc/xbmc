@@ -43,3 +43,7 @@ msgstr "Detaljeret logning af DBUS-kald"
 msgctxt "#30006"
 msgid "Verbose logging for JSON-RPC requests"
 msgstr "Detaljeret logføring til JSON-RPC-forespørgsler"
+
+msgctxt "#30007"
+msgid "Verbose logging for AUDIO component"
+msgstr "Detaljeret logføring for LYD komponent"

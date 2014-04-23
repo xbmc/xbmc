@@ -181,6 +181,14 @@ void CUDevProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 
 bool CUDevProvider::Eject(CStdString mountpath)
 {
+  // just go ahead and try to umount the disk
+  // if it does umount, life is good, if not, no loss.
+  std::string cmd = "umount \"" + mountpath + "\"";
+  int status = system(cmd.c_str());
+
+  if (status == 0)
+    return true;
+
   return false;
 }
 

@@ -16,6 +16,10 @@ msgstr ""
 "Language: en_US\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "Detail [CPU intensive]"
+
 msgctxt "#30001"
 msgid "Low"
 msgstr "Low"
@@ -32,6 +36,18 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "Extreme"
 
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Nervous Mode [more mode changes]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Speed [skip some frames]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Very Low"
+
 msgctxt "#30008"
 msgid "Low"
 msgstr "Low"
@@ -43,3 +59,7 @@ msgstr "Normal"
 msgctxt "#30010"
 msgid "High"
 msgstr "High"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Use a Persistence File [faster startup]"

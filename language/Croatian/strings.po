@@ -11509,6 +11509,14 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Zadani sakupljač korišten za dodavanje video spotova vašoj zbirci."
 
+msgctxt "#36201"
+msgid "Settings for PVR/Live TV features."
+msgstr "Postavke za PVR/TV značajke."
+
+msgctxt "#36202"
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Kategorija za opće postavke PVR/TV značajka."
+
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr "Omogući značajku Osobnog Video Snimača (PVR) u XBMC-u. To zahtijeva bar jedan instalirani PVR dodatak."
@@ -11595,7 +11603,7 @@ msgstr "Po zadanom, EPG podaci su spremljeni u lokalnoj bazi podataka zbog ubrza
 
 msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
-msgstr "Sakrij oznaku \"Informacija nije dostupna\" kada se EPG podaci ne mogu preuzeti za program."
+msgstr "Sakrij oznaku \"Informacije nisu dostupne\" kada se EPG podaci ne mogu preuzeti za program."
 
 msgctxt "#36225"
 msgid "Delete the EPG database in XBMC and reimport the data afterwards from the backend."

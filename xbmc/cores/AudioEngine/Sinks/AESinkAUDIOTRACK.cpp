@@ -217,9 +217,7 @@ void  CAESinkAUDIOTRACK::SetVolume(float scale)
   if (!m_at_jni)
     return;
 
-  // Android uses fixed steps, reverse scale back to percent
-  float gain = CAEUtil::ScaleToGain(scale);
-  m_volume = CAEUtil::GainToPercent(gain);
+  m_volume = scale;
   if (!m_passthrough)
   {
     CXBMCApp::SetSystemVolume(xbmc_jnienv(), m_volume);
@@ -232,16 +230,7 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_dataFormats.clear();
   m_info.m_sampleRates.clear();
 
-  m_info.m_deviceType = AE_DEVTYPE_PCM;
-#if defined(HAS_LIBAMCODEC)
-  // AML devices can do passthough
-  if (aml_present())
-  {
-    m_info.m_deviceType = AE_DEVTYPE_HDMI;
-    m_info.m_dataFormats.push_back(AE_FMT_AC3);
-    m_info.m_dataFormats.push_back(AE_FMT_DTS);
-  }
-#endif
+  m_info.m_deviceType = AE_DEVTYPE_HDMI;
   m_info.m_deviceName = "AudioTrack";
   m_info.m_displayName = "android";
   m_info.m_displayNameExtra = "audiotrack";
@@ -249,6 +238,8 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_channels += AE_CH_FR;
   m_info.m_sampleRates.push_back(CJNIAudioTrack::getNativeOutputSampleRate(CJNIAudioManager::STREAM_MUSIC));
   m_info.m_dataFormats.push_back(AE_FMT_S16LE);
+  m_info.m_dataFormats.push_back(AE_FMT_AC3);
+  m_info.m_dataFormats.push_back(AE_FMT_DTS);
 #if 0 //defined(__ARM_NEON__)
   if (g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_NEON)
     m_info.m_dataFormats.push_back(AE_FMT_FLOAT);

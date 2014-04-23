@@ -51,15 +51,12 @@ public:
   virtual unsigned int AddPackets      (uint8_t *data, unsigned int frames, bool hasAudio, bool blocking = false);
   virtual void         Drain           ();
   virtual bool         HasVolume       ();
-  virtual void         SetVolume       (float scale);
   static void          EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 
 private:
   static AEDeviceInfoList m_devices;
   CAEDeviceInfo      m_info;
   AEAudioFormat      m_format;
-  double             m_volume;
-  bool               m_volume_changed;
 
   CAAudioUnitSink   *m_audioSink;
 #if DO_440HZ_TONE_TEST

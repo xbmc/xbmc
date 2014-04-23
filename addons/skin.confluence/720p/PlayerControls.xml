@@ -341,7 +341,7 @@
 				<onright>705</onright>
 				<onup>300</onup>
 				<ondown>200</ondown>
-				<onclick>XBMC.PlayerControl(Previous)</onclick>
+				<onclick>ChannelDown</onclick>
 				<visible>VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="705">
@@ -356,7 +356,7 @@
 				<onright>706</onright>
 				<onup>300</onup>
 				<ondown>200</ondown>
-				<onclick>XBMC.PlayerControl(Next)</onclick>
+				<onclick>ChannelUp</onclick>
 				<visible>VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="706">

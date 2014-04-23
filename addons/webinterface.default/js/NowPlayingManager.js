@@ -141,6 +141,27 @@ NowPlayingManager.prototype = {
     $('#pbStop').bind('click', jQuery.proxy(this.stopTrack, this));
     $('#pbPlay').bind('click', jQuery.proxy(this.playPauseTrack, this));
     $('#pbPause').bind('click', jQuery.proxy(this.playPauseTrack, this));
+    that = this
+    $(document).keypress(function(event) {
+      switch (event.which) {
+        case 32: //spacebar
+          event.preventDefault()
+          jQuery.proxy(that.playPauseTrack, that)();
+          break;
+        case 120: //x key
+          event.preventDefault()
+          jQuery.proxy(that.stopTrack, that)();
+          break;
+        case 44: //period key
+          event.preventDefault()
+          jQuery.proxy(that.nextTrack, that)();
+          break;
+        case 46: //comma key
+          event.preventDefault()
+          jQuery.proxy(that.prevTrack, that)();
+          break;
+      }
+    });
   },
   showPlaylist: function() {
     $('#nextText').html('Playlist: ');

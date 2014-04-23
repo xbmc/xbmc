@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.debug" version="0.1.16" provider-name="Team XBMC" name="Log">
+<addon id="xbmc.debug" version="0.1.17" provider-name="Team XBMC" name="Log">
   <backwards-compatibility abi="0.1"/>
   <requires>
     <c-pluff version="0.1"/>
   </requires>
   <extension point="xbmc.python.module"/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="af">Byvoegsel om verpersoonliking van log te verbeter</summary>
     <summary lang="bg">Добавка с разширени настройки за генерираните от XBMC дневници</summary>
     <summary lang="ca">Complement per millorar la personalització de registre</summary>
     <summary lang="cs">Doplněk pro vylepšení přizpůsobení záznamu</summary>
@@ -37,8 +38,8 @@
     <summary lang="nl">Addon voor het verbeteren van de aanpasbaarheid van logging</summary>
     <summary lang="no">Tillegg for å forbedre loggmulighetene</summary>
     <summary lang="pl">Wtyczka umożliwiająca dostosowanie diagnozowania błędów</summary>
-    <summary lang="pt">Um addon que melhora a personalização do registo de erros</summary>
-    <summary lang="pt_BR">Complemento para melhorar customização de registro</summary>
+    <summary lang="pt">Um add-on para melhorar a personalização do registo de erros</summary>
+    <summary lang="pt_BR">Complemento para melhorar personalização de registro</summary>
     <summary lang="ru">Дополнение расширенных настроек ведения журнала</summary>
     <summary lang="sk">Doplnok pre lepšie nastavenie denníka na ladenie chýb</summary>
     <summary lang="sl">Dodatek, ki izboljša prilagajanje zapisovanja delovanja programa</summary>

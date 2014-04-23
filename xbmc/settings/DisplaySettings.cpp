@@ -225,7 +225,16 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
     if (settingId == "videoscreen.resolution")
       newRes = (RESOLUTION)((CSettingInt*)setting)->GetValue();
     else if (settingId == "videoscreen.screen")
+    {
+      int screen = ((CSettingInt*)setting)->GetValue();
+
+      // if triggered by a change of screenmode, screen may not have changed
+      if (screen == GetCurrentDisplayMode())
+        return true;
+
+      // get desktop resolution for screen
       newRes = GetResolutionForScreen();
+    }
 
     string screenmode = GetStringFromResolution(newRes);
     CSettings::Get().SetString("videoscreen.screenmode", screenmode);
@@ -240,7 +249,7 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
 
     // check if the old or the new resolution was/is windowed
     // in which case we don't show any prompt to the user
-    if (oldRes != RES_WINDOW && newRes != RES_WINDOW)
+    if (oldRes != RES_WINDOW && newRes != RES_WINDOW && oldRes != newRes)
     {
       if (!m_resolutionChangeAborted)
       {
@@ -276,6 +285,16 @@ bool CDisplaySettings::OnSettingUpdate(CSetting* &setting, const char *oldSettin
       return screenmodeSetting->SetValue(screenmode + "pstd");
     if (screenmode.size() == 21)
       return screenmodeSetting->SetValue(screenmode + "std");
+  }
+  else if (settingId == "videoscreen.vsync")
+  {
+    // This ifdef is intended to catch everything except Linux and FreeBSD
+#if !defined(TARGET_LINUX) || defined(TARGET_DARWIN) || defined(TARGET_ANDROID) || defined(TARGET_RASPBERRY_PI)
+    // in the Gotham alphas through beta3 the default value for darwin and android was set incorrectly.
+    CSettingInt *vsyncSetting = (CSettingInt*)setting;
+    if (vsyncSetting->GetValue() == VSYNC_DRIVER)
+      return vsyncSetting->SetValue(VSYNC_ALWAYS);
+#endif
   }
 
   return false;
@@ -640,7 +659,8 @@ void CDisplaySettings::SettingOptionsScreensFiller(const CSetting *setting, std:
 
 void CDisplaySettings::SettingOptionsVerticalSyncsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
 {
-#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
+  // This ifdef is intended to catch everything except Linux and FreeBSD
+#if defined(TARGET_LINUX) && !defined(TARGET_DARWIN) && !defined(TARGET_ANDROID) && !defined(TARGET_RASPBERRY_PI)
   list.push_back(make_pair(g_localizeStrings.Get(13101), VSYNC_DRIVER));
 #endif
   list.push_back(make_pair(g_localizeStrings.Get(13106), VSYNC_DISABLED));

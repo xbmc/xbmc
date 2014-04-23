@@ -5113,6 +5113,10 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "שגיאת שלט Apple"
 
+msgctxt "#13621"
+msgid "Apple Remote support could not be enabled."
+msgstr "תמיכת Apple Remote אינה יכולה להיות פעילה"
+
 msgctxt "#14000"
 msgid "Stack"
 msgstr "לערום"
@@ -6360,6 +6364,10 @@ msgstr "חפש ערוצים"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "אין אפשרות להשתמש בתוכנות ה-PVR בעת חיפוש."
+
+msgctxt "#19119"
+msgid "On which server do you want to search?"
+msgstr "באיזה שרת ברצונך לבצע חיפוש?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -8577,6 +8585,10 @@ msgctxt "#20411"
 msgid "Flatten"
 msgstr "שטח"
 
+msgctxt "#20412"
+msgid "Flatten TV show seasons"
+msgstr "שטח עונות סדרה"
+
 msgctxt "#20413"
 msgid "Get fanart"
 msgstr "קבל פאנארט"
@@ -10197,6 +10209,10 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "בחר מכל הכותרות ..."
 
+msgctxt "#25003"
+msgid "Show Blu-ray menus"
+msgstr "הצג תפריטי Blu-ray"
+
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "נגן כותרת ראשית: %d"
@@ -10212,6 +10228,14 @@ msgstr "בחר פריט השמעה"
 msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr "פרקים: %u - משך: %s"
+
+msgctxt "#25008"
+msgid "Playback of Blu-ray failed"
+msgstr "ניגון Blu-ray נכשל"
+
+msgctxt "#25009"
+msgid "The menu of this Blu-ray is not supported"
+msgstr "התפריט של Blu-ray אינו נתמך"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11037,6 +11061,10 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "אין מידע זמין כעת."
 
+msgctxt "#36140"
+msgid "Enable the video library."
+msgstr "הפעל ספרית וידאו"
+
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
 msgstr "הצגת פרטי העלילה למדיה שעדיין לא נצפתה בספריית הווידאו."
@@ -11117,6 +11145,14 @@ msgctxt "#36188"
 msgid "Set the font colour to be used for subtitles."
 msgstr "בחר את צבע הגופן לשימוש עבור כתוביות."
 
+msgctxt "#36189"
+msgid "Set the font character set to be used for subtitles."
+msgstr "בחר ערכת התווים שתשמש את הגופן שמופיע בכתוביות."
+
+msgctxt "#36190"
+msgid "Override ASS/SSA subtitles fonts."
+msgstr "דרוס גופני כתוביות ASS/SSA"
+
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr "מיקום הכתוביות על המסך."
@@ -11137,6 +11173,14 @@ msgctxt "#36199"
 msgid "Select the default TV show information source. See the Add-ons Manager for options."
 msgstr "בחר מקור מידע ברירת המחדל עבור סדרה. ראה מנהל הרחבות עבור אפשרויות."
 
+msgctxt "#36201"
+msgid "Settings for PVR/Live TV features."
+msgstr "הגדרות עבור תכונות PVR/שידור חי"
+
+msgctxt "#36202"
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "קטגורית הגדרות כלליות עבור תכונות PVR/שידור חי"
+
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "ייבא קבוצת ערוצים מממשק אחורי PVR (אם נתמך). ימחק קבוצות משתמש שלא קיימות בממשק אחורי."
@@ -11153,6 +11197,22 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "מחק מסד נתונים של ערוצים/לוח שידורים ולאחר מכן ייבא מחדש מידע מממשק אחורי."
 
+msgctxt "#36216"
+msgid "Folder where channel icons are stored."
+msgstr "תיקיה אשר מכילה סמלי ערוץ"
+
+msgctxt "#36217"
+msgid "Scan for missing channel icons."
+msgstr "סרוק לסמלי ערוץ חסרים"
+
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends."
+msgstr "מספר ימי לוח השידורים אשר לייבא מממשק אחורי."
+
+msgctxt "#36221"
+msgid "Time between EPG data imports from backends."
+msgstr "זמן בין ייבוא לוח השידורים מממשק אחורי."
+
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "אל תייבא לוח שידורים בעת צפייה בטלוויזיה כדי למזער שימוש במעבד."
@@ -11161,13 +11221,25 @@ msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "הצג את הערוץ הנבחר בחלונית קטנה במקום בחלון מלא."
 
+msgctxt "#36228"
+msgid "Continue with the last viewed channel on startup."
+msgstr "בהפעלה מחדש המשך בצפייה בערוץ אחרון שנצפה"
+
 msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "הצג מידע על אות איכות בחלון מידע מקודד (אם נתמך ע\"י ההרחבה והממשק אחורי)"
 
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Not supported by all Add-ons and backends."
+msgstr "עדיפות ההקלטה. מספר גבוה אומר עדיפות גבוהה. לא נתמך בכל ההרחבות וממשקים אחוריים."
+
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "הצג הודעה כאשר תזמונים מתווספים, מסתיימים או נמחקים ע\"י הממשק האחורי."
+
+msgctxt "#36243"
+msgid "The command to execute."
+msgstr "הפקודה כדי להריץ."
 
 msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
@@ -11181,9 +11253,17 @@ msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "שנה את הסיסמא  לבקרת הורים עבור ערוצים נעולים"
 
+msgctxt "#36254"
+msgid "Enable the music library."
+msgstr "הפעל ספרית המוסיקה"
+
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information via scrapers during scan."
 msgstr "ייבא פרטי אלבום ואמן באופן אוטומטי באמצעות הסקרייפרים בזמן עדכון."
+
+msgctxt "#36257"
+msgid "Select the default album information source."
+msgstr "בחר את שירות ברירת המחדל לפרטי אלבום"
 
 msgctxt "#36259"
 msgid "Check for new and removed media files on XBMC startup."
@@ -11221,6 +11301,22 @@ msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr "הוצא דיסק לאחר שההעתקה תושלם."
 
+msgctxt "#36295"
+msgid "Select the font type used during karaoke."
+msgstr "בחירת סוג הגופן המופיע בקריוקי."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karaoke."
+msgstr "בחירת גודל הגופן המופיע בקריוקי."
+
+msgctxt "#36297"
+msgid "Select the font colour used during karaoke."
+msgstr "בחירת צבע הגופן המופיע בקריוקי."
+
+msgctxt "#36298"
+msgid "Select the character set used during karaoke."
+msgstr "בחירת ערכת התווים שתשמש את הגופן שמופיע בקריוקי."
+
 msgctxt "#36301"
 msgid "No info available yet."
 msgstr "אין מידע זמין כעת."
@@ -11236,6 +11332,10 @@ msgstr "אין מידע זמין כעת."
 msgctxt "#36306"
 msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
 msgstr "אם קיימים נתוני EXIF (תאריך, שעה, המצלמה שצילמה ועוד), הם יוצגו."
+
+msgctxt "#36309"
+msgid "Show videos in picture file lists."
+msgstr "הצג וידאו ברשימת קבצי תמונות"
 
 msgctxt "#36310"
 msgid "No info available yet."
@@ -11260,6 +11360,14 @@ msgstr "הגדר פורט לשרת WEB"
 msgctxt "#36330"
 msgid "Define the webserver username."
 msgstr "הגדר שם משתמש לשרת WEB"
+
+msgctxt "#36331"
+msgid "Define the webserver password."
+msgstr "הגדר סיסמא לשרת ה-WEB שלך."
+
+msgctxt "#36339"
+msgid "Initial repeat delay (ms)."
+msgstr "חוזר על עיכוב ראשוני (ms)"
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -11352,6 +11460,10 @@ msgstr "אין מידע זמין כעת."
 msgctxt "#36415"
 msgid "No info available yet."
 msgstr "אין מידע זמין כעת."
+
+msgctxt "#36416"
+msgid "Specify the type of remote used."
+msgstr "הגדר את סוג השלט שבשימוש."
 
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."

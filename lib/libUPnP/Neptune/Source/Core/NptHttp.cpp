@@ -2880,6 +2880,7 @@ NPT_HttpFileRequestHandler_DefaultFileTypeMap[] = {
     {"aif",  "audio/x-aiff"},
     {"aifc", "audio/x-aiff"},
     {"aiff", "audio/x-aiff"},
+    {"flac", "audio/x-flac"},
     {"mka",  "audio/x-matroska"},
     {"mpa",  "audio/mpeg"},
     {"mp2",  "audio/mpeg"},

@@ -29,7 +29,7 @@
       <speedunit>kmh</speedunit>
       <timezone>CEST</timezone>
     </region>
-    <region name="Lichtenstein" locale="LI">
+    <region name="Liechtenstein" locale="LI">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D. MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>

@@ -27,6 +27,7 @@
 #include "threads/Thread.h"
 #include "utils/JobManager.h"
 #include "utils/Observer.h"
+#include "interfaces/IAnnouncer.h"
 
 class CGUIDialogProgressBarHandle;
 class CStopWatch;
@@ -84,7 +85,7 @@ namespace PVR
 
   typedef boost::shared_ptr<PVR::CPVRChannelGroup> CPVRChannelGroupPtr;
 
-  class CPVRManager : public ISettingCallback, private CThread, public Observable
+  class CPVRManager : public ISettingCallback, private CThread, public Observable, public ANNOUNCEMENT::IAnnouncer
   {
     friend class CPVRClients;
 
@@ -99,6 +100,8 @@ namespace PVR
      * @brief Stop the PVRManager and destroy all objects it created.
      */
     virtual ~CPVRManager(void);
+
+    virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
 
     /*!
      * @brief Get the instance of the PVRManager.

@@ -468,6 +468,14 @@ static int get_best_header(FLACParseContext* fpc, const uint8_t **poutbuf,
                                         &fpc->wrap_buf,
                                         &fpc->wrap_buf_allocated_size);
 
+
+    if (fpc->pc->flags & PARSER_FLAG_USE_CODEC_TS){
+        if (header->fi.is_var_size)
+          fpc->pc->pts = header->fi.frame_or_sample_num;
+        else if (header->best_child)
+          fpc->pc->pts = header->fi.frame_or_sample_num * header->fi.blocksize;
+    }
+
     fpc->best_header_valid = 0;
     /* Return the negative overread index so the client can compute pos.
        This should be the amount overread to the beginning of the child */

@@ -441,7 +441,7 @@ bool CSettingList::SetValue(const SettingPtrList &values)
     return false;
   }
 
-  m_changed = (toString(m_values) == toString(m_defaults));
+  m_changed = (toString(m_values) != toString(m_defaults));
   OnSettingChanged(this);
   return true;
 }

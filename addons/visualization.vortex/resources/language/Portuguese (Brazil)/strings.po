@@ -22,7 +22,7 @@ msgstr "Pré-definidos Randômicos"
 
 msgctxt "#30001"
 msgid "Time Between Presets"
-msgstr "Tempo entre pré-definidos"
+msgstr "Tempo entre predefinições"
 
 msgctxt "#30002"
 msgid "Additional Random Time"

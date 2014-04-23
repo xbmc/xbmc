@@ -11509,6 +11509,14 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Alapértelmezetten használt album letöltő a zenei klipek médiatárhoz adásához."
 
+msgctxt "#36201"
+msgid "Settings for PVR/Live TV features."
+msgstr "Beállítások a PVR/Live TV funkciókhoz."
+
+msgctxt "#36202"
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Kategória a PVR/Élő TV általános beállításaival."
+
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr "Videófelvevő funkciók (PVR) engedélyezése. Ehhez legalább egy telepített PVR kiegészítő szükséges."
