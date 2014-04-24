@@ -22,7 +22,7 @@
 namespace JSONRPC
 {
   const char* const JSONRPC_SERVICE_ID          = "http://xbmc.org/jsonrpc/ServiceDescription.json";
-  const char* const JSONRPC_SERVICE_VERSION     = "6.14.3";
+  const char* const JSONRPC_SERVICE_VERSION     = "6.15.0";
   const char* const JSONRPC_SERVICE_DESCRIPTION = "JSON-RPC API of XBMC";
 
   const char* const JSONRPC_SERVICE_TYPES[] = {  
@@ -567,7 +567,7 @@ namespace JSONRPC
                   "\"productioncode\", \"season\", \"episode\", \"originaltitle\","
                   "\"showtitle\", \"cast\", \"streamdetails\", \"lastplayed\", \"fanart\","
                   "\"thumbnail\", \"file\", \"resume\", \"tvshowid\", \"dateadded\","
-                  "\"uniqueid\", \"art\" ]"
+                  "\"uniqueid\", \"art\", \"specialsortseason\", \"specialsortepisode\" ]"
       "}"
     "}",
     "\"Video.Fields.MusicVideo\": {"
@@ -756,7 +756,9 @@ namespace JSONRPC
         "\"originaltitle\": { \"type\": \"string\" },"
         "\"showtitle\": { \"type\": \"string\" },"
         "\"cast\": { \"$ref\": \"Video.Cast\" },"
-        "\"tvshowid\": { \"$ref\": \"Library.Id\" }"
+        "\"tvshowid\": { \"$ref\": \"Library.Id\" },"
+        "\"specialsortseason\": { \"type\": \"integer\" },"
+        "\"specialsortepisode\": { \"type\": \"integer\" }"
       "}"
     "}",
     "\"Video.Details.MusicVideo\": {"
@@ -1251,7 +1253,9 @@ namespace JSONRPC
         "\"theme\": { \"$ref\": \"Array.String\" },"
         "\"mood\": { \"$ref\": \"Array.String\" },"
         "\"style\": { \"$ref\": \"Array.String\" },"
-        "\"albumlabel\": { \"type\": \"string\" }"
+        "\"albumlabel\": { \"type\": \"string\" },"
+        "\"specialsortseason\": { \"type\": \"integer\" },"
+        "\"specialsortepisode\": { \"type\": \"integer\" }"
       "}"
     "}",
     "\"List.Fields.All\": {"
@@ -1269,7 +1273,8 @@ namespace JSONRPC
                   "\"disc\", \"tag\", \"art\", \"genreid\", \"displayartist\", \"albumartistid\","
                   "\"description\", \"theme\", \"mood\", \"style\", \"albumlabel\", \"sorttitle\","
                   "\"episodeguide\", \"uniqueid\", \"dateadded\", \"channel\", \"channeltype\", \"hidden\","
-                  "\"locked\", \"channelnumber\", \"starttime\", \"endtime\" ]"
+                  "\"locked\", \"channelnumber\", \"starttime\", \"endtime\", \"specialsortseason\","
+                  "\"specialsortepisode\" ]"
       "}"
     "}",
     "\"List.Item.All\": {"
@@ -1298,7 +1303,8 @@ namespace JSONRPC
                   "\"resume\", \"artistid\", \"albumid\", \"tvshowid\", \"setid\", \"watchedepisodes\","
                   "\"disc\", \"tag\", \"art\", \"genreid\", \"displayartist\", \"albumartistid\","
                   "\"description\", \"theme\", \"mood\", \"style\", \"albumlabel\", \"sorttitle\","
-                  "\"episodeguide\", \"uniqueid\", \"dateadded\", \"size\", \"lastmodified\", \"mimetype\" ]"
+                  "\"episodeguide\", \"uniqueid\", \"dateadded\", \"size\", \"lastmodified\", \"mimetype\","
+                  "\"specialsortseason\", \"specialsortepisode\" ]"
       "}"
     "}",
     "\"List.Item.File\": {"
