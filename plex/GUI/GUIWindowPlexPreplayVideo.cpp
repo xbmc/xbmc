@@ -144,6 +144,7 @@ void CGUIWindowPlexPreplayVideo::MoveToItem(int idx)
               CFileItemPtr i2 = list.Get(i + idx);
               if (!i2)
               {
+                m_navHelper.CloseBusyDialog();
                 lk.Enter();
                 m_navigating = false;
                 return;
@@ -155,6 +156,7 @@ void CGUIWindowPlexPreplayVideo::MoveToItem(int idx)
           }
         }
       }
+      m_navHelper.CloseBusyDialog();
     }
   }
 
