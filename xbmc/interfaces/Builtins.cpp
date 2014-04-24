@@ -1678,7 +1678,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("playall"))
     g_application.OnAction(CAction(ACTION_PLEX_PLAY_ALL));
   else if (execute.Equals("shuffleall"))
-    g_application.OnAction(CAction(ACTION_PLEX_PLAY_ALL));
+    g_application.OnAction(CAction(ACTION_PLEX_SHUFFLE_ALL));
 #endif
   /* PLEX */
   else
