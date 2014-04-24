@@ -165,7 +165,7 @@
 		</control>
 	</include>
 	<include name="ListItemFullInfoLeftSlide">
-		<animation effect="slide" start="0" end="-74" time="400" condition="Container.Content(seasons) | [Container.Content(episodes) + !IsEmpty(Container.Property(PlexPreplay))] | [Container.Content(albums) + !IsEmpty(Container.Property(PlexPreplay))] | [Container.Content(albums) + IsEmpty(Container.Property(primaryFilterActivated)] | Container.Content(songs) | Container.Content(channels) | Container.Content(channel) | Window.IsActive(mysharedcontent)">Conditional</animation>
+		<animation effect="slide" start="0" end="-74" time="400" condition="Container.Content(seasons) | [Container.Content(episodes) + !IsEmpty(Container.Property(PlexPreplay))] | [Container.Content(albums) + !IsEmpty(Container.Property(PlexPreplay))] | [Container.Content(albums) + IsEmpty(Container.Property(primaryFilterActivated)] | Container.Content(songs) | Container.Content(channels) | [Container.Content(channel) + ![ListItem.Type(clip) | ListItem.Type(episode)]] | Window.IsActive(mysharedcontent)">Conditional</animation>
 	</include>
 	<include name="ListItemFullInfoThumbCardUnwatchedOverlay">
 		<control type="group">

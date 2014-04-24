@@ -763,7 +763,7 @@
 				<height>680</height>
 				<orientation>vertical</orientation>
 				<itemgap>5</itemgap>
-				<visible>Window.IsVisible(501)</visible>
+				<visible>Window.IsVisible(501) | Window.IsVisible(plexplayqueue)</visible>
 				<control type="label">
 					<include>debugFont</include>
 					<label>MUSIC SPECIFIC:</label>

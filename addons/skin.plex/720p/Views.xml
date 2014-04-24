@@ -118,6 +118,21 @@
 			<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 		</control>
 	</include>
+	<include name="ListPlayQueueSquareItemThumb">
+		<control type="image">
+			<include>PosListItem</include>
+			<width>40</width>
+			<height>40</height>
+			<texture background="true">default-square-small.png</texture>
+		</control>
+		<control type="image">
+			<include>PosListItem</include>
+			<width>40</width>
+			<height>40</height>
+			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+			<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+		</control>
+	</include>
 	<include name="ListChannelTypeIcon">
 		<control type="image">
 			<posx>0</posx>
@@ -205,10 +220,10 @@
 					<visible>!Container.Content(movie) + !Container.Content(episode) + !Container.Content(Folders) + !Container.Content(clip) + !Container.Content(clips)</visible>
 					<posy>31</posy>
 					<posx>505</posx>
-					<width>735</width>
+					<width>805</width>
 					<height>655</height>
 					<onright>Container.NextViewMode</onright>
-					<onleft>1300</onleft>
+					<onleft>998</onleft>
 					<onup>58</onup>
 					<ondown>58</ondown>
 					<focusposition>6</focusposition>
@@ -833,7 +848,7 @@
 						</control>
 					</focusedlayout>
 					<!-- music -->
-					<itemlayout height="50" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(songs)">
+					<itemlayout height="50" condition="!Window.IsActive(plexplayqueue) + [Container.Content(artists) | Container.Content(albums) | Container.Content(songs)]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -891,7 +906,7 @@
 							<visible>!IsEmpty(Container.Property(mixedParents)) + Container.Content(songs)</visible>
 						</control>
 					</itemlayout>
-					<focusedlayout height="100" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(songs)">
+					<focusedlayout height="100" condition="!Window.IsActive(plexplayqueue) + [Container.Content(artists) | Container.Content(albums) | Container.Content(songs)]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -958,6 +973,128 @@
 							<aligny>center</aligny>
 							<font>Bold-32</font>
 							<textcolor>orange</textcolor>
+							<shadowcolor>FF222222</shadowcolor>
+							<animation type="Focus" reversible="false">
+								<effect type="zoom" center="0,0" start="90" end="100" time="200" tween="Linear" easing="out"/>
+								<effect type="fade" start="0" end="100" time="450"/>
+							</animation>
+						</control>
+					</focusedlayout>
+					<!-- Play Queues -->
+					<!-- music -->
+					<itemlayout height="50" condition="Window.IsActive(plexplayqueue) + Container.Content(songs)">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>1150</width>
+							<height>50</height>
+							<texture border="5">border-bottom-grey.png</texture>
+						</control>
+						<control type="group">
+							<posx>-7</posx>
+							<posy>-45</posy>
+							<include>ListPlayQueueSquareItemThumb</include>
+						</control>
+						<control type="label">
+							<width>800</width>
+							<height>50</height>
+							<label>$INFO[ListItem.Label][COLOR=FF888888]$INFO[ListItem.Artist, [COLOR=orange]&#xB7;[/COLOR] ][/COLOR]</label>
+							<font>Regular-20</font>
+							<include>White2</include>
+							<textoffsetx>100</textoffsetx>
+						</control>
+						<control type="label">
+							<posx>805</posx>
+							<width>100</width>
+							<height>50</height>
+							<label>$INFO[ListItem.Duration]</label>
+							<align>right</align>
+							<font>Regular-20</font>
+							<include>White2</include>
+						</control>
+					</itemlayout>
+					<focusedlayout height="100" condition="Window.IsActive(plexplayqueue) + Container.Content(songs)">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>1150</width>
+							<height>100</height>
+							<texture border="10">-black-bottom-grey.png</texture>
+							<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
+						</control>
+						<control type="group">
+							<posx>-27</posx>
+							<posy>-40</posy>
+							<include>ListSelectedArt</include>
+							<animation type="Focus" reversible="false">
+								<effect type="zoom" center="150,0" start="85" end="100" time="200" tween="Linear" easing="out"/>
+								<effect type="fade" start="0" end="100" time="650"/>
+							</animation>
+						</control>
+						<control type="label">
+							<posy>5</posy>
+							<posx>120</posx>
+							<width>550</width>
+							<height>45</height>
+							<info>ListItem.Label</info>
+							<aligny>center</aligny>
+							<font>Bold-28</font>
+							<textcolor>orange</textcolor>
+							<shadowcolor>FF222222</shadowcolor>
+							<animation type="Focus" reversible="false">
+								<effect type="zoom" center="0,0" start="90" end="100" time="200" tween="Linear" easing="out"/>
+								<effect type="fade" start="0" end="100" time="450"/>
+							</animation>
+						</control>
+						<control type="label">
+							<posy>5</posy>
+							<posx>805</posx>
+							<width>120</width>
+							<height>45</height>
+							<info>ListItem.Duration</info>
+							<aligny>center</aligny>
+							<align>right</align>
+							<font>Bold-28</font>
+							<textcolor>orange</textcolor>
+							<shadowcolor>FF222222</shadowcolor>
+							<animation type="Focus" reversible="false">
+								<effect type="zoom" center="0,0" start="90" end="100" time="200" tween="Linear" easing="out"/>
+								<effect type="fade" start="0" end="100" time="450"/>
+							</animation>
+						</control>
+						<control type="image">
+							<posx>120</posx>
+							<posy>51</posy>
+							<width>700</width>
+							<height>1</height>
+							<texture>black.png</texture>
+							<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
+						</control>
+						<control type="label">
+							<posx>120</posx>
+							<posy>57</posy>
+							<width>525</width>
+							<height>40</height>
+							<info>ListItem.Artist</info>
+							<aligny>center</aligny>
+							<font>Regular-24</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>FF222222</shadowcolor>
+							<animation type="Focus" reversible="false">
+								<effect type="zoom" center="0,0" start="90" end="100" time="200" tween="Linear" easing="out"/>
+								<effect type="fade" start="0" end="100" time="450"/>
+							</animation>
+						</control>
+						<control type="label">
+							<posx>805</posx>
+							<posy>57</posy>
+							<width>525</width>
+							<height>40</height>
+							<info>ListItem.Album</info>
+							<aligny>center</aligny>
+							<align>right</align>
+							<font>Regular-24</font>
+							<textcolor>white</textcolor>
 							<shadowcolor>FF222222</shadowcolor>
 							<animation type="Focus" reversible="false">
 								<effect type="zoom" center="0,0" start="90" end="100" time="200" tween="Linear" easing="out"/>

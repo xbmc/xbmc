@@ -122,7 +122,7 @@
 				<onup>80</onup>
 				<ondown>80</ondown>
 				<onright>80</onright>
-				<onleft>1300</onleft>
+				<onleft>998</onleft>
 				<orientation>vertical</orientation>
 				<posx>102</posx>
 				<posy>28</posy>
@@ -176,7 +176,7 @@
 					<width>1200</width>
 					<height>655</height>
 					<onright>-</onright>
-					<onleft>1300</onleft>
+					<onleft>998</onleft>
 					<onup>40</onup>
 					<ondown>40</ondown>
 					<focusposition>0</focusposition>

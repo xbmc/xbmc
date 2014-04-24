@@ -1014,9 +1014,9 @@
 						<onright>-</onright>
 						<onleft>300</onleft>
 						<posx>0</posx>
-						<posy>-110</posy>
+						<posy>-113</posy>
 						<width>860</width>
-						<height>330</height>
+						<height>340</height>
 						<itemlayout width="139" height="330">
 							<!-- music when both lists are visible -->
 							<control type="group">
@@ -1026,7 +1026,7 @@
 								<include>ListItemSquareCard</include>
 								<include>ListItemSquare</include>
 								<include>ListItemSquareTitleArtist</include>
-								<include>ListItemSquareTitleAlbum</include>
+								<include>ListItemSquareTitle</include>
 							</control>
 							</control>
 							<!-- music when only this list is visible -->
@@ -1036,7 +1036,7 @@
 								<include>ListItemSquareCard</include>
 								<include>ListItemSquare</include>
 								<include>ListItemSquareTitleArtist</include>
-								<include>ListItemSquareTitleAlbum</include>
+								<include>ListItemSquareTitle</include>
 							</control>
 						</itemlayout>
 						<focusedlayout width="139" height="330">
@@ -1048,7 +1048,7 @@
 								<include>ListItemSquareCard</include>
 								<include>ListItemSquare</include>
 								<include>ListItemSquareTitleArtist</include>
-								<include>ListItemSquareTitleAlbum</include>
+								<include>ListItemSquareTitle</include>
 								<include>ListItemSquareSelectedBorder</include>
 							</control>
 							</control>
@@ -1059,7 +1059,7 @@
 								<include>ListItemSquareCard</include>
 								<include>ListItemSquare</include>
 								<include>ListItemSquareTitleArtist</include>
-								<include>ListItemSquareTitleAlbum</include>
+								<include>ListItemSquareTitle</include>
 								<include>ListItemSquareSelectedBorder</include>
 							</control>
 						</focusedlayout>
