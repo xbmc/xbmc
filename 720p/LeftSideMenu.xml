@@ -60,7 +60,7 @@
 				<aspectratio>keep</aspectratio>
 				<texture>left-menu-filters-icon.png</texture>
 				<colordiffuse>FF999999</colordiffuse>
-				<visible>!Container.content(movie) + !Container.content(episode) + !Container.content(clip) + !Container.content(channel)</visible>
+				<visible>!Container.content(movie) + !Container.content(episode) + !Container.content(clip) + !Container.content(channel) + !Control.IsVisible(998)</visible>
 			</control>
 			<control type="image">
 				<posy>680</posy>
@@ -277,16 +277,16 @@
 		<radioposy>6</radioposy>
 	</include>
 	<!-- preplay buttons -->
-	<include name="leftMenuPreplayIcon">
+	<include name="leftMenuBarIcon">
 		<width>74</width>
 		<height>30</height>
 		<colordiffuse>FF999999</colordiffuse>
 	</include>
-	<include name="leftMenuPreplayButton">
+	<include name="leftMenuBarButton">
 		<width>74</width>
 		<height>30</height>
 		<onleft>1300</onleft>
-		<onright>-</onright>
+		<onright>777</onright>
 	</include>
 	<!-- Home menu -->
 	<include name="PivotMenuHome">
@@ -466,6 +466,52 @@
 			<include>leftMenuBg</include>
 			<!-- global search-->
 			<!--><include>GlobalSearch</include>-->
+			<!-- sidebar buttons -->
+			<control type="grouplist" id="998">
+				<posy>40</posy>
+				<posx>0</posx>
+				<width>74</width>
+				<aligny>top</aligny>
+				<orientation>vertical</orientation>
+				<itemgap>20</itemgap>
+				<!-- Filters -->
+				<control type="button" id="102">
+					<texturefocus>left-menu-filters-icon-s.png</texturefocus>
+					<texturenofocus>left-menu-filters-icon-u.png</texturenofocus>
+					<onclick>Control.SetFocus(1300)</onclick>
+					<onup>998</onup>
+					<ondown>998</ondown>
+					<include>leftMenuBarButton</include>
+				</control>
+				<!-- Now Playing -->
+				<control type="button" id="103">
+					<texturefocus>left-menu-nowplaying-icon-s.png</texturefocus>
+					<texturenofocus>left-menu-nowplaying-icon-u.png</texturenofocus>
+					<onclick>ActivateWindow(nowplaying)</onclick>
+					<onup>998</onup>
+					<ondown>998</ondown>
+					<include>leftMenuBarButton</include>
+					<visible>Player.HasAudio | Player.HasVideo</visible>
+				</control>
+				<!-- Play All -->
+				<control type="button" id="104">
+					<texturefocus>b-pp-play-s.png</texturefocus>
+					<texturenofocus>b-pp-play.png</texturenofocus>
+					<onclick>Plex.PlayAll()</onclick>
+					<onup>998</onup>
+					<ondown>998</ondown>
+					<include>leftMenuBarButton</include>
+				</control>
+				<!-- Shuffle All -->
+				<control type="button" id="105">
+					<texturefocus>left-menu-shuffle-icon-s.png</texturefocus>
+					<texturenofocus>left-menu-shuffle-icon-u.png</texturenofocus>
+					<onclick>Plex.ShuffleAll()</onclick>
+					<onup>998</onup>
+					<ondown>998</ondown>
+					<include>leftMenuBarButton</include>
+				</control>
+			</control>
 			<!-- filters & sorting menu -->
 			<control type="group" id="1300">
 				<animation type="Conditional" condition="!Window.IsActive(10202)" reversible="false">
@@ -615,7 +661,7 @@
 					<onclick>Plex.PlayWith(VideoDefaultPlayer)</onclick>
 					<onup>109</onup>
 					<ondown>103</ondown>
-					<include>leftMenuPreplayButton</include>
+					<include>leftMenuBarButton</include>
 				</control>
 				<!-- Audio -->
 				<control type="button" id="103">
@@ -624,7 +670,7 @@
 					<onclick>ActivateWindow(10205)</onclick>
 					<onup>102</onup>
 					<ondown>104</ondown>
-					<include>leftMenuPreplayButton</include>
+					<include>leftMenuBarButton</include>
 					<onfocus>Skin.SetString(DialogPos,audiostreampicker)</onfocus>
 					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
 				</control>
@@ -635,7 +681,7 @@
 					<onclick>ActivateWindow(10204)</onclick>
 					<onup>103</onup>
 					<ondown>105</ondown>
-					<include>leftMenuPreplayButton</include>
+					<include>leftMenuBarButton</include>
 					<onfocus>Skin.SetString(DialogPos,subtitlestreampicker)</onfocus>
 					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
 				</control>
@@ -646,7 +692,7 @@
 					<onclick>ActivateWindow(10200,$INFO[ListItem(0).Path])</onclick>
 					<onup>104</onup>
 					<ondown>106</ondown>
-					<include>leftMenuPreplayButton</include>
+					<include>leftMenuBarButton</include>
 					<onfocus>Skin.SetString(DialogPos,rate)</onfocus>
 					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
 				</control>
@@ -656,7 +702,7 @@
 					<texturenofocus>b-pp-recommend.png</texturenofocus>
 					<onup>105</onup>
 					<ondown>107</ondown>
-					<include>leftMenuPreplayButton</include>
+					<include>leftMenuBarButton</include>
 					<visible>!IsEmpty(ListItem(0).Property(canRecommend))</visible>
 					<onfocus>Skin.SetString(DialogPos,recommend)</onfocus>
 					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
@@ -667,7 +713,7 @@
 					<texturenofocus>b-pp-share.png</texturenofocus>
 					<onup>106</onup>
 					<ondown>108</ondown>
-					<include>leftMenuPreplayButton</include>
+					<include>leftMenuBarButton</include>
 					<visible>!IsEmpty(ListItem(0).Property(canShare))</visible>
 					<onfocus>Skin.SetString(DialogPos,share)</onfocus>
 					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
@@ -679,7 +725,7 @@
 					<onup>107</onup>
 					<ondown>109</ondown>
 					<onclick>markasunwatched</onclick>
-					<include>leftMenuPreplayButton</include>
+					<include>leftMenuBarButton</include>
 				</control>
 				<!-- Unwatched -->
 				<control type="button" id="109">
@@ -688,7 +734,7 @@
 					<onup>108</onup>
 					<ondown>102</ondown>
 					<onclick>markaswatched</onclick>
-					<include>leftMenuPreplayButton</include>
+					<include>leftMenuBarButton</include>
 				</control>
 			</control>
 		</control>
@@ -750,7 +796,7 @@
 						<posy>18</posy>
 						<aspectratio>keep</aspectratio>
 						<info>ListItem.Art(thumb)</info>
-						<include>leftMenuPreplayIcon</include>
+						<include>leftMenuBarIcon</include>
 					</control>
 				</itemlayout>
 				<focusedlayout width="1400" height="50">
@@ -758,7 +804,7 @@
 						<posx>0</posx>
 						<posy>18</posy>
 						<info>ListItem.Art(thumb)</info>
-						<include>leftMenuPreplayButton</include>
+						<include>leftMenuBarButton</include>
 						<colordiffuse>orange</colordiffuse>
 					</control>
 				</focusedlayout>

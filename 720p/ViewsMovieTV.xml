@@ -164,7 +164,7 @@
 				<onup>51</onup>
 				<ondown>51</ondown>
 				<onright>Container.NextViewMode</onright>
-				<onleft>1300</onleft>
+				<onleft>998</onleft>
 				<orientation>vertical</orientation>
 				<posx>102</posx>
 				<posy>28</posy>
@@ -201,7 +201,7 @@
 				<onup>50</onup>
 				<ondown>50</ondown>
 				<onright>Container.NextViewMode</onright>
-				<onleft>1300</onleft>
+				<onleft>998</onleft>
 				<orientation>vertical</orientation>
 				<posx>100</posx>
 				<posy>28</posy>

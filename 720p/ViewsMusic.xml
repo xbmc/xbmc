@@ -104,7 +104,7 @@
 					<onup>52</onup>
 					<ondown>52</ondown>
 					<onright>Container.NextViewMode</onright>
-					<onleft>1300</onleft>
+					<onleft>998</onleft>
 					<orientation>vertical</orientation>
 					<itemlayout width="192" height="220">
 						<include>MusicThumbCard</include>
