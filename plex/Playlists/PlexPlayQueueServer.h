@@ -45,6 +45,7 @@ public:
   }
 
 protected:
+  void sendRequest(const CURL &url, const CStdString &verb, bool startPlaying);
   CURL getPlayQueueURL(ePlexMediaType type, const std::string& uri, const std::string& key="",
                        bool shuffle = false, bool continuous = false, int limit = 0,
                        bool next = false);

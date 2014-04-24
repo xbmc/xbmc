@@ -42,6 +42,21 @@ CURL CPlexPlayQueueServer::getPlayQueueURL(ePlexMediaType type, const std::strin
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexPlayQueueServer::sendRequest(const CURL& url, const CStdString& verb, bool startPlaying)
+{
+  CURL u(url);
+
+  // This is the window size, let's add it here so we know that it's on all requests
+  u.SetOption("window", "50");
+  CPlexPlayQueueFetchJob* job = new CPlexPlayQueueFetchJob(u, startPlaying);
+  job->m_caller = shared_from_this();
+  if (!verb.empty())
+    job->m_dir.SetHTTPVerb(verb);
+
+  CJobManager::GetInstance().AddJob(job, this);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexPlayQueueServer::create(const CFileItem& container, const CStdString& uri,
                                   const CStdString& startItemKey, bool shuffle)
 {
@@ -62,10 +77,7 @@ void CPlexPlayQueueServer::create(const CFileItem& container, const CStdString& 
   if (u.Get().empty())
     return;
 
-  CPlexPlayQueueFetchJob* job = new CPlexPlayQueueFetchJob(u, true);
-  job->m_dir.SetHTTPVerb("POST");
-  job->m_caller = shared_from_this();
-  CJobManager::GetInstance().AddJob(job, this);
+  sendRequest(u, "POST", true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,10 +90,7 @@ bool CPlexPlayQueueServer::refreshCurrent()
   CStdString path;
   path.Format("/playQueues/%d", id);
 
-  CURL u = m_server->BuildPlexURL(path);
-  CPlexPlayQueueFetchJob* job = new CPlexPlayQueueFetchJob(u, false);
-  job->m_caller = shared_from_this();
-  CJobManager::GetInstance().AddJob(job, this);
+  sendRequest(m_server->BuildPlexURL(path), "", false);
   return true;
 }
 
@@ -109,10 +118,7 @@ void CPlexPlayQueueServer::removeItem(const CFileItemPtr& item)
               item->GetProperty("playQueueItemID").asInteger());
   CURL u = m_server->BuildPlexURL(path);
 
-  CPlexPlayQueueFetchJob* job = new CPlexPlayQueueFetchJob(u);
-  job->m_dir.SetHTTPVerb("DELETE");
-  job->m_caller = shared_from_this();
-  CJobManager::GetInstance().AddJob(job, this);
+  sendRequest(u, "DELETE", false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,10 +134,7 @@ void CPlexPlayQueueServer::addItem(const CFileItemPtr& item)
     if (u.Get().empty())
       return;
 
-    CPlexPlayQueueFetchJob* job = new CPlexPlayQueueFetchJob(u, true);
-    job->m_dir.SetHTTPVerb("PUT");
-    job->m_caller = shared_from_this();
-    CJobManager::GetInstance().AddJob(job, this);
+    sendRequest(u, "PUT", false);
   }
 }
 
@@ -149,9 +152,7 @@ void CPlexPlayQueueServer::get(const CStdString &playQueueID)
 {
   CStdString path;
   path.Format("/playQueues/%s", playQueueID);
-  CPlexPlayQueueFetchJob* job = new CPlexPlayQueueFetchJob(m_server->BuildPlexURL(path), false);
-  job->m_caller = shared_from_this();
-  CJobManager::GetInstance().AddJob(job, this);
+  sendRequest(m_server->BuildPlexURL(path), "", false);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
