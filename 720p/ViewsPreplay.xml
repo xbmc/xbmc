@@ -355,7 +355,7 @@
 					<description>Poster image</description>
 					<posx>13</posx>
 					<posy>13</posy>
-					<width>182</width>
+					<width>185</width>
 					<height>274</height>
 					<fadetime>160</fadetime>
 					<texture background="true" diffuse="mask-poster-middle.png">$INFO[Container.FolderThumb]</texture>
