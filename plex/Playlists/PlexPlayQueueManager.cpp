@@ -74,11 +74,7 @@ void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool st
   if (g_playlistPlayer.GetCurrentPlaylist() == playlist && playlistItem &&
       playlistItem->GetProperty("playQueueID").asInteger() == pqID)
   {
-    if (reconcilePlayQueueChanges(type, list))
-    {
-      CGUIMessage msg(GUI_MSG_PLEX_PLAYQUEUE_UPDATED, PLEX_PLAYQUEUE_MANAGER, 0);
-      g_windowManager.SendThreadMessage(msg);
-    }
+    reconcilePlayQueueChanges(type, list);
   }
   else
   {
@@ -93,6 +89,9 @@ void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool st
               "CPlexPlayQueueManager::PlayQueueUpdated now playing PlayQueue of type %d",
               type);
   }
+
+  CGUIMessage msg(GUI_MSG_PLEX_PLAYQUEUE_UPDATED, PLEX_PLAYQUEUE_MANAGER, 0);
+  g_windowManager.SendThreadMessage(msg);
 
   if (startPlaying)
   {
