@@ -65,6 +65,15 @@ void CPlexNavigationHelper::CloseBusyDialog()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexNavigationHelper::navigateToNowPlaying()
+{
+  if (g_application.IsPlayingAudio())
+    g_windowManager.ActivateWindow(WINDOW_NOW_PLAYING);
+  else if (g_application.IsPlayingVideo())
+    g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CStdString CPlexNavigationHelper::navigateToItem(CFileItemPtr item, const CURL &parentUrl, int windowId, bool swap)
 {
   CStdString empty;

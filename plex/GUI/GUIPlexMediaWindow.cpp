@@ -755,13 +755,8 @@ void CGUIPlexMediaWindow::GetContextButtons(int itemNumber, CContextButtons &but
     return;
 
   if (PlexUtils::IsPlayingPlaylist())
-    buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
-
-  if (!PlexUtils::IsPlayingPlaylist())
   {
-    buttons.Add(CONTEXT_BUTTON_SHUFFLE, 52600);
-    buttons.Add(CONTEXT_BUTTON_PLAY_PARTYMODE, 52601);
-
+    buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
     if (!item->m_bIsFolder && item->CanQueue())
       buttons.Add(CONTEXT_BUTTON_PLAY_AND_QUEUE, 13412);
   }
@@ -810,11 +805,8 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
     case CONTEXT_BUTTON_NOW_PLAYING:
     {
-      if (IsVideoContainer() && g_application.IsPlayingVideo())
-        g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
-      else if (IsMusicContainer() && g_application.IsPlayingAudio())
-        g_windowManager.ActivateWindow(WINDOW_NOW_PLAYING);
-       break;
+      m_navHelper.navigateToNowPlaying();
+      break;
     }
     case CONTEXT_BUTTON_SHUFFLE:
     {

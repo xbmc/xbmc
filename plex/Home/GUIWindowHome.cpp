@@ -281,6 +281,10 @@ void CGUIWindowHome::GetContextMenu(CContextButtons& buttons)
   }
   else if (fileItem != NULL)
   {
+
+    if (PlexUtils::IsPlayingPlaylist())
+      buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
+
     if (controlId == CONTENT_LIST_ON_DECK ||
         controlId == CONTENT_LIST_RECENTLY_ADDED ||
         controlId == CONTENT_LIST_QUEUE ||
@@ -419,6 +423,10 @@ bool CGUIWindowHome::OnPopupMenu()
 
     case CONTEXT_BUTTON_REMOVE_SOURCE:
       RemoveFromPlayQueue();
+      break;
+
+    case CONTEXT_BUTTON_NOW_PLAYING:
+      m_navHelper.navigateToNowPlaying();
       break;
 
     default:

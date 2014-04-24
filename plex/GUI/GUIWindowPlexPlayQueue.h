@@ -12,7 +12,8 @@ public:
 
   bool OnSelect(int iItem);
   bool OnMessage(CGUIMessage &message);
-
+  void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 };
 
 #endif // GUIWINDOWPLEXPLAYQUEUE_H
