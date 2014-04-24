@@ -223,7 +223,7 @@
 					<width>805</width>
 					<height>655</height>
 					<onright>Container.NextViewMode</onright>
-					<onleft>1300</onleft>
+					<onleft>998</onleft>
 					<onup>58</onup>
 					<ondown>58</ondown>
 					<focusposition>6</focusposition>

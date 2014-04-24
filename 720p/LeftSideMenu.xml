@@ -52,7 +52,7 @@
 				<colordiffuse>FF000000</colordiffuse>
 				<visible>!Control.IsVisible(41)</visible>
 			</control>
-			<control type="image">
+			<!--><control type="image">
 				<posy>41</posy>
 				<posx>25</posx>
 				<width>24</width>
@@ -61,7 +61,7 @@
 				<texture>left-menu-filters-icon.png</texture>
 				<colordiffuse>FF999999</colordiffuse>
 				<visible>!Container.content(movie) + !Container.content(episode) + !Container.content(clip) + !Container.content(channel) + !Control.IsVisible(998)</visible>
-			</control>
+			</control>-->
 			<control type="image">
 				<posy>680</posy>
 				<posx>30</posx>
@@ -285,7 +285,7 @@
 	<include name="leftMenuBarButton">
 		<width>74</width>
 		<height>30</height>
-		<onleft>1300</onleft>
+		<onleft condition="[!Container.Content(albums) | [Container.Content(albums) + !IsEmpty(Container.Property(primaryFilterActivated)]] + !Container.Content(songs) + !Container.Content(movie) + !Container.Content(seasons) + [!Container.Content(episodes) | [Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated) + IsEmpty(Container.Property(PlexPreplay)]] + !Container.Content(episode) + !Container.Content(clip) + ![Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]">1300</onleft>
 		<onright>777</onright>
 	</include>
 	<!-- Home menu -->
@@ -460,18 +460,21 @@
 	<!-- Library menu -->
 	<include name="LeftSideMenu">
 		<control type="group">
-			<visible>[!Container.Content(channel) + !Container.Content(albums) + !Container.Content(songs) + [IsEmpty(Container.Property(PlexPreplay) | Container.Content(empty)]] |  [Container.Content(albums) + !IsEmpty(Container.Property(primaryFilterActivated)]</visible>
+			<visible>[!Container.Content(channel) | [Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]]</visible>
 			<include>leftMenuInitSlide</include>
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
 			<!-- global search-->
 			<!--><include>GlobalSearch</include>-->
-			<!-- sidebar buttons -->
+			<!-- sidebar global -->
 			<control type="grouplist" id="998">
+				<visible>!Container.Content(movie) + !Container.Content(episode) + !Container.Content(clip)</visible>
 				<posy>40</posy>
 				<posx>0</posx>
 				<width>74</width>
 				<aligny>top</aligny>
+				<onup>998</onup>
+				<ondown>998</ondown>
 				<orientation>vertical</orientation>
 				<itemgap>20</itemgap>
 				<!-- Filters -->
@@ -479,17 +482,14 @@
 					<texturefocus>left-menu-filters-icon-s.png</texturefocus>
 					<texturenofocus>left-menu-filters-icon-u.png</texturenofocus>
 					<onclick>Control.SetFocus(1300)</onclick>
-					<onup>998</onup>
-					<ondown>998</ondown>
 					<include>leftMenuBarButton</include>
+					<visible>[!Container.Content(albums) | [Container.Content(albums) + !IsEmpty(Container.Property(primaryFilterActivated)]] + !Container.Content(songs) + !Container.Content(seasons) + [!Container.Content(episodes) | [Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated) + IsEmpty(Container.Property(PlexPreplay)]] + ![Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
 				</control>
 				<!-- Now Playing -->
 				<control type="button" id="103">
 					<texturefocus>left-menu-nowplaying-icon-s.png</texturefocus>
 					<texturenofocus>left-menu-nowplaying-icon-u.png</texturenofocus>
 					<onclick>ActivateWindow(nowplaying)</onclick>
-					<onup>998</onup>
-					<ondown>998</ondown>
 					<include>leftMenuBarButton</include>
 					<visible>Player.HasAudio | Player.HasVideo</visible>
 				</control>
@@ -498,17 +498,95 @@
 					<texturefocus>b-pp-play-s.png</texturefocus>
 					<texturenofocus>b-pp-play.png</texturenofocus>
 					<onclick>Plex.PlayAll()</onclick>
-					<onup>998</onup>
-					<ondown>998</ondown>
 					<include>leftMenuBarButton</include>
+					<visible>!Container.Content(songs) + !Container.Content(photos)</visible>
 				</control>
 				<!-- Shuffle All -->
 				<control type="button" id="105">
 					<texturefocus>left-menu-shuffle-icon-s.png</texturefocus>
 					<texturenofocus>left-menu-shuffle-icon-u.png</texturenofocus>
 					<onclick>Plex.ShuffleAll()</onclick>
-					<onup>998</onup>
-					<ondown>998</ondown>
+					<include>leftMenuBarButton</include>
+					<visible>!Container.Content(photos)</visible>
+				</control>
+			</control>
+			<!-- sidebar preplay -->
+			<control type="grouplist" id="998">
+				<visible>[Container.Content(movie) | Container.Content(episode) | Container.Content(clip) | [Container.Content(channel) + [ListItem.Type(movie) | ListItem.Type(clip)]]] + !Container.Content(channel)</visible>
+				<posy>40</posy>
+				<posx>0</posx>
+				<width>74</width>
+				<aligny>top</aligny>
+				<onup>998</onup>
+				<ondown>998</ondown>
+				<orientation>vertical</orientation>
+				<itemgap>20</itemgap>
+				<!-- Play -->
+				<control type="button" id="102">
+					<texturefocus>b-pp-play-s.png</texturefocus>
+					<texturenofocus>b-pp-play.png</texturenofocus>
+					<onclick>Plex.PlayWith(VideoDefaultPlayer)</onclick>
+					<include>leftMenuBarButton</include>
+				</control>
+				<!-- Audio -->
+				<control type="button" id="103">
+					<texturefocus>b-pp-audio-s2.png</texturefocus>
+					<texturenofocus>b-pp-audio2.png</texturenofocus>
+					<onclick>ActivateWindow(10205)</onclick>
+					<include>leftMenuBarButton</include>
+					<onfocus>Skin.SetString(DialogPos,audiostreampicker)</onfocus>
+					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
+				</control>
+				<!-- Subtitles -->
+				<control type="button" id="104">
+					<texturefocus>b-pp-subtitles-s.png</texturefocus>
+					<texturenofocus>b-pp-subtitles.png</texturenofocus>
+					<onclick>ActivateWindow(10204)</onclick>
+					<include>leftMenuBarButton</include>
+					<onfocus>Skin.SetString(DialogPos,subtitlestreampicker)</onfocus>
+					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
+				</control>
+				<!-- Rate -->
+				<control type="button" id="105">
+					<texturefocus>b-pp-rate-s.png</texturefocus>
+					<texturenofocus>b-pp-rate.png</texturenofocus>
+					<onclick>ActivateWindow(10200,$INFO[ListItem(0).Path])</onclick>
+					<include>leftMenuBarButton</include>
+					<onfocus>Skin.SetString(DialogPos,rate)</onfocus>
+					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
+				</control>
+				<!-- Recommend -->
+				<!--><control type="button" id="106">
+					<texturefocus>b-pp-recommend-s.png</texturefocus>
+					<texturenofocus>b-pp-recommend.png</texturenofocus>
+					<onup>105</onup>
+					<ondown>107</ondown>
+					<include>leftMenuBarButton</include>
+					<visible>!IsEmpty(ListItem(0).Property(canRecommend))</visible>
+					<onfocus>Skin.SetString(DialogPos,recommend)</onfocus>
+					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
+				</control>-->
+				<!-- Share -->
+				<control type="button" id="107">
+					<texturefocus>b-pp-share-s.png</texturefocus>
+					<texturenofocus>b-pp-share.png</texturenofocus>
+					<include>leftMenuBarButton</include>
+					<visible>!IsEmpty(ListItem(0).Property(canShare))</visible>
+					<onfocus>Skin.SetString(DialogPos,share)</onfocus>
+					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
+				</control>
+				<!-- Watched -->
+				<control type="button" id="108">
+					<texturefocus>b-pp-watched-s.png</texturefocus>
+					<texturenofocus>b-pp-watched.png</texturenofocus>
+					<onclick>markasunwatched</onclick>
+					<include>leftMenuBarButton</include>
+				</control>
+				<!-- Unwatched -->
+				<control type="button" id="109">
+					<texturefocus>b-pp-unwatched-s.png</texturefocus>
+					<texturenofocus>b-pp-unwatched.png</texturenofocus>
+					<onclick>markaswatched</onclick>
 					<include>leftMenuBarButton</include>
 				</control>
 			</control>
@@ -633,108 +711,6 @@
 					<textoffsetx>35</textoffsetx>
 					<include>leftMenuFormat</include>
 					<include>leftMenuSortingButton</include>
-				</control>
-			</control>
-		</control>
-	</include>
-	<!-- Preplay menu -->
-	<include name="LeftSideMenuPreplay">
-		<control type="group">
-			<visible>Container.Content(movie) | Container.Content(episode) | Container.Content(clip) | [Container.Content(channel) + ListItem.Type(movie)] | [Container.Content(channel) + ListItem.Type(clip)]</visible>
-			<include>leftMenuInitSlide</include>
-			<include>leftMenuSlide</include>
-			<include>leftMenuBg</include>
-			<!-- global search-->
-			<!--><include>GlobalSearch</include>-->
-			<!-- sidebar buttons -->
-			<control type="grouplist" id="998">
-				<posy>40</posy>
-				<posx>0</posx>
-				<width>74</width>
-				<aligny>top</aligny>
-				<orientation>vertical</orientation>
-				<itemgap>20</itemgap>
-				<!-- Play -->
-				<control type="button" id="102">
-					<texturefocus>b-pp-play-s.png</texturefocus>
-					<texturenofocus>b-pp-play.png</texturenofocus>
-					<onclick>Plex.PlayWith(VideoDefaultPlayer)</onclick>
-					<onup>109</onup>
-					<ondown>103</ondown>
-					<include>leftMenuBarButton</include>
-				</control>
-				<!-- Audio -->
-				<control type="button" id="103">
-					<texturefocus>b-pp-audio-s2.png</texturefocus>
-					<texturenofocus>b-pp-audio2.png</texturenofocus>
-					<onclick>ActivateWindow(10205)</onclick>
-					<onup>102</onup>
-					<ondown>104</ondown>
-					<include>leftMenuBarButton</include>
-					<onfocus>Skin.SetString(DialogPos,audiostreampicker)</onfocus>
-					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
-				</control>
-				<!-- Subtitles -->
-				<control type="button" id="104">
-					<texturefocus>b-pp-subtitles-s.png</texturefocus>
-					<texturenofocus>b-pp-subtitles.png</texturenofocus>
-					<onclick>ActivateWindow(10204)</onclick>
-					<onup>103</onup>
-					<ondown>105</ondown>
-					<include>leftMenuBarButton</include>
-					<onfocus>Skin.SetString(DialogPos,subtitlestreampicker)</onfocus>
-					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
-				</control>
-				<!-- Rate -->
-				<control type="button" id="105">
-					<texturefocus>b-pp-rate-s.png</texturefocus>
-					<texturenofocus>b-pp-rate.png</texturenofocus>
-					<onclick>ActivateWindow(10200,$INFO[ListItem(0).Path])</onclick>
-					<onup>104</onup>
-					<ondown>106</ondown>
-					<include>leftMenuBarButton</include>
-					<onfocus>Skin.SetString(DialogPos,rate)</onfocus>
-					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
-				</control>
-				<!-- Recommend -->
-				<!--><control type="button" id="106">
-					<texturefocus>b-pp-recommend-s.png</texturefocus>
-					<texturenofocus>b-pp-recommend.png</texturenofocus>
-					<onup>105</onup>
-					<ondown>107</ondown>
-					<include>leftMenuBarButton</include>
-					<visible>!IsEmpty(ListItem(0).Property(canRecommend))</visible>
-					<onfocus>Skin.SetString(DialogPos,recommend)</onfocus>
-					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
-				</control>-->
-				<!-- Share -->
-				<control type="button" id="107">
-					<texturefocus>b-pp-share-s.png</texturefocus>
-					<texturenofocus>b-pp-share.png</texturenofocus>
-					<onup>106</onup>
-					<ondown>108</ondown>
-					<include>leftMenuBarButton</include>
-					<visible>!IsEmpty(ListItem(0).Property(canShare))</visible>
-					<onfocus>Skin.SetString(DialogPos,share)</onfocus>
-					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
-				</control>
-				<!-- Watched -->
-				<control type="button" id="108">
-					<texturefocus>b-pp-watched-s.png</texturefocus>
-					<texturenofocus>b-pp-watched.png</texturenofocus>
-					<onup>107</onup>
-					<ondown>109</ondown>
-					<onclick>markasunwatched</onclick>
-					<include>leftMenuBarButton</include>
-				</control>
-				<!-- Unwatched -->
-				<control type="button" id="109">
-					<texturefocus>b-pp-unwatched-s.png</texturefocus>
-					<texturenofocus>b-pp-unwatched.png</texturenofocus>
-					<onup>108</onup>
-					<ondown>102</ondown>
-					<onclick>markaswatched</onclick>
-					<include>leftMenuBarButton</include>
 				</control>
 			</control>
 		</control>

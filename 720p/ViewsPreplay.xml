@@ -342,7 +342,7 @@
 			</control>
 			<!-- poster -->
 			<control type="group">
-				<posx>28</posx>
+				<posx>102</posx>
 				<posy>28</posy>
 				<control type="image">
 					<posx>0</posx>
@@ -365,10 +365,10 @@
 			<!-- Infos Left -->
 			<control type="group">
 				<posy>38</posy>
-				<posx>262</posx>
+				<posx>336</posx>
 				<!-- Title -->
 				<control type="label">
-					<width min="29" max="300">auto</width>
+					<width min="29" max="226">auto</width>
 					<height>44</height>
 					<label>$INFO[Container.SecondTitle]</label>
 					<label>Seasons view</label>
@@ -408,7 +408,7 @@
 						<visible>true</visible>
 					</control>
 					<control type="label">
-						<width min="29" max="230">auto</width>
+						<width min="29" max="156">auto</width>
 						<include>LeftInfoFormatWhite</include>
 						<label>$INFO[ListItem.Genre]</label>
 						<visible>true</visible>
@@ -417,18 +417,18 @@
 			</control>
 			<!-- show plot -->
 			<control type="textbox">
-				<posx>40</posx>
+				<posx>114</posx>
 				<posy>412</posy>
-				<width>490</width>
-				<height>207</height>
+				<width>416</width>
+				<height>200</height>
 				<include>PlotFormat</include>
 				<label>$INFO[Container.ShowPlot]</label>
 			</control>
 			<control type="textbox">
-				<posx>40</posx>
+				<posx>114</posx>
 				<posy>412</posy>
-				<width>490</width>
-				<height>207</height>
+				<width>416</width>
+				<height>200</height>
 				<include>PlotFormat</include>
 				<include>NoPlotDefault</include>
 				<visible>IsEmpty(Container.ShowPlot)</visible>
@@ -441,7 +441,7 @@
 				<onup>60</onup>
 				<ondown>60</ondown>
 				<onright>Container.NextViewMode</onright>
-				<onleft>9100</onleft>
+				<onleft>998</onleft>
 				<orientation>vertical</orientation>
 				<posx>598</posx>
 				<posy>30</posy>
@@ -568,7 +568,7 @@
 			</control>
 			<!-- poster -->
 			<control type="group">
-				<posx>28</posx>
+				<posx>102</posx>
 				<posy>28</posy>
 				<control type="image">
 					<posx>0</posx>
@@ -601,10 +601,10 @@
 			<!-- Infos Left -->
 			<control type="group">
 				<posy>38</posy>
-				<posx>262</posx>
+				<posx>336</posx>
 				<!-- Titles -->
 				<control type="label">
-					<width>270</width>
+					<width>226</width>
 					<height>44</height>
 					<label>$INFO[Container.FirstTitle]</label>
 					<font>Bold-36</font>
@@ -613,7 +613,7 @@
 					<visible>IsEmpty(Container.Property(mixedParents))</visible>
 				</control>
 				<control type="label">
-					<width>270</width>
+					<width>226</width>
 					<height>44</height>
 					<label>$INFO[Container.Property(parentTitle)]</label>
 					<font>Bold-36</font>
@@ -623,7 +623,7 @@
 				</control>
 				<control type="label">
 					<posy>40</posy>
-					<width>270</width>
+					<width>226</width>
 					<height>44</height>
 					<label>$INFO[Container.SecondTitle]</label>
 					<font>Bold-36</font>
@@ -633,7 +633,7 @@
 				</control>
 				<control type="label">
 					<posy>40</posy>
-					<width>270</width>
+					<width>226</width>
 					<height>44</height>
 					<label>$LOCALIZE[32102]</label>
 					<font>Bold-36</font>
@@ -644,7 +644,7 @@
 				<!-- Year -->
 				<control type="label">
 					<posy>82</posy>
-					<width>270</width>
+					<width>226</width>
 					<height>40</height>
 					<align>left</align>
 					<label>$INFO[ListItem.Year]</label>
@@ -656,27 +656,27 @@
 			</control>
 			<!-- plot text -->
 			<control type="textbox">
-				<posx>40</posx>
+				<posx>114</posx>
 				<posy>412</posy>
-				<width>490</width>
+				<width>416</width>
 				<height>200</height>
 				<include>PlotFormat</include>
 				<label>$INFO[ListItem.Plot]</label>
 				<visible>ListItem.Status(Watched) | [!Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]]</visible>
 			</control>
 			<control type="textbox">
-				<posx>40</posx>
+				<posx>114</posx>
 				<posy>412</posy>
-				<width>490</width>
+				<width>416</width>
 				<height>200</height>
 				<include>PlotFormat</include>
 				<label>$LOCALIZE[32105]</label>
 				<visible>Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)] + !IsEmpty(ListItem.Plot)</visible>
 			</control>
 			<control type="textbox">
-				<posx>40</posx>
+				<posx>114</posx>
 				<posy>412</posy>
-				<width>490</width>
+				<width>416</width>
 				<height>200</height>
 				<include>PlotFormat</include>
 				<include>NoPlotDefault</include>
@@ -690,7 +690,7 @@
 				<onup>61</onup>
 				<ondown>61</ondown>
 				<onright>Container.NextViewMode</onright>
-				<onleft>9100</onleft>
+				<onleft>998</onleft>
 				<orientation>vertical</orientation>
 				<posx>588</posx>
 				<posy>27</posy>

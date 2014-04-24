@@ -14,7 +14,7 @@
 		<include>PreplayEpisode</include>
 		<include>PreplayClip</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
-		<include>LeftSideMenuPreplay</include>
+		<include>LeftSideMenu</include>
 		<!--<include>TopBar</include>-->
 		<include>debugInfos</include>
 		<include>Grid</include>

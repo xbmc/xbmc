@@ -139,7 +139,7 @@
 						<visible>Control.IsVisible(53)</visible>
 						<!-- artist thumb -->
 						<control type="group">
-						<posx>81</posx>
+						<posx>155</posx>
 						<posy>62</posy>
 						<control type="image">
 							<posx>0</posx>
@@ -169,17 +169,17 @@
 					</control>
 						<!-- plot text -->
 						<control type="textbox">
-						<posx>95</posx>
+						<posx>169</posx>
 						<posy>420</posy>
-						<width>670</width>
+						<width>596</width>
 						<height>246</height>
 						<include>PlotFormat</include>
 						<label>$INFO[Container.Property(summary)]</label>
 					</control>
 						<control type="textbox">
-						<posx>95</posx>
+						<posx>169</posx>
 						<posy>420</posy>
-						<width>670</width>
+						<width>596</width>
 						<height>246</height>
 						<include>PlotFormat</include>
 						<include>NoPlotDefault</include>
@@ -190,10 +190,10 @@
 				<!-- Infos Left -->
 				<control type="group">
 					<posy>70</posy>
-					<posx>394</posx>
+					<posx>468</posx>
 					<!-- Title -->
 					<control type="label">
-						<width>370</width>
+						<width>296</width>
 						<height>40</height>
 						<label>$INFO[Container.SecondTitle]</label>
 						<font>Bold-36</font>
@@ -228,7 +228,7 @@
 						<orientation>horizontal</orientation>
 						<itemgap>10</itemgap>
 						<control type="label">
-							<width min="29" max="600">auto</width>
+							<width min="29" max="296">auto</width>
 							<height>20</height>
 							<label>$VAR[TopBarItemCountStrings]</label>
 							<font>Regular-18</font>
@@ -267,7 +267,7 @@
 					<onup>53</onup>
 					<ondown>53</ondown>
 					<onright>Container.NextViewMode</onright>
-					<onleft>1300</onleft>
+					<onleft>998</onleft>
 					<orientation>vertical</orientation>
 					<posx>850</posx>
 					<posy>60</posy>
@@ -307,7 +307,7 @@
 					</control>
 					<!-- artist thumb -->
 					<control type="group">
-						<posx>81</posx>
+						<posx>155</posx>
 						<posy>62</posy>
 						<control type="image">
 							<posx>0</posx>
@@ -339,17 +339,17 @@
 					</control>
 					<!-- plot text -->
 					<control type="textbox">
-						<posx>95</posx>
+						<posx>169</posx>
 						<posy>412</posy>
-						<width>670</width>
+						<width>596</width>
 						<height>246</height>
 						<include>PlotFormat</include>
 						<label>$INFO[Container.Property(summary)]</label>
 					</control>
 					<control type="textbox">
-						<posx>95</posx>
+						<posx>169</posx>
 						<posy>420</posy>
-						<width>670</width>
+						<width>596</width>
 						<height>246</height>
 						<include>PlotFormat</include>
 						<include>NoPlotDefault</include>
@@ -360,10 +360,10 @@
 				<control type="group">
 					<visible>Control.IsVisible(54)</visible>
 					<posy>70</posy>
-					<posx>394</posx>
+					<posx>468</posx>
 					<!-- Titles -->
 					<control type="label">
-						<width>370</width>
+						<width>296</width>
 						<height>40</height>
 						<label>$INFO[ListItem.Artist]</label>
 						<font>Bold-36</font>
@@ -372,7 +372,7 @@
 					</control>
 					<control type="label">
 						<posy>40</posy>
-						<width>370</width>
+						<width>296</width>
 						<height>40</height>
 						<label>$INFO[ListItem.Album]</label>
 						<font>Bold-36</font>
@@ -408,7 +408,7 @@
 						<orientation>horizontal</orientation>
 						<itemgap>10</itemgap>
 						<control type="label">
-							<width min="29" max="600">auto</width>
+							<width min="29" max="296">auto</width>
 							<height>20</height>
 							<label>$VAR[TopBarItemCountStrings]</label>
 							<font>Regular-18</font>
@@ -429,7 +429,7 @@
 					<height>650</height>
 					<scrolltime>200</scrolltime>
 					<pagecontrol>61</pagecontrol>
-					<onleft>1300</onleft>
+					<onleft>998</onleft>
 					<onright>Container.NextViewMode</onright>
 					<onup>54</onup>
 					<ondown>54</ondown>
