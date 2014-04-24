@@ -839,7 +839,6 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
 
     ClearFileItems();
     m_vecItems->ClearProperties();
-    m_vecItems->RemoveArt(PLEX_ART_THUMB);
 
     if (items.m_wasListingCancelled == false)
       CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", strDirectory.c_str());

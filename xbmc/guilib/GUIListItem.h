@@ -222,11 +222,6 @@ public:
 #endif
 
   int GetOverlayImageID() const { return m_overlayIcon; }
-
-  void SetArt(const std::string &type, int index, const std::string &url);
-  std::string GetArt(const std::string &type, int index) const;
-  bool HasArt(const std::string &type, int index) const;
-  void RemoveArt(const std::string &type);
   const PropertyMap& GetAllProperties() const { return m_mapProperties; }
   /* END PLEX */
 

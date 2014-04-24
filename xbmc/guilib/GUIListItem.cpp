@@ -468,37 +468,3 @@ void CGUIListItem::AppendProperties(const CGUIListItem &item)
   for (PropertyMap::const_iterator i = item.m_mapProperties.begin(); i != item.m_mapProperties.end(); ++i)
     SetProperty(i->first, i->second);
 }
-
-/* PLEX */
-bool CGUIListItem::HasArt(const string &type, int index) const
-{
-  return !GetArt(type, index).empty();
-}
-
-std::string CGUIListItem::GetArt(const string &type, int index) const
-{
-  if (index == 0)
-    return GetArt(type);
-
-  std::string typeNum = (boost::format("%s____%d") % type % index).str();
-  return GetArt(typeNum);
-}
-
-void CGUIListItem::SetArt(const string &type, int index, const string &url)
-{
-  if (index == 0)
-    SetArt(type, url);
-  else
-  {
-    std::string typeNum = (boost::format("%s____%d") % type % index).str();
-    SetArt(typeNum, url);
-  }
-}
-
-void CGUIListItem::RemoveArt(const string &type)
-{
-  if (HasArt(type))
-    m_art.erase(type);
-}
-
-/* END PLEX */

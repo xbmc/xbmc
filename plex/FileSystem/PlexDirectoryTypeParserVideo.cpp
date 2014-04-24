@@ -168,7 +168,6 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
 void
 CPlexDirectoryTypeParserVideo::ParseMediaNodes(CFileItem &item, XML_ELEMENT *element)
 {
-  int thumbIdx = 0;
   int mediaIndex = 0;
 
 #ifndef USE_RAPIDXML
@@ -205,10 +204,6 @@ CPlexDirectoryTypeParserVideo::ParseMediaNodes(CFileItem &item, XML_ELEMENT *ele
         item.SetProperty("unavailable", mediaItem->GetProperty("unavailable"));
 
       item.m_mediaItems.push_back(mediaItem);
-    }
-    else if (mediaItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_THUMB)
-    {
-      item.SetArt(PLEX_ART_THUMB, thumbIdx ++, mediaItem->GetPath());
     }
   }
 

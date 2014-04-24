@@ -509,11 +509,6 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   /* PLEX */
                                   { "type",             LISTITEM_TYPE },
                                   { "status",           LISTITEM_STATUS },
-                                  { "thumb0",           LISTITEM_THUMB0 },
-                                  { "thumb1",           LISTITEM_THUMB1 },
-                                  { "thumb2",           LISTITEM_THUMB2 },
-                                  { "thumb3",           LISTITEM_THUMB3 },
-                                  { "thumb4",           LISTITEM_THUMB4 },
                                   { "banner",           LISTITEM_BANNER },
                                   { "firstgenre",       LISTITEM_FIRST_GENRE },
                                   { "stardiffuse",      LISTITEM_STAR_DIFFUSE },
@@ -3405,8 +3400,7 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow, CStdString *fa
   }
   /* END PLEX */
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
-          info == LISTITEM_OVERLAY || info == LISTITEM_RATING || info == LISTITEM_STAR_RATING ||
-          (info >= LISTITEM_THUMB0 && info <= LISTITEM_THUMB4)) /* PLEX added thumbs */
+          info == LISTITEM_OVERLAY || info == LISTITEM_RATING || info == LISTITEM_STAR_RATING)
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
     if (window)
@@ -4930,13 +4924,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
   /* PLEX */
   case LISTITEM_BANNER:
       return item->GetArt(PLEX_ART_BANNER);
-  case LISTITEM_THUMB0:
-  case LISTITEM_THUMB1:
-  case LISTITEM_THUMB2:
-  case LISTITEM_THUMB3:
-  case LISTITEM_THUMB4:
-      return item->GetArt(PLEX_ART_THUMB, info-LISTITEM_THUMB0);
-  case LISTITEM_GRANDPARENT_THUMB:
+ case LISTITEM_GRANDPARENT_THUMB:
     return item->GetArt(PLEX_ART_TVSHOW_THUMB);
   /* END PLEX */
 
