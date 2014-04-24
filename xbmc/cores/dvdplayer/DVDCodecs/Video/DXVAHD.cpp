@@ -528,13 +528,6 @@ bool CProcessorHD::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFER
 {
   CSingleLock lock(m_section);
 
-  // buffering frames
-  frame -= m_VPCaps.FutureFrames * 2;
-  if (frame <= 0)
-  {
-  	return false;
-  }
-
   // restore processor if it was lost
   if(!m_pDXVAVP && !OpenProcessor())
   {
@@ -598,8 +591,8 @@ bool CProcessorHD::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFER
     {
       if (it->index < frame)
       {
-        // frames order should be { .., T-3, T-2, T-1 }
-        stream_data.ppPastSurfaces[m_VPCaps.PastFrames - (frame - it->index)/2] = it->pSurface;
+        // frames order should be { .., T-1, T-2, T-3 }
+        stream_data.ppPastSurfaces[(frame - it->index)/2 - 1] = it->pSurface;
         stream_data.PastFrames++;
       }
       else if (it->index == frame)
@@ -622,12 +615,6 @@ bool CProcessorHD::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFER
   {
     CLog::Log(LOGWARNING, __FUNCTION__" - uncomplete stream data, skipping frame.");
     return false;
-  }
-
-  // rewind uncomplete array
-  if (stream_data.PastFrames < m_VPCaps.PastFrames)
-  {
-    stream_data.ppPastSurfaces += (m_VPCaps.PastFrames - stream_data.PastFrames);
   }
 
   // Override the sample format when the processor doesn't need to deinterlace or when deinterlacing is forced and flags are missing.
@@ -684,12 +671,6 @@ bool CProcessorHD::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFER
   if(FAILED(hr))
   {
     CLog::Log(LOGERROR, __FUNCTION__" - failed executing VideoProcessBltHD with error %x", hr);
-  }
-
-  // rewind back before delete
-  if (stream_data.PastFrames < m_VPCaps.PastFrames)
-  {
-    stream_data.ppPastSurfaces -= (m_VPCaps.PastFrames - stream_data.PastFrames);
   }
 
   delete [] stream_data.ppPastSurfaces;

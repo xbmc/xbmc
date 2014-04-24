@@ -258,7 +258,9 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     m_format = format;
 
     int processor = m_pRenderer->GetProcessorSize();
-    if(processor)
+    if(processor > buffers)                          /* DXVA-HD returns processor size 6 */
+      m_QueueSize = 3;                               /* we need queue size of 3 to get future frames in the processor */
+    else if(processor)
       m_QueueSize = buffers - processor + 1;         /* respect maximum refs */
     else
       m_QueueSize = m_pRenderer->GetMaxBufferSize(); /* no refs to data */
