@@ -10,14 +10,14 @@
 		<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 	</include>
 	<include name="ListItemFullInfoThumbCard">
-	<control type="image">
-		<posy>245</posy>
-		<posx>20</posx>
-		<width>390</width>
-		<height>30</height>
-		<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
-		<include>Black</include>
-	</control>
+		<control type="image">
+			<posy>245</posy>
+			<posx>20</posx>
+			<width>390</width>
+			<height>30</height>
+			<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
+			<include>Black</include>
+		</control>
 	</include>
 	<variable name="ListItemFullInfoTitle">
 		<value condition="ListItem.Type(episode) + !Container.Content(episodes) + !Container.Content(channel)">$INFO[ListItem.TVShowTitle]</value>
@@ -47,7 +47,7 @@
 		<value condition="Container.Content(songs) | [Container.Content(channel) + Skin.String(SectionType,music)]">$INFO[ListItem.Label]$INFO[ListItem.DurationStr, [COLOR=orange]&#xB7;[/COLOR] ]</value>
 	</variable>
 	<variable name="ListItemFullInfoThirdTitle">
-	    <value condition="Window.IsActive(mysharedcontent)">$INFO[ListItem.Property(ServerName)]</value>
+		<value condition="Window.IsActive(mysharedcontent)">$INFO[ListItem.Property(ServerName)]</value>
 		<value condition="ListItem.Type(episode) + !Container.Content(episodes) + !Container.Content(channel)">Season $INFO[ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]$INFO[ListItem.Date, [COLOR=orange]&#xB7;[/COLOR] ]</value>
 		<value condition="ListItem.Type(episode) + Container.Content(episodes)">$INFO[ListItem.DurationStr]$INFO[ListItem.Date, [COLOR=orange]&#xB7;[/COLOR] ]</value>
 		<value condition="ListItem.Type(episode) + [Container.Content(episodes) | Container.Content(channel)]">$INFO[ListItem.Date]</value>
@@ -93,7 +93,7 @@
 				<wrapmultiline>false</wrapmultiline>
 				<shadowcolor>ff222222</shadowcolor>
 				<visible>Container.Content(seasons)</visible>
-			</control>			
+			</control>
 			<control type="label">
 				<width min="0" max="20">auto</width>
 				<height>20</height>
@@ -182,9 +182,9 @@
 	<!-- Card -->
 	<include name="ListItemFullInfo">
 		<control type="group">
-		<visible>Control.IsVisible(58)</visible>
-		<include>rightSideSlide</include>
-		<include>ListItemFullInfoLeftSlide</include>
+			<visible>Control.IsVisible(58)</visible>
+			<include>rightSideSlide</include>
+			<include>ListItemFullInfoLeftSlide</include>
 			<control type="group" id="999">
 				<posx>74</posx>
 				<posy>0</posy>
@@ -249,15 +249,15 @@
 								<visible>!IsEmpty(ListItem.Property(Fanart_Image)) + !Container.Content(homemovies) + !Container.Content(photos) + !Container.Content(artists) | [Container.Content(channel) + !ListItem.Type(photo)] + [Container.Content(channel) + !ListItem.Type(clip) + !ListItem.Type(episode)]</visible>
 							</control>
 							<control type="image">
-									<posy>30</posy>
-									<posx>20</posx>
-									<width>390</width>
-									<height>215</height>
-									<fadetime>300</fadetime>
-									<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-									<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
-									<visible>IsEmpty(ListItem.Property(Fanart_Image)) | Container.Content(homemovies) | Container.Content(photos) | Container.Content(artists) | [Container.Content(channel) + ListItem.Type(photo)] | [Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
-								</control>
+								<posy>30</posy>
+								<posx>20</posx>
+								<width>390</width>
+								<height>215</height>
+								<fadetime>300</fadetime>
+								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+								<visible>IsEmpty(ListItem.Property(Fanart_Image)) | Container.Content(homemovies) | Container.Content(photos) | Container.Content(artists) | [Container.Content(channel) + ListItem.Type(photo)] | [Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
+							</control>
 							<include>ListItemFullInfoThumbCardUnwatchedOverlay</include>
 						</control>
 					</control>
@@ -347,7 +347,7 @@
 							<colordiffuse>FF999999</colordiffuse>
 							<visible>Container.Content(channels) + ListItem.Type(photos)</visible>
 						</control>
-						<control type="textbox"id="111">
+						<control type="textbox" id="111">
 							<posy>115</posy>
 							<width>315</width>
 							<height>280</height>
@@ -407,7 +407,7 @@
 				</control>
 			</control>
 		</control>
-	</include>	
+	</include>
 	<!-- HomeListItemFullInfo -->
 	<include name="ShowHomeFullInfo">
 		<visible>[Control.HasFocus(11001) + Control.IsVisible(11000)] | [Control.HasFocus(11003) + Control.IsVisible(11004)] | [Control.HasFocus(11000) + Control.IsVisible(11001)] | [Control.HasFocus(11004) + Control.IsVisible(11003)] | [Control.HasFocus(11000) + !Control.IsVisible(11001) + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode)]] | [Control.HasFocus(11001) + !Control.IsVisible(11000)] | [Control.HasFocus(11003) + !Control.IsVisible(11004)] | [Control.HasFocus(11004) + !Control.IsVisible(11003)]</visible>
@@ -425,14 +425,14 @@
 		<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 	</include>
 	<include name="HomeListItemFullInfoThumbCard">
-	<control type="image">
-		<posy>245</posy>
-		<posx>20</posx>
-		<width>390</width>
-		<height>30</height>
-		<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
-		<include>Black</include>
-	</control>
+		<control type="image">
+			<posy>245</posy>
+			<posx>20</posx>
+			<width>390</width>
+			<height>30</height>
+			<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
+			<include>Black</include>
+		</control>
 	</include>
 	<variable name="HomeListItemFullInfoTitle">
 		<!-- on deck -->

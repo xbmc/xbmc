@@ -212,7 +212,7 @@
 					<control type="label">
 						<include>MovieTVPosterTitle</include>
 					</control>
-					<include>MovieTVPosterUnwatchedOverlay</include>					
+					<include>MovieTVPosterUnwatchedOverlay</include>
 				</itemlayout>
 				<focusedlayout width="144" height="220">
 					<include>MovieTVPoster</include>
@@ -283,17 +283,17 @@
 		<shadowcolor>ff222222</shadowcolor>
 	</include>
 	<include name="EpisodeSecondTitleFiltered">
-	<control type="label">
-		<posy>145</posy>
-		<posx>20</posx>
-		<width>159</width>
-		<height>20</height>
-		<align>left</align>
-		<aligny>center</aligny>
-		<label>$INFO[ListItem.Label]</label>
-		<font>Regular-14</font>
-		<shadowcolor>ff222222</shadowcolor>
-	</control>
+		<control type="label">
+			<posy>145</posy>
+			<posx>20</posx>
+			<width>159</width>
+			<height>20</height>
+			<align>left</align>
+			<aligny>center</aligny>
+			<label>$INFO[ListItem.Label]</label>
+			<font>Regular-14</font>
+			<shadowcolor>ff222222</shadowcolor>
+		</control>
 	</include>
 	<include name="EpisodeDateFiltered">
 		<control type="label">

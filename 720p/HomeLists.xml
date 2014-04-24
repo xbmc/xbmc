@@ -1022,12 +1022,12 @@
 							<control type="group">
 								<posy>0</posy>
 								<visible>Control.IsVisible(11007)</visible>
-							<control type="group">
-								<include>ListItemSquareCard</include>
-								<include>ListItemSquare</include>
-								<include>ListItemSquareTitleArtist</include>
-								<include>ListItemSquareTitle</include>
-							</control>
+								<control type="group">
+									<include>ListItemSquareCard</include>
+									<include>ListItemSquare</include>
+									<include>ListItemSquareTitleArtist</include>
+									<include>ListItemSquareTitle</include>
+								</control>
 							</control>
 							<!-- music when only this list is visible -->
 							<control type="group">
@@ -1044,13 +1044,13 @@
 							<control type="group">
 								<posy>0</posy>
 								<visible>Control.IsVisible(11007)</visible>
-							<control type="group">
-								<include>ListItemSquareCard</include>
-								<include>ListItemSquare</include>
-								<include>ListItemSquareTitleArtist</include>
-								<include>ListItemSquareTitle</include>
-								<include>ListItemSquareSelectedBorder</include>
-							</control>
+								<control type="group">
+									<include>ListItemSquareCard</include>
+									<include>ListItemSquare</include>
+									<include>ListItemSquareTitleArtist</include>
+									<include>ListItemSquareTitle</include>
+									<include>ListItemSquareSelectedBorder</include>
+								</control>
 							</control>
 							<!-- music when only this list is visible -->
 							<control type="group">

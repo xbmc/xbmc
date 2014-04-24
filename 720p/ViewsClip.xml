@@ -90,14 +90,14 @@
 			<aspectratio align="right" aligny="center">keep</aspectratio>
 			<visible>IsEmpty(ListItem.Art(sourceIcon))</visible>
 		</control>
-	<control type="image">
-		<posy>160</posy>
-		<posx>19</posx>
-		<width>38</width>
-		<height>38</height>
-		<texture>$INFO[ListItem.Art(sourceIcon)]</texture>
-		<aspectratio align="right" aligny="center">keep</aspectratio>
-	</control>
+		<control type="image">
+			<posy>160</posy>
+			<posx>19</posx>
+			<width>38</width>
+			<height>38</height>
+			<texture>$INFO[ListItem.Art(sourceIcon)]</texture>
+			<aspectratio align="right" aligny="center">keep</aspectratio>
+		</control>
 	</include>
 	<include name="ClipThumbUnwatchedOverlay">
 		<control type="image">
@@ -134,7 +134,7 @@
 					<include>ClipSourceIcon</include>
 					<control type="label">
 						<include>ClipTitle</include>
-					</control>	
+					</control>
 					<include>ClipSecondTitle</include>
 					<include>ClipThumbUnwatchedOverlay</include>
 				</itemlayout>
@@ -153,7 +153,7 @@
 					<control type="label">
 						<include>ClipTitle</include>
 						<textcolor>orangeLight</textcolor>
-					</control>	
+					</control>
 					<include>ClipSecondTitle</include>
 					<include>ClipThumbSelectedBorder</include>
 					<include>ClipThumbUnwatchedOverlay</include>

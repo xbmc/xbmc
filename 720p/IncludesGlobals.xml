@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <includes>
+	<!-- basic shapes etc -->
 	<include name="Base">
 		<texture border="5">base.png</texture>
 	</include>
@@ -112,6 +113,23 @@
 			<texture background="true">grid.png</texture>
 			<visible>Skin.HasSetting(showgrid)</visible>
 		</control>
+	</include>
+	<!-- fonts -->
+	<include name="White1">
+		<textcolor>white</textcolor>
+		<shadowcolor>FF444444</shadowcolor>
+	</include>
+	<include name="WhiteShadow">
+		<textcolor>white</textcolor>
+		<shadowcolor>FF444444</shadowcolor>
+	</include>
+	<include name="White2">
+		<textcolor>FFefedeb</textcolor>
+		<shadowcolor>FF444444</shadowcolor>
+	</include>
+	<include name="Grey1">
+		<textcolor>FF999999</textcolor>
+		<shadowcolor>FF444444</shadowcolor>
 	</include>
 	<!-- MediaFlags -->
 	<include name="MediaFlags">
@@ -233,7 +251,7 @@
 		<value condition="Container.Content(episode)">$LOCALIZE[31114]</value>
 		<value condition="Container.Content(channels)">$LOCALIZE[32107]</value>
 		<value condition="Container.Content(clip) | Container.Content(homemovies)">$LOCALIZE[31144]</value>
-		<value condition="Window.IsActive(mysharedcontent)">$LOCALIZE[32108]</value>		
+		<value condition="Window.IsActive(mysharedcontent)">$LOCALIZE[32108]</value>
 		<value>Item</value>
 	</variable>
 	<include name="TopBar">
@@ -358,7 +376,6 @@
 					<label>$INFO[ListItem.SortLetter]</label>
 				</control>
 			</control>
-			
 		</control>
 	</include>
 	<include name="UnavailableIndicator">

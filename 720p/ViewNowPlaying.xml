@@ -464,7 +464,7 @@
 						<height>80</height>
 						<texture diffuse="mask-square-big.png">$INFO[MusicPlayer.Cover]</texture>
 						<aspectratio scalediffuse="false">scale</aspectratio>
-					</control>					
+					</control>
 				</control>
 				<control type="group">
 					<posx>90</posx>
@@ -479,7 +479,7 @@
 						<height>80</height>
 						<texture diffuse="mask-square.png">$INFO[MusicPlayer.Offset(1).Cover]</texture>
 						<aspectratio scalediffuse="false">scale</aspectratio>
-					</control>					
+					</control>
 				</control>
 			</control>
 			<!-- video posters -->
@@ -498,7 +498,7 @@
 						<height>80</height>
 						<texture background="true" diffuse="mask-poster-middle.png">$INFO[Player.Art(poster)]</texture>
 						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-					</control>					
+					</control>
 				</control>
 				<control type="group">
 					<posx>90</posx>
@@ -508,7 +508,7 @@
 						<height>80</height>
 						<texture background="true" diffuse="mask-poster-middle.png">$INFO[Player.Offset(1).Art(poster)]</texture>
 						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-					</control>					
+					</control>
 				</control>
 			</control>
 			<!-- current video PiP -->
