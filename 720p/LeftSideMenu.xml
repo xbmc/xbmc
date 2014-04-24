@@ -70,7 +70,7 @@
 				<aspectratio>scale</aspectratio>
 				<texture flipx="true">left-menu-indicator-arrow.png</texture>
 				<animation effect="rotate" end="-180" center="36,689" time="500" condition="ControlGroup(1300).HasFocus">Conditional</animation>
-				<visible>!Container.content(movie) + !Container.content(episode) + !Container.content(clip) + !Container.content(channel)</visible>
+				<visible>[!Container.Content(albums) | [Container.Content(albums) + !IsEmpty(Container.Property(primaryFilterActivated)]] + !Container.Content(songs) + !Container.Content(seasons) + [!Container.Content(episodes) | [Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated) + IsEmpty(Container.Property(PlexPreplay)]] + ![Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
 			</control>
 		</control>
 	</include>
