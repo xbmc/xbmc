@@ -788,7 +788,7 @@ string PlexUtils::GetCompositeImageUrl(const CFileItem &item, const CStdString &
   CStdStringArray argList = StringUtils::SplitString(args, ";", 0);
   if (argList.size() > 0)
   {
-    BOOST_FOREACH(CStdString arg, argList)
+    BOOST_FOREACH(const CStdString& arg, argList)
     {
       CStdStringArray kv = StringUtils::SplitString(arg, "=", 2);
       if (kv.size() == 2)
