@@ -18,7 +18,7 @@
 		<!--<include>TopBar</include>-->
 		<include>debugInfos</include>
 		<include>Grid</include>
-		<include>CurrentlyPlaying</include>
+		<include>CurrentlyPlaying_</include>
 		<include>WindowFade</include>
 	</controls>
 </window>
