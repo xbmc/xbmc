@@ -94,38 +94,5 @@ CMyPlexManager::EMyPlexError CMyPlexScanner::DoScan()
 
   g_plexApplication.serverManager->UpdateFromConnectionType(serverList, CPlexConnection::CONNECTION_MYPLEX);
 
-  /* now we need to store away the thumbnails */
-  CURL sectionsURL = myplex->BuildPlexURL("pms/system/library/sections");
-
-  CFileItemList sectionList;
-  if (!dir.GetDirectory(sectionsURL.Get(), sectionList))
-  {
-    return CMyPlexManager::ERROR_PARSE;
-  }
-
-  CMyPlexSectionMap sectionMap;
-
-  for (int i = 0; i < sectionList.Size(); i ++)
-  {
-    CFileItemPtr section = sectionList.Get(i);
-    CStdString serverUUID = section->GetProperty("machineIdentifier").asString();
-
-#if 0
-    CLog::Log(LOGDEBUG, "CMyPlexScanner::DoScan found section %s for server %s", section->GetProperty("path").asString().c_str(), serverUUID.c_str());
-#endif
-
-    if (sectionMap.find(serverUUID) != sectionMap.end())
-    {
-      sectionMap[serverUUID]->Add(section);
-    }
-    else
-    {
-      sectionMap[serverUUID] = CFileItemListPtr(new CFileItemList);
-      sectionMap[serverUUID]->Add(section);
-    }
-  }
-
-  g_plexApplication.myPlexManager->SetSectionMap(sectionMap);
-
   return CMyPlexManager::ERROR_NOERROR;
 }

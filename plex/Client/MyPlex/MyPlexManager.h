@@ -11,8 +11,6 @@
 
 #include "FileItem.h"
 
-typedef std::map<CStdString, CFileItemListPtr> CMyPlexSectionMap;
-
 class CMyPlexManager : public CThread
 {
   public:
@@ -46,9 +44,6 @@ class CMyPlexManager : public CThread
     void Logout();
     void Refresh() { m_state = STATE_REFRESH; Poke(); }
     void Rescan() { m_state = STATE_LOGGEDIN; Poke(); }
-
-    void SetSectionMap(const CMyPlexSectionMap &map) { m_sectionMap = map; }
-    CMyPlexSectionMap GetSectionMap() const { return m_sectionMap; }
 
     const CMyPlexUserInfo& GetCurrentUserInfo() const { return m_currentUserInfo; }
     const CMyPlexPinInfo& GetCurrentPinInfo() const { return m_currentPinInfo; }
@@ -91,8 +86,6 @@ class CMyPlexManager : public CThread
 
     CMyPlexUserInfo m_currentUserInfo;
     CMyPlexPinInfo m_currentPinInfo;
-
-    CMyPlexSectionMap m_sectionMap;
 
     CXBMCTinyXML m_doc;
 };

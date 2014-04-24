@@ -735,7 +735,6 @@ bool CPlexDirectory::IsFolder(const CFileItemPtr& item, XML_ELEMENT* element)
 bool CPlexDirectory::GetSharedServerDirectory(CFileItemList &items)
 {
   CFileItemListPtr sharedSections = g_plexApplication.dataLoader->GetAllSharedSections();
-  CMyPlexSectionMap sectionMap = g_plexApplication.myPlexManager->GetSectionMap();
 
   for (int i = 0 ; i < sharedSections->Size(); i++)
   {
@@ -757,19 +756,6 @@ bool CPlexDirectory::GetSharedServerDirectory(CFileItemList &items)
 
     if (sectionItem->HasProperty("composite"))
       item->SetProperty("composite", sectionItem->GetProperty("composite"));
-
-    if (sectionMap.find(server->GetUUID()) != sectionMap.end())
-    {
-      CFileItemListPtr sections = sectionMap[server->GetUUID()];
-      for (int y = 0; y < sections->Size(); y ++)
-      {
-        CFileItemPtr s = sections->Get(y);
-        s->SetProperty("sharedSection", true);
-        if (s->GetProperty("path").asString() ==
-            ("/library/sections/" + sectionItem->GetProperty("unprocessed_key").asString()))
-          item->SetArt(s->GetArt());
-      }
-    }
 
     items.Add(item);
   }
