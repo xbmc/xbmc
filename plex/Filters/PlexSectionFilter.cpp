@@ -146,7 +146,8 @@ CURL CPlexSectionFilter::addFiltersToUrl(const CURL &baseUrl)
 {
   CURL nu(baseUrl);
 
-  if (m_sectionType == PLEX_DIR_TYPE_ARTIST)
+  if (m_sectionType == PLEX_DIR_TYPE_ARTIST &&
+      (m_currentPrimaryFilter == "all" || m_currentPrimaryFilter == "albums"))
   {
     // this should really be refactored to a CPlexMusicSectionFilter instead
     PlexUtils::AppendPathToURL(nu, "all");
