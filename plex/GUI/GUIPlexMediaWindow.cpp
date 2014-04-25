@@ -947,6 +947,7 @@ void CGUIPlexMediaWindow::CheckPlexFilters(CFileItemList &list)
   if (filter)
   {
     list.SetProperty("hasAdvancedFilters", filter->hasAdvancedFilters() ? "yes" : "");
+    list.SetProperty("primaryFilterActivated", filter->secondaryFiltersActivated() ? "" : "yes");
     list.SetProperty("secondaryFilterActivated", filter->hasActiveSecondaryFilters() ? "yes" : "");
   }
 
@@ -969,11 +970,6 @@ void CGUIPlexMediaWindow::CheckPlexFilters(CFileItemList &list)
       CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::CheckPlexFilters setting preplay flag");
       list.SetProperty("PlexPreplay", "yes");
     }
-  }
-  else if (filter)
-  {
-    // We only enable primaryFilters at the toplevel. I.e. when startdirectory == newPath
-    list.SetProperty("primaryFilterActivated", "yes");
   }
 }
 
