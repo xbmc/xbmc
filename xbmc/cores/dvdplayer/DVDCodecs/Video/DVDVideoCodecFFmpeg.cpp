@@ -671,7 +671,6 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
 {
   int result;
-  AVBufferSinkParams *buffersink_params;
 
   if (m_pFilterGraph)
     FilterClose();
