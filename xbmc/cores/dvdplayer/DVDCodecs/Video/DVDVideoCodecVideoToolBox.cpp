@@ -33,8 +33,8 @@
 #include "osx/DarwinUtils.h"
 
 extern "C" {
-#include "lib/libswscale/swscale.h"
-#include "lib/libavformat/avformat.h"
+#include "libswscale/swscale.h"
+#include "libavformat/avformat.h"
 }
 
 #if defined(__cplusplus)
