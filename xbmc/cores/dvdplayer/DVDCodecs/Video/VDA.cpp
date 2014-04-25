@@ -22,21 +22,22 @@
 #include "osx/CocoaInterface.h"
 #include "DVDVideoCodec.h"
 #include "DVDCodecs/DVDCodecUtils.h"
+#include "utils/log.h"
 #include "VDA.h"
 
 extern "C" {
-  #include <libavcodec/vda.h>
+  #include "libavcodec/vda.h"
 }
 
 using namespace std;
 using namespace VDA;
 
 
-static void RelBufferS(AVCodecContext *avctx, AVFrame *pic)
-{ ((CDecoder*)((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetHardware())->RelBuffer(avctx, pic); }
+static void RelBufferS(void *opaque, uint8_t *data)
+{ ((CDecoder*)((CDVDVideoCodecFFmpeg*)opaque)->GetHardware())->RelBuffer(data); }
 
-static int GetBufferS(AVCodecContext *avctx, AVFrame *pic) 
-{  return ((CDecoder*)((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetHardware())->GetBuffer(avctx, pic); }
+static int GetBufferS(AVCodecContext *avctx, AVFrame *pic, int flags)
+{  return ((CDecoder*)((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetHardware())->GetBuffer(avctx, pic, flags); }
 
 CDecoder::CDecoder()
 : m_renderbuffers_count(0)
@@ -50,20 +51,25 @@ CDecoder::~CDecoder()
   free(m_ctx);
 }
 
-void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
+void CDecoder::RelBuffer(uint8_t *data)
 {
-  CVPixelBufferRef cv_buffer = (CVPixelBufferRef)pic->data[3];
+  CVPixelBufferRef cv_buffer = (CVPixelBufferRef)data;
   CVPixelBufferRelease(cv_buffer);
-
-  for (int i = 0; i < 4; i++)
-    pic->data[i] = NULL;
 }
 
-int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
+int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
 {
-  pic->type = FF_BUFFER_TYPE_USER;
-  pic->data[0] = (uint8_t *)1;
+  pic->data[3] = (uint8_t *)(uintptr_t)1;
   pic->reordered_opaque = avctx->reordered_opaque;
+
+  AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, RelBufferS, avctx->opaque, 0);
+  if (!buffer)
+  {
+    CLog::Log(LOGERROR, "VAAPI::%s - error creating buffer", __FUNCTION__);
+    return -1;
+  }
+  pic->buf[0] = buffer;
+
   return 0;
 }
 
@@ -234,9 +240,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
 
   avctx->pix_fmt         = fmt;
   avctx->hwaccel_context = m_ctx;
-  avctx->get_buffer      = GetBufferS;
-  avctx->release_buffer  = RelBufferS;
-
+  avctx->get_buffer2     = GetBufferS;
   return true;
 }
 

@@ -42,8 +42,8 @@ public:
   virtual CCriticalSection* Section() {  return NULL; }
   virtual unsigned GetAllowedReferences();
 
-  int   GetBuffer(AVCodecContext *avctx, AVFrame *pic);
-  void  RelBuffer(AVCodecContext *avctx, AVFrame *pic);
+  int   GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
+  void  RelBuffer(uint8_t *data);
 protected:
   bool                   Create(AVCodecContext* avctx);
   unsigned               m_renderbuffers_count;
