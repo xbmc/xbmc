@@ -24,10 +24,14 @@
 #include "system_gl.h"
 #include "DVDVideoCodecVDA.h"
 
+extern "C" {
 #include "libswscale/swscale.h"
+}
+
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
 #include "cores/dvdplayer/DVDCodecs/DVDCodecUtils.h"
+#include "cores/FFmpeg.h"
 #include "osx/CocoaInterface.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/BitstreamConverter.h"

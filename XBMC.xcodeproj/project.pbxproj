@@ -359,6 +359,9 @@
 		7CDAEA8D1001EBA70040B25F /* PltIconsData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAEA8B1001EBA70040B25F /* PltIconsData.cpp */; settings = {COMPILER_FLAGS = "-I$SRCROOT/lib/libUPnP/Platinum/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Platinum -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaConnect -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaRenderer -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaServer -I$SRCROOT/lib/libUPnP/Platinum/Source/Extras -I$SRCROOT/lib/libUPnP/Neptune/Source/System/Posix -I$SRCROOT/lib/libUPnP/Neptune/Source/Core"; }; };
 		7CEBD8A80F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */; };
 		7CEE2E5B13D6B71E000ABF2A /* TimeSmoother.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEE2E5913D6B71E000ABF2A /* TimeSmoother.cpp */; };
+		7CF0504B190A1D7200222135 /* FFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF05049190A1D7200222135 /* FFmpeg.cpp */; };
+		7CF0504C190A1D7200222135 /* FFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF05049190A1D7200222135 /* FFmpeg.cpp */; };
+		7CF0504D190A1D7200222135 /* FFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF05049190A1D7200222135 /* FFmpeg.cpp */; };
 		7CF1FB0C123B1AF000B2CBCB /* Variant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF1FB09123B1AF000B2CBCB /* Variant.cpp */; };
 		810C9F630D67BD2F0095F5DD /* PltMediaConnect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9F600D67BD2F0095F5DD /* PltMediaConnect.cpp */; settings = {COMPILER_FLAGS = "-I$SRCROOT/lib/libUPnP/Platinum/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Platinum -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaConnect -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaRenderer -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaServer -I$SRCROOT/lib/libUPnP/Platinum/Source/Extras -I$SRCROOT/lib/libUPnP/Neptune/Source/System/Posix -I$SRCROOT/lib/libUPnP/Neptune/Source/Core"; }; };
 		810C9FA90D67D1FB0095F5DD /* MythDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9FA50D67D1FB0095F5DD /* MythDirectory.cpp */; };
@@ -3876,6 +3879,8 @@
 		7CEBD8A70F33A0D800CAF6AD /* SpecialProtocolDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecialProtocolDirectory.h; sourceTree = "<group>"; };
 		7CEE2E5913D6B71E000ABF2A /* TimeSmoother.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeSmoother.cpp; sourceTree = "<group>"; };
 		7CEE2E5A13D6B71E000ABF2A /* TimeSmoother.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeSmoother.h; sourceTree = "<group>"; };
+		7CF05049190A1D7200222135 /* FFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FFmpeg.cpp; sourceTree = "<group>"; };
+		7CF0504A190A1D7200222135 /* FFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFmpeg.h; sourceTree = "<group>"; };
 		7CF1FB09123B1AF000B2CBCB /* Variant.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Variant.cpp; sourceTree = "<group>"; };
 		7CF1FB0A123B1AF000B2CBCB /* Variant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Variant.h; sourceTree = "<group>"; };
 		810C9F600D67BD2F0095F5DD /* PltMediaConnect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PltMediaConnect.cpp; path = MediaConnect/PltMediaConnect.cpp; sourceTree = "<group>"; };
@@ -7463,6 +7468,8 @@
 				E38E16580D25F9FA00618676 /* VideoRenderers */,
 				E38E14F60D25F9F900618676 /* DummyVideoPlayer.cpp */,
 				E38E14F70D25F9F900618676 /* DummyVideoPlayer.h */,
+				7CF05049190A1D7200222135 /* FFmpeg.cpp */,
+				7CF0504A190A1D7200222135 /* FFmpeg.h */,
 				E38E15B50D25F9FA00618676 /* IAudioCallback.h */,
 				E38E15B60D25F9FA00618676 /* IPlayer.h */,
 			);
@@ -10773,6 +10780,7 @@
 				7C8AE850189DE3CD00C33786 /* CoreAudioHardware.cpp in Sources */,
 				7C8AE851189DE3CD00C33786 /* CoreAudioStream.cpp in Sources */,
 				7C8AE854189DE47F00C33786 /* CoreAudioHelpers.cpp in Sources */,
+				7CF0504B190A1D7200222135 /* FFmpeg.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11821,6 +11829,7 @@
 				F5CC234818150277006B5E91 /* AESinkNULL.cpp in Sources */,
 				F5CC238918150768006B5E91 /* AESinkProfiler.cpp in Sources */,
 				DF374B2518AC2BA20076B514 /* CoreAudioHelpers.cpp in Sources */,
+				7CF0504D190A1D7200222135 /* FFmpeg.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12871,6 +12880,7 @@
 				F5CC234718150277006B5E91 /* AESinkNULL.cpp in Sources */,
 				F5CC238818150768006B5E91 /* AESinkProfiler.cpp in Sources */,
 				DF374B2418AC2BA20076B514 /* CoreAudioHelpers.cpp in Sources */,
+				7CF0504C190A1D7200222135 /* FFmpeg.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12967,14 +12977,6 @@
 					"$(SRCROOT)/lib/libsquish",
 					"$(SRCROOT)/lib/SlingboxLib",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
-					"\"$(SRCROOT)/lib/ffmpeg/libavcodec\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libavutil\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libavformat\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libavfilter\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libavdevice\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libswresample\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libpostproc\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libswscale\"",
 					"\"$(SRCROOT)/xbmc/interfaces/python\"",
 					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
 				);
@@ -13102,14 +13104,6 @@
 					"$(SRCROOT)/lib/libsquish",
 					"$(SRCROOT)/lib/SlingboxLib",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
-					"\"$(SRCROOT)/lib/ffmpeg/libavcodec\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libavutil\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libavformat\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libavfilter\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libavdevice\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libswresample\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libpostproc\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libswscale\"",
 					"\"$(SRCROOT)/xbmc/interfaces/python\"",
 					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
 				);
@@ -13252,7 +13246,6 @@
 					xbmc/cores/AudioEngine,
 					xbmc/cores/AudioEngine/Utils,
 					lib,
-					lib/ffmpeg,
 					addons/library.xbmc.addon,
 					$XBMC_DEPENDS/include,
 					$XBMC_DEPENDS/include/mysql,
@@ -13272,15 +13265,6 @@
 					"\"$(SRCROOT)/lib/libsquish\"",
 					"\"$(SRCROOT)/lib/SlingboxLib\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libavcodec\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libavutil\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libavformat\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libavfilter\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libavdevice\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libswresample\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libpostproc\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libswscale\"",
-					"\"$(SRCROOT)/xbmc/interfaces\"",
 					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
 					"\"$(SRCROOT)/xbmc/interfaces/python\"",
 				);
@@ -13368,7 +13352,6 @@
 					xbmc/cores/AudioEngine,
 					xbmc/cores/AudioEngine/Utils,
 					lib,
-					lib/ffmpeg,
 					addons/library.xbmc.addon,
 					$XBMC_DEPENDS/include,
 					$XBMC_DEPENDS/include/mysql,
@@ -13388,15 +13371,6 @@
 					"\"$(SRCROOT)/lib/libsquish\"",
 					"\"$(SRCROOT)/lib/SlingboxLib\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libavcodec\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libavutil\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libavformat\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libavfilter\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libavdevice\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libswresample\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libpostproc\"",
-					"\"$(SRCROOT)/lib/ffmpeg/libswscale\"",
-					"\"$(SRCROOT)/xbmc/interfaces\"",
 					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
 					"\"$(SRCROOT)/xbmc/interfaces/python\"",
 				);
@@ -13483,7 +13457,6 @@
 					xbmc/osx,
 					xbmc/cores/dvdplayer,
 					lib,
-					lib/ffmpeg,
 					addons/library.xbmc.addon,
 					$XBMC_DEPENDS/include,
 					$XBMC_DEPENDS/include/libcec,
@@ -13524,7 +13497,6 @@
 					xbmc/osx,
 					xbmc/cores/dvdplayer,
 					lib,
-					lib/ffmpeg,
 					addons/library.xbmc.addon,
 					$XBMC_DEPENDS/include,
 					$XBMC_DEPENDS/include/libcec,
