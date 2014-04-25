@@ -475,7 +475,7 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
       }
       else if (action.GetID() == ACTION_PLEX_TOGGLE_UNWATCHED_FILTER)
       {
-        if (sectionFilter->currentPrimaryFilter() == "all")
+        if (sectionFilter->secondaryFiltersActivated())
         {
           std::vector<CPlexSecondaryFilterPtr> secFilters = sectionFilter->getSecondaryFilters();
 
@@ -697,7 +697,7 @@ bool CGUIPlexMediaWindow::OnSelect(int iItem)
       item->GetPlexDirectoryType() == PLEX_DIR_TYPE_SHOW)
   {
     CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
-    if (filter && filter->currentPrimaryFilter() == "all")
+    if (filter && filter->secondaryFiltersActivated())
     {
       CPlexSecondaryFilterPtr unwatchedFilter = filter->getSecondaryFilterOfName("unwatchedLeaves");
       if (unwatchedFilter && unwatchedFilter->isSelected())
@@ -947,7 +947,6 @@ void CGUIPlexMediaWindow::CheckPlexFilters(CFileItemList &list)
   if (filter)
   {
     list.SetProperty("hasAdvancedFilters", filter->hasAdvancedFilters() ? "yes" : "");
-    list.SetProperty("primaryFilterActivated", filter->secondaryFiltersActivated() ? "" : "yes");
     list.SetProperty("secondaryFilterActivated", filter->hasActiveSecondaryFilters() ? "yes" : "");
   }
 
@@ -970,6 +969,11 @@ void CGUIPlexMediaWindow::CheckPlexFilters(CFileItemList &list)
       CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::CheckPlexFilters setting preplay flag");
       list.SetProperty("PlexPreplay", "yes");
     }
+  }
+  else if (filter)
+  {
+    // We only enable primaryFilters at the toplevel. I.e. when startdirectory == newPath
+    list.SetProperty("primaryFilterActivated", "yes");
   }
 }
 

@@ -27,7 +27,7 @@ bool CPlexSectionFilter::loadFilters()
   CLog::Log(LOGDEBUG, "CPlexSectionFilter::loadFilters loading filters from section %s", m_sectionUrl.Get().c_str());
 
   bool advancedFilters = g_plexApplication.dataLoader->SectionHasFilters(m_sectionUrl);
-  EPlexDirectoryType type = g_plexApplication.dataLoader->GetSectionType(m_sectionUrl);
+  m_sectionType = g_plexApplication.dataLoader->GetSectionType(m_sectionUrl);
 
   /* get primary filters */
   CURL fURL(m_sectionUrl);
@@ -38,10 +38,10 @@ bool CPlexSectionFilter::loadFilters()
       CFileItemPtr primaryFilter = list.Get(i);
 
       if (advancedFilters && primaryFilter->GetProperty("unprocessed_key").asString() == "folder" &&
-          type != PLEX_DIR_TYPE_HOME_MOVIES)
+          m_sectionType != PLEX_DIR_TYPE_HOME_MOVIES)
         continue;
 
-      if (advancedFilters && (type == PLEX_DIR_TYPE_MOVIE))
+      if (advancedFilters && (m_sectionType == PLEX_DIR_TYPE_MOVIE))
       {
         if (primaryFilter->GetProperty("unprocessed_key").asString() == "all" ||
             primaryFilter->GetProperty("unprocessed_key").asString() == "onDeck" ||
@@ -68,7 +68,7 @@ bool CPlexSectionFilter::loadFilters()
   list.Clear();
 
   /* and now the secondaries */
-  if (type != PLEX_DIR_TYPE_HOME_MOVIES)
+  if (m_sectionType != PLEX_DIR_TYPE_HOME_MOVIES)
   {
     PlexUtils::AppendPathToURL(fURL, "filters");
     if (dir.GetDirectory(fURL.Get(), list))
@@ -146,7 +146,20 @@ CURL CPlexSectionFilter::addFiltersToUrl(const CURL &baseUrl)
 {
   CURL nu(baseUrl);
 
-  PlexUtils::AppendPathToURL(nu, m_currentPrimaryFilter);
+  if (m_sectionType == PLEX_DIR_TYPE_ARTIST)
+  {
+    // this should really be refactored to a CPlexMusicSectionFilter instead
+    PlexUtils::AppendPathToURL(nu, "all");
+    if (m_currentPrimaryFilter == "all")
+      nu.SetOption("type", boost::lexical_cast<CStdString>(PLEX_MEDIA_FILTER_TYPE_ARTIST));
+    else if (m_currentPrimaryFilter == "albums")
+      nu.SetOption("type", boost::lexical_cast<CStdString>(PLEX_MEDIA_FILTER_TYPE_ALBUM));
+  }
+  else
+  {
+    PlexUtils::AppendPathToURL(nu, m_currentPrimaryFilter);
+  }
+
   nu.AddOptions(getFilterOptions());
   nu.SetOption("sort", m_currentSortOrder + ":" + (m_currentSortOrderAscending ? "asc" : "desc"));
 

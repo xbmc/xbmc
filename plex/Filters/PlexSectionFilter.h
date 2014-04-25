@@ -11,6 +11,7 @@
 class CPlexSectionFilter;
 typedef boost::shared_ptr<CPlexSectionFilter> CPlexSectionFilterPtr;
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 class CPlexSectionFilter
 {
   public:
@@ -105,6 +106,13 @@ class CPlexSectionFilter
 
     virtual bool secondaryFiltersActivated() const
     {
+      if (m_sectionType == PLEX_DIR_TYPE_ARTIST)
+      {
+        if (m_currentPrimaryFilter == "all" ||
+            m_currentPrimaryFilter == "albums")
+          return true;
+        return false;
+      }
       if (m_currentPrimaryFilter != "all")
         return false;
       return true;
@@ -115,6 +123,7 @@ class CPlexSectionFilter
     PlexStringMap m_primaryFilters;
     std::map<std::string, CPlexSecondaryFilterPtr> m_secondaryFilters;
     PlexStringMap m_sortOrders;
+    EPlexDirectoryType m_sectionType;
 
     std::string m_currentSortOrder;
     bool m_currentSortOrderAscending;
@@ -123,6 +132,7 @@ class CPlexSectionFilter
     std::vector<CPlexSecondaryFilterPtr> m_currentSecondaryFilters;
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 class CPlexMyPlexPlaylistFilter : public CPlexSectionFilter
 {
   public:

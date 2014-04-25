@@ -73,6 +73,30 @@ enum ePlexMediaState {
   PLEX_MEDIA_STATE_PAUSED
 };
 
+// This is used when we filter stuff in the media window
+// it's seperate because the numbers below actually map
+// to what the server expects. This should all be merged
+// with the enums above. The reason why it's separate here
+// is because of legacy reasons.
+enum ePlexMediaFilterTypes
+{
+  PLEX_MEDIA_FILTER_TYPE_MOVIE = 1,
+  PLEX_MEDIA_FILTER_TYPE_SHOW,
+  PLEX_MEDIA_FILTER_TYPE_SEASON,
+  PLEX_MEDIA_FILTER_TYPE_EPISODE,
+  PLEX_MEDIA_FILTER_TYPE_TRAILER,
+  PLEX_MEDIA_FILTER_TYPE_COMIC,
+  PLEX_MEDIA_FILTER_TYPE_PERSON,
+  PLEX_MEDIA_FILTER_TYPE_ARTIST,
+  PLEX_MEDIA_FILTER_TYPE_ALBUM,
+  PLEX_MEDIA_FILTER_TYPE_TRACK,
+  PLEX_MEDIA_FILTER_TYPE_PHOTOALBUM,
+  PLEX_MEDIA_FILTER_TYPE_PICTURE,
+  PLEX_MEDIA_FILTER_TYPE_PHOTO,
+  PLEX_MEDIA_FILTER_TYPE_CLIP,
+  PLEX_MEDIA_FILTER_TYPE_PLAYLISTITEM
+};
+
 
 // Windows.
 #define WINDOW_NOW_PLAYING                10050
