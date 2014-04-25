@@ -4470,9 +4470,11 @@ int CMusicDatabase::GetSongIDFromPath(const CStdString &filePath)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    CStdString strPath = URIUtils::GetDirectory(filePath);
+    CStdString strPath, strFileName;
+    URIUtils::Split(filePath, strPath, strFileName);
+    
     URIUtils::AddSlashAtEnd(strPath);
-    DWORD crc = ComputeCRC(filePath);
+    DWORD crc = ComputeCRC(strFileName);
 
     CStdString sql = PrepareSQL("select idSong from song join path on song.idPath = path.idPath where song.dwFileNameCRC='%ul'and path.strPath='%s'", crc, strPath.c_str());
     if (!m_pDS->query(sql.c_str())) return -1;
