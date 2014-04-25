@@ -613,7 +613,7 @@ bool CMusicDatabase::GetSong(int idSong, CSong& song)
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL=PrepareSQL("SELECT songview.*,songartistview.* FROM songview "
-                                 " JOIN songartistview ON songview.idSong = songartistview.idSong "
+                                 " LEFT JOIN songartistview ON songview.idSong = songartistview.idSong "
                                  " WHERE songview.idSong = %i", idSong);
 
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -851,9 +851,9 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
     {
       sql = PrepareSQL("SELECT albumview.*,albumartistview.*,songview.*,songartistview.*,albuminfosong.* "
                        "  FROM albumview "
-                       "  JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum "
+                       "  LEFT JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum "
                        "  JOIN songview ON albumview.idAlbum = songview.idAlbum "
-                       "  JOIN songartistview ON songview.idSong = songartistview.idSong "
+                       "  LEFT JOIN songartistview ON songview.idSong = songartistview.idSong "
                        "  LEFT JOIN albuminfosong ON albumview.idAlbum = albuminfosong.idAlbumInfo "
                        "  WHERE albumview.idAlbum = %ld "
                        "  ORDER BY albumartistview.iOrder, songview.iTrack, songartistview.iOrder", idAlbum);
@@ -862,7 +862,7 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
     {
       sql = PrepareSQL("SELECT albumview.*,albumartistview.* "
                        "  FROM albumview "
-                       "  JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum "
+                       "  LEFT JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum "
                        "  WHERE albumview.idAlbum = %ld "
                        "  ORDER BY albumartistview.iOrder", idAlbum);
     }
