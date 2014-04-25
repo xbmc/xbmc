@@ -90,7 +90,9 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir
 {
   CURL url(strPath);
 
-  if (!CAddonMgr::Get().GetAddon(url.GetHostName(), m_addon, ADDON_UNKNOWN) && 
+  // try the plugin type first, and if not found, try an unknown type
+  if (!CAddonMgr::Get().GetAddon(url.GetHostName(), m_addon, ADDON_PLUGIN) &&
+      !CAddonMgr::Get().GetAddon(url.GetHostName(), m_addon, ADDON_UNKNOWN) &&
       !CAddonInstaller::Get().PromptForInstall(url.GetHostName(), m_addon))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
