@@ -90,8 +90,6 @@ void CAlarmClock::Stop(const CStdString& strName, bool bSilent /* false */)
   if (iter == m_event.end())
     return;
 
-  SAlarmClockEvent& event = iter->second;
-
   CStdString strAlarmClock;
   if (StringUtils::EqualsNoCase(strName, "shutdowntimer"))
     strAlarmClock = g_localizeStrings.Get(20144);
