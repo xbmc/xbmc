@@ -131,6 +131,157 @@
 		<textcolor>FF999999</textcolor>
 		<shadowcolor>FF444444</shadowcolor>
 	</include>
+	<!-- POSTERS -->
+	<!-- Small size posters -->
+	<include name="MovieTVPosterSmall">
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>146</width>
+			<height>206</height>
+			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>120</width>
+			<height>180</height>
+			<texture background="true">default-poster-middle.png</texture>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>120</width>
+			<height>180</height>
+			<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Art(smallThumb)]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+	</include>
+	<include name="MovieTVPosterSmallSelectedBorder">
+		<control type="image">
+			<width>126</width>
+			<height>186</height>
+			<include>Border</include>
+		</control>
+	</include>
+	<include name="MovieTVPosterSmallTitle">
+		<posy>202</posy>
+		<posx>73</posx>
+		<width>120</width>
+		<height>20</height>
+		<align>center</align>
+		<aligny>center</aligny>
+		<label>$INFO[ListItem.Label]</label>
+		<font>Regular-17</font>
+		<shadowcolor>FF222222</shadowcolor>
+	</include>
+	<include name="MovieTVPosterSmallUnwatchedOverlay">
+		<control type="group">
+			<control type="image">
+				<posx>98</posx>
+				<posy>158</posy>
+				<width>34</width>
+				<height>34</height>
+				<info>ListItem.Overlay</info>
+			</control>
+			<control type="label">
+				<posy>161</posy>
+				<posx>114</posx>
+				<width>40</width>
+				<height>30</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
+				<font>Bold-14</font>
+				<shadowcolor>FF222222</shadowcolor>
+			</control>
+			<visible>[Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
+		</control>
+		<control type="group">
+			<control type="image">
+				<posx>106</posx>
+				<posy>166</posy>
+				<width>26</width>
+				<height>26</height>
+				<info>ListItem.Overlay</info>
+				<visible>[Container.Content(movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)]</visible>
+			</control>
+		</control>
+	</include>
+	<!-- Middle size posters -->
+	<include name="MovieTVPosterMiddle">
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>208</width>
+			<height>300</height>
+			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>185</width>
+			<height>274</height>
+			<texture background="true">default-poster-middle.png</texture>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>185</width>
+			<height>274</height>
+			<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Art(thumb)]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+	</include>
+	<include name="MovieTVPosterMiddleSelectedBorder">
+		<control type="image">
+			<width>192</width>
+			<height>281</height>
+			<include>Border</include>
+		</control>
+	</include>
+	<include name="MovieTVPosterMiddleTitle">
+		<posy>298</posy>
+		<posx>105</posx>
+		<width>180</width>
+		<height>30</height>
+		<align>center</align>
+		<aligny>center</aligny>
+		<label>$INFO[ListItem.Label]</label>
+		<font>Regular-17</font>
+		<shadowcolor>FF222222</shadowcolor>
+	</include>
+	<include name="MovieTVPosterMiddleUnwatchedOverlay">
+		<control type="group">
+			<control type="image">
+				<posx>157</posx>
+				<posy>246</posy>
+				<info>ListItem.Overlay</info>
+			</control>
+			<control type="label">
+				<posy>253</posy>
+				<posx>176</posx>
+				<width>40</width>
+				<height>30</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
+				<font>Bold-16</font>
+				<shadowcolor>FF222222</shadowcolor>
+			</control>
+			<visible>[Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
+		</control>
+		<control type="group">
+			<control type="image">
+				<posx>167</posx>
+				<posy>256</posy>
+				<width>30</width>
+				<height>30</height>
+				<info>ListItem.Overlay</info>
+				<visible>[Container.Content(movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)]</visible>
+			</control>
+		</control>
+	</include>
 	<!-- MediaFlags -->
 	<include name="MediaFlags">
 		<control type="group">
