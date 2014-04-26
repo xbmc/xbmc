@@ -26,7 +26,6 @@
 #endif
 
 #define PRE_SKIN_VERSION_9_10_COMPATIBILITY 1
-#define PRE_SKIN_VERSION_11_COMPATIBILITY 1
 
 /*****************
  * All platforms
