@@ -172,7 +172,8 @@ void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 
         // Ignore sdcards
         if (!StringUtils::StartsWith(device, "/dev/block/vold/") ||
-            mountStr.find("sdcard") != std::string::npos)
+            mountStr.find("sdcard") != std::string::npos ||
+            mountStr.find("secure/asec") != std::string::npos)
           accepted = false;
 
         if(accepted)
