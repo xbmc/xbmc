@@ -256,7 +256,6 @@ void CMusicDatabase::CreateViews()
               "        strTitle, "
               "        iTrack, iDuration, "
               "        song.iYear AS iYear, "
-              "        dwFileNameCRC, "
               "        strFileName, "
               "        strMusicBrainzTrackID, "
               "        iTimesPlayed, iStartOffset, iEndOffset, "
@@ -517,7 +516,6 @@ int CMusicDatabase::AddSong(const int idAlbum,
     CStdString strPath, strFileName;
     URIUtils::Split(strPathAndFileName, strPath, strFileName);
     int idPath = AddPath(strPath);
-    DWORD crc = ComputeCRC(strFileName);
 
     bool bHasKaraoke = false;
 #ifdef HAS_KARAOKE
@@ -529,9 +527,9 @@ int CMusicDatabase::AddSong(const int idAlbum,
                           idAlbum,
                           strMusicBrainzTrackID.c_str());
     else
-      strSQL = PrepareSQL("SELECT * FROM song WHERE idAlbum=%i AND dwFileNameCRC='%ul' AND strTitle='%s' AND strMusicBrainzTrackID IS NULL",
+      strSQL = PrepareSQL("SELECT * FROM song WHERE idAlbum=%i AND strFileName='%s' AND strTitle='%s' AND strMusicBrainzTrackID IS NULL",
                           idAlbum,
-                          crc,
+                          strFileName.c_str(),
                           strTitle.c_str());
 
     if (!m_pDS->query(strSQL.c_str()))
@@ -540,14 +538,14 @@ int CMusicDatabase::AddSong(const int idAlbum,
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
-      strSQL=PrepareSQL("INSERT INTO song (idSong,idAlbum,idPath,strArtists,strGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,strMusicBrainzTrackID,iTimesPlayed,iStartOffset,iEndOffset,lastplayed,rating,comment) values (NULL, %i, %i, '%s', '%s', '%s', %i, %i, %i, '%ul', '%s'",
+      strSQL=PrepareSQL("INSERT INTO song (idSong,idAlbum,idPath,strArtists,strGenres,strTitle,iTrack,iDuration,iYear,strFileName,strMusicBrainzTrackID,iTimesPlayed,iStartOffset,iEndOffset,lastplayed,rating,comment) values (NULL, %i, %i, '%s', '%s', '%s', %i, %i, %i, '%s'",
                     idAlbum,
                     idPath,
                     artistString.c_str(),
                     StringUtils::Join(genres, g_advancedSettings.m_musicItemSeparator).c_str(),
                     strTitle.c_str(),
                     iTrack, iDuration, iYear,
-                    crc, strFileName.c_str());
+                    strFileName.c_str());
 
       if (strMusicBrainzTrackID.empty())
         strSQL += PrepareSQL(",NULL");
@@ -592,7 +590,7 @@ int CMusicDatabase::AddSong(const int idAlbum,
 
     // Add karaoke information (if any)
     if (bHasKaraoke)
-      AddKaraokeData(idSong, iKaraokeNumber, crc);
+      AddKaraokeData(idSong, iKaraokeNumber, ComputeCRC(strFileName));
 
     AnnounceUpdate(MediaTypeSong, idSong);
   }
@@ -688,15 +686,14 @@ int CMusicDatabase::UpdateSong(int idSong,
   CStdString strPath, strFileName;
   URIUtils::Split(strPathAndFileName, strPath, strFileName);
   int idPath = AddPath(strPath);
-  DWORD crc = ComputeCRC(strFileName);
 
-  strSQL = PrepareSQL("UPDATE song SET idPath = %i, strArtists = '%s', strGenres = '%s', strTitle = '%s', iTrack = %i, iDuration = %i, iYear = %i, dwFileNameCRC = '%ul', strFileName = '%s'",
+  strSQL = PrepareSQL("UPDATE song SET idPath = %i, strArtists = '%s', strGenres = '%s', strTitle = '%s', iTrack = %i, iDuration = %i, iYear = %i, strFileName = '%s'",
                       idPath,
                       artistString.c_str(),
                       StringUtils::Join(genres, g_advancedSettings.m_musicItemSeparator).c_str(),
                       strTitle.c_str(),
                       iTrack, iDuration, iYear,
-                      crc, strFileName.c_str());
+                      strFileName.c_str());
   if (strMusicBrainzTrackID.empty())
     strSQL += PrepareSQL(", strMusicBrainzTrackID = NULL");
   else
@@ -1712,11 +1709,10 @@ bool CMusicDatabase::GetSongByFileName(const CStdString& strFileNameAndPath, CSo
   CStdString strPath, strFileName;
   URIUtils::Split(strFileNameAndPath, strPath, strFileName);
   URIUtils::AddSlashAtEnd(strPath);
-  DWORD crc = ComputeCRC(strFileName);
 
   CStdString strSQL = PrepareSQL("select idSong from songview "
-                                 "where dwFileNameCRC='%ul' and strPath='%s'",
-                                 crc, strPath.c_str());
+                                 "where strFileName='%s' and strPath='%s'",
+                                 strFileName.c_str(), strPath.c_str());
   if (startOffset)
     strSQL += PrepareSQL(" AND iStartOffset=%i", startOffset);
 
@@ -3919,7 +3915,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 46;
+  return 47;
 }
 
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, vector<pair<int,int> > &songIDs)
@@ -4473,9 +4469,8 @@ int CMusicDatabase::GetSongIDFromPath(const CStdString &filePath)
     CStdString strPath, strFileName;
     URIUtils::Split(filePath, strPath, strFileName);
     URIUtils::AddSlashAtEnd(strPath);
-    DWORD crc = ComputeCRC(strFileName);
 
-    CStdString sql = PrepareSQL("select idSong from song join path on song.idPath = path.idPath where song.dwFileNameCRC='%ul'and path.strPath='%s'", crc, strPath.c_str());
+    CStdString sql = PrepareSQL("select idSong from song join path on song.idPath = path.idPath where song.strFileName='%s' and path.strPath='%s'", strFileName.c_str(), strPath.c_str());
     if (!m_pDS->query(sql.c_str())) return -1;
 
     if (m_pDS->num_rows() == 0)

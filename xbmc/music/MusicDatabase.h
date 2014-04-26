@@ -515,7 +515,6 @@ private:
     song_iTrack,
     song_iDuration,
     song_iYear,
-    song_dwFileNameCRC,
     song_strFileName,
     song_strMusicBrainzTrackID,
     song_iTimesPlayed,
