@@ -25,8 +25,6 @@
 #define DECLARE_UNUSED(a,b) a __attribute__((unused)) b;
 #endif
 
-#define PRE_SKIN_VERSION_9_10_COMPATIBILITY 1
-
 /*****************
  * All platforms
  *****************/
