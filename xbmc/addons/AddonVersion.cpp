@@ -111,7 +111,7 @@ namespace ADDON
 
   bool AddonVersion::empty() const
   {
-    return m_originalVersion.empty() || m_originalVersion == "0.0.0";
+    return mEpoch == 0 && mUpstream == "0.0.0" && mRevision.empty();
   }
 
   CStdString AddonVersion::Print() const
