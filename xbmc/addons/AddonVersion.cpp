@@ -29,9 +29,8 @@
 namespace ADDON
 {
   AddonVersion::AddonVersion(const std::string& version)
-  : m_originalVersion(version.empty() ? "0.0.0" : version), mEpoch(0)
+  : mEpoch(0), mUpstream(version.empty() ? "0.0.0" : version)
   {
-    mUpstream = m_originalVersion;
     size_t pos = mUpstream.find(':');
     if (pos != std::string::npos)
     {

@@ -56,7 +56,6 @@ namespace ADDON
                               const CStdString& filename);
 
   protected:
-    std::string m_originalVersion;
     int mEpoch;
     std::string mUpstream;
     std::string mRevision;
