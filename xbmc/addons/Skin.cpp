@@ -37,8 +37,6 @@
 using namespace std;
 using namespace XFILE;
 
-#define SKIN_MIN_VERSION 2.1f
-
 boost::shared_ptr<ADDON::CSkinInfo> g_SkinInfo;
 
 namespace ADDON
@@ -182,11 +180,6 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION_INFO *re
 bool CSkinInfo::HasSkinFile(const CStdString &strFile) const
 {
   return CFile::Exists(GetSkinPath(strFile));
-}
-
-double CSkinInfo::GetMinVersion()
-{
-  return SKIN_MIN_VERSION;
 }
 
 void CSkinInfo::LoadIncludes()
