@@ -2724,7 +2724,7 @@ void COMXPlayer::Pause()
     return;
   lock.Leave();
 
-  if(m_playSpeed != DVD_PLAYSPEED_PAUSE && (m_caching == CACHESTATE_FULL || m_caching == CACHESTATE_PVR))
+  if(m_playSpeed != DVD_PLAYSPEED_PAUSE && IsCaching())
   {
     SetCaching(CACHESTATE_DONE);
     return;
@@ -2745,7 +2745,7 @@ void COMXPlayer::Pause()
 
 bool COMXPlayer::IsPaused() const
 {
-  return m_playSpeed == DVD_PLAYSPEED_PAUSE || m_caching == CACHESTATE_FULL || m_caching == CACHESTATE_PVR;
+  return m_playSpeed == DVD_PLAYSPEED_PAUSE || IsCaching();
 }
 
 bool COMXPlayer::HasVideo() const
