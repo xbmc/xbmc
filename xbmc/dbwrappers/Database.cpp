@@ -20,7 +20,6 @@
 
 #include "Database.h"
 #include "settings/AdvancedSettings.h"
-#include "utils/Crc32.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/File.h"
 #include "profiles/ProfilesManager.h"
@@ -127,13 +126,6 @@ void CDatabase::Split(const CStdString& strFileNameAndPath, CStdString& strPath,
   }
   strPath = strFileNameAndPath.substr(0, i);
   strFileName = strFileNameAndPath.substr(i);
-}
-
-uint32_t CDatabase::ComputeCRC(const CStdString &text)
-{
-  Crc32 crc;
-  crc.ComputeFromLowerCase(text);
-  return crc;
 }
 
 CStdString CDatabase::PrepareSQL(CStdString strStmt, ...) const
