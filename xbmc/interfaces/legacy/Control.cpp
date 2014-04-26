@@ -857,15 +857,15 @@ namespace XBMCAddon
       if(iControlId == 0)
         throw WindowException("Control has to be added to a window first");
 
-      iControlUp = up->iControlId;
-      iControlDown = down->iControlId;
-      iControlLeft = left->iControlId;
-      iControlRight = right->iControlId;
-
       {
         LOCKGUI;
         if (pGUIControl)
-          pGUIControl->SetNavigation(iControlUp,iControlDown,iControlLeft,iControlRight);
+        {
+          pGUIControl->SetNavigationAction(ACTION_MOVE_UP,    up->iControlId);
+          pGUIControl->SetNavigationAction(ACTION_MOVE_DOWN,  down->iControlId);
+          pGUIControl->SetNavigationAction(ACTION_MOVE_LEFT,  left->iControlId);
+          pGUIControl->SetNavigationAction(ACTION_MOVE_RIGHT, right->iControlId);
+        }
       }
     }
 
@@ -874,11 +874,10 @@ namespace XBMCAddon
       if(iControlId == 0)
         throw WindowException("Control has to be added to a window first");
 
-      iControlUp = control->iControlId;
       {
         LOCKGUI;
         if (pGUIControl) 
-          pGUIControl->SetNavigation(iControlUp,iControlDown,iControlLeft,iControlRight);
+          pGUIControl->SetNavigationAction(ACTION_MOVE_UP, control->iControlId);
       }
     }
 
@@ -887,11 +886,10 @@ namespace XBMCAddon
       if(iControlId == 0)
         throw WindowException("Control has to be added to a window first");
 
-      iControlDown = control->iControlId;
       {
         LOCKGUI;
-        if (pGUIControl) 
-          pGUIControl->SetNavigation(iControlUp,iControlDown,iControlLeft,iControlRight);
+        if (pGUIControl)
+          pGUIControl->SetNavigationAction(ACTION_MOVE_DOWN, control->iControlId);
       }
     }
 
@@ -900,11 +898,10 @@ namespace XBMCAddon
       if(iControlId == 0)
         throw WindowException("Control has to be added to a window first");
 
-      iControlLeft = control->iControlId;
       {
         LOCKGUI;
-        if (pGUIControl) 
-          pGUIControl->SetNavigation(iControlUp,iControlDown,iControlLeft,iControlRight);
+        if (pGUIControl)
+          pGUIControl->SetNavigationAction(ACTION_MOVE_LEFT, control->iControlId);
       }
     }
 
@@ -913,11 +910,10 @@ namespace XBMCAddon
       if(iControlId == 0)
         throw WindowException("Control has to be added to a window first");
 
-      iControlRight = control->iControlId;
       {
         LOCKGUI;
-        if (pGUIControl) 
-          pGUIControl->SetNavigation(iControlUp,iControlDown,iControlLeft,iControlRight);
+        if (pGUIControl)
+          pGUIControl->SetNavigationAction(ACTION_MOVE_RIGHT, control->iControlId);
       }
     }
 

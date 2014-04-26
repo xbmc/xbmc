@@ -457,21 +457,6 @@ CRect CGUIControl::CalcRenderRegion() const
   return CRect(tl.x, tl.y, br.x, br.y);
 }
 
-void CGUIControl::SetNavigation(int up, int down, int left, int right, int back)
-{
-  m_actions[ACTION_MOVE_UP].SetNavigation(up);
-  m_actions[ACTION_MOVE_DOWN].SetNavigation(down);
-  m_actions[ACTION_MOVE_LEFT].SetNavigation(left);
-  m_actions[ACTION_MOVE_RIGHT].SetNavigation(right);
-  m_actions[ACTION_NAV_BACK].SetNavigation(back);
-}
-
-void CGUIControl::SetTabNavigation(int next, int prev)
-{
-  m_actions[ACTION_NEXT_CONTROL].SetNavigation(next);
-  m_actions[ACTION_PREV_CONTROL].SetNavigation(prev);
-}
-
 void CGUIControl::SetNavigationActions(const CGUIAction &up, const CGUIAction &down,
                                        const CGUIAction &left, const CGUIAction &right,
                                        const CGUIAction &back, bool replace)

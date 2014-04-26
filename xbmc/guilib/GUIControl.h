@@ -179,8 +179,6 @@ public:
    */
   virtual CRect CalcRenderRegion() const;
 
-  virtual void SetNavigation(int up, int down, int left, int right, int back = 0);
-  virtual void SetTabNavigation(int next, int prev);
 
   /*! \brief Set actions to perform on navigation
    Navigations are set if replace is true or if there is no previously set action
