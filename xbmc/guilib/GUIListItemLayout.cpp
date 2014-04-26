@@ -191,7 +191,7 @@ void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, int context, bool focu
   m_height = std::max(1.0f, m_height);
 }
 
-//#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
+//#ifdef GUILIB_PYTHON_COMPATIBILITY
 void CGUIListItemLayout::CreateListControlLayouts(float width, float height, bool focused, const CLabelInfo &labelInfo, const CLabelInfo &labelInfo2, const CTextureInfo &texture, const CTextureInfo &textureFocus, float texHeight, float iconWidth, float iconHeight, const CStdString &nofocusCondition, const CStdString &focusCondition)
 {
   m_width = width;
