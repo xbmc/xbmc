@@ -367,7 +367,6 @@ protected:
   bool LoadSkin(const CStdString& skinID);
   bool LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
 
-  bool m_skinReloading; // if true we disallow LoadSkin until ReloadSkin is called
   bool m_skinReverting;
 
   bool m_loggingIn;
