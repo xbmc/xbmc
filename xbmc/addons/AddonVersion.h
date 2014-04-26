@@ -49,7 +49,6 @@ namespace ADDON
     AddonVersion& operator=(const AddonVersion& other);
     bool operator<(const AddonVersion& other) const;
     bool operator==(const AddonVersion& other) const;
-    CStdString Print() const;
     const char *c_str() const { return m_originalVersion.c_str(); };
     bool empty() const;
 

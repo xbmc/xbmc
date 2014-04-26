@@ -25,7 +25,6 @@
 
 #include "AddonVersion.h"
 #include "utils/StringUtils.h"
-#include "guilib/LocalizeStrings.h"
 
 namespace ADDON
 {
@@ -112,11 +111,6 @@ namespace ADDON
   bool AddonVersion::empty() const
   {
     return mEpoch == 0 && mUpstream == "0.0.0" && mRevision.empty();
-  }
-
-  CStdString AddonVersion::Print() const
-  {
-    return StringUtils::Format("%s %s", g_localizeStrings.Get(24051).c_str(), m_originalVersion.c_str());
   }
 
   bool AddonVersion::SplitFileName(CStdString& ID, CStdString& version,
