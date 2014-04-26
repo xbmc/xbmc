@@ -71,7 +71,7 @@ namespace XBMCAddon
         {
           throw AddonException("Could not get AddonPtr given a script id of %s."
                                "If you are trying to use 'os.getcwd' to set the path, you cannot do that in a version %s plugin.", 
-                               id.c_str(), version.c_str());
+                               id.c_str(), version.asString().c_str());
         }
       }
 
