@@ -957,6 +957,7 @@ void CGUIEPGGridContainer::ProgrammesScroll(int amount)
 
 void CGUIEPGGridContainer::OnUp()
 {
+  CGUIAction action = GetNavigateAction(ACTION_MOVE_UP);
   if (m_channelCursor > 0)
   {
     SetChannel(m_channelCursor - 1);
@@ -966,7 +967,7 @@ void CGUIEPGGridContainer::OnUp()
     ScrollToChannelOffset(m_channelOffset - 1);
     SetChannel(0);
   }
-  else if (m_actionUp.GetNavigation() == GetID() || !m_actionUp.HasActionsMeetingCondition()) // wrap around
+  else if (action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition()) // wrap around
   {
     int offset = m_channels - m_channelsPerPage;
 
@@ -982,6 +983,7 @@ void CGUIEPGGridContainer::OnUp()
 
 void CGUIEPGGridContainer::OnDown()
 {
+  CGUIAction action = GetNavigateAction(ACTION_MOVE_DOWN);
   if (m_channelOffset + m_channelCursor + 1 < m_channels)
   {
     if (m_channelCursor + 1 < m_channelsPerPage)
@@ -994,7 +996,7 @@ void CGUIEPGGridContainer::OnDown()
       SetChannel(m_channelsPerPage - 1);
     }
   }
-  else if (m_actionDown.GetNavigation() == GetID() || !m_actionDown.HasActionsMeetingCondition()) // wrap around
+  else if (action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition()) // wrap around
   {
     SetChannel(0);
     ScrollToChannelOffset(0);
