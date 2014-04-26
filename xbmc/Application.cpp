@@ -1816,21 +1816,35 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
   CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, g_windowManager.GetActiveWindow());
   g_windowManager.SendMessage(msg);
 
-  g_application.LoadSkin(CSettings::Get().GetString("lookandfeel.skin"));
-
-  if (!m_skinReverting && confirm)
+  string newSkin = CSettings::Get().GetString("lookandfeel.skin");
+  if (LoadSkin(newSkin))
   {
-    bool cancelled;
-    if (!CGUIDialogYesNo::ShowAndGetInput(13123, 13111, -1, -1, -1, -1, cancelled, 10000))
+    /* The Reset() or SetString() below will cause recursion, so the m_skinReverting boolean is set so as to not prompt the
+       user as to whether they want to keep the current skin. */
+    if (confirm && !m_skinReverting)
     {
-      m_skinReverting = true;
-      if (oldSkin.empty())
-        CSettings::Get().GetSetting("lookandfeel.skin")->Reset();
-      else
-        CSettings::Get().SetString("lookandfeel.skin", oldSkin);
+      bool cancelled;
+      if (!CGUIDialogYesNo::ShowAndGetInput(13123, 13111, -1, -1, -1, -1, cancelled, 10000))
+      {
+        m_skinReverting = true;
+        if (oldSkin.empty())
+          CSettings::Get().GetSetting("lookandfeel.skin")->Reset();
+        else
+          CSettings::Get().SetString("lookandfeel.skin", oldSkin);
+      }
     }
   }
-
+  else
+  {
+    // skin failed to load - we revert to the default only if we didn't fail loading the default
+    string defaultSkin = ((CSettingString*)CSettings::Get().GetSetting("lookandfeel.skin"))->GetDefault();
+    if (newSkin != defaultSkin)
+    {
+      m_skinReverting = true;
+      CSettings::Get().GetSetting("lookandfeel.skin")->Reset();
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(24102), g_localizeStrings.Get(24103));
+    }
+  }
   m_skinReverting = false;
 }
 
@@ -1874,35 +1888,21 @@ bool CApplication::LoadSkin(const CStdString& skinID)
   AddonPtr addon;
   if (CAddonMgr::Get().GetAddon(skinID, addon, ADDON_SKIN))
   {
-    LoadSkin(boost::dynamic_pointer_cast<ADDON::CSkinInfo>(addon));
-    return true;
+    if (LoadSkin(boost::dynamic_pointer_cast<ADDON::CSkinInfo>(addon)))
+      return true;
   }
+  CLog::Log(LOGERROR, "failed to load requested skin '%s'", skinID.c_str());
   return false;
 }
 
-void CApplication::LoadSkin(const SkinPtr& skin)
+bool CApplication::LoadSkin(const SkinPtr& skin)
 {
-  string defaultSkin = ((const CSettingString*)CSettings::Get().GetSetting("lookandfeel.skin"))->GetDefault();
   if (!skin)
-  {
-    CLog::Log(LOGERROR, "failed to load requested skin, fallback to \"%s\" skin", defaultSkin.c_str());
-    CSettings::Get().GetSetting("lookandfeel.skin")->Reset();
-    return ;
-  }
+    return false;
 
   skin->Start();
   if (!skin->HasSkinFile("Home.xml"))
-  {
-    // failed to find home.xml
-    // fallback to default skin
-    if (strcmpi(skin->ID().c_str(), defaultSkin.c_str()) != 0)
-    {
-      CLog::Log(LOGERROR, "home.xml doesn't exist in skin: %s, fallback to \"%s\" skin", skin->ID().c_str(), defaultSkin.c_str());
-      CSettings::Get().GetSetting("lookandfeel.skin")->Reset();
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(24102), g_localizeStrings.Get(24103));
-      return ;
-    }
-  }
+    return false;
 
   bool bPreviousPlayingState=false;
   bool bPreviousRenderingState=false;
@@ -2032,6 +2032,7 @@ void CApplication::LoadSkin(const SkinPtr& skin)
     if (bPreviousRenderingState)
       g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
   }
+  return true;
 }
 
 void CApplication::UnloadSkin(bool forReload /* = false */)
