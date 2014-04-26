@@ -113,6 +113,17 @@ namespace ADDON
     return mEpoch == 0 && mUpstream == "0.0.0" && mRevision.empty();
   }
 
+  std::string AddonVersion::asString() const
+  {
+    std::string out;
+    if (mEpoch)
+      out = StringUtils::Format("%i:", mEpoch);
+    out += mUpstream;
+    if (!mRevision.empty())
+      out += "-" + mRevision;
+    return out;
+  }
+
   bool AddonVersion::SplitFileName(CStdString& ID, CStdString& version,
                                    const CStdString& filename)
   {

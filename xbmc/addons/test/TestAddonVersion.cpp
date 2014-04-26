@@ -138,6 +138,27 @@ TEST_F(TestAddonVersion, Constructor)
   EXPECT_TRUE(v1_0_0_alpha10.Revision().empty());
 }
 
+TEST_F(TestAddonVersion, asString)
+{
+  EXPECT_EQ(v1_0.asString(), "1.0");
+  EXPECT_EQ(v1_00.asString(), "1.00");
+  EXPECT_EQ(v1_0_0.asString(), "1.0.0");
+  EXPECT_EQ(v1_1.asString(), "1.1");
+  EXPECT_EQ(v1_01.asString(), "1.01");
+  EXPECT_EQ(v1_0_1.asString(), "1.0.1");
+  EXPECT_EQ(e1_v1_0_0.asString(), "1:1.0.0");
+  EXPECT_EQ(e1_v1_0_1.asString(), "1:1.0.1");
+  EXPECT_EQ(e2_v1_0_0.asString(), "2:1.0.0");
+  EXPECT_EQ(e1_v1_0_0_r1.asString(), "1:1.0.0-1");
+  EXPECT_EQ(e1_v1_0_1_r1.asString(), "1:1.0.1-1");
+  EXPECT_EQ(e1_v1_0_0_r2.asString(), "1:1.0.0-2");
+  EXPECT_EQ(v1_0_0_beta.asString(), "1.0.0~beta");
+  EXPECT_EQ(v1_0_0_alpha.asString(), "1.0.0~alpha");
+  EXPECT_EQ(v1_0_0_alpha2.asString(), "1.0.0~alpha2");
+  EXPECT_EQ(v1_0_0_alpha3.asString(), "1.0.0~alpha3");
+  EXPECT_EQ(v1_0_0_alpha10.asString(), "1.0.0~alpha10");
+}
+
 TEST_F(TestAddonVersion, Equals)
 {
   EXPECT_EQ(v1_0, AddonVersion("1.0"));

@@ -187,8 +187,8 @@ void AddonProps::Serialize(CVariant &variant) const
 {
   variant["addonid"] = id;
   variant["type"] = TranslateType(type);
-  variant["version"] = version.c_str();
-  variant["minversion"] = minversion.c_str();
+  variant["version"] = version.asString();
+  variant["minversion"] = minversion.asString();
   variant["name"] = name;
   variant["license"] = license;
   variant["summary"] = summary;
@@ -217,7 +217,7 @@ void AddonProps::Serialize(CVariant &variant) const
   {
     CVariant dep(CVariant::VariantTypeObject);
     dep["addonid"] = it->first;
-    dep["version"] = it->second.first.c_str();
+    dep["version"] = it->second.first.asString();
     dep["optional"] = it->second.second;
     variant["dependencies"].push_back(dep);
   }
@@ -647,7 +647,7 @@ CStdString GetXbmcApiVersionDependency(ADDON::AddonPtr addon)
     if (!(it == deps.end()))
     {
       const ADDON::AddonVersion * xbmcApiVersion = &(it->second.first);
-      version = xbmcApiVersion->c_str();
+      version = xbmcApiVersion->asString();
     }
   }
 

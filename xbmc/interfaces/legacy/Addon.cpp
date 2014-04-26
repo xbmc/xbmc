@@ -158,7 +158,7 @@ namespace XBMCAddon
       else if (strcmpi(id, "type") == 0)
         return ADDON::TranslateType(pAddon->Type());
       else if (strcmpi(id, "version") == 0)
-        return String(pAddon->Version().c_str());
+        return pAddon->Version().asString();
       else
         throw AddonException("'%s' is an invalid Id", id);
     }
