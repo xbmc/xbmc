@@ -179,20 +179,20 @@ public:
    */
   virtual CRect CalcRenderRegion() const;
 
+  /*! \brief Set actions to perform on navigation
+   \param actions ActionMap of actions
+   \sa SetNavigationAction
+   */
+  typedef std::map<int, CGUIAction> ActionMap;
+  void SetNavigationActions(const ActionMap &actions);
 
   /*! \brief Set actions to perform on navigation
    Navigations are set if replace is true or if there is no previously set action
-   \param up CGUIAction to execute on up
-   \param down CGUIAction to execute on down
-   \param left CGUIAction to execute on left
-   \param right CGUIAction to execute on right
-   \param back CGUIAction to execute on back
+   \param actionID id of the nagivation action
+   \param actions CGUIAction to set
    \param replace Actions are set only if replace is true or there is no previously set action.  Defaults to true
-   \sa SetNavigation
+   \sa SetNavigationActions
    */
-  virtual void SetNavigationActions(const CGUIAction &up, const CGUIAction &down,
-                                    const CGUIAction &left, const CGUIAction &right,
-                                    const CGUIAction &back, bool replace = true);
   void SetNavigationAction(int actionID, const CGUIAction &action, bool replace = true);
 
   /*! \brief Get an action the control can be perform.
@@ -312,7 +312,6 @@ protected:
   bool SendWindowMessage(CGUIMessage &message) const;
 
   // navigation and actions
-  typedef std::map<int, CGUIAction> ActionMap;
   ActionMap m_actions;
 
   float m_posX;

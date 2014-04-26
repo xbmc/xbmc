@@ -55,6 +55,7 @@
 #include "GUIListLabel.h"
 #include "GUIListGroup.h"
 #include "GUIInfoManager.h"
+#include "Key.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/XMLUtils.h"
@@ -677,7 +678,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   float width = 0, height = 0;
   float minHeight = 0, minWidth = 0;
 
-  CGUIAction leftActions, rightActions, upActions, downActions, backActions, nextActions, prevActions;
+  CGUIControl::ActionMap actions;
 
   int pageControl = 0;
   CGUIInfoColor colorDiffuse(0xFFFFFFFF);
@@ -822,13 +823,13 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   hitRect.SetRect(posX, posY, posX + width, posY + height);
   GetHitRect(pControlNode, hitRect);
 
-  GetActions(pControlNode, "onup",    upActions);
-  GetActions(pControlNode, "ondown",  downActions);
-  GetActions(pControlNode, "onleft",  leftActions);
-  GetActions(pControlNode, "onright", rightActions);
-  GetActions(pControlNode, "onnext",  nextActions);
-  GetActions(pControlNode, "onprev",  prevActions);
-  GetActions(pControlNode, "onback",  backActions);
+  GetActions(pControlNode, "onup",    actions[ACTION_MOVE_UP]);
+  GetActions(pControlNode, "ondown",  actions[ACTION_MOVE_DOWN]);
+  GetActions(pControlNode, "onleft",  actions[ACTION_MOVE_LEFT]);
+  GetActions(pControlNode, "onright", actions[ACTION_MOVE_RIGHT]);
+  GetActions(pControlNode, "onnext",  actions[ACTION_NEXT_CONTROL]);
+  GetActions(pControlNode, "onprev",  actions[ACTION_PREV_CONTROL]);
+  GetActions(pControlNode, "onback",  actions[ACTION_NAV_BACK]);
 
   if (XMLUtils::GetInt(pControlNode, "defaultcontrol", defaultControl))
   {
@@ -1438,7 +1439,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     control->SetEnableCondition(enableCondition);
     control->SetAnimations(animations);
     control->SetColorDiffuse(colorDiffuse);
-    control->SetNavigationActions(upActions, downActions, leftActions, rightActions, backActions);
+    control->SetNavigationActions(actions);
     control->SetPulseOnSelect(bPulse);
     if (hasCamera)
       control->SetCamera(camera);

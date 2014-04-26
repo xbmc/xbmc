@@ -457,15 +457,9 @@ CRect CGUIControl::CalcRenderRegion() const
   return CRect(tl.x, tl.y, br.x, br.y);
 }
 
-void CGUIControl::SetNavigationActions(const CGUIAction &up, const CGUIAction &down,
-                                       const CGUIAction &left, const CGUIAction &right,
-                                       const CGUIAction &back, bool replace)
+void CGUIControl::SetNavigationActions(const ActionMap &actions)
 {
-  SetNavigationAction(ACTION_MOVE_LEFT,   left, replace);
-  SetNavigationAction(ACTION_MOVE_RIGHT, right, replace);
-  SetNavigationAction(ACTION_MOVE_UP,       up, replace);
-  SetNavigationAction(ACTION_MOVE_DOWN,   down, replace);
-  SetNavigationAction(ACTION_NAV_BACK,    back, replace);
+  m_actions = actions;
 }
 
 void CGUIControl::SetNavigationAction(int actionID, const CGUIAction &action, bool replace /*= true*/)
