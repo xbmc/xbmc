@@ -45,12 +45,12 @@ namespace ADDON
 {
 
 CSkinInfo::CSkinInfo(const AddonProps &props, const RESOLUTION_INFO &resolution)
-  : CAddon(props), m_defaultRes(resolution)
+  : CAddon(props), m_defaultRes(resolution), m_version("")
 {
 }
 
 CSkinInfo::CSkinInfo(const cp_extension_t *ext)
-  : CAddon(ext)
+  : CAddon(ext), m_version("")
 {
   ELEMENTS elements;
   if (CAddonMgr::Get().GetExtElements(ext->configuration, "res", elements))
@@ -95,7 +95,9 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
   m_debugging = !strcmp(str.c_str(), "true");
 
   LoadStartupWindows(ext);
-  m_Version = 2.11;
+
+  // figure out the version
+  m_version = GetDependencyVersion("xbmc.gui");
 }
 
 CSkinInfo::~CSkinInfo()

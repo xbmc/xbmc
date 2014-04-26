@@ -68,7 +68,7 @@ public:
    */
   CStdString GetSkinPath(const CStdString& file, RESOLUTION_INFO *res = NULL, const CStdString& baseDir = "") const;
 
-  double GetVersion() const { return m_Version; };
+  AddonVersion APIVersion() const { return m_version; };
 
   /*! \brief Return whether skin debugging is enabled
    \return true if skin debugging (set via <debugging>true</debugging> in skin.xml) is enabled.
@@ -141,7 +141,7 @@ protected:
   RESOLUTION_INFO m_defaultRes;
   std::vector<RESOLUTION_INFO> m_resolutions;
 
-  double m_Version;
+  AddonVersion m_version;
 
   float m_effectsSlowDown;
   CGUIIncludes m_includes;
