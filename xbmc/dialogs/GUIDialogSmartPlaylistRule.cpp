@@ -480,12 +480,6 @@ void CGUIDialogSmartPlaylistRule::AddOperatorLabel(CDatabaseQueryRule::SEARCH_OP
   OnMessage(select);
 }
 
-void CGUIDialogSmartPlaylistRule::OnWindowLoaded()
-{
-  CGUIWindow::OnWindowLoaded();
-  ChangeButtonToEdit(CONTROL_VALUE, true); // true for single label
-}
-
 void CGUIDialogSmartPlaylistRule::OnInitWindow()
 {
   CGUIDialog::OnInitWindow();

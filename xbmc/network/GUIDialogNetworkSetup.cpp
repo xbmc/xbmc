@@ -107,18 +107,6 @@ bool CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(CStdString &path)
   return dialog->IsConfirmed();
 }
 
-void CGUIDialogNetworkSetup::OnWindowLoaded()
-{
-  // replace our buttons with edits
-  ChangeButtonToEdit(CONTROL_SERVER_ADDRESS);
-  ChangeButtonToEdit(CONTROL_REMOTE_PATH);
-  ChangeButtonToEdit(CONTROL_USERNAME);
-  ChangeButtonToEdit(CONTROL_PORT_NUMBER);
-  ChangeButtonToEdit(CONTROL_PASSWORD);
-
-  CGUIDialog::OnWindowLoaded();
-}
-
 void CGUIDialogNetworkSetup::OnInitWindow()
 {
   // start as unconfirmed
