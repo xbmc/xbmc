@@ -371,7 +371,7 @@ public:
   /////////////////////////////////////////////////
   // Karaoke
   /////////////////////////////////////////////////
-  void AddKaraokeData(int idSong, int iKaraokeNumber, DWORD crc);
+  void AddKaraokeData(int idSong, int iKaraokeNumber);
   bool GetSongByKaraokeNumber( int number, CSong& song );
   bool SetKaraokeSongDelay( int idSong, int delay );
   int GetKaraokeSongsCount();

@@ -590,7 +590,7 @@ int CMusicDatabase::AddSong(const int idAlbum,
 
     // Add karaoke information (if any)
     if (bHasKaraoke)
-      AddKaraokeData(idSong, iKaraokeNumber, ComputeCRC(strFileName));
+      AddKaraokeData(idSong, iKaraokeNumber);
 
     AnnounceUpdate(MediaTypeSong, idSong);
   }
@@ -4956,7 +4956,7 @@ void CMusicDatabase::ImportFromXML(const CStdString &xmlFile)
     progress->Close();
 }
 
-void CMusicDatabase::AddKaraokeData(int idSong, int iKaraokeNumber, DWORD crc)
+void CMusicDatabase::AddKaraokeData(int idSong, int iKaraokeNumber)
 {
   try
   {
@@ -4980,8 +4980,8 @@ void CMusicDatabase::AddKaraokeData(int idSong, int iKaraokeNumber, DWORD crc)
       iKaraokeNumber = m_pDS->fv("MAX(iKaraNumber)").get_asInt() + 1;
 
     // Add the data
-    strSQL=PrepareSQL( "INSERT INTO karaokedata (iKaraNumber, idSong, iKaraDelay, strKaraEncoding, strKaralyrics, strKaraLyrFileCRC) "
-        "VALUES( %i, %i, 0, NULL, NULL, '%ul' )", iKaraokeNumber, idSong, crc );
+    strSQL=PrepareSQL( "INSERT INTO karaokedata (iKaraNumber, idSong, iKaraDelay, strKaraEncoding, strKaralyrics) "
+        "VALUES( %i, %i, 0, NULL, NULL)", iKaraokeNumber, idSong );
 
     m_pDS->exec(strSQL.c_str());
   }
