@@ -244,7 +244,7 @@ PopulateObjectFromTag(CMusicInfoTag&         tag,
     if (object.m_ReferenceID == object.m_ObjectID)
         object.m_ReferenceID = "";
 
-    object.m_MiscInfo.last_time = tag.GetLastPlayed().GetAsDBDate();
+    object.m_MiscInfo.last_time = tag.GetLastPlayed().GetAsW3CDateTime();
     object.m_MiscInfo.play_count = tag.GetPlayCount();
 
     if (resource) resource->m_Duration = tag.GetDuration();
@@ -277,7 +277,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
         } else if (tag.m_type == "movie") {
           object.m_ObjectClass.type = "object.item.videoItem.movie";
           object.m_Title = tag.m_strTitle;
-          object.m_Date = NPT_String::FromInteger(tag.m_iYear) + "-01-01";
+          object.m_Date = CDateTime(tag.m_iYear, 0, 0, 0, 0, 0).GetAsW3CDate();
           object.m_ReferenceID = NPT_String::Format("videodb://movies/titles/%i", tag.m_iDbId);
         } else {
           object.m_ObjectClass.type = "object.item.videoItem.videoBroadcast";
@@ -288,7 +288,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
           int season = tag.m_iSeason > 1 ? tag.m_iSeason : 1;
           object.m_Recorded.episode_number = season * 100 + tag.m_iEpisode;
           object.m_Title = object.m_Recorded.series_title + " - " + object.m_Recorded.program_title;
-          object.m_Date = tag.m_firstAired.GetAsDBDate();
+          object.m_Date = tag.m_firstAired.GetAsW3CDate();
           if(tag.m_iSeason != -1)
               object.m_ReferenceID = NPT_String::Format("videodb://tvshows/0/%i", tag.m_iDbId);
         }
@@ -317,7 +317,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     object.m_Description.long_description = tag.m_strPlot;
     object.m_Description.rating = tag.m_strMPAARating;
     object.m_MiscInfo.last_position = (NPT_UInt32)tag.m_resumePoint.timeInSeconds;
-    object.m_MiscInfo.last_time = tag.m_lastPlayed.GetAsDBDate();
+    object.m_MiscInfo.last_time = tag.m_lastPlayed.GetAsW3CDateTime();
     object.m_MiscInfo.play_count = tag.m_playCount;
     if (resource) {
         resource->m_Duration = tag.GetDuration();
@@ -638,7 +638,7 @@ PopulateTagFromObject(CMusicInfoTag&          tag,
 
     tag.SetAlbum((const char*)object.m_Affiliation.album);
     CDateTime last;
-    last.SetFromDateString((const char*)object.m_MiscInfo.last_time);
+    last.SetFromW3CDateTime((const char*)object.m_MiscInfo.last_time);
     tag.SetLastPlayed(last);
     tag.SetPlayCount(object.m_MiscInfo.play_count);
     if(resource)
@@ -706,7 +706,7 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
     tag.m_strPlot     = object.m_Description.long_description;
     tag.m_strMPAARating = object.m_Description.rating;
     tag.m_strShowTitle = object.m_Recorded.series_title;
-    tag.m_lastPlayed.SetFromDateString((const char*)object.m_MiscInfo.last_time);
+    tag.m_lastPlayed.SetFromW3CDateTime((const char*)object.m_MiscInfo.last_time);
     tag.m_playCount = object.m_MiscInfo.play_count;
 
     if(resource)
