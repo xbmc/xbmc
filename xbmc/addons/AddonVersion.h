@@ -18,9 +18,7 @@
  *
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <iostream>
+#include <string>
 #include <boost/operators.hpp>
 #include "utils/StdString.h"
 
@@ -40,13 +38,13 @@ namespace ADDON
     */
   class AddonVersion : public boost::totally_ordered<AddonVersion> {
   public:
-    AddonVersion(const AddonVersion& other) : mUpstream(NULL), mRevision(NULL) { *this = other; }
-    explicit AddonVersion(const CStdString& version);
-    ~AddonVersion();
+    AddonVersion(const AddonVersion& other) { *this = other; }
+    explicit AddonVersion(const std::string& version);
+    ~AddonVersion() {};
 
     int Epoch() const { return mEpoch; }
-    const char *Upstream() const { return mUpstream; }
-    const char *Revision() const { return mRevision; }
+    const std::string &Upstream() const { return mUpstream; }
+    const std::string &Revision() const { return mRevision; }
 
     AddonVersion& operator=(const AddonVersion& other);
     bool operator<(const AddonVersion& other) const;
@@ -59,28 +57,19 @@ namespace ADDON
                               const CStdString& filename);
 
   protected:
-    CStdString m_originalVersion;
+    std::string m_originalVersion;
     int mEpoch;
-    char *mUpstream;
-    char *mRevision;
+    std::string mUpstream;
+    std::string mRevision;
 
     static int CompareComponent(const char *a, const char *b);
   };
 
-  inline AddonVersion::~AddonVersion()
-  {
-    free(mUpstream);
-    free(mRevision);
-  }
-
   inline AddonVersion& AddonVersion::operator=(const AddonVersion& other)
   {
-    free(mUpstream);
-    free(mRevision);
-    mEpoch = other.Epoch();
-    mUpstream = strdup(other.Upstream());
-    mRevision = strdup(other.Revision());
-    m_originalVersion = other.m_originalVersion;
+    mEpoch = other.mEpoch;
+    mUpstream = other.mUpstream;
+    mRevision = other.mRevision;
     return *this;
   }
 }

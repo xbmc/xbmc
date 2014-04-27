@@ -24,43 +24,28 @@
 #include <ctype.h>
 
 #include "AddonVersion.h"
-#include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
+#include "guilib/LocalizeStrings.h"
 
 namespace ADDON
 {
-  AddonVersion::AddonVersion(const CStdString& version)
+  AddonVersion::AddonVersion(const std::string& version)
+  : m_originalVersion(version.empty() ? "0.0.0" : version), mEpoch(0)
   {
-    m_originalVersion = version;
-    if (m_originalVersion.empty())
-      m_originalVersion = "0.0.0";
-    const char *epoch_end = strchr(m_originalVersion.c_str(), ':');
-    if (epoch_end != NULL)
-      mEpoch = atoi(m_originalVersion.c_str());
-    else
-      mEpoch = 0;
+    mUpstream = m_originalVersion;
+    size_t pos = mUpstream.find(':');
+    if (pos != std::string::npos)
+    {
+      mEpoch = strtol(mUpstream.c_str(), NULL, 10);
+      mUpstream.erase(0, pos+1);
+    }
 
-    const char *upstream_start;
-    if (epoch_end)
-      upstream_start = epoch_end + 1;
-    else
-      upstream_start = m_originalVersion.c_str();
-
-    const char *upstream_end = strrchr(upstream_start, '-');
-    size_t upstream_size;
-    if (upstream_end == NULL)
-      upstream_size = strlen(upstream_start);
-    else
-      upstream_size = upstream_end - upstream_start;
-
-    mUpstream = (char*) malloc(upstream_size + 1);
-    strncpy(mUpstream, upstream_start, upstream_size);
-    mUpstream[upstream_size] = '\0';
-
-    if (upstream_end == NULL)
-      mRevision = strdup("");
-    else
-      mRevision = strdup(upstream_end + 1);
+    pos = mUpstream.find('-');
+    if (pos != std::string::npos)
+    {
+      mRevision = mUpstream.substr(pos+1);
+      mUpstream.erase(pos);
+    }
   }
 
   /**Compare two components of a Debian-style version.  Return -1, 0, or 1
@@ -107,21 +92,21 @@ namespace ADDON
 
   bool AddonVersion::operator<(const AddonVersion& other) const
   {
-    if (Epoch() != other.Epoch())
-      return Epoch() < other.Epoch();
+    if (mEpoch != other.mEpoch)
+      return mEpoch < other.mEpoch;
 
-    int result = CompareComponent(Upstream(), other.Upstream());
+    int result = CompareComponent(mUpstream.c_str(), other.mUpstream.c_str());
     if (result)
       return (result < 0);
 
-    return (CompareComponent(Revision(), other.Revision()) < 0);
+    return (CompareComponent(mRevision.c_str(), other.mRevision.c_str()) < 0);
   }
 
   bool AddonVersion::operator==(const AddonVersion& other) const
   {
-    return Epoch() == other.Epoch()
-      && CompareComponent(Upstream(), other.Upstream()) == 0
-      && CompareComponent(Revision(), other.Revision()) == 0;
+    return mEpoch == other.mEpoch
+      && CompareComponent(mUpstream.c_str(), other.mUpstream.c_str()) == 0
+      && CompareComponent(mRevision.c_str(), other.mRevision.c_str()) == 0;
   }
 
   bool AddonVersion::empty() const
