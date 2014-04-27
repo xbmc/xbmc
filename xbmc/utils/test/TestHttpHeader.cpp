@@ -31,7 +31,8 @@ TEST(TestHttpHeader, General)
                    "Content-Type: text/html; charset=ISO-8859-4\r\n"
                    "User-Agent: XBMC/snapshot (compatible; MSIE 5.5; Windows NT"
                      " 4.0)\r\n"
-                   "Connection: Keep-Alive\r\n";
+                   "Connection: Keep-Alive\r\n"
+                   "\r\n";
   std::string refstr, varstr;
 
   a.Parse(str);
