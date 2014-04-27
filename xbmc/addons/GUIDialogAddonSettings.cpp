@@ -873,11 +873,11 @@ void CGUIDialogAddonSettings::CreateControls()
         int iType=0;
 
         if (option.size() == 0 || StringUtils::EqualsNoCase(option, "float"))
-          iType = SPIN_CONTROL_TYPE_FLOAT;
+          iType = SLIDER_CONTROL_TYPE_FLOAT;
         else if (StringUtils::EqualsNoCase(option, "int"))
-          iType = SPIN_CONTROL_TYPE_INT;
+          iType = SLIDER_CONTROL_TYPE_INT;
         else if (StringUtils::EqualsNoCase(option, "percent"))
-          iType = 0;
+          iType = SLIDER_CONTROL_TYPE_PERCENTAGE;
 
         ((CGUISettingsSliderControl *)pControl)->SetType(iType);
         ((CGUISettingsSliderControl *)pControl)->SetFloatRange(fMin, fMax);

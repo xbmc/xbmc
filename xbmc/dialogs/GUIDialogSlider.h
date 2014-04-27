@@ -21,28 +21,7 @@
  */
 
 #include "guilib/GUIDialog.h"
-
-class CGUISliderControl;
-
-/*! \brief Interface class for callback from the slider dialog
- Used to pass feedback from the slider dialog to a caller.  Users of the
- slider dialog should derive from this class if they wish to respond to changes
- in the slider by the user as they happen.  OnSliderChange is called in response
- to the user moving the slider.  The caller may then update the text on the slider
- and update anything that should be changed as the slider is adjusted.
- \sa CGUIDialogSlider
- */
-class ISliderCallback
-{
-public:
-  virtual ~ISliderCallback() {}
-  
-  /*! \brief Callback function called whenever the user moves the slider
-   \param data pointer of callbackData passed into CGUIDialogSlider::ShowAndGetInput()
-   \param slider pointer to the slider control on the dialog 
-   */
-  virtual void OnSliderChange(void *data, CGUISliderControl *slider)=0;
-};
+#include "guilib/ISliderCallback.h"
 
 class CGUIDialogSlider : public CGUIDialog
 {

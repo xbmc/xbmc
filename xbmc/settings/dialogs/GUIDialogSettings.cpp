@@ -19,6 +19,7 @@
  */
 
 #include "GUIDialogSettings.h"
+#include "dialogs/GUIDialogSlider.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIRadioButtonControl.h"
@@ -428,7 +429,7 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iCont
     ((CGUISettingsSliderControl *)pControl)->SetText(setting.name);
     if (setting.formatFunction.standard)
       ((CGUISettingsSliderControl *)pControl)->SetTextValue(setting.formatFunction.standard(*(float *)setting.data, setting.interval));
-    ((CGUISettingsSliderControl *)pControl)->SetType(SPIN_CONTROL_TYPE_FLOAT);
+    ((CGUISettingsSliderControl *)pControl)->SetType(SLIDER_CONTROL_TYPE_FLOAT);
     ((CGUISettingsSliderControl *)pControl)->SetFloatRange(setting.min, setting.max);
     ((CGUISettingsSliderControl *)pControl)->SetFloatInterval(setting.interval);
     if (setting.data) ((CGUISettingsSliderControl *)pControl)->SetFloatValue(*(float *)setting.data);
@@ -453,7 +454,7 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iCont
     ((CGUISettingsSliderControl *)pControl)->SetText(setting.name);
     if (setting.formatFunction.range)
       ((CGUISettingsSliderControl *)pControl)->SetTextValue(setting.formatFunction.range(*((float **)setting.data)[0], *((float **)setting.data)[1], setting.interval));
-    ((CGUISettingsSliderControl *)pControl)->SetType(SPIN_CONTROL_TYPE_FLOAT);
+    ((CGUISettingsSliderControl *)pControl)->SetType(SLIDER_CONTROL_TYPE_FLOAT);
     ((CGUISettingsSliderControl *)pControl)->SetRangeSelection(true);
     ((CGUISettingsSliderControl *)pControl)->SetFloatRange(setting.min, setting.max);
     ((CGUISettingsSliderControl *)pControl)->SetFloatInterval(setting.interval);

@@ -19,6 +19,7 @@
  */
 
 #include "PlayerController.h"
+#include "dialogs/GUIDialogSlider.h"
 #include "utils/StdString.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
