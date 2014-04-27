@@ -40,8 +40,6 @@ namespace ADDON
 const CStdString    TranslateType(const TYPE &type, bool pretty=false);
 const CStdString    GetIcon(const TYPE &type);
       TYPE          TranslateType(const CStdString &string);
-const CStdString    UpdateVideoScraper(const CStdString &scraper);
-const CStdString    UpdateMusicScraper(const CStdString &scraper);
 
 class AddonProps : public ISerializable
 {
