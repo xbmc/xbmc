@@ -213,6 +213,8 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD1(AVCodec*, av_codec_next, (AVCodec *p1))
   DEFINE_METHOD1(int, av_codec_is_decoder, (const AVCodec *p1))
   DEFINE_METHOD1(AVDictionary*, av_frame_get_metadata, (const AVFrame* p1))
+  DEFINE_METHOD_FP(int, avcodec_default_get_buffer, (AVCodecContext *p1, AVFrame *p2))
+  DEFINE_METHOD_FP(void, avcodec_default_release_buffer, (AVCodecContext *p1, AVFrame *p2))
 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(avcodec_flush_buffers)
@@ -248,6 +250,8 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(avcodec_free_frame)
     RESOLVE_METHOD(av_codec_is_decoder)
     RESOLVE_METHOD(av_frame_get_metadata)
+    RESOLVE_METHOD_FP(avcodec_default_get_buffer)
+    RESOLVE_METHOD_FP(avcodec_default_release_buffer)
   END_METHOD_RESOLVE()
 
   /* dependencies of libavcodec */
