@@ -540,7 +540,7 @@
                 "productioncode", "season", "episode", "originaltitle",
                 "showtitle", "cast", "streamdetails", "lastplayed", "fanart",
                 "thumbnail", "file", "resume", "tvshowid", "dateadded",
-                "uniqueid", "art" ]
+                "uniqueid", "art", "specialsortseason", "specialsortepisode" ]
     }
   },
   "Video.Fields.MusicVideo": {
@@ -729,7 +729,9 @@
       "originaltitle": { "type": "string" },
       "showtitle": { "type": "string" },
       "cast": { "$ref": "Video.Cast" },
-      "tvshowid": { "$ref": "Library.Id" }
+      "tvshowid": { "$ref": "Library.Id" },
+      "specialsortseason": { "type": "integer" },
+      "specialsortepisode": { "type": "integer" }
     }
   },
   "Video.Details.MusicVideo": {
@@ -1224,7 +1226,9 @@
       "theme": { "$ref": "Array.String" },
       "mood": { "$ref": "Array.String" },
       "style": { "$ref": "Array.String" },
-      "albumlabel": { "type": "string" }
+      "albumlabel": { "type": "string" },
+      "specialsortseason": { "type": "integer" },
+      "specialsortepisode": { "type": "integer" }
     }
   },
   "List.Fields.All": {
@@ -1242,7 +1246,8 @@
                 "disc", "tag", "art", "genreid", "displayartist", "albumartistid",
                 "description", "theme", "mood", "style", "albumlabel", "sorttitle",
                 "episodeguide", "uniqueid", "dateadded", "channel", "channeltype", "hidden",
-                "locked", "channelnumber", "starttime", "endtime" ]
+                "locked", "channelnumber", "starttime", "endtime", "specialsortseason",
+                "specialsortepisode" ]
     }
   },
   "List.Item.All": {
@@ -1271,7 +1276,8 @@
                 "resume", "artistid", "albumid", "tvshowid", "setid", "watchedepisodes",
                 "disc", "tag", "art", "genreid", "displayartist", "albumartistid",
                 "description", "theme", "mood", "style", "albumlabel", "sorttitle",
-                "episodeguide", "uniqueid", "dateadded", "size", "lastmodified", "mimetype" ]
+                "episodeguide", "uniqueid", "dateadded", "size", "lastmodified", "mimetype",
+                "specialsortseason", "specialsortepisode" ]
     }
   },
   "List.Item.File": {
