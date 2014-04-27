@@ -1233,7 +1233,7 @@ CUPnPServer::SortItems(CFileItemList& items, const char* sort_criteria)
     else if (method.Equals("upnp:originalTrackNumber"))
       sorting.sortBy = SortByTrackNumber;
     else if(method.Equals("upnp:rating"))
-      sorting.sortBy = SortByRating;
+      sorting.sortBy = SortByMPAA;
     else {
       CLog::Log(LOGINFO, "UPnP: unsupported sort criteria '%s' passed", method.c_str());
       continue; // needed so unidentified sort methods don't re-sort by label

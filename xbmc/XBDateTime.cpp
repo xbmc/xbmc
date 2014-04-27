@@ -924,6 +924,34 @@ bool CDateTime::SetFromUTCDateTime(const time_t &dateTime)
 
 bool CDateTime::SetFromW3CDate(const CStdString &dateTime)
 {
+  CStdString date;
+
+  size_t posT = dateTime.find("T");
+  if(posT != std::string::npos)
+    date = dateTime.substr(0, posT);
+  else
+    date = dateTime;
+
+  int year = 0, month = 1, day = 1;
+
+  if (date.size() >= 4)
+    year  = atoi(date.substr(0, 4).c_str());
+
+  if (date.size() >= 10)
+  {
+    month = atoi(date.substr(5, 2).c_str());
+    day   = atoi(date.substr(8, 2).c_str());
+  }
+
+  CDateTime tmpDateTime(year, month, day, 0, 0, 0);
+  if (tmpDateTime.IsValid())
+    *this = tmpDateTime;
+
+  return IsValid();
+}
+
+bool CDateTime::SetFromW3CDateTime(const CStdString &dateTime, bool ignoreTimezone /* = false */)
+{
   CStdString date, time, zone;
 
   size_t posT = dateTime.find("T");
@@ -962,7 +990,31 @@ bool CDateTime::SetFromW3CDate(const CStdString &dateTime)
   if (time.length() >= 8)
     sec  = atoi(time.substr(6, 2).c_str());
 
-  return SetDateTime(year, month, day, hour, min, sec);
+  CDateTime tmpDateTime(year, month, day, hour, min, sec);
+  if (!tmpDateTime.IsValid())
+    return false;
+
+  if (!ignoreTimezone && !zone.empty())
+  {
+    // check if the timezone is UTC
+    if (StringUtils::StartsWith(zone, "Z"))
+      return SetFromUTCDateTime(tmpDateTime);
+    else
+    {
+      // retrieve the timezone offset (ignoring the + or -)
+      CDateTimeSpan zoneSpan; zoneSpan.SetFromTimeString(zone.substr(1));
+      if (zoneSpan.GetSecondsTotal() != 0)
+      {
+        if (StringUtils::StartsWith(zone, "+"))
+          tmpDateTime += zoneSpan;
+        else if (StringUtils::StartsWith(zone, "-"))
+          tmpDateTime -= zoneSpan;
+      }
+    }
+  }
+
+  *this = tmpDateTime;
+  return IsValid();
 }
 
 bool CDateTime::SetFromDBDateTime(const CStdString &dateTime)
@@ -1379,6 +1431,30 @@ CStdString CDateTime::GetAsRFC1123DateTime() const
 
   CStdString result = StringUtils::Format("%s, %02i %s %04i %02i:%02i:%02i GMT", DAY_NAMES[weekDay], time.GetDay(), MONTH_NAMES[month - 1], time.GetYear(), time.GetHour(), time.GetMinute(), time.GetSecond());
   return result;
+}
+
+CStdString CDateTime::GetAsW3CDate() const
+{
+  SYSTEMTIME st;
+  GetAsSystemTime(st);
+
+  return StringUtils::Format("%04i-%02i-%02i", st.wYear, st.wMonth, st.wDay);
+}
+
+CStdString CDateTime::GetAsW3CDateTime(bool asUtc /* = false */) const
+{
+  CDateTime w3cDate = *this;
+  if (asUtc)
+    w3cDate = GetAsUTCDateTime();
+  SYSTEMTIME st;
+  w3cDate.GetAsSystemTime(st);
+
+  CStdString result = StringUtils::Format("%04i-%02i-%02iT%02i:%02i:%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+  if (asUtc)
+    return result + "Z";
+
+  CDateTimeSpan bias = GetTimezoneBias();
+  return result + StringUtils::Format("%c%02i:%02i", (bias.GetSecondsTotal() >= 0 ? '+' : '-'), abs(bias.GetHours()), abs(bias.GetMinutes())).c_str();
 }
 
 int CDateTime::MonthStringToMonthNum(const CStdString& month)
