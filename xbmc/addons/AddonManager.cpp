@@ -93,7 +93,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       {
         // Eden (API v2.0) broke old weather add-ons
         AddonPtr result(new CAddon(props));
-        AddonVersion ver1 = AddonVersion(GetXbmcApiVersionDependency(result));
+        AddonVersion ver1 = result->GetDependencyVersion("xbmc.python");
         AddonVersion ver2 = AddonVersion("2.0");
         if (ver1 < ver2)
         {

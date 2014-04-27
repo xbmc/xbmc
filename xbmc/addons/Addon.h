@@ -162,6 +162,12 @@ public:
   const InfoMap &ExtraInfo() const { return m_props.extrainfo; }
   const ADDONDEPS &GetDeps() const { return m_props.dependencies; }
 
+  /*! \brief get the required version of a dependency.
+   \param dependencyID the addon ID of the dependency.
+   \return the version this addon requires.
+   */
+  AddonVersion GetDependencyVersion(const std::string &dependencyID) const;
+
   /*! \brief return whether or not this addon satisfies the given version requirements
    \param version the version to meet.
    \return true if  min_version <= version <= current_version, false otherwise.
