@@ -71,39 +71,39 @@ TEST_F(TestAddonVersion, Constructor)
 {
   EXPECT_STREQ(v1_0.Upstream(), "1.0");
   EXPECT_EQ(v1_0.Epoch(), 0);
-  EXPECT_STREQ(v1_0.Revision(), "0");
+  EXPECT_STREQ(v1_0.Revision(), "");
 
   EXPECT_STREQ(v1_00.Upstream(), "1.00");
   EXPECT_EQ(v1_00.Epoch(), 0);
-  EXPECT_STREQ(v1_00.Revision(), "0");
+  EXPECT_STREQ(v1_00.Revision(), "");
 
   EXPECT_STREQ(v1_0_0.Upstream(), "1.0.0");
   EXPECT_EQ(v1_0_0.Epoch(), 0);
-  EXPECT_STREQ(v1_0_0.Revision(), "0");
+  EXPECT_STREQ(v1_0_0.Revision(), "");
 
   EXPECT_STREQ(v1_1.Upstream(), "1.1");
   EXPECT_EQ(v1_1.Epoch(), 0);
-  EXPECT_STREQ(v1_1.Revision(), "0");
+  EXPECT_STREQ(v1_1.Revision(), "");
 
   EXPECT_STREQ(v1_01.Upstream(), "1.01");
   EXPECT_EQ(v1_01.Epoch(), 0);
-  EXPECT_STREQ(v1_01.Revision(), "0");
+  EXPECT_STREQ(v1_01.Revision(), "");
 
   EXPECT_STREQ(v1_0_1.Upstream(), "1.0.1");
   EXPECT_EQ(v1_0_1.Epoch(), 0);
-  EXPECT_STREQ(v1_0_1.Revision(), "0");
+  EXPECT_STREQ(v1_0_1.Revision(), "");
 
   EXPECT_STREQ(e1_v1_0_0.Upstream(), "1.0.0");
   EXPECT_EQ(e1_v1_0_0.Epoch(), 1);
-  EXPECT_STREQ(e1_v1_0_0.Revision(), "0");
+  EXPECT_STREQ(e1_v1_0_0.Revision(), "");
 
   EXPECT_STREQ(e1_v1_0_1.Upstream(), "1.0.1");
   EXPECT_EQ(e1_v1_0_1.Epoch(), 1);
-  EXPECT_STREQ(e1_v1_0_1.Revision(), "0");
+  EXPECT_STREQ(e1_v1_0_1.Revision(), "");
 
   EXPECT_STREQ(e2_v1_0_0.Upstream(), "1.0.0");
   EXPECT_EQ(e2_v1_0_0.Epoch(), 2);
-  EXPECT_STREQ(e2_v1_0_0.Revision(), "0");
+  EXPECT_STREQ(e2_v1_0_0.Revision(), "");
 
   EXPECT_STREQ(e1_v1_0_0_r1.Upstream(), "1.0.0");
   EXPECT_EQ(e1_v1_0_0_r1.Epoch(), 1);
@@ -119,23 +119,23 @@ TEST_F(TestAddonVersion, Constructor)
 
   EXPECT_STREQ(v1_0_0_beta.Upstream(), "1.0.0~beta");
   EXPECT_EQ(v1_0_0_beta.Epoch(), 0);
-  EXPECT_STREQ(v1_0_0_beta.Revision(), "0");
+  EXPECT_STREQ(v1_0_0_beta.Revision(), "");
 
   EXPECT_STREQ(v1_0_0_alpha.Upstream(), "1.0.0~alpha");
   EXPECT_EQ(v1_0_0_alpha.Epoch(), 0);
-  EXPECT_STREQ(v1_0_0_alpha.Revision(), "0");
+  EXPECT_STREQ(v1_0_0_alpha.Revision(), "");
 
   EXPECT_STREQ(v1_0_0_alpha2.Upstream(), "1.0.0~alpha2");
   EXPECT_EQ(v1_0_0_alpha2.Epoch(), 0);
-  EXPECT_STREQ(v1_0_0_alpha2.Revision(), "0");
+  EXPECT_STREQ(v1_0_0_alpha2.Revision(), "");
 
   EXPECT_STREQ(v1_0_0_alpha3.Upstream(), "1.0.0~alpha3");
   EXPECT_EQ(v1_0_0_alpha3.Epoch(), 0);
-  EXPECT_STREQ(v1_0_0_alpha3.Revision(), "0");
+  EXPECT_STREQ(v1_0_0_alpha3.Revision(), "");
 
   EXPECT_STREQ(v1_0_0_alpha10.Upstream(), "1.0.0~alpha10");
   EXPECT_EQ(v1_0_0_alpha10.Epoch(), 0);
-  EXPECT_STREQ(v1_0_0_alpha10.Revision(), "0");
+  EXPECT_STREQ(v1_0_0_alpha10.Revision(), "");
 }
 
 TEST_F(TestAddonVersion, Equals)

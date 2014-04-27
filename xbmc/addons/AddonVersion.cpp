@@ -58,7 +58,7 @@ namespace ADDON
     mUpstream[upstream_size] = '\0';
 
     if (upstream_end == NULL)
-      mRevision = strdup("0");
+      mRevision = strdup("");
     else
       mRevision = strdup(upstream_end + 1);
   }
