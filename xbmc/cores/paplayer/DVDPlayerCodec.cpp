@@ -270,11 +270,18 @@ void DVDPlayerCodec::DeInit()
 
 int64_t DVDPlayerCodec::Seek(int64_t iSeekTime)
 {
+  // default to announce backwards seek if !m_pPacket to not make FFmpeg
+  // skip mpeg audio frames at playback start
+  bool seekback = true;
+
   if (m_pPacket)
+  {
+    seekback = (DVD_MSEC_TO_TIME(iSeekTime) > m_pPacket->pts);
     CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
+  }
   m_pPacket = NULL;
 
-  bool ret = m_pDemuxer->SeekTime((int)iSeekTime, false);
+  bool ret = m_pDemuxer->SeekTime((int)iSeekTime, seekback);
   m_pAudioCodec->Reset();
 
   m_decoded = NULL;
