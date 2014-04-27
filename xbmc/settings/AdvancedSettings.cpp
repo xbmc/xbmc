@@ -111,6 +111,7 @@ void CAdvancedSettings::Initialize()
   if (m_initialized)
     return;
 
+  m_searchextendedstreaminfo = true;
   m_audioHeadRoom = 0;
   m_ac3Gain = 12.0f;
   m_audioApplyDrc = true;
@@ -478,6 +479,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
   {
+    XMLUtils::GetBoolean(pElement, "searchextendedstreaminfo", m_searchextendedstreaminfo);
     XMLUtils::GetFloat(pElement, "ac3downmixgain", m_ac3Gain, -96.0f, 96.0f);
     XMLUtils::GetInt(pElement, "headroom", m_audioHeadRoom, 0, 12);
     XMLUtils::GetString(pElement, "defaultplayer", m_audioDefaultPlayer);

@@ -477,7 +477,10 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
             s.name += " - ";
           s.name += type;
         }
-        s.channels = ((CDemuxStreamAudio*)stream)->iChannels;
+        if(((CDemuxStreamAudio*)stream)->bExtendedStreamInfo)
+          s.channels = ((CDemuxStreamAudio*)stream)->iExtendedChannels;
+        else
+          s.channels = ((CDemuxStreamAudio*)stream)->iChannels;
       }
       Update(s);
     }
@@ -3978,7 +3981,12 @@ void CDVDPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
     CDemuxStreamAudio* stream = static_cast<CDemuxStreamAudio*>(m_pDemuxer->GetStreamFromAudioId(index));
     if (stream)
     {
-      info.channels = stream->iChannels;
+      //For videoplayer.audiochannels
+      if(stream->bExtendedStreamInfo)
+        info.channels = stream->iExtendedChannels;
+      else
+        info.channels = stream->iChannels;
+      
       CStdString codecName;
       m_pDemuxer->GetStreamCodecName(stream->iId, codecName);
       info.audioCodecName = codecName;

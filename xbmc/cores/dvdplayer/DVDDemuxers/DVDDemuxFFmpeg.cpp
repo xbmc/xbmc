@@ -49,6 +49,7 @@
 #include "threads/SystemClock.h"
 #include "utils/TimeUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/fastmemcpy.h"
 #include "URL.h"
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
@@ -57,6 +58,39 @@ void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
   char temp[128];
   m_parent->m_dllAvCodec.avcodec_string(temp, 128, m_stream->codec, 0);
   strInfo = temp;
+  if(bExtendedStreamInfo)
+  {
+     std::string strExtendedInfo = " - Extended : ";
+     
+     if(iExtendedChannels == 3)
+     {
+       if(lfe_channel == PRESENT)
+         strExtendedInfo += " 2.1";
+       else
+         strExtendedInfo += " 3.0";
+     }
+     else if (iExtendedChannels == 6) strExtendedInfo += " 5.1";
+     else if (iExtendedChannels == 8) strExtendedInfo += "7.1";
+     else strExtendedInfo = StringUtils::Format("%s %d", strExtendedInfo.c_str(), iExtendedChannels);
+  
+     if(iExtendedSampleRate != 0)
+     {
+       std::string sFormat;
+       if(iExtendedSampleRate % 100)
+         sFormat = " / %3.2f Khz";
+       else if(iExtendedSampleRate % 10)
+         sFormat = " / %3.1f Khz";
+       else
+         sFormat = " / %g Khz";
+                 
+       strExtendedInfo += StringUtils::Format(sFormat.c_str(), (float)(iExtendedSampleRate / 1000));
+     }
+
+     if(iExtendedResolution != 0)
+      strExtendedInfo += StringUtils::Format(" / %d Bits", iExtendedResolution);
+     
+     strInfo += strExtendedInfo;
+  }
 }
 
 void CDemuxStreamAudioFFmpeg::GetStreamName(std::string& strInfo)
@@ -169,6 +203,32 @@ static int interrupt_cb(void* ctx)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
+
+static AVPacket* get_single_frame( AVFormatContext* fmt_ctx, int streamid)
+{
+  static AVPacket pkt;
+  int _continue = 1;
+    
+  av_init_packet(&pkt);
+  pkt.data = NULL;
+  pkt.size = 0;
+ 
+  do 
+  {
+    if(av_read_frame(fmt_ctx, &pkt) >= 0)
+    {
+      if(pkt.stream_index == streamid)
+      {					
+        _continue = 0;
+      }
+    }
+    else
+      _continue = 0;
+    } while (_continue == 1);  
+    
+  return &pkt;
+}
+
 /*
 static int dvd_file_open(URLContext *h, const char *filename, int flags)
 {
@@ -489,6 +549,10 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   CreateStreams();
 
+  if(g_advancedSettings.m_searchextendedstreaminfo)
+    //Needed cause we picked some frame for dts-hd ma extended info ....
+    SeekTime(0,false);
+  
   return true;
 }
 
@@ -1083,7 +1147,29 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
 	
         if(m_dllAvUtil.av_dict_get(pStream->metadata, "title", NULL, 0))
           st->m_description = m_dllAvUtil.av_dict_get(pStream->metadata, "title", NULL, 0)->value;
-
+        
+        if(g_advancedSettings.m_searchextendedstreaminfo)
+        {
+          //REM: ffmpeg correctly detects channel number for 
+          //        DTS_HD_HRA, however still me be usefull for more accurate lfe/bitrate/resolution ... 
+          if(pStream->codec->profile == FF_PROFILE_DTS_HD_MA)
+          {
+            CLog::Log(LOGINFO, "%s : Searching for extended stream info", __FUNCTION__);
+            AVPacket* pkt = get_single_frame( m_pFormatContext, iId);
+            if(pkt->data != NULL)
+            {
+              Frame frame;
+              frame.size = pkt->size;
+              frame.data = (unsigned char *)malloc(frame.size * sizeof(unsigned char));
+              fast_memcpy(frame.data, pkt->data, frame.size);
+              st->GetExtendedStreamInfo(AV_CODEC_ID_DTS , &frame);
+              free(frame.data);
+              av_free_packet(pkt);
+            }
+            else
+              CLog::Log(LOGINFO, "%s : No frame returned by get_single_frame", __FUNCTION__);
+          }
+        }   
         break;
       }
     case AVMEDIA_TYPE_VIDEO:

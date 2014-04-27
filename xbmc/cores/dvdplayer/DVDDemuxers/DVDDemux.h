@@ -21,6 +21,7 @@
  */
 
 #include "utils/StdString.h"
+#include "utils/BitstreamConverter.h"
 #include "system.h"
 #include "DVDDemuxPacket.h"
 
@@ -29,6 +30,10 @@ class CDVDInputStream;
 #ifndef __GNUC__
 #pragma warning(push)
 #pragma warning(disable:4244)
+#endif
+
+#if !defined(TARGET_WINDOWS) && !defined(__ppc__) && !defined(__powerpc__) && !defined(__arm__) 
+#include <stddef.h>
 #endif
 
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
@@ -62,6 +67,13 @@ enum StreamSource {
 
 #define STREAM_SOURCE_MASK(a) ((a) & 0xf00)
 
+typedef struct { unsigned char * data; int size; } Frame, *pFrame;
+
+enum LFE_Channel {
+  UNKNOW        = 0,
+  PRESENT         = 1,
+  NOT_PRESENT = 2,
+};
 /*
  * CDemuxStream
  * Base class for all demuxer streams
@@ -184,18 +196,38 @@ public:
     iBlockAlign = 0;
     iBitRate = 0;
     iBitsPerSample = 0;
+    
+    bExtendedStreamInfo = false;
+    iExtendedChannels = 0;
+    lfe_channel = UNKNOW;
+    iExtendedSampleRate = 0;
+    iExtendedResolution = 0;
+    
     type = STREAM_AUDIO;
   }
 
   virtual ~CDemuxStreamAudio() {}
 
   void GetStreamType(std::string& strInfo);
-
+  
+  virtual void GetExtendedStreamInfo(AVCodecID codectype = AV_CODEC_ID_NONE, pFrame pframe = NULL);
+  
   int iChannels;
   int iSampleRate;
   int iBlockAlign;
   int iBitRate;
   int iBitsPerSample;
+  
+  bool bExtendedStreamInfo;
+  uint8_t iExtendedChannels;
+  LFE_Channel lfe_channel;
+  int iExtendedSampleRate;
+  uint8_t iExtendedResolution;
+  
+protected:
+  const int DTS_HD_MaxSampleRate[16]= {   8000, 16000, 32000, 64000, 128000, 22050, 44100, 88200,
+                                                            176400, 352800, 12000, 24000, 48000, 96000, 192000, 384000};
+  bool Parse_dts_audio_header(pFrame pframe);
 };
 
 class CDemuxStreamSubtitle : public CDemuxStream

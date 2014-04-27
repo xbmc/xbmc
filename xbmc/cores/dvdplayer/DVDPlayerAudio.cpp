@@ -169,6 +169,7 @@ void CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints, CDVDAudioCodec* codec )
   int samplerateFromCodec = m_pAudioCodec->GetEncodedSampleRate();
 
   if (channelsFromCodec > 0)
+    //REM: not necessary to assign dts-hd-ma extendedchannel here
     m_streaminfo.channels = channelsFromCodec;
   if (samplerateFromCodec > 0)
     m_streaminfo.samplerate = samplerateFromCodec;
