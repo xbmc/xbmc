@@ -797,3 +797,56 @@ string PlexUtils::GetCompositeImageUrl(const CFileItem &item, const CStdString &
   }
   return newURL.Get();
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+string PlexUtils::GetPlexContent(const CFileItem &item)
+{
+  CStdString content;
+
+  switch(item.GetPlexDirectoryType())
+  {
+    case PLEX_DIR_TYPE_MOVIE:
+      content = "movies";
+      break;
+    case PLEX_DIR_TYPE_SHOW:
+      content = "tvshows";
+      break;
+    case PLEX_DIR_TYPE_SEASON:
+      content = "seasons";
+      break;
+    case PLEX_DIR_TYPE_EPISODE:
+      content = "episodes";
+      break;
+    case PLEX_DIR_TYPE_ARTIST:
+      content = "artists";
+      break;
+    case PLEX_DIR_TYPE_ALBUM:
+      content = "albums";
+      break;
+    case PLEX_DIR_TYPE_TRACK:
+      content = "songs";
+      break;
+    case PLEX_DIR_TYPE_SECONDARY:
+      content = "secondary";
+      break;
+    case PLEX_DIR_TYPE_CHANNEL:
+      content = "channel";
+      break;
+    case PLEX_DIR_TYPE_CHANNELS:
+      content = "channels";
+      break;
+    case PLEX_DIR_TYPE_CLIP:
+      content = "clips";
+      break;
+    case PLEX_DIR_TYPE_PHOTO:
+      content = "photos";
+      break;
+    case PLEX_DIR_TYPE_PHOTOALBUM:
+      content = "photoalbums";
+      break;
+    default:
+      break;
+  }
+  return content;
+}

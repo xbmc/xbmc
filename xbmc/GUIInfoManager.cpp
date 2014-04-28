@@ -92,6 +92,7 @@
 #include "plex/PlexApplication.h"
 #include "AutoUpdate/PlexAutoUpdate.h"
 #include "git_revision.h"
+#include "GUI/GUIPlexMediaWindow.h"
 
 using namespace PLAYLIST;
 /* END PLEX */
@@ -502,6 +503,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
                                   /* PLEX */
                                   { "firsttitle",       CONTAINER_FIRST_TITLE },
                                   { "secondtitle",      CONTAINER_SECOND_TITLE },
+                                  { "plexcontent",      CONTAINER_PLEXCONTENT },
                                   /* END PLEX */
                                   { "content",          CONTAINER_CONTENT }};
 
@@ -3064,6 +3066,17 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           return false;
         }
         break;
+
+      /* PLEX */
+      case CONTAINER_PLEXCONTENT:
+        {
+          CStdString match = m_stringParameters[info.GetData2()];
+          CGUIWindow* window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+          if (window)
+            bReturn = ((CGUIPlexMediaWindow *)window)->MatchPlexContent(match);
+        }
+        break;
+     /* END PLEX */
     }
   }
   return (info.m_info < 0) ? !bReturn : bReturn;

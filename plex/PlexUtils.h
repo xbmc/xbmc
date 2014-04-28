@@ -61,6 +61,7 @@ namespace PlexUtils
   unsigned long GetFastHash(std::string Data);
   bool IsPlayingPlaylist();
   std::string GetCompositeImageUrl(const CFileItem& item, const CStdString& args);
+  std::string GetPlexContent(const CFileItem& item);
 }
 
 #if defined(HAVE_EXECINFO_H)

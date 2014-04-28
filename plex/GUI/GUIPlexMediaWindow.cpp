@@ -920,6 +920,7 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
 
   bool ret = CGUIMediaWindow::Update(newUrl.Get(), updateFilterPath);
 
+  m_vecItems->SetProperty("PlexContent", PlexUtils::GetPlexContent(*m_vecItems));
   g_plexApplication.extraInfo->LoadExtraInfoForItem(m_vecItems);
 
   if (!updateFromFilter)
@@ -1265,4 +1266,20 @@ void CGUIPlexMediaWindow::AddFilters()
       }
     }
   }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIPlexMediaWindow::MatchPlexContent(const CStdString &matchStr)
+{
+  CStdStringArray matchVec = StringUtils::SplitString(matchStr, ",");
+  CStdString content = PlexUtils::GetPlexContent(*m_vecItems);
+
+  BOOST_FOREACH(CStdString& match, matchVec)
+  {
+    match = StringUtils::Trim(match);
+    if(match.Equals(content))
+      return true;
+  }
+
+  return false;
 }
