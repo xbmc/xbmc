@@ -254,13 +254,13 @@
 	<!-- Library -->
 	<include name="LibraryPhoto">
 		<control type="group">
-			<visible>!Container.Content(photoAlbums) + !Container.Content(channel)</visible>
+			<visible>!Container.PlexContent(PhotoAlbums) + !Container.PlexContent(Channel)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- main list -->
 			<control type="group" id="777">
 				<control type="panel" id="51">
-					<visible>!Container.Content(photoAlbums) + !Container.Content(channel)</visible>
+					<visible>!Container.PlexContent(PhotoAlbums) + !Container.PlexContent(Channel)</visible>
 					<viewtype label="LibraryPhoto">panel</viewtype>
 					<onup>51</onup>
 					<ondown>51</ondown>
@@ -314,7 +314,7 @@
 	<!-- Album -->
 	<include name="AlbumPhoto">
 		<control type="group">
-			<visible>Container.Content(photoAlbums)</visible>
+			<visible>Container.PlexContent(PhotoAlbums)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<control type="group">
@@ -327,7 +327,7 @@
 			<!-- main list -->
 			<control type="group" id="777">
 				<control type="panel" id="52">
-					<visible>Container.Content(photoAlbums)</visible>
+					<visible>Container.PlexContent(PhotoAlbums)</visible>
 					<viewtype label="AlbumPhoto">panel</viewtype>
 					<onup>51</onup>
 					<ondown>51</ondown>

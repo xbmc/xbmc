@@ -296,13 +296,13 @@
 	<!-- top level of any channels section -->
 	<include name="Channels">
 		<control type="group" id="777">
-			<visible>Container.Content(channels)</visible>
+			<visible>Container.PlexContent(Channels)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- main list -->
 			<control type="panel" id="70">
 				<viewtype label="Channels">panel</viewtype>
-				<visible>Container.Content(channels)</visible>
+				<visible>Container.PlexContent(Channels)</visible>
 				<posy>18</posy>
 				<posx>28</posx>
 				<width>1300</width>
@@ -340,13 +340,13 @@
 	<!-- Generic Channel view, a temporary throw-in-all -->
 	<include name="Channel">
 		<control type="group">
-			<visible>Container.content(channel)</visible>
+			<visible>Container.PlexContent(Channel)</visible>
 			<include>FadeDialog</include>
 			<!-- main list -->
 			<control type="group" id="777">
 				<control type="panel" id="99">
 					<viewtype label="ChannelGeneric">panel</viewtype>
-					<visible>Container.content(channel)</visible>
+					<visible>Container.PlexContent(Channel)</visible>
 					<onup>99</onup>
 					<ondown>99</ondown>
 					<onright>Container.NextViewMode</onright>
@@ -400,7 +400,7 @@
 	</include>
 	<include name="_Channel">
 		<control type="group">
-			<visible>Container.content(channel)</visible>
+			<visible>Container.PlexContent(Channel)</visible>
 			<include>FadeDialog</include>
 			<!--><include>rightSideSlide</include>
 			<include>ChannelPlotBG</include>
@@ -410,7 +410,7 @@
 			<control type="group" id="777">
 				<control type="panel" id="71">
 					<viewtype label="ChannelVideo">panel</viewtype>
-					<visible>Container.content(channel)</visible>
+					<visible>Container.PlexContent(Channel)</visible>
 					<onup>71</onup>
 					<ondown>71</ondown>
 					<onright>71</onright>
@@ -444,7 +444,7 @@
 	<!-- Photo Channel (MyPics.xml) -->
 	<include name="ChannelPhoto">
 		<control type="group">
-			<visible>Container.content(channel)</visible>
+			<visible>Container.PlexContent(Channel)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<include>ChannelPlotBG</include>
@@ -454,7 +454,7 @@
 			<control type="group" id="777">
 				<control type="panel" id="72">
 					<viewtype label="ChannelPhoto">panel</viewtype>
-					<visible>Container.content(channel)</visible>
+					<visible>Container.PlexContent(Channel)</visible>
 					<onup>72</onup>
 					<ondown>72</ondown>
 					<onright>72</onright>
@@ -488,7 +488,7 @@
 	<!-- Music Channel (MyMusicSongs.xml) -->
 	<include name="ChannelMusic">
 		<control type="group">
-			<visible>Container.content(channel)</visible>
+			<visible>Container.PlexContent(Channel)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<include>ChannelPlotBG</include>
@@ -498,7 +498,7 @@
 			<control type="group" id="777">
 				<control type="panel" id="73">
 					<viewtype label="ChannelMusic">panel</viewtype>
-					<visible>Container.content(channel)</visible>
+					<visible>Container.PlexContent(Channel)</visible>
 					<onup>73</onup>
 					<ondown>73</ondown>
 					<onright>73</onright>

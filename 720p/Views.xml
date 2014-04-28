@@ -4,7 +4,7 @@
 	<include name="ListSelectedArt">
 		<!-- TV Show Banner -->
 		<control type="group">
-			<visible>Container.Content(tvshows)</visible>
+			<visible>Container.PlexContent(TVShows)</visible>
 			<control type="image">
 				<posx>23</posx>
 				<posy>37</posy>
@@ -30,7 +30,7 @@
 		</control>
 		<!-- Episode Thumb -->
 		<control type="group">
-			<visible>Container.Content(episodes) | [Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
+			<visible>Container.PlexContent(Episodes) | [Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
 			<control type="image">
 				<posx>23</posx>
 				<posy>37</posy>
@@ -55,7 +55,7 @@
 		</control>
 		<!-- Movies Poster -->
 		<control type="group">
-			<visible>Container.Content(Movies)</visible>
+			<visible>Container.PlexContent(Movies)</visible>
 			<control type="image">
 				<posx>23</posx>
 				<posy>37</posy>
@@ -80,7 +80,7 @@
 		</control>
 		<!-- Music/Photos/Channels Square Art -->
 		<control type="group">
-			<visible>Container.Content(artists) | Container.Content(albums) | Container.Content(songs) | Container.Content(photos) | [Container.Content(channels) | [Container.Content(channel) + ListItem.Type(photo)]] | [Container.Content(channel) + !ListItem.Type(clip) + !ListItem.Type(episode)]</visible>
+			<visible>Container.PlexContent(Artists) | Container.PlexContent(Albums) | Container.PlexContent(Songs) | Container.PlexContent(Photos) | [Container.PlexContent(Channels) | [Container.PlexContent(Channel) + ListItem.Type(photo)]] | [Container.PlexContent(Channel) + !ListItem.Type(clip) + !ListItem.Type(episode)]</visible>
 			<control type="image">
 				<posx>23</posx>
 				<posy>37</posy>
@@ -184,7 +184,7 @@
 				<include>White2</include>
 				<align>right</align>
 			</control>
-			<visible>[Container.Content(movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
+			<visible>[Container.PlexContent(Movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.PlexContent(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.PlexContent(Seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
 		</control>
 	</include>
 	<!-- List -->
@@ -203,7 +203,7 @@
 				<visible>Control.IsVisible(58)</visible>
 				<animation effect="fade" end="40" time="0" condition="true">Conditional</animation>
 			</control>
-			<visible>!Container.Content(movie) + !Container.Content(episode) + !Container.Content(Folders) + !Container.Content(clip) + !Container.Content(clips)</visible>
+			<visible>!Container.Content(movie) + !Container.Content(episode) + !Container.Content(Folders) + !Container.Content(clip) + !Container.PlexContent(Clips)</visible>
 			<!-- selected item bg -->
 			<control type="image">
 				<posx>465</posx>
@@ -217,7 +217,7 @@
 			<control type="group" id="777">
 				<control type="fixedlist" id="58">
 					<viewtype label="List">panel</viewtype>
-					<visible>!Container.Content(movie) + !Container.Content(episode) + !Container.Content(Folders) + !Container.Content(clip) + !Container.Content(clips)</visible>
+					<visible>!Container.Content(movie) + !Container.Content(episode) + !Container.Content(Folders) + !Container.Content(clip) + !Container.PlexContent(Clips)</visible>
 					<posy>31</posy>
 					<posx>505</posx>
 					<width>805</width>
@@ -231,7 +231,7 @@
 					<scrolltime>200</scrolltime>
 					<pagecontrol>61</pagecontrol>
 					<!-- movies & tv shows -->
-					<itemlayout height="50" condition="Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)">
+					<itemlayout height="50" condition="Container.PlexContent(Movies) | Container.PlexContent(TVShows) | Container.PlexContent(Seasons)">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -249,7 +249,7 @@
 							<textoffsetx>80</textoffsetx>
 						</control>
 					</itemlayout>
-					<focusedlayout height="100" condition="Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)">
+					<focusedlayout height="100" condition="Container.PlexContent(Movies) | Container.PlexContent(TVShows) | Container.PlexContent(Seasons)">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -285,7 +285,7 @@
 							<font>Bold-32</font>
 							<textcolor>orange</textcolor>
 							<shadowcolor>FF222222</shadowcolor>
-							<visible>!Container.Content(TVShows) + !Container.Content(Movies)</visible>
+							<visible>!Container.PlexContent(TVShows) + !Container.PlexContent(Movies)</visible>
 							<animation type="Focus" reversible="false">
 								<effect type="zoom" center="0,0" start="90" end="100" time="200" tween="Linear" easing="out"/>
 								<effect type="fade" start="0" end="100" time="450"/>
@@ -301,7 +301,7 @@
 							<font>Bold-32</font>
 							<textcolor>orange</textcolor>
 							<shadowcolor>FF222222</shadowcolor>
-							<visible>Container.Content(Movies)</visible>
+							<visible>Container.PlexContent(Movies)</visible>
 							<animation type="Focus" reversible="false">
 								<effect type="zoom" center="0,0" start="90" end="100" time="200" tween="Linear" easing="out"/>
 								<effect type="fade" start="0" end="100" time="450"/>
@@ -309,7 +309,7 @@
 						</control>
 					</focusedlayout>
 					<!-- filtered episodes -->
-					<itemlayout height="50" condition="[Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated)) + !IsEmpty(Container.Property(mixedParents))] | [Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents))]">
+					<itemlayout height="50" condition="[Container.PlexContent(Episodes) + !IsEmpty(Container.Property(primaryFilterActivated)) + !IsEmpty(Container.Property(mixedParents))] | [Container.PlexContent(Episodes) + !IsEmpty(Container.Property(mixedParents))]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -333,7 +333,7 @@
 							<textoffsetx>80</textoffsetx>
 						</control>
 					</itemlayout>
-					<focusedlayout height="100" condition="[Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated)) + !IsEmpty(Container.Property(mixedParents))] | [Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents))]">
+					<focusedlayout height="100" condition="[Container.PlexContent(Episodes) + !IsEmpty(Container.Property(primaryFilterActivated)) + !IsEmpty(Container.Property(mixedParents))] | [Container.PlexContent(Episodes) + !IsEmpty(Container.Property(mixedParents))]">
 						<control type="group">
 							<posx>28</posx>
 							<posy>-40</posy>
@@ -396,7 +396,7 @@
 						</control>
 					</focusedlayout>
 					<!-- clips & episodes -->
-					<itemlayout height="50" condition="Container.Content(clips) | Container.Content(homemovies) | [Container.Content(episodes) + [IsEmpty(Container.Property(primaryFilterActivated)) | IsEmpty(Container.Property(mixedParents))]]">
+					<itemlayout height="50" condition="Container.PlexContent(Clips) | Container.Content(homemovies) | [Container.PlexContent(Episodes) + [IsEmpty(Container.Property(primaryFilterActivated)) | IsEmpty(Container.Property(mixedParents))]]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -418,7 +418,7 @@
 							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>80</textoffsetx>
-							<visible>![Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents))]</visible>
+							<visible>![Container.PlexContent(Episodes) + !IsEmpty(Container.Property(mixedParents))]</visible>
 						</control>
 						<control type="label">
 							<width>840</width>
@@ -427,7 +427,7 @@
 							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>80</textoffsetx>
-							<visible>[Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents)) + !IsEmpty(ListItem.Season)]</visible>
+							<visible>[Container.PlexContent(Episodes) + !IsEmpty(Container.Property(mixedParents)) + !IsEmpty(ListItem.Season)]</visible>
 						</control>
 						<control type="label">
 							<width>840</width>
@@ -436,10 +436,10 @@
 							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>80</textoffsetx>
-							<visible>[Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents)) + IsEmpty(ListItem.Season)]</visible>
+							<visible>[Container.PlexContent(Episodes) + !IsEmpty(Container.Property(mixedParents)) + IsEmpty(ListItem.Season)]</visible>
 						</control>
 					</itemlayout>
-					<focusedlayout height="100" condition="Container.Content(clips) | Container.Content(homemovies) | [Container.Content(episodes) + [IsEmpty(Container.Property(primaryFilterActivated)) | IsEmpty(Container.Property(mixedParents))]]">
+					<focusedlayout height="100" condition="Container.PlexContent(Clips) | Container.Content(homemovies) | [Container.PlexContent(Episodes) + [IsEmpty(Container.Property(primaryFilterActivated)) | IsEmpty(Container.Property(mixedParents))]]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -487,7 +487,7 @@
 						</control>
 					</focusedlayout>
 					<!-- photos -->
-					<itemlayout height="50" condition="Container.Content(photos) | Container.Content(photoAlbums)">
+					<itemlayout height="50" condition="Container.PlexContent(Photos) | Container.PlexContent(PhotoAlbums)">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -517,7 +517,7 @@
 							<textoffsetx>100</textoffsetx>
 						</control>
 					</itemlayout>
-					<focusedlayout height="100" condition="Container.Content(photos) | Container.Content(photoAlbums)">
+					<focusedlayout height="100" condition="Container.PlexContent(Photos) | Container.PlexContent(PhotoAlbums)">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -563,7 +563,7 @@
 						</control>
 					</focusedlayout>
 					<!-- channels -->
-					<itemlayout height="50" condition="Container.Content(channels) | [Container.Content(channel) + ListItem.Type(photo)]">
+					<itemlayout height="50" condition="Container.PlexContent(Channels) | [Container.PlexContent(Channel) + ListItem.Type(photo)]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -586,7 +586,7 @@
 							<textoffsetx>100</textoffsetx>
 						</control>
 					</itemlayout>
-					<focusedlayout height="100" condition="Container.Content(channels) | [Container.Content(channel) + ListItem.Type(photo)]">
+					<focusedlayout height="100" condition="Container.PlexContent(Channels) | [Container.PlexContent(Channel) + ListItem.Type(photo)]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -631,7 +631,7 @@
 							</animation>
 						</control>
 					</focusedlayout>
-					<itemlayout height="50" condition="[Container.Content(channel) + !ListItem.Type(clip) + !ListItem.Type(episode)]">
+					<itemlayout height="50" condition="[Container.PlexContent(Channel) + !ListItem.Type(clip) + !ListItem.Type(episode)]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -654,7 +654,7 @@
 							<textoffsetx>100</textoffsetx>
 						</control>
 					</itemlayout>
-					<focusedlayout height="100" condition="[Container.Content(channel) + !ListItem.Type(clip) + !ListItem.Type(episode)]">
+					<focusedlayout height="100" condition="[Container.PlexContent(Channel) + !ListItem.Type(clip) + !ListItem.Type(episode)]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -699,7 +699,7 @@
 							</animation>
 						</control>
 					</focusedlayout>
-					<itemlayout height="50" condition="[Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]">
+					<itemlayout height="50" condition="[Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -721,7 +721,7 @@
 							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>80</textoffsetx>
-							<visible>![Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents))]</visible>
+							<visible>![Container.PlexContent(Episodes) + !IsEmpty(Container.Property(mixedParents))]</visible>
 						</control>
 						<control type="label">
 							<width>840</width>
@@ -730,7 +730,7 @@
 							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>80</textoffsetx>
-							<visible>[Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents)) + !IsEmpty(ListItem.Season)]</visible>
+							<visible>[Container.PlexContent(Episodes) + !IsEmpty(Container.Property(mixedParents)) + !IsEmpty(ListItem.Season)]</visible>
 						</control>
 						<control type="label">
 							<width>840</width>
@@ -739,10 +739,10 @@
 							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>80</textoffsetx>
-							<visible>[Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents)) + IsEmpty(ListItem.Season)]</visible>
+							<visible>[Container.PlexContent(Episodes) + !IsEmpty(Container.Property(mixedParents)) + IsEmpty(ListItem.Season)]</visible>
 						</control>
 					</itemlayout>
-					<focusedlayout height="100" condition="[Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]">
+					<focusedlayout height="100" condition="[Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -848,7 +848,7 @@
 						</control>
 					</focusedlayout>
 					<!-- music -->
-					<itemlayout height="50" condition="!Window.IsActive(plexplayqueue) + [Container.Content(artists) | Container.Content(albums) | Container.Content(songs)]">
+					<itemlayout height="50" condition="!Window.IsActive(plexplayqueue) + [Container.PlexContent(Artists) | Container.PlexContent(Albums) | Container.PlexContent(Songs)]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -876,7 +876,7 @@
 							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>100</textoffsetx>
-							<visible>[IsEmpty(Container.Property(primaryFilterActivated)) + Container.Content(albums)] | [IsEmpty(Container.Property(primaryFilterActivated)) + Container.Content(artists)]</visible>
+							<visible>[IsEmpty(Container.Property(primaryFilterActivated)) + Container.PlexContent(Albums)] | [IsEmpty(Container.Property(primaryFilterActivated)) + Container.PlexContent(Artists)]</visible>
 						</control>
 						<control type="label">
 							<width>840</width>
@@ -885,7 +885,7 @@
 							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>100</textoffsetx>
-							<visible>!IsEmpty(Container.Property(primaryFilterActivated)) + Container.Content(albums)</visible>
+							<visible>!IsEmpty(Container.Property(primaryFilterActivated)) + Container.PlexContent(Albums)</visible>
 						</control>
 						<control type="label">
 							<width>840</width>
@@ -894,7 +894,7 @@
 							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>100</textoffsetx>
-							<visible>IsEmpty(Container.Property(mixedParents)) + Container.Content(songs)</visible>
+							<visible>IsEmpty(Container.Property(mixedParents)) + Container.PlexContent(Songs)</visible>
 						</control>
 						<control type="label">
 							<width>840</width>
@@ -903,10 +903,10 @@
 							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>100</textoffsetx>
-							<visible>!IsEmpty(Container.Property(mixedParents)) + Container.Content(songs)</visible>
+							<visible>!IsEmpty(Container.Property(mixedParents)) + Container.PlexContent(Songs)</visible>
 						</control>
 					</itemlayout>
-					<focusedlayout height="100" condition="!Window.IsActive(plexplayqueue) + [Container.Content(artists) | Container.Content(albums) | Container.Content(songs)]">
+					<focusedlayout height="100" condition="!Window.IsActive(plexplayqueue) + [Container.PlexContent(Artists) | Container.PlexContent(Albums) | Container.PlexContent(Songs)]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -982,7 +982,7 @@
 					</focusedlayout>
 					<!-- Play Queues -->
 					<!-- music -->
-					<itemlayout height="50" condition="Window.IsActive(plexplayqueue) + Container.Content(songs)">
+					<itemlayout height="50" condition="Window.IsActive(plexplayqueue) + Container.PlexContent(Songs)">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -1013,7 +1013,7 @@
 							<include>White2</include>
 						</control>
 					</itemlayout>
-					<focusedlayout height="100" condition="Window.IsActive(plexplayqueue) + Container.Content(songs)">
+					<focusedlayout height="100" condition="Window.IsActive(plexplayqueue) + Container.PlexContent(Songs)">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>

@@ -5,10 +5,10 @@
 		<!-- Library Movies & TV Shows -->
 		<control type="group" id="777">
 			<include>FadeDialog</include>
-			<visible>!Container.Content(secondary) + [Container.content(movies) | Container.Content(TVShows)]</visible>
+			<visible>!Container.PlexContent(Secondary) + [Container.PlexContent(Movies) | Container.PlexContent(TVShows)]</visible>
 			<include>rightSideSlide</include>
 			<control type="panel" id="51">
-				<visible>!Container.Content(secondary) + [Container.content(movies) | Container.Content(TVShows)]</visible>
+				<visible>!Container.PlexContent(Secondary) + [Container.PlexContent(Movies) | Container.PlexContent(TVShows)]</visible>
 				<viewtype label="LibraryPostersBigger">panel</viewtype>
 				<onup>51</onup>
 				<ondown>51</ondown>
@@ -42,10 +42,10 @@
 		<!-- Library Movies & TV Shows -->
 		<control type="group" id="777">
 			<include>FadeDialog</include>
-			<visible>!Container.Content(secondary) + [Container.content(movies) | Container.Content(TVShows)]</visible>
+			<visible>!Container.PlexContent(Secondary) + [Container.PlexContent(Movies) | Container.PlexContent(TVShows)]</visible>
 			<include>rightSideSlide</include>
 			<control type="panel" id="50">
-				<visible>!Container.Content(secondary) + [Container.content(movies) | Container.Content(TVShows)]</visible>
+				<visible>!Container.PlexContent(Secondary) + [Container.PlexContent(Movies) | Container.PlexContent(TVShows)]</visible>
 				<viewtype label="LibraryPosters">panel</viewtype>
 				<onup>50</onup>
 				<ondown>50</ondown>
@@ -191,12 +191,12 @@
 	<!-- Pre-play Filtered Episodes -->
 	<include name="LibraryFilteredEpisodes">
 		<control type="group" id="777">
-			<visible>[Container.Content(episodes) + IsEmpty(Container.Property(PlexPreplay))] + !IsEmpty(Container.Property(primaryFilterActivated))</visible>
+			<visible>[Container.PlexContent(Episodes) + IsEmpty(Container.Property(PlexPreplay))] + !IsEmpty(Container.Property(primaryFilterActivated))</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- main list -->
 			<control type="panel" id="62">
-				<visible>[Container.Content(episodes) + IsEmpty(Container.Property(PlexPreplay))] + !IsEmpty(Container.Property(primaryFilterActivated))</visible>
+				<visible>[Container.PlexContent(Episodes) + IsEmpty(Container.Property(PlexPreplay))] + !IsEmpty(Container.Property(primaryFilterActivated))</visible>
 				<viewtype label="LibraryFilteredEpisodes">panel</viewtype>
 				<onup>62</onup>
 				<ondown>62</ondown>

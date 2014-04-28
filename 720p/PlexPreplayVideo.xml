@@ -2,7 +2,7 @@
 	<defaultcontrol always="true">102</defaultcontrol>
 	<views>60,61,58</views>
 	<allowoverlay>no</allowoverlay>
-	<onload condition="Container.Content(clips)">Skin.SetString(SectionType,preplay)</onload>
+	<onload condition="Container.PlexContent(Clips)">Skin.SetString(SectionType,preplay)</onload>
 	<onunload>Skin.Reset(SectionType)</onunload>
 	<controls>
 		<!-- bg's (Backgrounds.xml) -->

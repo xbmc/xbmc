@@ -42,12 +42,12 @@
 				<posx>InfoDialogTitleXOffset</posx>
 				<control type="label">
 					<description>Album title</description>
-					<visible>Container.Content(albums)</visible>
+					<visible>Container.PlexContent(Albums)</visible>
 					<info>ListItem.Album</info>
 				</control>
 				<control type="label">
 					<description>Artist name</description>
-					<visible>Container.Content(artists)</visible>
+					<visible>Container.PlexContent(Artists)</visible>
 					<info>ListItem.Artist</info>
 				</control>
 				<control type="grouplist">
@@ -55,7 +55,7 @@
 					<posy>InfoDialogTopButtonsPosY</posy>
 					<orientation>horizontal</orientation>
 					<ondown>61</ondown>
-					<visible>Container.Content(albums)</visible>
+					<visible>Container.PlexContent(Albums)</visible>
 					<control type="button" id="5">
 						<description>Cast/Review</description>
 						<label>206</label>
@@ -74,7 +74,7 @@
 					<posy>InfoDialogTopButtonsPosY</posy>
 					<orientation>horizontal</orientation>
 					<ondown>50</ondown>
-					<visible>Container.Content(artists)</visible>
+					<visible>Container.PlexContent(Artists)</visible>
 					<control type="button" id="5">
 						<description>Cast/Review</description>
 						<label>206</label>
@@ -92,7 +92,7 @@
 					<posx>10</posx>
 					<posy>120</posy>
 					<control type="group">
-						<visible>Container.Content(albums)</visible>
+						<visible>Container.PlexContent(Albums)</visible>
 						<control type="group">
 							<description>Artist</description>
 							<control type="label">
@@ -174,7 +174,7 @@
 						</control>
 					</control>
 					<control type="group">
-						<visible>Container.Content(artists)</visible>
+						<visible>Container.PlexContent(Artists)</visible>
 						<control type="group">
 							<description>Born/Formed</description>
 							<control type="label">

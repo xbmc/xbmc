@@ -195,7 +195,7 @@
 				<font>Bold-14</font>
 				<shadowcolor>FF222222</shadowcolor>
 			</control>
-			<visible>[Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
+			<visible>[Container.PlexContent(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.PlexContent(Seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
 		</control>
 		<control type="group">
 			<control type="image">
@@ -204,7 +204,7 @@
 				<width>26</width>
 				<height>26</height>
 				<info>ListItem.Overlay</info>
-				<visible>[Container.Content(movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)]</visible>
+				<visible>[Container.PlexContent(Movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)]</visible>
 			</control>
 		</control>
 	</include>
@@ -269,7 +269,7 @@
 				<font>Bold-16</font>
 				<shadowcolor>FF222222</shadowcolor>
 			</control>
-			<visible>[Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
+			<visible>[Container.PlexContent(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.PlexContent(Seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
 		</control>
 		<control type="group">
 			<control type="image">
@@ -278,7 +278,7 @@
 				<width>30</width>
 				<height>30</height>
 				<info>ListItem.Overlay</info>
-				<visible>[Container.Content(movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)]</visible>
+				<visible>[Container.PlexContent(Movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)]</visible>
 			</control>
 		</control>
 	</include>
@@ -366,15 +366,15 @@
 	<!-- screen top bar -->
 	<!-- variables for item count in top bar -->
 	<variable name="TopBarItemCountStrings">
-		<value condition="Container.Content(tvshows)">$INFO[Container.NumItems] $LOCALIZE[31008]</value>
-		<value condition="Container.Content(seasons)">$INFO[Container.NumItems] $LOCALIZE[31021]</value>
-		<value condition="Container.Content(episodes)">$INFO[Container.NumItems] $LOCALIZE[20360]</value>
-		<value condition="Container.Content(movies)">$INFO[Container.NumItems] $LOCALIZE[342]</value>
-		<value condition="Container.Content(albums)">$INFO[Container.NumItems] $LOCALIZE[132]</value>
-		<value condition="Container.Content(artists)">$INFO[Container.NumItems] $LOCALIZE[133]</value>
-		<value condition="Container.Content(songs)">$INFO[Container.NumItems] $LOCALIZE[134]</value>
+		<value condition="Container.PlexContent(TVShows)">$INFO[Container.NumItems] $LOCALIZE[31008]</value>
+		<value condition="Container.PlexContent(Seasons)">$INFO[Container.NumItems] $LOCALIZE[31021]</value>
+		<value condition="Container.PlexContent(Episodes)">$INFO[Container.NumItems] $LOCALIZE[20360]</value>
+		<value condition="Container.PlexContent(Movies)">$INFO[Container.NumItems] $LOCALIZE[342]</value>
+		<value condition="Container.PlexContent(Albums)">$INFO[Container.NumItems] $LOCALIZE[132]</value>
+		<value condition="Container.PlexContent(Artists)">$INFO[Container.NumItems] $LOCALIZE[133]</value>
+		<value condition="Container.PlexContent(Songs)">$INFO[Container.NumItems] $LOCALIZE[134]</value>
 		<value condition="Container.Content(genres)">$INFO[Container.NumItems] $LOCALIZE[135]</value>
-		<value condition="Container.Content(photos)">$INFO[Container.NumItems] $LOCALIZE[1213]</value>
+		<value condition="Container.PlexContent(Photos)">$INFO[Container.NumItems] $LOCALIZE[1213]</value>
 		<value condition="Window.IsActive(1) + !IsEmpty(Container.SecondTitle)">$INFO[Container.NumItems] $LOCALIZE[31970]</value>
 	</variable>
 	<variable name="TopBarSelectedItemStrings">
@@ -389,18 +389,18 @@
 	</variable>
 	<!-- variable for default description when no plot available -->
 	<variable name="NoPlotDefaultItem">
-		<value condition="Container.Content(songs)">$LOCALIZE[31230]</value>
-		<value condition="Container.Content(albums) + IsEmpty(Container.Property(primaryFilterActivated))">$LOCALIZE[31229]</value>
-		<value condition="Container.Content(albums) + !IsEmpty(Container.Property(primaryFilterActivated))">$LOCALIZE[31230]</value>
-		<value condition="Container.Content(photos) + ListItem.Type(photo)">$LOCALIZE[31704]</value>
-		<value condition="Container.Content(photos) + ListItem.Type(photoAlbum)">$LOCALIZE[31230]</value>
-		<value condition="Container.Content(photoAlbums)">$LOCALIZE[31704]</value>
-		<value condition="Container.Content(movie) | Container.Content(movies)">$LOCALIZE[31142]</value>
+		<value condition="Container.PlexContent(Songs)">$LOCALIZE[31230]</value>
+		<value condition="Container.PlexContent(Albums) + IsEmpty(Container.Property(primaryFilterActivated))">$LOCALIZE[31229]</value>
+		<value condition="Container.PlexContent(Albums) + !IsEmpty(Container.Property(primaryFilterActivated))">$LOCALIZE[31230]</value>
+		<value condition="Container.PlexContent(Photos) + ListItem.Type(photo)">$LOCALIZE[31704]</value>
+		<value condition="Container.PlexContent(Photos) + ListItem.Type(photoAlbum)">$LOCALIZE[31230]</value>
+		<value condition="Container.PlexContent(PhotoAlbums)">$LOCALIZE[31704]</value>
+		<value condition="Container.Content(movie) | Container.PlexContent(Movies)">$LOCALIZE[31142]</value>
 		<value condition="Container.Content(tvshow)">$LOCALIZE[31143]</value>
-		<value condition="Container.Content(seasons)">$LOCALIZE[31143]</value>
-		<value condition="Container.Content(episodes)">$LOCALIZE[31143]</value>
+		<value condition="Container.PlexContent(Seasons)">$LOCALIZE[31143]</value>
+		<value condition="Container.PlexContent(Episodes)">$LOCALIZE[31143]</value>
 		<value condition="Container.Content(episode)">$LOCALIZE[31114]</value>
-		<value condition="Container.Content(channels)">$LOCALIZE[32107]</value>
+		<value condition="Container.PlexContent(Channels)">$LOCALIZE[32107]</value>
 		<value condition="Container.Content(clip) | Container.Content(homemovies)">$LOCALIZE[31144]</value>
 		<value condition="Window.IsActive(mysharedcontent)">$LOCALIZE[32108]</value>
 		<value>Item</value>

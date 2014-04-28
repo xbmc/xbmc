@@ -115,10 +115,10 @@
 		<control type="group" id="777">
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
-			<visible>Container.content(Clips) | Container.Content(HomeMovies)</visible>
+			<visible>Container.PlexContent(Clips) | Container.Content(HomeMovies)</visible>
 			<control type="panel" id="80">
 				<viewtype label="ClipThumbs">panel</viewtype>
-				<visible>Container.content(Clips) | Container.Content(HomeMovies)</visible>
+				<visible>Container.PlexContent(Clips) | Container.Content(HomeMovies)</visible>
 				<onup>80</onup>
 				<ondown>80</ondown>
 				<onright>80</onright>
