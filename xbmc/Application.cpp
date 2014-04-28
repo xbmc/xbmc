@@ -3723,7 +3723,10 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
       if (dbs.Open())
       {
         CBookmark bookmark;
-        if (dbs.GetResumeBookMark(item.GetPath(), bookmark))
+        CStdString path = item.GetPath();
+        if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
+          path = item.GetProperty("original_listitem_url").asString();
+        if( dbs.GetResumeBookMark(path, bookmark) )
         {
           startoffset = (int)(bookmark.timeInSeconds*75);
           selectedFile = bookmark.partNumber;
