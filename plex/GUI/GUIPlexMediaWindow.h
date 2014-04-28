@@ -115,6 +115,7 @@ private:
     void InsertPage(CFileItemList *items);
 
     CPlexThumbCacher m_thumbCache;
+    CPlexSectionFilterPtr m_sectionFilter;
 };
 
 class CGUIPlexMusicWindow : public CGUIPlexMediaWindow
