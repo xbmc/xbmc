@@ -101,11 +101,11 @@ bool CGUIWindowPlexPreplayVideo::OnAction(const CAction &action)
     SetInvalid();
     return true;
   }
-  else if (action.GetID() == ACTION_MOVE_RIGHT)
+  else if (action.GetID() == ACTION_PLEX_MOVE_NEXT_ITEM)
   {
     MoveToItem(1);
   }
-  else if (action.GetID() == ACTION_MOVE_LEFT)
+  else if (action.GetID() == ACTION_PLEX_MOVE_PREV_ITEM)
   {
     MoveToItem(-1);
   }
