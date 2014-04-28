@@ -23,14 +23,14 @@ TEST_F(PlexMediaWindowTests, matchPlexContent_basic)
 TEST_F(PlexMediaWindowTests, matchPlexContent_twoArgs)
 {
   mw.GetVecItems()->SetPlexDirectoryType(PLEX_DIR_TYPE_ALBUM);
-  EXPECT_TRUE(mw.MatchPlexContent("albums, songs"));
-  EXPECT_TRUE(mw.MatchPlexContent("songs, albums"));
+  EXPECT_TRUE(mw.MatchPlexContent("albums; songs"));
+  EXPECT_TRUE(mw.MatchPlexContent("songs; albums"));
 }
 
 TEST_F(PlexMediaWindowTests, matchPlexContent_spaces)
 {
   mw.GetVecItems()->SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
-  EXPECT_TRUE(mw.MatchPlexContent("    movies  , foo "));
+  EXPECT_TRUE(mw.MatchPlexContent("    movies  ; foo "));
 }
 
 TEST_F(PlexMediaWindowTests, matchPlexContent_nomatch)
@@ -68,5 +68,5 @@ TEST_F(PlexMediaWindowTests, matchPlexFilter_nomatch)
 TEST_F(PlexMediaWindowTests, matchPlexFilter_twoArgs)
 {
   mw.m_sectionFilter->setPrimaryFilter("onDeck");
-  EXPECT_TRUE(mw.MatchPlexFilter("all, onDeck"));
+  EXPECT_TRUE(mw.MatchPlexFilter("all; onDeck"));
 }

@@ -1269,7 +1269,7 @@ void CGUIPlexMediaWindow::AddFilters()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::MatchPlexContent(const CStdString &matchStr)
 {
-  CStdStringArray matchVec = StringUtils::SplitString(matchStr, ",");
+  CStdStringArray matchVec = StringUtils::SplitString(matchStr, ";");
   CStdString content = PlexUtils::GetPlexContent(*m_vecItems);
 
   BOOST_FOREACH(CStdString& match, matchVec)
@@ -1288,7 +1288,7 @@ bool CGUIPlexMediaWindow::MatchPlexFilter(const CStdString &matchStr)
   if (!m_sectionFilter)
     return matchStr.empty();
 
-  CStdStringArray matchVec = StringUtils::SplitString(matchStr, ",");
+  CStdStringArray matchVec = StringUtils::SplitString(matchStr, ";");
   CStdString filterName = m_sectionFilter->currentPrimaryFilter();
 
   BOOST_FOREACH(CStdString& match, matchVec)
