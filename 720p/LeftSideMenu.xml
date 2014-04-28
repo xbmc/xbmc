@@ -285,7 +285,7 @@
 	<include name="leftMenuBarButton">
 		<width>74</width>
 		<height>30</height>
-		<onleft condition="[!Container.Content(albums) | [Container.Content(albums) + !IsEmpty(Container.Property(primaryFilterActivated)]] + !Container.Content(songs) + !Container.Content(movie) + !Container.Content(seasons) + [!Container.Content(episodes) | [Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated) + IsEmpty(Container.Property(PlexPreplay)]] + !Container.Content(episode) + !Container.Content(clip) + ![Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]">1300</onleft>
+		<onleft condition="[!Container.Content(albums) | [Container.Content(albums) + [Container.PlexFilter(Albums) | Container.PlexFilter(recentlyAdded)]]] + !Container.Content(songs) + !Container.Content(movie) + !Container.Content(seasons) + [!Container.Content(episodes) | [Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated) + IsEmpty(Container.Property(PlexPreplay)]] + !Container.Content(episode) + !Container.Content(clip) + ![Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]">1300</onleft>
 		<onright>777</onright>
 	</include>
 	<!-- Home menu -->
@@ -483,7 +483,7 @@
 					<texturenofocus>left-menu-filters-icon-u.png</texturenofocus>
 					<onclick>Control.SetFocus(1300)</onclick>
 					<include>leftMenuBarButton</include>
-					<visible>[!Container.Content(albums) | [Container.Content(albums) + !IsEmpty(Container.Property(primaryFilterActivated)]] + !Container.Content(songs) + !Container.Content(seasons) + [!Container.Content(episodes) | [Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated) + IsEmpty(Container.Property(PlexPreplay)]] + ![Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
+					<visible>[!Container.Content(albums) | [Container.Content(albums) + [Container.PlexFilter(Albums) | Container.PlexFilter(recentlyAdded)]]] + !Container.Content(songs) + !Container.Content(seasons) + [!Container.Content(episodes) | [Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated) + IsEmpty(Container.Property(PlexPreplay)]] + ![Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
 				</control>
 				<!-- Now Playing -->
 				<control type="button" id="103">

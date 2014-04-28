@@ -96,7 +96,7 @@
 			<control type="group" id="777">
 				<control type="panel" id="52">
 					<viewtype label="MusicLibrary">panel</viewtype>
-					<visible>[!Container.Content(Albums) + !Container.Content(Songs) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(channel)] | [Container.Content(Albums) + !IsEmpty(Container.Property(mixedParents))]</visible>
+					<visible>[[Container.Content(Albums) + [Container.PlexFilter(Albums) | Container.PlexFilter(recentlyAdded)]] | [Container.Content(Artists) + Container.PlexFilter(All)]] + !Container.Content(Songs) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(channel)</visible>
 					<posy>28</posy>
 					<posx>100</posx>
 					<width>1200</width>
@@ -129,7 +129,7 @@
 			<control type="group" id="777">
 				<posx>-54</posx>
 				<posy>-34</posy>
-				<visible>Container.Content(Albums) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary) + IsEmpty(Container.Property(mixedParents)) + IsEmpty(Container.Property(primaryFilterActivated)) + Control.IsVisible(53)</visible>
+				<visible>[Container.Content(Albums) + !Container.PlexFilter(Albums)] + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary) + IsEmpty(Container.Property(mixedParents)) + Control.IsVisible(53)</visible>
 				<!-- backgrounds & plot -->
 				<control type="group">
 					<!-- backgrounds -->
@@ -262,7 +262,7 @@
 				</control>
 				<!-- list -->
 				<control type="panel" id="53">
-					<visible>Container.Content(Albums) + IsEmpty(Container.Property(primaryFilterActivated))</visible>
+					<visible>[Container.Content(Albums) + !Container.PlexFilter(Albums)] + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary) + IsEmpty(Container.Property(mixedParents))</visible>
 					<viewtype label="MusicLibraryAlbums">panel</viewtype>
 					<onup>53</onup>
 					<ondown>53</ondown>
