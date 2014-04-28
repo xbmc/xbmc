@@ -231,7 +231,7 @@
 					<scrolltime>200</scrolltime>
 					<pagecontrol>61</pagecontrol>
 					<!-- movies & tv shows -->
-					<itemlayout height="50" condition="Container.PlexContent(Movies) | Container.PlexContent(TVShows) | Container.PlexContent(Seasons)">
+					<itemlayout height="50" condition="Container.PlexContent(movies,tvshows,seasons)">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -249,7 +249,7 @@
 							<textoffsetx>80</textoffsetx>
 						</control>
 					</itemlayout>
-					<focusedlayout height="100" condition="Container.PlexContent(Movies) | Container.PlexContent(TVShows) | Container.PlexContent(Seasons)">
+					<focusedlayout height="100" condition="Container.PlexContent(movies,tvshows,seasons)">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
