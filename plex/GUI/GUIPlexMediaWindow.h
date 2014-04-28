@@ -19,6 +19,7 @@
 #include "Filters/PlexSectionFilter.h"
 #include "guilib/GUIButtonControl.h"
 #include "PlexNavigationHelper.h"
+#include "gtest/gtest.h"
 
 #define FILTER_PRIMARY_CONTAINER     19000
 #define FILTER_SECONDARY_CONTAINER   19001
@@ -41,9 +42,15 @@
 #define FILTER_SECONDARY_LABEL       10009
 #define SORT_LABEL                   19019
 
-
+class PlexMediaWindowTests;
 class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public PlexContentPlayerMixin
 {    
+  friend class PlexMediaWindowTests;
+  FRIEND_TEST(PlexMediaWindowTests, matchPlexFilter_basic);
+  FRIEND_TEST(PlexMediaWindowTests, matchPlexFilter_cased);
+  FRIEND_TEST(PlexMediaWindowTests, matchPlexFilter_nomatch);
+  FRIEND_TEST(PlexMediaWindowTests, matchPlexFilter_twoArgs);
+
   public:
     CGUIPlexMediaWindow(int windowId = WINDOW_VIDEO_NAV, const CStdString &xml = "MyVideoNav.xml") :
       CGUIMediaWindow(windowId, xml), m_returningFromSkinLoad(false), m_pagingOffset(0), m_currentJobId(-1), m_hasAdvancedFilters(false), m_clearFilterButton(NULL) {};

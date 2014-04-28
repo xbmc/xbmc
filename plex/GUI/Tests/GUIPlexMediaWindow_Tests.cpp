@@ -2,32 +2,71 @@
 #include "GUI/GUIPlexMediaWindow.h"
 #include "FileItem.h"
 
-TEST(GUIPlexMediaWindow_MatchPlexContent, basic)
+class PlexMediaWindowTests : public ::testing::Test
 {
-  CGUIPlexMediaWindow mw;
-  mw.GetVecItems()->SetPlexDirectoryType(PLEX_DIR_TYPE_ALBUM);
+public:
+  void SetUp()
+  {
+    CURL u("plexserver://abc123");
+    mw.m_sectionFilter = CPlexSectionFilterPtr(new CPlexSectionFilter(u));
+  }
 
+  CGUIPlexMediaWindow mw;
+};
+
+TEST_F(PlexMediaWindowTests, matchPlexContent_basic)
+{
+  mw.GetVecItems()->SetPlexDirectoryType(PLEX_DIR_TYPE_ALBUM);
   EXPECT_TRUE(mw.MatchPlexContent("albums"));
 }
 
-TEST(GUIPlexMediaWindow_MatchPlexContent, twoArgs)
+TEST_F(PlexMediaWindowTests, matchPlexContent_twoArgs)
 {
-  CGUIPlexMediaWindow mw;
   mw.GetVecItems()->SetPlexDirectoryType(PLEX_DIR_TYPE_ALBUM);
   EXPECT_TRUE(mw.MatchPlexContent("albums, songs"));
   EXPECT_TRUE(mw.MatchPlexContent("songs, albums"));
 }
 
-TEST(GUIPlexMediaWindow_MatchPlexContent, spaces)
+TEST_F(PlexMediaWindowTests, matchPlexContent_spaces)
 {
-  CGUIPlexMediaWindow mw;
   mw.GetVecItems()->SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
   EXPECT_TRUE(mw.MatchPlexContent("    movies  , foo "));
 }
 
-TEST(GUIPlexMediaWindow_MatchPlexContent, nomatch)
+TEST_F(PlexMediaWindowTests, matchPlexContent_nomatch)
 {
-  CGUIPlexMediaWindow mw;
   mw.GetVecItems()->SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
   EXPECT_FALSE(mw.MatchPlexContent("albums"));
+}
+
+TEST_F(PlexMediaWindowTests, matchPlexContent_cased)
+{
+  mw.GetVecItems()->SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
+  EXPECT_TRUE(mw.MatchPlexContent("MOVIES"));
+  EXPECT_TRUE(mw.MatchPlexContent("movies"));
+  EXPECT_TRUE(mw.MatchPlexContent("MovIes"));
+}
+
+TEST_F(PlexMediaWindowTests, matchPlexFilter_basic)
+{
+  mw.m_sectionFilter->setPrimaryFilter("all");
+  EXPECT_TRUE(mw.MatchPlexFilter("all"));
+}
+
+TEST_F(PlexMediaWindowTests, matchPlexFilter_cased)
+{
+  mw.m_sectionFilter->setPrimaryFilter("all");
+  EXPECT_TRUE(mw.MatchPlexFilter("aLl"));
+}
+
+TEST_F(PlexMediaWindowTests, matchPlexFilter_nomatch)
+{
+  mw.m_sectionFilter->setPrimaryFilter("onDeck");
+  EXPECT_FALSE(mw.MatchPlexFilter("aLl"));
+}
+
+TEST_F(PlexMediaWindowTests, matchPlexFilter_twoArgs)
+{
+  mw.m_sectionFilter->setPrimaryFilter("onDeck");
+  EXPECT_TRUE(mw.MatchPlexFilter("all, onDeck"));
 }
