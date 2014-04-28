@@ -57,14 +57,14 @@
 				<width>1200</width>
 				<height>666</height>
 				<itemlayout width="144" height="220">
-					<include>MovieTVPoster</include>
+					<include>MovieTVPosterSmall</include>
 					<control type="label">
 						<include>MovieTVPosterSmallTitle</include>
 					</control>
 					<include>MovieTVPosterSmallUnwatchedOverlay</include>
 				</itemlayout>
 				<focusedlayout width="144" height="220">
-					<include>MovieTVPoster</include>
+					<include>MovieTVPosterSmall</include>
 					<control type="label">
 						<include>MovieTVPosterSmallTitle</include>
 						<textcolor>orangeLight</textcolor>
