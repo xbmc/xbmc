@@ -43,7 +43,6 @@ char *      (*dvdinput_error) (dvd_input_t);
 #define DVDcss_open(a) dvdcss_open((char*)(a))
 #define DVDcss_close   dvdcss_close
 #define DVDcss_seek    dvdcss_seek
-#define DVDcss_title   dvdcss_title
 #define DVDcss_read    dvdcss_read
 #define DVDcss_error   dvdcss_error
 #else
@@ -56,19 +55,19 @@ char *      (*dvdinput_error) (dvd_input_t);
 #include "../../msvc/contrib/dlfcn.c"
 #endif
 
-typedef struct dvdcss_s *dvdcss_handle;
-static dvdcss_handle (*DVDcss_open)  (const char *);
-static int           (*DVDcss_close) (dvdcss_handle);
-static int           (*DVDcss_seek)  (dvdcss_handle, int, int);
-static int           (*DVDcss_title) (dvdcss_handle, int);
-static int           (*DVDcss_read)  (dvdcss_handle, void *, int, int);
-static char *        (*DVDcss_error) (dvdcss_handle);
+typedef struct dvdcss_s *dvdcss_t;
+static dvdcss_t (*DVDcss_open)  (const char *);
+static int      (*DVDcss_close) (dvdcss_t);
+static int      (*DVDcss_seek)  (dvdcss_t, int, int);
+static int      (*DVDcss_read)  (dvdcss_t, void *, int, int);
+static char *   (*DVDcss_error) (dvdcss_t);
+#define DVDCSS_SEEK_KEY (1 << 1)
 #endif
 
 /* The DVDinput handle, add stuff here for new input methods. */
 struct dvd_input_s {
   /* libdvdcss handle */
-  dvdcss_handle dvdcss;
+  dvdcss_t dvdcss;
 
   /* dummy file input */
   int fd;
@@ -122,7 +121,7 @@ static int css_seek(dvd_input_t dev, int blocks)
  */
 static int css_title(dvd_input_t dev, int block)
 {
-  return DVDcss_title(dev->dvdcss, block);
+  return DVDcss_seek(dev->dvdcss, block, DVDCSS_SEEK_KEY);
 }
 
 /**
@@ -272,13 +271,10 @@ static int file_close(dvd_input_t dev)
 int dvdinput_setup(void)
 {
   void *dvdcss_library = NULL;
-  char **dvdcss_version = NULL;
 
 #ifdef HAVE_DVDCSS_DVDCSS_H
   /* linking to libdvdcss */
   dvdcss_library = &dvdcss_library;  /* Give it some value != NULL */
-  /* the DVDcss_* functions have been #defined at the top */
-  dvdcss_version = &dvdcss_interface_2;
 
 #else
   /* dlopening libdvdcss */
@@ -286,7 +282,7 @@ int dvdinput_setup(void)
 #ifdef __APPLE__
   #define CSS_LIB "libdvdcss.2.dylib"
 #elif defined(WIN32)
-  #define CSS_LIB "libdvdcss.dll"
+  #define CSS_LIB "libdvdcss-2.dll"
 #elif defined(__OS2__)
   #define CSS_LIB "dvdcss.dll"
 #else
@@ -300,20 +296,16 @@ int dvdinput_setup(void)
 #else
 #define U_S
 #endif
-    DVDcss_open = (dvdcss_handle (*)(const char*))
+    DVDcss_open = (dvdcss_t (*)(const char*))
       dlsym(dvdcss_library, U_S "dvdcss_open");
-    DVDcss_close = (int (*)(dvdcss_handle))
+    DVDcss_close = (int (*)(dvdcss_t))
       dlsym(dvdcss_library, U_S "dvdcss_close");
-    DVDcss_title = (int (*)(dvdcss_handle, int))
-      dlsym(dvdcss_library, U_S "dvdcss_title");
-    DVDcss_seek = (int (*)(dvdcss_handle, int, int))
+    DVDcss_seek = (int (*)(dvdcss_t, int, int))
       dlsym(dvdcss_library, U_S "dvdcss_seek");
-    DVDcss_read = (int (*)(dvdcss_handle, void*, int, int))
+    DVDcss_read = (int (*)(dvdcss_t, void*, int, int))
       dlsym(dvdcss_library, U_S "dvdcss_read");
-    DVDcss_error = (char* (*)(dvdcss_handle))
+    DVDcss_error = (char* (*)(dvdcss_t))
       dlsym(dvdcss_library, U_S "dvdcss_error");
-
-    dvdcss_version = (char **)dlsym(dvdcss_library, U_S "dvdcss_interface_2");
 
     if(dlsym(dvdcss_library, U_S "dvdcss_crack")) {
       fprintf(stderr,
@@ -322,8 +314,8 @@ int dvdinput_setup(void)
 	      "http://www.videolan.org/\n" );
       dlclose(dvdcss_library);
       dvdcss_library = NULL;
-    } else if(!DVDcss_open  || !DVDcss_close || !DVDcss_title || !DVDcss_seek
-	      || !DVDcss_read || !DVDcss_error || !dvdcss_version) {
+    } else if(!DVDcss_open  || !DVDcss_close || !DVDcss_seek
+              || !DVDcss_read || !DVDcss_error) {
       fprintf(stderr,  "libdvdread: Missing symbols in %s, "
 	      "this shouldn't happen !\n", CSS_LIB);
       dlclose(dvdcss_library);
@@ -338,8 +330,6 @@ int dvdinput_setup(void)
     fprintf(stderr, "DVDCSS_METHOD %s\n", psz_method);
     fprintf(stderr, "DVDCSS_VERBOSE %s\n", psz_verbose);
     */
-    fprintf(stderr, "libdvdread: Using libdvdcss version %s for DVD access\n",
-	    dvdcss_version ? *dvdcss_version : "");
 
     /* libdvdcss wrapper functions */
     dvdinput_open  = css_open;

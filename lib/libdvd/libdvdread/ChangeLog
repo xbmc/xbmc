@@ -1,3 +1,9 @@
+libdvdread (4.2.1)
+  * fix huge memory consumption when reading DVDs: "Up" and "Dark Knight"
+  * fix segfault when reading DVDs: "The Express", "Transformers 3"
+    and "Cars 2"
+  * fix packed structures with mingw gcc >= 4.7
+
 libdvdread (4.2.0)
   * added OS/2 support
   * fixed ARM memory alignment issue

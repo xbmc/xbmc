@@ -2,7 +2,6 @@
  * device.h: DVD device access
  *****************************************************************************
  * Copyright (C) 1998-2006 VideoLAN
- * $Id: device.c 242 2011-10-26 04:59:23Z jb $
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Sam Hocevar <sam@zoy.org>
@@ -24,7 +23,7 @@
  *****************************************************************************/
 
 /*
-	Modifications for XBMC are all contained within _XBOX (real xbox hardware) or WITH_CACHE
+	Modifications for XBMC are all contained within WITH_CACHE
 */
 
 /*****************************************************************************
@@ -53,12 +52,6 @@
 #   include <limits.h>
 #endif
 
-#if defined( WIN32 ) && !defined( SYS_CYGWIN )
-#   include <io.h>                                                 /* read() */
-#else
-#   include <sys/uio.h>                                      /* struct iovec */
-#endif
-
 #ifdef DARWIN_DVD_IOCTL
 #   include <paths.h>
 #   include <CoreFoundation/CoreFoundation.h>
@@ -69,7 +62,7 @@
 #   include <IOKit/storage/IODVDMedia.h>
 #endif
 
-#ifdef SYS_OS2
+#ifdef __OS2__
 #   define INCL_DOS
 #   define INCL_DOSDEVIOCTL
 #   include <os2.h>
@@ -103,7 +96,7 @@ static int aspi_read  ( dvdcss_t, void *, int );
 static int win_readv  ( dvdcss_t, struct iovec *, int );
 
 static int aspi_read_internal  ( int, void *, int );
-#elif defined( SYS_OS2 )
+#elif defined( __OS2__ )
 static int os2_open ( dvdcss_t, char const * );
 /* just use macros for libc */
 #   define os2_seek     libc_seek
@@ -128,7 +121,7 @@ int _dvdcss_use_ioctls( dvdcss_t dvdcss )
     {
         return 1;
     }
-#elif defined( SYS_OS2 )
+#elif defined( __OS2__ )
     ULONG ulMode;
 
     if( DosQueryFHState( dvdcss->i_fd, &ulMode ) != 0 )
@@ -158,7 +151,6 @@ int _dvdcss_use_ioctls( dvdcss_t dvdcss )
      * OpenBSD  needs a char device
      * NetBSD   needs a char device
      * FreeBSD  can use either the block or the char device
-     * BSD/OS   can use either the block or the char device
      */
 
     /* Check if this is a block/char device */
@@ -185,7 +177,7 @@ void _dvdcss_check ( dvdcss_t dvdcss )
     kern_return_t kern_result;
     io_iterator_t media_iterator;
     CFMutableDictionaryRef classes_to_match;
-#elif defined( SYS_OS2 )
+#elif defined( __OS2__ )
 #pragma pack( 1 )
     struct
     {
@@ -243,7 +235,7 @@ void _dvdcss_check ( dvdcss_t dvdcss )
         /* Remove trailing backslash */
         psz_device[2] = '\0';
 
-        /* FIXME: we want to differenciate between CD and DVD drives
+        /* FIXME: we want to differentiate between CD and DVD drives
          * using DeviceIoControl() */
         print_debug( dvdcss, "defaulting to drive `%s'", psz_device );
         free( dvdcss->psz_device );
@@ -320,7 +312,7 @@ void _dvdcss_check ( dvdcss_t dvdcss )
     }
 
     IOObjectRelease( media_iterator );
-#elif defined( SYS_OS2 )
+#elif defined( __OS2__ )
     for( i = 0; i < 26; i++ )
     {
         param.bCmdInfo = 0;
@@ -372,20 +364,11 @@ int _dvdcss_open ( dvdcss_t dvdcss )
 
 #if defined( WIN32 )
     dvdcss->b_file = 1;
-#if defined( _XBOX )
-	// If we've passed over the device string make sure we don't try
-	// to use file based handling (libc) - we want Win2k routines ...
-	if (!stricmp(psz_device, "\\Device\\Cdrom0"))
-		dvdcss->b_file = 0;
-	else
-		dvdcss->b_file = stricmp(psz_device, "D:");
-#else
     /* If device is "X:" or "X:\", we are not actually opening a file. */
     if (psz_device[0] && psz_device[1] == ':' &&
        (!psz_device[2] || (psz_device[2] == '\\' && !psz_device[3])))
         dvdcss->b_file = 0;
 
-#endif	// _XBOX
     /* Initialize readv temporary buffer */
     dvdcss->p_readv_buffer   = NULL;
     dvdcss->i_readv_buf_size = 0;
@@ -407,7 +390,7 @@ int _dvdcss_open ( dvdcss_t dvdcss )
         return aspi_open( dvdcss, psz_device );
     }
     else
-#elif defined( SYS_OS2 )
+#elif defined( __OS2__ )
     /* If device is "X:" or "X:\", we are not actually opening a file. */
     if( psz_device[0] && psz_device[1] == ':' &&
         ( !psz_device[2] || ( psz_device[2] == '\\' && !psz_device[3] ) ) )
@@ -429,7 +412,7 @@ int _dvdcss_open ( dvdcss_t dvdcss )
     }
 }
 
-#if !defined(WIN32) && !defined(SYS_OS2)
+#ifdef DVDCSS_RAW_OPEN
 int _dvdcss_raw_open ( dvdcss_t dvdcss, char const *psz_device )
 {
     dvdcss->i_raw_fd = open( psz_device, 0 );
@@ -463,13 +446,11 @@ int _dvdcss_close ( dvdcss_t dvdcss )
     }
     else /* ASPI */
     {
-#if !defined(_XBOX)
         struct w32_aspidev *fd = (struct w32_aspidev *) dvdcss->i_fd;
 
-        /* Unload aspi and free w32_aspidev structure */
+        /* Unload ASPI and free w32_aspidev structure */
         FreeLibrary( (HMODULE) fd->hASPI );
         free( (void*) dvdcss->i_fd );
-#endif	// !_XBOX
     }
 
     /* Free readv temporary buffer */
@@ -484,7 +465,7 @@ int _dvdcss_close ( dvdcss_t dvdcss )
 #else
     close( dvdcss->i_fd );
 
-#ifndef SYS_OS2
+#ifdef DVDCSS_RAW_OPEN
     if( dvdcss->i_raw_fd >= 0 )
     {
         close( dvdcss->i_raw_fd );
@@ -503,11 +484,7 @@ int _dvdcss_close ( dvdcss_t dvdcss )
  *****************************************************************************/
 static int libc_open ( dvdcss_t dvdcss, char const *psz_device )
 {
-#if !defined( WIN32 ) && !defined( SYS_OS2 )
-    dvdcss->i_fd = dvdcss->i_read_fd = open( psz_device, 0 );
-#else
     dvdcss->i_fd = dvdcss->i_read_fd = open( psz_device, O_BINARY );
-#endif
 
     if( dvdcss->i_fd == -1 )
     {
@@ -525,18 +502,13 @@ static int libc_open ( dvdcss_t dvdcss, char const *psz_device )
 #if defined( WIN32 )
 static int win2k_open ( dvdcss_t dvdcss, char const *psz_device )
 {
-#ifdef _XBOX
-    char psz_dvd[70];
-    strcpy(psz_dvd, "cdrom0:");
-#else
     char psz_dvd[7];
     snprintf( psz_dvd, 7, "\\\\.\\%c:", psz_device[0] );
 
-#endif
     /* To work around an M$ bug in IOCTL_DVD_READ_STRUCTURE, we need read
      * _and_ write access to the device (so we can make SCSI Pass Through
      * Requests). Unfortunately this is only allowed if you have
-     * administrator priviledges so we allow for a fallback method with
+     * administrator privileges so we allow for a fallback method with
      * only read access to the device (in this case ioctl_ReadCopyright()
      * won't send back the right result).
      * (See Microsoft Q241374: Read and Write Access Required for SCSI
@@ -546,7 +518,7 @@ static int win2k_open ( dvdcss_t dvdcss, char const *psz_device )
     DWORD flags = FILE_FLAG_NO_BUFFERING; /* we handle buffering ourself */
 #else
     DWORD flags = FILE_FLAG_RANDOM_ACCESS;
-#endif //!_XBOX
+#endif //!WITH_CACHE
 
     dvdcss->i_fd = (int)
                 CreateFile( psz_dvd, GENERIC_READ | GENERIC_WRITE,
@@ -581,7 +553,7 @@ static int aspi_open( dvdcss_t dvdcss, char const * psz_device )
     SENDASPI32COMMAND lpSendCommand;
     char c_drive = psz_device[0];
 
-    /* load aspi and init w32_aspidev structure */
+    /* load ASPI and init w32_aspidev structure */
     hASPI = LoadLibrary( "wnaspi32.dll" );
     if( hASPI == NULL )
     {
@@ -594,7 +566,7 @@ static int aspi_open( dvdcss_t dvdcss, char const * psz_device )
 
     if(lpGetSupport == NULL || lpSendCommand == NULL )
     {
-        print_error( dvdcss, "unable to get aspi function pointers" );
+        print_error( dvdcss, "unable to get ASPI function pointers" );
         FreeLibrary( hASPI );
         return -1;
     }
@@ -610,7 +582,7 @@ static int aspi_open( dvdcss_t dvdcss, char const * psz_device )
 
     if( HIBYTE( LOWORD ( dwSupportInfo ) ) != SS_COMP )
     {
-        print_error( dvdcss, "unable to initalize aspi layer" );
+        print_error( dvdcss, "unable to initialize ASPI layer" );
         FreeLibrary( hASPI );
         return -1;
     }
@@ -655,10 +627,9 @@ static int aspi_open( dvdcss_t dvdcss, char const * psz_device )
             if( (srbDiskInfo.SRB_Status == SS_COMP) &&
                 (srbDiskInfo.SRB_Int13HDriveInfo == c_drive) )
             {
-                /* Make sure this is a cdrom device */
-                struct SRB_GDEVBlock srbGDEVBlock;
+                /* Make sure this is a CD-ROM device */
+                struct SRB_GDEVBlock srbGDEVBlock = { 0 };
 
-                memset( &srbGDEVBlock, 0, sizeof(struct SRB_GDEVBlock) );
                 srbGDEVBlock.SRB_Cmd    = SC_GET_DEV_TYPE;
                 srbGDEVBlock.SRB_HaId   = i;
                 srbGDEVBlock.SRB_Target = j;
@@ -677,7 +648,7 @@ static int aspi_open( dvdcss_t dvdcss, char const * psz_device )
                 {
                     free( (void*) fd );
                     FreeLibrary( hASPI );
-                    print_error( dvdcss,"this is not a cdrom drive" );
+                    print_error( dvdcss,"this is not a CD-ROM drive" );
                     return -1;
                 }
             }
@@ -686,12 +657,12 @@ static int aspi_open( dvdcss_t dvdcss, char const * psz_device )
 
     free( (void*) fd );
     FreeLibrary( hASPI );
-    print_error( dvdcss, "unable to get haid and target (aspi)" );
+    print_error( dvdcss, "unable to get haid and target (ASPI)" );
     return -1;
 }
 #endif
 
-#ifdef SYS_OS2
+#ifdef __OS2__
 static int os2_open ( dvdcss_t dvdcss, char const *psz_device )
 {
     char  psz_dvd[] = "X:";
@@ -949,7 +920,7 @@ static int win2k_read ( dvdcss_t dvdcss, void *p_buffer, int i_blocks )
 
     dvdcss->i_pos += i_bytes / DVDCSS_BLOCK_SIZE;
     return i_bytes / DVDCSS_BLOCK_SIZE;
-#endif // WITH_CACHE
+#endif // WITH_CACHE	
 }
 
 static int aspi_read ( dvdcss_t dvdcss, void *p_buffer, int i_blocks )
@@ -994,8 +965,8 @@ static int libc_readv ( dvdcss_t dvdcss, struct iovec *p_iovec, int i_blocks )
         if( i_bytes < 0 )
         {
             /* One of the reads failed, too bad.
-             * We won't even bother returning the reads that went ok,
-             * and as in the posix spec the file postition is left
+             * We won't even bother returning the reads that went OK,
+             * and as in the POSIX spec the file position is left
              * unspecified after a failure */
             dvdcss->i_pos = -1;
             return -1;
@@ -1081,7 +1052,7 @@ static int win_readv ( dvdcss_t dvdcss, struct iovec *p_iovec, int i_blocks )
                        i_blocks_total * DVDCSS_BLOCK_SIZE, &i_bytes, NULL ) )
         {
             /* The read failed... too bad.
-             * As in the posix spec the file postition is left
+             * As in the POSIX spec the file position is left
              * unspecified after a failure */
             dvdcss->i_pos = -1;
             return -1;
@@ -1123,7 +1094,7 @@ static int win_readv ( dvdcss_t dvdcss, struct iovec *p_iovec, int i_blocks )
 static int aspi_read_internal( int i_fd, void *p_data, int i_blocks )
 {
     HANDLE hEvent;
-    struct SRB_ExecSCSICmd ssc;
+    struct SRB_ExecSCSICmd ssc = { 0 };
     struct w32_aspidev *fd = (struct w32_aspidev *) i_fd;
 
     /* Create the transfer completion event */
@@ -1132,8 +1103,6 @@ static int aspi_read_internal( int i_fd, void *p_data, int i_blocks )
     {
         return -1;
     }
-
-    memset( &ssc, 0, sizeof( ssc ) );
 
     ssc.SRB_Cmd         = SC_EXEC_SCSI_CMD;
     ssc.SRB_Flags       = SRB_DIR_IN | SRB_EVENT_NOTIFY;
@@ -1151,7 +1120,7 @@ static int aspi_read_internal( int i_fd, void *p_data, int i_blocks )
     ssc.CDBByte[4]      = (UCHAR) (fd->i_blocks >> 8) & 0xff;
     ssc.CDBByte[5]      = (UCHAR) (fd->i_blocks) & 0xff;
 
-    /* We have to break down the reads into 64kb pieces (ASPI restriction) */
+    /* We have to break down the reads into 64KB pieces (ASPI restriction) */
     if( i_blocks > 32 )
     {
         ssc.SRB_BufLen = 32 * DVDCSS_BLOCK_SIZE;
@@ -1162,7 +1131,7 @@ static int aspi_read_internal( int i_fd, void *p_data, int i_blocks )
         ResetEvent( hEvent );
         fd->lpSendCommand( (void*) &ssc );
 
-        /* transfer the next 64kb (aspi_read_internal is called recursively)
+        /* transfer the next 64KB (aspi_read_internal is called recursively)
          * We need to check the status of the read on return */
         if( aspi_read_internal( i_fd,
                                 (uint8_t*) p_data + 32 * DVDCSS_BLOCK_SIZE,

@@ -14,11 +14,12 @@ dnl These are defined in m4 so they can be passed to AC_INIT
 dnl --------------------------------------------------------------
 m4_define([dvdread_major], [4])
 m4_define([dvdread_minor], [2])
-m4_define([dvdread_sub],   [0])
+m4_define([dvdread_sub],   [1])
 m4_define([dvdread_pre],   [])
 
 AC_INIT([libdvdread], [dvdread_major.dvdread_minor.dvdread_sub[]dvdread_pre])
 AC_CONFIG_SRCDIR([src/dvdread/dvd_reader.h])
+m4_include([m4/ax_check_compile_flag.m4])
 AM_INIT_AUTOMAKE([1.6])
 
 dnl create a config.h file (Automake will add -DHAVE_CONFIG_H)
@@ -166,6 +167,11 @@ CFLAGS="-O3 -Wall -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE $CFLAGS"
 DEBUG_CFLAGS="-g -DDEBUG $CFLAGS"
 
 AC_SUBST(DEBUG_CFLAGS)
+
+dnl ---------------------------------------------
+dnl Check for bitfield compiler flag
+dnl ---------------------------------------------
+AX_CHECK_COMPILE_FLAG([-mno-ms-bitfields], [CFLAGS="-mno-ms-bitfields $CFLAGS"])
 
 dnl ---------------------------------------------
 dnl Check for doxygen (dynamic documentation generator)

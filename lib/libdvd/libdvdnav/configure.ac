@@ -14,7 +14,7 @@ dnl These are defined in m4 so they can be passed to AC_INIT
 dnl --------------------------------------------------------------
 m4_define([dvdnav_major], [4])
 m4_define([dvdnav_minor], [2])
-m4_define([dvdnav_sub],   [0])
+m4_define([dvdnav_sub],   [1])
 m4_define([dvdnav_pre],   [])
 
 AC_INIT([libdvdnav], [dvdnav_major.dvdnav_minor.dvdnav_sub[]dvdnav_pre])

@@ -1,49 +1,121 @@
-AC_INIT(src/libdvdcss.c)
+AC_INIT(libdvdcss, 1.2.13)
+AC_CONFIG_SRCDIR([src/libdvdcss.c])
 
 AC_PREREQ(2.50)
-AC_CONFIG_AUX_DIR(.auto)
-AC_CANONICAL_SYSTEM
+AC_CANONICAL_HOST
 
-AM_INIT_AUTOMAKE(libdvdcss, 1.2.12)
-AC_CONFIG_HEADERS(config.h)
+AM_INIT_AUTOMAKE([foreign dist-bzip2 no-dist-gzip subdir-objects])
+AM_MAINTAINER_MODE([enable])
+dnl Enable silent rules only when available (automake 1.11 or later).
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+
+LT_INIT([win32-dll])
+
+AC_CONFIG_HEADER(config.h)
+AC_CONFIG_MACRO_DIR([m4])
+
+dnl The libtool version numbers (DVDCSS_LT_*); Don't even think about faking this!
+dnl
+dnl immediately before every release do:
+dnl ===================================
+dnl if (the interface is totally unchanged from previous release)
+dnl    DVDCSS_LT_REVISION ++;
+dnl else { /* interfaces have been added, removed or changed */
+dnl    DVDCSS_LT_REVISION = 0;
+dnl    DVDCSS_LT_CURRENT ++;
+dnl    if (any interfaces have been _added_ since last release)
+dnl       AGE ++;
+dnl    if (any interfaces have been _removed_ or _incompatibly changed_)
+dnl       AGE = 0;
+dnl }
+dnl
+dnl If you want to know more about what you are doing, here are some details:
+dnl  * DVDCSS_LT_CURRENT is the current API version
+dnl  * DVDCSS_LT_REVISION is an internal revision number which is increased when the API
+dnl    itself did not change
+dnl  * DVDCSS_LT_AGE is the number of previous API versions still supported by this library
+dnl  * libtool has its own numbering scheme, because local library numbering schemes
+dnl    are platform dependent
+dnl  * in Linux, the library will be named
+dnl    libname.so.(DVDCSS_LT_CURRENT - DVDCSS_LT_AGE).DVDCSS_LT_AGE.DVDCSS_LT_REVISION
+
+DVDCSS_LT_CURRENT=3
+DVDCSS_LT_AGE=0
+DVDCSS_LT_REVISION=1
+
+AC_SUBST([DVDCSS_LTVERSION], [$DVDCSS_LT_CURRENT:$DVDCSS_LT_AGE:$DVDCSS_LT_REVISION])
 
 AC_PROG_CC
-AC_STDC_HEADERS
-
-AC_LIBTOOL_WIN32_DLL
-AM_PROG_LIBTOOL
+AC_HEADER_STDC
 
 AC_C_CONST
 AC_C_INLINE
 AC_TYPE_SIZE_T
 
-AC_CHECK_HEADERS(unistd.h sys/param.h limits.h pwd.h errno.h)
+AC_CHECK_HEADERS([unistd.h sys/param.h sys/uio.h limits.h pwd.h]dnl
+  [errno.h sys/types.h sys/stat.h fcntl.h io.h])
+
+AC_CHECK_DECL([O_BINARY], [],
+  [AC_DEFINE([O_BINARY], [0], [Define O_BINARY if missing])],
+  [
+    #if HAVE_SYS_TYPES_H
+    # include <sys/types.h>
+    #endif
+    #if HAVE_SYS_STAT_H
+    # include <sys/stat.h>
+    #endif
+    #if HAVE_FCNTL_H
+    # include <fcntl.h>
+    #endif
+  ])
+
+AC_SYS_LARGEFILE
+
+AC_CACHE_CHECK(
+  [for posix mkdir()],
+  [css_cv_mkdir_posix], [
+    AC_COMPILE_IFELSE([AC_LANG_SOURCE([
+#ifdef HAVE_IO_H
+# include <io.h>
+#endif
+#ifdef HAVE_SYS_STAT_H
+# include <sys/stat.h>
+#endif
+#ifdef HAVE_SYS_TYPES_H
+# include <sys/types.h>
+#endif
+
+int mkdir(const char *path, mode_t mode);
+      ])
+    ],
+    [css_cv_mkdir_posix=yes],
+    [css_cv_mkdir_posix=no])
+  ])
+
+AS_IF([test "$css_cv_mkdir_posix" = "no"], [
+  AC_DEFINE([HAVE_BROKEN_MKDIR], 1, [Define if you have a broken mkdir])
+])
 
 dnl
 dnl  Check the operating system
 dnl
-case x"${target_os}" in
+
+case x"${host_os}" in
   xdarwin*)
     CFLAGS="${CFLAGS} -no-cpp-precomp"
     ;;
   x*cygwin*)
-    dnl Check if we are using the mno-cygwin mode in which case we are
-    dnl actually dealing with a mingw32 compiler.
-    AC_EGREP_CPP(yes, [#ifndef WIN32
-                       yes
-                       #endif],
-                 AC_DEFINE(SYS_CYGWIN, 1, Have a Cygwin system.))
-    AC_DEFINE(WIN32, 1, Using Win32.)
-    ;;
-  xbeos*)
-    AC_DEFINE(SYS_BEOS, 1, Have a BeOS system.)
+    CFLAGS="${CFLAGS} -mwin32"
     ;;
   xos2*)
     LDFLAGS="-Zbin-files"
-    AC_DEFINE(SYS_OS2, 1, Have a OS/2 system.)
     ;;
   x*msvc*)
     SYS_MSVC=1
+    AC_DEFINE([_WIN32_IE], 0x0401, [Define to '0x0401' for IE 4.01 (and shell) APIs.])
+    ;;
+  x*mingw* | *wince* | *mingwce*)
+    AC_DEFINE([_WIN32_IE], 0x0401, [Define to '0x0401' for IE 4.01 (and shell) APIs.])
     ;;
   x*)
     ;;
@@ -58,9 +130,6 @@ CAN_BUILD_LIBDVDCSS=0
 
 dnl  for windoze
 AC_CHECK_HEADERS(windows.h,[
-  AC_CHECK_HEADERS(direct.h,,,[
-  #include <windows.h>
-  ])
   AC_CHECK_HEADERS(winioctl.h,[
     CAN_BUILD_LIBDVDCSS=1
   ],,[
@@ -102,32 +171,14 @@ AC_CHECK_HEADERS(sys/ioctl.h,[
     LINUX_DVD_STRUCT=1
   ])
   dnl
-  dnl BSDI: dvd.h - may require -ldvd IF a local copy of libdvd is installed
-  dnl
-  AC_EGREP_HEADER(dvd_struct,dvd.h,[
-    AC_DEFINE(DVD_STRUCT_IN_DVD_H, 1,
-              Define if <dvd.h> defines DVD_STRUCT.)
-    SYS_BSDI_LIBDVD=1
-    LINUX_DVD_STRUCT=1
-  ],[
-    dnl
-    dnl BSDI: /sys/dev/scsi/scsi_ioctl.h, using our own libdvd
-    dnl
-    AC_CHECK_HEADERS(/sys/dev/scsi/scsi_ioctl.h,[
-      AC_DEFINE(DVD_STRUCT_IN_BSDI_DVDIOCTL_DVD_H, 1,
-                Define if <extras/BSDI_dvdioctl/dvd.h> defines DVD_STRUCT.)
-      SYS_BSDI=1
-      LINUX_DVD_STRUCT=1
-    ])
-  ])
-  dnl
   dnl Solaris: sys/scsi/scsi_types.h, sys/scsi/impl/uscsi.h
   dnl
-  AC_CHECK_HEADER(sys/scsi/scsi_types.h,[
-    AC_CHECK_HEADER(sys/scsi/impl/uscsi.h,[
+  solaris_uscsi=yes
+  AC_CHECK_HEADERS([sys/scsi/scsi_types.h, sys/scsi/impl/uscsi.h], [],
+    [solaris_uscsi=no; break;])
+  AS_IF([test "$solaris_uscsi" = "yes"], [
       AC_DEFINE(SOLARIS_USCSI, 1, Have userspace SCSI headers.)
     ])
-  ])
   dnl
   dnl HP-UX: sys/scsi.h
   dnl
@@ -161,59 +212,30 @@ AC_CHECK_HEADERS(sys/ioctl.h,[
   fi
 ])
 
-dnl
-dnl  Check for available warning flags
-dnl
-CFLAGS_save="${CFLAGS}"
+CC_CHECK_CFLAGS_APPEND([-Wall -Wsign-compare])
+CC_FLAG_VISIBILITY([
+  CC_ATTRIBUTE_VISIBILITY([default], [
+    CFLAGS="${CFLAGS} -fvisibility=hidden"
+  ])
+])
 
-AC_CACHE_CHECK([if \$CC accepts -Wall],
-    [ac_cv_c_Wall],
-    [CFLAGS="-Wall ${CFLAGS_save}"
-     AC_TRY_COMPILE([],,ac_cv_c_Wall=yes, ac_cv_c_Wall=no)])
-if test "${ac_cv_c_Wall}" != "no"; then
-    CFLAGS_save="-Wall ${CFLAGS_save}"
-fi
-
-AC_CACHE_CHECK([if \$CC accepts -Wsign-compare],
-    [ac_cv_c_Wsign_compare],
-    [CFLAGS="-Wsign-compare ${CFLAGS_save}"
-     AC_TRY_COMPILE([],,ac_cv_c_Wsign_compare=yes, ac_cv_c_Wsign_compare=no)])
-if test "${ac_cv_c_Wsign_compare}" != "no"; then
-    CFLAGS_save="-Wsign-compare ${CFLAGS_save}"
-fi
-
-CFLAGS="${CFLAGS_save}"
-
-dnl
-dnl  Use 64 bits offsets
-dnl
-CFLAGS="-D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -DDVDCSS_DIST ${CFLAGS}"
-
-AM_CONDITIONAL(SYS_BSDI, test "${SYS_BSDI}" = "1")
-AM_CONDITIONAL(SYS_BSDI_LIBDVD, test "${SYS_BSDI_LIBDVD}" = "1")
 AM_CONDITIONAL(SYS_MSVC, test "${SYS_MSVC}" = "1")
 
-dnl
-dnl  Shall we build documentation?
-dnl
-AC_ARG_ENABLE([doc], AC_HELP_STRING([--disable-doc], [do not build API documentation with Doxygen]))
-if test "$enable_doc" != "no"; then
-  AC_PATH_PROG(DOXYGEN, doxygen, no)
-  AC_PATH_PROG(LATEX, latex, no)
-else
-  DOXYGEN="no"
-  LATEX="no"
-fi
-AM_CONDITIONAL(DOXYGEN, test "${DOXYGEN}" != "no")
-AM_CONDITIONAL(LATEX, test "${LATEX}" != "no")
+AC_ARG_ENABLE([doc],
+  AS_HELP_STRING([--disable-apidoc], [Disable building (with Doxygen) and intalling API documentation @<:@default=auto@:@>]))
+
+AC_PATH_PROG([DOXYGEN], [doxygen])
+
+AS_IF([test "x$DOXYGEN" = "x"], [
+  AS_IF([test "x$enable_apidoc" = "xyes"], [
+    AC_MSG_ERROR([You need Doxygen to build API documentation])
+  ])
+])
+AM_CONDITIONAL([APIDOC], [test "x$DOXYGEN" != "x"])
 
 AC_SUBST(DVDCSS_LDFLAGS)
 AC_OUTPUT([
   Makefile
-  doc/Makefile
-  src/Makefile
-  src/dvdcss/Makefile
-  test/Makefile
+  doc/doxygen.cfg
   src/libdvdcss.pc
 ])
-

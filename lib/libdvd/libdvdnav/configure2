@@ -1,6 +1,6 @@
 #!/bin/sh
 
-dvdnav_sh_version=4.2.0
+dvdnav_sh_version=4.2.1
 dvdnav_sh_major=`echo $dvdnav_sh_version | awk -F. '{print $1}'`
 
 cc=gcc

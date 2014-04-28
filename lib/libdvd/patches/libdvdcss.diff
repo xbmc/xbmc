@@ -1,68 +1,37 @@
-diff -uwr libdvdcss-1.2.12/src/device.c xbmc/lib/libdvd/libdvdcss/src/device.c
---- libdvdcss-1.2.12/src/device.c	2012-03-12 00:07:48 +0100
-+++ xbmc/lib/libdvd/libdvdcss/src/device.c	2013-02-07 14:42:34 +0100
-@@ -23,6 +23,10 @@
+Only in lib/libdvd/libdvdcss/: .libs
+diff -uwr ../libdvdcss-1.2.13/Makefile.am lib/libdvd/libdvdcss/Makefile.am
+--- ../libdvdcss-1.2.13/Makefile.am	Wed Feb 27 10:05:36 2013
++++ lib/libdvd/libdvdcss/Makefile.am	Sat Feb  1 22:41:19 2014
+@@ -4,13 +4,7 @@
+ 
+ dist_doc_DATA = AUTHORS COPYING NEWS README ChangeLog
+ 
+-DISTCLEANFILES = ChangeLog
+-
+-ChangeLog: $(wildcard $(srcdir)/.git/logs/HEAD)
+-	-cd $(srcdir) && git log > $(abs_builddir)/$(@)-tmp
+-	test -s $(@)-tmp && mv $(@)-tmp $(@)
+-	-rm -f $(@)-tmp
+-	test -e $(@) || touch $(@)
++DISTCLEANFILES = 
+ 
+ lib_LTLIBRARIES = libdvdcss.la
+ EXTRA_PROGRAMS = csstest dvd_region
+diff -uwr ../libdvdcss-1.2.13/src/device.c lib/libdvd/libdvdcss/src/device.c
+--- ../libdvdcss-1.2.13/src/device.c	Wed Feb 27 10:05:36 2013
++++ lib/libdvd/libdvdcss/src/device.c	Sat Feb  1 19:41:54 2014
+@@ -22,6 +22,10 @@
   * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
   *****************************************************************************/
  
 +/*
-+	Modifications for XBMC are all contained within _XBOX (real xbox hardware) or WITH_CACHE
++	Modifications for XBMC are all contained within WITH_CACHE
 +*/
 +
  /*****************************************************************************
   * Preamble
   *****************************************************************************/
-@@ -368,11 +372,20 @@
- 
- #if defined( WIN32 )
-     dvdcss->b_file = 1;
-+#if defined( _XBOX )
-+	// If we've passed over the device string make sure we don't try
-+	// to use file based handling (libc) - we want Win2k routines ...
-+	if (!stricmp(psz_device, "\\Device\\Cdrom0"))
-+		dvdcss->b_file = 0;
-+	else
-+		dvdcss->b_file = stricmp(psz_device, "D:");
-+#else
-     /* If device is "X:" or "X:\", we are not actually opening a file. */
-     if (psz_device[0] && psz_device[1] == ':' &&
-        (!psz_device[2] || (psz_device[2] == '\\' && !psz_device[3])))
-         dvdcss->b_file = 0;
- 
-+#endif	// _XBOX
-     /* Initialize readv temporary buffer */
-     dvdcss->p_readv_buffer   = NULL;
-     dvdcss->i_readv_buf_size = 0;
-@@ -450,11 +463,13 @@
-     }
-     else /* ASPI */
-     {
-+#if !defined(_XBOX)
-         struct w32_aspidev *fd = (struct w32_aspidev *) dvdcss->i_fd;
- 
-         /* Unload aspi and free w32_aspidev structure */
-         FreeLibrary( (HMODULE) fd->hASPI );
-         free( (void*) dvdcss->i_fd );
-+#endif	// !_XBOX
-     }
- 
-     /* Free readv temporary buffer */
-@@ -510,9 +525,14 @@
- #if defined( WIN32 )
- static int win2k_open ( dvdcss_t dvdcss, char const *psz_device )
- {
-+#ifdef _XBOX
-+    char psz_dvd[70];
-+    strcpy(psz_dvd, "cdrom0:");
-+#else
-     char psz_dvd[7];
-     snprintf( psz_dvd, 7, "\\\\.\\%c:", psz_device[0] );
- 
-+#endif
-     /* To work around an M$ bug in IOCTL_DVD_READ_STRUCTURE, we need read
-      * _and_ write access to the device (so we can make SCSI Pass Through
-      * Requests). Unfortunately this is only allowed if you have
-@@ -521,17 +541,24 @@
+@@ -509,17 +513,24 @@
       * won't send back the right result).
       * (See Microsoft Q241374: Read and Write Access Required for SCSI
       * Pass Through Requests) */
@@ -71,7 +40,7 @@ diff -uwr libdvdcss-1.2.12/src/device.c xbmc/lib/libdvd/libdvdcss/src/device.c
 +    DWORD flags = FILE_FLAG_NO_BUFFERING; /* we handle buffering ourself */
 +#else
 +    DWORD flags = FILE_FLAG_RANDOM_ACCESS;
-+#endif //!_XBOX
++#endif //!WITH_CACHE
 +
      dvdcss->i_fd = (int)
                  CreateFile( psz_dvd, GENERIC_READ | GENERIC_WRITE,
@@ -89,7 +58,7 @@ diff -uwr libdvdcss-1.2.12/src/device.c xbmc/lib/libdvd/libdvdcss/src/device.c
  
      if( (HANDLE) dvdcss->i_fd == INVALID_HANDLE_VALUE )
      {
-@@ -727,6 +754,9 @@
+@@ -714,6 +725,9 @@
  static int win2k_seek( dvdcss_t dvdcss, int i_blocks )
  {
      LARGE_INTEGER li_seek;
@@ -99,7 +68,7 @@ diff -uwr libdvdcss-1.2.12/src/device.c xbmc/lib/libdvd/libdvdcss/src/device.c
  
  #ifndef INVALID_SET_FILE_POINTER
  #   define INVALID_SET_FILE_POINTER ((DWORD)-1)
-@@ -738,6 +768,28 @@
+@@ -725,6 +739,28 @@
          return i_blocks;
      }
  
@@ -128,7 +97,7 @@ diff -uwr libdvdcss-1.2.12/src/device.c xbmc/lib/libdvd/libdvdcss/src/device.c
      li_seek.QuadPart = (LONGLONG)i_blocks * DVDCSS_BLOCK_SIZE;
  
      li_seek.LowPart = SetFilePointer( (HANDLE) dvdcss->i_fd,
-@@ -827,6 +879,66 @@
+@@ -814,6 +850,66 @@
  {
      int i_bytes;
  
@@ -195,127 +164,23 @@ diff -uwr libdvdcss-1.2.12/src/device.c xbmc/lib/libdvd/libdvdcss/src/device.c
      if( !ReadFile( (HANDLE) dvdcss->i_fd, p_buffer,
                i_blocks * DVDCSS_BLOCK_SIZE,
                (LPDWORD)&i_bytes, NULL ) )
-@@ -837,6 +949,7 @@
+@@ -824,6 +920,7 @@
  
      dvdcss->i_pos += i_bytes / DVDCSS_BLOCK_SIZE;
      return i_bytes / DVDCSS_BLOCK_SIZE;
-+#endif // WITH_CACHE
++#endif // WITH_CACHE	
  }
  
  static int aspi_read ( dvdcss_t dvdcss, void *p_buffer, int i_blocks )
-diff -uwr libdvdcss-1.2.12/src/ioctl.c xbmc/lib/libdvd/libdvdcss/src/ioctl.c
---- libdvdcss-1.2.12/src/ioctl.c	2012-03-12 00:07:48 +0100
-+++ xbmc/lib/libdvd/libdvdcss/src/ioctl.c	2013-02-07 14:42:34 +0100
-@@ -373,6 +373,37 @@
- 
-     memcpy( p_key, dvdbs.discKeyStructures, DVD_DISCKEY_SIZE );
- 
-+#elif defined( _XBOX )
-+    // the next piece of code will read the disc key on the xbox for all drives (samsung included)
-+    // but for some reason it takes 15 - 20 seconds longer to load a dvd if mplayer has the dvd key
-+    // so we let this part fail and will only use the modified ioctl_ReadTitleKey code.
-+    // don't get this delay, and i'm surprised it worked as the ReadTitleKey function didn't work.
-+
-+    DWORD dwBytesRead;
-+	DVD_READ_STRUCTURE st;
-+    char buffer[DVD_DISCKEY_SIZE];
-+    
-+    memset( &buffer, 0, sizeof( buffer ) );
-+	memset( &st, 0, sizeof( st ) );
-+
-+    st.BlockByteOffset.QuadPart = 0;
-+    st.SessionId = *pi_agid;
-+    st.Format = DvdDiskKeyDescriptor;
-+
-+    i_ret = DeviceIoControl((HANDLE) i_fd, IOCTL_DVD_READ_STRUCTURE, &st,
-+				sizeof(st), buffer, DVD_DISCKEY_SIZE, &dwBytesRead, NULL ) ? 0 : -1;
-+
-+	if (i_ret < 0)	// didn't work
-+	{
-+		printf("Failed to read disc key\n");
-+		return i_ret;
-+	}
-+    
-+	// copy the returned key into our key buffer
-+	int i;
-+    for (i = 0; i < DVD_DISCKEY_SIZE; i++)
-+		p_key[i] = buffer[i+4];
-+
- #elif defined( WIN32 )
-     if( WIN2K ) /* NT/2k/XP */
-     {
-@@ -541,6 +572,25 @@
- 
-     memcpy( p_key, dvdbs.titleKeyValue, DVD_KEY_SIZE );
- 
-+#elif defined( _XBOX ) && 0 //Faulty wrong key returned, original for WIN32 works thou so use it instead
-+    DWORD dwBytesRead;
-+    DVD_READ_STRUCTURE st;
-+    char buffer[2048+4];
-+
-+    memset( &buffer, 0, sizeof( buffer ) );
-+		
-+    st.BlockByteOffset.QuadPart = (LONGLONG) i_pos * 2048 /*DVDCSS_BLOCK_SIZE*/;
-+    st.SessionId = *pi_agid;
-+    st.Format = DvdDiskKeyDescriptor;
-+		
-+    i_ret = DeviceIoControl((HANDLE) i_fd, IOCTL_DVD_READ_STRUCTURE, &st, sizeof(st), buffer, 2048+4, &dwBytesRead, NULL ) ? 0 : -1;
-+    if( i_ret < 0 )
-+    {
-+      return i_ret;
-+    }
-+
-+    memcpy( p_key, &(buffer[4]), 2048);
-+
- #elif defined( WIN32 )
-     if( WIN2K ) /* NT/2k/XP */
-     {
-@@ -693,8 +743,13 @@
-         ULONG id;
-         DWORD tmp;
- 
-+#if defined( _XBOX)
-+        i_ret = DeviceIoControl( (HANDLE) i_fd, IOCTL_DVD_START_SESSION,
-+						NULL, 0, &id, sizeof(id), &tmp, NULL ) ? 0 : -1;
-+#else
-         i_ret = DeviceIoControl( (HANDLE) i_fd, IOCTL_DVD_START_SESSION,
-                         &tmp, 4, &id, sizeof( id ), &tmp, NULL ) ? 0 : -1;
-+#endif
- 
-         *pi_agid = id;
-     }
-@@ -1336,8 +1391,13 @@
- 
-         memcpy( key->KeyData, p_challenge, DVD_CHALLENGE_SIZE );
- 
-+#if defined(_XBOX)
-+        i_ret = DeviceIoControl( (HANDLE) i_fd, IOCTL_DVD_SEND_KEY, key,
-+                 key->KeyLength, NULL, 0, &tmp, NULL ) ? 0 : -1;
-+#else
-         i_ret = DeviceIoControl( (HANDLE) i_fd, IOCTL_DVD_SEND_KEY, key,
-                  key->KeyLength, key, key->KeyLength, &tmp, NULL ) ? 0 : -1;
-+#endif
-     }
-     else
-     {
-diff -uwr libdvdcss-1.2.12/src/ioctl.h xbmc/lib/libdvd/libdvdcss/src/ioctl.h
---- libdvdcss-1.2.12/src/ioctl.h	2012-03-12 00:07:48 +0100
-+++ xbmc/lib/libdvd/libdvdcss/src/ioctl.h	2013-02-07 14:42:34 +0100
-@@ -324,7 +324,11 @@
- typedef DWORD (CALLBACK *GETASPI32SUPPORTINFO)(VOID);
- typedef DWORD (CALLBACK *SENDASPI32COMMAND)(LPVOID);
- 
-+#if defined(_XBOX)
-+#define WIN2K	1
-+#else
- #define WIN2K               ( GetVersion() < 0x80000000 )
-+#endif	// _XBOX
- #define ASPI_HAID           0
- #define ASPI_TARGET         0
- #define DTYPE_CDROM         0x05
-diff -uwr libdvdcss-1.2.12/src/libdvdcss.c xbmc/lib/libdvd/libdvdcss/src/libdvdcss.c
---- libdvdcss-1.2.12/src/libdvdcss.c	2012-03-12 00:07:48 +0100
-+++ xbmc/lib/libdvd/libdvdcss/src/libdvdcss.c	2013-02-07 14:42:34 +0100
+Only in lib/libdvd/libdvdcss/src: device.lo
+Only in lib/libdvd/libdvdcss/src: device.o
+Only in lib/libdvd/libdvdcss/src: error.lo
+Only in lib/libdvd/libdvdcss/src: error.o
+Only in lib/libdvd/libdvdcss/src: ioctl.lo
+Only in lib/libdvd/libdvdcss/src: ioctl.o
+diff -uwr ../libdvdcss-1.2.13/src/libdvdcss.c lib/libdvd/libdvdcss/src/libdvdcss.c
+--- ../libdvdcss-1.2.13/src/libdvdcss.c	Tue Feb 26 08:08:36 2013
++++ lib/libdvd/libdvdcss/src/libdvdcss.c	Sat Feb  1 18:37:25 2014
 @@ -195,6 +195,10 @@
      dvdcss->b_debug = 0;
      dvdcss->b_errors = 0;
@@ -336,30 +201,4 @@ diff -uwr libdvdcss-1.2.12/src/libdvdcss.c xbmc/lib/libdvd/libdvdcss/src/libdvdc
      memset( dvdcss->css.p_disc_key, 0, KEY_SIZE );
      /* If disc is CSS protected and the ioctls work, authenticate the drive */
      if( dvdcss->b_scrambled && dvdcss->b_ioctls )
-@@ -533,8 +537,26 @@
-             goto nocache;
-         }
- 
-+#ifdef _XBOX
-+        //due to xbox file system having a limited length on folders/files, 
-+        //make separate folder for disk name first
-+        if(psz_title[0] == '\0')
-+          strcat(psz_title, "NONAME");
-+
-+        i += sprintf( dvdcss->psz_cachefile + i, "/%s", psz_title);
-+        
-+        i_ret = mkdir( dvdcss->psz_cachefile );
-+        if( i_ret < 0 && errno != EEXIST )
-+        {
-+            print_error( dvdcss, "failed creating cache titledirectory" );
-+            dvdcss->psz_cachefile[0] = '\0';
-+            goto nocache;
-+        }
-+        i += sprintf( dvdcss->psz_cachefile + i, "/%s%s", psz_serial, psz_key );
-+#else
-         i += sprintf( dvdcss->psz_cachefile + i, "/%s-%s%s", psz_title,
-                       psz_serial, psz_key );
-+#endif
- #if !defined( WIN32 ) || defined( SYS_CYGWIN )
-         i_ret = mkdir( dvdcss->psz_cachefile, 0755 );
- #else
+

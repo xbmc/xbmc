@@ -275,7 +275,7 @@ dvdnav_status_t dvdnav_part_play(dvdnav_t *self, int32_t title, int32_t part);
 /*
  * Plays the specified title, starting from the specified program
  */
-dvdnav_status_t dvdnav_program_play(dvdnav_t *this, int32_t title, int32_t pgcn, int32_t pgn);
+dvdnav_status_t dvdnav_program_play(dvdnav_t *self, int32_t title, int32_t pgcn, int32_t pgn);
 
 /*
  * Stores in *times an array (that the application *must* free) of
@@ -384,7 +384,7 @@ dvdnav_status_t dvdnav_jump_to_sector_by_time(dvdnav_t *this,
  * Stop playing the current position and start playback of the title
  * from the specified timecode.
  *
- * Currently unimplemented!
+ * Currently implemented using interpolation, which is slightly inaccurate.
  */
 dvdnav_status_t dvdnav_time_search(dvdnav_t *self,
 				   uint64_t time);
@@ -697,42 +697,6 @@ int8_t dvdnav_is_domain_vtsm(dvdnav_t *self);
  */
 int8_t dvdnav_is_domain_vts(dvdnav_t *self);
 
-////////// RATDVD stuff ///////////////
-
-/*
- * Get the number of audio streams.
- */
-int32_t dvdnav_get_audio_stream_count(dvdnav_t * self);
-
-/*
- * Get the number of subpicture streams.
- */
-int32_t dvdnav_get_subpicture_stream_count(dvdnav_t * self);
-
-/*
- * Get attributes of the current audio stream.
- */
-dvdnav_status_t dvdnav_get_audio_info(dvdnav_t * self, int32_t streamid, audio_attr_t* audio_attributes);
-
-/*
- * Get attributes of the current subpicture stream.
- */
-dvdnav_status_t dvdnav_get_stitle_info(dvdnav_t * self, int32_t streamid, subp_attr_t* stitle_attributes);
-
-/*
- * Get information about the current video stream
- */
-dvdnav_status_t dvdnav_get_video_info(dvdnav_t * self, video_attr_t* video_attributes);
-
-/*
- * Select the audio stream to be played
- */
-dvdnav_status_t dvdnav_audio_change(dvdnav_t *self, int32_t audio);
-
-/*
- * Select the spu stream to be displayed
- */
-dvdnav_status_t dvdnav_subpicture_change(dvdnav_t *self, int32_t subpicture);
 
 #ifdef __cplusplus
 }

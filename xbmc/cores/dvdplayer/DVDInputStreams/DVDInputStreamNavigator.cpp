@@ -852,7 +852,7 @@ bool CDVDInputStreamNavigator::GetSubtitleStreamInfo(const int iId, DVDNavStream
   int streamId = ConvertSubtitleStreamId_XBMCToExternal(iId);
   subp_attr_t subp_attributes;
 
-  if( m_dll.dvdnav_get_stitle_info(m_dvdnav, streamId, &subp_attributes) == DVDNAV_STATUS_OK )
+  if( m_dll.dvdnav_get_spu_attr(m_dvdnav, streamId, &subp_attributes) == DVDNAV_STATUS_OK )
   {
     SetSubtitleStreamName(info, subp_attributes);
 
@@ -1038,7 +1038,7 @@ bool CDVDInputStreamNavigator::GetAudioStreamInfo(const int iId, DVDNavStreamInf
   int streamId = ConvertAudioStreamId_XBMCToExternal(iId);
   audio_attr_t audio_attributes;
 
-  if( m_dll.dvdnav_get_audio_info(m_dvdnav, streamId, &audio_attributes) == DVDNAV_STATUS_OK )
+  if( m_dll.dvdnav_get_audio_attr(m_dvdnav, streamId, &audio_attributes) == DVDNAV_STATUS_OK )
   {
     SetAudioStreamName(info, audio_attributes);
 

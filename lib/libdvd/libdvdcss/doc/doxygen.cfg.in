@@ -25,20 +25,20 @@ DOXYFILE_ENCODING      = UTF-8
 # The PROJECT_NAME tag is a single word (or a sequence of words surrounded 
 # by quotes) that should identify the project.
 
-PROJECT_NAME           = libdvdcss
+PROJECT_NAME           = @PACKAGE_NAME@
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. 
 # This could be handy for archiving the generated documentation or 
 # if some version control system is used.
 
-PROJECT_NUMBER         = 1.2.12
+PROJECT_NUMBER         = @PACKAGE_VERSION@
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 
 # If a relative path is entered, it will be relative to the location 
 # where doxygen was started. If left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = .
+OUTPUT_DIRECTORY       = @top_builddir@/doc
 
 # If the CREATE_SUBDIRS tag is set to YES, then doxygen will create 
 # 4096 sub-directories (in 2 levels) under the output directory of each output 
@@ -154,13 +154,6 @@ QT_AUTOBRIEF           = NO
 # description. Set this tag to YES if you prefer the old behaviour instead.
 
 MULTILINE_CPP_IS_BRIEF = NO
-
-# If the DETAILS_AT_TOP tag is set to YES then Doxygen 
-# will output the detailed description near the top, like JavaDoc.
-# If set to NO, the detailed description appears after the member 
-# documentation.
-
-DETAILS_AT_TOP         = NO
 
 # If the INHERIT_DOCS tag is set to YES (the default) then an undocumented 
 # member inherits the documentation from any documented member that it 
@@ -446,12 +439,6 @@ MAX_INITIALIZER_LINES  = 30
 
 SHOW_USED_FILES        = YES
 
-# If the sources in your project are distributed over multiple directories 
-# then setting the SHOW_DIRECTORIES tag to YES will show the directory hierarchy 
-# in the documentation. The default is NO.
-
-SHOW_DIRECTORIES       = NO
-
 # Set the SHOW_FILES tag to NO to disable the generation of the Files page.
 # This will remove the Files entry from the Quick Index and from the 
 # Folder Tree View (if specified). The default is YES.
@@ -534,8 +521,8 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = @TOP_SRCDIR@/src/dvdcss/dvdcss.h \
-                         @TOP_SRCDIR@/src/libdvdcss.c
+INPUT                  = @top_srcdir@/src/dvdcss/dvdcss.h \
+                         @top_srcdir@/src/libdvdcss.c
 
 # This tag can be used to specify the character encoding of the source files 
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is 
@@ -565,7 +552,7 @@ RECURSIVE              = YES
 # excluded from the INPUT source files. This way you can easily exclude a 
 # subdirectory from a directory tree whose root is specified with the INPUT tag.
 
-EXCLUDE                = ../src/config.h
+EXCLUDE                =
 
 # The EXCLUDE_SYMLINKS tag can be used select whether or not files or 
 # directories that are symbolic links (a Unix filesystem feature) are excluded 
@@ -743,13 +730,13 @@ HTML_FILE_EXTENSION    = .html
 # each generated HTML page. If it is left blank doxygen will generate a 
 # standard header.
 
-HTML_HEADER            = @SRCDIR@/header.html
+HTML_HEADER            = @top_srcdir@/doc/header.html
 
 # The HTML_FOOTER tag can be used to specify a personal HTML footer for 
 # each generated HTML page. If it is left blank doxygen will generate a 
 # standard footer.
 
-HTML_FOOTER            = @SRCDIR@/footer.html
+HTML_FOOTER            = @top_srcdir@/doc/footer.html
 
 # The HTML_STYLESHEET tag can be used to specify a user-defined cascading 
 # style sheet that is used by each HTML page. It can be used to 
@@ -759,12 +746,6 @@ HTML_FOOTER            = @SRCDIR@/footer.html
 # stylesheet in the HTML output directory as well, or it will be erased!
 
 HTML_STYLESHEET        = 
-
-# If the HTML_ALIGN_MEMBERS tag is set to YES, the members of classes, 
-# files or namespaces will be aligned in HTML using tables. If set to 
-# NO a bullet list will be used.
-
-HTML_ALIGN_MEMBERS     = YES
 
 # If the GENERATE_HTMLHELP tag is set to YES, additional index files 
 # will be generated that can be used as input for tools like the 
@@ -892,74 +873,7 @@ FORMULA_FONTSIZE       = 10
 # If the GENERATE_LATEX tag is set to YES (the default) Doxygen will 
 # generate Latex output.
 
-GENERATE_LATEX         = YES
-
-# The LATEX_OUTPUT tag is used to specify where the LaTeX docs will be put. 
-# If a relative path is entered the value of OUTPUT_DIRECTORY will be 
-# put in front of it. If left blank `latex' will be used as the default path.
-
-LATEX_OUTPUT           = latex
-
-# The LATEX_CMD_NAME tag can be used to specify the LaTeX command name to be 
-# invoked. If left blank `latex' will be used as the default command name.
-
-LATEX_CMD_NAME         = latex
-
-# The MAKEINDEX_CMD_NAME tag can be used to specify the command name to 
-# generate index for LaTeX. If left blank `makeindex' will be used as the 
-# default command name.
-
-MAKEINDEX_CMD_NAME     = makeindex
-
-# If the COMPACT_LATEX tag is set to YES Doxygen generates more compact 
-# LaTeX documents. This may be useful for small projects and may help to 
-# save some trees in general.
-
-COMPACT_LATEX          = NO
-
-# The PAPER_TYPE tag can be used to set the paper type that is used 
-# by the printer. Possible values are: a4, a4wide, letter, legal and 
-# executive. If left blank a4wide will be used.
-
-PAPER_TYPE             = a4wide
-
-# The EXTRA_PACKAGES tag can be to specify one or more names of LaTeX 
-# packages that should be included in the LaTeX output.
-
-EXTRA_PACKAGES         = 
-
-# The LATEX_HEADER tag can be used to specify a personal LaTeX header for 
-# the generated latex document. The header should contain everything until 
-# the first chapter. If it is left blank doxygen will generate a 
-# standard header. Notice: only use this tag if you know what you are doing!
-
-LATEX_HEADER           = 
-
-# If the PDF_HYPERLINKS tag is set to YES, the LaTeX that is generated 
-# is prepared for conversion to pdf (using ps2pdf). The pdf file will 
-# contain links (just like the HTML output) instead of page references 
-# This makes the output suitable for online browsing using a pdf viewer.
-
-PDF_HYPERLINKS         = NO
-
-# If the USE_PDFLATEX tag is set to YES, pdflatex will be used instead of 
-# plain latex in the generated Makefile. Set this option to YES to get a 
-# higher quality PDF documentation.
-
-USE_PDFLATEX           = NO
-
-# If the LATEX_BATCHMODE tag is set to YES, doxygen will add the \\batchmode. 
-# command to the generated LaTeX files. This will instruct LaTeX to keep 
-# running if errors occur, instead of asking the user for help. 
-# This option is also used when generating formulas in HTML.
-
-LATEX_BATCHMODE        = NO
-
-# If LATEX_HIDE_INDICES is set to YES then doxygen will not 
-# include the index chapters (such as File Index, Compound Index, etc.) 
-# in the output.
-
-LATEX_HIDE_INDICES     = NO
+GENERATE_LATEX         = NO
 
 #---------------------------------------------------------------------------
 # configuration options related to the RTF output

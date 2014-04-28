@@ -12,8 +12,8 @@ See `./configure --help' for more information.
 
 
 If you got libdvdcss from its version control system, please bootstrap first:
- 
-   ./bootstrap
+
+   autoreconf -i
 
 
 Building libdvdcss
@@ -38,46 +38,27 @@ Building libdvdcss for Win32
 
 You have two alternatives to build libdvdcss for Win32:
 
-- natively on Windows, using MSYS + MINGW (www.mingw.org):
+- on Linux, using the mingw.org or mingw-w64 cross-compilers.
+
+ If you are running Debian, there is are mingw32 packages you can use.
+
+ If you are cross-compiling from the Debian package, you can use the following
+ commands, for example:
+
+  ./configure --host=i586-mingw32msvc --target=i586-mingw32msvc \
+  --build=i386-linux
+
+  make
+
+- natively on Windows, using MSYS + MinGW (www.mingw.org):
 
  (MSYS is a minimal build environment to compile unixish projects under
-  windoze. It provides all the common unix tools like sh, gmake...)
+  Windows. It provides all the common Unix tools like sh, gmake...)
 
- You will need to download and install the latest MSYS (version 1.0.7 as
- of now) and MINGW.
- The installation is really easy. Begin with the MSYS auto-installer and once
- this is done, extract MINGW into c:\msys\1.0\mingw. You also have to remember
- to remove the make utility included with MINGW as it conflicts with the one
- from MSYS (just rename or remove c:\msys\1.0\mingw\bin\make.exe).
-
- http://www.mingw.org/download.shtml
- http://prdownloads.sourceforge.net/mingw/MSYS-1.0.7-i686-2002.04.24-1.exe
- http://prdownloads.sourceforge.net/mingw/MinGW-1.1.tar.gz
+ You will need to download and install the latest MSYS and MINGW.
 
  To build libdvdcss you just have to run the following commands:
   ./configure
   make
 
-- or on Linux, using the mingw32 cross-compiler:
-
- You can find a mingw32 cross-compiler on the videolan web site:
- http://www.videolan.org/vlc/windows.html
- Or if you are running Debian, there is a mingw32 package you can use.
-
- If you are cross-compiling from the Debian package, you can use the following
- commands:
-
-  ./configure --host=i586-mingw32msvc --target=i586-mingw32msvc \
-  --build=i386-linux
-
-  make
-
- If you are cross-compiling using the mingw32 package provided by
- www.videolan.org, you have to use something along those lines:
-
-  CC=/usr/local/cross-tools/bin/i586-mingw32msvc-gcc \
-  PATH=/usr/local/cross-tools/bin:$PATH \
-  ./configure --host=i586-mingw32msvc --target=i586-mingw32msvc \
-  --build=i386-linux
-
-  PATH=/usr/local/cross-tools/bin:$PATH make
+ More on MSys on our wiki: http://wiki.videolan.org/Win32CompileMSYS

@@ -2,7 +2,6 @@
  * ioctl.h: DVD ioctl replacement function
  *****************************************************************************
  * Copyright (C) 1999-2001 VideoLAN
- * $Id: ioctl.h 235 2010-08-02 15:41:14Z jb $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *
@@ -35,7 +34,6 @@ int ioctl_InvalidateAgid    ( int, int * );
 int ioctl_SendChallenge     ( int, int *, uint8_t * );
 int ioctl_SendKey2          ( int, int *, uint8_t * );
 int ioctl_ReportRPC         ( int, int *, int *, int * );
-int ioctl_SendRPC           ( int, int );
 
 #define DVD_KEY_SIZE 5
 #define DVD_CHALLENGE_SIZE 10
@@ -44,11 +42,10 @@ int ioctl_SendRPC           ( int, int );
 /*****************************************************************************
  * Common macro, BeOS specific
  *****************************************************************************/
-#if defined( SYS_BEOS )
+#if defined( __BEOS__ )
 #define INIT_RDC( TYPE, SIZE ) \
-    raw_device_command rdc; \
+    raw_device_command rdc = { 0 }; \
     uint8_t p_buffer[ (SIZE)+1 ]; \
-    memset( &rdc, 0, sizeof( raw_device_command ) ); \
     rdc.data = (char *)p_buffer; \
     rdc.data_length = (SIZE); \
     BeInitRDC( &rdc, (TYPE) );
@@ -59,9 +56,8 @@ int ioctl_SendRPC           ( int, int );
  *****************************************************************************/
 #if defined( HPUX_SCTL_IO )
 #define INIT_SCTL_IO( TYPE, SIZE ) \
-    struct sctl_io sctl_io; \
+    struct sctl_io sctl_io = { 0 }; \
     uint8_t p_buffer[ (SIZE)+1 ]; \
-    memset( &sctl_io, 0, sizeof( sctl_io ) ); \
     sctl_io.data = (void *)p_buffer; \
     sctl_io.data_length = (SIZE); \
     HPUXInitSCTL( &sctl_io, (TYPE) );
@@ -74,10 +70,9 @@ int ioctl_SendRPC           ( int, int );
 #define USCSI_TIMEOUT( SC, TO ) ( (SC)->uscsi_timeout = (TO) )
 #define USCSI_RESID( SC )       ( (SC)->uscsi_resid )
 #define INIT_USCSI( TYPE, SIZE ) \
-    struct uscsi_cmd sc; \
+    struct uscsi_cmd sc = { 0 }; \
     union scsi_cdb rs_cdb; \
     uint8_t p_buffer[ (SIZE)+1 ]; \
-    memset( &sc, 0, sizeof( struct uscsi_cmd ) ); \
     sc.uscsi_cdb = (caddr_t)&rs_cdb; \
     sc.uscsi_bufaddr = (caddr_t)p_buffer; \
     sc.uscsi_buflen = (SIZE); \
@@ -89,10 +84,8 @@ int ioctl_SendRPC           ( int, int );
  *****************************************************************************/
 #if defined( DARWIN_DVD_IOCTL )
 #define INIT_DVDIOCTL( DKDVD_TYPE, BUFFER_TYPE, FORMAT ) \
-    DKDVD_TYPE dvd; \
-    BUFFER_TYPE dvdbs; \
-    memset( &dvd, 0, sizeof(dvd) ); \
-    memset( &dvdbs, 0, sizeof(dvdbs) ); \
+    DKDVD_TYPE dvd = { 0 }; \
+    BUFFER_TYPE dvdbs = { 0 }; \
     dvd.format = FORMAT; \
     dvd.buffer = &dvdbs; \
     dvd.bufferLength = sizeof(dvdbs);
@@ -104,9 +97,8 @@ int ioctl_SendRPC           ( int, int );
 #if defined( WIN32 )
 #define INIT_SPTD( TYPE, SIZE ) \
     DWORD tmp; \
-    SCSI_PASS_THROUGH_DIRECT sptd; \
+    SCSI_PASS_THROUGH_DIRECT sptd = { 0 }; \
     uint8_t p_buffer[ (SIZE) ]; \
-    memset( &sptd, 0, sizeof( SCSI_PASS_THROUGH_DIRECT ) ); \
     sptd.Length = sizeof( SCSI_PASS_THROUGH_DIRECT ); \
     sptd.DataBuffer = p_buffer; \
     sptd.DataTransferLength = (SIZE); \
@@ -117,10 +109,9 @@ int ioctl_SendRPC           ( int, int );
                       (SPTD), sizeof( SCSI_PASS_THROUGH_DIRECT ), \
                       (TMP), NULL ) ? 0 : -1)
 #define INIT_SSC( TYPE, SIZE ) \
-    struct SRB_ExecSCSICmd ssc; \
+    struct SRB_ExecSCSICmd ssc = { 0 }; \
     uint8_t p_buffer[ (SIZE)+1 ]; \
-    memset( &ssc, 0, sizeof( struct SRB_ExecSCSICmd ) ); \
-    ssc.SRB_BufPointer = (char *)p_buffer; \
+    ssc.SRB_BufPointer = (unsigned char *)p_buffer; \
     ssc.SRB_BufLen = (SIZE); \
     WinInitSSC( &ssc, (TYPE) );
 #endif
@@ -130,12 +121,11 @@ int ioctl_SendRPC           ( int, int );
  *****************************************************************************/
 #if defined( __QNXNTO__ )
 #define INIT_CPT( TYPE, SIZE ) \
-    CAM_PASS_THRU * p_cpt; \
+    CAM_PASS_THRU * p_cpt = { 0 }; \
     uint8_t * p_buffer; \
     int structSize = sizeof( CAM_PASS_THRU ) + (SIZE); \
     p_cpt = (CAM_PASS_THRU *) malloc ( structSize ); \
     p_buffer = (uint8_t *) p_cpt + sizeof( CAM_PASS_THRU ); \
-    memset( p_cpt, 0, structSize ); \
       p_cpt->cam_data_ptr = sizeof( CAM_PASS_THRU ); \
       p_cpt->cam_dxfer_len = (SIZE); \
     QNXInitCPT( p_cpt, (TYPE) );
@@ -144,14 +134,12 @@ int ioctl_SendRPC           ( int, int );
 /*****************************************************************************
  * Common macro, OS2 specific
  *****************************************************************************/
-#if defined( SYS_OS2 )
+#if defined( __OS2__ )
 #define INIT_SSC( TYPE, SIZE ) \
-    struct OS2_ExecSCSICmd sdc; \
-    uint8_t p_buffer[ (SIZE)+1 ]; \
+    struct OS2_ExecSCSICmd sdc = { 0 }; \
+    uint8_t p_buffer[ (SIZE) + 1 ] = { 0 }; \
     unsigned long ulParamLen; \
     unsigned long ulDataLen; \
-    memset( &sdc, 0, sizeof( OS2_ExecSCSICmd ) ); \
-    memset( &p_buffer, 0, SIZE ); \
     sdc.data_length = (SIZE); \
     ulParamLen = sizeof(sdc); \
     OS2InitSDC( &sdc, (TYPE) )
@@ -168,30 +156,28 @@ typedef union dvd_authinfo dvd_authinfo;
 /*****************************************************************************
  * Various DVD I/O tables
  *****************************************************************************/
-#if defined( SYS_BEOS ) || defined( WIN32 ) || defined ( SOLARIS_USCSI ) || defined ( HPUX_SCTL_IO ) || defined ( __QNXNTO__ ) || defined ( SYS_OS2 )
-    /* The generic packet command opcodes for CD/DVD Logical Units,
-     * From Table 57 of the SFF8090 Ver. 3 (Mt. Fuji) draft standard. */
-#   define GPCMD_READ_DVD_STRUCTURE 0xad
-#   define GPCMD_REPORT_KEY         0xa4
-#   define GPCMD_SEND_KEY           0xa3
-    /* DVD struct types */
-#   define DVD_STRUCT_PHYSICAL      0x00
-#   define DVD_STRUCT_COPYRIGHT     0x01
-#   define DVD_STRUCT_DISCKEY       0x02
-#   define DVD_STRUCT_BCA           0x03
-#   define DVD_STRUCT_MANUFACT      0x04
-    /* Key formats */
-#   define DVD_REPORT_AGID          0x00
-#   define DVD_REPORT_CHALLENGE     0x01
-#   define DVD_SEND_CHALLENGE       0x01
-#   define DVD_REPORT_KEY1          0x02
-#   define DVD_SEND_KEY2            0x03
-#   define DVD_REPORT_TITLE_KEY     0x04
-#   define DVD_REPORT_ASF           0x05
-#   define DVD_SEND_RPC             0x06
-#   define DVD_REPORT_RPC           0x08
-#   define DVD_INVALIDATE_AGID      0x3f
-#endif
+/* The generic packet command opcodes for CD/DVD Logical Units,
+ * From Table 57 of the SFF8090 Ver. 3 (Mt. Fuji) draft standard. */
+#define GPCMD_READ_DVD_STRUCTURE 0xad
+#define GPCMD_REPORT_KEY         0xa4
+#define GPCMD_SEND_KEY           0xa3
+ /* DVD struct types */
+#define DVD_STRUCT_PHYSICAL      0x00
+#define DVD_STRUCT_COPYRIGHT     0x01
+#define DVD_STRUCT_DISCKEY       0x02
+#define DVD_STRUCT_BCA           0x03
+#define DVD_STRUCT_MANUFACT      0x04
+ /* Key formats */
+#define DVD_REPORT_AGID          0x00
+#define DVD_REPORT_CHALLENGE     0x01
+#define DVD_SEND_CHALLENGE       0x01
+#define DVD_REPORT_KEY1          0x02
+#define DVD_SEND_KEY2            0x03
+#define DVD_REPORT_TITLE_KEY     0x04
+#define DVD_REPORT_ASF           0x05
+#define DVD_SEND_RPC             0x06
+#define DVD_REPORT_RPC           0x08
+#define DVDCSS_INVALIDATE_AGID   0x3f
 
 /*****************************************************************************
  * win32 ioctl specific
@@ -324,11 +310,7 @@ typedef struct SCSI_PASS_THROUGH_DIRECT
 typedef DWORD (CALLBACK *GETASPI32SUPPORTINFO)(VOID);
 typedef DWORD (CALLBACK *SENDASPI32COMMAND)(LPVOID);
 
-#if defined(_XBOX)
-#define WIN2K	1
-#else
 #define WIN2K               ( GetVersion() < 0x80000000 )
-#endif	// _XBOX
 #define ASPI_HAID           0
 #define ASPI_TARGET         0
 #define DTYPE_CDROM         0x05
@@ -412,7 +394,7 @@ struct SRB_ExecSCSICmd
 /*****************************************************************************
  * OS2 ioctl specific
  *****************************************************************************/
-#if defined( SYS_OS2 )
+#if defined( __OS2__ )
 
 #define CDROMDISK_EXECMD      0x7A
 

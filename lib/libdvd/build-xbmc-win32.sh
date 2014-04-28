@@ -21,18 +21,18 @@ then
 make distclean
 fi
 echo "***** Building libdvdcss *****"
-sh bootstrap
+autoreconf -i
 ./configure \
       CFLAGS="-DNDEBUG" \
       --disable-doc \
       --enable-static \
       --with-pic
 make $MAKEFLAGS
-strip -S src/.libs/libdvdcss-2.dll
+strip -S .libs/libdvdcss-2.dll
 cd ..
 mkdir -p includes/dvdcss
 cp libdvdcss/src/dvdcss/dvdcss.h includes/dvdcss
-cp libdvdcss/src/.libs/libdvdcss-2.dll /xbmc/system/players/dvdplayer/
+cp libdvdcss/.libs/libdvdcss-2.dll /xbmc/system/players/dvdplayer/
 
 #libdvdread
 cd libdvdread
@@ -72,7 +72,7 @@ make $MAKEFLAGS
 gcc \
       -shared \
       -o obj/libdvdnav.dll \
-      ../libdvdread/obj/*.o obj/*.o ../libdvdcss/src/.libs/libdvdcss.dll.a \
+      ../libdvdread/obj/*.o obj/*.o ../libdvdcss/.libs/libdvdcss.dll.a \
       -ldl \
       -Wl,--enable-auto-image-base \
       -Xlinker --enable-auto-import

@@ -268,9 +268,11 @@ dvdnav_status_t dvdnav_stop(dvdnav_t *this) {
 
 dvdnav_status_t dvdnav_go_up(dvdnav_t *this) {
   /* A nice easy function... delegate to the VM */
+  int32_t retval;
+
   pthread_mutex_lock(&this->vm_lock);
-  vm_jump_up(this->vm);
+  retval = vm_jump_up(this->vm);
   pthread_mutex_unlock(&this->vm_lock);
 
-  return DVDNAV_STATUS_OK;
+  return retval ? DVDNAV_STATUS_OK : DVDNAV_STATUS_ERR;
 }

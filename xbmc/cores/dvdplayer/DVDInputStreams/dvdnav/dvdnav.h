@@ -63,6 +63,11 @@ typedef int32_t dvdnav_status_t;
 #define DVDNAV_STATUS_ERR 0
 #define DVDNAV_STATUS_OK  1
 
+#define DVDNAV_FORMAT_AC3 0
+#define DVDNAV_FORMAT_MPEGAUDIO 3
+#define DVDNAV_FORMAT_LPCM 4
+#define DVDNAV_FORMAT_DTS 5
+#define DVDNAV_FORMAT_SDDS 6
 
 /*********************************************************************
  * initialisation & housekeeping functions                           *
@@ -377,7 +382,7 @@ int64_t dvdnav_get_current_time(dvdnav_t *self);
  * Stop playing the current position and start playback of the title
  * from the specified timecode.
  *
- * Currently unimplemented!
+ * Currently implemented using interpolation, which is slightly inaccurate.
  */
 dvdnav_status_t dvdnav_time_search(dvdnav_t *self, 
 				   uint64_t time);
@@ -691,50 +696,9 @@ int8_t dvdnav_is_domain_vtsm(dvdnav_t *self);
 int8_t dvdnav_is_domain_vts(dvdnav_t *self);
 
 /* XBMC added functions */
-int dvdnav_get_nr_of_subtitle_streams(dvdnav_t *self);
-
-int dvdnav_get_nr_of_audio_streams(dvdnav_t *self);
-
 int dvdnav_get_button_info(dvdnav_t* self, int alpha[2][4], int color[2][4]);
 
 int64_t dvdnav_convert_time(dvd_time_t *time);
-
-////////// RATDVD stuff ///////////////
-
-/*
- * Get the number of audio streams.
- */
-int32_t dvdnav_get_audio_stream_count(dvdnav_t * self);
-
-/*
- * Get the number of subpicture streams.
- */
-int32_t dvdnav_get_subpicture_stream_count(dvdnav_t * self);
-
-/*
- * Get attributes of the current audio stream.
- */
-dvdnav_status_t dvdnav_get_audio_info(dvdnav_t * self, int32_t streamid, audio_attr_t* audio_attributes);
-
-/*
- * Get attributes of the current subpicture stream.
- */
-dvdnav_status_t dvdnav_get_stitle_info(dvdnav_t * self, int32_t streamid, subp_attr_t* stitle_attributes);
-
-/*
- * Get information about the current video stream
- */
-dvdnav_status_t dvdnav_get_video_info(dvdnav_t * self, video_attr_t* video_attributes);
-
-/*
- * Select the audio stream to be played
- */
-dvdnav_status_t dvdnav_audio_change(dvdnav_t *self, int32_t audio);
-
-/*
- * Select the spu stream to be displayed
- */
-dvdnav_status_t dvdnav_subpicture_change(dvdnav_t *self, int32_t subpicture);
 
 #ifdef __cplusplus
 }

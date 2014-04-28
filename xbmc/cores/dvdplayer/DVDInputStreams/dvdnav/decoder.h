@@ -22,9 +22,6 @@
 #ifndef LIBDVDNAV_DECODER_H
 #define LIBDVDNAV_DECODER_H
 
-//#include <inttypes.h>
-//#include <sys/time.h>
-
 #include "ifo_types.h" /*  vm_cmd_t */
 #include "dvdnav_internal.h"
 

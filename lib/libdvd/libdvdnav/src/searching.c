@@ -709,13 +709,41 @@ uint32_t dvdnav_describe_title_chapters(dvdnav_t *this, int32_t title, uint64_t 
   length = 0;
   for(i=0; i<parts; i++) {
     uint32_t cellnr, endcellnr;
+    if (ptt[i].pgcn == 0 || ptt[i].pgcn > ifo->vts_pgcit->nr_of_pgci_srp) {
+      printerr("PGCN out of bounds.");
+      continue;
+    }
+    if (ifo->vts_pgcit->pgci_srp[ptt[i].pgcn-1].pgc_start_byte >= ifo->vts_pgcit->last_byte) {
+      printerr("PGC start out of bounds");
+      continue;
+    }
     pgc = ifo->vts_pgcit->pgci_srp[ptt[i].pgcn-1].pgc;
-    if(ptt[i].pgn > pgc->nr_of_programs) {
+    if (pgc == NULL) {
+      printerr("PGC missing.");
+      continue;
+    }
+    if (pgc->program_map == NULL) {
+      printerr("Program map missing.");
+      continue;
+    }
+    if(ptt[i].pgn == 0 || ptt[i].pgn > pgc->nr_of_programs) {
       printerr("WRONG part number.");
       goto fail;
     }
 
-    cellnr = pgc->program_map[ptt[i].pgn-1];
+    if (pgc->nr_of_cells == 0) {
+      printerr("Number of cells cannot be 0");
+      continue;
+    }
+    if ((cellnr = pgc->program_map[ptt[i].pgn-1]) == 0) {
+      printerr("Cell new row cannot be 0");
+      continue;
+    }
+    if (pgc->cell_playback == NULL) {
+      printerr("Cell missing");
+      continue;
+    }
+
     if(ptt[i].pgn < pgc->nr_of_programs)
       endcellnr = pgc->program_map[ptt[i].pgn];
     else
