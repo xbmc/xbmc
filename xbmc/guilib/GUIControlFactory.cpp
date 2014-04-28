@@ -677,7 +677,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   float width = 0, height = 0;
   float minHeight = 0, minWidth = 0;
 
-  CGUIAction leftActions, rightActions, upActions, downActions, backActions, nextActions, prevActions;
+  CGUIAction leftActions, rightActions, upActions, downActions, backActions, nextActions, prevActions, itemchangedActions;
 
   int pageControl = 0;
   CGUIInfoColor colorDiffuse(0xFFFFFFFF);
@@ -829,6 +829,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetActions(pControlNode, "onnext",  nextActions);
   GetActions(pControlNode, "onprev",  prevActions);
   GetActions(pControlNode, "onback",  backActions);
+  GetActions(pControlNode, "onitemchanged",  itemchangedActions);
 
   if (XMLUtils::GetInt(pControlNode, "defaultcontrol", defaultControl))
   {
@@ -1329,6 +1330,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     ((CGUIListContainer *)control)->SetPageControl(pageControl);
     ((CGUIListContainer *)control)->SetRenderOffset(offset);
     ((CGUIListContainer *)control)->SetAutoScrolling(pControlNode);
+    ((CGUIListContainer *)control)->SetItemChangedActions(itemchangedActions);
   }
   else if (type == CGUIControl::GUICONTAINER_WRAPLIST)
   {
@@ -1342,6 +1344,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     ((CGUIWrappingListContainer *)control)->SetPageControl(pageControl);
     ((CGUIWrappingListContainer *)control)->SetRenderOffset(offset);
     ((CGUIWrappingListContainer *)control)->SetAutoScrolling(pControlNode);
+    ((CGUIWrappingListContainer *)control)->SetItemChangedActions(itemchangedActions);
   }
   else if (type == CGUIControl::GUICONTAINER_EPGGRID)
   {
@@ -1362,6 +1365,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     ((CGUIFixedListContainer *)control)->SetPageControl(pageControl);
     ((CGUIFixedListContainer *)control)->SetRenderOffset(offset);
     ((CGUIFixedListContainer *)control)->SetAutoScrolling(pControlNode);
+    ((CGUIFixedListContainer *)control)->SetItemChangedActions(itemchangedActions);
   }
   else if (type == CGUIControl::GUICONTAINER_PANEL)
   {
@@ -1375,6 +1379,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     ((CGUIPanelContainer *)control)->SetPageControl(pageControl);
     ((CGUIPanelContainer *)control)->SetRenderOffset(offset);
     ((CGUIPanelContainer *)control)->SetAutoScrolling(pControlNode);
+    ((CGUIPanelContainer *)control)->SetItemChangedActions(itemchangedActions);
   }
   else if (type == CGUIControl::GUICONTROL_TEXTBOX)
   {
