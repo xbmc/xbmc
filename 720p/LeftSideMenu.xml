@@ -525,6 +525,8 @@
 				<control type="button" id="102">
 					<texturefocus>b-pp-play-s.png</texturefocus>
 					<texturenofocus>b-pp-play.png</texturenofocus>
+					<onright>XBMC.NextItem</onright>
+					<onleft>XBMC.PrevItem</onleft>
 					<onclick>Plex.PlayWith(VideoDefaultPlayer)</onclick>
 					<include>leftMenuBarButton</include>
 				</control>
@@ -532,6 +534,8 @@
 				<control type="button" id="103">
 					<texturefocus>b-pp-audio-s2.png</texturefocus>
 					<texturenofocus>b-pp-audio2.png</texturenofocus>
+					<onright>XBMC.NextItem</onright>
+					<onleft>XBMC.PrevItem</onleft>
 					<onclick>ActivateWindow(10205)</onclick>
 					<include>leftMenuBarButton</include>
 					<onfocus>Skin.SetString(DialogPos,audiostreampicker)</onfocus>
@@ -541,6 +545,8 @@
 				<control type="button" id="104">
 					<texturefocus>b-pp-subtitles-s.png</texturefocus>
 					<texturenofocus>b-pp-subtitles.png</texturenofocus>
+					<onright>XBMC.NextItem</onright>
+					<onleft>XBMC.PrevItem</onleft>
 					<onclick>ActivateWindow(10204)</onclick>
 					<include>leftMenuBarButton</include>
 					<onfocus>Skin.SetString(DialogPos,subtitlestreampicker)</onfocus>
@@ -550,6 +556,8 @@
 				<control type="button" id="105">
 					<texturefocus>b-pp-rate-s.png</texturefocus>
 					<texturenofocus>b-pp-rate.png</texturenofocus>
+					<onright>XBMC.NextItem</onright>
+					<onleft>XBMC.PrevItem</onleft>
 					<onclick>ActivateWindow(10200,$INFO[ListItem(0).Path])</onclick>
 					<include>leftMenuBarButton</include>
 					<onfocus>Skin.SetString(DialogPos,rate)</onfocus>
@@ -570,6 +578,8 @@
 				<control type="button" id="107">
 					<texturefocus>b-pp-share-s.png</texturefocus>
 					<texturenofocus>b-pp-share.png</texturenofocus>
+					<onright>XBMC.NextItem</onright>
+					<onleft>XBMC.PrevItem</onleft>
 					<include>leftMenuBarButton</include>
 					<visible>!IsEmpty(ListItem(0).Property(canShare))</visible>
 					<onfocus>Skin.SetString(DialogPos,share)</onfocus>
@@ -579,6 +589,8 @@
 				<control type="button" id="108">
 					<texturefocus>b-pp-watched-s.png</texturefocus>
 					<texturenofocus>b-pp-watched.png</texturenofocus>
+					<onright>XBMC.NextItem</onright>
+					<onleft>XBMC.PrevItem</onleft>
 					<onclick>markasunwatched</onclick>
 					<include>leftMenuBarButton</include>
 				</control>
@@ -586,6 +598,8 @@
 				<control type="button" id="109">
 					<texturefocus>b-pp-unwatched-s.png</texturefocus>
 					<texturenofocus>b-pp-unwatched.png</texturenofocus>
+					<onright>XBMC.NextItem</onright>
+					<onleft>XBMC.PrevItem</onleft>
 					<onclick>markaswatched</onclick>
 					<include>leftMenuBarButton</include>
 				</control>
