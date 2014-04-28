@@ -1283,3 +1283,24 @@ bool CGUIPlexMediaWindow::MatchPlexContent(const CStdString &matchStr)
 
   return false;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIPlexMediaWindow::IsFiltered()
+{
+  CPlexSectionFilterPtr sectionFilter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
+  if (sectionFilter)
+  {
+    if (sectionFilter->secondaryFiltersActivated())
+      return true;
+  }
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIPlexMediaWindow::CanFilterAdvanced()
+{
+  CPlexSectionFilterPtr sectionFilter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
+  if (sectionFilter)
+    return sectionFilter->hasAdvancedFilters();
+  return false;
+}
