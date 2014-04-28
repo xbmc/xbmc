@@ -675,7 +675,6 @@ int CBuiltins::Execute(const CStdString& execString)
       CFileItemList items;
       CStdString extensions = g_advancedSettings.m_videoExtensions + "|" + g_advancedSettings.m_musicExtensions;
       CDirectory::GetDirectory(item.GetPath(),items,extensions);
-      items.Sort(SortByLabel, SortOrderAscending);
 
       bool containsMusic = false, containsVideo = false;
       for (int i = 0; i < items.Size(); i++)
@@ -687,7 +686,13 @@ int CBuiltins::Execute(const CStdString& execString)
         if (containsMusic && containsVideo)
           break;
       }
-      
+
+      CGUIViewState *state = CGUIViewState::GetViewState(containsVideo ? WINDOW_VIDEO_NAV : WINDOW_MUSIC, items);
+      if (state)
+        items.Sort(state->GetSortMethod());
+      else
+        items.Sort(SortByLabel, SortOrderAscending);
+
       int playlist = containsVideo? PLAYLIST_VIDEO : PLAYLIST_MUSIC;;
       if (containsMusic && containsVideo) //mixed content found in the folder
       {
