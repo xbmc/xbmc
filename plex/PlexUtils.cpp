@@ -804,10 +804,25 @@ string PlexUtils::GetPlexContent(const CFileItem &item)
 {
   CStdString content;
 
+  if (item.HasProperty("sectionType") &&
+      item.GetProperty("sectionType").asInteger() == PLEX_DIR_TYPE_HOME_MOVIES)
+    return "homemovies";
+
+  // this is SUCH a hack.
+  if (item.HasProperty("title2") && item.GetProperty("title2").asString() == "By Folder")
+    return "folders";
+
+  // check if we are requesting a single item
+  CURL itemUrl(item.GetPath());
+  bool singleItem = boost::starts_with(itemUrl.GetFileName(), "library/metadata");
+
   switch(item.GetPlexDirectoryType())
   {
     case PLEX_DIR_TYPE_MOVIE:
-      content = "movies";
+      if (singleItem)
+        content = "movie";
+      else
+        content = "movies";
       break;
     case PLEX_DIR_TYPE_SHOW:
       content = "tvshows";
@@ -816,7 +831,10 @@ string PlexUtils::GetPlexContent(const CFileItem &item)
       content = "seasons";
       break;
     case PLEX_DIR_TYPE_EPISODE:
-      content = "episodes";
+      if (singleItem)
+        content = "episode";
+      else
+        content = "episodes";
       break;
     case PLEX_DIR_TYPE_ARTIST:
       content = "artists";
@@ -837,7 +855,10 @@ string PlexUtils::GetPlexContent(const CFileItem &item)
       content = "channels";
       break;
     case PLEX_DIR_TYPE_CLIP:
-      content = "clips";
+      if (singleItem)
+        content = "clip";
+      else
+        content = "clips";
       break;
     case PLEX_DIR_TYPE_PHOTO:
       content = "photos";

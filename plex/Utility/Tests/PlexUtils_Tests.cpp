@@ -196,3 +196,29 @@ TEST(PlexUtilsGetCompositeImageUrl, lotOfEquals)
   std::string url = PlexUtils::GetCompositeImageUrl(item, "key==value");
   EXPECT_EQ(url, "plexserver://abc123/composite?key=%3dvalue");
 }
+
+TEST(PlexUtilsGetPlexContent, homemovies)
+{
+  CFileItem item;
+  item.SetProperty("sectionType", (int)PLEX_DIR_TYPE_HOME_MOVIES);
+  EXPECT_EQ(PlexUtils::GetPlexContent(item), "homemovies");
+}
+
+TEST(PlexUtilsGetPlexContent, folders)
+{
+  CFileItem item;
+  item.SetProperty("title2", "By Folder");
+  EXPECT_EQ(PlexUtils::GetPlexContent(item), "folders");
+}
+
+TEST(PlexUtilsGetPlexContent, singleItems)
+{
+  CFileItem item;
+  item.SetPath("http://1.0.0.0:32400/library/metadata/1234");
+  item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
+  EXPECT_EQ(PlexUtils::GetPlexContent(item), "movie");
+  item.SetPlexDirectoryType(PLEX_DIR_TYPE_EPISODE);
+  EXPECT_EQ(PlexUtils::GetPlexContent(item), "episode");
+  item.SetPlexDirectoryType(PLEX_DIR_TYPE_CLIP);
+  EXPECT_EQ(PlexUtils::GetPlexContent(item), "clip");
+}

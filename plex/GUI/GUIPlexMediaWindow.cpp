@@ -949,7 +949,10 @@ void CGUIPlexMediaWindow::CheckPlexFilters(CFileItemList &list)
 
   CFileItemPtr section = g_plexApplication.dataLoader->GetSection(m_sectionRoot);
   if (section && section->GetPlexDirectoryType() == PLEX_DIR_TYPE_HOME_MOVIES)
+  {
     list.SetContent("homemovies");
+    list.SetProperty("sectionType", (int)section->GetPlexDirectoryType());
+  }
 
   if (m_sectionFilter && m_sectionFilter->currentPrimaryFilter() == "folder")
     list.SetContent("folders");
