@@ -1285,6 +1285,25 @@ bool CGUIPlexMediaWindow::MatchPlexContent(const CStdString &matchStr)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIPlexMediaWindow::MatchPlexFilter(const CStdString &matchStr)
+{
+  if (!m_sectionFilter)
+    return matchStr.empty();
+
+  CStdStringArray matchVec = StringUtils::SplitString(matchStr, ",");
+  CStdString filterName = m_sectionFilter->currentPrimaryFilter();
+
+  BOOST_FOREACH(CStdString& match, matchVec)
+  {
+    match = StringUtils::Trim(match);
+    if(match.Equals(filterName))
+      return true;
+  }
+
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::IsFiltered()
 {
   CPlexSectionFilterPtr sectionFilter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());

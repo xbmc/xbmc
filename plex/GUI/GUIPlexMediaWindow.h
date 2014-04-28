@@ -69,6 +69,7 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public 
     void PlayAllPlayQueue(const CPlexServerPtr &server, bool shuffle, const CFileItemPtr &fromHere);
     void PlayAllLocalPlaylist(bool shuffle, const CFileItemPtr &fromHere);
     bool MatchPlexContent(const CStdString& matchStr);
+    bool MatchPlexFilter(const CStdString& matchStr);
     CFileItemList* GetVecItems() const { return m_vecItems; }
     bool IsFiltered();
     bool CanFilterAdvanced();
