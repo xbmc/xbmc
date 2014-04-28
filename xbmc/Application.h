@@ -365,9 +365,8 @@ protected:
   virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode);
 
   bool LoadSkin(const CStdString& skinID);
-  void LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
+  bool LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
 
-  bool m_skinReloading; // if true we disallow LoadSkin until ReloadSkin is called
   bool m_skinReverting;
 
   bool m_loggingIn;
