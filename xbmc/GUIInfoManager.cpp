@@ -580,6 +580,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "hasepg",           LISTITEM_HAS_EPG },
                                   { "hastimer",         LISTITEM_HASTIMER },
                                   { "isrecording",      LISTITEM_ISRECORDING },
+                                  { "inprogress",       LISTITEM_INPROGRESS },
                                   { "isencrypted",      LISTITEM_ISENCRYPTED },
                                   { "progress",         LISTITEM_PROGRESS },
                                   { "dateadded",        LISTITEM_DATE_ADDED },
@@ -5153,6 +5154,14 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
         if (timer && timer->HasPVRTimerInfoTag())
           return timer->GetPVRTimerInfoTag()->IsRecording();
       }
+    }
+    else if (condition == LISTITEM_INPROGRESS)
+    {
+      if (!g_PVRManager.IsStarted())
+        return false;
+
+      if (pItem->HasEPGInfoTag())
+        return pItem->GetEPGInfoTag()->IsActive();
     }
     else if (condition == LISTITEM_HASTIMER)
     {
