@@ -282,6 +282,14 @@
 					<label>Container.Property(PlexPreplay) :</label>
 					<visible>IsEmpty(Container.Property(PlexPreplay))</visible>
 				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.Property(PlexContent) : [COLOR=orangeLight]$INFO[Container.Property(PlexContent)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.Property(PlexFilter) : [COLOR=orangeLight]$INFO[Container.Property(PlexFilter)][/COLOR]</label>
+				</control>
 				<!--><control type="label">
 					<include>debugFont</include>
 					<label>ListItem.FileNameAndPath : [COLOR=orangeLight]$INFO[ListItem.FileNameAndPath][/COLOR]</label>
