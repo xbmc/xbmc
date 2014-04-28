@@ -192,19 +192,14 @@ bool CPVRChannelGroup::MoveChannel(unsigned int iOldChannelNumber, unsigned int 
   if (iOldChannelNumber == iNewChannelNumber)
     return true;
 
-  bool bReturn(false);
   CSingleLock lock(m_critSection);
 
   /* make sure the list is sorted by channel number */
   SortByChannelNumber();
 
-  /* old channel number out of range */
-  if (iOldChannelNumber > m_members.size())
-    return bReturn;
-
-  /* new channel number out of range */
-  if (iNewChannelNumber < 1)
-    return bReturn;
+  /* old or new channel number out of range */
+  if (iOldChannelNumber > m_members.size() || iNewChannelNumber < 1)
+    return false;
 
   if (iNewChannelNumber > m_members.size())
     iNewChannelNumber = m_members.size();
@@ -220,9 +215,7 @@ bool CPVRChannelGroup::MoveChannel(unsigned int iOldChannelNumber, unsigned int 
   m_bChanged = true;
 
   if (bSaveInDb)
-    bReturn = Persist();
-  else
-    bReturn = true;
+    Persist();
 
   CLog::Log(LOGNOTICE, "CPVRChannelGroup - %s - %s channel '%s' moved to channel number '%d'",
       __FUNCTION__, (m_bRadio ? "radio" : "tv"), entry.channel->ChannelName().c_str(), iNewChannelNumber);
