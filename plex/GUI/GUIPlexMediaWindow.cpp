@@ -70,6 +70,8 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
     if (dialog && dialog->IsActive())
       dialog->Close();
   }
+  else if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
+    m_sectionFilter.reset();
 
   bool ret = CGUIMediaWindow::OnMessage(message);
 
