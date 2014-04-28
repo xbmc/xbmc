@@ -1102,12 +1102,6 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("input.enablemouse");
   m_settingsManager->RegisterCallback(&g_Mouse, settingSet);
 
-#if defined(HAS_GL) && defined(HAVE_X11)
-  settingSet.clear();
-  settingSet.insert("input.enablesystemkeys");
-  m_settingsManager->RegisterCallback(&g_Windowing, settingSet);
-#endif
-
   settingSet.clear();
   settingSet.insert("services.webserver");
   settingSet.insert("services.webserverport");

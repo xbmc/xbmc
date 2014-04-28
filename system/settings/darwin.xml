@@ -61,13 +61,6 @@
           </control>
         </setting>
       </group>
-      <group id="2">
-        <setting id="input.enablesystemkeys" type="boolean" label="35103" help="37019">
-          <visible>false</visible>
-          <default>yes</default>
-          <control type="toggle" />
-        </setting>
-      </group>
     </category>
   </section>
 </settings>
