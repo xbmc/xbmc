@@ -87,7 +87,9 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
             {
               (*settingIt)->CheckRequirements();
 
-              const std::string &settingId = (*settingIt)->GetId();
+              std::string settingId = (*settingIt)->GetId();
+              StringUtils::ToLower(settingId);
+
               SettingMap::iterator setting = m_settings.find(settingId);
               if (setting == m_settings.end())
               {
@@ -127,7 +129,11 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
       std::set<std::string> settingIds = depIt->GetSettings();
       for (std::set<std::string>::const_iterator itSettingId = settingIds.begin(); itSettingId != settingIds.end(); ++itSettingId)
       {
-        SettingMap::iterator setting = m_settings.find(*itSettingId);
+        
+        std::string settingId = *itSettingId;
+        StringUtils::ToLower(settingId);
+        
+        SettingMap::iterator setting = m_settings.find(settingId);
         if (setting == m_settings.end())
           continue;
 
@@ -480,7 +486,10 @@ CSettingSection* CSettingsManager::GetSection(const std::string &section) const
 SettingDependencyMap CSettingsManager::GetDependencies(const std::string &id) const
 {
   CSharedLock lock(m_settingsCritical);
-  SettingMap::const_iterator setting = m_settings.find(id);
+  std::string settingId = id;
+  StringUtils::ToLower(settingId);
+
+  SettingMap::const_iterator setting = m_settings.find(settingId);
   if (setting == m_settings.end())
     return SettingDependencyMap();
 
@@ -701,7 +710,10 @@ bool CSettingsManager::OnSettingChanging(const CSetting *setting)
   if (!m_loaded)
     return true;
 
-  SettingMap::const_iterator settingIt = m_settings.find(setting->GetId());
+  std::string settingId = setting->GetId();
+  StringUtils::ToLower(settingId);
+
+  SettingMap::const_iterator settingIt = m_settings.find(settingId);
   if (settingIt == m_settings.end())
     return false;
 
@@ -725,8 +737,11 @@ void CSettingsManager::OnSettingChanged(const CSetting *setting)
   CSharedLock lock(m_settingsCritical);
   if (!m_loaded || setting == NULL)
     return;
-    
-  SettingMap::const_iterator settingIt = m_settings.find(setting->GetId());
+
+  std::string settingId = setting->GetId();
+  StringUtils::ToLower(settingId);
+
+  SettingMap::const_iterator settingIt = m_settings.find(settingId);
   if (settingIt == m_settings.end())
     return;
 
@@ -754,7 +769,10 @@ void CSettingsManager::OnSettingAction(const CSetting *setting)
   if (!m_loaded || setting == NULL)
     return;
 
-  SettingMap::const_iterator settingIt = m_settings.find(setting->GetId());
+  std::string settingId = setting->GetId();
+  StringUtils::ToLower(settingId);
+
+  SettingMap::const_iterator settingIt = m_settings.find(settingId);
   if (settingIt == m_settings.end())
     return;
 
@@ -774,7 +792,10 @@ bool CSettingsManager::OnSettingUpdate(CSetting* &setting, const char *oldSettin
   if (setting == NULL)
     return false;
 
-  SettingMap::const_iterator settingIt = m_settings.find(setting->GetId());
+  std::string settingId = setting->GetId();
+  StringUtils::ToLower(settingId);
+
+  SettingMap::const_iterator settingIt = m_settings.find(settingId);
   if (settingIt == m_settings.end())
     return false;
 
@@ -797,7 +818,10 @@ void CSettingsManager::OnSettingPropertyChanged(const CSetting *setting, const c
   if (!m_loaded || setting == NULL)
     return;
 
-  SettingMap::const_iterator settingIt = m_settings.find(setting->GetId());
+  std::string settingId = setting->GetId();
+  StringUtils::ToLower(settingId);
+
+  SettingMap::const_iterator settingIt = m_settings.find(settingId);
   if (settingIt == m_settings.end())
     return;
 
