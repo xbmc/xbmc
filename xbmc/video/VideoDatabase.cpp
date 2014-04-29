@@ -7765,6 +7765,40 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
       }
     }
 
+    // check that our sources are all around
+    std::vector<CStdString> missingSources;
+    VECSOURCES*             videoSources;
+
+    if ((videoSources = CMediaSourceSettings::Get().GetSources("video")))
+    {
+      VECSOURCES::const_iterator it;
+      std::vector<std::string> toCheck;
+
+      for (it = videoSources->begin(); it != videoSources->end(); ++it)
+      {
+        if (URIUtils::IsMultiPath(it->strPath))
+        {
+          std::vector<CStdString> multipaths;
+          CMultiPathDirectory::GetPaths(it->strPath, multipaths);
+          toCheck.insert(toCheck.end(), multipaths.begin(), multipaths.end());
+        }
+        else
+          toCheck.push_back(it->strPath);
+      }
+
+      std::vector<std::string>::const_iterator it2;
+
+      for (it2 = toCheck.begin(); it2 != toCheck.end(); ++it2)
+      {
+        CLog::Log(LOGDEBUG, "2 Checking existence of %s", it2->c_str());
+        if (!CDirectory::Exists(*it2))
+        {
+          if (!showProgress || QueryUserToRemoveMissingPath(*it2))
+            missingSources.push_back(*it2);
+        }
+      }
+    }
+
     std::string filesToTestForDelete;
 
     int total = m_pDS->num_rows();
@@ -7781,8 +7815,16 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
       if (URIUtils::IsStack(fullPath))
         fullPath = CStackDirectory::GetFirstStackedFile(fullPath);
 
+      if (URIUtils::IsInArchive(fullPath))
+      {
+        CURL url(fullPath);
+        fullPath = url.GetHostName();
+      }
+
       // remove optical, non-existing files
-      if (URIUtils::IsOnDVD(fullPath) || !CFile::Exists(fullPath, false))
+      if (URIUtils::IsOnDVD(fullPath) ||
+          URIUtils::IsInPath(fullPath, missingSources) ||
+          !CFile::Exists(fullPath, false))
         filesToTestForDelete += m_pDS->fv("files.idFile").get_asString() + ",";
 
       if (handle == NULL && progress != NULL)
@@ -7833,9 +7875,9 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     {
       StringUtils::TrimRight(filesToTestForDelete, ",");
 
-      movieIDs = CleanMediaType("movie", filesToTestForDelete, pathsDeleteDecisions, filesToDelete, !showProgress);
-      episodeIDs = CleanMediaType("episode", filesToTestForDelete, pathsDeleteDecisions, filesToDelete, !showProgress);
-      musicVideoIDs = CleanMediaType("musicvideo", filesToTestForDelete, pathsDeleteDecisions, filesToDelete, !showProgress);
+      movieIDs = CleanMediaType("movie", filesToTestForDelete, pathsDeleteDecisions, filesToDelete, !showProgress, missingSources);
+      episodeIDs = CleanMediaType("episode", filesToTestForDelete, pathsDeleteDecisions, filesToDelete, !showProgress, missingSources);
+      musicVideoIDs = CleanMediaType("musicvideo", filesToTestForDelete, pathsDeleteDecisions, filesToDelete, !showProgress, missingSources);
     }
 
     if (progress != NULL)
@@ -7939,9 +7981,11 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     std::string strIds;
     while (!m_pDS->eof())
     {
+      std::string strPath = m_pDS->fv(1).get_asString();
       std::map<int, bool>::const_iterator pathsDeleteDecision = pathsDeleteDecisions.find(m_pDS->fv(0).get_asInt());
       if ((pathsDeleteDecision != pathsDeleteDecisions.end() && pathsDeleteDecision->second) ||
-          (pathsDeleteDecision == pathsDeleteDecisions.end() && !CDirectory::Exists(m_pDS->fv(1).get_asString(), false)))
+          (pathsDeleteDecision == pathsDeleteDecisions.end() &&
+           (URIUtils::IsInPath(strPath, missingSources) || !CDirectory::Exists(strPath, false))))
         strIds += m_pDS->fv(0).get_asString() + ",";
 
       m_pDS->next();
@@ -8121,7 +8165,8 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
 }
 
 std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, const std::string &cleanableFileIDs,
-                                                std::map<int, bool> &pathsDeleteDecisions, std::string &deletedFileIDs, bool silent)
+                                                std::map<int, bool> &pathsDeleteDecisions, std::string &deletedFileIDs, bool silent,
+                                                const std::vector<CStdString>& missingSources)
 {
   std::vector<int> cleanedIDs;
   if (mediaType.empty() || cleanableFileIDs.empty())
@@ -8176,7 +8221,9 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
     if (parentPathsDeleteDecision == parentPathsDeleteDecisions.end())
     {
       std::string parentPath = m_pDS->fv(4).get_asString();
-      bool parentPathNotExists = !CDirectory::Exists(parentPath, false);
+      bool parentSourceMissing = URIUtils::IsInPath(parentPath, missingSources);
+      bool parentPathNotExists = parentSourceMissing || !CDirectory::Exists(parentPath, false);
+
       // if the parent path exists, the file will be deleted without asking
       // if the parent path doesn't exist, ask the user whether to remove all items it contained
       if (parentPathNotExists)
@@ -8185,23 +8232,7 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
         if (silent)
           del = false;
         else
-        {
-          CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-          if (pDialog != NULL)
-          {
-            CURL parentUrl(parentPath);
-            pDialog->SetHeading(15012);
-            pDialog->SetText(StringUtils::Format(g_localizeStrings.Get(15013), parentUrl.GetWithoutUserDetails().c_str()));
-            pDialog->SetChoice(0, 15015);
-            pDialog->SetChoice(1, 15014);
-
-            //send message and wait for user input
-            ThreadMessage tMsg = { TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, (unsigned int)g_windowManager.GetActiveWindow() };
-            CApplicationMessenger::Get().SendMessage(tMsg, true);
-
-            del = !pDialog->IsConfirmed();
-          }
-        }
+          del = (parentSourceMissing || QueryUserToRemoveMissingPath(parentPath));
       }
 
       parentPathsDeleteDecisions.insert(make_pair(parentPathID, make_pair(parentPathNotExists, del)));
@@ -8226,6 +8257,28 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
   m_pDS->close();
 
   return cleanedIDs;
+}
+
+bool CVideoDatabase::QueryUserToRemoveMissingPath(const CStdString& path)
+{
+  bool              rc      = false;
+  CGUIDialogYesNo*  pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+
+  if (pDialog != NULL)
+  {
+    CURL parentUrl(path);
+    pDialog->SetHeading(15012);
+    pDialog->SetText(StringUtils::Format(g_localizeStrings.Get(15013), parentUrl.GetWithoutUserDetails().c_str()));
+    pDialog->SetChoice(0, 15015);
+    pDialog->SetChoice(1, 15014);
+
+    //send message and wait for user input
+    ThreadMessage tMsg = { TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, (unsigned int)g_windowManager.GetActiveWindow() };
+    CApplicationMessenger::Get().SendMessage(tMsg, true);
+    rc = !pDialog->IsConfirmed();
+  }
+
+  return rc;
 }
 
 void CVideoDatabase::DumpToDummyFiles(const CStdString &path)
