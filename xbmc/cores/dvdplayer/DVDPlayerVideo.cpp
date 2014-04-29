@@ -1156,10 +1156,23 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 
   if( m_started == false )
     iSleepTime = 0.0;
-  else if( m_stalled )
+  else if( m_stalled || m_pClock->GetMaster() == MASTER_CLOCK_VIDEO)
     iSleepTime = iFrameSleep;
   else
     iSleepTime = iClockSleep;
+
+  // sync clock if we are master
+  if(m_pClock->GetMaster() == MASTER_CLOCK_VIDEO)
+  {
+    double error = iClockSleep - iFrameSleep;
+    if( abs(error)  > DVD_MSEC_TO_TIME(10) )
+    {
+      CLog::Log(LOGDEBUG, "CDVDPlayerVideo:: Discontinuity - was:%f, should be:%f, error:%f"
+                        , iPlayingClock, iPlayingClock + error, error);
+      m_pClock->Discontinuity(iPlayingClock + error);
+
+    }
+  }
 
   // present the current pts of this frame to user, and include the actual
   // presentation delay, to allow him to adjust for it

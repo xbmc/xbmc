@@ -605,6 +605,9 @@ void CDVDPlayerAudio::SetSyncType(bool passthrough)
   if (!m_pClock->SetMaxSpeedAdjust(maxspeedadjust))
     m_synctype = SYNC_DISCON;
 
+  if(m_synctype == SYNC_DISCON && m_pClock->GetMaster() != MASTER_CLOCK_AUDIO)
+    m_synctype = SYNC_SKIPDUP;
+
   if (m_synctype != m_prevsynctype)
   {
     const char *synctypes[] = {"clock feedback", "skip/duplicate", "resample", "invalid"};
@@ -619,7 +622,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   double clock = m_pClock->GetClock();
   double error = m_dvdAudio.GetPlayingPts() - clock;
 
-  if( fabs(error) > DVD_MSEC_TO_TIME(100) || m_syncclock )
+  if( (fabs(error) > DVD_MSEC_TO_TIME(100) || m_syncclock) && m_pClock->GetMaster() == MASTER_CLOCK_AUDIO )
   {
     m_pClock->Discontinuity(clock+error);
     CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity1 - was:%f, should be:%f, error:%f", clock, clock+error, error);
@@ -657,7 +660,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
         error = m_error;
       }
 
-      if (fabs(error) > limit - 0.001)
+      if (fabs(error) > limit - 0.001 && m_pClock->GetMaster() == MASTER_CLOCK_AUDIO)
       {
         m_pClock->Discontinuity(clock+error);
         CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity2 - was:%f, should be:%f, error:%f", clock, clock+error, error);
