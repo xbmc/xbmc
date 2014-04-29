@@ -1111,6 +1111,9 @@ bool CGUIMediaWindow::HaveDiscOrConnection(const CStdString& strPath, int iDrive
 // \brief Shows a standard errormessage for a given pItem.
 void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem)
 {
+  if (!pItem->m_bIsShareOrDrive)
+    return;
+
   int idMessageText = 0;
   CURL url(pItem->GetPath());
   const CStdString& strHostName = url.GetHostName();

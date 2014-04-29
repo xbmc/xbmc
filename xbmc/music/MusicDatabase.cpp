@@ -613,7 +613,7 @@ bool CMusicDatabase::GetSong(int idSong, CSong& song)
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL=PrepareSQL("SELECT songview.*,songartistview.* FROM songview "
-                                 " JOIN songartistview ON songview.idSong = songartistview.idSong "
+                                 " LEFT JOIN songartistview ON songview.idSong = songartistview.idSong "
                                  " WHERE songview.idSong = %i", idSong);
 
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -851,9 +851,9 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
     {
       sql = PrepareSQL("SELECT albumview.*,albumartistview.*,songview.*,songartistview.*,albuminfosong.* "
                        "  FROM albumview "
-                       "  JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum "
+                       "  LEFT JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum "
                        "  JOIN songview ON albumview.idAlbum = songview.idAlbum "
-                       "  JOIN songartistview ON songview.idSong = songartistview.idSong "
+                       "  LEFT JOIN songartistview ON songview.idSong = songartistview.idSong "
                        "  LEFT JOIN albuminfosong ON albumview.idAlbum = albuminfosong.idAlbumInfo "
                        "  WHERE albumview.idAlbum = %ld "
                        "  ORDER BY albumartistview.iOrder, songview.iTrack, songartistview.iOrder", idAlbum);
@@ -862,7 +862,7 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
     {
       sql = PrepareSQL("SELECT albumview.*,albumartistview.* "
                        "  FROM albumview "
-                       "  JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum "
+                       "  LEFT JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum "
                        "  WHERE albumview.idAlbum = %ld "
                        "  ORDER BY albumartistview.iOrder", idAlbum);
     }
@@ -1694,24 +1694,24 @@ CSong CMusicDatabase::GetAlbumInfoSongFromDataset(const dbiplus::sql_record* con
   return song;
 }
 
-bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName, CSong& song, int startOffset)
+bool CMusicDatabase::GetSongByFileName(const CStdString& strFileNameAndPath, CSong& song, int startOffset)
 {
   song.Clear();
-  CURL url(strFileName);
+  CURL url(strFileNameAndPath);
 
   if (url.GetProtocol()=="musicdb")
   {
-    CStdString strFile = URIUtils::GetFileName(strFileName);
+    CStdString strFile = URIUtils::GetFileName(strFileNameAndPath);
     URIUtils::RemoveExtension(strFile);
     return GetSong(atol(strFile.c_str()), song);
   }
 
-  CStdString strPath = URIUtils::GetDirectory(strFileName);
-  URIUtils::AddSlashAtEnd(strPath);
-
   if (NULL == m_pDB.get()) return false;
   if (NULL == m_pDS.get()) return false;
 
+  CStdString strPath, strFileName;
+  URIUtils::Split(strFileNameAndPath, strPath, strFileName);
+  URIUtils::AddSlashAtEnd(strPath);
   DWORD crc = ComputeCRC(strFileName);
 
   CStdString strSQL = PrepareSQL("select idSong from songview "
@@ -4470,9 +4470,10 @@ int CMusicDatabase::GetSongIDFromPath(const CStdString &filePath)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    CStdString strPath = URIUtils::GetDirectory(filePath);
+    CStdString strPath, strFileName;
+    URIUtils::Split(filePath, strPath, strFileName);
     URIUtils::AddSlashAtEnd(strPath);
-    DWORD crc = ComputeCRC(filePath);
+    DWORD crc = ComputeCRC(strFileName);
 
     CStdString sql = PrepareSQL("select idSong from song join path on song.idPath = path.idPath where song.dwFileNameCRC='%ul'and path.strPath='%s'", crc, strPath.c_str());
     if (!m_pDS->query(sql.c_str())) return -1;
