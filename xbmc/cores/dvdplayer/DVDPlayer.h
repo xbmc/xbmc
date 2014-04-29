@@ -274,10 +274,7 @@ protected:
   *   \return true if the subtitles were changed, false otherwise.
   */
   bool AdaptForcedSubtitles();
-  bool CloseAudioStream(bool bWaitForBuffers);
-  bool CloseVideoStream(bool bWaitForBuffers);
-  bool CloseSubtitleStream(bool bKeepOverlays);
-  bool CloseTeletextStream(bool bWaitForBuffers);
+  bool CloseStream(CCurrentStream& current, bool bWaitForBuffers);
 
   bool CheckIsCurrent(CCurrentStream& current, CDemuxStream* stream, DemuxPacket* pkg);
   void ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket);
