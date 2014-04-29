@@ -728,7 +728,7 @@
 	<include name="PreplayEpisode">
 		<control type="group" id="777">
 			<posy>-28</posy>
-			<visible>Container.Content(Episode)</visible>
+			<visible>Container.PlexContent(Episode)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- backgrounds -->
@@ -947,7 +947,7 @@
 	<include name="PreplayMovie">
 		<control type="group">
 			<posy>-28</posy>
-			<visible>Container.Content(Movie) | [Container.PlexContent(Channel) + ListItem.Type(movie)]</visible>
+			<visible>Container.PlexContent(Movie) | [Container.PlexContent(Channel) + ListItem.Type(movie)]</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- backgrounds -->
@@ -1157,7 +1157,7 @@
 	<include name="PreplayClip">
 		<control type="group" id="777">
 			<posy>-28</posy>
-			<visible>Container.Content(clip) | [Container.PlexContent(Channel) + ListItem.Type(clip)]</visible>
+			<visible>Container.PlexContent(Clip) | [Container.PlexContent(Channel) + ListItem.Type(clip)]</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- backgrounds -->

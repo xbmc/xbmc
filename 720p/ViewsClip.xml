@@ -115,10 +115,10 @@
 		<control type="group" id="777">
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
-			<visible>Container.PlexContent(Clips) | Container.Content(HomeMovies)</visible>
+			<visible>Container.PlexContent(Clips) | Container.PlexContent(Homemovies)</visible>
 			<control type="panel" id="80">
 				<viewtype label="ClipThumbs">panel</viewtype>
-				<visible>Container.PlexContent(Clips) | Container.Content(HomeMovies)</visible>
+				<visible>Container.PlexContent(Clips) | Container.PlexContent(Homemovies)</visible>
 				<onup>80</onup>
 				<ondown>80</ondown>
 				<onright>80</onright>
@@ -166,10 +166,10 @@
 		<control type="group">
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
-			<visible>Container.content(folders) | Container.content(folder)</visible>
+			<visible>Container.PlexContent(Folders) | Container.PlexContent(Folder)</visible>
 			<control type="group" id="777">
 				<control type="list" id="40">
-					<visible>Container.content(folders) | Container.content(folder)</visible>
+					<visible>Container.PlexContent(Folders) | Container.PlexContent(Folder)</visible>
 					<viewtype label="ByFolder">list</viewtype>
 					<posy>30</posy>
 					<posx>100</posx>

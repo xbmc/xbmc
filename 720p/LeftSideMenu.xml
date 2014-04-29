@@ -60,7 +60,7 @@
 				<aspectratio>keep</aspectratio>
 				<texture>left-menu-filters-icon.png</texture>
 				<colordiffuse>FF999999</colordiffuse>
-				<visible>!Container.content(movie) + !Container.content(episode) + !Container.content(clip) + !Container.PlexContent(Channel) + !Control.IsVisible(998)</visible>
+				<visible>!Container.PlexContent(Movie) + !Container.PlexContent(Episode) + !Container.PlexContent(Clip) + !Container.PlexContent(Channel) + !Control.IsVisible(998)</visible>
 			</control>-->
 			<control type="image">
 				<posy>680</posy>
@@ -285,7 +285,7 @@
 	<include name="leftMenuBarButton">
 		<width>74</width>
 		<height>30</height>
-		<onleft condition="[!Container.PlexContent(Albums) | [Container.PlexContent(Albums) + [Container.PlexFilter(Albums) | Container.PlexFilter(recentlyAdded)]]] + !Container.PlexContent(Songs) + !Container.Content(movie) + !Container.PlexContent(Seasons) + [!Container.PlexContent(Episodes) | [Container.PlexContent(Episodes) + !IsEmpty(Container.Property(primaryFilterActivated)) + IsEmpty(Container.Property(PlexPreplay))]] + !Container.Content(episode) + !Container.Content(clip) + ![Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]">1300</onleft>
+		<onleft condition="[!Container.PlexContent(Albums) | [Container.PlexContent(Albums) + [Container.PlexFilter(Albums) | Container.PlexFilter(recentlyAdded)]]] + !Container.PlexContent(Songs) + !Container.PlexContent(Movie) + !Container.PlexContent(Seasons) + [!Container.PlexContent(Episodes) | [Container.PlexContent(Episodes) + !IsEmpty(Container.Property(primaryFilterActivated)) + IsEmpty(Container.Property(PlexPreplay))]] + !Container.PlexContent(Episode) + !Container.PlexContent(Clip) + ![Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]">1300</onleft>
 		<onright>777</onright>
 	</include>
 	<!-- Home menu -->
@@ -468,7 +468,7 @@
 			<!--><include>GlobalSearch</include>-->
 			<!-- sidebar global -->
 			<control type="grouplist" id="998">
-				<visible>!Container.Content(movie) + !Container.Content(episode) + !Container.Content(clip)</visible>
+				<visible>!Container.PlexContent(Movie) + !Container.PlexContent(Episode) + !Container.PlexContent(Clip)</visible>
 				<posy>40</posy>
 				<posx>0</posx>
 				<width>74</width>
@@ -512,7 +512,7 @@
 			</control>
 			<!-- sidebar preplay -->
 			<control type="grouplist" id="998">
-				<visible>[Container.Content(movie) | Container.Content(episode) | Container.Content(clip) | [Container.PlexContent(Channel) + [ListItem.Type(movie) | ListItem.Type(clip)]]] + !Container.PlexContent(Channel)</visible>
+				<visible>[Container.PlexContent(Movie) | Container.PlexContent(Episode) | Container.PlexContent(Clip) | [Container.PlexContent(Channel) + [ListItem.Type(movie) | ListItem.Type(clip)]]] + !Container.PlexContent(Channel)</visible>
 				<posy>40</posy>
 				<posx>0</posx>
 				<width>74</width>

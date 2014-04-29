@@ -30,8 +30,8 @@
 		<value>$INFO[ListItem.Label]</value>
 	</variable>
 	<variable name="ListItemFullInfoSecondTitle">
-		<value condition="ListItem.Type(movie) + !Container.Content(homemovies)">$INFO[ListItem.DurationStr]$INFO[ListItem.Year, [COLOR=orange]&#xB7;[/COLOR] ]</value>
-		<value condition="ListItem.Type(movie) + Container.Content(homemovies)">$INFO[ListItem.DurationStr]</value>
+		<value condition="ListItem.Type(movie) + !Container.PlexContent(Homemovies)">$INFO[ListItem.DurationStr]$INFO[ListItem.Year, [COLOR=orange]&#xB7;[/COLOR] ]</value>
+		<value condition="ListItem.Type(movie) + Container.PlexContent(Homemovies)">$INFO[ListItem.DurationStr]</value>
 		<value condition="Window.IsActive(mysharedcontent)">$INFO[ListItem.Property(SourceTitle)]</value>
 		<value condition="ListItem.Type(episode) + !Container.PlexContent(Episodes)">$INFO[ListItem.Label]</value>
 		<value condition="ListItem.Type(episode) + Container.PlexContent(Episodes) + IsEmpty(Container.Property(mixedParents)) ">$INFO[Container.SecondTitle] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]</value>
@@ -51,8 +51,8 @@
 		<value condition="ListItem.Type(episode) + !Container.PlexContent(Episodes) + !Container.PlexContent(Channel)">Season $INFO[ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]$INFO[ListItem.Date, [COLOR=orange]&#xB7;[/COLOR] ]</value>
 		<value condition="ListItem.Type(episode) + Container.PlexContent(Episodes)">$INFO[ListItem.DurationStr]$INFO[ListItem.Date, [COLOR=orange]&#xB7;[/COLOR] ]</value>
 		<value condition="ListItem.Type(episode) + [Container.PlexContent(Episodes) | Container.PlexContent(Channel)]">$INFO[ListItem.Date]</value>
-		<value condition="[ListItem.Type(movie) + !Container.Content(homemovies)] | Container.PlexContent(TVShows)">[UPPERCASE]$INFO[ListItem.Genre][/UPPERCASE]</value>
-		<value condition="[ListItem.Type(movie) + Container.Content(homemovies)] | [Container.PlexContent(Channel) + ListItem.Type(clip)]">$INFO[ListItem.Date]</value>
+		<value condition="[ListItem.Type(movie) + !Container.PlexContent(Homemovies)] | Container.PlexContent(TVShows)">[UPPERCASE]$INFO[ListItem.Genre][/UPPERCASE]</value>
+		<value condition="[ListItem.Type(movie) + Container.PlexContent(Homemovies)] | [Container.PlexContent(Channel) + ListItem.Type(clip)]">$INFO[ListItem.Date]</value>
 		<value condition="ListItem.Type(season) + !Container.PlexContent(Seasons)">$LOCALIZE[32101]: $INFO[ListItem.Property(LeafCount)]</value>
 		<value condition="Container.PlexContent(Seasons)">$INFO[ListItem.Genre]</value>
 		<value condition="[!Container.PlexContent(Albums) + ListItem.Type(album) + !IsEmpty(ListItem.Album) + !Container.PlexContent(Channel)] | [Container.PlexContent(Channel) + Skin.String(SectionType,music) + !ListItem.Type(album)]">$INFO[ListItem.Album]</value>
@@ -246,7 +246,7 @@
 							<control type="image">
 								<include>ListItemFullInfoThumbSize</include>
 								<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
-								<visible>!IsEmpty(ListItem.Property(Fanart_Image)) + !Container.Content(homemovies) + !Container.PlexContent(Photos) + !Container.PlexContent(Artists) | [Container.PlexContent(Channel) + !ListItem.Type(photo)] + [Container.PlexContent(Channel) + !ListItem.Type(clip) + !ListItem.Type(episode)]</visible>
+								<visible>!IsEmpty(ListItem.Property(Fanart_Image)) + !Container.PlexContent(Homemovies) + !Container.PlexContent(Photos) + !Container.PlexContent(Artists) | [Container.PlexContent(Channel) + !ListItem.Type(photo)] + [Container.PlexContent(Channel) + !ListItem.Type(clip) + !ListItem.Type(episode)]</visible>
 							</control>
 							<control type="image">
 								<posy>30</posy>
@@ -256,7 +256,7 @@
 								<fadetime>300</fadetime>
 								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 								<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
-								<visible>IsEmpty(ListItem.Property(Fanart_Image)) | Container.Content(homemovies) | Container.PlexContent(Photos) | Container.PlexContent(Artists) | [Container.PlexContent(Channel) + ListItem.Type(photo)] | [Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
+								<visible>IsEmpty(ListItem.Property(Fanart_Image)) | Container.PlexContent(Homemovies) | Container.PlexContent(Photos) | Container.PlexContent(Artists) | [Container.PlexContent(Channel) + ListItem.Type(photo)] | [Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
 							</control>
 							<include>ListItemFullInfoThumbCardUnwatchedOverlay</include>
 						</control>

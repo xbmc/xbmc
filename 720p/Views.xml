@@ -203,7 +203,7 @@
 				<visible>Control.IsVisible(58)</visible>
 				<animation effect="fade" end="40" time="0" condition="true">Conditional</animation>
 			</control>
-			<visible>!Container.Content(movie) + !Container.Content(episode) + !Container.Content(Folders) + !Container.Content(clip) + !Container.PlexContent(Clips)</visible>
+			<visible>!Container.PlexContent(Movie) + !Container.PlexContent(Episode) + !Container.PlexContent(Folders) + !Container.PlexContent(Clip) + !Container.PlexContent(Clips)</visible>
 			<!-- selected item bg -->
 			<control type="image">
 				<posx>465</posx>
@@ -217,7 +217,7 @@
 			<control type="group" id="777">
 				<control type="fixedlist" id="58">
 					<viewtype label="List">panel</viewtype>
-					<visible>!Container.Content(movie) + !Container.Content(episode) + !Container.Content(Folders) + !Container.Content(clip) + !Container.PlexContent(Clips)</visible>
+					<visible>!Container.PlexContent(Movie) + !Container.PlexContent(Episode) + !Container.PlexContent(Folders) + !Container.PlexContent(Clip) + !Container.PlexContent(Clips)</visible>
 					<posy>31</posy>
 					<posx>505</posx>
 					<width>805</width>
@@ -396,7 +396,7 @@
 						</control>
 					</focusedlayout>
 					<!-- clips & episodes -->
-					<itemlayout height="50" condition="Container.PlexContent(Clips) | Container.Content(homemovies) | [Container.PlexContent(Episodes) + [IsEmpty(Container.Property(primaryFilterActivated)) | IsEmpty(Container.Property(mixedParents))]]">
+					<itemlayout height="50" condition="Container.PlexContent(Clips) | Container.PlexContent(Homemovies) | [Container.PlexContent(Episodes) + [IsEmpty(Container.Property(primaryFilterActivated)) | IsEmpty(Container.Property(mixedParents))]]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -439,7 +439,7 @@
 							<visible>[Container.PlexContent(Episodes) + !IsEmpty(Container.Property(mixedParents)) + IsEmpty(ListItem.Season)]</visible>
 						</control>
 					</itemlayout>
-					<focusedlayout height="100" condition="Container.PlexContent(Clips) | Container.Content(homemovies) | [Container.PlexContent(Episodes) + [IsEmpty(Container.Property(primaryFilterActivated)) | IsEmpty(Container.Property(mixedParents))]]">
+					<focusedlayout height="100" condition="Container.PlexContent(Clips) | Container.PlexContent(Homemovies) | [Container.PlexContent(Episodes) + [IsEmpty(Container.Property(primaryFilterActivated)) | IsEmpty(Container.Property(mixedParents))]]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>

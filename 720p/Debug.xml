@@ -13,8 +13,8 @@
 		<value condition="Container.Content(empty)">empty</value>
 		<value condition="Container.Content(files)">files</value>
 		<value condition="Container.Content(file)">file</value>
-		<value condition="Container.Content(folder)">folder</value>
-		<value condition="Container.Content(folders)">folders</value>
+		<value condition="Container.PlexContent(Folder)">folder</value>
+		<value condition="Container.PlexContent(Folders)">folders</value>
 		<value condition="Container.PlexContent(Songs)">songs</value>
 		<value condition="Container.Content(song)">song</value>
 		<value condition="Container.PlexContent(Artists)">artists</value>
@@ -22,16 +22,16 @@
 		<value condition="Container.PlexContent(Albums)">albums</value>
 		<value condition="Container.Content(album)">album</value>
 		<value condition="Container.PlexContent(Movies)">movies</value>
-		<value condition="Container.Content(movie)">movie</value>
+		<value condition="Container.PlexContent(Movie)">movie</value>
 		<value condition="Container.PlexContent(TVShows)">tvshows</value>
 		<value condition="Container.Content(tvshow)">tvshow</value>
 		<value condition="Container.PlexContent(Seasons)">seasons</value>
 		<value condition="Container.Content(season)">season</value>
 		<value condition="Container.PlexContent(Episodes)">episodes</value>
-		<value condition="Container.Content(episode)">episode</value>
+		<value condition="Container.PlexContent(Episode)">episode</value>
 		<value condition="Container.PlexContent(Clips)">clips</value>
-		<value condition="Container.Content(clip)">clip</value>
-		<value condition="Container.Content(homemovies)">homemovies</value>
+		<value condition="Container.PlexContent(Clip)">clip</value>
+		<value condition="Container.PlexContent(Homemovies)">homemovies</value>
 		<value condition="Container.Content(musicvideos)">musicvideos</value>
 		<value condition="Container.Content(genres)">genres</value>
 		<value condition="Container.Content(years)">years</value>
@@ -701,7 +701,7 @@
 				<height>680</height>
 				<orientation>vertical</orientation>
 				<itemgap>5</itemgap>
-				<visible>Container.PlexContent(TVShows) | Container.Content(tvshow) | Container.PlexContent(Seasons) | Container.Content(season) | Container.PlexContent(Episodes) | Container.Content(episode)</visible>
+				<visible>Container.PlexContent(TVShows) | Container.Content(tvshow) | Container.PlexContent(Seasons) | Container.Content(season) | Container.PlexContent(Episodes) | Container.PlexContent(Episode)</visible>
 				<control type="label">
 					<include>debugFont</include>
 					<label>TV SPECIFIC:</label>

@@ -395,13 +395,13 @@
 		<value condition="Container.PlexContent(Photos) + ListItem.Type(photo)">$LOCALIZE[31704]</value>
 		<value condition="Container.PlexContent(Photos) + ListItem.Type(photoAlbum)">$LOCALIZE[31230]</value>
 		<value condition="Container.PlexContent(PhotoAlbums)">$LOCALIZE[31704]</value>
-		<value condition="Container.Content(movie) | Container.PlexContent(Movies)">$LOCALIZE[31142]</value>
+		<value condition="Container.PlexContent(Movie) | Container.PlexContent(Movies)">$LOCALIZE[31142]</value>
 		<value condition="Container.Content(tvshow)">$LOCALIZE[31143]</value>
 		<value condition="Container.PlexContent(Seasons)">$LOCALIZE[31143]</value>
 		<value condition="Container.PlexContent(Episodes)">$LOCALIZE[31143]</value>
-		<value condition="Container.Content(episode)">$LOCALIZE[31114]</value>
+		<value condition="Container.PlexContent(Episode)">$LOCALIZE[31114]</value>
 		<value condition="Container.PlexContent(Channels)">$LOCALIZE[32107]</value>
-		<value condition="Container.Content(clip) | Container.Content(homemovies)">$LOCALIZE[31144]</value>
+		<value condition="Container.PlexContent(Clip) | Container.PlexContent(Homemovies)">$LOCALIZE[31144]</value>
 		<value condition="Window.IsActive(mysharedcontent)">$LOCALIZE[32108]</value>
 		<value>Item</value>
 	</variable>
