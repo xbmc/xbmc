@@ -1363,20 +1363,25 @@ void CDVDPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
 
 }
 
-void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
+void CDVDPlayer::CheckStreamChanges(CCurrentStream& current, CDemuxStream* stream)
 {
-  if (m_CurrentAudio.stream  != (void*)pStream
-  ||  m_CurrentAudio.changes != pStream->changes)
+  if (current.stream  != (void*)stream
+  ||  current.changes != stream->changes)
   {
     /* check so that dmuxer hints or extra data hasn't changed */
     /* if they have, reopen stream */
 
-    if (m_CurrentAudio.hint != CDVDStreamInfo(*pStream, true))
-      OpenStream(m_CurrentAudio, pPacket->iStreamId, pStream->source );
+    if (current.hint != CDVDStreamInfo(*stream, true))
+      OpenStream(current, stream->iId, stream->source );
 
-    m_CurrentAudio.stream = (void*)pStream;
-    m_CurrentAudio.changes = pStream->changes;
+    current.stream = (void*)stream;
+    current.changes = stream->changes;
   }
+}
+
+void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
+{
+  CheckStreamChanges(m_CurrentAudio, pStream);
 
   // check if we are too slow and need to recache
   CheckStartCaching(m_CurrentAudio);
@@ -1415,18 +1420,7 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
 
 void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
 {
-  if (m_CurrentVideo.stream  != (void*)pStream
-  ||  m_CurrentVideo.changes != pStream->changes)
-  {
-    /* check so that dmuxer hints or extra data hasn't changed */
-    /* if they have reopen stream */
-
-    if (m_CurrentVideo.hint != CDVDStreamInfo(*pStream, true))
-      OpenStream(m_CurrentVideo, pPacket->iStreamId, pStream->source);
-
-    m_CurrentVideo.stream = (void*)pStream;
-    m_CurrentVideo.changes = pStream->changes;
-  }
+  CheckStreamChanges(m_CurrentVideo, pStream);
 
   // check if we are too slow and need to recache
   CheckStartCaching(m_CurrentVideo);
@@ -1449,18 +1443,7 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
 
 void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket)
 {
-  if (m_CurrentSubtitle.stream  != (void*)pStream
-  ||  m_CurrentSubtitle.changes != pStream->changes)
-  {
-    /* check so that dmuxer hints or extra data hasn't changed */
-    /* if they have reopen stream */
-
-    if (m_CurrentSubtitle.hint != CDVDStreamInfo(*pStream, true))
-      OpenSubtitleStream(pPacket->iStreamId, pStream->source);
-
-    m_CurrentSubtitle.stream = (void*)pStream;
-    m_CurrentSubtitle.changes = pStream->changes;
-  }
+  CheckStreamChanges(m_CurrentSubtitle, pStream);
 
   UpdateTimestamps(m_CurrentSubtitle, pPacket);
 
@@ -1479,17 +1462,8 @@ void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket)
 
 void CDVDPlayer::ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket)
 {
-  if (m_CurrentTeletext.stream  != (void*)pStream
-  ||  m_CurrentTeletext.changes != pStream->changes)
-  {
-    /* check so that dmuxer hints or extra data hasn't changed */
-    /* if they have, reopen stream */
-    if (m_CurrentTeletext.hint != CDVDStreamInfo(*pStream, true))
-      OpenStream(m_CurrentTeletext, pPacket->iStreamId, pStream->source );
+  CheckStreamChanges(m_CurrentTeletext, pStream);
 
-    m_CurrentTeletext.stream = (void*)pStream;
-    m_CurrentTeletext.changes = pStream->changes;
-  }
   UpdateTimestamps(m_CurrentTeletext, pPacket);
 
   bool drop = false;
