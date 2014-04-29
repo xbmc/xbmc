@@ -172,7 +172,7 @@ void CPlexServerManager::UpdateFromDiscovery(CPlexServerPtr server)
   CSingleLock lk(m_serverManagerLock);
 
   CPlexServerPtr mergedServer = MergeServer(server);
-  NotifyAboutServer(mergedServer);
+  NotifyAboutServer(mergedServer, mergedServer->GetActiveConnection());
   SetBestServer(mergedServer, false);
 }
 
