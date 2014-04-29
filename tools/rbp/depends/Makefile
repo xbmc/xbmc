@@ -2,10 +2,10 @@ include ../Makefile.include
 
 ifeq ($(USE_BUILDROOT),1)
 	BUILDTOOLS = 
-	SUBDIRS = xbmc
+	SUBDIRS = ffmpeg xbmc
 else
 	BUILDTOOLS = help2man autoconf automake libtool pkg-config yasm cmake patchelf
-	SUBDIRS = liblzo2 tiff libnfs jasper libplist libshairplay tinyxml xbmc
+	SUBDIRS = liblzo2 tiff libnfs jasper libplist libshairplay tinyxml ffmpeg xbmc
 endif
 
 IMAGENAME = xbmc-rbp-`date +'%y%m%d'`
@@ -18,7 +18,7 @@ buildtools:
 	for d in $(BUILDTOOLS); do $(MAKE) -C $$d; done
 
 subdirs:
-	for d in $(SUBDIRS); do $(MAKE) -C $$d; done
+	for d in $(SUBDIRS); do if test -f "$$d/.installed"; then :; else $(MAKE) -C $$d || exit 1; fi; done
 
 clean:
 	for d in $(BUILDTOOLS); do $(MAKE) -C $$d clean; done

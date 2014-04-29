@@ -21,15 +21,16 @@
 
 #include "system_gl.h"
 
-#include "DllAvCodec.h"
 #include "DVDVideoCodecFFmpeg.h"
-#include <libavcodec/vaapi.h>
 #include <va/va.h>
 #include <va/va_x11.h>
 #include <va/va_glx.h>
 #include <list>
 #include <boost/shared_ptr.hpp>
 
+extern "C" {
+#include "libavcodec/vaapi.h"
+}
 
 namespace VAAPI {
 
@@ -118,8 +119,8 @@ public:
   virtual CCriticalSection* Section() { if(m_display) return m_display.get(); else return NULL; }
   virtual unsigned GetAllowedReferences();
 
-  int   GetBuffer(AVCodecContext *avctx, AVFrame *pic);
-  void  RelBuffer(AVCodecContext *avctx, AVFrame *pic);
+  int   GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
+  void  RelBuffer(uint8_t *data);
 
   VADisplay    GetDisplay() { return m_display->get(); }
 protected:

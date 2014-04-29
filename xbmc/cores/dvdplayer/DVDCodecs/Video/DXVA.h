@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "DllAvCodec.h"
+#include "libavcodec/avcodec.h"
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "guilib/D3DResource.h"
 #include "threads/Event.h"
@@ -62,8 +62,8 @@ public:
 
   bool  OpenTarget(const GUID &guid);
   bool  OpenDecoder();
-  int   GetBuffer(AVCodecContext *avctx, AVFrame *pic);
-  void  RelBuffer(AVCodecContext *avctx, AVFrame *pic);
+  int   GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
+  void  RelBuffer(uint8_t *data);
 
   static bool      Supports(enum PixelFormat fmt);
 

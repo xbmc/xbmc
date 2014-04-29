@@ -208,9 +208,6 @@ protected:
   std::vector<ERenderFormat> m_formats;
 
   // software scale libraries (fallback if required pixel shaders version is not available)
-  DllAvUtil           *m_dllAvUtil;
-  DllAvCodec          *m_dllAvCodec;
-  DllSwScale          *m_dllSwScale;
   struct SwsContext   *m_sw_scale_ctx;
 
   // Software rendering

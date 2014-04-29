@@ -1,6 +1,6 @@
 @ECHO OFF
 rem batch file to compile mingw libs via BuildSetup
-
+SET WORKDIR=%WORKSPACE%
 rem set M$ env
 call "%VS100COMNTOOLS%..\..\VC\bin\vcvars32.bat"
 
@@ -14,37 +14,43 @@ FOR %%b in (%1, %2, %3) DO (
   IF %%b==sh SET opt=sh
 )
 
-SET BS_DIR=%WORKSPACE%\project\Win32BuildSetup
-cd %BS_DIR%
+IF "%WORKDIR%"=="" (
+  SET WORKDIR=%CD%\..\..\..
+)
 
-IF EXIST errormingw del errormingw > NUL
+SET ERRORFILE=%WORKDIR%\project\Win32BuildSetup\errormingw
+
+SET BS_DIR=%WORKDIR%\project\Win32BuildSetup
+rem cd %BS_DIR%
+
+IF EXIST %ERRORFILE% del %ERRORFILE% > NUL
 
 rem compiles a bunch of mingw libs and not more
 IF %opt%==sh (
-  IF EXIST %WORKSPACE%\project\BuildDependencies\msys\bin\sh.exe (
+  IF EXIST %WORKDIR%\project\BuildDependencies\msys\bin\sh.exe (
     ECHO starting sh shell
-    %WORKSPACE%\project\BuildDependencies\msys\bin\sh --login /xbmc/tools/buildsteps/win32/make-mingwlibs.sh
+    %WORKDIR%\project\BuildDependencies\msys\bin\sh --login /xbmc/tools/buildsteps/win32/make-mingwlibs.sh
     GOTO END
   ) ELSE (
     GOTO ENDWITHERROR
   )
 )
-IF EXIST %WORKSPACE%\project\BuildDependencies\msys\bin\rxvt.exe (
+IF EXIST %WORKDIR%\project\BuildDependencies\msys\bin\rxvt.exe (
   ECHO starting rxvt shell
-  %WORKSPACE%\project\BuildDependencies\msys\bin\rxvt -backspacekey  -sl 2500 -sr -fn Courier-12 -tn msys -geometry 120x25 -title "building mingw dlls" -e /bin/sh --login /xbmc//xbmc/tools/buildsteps/win32/make-mingwlibs.sh
+  %WORKDIR%\project\BuildDependencies\msys\bin\rxvt -backspacekey  -sl 2500 -sr -fn Courier-12 -tn msys -geometry 120x25 -title "building mingw dlls" -e /bin/sh --login /xbmc/tools/buildsteps/win32/make-mingwlibs.sh
   GOTO END
 )
 GOTO ENDWITHERROR
 
 :ENDWITHERROR
   ECHO msys environment not found
+  ECHO bla>%ERRORFILE%
   EXIT /B 1
   
 :END
   ECHO exiting msys environment
-  IF EXIST errormingw (
+  IF EXIST %ERRORFILE% (
     ECHO failed to build mingw libs
-	del errormingw > NUL
     EXIT /B 1
   )
   EXIT /B 0

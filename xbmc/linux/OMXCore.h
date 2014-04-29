@@ -48,7 +48,7 @@
   (a).nVersion.s.nRevision = OMX_VERSION_REVISION; \
   (a).nVersion.s.nStep = OMX_VERSION_STEP
 
-#include "DllAvFormat.h"
+#include "libavformat/avformat.h"
 
 #define OMX_MAX_PORTS 10
 

@@ -11,5 +11,6 @@ then
     --with-ndk=$NDK_PATH \
     $(if [ "$SDK_VERSION" != "Default" ]; then echo --with-sdk=android-$SDK_VERSION;fi) \
     --with-toolchain=$TOOLCHAIN \
-    --prefix=$XBMC_DEPENDS_ROOT
+    --prefix=$XBMC_DEPENDS_ROOT \
+    --enable-neon
 fi

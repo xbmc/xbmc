@@ -21,14 +21,13 @@
  */
 
 #include "DVDDemux.h"
-#include "DllAvFormat.h"
-#include "DllAvCodec.h"
-#include "DllAvUtil.h"
-
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
-
 #include <map>
+
+extern "C" {
+#include "libavformat/avformat.h"
+}
 
 class CDVDDemuxFFmpeg;
 class CURL;
@@ -138,10 +137,6 @@ protected:
   std::vector<std::map<int, CDemuxStream*>::iterator> m_stream_index;
 
   AVIOContext* m_ioContext;
-
-  DllAvFormat m_dllAvFormat;
-  DllAvCodec  m_dllAvCodec;
-  DllAvUtil   m_dllAvUtil;
 
   double   m_iCurrentPts; // used for stream length estimation
   bool     m_bMatroska;

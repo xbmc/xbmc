@@ -5,11 +5,26 @@ AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_FILES([target/config.site native/config.site.native Makefile.include target/Toolchain.cmake])
 AC_CANONICAL_HOST
 m4_include([../../m4/xbmc_arch.m4])
+m4_include([../../m4/ax_require_defined.m4])
+m4_include([../../m4/ax_append_flag.m4])
+m4_include([../../m4/ax_check_compile_flag.m4])
+m4_include([../../m4/ax_append_compile_flags.m4])
+
 
 AC_ARG_WITH([toolchain],
   [AS_HELP_STRING([--with-toolchain],
   [specify path to toolchain. Required for android. Defaults to xcode root for darwin, /usr for linux])],
   [use_toolchain=$withval])
+
+AC_ARG_WITH([platform],
+  [AS_HELP_STRING([--with-platform],
+  [target platform [auto]])],
+  [use_platform=$withval])
+
+AC_ARG_WITH([firmware],
+  [AS_HELP_STRING([--with-firmware],
+  [platform specific firmware []])],
+  [use_firmware=$withval])
 
 AC_ARG_WITH([tarballs],
   [AS_HELP_STRING([--with-tarballs],
@@ -20,6 +35,18 @@ AC_ARG_WITH([cpu],
   [AS_HELP_STRING([--with-cpu],
   [optional. specify target cpu. guessed if not specified])],
   [use_cpu=$withval],use_cpu=auto)
+
+AC_ARG_ENABLE([neon],
+  [AS_HELP_STRING([--enable-neon],
+  [enable neon support (default is no)])],
+  [use_neon=$enableval],
+  [use_neon=no])
+
+AC_ARG_ENABLE([tegra],
+  [AS_HELP_STRING([--enable-tegra],
+  [enable Tegra2 arm (default is no)])],
+  [use_tegra=$enableval],
+  [use_tegra=no])
 
 AC_ARG_WITH([ndk],
   [AS_HELP_STRING([--with-ndk],
@@ -83,15 +110,25 @@ platform_cc=gcc
 platform_cxx=g++
 case $host in
   arm*-*linux-android*)
-    if test "x$use_cpu" = "xauto"; then
+    if test "x$use_cpu" = "xauto" || test "x$use_cpu" = "xarmeabi-v7a"; then
       use_cpu="armeabi-v7a"
+      AX_APPEND_COMPILE_FLAGS([$passed_cflags -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp], [platform_cflags])
+      use_neon="yes"
+    fi
+    if test "$use_neon" = "yes"; then
+      AX_APPEND_COMPILE_FLAGS([$passed_cflags -mfpu=neon -mvectorize-with-neon-quad], [platform_cflags])
+    fi
+    if test "$use_tegra" = "yes"; then
+      AX_CHECK_COMPILE_FLAG(-mfpu=vfpv3-d16,
+        [AX_APPEND_COMPILE_FLAGS([$passed_cflags -Wno-psabi -Wa,-march=arv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork],
+          [platform_cflags])],
+        [AX_APPEND_COMPILE_FLAGS([$passed_cflags -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork],
+          [platform_cflags])],
+      )
     fi
     use_sdk="${use_sdk:-android-14}"
     deps_dir="$use_host-$use_sdk"
     platform_cflags="-DANDROID -Os -fexceptions"
-    if test "x$use_cpu" = "xarmeabi-v7a"; then
-      platform_cflags+=" -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon"
-    fi
     platform_ldflags="-L$prefix/$deps_dir/lib/$use_sdk"
     platform_cxxflags="$platform_cflags -frtti"
     platform_includes="-I$prefix/$deps_dir/include/$use_sdk"
@@ -120,14 +157,27 @@ case $host in
     cross_compiling="yes"
   ;;
   arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
-    if test "x$use_cpu" = "xauto"; then
-      use_cpu=$host_cpu
+    if test "$use_platform" = "auto"; then
+      if test "x$use_cpu" = "xauto"; then
+        use_cpu=$host_cpu
+      fi
+      if test "$use_neon" = "yes"; then
+        AX_APPEND_COMPILE_FLAGS([$passed_cflags -mfpu=neon -mvectorize-with-neon-quad], [platform_cflags])
+      fi
+      if test "$use_tegra" = "yes"; then
+        AX_CHECK_COMPILE_FLAG(-mfpu=vfpv3-d16,
+          [AX_APPEND_COMPILE_FLAGS([$passed_cflags -Wno-psabi -Wa,-march=arv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork],
+            [platform_cflags])],
+          [AX_APPEND_COMPILE_FLAGS([$passed_cflags -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork],
+            [platform_cflags])],
+        )
+      fi
+      use_toolchain="${use_toolchain:-/usr}"
+      platform_cflags="-Os -fPIC -DPIC"
+      platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
+      platform_cxxflags="$platform_cflags"
+      platform_os="linux"
     fi
-    use_toolchain="${use_toolchain:-/usr}"
-    platform_cflags="-Os -fPIC -DPIC"
-    platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
-    platform_cxxflags="$platform_cflags"
-    platform_os="linux"
   ;;
   *i686*-linux-gnu*|i*86*-*-linux-uclibc*)
     use_cpu=$host_cpu
@@ -269,6 +319,37 @@ case $host in
     AC_MSG_ERROR(unsupported host ($use_host))
 esac
 
+if test "$use_platform" = "raspberry-pi"; then
+  if test -d "${use_firmware}/opt/vc/include"; then
+    :
+  else
+    AC_MSG_ERROR([Raspberry Pi firmware not found])
+  fi
+  use_neon=no
+  use_arch="arm"
+  use_cpu="arm1176jzf-s"
+  use_hardcoded_tables="yes"
+  use_alsa="no"
+  ARCH="arm"
+  platform_os="linux"
+  cross_compiling="yes"
+  use_host="arm-linux-gnueabihf"
+  deps_dir="$use_host"
+  platform_cflags="-pipe -mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard \
+   -mfpu=vfp -mabi=aapcs-linux -Wno-psabi -Wa,-mno-warn-deprecated \
+   -Wno-deprecated-declarations -isystem${use_firmware}/opt/vc/include \
+   -isystem${use_firmware}/opt/vc/include/interface/vcos/pthreads \
+   -isystem${use_firmware}/opt/vc/include/interface/vmcs_host/linux"
+  platform_cxxflags="-pipe -mcpu=arm1176jzf-s -mtune=arm1176jzf-s \
+   -mfloat-abi=hard -mfpu=vfp -mabi=aapcs-linux -Wno-psabi \
+   -Wa,-mno-warn-deprecated -Wno-deprecated-declarations \
+   -isystem${use_firmware}/opt/vc/include \
+   -isystem${use_firmware}/opt/vc/include/interface/vcos/pthreads \
+   -isystem${use_firmware}/opt/vc/include/interface/vmcs_host/linux"
+  platform_ldflags="-L${use_firmware}/opt/vc/lib -lEGL -lGLESv2 -lbcm_host -lvcos \
+   -lvchiq_arm"
+fi
+
 XBMC_SETUP_ARCH_DEFINES()
 
 platform_cflags+=" $passed_cflags"
@@ -407,6 +488,7 @@ AC_SUBST(use_cpu)
 AC_SUBST(use_toolchain)
 AC_SUBST(use_build_toolchain)
 AC_SUBST(use_tarballs)
+AC_SUBST(use_platform)
 AC_SUBST(cross_compiling)
 AC_SUBST(platform_cflags)
 AC_SUBST(platform_cxxflags)

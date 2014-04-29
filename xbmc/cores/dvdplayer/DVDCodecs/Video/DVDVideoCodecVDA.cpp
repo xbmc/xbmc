@@ -24,10 +24,14 @@
 #include "system_gl.h"
 #include "DVDVideoCodecVDA.h"
 
-#include "DllSwScale.h"
+extern "C" {
+#include "libswscale/swscale.h"
+}
+
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
 #include "cores/dvdplayer/DVDCodecs/DVDCodecUtils.h"
+#include "cores/FFmpeg.h"
 #include "osx/CocoaInterface.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/BitstreamConverter.h"
@@ -137,7 +141,6 @@ CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
   pthread_mutex_init(&m_queue_mutex, NULL);
 
   m_bitstream = NULL;
-  m_dllSwScale = NULL;
   memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
   m_DropPictures = false;
   m_decode_async = false;
@@ -267,13 +270,6 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
     if (!m_use_cvBufferRef)
     {
-      m_dllSwScale = new DllSwScale;
-      if (!m_dllSwScale->Load())
-      {
-        CFRelease(avcCData);
-        return false;
-      }
-
       // allocate a YV12 DVDVideoPicture buffer.
       // first make sure all properties are reset.
       memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
@@ -394,9 +390,6 @@ void CDVDVideoCodecVDA::Dispose()
 
   if (m_bitstream)
     delete m_bitstream, m_bitstream = NULL;
-
-  if (m_dllSwScale)
-    delete m_dllSwScale, m_dllSwScale = NULL;
 }
 
 void CDVDVideoCodecVDA::SetDropState(bool bDrop)
@@ -553,7 +546,7 @@ void CDVDVideoCodecVDA::DisplayQueuePop(void)
 void CDVDVideoCodecVDA::UYVY422_to_YUV420P(uint8_t *yuv422_ptr, int yuv422_stride, DVDVideoPicture *picture)
 {
   // convert PIX_FMT_UYVY422 to PIX_FMT_YUV420P.
-  struct SwsContext *swcontext = m_dllSwScale->sws_getContext(
+  struct SwsContext *swcontext = sws_getContext(
     m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_UYVY422, 
     m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_YUV420P, 
     SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
@@ -565,15 +558,15 @@ void CDVDVideoCodecVDA::UYVY422_to_YUV420P(uint8_t *yuv422_ptr, int yuv422_strid
     uint8_t  *dst[] = { picture->data[0], picture->data[1], picture->data[2], 0 };
     int dstStride[] = { picture->iLineSize[0], picture->iLineSize[1], picture->iLineSize[2], 0 };
 
-    m_dllSwScale->sws_scale(swcontext, src, srcStride, 0, picture->iHeight, dst, dstStride);
-    m_dllSwScale->sws_freeContext(swcontext);
+    sws_scale(swcontext, src, srcStride, 0, picture->iHeight, dst, dstStride);
+    sws_freeContext(swcontext);
   }
 }
 
 void CDVDVideoCodecVDA::BGRA_to_YUV420P(uint8_t *bgra_ptr, int bgra_stride, DVDVideoPicture *picture)
 {
   // convert PIX_FMT_BGRA to PIX_FMT_YUV420P.
-  struct SwsContext *swcontext = m_dllSwScale->sws_getContext(
+  struct SwsContext *swcontext = sws_getContext(
     m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_BGRA, 
     m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_YUV420P, 
     SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
@@ -585,8 +578,8 @@ void CDVDVideoCodecVDA::BGRA_to_YUV420P(uint8_t *bgra_ptr, int bgra_stride, DVDV
     uint8_t  *dst[] = { picture->data[0], picture->data[1], picture->data[2], 0 };
     int dstStride[] = { picture->iLineSize[0], picture->iLineSize[1], picture->iLineSize[2], 0 };
 
-    m_dllSwScale->sws_scale(swcontext, src, srcStride, 0, picture->iHeight, dst, dstStride);
-    m_dllSwScale->sws_freeContext(swcontext);
+    sws_scale(swcontext, src, srcStride, 0, picture->iHeight, dst, dstStride);
+    sws_freeContext(swcontext);
   }
 }
 

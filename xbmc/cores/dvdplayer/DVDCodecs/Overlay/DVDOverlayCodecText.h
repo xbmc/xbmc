@@ -21,7 +21,7 @@
  */
 
 #include "DVDOverlayCodec.h"
-#include "DllAvCodec.h"
+#include "libavcodec/avcodec.h"
 
 class CDVDOverlayText;
 

@@ -23,6 +23,9 @@ Android (the pathes are examples and have to match those of docs/READM.android):
 Linux:
   ARM toolchain (codesourcery/lenaro/etc)
     ./configure --with-toolchain=/opt/toolchains/my-example-toolchain/  --prefix=/opt/xbmc-deps --host=arm-linux-gnueabi
+  RASPBERRY-PI:
+    PATH="/opt/rbp-dev/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin:$PATH" ./configure --with-platform=raspberry-pi --host=arm-linux-gnueabihf --prefix=/opt/xbmc-deps --with-tarballs=/opt/xbmc-tarballs --with-toolchain=/opt/rbp-dev/tools/arm-bcm2708/arm-bcm2708hardfp-linux-gnueabi/arm-bcm2708hardfp-linux-gnueabi/sysroot --with-firmware=/opt/rbp-dev/firmware --build=i686-linux
+
   Native toolchain
     ./configure --with-toolchain=/usr --prefix=/opt/xbmc-deps --host=x86_64-linux-gnu
 

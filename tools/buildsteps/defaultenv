@@ -45,7 +45,7 @@ case $XBMC_PLATFORM_DIR in
   ;;
 
   rbpi)
-    JENKINS_RBPI_DEVENV=/home/jenkins/rbpi-dev
+    JENKINS_RBPI_DEVENV=${JENKINS_RBPI_DEVENV:-"/home/jenkins/rbpi-dev"}
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
     DEFAULT_CONFIGURATION="Debug"
   ;;

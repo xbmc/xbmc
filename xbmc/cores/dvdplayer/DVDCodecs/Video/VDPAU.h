@@ -40,19 +40,15 @@
 
 #include "system_gl.h"
 
-#include "DllAvUtil.h"
 #include "DVDVideoCodec.h"
 #include "DVDVideoCodecFFmpeg.h"
-#include "libavcodec/vdpau.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #define GLX_GLXEXT_PROTOTYPES
 #include <GL/glx.h>
 
-#include "DllAvUtil.h"
 #include "DVDVideoCodec.h"
 #include "DVDVideoCodecFFmpeg.h"
-#include "libavcodec/vdpau.h"
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
 #include "settings/VideoSettings.h"
@@ -61,6 +57,12 @@
 #include "threads/Thread.h"
 #include "utils/ActorProtocol.h"
 #include <list>
+#include <map>
+
+extern "C" {
+#include "libavutil/avutil.h"
+#include "libavcodec/vdpau.h"
+}
 
 using namespace Actor;
 
@@ -574,15 +576,11 @@ public:
   EINTERLACEMETHOD AutoInterlaceMethod();
   static bool IsVDPAUFormat(PixelFormat fmt);
 
-  static void FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic);
-  static void FFDrawSlice(struct AVCodecContext *s,
-                          const AVFrame *src, int offset[4],
-                          int y, int type, int height);
-  static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic);
-  static VdpStatus Render( VdpDecoder decoder, VdpVideoSurface target,
-                           VdpPictureInfo const *picture_info,
-                           uint32_t bitstream_buffer_count,
-                           VdpBitstreamBuffer const * bitstream_buffers);
+  static void FFReleaseBuffer(void *opaque, uint8_t *data);
+  static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
+  static int Render(struct AVCodecContext *s, struct AVFrame *src,
+                    const VdpPictureInfo *info, uint32_t buffers_used,
+                    const VdpBitstreamBuffer *buffers);
 
   virtual void OnLostDevice();
   virtual void OnResetDevice();
@@ -611,7 +609,6 @@ protected:
   CCriticalSection m_DecoderSection;
   CEvent         m_DisplayEvent;
 
-  DllAvUtil     m_dllAvUtil;
   ThreadIdentifier m_decoderThread;
   bool          m_vdpauConfigured;
   CVdpauConfig  m_vdpauConfig;

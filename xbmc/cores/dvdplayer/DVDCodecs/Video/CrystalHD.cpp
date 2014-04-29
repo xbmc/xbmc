@@ -36,9 +36,12 @@
 #include "threads/Thread.h"
 #include "utils/log.h"
 #include "utils/fastmemcpy.h"
-#include "DllSwScale.h"
+extern "C" {
+#include "libswscale/swscale.h"
+}
 #include "utils/TimeUtils.h"
 #include "windowing/WindowingFactory.h"
+#include "cores/FFmpeg.h"
 
 namespace BCM
 {
@@ -248,7 +251,6 @@ protected:
   int                 m_aspectratio_x;
   int                 m_aspectratio_y;
   CEvent              m_ready_event;
-  DllSwScale          *m_dllSwScale;
   struct SwsContext   *m_sw_scale_ctx;
 };
 
@@ -348,9 +350,6 @@ CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll, bool has_
   m_aspectratio_y(1)
 {
   m_sw_scale_ctx = NULL;
-  m_dllSwScale = new DllSwScale;
-  m_dllSwScale->Load();
-
   
   if (g_Windowing.GetRenderQuirks() & RENDER_QUIRKS_YV12_PREFERED)
     m_output_YV12 = true;
@@ -366,8 +365,7 @@ CMPCOutputThread::~CMPCOutputThread()
     delete m_FreeList.Pop();
     
   if (m_sw_scale_ctx)
-    m_dllSwScale->sws_freeContext(m_sw_scale_ctx);
-  delete m_dllSwScale;
+    sws_freeContext(m_sw_scale_ctx);
 }
 
 unsigned int CMPCOutputThread::GetReadyCount(void)
@@ -949,11 +947,11 @@ bool CMPCOutputThread::GetDecoderOutput(void)
                   uint8_t* dst[] =       { pBuffer->m_y_buffer_ptr, pBuffer->m_u_buffer_ptr, pBuffer->m_v_buffer_ptr, NULL };
                   int      dstStride[] = { pBuffer->m_width, pBuffer->m_width/2, pBuffer->m_width/2, 0 };
 
-                  m_sw_scale_ctx = m_dllSwScale->sws_getCachedContext(m_sw_scale_ctx,
+                  m_sw_scale_ctx = sws_getCachedContext(m_sw_scale_ctx,
                     pBuffer->m_width, pBuffer->m_height, PIX_FMT_YUYV422,
                     pBuffer->m_width, pBuffer->m_height, PIX_FMT_YUV420P,
                     SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
-                  m_dllSwScale->sws_scale(m_sw_scale_ctx, src, srcStride, 0, pBuffer->m_height, dst, dstStride);
+                  sws_scale(m_sw_scale_ctx, src, srcStride, 0, pBuffer->m_height, dst, dstStride);
                 }
               break;
               default:

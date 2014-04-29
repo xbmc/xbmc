@@ -44,6 +44,7 @@
 #include "settings/MediaSettings.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "win32/WIN32Util.h"
+#include "utils/Log.h"
 
 #define ALLOW_ADDING_SURFACES 0
 
@@ -72,11 +73,11 @@ static bool LoadDXVA()
 
 
 
-static void RelBufferS(AVCodecContext *avctx, AVFrame *pic)
-{ ((CDecoder*)((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetHardware())->RelBuffer(avctx, pic); }
+static void RelBufferS(void *opaque, uint8_t *data)
+{ ((CDecoder*)((CDVDVideoCodecFFmpeg*)opaque)->GetHardware())->RelBuffer(data); }
 
-static int GetBufferS(AVCodecContext *avctx, AVFrame *pic) 
-{  return ((CDecoder*)((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetHardware())->GetBuffer(avctx, pic); }
+static int GetBufferS(AVCodecContext *avctx, AVFrame *pic, int flags) 
+{  return ((CDecoder*)((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetHardware())->GetBuffer(avctx, pic, flags); }
 
 
 DEFINE_GUID(DXVADDI_Intel_ModeH264_A, 0x604F8E64,0x4951,0x4c54,0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6);
@@ -695,8 +696,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
   if(!OpenDecoder())
     return false;
 
-  avctx->get_buffer      = GetBufferS;
-  avctx->release_buffer  = RelBufferS;
+  avctx->get_buffer2     = GetBufferS;
   avctx->hwaccel_context = m_context;
 
   D3DADAPTER_IDENTIFIER9 AIdentifier = g_Windowing.GetAIdentifier();
@@ -902,10 +902,10 @@ bool CDecoder::Supports(enum PixelFormat fmt)
   return false;
 }
 
-void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
+void CDecoder::RelBuffer(uint8_t *data)
 {
   CSingleLock lock(m_section);
-  IDirect3DSurface9* surface = (IDirect3DSurface9*)pic->data[3];
+  IDirect3DSurface9* surface = (IDirect3DSurface9*)data;
 
   for(unsigned i = 0; i < m_buffer_count; i++)
   {
@@ -916,11 +916,9 @@ void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
       break;
     }
   }
-  for(unsigned i = 0; i < 4; i++)
-    pic->data[i] = NULL;
 }
 
-int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
+int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
 {
   CSingleLock lock(m_section);
   if(avctx->coded_width  != m_format.SampleWidth
@@ -967,7 +965,6 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
   }
 
   pic->reordered_opaque = avctx->reordered_opaque;
-  pic->type = FF_BUFFER_TYPE_USER;
 
   for(unsigned i = 0; i < 4; i++)
   {
@@ -977,6 +974,13 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 
   pic->data[0] = (uint8_t*)buf->surface;
   pic->data[3] = (uint8_t*)buf->surface;
+  AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, RelBufferS, avctx->opaque, 0);
+  if (!buffer)
+  {
+    CLog::Log(LOGERROR, "DXVA - error creating buffer");
+    return -1;
+  }
+  pic->buf[0] = buffer;
   buf->used = true;
 
   return 0;

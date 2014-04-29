@@ -15,7 +15,7 @@ DEPENDS = \
 	python26 afpfs-ng libshairplay \
 	libplist libcec libbluray boost tinyxml dummy-libxbmc \
 	libamplayer libssh taglib xbmc-pvr-addons libusb libnfs libmp3lame \
-	pythonmodule-pil libxslt
+	pythonmodule-pil libxslt ffmpeg
 
 ifeq ($(ENABLE_GPLV3),1)
   DEPENDS+=samba-gplv3 libcdio-gplv3
@@ -56,11 +56,12 @@ ALSA_LIB=
 LINUX_SYSTEM_LIBS=
 ifeq ($(OS),linux)
   #not for raspberry pi
-  ifneq ($(CPU),arm)
+  ifneq ($(TARGET_PLATFORM),raspberry-pi)
     DEPENDS += alsa-lib libsdl linux-system-libs
     ALSA_LIB = alsa-lib
     LINUX_SYSTEM_LIBS = linux-system-libs
   endif
+  FFMPEG_DEPENDS = gnutls
 endif
 
 .PHONY: $(DEPENDS)
@@ -96,6 +97,7 @@ nettle: gmp
 pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng freetype2 python26
 libsdl: $(LINUX_SYSTEM_LIBS)
 libxslt: libgcrypt
+ffmpeg: $(ICONV) $(ZLIB) bzip2 libvorbis $(FFMPEG_DEPENDS)
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
