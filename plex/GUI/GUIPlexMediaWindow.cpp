@@ -886,26 +886,22 @@ void CGUIPlexMediaWindow::PlayAll(bool shuffle, const CFileItemPtr& fromHere)
 
   CURL itemsUrl(m_vecItems->GetPath());
   CURL uriPart("plexserver://plex");
+
   if (m_startDirectory == itemsUrl.GetUrlWithoutOptions())
   {
     uriPart.SetFileName(m_sectionRoot.GetFileName());
     if (m_sectionFilter)
-    {
       uriPart = m_sectionFilter->addFiltersToUrl(uriPart);
-      if (uriPart.HasOption("type"))
-      {
-        uriPart.SetOption("sourceType", uriPart.GetOption("type"));
-        uriPart.RemoveOption("type");
-      }
-    }
   }
   else
-  {
     uriPart.SetFileName(itemsUrl.GetFileName());
-    if (m_sectionFilter && m_sectionFilter->getSecondaryFilterOfName("unwatchedLeaves") &&
-        m_sectionFilter->getSecondaryFilterOfName("unwatchedLeaves")->isSelected())
-      uriPart.SetOption("unwatched", "1");
-  }
+
+  CStdString sourceType = boost::lexical_cast<CStdString>(PlexUtils::GetFilterType(*m_vecItems));
+  uriPart.SetOption("sourceType", sourceType);
+
+  if (m_sectionFilter && m_sectionFilter->getSecondaryFilterOfName("unwatchedLeaves") &&
+      m_sectionFilter->getSecondaryFilterOfName("unwatchedLeaves")->isSelected())
+    uriPart.SetOption("unwatched", "1");
 
   // take out the plexserver://plex part from above when passing it down
   CStdString uri = CPlexPlayQueueManager::getURIFromItem(*m_vecItems, uriPart.Get().substr(17, std::string::npos));
