@@ -264,16 +264,16 @@ protected:
   virtual void Process();
 
   bool OpenStream(CCurrentStream& current, int iStream, int source, bool reset = true);
-  bool OpenAudioStream(int iStream, int source, bool reset = true);
-  bool OpenVideoStream(int iStream, int source, bool reset = true);
-  bool OpenSubtitleStream(int iStream, int source);
+  bool OpenAudioStream(CDVDStreamInfo& hint, bool reset = true);
+  bool OpenVideoStream(CDVDStreamInfo& hint, bool reset = true);
+  bool OpenSubtitleStream(CDVDStreamInfo& hint);
+  bool OpenTeletextStream(CDVDStreamInfo& hint);
 
   /** \brief Switches forced subtitles to forced subtitles matching the language of the current audio track.
   *          If these are not available, subtitles are disabled.
   *   \return true if the subtitles were changed, false otherwise.
   */
   bool AdaptForcedSubtitles();
-  bool OpenTeletextStream(int iStream, int source);
   bool CloseAudioStream(bool bWaitForBuffers);
   bool CloseVideoStream(bool bWaitForBuffers);
   bool CloseSubtitleStream(bool bKeepOverlays);
