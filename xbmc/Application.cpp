@@ -3737,10 +3737,7 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
       if (dbs.Open())
       {
         CBookmark bookmark;
-        CStdString path = item.GetPath();
-        if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
-          path = item.GetProperty("original_listitem_url").asString();
-        if( dbs.GetResumeBookMark(path, bookmark) )
+        if( dbs.GetResumeBookMark(item.GetPath(), bookmark) )
         {
           startoffset = (int)(bookmark.timeInSeconds*75);
           selectedFile = bookmark.partNumber;
@@ -3824,7 +3821,10 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
         {
           // can only resume seek here, not dvdstate
           CBookmark bookmark;
-          if( dbs.GetResumeBookMark(item.GetPath(), bookmark) )
+          CStdString path = item.GetPath();
+          if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
+            path = item.GetProperty("original_listitem_url").asString();
+          if( dbs.GetResumeBookMark(path, bookmark) )
             seconds = bookmark.timeInSeconds;
           else
             seconds = 0.0f;
