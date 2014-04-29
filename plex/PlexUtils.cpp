@@ -814,7 +814,8 @@ string PlexUtils::GetPlexContent(const CFileItem &item)
 
   // check if we are requesting a single item
   CURL itemUrl(item.GetPath());
-  bool singleItem = boost::starts_with(itemUrl.GetFileName(), "library/metadata");
+  bool singleItem = (boost::starts_with(itemUrl.GetFileName(), "library/metadata") &&
+                     !boost::ends_with(itemUrl.GetFileName(), "/children"));
 
   switch(item.GetPlexDirectoryType())
   {
