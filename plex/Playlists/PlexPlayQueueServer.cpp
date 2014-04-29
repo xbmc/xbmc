@@ -35,8 +35,7 @@ CURL CPlexPlayQueueServer::getPlayQueueURL(ePlexMediaType type, const std::strin
     u.SetOption("continuous", "1");
   if (limit > 0)
     u.SetOption("limit", boost::lexical_cast<std::string>(limit));
-  if (next)
-    u.SetOption("next", "1");
+  u.SetOption("next", next ? "1" : "0");
 
   return u;
 }
@@ -130,6 +129,10 @@ void CPlexPlayQueueServer::addItem(const CFileItemPtr& item)
   if (server)
   {
     CURL u = getPlayQueueURL(PlexUtils::GetMediaTypeFromItem(item), uri, "", false, false);
+    CStdString path;
+    path.Format("/playQueues/%d", getCurrentID());
+
+    u.SetFileName(path);
 
     if (u.Get().empty())
       return;

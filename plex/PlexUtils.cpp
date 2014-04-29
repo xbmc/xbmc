@@ -871,3 +871,47 @@ string PlexUtils::GetPlexContent(const CFileItem &item)
   }
   return content;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+ePlexMediaFilterTypes PlexUtils::GetFilterType(const CFileItem& item)
+{
+  switch (item.GetPlexDirectoryType())
+  {
+    case PLEX_DIR_TYPE_MOVIE:
+      return PLEX_MEDIA_FILTER_TYPE_MOVIE;
+    case PLEX_DIR_TYPE_SHOW:
+      return PLEX_MEDIA_FILTER_TYPE_SHOW;
+    case PLEX_DIR_TYPE_SEASON:
+      return PLEX_MEDIA_FILTER_TYPE_SEASON;
+    case PLEX_DIR_TYPE_EPISODE:
+      return PLEX_MEDIA_FILTER_TYPE_EPISODE;
+#if 0
+    case PLEX_DIR_TYPE_TRAILER:
+      return PLEX_MEDIA_FILTER_TYPE_TRAILER;
+    case PLEX_DIR_TYPE_COMIC:
+      return PLEX_MEDIA_FILTER_TYPE_COMIC;
+    case PLEX_DIR_TYPE_PERSON:
+      return PLEX_MEDIA_FILTER_TYPE_PERSON;
+#endif
+    case PLEX_DIR_TYPE_ARTIST:
+      return PLEX_MEDIA_FILTER_TYPE_ARTIST;
+    case PLEX_DIR_TYPE_ALBUM:
+      return PLEX_MEDIA_FILTER_TYPE_ALBUM;
+    case PLEX_DIR_TYPE_TRACK:
+      return PLEX_MEDIA_FILTER_TYPE_TRACK;
+    case PLEX_DIR_TYPE_PHOTOALBUM:
+      return PLEX_MEDIA_FILTER_TYPE_PHOTOALBUM;
+#if 0
+    case PLEX_DIR_TYPE_PICTURE:
+      return PLEX_MEDIA_FILTER_TYPE_PICTURE;
+#endif
+    case PLEX_DIR_TYPE_PHOTO:
+      return PLEX_MEDIA_FILTER_TYPE_PHOTO;
+    case PLEX_DIR_TYPE_CLIP:
+      return PLEX_MEDIA_FILTER_TYPE_CLIP;
+    case PLEX_DIR_TYPE_PLAYLIST:
+      return PLEX_MEDIA_FILTER_TYPE_PLAYLISTITEM;
+    default:
+      return PLEX_MEDIA_FILTER_TYPE_NONE;
+  }
+}

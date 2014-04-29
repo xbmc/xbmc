@@ -758,10 +758,13 @@ void CGUIPlexMediaWindow::GetContextButtons(int itemNumber, CContextButtons &but
     if (!item->m_bIsFolder && item->CanQueue())
       buttons.Add(CONTEXT_BUTTON_PLAY_AND_QUEUE, 13412);
   }
-  else
+
+  if (g_plexApplication.playQueueManager->getCurrentPlayQueuePlaylist() != PLAYLIST_NONE)
   {
-    if ((IsVideoContainer() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO) ||
-        (IsMusicContainer() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC))
+    if ((IsVideoContainer() &&
+         g_plexApplication.playQueueManager->getCurrentPlayQueuePlaylist() == PLAYLIST_VIDEO) ||
+        (IsMusicContainer() &&
+         g_plexApplication.playQueueManager->getCurrentPlayQueuePlaylist() == PLAYLIST_MUSIC))
     {
       // now enable queueing
       buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);
@@ -824,6 +827,12 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       break;
     }
 
+    case CONTEXT_BUTTON_QUEUE_ITEM:
+    {
+      QueueItem(item);
+      break;
+    }
+
     case CONTEXT_BUTTON_MARK_WATCHED:
     case CONTEXT_BUTTON_MARK_UNWATCHED:
     {
@@ -853,6 +862,15 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
 
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexMediaWindow::QueueItem(const CFileItemPtr& item)
+{
+  if (!item)
+    return;
+
+  g_plexApplication.playQueueManager->current()->addItem(item);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

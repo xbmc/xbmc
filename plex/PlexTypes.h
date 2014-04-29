@@ -80,6 +80,7 @@ enum ePlexMediaState {
 // is because of legacy reasons.
 enum ePlexMediaFilterTypes
 {
+  PLEX_MEDIA_FILTER_TYPE_NONE = 0,
   PLEX_MEDIA_FILTER_TYPE_MOVIE = 1,
   PLEX_MEDIA_FILTER_TYPE_SHOW,
   PLEX_MEDIA_FILTER_TYPE_SEASON,
