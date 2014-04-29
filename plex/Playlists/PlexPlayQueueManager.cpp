@@ -117,6 +117,9 @@ void CPlexPlayQueueManager::saveCurrentPlayQueue(const CPlexServerPtr& server,
 
     g_guiSettings.SetString("system.mostrecentplayqueue", server->BuildPlexURL(path).Get());
   }
+  else
+    // reset the saved state - we don't want it to show an old playlist
+    g_guiSettings.SetString("system.mostrecentplayqueue", "");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

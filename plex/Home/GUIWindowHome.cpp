@@ -859,12 +859,15 @@ void CGUIWindowHome::UpdateSections()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowHome::AddPlayQueue(std::vector<CGUIListItemPtr>& list, bool& updated)
 {
-  int type = g_playlistPlayer.GetCurrentPlaylist();
+  int type = g_plexApplication.playQueueManager->getCurrentPlayQueuePlaylist();
   if (type == PLAYLIST_NONE)
     return;
 
-  PLAYLIST::CPlayList playlist = g_playlistPlayer.GetPlaylist(type);
-  if (playlist.size() < 1)
+  CFileItemList pq;
+  if (!g_plexApplication.playQueueManager->getCurrentPlayQueue(pq))
+    return;
+
+  if (pq.Size() < 1)
     return;
 
   updated = true;
