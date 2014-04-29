@@ -45,6 +45,8 @@
 #include "xbmc/GUIUserMessages.h"
 #include "utils/FileUtils.h"
 
+NPT_SET_LOCAL_LOGGER("xbmc.upnp.server")
+
 using namespace std;
 using namespace ANNOUNCEMENT;
 using namespace XFILE;

@@ -2037,6 +2037,11 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="services.upnplogging" type="boolean" label="37025" help="37026">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
     </category>
     <category id="webserver" label="33101" help="36327">

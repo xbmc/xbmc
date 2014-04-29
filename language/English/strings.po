@@ -15497,3 +15497,15 @@ msgstr ""
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr ""
+
+#: xbmc/network/upnp/UPnP.cpp
+#: system/settings/settings.xml
+msgctxt "#37025"
+msgid "Save detailed logs"
+msgstr ""
+
+#. Description of setting "Services -> UPnP -> Save detailed logs" with label #37025
+#: system/settings/settings.xml
+msgctxt "#37026"
+msgid "Enable detailed logging of UPnP messages for troubleshooting purposes."
+msgstr ""
