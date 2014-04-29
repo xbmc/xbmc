@@ -1370,7 +1370,7 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
   UpdateTimestamps(m_CurrentAudio, pPacket);
 
   bool drop = false;
-  if (CheckPlayerInit(m_CurrentAudio, DVDPLAYER_AUDIO))
+  if (CheckPlayerInit(m_CurrentAudio))
     drop = true;
 
   /*
@@ -1423,7 +1423,7 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
   }
 
   bool drop = false;
-  if (CheckPlayerInit(m_CurrentVideo, DVDPLAYER_VIDEO))
+  if (CheckPlayerInit(m_CurrentVideo))
     drop = true;
 
   if (CheckSceneSkip(m_CurrentVideo))
@@ -1450,7 +1450,7 @@ void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket)
   UpdateTimestamps(m_CurrentSubtitle, pPacket);
 
   bool drop = false;
-  if (CheckPlayerInit(m_CurrentSubtitle, DVDPLAYER_SUBTITLE))
+  if (CheckPlayerInit(m_CurrentSubtitle))
     drop = true;
 
   if (CheckSceneSkip(m_CurrentSubtitle))
@@ -1478,7 +1478,7 @@ void CDVDPlayer::ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket
   UpdateTimestamps(m_CurrentTeletext, pPacket);
 
   bool drop = false;
-  if (CheckPlayerInit(m_CurrentTeletext, DVDPLAYER_TELETEXT))
+  if (CheckPlayerInit(m_CurrentTeletext))
     drop = true;
 
   if (CheckSceneSkip(m_CurrentTeletext))
@@ -1700,7 +1700,7 @@ bool CDVDPlayer::CheckStartCaching(CCurrentStream& current)
   return false;
 }
 
-bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
+bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current)
 {
   if(current.inited)
     return false;
@@ -1709,7 +1709,7 @@ bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
   {
     if(current.dts == DVD_NOPTS_VALUE)
     {
-      CLog::Log(LOGDEBUG, "%s - dropping packet type:%d dts:%f to get to start point at %f", __FUNCTION__, source,  current.dts, current.startpts);
+      CLog::Log(LOGDEBUG, "%s - dropping packet type:%d dts:%f to get to start point at %f", __FUNCTION__, current.player,  current.dts, current.startpts);
       return true;
     }
 
@@ -1728,7 +1728,7 @@ bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
 
     if(current.dts < current.startpts)
     {
-      CLog::Log(LOGDEBUG, "%s - dropping packet type:%d dts:%f to get to start point at %f", __FUNCTION__, source,  current.dts, current.startpts);
+      CLog::Log(LOGDEBUG, "%s - dropping packet type:%d dts:%f to get to start point at %f", __FUNCTION__, current.player,  current.dts, current.startpts);
       return true;
     }
   }
@@ -1742,15 +1742,15 @@ bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
     bool setclock = false;
     if(m_playSpeed == DVD_PLAYSPEED_NORMAL)
     {
-      if(     source == DVDPLAYER_AUDIO)
+      if(     current.player == DVDPLAYER_AUDIO)
         setclock = m_clock.GetMaster() == MASTER_CLOCK_AUDIO
                 || m_clock.GetMaster() == MASTER_CLOCK_AUDIO_VIDEOREF;
-      else if(source == DVDPLAYER_VIDEO)
+      else if(current.player == DVDPLAYER_VIDEO)
         setclock = m_clock.GetMaster() == MASTER_CLOCK_VIDEO;
     }
     else
     {
-      if(source == DVDPLAYER_VIDEO)
+      if(current.player == DVDPLAYER_VIDEO)
         setclock = true;
     }
 
@@ -1768,12 +1768,12 @@ bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
     if(starttime > 0 && setclock)
     {
       if(starttime > DVD_SEC_TO_TIME(2))
-        CLog::Log(LOGWARNING, "CDVDPlayer::CheckPlayerInit(%d) - Ignoring too large delay of %f", source, starttime);
+        CLog::Log(LOGWARNING, "CDVDPlayer::CheckPlayerInit(%d) - Ignoring too large delay of %f", current.player, starttime);
       else
-        SendPlayerMessage(new CDVDMsgDouble(CDVDMsg::GENERAL_DELAY, starttime), source);
+        SendPlayerMessage(new CDVDMsgDouble(CDVDMsg::GENERAL_DELAY, starttime), current.player);
     }
 
-    SendPlayerMessage(new CDVDMsgGeneralResync(current.dts, setclock), source);
+    SendPlayerMessage(new CDVDMsgGeneralResync(current.dts, setclock), current.player);
   }
   return false;
 }

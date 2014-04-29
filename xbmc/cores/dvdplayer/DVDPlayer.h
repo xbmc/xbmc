@@ -313,7 +313,7 @@ protected:
   void CheckAutoSceneSkip();
   void CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket);
   bool CheckSceneSkip(CCurrentStream& current);
-  bool CheckPlayerInit(CCurrentStream& current, unsigned int source);
+  bool CheckPlayerInit(CCurrentStream& current);
   bool CheckStartCaching(CCurrentStream& current);
   void UpdateCorrection(DemuxPacket* pkt, double correction);
   void UpdateTimestamps(CCurrentStream& current, DemuxPacket* pPacket);
