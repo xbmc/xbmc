@@ -872,7 +872,14 @@ void CGUIPlexMediaWindow::PlayAll(bool shuffle, const CFileItemPtr& fromHere)
   {
     uriPart.SetFileName(m_sectionRoot.GetFileName());
     if (m_sectionFilter)
+    {
       uriPart = m_sectionFilter->addFiltersToUrl(uriPart);
+      if (uriPart.HasOption("type"))
+      {
+        uriPart.SetOption("sourceType", uriPart.GetOption("type"));
+        uriPart.RemoveOption("type");
+      }
+    }
   }
   else
   {
