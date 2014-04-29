@@ -2970,6 +2970,8 @@ bool CDVDPlayer::OpenStream(CCurrentStream& current, int iStream, int source, bo
     current.hint    = hint;
     current.stream  = (void*)stream;
     current.started = false;
+    if(stream)
+      current.changes = stream->changes;
 
     UpdateClockMaster();
   }
