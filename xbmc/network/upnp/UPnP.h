@@ -25,6 +25,7 @@
 
 #include "utils/StdString.h"
 
+class NPT_LogHandler;
 class PLT_UPnP;
 class PLT_SyncMediaBrowser;
 class PLT_MediaController;
@@ -89,6 +90,7 @@ public:
 private:
     CStdString                  m_IP;
     PLT_UPnP*                   m_UPnP;
+    NPT_LogHandler*             m_LogHandler;
     CDeviceHostReferenceHolder* m_ServerHolder;
     CRendererReferenceHolder*   m_RendererHolder;
     CCtrlPointReferenceHolder*  m_CtrlPointHolder;

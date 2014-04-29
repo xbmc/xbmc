@@ -2861,7 +2861,12 @@ msgctxt "#677"
 msgid "Verbose logging for AirTunes library"
 msgstr ""
 
-#empty strings from id 678 to 699
+#: xbmc/settings/AdvancedSettings.cpp
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr ""
+
+#empty strings from id 679 to 699
 
 msgctxt "#700"
 msgid "Cleaning up library"
