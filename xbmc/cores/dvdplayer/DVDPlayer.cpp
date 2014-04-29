@@ -775,7 +775,7 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
   valid   = false;
   for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
-    if(OpenVideoStream(it->id, it->source, reset))
+    if(OpenStream(m_CurrentVideo, it->id, it->source, reset))
       valid = true;
   }
   if(!valid)
@@ -790,7 +790,7 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
 
   for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
-    if(OpenAudioStream(it->id, it->source, reset))
+    if(OpenStream(m_CurrentAudio, it->id, it->source, reset))
       valid = true;
   }
   if(!valid)
@@ -806,7 +806,7 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
   valid   = false;
   for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
-    if(OpenSubtitleStream(it->id, it->source))
+    if(OpenStream(m_CurrentSubtitle, it->id, it->source))
     {
       valid = true;
       if(!psp.relevant(*it))
@@ -825,7 +825,7 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
   valid   = false;
   for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
-    if(OpenTeletextStream(it->id, it->source))
+    if(OpenStream(m_CurrentTeletext, it->id, it->source))
       valid = true;
   }
   if(!valid)
@@ -1291,10 +1291,10 @@ void CDVDPlayer::Process()
     if (!IsValidStream(m_CurrentTeletext))                                    CloseTeletextStream(true);
 
     // see if we can find something better to play
-    if (IsBetterStream(m_CurrentAudio,    pStream)) OpenAudioStream   (pStream->iId, pStream->source);
-    if (IsBetterStream(m_CurrentVideo,    pStream)) OpenVideoStream   (pStream->iId, pStream->source);
-    if (IsBetterStream(m_CurrentSubtitle, pStream)) OpenSubtitleStream(pStream->iId, pStream->source);
-    if (IsBetterStream(m_CurrentTeletext, pStream)) OpenTeletextStream(pStream->iId, pStream->source);
+    if (IsBetterStream(m_CurrentAudio,    pStream)) OpenStream(m_CurrentAudio, pStream->iId, pStream->source);
+    if (IsBetterStream(m_CurrentVideo,    pStream)) OpenStream(m_CurrentVideo, pStream->iId, pStream->source);
+    if (IsBetterStream(m_CurrentSubtitle, pStream)) OpenStream(m_CurrentSubtitle, pStream->iId, pStream->source);
+    if (IsBetterStream(m_CurrentTeletext, pStream)) OpenStream(m_CurrentTeletext, pStream->iId, pStream->source);
 
     // process the packet
     ProcessPacket(pStream, pPacket);
@@ -1367,7 +1367,7 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
     /* if they have, reopen stream */
 
     if (m_CurrentAudio.hint != CDVDStreamInfo(*pStream, true))
-      OpenAudioStream( pPacket->iStreamId, pStream->source );
+      OpenStream(m_CurrentAudio, pPacket->iStreamId, pStream->source );
 
     m_CurrentAudio.stream = (void*)pStream;
     m_CurrentAudio.changes = pStream->changes;
@@ -1417,7 +1417,7 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
     /* if they have reopen stream */
 
     if (m_CurrentVideo.hint != CDVDStreamInfo(*pStream, true))
-      OpenVideoStream(pPacket->iStreamId, pStream->source);
+      OpenStream(m_CurrentVideo, pPacket->iStreamId, pStream->source);
 
     m_CurrentVideo.stream = (void*)pStream;
     m_CurrentVideo.changes = pStream->changes;
@@ -1480,7 +1480,7 @@ void CDVDPlayer::ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket
     /* check so that dmuxer hints or extra data hasn't changed */
     /* if they have, reopen stream */
     if (m_CurrentTeletext.hint != CDVDStreamInfo(*pStream, true))
-      OpenTeletextStream( pPacket->iStreamId, pStream->source );
+      OpenStream(m_CurrentTeletext, pPacket->iStreamId, pStream->source );
 
     m_CurrentTeletext.stream = (void*)pStream;
     m_CurrentTeletext.changes = pStream->changes;
@@ -2199,7 +2199,7 @@ void CDVDPlayer::HandleMessages()
           else
           {
             CloseAudioStream(false);
-            OpenAudioStream(st.id, st.source);
+            OpenStream(m_CurrentAudio, st.id, st.source);
             AdaptForcedSubtitles();
             m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true, true, true));
           }
@@ -2224,7 +2224,7 @@ void CDVDPlayer::HandleMessages()
           else
           {
             CloseSubtitleStream(false);
-            OpenSubtitleStream(st.id, st.source);
+            OpenStream(m_CurrentSubtitle, st.id, st.source);
           }
         }
       }
@@ -2899,6 +2899,31 @@ void CDVDPlayer::ToFFRW(int iSpeed)
   SetPlaySpeed(iSpeed * DVD_PLAYSPEED_NORMAL);
 }
 
+bool CDVDPlayer::OpenStream(CCurrentStream& current, int iStream, int source, bool reset)
+{
+  bool res;
+  switch(current.type)
+  {
+    case STREAM_AUDIO:
+      res = OpenAudioStream(iStream, source, reset);
+      break;
+    case STREAM_VIDEO:
+      res = OpenVideoStream(iStream, source, reset);
+      break;
+    case STREAM_SUBTITLE:
+      res = OpenSubtitleStream(iStream, source);
+      break;
+    case STREAM_TELETEXT:
+      res = OpenTeletextStream(iStream, source);
+      break;
+    default:
+      res = false;
+      break;
+  }
+
+  return res;
+}
+
 bool CDVDPlayer::OpenAudioStream(int iStream, int source, bool reset)
 {
   CLog::Log(LOGNOTICE, "Opening audio stream: %i source: %i", iStream, source);
@@ -3148,7 +3173,7 @@ bool CDVDPlayer::AdaptForcedSubtitles()
     {
       if (it->flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareLangCodes(it->language, as.language))
       {
-        if(OpenSubtitleStream(it->id, it->source))
+        if(OpenStream(m_CurrentSubtitle, it->id, it->source))
         {
           valid = true;
           SetSubtitleVisibleInternal(true);

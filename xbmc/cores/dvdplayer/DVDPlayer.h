@@ -263,6 +263,7 @@ protected:
   virtual void OnExit();
   virtual void Process();
 
+  bool OpenStream(CCurrentStream& current, int iStream, int source, bool reset = true);
   bool OpenAudioStream(int iStream, int source, bool reset = true);
   bool OpenVideoStream(int iStream, int source, bool reset = true);
   bool OpenSubtitleStream(int iStream, int source);
