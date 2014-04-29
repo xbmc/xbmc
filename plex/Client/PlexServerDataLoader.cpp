@@ -51,6 +51,8 @@ void CPlexServerDataLoader::RemoveServer(const CPlexServerPtr& server)
 
   CSingleLock lk(m_dataLock);
 
+  CLog::Log(LOGDEBUG, "CPlexServerDataLoader::RemoveServer removing %s", server->GetName().c_str());
+
   if (m_sectionMap.find(server->GetUUID()) != m_sectionMap.end())
   {
     CLog::Log(LOG_LEVEL_DEBUG, "CPlexServerDataLoader::RemoveServer from sectionMap %s",
@@ -327,8 +329,9 @@ void CPlexServerDataLoader::OnTimeout()
 
     if (p.second->GetUUID() != "myplex")
     {
-      if ((p.second->GetOwned() && p.second->GetLastRefreshed() > OWNED_SERVER_REFRESH) ||
-          (!p.second->GetOwned() && p.second->GetLastRefreshed() > SHARED_SERVER_REFRESH))
+      if (p.second->GetLastRefreshed() == 0 ||
+          ((p.second->GetOwned() && p.second->GetLastRefreshed() > OWNED_SERVER_REFRESH) ||
+          (!p.second->GetOwned() && p.second->GetLastRefreshed() > SHARED_SERVER_REFRESH)))
       {
         CLog::Log(LOGDEBUG, "CPlexServerDataLoader::OnTimeout refreshing data for %s",
                   p.second->GetName().c_str());
