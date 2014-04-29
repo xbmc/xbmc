@@ -14,6 +14,7 @@ public:
   bool OnMessage(CGUIMessage &message);
   void GetContextButtons(int itemNumber, CContextButtons &buttons);
   bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+  bool Update(const CStdString &strDirectory, bool updateFilterPath);
 };
 
 #endif // GUIWINDOWPLEXPLAYQUEUE_H

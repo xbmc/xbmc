@@ -21,7 +21,7 @@ bool CGUIWindowPlexPlayQueue::OnSelect(int iItem)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIWindowPlexPlayQueue::GetContextButtons(int itemNumber, CContextButtons &buttons)
+void CGUIWindowPlexPlayQueue::GetContextButtons(int itemNumber, CContextButtons& buttons)
 {
   CFileItemPtr item = m_vecItems->Get(itemNumber);
   if (!item)
@@ -33,13 +33,25 @@ void CGUIWindowPlexPlayQueue::GetContextButtons(int itemNumber, CContextButtons 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CGUIWindowPlexPlayQueue::OnMessage(CGUIMessage &message)
+bool CGUIWindowPlexPlayQueue::Update(const CStdString& strDirectory, bool updateFilterPath)
+{
+  if (CGUIPlexMediaWindow::Update(strDirectory, updateFilterPath))
+  {
+    if (PlexUtils::IsPlayingPlaylist() && g_application.CurrentFileItemPtr())
+      m_viewControl.SetSelectedItem(g_application.CurrentFileItemPtr()->GetPath());
+    return true;
+  }
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIWindowPlexPlayQueue::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
     case GUI_MSG_PLEX_PLAYQUEUE_UPDATED:
     {
-      Update(m_vecItems->GetPath(), false, false);
+      Update(m_vecItems->GetPath(), false);
       return true;
     }
   }
