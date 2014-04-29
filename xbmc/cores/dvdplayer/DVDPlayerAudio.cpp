@@ -689,7 +689,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
 
         proportional = m_error / DVD_TIME_BASE / proportionaldiv;
       }
-      m_resampleratio = 1.0 / g_VideoReferenceClock.GetSpeed() + proportional + m_integral;
+      m_resampleratio = 1.0 / m_pClock->GetClockSpeed() + proportional + m_integral;
     }
   }
 }

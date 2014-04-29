@@ -65,6 +65,8 @@ public:
   void Resume();
   void SetSpeed(int iSpeed);
 
+  double GetClockSpeed(); /**< get the current speed of the clock relative normal system time */
+
   /* tells clock at what framerate video is, to  *
    * allow it to adjust speed for a better match */
   int UpdateFramerate(double fps, double* interval = NULL);

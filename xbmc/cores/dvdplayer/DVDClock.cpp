@@ -269,3 +269,8 @@ void CDVDClock::SetMaster(EMasterClock master)
 
   m_master = master;
 }
+
+double CDVDClock::GetClockSpeed()
+{
+  return g_VideoReferenceClock.GetSpeed();
+}
