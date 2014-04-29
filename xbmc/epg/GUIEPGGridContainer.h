@@ -26,11 +26,6 @@
 #include "guilib/GUIListItemLayout.h"
 #include "guilib/IGUIContainer.h"
 
-namespace PVR
-{
-  class CGUIWindowPVRGuide;
-}
-
 namespace EPG
 {
   #define MAXCHANNELS 20
@@ -47,11 +42,9 @@ namespace EPG
 
   class CGUIEPGGridContainer : public IGUIContainer
   {
-  friend class PVR::CGUIWindowPVRGuide;
-
   public:
     CGUIEPGGridContainer(int parentID, int controlID, float posX, float posY, float width, float height,
-                         ORIENTATION orientation, int scrollTime, int preloadItems, int minutesPerPage,
+                         int scrollTime, int preloadItems, int minutesPerPage,
                          int rulerUnit, const CTextureInfo& progressIndicatorTexture);
     virtual ~CGUIEPGGridContainer(void);
     virtual CGUIEPGGridContainer *Clone() const { return new CGUIEPGGridContainer(*this); };
@@ -66,7 +59,7 @@ namespace EPG
     virtual bool OnMouseDoubleClick(int dwButton, const CPoint &point);
     virtual bool OnMouseWheel(char wheel, const CPoint &point);
     virtual bool OnMessage(CGUIMessage& message);
-    virtual void SetFocus(bool bOnOff);
+    virtual void SetFocus(bool focus);
 
     virtual CStdString GetDescription() const;
     const int GetNumChannels()   { return m_channels; };
@@ -82,8 +75,6 @@ namespace EPG
 
     virtual CGUIListItemPtr GetListItem(int offset, unsigned int flag = 0) const;
     virtual CStdString GetLabel(int info) const;
-
-    virtual int  CorrectOffset(int offset, int cursor) const;
 
     /*! \brief Set the offset of the first item in the container from the container's position
      Useful for lists/panels where the focused item may be larger than the non-focused items and thus
@@ -110,8 +101,7 @@ namespace EPG
     void ChannelScroll(int amount);
     void ProgrammesScroll(int amount);
     void ValidateOffset();
-    void UpdateLayout(bool refreshAllItems = false);
-    void CalculateLayout();
+    void UpdateLayout();
     void Reset();
     void ClearGridIndex(void);
 
@@ -120,12 +110,10 @@ namespace EPG
     GridItemsPtr *GetPrevItem(const int &channel);
     GridItemsPtr *GetClosestItem(const int &channel);
 
-    int  GetItemSize(GridItemsPtr *item);
-    int  GetBlock(const CGUIListItemPtr &item, const int &channel);
-    int  GetRealBlock(const CGUIListItemPtr &item, const int &channel);
+    int GetItemSize(GridItemsPtr *item);
+    int GetBlock(const CGUIListItemPtr &item, const int &channel);
+    int GetRealBlock(const CGUIListItemPtr &item, const int &channel);
     void MoveToRow(int row);
-    bool MoveChannel(bool direction, bool wrapAround);
-    bool MoveProgrammes(bool direction);
 
     CGUIListItemLayout *GetFocusedLayout() const;
 
@@ -147,19 +135,15 @@ namespace EPG
 
     CPoint m_renderOffset; ///< \brief render offset of the first item in the list \sa SetRenderOffset
 
-    ORIENTATION m_orientation;
-
     struct ItemsPtr
     {
       long start;
       long stop;
     };
-    std::vector< ItemsPtr > m_epgItemsPtr;
-    std::vector< CGUIListItemPtr > m_channelItems;
-    std::vector< CGUIListItemPtr > m_rulerItems;
-    std::vector< CGUIListItemPtr > m_programmeItems;
-    typedef std::vector<CGUIListItemPtr> ::iterator iItems;
-
+    std::vector<ItemsPtr> m_epgItemsPtr;
+    std::vector<CGUIListItemPtr> m_channelItems;
+    std::vector<CGUIListItemPtr> m_rulerItems;
+    std::vector<CGUIListItemPtr> m_programmeItems;
     std::vector<CGUIListItemLayout> m_channelLayouts;
     std::vector<CGUIListItemLayout> m_focusedChannelLayouts;
     std::vector<CGUIListItemLayout> m_focusedProgrammeLayouts;
@@ -177,6 +161,7 @@ namespace EPG
                       // the "movement" was simply due to the list being repopulated (thus cursor position
                       // changing around)
 
+    void FreeItemsMemory();
     void FreeChannelMemory(int keepStart, int keepEnd);
     void FreeProgrammeMemory(int channel, int keepStart, int keepEnd);
     void FreeRulerMemory(int keepStart, int keepEnd);
@@ -185,32 +170,32 @@ namespace EPG
     void GetProgrammeCacheOffsets(int &cacheBefore, int &cacheAfter);
 
   private:
-    int   m_rulerUnit; //! number of blocks that makes up one element of the ruler
-    int   m_channels;
-    int   m_channelsPerPage;
-    int   m_ProgrammesPerPage;
-    int   m_channelCursor;
-    int   m_channelOffset;
-    int   m_blocks;
-    int   m_blocksPerPage;
-    int   m_blockCursor;
-    int   m_blockOffset;
-    int   m_cacheChannelItems;
-    int   m_cacheProgrammeItems;
-    int   m_cacheRulerItems;
+    int m_rulerUnit; //! number of blocks that makes up one element of the ruler
+    int m_channels;
+    int m_channelsPerPage;
+    int m_programmesPerPage;
+    int m_channelCursor;
+    int m_channelOffset;
+    int m_blocks;
+    int m_blocksPerPage;
+    int m_blockCursor;
+    int m_blockOffset;
+    int m_cacheChannelItems;
+    int m_cacheProgrammeItems;
+    int m_cacheRulerItems;
 
     float m_rulerPosX;      //! X position of first ruler item
     float m_rulerPosY;      //! Y position of first ruler item
     float m_rulerHeight;    //! height of the scrolling timeline above the ruler items
     float m_rulerWidth;     //! width of each element of the ruler
-    float m_channelPosX;    //! Y position of first channel row
+    float m_channelPosX;    //! X position of first channel row
     float m_channelPosY;    //! Y position of first channel row
-    float m_channelHeight;  //! height of each channel row (& every grid item)
+    float m_channelHeight;  //! height of the channel item
     float m_channelWidth;   //! width of the channel item
     float m_gridPosX;       //! X position of first grid item
     float m_gridPosY;       //! Y position of first grid item
-    float m_gridWidth;
-    float m_gridHeight;
+    float m_gridWidth;      //! width of the epg grid control
+    float m_gridHeight;     //! height of the epg grid control
     float m_blockSize;      //! a block's width in pixels
     float m_analogScrollCount;
 
@@ -224,8 +209,7 @@ namespace EPG
     CGUIListItem *m_lastItem;
     CGUIListItem *m_lastChannel;
 
-    int   m_scrollTime;
-    bool  m_gridWrapAround; //! only when no more data available should this be true
+    int m_scrollTime;
 
     int m_programmeScrollLastTime;
     float m_programmeScrollSpeed;
@@ -234,7 +218,5 @@ namespace EPG
     int m_channelScrollLastTime;
     float m_channelScrollSpeed;
     float m_channelScrollOffset;
-
-    CStdString m_label;
   };
 }
