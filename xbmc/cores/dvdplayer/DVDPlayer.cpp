@@ -995,6 +995,12 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
   return false;
 }
 
+void CDVDPlayer::CheckBetterStream(CCurrentStream& current, CDemuxStream* stream)
+{
+  if (IsBetterStream(current, stream))
+    OpenStream(current, stream->iId, stream->source);
+}
+
 void CDVDPlayer::Process()
 {
   if (!OpenInputStream())
@@ -1290,10 +1296,10 @@ void CDVDPlayer::Process()
     if (!IsValidStream(m_CurrentTeletext))                                    CloseTeletextStream(true);
 
     // see if we can find something better to play
-    if (IsBetterStream(m_CurrentAudio,    pStream)) OpenStream(m_CurrentAudio, pStream->iId, pStream->source);
-    if (IsBetterStream(m_CurrentVideo,    pStream)) OpenStream(m_CurrentVideo, pStream->iId, pStream->source);
-    if (IsBetterStream(m_CurrentSubtitle, pStream)) OpenStream(m_CurrentSubtitle, pStream->iId, pStream->source);
-    if (IsBetterStream(m_CurrentTeletext, pStream)) OpenStream(m_CurrentTeletext, pStream->iId, pStream->source);
+    CheckBetterStream(m_CurrentAudio,    pStream);
+    CheckBetterStream(m_CurrentVideo,    pStream);
+    CheckBetterStream(m_CurrentSubtitle, pStream);
+    CheckBetterStream(m_CurrentTeletext, pStream);
 
     // process the packet
     ProcessPacket(pStream, pPacket);
