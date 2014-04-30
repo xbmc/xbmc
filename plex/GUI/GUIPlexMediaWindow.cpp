@@ -1025,7 +1025,19 @@ void CGUIPlexMediaWindow::UpdateButtons()
   }
 
   if (viewMode == -1 && CurrentDirectory().HasProperty("viewMode"))
+  {
     viewMode = (int)CurrentDirectory().GetProperty("viewMode").asInteger();
+    if (db.IsOpen())
+    {
+      CViewState state;
+      state.m_viewMode = viewMode;
+      db.SetViewState(m_sectionRoot.Get(), GetID(), state, g_guiSettings.GetString("lookandfeel.skin"));
+      CLog::Log(LOGDEBUG, "GUIPlexMediaWindow::UpdateButtons storing viewMode to db: %d", state.m_viewMode);
+    }
+  }
+
+  if (db.IsOpen())
+    db.Close();
 
   CLog::Log(LOGDEBUG, "CGUIMediaWindow::UpdateButtons setting viewMode to %d", viewMode);
   m_viewControl.SetCurrentView(viewMode);
