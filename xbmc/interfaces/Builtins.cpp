@@ -1684,7 +1684,7 @@ int CBuiltins::Execute(const CStdString& execString)
     g_application.OnAction(CAction(ACTION_PLEX_SHUFFLE_ALL));
   else if (execute.Equals("nextitem"))
     g_application.OnAction(CAction(ACTION_PLEX_MOVE_NEXT_ITEM));
-  else if (execute.Equals("prevtem"))
+  else if (execute.Equals("previtem"))
     g_application.OnAction(CAction(ACTION_PLEX_MOVE_PREV_ITEM));
   /* PLEX */
     return -1;
