@@ -63,6 +63,7 @@ private:
   CAEChannelInfo m_ChannelInfo;
 
   bool m_bInited;
+  bool m_bCanSeek;
 };
 
 #endif

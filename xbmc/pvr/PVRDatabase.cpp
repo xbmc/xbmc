@@ -22,6 +22,7 @@
 #include "dbwrappers/dataset.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/VideoSettings.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
@@ -292,6 +293,7 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
   {
     try
     {
+      bool bIgnoreEpgDB = CSettings::Get().GetBool("epg.ignoredbforclient");
       while (!m_pDS->eof())
       {
         CPVRChannelPtr channel = CPVRChannelPtr(new CPVRChannel());
@@ -313,7 +315,10 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
         channel->m_strInputFormat          = m_pDS->fv("sInputFormat").get_asString();
         channel->m_strStreamURL            = m_pDS->fv("sStreamURL").get_asString();
         channel->m_iClientEncryptionSystem = m_pDS->fv("iEncryptionSystem").get_asInt();
-        channel->m_iEpgId                  = m_pDS->fv("idEpg").get_asInt();
+        if (bIgnoreEpgDB)
+          channel->m_iEpgId                = -1;
+        else
+          channel->m_iEpgId                = m_pDS->fv("idEpg").get_asInt();
         channel->UpdateEncryptionName();
 
 #if PVRDB_DEBUGGING

@@ -911,15 +911,34 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
 
 void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat* mediaformat)
 {
-  int width       = mediaformat->getInteger("width");
-  int height      = mediaformat->getInteger("height");
-  int stride      = mediaformat->getInteger("stride");
-  int slice_height= mediaformat->getInteger("slice-height");
-  int color_format= mediaformat->getInteger("color-format");
-  int crop_left   = mediaformat->getInteger("crop-left");
-  int crop_top    = mediaformat->getInteger("crop-top");
-  int crop_right  = mediaformat->getInteger("crop-right");
-  int crop_bottom = mediaformat->getInteger("crop-bottom");
+  int width       = 0;
+  int height      = 0;
+  int stride      = 0;
+  int slice_height= 0;
+  int color_format= 0;
+  int crop_left   = 0;
+  int crop_top    = 0;
+  int crop_right  = 0;
+  int crop_bottom = 0;
+
+  if (mediaformat->containsKey("width"))
+    width       = mediaformat->getInteger("width");
+  if (mediaformat->containsKey("height"))
+    height      = mediaformat->getInteger("height");
+  if (mediaformat->containsKey("stride"))
+    stride      = mediaformat->getInteger("stride");
+  if (mediaformat->containsKey("slice-height"))
+    slice_height= mediaformat->getInteger("slice-height");
+  if (mediaformat->containsKey("color-format"))
+    color_format= mediaformat->getInteger("color-format");
+  if (mediaformat->containsKey("crop-left"))
+    crop_left   = mediaformat->getInteger("crop-left");
+  if (mediaformat->containsKey("crop-top"))
+    crop_top    = mediaformat->getInteger("crop-top");
+  if (mediaformat->containsKey("crop-right"))
+    crop_right  = mediaformat->getInteger("crop-right");
+  if (mediaformat->containsKey("crop-bottom"))
+    crop_bottom = mediaformat->getInteger("crop-bottom");
 
   CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: "
     "width(%d), height(%d), stride(%d), slice-height(%d), color-format(%d)",
