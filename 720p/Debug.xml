@@ -108,7 +108,6 @@
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(episode)">episode</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(movie)">movie</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(album)">album</value>
-		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(track)">track</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(song)">song</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(photo)">photo</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(photoAlbum)">photoAlbum</value>
