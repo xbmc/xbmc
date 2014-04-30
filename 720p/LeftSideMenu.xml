@@ -499,7 +499,7 @@
 					<texturenofocus>b-pp-play.png</texturenofocus>
 					<onclick>Plex.PlayAll()</onclick>
 					<include>leftMenuBarButton</include>
-					<visible>!Container.PlexContent(Songs) + !Container.PlexContent(Photos)</visible>
+					<visible>!Container.PlexContent(Songs) + !Container.PlexContent(Photos) + ![Window.IsActive(501) + Container.PlexFilter(recentlyAdded)] + !Container.PlexFilter(recentlyViewedShows)</visible>
 				</control>
 				<!-- Shuffle All -->
 				<control type="button" id="105">
@@ -507,7 +507,7 @@
 					<texturenofocus>left-menu-shuffle-icon-u.png</texturenofocus>
 					<onclick>Plex.ShuffleAll()</onclick>
 					<include>leftMenuBarButton</include>
-					<visible>!Container.PlexContent(Photos)</visible>
+					<visible>!Container.PlexContent(Photos) + ![Window.IsActive(501) + Container.PlexFilter(recentlyAdded)] + !Container.PlexFilter(recentlyViewedShows)</visible>
 				</control>
 			</control>
 			<!-- sidebar preplay -->
