@@ -119,6 +119,7 @@ enum ePlexMediaFilterTypes
 #define WINDOW_DIALOG_PLEX_SUBTITLE_PICKER  10204
 #define WINDOW_DIALOG_PLEX_AUDIO_PICKER     10205
 #define WINDOW_DIALOG_PLEX_SS_PHOTOS        10206
+#define WINDOW_DIALOG_PLEX_PLAYQUEUE        10207
 
 // Sent when the set of remote sources has changed
 #define GUI_MSG_UPDATE_REMOTE_SOURCES GUI_MSG_USER + 40
