@@ -26,7 +26,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CGUIWindowPlexPreplayVideo::CGUIWindowPlexPreplayVideo(void)
- : CGUIMediaWindow(WINDOW_PLEX_PREPLAY_VIDEO, "PlexPreplayVideo.xml")
+ : CGUIPlexMediaWindow(WINDOW_PLEX_PREPLAY_VIDEO, "PlexPreplayVideo.xml")
 {
   m_navigating = false;
 }
@@ -171,7 +171,8 @@ void CGUIWindowPlexPreplayVideo::Recommend()
   {
     m_dataLoaded.Reset();
 
-    CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(CURL("plexserver://myplex/pms/friends/all.xml")), this, CJob::PRIORITY_HIGH);
+    CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(CURL("plexserver://myplex/pms/friends/all.xml")),
+                                      this, CJob::PRIORITY_HIGH);
     CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
 
     if (dialog)
@@ -207,7 +208,8 @@ void CGUIWindowPlexPreplayVideo::Share()
   {
     m_dataLoaded.Reset();
 
-    CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(CURL("plexserver://myplex/pms/social/networks.xml")), this, CJob::PRIORITY_HIGH);
+    CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(CURL("plexserver://myplex/pms/social/networks.xml")),
+                                      this, CJob::PRIORITY_HIGH);
     CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
 
     if (dialog)

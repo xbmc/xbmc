@@ -1,11 +1,11 @@
 #pragma once
 
-#include "windows/GUIMediaWindow.h"
+#include "GUI/GUIPlexMediaWindow.h"
 #include "JobManager.h"
 #include "threads/Event.h"
 #include "PlexNavigationHelper.h"
 
-class CGUIWindowPlexPreplayVideo : public CGUIMediaWindow, public IJobCallback
+class CGUIWindowPlexPreplayVideo : public CGUIPlexMediaWindow
 {
 public:
   CGUIWindowPlexPreplayVideo(void);

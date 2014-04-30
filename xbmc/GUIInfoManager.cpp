@@ -3073,7 +3073,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         {
           CStdString match = m_stringParameters[info.GetData2()];
           CGUIWindow* window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-          if (window && window->GetID() != WINDOW_PLEX_PREPLAY_VIDEO)
+          if (window)
             bReturn = ((CGUIPlexMediaWindow *)window)->MatchPlexContent(match);
         }
         break;
@@ -3081,7 +3081,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         {
           CStdString match = m_stringParameters[info.GetData2()];
           CGUIWindow* window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-          if (window && window->GetID() != WINDOW_PLEX_PREPLAY_VIDEO)
+          if (window)
             bReturn = ((CGUIPlexMediaWindow *)window)->MatchPlexFilter(match);
         }
         break;
