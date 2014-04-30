@@ -179,6 +179,9 @@ lib/cpluff/libtool
 lib/cpluff/po/POTFILES
 lib/cpluff/stamp-h1
 
+# /lib/ffmpeg/
+/lib/ffmpeg/
+
 # /lib/libcec
 /lib/libcec/libcec
 
@@ -414,9 +417,9 @@ lib/cpluff/stamp-h1
 /system/cdrip/vorbisenc.dll
 
 # /system/players/dvdplayer
-/system/players/dvdplayer/avcodec-54.dll
-/system/players/dvdplayer/avfilter-3.dll
-/system/players/dvdplayer/avformat-54.dll
+/system/players/dvdplayer/avcodec-55.dll
+/system/players/dvdplayer/avfilter-4.dll
+/system/players/dvdplayer/avformat-55.dll
 /system/players/dvdplayer/avutil-52.dll
 /system/players/dvdplayer/freetype6.dll
 /system/players/dvdplayer/libass.dll
@@ -1099,6 +1102,12 @@ lib/cpluff/stamp-h1
 /lib/vgmstream/win32/win32.ncb
 /lib/vgmstream/win32/win32.suo
 /lib/vgmstream/win32/win32.lib
+
+#/lib/win32
+/lib/win32/2.2-Helix-alpha1.tar*
+
+#/lib/win32/ffmpeg
+/lib/win32/ffmpeg/
 
 # /lib/win32/libmms_win32/
 /lib/win32/libmms_win32/msvc++/Debug
