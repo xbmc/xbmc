@@ -129,6 +129,8 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
     {
       if (message.GetStringParam() == m_sectionRoot.Get())
       {
+        m_sectionFilter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
+
         CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::OnMessage filter is loaded for %s", m_sectionRoot.Get().c_str());
         AddFilters();
 
@@ -927,8 +929,17 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
     g_plexApplication.filterManager->loadFilterForSection(m_sectionRoot.Get());
   }
 
-  if (m_sectionFilter && boost::ends_with(newUrl.GetFileName(), m_sectionFilter->currentPrimaryFilter()))
+  // since the filters might not have been loaded yet we should really make sure that we
+  // use *a* primaryFilter here. We just default to all since that seems sane.
+  CStdString primaryFilter = "all";
+  if (m_sectionFilter)
+    primaryFilter = m_sectionFilter->currentPrimaryFilter();
+
+  if (boost::ends_with(newUrl.GetFileName(), primaryFilter))
+  {
+    CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::Update m_startDirectory=%s", newUrl.GetUrlWithoutOptions().c_str());
     m_startDirectory = newUrl.GetUrlWithoutOptions();
+  }
 
   if (updateFromFilter)
     m_history.RemoveParentPath();
@@ -1176,7 +1187,6 @@ void CGUIPlexMediaWindow::AddFilters()
   if (!PlexUtils::CurrentSkinHasFilters())
     return;
 
-  m_sectionFilter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
   CGUIPlexFilterFactory factory(this);
 
   if (!m_sectionFilter)
