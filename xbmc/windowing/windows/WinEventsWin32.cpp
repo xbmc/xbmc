@@ -473,10 +473,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           }
         }
         if (g_application.GetRenderGUI() != active)
-        {
           g_Windowing.NotifyAppActiveChange(g_application.GetRenderGUI());
-          g_application.SetInBackground(!g_application.GetRenderGUI());
-        }
         CLog::Log(LOGDEBUG, __FUNCTION__"Window is %s", g_application.GetRenderGUI() ? "active" : "inactive");
       }
       break;
