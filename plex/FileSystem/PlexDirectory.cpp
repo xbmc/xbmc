@@ -196,7 +196,9 @@ static DirectoryTypeMap g_typeMap = boost::assign::list_of<DirectoryTypeMap::rel
                                     (PLEX_DIR_TYPE_EPISODE, "episode")
                                     (PLEX_DIR_TYPE_ARTIST, "artist")
                                     (PLEX_DIR_TYPE_ALBUM, "album")
-                                    (PLEX_DIR_TYPE_TRACK, "track")
+                                    // special case, we'll use song instead of track here
+                                    // since it's song everywhere else
+                                    (PLEX_DIR_TYPE_TRACK, "song")
                                     (PLEX_DIR_TYPE_PHOTO, "photo")
                                     (PLEX_DIR_TYPE_VIDEO, "video")
                                     (PLEX_DIR_TYPE_DIRECTORY, "directory")
@@ -400,9 +402,9 @@ CFileItemPtr CPlexDirectory::NewPlexElement(XML_ELEMENT *element, const CFileIte
     /* no type attribute, let's try to use the name of the XML element */
     CPlexAttributeParserType t;
 #ifndef USE_RAPIDXML
-    t.Process(baseUrl, "type", element->ValueStr(), newItem.get());
+    g_parserType->Process(baseUrl, "type", element->ValueStr(), newItem.get());
 #else
-    t.Process(baseUrl, "type", CStdString(element->name()), newItem.get());
+    g_parserType->Process(baseUrl, "type", CStdString(element->name()), newItem.get());
 #endif
 
   }

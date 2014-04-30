@@ -915,8 +915,9 @@ bool CFileItem::IsDiscStub() const
 bool CFileItem::IsAudio() const
 {
   /* PLEX */
-  string type = GetProperty("album_type").asString();
-  if (type == "track")
+  if (m_plexDirectoryType == PLEX_DIR_TYPE_TRACK ||
+      m_plexDirectoryType == PLEX_DIR_TYPE_ALBUM ||
+      m_plexDirectoryType == PLEX_DIR_TYPE_ARTIST)
     return true;
   /* END PLEX */
 
@@ -3468,7 +3469,7 @@ bool CFileItem::IsPlexMediaServerMusic() const
         ret = true;
     }
 
-    if (GetProperty("type") == "track")
+    if (GetProperty("type") == "song")
       ret = true;
   }
 
@@ -3500,7 +3501,7 @@ void CFileItem::SetEpisodeData(int total, int watchedCount)
 
 bool CFileItemList::IsPlexMediaServerMusic() const
 {
-  if (GetContent() == "track" || GetContent() == "songs")
+  if (GetContent() == "song" || GetContent() == "songs")
     return true;
 
   return CFileItem::IsPlexMediaServerMusic();

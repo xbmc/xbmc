@@ -263,6 +263,14 @@ void CPlexAttributeParserMediaFlag::Process(const CURL &url, const CStdString &k
 void CPlexAttributeParserType::Process(const CURL &url, const CStdString &key, const CStdString &value, CFileItem *item)
 {
   CStdString lookupVal = boost::algorithm::to_lower_copy(std::string(value));
+
+  // This is a hack to appease Sebastian :)
+  // basically it's refered to as song everywhere but from the server it's called
+  // track. And we can't make the typeMap map two values, so we'll just hack it for
+  // now.
+  if (lookupVal == "track")
+    lookupVal = "song";
+
   EPlexDirectoryType dirType = XFILE::CPlexDirectory::GetDirectoryType(lookupVal);
 
   if (dirType == PLEX_DIR_TYPE_PHOTO)
