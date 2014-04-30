@@ -1,0 +1,5 @@
+JSON Schema Builder
+===================
+JSON Schema Builder is a tool used by XBMC to transform files containing JSON
+schema definitions of XBMC's JSON-RPC API into a C++ header file which can be
+parsed by XBMC's JSON-RPC implementation at runtime.

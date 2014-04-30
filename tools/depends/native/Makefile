@@ -9,7 +9,7 @@ NATIVE= m4-native gettext-native autoconf-native automake-native \
         gas-preprocessor-native python26-native zlib-native \
         pcre-native swig-native rpl-native libsdl_image-native \
         tiff-native libpng-native libjpeg-turbo-native liblzo2-native \
-        libsdl-native distribute-native distutilscross-native
+        libsdl-native distribute-native distutilscross-native JsonSchemaBuilder
 
 
 ifeq ($(OS),ios)
@@ -40,6 +40,7 @@ python26-native: zlib-native
 
 #liblzo2 has stale packaged automake files that cause borked host/build detection
 liblzo2-native: automake-native
+JsonSchemaBuilder: automake-native
 
 native: $(NATIVE)
 $(NATIVE):

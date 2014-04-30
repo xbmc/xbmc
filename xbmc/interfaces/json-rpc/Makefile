@@ -20,5 +20,17 @@ SRCS=AddonsOperations.cpp \
 
 LIB=json-rpc.a
 
-include ../../../Makefile.include
+GENERATED_JSON = ServiceDescription.h
+JSON_SRC =  schema/version.txt schema/license.txt schema/methods.json schema/types.json schema/notifications.json
+
+all: $(GENERATED_JSON) $(LIB)
+
+-include ../../../Makefile.include
+ifeq ($(wildcard $(JSON_BUILDER)),)
+  JSON_BUILDER = ../../../tools/depends/native/JsonSchemaBuilder/JsonSchemaBuilder
+endif
+
+$(GENERATED_JSON): $(JSON_SRC)
+	$(JSON_BUILDER) $(JSON_SRC)
+
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
