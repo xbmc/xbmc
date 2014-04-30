@@ -81,15 +81,15 @@ bool CPlexCachedDirectoryFetchJob::DoWork()
   }
 
   bool httpSuccess;
-  XFILE::CPlexFile file;
   CStdString xmlData;
 
-  httpSuccess = file.Get(m_url.Get(), xmlData);
+  httpSuccess = m_file.Get(m_url.Get(), xmlData);
 
   if (!httpSuccess)
   {
-    CLog::Log(LOGDEBUG, "CPlexCachedDirectoryFetchJob::DoWork failed to fetch data from %s: %ld", m_url.Get().c_str(), file.GetLastHTTPResponseCode());
-    if (file.GetLastHTTPResponseCode() == 500)
+    CLog::Log(LOGDEBUG, "CPlexCachedDirectoryFetchJob::DoWork failed to fetch data from %s: %ld",
+              m_url.Get().c_str(), m_file.GetLastHTTPResponseCode());
+    if (m_file.GetLastHTTPResponseCode() == 500)
     {
       /* internal server error, we should handle this .. */
     }
