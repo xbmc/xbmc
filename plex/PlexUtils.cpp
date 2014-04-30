@@ -817,6 +817,10 @@ string PlexUtils::GetPlexContent(const CFileItem &item)
   bool singleItem = (boost::starts_with(itemUrl.GetFileName(), "library/metadata") &&
                      !boost::ends_with(itemUrl.GetFileName(), "/children"));
 
+  // This is also a single item, from channels
+  if (boost::starts_with(itemUrl.GetFileName(), "system/services/url/lookup"))
+    singleItem = true;
+
   switch(item.GetPlexDirectoryType())
   {
     case PLEX_DIR_TYPE_MOVIE:
