@@ -47,7 +47,8 @@
 
   !define MUI_HEADERIMAGE
   !define MUI_ICON "..\..\tools\windows\packaging\media\xbmc.ico"
-  !define MUI_WELCOMEFINISHPAGE_BITMAP "xbmc-left.bmp"
+  !define MUI_HEADERIMAGE_BITMAP "..\..\tools\windows\packaging\media\installer\header.bmp"
+  !define MUI_WELCOMEFINISHPAGE_BITMAP "..\..\tools\windows\packaging\media\installer\welcome-left.bmp"
   !define MUI_COMPONENTSPAGE_SMALLDESC
   !define MUI_FINISHPAGE_LINK "Please visit http://xbmc.org for more information."
   !define MUI_FINISHPAGE_LINK_LOCATION "http://xbmc.org"
