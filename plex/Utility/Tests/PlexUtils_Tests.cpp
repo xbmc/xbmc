@@ -222,3 +222,19 @@ TEST(PlexUtilsGetPlexContent, singleItems)
   item.SetPlexDirectoryType(PLEX_DIR_TYPE_CLIP);
   EXPECT_EQ(PlexUtils::GetPlexContent(item), "clip");
 }
+
+TEST(PlexUtilsGetPlexContent, metadataChildren)
+{
+  CFileItem item;
+  item.SetPath("http://1.0.0.0:32400/library/metadata/1234/children");
+  item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
+  EXPECT_EQ(PlexUtils::GetPlexContent(item), "movies");
+}
+
+TEST(PlexUtilsGetPlexContent, channelItems)
+{
+  CFileItem item;
+  item.SetPath("http://1.0.0.0:32400/system/services/url/lookup?url=youtubesomething");
+  item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
+  EXPECT_EQ(PlexUtils::GetPlexContent(item), "movie");
+}
