@@ -39,6 +39,10 @@ bool CGUIWindowPlexPlayQueue::Update(const CStdString& strDirectory, bool update
   {
     if (PlexUtils::IsPlayingPlaylist() && g_application.CurrentFileItemPtr())
       m_viewControl.SetSelectedItem(g_application.CurrentFileItemPtr()->GetPath());
+
+    // since we call to plexserver://playqueue we need to rewrite that to the real
+    // current path.
+    m_startDirectory = CURL(m_vecItems->GetPath()).GetUrlWithoutOptions();
     return true;
   }
   return false;
