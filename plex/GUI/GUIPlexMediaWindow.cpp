@@ -45,6 +45,7 @@
 
 #include "LocalizeStrings.h"
 #include "DirectoryCache.h"
+#include "music/tags/MusicInfoTag.h"
 
 #define XMIN(a,b) ((a)<(b)?(a):(b))
 
@@ -1365,3 +1366,40 @@ bool CGUIPlexMediaWindow::CanFilterAdvanced()
   return false;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIPlexMediaWindow::MatchUniformProperty(const CStdString& property)
+{
+  if (property != "artist" && property != "album")
+    return false;
+
+  CStdString cacheKey = "__cached_up_" + property;
+  if (m_vecItems->HasProperty(cacheKey))
+    return m_vecItems->GetProperty(cacheKey).asBoolean();
+
+  bool same = true;
+  CStdString lastVal;
+  for (int i = 0; i < m_vecItems->Size(); i ++)
+  {
+    CFileItemPtr item = m_vecItems->Get(i);
+    CStdString value;
+
+    if (!item)
+      continue;
+
+    if (property == "artist")
+      value = item->GetMusicInfoTag()->GetArtist()[0];
+    else if (property == "album")
+      value = item->GetMusicInfoTag()->GetAlbum();
+
+    if (!lastVal.empty() && value != lastVal)
+    {
+      same = false;
+      break;
+    }
+
+    lastVal = value;
+  }
+
+  m_vecItems->SetProperty(cacheKey, same);
+  return same;
+}

@@ -43,6 +43,8 @@
 #define SORT_LABEL                   19019
 
 class PlexMediaWindowTests;
+class PlexMediaWindowUniformPropertyTests;
+
 class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public PlexContentPlayerMixin
 {    
   friend class PlexMediaWindowTests;
@@ -78,6 +80,7 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public 
     void PlayAllLocalPlaylist(bool shuffle, const CFileItemPtr &fromHere);
     bool MatchPlexContent(const CStdString& matchStr);
     bool MatchPlexFilter(const CStdString& matchStr);
+    bool MatchUniformProperty(const CStdString& property);
     CFileItemList* GetVecItems() const { return m_vecItems; }
     bool IsFiltered();
     bool CanFilterAdvanced();

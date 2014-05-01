@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "GUI/GUIPlexMediaWindow.h"
 #include "FileItem.h"
+#include "music/tags/MusicInfoTag.h"
 
 class PlexMediaWindowTests : public ::testing::Test
 {
@@ -76,4 +77,54 @@ TEST_F(PlexMediaWindowTests, matchPlexFilter_twoArgs)
 {
   mw->m_sectionFilter->setPrimaryFilter("onDeck");
   EXPECT_TRUE(mw->MatchPlexFilter("all; onDeck"));
+}
+
+class PlexMediaWindowUniformPropertyTest : public PlexMediaWindowTests
+{
+  void SetUp()
+  {
+    PlexMediaWindowTests::SetUp();
+
+    for (int i = 0; i < 10; i ++)
+    {
+      CFileItemPtr item = CFileItemPtr(new CFileItem);
+      item->GetMusicInfoTag()->SetAlbum("album");
+      item->GetMusicInfoTag()->SetArtist("artist");
+      mw->GetVecItems()->Add(item);
+    }
+  }
+};
+
+TEST_F(PlexMediaWindowUniformPropertyTest, sameAlbum)
+{
+  EXPECT_TRUE(mw->MatchUniformProperty("album"));
+}
+
+TEST_F(PlexMediaWindowUniformPropertyTest, notSameAlbum)
+{
+  CFileItemPtr item2 = CFileItemPtr(new CFileItem);
+  item2->GetMusicInfoTag()->SetAlbum("bar");
+  mw->GetVecItems()->Add(item2);
+
+  EXPECT_FALSE(mw->MatchUniformProperty("album"));
+}
+
+TEST_F(PlexMediaWindowUniformPropertyTest, sameArtist)
+{
+  EXPECT_TRUE(mw->MatchUniformProperty("artist"));
+}
+
+TEST_F(PlexMediaWindowUniformPropertyTest, notSameArtist)
+{
+  CFileItemPtr item2 = CFileItemPtr(new CFileItem);
+  item2->GetMusicInfoTag()->SetArtist("bar");
+  mw->GetVecItems()->Add(item2);
+
+  EXPECT_FALSE(mw->MatchUniformProperty("artist"));
+}
+
+TEST_F(PlexMediaWindowUniformPropertyTest, cachedAlbum)
+{
+  EXPECT_TRUE(mw->MatchUniformProperty("album"));
+  EXPECT_TRUE(mw->MatchUniformProperty("album"));
 }

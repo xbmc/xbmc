@@ -505,6 +505,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
                                   { "secondtitle",      CONTAINER_SECOND_TITLE },
                                   { "plexcontent",      CONTAINER_PLEXCONTENT },
                                   { "plexfilter",       CONTAINER_PLEXFILTER },
+                                  { "uniformproperty",  CONTAINER_UNIFORM_PROPERTY },
                                   /* END PLEX */
                                   { "content",          CONTAINER_CONTENT }};
 
@@ -3083,6 +3084,14 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           CGUIWindow* window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
           if (window)
             bReturn = ((CGUIPlexMediaWindow *)window)->MatchPlexFilter(match);
+        }
+        break;
+      case CONTAINER_UNIFORM_PROPERTY:
+        {
+          CStdString property = m_stringParameters[info.GetData2()];
+          CGUIWindow* window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+          if (window)
+            bReturn = ((CGUIPlexMediaWindow *)window)->MatchUniformProperty(property);
         }
         break;
      /* END PLEX */
