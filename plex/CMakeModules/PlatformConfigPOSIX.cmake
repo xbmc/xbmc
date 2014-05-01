@@ -10,7 +10,7 @@ if(CMAKE_C_COMPILER_ID STREQUAL "Clang")
 endif(CMAKE_C_COMPILER_ID STREQUAL "Clang")
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  set(DISABLED_WARNINGS "-Wno-reorder -Wno-sign-compare -Wno-unused-variable")
+  set(DISABLED_WARNINGS "-Wno-reorder -Wno-sign-compare -Wno-unused-variable -Wno-format")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   set(DISABLED_WARNINGS "-Wno-parentheses-equality -Wno-self-assign-field")
 endif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
