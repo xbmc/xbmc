@@ -815,6 +815,26 @@
 					<include>debugFont</include>
 					<label>Listitem.Property(Album_Type) : [COLOR=orangeLight]$INFO[Listitem.Property(Album_Type)][/COLOR]</label>
 				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.UniformProperty(Artist) :</label>
+					<visible>!Container.UniformProperty(Artist)</visible>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.UniformProperty(Artist) : [COLOR=orangeLight]true[/COLOR]</label>
+					<visible>Container.UniformProperty(Artist)</visible>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.UniformProperty(Album) :</label>
+					<visible>!Container.UniformProperty(Album)</visible>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.UniformProperty(Album) : [COLOR=orangeLight]true[/COLOR]</label>
+					<visible>Container.UniformProperty(Album)</visible>
+				</control>
 			</control>
 			<!-- HOME LISTS DEBUG -->
 			<control type="grouplist">
