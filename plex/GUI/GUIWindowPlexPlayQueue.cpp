@@ -88,3 +88,18 @@ bool CGUIWindowPlexPlayQueue::OnContextButton(int itemNumber, CONTEXT_BUTTON but
   }
   return true;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIWindowPlexPlayQueue::OnAction(const CAction &action)
+{
+  if (action.GetID() == ACTION_DELETE_ITEM)
+  {
+    int i = m_viewControl.GetSelectedItem();
+    CFileItemPtr item = m_vecItems->Get(i);
+    if (item && g_plexApplication.playQueueManager->current())
+      g_plexApplication.playQueueManager->current()->removeItem(item);
+    return true;
+  }
+
+  return CGUIPlexMediaWindow::OnAction(action);
+}
