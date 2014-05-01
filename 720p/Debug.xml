@@ -478,6 +478,10 @@
 				</control>
 				<control type="label">
 					<include>debugFont</include>
+					<label>ListItem.Property(index) : [COLOR=orangeLight]$INFO[ListItem.Property(index)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
 					<label/>
 				</control>
 				<!--><control type="label">
