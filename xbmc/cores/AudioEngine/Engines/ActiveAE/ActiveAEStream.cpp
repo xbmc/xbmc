@@ -58,6 +58,7 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat *format)
   m_forceResampler = false;
   m_remapper = NULL;
   m_remapBuffer = NULL;
+  m_streamResampleRatio = 1.0;
 }
 
 CActiveAEStream::~CActiveAEStream()
