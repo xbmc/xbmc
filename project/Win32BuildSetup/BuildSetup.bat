@@ -40,6 +40,7 @@ FOR %%b in (%1, %2, %3, %4, %5) DO (
 
 SET buildconfig=Release (DirectX)
 IF %target%==gl SET buildconfig=Release (OpenGL)
+set WORKSPACE=%CD%\..\..
 
 IF %comp%==vs2010 (
 	REM look for MSBuild.exe in .NET Framework 4.x
@@ -105,27 +106,50 @@ IF %comp%==vs2010 (
 
 :EXE_COMPILE
   IF EXIST buildlog.html del buildlog.html /q
-  IF %buildmode%==clean goto COMPILE_EXE
-  IF %buildmode%==noclean goto COMPILE_NO_CLEAN_EXE
+  IF NOT %buildmode%==ask goto COMPILE_MINGW
+  IF %promptlevel%==noprompt goto COMPILE_MINGW
   rem ---------------------------------------------
   rem	check for existing exe
   rem ---------------------------------------------
+  set buildmode=clean
   
-  IF EXIST %EXE% (
-    goto EXE_EXIST
-  )
-  goto COMPILE_EXE
-
-:EXE_EXIST
-  IF %promptlevel%==noprompt goto COMPILE_EXE
+  IF NOT EXIST %EXE% goto COMPILE_MINGW
+  
   ECHO ------------------------------------------------------------
   ECHO Found a previous Compiled WIN32 EXE!
   ECHO [1] a NEW EXE will be compiled for the BUILD_WIN32
   ECHO [2] existing EXE will be updated (quick mode compile) for the BUILD_WIN32
   ECHO ------------------------------------------------------------
   set /P XBMC_COMPILE_ANSWER=Compile a new EXE? [1/2]:
-  if /I %XBMC_COMPILE_ANSWER% EQU 1 goto COMPILE_EXE
-  if /I %XBMC_COMPILE_ANSWER% EQU 2 goto COMPILE_NO_CLEAN_EXE
+  if /I %XBMC_COMPILE_ANSWER% EQU 1 set buildmode=clean
+  if /I %XBMC_COMPILE_ANSWER% EQU 2 set buildmode=noclean
+
+  goto COMPILE_MINGW
+  
+
+:COMPILE_MINGW
+  ECHO Buildmode = %buildmode%
+  IF %buildmingwlibs%==true (
+    ECHO Compiling mingw libs
+    ECHO bla>noprompt
+    IF EXIST errormingw del errormingw > NUL
+	IF %buildmode%==clean (
+	  ECHO bla>makeclean
+	)
+    rem only use sh to please jenkins
+    IF %useshell%==sh (
+      call ..\..\tools\buildsteps\win32\make-mingwlibs.bat sh noprompt
+    ) ELSE (
+      call ..\..\tools\buildsteps\win32\make-mingwlibs.bat noprompt
+    )
+    IF EXIST errormingw (
+    	set DIETEXT="failed to build mingw libs"
+    	goto DIE
+    )
+  )
+  IF %buildmode%==clean goto COMPILE_EXE
+  goto COMPILE_NO_CLEAN_EXE
+  
   
 :COMPILE_EXE
   ECHO Wait while preparing the build.
@@ -163,25 +187,6 @@ IF %comp%==vs2010 (
   GOTO MAKE_BUILD_EXE
 
 :MAKE_BUILD_EXE
-  IF %buildmingwlibs%==true (
-    ECHO Compiling mingw libs
-    ECHO bla>noprompt
-    IF EXIST errormingw del errormingw > NUL
-	IF %buildmode%==clean (
-	  ECHO bla>makeclean
-	)
-    rem only use sh to please jenkins
-    IF %useshell%==sh (
-      call buildmingwlibs.bat sh
-    ) ELSE (
-      call buildmingwlibs.bat
-    )
-    IF EXIST errormingw (
-    	set DIETEXT="failed to build mingw libs"
-    	goto DIE
-    )
-  )
-  
   ECHO Copying files...
   IF EXIST BUILD_WIN32 rmdir BUILD_WIN32 /S /Q
   rem Add files to exclude.txt that should not be included in the installer
