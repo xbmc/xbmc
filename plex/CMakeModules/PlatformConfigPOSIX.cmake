@@ -9,9 +9,15 @@ if(CMAKE_C_COMPILER_ID STREQUAL "Clang")
   endif(CLANG_COLOR)
 endif(CMAKE_C_COMPILER_ID STREQUAL "Clang")
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  set(DISABLED_WARNINGS "-Wno-reorder -Wno-sign-compare -Wno-unused-variable")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  set(DISABLED_WARNINGS "-Wno-parentheses-equality -Wno-self-assign-field")
+endif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+
 if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pipe -Wno-parentheses-equality -Wno-self-assign-field")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -Wno-parentheses-equality -Wno-self-assign-field")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pipe ${DISABLED_WARNINGS}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe ${DISABLED_WARNINGS}")
 endif(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")  
 
 ############ Set global CFlags with the information from the subroutines
