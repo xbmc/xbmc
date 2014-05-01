@@ -48,7 +48,6 @@
 #include "android/activity/AndroidFeatures.h"
 #endif
 #include "Audio/DVDAudioCodecFFmpeg.h"
-#include "Audio/DVDAudioCodecLibMad.h"
 #include "Audio/DVDAudioCodecPcm.h"
 #include "Audio/DVDAudioCodecLPcm.h"
 #include "Audio/DVDAudioCodecPassthrough.h"
@@ -332,7 +331,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint)
   case AV_CODEC_ID_MP2:
   case AV_CODEC_ID_MP3:
     {
-      pCodec = OpenCodec( new CDVDAudioCodecLibMad(), hint, options );
+      pCodec = OpenCodec( new CDVDAudioCodecFFmpeg(), hint, options );
       if( pCodec ) return pCodec;
       break;
     }

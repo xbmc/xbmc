@@ -438,7 +438,6 @@ lib/cpluff/stamp-h1
 /system/players/dvdplayer/swscale-2.dll
 /system/players/dvdplayer/libbluray.dll
 /system/players/dvdplayer/libmpeg2-0.dll
-/system/players/dvdplayer/libmad.dll
 
 # /system/players/paplayer
 /system/players/paplayer/libmodplug.dll
@@ -871,23 +870,6 @@ lib/cpluff/stamp-h1
 /lib/libdvd/libdvdread/INSTALL
 /lib/libdvd/libdvdread/autom4te.cache
 /lib/libdvd/libdvdread/config.h.in~
-
-# /lib/libmad/
-/lib/libmad/config.h
-/lib/libmad/Makefile
-/lib/libmad/config.status
-/lib/libmad/libmad.list
-/lib/libmad/libtool
-/lib/libmad/config.log
-/lib/libmad/stamp-h1
-/lib/libmad/configure.lineno
-/lib/libmad/mad.h
-
-# /lib/libmad/msvc++/
-/lib/libmad/msvc++/Makefile
-/lib/libmad/msvc++/libmad.lib
-/lib/libmad/msvc++/Debug
-/lib/libmad/msvc++/Release
 
 # /lib/libmpeg2/
 /lib/libmpeg2/config.log

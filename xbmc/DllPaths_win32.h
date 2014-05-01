@@ -38,7 +38,6 @@
 #define DLL_PATH_ADPCM_CODEC   "special://xbmcbin/system/players/paplayer/adpcm.dll"
 #define DLL_PATH_ASAP_CODEC    "special://xbmcbin/system/players/paplayer/xbmc_asap.dll"
 #define DLL_PATH_FLAC_CODEC    "special://xbmcbin/system/players/paplayer/libFLAC.dll"
-#define DLL_PATH_MAD_CODEC     "special://xbmcbin/system/players/dvdplayer/libmad.dll"
 #define DLL_PATH_MID_CODEC     "special://xbmcbin/system/players/paplayer/timidity.dll"
 #define DLL_PATH_NSF_CODEC     "special://xbmcbin/system/players/paplayer/nosefart.dll"
 #define DLL_PATH_OGG_CODEC     "special://xbmcbin/system/players/paplayer/vorbisfile.dll"
@@ -50,7 +49,6 @@
 
 /* dvdplayer */
 #define DLL_PATH_LIBASS        "special://xbmcbin/system/players/dvdplayer/libass.dll"
-#define DLL_PATH_LIBMAD        "special://xbmcbin/system/players/dvdplayer/libmad.dll"
 #define DLL_PATH_LIBMPEG2      "special://xbmcbin/system/players/dvdplayer/libmpeg2-0.dll"
 #define DLL_PATH_LIBDVDNAV     "special://xbmcbin/system/players/dvdplayer/libdvdnav.dll"
 #define DLL_PATH_LIBCRYSTALHD  "special://xbmcbin/system/players/dvdplayer/bcmDIL.dll"

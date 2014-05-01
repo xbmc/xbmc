@@ -20,7 +20,6 @@
 
 #include "system.h"
 #include "CodecFactory.h"
-#include "MP3codec.h"
 #include "OGGcodec.h"
 #include "ModplugCodec.h"
 #include "NSFCodec.h"
@@ -42,7 +41,7 @@
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
   if (strFileType.Equals("mp3") || strFileType.Equals("mp2"))
-    return new MP3Codec();
+    return new DVDPlayerCodec();
   else if (strFileType.Equals("pcm") || strFileType.Equals("l16"))
     return new PCMCodec();
   else if (strFileType.Equals("ape") || strFileType.Equals("mac"))
@@ -118,7 +117,11 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   if( strContent.Equals("audio/mpeg")
   ||  strContent.Equals("audio/mpeg3")
   ||  strContent.Equals("audio/mp3") )
-    return new MP3Codec();
+  {
+    DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
+    dvdcodec->SetContentType(strContent);
+    return dvdcodec;
+  }
   else if (StringUtils::StartsWithNoCase(strContent, "audio/l16"))
   {
     PCMCodec * pcm_codec = new PCMCodec();
@@ -152,7 +155,9 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
 
   if (urlFile.GetProtocol() == "shout")
   {
-    return new MP3Codec(); // if we got this far with internet radio - content-type was wrong. gamble on mp3.
+    DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
+    dvdcodec->SetContentType("audio/mp3");
+    return dvdcodec; // if we got this far with internet radio - content-type was wrong. gamble on mp3.
   }
 
   if (urlFile.GetFileType().Equals("wav") || strContent.Equals("audio/wav") || strContent.Equals("audio/x-wav"))

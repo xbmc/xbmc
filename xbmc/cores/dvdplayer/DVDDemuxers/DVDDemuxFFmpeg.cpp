@@ -358,12 +358,22 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
     m_pFormatContext->pb = m_ioContext;
 
-    if (avformat_open_input(&m_pFormatContext, strFile.c_str(), iformat, NULL) < 0)
+    AVDictionary *options = NULL;
+    if(strcmp(iformat->name, "mp3") == 0
+      || strcmp(iformat->name, "mp2") == 0 )
+    {
+      CLog::Log(LOGDEBUG, "%s - setting usetoc to 0 for accurate VBR MP3 seek", __FUNCTION__);
+      av_dict_set(&options, "usetoc", "0", 0);
+    }
+
+    if (avformat_open_input(&m_pFormatContext, strFile.c_str(), iformat, &options) < 0)
     {
       CLog::Log(LOGERROR, "%s - Error, could not open file %s", __FUNCTION__, CURL::GetRedacted(strFile).c_str());
       Dispose();
+      av_dict_free(&options);
       return false;
     }
+    av_dict_free(&options);
   }
 
   // Avoid detecting framerate if advancedsettings.xml says so
