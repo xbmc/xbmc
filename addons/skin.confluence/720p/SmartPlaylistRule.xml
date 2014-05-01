@@ -124,7 +124,7 @@
 				<shadowcolor>black</shadowcolor>
 			</control>
 		</control>
-		<control type="button" id="17">
+		<control type="edit" id="17">
 			<description>Value Button</description>
 			<left>30</left>
 			<top>145</top>

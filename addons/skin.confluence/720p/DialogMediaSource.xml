@@ -212,7 +212,7 @@
 			<textcolor>blue</textcolor>
 			<shadowcolor>black</shadowcolor>
 		</control>
-		<control type="button" id="12">
+		<control type="edit" id="12">
 			<description>Name Button</description>
 			<left>30</left>
 			<top>370</top>
