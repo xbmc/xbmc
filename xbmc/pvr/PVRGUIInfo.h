@@ -160,6 +160,8 @@ namespace PVR
     bool                            m_bIsPlayingRadio;
     bool                            m_bIsPlayingRecording;
     bool                            m_bIsPlayingEncryptedStream;
+    bool                            m_bHasTVChannels;
+    bool                            m_bHasRadioChannels;
     //@}
 
     PVR_SIGNAL_STATUS               m_qualityInfo;       /*!< stream quality information */

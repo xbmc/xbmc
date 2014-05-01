@@ -1,3 +1,8 @@
+[B]2.3.0[/B]
+
+- Set minimum GUI version to 5.1.0
+- Separate Live TV window into TV and Radio window 
+
 [B]2.2.14[/B]
 
 - Updated language files from Transifex

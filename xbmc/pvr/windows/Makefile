@@ -1,5 +1,7 @@
 SRCS=GUIViewStatePVR.cpp \
      GUIWindowPVR.cpp \
+     GUIWindowTV.cpp \
+     GUIWindowRadio.cpp \
      GUIWindowPVRChannels.cpp \
      GUIWindowPVRCommon.cpp \
      GUIWindowPVRGuide.cpp \

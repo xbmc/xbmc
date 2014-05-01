@@ -872,6 +872,8 @@
     <ClCompile Include="..\..\xbmc\pvr\timers\PVRTimers.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\windows\GUIViewStatePVR.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVR.cpp" />
+    <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowTV.cpp" />
+    <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowRadio.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVRChannels.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVRCommon.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVRGuide.cpp" />
@@ -2323,6 +2325,8 @@
     <ClInclude Include="..\..\xbmc\pvr\timers\PVRTimers.h" />
     <ClInclude Include="..\..\xbmc\pvr\windows\GUIViewStatePVR.h" />
     <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVR.h" />
+    <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowTV.h" />
+    <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowRadio.h" />
     <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRChannels.h" />
     <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRCommon.h" />
     <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRGuide.h" />

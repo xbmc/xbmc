@@ -125,8 +125,8 @@ void CGUIViewControl::SetCurrentView(int viewMode, bool bRefresh /* = false */)
     g_windowManager.SendMessage(msg, m_parentWindow);
   }
 
-  // Update our view control only if we are not in the TV Window
-  if (m_parentWindow != WINDOW_PVR)
+  // Update our view control only if we are not in the pvr window
+  if (m_parentWindow != WINDOW_TV || m_parentWindow != WINDOW_RADIO)
     UpdateViewAsControl(((IGUIContainer *)pNewView)->GetLabel());
 }
 

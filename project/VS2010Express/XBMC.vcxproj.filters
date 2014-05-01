@@ -1747,6 +1747,12 @@
     <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVR.cpp">
       <Filter>pvr\windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowTV.cpp">
+      <Filter>pvr\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowRadio.cpp">
+      <Filter>pvr\windows</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\timers\PVRTimerInfoTag.cpp">
       <Filter>pvr\timers</Filter>
     </ClCompile>
@@ -4796,6 +4802,12 @@
     </ClInclude>
     <ClInclude Include="..\..\lib\ffmpeg\include-xbmc-win32\libavutil\avconfig.h" />
     <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVR.h">
+      <Filter>pvr\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowTV.h">
+      <Filter>pvr\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowRadio.h">
       <Filter>pvr\windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\timers\PVRTimers.h">

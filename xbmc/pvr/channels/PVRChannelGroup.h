@@ -320,6 +320,12 @@ namespace PVR
      * @return The amount of hidden channels in this container.
      */
     virtual int GetNumHiddenChannels(void) const { return 0; }
+    
+    /*!
+     * @brief The amount of channels in this container.
+     * @return The amount of channels in this container.
+     */
+    int GetNumChannels(void) const;
 
     /*!
      * @return True if there is at least one channel in this group with changes that haven't been persisted, false otherwise.

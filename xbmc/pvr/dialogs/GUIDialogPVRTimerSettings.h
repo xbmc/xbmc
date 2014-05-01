@@ -42,7 +42,7 @@ namespace PVR
     virtual void OnSettingChanged(SettingInfo &setting);
     virtual void OnOkay();
     virtual void OnCancel() { m_cancelled = true; }
-    virtual void AddChannelNames(CFileItemList &channelsList, SETTINGSTRINGS &channelNames, bool bRadio);
+    virtual void AddChannelNames(bool bRadio);
     virtual void SetWeekdaySettingFromTimer(const CPVRTimerInfoTag &timer);
     virtual void SetTimerFromWeekdaySetting(CPVRTimerInfoTag &timer);
 
@@ -54,7 +54,7 @@ namespace PVR
     int                                 m_tmp_day;
     bool                                m_bTimerActive;
     int                                 m_selectedChannelEntry;
-    std::map<std::pair<bool, int>, int> m_channelEntries;
+    std::map<int, int>                  m_channelEntries;
 
     CFileItem                          *m_timerItem;
     bool                                m_cancelled;

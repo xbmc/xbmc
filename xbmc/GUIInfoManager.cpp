@@ -627,6 +627,8 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 
 const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING },
                                   { "hastimer",                 PVR_HAS_TIMER },
+                                  { "hastvchannels",            PVR_HAS_TV_CHANNELS },
+                                  { "hasradiochannels",         PVR_HAS_RADIO_CHANNELS },
                                   { "hasnonrecordingtimer",     PVR_HAS_NONRECORDING_TIMER },
                                   { "nowrecordingtitle",        PVR_NOW_RECORDING_TITLE },
                                   { "nowrecordingdatetime",     PVR_NOW_RECORDING_DATETIME },

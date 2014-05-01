@@ -30,6 +30,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "GUIWindowPVR.h"
 #include "threads/SingleLock.h"
+#include "utils/StringUtils.h"
 
 using namespace PVR;
 
@@ -110,7 +111,7 @@ void CGUIWindowPVRTimers::UpdateData(bool bUpdateSelectedFile /* = true */)
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
   ShowBusyItem();
   m_parent->m_vecItems->Clear();
-  m_parent->m_vecItems->SetPath("pvr://timers/");
+  m_parent->m_vecItems->SetPath(StringUtils::Format("pvr://timers/%s/", m_parent->IsRadio() ? "radio" : "tv"));
   m_parent->Update(m_parent->m_vecItems->GetPath());
   m_parent->m_vecItems->Sort(m_iSortMethod, m_iSortOrder, m_iSortAttributes);
   m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
@@ -124,9 +125,9 @@ void CGUIWindowPVRTimers::UpdateData(bool bUpdateSelectedFile /* = true */)
 
 bool CGUIWindowPVRTimers::OnClickButton(CGUIMessage &message)
 {
-  bool bReturn = false;
+  bool bReturn = CGUIWindowPVRCommon::OnClickButton(message);
 
-  if (IsSelectedButton(message))
+  if (!bReturn && IsSelectedButton(message))
   {
     bReturn = true;
     g_PVRManager.TriggerTimersUpdate();

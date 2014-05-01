@@ -155,9 +155,9 @@ void CGUIWindowPVRSearch::UpdateData(bool bUpdateSelectedFile /* = true */)
 
 bool CGUIWindowPVRSearch::OnClickButton(CGUIMessage &message)
 {
-  bool bReturn = false;
+  bool bReturn = CGUIWindowPVRCommon::OnClickButton(message);
 
-  if (IsSelectedButton(message))
+  if (!bReturn && IsSelectedButton(message))
   {
     bReturn = true;
     ShowSearchResults();
@@ -265,7 +265,7 @@ bool CGUIWindowPVRSearch::ActionShowSearch(CFileItem *item)
 
 void CGUIWindowPVRSearch::ShowSearchResults()
 {
-  /* Load timer settings dialog */
+  /* Load search dialog */
   CGUIDialogPVRGuideSearch* pDlgInfo = (CGUIDialogPVRGuideSearch*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_SEARCH);
 
   if (!pDlgInfo)
@@ -279,6 +279,9 @@ void CGUIWindowPVRSearch::ShowSearchResults()
 
   pDlgInfo->SetFilterData(&m_searchfilter);
 
+  /* Set channel type filter */
+  m_searchfilter.m_bIsRadio = m_parent->IsRadio();
+
   /* Open dialog window */
   pDlgInfo->DoModal();
 
@@ -287,4 +290,16 @@ void CGUIWindowPVRSearch::ShowSearchResults()
     m_bSearchConfirmed = true;
     UpdateData();
   }
+}
+
+void CGUIWindowPVRSearch::UnregisterObservers(void)
+{
+}
+
+void CGUIWindowPVRSearch::ResetObservers(void)
+{
+}
+
+void CGUIWindowPVRSearch::Notify(const Observable &obs, const ObservableMessage msg)
+{
 }

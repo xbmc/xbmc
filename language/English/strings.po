@@ -7354,7 +7354,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
 msgctxt "#19017"
-msgid "TV recordings"
+msgid "Recordings"
 msgstr ""
 
 #. Name of a setting, asking to enter the path to a folder that contains icons for TV channels
@@ -7715,7 +7715,9 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr ""
 
-#empty string with id 19103
+msgctxt "#19103"
+msgid "Please select a channel"
+msgstr ""
 
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
@@ -8038,7 +8040,12 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr ""
 
-#empty string with id 19183
+#: system/settings/settings.xml
+msgctxt "#19183"
+msgid "Radio"
+msgstr ""
+
+#empty string with id 19184
 
 #: system/settings/settings.xml
 msgctxt "#19184"
@@ -8491,7 +8498,13 @@ msgctxt "#19285"
 msgid "Browse for icon"
 msgstr ""
 
-#empty strings from id 19286 to 19498
+#. Label for the default pvr channel group
+#: xbmc/pvr/windows/GUIWindowPVRCommon.cpp
+msgctxt "#19286"
+msgid "All channels"
+msgstr ""
+
+#empty strings from id 19287 to 19498
 
 #: xbmc/epg/Epg.cpp
 msgctxt "#19499"

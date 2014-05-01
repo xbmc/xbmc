@@ -23,7 +23,6 @@
 #include "GUIWindowPVRCommon.h"
 #include "epg/GUIEPGGridContainer.h"
 #include "threads/CriticalSection.h"
-#include "utils/Observer.h"
 #include "../channels/PVRChannelGroup.h"
 
 class CSetting;
@@ -40,7 +39,7 @@ namespace PVR
 
   class CGUIWindowPVR;
 
-  class CGUIWindowPVRGuide : public CGUIWindowPVRCommon, public Observer
+  class CGUIWindowPVRGuide : public CGUIWindowPVRCommon
   {
     friend class CGUIWindowPVR;
 
@@ -79,8 +78,8 @@ namespace PVR
     void UpdateViewNext(bool bUpdateSelectedFile);
     void UpdateViewTimeline(bool bUpdateSelectedFile);
 
-    int               m_iGuideView;
-    CFileItemList    *m_cachedTimeline;
+    int                 m_iGuideView;
+    CFileItemList      *m_cachedTimeline;
     CPVRChannelGroupPtr m_cachedChannelGroup;
   };
 }

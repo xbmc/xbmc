@@ -1271,6 +1271,11 @@ bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool b
   return true;
 }
 
+int CPVRChannelGroup::GetNumChannels() const
+{
+  return m_members.size();
+}
+
 bool CPVRChannelGroup::ToggleChannelLocked(const CFileItem &item)
 {
   if (!item.HasPVRChannelInfoTag())

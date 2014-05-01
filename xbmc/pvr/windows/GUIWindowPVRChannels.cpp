@@ -45,14 +45,10 @@
 using namespace PVR;
 using namespace EPG;
 
-CGUIWindowPVRChannels::CGUIWindowPVRChannels(CGUIWindowPVR *parent, bool bRadio) :
-  CGUIWindowPVRCommon(parent,
-                      bRadio ? PVR_WINDOW_CHANNELS_RADIO : PVR_WINDOW_CHANNELS_TV,
-                      bRadio ? CONTROL_BTNCHANNELS_RADIO : CONTROL_BTNCHANNELS_TV,
-                      bRadio ? CONTROL_LIST_CHANNELS_RADIO: CONTROL_LIST_CHANNELS_TV)
+CGUIWindowPVRChannels::CGUIWindowPVRChannels(CGUIWindowPVR *parent) :
+  CGUIWindowPVRCommon(parent, PVR_WINDOW_CHANNELS, CONTROL_BTNCHANNELS, CONTROL_LIST_CHANNELS)
+                     
 {
-  m_bRadio              = bRadio;
-  m_bShowHiddenChannels = false;
 }
 
 CGUIWindowPVRChannels::~CGUIWindowPVRChannels(void)
@@ -136,26 +132,6 @@ bool CGUIWindowPVRChannels::OnContextButton(int itemNumber, CONTEXT_BUTTON butto
       CGUIWindowPVRCommon::OnContextButton(itemNumber, button);
 }
 
-CPVRChannelGroupPtr CGUIWindowPVRChannels::SelectedGroup(void)
-{
-  if (!m_selectedGroup)
-    SetSelectedGroup(g_PVRManager.GetPlayingGroup(m_bRadio));
-
-  return m_selectedGroup;
-}
-
-void CGUIWindowPVRChannels::SetSelectedGroup(CPVRChannelGroupPtr group)
-{
-  if (!group)
-    return;
-
-  if (m_selectedGroup)
-    m_selectedGroup->UnregisterObserver(this);
-  m_selectedGroup = group;
-  m_selectedGroup->RegisterObserver(this);
-  g_PVRManager.SetPlayingGroup(m_selectedGroup);
-}
-
 void CGUIWindowPVRChannels::Notify(const Observable &obs, const ObservableMessage msg)
 {
   if (msg == ObservableMessageChannelGroup || msg == ObservableMessageTimers || msg == ObservableMessageEpgActiveItem || msg == ObservableMessageCurrentItem)
@@ -174,27 +150,6 @@ void CGUIWindowPVRChannels::Notify(const Observable &obs, const ObservableMessag
   }
 }
 
-CPVRChannelGroupPtr CGUIWindowPVRChannels::SelectNextGroup(void)
-{
-  CPVRChannelGroupPtr currentGroup = SelectedGroup();
-  CPVRChannelGroupPtr nextGroup = currentGroup->GetNextGroup();
-  while (nextGroup && nextGroup->Size() == 0 &&
-      // break if the group matches
-      *nextGroup != *currentGroup &&
-      // or if we hit the first group
-      !nextGroup->IsInternalGroup())
-    nextGroup = nextGroup->GetNextGroup();
-
-  /* always update so users can reset the list */
-  if (nextGroup)
-  {
-    SetSelectedGroup(nextGroup);
-    UpdateData();
-  }
-
-  return m_selectedGroup;
-}
-
 void CGUIWindowPVRChannels::UpdateData(bool bUpdateSelectedFile /* = true */)
 {
   CSingleLock lock(m_critSection);
@@ -205,8 +160,6 @@ void CGUIWindowPVRChannels::UpdateData(bool bUpdateSelectedFile /* = true */)
   /* lock the graphics context while updating */
   CSingleLock graphicsLock(g_graphicsContext);
 
-  CPVRChannelGroupPtr selectedGroup = SelectedGroup();
-
   if (!bUpdateSelectedFile)
     m_iSelected = m_parent->m_viewControl.GetSelectedItem();
   else
@@ -216,16 +169,12 @@ void CGUIWindowPVRChannels::UpdateData(bool bUpdateSelectedFile /* = true */)
   ShowBusyItem();
   m_parent->m_vecItems->Clear();
 
-  CPVRChannelGroupPtr currentGroup = g_PVRManager.GetPlayingGroup(m_bRadio);
-  if (!currentGroup)
-    return;
-
-  SetSelectedGroup(currentGroup);
-
+  CPVRChannelGroupPtr group = m_parent->GetSelectedGroup();
+  
   CStdString strPath;
   strPath = StringUtils::Format("pvr://channels/%s/%s/",
-      m_bRadio ? "radio" : "tv",
-      m_bShowHiddenChannels ? ".hidden" : currentGroup->GroupName().c_str());
+      m_parent->IsRadio() ? "radio" : "tv",
+      m_bShowHiddenChannels ? ".hidden" : group->GroupName().c_str());
 
   m_parent->m_vecItems->SetPath(strPath);
   m_parent->Update(m_parent->m_vecItems->GetPath());
@@ -250,28 +199,24 @@ void CGUIWindowPVRChannels::UpdateData(bool bUpdateSelectedFile /* = true */)
       UpdateData(bUpdateSelectedFile);
       return;
     }
-    else if (currentGroup->GroupID() > 0)
-    {
-      if (*currentGroup != *SelectNextGroup())
-        return;
-    }
   }
 
-  m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(m_bRadio ? 19024 : 19023));
-  if (m_bShowHiddenChannels)
-    m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19022));
-  else
-    m_parent->SetLabel(CONTROL_LABELGROUP, currentGroup->GroupName());
+  m_parent->SetLabel(CONTROL_LABELHEADER, m_bShowHiddenChannels ? g_localizeStrings.Get(19022) : m_parent->GetSelectedGroup()->GroupName());
+  m_parent->SetLabel(CONTROL_LABELGROUP, "");
+  
+  UpdateButtons();
 }
 
 bool CGUIWindowPVRChannels::OnClickButton(CGUIMessage &message)
 {
-  bool bReturn = false;
+  bool bReturn = CGUIWindowPVRCommon::OnClickButton(message);
 
-  if (IsSelectedButton(message))
+  if (!bReturn && IsSelectedButton(message))
   {
+    m_parent->SetRadio(!m_parent->IsRadio());
+    m_parent->SetSelectedGroup(g_PVRManager.GetPlayingGroup(m_parent->IsRadio()));
+    UpdateData();
     bReturn = true;
-    SelectNextGroup();
   }
 
   return bReturn;
@@ -340,7 +285,7 @@ bool CGUIWindowPVRChannels::OnContextButtonHide(CFileItem *item, CONTEXT_BUTTON 
   if (button == CONTEXT_BUTTON_HIDE)
   {
     CPVRChannel *channel = item->GetPVRChannelInfoTag();
-    if (!channel || channel->IsRadio() != m_bRadio)
+    if (!channel || channel->IsRadio() != m_parent->IsRadio())
       return bReturn;
 
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -356,7 +301,7 @@ bool CGUIWindowPVRChannels::OnContextButtonHide(CFileItem *item, CONTEXT_BUTTON 
     if (!pDialog->IsConfirmed())
       return bReturn;
 
-    g_PVRManager.GetPlayingGroup(m_bRadio)->RemoveFromGroup(*channel);
+    g_PVRManager.GetPlayingGroup(m_parent->IsRadio())->RemoveFromGroup(*channel);
     UpdateData();
 
     bReturn = true;
@@ -375,7 +320,7 @@ bool CGUIWindowPVRChannels::OnContextButtonLock(CFileItem *item, CONTEXT_BUTTON 
     if (!g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262).c_str()))
       return bReturn;
 
-    CPVRChannelGroupPtr group = g_PVRChannelGroups->GetGroupAll(m_bRadio);
+    CPVRChannelGroupPtr group = g_PVRChannelGroups->GetGroupAll(m_parent->IsRadio());
     if (!group)
       return bReturn;
 
@@ -408,7 +353,7 @@ bool CGUIWindowPVRChannels::OnContextButtonMove(CFileItem *item, CONTEXT_BUTTON 
   if (button == CONTEXT_BUTTON_MOVE)
   {
     CPVRChannel *channel = item->GetPVRChannelInfoTag();
-    if (!channel || channel->IsRadio() != m_bRadio)
+    if (!channel || channel->IsRadio() != m_parent->IsRadio())
       return bReturn;
 
     CStdString strIndex;
@@ -594,7 +539,7 @@ void CGUIWindowPVRChannels::ShowGroupManager(void)
   if (!pDlgInfo)
     return;
 
-  pDlgInfo->SetRadio(m_bRadio);
+  pDlgInfo->SetRadio(m_parent->IsRadio());
   pDlgInfo->DoModal();
 
   return;
