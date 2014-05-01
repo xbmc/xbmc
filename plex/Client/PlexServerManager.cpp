@@ -17,6 +17,7 @@
 
 #include "PlexApplication.h"
 #include "PlexServerCacheDatabase.h"
+#include "ApplicationMessenger.h"
 
 using namespace std;
 
@@ -161,6 +162,8 @@ void CPlexServerManager::UpdateFromConnectionType(PlexServerList servers, int co
 
   ServerRefreshComplete(connectionType);
   UpdateReachability();
+  lk.unlock();
+
   save();
 }
 
@@ -327,13 +330,7 @@ void CPlexServerManager::NotifyAboutServer(CPlexServerPtr server, bool added)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexServerManager::save()
 {
-  CSingleLock lk(m_serverManagerLock);
-  CPlexServerCacheDatabase db;
-  if (db.Open())
-  {
-    db.cacheServers();
-    db.Close();
-  }
+  CApplicationMessenger::Get().PlexSaveServerCache();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

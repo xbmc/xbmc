@@ -69,6 +69,7 @@
 /* PLEX */
 #include "PlexApplication.h"
 #include "Playlists/PlexPlayQueueManager.h"
+#include "Client/PlexServerCacheDatabase.h"
 /* END PLEX */
 
 using namespace PVR;
@@ -836,6 +837,15 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
                                                            (bool)pMsg->dwParam2);
       break;
     }
+    case TMSG_PLEX_SAVE_SERVER_CACHE:
+    {
+      CPlexServerCacheDatabase db;
+      if (db.Open())
+      {
+        db.cacheServers();
+        db.Close();
+      }
+    }
     /* END PLEX */
 
   }
@@ -1356,4 +1366,11 @@ void CApplicationMessenger::PictureSlideShow(string pathname, bool addTBN, const
   tMsg.params.push_back(index);
   SendMessage(tMsg);
 }
+
+void CApplicationMessenger::PlexSaveServerCache()
+{
+  ThreadMessage tMsg = {TMSG_PLEX_SAVE_SERVER_CACHE};
+  SendMessage(tMsg, true);
+}
+
 /* END PLEX */

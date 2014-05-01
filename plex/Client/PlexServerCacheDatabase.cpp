@@ -201,6 +201,9 @@ bool CPlexServerCacheDatabase::cacheServers()
 {
   PlexServerList servers = g_plexApplication.serverManager->GetAllServers();
 
+  if (m_pDB.get() == NULL) return false;
+  if (m_pDS.get() == NULL) return false;
+
   BeginTransaction();
 
   clearTables();

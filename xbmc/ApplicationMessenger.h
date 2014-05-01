@@ -252,6 +252,7 @@ public:
   void RestartWithNewPlayer(CGUIDialogCache* dlg, const std::string& newURL);
   void PlexUpdatePlayQueue(ePlexMediaType type, bool startPlaying);
   void PictureSlideShow(std::string pathname, bool addTBN, const std::string &index);
+  void PlexSaveServerCache();
   /* END PLEX */
 
   virtual ~CApplicationMessenger();

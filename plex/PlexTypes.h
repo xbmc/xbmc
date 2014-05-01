@@ -202,6 +202,7 @@ class CMusicThumbLoader;
 #define TMSG_MEDIA_RESTART_WITH_NEW_PLAYER 2000
 #define TMSG_HIDE                          2001
 #define TMSG_PLEX_PLAY_QUEUE_UPDATED       2002
+#define TMSG_PLEX_SAVE_SERVER_CACHE        2003
 
 #define CONF_FLAGS_RGB           0x20
 
