@@ -503,11 +503,11 @@
 					<orientation>vertical</orientation>
 					<posx>28</posx>
 					<posy>28</posy>
-					<animation effect="slide" start="0" end="70" time="0" condition="ListItem.Type(album)">Conditional</animation>
+					<animation effect="slide" start="0" end="74" time="400" condition="ListItem.Type(song)">Conditional</animation>
 					<width>1200</width>
 					<height>660</height>
-					<!-- albu -->
-					<itemlayout width="144" height="164" condition="ListItem.Type(album)">
+					<!-- album -->
+					<itemlayout width="144" height="164" condition="ListItem.Type(song) | ListItem.Type(album)">
 						<include>PhotoThumbCard</include>
 						<include>ChannelContentThumb</include>
 						<control type="label">
@@ -515,7 +515,7 @@
 							<textcolor>white</textcolor>
 						</control>
 					</itemlayout>
-					<focusedlayout width="144" height="164" condition="ListItem.Type(album)">
+					<focusedlayout width="144" height="164" condition="ListItem.Type(song) | ListItem.Type(album)">
 						<include>PhotoThumbCard</include>
 						<include>ChannelContentThumb</include>
 						<control type="label">
