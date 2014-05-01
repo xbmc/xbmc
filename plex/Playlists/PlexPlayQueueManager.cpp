@@ -10,6 +10,7 @@
 #include "PlexPlayQueueLocal.h"
 #include "settings/GUISettings.h"
 #include "guilib/GUIWindowManager.h"
+#include "music/tags/MusicInfoTag.h"
 
 using namespace PLAYLIST;
 
@@ -70,11 +71,12 @@ void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool st
     return;
 
   int selectedOffset;
+  bool hasChanged = false;
 
   if (g_playlistPlayer.GetCurrentPlaylist() == playlist && playlistItem &&
       playlistItem->GetProperty("playQueueID").asInteger() == pqID)
   {
-    reconcilePlayQueueChanges(type, list);
+    hasChanged = reconcilePlayQueueChanges(type, list);
   }
   else
   {
@@ -82,6 +84,7 @@ void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool st
     //CApplicationMessenger::Get().MediaStop(true);
     g_playlistPlayer.ClearPlaylist(playlist);
     g_playlistPlayer.Add(playlist, list);
+    hasChanged = true;
 
     saveCurrentPlayQueue(m_currentImpl->server(), list);
 
@@ -90,8 +93,11 @@ void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool st
               type);
   }
 
-  CGUIMessage msg(GUI_MSG_PLEX_PLAYQUEUE_UPDATED, PLEX_PLAYQUEUE_MANAGER, 0);
-  g_windowManager.SendThreadMessage(msg);
+  if (hasChanged)
+  {
+    CGUIMessage msg(GUI_MSG_PLEX_PLAYQUEUE_UPDATED, PLEX_PLAYQUEUE_MANAGER, 0);
+    g_windowManager.SendThreadMessage(msg);
+  }
 
   if (startPlaying)
   {
@@ -168,18 +174,18 @@ bool CPlexPlayQueueManager::reconcilePlayQueueChanges(int playlistType, const CF
 
   while (true)
   {
-    CStdString playlistPath;
+    int listItemId = -1;
     if (playlistCursor < playlist.size())
-      playlistPath = playlist[playlistCursor]->GetProperty("unprocessed_key").asString();
+      listItemId = playlist[playlistCursor]->GetMusicInfoTag()->GetDatabaseId();
 
     if (listCursor >= list.Size())
       break;
 
-    CStdString listPath = list.Get(listCursor)->GetProperty("unprocessed_key").asString();
+    int serverItemId = list.Get(listCursor)->GetMusicInfoTag()->GetDatabaseId();
 
-    if (!firstCommon && !playlistPath.empty())
+    if (!firstCommon && listItemId != -1)
     {
-      if (playlistPath == listPath)
+      if (listItemId == serverItemId)
       {
         firstCommon = true;
         listCursor++;
@@ -200,11 +206,11 @@ bool CPlexPlayQueueManager::reconcilePlayQueueChanges(int playlistType, const CF
         continue;
       }
     }
-    else if (playlistPath.empty())
+    else if (listItemId == -1)
     {
       CLog::Log(LOGDEBUG,
-                "CPlexPlayQueueManager::reconcilePlayQueueChanges adding item %s to playlist %d",
-                listPath.c_str(), playlistType);
+                "CPlexPlayQueueManager::reconcilePlayQueueChanges adding item %d to playlist %d",
+                serverItemId, playlistType);
 
       g_playlistPlayer.Add(playlistType, list.Get(listCursor));
       // add it to the local copy just to make sure they match up.
@@ -213,8 +219,13 @@ bool CPlexPlayQueueManager::reconcilePlayQueueChanges(int playlistType, const CF
       hasChanged = true;
       listCursor++;
     }
-    else if (playlistPath == listPath)
+    else if (listItemId == serverItemId)
     {
+      // we will update the current item with new properties
+      // because for example index might change after a update.
+      playlist[playlistCursor]->ClearProperties();
+      playlist[playlistCursor]->AppendProperties(*(list.Get(listCursor)));
+
       listCursor++;
     }
     else

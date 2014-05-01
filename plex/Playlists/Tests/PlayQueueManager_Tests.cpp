@@ -7,6 +7,7 @@
 
 #include "PlayListPlayer.h"
 #include "Tests/PlexTestUtils.h"
+#include "music/tags/MusicInfoTag.h"
 
 static const CFileItem& getURIItem()
 {
@@ -105,24 +106,24 @@ TEST_F(PlayQueueManagerTest, GetPlaylistFromString_basic)
 
 #define newItem(list, a)                                                                           \
   {                                                                                                \
-    CFileItemPtr item = CFileItemPtr(new CFileItem(a));                                            \
-    item->SetProperty("unprocessed_key", a);                                                       \
+    CFileItemPtr item = CFileItemPtr(new CFileItem());                                            \
+    item->GetMusicInfoTag()->SetDatabaseId(a, "song");                                                     \
     list.Add(item);                                                                                \
   }
 
 TEST_F(PlayQueueManagerTest, ReconcilePlayQueueChanges_basic)
 {
   CFileItemList list;
-  newItem(list, "1");
-  newItem(list, "2");
-  newItem(list, "3");
+  newItem(list, 1);
+  newItem(list, 2);
+  newItem(list, 3);
 
   g_playlistPlayer.Add(PLAYLIST_VIDEO, list);
 
   // simulate a sliding window
   // our list is now 2, 3, 4
   list.Remove(0);
-  newItem(list, "4");
+  newItem(list, 4);
 
   // reconcile changes and hope that the list
   // will be 2, 3, 4 as expected
@@ -130,36 +131,36 @@ TEST_F(PlayQueueManagerTest, ReconcilePlayQueueChanges_basic)
 
   PLAYLIST::CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
   EXPECT_EQ(playlist.size(), 3);
-  EXPECT_STREQ(playlist[0]->GetProperty("unprocessed_key").asString().c_str(), "2");
-  EXPECT_STREQ(playlist[1]->GetProperty("unprocessed_key").asString().c_str(), "3");
-  EXPECT_STREQ(playlist[2]->GetProperty("unprocessed_key").asString().c_str(), "4");
+  EXPECT_EQ(playlist[0]->GetMusicInfoTag()->GetDatabaseId(), 2);
+  EXPECT_EQ(playlist[1]->GetMusicInfoTag()->GetDatabaseId(), 3);
+  EXPECT_EQ(playlist[2]->GetMusicInfoTag()->GetDatabaseId(), 4);
 }
 
 TEST_F(PlayQueueManagerTest, ReconcilePlayQueueChanges_noMatching)
 {
   CFileItemList list;
-  newItem(list, "1");
+  newItem(list, 1);
 
   g_playlistPlayer.Add(PLAYLIST_VIDEO, list);
 
   list.Clear();
-  newItem(list, "2");
-  newItem(list, "3");
+  newItem(list, 2);
+  newItem(list, 3);
 
   manager.reconcilePlayQueueChanges(PLAYLIST_VIDEO, list);
   PLAYLIST::CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
   EXPECT_EQ(playlist.size(), 2);
-  EXPECT_STREQ(playlist[0]->GetProperty("unprocessed_key").asString().c_str(), "2");
-  EXPECT_STREQ(playlist[1]->GetProperty("unprocessed_key").asString().c_str(), "3");
+  EXPECT_EQ(playlist[0]->GetMusicInfoTag()->GetDatabaseId(), 2);
+  EXPECT_EQ(playlist[1]->GetMusicInfoTag()->GetDatabaseId(), 3);
 }
 
 TEST_F(PlayQueueManagerTest, ReconcilePlayQueueChanges_gapInMiddle)
 {
   CFileItemList list;
-  newItem(list, "1");
-  newItem(list, "2");
-  newItem(list, "3");
-  newItem(list, "4");
+  newItem(list, 1);
+  newItem(list, 2);
+  newItem(list, 3);
+  newItem(list, 4);
 
   g_playlistPlayer.Add(PLAYLIST_VIDEO, list);
 
@@ -168,41 +169,29 @@ TEST_F(PlayQueueManagerTest, ReconcilePlayQueueChanges_gapInMiddle)
   manager.reconcilePlayQueueChanges(PLAYLIST_VIDEO, list);
   PLAYLIST::CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
   EXPECT_EQ(playlist.size(), 3);
-  EXPECT_STREQ(playlist[0]->GetProperty("unprocessed_key").asString().c_str(), "1");
-  EXPECT_STREQ(playlist[1]->GetProperty("unprocessed_key").asString().c_str(), "2");
-  EXPECT_STREQ(playlist[2]->GetProperty("unprocessed_key").asString().c_str(), "4");
+  EXPECT_EQ(playlist[0]->GetMusicInfoTag()->GetDatabaseId(), 1);
+  EXPECT_EQ(playlist[1]->GetMusicInfoTag()->GetDatabaseId(), 2);
+  EXPECT_EQ(playlist[2]->GetMusicInfoTag()->GetDatabaseId(), 4);
 }
 
 TEST_F(PlayQueueManagerTest, ReconcilePlayQueueChanges_largedataset)
 {
   CFileItemList list;
-  for (int i = 0; i < 100; i ++)
-  {
-    CStdString name;
-    name.Format("%d", i);
-    newItem(list, name);
-  }
+  for (int i = 0; i < 100; i++)
+    newItem(list, i);
 
   g_playlistPlayer.Add(PLAYLIST_MUSIC, list);
 
   list.Clear();
 
-  for (int i = 60; i < 160; i ++)
-  {
-    CStdString name;
-    name.Format("%d", i);
-    newItem(list, name);
-  }
+  for (int i = 60; i < 160; i++)
+    newItem(list, i);
 
   manager.reconcilePlayQueueChanges(PLAYLIST_MUSIC, list);
   PLAYLIST::CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
   EXPECT_EQ(playlist.size(), 100);
   for (int i = 60; i < 160; i++)
-  {
-    CStdString name;
-    name.Format("%d", i);
-    EXPECT_STREQ(playlist[i - 60]->GetProperty("unprocessed_key").asString().c_str(), name);
-  }
+    EXPECT_EQ(playlist[i - 60]->GetMusicInfoTag()->GetDatabaseId(), i);
 }
 
 TEST_F(PlayQueueManagerTest, GetPlaylistFromType_basic)
