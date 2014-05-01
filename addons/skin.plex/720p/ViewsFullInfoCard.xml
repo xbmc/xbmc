@@ -10,62 +10,62 @@
 		<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 	</include>
 	<include name="ListItemFullInfoThumbCard">
-	<control type="image">
-		<posy>245</posy>
-		<posx>20</posx>
-		<width>390</width>
-		<height>30</height>
-		<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
-		<include>Black</include>
-	</control>
+		<control type="image">
+			<posy>245</posy>
+			<posx>20</posx>
+			<width>390</width>
+			<height>30</height>
+			<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
+			<include>Black</include>
+		</control>
 	</include>
 	<variable name="ListItemFullInfoTitle">
-		<value condition="ListItem.Type(episode) + !Container.Content(episodes) + !Container.Content(channel)">$INFO[ListItem.TVShowTitle]</value>
-		<value condition="ListItem.Type(episode) + Container.Content(episodes)">$INFO[ListItem.Label]</value>
-		<value condition="ListItem.Type(episode) + Container.Content(channel)">$INFO[Container.FolderName]</value>
+		<value condition="ListItem.Type(episode) + !Container.PlexContent(Episodes) + !Container.PlexContent(Channel)">$INFO[ListItem.TVShowTitle]</value>
+		<value condition="ListItem.Type(episode) + Container.PlexContent(Episodes)">$INFO[ListItem.Label]</value>
+		<value condition="ListItem.Type(episode) + Container.PlexContent(Channel)">$INFO[Container.FolderName]</value>
 		<value condition="ListItem.Type(movie)">$INFO[ListItem.Label]</value>
 		<value condition="ListItem.Type(artist)">$INFO[ListItem.Label]</value>
-		<value condition="ListItem.Type(album) | Container.Content(songs) | [Container.Content(channel) + Skin.String(SectionType,music)]">$INFO[ListItem.Artist]</value>
-		<value condition="[Container.Content(albums) + !ListItem.Type(album)] | Container.Content(seasons)">$INFO[Container.Property(parentTitle)]</value>
+		<value condition="ListItem.Type(album) | Container.PlexContent(Songs) | [Container.PlexContent(Channel) + Skin.String(SectionType,music)]">$INFO[ListItem.Artist]</value>
+		<value condition="[Container.PlexContent(Albums) + !ListItem.Type(album)] | Container.PlexContent(Seasons)">$INFO[Container.Property(parentTitle)]</value>
 		<value>$INFO[ListItem.Label]</value>
 	</variable>
 	<variable name="ListItemFullInfoSecondTitle">
-		<value condition="ListItem.Type(movie) + !Container.Content(homemovies)">$INFO[ListItem.DurationStr]$INFO[ListItem.Year, [COLOR=orange]&#xB7;[/COLOR] ]</value>
-		<value condition="ListItem.Type(movie) + Container.Content(homemovies)">$INFO[ListItem.DurationStr]</value>
+		<value condition="ListItem.Type(movie) + !Container.PlexContent(Homemovies)">$INFO[ListItem.DurationStr]$INFO[ListItem.Year, [COLOR=orange]&#xB7;[/COLOR] ]</value>
+		<value condition="ListItem.Type(movie) + Container.PlexContent(Homemovies)">$INFO[ListItem.DurationStr]</value>
 		<value condition="Window.IsActive(mysharedcontent)">$INFO[ListItem.Property(SourceTitle)]</value>
-		<value condition="ListItem.Type(episode) + !Container.Content(episodes)">$INFO[ListItem.Label]</value>
-		<value condition="ListItem.Type(episode) + Container.Content(episodes) + IsEmpty(Container.Property(mixedParents)) ">$INFO[Container.SecondTitle] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]</value>
-		<value condition="ListItem.Type(episode) + [Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents)) + !IsEmpty(ListItem.Season)]">Season $INFO[ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]</value>
-		<value condition="ListItem.Type(episode) + [Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents)) + IsEmpty(ListItem.Season)]">$LOCALIZE[31145] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]</value>
+		<value condition="ListItem.Type(episode) + !Container.PlexContent(Episodes)">$INFO[ListItem.Label]</value>
+		<value condition="ListItem.Type(episode) + Container.PlexContent(Episodes) + IsEmpty(Container.Property(mixedParents)) ">$INFO[Container.SecondTitle] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]</value>
+		<value condition="ListItem.Type(episode) + [Container.PlexContent(Episodes) + !IsEmpty(Container.Property(mixedParents)) + !IsEmpty(ListItem.Season)]">Season $INFO[ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]</value>
+		<value condition="ListItem.Type(episode) + [Container.PlexContent(Episodes) + !IsEmpty(Container.Property(mixedParents)) + IsEmpty(ListItem.Season)]">$LOCALIZE[31145] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]</value>
 		<value condition="ListItem.Type(clip)">$INFO[ListItem.DurationStr]</value>
 		<value condition="ListItem.Type(photo)">$INFO[ListItem.Date]</value>
 		<value condition="ListItem.Type(photoAlbum)">Album</value>
 		<value condition="ListItem.Type(artist)">$INFO[ListItem.Genre]</value>
 		<value condition="ListItem.Type(album)">$INFO[ListItem.Album]</value>
-		<value condition="[Container.Content(albums) + !ListItem.Type(album)]">$INFO[ListItem.Label]</value>
-		<value condition="Container.Content(channels)">$INFO[ListItem.Property(ServerName)]</value>
-		<value condition="Container.Content(songs) | [Container.Content(channel) + Skin.String(SectionType,music)]">$INFO[ListItem.Label]$INFO[ListItem.DurationStr, [COLOR=orange]&#xB7;[/COLOR] ]</value>
+		<value condition="[Container.PlexContent(Albums) + !ListItem.Type(album)]">$INFO[ListItem.Label]</value>
+		<value condition="Container.PlexContent(Channels)">$INFO[ListItem.Property(ServerName)]</value>
+		<value condition="Container.PlexContent(Songs) | [Container.PlexContent(Channel) + Skin.String(SectionType,music)]">$INFO[ListItem.Label]$INFO[ListItem.DurationStr, [COLOR=orange]&#xB7;[/COLOR] ]</value>
 	</variable>
 	<variable name="ListItemFullInfoThirdTitle">
-	    <value condition="Window.IsActive(mysharedcontent)">$INFO[ListItem.Property(ServerName)]</value>
-		<value condition="ListItem.Type(episode) + !Container.Content(episodes) + !Container.Content(channel)">Season $INFO[ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]$INFO[ListItem.Date, [COLOR=orange]&#xB7;[/COLOR] ]</value>
-		<value condition="ListItem.Type(episode) + Container.Content(episodes)">$INFO[ListItem.DurationStr]$INFO[ListItem.Date, [COLOR=orange]&#xB7;[/COLOR] ]</value>
-		<value condition="ListItem.Type(episode) + [Container.Content(episodes) | Container.Content(channel)]">$INFO[ListItem.Date]</value>
-		<value condition="[ListItem.Type(movie) + !Container.Content(homemovies)] | Container.Content(tvshows)">[UPPERCASE]$INFO[ListItem.Genre][/UPPERCASE]</value>
-		<value condition="[ListItem.Type(movie) + Container.Content(homemovies)] | [Container.Content(channel) + ListItem.Type(clip)]">$INFO[ListItem.Date]</value>
-		<value condition="ListItem.Type(season) + !Container.Content(seasons)">$LOCALIZE[32101]: $INFO[ListItem.Property(LeafCount)]</value>
-		<value condition="Container.Content(seasons)">$INFO[ListItem.Genre]</value>
-		<value condition="[!Container.Content(albums) + ListItem.Type(album) + !IsEmpty(ListItem.Album) + !Container.Content(channel)] | [Container.Content(channel) + Skin.String(SectionType,music) + !ListItem.Type(album)]">$INFO[ListItem.Album]</value>
-		<value condition="[Container.Content(channel) + Skin.String(SectionType,music) + ListItem.Type(album)]">$INFO[ListItem.Year]</value>
+		<value condition="Window.IsActive(mysharedcontent)">$INFO[ListItem.Property(ServerName)]</value>
+		<value condition="ListItem.Type(episode) + !Container.PlexContent(Episodes) + !Container.PlexContent(Channel)">Season $INFO[ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]$INFO[ListItem.Date, [COLOR=orange]&#xB7;[/COLOR] ]</value>
+		<value condition="ListItem.Type(episode) + Container.PlexContent(Episodes)">$INFO[ListItem.DurationStr]$INFO[ListItem.Date, [COLOR=orange]&#xB7;[/COLOR] ]</value>
+		<value condition="ListItem.Type(episode) + [Container.PlexContent(Episodes) | Container.PlexContent(Channel)]">$INFO[ListItem.Date]</value>
+		<value condition="[ListItem.Type(movie) + !Container.PlexContent(Homemovies)] | Container.PlexContent(TVShows)">[UPPERCASE]$INFO[ListItem.Genre][/UPPERCASE]</value>
+		<value condition="[ListItem.Type(movie) + Container.PlexContent(Homemovies)] | [Container.PlexContent(Channel) + ListItem.Type(clip)]">$INFO[ListItem.Date]</value>
+		<value condition="ListItem.Type(season) + !Container.PlexContent(Seasons)">$LOCALIZE[32101]: $INFO[ListItem.Property(LeafCount)]</value>
+		<value condition="Container.PlexContent(Seasons)">$INFO[ListItem.Genre]</value>
+		<value condition="[!Container.PlexContent(Albums) + ListItem.Type(album) + !IsEmpty(ListItem.Album) + !Container.PlexContent(Channel)] | [Container.PlexContent(Channel) + Skin.String(SectionType,music) + !ListItem.Type(album)]">$INFO[ListItem.Album]</value>
+		<value condition="[Container.PlexContent(Channel) + Skin.String(SectionType,music) + ListItem.Type(album)]">$INFO[ListItem.Year]</value>
 		<value condition="ListItem.Type(clip) + IsEmpty(ListItem.Property(Recommender))">$INFO[ListItem.Property(sourceTitle)]</value>
 		<value condition="ListItem.Type(clip) + !IsEmpty(ListItem.Property(Recommender))">$INFO[ListItem.Property(Recommender)]$INFO[ListItem.Property(sourceTitle), [COLOR=orange]&#xB7;[/COLOR] ]</value>
 		<value condition="ListItem.Type(photo)">$INFO[ListItem.PictureResolution]</value>
-		<value condition="Container.Content(albums)">$INFO[ListItem.Property(LeafCount)] $LOCALIZE[32106]$INFO[ListItem.Year, [COLOR=orange]&#xB7;[/COLOR] ]</value>
-		<value condition="Container.Content(songs)">$INFO[ListItem.Album]</value>
+		<value condition="Container.PlexContent(Albums)">$INFO[ListItem.Property(LeafCount)] $LOCALIZE[32106]$INFO[ListItem.Year, [COLOR=orange]&#xB7;[/COLOR] ]</value>
+		<value condition="Container.PlexContent(Songs)">$INFO[ListItem.Album]</value>
 	</variable>
 	<include name="ListItemUnwatchedCount">
 		<control type="grouplist">
-			<visible>[Container.Content(tvshows) | Container.Content(seasons)]</visible>
+			<visible>[Container.PlexContent(TVShows) | Container.PlexContent(Seasons)]</visible>
 			<width>310</width>
 			<height>20</height>
 			<align>left</align>
@@ -81,7 +81,7 @@
 				<textcolor>FFefedeb</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 				<shadowcolor>ff222222</shadowcolor>
-				<visible>!Container.Content(seasons)</visible>
+				<visible>!Container.PlexContent(Seasons)</visible>
 			</control>
 			<control type="label">
 				<width min="10" max="150">auto</width>
@@ -92,8 +92,8 @@
 				<textcolor>FFefedeb</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 				<shadowcolor>ff222222</shadowcolor>
-				<visible>Container.Content(seasons)</visible>
-			</control>			
+				<visible>Container.PlexContent(Seasons)</visible>
+			</control>
 			<control type="label">
 				<width min="0" max="20">auto</width>
 				<height>20</height>
@@ -103,14 +103,14 @@
 				<textcolor>orange</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 				<shadowcolor>ff222222</shadowcolor>
-				<visible>[Container.Content(movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
+				<visible>[Container.PlexContent(Movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.PlexContent(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.PlexContent(Seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
 			</control>
 			<control type="image">
 				<height>17</height>
 				<width min="1" max="20">auto</width>
 				<texture>OverlayUnwatched.png</texture>
 				<aspectratio>keep</aspectratio>
-				<visible>[Container.Content(movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
+				<visible>[Container.PlexContent(Movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.PlexContent(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.PlexContent(Seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
 			</control>
 			<control type="label">
 				<width min="10" max="50">auto</width>
@@ -121,14 +121,14 @@
 				<textcolor>FFefedeb</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 				<shadowcolor>ff222222</shadowcolor>
-				<visible>[Container.Content(movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
+				<visible>[Container.PlexContent(Movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.PlexContent(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.PlexContent(Seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
 			</control>
 		</control>
 	</include>
 	<variable name="ListItemFullInfoPlot">
 		<value condition="!ListItem.Type(episode)">$INFO[ListItem.Plot]</value>
 		<value condition="ListItem.Type(episode) + [ListItem.Status(Watched) | [!Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]]]">$INFO[ListItem.Plot]</value>
-		<value condition="[Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated))] + [ListItem.Status(Watched) | [!Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]]]">$INFO[ListItem.Plot]</value>
+		<value condition="[Container.PlexContent(Episodes) + !IsEmpty(Container.Property(primaryFilterActivated))] + [ListItem.Status(Watched) | [!Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]]]">$INFO[ListItem.Plot]</value>
 		<value condition="ListItem.Type(episode) + [Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)] + !IsEmpty(ListItem.Plot)]">$LOCALIZE[32105]</value>
 		<value condition="IsEmpty(ListItem.Plot)]">NoPlotDefault</value>
 		<!--><value>$INFO[ListItem.Plot]</value>-->
@@ -165,7 +165,7 @@
 		</control>
 	</include>
 	<include name="ListItemFullInfoLeftSlide">
-		<animation effect="slide" start="0" end="-74" time="400" condition="Container.Content(seasons) | [Container.Content(episodes) + !IsEmpty(Container.Property(PlexPreplay))] | [Container.Content(albums) + !IsEmpty(Container.Property(PlexPreplay))] | [Container.Content(albums) + IsEmpty(Container.Property(primaryFilterActivated)] | Container.Content(songs) | Container.Content(channels) | [Container.Content(channel) + ![ListItem.Type(clip) | ListItem.Type(episode)]] | Window.IsActive(mysharedcontent)">Conditional</animation>
+		<animation effect="slide" start="0" end="-74" time="400" condition="[Container.PlexContent(Albums) + ![Container.PlexFilter(Albums) | Container.PlexFilter(recentlyAdded) | Container.PlexFilter(All)]] | Container.PlexContent(Channels) | [Container.PlexContent(Channel) + ![ListItem.Type(clip) | ListItem.Type(episode) | ListItem.Type(album)]] | Window.IsActive(mysharedcontent)">Conditional</animation>
 	</include>
 	<include name="ListItemFullInfoThumbCardUnwatchedOverlay">
 		<control type="group">
@@ -176,15 +176,15 @@
 				<height>30</height>
 				<info>ListItem.Overlay</info>
 			</control>
-			<visible>[Container.Content(movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | Container.Content(episodes)</visible>
+			<visible>[Container.PlexContent(Movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.PlexContent(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.PlexContent(Seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | Container.PlexContent(Episodes)</visible>
 		</control>
 	</include>
 	<!-- Card -->
 	<include name="ListItemFullInfo">
 		<control type="group">
-		<visible>Control.IsVisible(58)</visible>
-		<include>rightSideSlide</include>
-		<include>ListItemFullInfoLeftSlide</include>
+			<visible>Control.IsVisible(58)</visible>
+			<include>rightSideSlide</include>
+			<include>ListItemFullInfoLeftSlide</include>
 			<control type="group" id="999">
 				<posx>74</posx>
 				<posy>0</posy>
@@ -246,18 +246,18 @@
 							<control type="image">
 								<include>ListItemFullInfoThumbSize</include>
 								<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
-								<visible>!IsEmpty(ListItem.Property(Fanart_Image)) + !Container.Content(homemovies) + !Container.Content(photos) + !Container.Content(artists) | [Container.Content(channel) + !ListItem.Type(photo)] + [Container.Content(channel) + !ListItem.Type(clip) + !ListItem.Type(episode)]</visible>
+								<visible>!IsEmpty(ListItem.Property(Fanart_Image)) + !Container.PlexContent(Homemovies) + !Container.PlexContent(Photos) + !Container.PlexContent(Artists) | [Container.PlexContent(Channel) + !ListItem.Type(photo)] + [Container.PlexContent(Channel) + !ListItem.Type(clip) + !ListItem.Type(episode)]</visible>
 							</control>
 							<control type="image">
-									<posy>30</posy>
-									<posx>20</posx>
-									<width>390</width>
-									<height>215</height>
-									<fadetime>300</fadetime>
-									<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-									<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
-									<visible>IsEmpty(ListItem.Property(Fanart_Image)) | Container.Content(homemovies) | Container.Content(photos) | Container.Content(artists) | [Container.Content(channel) + ListItem.Type(photo)] | [Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
-								</control>
+								<posy>30</posy>
+								<posx>20</posx>
+								<width>390</width>
+								<height>215</height>
+								<fadetime>300</fadetime>
+								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+								<visible>IsEmpty(ListItem.Property(Fanart_Image)) | Container.PlexContent(Homemovies) | Container.PlexContent(Photos) | Container.PlexContent(Artists) | [Container.PlexContent(Channel) + ListItem.Type(photo)] | [Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
+							</control>
 							<include>ListItemFullInfoThumbCardUnwatchedOverlay</include>
 						</control>
 					</control>
@@ -325,7 +325,7 @@
 							<texture>icon-video.png</texture>
 							<aspectratio align="right" aligny="bottom">keep</aspectratio>
 							<colordiffuse>FF999999</colordiffuse>
-							<visible>Container.Content(channels) + ListItem.Type(video)</visible>
+							<visible>Container.PlexContent(Channels) + ListItem.Type(video)</visible>
 						</control>
 						<control type="image">
 							<posy>37</posy>
@@ -335,7 +335,7 @@
 							<texture>icon-music.png</texture>
 							<aspectratio align="right" aligny="bottom">keep</aspectratio>
 							<colordiffuse>FF999999</colordiffuse>
-							<visible>Container.Content(channels) + ListItem.Type(music)</visible>
+							<visible>Container.PlexContent(Channels) + ListItem.Type(music)</visible>
 						</control>
 						<control type="image">
 							<posy>37</posy>
@@ -345,9 +345,9 @@
 							<texture>icon-photo.png</texture>
 							<aspectratio align="right" aligny="bottom">keep</aspectratio>
 							<colordiffuse>FF999999</colordiffuse>
-							<visible>Container.Content(channels) + ListItem.Type(photos)</visible>
+							<visible>Container.PlexContent(Channels) + ListItem.Type(photos)</visible>
 						</control>
-						<control type="textbox"id="111">
+						<control type="textbox" id="111">
 							<posy>115</posy>
 							<width>315</width>
 							<height>280</height>
@@ -365,7 +365,7 @@
 							<font>HomePlot</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>ff222222</shadowcolor>
-							<visible>[Container.Content(songs) + !IsEmpty(Container.Property(summary))] | [Container.Content(seasons) + IsEmpty(ListItem.Property(summary)) + !IsEmpty(Container.Property(summary))]</visible>
+							<visible>[Container.PlexContent(Songs) + !IsEmpty(Container.Property(summary))] | [Container.PlexContent(Seasons) + IsEmpty(ListItem.Property(summary)) + !IsEmpty(Container.Property(summary))]</visible>
 						</control>
 						<control type="textbox" id="113">
 							<posy>115</posy>
@@ -375,7 +375,7 @@
 							<font>HomePlot</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>ff222222</shadowcolor>
-							<visible>[!IsEmpty(ListItem.Plot) + IsEmpty(ListItem.Property(summary))] | [!IsEmpty(ListItem.Plot) + !IsEmpty(ListItem.Property(summary))] | [Container.Content(episodes) + !IsEmpty(Container.ShowPlot)]</visible>
+							<visible>[!IsEmpty(ListItem.Plot) + IsEmpty(ListItem.Property(summary))] | [!IsEmpty(ListItem.Plot) + !IsEmpty(ListItem.Property(summary))] | [Container.PlexContent(Episodes) + !IsEmpty(Container.ShowPlot)]</visible>
 						</control>
 						<control type="textbox">
 							<posy>115</posy>
@@ -385,7 +385,7 @@
 							<font>HomePlot</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>ff222222</shadowcolor>
-							<visible>!Control.IsVisible(111) + !Control.IsVisible(112) + !Control.IsVisible(113) + !Container.Content(channels) + !Container.Content(channel) + !Window.IsActive(mysharedcontent)</visible>
+							<visible>!Control.IsVisible(111) + !Control.IsVisible(112) + !Control.IsVisible(113) + !Container.PlexContent(Channels) + !Container.PlexContent(Channel) + !Window.IsActive(mysharedcontent)</visible>
 						</control>
 						<control type="textbox">
 							<posy>115</posy>
@@ -395,7 +395,7 @@
 							<font>HomePlot</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>ff222222</shadowcolor>
-							<visible>!Control.IsVisible(111) + !Control.IsVisible(112) + !Control.IsVisible(113) + [Container.Content(channels) | Container.Content(channel) | Window.IsActive(mysharedcontent)]</visible>
+							<visible>!Control.IsVisible(111) + !Control.IsVisible(112) + !Control.IsVisible(113) + [Container.PlexContent(Channels) | Container.PlexContent(Channel) | Window.IsActive(mysharedcontent)]</visible>
 						</control>
 					</control>
 					<!-- media flags -->
@@ -407,7 +407,7 @@
 				</control>
 			</control>
 		</control>
-	</include>	
+	</include>
 	<!-- HomeListItemFullInfo -->
 	<include name="ShowHomeFullInfo">
 		<visible>[Control.HasFocus(11001) + Control.IsVisible(11000)] | [Control.HasFocus(11003) + Control.IsVisible(11004)] | [Control.HasFocus(11000) + Control.IsVisible(11001)] | [Control.HasFocus(11004) + Control.IsVisible(11003)] | [Control.HasFocus(11000) + !Control.IsVisible(11001) + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode)]] | [Control.HasFocus(11001) + !Control.IsVisible(11000)] | [Control.HasFocus(11003) + !Control.IsVisible(11004)] | [Control.HasFocus(11004) + !Control.IsVisible(11003)]</visible>
@@ -425,14 +425,14 @@
 		<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 	</include>
 	<include name="HomeListItemFullInfoThumbCard">
-	<control type="image">
-		<posy>245</posy>
-		<posx>20</posx>
-		<width>390</width>
-		<height>30</height>
-		<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
-		<include>Black</include>
-	</control>
+		<control type="image">
+			<posy>245</posy>
+			<posx>20</posx>
+			<width>390</width>
+			<height>30</height>
+			<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
+			<include>Black</include>
+		</control>
 	</include>
 	<variable name="HomeListItemFullInfoTitle">
 		<!-- on deck -->

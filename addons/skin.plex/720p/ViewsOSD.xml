@@ -76,7 +76,7 @@
 						<height>115</height>
 						<label>$INFO[VideoPlayer.Plot]</label>
 						<include>Plot</include>
-					</control>					
+					</control>
 					<control type="textbox">
 						<posy>10</posy>
 						<width>1000</width>
@@ -397,28 +397,28 @@
 					<posy>15</posy>
 					<posx>50</posx>
 					<control type="group">
-					<control type="label">
-						<posy>-4</posy>
-						<posx>45</posx>
-						<width>165</width>
-						<height>24</height>
-						<label>$INFO[VideoPlayer.SubtitleStream]</label>
-						<font>Regular-16</font>
-						<textcolor>FF666666</textcolor>
-						<shadowcolor>FF000000</shadowcolor>
-						<visible>!Control.HasFocus(721)</visible>
-					</control>
-					<control type="label">
-						<posy>-4</posy>
-						<posx>45</posx>
-						<width>165</width>
-						<height>24</height>
-						<label>$INFO[VideoPlayer.SubtitleStream]</label>
-						<font>Regular-16</font>
-						<textcolor>white</textcolor>
-						<shadowcolor>FF000000</shadowcolor>
-						<visible>Control.HasFocus(721)</visible>
-					</control>
+						<control type="label">
+							<posy>-4</posy>
+							<posx>45</posx>
+							<width>165</width>
+							<height>24</height>
+							<label>$INFO[VideoPlayer.SubtitleStream]</label>
+							<font>Regular-16</font>
+							<textcolor>FF666666</textcolor>
+							<shadowcolor>FF000000</shadowcolor>
+							<visible>!Control.HasFocus(721)</visible>
+						</control>
+						<control type="label">
+							<posy>-4</posy>
+							<posx>45</posx>
+							<width>165</width>
+							<height>24</height>
+							<label>$INFO[VideoPlayer.SubtitleStream]</label>
+							<font>Regular-16</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>FF000000</shadowcolor>
+							<visible>Control.HasFocus(721)</visible>
+						</control>
 						<control type="image">
 							<posy>-2</posy>
 							<width>29</width>
@@ -596,28 +596,28 @@
 						<visible allowhiddenfocus="true">Control.HasFocus(717)</visible>
 						<colordiffuse>orange</colordiffuse>
 					</control>
-						<control type="label">
-							<posy>0</posy>
-							<posx>43</posx>
-							<width>100</width>
-							<height>24</height>
-							<label>$LOCALIZE[31060]</label>
-							<font>Regular-16</font>
-							<textcolor>FF666666</textcolor>
-							<shadowcolor>FF000000</shadowcolor>
-							<visible>!Control.HasFocus(717)</visible>
-						</control>
-						<control type="label">
-							<posy>0</posy>
-							<posx>43</posx>
-							<width>100</width>
-							<height>24</height>
-							<label>$LOCALIZE[31060]</label>
-							<font>Regular-16</font>
-							<textcolor>white</textcolor>
-							<shadowcolor>FF000000</shadowcolor>
-							<visible>Control.HasFocus(717)</visible>
-						</control>
+					<control type="label">
+						<posy>0</posy>
+						<posx>43</posx>
+						<width>100</width>
+						<height>24</height>
+						<label>$LOCALIZE[31060]</label>
+						<font>Regular-16</font>
+						<textcolor>FF666666</textcolor>
+						<shadowcolor>FF000000</shadowcolor>
+						<visible>!Control.HasFocus(717)</visible>
+					</control>
+					<control type="label">
+						<posy>0</posy>
+						<posx>43</posx>
+						<width>100</width>
+						<height>24</height>
+						<label>$LOCALIZE[31060]</label>
+						<font>Regular-16</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>FF000000</shadowcolor>
+						<visible>Control.HasFocus(717)</visible>
+					</control>
 				</control>
 				<!-- video settings -->
 				<control type="group">
@@ -648,28 +648,28 @@
 							<visible allowhiddenfocus="true">Control.HasFocus(718)</visible>
 							<colordiffuse>orange</colordiffuse>
 						</control>
-								<control type="label">
-									<posy>0</posy>
-									<posx>49</posx>
-									<width>80</width>
-									<height>24</height>
-									<label>$LOCALIZE[31060]</label>
-									<font>Regular-16</font>
-									<textcolor>FF666666</textcolor>
-									<shadowcolor>FF000000</shadowcolor>
-									<visible>!Control.HasFocus(718)</visible>
-								</control>
-								<control type="label">
-									<posy>0</posy>
-									<posx>49</posx>
-									<width>80</width>
-									<height>24</height>
-									<label>$LOCALIZE[31060]</label>
-									<font>Regular-16</font>
-									<textcolor>white</textcolor>
-									<shadowcolor>FF000000</shadowcolor>
-									<visible>Control.HasFocus(718)</visible>
-								</control>
+						<control type="label">
+							<posy>0</posy>
+							<posx>49</posx>
+							<width>80</width>
+							<height>24</height>
+							<label>$LOCALIZE[31060]</label>
+							<font>Regular-16</font>
+							<textcolor>FF666666</textcolor>
+							<shadowcolor>FF000000</shadowcolor>
+							<visible>!Control.HasFocus(718)</visible>
+						</control>
+						<control type="label">
+							<posy>0</posy>
+							<posx>49</posx>
+							<width>80</width>
+							<height>24</height>
+							<label>$LOCALIZE[31060]</label>
+							<font>Regular-16</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>FF000000</shadowcolor>
+							<visible>Control.HasFocus(718)</visible>
+						</control>
 					</control>
 				</control>
 			</control>

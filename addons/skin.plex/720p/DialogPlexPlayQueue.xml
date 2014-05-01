@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<window id="10207">
+	<defaultcontrol>3</defaultcontrol>
+	<!-- ViewsDialog.xml -->
+	<include>DialogFadeInOut</include>
+	<controls>
+		<control type="group">
+			<!-- bg's -->
+			<control type="group">
+				<posx>339</posx>
+				<posy>136</posy>
+				<control type="image">
+					<posx>-1</posx>
+					<posy>-1</posy>
+					<width>602</width>
+					<height>442</height>
+					<texture>transparent.png</texture>
+					<bordertexture border="10">border-black.png</bordertexture>
+					<bordersize>1</bordersize>
+					<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+				</control>
+				<control type="image">
+					<posy>80</posy>
+					<width>600</width>
+					<height>360</height>
+					<texture border="10">base-rounded-half.png</texture>
+					<colordiffuse>FF000000</colordiffuse>
+					<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+				</control>
+				<!-- title bg -->
+				<control type="image">
+					<width>600</width>
+					<height>80</height>
+					<texture border="10" flipy="true">base-rounded-half.png</texture>
+					<colordiffuse>FF111111</colordiffuse>
+				</control>
+				<control type="image">
+					<posy>30</posy>
+					<width>600</width>
+					<height>50</height>
+					<texture>border-bottom-grey.png</texture>
+				</control>
+				<!-- arrow -->
+				<control type="image">
+					<posx>285</posx>
+					<posy>440</posy>
+					<include>ArrowBlackDown</include>
+					<visible>!Window.IsVisible(2901) + !Window.IsVisible(10090)</visible>
+				</control>
+			</control>
+			<control type="group">
+				<posx>340</posx>
+				<posy>155</posy>
+				<control type="label" id="1">
+					<label>[UPPERCASE]$LOCALIZE[33063][/UPPERCASE]</label>
+					<width>580</width>
+					<height>40</height>
+					<align>center</align>
+					<font>Regular-24</font>
+					<textcolor>Focused</textcolor>
+				</control>
+				<control type="group">
+					<posy>80</posy>
+					<posx>20</posx>
+					<control type="list" id="3">
+						<width>560</width>
+						<height>300</height>
+						<onleft>-</onleft>
+						<onright>5</onright>
+						<onup>3</onup>
+						<ondown>3</ondown>
+						<pagecontrol>61</pagecontrol>
+						<scrolltime>200</scrolltime>
+						<itemlayout height="50">
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>560</width>
+								<height>50</height>
+								<texture border="5">border-bottom-grey.png</texture>
+							</control>
+							<control type="label">
+								<width>560</width>
+								<height>50</height>
+								<info>ListItem.Label</info>
+								<textcolor>Unfocused</textcolor>
+								<textoffsetx>20</textoffsetx>
+							</control>
+						</itemlayout>
+						<focusedlayout height="50">
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>560</width>
+								<height>50</height>
+								<texture border="5">black-bottom-grey.png</texture>
+							</control>
+							<control type="label">
+								<width>560</width>
+								<height>50</height>
+								<info>ListItem.Label</info>
+								<textcolor>Focused</textcolor>
+								<textoffsetx>20</textoffsetx>
+							</control>
+						</focusedlayout>
+					</control>
+					<control type="scrollbar" id="61">
+						<description>Scroll Bar</description>
+						<posy>-5</posy>
+						<posx>563</posx>
+						<width>20</width>
+						<height>300</height>
+					</control>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -13,25 +13,25 @@
 		<value condition="Container.Content(empty)">empty</value>
 		<value condition="Container.Content(files)">files</value>
 		<value condition="Container.Content(file)">file</value>
-		<value condition="Container.Content(folder)">folder</value>
-		<value condition="Container.Content(folders)">folders</value>
-		<value condition="Container.Content(songs)">songs</value>
+		<value condition="Container.PlexContent(Folder)">folder</value>
+		<value condition="Container.PlexContent(Folders)">folders</value>
+		<value condition="Container.PlexContent(Songs)">songs</value>
 		<value condition="Container.Content(song)">song</value>
-		<value condition="Container.Content(artists)">artists</value>
+		<value condition="Container.PlexContent(Artists)">artists</value>
 		<value condition="Container.Content(artist)">artist</value>
-		<value condition="Container.Content(albums)">albums</value>
+		<value condition="Container.PlexContent(Albums)">albums</value>
 		<value condition="Container.Content(album)">album</value>
-		<value condition="Container.Content(movies)">movies</value>
-		<value condition="Container.Content(movie)">movie</value>
-		<value condition="Container.Content(tvshows)">tvshows</value>
+		<value condition="Container.PlexContent(Movies)">movies</value>
+		<value condition="Container.PlexContent(Movie)">movie</value>
+		<value condition="Container.PlexContent(TVShows)">tvshows</value>
 		<value condition="Container.Content(tvshow)">tvshow</value>
-		<value condition="Container.Content(seasons)">seasons</value>
+		<value condition="Container.PlexContent(Seasons)">seasons</value>
 		<value condition="Container.Content(season)">season</value>
-		<value condition="Container.Content(episodes)">episodes</value>
-		<value condition="Container.Content(episode)">episode</value>
-		<value condition="Container.Content(clips)">clips</value>
-		<value condition="Container.Content(clip)">clip</value>
-		<value condition="Container.Content(homemovies)">homemovies</value>
+		<value condition="Container.PlexContent(Episodes)">episodes</value>
+		<value condition="Container.PlexContent(Episode)">episode</value>
+		<value condition="Container.PlexContent(Clips)">clips</value>
+		<value condition="Container.PlexContent(Clip)">clip</value>
+		<value condition="Container.PlexContent(Homemovies)">homemovies</value>
 		<value condition="Container.Content(musicvideos)">musicvideos</value>
 		<value condition="Container.Content(genres)">genres</value>
 		<value condition="Container.Content(years)">years</value>
@@ -40,17 +40,17 @@
 		<value condition="Container.Content(playlists)">playlists</value>
 		<value condition="Container.Content(playlist)">playlist</value>
 		<value condition="Container.Content(plugins)">plugins</value>
-		<value condition="Container.Content(channels)">channels</value>
-		<value condition="Container.Content(channel)">channel</value>
+		<value condition="Container.PlexContent(Channels)">channels</value>
+		<value condition="Container.PlexContent(Channel)">channel</value>
 		<value condition="Container.Content(studios)">studios</value>
 		<value condition="Container.Content(directors)">directors</value>
 		<value condition="Container.Content(director)">director</value>
 		<value condition="Container.Content(plugincontent)">plugincontent</value>
 		<value condition="Container.Content(addons)">addons</value>
-		<value condition="Container.Content(secondary)">secondary</value>
-		<value condition="Container.Content(photos)">photos</value>
+		<value condition="Container.PlexContent(Secondary)">secondary</value>
+		<value condition="Container.PlexContent(Photos)">photos</value>
 		<value condition="Container.Content(photoalbum)">photoalbum</value>
-		<value condition="Container.Content(photoalbums)">photoalbums</value>
+		<value condition="Container.PlexContent(PhotoAlbums)">photoalbums</value>
 		<value/>
 	</variable>
 	<variable name="ListItemType">
@@ -108,7 +108,6 @@
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(episode)">episode</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(movie)">movie</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(album)">album</value>
-		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(track)">track</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(song)">song</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(photo)">photo</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(photoAlbum)">photoAlbum</value>
@@ -281,6 +280,14 @@
 					<include>debugFont</include>
 					<label>Container.Property(PlexPreplay) :</label>
 					<visible>IsEmpty(Container.Property(PlexPreplay))</visible>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.Property(PlexContent) : [COLOR=orangeLight]$INFO[Container.Property(PlexContent)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.Property(PlexFilter) : [COLOR=orangeLight]$INFO[Container.Property(PlexFilter)][/COLOR]</label>
 				</control>
 				<!--><control type="label">
 					<include>debugFont</include>
@@ -693,7 +700,7 @@
 				<height>680</height>
 				<orientation>vertical</orientation>
 				<itemgap>5</itemgap>
-				<visible>Container.Content(tvshows) | Container.Content(tvshow) | Container.Content(seasons) | Container.Content(season) | Container.Content(episodes) | Container.Content(episode)</visible>
+				<visible>Container.PlexContent(TVShows) | Container.Content(tvshow) | Container.PlexContent(Seasons) | Container.Content(season) | Container.PlexContent(Episodes) | Container.PlexContent(Episode)</visible>
 				<control type="label">
 					<include>debugFont</include>
 					<label>TV SPECIFIC:</label>

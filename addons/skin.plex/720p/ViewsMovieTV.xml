@@ -1,165 +1,14 @@
 <?xml version="1.0"?>
 <includes>
-	<!-- POSTERS -->
-	<!-- Big posters -->
-	<include name="MovieTVPosterBigger">
-		<control type="image">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>208</width>
-			<height>300</height>
-			<include>Shadow</include>
-		</control>
-		<control type="image">
-			<posx>13</posx>
-			<posy>13</posy>
-			<width>185</width>
-			<height>274</height>
-			<texture background="true">default-poster-middle.png</texture>
-		</control>
-		<control type="image">
-			<posx>13</posx>
-			<posy>13</posy>
-			<width>185</width>
-			<height>274</height>
-			<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Art(thumb)]</texture>
-			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-		</control>
-	</include>
-	<include name="MovieTVPosterSelectedBorderBigger">
-		<control type="image">
-			<width>192</width>
-			<height>281</height>
-			<include>Border</include>
-		</control>
-	</include>
-	<include name="MovieTVPosterTitleBigger">
-		<posy>298</posy>
-		<posx>105</posx>
-		<width>180</width>
-		<height>30</height>
-		<align>center</align>
-		<aligny>center</aligny>
-		<label>$INFO[ListItem.Label]</label>
-		<font>Regular-17</font>
-		<shadowcolor>FF222222</shadowcolor>
-	</include>
-	<include name="MovieTVPosterUnwatchedOverlayBigger">
-		<control type="group">
-			<control type="image">
-				<posx>157</posx>
-				<posy>246</posy>
-				<info>ListItem.Overlay</info>
-			</control>
-			<control type="label">
-				<posy>253</posy>
-				<posx>176</posx>
-				<width>40</width>
-				<height>30</height>
-				<align>center</align>
-				<aligny>center</aligny>
-				<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
-				<font>Bold-16</font>
-				<shadowcolor>FF222222</shadowcolor>
-			</control>
-			<visible>[Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
-		</control>
-		<control type="group">
-			<control type="image">
-				<posx>167</posx>
-				<posy>256</posy>
-				<width>30</width>
-				<height>30</height>
-				<info>ListItem.Overlay</info>
-				<visible>[Container.Content(movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)]</visible>
-			</control>
-		</control>
-	</include>
-	<!-- Smaller posters -->
-	<include name="MovieTVPoster">
-		<control type="image">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>146</width>
-			<height>206</height>
-			<include>Shadow</include>
-		</control>
-		<control type="image">
-			<posx>13</posx>
-			<posy>13</posy>
-			<width>120</width>
-			<height>180</height>
-			<texture background="true">default-poster-middle.png</texture>
-		</control>
-		<control type="image">
-			<posx>13</posx>
-			<posy>13</posy>
-			<width>120</width>
-			<height>180</height>
-			<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Art(smallThumb)]</texture>
-			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-		</control>
-	</include>
-	<include name="MovieTVPosterSelectedBorder">
-		<control type="image">
-			<width>126</width>
-			<height>186</height>
-			<include>Border</include>
-		</control>
-	</include>
-	<include name="MovieTVPosterTitle">
-		<posy>202</posy>
-		<posx>73</posx>
-		<width>120</width>
-		<height>20</height>
-		<align>center</align>
-		<aligny>center</aligny>
-		<label>$INFO[ListItem.Label]</label>
-		<font>Regular-17</font>
-		<shadowcolor>FF222222</shadowcolor>
-	</include>
-	<include name="MovieTVPosterUnwatchedOverlay">
-		<control type="group">
-			<control type="image">
-				<posx>98</posx>
-				<posy>158</posy>
-				<width>34</width>
-				<height>34</height>
-				<info>ListItem.Overlay</info>
-			</control>
-			<control type="label">
-				<posy>161</posy>
-				<posx>114</posx>
-				<width>40</width>
-				<height>30</height>
-				<align>center</align>
-				<aligny>center</aligny>
-				<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
-				<font>Bold-14</font>
-				<shadowcolor>FF222222</shadowcolor>
-			</control>
-			<visible>[Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
-		</control>
-		<control type="group">
-			<control type="image">
-				<posx>106</posx>
-				<posy>166</posy>
-				<width>26</width>
-				<height>26</height>
-				<info>ListItem.Overlay</info>
-				<visible>[Container.Content(movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)]</visible>
-			</control>
-		</control>
-	</include>
 	<!-- Library -->
 	<include name="LibraryPostersBigger">
 		<!-- Library Movies & TV Shows -->
 		<control type="group" id="777">
 			<include>FadeDialog</include>
-			<visible>!Container.Content(secondary) + [Container.content(movies) | Container.Content(TVShows)]</visible>
+			<visible>!Container.PlexContent(Secondary) + [Container.PlexContent(Movies) | Container.PlexContent(TVShows)]</visible>
 			<include>rightSideSlide</include>
 			<control type="panel" id="51">
-				<visible>!Container.Content(secondary) + [Container.content(movies) | Container.Content(TVShows)]</visible>
+				<visible>!Container.PlexContent(Secondary) + [Container.PlexContent(Movies) | Container.PlexContent(TVShows)]</visible>
 				<viewtype label="LibraryPostersBigger">panel</viewtype>
 				<onup>51</onup>
 				<ondown>51</ondown>
@@ -171,20 +20,20 @@
 				<width>1200</width>
 				<height>670</height>
 				<itemlayout width="234" height="335">
-					<include>MovieTVPosterBigger</include>
+					<include>MovieTVPosterMiddle</include>
 					<control type="label">
-						<include>MovieTVPosterTitleBigger</include>
+						<include>MovieTVPosterMiddleTitle</include>
 					</control>
-					<include>MovieTVPosterUnwatchedOverlayBigger</include>
+					<include>MovieTVPosterMiddleUnwatchedOverlay</include>
 				</itemlayout>
 				<focusedlayout width="234" height="335">
-					<include>MovieTVPosterBigger</include>
+					<include>MovieTVPosterMiddle</include>
 					<control type="label">
-						<include>MovieTVPosterTitleBigger</include>
+						<include>MovieTVPosterMiddleTitle</include>
 						<textcolor>orangeLight</textcolor>
 					</control>
-					<include>MovieTVPosterUnwatchedOverlayBigger</include>
-					<include>MovieTVPosterSelectedBorderBigger</include>
+					<include>MovieTVPosterMiddleUnwatchedOverlay</include>
+					<include>MovieTVPosterMiddleSelectedBorder</include>
 				</focusedlayout>
 			</control>
 		</control>
@@ -193,10 +42,10 @@
 		<!-- Library Movies & TV Shows -->
 		<control type="group" id="777">
 			<include>FadeDialog</include>
-			<visible>!Container.Content(secondary) + [Container.content(movies) | Container.Content(TVShows)]</visible>
+			<visible>!Container.PlexContent(Secondary) + [Container.PlexContent(Movies) | Container.PlexContent(TVShows)]</visible>
 			<include>rightSideSlide</include>
 			<control type="panel" id="50">
-				<visible>!Container.Content(secondary) + [Container.content(movies) | Container.Content(TVShows)]</visible>
+				<visible>!Container.PlexContent(Secondary) + [Container.PlexContent(Movies) | Container.PlexContent(TVShows)]</visible>
 				<viewtype label="LibraryPosters">panel</viewtype>
 				<onup>50</onup>
 				<ondown>50</ondown>
@@ -208,20 +57,20 @@
 				<width>1200</width>
 				<height>666</height>
 				<itemlayout width="144" height="220">
-					<include>MovieTVPoster</include>
+					<include>MovieTVPosterSmall</include>
 					<control type="label">
-						<include>MovieTVPosterTitle</include>
+						<include>MovieTVPosterSmallTitle</include>
 					</control>
-					<include>MovieTVPosterUnwatchedOverlay</include>					
+					<include>MovieTVPosterSmallUnwatchedOverlay</include>
 				</itemlayout>
 				<focusedlayout width="144" height="220">
-					<include>MovieTVPoster</include>
+					<include>MovieTVPosterSmall</include>
 					<control type="label">
-						<include>MovieTVPosterTitle</include>
+						<include>MovieTVPosterSmallTitle</include>
 						<textcolor>orangeLight</textcolor>
 					</control>
-					<include>MovieTVPosterUnwatchedOverlay</include>
-					<include>MovieTVPosterSelectedBorder</include>
+					<include>MovieTVPosterSmallUnwatchedOverlay</include>
+					<include>MovieTVPosterSmallSelectedBorder</include>
 				</focusedlayout>
 			</control>
 		</control>
@@ -283,17 +132,17 @@
 		<shadowcolor>ff222222</shadowcolor>
 	</include>
 	<include name="EpisodeSecondTitleFiltered">
-	<control type="label">
-		<posy>145</posy>
-		<posx>20</posx>
-		<width>159</width>
-		<height>20</height>
-		<align>left</align>
-		<aligny>center</aligny>
-		<label>$INFO[ListItem.Label]</label>
-		<font>Regular-14</font>
-		<shadowcolor>ff222222</shadowcolor>
-	</control>
+		<control type="label">
+			<posy>145</posy>
+			<posx>20</posx>
+			<width>159</width>
+			<height>20</height>
+			<align>left</align>
+			<aligny>center</aligny>
+			<label>$INFO[ListItem.Label]</label>
+			<font>Regular-14</font>
+			<shadowcolor>ff222222</shadowcolor>
+		</control>
 	</include>
 	<include name="EpisodeDateFiltered">
 		<control type="label">
@@ -342,12 +191,12 @@
 	<!-- Pre-play Filtered Episodes -->
 	<include name="LibraryFilteredEpisodes">
 		<control type="group" id="777">
-			<visible>[Container.Content(episodes) + IsEmpty(Container.Property(PlexPreplay))] + !IsEmpty(Container.Property(primaryFilterActivated))</visible>
+			<visible>[Container.PlexContent(Episodes) + IsEmpty(Container.Property(PlexPreplay))] + !IsEmpty(Container.Property(primaryFilterActivated))</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- main list -->
 			<control type="panel" id="62">
-				<visible>[Container.Content(episodes) + IsEmpty(Container.Property(PlexPreplay))] + !IsEmpty(Container.Property(primaryFilterActivated))</visible>
+				<visible>[Container.PlexContent(Episodes) + IsEmpty(Container.Property(PlexPreplay))] + !IsEmpty(Container.Property(primaryFilterActivated))</visible>
 				<viewtype label="LibraryFilteredEpisodes">panel</viewtype>
 				<onup>62</onup>
 				<ondown>62</ondown>

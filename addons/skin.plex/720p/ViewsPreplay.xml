@@ -1,23 +1,5 @@
 <?xml version="1.0"?>
 <includes>
-	<!-- font colors -->
-	<include name="White1">
-		<textcolor>white</textcolor>
-		<shadowcolor>FF444444</shadowcolor>
-	</include>
-	<include name="WhiteShadow">
-		<textcolor>white</textcolor>
-		<shadowcolor>FF444444</shadowcolor>
-	</include>
-	<include name="White2">
-		<textcolor>FFefedeb</textcolor>
-		<shadowcolor>FF444444</shadowcolor>
-	</include>
-	<include name="Grey1">
-		<textcolor>FF999999</textcolor>
-		<shadowcolor>FF444444</shadowcolor>
-	</include>
-	<!-- -->
 	<!-- info formatting -->
 	<include name="LeftInfoFormatGrey">
 		<width min="29" max="200">auto</width>
@@ -253,7 +235,7 @@
 				<font>Bold-16</font>
 				<shadowcolor>FF222222</shadowcolor>
 			</control>
-			<visible>[Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
+			<visible>[Container.PlexContent(Seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
 		</control>
 		<!-- episode thumb -->
 		<control type="group">
@@ -263,7 +245,7 @@
 				<width>28</width>
 				<height>28</height>
 				<info>ListItem.Overlay</info>
-				<visible>Container.Content(episodes)</visible>
+				<visible>Container.PlexContent(Episodes)</visible>
 			</control>
 		</control>
 	</include>
@@ -331,64 +313,64 @@
 	<include name="PreplayShow">
 		<control type="group" id="777">
 			<include>FadeDialog</include>
-			<visible>Container.Content(Seasons)</visible>
+			<visible>Container.PlexContent(Seasons)</visible>
 			<include>rightSideSlide</include>
 			<control type="group">
-			<visible> Control.IsVisible(60)</visible>
-			<!-- backgrounds -->
-			<control type="group">
-				<include>PlotBGShowAndSeason</include>
-				<include>RightBGShowAndSeason</include>
-			</control>
-			<!-- poster -->
-			<control type="group">
-				<posx>102</posx>
-				<posy>28</posy>
-				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>208</width>
-					<height>300</height>
-					<include>Shadow</include>
+				<visible> Control.IsVisible(60)</visible>
+				<!-- backgrounds -->
+				<control type="group">
+					<include>PlotBGShowAndSeason</include>
+					<include>RightBGShowAndSeason</include>
 				</control>
-				<control type="image">
-					<description>Poster image</description>
-					<posx>13</posx>
-					<posy>13</posy>
-					<width>182</width>
-					<height>274</height>
-					<fadetime>160</fadetime>
-					<texture background="true" diffuse="mask-poster-middle.png">$INFO[Container.FolderThumb]</texture>
-					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+				<!-- poster -->
+				<control type="group">
+					<posx>102</posx>
+					<posy>28</posy>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>208</width>
+						<height>300</height>
+						<include>Shadow</include>
+					</control>
+					<control type="image">
+						<description>Poster image</description>
+						<posx>13</posx>
+						<posy>13</posy>
+						<width>185</width>
+						<height>274</height>
+						<fadetime>160</fadetime>
+						<texture background="true" diffuse="mask-poster-middle.png">$INFO[Container.FolderThumb]</texture>
+						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+					</control>
 				</control>
-			</control>
-			<!-- Infos Left -->
-			<control type="group">
-				<posy>38</posy>
-				<posx>336</posx>
-				<!-- Title -->
-				<control type="label">
-					<width min="29" max="226">auto</width>
-					<height>44</height>
-					<label>$INFO[Container.SecondTitle]</label>
-					<label>Seasons view</label>
-					<font>Bold-36</font>
-					<include>WhiteShadow</include>
-					<visible>true</visible>
-				</control>
-				<!-- MPAA flag -->
-				<control type="image">
-					<posy>60</posy>
-					<width>60</width>
-					<height>30</height>
-					<texture>$INFO[Listitem.Art(mediaTag::contentRating)]</texture>
-					<aspectratio align="left" aligny="center">keep</aspectratio>
-					<colordiffuse>FF999999</colordiffuse>
-					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-					<visible>true</visible>
-				</control>
-				<!-- Star Rating -->
-				<!--><control type="image">
+				<!-- Infos Left -->
+				<control type="group">
+					<posy>38</posy>
+					<posx>336</posx>
+					<!-- Title -->
+					<control type="label">
+						<width min="29" max="226">auto</width>
+						<height>44</height>
+						<label>$INFO[Container.SecondTitle]</label>
+						<label>Seasons view</label>
+						<font>Bold-36</font>
+						<include>WhiteShadow</include>
+						<visible>true</visible>
+					</control>
+					<!-- MPAA flag -->
+					<control type="image">
+						<posy>60</posy>
+						<width>60</width>
+						<height>30</height>
+						<texture>$INFO[Listitem.Art(mediaTag::contentRating)]</texture>
+						<aspectratio align="left" aligny="center">keep</aspectratio>
+						<colordiffuse>FF999999</colordiffuse>
+						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+						<visible>true</visible>
+					</control>
+					<!-- Star Rating -->
+					<!--><control type="image">
 					<posy>89</posy>
 					<width>200</width>
 					<height>20</height>
@@ -397,46 +379,46 @@
 					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
 					<visible>true</visible>
 				</control>-->
-				<!-- Genre -->
-				<control type="grouplist">
-					<posy>252</posy>
-					<orientation>horizontal</orientation>
-					<itemgap>10</itemgap>
-					<control type="label">
-						<include>LeftInfoFormatGrey</include>
-						<label>[UPPERCASE]$LOCALIZE[31131][/UPPERCASE]</label>
-						<visible>true</visible>
-					</control>
-					<control type="label">
-						<width min="29" max="156">auto</width>
-						<include>LeftInfoFormatWhite</include>
-						<label>$INFO[ListItem.Genre]</label>
-						<visible>true</visible>
+					<!-- Genre -->
+					<control type="grouplist">
+						<posy>252</posy>
+						<orientation>horizontal</orientation>
+						<itemgap>10</itemgap>
+						<control type="label">
+							<include>LeftInfoFormatGrey</include>
+							<label>[UPPERCASE]$LOCALIZE[31131][/UPPERCASE]</label>
+							<visible>true</visible>
+						</control>
+						<control type="label">
+							<width min="29" max="156">auto</width>
+							<include>LeftInfoFormatWhite</include>
+							<label>$INFO[ListItem.Genre]</label>
+							<visible>true</visible>
+						</control>
 					</control>
 				</control>
+				<!-- show plot -->
+				<control type="textbox">
+					<posx>114</posx>
+					<posy>412</posy>
+					<width>416</width>
+					<height>200</height>
+					<include>PlotFormat</include>
+					<label>$INFO[Container.ShowPlot]</label>
+				</control>
+				<control type="textbox">
+					<posx>114</posx>
+					<posy>412</posy>
+					<width>416</width>
+					<height>200</height>
+					<include>PlotFormat</include>
+					<include>NoPlotDefault</include>
+					<visible>IsEmpty(Container.ShowPlot)</visible>
+				</control>
 			</control>
-			<!-- show plot -->
-			<control type="textbox">
-				<posx>114</posx>
-				<posy>412</posy>
-				<width>416</width>
-				<height>200</height>
-				<include>PlotFormat</include>
-				<label>$INFO[Container.ShowPlot]</label>
-			</control>
-			<control type="textbox">
-				<posx>114</posx>
-				<posy>412</posy>
-				<width>416</width>
-				<height>200</height>
-				<include>PlotFormat</include>
-				<include>NoPlotDefault</include>
-				<visible>IsEmpty(Container.ShowPlot)</visible>
-			</control>
-		</control>
 			<!-- main list -->
 			<control type="panel" id="60">
-				<visible>Container.Content(Seasons)</visible>
+				<visible>Container.PlexContent(Seasons)</visible>
 				<viewtype label="PreplaySeasons">panel</viewtype>
 				<onup>60</onup>
 				<ondown>60</ondown>
@@ -556,136 +538,136 @@
 	<!-- Pre-play Season -->
 	<include name="PreplaySeason">
 		<control type="group" id="777">
-			<visible>Container.Content(episodes) + !IsEmpty(Container.Property(PlexPreplay))</visible>
+			<visible>Container.PlexContent(Episodes) + !IsEmpty(Container.Property(PlexPreplay))</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<control type="group">
-			<visible> Control.IsVisible(61)</visible>
-			<!-- backgrounds -->
-			<control type="group">
-				<include>PlotBGShowAndSeason</include>
-				<include>RightBGShowAndSeason</include>
-			</control>
-			<!-- poster -->
-			<control type="group">
-				<posx>102</posx>
-				<posy>28</posy>
-				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>208</width>
-					<height>300</height>
-					<include>Shadow</include>
+				<visible> Control.IsVisible(61)</visible>
+				<!-- backgrounds -->
+				<control type="group">
+					<include>PlotBGShowAndSeason</include>
+					<include>RightBGShowAndSeason</include>
 				</control>
-				<control type="image">
-					<description>Poster image</description>
-					<posx>13</posx>
-					<posy>13</posy>
-					<width>182</width>
-					<height>274</height>
-					<texture background="true" diffuse="mask-poster-middle.png">$INFO[Container.Thumb]</texture>
-					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-					<visible>IsEmpty(Container.Property(mixedParents))</visible>
+				<!-- poster -->
+				<control type="group">
+					<posx>102</posx>
+					<posy>28</posy>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>208</width>
+						<height>300</height>
+						<include>Shadow</include>
+					</control>
+					<control type="image">
+						<description>Poster image</description>
+						<posx>13</posx>
+						<posy>13</posy>
+						<width>182</width>
+						<height>274</height>
+						<texture background="true" diffuse="mask-poster-middle.png">$INFO[Container.Thumb]</texture>
+						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+						<visible>IsEmpty(Container.Property(mixedParents))</visible>
+					</control>
+					<control type="image">
+						<description>Poster image</description>
+						<posx>13</posx>
+						<posy>13</posy>
+						<width>182</width>
+						<height>274</height>
+						<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Art(parentThumb)]</texture>
+						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+						<visible>!IsEmpty(Container.Property(mixedParents))</visible>
+					</control>
 				</control>
-				<control type="image">
-					<description>Poster image</description>
-					<posx>13</posx>
-					<posy>13</posy>
-					<width>182</width>
-					<height>274</height>
-					<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Art(parentThumb)]</texture>
-					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-					<visible>!IsEmpty(Container.Property(mixedParents))</visible>
+				<!-- Infos Left -->
+				<control type="group">
+					<posy>38</posy>
+					<posx>336</posx>
+					<!-- Titles -->
+					<control type="label">
+						<width>226</width>
+						<height>44</height>
+						<label>$INFO[Container.FirstTitle]</label>
+						<font>Bold-36</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>ff333333</shadowcolor>
+						<visible>IsEmpty(Container.Property(mixedParents))</visible>
+					</control>
+					<control type="label">
+						<width>226</width>
+						<height>44</height>
+						<label>$INFO[Container.Property(parentTitle)]</label>
+						<font>Bold-36</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>ff333333</shadowcolor>
+						<visible>!IsEmpty(Container.Property(mixedParents))</visible>
+					</control>
+					<control type="label">
+						<posy>40</posy>
+						<width>226</width>
+						<height>44</height>
+						<label>$INFO[Container.SecondTitle]</label>
+						<font>Bold-36</font>
+						<include>Grey1</include>
+						<shadowcolor>ff333333</shadowcolor>
+						<visible>IsEmpty(Container.Property(mixedParents))</visible>
+					</control>
+					<control type="label">
+						<posy>40</posy>
+						<width>226</width>
+						<height>44</height>
+						<label>$LOCALIZE[32102]</label>
+						<font>Bold-36</font>
+						<include>Grey1</include>
+						<shadowcolor>ff333333</shadowcolor>
+						<visible>!IsEmpty(Container.Property(mixedParents))</visible>
+					</control>
+					<!-- Year -->
+					<control type="label">
+						<posy>82</posy>
+						<width>226</width>
+						<height>40</height>
+						<align>left</align>
+						<label>$INFO[ListItem.Year]</label>
+						<font>Bold-36</font>
+						<include>Grey1</include>
+						<shadowcolor>ff333333</shadowcolor>
+						<visible>true</visible>
+					</control>
 				</control>
-			</control>
-			<!-- Infos Left -->
-			<control type="group">
-				<posy>38</posy>
-				<posx>336</posx>
-				<!-- Titles -->
-				<control type="label">
-					<width>226</width>
-					<height>44</height>
-					<label>$INFO[Container.FirstTitle]</label>
-					<font>Bold-36</font>
-					<textcolor>white</textcolor>
-					<shadowcolor>ff333333</shadowcolor>
-					<visible>IsEmpty(Container.Property(mixedParents))</visible>
+				<!-- plot text -->
+				<control type="textbox">
+					<posx>114</posx>
+					<posy>412</posy>
+					<width>416</width>
+					<height>200</height>
+					<include>PlotFormat</include>
+					<label>$INFO[ListItem.Plot]</label>
+					<visible>ListItem.Status(Watched) | [!Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]]</visible>
 				</control>
-				<control type="label">
-					<width>226</width>
-					<height>44</height>
-					<label>$INFO[Container.Property(parentTitle)]</label>
-					<font>Bold-36</font>
-					<textcolor>white</textcolor>
-					<shadowcolor>ff333333</shadowcolor>
-					<visible>!IsEmpty(Container.Property(mixedParents))</visible>
+				<control type="textbox">
+					<posx>114</posx>
+					<posy>412</posy>
+					<width>416</width>
+					<height>200</height>
+					<include>PlotFormat</include>
+					<label>$LOCALIZE[32105]</label>
+					<visible>Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)] + !IsEmpty(ListItem.Plot)</visible>
 				</control>
-				<control type="label">
-					<posy>40</posy>
-					<width>226</width>
-					<height>44</height>
-					<label>$INFO[Container.SecondTitle]</label>
-					<font>Bold-36</font>
-					<include>Grey1</include>
-					<shadowcolor>ff333333</shadowcolor>
-					<visible>IsEmpty(Container.Property(mixedParents))</visible>
+				<control type="textbox">
+					<posx>114</posx>
+					<posy>412</posy>
+					<width>416</width>
+					<height>200</height>
+					<include>PlotFormat</include>
+					<include>NoPlotDefault</include>
+					<visible>IsEmpty(ListItem.Plot)</visible>
 				</control>
-				<control type="label">
-					<posy>40</posy>
-					<width>226</width>
-					<height>44</height>
-					<label>$LOCALIZE[32102]</label>
-					<font>Bold-36</font>
-					<include>Grey1</include>
-					<shadowcolor>ff333333</shadowcolor>
-					<visible>!IsEmpty(Container.Property(mixedParents))</visible>
-				</control>
-				<!-- Year -->
-				<control type="label">
-					<posy>82</posy>
-					<width>226</width>
-					<height>40</height>
-					<align>left</align>
-					<label>$INFO[ListItem.Year]</label>
-					<font>Bold-36</font>
-					<include>Grey1</include>
-					<shadowcolor>ff333333</shadowcolor>
-					<visible>true</visible>
-				</control>
-			</control>
-			<!-- plot text -->
-			<control type="textbox">
-				<posx>114</posx>
-				<posy>412</posy>
-				<width>416</width>
-				<height>200</height>
-				<include>PlotFormat</include>
-				<label>$INFO[ListItem.Plot]</label>
-				<visible>ListItem.Status(Watched) | [!Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]]</visible>
-			</control>
-			<control type="textbox">
-				<posx>114</posx>
-				<posy>412</posy>
-				<width>416</width>
-				<height>200</height>
-				<include>PlotFormat</include>
-				<label>$LOCALIZE[32105]</label>
-				<visible>Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)] + !IsEmpty(ListItem.Plot)</visible>
-			</control>
-			<control type="textbox">
-				<posx>114</posx>
-				<posy>412</posy>
-				<width>416</width>
-				<height>200</height>
-				<include>PlotFormat</include>
-				<include>NoPlotDefault</include>
-				<visible>IsEmpty(ListItem.Plot)</visible>
-			</control>
 			</control>
 			<!-- main list -->
 			<control type="panel" id="61">
-				<visible>Container.Content(episodes) + !IsEmpty(Container.Property(PlexPreplay))</visible>
+				<visible>Container.PlexContent(Episodes) + !IsEmpty(Container.Property(PlexPreplay))</visible>
 				<viewtype label="PreplayEpisodes">panel</viewtype>
 				<onup>61</onup>
 				<ondown>61</ondown>
@@ -746,7 +728,7 @@
 	<include name="PreplayEpisode">
 		<control type="group" id="777">
 			<posy>-28</posy>
-			<visible>Container.Content(Episode)</visible>
+			<visible>Container.PlexContent(Episode)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- backgrounds -->
@@ -965,7 +947,7 @@
 	<include name="PreplayMovie">
 		<control type="group">
 			<posy>-28</posy>
-			<visible>Container.Content(Movie) | [Container.Content(channel) + ListItem.Type(movie)]</visible>
+			<visible>Container.PlexContent(Movie) | [Container.PlexContent(Channel) + ListItem.Type(movie)]</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- backgrounds -->
@@ -1175,7 +1157,7 @@
 	<include name="PreplayClip">
 		<control type="group" id="777">
 			<posy>-28</posy>
-			<visible>Container.Content(clip) | [Container.Content(channel) + ListItem.Type(clip)]</visible>
+			<visible>Container.PlexContent(Clip) | [Container.PlexContent(Channel) + ListItem.Type(clip)]</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- backgrounds -->

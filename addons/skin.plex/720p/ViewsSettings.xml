@@ -72,7 +72,7 @@
 		<value condition="Window.IsActive(videossettings)">$LOCALIZE[31001]</value>
 		<value condition="Window.IsActive(musicsettings)">$LOCALIZE[2]</value>
 		<value condition="Window.IsActive(picturessettings)">$LOCALIZE[1]</value>
-		<value condition="Window.IsActive(systemsettings)">$LOCALIZE[13000]</value>		
+		<value condition="Window.IsActive(systemsettings)">$LOCALIZE[13000]</value>
 		<value condition="Window.IsActive(skinsettings)">Skin</value>
 	</variable>
 	<!-- settings menu (left) -->
@@ -133,8 +133,8 @@
 			<control type="spincontrolex" id="9">
 				<textoffsetx>20</textoffsetx>
 			</control>
-			<control type="scrollbar" id="61">	
-				<posy>60</posy>			
+			<control type="scrollbar" id="61">
+				<posy>60</posy>
 				<posx>732</posx>
 				<height>410</height>
 				<onup>61</onup>

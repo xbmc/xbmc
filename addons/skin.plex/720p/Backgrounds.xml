@@ -39,7 +39,7 @@
 		</control>
 		<!-- Clip backgrounds use item thumb, not as pretty so we'll hide them a bit more -->
 		<control type="group">
-			<visible>Container.Content(Clips)</visible>
+			<visible>Container.PlexContent(Clips)</visible>
 			<control type="largeimage">
 				<include>FullScreenScaled</include>
 				<fadetime>400</fadetime>

@@ -7,17 +7,17 @@
 	<include name="leftMenuSlide">
 		<animation effect="slide" start="0" end="246" time="500" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
 		<animation effect="slide" start="0" end="-246" time="500" condition="ControlGroup(1300).HasFocus()">WindowClose</animation>
-		<animation effect="slide" start="0" end="-246" time="500" condition="ControlGroup(1300).HasFocus() + Container.Content(secondary)">Conditional</animation>
+		<animation effect="slide" start="0" end="-246" time="500" condition="ControlGroup(1300).HasFocus() + Container.PlexContent(Secondary)">Conditional</animation>
 	</include>
 	<include name="leftMenuSlideHome">
 		<animation effect="slide" start="0" end="317" time="500" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
 		<animation effect="slide" start="0" end="-317" time="500" condition="ControlGroup(1300).HasFocus()">WindowClose</animation>
-		<animation effect="slide" start="0" end="-317" time="500" condition="ControlGroup(1300).HasFocus() + Container.Content(secondary)">Conditional</animation>
+		<animation effect="slide" start="0" end="-317" time="500" condition="ControlGroup(1300).HasFocus() + Container.PlexContent(Secondary)">Conditional</animation>
 	</include>
 	<include name="leftMenuClockSlideHome">
 		<animation effect="slide" start="0" end="390" time="500" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
 		<animation effect="slide" start="0" end="-390" time="500" condition="ControlGroup(1300).HasFocus()">WindowClose</animation>
-		<animation effect="slide" start="0" end="-390" time="500" condition="ControlGroup(1300).HasFocus() + Container.Content(secondary)">Conditional</animation>
+		<animation effect="slide" start="0" end="-390" time="500" condition="ControlGroup(1300).HasFocus() + Container.PlexContent(Secondary)">Conditional</animation>
 	</include>
 	<include name="rightSideSlide">
 		<include>leftMenuSlide</include>
@@ -60,7 +60,7 @@
 				<aspectratio>keep</aspectratio>
 				<texture>left-menu-filters-icon.png</texture>
 				<colordiffuse>FF999999</colordiffuse>
-				<visible>!Container.content(movie) + !Container.content(episode) + !Container.content(clip) + !Container.content(channel) + !Control.IsVisible(998)</visible>
+				<visible>!Container.PlexContent(Movie) + !Container.PlexContent(Episode) + !Container.PlexContent(Clip) + !Container.PlexContent(Channel) + !Control.IsVisible(998)</visible>
 			</control>-->
 			<control type="image">
 				<posy>680</posy>
@@ -70,7 +70,7 @@
 				<aspectratio>scale</aspectratio>
 				<texture flipx="true">left-menu-indicator-arrow.png</texture>
 				<animation effect="rotate" end="-180" center="36,689" time="500" condition="ControlGroup(1300).HasFocus">Conditional</animation>
-				<visible>[!Container.Content(albums) | [Container.Content(albums) + !IsEmpty(Container.Property(primaryFilterActivated)]] + !Container.Content(songs) + !Container.Content(seasons) + [!Container.Content(episodes) | [Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated) + IsEmpty(Container.Property(PlexPreplay)]] + ![Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
+				<visible>[!Container.PlexContent(Albums) | [Container.PlexContent(Albums) + !IsEmpty(Container.Property(primaryFilterActivated))]] + !Container.PlexContent(Songs) + !Container.PlexContent(Seasons) + [!Container.PlexContent(Episodes) | [Container.PlexContent(Episodes) + !IsEmpty(Container.Property(primaryFilterActivated)) + IsEmpty(Container.Property(PlexPreplay))]] + ![Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
 			</control>
 		</control>
 	</include>
@@ -146,7 +146,7 @@
 				<aspectratio>keep</aspectratio>
 				<texture>left-menu-filters-icon.png</texture>
 				<colordiffuse>FF999999</colordiffuse>
-				<visible>Container.content(movies) | Container.content(tvshows)</visible>
+				<visible>Container.PlexContent(Movies) | Container.PlexContent(TVShows)</visible>
 			</control>
 			<control type="image">
 				<posy>680</posy>
@@ -285,7 +285,7 @@
 	<include name="leftMenuBarButton">
 		<width>74</width>
 		<height>30</height>
-		<onleft condition="[!Container.Content(albums) | [Container.Content(albums) + !IsEmpty(Container.Property(primaryFilterActivated)]] + !Container.Content(songs) + !Container.Content(movie) + !Container.Content(seasons) + [!Container.Content(episodes) | [Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated) + IsEmpty(Container.Property(PlexPreplay)]] + !Container.Content(episode) + !Container.Content(clip) + ![Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]">1300</onleft>
+		<onleft condition="[!Container.PlexContent(Albums) | [Container.PlexContent(Albums) + [Container.PlexFilter(Albums) | Container.PlexFilter(recentlyAdded)]]] + !Container.PlexContent(Songs) + !Container.PlexContent(Movie) + !Container.PlexContent(Seasons) + [!Container.PlexContent(Episodes) | [Container.PlexContent(Episodes) + !IsEmpty(Container.Property(primaryFilterActivated)) + IsEmpty(Container.Property(PlexPreplay))]] + !Container.PlexContent(Episode) + !Container.PlexContent(Clip) + ![Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode) | ListItem.Type(album)]]">1300</onleft>
 		<onright>777</onright>
 	</include>
 	<!-- Home menu -->
@@ -460,7 +460,7 @@
 	<!-- Library menu -->
 	<include name="LeftSideMenu">
 		<control type="group">
-			<visible>[!Container.Content(channel) | [Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]]</visible>
+			<visible>[!Container.PlexContent(Channel) | [Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode) | ListItem.Type(album)]]]</visible>
 			<include>leftMenuInitSlide</include>
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
@@ -468,7 +468,7 @@
 			<!--><include>GlobalSearch</include>-->
 			<!-- sidebar global -->
 			<control type="grouplist" id="998">
-				<visible>!Container.Content(movie) + !Container.Content(episode) + !Container.Content(clip)</visible>
+				<visible>!Container.PlexContent(Movie) + !Container.PlexContent(Episode) + !Container.PlexContent(Clip)</visible>
 				<posy>40</posy>
 				<posx>0</posx>
 				<width>74</width>
@@ -483,7 +483,7 @@
 					<texturenofocus>left-menu-filters-icon-u.png</texturenofocus>
 					<onclick>Control.SetFocus(1300)</onclick>
 					<include>leftMenuBarButton</include>
-					<visible>[!Container.Content(albums) | [Container.Content(albums) + !IsEmpty(Container.Property(primaryFilterActivated)]] + !Container.Content(songs) + !Container.Content(seasons) + [!Container.Content(episodes) | [Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated) + IsEmpty(Container.Property(PlexPreplay)]] + ![Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
+					<visible>[!Container.PlexContent(Albums) | [Container.PlexContent(Albums) + [Container.PlexFilter(Albums) | Container.PlexFilter(recentlyAdded)]]] + !Container.PlexContent(Songs) + !Container.PlexContent(Seasons) + [!Container.PlexContent(Episodes) | [Container.PlexContent(Episodes) + !IsEmpty(Container.Property(primaryFilterActivated)) + IsEmpty(Container.Property(PlexPreplay))]] + ![Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode) | ListItem.Type(album)]]</visible>
 				</control>
 				<!-- Now Playing -->
 				<control type="button" id="103">
@@ -499,7 +499,7 @@
 					<texturenofocus>b-pp-play.png</texturenofocus>
 					<onclick>Plex.PlayAll()</onclick>
 					<include>leftMenuBarButton</include>
-					<visible>!Container.Content(songs) + !Container.Content(photos)</visible>
+					<visible>!Container.PlexContent(Songs) + !Container.PlexContent(Photos) + ![Window.IsActive(501) + Container.PlexFilter(recentlyAdded)] + !Container.PlexFilter(recentlyViewedShows)</visible>
 				</control>
 				<!-- Shuffle All -->
 				<control type="button" id="105">
@@ -507,12 +507,12 @@
 					<texturenofocus>left-menu-shuffle-icon-u.png</texturenofocus>
 					<onclick>Plex.ShuffleAll()</onclick>
 					<include>leftMenuBarButton</include>
-					<visible>!Container.Content(photos)</visible>
+					<visible>!Container.PlexContent(Photos) + ![Window.IsActive(501) + Container.PlexFilter(recentlyAdded)] + !Container.PlexFilter(recentlyViewedShows)</visible>
 				</control>
 			</control>
 			<!-- sidebar preplay -->
 			<control type="grouplist" id="998">
-				<visible>[Container.Content(movie) | Container.Content(episode) | Container.Content(clip) | [Container.Content(channel) + [ListItem.Type(movie) | ListItem.Type(clip)]]] + !Container.Content(channel)</visible>
+				<visible>[Container.PlexContent(Movie) | Container.PlexContent(Episode) | Container.PlexContent(Clip) | [Container.PlexContent(Channel) + [ListItem.Type(movie) | ListItem.Type(clip)]]] + !Container.PlexContent(Channel)</visible>
 				<posy>40</posy>
 				<posx>0</posx>
 				<width>74</width>
@@ -525,6 +525,8 @@
 				<control type="button" id="102">
 					<texturefocus>b-pp-play-s.png</texturefocus>
 					<texturenofocus>b-pp-play.png</texturenofocus>
+					<onright>XBMC.NextItem</onright>
+					<onleft>XBMC.PrevItem</onleft>
 					<onclick>Plex.PlayWith(VideoDefaultPlayer)</onclick>
 					<include>leftMenuBarButton</include>
 				</control>
@@ -532,6 +534,8 @@
 				<control type="button" id="103">
 					<texturefocus>b-pp-audio-s2.png</texturefocus>
 					<texturenofocus>b-pp-audio2.png</texturenofocus>
+					<onright>XBMC.NextItem</onright>
+					<onleft>XBMC.PrevItem</onleft>
 					<onclick>ActivateWindow(10205)</onclick>
 					<include>leftMenuBarButton</include>
 					<onfocus>Skin.SetString(DialogPos,audiostreampicker)</onfocus>
@@ -541,6 +545,8 @@
 				<control type="button" id="104">
 					<texturefocus>b-pp-subtitles-s.png</texturefocus>
 					<texturenofocus>b-pp-subtitles.png</texturenofocus>
+					<onright>XBMC.NextItem</onright>
+					<onleft>XBMC.PrevItem</onleft>
 					<onclick>ActivateWindow(10204)</onclick>
 					<include>leftMenuBarButton</include>
 					<onfocus>Skin.SetString(DialogPos,subtitlestreampicker)</onfocus>
@@ -550,6 +556,8 @@
 				<control type="button" id="105">
 					<texturefocus>b-pp-rate-s.png</texturefocus>
 					<texturenofocus>b-pp-rate.png</texturenofocus>
+					<onright>XBMC.NextItem</onright>
+					<onleft>XBMC.PrevItem</onleft>
 					<onclick>ActivateWindow(10200,$INFO[ListItem(0).Path])</onclick>
 					<include>leftMenuBarButton</include>
 					<onfocus>Skin.SetString(DialogPos,rate)</onfocus>
@@ -570,6 +578,8 @@
 				<control type="button" id="107">
 					<texturefocus>b-pp-share-s.png</texturefocus>
 					<texturenofocus>b-pp-share.png</texturenofocus>
+					<onright>XBMC.NextItem</onright>
+					<onleft>XBMC.PrevItem</onleft>
 					<include>leftMenuBarButton</include>
 					<visible>!IsEmpty(ListItem(0).Property(canShare))</visible>
 					<onfocus>Skin.SetString(DialogPos,share)</onfocus>
@@ -579,6 +589,8 @@
 				<control type="button" id="108">
 					<texturefocus>b-pp-watched-s.png</texturefocus>
 					<texturenofocus>b-pp-watched.png</texturenofocus>
+					<onright>XBMC.NextItem</onright>
+					<onleft>XBMC.PrevItem</onleft>
 					<onclick>markasunwatched</onclick>
 					<include>leftMenuBarButton</include>
 				</control>
@@ -586,6 +598,8 @@
 				<control type="button" id="109">
 					<texturefocus>b-pp-unwatched-s.png</texturefocus>
 					<texturenofocus>b-pp-unwatched.png</texturenofocus>
+					<onright>XBMC.NextItem</onright>
+					<onleft>XBMC.PrevItem</onleft>
 					<onclick>markaswatched</onclick>
 					<include>leftMenuBarButton</include>
 				</control>
@@ -623,7 +637,7 @@
 					<ondown>29999</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,0" time="0" condition="Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,0" time="0" condition="Container.PlexContent(Movies)">Conditional</animation>
 				</control>
 				<!-- secondary filters list title -->
 				<control type="label" id="19009">
@@ -632,8 +646,8 @@
 					<posx>255</posx>
 					<include>leftMenuTitle</include>
 					<label>FILTER</label>
-					<animation effect="slide" end="0,-107" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-20" time="0" condition="Skin.String(SectionType,tvshows) | Container.Content(tvshows)">Conditional</animation>
+					<animation effect="slide" end="0,-107" time="0" condition="Skin.String(SectionType,movies) | Container.PlexContent(Movies)">Conditional</animation>
+					<animation effect="slide" end="0,-20" time="0" condition="Skin.String(SectionType,tvshows) | Container.PlexContent(TVShows)">Conditional</animation>
 					<animation effect="slide" end="0,-115" time="0" condition="Skin.String(SectionType,photos) | Window.IsVisible(2)">Conditional</animation>
 					<animation effect="slide" end="0,-95" time="0" condition="Skin.String(SectionType,music) | Window.IsVisible(501)">Conditional</animation>
 					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
@@ -646,8 +660,8 @@
 					<ondown>32000</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,-107" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-20" time="0" condition="Skin.String(SectionType,tvshows) | Container.Content(tvshows)">Conditional</animation>
+					<animation effect="slide" end="0,-107" time="0" condition="Skin.String(SectionType,movies) | Container.PlexContent(Movies)">Conditional</animation>
+					<animation effect="slide" end="0,-20" time="0" condition="Skin.String(SectionType,tvshows) | Container.PlexContent(TVShows)">Conditional</animation>
 					<animation effect="slide" end="0,-115" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
 					<animation effect="slide" end="0,-95" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
 				</control>
@@ -679,10 +693,10 @@
 					<posx>255</posx>
 					<include>leftMenuTitle</include>
 					<label>SORT</label>
-					<animation effect="slide" end="0,-40" time="0" condition="[Skin.String(SectionType,movies) | Container.Content(movies)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
-					<animation effect="slide" end="0,-20" time="0" condition="[Skin.String(SectionType,movies) | Container.Content(movies)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
-					<animation effect="slide" end="0,-60" time="0" condition="[Skin.String(SectionType,tvshows) | Container.Content(tvshows)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
-					<animation effect="slide" end="0,-40" time="0" condition="[Skin.String(SectionType,tvshows) | Container.Content(tvshows)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-40" time="0" condition="[Skin.String(SectionType,movies) | Container.PlexContent(Movies)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-20" time="0" condition="[Skin.String(SectionType,movies) | Container.PlexContent(Movies)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-60" time="0" condition="[Skin.String(SectionType,tvshows) | Container.PlexContent(TVShows)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-40" time="0" condition="[Skin.String(SectionType,tvshows) | Container.PlexContent(TVShows)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
 					<animation effect="slide" end="0,-85" time="0" condition="[Skin.String(SectionType,photos) | Window.IsActive(2)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
 					<animation effect="slide" end="0,-65" time="0" condition="[Skin.String(SectionType,photos) | Window.IsActive(2)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
 					<animation effect="slide" end="0,-210" time="0" condition="[Skin.String(SectionType,music) | Window.IsActive(501)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
@@ -697,10 +711,10 @@
 					<ondown>30000</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,-40" time="0" condition="[Skin.String(SectionType,movies) | Container.Content(movies)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
-					<animation effect="slide" end="0,-20" time="0" condition="[Skin.String(SectionType,movies) | Container.Content(movies)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
-					<animation effect="slide" end="0,-60" time="0" condition="[Skin.String(SectionType,tvshows) | Container.Content(tvshows)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
-					<animation effect="slide" end="0,-40" time="0" condition="[Skin.String(SectionType,tvshows) | Container.Content(tvshows)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-40" time="0" condition="[Skin.String(SectionType,movies) | Container.PlexContent(Movies)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-20" time="0" condition="[Skin.String(SectionType,movies) | Container.PlexContent(Movies)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-60" time="0" condition="[Skin.String(SectionType,tvshows) | Container.PlexContent(TVShows)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-40" time="0" condition="[Skin.String(SectionType,tvshows) | Container.PlexContent(TVShows)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
 					<animation effect="slide" end="0,-85" time="0" condition="[Skin.String(SectionType,photos) | Window.IsActive(2)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
 					<animation effect="slide" end="0,-65" time="0" condition="[Skin.String(SectionType,photos) | Window.IsActive(2)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
 					<animation effect="slide" end="0,-210" time="0" condition="[Skin.String(SectionType,music) | Window.IsActive(501)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
