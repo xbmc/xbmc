@@ -194,17 +194,21 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
   }
 
   // test if seeking is supported
-  if (Seek(1) != DVD_NOPTS_VALUE)
+  m_bCanSeek = false;
+  if (m_pInputStream->Seek(0, SEEK_POSSIBLE))
   {
-    // rewind stream to beginning
-    Seek(0);
-    m_bCanSeek = true;
-  }
-  else
-  {
+    // reset eof flag of stream, with eof set seek returns always success
     m_pInputStream->Seek(0, SEEK_SET);
-    m_pDemuxer->Reset();
-    m_bCanSeek = false;
+    if (Seek(1) != DVD_NOPTS_VALUE)
+    {
+      // rewind stream to beginning
+      Seek(0);
+    }
+    else
+    {
+      m_pInputStream->Seek(0, SEEK_SET);
+      m_pDemuxer->Reset();
+    }
   }
 
   if (m_Channels == 0) // no data - just guess and hope for the best
