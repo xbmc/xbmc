@@ -30,24 +30,29 @@
 
 using namespace XFILE;
 
-#define BUFFER_MAX 4096
-
 CArchive::CArchive(CFile* pFile, int mode)
 {
   m_pFile = pFile;
   m_iMode = mode;
 
-  m_pBuffer = new uint8_t[BUFFER_MAX];
-  memset(m_pBuffer, 0, BUFFER_MAX);
-
-  m_BufferPos = 0;
+  m_pBuffer = new uint8_t[CARCHIVE_BUFFER_MAX];
+  memset(m_pBuffer, 0, CARCHIVE_BUFFER_MAX);
+  if (mode == load)
+  {
+    m_BufferPos = m_pBuffer + CARCHIVE_BUFFER_MAX;
+    m_BufferRemain = 0;
+  }
+  else
+  {
+    m_BufferPos = m_pBuffer;
+    m_BufferRemain = CARCHIVE_BUFFER_MAX;
+  }
 }
 
 CArchive::~CArchive()
 {
   FlushBuffer();
   delete[] m_pBuffer;
-  m_BufferPos = 0;
 }
 
 void CArchive::Close()
@@ -214,89 +219,6 @@ CArchive& CArchive::operator<<(const std::vector<int>& iArray)
   return *this;
 }
 
-inline CArchive& CArchive::streamout(const void* dataPtr, size_t size)
-{
-  const uint8_t* ptr = (const uint8_t*)dataPtr;
-
-  if (size + m_BufferPos >= BUFFER_MAX)
-  {
-    FlushBuffer();
-    while (size >= BUFFER_MAX)
-    {
-      memcpy(m_pBuffer, ptr, BUFFER_MAX);
-      m_BufferPos = BUFFER_MAX;
-      ptr += BUFFER_MAX;
-      size -= BUFFER_MAX;
-      FlushBuffer();
-    }
-  }
-
-  memcpy(m_pBuffer + m_BufferPos, ptr, size);
-  m_BufferPos += size;
-
-  return *this;
-}
-
-CArchive& CArchive::operator>>(float& f)
-{
-  return streamin(&f, sizeof(f));
-}
-
-CArchive& CArchive::operator>>(double& d)
-{
-  return streamin(&d, sizeof(d));
-}
-
-CArchive& CArchive::operator>>(short int& s)
-{
-  return streamin(&s, sizeof(s));
-}
-
-CArchive& CArchive::operator>>(unsigned short int& us)
-{
-  return streamin(&us, sizeof(us));
-}
-
-CArchive& CArchive::operator>>(int& i)
-{
-  return streamin(&i, sizeof(i));
-}
-
-CArchive& CArchive::operator>>(unsigned int& ui)
-{
-  return streamin(&ui, sizeof(ui));
-}
-
-CArchive& CArchive::operator>>(long int& l)
-{
-  return streamin(&l, sizeof(l));
-}
-
-CArchive& CArchive::operator>>(unsigned long int& ul)
-{
-  return streamin(&ul, sizeof(ul));
-}
-
-CArchive& CArchive::operator>>(long long int& ll)
-{
-  return streamin(&ll, sizeof(ll));
-}
-
-CArchive& CArchive::operator>>(unsigned long long int& ull)
-{
-  return streamin(&ull, sizeof(ull));
-}
-
-CArchive& CArchive::operator>>(bool& b)
-{
-  return streamin(&b, sizeof(b));
-}
-
-CArchive& CArchive::operator>>(char& c)
-{
-  return streamin(&c, sizeof(c));
-}
-
 CArchive& CArchive::operator>>(std::string& str)
 {
   size_t iLength = 0;
@@ -450,23 +372,61 @@ CArchive& CArchive::operator>>(std::vector<int>& iArray)
   return *this;
 }
 
-inline CArchive& CArchive::streamin(void* dataPtr, const size_t size)
+void CArchive::FlushBuffer()
 {
-  size_t read = m_pFile->Read(dataPtr, size);
-  if (read < size)
+  if (m_iMode == store && m_BufferPos != m_pBuffer)
   {
-    CLog::Log(LOGERROR, "%s: can't stream out: requested %lu bytes, was read %lu bytes", __FUNCTION__, (unsigned long)size, (unsigned long)read);
-    memset(dataPtr, 0, size);
+    m_pFile->Write(m_pBuffer, m_BufferPos - m_pBuffer);
+    m_BufferPos = m_pBuffer;
+    m_BufferRemain = CARCHIVE_BUFFER_MAX;
   }
+}
 
+CArchive &CArchive::streamout_bufferwrap(const uint8_t *ptr, size_t size)
+{
+  do
+  {
+    size_t chunkSize = std::min(size, m_BufferRemain);
+    m_BufferPos = std::copy(ptr, ptr + chunkSize, m_BufferPos);
+    ptr += chunkSize;
+    size -= chunkSize;
+    m_BufferRemain -= chunkSize;
+    if (m_BufferRemain == 0)
+      FlushBuffer();
+  } while (size > 0);
   return *this;
 }
 
-void CArchive::FlushBuffer()
+void CArchive::FillBuffer()
 {
-  if (m_BufferPos > 0)
+  if (m_iMode == load && m_BufferRemain == 0)
   {
-    m_pFile->Write(m_pBuffer, m_BufferPos);
-    m_BufferPos = 0;
+    m_BufferRemain = m_pFile->Read(m_pBuffer, CARCHIVE_BUFFER_MAX);
+    m_BufferPos = m_pBuffer;
   }
+}
+
+CArchive &CArchive::streamin_bufferwrap(uint8_t *ptr, size_t size)
+{
+  uint8_t *orig_ptr = ptr;
+  size_t orig_size = size;
+  do
+  {
+    if (m_BufferRemain == 0)
+    {
+      FillBuffer();
+      if (m_BufferRemain < CARCHIVE_BUFFER_MAX && m_BufferRemain < size)
+      {
+        CLog::Log(LOGERROR, "%s: can't stream in: requested %lu bytes, was read %lu bytes", __FUNCTION__, (unsigned long) orig_size, (unsigned long) (ptr - orig_ptr + m_BufferRemain));
+        memset(orig_ptr, 0, orig_size);
+        return *this;
+      }
+    }
+    size_t chunkSize = std::min(size, m_BufferRemain);
+    ptr = std::copy(m_BufferPos, m_BufferPos + chunkSize, ptr);
+    m_BufferPos += chunkSize;
+    m_BufferRemain -= chunkSize;
+    size -= chunkSize;
+  } while (size > 0);
+  return *this;
 }
