@@ -25,7 +25,6 @@
 
 #include "system_gl.h"
 #include <GL/glx.h>
-#include <SDL/SDL.h>
 
 #include "windowing/WinSystem.h"
 #include "utils/Stopwatch.h"
@@ -49,11 +48,14 @@ public:
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
   virtual void UpdateResolutions();
   virtual int  GetNumScreens() { return 1; }
+  virtual int  GetCurrentScreen() { return m_nScreen; }
   virtual void ShowOSMouse(bool show);
   virtual void ResetOSScreensaver();
   virtual bool EnableFrameLimiter();
+  virtual void EnableSystemScreenSaver(bool bEnable);
 
   virtual void NotifyAppActiveChange(bool bActivated);
+  virtual void NotifyAppFocusChange(bool bGaining);
 
   virtual bool Minimize();
   virtual bool Restore() ;
@@ -61,34 +63,46 @@ public:
   virtual bool Show(bool raise = true);
   virtual void Register(IDispResource *resource);
   virtual void Unregister(IDispResource *resource);
+  virtual bool HasCalibration(const RESOLUTION_INFO &resInfo);
 
   // Local to WinSystemX11 only
   Display*  GetDisplay() { return m_dpy; }
   GLXWindow GetWindow() { return m_glWindow; }
   GLXContext GetGlxContext() { return m_glContext; }
-  virtual void OnSettingChanged(const CSetting *setting);
+  void NotifyXRREvent();
+  void GetConnectedOutputs(std::vector<CStdString> *outputs);
+  bool IsCurrentOutput(CStdString output);
 
 protected:
-  bool RefreshGlxContext();
+  bool RefreshGlxContext(bool force);
   void CheckDisplayEvents();
   void OnLostDevice();
+  bool SetWindow(int width, int height, bool fullscreen, const std::string &output);
 
-  SDL_Surface* m_SDLSurface;
+  Window       m_glWindow, m_mainWindow;
   GLXContext   m_glContext;
-  GLXWindow    m_glWindow;
-  Window       m_wmWindow;
   Display*     m_dpy;
+  Cursor       m_invisibleCursor;
+  Pixmap       m_icon;
+  bool         m_bIsRotated;
   bool         m_bWasFullScreenBeforeMinimize;
   bool         m_minimized;
+  bool         m_bIgnoreNextFocusMessage;
   int          m_RREventBase;
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;
   uint64_t                     m_dpyLostTime;
+  std::string                  m_currentOutput;
+  std::string                  m_userOutput;
+  bool                         m_windowDirty;
+  bool                         m_bIsInternalXrr;
+  bool                         m_newGlContext;
 
 private:
   bool IsSuitableVisual(XVisualInfo *vInfo);
   static int XErrorHandler(Display* dpy, XErrorEvent* error);
-  void SetGrabMode(const CSetting *setting = NULL);
+  bool CreateIconPixmap();
+  bool HasWindowManager();
 
   CStopWatch m_screensaverReset;
 };

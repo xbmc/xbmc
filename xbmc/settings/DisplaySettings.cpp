@@ -264,6 +264,34 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
         m_resolutionChangeAborted = false;
     }
   }
+  else if (settingId == "videoscreen.monitor")
+  {
+    g_Windowing.UpdateResolutions();
+    RESOLUTION newRes = GetResolutionForScreen();
+
+    SetCurrentResolution(newRes, false);
+    g_graphicsContext.SetVideoResolution(newRes, true);
+
+    if (!m_resolutionChangeAborted)
+    {
+      bool cancelled = false;
+      if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 10000))
+      {
+        m_resolutionChangeAborted = true;
+        return false;
+      }
+    }
+    else
+      m_resolutionChangeAborted = false;
+
+    return true;
+  }
+#if defined(HAS_GLX)
+  else if (settingId == "videoscreen.blankdisplays")
+  {
+    g_Windowing.UpdateResolutions();
+  }
+#endif
 
   return true;
 }
@@ -641,6 +669,10 @@ void CDisplaySettings::SettingOptionsScreensFiller(const CSetting *setting, std:
   if (g_advancedSettings.m_canWindowed)
     list.push_back(make_pair(g_localizeStrings.Get(242), DM_WINDOWED));
 
+#if defined(HAS_GLX)
+  list.push_back(make_pair(g_localizeStrings.Get(244), 0));
+#else
+
   for (int idx = 0; idx < g_Windowing.GetNumScreens(); idx++)
   {
     int screen = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP + idx).iScreen;
@@ -655,6 +687,7 @@ void CDisplaySettings::SettingOptionsScreensFiller(const CSetting *setting, std:
     RESOLUTION_INFO resInfo = CDisplaySettings::Get().GetResolutionInfo(res);
     current = resInfo.iScreen;
   }
+#endif
 }
 
 void CDisplaySettings::SettingOptionsVerticalSyncsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
@@ -682,4 +715,31 @@ void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(const 
 {
   SettingOptionsStereoscopicModesFiller(setting, list, current);
   list.push_back(make_pair(g_localizeStrings.Get(36525), RENDER_STEREO_MODE_AUTO)); // option for autodetect
+}
+
+void CDisplaySettings::SettingOptionsMonitorsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+{
+#if defined(HAS_GLX)
+  std::vector<CStdString> monitors;
+  g_Windowing.GetConnectedOutputs(&monitors);
+  std::string currentMonitor = CSettings::Get().GetString("videoscreen.monitor");
+  for (unsigned int i=0; i<monitors.size(); ++i)
+  {
+    if(currentMonitor.compare("Default") != 0 &&
+       CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strOutput.Equals(monitors[i]))
+    {
+      current = monitors[i];
+    }
+    list.push_back(make_pair(monitors[i], monitors[i]));
+  }
+#endif
+}
+
+void CDisplaySettings::ClearCustomResolutions()
+{
+  if (m_resolutions.size() > RES_CUSTOM)
+  {
+    std::vector<RESOLUTION_INFO>::iterator firstCustom = m_resolutions.begin()+RES_CUSTOM;
+    m_resolutions.erase(firstCustom, m_resolutions.end());
+  }
 }
