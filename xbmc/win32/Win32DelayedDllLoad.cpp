@@ -48,12 +48,6 @@ FARPROC WINAPI delayHookNotifyFunc (unsigned dliNotify, PDelayLoadInfo pdli)
         HMODULE hMod = LoadLibraryEx(strDll.c_str(), 0, LOAD_WITH_ALTERED_SEARCH_PATH);
         return (FARPROC)hMod;
       }
-      if (stricmp(pdli->szDll, "libsamplerate-0.dll") == 0)
-      {
-        std::string strDll = CSpecialProtocol::TranslatePath("special://xbmcbin/system/libsamplerate-0.dll");
-        HMODULE hMod = LoadLibraryEx(strDll.c_str(), 0, LOAD_WITH_ALTERED_SEARCH_PATH);
-        return (FARPROC)hMod;
-      }
       if (stricmp(pdli->szDll, "dnssd.dll") == 0)
       {
         std::string strDll = CSpecialProtocol::TranslatePath("special://xbmcbin/system/dnssd.dll");

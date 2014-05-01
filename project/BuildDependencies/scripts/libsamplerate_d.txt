@@ -1,3 +1,0 @@
-; filename                          	mirror of the file									source of the file
-libsamplerate-vc100-0.1.7-lib.tar.bz2   http://mirrors.xbmc.org/build-deps/win32/			http://winkde.org/pub/kde/ports/win32/releases/stable/4.5.4/libsamplerate-vc100-0.1.7-lib.tar.bz2
-libsamplerate-vc100-0.1.7-bin.tar.bz2   http://mirrors.xbmc.org/build-deps/win32/			http://winkde.org/pub/kde/ports/win32/releases/stable/4.5.4/libsamplerate-vc100-0.1.7-bin.tar.bz2
