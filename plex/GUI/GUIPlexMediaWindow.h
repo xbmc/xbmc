@@ -19,7 +19,7 @@
 #include "Filters/PlexSectionFilter.h"
 #include "guilib/GUIButtonControl.h"
 #include "PlexNavigationHelper.h"
-#include "gtest/gtest.h"
+#include "gtest/gtest_prod.h"
 
 #define FILTER_PRIMARY_CONTAINER     19000
 #define FILTER_SECONDARY_CONTAINER   19001

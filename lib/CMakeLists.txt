@@ -39,6 +39,5 @@ endif()
 
 if(ENABLE_TESTING)
   include_directories(gtest gtest/include)
-  find_all_sources(gtest/src GTEST_SRC)
-  add_library(gtest STATIC ${GTEST_SRC})
+  add_library(gtest STATIC gtest/src/gtest-all.cc gtest/src/gtest_main.cc)
 endif(ENABLE_TESTING)
