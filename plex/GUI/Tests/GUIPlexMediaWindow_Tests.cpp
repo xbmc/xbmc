@@ -91,6 +91,7 @@ class PlexMediaWindowUniformPropertyTest : public PlexMediaWindowTests
       item->GetMusicInfoTag()->SetAlbum("album");
       item->GetMusicInfoTag()->SetArtist("artist");
       mw->GetVecItems()->Add(item);
+      mw->GetVecItems()->SetPlexDirectoryType(PLEX_DIR_TYPE_ALBUM);
     }
   }
 };

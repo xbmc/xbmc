@@ -1369,15 +1369,11 @@ bool CGUIPlexMediaWindow::CanFilterAdvanced()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::MatchUniformProperty(const CStdString& property)
 {
-  if (!IsMusicContainer())
+  if (!IsMusicContainer() || !m_vecItems)
     return false;
 
   if (property != "artist" && property != "album")
     return false;
-
-  CStdString cacheKey = "__cached_up_" + property;
-  if (m_vecItems->HasProperty(cacheKey))
-    return m_vecItems->GetProperty(cacheKey).asBoolean();
 
   bool same = true;
   CStdString lastVal;
@@ -1391,7 +1387,7 @@ bool CGUIPlexMediaWindow::MatchUniformProperty(const CStdString& property)
 
     if (item->HasMusicInfoTag())
     {
-      if (property == "artist")
+      if (property == "artist" && item->GetMusicInfoTag()->GetArtist().size() > 0)
         value = item->GetMusicInfoTag()->GetArtist()[0];
       else if (property == "album")
         value = item->GetMusicInfoTag()->GetAlbum();
@@ -1406,6 +1402,5 @@ bool CGUIPlexMediaWindow::MatchUniformProperty(const CStdString& property)
     lastVal = value;
   }
 
-  m_vecItems->SetProperty(cacheKey, same);
   return same;
 }
