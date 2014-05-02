@@ -285,7 +285,7 @@
 	<include name="leftMenuBarButton">
 		<width>74</width>
 		<height>30</height>
-		<onleft condition="[!Container.PlexContent(Albums) | [Container.PlexContent(Albums) + [Container.PlexFilter(Albums) | Container.PlexFilter(recentlyAdded)]]] + !Container.PlexContent(Songs) + !Container.PlexContent(Movie) + !Container.PlexContent(Seasons) + [!Container.PlexContent(Episodes) | [Container.PlexContent(Episodes) + !IsEmpty(Container.Property(primaryFilterActivated)) + IsEmpty(Container.Property(PlexPreplay))]] + !Container.PlexContent(Episode) + !Container.PlexContent(Clip) + ![Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode) | ListItem.Type(album)]]">1300</onleft>
+		<onleft condition="[!Container.PlexContent(Albums) | [Container.PlexContent(Albums) + [Container.PlexFilter(Albums) | Container.PlexFilter(recentlyAdded)]]] + !Container.PlexContent(Songs) + !Container.PlexContent(Movie) + !Container.PlexContent(Seasons) + [!Container.PlexContent(Episodes) | [Container.PlexContent(Episodes) + !IsEmpty(Container.Property(primaryFilterActivated)) + IsEmpty(Container.Property(PlexPreplay))]] + !Container.PlexContent(Episode) + !Container.PlexContent(Clip) + ![Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode) | ListItem.Type(song)]]">1300</onleft>
 		<onright>777</onright>
 	</include>
 	<!-- Home menu -->
@@ -459,8 +459,8 @@
 	</include>
 	<!-- Library menu -->
 	<include name="LeftSideMenu">
-		<control type="group">
-			<visible>[!Container.PlexContent(Channel) | [Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode) | ListItem.Type(album)]]]</visible>
+		<control type="group" id="995">
+			<visible allowhiddenfocus="false">[!Container.PlexContent(Channel) | [Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode) | ListItem.Type(song)]]] + !Container.PlexContent(Movie) + !Container.PlexContent(Episode) + !Container.PlexContent(Clip)</visible>
 			<include>leftMenuInitSlide</include>
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
@@ -468,7 +468,7 @@
 			<!--><include>GlobalSearch</include>-->
 			<!-- sidebar global -->
 			<control type="grouplist" id="998">
-				<visible>!Container.PlexContent(Movie) + !Container.PlexContent(Episode) + !Container.PlexContent(Clip)</visible>
+				<visible>Control.IsVisible(995)</visible>
 				<posy>40</posy>
 				<posx>0</posx>
 				<width>74</width>
@@ -483,7 +483,7 @@
 					<texturenofocus>left-menu-filters-icon-u.png</texturenofocus>
 					<onclick>Control.SetFocus(1300)</onclick>
 					<include>leftMenuBarButton</include>
-					<visible>[!Container.PlexContent(Albums) | [Container.PlexContent(Albums) + [Container.PlexFilter(Albums) | Container.PlexFilter(recentlyAdded)]]] + !Container.PlexContent(Songs) + !Container.PlexContent(Seasons) + [!Container.PlexContent(Episodes) | [Container.PlexContent(Episodes) + !IsEmpty(Container.Property(primaryFilterActivated)) + IsEmpty(Container.Property(PlexPreplay))]] + ![Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode) | ListItem.Type(album)]]</visible>
+					<visible>[!Container.PlexContent(Albums) | [Container.PlexContent(Albums) + [Container.PlexFilter(Albums) | Container.PlexFilter(recentlyAdded)]]] + !Container.PlexContent(Songs) + !Container.PlexContent(Seasons) + [!Container.PlexContent(Episodes) | [Container.PlexContent(Episodes) + !IsEmpty(Container.Property(primaryFilterActivated)) + IsEmpty(Container.Property(PlexPreplay))]] + ![Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode) | ListItem.Type(song)]]</visible>
 				</control>
 				<!-- Now Playing -->
 				<control type="button" id="103">

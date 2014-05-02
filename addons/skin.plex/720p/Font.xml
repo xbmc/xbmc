@@ -101,6 +101,16 @@
 			<filename>PlexFont-Regular.ttf</filename>
 			<size>30</size>
 		</font>
+		<font>
+			<name>Regular-32</name>
+			<filename>PlexFont-Regular.ttf</filename>
+			<size>32</size>
+		</font>
+		<font>
+			<name>Regular-34</name>
+			<filename>PlexFont-Regular.ttf</filename>
+			<size>34</size>
+		</font>
 		<!-- Bold -->
 		<font>
 			<name>Bold-10</name>
