@@ -608,6 +608,7 @@ protected:
   } m_DisplayState;
   CCriticalSection m_DecoderSection;
   CEvent         m_DisplayEvent;
+  int m_ErrorCount;
 
   ThreadIdentifier m_decoderThread;
   bool          m_vdpauConfigured;
