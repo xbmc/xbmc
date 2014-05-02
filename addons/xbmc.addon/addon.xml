@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.addon" version="13.9.1" provider-name="Team XBMC">
+<addon id="xbmc.addon" version="13.9.701" provider-name="Team XBMC">
   <backwards-compatibility abi="12.0"/>
   <requires>
     <import addon="xbmc.core" version="0.1.0"/>
