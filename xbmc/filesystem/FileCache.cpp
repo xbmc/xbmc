@@ -347,7 +347,12 @@ retry:
   if (iRc == CACHE_RC_WOULD_BLOCK)
   {
     // just wait for some data to show up
+#ifndef __PLEX__
     iRc = m_pCache->WaitForData(1, 10000);
+#else
+    /* wait 30 seconds, some NAS devices can take quite a while to wake up */
+    iRc = m_pCache->WaitForData(1, 30 * 1000);
+#endif
     if (iRc > 0)
       goto retry;
     /* PLEX */
