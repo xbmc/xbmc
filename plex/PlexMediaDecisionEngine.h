@@ -13,34 +13,45 @@
 #include "FileSystem/PlexDirectory.h"
 #include "threads/Thread.h"
 #include "filesystem/CurlFile.h"
+#include "Job.h"
 
-class CPlexMediaDecisionEngine : public CThread
+class CPlexMediaDecisionJob : public CJob
 {
-  public:
-    CPlexMediaDecisionEngine() : CThread("MediaDecision"), m_success(false) {}
-    void Cancel();
+public:
+  CPlexMediaDecisionJob(const CFileItem& item) : m_item(item), m_success(false), m_bStop(false)
+  {
+  }
+  virtual void Cancel();
+  virtual bool DoWork();
+  CFileItem m_choosenMedia;
 
-    CFileItem m_choosenMedia;
-    bool m_success;
+private:
+  CStdString GetPartURL(CFileItemPtr mediaPart);
+  CFileItemPtr ResolveIndirect(CFileItemPtr item);
+  void AddHeaders();
 
-    bool BlockAndResolve(const CFileItem &item, CFileItem &resolvedItem);
-    static void ProcessStack(const CFileItem& item, const CFileItemList& stack);
-    static CFileItemPtr getSelectedMediaItem(const CFileItem& item);
-    static CFileItemPtr getMediaPart(const CFileItem &item, int partId = -1);
+  bool m_success;
+  XFILE::CPlexDirectory m_dir;
+  XFILE::CCurlFile m_http;
 
-  private:
-    virtual void Process();
-    CStdString GetPartURL(CFileItemPtr mediaPart);
+  CFileItem m_item;
+  CEvent m_done;
+  bool m_bStop;
+};
 
-    void ChooseMedia();
-    CFileItemPtr ResolveIndirect(CFileItemPtr item);
-    void AddHeaders();
+class CPlexMediaDecisionEngine : public IJobCallback
+{
+public:
+  bool resolveItem(const CFileItem& item, CFileItem& resolvedItem);
+  static void ProcessStack(const CFileItem& item, const CFileItemList& stack);
+  static CFileItemPtr getSelectedMediaItem(const CFileItem& item);
+  static CFileItemPtr getMediaPart(const CFileItem& item, int partId = -1);
 
-    XFILE::CPlexDirectory m_dir;
-    XFILE::CCurlFile m_http;
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob* job);
 
-    CFileItem m_item;
-    CEvent m_done;
+private:
+  bool m_success;
+  CFileItem m_resolvedItem;
 };
 
 #endif /* defined(__Plex_Home_Theater__PlexMediaDecisionEngine__) */

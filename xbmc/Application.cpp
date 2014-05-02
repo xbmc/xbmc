@@ -4253,7 +4253,7 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
   {
     CFileItem newItem;
     CPlexMediaDecisionEngine plexMDE;
-    if (plexMDE.BlockAndResolve(item, newItem))
+    if (plexMDE.resolveItem(item, newItem))
     {
       newItem.SetProperty("viewOffset", item.GetProperty("viewOffset"));
       newItem.m_lStartOffset = item.m_lStartOffset;
