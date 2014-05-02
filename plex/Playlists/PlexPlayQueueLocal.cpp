@@ -3,6 +3,7 @@
 #include "JobManager.h"
 #include "URL.h"
 #include "ApplicationMessenger.h"
+#include "PlexApplication.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexPlayQueueLocal::CPlexPlayQueueLocal(const CPlexServerPtr& server) : m_server(server)
@@ -13,8 +14,8 @@ void CPlexPlayQueueLocal::create(const CFileItem& container, const CStdString& u
                                  const CStdString& startItemKey, bool shuffle)
 {
   CURL containerURL(container.GetPath());
-  CJobManager::GetInstance().AddJob(new CPlexPlayQueueFetchJob(containerURL, true, shuffle,
-                                                               startItemKey), this);
+  g_plexApplication.busy.blockWaitingForJob(new CPlexPlayQueueFetchJob(containerURL, true, shuffle,
+                                                                       startItemKey), this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +53,8 @@ int CPlexPlayQueueLocal::getCurrentID()
 void CPlexPlayQueueLocal::get(const CStdString& playQueueID)
 {
   if (m_list && m_list->GetProperty("playQueueID").asString() == playQueueID)
-    CApplicationMessenger::Get().PlexUpdatePlayQueue(PlexUtils::GetMediaTypeFromItem(m_list), false);
+    CApplicationMessenger::Get().PlexUpdatePlayQueue(PlexUtils::GetMediaTypeFromItem(m_list),
+                                                     false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
