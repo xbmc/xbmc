@@ -1369,6 +1369,9 @@ bool CGUIPlexMediaWindow::CanFilterAdvanced()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::MatchUniformProperty(const CStdString& property)
 {
+  if (!IsMusicContainer())
+    return false;
+
   if (property != "artist" && property != "album")
     return false;
 
@@ -1386,10 +1389,13 @@ bool CGUIPlexMediaWindow::MatchUniformProperty(const CStdString& property)
     if (!item)
       continue;
 
-    if (property == "artist")
-      value = item->GetMusicInfoTag()->GetArtist()[0];
-    else if (property == "album")
-      value = item->GetMusicInfoTag()->GetAlbum();
+    if (item->HasMusicInfoTag())
+    {
+      if (property == "artist")
+        value = item->GetMusicInfoTag()->GetArtist()[0];
+      else if (property == "album")
+        value = item->GetMusicInfoTag()->GetAlbum();
+    }
 
     if (!lastVal.empty() && value != lastVal)
     {
