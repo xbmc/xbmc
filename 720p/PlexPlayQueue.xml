@@ -526,6 +526,7 @@
 							<label>$INFO[ListItem.Label]</label>
 							<font>Regular-17</font>
 							<include>White2</include>
+							<selectedcolor>orange</selectedcolor>
 						</control>
 						<control type="label">
 							<posx>505</posx>
@@ -536,6 +537,7 @@
 							<label>$INFO[ListItem.DurationStr]</label>
 							<font>Regular-17</font>
 							<include>White2</include>
+							<selectedcolor>orange</selectedcolor>
 						</control>
 					</itemlayout>
 					<focusedlayout height="49" width="520">
