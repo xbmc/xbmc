@@ -52,7 +52,7 @@ void CPlexPlayQueueServer::sendRequest(const CURL& url, const CStdString& verb, 
   if (!verb.empty())
     job->m_dir.SetHTTPVerb(verb);
 
-  CJobManager::GetInstance().AddJob(job, this);
+  g_plexApplication.busy.blockWaitingForJob(job, this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
