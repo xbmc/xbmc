@@ -146,6 +146,13 @@ CURL CPlexSectionFilter::addFiltersToUrl(const CURL &baseUrl)
 {
   CURL nu(baseUrl);
 
+  if (m_sectionType == PLEX_DIR_TYPE_UNKNOWN)
+  {
+    // filters might not have loaded yet.
+    // so check if we can find a type
+    m_sectionType = g_plexApplication.dataLoader->GetSectionType(nu);
+  }
+
   if (m_sectionType == PLEX_DIR_TYPE_ARTIST &&
       (m_currentPrimaryFilter == "all" || m_currentPrimaryFilter == "albums"))
   {
