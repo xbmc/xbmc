@@ -4,6 +4,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "boost/foreach.hpp"
 #include "log.h"
+#include "Application.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexBusyIndicator::CPlexBusyIndicator()
@@ -22,9 +23,14 @@ bool CPlexBusyIndicator::blockWaitingForJob(CJob* job, IJobCallback* callback)
   lk.Leave();
   m_blockEvent.WaitMSec(300); // wait an initial 300ms if this is a fast operation.
 
-  CGUIDialogBusy* busy = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-  if (busy)
-    busy->Show();
+  CGUIDialogBusy* busy = NULL;
+
+  if (g_application.IsCurrentThread())
+  {
+    busy = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+    if (busy)
+      busy->Show();
+  }
 
   lk.Enter();
 
