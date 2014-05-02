@@ -206,15 +206,15 @@ static void SetupRarOptions(CFileItem& item, const CStdString& path)
 vector<string> CVideoThumbLoader::GetArtTypes(const string &type)
 {
   vector<string> ret;
-  if (type == "episode")
+  if (type == MediaTypeEpisode)
     ret.push_back("thumb");
-  else if (type == "tvshow" || type == "season")
+  else if (type == MediaTypeTvShow || type == MediaTypeSeason)
   {
     ret.push_back("banner");
     ret.push_back("poster");
     ret.push_back("fanart");
   }
-  else if (type == "movie" || type == "musicvideo" || type == "set")
+  else if (type == MediaTypeMovie || type == MediaTypeMusicVideo || type == MediaTypeVideoCollection)
   {
     ret.push_back("poster");
     ret.push_back("fanart");
@@ -266,11 +266,11 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
   {
     FillLibraryArt(*pItem);
 
-    if (!pItem->GetVideoInfoTag()->m_type.empty()         &&
-         pItem->GetVideoInfoTag()->m_type != "movie"      &&
-         pItem->GetVideoInfoTag()->m_type != "tvshow"     &&
-         pItem->GetVideoInfoTag()->m_type != "episode"    &&
-         pItem->GetVideoInfoTag()->m_type != "musicvideo")
+    if (!pItem->GetVideoInfoTag()->m_type.empty()                &&
+         pItem->GetVideoInfoTag()->m_type != MediaTypeMovie      &&
+         pItem->GetVideoInfoTag()->m_type != MediaTypeTvShow     &&
+         pItem->GetVideoInfoTag()->m_type != MediaTypeEpisode    &&
+         pItem->GetVideoInfoTag()->m_type != MediaTypeMusicVideo)
     {
       m_videoDatabase->Close();
       return true; // nothing else to be done
@@ -304,12 +304,12 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
   if (pItem->m_bIsShareOrDrive || pItem->IsParentFolder() || pItem->GetPath() == "add")
     return false;
 
-  if (pItem->HasVideoInfoTag()                         &&
-     !pItem->GetVideoInfoTag()->m_type.empty()         &&
-      pItem->GetVideoInfoTag()->m_type != "movie"      &&
-      pItem->GetVideoInfoTag()->m_type != "tvshow"     &&
-      pItem->GetVideoInfoTag()->m_type != "episode"    &&
-      pItem->GetVideoInfoTag()->m_type != "musicvideo")
+  if (pItem->HasVideoInfoTag()                                &&
+     !pItem->GetVideoInfoTag()->m_type.empty()                &&
+      pItem->GetVideoInfoTag()->m_type != MediaTypeMovie      &&
+      pItem->GetVideoInfoTag()->m_type != MediaTypeTvShow     &&
+      pItem->GetVideoInfoTag()->m_type != MediaTypeEpisode    &&
+      pItem->GetVideoInfoTag()->m_type != MediaTypeMusicVideo)
     return false; // Nothing to do here
 
   DetectAndAddMissingItemData(*pItem);
@@ -418,20 +418,20 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
     m_videoDatabase->Open();
     if (m_videoDatabase->GetArtForItem(tag.m_iDbId, tag.m_type, artwork))
       SetArt(item, artwork);
-    else if (tag.m_type == "artist")
+    else if (tag.m_type == MediaTypeArtist)
     { // we retrieve music video art from the music database (no backward compat)
       CMusicDatabase database;
       database.Open();
       int idArtist = database.GetArtistByName(item.GetLabel());
-      if (database.GetArtForItem(idArtist, "artist", artwork))
+      if (database.GetArtForItem(idArtist, MediaTypeArtist, artwork))
         item.SetArt(artwork);
     }
-    else if (tag.m_type == "album")
+    else if (tag.m_type == MediaTypeAlbum)
     { // we retrieve music video art from the music database (no backward compat)
       CMusicDatabase database;
       database.Open();
       int idAlbum = database.GetAlbumByName(item.GetLabel(), tag.m_artist);
-      if (database.GetArtForItem(idAlbum, "album", artwork))
+      if (database.GetArtForItem(idAlbum, MediaTypeAlbum, artwork))
         item.SetArt(artwork);
     }
     // For episodes and seasons, we want to set fanart for that of the show
@@ -441,7 +441,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
       if (i == m_showArt.end())
       {
         map<string, string> showArt;
-        m_videoDatabase->GetArtForItem(tag.m_iIdShow, "tvshow", showArt);
+        m_videoDatabase->GetArtForItem(tag.m_iIdShow, MediaTypeTvShow, showArt);
         i = m_showArt.insert(make_pair(tag.m_iIdShow, showArt)).first;
       }
       if (i != m_showArt.end())

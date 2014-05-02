@@ -727,7 +727,7 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
   {
     GetVideoInfoTag()->ToSortable(sortable, field);
 
-    if (GetVideoInfoTag()->m_type == "tvshow")
+    if (GetVideoInfoTag()->m_type == MediaTypeTvShow)
     {
       if (field == FieldNumberOfEpisodes && HasProperty("totalepisodes"))
         sortable[FieldNumberOfEpisodes] = GetProperty("totalepisodes");

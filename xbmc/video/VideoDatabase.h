@@ -657,7 +657,7 @@ public:
   bool GetMusicVideosByWhere(const CStdString &baseDir, const Filter &filter, CFileItemList& items, bool checkLocks = true, const SortDescription &sortDescription = SortDescription());
   
   // retrieve sorted and limited items
-  bool GetSortedVideos(MediaType mediaType, const CStdString& strBaseDir, const SortDescription &sortDescription, CFileItemList& items, const Filter &filter = Filter());
+  bool GetSortedVideos(const MediaType &mediaType, const CStdString& strBaseDir, const SortDescription &sortDescription, CFileItemList& items, const Filter &filter = Filter());
 
   // retrieve a list of items
   bool GetItems(const CStdString &strBaseDir, CFileItemList &items, const Filter &filter = Filter(), const SortDescription &sortDescription = SortDescription());
@@ -675,30 +675,30 @@ public:
     switch (type)
     {
     case VIDEODB_CONTENT_MOVIES:
-      out = "movie";
+      out = MediaTypeMovie;
       break;
     case VIDEODB_CONTENT_TVSHOWS:
-      out = "tvshow";
+      out = MediaTypeTvShow;
       break;
     case VIDEODB_CONTENT_EPISODES:
-      out = "episode";
+      out = MediaTypeEpisode;
       break;
     case VIDEODB_CONTENT_MUSICVIDEOS:
-      out = "musicvideo";
+      out = MediaTypeMusicVideo;
       break;
     default:
       break;
     }
   }
 
-  void SetArtForItem(int mediaId, const std::string &mediaType, const std::string &artType, const std::string &url);
-  void SetArtForItem(int mediaId, const std::string &mediaType, const std::map<std::string, std::string> &art);
-  bool GetArtForItem(int mediaId, const std::string &mediaType, std::map<std::string, std::string> &art);
-  std::string GetArtForItem(int mediaId, const std::string &mediaType, const std::string &artType);
-  bool RemoveArtForItem(int mediaId, const std::string &mediaType, const std::string &artType);
-  bool RemoveArtForItem(int mediaId, const std::string &mediaType, const std::set<std::string> &artTypes);
+  void SetArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType, const std::string &url);
+  void SetArtForItem(int mediaId, const MediaType &mediaType, const std::map<std::string, std::string> &art);
+  bool GetArtForItem(int mediaId, const MediaType &mediaType, std::map<std::string, std::string> &art);
+  std::string GetArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType);
+  bool RemoveArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType);
+  bool RemoveArtForItem(int mediaId, const MediaType &mediaType, const std::set<std::string> &artTypes);
   bool GetTvShowSeasonArt(int mediaId, std::map<int, std::map<std::string, std::string> > &seasonArt);
-  bool GetArtTypes(const std::string &mediaType, std::vector<std::string> &artTypes);
+  bool GetArtTypes(const MediaType &mediaType, std::vector<std::string> &artTypes);
 
   int AddTag(const std::string &tag);
   void AddTagToItem(int idItem, int idTag, const std::string &type);

@@ -62,7 +62,7 @@ public:
   static bool AddItemsToTag(const CFileItemPtr &tagItem);
   static bool RemoveItemsFromTag(const CFileItemPtr &tagItem);
 
-  static bool ManageVideoItemArtwork(const CFileItemPtr &item, const std::string &type);
+  static bool ManageVideoItemArtwork(const CFileItemPtr &item, const MediaType &type);
 
   static std::string GetLocalizedVideoType(const std::string &strType);
 protected:

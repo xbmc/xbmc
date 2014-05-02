@@ -186,13 +186,13 @@ void CEdenVideoArtUpdater::Process()
         continue;
       int idSeason = db.AddSeason(item->GetVideoInfoTag()->m_iDbId, j->first);
       map<string, string> seasonArt;
-      if (idSeason > -1 && !db.GetArtForItem(idSeason, "season", seasonArt))
+      if (idSeason > -1 && !db.GetArtForItem(idSeason, MediaTypeSeason, seasonArt))
       {
         std::string cachedSeason = GetCachedSeasonThumb(j->first, item->GetVideoInfoTag()->m_strPath);
         std::string type;
         std::string originalUrl = j->second.begin()->second;
         if (CacheTexture(originalUrl, cachedSeason, "", type))
-          db.SetArtForItem(idSeason, "season", type, originalUrl);
+          db.SetArtForItem(idSeason, MediaTypeSeason, type, originalUrl);
       }
     }
 

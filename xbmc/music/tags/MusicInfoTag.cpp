@@ -523,7 +523,7 @@ void CMusicInfoTag::SetArtist(const CArtist& artist)
   SetAlbumArtist(artist.strArtist);
   SetGenre(artist.genre);
   m_iDbId = artist.idArtist;
-  m_type = "artist";
+  m_type = MediaTypeArtist;
   m_bLoaded = true;
 }
 
@@ -542,7 +542,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SetReleaseDate(stTime);
   m_iTimesPlayed = album.iTimesPlayed;
   m_iDbId = album.idAlbum;
-  m_type = "album";
+  m_type = MediaTypeAlbum;
   m_bLoaded = true;
 }
 
@@ -566,7 +566,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
   m_iTrack = song.iTrack;
   m_iDuration = song.iDuration;
   m_iDbId = song.idSong;
-  m_type = "song";
+  m_type = MediaTypeSong;
   m_bLoaded = true;
   m_iTimesPlayed = song.iTimesPlayed;
   m_iAlbumId = song.idAlbum;
@@ -576,7 +576,7 @@ void CMusicInfoTag::Serialize(CVariant& value) const
 {
   value["url"] = m_strURL;
   value["title"] = m_strTitle;
-  if (m_type.compare("artist") == 0 && m_artist.size() == 1)
+  if (m_type.compare(MediaTypeArtist) == 0 && m_artist.size() == 1)
     value["artist"] = m_artist[0];
   else
     value["artist"] = m_artist;

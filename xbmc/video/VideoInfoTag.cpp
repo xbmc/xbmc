@@ -548,7 +548,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
 
   case FieldInProgress:               sortable[FieldInProgress] = m_resumePoint.IsPartWay(); break;
   case FieldDateAdded:                sortable[FieldDateAdded] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::EmptyString; break;
-  case FieldMediaType:                sortable[FieldMediaType] = DatabaseUtils::MediaTypeFromString(m_type); break;
+  case FieldMediaType:                sortable[FieldMediaType] = m_type; break;
   default: break;
   }
 }

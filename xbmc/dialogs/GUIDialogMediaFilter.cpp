@@ -846,23 +846,16 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, float &min, float &in
     else if (m_mediaType == "albums" || m_mediaType == "songs")
     {
       CStdString table;
-      MediaType mediaType;
       if (m_mediaType == "albums")
-      {
         table = "albumview";
-        mediaType = MediaTypeAlbum;
-      }
       else if (m_mediaType == "songs")
-      {
         table = "songview";
-        mediaType = MediaTypeSong;
-      }
       else
         return;
 
       CDatabase::Filter filter;
-      filter.where = DatabaseUtils::GetField(FieldYear, mediaType, DatabaseQueryPartWhere) + " > 0";
-      GetMinMax(table, DatabaseUtils::GetField(FieldYear, mediaType, DatabaseQueryPartSelect), min, max, filter);
+      filter.where = DatabaseUtils::GetField(FieldYear, m_mediaType, DatabaseQueryPartWhere) + " > 0";
+      GetMinMax(table, DatabaseUtils::GetField(FieldYear, m_mediaType, DatabaseQueryPartSelect), min, max, filter);
     }
   }
   else if (filter.field == FieldAirDate)

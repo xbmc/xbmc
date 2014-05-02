@@ -31,6 +31,7 @@ msgstr ""
 
 #: Used in Confluence
 #: system/settings/settings.xml
+#: xbmc/media/MediaTypes.cpp
 msgctxt "#3"
 msgid "Videos"
 msgstr ""
@@ -512,6 +513,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistEditor.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMusicVideosOverview.cpp
+#: xbmc/media/MediaTypes.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#132"
 msgid "Albums"
@@ -521,6 +523,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogSmartPlaylistEditor.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMusicVideosOverview.cpp
 #: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeOverview.cpp
+#: xbmc/media/MediaTypes.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#133"
 msgid "Artists"
@@ -530,6 +533,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogSmartPlaylistEditor.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeOverview.cpp
+#: xbmc/media/MediaTypes.cpp
 msgctxt "#134"
 msgid "Songs"
 msgstr ""
@@ -722,6 +726,7 @@ msgstr ""
 
 #empty strings from id 177 to 178
 
+#: xbmc/media/MediaTypes.cpp
 #: xbmc/music/karaoke/GUIDialogKaraokeSongSelector.cpp
 msgctxt "#179"
 msgid "Song"
@@ -1035,6 +1040,7 @@ msgid "Language"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
+#: xbmc/media/MediaTypes.cpp
 msgctxt "#249"
 msgid "Music"
 msgstr ""
@@ -1216,6 +1222,7 @@ msgid "Dynamic range compression"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
+#: xbmc/media/MediaTypes.cpp
 msgctxt "#291"
 msgid "Video"
 msgstr ""
@@ -2329,6 +2336,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
+#: xbmc/media/MediaTypes.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#557"
 msgid "Artist"
@@ -2336,6 +2344,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
+#: xbmc/media/MediaTypes.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#558"
 msgid "Album"
@@ -9516,6 +9525,7 @@ msgctxt "#20140"
 msgid "Lock screensaver"
 msgstr ""
 
+#: xbmc/media/MediaTypes.cpp
 msgctxt "#20141"
 msgid "Set"
 msgstr ""
@@ -10015,6 +10025,7 @@ msgctxt "#20337"
 msgid "Actor"
 msgstr ""
 
+#: xbmc/media/MediaTypes.cpp
 msgctxt "#20338"
 msgid "Movie"
 msgstr ""
@@ -10037,6 +10048,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistEditor.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
+#: xbmc/media/MediaTypes.cpp
 msgctxt "#20342"
 msgid "Movies"
 msgstr ""
@@ -10112,6 +10124,7 @@ msgctxt "#20358"
 msgid "Season %i"
 msgstr ""
 
+#: xbmc/media/MediaTypes.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20359"
 msgid "Episode"
@@ -10120,6 +10133,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistEditor.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
+#: xbmc/media/MediaTypes.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20360"
 msgid "Episodes"
@@ -10177,6 +10191,7 @@ msgctxt "#20372"
 msgid "Season image"
 msgstr ""
 
+#: xbmc/media/MediaTypes.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20373"
 msgid "Season"
@@ -10251,6 +10266,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogSmartPlaylistEditor.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeOverview.cpp
+#: xbmc/media/MediaTypes.cpp
 msgctxt "#20389"
 msgid "Music videos"
 msgstr ""
@@ -10260,6 +10276,7 @@ msgctxt "#20390"
 msgid "Recently added music videos"
 msgstr ""
 
+#: xbmc/media/MediaTypes.cpp
 msgctxt "#20391"
 msgid "Music video"
 msgstr ""
@@ -10450,6 +10467,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
+#: xbmc/media/MediaTypes.cpp
 msgctxt "#20434"
 msgid "Sets"
 msgstr ""
@@ -12532,6 +12550,7 @@ msgstr ""
 
 #: addons/skin.confluence/720p/script-globalsearch-main.xml
 #: xbmc\filesystem\VideoDatabaseDirectory.cpp
+#: xbmc/media/MediaTypes.cpp
 msgctxt "#33054"
 msgid "Seasons"
 msgstr ""
@@ -15404,7 +15423,117 @@ msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr ""
 
-#empty strings from id 36604 to 36999
+#empty strings from id 36604 to 36899
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36900"
+msgid "movie"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36901"
+msgid "movies"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36902"
+msgid "TV show"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36903"
+msgid "TV shows"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36904"
+msgid "season"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36905"
+msgid "seasons"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36906"
+msgid "episode"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36907"
+msgid "episodes"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36910"
+msgid "set"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36911"
+msgid "sets"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36912"
+msgid "video"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36913"
+msgid "videos"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36914"
+msgid "music"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36915"
+msgid "music"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36916"
+msgid "artist"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36917"
+msgid "artists"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36918"
+msgid "album"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36919"
+msgid "albums"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36920"
+msgid "song"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#36921"
+msgid "songs"
+msgstr ""
 
 #: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37000"
