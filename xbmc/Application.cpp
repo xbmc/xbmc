@@ -5196,6 +5196,11 @@ void CApplication::ProcessSlow()
 
   CAEFactory::GarbageCollect();
 
+  // if we don't render the gui there's no reason to start the screensaver.
+  // that way the screensaver won't kick in if we maximize the XBMC window
+  // after the screensaver start time.
+  if(!m_renderGUI)
+    ResetScreenSaverTimer();
 }
 
 // Global Idle Time in Seconds
