@@ -934,7 +934,13 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
   // use *a* primaryFilter here. We just default to all since that seems sane.
   CStdString primaryFilter = "all";
   if (m_sectionFilter)
+  {
     primaryFilter = m_sectionFilter->currentPrimaryFilter();
+
+    // A hack to handle by Albums
+    if (primaryFilter == "albums")
+      primaryFilter = "all";
+  }
 
   if (boost::ends_with(newUrl.GetFileName(), primaryFilter))
   {
