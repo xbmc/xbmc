@@ -132,7 +132,7 @@ void CGUIWindowPlexPreplayVideo::MoveToItem(int idx)
       CURL u(item->GetProperty("parentKey").asString());
       PlexUtils::AppendPathToURL(u, "children");
 
-      if (m_navHelper.CacheUrl(u.Get(), cancel, false))
+      if (m_navHelper.CacheUrl(u.Get(), cancel))
       {
         CFileItemList list;
         if (GetDirectory(u.Get(), list))
@@ -144,7 +144,6 @@ void CGUIWindowPlexPreplayVideo::MoveToItem(int idx)
               CFileItemPtr i2 = list.Get(i + idx);
               if (!i2)
               {
-                m_navHelper.CloseBusyDialog();
                 lk.Enter();
                 m_navigating = false;
                 return;
@@ -156,7 +155,6 @@ void CGUIWindowPlexPreplayVideo::MoveToItem(int idx)
           }
         }
       }
-      m_navHelper.CloseBusyDialog();
     }
   }
 
@@ -169,27 +167,9 @@ void CGUIWindowPlexPreplayVideo::Recommend()
 {
   if (m_friends.Size() < 1)
   {
-    m_dataLoaded.Reset();
-
-    CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(CURL("plexserver://myplex/pms/friends/all.xml")),
-                                      this, CJob::PRIORITY_HIGH);
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-
-    if (dialog)
-      dialog->Show();
-
-    while (true)
-    {
-      if (m_dataLoaded.WaitMSec(1))
-        break;
-
-      if (dialog && dialog->IsCanceled())
-        break;
-
-      g_windowManager.ProcessRenderLoop(false);
-    }
-
-    dialog->Close();
+    CJob* j = new CPlexDirectoryFetchJob(CURL("plexserver://myplex/pms/friends/all.xml"));
+    if (!g_plexApplication.busy.blockWaitingForJob(j, this))
+      return;
   }
 
   if (m_friends.Size() > 0)
@@ -206,27 +186,9 @@ void CGUIWindowPlexPreplayVideo::Share()
 {
   if (m_networks.Size() < 1)
   {
-    m_dataLoaded.Reset();
-
-    CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(CURL("plexserver://myplex/pms/social/networks.xml")),
-                                      this, CJob::PRIORITY_HIGH);
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-
-    if (dialog)
-      dialog->Show();
-
-    while (true)
-    {
-      if (m_dataLoaded.WaitMSec(1))
-        break;
-
-      if (dialog && dialog->IsCanceled())
-        break;
-
-      g_windowManager.ProcessRenderLoop(false);
-    }
-
-    dialog->Close();
+    CJob* job = new CPlexDirectoryFetchJob(CURL("plexserver://myplex/pms/social/networks.xml"));
+    if (!g_plexApplication.busy.blockWaitingForJob(job, this))
+      return;
   }
 
   CFileItemList linkedNetworks;
@@ -321,7 +283,6 @@ void CGUIWindowPlexPreplayVideo::OnJobComplete(unsigned int jobID, bool success,
     else if (fjob->m_url.GetFileName() == "pms/social/networks.xml")
       m_networks.Copy(fjob->m_items);
   }
-  m_dataLoaded.Set();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
