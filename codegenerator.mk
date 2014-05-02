@@ -20,7 +20,10 @@ endif
 
 GENERATED_JSON = $(INTERFACES_DIR)/json-rpc/ServiceDescription.h
 ifeq ($(wildcard $(JSON_BUILDER)),)
+  JSON_BUILDER = $(shell which JsonSchemaBuilder)
+ifeq ($(JSON_BUILDER),)
   JSON_BUILDER = tools/depends/native/JsonSchemaBuilder/JsonSchemaBuilder
+endif
 endif
 
 GENDIR = $(INTERFACES_DIR)/python/generated
