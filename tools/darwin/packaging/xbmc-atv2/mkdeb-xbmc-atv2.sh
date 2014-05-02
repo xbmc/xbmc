@@ -80,6 +80,7 @@ chmod +x $DIRNAME/$PACKAGE/DEBIAN/prerm
 echo "#!/bin/sh"                                  >  $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "chown -R mobile:mobile /Applications/XBMC.frappliance" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "cp /Applications/XBMC.frappliance/AppIcon.png /Applications/AppleTV.app/com.apple.frontrow.appliance.xbmc\@720p.png" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
+echo "cp /Applications/XBMC.frappliance/AppIcon.png /private/var/mobile/Library/Caches/AppleTV/MainMenu/com.apple.frontrow.appliance.xbmc@720.png" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "cp /Applications/XBMC.frappliance/AppIcon.png /Applications/XBMC.frappliance/TopRowIcon.png" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "if [ \"\`uname -r\`\" = \"10.3.1\" ]; then" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "  ln -sf /Applications/XBMC.frappliance /Applications/Lowtide.app/Appliances/XBMC.frappliance" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
