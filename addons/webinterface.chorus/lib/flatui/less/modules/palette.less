@@ -1,0 +1,58 @@
+//
+// Palette
+// --------------------------------------------------
+
+.palette {
+  color: @inverse;
+  margin: 0;
+  padding: 15px;
+  text-transform: uppercase;
+
+  dt {
+    display: block;
+    font-weight: 500;
+    .opacity(80);
+  }
+  dd {
+    font-weight: 200;
+    margin-left: 0;
+    .opacity(80);
+  }  
+}
+
+//
+// Pallet grid
+// --------------------------------------------------
+.calc-color(~"turquoise", ~"green-sea");
+.calc-color(~"emerland", ~"nephritis");
+.calc-color(~"peter-river", ~"belize-hole");
+.calc-color(~"amethyst", ~"wisteria");
+.calc-color(~"wet-asphalt", ~"midnight-blue");
+
+.calc-color(~"sun-flower", ~"orange");
+.calc-color(~"carrot", ~"pumpkin");
+.calc-color(~"alizarin", ~"pomegranate");
+.calc-color(~"clouds", ~"silver");
+.calc-color(~"concrete", ~"asbestos");
+
+.palette-clouds {
+  color: #bdc3c7;
+}
+
+// Palette paragraph
+.palette-paragraph {
+  color: #7f8c8d;
+  font-size: 12px;
+  line-height: 17px;
+
+  span {
+    color: #bdc3c7;
+  }  
+}
+
+// Headline
+.palette-headline {
+  color: #7f8c8d;
+  font-weight: 700;
+  margin-top: -5px;
+}

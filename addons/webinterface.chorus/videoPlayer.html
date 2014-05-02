@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Chorus video.</title>
+
+    <link href="//vjs.zencdn.net/4.4/video-js.css" rel="stylesheet">
+    <script src="//vjs.zencdn.net/4.4/video.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+
+    <script>
+        function getParameterByName(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                    results = regex.exec(location.search);
+            return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+        var src = getParameterByName('src'),
+          player = getParameterByName('player'),
+          $player = $('<div>'),
+          width = '100%',
+          height = '90%',
+          id = "videoplayer";
+
+        // do we have something to play?
+        if(src != ''){
+
+            // Make the html5 player
+            if(player == 'html5'){
+                $player = $('<video>', {
+                    "id": id,
+                    "class": "video-js vjs-default-skin",
+                    "controls": "controls",
+                    "preload": "auto",
+                    "data-setup": {}
+                });
+                $player.append($('<source>', {
+                    "type": 'video/mp4; codecs="a_ac3, avc"',
+                    "src": src
+                }));
+                $player.attr('width', width).attr('height', height);
+            }
+
+            // Make the VLC player
+            if(player == 'vlc'){
+                $player = $('<embed>', {
+                    "type": "application/x-vlc-plugin",
+                    "pluginspage": "http://www.videolan.org",
+                    "version": "VideoLAN.VLCPlugin.2",
+                    "width": width,
+                    "height": height,
+                    "target": '/' + src,
+                    "id": id
+                });
+            }
+
+            // Dom ready actions
+            $(document).ready(function(){
+
+                // update download link
+                $('#download').attr('href', src);
+
+                // update switch link
+                var other = (player == 'html5' ? 'vlc' : 'html5');
+                $('#switch-player').attr('href', 'videoPlayer.html?player=' + other + '&src=' + src ).html('play in ' + other);
+
+
+                // Autoplay html5
+                if(player == 'html5'){
+                    videojs("videoplayer").ready(function(){
+                        var myPlayer = this;
+                        // Start playing the video.
+                        myPlayer.play();
+                    });
+                }
+
+            });
+        }
+    </script>
+    <style type="text/css">
+        body, html {
+            height: 100%;
+        }
+        body {
+            margin: 0; background: #000; padding: 0; overflow: hidden;
+        }
+        #player {
+            margin: 0px 10px 0;
+            height: 98%;
+            margin-top: 1%;
+        }
+        #switch-player,
+        #download {
+            display: block;
+            color: #222;
+            font: 12px Arial, Helvetica, "Nimbus Sans L", sans-serif;
+            margin: 1px 0 0;
+            padding: 5px 10px 0 0;
+            float: right;
+            text-decoration: none;
+        }
+        #switch-player {
+            float: left;
+            padding: 5px 0 0 10px;
+        }
+        #switch-player:hover,
+        #download:hover {
+            color: #aaa;
+        }
+        #videoplayer {
+            min-height: 300px;
+        }
+    </style>
+</head>
+<body>
+<div id="player">
+    <a href="" id="download">Download video</a>
+    <a href="" id="switch-player">Play in html5</a>
+</div>
+<script> $('#player').prepend($player);</script>
+</body>
+</html>

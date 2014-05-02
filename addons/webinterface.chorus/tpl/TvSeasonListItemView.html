@@ -1,0 +1,27 @@
+<div class="card tvseason-row clearfix row-episode-<%=episodeid%> watched-<%=watched.status%>" data-id="">
+    <a class="image-wrapper" href="<%=url%>" title="<%= label %>">
+        <img class="image content-lazy" src="<%= app.image.url(thumbnail) %>" />
+    </a>
+
+    <div class="actions-wrapper tvseason-actions-wrapper">
+        <div class="actions tvseason-actions" data-id="">
+            <% if(type != 'season'){ %>
+                <button class="tv-watched btn watched-btn" title="Toggle Watched"><i class="fa fa-circle"></i></button>
+            <% } %>
+            <button class="tv-play btn video-play" title="Replace the playlist with this tvseason and start playing"><i class="fa fa-play"></i></button>
+            <button class="tv-add btn" title="Add this tvseason to the playlist"><i class="fa fa-plus"></i></button>
+            <!--<button class="tvseason-menu btn" title="More tvseason options"><i class="fa fa-ellipsis-v"></i></button>-->
+        </div>
+    </div>
+    <div class="video-progress"><span style="width: <%=watched.progress%>%"></span></div>
+    <div class="details">
+        <p class="item-title" title="<%= label %>">
+            <a class="image-wrapper" href="<%=url%>"><span><%= label %></span></a>
+        </p>
+        <p class="item-sub-title">
+            <span><%= subText %></span>
+        </p>
+        <i class="fa fa-check is-watched" title="Watched"></i>
+    </div>
+
+</div>

@@ -1,0 +1,31 @@
+<div class="album-small-row album-row-<%= albumid %> clearfix" data-id="<%= albumid %>">
+
+    <a class="image-wrapper" href="<%= url %>">
+        <span class="image" style="background-image: url('<%= img %>')" title="<%= title %>"></span>
+    </a>
+
+    <div class="image actions-wrapper album-actions-wrapper">
+        <button class="play album-play btn" title="Replace the playlist with this album and start playing"><i class="fa fa-play"></i></button>
+        <div class="actions album-actions dropdown" data-id="<%= albumid %>">
+            <button class="thumbs-up album-thumbsup btn" title="Thumbs Up"><i class="fa fa-thumbs-up"></i></button>
+            <button class="add album-add btn" title="Add all songs from this album to the playlist"><i class="fa fa-plus"></i></button>
+            <button class="add album-menu btn" title="Extra options"><i class="fa fa-ellipsis-v"></i></button>
+
+        </div>
+    </div>
+
+    <div class="details">
+        <p class="item-title" title="<%= title %> <%= (recenttext != '' ? '(' + recenttext + ')' : '') %>">
+            <a class="image-wrapper" href="<%= url %>"><span><%= title %></span></a>
+        </p>
+        <p class="item-sub-title">
+            <a href="<%= artisturl %>"><span><%= ( typeof artist != "undefined" ? artist : '' ) %></span></a>
+        </p>
+        <% if(typeof recent != 'undefined') { %>
+            <p class="item-sub-sub-title">
+                <%= recenttext %>
+            </p>
+        <% } %>
+    </div>
+
+</div>

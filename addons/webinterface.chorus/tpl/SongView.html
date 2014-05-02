@@ -1,0 +1,20 @@
+<div class="track song" data-type="song" data-id="<%= songid %>" data-songid="<%= songid %>" data-path="<%= (typeof file != 'undefined' ? file : '') %>">
+
+    <span class="track-col song-tracknum"><%= (parseInt(track) > 0 ? track : "") %></span>
+    <span class="track-col song-title"><%= label %></span>
+    <span class="track-col song-artist"><a href="#artist/<%= artistid %> " class=""><%= artist %></a></span>
+    <span class="track-col song-duration"><%= app.helpers.formatTime(app.helpers.secToTime(duration)) %></span>
+
+    <div class="song-actions-wrapper">
+        <div class="song-actions dropdown" data-id="<%= songid %>" data-album="<%= albumid %>">
+            <button class="song-play btn" title="Insert into playlist as the next song, then start playing"><i class="fa fa-play"></i></button>
+            <button class="song-thumbsup btn" title="Thumbs Up"><i class="fa fa-thumbs-up"></i></button>
+            <button class="song-add btn" title="Add this song to the playlist"><i class="fa fa-plus"></i></button>
+            <button class="song-menu btn" title="More options"><i class="fa fa-ellipsis-v"></i></button>
+        </div>
+    </div>
+    <div class="visible-song-actions-wrapper">
+        <i class="fa fa-thumbs-up"></i>
+    </div>
+
+</div>

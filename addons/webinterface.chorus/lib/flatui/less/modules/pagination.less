@@ -1,0 +1,171 @@
+//
+// Pagination
+// --------------------------------------------------
+
+.pagination {
+  position: relative;
+
+  ul {
+    background: @pagination-color;
+    color: @inverse;
+    vertical-align: top;
+    .border-radius(6px);
+    .box-shadow(none);
+
+    li {
+      display: inline-block;
+      margin-right: -3px;
+      vertical-align: top;
+
+      // Pseudos and states
+      &.active {
+        > a, > span {
+          background-color: @firm;
+          color: @inverse;
+        }
+        &.previous,
+        &.next {
+          > a, > span {
+            margin: 0;
+
+            &, &:hover, &:focus {
+              background-color: @firm;
+              color: @inverse;
+            }
+          }
+        }
+      }
+      &:first-child {
+        .border-radius(6px 0 0 6px);
+        > a, > span {
+          .border-radius(6px 0 0 6px);
+        }
+        &.previous + li {
+          > a, > span {
+            border-left-width: 5px;
+          }
+        }
+        > a, > span {
+          border-left: none;
+        }
+      }
+      &:last-child {
+        margin-right: 0;
+        .border-radius(0 6px 6px 0);
+        
+        > a, > span {
+          &, &:hover, &:focus {
+            .border-radius(0 6px 6px 0);
+          }
+        }
+      }
+      &.previous,
+      &.next {
+        > a, > span {
+          background: transparent;
+          border: none;
+          border-right: 2px solid mix(@pagination-color, white, 66%);
+          font-size: @base-font-size * 1.142; /* 16px */
+          margin: 0 9px 0 0;
+          padding: 12px 17px;
+          min-width: auto;
+          .border-radius(6px 0 0 6px);
+          .box-shadow(~"none !important");
+
+          &, &:hover, &:focus {
+            border-color: mix(@pagination-color, white, 66%) !important;
+          }
+        }
+      }
+      &.next {
+        margin-left: 9px;
+        
+        > a, > span {
+          border-left: 2px solid mix(@pagination-color, white, 66%);
+          border-right: none;
+          margin: 0;
+          .border-radius(0 6px 6px 0);
+        }
+      }
+      &.active {
+        > a, > span {
+          background-color: @inverse;
+          border-color: @inverse;
+          border-width: 2px !important;
+          color: @pagination-color;
+          margin: 10px 5px 9px;
+
+          &:hover, &:focus {
+            background-color: @inverse;
+            border-color: @inverse;
+            color: @pagination-color;
+            .box-shadow(none);
+          }
+        }
+        &.previous,
+        &.next {
+          border-color: mix(@pagination-color, white, 66%);
+        }
+        &.previous {
+          margin-right: 6px;
+        }
+      }
+
+      // Link
+      > a, > span {
+        background: @inverse;
+        border: 5px solid @pagination-color;
+        color: @inverse;
+        line-height: 16px;
+        min-height: 17px;
+        min-width: auto;
+        outline: none;
+        padding: 0 4px;
+        margin: 7px 2px 6px;
+        text-align: center;
+        .border-radius(50px);
+        .transition(~"background 0.2s ease-out, border-color 0s ease-out, color 0.2s ease-out");
+
+        &:hover,
+        &:focus {
+          background-color: @firm;
+          border-color: @firm;
+          color: @inverse;
+          .transition(~"background 0.2s ease-out, border-color 0.2s ease-out, color 0.2s ease-out");
+        }
+        &:active {
+          background-color: mix(@firm, black, 85%);
+          border-color: mix(@firm, black, 85%);
+          color: @inverse;
+        }
+      }
+    }
+  }
+
+  // Navigation buttons
+  > .btn {
+    &.previous,
+    &.next {
+      margin-right: 8px;
+      font-size: @base-font-size;
+      padding-left: 23px;
+      padding-right: 23px;
+      
+      [class*="fui-"] {
+        font-size: @icon-normal;
+        margin-left: -2px;
+        margin-top: -2px;
+      }
+    }
+
+    &.next {
+      margin-left: 8px;
+      margin-right: 0;
+      
+      [class*="fui-"] {
+        margin-right: -2px;
+        margin-left: 4px;
+      }
+    }
+  }
+}

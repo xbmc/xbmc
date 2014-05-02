@@ -1,0 +1,41 @@
+//
+// Sharing box
+// --------------------------------------------------
+
+// Module color variable
+@share-color: mix(@base, @inverse, 8%);
+
+.share {
+  background-color: @share-color;
+  position: relative;
+  .dropdown-arrow(@share-color, -9px, 23px);
+  .border-radius(6px);
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 15px;
+  }
+  li {
+    padding-top: 11px;
+    .clearfix();
+    
+    &:first-child {
+      padding-top: 0;
+    }  
+  }
+  .toggle {
+    float: right;
+    margin: 0;
+  }
+  .btn {
+    .border-radius(0 0 6px 6px);
+  }  
+}    
+
+.share-label {
+  float: left;
+  font-size: 15px;
+  padding-top: 5px;
+  width: 50%;
+}

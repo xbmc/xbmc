@@ -1,0 +1,54 @@
+//
+// Tile
+// -------------------------------------------------
+
+.tile {
+  background-color: mix(@base, @inverse, 8%);
+  border-radius: 6px;
+  padding: 14px;
+  position: relative;
+  text-align: center;
+
+  &.tile-hot {
+    &:before {
+      background: url(../images/tile/ribbon.png) 0 0 no-repeat;
+      background-size: 82px 82px;
+      content: '';
+      height: 82px;
+      position: absolute;
+      right: -4px;
+      top: -4px;
+      width: 82px;
+    }  
+  }
+  p {
+    font-size: 15px;
+    margin-bottom: 33px;
+  }  
+}
+.tile-image {
+  height: 100px;
+  margin: 31px 0 27px;
+  vertical-align: bottom;
+  
+  &.big-illustration {
+    height: 111px;
+    margin-top: 20px;
+    width: 112px;
+  }
+}
+.tile-title {
+  font-size: 20px;
+  margin: 0;
+}
+
+// Retina Support
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (-moz-min-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 3/2), only screen and (-o-min-device-pixel-ratio: 2/1), only screen and (-moz-min-device-pixel-ratio: 1.5), only screen and (min-device-pixel-ratio: 1.5), only screen and (min-device-pixel-ratio: 2) {
+  .tile {
+    &.tile-hot {
+      &:before {
+        background-image: url(../images/tile/ribbon-2x.png);
+      }  
+    }    
+  }      
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="webinterface.chorus"
+  version="0.3.8"
+  name="Chorus"
+  provider-name="jez500">
+  <requires>
+    <import addon="xbmc.json" version="6.0.0" />
+  </requires>
+  <extension
+    point="xbmc.gui.webinterface"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">A modern Web UI for your XBMC</summary>
+    <description lang="en">A modern Web UI for your XBMC. Browse your Music, Movies or TV Shows from the comfort of your own web browser.  You can play media via XBMC or stream it in your browser. Works best with Chrome but plays well with most modern browsers. For more, see github.com/jez500/chorus</description>
+    <platform>all</platform>
+    <language>en</language>
+    <source>https://github.com/jez500/chorus</source>
+    <forum>http://forum.xbmc.org/showthread.php?tid=183451</forum>
+  </extension>
+</addon>

@@ -1,0 +1,32 @@
+<div id="details" class="tabbable <%= ( fanart != '' ? 'has-fanart' : '') %>">
+
+    <% if( fanart != '' ){ %>
+    <div class="artist-fanart content-fanart">
+        <img src="<%= app.image.url(fanart) %>" />
+    </div>
+    <% } %>
+
+    <div id="artist-tabs" class="content-tabs">
+        <div class="artist-actions-wrapper">
+            <div class="artist-actions content-actions dropdown<%= (thumbsup ? ' thumbs-up' : '') %>" data-id="<%= artistid %>">
+                <button class="artist-thumbsup btn" title="Thumbs Up"><i class="fa fa-thumbs-up"></i></button>
+                <button class="artist-play btn" title="Replace the playlist with this artist and start playing"><i class="fa fa-play"></i></button>
+                <button class="artist-add btn" title="Add all songs from this artist to the playlist"><i class="fa fa-plus"></i></button>
+                <button class="artist-menu btn" title="More artist options"><i class="fa fa-ellipsis-v"></i></button>
+            </div>
+        </div>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#album-list" data-toggle="tab">Music</a></li>
+            <li data-id="about"><a href="#artist-meta" data-toggle="tab">About</a></li>
+        </ul>
+    </div>
+
+    <div class="tab-content">
+        <div id="album-list" class="tab-pane active">
+            <div class="loading-box">Music is loading</div>
+        </div>
+        <div id="artist-meta" class="tab-pane">
+        </div>
+    </div>
+
+</div>

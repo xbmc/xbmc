@@ -1,0 +1,73 @@
+/*
+Syntax error: File to import not found or unreadable: variables.
+              Load paths:
+                /subdomains/chorus/theme/sass
+                /usr/local/lib/ruby/gems/1.9.1/gems/compass-core-1.0.0.alpha.16/stylesheets
+                /usr/local/lib/ruby/gems/1.9.1/gems/sassy-maps-0.3.1/stylesheets
+                /usr/local/lib/ruby/gems/1.9.1/gems/breakpoint-2.4.1/stylesheets
+                /usr/local/lib/ruby/gems/1.9.1/gems/singularitygs-1.2.0.rc.1/stylesheets
+                /subdomains/chorus/theme/sass-extensions/zen-grids/stylesheets
+                Compass::SpriteImporter
+        on line 6 of /subdomains/chorus/theme/sass/scss/font-awesome.scss
+
+1: /subdomains/chorus/theme/sass/scss/font-awesome.scss
+
+Backtrace:
+/subdomains/chorus/theme/sass/scss/font-awesome.scss:6
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/import_node.rb:66:in `rescue in import'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/import_node.rb:45:in `import'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/import_node.rb:28:in `imported_file'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/import_node.rb:37:in `css_import?'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/visitors/perform.rb:283:in `visit_import'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/visitors/base.rb:36:in `visit'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/visitors/perform.rb:152:in `block in visit'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/stack.rb:79:in `block in with_base'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/stack.rb:115:in `with_frame'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/stack.rb:79:in `with_base'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/visitors/perform.rb:152:in `visit'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/visitors/base.rb:52:in `block in visit_children'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/visitors/base.rb:52:in `map'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/visitors/base.rb:52:in `visit_children'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/visitors/perform.rb:161:in `block in visit_children'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/visitors/perform.rb:173:in `with_environment'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/visitors/perform.rb:160:in `visit_children'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/visitors/base.rb:36:in `block in visit'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/visitors/perform.rb:180:in `visit_root'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/visitors/base.rb:36:in `visit'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/visitors/perform.rb:151:in `visit'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/visitors/perform.rb:8:in `visit'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/root_node.rb:36:in `css_tree'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/tree/root_node.rb:20:in `render'
+/usr/local/lib/ruby/gems/1.9.1/gems/sass-3.3.0.rc.4/lib/sass/engine.rb:274:in `render'
+/usr/local/lib/ruby/gems/1.9.1/gems/compass-1.0.0.alpha.17/lib/compass/compiler.rb:171:in `block (2 levels) in compile'
+/usr/local/lib/ruby/gems/1.9.1/gems/compass-1.0.0.alpha.17/lib/compass/compiler.rb:153:in `timed'
+/usr/local/lib/ruby/gems/1.9.1/gems/compass-1.0.0.alpha.17/lib/compass/compiler.rb:166:in `block in compile'
+/usr/local/lib/ruby/gems/1.9.1/gems/compass-1.0.0.alpha.17/lib/compass/logger.rb:46:in `red'
+/usr/local/lib/ruby/gems/1.9.1/gems/compass-1.0.0.alpha.17/lib/compass/compiler.rb:165:in `compile'
+/usr/local/lib/ruby/gems/1.9.1/gems/compass-1.0.0.alpha.17/lib/compass/compiler.rb:144:in `compile_if_required'
+/usr/local/lib/ruby/gems/1.9.1/gems/compass-1.0.0.alpha.17/lib/compass/compiler.rb:129:in `block (2 levels) in run'
+/usr/local/lib/ruby/gems/1.9.1/gems/compass-1.0.0.alpha.17/lib/compass/compiler.rb:127:in `each'
+/usr/local/lib/ruby/gems/1.9.1/gems/compass-1.0.0.alpha.17/lib/compass/compiler.rb:127:in `block in run'
+/usr/local/lib/ruby/gems/1.9.1/gems/compass-1.0.0.alpha.17/lib/compass/compiler.rb:153:in `timed'
+/usr/local/lib/ruby/gems/1.9.1/gems/compass-1.0.0.alpha.17/lib/compass/compiler.rb:126:in `run'
+/usr/local/lib/ruby/gems/1.9.1/gems/compass-1.0.0.alpha.17/lib/compass/watcher/compiler.rb:24:in `compile'
+/usr/local/lib/ruby/1.9.1/forwardable.rb:201:in `compile'
+/usr/local/lib/ruby/gems/1.9.1/gems/compass-1.0.0.alpha.17/lib/compass/watcher/project_watcher.rb:100:in `sass_added'
+/usr/local/lib/ruby/gems/1.9.1/gems/compass-1.0.0.alpha.17/lib/compass/watcher/project_watcher.rb:85:in `sass_callback'
+/usr/local/lib/ruby/gems/1.9.1/gems/compass-1.0.0.alpha.17/lib/compass/watcher/watch.rb:14:in `call'
+/usr/local/lib/ruby/gems/1.9.1/gems/compass-1.0.0.alpha.17/lib/compass/watcher/watch.rb:14:in `run_callback'
+/usr/local/lib/ruby/gems/1.9.1/gems/compass-1.0.0.alpha.17/lib/compass/watcher/project_watcher.rb:63:in `block in listen_callback'
+/usr/local/lib/ruby/gems/1.9.1/gems/compass-1.0.0.alpha.17/lib/compass/watcher/project_watcher.rb:60:in `each'
+/usr/local/lib/ruby/gems/1.9.1/gems/compass-1.0.0.alpha.17/lib/compass/watcher/project_watcher.rb:60:in `listen_callback'
+/usr/local/lib/ruby/gems/1.9.1/gems/listen-1.1.6/lib/listen/listener.rb:236:in `call'
+/usr/local/lib/ruby/gems/1.9.1/gems/listen-1.1.6/lib/listen/listener.rb:236:in `on_change'
+/usr/local/lib/ruby/gems/1.9.1/gems/listen-1.1.6/lib/listen/listener.rb:271:in `block in initialize_adapter'
+/usr/local/lib/ruby/gems/1.9.1/gems/listen-1.1.6/lib/listen/adapter.rb:244:in `call'
+/usr/local/lib/ruby/gems/1.9.1/gems/listen-1.1.6/lib/listen/adapter.rb:244:in `report_changes'
+/usr/local/lib/ruby/gems/1.9.1/gems/listen-1.1.6/lib/listen/adapter.rb:313:in `poll_changed_directories'
+/usr/local/lib/ruby/gems/1.9.1/gems/listen-1.1.6/lib/listen/adapter.rb:289:in `block in start_poller'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Syntax error: File to import not found or unreadable: variables.\A               Load paths:\A                 /subdomains/chorus/theme/sass\A                 /usr/local/lib/ruby/gems/1.9.1/gems/compass-core-1.0.0.alpha.16/stylesheets\A                 /usr/local/lib/ruby/gems/1.9.1/gems/sassy-maps-0.3.1/stylesheets\A                 /usr/local/lib/ruby/gems/1.9.1/gems/breakpoint-2.4.1/stylesheets\A                 /usr/local/lib/ruby/gems/1.9.1/gems/singularitygs-1.2.0.rc.1/stylesheets\A                 /subdomains/chorus/theme/sass-extensions/zen-grids/stylesheets\A                 Compass::SpriteImporter\A         on line 6 of /subdomains/chorus/theme/sass/scss/font-awesome.scss\A \A 1: /subdomains/chorus/theme/sass/scss/font-awesome.scss"; }

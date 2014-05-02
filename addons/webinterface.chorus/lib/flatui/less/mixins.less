@@ -1,0 +1,219 @@
+//
+// Mixins
+// --------------------------------------------------
+
+.animation(@properties) {
+  -webkit-animation: @properties;
+     -moz-animation: @properties;
+       -o-animation: @properties;
+          animation: @properties;
+}
+
+.border-radius(@radius) {
+  -webkit-border-radius: @radius;
+     -moz-border-radius: @radius;
+          border-radius: @radius;
+}
+
+.box-sizing(@boxmodel: border-box) {
+  -webkit-box-sizing: @boxmodel;
+     -moz-box-sizing: @boxmodel;
+          box-sizing: @boxmodel;
+}
+
+.box-shadow(@properties) {
+  -webkit-box-shadow: @properties;
+     -moz-box-shadow: @properties;
+          box-shadow: @properties;
+}
+
+.inline-block {
+  display: inline-block;
+  zoom: 1;
+  *display: inline;
+}
+
+.opacity(@value) {
+  opacity: @value / 100;
+  filter: ~"alpha(opacity=@{value})";
+}
+
+// User select
+// For selecting text on the page
+.user-select(@select) {
+  -webkit-user-select: @select;
+     -moz-user-select: @select;
+      -ms-user-select: @select;
+       -o-user-select: @select;
+          user-select: @select;
+}
+
+.placeholder-height(@height) {
+  &:-moz-placeholder {
+    line-height: @height;
+  }
+  &::-webkit-input-placeholder {
+    line-height: @height;
+  }
+  &.placeholder {
+    line-height: @height;
+  }
+}
+
+.mask(...) {
+  -webkit-mask: @arguments;
+          mask: @arguments;
+}
+
+.placeholder-color(@color) {
+  &:-moz-placeholder {
+    color: @color;
+  }
+  &::-webkit-input-placeholder {
+    color: @color;
+  }
+  &.placeholder {
+    color: @color;
+  }
+}
+
+.transition(@properties) {
+  -webkit-transition: @properties;
+     -moz-transition: @properties;
+       -o-transition: @properties;
+          transition: @properties;
+  -webkit-backface-visibility: hidden;
+}
+
+.transform(@properties) {
+  -webkit-transform: @properties;
+     -moz-transform: @properties;
+      -ms-transform: @properties;
+       -o-transform: @properties;
+          transform: @properties;
+}
+
+.vertical-gradient(@from, @to) {
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, @from), color-stop(100%, @to));
+  background: -webkit-linear-gradient(top, @from, @to);
+  background:    -moz-linear-gradient(top, @from, @to);
+  background:     -ms-linear-gradient(top, @from, @to);
+  background:      -o-linear-gradient(top, @from, @to);
+  background:   linear-gradient(to bottom, @from, @to);
+}
+
+.selection(@color) {
+  &::selection {
+    background: @color;
+  }
+  &::-moz-selection {
+    background: @color;
+  }
+}
+
+.clearfix {
+  *zoom: 1;
+  &:before,
+  &:after {
+    display: table;
+    content: "";
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+.dropdown-arrow(@color: @base, @top: 5px, @left: 15px, @size: 9px) {
+  &:before {
+    content: "";
+    border-style: solid;
+    border-width: 0 @size @size @size;
+    border-color: transparent transparent @color transparent;
+    height: 0;
+    position: absolute;
+    left: @left;
+    top: @top;
+    width: 0;
+    // Make corners smooth
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+.drop-ie-gradient {
+  filter: unquote("progid:DXImageTransform.Microsoft.gradient(enabled = false)");
+}
+
+.swap-button-color(@color, @hover, @active) {
+  background-color: @color;
+
+  &:hover,
+  &:focus,
+  .btn-group:focus &.dropdown-toggle {
+    background-color: @hover;
+  }
+  &:active,
+  .btn-group.open &.dropdown-toggle,
+  &.active {
+    background-color: @active;
+  }
+}
+
+.dropdown-arrow-inverse {
+  border-bottom-color: @base !important;
+  border-top-color: @base !important;
+}
+
+.input-states(@color) {
+  border-color: @color;
+  color: @color;
+  .box-shadow(none);
+
+  &:focus {
+    .box-shadow(none);
+  }
+}
+
+.swap-pagination-color(@color, @hover, @active) {
+  ul {
+    background-color: @color;
+
+    li {
+      &.previous {
+        > a {
+          border-right-color: mix(@color, white, 66%);
+        }
+      }
+      > a, > span {
+        border-left-color: mix(@color, white, 66%);
+
+        &:hover, &:focus {
+          background-color: @hover;
+        }
+        &:active {
+          background-color: @active;
+        }
+      }
+      &.active {
+        > a, > span {
+          background-color: @active;
+        }
+      }
+
+      &.pagination-dropdown.dropup {
+        .dropdown-arrow {
+          border-top-color: @color;
+        }
+      }
+    }
+  }
+}
+
+// Color swatches grid
+.calc-color(@first-color, @second-color) {
+  .palette-@{first-color} {
+    background-color: ~"@{@{first-color}}";
+  }
+  .palette-@{second-color} {
+    background-color: ~"@{@{second-color}}";
+  }  
+}

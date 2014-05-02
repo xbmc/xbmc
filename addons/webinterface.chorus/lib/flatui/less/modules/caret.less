@@ -1,0 +1,37 @@
+//
+// Caret
+// --------------------------------------------------
+
+.caret(@color: @base) {
+  border-left-width: 6px;
+  border-right-width: 6px;
+  border-top-width: 8px;
+  border-bottom-color: @color;
+  border-style: solid;
+  border-bottom-style: none;
+  border-top-color: @color;
+  .transition(.25s);
+}
+
+.caret {
+  .caret();
+}
+
+.dropup .caret,
+.dropup .btn-large .caret,
+.navbar-fixed-bottom .dropdown .caret {
+  border-bottom-width: 8px;
+}
+
+.btn-mini .caret,
+.btn-small .caret,
+.btn-large .caret {
+  margin-top: 7px;
+}
+
+.btn-large .caret {
+  border-top-width: 8px;
+  border-right-width: 6px;
+  border-left-width: 6px;
+}
+

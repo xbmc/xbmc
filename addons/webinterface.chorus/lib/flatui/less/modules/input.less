@@ -1,0 +1,175 @@
+//
+// Inputs
+// --------------------------------------------------
+
+// Text fields
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+.uneditable-input {
+  border: 2px solid @lightgray;
+  color: @base;
+  font-family: @base-font-family;
+  font-size: @base-font-size;
+  padding: 8px 5px;
+  height: 21px;
+  text-indent: 6px;
+  -webkit-appearance: none;
+  .border-radius(6px);
+  .box-shadow(none);
+  .placeholder-color(desaturate(lighten(@base, 45%), 15%));
+  .transition(~"border .25s linear, color .25s linear");
+
+  // Alternate state
+  // --------------------------------------------------
+  .control-group.focus &,
+  &:focus {
+    border-color: @firm;
+    .box-shadow(none);
+  }
+  
+  .row-fluid & {
+    height: 41px;
+    width: 100%;
+  }
+
+  // Flat (without border)
+  &.flat {
+    border-color: transparent;
+    &:hover {
+      border-color: @lightgray;
+    }
+    &:focus {
+      border-color: @firm;
+    }
+  }
+
+  // Alternate Colors
+  // --------------------------------------------------
+  .control-group.error &   { .input-states(@danger) }
+  .control-group.success & { .input-states(@success) }
+  .control-group.warning & { .input-states(@warning) }
+  .control-group.info &    { .input-states(@info) }
+
+  .control-group & { margin-bottom: 0; }
+}
+
+// INPUT ICONS
+// ----------------------
+.control-group {
+  position: relative;
+
+  > .input-icon {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    line-height: 37px;
+    vertical-align: middle;
+    font-size: @base-font-size * 1.428; /* 20px */
+    color: desaturate(lighten(@base, 45%), 15%);
+    background-color: #ffffff;
+    padding: 0 10px;
+    .border-radius(6px);
+  }
+
+  input:focus + .input-icon { color: @base; }
+
+  // Icon Sizes
+  // --------------------------------------------------
+
+  // Huge
+  &.huge {
+    > .input-icon {
+      line-height: 49px;
+    }
+  }
+
+  //Large
+  &.large {
+    > .input-icon {
+      line-height: 41px;
+    }
+  }
+
+  // Small
+  &.small {
+    > .input-icon {
+      font-size: @base-font-size * 1.142; /* 16px */
+      line-height: 30px;
+    }
+  }
+
+
+  // Icon Colors
+  // --------------------------------------------------
+  &.success {
+    > .input-icon, input + .input-icon {
+      color: @success;
+    }
+  }
+  &.warning {
+    > .input-icon, input + .input-icon {
+      color: @warning;
+    }
+  }
+  &.error {
+    > .input-icon, input + .input-icon {
+      color: @danger;
+    }
+  }
+  &.disabled {
+    > .input-icon, input + .input-icon {
+      color: mix(@gray, white, 40%);
+      background-color: mix(@gray, white, 10%);
+    }
+  }
+
+}
+
+// Disabled state
+input[disabled],
+input[readonly],
+textarea[disabled],
+textarea[readonly] {
+  background-color: mix(@gray, white, 10%);
+  border-color: mix(@gray, white, 40%);
+  color: mix(@gray, white, 40%);
+  cursor: default;
+}
+
+// Text field grids
+input,
+textarea,
+.uneditable-input {
+  width: 192px;
+}
+
+// Textarea
+textarea {
+  height: auto;
+  font-size: @base-font-size * 1.071; /* 15px */
+  line-height: 24px;
+  padding: 5px 11px;
+  text-indent: 0;
+  
+  .row-fluid & {
+    height: auto;
+    width: 100% !important;
+  }
+}
+textarea[class*="span"] {
+  width: 100% !important;
+  .box-sizing(border-box);
+}

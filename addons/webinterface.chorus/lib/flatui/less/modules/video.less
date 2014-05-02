@@ -1,0 +1,454 @@
+//
+// Video Player
+// --------------------------------------------------
+
+// Module color variable
+@controls-color: mix(@base, black, 75%);
+
+.video-js {
+  background-color: transparent;  
+  // Otherwise you won't see controls in Fullscreen mode
+  margin-top: -95px;
+  position: relative;
+  padding: 0;
+  font-size: 10px;
+  vertical-align: middle;
+  .border-radius(6px 6px 0 0);
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility:hidden;
+  -ms-backface-visibility:hidden;
+  backface-visibility:hidden;
+  
+  .vjs-tech {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    .border-radius(6px 6px 0 0);
+  }  
+  &:-moz-full-screen {
+    position: absolute;
+  }  
+}
+
+body.vjs-full-window {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.video-js {
+  &.vjs-fullscreen {
+    position: fixed;
+    overflow: hidden;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 100% !important;
+    height: 100% !important;
+    _position: absolute;
+  }  
+  &:-webkit-full-screen {
+    width: 100% !important;
+    height: 100% !important;
+  }  
+}
+
+.vjs-poster {
+  margin: 0 auto;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  width: 100%;
+  max-height: 100%;
+  .border-radius(6px 6px 0 0);
+}
+
+.video-js {
+  .vjs-text-track-display {
+    text-align: center;
+    position: absolute;
+    bottom: 4em;
+    left: 1em;
+    right: 1em;
+    font-family: @base-font-family;
+  }  
+  .vjs-text-track {
+    display: none;
+    color: @inverse;
+    font-size: 1.4em;
+    text-align: center;
+    margin-bottom: .1em;
+    background: #000;
+    background: rgba(0,0,0,.5);
+  }  
+  .vjs-subtitles {
+    color: #fff;
+  }  
+  .vjs-captions {
+    color: #fc6;
+  }  
+}
+
+.vjs-tt-cue {
+  display: block;
+}
+
+.vjs-fade-in {
+  visibility: visible !important;
+  opacity: 1 !important;
+  .transition(~"visibility 0s linear 0s, opacity .3s linear");
+}
+.vjs-fade-out {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  .transition(~"visibility 0s linear 1.5s, opacity 1.5s linear");
+}
+
+.vjs-controls {  
+  position: absolute;
+  bottom: -47px;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  height: 47px;
+  color: @inverse;
+  background: @controls-color;
+  .border-radius(0 0 6px 6px);
+  
+  &.vjs-fade-out {
+    visibility: visible !important;
+    opacity: 1 !important;
+  }  
+}
+
+// Video player control general style
+.vjs-control {
+  background-position: center center;
+  background-repeat: no-repeat;
+  position: relative;
+  float: left;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  height: 18px;
+  width: 18px;
+  
+  &:focus {
+    outline: 0
+  }  
+  div {
+    background-position: center center;
+    background-repeat: no-repeat;
+  }    
+}
+
+// Control tooltip
+.vjs-control-text {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.vjs-play-control {
+  cursor: pointer !important;
+  height: 47px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 58px;
+  
+  div {
+    position: relative;    
+    height: 47px;
+    
+    &:before,
+    &:after {
+      position: absolute;
+      font-family: "Flat-UI-Icons";
+      color: @firm;
+      font-size: 16px;
+      top: 50%;
+      left: 50%;
+      margin: -0.55em 0 0 -0.5em;
+      .transition(~"color .25s, opacity .25s");
+    }
+    &:after {
+      content: "\e03b";
+    }
+    &:before {
+      content: "\e03c";
+    }
+  }
+}
+
+.vjs-paused .vjs-play-control {  
+  &:hover {
+    div:before {
+      color: mix(@firm, black, 85%);
+    } 
+  }  
+  div {
+    &:after {
+      .opacity(0);
+    }
+    &:before {
+      .opacity(100);
+    }
+  }  
+}
+
+.vjs-playing .vjs-play-control {  
+  &:hover {
+    div:after {
+      color: mix(@firm, black, 85%);
+    } 
+  }  
+  div {
+    &:after {
+      .opacity(100);
+    }
+    &:before {
+      .opacity(0);
+    }    
+  }  
+}
+
+.vjs-rewind-control {
+  width: 5em;
+  cursor: pointer !important;
+  
+  div {
+    width: 19px;
+    height: 16px;
+    background: none transparent;
+    margin: .5em auto 0;
+  }  
+}
+
+.vjs-mute-control {
+  background: url(../images/video/volume-full.png) center -48px no-repeat;
+  background-size: 16px 64px;
+  cursor: pointer !important;
+  position: absolute;
+  right: 51px;
+  top: 14px;
+
+  &:hover,
+  &:focus {
+    div {
+      opacity: 0;
+    }  
+  }
+  
+  // Muted state
+  &.vjs-vol-0 {
+    &,
+    div {
+      background-image: url(../images/video/volume-off.png);
+    }  
+  }
+  div {
+    background: @controls-color url(../images/video/volume-full.png) no-repeat center 2px;
+    background-size: 16px 64px;
+    height: 18px;
+    .transition(opacity .25s);
+  }  
+}
+
+.vjs-volume-control,
+.vjs-volume-level,
+.vjs-volume-handle,
+.vjs-volume-bar {
+  display: none;
+}
+
+.vjs-progress-control {
+  position: absolute;
+  left: 60px;
+  right: 180px;
+  height: 12px;
+  width: auto;
+  top: 18px;
+  background: mix(@base, @inverse, 93%);
+  .border-radius(32px);
+}
+
+.vjs-progress-holder {
+  position: relative;
+  cursor: pointer !important;
+  padding: 0;
+  margin: 0;
+  height: 12px;
+}
+
+.vjs-play-progress,
+.vjs-load-progress {
+  position: absolute;
+  display: block;
+  height: 12px;
+  margin: 0;
+  padding: 0;
+  left: 0;
+  top: 0;
+  .border-radius(32px);
+}
+
+.vjs-play-progress {
+  background: @firm;
+  left: -1px;
+}
+
+.vjs-load-progress {
+  background: mix(@base, @inverse, 20%);
+  .border-radius(32px 0 0 32px);
+  
+  &[style*='100%'],
+  &[style*='99%'] {
+    .border-radius(32px);
+  }  
+}
+
+.vjs-seek-handle {
+  background-color: mix(@firm, black, 85%);
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  margin: -3px 0 0 1px;
+  left: 0;
+  top: 0;
+  .transition(background-color .25s);
+  .border-radius(50%);
+
+  &[style*='95.'] {
+    margin-left: 3px;
+  }
+  &[style='left: 0%;'] {
+    margin-left: -2px;
+  }
+  &:hover,
+  &:focus {
+    background-color: mix(@firm, black, 75%);
+  }  
+  &:active {
+    background-color: mix(@firm, black, 65%)
+  }  
+}
+
+// Player time controls
+.vjs-time-controls {
+  position: absolute;
+  height: 20px;
+  width: 50px;
+  top: 16px;
+  font: 300 13px @base-font-family;
+}
+
+.vjs-current-time {
+  right: 128px;
+  text-align: right;
+}
+
+.vjs-duration {
+  color: mix(@base, @inverse, 80%);
+  right: 69px;
+  text-align: left;
+}
+
+.vjs-remaining-time {
+  display: none;
+}
+
+.vjs-time-divider {
+  color: mix(@base, @inverse, 80%);
+  font-size: 14px;
+  position: absolute;
+  right: 121px;
+  top: 15px;
+}
+
+.vjs-secondary-controls {
+  float: right;
+}
+
+.vjs-fullscreen-control {
+  background-image: url(../images/video/fullscreen.png);
+  background-position: center -47px;
+  background-size: 15px 64px;
+  cursor: pointer !important;
+  position: absolute;
+  right: 17px;
+  top: 13px;
+
+  &:hover,
+  &:focus {
+    div {
+      opacity: 0;
+    }  
+  }
+  div {
+    height: 18px;
+    background: url(../images/video/fullscreen.png) no-repeat center 2px;
+    background-size: 15px 64px;
+    .transition(opacity .25s);
+  }  
+}
+
+// Subtitles menu. Hide for no need by design.
+.vjs-menu-button {
+  display: none !important;
+}
+
+// Video preloader
+.sharp-keyframes() {
+  0% {
+    background: #e74c3c;    
+    .transform(rotate(0deg));
+    .border-radius(10px);
+  }
+  50% {
+    background: #ebedee;
+    .border-radius(0);
+    .transform(rotate(180deg));
+  }
+  100% {
+    background: #e74c3c;
+    .border-radius(10px);
+    .transform(rotate(360deg));
+  }  
+}    
+
+@-webkit-keyframes sharp
+  .sharp-keyframes();
+
+@-moz-keyframes sharp
+  .sharp-keyframes();
+
+@-o-keyframes sharp
+  .sharp-keyframes();
+
+@keyframes sharp
+  .sharp-keyframes();
+
+.vjs-loading-spinner {
+  background: #ebedee;
+  display: none;
+  height: 16px;
+  left: 50%;
+  margin: -8px 0 0 -8px;
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  .animation(sharp 2s ease infinite);
+  .border-radius(10px);
+}  

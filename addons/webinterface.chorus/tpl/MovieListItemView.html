@@ -1,0 +1,24 @@
+<div class="card movie-row movie-row-<%= movieid %> clearfix watched-<%=watched.status%>" data-id="<%= movieid %>">
+    <a class="image-wrapper" href="#movie/<%= movieid %>" title="<%= label %>">
+        <img class="image content-lazy" src="<%= app.image.url('', 'space') %>" data-original="<%= app.image.url(thumbnail) %>" />
+    </a>
+    <div class="actions-wrapper movie-actions-wrapper">
+        <div class="actions movie-actions<%= (thumbsup ? ' thumbs-up' : '') %>" data-id="<%= movieid %>">
+            <button class="movie-watched btn watched-btn" title="Toggle Watched"><i class="fa fa-circle"></i></button>
+            <button class="movie-thumbsup btn thumbs-up" title="Thumbs Up"><i class="fa fa-thumbs-up"></i></button>
+            <button class="movie-play video-play btn" title="Replace the playlist with this movie and start playing"><i class="fa fa-play"></i></button>
+            <button class="movie-add btn" title="Add this movie to the playlist"><i class="fa fa-plus"></i></button>
+            <button class="movie-menu btn" title="More movie options"><i class="fa fa-ellipsis-v"></i></button>
+        </div>
+    </div>
+    <div class="video-progress"><span style="width: <%=watched.progress%>%"></span></div>
+    <div class="details">
+        <p class="item-title" title="<%= label %>">
+            <a class="image-wrapper" href="#movie/<%= movieid %>"><span><%= label %></span></a>
+        </p>
+        <p class="item-sub-title">
+            <span><%= year %></span>
+        </p>
+        <i class="fa fa-check is-watched" title="Watched"></i>
+    </div>
+</div>

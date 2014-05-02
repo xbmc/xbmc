@@ -1,0 +1,145 @@
+//
+// Bootstrap Select
+// --------------------------------------------------
+// Credits: Silvio Moreto
+// http://github.com/silviomoreto/bootstrap-select
+
+.select {
+  display: inline-block;
+  margin-bottom: 10px;
+
+  // Select grid
+  &[class*="span"] {
+    [class*="span"] > & {
+      margin-left: 0; // No margin if select is a closest child of the grid
+    }
+    .btn {
+      width: 100%; // Button should take all available space of its parent
+      .box-sizing();
+    }
+  }
+
+  // Fluid width. Takes all available space and behaves like a block
+  &.select-block {
+    display: block;
+    float: none;
+    margin-left: 0;
+    width: auto;
+
+    .btn {
+      width: 100%;
+      .box-sizing();
+    }
+  }
+  
+  
+  // Button Sizes
+  // --------------------------------------------------
+
+  .btn {
+    width: 220px; // Default select width until .span* is applied
+    
+    // Huge
+    &.btn-huge {
+      .filter-option {
+        left: 20px;
+        right: 40px;
+        top: 16px;
+      }
+      .caret {
+        right: 20px;
+      }
+    }
+    
+    // Large
+    &.btn-large {
+      .filter-option {
+        left: 18px;
+        right: 38px;
+        top: 12px;
+      }
+    }
+    
+    // Small
+    &.btn-small {
+      .filter-option {
+        left: 13px;
+        right: 33px;
+        top: 7px;
+      }
+      .caret {
+        right: 13px;
+      }
+    }
+    
+    // Mini
+    &.btn-mini {
+      .filter-option {
+        left: 13px;
+        right: 33px;
+        top: 5px;
+      }
+      .caret {
+        right: 13px;
+      }
+    }
+    .filter-option {
+      height: 26px;
+      left: 13px;
+      overflow: hidden;
+      position: absolute;
+      right: 33px;
+      text-align: left;
+      top: 10px;
+    }
+    .caret {
+      position: absolute;
+      right: 16px;
+    }
+    .dropdown-toggle {
+      .border-radius(6px);
+    }
+
+    // Dropdown menu
+    .dropdown-menu {
+      min-width: 100%;
+      .box-sizing;
+
+      dt {
+        cursor: default;
+        display: block;
+        padding: 3px 20px;
+      }
+      li {
+        &:not(.disabled) > a:hover small {
+          color: fade(@inverse, .4);
+        }
+        > a {
+          min-height: 20px;
+          
+          &.opt {
+            padding-left: 35px;
+          }
+        }
+        small {
+          padding-left: 0.5em;
+        }
+        > dt small {
+          font-weight: normal;
+        }
+      }
+    }
+
+    // Disabled state
+    > .disabled,
+    .dropdown-menu li.disabled > a {
+      cursor: default;
+    }
+  }
+
+  // Caret
+  .caret {
+    .caret(@inverse);
+  }
+}
+
