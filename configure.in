@@ -880,6 +880,7 @@ if test "$use_static_ffmpeg" = "yes"; then
   # ffmpeg may depend on gnutls and vorbisenc, we add those libs at the end of linker
   # command in order to resolve any missing symbols
   GNUTLS_ALL_LIBS=`${PKG_CONFIG} --static --libs-only-l --silence-errors gnutls`
+  HOGWEED_ALL_LIBS=`${PKG_CONFIG} --static --libs-only-l --silence-errors hogweed nettle`
   VORBISENC_ALL_LIBS=`${PKG_CONFIG} --static --libs-only-l --silence-errors vorbisenc`
 fi 
 
@@ -1528,20 +1529,26 @@ fi
 
 # libRTMP
 if test "$use_librtmp" != "no"; then
-  AC_CHECK_HEADERS([librtmp/log.h librtmp/amf.h librtmp/rtmp.h],,
-   [if test "$use_librtmp" = "yes"; then
-      AC_MSG_ERROR($librtmp_not_found)
-    elif test "$use_librtmp" != "no"; then
-      AC_MSG_NOTICE($librtmp_not_found)
-      use_librtmp="no"
-    fi
-   ])
-  if test "$use_librtmp" != "no"; then
-    XB_FIND_SONAME([RTMP], [rtmp], [use_librtmp])
-  fi
-  if test "$use_librtmp" != "no"; then
-    AC_DEFINE([HAS_LIBRTMP], [1], [Whether to use libRTMP library.])
-  fi
+  PKG_CHECK_MODULES([LIBRTMP], [librtmp],
+    [INCLUDES="$INCLUDES $LIBRTMP_CFLAGS"; LIBS="$LIBS $LIBRTMP_LIBS";
+      AC_DEFINE([HAS_LIBRTMP], [1], [Whether to use libRTMP library.])
+      RTMP_ALL_LIBS=$(${PKG_CONFIG} --static --libs-only-l --silence-errors librtmp)
+      test "$use_static_ffmpeg" = "yes" && LIBS="$LIBS $RTMP_ALL_LIBS"],
+    [AC_CHECK_HEADERS([librtmp/log.h librtmp/amf.h librtmp/rtmp.h],,
+      [if test "$use_librtmp" = "yes"; then
+        AC_MSG_ERROR($librtmp_not_found)
+      elif test "$use_librtmp" != "no"; then
+        AC_MSG_NOTICE($librtmp_not_found)
+        use_librtmp="no"
+      fi
+      ])
+      if test "$use_librtmp" != "no"; then
+        XB_FIND_SONAME([RTMP], [rtmp], [use_librtmp])
+      fi
+      if test "$use_librtmp" != "no"; then
+        AC_DEFINE([HAS_LIBRTMP], [1], [Whether to use libRTMP library.])
+      fi
+    ])
 else
   AC_MSG_NOTICE($librtmp_disabled)
 fi
@@ -2667,6 +2674,7 @@ AC_SUBST(GTEST_CONFIGURED)
 AC_SUBST(USE_DOXYGEN)
 AC_SUBST(USE_PVR_ADDONS)
 AC_SUBST(GNUTLS_ALL_LIBS)
+AC_SUBST(HOGWEED_ALL_LIBS)
 AC_SUBST(VORBISENC_ALL_LIBS)
 
 # pushd and popd are not available in other shells besides bash, so implement

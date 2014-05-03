@@ -481,7 +481,7 @@ FFMPEGOBJS = lib/ffmpeg/libavcodec/libavcodec.a \
              lib/ffmpeg/libpostproc/libpostproc.a \
              lib/ffmpeg/libswscale/libswscale.a
 DYNOBJSXBMC+= $(FFMPEGOBJS)
-LIBS+= @GNUTLS_ALL_LIBS@ @VORBISENC_ALL_LIBS@
+LIBS+= @GNUTLS_ALL_LIBS@ @VORBISENC_ALL_LIBS@ @HOGWEED_ALL_LIBS@
 
 $(FFMPEGOBJS): dvdpcodecs
 endif
