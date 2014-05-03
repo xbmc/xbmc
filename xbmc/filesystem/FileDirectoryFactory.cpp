@@ -217,7 +217,8 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     return NULL;
   }
 
-  if (pItem->IsAudioBook())
+  if (pItem->IsAudioBook() || StringUtils::EqualsNoCase(strExtension, ".mka") ||
+      pItem->IsType(".mka"))
   {
     if (!pItem->HasMusicInfoTag() || pItem->m_lEndOffset <= 0)
     {
