@@ -373,10 +373,10 @@ namespace XBMCAddon
       pControl->dwWidth = (int)pGUIControl->GetWidth();
       pControl->dwPosX = (int)pGUIControl->GetXPosition();
       pControl->dwPosY = (int)pGUIControl->GetYPosition();
-      pControl->iControlUp = pGUIControl->GetControlIdUp();
-      pControl->iControlDown = pGUIControl->GetControlIdDown();
-      pControl->iControlLeft = pGUIControl->GetControlIdLeft();
-      pControl->iControlRight = pGUIControl->GetControlIdRight();
+      pControl->iControlUp = pGUIControl->GetNavigateAction(ACTION_MOVE_UP).GetNavigation();
+      pControl->iControlDown = pGUIControl->GetNavigateAction(ACTION_MOVE_DOWN).GetNavigation();
+      pControl->iControlLeft = pGUIControl->GetNavigateAction(ACTION_MOVE_LEFT).GetNavigation();
+      pControl->iControlRight = pGUIControl->GetNavigateAction(ACTION_MOVE_RIGHT).GetNavigation();
 
       // It got this far so means the control isn't actually in the vector of controls
       // so lets add it to save doing all that next time
@@ -762,8 +762,10 @@ namespace XBMCAddon
       pControl->iControlLeft = pControl->iControlId;
       pControl->iControlRight = pControl->iControlId;
 
-      pControl->pGUIControl->SetNavigation(pControl->iControlUp,
-          pControl->iControlDown, pControl->iControlLeft, pControl->iControlRight);
+      pControl->pGUIControl->SetNavigationAction(ACTION_MOVE_UP,    pControl->iControlUp);
+      pControl->pGUIControl->SetNavigationAction(ACTION_MOVE_DOWN,  pControl->iControlDown);
+      pControl->pGUIControl->SetNavigationAction(ACTION_MOVE_LEFT,  pControl->iControlLeft);
+      pControl->pGUIControl->SetNavigationAction(ACTION_MOVE_RIGHT, pControl->iControlRight);
 
       // add control to list and allocate recources for the control
       vecControls.push_back(AddonClass::Ref<Control>(pControl));

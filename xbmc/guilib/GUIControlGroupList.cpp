@@ -225,8 +225,8 @@ void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*
 
   if (control)
   { // set the navigation of items so that they form a list
-    CGUIAction beforeAction = (m_orientation == VERTICAL) ? m_actionUp : m_actionLeft;
-    CGUIAction afterAction = (m_orientation == VERTICAL) ? m_actionDown : m_actionRight;
+    CGUIAction beforeAction = GetNavigateAction((m_orientation == VERTICAL) ? ACTION_MOVE_UP : ACTION_MOVE_LEFT);
+    CGUIAction afterAction = GetNavigateAction((m_orientation == VERTICAL) ? ACTION_MOVE_DOWN : ACTION_MOVE_RIGHT);
     if (m_children.size())
     {
       // we're inserting at the given position, so grab the items above and below and alter
@@ -281,17 +281,17 @@ void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*
     {
       control->SetNavigationAction(ACTION_MOVE_UP, beforeAction);
       control->SetNavigationAction(ACTION_MOVE_DOWN, afterAction);
-      control->SetNavigationAction(ACTION_MOVE_LEFT, m_actionLeft, false);
-      control->SetNavigationAction(ACTION_MOVE_RIGHT, m_actionRight, false);
+      control->SetNavigationAction(ACTION_MOVE_LEFT, GetNavigateAction(ACTION_MOVE_LEFT), false);
+      control->SetNavigationAction(ACTION_MOVE_RIGHT, GetNavigateAction(ACTION_MOVE_RIGHT), false);
     }
     else
     {
       control->SetNavigationAction(ACTION_MOVE_LEFT, beforeAction);
       control->SetNavigationAction(ACTION_MOVE_RIGHT, afterAction);
-      control->SetNavigationAction(ACTION_MOVE_UP, m_actionUp, false);
-      control->SetNavigationAction(ACTION_MOVE_DOWN, m_actionDown, false);
+      control->SetNavigationAction(ACTION_MOVE_UP, GetNavigateAction(ACTION_MOVE_UP), false);
+      control->SetNavigationAction(ACTION_MOVE_DOWN, GetNavigateAction(ACTION_MOVE_DOWN), false);
     }
-    control->SetNavigationAction(ACTION_NAV_BACK, m_actionBack, false);
+    control->SetNavigationAction(ACTION_NAV_BACK, GetNavigateAction(ACTION_NAV_BACK), false);
 
     if (!m_useControlPositions)
       control->SetPosition(0,0);

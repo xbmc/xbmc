@@ -179,29 +179,27 @@ public:
    */
   virtual CRect CalcRenderRegion() const;
 
-  virtual void SetNavigation(int up, int down, int left, int right, int back = 0);
-  virtual void SetTabNavigation(int next, int prev);
+  /*! \brief Set actions to perform on navigation
+   \param actions ActionMap of actions
+   \sa SetNavigationAction
+   */
+  typedef std::map<int, CGUIAction> ActionMap;
+  void SetNavigationActions(const ActionMap &actions);
 
   /*! \brief Set actions to perform on navigation
    Navigations are set if replace is true or if there is no previously set action
-   \param up CGUIAction to execute on up
-   \param down CGUIAction to execute on down
-   \param left CGUIAction to execute on left
-   \param right CGUIAction to execute on right
-   \param back CGUIAction to execute on back
+   \param actionID id of the nagivation action
+   \param actions CGUIAction to set
    \param replace Actions are set only if replace is true or there is no previously set action.  Defaults to true
-   \sa SetNavigation
+   \sa SetNavigationActions
    */
-  virtual void SetNavigationActions(const CGUIAction &up, const CGUIAction &down,
-                                    const CGUIAction &left, const CGUIAction &right,
-                                    const CGUIAction &back, bool replace = true);
-  void SetNavigationAction(int direction, const CGUIAction &action, bool replace = true);
-  int GetControlIdUp() const { return m_actionUp.GetNavigation(); };
-  int GetControlIdDown() const { return  m_actionDown.GetNavigation(); };
-  int GetControlIdLeft() const { return m_actionLeft.GetNavigation(); };
-  int GetControlIdRight() const { return m_actionRight.GetNavigation(); };
-  int GetControlIdBack() const { return m_actionBack.GetNavigation(); };
-  bool GetNavigationAction(int direction, CGUIAction& action) const;
+  void SetNavigationAction(int actionID, const CGUIAction &action, bool replace = true);
+
+  /*! \brief Get an action the control can be perform.
+   \param action the actionID to retrieve.
+   */
+  CGUIAction GetNavigateAction(int actionID) const;
+
   /*! \brief  Start navigating in given direction.
    */
   bool Navigate(int direction) const;
@@ -314,13 +312,7 @@ protected:
   bool SendWindowMessage(CGUIMessage &message) const;
 
   // navigation and actions
-  CGUIAction m_actionLeft;
-  CGUIAction m_actionRight;
-  CGUIAction m_actionUp;
-  CGUIAction m_actionDown;
-  CGUIAction m_actionBack;
-  CGUIAction m_actionNext;
-  CGUIAction m_actionPrev;
+  ActionMap m_actions;
 
   float m_posX;
   float m_posY;

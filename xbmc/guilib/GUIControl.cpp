@@ -457,57 +457,16 @@ CRect CGUIControl::CalcRenderRegion() const
   return CRect(tl.x, tl.y, br.x, br.y);
 }
 
-void CGUIControl::SetNavigation(int up, int down, int left, int right, int back)
+void CGUIControl::SetNavigationActions(const ActionMap &actions)
 {
-  m_actionUp.SetNavigation(up);
-  m_actionDown.SetNavigation(down);
-  m_actionLeft.SetNavigation(left);
-  m_actionRight.SetNavigation(right);
-  m_actionBack.SetNavigation(back);
+  m_actions = actions;
 }
 
-void CGUIControl::SetTabNavigation(int next, int prev)
+void CGUIControl::SetNavigationAction(int actionID, const CGUIAction &action, bool replace /*= true*/)
 {
-  m_actionNext.SetNavigation(next);
-  m_actionPrev.SetNavigation(prev);
-}
-
-void CGUIControl::SetNavigationActions(const CGUIAction &up, const CGUIAction &down,
-                                       const CGUIAction &left, const CGUIAction &right,
-                                       const CGUIAction &back, bool replace)
-{
-  if (!m_actionLeft.HasAnyActions()  || replace) m_actionLeft  = left;
-  if (!m_actionRight.HasAnyActions() || replace) m_actionRight = right;
-  if (!m_actionUp.HasAnyActions()    || replace) m_actionUp    = up;
-  if (!m_actionDown.HasAnyActions()  || replace) m_actionDown  = down;
-  if (!m_actionBack.HasAnyActions()  || replace) m_actionBack  = back;
-}
-
-void CGUIControl::SetNavigationAction(int direction, const CGUIAction &action, bool replace /*= true*/)
-{
-  switch (direction)
-  {
-  case ACTION_MOVE_UP:
-    if (!m_actionUp.HasAnyActions() || replace)
-      m_actionUp = action;
-    break;
-  case ACTION_MOVE_DOWN:
-    if (!m_actionDown.HasAnyActions() || replace)
-      m_actionDown = action;
-    break;
-  case ACTION_MOVE_LEFT:
-    if (!m_actionLeft.HasAnyActions() || replace)
-      m_actionLeft = action;
-    break;
-  case ACTION_MOVE_RIGHT:
-    if (!m_actionRight.HasAnyActions() || replace)
-      m_actionRight = action;
-    break;
-  case ACTION_NAV_BACK:
-    if (!m_actionBack.HasAnyActions() || replace)
-      m_actionBack = action;
-    break;
-  }
+  ActionMap::iterator i = m_actions.find(actionID);
+  if (i == m_actions.end() || !i->second.HasAnyActions() || replace)
+    m_actions[actionID] = action;
 }
 
 void CGUIControl::SetWidth(float width)
@@ -900,28 +859,12 @@ bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)
   return false;
 }
 
-bool CGUIControl::GetNavigationAction(int direction, CGUIAction& action) const
+CGUIAction CGUIControl::GetNavigateAction(int actionID) const
 {
-  switch (direction)
-  {
-  case ACTION_MOVE_UP:
-    action = m_actionUp;
-    return true;
-  case ACTION_MOVE_DOWN:
-    action = m_actionDown;
-    return true;
-  case ACTION_MOVE_LEFT:
-    action = m_actionLeft;
-    return true;
-  case ACTION_MOVE_RIGHT:
-    action = m_actionRight;
-    return true;
-  case ACTION_NAV_BACK:
-    action = m_actionBack;
-    return true;
-  default:
-    return false;
-  }
+  ActionMap::const_iterator i = m_actions.find(actionID);
+  if (i != m_actions.end())
+    return i->second;
+  return CGUIAction();
 }
 
 bool CGUIControl::CanFocusFromPoint(const CPoint &point) const

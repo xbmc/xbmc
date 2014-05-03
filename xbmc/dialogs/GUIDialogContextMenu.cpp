@@ -158,7 +158,10 @@ void CGUIDialogContextMenu::SetupButtons()
       else
       {
         pButton->SetPosition(pButtonTemplate->GetXPosition(), i*(pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
-        pButton->SetNavigation(id - 1, id + 1, id, id);
+        pButton->SetNavigationAction(ACTION_MOVE_UP, id - 1 );
+        pButton->SetNavigationAction(ACTION_MOVE_DOWN, id + 1);
+        pButton->SetNavigationAction(ACTION_MOVE_LEFT, id);
+        pButton->SetNavigationAction(ACTION_MOVE_RIGHT, id);
         AddControl(pButton);
       }
 #endif
@@ -172,10 +175,10 @@ void CGUIDialogContextMenu::SetupButtons()
     // if we don't have grouplist update the navigation of the first and last buttons
     pControl = (CGUIControl *)GetControl(BUTTON_START);
     if (pControl)
-      pControl->SetNavigation(BUTTON_END, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+      pControl->SetNavigationAction(ACTION_MOVE_UP, BUTTON_END);
     pControl = (CGUIControl *)GetControl(BUTTON_END);
     if (pControl)
-      pControl->SetNavigation(pControl->GetControlIdUp(), BUTTON_START, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+      pControl->SetNavigationAction(ACTION_MOVE_DOWN, BUTTON_START);
   }
 #endif
 
