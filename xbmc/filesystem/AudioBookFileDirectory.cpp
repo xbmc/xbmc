@@ -65,37 +65,63 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
 
   std::string title;
   std::string author;
+  std::string album;
 
   AVDictionaryEntry* tag=NULL;
   while ((tag = av_dict_get(m_fctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
   {
-    if (strcmp(tag->key,"title") == 0)
+    if (strcasecmp(tag->key,"title") == 0)
       title = tag->value;
-    if (strcmp(tag->key,"artist") == 0)
+    if (strcasecmp(tag->key,"album") == 0)
+      album = tag->value;
+    if (strcasecmp(tag->key,"artist") == 0)
       author = tag->value;
   }
 
   for (size_t i=0;i<m_fctx->nb_chapters;++i)
   {
     tag=NULL;
-    std::string chaptitle = "Unknown";
+    std::string chaptitle = StringUtils::Format(g_localizeStrings.Get(25010).c_str(), i+1);
+    std::string chapauthor;
+    std::string chapalbum;
     while ((tag=av_dict_get(m_fctx->chapters[i]->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
     {
-      if (strcmp(tag->key,"title") == 0)
-      {
+      if (strcasecmp(tag->key,"title") == 0)
         chaptitle = tag->value;
-        break;
-      }
+      if (strcasecmp(tag->key,"artist") == 0)
+        chapauthor = tag->value;
+      if (strcasecmp(tag->key,"album") == 0)
+        chapalbum = tag->value;
     }
     CFileItemPtr item(new CFileItem(url.Get(),false));
     item->GetMusicInfoTag()->SetTrackNumber(i+1);
     item->GetMusicInfoTag()->SetLoaded(true);
     item->GetMusicInfoTag()->SetTitle(chaptitle);
-    item->GetMusicInfoTag()->SetAlbum(title);
-    item->GetMusicInfoTag()->SetArtist(author);
-    item->SetLabel(StringUtils::Format("%02i. %s - %s",i+1, title.c_str(), chaptitle.c_str()));
+    if (album.empty())
+      item->GetMusicInfoTag()->SetAlbum(title);
+    else if (chapalbum.empty())
+      item->GetMusicInfoTag()->SetAlbum(album);
+    else
+      item->GetMusicInfoTag()->SetAlbum(chapalbum);
+    if (chapauthor.empty())
+      item->GetMusicInfoTag()->SetArtist(author);
+    else
+      item->GetMusicInfoTag()->SetArtist(chapauthor);
+
+    item->SetLabel(StringUtils::Format("%02" PRIdS ". %s - %s",i+1,
+                   item->GetMusicInfoTag()->GetAlbum().c_str(),
+                   item->GetMusicInfoTag()->GetTitle().c_str()));
     item->m_lStartOffset = m_fctx->chapters[i]->start*av_q2d(m_fctx->chapters[i]->time_base)*75;
-    item->m_lEndOffset = m_fctx->chapters[i]->end*av_q2d(m_fctx->chapters[i]->time_base)*75;
+    item->m_lEndOffset = m_fctx->chapters[i]->end*av_q2d(m_fctx->chapters[i]->time_base);
+    int compare = m_fctx->duration / (AV_TIME_BASE);
+    if (item->m_lEndOffset < 0 || item->m_lEndOffset > compare)
+    {
+      if (i < m_fctx->nb_chapters-1)
+        item->m_lEndOffset = m_fctx->chapters[i+1]->start*av_q2d(m_fctx->chapters[i+1]->time_base);
+      else
+        item->m_lEndOffset = compare;
+    }
+    item->m_lEndOffset *= 75;
     item->GetMusicInfoTag()->SetDuration((item->m_lEndOffset-item->m_lStartOffset)/75);
     item->SetProperty("item_start", item->m_lStartOffset);
     items.Add(item);
