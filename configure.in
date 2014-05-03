@@ -1528,20 +1528,24 @@ fi
 
 # libRTMP
 if test "$use_librtmp" != "no"; then
-  AC_CHECK_HEADERS([librtmp/log.h librtmp/amf.h librtmp/rtmp.h],,
-   [if test "$use_librtmp" = "yes"; then
-      AC_MSG_ERROR($librtmp_not_found)
-    elif test "$use_librtmp" != "no"; then
-      AC_MSG_NOTICE($librtmp_not_found)
-      use_librtmp="no"
-    fi
-   ])
-  if test "$use_librtmp" != "no"; then
-    XB_FIND_SONAME([RTMP], [rtmp], [use_librtmp])
-  fi
-  if test "$use_librtmp" != "no"; then
-    AC_DEFINE([HAS_LIBRTMP], [1], [Whether to use libRTMP library.])
-  fi
+  PKG_CHECK_MODULES([LIBRTMP], [librtmp],
+    [INCLUDES="$INCLUDES $LIBRTMP_CFLAGS"; LIBS="$LIBS $LIBRTMP_LIBS";
+      AC_DEFINE([HAS_LIBRTMP], [1], [Whether to use libRTMP library.])],
+    [AC_CHECK_HEADERS([librtmp/log.h librtmp/amf.h librtmp/rtmp.h],,
+      [if test "$use_librtmp" = "yes"; then
+        AC_MSG_ERROR($librtmp_not_found)
+      elif test "$use_librtmp" != "no"; then
+        AC_MSG_NOTICE($librtmp_not_found)
+        use_librtmp="no"
+      fi
+      ])
+      if test "$use_librtmp" != "no"; then
+        XB_FIND_SONAME([RTMP], [rtmp], [use_librtmp])
+      fi
+      if test "$use_librtmp" != "no"; then
+        AC_DEFINE([HAS_LIBRTMP], [1], [Whether to use libRTMP library.])
+      fi
+    ])
 else
   AC_MSG_NOTICE($librtmp_disabled)
 fi
