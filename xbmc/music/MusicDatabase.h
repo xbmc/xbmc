@@ -371,7 +371,7 @@ public:
   /////////////////////////////////////////////////
   // Karaoke
   /////////////////////////////////////////////////
-  void AddKaraokeData(int idSong, int iKaraokeNumber, DWORD crc);
+  void AddKaraokeData(int idSong, int iKaraokeNumber);
   bool GetSongByKaraokeNumber( int number, CSong& song );
   bool SetKaraokeSongDelay( int idSong, int delay );
   int GetKaraokeSongsCount();
@@ -515,7 +515,6 @@ private:
     song_iTrack,
     song_iDuration,
     song_iYear,
-    song_dwFileNameCRC,
     song_strFileName,
     song_strMusicBrainzTrackID,
     song_iTimesPlayed,

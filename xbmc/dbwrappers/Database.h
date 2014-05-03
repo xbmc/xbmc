@@ -166,7 +166,6 @@ protected:
   bool Update(const DatabaseSettings &db);
 
   void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
-  uint32_t ComputeCRC(const CStdString &text);
 
   virtual bool Open();
 
