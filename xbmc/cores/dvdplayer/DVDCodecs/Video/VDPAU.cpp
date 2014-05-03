@@ -933,6 +933,7 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
 
   m_inMsgEvent.Reset();
   m_vdpauConfigured = true;
+  m_ErrorCount = 0;
   return true;
 }
 
@@ -1051,7 +1052,9 @@ int CDecoder::Render(struct AVCodecContext *s, struct AVFrame *src,
   vdp->m_bufferStats.Get(decoded, processed, rend);
   vdp_st = vdp->m_vdpauConfig.context->GetProcs().vdp_decoder_render(vdp->m_vdpauConfig.vdpDecoder,
                                                                      surf, info, buffers_used, buffers);
-  vdp->CheckStatus(vdp_st, __LINE__);
+  if (vdp->CheckStatus(vdp_st, __LINE__))
+    return -1;
+
   uint64_t diff = CurrentHostCounter() - startTime;
   if (diff*1000/CurrentHostFrequency() > 30)
     CLog::Log(LOGDEBUG, "CVDPAU::DrawSlice - VdpDecoderRender long decoding: %d ms, dec: %d, proc: %d, rend: %d", (int)((diff*1000)/CurrentHostFrequency()), decoded, processed, rend);
@@ -1239,6 +1242,8 @@ bool CDecoder::CheckStatus(VdpStatus vdp_st, int line)
   {
     CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", m_vdpauConfig.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
 
+    m_ErrorCount++;
+
     if(m_DisplayState == VDPAU_OPEN)
     {
       if (vdp_st == VDP_STATUS_DISPLAY_PREEMPTED)
@@ -1246,12 +1251,13 @@ bool CDecoder::CheckStatus(VdpStatus vdp_st, int line)
         m_DisplayEvent.Reset();
         m_DisplayState = VDPAU_LOST;
       }
-      else
+      else if (m_ErrorCount > 2)
         m_DisplayState = VDPAU_ERROR;
     }
 
     return true;
   }
+  m_ErrorCount = 0;
   return false;
 }
 
@@ -2929,6 +2935,11 @@ bool COutput::Init()
 bool COutput::Uninit()
 {
   m_mixer.Dispose();
+  glFlush();
+  while(ProcessSyncPicture())
+  {
+    Sleep(10);
+  }
   GLUnmapSurfaces();
   ReleaseBufferPool();
   DestroyGlxContext();
