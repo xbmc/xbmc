@@ -531,9 +531,9 @@ AC_ARG_ENABLE([player],
 
 AC_ARG_ENABLE([gtest],
   [AS_HELP_STRING([--enable-gtest],
-  [configure Google Test Framework (default is no)])],
+  [configure Google Test Framework (default is yes)])],
   [configure_gtest=$enableval],
-  [configure_gtest=no])
+  [configure_gtest=yes])
 
 AC_ARG_ENABLE([codec],
   [AS_HELP_STRING([--enable-codec],
