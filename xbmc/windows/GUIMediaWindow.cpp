@@ -490,17 +490,22 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       bool returning = StringUtils::EqualsNoCase(ret, "return");
       if (!dir.empty())
       {
-        m_history.ClearPathHistory();
         // ensure our directory is valid
         dir = GetStartFolder(dir);
-        if (!returning || !StringUtils::StartsWith(m_vecItems->GetPath(), dir))
+        bool resetHistory = false;
+        if (!returning || !m_history.IsInHistory(dir))
         { // we're not returning to the same path, so set our directory to the requested path
           m_vecItems->SetPath(dir);
+          resetHistory = true;
         }
         // check for network up
         if (URIUtils::IsRemote(m_vecItems->GetPath()) && !WaitForNetwork())
+        {
           m_vecItems->SetPath("");
-        SetHistoryForPath(m_vecItems->GetPath());
+          resetHistory = true;
+        }
+        if (resetHistory)
+          SetHistoryForPath(m_vecItems->GetPath());
       }
       if (message.GetParam1() != WINDOW_INVALID)
       { // first time to this window - make sure we set the root path

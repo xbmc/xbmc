@@ -103,6 +103,20 @@ CStdString CDirectoryHistory::GetParentPath(bool filter /* = false */)
   return m_vecPathHistory.back().GetPath(filter);
 }
 
+bool CDirectoryHistory::IsInHistory(const std::string &path) const
+{
+  std::string slashEnded(path);
+  URIUtils::AddSlashAtEnd(slashEnded);
+  for (vector<CPathHistoryItem>::const_iterator i = m_vecPathHistory.begin(); i != m_vecPathHistory.end(); ++i)
+  {
+    std::string testPath(i->GetPath());
+    URIUtils::AddSlashAtEnd(testPath);
+    if (slashEnded == testPath)
+      return true;
+  }
+  return false;
+}
+
 CStdString CDirectoryHistory::RemoveParentPath(bool filter /* = false */)
 {
   if (m_vecPathHistory.empty())
