@@ -3,6 +3,7 @@ SRCS=\
      MusicInfoTagLoaderCDDA.cpp \
      MusicInfoTagLoaderDatabase.cpp \
      MusicInfoTagLoaderFactory.cpp \
+     MusicInfoTagLoaderFFmpeg.cpp \
      MusicInfoTagLoaderShn.cpp \
      TagLoaderTagLib.cpp \
      TagLibVFSStream.cpp \
