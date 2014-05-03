@@ -2,8 +2,6 @@
 ;Copyright (C) 2005-2013 Team XBMC
 ;http://xbmc.org
 
-;Script by chadoe
-
 ;--------------------------------
 ;Include Modern UI
 
@@ -97,39 +95,36 @@ Section "XBMC" SecXBMC
   SetShellVarContext current
   SectionIn RO
   SectionIn 1 2 3 #section is in install type Normal/Full/Minimal
-  ;ADD YOUR OWN FILES HERE...
+  ;Clean up install folder
+  RMDir /r $INSTDIR\addons
+  RMDir /r $INSTDIR\language
+  RMDir /r $INSTDIR\media
+  RMDir /r $INSTDIR\sounds
+  RMDir /r $INSTDIR\system
+  Delete "$INSTDIR\*.*"
+  
+  ;Start copying files
   SetOutPath "$INSTDIR"
   File "${xbmc_root}\Xbmc\XBMC.exe"
   File "${xbmc_root}\Xbmc\copying.txt"
   File "${xbmc_root}\Xbmc\LICENSE.GPL"
   File "${xbmc_root}\Xbmc\*.dll"
-  SetOutPath "$INSTDIR\language"
-  File /r /x *.so "${xbmc_root}\Xbmc\language\*.*"
-  SetOutPath "$INSTDIR\media"
-  File /r /x *.so "${xbmc_root}\Xbmc\media\*.*"
-  SetOutPath "$INSTDIR\sounds"
-  File /r /x *.so "${xbmc_root}\Xbmc\sounds\*.*"
-
-  RMDir /r $INSTDIR\addons
   SetOutPath "$INSTDIR\addons"
   File /r /x skin.touched ${xbmc_root}\Xbmc\addons\*.*
-
-  ; delete system/python if its there
+  SetOutPath "$INSTDIR\language"
+  File /r "${xbmc_root}\Xbmc\language\*.*"
+  SetOutPath "$INSTDIR\media"
+  File /r "${xbmc_root}\Xbmc\media\*.*"
+  SetOutPath "$INSTDIR\sounds"
+  File /r "${xbmc_root}\Xbmc\sounds\*.*"
   SetOutPath "$INSTDIR\system"
-  IfFileExists $INSTDIR\system\python 0 +2
-    RMDir /r $INSTDIR\system\python
+  File /r "${xbmc_root}\Xbmc\system\*.*"
   
-  File /r /x *.so /x *_d.* /x tcl85g.dll /x tclpip85g.dll /x tk85g.dll "${xbmc_root}\Xbmc\system\*.*"
-  
-  ; delete  msvc?90.dll's in INSTDIR, we use the vcredist installer later
-  Delete "$INSTDIR\msvcr90.dll"
-  Delete "$INSTDIR\msvcp90.dll"
-  
-  ;Turn off overwrite to prevent files in xbmc\userdata\ from being overwritten
+  ;Turn off overwrite to prevent files in APPDATA\xbmc\userdata\ from being overwritten
   SetOverwrite off
-  
-  SetOutPath "$INSTDIR\userdata"
-  File /r /x *.so  "${xbmc_root}\Xbmc\userdata\*.*"
+  IfFileExists $INSTDIR\userdata 0 +2
+    SetOutPath "$APPDATA\${APP_NAME}\userdata"
+    File /r "${xbmc_root}\Xbmc\userdata\*.*"
   
   ;Turn on overwrite for rest of install
   SetOverwrite on
@@ -247,57 +242,31 @@ Section "Uninstall"
   SetShellVarContext current
 
   ;ADD YOUR OWN FILES HERE...
-  Delete "$INSTDIR\${APP_NAME}.exe"
-  Delete "$INSTDIR\copying.txt"
-  Delete "$INSTDIR\known_issues.txt"
-  Delete "$INSTDIR\LICENSE.GPL"
-  Delete "$INSTDIR\glew32.dll"
-  Delete "$INSTDIR\SDL.dll"
-  Delete "$INSTDIR\zlib1.dll"
-  Delete "$INSTDIR\xbmc.log"
-  Delete "$INSTDIR\xbmc.old.log"
-  Delete "$INSTDIR\python26.dll"
-  Delete "$INSTDIR\python27.dll"
-  Delete "$INSTDIR\libcdio-*.dll"
-  Delete "$INSTDIR\libiconv-2.dll"
-  Delete "$INSTDIR\libxml2.dll"
-  Delete "$INSTDIR\iconv.dll"
+  Delete "$INSTDIR\*.*"
+  RMDir /r "$INSTDIR\addons"
   RMDir /r "$INSTDIR\language"
   RMDir /r "$INSTDIR\media"
-  RMDir /r "$INSTDIR\plugins"
-  RMDir /r "$INSTDIR\scripts"
-  RMDir /r "$INSTDIR\skin"
   RMDir /r "$INSTDIR\sounds"
   RMDir /r "$INSTDIR\system"
-  RMDir /r "$INSTDIR\visualisations"
-  RMDir /r "$INSTDIR\addons"
-  RMDir /r "$INSTDIR\web"
-  RMDir /r "$INSTDIR\cache"
-
-  Delete "$INSTDIR\Uninstall.exe"
   
 ;Uninstall User Data if option is checked, otherwise skip
   ${If} $UnPageProfileCheckbox_State == ${BST_CHECKED}
-    RMDir /r "$INSTDIR\userdata"  
-    RMDir "$INSTDIR"
+    RMDir /r "$INSTDIR"
     RMDir /r "$APPDATA\${APP_NAME}\"
   ${Else}
 ;Even if userdata is kept in %appdata%\xbmc\userdata, the $INSTDIR\userdata should be cleaned up on uninstall if not used
 ;If guisettings.xml exists in the XBMC\userdata directory, do not delete XBMC\userdata directory
 ;If that file does not exists, then delete that folder and $INSTDIR
-    IfFileExists $INSTDIR\userdata\guisettings.xml +3
-      RMDir /r "$INSTDIR\userdata"  
-      RMDir "$INSTDIR"
+    IfFileExists $INSTDIR\userdata\guisettings.xml +2
+      RMDir /r "$INSTDIR"
   ${EndIf}
 
-  
   !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
   Delete "$SMPROGRAMS\$StartMenuFolder\${APP_NAME}.lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall ${APP_NAME}.lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\Visit ${APP_NAME} Online.url"
   RMDir "$SMPROGRAMS\$StartMenuFolder"  
   DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}"
-
   DeleteRegKey /ifempty HKCU "Software\${APP_NAME}"
 
 SectionEnd
