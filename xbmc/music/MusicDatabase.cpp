@@ -3911,11 +3911,17 @@ void CMusicDatabase::UpdateTables(int version)
     m_pDS->exec("UPDATE song_artist SET strJoinPhrase = '' WHERE 100*idSong+iOrder IN (SELECT id FROM (SELECT 100*idSong+max(iOrder) AS id FROM song_artist GROUP BY idSong) AS sub)");
     m_pDS->exec("UPDATE album_artist SET strJoinPhrase = '' WHERE 100*idAlbum+iOrder IN (SELECT id FROM (SELECT 100*idAlbum+max(iOrder) AS id FROM album_artist GROUP BY idAlbum) AS sub)");
   }
+  if (version < 48)
+  { // null out columns that are no longer used
+    m_pDS->exec("UPDATE song SET dwFileNameCRC=NULL, idThumb=NULL");
+    m_pDS->exec("UPDATE karaokedata SET strKaraLyrFileCRC=NULL");
+    m_pDS->exec("UPDATE album SET idThumb=NULL");
+  }
 }
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 47;
+  return 48;
 }
 
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, vector<pair<int,int> > &songIDs)
