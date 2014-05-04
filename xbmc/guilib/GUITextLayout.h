@@ -134,6 +134,7 @@ protected:
 
   std::string m_lastUtf8Text;
   CStdStringW m_lastText;
+  bool        m_lastUpdateW; ///< true if the last string we updated was the wstring version
   float m_textWidth;
   float m_textHeight;
 private:
