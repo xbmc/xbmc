@@ -203,6 +203,7 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
     {
       // rewind stream to beginning
       Seek(0);
+      m_bCanSeek = true;
     }
     else
     {
