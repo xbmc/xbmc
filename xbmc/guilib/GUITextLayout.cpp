@@ -52,6 +52,7 @@ CGUITextLayout::CGUITextLayout(CGUIFont *font, bool wrap, float fHeight, CGUIFon
   m_maxHeight = fHeight;
   m_textWidth = 0;
   m_textHeight = 0;
+  m_lastUpdateW = false;
 }
 
 void CGUITextLayout::SetWrap(bool bWrap)
@@ -217,10 +218,11 @@ void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outl
 
 bool CGUITextLayout::Update(const CStdString &text, float maxWidth, bool forceUpdate /*= false*/, bool forceLTRReadingOrder /*= false*/)
 {
-  if (text == m_lastUtf8Text && !forceUpdate)
+  if (text == m_lastUtf8Text && !forceUpdate && !m_lastUpdateW)
     return false;
 
   m_lastUtf8Text = text;
+  m_lastUpdateW = false;
   CStdStringW utf16;
   utf8ToW(text, utf16);
   UpdateCommon(utf16, maxWidth, forceLTRReadingOrder);
@@ -229,10 +231,11 @@ bool CGUITextLayout::Update(const CStdString &text, float maxWidth, bool forceUp
 
 bool CGUITextLayout::UpdateW(const CStdStringW &text, float maxWidth /*= 0*/, bool forceUpdate /*= false*/, bool forceLTRReadingOrder /*= false*/)
 {
-  if (text == m_lastText && !forceUpdate)
+  if (text == m_lastText && !forceUpdate && m_lastUpdateW)
     return false;
 
   m_lastText = text;
+  m_lastUpdateW = true;
   UpdateCommon(text, maxWidth, forceLTRReadingOrder);
   return true;
 }
