@@ -449,10 +449,14 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
         col = L"[COLOR 00FFFFFF]|[/COLOR]";
       text.insert(m_cursorPos, col);
     }
+    else if (!HasFocus())
+    {
+      text.erase(m_cursorPos);
+    }
 
     changed |= m_label2.SetMaxRect(m_clipRect.x1 + m_textOffset, m_posY, m_clipRect.Width() - m_textOffset, m_height);
     if (text.empty())
-      changed |= m_label2.SetText(m_hintInfo.GetLabel(GetParentID()));
+      changed |= m_label2.SetTextW(m_hintInfo.GetLabel(GetParentID()));
     else
       changed |= m_label2.SetTextW(text);
     changed |= m_label2.SetAlign(align);
