@@ -19,6 +19,7 @@
  *
  */
 
+#include "guilib/KeyboardLayout.h"
 #include "settings/lib/ISettingCallback.h"
 #include "utils/StdString.h"
 
@@ -34,6 +35,8 @@
 #endif // TARGET_WINDOWS
 
 class TiXmlNode;
+
+typedef std::map<std::string, CKeyboardLayout> KeyboardLayoutMap;
 
 class CLangInfo : public ISettingCallback
 {
@@ -128,13 +131,26 @@ public:
   void SetCurrentRegion(const CStdString& strName);
   const CStdString& GetCurrentRegion() const;
 
+  CKeyboardLayout* GetMainKeyboardLayout();
+  void SetMainKeyboardLayout(const std::string &strName);
+  void GetMainKeyboardLayoutNames(std::vector<std::string> &array);
+
+  CKeyboardLayout* GetAltKeyboardLayout();
+  bool HasAltKeyboardLayout();
+  void SetAltKeyboardLayout(const std::string &strName);
+  void GetAltKeyboardLayoutNames(std::vector<std::string> &array);
+
   static bool CheckLanguage(const std::string& language);
 
   static void LoadTokens(const TiXmlNode* pTokens, std::vector<CStdString>& vecTokens);
 
+  static void LoadKeyboardLayouts(const std::string& strFileName, KeyboardLayoutMap &keyboardLayouts);
+  static void LoadKeyboardLayouts(const TiXmlNode* pKeyboardLayouts, KeyboardLayoutMap &keyboardLayouts);
+
   static void SettingOptionsLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
   static void SettingOptionsStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
   static void SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
+  static void SettingOptionsKeyboardLayoutsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
 
 protected:
   void SetDefaults();
@@ -182,6 +198,11 @@ protected:
   CStdString m_subtitleLanguage;
   // this is the general (not win32-specific) three char language code
   CStdString m_languageCodeGeneral;
+
+  KeyboardLayoutMap m_mainKeyboardLayouts;
+  KeyboardLayoutMap m_altKeyboardLayouts;
+  CKeyboardLayout *m_mainKeyboardLayout;
+  CKeyboardLayout *m_altKeyboardLayout;
 };
 
 

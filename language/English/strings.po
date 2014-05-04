@@ -1296,7 +1296,15 @@ msgctxt "#309"
 msgid "User interface language"
 msgstr ""
 
-#empty strings from id 310 to 311
+#: system/settings/settings.xml
+msgctxt "#310"
+msgid "Main keyboard layout"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#311"
+msgid "Alternative keyboard layout"
+msgstr ""
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -15184,9 +15192,18 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
+
+#: system/settings/settings.xml
+msgctxt "#36432"
+msgid "Select main virtual keyboard layout."
 msgstr ""
 
-#empty strings from id 36432 to 36499
+#: system/settings/settings.xml
+msgctxt "#36433"
+msgid "Select alternative virtual keyboard layout."
+msgstr ""
+
+#empty strings from id 36434 to 36499
 #end reservation
 
 #: system/settings/settings.xml

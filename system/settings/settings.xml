@@ -142,6 +142,22 @@
           </dependencies>
           <control type="list" format="string" />
         </setting>
+        <setting id="locale.mainkeyboardlayout" type="string" label="310" help="36432">
+          <level>1</level>
+          <default>default</default>
+          <constraints>
+            <options>keyboardlayouts</options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="locale.altkeyboardlayout" type="string" label="311" help="36433">
+          <level>1</level>
+          <default>default</default>
+          <constraints>
+            <options>keyboardlayouts</options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
       </group>
       <group id="2">
         <setting id="locale.timezonecountry" type="string" label="14079" help="36117">

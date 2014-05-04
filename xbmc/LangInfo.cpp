@@ -230,11 +230,26 @@ void CLangInfo::OnSettingChanged(const CSetting *setting)
     g_langInfo.SetCurrentRegion(((CSettingString*)setting)->GetValue());
     g_weatherManager.Refresh(); // need to reset our weather, as temperatures need re-translating.
   }
+  else if (settingId == "locale.mainkeyboardlayout")
+    g_langInfo.SetMainKeyboardLayout(((CSettingString*)setting)->GetValue());
+  else if (settingId == "locale.altkeyboardlayout")
+    g_langInfo.SetAltKeyboardLayout(((CSettingString*)setting)->GetValue());
 }
 
 bool CLangInfo::Load(const std::string& strFileName, bool onlyCheckLanguage /*= false*/)
 {
   SetDefaults();
+
+  if (!onlyCheckLanguage)
+  {
+    std::string strMainLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", m_defaultRegion.m_strLangLocaleName.c_str());
+    LoadKeyboardLayouts(strMainLangInfoPath, m_mainKeyboardLayouts);
+    if (!m_mainKeyboardLayout)
+    {
+      const std::string strName = CSettings::Get().GetString("locale.mainkeyboardlayout");
+      SetMainKeyboardLayout(strName);
+    }
+  }
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(strFileName))
@@ -377,7 +392,13 @@ bool CLangInfo::Load(const std::string& strFileName, bool onlyCheckLanguage /*= 
   g_charsetConverter.reinitCharsetsFromSettings();
 
   if (!onlyCheckLanguage)
+  {
     LoadTokens(pRootElement->FirstChild("sorttokens"), g_advancedSettings.m_vecTokens);
+
+    LoadKeyboardLayouts(pRootElement->FirstChild("keyboardlayouts"), m_altKeyboardLayouts);
+    const std::string strName = CSettings::Get().GetString("locale.altkeyboardlayout");
+    SetAltKeyboardLayout(strName);
+  }
 
   return true;
 }
@@ -407,6 +428,95 @@ void CLangInfo::LoadTokens(const TiXmlNode* pTokens, vector<CStdString>& vecToke
             vecTokens.push_back(CStdString(pToken->FirstChild()->Value())+strSep[i]);
       }
       pToken = pToken->NextSiblingElement();
+    }
+  }
+}
+
+void CLangInfo::LoadKeyboardLayouts(const std::string& strFileName, KeyboardLayoutMap &keyboardLayouts)
+{
+  CXBMCTinyXML xmlDoc;
+  if (!xmlDoc.LoadFile(strFileName))
+  {
+    CLog::Log(LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
+    return;
+  }
+  TiXmlElement* pRootElement = xmlDoc.RootElement();
+  LoadKeyboardLayouts(pRootElement->FirstChild("keyboardlayouts"), keyboardLayouts);
+}
+
+void CLangInfo::LoadKeyboardLayouts(const TiXmlNode* pKeyboardLayouts, KeyboardLayoutMap &keyboardLayouts)
+{
+  keyboardLayouts.clear();
+
+  if (pKeyboardLayouts && !pKeyboardLayouts->NoChildren())
+  {
+    const TiXmlElement *pKeyboardLayout = pKeyboardLayouts->FirstChildElement("layout");
+
+    while (pKeyboardLayout)
+    {
+      // skip nameless layouts
+      if (!pKeyboardLayout->Attribute("name"))
+      {
+        pKeyboardLayout = pKeyboardLayout->NextSiblingElement();
+        continue;
+      }
+
+      CKeyboardLayout layout(pKeyboardLayout->Attribute("name"));
+      const TiXmlElement *pKeyboard = pKeyboardLayout->FirstChildElement("keyboard");
+
+      while (pKeyboard)
+      {
+        // parse modifiers keys
+        std::set<unsigned int> modifierKeysSet;
+
+        if (pKeyboard->Attribute("modifiers"))
+        {
+          std::string strModifiers = pKeyboard->Attribute("modifiers");
+          StringUtils::ToLower(strModifiers);
+
+          std::vector<string> variants = StringUtils::Split(strModifiers, ",");
+          for (std::vector<std::string>::const_iterator itv = variants.begin(); itv != variants.end(); itv++)
+          {
+            unsigned int iKeys = MODIFIER_KEY_NONE;
+            std::vector<std::string> keys = StringUtils::Split(*itv, "+");
+            for (std::vector<std::string>::const_iterator it = keys.begin(); it != keys.end(); it++)
+            {
+              std::string strKey = *it;
+              if (strKey == "shift")
+                iKeys |= MODIFIER_KEY_SHIFT;
+              else if (strKey == "symbol")
+                iKeys |= MODIFIER_KEY_SYMBOL;
+            }
+            modifierKeysSet.insert(iKeys);
+          }
+        }
+
+        // parse keyboard rows
+        const TiXmlNode *pKeyboardRow = pKeyboard->FirstChild("row");
+        while (pKeyboardRow)
+        {
+          if (!pKeyboardRow->NoChildren())
+          {
+            std::string strRow = pKeyboardRow->FirstChild()->ValueStr();
+            std::wstring wstrRow;
+            g_charsetConverter.utf8ToW(strRow, wstrRow);
+            if (!modifierKeysSet.empty())
+            {
+              for (std::set<unsigned int>::const_iterator it = modifierKeysSet.begin(); it != modifierKeysSet.end(); it++)
+                layout.AddKeyboardRow(wstrRow, *it);
+            }
+            else
+              layout.AddKeyboardRow(wstrRow);
+          }
+          pKeyboardRow = pKeyboardRow->NextSibling();
+        }
+
+        pKeyboard = pKeyboard->NextSiblingElement();
+      }
+
+      keyboardLayouts.insert(std::make_pair(layout.GetName(), layout));
+
+      pKeyboardLayout = pKeyboardLayout->NextSiblingElement();
     }
   }
 }
@@ -633,6 +743,55 @@ const CStdString& CLangInfo::GetSpeedUnitString() const
   return g_localizeStrings.Get(SPEED_UNIT_STRINGS+m_currentRegion->m_speedUnit);
 }
 
+CKeyboardLayout* CLangInfo::GetMainKeyboardLayout()
+{
+  return m_mainKeyboardLayout;
+}
+
+void CLangInfo::SetMainKeyboardLayout(const std::string &strName)
+{
+  KeyboardLayoutMap::iterator it = m_mainKeyboardLayouts.find(strName);
+  if (it != m_mainKeyboardLayouts.end())
+    m_mainKeyboardLayout = &it->second;
+  else if (!m_mainKeyboardLayouts.empty())
+    m_mainKeyboardLayout = &m_mainKeyboardLayouts.begin()->second;
+  else
+    m_mainKeyboardLayout = NULL;
+}
+
+void CLangInfo::GetMainKeyboardLayoutNames(std::vector<std::string> &array)
+{
+  for (KeyboardLayoutMap::const_iterator it = m_mainKeyboardLayouts.begin(); it != m_mainKeyboardLayouts.end(); it++)
+  {
+    array.push_back(it->first);
+  }
+}
+
+CKeyboardLayout* CLangInfo::GetAltKeyboardLayout()
+{
+  return m_altKeyboardLayout;
+}
+
+bool CLangInfo::HasAltKeyboardLayout()
+{
+  return m_altKeyboardLayout != NULL;
+}
+
+void CLangInfo::SetAltKeyboardLayout(const std::string &strName)
+{
+  KeyboardLayoutMap::iterator it = m_altKeyboardLayouts.find(strName);
+  if (it != m_altKeyboardLayouts.end())
+    m_altKeyboardLayout = &it->second;
+  else if (!m_altKeyboardLayouts.empty())
+    m_altKeyboardLayout = &m_altKeyboardLayouts.begin()->second;
+}
+
+void CLangInfo::GetAltKeyboardLayoutNames(std::vector<std::string> &array)
+{
+  for (KeyboardLayoutMap::const_iterator it = m_altKeyboardLayouts.begin(); it != m_altKeyboardLayouts.end(); it++)
+    array.push_back(it->first);
+}
+
 void CLangInfo::SettingOptionsLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
 {
   //find languages...
@@ -693,4 +852,31 @@ void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector
 
   if (!match && regions.size() > 0)
     current = regions[0];
+}
+
+void CLangInfo::SettingOptionsKeyboardLayoutsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+{
+  std::vector<std::string> names;
+  if (setting->GetId() == "locale.mainkeyboardlayout")
+    g_langInfo.GetMainKeyboardLayoutNames(names);
+  else if (setting->GetId() == "locale.altkeyboardlayout")
+    g_langInfo.GetAltKeyboardLayoutNames(names);
+  else
+    return;
+
+  bool match = false;
+  for (std::vector<std::string>::const_iterator it = names.begin(); it != names.end(); it++)
+  {
+    std::string strName = *it;
+    list.push_back(make_pair(strName, strName));
+
+    if (!match && strName == ((CSettingString*)setting)->GetValue())
+    {
+      match = true;
+      current = strName;
+    }
+  }
+
+  if (!match && !names.empty())
+    current = names[0];
 }

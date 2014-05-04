@@ -20,9 +20,11 @@
 
 #include "interfaces/AnnouncementManager.h"
 #include "input/XBMC_vkeys.h"
+#include "guilib/GUIButtonControl.h"
 #include "guilib/GUILabelControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
+#include "guilib/KeyboardLayout.h"
 #include "guilib/LocalizeStrings.h"
 #include "GUIUserMessages.h"
 #include "GUIDialogNumeric.h"
@@ -33,13 +35,17 @@
 #include "ApplicationMessenger.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/CharsetConverter.h"
+#include "LangInfo.h"
+
+#include <sstream>
 
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaInterface.h"
 #endif
 
-// Symbol mapping (based on MS virtual keyboard - may need improving)
-static char symbol_map[37] = ")!@#$%^&*([]{}-_=+;:\'\",.<>/?\\|`~    ";
+#define BUTTON_ID_OFFSET      100
+#define BUTTONS_PER_ROW        20
+#define BUTTONS_MAX_ROWS        4
 
 #define CTL_BUTTON_DONE       300
 #define CTL_BUTTON_CANCEL     301
@@ -50,14 +56,13 @@ static char symbol_map[37] = ")!@#$%^&*([]{}-_=+;:\'\",.<>/?\\|`~    ";
 #define CTL_BUTTON_RIGHT      306
 #define CTL_BUTTON_IP_ADDRESS 307
 #define CTL_BUTTON_CLEAR      308
+#define CTL_BUTTON_LAYOUT     312
 
 #define CTL_LABEL_EDIT        310
 #define CTL_LABEL_HEADING     311
 
 #define CTL_BUTTON_BACKSPACE    8
-
-static char symbolButtons[] = "._-@/\\";
-#define NUM_SYMBOLS sizeof(symbolButtons) - 1
+#define CTL_BUTTON_SPACE       32
 
 #define SEARCH_DELAY         1000
 #define REMOTE_SMS_DELAY     1000
@@ -71,6 +76,7 @@ CGUIDialogKeyboardGeneric::CGUIDialogKeyboardGeneric()
   m_bShift = false;
   m_hiddenInput = false;
   m_keyType = LOWER;
+  m_keyLayout = MAIN;
   m_strHeading = "";
   m_iCursorPos = 0;
   m_iEditingOffset = 0;
@@ -103,6 +109,14 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
   {
     SET_CONTROL_HIDDEN(CTL_LABEL_HEADING);
   }
+
+  m_keyLayout = MAIN;
+
+  SetProperty("LocaleLanguage", g_langInfo.GetLanguageLocale(true));
+  SetProperty("HasAltLayout", int(g_langInfo.HasAltKeyboardLayout()));
+
+  UpdateButtons();
+
   g_Windowing.EnableTextInput(true);
 
   CVariant data;
@@ -265,6 +279,9 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
         else if (m_keyType == CAPS)
           m_keyType = LOWER;
         UpdateButtons();
+        break;
+      case CTL_BUTTON_LAYOUT:
+        OnLayout();
         break;
       case CTL_BUTTON_SYMBOLS:
         OnSymbols();
@@ -437,8 +454,21 @@ void CGUIDialogKeyboardGeneric::OnClickButton(int iButtonControl)
   {
     Backspace();
   }
+  else if (iButtonControl == CTL_BUTTON_SPACE)
+  {
+    Character(L' ');
+  }
   else
-    Character(GetCharacter(iButtonControl));
+  {
+    CGUIButtonControl* pButton = ((CGUIButtonControl*)GetControl(iButtonControl));
+    if (pButton)
+    {
+      std::wstring s;
+      g_charsetConverter.utf8ToW(pButton->GetLabel(), s);
+      Character(s[0]);
+      ResetShiftAndSymbols();
+    }
+  }
 }
 
 void CGUIDialogKeyboardGeneric::OnRemoteNumberClick(int key)
@@ -483,120 +513,54 @@ void CGUIDialogKeyboardGeneric::OnRemoteNumberClick(int key)
   Character(ch);
 }
 
-char CGUIDialogKeyboardGeneric::GetCharacter(int iButton)
-{
-  // First the numbers
-  if (iButton >= 48 && iButton <= 57)
-  {
-    if (m_keyType == SYMBOLS)
-    {
-      OnSymbols();
-      return symbol_map[iButton -48];
-    }
-    else
-      return (char)iButton;
-  }
-  else if (iButton == 32) // space
-    return (char)iButton;
-  else if (iButton >= 65 && iButton < 91)
-  {
-    if (m_keyType == SYMBOLS)
-    { // symbol
-      OnSymbols();
-      return symbol_map[iButton - 65 + 10];
-    }
-    if ((m_keyType == CAPS && m_bShift) || (m_keyType == LOWER && !m_bShift))
-    { // make lower case
-      iButton += 32;
-    }
-    if (m_bShift)
-    { // turn off the shift key
-      OnShift();
-    }
-    return (char) iButton;
-  }
-  else
-  { // check for symbols
-    for (unsigned int i = 0; i < NUM_SYMBOLS; i++)
-      if (iButton == symbolButtons[i])
-        return (char)iButton;
-  }
-  return 0;
-}
-
 void CGUIDialogKeyboardGeneric::UpdateButtons()
 {
-  if (m_bShift)
-  { // show the button depressed
-    CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CTL_BUTTON_SHIFT);
-    OnMessage(msg);
-  }
-  else
-  {
-    CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CTL_BUTTON_SHIFT);
-    OnMessage(msg);
-  }
-  if (m_keyType == CAPS)
-  {
-    CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CTL_BUTTON_CAPS);
-    OnMessage(msg);
-  }
-  else
-  {
-    CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CTL_BUTTON_CAPS);
-    OnMessage(msg);
-  }
+  SET_CONTROL_SELECTED(GetID(), CTL_BUTTON_SHIFT, m_bShift);
+  SET_CONTROL_SELECTED(GetID(), CTL_BUTTON_CAPS, m_keyType == CAPS);
+  SET_CONTROL_SELECTED(GetID(), CTL_BUTTON_SYMBOLS, m_keyType == SYMBOLS);
+  SET_CONTROL_SELECTED(GetID(), CTL_BUTTON_LAYOUT, m_keyLayout == ALT);
+
+  CKeyboardLayout *currentLayout =
+      m_keyLayout == MAIN || !g_langInfo.HasAltKeyboardLayout() ?
+          g_langInfo.GetMainKeyboardLayout() :
+          g_langInfo.GetAltKeyboardLayout();
+
+  unsigned int iModifierKeys = MODIFIER_KEY_NONE;
+
+  if ((m_keyType == CAPS && !m_bShift) || (m_keyType == LOWER && m_bShift))
+    iModifierKeys |= MODIFIER_KEY_SHIFT;
+
   if (m_keyType == SYMBOLS)
   {
-    CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CTL_BUTTON_SYMBOLS);
-    OnMessage(msg);
-  }
-  else
-  {
-    CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CTL_BUTTON_SYMBOLS);
-    OnMessage(msg);
-  }
-  char szLabel[2];
-  szLabel[0] = 32;
-  szLabel[1] = 0;
-  CStdString aLabel = szLabel;
-
-  // set numerals
-  for (int iButton = 48; iButton <= 57; iButton++)
-  {
-    if (m_keyType == SYMBOLS)
-      aLabel[0] = symbol_map[iButton - 48];
-    else
-      aLabel[0] = iButton;
-    SetControlLabel(iButton, aLabel);
+    iModifierKeys |= MODIFIER_KEY_SYMBOL;
+    if (m_bShift)
+      iModifierKeys |= MODIFIER_KEY_SHIFT;
   }
 
-  // set correct alphabet characters...
-
-  for (int iButton = 65; iButton <= 90; iButton++)
+  for (unsigned int iRow = 0; iRow < BUTTONS_MAX_ROWS; iRow++)
   {
-    // set the correct case...
-    if ((m_keyType == CAPS && m_bShift) || (m_keyType == LOWER && !m_bShift))
-    { // make lower case
-      aLabel[0] = iButton + 32;
-    }
-    else if (m_keyType == SYMBOLS)
+    for (unsigned int iColumn = 0; iColumn < BUTTONS_PER_ROW; iColumn++)
     {
-      aLabel[0] = symbol_map[iButton - 65 + 10];
+      int iButtonId = (iRow * BUTTONS_PER_ROW) + iColumn + BUTTON_ID_OFFSET;
+      WCHAR ch = currentLayout->GetCharAt(iRow, iColumn, iModifierKeys);
+      if (ch)
+      {
+        std::string strLabel;
+        std::wostringstream wstrStream;
+        wstrStream << ch;
+        std::wstring wstrLabel = wstrStream.str();
+        g_charsetConverter.wToUTF8(wstrLabel, strLabel);
+        SetControlLabel(iButtonId, strLabel);
+        SET_CONTROL_VISIBLE(iButtonId);
+      }
+      else
+      {
+        SetControlLabel(iButtonId, " ");
+        SET_CONTROL_HIDDEN(iButtonId);
+      }
     }
-    else
-    {
-      aLabel[0] = iButton;
-    }
-    SetControlLabel(iButton, aLabel);
-  }
-  for (unsigned int i = 0; i < NUM_SYMBOLS; i++)
-  {
-    aLabel[0] = symbolButtons[i];
-    SetControlLabel(symbolButtons[i], aLabel);
   }
 }
-
 
 void CGUIDialogKeyboardGeneric::OnDeinitWindow(int nextWindowID)
 {
@@ -633,6 +597,15 @@ void CGUIDialogKeyboardGeneric::SetCursorPos(int iPos)
 int CGUIDialogKeyboardGeneric::GetCursorPos() const
 {
   return m_iCursorPos;
+}
+
+void CGUIDialogKeyboardGeneric::OnLayout()
+{
+  if (m_keyLayout == ALT)
+    m_keyLayout = MAIN;
+  else
+    m_keyLayout = ALT;
+  UpdateButtons();
 }
 
 void CGUIDialogKeyboardGeneric::OnSymbols()

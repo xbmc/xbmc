@@ -24,7 +24,8 @@
 #include "guilib/GUIDialog.h"
 #include "utils/Variant.h"
 
-enum KEYBOARD {CAPS, LOWER, SYMBOLS };
+enum KEYBOARD {CAPS, LOWER, SYMBOLS};
+enum LAYOUT {MAIN, ALT};
 
 class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
 {
@@ -58,6 +59,7 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     void MoveCursor(int iAmount);
     void SetCursorPos(int iPos);
     int GetCursorPos() const;
+    void OnLayout();
     void OnSymbols();
     void OnIPAddress();
     void OnOK();
@@ -66,7 +68,6 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     void OnClickButton(int iButtonControl);
     void OnRemoteNumberClick(int key);
     void UpdateButtons();
-    char GetCharacter(int iButton);
     void UpdateLabel();
     void ResetShiftAndSymbols();
     void Backspace();
@@ -82,7 +83,7 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
 
     bool m_bIsConfirmed;
     KEYBOARD m_keyType;
-    int m_iMode;
+    LAYOUT m_keyLayout;
     bool m_bShift;
     bool m_hiddenInput;
 
@@ -91,7 +92,6 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     int m_indexInSeries;
     std::string m_strHeading;
     static const char* s_charsSeries[10];
-
 
     char_callback_t m_pCharCallback;
 };

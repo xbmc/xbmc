@@ -66,6 +66,7 @@ SRCS += imagefactory.cpp
 SRCS += IWindowManagerCallback.cpp
 SRCS += JpegIO.cpp
 SRCS += Key.cpp
+SRCS += KeyboardLayout.cpp
 SRCS += LocalizeStrings.cpp
 SRCS += Shader.cpp
 SRCS += StereoscopicsManager.cpp
