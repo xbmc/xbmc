@@ -206,11 +206,13 @@ JSONRPC_STATUS CVideoLibrary::GetTVShowDetails(const CStdString &method, ITransp
 
   int id = (int)parameterObject["tvshowid"].asInteger();
 
+  CFileItemPtr fileItem(new CFileItem());
   CVideoInfoTag infos;
-  if (!videodatabase.GetTvShowInfo("", infos, id) || infos.m_iDbId <= 0)
+  if (!videodatabase.GetTvShowInfo("", infos, id, fileItem.get()) || infos.m_iDbId <= 0)
     return InvalidParams;
 
-  HandleFileItem("tvshowid", true, "tvshowdetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["properties"], result, false);
+  fileItem->SetFromVideoInfoTag(infos);
+  HandleFileItem("tvshowid", true, "tvshowdetails", fileItem, parameterObject, parameterObject["properties"], result, false);
   return OK;
 }
 
