@@ -117,6 +117,7 @@ namespace PVR
     virtual bool ActionPlayChannel(CFileItem *item);
     virtual bool ActionPlayEpg(CFileItem *item);
     virtual bool ActionDeleteChannel(CFileItem *item);
+    virtual bool ActionInputChannelNumber(int input, bool bGuideGrid = false);
 
     virtual bool PlayRecording(CFileItem *item, bool bPlayMinimized = false);
     virtual bool PlayFile(CFileItem *item, bool bPlayMinimized = false);

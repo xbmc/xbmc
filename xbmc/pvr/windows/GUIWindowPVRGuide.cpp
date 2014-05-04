@@ -120,6 +120,27 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
     buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
 }
 
+bool CGUIWindowPVRGuide::OnAction(const CAction &action)
+{
+  switch (action.GetID())
+  {
+    case REMOTE_0:
+    case REMOTE_1:
+    case REMOTE_2:
+    case REMOTE_3:
+    case REMOTE_4:
+    case REMOTE_5:
+    case REMOTE_6:
+    case REMOTE_7:
+    case REMOTE_8:
+    case REMOTE_9:
+      if (m_iGuideView != GUIDE_VIEW_CHANNEL)
+        return ActionInputChannelNumber(action.GetID() - REMOTE_0, (m_iGuideView == GUIDE_VIEW_TIMELINE));
+      break;
+  }
+
+  return false;
+}
 
 bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {

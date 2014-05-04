@@ -48,6 +48,7 @@ namespace PVR
     CGUIWindowPVRGuide(CGUIWindowPVR *parent);
     virtual ~CGUIWindowPVRGuide(void);
 
+    bool OnAction(const CAction &action);
     void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
     void UpdateData(bool bUpdateSelectedFile = true);
