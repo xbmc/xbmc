@@ -134,6 +134,7 @@ bool CVDPAUContext::EnsureContext(CVDPAUContext **ctx)
     {
       delete m_context;
       m_context = 0;
+      *ctx = NULL;
       return false;
     }
   }
