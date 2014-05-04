@@ -29,15 +29,7 @@ namespace XFILE
   class CFile;
 }
 class CVariant;
-
-class CArchive;
-
-class IArchivable
-{
-public:
-  virtual void Archive(CArchive& ar) = 0;
-  virtual ~IArchivable() {}
-};
+class IArchivable;
 
 class CArchive
 {

@@ -20,6 +20,7 @@
 
 #include <cstring>
 #include "Archive.h"
+#include "IArchivable.h"
 #include "filesystem/File.h"
 #include "Variant.h"
 #include "utils/log.h"

@@ -32,6 +32,7 @@
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "utils/log.h"
+#include "utils/Archive.h"
 #include "Artist.h"
 #include "Album.h"
 #include "MusicThumbLoader.h"

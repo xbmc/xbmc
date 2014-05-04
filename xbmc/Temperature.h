@@ -20,7 +20,7 @@
  */
 
 #include <string>
-#include "utils/Archive.h"
+#include "utils/IArchivable.h"
 
 class CTemperature : public IArchivable
 {
