@@ -1067,8 +1067,7 @@ void CGUIEPGGridContainer::SetChannel(const CStdString &channel)
     }
   }
 
-  if (iChannelIndex >= 0)
-    ScrollToChannelOffset(iChannelIndex);
+  SetSelectedChannel(iChannelIndex);
 }
 
 void CGUIEPGGridContainer::SetChannel(const CPVRChannel &channel)
@@ -1084,8 +1083,7 @@ void CGUIEPGGridContainer::SetChannel(const CPVRChannel &channel)
     }
   }
 
-  if (iChannelIndex >= 0)
-    ScrollToChannelOffset(iChannelIndex);
+  SetSelectedChannel(iChannelIndex);
 }
 
 void CGUIEPGGridContainer::SetChannel(int channel)
@@ -1262,6 +1260,27 @@ bool CGUIEPGGridContainer::OnMouseWheel(char wheel, const CPoint &point)
   ///doesn't work while an item is selected?
   ProgrammesScroll(-wheel);
   return true;
+}
+
+void CGUIEPGGridContainer::SetSelectedChannel(int channelIndex)
+{
+  if (channelIndex < 0)
+    return;
+
+  if (channelIndex - m_channelOffset < m_channelsPerPage && channelIndex - m_channelOffset >= 0)
+  {
+    SetChannel(channelIndex - m_channelOffset);
+  }
+  else if(channelIndex < m_channels - m_channelsPerPage)
+  {
+    ScrollToChannelOffset(channelIndex - m_channelsPerPage + 1);
+    SetChannel(m_channelsPerPage - 1);
+  }
+  else
+  {
+    ScrollToChannelOffset(m_channels - m_channelsPerPage);
+    SetChannel(channelIndex - (m_channels - m_channelsPerPage));
+  }
 }
 
 int CGUIEPGGridContainer::GetSelectedItem() const

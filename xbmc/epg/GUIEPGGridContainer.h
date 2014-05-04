@@ -65,6 +65,7 @@ namespace EPG
     const int GetNumChannels()   { return m_channels; };
     virtual int GetSelectedItem() const;
     const int GetSelectedChannel() { return m_channelCursor + m_channelOffset; }
+    void SetSelectedChannel(int channelIndex);
     virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
 
     virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
