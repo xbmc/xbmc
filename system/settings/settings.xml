@@ -949,6 +949,11 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="subtitles.downloadfirst" type="boolean" label="24126" help="24127">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="subtitles.tv" type="addon" label="24116" help="24117">
           <level>1</level>
           <default>-</default>

@@ -71,4 +71,5 @@ protected:
   CStdString     m_strManualSearch;
   bool           m_pausedOnRun;
   bool           m_updateSubsList; ///< true if we need to update our subs list
+  CStdString     m_LastAutoDownloaded; ///< Last video file path which automatically downloaded subtitle
 };
