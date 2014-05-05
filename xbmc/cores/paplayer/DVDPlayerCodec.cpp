@@ -197,8 +197,6 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_bCanSeek = false;
   if (m_pInputStream->Seek(0, SEEK_POSSIBLE))
   {
-    // reset eof flag of stream, with eof set seek returns always success
-    m_pInputStream->Seek(0, SEEK_SET);
     if (Seek(1) != DVD_NOPTS_VALUE)
     {
       // rewind stream to beginning
