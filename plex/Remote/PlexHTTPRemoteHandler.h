@@ -12,69 +12,85 @@
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
 #include "utils/StdString.h"
 #include "PlexRemoteSubscriberManager.h"
+#include "PlexUtils.h"
 
 #include "utils/XBMCTinyXML.h"
 
 typedef std::map<std::string, std::string> ArgMap;
 
-class CPlexHTTPRemoteHandler : public IHTTPRequestHandler
+class CPlexRemoteResponse
 {
-  public:
-    CPlexHTTPRemoteHandler() {};
-    virtual IHTTPRequestHandler* GetInstance() { return new CPlexHTTPRemoteHandler(); }
-    virtual bool CheckHTTPRequest(const HTTPRequest &request);
-    virtual int HandleHTTPRequest(const HTTPRequest &request);
-  
-    virtual void* GetHTTPResponseData() const;
-    virtual size_t GetHTTPResonseDataLength() const;
+public:
+  CPlexRemoteResponse(int _code = 200, const std::string& status = "OK")
+  {
+    code = _code;
 
-  private:
-    /* generic function to handle commandID parameter */
-    void updateCommandID(const HTTPRequest &request, const ArgMap &arguments);
+    CXBMCTinyXML xmlOutput;
+    TiXmlDeclaration decl("1.0", "utf-8", "");
+    xmlOutput.InsertEndChild(decl);
 
-    /* find server for playMedia and showDetails commands */
-    CPlexServerPtr getServerFromArguments(const ArgMap &arguments);
+    TiXmlElement el("Response");
+    el.SetAttribute("code", code);
+    el.SetAttribute("status", std::string(status));
+    xmlOutput.InsertEndChild(el);
 
-    /* player functions */
-    void playMedia(const ArgMap &arguments);
-    void stepFunction(const CStdString &url, const ArgMap &arguments);
-    void skipNext(const ArgMap &arguments);
-    void skipPrevious(const ArgMap &arguments);
-    void pausePlay(const ArgMap &arguments);
-    void stop(const ArgMap &arguments);
-    void seekTo(const ArgMap &arguments);
-    void showDetails(const ArgMap &arguments);
-    void navigation(const CStdString &url, const ArgMap &arguments);
-    void set(const ArgMap &arguments);
-    void setVolume(const ArgMap &arguments);
-    void sendString(const ArgMap &arguments);
-    void sendVKey(const ArgMap &arguments);
-    void subscribe(const HTTPRequest &request, const ArgMap &arguments);
-    void unsubscribe(const HTTPRequest &request, const ArgMap &arguments);
-    void setStreams(const ArgMap &arguments);
-    void poll(const HTTPRequest &request, const ArgMap &arguments);
-    void skipTo(const ArgMap &arguments);
-    void resources();
+    body = PlexUtils::GetXMLString(xmlOutput);
+  }
 
-    void setStandardResponse(int code=200, const CStdString status="OK")
-    {
-      m_xmlOutput.Clear();
+  CPlexRemoteResponse(const CXBMCTinyXML& xmlResponse)
+  {
+    body = PlexUtils::GetXMLString(xmlResponse);
+  }
 
-      TiXmlDeclaration decl("1.0", "utf-8", "");
-      m_xmlOutput.InsertEndChild(decl);
+  CPlexRemoteResponse(const CPlexRemoteResponse& response)
+  {
+    code = response.code;
+    body = response.body;
+  }
 
-      TiXmlElement el("Response");
-      el.SetAttribute("code", code);
-      el.SetAttribute("status", std::string(status));
-      m_xmlOutput.InsertEndChild(el);
-    }
-
-    CPlexRemoteSubscriberPtr getSubFromRequest(const HTTPRequest &request, const ArgMap &arguments);
-    CXBMCTinyXML m_xmlOutput;
-
-    CStdString m_data;
-    int m_formerWindow;
+  int code;
+  CStdString body;
 };
 
+class IPlexRemoteHandler
+{
+public:
+  virtual CPlexRemoteResponse handle(const CStdString& url, const ArgMap& arguments) = 0;
+};
+
+class CPlexHTTPRemoteHandler : public IHTTPRequestHandler
+{
+public:
+  CPlexHTTPRemoteHandler();
+  virtual IHTTPRequestHandler* GetInstance()
+  {
+    return new CPlexHTTPRemoteHandler();
+  }
+
+  virtual bool CheckHTTPRequest(const HTTPRequest& request);
+  virtual int HandleHTTPRequest(const HTTPRequest& request);
+
+  virtual void* GetHTTPResponseData() const;
+  virtual size_t GetHTTPResonseDataLength() const;
+
+  static CPlexServerPtr getServerFromArguments(const ArgMap& arguments);
+
+private:
+  /* generic function to handle commandID parameter */
+  CPlexRemoteResponse updateCommandID(const HTTPRequest& request, const ArgMap& arguments);
+
+  /* find server for playMedia and showDetails commands */
+  CPlexRemoteSubscriberPtr getSubFromRequest(const HTTPRequest& request, const ArgMap& arguments);
+
+  /* player functions */
+  CPlexRemoteResponse subscribe(const HTTPRequest& request, const ArgMap& arguments);
+  CPlexRemoteResponse unsubscribe(const HTTPRequest& request, const ArgMap& arguments);
+  CPlexRemoteResponse poll(const HTTPRequest& request, const ArgMap& arguments);
+  CPlexRemoteResponse resources();
+  CPlexRemoteResponse showDetails(const ArgMap &arguments);
+
+  CStdString m_data;
+  int m_formerWindow;
+};
 
 #endif /* defined(__Plex_Home_Theater__PlexHTTPRemoteHandler__) */
