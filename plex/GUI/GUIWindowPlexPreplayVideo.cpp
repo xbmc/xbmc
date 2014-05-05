@@ -264,6 +264,7 @@ void CGUIWindowPlexPreplayVideo::UpdateItem()
     m_vecItems->SetContent("clip");
 
   m_vecItems->SetProperty("PlexPreplay", "yes");
+  m_vecItems->SetProperty("PlexContent", PlexUtils::GetPlexContent(*m_vecItems));
 
   if (m_vecItems->Size() > 0 && m_vecItems->Get(0))
   {
