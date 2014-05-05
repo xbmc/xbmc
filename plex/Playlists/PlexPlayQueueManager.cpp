@@ -93,6 +93,8 @@ void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool st
               type);
   }
 
+  m_playQueueVersion = list.GetProperty("playQueueVersion").asInteger();
+
   if (hasChanged)
   {
     CGUIMessage msg(GUI_MSG_PLEX_PLAYQUEUE_UPDATED, PLEX_PLAYQUEUE_MANAGER, 0);

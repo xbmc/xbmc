@@ -21,6 +21,7 @@ public:
   CPlexRemoteResponse sendVKey(const ArgMap &arguments);
   CPlexRemoteResponse setStreams(const ArgMap &arguments);
   CPlexRemoteResponse skipTo(const ArgMap &arguments);
+  CPlexRemoteResponse refreshPlayQueue(const ArgMap &arguments);
 
 };
 

@@ -12,6 +12,8 @@
 #include "PlayList.h"
 #include "StringUtils.h"
 #include "guilib/GUIWindowManager.h"
+#include "PlexPlayQueueManager.h"
+#include "music/tags/MusicInfoTag.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CUrlOptions CPlexTimeline::getTimeline(bool forServer)
@@ -164,12 +166,32 @@ CUrlOptions CPlexTimeline::getTimeline(bool forServer)
         options.AddOption("seekRange", "0-0");
     }
 
+    if (g_plexApplication.playQueueManager->current() && PlexUtils::IsPlayingPlaylist())
+    {
+      int playQueueId = g_plexApplication.playQueueManager->current()->getCurrentID();
+      options.AddOption("playQueueId", boost::lexical_cast<std::string>(playQueueId));
+
+      if (m_item && m_item->HasMusicInfoTag())
+      {
+        try
+        {
+          std::string pqid = boost::lexical_cast<std::string>(m_item->GetMusicInfoTag()->GetDatabaseId());
+          options.AddOption("playQueueItemId", pqid);
+        }
+        catch (...)
+        {
+        }
+      }
+
+      int playQueueVersion = g_plexApplication.playQueueManager->getCurrentPlayQueueVersion();
+      options.AddOption("containerVersion", boost::lexical_cast<std::string>(playQueueVersion));
+
+    }
+
   }
 
   return options;
 }
-
-#define ADD_TIMELINE(tl) if (m_timelines.find(tl) != m_timelines.end && m_timelines[tl]) { tlines.push_back(m_timelines[tl]->getTimeline(false)); }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CXBMCTinyXML CPlexTimelineCollection::getTimelinesXML(int commandID)

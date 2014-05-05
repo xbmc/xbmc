@@ -7,6 +7,7 @@
 #include "settings/Settings.h"
 #include "guilib/GUIWindowManager.h"
 #include "pictures/GUIWindowSlideShow.h"
+#include "Playlists/PlexPlayQueueManager.h"
 
 #include <boost/lexical_cast.hpp>
 
@@ -34,6 +35,8 @@ CPlexRemoteResponse CPlexRemotePlaybackHandler::handle(const CStdString &url, co
     return pausePlay(arguments);
   else if (url.Equals("/player/playback/play"))
     return pausePlay(arguments);
+  else if (url.Equals("/player/playback/refreshPlayQueue"))
+    return refreshPlayQueue(arguments);
 
   return CPlexRemoteResponse();
 }
@@ -345,5 +348,22 @@ CPlexRemoteResponse CPlexRemotePlaybackHandler::setStreams(const ArgMap &argumen
   if (stream)
     PlexUtils::SetSelectedStream(g_application.CurrentFileItemPtr(), stream);
 
+  return CPlexRemoteResponse();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CPlexRemoteResponse CPlexRemotePlaybackHandler::refreshPlayQueue(const ArgMap &arguments)
+{
+  int playQueueId;
+  if (arguments.find("playQueueId") == arguments.end())
+    return CPlexRemoteResponse(500, "No playQueueId argument!");
+
+  playQueueId = boost::lexical_cast<int>(arguments.find("playQueueId")->second);
+
+  if (g_plexApplication.playQueueManager->current())
+  {
+    if (g_plexApplication.playQueueManager->current()->getCurrentID() == playQueueId)
+      g_plexApplication.playQueueManager->current()->refreshCurrent();
+  }
   return CPlexRemoteResponse();
 }

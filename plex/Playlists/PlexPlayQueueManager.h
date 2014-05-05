@@ -35,6 +35,11 @@ class CPlexPlayQueueManager
   FRIEND_TEST(PlayQueueManagerTest, ReconcilePlayQueueChanges_largedataset);
 
 public:
+  CPlexPlayQueueManager() : m_playQueueVersion(0)
+  {
+
+  }
+
   void create(const CFileItem& container, const CStdString& uri = "",
               const CStdString& startItemKey = "", bool shuffle = false);
 
@@ -63,6 +68,11 @@ public:
   void loadSavedPlayQueue();
   void playCurrentId(int id);
 
+  int getCurrentPlayQueueVersion() const
+  {
+    return m_playQueueVersion;
+  }
+
 private:
   IPlexPlayQueueBasePtr getImpl(const CFileItem &container);
   bool reconcilePlayQueueChanges(int playlistType, const CFileItemList& list);
@@ -71,6 +81,7 @@ private:
   IPlexPlayQueueBasePtr m_currentImpl;
   CStdString m_pqKey;
   ePlexMediaType m_playQueueType;
+  int m_playQueueVersion;
 };
 
 typedef boost::shared_ptr<CPlexPlayQueueManager> CPlexPlayQueueManagerPtr;
