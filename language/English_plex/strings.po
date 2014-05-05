@@ -930,7 +930,7 @@ msgstr "Media Server went away"
 
 msgctxt "#52301"
 msgid "The Server you where browsing went away..."
-msgstr "The Server you where browsing went away..."
+msgstr "The Server you were browsing went away..."
 
 msgctxt "#52400"
 msgid "No linked social accounts"
