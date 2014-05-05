@@ -139,13 +139,13 @@
 				<control type="group">
 					<!-- mixed list art -->
 					<control type="group">
-						<visible>Player.HasAudio + !Container.UniformProperty(Album) + !Container.UniformProperty(Artist)</visible>
+						<visible>!Container.UniformProperty(Album) + !Container.UniformProperty(Artist)</visible>
 						<!-- fanart -->
 						<control type="group">
 							<!-- small fanart -->
 							<!-- 4 or 7 or 10 covers -->
 							<control type="group">
-								<visible>[MusicPlayer.Offset(4).Exists + !MusicPlayer.Offset(5).Exists] | [MusicPlayer.Offset(7).Exists + !MusicPlayer.Offset(8).Exists] | MusicPlayer.Offset(10).Exists</visible>
+								<visible>[[MusicPlayer.Offset(4).Exists + !MusicPlayer.Offset(5).Exists] | [MusicPlayer.Offset(7).Exists + !MusicPlayer.Offset(8).Exists] | MusicPlayer.Offset(10).Exists] | [!Player.HasAudio + [!IsEmpty(ListItem(4).Label) + IsEmpty(ListItem(5).Label)] | [!IsEmpty(ListItem(7).Label) + IsEmpty(ListItem(8).Label)] | !IsEmpty(ListItem(10).Label)]</visible>
 								<control type="largeimage">
 									<posx>54</posx>
 									<posy>34</posy>
@@ -154,6 +154,16 @@
 									<texture>$INFO[Player.Art(fanart)]</texture>
 									<fadetime>400</fadetime>
 									<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								</control>
+								<control type="largeimage">
+									<posx>54</posx>
+									<posy>34</posy>
+									<width>735</width>
+									<height>426</height>
+									<texture>$INFO[ListItem.Art(fanart)]</texture>
+									<fadetime>400</fadetime>
+									<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+									<visible>!Player.HasAudio</visible>
 								</control>
 								<control type="image">
 									<posx>54</posx>
@@ -167,7 +177,7 @@
 							</control>
 							<!-- 3 or 6 or 9 covers -->
 							<control type="group">
-								<visible>[[MusicPlayer.Offset(3).Exists + !MusicPlayer.Offset(4).Exists] | [MusicPlayer.Offset(6).Exists + !MusicPlayer.Offset(7).Exists] | [MusicPlayer.Offset(9).Exists + !MusicPlayer.Offset(10).Exists]]</visible>
+								<visible>[[MusicPlayer.Offset(3).Exists + !MusicPlayer.Offset(4).Exists] | [MusicPlayer.Offset(6).Exists + !MusicPlayer.Offset(7).Exists] | [MusicPlayer.Offset(9).Exists + !MusicPlayer.Offset(10).Exists]] | [!Player.HasAudio + [!IsEmpty(ListItem(3).Label) + IsEmpty(ListItem(4).Label)] | [!IsEmpty(ListItem(6).Label) + IsEmpty(ListItem(7).Label)] | [!IsEmpty(ListItem(9).Label) + IsEmpty(ListItem(10).Label)]]</visible>
 								<control type="largeimage">
 									<posx>54</posx>
 									<posy>34</posy>
@@ -176,6 +186,16 @@
 									<texture>$INFO[Player.Art(fanart)]</texture>
 									<fadetime>400</fadetime>
 									<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								</control>
+								<control type="largeimage">
+									<posx>54</posx>
+									<posy>34</posy>
+									<width>735</width>
+									<height>475</height>
+									<texture>$INFO[ListItem.Art(fanart)]</texture>
+									<fadetime>400</fadetime>
+									<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+									<visible>!Player.HasAudio</visible>
 								</control>
 								<control type="image">
 									<posx>54</posx>
@@ -189,7 +209,7 @@
 							</control>
 							<!-- 5 or 8 covers -->
 							<control type="group">
-								<visible>[[MusicPlayer.Offset(5).Exists + !MusicPlayer.Offset(6).Exists] | [MusicPlayer.Offset(8).Exists + !MusicPlayer.Offset(9).Exists]]</visible>
+								<visible>[[MusicPlayer.Offset(5).Exists + !MusicPlayer.Offset(6).Exists] | [MusicPlayer.Offset(8).Exists + !MusicPlayer.Offset(9).Exists]] | [!Player.HasAudio + [!IsEmpty(ListItem(5).Label) + IsEmpty(ListItem(6).Label)] | [!IsEmpty(ListItem(8).Label) + IsEmpty(ListItem(9).Label)]]</visible>
 								<control type="largeimage">
 									<posx>54</posx>
 									<posy>34</posy>
@@ -198,6 +218,16 @@
 									<texture>$INFO[Player.Art(fanart)]</texture>
 									<fadetime>400</fadetime>
 									<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								</control>
+								<control type="largeimage">
+									<posx>54</posx>
+									<posy>34</posy>
+									<width>735</width>
+									<height>510</height>
+									<texture>$INFO[ListItem.Art(fanart)]</texture>
+									<fadetime>400</fadetime>
+									<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+									<visible>!Player.HasAudio</visible>
 								</control>
 								<control type="image">
 									<posx>54</posx>
@@ -215,422 +245,422 @@
 						<control type="group">
 							<posx>54</posx>
 							<posy>460</posy>
-							<visible>MusicPlayer.Offset(10).Exists + !Container.UniformProperty(Album)</visible>
+							<visible>[MusicPlayer.Offset(10).Exists | [!Player.HasAudio + !IsEmpty(ListItem(10).Label)]]</visible>
 							<control type="image">
 								<width>147</width>
 								<height>147</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(1).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover1]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>147</posx>
 								<width>147</width>
 								<height>147</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(2).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover2]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>294</posx>
 								<width>147</width>
 								<height>147</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(3).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover3]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>441</posx>
 								<width>147</width>
 								<height>147</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(4).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover4]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>588</posx>
 								<width>147</width>
 								<height>147</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(5).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover5]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posy>147</posy>
 								<width>147</width>
 								<height>147</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(6).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover6]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posy>147</posy>
 								<posx>147</posx>
 								<width>147</width>
 								<height>147</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(7).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover7]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posy>147</posy>
 								<posx>294</posx>
 								<width>147</width>
 								<height>147</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(8).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover8]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posy>147</posy>
 								<posx>441</posx>
 								<width>147</width>
 								<height>147</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(9).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover9]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posy>147</posy>
 								<posx>588</posx>
 								<width>147</width>
 								<height>147</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(10).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover10]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 						</control>
 						<!-- 9 covers -->
 						<control type="group">
 							<posx>54</posx>
 							<posy>508</posy>
-							<visible>[MusicPlayer.Offset(9).Exists + !MusicPlayer.Offset(10).Exists] + !Container.UniformProperty(Album)</visible>
+							<visible>[[MusicPlayer.Offset(9).Exists + !MusicPlayer.Offset(10).Exists] | [!Player.HasAudio + !IsEmpty(ListItem(9).Label) + IsEmpty(ListItem(10).Label)]]</visible>
 							<control type="image">
 								<width>245</width>
 								<height>246</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(1).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover1]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>245</posx>
 								<width>123</width>
 								<height>123</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(2).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover2]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>368</posx>
 								<width>123</width>
 								<height>123</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(3).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover3]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>491</posx>
 								<width>123</width>
 								<height>123</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(4).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover4]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>612</posx>
 								<width>123</width>
 								<height>123</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(5).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover5]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posy>123</posy>
 								<posx>245</posx>
 								<width>123</width>
 								<height>123</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(6).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover6]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posy>123</posy>
 								<posx>368</posx>
 								<width>123</width>
 								<height>123</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(7).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover7]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posy>123</posy>
 								<posx>491</posx>
 								<width>123</width>
 								<height>123</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(8).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover8]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posy>123</posy>
 								<posx>612</posx>
 								<width>123</width>
 								<height>123</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(9).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover9]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 						</control>
 						<!-- 8 covers -->
 						<control type="group">
 							<posx>54</posx>
 							<posy>544</posy>
-							<visible>[MusicPlayer.Offset(8).Exists + !MusicPlayer.Offset(9).Exists] + !Container.UniformProperty(Album)</visible>
+							<visible>[[MusicPlayer.Offset(8).Exists + !MusicPlayer.Offset(9).Exists] | [!Player.HasAudio + !IsEmpty(ListItem(8).Label) + IsEmpty(ListItem(9).Label)]]</visible>
 							<control type="image">
 								<width>210</width>
 								<height>210</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(1).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover1]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>210</posx>
 								<width>210</width>
 								<height>210</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(2).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover2]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>420</posx>
 								<width>105</width>
 								<height>105</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(3).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover3]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>525</posx>
 								<width>105</width>
 								<height>105</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(4).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover4]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>630</posx>
 								<width>105</width>
 								<height>105</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(5).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover5]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posy>105</posy>
 								<posx>420</posx>
 								<width>105</width>
 								<height>105</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(6).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover6]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posy>105</posy>
 								<posx>525</posx>
 								<width>105</width>
 								<height>105</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(7).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover7]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posy>105</posy>
 								<posx>630</posx>
 								<width>105</width>
 								<height>105</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(8).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover8]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 						</control>
 						<!-- 7 covers -->
 						<control type="group">
 							<posx>54</posx>
 							<posy>460</posy>
-							<visible>[MusicPlayer.Offset(7).Exists + !MusicPlayer.Offset(8).Exists] + !Container.UniformProperty(Album)</visible>
+							<visible>[[MusicPlayer.Offset(7).Exists + !MusicPlayer.Offset(8).Exists] | [!Player.HasAudio + !IsEmpty(ListItem(7).Label) + IsEmpty(ListItem(8).Label)]]</visible>
 							<control type="image">
 								<width>294</width>
 								<height>294</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(1).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover1]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>294</posx>
 								<width>147</width>
 								<height>147</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(2).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover2]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>441</posx>
 								<width>147</width>
 								<height>147</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(3).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover3]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>588</posx>
 								<width>147</width>
 								<height>147</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(4).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover4]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posy>147</posy>
 								<posx>294</posx>
 								<width>147</width>
 								<height>147</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(5).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover5]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posy>147</posy>
 								<posx>441</posx>
 								<width>147</width>
 								<height>147</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(6).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover6]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posy>147</posy>
 								<posx>588</posx>
 								<width>147</width>
 								<height>147</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(7).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover7]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 						</control>
 						<!-- 6 covers -->
 						<control type="group">
 							<posx>54</posx>
 							<posy>508</posy>
-							<visible>[MusicPlayer.Offset(6).Exists + !MusicPlayer.Offset(7).Exists] + !Container.UniformProperty(Album)</visible>
+							<visible>[[MusicPlayer.Offset(6).Exists + !MusicPlayer.Offset(7).Exists] | [!Player.HasAudio + !IsEmpty(ListItem(6).Label) + IsEmpty(ListItem(7).Label)]]</visible>
 							<control type="image">
 								<width>245</width>
 								<height>246</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(1).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover1]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>245</posx>
 								<width>123</width>
 								<height>123</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(2).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover2]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posy>123</posy>
 								<posx>245</posx>
 								<width>123</width>
 								<height>123</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(3).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover3]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>368</posx>
 								<width>244</width>
 								<height>246</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(4).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover4]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>612</posx>
 								<width>123</width>
 								<height>123</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(5).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover5]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posy>123</posy>
 								<posx>612</posx>
 								<width>123</width>
 								<height>123</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(6).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover6]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 						</control>
 						<!-- 5 covers -->
 						<control type="group">
 							<posx>54</posx>
 							<posy>544</posy>
-							<visible>[MusicPlayer.Offset(5).Exists + !MusicPlayer.Offset(6).Exists] + !Container.UniformProperty(Album)</visible>
+							<visible>[[MusicPlayer.Offset(5).Exists + !MusicPlayer.Offset(6).Exists] | [!Player.HasAudio + !IsEmpty(ListItem(5).Label) + IsEmpty(ListItem(6).Label)]]</visible>
 							<control type="image">
 								<width>210</width>
 								<height>210</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(1).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover1]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>210</posx>
 								<width>210</width>
 								<height>210</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(2).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover2]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>420</posx>
 								<width>210</width>
 								<height>210</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(3).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover3]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>630</posx>
 								<width>105</width>
 								<height>105</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(4).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover4]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posy>105</posy>
 								<posx>630</posx>
 								<width>105</width>
 								<height>105</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(5).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover5]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 						</control>
 						<!-- 4 covers -->
 						<control type="group">
 							<posx>54</posx>
 							<posy>460</posy>
-							<visible>[MusicPlayer.Offset(4).Exists + !MusicPlayer.Offset(5).Exists] + !Container.UniformProperty(Album)</visible>
+							<visible>[[MusicPlayer.Offset(4).Exists + !MusicPlayer.Offset(5).Exists] | [!Player.HasAudio + !IsEmpty(ListItem(4).Label) + IsEmpty(ListItem(5).Label)]]</visible>
 							<control type="image">
 								<width>294</width>
 								<height>294</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(1).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover1]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>294</posx>
 								<width>294</width>
 								<height>294</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(2).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover2]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>588</posx>
 								<width>147</width>
 								<height>147</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(3).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover3]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posy>147</posy>
 								<posx>588</posx>
 								<width>147</width>
 								<height>147</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(3).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover4]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 						</control>
 						<!-- 3 covers -->
 						<control type="group">
 							<posx>54</posx>
 							<posy>509</posy>
-							<visible>[MusicPlayer.Offset(3).Exists + !MusicPlayer.Offset(4).Exists] + !Container.UniformProperty(Album)</visible>
+							<visible>[[MusicPlayer.Offset(3).Exists + !MusicPlayer.Offset(4).Exists] | [!Player.HasAudio + !IsEmpty(ListItem(3).Label) + IsEmpty(ListItem(4).Label)]]</visible>
 							<control type="image">
 								<width>245</width>
 								<height>245</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(1).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover1]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>245</posx>
 								<width>245</width>
 								<height>245</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(2).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover2]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 							<control type="image">
 								<posx>490</posx>
 								<width>245</width>
 								<height>245</height>
-								<texture background="true" diffuse="base.png">$INFO[MusicPlayer.Offset(3).Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover3]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 						</control>
 					</control>
@@ -653,19 +683,8 @@
 								<posy>13</posy>
 								<width>227</width>
 								<height>227</height>
-								<texture background="true" diffuse="mask-square.png">$INFO[MusicPlayer.Cover]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-								<visible>Player.HasAudio</visible>
-							</control>
-							<control type="image">
-								<description>Poster image</description>
-								<posx>13</posx>
-								<posy>13</posy>
-								<width>227</width>
-								<height>227</height>
-								<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Art(thumb)]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-								<visible>!Player.HasAudio</visible>
+								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover0]</texture>
+								<include>PlayQueueCoverFormat</include>
 							</control>
 						</control>
 						<!-- progress bar & osd -->
@@ -730,7 +749,7 @@
 								<!-- repeat -->
 								<control type="group">
 									<posy>9</posy>
-									<posx>0</posx>
+									<posx>55</posx>
 									<control type="image">
 										<width>32</width>
 										<height>30</height>
@@ -743,14 +762,14 @@
 										<height>30</height>
 										<texture>b-repeat-one.png</texture>
 										<visible>!Control.HasFocus(708) + Playlist.IsRepeatOne</visible>
-										<colordiffuse>FFCCCCCC</colordiffuse>
+										<colordiffuse>FFFFFFFF</colordiffuse>
 									</control>
 									<control type="image">
 										<width>32</width>
 										<height>30</height>
 										<texture>b-repeat-all.png</texture>
 										<visible>!Control.HasFocus(708) + Playlist.IsRepeat</visible>
-										<colordiffuse>FFCCCCCC</colordiffuse>
+										<colordiffuse>FFFFFFFF</colordiffuse>
 									</control>
 									<control type="image">
 										<width>32</width>
@@ -777,11 +796,13 @@
 										<width>32</width>
 										<height>30</height>
 										<onleft>713</onleft>
-										<onright>709</onright>
+										<onright>710</onright>
 										<onup>-</onup>
 										<texturefocus>-</texturefocus>
 										<texturenofocus>-</texturenofocus>
 										<onclick>XBMC.PlayerControl(Repeat)</onclick>
+										<onup>54</onup>
+										<ondown>54</ondown>
 										<visible allowhiddenfocus="true">Control.HasFocus(708)</visible>
 									</control>
 								</control>
@@ -801,10 +822,10 @@
 										<height>22</height>
 										<texturefocus>b-previous.png</texturefocus>
 										<texturenofocus>b-previous.png</texturenofocus>
-										<onleft>709</onleft>
+										<onleft>708</onleft>
 										<onright>711</onright>
-										<onup>200</onup>
-										<ondown>200</ondown>
+										<onup>54</onup>
+										<ondown>54</ondown>
 										<onclick>PlayerControl(Previous)</onclick>
 										<visible allowhiddenfocus="true">Control.HasFocus(710)</visible>
 										<colordiffuse>orange</colordiffuse>
@@ -836,10 +857,9 @@
 										<alttexturefocus>b-play2.png</alttexturefocus>
 										<onleft>710</onleft>
 										<onright>712</onright>
-										<onup>200</onup>
-										<ondown>200</ondown>
+										<onup>54</onup>
+										<ondown>54</ondown>
 										<onclick>PlayerControl(Play)</onclick>
-										<onfocus condition="!Player.HasAudio">Dialog.Close(PlayerControls)</onfocus>
 										<visible allowhiddenfocus="true">Control.HasFocus(711)</visible>
 										<colordiffuse>orange</colordiffuse>
 									</control>
@@ -862,10 +882,9 @@
 										<texturenofocus>b-next.png</texturenofocus>
 										<onleft>711</onleft>
 										<onright>713</onright>
-										<onup>200</onup>
-										<ondown>200</ondown>
+										<onup>54</onup>
+										<ondown>54</ondown>
 										<onclick>PlayerControl(Next)</onclick>
-										<onclick condition="!MusicPlayer.HasNext">Dialog.Close(PlayerControls)</onclick>
 										<visible allowhiddenfocus="true">Control.HasFocus(712)</visible>
 										<colordiffuse>orange</colordiffuse>
 									</control>
@@ -888,11 +907,10 @@
 										<texturenofocus>b-stop.png</texturenofocus>
 										<onleft>712</onleft>
 										<onright>54</onright>
-										<onup>200</onup>
-										<ondown>200</ondown>
+										<onup>54</onup>
+										<ondown>54</ondown>
 										<onclick>PlayerControl(Stop)</onclick>
 										<onclick>Control.SetFocus(54)</onclick>
-										<onfocus condition="!Player.HasAudio">Dialog.Close(PlayerControls)</onfocus>
 										<visible allowhiddenfocus="true">Control.HasFocus(713)</visible>
 										<colordiffuse>orange</colordiffuse>
 									</control>
@@ -907,45 +925,25 @@
 							<control type="label">
 								<width>400</width>
 								<height>40</height>
-								<label>$INFO[MusicPlayer.Artist]</label>
+								<label>$VAR[PlayQueueArtist]</label>
 								<font>Bold-30</font>
 								<include>WhiteShadow</include>
-								<visible>Player.HasAudio</visible>
-							</control>
-							<control type="label">
-								<width>400</width>
-								<height>40</height>
-								<label>$INFO[ListItem.Artist]</label>
-								<font>Bold-30</font>
-								<include>WhiteShadow</include>
-								<visible>!Player.HasAudio</visible>
 							</control>
 							<control type="label">
 								<posy>40</posy>
 								<width>400</width>
 								<height>40</height>
-								<label>$INFO[MusicPlayer.Title]</label>
+								<label>$VAR[PlayQueueSong]</label>
 								<font>Bold-30</font>
 								<include>WhiteShadow</include>
-								<visible>Player.HasAudio</visible>
-							</control>
-							<control type="label">
-								<posy>40</posy>
-								<width>400</width>
-								<height>40</height>
-								<label>$INFO[ListItem.Title]</label>
-								<font>Bold-30</font>
-								<include>WhiteShadow</include>
-								<visible>[!Player.HasAudio + [Container.UniformProperty(Album) | Container.UniformProperty(Artist)]]</visible>
 							</control>
 							<control type="label">
 								<posy>80</posy>
 								<width>400</width>
 								<height>40</height>
-								<label>$INFO[ListItem.Album]</label>
+								<label>$VAR[PlayQueueAlbum]</label>
 								<font>Regular-30</font>
 								<include>Grey1</include>
-								<visible>Player.HasAudio | [!Player.HasAudio + [Container.UniformProperty(Album) | Container.UniformProperty(Artist)]]</visible>
 							</control>
 							<!-- Count -->
 							<control type="grouplist">
