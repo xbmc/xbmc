@@ -590,7 +590,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       g_application.ResetScreenSaver();
       g_application.WakeUpScreenSaverAndDPMS();
       // Send a mouse motion event with no dx,dy for getting the current guiitem selected
-      g_application.OnAction(CAction(ACTION_MOUSE_MOVE, 0, newEvent.focus.x, newEvent.focus.y, 0, 0));
+      g_application.OnAction(CAction(ACTION_MOUSE_MOVE, 0, static_cast<float>(newEvent.focus.x), static_cast<float>(newEvent.focus.y), 0, 0));
       break;
   }
   return true;

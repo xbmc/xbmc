@@ -108,7 +108,7 @@ bool CCDDARipJob::DoWork()
     if (percent > oldpercent)
     {
       oldpercent = percent;
-      handle->SetPercentage(percent);
+      handle->SetPercentage(static_cast<float>(percent));
     }
   }
 
@@ -172,7 +172,7 @@ int CCDDARipJob::RipChunk(CFile& reader, CEncoder* encoder, int& percent)
   int encres=encoder->Encode(result, stream);
 
   // Get progress indication
-  percent = reader.GetPosition()*100/reader.GetLength();
+  percent = static_cast<int>(reader.GetPosition()*100/reader.GetLength());
 
   if (reader.GetPosition() == reader.GetLength())
     return 2;
@@ -224,7 +224,7 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
   encoder->SetGenre(StringUtils::Join(m_tag.GetGenre(),
                                       g_advancedSettings.m_musicItemSeparator));
   encoder->SetTrack(strTrack);
-  encoder->SetTrackLength(reader.GetLength());
+  encoder->SetTrackLength(static_cast<int>(reader.GetLength()));
   encoder->SetYear(m_tag.GetYearString());
 
   // init encoder

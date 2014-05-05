@@ -287,7 +287,7 @@ namespace XBMCAddon
       {
         case INPUT_ALPHANUM:
           {
-            bool bHiddenInput = option & ALPHANUM_HIDE_INPUT;
+            bool bHiddenInput = (option & ALPHANUM_HIDE_INPUT) == ALPHANUM_HIDE_INPUT;
             if (!CGUIKeyboardFactory::ShowAndGetInput(value, heading, true, bHiddenInput, autoclose))
               value = emptyString;
           }

@@ -296,7 +296,7 @@ bool CFile::Open(const CStdString& strFileName, const unsigned int flags)
       if (m_flags & READ_CACHED)
       {
         // for internet stream, if it contains multiple stream, file cache need handle it specially.
-        m_pFile = new CFileCache(m_flags & READ_MULTI_STREAM);
+        m_pFile = new CFileCache((m_flags & READ_MULTI_STREAM) == READ_MULTI_STREAM);
         return m_pFile->Open(url);
       }
     }
