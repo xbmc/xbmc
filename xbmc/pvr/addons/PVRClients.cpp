@@ -203,7 +203,7 @@ bool CPVRClients::StopClient(AddonPtr client, bool bRestart)
   CSingleLock lock(m_critSection);  
   int iId = GetClientId(client);
   PVR_CLIENT mappedClient;
-  if (GetConnectedClient(iId, mappedClient))
+  if (GetClient(iId, mappedClient))
   {
     if (bRestart)
       mappedClient->ReCreate();
