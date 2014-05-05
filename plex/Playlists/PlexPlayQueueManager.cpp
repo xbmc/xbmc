@@ -251,6 +251,18 @@ bool CPlexPlayQueueManager::getCurrentPlayQueue(CFileItemList& list)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexPlayQueueManager::loadPlayQueue(const CPlexServerPtr& server,
+                                          const std::string& playQueueID)
+{
+  if (!server || playQueueID.empty())
+    return false;
+
+  m_currentImpl = IPlexPlayQueueBasePtr(new CPlexPlayQueueServer(server));
+  m_currentImpl->get(playQueueID, true);
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexPlayQueueManager::loadSavedPlayQueue()
 {
   CURL playQueueURL(g_guiSettings.GetString("system.mostrecentplayqueue"));

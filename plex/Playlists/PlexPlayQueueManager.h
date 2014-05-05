@@ -59,6 +59,7 @@ public:
   }
 
   bool getCurrentPlayQueue(CFileItemList& list);
+  bool loadPlayQueue(const CPlexServerPtr& server, const std::string& playQueueID);
   void loadSavedPlayQueue();
   void playCurrentId(int id);
 
