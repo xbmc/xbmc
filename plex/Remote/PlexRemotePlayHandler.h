@@ -12,6 +12,7 @@ public:
   virtual bool getContainer(const CURL& dirURL, CFileItemList& list);
   CFileItemPtr getItemFromContainer(const std::string &key, const CFileItemList& list, int& idx);
   void setStartPosition(const CFileItemPtr &item, const ArgMap &arguments);
+  CPlexRemoteResponse playPlayQueue(const CPlexServerPtr &server, const CStdString &playQueueUrl);
 };
 
 #endif // PLEXREMOTEPLAYHANDLER_H

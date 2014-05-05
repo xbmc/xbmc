@@ -113,6 +113,24 @@ void CPlexRemotePlayHandler::setStartPosition(const CFileItemPtr& item, const Ar
   item->SetProperty("forceStartOffset", true);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CPlexRemoteResponse CPlexRemotePlayHandler::playPlayQueue(const CPlexServerPtr& server,
+                                                          const CStdString& playQueueUrl)
+{
+
+  // chop of /playQueues/ and all arguments
+  std::string playQueueId = playQueueUrl.substr(12);
+  int i = playQueueId.find("?");
+  if (i != std::string::npos)
+    playQueueId = playQueueId.substr(0, i);
+
+  CLog::Log(LOGDEBUG, "CPlexRemotePlayHandler::playPlayQueue asked to play a playQueue: %s",
+            playQueueId.c_str());
+
+  g_plexApplication.playQueueManager->loadPlayQueue(server, playQueueId);
+  return CPlexRemoteResponse();
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 CPlexRemoteResponse CPlexRemotePlayHandler::handle(const CStdString& url, const ArgMap &arguments)
 {
@@ -134,9 +152,17 @@ CPlexRemoteResponse CPlexRemotePlayHandler::handle(const CStdString& url, const 
 
   CURL dirURL;
   if (!containerPath.empty())
-    dirURL = server->BuildPlexURL(containerPath);
+  {
+    if (boost::starts_with(containerPath, "/playQueues"))
+      return playPlayQueue(server, containerPath);
+    else
+      dirURL = server->BuildPlexURL(containerPath);
+  }
   else
+  {
     dirURL = server->BuildPlexURL(key);
+  }
+
 
   CFileItemList list;
   if (!getContainer(dirURL, list))
@@ -155,7 +181,6 @@ CPlexRemoteResponse CPlexRemotePlayHandler::handle(const CStdString& url, const 
   g_application.WakeUpScreenSaverAndDPMS();
   g_application.ResetSystemIdleTimer();
 
-  // Play a full directory of something
   if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK && !containerPath.empty())
   {
     g_plexApplication.playQueueManager->create(list, "",
