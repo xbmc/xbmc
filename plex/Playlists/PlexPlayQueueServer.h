@@ -38,7 +38,7 @@ public:
   virtual void removeItem(const CFileItemPtr& item);
   virtual void addItem(const CFileItemPtr& item);
   virtual int getCurrentID();
-  virtual void get(const CStdString &playQueueID);
+  virtual void get(const CStdString &playQueueID, bool startPlaying);
   virtual CPlexServerPtr server() const
   {
     return m_server;

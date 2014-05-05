@@ -50,7 +50,7 @@ int CPlexPlayQueueLocal::getCurrentID()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexPlayQueueLocal::get(const CStdString& playQueueID)
+void CPlexPlayQueueLocal::get(const CStdString& playQueueID, bool startPlay)
 {
   if (m_list && m_list->GetProperty("playQueueID").asString() == playQueueID)
     CApplicationMessenger::Get().PlexUpdatePlayQueue(PlexUtils::GetMediaTypeFromItem(m_list),

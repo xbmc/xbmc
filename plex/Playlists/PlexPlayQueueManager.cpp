@@ -258,7 +258,7 @@ void CPlexPlayQueueManager::loadSavedPlayQueue()
   if (server && !m_currentImpl)
   {
     m_currentImpl = IPlexPlayQueueBasePtr(new CPlexPlayQueueServer(server));
-    m_currentImpl->get(playQueueURL.GetFileName());
+    m_currentImpl->get(playQueueURL.GetFileName(), false);
   }
 }
 

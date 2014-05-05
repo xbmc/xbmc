@@ -151,11 +151,11 @@ int CPlexPlayQueueServer::getCurrentID()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexPlayQueueServer::get(const CStdString &playQueueID)
+void CPlexPlayQueueServer::get(const CStdString &playQueueID, bool startPlaying)
 {
   CStdString path;
   path.Format("/playQueues/%s", playQueueID);
-  sendRequest(m_server->BuildPlexURL(path), "", false);
+  sendRequest(m_server->BuildPlexURL(path), "", startPlaying);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
