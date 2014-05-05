@@ -1,0 +1,1 @@
+plex_add_testcase(PlexRemotePlayHandler_Tests.cpp)
