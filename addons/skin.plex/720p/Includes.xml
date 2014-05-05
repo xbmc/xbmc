@@ -21,4 +21,5 @@
 	<include file="ViewsSearch.xml"/>	
 	<include file="ViewsDialogs.xml"/>	
 	<include file="ViewsFullInfoCard.xml"/>
+	<include file="ViewsPlayQueue.xml"/>
 </includes>
