@@ -460,7 +460,7 @@
 	<!-- Library menu -->
 	<include name="LeftSideMenu">
 		<control type="group" id="995">
-			<visible allowhiddenfocus="false">[!Container.PlexContent(Channel) | [Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode) | ListItem.Type(song)]]] + !Container.PlexContent(Movie) + !Container.PlexContent(Episode) + !Container.PlexContent(Clip)</visible>
+			<visible allowhiddenfocus="false">[!Container.PlexContent(Channel) | [Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode) | ListItem.Type(song)]]]</visible>
 			<include>leftMenuInitSlide</include>
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
@@ -468,7 +468,7 @@
 			<!--><include>GlobalSearch</include>-->
 			<!-- sidebar global -->
 			<control type="grouplist" id="998">
-				<visible>Control.IsVisible(995)</visible>
+				<visible>!Container.PlexContent(Movie) + !Container.PlexContent(Episode) + !Container.PlexContent(Clip) + Control.IsVisible(995)</visible>
 				<posy>40</posy>
 				<posx>0</posx>
 				<width>74</width>
@@ -512,7 +512,7 @@
 			</control>
 			<!-- sidebar preplay -->
 			<control type="grouplist" id="998">
-				<visible>[Container.PlexContent(Movie) | Container.PlexContent(Episode) | Container.PlexContent(Clip) | [Container.PlexContent(Channel) + [ListItem.Type(movie) | ListItem.Type(clip)]]] + !Container.PlexContent(Channel)</visible>
+				<visible>[Container.PlexContent(Movie) | Container.PlexContent(Episode) | Container.PlexContent(Clip)]</visible>
 				<posy>40</posy>
 				<posx>0</posx>
 				<width>74</width>
