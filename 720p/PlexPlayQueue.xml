@@ -8,7 +8,7 @@
 	<controls>
 		<!-- music play queue -->
 		<control type="group">
-			<visible>Container.PlexContent(songs)</visible>
+			<visible>Container.PlexContent(songs) | [Container.PlexContent(channel) + ListItem.Type(song)]</visible>
 			<!-- backgrounds -->
 			<control type="group">
 				<!-- fanart -->
