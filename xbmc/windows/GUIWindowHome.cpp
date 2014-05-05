@@ -34,8 +34,7 @@ using namespace ANNOUNCEMENT;
 
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), 
                                        m_recentlyAddedRunning(false),
-                                       m_cumulativeUpdateFlag(0),
-                                       m_dbUpdating(false)
+                                       m_cumulativeUpdateFlag(0)
 {
   m_updateRA = (Audio | Video | Totals);
   m_loadType = KEEP_IN_MEMORY;
@@ -83,19 +82,11 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
   if ((flag & (VideoLibrary | AudioLibrary)) == 0)
     return;
 
+  if (data.isMember("transaction") && data["transaction"].asBoolean())
+    return;
+
   if (strcmp(message, "OnScanStarted") == 0 ||
       strcmp(message, "OnCleanStarted") == 0)
-  {
-    m_dbUpdating = true;
-    return;
-  }
-
-  if (strcmp(message, "OnScanFinished") == 0 ||
-      strcmp(message, "OnCleanFinished") == 0)
-    m_dbUpdating = false;
-
-  // we are in an update/clean
-  if (m_dbUpdating)
     return;
 
   bool onUpdate = strcmp(message, "OnUpdate") == 0;

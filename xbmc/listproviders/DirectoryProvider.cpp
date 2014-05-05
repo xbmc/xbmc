@@ -136,7 +136,6 @@ CDirectoryProvider::CDirectoryProvider(const TiXmlElement *element, int parentID
  : IListProvider(parentID),
    m_updateTime(0),
    m_updateState(OK),
-   m_isDbUpdating(false),
    m_isAnnounced(false),
    m_jobID(0)
 {
@@ -194,24 +193,17 @@ void CDirectoryProvider::Announce(AnnouncementFlag flag, const char *sender, con
          (std::find(m_itemTypes.begin(), m_itemTypes.end(), AUDIO) == m_itemTypes.end())))
       return;
 
-    // don't update while scanning / cleaning
-    if (strcmp(message, "OnScanStarted") == 0 ||
-        strcmp(message, "OnCleanStarted") == 0)
-    {
-      m_isDbUpdating = true;
+    // if we're in a database transaction, don't bother doing anything just yet
+    if (data.isMember("transaction") && data["transaction"].asBoolean())
       return;
-    }
 
     // if there was a database update, we set the update state
     // to PENDING to fire off a new job in the next update
     if (strcmp(message, "OnScanFinished") == 0 ||
         strcmp(message, "OnCleanFinished") == 0 ||
-        ((strcmp(message, "OnUpdate") == 0 ||
-          strcmp(message, "OnRemove") == 0) && !m_isDbUpdating))
-    {
-      m_isDbUpdating = false;
+        strcmp(message, "OnUpdate") == 0 ||
+        strcmp(message, "OnRemove") == 0)
       m_updateState = PENDING;
-    }
   }
 }
 
@@ -304,7 +296,6 @@ void CDirectoryProvider::RegisterListProvider(bool hasLibraryContent)
   else if (!hasLibraryContent && m_isAnnounced)
   {
     m_isAnnounced = false;
-    m_isDbUpdating = false;
     CAnnouncementManager::RemoveAnnouncer(this);
   }
 }

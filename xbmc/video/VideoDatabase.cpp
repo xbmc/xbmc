@@ -59,6 +59,7 @@
 #include "video/VideoDbUrl.h"
 #include "playlists/SmartPlayList.h"
 #include "utils/GroupUtils.h"
+#include "Application.h"
 
 using namespace std;
 using namespace dbiplus;
@@ -4504,15 +4505,13 @@ void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CDateT
     // We only need to announce changes to video items in the library
     if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId > 0)
     {
+      CVariant data;
+      if (g_application.IsVideoScanning())
+        data["transaction"] = true;
       // Only provide the "playcount" value if it has actually changed
       if (item.GetVideoInfoTag()->m_playCount != count)
-      {
-        CVariant data;
         data["playcount"] = count;
-        ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", CFileItemPtr(new CFileItem(item)), data);
-      }
-      else
-        ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", CFileItemPtr(new CFileItem(item)));
+      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", CFileItemPtr(new CFileItem(item)), data);
     }
   }
   catch (...)
@@ -8087,16 +8086,16 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     CLog::Log(LOGNOTICE, "%s: Cleaning videodatabase done. Operation took %s", __FUNCTION__, StringUtils::SecondsToTimeString(time / 1000).c_str());
 
     for (std::vector<int>::const_iterator it = movieIDs.begin(); it != movieIDs.end(); ++it)
-      AnnounceRemove(MediaTypeMovie, *it);
+      AnnounceRemove(MediaTypeMovie, *it, true);
 
     for (std::vector<int>::const_iterator it = episodeIDs.begin(); it != episodeIDs.end(); ++it)
-      AnnounceRemove(MediaTypeEpisode, *it);
+      AnnounceRemove(MediaTypeEpisode, *it, true);
 
     for (std::vector<int>::const_iterator it = tvshowIDs.begin(); it != tvshowIDs.end(); ++it)
-      AnnounceRemove(MediaTypeTvShow, *it);
+      AnnounceRemove(MediaTypeTvShow, *it, true);
 
     for (std::vector<int>::const_iterator it = musicVideoIDs.begin(); it != musicVideoIDs.end(); ++it)
-      AnnounceRemove(MediaTypeMusicVideo, *it);
+      AnnounceRemove(MediaTypeMusicVideo, *it, true);
   }
   catch (...)
   {
@@ -9158,11 +9157,13 @@ CStdString CVideoDatabase::GetSafeFile(const CStdString &dir, const CStdString &
   return URIUtils::AddFileToFolder(dir, CUtil::MakeLegalFileName(safeThumb));
 }
 
-void CVideoDatabase::AnnounceRemove(std::string content, int id)
+void CVideoDatabase::AnnounceRemove(std::string content, int id, bool scanning /* = false */)
 {
   CVariant data;
   data["type"] = content;
   data["id"] = id;
+  if (scanning)
+    data["transaction"] = true;
   ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnRemove", data);
 }
 

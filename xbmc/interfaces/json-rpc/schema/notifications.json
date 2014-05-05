@@ -118,7 +118,8 @@
       { "name": "data", "type": "object", "required": true,
         "properties": {
           "id": { "$ref": "Library.Id", "required": true },
-          "type": { "type": "string", "id": "Notifications.Library.Audio.Type", "enum": [ "song" ], "required": true }
+          "type": { "type": "string", "id": "Notifications.Library.Audio.Type", "enum": [ "song" ], "required": true },
+          "transaction": { "$ref": "Optional.Boolean", "description": "True if the update is being performed within a transaction." }
         }
       }
     ],
@@ -132,7 +133,8 @@
       { "name": "data", "type": "object", "required": true,
         "properties": {
           "id": { "$ref": "Library.Id", "required": true },
-          "type": { "$ref": "Notifications.Library.Audio.Type", "required": true }
+          "type": { "$ref": "Notifications.Library.Audio.Type", "required": true },
+          "transaction": { "$ref": "Optional.Boolean", "description": "True if the removal is being performed within a transaction." }
         }
       }
     ],
@@ -183,7 +185,8 @@
         "properties": {
           "id": { "$ref": "Library.Id", "required": true },
           "type": { "type": "string", "id": "Notifications.Library.Video.Type", "enum": [ "movie", "tvshow", "episode", "musicvideo" ], "required": true },
-          "playcount": { "type": "integer", "minimum": 0, "default": -1 }
+          "playcount": { "type": "integer", "minimum": 0, "default": -1 },
+          "transaction": { "$ref": "Optional.Boolean", "description": "True if the update is being performed within a transaction." }
         }
       }
     ],
@@ -197,7 +200,8 @@
       { "name": "data", "type": "object", "required": true,
         "properties": {
           "id": { "$ref": "Library.Id", "required": true },
-          "type": { "$ref": "Notifications.Library.Video.Type", "required": true }
+          "type": { "$ref": "Notifications.Library.Video.Type", "required": true },
+          "transaction": { "$ref": "Optional.Boolean", "description": "True if the removal is being performed within a transaction." }
         }
       }
     ],
