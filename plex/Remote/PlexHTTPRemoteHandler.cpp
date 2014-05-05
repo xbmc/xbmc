@@ -446,7 +446,7 @@ CPlexRemoteResponse CPlexHTTPRemoteHandler::resources()
   player->SetAttribute("title", g_guiSettings.GetString("services.devicename").c_str());
   player->SetAttribute("protocol", "plex");
   player->SetAttribute("protocolVersion", "1");
-  player->SetAttribute("protocolCapabilities", "navigation,playback,timeline,mirror");
+  player->SetAttribute("protocolCapabilities", "navigation,playback,timeline,mirror,playqueue");
   player->SetAttribute("machineIdentifier", g_guiSettings.GetString("system.uuid").c_str());
   player->SetAttribute("product", "Plex Home Theater");
   player->SetAttribute("platform", PlexUtils::GetMachinePlatform());
