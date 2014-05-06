@@ -410,14 +410,6 @@ namespace PVR
 
   protected:
     /*!
-     * @brief Set a new channel icon path if the path exists
-     * @param channel The channel to change
-     * @param strIconPath The new path
-     * @return True if the path exists, false otherwise
-     */
-    bool SetChannelIconPath(CPVRChannelPtr channel, const std::string& strIconPath);
-
-    /*!
      * @brief Load the channels stored in the database.
      * @param bCompress If true, compress the database after storing the channels.
      * @return The amount of channels that were added.
