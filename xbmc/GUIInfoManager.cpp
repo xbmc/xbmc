@@ -5822,17 +5822,27 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition, int s
   }
   else if (condition == LISTITEM_ISPLAYING)
   {
-    if (item->HasProperty("playlistposition"))
-      return (int)item->GetProperty("playlisttype").asInteger() == g_playlistPlayer.GetCurrentPlaylist() && (int)item->GetProperty("playlistposition").asInteger() == g_playlistPlayer.GetCurrentSong();
-    else if (item->IsFileItem() && !m_currentFile->GetPath().IsEmpty())
+    if (!g_application.IsPlaying())
+      return false;
+
+    CFileItemPtr gitem = g_application.CurrentFileItemPtr();
+    if (gitem)
     {
-      if (!g_application.m_strPlayListFile.IsEmpty())
+      if (item->IsFileItem())
       {
-        //playlist file that is currently playing or the playlistitem that is currently playing.
-        return g_application.m_strPlayListFile.Equals(((const CFileItem *)item)->GetPath()) || m_currentFile->IsSamePath((const CFileItem *)item);
+        const CFileItem* fitem = static_cast<const CFileItem*>(item);
+        if (fitem->HasMusicInfoTag() && gitem->HasMusicInfoTag())
+        {
+          if (fitem->GetMusicInfoTag()->GetDatabaseId() == gitem->GetMusicInfoTag()->GetDatabaseId())
+            return true;
+          else
+            return false;
+        }
+
+        return fitem->GetPath().Equals(gitem->GetPath());
       }
-      return m_currentFile->IsSamePath((const CFileItem *)item);
     }
+    return false;
   }
   else if (condition == LISTITEM_TYPE)
   {
