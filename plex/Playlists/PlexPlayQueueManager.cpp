@@ -11,6 +11,7 @@
 #include "settings/GUISettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "music/tags/MusicInfoTag.h"
+#include "Client/PlexTimelineManager.h"
 
 using namespace PLAYLIST;
 
@@ -99,6 +100,8 @@ void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool st
   {
     CGUIMessage msg(GUI_MSG_PLEX_PLAYQUEUE_UPDATED, PLEX_PLAYQUEUE_MANAGER, 0);
     g_windowManager.SendThreadMessage(msg);
+
+    g_plexApplication.timelineManager->RefreshSubscribers();
   }
 
   if (startPlaying)

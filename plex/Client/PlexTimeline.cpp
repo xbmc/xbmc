@@ -169,14 +169,14 @@ CUrlOptions CPlexTimeline::getTimeline(bool forServer)
     if (g_plexApplication.playQueueManager->current() && PlexUtils::IsPlayingPlaylist())
     {
       int playQueueId = g_plexApplication.playQueueManager->current()->getCurrentID();
-      options.AddOption("playQueueId", boost::lexical_cast<std::string>(playQueueId));
+      options.AddOption("playQueueID", boost::lexical_cast<std::string>(playQueueId));
 
       if (m_item && m_item->HasMusicInfoTag())
       {
         try
         {
           std::string pqid = boost::lexical_cast<std::string>(m_item->GetMusicInfoTag()->GetDatabaseId());
-          options.AddOption("playQueueItemId", pqid);
+          options.AddOption("playQueueItemID", pqid);
         }
         catch (...)
         {
@@ -184,7 +184,7 @@ CUrlOptions CPlexTimeline::getTimeline(bool forServer)
       }
 
       int playQueueVersion = g_plexApplication.playQueueManager->getCurrentPlayQueueVersion();
-      options.AddOption("containerVersion", boost::lexical_cast<std::string>(playQueueVersion));
+      options.AddOption("playQueueVersion", boost::lexical_cast<std::string>(playQueueVersion));
 
     }
 

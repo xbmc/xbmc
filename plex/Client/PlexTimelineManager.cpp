@@ -94,7 +94,7 @@ void CPlexTimelineManager::SetTextFieldFocused(bool focused, const CStdString &n
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexTimelineManager::UpdateLocation()
+void CPlexTimelineManager::RefreshSubscribers()
 {
   SendTimelineToSubscribers(GetCurrentTimeLines());
 }

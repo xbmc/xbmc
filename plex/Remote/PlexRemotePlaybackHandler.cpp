@@ -355,10 +355,10 @@ CPlexRemoteResponse CPlexRemotePlaybackHandler::setStreams(const ArgMap &argumen
 CPlexRemoteResponse CPlexRemotePlaybackHandler::refreshPlayQueue(const ArgMap &arguments)
 {
   int playQueueId;
-  if (arguments.find("playQueueId") == arguments.end())
+  if (arguments.find("playQueueID") == arguments.end())
     return CPlexRemoteResponse(500, "No playQueueId argument!");
 
-  playQueueId = boost::lexical_cast<int>(arguments.find("playQueueId")->second);
+  playQueueId = boost::lexical_cast<int>(arguments.find("playQueueID")->second);
 
   if (g_plexApplication.playQueueManager->current())
   {

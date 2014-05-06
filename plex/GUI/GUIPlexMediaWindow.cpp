@@ -98,7 +98,7 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
       if (m_returningFromSkinLoad)
         AddFilters();
       m_returningFromSkinLoad = false;
-      g_plexApplication.timelineManager->UpdateLocation();
+      g_plexApplication.timelineManager->RefreshSubscribers();
       break;
     }
 

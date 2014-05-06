@@ -32,7 +32,7 @@ class CPlexTimelineManager
     void SendTimelineToSubscribers(const CPlexTimelineCollectionPtr &timelines, bool delay = false);
 
     void SetTextFieldFocused(bool focused, const CStdString &name="field", const CStdString &contents=CStdString(), bool isSecure=false);
-    void UpdateLocation();
+    void RefreshSubscribers();
 
     void Stop();
 
