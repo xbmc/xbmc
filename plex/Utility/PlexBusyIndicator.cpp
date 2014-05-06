@@ -38,7 +38,7 @@ bool CPlexBusyIndicator::blockWaitingForJob(CJob* job, IJobCallback* callback)
   while (m_callbackMap.size() > 0)
   {
     lk.Leave();
-    while (!m_blockEvent.WaitMSec(10))
+    while (!m_blockEvent.WaitMSec(100))
     {
       lk.Enter();
       if (busy && busy->IsCanceled())
