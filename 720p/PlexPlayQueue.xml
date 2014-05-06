@@ -109,7 +109,8 @@
 							<label>$VAR[PlayQueueTitle]</label>
 							<font>Bold-17</font>
 							<scroll>true</scroll>
-							<textcolor>orange</textcolor>
+							<selectedcolor>orangeLight</selectedcolor>
+							<shadowcolor>FF000000</shadowcolor>
 							<visible>ListItem.IsPlaying</visible>
 						</control>
 						<control type="label">
@@ -120,7 +121,8 @@
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.DurationStr]</label>
 							<font>Bold-17</font>
-							<textcolor>orange</textcolor>
+							<selectedcolor>orangeLight</selectedcolor>
+							<shadowcolor>FF000000</shadowcolor>
 							<visible>ListItem.IsPlaying</visible>
 						</control>
 						<control type="image">
