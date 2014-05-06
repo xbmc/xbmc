@@ -18,13 +18,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include <Platinum/Source/Platinum/Platinum.h>
+#include <Platinum/Source/Devices/MediaRenderer/PltMediaController.h>
+#include <Platinum/Source/Devices/MediaServer/PltDidl.h>
 
 #include "UPnPPlayer.h"
 #include "UPnP.h"
 #include "UPnPInternal.h"
-#include "Platinum.h"
-#include "PltMediaController.h"
-#include "PltDidl.h"
 #include "FileItem.h"
 #include "threads/Event.h"
 #include "utils/log.h"

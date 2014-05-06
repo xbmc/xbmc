@@ -18,7 +18,8 @@
  *
  */
 #pragma once
-#include "PltMediaConnect.h"
+#include <Platinum/Source/Devices/MediaConnect/PltMediaConnect.h>
+
 #include "interfaces/IAnnouncer.h"
 #include "FileItem.h"
 

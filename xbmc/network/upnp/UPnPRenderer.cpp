@@ -17,11 +17,12 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include <Platinum/Source/Platinum/Platinum.h>
+
 #include "network/Network.h"
 #include "UPnPRenderer.h"
 #include "UPnP.h"
 #include "UPnPInternal.h"
-#include "Platinum.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "FileItem.h"

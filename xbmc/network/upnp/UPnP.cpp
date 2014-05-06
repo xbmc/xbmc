@@ -23,6 +23,7 @@
  */
 
 #include <set>
+#include <Platinum/Source/Platinum/Platinum.h>
 
 #include "threads/SystemClock.h"
 #include "UPnP.h"
@@ -35,7 +36,6 @@
 #include "ApplicationMessenger.h"
 #include "network/Network.h"
 #include "utils/log.h"
-#include "Platinum.h"
 #include "URL.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/Settings.h"

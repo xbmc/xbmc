@@ -22,12 +22,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include <Platinum/Source/Platinum/Platinum.h>
+#include <Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h>
+
 #include "UPnPDirectory.h"
 #include "URL.h"
 #include "network/upnp/UPnP.h"
 #include "network/upnp/UPnPInternal.h"
-#include "Platinum.h"
-#include "PltSyncMediaBrowser.h"
 #include "video/VideoInfoTag.h"
 #include "FileItem.h"
 #include "utils/log.h"

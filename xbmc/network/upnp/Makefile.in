@@ -1,5 +1,6 @@
 ifeq (@USE_UPNP@, 1)
-INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Core \
+INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP \
+          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Core \
           -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Platinum \
           -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaConnect \
           -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaRenderer \
