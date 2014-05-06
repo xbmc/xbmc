@@ -8502,7 +8502,13 @@ msgctxt "#19285"
 msgid "Browse for icon"
 msgstr ""
 
-#empty strings from id 19286 to 19498
+#. Notification message if process starts searching for missing channel icons
+#: xbmc/pvr/PVRManager.cpp
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr ""
+
+#empty strings from id 19287 to 19498
 
 #: xbmc/epg/Epg.cpp
 msgctxt "#19499"

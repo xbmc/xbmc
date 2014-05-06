@@ -144,7 +144,7 @@ void CPVRManager::OnSettingAction(const CSetting *setting)
   if (settingId == "pvrmenu.searchicons")
   {
     if (IsStarted())
-      SearchMissingChannelIcons();
+      TriggerSearchMissingChannelIcons();
   }
   else if (settingId == "pvrmanager.resetdb")
   {
@@ -449,13 +449,18 @@ void CPVRManager::Process(void)
   bool bRestart(false);
   while (IsStarted() && m_addons && m_addons->HasConnectedClients() && !bRestart)
   {
-    /* continue last watched channel after first startup */
+    /* first startup */
     if (m_bFirstStart)
     {
       {
         CSingleLock lock(m_critSection);
         m_bFirstStart = false;
       }
+      
+      /* start job to search for missing channel icons */
+      TriggerSearchMissingChannelIcons();
+      
+      /* continue last watched channel */
       ContinueLastChannel();
     }
     /* execute the next pending jobs if there are any */
@@ -1455,6 +1460,11 @@ void CPVRManager::TriggerSaveChannelSettings(void)
   QueueJob(new CPVRChannelSettingsSaveJob());
 }
 
+void CPVRManager::TriggerSearchMissingChannelIcons(void)
+{
+  CJobManager::GetInstance().AddJob(new CPVRSearchMissingChannelIconsJob(), NULL);
+}
+
 void CPVRManager::ExecutePendingJobs(void)
 {
   CSingleLock lock(m_critSectionTriggers);
@@ -1536,6 +1546,12 @@ bool CPVRChannelSwitchJob::DoWork(void)
     ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Player, "xbmc", "OnPlay", CFileItemPtr(new CFileItem(*m_next)), param);
   }
 
+  return true;
+}
+
+bool CPVRSearchMissingChannelIconsJob::DoWork(void)
+{
+  g_PVRManager.SearchMissingChannelIcons();
   return true;
 }
 

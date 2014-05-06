@@ -29,6 +29,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "music/tags/MusicInfoTag.h"
 #include "utils/log.h"
 #include "Util.h"
@@ -246,7 +247,10 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 
   if (fileItemList.IsEmpty())
     return;
-  
+
+  CGUIDialogExtendedProgressBar* dlgProgress = (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
+  CGUIDialogProgressBarHandle* dlgProgressHandle = dlgProgress ? dlgProgress->GetHandle(g_localizeStrings.Get(19286)) : NULL;
+
   CSingleLock lock(m_critSection);
 
   /* create a map for fast lookup of normalized file base name */
@@ -260,9 +264,17 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
     fileItemMap.insert(std::make_pair(baseName, (*it)->GetPath()));
   }
 
+  int channelIndex = 0;
   for(std::vector<PVRChannelGroupMember>::const_iterator it = m_members.begin(); it != m_members.end(); ++it)
   {
     CPVRChannelPtr channel = (*it).channel;
+
+    /* update progress dialog */
+    if (dlgProgressHandle)
+    {
+      dlgProgressHandle->SetProgress(channelIndex++, m_members.size());
+      dlgProgressHandle->SetText(channel->ChannelName());
+    }
 
     /* skip if an icon is already set and exists */
     if (channel->IsIconExists())
@@ -290,6 +302,9 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 
     /* TODO: start channel icon scraper here if nothing was found */
   }
+
+  if (dlgProgressHandle)
+    dlgProgressHandle->MarkFinished();
 }
 
 /********** sort methods **********/
