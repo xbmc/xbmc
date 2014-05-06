@@ -409,7 +409,7 @@ void CPVRClient::CallMenuHook(const PVR_MENUHOOK &hook, const CFileItem *item)
       if (item->IsEPG())
       {
         hookData.cat = PVR_MENUHOOK_EPG;
-        hookData.data.iEpgUid = item->GetEPGInfoTag()->BroadcastId();
+        hookData.data.iEpgUid = item->GetEPGInfoTag()->UniqueBroadcastID();
       }
       else if (item->IsPVRChannel())
       {
