@@ -36,13 +36,7 @@
 					<aspectratio>stretch</aspectratio>
 					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
 					<visible>true</visible>
-				</control>
-				<!--><control type="image">
-				<posx>791</posx>
-				<posy>527</posy>
-				<texture>arrow-big.png</texture>
-				<colordiffuse>FF000000</colordiffuse>
-			</control>-->
+				</control>			
 				<!-- list background -->
 				<control type="image">
 					<posy>0</posy>
@@ -58,7 +52,7 @@
 				<!-- list -->
 				<control type="list" id="54">
 					<viewtype label="ListPlayQueue">list</viewtype>
-					<posx>794</posx>
+					<posx>791</posx>
 					<posy>55</posy>
 					<width>520</width>
 					<height>650</height>
@@ -84,7 +78,6 @@
 							<label>$VAR[PlayQueueTitle]</label>
 							<font>Regular-17</font>
 							<include>White2</include>
-							<selectedcolor>orange</selectedcolor>
 							<visible>!ListItem.IsPlaying</visible>
 						</control>
 						<control type="label">
@@ -96,8 +89,16 @@
 							<label>$INFO[ListItem.DurationStr]</label>
 							<font>Regular-17</font>
 							<include>White2</include>
-							<selectedcolor>orange</selectedcolor>
 							<visible>!ListItem.IsPlaying</visible>
+						</control>
+						<control type="image">
+							<posx>20</posx>
+							<posy>0</posy>
+							<width>565</width>
+							<height>50</height>
+							<texture aspectratio="stretch">black.png</texture>
+							<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
+							<visible>ListItem.IsPlaying</visible>
 						</control>
 						<control type="label">
 							<posx>35</posx>
@@ -108,9 +109,7 @@
 							<label>$VAR[PlayQueueTitle]</label>
 							<font>Bold-17</font>
 							<scroll>true</scroll>
-							<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnNext">Focus</animation>
-							<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnPrevious">Focus</animation>
-							<textcolor>FFCC0000</textcolor>
+							<textcolor>orange</textcolor>
 							<visible>ListItem.IsPlaying</visible>
 						</control>
 						<control type="label">
@@ -120,9 +119,15 @@
 							<align>right</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.DurationStr]</label>
-							<font>Regular-17</font>
-							<include>White2</include>
-							<textcolor>FFCC0000</textcolor>
+							<font>Bold-17</font>
+							<textcolor>orange</textcolor>
+							<visible>ListItem.IsPlaying</visible>
+						</control>
+						<control type="image">
+							<posx>0</posx>
+							<posy>10</posy>
+							<texture>arrow-big.png</texture>
+							<colordiffuse>orange</colordiffuse>
 							<visible>ListItem.IsPlaying</visible>
 						</control>
 					</itemlayout>
@@ -136,6 +141,15 @@
 							<animation effect="slide" start="0,-42" end="0,0" time="200" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
 							<animation effect="slide" start="0,42" end="0,0" time="200" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
 						</control>
+						<control type="image">
+							<posx>20</posx>
+							<posy>0</posy>
+							<width>565</width>
+							<height>50</height>
+							<texture aspectratio="stretch">black.png</texture>
+							<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
+							<visible>ListItem.IsPlaying</visible>
+						</control>
 						<control type="label">
 							<posx>35</posx>
 							<width>434</width>
@@ -160,6 +174,13 @@
 							<textcolor>orangeLight</textcolor>
 							<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnNext">Focus</animation>
 							<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnPrevious">Focus</animation>
+						</control>
+						<control type="image">
+							<posx>0</posx>
+							<posy>10</posy>
+							<texture>arrow-big.png</texture>
+							<colordiffuse>orange</colordiffuse>
+							<visible>ListItem.IsPlaying</visible>
 						</control>
 					</focusedlayout>
 				</control>
