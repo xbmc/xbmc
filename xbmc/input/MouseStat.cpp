@@ -160,8 +160,8 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
   else if (m_mouseState.dz < 0)
     m_Action = ACTION_MOUSE_WHEEL_DOWN;
 
-  // Finally check for a mouse move (that isn't a drag)
-  else if (newEvent.type == XBMC_MOUSEMOTION)
+  // Check for a mouse move that isn't a drag, ignoring messages with no movement at all
+  else if (newEvent.type == XBMC_MOUSEMOTION && (m_mouseState.dx || m_mouseState.dy))
     m_Action = ACTION_MOUSE_MOVE;
 
   // ignore any other mouse messages

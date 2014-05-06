@@ -26,6 +26,7 @@
 #include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "filesystem/Directory.h"
 #include "addons/Skin.h"
 #include "cores/AudioEngine/AEFactory.h"
 
@@ -215,12 +216,19 @@ bool CGUIAudioManager::Load()
   else
     Enable(true);
 
-  if (CSettings::Get().GetString("lookandfeel.soundskin")=="SKINDEFAULT")
+  CStdString soundSkin = CSettings::Get().GetString("lookandfeel.soundskin");
+
+  if (soundSkin == "SKINDEFAULT")
   {
     m_strMediaDir = URIUtils::AddFileToFolder(g_SkinInfo->Path(), "sounds");
   }
   else
-    m_strMediaDir = URIUtils::AddFileToFolder("special://xbmc/sounds", CSettings::Get().GetString("lookandfeel.soundskin"));
+  {
+    //check if sound skin is located in home, otherwise fallback to built-ins
+    m_strMediaDir = URIUtils::AddFileToFolder("special://home/sounds", soundSkin);
+    if (!XFILE::CDirectory::Exists(m_strMediaDir))
+      m_strMediaDir = URIUtils::AddFileToFolder("special://xbmc/sounds", soundSkin);
+  }
 
   CStdString strSoundsXml = URIUtils::AddFileToFolder(m_strMediaDir, "sounds.xml");
 
