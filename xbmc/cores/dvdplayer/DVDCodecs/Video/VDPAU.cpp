@@ -39,6 +39,7 @@
 
 using namespace VDPAU;
 #define NUM_RENDER_PICS 7
+#define NUM_CROP_PIX 3
 
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 
@@ -2383,6 +2384,7 @@ void CMixer::InitCycle()
   }
   m_mixerstep = 0;
 
+  m_processPicture.crop = false;
   if (m_mixerInput[1].DVDPic.format == RENDER_FMT_VDPAU)
   {
     m_processPicture.outputSurface = m_outputSurfaces.front();
@@ -2391,8 +2393,8 @@ void CMixer::InitCycle()
     if (m_SeenInterlaceFlag)
     {
       double ratio = (double)m_mixerInput[1].DVDPic.iDisplayHeight / m_mixerInput[1].DVDPic.iHeight;
-      m_mixerInput[1].DVDPic.iHeight -= 6;
-      m_mixerInput[1].DVDPic.iDisplayHeight = lrint(ratio*m_mixerInput[1].DVDPic.iHeight);
+      m_mixerInput[1].DVDPic.iDisplayHeight = lrint(ratio*(m_mixerInput[1].DVDPic.iHeight-NUM_CROP_PIX*2));
+      m_processPicture.crop = true;
     }
   }
   else
@@ -3066,7 +3068,7 @@ CVdpauRenderPicture* COutput::ProcessMixerPicture()
       retPic->texWidth = m_config.outWidth;
       retPic->texHeight = m_config.outHeight;
       retPic->crop.x1 = 0;
-      retPic->crop.y1 = (m_config.outHeight - retPic->DVDPic.iHeight) / 2;
+      retPic->crop.y1 = procPic.crop ? NUM_CROP_PIX : 0;
       retPic->crop.x2 = m_config.outWidth;
       retPic->crop.y2 = m_config.outHeight - retPic->crop.y1;
     }

@@ -202,6 +202,7 @@ struct CVdpauProcessedPicture
   DVDVideoPicture DVDPic;
   VdpVideoSurface videoSurface;
   VdpOutputSurface outputSurface;
+  bool crop;
 };
 
 /**
