@@ -111,6 +111,7 @@ config.log
 /addons/visualization.milkdrop/MilkDrop_win32dx.vis
 /addons/visualization.projectm/projectM.vis
 /addons/visualization.projectm/resources/presets.zip
+/addons/visualization.vortex/Vortex_win32dx.vis
 /addons/visualization.waveform/Waveform.vis
 /addons/visualization.waveform/Waveform_win32.vis
 /addons/visualization.itunes/iTunes.mvis
@@ -343,6 +344,9 @@ lib/cpluff/stamp-h1
 /project/Win32BuildSetup/languages.nsi
 /project/Win32BuildSetup/skins.nsi
 /project/Win32BuildSetup/xbmc-pvr-addons.nsi
+/project/Win32BuildSetup/bgprocess
+/project/Win32BuildSetup/makeclean
+/project/Win32BuildSetup/noprompt
 /project/Win32BuildSetup/BUILD_WIN32/
 /project/Win32BuildSetup/dependencies
 
@@ -717,6 +721,7 @@ lib/cpluff/stamp-h1
 /xbmc/visualizations/Milkdrop/Debug
 /xbmc/visualizations/Milkdrop/Release
 /xbmc/visualizations/OpenGLSpectrum/Makefile
+/xbmc/visualizations/Vortex/Vortex/Vortex.vcxproj.metaproj
 /xbmc/visualizations/WaveForm/Makefile
 /xbmc/visualizations/WaveForm/Debug (DirectX)
 /xbmc/visualizations/WaveForm/Release (DirectX)
@@ -1087,6 +1092,7 @@ lib/cpluff/stamp-h1
 
 #/lib/win32
 /lib/win32/2.2-Helix-alpha1.tar*
+/lib/win32/pax_global_header
 
 #/lib/win32/ffmpeg
 /lib/win32/ffmpeg/
