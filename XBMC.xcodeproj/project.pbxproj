@@ -588,7 +588,6 @@
 		DFB65FD115373AE7006B8FF1 /* AERemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAD15373AE7006B8FF1 /* AERemap.cpp */; };
 		DFB65FD215373AE7006B8FF1 /* AEStreamInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAF15373AE7006B8FF1 /* AEStreamInfo.cpp */; };
 		DFB65FD315373AE7006B8FF1 /* AEUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FB115373AE7006B8FF1 /* AEUtil.cpp */; };
-		DFB65FD415373AE7006B8FF1 /* AEWAVLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FB315373AE7006B8FF1 /* AEWAVLoader.cpp */; };
 		DFB6610915374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB6610615374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp */; };
 		DFBB4308178B574E006CC20A /* AddonCallbacksCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBB4306178B574E006CC20A /* AddonCallbacksCodec.cpp */; };
 		DFBB4309178B574E006CC20A /* AddonCallbacksCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBB4306178B574E006CC20A /* AddonCallbacksCodec.cpp */; };
@@ -813,7 +812,6 @@
 		DFF0F14517528350002DA3A4 /* AERemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAD15373AE7006B8FF1 /* AERemap.cpp */; };
 		DFF0F14617528350002DA3A4 /* AEStreamInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAF15373AE7006B8FF1 /* AEStreamInfo.cpp */; };
 		DFF0F14717528350002DA3A4 /* AEUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FB115373AE7006B8FF1 /* AEUtil.cpp */; };
-		DFF0F14817528350002DA3A4 /* AEWAVLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FB315373AE7006B8FF1 /* AEWAVLoader.cpp */; };
 		DFF0F14917528350002DA3A4 /* AEFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6515373AE7006B8FF1 /* AEFactory.cpp */; };
 		DFF0F14A17528350002DA3A4 /* EmuFileWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */; };
 		DFF0F14B17528350002DA3A4 /* emu_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B90D25F9F900618676 /* emu_dummy.cpp */; };
@@ -2223,7 +2221,6 @@
 		E49911AD174E5CFE00741B6D /* AERemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAD15373AE7006B8FF1 /* AERemap.cpp */; };
 		E49911AE174E5CFE00741B6D /* AEStreamInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAF15373AE7006B8FF1 /* AEStreamInfo.cpp */; };
 		E49911AF174E5CFE00741B6D /* AEUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FB115373AE7006B8FF1 /* AEUtil.cpp */; };
-		E49911B0174E5CFE00741B6D /* AEWAVLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FB315373AE7006B8FF1 /* AEWAVLoader.cpp */; };
 		E49911B1174E5CFE00741B6D /* AEFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6515373AE7006B8FF1 /* AEFactory.cpp */; };
 		E49911B2174E5D0A00741B6D /* EmuFileWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */; };
 		E49911B3174E5D0A00741B6D /* emu_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B90D25F9F900618676 /* emu_dummy.cpp */; };
@@ -4325,8 +4322,6 @@
 		DFB65FB015373AE7006B8FF1 /* AEStreamInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEStreamInfo.h; sourceTree = "<group>"; };
 		DFB65FB115373AE7006B8FF1 /* AEUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEUtil.cpp; sourceTree = "<group>"; };
 		DFB65FB215373AE7006B8FF1 /* AEUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEUtil.h; sourceTree = "<group>"; };
-		DFB65FB315373AE7006B8FF1 /* AEWAVLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEWAVLoader.cpp; sourceTree = "<group>"; };
-		DFB65FB415373AE7006B8FF1 /* AEWAVLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEWAVLoader.h; sourceTree = "<group>"; };
 		DFB6610615374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecPassthrough.cpp; sourceTree = "<group>"; };
 		DFB6610715374E80006B8FF1 /* DVDAudioCodecPassthrough.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecPassthrough.h; sourceTree = "<group>"; };
 		DFBB4306178B574E006CC20A /* AddonCallbacksCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonCallbacksCodec.cpp; sourceTree = "<group>"; };
@@ -7280,8 +7275,6 @@
 				DFB65FB015373AE7006B8FF1 /* AEStreamInfo.h */,
 				DFB65FB115373AE7006B8FF1 /* AEUtil.cpp */,
 				DFB65FB215373AE7006B8FF1 /* AEUtil.h */,
-				DFB65FB315373AE7006B8FF1 /* AEWAVLoader.cpp */,
-				DFB65FB415373AE7006B8FF1 /* AEWAVLoader.h */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -10689,7 +10682,6 @@
 				DFB65FD115373AE7006B8FF1 /* AERemap.cpp in Sources */,
 				DFB65FD215373AE7006B8FF1 /* AEStreamInfo.cpp in Sources */,
 				DFB65FD315373AE7006B8FF1 /* AEUtil.cpp in Sources */,
-				DFB65FD415373AE7006B8FF1 /* AEWAVLoader.cpp in Sources */,
 				DFB6610915374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp in Sources */,
 				7C0B98A4154B79C30065A238 /* AEDeviceInfo.cpp in Sources */,
 				7C6EB330155BD1D40080368A /* ImageFile.cpp in Sources */,
@@ -11102,7 +11094,6 @@
 				DFF0F14517528350002DA3A4 /* AERemap.cpp in Sources */,
 				DFF0F14617528350002DA3A4 /* AEStreamInfo.cpp in Sources */,
 				DFF0F14717528350002DA3A4 /* AEUtil.cpp in Sources */,
-				DFF0F14817528350002DA3A4 /* AEWAVLoader.cpp in Sources */,
 				DFF0F14917528350002DA3A4 /* AEFactory.cpp in Sources */,
 				DFF0F14A17528350002DA3A4 /* EmuFileWrapper.cpp in Sources */,
 				DFF0F14B17528350002DA3A4 /* emu_dummy.cpp in Sources */,
@@ -12157,7 +12148,6 @@
 				E49911AD174E5CFE00741B6D /* AERemap.cpp in Sources */,
 				E49911AE174E5CFE00741B6D /* AEStreamInfo.cpp in Sources */,
 				E49911AF174E5CFE00741B6D /* AEUtil.cpp in Sources */,
-				E49911B0174E5CFE00741B6D /* AEWAVLoader.cpp in Sources */,
 				E49911B1174E5CFE00741B6D /* AEFactory.cpp in Sources */,
 				E49911B2174E5D0A00741B6D /* EmuFileWrapper.cpp in Sources */,
 				E49911B3174E5D0A00741B6D /* emu_dummy.cpp in Sources */,
@@ -13149,7 +13139,6 @@
 					"-lfreetype",
 					"-lfontconfig",
 					"-lsqlite3",
-					"-lsamplerate",
 					"-ltinyxml",
 					"-lmicrohttpd",
 					"-lyajl",
@@ -13276,7 +13265,6 @@
 					"-lfreetype",
 					"-lfontconfig",
 					"-lsqlite3",
-					"-lsamplerate",
 					"-ltinyxml",
 					"-lmicrohttpd",
 					"-lyajl",
@@ -13432,7 +13420,6 @@
 					"-lfreetype",
 					"-lfontconfig",
 					"-lsqlite3",
-					"-lsamplerate",
 					"-ltinyxml",
 					"-lmicrohttpd",
 					"-lsmbclient",
@@ -13538,7 +13525,6 @@
 					"-lfreetype",
 					"-lfontconfig",
 					"-lsqlite3",
-					"-lsamplerate",
 					"-ltinyxml",
 					"-lmicrohttpd",
 					"-lsmbclient",
