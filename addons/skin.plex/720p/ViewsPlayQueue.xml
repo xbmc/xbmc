@@ -5,4 +5,64 @@
 		<value condition="Container.UniformProperty(Artist) + !Container.UniformProperty(Album)">$INFO[ListItem.Label]$INFO[ListItem.Album, &#xB7; ]</value>
 		<value>$INFO[ListItem.Label]</value>
 	</variable>
+	<variable name="PlayQueueArtist">
+		<value condition="Player.HasAudio">$INFO[MusicPlayer.Artist]</value>
+		<value condition="!Player.HasAudio">$INFO[ListItem.Artist]</value>
+	</variable>
+	<variable name="PlayQueueSong">
+		<value condition="Player.HasAudio">$INFO[MusicPlayer.Title]</value>
+		<value condition="!Player.HasAudio">$INFO[ListItem.Title]</value>
+	</variable>
+	<variable name="PlayQueueAlbum">
+		<value condition="Player.HasAudio">$INFO[MusicPlayer.Album]</value>
+		<value condition="!Player.HasAudio">$INFO[ListItem.Album]</value>
+	</variable>
+	<variable name="PlayQueueCover0">
+		<value condition="Player.HasAudio">$INFO[MusicPlayer.Cover]</value>
+		<value condition="!Player.HasAudio">$INFO[ListItem.Art(thumb)]</value>
+	</variable>
+	<variable name="PlayQueueCover1">
+		<value condition="Player.HasAudio">$INFO[MusicPlayer.Offset(1).Cover]</value>
+		<value condition="!Player.HasAudio">$INFO[ListItem(1).Art(thumb)]</value>
+	</variable>
+	<variable name="PlayQueueCover2">
+		<value condition="Player.HasAudio">$INFO[MusicPlayer.Offset(2).Cover]</value>
+		<value condition="!Player.HasAudio">$INFO[ListItem(2).Art(thumb)]</value>
+	</variable>
+	<variable name="PlayQueueCover3">
+		<value condition="Player.HasAudio">$INFO[MusicPlayer.Offset(3).Cover]</value>
+		<value condition="!Player.HasAudio">$INFO[ListItem(3).Art(thumb)]</value>
+	</variable>
+	<variable name="PlayQueueCover4">
+		<value condition="Player.HasAudio">$INFO[MusicPlayer.Offset(4).Cover]</value>
+		<value condition="!Player.HasAudio">$INFO[ListItem(4).Art(thumb)]</value>
+	</variable>
+	<variable name="PlayQueueCover5">
+		<value condition="Player.HasAudio">$INFO[MusicPlayer.Offset(5).Cover]</value>
+		<value condition="!Player.HasAudio">$INFO[ListItem(5).Art(thumb)]</value>
+	</variable>
+	<variable name="PlayQueueCover6">
+		<value condition="Player.HasAudio">$INFO[MusicPlayer.Offset(6).Cover]</value>
+		<value condition="!Player.HasAudio">$INFO[ListItem(6).Art(thumb)]</value>
+	</variable>
+	<variable name="PlayQueueCover7">
+		<value condition="Player.HasAudio">$INFO[MusicPlayer.Offset(7).Cover]</value>
+		<value condition="!Player.HasAudio">$INFO[ListItem(7).Art(thumb)]</value>
+	</variable>
+	<variable name="PlayQueueCover8">
+		<value condition="Player.HasAudio">$INFO[MusicPlayer.Offset(8).Cover]</value>
+		<value condition="!Player.HasAudio">$INFO[ListItem(8).Art(thumb)]</value>
+	</variable>
+	<variable name="PlayQueueCover9">
+		<value condition="Player.HasAudio">$INFO[MusicPlayer.Offset(9).Cover]</value>
+		<value condition="!Player.HasAudio">$INFO[ListItem(9).Art(thumb)]</value>
+	</variable>
+	<variable name="PlayQueueCover10">
+		<value condition="Player.HasAudio">$INFO[MusicPlayer.Offset(10).Cover]</value>
+		<value condition="!Player.HasAudio">$INFO[ListItem(10).Art(thumb)]</value>
+	</variable>
+	<include name="PlayQueueCoverFormat">		
+		<fadetime>200</fadetime>
+		<aspectratio scalediffuse="false" align="center" aligny="middle">scale</aspectratio>
+	</include>
 </includes>
