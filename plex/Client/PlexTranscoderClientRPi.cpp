@@ -30,10 +30,19 @@ CPlexTranscoderClientRPi::CPlexTranscoderClientRPi()
 
   // check if optionnal codecs are here
   if ( CheckCodec("MPG2") )
+  {
     m_knownVideoCodecs.insert("mpeg2video");
+  }
 
   if ( CheckCodec("WVC1") )
+  {
+    m_knownAudioCodecs.insert("wmav2");
+    m_knownAudioCodecs.insert("wmapro");
+
     m_knownVideoCodecs.insert("vc1");
+    m_knownVideoCodecs.insert("mjpeg");
+    m_knownVideoCodecs.insert("wmv3");
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
