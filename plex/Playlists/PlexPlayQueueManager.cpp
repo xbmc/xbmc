@@ -51,6 +51,22 @@ void CPlexPlayQueueManager::playCurrentId(int id)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexPlayQueueManager::clear()
+{
+  if (PlexUtils::IsPlayingPlaylist())
+    CApplicationMessenger::Get().MediaStop();
+
+  m_currentImpl.reset();
+  m_playQueueType = PLEX_MEDIA_TYPE_UNKNOWN;
+  m_playQueueVersion = 0;
+  g_guiSettings.SetString("system.mostrecentplayqueue", "");
+
+  CGUIMessage msg(GUI_MSG_PLEX_PLAYQUEUE_UPDATED, PLEX_PLAYQUEUE_MANAGER, 0);
+  g_windowManager.SendThreadMessage(msg);
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool startPlaying, int id)
 {
   if (!m_currentImpl)

@@ -30,7 +30,7 @@ void CPlexPlayQueueLocal::removeItem(const CFileItemPtr& item)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexPlayQueueLocal::addItem(const CFileItemPtr& item)
+bool CPlexPlayQueueLocal::addItem(const CFileItemPtr& item)
 {
   ePlexMediaType type = PlexUtils::GetMediaTypeFromItem(item);
 
@@ -38,7 +38,9 @@ void CPlexPlayQueueLocal::addItem(const CFileItemPtr& item)
   {
     m_list->Add(item);
     CApplicationMessenger::Get().PlexUpdatePlayQueue(type, false);
+    return true;
   }
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

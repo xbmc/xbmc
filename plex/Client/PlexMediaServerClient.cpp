@@ -81,7 +81,7 @@ void CPlexMediaServerClient::OnJobComplete(unsigned int jobID, bool success, CJo
       if (item->HasProperty("playQueueID"))
       {
         IPlexPlayQueueBasePtr impl = g_plexApplication.playQueueManager->current();
-        if (impl->getCurrentID() == item->GetProperty("playQueueID").asInteger())
+        if (impl && impl->getCurrentID() == item->GetProperty("playQueueID").asInteger())
           impl->refreshCurrent();
       }
     }

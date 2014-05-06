@@ -36,7 +36,7 @@ public:
   virtual bool refreshCurrent();
   virtual bool getCurrent(CFileItemList& list);
   virtual void removeItem(const CFileItemPtr& item);
-  virtual void addItem(const CFileItemPtr& item);
+  virtual bool addItem(const CFileItemPtr& item);
   virtual int getCurrentID();
   virtual void get(const CStdString &playQueueID, bool startPlaying);
   virtual CPlexServerPtr server() const
@@ -45,7 +45,7 @@ public:
   }
 
 protected:
-  void sendRequest(const CURL &url, const CStdString &verb, bool startPlaying);
+  bool sendRequest(const CURL &url, const CStdString &verb, bool startPlaying);
   CURL getPlayQueueURL(ePlexMediaType type, const std::string& uri, const std::string& key="",
                        bool shuffle = false, bool continuous = false, int limit = 0,
                        bool next = false);

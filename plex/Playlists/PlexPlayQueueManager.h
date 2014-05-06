@@ -18,7 +18,7 @@ public:
   virtual bool refreshCurrent() = 0;
   virtual bool getCurrent(CFileItemList& list) = 0;
   virtual void removeItem(const CFileItemPtr& item) = 0;
-  virtual void addItem(const CFileItemPtr& item) = 0;
+  virtual bool addItem(const CFileItemPtr& item) = 0;
   virtual int getCurrentID() = 0;
   virtual void get(const CStdString& playQueueID, bool startPlay) = 0;
   virtual CPlexServerPtr server() const = 0;
@@ -73,13 +73,14 @@ public:
     return m_playQueueVersion;
   }
 
+  void clear();
+
 private:
   IPlexPlayQueueBasePtr getImpl(const CFileItem &container);
   bool reconcilePlayQueueChanges(int playlistType, const CFileItemList& list);
   void saveCurrentPlayQueue(const CPlexServerPtr& server, const CFileItemList& list);
 
   IPlexPlayQueueBasePtr m_currentImpl;
-  CStdString m_pqKey;
   ePlexMediaType m_playQueueType;
   int m_playQueueVersion;
 };

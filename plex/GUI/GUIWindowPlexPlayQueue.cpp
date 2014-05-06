@@ -30,6 +30,7 @@ void CGUIWindowPlexPlayQueue::GetContextButtons(int itemNumber, CContextButtons&
   if (PlexUtils::IsPlayingPlaylist())
     buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
   buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 1210);
+  buttons.Add(CONTEXT_BUTTON_CLEAR, 192);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +56,7 @@ bool CGUIWindowPlexPlayQueue::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_PLEX_PLAYQUEUE_UPDATED:
     {
-      Update(m_vecItems->GetPath(), false);
+      Update("plexserver://playqueue/", false);
       return true;
     }
   }
@@ -81,6 +82,12 @@ bool CGUIWindowPlexPlayQueue::OnContextButton(int itemNumber, CONTEXT_BUTTON but
     {
       if (g_plexApplication.playQueueManager->current())
         g_plexApplication.playQueueManager->current()->removeItem(item);
+      break;
+    }
+    case CONTEXT_BUTTON_CLEAR:
+    {
+      g_plexApplication.playQueueManager->clear();
+      OnBack(ACTION_NAV_BACK);
       break;
     }
     default:

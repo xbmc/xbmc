@@ -264,6 +264,7 @@ void CGUIWindowHome::GetPlayQueueContextMenu(CContextButtons& buttons, const CFi
 {
   // Remove from Queue
   buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 1210);
+  buttons.Add(CONTEXT_BUTTON_CLEAR, 192);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -427,6 +428,11 @@ bool CGUIWindowHome::OnPopupMenu()
 
     case CONTEXT_BUTTON_NOW_PLAYING:
       m_navHelper.navigateToNowPlaying();
+      break;
+
+    case CONTEXT_BUTTON_CLEAR:
+      g_plexApplication.playQueueManager->clear();
+      UpdateSections();
       break;
 
     default:

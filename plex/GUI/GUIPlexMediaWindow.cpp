@@ -517,9 +517,21 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
     }
   }
   else if (action.GetID() == ACTION_PLEX_PLAY_ALL)
+  {
     PlayAll(false);
+  }
   else if (action.GetID() == ACTION_PLEX_SHUFFLE_ALL)
+  {
     PlayAll(true);
+  }
+  else if (action.GetID() == ACTION_QUEUE_ITEM)
+  {
+    if (m_viewControl.GetSelectedItem() != -1)
+    {
+      CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
+      QueueItem(pItem);
+    }
+  }
 
   bool ret = CGUIMediaWindow::OnAction(action);
 
@@ -873,7 +885,22 @@ void CGUIPlexMediaWindow::QueueItem(const CFileItemPtr& item)
   if (!item)
     return;
 
-  g_plexApplication.playQueueManager->current()->addItem(item);
+  ePlexMediaType type = g_plexApplication.playQueueManager->getCurrentPlayQueueType();
+
+  if (type == PLEX_MEDIA_TYPE_UNKNOWN || (type == PLEX_MEDIA_TYPE_MUSIC && IsVideoContainer()) ||
+      (type == PLEX_MEDIA_TYPE_VIDEO && IsMusicContainer()))
+  {
+    g_plexApplication.playQueueManager->create(*item);
+  }
+  else
+  {
+    if (g_plexApplication.playQueueManager->current()->addItem(item))
+    {
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
+                                            "Item Queued", "The item was added the current queue..",
+                                            2500L, false);
+    }
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

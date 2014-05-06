@@ -41,7 +41,7 @@ CURL CPlexPlayQueueServer::getPlayQueueURL(ePlexMediaType type, const std::strin
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexPlayQueueServer::sendRequest(const CURL& url, const CStdString& verb, bool startPlaying)
+bool CPlexPlayQueueServer::sendRequest(const CURL& url, const CStdString& verb, bool startPlaying)
 {
   CURL u(url);
 
@@ -52,7 +52,7 @@ void CPlexPlayQueueServer::sendRequest(const CURL& url, const CStdString& verb, 
   if (!verb.empty())
     job->m_dir.SetHTTPVerb(verb);
 
-  g_plexApplication.busy.blockWaitingForJob(job, this);
+  return g_plexApplication.busy.blockWaitingForJob(job, this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,7 +121,7 @@ void CPlexPlayQueueServer::removeItem(const CFileItemPtr& item)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexPlayQueueServer::addItem(const CFileItemPtr& item)
+bool CPlexPlayQueueServer::addItem(const CFileItemPtr& item)
 {
   CStdString uri = CPlexPlayQueueManager::getURIFromItem(*item);
   CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(item);
@@ -135,10 +135,11 @@ void CPlexPlayQueueServer::addItem(const CFileItemPtr& item)
     u.SetFileName(path);
 
     if (u.Get().empty())
-      return;
+      return false;
 
-    sendRequest(u, "PUT", false);
+    return sendRequest(u, "PUT", false);
   }
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
