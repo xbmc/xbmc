@@ -5,11 +5,13 @@
 #include "ApplicationMessenger.h"
 #include "PlexApplication.h"
 #include "PlayListPlayer.h"
+#include "music/tags/MusicInfoTag.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexPlayQueueLocal::CPlexPlayQueueLocal(const CPlexServerPtr& server) : m_server(server)
 {
   m_list = CFileItemListPtr(new CFileItemList);
+  m_list->SetFastLookup(true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -102,7 +104,8 @@ void CPlexPlayQueueLocal::OnJobComplete(unsigned int jobID, bool success, CJob* 
     if (type == PLEX_MEDIA_TYPE_UNKNOWN)
       return;
 
-    m_list->Assign(fj->m_items);
+    m_list->Clear();
+    m_list->Copy(fj->m_items);
 
     /* If we need to shuffle the list do it here */
     if (fj->m_shuffle)
@@ -110,9 +113,9 @@ void CPlexPlayQueueLocal::OnJobComplete(unsigned int jobID, bool success, CJob* 
 
     if (!fj->m_startItem.empty())
     {
-      int startOffset = m_list->IndexOfItem(fj->m_startItem);
-      if (startOffset != -1)
-        m_list->SetProperty("playQueueSelectedItemOffset", startOffset);
+      CFileItemPtr item = m_list->Get(fj->m_startItem);
+      if (item && item->HasMusicInfoTag())
+        m_list->SetProperty("playQueueSelectedItemID", item->GetMusicInfoTag()->GetDatabaseId());
     }
 
     m_list->SetProperty("playQueueID", m_list->GetProperty("ratingKey"));

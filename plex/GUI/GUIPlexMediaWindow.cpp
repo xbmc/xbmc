@@ -913,7 +913,7 @@ void CGUIPlexMediaWindow::PlayAll(bool shuffle, const CFileItemPtr& fromHere)
 
   CStdString fromHereKey;
   if (fromHere)
-    fromHereKey = fromHere->GetProperty("unprocessed_key").asString();
+    fromHereKey = fromHere->GetProperty("key").asString();
 
   CURL itemsUrl(m_vecItems->GetPath());
   CURL uriPart("plexserver://plex");

@@ -28,7 +28,18 @@ CURL CPlexPlayQueueServer::getPlayQueueURL(ePlexMediaType type, const std::strin
   u.SetOption("uri", uri);
 
   if (!key.empty())
-    u.SetOption("key", key);
+  {
+    CStdString keyStr = key;
+
+    CURL keyURL(key);
+    if (keyURL.GetProtocol() == "plexserver")
+    {
+      // This means we have the full path and needs to extract just the
+      // filename part of it for the server to understand us.
+      keyStr = "/" + keyURL.GetFileName();
+    }
+    u.SetOption("key", keyStr);
+  }
   if (shuffle)
     u.SetOption("shuffle", "1");
   if (continuous)
