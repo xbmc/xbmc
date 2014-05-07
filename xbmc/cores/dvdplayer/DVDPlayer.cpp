@@ -2043,28 +2043,11 @@ void CDVDPlayer::OnExit()
       CLog::Log(LOGNOTICE, "DVDPlayer: closing teletext stream");
       CloseTeletextStream(!m_bAbortRequest);
     }
-    // destroy the demuxer
-    if (m_pDemuxer)
-    {
-      CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit() deleting demuxer");
-      delete m_pDemuxer;
-    }
-    m_pDemuxer = NULL;
 
-    if (m_pSubtitleDemuxer)
-    {
-      CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit() deleting subtitle demuxer");
-      delete m_pSubtitleDemuxer;
-    }
-    m_pSubtitleDemuxer = NULL;
-
-    // destroy the inputstream
-    if (m_pInputStream)
-    {
-      CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit() deleting input stream");
-      delete m_pInputStream;
-    }
-    m_pInputStream = NULL;
+    // destroy objects
+    SAFE_DELETE(m_pDemuxer);
+    SAFE_DELETE(m_pSubtitleDemuxer);
+    SAFE_DELETE(m_pInputStream);
 
     // clean up all selection streams
     m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NONE);
