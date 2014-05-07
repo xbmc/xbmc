@@ -987,3 +987,7 @@ msgstr "Play all"
 msgctxt "#52602"
 msgid "Play Next"
 msgstr "Play Next"
+
+msgctxt "#52603"
+msgid "Add to Up Next"
+msgstr "Add to Up Next"
