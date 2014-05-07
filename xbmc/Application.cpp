@@ -4438,9 +4438,6 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
 #ifndef __PLEX__
   int playlist = g_playlistPlayer.GetCurrentPlaylist();
   if (item.IsVideo() && g_playlistPlayer.GetPlaylist(playlist).size() > 1)
-#else
-  if (item.IsVideo() && g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size() > 1)
-#endif
   { // playing from a playlist by the looks
     // don't switch to fullscreen if we are not playing the first item...
     options.fullscreen = !g_playlistPlayer.HasPlayedFirstFile() && g_advancedSettings.m_fullScreenOnMovieStart && !g_settings.m_bStartVideoWindowed;
@@ -4457,6 +4454,9 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
   }
   else
     options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart && !g_settings.m_bStartVideoWindowed;
+#else
+  options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart;
+#endif
 
   // reset m_bStartVideoWindowed as it's a temp setting
   g_settings.m_bStartVideoWindowed = false;
@@ -4596,17 +4596,7 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
       OnPlayBackStopped();
   }
 
-  /* PLEX */
-  // If we're supposed to activate the visualizer when playing audio, do so now.
-  if (IsPlayingAudio() &&
-      g_advancedSettings.m_bVisualizerOnPlay &&
-      !g_playlistPlayer.HasPlayedFirstFile())
-  {
-    ActivateVisualizer();
-  }
-
-  return bResult;
-  /* END PLEX */
+ return bResult;
 }
 
 void CApplication::OnPlayBackEnded()
