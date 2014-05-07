@@ -118,6 +118,7 @@ config.log
 /addons/visualization.fishbmc/fishbmc.vis
 /addons/script.module.pil/
 /addons/pvr.*
+/addons/xbmc.json/addon.xml
 
 # /lib/
 /lib/Makefile
