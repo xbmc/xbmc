@@ -1,4 +1,4 @@
-#include "gtest/gtest.h"
+#include "PlexTest.h"
 #include "PlexPlayQueueLocal.h"
 #include <boost/lexical_cast.hpp>
 #include "PlexPlaylistPlayer.h"

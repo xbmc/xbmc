@@ -1,4 +1,4 @@
-#include "gtest/gtest.h"
+#include "PlexTest.h"
 #include "GUI/GUIPlexMediaWindow.h"
 #include "FileItem.h"
 #include "music/tags/MusicInfoTag.h"

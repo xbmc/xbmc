@@ -1,6 +1,5 @@
-#include "gtest/gtest.h"
+#include "PlexTest.h"
 #include "Client/PlexServerVersion.h"
-
 
 TEST(PlexServerVersion, parseBasic)
 {

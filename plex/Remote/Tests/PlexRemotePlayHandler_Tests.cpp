@@ -1,5 +1,4 @@
-#include "gtest/gtest.h"
-#include "gmock/gmock.h"
+#include "PlexTest.h"
 #include "PlexRemotePlayHandler.h"
 
 class PlexRemotePlayHandlerOverridden : public CPlexRemotePlayHandler

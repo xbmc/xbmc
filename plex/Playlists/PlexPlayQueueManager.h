@@ -4,7 +4,7 @@
 #include "PlexTypes.h"
 #include "FileItem.h"
 #include "Client/PlexServer.h"
-#include "gtest/gtest.h"
+#include "gtest/gtest_prod.h"
 
 class IPlexPlayQueueBase
 {

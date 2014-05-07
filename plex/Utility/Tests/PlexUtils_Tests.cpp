@@ -1,4 +1,4 @@
-#include "gtest/gtest.h"
+#include "PlexTest.h"
 #include "FileItem.h"
 
 #include "PlexUtils.h"

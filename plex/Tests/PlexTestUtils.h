@@ -1,7 +1,7 @@
 #ifndef PLEXTESTUTILS_H
 #define PLEXTESTUTILS_H
 
-#include "gtest/gtest.h"
+#include "PlexTest.h"
 #include "Client/PlexServer.h"
 
 class PlexServerManagerTestUtility : public ::testing::Test

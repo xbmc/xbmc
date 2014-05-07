@@ -1,4 +1,4 @@
-#include "gtest/gtest.h"
+#include "PlexTest.h"
 #include "PlexPlayQueueServer.h"
 #include "Client/PlexServer.h"
 #include "Tests/PlexTestUtils.h"

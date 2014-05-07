@@ -1,4 +1,4 @@
-#include "gtest/gtest.h"
+#include "PlexTest.h"
 #include "PlexAttributeParser.h"
 #include "URL.h"
 #include "PlexApplication.h"
