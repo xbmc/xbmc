@@ -13,6 +13,18 @@
 		<value condition="Player.HasAudio">$INFO[MusicPlayer.Title]</value>
 		<value condition="!Player.HasAudio">$INFO[ListItem.Title]</value>
 	</variable>
+	<variable name="PlayQueueVideoTitle">
+		<value condition="Player.HasVideo + ListItem.Type(episode)">$INFO[VideoPlayer.TVShowTitle]</value>
+		<value condition="!Player.HasVideo + ListItem.Type(episode)">$INFO[ListItem.TVShowTitle]</value>
+	</variable>
+	<variable name="PlayQueueVideoTitle2">
+		<value condition="Player.HasVideo + ListItem.Type(episode)">$INFO[VideoPlayer.Title]</value>
+		<value condition="!Player.HasVideo + ListItem.Type(episode)">$INFO[ListItem.Title]</value>
+	</variable>
+	<variable name="PlayQueueVideoTitle3">
+		<value condition="Player.HasVideo + ListItem.Type(episode)">$INFO[VideoPlayer.Duration]</value>
+		<value condition="!Player.HasVideo + ListItem.Type(episode)">$INFO[ListItem.Duration]</value>
+	</variable>
 	<variable name="PlayQueueAlbum">
 		<value condition="Player.HasAudio">$INFO[MusicPlayer.Album]</value>
 		<value condition="!Player.HasAudio">$INFO[ListItem.Album]</value>
