@@ -160,7 +160,7 @@ namespace XBMCAddon
       if (!shares) 
         throw WindowException("Error: GetSources given %s is NULL.",s_shares.c_str());
 
-      if (useFileDirectories && (!maskparam.empty() && !maskparam.size() == 0))
+      if (useFileDirectories && (!maskparam.empty() && maskparam.size() != 0))
         mask += "|.rar|.zip";
 
       value = defaultt;

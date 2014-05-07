@@ -83,7 +83,7 @@ void CAutorun::ExecuteAutorun(const CStdString& path, bool bypassSettings, bool 
 
 bool CAutorun::PlayDisc(const CStdString& path, bool bypassSettings, bool startFromBeginning)
 {
-  if ( !bypassSettings && !CSettings::Get().GetInt("audiocds.autoaction") == AUTOCD_PLAY && !CSettings::Get().GetBool("dvds.autorun"))
+  if ( !bypassSettings && CSettings::Get().GetInt("audiocds.autoaction") != AUTOCD_PLAY && !CSettings::Get().GetBool("dvds.autorun"))
     return false;
 
   int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
