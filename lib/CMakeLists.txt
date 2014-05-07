@@ -36,8 +36,3 @@ add_subdirectory(cximage-6.0)
 if(TARGET_RPI)
   add_subdirectory(addons)
 endif()
-
-if(ENABLE_TESTING)
-  include_directories(gtest gtest/include)
-  add_library(gtest STATIC gtest/src/gtest-all.cc gtest/src/gtest_main.cc)
-endif(ENABLE_TESTING)
