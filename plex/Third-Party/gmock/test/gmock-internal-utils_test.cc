@@ -59,9 +59,6 @@ namespace internal {
 
 namespace {
 
-using ::std::tr1::make_tuple;
-using ::std::tr1::tuple;
-
 TEST(ConvertIdentifierNameToWordsTest, WorksWhenNameContainsNoWord) {
   EXPECT_EQ("", ConvertIdentifierNameToWords(""));
   EXPECT_EQ("", ConvertIdentifierNameToWords("_"));
@@ -250,7 +247,9 @@ TEST(LosslessArithmeticConvertibleTest, FloatingPointToFloatingPoint) {
 
   // Larger size => smaller size is not fine.
   EXPECT_FALSE((LosslessArithmeticConvertible<double, float>::value));
+  GTEST_INTENTIONAL_CONST_COND_PUSH_
   if (sizeof(double) == sizeof(long double)) {  // NOLINT
+  GTEST_INTENTIONAL_CONST_COND_POP_
     // In some implementations (e.g. MSVC), double and long double
     // have the same size.
     EXPECT_TRUE((LosslessArithmeticConvertible<long double, double>::value));

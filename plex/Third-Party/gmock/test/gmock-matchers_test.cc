@@ -33,6 +33,10 @@
 //
 // This file tests some commonly used argument matchers.
 
+// windows.h defines macros which conflict with standard identifiers used in
+// this test.  Defining this symbol prevents windows.h from doing that.
+#define NOMINMAX
+
 #include "gmock/gmock-matchers.h"
 #include "gmock/gmock-more-matchers.h"
 
@@ -54,6 +58,10 @@
 #include "gtest/gtest.h"
 #include "gtest/gtest-spi.h"
 
+#if GTEST_LANG_CXX11
+# include <forward_list>  // NOLINT
+#endif
+
 namespace testing {
 
 namespace internal {
@@ -73,9 +81,9 @@ using std::ostream;
 using std::pair;
 using std::set;
 using std::stringstream;
-using std::tr1::get;
-using std::tr1::make_tuple;
-using std::tr1::tuple;
+using testing::get;
+using testing::make_tuple;
+using testing::tuple;
 using std::vector;
 using testing::A;
 using testing::AllArgs;
@@ -150,9 +158,6 @@ using testing::internal::Strings;
 using testing::internal::linked_ptr;
 using testing::internal::scoped_ptr;
 using testing::internal::string;
-
-// Evaluates to the number of elements in 'array'.
-#define GMOCK_ARRAY_SIZE_(array) (sizeof(array) / sizeof(array[0]))
 
 // For testing ExplainMatchResultTo().
 class GreaterThanMatcher : public MatcherInterface<int> {
@@ -636,6 +641,22 @@ TEST(MatcherCastTest, FromConvertibleFromAny) {
   EXPECT_FALSE(m.Matches(ConvertibleFromAny(2)));
 }
 
+struct IntReferenceWrapper {
+  IntReferenceWrapper(const int& a_value) : value(&a_value) {}
+  const int* value;
+};
+
+bool operator==(const IntReferenceWrapper& a, const IntReferenceWrapper& b) {
+  return a.value == b.value;
+}
+
+TEST(MatcherCastTest, ValueIsNotCopied) {
+  int n = 42;
+  Matcher<IntReferenceWrapper> m = MatcherCast<IntReferenceWrapper>(n);
+  // Verify that the matcher holds a reference to n, not to its temporary copy.
+  EXPECT_TRUE(m.Matches(n));
+}
+
 class Base {};
 class Derived : public Base {};
 
@@ -722,6 +743,13 @@ TEST(SafeMatcherCastTest, FromConvertibleFromAny) {
       SafeMatcherCast<ConvertibleFromAny>(Eq(ConvertibleFromAny(1)));
   EXPECT_TRUE(m.Matches(ConvertibleFromAny(1)));
   EXPECT_FALSE(m.Matches(ConvertibleFromAny(2)));
+}
+
+TEST(SafeMatcherCastTest, ValueIsNotCopied) {
+  int n = 42;
+  Matcher<IntReferenceWrapper> m = SafeMatcherCast<IntReferenceWrapper>(n);
+  // Verify that the matcher holds a reference to n, not to its temporary copy.
+  EXPECT_TRUE(m.Matches(n));
 }
 
 // Tests that A<T>() matches any value of type T.
@@ -1868,7 +1896,7 @@ TEST(GlobalWideEndsWithTest, CanDescribeSelf) {
 #endif  // GTEST_HAS_GLOBAL_WSTRING
 
 
-typedef ::std::tr1::tuple<long, int> Tuple2;  // NOLINT
+typedef ::testing::tuple<long, int> Tuple2;  // NOLINT
 
 // Tests that Eq() matches a 2-tuple where the first field == the
 // second field.
@@ -3421,6 +3449,8 @@ double AClass::x_ = 0.0;
 
 // A derived class for testing Property().
 class DerivedClass : public AClass {
+ public:
+  int k() const { return k_; }
  private:
   int k_;
 };
@@ -4397,18 +4427,75 @@ TEST(StreamlikeTest, Iteration) {
   }
 }
 
+#if GTEST_LANG_CXX11
+TEST(BeginEndDistanceIsTest, WorksWithForwardList) {
+  std::forward_list<int> container;
+  EXPECT_THAT(container, BeginEndDistanceIs(0));
+  EXPECT_THAT(container, Not(BeginEndDistanceIs(1)));
+  container.push_front(0);
+  EXPECT_THAT(container, Not(BeginEndDistanceIs(0)));
+  EXPECT_THAT(container, BeginEndDistanceIs(1));
+  container.push_front(0);
+  EXPECT_THAT(container, Not(BeginEndDistanceIs(0)));
+  EXPECT_THAT(container, BeginEndDistanceIs(2));
+}
+#endif  // GTEST_LANG_CXX11
+
+TEST(BeginEndDistanceIsTest, WorksWithNonStdList) {
+  const int a[5] = { 1, 2, 3, 4, 5 };
+  Streamlike<int> s(a, a + 5);
+  EXPECT_THAT(s, BeginEndDistanceIs(5));
+}
+
+TEST(BeginEndDistanceIsTest, CanDescribeSelf) {
+  Matcher<vector<int> > m = BeginEndDistanceIs(2);
+  EXPECT_EQ("distance between begin() and end() is equal to 2", Describe(m));
+  EXPECT_EQ("distance between begin() and end() isn't equal to 2",
+            DescribeNegation(m));
+}
+
+TEST(BeginEndDistanceIsTest, ExplainsResult) {
+  Matcher<vector<int> > m1 = BeginEndDistanceIs(2);
+  Matcher<vector<int> > m2 = BeginEndDistanceIs(Lt(2));
+  Matcher<vector<int> > m3 = BeginEndDistanceIs(AnyOf(0, 3));
+  Matcher<vector<int> > m4 = BeginEndDistanceIs(GreaterThan(1));
+  vector<int> container;
+  EXPECT_EQ("whose distance between begin() and end() 0 doesn't match",
+            Explain(m1, container));
+  EXPECT_EQ("whose distance between begin() and end() 0 matches",
+            Explain(m2, container));
+  EXPECT_EQ("whose distance between begin() and end() 0 matches",
+            Explain(m3, container));
+  EXPECT_EQ(
+      "whose distance between begin() and end() 0 doesn't match, which is 1 "
+      "less than 1",
+      Explain(m4, container));
+  container.push_back(0);
+  container.push_back(0);
+  EXPECT_EQ("whose distance between begin() and end() 2 matches",
+            Explain(m1, container));
+  EXPECT_EQ("whose distance between begin() and end() 2 doesn't match",
+            Explain(m2, container));
+  EXPECT_EQ("whose distance between begin() and end() 2 doesn't match",
+            Explain(m3, container));
+  EXPECT_EQ(
+      "whose distance between begin() and end() 2 matches, which is 1 more "
+      "than 1",
+      Explain(m4, container));
+}
+
 TEST(WhenSortedTest, WorksForStreamlike) {
   // Streamlike 'container' provides only minimal iterator support.
   // Its iterators are tagged with input_iterator_tag.
   const int a[5] = { 2, 1, 4, 5, 3 };
-  Streamlike<int> s(a, a + GMOCK_ARRAY_SIZE_(a));
+  Streamlike<int> s(a, a + GTEST_ARRAY_SIZE_(a));
   EXPECT_THAT(s, WhenSorted(ElementsAre(1, 2, 3, 4, 5)));
   EXPECT_THAT(s, Not(WhenSorted(ElementsAre(2, 1, 4, 5, 3))));
 }
 
 TEST(WhenSortedTest, WorksForVectorConstRefMatcherOnStreamlike) {
   const int a[] = { 2, 1, 4, 5, 3 };
-  Streamlike<int> s(a, a + GMOCK_ARRAY_SIZE_(a));
+  Streamlike<int> s(a, a + GTEST_ARRAY_SIZE_(a));
   Matcher<const std::vector<int>&> vector_match = ElementsAre(1, 2, 3, 4, 5);
   EXPECT_THAT(s, WhenSorted(vector_match));
   EXPECT_THAT(s, Not(WhenSorted(ElementsAre(2, 1, 4, 5, 3))));
@@ -4419,14 +4506,14 @@ TEST(WhenSortedTest, WorksForVectorConstRefMatcherOnStreamlike) {
 
 TEST(ElemensAreStreamTest, WorksForStreamlike) {
   const int a[5] = { 1, 2, 3, 4, 5 };
-  Streamlike<int> s(a, a + GMOCK_ARRAY_SIZE_(a));
+  Streamlike<int> s(a, a + GTEST_ARRAY_SIZE_(a));
   EXPECT_THAT(s, ElementsAre(1, 2, 3, 4, 5));
   EXPECT_THAT(s, Not(ElementsAre(2, 1, 4, 5, 3)));
 }
 
 TEST(ElemensAreArrayStreamTest, WorksForStreamlike) {
   const int a[5] = { 1, 2, 3, 4, 5 };
-  Streamlike<int> s(a, a + GMOCK_ARRAY_SIZE_(a));
+  Streamlike<int> s(a, a + GTEST_ARRAY_SIZE_(a));
 
   vector<int> expected;
   expected.push_back(1);
@@ -4444,7 +4531,7 @@ TEST(ElemensAreArrayStreamTest, WorksForStreamlike) {
 
 TEST(UnorderedElementsAreArrayTest, SucceedsWhenExpected) {
   const int a[] = { 0, 1, 2, 3, 4 };
-  std::vector<int> s(a, a + GMOCK_ARRAY_SIZE_(a));
+  std::vector<int> s(a, a + GTEST_ARRAY_SIZE_(a));
   do {
     StringMatchResultListener listener;
     EXPECT_TRUE(ExplainMatchResult(UnorderedElementsAreArray(a),
@@ -4455,8 +4542,8 @@ TEST(UnorderedElementsAreArrayTest, SucceedsWhenExpected) {
 TEST(UnorderedElementsAreArrayTest, VectorBool) {
   const bool a[] = { 0, 1, 0, 1, 1 };
   const bool b[] = { 1, 0, 1, 1, 0 };
-  std::vector<bool> expected(a, a + GMOCK_ARRAY_SIZE_(a));
-  std::vector<bool> actual(b, b + GMOCK_ARRAY_SIZE_(b));
+  std::vector<bool> expected(a, a + GTEST_ARRAY_SIZE_(a));
+  std::vector<bool> actual(b, b + GTEST_ARRAY_SIZE_(b));
   StringMatchResultListener listener;
   EXPECT_TRUE(ExplainMatchResult(UnorderedElementsAreArray(expected),
                                  actual, &listener)) << listener.str();
@@ -4467,7 +4554,7 @@ TEST(UnorderedElementsAreArrayTest, WorksForStreamlike) {
   // Its iterators are tagged with input_iterator_tag, and it has no
   // size() or empty() methods.
   const int a[5] = { 2, 1, 4, 5, 3 };
-  Streamlike<int> s(a, a + GMOCK_ARRAY_SIZE_(a));
+  Streamlike<int> s(a, a + GTEST_ARRAY_SIZE_(a));
 
   ::std::vector<int> expected;
   expected.push_back(1);
@@ -4481,7 +4568,7 @@ TEST(UnorderedElementsAreArrayTest, WorksForStreamlike) {
   EXPECT_THAT(s, Not(UnorderedElementsAreArray(expected)));
 }
 
-#if GTEST_LANG_CXX11
+#if GTEST_HAS_STD_INITIALIZER_LIST_
 
 TEST(UnorderedElementsAreArrayTest, TakesInitializerList) {
   const int a[5] = { 2, 1, 4, 5, 3 };
@@ -4515,7 +4602,7 @@ TEST(UnorderedElementsAreArrayTest,
       { Eq(1), Ne(-2), Ge(3), Le(4), Eq(6) })));
 }
 
-#endif  // GTEST_LANG_CXX11
+#endif  // GTEST_HAS_STD_INITIALIZER_LIST_
 
 class UnorderedElementsAreTest : public testing::Test {
  protected:
@@ -4524,7 +4611,7 @@ class UnorderedElementsAreTest : public testing::Test {
 
 TEST_F(UnorderedElementsAreTest, SucceedsWhenExpected) {
   const int a[] = { 1, 2, 3 };
-  std::vector<int> s(a, a + GMOCK_ARRAY_SIZE_(a));
+  std::vector<int> s(a, a + GTEST_ARRAY_SIZE_(a));
   do {
     StringMatchResultListener listener;
     EXPECT_TRUE(ExplainMatchResult(UnorderedElementsAre(1, 2, 3),
@@ -4534,7 +4621,7 @@ TEST_F(UnorderedElementsAreTest, SucceedsWhenExpected) {
 
 TEST_F(UnorderedElementsAreTest, FailsWhenAnElementMatchesNoMatcher) {
   const int a[] = { 1, 2, 3 };
-  std::vector<int> s(a, a + GMOCK_ARRAY_SIZE_(a));
+  std::vector<int> s(a, a + GTEST_ARRAY_SIZE_(a));
   std::vector<Matcher<int> > mv;
   mv.push_back(1);
   mv.push_back(2);
@@ -4550,7 +4637,7 @@ TEST_F(UnorderedElementsAreTest, WorksForStreamlike) {
   // Its iterators are tagged with input_iterator_tag, and it has no
   // size() or empty() methods.
   const int a[5] = { 2, 1, 4, 5, 3 };
-  Streamlike<int> s(a, a + GMOCK_ARRAY_SIZE_(a));
+  Streamlike<int> s(a, a + GTEST_ARRAY_SIZE_(a));
 
   EXPECT_THAT(s, UnorderedElementsAre(1, 2, 3, 4, 5));
   EXPECT_THAT(s, Not(UnorderedElementsAre(2, 2, 3, 4, 5)));
@@ -4861,7 +4948,7 @@ TEST_F(BipartiteNonSquareTest, SimpleBacktracking) {
   //    0 1 2
   MatchMatrix g(4, 3);
   static const int kEdges[][2] = { {0, 2}, {1, 1}, {2, 1}, {3, 0} };
-  for (size_t i = 0; i < GMOCK_ARRAY_SIZE_(kEdges); ++i) {
+  for (size_t i = 0; i < GTEST_ARRAY_SIZE_(kEdges); ++i) {
     g.SetEdge(kEdges[i][0], kEdges[i][1], true);
   }
   EXPECT_THAT(FindBacktrackingMaxBPM(g),

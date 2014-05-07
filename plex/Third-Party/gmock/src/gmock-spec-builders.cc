@@ -250,7 +250,14 @@ void ReportUninterestingCall(CallReaction reaction, const string& msg) {
       Log(kInfo, msg, 3);
       break;
     case kWarn:
-      Log(kWarning, msg, 3);
+      Log(kWarning,
+          msg +
+          "\nNOTE: You can safely ignore the above warning unless this "
+          "call should not happen.  Do not suppress it by blindly adding "
+          "an EXPECT_CALL() if you don't mean to enforce the call.  "
+          "See http://code.google.com/p/googlemock/wiki/CookBook#"
+          "Knowing_When_to_Expect for details.",
+          3);
       break;
     default:  // FAIL
       Expect(false, NULL, -1, msg);
@@ -325,7 +332,7 @@ const char* UntypedFunctionMockerBase::Name() const
 // Calculates the result of invoking this mock function with the given
 // arguments, prints it, and returns it.  The caller is responsible
 // for deleting the result.
-const UntypedActionResultHolderBase*
+UntypedActionResultHolderBase*
 UntypedFunctionMockerBase::UntypedInvokeWith(const void* const untyped_args)
     GTEST_LOCK_EXCLUDED_(g_gmock_mutex) {
   if (untyped_expectations_.size() == 0) {
@@ -363,7 +370,7 @@ UntypedFunctionMockerBase::UntypedInvokeWith(const void* const untyped_args)
     this->UntypedDescribeUninterestingCall(untyped_args, &ss);
 
     // Calculates the function result.
-    const UntypedActionResultHolderBase* const result =
+    UntypedActionResultHolderBase* const result =
         this->UntypedPerformDefaultAction(untyped_args, ss.str());
 
     // Prints the function result.
@@ -410,7 +417,7 @@ UntypedFunctionMockerBase::UntypedInvokeWith(const void* const untyped_args)
     untyped_expectation->DescribeLocationTo(&loc);
   }
 
-  const UntypedActionResultHolderBase* const result =
+  UntypedActionResultHolderBase* const result =
       untyped_action == NULL ?
       this->UntypedPerformDefaultAction(untyped_args, ss.str()) :
       this->UntypedPerformAction(untyped_action, untyped_args);

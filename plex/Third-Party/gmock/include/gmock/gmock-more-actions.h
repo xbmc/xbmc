@@ -87,6 +87,20 @@ class InvokeMethodAction {
   GTEST_DISALLOW_ASSIGN_(InvokeMethodAction);
 };
 
+// An internal replacement for std::copy which mimics its behavior. This is
+// necessary because Visual Studio deprecates ::std::copy, issuing warning 4996.
+// However Visual Studio 2010 and later do not honor #pragmas which disable that
+// warning.
+template<typename InputIterator, typename OutputIterator>
+inline OutputIterator CopyElements(InputIterator first,
+                                   InputIterator last,
+                                   OutputIterator output) {
+  for (; first != last; ++first, ++output) {
+    *output = *first;
+  }
+  return output;
+}
+
 }  // namespace internal
 
 // Various overloads for Invoke().
@@ -144,7 +158,7 @@ WithArg(const InnerAction& action) {
 ACTION_TEMPLATE(ReturnArg,
                 HAS_1_TEMPLATE_PARAMS(int, k),
                 AND_0_VALUE_PARAMS()) {
-  return std::tr1::get<k>(args);
+  return ::testing::get<k>(args);
 }
 
 // Action SaveArg<k>(pointer) saves the k-th (0-based) argument of the
@@ -152,7 +166,7 @@ ACTION_TEMPLATE(ReturnArg,
 ACTION_TEMPLATE(SaveArg,
                 HAS_1_TEMPLATE_PARAMS(int, k),
                 AND_1_VALUE_PARAMS(pointer)) {
-  *pointer = ::std::tr1::get<k>(args);
+  *pointer = ::testing::get<k>(args);
 }
 
 // Action SaveArgPointee<k>(pointer) saves the value pointed to
@@ -160,7 +174,7 @@ ACTION_TEMPLATE(SaveArg,
 ACTION_TEMPLATE(SaveArgPointee,
                 HAS_1_TEMPLATE_PARAMS(int, k),
                 AND_1_VALUE_PARAMS(pointer)) {
-  *pointer = *::std::tr1::get<k>(args);
+  *pointer = *::testing::get<k>(args);
 }
 
 // Action SetArgReferee<k>(value) assigns 'value' to the variable
@@ -168,13 +182,13 @@ ACTION_TEMPLATE(SaveArgPointee,
 ACTION_TEMPLATE(SetArgReferee,
                 HAS_1_TEMPLATE_PARAMS(int, k),
                 AND_1_VALUE_PARAMS(value)) {
-  typedef typename ::std::tr1::tuple_element<k, args_type>::type argk_type;
+  typedef typename ::testing::tuple_element<k, args_type>::type argk_type;
   // Ensures that argument #k is a reference.  If you get a compiler
   // error on the next line, you are using SetArgReferee<k>(value) in
   // a mock function whose k-th (0-based) argument is not a reference.
   GTEST_COMPILE_ASSERT_(internal::is_reference<argk_type>::value,
                         SetArgReferee_must_be_used_with_a_reference_argument);
-  ::std::tr1::get<k>(args) = value;
+  ::testing::get<k>(args) = value;
 }
 
 // Action SetArrayArgument<k>(first, last) copies the elements in
@@ -185,15 +199,11 @@ ACTION_TEMPLATE(SetArgReferee,
 ACTION_TEMPLATE(SetArrayArgument,
                 HAS_1_TEMPLATE_PARAMS(int, k),
                 AND_2_VALUE_PARAMS(first, last)) {
-  // Microsoft compiler deprecates ::std::copy, so we want to suppress warning
-  // 4996 (Function call with parameters that may be unsafe) there.
+  // Visual Studio deprecates ::std::copy, so we use our own copy in that case.
 #ifdef _MSC_VER
-# pragma warning(push)          // Saves the current warning state.
-# pragma warning(disable:4996)  // Temporarily disables warning 4996.
-#endif
-  ::std::copy(first, last, ::std::tr1::get<k>(args));
-#ifdef _MSC_VER
-# pragma warning(pop)           // Restores the warning state.
+  internal::CopyElements(first, last, ::testing::get<k>(args));
+#else
+  ::std::copy(first, last, ::testing::get<k>(args));
 #endif
 }
 
@@ -202,7 +212,7 @@ ACTION_TEMPLATE(SetArrayArgument,
 ACTION_TEMPLATE(DeleteArg,
                 HAS_1_TEMPLATE_PARAMS(int, k),
                 AND_0_VALUE_PARAMS()) {
-  delete ::std::tr1::get<k>(args);
+  delete ::testing::get<k>(args);
 }
 
 // This action returns the value pointed to by 'pointer'.

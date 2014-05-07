@@ -53,9 +53,9 @@ using std::pair;
 using std::set;
 using std::stringstream;
 using std::vector;
-using std::tr1::get;
-using std::tr1::make_tuple;
-using std::tr1::tuple;
+using testing::get;
+using testing::make_tuple;
+using testing::tuple;
 using testing::_;
 using testing::Args;
 using testing::Contains;
@@ -80,9 +80,6 @@ using testing::StrEq;
 using testing::Value;
 using testing::internal::ElementsAreArrayMatcher;
 using testing::internal::string;
-
-// Evaluates to the number of elements in 'array'.
-#define GMOCK_ARRAY_SIZE_(a) (sizeof(a) / sizeof(a[0]))
 
 // Returns the description of the given matcher.
 template <typename T>
@@ -337,7 +334,7 @@ TEST(ElementsAreTest, ExplainsNonTrivialMatch) {
       ElementsAre(GreaterThan(1), 0, GreaterThan(2));
 
   const int a[] = { 10, 0, 100 };
-  vector<int> test_vector(a, a + GMOCK_ARRAY_SIZE_(a));
+  vector<int> test_vector(a, a + GTEST_ARRAY_SIZE_(a));
   EXPECT_EQ("whose element #0 matches, which is 9 more than 1,\n"
             "and whose element #2 matches, which is 98 more than 2",
             Explain(m, test_vector));
@@ -422,7 +419,7 @@ TEST(ElementsAreTest, MatchesThreeElementsMixedMatchers) {
 
 TEST(ElementsAreTest, MatchesTenElementVector) {
   const int a[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-  vector<int> test_vector(a, a + GMOCK_ARRAY_SIZE_(a));
+  vector<int> test_vector(a, a + GTEST_ARRAY_SIZE_(a));
 
   EXPECT_THAT(test_vector,
               // The element list can contain values and/or matchers
@@ -465,7 +462,7 @@ TEST(ElementsAreTest, WorksForNestedContainer) {
   };
 
   vector<list<char> > nested;
-  for (size_t i = 0; i < GMOCK_ARRAY_SIZE_(strings); i++) {
+  for (size_t i = 0; i < GTEST_ARRAY_SIZE_(strings); i++) {
     nested.push_back(list<char>(strings[i], strings[i] + strlen(strings[i])));
   }
 
@@ -477,7 +474,7 @@ TEST(ElementsAreTest, WorksForNestedContainer) {
 
 TEST(ElementsAreTest, WorksWithByRefElementMatchers) {
   int a[] = { 0, 1, 2 };
-  vector<int> v(a, a + GMOCK_ARRAY_SIZE_(a));
+  vector<int> v(a, a + GTEST_ARRAY_SIZE_(a));
 
   EXPECT_THAT(v, ElementsAre(Ref(v[0]), Ref(v[1]), Ref(v[2])));
   EXPECT_THAT(v, Not(ElementsAre(Ref(v[0]), Ref(v[1]), Ref(a[2]))));
@@ -485,7 +482,7 @@ TEST(ElementsAreTest, WorksWithByRefElementMatchers) {
 
 TEST(ElementsAreTest, WorksWithContainerPointerUsingPointee) {
   int a[] = { 0, 1, 2 };
-  vector<int> v(a, a + GMOCK_ARRAY_SIZE_(a));
+  vector<int> v(a, a + GTEST_ARRAY_SIZE_(a));
 
   EXPECT_THAT(&v, Pointee(ElementsAre(0, 1, _)));
   EXPECT_THAT(&v, Not(Pointee(ElementsAre(0, _, 3))));
@@ -510,7 +507,7 @@ class NativeArrayPassedAsPointerAndSize {
 
 TEST(ElementsAreTest, WorksWithNativeArrayPassedAsPointerAndSize) {
   int array[] = { 0, 1 };
-  ::std::tr1::tuple<int*, size_t> array_as_tuple(array, 2);
+  ::testing::tuple<int*, size_t> array_as_tuple(array, 2);
   EXPECT_THAT(array_as_tuple, ElementsAre(0, 1));
   EXPECT_THAT(array_as_tuple, Not(ElementsAre(0)));
 
@@ -564,7 +561,7 @@ TEST(ElementsAreTest, MakesCopyOfArguments) {
   int x = 1;
   int y = 2;
   // This should make a copy of x and y.
-  ::testing::internal::ElementsAreMatcher<std::tr1::tuple<int, int> >
+  ::testing::internal::ElementsAreMatcher<testing::tuple<int, int> >
           polymorphic_matcher = ElementsAre(x, y);
   // Changing x and y now shouldn't affect the meaning of the above matcher.
   x = y = 0;
@@ -582,7 +579,7 @@ TEST(ElementsAreTest, MakesCopyOfArguments) {
 TEST(ElementsAreArrayTest, CanBeCreatedWithValueArray) {
   const int a[] = { 1, 2, 3 };
 
-  vector<int> test_vector(a, a + GMOCK_ARRAY_SIZE_(a));
+  vector<int> test_vector(a, a + GTEST_ARRAY_SIZE_(a));
   EXPECT_THAT(test_vector, ElementsAreArray(a));
 
   test_vector[2] = 0;
@@ -592,18 +589,18 @@ TEST(ElementsAreArrayTest, CanBeCreatedWithValueArray) {
 TEST(ElementsAreArrayTest, CanBeCreatedWithArraySize) {
   const char* a[] = { "one", "two", "three" };
 
-  vector<string> test_vector(a, a + GMOCK_ARRAY_SIZE_(a));
-  EXPECT_THAT(test_vector, ElementsAreArray(a, GMOCK_ARRAY_SIZE_(a)));
+  vector<string> test_vector(a, a + GTEST_ARRAY_SIZE_(a));
+  EXPECT_THAT(test_vector, ElementsAreArray(a, GTEST_ARRAY_SIZE_(a)));
 
   const char** p = a;
   test_vector[0] = "1";
-  EXPECT_THAT(test_vector, Not(ElementsAreArray(p, GMOCK_ARRAY_SIZE_(a))));
+  EXPECT_THAT(test_vector, Not(ElementsAreArray(p, GTEST_ARRAY_SIZE_(a))));
 }
 
 TEST(ElementsAreArrayTest, CanBeCreatedWithoutArraySize) {
   const char* a[] = { "one", "two", "three" };
 
-  vector<string> test_vector(a, a + GMOCK_ARRAY_SIZE_(a));
+  vector<string> test_vector(a, a + GTEST_ARRAY_SIZE_(a));
   EXPECT_THAT(test_vector, ElementsAreArray(a));
 
   test_vector[0] = "1";
@@ -626,14 +623,14 @@ TEST(ElementsAreArrayTest, CanBeCreatedWithMatcherArray) {
 
 TEST(ElementsAreArrayTest, CanBeCreatedWithVector) {
   const int a[] = { 1, 2, 3 };
-  vector<int> test_vector(a, a + GMOCK_ARRAY_SIZE_(a));
-  const vector<int> expected(a, a + GMOCK_ARRAY_SIZE_(a));
+  vector<int> test_vector(a, a + GTEST_ARRAY_SIZE_(a));
+  const vector<int> expected(a, a + GTEST_ARRAY_SIZE_(a));
   EXPECT_THAT(test_vector, ElementsAreArray(expected));
   test_vector.push_back(4);
   EXPECT_THAT(test_vector, Not(ElementsAreArray(expected)));
 }
 
-#if GTEST_LANG_CXX11
+#if GTEST_HAS_STD_INITIALIZER_LIST_
 
 TEST(ElementsAreArrayTest, TakesInitializerList) {
   const int a[5] = { 1, 2, 3, 4, 5 };
@@ -669,14 +666,14 @@ TEST(ElementsAreArrayTest,
       { Eq(1), Ne(-2), Ge(3), Le(4), Eq(6) })));
 }
 
-#endif  // GTEST_LANG_CXX11
+#endif  // GTEST_HAS_STD_INITIALIZER_LIST_
 
 TEST(ElementsAreArrayTest, CanBeCreatedWithMatcherVector) {
   const int a[] = { 1, 2, 3 };
   const Matcher<int> kMatchers[] = { Eq(1), Eq(2), Eq(3) };
-  vector<int> test_vector(a, a + GMOCK_ARRAY_SIZE_(a));
+  vector<int> test_vector(a, a + GTEST_ARRAY_SIZE_(a));
   const vector<Matcher<int> > expected(
-      kMatchers, kMatchers + GMOCK_ARRAY_SIZE_(kMatchers));
+      kMatchers, kMatchers + GTEST_ARRAY_SIZE_(kMatchers));
   EXPECT_THAT(test_vector, ElementsAreArray(expected));
   test_vector.push_back(4);
   EXPECT_THAT(test_vector, Not(ElementsAreArray(expected)));
@@ -684,11 +681,11 @@ TEST(ElementsAreArrayTest, CanBeCreatedWithMatcherVector) {
 
 TEST(ElementsAreArrayTest, CanBeCreatedWithIteratorRange) {
   const int a[] = { 1, 2, 3 };
-  const vector<int> test_vector(a, a + GMOCK_ARRAY_SIZE_(a));
-  const vector<int> expected(a, a + GMOCK_ARRAY_SIZE_(a));
+  const vector<int> test_vector(a, a + GTEST_ARRAY_SIZE_(a));
+  const vector<int> expected(a, a + GTEST_ARRAY_SIZE_(a));
   EXPECT_THAT(test_vector, ElementsAreArray(expected.begin(), expected.end()));
   // Pointers are iterators, too.
-  EXPECT_THAT(test_vector, ElementsAreArray(a, a + GMOCK_ARRAY_SIZE_(a)));
+  EXPECT_THAT(test_vector, ElementsAreArray(a, a + GTEST_ARRAY_SIZE_(a)));
   // The empty range of NULL pointers should also be okay.
   int* const null_int = NULL;
   EXPECT_THAT(test_vector, Not(ElementsAreArray(null_int, null_int)));
@@ -708,8 +705,8 @@ TEST(ElementsAreArrayTest, WorksWithNativeArray) {
 
 TEST(ElementsAreArrayTest, SourceLifeSpan) {
   const int a[] = { 1, 2, 3 };
-  vector<int> test_vector(a, a + GMOCK_ARRAY_SIZE_(a));
-  vector<int> expect(a, a + GMOCK_ARRAY_SIZE_(a));
+  vector<int> test_vector(a, a + GTEST_ARRAY_SIZE_(a));
+  vector<int> expect(a, a + GTEST_ARRAY_SIZE_(a));
   ElementsAreArrayMatcher<int> matcher_maker =
       ElementsAreArray(expect.begin(), expect.end());
   EXPECT_THAT(test_vector, matcher_maker);
