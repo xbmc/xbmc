@@ -42,11 +42,7 @@ public:
 
   void create(const CFileItem& container, const CStdString& uri = "",
               const CStdString& startItemKey = "", bool shuffle = false);
-
-  IPlexPlayQueueBasePtr current()
-  {
-    return m_currentImpl;
-  }
+  void clear();
 
   static CStdString getURIFromItem(const CFileItem& item, const CStdString& uri = "");
   static int getPlaylistFromType(ePlexMediaType type);
@@ -73,7 +69,12 @@ public:
     return m_playQueueVersion;
   }
 
-  void clear();
+  /* proxy current implementation */
+  bool addItem(const CFileItemPtr& item, bool next);
+  void removeItem(const CFileItemPtr& item);
+  int getCurrentID();
+  bool refreshCurrent();
+
 
 private:
   IPlexPlayQueueBasePtr getImpl(const CFileItem &container);
@@ -83,6 +84,7 @@ private:
   IPlexPlayQueueBasePtr m_currentImpl;
   ePlexMediaType m_playQueueType;
   int m_playQueueVersion;
+  bool m_currentPlayQueueModified;
 };
 
 typedef boost::shared_ptr<CPlexPlayQueueManager> CPlexPlayQueueManagerPtr;

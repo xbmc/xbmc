@@ -166,10 +166,11 @@ CUrlOptions CPlexTimeline::getTimeline(bool forServer)
         options.AddOption("seekRange", "0-0");
     }
 
-    if (g_plexApplication.playQueueManager->current() && PlexUtils::IsPlayingPlaylist())
+    if (PlexUtils::IsPlayingPlaylist())
     {
-      int playQueueId = g_plexApplication.playQueueManager->current()->getCurrentID();
-      options.AddOption("playQueueID", boost::lexical_cast<std::string>(playQueueId));
+      int playQueueId = g_plexApplication.playQueueManager->getCurrentID();
+      if (playQueueId != -1)
+        options.AddOption("playQueueID", boost::lexical_cast<std::string>(playQueueId));
 
       if (m_item && m_item->HasMusicInfoTag())
       {

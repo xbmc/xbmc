@@ -80,9 +80,9 @@ void CPlexMediaServerClient::OnJobComplete(unsigned int jobID, bool success, CJo
       CFileItemPtr item = tljob->m_item;
       if (item->HasProperty("playQueueID"))
       {
-        IPlexPlayQueueBasePtr impl = g_plexApplication.playQueueManager->current();
-        if (impl && impl->getCurrentID() == item->GetProperty("playQueueID").asInteger())
-          impl->refreshCurrent();
+        if (g_plexApplication.playQueueManager->getCurrentID() ==
+            item->GetProperty("playQueueID").asInteger())
+          g_plexApplication.playQueueManager->refreshCurrent();
       }
     }
   }

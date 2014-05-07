@@ -895,7 +895,7 @@ void CGUIPlexMediaWindow::QueueItem(const CFileItemPtr& item, bool next)
   }
   else
   {
-    if (g_plexApplication.playQueueManager->current()->addItem(item, next))
+    if (g_plexApplication.playQueueManager->addItem(item, next))
     {
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
                                             "Item Queued", "The item was added the current queue..",

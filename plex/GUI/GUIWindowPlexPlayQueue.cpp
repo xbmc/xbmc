@@ -80,8 +80,7 @@ bool CGUIWindowPlexPlayQueue::OnContextButton(int itemNumber, CONTEXT_BUTTON but
     }
     case CONTEXT_BUTTON_REMOVE_SOURCE:
     {
-      if (g_plexApplication.playQueueManager->current())
-        g_plexApplication.playQueueManager->current()->removeItem(item);
+      g_plexApplication.playQueueManager->removeItem(item);
       break;
     }
     case CONTEXT_BUTTON_CLEAR:
@@ -103,8 +102,8 @@ bool CGUIWindowPlexPlayQueue::OnAction(const CAction &action)
   {
     int i = m_viewControl.GetSelectedItem();
     CFileItemPtr item = m_vecItems->Get(i);
-    if (item && g_plexApplication.playQueueManager->current())
-      g_plexApplication.playQueueManager->current()->removeItem(item);
+    if (item)
+      g_plexApplication.playQueueManager->removeItem(item);
     return true;
   }
 

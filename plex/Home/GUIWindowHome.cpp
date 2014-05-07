@@ -383,10 +383,7 @@ void CGUIWindowHome::RemoveFromPlayQueue()
 {
   CFileItemPtr fileItem = GetCurrentFanoutItem();
   if (fileItem)
-  {
-    if (g_plexApplication.playQueueManager->current())
-      g_plexApplication.playQueueManager->current()->removeItem(fileItem);
-  }
+    g_plexApplication.playQueueManager->removeItem(fileItem);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

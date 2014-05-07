@@ -829,8 +829,7 @@ bool CPlexDirectory::GetOnlineChannelDirectory(CFileItemList &items)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexDirectory::GetPlayQueueDirectory(CFileItemList& items)
 {
-  if (g_plexApplication.playQueueManager->current())
-    g_plexApplication.playQueueManager->current()->getCurrent(items);
+  g_plexApplication.playQueueManager->getCurrentPlayQueue(items);
 
   // we always want to return true here, in *worst* case we will just
   // return a empty list.

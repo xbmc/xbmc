@@ -22,6 +22,7 @@ void CPlexPlayQueueManager::create(const CFileItem& container, const CStdString&
   IPlexPlayQueueBasePtr impl = getImpl(container);
   if (impl)
   {
+    m_currentPlayQueueModified = false;
     m_currentImpl = impl;
     m_currentImpl->create(container, uri, startItemKey, shuffle);
   }
@@ -291,6 +292,7 @@ void CPlexPlayQueueManager::loadSavedPlayQueue()
   if (server && !m_currentImpl)
   {
     m_currentImpl = IPlexPlayQueueBasePtr(new CPlexPlayQueueServer(server));
+    m_currentPlayQueueModified = false;
     m_currentImpl->get(playQueueURL.GetFileName(), false);
   }
 }
@@ -318,4 +320,41 @@ IPlexPlayQueueBasePtr CPlexPlayQueueManager::getImpl(const CFileItem& container)
 
   CLog::Log(LOGDEBUG, "CPlexPlayQueueManager::getImpl can't select implementation");
   return IPlexPlayQueueBasePtr();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexPlayQueueManager::addItem(const CFileItemPtr &item, bool next)
+{
+  if (m_currentImpl)
+  {
+    m_currentPlayQueueModified = true;
+    return m_currentImpl->addItem(item, next);
+  }
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexPlayQueueManager::removeItem(const CFileItemPtr &item)
+{
+  if (m_currentImpl)
+  {
+    m_currentPlayQueueModified = true;
+    m_currentImpl->removeItem(item);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+int CPlexPlayQueueManager::getCurrentID()
+{
+  if (m_currentImpl)
+    return m_currentImpl->getCurrentID();
+  return -1;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexPlayQueueManager::refreshCurrent()
+{
+  if (m_currentImpl)
+    return m_currentImpl->refreshCurrent();
+  return false;
 }
