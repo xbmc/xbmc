@@ -245,7 +245,7 @@
 				<width>28</width>
 				<height>28</height>
 				<info>ListItem.Overlay</info>
-				<visible>Container.PlexContent(Episodes)</visible>
+				<visible>Container.PlexContent(Episodes) | [Container.PlexContent(clips)]</visible>
 			</control>
 		</control>
 	</include>

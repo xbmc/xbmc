@@ -1036,7 +1036,7 @@
 		<!-- video play queue -->
 		<control type="group">
 			<control type="group" id="777">
-				<visible>Container.PlexContent(Episodes) | Container.PlexContent(clips) | [Container.PlexContent(channel) + [ListItem.Type(episode) | ListItem.Type(clip)]]</visible>
+				<visible>Container.PlexContent(Episodes) | Container.PlexContent(clips) | [Container.PlexContent(channel) + [ListItem.Type(episode) | ListItem.Type(clip)]] | Container.PlexContent(Movies)</visible>
 				<include>FadeDialog</include>
 				<include>rightSideSlide</include>
 				<control type="group">
@@ -1153,7 +1153,7 @@
 						<posx>40</posx>
 						<!-- Titles -->
 						<control type="label">
-							<width>400</width>
+							<width>490</width>
 							<height>40</height>
 							<label>$VAR[PlayQueueVideoTitle]</label>
 							<font>Bold-30</font>
@@ -1161,19 +1161,39 @@
 						</control>
 						<control type="label">
 							<posy>40</posy>
-							<width>400</width>
+							<width>490</width>
 							<height>40</height>
 							<label>$VAR[PlayQueueVideoTitle2]</label>
 							<font>Bold-30</font>
 							<include>WhiteShadow</include>
+							<visible>!Container.PlexContent(Movies)</visible>
+						</control>
+						<control type="label">
+							<posy>40</posy>
+							<width>490</width>
+							<height>40</height>
+							<label>$VAR[PlayQueueVideoTitle2]</label>
+							<font>Regular-18</font>
+							<include>WhiteShadow</include>
+							<visible>Container.PlexContent(Movies)</visible>
 						</control>
 						<control type="label">
 							<posy>80</posy>
-							<width>400</width>
+							<width>490</width>
 							<height>40</height>
 							<label>$VAR[PlayQueueVideoTitle3]</label>
 							<font>Regular-30</font>
 							<include>WhiteShadow</include>
+							<visible>!Container.PlexContent(Movies)</visible>
+						</control>
+						<control type="label">
+							<posy>70</posy>
+							<width>490</width>
+							<height>40</height>
+							<label>$VAR[PlayQueueVideoTitle3]</label>
+							<font>Regular-18</font>
+							<include>WhiteShadow</include>
+							<visible>Container.PlexContent(Movies)</visible>
 						</control>
 						<!-- Count -->
 						<control type="grouplist">
@@ -1186,7 +1206,7 @@
 								<label>$VAR[TopBarItemCountStrings]</label>
 								<font>Regular-18</font>
 								<include>WhiteShadow</include>
-								<visible>true</visible>
+								<visible>!Player.HasVideo</visible>
 							</control>
 						</control>
 					</control>
@@ -1212,7 +1232,7 @@
 							<height>245</height>
 							<include>PlotFormat</include>
 							<label>$INFO[ListItem.Plot]</label>
-							<visible>ListItem.Status(Watched) | [!Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]]</visible>
+							<visible>[ListItem.Status(Watched) | [!Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]]] | Container.PlexContent(Clips) | Container.PlexContent(Movies)</visible>
 						</control>
 						<control type="textbox">
 							<posx>0</posx>
@@ -1221,7 +1241,7 @@
 							<height>245</height>
 							<include>PlotFormat</include>
 							<label>$LOCALIZE[32105]</label>
-							<visible>Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)] + !IsEmpty(ListItem.Plot)</visible>
+							<visible>[Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)] + !IsEmpty(ListItem.Plot)] + !Container.PlexContent(Clips) + !Container.PlexContent(Movies)</visible>
 						</control>
 						<control type="textbox">
 							<posx>0</posx>
@@ -1490,7 +1510,7 @@
 				</control>
 				<!-- main list -->
 				<control type="panel" id="61">
-					<visible>Container.PlexContent(Episodes) | Container.PlexContent(clips) | [Container.PlexContent(channel) + [ListItem.Type(episode) | ListItem.Type(clip)]]</visible>
+					<visible>Container.PlexContent(Episodes) | Container.PlexContent(clips) | [Container.PlexContent(channel) + [ListItem.Type(episode) | ListItem.Type(clip)]] | Container.PlexContent(Movies)</visible>
 					<viewtype label="VideoPlayQueue">panel</viewtype>
 					<onup>61</onup>
 					<ondown>61</ondown>
@@ -1500,8 +1520,8 @@
 					<posx>588</posx>
 					<posy>27</posy>
 					<width>750</width>
-					<height>665</height>
-					<itemlayout width="226" height="165">
+					<height>670</height>
+					<itemlayout condition="Container.PlexContent(Episodes) | Container.PlexContent(clips) | [Container.PlexContent(channel) + [ListItem.Type(episode) | ListItem.Type(clip)]]" width="226" height="165">
 						<include>EpisodeThumbCard</include>
 						<include>EpisodeThumb</include>
 						<control type="label">
@@ -1525,7 +1545,7 @@
 						</control>
 						<include>PosterThumbUnwatchedOverlay</include>
 					</itemlayout>
-					<focusedlayout width="226" height="165">
+					<focusedlayout condition="Container.PlexContent(Episodes) | Container.PlexContent(clips) | [Container.PlexContent(channel) + [ListItem.Type(episode) | ListItem.Type(clip)]]" width="226" height="165">
 						<include>EpisodeThumbCard</include>
 						<include>EpisodeThumb</include>
 						<control type="label">
@@ -1549,6 +1569,29 @@
 						</control>
 						<include>PosterThumbUnwatchedOverlay</include>
 						<include>EpisodeSelectedBorder</include>
+					</focusedlayout>
+					<itemlayout condition="Container.PlexContent(Movies)" width="233" height="335">
+						<include>TVPoster</include>
+						<control type="image">
+							<posx>162</posx>
+							<posy>254</posy>
+							<width>30</width>
+							<height>30</height>
+							<info>ListItem.Overlay</info>
+							<visible>[Container.PlexContent(Movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)]</visible>
+						</control>
+					</itemlayout>
+					<focusedlayout condition="Container.PlexContent(Movies)" width="233" height="335">
+						<include>TVPoster</include>
+						<include>TVPosterSelectedBorder</include>
+						<control type="image">
+							<posx>162</posx>
+							<posy>254</posy>
+							<width>30</width>
+							<height>30</height>
+							<info>ListItem.Overlay</info>
+							<visible>[Container.PlexContent(Movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)]</visible>
+						</control>
 					</focusedlayout>
 				</control>
 			</control>
