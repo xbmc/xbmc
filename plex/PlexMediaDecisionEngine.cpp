@@ -264,7 +264,7 @@ void CPlexMediaDecisionJob::AddHeaders()
 CStdString CPlexMediaDecisionJob::GetPartURL(CFileItemPtr mediaPart)
 {
   CStdString unprocessed_key = mediaPart->GetProperty("unprocessed_key").asString();
-  if (!mediaPart->IsRemotePlexMediaServerLibrary() && mediaPart->HasProperty("file"))
+  if (mediaPart->HasProperty("file"))
   {
     CStdString localPath = mediaPart->GetProperty("file").asString();
     if (XFILE::CFile::Exists(localPath))
