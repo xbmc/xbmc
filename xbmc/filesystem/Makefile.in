@@ -124,6 +124,7 @@ SRCS += BlurayDirectory.cpp
 endif
 
 ifeq (@USE_UPNP@,1)
+INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP
 INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Core
 INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Platinum
 INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaConnect

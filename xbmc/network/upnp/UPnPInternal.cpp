@@ -17,10 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include <Platinum/Source/Platinum/Platinum.h>
+
 #include "UPnPInternal.h"
 #include "UPnP.h"
 #include "UPnPServer.h"
-#include "Platinum.h"
 #include "URL.h"
 #include "Util.h"
 #include "settings/AdvancedSettings.h"

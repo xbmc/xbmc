@@ -18,11 +18,12 @@
  *
  */
 #pragma once
+#include <Neptune/Source/Core/NptTypes.h>
+#include <Neptune/Source/Core/NptReferences.h>
+#include <Neptune/Source/Core/NptStrings.h>
+
 #include "system.h"
 #include "utils/StdString.h"
-#include "NptTypes.h"
-#include "NptReferences.h"
-#include "NptStrings.h"
 #include "FileItem.h"
 
 class CUPnPServer;
