@@ -1321,19 +1321,29 @@ bool CDVDPlayer::CheckDelayedChannelEntry(void)
   return bReturn;
 }
 
+bool CDVDPlayer::CheckIsCurrent(CCurrentStream& current, CDemuxStream* stream, DemuxPacket* pkg)
+{
+  if(current.id     == pkg->iStreamId
+  && current.source == stream->source
+  && current.type   == stream->type)
+    return true;
+  else
+    return false;
+}
+
 void CDVDPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
 {
     /* process packet if it belongs to selected stream. for dvd's don't allow automatic opening of streams*/
 
     try
     {
-      if (pPacket->iStreamId == m_CurrentAudio.id && pStream->source == m_CurrentAudio.source && pStream->type == STREAM_AUDIO)
+      if (CheckIsCurrent(m_CurrentAudio, pStream, pPacket))
         ProcessAudioData(pStream, pPacket);
-      else if (pPacket->iStreamId == m_CurrentVideo.id && pStream->source == m_CurrentVideo.source && pStream->type == STREAM_VIDEO)
+      else if (CheckIsCurrent(m_CurrentVideo, pStream, pPacket))
         ProcessVideoData(pStream, pPacket);
-      else if (pPacket->iStreamId == m_CurrentSubtitle.id && pStream->source == m_CurrentSubtitle.source && pStream->type == STREAM_SUBTITLE)
+      else if (CheckIsCurrent(m_CurrentSubtitle, pStream, pPacket))
         ProcessSubData(pStream, pPacket);
-      else if (pPacket->iStreamId == m_CurrentTeletext.id && pStream->source == m_CurrentTeletext.source && pStream->type == STREAM_TELETEXT)
+      else if (CheckIsCurrent(m_CurrentTeletext, pStream, pPacket))
         ProcessTeletextData(pStream, pPacket);
       else
       {

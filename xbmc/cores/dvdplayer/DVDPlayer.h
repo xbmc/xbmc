@@ -278,6 +278,7 @@ protected:
   bool CloseSubtitleStream(bool bKeepOverlays);
   bool CloseTeletextStream(bool bWaitForBuffers);
 
+  bool CheckIsCurrent(CCurrentStream& current, CDemuxStream* stream, DemuxPacket* pkg);
   void ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket);
