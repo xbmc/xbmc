@@ -32,7 +32,7 @@ class PlexNetworkServiceAdvertiser : public NetworkServiceAdvertiser
     headers["Product"] = PLEX_TARGET_NAME;
     headers["Protocol"] = "plex";
     headers["Protocol-Version"] = "1";
-    headers["Protocol-Capabilities"] = "navigation,playback,timeline,mirror";
+    headers["Protocol-Capabilities"] = PLEX_HOME_THEATER_CAPABILITY_STRING;
     headers["Device-Class"] = "HTPC";
   }
   

@@ -247,4 +247,6 @@ typedef std::pair<std::string, CPlexServerPtr> PlexServerPair;
 /* Property map definition */
 typedef boost::unordered_map<CStdString, CVariant> PropertyMap;
 
+#define PLEX_HOME_THEATER_CAPABILITY_STRING "navigation,playback,timeline,mirror,playqueues"
+
 #endif
