@@ -815,7 +815,8 @@ string PlexUtils::GetPlexContent(const CFileItem &item)
   // check if we are requesting a single item
   CURL itemUrl(item.GetPath());
   bool singleItem = (boost::starts_with(itemUrl.GetFileName(), "library/metadata") &&
-                     !boost::ends_with(itemUrl.GetFileName(), "/children"));
+                     !boost::ends_with(itemUrl.GetFileName(), "/children") &&
+                     !boost::ends_with(itemUrl.GetFileName(), "/allLeaves"));
 
   // This is also a single item, from channels
   if (boost::starts_with(itemUrl.GetFileName(), "system/services/url/lookup"))
