@@ -22,7 +22,7 @@ public:
   virtual bool refreshCurrent();
   virtual bool getCurrent(CFileItemList& list);
   virtual void removeItem(const CFileItemPtr &item);
-  virtual bool addItem(const CFileItemPtr &item);
+  virtual bool addItem(const CFileItemPtr &item, bool next);
   virtual int getCurrentID();
   virtual void get(const CStdString &playQueueID, bool startPlay);
   virtual CPlexServerPtr server() const

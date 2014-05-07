@@ -529,7 +529,7 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
     if (m_viewControl.GetSelectedItem() != -1)
     {
       CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
-      QueueItem(pItem);
+      QueueItem(pItem, false);
     }
   }
 
@@ -843,8 +843,9 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
 
     case CONTEXT_BUTTON_QUEUE_ITEM:
+    case CONTEXT_BUTTON_PLAY_ONLY_THIS:
     {
-      QueueItem(item);
+      QueueItem(item, button == CONTEXT_BUTTON_PLAY_ONLY_THIS);
       break;
     }
 
@@ -880,7 +881,7 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIPlexMediaWindow::QueueItem(const CFileItemPtr& item)
+void CGUIPlexMediaWindow::QueueItem(const CFileItemPtr& item, bool next)
 {
   if (!item)
     return;
@@ -894,7 +895,7 @@ void CGUIPlexMediaWindow::QueueItem(const CFileItemPtr& item)
   }
   else
   {
-    if (g_plexApplication.playQueueManager->current()->addItem(item))
+    if (g_plexApplication.playQueueManager->current()->addItem(item, next))
     {
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
                                             "Item Queued", "The item was added the current queue..",

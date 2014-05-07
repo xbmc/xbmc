@@ -4,12 +4,15 @@
 #include "URL.h"
 #include "ApplicationMessenger.h"
 #include "PlexApplication.h"
+#include "PlayListPlayer.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexPlayQueueLocal::CPlexPlayQueueLocal(const CPlexServerPtr& server) : m_server(server)
 {
+  m_list = CFileItemListPtr(new CFileItemList);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexPlayQueueLocal::create(const CFileItem& container, const CStdString& uri,
                                  const CStdString& startItemKey, bool shuffle)
 {
@@ -30,13 +33,26 @@ void CPlexPlayQueueLocal::removeItem(const CFileItemPtr& item)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CPlexPlayQueueLocal::addItem(const CFileItemPtr& item)
+bool CPlexPlayQueueLocal::addItem(const CFileItemPtr& item, bool next)
 {
   ePlexMediaType type = PlexUtils::GetMediaTypeFromItem(item);
 
   if (m_list)
   {
-    m_list->Add(item);
+    if (next)
+    {
+      int currentSong = 0;
+      if (CPlexPlayQueueManager::getPlaylistFromType(type) == g_playlistPlayer.GetCurrentPlaylist())
+      {
+        if (g_playlistPlayer.GetCurrentSong() != -1)
+          currentSong = g_playlistPlayer.GetCurrentSong() + 1;
+      }
+      m_list->AddFront(item, currentSong);
+    }
+    else
+    {
+      m_list->Add(item);
+    }
     CApplicationMessenger::Get().PlexUpdatePlayQueue(type, false);
     return true;
   }
@@ -86,22 +102,20 @@ void CPlexPlayQueueLocal::OnJobComplete(unsigned int jobID, bool success, CJob* 
     if (type == PLEX_MEDIA_TYPE_UNKNOWN)
       return;
 
-    CFileItemListPtr list = CFileItemListPtr(new CFileItemList);
-    list->Assign(fj->m_items);
+    m_list->Assign(fj->m_items);
 
     /* If we need to shuffle the list do it here */
     if (fj->m_shuffle)
-      list->Randomize();
+      m_list->Randomize();
 
     if (!fj->m_startItem.empty())
     {
-      int startOffset = list->IndexOfItem(fj->m_startItem);
+      int startOffset = m_list->IndexOfItem(fj->m_startItem);
       if (startOffset != -1)
-        list->SetProperty("playQueueSelectedItemOffset", startOffset);
+        m_list->SetProperty("playQueueSelectedItemOffset", startOffset);
     }
 
-    list->SetProperty("playQueueID", list->GetProperty("ratingKey"));
-    m_list = list;
+    m_list->SetProperty("playQueueID", m_list->GetProperty("ratingKey"));
     CApplicationMessenger::Get().PlexUpdatePlayQueue(type, fj->m_startPlaying);
   }
 }

@@ -121,14 +121,14 @@ void CPlexPlayQueueServer::removeItem(const CFileItemPtr& item)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CPlexPlayQueueServer::addItem(const CFileItemPtr& item)
+bool CPlexPlayQueueServer::addItem(const CFileItemPtr& item, bool next)
 {
   CStdString uri = CPlexPlayQueueManager::getURIFromItem(*item);
   CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(item);
 
   if (server)
   {
-    CURL u = getPlayQueueURL(PlexUtils::GetMediaTypeFromItem(item), uri, "", false, false);
+    CURL u = getPlayQueueURL(PlexUtils::GetMediaTypeFromItem(item), uri, "", false, false, 0, next);
     CStdString path;
     path.Format("/playQueues/%d", getCurrentID());
 

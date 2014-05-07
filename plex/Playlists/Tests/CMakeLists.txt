@@ -1,2 +1,3 @@
 plex_add_testcase(PlayQueueManager_Tests.cpp)
 plex_add_testcase(PlayQueueServer_Tests.cpp)
+plex_add_testcase(PlayQueueLocal_Tests.cpp)

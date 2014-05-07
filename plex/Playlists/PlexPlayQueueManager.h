@@ -18,7 +18,7 @@ public:
   virtual bool refreshCurrent() = 0;
   virtual bool getCurrent(CFileItemList& list) = 0;
   virtual void removeItem(const CFileItemPtr& item) = 0;
-  virtual bool addItem(const CFileItemPtr& item) = 0;
+  virtual bool addItem(const CFileItemPtr& item, bool next) = 0;
   virtual int getCurrentID() = 0;
   virtual void get(const CStdString& playQueueID, bool startPlay) = 0;
   virtual CPlexServerPtr server() const = 0;
