@@ -259,12 +259,6 @@ public:
 protected:
   friend class CSelectionStreams;
 
-  class StreamLock : public CSingleLock
-  {
-  public:
-    inline StreamLock(CDVDPlayer* cdvdplayer) : CSingleLock(cdvdplayer->m_critStreamSection) {}
-  };
-
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
@@ -470,7 +464,6 @@ protected:
   CCriticalSection m_StateSection;
 
   CEvent m_ready;
-  CCriticalSection m_critStreamSection; // need to have this lock when switching streams (audio / video)
 
   CEdl m_Edl;
 
