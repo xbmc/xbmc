@@ -991,3 +991,15 @@ msgstr "Play Next"
 msgctxt "#52603"
 msgid "Add to Up Next"
 msgstr "Add to Up Next"
+
+msgctxt "#52604"
+msgid "Play Now?"
+msgstr "Play Now?"
+
+msgctxt "#52605"
+msgid "This will clear the contents of Up Next"
+msgstr "This will clear the contents of Up Next"
+
+msgctxt "#52606"
+msgid "and play the selection instead"
+msgstr "and play the selection instead"

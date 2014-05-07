@@ -12,6 +12,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "music/tags/MusicInfoTag.h"
 #include "Client/PlexTimelineManager.h"
+#include "dialogs/GUIDialogYesNo.h"
+#include "LocalizeStrings.h"
 
 using namespace PLAYLIST;
 
@@ -19,6 +21,16 @@ using namespace PLAYLIST;
 void CPlexPlayQueueManager::create(const CFileItem& container, const CStdString& uri,
                                    const CStdString& startItemKey, bool shuffle)
 {
+  if (m_currentImpl && m_currentPlayQueueModified)
+  {
+    // Give user a warning since this will clear the current
+    // play queue
+    bool canceled;
+    if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(52604), g_localizeStrings.Get(52605),
+                                         g_localizeStrings.Get(52606), "", canceled) || canceled)
+      return;
+  }
+
   IPlexPlayQueueBasePtr impl = getImpl(container);
   if (impl)
   {
