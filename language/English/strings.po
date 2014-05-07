@@ -7726,7 +7726,11 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr ""
 
-#empty string with id 19103
+#. Title of numeric dialog for choosing a channel by entering a number
+#: xbmc/pvr/windows/GUIWindowPVRCommon.cpp
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr ""
 
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"

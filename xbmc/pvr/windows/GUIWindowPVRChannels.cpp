@@ -264,6 +264,26 @@ void CGUIWindowPVRChannels::UpdateData(bool bUpdateSelectedFile /* = true */)
     m_parent->SetLabel(CONTROL_LABELGROUP, currentGroup->GroupName());
 }
 
+bool CGUIWindowPVRChannels::OnAction(const CAction &action)
+{
+  switch (action.GetID())
+  {
+    case REMOTE_0:
+    case REMOTE_1:
+    case REMOTE_2:
+    case REMOTE_3:
+    case REMOTE_4:
+    case REMOTE_5:
+    case REMOTE_6:
+    case REMOTE_7:
+    case REMOTE_8:
+    case REMOTE_9:
+      return ActionInputChannelNumber(action.GetID() - REMOTE_0);
+  }
+
+  return false;
+}
+
 bool CGUIWindowPVRChannels::OnClickButton(CGUIMessage &message)
 {
   bool bReturn = false;

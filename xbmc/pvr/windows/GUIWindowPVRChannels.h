@@ -45,6 +45,7 @@ namespace PVR
     void Notify(const Observable &obs, const ObservableMessage msg);
     void ResetObservers(void);
     void UnregisterObservers(void);
+    bool OnAction(const CAction &action);
 
   private:
     bool OnClickButton(CGUIMessage &message);
