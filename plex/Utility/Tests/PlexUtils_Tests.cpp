@@ -238,3 +238,20 @@ TEST(PlexUtilsGetPlexContent, channelItems)
   item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
   EXPECT_EQ(PlexUtils::GetPlexContent(item), "movie");
 }
+
+TEST(PlexUtilsGetPlexContent, noMixedMedia)
+{
+  CFileItem item;
+  item.SetPath("http://10.0.0.0:32400/playQueues/123");
+  item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
+  EXPECT_EQ("movies", PlexUtils::GetPlexContent(item));
+}
+
+TEST(PlexUtilsGetPlexContent, mixedMedia)
+{
+  CFileItem item;
+  item.SetPath("http://10.0.0.0:32400/playQueues/123");
+  item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
+  item.SetProperty("hasMixedMembers", true);
+  EXPECT_EQ("mixedcontent", PlexUtils::GetPlexContent(item));
+}
