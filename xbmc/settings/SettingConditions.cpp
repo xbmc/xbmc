@@ -182,6 +182,9 @@ void CSettingConditions::Initialize()
 
   // add simple conditions
   m_simpleConditions.insert("true");
+#ifdef HAS_DVD_DRIVE
+  m_simpleConditions.insert("has_dvd_drive");
+#endif
 #ifdef HAS_UPNP
   m_simpleConditions.insert("has_upnp");
 #endif
