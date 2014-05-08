@@ -56,8 +56,6 @@ static const operatorField operators[] = {
 
 static const size_t NUM_OPERATORS = sizeof(operators) / sizeof(operatorField);
 
-#define RULE_VALUE_SEPARATOR  " / "
-
 CDatabaseQueryRule::CDatabaseQueryRule()
 {
   m_field = 0;
@@ -231,13 +229,13 @@ void CDatabaseQueryRule::GetAvailableOperators(std::vector<std::string> &operato
 
 CStdString CDatabaseQueryRule::GetParameter() const
 {
-  return StringUtils::JoinString(m_parameter, RULE_VALUE_SEPARATOR);
+  return StringUtils::JoinString(m_parameter, DATABASEQUERY_RULE_VALUE_SEPARATOR);
 }
 
 void CDatabaseQueryRule::SetParameter(const CStdString &value)
 {
   m_parameter.clear();
-  StringUtils::SplitString(value, RULE_VALUE_SEPARATOR, m_parameter);
+  StringUtils::SplitString(value, DATABASEQUERY_RULE_VALUE_SEPARATOR, m_parameter);
 }
 
 void CDatabaseQueryRule::SetParameter(const std::vector<CStdString> &values)

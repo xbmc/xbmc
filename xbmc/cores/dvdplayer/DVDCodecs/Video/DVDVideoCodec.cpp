@@ -21,11 +21,14 @@
 #include "DVDVideoCodec.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/Settings.h"
+#include "settings/lib/Setting.h"
 
-bool CDVDVideoCodec::IsSettingVisible(const std::string &condition, const std::string &value, const std::string &settingId)
+bool CDVDVideoCodec::IsSettingVisible(const std::string &condition, const std::string &value, const CSetting *setting)
 {
-  if (settingId.empty() || value.empty())
+  if (setting == NULL || value.empty())
     return false;
+
+  const std::string &settingId = setting->GetId();
 
   // check if we are running on nvidia hardware
   std::string gpuvendor = g_Windowing.GetRenderVendor();
@@ -69,7 +72,7 @@ bool CDVDVideoCodec::IsCodecDisabled(DVDCodecAvailableType* map, unsigned int si
     }
   }
   if(index > -1)
-    return (!CSettings::Get().GetBool(map[index].setting) || !CDVDVideoCodec::IsSettingVisible("unused", "unused", map[index].setting));
+    return (!CSettings::Get().GetBool(map[index].setting) || !CDVDVideoCodec::IsSettingVisible("unused", "unused", CSettings::Get().GetSetting(map[index].setting)));
 
   return false; //don't disable what we don't have
 }

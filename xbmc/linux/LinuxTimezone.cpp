@@ -252,14 +252,14 @@ CStdString CLinuxTimezone::GetOSConfiguredTimezone()
    return timezoneName;
 }
 
-void CLinuxTimezone::SettingOptionsTimezoneCountriesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+void CLinuxTimezone::SettingOptionsTimezoneCountriesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   vector<CStdString> countries = g_timezone.GetCounties();
   for (unsigned int i = 0; i < countries.size(); i++)
     list.push_back(make_pair(countries[i], countries[i]));
 }
 
-void CLinuxTimezone::SettingOptionsTimezonesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+void CLinuxTimezone::SettingOptionsTimezonesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   current = ((const CSettingString*)setting)->GetValue();
   bool found = false;

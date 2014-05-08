@@ -19,227 +19,213 @@
  */
 
 #include "GUIDialogPeripheralSettings.h"
+#include "FileItem.h"
 #include "addons/Skin.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "peripherals/Peripherals.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingSection.h"
 #include "utils/log.h"
-#include "video/dialogs/GUIDialogVideoSettings.h"
+
+#define CONTROL_BUTTON_DEFAULTS 50
 
 using namespace std;
 using namespace PERIPHERALS;
 
-#define BUTTON_DEFAULTS 50
-
-CGUIDialogPeripheralSettings::CGUIDialogPeripheralSettings(void) :
-    CGUIDialogSettings(WINDOW_DIALOG_PERIPHERAL_SETTINGS, "DialogPeripheralSettings.xml"),
+CGUIDialogPeripheralSettings::CGUIDialogPeripheralSettings()
+  : CGUIDialogSettingsManualBase(WINDOW_DIALOG_PERIPHERAL_SETTINGS, "DialogPeripheralSettings.xml"),
     m_item(NULL),
-    m_bIsInitialising(true),
-    m_settingId(0)
-{
-}
+    m_initialising(false)
+{ }
 
-CGUIDialogPeripheralSettings::~CGUIDialogPeripheralSettings(void)
+CGUIDialogPeripheralSettings::~CGUIDialogPeripheralSettings()
 {
-  if (m_item)
+  if (m_item != NULL)
     delete m_item;
-}
 
-void CGUIDialogPeripheralSettings::SetFileItem(CFileItemPtr item)
-{
-  if (m_item)
-  {
-    delete m_item;
-    m_boolSettings.clear();
-    m_intSettings.clear();
-    m_intTextSettings.clear();
-    m_floatSettings.clear();
-    m_stringSettings.clear();
-    m_settings.clear();
-  }
-
-  m_item = new CFileItem(*item.get());
-}
-
-void CGUIDialogPeripheralSettings::CreateSettings()
-{
-  m_bIsInitialising = true;
-  m_usePopupSliders = g_SkinInfo->HasSkinFile("DialogSlider.xml");
-
-  if (m_item)
-  {
-    CPeripheral *peripheral = g_peripherals.GetByPath(m_item->GetPath());
-    if (peripheral)
-    {
-      vector<CSetting *> settings = peripheral->GetSettings();
-      for (size_t iPtr = 0; iPtr < settings.size(); iPtr++)
-      {
-        CSetting *setting = settings[iPtr];
-        if (!setting->IsVisible())
-        {
-          CLog::Log(LOGDEBUG, "%s - invisible", __FUNCTION__);
-          continue;
-        }
-
-        switch(setting->GetType())
-        {
-        case SettingTypeBool:
-          {
-            CSettingBool *boolSetting = (CSettingBool *) setting;
-            if (boolSetting)
-            {
-              m_boolSettings.insert(make_pair(CStdString(boolSetting->GetId()), boolSetting->GetValue()));
-              AddBool(m_settingId++, boolSetting->GetLabel(), &m_boolSettings[boolSetting->GetId()], true);
-            }
-          }
-          break;
-        case SettingTypeInteger:
-          {
-            CSettingInt *intSetting = (CSettingInt *) setting;
-            if (intSetting)
-            {
-              if (intSetting->GetOptions().empty())
-              {
-                m_intSettings.insert(make_pair(CStdString(intSetting->GetId()), (float) intSetting->GetValue()));
-                AddSlider(m_settingId++, intSetting->GetLabel(), &m_intSettings[intSetting->GetId()], (float)intSetting->GetMinimum(), (float)intSetting->GetStep(), (float)intSetting->GetMaximum(), CGUIDialogVideoSettings::FormatInteger, false);
-              }
-              else
-              {
-                m_intTextSettings.insert(make_pair(CStdString(intSetting->GetId()), intSetting->GetValue()));
-                vector<pair<int, int> > entries;
-                StaticIntegerSettingOptions::const_iterator entriesItr = intSetting->GetOptions().begin();
-                while (entriesItr != intSetting->GetOptions().end())
-                {
-                  entries.push_back(make_pair(entriesItr->first, entriesItr->second));
-                  ++entriesItr;
-                }
-                AddSpin(m_settingId++, intSetting->GetLabel(), &m_intTextSettings[intSetting->GetId()], entries);
-              }
-            }
-          }
-          break;
-        case SettingTypeNumber:
-          {
-            CSettingNumber *floatSetting = (CSettingNumber *) setting;
-            if (floatSetting)
-            {
-              m_floatSettings.insert(make_pair(CStdString(floatSetting->GetId()), (float)floatSetting->GetValue()));
-              AddSlider(m_settingId++, floatSetting->GetLabel(), &m_floatSettings[floatSetting->GetId()], (float)floatSetting->GetMinimum(), (float)floatSetting->GetStep(), (float)floatSetting->GetMaximum(), CGUIDialogVideoSettings::FormatFloat, false);
-            }
-          }
-          break;
-        case SettingTypeString:
-          {
-            CSettingString *stringSetting = (CSettingString *) setting;
-            if (stringSetting)
-            {
-              m_stringSettings.insert(make_pair(CStdString(stringSetting->GetId()), stringSetting->GetValue()));
-              AddString(m_settingId++, stringSetting->GetLabel(), &m_stringSettings[stringSetting->GetId()]);
-            }
-          }
-          break;
-        default:
-          //TODO add more types if needed
-          CLog::Log(LOGDEBUG, "%s - unknown type", __FUNCTION__);
-          break;
-        }
-      }
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG, "%s - no peripheral", __FUNCTION__);
-    }
-  }
-
-  m_bIsInitialising = false;
-}
-
-void CGUIDialogPeripheralSettings::UpdatePeripheralSettings(void)
-{
-  if (!m_item || m_bIsInitialising)
-    return;
-
-  CPeripheral *peripheral = g_peripherals.GetByPath(m_item->GetPath());
-  if (!peripheral)
-    return;
-
-  map<CStdString, bool>::iterator boolItr = m_boolSettings.begin();
-  while (boolItr != m_boolSettings.end())
-  {
-    peripheral->SetSetting((*boolItr).first, (*boolItr).second);
-    ++boolItr;
-  }
-
-  map<CStdString, float>::iterator intItr = m_intSettings.begin();
-  while (intItr != m_intSettings.end())
-  {
-    peripheral->SetSetting((*intItr).first, (int) (*intItr).second);
-    ++intItr;
-  }
-
-  map<CStdString, int>::iterator intTextItr = m_intTextSettings.begin();
-  while (intTextItr != m_intTextSettings.end())
-  {
-    peripheral->SetSetting((*intTextItr).first, (*intTextItr).second);
-    ++intTextItr;
-  }
-
-  map<CStdString, float>::iterator floatItr = m_floatSettings.begin();
-  while (floatItr != m_floatSettings.end())
-  {
-    peripheral->SetSetting((*floatItr).first, (*floatItr).second);
-    ++floatItr;
-  }
-
-  map<CStdString, CStdString>::iterator stringItr = m_stringSettings.begin();
-  while (stringItr != m_stringSettings.end())
-  {
-    peripheral->SetSetting((*stringItr).first, (*stringItr).second);
-    ++stringItr;
-  }
-
-  peripheral->PersistSettings();
+  m_settingsMap.clear();
 }
 
 bool CGUIDialogPeripheralSettings::OnMessage(CGUIMessage &message)
 {
   if (message.GetMessage() == GUI_MSG_CLICKED &&
-      message.GetSenderId() == BUTTON_DEFAULTS)
+      message.GetSenderId() == CONTROL_BUTTON_DEFAULTS)
   {
-    ResetDefaultSettings();
+    OnResetSettings();
     return true;
   }
 
-  return CGUIDialogSettings::OnMessage(message);
+  return CGUIDialogSettingsManualBase::OnMessage(message);
 }
 
-void CGUIDialogPeripheralSettings::OnOkay(void)
+void CGUIDialogPeripheralSettings::SetFileItem(const CFileItem *item)
 {
-  UpdatePeripheralSettings();
+  if (item == NULL)
+    return;
+
+  if (m_item != NULL)
+    delete m_item;
+
+  m_item = new CFileItem(*item);
 }
 
-void CGUIDialogPeripheralSettings::ResetDefaultSettings(void)
+void CGUIDialogPeripheralSettings::OnSettingChanged(const CSetting *setting)
 {
-  if (m_item)
+  if (setting == NULL)
+    return;
+
+  CGUIDialogSettingsManualBase::OnSettingChanged(setting);
+
+  // we need to copy the new value of the setting from the copy to the
+  // original setting
+  std::map<std::string, CSetting*>::iterator itSetting = m_settingsMap.find(setting->GetId());
+  if (itSetting == m_settingsMap.end())
+    return;
+
+  itSetting->second->FromString(setting->ToString());
+}
+
+void CGUIDialogPeripheralSettings::Save()
+{
+  if (m_item == NULL || m_initialising)
+    return;
+
+  CPeripheral *peripheral = g_peripherals.GetByPath(m_item->GetPath());
+  if (peripheral == NULL)
+    return;
+
+  peripheral->PersistSettings();
+}
+
+void CGUIDialogPeripheralSettings::OnResetSettings()
+{
+  if (m_item == NULL)
+    return;
+
+  CPeripheral *peripheral = g_peripherals.GetByPath(m_item->GetPath());
+  if (peripheral == NULL)
+    return;
+
+  if (!CGUIDialogYesNo::ShowAndGetInput(10041, 0, 10042, 0))
+    return;
+
+  // reset the settings in the peripheral
+  peripheral->ResetDefaultSettings();
+
+  // re-create all settings and their controls
+  SetupView();
+}
+
+void CGUIDialogPeripheralSettings::InitializeSettings()
+{
+  if (m_item == NULL)
   {
-    CPeripheral *peripheral = g_peripherals.GetByPath(m_item->GetPath());
-    if (!peripheral)
-      return;
-
-    /* reset the settings in the peripheral */
-    peripheral->ResetDefaultSettings();
-
-    CSingleLock lock(g_graphicsContext);
-
-    /* clear the settings */
-    m_boolSettings.clear();
-    m_intSettings.clear();
-    m_intTextSettings.clear();
-    m_floatSettings.clear();
-    m_stringSettings.clear();
-    m_settings.clear();
-
-    /* reinit the window */
-    CreateSettings();
-    SetupPage(); // will clear the previous controls first
+    m_initialising = false;
+    return;
   }
+
+  m_initialising = true;
+  bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
+
+  CPeripheral *peripheral = g_peripherals.GetByPath(m_item->GetPath());
+  if (peripheral == NULL)
+  {
+    CLog::Log(LOGDEBUG, "%s - no peripheral", __FUNCTION__);
+    m_initialising = false;
+    return;
+  }
+
+  m_settingsMap.clear();
+  CGUIDialogSettingsManualBase::InitializeSettings();
+
+  CSettingCategory *category = AddCategory("peripheralsettings", -1);
+  if (category == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogPeripheralSettings: unable to setup settings");
+    return;
+  }
+
+  CSettingGroup *group = AddGroup(category);
+  if (group == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogPeripheralSettings: unable to setup settings");
+    return;
+  }
+  
+  vector<CSetting*> settings = peripheral->GetSettings();
+  for (vector<CSetting*>::iterator itSetting = settings.begin(); itSetting != settings.end(); ++itSetting)
+  {
+    CSetting *setting = *itSetting;
+    if (setting == NULL)
+      continue;
+
+    if (!setting->IsVisible())
+    {
+      CLog::Log(LOGDEBUG, "%s - invisible", __FUNCTION__);
+      continue;
+    }
+
+    // we need to create a copy of the setting because the CSetting instances
+    // are destroyed when leaving the dialog
+    CSetting *settingCopy = NULL;
+    switch(setting->GetType())
+    {
+      case SettingTypeBool:
+      {
+        CSettingBool *settingBool = new CSettingBool(setting->GetId(), *static_cast<CSettingBool*>(setting));
+        settingBool->SetControl(GetCheckmarkControl());
+
+        settingCopy = static_cast<CSetting*>(settingBool);
+        break;
+      }
+
+      case SettingTypeInteger:
+      {
+        CSettingInt *intSetting = static_cast<CSettingInt*>(setting);
+        if (intSetting == NULL)
+          break;
+        
+        CSettingInt *settingInt = new CSettingInt(setting->GetId(), *intSetting);
+        if (settingInt->GetOptions().empty())
+          settingInt->SetControl(GetSliderControl("integer", false, -1, usePopup, -1, "%i"));
+        else
+          settingInt->SetControl(GetSpinnerControl("string"));
+
+        settingCopy = static_cast<CSetting*>(settingInt);
+        break;
+      }
+
+      case SettingTypeNumber:
+      {
+        CSettingNumber *settingNumber = new CSettingNumber(setting->GetId(), *static_cast<CSettingNumber*>(setting));
+        settingNumber->SetControl(GetSliderControl("number", false, -1, usePopup, -1, "%2.2f"));
+
+        settingCopy = static_cast<CSetting*>(settingNumber);
+        break;
+      }
+
+      case SettingTypeString:
+      {
+        CSettingString *settingString = new CSettingString(setting->GetId(), *static_cast<CSettingString*>(setting));
+        settingString->SetControl(GetEditControl("string"));
+
+        settingCopy = static_cast<CSetting*>(settingString);
+        break;
+      }
+
+      default:
+        // TODO: add more types if needed
+        CLog::Log(LOGDEBUG, "%s - unknown type", __FUNCTION__);
+        break;
+    }
+
+    if (settingCopy != NULL && settingCopy->GetControl() != NULL)
+    {
+      settingCopy->SetLevel(SettingLevelBasic);
+      group->AddSetting(settingCopy);
+      m_settingsMap.insert(std::make_pair(setting->GetId(), setting));
+    }
+  }
+
+  m_initialising = false;
 }

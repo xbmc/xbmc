@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<defaultcontrol always="true">3</defaultcontrol>
+	<defaultcontrol always="true">20</defaultcontrol>
 	<coordinates>
 		<system>1</system>
 		<left>240</left>
@@ -69,7 +69,7 @@
 				<textcolor>blue</textcolor>
 				<shadowcolor>black</shadowcolor>
 			</control>
-			<control type="spincontrolex" id="3">
+			<control type="spincontrolex" id="20">
 				<description>Content Picker</description>
 				<left>30</left>
 				<top>100</top>
@@ -83,7 +83,7 @@
 				<onup>28</onup>
 				<ondown>5</ondown>
 				<onleft>60</onleft>
-				<onright>4</onright>
+				<onright>21</onright>
 			</control>
 			<control type="label">
 				<description>Content Picker label</description>
@@ -92,7 +92,7 @@
 				<width>280</width>
 				<height>40</height>
 				<font>font13_title</font>
-				<label>$INFO[Control.GetLabel(3)]</label>
+				<label>$INFO[Control.GetLabel(20)]</label>
 				<align>left</align>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
@@ -154,15 +154,15 @@
 				<textcolor>blue</textcolor>
 				<shadowcolor>black</shadowcolor>
 			</control>
-			<control type="list" id="4">
+			<control type="list" id="21">
 				<left>400</left>
 				<top>100</top>
 				<width>360</width>
 				<height>241</height>
-				<onup>4</onup>
-				<onleft>3</onleft>
+				<onup>21</onup>
+				<onleft>20</onleft>
 				<onright>60</onright>
-				<ondown>4</ondown>
+				<ondown>21</ondown>
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<itemlayout height="45">
@@ -199,7 +199,7 @@
 						<top>0</top>
 						<width>360</width>
 						<height>40</height>
-						<visible>!Control.HasFocus(4)</visible>
+						<visible>!Control.HasFocus(21)</visible>
 						<texture border="5">button-nofocus.png</texture>
 					</control>
 					<control type="image">
@@ -207,7 +207,7 @@
 						<top>0</top>
 						<width>360</width>
 						<height>40</height>
-						<visible>Control.HasFocus(4)</visible>
+						<visible>Control.HasFocus(21)</visible>
 						<texture border="5">button-focus2.png</texture>
 					</control>
 					<control type="image">
@@ -241,8 +241,8 @@
 				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
 				<textureslidernib>ScrollBarNib.png</textureslidernib>
 				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-				<onleft>4</onleft>
-				<onright>3</onright>
+				<onleft>21</onleft>
+				<onright>20</onright>
 				<showonepage>true</showonepage>
 				<orientation>vertical</orientation>
 			</control>
@@ -266,7 +266,7 @@
 				<width>740</width>
 				<height>220</height>
 				<itemgap>4</itemgap>
-				<onup>3</onup>
+				<onup>20</onup>
 				<ondown>28</ondown>
 				<onleft>5</onleft>
 				<onright>5</onright>
@@ -299,10 +299,10 @@
 					<aligny>center</aligny>
 					<font>font12_title</font>
 					<label>186</label>
-					<onleft>6</onleft>
+					<onleft>22</onleft>
 					<onright>29</onright>
-					<onup>30</onup>
-					<ondown>3</ondown>
+					<onup>5</onup>
+					<ondown>20</ondown>
 				</control>
 				<control type="button" id="29">
 					<description>Cancel Button</description>
@@ -315,11 +315,11 @@
 					<font>font12_title</font>
 					<label>222</label>
 					<onleft>28</onleft>
-					<onright>6</onright>
-					<onup>30</onup>
-					<ondown>3</ondown>
+					<onright>22</onright>
+					<onup>5</onup>
+					<ondown>20</ondown>
 				</control>
-				<control type="button" id="6">
+				<control type="button" id="22">
 					<description>Settings Button</description>
 					<left>90</left>
 					<top>0</top>
@@ -331,8 +331,8 @@
 					<label>5</label>
 					<onleft>29</onleft>
 					<onright>28</onright>
-					<onup>30</onup>
-					<ondown>3</ondown>
+					<onup>5</onup>
+					<ondown>20</ondown>
 				</control>
 			</control>
 		</control>

@@ -5279,6 +5279,7 @@ msgstr ""
 #: skin.confluence
 #: skin.touched
 #: xbmc\profiles\ProfilesManager.cpp
+#: xbmc/profiles/dialogs/GUIDialogProfileSettings.cpp
 msgctxt "#13200"
 msgid "Profiles"
 msgstr ""
@@ -6463,6 +6464,7 @@ msgid "%i ms"
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#14047"
 msgid "%i %%"
 msgstr ""
@@ -6494,7 +6496,10 @@ msgctxt "#14053"
 msgid "GUI filters"
 msgstr ""
 
-#empty string with id 14054
+#: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr ""
 
 msgctxt "#14055"
 msgid "Use background scanning"
@@ -11169,11 +11174,18 @@ msgstr ""
 
 #. Filter (media data) from string value to string value
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/settings/SettingControl.cpp
 msgctxt "#21469"
 msgid "%s to %s"
 msgstr ""
 
-#empty strings from id 21470 to 21601
+#. Field (e.g. "Genre") [count]
+#: xbmc/dialogs/GUIDialogMediaFilter.cpp
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr ""
+
+#empty strings from id 21471 to 21601
 
 #: xbmc/Util.cpp
 msgctxt "#21602"

@@ -24,14 +24,14 @@
 			<height>40</height>
 			<texture>dialogheader.png</texture>
 		</control>
-		<control type="label">
+		<control type="label" id="2">
 			<description>header label</description>
 			<left>40</left>
 			<top>20</top>
 			<width>620</width>
 			<height>30</height>
 			<font>font13_title</font>
-			<label>$INFO[Window.Property(heading)]</label>
+			<label>-</label>
 			<align>center</align>
 			<aligny>center</aligny>
 			<textcolor>selected</textcolor>
@@ -54,7 +54,7 @@
 			<ondown>1</ondown>
 			<visible>system.getbool(input.enablemouse)</visible>
 		</control>
-		<control type="image" id="2">
+		<control type="image" id="101">
 			<description>profile image</description>
 			<left>30</left>
 			<top>70</top>
@@ -76,7 +76,7 @@
 			<textcolor>blue</textcolor>
 			<label>$LOCALIZE[20093]</label>
 		</control>
-		<control type="label" id="1000">
+		<control type="label" id="102">
 			<description>profile name Value</description>
 			<left>200</left>
 			<top>95</top>
@@ -95,7 +95,7 @@
 			<textcolor>blue</textcolor>
 			<label>$LOCALIZE[20070]</label>
 		</control>
-		<control type="label" id="1001">
+		<control type="label" id="103">
 			<description>profile directory Value</description>
 			<left>200</left>
 			<top>180</top>

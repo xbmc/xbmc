@@ -1510,7 +1510,7 @@ bool CPVRManager::OnAction(const CAction &action)
   return false;
 }
 
-void CPVRManager::SettingOptionsPvrStartLastChannelFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
+void CPVRManager::SettingOptionsPvrStartLastChannelFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
   list.push_back(make_pair(g_localizeStrings.Get(106),   PVR::START_LAST_CHANNEL_OFF));
   list.push_back(make_pair(g_localizeStrings.Get(19190), PVR::START_LAST_CHANNEL_MIN));

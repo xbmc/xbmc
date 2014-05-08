@@ -897,7 +897,9 @@
     <ClCompile Include="..\..\xbmc\SectionLoader.cpp" />
     <ClCompile Include="..\..\xbmc\settings\AdvancedSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogContentSettings.cpp" />
-    <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogSettings.cpp" />
+    <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsBase.cpp" />
+    <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsManagerBase.cpp" />
+    <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsManualBase.cpp" />
     <ClCompile Include="..\..\xbmc\settings\DisplaySettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\lib\ISetting.cpp" />
     <ClCompile Include="..\..\xbmc\settings\lib\ISettingControl.cpp" />
@@ -912,9 +914,12 @@
     <ClCompile Include="..\..\xbmc\settings\MediaSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\MediaSourceSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\SettingAddon.cpp" />
+    <ClCompile Include="..\..\xbmc\settings\SettingConditions.cpp" />
     <ClCompile Include="..\..\xbmc\settings\SettingControl.cpp" />
+    <ClCompile Include="..\..\xbmc\settings\SettingCreator.cpp" />
     <ClCompile Include="..\..\xbmc\settings\SettingPath.cpp" />
     <ClCompile Include="..\..\xbmc\settings\Settings.cpp" />
+    <ClCompile Include="..\..\xbmc\settings\SettingUtils.cpp" />
     <ClCompile Include="..\..\xbmc\settings\SkinSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\VideoSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\windows\GUIControlSettings.cpp" />
@@ -1029,6 +1034,7 @@
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboardFactory.h" />
     <ClInclude Include="..\..\xbmc\guilib\iimage.h" />
     <ClInclude Include="..\..\xbmc\guilib\imagefactory.h" />
+    <ClInclude Include="..\..\xbmc\guilib\ISliderCallback.h" />
     <ClInclude Include="..\..\xbmc\IFileItemListModifier.h" />
     <ClInclude Include="..\..\xbmc\input\touch\generic\GenericTouchActionHandler.h" />
     <ClInclude Include="..\..\xbmc\input\touch\generic\GenericTouchSwipeDetector.h" />
@@ -1101,7 +1107,9 @@
     <ClInclude Include="..\..\xbmc\profiles\ProfilesManager.h" />
     <ClInclude Include="..\..\xbmc\profiles\windows\GUIWindowSettingsProfile.h" />
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogContentSettings.h" />
-    <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettings.h" />
+    <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsBase.h" />
+    <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsManagerBase.h" />
+    <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsManualBase.h" />
     <ClInclude Include="..\..\xbmc\settings\DisplaySettings.h" />
     <ClInclude Include="..\..\xbmc\settings\lib\ISetting.h" />
     <ClInclude Include="..\..\xbmc\settings\lib\ISettingCallback.h" />
@@ -1122,8 +1130,11 @@
     <ClInclude Include="..\..\xbmc\settings\MediaSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\MediaSourceSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\SettingAddon.h" />
+    <ClInclude Include="..\..\xbmc\settings\SettingConditions.h" />
     <ClInclude Include="..\..\xbmc\settings\SettingControl.h" />
+    <ClInclude Include="..\..\xbmc\settings\SettingCreator.h" />
     <ClInclude Include="..\..\xbmc\settings\SettingPath.h" />
+    <ClInclude Include="..\..\xbmc\settings\SettingUtils.h" />
     <ClInclude Include="..\..\xbmc\settings\SkinSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\windows\GUIControlSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\windows\GUIWindowSettings.h" />

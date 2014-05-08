@@ -25,9 +25,9 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include "settings/SettingControl.h"
+#include "settings/SettingCreator.h"
 #include "settings/lib/ISettingCallback.h"
-#include "settings/lib/ISettingControlCreator.h"
-#include "settings/lib/ISettingCreator.h"
 #include "threads/CriticalSection.h"
 #include "utils/Variant.h"
 
@@ -44,7 +44,7 @@ class TiXmlNode;
  setting types.
  \sa CSettingsManager
  */
-class CSettings : public ISettingCreator, public ISettingControlCreator
+class CSettings : public CSettingCreator, public CSettingControlCreator
 {
 public:
   /*!
@@ -63,11 +63,7 @@ public:
    */
   static CSettings& Get();
 
-  // implementation of ISettingCreator
-  virtual CSetting* CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = NULL) const;
-
-  // implementation of ISettingControlCreator
-  virtual ISettingControl* CreateControl(const std::string &controlType) const;
+  CSettingsManager* GetSettingsManager() const { return m_settingsManager; }
 
   /*!
    \brief Initializes the setting system with the generic
@@ -261,8 +257,6 @@ public:
    \return True if the setting was successfully loaded from the given XML node, false otherwise
    */
   bool LoadSetting(const TiXmlNode *node, const std::string &settingId);
-
-  static std::vector<CVariant> ListToValues(const CSettingList *setting, const std::vector< boost::shared_ptr<CSetting> > &values);
 private:
   CSettings(const CSettings&);
   CSettings const& operator=(CSettings const&);

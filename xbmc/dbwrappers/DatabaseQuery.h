@@ -25,6 +25,8 @@
 
 #include "utils/StdString.h"
 
+#define DATABASEQUERY_RULE_VALUE_SEPARATOR  " / "
+
 class CDatabase;
 class CVariant;
 class TiXmlNode;

@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,33 +19,37 @@
  *
  */
 
-#include "guilib/GUIDialog.h"
-#include "settings/dialogs/GUIDialogSettings.h"
-#include "FileItem.h"
+#include "settings/dialogs/GUIDialogSettingsManualBase.h"
+
+class CFileItem;
 
 namespace PERIPHERALS
 {
-  class CGUIDialogPeripheralSettings : public CGUIDialogSettings
-  {
-  public:
-    CGUIDialogPeripheralSettings(void);
-    virtual ~CGUIDialogPeripheralSettings(void);
+class CGUIDialogPeripheralSettings : public CGUIDialogSettingsManualBase
+{
+public:
+  CGUIDialogPeripheralSettings();
+  virtual ~CGUIDialogPeripheralSettings();
 
-    virtual void SetFileItem(CFileItemPtr item);
-    virtual bool OnMessage(CGUIMessage &message);
-  protected:
-    virtual void CreateSettings();
-    virtual void OnOkay(void);
-    virtual void ResetDefaultSettings(void);
-    virtual void UpdatePeripheralSettings(void);
+  // specializations of CGUIControl
+  virtual bool OnMessage(CGUIMessage &message);
 
-    CFileItem *                      m_item;
-    bool                             m_bIsInitialising;
-    std::map<CStdString, bool>       m_boolSettings;
-    std::map<CStdString, float>      m_intSettings;
-    std::map<CStdString, int>        m_intTextSettings;
-    std::map<CStdString, float>      m_floatSettings;
-    std::map<CStdString, CStdString> m_stringSettings;
-    int                              m_settingId;
-  };
+  virtual void SetFileItem(const CFileItem *item);
+
+protected:
+  // implementations of ISettingCallback
+  virtual void OnSettingChanged(const CSetting *setting);
+
+  // specialization of CGUIDialogSettingsBase
+  virtual bool AllowResettingSettings() const { return false; }
+  virtual void Save();
+  virtual void OnResetSettings();
+
+  // specialization of CGUIDialogSettingsManualBase
+  virtual void InitializeSettings();
+
+  CFileItem *m_item;
+  bool m_initialising;
+  std::map<std::string, CSetting*> m_settingsMap;
+};
 }

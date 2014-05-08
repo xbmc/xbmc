@@ -95,7 +95,7 @@ bool CGUIDialogPeripheralManager::OpenSettingsDialog(void)
   CGUIDialogPeripheralSettings *dialog = (CGUIDialogPeripheralSettings *)g_windowManager.GetWindow(WINDOW_DIALOG_PERIPHERAL_SETTINGS);
   if (dialog)
   {
-    dialog->SetFileItem(GetCurrentListItem());
+    dialog->SetFileItem(GetCurrentListItem().get());
     dialog->DoModal();
     return true;
   }

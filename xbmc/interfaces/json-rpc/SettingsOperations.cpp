@@ -24,6 +24,7 @@
 #include "settings/SettingControl.h"
 #include "settings/SettingPath.h"
 #include "settings/Settings.h"
+#include "settings/SettingUtils.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingSection.h"
 #include "guilib/LocalizeStrings.h"
@@ -597,8 +598,8 @@ bool CSettingsOperations::SerializeSettingList(const CSettingList* setting, CVar
       !SerializeSetting(setting->GetDefinition(), obj["definition"]))
     return false;
 
-  SerializeSettingListValues(CSettings::Get().GetList(setting->GetId()), obj["value"]);
-  SerializeSettingListValues(CSettings::ListToValues(setting, setting->GetDefault()), obj["default"]);
+  SerializeSettingListValues(CSettingUtils::GetList(setting), obj["value"]);
+  SerializeSettingListValues(CSettingUtils::ListToValues(setting, setting->GetDefault()), obj["default"]);
 
   obj["elementtype"] = obj["definition"]["type"];
   obj["delimiter"] = setting->GetDelimiter();
@@ -683,6 +684,35 @@ bool CSettingsOperations::SerializeSettingControl(const ISettingControl* control
     if (list->GetHeading() >= 0)
       obj["heading"] = g_localizeStrings.Get(list->GetHeading());
     obj["multiselect"] = list->CanMultiSelect();
+  }
+  else if (type == "slider")
+  {
+    const CSettingControlSlider* slider = static_cast<const CSettingControlSlider*>(control);
+    if (slider == NULL)
+      return false;
+
+    if (slider->GetHeading() >= 0)
+      obj["heading"] = g_localizeStrings.Get(slider->GetHeading());
+    obj["popup"] = slider->UsePopup();
+    if (slider->GetFormatLabel() >= 0)
+      obj["formatlabel"] = g_localizeStrings.Get(slider->GetFormatLabel());
+    else
+      obj["formatlabel"] = slider->GetFormatString();
+  }
+  else if (type == "range")
+  {
+    const CSettingControlRange* range = static_cast<const CSettingControlRange*>(control);
+    if (range == NULL)
+      return false;
+
+    if (range->GetFormatLabel() >= 0)
+      obj["formatlabel"] = g_localizeStrings.Get(range->GetFormatLabel());
+    else
+      obj["formatlabel"] = "";
+    if (range->GetValueFormatLabel() >= 0)
+      obj["formatvalue"] = g_localizeStrings.Get(range->GetValueFormatLabel());
+    else
+      obj["formatvalue"] = range->GetValueFormat();
   }
   else if (type != "toggle")
     return false;

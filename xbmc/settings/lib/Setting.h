@@ -29,6 +29,7 @@
 #include "ISetting.h"
 #include "ISettingCallback.h"
 #include "ISettingControl.h"
+#include "SettingDefinitions.h"
 #include "SettingDependency.h"
 #include "SettingUpdate.h"
 #include "threads/SharedSection.h"
@@ -65,13 +66,6 @@ typedef enum {
   SettingOptionsTypeDynamic
 } SettingOptionsType;
 
-typedef std::pair<int, int> StaticIntegerSettingOption;
-typedef std::vector<StaticIntegerSettingOption> StaticIntegerSettingOptions;
-typedef std::pair<std::string, int> DynamicIntegerSettingOption;
-typedef std::vector<DynamicIntegerSettingOption> DynamicIntegerSettingOptions;
-typedef std::pair<std::string, std::string> DynamicStringSettingOption;
-typedef std::vector<DynamicStringSettingOption> DynamicStringSettingOptions;
-
 /*!
  \ingroup settings
  \brief Setting base class containing all the properties which are common to
@@ -101,20 +95,26 @@ public:
   int GetHelp() const { return m_help; }
   void SetHelp(int help) { m_help = help; }
   bool IsEnabled() const;
+  void SetEnabled(bool enabled);
   bool IsDefault() const { return !m_changed; }
   const std::string& GetParent() const { return m_parentSetting; }
+  void SetParent(const std::string& parentSetting) { m_parentSetting = parentSetting; }
   SettingLevel GetLevel() const { return m_level; }
+  void SetLevel(SettingLevel level) { m_level = level; }
   const ISettingControl* GetControl() const { return m_control; }
+  ISettingControl* GetControl() { return m_control; }
   void SetControl(ISettingControl* control) { m_control = control; }
   const SettingDependencies& GetDependencies() const { return m_dependencies; }
+  void SetDependencies(const SettingDependencies &dependencies) { m_dependencies = dependencies; }
   const std::set<CSettingUpdate>& GetUpdates() const { return m_updates; }
+
+  void SetCallback(ISettingCallback *callback) { m_callback = callback; }
 
   // overrides of ISetting
   virtual bool IsVisible() const;
 
 protected:
-  friend class CSettingsManager;
-
+  // implementation of ISettingCallback
   virtual bool OnSettingChanging(const CSetting *setting);
   virtual void OnSettingChanged(const CSetting *setting);
   virtual void OnSettingAction(const CSetting *setting);
@@ -126,6 +126,7 @@ protected:
   ISettingCallback *m_callback;
   int m_label;
   int m_help;
+  bool m_enabled;
   std::string m_parentSetting;
   SettingLevel m_level;
   ISettingControl *m_control;
@@ -149,6 +150,7 @@ class CSettingList : public CSetting
 {
 public:
   CSettingList(const std::string &id, CSetting *settingDefinition, CSettingsManager *settingsManager = NULL);
+  CSettingList(const std::string &id, CSetting *settingDefinition, int label, CSettingsManager *settingsManager = NULL);
   CSettingList(const std::string &id, const CSettingList &setting);
   virtual ~CSettingList();
 
@@ -165,10 +167,14 @@ public:
   
   int GetElementType() const;
   const CSetting* GetDefinition() const { return m_definition; }
+  void SetDefinition(CSetting *definition) { m_definition = definition; }
 
   const std::string& GetDelimiter() const { return m_delimiter; }
+  void SetDelimiter(const std::string &delimiter) { m_delimiter = delimiter; }
   int GetMinimumItems() const { return m_minimumItems; }
+  void SetMinimumItems(int minimumItems) { m_minimumItems = minimumItems; }
   int GetMaximumItems() const { return m_maximumItems; }
+  void SetMaximumItems(int maximumItems) { m_maximumItems = maximumItems; }
   
   bool FromString(const std::vector<std::string> &value);
 
@@ -239,6 +245,7 @@ class CSettingInt : public CSetting
 public:
   CSettingInt(const std::string &id, CSettingsManager *settingsManager = NULL);
   CSettingInt(const std::string &id, const CSettingInt &setting);
+  CSettingInt(const std::string &id, int label, int value, CSettingsManager *settingsManager = NULL);
   CSettingInt(const std::string &id, int label, int value, int minimum, int step, int maximum, CSettingsManager *settingsManager = NULL);
   CSettingInt(const std::string &id, int label, int value, const StaticIntegerSettingOptions &options, CSettingsManager *settingsManager = NULL);
   virtual ~CSettingInt() { }
@@ -261,12 +268,26 @@ public:
   void SetDefault(int value);
 
   int GetMinimum() const { return m_min; }
+  void SetMinimum(int minimum) { m_min = minimum; }
   int GetStep() const { return m_step; }
+  void SetStep(int step) { m_step = step; }
   int GetMaximum() const { return m_max; }
+  void SetMaximum(int maximum) { m_max = maximum; }
 
   SettingOptionsType GetOptionsType() const;
   const StaticIntegerSettingOptions& GetOptions() const { return m_options; }
-  const std::string& GetOptionsFiller() const { return m_optionsFiller; }
+  void SetOptions(const StaticIntegerSettingOptions &options) { m_options = options; }
+  const std::string& GetOptionsFillerName() const { return m_optionsFillerName; }
+  void SetOptionsFillerName(const std::string &optionsFillerName, void *data = NULL)
+  {
+    m_optionsFillerName = optionsFillerName;
+    m_optionsFillerData = data;
+  }
+  void SetOptionsFiller(IntegerSettingOptionsFiller optionsFiller, void *data = NULL)
+  {
+    m_optionsFiller = optionsFiller;
+    m_optionsFillerData = data;
+  }
   DynamicIntegerSettingOptions UpdateDynamicOptions();
 
 private:
@@ -279,7 +300,9 @@ private:
   int m_step;
   int m_max;
   StaticIntegerSettingOptions m_options;
-  std::string m_optionsFiller;
+  std::string m_optionsFillerName;
+  IntegerSettingOptionsFiller m_optionsFiller;
+  void *m_optionsFillerData;
   DynamicIntegerSettingOptions m_dynamicOptions;
 };
 
@@ -293,6 +316,7 @@ class CSettingNumber : public CSetting
 public:
   CSettingNumber(const std::string &id, CSettingsManager *settingsManager = NULL);
   CSettingNumber(const std::string &id, const CSettingNumber &setting);
+  CSettingNumber(const std::string &id, int label, float value, CSettingsManager *settingsManager = NULL);
   CSettingNumber(const std::string &id, int label, float value, float minimum, float step, float maximum, CSettingsManager *settingsManager = NULL);
   virtual ~CSettingNumber() { }
 
@@ -314,8 +338,11 @@ public:
   void SetDefault(double value);
 
   double GetMinimum() const { return m_min; }
+  void SetMinimum(double minimum) { m_min = minimum; }
   double GetStep() const { return m_step; }
+  void SetStep(double step) { m_step = step; }
   double GetMaximum() const { return m_max; }
+  void SetMaximum(double maximum) { m_max = maximum; }
 
 private:
   virtual void copy(const CSettingNumber &setting);
@@ -358,9 +385,20 @@ public:
   virtual void SetDefault(const std::string &value);
 
   virtual bool AllowEmpty() const { return m_allowEmpty; }
+  void SetAllowEmpty(bool allowEmpty) { m_allowEmpty = allowEmpty; }
 
   SettingOptionsType GetOptionsType() const;
-  const std::string& GetOptionsFiller() const { return m_optionsFiller; }
+  const std::string& GetOptionsFillerName() const { return m_optionsFillerName; }
+  void SetOptionsFillerName(const std::string &optionsFillerName, void *data = NULL)
+  {
+    m_optionsFillerName = optionsFillerName;
+    m_optionsFillerData = data;
+  }
+  void SetOptionsFiller(StringSettingOptionsFiller optionsFiller, void *data = NULL)
+  {
+    m_optionsFiller = optionsFiller;
+    m_optionsFillerData = data;
+  }
   DynamicStringSettingOptions UpdateDynamicOptions();
 
 protected:
@@ -369,7 +407,9 @@ protected:
   std::string m_value;
   std::string m_default;
   bool m_allowEmpty;
-  std::string m_optionsFiller;
+  std::string m_optionsFillerName;
+  StringSettingOptionsFiller m_optionsFiller;
+  void *m_optionsFillerData;
   DynamicStringSettingOptions m_dynamicOptions;
 };
 
@@ -386,6 +426,7 @@ class CSettingAction : public CSetting
 {
 public:
   CSettingAction(const std::string &id, CSettingsManager *settingsManager = NULL);
+  CSettingAction(const std::string &id, int label, CSettingsManager *settingsManager = NULL);
   CSettingAction(const std::string &id, const CSettingAction &setting);
   virtual ~CSettingAction() { }
 

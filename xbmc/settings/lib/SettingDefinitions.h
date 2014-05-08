@@ -19,6 +19,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #define SETTING_XML_ROOT              "settings"
 
 #define SETTING_XML_ELM_SECTION       "section"
@@ -61,3 +64,14 @@
 #define SETTING_XML_ATTR_SETTING      "setting"
 #define SETTING_XML_ATTR_BEFORE       "before"
 #define SETTING_XML_ATTR_AFTER        "after"
+
+typedef std::pair<int, int> StaticIntegerSettingOption;
+typedef std::vector<StaticIntegerSettingOption> StaticIntegerSettingOptions;
+typedef std::pair<std::string, int> DynamicIntegerSettingOption;
+typedef std::vector<DynamicIntegerSettingOption> DynamicIntegerSettingOptions;
+typedef std::pair<std::string, std::string> DynamicStringSettingOption;
+typedef std::vector<DynamicStringSettingOption> DynamicStringSettingOptions;
+
+class CSetting;
+typedef void (*IntegerSettingOptionsFiller)(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+typedef void (*StringSettingOptionsFiller)(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);

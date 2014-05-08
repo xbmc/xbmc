@@ -31,6 +31,11 @@ CSettingAddon::CSettingAddon(const std::string &id, CSettingsManager *settingsMa
   : CSettingString(id, settingsManager),
     m_addonType(ADDON::ADDON_UNKNOWN)
 { }
+
+CSettingAddon::CSettingAddon(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager /* = NULL */)
+  : CSettingString(id, label, value, settingsManager),
+    m_addonType(ADDON::ADDON_UNKNOWN)
+{ }
   
 CSettingAddon::CSettingAddon(const std::string &id, const CSettingAddon &setting)
   : CSettingString(id, setting)

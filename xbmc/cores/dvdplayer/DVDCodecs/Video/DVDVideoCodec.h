@@ -30,6 +30,8 @@ extern "C" {
 #include "libavcodec/avcodec.h"
 }
 
+class CSetting;
+
 struct DVDCodecAvailableType 
 {
   AVCodecID codec;
@@ -279,7 +281,7 @@ public:
    * Hide or Show Settings depending on the currently running hardware 
    *
    */
-   static bool IsSettingVisible(const std::string &condition, const std::string &value, const std::string &settingId);
+   static bool IsSettingVisible(const std::string &condition, const std::string &value, const CSetting *setting);
 
   /**
   * Interact with user settings so that user disabled codecs are disabled

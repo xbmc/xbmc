@@ -129,7 +129,7 @@
 			<aligny>center</aligny>
 			<reverse>yes</reverse>
 		</control>
-		<control type="sliderex" id="10">
+		<control type="sliderex" id="13">
 			<description>Default Slider</description>
 			<height>40</height>
 			<texturefocus border="5">button-focus2.png</texturefocus>

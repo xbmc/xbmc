@@ -295,7 +295,7 @@ void CPowerManager::OnLowBattery()
   CAnnouncementManager::Announce(System, "xbmc", "OnLowBattery");
 }
 
-void CPowerManager::SettingOptionsShutdownStatesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
+void CPowerManager::SettingOptionsShutdownStatesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
   if (g_powerManager.CanPowerdown())
     list.push_back(make_pair(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN));

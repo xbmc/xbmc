@@ -27,6 +27,26 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 
+ISettingControl* CSettingControlCreator::CreateControl(const std::string &controlType) const
+{
+  if (StringUtils::EqualsNoCase(controlType, "toggle"))
+    return new CSettingControlCheckmark();
+  else if (StringUtils::EqualsNoCase(controlType, "spinner"))
+    return new CSettingControlSpinner();
+  else if (StringUtils::EqualsNoCase(controlType, "edit"))
+    return new CSettingControlEdit();
+  else if (StringUtils::EqualsNoCase(controlType, "button"))
+    return new CSettingControlButton();
+  else if (StringUtils::EqualsNoCase(controlType, "list"))
+    return new CSettingControlList();
+  else if (StringUtils::EqualsNoCase(controlType, "slider"))
+    return new CSettingControlSlider();
+  else if (StringUtils::EqualsNoCase(controlType, "range"))
+    return new CSettingControlRange();
+
+  return NULL;
+}
+
 bool CSettingControlCheckmark::SetFormat(const std::string &format)
 {
   return format.empty() || StringUtils::EqualsNoCase(format, "boolean");
@@ -103,8 +123,7 @@ bool CSettingControlEdit::SetFormat(const std::string &format)
       !StringUtils::EqualsNoCase(format, "integer") &&
       !StringUtils::EqualsNoCase(format, "number") &&
       !StringUtils::EqualsNoCase(format, "ip") &&
-      !StringUtils::EqualsNoCase(format, "md5") &&
-      !StringUtils::EqualsNoCase(format, "path")) // TODO
+      !StringUtils::EqualsNoCase(format, "md5"))
     return false;
 
   m_format = format;
@@ -126,11 +145,8 @@ bool CSettingControlButton::Deserialize(const TiXmlNode *node, bool update /* = 
 
 bool CSettingControlButton::SetFormat(const std::string &format)
 {
-  if (!StringUtils::EqualsNoCase(format, "string") &&  // TODO
-      !StringUtils::EqualsNoCase(format, "integer") &&  // TODO
-      !StringUtils::EqualsNoCase(format, "number") &&  // TODO
-      !StringUtils::EqualsNoCase(format, "path") &&
-      !StringUtils::EqualsNoCase(format, "addon") &&  // TODO
+  if (!StringUtils::EqualsNoCase(format, "path") &&
+      !StringUtils::EqualsNoCase(format, "addon") &&
       !StringUtils::EqualsNoCase(format, "action"))
     return false;
 
@@ -155,6 +171,91 @@ bool CSettingControlList::SetFormat(const std::string &format)
 {
   if (!StringUtils::EqualsNoCase(format, "string") &&
       !StringUtils::EqualsNoCase(format, "integer"))
+    return false;
+
+  m_format = format;
+  StringUtils::ToLower(m_format);
+
+  return true;
+}
+
+bool CSettingControlSlider::Deserialize(const TiXmlNode *node, bool update /* = false */)
+{
+  if (!ISettingControl::Deserialize(node, update))
+    return false;
+
+  XMLUtils::GetInt(node, SETTING_XML_ELM_CONTROL_HEADING, m_heading);
+  XMLUtils::GetBoolean(node, SETTING_XML_ELM_CONTROL_POPUP, m_popup);
+
+  XMLUtils::GetInt(node, SETTING_XML_ELM_CONTROL_FORMATLABEL, m_formatLabel);
+  if (m_formatLabel < 0)
+  {
+    std::string strFormat;
+    if (XMLUtils::GetString(node, SETTING_XML_ATTR_FORMAT, strFormat) && !strFormat.empty())
+      m_formatString = strFormat;
+  }
+
+  return true;
+}
+
+bool CSettingControlSlider::SetFormat(const std::string &format)
+{
+  if (StringUtils::EqualsNoCase(format, "percentage"))
+    m_format = "%i %%";
+  else if (StringUtils::EqualsNoCase(format, "integer"))
+    m_format = "%d";
+  else if (StringUtils::EqualsNoCase(format, "number"))
+    m_format = "%.1f";
+  else
+    return false;
+
+  m_format = format;
+  StringUtils::ToLower(m_format);
+
+  return true;
+}
+
+bool CSettingControlRange::Deserialize(const TiXmlNode *node, bool update /* = false */)
+{
+  if (!ISettingControl::Deserialize(node, update))
+    return false;
+
+  const TiXmlElement *formatLabel = node->FirstChildElement(SETTING_XML_ELM_CONTROL_FORMATLABEL);
+  if (formatLabel != NULL)
+  {
+    XMLUtils::GetInt(node, SETTING_XML_ELM_CONTROL_FORMATLABEL, m_formatLabel);
+    if (m_formatLabel < 0)
+      return false;
+
+    const char *formatValue = formatLabel->Attribute(SETTING_XML_ELM_CONTROL_FORMATVALUE);
+    if (formatValue != NULL)
+    {
+      if (StringUtils::IsInteger(formatValue))
+        m_valueFormatLabel = (int)strtol(formatValue, NULL, 0);
+      else
+      {
+        m_valueFormat = formatValue;
+        if (!m_valueFormat.empty())
+          m_valueFormatLabel = -1;
+      }
+    }
+  }
+
+  return true;
+}
+
+bool CSettingControlRange::SetFormat(const std::string &format)
+{
+  if (StringUtils::EqualsNoCase(format, "percentage"))
+    m_valueFormat = "%i %%";
+  else if (StringUtils::EqualsNoCase(format, "integer"))
+    m_valueFormat = "%d";
+  else if (StringUtils::EqualsNoCase(format, "number"))
+    m_valueFormat = "%.1f";
+  else if (StringUtils::EqualsNoCase(format, "date") ||
+           StringUtils::EqualsNoCase(format, "time"))
+    m_valueFormat.clear();
+  else
     return false;
 
   m_format = format;

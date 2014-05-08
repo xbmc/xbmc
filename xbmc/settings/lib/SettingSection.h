@@ -65,6 +65,9 @@ public:
    */
   SettingList GetSettings(SettingLevel level) const;
 
+  void AddSetting(CSetting *setting);
+  void AddSettings(const SettingList &settings);
+
 private:
   SettingList m_settings;
 };
@@ -140,6 +143,9 @@ public:
    */
   bool CanAccess() const;
 
+  void AddGroup(CSettingGroup *group);
+  void AddGroups(const SettingGroupList &groups);
+
 private:
   int m_label;
   int m_help;
@@ -210,6 +216,9 @@ public:
    \return List of setting categories belonging to the setting section
    */
   SettingCategoryList GetCategories(SettingLevel level) const;
+
+  void AddCategory(CSettingCategory *category);
+  void AddCategories(const SettingCategoryList &categories);
 
 private:
   int m_label;

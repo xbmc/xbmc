@@ -34,12 +34,12 @@ public:
   virtual std::string GetType() const = 0;
   const std::string& GetFormat() const { return m_format; }
   bool GetDelayed() const { return m_delayed; }
+  void SetDelayed(bool delayed) { m_delayed = delayed; }
 
   virtual bool Deserialize(const TiXmlNode *node, bool update = false);
-
-protected:
   virtual bool SetFormat(const std::string &format) { return true; }
 
+protected:
   bool m_delayed;
   std::string m_format;
 };

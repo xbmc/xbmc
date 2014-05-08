@@ -19,6 +19,7 @@
  */
 
 #include "GUIWindowMusicNav.h"
+#include "addons/AddonManager.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 #include "PlayListPlayer.h"

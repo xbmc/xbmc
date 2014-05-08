@@ -26,6 +26,7 @@ class CSettingAddon : public CSettingString
 {
 public:
   CSettingAddon(const std::string &id, CSettingsManager *settingsManager = NULL);
+  CSettingAddon(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager = NULL);
   CSettingAddon(const std::string &id, const CSettingAddon &setting);
   virtual ~CSettingAddon() { }
 
@@ -34,6 +35,7 @@ public:
   virtual bool Deserialize(const TiXmlNode *node, bool update = false);
 
   ADDON::TYPE GetAddonType() const { return m_addonType; }
+  void SetAddonType(ADDON::TYPE addonType) { m_addonType = addonType; }
 
 private:
   void copy(const CSettingAddon &setting);

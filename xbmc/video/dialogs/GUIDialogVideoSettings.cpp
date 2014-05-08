@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,219 +20,145 @@
 
 #include "system.h"
 #include "GUIDialogVideoSettings.h"
-#include "guilib/GUIWindowManager.h"
 #include "GUIPassword.h"
-#include "utils/MathUtils.h"
-#include "utils/StringUtils.h"
+#include "addons/Skin.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #include "cores/VideoRenderers/RenderFlags.h"
 #endif
-#include "video/VideoDatabase.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIWindowManager.h"
 #include "profiles/ProfilesManager.h"
-#include "settings/Settings.h"
-#include "settings/MediaSettings.h"
-#include "addons/Skin.h"
 #include "pvr/PVRManager.h"
+#include "settings/MediaSettings.h"
+#include "settings/Settings.h"
+#include "settings/lib/Setting.h"
+#include "settings/lib/SettingsManager.h"
+#include "utils/log.h"
+#include "video/VideoDatabase.h"
+
+#define SETTING_VIDEO_CROP                "video.crop"
+#define SETTING_VIDEO_VIEW_MODE           "video.viewmode"
+#define SETTING_VIDEO_ZOOM                "video.zoom"
+#define SETTING_VIDEO_PIXEL_RATIO         "video.pixelratio"
+#define SETTING_VIDEO_BRIGHTNESS          "video.brightness"
+#define SETTING_VIDEO_CONTRAST            "video.contrast"
+#define SETTING_VIDEO_GAMMA               "video.gamma"
+#define SETTING_VIDEO_NONLIN_STRETCH      "video.nonlinearstretch"
+#define SETTING_VIDEO_POSTPROCESS         "video.postprocess"
+#define SETTING_VIDEO_VERTICAL_SHIFT      "video.verticalshift"
+
+#define SETTING_VIDEO_VDPAU_NOISE         "vdpau.noise"
+#define SETTING_VIDEO_VDPAU_SHARPNESS     "vdpau.sharpness"
+
+#define SETTING_VIDEO_DEINTERLACEMODE     "video.deinterlacemode"
+#define SETTING_VIDEO_INTERLACEMETHOD     "video.interlacemethod"
+#define SETTING_VIDEO_SCALINGMETHOD       "video.scalingmethod"
+
+#define SETTING_VIDEO_STEREOSCOPICMODE    "video.stereoscopicmode"
+#define SETTING_VIDEO_STEREOSCOPICINVERT  "video.stereoscopicinvert"
+
+#define SETTING_VIDEO_MAKE_DEFAULT        "video.save"
+#define SETTING_VIDEO_CALIBRATION         "video.calibration"
 
 using namespace std;
 using namespace PVR;
 
-CGUIDialogVideoSettings::CGUIDialogVideoSettings(void)
-    : CGUIDialogSettings(WINDOW_DIALOG_VIDEO_OSD_SETTINGS, "VideoOSDSettings.xml")
+CGUIDialogVideoSettings::CGUIDialogVideoSettings()
+    : CGUIDialogSettingsManualBase(WINDOW_DIALOG_VIDEO_OSD_SETTINGS, "VideoOSDSettings.xml"),
+      m_viewModeChanged(false)
+{ }
+
+CGUIDialogVideoSettings::~CGUIDialogVideoSettings()
+{ }
+
+void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
 {
-}
+  if (setting == NULL)
+    return;
 
-CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
-{
-}
+  CGUIDialogSettingsManualBase::OnSettingChanged(setting);
 
-#define VIDEO_SETTINGS_CROP               1
-#define VIDEO_SETTINGS_VIEW_MODE          2
-#define VIDEO_SETTINGS_ZOOM               3
-#define VIDEO_SETTINGS_PIXEL_RATIO        4
-#define VIDEO_SETTINGS_BRIGHTNESS         5
-#define VIDEO_SETTINGS_CONTRAST           6
-#define VIDEO_SETTINGS_GAMMA              7
-#define VIDEO_SETTINGS_INTERLACEMETHOD    8
-// separator 9
-#define VIDEO_SETTINGS_MAKE_DEFAULT       10
+  CVideoSettings &videoSettings = CMediaSettings::Get().GetCurrentVideoSettings();
 
-#define VIDEO_SETTINGS_CALIBRATION        11
-#define VIDEO_SETTINGS_SOFTEN             13
-#define VIDEO_SETTINGS_SCALINGMETHOD      18
-
-#define VIDEO_SETTING_VDPAU_NOISE         19
-#define VIDEO_SETTING_VDPAU_SHARPNESS     20
-
-#define VIDEO_SETTINGS_NONLIN_STRETCH     21
-#define VIDEO_SETTINGS_POSTPROCESS        22
-#define VIDEO_SETTINGS_VERTICAL_SHIFT     23
-#define VIDEO_SETTINGS_DEINTERLACEMODE    24
-
-#define VIDEO_SETTINGS_STEREOSCOPICMODE   25
-#define VIDEO_SETTINGS_STEREOSCOPICINVERT 26
-
-void CGUIDialogVideoSettings::CreateSettings()
-{
-  m_usePopupSliders = g_SkinInfo->HasSkinFile("DialogSlider.xml");
-  // clear out any old settings
-  m_settings.clear();
-  // create our settings
-  {
-    vector<pair<int, int> > entries;
-
-    if (g_renderManager.Supports(VS_DEINTERLACEMODE_OFF))
-      entries.push_back(make_pair(VS_DEINTERLACEMODE_OFF    , 16039));
-
-    if (g_renderManager.Supports(VS_DEINTERLACEMODE_AUTO))
-      entries.push_back(make_pair(VS_DEINTERLACEMODE_AUTO   , 16040));
-
-    if (g_renderManager.Supports(VS_DEINTERLACEMODE_FORCE))
-      entries.push_back(make_pair(VS_DEINTERLACEMODE_FORCE  , 16041));
-
-    if (entries.size())
-      AddSpin(VIDEO_SETTINGS_DEINTERLACEMODE, 16037, (int*)&CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode, entries);
-  }
-  {
-    vector<pair<int, int> > entries;
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_AUTO                 , 16019));
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_BLEND         , 20131));
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED, 20130));
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_WEAVE         , 20129));
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_BOB_INVERTED  , 16022));
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_BOB           , 16021));
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_DEINTERLACE          , 16020));
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_DEINTERLACE_HALF     , 16036));
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_SW_BLEND             , 16324));
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_INVERSE_TELECINE     , 16314));
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL     , 16311));
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_TEMPORAL             , 16310));
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_BOB                  , 16325));
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF, 16318));
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF        , 16317));
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE     , 16314));
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_DXVA_BOB                   , 16320));
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_DXVA_BEST                  , 16321));
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_AUTO_ION                   , 16325));
-
-    /* remove unsupported methods */
-    for(vector<pair<int, int> >::iterator it = entries.begin(); it != entries.end();)
-    {
-      if(g_renderManager.Supports((EINTERLACEMETHOD)it->first))
-        it++;
-      else
-        it = entries.erase(it);
-    }
-
-    if (entries.size() > 1)
-    {
-      AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16038, (int*)&CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod, entries);
-      if (CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode == VS_DEINTERLACEMODE_OFF)
-        EnableSettings(VIDEO_SETTINGS_INTERLACEMETHOD, false);
-    }
-  }
-  {
-    vector<pair<int, int> > entries;
-    entries.push_back(make_pair(VS_SCALINGMETHOD_NEAREST          , 16301));
-    entries.push_back(make_pair(VS_SCALINGMETHOD_LINEAR           , 16302));
-    entries.push_back(make_pair(VS_SCALINGMETHOD_CUBIC            , 16303));
-    entries.push_back(make_pair(VS_SCALINGMETHOD_LANCZOS2         , 16304));
-    entries.push_back(make_pair(VS_SCALINGMETHOD_SPLINE36_FAST    , 16323));
-    entries.push_back(make_pair(VS_SCALINGMETHOD_LANCZOS3_FAST    , 16315));
-    entries.push_back(make_pair(VS_SCALINGMETHOD_SPLINE36         , 16322));
-    entries.push_back(make_pair(VS_SCALINGMETHOD_LANCZOS3         , 16305));
-    entries.push_back(make_pair(VS_SCALINGMETHOD_SINC8            , 16306));
-//    entries.push_back(make_pair(VS_SCALINGMETHOD_NEDI             , ?????));
-    entries.push_back(make_pair(VS_SCALINGMETHOD_BICUBIC_SOFTWARE , 16307));
-    entries.push_back(make_pair(VS_SCALINGMETHOD_LANCZOS_SOFTWARE , 16308));
-    entries.push_back(make_pair(VS_SCALINGMETHOD_SINC_SOFTWARE    , 16309));
-    entries.push_back(make_pair(VS_SCALINGMETHOD_VDPAU_HARDWARE   , 13120));
-    entries.push_back(make_pair(VS_SCALINGMETHOD_DXVA_HARDWARE    , 16319));
-    entries.push_back(make_pair(VS_SCALINGMETHOD_AUTO             , 16316));
-
-    /* remove unsupported methods */
-    for(vector<pair<int, int> >::iterator it = entries.begin(); it != entries.end();)
-    {
-      if(g_renderManager.Supports((ESCALINGMETHOD)it->first))
-        it++;
-      else
-        it = entries.erase(it);
-    }
-
-    AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int*)&CMediaSettings::Get().GetCurrentVideoSettings().m_ScalingMethod, entries);
-  }
-  if (g_renderManager.Supports(RENDERFEATURE_CROP))
-    AddBool(VIDEO_SETTINGS_CROP, 644, &CMediaSettings::Get().GetCurrentVideoSettings().m_Crop);
-  if (g_renderManager.Supports(RENDERFEATURE_STRETCH) || g_renderManager.Supports(RENDERFEATURE_PIXEL_RATIO))
-  {
-    const int entries[] = {630, 631, 632, 633, 634, 635, 636 };
-    AddSpin(VIDEO_SETTINGS_VIEW_MODE, 629, &CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode, 7, entries);
-  }
-  if (g_renderManager.Supports(RENDERFEATURE_ZOOM))
-    AddSlider(VIDEO_SETTINGS_ZOOM, 216, &CMediaSettings::Get().GetCurrentVideoSettings().m_CustomZoomAmount, 0.5f, 0.01f, 2.0f, FormatFloat);
-  if (g_renderManager.Supports(RENDERFEATURE_VERTICAL_SHIFT))
-    AddSlider(VIDEO_SETTINGS_VERTICAL_SHIFT, 225, &CMediaSettings::Get().GetCurrentVideoSettings().m_CustomVerticalShift, -2.0f, 0.01f, 2.0f, FormatFloat);
-  if (g_renderManager.Supports(RENDERFEATURE_PIXEL_RATIO))
-    AddSlider(VIDEO_SETTINGS_PIXEL_RATIO, 217, &CMediaSettings::Get().GetCurrentVideoSettings().m_CustomPixelRatio, 0.5f, 0.01f, 2.0f, FormatFloat);
-  if (g_renderManager.Supports(RENDERFEATURE_POSTPROCESS))
-    AddBool(VIDEO_SETTINGS_POSTPROCESS, 16400, &CMediaSettings::Get().GetCurrentVideoSettings().m_PostProcess);
-
+  const std::string &settingId = setting->GetId();
+  if (settingId == SETTING_VIDEO_DEINTERLACEMODE)
+    videoSettings.m_DeinterlaceMode = static_cast<EDEINTERLACEMODE>(static_cast<const CSettingInt*>(setting)->GetValue());
+  else if (settingId == SETTING_VIDEO_INTERLACEMETHOD)
+    videoSettings.m_InterlaceMethod = static_cast<EINTERLACEMETHOD>(static_cast<const CSettingInt*>(setting)->GetValue());
+  else if (settingId == SETTING_VIDEO_SCALINGMETHOD)
+    videoSettings.m_ScalingMethod = static_cast<ESCALINGMETHOD>(static_cast<const CSettingInt*>(setting)->GetValue());
 #ifdef HAS_VIDEO_PLAYBACK
-  if (g_renderManager.Supports(RENDERFEATURE_BRIGHTNESS))
-    AddSlider(VIDEO_SETTINGS_BRIGHTNESS, 464, &CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness, 0, 1, 100, FormatInteger);
-  if (g_renderManager.Supports(RENDERFEATURE_CONTRAST))
-    AddSlider(VIDEO_SETTINGS_CONTRAST, 465, &CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast, 0, 1, 100, FormatInteger);
-  if (g_renderManager.Supports(RENDERFEATURE_GAMMA))
-    AddSlider(VIDEO_SETTINGS_GAMMA, 466, &CMediaSettings::Get().GetCurrentVideoSettings().m_Gamma, 0, 1, 100, FormatInteger);
-  if (g_renderManager.Supports(RENDERFEATURE_NOISE))
-    AddSlider(VIDEO_SETTING_VDPAU_NOISE, 16312, &CMediaSettings::Get().GetCurrentVideoSettings().m_NoiseReduction, 0.0f, 0.01f, 1.0f, FormatFloat);
-  if (g_renderManager.Supports(RENDERFEATURE_SHARPNESS))
-    AddSlider(VIDEO_SETTING_VDPAU_SHARPNESS, 16313, &CMediaSettings::Get().GetCurrentVideoSettings().m_Sharpness, -1.0f, 0.02f, 1.0f, FormatFloat);
-  if (g_renderManager.Supports(RENDERFEATURE_NONLINSTRETCH))
-    AddBool(VIDEO_SETTINGS_NONLIN_STRETCH, 659, &CMediaSettings::Get().GetCurrentVideoSettings().m_CustomNonLinStretch);
+  else if (settingId == SETTING_VIDEO_CROP)
+    videoSettings.m_Crop = static_cast<const CSettingBool*>(setting)->GetValue();
+  else if (settingId == SETTING_VIDEO_VIEW_MODE)
+  {
+    videoSettings.m_ViewMode = static_cast<const CSettingInt*>(setting)->GetValue();
+
+    g_renderManager.SetViewMode(videoSettings.m_ViewMode);
+
+    m_viewModeChanged = true;
+    m_settingsManager->SetNumber(SETTING_VIDEO_ZOOM, videoSettings.m_CustomZoomAmount);
+    m_settingsManager->SetNumber(SETTING_VIDEO_PIXEL_RATIO, videoSettings.m_CustomPixelRatio);
+    m_settingsManager->SetNumber(SETTING_VIDEO_VERTICAL_SHIFT, videoSettings.m_CustomVerticalShift);
+    m_settingsManager->SetBool(SETTING_VIDEO_NONLIN_STRETCH, videoSettings.m_CustomNonLinStretch);
+    m_viewModeChanged = false;
+  }
+  else if (settingId == SETTING_VIDEO_ZOOM ||
+           settingId == SETTING_VIDEO_VERTICAL_SHIFT ||
+           settingId == SETTING_VIDEO_PIXEL_RATIO ||
+           settingId == SETTING_VIDEO_NONLIN_STRETCH)
+  {
+    if (settingId == SETTING_VIDEO_ZOOM)
+      videoSettings.m_CustomZoomAmount = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
+    else if (settingId == SETTING_VIDEO_VERTICAL_SHIFT)
+      videoSettings.m_CustomVerticalShift = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
+    else if (settingId == SETTING_VIDEO_PIXEL_RATIO)
+      videoSettings.m_CustomPixelRatio = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
+    else if (settingId == SETTING_VIDEO_NONLIN_STRETCH)
+      videoSettings.m_CustomNonLinStretch = static_cast<const CSettingBool*>(setting)->GetValue();
+
+    if (!m_viewModeChanged)
+    {
+      // try changing the view mode to custom. If it already is set to custom
+      // manually call the render manager
+      if (m_settingsManager->GetInt(SETTING_VIDEO_VIEW_MODE) != ViewModeCustom)
+        m_settingsManager->SetInt(SETTING_VIDEO_VIEW_MODE, ViewModeCustom);
+      else
+        g_renderManager.SetViewMode(videoSettings.m_ViewMode);
+    }
+  }
+  else if (settingId == SETTING_VIDEO_POSTPROCESS)
+    videoSettings.m_PostProcess = static_cast<const CSettingBool*>(setting)->GetValue();
+  else if (settingId == SETTING_VIDEO_BRIGHTNESS)
+    videoSettings.m_Brightness = static_cast<float>(static_cast<const CSettingInt*>(setting)->GetValue());
+  else if (settingId == SETTING_VIDEO_CONTRAST)
+    videoSettings.m_Contrast = static_cast<float>(static_cast<const CSettingInt*>(setting)->GetValue());
+  else if (settingId == SETTING_VIDEO_GAMMA)
+    videoSettings.m_Gamma = static_cast<float>(static_cast<const CSettingInt*>(setting)->GetValue());
+  else if (settingId == SETTING_VIDEO_VDPAU_NOISE)
+    videoSettings.m_NoiseReduction = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
+  else if (settingId == SETTING_VIDEO_VDPAU_SHARPNESS)
+    videoSettings.m_Sharpness = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
 #endif
+  else if (settingId == SETTING_VIDEO_STEREOSCOPICMODE)
+    videoSettings.m_StereoMode = static_cast<const CSettingInt*>(setting)->GetValue();
+  else if (settingId == SETTING_VIDEO_STEREOSCOPICINVERT)
+    videoSettings.m_StereoInvert = static_cast<const CSettingBool*>(setting)->GetValue();
 
-  vector<pair<int, int> > stereomode;
-  stereomode.push_back(make_pair(RENDER_STEREO_MODE_OFF             , 16316));
-  stereomode.push_back(make_pair(RENDER_STEREO_MODE_SPLIT_HORIZONTAL, 36503));
-  stereomode.push_back(make_pair(RENDER_STEREO_MODE_SPLIT_VERTICAL  , 36504));
-  AddSpin(VIDEO_SETTINGS_STEREOSCOPICMODE  , 36535, &CMediaSettings::Get().GetCurrentVideoSettings().m_StereoMode, stereomode);
-  AddBool(VIDEO_SETTINGS_STEREOSCOPICINVERT, 36536, &CMediaSettings::Get().GetCurrentVideoSettings().m_StereoInvert);
-
-  AddSeparator(8);
-  AddButton(VIDEO_SETTINGS_MAKE_DEFAULT, 12376);
-  AddButton(VIDEO_SETTINGS_CALIBRATION, 214);
+  if (g_PVRManager.IsPlayingRadio() || g_PVRManager.IsPlayingTV())
+    g_PVRManager.TriggerSaveChannelSettings();
 }
 
-void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
+void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
 {
-  // check and update anything that needs it
-#ifdef HAS_VIDEO_PLAYBACK
-  if (setting.id == VIDEO_SETTINGS_CROP)
-  {
-    // AutoCrop changes will get picked up automatically by dvdplayer
-  }
-  else if (setting.id == VIDEO_SETTINGS_VIEW_MODE)
-  {
-    g_renderManager.SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
-    UpdateSetting(VIDEO_SETTINGS_ZOOM);
-    UpdateSetting(VIDEO_SETTINGS_PIXEL_RATIO);
-    UpdateSetting(VIDEO_SETTINGS_NONLIN_STRETCH);
-    UpdateSetting(VIDEO_SETTINGS_VERTICAL_SHIFT);
-  }
-  else if (setting.id == VIDEO_SETTINGS_ZOOM || setting.id == VIDEO_SETTINGS_PIXEL_RATIO
-        || setting.id == VIDEO_SETTINGS_NONLIN_STRETCH
-        || setting.id == VIDEO_SETTINGS_VERTICAL_SHIFT)
-  {
-    CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode = ViewModeCustom;
-    g_renderManager.SetViewMode(ViewModeCustom);
-    UpdateSetting(VIDEO_SETTINGS_VIEW_MODE);
-  }
-  else
-#endif
-  if (setting.id == VIDEO_SETTINGS_CALIBRATION)
+  if (setting == NULL)
+    return;
+
+  CGUIDialogSettingsManualBase::OnSettingChanged(setting);
+
+  const std::string &settingId = setting->GetId();
+  if (settingId == SETTING_VIDEO_CALIBRATION)
   {
     // launch calibration window
     if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE  &&
@@ -240,41 +166,197 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
       return;
     g_windowManager.ActivateWindow(WINDOW_SCREEN_CALIBRATION);
   }
-  else if (setting.id == VIDEO_SETTINGS_MAKE_DEFAULT)
-  {
-    if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-        !g_passwordManager.CheckSettingLevelLock(::SettingLevelExpert))
+  // TODO
+  else if (settingId == SETTING_VIDEO_MAKE_DEFAULT)
+    Save();
+}
+
+void CGUIDialogVideoSettings::Save()
+{
+  if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+      !g_passwordManager.CheckSettingLevelLock(::SettingLevelExpert))
+    return;
+
+  // prompt user if they are sure
+  if (CGUIDialogYesNo::ShowAndGetInput(12376, 750, 0, 12377))
+  { // reset the settings
+    CVideoDatabase db;
+    if (!db.Open())
       return;
+    db.EraseVideoSettings();
+    db.Close();
 
-    // prompt user if they are sure
-    if (CGUIDialogYesNo::ShowAndGetInput(12376, 750, 0, 12377))
-    { // reset the settings
-      CVideoDatabase db;
-      db.Open();
-      db.EraseVideoSettings();
-      db.Close();
-      CMediaSettings::Get().GetDefaultVideoSettings() = CMediaSettings::Get().GetCurrentVideoSettings();
-      CMediaSettings::Get().GetDefaultVideoSettings().m_SubtitleStream = -1;
-      CMediaSettings::Get().GetDefaultVideoSettings().m_AudioStream = -1;
-      CSettings::Get().Save();
-    }
+    CMediaSettings::Get().GetDefaultVideoSettings() = CMediaSettings::Get().GetCurrentVideoSettings();
+    CMediaSettings::Get().GetDefaultVideoSettings().m_SubtitleStream = -1;
+    CMediaSettings::Get().GetDefaultVideoSettings().m_AudioStream = -1;
+    CSettings::Get().Save();
   }
-  else if (setting.id == VIDEO_SETTINGS_DEINTERLACEMODE)
+}
+
+void CGUIDialogVideoSettings::InitializeSettings()
+{
+  CGUIDialogSettingsManualBase::InitializeSettings();
+
+  CSettingCategory *category = AddCategory("audiosubtitlesettings", -1);
+  if (category == NULL)
   {
-    EnableSettings(VIDEO_SETTINGS_INTERLACEMETHOD, CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode != VS_DEINTERLACEMODE_OFF);
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
   }
 
-  if (g_PVRManager.IsPlayingRadio() || g_PVRManager.IsPlayingTV())
-    g_PVRManager.TriggerSaveChannelSettings();
-}
+  // get all necessary setting groups
+  CSettingGroup *groupVideo = AddGroup(category);
+  if (groupVideo == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
+  CSettingGroup *groupVideoPlayback = AddGroup(category);
+  if (groupVideoPlayback == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
+  CSettingGroup *groupStereoscopic = AddGroup(category);
+  if (groupStereoscopic == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
+  CSettingGroup *groupSaveAsDefault = AddGroup(category);
+  if (groupSaveAsDefault == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
 
-CStdString CGUIDialogVideoSettings::FormatInteger(float value, float minimum)
-{
-  return StringUtils::Format("%i", MathUtils::round_int(value));
-}
+  bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
 
-CStdString CGUIDialogVideoSettings::FormatFloat(float value, float minimum)
-{
-  return StringUtils::Format("%2.2f", value);
-}
+  CVideoSettings &videoSettings = CMediaSettings::Get().GetCurrentVideoSettings();
+  
+  StaticIntegerSettingOptions entries;
+  if (g_renderManager.Supports(VS_DEINTERLACEMODE_OFF))
+    entries.push_back(make_pair(16039, VS_DEINTERLACEMODE_OFF));
+  if (g_renderManager.Supports(VS_DEINTERLACEMODE_AUTO))
+    entries.push_back(make_pair(16040, VS_DEINTERLACEMODE_AUTO));
+  if (g_renderManager.Supports(VS_DEINTERLACEMODE_FORCE))
+    entries.push_back(make_pair(16041, VS_DEINTERLACEMODE_FORCE));
+  if (!entries.empty())
+    AddSpinner(groupVideo, SETTING_VIDEO_DEINTERLACEMODE, 16037, 0, static_cast<int>(videoSettings.m_DeinterlaceMode), entries);
 
+  entries.clear();
+  entries.push_back(make_pair(16019, VS_INTERLACEMETHOD_AUTO));
+  entries.push_back(make_pair(20131, VS_INTERLACEMETHOD_RENDER_BLEND));
+  entries.push_back(make_pair(20130, VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED));
+  entries.push_back(make_pair(20129, VS_INTERLACEMETHOD_RENDER_WEAVE));
+  entries.push_back(make_pair(16022, VS_INTERLACEMETHOD_RENDER_BOB_INVERTED));
+  entries.push_back(make_pair(16021, VS_INTERLACEMETHOD_RENDER_BOB));
+  entries.push_back(make_pair(16020, VS_INTERLACEMETHOD_DEINTERLACE));
+  entries.push_back(make_pair(16036, VS_INTERLACEMETHOD_DEINTERLACE_HALF));
+  entries.push_back(make_pair(16324, VS_INTERLACEMETHOD_SW_BLEND));
+  entries.push_back(make_pair(16314, VS_INTERLACEMETHOD_INVERSE_TELECINE));
+  entries.push_back(make_pair(16311, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL));
+  entries.push_back(make_pair(16310, VS_INTERLACEMETHOD_VDPAU_TEMPORAL));
+  entries.push_back(make_pair(16325, VS_INTERLACEMETHOD_VDPAU_BOB));
+  entries.push_back(make_pair(16318, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF));
+  entries.push_back(make_pair(16317, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF));
+  entries.push_back(make_pair(16314, VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE));
+  entries.push_back(make_pair(16320, VS_INTERLACEMETHOD_DXVA_BOB));
+  entries.push_back(make_pair(16321, VS_INTERLACEMETHOD_DXVA_BEST));
+  entries.push_back(make_pair(16325, VS_INTERLACEMETHOD_AUTO_ION));
+
+  /* remove unsupported methods */
+  for (StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
+  {
+    if (g_renderManager.Supports((EINTERLACEMETHOD)it->second))
+      it++;
+    else
+      it = entries.erase(it);
+  }
+
+  if (!entries.empty())
+  {
+    CSettingInt *settingInterlaceMethod = AddSpinner(groupVideo, SETTING_VIDEO_INTERLACEMETHOD, 16038, 0, static_cast<int>(videoSettings.m_InterlaceMethod), entries);
+
+    CSettingDependency dependencyDeinterlaceModeOff(SettingDependencyTypeEnable, m_settingsManager);
+    dependencyDeinterlaceModeOff.And()
+      ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_DEINTERLACEMODE, "0", SettingDependencyOperatorEquals, true, m_settingsManager)));
+    SettingDependencies depsDeinterlaceModeOff;
+    depsDeinterlaceModeOff.push_back(dependencyDeinterlaceModeOff);
+    settingInterlaceMethod->SetDependencies(depsDeinterlaceModeOff);
+  }
+
+  entries.clear();
+  entries.push_back(make_pair(16301, VS_SCALINGMETHOD_NEAREST));
+  entries.push_back(make_pair(16302, VS_SCALINGMETHOD_LINEAR));
+  entries.push_back(make_pair(16303, VS_SCALINGMETHOD_CUBIC ));
+  entries.push_back(make_pair(16304, VS_SCALINGMETHOD_LANCZOS2));
+  entries.push_back(make_pair(16323, VS_SCALINGMETHOD_SPLINE36_FAST));
+  entries.push_back(make_pair(16315, VS_SCALINGMETHOD_LANCZOS3_FAST));
+  entries.push_back(make_pair(16322, VS_SCALINGMETHOD_SPLINE36));
+  entries.push_back(make_pair(16305, VS_SCALINGMETHOD_LANCZOS3));
+  entries.push_back(make_pair(16306, VS_SCALINGMETHOD_SINC8));
+//  entries.push_back(make_pair(?????, VS_SCALINGMETHOD_NEDI));
+  entries.push_back(make_pair(16307, VS_SCALINGMETHOD_BICUBIC_SOFTWARE));
+  entries.push_back(make_pair(16308, VS_SCALINGMETHOD_LANCZOS_SOFTWARE));
+  entries.push_back(make_pair(16309, VS_SCALINGMETHOD_SINC_SOFTWARE));
+  entries.push_back(make_pair(13120, VS_SCALINGMETHOD_VDPAU_HARDWARE));
+  entries.push_back(make_pair(16319, VS_SCALINGMETHOD_DXVA_HARDWARE));
+  entries.push_back(make_pair(16316, VS_SCALINGMETHOD_AUTO));
+
+  /* remove unsupported methods */
+  for(StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
+  {
+    if (g_renderManager.Supports((ESCALINGMETHOD)it->second))
+      it++;
+    else
+      it = entries.erase(it);
+  }
+
+  AddSpinner(groupVideo, SETTING_VIDEO_SCALINGMETHOD, 16300, 0, static_cast<int>(videoSettings.m_ScalingMethod), entries);
+
+#ifdef HAS_VIDEO_PLAYBACK
+  if (g_renderManager.Supports(RENDERFEATURE_CROP))
+    AddToggle(groupVideo, SETTING_VIDEO_CROP, 644, 0, videoSettings.m_Crop);
+
+  if (g_renderManager.Supports(RENDERFEATURE_STRETCH) || g_renderManager.Supports(RENDERFEATURE_PIXEL_RATIO))
+  {
+    entries.clear();
+    for (int i = 0; i < 7; ++i)
+      entries.push_back(make_pair(630 + i, i));
+    AddSpinner(groupVideo, SETTING_VIDEO_VIEW_MODE, 629, 0, videoSettings.m_ViewMode, entries);
+  }
+  if (g_renderManager.Supports(RENDERFEATURE_ZOOM))
+    AddSlider(groupVideo, SETTING_VIDEO_ZOOM, 216, 0, videoSettings.m_CustomZoomAmount, "%2.2f", 0.5f, 0.01f, 2.0f, -1, usePopup);
+  if (g_renderManager.Supports(RENDERFEATURE_VERTICAL_SHIFT))
+    AddSlider(groupVideo, SETTING_VIDEO_VERTICAL_SHIFT, 225, 0, videoSettings.m_CustomVerticalShift, "%2.2f", -2.0f, 0.01f, 2.0f, -1, usePopup);
+  if (g_renderManager.Supports(RENDERFEATURE_PIXEL_RATIO))
+    AddSlider(groupVideo, SETTING_VIDEO_PIXEL_RATIO, 217, 0, videoSettings.m_CustomPixelRatio, "%2.2f", 0.5f, 0.01f, 2.0f, -1, usePopup);
+  if (g_renderManager.Supports(RENDERFEATURE_POSTPROCESS))
+    AddToggle(groupVideo, SETTING_VIDEO_POSTPROCESS, 16400, 0, videoSettings.m_PostProcess);
+  if (g_renderManager.Supports(RENDERFEATURE_BRIGHTNESS))
+    AddPercentageSlider(groupVideoPlayback, SETTING_VIDEO_BRIGHTNESS, 464, 0, static_cast<int>(videoSettings.m_Brightness), 14047, 1, 464, usePopup);
+  if (g_renderManager.Supports(RENDERFEATURE_CONTRAST))
+    AddPercentageSlider(groupVideoPlayback, SETTING_VIDEO_CONTRAST, 465, 0, static_cast<int>(videoSettings.m_Contrast), 14047, 1, 464, usePopup);
+  if (g_renderManager.Supports(RENDERFEATURE_GAMMA))
+    AddPercentageSlider(groupVideoPlayback, SETTING_VIDEO_GAMMA, 466, 0, static_cast<int>(videoSettings.m_Gamma), 14047, 1, 464, usePopup);
+  if (g_renderManager.Supports(RENDERFEATURE_NOISE))
+    AddSlider(groupVideoPlayback, SETTING_VIDEO_VDPAU_NOISE, 16312, 0, videoSettings.m_NoiseReduction, "%2.2f", 0.0f, 0.01f, 1.0f, -1, usePopup);
+  if (g_renderManager.Supports(RENDERFEATURE_SHARPNESS))
+    AddSlider(groupVideoPlayback, SETTING_VIDEO_VDPAU_SHARPNESS, 16313, 0, videoSettings.m_Sharpness, "%2.2f", -1.0f, 0.02f, 1.0f, -1, usePopup);
+  if (g_renderManager.Supports(RENDERFEATURE_NONLINSTRETCH))
+    AddToggle(groupVideoPlayback, SETTING_VIDEO_NONLIN_STRETCH, 659, 0, videoSettings.m_CustomNonLinStretch);
+#endif
+
+  // stereoscopic settings
+  entries.clear();
+  entries.push_back(make_pair(16316, RENDER_STEREO_MODE_OFF));
+  entries.push_back(make_pair(36503, RENDER_STEREO_MODE_SPLIT_HORIZONTAL));
+  entries.push_back(make_pair(36504, RENDER_STEREO_MODE_SPLIT_VERTICAL));
+  AddSpinner(groupStereoscopic, SETTING_VIDEO_STEREOSCOPICMODE  , 36535, 0, videoSettings.m_StereoMode, entries);
+  AddToggle(groupStereoscopic, SETTING_VIDEO_STEREOSCOPICINVERT, 36536, 0, videoSettings.m_StereoInvert);
+
+  // general settings
+  AddButton(groupSaveAsDefault, SETTING_VIDEO_MAKE_DEFAULT, 12376, 0);
+  AddButton(groupSaveAsDefault, SETTING_VIDEO_CALIBRATION, 214, 0);
+}

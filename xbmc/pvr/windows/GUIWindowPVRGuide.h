@@ -57,7 +57,7 @@ namespace PVR
     void UnregisterObservers(void);
     void ResetObservers(void);
     
-    static void SettingOptionsEpgGuideViewFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
+    static void SettingOptionsEpgGuideViewFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
   private:
     bool SelectPlayingFile(void);

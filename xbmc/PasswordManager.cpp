@@ -66,9 +66,8 @@ bool CPasswordManager::PromptToAuthenticateURL(CURL &url)
 {
   CSingleLock lock(m_critSection);
 
-  CStdString passcode;
-  CStdString username = url.GetUserName();
-  CStdString path = GetLookupPath(url);
+  std::string passcode;
+  std::string username = url.GetUserName();
 
   bool saveDetails = false;
   if (!CGUIDialogLockSettings::ShowAndGetUserAndPassword(username, passcode, url.GetWithoutUserDetails(), &saveDetails))

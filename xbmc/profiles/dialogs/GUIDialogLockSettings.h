@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,32 +22,44 @@
 
 #include "GUIPassword.h"
 #include "profiles/Profile.h"
-#include "settings/dialogs/GUIDialogSettings.h"
+#include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
-class CGUIDialogLockSettings : public CGUIDialogSettings
+class CGUIDialogLockSettings : public CGUIDialogSettingsManualBase
 {
 public:
-  CGUIDialogLockSettings(void);
-  virtual ~CGUIDialogLockSettings(void);
-  static bool ShowAndGetLock(LockType& iLockMode, CStdString& strPassword, int iHeader=20091);
-  static bool ShowAndGetLock(CProfile::CLock &locks, int iButtonLabel = 20091, bool bConditional = false, bool bDetails = true);
-  static bool ShowAndGetUserAndPassword(CStdString& strUser, CStdString& strPassword, const CStdString& strURL, bool *saveUserDetails);
+  CGUIDialogLockSettings();
+  virtual ~CGUIDialogLockSettings();
+
+  static bool ShowAndGetLock(LockType &lockMode, std::string &password, int header = 20091);
+  static bool ShowAndGetLock(CProfile::CLock &locks, int buttonLabel = 20091, bool conditional = false, bool details = true);
+  static bool ShowAndGetUserAndPassword(std::string &user, std::string &password, const std::string &url, bool *saveUserDetails);
+
 protected:
+  // implementations of ISettingCallback
+  virtual void OnSettingChanged(const CSetting *setting);
+  virtual void OnSettingAction(const CSetting *setting);
+
+  // specialization of CGUIDialogSettingsBase
+  virtual bool AllowResettingSettings() const { return false; }
+  virtual void Save() { }
   virtual void OnCancel();
-  virtual void SetupPage();
-  virtual void CreateSettings();
-  virtual void OnSettingChanged(SettingInfo &setting);
-  void EnableDetails(bool bEnable);
+  virtual void SetupView();
+
+  // specialization of CGUIDialogSettingsManualBase
+  virtual void InitializeSettings();
+
+private:
+  void setDetailSettingsEnabled(bool enabled);
+  void setLockCodeLabel();
+
+  bool m_changed;
 
   CProfile::CLock m_locks;
-  CStdString m_strUser;
-  CStdString m_strURL;
-  bool m_bChanged;
-  bool m_bDetails;
-  bool m_bConditionalDetails;
-  bool m_bGetUser;
-  int m_iButtonLabel;
-  bool *m_saveUserDetails;
+  std::string m_user;
+  std::string m_url;
+  bool m_details;
+  bool m_conditionalDetails;
+  bool m_getUser;
+  bool* m_saveUserDetails;
+  int m_buttonLabel;
 };
-
-

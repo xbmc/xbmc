@@ -2894,9 +2894,6 @@
     <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogContentSettings.cpp">
       <Filter>settings\dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogSettings.cpp">
-      <Filter>settings\dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\settings\windows\GUIWindowSettings.cpp">
       <Filter>settings\windows</Filter>
     </ClCompile>
@@ -3106,6 +3103,24 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\media\MediaType.cpp">
       <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsBase.cpp">
+      <Filter>settings\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsManagerBase.cpp">
+      <Filter>settings\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\SettingCreator.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\SettingConditions.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsManualBase.cpp">
+      <Filter>settings\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\SettingUtils.cpp">
+      <Filter>settings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5835,9 +5850,6 @@
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogContentSettings.h">
       <Filter>settings\dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettings.h">
-      <Filter>settings\dialogs</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\windows\GUIWindowSettings.h">
       <Filter>settings\windows</Filter>
     </ClInclude>
@@ -6090,6 +6102,27 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\media\MediaType.h">
       <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\ISliderCallback.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsBase.h">
+      <Filter>settings\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsManagerBase.h">
+      <Filter>settings\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\SettingCreator.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\SettingConditions.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsManualBase.h">
+      <Filter>settings\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\SettingUtils.h">
+      <Filter>settings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
