@@ -784,8 +784,8 @@ void CGUIPlexMediaWindow::GetContextButtons(int itemNumber, CContextButtons &but
          g_plexApplication.playQueueManager->getCurrentPlayQueuePlaylist() == PLAYLIST_MUSIC))
     {
       // now enable queueing
-      buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 52603);
       buttons.Add(CONTEXT_BUTTON_PLAY_ONLY_THIS, 52602);
+      buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 52603);
     }
   }
 
