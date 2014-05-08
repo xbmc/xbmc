@@ -106,7 +106,11 @@ CGUIMediaWindow::CGUIMediaWindow(int id, const char *xmlFile)
     : CGUIWindow(id, xmlFile)
 {
   m_loadType = KEEP_IN_MEMORY;
+#ifndef __PLEX__
   m_vecItems = new CFileItemList;
+#else
+  m_vecItems = CFileItemListPtr(new CFileItemList);
+#endif
   m_unfilteredItems = new CFileItemList;
   m_vecItems->SetPath("?");
   m_iLastControl = -1;
@@ -118,7 +122,9 @@ CGUIMediaWindow::CGUIMediaWindow(int id, const char *xmlFile)
 
 CGUIMediaWindow::~CGUIMediaWindow()
 {
+#ifndef __PLEX__
   delete m_vecItems;
+#endif
   delete m_unfilteredItems;
 }
 

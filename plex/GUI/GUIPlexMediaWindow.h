@@ -81,7 +81,7 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public 
     bool MatchPlexContent(const CStdString& matchStr);
     bool MatchPlexFilter(const CStdString& matchStr);
     bool MatchUniformProperty(const CStdString& property);
-    CFileItemList* GetVecItems() const { return m_vecItems; }
+    CFileItemListPtr GetVecItems() const { return m_vecItems; }
     bool IsFiltered();
     bool CanFilterAdvanced();
 

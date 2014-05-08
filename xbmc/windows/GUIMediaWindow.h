@@ -177,7 +177,7 @@ protected:
   CGUIViewControl m_viewControl;
 
   // current path and history
-  CFileItemList* m_vecItems;
+  CFileItemListPtr m_vecItems;
   CFileItemList* m_unfilteredItems;        ///< \brief items prior to filtering using FilterItems()
   CDirectoryHistory m_history;
   std::auto_ptr<CGUIViewState> m_guiState;
