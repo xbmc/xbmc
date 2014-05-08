@@ -280,7 +280,9 @@ void CPlexDirectoryTypeParserVideo::ParseTag(CFileItem &item, CFileItem &tagItem
   switch(tagItem.GetPlexDirectoryType())
   {
     case PLEX_DIR_TYPE_GENRE:
-      tag->m_genre.push_back(tagVal);
+      // limit to two genres for now
+      if (tag->m_genre.size() < 2)
+        tag->m_genre.push_back(tagVal);
       break;
     case PLEX_DIR_TYPE_WRITER:
       tag->m_writingCredits.push_back(tagVal);
