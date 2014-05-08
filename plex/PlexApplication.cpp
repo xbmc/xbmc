@@ -321,9 +321,12 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char* 
   else if (flag == ANNOUNCEMENT::Player && stricmp(sender, "xbmc") == 0
            && stricmp(message, "OnPause") == 0)
   {
-    CGUIDialogVideoOSD* osd
-        = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
-    if (g_application.IsPlayingVideo() && osd && !osd->IsActive())
-      CApplicationMessenger::Get().DoModal(osd, WINDOW_DIALOG_VIDEO_OSD, "pauseOpen", false);
+    if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+    {
+      CGUIDialogVideoOSD* osd
+          = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
+      if (g_application.IsPlayingVideo() && osd && !osd->IsActive())
+        CApplicationMessenger::Get().DoModal(osd, WINDOW_DIALOG_VIDEO_OSD, "pauseOpen", false);
+    }
   }
 }
