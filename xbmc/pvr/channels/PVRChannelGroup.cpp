@@ -29,6 +29,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "music/tags/MusicInfoTag.h"
 #include "utils/log.h"
 #include "Util.h"
@@ -230,87 +231,80 @@ bool CPVRChannelGroup::MoveChannel(unsigned int iOldChannelNumber, unsigned int 
   return true;
 }
 
-bool CPVRChannelGroup::SetChannelIconPath(CPVRChannelPtr channel, const std::string& strIconPath)
-{
-  if (CFile::Exists(strIconPath))
-  {
-    channel->SetIconPath(strIconPath, g_advancedSettings.m_bPVRAutoScanIconsUserSet);
-    return true;
-  }
-  return false;
-}
-
 void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 {
-  if (CSettings::Get().GetString("pvrmenu.iconpath").empty())
+  std::string iconPath = CSettings::Get().GetString("pvrmenu.iconpath");
+  if (iconPath.empty())
     return;
 
   CPVRDatabase *database = GetPVRDatabase();
   if (!database)
     return;
 
+  /* fetch files in icon path for fast lookup */
+  CFileItemList fileItemList;
+  CDirectory::GetDirectory(iconPath, fileItemList, ".jpg|.png|.tbn");
+
+  if (fileItemList.IsEmpty())
+    return;
+
+  CGUIDialogExtendedProgressBar* dlgProgress = (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
+  CGUIDialogProgressBarHandle* dlgProgressHandle = dlgProgress ? dlgProgress->GetHandle(g_localizeStrings.Get(19286)) : NULL;
+
   CSingleLock lock(m_critSection);
 
-  for (unsigned int ptr = 0; ptr < m_members.size(); ptr++)
+  /* create a map for fast lookup of normalized file base name */
+  std::map<std::string, std::string> fileItemMap;
+  const VECFILEITEMS &items = fileItemList.GetList();
+  for(VECFILEITEMS::const_iterator it = items.begin(); it != items.end(); ++it)
   {
-    PVRChannelGroupMember groupMember = m_members.at(ptr);
+    CStdString baseName = URIUtils::GetFileName((*it)->GetPath());
+    URIUtils::RemoveExtension(baseName);
+    StringUtils::ToLower(baseName);
+    fileItemMap.insert(std::make_pair(baseName, (*it)->GetPath()));
+  }
+
+  int channelIndex = 0;
+  for(std::vector<PVRChannelGroupMember>::const_iterator it = m_members.begin(); it != m_members.end(); ++it)
+  {
+    CPVRChannelPtr channel = (*it).channel;
+
+    /* update progress dialog */
+    if (dlgProgressHandle)
+    {
+      dlgProgressHandle->SetProgress(channelIndex++, m_members.size());
+      dlgProgressHandle->SetText(channel->ChannelName());
+    }
 
     /* skip if an icon is already set and exists */
-    if (groupMember.channel->IsIconExists())
+    if (channel->IsIconExists())
       continue;
 
     /* reset icon before searching for a new one */
-    groupMember.channel->SetIconPath(StringUtils::Empty);
+    channel->SetIconPath(StringUtils::Empty);
 
-    CStdString strBasePath = CSettings::Get().GetString("pvrmenu.iconpath");
-    CStdString strSanitizedClientChannelName = CUtil::MakeLegalFileName(groupMember.channel->ClientChannelName());
-    
-    CStdString strIconPath = strBasePath + strSanitizedClientChannelName;
-    StringUtils::ToLower(strSanitizedClientChannelName);
-    CStdString strIconPathLower = strBasePath + strSanitizedClientChannelName;
-    CStdString strIconPathUid;
-    strIconPathUid = StringUtils::Format("%08d", groupMember.channel->UniqueID());
-    strIconPathUid = URIUtils::AddFileToFolder(strBasePath, strIconPathUid);
+    std::string strChannelUid = StringUtils::Format("%08d", channel->UniqueID());
+    std::string strLegalClientChannelName = CUtil::MakeLegalFileName(channel->ClientChannelName());
+    StringUtils::ToLower(strLegalClientChannelName);
+    std::string strLegalChannelName = CUtil::MakeLegalFileName(channel->ChannelName());
+    StringUtils::ToLower(strLegalChannelName);
 
-    bool bIconFound =
-      SetChannelIconPath(groupMember.channel, strIconPath + ".tbn") ||
-      SetChannelIconPath(groupMember.channel, strIconPath + ".jpg") ||
-      SetChannelIconPath(groupMember.channel, strIconPath + ".png") ||
-
-      SetChannelIconPath(groupMember.channel, strIconPathLower + ".tbn") ||
-      SetChannelIconPath(groupMember.channel, strIconPathLower + ".jpg") ||
-      SetChannelIconPath(groupMember.channel, strIconPathLower + ".png") ||
-
-      SetChannelIconPath(groupMember.channel, strIconPathUid + ".tbn") ||
-      SetChannelIconPath(groupMember.channel, strIconPathUid + ".jpg") ||
-      SetChannelIconPath(groupMember.channel, strIconPathUid + ".png");
-
-    // lets do the same with the db channel name if those are different
-    if (!bIconFound)
+    std::map<std::string, std::string>::iterator itItem;
+    if ((itItem = fileItemMap.find(strLegalClientChannelName)) != fileItemMap.end() ||
+        (itItem = fileItemMap.find(strLegalChannelName)) != fileItemMap.end() ||
+        (itItem = fileItemMap.find(strChannelUid)) != fileItemMap.end())
     {
-      CStdString strSanitizedChannelName = CUtil::MakeLegalFileName(groupMember.channel->ChannelName());
-      CStdString strIconPath2 = strBasePath + strSanitizedChannelName;
-      CStdString strSanitizedLowerChannelName = strSanitizedChannelName;
-      StringUtils::ToLower(strSanitizedLowerChannelName);
-      CStdString strIconPathLower2 = strBasePath + strSanitizedLowerChannelName;
-
-      if (strIconPathLower != strIconPathLower2)
-      {
-        SetChannelIconPath(groupMember.channel, strIconPath2 + ".tbn") ||
-        SetChannelIconPath(groupMember.channel, strIconPath2 + ".jpg") ||
-        SetChannelIconPath(groupMember.channel, strIconPath2 + ".png") ||
-
-        SetChannelIconPath(groupMember.channel, strIconPathLower2 + ".tbn") ||
-        SetChannelIconPath(groupMember.channel, strIconPathLower2 + ".jpg") ||
-        SetChannelIconPath(groupMember.channel, strIconPathLower2 + ".png");
-      } 
+      channel->SetIconPath(itItem->second, g_advancedSettings.m_bPVRAutoScanIconsUserSet);
     }
 
     if (bUpdateDb)
-      groupMember.channel->Persist();
+      channel->Persist();
 
     /* TODO: start channel icon scraper here if nothing was found */
   }
+
+  if (dlgProgressHandle)
+    dlgProgressHandle->MarkFinished();
 }
 
 /********** sort methods **********/
