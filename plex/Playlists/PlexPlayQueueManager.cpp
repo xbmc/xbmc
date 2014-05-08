@@ -21,20 +21,26 @@ using namespace PLAYLIST;
 void CPlexPlayQueueManager::create(const CFileItem& container, const CStdString& uri,
                                    const CStdString& startItemKey, bool shuffle)
 {
-  if (m_currentImpl && m_currentPlayQueueModified)
+  if (m_currentImpl && m_playQueueVersion > 1)
   {
-    // Give user a warning since this will clear the current
-    // play queue
-    bool canceled;
-    if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(52604), g_localizeStrings.Get(52605),
-                                         g_localizeStrings.Get(52606), "", canceled) || canceled)
-      return;
+    CFileItemList list;
+    if (m_currentImpl->getCurrent(list))
+    {
+      if (list.HasProperty("playQueueLastAddedItemID"))
+      {
+        // Give user a warning since this will clear the current
+        // play queue
+        bool canceled;
+        if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(52604), g_localizeStrings.Get(52605),
+                                              g_localizeStrings.Get(52606), "", canceled) || canceled)
+          return;
+      }
+    }
   }
 
   IPlexPlayQueueBasePtr impl = getImpl(container);
   if (impl)
   {
-    m_currentPlayQueueModified = false;
     m_currentImpl = impl;
     m_currentImpl->create(container, uri, startItemKey, shuffle);
   }
@@ -305,7 +311,6 @@ void CPlexPlayQueueManager::loadSavedPlayQueue()
   if (server && !m_currentImpl)
   {
     m_currentImpl = IPlexPlayQueueBasePtr(new CPlexPlayQueueServer(server));
-    m_currentPlayQueueModified = false;
     m_currentImpl->get(playQueueURL.GetFileName(), false);
   }
 }
@@ -340,7 +345,6 @@ bool CPlexPlayQueueManager::addItem(const CFileItemPtr &item, bool next)
 {
   if (m_currentImpl)
   {
-    m_currentPlayQueueModified = true;
     return m_currentImpl->addItem(item, next);
   }
   return false;
@@ -351,7 +355,6 @@ void CPlexPlayQueueManager::removeItem(const CFileItemPtr &item)
 {
   if (m_currentImpl)
   {
-    m_currentPlayQueueModified = true;
     m_currentImpl->removeItem(item);
   }
 }

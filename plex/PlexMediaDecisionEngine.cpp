@@ -73,7 +73,7 @@ bool CPlexMediaDecisionEngine::resolveItem(const CFileItem& _item, CFileItem &re
     return false;
 
   int offset = item.m_lStartOffset;
-  if (!g_playlistPlayer.HasPlayedFirstFile())
+  if (!g_playlistPlayer.HasPlayedFirstFile() && item.IsVideo())
   {
     int selectedMedia = CGUIDialogPlexMedia::ProcessMediaChoice(item);
     if (selectedMedia == -1)

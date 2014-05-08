@@ -84,7 +84,6 @@ private:
   IPlexPlayQueueBasePtr m_currentImpl;
   ePlexMediaType m_playQueueType;
   int m_playQueueVersion;
-  bool m_currentPlayQueueModified;
 };
 
 typedef boost::shared_ptr<CPlexPlayQueueManager> CPlexPlayQueueManagerPtr;
