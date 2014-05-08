@@ -55,7 +55,7 @@ vector<stringPair> CPlexFile::GetHeaderList()
   
   hdrs.push_back(stringPair("X-Plex-Client-Capabilities", protocols));
   
-  if (g_plexApplication.myPlexManager->IsSignedIn())
+  if (g_plexApplication.myPlexManager && g_plexApplication.myPlexManager->IsSignedIn())
     hdrs.push_back(stringPair("X-Plex-Username", g_plexApplication.myPlexManager->GetCurrentUserInfo().username));
 
   return hdrs;
