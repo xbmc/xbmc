@@ -118,7 +118,11 @@ void CPlexPlayQueueLocal::OnJobComplete(unsigned int jobID, bool success, CJob* 
         m_list->SetProperty("playQueueSelectedItemID", item->GetMusicInfoTag()->GetDatabaseId());
     }
 
-    m_list->SetProperty("playQueueID", m_list->GetProperty("ratingKey"));
+    if (m_list->HasProperty("ratingKey"))
+      m_list->SetProperty("playQueueID", m_list->GetProperty("ratingKey"));
+    else
+      m_list->SetProperty("playQueueID", rand());
+
     CApplicationMessenger::Get().PlexUpdatePlayQueue(type, fj->m_startPlaying);
   }
 }

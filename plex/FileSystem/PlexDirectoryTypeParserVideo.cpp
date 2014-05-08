@@ -157,9 +157,21 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
 
   // We misuse the MusicInfoTag a bit here so we can call PlayListPlayer::PlaySongId()
   if (item.HasProperty("playQueueItemID"))
+  {
     item.GetMusicInfoTag()->SetDatabaseId(item.GetProperty("playQueueItemID").asInteger(), "video");
-  else
+  }
+  else if (item.HasProperty("ratingKey"))
+  {
     item.GetMusicInfoTag()->SetDatabaseId(item.GetProperty("ratingKey").asInteger(), "video");
+  }
+  else
+  {
+    int id = mediaContainer.GetProperty("__containerItemIndex").asInteger(0);
+    // ok, this is probably a channel, we still need a pretty unique id, so let's
+    // just try to get unique id for this certain container
+    item.GetMusicInfoTag()->SetDatabaseId(id, "video");
+    mediaContainer.SetProperty("__containerItemIndex", ++ id);
+  }
   
   //DebugPrintVideoItem(item);
 }
