@@ -4,7 +4,7 @@
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "FileSystem/PlexDirectory.h"
-#include "PlayLists/PlexPlayQueueManager.h"
+#include "Playlists/PlexPlayQueueManager.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexRemotePlayHandler::getKeyAndContainerUrl(const ArgMap& arguments, std::string& key, std::string& containerKey)

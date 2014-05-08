@@ -2,7 +2,7 @@
 #include "ApplicationMessenger.h"
 #include "Application.h"
 #include "PlexApplication.h"
-#include "client/PlexServerManager.h"
+#include "Client/PlexServerManager.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "guilib/GUIWindowManager.h"
