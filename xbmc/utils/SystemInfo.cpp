@@ -842,16 +842,18 @@ CStdString CSysInfo::GetUAWindowsVersion()
   {
     if (bIsWow)
     {
-      strVersion.append(";WOW64");
+      strVersion.append("; WOW64");
       GetNativeSystemInfo(&si);     // different function to read the info under Wow
     }
   }
 
-  if (si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64)
-    strVersion.append(";Win64;x64");
-  else if (si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_IA64)
-    strVersion.append(";Win64;IA64");
-
+  if (!bIsWow)
+  {
+    if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
+      strVersion.append("; Win64; x64");
+    else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64)
+      strVersion.append("; Win64; IA64");
+  }
   return strVersion;
 }
 #endif
