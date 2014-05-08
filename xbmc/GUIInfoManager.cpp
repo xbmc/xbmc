@@ -458,6 +458,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   /* PLEX */
                                   { "audiostream",      VIDEOPLAYER_AUDIOSTREAM },
                                   { "subtitlestream",   VIDEOPLAYER_SUBTITLESTREAM },
+                                  { "durationstr",      VIDEOPLAYER_DURATION_STRING },
                                   /* END PLEX */
                                   { "parentalrating",   VIDEOPLAYER_PARENTAL_RATING }};
 
@@ -1555,6 +1556,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   /* PLEX */
   case VIDEOPLAYER_AUDIOSTREAM:
   case VIDEOPLAYER_SUBTITLESTREAM:
+  case VIDEOPLAYER_DURATION_STRING:
   /* END PLEX */
   case VIDEOPLAYER_LASTPLAYED:
     strLabel = GetVideoLabel(info);
@@ -4112,15 +4114,25 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     /* PLEX */
     case VIDEOPLAYER_AUDIOSTREAM:
       {
-        if (g_application.CurrentFileItemPtr()->HasProperty("selectedAudioStream"))
-          return g_application.CurrentFileItemPtr()->GetProperty("selectedAudioStream").asString();
+        if (m_currentFile->HasProperty("selectedAudioStream"))
+          return m_currentFile->GetProperty("selectedAudioStream").asString();
         return g_localizeStrings.Get(1446);
       }
     case VIDEOPLAYER_SUBTITLESTREAM:
       {
-        if (g_application.CurrentFileItemPtr()->HasProperty("selectedSubtitleStream"))
-          return g_application.CurrentFileItemPtr()->GetProperty("selectedSubtitleStream").asString();
+        if (m_currentFile->HasProperty("selectedSubtitleStream"))
+          return m_currentFile->GetProperty("selectedSubtitleStream").asString();
         return g_localizeStrings.Get(1446);
+      }
+    case VIDEOPLAYER_DURATION_STRING:
+      {
+        if (m_currentFile->HasVideoInfoTag())
+        {
+          if (m_currentFile->GetVideoInfoTag()->GetDuration() > 0)
+            return StringUtils::SecondsToTimeString(m_currentFile->GetVideoInfoTag()->GetDuration(), TIME_FORMAT_GUESS);
+        }
+        else
+          return GetItemLabel(m_currentFile.get(), LISTITEM_DURATION);
       }
     /* END PLEX */
     case VIDEOPLAYER_PLAYCOUNT:
@@ -4835,6 +4847,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       count.Format("%i", item->m_iprogramCount);
       return count;
     }
+  /* PLEX */
   case LISTITEM_DURATION_STRING:
     {
       if (item->HasVideoInfoTag())
@@ -4845,6 +4858,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       else
         return GetItemLabel(item, LISTITEM_DURATION);
     }
+  /* END PLEX */
 
   case LISTITEM_DURATION:
     {
