@@ -73,12 +73,16 @@ public:
    \param url location of the image
    \return a hash string for this image
    */
-  bool CacheTexture(CBaseTexture **texture = NULL);
+  /* PLEX - Added virtual */
+  virtual bool CacheTexture(CBaseTexture **texture = NULL);
 
   CStdString m_url;
   CStdString m_oldHash;
   CTextureDetails m_details;
-private:
+
+/* PLEX */
+protected:
+/* END PLEX */
   friend class CEdenVideoArtUpdater;
 
   /*! \brief retrieve a hash for the given image

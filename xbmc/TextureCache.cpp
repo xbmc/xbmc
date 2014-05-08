@@ -31,6 +31,7 @@
 
 /* PLEX */
 #include "PlexUtils.h"
+#include "PlexJobs.h"
 /* END PLEX */
 
 using namespace XFILE;
@@ -169,7 +170,13 @@ void CTextureCache::BackgroundCacheImage(const CStdString &url)
     return; // image is already cached and doesn't need to be checked further
 
   // needs (re)caching
+  /* PLEX */
+#ifdef __PLEX__
+  AddJob(new CPlexTextureCacheJob(UnwrapImageURL(url), details.hash));
+#else
   AddJob(new CTextureCacheJob(UnwrapImageURL(url), details.hash));
+#endif
+  /*END PLEX */
 }
 
 bool CTextureCache::CacheImage(const CStdString &image, CTextureDetails &details)
@@ -190,7 +197,15 @@ CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **tex
     m_processing.insert(url);
     lock.Leave();
     // cache the texture directly
+
+    /* PLEX */
+#ifdef __PLEX__
+    CPlexTextureCacheJob job(url);
+#else
     CTextureCacheJob job(url);
+#endif
+    /* END PLEX */
+
     bool success = job.CacheTexture(texture);
     OnCachingComplete(success, &job);
     if (success && details)

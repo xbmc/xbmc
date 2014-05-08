@@ -17,6 +17,8 @@
 #include "Client/PlexMediaServerClient.h"
 #include "FileSystem/PlexDirectory.h"
 #include "threads/CriticalSection.h"
+#include "TextureCacheJob.h"
+#include "filesystem/File.h"
 
 class IPlexPlayQueueBase;
 typedef boost::shared_ptr<IPlexPlayQueueBase> IPlexPlayQueueBasePtr;
@@ -216,6 +218,22 @@ class CPlexThemeMusicPlayerJob : public CJob
     bool DoWork();
     CStdString m_themeUrl;
     CStdString m_fileToPlay;
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+class CPlexTextureCacheJob : public CTextureCacheJob
+{
+private:
+  XFILE::CFile m_inputFile;
+  XFILE::CFile m_outputFile;
+
+public:
+  CPlexTextureCacheJob(const CStdString& url, const CStdString& oldHash = "")
+    : CTextureCacheJob(url, oldHash)
+  {
+  }
+  virtual bool CacheTexture(CBaseTexture** texture = NULL);
+  virtual void Cancel();
 };
 
 #endif /* defined(__Plex_Home_Theater__PlexJobs__) */
