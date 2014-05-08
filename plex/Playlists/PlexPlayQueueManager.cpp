@@ -14,6 +14,7 @@
 #include "Client/PlexTimelineManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "LocalizeStrings.h"
+#include "Application.h"
 
 using namespace PLAYLIST;
 
@@ -142,6 +143,7 @@ void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool st
 
   if (startPlaying)
   {
+    g_application.StopPlaying();
     g_playlistPlayer.SetCurrentPlaylist(playlist);
     if (selectedId == -1)
       g_playlistPlayer.Play(0);
