@@ -13,6 +13,33 @@
 		<value condition="Player.HasAudio">$INFO[MusicPlayer.Title]</value>
 		<value condition="!Player.HasAudio">$INFO[ListItem.Title]</value>
 	</variable>
+	<variable name="PlayQueueVideoTitle">
+		<value condition="Player.HasVideo + ListItem.Type(episode)">$INFO[VideoPlayer.TVShowTitle]</value>
+		<value condition="!Player.HasVideo + ListItem.Type(episode)">$INFO[ListItem.TVShowTitle]</value>
+		<value condition="Player.HasVideo + [ListItem.Type(clip) | ListItem.Type(movie)]">$INFO[VideoPlayer.Title]</value>
+		<value condition="!Player.HasVideo + [ListItem.Type(clip) | ListItem.Type(movie)]">$INFO[ListItem.Title]</value>
+	</variable>
+	<variable name="PlayQueueVideoTitle2">
+		<value condition="Player.HasVideo + ListItem.Type(episode)">$INFO[VideoPlayer.Title]</value>
+		<value condition="!Player.HasVideo + ListItem.Type(episode)">$INFO[ListItem.Title]</value>
+		<value condition="Player.HasVideo + ListItem.Type(clip)">$INFO[VideoPlayer.Date]$INFO[VideoPlayer.Property(sourceTitle), &#xB7; ]</value>
+		<value condition="!Player.HasVideo + ListItem.Type(clip)">$INFO[ListItem.Date]$INFO[ListItem.Property(sourceTitle), &#xB7; ]</value>
+		<value condition="Player.HasVideo + ListItem.Type(movie)">[UPPERCASE]$INFO[VideoPlayer.Genre][/UPPERCASE]</value>
+		<value condition="!Player.HasVideo + ListItem.Type(movie)">[UPPERCASE]$INFO[ListItem.Genre][/UPPERCASE]</value>
+	</variable>
+	<variable name="PlayQueueVideoTitle3">
+		<value condition="Player.HasVideo + [ListItem.Type(episode) | ListItem.Type(movie)]">$INFO[VideoPlayer.DurationStr]</value>
+		<value condition="!Player.HasVideo + [ListItem.Type(episode) | ListItem.Type(movie)]">$INFO[ListItem.DurationStr]</value>
+		<value condition="Player.HasVideo + ListItem.Type(clip)">$INFO[VideoPlayer.DurationStr]</value>
+		<value condition="!Player.HasVideo + ListItem.Type(clip)">$INFO[ListItem.DurationStr]</value>
+	</variable>
+	<variable name="PlayQueueVideoCardTitle">
+		<value>$INFO[ListItem.Title]</value>
+	</variable>
+	<variable name="PlayQueueVideoCardTitle2">
+		<value condition="ListItem.Type(episode)">$INFO[ListItem.Date]</value>
+		<value condition="ListItem.Type(clip)">$INFO[ListItem.DurationStr]</value>
+	</variable>
 	<variable name="PlayQueueAlbum">
 		<value condition="Player.HasAudio">$INFO[MusicPlayer.Album]</value>
 		<value condition="!Player.HasAudio">$INFO[ListItem.Album]</value>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <window id="10094">
-	<defaultcontrol always="true">54</defaultcontrol>
-	<views>54,58</views>
+	<defaultcontrol always="true">54,61</defaultcontrol>
+	<views>54,61</views>
 	<allowoverlay>yes</allowoverlay>
 	<onload>Skin.SetString(SectionType,playqueue)</onload>
 	<onunload>Skin.Reset(SectionType)</onunload>
@@ -36,7 +36,7 @@
 					<aspectratio>stretch</aspectratio>
 					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
 					<visible>true</visible>
-				</control>			
+				</control>
 				<!-- list background -->
 				<control type="image">
 					<posy>0</posy>
@@ -51,7 +51,8 @@
 				<posy>-34</posy>
 				<!-- list -->
 				<control type="list" id="54">
-					<viewtype label="ListPlayQueue">list</viewtype>
+					<visible>Container.PlexContent(songs) | [Container.PlexContent(channel) + ListItem.Type(song)]</visible>
+					<viewtype label="MusicPlayQueue">list</viewtype>
 					<posx>791</posx>
 					<posy>55</posy>
 					<width>520</width>
@@ -1029,6 +1030,644 @@
 					<height>1</height>
 					<texture>orange.png</texture>
 				</control>-->
+				</control>
+			</control>
+		</control>
+		<!-- video play queue -->
+		<control type="group">
+			<control type="group" id="777">
+				<visible>Container.PlexContent(Episodes) | Container.PlexContent(clips) | [Container.PlexContent(channel) + [ListItem.Type(episode) | ListItem.Type(clip)]] | Container.PlexContent(Movies)</visible>
+				<include>FadeDialog</include>
+				<include>rightSideSlide</include>
+				<control type="group">
+					<visible> Control.IsVisible(61)</visible>
+					<!-- backgrounds -->
+					<control type="group">
+						<!-- fanart -->
+						<control type="largeimage">
+							<include>FullScreenScaled</include>
+							<texture>$INFO[Player.Art(fanart)]</texture>
+							<include>BackgroundFade</include>
+							<animation effect="fade" end="40" time="0" condition="true">conditional</animation>
+							<fadetime>400</fadetime>
+							<visible>Player.HasAudio</visible>
+						</control>
+						<control type="largeimage">
+							<include>FullScreenScaled</include>
+							<texture>$INFO[ListItem.Art(fanart)]</texture>
+							<include>BackgroundFade</include>
+							<animation effect="fade" end="40" time="0" condition="true">conditional</animation>
+							<fadetime>400</fadetime>
+							<visible>!Player.HasAudio</visible>
+						</control>
+						<!-- overlay -->
+						<control type="image">
+							<width>1280</width>
+							<height>720</height>
+							<texture>bg-overlay-grainy.png</texture>
+							<aspectratio>stretch</aspectratio>
+							<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+							<visible>true</visible>
+						</control>
+						<!-- list background -->
+						<control type="image">
+							<posy>0</posy>
+							<posx>570</posx>
+							<texture>base-arrow-insert.png</texture>
+							<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+						</control>
+					</control>
+					<!-- thumb -->
+					<!--><control type="group">
+						<posx>30</posx>
+						<posy>28</posy>
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>386</width>
+							<height>216</height>
+							<include>Shadow</include>
+						</control>
+						<control type="largeimage">
+							<posy>13</posy>
+							<posx>13</posx>
+							<width>360</width>
+							<height>190</height>
+							<texture background="true" diffuse="mask-wide-big.png">$INFO[ListItem.Art(thumb)]</texture>
+							<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+							<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+						</control>
+					</control>-->
+					<!-- fanart -->
+					<control type="group">
+						<!-- small fanart -->
+						<control type="group">
+							<posx>0</posx>
+							<posy>0</posy>
+							<control type="largeimage">
+								<width>570</width>
+								<height>400</height>
+								<texture>$INFO[Player.Art(fanart)]</texture>
+								<fadetime>400</fadetime>
+								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<visible>!Container.PlexContent(clips)</visible>
+							</control>
+							<control type="largeimage">
+								<width>570</width>
+								<height>400</height>
+								<texture>$INFO[Player.Art(thumb)]</texture>
+								<fadetime>400</fadetime>
+								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<visible>Container.PlexContent(clips)</visible>
+							</control>
+							<control type="largeimage">
+								<width>570</width>
+								<height>400</height>
+								<texture>$INFO[ListItem.Art(fanart)]</texture>
+								<fadetime>400</fadetime>
+								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<visible>!Player.HasVideo</visible>
+								<visible>!Container.PlexContent(clips)</visible>
+							</control>
+							<control type="largeimage">
+								<width>570</width>
+								<height>400</height>
+								<texture>$INFO[ListItem.Art(thumb)]</texture>
+								<fadetime>400</fadetime>
+								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<visible>!Player.HasVideo</visible>
+								<visible>Container.PlexContent(clips)</visible>
+							</control>
+							<control type="image">
+								<width>570</width>
+								<height>400</height>
+								<texture>bg-overlay-grainy.png</texture>
+								<aspectratio>stretch</aspectratio>
+								<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+							</control>
+						</control>
+					</control>
+					<!-- infos Left -->
+					<control type="group">
+						<posy>40</posy>
+						<posx>40</posx>
+						<!-- Titles -->
+						<control type="label">
+							<width>490</width>
+							<height>40</height>
+							<label>$VAR[PlayQueueVideoTitle]</label>
+							<font>Bold-30</font>
+							<include>WhiteShadow</include>
+						</control>
+						<control type="label">
+							<posy>40</posy>
+							<width>490</width>
+							<height>40</height>
+							<label>$VAR[PlayQueueVideoTitle2]</label>
+							<font>Bold-30</font>
+							<include>WhiteShadow</include>
+							<visible>!Container.PlexContent(Movies) + !Container.PlexContent(Clips)</visible>
+						</control>
+						<control type="label">
+							<posy>40</posy>
+							<width>490</width>
+							<height>40</height>
+							<label>$VAR[PlayQueueVideoTitle2]</label>
+							<font>Regular-18</font>
+							<include>WhiteShadow</include>
+							<visible>Container.PlexContent(Movies) | Container.PlexContent(Clips)</visible>
+						</control>
+						<control type="label">
+							<posy>80</posy>
+							<width>490</width>
+							<height>40</height>
+							<label>$VAR[PlayQueueVideoTitle3]</label>
+							<font>Regular-30</font>
+							<include>WhiteShadow</include>
+							<visible>!Container.PlexContent(Movies) + !Container.PlexContent(Clips)</visible>
+						</control>
+						<control type="label">
+							<posy>70</posy>
+							<width>490</width>
+							<height>40</height>
+							<label>$VAR[PlayQueueVideoTitle3]</label>
+							<font>Regular-18</font>
+							<include>WhiteShadow</include>
+							<visible>Container.PlexContent(Movies) | Container.PlexContent(Clips)</visible>
+						</control>
+						<!-- Count -->
+						<control type="grouplist">
+							<posy>140</posy>
+							<orientation>horizontal</orientation>
+							<itemgap>10</itemgap>
+							<control type="label">
+								<width min="29" max="296">auto</width>
+								<height>20</height>
+								<label>$VAR[TopBarItemCountStrings]</label>
+								<font>Regular-18</font>
+								<include>WhiteShadow</include>
+								<visible>!Player.HasVideo</visible>
+							</control>
+						</control>
+					</control>
+					<!-- plot text -->
+					<control type="group">
+						<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
+						<control type="image">
+							<posy>400</posy>
+							<posx>0</posx>
+							<width>570</width>
+							<height>320</height>
+							<include>Black</include>
+						</control>
+					</control>
+					<control type="group">
+						<visible>!Player.HasVideo</visible>
+						<posx>40</posx>
+						<posy>432</posy>
+						<control type="textbox">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>490</width>
+							<height>245</height>
+							<include>PlotFormat</include>
+							<label>$INFO[ListItem.Plot]</label>
+							<visible>[ListItem.Status(Watched) | [!Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]]] | Container.PlexContent(Clips) | Container.PlexContent(Movies)</visible>
+						</control>
+						<control type="textbox">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>490</width>
+							<height>245</height>
+							<include>PlotFormat</include>
+							<label>$LOCALIZE[32105]</label>
+							<visible>[Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)] + !IsEmpty(ListItem.Plot)] + !Container.PlexContent(Clips) + !Container.PlexContent(Movies)</visible>
+						</control>
+						<control type="textbox">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>490</width>
+							<height>245</height>
+							<include>PlotFormat</include>
+							<include>NoPlotDefault</include>
+							<visible>IsEmpty(ListItem.Plot)</visible>
+						</control>
+					</control>
+					<control type="group">
+						<visible>Player.HasVideo</visible>
+						<posx>40</posx>
+						<posy>432</posy>
+						<control type="textbox">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>490</width>
+							<height>245</height>
+							<include>PlotFormat</include>
+							<label>$INFO[VideoPlayer.Plot]</label>
+						</control>
+					</control>
+					<!-- separator -->
+					<control type="group">
+						<control type="image">
+							<posy>0</posy>
+							<posx>570</posx>
+							<width>1</width>
+							<height>720</height>
+							<texture>orange.png</texture>
+						</control>
+						<!--><control type="image">
+						<posy>458</posy>
+						<posx>54</posx>
+						<width>736</width>
+						<height>1</height>
+						<texture>orange.png</texture>
+					</control>-->
+					</control>
+					<!-- progress bar & osd -->
+					<control type="group" id="300">
+						<posx>-135</posx>
+						<posy>-50</posy>
+						<defaultcontrol always="true">711</defaultcontrol>
+						<!-- progress bar -->
+						<control type="group">
+							<visible>Player.HasVideo</visible>
+							<control type="progress">
+								<posx>255</posx>
+								<posy>341</posy>
+								<width>334</width>
+								<height>16</height>
+								<aligny>center</aligny>
+								<info>Player.Progress</info>
+								<texturebg border="8">OSDProgressBack2.png</texturebg>
+								<midtexture border="8">OSDProgressMid-white2.png</midtexture>
+							</control>
+							<control type="label">
+								<posx>235</posx>
+								<posy>350</posy>
+								<width>500</width>
+								<textcolor>white</textcolor>
+								<font>Regular-16</font>
+								<align>right</align>
+								<label>$INFO[MusicPlayer.Time]</label>
+								<shadowcolor>ff222222</shadowcolor>
+							</control>
+							<control type="label">
+								<posy>350</posy>
+								<posx>610</posx>
+								<width>100</width>
+								<textcolor>white</textcolor>
+								<font>Regular-16</font>
+								<label>$INFO[MusicPlayer.Duration]</label>
+								<shadowcolor>ff222222</shadowcolor>
+							</control>
+						</control>
+						<!-- osd -->
+						<control type="group">
+							<visible>Player.HasVideo</visible>
+							<posy>390</posy>
+							<posx>205</posx>
+							<control type="group">
+								<animation effect="fade" start="0" end="70" time="0" condition="true">Conditional</animation>
+								<control type="image">
+									<posy>-15</posy>
+									<posx>-70</posx>
+									<width>570</width>
+									<height>75</height>
+									<include>Black</include>
+								</control>
+							</control>
+							<!-- repeat -->
+							<control type="group">
+								<posy>9</posy>
+								<posx>55</posx>
+								<control type="image">
+									<width>32</width>
+									<height>30</height>
+									<texture>b-repeat.png</texture>
+									<visible>!Control.HasFocus(708) + !Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
+									<colordiffuse>FFCCCCCC</colordiffuse>
+								</control>
+								<control type="image">
+									<width>32</width>
+									<height>30</height>
+									<texture>b-repeat-one.png</texture>
+									<visible>!Control.HasFocus(708) + Playlist.IsRepeatOne</visible>
+									<colordiffuse>FFFFFFFF</colordiffuse>
+								</control>
+								<control type="image">
+									<width>32</width>
+									<height>30</height>
+									<texture>b-repeat-all.png</texture>
+									<visible>!Control.HasFocus(708) + Playlist.IsRepeat</visible>
+									<colordiffuse>FFFFFFFF</colordiffuse>
+								</control>
+								<control type="image">
+									<width>32</width>
+									<height>30</height>
+									<texture>b-repeat.png</texture>
+									<visible>Control.HasFocus(708) + !Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
+									<colordiffuse>orange</colordiffuse>
+								</control>
+								<control type="image">
+									<width>32</width>
+									<height>30</height>
+									<texture>b-repeat-one.png</texture>
+									<visible>Control.HasFocus(708) + Playlist.IsRepeatOne</visible>
+									<colordiffuse>orange</colordiffuse>
+								</control>
+								<control type="image">
+									<width>32</width>
+									<height>30</height>
+									<texture>b-repeat-all.png</texture>
+									<visible>Control.HasFocus(708) + Playlist.IsRepeat</visible>
+									<colordiffuse>orange</colordiffuse>
+								</control>
+								<control type="button" id="708">
+									<width>32</width>
+									<height>30</height>
+									<onleft>713</onleft>
+									<onright>710</onright>
+									<onup>-</onup>
+									<texturefocus>-</texturefocus>
+									<texturenofocus>-</texturenofocus>
+									<onclick>XBMC.PlayerControl(Repeat)</onclick>
+									<onup>54</onup>
+									<ondown>54</ondown>
+									<visible allowhiddenfocus="true">Control.HasFocus(708)</visible>
+								</control>
+							</control>
+							<!-- previous -->
+							<control type="group">
+								<posy>13</posy>
+								<posx>160</posx>
+								<control type="image">
+									<width>22</width>
+									<height>22</height>
+									<texture>b-previous.png</texture>
+									<visible>!Control.HasFocus(710)</visible>
+									<colordiffuse>FFCCCCCC</colordiffuse>
+								</control>
+								<control type="button" id="710">
+									<width>22</width>
+									<height>22</height>
+									<texturefocus>b-previous.png</texturefocus>
+									<texturenofocus>b-previous.png</texturenofocus>
+									<onleft>708</onleft>
+									<onright>711</onright>
+									<onup>54</onup>
+									<ondown>54</ondown>
+									<onclick>PlayerControl(Previous)</onclick>
+									<visible allowhiddenfocus="true">Control.HasFocus(710)</visible>
+									<colordiffuse>orange</colordiffuse>
+								</control>
+							</control>
+							<!-- play/pause -->
+							<control type="group">
+								<posy>13</posy>
+								<posx>212</posx>
+								<control type="image">
+									<width>20</width>
+									<height>22</height>
+									<texture>b-pause2.png</texture>
+									<visible>!Control.HasFocus(711) + !Player.Paused</visible>
+									<colordiffuse>FFCCCCCC</colordiffuse>
+								</control>
+								<control type="image">
+									<width>20</width>
+									<height>22</height>
+									<texture>b-play2.png</texture>
+									<visible>!Control.HasFocus(711) + Player.Paused</visible>
+									<colordiffuse>FFCCCCCC</colordiffuse>
+								</control>
+								<control type="togglebutton" id="711">
+									<width>20</width>
+									<height>22</height>
+									<texturefocus>b-pause2.png</texturefocus>
+									<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
+									<alttexturefocus>b-play2.png</alttexturefocus>
+									<onleft>710</onleft>
+									<onright>712</onright>
+									<onup>54</onup>
+									<ondown>54</ondown>
+									<onclick>PlayerControl(Play)</onclick>
+									<visible allowhiddenfocus="true">Control.HasFocus(711)</visible>
+									<colordiffuse>orange</colordiffuse>
+								</control>
+							</control>
+							<!-- next -->
+							<control type="group">
+								<posy>13</posy>
+								<posx>262</posx>
+								<control type="image">
+									<width>22</width>
+									<height>22</height>
+									<texture>b-next.png</texture>
+									<visible>!Control.HasFocus(712)</visible>
+									<colordiffuse>FFCCCCCC</colordiffuse>
+								</control>
+								<control type="button" id="712">
+									<width>22</width>
+									<height>22</height>
+									<texturefocus>b-next.png</texturefocus>
+									<texturenofocus>b-next.png</texturenofocus>
+									<onleft>711</onleft>
+									<onright>713</onright>
+									<onup>54</onup>
+									<ondown>54</ondown>
+									<onclick>PlayerControl(Next)</onclick>
+									<visible allowhiddenfocus="true">Control.HasFocus(712)</visible>
+									<colordiffuse>orange</colordiffuse>
+								</control>
+							</control>
+							<!-- stop -->
+							<control type="group">
+								<posy>13</posy>
+								<posx>358</posx>
+								<control type="image">
+									<width>22</width>
+									<height>22</height>
+									<texture>b-stop.png</texture>
+									<visible>!Control.HasFocus(713)</visible>
+									<colordiffuse>FFCCCCCC</colordiffuse>
+								</control>
+								<control type="button" id="713">
+									<width>22</width>
+									<height>22</height>
+									<texturefocus>b-stop.png</texturefocus>
+									<texturenofocus>b-stop.png</texturenofocus>
+									<onleft>712</onleft>
+									<onright>54</onright>
+									<onup>54</onup>
+									<ondown>54</ondown>
+									<onclick>PlayerControl(Stop)</onclick>
+									<onclick>Control.SetFocus(54)</onclick>
+									<visible allowhiddenfocus="true">Control.HasFocus(713)</visible>
+									<colordiffuse>orange</colordiffuse>
+								</control>
+							</control>
+						</control>
+					</control>
+				</control>
+				<!-- main list -->
+				<control type="panel" id="61">
+					<visible>Container.PlexContent(Episodes) | Container.PlexContent(clips) | [Container.PlexContent(channel) + [ListItem.Type(episode) | ListItem.Type(clip)]] | Container.PlexContent(Movies)</visible>
+					<viewtype label="VideoPlayQueue">panel</viewtype>
+					<onup>61</onup>
+					<ondown>61</ondown>
+					<onright>Container.NextViewMode</onright>
+					<onleft>300</onleft>
+					<orientation>vertical</orientation>
+					<posx>588</posx>
+					<posy>27</posy>
+					<width>750</width>
+					<height>670</height>
+					<itemlayout condition="Container.PlexContent(Episodes) | Container.PlexContent(clips) | [Container.PlexContent(channel) + [ListItem.Type(episode) | ListItem.Type(clip)]]" width="226" height="165">
+						<include>EpisodeThumbCard</include>
+						<include>EpisodeThumb</include>
+						<control type="label">
+							<posy>121</posy>
+							<posx>20</posx>
+							<width>174</width>
+							<height>20</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$VAR[PlayQueueVideoCardTitle]</label>
+							<font>Regular-14</font>
+							<textcolor>FFFFFFFF</textcolor>
+							<shadowcolor>ff222222</shadowcolor>
+						</control>
+						<control type="label">
+							<posy>145</posy>
+							<posx>20</posx>
+							<width>174</width>
+							<height>20</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$VAR[PlayQueueVideoCardTitle2]</label>
+							<font>Regular-14</font>
+							<textcolor>FF999999</textcolor>
+							<shadowcolor>ff222222</shadowcolor>
+						</control>
+						<control type="group">
+							<visible>Container.PlexContent(Episodes)</visible>
+							<include>EpisodeThumbOverlay</include>
+							<control type="label">
+								<include>EpisodeThumbOverlayTitle</include>
+								<textcolor>white</textcolor>
+								<visible>IsEmpty(Container.Property(mixedParents))</visible>
+							</control>
+							<control type="label">
+								<include>EpisodeThumbOverlayTitle2</include>
+								<textcolor>white</textcolor>
+								<visible>!IsEmpty(Container.Property(mixedParents))</visible>
+							</control>
+						</control>
+						<include>PosterThumbUnwatchedOverlay</include>
+						<control type="image">
+							<posx>100</posx>
+							<posy>50</posy>
+							<texture>b-play2.png</texture>
+							<colordiffuse>orangeLight</colordiffuse>
+							<visible>ListItem.IsPlaying</visible>
+						</control>
+					</itemlayout>
+					<focusedlayout condition="Container.PlexContent(Episodes) | Container.PlexContent(clips) | [Container.PlexContent(channel) + [ListItem.Type(episode) | ListItem.Type(clip)]]" width="226" height="165">
+						<include>EpisodeThumbCard</include>
+						<include>EpisodeThumb</include>
+						<control type="label">
+							<posy>121</posy>
+							<posx>20</posx>
+							<width>174</width>
+							<height>20</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$VAR[PlayQueueVideoCardTitle]</label>
+							<font>Regular-14</font>
+							<textcolor>orangeLight</textcolor>
+							<shadowcolor>ff222222</shadowcolor>
+						</control>
+						<control type="label">
+							<posy>145</posy>
+							<posx>20</posx>
+							<width>174</width>
+							<height>20</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$VAR[PlayQueueVideoCardTitle2]</label>
+							<font>Regular-14</font>
+							<textcolor>orangeLight</textcolor>
+							<shadowcolor>ff222222</shadowcolor>
+						</control>
+						<control type="group">
+							<visible>Container.PlexContent(Episodes)</visible>
+							<include>EpisodeThumbOverlay</include>
+							<control type="label">
+								<include>EpisodeThumbOverlayTitle</include>
+								<textcolor>white</textcolor>
+								<visible>IsEmpty(Container.Property(mixedParents))</visible>
+							</control>
+							<control type="label">
+								<include>EpisodeThumbOverlayTitle2</include>
+								<textcolor>white</textcolor>
+								<visible>!IsEmpty(Container.Property(mixedParents))</visible>
+							</control>
+						</control>
+						<include>PosterThumbUnwatchedOverlay</include>
+						<include>EpisodeSelectedBorder</include>
+						<control type="image">
+							<posx>100</posx>
+							<posy>50</posy>
+							<texture>b-play2.png</texture>
+							<colordiffuse>orangeLight</colordiffuse>
+							<visible>ListItem.IsPlaying</visible>
+						</control>
+					</focusedlayout>
+					<itemlayout condition="Container.PlexContent(Movies)" width="233" height="335">
+						<include>TVPoster</include>
+						<control type="image">
+							<posx>162</posx>
+							<posy>254</posy>
+							<width>30</width>
+							<height>30</height>
+							<info>ListItem.Overlay</info>
+							<visible>[Container.PlexContent(Movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)]</visible>
+						</control>
+						<control type="label">
+							<posy>298</posy>
+							<posx>105</posx>
+							<width>180</width>
+							<height>30</height>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<font>Regular-17</font>
+							<shadowcolor>FF222222</shadowcolor>
+						</control>
+					</itemlayout>
+					<focusedlayout condition="Container.PlexContent(Movies)" width="233" height="335">
+						<include>TVPoster</include>
+						<include>TVPosterSelectedBorder</include>
+						<control type="image">
+							<posx>162</posx>
+							<posy>254</posy>
+							<width>30</width>
+							<height>30</height>
+							<info>ListItem.Overlay</info>
+							<visible>[Container.PlexContent(Movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)]</visible>
+						</control>
+							<control type="label">
+								<posy>298</posy>
+								<posx>105</posx>
+								<width>180</width>
+								<height>30</height>
+								<align>center</align>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.Label]</label>
+								<font>Regular-17</font>
+								<textcolor>orangeLight</textcolor>
+								<shadowcolor>FF222222</shadowcolor>
+							</control>
+					</focusedlayout>
 				</control>
 			</control>
 		</control>
