@@ -236,6 +236,21 @@ float GetIOSVersion(void)
   return(version);
 }
 
+const char *GetIOSVersionString(void)
+{
+#if defined(TARGET_DARWIN_IOS)
+  static std::string iOSVersionString;
+  if (iOSVersionString.empty())
+  {
+    CCocoaAutoPool pool;
+    iOSVersionString.assign((const char*)[[[UIDevice currentDevice] systemVersion] UTF8String]);
+  }
+  return iOSVersionString.c_str();
+#else
+  return "0.0";
+#endif
+}
+
 int  GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize)
 {
   CCocoaAutoPool pool;
