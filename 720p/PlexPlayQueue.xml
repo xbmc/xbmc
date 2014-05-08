@@ -1166,7 +1166,7 @@
 							<label>$VAR[PlayQueueVideoTitle2]</label>
 							<font>Bold-30</font>
 							<include>WhiteShadow</include>
-							<visible>!Container.PlexContent(Movies)</visible>
+							<visible>!Container.PlexContent(Movies) + !Container.PlexContent(Clips)</visible>
 						</control>
 						<control type="label">
 							<posy>40</posy>
@@ -1175,7 +1175,7 @@
 							<label>$VAR[PlayQueueVideoTitle2]</label>
 							<font>Regular-18</font>
 							<include>WhiteShadow</include>
-							<visible>Container.PlexContent(Movies)</visible>
+							<visible>Container.PlexContent(Movies) | Container.PlexContent(Clips)</visible>
 						</control>
 						<control type="label">
 							<posy>80</posy>
@@ -1184,7 +1184,7 @@
 							<label>$VAR[PlayQueueVideoTitle3]</label>
 							<font>Regular-30</font>
 							<include>WhiteShadow</include>
-							<visible>!Container.PlexContent(Movies)</visible>
+							<visible>!Container.PlexContent(Movies) + !Container.PlexContent(Clips)</visible>
 						</control>
 						<control type="label">
 							<posy>70</posy>
@@ -1193,7 +1193,7 @@
 							<label>$VAR[PlayQueueVideoTitle3]</label>
 							<font>Regular-18</font>
 							<include>WhiteShadow</include>
-							<visible>Container.PlexContent(Movies)</visible>
+							<visible>Container.PlexContent(Movies) | Container.PlexContent(Clips)</visible>
 						</control>
 						<!-- Count -->
 						<control type="grouplist">
@@ -1525,10 +1525,29 @@
 						<include>EpisodeThumbCard</include>
 						<include>EpisodeThumb</include>
 						<control type="label">
-							<include>EpisodeTitle</include>
-							<textcolor>white</textcolor>
+							<posy>121</posy>
+							<posx>20</posx>
+							<width>174</width>
+							<height>20</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$VAR[PlayQueueVideoCardTitle]</label>
+							<font>Regular-14</font>
+							<textcolor>FFFFFFFF</textcolor>
+							<shadowcolor>ff222222</shadowcolor>
 						</control>
-						<include>EpisodeDate</include>
+						<control type="label">
+							<posy>145</posy>
+							<posx>20</posx>
+							<width>174</width>
+							<height>20</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$VAR[PlayQueueVideoCardTitle2]</label>
+							<font>Regular-14</font>
+							<textcolor>FF999999</textcolor>
+							<shadowcolor>ff222222</shadowcolor>
+						</control>
 						<control type="group">
 							<visible>Container.PlexContent(Episodes)</visible>
 							<include>EpisodeThumbOverlay</include>
@@ -1544,15 +1563,41 @@
 							</control>
 						</control>
 						<include>PosterThumbUnwatchedOverlay</include>
+						<control type="image">
+							<posx>100</posx>
+							<posy>50</posy>
+							<texture>b-play2.png</texture>
+							<colordiffuse>orangeLight</colordiffuse>
+							<visible>ListItem.IsPlaying</visible>
+						</control>
 					</itemlayout>
 					<focusedlayout condition="Container.PlexContent(Episodes) | Container.PlexContent(clips) | [Container.PlexContent(channel) + [ListItem.Type(episode) | ListItem.Type(clip)]]" width="226" height="165">
 						<include>EpisodeThumbCard</include>
 						<include>EpisodeThumb</include>
 						<control type="label">
-							<include>EpisodeTitle</include>
+							<posy>121</posy>
+							<posx>20</posx>
+							<width>174</width>
+							<height>20</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$VAR[PlayQueueVideoCardTitle]</label>
+							<font>Regular-14</font>
 							<textcolor>orangeLight</textcolor>
+							<shadowcolor>ff222222</shadowcolor>
 						</control>
-						<include>EpisodeDate</include>
+						<control type="label">
+							<posy>145</posy>
+							<posx>20</posx>
+							<width>174</width>
+							<height>20</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$VAR[PlayQueueVideoCardTitle2]</label>
+							<font>Regular-14</font>
+							<textcolor>orangeLight</textcolor>
+							<shadowcolor>ff222222</shadowcolor>
+						</control>
 						<control type="group">
 							<visible>Container.PlexContent(Episodes)</visible>
 							<include>EpisodeThumbOverlay</include>
@@ -1569,6 +1614,13 @@
 						</control>
 						<include>PosterThumbUnwatchedOverlay</include>
 						<include>EpisodeSelectedBorder</include>
+						<control type="image">
+							<posx>100</posx>
+							<posy>50</posy>
+							<texture>b-play2.png</texture>
+							<colordiffuse>orangeLight</colordiffuse>
+							<visible>ListItem.IsPlaying</visible>
+						</control>
 					</focusedlayout>
 					<itemlayout condition="Container.PlexContent(Movies)" width="233" height="335">
 						<include>TVPoster</include>

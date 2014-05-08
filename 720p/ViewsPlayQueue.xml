@@ -22,14 +22,23 @@
 	<variable name="PlayQueueVideoTitle2">
 		<value condition="Player.HasVideo + ListItem.Type(episode)">$INFO[VideoPlayer.Title]</value>
 		<value condition="!Player.HasVideo + ListItem.Type(episode)">$INFO[ListItem.Title]</value>
-		<value condition="Player.HasVideo + ListItem.Type(clip)">$INFO[ListItem.Date]$INFO[ListItem.DurationStr, &#xB7; ]$INFO[ListItem.Property(sourceTitle), &#xB7; ]</value>
-		<value condition="!Player.HasVideo + ListItem.Type(clip)">$INFO[ListItem.Date]$INFO[ListItem.DurationStr, &#xB7; ]$INFO[ListItem.Property(sourceTitle), &#xB7; ]</value>
+		<value condition="Player.HasVideo + ListItem.Type(clip)">$INFO[VideoPlayer.Date]$INFO[VideoPlayer.Property(sourceTitle), &#xB7; ]</value>
+		<value condition="!Player.HasVideo + ListItem.Type(clip)">$INFO[ListItem.Date]$INFO[ListItem.Property(sourceTitle), &#xB7; ]</value>
 		<value condition="Player.HasVideo + ListItem.Type(movie)">[UPPERCASE]$INFO[VideoPlayer.Genre][/UPPERCASE]</value>
 		<value condition="!Player.HasVideo + ListItem.Type(movie)">[UPPERCASE]$INFO[ListItem.Genre][/UPPERCASE]</value>
 	</variable>
 	<variable name="PlayQueueVideoTitle3">
 		<value condition="Player.HasVideo + [ListItem.Type(episode) | ListItem.Type(movie)]">$INFO[VideoPlayer.DurationStr]</value>
 		<value condition="!Player.HasVideo + [ListItem.Type(episode) | ListItem.Type(movie)]">$INFO[ListItem.DurationStr]</value>
+		<value condition="Player.HasVideo + ListItem.Type(clip)">$INFO[VideoPlayer.DurationStr]</value>
+		<value condition="!Player.HasVideo + ListItem.Type(clip)">$INFO[ListItem.DurationStr]</value>
+	</variable>
+	<variable name="PlayQueueVideoCardTitle">
+		<value>$INFO[ListItem.Title]</value>
+	</variable>
+	<variable name="PlayQueueVideoCardTitle2">
+		<value condition="ListItem.Type(episode)">$INFO[ListItem.Date]</value>
+		<value condition="ListItem.Type(clip)">$INFO[ListItem.DurationStr]</value>
 	</variable>
 	<variable name="PlayQueueAlbum">
 		<value condition="Player.HasAudio">$INFO[MusicPlayer.Album]</value>
