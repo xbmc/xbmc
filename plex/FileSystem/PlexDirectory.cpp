@@ -452,6 +452,8 @@ CFileItemPtr CPlexDirectory::NewPlexElement(XML_ELEMENT *element, const CFileIte
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexDirectory::ReadChildren(XML_ELEMENT* root, CFileItemList& container)
 {
+  EPlexDirectoryType type = PLEX_DIR_TYPE_UNKNOWN;
+
 #ifdef USE_RAPIDXML
   for (XML_ELEMENT *element = root->first_node(); element; element = element->next_sibling())
 #else
@@ -467,6 +469,11 @@ void CPlexDirectory::ReadChildren(XML_ELEMENT* root, CFileItemList& container)
 
       item->SetProperty("isAllItems", true);
     }
+
+    if (type == PLEX_DIR_TYPE_UNKNOWN)
+      type = item->GetPlexDirectoryType();
+    else if (type != item->GetPlexDirectoryType())
+      container.SetProperty("hasMixedMembers", true);
 
     CPlexDirectoryTypeParserBase::GetDirectoryTypeParser(item->GetPlexDirectoryType())->Process(*item, container, element);
 

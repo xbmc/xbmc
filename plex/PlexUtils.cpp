@@ -822,6 +822,10 @@ string PlexUtils::GetPlexContent(const CFileItem &item)
   if (boost::starts_with(itemUrl.GetFileName(), "system/services/url/lookup"))
     singleItem = true;
 
+  if (boost::starts_with(itemUrl.GetFileName(), "playQueues/") &&
+      item.GetProperty("hasMixedMembers").asBoolean())
+    return "mixedcontent";
+
   switch(item.GetPlexDirectoryType())
   {
     case PLEX_DIR_TYPE_MOVIE:
