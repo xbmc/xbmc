@@ -66,6 +66,20 @@ public:
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+class CPlexExtraInfoLoaderJob : public CPlexDirectoryFetchJob
+{
+public:
+  CPlexExtraInfoLoaderJob(const CURL &url, const CFileItemListPtr& list, bool block = false)
+    : CPlexDirectoryFetchJob(url), m_block(block)
+  {
+    m_extraList = list;
+  }
+
+  bool m_block;
+  CFileItemListPtr m_extraList;
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 class CPlexPlayQueueFetchJob : public CPlexDirectoryFetchJob
 {
 public:

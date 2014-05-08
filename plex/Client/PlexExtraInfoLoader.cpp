@@ -2,6 +2,8 @@
 #include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
 #include "DirectoryCache.h"
+#include "PlexBusyIndicator.h"
+#include "PlexApplication.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexExtraInfoLoader::CPlexExtraInfoLoader()
@@ -11,14 +13,10 @@ CPlexExtraInfoLoader::CPlexExtraInfoLoader()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexExtraInfoLoader::~CPlexExtraInfoLoader()
 {
-  std::pair<int, CFileItemList*> p;
-  BOOST_FOREACH(p, m_jobMap)
-  CJobManager::GetInstance().CancelJob(p.first);
-  m_jobMap.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexExtraInfoLoader::LoadExtraInfoForItem(CFileItemList* list, CFileItemPtr extraItem)
+void CPlexExtraInfoLoader::LoadExtraInfoForItem(const CFileItemListPtr& list, const CFileItemPtr& extraItem, bool block)
 {
   if (!list)
     return;
@@ -61,27 +59,19 @@ void CPlexExtraInfoLoader::LoadExtraInfoForItem(CFileItemList* list, CFileItemPt
       return;
     }
 
-    int id = CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(CURL(url)), this,
-                                               CJob::PRIORITY_HIGH);
-    if (id != 0)
-    {
-      CLog::Log(LOGDEBUG, "CPlexExtraInfoLoader::LoadExtraInfoForItem loading %s for item %s",
-                url.c_str(), list->GetPath().c_str());
-      CSingleLock lk(m_lock);
-      m_jobMap[id] = list;
-    }
+    CLog::Log(LOGDEBUG, "CPlexExtraInfoLoader::LoadExtraInfoForItem loading %s for item %s",
+              url.c_str(), list->GetPath().c_str());
+
+    CPlexExtraInfoLoaderJob* job = new CPlexExtraInfoLoaderJob(CURL(url), list, block);
+    if (block)
+      g_plexApplication.busy.blockWaitingForJob(job, this);
     else
-    {
-      CLog::Log(LOGERROR, "CPlexExtraInfoLoader::LoadExtraInfoForItem failed to create "
-                          "CPlexDirectoryFetchJob for url %s",
-                url.c_str());
-      return;
-    }
+      CJobManager::GetInstance().AddJob(job, this, CJob::PRIORITY_HIGH);
   }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexExtraInfoLoader::CopyProperties(CFileItemList* list, CFileItemPtr extraItem)
+void CPlexExtraInfoLoader::CopyProperties(const CFileItemListPtr& list, CFileItemPtr extraItem)
 {
   if (!list || !extraItem)
     return;
@@ -152,31 +142,20 @@ void CPlexExtraInfoLoader::CopyProperties(CFileItemList* list, CFileItemPtr extr
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexExtraInfoLoader::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
-  CSingleLock lk(m_lock);
-  if (m_jobMap.find(jobID) == m_jobMap.end())
-  {
-    CLog::Log(LOGERROR, "CPlexExtraInfoLoader::OnJobComplete can't find list for jobID: %d", jobID);
-    return;
-  }
 
-  CFileItemList* list = m_jobMap[jobID];
-  if (!list)
-    return;
-  m_jobMap.erase(jobID);
-
-  CLog::Log(LOGDEBUG, "CPlexExtraInfoLoader::OnJobComplete loaded extra info for %s, sucess: %s",
-            list->GetPath().c_str(), success ? "YES" : "NO");
-
-  CPlexDirectoryFetchJob* fjob = static_cast<CPlexDirectoryFetchJob*>(job);
+  CPlexExtraInfoLoaderJob* fjob = static_cast<CPlexExtraInfoLoaderJob*>(job);
   if (!job)
     return;
+
+  CLog::Log(LOGDEBUG, "CPlexExtraInfoLoader::OnJobComplete loaded extra info for %s, sucess: %s",
+            fjob->m_extraList->GetPath().c_str(), success ? "YES" : "NO");
 
   CFileItemPtr extraItem = fjob->m_items.Get(0);
 
   if (extraItem)
   {
-    CopyProperties(list, extraItem);
-    LoadExtraInfoForItem(list, extraItem);
+    CopyProperties(fjob->m_extraList, extraItem);
+    LoadExtraInfoForItem(fjob->m_extraList, extraItem, fjob->m_block);
   }
 
   g_directoryCache.SetDirectory(fjob->m_url.Get(), fjob->m_items, XFILE::DIR_CACHE_ALWAYS);

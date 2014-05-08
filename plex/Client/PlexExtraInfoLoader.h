@@ -19,14 +19,11 @@ class CPlexExtraInfoLoader : public IJobCallback
 public:
   CPlexExtraInfoLoader();
   ~CPlexExtraInfoLoader();
-  void LoadExtraInfoForItem(CFileItemList* list, CFileItemPtr extraItem = CFileItemPtr());
+  void LoadExtraInfoForItem(const CFileItemListPtr &list, const CFileItemPtr &extraItem = CFileItemPtr(), bool block = false);
 
 private:
-  void CopyProperties(CFileItemList* item, CFileItemPtr extraItem);
+  void CopyProperties(const CFileItemListPtr &item, CFileItemPtr extraItem);
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
-
-  CCriticalSection m_lock;
-  std::map<int, CFileItemList*> m_jobMap;
 };
 
 #endif // CPLEXEXTRAINFOLOADER_H
