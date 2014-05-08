@@ -20,6 +20,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "PlexApplication.h"
 #include "AdvancedSettings.h"
+#include "Client/PlexExtraInfoLoader.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexMediaDecisionEngine::resolveItem(const CFileItem& _item, CFileItem &resolvedItem)
@@ -286,14 +287,17 @@ bool CPlexMediaDecisionJob::DoWork()
   if (m_item.IsPlexMediaServerLibrary() && m_item.IsVideo() &&
       !m_item.GetProperty("isSynthesized").asBoolean())
   {
-    CFileItemList list;
+    CFileItemListPtr list = CFileItemListPtr(new CFileItemList);
 
     CLog::Log(LOGDEBUG, "CPlexMediaDecisionJob::DoWork loading extra information for item");
 
-    if (!m_dir.GetDirectory(m_item.GetPath(), list))
+    if (!m_dir.GetDirectory(m_item.GetPath(), *list))
       return false;
 
-    m_choosenMedia = *list.Get(0).get();
+    m_choosenMedia = *list->Get(0);
+
+    // since this item is loaded again we need to call the extra info loader
+    g_plexApplication.extraInfo->LoadExtraInfoForItem(list);
   }
   else
   {
