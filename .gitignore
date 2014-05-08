@@ -407,7 +407,6 @@ lib/cpluff/stamp-h1
 /system/hdhomerun.dll
 /system/ssh.dll
 /system/sqlite3.dll
-/system/libsamplerate-0.dll
 /system/libnfs.dll
 /system/dnssd.dll
 /system/libcec.dll
@@ -1100,10 +1099,6 @@ lib/cpluff/stamp-h1
 # /lib/win32/libmms_win32/
 /lib/win32/libmms_win32/msvc++/Debug
 /lib/win32/libmms_win32/msvc++/Release
-
-# /lib/win32/libsamplerate
-/lib/win32/libsamplerate/libsamplerate_win32/Debug
-/lib/win32/libsamplerate/libsamplerate_win32/Release
 
 # /lib/win32/sqlite
 /lib/win32/sqlite/libsqlite_win32/Debug
