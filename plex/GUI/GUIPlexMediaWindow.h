@@ -14,7 +14,6 @@
 #include "guilib/GUIRadioButtonControl.h"
 #include "StringUtils.h"
 #include "JobManager.h"
-#include "PlexContentPlayerMixin.h"
 #include "threads/Event.h"
 #include "Filters/PlexSectionFilter.h"
 #include "guilib/GUIButtonControl.h"
@@ -45,7 +44,7 @@
 class PlexMediaWindowTests;
 class PlexMediaWindowUniformPropertyTests;
 
-class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public PlexContentPlayerMixin
+class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback
 {    
   friend class PlexMediaWindowTests;
   FRIEND_TEST(PlexMediaWindowTests, matchPlexFilter_basic);

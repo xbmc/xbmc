@@ -4255,11 +4255,7 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
     CPlexMediaDecisionEngine plexMDE;
     if (plexMDE.resolveItem(item, newItem))
     {
-      newItem.SetProperty("viewOffset", item.GetProperty("viewOffset"));
-      newItem.m_lStartOffset = item.m_lStartOffset;
-      newItem.m_lEndOffset = item.m_lEndOffset;
-
-      // Matroska seeking check
+     // Matroska seeking check
       if (CPlexTranscoderClient::getItemTranscodeMode(item) == CPlexTranscoderClient::PLEX_TRANSCODE_MODE_MKV)
       {
         if (item.HasProperty("viewOffsetSeek"))
@@ -4277,6 +4273,8 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
       if (!m_itemCurrentFile->IsStack())
         *m_itemCurrentFile = newItem;
     }
+    else
+      return false;
 
     /* let's set some options if we need to */
     CFileItemPtr mediaPart = CPlexMediaDecisionEngine::getMediaPart(newItem);

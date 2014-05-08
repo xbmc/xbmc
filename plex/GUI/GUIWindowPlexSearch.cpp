@@ -45,6 +45,8 @@
 #include "ApplicationMessenger.h"
 #include "PlexThemeMusicPlayer.h"
 #include "PlexJobs.h"
+#include "settings/GUISettings.h"
+#include "Playlists/PlexPlayQueueManager.h"
 
 #define CTL_LABEL_EDIT       310
 #define CTL_BUTTON_BACKSPACE 8
@@ -268,7 +270,7 @@ bool CGUIWindowPlexSearch::OnClick(int senderId, int action)
                  fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK ||
                  fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTO))
             {
-              PlayPlexItem(fileItem);
+              g_plexApplication.playQueueManager->create(*fileItem);
               return true;
             }
           }

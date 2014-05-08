@@ -43,6 +43,7 @@ class CPlexMediaDecisionEngine : public IJobCallback
 {
 public:
   bool resolveItem(const CFileItem& item, CFileItem& resolvedItem);
+  static bool checkItemPlayability(const CFileItem& item);
   static void ProcessStack(const CFileItem& item, const CFileItemList& stack);
   static CFileItemPtr getSelectedMediaItem(const CFileItem& item);
   static CFileItemPtr getMediaPart(const CFileItem& item, int partId = -1);

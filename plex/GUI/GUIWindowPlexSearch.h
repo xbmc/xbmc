@@ -26,13 +26,12 @@
 #include "FileItem.h"
 #include "guilib/GUIWindow.h"
 #include "JobManager.h"
-#include "PlexContentPlayerMixin.h"
 #include "guilib/GUIEditControl.h"
 #include "PlexGlobalTimer.h"
 #include "threads/CriticalSection.h"
 #include "PlexNavigationHelper.h"
 
-class CGUIWindowPlexSearch : public CGUIWindow, public PlexContentPlayerMixin, public IJobCallback, public IPlexGlobalTimeout
+class CGUIWindowPlexSearch : public CGUIWindow, public IJobCallback, public IPlexGlobalTimeout
 {
   public:
 

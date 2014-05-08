@@ -84,6 +84,7 @@
 #include "playlists/PlayList.h"
 #include "PlexPlayQueueManager.h"
 #include "music/tags/MusicInfoTag.h"
+#include "settings/GUISettings.h"
 
 using namespace std;
 using namespace XFILE;
@@ -617,7 +618,6 @@ bool CGUIWindowHome::OnClick(const CGUIMessage& message)
   {
     if (fileItem->HasMusicInfoTag() &&
         (currentContainer == CONTENT_LIST_PLAYQUEUE_MUSIC ||
-         currentContainer == CONTENT_LIST_PLAYQUEUE_PHOTO ||
          currentContainer == CONTENT_LIST_PLAYQUEUE_VIDEO))
     {
       g_plexApplication.playQueueManager->playCurrentId(fileItem->GetMusicInfoTag()->GetDatabaseId());
@@ -626,9 +626,23 @@ bool CGUIWindowHome::OnClick(const CGUIMessage& message)
     {
       if (iAction == ACTION_SELECT_ITEM && PlexUtils::CurrentSkinHasPreplay() &&
           fileItem->GetPlexDirectoryType() != PLEX_DIR_TYPE_PHOTO)
+      {
         OpenItem(fileItem);
+      }
+      else if (fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTO ||
+               fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTOALBUM)
+      {
+        if (fileItem->HasProperty("parentKey"))
+          CApplicationMessenger::Get().PictureSlideShow(fileItem->GetProperty("parentKey").asString(),
+                                                        false,
+                                                        fileItem->GetPath());
+        else
+          CApplicationMessenger::Get().PictureShow(fileItem->GetPath());
+      }
       else
-        PlayPlexItem(fileItem, (CGUIBaseContainer*)GetFocusedControl());
+      {
+        g_plexApplication.playQueueManager->create(*fileItem);
+      }
     }
   }
   else

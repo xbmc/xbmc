@@ -15,6 +15,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "PlexBusyIndicator.h"
 #include "PlexApplication.h"
+#include "Application.h"
 
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>

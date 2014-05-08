@@ -21,6 +21,35 @@
 #include "PlexApplication.h"
 #include "AdvancedSettings.h"
 #include "Client/PlexExtraInfoLoader.h"
+#include "dialogs/GUIDialogOK.h"
+#include "LocalizeStrings.h"
+#include "GUI/GUIDialogPlexMedia.h"
+#include "PlayListPlayer.h"
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexMediaDecisionEngine::checkItemPlayability(const CFileItem& item)
+{
+  /* something went wrong ... */
+  if (item.HasProperty("unavailable") && item.GetProperty("unavailable").asBoolean())
+  {
+    CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(52000), g_localizeStrings.Get(52010), "", "");
+    return false;
+  }
+  /* webkit can't be played by PHT */
+  if (item.HasProperty("protocol") && item.GetProperty("protocol").asString() == "webkit")
+  {
+    CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(52000), g_localizeStrings.Get(52011), "", "");
+    return false;
+  }
+  /* and we defintely not playing isos. */
+  if (item.HasProperty("isdvd") && item.GetProperty("isdvd").asBoolean())
+  {
+    CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(52000), g_localizeStrings.Get(52012), "", "");
+    return false;
+  }
+
+  return true;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexMediaDecisionEngine::resolveItem(const CFileItem& _item, CFileItem &resolvedItem)
@@ -40,10 +69,21 @@ bool CPlexMediaDecisionEngine::resolveItem(const CFileItem& _item, CFileItem &re
     }
   }
 
-  if (item.GetProperty("isResolved").asBoolean())
+  if (!checkItemPlayability(item))
+    return false;
+
+  int offset = item.m_lStartOffset;
+  if (!g_playlistPlayer.HasPlayedFirstFile())
   {
-    resolvedItem = item;
-    return true;
+    int selectedMedia = CGUIDialogPlexMedia::ProcessMediaChoice(item);
+    if (selectedMedia == -1)
+      return false;
+    item.SetProperty("selectedMediaItem", selectedMedia);
+    offset = CGUIDialogPlexMedia::ProcessResumeChoice(item);
+
+    // we use -2 for "abort"
+    if (offset == -2)
+      return false;
   }
 
   g_plexApplication.busy.blockWaitingForJob(new CPlexMediaDecisionJob(item), this);
@@ -54,6 +94,9 @@ bool CPlexMediaDecisionEngine::resolveItem(const CFileItem& _item, CFileItem &re
   {
     resolvedItem = m_resolvedItem;
     resolvedItem.SetProperty("isResolved", true);
+    resolvedItem.m_lStartOffset = offset;
+    resolvedItem.m_lEndOffset = item.m_lEndOffset;
+    resolvedItem.SetProperty("viewOffset", item.GetProperty("viewOffset"));
     return true;
   }
   return false;

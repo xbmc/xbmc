@@ -26,7 +26,6 @@
 
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIStaticItem.h"
-#include "PlexContentPlayerMixin.h"
 #include "Job.h"
 #include <boost/timer.hpp>
 
@@ -47,7 +46,7 @@
 
 class CGUIWindowHome;
 
-class CGUIWindowHome : public CGUIWindow, public PlexContentPlayerMixin, public IPlexGlobalTimeout, public IJobCallback
+class CGUIWindowHome : public CGUIWindow, public IPlexGlobalTimeout, public IJobCallback
 {
 public:
   CGUIWindowHome(void);

@@ -3,6 +3,7 @@
 #include "PlexPlayQueueManager.h"
 #include "music/tags/MusicInfoTag.h"
 #include "GUIUserMessages.h"
+#include "Application.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowPlexPlayQueue::OnSelect(int iItem)

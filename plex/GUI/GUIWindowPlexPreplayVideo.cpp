@@ -10,7 +10,6 @@
 #include "guilib/GUILabelControl.h"
 #include "ApplicationMessenger.h"
 #include "PlexApplication.h"
-#include "PlexContentPlayerMixin.h"
 #include "PlexThemeMusicPlayer.h"
 
 #include "dialogs/GUIDialogBusy.h"
@@ -21,6 +20,7 @@
 #include "Client/PlexServerManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "LocalizeStrings.h"
+#include "PlexPlayQueueManager.h"
 
 #include "DirectoryCache.h"
 
@@ -78,7 +78,7 @@ bool CGUIWindowPlexPreplayVideo::OnAction(const CAction &action)
 
   if (action.GetID() == ACTION_PLAYER_PLAY)
   {
-    PlexContentPlayerMixin::PlayPlexItem(g_plexApplication.m_preplayItem);
+    g_plexApplication.playQueueManager->create(*g_plexApplication.m_preplayItem);
     return true;
   }
   else if (action.GetID() == ACTION_TOGGLE_WATCHED)

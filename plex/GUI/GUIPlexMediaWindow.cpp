@@ -18,7 +18,6 @@
 #include "guilib/GUILabelControl.h"
 #include "GUI/GUIDialogFilterSort.h"
 #include "GUIWindowManager.h"
-#include "PlexContentPlayerMixin.h"
 #include "ApplicationMessenger.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "PlexUtils.h"
@@ -30,7 +29,6 @@
 #include "utils/URIUtils.h"
 #include "plex/GUI/GUIDialogPlexPluginSettings.h"
 #include "PlexThemeMusicPlayer.h"
-#include "PlexContentPlayerMixin.h"
 #include "PlexFilterManager.h"
 #include "Filters/GUIPlexFilterFactory.h"
 #include "dialogs/GUIDialogBusy.h"
@@ -42,6 +40,7 @@
 #include "ViewState.h"
 #include "PlexPlayQueueManager.h"
 #include "Client/PlexServerVersion.h"
+#include "settings/GUISettings.h"
 
 #include "LocalizeStrings.h"
 #include "DirectoryCache.h"
@@ -744,18 +743,21 @@ bool CGUIPlexMediaWindow::OnPlayMedia(int iItem)
   if (!item)
     return false;
 
-  if (item->m_bIsFolder)
+  if (IsPhotoContainer())
   {
-     g_plexApplication.playQueueManager->create(*item, CPlexPlayQueueManager::getURIFromItem(*item));
-     return true;
+    if (item->m_bIsFolder)
+      CApplicationMessenger::Get().PictureSlideShow(item->GetPath(), false);
+    else
+      CApplicationMessenger::Get().PictureSlideShow(m_vecItems->GetPath(), false, item->GetPath());
   }
-
-  if (IsMusicContainer())
+  else if (IsMusicContainer() && !item->m_bIsFolder)
+  {
     PlayAll(false, item);
-  else if (IsPhotoContainer())
-    CApplicationMessenger::Get().PictureSlideShow(m_vecItems->GetPath(), false, item->GetPath());
+  }
   else
-    PlexContentPlayerMixin::PlayPlexItem(item);
+  {
+    g_plexApplication.playQueueManager->create(*item, CPlexPlayQueueManager::getURIFromItem(*item));
+  }
 
   return true;
 }
