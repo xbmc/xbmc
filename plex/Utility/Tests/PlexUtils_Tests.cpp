@@ -255,3 +255,51 @@ TEST(PlexUtilsGetPlexContent, mixedMedia)
   item.SetProperty("hasMixedMembers", true);
   EXPECT_EQ("mixedcontent", PlexUtils::GetPlexContent(item));
 }
+
+class PlexUtilsGetPrettyMediaItemNameTest : public ::testing::Test
+{
+public:
+  void SetUp()
+  {
+    mediaItem = CFileItemPtr(new CFileItem);
+    mediaItem->SetProperty("mediaTag-videoCodec", "h264");
+    mediaItem->SetProperty("mediaTag-videoResolution", "720");
+
+    CFileItemPtr mediaPart = CFileItemPtr(new CFileItem);
+
+    CFileItemPtr audioStream = CFileItemPtr(new CFileItem);
+    audioStream->SetProperty("codec", "ac3");
+    audioStream->SetProperty("language", "English");
+    audioStream->SetProperty("channels", "6");
+    audioStream->SetProperty("streamType", PLEX_STREAM_AUDIO);
+    audioStream->Select(true);
+
+    mediaPart->m_mediaPartStreams.push_back(audioStream);
+    mediaItem->m_mediaParts.push_back(mediaPart);
+  }
+
+  void TearDown()
+  {
+    mediaItem.reset();
+  }
+
+  CFileItemPtr mediaItem;
+
+};
+
+TEST_F(PlexUtilsGetPrettyMediaItemNameTest, basic)
+{
+  EXPECT_STREQ("720p H264 - English (AC3 5.1)", PlexUtils::GetPrettyMediaItemName(mediaItem));
+}
+
+TEST_F(PlexUtilsGetPrettyMediaItemNameTest, noAudio)
+{
+  mediaItem->m_mediaParts[0]->m_mediaPartStreams.clear();
+  EXPECT_STREQ("720p H264 - ", PlexUtils::GetPrettyMediaItemName(mediaItem));
+}
+
+TEST_F(PlexUtilsGetPrettyMediaItemNameTest, sdVideo)
+{
+  mediaItem->SetProperty("mediaTag-videoResolution", "SD");
+  EXPECT_STREQ("SD H264 - English (AC3 5.1)", PlexUtils::GetPrettyMediaItemName(mediaItem));
+}

@@ -42,6 +42,7 @@ namespace PlexUtils
   std::string GetPlexCrashPath();
   CStdString GetPrettyStreamNameFromStreamItem(CFileItemPtr stream);
   CStdString GetPrettyStreamName(const CFileItem& fileItem, bool audio);
+  CStdString GetPrettyMediaItemName(const CFileItemPtr& mediaItem);
 
   CStdString GetSHA1SumFromURL(const CURL &url);
 

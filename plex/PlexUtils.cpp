@@ -25,6 +25,7 @@
 #include "GUIWindowManager.h"
 #include "Key.h"
 #include "GUI/GUIPlexMediaWindow.h"
+#include "Application.h"
 
 #include "File.h"
 
@@ -446,6 +447,39 @@ return g_SkinInfo->HasSkinFile("DialogFilters.xml");}
 std::string PlexUtils::GetPlexCrashPath()
 {
   return CSpecialProtocol::TranslatePath("special://temp/CrashReports");
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CStdString PlexUtils::GetPrettyMediaItemName(const CFileItemPtr& mediaItem)
+{
+  CStdString label;
+  CStdString videoCodec = CStdString(mediaItem->GetProperty("mediaTag-videoCodec").asString()).ToUpper();
+  CStdString videoRes = CStdString(mediaItem->GetProperty("mediaTag-videoResolution").asString()).ToUpper();
+  CStdString audioLabel = g_localizeStrings.Get(13205);
+  CFileItemPtr part = mediaItem->m_mediaParts[0];
+  if (part)
+  {
+    CFileItemPtr audioStream = GetSelectedStreamOfType(part, PLEX_STREAM_AUDIO);
+    if (audioStream)
+      audioLabel = GetPrettyStreamNameFromStreamItem(audioStream);
+  }
+
+  if (videoCodec.size() == 0 && videoRes.size() == 0)
+  {
+    label = g_localizeStrings.Get(13205);
+  }
+  else
+  {
+    if (isdigit(videoRes[0]))
+      videoRes += "p";
+
+    label += videoRes;
+    label += " " + videoCodec;
+  }
+
+  label += " - " + audioLabel;
+
+  return label;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
