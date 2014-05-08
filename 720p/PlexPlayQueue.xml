@@ -1580,6 +1580,17 @@
 							<info>ListItem.Overlay</info>
 							<visible>[Container.PlexContent(Movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)]</visible>
 						</control>
+						<control type="label">
+							<posy>298</posy>
+							<posx>105</posx>
+							<width>180</width>
+							<height>30</height>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<font>Regular-17</font>
+							<shadowcolor>FF222222</shadowcolor>
+						</control>
 					</itemlayout>
 					<focusedlayout condition="Container.PlexContent(Movies)" width="233" height="335">
 						<include>TVPoster</include>
@@ -1592,6 +1603,18 @@
 							<info>ListItem.Overlay</info>
 							<visible>[Container.PlexContent(Movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)]</visible>
 						</control>
+							<control type="label">
+								<posy>298</posy>
+								<posx>105</posx>
+								<width>180</width>
+								<height>30</height>
+								<align>center</align>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.Label]</label>
+								<font>Regular-17</font>
+								<textcolor>orangeLight</textcolor>
+								<shadowcolor>FF222222</shadowcolor>
+							</control>
 					</focusedlayout>
 				</control>
 			</control>
