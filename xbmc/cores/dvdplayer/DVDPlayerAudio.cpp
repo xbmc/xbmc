@@ -286,7 +286,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
       if (audioframe.pts == DVD_NOPTS_VALUE)
         audioframe.pts = m_audioClock;
 
-      if (m_streaminfo.samplerate != audioframe.encoded_sample_rate)
+      if (audioframe.encoded_sample_rate && m_streaminfo.samplerate != audioframe.encoded_sample_rate)
       {
         // The sample rate has changed or we just got it for the first time
         // for this stream. See if we should enable/disable passthrough due
