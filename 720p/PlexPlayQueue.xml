@@ -1602,6 +1602,16 @@
 							<colordiffuse>orangeLight</colordiffuse>
 							<visible>ListItem.IsPlaying</visible>
 						</control>
+						<!-- Source Icon -->
+						<control type="image">
+							<posx>20</posx>
+							<posy>82</posy>
+							<width>30</width>
+							<height>30</height>
+							<texture>$INFO[ListItem.Art(sourceIcon)]</texture>
+							<aspectratio align="center" aligny="center">keep</aspectratio>
+							<visible>!IsEmpty(ListItem.Art(sourceIcon))</visible>
+						</control>
 					</itemlayout>
 					<focusedlayout condition="Container.PlexContent(MixedContent) | Container.PlexContent(Episodes) | Container.PlexContent(clips) | [Container.PlexContent(channel) + [ListItem.Type(episode) | ListItem.Type(clip)]]" width="226" height="165">
 						<include>EpisodeThumbCard</include>
@@ -1652,6 +1662,16 @@
 							<texture>b-play2.png</texture>
 							<colordiffuse>orangeLight</colordiffuse>
 							<visible>ListItem.IsPlaying</visible>
+						</control>
+						<!-- Source Icon -->
+						<control type="image">
+							<posx>20</posx>
+							<posy>82</posy>
+							<width>30</width>
+							<height>30</height>
+							<texture>$INFO[ListItem.Art(sourceIcon)]</texture>
+							<aspectratio align="center" aligny="center">keep</aspectratio>
+							<visible>!IsEmpty(ListItem.Art(sourceIcon))</visible>
 						</control>
 					</focusedlayout>
 					<itemlayout condition="Container.PlexContent(Movies)" width="233" height="335">
