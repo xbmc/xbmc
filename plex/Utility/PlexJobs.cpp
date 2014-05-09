@@ -18,6 +18,7 @@
 #include "video/VideoInfoTag.h"
 #include "Stopwatch.h"
 #include "PlexUtils.h"
+#include "xbmc/Util.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CPlexHTTPFetchJob::DoWork()
@@ -279,4 +280,11 @@ bool CPlexThemeMusicPlayerJob::DoWork()
   }
   else
     return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexRecursiveFetchJob::DoWork()
+{
+  CUtil::GetRecursiveListing(m_url, *m_list, m_exts);
+  return true;
 }

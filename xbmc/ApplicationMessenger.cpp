@@ -70,6 +70,8 @@
 #include "PlexApplication.h"
 #include "Playlists/PlexPlayQueueManager.h"
 #include "Client/PlexServerCacheDatabase.h"
+#include "PlexBusyIndicator.h"
+#include "PlexJobs.h"
 /* END PLEX */
 
 using namespace PVR;
@@ -442,9 +444,14 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         CFileItemList items;
         CStdString strPath = pMsg->strParam;
         CStdString extensions = g_settings.m_pictureExtensions;
+#ifndef __PLEX__
         if (pMsg->dwParam1)
           extensions += "|.tbn";
         CUtil::GetRecursiveListing(strPath, items, extensions);
+#else
+        if (!g_plexApplication.busy.blockWaitingForJob(new CPlexRecursiveFetchJob(strPath, extensions, &items), NULL))
+          break;
+#endif
 
         /* PLEX */
         if (pMsg->dwParam2)

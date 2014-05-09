@@ -97,6 +97,22 @@ public:
   IPlexPlayQueueBasePtr m_caller;
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+class CPlexRecursiveFetchJob : public CJob
+{
+public:
+  CPlexRecursiveFetchJob(const CStdString& url, const CStdString& exts, CFileItemList* list)
+    : m_url(url), m_exts(exts)
+  {
+    m_list = list;
+  }
+
+  bool DoWork();
+
+  CStdString m_url, m_exts;
+  CFileItemList* m_list;
+};
+
 ////////////////////////////////////////////////////////////////////////////////////////
 class CPlexCachedDirectoryFetchJob : public CPlexDirectoryFetchJob
 {
