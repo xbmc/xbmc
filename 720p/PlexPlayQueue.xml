@@ -1330,6 +1330,7 @@
 						<!-- osd -->
 						<control type="group">
 							<visible>Player.HasVideo</visible>
+							<animation effect="fade" start="100" end="20" time="400" condition="Player.HasVideo + !Player.Paused + System.IdleTime(3)" reversible="true">Conditional</animation>
 							<posy>390</posy>
 							<posx>205</posx>
 							<control type="group">
