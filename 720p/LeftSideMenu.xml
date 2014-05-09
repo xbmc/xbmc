@@ -489,7 +489,7 @@
 				<control type="button" id="103">
 					<texturefocus>left-menu-nowplaying-icon-s.png</texturefocus>
 					<texturenofocus>left-menu-nowplaying-icon-u.png</texturenofocus>
-					<onclick>ActivateWindow(nowplaying)</onclick>
+					<onclick>fullscreen</onclick>
 					<include>leftMenuBarButton</include>
 					<visible>Player.HasAudio | Player.HasVideo</visible>
 				</control>
