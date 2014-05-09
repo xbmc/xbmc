@@ -306,6 +306,13 @@ bool CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
   if (item->m_lStartOffset == STARTOFFSET_RESUME)
       item->m_lStartOffset = 0;
 
+  /* PLEX */
+  if (m_iCurrentPlayList == PLAYLIST_VIDEO && m_bPlayedFirstFile)
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
+                                          g_localizeStrings.Get(13350),
+                                          g_application.CurrentFileItemPtr()->GetLabel(), 2500L, false);
+  /* END PLEX */
+
   // TODO - move the above failure logic and the below success logic
   //        to callbacks instead so we don't rely on the return value
   //        of PlayFile()
