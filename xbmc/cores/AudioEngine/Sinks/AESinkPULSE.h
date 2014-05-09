@@ -51,12 +51,13 @@ public:
   bool IsInitialized();
   CCriticalSection m_sec;
 private:
-  bool Pause(bool pause);
+  void Pause(bool pause);
   static inline bool WaitForOperation(pa_operation *op, pa_threaded_mainloop *mainloop, const char *LogEntry);
   static bool SetupContext(const char *host, pa_context **context, pa_threaded_mainloop **mainloop);
 
   bool m_IsAllocated;
   bool m_passthrough;
+  bool m_IsStreamPaused;
 
   AEAudioFormat m_format;
   unsigned int m_BytesPerSecond;
