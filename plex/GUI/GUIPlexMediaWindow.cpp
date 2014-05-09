@@ -1082,7 +1082,7 @@ bool CGUIPlexMediaWindow::IsVideoContainer(CFileItemPtr item) const
 {
   EPlexDirectoryType dirType = m_vecItems->GetPlexDirectoryType();
 
-  if (dirType == PLEX_DIR_TYPE_CHANNEL)
+  if (dirType == PLEX_DIR_TYPE_CHANNEL && m_vecItems->Get(0))
     dirType = m_vecItems->Get(0)->GetPlexDirectoryType();
 
   if (dirType == PLEX_DIR_TYPE_DIRECTORY && item)
@@ -1101,7 +1101,7 @@ bool CGUIPlexMediaWindow::IsVideoContainer(CFileItemPtr item) const
 bool CGUIPlexMediaWindow::IsMusicContainer() const
 {
   EPlexDirectoryType dirType = m_vecItems->GetPlexDirectoryType();
-  if (dirType == PLEX_DIR_TYPE_CHANNEL)
+  if (dirType == PLEX_DIR_TYPE_CHANNEL && m_vecItems->Get(0))
     dirType = m_vecItems->Get(0)->GetPlexDirectoryType();
   return (dirType == PLEX_DIR_TYPE_ALBUM || dirType == PLEX_DIR_TYPE_ARTIST || dirType == PLEX_DIR_TYPE_TRACK);
 }
@@ -1111,7 +1111,7 @@ bool CGUIPlexMediaWindow::IsPhotoContainer() const
 {
   EPlexDirectoryType dirType = m_vecItems->GetPlexDirectoryType();
 
-  if (dirType == PLEX_DIR_TYPE_CHANNEL)
+  if (dirType == PLEX_DIR_TYPE_CHANNEL && m_vecItems->Get(0))
     dirType = m_vecItems->Get(0)->GetPlexDirectoryType();
 
   return (dirType == PLEX_DIR_TYPE_PHOTOALBUM | dirType == PLEX_DIR_TYPE_PHOTO);
