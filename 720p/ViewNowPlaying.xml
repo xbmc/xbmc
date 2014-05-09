@@ -436,7 +436,7 @@
 		<value condition="MusicPlayer.HasNext">$INFO[MusicPlayer.Offset(1).Duration]</value>
 		<value condition="Player.HasVideo + !IsEmpty(VideoPlayer.Offset(1).Duration)">$INFO[VideoPlayer.Offset(1).Time] / $INFO[VideoPlayer.Offset(1).Duration]</value>
 	</variable>
-	<include name="CurrentlyPlaying">
+	<include name="CurrentlyPlaying_">
 		<control type="group">
 			<!-- background -->
 			<control type="image">
