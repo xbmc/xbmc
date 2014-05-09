@@ -968,6 +968,7 @@
       </group>
     </category>
     <category id="dvds" label="14087" help="36193">
+      <requirement>HAS_DVD_DRIVE</requirement>
       <group id="1">
         <setting id="dvds.autorun" type="boolean" label="14088" help="36194">
           <level>0</level>
