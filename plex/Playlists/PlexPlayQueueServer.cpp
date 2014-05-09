@@ -124,8 +124,8 @@ void CPlexPlayQueueServer::removeItem(const CFileItemPtr& item)
     return;
 
   CStdString path;
-  path.Format("/playQueues/%d/items/%d", item->GetProperty("playQueueID").asInteger(),
-              item->GetProperty("playQueueItemID").asInteger());
+  path.Format("/playQueues/%d/items/%d", (int)item->GetProperty("playQueueID").asInteger(),
+              (int)item->GetProperty("playQueueItemID").asInteger());
   CURL u = m_server->BuildPlexURL(path);
 
   sendRequest(u, "DELETE", false);
