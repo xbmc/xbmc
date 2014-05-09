@@ -8,7 +8,7 @@
 	<controls>
 		<!-- music play queue -->
 		<control type="group">
-			<visible>Container.PlexContent(songs) | [Container.PlexContent(channel) + ListItem.Type(song)]</visible>
+			<visible>Container.PlexContent(songs) | [Container.PlexContent(channel) + System.PlexPlayQueue(Music)]</visible>
 			<!-- backgrounds -->
 			<control type="group">
 				<!-- fanart -->
@@ -51,7 +51,7 @@
 				<posy>-34</posy>
 				<!-- list -->
 				<control type="list" id="54">
-					<visible>Container.PlexContent(songs) | [Container.PlexContent(channel) + ListItem.Type(song)]</visible>
+					<visible>Container.PlexContent(songs) | [Container.PlexContent(channel) + System.PlexPlayQueue(Music)]</visible>
 					<viewtype label="MusicPlayQueue">list</viewtype>
 					<posx>791</posx>
 					<posy>55</posy>
@@ -1036,7 +1036,7 @@
 		<!-- video play queue -->
 		<control type="group">
 			<control type="group" id="777">
-				<visible>Container.PlexContent(MixedContent) | Container.PlexContent(Episodes) | Container.PlexContent(clips) | [Container.PlexContent(channel) + [ListItem.Type(episode) | ListItem.Type(clip)]] | Container.PlexContent(Movies)</visible>
+				<visible>Container.PlexContent(MixedContent) | Container.PlexContent(Episodes) | Container.PlexContent(clips) | [Container.PlexContent(channel) + System.PlexPlayQueue(Video)] | Container.PlexContent(Movies)</visible>
 				<include>FadeDialog</include>
 				<include>rightSideSlide</include>
 				<control type="group">
@@ -1542,7 +1542,7 @@
 				</control>
 				<!-- main list -->
 				<control type="panel" id="61">
-					<visible>Container.PlexContent(MixedContent) | Container.PlexContent(Episodes) | Container.PlexContent(clips) | [Container.PlexContent(channel) + [ListItem.Type(episode) | ListItem.Type(clip)]] | Container.PlexContent(Movies)</visible>
+					<visible>Container.PlexContent(MixedContent) | Container.PlexContent(Episodes) | Container.PlexContent(clips) | [Container.PlexContent(channel) + System.PlexPlayQueue(Video)] | Container.PlexContent(Movies)</visible>
 					<viewtype label="VideoPlayQueue">panel</viewtype>
 					<onup>61</onup>
 					<ondown>61</ondown>
