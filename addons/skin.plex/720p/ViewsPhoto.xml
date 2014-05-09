@@ -265,7 +265,7 @@
 					<onup>51</onup>
 					<ondown>51</ondown>
 					<onright>Container.NextViewMode</onright>
-					<onleft>1300</onleft>
+					<onleft>998</onleft>
 					<orientation>vertical</orientation>
 					<posx>93</posx>
 					<posy>15</posy>
@@ -332,7 +332,7 @@
 					<onup>51</onup>
 					<ondown>51</ondown>
 					<onright>Container.NextViewMode</onright>
-					<onleft>1300</onleft>
+					<onleft>998</onleft>
 					<orientation>vertical</orientation>
 					<posx>573</posx>
 					<posy>15</posy>

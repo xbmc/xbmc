@@ -99,6 +99,11 @@
 		<value condition="ListItem(0).Status(unwatched)">Unwatched</value>
 		<value/>
 	</variable>
+	<variable name="PlexPlayQueue">
+		<value condition="System.PlexPlayQueue(video)">Video</value>
+		<value condition="System.PlexPlayQueue(music)">Music</value>
+		<value condition="!System.PlexPlayQueue(any)">None</value>
+	</variable>
 	<variable name="HomeListSelectedItemType">
 		<!-- on deck -->
 		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode)">episode</value>
@@ -182,6 +187,10 @@
 				<control type="label">
 					<include>debugFont</include>
 					<label>System.CpuFrequency : [COLOR=orangeLight]$INFO[System.CpuFrequency][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>System.PlexPlayQueue : [COLOR=orangeLight]$VAR[PlexPlayQueue][/COLOR]</label>
 				</control>
 				<control type="label">
 					<include>debugFont</include>
@@ -576,7 +585,7 @@
 				<height>680</height>
 				<orientation>vertical</orientation>
 				<itemgap>5</itemgap>
-				<visible>Window.IsVisible(25) | Window.IsVisible(10090)</visible>
+				<visible>Window.IsVisible(25) | Window.IsVisible(10090) | [Window.IsVisible(plexplayqueue) + System.PlexPlayQueue(Video)]</visible>
 				<control type="label">
 					<include>debugFont</include>
 					<label>VIDEO SPECIFIC:</label>
@@ -704,7 +713,7 @@
 				<height>680</height>
 				<orientation>vertical</orientation>
 				<itemgap>5</itemgap>
-				<visible>Container.PlexContent(TVShows) | Container.Content(tvshow) | Container.PlexContent(Seasons) | Container.Content(season) | Container.PlexContent(Episodes) | Container.PlexContent(Episode)</visible>
+				<visible>Container.PlexContent(TVShows) | Container.Content(tvshow) | Container.PlexContent(Seasons) | Container.Content(season) | Container.PlexContent(Episodes) | Container.PlexContent(Episode) | [Window.IsVisible(plexplayqueue) + System.PlexPlayQueue(Video)]</visible>
 				<control type="label">
 					<include>debugFont</include>
 					<label>TV SPECIFIC:</label>
@@ -774,7 +783,7 @@
 				<height>680</height>
 				<orientation>vertical</orientation>
 				<itemgap>5</itemgap>
-				<visible>Window.IsVisible(501) | Window.IsVisible(plexplayqueue)</visible>
+				<visible>Window.IsVisible(501) | [Window.IsVisible(plexplayqueue) + System.PlexPlayQueue(Music)]</visible>
 				<control type="label">
 					<include>debugFont</include>
 					<label>MUSIC SPECIFIC:</label>
