@@ -847,7 +847,7 @@
 									<control type="button" id="708">
 										<width>32</width>
 										<height>30</height>
-										<onleft>713</onleft>
+										<onleft>714</onleft>
 										<onright>710</onright>
 										<onup>-</onup>
 										<texturefocus>-</texturefocus>
@@ -958,12 +958,37 @@
 										<texturefocus>b-stop.png</texturefocus>
 										<texturenofocus>b-stop.png</texturenofocus>
 										<onleft>712</onleft>
-										<onright>54</onright>
+										<onright>714</onright>
 										<onup>54</onup>
 										<ondown>54</ondown>
 										<onclick>PlayerControl(Stop)</onclick>
 										<onclick>Control.SetFocus(54)</onclick>
 										<visible allowhiddenfocus="true">Control.HasFocus(713)</visible>
+										<colordiffuse>orange</colordiffuse>
+									</control>
+								</control>
+								<!-- fullscreen -->
+								<control type="group">
+									<posy>13</posy>
+									<posx>405</posx>
+									<control type="image">
+										<width>22</width>
+										<height>22</height>
+										<texture>b-fullscreen.png</texture>
+										<visible>!Control.HasFocus(714)</visible>
+										<colordiffuse>FFCCCCCC</colordiffuse>
+									</control>
+									<control type="button" id="714">
+										<width>22</width>
+										<height>22</height>
+										<texturefocus>b-fullscreen.png</texturefocus>
+										<texturenofocus>b-fullscreen.png</texturenofocus>
+										<onleft>713</onleft>
+										<onright>54</onright>
+										<onup>54</onup>
+										<ondown>54</ondown>
+										<onclick>fullscreen</onclick>
+										<visible allowhiddenfocus="true">Control.HasFocus(714)</visible>
 										<colordiffuse>orange</colordiffuse>
 									</control>
 								</control>
