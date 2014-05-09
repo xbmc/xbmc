@@ -2979,16 +2979,27 @@ bool CDVDPlayer::OpenStream(CCurrentStream& current, int iStream, int source, bo
   return res;
 }
 
-bool CDVDPlayer::OpenAudioStream(CDVDStreamInfo& hint, bool reset)
+bool CDVDPlayer::OpenStreamPlayer(CCurrentStream& current, CDVDStreamInfo& hint, bool reset)
 {
-  if(m_CurrentAudio.id    < 0
-  || m_CurrentAudio.hint != hint)
+  IDVDStreamPlayer* player = GetStreamPlayer(current.player);
+  if(player == NULL)
+    return false;
+
+  if(current.id    < 0
+  || current.hint != hint)
   {
-    if (!m_dvdPlayerAudio.OpenStream( hint ))
+    if (!player->OpenStream( hint ))
       return false;
   }
   else if (reset)
-    m_dvdPlayerAudio.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
+    player->SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET), 0);
+  return true;
+}
+
+bool CDVDPlayer::OpenAudioStream(CDVDStreamInfo& hint, bool reset)
+{
+  if(!OpenStreamPlayer(m_CurrentAudio, hint, reset))
+    return false;
 
   m_HasAudio = true;
 
@@ -3022,15 +3033,11 @@ bool CDVDPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
   if (hint.stereo_mode.empty())
     hint.stereo_mode = CStereoscopicsManager::Get().DetectStereoModeByString(m_filename);
 
-  if(m_CurrentVideo.id    < 0
-  || m_CurrentVideo.hint != hint)
-  {
-    // discard if it's a picture attachment (e.g. album art embedded in MP3 or AAC)
-    if ((hint.flags & AV_DISPOSITION_ATTACHED_PIC) || !m_dvdPlayerVideo.OpenStream(hint))
-      return false;
-  }
-  else if (reset)
-    m_dvdPlayerVideo.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
+  if(hint.flags & AV_DISPOSITION_ATTACHED_PIC)
+    return false;
+
+  if(!OpenStreamPlayer(m_CurrentVideo, hint, reset))
+    return false;
 
   m_HasVideo = true;
 
@@ -3057,20 +3064,8 @@ bool CDVDPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
 
 bool CDVDPlayer::OpenSubtitleStream(CDVDStreamInfo& hint)
 {
-  if(m_CurrentSubtitle.id    < 0
-  || m_CurrentSubtitle.hint != hint)
-  {
-    if(m_CurrentSubtitle.id >= 0)
-    {
-      CLog::Log(LOGDEBUG, " - codecs hints have changed, must close previous stream");
-      CloseStream(m_CurrentSubtitle, false);
-    }
-
-    if(!m_dvdPlayerSubtitle.OpenStream(hint, hint.filename))
-      return false;
-  }
-  else
-    m_dvdPlayerSubtitle.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
+  if(!OpenStreamPlayer(m_CurrentSubtitle, hint, true))
+    return false;
 
   CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = GetSubtitle();
   return true;
@@ -3110,20 +3105,8 @@ bool CDVDPlayer::OpenTeletextStream(CDVDStreamInfo& hint)
   if (!m_dvdPlayerTeletext.CheckStream(hint))
     return false;
 
-  if(m_CurrentTeletext.id    < 0
-  || m_CurrentTeletext.hint != hint)
-  {
-    if(m_CurrentTeletext.id >= 0)
-    {
-      CLog::Log(LOGDEBUG, " - teletext codecs hints have changed, must close previous stream");
-      CloseStream(m_CurrentTeletext, true);
-    }
-
-    if (!m_dvdPlayerTeletext.OpenStream(hint))
-      return false;
-  }
-  else
-    m_dvdPlayerTeletext.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
+  if(!OpenStreamPlayer(m_CurrentTeletext, hint, true))
+    return false;
 
   return true;
 }
