@@ -80,6 +80,7 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bSaveInDb)
       // create a new group if none was found
       updateGroup = CPVRChannelGroupPtr(new CPVRChannelGroup(m_bRadio, group.GroupID(), group.GroupName()));
       updateGroup->SetGroupType(group.GroupType());
+      updateGroup->SetLastWatched(group.LastWatched());
       m_groups.push_back(updateGroup);
     }
     else
@@ -293,8 +294,9 @@ bool CPVRChannelGroups::Load(void)
     return false;
   }
 
-  // set the internal group as selected at startup
-  SetSelectedGroup(internalChannels);
+  // set the last played group as selected group at startup
+  CPVRChannelGroupPtr lastPlayedGroup = GetLastPlayedGroup();
+  SetSelectedGroup(lastPlayedGroup ? lastPlayedGroup : internalChannels);
 
   CLog::Log(LOGDEBUG, "PVR - %s - %d %s channel groups loaded", __FUNCTION__, (int) m_groups.size(), m_bRadio ? "radio" : "TV");
 
@@ -332,6 +334,20 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetLastGroup(void) const
 
   CPVRChannelGroupPtr empty;
   return empty;
+}
+
+CPVRChannelGroupPtr CPVRChannelGroups::GetLastPlayedGroup() const
+{
+  CSingleLock lock(m_critSection);
+
+  CPVRChannelGroupPtr group;
+  for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); it++)
+  {
+    if ((*it)->LastWatched() > 0 && (!group || (*it)->LastWatched() > group->LastWatched()))
+      group = (*it);
+  }
+
+  return group;
 }
 
 std::vector<CPVRChannelGroupPtr> CPVRChannelGroups::GetMembers() const

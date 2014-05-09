@@ -53,7 +53,8 @@ CPVRChannelGroup::CPVRChannelGroup(void) :
     m_bChanged(false),
     m_bUsingBackendChannelOrder(false),
     m_bSelectedGroup(false),
-    m_bPreventSortAndRenumber(false)
+    m_bPreventSortAndRenumber(false),
+    m_iLastWatched(0)
 {
 }
 
@@ -66,7 +67,8 @@ CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CSt
     m_bChanged(false),
     m_bUsingBackendChannelOrder(false),
     m_bSelectedGroup(false),
-    m_bPreventSortAndRenumber(false)
+    m_bPreventSortAndRenumber(false),
+    m_iLastWatched(0)
 {
 }
 
@@ -79,7 +81,8 @@ CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP &group) :
     m_bChanged(false),
     m_bUsingBackendChannelOrder(false),
     m_bSelectedGroup(false),
-    m_bPreventSortAndRenumber(false)
+    m_bPreventSortAndRenumber(false),
+    m_iLastWatched(0)
 {
 }
 
@@ -111,6 +114,7 @@ CPVRChannelGroup::CPVRChannelGroup(const CPVRChannelGroup &group)
   m_bChanged                    = group.m_bChanged;
   m_bUsingBackendChannelOrder   = group.m_bUsingBackendChannelOrder;
   m_bUsingBackendChannelNumbers = group.m_bUsingBackendChannelNumbers;
+  m_iLastWatched                = group.m_iLastWatched;
 
   for (int iPtr = 0; iPtr < group.Size(); iPtr++)
     m_members.push_back(group.m_members.at(iPtr));
@@ -1212,6 +1216,29 @@ CStdString CPVRChannelGroup::GroupName(void) const
   CSingleLock lock(m_critSection);
   CStdString strReturn(m_strGroupName);
   return strReturn;
+}
+
+time_t CPVRChannelGroup::LastWatched(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_iLastWatched;
+}
+
+bool CPVRChannelGroup::SetLastWatched(time_t iLastWatched)
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_iLastWatched != iLastWatched)
+  {
+    /* update last watched  */
+    m_iLastWatched = iLastWatched;
+    SetChanged();
+    m_bChanged = true;
+
+    return true;
+  }
+
+  return false;
 }
 
 bool CPVRChannelGroup::PreventSortAndRenumber(void) const

@@ -112,7 +112,8 @@ void CPVRDatabase::CreateTables()
       "CREATE TABLE map_channelgroups_channels ("
         "idChannel      integer, "
         "idGroup        integer, "
-        "iChannelNumber integer"
+        "iChannelNumber integer, "
+        "iLastWatched   integer"
       ")"
   );
 
@@ -219,6 +220,9 @@ void CPVRDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 22)
     m_pDS->exec("ALTER TABLE channels ADD bIsLocked bool");
+
+  if (iVersion < 23)
+    m_pDS->exec("ALTER TABLE channelgroups ADD iLastWatched integer");
 }
 
 int CPVRDatabase::GetLastChannelId(void)
@@ -648,6 +652,7 @@ bool CPVRDatabase::Get(CPVRChannelGroups &results)
       {
         CPVRChannelGroup data(m_pDS->fv("bIsRadio").get_asBool(), m_pDS->fv("idGroup").get_asInt(), m_pDS->fv("sName").get_asString());
         data.SetGroupType(m_pDS->fv("iGroupType").get_asInt());
+        data.SetLastWatched((time_t) m_pDS->fv("iLastWatched").get_asInt());
         results.Update(data);
 
         CLog::Log(LOGDEBUG, "PVR - %s - group '%s' loaded from the database", __FUNCTION__, data.GroupName().c_str());
@@ -842,11 +847,11 @@ bool CPVRDatabase::Persist(CPVRChannelGroup &group)
 
     /* insert a new entry when this is a new group, or replace the existing one otherwise */
     if (group.GroupID() <= 0)
-      strQuery = PrepareSQL("INSERT INTO channelgroups (bIsRadio, iGroupType, sName) VALUES (%i, %i, '%s')",
-          (group.IsRadio() ? 1 :0), group.GroupType(), group.GroupName().c_str());
+      strQuery = PrepareSQL("INSERT INTO channelgroups (bIsRadio, iGroupType, sName, iLastWatched) VALUES (%i, %i, '%s', %u)",
+          (group.IsRadio() ? 1 :0), group.GroupType(), group.GroupName().c_str(), group.LastWatched());
     else
-      strQuery = PrepareSQL("REPLACE INTO channelgroups (idGroup, bIsRadio, iGroupType, sName) VALUES (%i, %i, %i, '%s')",
-          group.GroupID(), (group.IsRadio() ? 1 :0), group.GroupType(), group.GroupName().c_str());
+      strQuery = PrepareSQL("REPLACE INTO channelgroups (idGroup, bIsRadio, iGroupType, sName, iLastWatched) VALUES (%i, %i, %i, '%s', %u)",
+          group.GroupID(), (group.IsRadio() ? 1 :0), group.GroupType(), group.GroupName().c_str(), group.LastWatched());
 
     bReturn = ExecuteQuery(strQuery);
 

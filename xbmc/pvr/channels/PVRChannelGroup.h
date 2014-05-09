@@ -216,6 +216,18 @@ namespace PVR
     int GroupType(void) const;
 
     /*!
+     * @return Time group has been watched last.
+     */
+    time_t LastWatched() const;
+
+    /*!
+     * @brief Last time group has been watched
+     * @param iLastWatched The new value.
+     * @return True if something changed, false otherwise.
+     */
+    bool SetLastWatched(time_t iLastWatched);
+
+    /*!
      * @brief Set if sorting and renumbering should happen after adding/updating channels to group.
      * @param bPreventSortAndRenumber The new sorting and renumbering prevention value for this group.
      */
@@ -503,6 +515,7 @@ namespace PVR
     bool             m_bUsingBackendChannelNumbers; /*!< true to use the channel numbers from 1 backend, false otherwise */
     bool             m_bSelectedGroup;              /*!< true when this is the selected group, false otherwise */
     bool             m_bPreventSortAndRenumber;     /*!< true when sorting and renumbering should not be done after adding/updating channels to the group */
+    time_t           m_iLastWatched;                /*!< last time group has been watched */
     std::vector<PVRChannelGroupMember> m_members;
     CCriticalSection m_critSection;
     

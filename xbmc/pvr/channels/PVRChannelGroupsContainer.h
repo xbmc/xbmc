@@ -180,6 +180,12 @@ namespace PVR
      */
     CFileItemPtr GetLastPlayedChannel(void) const;
 
+    /*!
+     * @brief The group that was played last.
+     * @return The last watched group.
+     */
+    CPVRChannelGroupPtr GetLastPlayedGroup() const;
+
     bool CreateChannel(const CPVRChannel &channel);
 
     /*!
