@@ -251,7 +251,7 @@ public:
   void Hide();
   void RestartWithNewPlayer(CGUIDialogCache* dlg, const std::string& newURL);
   void PlexUpdatePlayQueue(ePlexMediaType type, bool startPlaying);
-  void PictureSlideShow(std::string pathname, bool addTBN, const std::string &index);
+  void PictureSlideShow(std::string pathname, bool addTBN, const std::string &index, bool shuffle = false);
   void PlexSaveServerCache();
   /* END PLEX */
 

@@ -446,6 +446,11 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
           extensions += "|.tbn";
         CUtil::GetRecursiveListing(strPath, items, extensions);
 
+        /* PLEX */
+        if (pMsg->dwParam2)
+          items.Randomize();
+        /* END PLEX */
+
         if (items.Size() > 0)
         {
           for (int i=0;i<items.Size();++i)
@@ -1357,12 +1362,13 @@ void CApplicationMessenger::PlexUpdatePlayQueue(ePlexMediaType type, bool startP
   SendMessage(tMsg, false);
 }
 
-void CApplicationMessenger::PictureSlideShow(string pathname, bool addTBN, const string& index)
+void CApplicationMessenger::PictureSlideShow(string pathname, bool addTBN, const string& index, bool shuffle)
 {
   DWORD dwMessage = TMSG_PICTURE_SLIDESHOW;
   ThreadMessage tMsg = {dwMessage};
   tMsg.strParam = pathname;
   tMsg.dwParam1 = addTBN ? 1 : 0;
+  tMsg.dwParam2 = shuffle ? 1 : 0;
   tMsg.params.push_back(index);
   SendMessage(tMsg);
 }

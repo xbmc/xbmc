@@ -906,6 +906,14 @@ void CGUIPlexMediaWindow::QueueItem(const CFileItemPtr& item, bool next)
 //////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIPlexMediaWindow::PlayAll(bool shuffle, const CFileItemPtr& fromHere)
 {
+  if (IsPhotoContainer())
+  {
+    // Photos are handled a bit different
+    CApplicationMessenger::Get().PictureSlideShow(m_vecItems->GetPath(), false,
+                                                  fromHere ? fromHere->GetPath() : "", shuffle);
+    return;
+  }
+
   CPlexServerPtr server;
   if (m_vecItems->HasProperty("plexServer"))
     server = g_plexApplication.serverManager->FindByUUID(m_vecItems->GetProperty("plexServer").asString());
