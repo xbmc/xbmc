@@ -99,6 +99,11 @@
 		<value condition="ListItem(0).Status(unwatched)">Unwatched</value>
 		<value/>
 	</variable>
+	<variable name="PlexPlayQueue">
+		<value condition="System.PlexPlayQueue(video)">Video</value>
+		<value condition="System.PlexPlayQueue(music)">Music</value>
+		<value condition="!System.PlexPlayQueue(any)">None</value>
+	</variable>
 	<variable name="HomeListSelectedItemType">
 		<!-- on deck -->
 		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode)">episode</value>
@@ -182,6 +187,10 @@
 				<control type="label">
 					<include>debugFont</include>
 					<label>System.CpuFrequency : [COLOR=orangeLight]$INFO[System.CpuFrequency][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>System.PlexPlayQueue : [COLOR=orangeLight]$VAR[PlexPlayQueue][/COLOR]</label>
 				</control>
 				<control type="label">
 					<include>debugFont</include>
