@@ -50,6 +50,7 @@ using namespace std;
 CAdvancedSettings::CAdvancedSettings()
 {
   m_initialized = false;
+  m_fullScreen = false;
 }
 
 void CAdvancedSettings::OnSettingsLoaded()
@@ -325,7 +326,7 @@ void CAdvancedSettings::Initialize()
   m_curlDisableIPV6 = false;      //Certain hardware/OS combinations have trouble
                                   //with ipv6.
 
-  m_fullScreen = m_startFullScreen = false;
+  m_startFullScreen = false;
   m_showExitButton = true;
   m_splashImage = true;
 
