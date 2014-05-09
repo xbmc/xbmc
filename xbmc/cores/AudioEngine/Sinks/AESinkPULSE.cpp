@@ -694,7 +694,8 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   m_format = format;
   format.m_dataFormat = m_passthrough ? AE_FMT_S16NE : format.m_dataFormat;
 
-  Pause(false);
+  // Cork stream will resume when adding first package
+  Pause(true);
   {
     CSingleLock lock(m_sec);
     m_IsAllocated = true;
@@ -771,6 +772,11 @@ unsigned int CAESinkPULSE::AddPackets(uint8_t *data, unsigned int frames, bool h
 {
   if (!m_IsAllocated)
     return frames;
+
+  if (m_IsStreamPaused)
+  {
+    Pause(false);
+  }
 
   pa_threaded_mainloop_lock(m_MainLoop);
 
@@ -907,16 +913,15 @@ bool CAESinkPULSE::IsInitialized()
  return m_IsAllocated; 
 }
 
-bool CAESinkPULSE::Pause(bool pause)
+void CAESinkPULSE::Pause(bool pause)
 {
   pa_threaded_mainloop_lock(m_MainLoop);
 
   if (!WaitForOperation(pa_stream_cork(m_Stream, pause ? 1 : 0, NULL, NULL), m_MainLoop, pause ? "Pause" : "Resume"))
     pause = !pause;
 
+  m_IsStreamPaused = pause;
   pa_threaded_mainloop_unlock(m_MainLoop);
-
-  return pause;
 }
 
 inline bool CAESinkPULSE::WaitForOperation(pa_operation *op, pa_threaded_mainloop *mainloop, const char *LogEntry = "")
