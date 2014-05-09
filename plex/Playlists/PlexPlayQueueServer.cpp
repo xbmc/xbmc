@@ -198,6 +198,7 @@ void CPlexPlayQueueServer::OnJobComplete(unsigned int jobID, bool success, CJob*
 
     CFileItemListPtr pqCopy = CFileItemListPtr(new CFileItemList);
     pqCopy->Assign(fj->m_items);
+    pqCopy->SetPath("plexserver://playqueue/");
 
     {
       CSingleLock lk(m_mapLock);

@@ -106,6 +106,7 @@ void CPlexPlayQueueLocal::OnJobComplete(unsigned int jobID, bool success, CJob* 
 
     m_list->Clear();
     m_list->Copy(fj->m_items);
+    m_list->SetPath("plexserver://playqueue/");
 
     /* If we need to shuffle the list do it here */
     if (fj->m_shuffle)
