@@ -416,6 +416,9 @@ namespace INFO
 #define SYSTEM_IDLE_TIME            715
 #define SYSTEM_FRIENDLY_NAME        716
 #define SYSTEM_SCREENSAVER_ACTIVE   717
+/* PLEX */
+#define SYSTEM_PLEX_PLAYQUEUE       718
+/* END PLEX */
 
 #define LIBRARY_HAS_MUSIC           720
 #define LIBRARY_HAS_VIDEO           721

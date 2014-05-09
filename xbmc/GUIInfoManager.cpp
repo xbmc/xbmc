@@ -93,6 +93,7 @@
 #include "AutoUpdate/PlexAutoUpdate.h"
 #include "git_revision.h"
 #include "GUI/GUIPlexMediaWindow.h"
+#include "Playlists/PlexPlayQueueManager.h"
 
 using namespace PLAYLIST;
 /* END PLEX */
@@ -318,6 +319,9 @@ const infomap system_param[] =   {{ "hasalarm",         SYSTEM_HAS_ALARM },
                                   { "hascoreid",        SYSTEM_HAS_CORE_ID },
                                   { "setting",          SYSTEM_SETTING },
                                   { "hasaddon",         SYSTEM_HAS_ADDON },
+                                  /* PLEX */
+                                  { "plexplayqueue",    SYSTEM_PLEX_PLAYQUEUE },
+                                  /* END PLEX */
                                   { "coreusage",        SYSTEM_GET_CORE_USAGE }};
 
 const infomap lcd_labels[] =     {{ "playicon",         LCD_PLAY_ICON },
@@ -3096,6 +3100,17 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             bReturn = ((CGUIPlexMediaWindow *)window)->MatchUniformProperty(property);
         }
         break;
+      case SYSTEM_PLEX_PLAYQUEUE:
+        {
+          CStdString pq = m_stringParameters[info.GetData1()];
+          ePlexMediaType type = g_plexApplication.playQueueManager->getCurrentPlayQueueType();
+          if (pq == "music" && type == PLEX_MEDIA_TYPE_MUSIC)
+            bReturn = true;
+          else if (pq == "video" && type == PLEX_MEDIA_TYPE_VIDEO)
+            bReturn = true;
+          else if (pq == "any" && type != PLEX_MEDIA_TYPE_UNKNOWN)
+            bReturn = true;
+        }
      /* END PLEX */
     }
   }
