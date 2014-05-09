@@ -585,7 +585,7 @@
 				<height>680</height>
 				<orientation>vertical</orientation>
 				<itemgap>5</itemgap>
-				<visible>Window.IsVisible(25) | Window.IsVisible(10090)</visible>
+				<visible>Window.IsVisible(25) | Window.IsVisible(10090) | [Window.IsVisible(plexplayqueue) + System.PlexPlayQueue(Video)]</visible>
 				<control type="label">
 					<include>debugFont</include>
 					<label>VIDEO SPECIFIC:</label>
@@ -713,7 +713,7 @@
 				<height>680</height>
 				<orientation>vertical</orientation>
 				<itemgap>5</itemgap>
-				<visible>Container.PlexContent(TVShows) | Container.Content(tvshow) | Container.PlexContent(Seasons) | Container.Content(season) | Container.PlexContent(Episodes) | Container.PlexContent(Episode)</visible>
+				<visible>Container.PlexContent(TVShows) | Container.Content(tvshow) | Container.PlexContent(Seasons) | Container.Content(season) | Container.PlexContent(Episodes) | Container.PlexContent(Episode) | [Window.IsVisible(plexplayqueue) + System.PlexPlayQueue(Video)]</visible>
 				<control type="label">
 					<include>debugFont</include>
 					<label>TV SPECIFIC:</label>
@@ -783,7 +783,7 @@
 				<height>680</height>
 				<orientation>vertical</orientation>
 				<itemgap>5</itemgap>
-				<visible>Window.IsVisible(501) | Window.IsVisible(plexplayqueue)</visible>
+				<visible>Window.IsVisible(501) | [Window.IsVisible(plexplayqueue) + System.PlexPlayQueue(Music)]</visible>
 				<control type="label">
 					<include>debugFont</include>
 					<label>MUSIC SPECIFIC:</label>
