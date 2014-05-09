@@ -73,22 +73,31 @@ bool CPlexMediaDecisionEngine::resolveItem(const CFileItem& _item, CFileItem &re
     return false;
 
   int offset = item.m_lStartOffset;
-  if (!g_playlistPlayer.HasPlayedFirstFile() && item.IsVideo())
+
+  if (!item.GetProperty("isResolved").asBoolean())
   {
-    int selectedMedia = CGUIDialogPlexMedia::ProcessMediaChoice(item);
-    if (selectedMedia == -1)
-      return false;
-    item.SetProperty("selectedMediaItem", selectedMedia);
-    offset = CGUIDialogPlexMedia::ProcessResumeChoice(item);
+    if (!g_playlistPlayer.HasPlayedFirstFile() && item.IsVideo())
+    {
+      int selectedMedia = CGUIDialogPlexMedia::ProcessMediaChoice(item);
+      if (selectedMedia == -1)
+        return false;
+      item.SetProperty("selectedMediaItem", selectedMedia);
+      offset = CGUIDialogPlexMedia::ProcessResumeChoice(item);
 
-    // we use -2 for "abort"
-    if (offset == -2)
-      return false;
+      // we use -2 for "abort"
+      if (offset == -2)
+        return false;
+    }
+
+    g_plexApplication.busy.blockWaitingForJob(new CPlexMediaDecisionJob(item), this);
+    CLog::Log(LOGDEBUG, "CPlexMediaDecisionEngine::BlockAndResolve resolve done, success: %s", m_success ? "Yes" : "No");
   }
-
-  g_plexApplication.busy.blockWaitingForJob(new CPlexMediaDecisionJob(item), this);
-
-  CLog::Log(LOGDEBUG, "CPlexMediaDecisionEngine::BlockAndResolve resolve done, success: %s", m_success ? "Yes" : "No");
+  else
+  {
+    m_success = true;
+    m_resolvedItem = item;
+    CLog::Log(LOGDEBUG, "CPlexMediaDecisionEngine::resolveItem item already resolved");
+  }
  
   if (m_success)
   {
