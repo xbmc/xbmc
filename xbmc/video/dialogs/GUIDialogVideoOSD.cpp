@@ -84,6 +84,10 @@ bool CGUIDialogVideoOSD::OnAction(const CAction &action)
   }
   if (action.GetID() == ACTION_SHOW_CODEC || action.GetID() == ACTION_SHOW_INFO)
     return true;
+  if (action.GetID() == ACTION_SHOW_GUI)
+  {
+    g_windowManager.PreviousWindow();
+  }
   /* END PLEX */
 
   if (action.GetID() == ACTION_SHOW_OSD)

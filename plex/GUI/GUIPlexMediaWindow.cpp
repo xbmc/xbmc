@@ -41,6 +41,7 @@
 #include "PlexPlayQueueManager.h"
 #include "Client/PlexServerVersion.h"
 #include "settings/GUISettings.h"
+#include "Application.h"
 
 #include "LocalizeStrings.h"
 #include "DirectoryCache.h"
@@ -769,12 +770,8 @@ void CGUIPlexMediaWindow::GetContextButtons(int itemNumber, CContextButtons &but
   if (!item)
     return;
 
-  if (PlexUtils::IsPlayingPlaylist())
-  {
+  if (g_application.IsPlaying())
     buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
-    if (!item->m_bIsFolder && item->CanQueue())
-      buttons.Add(CONTEXT_BUTTON_PLAY_AND_QUEUE, 13412);
-  }
 
   if (g_plexApplication.playQueueManager->getCurrentPlayQueuePlaylist() != PLAYLIST_NONE)
   {

@@ -727,6 +727,18 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       else
         m_subsLayout = NULL;
 
+      /* PLEX */
+      if (g_application.IsPaused())
+      {
+        CGUIDialogVideoOSD* osd = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
+        if (osd && !osd->IsActive())
+        {
+          osd->Show();
+          osd->SetOpenedFromPause(true);
+        }
+      }
+      /* END PLEX */
+
       return true;
     }
   case GUI_MSG_WINDOW_DEINIT:

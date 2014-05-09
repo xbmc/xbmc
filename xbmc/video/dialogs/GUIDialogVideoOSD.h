@@ -35,6 +35,7 @@ public:
 
   /* PLEX */
   bool IsOpenedFromPause() const { return m_openedFromPause; }
+  void SetOpenedFromPause(bool onOff) { m_openedFromPause = onOff; }
   /* END PLEX */
 
 protected:
