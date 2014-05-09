@@ -251,6 +251,23 @@ const char *GetIOSVersionString(void)
 #endif
 }
 
+const char *GetOSXVersionString(void)
+{
+#if defined(TARGET_DARWIN_OSX)
+  static std::string OSXVersionString;
+  if (OSXVersionString.empty())
+  {
+    CCocoaAutoPool pool;
+    OSXVersionString.assign((const char*)[[[NSDictionary dictionaryWithContentsOfFile:
+                         @"/System/Library/CoreServices/SystemVersion.plist"] objectForKey:@"ProductVersion"] UTF8String]);
+  }
+  
+  return OSXVersionString.c_str();
+#else
+  return "0.0";
+#endif
+}
+
 int  GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize)
 {
   CCocoaAutoPool pool;
