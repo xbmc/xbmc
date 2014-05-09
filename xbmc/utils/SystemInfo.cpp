@@ -822,12 +822,12 @@ CStdString CSysInfo::GetUnameVersion()
 #endif
 
 #if defined(TARGET_WINDOWS)
-CStdString CSysInfo::GetUAWindowsVersion()
+std::string CSysInfo::GetUAWindowsVersion()
 {
   OSVERSIONINFOEX osvi = {};
 
   osvi.dwOSVersionInfoSize = sizeof(osvi);
-  CStdString strVersion = "Windows NT";
+  std::string strVersion = "Windows NT";
 
   if (GetVersionEx((OSVERSIONINFO *)&osvi))
   {
@@ -861,7 +861,7 @@ CStdString CSysInfo::GetUAWindowsVersion()
 #endif
 
 
-CStdString CSysInfo::GetUserAgent()
+std::string CSysInfo::GetUserAgent()
 {
   std::string result;
   result = "XBMC/" + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION_SHORT) + " (";

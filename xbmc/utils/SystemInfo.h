@@ -110,9 +110,9 @@ public:
   CStdString GetUnameVersion();
 #endif
 #if defined(TARGET_WINDOWS)
-  CStdString GetUAWindowsVersion();
+  std::string GetUAWindowsVersion();
 #endif
-  CStdString GetUserAgent();
+  std::string GetUserAgent();
   bool HasInternet();
   bool IsAppleTV2();
   bool HasVideoToolBoxDecoder();
