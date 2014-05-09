@@ -1145,10 +1145,25 @@
 								<aspectratio>stretch</aspectratio>
 								<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
 							</control>
+							<!-- current video PiP -->
+							<control type="group">
+								<animation effect="fade" start="100" end="0" time="200" condition="!Player.HasVideo" reversible="true">Conditional</animation>
+								<control type="largeimage">
+									<width>570</width>
+									<height>400</height>
+									<include>Black</include>
+								</control>
+								<control type="videowindow" id="1">
+									<description>Video Preview</description>
+									<width>570</width>
+									<height>400</height>
+								</control>
+							</control>
 						</control>
 					</control>
 					<!-- infos Left -->
 					<control type="group">
+						<animation effect="fade" start="100" end="0" time="400" condition="Player.HasVideo + !Player.Paused" reversible="true">Conditional</animation>
 						<posy>40</posy>
 						<posx>40</posx>
 						<!-- Titles -->
@@ -1281,6 +1296,7 @@
 						<!-- progress bar -->
 						<control type="group">
 							<visible>Player.HasVideo</visible>
+							<animation effect="fade" start="100" end="0" time="400" condition="Player.HasVideo + !Player.Paused + System.IdleTime(5)" reversible="true">Conditional</animation>
 							<control type="progress">
 								<posx>255</posx>
 								<posy>341</posy>
@@ -1645,18 +1661,18 @@
 							<info>ListItem.Overlay</info>
 							<visible>[Container.PlexContent(Movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)]</visible>
 						</control>
-							<control type="label">
-								<posy>298</posy>
-								<posx>105</posx>
-								<width>180</width>
-								<height>30</height>
-								<align>center</align>
-								<aligny>center</aligny>
-								<label>$INFO[ListItem.Label]</label>
-								<font>Regular-17</font>
-								<textcolor>orangeLight</textcolor>
-								<shadowcolor>FF222222</shadowcolor>
-							</control>
+						<control type="label">
+							<posy>298</posy>
+							<posx>105</posx>
+							<width>180</width>
+							<height>30</height>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<font>Regular-17</font>
+							<textcolor>orangeLight</textcolor>
+							<shadowcolor>FF222222</shadowcolor>
+						</control>
 					</focusedlayout>
 				</control>
 			</control>
