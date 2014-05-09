@@ -42,7 +42,6 @@ public:
   virtual int GetChannels();
   virtual CAEChannelInfo GetChannelMap();
   virtual int GetSampleRate();
-  virtual int GetEncodedSampleRate();
   virtual enum AEDataFormat GetDataFormat();
   virtual const char* GetName() { return "FFmpeg"; }
   virtual int GetBufferSize() { return m_iBuffered; }
