@@ -4114,14 +4114,14 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     /* PLEX */
     case VIDEOPLAYER_AUDIOSTREAM:
       {
-        if (m_currentFile->HasProperty("selectedAudioStream"))
-          return m_currentFile->GetProperty("selectedAudioStream").asString();
+        if (g_application.CurrentFileItemPtr()->HasProperty("selectedAudioStream"))
+          return g_application.CurrentFileItemPtr()->GetProperty("selectedAudioStream").asString();
         return g_localizeStrings.Get(1446);
       }
     case VIDEOPLAYER_SUBTITLESTREAM:
       {
-        if (m_currentFile->HasProperty("selectedSubtitleStream"))
-          return m_currentFile->GetProperty("selectedSubtitleStream").asString();
+        if (g_application.CurrentFileItemPtr()->HasProperty("selectedSubtitleStream"))
+          return g_application.CurrentFileItemPtr()->GetProperty("selectedSubtitleStream").asString();
         return g_localizeStrings.Get(1446);
       }
     case VIDEOPLAYER_DURATION_STRING:
