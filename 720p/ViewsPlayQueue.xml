@@ -39,6 +39,7 @@
 	<variable name="PlayQueueVideoCardTitle2">
 		<value condition="ListItem.Type(episode)">$INFO[ListItem.Date]</value>
 		<value condition="ListItem.Type(clip)">$INFO[ListItem.DurationStr]</value>
+		<value condition="ListItem.Type(movie)">$INFO[ListItem.DurationStr]</value>
 	</variable>
 	<variable name="PlayQueueAlbum">
 		<value condition="Player.HasAudio">$INFO[MusicPlayer.Album]</value>
@@ -88,8 +89,36 @@
 		<value condition="Player.HasAudio">$INFO[MusicPlayer.Offset(10).Cover]</value>
 		<value condition="!Player.HasAudio">$INFO[ListItem(10).Art(thumb)]</value>
 	</variable>
-	<include name="PlayQueueCoverFormat">		
+	<include name="PlayQueueCoverFormat">
 		<fadetime>200</fadetime>
 		<aspectratio scalediffuse="false" align="center" aligny="middle">scale</aspectratio>
+	</include>
+	<variable name="PlayQueueListThumb">
+		<value condition="ListItem.Type(Episode) | ListItem.Type(Clip)">$INFO[ListItem.Art(smallThumb)]</value>
+		<value condition="ListItem.Type(Movie)">$INFO[ListItem.Art(fanart)]</value>
+	</variable>
+	<include name="PlayQueueListThumb">
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>224</width>
+			<height>132</height>
+			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>198</width>
+			<height>106</height>
+			<texture background="true">default-thumb-small.png</texture>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>198</width>
+			<height>106</height>
+			<texture background="true" diffuse="mask-clip-small.png">$VAR[PlayQueueListThumb]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
 	</include>
 </includes>
