@@ -1989,16 +1989,24 @@ void CDVDPlayer::SynchronizePlayers(unsigned int sources)
   message->Release();
 }
 
-void CDVDPlayer::SendPlayerMessage(CDVDMsg* pMsg, unsigned int target)
+IDVDStreamPlayer* CDVDPlayer::GetStreamPlayer(unsigned int target)
 {
   if(target == DVDPLAYER_AUDIO)
-    m_dvdPlayerAudio.SendMessage(pMsg);
+    return &m_dvdPlayerAudio;
   if(target == DVDPLAYER_VIDEO)
-    m_dvdPlayerVideo.SendMessage(pMsg);
+    return &m_dvdPlayerVideo;
   if(target == DVDPLAYER_SUBTITLE)
-    m_dvdPlayerSubtitle.SendMessage(pMsg);
+    return &m_dvdPlayerSubtitle;
   if(target == DVDPLAYER_TELETEXT)
-    m_dvdPlayerTeletext.SendMessage(pMsg);
+    return &m_dvdPlayerTeletext;
+  return NULL;
+}
+
+void CDVDPlayer::SendPlayerMessage(CDVDMsg* pMsg, unsigned int target)
+{
+  IDVDStreamPlayer* player = GetStreamPlayer(target);
+  if(player)
+    player->SendMessage(pMsg, 0);
 }
 
 void CDVDPlayer::OnExit()

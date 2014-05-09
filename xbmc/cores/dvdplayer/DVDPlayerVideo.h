@@ -21,6 +21,7 @@
  */
 
 #include "threads/Thread.h"
+#include "IDVDPlayer.h"
 #include "DVDMessageQueue.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDCodecs/Video/DVDVideoCodec.h"
@@ -36,7 +37,7 @@ class CDVDOverlayCodecCC;
 
 #define VIDEO_PICTURE_QUEUE_SIZE 1
 
-class CDVDPlayerVideo : public CThread
+class CDVDPlayerVideo : public CThread, public IDVDStreamPlayer
 {
 public:
   CDVDPlayerVideo( CDVDClock* pClock
@@ -76,7 +77,7 @@ public:
   double GetSubtitleDelay()                                { return m_iSubtitleDelay; }
   void SetSubtitleDelay(double delay)                      { m_iSubtitleDelay = delay; }
 
-  bool IsStalled()                                  { return m_stalled; }
+  bool IsStalled() const                            { return m_stalled; }
   int GetNrOfDroppedFrames()                        { return m_iDroppedFrames; }
 
   bool InitializedOutputDevice();

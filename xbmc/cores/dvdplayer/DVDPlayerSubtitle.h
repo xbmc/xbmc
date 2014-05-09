@@ -25,6 +25,7 @@
 #include "DVDStreamInfo.h"
 #include "DVDMessageQueue.h"
 #include "DVDDemuxSPU.h"
+#include "IDVDPlayer.h"
 
 class CDVDInputStream;
 class CDVDSubtitleStream;
@@ -32,7 +33,7 @@ class CDVDSubtitleParser;
 class CDVDInputStreamNavigator;
 class CDVDOverlayCodec;
 
-class CDVDPlayerSubtitle
+class CDVDPlayerSubtitle : public IDVDStreamPlayer
 {
 public:
   CDVDPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer);
@@ -45,12 +46,14 @@ public:
 
   void UpdateOverlayInfo(CDVDInputStreamNavigator* pStream, int iAction) { m_pOverlayContainer->UpdateOverlayInfo(pStream, &m_dvdspus, iAction); }
 
-  bool AcceptsData();
-  void SendMessage(CDVDMsg* pMsg);
+  bool AcceptsData() const;
+  void SendMessage(CDVDMsg* pMsg, int priority = 0);
+  bool OpenStream(CDVDStreamInfo &hints) { return OpenStream(hints, hints.filename); }
   bool OpenStream(CDVDStreamInfo &hints, std::string& filename);
   void CloseStream(bool flush);
 
-  bool IsStalled() { return m_pOverlayContainer->GetSize() == 0; }
+  bool IsInited() const { return true; }
+  bool IsStalled() const { return m_pOverlayContainer->GetSize() == 0; }
 private:
   CDVDOverlayContainer* m_pOverlayContainer;
 

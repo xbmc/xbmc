@@ -319,6 +319,7 @@ protected:
   bool CheckStartCaching(CCurrentStream& current);
   void UpdateCorrection(DemuxPacket* pkt, double correction);
   void UpdateTimestamps(CCurrentStream& current, DemuxPacket* pPacket);
+  IDVDStreamPlayer* GetStreamPlayer(unsigned int player);
   void SendPlayerMessage(CDVDMsg* pMsg, unsigned int target);
 
   bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);

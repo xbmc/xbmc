@@ -59,10 +59,10 @@ CDVDPlayerSubtitle::~CDVDPlayerSubtitle()
 
 void CDVDPlayerSubtitle::Flush()
 {
-  SendMessage(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
+  SendMessage(new CDVDMsg(CDVDMsg::GENERAL_FLUSH), 0);
 }
 
-void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
+void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg, int priority)
 {
   CSingleLock lock(m_section);
 
@@ -233,7 +233,7 @@ void CDVDPlayerSubtitle::Process(double pts, double offset)
   }
 }
 
-bool CDVDPlayerSubtitle::AcceptsData()
+bool CDVDPlayerSubtitle::AcceptsData() const
 {
   // FIXME : This may still be causing problems + magic number :(
   return m_pOverlayContainer->GetSize() < 5;
