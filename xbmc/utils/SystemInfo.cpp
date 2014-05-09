@@ -863,17 +863,41 @@ CStdString CSysInfo::GetUAWindowsVersion()
 
 CStdString CSysInfo::GetUserAgent()
 {
-  CStdString result;
+  std::string result;
   result = "XBMC/" + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION_SHORT) + " (";
 #if defined(TARGET_WINDOWS)
   result += GetUAWindowsVersion();
 #elif defined(TARGET_DARWIN)
 #if defined(TARGET_DARWIN_IOS)
-  result += "iOS; ";
+  std::string iDevStr(getIosPlatformString()); // device model name with number of model version
+  size_t iDevStrDigit = iDevStr.find_first_of("0123456789");
+  std::string iDev(iDevStr, 0, iDevStrDigit);  // device model name without number 
+  if (iDevStrDigit == 0)
+    iDev = "unknown";
+  result += iDev + "; ";
+  std::string iOSVerison(GetIOSVersionString());
+  size_t lastDotPos = iOSVerison.rfind('.');
+  if (lastDotPos != std::string::npos && iOSVerison.find('.') != lastDotPos
+      && iOSVerison.find_first_not_of('0', lastDotPos + 1) == std::string::npos)
+    iOSVerison.erase(lastDotPos);
+  StringUtils::Replace(iOSVerison, '.', '_');
+  if (iDev == "iPad" || iDev == "AppleTV")
+    result += "CPU OS ";
+  else
+    result += "CPU iPhone OS ";
+  result += iOSVerison + " like Mac OS X";
 #else
-  result += "Mac OS X; ";
+  result += "Macintosh; ";
+  std::string cpuFam(GetBuildTargetCpuFamily());
+  if (cpuFam == "x86")
+    result += "Intel ";
+  else if (cpuFam == "PowerPC")
+    result += "PPC ";
+  result += "Mac OS X ";
+  std::string OSXVersion(GetOSXVersionString());
+  StringUtils::Replace(OSXVersion, '.', '_');
+  result += OSXVersion;
 #endif
-  result += GetUnameVersion();
 #elif defined(TARGET_FREEBSD)
   result += "FreeBSD; ";
   result += GetUnameVersion();
@@ -883,7 +907,6 @@ CStdString CSysInfo::GetUserAgent()
   result += "; ";
   result += GetUnameVersion();
 #endif
-  result += "; http://xbmc.org)";
 
   std::string fullVer(g_infoManager.GetLabel(SYSTEM_BUILD_VERSION));
   StringUtils::Replace(fullVer, ' ', '-');
