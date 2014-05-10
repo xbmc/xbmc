@@ -140,7 +140,7 @@ public:
   /*
    * returns the samplerate for the encoded audio stream
    */
-  virtual int GetEncodedSampleRate() { return 0; } 
+  virtual int GetEncodedSampleRate() { return GetSampleRate(); }
 
   /*
    * returns the data format for the decoded audio stream (eg AE_FMT_S16LE)
