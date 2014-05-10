@@ -694,8 +694,8 @@ bool CApplication::Create()
   CProfilesManager::Get().Load();
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-  CLog::Log(LOGNOTICE, "Starting XBMC (%s). Platform: %s %s %d-bit", g_infoManager.GetVersion().c_str(), g_sysinfo.GetBuildTargetCpuFamily().c_str(),
-      g_sysinfo.GetBuildTargetPlatformName().c_str(), g_sysinfo.GetXbmcBitness());
+  CLog::Log(LOGNOTICE, "Starting XBMC (%s). Platform: %s %s %d-bit", g_infoManager.GetVersion().c_str(), g_sysinfo.GetBuildTargetPlatformName().c_str(),
+            g_sysinfo.GetBuildTargetCpuFamily().c_str(), g_sysinfo.GetXbmcBitness());
 
 /* Expand macro before stringify */
 #define STR_MACRO(x) #x
@@ -728,18 +728,18 @@ bool CApplication::Create()
   buildType = "Unknown";
 #endif
   CLog::Log(LOGNOTICE, "Using %s XBMC x%d build, compiled " __DATE__ " by %s for %s %s %d-bit %s", buildType.c_str(), g_sysinfo.GetXbmcBitness(), compilerStr.c_str(),
-      g_sysinfo.GetBuildTargetCpuFamily().c_str(), g_sysinfo.GetBuildTargetPlatformName().c_str(), g_sysinfo.GetXbmcBitness(), g_sysinfo.GetBuildTargetPlatformVersion().c_str());
+            g_sysinfo.GetBuildTargetPlatformName().c_str(), g_sysinfo.GetBuildTargetCpuFamily().c_str(), g_sysinfo.GetXbmcBitness(), g_sysinfo.GetBuildTargetPlatformVersion().c_str());
 
 #if defined(TARGET_DARWIN_OSX)
-  CLog::Log(LOGNOTICE, "Running on Darwin OSX %d-bit %s", g_sysinfo.GetKernelBitness(), g_sysinfo.GetUnameVersion().c_str());
+  CLog::Log(LOGNOTICE, "Running on Darwin OSX %s %d-bit %s", g_sysinfo.GetKernelCpuFamily().c_str(), g_sysinfo.GetKernelBitness(), g_sysinfo.GetUnameVersion().c_str());
 #elif defined(TARGET_DARWIN_IOS)
-  CLog::Log(LOGNOTICE, "Running on Darwin iOS %d-bit %s%s", g_sysinfo.GetKernelBitness(), g_sysinfo.IsAppleTV2() ? "(AppleTV2) " : "", g_sysinfo.GetUnameVersion().c_str());
+  CLog::Log(LOGNOTICE, "Running on Darwin iOS %s %d-bit %s%s", g_sysinfo.GetKernelCpuFamily().c_str(), g_sysinfo.GetKernelBitness(), g_sysinfo.IsAppleTV2() ? "(AppleTV2) " : "", g_sysinfo.GetUnameVersion().c_str());
 #elif defined(TARGET_FREEBSD)
-  CLog::Log(LOGNOTICE, "Running on FreeBSD %d-bit %s", g_sysinfo.GetKernelBitness(), g_sysinfo.GetUnameVersion().c_str());
+  CLog::Log(LOGNOTICE, "Running on FreeBSD %s %d-bit %s", g_sysinfo.GetKernelCpuFamily().c_str(), g_sysinfo.GetKernelBitness(), g_sysinfo.GetUnameVersion().c_str());
 #elif defined(TARGET_ANDROID)
-  CLog::Log(LOGNOTICE, "Running on Android %d-bit API level %d (%s, %s)", g_sysinfo.GetKernelBitness(), CJNIBuild::SDK_INT, g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str());
+  CLog::Log(LOGNOTICE, "Running on Android %s %d-bit API level %d (%s, %s)", g_sysinfo.GetKernelCpuFamily().c_str(), g_sysinfo.GetKernelBitness(), CJNIBuild::SDK_INT, g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str());
 #elif defined(TARGET_POSIX)
-  CLog::Log(LOGNOTICE, "Running on Linux %d-bit (%s, %s)", g_sysinfo.GetKernelBitness(), g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str());
+  CLog::Log(LOGNOTICE, "Running on Linux %s %d-bit (%s, %s)", g_sysinfo.GetKernelCpuFamily().c_str(), g_sysinfo.GetKernelBitness(), g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str());
   CLog::Log(LOGNOTICE, "FFmpeg version: %s, statically linked: %d", FFMPEG_VERSION, USE_STATIC_FFMPEG);
 if (!strstr(FFMPEG_VERSION, FFMPEG_VER_SHA))
 {
