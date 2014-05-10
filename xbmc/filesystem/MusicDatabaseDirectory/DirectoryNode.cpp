@@ -71,10 +71,8 @@ CDirectoryNode* CDirectoryNode::ParseURL(const CStdString& strPath)
   CStdString strDirectory=url.GetFileName();
   URIUtils::RemoveSlashAtEnd(strDirectory);
 
-  CStdStringArray Path;
-  StringUtils::SplitString(strDirectory, "/", Path);
-  if (!strDirectory.empty())
-    Path.insert(Path.begin(), "");
+  vector<string> Path = StringUtils::Split(strDirectory, "/");
+  Path.insert(Path.begin(), "");
 
   CDirectoryNode* pNode=NULL;
   CDirectoryNode* pParent=NULL;
