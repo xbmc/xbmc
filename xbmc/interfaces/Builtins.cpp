@@ -392,10 +392,7 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       // disable the screensaver
       g_application.WakeUpScreenSaverAndDPMS();
-      vector<CStdString> strParams;
-      for (vector<string>::const_iterator i = params.begin(); i != params.end(); ++i)
-        strParams.push_back(*i);
-      g_windowManager.ActivateWindow(iWindow, strParams, !execute.Equals("activatewindow"));
+      g_windowManager.ActivateWindow(iWindow, params, !execute.Equals("activatewindow"));
     }
     else
     {
@@ -420,7 +417,7 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       // disable the screensaver
       g_application.WakeUpScreenSaverAndDPMS();
-      vector<CStdString> dummy;
+      vector<string> dummy;
       g_windowManager.ActivateWindow(iWindow, dummy, !execute.Equals("activatewindowandfocus"));
 
       unsigned int iPtr = 1;
@@ -767,7 +764,7 @@ int CBuiltins::Execute(const CStdString& execString)
     }
 
     CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, flags);
-    vector<CStdString> strParams;
+    vector<string> strParams;
     strParams.push_back(params[0]);
     strParams.push_back(beginSlidePath);
     msg.SetStringParams(strParams);
@@ -1749,10 +1746,7 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("StartAndroidActivity") && params.size() > 0)
   {
-    vector<CStdString> strParams;
-    for (vector<string>::const_iterator i = params.begin(); i != params.end(); ++i)
-      strParams.push_back(*i);
-    CApplicationMessenger::Get().StartAndroidActivity(strParams);
+    CApplicationMessenger::Get().StartAndroidActivity(params);
   }
   else if (execute.Equals("SetStereoMode") && !parameter.empty())
   {

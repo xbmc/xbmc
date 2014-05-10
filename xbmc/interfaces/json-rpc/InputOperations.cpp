@@ -57,7 +57,7 @@ JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /
 JSONRPC_STATUS CInputOperations::activateWindow(int windowID)
 {
   if(!handleScreenSaver())
-    CApplicationMessenger::Get().ActivateWindow(windowID, std::vector<CStdString>(), false);
+    CApplicationMessenger::Get().ActivateWindow(windowID, std::vector<std::string>(), false);
 
   return ACK;
 }

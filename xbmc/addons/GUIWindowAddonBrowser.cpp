@@ -510,7 +510,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, vect
   dialog->DoModal();
   if (!multipleSelection && iTypes == 1 && dialog->IsButtonPressed())
   { // switch to the addons browser.
-    vector<CStdString> params;
+    vector<string> params;
     params.push_back("addons://all/"+TranslateType(types[0],false)+"/");
     params.push_back("return");
     g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);

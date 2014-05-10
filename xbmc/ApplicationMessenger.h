@@ -122,7 +122,7 @@ typedef struct
   unsigned int dwParam1;
   unsigned int dwParam2;
   CStdString strParam;
-  std::vector<CStdString> params;
+  std::vector<std::string> params;
   boost::shared_ptr<CEvent> waitEvent;
   void* lpVoid;
 }
@@ -232,7 +232,7 @@ public:
   void DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param = "");
   void Show(CGUIDialog *pDialog);
   void Close(CGUIWindow *window, bool forceClose, bool waitResult = true, int nextWindowID = 0, bool enableSound = true);
-  void ActivateWindow(int windowID, const std::vector<CStdString> &params, bool swappingWindows);
+  void ActivateWindow(int windowID, const std::vector<std::string> &params, bool swappingWindows);
   void SendAction(const CAction &action, int windowID = WINDOW_INVALID, bool waitResult=true);
 
   //! \brief Send text to currently focused window / keyboard.
@@ -246,8 +246,8 @@ public:
    */
   void SendGUIMessage(const CGUIMessage &msg, int windowID = WINDOW_INVALID, bool waitResult=false);
 
-  std::vector<CStdString> GetInfoLabels(const std::vector<CStdString> &properties);
-  std::vector<bool> GetInfoBooleans(const std::vector<CStdString> &properties);
+  std::vector<std::string> GetInfoLabels(const std::vector<std::string> &properties);
+  std::vector<bool> GetInfoBooleans(const std::vector<std::string> &properties);
 
   void ShowVolumeBar(bool up);
 
@@ -256,7 +256,7 @@ public:
   
   bool SetupDisplay();
   bool DestroyDisplay();
-  void StartAndroidActivity(const std::vector<CStdString> &params);
+  void StartAndroidActivity(const std::vector<std::string> &params);
 
   virtual ~CApplicationMessenger();
 private:
