@@ -940,6 +940,27 @@ std::string CSysInfo::GetUserAgent()
   StringUtils::Replace(OSXVersion, '.', '_');
   result += OSXVersion;
 #endif
+#elif defined(TARGET_ANDROID)
+  result += "Linux; Android ";
+  std::string versionStr(GetAndroidVersionString());
+  const size_t verLen = versionStr.length();
+  if (verLen >= 2 && versionStr.compare(verLen - 2, 2, ".0", 2) == 0)
+    versionStr.erase(verLen - 2); // remove last ".0" if any
+  result += versionStr;
+  std::string deviceInfo(GetAndroidDeviceName());
+
+  char buildId[PROP_VALUE_MAX];
+  int propLen = __system_property_get("ro.build.id", buildId);
+  if (propLen > 0 && propLen <= PROP_VALUE_MAX)
+  {
+    if (!deviceInfo.empty())
+      deviceInfo += " ";
+    deviceInfo += "Build/";
+    deviceInfo.append(buildId, propLen);
+  }
+
+  if (!deviceInfo.empty())
+    result += "; " + deviceInfo;
 #elif defined(TARGET_FREEBSD)
   result += "FreeBSD; ";
   result += GetUnameVersion();
