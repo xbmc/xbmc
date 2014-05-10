@@ -246,32 +246,6 @@ TEST(TestStringUtils, Join)
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
-TEST(TestStringUtils, SplitString)
-{
-  CStdStringArray varresults;
-
-  EXPECT_EQ(9, StringUtils::SplitString("a,b,c,de,,,fg,,", ",", varresults));
-  EXPECT_STREQ("a", varresults.at(0).c_str());
-  EXPECT_STREQ("b", varresults.at(1).c_str());
-  EXPECT_STREQ("c", varresults.at(2).c_str());
-  EXPECT_STREQ("de", varresults.at(3).c_str());
-  EXPECT_STREQ("", varresults.at(4).c_str());
-  EXPECT_STREQ("", varresults.at(5).c_str());
-  EXPECT_STREQ("fg", varresults.at(6).c_str());
-  EXPECT_STREQ("", varresults.at(7).c_str());
-  EXPECT_STREQ("", varresults.at(8).c_str());
-
-  varresults.clear();
-  varresults = StringUtils::SplitString("g,h,ij,k,lm,,n", ",");
-  EXPECT_STREQ("g", varresults.at(0).c_str());
-  EXPECT_STREQ("h", varresults.at(1).c_str());
-  EXPECT_STREQ("ij", varresults.at(2).c_str());
-  EXPECT_STREQ("k", varresults.at(3).c_str());
-  EXPECT_STREQ("lm", varresults.at(4).c_str());
-  EXPECT_STREQ("", varresults.at(5).c_str());
-  EXPECT_STREQ("n", varresults.at(6).c_str());
-}
-
 TEST(TestStringUtils, Split)
 {
   std::vector<std::string> varresults;

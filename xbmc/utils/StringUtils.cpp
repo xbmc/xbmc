@@ -482,17 +482,16 @@ CStdString StringUtils::Join(const vector<string> &strings, const CStdString& de
   return JoinString(strArray, delimiter);
 }
 
-// Splits the string input into pieces delimited by delimiter.
-// if 2 delimiters are in a row, it will include the empty string between them.
-// added MaxStrings parameter to restrict the number of returned substrings (like perl and python)
-int StringUtils::SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results, unsigned int iMaxStrings /* = 0 */)
+vector<string> StringUtils::Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings /* = 0 */)
 {
+  vector<string> results;
+  if (input.empty())
+    return results;
+
   size_t iPos = std::string::npos;
   size_t newPos = std::string::npos;
   size_t sizeS2 = delimiter.size();
   size_t isize = input.size();
-
-  results.clear();
 
   vector<unsigned int> positions;
 
@@ -501,7 +500,7 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
   if (newPos == std::string::npos)
   {
     results.push_back(input);
-    return 1;
+    return results;
   }
 
   while (newPos != std::string::npos)
@@ -519,7 +518,7 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
 
   for ( unsigned int i = 0; i <= numFound; i++ )
   {
-    CStdString s;
+    string s;
     if ( i == 0 )
     {
       if ( i == numFound )
@@ -541,30 +540,7 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
     }
     results.push_back(s);
   }
-  // return the number of substrings
-  return results.size();
-}
-
-CStdStringArray StringUtils::SplitString(const CStdString& input, const CStdString& delimiter, unsigned int iMaxStrings /* = 0 */)
-{
-  CStdStringArray result;
-  SplitString(input, delimiter, result, iMaxStrings);
-  return result;
-}
-
-vector<string> StringUtils::Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings /* = 0 */)
-{
-  vector<string> strArray;
-  if (input.empty())
-    return strArray;
-
-  CStdStringArray result;
-  SplitString(input, delimiter, result, iMaxStrings);
-
-  for (unsigned int index = 0; index < result.size(); index++)
-    strArray.push_back(result.at(index));
-
-  return strArray;
+  return results;
 }
 
 // returns the number of occurrences of strFind in strInput.
