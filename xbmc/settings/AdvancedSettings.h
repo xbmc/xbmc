@@ -129,8 +129,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void Clear();
 
     static void GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings);
-    static void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
-    static void GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings);
+    static void GetCustomRegexps(TiXmlElement *pRootElement, std::vector<std::string> &settings);
     static void GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions);
 
     bool CanLogComponent(int component) const;
@@ -223,16 +222,16 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_fullScreenOnMovieStart;
     CStdString m_cachePath;
     CStdString m_videoCleanDateTimeRegExp;
-    CStdStringArray m_videoCleanStringRegExps;
-    CStdStringArray m_videoExcludeFromListingRegExps;
-    CStdStringArray m_moviesExcludeFromScanRegExps;
-    CStdStringArray m_tvshowExcludeFromScanRegExps;
-    CStdStringArray m_audioExcludeFromListingRegExps;
-    CStdStringArray m_audioExcludeFromScanRegExps;
-    CStdStringArray m_pictureExcludeFromListingRegExps;
-    CStdStringArray m_videoStackRegExps;
-    CStdStringArray m_folderStackRegExps;
-    CStdStringArray m_trailerMatchRegExps;
+    std::vector<std::string> m_videoCleanStringRegExps;
+    std::vector<std::string> m_videoExcludeFromListingRegExps;
+    std::vector<std::string> m_moviesExcludeFromScanRegExps;
+    std::vector<std::string> m_tvshowExcludeFromScanRegExps;
+    std::vector<std::string> m_audioExcludeFromListingRegExps;
+    std::vector<std::string> m_audioExcludeFromScanRegExps;
+    std::vector<std::string> m_pictureExcludeFromListingRegExps;
+    std::vector<std::string> m_videoStackRegExps;
+    std::vector<std::string> m_folderStackRegExps;
+    std::vector<std::string> m_trailerMatchRegExps;
     SETTINGS_TVSHOWLIST m_tvshowEnumRegExps;
     CStdString m_tvshowMultiPartEnumRegExp;
     typedef std::vector< std::pair<CStdString, CStdString> > StringMapping;

@@ -392,7 +392,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
     m_handle->SetText(Prettify(strDirectory));
 
   // Discard all excluded files defined by m_musicExcludeRegExps
-  CStdStringArray regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
+  vector<string> regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
   if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
     return true;
 
@@ -467,7 +467,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 
 INFO_RET CMusicInfoScanner::ScanTags(const CFileItemList& items, CFileItemList& scannedItems)
 {
-  CStdStringArray regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
+  vector<string> regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
 
   for (int i = 0; i < items.Size(); ++i)
   {

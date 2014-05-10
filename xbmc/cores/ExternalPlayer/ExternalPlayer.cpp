@@ -701,7 +701,7 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
 }
 
 void CExternalPlayer::GetCustomRegexpReplacers(TiXmlElement *pRootElement,
-                                               CStdStringArray& settings)
+                                               std::vector<std::string>& settings)
 {
   int iAction = 0; // overwrite
   // for backward compatibility
