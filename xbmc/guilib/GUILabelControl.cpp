@@ -161,7 +161,7 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
         ch |= (3 << 16);
       text.insert(text.begin() + m_iCursorPos, ch);
     }
-    changed |= m_label.SetMaxRect(m_posX, m_posY, GetWidth(), m_height);
+    changed |= m_label.SetMaxRect(m_posX, m_posY, GetMaxWidth(), m_height);
     changed |= m_label.SetStyledText(text, colors);
   }
   else
@@ -169,7 +169,7 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
     if (m_bHasPath)
       label = ShortenPath(label);
 
-    changed |= m_label.SetMaxRect(m_posX, m_posY, GetWidth(), m_height);
+    changed |= m_label.SetMaxRect(m_posX, m_posY, GetMaxWidth(), m_height);
     changed |= m_label.SetText(label);
   }
   if (changed)
@@ -244,10 +244,7 @@ void CGUILabelControl::SetAlignment(uint32_t align)
 float CGUILabelControl::GetWidth() const
 {
   if (m_minWidth && m_minWidth != m_width)
-  {
-    float maxWidth = m_width ? m_width : m_label.GetTextWidth();
-    return CLAMP(m_label.GetTextWidth(), m_minWidth, maxWidth);
-  }
+    return CLAMP(m_label.GetTextWidth(), m_minWidth, GetMaxWidth());
   return m_width;
 }
 
