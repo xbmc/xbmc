@@ -155,7 +155,5 @@ private:
   static void AppendToUTF32(const CStdString &utf8, character_t colStyle, vecText &utf32);
   static void AppendToUTF32(const CStdStringW &utf16, character_t colStyle, vecText &utf32);
   static void ParseText(const CStdStringW &text, uint32_t defaultStyle, color_t defaultColor, vecColors &colors, vecText &parsedText);
-
-  static void utf8ToW(const CStdString &utf8, CStdStringW &utf16);
 };
 
