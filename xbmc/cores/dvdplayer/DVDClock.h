@@ -58,7 +58,12 @@ public:
   double GetClock(bool interpolated = true);
   double GetClock(double& absolute, bool interpolated = true);
 
-  void Discontinuity(double currentPts = 0LL);
+  void Discontinuity(double clock, double absolute, const char* log);
+  void Discontinuity(double clock, double absolute);
+  void Discontinuity(double clock = 0LL)
+  {
+    Discontinuity(clock, GetAbsoluteClock());
+  }
 
   void Reset() { m_bReset = true; }
   void Pause();
@@ -81,6 +86,7 @@ public:
 protected:
   static void   CheckSystemClock();
   static double SystemToAbsolute(int64_t system);
+  static int64_t AbsoluteToSystem(double absolute);
   double        SystemToPlaying(int64_t system);
 
   CSharedSection m_critSection;

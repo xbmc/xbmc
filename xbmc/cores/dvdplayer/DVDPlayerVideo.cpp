@@ -386,7 +386,8 @@ void CDVDPlayerVideo::Process()
       if(pMsgGeneralResync->m_timestamp != DVD_NOPTS_VALUE)
         pts = pMsgGeneralResync->m_timestamp;
 
-      double delay = m_FlipTimeStamp - m_pClock->GetAbsoluteClock();
+      double absolute = m_pClock->GetAbsoluteClock();
+      double delay = m_FlipTimeStamp - absolute;
       if( delay > frametime ) delay = frametime;
       else if( delay < 0 )    delay = 0;
       m_FlipTimePts = pts -frametime;
@@ -394,7 +395,7 @@ void CDVDPlayerVideo::Process()
       if(pMsgGeneralResync->m_clock)
       {
         CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, 1)", pts);
-        m_pClock->Discontinuity(m_FlipTimePts);
+        m_pClock->Discontinuity(m_FlipTimePts, absolute);
       }
       else
         CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, 0)", pts);
@@ -1163,12 +1164,8 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   {
     double error = iClockSleep - iFrameSleep;
     if( abs(error)  > DVD_MSEC_TO_TIME(10) )
-    {
-      CLog::Log(LOGDEBUG, "CDVDPlayerVideo:: Discontinuity - was:%f, should be:%f, error:%f"
-                        , iPlayingClock, iPlayingClock + error, error);
-      m_pClock->Discontinuity(iPlayingClock + error);
+      m_pClock->Discontinuity(iPlayingClock + error, iCurrentClock, "CDVDPlayerVideo::OutputPicture");
 
-    }
   }
 
   // present the current pts of this frame to user, and include the actual

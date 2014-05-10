@@ -145,13 +145,28 @@ void CDVDClock::SetSpeed(int iSpeed)
   m_systemUsed = newfreq;
 }
 
-void CDVDClock::Discontinuity(double currentPts)
+void CDVDClock::Discontinuity(double clock, double absolute, const char* log)
 {
   CExclusiveLock lock(m_critSection);
-  m_startClock = g_VideoReferenceClock.GetTime();
+  double was_absolute = SystemToAbsolute(m_startClock);
+  double was_clock    = m_iDisc + absolute - was_absolute;
+  Discontinuity(clock, absolute);
+  lock.Leave();
+
+  CLog::Log(LOGDEBUG, "CDVDClock::Discontinuity - %s - was:%f, should be:%f, error:%f"
+            , log
+            , was_clock
+            , clock
+            , clock - was_clock);
+}
+
+void CDVDClock::Discontinuity(double clock, double absolute)
+{
+  CExclusiveLock lock(m_critSection);
+  m_startClock = AbsoluteToSystem(absolute);
   if(m_pauseClock)
     m_pauseClock = m_startClock;
-  m_iDisc = currentPts;
+  m_iDisc = clock;
   m_bReset = false;
 }
 
@@ -226,6 +241,11 @@ void CDVDClock::CheckSystemClock()
 double CDVDClock::SystemToAbsolute(int64_t system)
 {
   return DVD_TIME_BASE * (double)(system - m_systemOffset) / m_systemFrequency;
+}
+
+int64_t CDVDClock::AbsoluteToSystem(double absolute)
+{
+  return (int64_t)(absolute / DVD_TIME_BASE * m_systemFrequency) + m_systemOffset;
 }
 
 double CDVDClock::SystemToPlaying(int64_t system)
