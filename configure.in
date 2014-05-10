@@ -1534,7 +1534,7 @@ if test "$use_librtmp" != "no"; then
       XB_FIND_SONAME([RTMP], [rtmp], [use_librtmp])
       AC_DEFINE([HAS_LIBRTMP], [1], [Whether to use libRTMP library.])
       RTMP_ALL_LIBS=$(${PKG_CONFIG} --static --libs-only-l --silence-errors librtmp)
-      test "$use_static_ffmpeg" = "yes" && LIBS="$LIBS $RTMP_ALL_LIBS"],
+      test "$use_static_ffmpeg" = "yes" && LIBS="$LIBS $RTMP_ALL_LIBS"; LIBS="`echo $LIBS | sed 's/-lrtmp//g'`"],
     [AC_CHECK_HEADERS([librtmp/log.h librtmp/amf.h librtmp/rtmp.h],,
       [if test "$use_librtmp" = "yes"; then
         AC_MSG_ERROR($librtmp_not_found)
