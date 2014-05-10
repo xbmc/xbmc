@@ -26,7 +26,7 @@
 #define LINE_ENDING "\r\n"
 
 #define __STDC_FORMAT_MACROS
-#include "inttypes.h"
+#include <inttypes.h>
 
 typedef __int64       off64_t;
 typedef __int64       fpos64_t;
