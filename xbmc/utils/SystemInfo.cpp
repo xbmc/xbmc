@@ -961,14 +961,22 @@ std::string CSysInfo::GetUserAgent()
 
   if (!deviceInfo.empty())
     result += "; " + deviceInfo;
-#elif defined(TARGET_FREEBSD)
-  result += "FreeBSD; ";
-  result += GetUnameVersion();
 #elif defined(TARGET_POSIX)
-  result += "Linux; ";
-  result += GetLinuxDistro();
-  result += "; ";
-  result += GetUnameVersion();
+  result += "X11; ";
+  struct utsname un;
+  if (uname(&un) == 0)
+  {
+    std::string cpuStr(un.machine);
+    if (cpuStr == "x86_64" && GetXbmcBitness() == 32)
+      cpuStr = "i686 (x86_64)";
+    result += un.sysname;
+    result += " ";
+    result += cpuStr;
+  }
+  else
+    result += "Unknown";
+#else
+  result += "Unknown";
 #endif
 
 #if defined(TARGET_ANDROID)
