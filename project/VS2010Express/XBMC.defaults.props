@@ -6,7 +6,6 @@
   <!-- Common configuration settings -->
   <PropertyGroup>
     <IncludePath>$(SolutionDir)\..\BuildDependencies\include;$(SolutionDir)\..\BuildDependencies\include\python;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\..\BuildDependencies\lib;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(SolutionDir)\..\..\tools\win32buildtools;$(ExecutablePath)</ExecutablePath>
     <LocalDebuggerEnvironment>XBMC_HOME=$(SolutionDir)..\..&#xD;&#xA;PATH=$(SolutionDir)..\Win32BuildSetup\dependencies;%PATH%</LocalDebuggerEnvironment>
   </PropertyGroup>
@@ -31,6 +30,7 @@
 
   <!-- "Debug" specific settings -->
   <PropertyGroup Condition="'$(UseDebugLibraries)'=='true'">
+    <LibraryPath>$(SolutionDir)\..\BuildDependencies\lib\Debug-vc120;$(SolutionDir)\..\BuildDependencies\lib;$(LibraryPath)</LibraryPath>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(UseDebugLibraries)'=='true'">
@@ -51,6 +51,7 @@
 
   <!-- "Release" specific settings -->
   <PropertyGroup Condition="'$(UseDebugLibraries)'!='true'">
+    <LibraryPath>$(SolutionDir)\..\BuildDependencies\lib\Release-vc120;$(SolutionDir)\..\BuildDependencies\lib;$(LibraryPath)</LibraryPath>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(UseDebugLibraries)'!='true'">
