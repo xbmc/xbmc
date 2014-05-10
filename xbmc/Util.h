@@ -93,11 +93,48 @@ public:
   static void ClearTempFonts();
 
   static void ClearSubtitles();
+
+  /** \brief Retrieves paths that could contain associated files of a given video.
+  *   \param[in] videoPath The full path of the video file.
+  *   \param[in] common_sub_dirs[] An array of sub directory names to look for.
+  *   \param[out] paths A vector of found paths to look for associated files.
+  */
+  static void GetPathsToLookForAssociatedItems(const CStdString& videoPath,
+    const char * common_sub_dirs[],
+    std::vector<CStdString>& paths);
+
+  /** \brief Searches for associated files of a given video.
+  *   \param[in] videoPath The full path of the video file.
+  *   \param[in] paths A vector of paths to look for associated files.
+  *   \param[in] item_exts An array of extensions specifying the associated files.
+  *   \param[out] itemPaths A vector containing the full paths of all found associated files.
+  */
+  static void ScanPathsForAssociatedItems(const CStdString& videoPath,
+    const std::vector<CStdString>& paths,
+    CStdStringArray item_exts,
+    std::vector<CStdString>& itemPaths);
+
+  /** \brief Searches in an archive for associated files of a given video.
+  *   \param[in] strArchivePath The full path of the archive.
+  *   \param[in] videoNameNoExt The filename of the video without extension for which associated files should be retrieved.
+  *   \param[in] item_exts An array of extensions specifying the associated files.
+  *   \param[out] itemPaths A vector containing the full paths of all found associated files.
+  */
+  static int ScanArchiveForAssociatedItems( const CStdString& strArchivePath,
+    const CStdString& videoNameNoExt,
+    CStdStringArray item_exts,
+    std::vector<CStdString>& itemPaths );
+
   static void ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CStdString>& vecSubtitles );
-  static int ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStdString& strMovieFileNameNoExt, std::vector<CStdString>& vecSubtitles );
   static void GetExternalStreamDetailsFromFilename(const CStdString& strMovie, const CStdString& strSubtitles, ExternalStreamInfo& info); 
   static bool FindVobSubPair( const std::vector<CStdString>& vecSubtitles, const CStdString& strIdxPath, CStdString& strSubPath );
   static bool IsVobSub( const std::vector<CStdString>& vecSubtitles, const CStdString& strSubPath );  
+  
+  /** \brief Retrieves paths of external audio files for a given video.
+  *   \param[in] videoPath The full path of the video file.
+  *   \param[out] vecAudio A vector containing the full paths of all found external audio files.
+  */
+  static void ScanForExternalAudio(const CStdString& videoPath, std::vector<CStdString>& vecAudio );
   static int64_t ToInt64(uint32_t high, uint32_t low);
   static CStdString GetNextFilename(const CStdString &fn_template, int max);
   static CStdString GetNextPathname(const CStdString &path_template, int max);

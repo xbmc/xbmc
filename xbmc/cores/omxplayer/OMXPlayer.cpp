@@ -144,6 +144,21 @@ void COMXSelectionStreams::Clear(StreamType type, StreamSource source)
   }
 }
 
+void COMXSelectionStreams::Clear(StreamType type, int source)
+{
+  CSingleLock lock(m_section);
+  for(int i = m_Streams.size()-1; i >= 0; i--)
+  {
+    if(type && m_Streams[i].type != type)
+      continue;
+
+    if(source && m_Streams[i].source != source)
+      continue;
+
+    m_Streams.erase(m_Streams.begin() + i);
+  }
+}
+
 OMXSelectionStream& COMXSelectionStreams::Get(StreamType type, int index)
 {
   CSingleLock lock(m_section);
@@ -434,13 +449,14 @@ void COMXSelectionStreams::Update(OMXSelectionStream& s)
   }
 }
 
-void COMXSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
+int COMXSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
 {
+  int source = -1;
   if(input && input->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     CDVDInputStreamNavigator* nav = (CDVDInputStreamNavigator*)input;
     string filename = nav->GetFileName();
-    int source = Source(STREAM_SOURCE_NAV, filename);
+    source = Source(STREAM_SOURCE_NAV, filename);
 
     int count;
     count = nav->GetAudioStreamCount();
@@ -483,7 +499,6 @@ void COMXSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
   {
     string filename = demuxer->GetFileName();
     int count = demuxer->GetNrOfStreams();
-    int source;
     if(input) /* hack to know this is sub decoder */
       source = Source(STREAM_SOURCE_DEMUX, filename);
     else
@@ -526,6 +541,7 @@ void COMXSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
       Update(s);
     }
   }
+  return source;
 }
 
 COMXPlayer::COMXPlayer(IPlayerCallback &callback) 
@@ -543,8 +559,10 @@ COMXPlayer::COMXPlayer(IPlayerCallback &callback)
       m_ready(true),
       m_DemuxerPausePending(false)
 {
+  m_pDemuxers.clear();
   m_pDemuxer          = NULL;
   m_pSubtitleDemuxer  = NULL;
+  m_pInputStreams.clear();
   m_pInputStream      = NULL;
 
   m_dvd.Clear();
@@ -636,15 +654,15 @@ bool COMXPlayer::CloseFile(bool reopen)
   // set the abort request so that other threads can finish up
   m_bAbortRequest = true;
 
-  // tell demuxer to abort
-  if(m_pDemuxer)
-    m_pDemuxer->Abort();
+  // tell demuxers to abort
+  for (map<int, DemuxPtr>::iterator iter = m_pDemuxers.begin(); iter != m_pDemuxers.end(); ++iter)
+    iter->second->Abort();
 
   if(m_pSubtitleDemuxer)
     m_pSubtitleDemuxer->Abort();
 
-  if(m_pInputStream)
-    m_pInputStream->Abort();
+  for (map<int, InputStreamPtr>::iterator iter = m_pInputStreams.begin(); iter != m_pInputStreams.end(); ++iter)
+    iter->second->Abort();
 
   CLog::Log(LOGDEBUG, "COMXPlayer: waiting for threads to exit");
 
@@ -685,8 +703,8 @@ void COMXPlayer::OnStartup()
 
 bool COMXPlayer::OpenInputStream()
 {
-  if(m_pInputStream)
-    SAFE_DELETE(m_pInputStream);
+  m_pInputStreams.clear();
+  m_pInputStream = NULL;
 
   CLog::Log(LOGNOTICE, "Creating InputStream");
 
@@ -698,20 +716,38 @@ bool COMXPlayer::OpenInputStream()
     m_filename = g_mediaManager.TranslateDevicePath("");
   }
 
-  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_mimetype);
-  if(m_pInputStream == NULL)
-  {
-    CLog::Log(LOGERROR, "COMXPlayer::OpenInputStream - unable to create input stream for [%s]", m_filename.c_str());
-    return false;
-  }
-  else
-    m_pInputStream->SetFileItem(m_item);
+  // find any available external audio tracks
+  std::vector<CStdString> filenames;
+  filenames.push_back(m_filename);
+  CUtil::ScanForExternalAudio( m_filename, filenames );
 
-  if (!m_pInputStream->Open(m_filename.c_str(), m_mimetype))
+  for(unsigned int i = 0, j = 0; i < filenames.size(); i++)
   {
-    CLog::Log(LOGERROR, "COMXPlayer::OpenInputStream - error opening [%s]", m_filename.c_str());
-    return false;
+    CFileItem fileitem = CFileItem(filenames[i]);
+    CStdString filemimetype = fileitem.GetMimeType();
+    InputStreamPtr inputstream(CDVDFactoryInputStream::CreateInputStream(this, filenames[i], filemimetype));
+    if(!inputstream)
+    {
+      CLog::Log(LOGERROR, "COMXPlayer::OpenInputStream - unable to create input stream for [%s]", filenames[i].c_str());
+      // if we can't create an input stream for the "master" file return false.
+      if (filenames[i].Equals(m_filename.c_str()))
+        return false;
+      continue;
+    }
+    else
+      m_pInputStream->SetFileItem(fileitem);
+
+    if (!inputstream->Open(filenames[i].c_str(), filemimetype))
+    {
+      CLog::Log(LOGERROR, "COMXPlayer::OpenInputStream - error opening [%s]", filenames[i].c_str());
+      // if we can't open an input stream for the "master" file return false.
+      if (i == 0)
+        return false;
+      continue;
+    }
+    m_pInputStreams[j++] = inputstream;
   }
+  m_pInputStream = m_pInputStreams[0].get();
 
   if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)
                        || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
@@ -726,7 +762,7 @@ bool COMXPlayer::OpenInputStream()
   &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP))
   {
     // find any available external subtitles
-    std::vector<CStdString> filenames;
+    filenames.clear();
     CUtil::ScanForExternalSubtitles( m_filename, filenames );
 
     // find any upnp subtitles
@@ -770,19 +806,39 @@ bool COMXPlayer::OpenDemuxStream()
   if(m_pDemuxer)
     SAFE_DELETE(m_pDemuxer);
 
-  CLog::Log(LOGNOTICE, "Creating Demuxer");
+  m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
+  m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NAV);
+  if (!OpenDemuxStream(m_pInputStreams.begin()->second))
+    return false;
 
+  map<int, InputStreamPtr>::iterator iter = ++m_pInputStreams.begin();
+  while (iter != m_pInputStreams.end())
+  {
+    if (!OpenDemuxStream(iter->second))
+      m_pInputStreams.erase(iter++);
+    else
+      ++iter;
+  }
+
+  m_pDemuxer = m_pDemuxers.begin()->second.get();
+  return true;
+}
+
+bool COMXPlayer::OpenDemuxStream(InputStreamPtr& input)
+{
+  CLog::Log(LOGNOTICE, "Creating Demuxer");
+  DemuxPtr demuxer;
   try
   {
     int attempts = 10;
     while(!m_bStop && attempts-- > 0)
     {
-      m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
-      if(!m_pDemuxer && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+      demuxer = DemuxPtr(CDVDFactoryDemuxer::CreateDemuxer(input.get()));
+      if(!demuxer && input->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
       {
         continue;
       }
-      else if(!m_pDemuxer && m_pInputStream->NextStream() != CDVDInputStream::NEXTSTREAM_NONE)
+      else if(!demuxer && input->NextStream() != CDVDInputStream::NEXTSTREAM_NONE)
       {
         CLog::Log(LOGDEBUG, "%s - New stream available from input, retry open", __FUNCTION__);
         continue;
@@ -790,7 +846,7 @@ bool COMXPlayer::OpenDemuxStream()
       break;
     }
 
-    if(!m_pDemuxer)
+    if(!demuxer)
     {
       CLog::Log(LOGERROR, "%s - Error creating demuxer", __FUNCTION__);
       return false;
@@ -802,16 +858,14 @@ bool COMXPlayer::OpenDemuxStream()
     CLog::Log(LOGERROR, "%s - Exception thrown when opening demuxer", __FUNCTION__);
     return false;
   }
+  int source = m_SelectionStreams.Update(input.get(), demuxer.get());
 
-  m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
-  m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NAV);
-  m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
-
-  int64_t len = m_pInputStream->GetLength();
-  int64_t tim = m_pDemuxer->GetStreamLength();
+  int64_t len = input->GetLength();
+  int64_t tim = demuxer->GetStreamLength();
   if(len > 0 && tim > 0)
-    m_pInputStream->SetReadRate(g_advancedSettings.m_readBufferFactor * len * 1000 / tim);
+    input->SetReadRate(g_advancedSettings.m_readBufferFactor * len * 1000 / tim);
 
+  m_pDemuxers[source] = demuxer;
   return true;
 }
 
@@ -916,9 +970,33 @@ bool COMXPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
     }
   }
 
-  // read a data frame from stream.
-  if(m_pDemuxer)
-    packet = m_pDemuxer->Read();
+  int source = m_CurrentVideo.source;
+
+  if (m_CurrentAudio.source > 0 && (m_CurrentAudio.source != m_CurrentVideo.source))
+  {
+    if (m_CurrentVideo.dts > m_CurrentAudio.dts)
+    {
+      source = m_CurrentAudio.source;
+    }
+  }
+
+  do
+  {
+    if(source > 0 && m_pDemuxers[source])
+      packet = m_pDemuxers[source]->Read();
+
+    // no packet could be read form external file, e.g. eof or not a valid audio file
+    if (!packet && source > 0 && (source != m_CurrentVideo.source))
+    {
+      m_SelectionStreams.Clear(STREAM_NONE, source);
+      m_pDemuxers.erase(source);
+      CloseAudioStream(false);
+      OpenDefaultStreams(false);
+      source = m_CurrentAudio.source;
+      if(source > 0 && m_pDemuxers[source])
+        packet = m_pDemuxers[source]->Read();
+    }
+  }while (!packet && source > 0 && (source != m_CurrentVideo.source));
 
   if(packet)
   {
@@ -926,7 +1004,7 @@ bool COMXPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
     if(packet->iStreamId == DMX_SPECIALID_STREAMCHANGE)
     {
         m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
-        m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
+        m_SelectionStreams.Update(m_pInputStream, m_pDemuxers[source].get());
         OpenDefaultStreams(false);
 
         // reevaluate HasVideo/Audio, we may have switched from/to a radio channel
@@ -943,9 +1021,9 @@ bool COMXPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
     if(packet->iStreamId < 0)
       return true;
 
-    if(m_pDemuxer)
+    if(m_pDemuxers[source])
     {
-      stream = m_pDemuxer->GetStream(packet->iStreamId);
+      stream = m_pDemuxers[source]->GetStream(packet->iStreamId);
       if (!stream)
       {
         CLog::Log(LOGERROR, "%s - Error demux packet doesn't belong to a valid stream", __FUNCTION__);
@@ -954,7 +1032,7 @@ bool COMXPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
       if(stream->source == STREAM_SOURCE_NONE)
       {
         m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
-        m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
+        m_SelectionStreams.Update(m_pInputStream, m_pDemuxers[source].get());
       }
     }
     return true;
@@ -981,7 +1059,7 @@ bool COMXPlayer::IsValidStream(COMXCurrentStream& stream)
   }
   if(source == STREAM_SOURCE_DEMUX)
   {
-    CDemuxStream* st = m_pDemuxer->GetStream(stream.id);
+    CDemuxStream* st = m_pDemuxers[stream.source]->GetStream(stream.id);
     if(st == NULL || st->disabled)
       return false;
     if(st->type != stream.type)
@@ -1150,10 +1228,13 @@ void COMXPlayer::Process()
     double startpts = DVD_NOPTS_VALUE;
     if(m_pDemuxer)
     {
-      if (m_pDemuxer->SeekTime(starttime, false, &startpts))
-        CLog::Log(LOGDEBUG, "%s - starting demuxer from: %d", __FUNCTION__, starttime);
-      else
-        CLog::Log(LOGDEBUG, "%s - failed to start demuxing from: %d", __FUNCTION__, starttime);
+      for (map<int, DemuxPtr>::iterator iter = m_pDemuxers.begin(); iter != m_pDemuxers.end(); ++iter)
+      {
+        if(iter->second->SeekTime(starttime, false, &startpts))
+          CLog::Log(LOGDEBUG, "%s - starting demuxer from: %d", __FUNCTION__, starttime);
+        else
+          CLog::Log(LOGDEBUG, "%s - failed to start demuxing from: %d", __FUNCTION__, starttime);
+      }
     }
 
     if(m_pSubtitleDemuxer)
@@ -1434,7 +1515,8 @@ void COMXPlayer::Process()
       CDVDInputStream::ENextStream next = m_pInputStream->NextStream();
       if(next == CDVDInputStream::NEXTSTREAM_OPEN)
       {
-        SAFE_DELETE(m_pDemuxer);
+        m_pDemuxers.clear();
+        m_pDemuxer = NULL;
         m_CurrentAudio.stream = NULL;
         m_CurrentVideo.stream = NULL;
         m_CurrentSubtitle.stream = NULL;
@@ -2273,12 +2355,9 @@ void COMXPlayer::OnExit()
       CLog::Log(LOGNOTICE, "OMXPlayer: closing teletext stream");
       CloseTeletextStream(!m_bAbortRequest);
     }
-    // destroy the demuxer
-    if (m_pDemuxer)
-    {
-      CLog::Log(LOGNOTICE, "COMXPlayer::OnExit() deleting demuxer");
-      delete m_pDemuxer;
-    }
+    // destroy the demuxers
+    CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit() deleting demuxers");
+    m_pDemuxers.clear();
     m_pDemuxer = NULL;
 
     if (m_pSubtitleDemuxer)
@@ -2307,7 +2386,9 @@ void COMXPlayer::OnExit()
   catch (...)
   {
     CLog::Log(LOGERROR, "%s - Exception thrown when trying to close down player, memory leak will follow", __FUNCTION__);
+    m_pInputStreams.clear();
     m_pInputStream = NULL;
+    m_pDemuxers.clear();
     m_pDemuxer = NULL;
   }
 
@@ -2370,6 +2451,15 @@ void COMXPlayer::HandleMessages()
             if(!m_pSubtitleDemuxer->SeekTime(time, msg.GetBackward()))
               CLog::Log(LOGDEBUG, "failed to seek subtitle demuxer: %d, success", time);
           }
+          
+          for (map<int, DemuxPtr>::iterator iter = ++m_pDemuxers.begin(); iter != m_pDemuxers.end(); ++iter)
+          {
+            if(!iter->second->SeekTime(time, msg.GetBackward(), &start))
+              CLog::Log(LOGDEBUG, "failed to seek external audio demuxer: %d", time);
+            else
+              CLog::Log(LOGDEBUG, "external audio demuxer seek to: %d, success", time);
+          }
+
           // dts after successful seek
           if (m_StateInput.time_src  == ETIMESOURCE_CLOCK && start == DVD_NOPTS_VALUE)
             m_StateInput.dts = DVD_MSEC_TO_TIME(time);
@@ -2404,6 +2494,12 @@ void COMXPlayer::HandleMessages()
         // This should always be the case.
         if(m_pDemuxer && m_pDemuxer->SeekChapter(msg.GetChapter(), &start))
         {
+          for (map<int, DemuxPtr>::iterator iter = ++m_pDemuxers.begin(); iter != m_pDemuxers.end(); ++iter)
+          {
+            if(!iter->second->SeekTime(DVD_TIME_TO_MSEC(start)))
+              CLog::Log(LOGDEBUG, "failed to seek to chapter %d on external audio demuxer, time: %d", msg.GetChapter(), DVD_TIME_TO_MSEC(start));
+          }
+
           FlushBuffers(false, start, true);
           // mark mediatime as invalid
           m_av_clock.OMXMediaTime(0.0);
@@ -2420,8 +2516,9 @@ void COMXPlayer::HandleMessages()
           m_CurrentSubtitle.stream = NULL;
 
           // we need to reset the demuxer, probably because the streams have changed
-          if(m_pDemuxer)
-            m_pDemuxer->Reset();
+          for (map<int, DemuxPtr>::iterator iter = m_pDemuxers.begin(); iter != m_pDemuxers.end(); ++iter)
+            iter->second->Reset();
+
           if(m_pSubtitleDemuxer)
             m_pSubtitleDemuxer->Reset();
       }
@@ -2561,7 +2658,8 @@ void COMXPlayer::HandleMessages()
         {
           m_DemuxerPausePending = (speed == DVD_PLAYSPEED_PAUSE);
           if (!m_DemuxerPausePending)
-            m_pDemuxer->SetSpeed(speed);
+            for (map<int, DemuxPtr>::iterator iter = m_pDemuxers.begin(); iter != m_pDemuxers.end(); ++iter)
+              iter->second->SetSpeed(speed);
         }
         CLog::Log(LOGDEBUG, "COMXPlayer - CDVDMsg::PLAYER_SETSPEED speed : %d", speed);
       }
@@ -2571,7 +2669,8 @@ void COMXPlayer::HandleMessages()
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
         if(input && input->SelectChannelByNumber(static_cast<CDVDMsgInt*>(pMsg)->m_value))
         {
-          SAFE_DELETE(m_pDemuxer);
+          m_pDemuxers.clear();
+          m_pDemuxer = NULL;
         }else
         {
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
@@ -2584,7 +2683,8 @@ void COMXPlayer::HandleMessages()
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
         if(input && input->SelectChannel(static_cast<CDVDMsgType <CPVRChannel> *>(pMsg)->m_value))
         {
-          SAFE_DELETE(m_pDemuxer);
+          m_pDemuxers.clear();
+          m_pDemuxer = NULL;
         }else
         {
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
@@ -3169,13 +3269,13 @@ bool COMXPlayer::OpenAudioStream(int iStream, int source, bool reset)
 {
   CLog::Log(LOGNOTICE, "Opening audio stream: %i source: %i", iStream, source);
 
-  if (!m_pDemuxer)
+  if (!m_pDemuxer || source <= 0 || !m_pDemuxers[source])
   {
     CLog::Log(LOGWARNING, "Opening audio stream: no demuxer");
     return false;
   }
 
-  CDemuxStream* pStream = m_pDemuxer->GetStream(iStream);
+  CDemuxStream* pStream = m_pDemuxers[source]->GetStream(iStream);
   if (!pStream || pStream->disabled)
   {
     CLog::Log(LOGWARNING, "Opening audio stream: pStream=%p disabled=%d", pStream, pStream ? pStream->disabled:0);
@@ -4225,12 +4325,6 @@ void COMXPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 
   if (index == GetAudioStream())
     info.bitrate = m_omxPlayerAudio.GetAudioBitrate();
-  else if (m_pDemuxer)
-  {
-    CDemuxStreamAudio* stream = m_pDemuxer->GetStreamFromAudioId(index);
-    if (stream)
-      info.bitrate = stream->iBitRate;
-  }
 
   OMXSelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, index);
   if(s.language.length() > 0)
@@ -4242,15 +4336,18 @@ void COMXPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
   if(s.type == STREAM_NONE)
     info.name += " (Invalid)";
 
-  if (m_pDemuxer)
+  if (s.source > 0 && m_pDemuxers[s.source])
   {
-    CDemuxStreamAudio* stream = static_cast<CDemuxStreamAudio*>(m_pDemuxer->GetStreamFromAudioId(index));
+    DemuxPtr demuxer = m_pDemuxers[s.source];
+    CDemuxStreamAudio* stream = static_cast<CDemuxStreamAudio*>(demuxer->GetStream(s.id));
     if (stream)
     {
       info.channels = stream->iChannels;
       CStdString codecName;
-      m_pDemuxer->GetStreamCodecName(stream->iId, codecName);
+      demuxer->GetStreamCodecName(stream->iId, codecName);
       info.audioCodecName = codecName;
+      if (info.bitrate == 0)
+        info.bitrate = stream->iBitRate;
     }
   }
 }
@@ -4394,9 +4491,9 @@ void COMXPlayer::UpdatePlayState(double timeout)
   else if (state.dts != DVD_NOPTS_VALUE)
     state.time_offset = DVD_MSEC_TO_TIME(state.time) - state.dts;
 
-  if (m_CurrentAudio.id >= 0 && m_pDemuxer)
+  if (m_CurrentAudio.id >= 0 && m_CurrentAudio.source > 0 && m_pDemuxers[m_CurrentAudio.source])
   {
-    CDemuxStream* pStream = m_pDemuxer->GetStream(m_CurrentAudio.id);
+    CDemuxStream* pStream = m_pDemuxers[m_CurrentAudio.source]->GetStream(m_CurrentAudio.id);
     if (pStream && pStream->type == STREAM_AUDIO)
       ((CDemuxStreamAudio*)pStream)->GetStreamInfo(state.demux_audio);
   }
@@ -4501,7 +4598,7 @@ bool COMXPlayer::GetStreamDetails(CStreamDetails &details)
       extSubDetails.push_back(p);
     }
 
-    bool result = CDVDFileInfo::DemuxerToStreamDetails(m_pInputStream, m_pDemuxer, extSubDetails, details);
+    bool result = CDVDFileInfo::DemuxerToStreamDetails(m_pInputStream, m_pDemuxer, m_pDemuxers, extSubDetails, details);
     if (result && details.GetStreamCount(CStreamDetail::VIDEO) > 0) // this is more correct (dvds in particular)
     {
       /* 
