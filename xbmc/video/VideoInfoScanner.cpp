@@ -497,13 +497,6 @@ namespace VIDEO
     // handle .nfo files
     if (useLocal)
       result = CheckForNFOFile(pItem, bDirNames, info2, scrUrl);
-    if (result != CNfoFile::NO_NFO && result != CNfoFile::ERROR_NFO)
-    { // check for preconfigured scraper; if found, overwrite with interpreted scraper (from Nfofile)
-      // but keep current scan settings
-      SScanSettings settings;
-      if (m_database.GetScraperForPath(pItem->GetPath(), settings))
-        m_database.SetScraperForPath(pItem->GetPath(), info2, settings);
-    }
     if (result == CNfoFile::FULL_NFO)
     {
       pItem->GetVideoInfoTag()->Reset();
