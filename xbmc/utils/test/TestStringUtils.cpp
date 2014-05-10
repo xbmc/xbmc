@@ -258,6 +258,8 @@ TEST(TestStringUtils, Split)
   EXPECT_STREQ("lm", varresults.at(4).c_str());
   EXPECT_STREQ("", varresults.at(5).c_str());
   EXPECT_STREQ("n", varresults.at(6).c_str());
+
+  EXPECT_TRUE(StringUtils::Split("", "|").empty());
 }
 
 TEST(TestStringUtils, FindNumber)
