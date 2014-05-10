@@ -978,6 +978,10 @@ std::string CSysInfo::GetUserAgent()
 #else
   result += "Unknown";
 #endif
+  result += ")";
+#ifdef TARGET_RASPBERRY_PI
+  result += " XBMC_HW_RaspberryPi/1.0";
+#endif
 
 #if defined(TARGET_ANDROID)
   // Android has no CPU string by default, so add it as additional parameter
@@ -992,7 +996,7 @@ std::string CSysInfo::GetUserAgent()
 
   std::string fullVer(g_infoManager.GetLabel(SYSTEM_BUILD_VERSION));
   StringUtils::Replace(fullVer, ' ', '-');
-  result += ") Version/" + fullVer;
+  result += " Version/" + fullVer;
 
   return result;
 }
