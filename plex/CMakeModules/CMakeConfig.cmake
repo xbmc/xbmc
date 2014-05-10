@@ -20,8 +20,9 @@ if(ENABLE_TESTING)
   enable_testing()
 endif(ENABLE_TESTING)
 
+OPTION(ENABLE_AUTOUPDATE "Enable the cool autoupdate system" ON)
+
 if(NOT TARGET_RPI)
-  OPTION(ENABLE_AUTOUPDATE "Enable the cool autoupdate system" ON)
   OPTION(COMPRESS_TEXTURES "If we should compress the textures or not" ON)
 endif()
 
