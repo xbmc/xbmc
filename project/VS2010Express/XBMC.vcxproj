@@ -2914,17 +2914,17 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\xbmc\interfaces\json-rpc\schema\license.txt">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
@@ -2932,17 +2932,17 @@
     </CustomBuild>
     <CustomBuild Include="..\..\xbmc\interfaces\json-rpc\schema\methods.json">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
@@ -2950,17 +2950,17 @@
     </CustomBuild>
     <CustomBuild Include="..\..\xbmc\interfaces\json-rpc\schema\notifications.json">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
@@ -2968,34 +2968,34 @@
     </CustomBuild>
     <CustomBuild Include="..\..\xbmc\interfaces\json-rpc\schema\types.json">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\xbmc\interfaces\json-rpc\schema\version.txt">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL ..\BuildDependencies\bin\json-rpc\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>

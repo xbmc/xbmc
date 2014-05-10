@@ -21,9 +21,11 @@ SRCS=AddonsOperations.cpp \
 LIB=json-rpc.a
 
 GENERATED_JSON = ServiceDescription.h
-JSON_SRC =  schema/version.txt schema/license.txt schema/methods.json schema/types.json schema/notifications.json
+GENERATED_ADDON_JSON = ../../../addons/xbmc.json/addon.xml
+JSON_VERSION_SRC = schema/version.txt
+JSON_SRC =  $(JSON_VERSION_SRC) schema/license.txt schema/methods.json schema/types.json schema/notifications.json
 
-all: $(GENERATED_JSON) $(LIB)
+all: $(GENERATED_JSON) $(GENERATED_ADDON_JSON) $(LIB)
 
 -include ../../../Makefile.include
 ifeq ($(wildcard $(JSON_BUILDER)),)
@@ -32,5 +34,11 @@ endif
 
 $(GENERATED_JSON): $(JSON_SRC)
 	$(JSON_BUILDER) $(JSON_SRC)
+
+.PHONY: $(notdir $(GENERATED_ADDON_JSON))
+$(notdir $(GENERATED_ADDON_JSON)): $(GENERATED_ADDON_JSON)
+
+$(GENERATED_ADDON_JSON): $(JSON_VERSION_SRC)
+	sed s/@jsonrpc_version@/`cat $(JSON_VERSION_SRC)`/g $@.in > $@
 
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
