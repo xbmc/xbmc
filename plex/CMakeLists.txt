@@ -152,6 +152,7 @@ set_target_properties(${PLEX_TARGET_NAME} PROPERTIES OUTPUT_NAME ${EXECUTABLE_NA
 set_target_properties(${PLEX_TARGET_NAME} PROPERTIES PDB_NAME "Plex Home Theater")
 
 if(ENABLE_DUMP_SYMBOLS)
+  message(STATUS "Generating breakpad symbols")
   GENERATE_BREAKPAD_SYMBOLS(${PLEX_TARGET_NAME})
   add_custom_target(symbols DEPENDS ${PLEX_TARGET_NAME}_symbols)
 endif(ENABLE_DUMP_SYMBOLS)
@@ -175,7 +176,7 @@ endif(ENABLE_PYTHON)
 # find all image files in the skin
 file(GLOB MEDIA_IMAGES_PLEX_SKIN ${root}/addons/skin.plex/Media/*.png ${root}/addons/skin.plex/Media/*.gif)
 
-if(COMPRESS_TEXTURES)
+if(COMPRESS_TEXTURES AND NOT TARGET_RPI)
   # Build the packed textures
   if(WIN32)
     set(WORKDIR ${root}/tools/TexturePacker)
