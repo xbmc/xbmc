@@ -199,36 +199,6 @@ TEST(TestStringUtils, EndsWith)
   EXPECT_TRUE(StringUtils::EndsWithNoCase(refstr, "TesT"));
 }
 
-TEST(TestStringUtils, JoinString)
-{
-  CStdString refstr, varstr;
-  CStdStringArray strarray;
-
-  strarray.push_back("a");
-  strarray.push_back("b");
-  strarray.push_back("c");
-  strarray.push_back("de");
-  strarray.push_back(",");
-  strarray.push_back("fg");
-  strarray.push_back(",");
-  refstr = "a,b,c,de,,,fg,,";
-  StringUtils::JoinString(strarray, ",", varstr);
-  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
-
-  strarray.clear();
-  varstr.clear();
-  strarray.push_back("g");
-  strarray.push_back("h");
-  strarray.push_back("i");
-  strarray.push_back("jk,");
-  strarray.push_back(",");
-  strarray.push_back("lmn,,");
-  strarray.push_back(",");
-  refstr = "g,h,i,jk,,,,lmn,,,,";
-  varstr = StringUtils::JoinString(strarray, ",");
-  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
-}
-
 TEST(TestStringUtils, Join)
 {
   CStdString refstr, varstr;

@@ -87,8 +87,6 @@ public:
   static bool EndsWithNoCase(const std::string &str1, const std::string &str2);
   static bool EndsWithNoCase(const std::string &str1, const char *s2);
 
-  static void JoinString(const CStdStringArray &strings, const CStdString& delimiter, CStdString& result);
-  static CStdString JoinString(const CStdStringArray &strings, const CStdString& delimiter);
   static CStdString Join(const std::vector<std::string> &strings, const CStdString& delimiter);
   /*! \brief Splits the given input string using the given delimiter into separate strings.
 
