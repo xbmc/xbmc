@@ -111,6 +111,7 @@ public:
 #endif
 #ifdef TARGET_ANDROID
   std::string GetAndroidVersionString(void);
+  std::string GetAndroidDeviceName(void);
 #endif
 #if defined(TARGET_WINDOWS)
   std::string GetUAWindowsVersion();

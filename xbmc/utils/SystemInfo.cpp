@@ -846,6 +846,21 @@ std::string CSysInfo::GetAndroidVersionString(void)
   
   return versionString;
 }
+
+std::string CSysInfo::GetAndroidDeviceName(void)
+{
+  static std::string deviceName;
+  static bool inited = false;
+  if (!inited)
+  {
+    char deviceCStr[PROP_VALUE_MAX];
+    int propLen = __system_property_get("ro.product.model", deviceCStr);
+    deviceName.assign(deviceCStr, (propLen > 0 && propLen <= PROP_VALUE_MAX) ? propLen : 0);
+    inited = true;
+  }
+
+  return deviceName;
+}
 #endif // TARGET_ANDROID
 
 #if defined(TARGET_WINDOWS)
