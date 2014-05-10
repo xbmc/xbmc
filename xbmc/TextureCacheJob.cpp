@@ -145,34 +145,11 @@ CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int 
 
     image = thumbURL.GetHostName();
 
-    CStdString optionString = thumbURL.GetOptions().empty() ? "" : thumbURL.GetOptions().substr(1);
-    StringUtils::TrimRight(optionString, "/"); // In case XBMC adds a slash.
+    if (thumbURL.HasOption("flipped"))
+      additional_info = "flipped";
 
-    std::vector<CStdString> options;
-    StringUtils::SplitString(optionString, "&", options);
-    for (std::vector<CStdString>::iterator i = options.begin(); i != options.end(); i++)
-    {
-      CStdString option, value;
-      size_t pos = i->find('=');
-      if (pos != std::string::npos)
-      {
-        option = i->substr(0, pos);
-        value  = i->substr(pos + 1);
-      }
-      else
-      {
-        option = *i;
-        value = "";
-      }
-      if (option == "size" && value == "thumb")
-      {
-        width = height = g_advancedSettings.GetThumbSize();
-      }
-      else if (option == "flipped")
-      {
-        additional_info = "flipped";
-      }
-    }
+    if (thumbURL.GetOption("size") == "thumb")
+      width = height = g_advancedSettings.GetThumbSize();
   }
   return image;
 }
