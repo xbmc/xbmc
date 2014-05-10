@@ -1567,15 +1567,13 @@ void CUtil::InitRandomSeed()
 #ifdef TARGET_POSIX
 bool CUtil::RunCommandLine(const CStdString& cmdLine, bool waitExit)
 {
-  CStdStringArray args;
-
-  StringUtils::SplitString(cmdLine, ",", args);
+  vector<string> args = StringUtils::Split(cmdLine, ",");
 
   // Strip quotes and whitespace around the arguments, or exec will fail.
   // This allows the python invocation to be written more naturally with any amount of whitespace around the args.
   // But it's still limited, for example quotes inside the strings are not expanded, etc.
   // TODO: Maybe some python library routine can parse this more properly ?
-  for (CStdStringArray::iterator it = args.begin(); it != args.end(); ++it)
+  for (vector<string>::iterator it = args.begin(); it != args.end(); ++it)
   {
     size_t pos;
     pos = it->find_first_not_of(" \t\n\"'");
@@ -1596,7 +1594,7 @@ bool CUtil::RunCommandLine(const CStdString& cmdLine, bool waitExit)
 //
 // FIXME, this should be merged with the function below.
 //
-bool CUtil::Command(const CStdStringArray& arrArgs, bool waitExit)
+bool CUtil::Command(const std::vector<std::string>& arrArgs, bool waitExit)
 {
 #ifdef _DEBUG
   printf("Executing: ");
@@ -1648,8 +1646,7 @@ bool CUtil::SudoCommand(const CStdString &strCommand)
     close(0); // close stdin to avoid sudo request password
     close(1);
     close(2);
-    CStdStringArray arrArgs;
-    StringUtils::SplitString(strCommand, " ", arrArgs);
+    vector<string> arrArgs = StringUtils::Split(strCommand, " ");
     if (arrArgs.size() > 0)
     {
       char **args = (char **)alloca(sizeof(char *) * (arrArgs.size() + 3));

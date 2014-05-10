@@ -196,7 +196,7 @@ public:
   //
   // Forks to execute a shell command.
   //
-  static bool Command(const CStdStringArray& arrArgs, bool waitExit = false);
+  static bool Command(const std::vector<std::string>& arrArgs, bool waitExit = false);
 
   //
   // Forks to execute an unparsed shell command line.
