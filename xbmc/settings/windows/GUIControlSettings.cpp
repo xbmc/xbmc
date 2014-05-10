@@ -533,7 +533,7 @@ bool CGUIControlButtonSetting::OnClick()
       // prompt for the addon
       CSettingAddon *setting = (CSettingAddon *)m_pSetting;
       CStdString addonID = setting->GetValue();
-      if (!CGUIWindowAddonBrowser::SelectAddonID(setting->GetAddonType(), addonID, setting->AllowEmpty()) == 1)
+      if (CGUIWindowAddonBrowser::SelectAddonID(setting->GetAddonType(), addonID, setting->AllowEmpty()) != 1)
         return false;
 
       SetValid(setting->SetValue(addonID));
