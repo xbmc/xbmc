@@ -62,12 +62,10 @@ friend class PLT_ThreadTask;
 public:
     PLT_HttpClientSocketTask(NPT_HttpRequest* request = NULL, 
                              bool             wait_forever = false);
+    virtual ~PLT_HttpClientSocketTask();
 
     virtual NPT_Result AddRequest(NPT_HttpRequest* request);
     virtual NPT_Result SetHttpClientConfig(const NPT_HttpClient::Config& config);
-
-protected:
-    virtual ~PLT_HttpClientSocketTask();
 
 protected:
     // PLT_ThreadTask methods

@@ -62,11 +62,11 @@ class PLT_TaskManager
 public:
     /**
      Create a new Task Manager.
-     @param max_items Maximum number of concurrent tasks that the task manager
-     will allow. When the value is reached, any new task are put on hold until
+     @param max_tasks Maximum number of concurrent tasks that the task manager
+     will allow. When the value is reached, a thread calling AddTask will block until
      a task has finished.
      */
-	PLT_TaskManager(NPT_Cardinal max_items = 0);
+	PLT_TaskManager(NPT_Cardinal max_tasks = 0);
 	virtual ~PLT_TaskManager();
 
     /**
@@ -79,11 +79,21 @@ public:
     virtual NPT_Result StartTask(PLT_ThreadTask*   task, 
                                  NPT_TimeInterval* delay = NULL,
                                  bool              auto_destroy = true);
-
+    
     /**
      Stop all tasks associated with this task manager.
      */
-    NPT_Result StopAllTasks();
+    NPT_Result Abort();
+    
+    /**
+     Reset task manager after an Abort so new tasks can be queued.
+     */
+    NPT_Result Reset();
+
+    /**
+     Returns the max number of concurrent tasks allowed. 0 for no limit.
+     */
+    NPT_Cardinal GetMaxTasks() { return m_MaxTasks; }
 
 private:
     friend class PLT_ThreadTask;
@@ -101,5 +111,7 @@ private:
     NPT_Cardinal               m_RunningTasks;
     bool                       m_Stopping;
 };
+
+typedef NPT_Reference<PLT_TaskManager> PLT_TaskManagerReference;
 
 #endif /* _PLT_TASKMANAGER_H_ */

@@ -103,4 +103,15 @@ Under Source/Extras/Managed
 
 * Android Java/JNI
 ------------------
-TBD
+To build the JNI shared library, you will need to have installed the Android NDK and set up the proper environment variables such as ANDROID_NDK_ROOT. 
+> cd <PlatinumKit>/Platinum
+> scons target=arm-android-linux build_config=Release
+
+> cd <PlatinumKit>/Platinum/Source/Platform/Android/module/platinum
+> ndk-build NDK_DEBUG=0
+
+> import eclipse Android .project located @ <PlatinumKit>/Platinum/Source/Platform/Android/modules/platinum/
+This will create the jar file @ <PlatinumKit>/Platinum/Source/Platform/Android/modules/platinum/bin/platinum.jar
+
+> To Test the Platinum jni layer, import into eclipse both Android projects located @ <PlatinumKit>/Platinum/Source/Platform/Android/samples/sample-upnp & <PlatinumKit>/Platinum/Source/Platform/Android/modules/platinum.
+

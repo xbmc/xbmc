@@ -59,7 +59,7 @@ public:
     PLT_HttpServer(NPT_IpAddress address = NPT_IpAddress::Any,
                    NPT_IpPort    port = 0,
                    bool          allow_random_port_on_bind_failure = false,
-                   NPT_Cardinal  max_clients = 0,
+                   NPT_Cardinal  max_clients = 50,
                    bool          reuse_address = false);
     virtual ~PLT_HttpServer();
     
@@ -85,12 +85,16 @@ public:
     virtual unsigned int GetPort() { return m_Port; }
 
 private:
-    PLT_TaskManager*    m_TaskManager;
-    NPT_IpAddress       m_Address;
-    NPT_IpPort          m_Port;
-    bool                m_AllowRandomPortOnBindFailure;
-    bool                m_ReuseAddress;
-    PLT_HttpListenTask* m_HttpListenTask;
+    PLT_TaskManagerReference        m_TaskManager;
+    NPT_Reference<NPT_HttpServer>   m_Server;
+    NPT_IpAddress                   m_Address;
+    NPT_IpPort                      m_Port;
+    bool                            m_AllowRandomPortOnBindFailure;
+    bool                            m_ReuseAddress;
+    bool                            m_Running;
+    bool                            m_Aborted;
 };
+
+typedef NPT_Reference<PLT_HttpServer> PLT_HttpServerReference;
 
 #endif /* _PLT_HTTP_SERVER_H_ */

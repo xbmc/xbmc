@@ -45,6 +45,7 @@
 #include "NptVersion.h"
 #include "NptTime.h"
 #include "NptThreads.h"
+#include "NptAutomaticCleaner.h"
 
 /*----------------------------------------------------------------------
 |   constants
@@ -407,46 +408,7 @@ public:
         virtual bool                       SupportsPersistence() { return false;                    }
         virtual bool                       IsRecycled()          { return false;                    }
         virtual NPT_Result                 Recycle()             { delete this; return NPT_SUCCESS; }
-        virtual NPT_Result                 Abort()               { return NPT_SUCCESS; }
-    };
-
-    class ConnectionCanceller
-    {
-    public:
-        typedef NPT_List<Connection*> ConnectionList;
-        
-        // singleton management
-        class Cleaner {
-            static Cleaner AutomaticCleaner;
-            ~Cleaner() {
-                if (Instance) {
-                    delete Instance;
-                    Instance = NULL;
-                }
-            }
-        };
-        static ConnectionCanceller* GetInstance();
-        static NPT_Result Untrack(Connection* connection);
-        
-        // destructor
-        ~ConnectionCanceller() {}
-        
-        // methods
-        NPT_Result Track(NPT_HttpClient* client, Connection* connection);
-        NPT_Result UntrackConnection(Connection* connection);
-        NPT_Result AbortConnections(NPT_HttpClient* client);
-        
-    private:
-        // class members
-        static ConnectionCanceller* Instance;
-        
-        // constructor
-        ConnectionCanceller() {}
-        
-        // members
-        NPT_Mutex  m_Lock;
-        NPT_Map<NPT_HttpClient*, ConnectionList> m_Connections;
-        NPT_Map<Connection*, NPT_HttpClient*> m_Clients;
+        virtual NPT_Result                 Abort()               { return NPT_ERROR_NOT_IMPLEMENTED; }
     };
     
     class Connector {
@@ -456,11 +418,12 @@ public:
         virtual NPT_Result Connect(const NPT_HttpUrl&          url,
                                    NPT_HttpClient&             client,
                                    const NPT_HttpProxyAddress* proxy,
-                                   bool                        reuse, // wether we can reuse a connection or not
+                                   bool                        reuse, // whether we can reuse a connection or not
                                    Connection*&                connection) = 0;
-        virtual NPT_Result Abort() { return NPT_SUCCESS; }
         
     protected:
+        NPT_Result TrackConnection(NPT_HttpClient& client,
+                                   Connection*     connection) { return client.TrackConnection(connection); }
         Connector() {} // don't instantiate directly
     };
 
@@ -508,6 +471,7 @@ public:
     
 protected:
     // methods
+    NPT_Result TrackConnection(Connection* connection);
     NPT_Result SendRequestOnce(NPT_HttpRequest&        request,
                                NPT_HttpResponse*&      response,
                                NPT_HttpRequestContext* context = NULL);
@@ -518,7 +482,6 @@ protected:
     bool                   m_ProxySelectorIsOwned;
     Connector*             m_Connector;
     bool                   m_ConnectorIsOwned;
-    
     NPT_Mutex              m_AbortLock;
     bool                   m_Aborted;
 };
@@ -526,19 +489,11 @@ protected:
 /*----------------------------------------------------------------------
 |   NPT_HttpConnectionManager
 +---------------------------------------------------------------------*/
-class NPT_HttpConnectionManager : public NPT_Thread
+class NPT_HttpConnectionManager : public NPT_Thread,
+                                  public NPT_AutomaticCleaner::Singleton
 {
 public:
     // singleton management
-    class Cleaner {
-        static Cleaner AutomaticCleaner;
-        ~Cleaner() {
-            if (Instance) {
-                delete Instance;
-                Instance = NULL;
-            }
-        }
-    };
     static NPT_HttpConnectionManager* GetInstance();
     
     class Connection : public NPT_HttpClient::Connection 
@@ -548,7 +503,7 @@ public:
                    NPT_SocketReference&       socket,
                    NPT_InputStreamReference   input_stream,
                    NPT_OutputStreamReference  output_stream);
-        virtual ~Connection() { NPT_HttpClient::ConnectionCanceller::Untrack(this); }
+        virtual ~Connection();
                    
         // NPT_HttpClient::Connection methods
         virtual NPT_InputStreamReference&  GetInputStream()      { return m_InputStream;           }
@@ -574,8 +529,15 @@ public:
     // methods
     Connection* FindConnection(NPT_SocketAddress& address);
     NPT_Result  Recycle(Connection* connection);
+    NPT_Result  Track(NPT_HttpClient* client, NPT_HttpClient::Connection* connection);
+    NPT_Result  AbortConnections(NPT_HttpClient* client);
+    
+    // class methods
+    static NPT_Result  Untrack(NPT_HttpClient::Connection* connection);
     
 private:
+    typedef NPT_List<NPT_HttpClient::Connection*> ConnectionList;
+    
     // class members
     static NPT_HttpConnectionManager* Instance;
     
@@ -586,14 +548,16 @@ private:
     void Run();
     
     // methods
-    NPT_Result Cleanup();
+    NPT_Result      UntrackConnection(NPT_HttpClient::Connection* connection);
+    NPT_Result      Cleanup();
 
     // members
     NPT_Mutex             m_Lock;
     NPT_Cardinal          m_MaxConnections;
     NPT_Cardinal          m_MaxConnectionAge;
-    NPT_List<Connection*> m_Connections;
     NPT_SharedVariable    m_Aborted;
+    NPT_List<Connection*> m_Connections;
+    NPT_Map<NPT_HttpClient*, ConnectionList> m_ClientConnections;
 };
 
 /*----------------------------------------------------------------------

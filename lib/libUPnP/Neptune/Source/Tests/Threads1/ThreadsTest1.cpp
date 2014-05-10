@@ -18,7 +18,7 @@
 
 #define CHECK(x) {                                  \
     if (!(x)) {                                     \
-        printf("TEST FAILED line %d\n", __LINE__);  \
+        NPT_Console::OutputF("TEST FAILED line %d\n", __LINE__);  \
         NPT_ASSERT(0);                              \
     }                                               \
 }
@@ -29,7 +29,9 @@
 class Thread1 : public NPT_Thread
 {
 public:
-    virtual ~Thread1() { NPT_Debug("~Thread1\n"); }
+    virtual ~Thread1() { 
+        NPT_Debug("~Thread1\n"); 
+    }
     void Run() {
         NPT_Debug("Thread1::Run - start\n");
 
@@ -110,7 +112,9 @@ public:
 class Thread4 : public NPT_Runnable
 {
 public:
-    virtual ~Thread4() { NPT_Debug("~Thread4\n"); }
+    virtual ~Thread4() { 
+        NPT_Debug("~Thread4\n"); 
+    }
     void Run() {
         NPT_Debug("Thread4::Run - start\n");
 
@@ -200,7 +204,7 @@ Test1()
     NPT_Debug("+++ waiting for non-detached thread +++\n");
     NPT_Result result = thread1->Wait();
     CHECK(NPT_SUCCEEDED(result));
-    NPT_Debug("+++ deleting for non-detached thread +++\n");
+    NPT_Debug("+++ deleting non-detached thread +++\n");
     delete thread1;
     NPT_Debug("+++ done with non-detached thread +++\n");
 
@@ -217,7 +221,7 @@ Test1()
     thread1 = new NPT_Thread(runnable); // not detached
     NPT_Debug("+++ starting non-detached thread +++\n");
     thread1->Start();
-    NPT_Debug("+++ deleting for non-detached thread +++\n");
+    NPT_Debug("+++ deleting non-detached thread +++\n");
     delete thread1;
     NPT_Debug("+++ done with non-detached thread +++\n");
 
@@ -262,7 +266,7 @@ Test2()
     NPT_Debug("deleting thread4\n");
     delete thread4;
 
-    NPT_Debug("deleting for thread1...\n");
+    NPT_Debug("deleting thread1...\n");
     delete thread1;
     NPT_Debug("...done\n");
 
@@ -488,13 +492,13 @@ TestSharedVariables()
     NPT_System::Sleep(2.0);
     shared.SetValue(2);
     
-    NPT_Result result = t1.Wait(1000);
+    NPT_Result result = t1.Wait(20000);
     CHECK(result == NPT_SUCCESS);
     CHECK(t1.m_Result == NPT_SUCCESS);
-    result = t2.Wait(1000);
+    result = t2.Wait(20000);
     CHECK(result == NPT_SUCCESS);
     CHECK(t2.m_Result == NPT_SUCCESS);
-    result = t3.Wait(1000);
+    result = t3.Wait(20000);
     CHECK(result == NPT_SUCCESS);
     CHECK(t3.m_Result == NPT_SUCCESS);
 }

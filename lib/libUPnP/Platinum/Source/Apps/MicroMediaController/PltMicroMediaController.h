@@ -46,15 +46,15 @@
 #include "NptStack.h"
 
 /*----------------------------------------------------------------------
- |   definitions
- +---------------------------------------------------------------------*/
-typedef NPT_Map<NPT_String, NPT_String>        PLT_StringMap;
-typedef NPT_Lock<PLT_StringMap>                PLT_LockStringMap;
-typedef NPT_Map<NPT_String, NPT_String>::Entry PLT_StringMapEntry;
+|   definitions
++---------------------------------------------------------------------*/
+typedef NPT_Map<NPT_String, NPT_String>              PLT_StringMap;
+typedef NPT_Lock<PLT_StringMap>                      PLT_LockStringMap;
+typedef NPT_Map<NPT_String, NPT_String>::Entry       PLT_StringMapEntry;
 
 /*----------------------------------------------------------------------
- |   PLT_MediaItemIDFinder
- +---------------------------------------------------------------------*/
+|   PLT_MediaItemIDFinder
++---------------------------------------------------------------------*/
 class PLT_MediaItemIDFinder
 {
 public:
@@ -71,8 +71,8 @@ private:
 };
 
 /*----------------------------------------------------------------------
- |   PLT_MicroMediaController
- +---------------------------------------------------------------------*/
+|   PLT_MicroMediaController
++---------------------------------------------------------------------*/
 class PLT_MicroMediaController : public PLT_SyncMediaBrowser,
                                  public PLT_MediaController,
                                  public PLT_MediaControllerDelegate
@@ -90,8 +90,14 @@ public:
     bool OnMRAdded(PLT_DeviceDataReference& device);
     void OnMRRemoved(PLT_DeviceDataReference& device);
     void OnMRStateVariablesChanged(PLT_Service* /* service */, 
-                                   NPT_List<PLT_StateVariable*>* /* vars */) {};
-
+                                   NPT_List<PLT_StateVariable*>* /* vars */);
+    
+    // PLT_HttpClientTask method
+    NPT_Result ProcessResponse(NPT_Result                    res,
+                               const NPT_HttpRequest&        request,
+                               const NPT_HttpRequestContext& context,
+                               NPT_HttpResponse*             response);
+    
 private:
     const char* ChooseIDFromTable(PLT_StringMap& table);
     void        PopDirectoryStackToRoot(void);
@@ -114,6 +120,7 @@ private:
     void    HandleCmd_help();
     void    HandleCmd_getmr();
     void    HandleCmd_setmr();
+    void    HandleCmd_download();
     void    HandleCmd_open();
     void    HandleCmd_play();
     void    HandleCmd_seek(const char* command);
@@ -122,30 +129,30 @@ private:
     void    HandleCmd_unmute();
 
 private:
-    /* The tables of known devices on the network.  These are updated via the
+    /* Tables of known devices on the network.  These are updated via the
      * OnMSAddedRemoved and OnMRAddedRemoved callbacks.  Note that you should first lock
      * before accessing them using the NPT_Map::Lock function.
      */
     NPT_Lock<PLT_DeviceMap> m_MediaServers;
     NPT_Lock<PLT_DeviceMap> m_MediaRenderers;
 
-    /* The currently selected media server as well as 
+    /* Currently selected media server as well as 
      * a lock.  If you ever want to hold both the m_CurMediaRendererLock lock and the 
      * m_CurMediaServerLock lock, make sure you grab the server lock first.
      */
     PLT_DeviceDataReference m_CurMediaServer;
     NPT_Mutex               m_CurMediaServerLock;
 
-    /* The currently selected media renderer as well as 
+    /* Currently selected media renderer as well as 
      * a lock.  If you ever want to hold both the m_CurMediaRendererLock lock and the 
      * m_CurMediaServerLock lock, make sure you grab the server lock first.
      */
     PLT_DeviceDataReference m_CurMediaRenderer;
     NPT_Mutex               m_CurMediaRendererLock;
 
-    /* the most recent results from a browse request.  The results come back in a 
+    /* Most recent results from a browse request.  The results come back in a 
      * callback instead of being returned to the calling function, so this 
-     * global variable is necessary in order to give the results back to the calling 
+     * variable is necessary in order to give the results back to the calling 
      * function.
      */
     PLT_MediaObjectListReference m_MostRecentBrowseResults;
@@ -157,10 +164,13 @@ private:
      */
     NPT_Stack<NPT_String> m_CurBrowseDirectoryStack;
 
-    /* the semaphore on which to block when waiting for a response from over
+    /* Semaphore on which to block when waiting for a response from over
      * the network 
      */
     NPT_SharedVariable m_CallbackResponseSemaphore;
+    
+    /* Task Manager managing download tasks */
+    PLT_TaskManager m_DownloadTaskManager;
 };
 
 #endif /* _MICRO_MEDIA_CONTROLLER_H_ */

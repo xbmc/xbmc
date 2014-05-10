@@ -565,9 +565,9 @@ NPT_XmlElementNode::GetNamespacePrefix(const char* uri) const
 /*----------------------------------------------------------------------
 |   NPT_XmlTextNode::NPT_XmlTextNode
 +---------------------------------------------------------------------*/
-NPT_XmlTextNode::NPT_XmlTextNode(TokenType token_type, const char* text) :
+NPT_XmlTextNode::NPT_XmlTextNode(TokenType, const char* text) :
     NPT_XmlNode(TEXT),
-    m_TokenType(token_type),
+//    m_TokenType(token_type),
     m_Text(text)
 {
 }
@@ -1750,8 +1750,8 @@ NPT_XmlParser::Parse(NPT_InputStream& stream,
         Reset();
     }
     
-    // use a  buffer on the stack
-    char buffer[256];
+    // use a buffer on the stack
+    char buffer[1024];
 
     // read a buffer and parse it until the end of the stream
     NPT_Size max_bytes_to_read = size;
@@ -1900,7 +1900,7 @@ NPT_XmlParser::OnElementAttribute(const char* name, const char* value)
         name[4] == 's' &&
         (name[5] == '\0' || name[5] == ':')) {
         // namespace definition
-        m_CurrentElement->SetNamespaceUri((name[5] == ':')?name+6:"", value);
+        m_CurrentElement->SetNamespaceUri((name[5] == ':' && name[6] != '\0')?name+6:"", value);
     } else {
         m_CurrentElement->AddAttribute(name, value);
     }
@@ -1968,7 +1968,7 @@ NPT_XmlParser::OnEndElement(const char* name)
 |   NPT_XmlParser::OnCharacterData
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_XmlParser::OnCharacterData(const char* data, unsigned long size)
+NPT_XmlParser::OnCharacterData(const char* data, NPT_Size size)
 { 
     NPT_XML_Debug_1("\nNPT_XmlParser::OnCharacterData: %s\n", data);
     

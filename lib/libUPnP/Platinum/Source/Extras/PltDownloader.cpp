@@ -37,17 +37,21 @@
 +---------------------------------------------------------------------*/
 #include "PltDownloader.h"
 #include "PltTaskManager.h"
+#include "NptLogging.h"
+
+
+NPT_SET_LOCAL_LOGGER("platinum.extra.downloader")
 
 /*----------------------------------------------------------------------
 |   PLT_Downloader::PLT_Downloader
 +---------------------------------------------------------------------*/
-PLT_Downloader::PLT_Downloader(PLT_TaskManager*           task_manager,
-                               NPT_HttpUrl&               url, 
+PLT_Downloader::PLT_Downloader(NPT_HttpUrl&               url, 
                                NPT_OutputStreamReference& output) :
+    PLT_HttpClientSocketTask(new NPT_HttpRequest(url,
+                                                 "GET",
+                                                 NPT_HTTP_PROTOCOL_1_1)),
     m_URL(url),
     m_Output(output),
-    m_TaskManager(task_manager),
-    m_Task(NULL),
     m_State(PLT_DOWNLOADER_IDLE)
 {
 }
@@ -57,41 +61,26 @@ PLT_Downloader::PLT_Downloader(PLT_TaskManager*           task_manager,
 +---------------------------------------------------------------------*/
 PLT_Downloader::~PLT_Downloader()
 {
-    Stop();
 }
 
 /*----------------------------------------------------------------------
-|   PLT_Downloader::Start
+|   PLT_Downloader::DoRun
 +---------------------------------------------------------------------*/
-NPT_Result
-PLT_Downloader::Start()
+void
+PLT_Downloader::DoRun()
 {
-    Stop();
-
-    m_Task = new PLT_HttpDownloadTask(m_URL, this);
-    NPT_Result res = m_TaskManager->StartTask(m_Task, NULL, false);
-    if (NPT_FAILED(res)) {
-        m_State = PLT_DOWNLOADER_ERROR;
-        return res;
-    }
-
     m_State = PLT_DOWNLOADER_STARTED;
-    return NPT_SUCCESS;
+    return PLT_HttpClientSocketTask::DoRun();
 }
 
 /*----------------------------------------------------------------------
-|   PLT_Downloader::Stop
+|   PLT_Downloader::DoAbort
 +---------------------------------------------------------------------*/
-NPT_Result
-PLT_Downloader::Stop()
+void
+PLT_Downloader::DoAbort()
 {
-    if (m_Task) {
-        m_Task->Kill();
-        m_Task = NULL;
-    }
-
+    PLT_HttpClientSocketTask::DoAbort();
     m_State = PLT_DOWNLOADER_IDLE;
-    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
@@ -107,6 +96,7 @@ PLT_Downloader::ProcessResponse(NPT_Result                    res,
     NPT_COMPILER_UNUSED(context);
 
     if (NPT_FAILED(res)) {
+        NPT_LOG_WARNING_2("Downloader error %d for %s", res, m_URL.ToString().GetChars());
         m_State = PLT_DOWNLOADER_ERROR;
         return res;
     }
@@ -120,6 +110,7 @@ PLT_Downloader::ProcessResponse(NPT_Result                    res,
         NPT_FAILED(entity->GetInputStream(body)) || 
         body.IsNull()) {
         m_State = PLT_DOWNLOADER_ERROR;
+        NPT_LOG_WARNING_2("No body %d for %s", res, m_URL.ToString().GetChars());
         return NPT_FAILURE;
     }
 
@@ -130,10 +121,12 @@ PLT_Downloader::ProcessResponse(NPT_Result                    res,
         entity->GetContentLength());
 
     if (NPT_FAILED(res)) {
+        NPT_LOG_WARNING_2("Downloader error %d for %s", res, m_URL.ToString().GetChars());
         m_State = PLT_DOWNLOADER_ERROR;
         return res;
     }
-
+    
+    NPT_LOG_INFO_1("Finished downloading %s", m_URL.ToString().GetChars());
     m_State = PLT_DOWNLOADER_SUCCESS;
     return NPT_SUCCESS;
 }

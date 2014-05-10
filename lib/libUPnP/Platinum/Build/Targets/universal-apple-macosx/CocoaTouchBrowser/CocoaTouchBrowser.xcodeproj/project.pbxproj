@@ -200,7 +200,7 @@
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../../../../Targets/universal-apple-iphoneos/Debug\"",
+					"\"$(SRCROOT)/../../../../Targets/universal-apple-ios/Debug\"",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -234,7 +234,7 @@
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../../../../Targets/universal-apple-iphoneos/Release\"",
+					"\"$(SRCROOT)/../../../../Targets/universal-apple-ios/Release\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = CocoaTouchBrowser_Prefix.pch;

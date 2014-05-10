@@ -263,90 +263,100 @@ PLT_ProtocolInfo::ValidateExtra()
         for (;entry;entry++) {
             if (entry->m_Key == "DLNA.ORG_PN") {
                 // pn-param only allowed as first param
-                if (state > PLT_PROTINFO_PARSER_STATE_START) 
-                    NPT_CHECK_SEVERE(NPT_ERROR_INVALID_SYNTAX);
-
-                NPT_CHECK_SEVERE(ValidateField(
+                if (state > PLT_PROTINFO_PARSER_STATE_START) {
+                    NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
+                }
+                
+                NPT_CHECK_LABEL_SEVERE(ValidateField(
                     entry->m_Value, 
-                    PLT_DLNAPNCharsToValidate));
+                    PLT_DLNAPNCharsToValidate), failure);
 
                 m_DLNA_PN = entry->m_Value;
                 state = PLT_PROTINFO_PARSER_STATE_PN;
                 continue;
             } else if (entry->m_Key == "DLNA.ORG_OP") {
                 // op-param only allowed after pn-param
-                if (state > PLT_PROTINFO_PARSER_STATE_PN) 
-                    NPT_CHECK_SEVERE(NPT_ERROR_INVALID_SYNTAX);
+                if (state > PLT_PROTINFO_PARSER_STATE_PN) {
+                    NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
+                }
 
                 // validate value
-                NPT_CHECK_SEVERE(ValidateField(
+                NPT_CHECK_LABEL_SEVERE(ValidateField(
                     entry->m_Value, 
                     PLT_DLNAFlagCharsToValidate, 
-                    2));
+                    2), failure);
 
                 m_DLNA_OP = entry->m_Value;
                 state = PLT_PROTINFO_PARSER_STATE_OP;
                 continue;
             } else if (entry->m_Key == "DLNA.ORG_PS") {
                 // ps-param only allowed after op-param
-                if (state > PLT_PROTINFO_PARSER_STATE_OP) 
-                    NPT_CHECK_SEVERE(NPT_ERROR_INVALID_SYNTAX);
+                if (state > PLT_PROTINFO_PARSER_STATE_OP) {
+                    NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
+                }
 
                 // validate value
-                NPT_CHECK_SEVERE(ValidateField(
+                NPT_CHECK_LABEL_SEVERE(ValidateField(
                     entry->m_Value, 
-                    PLT_DLNAPSCharsToValidate));
+                    PLT_DLNAPSCharsToValidate), failure);
 
                 m_DLNA_PS = entry->m_Value;
                 state = PLT_PROTINFO_PARSER_STATE_PS;
                 continue;
             } else if (entry->m_Key == "DLNA.ORG_CI") {
                 // ci-param only allowed after ps-param
-                if (state > PLT_PROTINFO_PARSER_STATE_PS) 
-                    NPT_CHECK_SEVERE(NPT_ERROR_INVALID_SYNTAX);
+                if (state > PLT_PROTINFO_PARSER_STATE_PS) {
+                    NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
+                }
 
                 // validate value
-                NPT_CHECK_SEVERE(ValidateField(
+                NPT_CHECK_LABEL_SEVERE(ValidateField(
                     entry->m_Value, 
                     PLT_DLNAFlagCharsToValidate, 
-                    1));
+                    1), failure);
 
                 m_DLNA_CI = entry->m_Value;
                 state = PLT_PROTINFO_PARSER_STATE_CI;
                 continue;
             } else if (entry->m_Key == "DLNA.ORG_FLAGS") {
                 // flags-param only allowed after ci-param
-                if (state > PLT_PROTINFO_PARSER_STATE_CI) 
-                    NPT_CHECK_SEVERE(NPT_ERROR_INVALID_SYNTAX);
+                if (state > PLT_PROTINFO_PARSER_STATE_CI) {
+                    NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
+                }
 
                 // validate value
-                NPT_CHECK_SEVERE(ValidateField(
+                NPT_CHECK_LABEL_SEVERE(ValidateField(
                     entry->m_Value, 
                     PLT_DLNAHexCharsToValidate, 
-                    32));
+                    32), failure);
 
                 m_DLNA_FLAGS = entry->m_Value;
                 state = PLT_PROTINFO_PARSER_STATE_FLAGS;
                 continue;
             } else if (entry->m_Key == "DLNA.ORG_MAXSP") {
                 // maxsp-param only allowed after flags-param
-                if (state > PLT_PROTINFO_PARSER_STATE_FLAGS) 
-                    NPT_CHECK_SEVERE(NPT_ERROR_INVALID_SYNTAX);
+                if (state > PLT_PROTINFO_PARSER_STATE_FLAGS) { 
+                    NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
+                }
 
                 // validate value
-                NPT_CHECK_SEVERE(ValidateField(
+                NPT_CHECK_LABEL_SEVERE(ValidateField(
                     entry->m_Value, 
-                    PLT_FIELD_NUM "."));
+                    PLT_FIELD_NUM "."), failure);
 
                 m_DLNA_MAXSP = entry->m_Value;
                 state = PLT_PROTINFO_PARSER_STATE_MAXSP;
                 continue;
             } else {
-                state = PLT_PROTINFO_PARSER_STATE_OTHER;
+                // don't switch state for unknown value so we don't break parsing next ones
+                // Sony TVs for example have DLNA.ORG_PN=xx;SONY.COM_PN=xx;DLNA.ORG_FLAGS=xxx
+                //state = PLT_PROTINFO_PARSER_STATE_OTHER;
 
                 // validate key first which should IANA_*<"a"-"z","A"-"Z","0"-"9">
                 int index = entry->m_Key.Find("_");
-                if (index == -1) NPT_CHECK_SEVERE(NPT_ERROR_INVALID_SYNTAX);
+                if (index == -1) {
+                    NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
+                }
 
                 // validate key
                 if (NPT_FAILED(ValidateField(
@@ -377,6 +387,10 @@ PLT_ProtocolInfo::ValidateExtra()
 
     m_Valid = true;
     return NPT_SUCCESS;
+    
+failure:
+    NPT_LOG_WARNING_1("Failure to parse Protocol Info Extras:%s", m_Extra.GetChars());
+    return NPT_FAILURE;
 }
 
 /*----------------------------------------------------------------------

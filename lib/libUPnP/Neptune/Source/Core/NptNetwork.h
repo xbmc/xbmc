@@ -95,6 +95,9 @@ public:
     // operators
     bool             operator==(const NPT_IpAddress& other) const;
     
+    // FIXME: temporary
+    NPT_String       m_HostName;
+
 private:
     // members
     unsigned char m_Address[4];

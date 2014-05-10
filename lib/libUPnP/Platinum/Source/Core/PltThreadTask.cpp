@@ -75,7 +75,13 @@ PLT_ThreadTask::Start(PLT_TaskManager*  task_manager,/* = NULL */
         NPT_CHECK_SEVERE(m_TaskManager->AddTask(this));
         return NPT_SUCCESS;
     } else {
-        return StartThread();
+        NPT_Result result = StartThread();
+        
+        // suicide now if task is to auto destroy when finish
+        if (NPT_FAILED(result) && m_AutoDestroy) {
+            delete this;
+        }
+        return result;
     }
 }
 
@@ -88,7 +94,17 @@ PLT_ThreadTask::StartThread()
     m_Started.SetValue(0);
     
     m_Thread = new NPT_Thread((NPT_Runnable&)*this, m_AutoDestroy);
-    NPT_CHECK_SEVERE(m_Thread->Start());
+    NPT_Result result = m_Thread->Start();
+    if (NPT_FAILED(result)) {
+        
+        // delete thread manually in case m_AutoDestroy was true
+        if (m_AutoDestroy) {
+            delete m_Thread;
+            m_Thread = NULL;
+        }
+        
+        NPT_CHECK_FATAL(result);
+    }
     
     return m_Started.WaitUntilEquals(1, NPT_TIMEOUT_INFINITE);
 }

@@ -93,6 +93,12 @@ public:
     virtual ~PLT_UPnP_DeviceStartIterator() {}
 
     NPT_Result operator()(PLT_DeviceHostReference& device_host) const {
+        
+        // We should always increment the boot id on restart
+        // so it is used in place of boot id during initial announcement
+        device_host->SetBootId(device_host->GenerateNextBootId());
+        device_host->SetNextBootId(0);
+        
         NPT_CHECK_SEVERE(device_host->Start(m_ListenTask));
         return NPT_SUCCESS;
     }
@@ -124,6 +130,7 @@ private:
 |   PLT_UPnP::PLT_UPnP
 +---------------------------------------------------------------------*/
 PLT_UPnP::PLT_UPnP() :
+    m_TaskManager(NULL),
     m_Started(false),
     m_SsdpListenTask(NULL),
 	m_IgnoreLocalUUIDs(true)
@@ -151,29 +158,31 @@ PLT_UPnP::Start()
 
     NPT_AutoLock lock(m_Lock);
 
-    if (m_Started == true) return NPT_ERROR_INVALID_STATE;
+    if (m_Started) NPT_CHECK_WARNING(NPT_ERROR_INVALID_STATE);
     
     NPT_List<NPT_IpAddress> ips;
     PLT_UPnPMessageHelper::GetIPAddresses(ips);
     
     /* Create multicast socket and bind on 1900. If other apps didn't
        play nicely by setting the REUSE_ADDR flag, this could fail */
-    NPT_UdpMulticastSocket* socket = new NPT_UdpMulticastSocket();
-    NPT_CHECK(socket->Bind(NPT_SocketAddress(NPT_IpAddress::Any, 1900), true));
+    NPT_Reference<NPT_UdpMulticastSocket> socket(new NPT_UdpMulticastSocket());
+    NPT_CHECK_SEVERE(socket->Bind(NPT_SocketAddress(NPT_IpAddress::Any, 1900), true));
     
     /* Join multicast group for every ip we found */
-    NPT_CHECK_SEVERE(ips.ApplyUntil(PLT_SsdpInitMulticastIterator(socket),
+    NPT_CHECK_SEVERE(ips.ApplyUntil(PLT_SsdpInitMulticastIterator(socket.AsPointer()),
                                     NPT_UntilResultNotEquals(NPT_SUCCESS)));
 
     /* create the ssdp listener */
-    m_SsdpListenTask = new PLT_SsdpListenTask(socket);
-    NPT_CHECK_SEVERE(m_TaskManager.StartTask(m_SsdpListenTask));
+    m_SsdpListenTask = new PLT_SsdpListenTask(socket.AsPointer());
+    socket.Detach();
+    NPT_Reference<PLT_TaskManager> taskManager(new PLT_TaskManager());
+    NPT_CHECK_SEVERE(taskManager->StartTask(m_SsdpListenTask));
 
     /* start devices & ctrlpoints */
-    // TODO: Starting devices and ctrlpoints could fail?
     m_CtrlPoints.Apply(PLT_UPnP_CtrlPointStartIterator(m_SsdpListenTask));
     m_Devices.Apply(PLT_UPnP_DeviceStartIterator(m_SsdpListenTask));
 
+    m_TaskManager = taskManager;
     m_Started = true;
     return NPT_SUCCESS;
 }
@@ -186,7 +195,7 @@ PLT_UPnP::Stop()
 {
     NPT_AutoLock lock(m_Lock);
 
-    if (m_Started == false) return NPT_ERROR_INVALID_STATE;
+    if (!m_Started) NPT_CHECK_WARNING(NPT_ERROR_INVALID_STATE);
 
     NPT_LOG_INFO("Stopping UPnP...");
 
@@ -195,8 +204,9 @@ PLT_UPnP::Stop()
     m_Devices.Apply(PLT_UPnP_DeviceStopIterator(m_SsdpListenTask));
 
     // stop remaining tasks
-    m_TaskManager.StopAllTasks();
+    m_TaskManager->Abort();
     m_SsdpListenTask = NULL;
+    m_TaskManager = NULL;
 
     m_Started = false;
     return NPT_SUCCESS;

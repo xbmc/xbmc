@@ -48,6 +48,8 @@ PLT_Constants::PLT_Constants()
     SetDefaultUserAgent(PLT_HTTP_DEFAULT_USER_AGENT);
     SetDefaultDeviceLease(NPT_TimeInterval(1800.));
     SetDefaultSubscribeLease(NPT_TimeInterval(1800.));
+    SetAnnounceMulticastTimeToLive(2);
+    SetSearchMulticastTimeToLive(2);
 }
 
 /*----------------------------------------------------------------------

@@ -172,13 +172,16 @@ PLT_RingBufferStream::Write(const void* buffer,
             if (m_Aborted) {
                 return NPT_ERROR_INTERRUPTED;
             }
-            
-            if (m_RingBuffer->GetSpace()) 
-                break;
 
+            // return immediately if we are told we're finished
             if (m_Eos) {
                 return NPT_ERROR_EOS;
-            } else if (!m_Blocking) {
+            }
+
+            if (m_RingBuffer->GetSpace())
+                break;
+
+            if (!m_Blocking) {
                 return NPT_ERROR_WOULD_BLOCK;
             }
         }

@@ -422,7 +422,7 @@ public:
     template <typename X> 
     NPT_Result Apply(const X& function) const
     {                          
-        for (unsigned int i=0; i<(m_BucketCountLog<<1); i++) {
+        for (int i=0; i<(1<<m_BucketCountLog); i++) {
             if (m_Buckets[i]) {
                 function(m_Buckets[i]);
             }

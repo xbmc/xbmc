@@ -66,7 +66,8 @@ typedef enum {
 	PLT_DEVICE_WMP,
     PLT_DEVICE_SONOS,
     PLT_DEVICE_MAC,
-    PLT_DEVICE_WINDOWS
+    PLT_DEVICE_WINDOWS,
+    PLT_DEVICE_VLC
 } PLT_DeviceSignature;
 
 /*----------------------------------------------------------------------

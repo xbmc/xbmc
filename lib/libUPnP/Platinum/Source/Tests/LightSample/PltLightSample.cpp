@@ -67,17 +67,22 @@ PLT_LightSampleDevice::~PLT_LightSampleDevice()
 NPT_Result
 PLT_LightSampleDevice::SetupServices()
 {
+    NPT_Result res;
     PLT_Service* service = new PLT_Service(
         this,
         "urn:schemas-upnp-org:service:SwitchPower:1", 
         "urn:upnp-org:serviceId:SwitchPower.001",
         "SwitchPower");
-    NPT_CHECK_FATAL(service->SetSCPDXML((const char*)SCPDXML));
-    NPT_CHECK_FATAL(AddService(service));
+    NPT_CHECK_LABEL_FATAL(res = service->SetSCPDXML((const char*)SCPDXML), failure);
+    NPT_CHECK_LABEL_FATAL(res = AddService(service), failure);
 
     service->SetStateVariable("Status", "True");
 
     return NPT_SUCCESS;
+    
+failure:
+    delete service;
+    return res;
 }
 
 /*----------------------------------------------------------------------

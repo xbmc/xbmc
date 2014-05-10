@@ -92,7 +92,7 @@ PLT_MediaServer::~PLT_MediaServer()
 NPT_Result
 PLT_MediaServer::SetupServices()
 {
-    PLT_Service* service;
+    NPT_Reference<PLT_Service> service;
 
     {
         service = new PLT_Service(
@@ -101,7 +101,7 @@ PLT_MediaServer::SetupServices()
             "urn:upnp-org:serviceId:ContentDirectory",
             "ContentDirectory");
         NPT_CHECK_FATAL(service->SetSCPDXML((const char*) MS_ContentDirectorywSearchSCPD));
-        NPT_CHECK_FATAL(AddService(service));
+        NPT_CHECK_FATAL(AddService(service.AsPointer()));
         
         service->SetStateVariable("ContainerUpdateIDs", "");
         service->SetStateVariableRate("ContainerUpdateIDs", NPT_TimeInterval(2.));
@@ -109,6 +109,9 @@ PLT_MediaServer::SetupServices()
         service->SetStateVariableRate("SystemUpdateID", NPT_TimeInterval(2.));
         service->SetStateVariable("SearchCapability", "@id,@refID,dc:title,upnp:class,upnp:genre,upnp:artist,upnp:author,upnp:author@role,upnp:album,dc:creator,res@size,res@duration,res@protocolInfo,res@protection,dc:publisher,dc:language,upnp:originalTrackNumber,dc:date,upnp:producer,upnp:rating,upnp:actor,upnp:director,upnp:toc,dc:description,microsoft:userRatingInStars,microsoft:userEffectiveRatingInStars,microsoft:userRating,microsoft:userEffectiveRating,microsoft:serviceProvider,microsoft:artistAlbumArtist,microsoft:artistPerformer,microsoft:artistConductor,microsoft:authorComposer,microsoft:authorOriginalLyricist,microsoft:authorWriter,upnp:userAnnotation,upnp:channelName,upnp:longDescription,upnp:programTitle");
         service->SetStateVariable("SortCapability", "dc:title,upnp:genre,upnp:album,dc:creator,res@size,res@duration,res@bitrate,dc:publisher,dc:language,upnp:originalTrackNumber,dc:date,upnp:producer,upnp:rating,upnp:actor,upnp:director,upnp:toc,dc:description,microsoft:year,microsoft:userRatingInStars,microsoft:userEffectiveRatingInStars,microsoft:userRating,microsoft:userEffectiveRating,microsoft:serviceProvider,microsoft:artistAlbumArtist,microsoft:artistPerformer,microsoft:artistConductor,microsoft:authorComposer,microsoft:authorOriginalLyricist,microsoft:authorWriter,microsoft:sourceUrl,upnp:userAnnotation,upnp:channelName,upnp:longDescription,upnp:programTitle");
+        
+        service.Detach();
+        service = NULL;
     }
 
     {
@@ -118,11 +121,14 @@ PLT_MediaServer::SetupServices()
             "urn:upnp-org:serviceId:ConnectionManager",
             "ConnectionManager");
         NPT_CHECK_FATAL(service->SetSCPDXML((const char*) MS_ConnectionManagerSCPD));
-        NPT_CHECK_FATAL(AddService(service));
+        NPT_CHECK_FATAL(AddService(service.AsPointer()));
         
         service->SetStateVariable("CurrentConnectionIDs", "0");
         service->SetStateVariable("SinkProtocolInfo", "");
         service->SetStateVariable("SourceProtocolInfo", "http-get:*:*:*");
+        
+        service.Detach();
+        service = NULL;
     }
 
     return NPT_SUCCESS;
@@ -162,9 +168,6 @@ PLT_MediaServer::OnAction(PLT_ActionReference&          action,
     }
     if (name.Compare("Search", true) == 0) {
         return OnSearch(action, context);
-    }
-    if (name.Compare("UpdateObject", true) == 0) {
-        return OnUpdate(action, context);
     }
     if (name.Compare("GetSystemUpdateID", true) == 0) {
         return OnGetSystemUpdateID(action, context);
@@ -339,8 +342,6 @@ PLT_MediaServer::ParseSort(const NPT_String& sort, NPT_List<NPT_String>& list)
     NPT_List<NPT_String>::Iterator property = list.GetFirstItem();
     while (property) {
         NPT_List<NPT_String> parsed_property = (*property).Split(":");
-        if (parsed_property.GetItemCount() != 2)
-          parsed_property = (*property).Split("@");
         if (parsed_property.GetItemCount() != 2 || 
             (!(*property).StartsWith("-") && !(*property).StartsWith("+"))) {
             NPT_LOG_WARNING_1("Invalid SortCriteria property %s", (*property).GetChars());
@@ -351,59 +352,6 @@ PLT_MediaServer::ParseSort(const NPT_String& sort, NPT_List<NPT_String>& list)
     
     return NPT_SUCCESS;
 }
-
-/*----------------------------------------------------------------------
-|   PLT_MediaServer::ParseTagList
-+---------------------------------------------------------------------*/
-NPT_Result
-PLT_MediaServer::ParseTagList(const NPT_String& updates, NPT_Map<NPT_String,NPT_String>& tags)
-{
-    // reset output params first
-    tags.Clear();
-
-    NPT_List<NPT_String> split = updates.Split(",");
-    NPT_XmlNode*        node = NULL;
-    NPT_XmlElementNode* didl_partial = NULL;
-    NPT_XmlParser       parser;
-
-    // as these are single name value pairs, separated by commas we wrap in a tag
-    // to create a valid tree
-    NPT_String xml("<TagValueList>");
-    for (NPT_List<NPT_String>::Iterator entry = split.GetFirstItem(); entry; entry++) {
-        NPT_String& element = (*entry);
-        if (element.IsEmpty())
-           xml.Append("<empty>empty</empty>");
-        else
-           xml.Append(element);
-    }
-    xml.Append("</TagValueList>");
-
-    NPT_LOG_FINE("Parsing TagList...");
-    NPT_CHECK_LABEL_SEVERE(parser.Parse(xml, node), cleanup);
-    if (!node || !node->AsElementNode()) {
-        NPT_LOG_SEVERE("Invalid node type");
-        goto cleanup;
-    }
-
-    didl_partial = node->AsElementNode();
-    if (didl_partial->GetTag().Compare("TagValueList", true)) {
-        NPT_LOG_SEVERE("Invalid node tag");
-        goto cleanup;
-    }
-
-    for (NPT_List<NPT_XmlNode*>::Iterator children = didl_partial->GetChildren().GetFirstItem(); children; children++) {
-        NPT_XmlElementNode* child = (*children)->AsElementNode();
-        if (!child) continue;
-        tags[child->GetTag()] = *child->GetText();
-    }
-
-    return NPT_SUCCESS;
-
-cleanup:
-    if (node) delete node;
-    return NPT_FAILURE;
-}
-
 
 /*----------------------------------------------------------------------
 |   PLT_MediaServer::OnBrowse
@@ -576,57 +524,6 @@ PLT_MediaServer::OnSearch(PLT_ActionReference&          action,
     }
 
     return res;
-}
-
-/*----------------------------------------------------------------------
-|   PLT_MediaServer::OnUpdate
-+---------------------------------------------------------------------*/
-NPT_Result
-PLT_MediaServer::OnUpdate(PLT_ActionReference&          action,
-                          const PLT_HttpRequestContext& context)
-{
-    if (!m_Delegate)
-        return NPT_ERROR_NOT_IMPLEMENTED;
-
-    int err;
-    const char* msg = NULL;
-
-    NPT_String object_id, current_xml, new_xml;
-    NPT_Map<NPT_String,NPT_String> curr_values;
-    NPT_Map<NPT_String,NPT_String> new_values;
-
-    NPT_CHECK_LABEL(action->GetArgumentValue("ObjectID", object_id), args);
-    NPT_CHECK_LABEL(object_id.IsEmpty(),args);
-    NPT_CHECK_LABEL(action->GetArgumentValue("CurrentTagValue", current_xml), args);
-    NPT_CHECK_LABEL(action->GetArgumentValue("NewTagValue",  new_xml), args);
-
-    if (NPT_FAILED(ParseTagList(current_xml, curr_values))) {
-        err = 702;
-        msg = "Invalid currentTagvalue";
-        goto failure;
-    }
-    if (NPT_FAILED(ParseTagList(new_xml, new_values))) {
-        err = 703;
-        msg = "Invalid newTagValue";
-        goto failure;
-    }
-
-    if (curr_values.GetEntryCount() != new_values.GetEntryCount()) {
-        err = 706;
-        msg = "Paramater mismatch";
-        goto failure;
-    }
-
-    return m_Delegate->OnUpdateObject(action, object_id, curr_values, new_values, context);
-
-args:
-    err = 402;
-    msg = "Invalid args";
-
-failure:
-    NPT_LOG_WARNING(msg);
-    action->SetError(err, msg);
-    return NPT_FAILURE;
 }
 
 /*----------------------------------------------------------------------

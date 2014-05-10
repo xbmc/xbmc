@@ -60,6 +60,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NetGet", "NetGet\NetGet.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NetResolve", "NetResolve\NetResolve.vcxproj", "{62F20819-2CD5-463E-85E5-23C0466F05C2}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SharedVariables1", "SharedVariables1\SharedVariables1.vcxproj", "{8029AE79-A145-4A5C-8F0B-297B56BA9ACD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -186,6 +188,10 @@ Global
 		{62F20819-2CD5-463E-85E5-23C0466F05C2}.Debug|Win32.Build.0 = Debug|Win32
 		{62F20819-2CD5-463E-85E5-23C0466F05C2}.Release|Win32.ActiveCfg = Release|Win32
 		{62F20819-2CD5-463E-85E5-23C0466F05C2}.Release|Win32.Build.0 = Release|Win32
+		{8029AE79-A145-4A5C-8F0B-297B56BA9ACD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8029AE79-A145-4A5C-8F0B-297B56BA9ACD}.Debug|Win32.Build.0 = Debug|Win32
+		{8029AE79-A145-4A5C-8F0B-297B56BA9ACD}.Release|Win32.ActiveCfg = Release|Win32
+		{8029AE79-A145-4A5C-8F0B-297B56BA9ACD}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

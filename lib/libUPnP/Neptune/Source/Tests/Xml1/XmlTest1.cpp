@@ -277,7 +277,8 @@ TestCanonicalizer()
         NPT_XmlCanonicalizer canonicalizer;
         NPT_MemoryStream buffer1;
         NPT_Result result = canonicalizer.Serialize(*root, buffer1);
-
+        CHECK(result == NPT_SUCCESS);
+        
         NPT_String str((const char*)buffer1.GetData(), buffer1.GetDataSize());
         NPT_Debug("%s", str.GetChars());
         CHECK(str == xml_out);

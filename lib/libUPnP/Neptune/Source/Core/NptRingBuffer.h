@@ -74,7 +74,7 @@ class NPT_RingBuffer
     }              m_Data;
     unsigned char* m_In;
     unsigned char* m_Out;
-    NPT_Size       m_Size;
+//    NPT_Size       m_Size;
     bool           m_BufferIsLocal;
     bool           m_Closed;
 };

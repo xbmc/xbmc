@@ -299,14 +299,14 @@ private:
 +---------------------------------------------------------------------*/
 /** 
  The PLT_ActionDescNameFinder class provides a mechanism to find a PLT_ActionDesc 
- given a PLT_Service and an action name.
+ given an action name.
  */
 class PLT_ActionDescNameFinder
 {
 public:
     // methods
-    PLT_ActionDescNameFinder(PLT_Service* service, const char* name) : 
-        m_Service(service), m_Name(name) {}
+    PLT_ActionDescNameFinder(const char* name) : 
+        m_Name(name) {}
     virtual ~PLT_ActionDescNameFinder() {}
 
     bool operator()(const PLT_ActionDesc* const & action_desc) const {
@@ -315,7 +315,6 @@ public:
 
 private:
     // members
-    PLT_Service* m_Service;
     NPT_String   m_Name;
 };
 

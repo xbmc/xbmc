@@ -90,7 +90,12 @@ private:
     virtual NPT_Result RespondToClient(NPT_HttpRequest&              request, 
                                        const NPT_HttpRequestContext& context,
                                        NPT_HttpResponse*&            response);
-    
+    virtual NPT_Result SendResponseHeaders(NPT_HttpResponse* response,
+                                           NPT_OutputStream& output_stream,
+                                           bool&             keep_alive);
+    virtual NPT_Result SendResponseBody(NPT_HttpResponse* response,
+                                        NPT_OutputStream& output_stream);
+
 protected:
     NPT_Socket*         m_Socket;
     bool                m_StayAliveForever;

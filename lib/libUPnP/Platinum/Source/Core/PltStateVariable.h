@@ -115,9 +115,8 @@ public:
      it is an allowed value. Once the value is validated, it is marked for eventing by
      calling the PLT_Service AddChanged function.
      @param value new state variable value. Can be a comma separated list of values.
-     @param clearonsend whether the statevariable should be cleared immediatly after sending
      */
-    NPT_Result SetValue(const char* value, const bool clearonsend = false);
+    NPT_Result SetValue(const char* value);
     
     /**
      Validate the new value of the state variable.
@@ -174,12 +173,6 @@ protected:
     bool IsReadyToPublish();
     
     /**
-     * If this statevariable should clear after sending to all subscribers, clears the value without
-     * eventing the change
-     */
-    void OnSendCompleted();
-
-    /**
      Serialize the state variable into xml.
      */
 	NPT_Result Serialize(NPT_XmlElementNode& node);
@@ -196,7 +189,6 @@ protected:
     NPT_String              m_DefaultValue;
     bool                    m_IsSendingEvents;
     bool                    m_IsSendingEventsIndirectly;
-    bool                    m_ShouldClearOnSend;
     NPT_TimeInterval        m_Rate;
     NPT_TimeStamp           m_LastEvent;
     NPT_Array<NPT_String*>  m_AllowedValues;

@@ -1,0 +1,23 @@
+### compiler flags
+env.AppendUnique(CCFLAGS = ['-w9'])
+env.AppendUnique(CFLAGS  = [])
+env.AppendUnique(CPPFLAGS = [])
+
+if env['build_config'] == 'Debug':
+    env.AppendUnique(CCFLAGS = '-g')
+else:
+    env.AppendUnique(CCFLAGS = '-O')
+
+env['ARCOM']  = 'qcc -A $TARGET $SOURCES'
+env['RANLIB'] = 'echo'
+env['CC']     = 'qcc -lang-c'
+env['CXX']    = 'qcc -lang-c++'
+env['LINK']   = 'qcc -lang-c++'
+
+env['ENV']['PATH'] = os.environ['PATH'] + ':' + env['ENV']['PATH']
+env['ENV']['QNX_HOST'] = os.environ['QNX_HOST']
+env['ENV']['QNX_TARGET'] = os.environ['QNX_TARGET']
+
+### Neptune System Files
+env['NPT_SYSTEM_SOURCES']={'System/StdC':'*.cpp', 'System/Bsd':'*.cpp', 'System/Posix':'*.cpp', 'System/Null':'NptNullSerialPort.cpp'}
+env['NPT_EXTRA_LIBS']=['m', 'socket']

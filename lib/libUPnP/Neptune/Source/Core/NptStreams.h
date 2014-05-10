@@ -286,11 +286,11 @@ public:
     // methods
     virtual NPT_Result Read(void*     buffer, 
                             NPT_Size  bytes_to_read, 
-                            NPT_Size* bytes_read = NULL) = 0;
-    virtual NPT_Result Seek(NPT_Position offset) = 0;
-    virtual NPT_Result Tell(NPT_Position& offset) = 0;
-    virtual NPT_Result GetSize(NPT_LargeSize& size) = 0;
-    virtual NPT_Result GetAvailable(NPT_LargeSize& available) = 0;
+                            NPT_Size* bytes_read = NULL);
+    virtual NPT_Result Seek(NPT_Position offset);
+    virtual NPT_Result Tell(NPT_Position& offset);
+    virtual NPT_Result GetSize(NPT_LargeSize& size);
+    virtual NPT_Result GetAvailable(NPT_LargeSize& available);
 
 private:
     NPT_InputStreamReference m_Source;

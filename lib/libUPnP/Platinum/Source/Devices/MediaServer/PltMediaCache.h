@@ -123,9 +123,9 @@ template <typename T, typename U>
 inline
 NPT_Result
 PLT_MediaCache<T,U>::Get(const char* root,
-                       const char* key, 
-                       T&          value,
-                       U*          tag /* = NULL */)
+                         const char* key,
+                         T&          value,
+                         U*          tag /* = NULL */)
 {
     NPT_AutoLock lock(m_Mutex);
 

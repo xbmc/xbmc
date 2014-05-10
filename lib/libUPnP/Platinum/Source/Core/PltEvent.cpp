@@ -46,12 +46,65 @@
 NPT_SET_LOCAL_LOGGER("platinum.core.event")
 
 /*----------------------------------------------------------------------
+|   PLT_EventNotification::PLT_EventNotification
++---------------------------------------------------------------------*/
+PLT_EventNotification*
+PLT_EventNotification::Parse(const NPT_HttpRequest&        request,
+                             const NPT_HttpRequestContext& context,
+                             NPT_HttpResponse&             response)
+{
+    NPT_COMPILER_UNUSED(context);
+
+    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINER, "PLT_CtrlPoint::ProcessHttpNotify:", request);
+
+    PLT_EventNotification *notification = new PLT_EventNotification();
+    notification->m_RequestUrl = request.GetUrl();
+    
+    const NPT_String* sid = PLT_UPnPMessageHelper::GetSID(request);
+    const NPT_String* nt  = PLT_UPnPMessageHelper::GetNT(request);
+    const NPT_String* nts = PLT_UPnPMessageHelper::GetNTS(request);
+
+    if (!sid || sid->GetLength() == 0) {
+        NPT_CHECK_LABEL_WARNING(NPT_FAILURE, bad_request);
+    }
+    notification->m_SID = *sid;
+
+    if (!nt  || nt->GetLength()  == 0 || !nts || nts->GetLength() == 0) {
+        response.SetStatus(400, "Bad request");
+        NPT_CHECK_LABEL_WARNING(NPT_FAILURE, bad_request);
+    }
+
+    if (nt->Compare("upnp:event", true) || nts->Compare("upnp:propchange", true)) {
+        NPT_CHECK_LABEL_WARNING(NPT_FAILURE, bad_request);
+    }
+
+    // if the sequence number is less than our current one, we got it out of order
+    // so we disregard it
+    PLT_UPnPMessageHelper::GetSeq(request, notification->m_EventKey);
+
+    // parse body
+    if (NPT_FAILED(PLT_HttpHelper::GetBody(request, notification->m_XmlBody))) {
+        NPT_CHECK_LABEL_WARNING(NPT_FAILURE, bad_request);
+    }
+
+    return notification;
+
+bad_request:
+    NPT_LOG_SEVERE("CtrlPoint received bad event notify request\r\n");
+    if (response.GetStatusCode() == 200) {
+        response.SetStatus(412, "Precondition Failed");
+    }
+    delete notification;
+    return NULL;
+}
+
+/*----------------------------------------------------------------------
 |   PLT_EventSubscriber::PLT_EventSubscriber
 +---------------------------------------------------------------------*/
-PLT_EventSubscriber::PLT_EventSubscriber(PLT_TaskManager* task_manager, 
-                                         PLT_Service*     service,
-                                         const char*      sid,
-                                         NPT_Timeout      timeout_secs /* = -1 */) : 
+PLT_EventSubscriber::PLT_EventSubscriber(PLT_TaskManagerReference task_manager,
+                                         PLT_Service*             service,
+                                         const char*              sid,
+                                         NPT_Timeout              timeout_secs /* = -1 */) : 
     m_TaskManager(task_manager), 
     m_Service(service), 
     m_EventKey(0),
@@ -184,8 +237,7 @@ PLT_EventSubscriber::Notify(NPT_List<PLT_StateVariable*>& vars)
 {
     // verify we have eventable variables
     bool foundVars = false;
-    NPT_XmlElementNode* propertyset = 
-        new NPT_XmlElementNode("e", "propertyset");
+    NPT_Reference<NPT_XmlElementNode> propertyset(new NPT_XmlElementNode("e", "propertyset"));
     NPT_CHECK_SEVERE(propertyset->SetNamespaceUri(
         "e", 
         "urn:schemas-upnp-org:event-1-0"));
@@ -193,12 +245,11 @@ PLT_EventSubscriber::Notify(NPT_List<PLT_StateVariable*>& vars)
     NPT_List<PLT_StateVariable*>::Iterator var = vars.GetFirstItem();
     while (var) {
         if ((*var)->IsSendingEvents()) {
-            NPT_XmlElementNode* property = 
-                new NPT_XmlElementNode("e", "property");
-            propertyset->AddChild(property);
-            PLT_XmlHelper::AddChildText(property, 
-                                        (*var)->GetName(), 
-                                        (*var)->GetValue());
+            NPT_XmlElementNode* property = new NPT_XmlElementNode("e", "property");
+            NPT_CHECK_FATAL(propertyset->AddChild(property));
+            NPT_CHECK_FATAL(PLT_XmlHelper::AddChildText(property,
+                                                        (*var)->GetName(), 
+                                                        (*var)->GetValue()));
             foundVars = true;
         }
         ++var;
@@ -206,17 +257,15 @@ PLT_EventSubscriber::Notify(NPT_List<PLT_StateVariable*>& vars)
 
     // no eventable state variables found!
     if (foundVars == false) {
-        delete propertyset;
         return NPT_FAILURE;
     }
 
     // format the body with the xml
     NPT_String xml;
     if (NPT_FAILED(PLT_XmlHelper::Serialize(*propertyset, xml))) {
-        delete propertyset;
         NPT_CHECK_FATAL(NPT_FAILURE);
     }
-    delete propertyset;
+    propertyset = NULL;
 
     // parse the callback url
     NPT_HttpUrl url(m_CallbackURLs[0]);
@@ -246,18 +295,22 @@ PLT_EventSubscriber::Notify(NPT_List<PLT_StateVariable*>& vars)
         // TODO: the subscriber task should inform subscriber if
         // a notification failed to be received so it can be removed
         // from the list of subscribers inside the device host
-        m_SubscriberTask = new PLT_HttpClientSocketTask(request, true);
+        NPT_Reference<PLT_HttpClientSocketTask> task(new PLT_HttpClientSocketTask(request, true));
         
         // short connection time out in case subscriber is not alive
         NPT_HttpClient::Config config;
         config.m_ConnectionTimeout = 2000;
-        m_SubscriberTask->SetHttpClientConfig(config);
+        task->SetHttpClientConfig(config);
         
         // add initial delay to make sure ctrlpoint receives response to subscription
         // before our first NOTIFY. Also make sure task is not auto-destroy
         // since we want to destroy it manually when the subscriber goes away.
         NPT_TimeInterval delay(0.05f);
-        NPT_CHECK_FATAL(m_TaskManager->StartTask(m_SubscriberTask, NULL /*&delay*/, false));
+        NPT_CHECK_FATAL(m_TaskManager->StartTask(task.AsPointer(), NULL /*&delay*/, false));
+        
+        // Task successfully started, keep around for future notifications
+        m_SubscriberTask = task.AsPointer();
+        task.Detach();
     } else {
         m_SubscriberTask->AddRequest(request);
     }
@@ -269,7 +322,7 @@ PLT_EventSubscriber::Notify(NPT_List<PLT_StateVariable*>& vars)
 |   PLT_EventSubscriberFinderByService::operator()
 +---------------------------------------------------------------------*/
 bool 
-PLT_EventSubscriberFinderByService::operator()(PLT_EventSubscriber* const & eventSub) const 
+PLT_EventSubscriberFinderByService::operator()(PLT_EventSubscriberReference const & eventSub) const
 {
     return (m_Service == eventSub->GetService());
 }

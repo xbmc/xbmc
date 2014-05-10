@@ -82,6 +82,7 @@ public:
 protected:
     // members
     NPT_InputStreamReference m_Source;
+    NPT_Position             m_Position;
     bool                     m_SkipNewline;
     bool                     m_Eos;
     struct {

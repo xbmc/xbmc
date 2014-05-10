@@ -93,6 +93,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\Source\Core\NptAutomaticCleaner.cpp" />
     <ClCompile Include="..\..\..\..\Source\Core\NptBase64.cpp" />
     <ClCompile Include="..\..\..\..\Source\Core\NptHash.cpp" />
     <ClCompile Include="..\..\..\..\Source\System\Bsd\NptBsdResolver.cpp" />
@@ -171,6 +172,7 @@
     <ClCompile Include="..\..\..\..\Source\Data\TLS\NptTlsDefaultTrustAnchorsExtended.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\Source\Core\NptAutomaticCleaner.h" />
     <ClInclude Include="..\..\..\..\Source\Core\NptHash.h" />
     <ClInclude Include="..\..\..\..\ThirdParty\axTLS\crypto\bigint.h" />
     <ClInclude Include="..\..\..\..\ThirdParty\axTLS\crypto\bigint_impl.h" />

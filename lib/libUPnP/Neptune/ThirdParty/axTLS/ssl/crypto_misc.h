@@ -112,8 +112,8 @@ const char * x509_display_error(int error);
 #define ASN1_BIT_STRING         0x03
 #define ASN1_OCTET_STRING       0x04
 #define ASN1_NULL               0x05
+#define ASN1_PRINTABLE_STR2     0x0C
 #define ASN1_OID                0x06
-#define ASN1_UTF8_STR           0x0C /* GBG */
 #define ASN1_UNIVERSAL_STR      0x1C /* GBG */
 #define ASN1_PRINTABLE_STR      0x13
 #define ASN1_TELETEX_STR        0x14

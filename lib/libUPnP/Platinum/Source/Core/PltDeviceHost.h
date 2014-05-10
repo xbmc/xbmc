@@ -48,12 +48,11 @@
 #include "PltTaskManager.h"
 #include "PltAction.h"
 #include "PltHttp.h"
+#include "PltHttpServer.h"
 
 /*----------------------------------------------------------------------
 |   forward declarations
 +---------------------------------------------------------------------*/
-class PLT_HttpServer;
-class PLT_HttpServerHandler;
 class PLT_SsdpDeviceAnnounceTask;
 class PLT_SsdpListenTask;
 
@@ -93,7 +92,7 @@ public:
                    bool         port_rebind = false);
     virtual ~PLT_DeviceHost();
     
-    virtual void SetBroadcast(bool broadcast) { m_Broadcast = broadcast; }
+    virtual void SetExtraBroadcast(bool broadcast) { m_ExtraBroascast = broadcast; }
      
     /**
      When a UPnP device comes up, the specifications require that a SSDP bye-bye
@@ -133,23 +132,23 @@ protected:
      @param device the device to announce
      @param request the SSDP pre formatted request
      @param socket the network socket to use to send the request
-     @param byebye boolean indicating if the announce is a SSDP bye-bye or alive.
+     @param type PLT_SsdpAnnounceType enum if the announce is a SSDP bye-bye, update or alive.
      */
-    static NPT_Result Announce(PLT_DeviceData*  device, 
-                                NPT_HttpRequest& request, 
-                                NPT_UdpSocket&   socket, 
-                                bool             byebye);
+    static NPT_Result Announce(PLT_DeviceData*      device,
+                               NPT_HttpRequest&     request,
+                               NPT_UdpSocket&       socket,
+                               PLT_SsdpAnnounceType type);
     /**
      Called during SSDP announce. The HTTP request is already configured with
      the right method and host.
      @param request the SSDP pre formatted request
      @param socket the network socket to use to send the request
-     @param byebye boolean indicating if the announce is a SSDP bye-bye or alive.
+     @param type PLT_SsdpAnnounceType enum if the announce is a SSDP bye-bye, update or alive.
      */
-    NPT_Result Announce(NPT_HttpRequest& request, 
-                        NPT_UdpSocket&   socket, 
-                        bool             byebye) {
-        return Announce(this, request, socket, byebye);
+    NPT_Result Announce(NPT_HttpRequest&     request,
+                        NPT_UdpSocket&       socket,
+                        PLT_SsdpAnnounceType type) {
+        return Announce(this, request, socket, type);
     }
 
     /**
@@ -173,7 +172,7 @@ protected:
                                              NPT_HttpResponse&        response, 
                                              NPT_UdpSocket&           socket, 
                                              const char*              st,
-                                             const NPT_SocketAddress* addr  = NULL);
+                                             const NPT_SocketAddress* addr = NULL);
     /**
      Called by PLT_SsdpDeviceSearchResponseTask when responding to a M-SEARCH
      SSDP request.
@@ -328,12 +327,13 @@ protected:
     friend class PLT_SsdpDeviceSearchResponseTask;
     friend class PLT_SsdpAnnounceInterfaceIterator;
 
-    PLT_TaskManager m_TaskManager;
-    PLT_HttpServer* m_HttpServer;
-    bool            m_Broadcast;
-    NPT_UInt16      m_Port;
-    bool            m_PortRebind;
-    bool            m_ByeByeFirst;
+    PLT_TaskManagerReference m_TaskManager;
+    PLT_HttpServerReference  m_HttpServer;
+    bool                     m_ExtraBroascast;
+    NPT_UInt16               m_Port;
+    bool                     m_PortRebind;
+    bool                     m_ByeByeFirst;
+    bool                     m_Started;
 };
 
 typedef NPT_Reference<PLT_DeviceHost> PLT_DeviceHostReference;

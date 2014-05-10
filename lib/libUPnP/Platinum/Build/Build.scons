@@ -11,9 +11,9 @@ def LoadTool(name, env, **kw):
     file, path, desc = imp.find_module(name, [config_path])
     module = imp.load_module(name, file, path, desc)
     module.generate(env, **kw)
-    
+
 def MergeListUnique(item_list, items):
-    for item in items: 
+    for item in items:
         if not item in item_list: item_list.append(item)
 
 def MergeItemUnique(item_list, item):
@@ -28,10 +28,10 @@ def GlobSources(drct, patterns, excluded_files=[]):
 
 def GetDirPath(dir):
     return '#/'+dir
-    
+
 def DeclareBuildDir(dir):
-    env.BuildDir(dir, GetDirPath(dir), duplicate=0)
-    
+    env.VariantDir(dir, GetDirPath(dir), duplicate=0)
+
 def GetIncludeDirs(modules, exclude=None):
     dirs = []
     for module in Split(modules):
@@ -60,18 +60,18 @@ class Module:
 
     def GetLibraries(self):
         return self.product+GetLibraries(self.linked_modules)
-        
+
     def GetIncludeDirs(self):
         return GetIncludeDirs(self.included_modules+self.build_include_dirs, self.name)
-    
+
 class LibraryModule(Module):
-    def __init__(self, name, 
-                 build_source_dirs     = ['.'], 
+    def __init__(self, name,
+                 build_source_dirs     = ['.'],
                  build_source_files    = {},
                  source_root           = 'Source',
-                 build_source_pattern  = ['*.c', '*.cpp'], 
-                 build_include_dirs    = [], 
-                 included_modules      = [], 
+                 build_source_pattern  = ['*.c', '*.cpp'],
+                 build_include_dirs    = [],
+                 included_modules      = [],
                  included_only_modules = [],
                  linked_modules        = [],
                  environment           = None,
@@ -80,9 +80,9 @@ class LibraryModule(Module):
                  shared                = False,
                  install               = False) :
         build_source_dirs = [source_root+'/'+drct for drct in build_source_dirs]
-        Module.__init__(self, 
-                        name, 
-                        Split(included_modules)+Split(included_only_modules)+Split(build_source_dirs), 
+        Module.__init__(self,
+                        name,
+                        Split(included_modules)+Split(included_only_modules)+Split(build_source_dirs),
                         Split(linked_modules)+Split(included_modules))
         self.build_include_dirs = build_include_dirs
         if environment is None:
@@ -90,18 +90,18 @@ class LibraryModule(Module):
         else:
             self.env = environment.Clone()
         self.env.AppendUnique(CPPDEFINES = extra_cpp_defines)
-        
+
         # store this new object in the module dictionary
         Modules[name] = self
-                
-        # for each source drct to build, create a BuildDir
+
+        # for each source drct to build, create a VariantDir
         # to say where we want the object files to be built,
         # and compute the list of source files to build
         sources = []
         for drct in Split(build_source_dirs):
             DeclareBuildDir(drct)
             sources += GlobSources(drct, build_source_pattern, excluded_files)
-            
+
         # add cherry-picked files
         for drct in build_source_files.keys():
             pattern = build_source_files[drct]
@@ -120,25 +120,25 @@ class LibraryModule(Module):
             libs = GetLibraries(Split(linked_modules))
             self.product = self.env.SharedLibrary(target=name, LIBS=libs, source=sources)
         self.env.Alias(name, self.product)
-            
+
         # copy to Targets folder
         if install is True:
             inst = env.Install(dir=env.GetBuildPath('#/Targets/'+env['target']+'/'+env['build_config']), source=self.product)
             if env['build_config'] == 'Release' and env.has_key('STRIP'):
                 env.AddPostAction(inst, env['STRIP']+' $TARGETS');
-        
+
 def Application(name, dir, deps, install = False):
     DeclareBuildDir(dir)
     libs = GetLibraries(deps)
     cpp_path = GetIncludeDirs(deps)
-    
-    prog = env.Program(name, 
+
+    prog = env.Program(name,
                        GlobSources(dir, ['*.c', '*.cpp']) + env['NPT_EXTRA_EXECUTABLE_OBJECTS'],
                        LIBS=libs, CPPPATH=cpp_path)
     #env.Alias(name, prog)
     if env.has_key('NPT_EXECUTABLE_POST_PROCESSOR'):
         env.AddPostAction(prog, env['NPT_EXECUTABLE_POST_PROCESSOR'])
-    
+
     # copy to Targets folder
     if install is True:
         inst = env.Install(dir=env.GetBuildPath('#/Targets/'+env['target']+'/'+env['build_config']), source=prog)
@@ -155,14 +155,14 @@ env['NPT_EXTRA_LIBS'] = []
 env['NPT_EXTRA_EXECUTABLE_OBJECTS'] = []
 
 if (env['build_config'] == 'Debug'):
-    env.AppendUnique(CPPDEFINES=['NPT_DEBUG', 'NPT_CONFIG_ENABLE_LOGGING'])
+    env.AppendUnique(CPPDEFINES=['NPT_DEBUG', 'NPT_CONFIG_ENABLE_LOGGING', 'PLATINUM_UPNP_SPECS_STRICT'])
 else:
-    env.AppendUnique(CPPDEFINES=['NDEBUG', 'NPT_CONFIG_ENABLE_LOGGING'])
+    env.AppendUnique(CPPDEFINES=['NDEBUG', 'NPT_CONFIG_ENABLE_LOGGING', 'PLATINUM_UPNP_SPECS_STRICT'])
 
 ### try to read in any target specific configuration
 target_config_file = env.GetBuildPath('#/Build/Targets/'+env['target']+'/Config.scons')
 if os.path.exists(target_config_file):
-    # Load the target-specific config file    
+    # Load the target-specific config file
     execfile(target_config_file)
 
 #######################################################
@@ -177,9 +177,9 @@ if os.path.exists(target_config_file):
 # The linked_modules parameter is a list of all the modules and/or directories
 # that are necessary to build this module. These modules will be added to
 # the include path of this module, but not to that of the modules that depend
-# on this module. The modules that depend on this module, however, will 
-# automatically link with the linked_modules. 
-# Note that the included_modules list is automatically added to the 
+# on this module. The modules that depend on this module, however, will
+# automatically link with the linked_modules.
+# Note that the included_modules list is automatically added to the
 # linked_modules list, so that you do not need to list in linked_modules
 # the modules that are already listed in included_modules.
 # If a module needs to export an include path to its dependents that
@@ -196,72 +196,69 @@ NPT_SOURCE_ROOT = '../Neptune'
 LibraryModule(name                  = 'Zlib',
               source_root           = NPT_SOURCE_ROOT,
               build_source_dirs     = ['ThirdParty/zlib-1.2.3'])
-              
+
 LibraryModule(name                  = 'axTLS',
               source_root           = NPT_SOURCE_ROOT,
               build_source_dirs     = ['ThirdParty/axTLS/crypto', 'ThirdParty/axTLS/ssl', 'ThirdParty/axTLS/config/Generic'])
-              
+
 extra_cpp_flags = []
 if not env.has_key('NPT_CONFIG_NO_ZIP'):
     extra_cpp_flags = ['NPT_CONFIG_ENABLE_ZIP']
-    
+
 if not env.has_key('NPT_CONFIG_NO_SSL'):
     extra_cpp_flags += ['NPT_CONFIG_ENABLE_TLS']
-    
+    tls_data_dirs  = ['Data/TLS']
+    tls_tests      = ['Tls1']
+else:
+    tls_data_dirs = []
+    tls_tests     = []
+
 LibraryModule(name                  = 'Neptune',
-              build_source_dirs     = ['Core', 'Data/TLS'],
+              build_source_dirs     = ['Core']+tls_data_dirs,
               build_source_files    = env['NPT_SYSTEM_SOURCES'],
               extra_cpp_defines     = extra_cpp_flags,
               linked_modules        = env['NPT_EXTRA_LIBS']+['Zlib']+['axTLS'],
               source_root           = NPT_SOURCE_ROOT + '/Source')
-                 
-# Platinum        
+
+# Platinum
 LibraryModule(name               = 'Platinum',
               build_source_dirs  = ['Core', 'Extras'],
               build_include_dirs = ['Source/Platinum'],
               included_modules   = ['Neptune'])
 
-# Platinum (jni)
-if env['target'] == 'arm-android-linux':
-     LibraryModule(name               = 'PlatinumJNI', 
-                   build_source_dirs  = ['Extras/JNI/C++'],
-                   linked_modules     = ['Platinum'],
-                   shared             = True,
-                   install            = True)
-
-# Platinum MediaServer         
+# Platinum MediaServer
 LibraryModule(name               = 'PltMediaServer',
               build_source_dirs  = ['MediaServer'],
               included_modules   = ['Platinum'],
               source_root        = 'Source/Devices')
 
-# Platinum MediaRenderer         
+# Platinum MediaRenderer
 LibraryModule(name               = 'PltMediaRenderer',
               build_source_dirs  = ['MediaRenderer'],
               included_modules   = ['Platinum', 'PltMediaServer'],
               source_root        = 'Source/Devices')
-                 
-# Platinum MediaConnect         
+
+# Platinum MediaConnect
 LibraryModule(name               = 'PltMediaConnect',
               build_source_dirs  = ['MediaConnect'],
               included_modules   = ['Platinum', 'PltMediaServer', 'PltMediaRenderer'],
               excluded_files	 = ['MACFromIP.cpp'],
               source_root        = 'Source/Devices')
-                                           
+
 for app in ['MicroMediaController', 'MediaCrawler', 'MediaConnect', 'FrameStreamer']:
-    Application(name    = app, 
-                dir     = 'Source/Apps/' + app, 
+    Application(name    = app,
+                dir     = 'Source/Apps/' + app,
                 deps    = ['Platinum', 'PltMediaServer', 'PltMediaRenderer', 'PltMediaConnect'],
               	install = True)
-    
+
 for test in ['FileMediaServer', 'MediaRenderer', 'LightSample', 'Http', 'Time']:
-    Application(name    = test+'Test', 
-                dir     = 'Source/Tests/' + test, 
+    Application(name    = test+'Test',
+                dir     = 'Source/Tests/' + test,
                 deps    = ['Platinum', 'PltMediaServer', 'PltMediaRenderer', 'PltMediaConnect'],
               	install = True)
-    		 
+
 for tool in ['TextToHeader']:
-    Application(name    = tool, 
-                dir     = 'Source/Tools/' + tool, 
+    Application(name    = tool,
+                dir     = 'Source/Tools/' + tool,
                 deps    = ['Platinum'],
              	install = True)

@@ -69,12 +69,19 @@ public:
     void SetDefaultUserAgent(const char* agent) { m_DefaultUserAgent = new NPT_String(agent); }
     NPT_Reference<NPT_String> GetDefaultUserAgent() { return m_DefaultUserAgent; }
     
-    
+    void SetSearchMulticastTimeToLive(NPT_UInt32 ttl) { m_SearchMulticastTimeToLive = ttl; }
+    NPT_UInt32 GetSearchMulticastTimeToLive() { return m_SearchMulticastTimeToLive; }
+
+    void SetAnnounceMulticastTimeToLive(NPT_UInt32 ttl) { m_AnnounceMulticastTimeToLive = ttl; }
+    NPT_UInt32 GetAnnounceMulticastTimeToLive() { return m_AnnounceMulticastTimeToLive; }
+
 private:
     // members
     NPT_Reference<NPT_TimeInterval> m_DefaultDeviceLease;
     NPT_Reference<NPT_TimeInterval> m_DefaultSubscribeLease;
     NPT_Reference<NPT_String>       m_DefaultUserAgent;
+    NPT_UInt32                      m_SearchMulticastTimeToLive;
+    NPT_UInt32                      m_AnnounceMulticastTimeToLive;
 };
 
 #endif /* _PLT_UPNP_CONSTANTS_H_ */

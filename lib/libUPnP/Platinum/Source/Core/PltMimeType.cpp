@@ -125,7 +125,7 @@ PLT_MimeType::GetMimeTypeFromExtension(const NPT_String&   extension,
 {
     if (signature != PLT_DEVICE_UNKNOWN) {
         // look for special case for 360
-        if (signature == PLT_DEVICE_XBOX || signature == PLT_DEVICE_WMP ) {
+        if (signature == PLT_DEVICE_XBOX /*|| signature == PLT_DEVICE_WMP*/ ) {
 			for (unsigned int i=0; i<NPT_ARRAY_SIZE(PLT_HttpFileRequestHandler_360FileTypeMap); i++) {
                 if (extension.Compare(PLT_HttpFileRequestHandler_360FileTypeMap[i].extension, true) == 0) {
                     return PLT_HttpFileRequestHandler_360FileTypeMap[i].mime_type;

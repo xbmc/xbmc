@@ -10,50 +10,45 @@ EnsureSConsVersion(0,98,1)
 
 # Platform to Target Map (specifies which default target to build on a platform)
 PLATFORM_TO_TARGET_MAP = { 
-    'linux-i386'   : 'x86-unknown-linux',
-    'linux-x86_64' : 'x86_64-unknown-linux',
-    'linux2'       : 'x86-unknown-linux',
-    'linux-arm'    : 'arm-unknown-linux',
-    'win32'        : 'x86-microsoft-win32',
-    'cygwin'       : 'x86-unknown-cygwin',
-    'darwin'       : 'universal-apple-macosx'
+    'linux-i386'  : 'x86-unknown-linux',
+    'linux-x86_64': 'x86_64-unknown-linux',
+    'linux-arm'   : 'arm-unknown-linux',
+    'linux2'      : 'x86-unknown-linux',
+    'win32'       : 'x86-microsoft-win32',
+    'cygwin'      : 'x86-unknown-cygwin',
+    'darwin'      : 'universal-apple-macosx'
 }
     
-CROSS_PLATFORMS = ['ppu-sony-ps3', 
-                   'arm-unknown-linux', 
-                   'mips-unknown-linux', 
-                   'powerpc-unknown-linux', 
-                   'arm-gp2x-linux',
-                   'mipsel-sigma-linux',
-                   'x86-unknown-mingw',
-                   'mipsel-broadcom-linux',
-                   'arm-android-linux',
-                   'sh4-st-linux']
+# list all target dirs
+scons_root = Environment().GetBuildPath('#')
+targets_dir = scons_root+'/Build/Targets'
+targets_dirs = os.listdir(targets_dir)
+TARGET_PLATFORMS = [x for x in targets_dirs if os.path.exists(targets_dir +'/'+x+'/Config.scons')]
 
 def DefaultTarget():
     platform_id = sys.platform
     if platform.system() == 'Linux':
         if (platform.machine() == 'i386' or
             platform.machine() == 'i486' or
-            platform.machine() == 'i586' or
+            platform.machine() == 'i586'or
             platform.machine() == 'i686'):
             platform_id = 'linux-i386'
         if (platform.machine() == 'x86_64'):
             platform_id = 'linux-x86_64'
-        if (platform.machine() == 'arm'):
+        if (platform.machine().startswith('arm')):
             platform_id = 'linux-arm'
-    
+
     if PLATFORM_TO_TARGET_MAP.has_key(platform_id):
         return PLATFORM_TO_TARGET_MAP[platform_id]
-    else:
-        return None
+    else:        
+    	return None
 
 #######################################################
 # Main Build
 #######################################################
 options = Variables()
 options.AddVariables(
-    EnumVariable('target', 'build target', DefaultTarget(), allowed_values=PLATFORM_TO_TARGET_MAP.values()+CROSS_PLATFORMS),
+    EnumVariable('target', 'Build Target', DefaultTarget(), allowed_values=TARGET_PLATFORMS),
     BoolVariable('stop_on_warning', 'Stop the build on warnings', False),
     ListVariable('build_config', 'build configurations', 'Debug', names=['Debug', 'Release'])
 )

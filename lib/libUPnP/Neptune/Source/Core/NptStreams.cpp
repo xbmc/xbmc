@@ -553,7 +553,7 @@ NPT_StreamToStreamCopy(NPT_InputStream&  from,
         while (buffer_bytes_to_write) {
             NPT_Size buffer_bytes_written = 0;
             result = to.Write(buffer_bytes, buffer_bytes_to_write, &buffer_bytes_written);
-            if (NPT_FAILED(result)) goto end;
+            if (NPT_FAILED(result) && result != NPT_ERROR_WOULD_BLOCK) goto end;
             NPT_ASSERT(buffer_bytes_written <= buffer_bytes_to_write);
             buffer_bytes_to_write -= buffer_bytes_written;
             if (bytes_written) *bytes_written += buffer_bytes_written;

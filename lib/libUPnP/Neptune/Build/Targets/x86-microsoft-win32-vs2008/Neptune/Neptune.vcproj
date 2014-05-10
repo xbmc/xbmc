@@ -43,8 +43,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\System\Win32;&quot;..\..\..\..\ThirdParty\zlib-1.2.3&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING"
+				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\System\Win32;&quot;..\..\..\..\ThirdParty\zlib-1.2.3&quot;;..\..\..\..\ThirdParty\axTLS\ssl;..\..\..\..\ThirdParty\axTLS\crypto;..\..\..\..\ThirdParty\axTLS\Config\Win32"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING;NPT_CONFIG_ENABLE_TLS"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
@@ -115,8 +115,8 @@
 				Optimization="3"
 				OmitFramePointers="true"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\System\Win32;&quot;..\..\..\..\ThirdParty\zlib-1.2.3&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING"
+				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\System\Win32;&quot;..\..\..\..\ThirdParty\zlib-1.2.3&quot;;..\..\..\..\ThirdParty\axTLS\ssl;..\..\..\..\ThirdParty\axTLS\crypto;..\..\..\..\ThirdParty\axTLS\Config\Win32"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING;NPT_CONFIG_ENABLE_TLS"
 				StringPooling="true"
 				ExceptionHandling="0"
 				RuntimeLibrary="0"
@@ -168,6 +168,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\..\..\..\Source\Core\NptAutomaticCleaner.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\Core\NptBase64.cpp"
 				>
 			</File>
@@ -200,15 +204,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\Core\NptDigest.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\Core\NptFile.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\NptHash.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Core\NptHash.h"
 				>
 			</File>
 			<File
@@ -354,6 +358,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\Core\NptAutomaticCleaner.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\Core\NptBase64.h"
 				>
 			</File>
@@ -390,7 +398,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\Core\NptDigest.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\Core\NptFile.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\Core\NptHash.h"
 				>
 			</File>
 			<File
@@ -523,6 +539,18 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+		</Filter>
+		<Filter
+			Name="Data"
+			>
+			<File
+				RelativePath="..\..\..\..\Source\Data\TLS\NptTlsDefaultTrustAnchorsBase.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\Data\TLS\NptTlsDefaultTrustAnchorsExtended.cpp"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

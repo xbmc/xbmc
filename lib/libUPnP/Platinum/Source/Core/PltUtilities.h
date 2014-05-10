@@ -98,6 +98,29 @@ class PLT_XmlHelper
 public:
 
     // static methods
+
+    static NPT_Result Parse(const NPT_String& xml, NPT_XmlElementNode*& tree) {
+        // reset tree
+        tree = NULL;
+
+        // parse body
+        NPT_XmlParser parser;
+        NPT_XmlNode*  node;
+        NPT_Result result = parser.Parse(xml, node);
+        if (NPT_FAILED(result)) {
+            //NPT_LOG_FINEST_1("Failed to parse %s", xml.IsEmpty()?"(empty string)":xml.GetChars());
+            NPT_CHECK(result);
+        }
+
+        tree = node->AsElementNode();
+        if (!tree) {
+            delete node;
+            return NPT_FAILURE;
+        }
+        
+        return NPT_SUCCESS;
+    }
+
     static NPT_Result GetChildText(NPT_XmlElementNode* node, 
                                    const char*         tag, 
                                    NPT_String&         value,
@@ -108,7 +131,9 @@ public:
         if (!node) return NPT_FAILURE;
 
         // special case "" means we look for the same namespace as the parent
-        if (namespc && namespc[0] == '\0') namespc = node->GetNamespace()?node->GetNamespace()->GetChars():NPT_XML_NO_NAMESPACE;
+        if (namespc && namespc[0] == '\0') {
+            namespc = node->GetNamespace()?node->GetNamespace()->GetChars():NPT_XML_NO_NAMESPACE;
+        }
 
         NPT_XmlElementNode* child = node->GetChild(tag, namespc);
         if (!child) return NPT_FAILURE;
@@ -125,7 +150,9 @@ public:
         if (!node) return NPT_FAILURE;
 
         // special case "" means we look for the same namespace as the parent
-        if (namespc && namespc[0] == '\0') namespc = node->GetNamespace()?node->GetNamespace()->GetChars():NPT_XML_NO_NAMESPACE;
+        if (namespc && namespc[0] == '\0') {
+            namespc = node->GetNamespace()?node->GetNamespace()->GetChars():NPT_XML_NO_NAMESPACE;
+        }
 
         NPT_List<NPT_XmlAttribute*>::Iterator attribute;
         attribute = node->GetAttributes().Find(PLT_XmlAttributeFinder(*node, name, namespc));
@@ -146,7 +173,9 @@ public:
         if (!node) return NPT_FAILURE;
 
         // special case "" means we look for the same namespace as the parent
-        if (namespc && namespc[0] == '\0') namespc = node->GetNamespace()?node->GetNamespace()->GetChars():NPT_XML_NO_NAMESPACE;
+        if (namespc && namespc[0] == '\0') {
+            namespc = node->GetNamespace()?node->GetNamespace()->GetChars():NPT_XML_NO_NAMESPACE;
+        }
 
         NPT_List<NPT_XmlAttribute*>::Iterator attribute;
         attribute = node->GetAttributes().Find(PLT_XmlAttributeFinder(*node, name, namespc));
@@ -178,7 +207,7 @@ public:
 
     static NPT_Result SetAttribute(NPT_XmlElementNode* node, 
                                    const char*         name,
-                                   NPT_String&         value,
+                                   const char*         value,
                                    const char*         namespc = "") {
         NPT_XmlAttribute* attribute = NULL;
         NPT_CHECK(GetAttribute(node, name, attribute, namespc));
@@ -233,7 +262,9 @@ public:
         if (!node) return NPT_FAILURE;
 
         // special case "" means we look for the same namespace as the parent
-        if (namespc && namespc[0] == '\0') namespc = node->GetNamespace()?node->GetNamespace()->GetChars():NPT_XML_NO_NAMESPACE;
+        if (namespc && namespc[0] == '\0') {
+            namespc = node->GetNamespace()?node->GetNamespace()->GetChars():NPT_XML_NO_NAMESPACE;
+        }
 
         const char* namespc_mapped = (namespc==NULL)?"":(namespc[0]=='*' && namespc[1]=='\0')?NULL:namespc;
 
@@ -257,7 +288,9 @@ public:
         if (!node) return NULL;
 
         // special case "" means we look for the same namespace as the parent
-        if (namespc && namespc[0] == '\0') namespc = node->GetNamespace()?node->GetNamespace()->GetChars():NPT_XML_NO_NAMESPACE;
+        if (namespc && namespc[0] == '\0') {
+            namespc = node->GetNamespace()?node->GetNamespace()->GetChars():NPT_XML_NO_NAMESPACE;
+        }
 
         return node->GetChild(tag, namespc);
     }
@@ -316,9 +349,14 @@ class NPT_StringFinder
 {
 public:
     // methods
-    NPT_StringFinder(const char* value, bool ignore_case = false) : 
-    m_Value(value), m_IgnoreCase(ignore_case) {}
+    explicit NPT_StringFinder(NPT_String& value, bool ignore_case = false) :
+        m_Value(value.GetChars()), m_IgnoreCase(ignore_case) {}
+ 
+    explicit NPT_StringFinder(const char* value, bool ignore_case = false) :
+        m_Value(value), m_IgnoreCase(ignore_case) {}
+    
     virtual ~NPT_StringFinder() {}
+    
     bool operator()(const NPT_String* const & value) const {
         return value->Compare(m_Value, m_IgnoreCase) ? false : true;
     }
@@ -328,7 +366,7 @@ public:
     
 private:
     // members
-    NPT_String   m_Value;
+    const char*  m_Value;
     bool         m_IgnoreCase;
 };
 
@@ -343,8 +381,7 @@ class NPT_IpAddressFinder
 {
 public:
     // methods
-    NPT_IpAddressFinder(NPT_IpAddress ip) : 
-    m_Value(ip) {}
+    NPT_IpAddressFinder(NPT_IpAddress ip) : m_Value(ip) {}
     virtual ~NPT_IpAddressFinder() {}
     
     bool operator()(const NPT_IpAddress* const & value) const {
@@ -378,35 +415,40 @@ public:
                             const char*      st) { 
         return message.GetHeaders().SetHeader("ST", st); 
     }
-    static const NPT_String* GetNT(const NPT_HttpMessage& message) { 
+    
+    static const NPT_String* GetNT(const NPT_HttpMessage& message) {
         return message.GetHeaders().GetHeaderValue("NT"); 
     }
     static NPT_Result SetNT(NPT_HttpMessage& message, 
                             const char*      nt) { 
         return message.GetHeaders().SetHeader("NT", nt); 
     }
-    static const NPT_String* GetNTS(const NPT_HttpMessage& message) { 
+    
+    static const NPT_String* GetNTS(const NPT_HttpMessage& message) {
         return message.GetHeaders().GetHeaderValue("NTS"); 
     }
     static NPT_Result SetNTS(NPT_HttpMessage& message, 
                              const char*      nts) { 
         return message.GetHeaders().SetHeader("NTS", nts); 
     }
-    static const NPT_String* GetMAN(const NPT_HttpMessage& message) { 
+    
+    static const NPT_String* GetMAN(const NPT_HttpMessage& message) {
         return message.GetHeaders().GetHeaderValue("MAN"); 
     }
     static NPT_Result SetMAN(NPT_HttpMessage& message, 
                              const char*      man) { 
         return message.GetHeaders().SetHeader("MAN", man); 
     }
-    static const NPT_String* GetLocation(const NPT_HttpMessage& message) { 
+    
+    static const NPT_String* GetLocation(const NPT_HttpMessage& message) {
         return message.GetHeaders().GetHeaderValue("Location"); 
     }
     static NPT_Result SetLocation(NPT_HttpMessage& message, 
                                   const char*      location) { 
         return message.GetHeaders().SetHeader("Location", location); 
     }
-    static const NPT_String* GetServer(const NPT_HttpMessage& message) { 
+    
+    static const NPT_String* GetServer(const NPT_HttpMessage& message) {
         return message.GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_SERVER); 
     }
     static NPT_Result SetServer(NPT_HttpMessage& message, 
@@ -417,117 +459,139 @@ public:
                                               server, 
                                               replace); 
     }
-    static const NPT_String* GetUSN(const NPT_HttpMessage& message) { 
+    
+    static const NPT_String* GetUSN(const NPT_HttpMessage& message) {
         return message.GetHeaders().GetHeaderValue("USN"); 
     }
     static NPT_Result SetUSN(NPT_HttpMessage& message, 
                              const char*      usn) { 
         return message.GetHeaders().SetHeader("USN", usn); 
     }
-    static const NPT_String* GetCallbacks(const NPT_HttpMessage& message) { 
+    
+    static const NPT_String* GetCallbacks(const NPT_HttpMessage& message) {
         return message.GetHeaders().GetHeaderValue("CALLBACK"); 
     }
-    static NPT_Result SetCallbacks(NPT_HttpMessage& message, 
-                                   const char*      callbacks) { 
+    static NPT_Result SetCallbacks(NPT_HttpMessage& message, const char* callbacks) {
         return message.GetHeaders().SetHeader("CALLBACK", callbacks); 
     }
-    static const NPT_String* GetSID(const NPT_HttpMessage& message) { 
+    
+    static const NPT_String* GetSID(const NPT_HttpMessage& message) {
         return message.GetHeaders().GetHeaderValue("SID"); 
     }
     static NPT_Result SetSID(NPT_HttpMessage& message, 
                              const char*      sid) { 
         return message.GetHeaders().SetHeader("SID", sid); 
     }
-    static NPT_Result GetLeaseTime(const NPT_HttpMessage& message, 
-                                   NPT_TimeInterval&      lease) { 
+    
+    static NPT_Result GetLeaseTime(const NPT_HttpMessage& message, NPT_TimeInterval& lease) {
         const NPT_String* cc = 
         message.GetHeaders().GetHeaderValue("Cache-Control");
         NPT_CHECK_POINTER(cc);
         return ExtractLeaseTime(*cc, lease);
     }
-    static NPT_Result SetLeaseTime(NPT_HttpMessage&        message, 
-                                   const NPT_TimeInterval& lease) { 
-        return message.GetHeaders().SetHeader(
-                                              "Cache-Control", 
+    static NPT_Result SetLeaseTime(NPT_HttpMessage& message, const NPT_TimeInterval& lease) {
+        return message.GetHeaders().SetHeader("Cache-Control",
                                               "max-age="+NPT_String::FromInteger(lease.ToSeconds())); 
     }
-    static NPT_Result GetTimeOut(const NPT_HttpMessage& message, 
-                                 NPT_Int32&             seconds) { 
+    
+    static NPT_Result GetBootId(const NPT_HttpMessage& message, NPT_UInt32& bootId) {
+        bootId = 0;
+        const NPT_String* bid = message.GetHeaders().GetHeaderValue("BOOTID.UPNP.ORG");
+        NPT_CHECK_POINTER(bid);
+        return NPT_ParseInteger32(*bid, bootId, false);
+    }
+    static NPT_Result SetBootId(NPT_HttpMessage& message, const NPT_UInt32& bootId) {
+        return message.GetHeaders().SetHeader("BOOTID.UPNP.ORG",
+                                              NPT_String::FromInteger(bootId));
+    }
+    
+    static NPT_Result GetNextBootId(const NPT_HttpMessage& message, NPT_UInt32& nextBootId) {
+        nextBootId = 0;
+        const NPT_String* nbid = message.GetHeaders().GetHeaderValue("NEXTBOOTID.UPNP.ORG");
+        NPT_CHECK_POINTER(nbid);
+        return NPT_ParseInteger32(*nbid, nextBootId, false);
+    }
+    static NPT_Result SetNextBootId(NPT_HttpMessage&  message, const NPT_UInt32& nextBootId) {
+        return message.GetHeaders().SetHeader("NEXTBOOTID.UPNP.ORG",
+                                              NPT_String::FromInteger(nextBootId));
+    }
+    
+    static NPT_Result GetConfigId(const NPT_HttpMessage& message, NPT_UInt32& configId) {
+        configId = 0;
+        const NPT_String* cid = message.GetHeaders().GetHeaderValue("CONFIGID.UPNP.ORG");
+        NPT_CHECK_POINTER(cid);
+        return NPT_ParseInteger32(*cid, configId, false);
+    }
+    static NPT_Result SetConfigId(NPT_HttpMessage&  message, const NPT_UInt32& configId) {
+        return message.GetHeaders().SetHeader("CONFIGID.UPNP.ORG", NPT_String::FromInteger(configId));
+    }
+    
+    static NPT_Result GetTimeOut(const NPT_HttpMessage& message, NPT_Int32& seconds) {
         seconds = 0;
         const NPT_String* timeout = 
         message.GetHeaders().GetHeaderValue("TIMEOUT"); 
         NPT_CHECK_POINTER(timeout);
         return ExtractTimeOut(*timeout, seconds); 
     }
-    static NPT_Result SetTimeOut(NPT_HttpMessage& message, 
-                                 const NPT_Int32  seconds) { 
+    static NPT_Result SetTimeOut(NPT_HttpMessage& message, const NPT_Int32 seconds) {
         if (seconds >= 0) {
-            return message.GetHeaders().SetHeader(
-                                                  "TIMEOUT", 
-                                                  "Second-"+NPT_String::FromInteger(seconds)); 
+            return message.GetHeaders().SetHeader("TIMEOUT", "Second-"+NPT_String::FromInteger(seconds));
         } else {
-            return message.GetHeaders().SetHeader(
-                                                  "TIMEOUT", 
-                                                  "Second-infinite"); 
+            return message.GetHeaders().SetHeader("TIMEOUT", "Second-infinite");
         }
     }
-    static NPT_Result SetDate(NPT_HttpMessage& message) { 
+    
+    static NPT_Result SetDate(NPT_HttpMessage& message) {
         NPT_TimeStamp now;
         NPT_System::GetCurrentTimeStamp(now);
         NPT_DateTime date(now);
         
         return message.GetHeaders().SetHeader("Date", date.ToString(NPT_DateTime::FORMAT_RFC_1123)); 
     }
-    static NPT_Result GetIfModifiedSince(const NPT_HttpMessage& message,
-                                         NPT_DateTime&          date) {
-        
-        const NPT_String* value = 
-        message.GetHeaders().GetHeaderValue("If-Modified-Since");
+    
+    static NPT_Result GetIfModifiedSince(const NPT_HttpMessage& message, NPT_DateTime& date) {
+        const NPT_String* value = message.GetHeaders().GetHeaderValue("If-Modified-Since");
         if (!value) return NPT_FAILURE;
         
         // Try RFC 1123, RFC 1036, then ANSI
         if (NPT_SUCCEEDED(date.FromString(*value, NPT_DateTime::FORMAT_RFC_1123))) 
             return NPT_SUCCESS;
+        
         if (NPT_SUCCEEDED(date.FromString(*value, NPT_DateTime::FORMAT_RFC_1036)))
             return NPT_SUCCESS;
+        
         return date.FromString(*value, NPT_DateTime::FORMAT_ANSI);
     }            
-    static NPT_Result SetIfModifiedSince(NPT_HttpMessage&    message,
-                                         const NPT_DateTime& date) {
-        return message.GetHeaders().SetHeader(
-                                              "If-Modified-Since",
+    static NPT_Result SetIfModifiedSince(NPT_HttpMessage& message, const NPT_DateTime& date) {
+        return message.GetHeaders().SetHeader("If-Modified-Since",
                                               date.ToString(NPT_DateTime::FORMAT_RFC_1123));
     }
-    static NPT_Result GetMX(const NPT_HttpMessage& message, 
-                            NPT_UInt32&            value) { 
+    
+    static NPT_Result GetMX(const NPT_HttpMessage& message, NPT_UInt32& value) {
         value = 0;
         const NPT_String* mx = 
         message.GetHeaders().GetHeaderValue("MX");
         NPT_CHECK_POINTER(mx);
         return NPT_ParseInteger32(*mx, value, false); // no relax to be UPnP compliant
     }
-    static NPT_Result SetMX(NPT_HttpMessage& message, 
-                            const NPT_UInt32 mx) {
-        return message.GetHeaders().SetHeader(
-                                              "MX", 
+    static NPT_Result SetMX(NPT_HttpMessage& message, const NPT_UInt32 mx) {
+        return message.GetHeaders().SetHeader("MX",
                                               NPT_String::FromInteger(mx)); 
     }
-    static NPT_Result GetSeq(const NPT_HttpMessage& message,  
-                             NPT_UInt32&      value) { 
+    
+    static NPT_Result GetSeq(const NPT_HttpMessage& message, NPT_UInt32& value) {
         value = 0;
         const NPT_String* seq = 
         message.GetHeaders().GetHeaderValue("SEQ");
         NPT_CHECK_POINTER(seq);
         return NPT_ParseInteger32(*seq, value);
     }
-    static NPT_Result SetSeq(NPT_HttpMessage& message, 
-                             const NPT_UInt32 seq) {
-        return message.GetHeaders().SetHeader(
-                                              "SEQ", 
+    static NPT_Result SetSeq(NPT_HttpMessage& message, const NPT_UInt32 seq) {
+        return message.GetHeaders().SetHeader("SEQ",
                                               NPT_String::FromInteger(seq)); 
     }
-    static const char* GenerateUUID(int         count, 
-                                    NPT_String& uuid) {   
+    
+    static const char* GenerateUUID(int count, NPT_String& uuid) {
         uuid = "";
         for (int i=0;i<(count<100?count:100);i++) {
             int random = NPT_System::GetRandomInteger();
@@ -545,7 +609,8 @@ public:
         sn += "}";
         return sn;
     }
-    static const char* GenerateGUID(NPT_String& guid) {   
+    
+    static const char* GenerateGUID(NPT_String& guid) {
         guid = "";
         for (int i=0;i<32;i++) {
             char nibble = (char)(NPT_System::GetRandomInteger() % 16);
@@ -556,19 +621,18 @@ public:
         }
         return guid;
     }
-    static NPT_Result ExtractLeaseTime(const NPT_String& cache_control, 
-                                       NPT_TimeInterval& lease) {
+    
+    static NPT_Result ExtractLeaseTime(const NPT_String& cache_control, NPT_TimeInterval& lease) {
         NPT_Int32 value;
         if (cache_control.StartsWith("max-age=", true) &&
-            NPT_SUCCEEDED(NPT_ParseInteger32(cache_control.GetChars()+8, 
-                                             value))) {
+            NPT_SUCCEEDED(NPT_ParseInteger32(cache_control.GetChars()+8, value))) {
             lease.SetSeconds(value);
             return NPT_SUCCESS;
         }
         return NPT_FAILURE;
     }
-    static NPT_Result ExtractTimeOut(const char* timeout, 
-                                     NPT_Int32&  len) {
+    
+    static NPT_Result ExtractTimeOut(const char* timeout, NPT_Int32& len) {
         NPT_String temp = timeout;
         if (temp.CompareN("Second-", 7, true)) {
             return NPT_ERROR_INVALID_FORMAT;
@@ -580,8 +644,8 @@ public:
         }
         return temp.SubString(7).ToInteger(len);
     }
-    static NPT_Result GetIPAddresses(NPT_List<NPT_IpAddress>& ips, 
-                                     bool with_localhost = false) {
+    
+    static NPT_Result GetIPAddresses(NPT_List<NPT_IpAddress>& ips, bool with_localhost = false) {
         NPT_List<NPT_NetworkInterface*> if_list;
         NPT_CHECK(GetNetworkInterfaces(if_list, with_localhost));
         
@@ -607,11 +671,11 @@ public:
     
     static NPT_Result GetNetworkInterfaces(NPT_List<NPT_NetworkInterface*>& if_list, 
                                            bool with_localhost = false) {
-        NPT_CHECK(_GetNetworkInterfaces(if_list, false));
+        NPT_CHECK(_GetNetworkInterfaces(if_list, with_localhost, false));
         
         // if no valid interfaces or if requested, add localhost interface
-        if (if_list.GetItemCount() == 0 || with_localhost) {
-            NPT_CHECK(_GetNetworkInterfaces(if_list, true));
+        if (if_list.GetItemCount() == 0) {
+            NPT_CHECK(_GetNetworkInterfaces(if_list, true, true));
         }
         return NPT_SUCCESS;
     }
@@ -652,7 +716,8 @@ public:
     
 private:
     
-    static NPT_Result _GetNetworkInterfaces(NPT_List<NPT_NetworkInterface*>& if_list, 
+    static NPT_Result _GetNetworkInterfaces(NPT_List<NPT_NetworkInterface*>& if_list,
+                                            bool include_localhost = false,
                                             bool only_localhost = false) {
         NPT_List<NPT_NetworkInterface*> _if_list;
         NPT_CHECK(NPT_NetworkInterface::GetNetworkInterfaces(_if_list));
@@ -660,23 +725,26 @@ private:
         NPT_NetworkInterface* iface;
         while (NPT_SUCCEEDED(_if_list.PopHead(iface))) {
             // only interested in non PTP & multicast capable interfaces
-            if ((iface->GetAddresses().GetItemCount() == 0)||
-                (!(iface->GetFlags() & NPT_NETWORK_INTERFACE_FLAG_MULTICAST)) ||
-                (iface->GetFlags() & NPT_NETWORK_INTERFACE_FLAG_POINT_TO_POINT)) {
+            if ((iface->GetAddresses().GetItemCount() == 0) ||
+                !(iface->GetFlags() & NPT_NETWORK_INTERFACE_FLAG_MULTICAST) ||
+                 (iface->GetFlags() & NPT_NETWORK_INTERFACE_FLAG_POINT_TO_POINT)) {
                 delete iface;
                 continue;
             }
             
             NPT_String ip = iface->GetAddresses().GetFirstItem()->GetPrimaryAddress().ToString();
             
-            if (only_localhost && (iface->GetFlags() & NPT_NETWORK_INTERFACE_FLAG_LOOPBACK)) {
+            if (iface->GetFlags() & NPT_NETWORK_INTERFACE_FLAG_LOOPBACK) {
+                if (include_localhost || only_localhost) {
+                    if_list.Add(iface);
+                    continue;
+                }
+            } else if (ip.Compare("0.0.0.0") && !only_localhost) {
                 if_list.Add(iface);
-                break;
-            } else  if (ip.Compare("0.0.0.0")) {
-                if_list.Add(iface);
-            } else {
-                delete iface;
+                continue;
             }
+            
+            delete iface;
         }
         
         // cleanup any remaining items in list if we breaked early

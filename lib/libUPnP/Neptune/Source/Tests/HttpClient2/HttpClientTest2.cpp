@@ -15,19 +15,28 @@
 
 #define LOG_FORMAT "%30s,%3d,%8d, %8d, %8d, [%30s], %s\n"
 
+static NPT_HttpClient::Connector* HttpConnector = NULL;
+static NPT_TlsContext* TlsContext = NULL;
+
 /*----------------------------------------------------------------------
 |       TestHttpGet
 +---------------------------------------------------------------------*/
 static void 
 TestHttpGet(const char* arg, bool use_http_1_1, int verbosity)
 {
+    const char* method = NPT_HTTP_METHOD_GET;
+    if (arg && arg[0] == '@') {
+        method = NPT_HTTP_METHOD_HEAD;
+        ++arg;
+    }
     NPT_HttpUrl url(arg);
-    NPT_HttpRequest request(url, NPT_HTTP_METHOD_GET);
+    NPT_HttpRequest request(url, method);
     NPT_HttpClient client;
     NPT_HttpResponse* response;
 
     if (!url.IsValid()) return;
     if (use_http_1_1) request.SetProtocol(NPT_HTTP_PROTOCOL_1_1);
+    if (HttpConnector) client.SetConnector(HttpConnector);
 
     NPT_TimeStamp before;
     NPT_System::GetCurrentTimeStamp(before);
@@ -38,15 +47,22 @@ TestHttpGet(const char* arg, bool use_http_1_1, int verbosity)
     if (NPT_FAILED(result)) {
         if (verbosity >= 1) printf(LOG_FORMAT, NPT_ResultText(result), 0, 0, 0, (int)elapsed, "", arg);
         return;
-    } 
-    NPT_DataBuffer payload;
-    result = response->GetEntity()->Load(payload);
+    }
     int loaded = -1;
-    if (NPT_SUCCEEDED(result))  {
-        loaded = (int)payload.GetDataSize();
+    if (method != NPT_HTTP_METHOD_HEAD) {
+        NPT_DataBuffer payload;
+        result = response->GetEntity()->Load(payload);
+        if (NPT_SUCCEEDED(result))  {
+            loaded = (int)payload.GetDataSize();
+        }
+    } else {
+        loaded = 0;
     }
     const NPT_String* server = response->GetHeaders().GetHeaderValue("Server");
-    if (verbosity >= 1) printf(LOG_FORMAT, "NPT_SUCCESS", response->GetStatusCode(), loaded, (int)response->GetEntity()->GetContentLength(), (int)elapsed, server?server->GetChars():"", arg);
+    if (verbosity >= 1) {
+        NPT_LargeSize entity_size = response->GetEntity()?response->GetEntity()->GetContentLength():0;
+        printf(LOG_FORMAT, "NPT_SUCCESS", response->GetStatusCode(), loaded, (int)entity_size, (int)elapsed, server?server->GetChars():"", arg);
+    }
 
     delete response;
 }
@@ -200,6 +216,9 @@ main(int argc, char** argv)
             NPT_ParseInteger(*++argv, verbosity);
         } else if (NPT_StringsEqual(*argv, "--threads")) {
             NPT_ParseInteger(*++argv, threads);
+        } else if (NPT_StringsEqual(*argv, "--no-cert-check")) {
+            TlsContext = new NPT_TlsContext(NPT_TlsContext::OPTION_VERIFY_LATER | NPT_TlsContext::OPTION_ADD_DEFAULT_TRUST_ANCHORS);
+            HttpConnector = new NPT_HttpTlsConnector(*TlsContext, NPT_HttpTlsConnector::OPTION_ACCEPT_SELF_SIGNED_CERTS | NPT_HttpTlsConnector::OPTION_ACCEPT_HOSTNAME_MISMATCH);
         } else {
             break;
         }
@@ -224,6 +243,9 @@ main(int argc, char** argv)
         cthreads[i]->Wait();
         delete cthreads[i];
     }
+
+    delete TlsContext;
+    delete HttpConnector;
     
     return 0;
 }

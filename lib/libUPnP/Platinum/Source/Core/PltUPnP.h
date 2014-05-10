@@ -130,7 +130,7 @@ private:
     NPT_Mutex                           m_Lock;
     NPT_List<PLT_DeviceHostReference>   m_Devices;
     NPT_List<PLT_CtrlPointReference>    m_CtrlPoints;
-    PLT_TaskManager                     m_TaskManager;
+    NPT_Reference<PLT_TaskManager>      m_TaskManager;
 
     // Since we can only have one socket listening on port 1900, 
     // we create it in here and we will attach every control points

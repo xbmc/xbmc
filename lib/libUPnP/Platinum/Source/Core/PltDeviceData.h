@@ -94,7 +94,7 @@ class PLT_DeviceData
 {
 public:
     PLT_DeviceData(
-        NPT_HttpUrl      description_url = NPT_HttpUrl(NULL, 0, "/"), 
+        NPT_HttpUrl      description_url = NPT_HttpUrl(NULL, 0, "/description.xml"), 
         const char*      uuid = "",
         NPT_TimeInterval lease_time = *PLT_Constants::GetInstance().GetDefaultDeviceLease(),
         const char*      device_type = "",
@@ -107,15 +107,15 @@ public:
     virtual NPT_HttpUrl NormalizeURL(const NPT_String& url);
     virtual NPT_Result  GetDescription(NPT_XmlElementNode* parent, NPT_XmlElementNode** device = NULL);
     virtual NPT_String  GetIconUrl(const char* mimetype = NULL, NPT_Int32 maxsize = 0, NPT_Int32 maxdepth = 0);
-
-    const NPT_TimeInterval& GetLeaseTime()    const { return m_LeaseTime;        }
-    const NPT_String&   GetUUID()             const { return m_UUID;             }
-    const NPT_String&   GetFriendlyName()     const { return m_FriendlyName;     }
-    const NPT_String&   GetType()             const { return m_DeviceType;       }
-    const NPT_String&   GetModelDescription() const { return m_ModelDescription; }
-    const NPT_String&   GetParentUUID()       const { return m_ParentUUID;       }
-    bool                IsRoot()              { return m_ParentUUID.IsEmpty();   }
-    const NPT_IpAddress& GetLocalIP()          const { return m_LocalIfaceIp;     }
+    
+    bool                    IsRoot()              { return m_ParentUUID.IsEmpty();   }
+    const NPT_TimeInterval& GetLeaseTime()        const { return m_LeaseTime;        }
+    const NPT_String&       GetUUID()             const { return m_UUID;             }
+    const NPT_String&       GetFriendlyName()     const { return m_FriendlyName;     }
+    const NPT_String&       GetType()             const { return m_DeviceType;       }
+    const NPT_String&       GetModelDescription() const { return m_ModelDescription; }
+    const NPT_String&       GetParentUUID()       const { return m_ParentUUID;       }
+    const NPT_IpAddress&    GetLocalIP()          const { return m_LocalIfaceIp;     }
 
     const NPT_Array<PLT_Service*>&            GetServices()        const { return m_Services; }
     const NPT_Array<PLT_DeviceDataReference>& GetEmbeddedDevices() const { return m_EmbeddedDevices; }
@@ -134,19 +134,28 @@ public:
     NPT_Result RemoveEmbeddedDevice(PLT_DeviceDataReference& device);
     NPT_Result AddService(PLT_Service* service);
 	NPT_Result RemoveService(PLT_Service* service);
+    
+    /* BOOTID UPnP 1/1 */
+    void SetBootId(NPT_UInt32 bootId);
+    void SetNextBootId(NPT_UInt32 nextBootId);
+    NPT_UInt32 GenerateNextBootId();
 
     operator const char* ();
 
 protected:
     virtual ~PLT_DeviceData();
+    
     virtual void       Cleanup();
     virtual NPT_Result OnAddExtraInfo(NPT_XmlElementNode* /*device_node*/) { return NPT_SUCCESS; }
-    NPT_Result         SetLeaseTime(NPT_TimeInterval lease_time, NPT_TimeStamp lease_time_last_update = 0.);
+    
 
 private:
-    /* called by PLT_CtrlPoint when new device is discovered */
+    /* called by PLT_CtrlPoint when an existing device location is updated */
+    NPT_Result    SetDescriptionUrl(NPT_HttpUrl& url);
+    NPT_Result    SetLeaseTime(NPT_TimeInterval lease_time, NPT_TimeStamp lease_time_last_update = 0.);
     NPT_Result    SetURLBase(NPT_HttpUrl& url_base);
     NPT_TimeStamp GetLeaseTimeLastUpdate();
+    void          UpdateConfigId();
     
     /* class methods */
     static NPT_Result SetDescription(PLT_DeviceDataReference&      root_device,
@@ -195,6 +204,11 @@ protected:
        We need the info for the control point subscription callback */
     NPT_IpAddress                      m_LocalIfaceIp; 
     NPT_String                         m_Representation;
+    
+private:
+    NPT_UInt32                         m_BootId;
+    NPT_UInt32                         m_NextBootId;
+    NPT_UInt32                         m_ConfigId;
 };
 
 /*----------------------------------------------------------------------

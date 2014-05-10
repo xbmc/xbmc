@@ -263,6 +263,15 @@ main(int /*argc*/, char** /*argv*/)
     CHECK(field2 != NULL);
     CHECK(NPT_UrlQuery::UrlDecode(field2) == "c&5");
 
+    // url query with empty values
+    NPT_UrlQuery query4("a=1&b&c=");
+    a_field = query4.GetField("a");
+    b_field = query4.GetField("b");
+    c_field = query4.GetField("c");
+    CHECK(NPT_StringsEqual(a_field, "1"));
+    CHECK(NPT_StringsEqual(b_field, ""));
+    CHECK(NPT_StringsEqual(c_field, ""));
+
     printf("--- test done\n");
     
     return 0;

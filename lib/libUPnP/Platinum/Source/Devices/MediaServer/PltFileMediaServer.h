@@ -62,7 +62,7 @@ public:
                                            const char*        host, 
                                            const char*        file_path);
     // constructor & destructor
-    PLT_FileMediaServerDelegate(const char* url_root, const char* file_root);
+    PLT_FileMediaServerDelegate(const char* url_root, const char* file_root, bool use_cache = false);
     virtual ~PLT_FileMediaServerDelegate();
     
 protected:
@@ -114,6 +114,7 @@ protected:
     NPT_String  m_UrlRoot;
     NPT_String  m_FileRoot;
     bool        m_FilterUnknownOut;
+    bool        m_UseCache;
     
     PLT_MediaCache<NPT_Reference<NPT_List<NPT_String> >, NPT_TimeStamp> m_DirCache;
 };

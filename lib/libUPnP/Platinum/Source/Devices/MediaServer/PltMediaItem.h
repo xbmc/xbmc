@@ -91,7 +91,7 @@ typedef struct {
     PLT_PersonRoles actors;
     PLT_PersonRoles authors;
     NPT_String      producer; //TODO: can be multiple
-    PLT_PersonRoles directors;
+    NPT_String      director; //TODO: can be multiple
     NPT_String      publisher; //TODO: can be multiple
     NPT_String      contributor; // should match m_Creator (dc:creator) //TODO: can be multiple
 } PLT_PeopleInfo;
@@ -130,9 +130,6 @@ typedef struct {
     NPT_UInt32 original_track_number;
     NPT_String toc;
     NPT_String user_annotation; //TODO: can be multiple
-    NPT_UInt32 last_position;
-    NPT_String last_time;
-    NPT_Int32  play_count;
 } PLT_MiscInfo;
 
 typedef struct {
@@ -184,7 +181,7 @@ class PLT_MediaObject
 protected:
     NPT_IMPLEMENT_DYNAMIC_CAST(PLT_MediaObject)
 
-    PLT_MediaObject() {}
+    PLT_MediaObject() : m_Restricted(true) {}
 
 public:
     virtual ~PLT_MediaObject() {}
@@ -196,7 +193,7 @@ public:
 
     virtual NPT_Result Reset();
     virtual NPT_Result ToDidl(const NPT_String& filter, NPT_String& didl);
-    virtual NPT_Result ToDidl(NPT_UInt64 mask, NPT_String& didl);
+    virtual NPT_Result ToDidl(NPT_UInt32 mask, NPT_String& didl);
     virtual NPT_Result FromDidl(NPT_XmlElementNode* entry);
 
 public:
@@ -248,7 +245,7 @@ public:
 
     // PLT_MediaObject methods
     NPT_Result ToDidl(const NPT_String& filter, NPT_String& didl);
-    NPT_Result ToDidl(NPT_UInt64 mask, NPT_String& didl);
+    NPT_Result ToDidl(NPT_UInt32 mask, NPT_String& didl);
     NPT_Result FromDidl(NPT_XmlElementNode* entry);
 };
 
@@ -271,7 +268,7 @@ public:
     // PLT_MediaObject methods
     NPT_Result Reset();
     NPT_Result ToDidl(const NPT_String& filter, NPT_String& didl);
-    NPT_Result ToDidl(NPT_UInt64 mask, NPT_String& didl);
+    NPT_Result ToDidl(NPT_UInt32 mask, NPT_String& didl);
     NPT_Result FromDidl(NPT_XmlElementNode* entry);
 
 public:
