@@ -46,14 +46,16 @@ bool StringValidation::IsTime(const std::string &input, void *data)
   }
   else
   {
-    size_t pos = strTime.find(":");
-    // if there's no ":", the value must be in seconds only
-    if (pos == std::string::npos)
-      return IsPositiveInteger(strTime, NULL);
+    // support [[HH:]MM:]SS
+    std::vector<std::string> bits = StringUtils::Split(input, ":");
+    if (bits.size() > 3)
+      return false;
 
-    std::string strMin = StringUtils::Left(strTime, pos);
-    std::string strSec = StringUtils::Mid(strTime, pos + 1);
-    return IsPositiveInteger(strMin, NULL) && IsPositiveInteger(strSec, NULL);
+    for (std::vector<std::string>::const_iterator i = bits.begin(); i != bits.end(); ++i)
+      if (!IsPositiveInteger(*i, NULL))
+        return false;
+
+    return true;
   }
   return false;
 }
