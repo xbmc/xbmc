@@ -123,7 +123,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       m_rootDir.AllowNonLocalSources(false);
 
       SetProperty("flattened", CSettings::Get().GetBool("myvideos.flatten"));
-      if (message.GetNumStringParams() && message.GetStringParam(0).Equals("Files") &&
+      if (message.GetNumStringParams() && StringUtils::EqualsNoCase(message.GetStringParam(0), "Files") &&
           CMediaSourceSettings::Get().GetSources("video")->empty())
       {
         message.SetStringParam("");

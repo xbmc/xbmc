@@ -485,7 +485,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       if (m_vecItems->GetPath() == "?")
         m_vecItems->SetPath("");
       CStdString dir = message.GetStringParam(0);
-      const CStdString &ret = message.GetStringParam(1);
+      const std::string &ret = message.GetStringParam(1);
       bool returning = StringUtils::EqualsNoCase(ret, "return");
       if (!dir.empty())
       {
