@@ -52,11 +52,12 @@
 #include "utils/AMLUtils.h"
 #endif
 
-/* Target identification */
+/* Platform identification */
 #if defined(TARGET_DARWIN)
 #include <Availability.h>
 #elif defined(TARGET_ANDROID)
 #include <android/api-level.h>
+#include <sys/system_properties.h>
 #elif defined(TARGET_FREEBSD)
 #include <sys/param.h>
 #elif defined(TARGET_LINUX)
@@ -820,6 +821,32 @@ CStdString CSysInfo::GetUnameVersion()
   return StringUtils::Trim(result);
 }
 #endif
+
+#ifdef TARGET_ANDROID
+std::string CSysInfo::GetAndroidVersionString(void)
+{
+  static std::string versionString;
+  if (versionString.empty())
+  {
+    char versionCStr[PROP_VALUE_MAX];
+    int propLen = __system_property_get("ro.build.version.release", versionCStr);
+    versionString.assign(versionCStr, (propLen > 0 && propLen <= PROP_VALUE_MAX) ? propLen : 0);
+
+    if (versionString.empty() || std::string("0123456789").find(versionCStr[0]) == std::string::npos)
+      versionString.assign("0.0.0"); // can't correctly detect Android version
+    else
+    {
+      size_t pointPos = versionString.find('.');
+      if (pointPos == std::string::npos)
+        versionString += ".0.0";
+      else if (versionString.find('.', pointPos + 1) == std::string::npos)
+        versionString += ".0";
+    }
+  }
+  
+  return versionString;
+}
+#endif // TARGET_ANDROID
 
 #if defined(TARGET_WINDOWS)
 std::string CSysInfo::GetUAWindowsVersion()

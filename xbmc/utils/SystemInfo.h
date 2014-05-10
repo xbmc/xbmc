@@ -109,6 +109,9 @@ public:
 #ifdef TARGET_POSIX
   CStdString GetUnameVersion();
 #endif
+#ifdef TARGET_ANDROID
+  std::string GetAndroidVersionString(void);
+#endif
 #if defined(TARGET_WINDOWS)
   std::string GetUAWindowsVersion();
 #endif
