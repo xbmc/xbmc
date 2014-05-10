@@ -49,8 +49,8 @@ public:
    \param multipleSelection allow selection of multiple addons, if set to true showNone will automaticly switch to false
    \return 1 if an addon was selected or multiple selection was specified, 2 if "Get More" was chosen, or 0 if an error occurred or if the selection process was cancelled
    */
-  static int SelectAddonID(ADDON::TYPE type, CStdStringArray &addonIDs, bool showNone = false, bool multipleSelection = true);
-  static int SelectAddonID(const std::vector<ADDON::TYPE> &types, CStdStringArray &addonIDs, bool showNone = false, bool multipleSelection = true);
+  static int SelectAddonID(ADDON::TYPE type, std::vector<std::string> &addonIDs, bool showNone = false, bool multipleSelection = true);
+  static int SelectAddonID(const std::vector<ADDON::TYPE> &types, std::vector<std::string> &addonIDs, bool showNone = false, bool multipleSelection = true);
   
 protected:
   /* \brief set label2 of an item based on the Addon.Status property

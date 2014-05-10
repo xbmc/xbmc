@@ -472,11 +472,10 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               if (multiSelect)
               {
                 // construct vector of addon IDs (IDs are comma seperated in single string)
-                CStdStringArray addonIDs;
-                StringUtils::SplitString(value, ",", addonIDs);
+                vector<string> addonIDs = StringUtils::Split(value, ",");
                 if (CGUIWindowAddonBrowser::SelectAddonID(types, addonIDs, false) == 1)
                 {
-                  StringUtils::JoinString(addonIDs, ",", value);
+                  value = StringUtils::Join(addonIDs, ",");
                   ((CGUIButtonControl*) control)->SetLabel2(GetAddonNames(value));
                 }
               }
