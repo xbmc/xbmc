@@ -59,10 +59,10 @@ void CPluginSource::SetProvides(const CStdString &content)
   vector<CStdString> provides;
   if (!content.empty())
   {
-    StringUtils::SplitString(content, " ", provides);
-    for (unsigned int i = 0; i < provides.size(); ++i)
+    vector<string> provides = StringUtils::Split(content, " ");
+    for (vector<string>::const_iterator i = provides.begin(); i != provides.end(); ++i)
     {
-      Content content = Translate(provides[i]);
+      Content content = Translate(*i);
       if (content != UNKNOWN)
         m_providedContent.insert(content);
     }

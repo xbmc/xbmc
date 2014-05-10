@@ -60,9 +60,8 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
       bool defRes = CAddonMgr::Get().GetExtValue(*i, "@default").Equals("true");
       CStdString folder = CAddonMgr::Get().GetExtValue(*i, "@folder");
       float aspect = 0;
-      CStdStringArray fracs;
       CStdString strAspect = CAddonMgr::Get().GetExtValue(*i, "@aspect");
-      StringUtils::SplitString(strAspect, ":", fracs);
+      vector<string> fracs = StringUtils::Split(strAspect, ":");
       if (fracs.size() == 2)
         aspect = (float)(atof(fracs[0].c_str())/atof(fracs[1].c_str()));
       if (width > 0 && height > 0)

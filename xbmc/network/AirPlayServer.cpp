@@ -48,6 +48,7 @@
 #endif // HAS_ZEROCONF
 
 using namespace ANNOUNCEMENT;
+using namespace std;
 
 #ifdef TARGET_WINDOWS
 #define close closesocket
@@ -614,17 +615,13 @@ CStdString calcResponse(const CStdString& username,
 //from a string field1="value1", field2="value2" it parses the value to a field
 CStdString getFieldFromString(const CStdString &str, const char* field)
 {
-  CStdString tmpStr;
-  CStdStringArray tmpAr1;
-  CStdStringArray tmpAr2;
-
-  StringUtils::SplitString(str, ",", tmpAr1);
-
-  for(unsigned int i = 0;i<tmpAr1.size();i++)
+  vector<string> tmpAr1 = StringUtils::Split(str, ",");
+  for(vector<string>::const_iterator i = tmpAr1.begin(); i != tmpAr1.end(); ++i)
   {
-    if (tmpAr1[i].find(field) != std::string::npos)
+    if (i->find(field) != std::string::npos)
     {
-      if (StringUtils::SplitString(tmpAr1[i], "=", tmpAr2) == 2)
+      vector<string> tmpAr2 = StringUtils::Split(*i, "=");
+      if (tmpAr2.size() == 2)
       {
         StringUtils::Replace(tmpAr2[1], "\"", "");//remove quotes
         return tmpAr2[1];

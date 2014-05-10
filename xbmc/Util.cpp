@@ -1914,10 +1914,9 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
   int iSize = strLookInPaths.size();
   for (int i=0; i<iSize; ++i)
   {
-    CStdStringArray directories;
-    int nTokens = StringUtils::SplitString( strLookInPaths[i], "/", directories );
-    if (nTokens == 1)
-      StringUtils::SplitString( strLookInPaths[i], "\\", directories );
+    vector<string> directories = StringUtils::Split( strLookInPaths[i], "/" );
+    if (directories.size() == 1)
+      directories = StringUtils::Split( strLookInPaths[i], "\\" );
 
     // if it's inside a cdX dir, add parent path
     if (directories.size() >= 2 && directories[directories.size()-2].size() == 3 && StringUtils::StartsWithNoCase(directories[directories.size()-2], "cd")) // SplitString returns empty token as last item, hence size-2

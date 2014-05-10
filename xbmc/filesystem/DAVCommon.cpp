@@ -31,7 +31,6 @@ using namespace XFILE;
  */
 bool CDAVCommon::ValueWithoutNamespace(const TiXmlNode *pNode, const std::string& value)
 {
-  CStdStringArray tag;
   const TiXmlElement *pElement;
 
   if (!pNode)
@@ -46,7 +45,7 @@ bool CDAVCommon::ValueWithoutNamespace(const TiXmlNode *pNode, const std::string
     return false;
   }
 
-  StringUtils::SplitString(pElement->Value(), ":", tag, 2);
+  std::vector<std::string> tag = StringUtils::Split(pElement->ValueStr(), ":", 2);
 
   if (tag.size() == 1 && tag[0] == value)
   {

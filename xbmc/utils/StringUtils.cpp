@@ -648,13 +648,12 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t *left, const wchar_t *rig
 
 int StringUtils::DateStringToYYYYMMDD(const CStdString &dateString)
 {
-  CStdStringArray days;
-  int splitCount = StringUtils::SplitString(dateString, "-", days);
-  if (splitCount == 1)
+  vector<string> days = StringUtils::Split(dateString, "-");
+  if (days.size() == 1)
     return atoi(days[0].c_str());
-  else if (splitCount == 2)
+  else if (days.size() == 2)
     return atoi(days[0].c_str())*100+atoi(days[1].c_str());
-  else if (splitCount == 3)
+  else if (days.size() == 3)
     return atoi(days[0].c_str())*10000+atoi(days[1].c_str())*100+atoi(days[2].c_str());
   else
     return -1;
@@ -671,13 +670,12 @@ long StringUtils::TimeStringToSeconds(const CStdString &timeString)
   }
   else
   {
-    CStdStringArray secs;
-    StringUtils::SplitString(strCopy, ":", secs);
+    vector<string> secs = StringUtils::Split(strCopy, ":");
     int timeInSecs = 0;
     for (unsigned int i = 0; i < 3 && i < secs.size(); i++)
     {
       timeInSecs *= 60;
-      timeInSecs += atoi(secs[i]);
+      timeInSecs += atoi(secs[i].c_str());
     }
     return timeInSecs;
   }

@@ -118,11 +118,10 @@ void CGUIMediaWindow::LoadAdditionalTags(TiXmlElement *root)
   if (element && element->FirstChild())
   { // format is <views>50,29,51,95</views>
     CStdString allViews = element->FirstChild()->Value();
-    CStdStringArray views;
-    StringUtils::SplitString(allViews, ",", views);
-    for (unsigned int i = 0; i < views.size(); i++)
+    vector<string> views = StringUtils::Split(allViews, ",");
+    for (vector<string>::const_iterator i = views.begin(); i != views.end(); ++i)
     {
-      int controlID = atol(views[i].c_str());
+      int controlID = atol(i->c_str());
       CGUIControl *control = GetControl(controlID);
       if (control && control->IsContainer())
         m_viewControl.AddView(control);

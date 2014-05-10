@@ -182,14 +182,13 @@ bool CEGLNativeTypeAmlogic::ProbeResolutions(std::vector<RESOLUTION_INFO> &resol
 {
   char valstr[256] = {0};
   aml_get_sysfs_str("/sys/class/amhdmitx/amhdmitx0/disp_cap", valstr, 255);
-  std::vector<CStdString> probe_str;
-  StringUtils::SplitString(valstr, "\n", probe_str);
+  std::vector<std::string> probe_str = StringUtils::Split(valstr, "\n");
 
   resolutions.clear();
   RESOLUTION_INFO res;
-  for (size_t i = 0; i < probe_str.size(); i++)
+  for (std::vector<std::string>::const_iterator i = probe_str.begin(); i != probe_str.end(); ++i)
   {
-    if(ModeToResolution(probe_str[i].c_str(), &res))
+    if(ModeToResolution(i->c_str(), &res))
       resolutions.push_back(res);
   }
   return resolutions.size() > 0;
