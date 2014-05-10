@@ -861,12 +861,12 @@ protected:
   public:
     Property(const CStdString &property, const CStdString &parameters);
 
-    const CStdString &param(unsigned int n = 0) const;
+    const std::string &param(unsigned int n = 0) const;
     unsigned int num_params() const;
 
     CStdString name;
   private:
-    std::vector<CStdString> params;
+    std::vector<std::string> params;
   };
 
   bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);

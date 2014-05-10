@@ -741,11 +741,11 @@ CGUIInfoManager::Property::Property(const CStdString &property, const CStdString
   CUtil::SplitParams(parameters, params);
 }
 
-const CStdString &CGUIInfoManager::Property::param(unsigned int n /* = 0 */) const
+const std::string &CGUIInfoManager::Property::param(unsigned int n /* = 0 */) const
 {
   if (n < params.size())
     return params[n];
-  return StringUtils::EmptyString;
+  return StringUtils::Empty;
 }
 
 unsigned int CGUIInfoManager::Property::num_params() const
@@ -1033,7 +1033,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition, bool 
       }
       if (prop.name == "property")
       {
-        if (prop.param().Equals("fanart_image"))
+        if (prop.param() == "fanart_image")
           return AddMultiInfo(GUIInfo(PLAYER_ITEM_ART, ConditionalStringParameter("fanart")));
         return AddListItemProp(prop.param(), MUSICPLAYER_PROPERTY_OFFSET);
       }
@@ -1089,15 +1089,15 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition, bool 
       if (prop.name == "sortdirection")
       {
         SortOrder order = SortOrderNone;
-        if (prop.param().Equals("ascending"))
+        if (StringUtils::EqualsNoCase(prop.param(), "ascending"))
           order = SortOrderAscending;
-        else if (prop.param().Equals("descending"))
+        else if (StringUtils::EqualsNoCase(prop.param(), "descending"))
           order = SortOrderDescending;
         return AddMultiInfo(GUIInfo(CONTAINER_SORT_DIRECTION, order));
       }
       else if (prop.name == "sort")
       {
-        if (prop.param().Equals("songrating"))
+        if (StringUtils::EqualsNoCase(prop.param(), "songrating"))
           return AddMultiInfo(GUIInfo(CONTAINER_SORT_METHOD, SortByRating));
       }
     }
@@ -1227,9 +1227,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition, bool 
         else
         {
           int playlistid = PLAYLIST_NONE;
-          if (prop.param().Equals("video"))
+          if (StringUtils::EqualsNoCase(prop.param(), "video"))
             playlistid = PLAYLIST_VIDEO;
-          else if (prop.param().Equals("music"))
+          else if (StringUtils::EqualsNoCase(prop.param(), "music"))
             playlistid = PLAYLIST_MUSIC;
 
           if (playlistid > PLAYLIST_NONE)
@@ -1316,7 +1316,7 @@ int CGUIInfoManager::TranslateListItem(const Property &info)
   }
   if (info.name == "property" && info.num_params() == 1)
   {
-    if (info.param().Equals("fanart_image"))
+    if (info.param() == "fanart_image")
       return AddListItemProp("fanart", LISTITEM_ART_OFFSET);
     return AddListItemProp(info.param());
   }
