@@ -149,7 +149,13 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer *pPlayer, 
 #endif
 
   // our file interface handles all these types of streams
-  return (new CDVDInputStreamFile());
+  if (file.substr(0, 13) == "plexserver://")
+  {
+    return new CDVDInputStreamFFmpeg();
+  }
+  else
+    return (new CDVDInputStreamFile());
+
 }
 
 #endif
