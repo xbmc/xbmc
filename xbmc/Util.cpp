@@ -882,10 +882,12 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
     return false;
   }
 
-  CStdStringArray dirs = URIUtils::SplitPath(strPath);
+  vector<string> dirs = URIUtils::SplitPath(strPath);
+  if (dirs.empty())
+    return false;
   CStdString dir(dirs.front());
   URIUtils::AddSlashAtEnd(dir);
-  for (CStdStringArray::iterator it = dirs.begin() + 1; it != dirs.end(); it ++)
+  for (vector<string>::const_iterator it = dirs.begin() + 1; it != dirs.end(); it ++)
   {
     dir = URIUtils::AddFileToFolder(dir, *it);
     CDirectory::Create(dir);
@@ -930,13 +932,15 @@ CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile, int LegalType)
     return strPathAndFile; // we don't support writing anywhere except HD, SMB, NFS and AFP - no need to legalize path
 
   bool trailingSlash = URIUtils::HasSlashAtEnd(strPathAndFile);
-  CStdStringArray dirs = URIUtils::SplitPath(strPathAndFile);
+  vector<string> dirs = URIUtils::SplitPath(strPathAndFile);
+  if (dirs.empty())
+    return strPathAndFile;
   // we just add first token to path and don't legalize it - possible values: 
   // "X:" (local win32), "" (local unix - empty string before '/') or
   // "protocol://domain"
   CStdString dir(dirs.front());
   URIUtils::AddSlashAtEnd(dir);
-  for (CStdStringArray::iterator it = dirs.begin() + 1; it != dirs.end(); it ++)
+  for (vector<string>::const_iterator it = dirs.begin() + 1; it != dirs.end(); it ++)
     dir = URIUtils::AddFileToFolder(dir, MakeLegalFileName(*it, LegalType));
   if (trailingSlash) URIUtils::AddSlashAtEnd(dir);
   return dir;

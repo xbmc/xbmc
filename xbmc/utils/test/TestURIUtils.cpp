@@ -120,7 +120,7 @@ TEST_F(TestURIUtils, Split)
 
 TEST_F(TestURIUtils, SplitPath)
 {
-  CStdStringArray strarray;
+  std::vector<std::string> strarray;
 
   strarray = URIUtils::SplitPath("http://www.test.com/path/to/movie.avi");
 
@@ -137,7 +137,7 @@ TEST_F(TestURIUtils, SplitPathLocal)
 #else
   const char *path = "/path/to/movie.avi";
 #endif
-  CStdStringArray strarray;
+  std::vector<std::string> strarray;
 
   strarray = URIUtils::SplitPath(path);
 

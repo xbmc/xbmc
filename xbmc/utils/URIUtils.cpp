@@ -231,7 +231,7 @@ void URIUtils::Split(const std::string& strFileNameAndPath,
   strFileName = strFileNameAndPath.substr(i+1);
 }
 
-CStdStringArray URIUtils::SplitPath(const CStdString& strPath)
+std::vector<std::string> URIUtils::SplitPath(const CStdString& strPath)
 {
   CURL url(strPath);
 
@@ -239,8 +239,7 @@ CStdStringArray URIUtils::SplitPath(const CStdString& strPath)
   CStdString sep(1, url.GetDirectorySeparator());
 
   // split the filename portion of the URL up into separate dirs
-  CStdStringArray dirs;
-  StringUtils::SplitString(url.GetFileName(), sep, dirs);
+  vector<string> dirs = StringUtils::Split(url.GetFileName(), sep);
   
   // we start with the root path
   CStdString dir = url.GetWithoutFilename();
