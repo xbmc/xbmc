@@ -357,23 +357,53 @@
 						<onclick>Dialog.Close(4998)</onclick>
 						<onclick>XBMC.ActivateWindow(appearancesettings)</onclick>
 					</item>
+					<item id="101">
+						<description>OE Settings Button</description>
+						<label> $LOCALIZE[41000] </label>
+						<onclick>Dialog.Close(4998)</onclick>
+						<onclick>RunAddon(service.openelec.settings)</onclick>
+						<visible>System.isSystem(openelec)</visible>
+					</item>
+					<item id="102">
+						<description>Control Global Caching</description>
+						<label> $LOCALIZE[41001] </label>
+						<onclick>Dialog.Close(4998)</onclick>
+                        <onclick>XBMC.ActivateWindow(10208)</onclick>
+						<visible>System.isSystem(rasplex)</visible>
+					</item>
 					<item id="111">
 						<description>Quit</description>
 						<label>$LOCALIZE[31007]</label>
 						<onclick>Dialog.Close(4998)</onclick>
 						<onclick>Plex.Quit</onclick>
+						<visible>!System.isSystem(openelec)</visible>
 					</item>
 					<item id="112">
 						<description>Sleep</description>
 						<label>$LOCALIZE[31960]</label>
 						<onclick>Dialog.Close(4998)</onclick>
 						<onclick>Plex.Suspend</onclick>
+						<visible>!System.isSystem(rasplex)</visible>
 					</item>
 					<item id="113">
 						<description>Shut Down</description>
 						<label>$LOCALIZE[31961]</label>
 						<onclick>Dialog.Close(4998)</onclick>
 						<onclick>Plex.Powerdown</onclick>
+					</item>
+					<item id="114">
+						<description>Restart</description>
+						<label>$LOCALIZE[31072]</label>
+						<onclick>Dialog.Close(4998)</onclick>
+						<onclick>System.Exec(reboot)</onclick>
+						<visible>System.isSystem(openelec)</visible>
+					</item>
+					<item id="115">
+						<description>Sleep</description>
+						<label>$LOCALIZE[31960]</label>
+						<onclick>Dialog.Close(4998)</onclick>
+						<onclick>System.Exec(pm-suspend)</onclick>
+						<visible>System.isSystem(openelec) + !System.isSystem(rasplex)</visible>
 					</item>
 				</content>
 			</control>
