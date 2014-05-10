@@ -1446,8 +1446,12 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
     // 2. stereo upmix is selected
     // 3. fixed mode
 
+    // g_advancedSettings.m_audioFixedMultichannelLayout is for e.g.
+    // Anthem Statement D2 audio processor which only supports 2.0 and 5.1 properly
+
     bool useFixedLayout = (m_settings.config == AE_CONFIG_FIXED)
-                       || (settings.stereoupmix && format.m_channelLayout.Count() <= 2);
+                       || (settings.stereoupmix && format.m_channelLayout.Count() <= 2)
+                       || (g_advancedSettings.m_audioFixedMultichannelLayout && format.m_channelLayout.Count() > 2);
 
     if (format.m_channelLayout.Count() > 2 || useFixedLayout)
     {
