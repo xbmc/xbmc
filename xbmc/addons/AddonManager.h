@@ -147,7 +147,7 @@ namespace ADDON
      \param result [out] returned list of strings.
      \return true if the configuration element is present and the list of strings is non-empty
      */
-    bool GetExtList(cp_cfg_element_t *base, const char *path, std::vector<CStdString> &result) const;
+    bool GetExtList(cp_cfg_element_t *base, const char *path, std::vector<std::string> &result) const;
 
     const cp_extension_t *GetExtension(const cp_plugin_info_t *props, const char *extension) const;
 
