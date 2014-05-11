@@ -387,6 +387,11 @@ CStdString CGUITextBox::GetLabel(int info) const
   return label;
 }
 
+CStdString CGUITextBox::GetDescription() const
+{
+  return GetText();
+}
+
 void CGUITextBox::UpdateVisibility(const CGUIListItem *item)
 {
   // we have to update the page control when we become visible
