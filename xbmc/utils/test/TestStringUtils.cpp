@@ -454,7 +454,7 @@ TEST(TestStringUtils, FindBestMatch)
 {
   double refdouble, vardouble;
   int refint, varint;
-  CStdStringArray strarray;
+  std::vector<std::string> strarray;
 
   refint = 3;
   refdouble = 0.5625f;

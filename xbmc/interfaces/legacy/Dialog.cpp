@@ -179,7 +179,7 @@ namespace XBMCAddon
     {
       DelayedCallGuard dcguard(languageHook);
       VECSOURCES *shares = CMediaSourceSettings::Get().GetSources(s_shares);
-      CStdStringArray tmpret;
+      std::vector<String> valuelist;
       String lmask = mask;
       if (!shares) 
         throw WindowException("Error: GetSources given %s is NULL.",s_shares.c_str());
@@ -188,16 +188,11 @@ namespace XBMCAddon
         lmask += "|.rar|.zip";
 
       if (type == 1)
-        CGUIDialogFileBrowser::ShowAndGetFileList(*shares, lmask, heading, tmpret, useThumbs, useFileDirectories);
+        CGUIDialogFileBrowser::ShowAndGetFileList(*shares, lmask, heading, valuelist, useThumbs, useFileDirectories);
       else if (type == 2)
-        CGUIDialogFileBrowser::ShowAndGetImageList(*shares, heading, tmpret);
+        CGUIDialogFileBrowser::ShowAndGetImageList(*shares, heading, valuelist);
       else
         throw WindowException("Error: Cannot retreive multuple directories using browse %s is NULL.",s_shares.c_str());
-
-      std::vector<String> valuelist;
-      int index = 0;
-      for (CStdStringArray::iterator iter = tmpret.begin(); iter != tmpret.end(); ++iter)
-        valuelist[index++] = (*iter);
 
       return valuelist;
     }

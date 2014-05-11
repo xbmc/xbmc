@@ -929,13 +929,13 @@ double StringUtils::CompareFuzzy(const CStdString &left, const CStdString &right
   return (0.5 + fstrcmp(left.c_str(), right.c_str(), 0.0) * (left.length() + right.length())) / 2.0;
 }
 
-int StringUtils::FindBestMatch(const CStdString &str, const CStdStringArray &strings, double &matchscore)
+int StringUtils::FindBestMatch(const CStdString &str, const vector<string> &strings, double &matchscore)
 {
   int best = -1;
   matchscore = 0;
 
   int i = 0;
-  for (CStdStringArray::const_iterator it = strings.begin(); it != strings.end(); ++it, i++)
+  for (vector<string>::const_iterator it = strings.begin(); it != strings.end(); ++it, i++)
   {
     int maxlength = max(str.length(), it->length());
     double score = StringUtils::CompareFuzzy(str, *it) / maxlength;
@@ -948,9 +948,9 @@ int StringUtils::FindBestMatch(const CStdString &str, const CStdStringArray &str
   return best;
 }
 
-bool StringUtils::ContainsKeyword(const CStdString &str, const CStdStringArray &keywords)
+bool StringUtils::ContainsKeyword(const CStdString &str, const vector<string> &keywords)
 {
-  for (CStdStringArray::const_iterator it = keywords.begin(); it != keywords.end(); ++it)
+  for (vector<string>::const_iterator it = keywords.begin(); it != keywords.end(); ++it)
   {
     if (str.find(*it) != str.npos)
       return true;

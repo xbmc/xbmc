@@ -193,7 +193,7 @@ bool CDirectoryNode::GetContent(CFileItemList& items) const
 //  Creates a videodb url
 CStdString CDirectoryNode::BuildPath() const
 {
-  CStdStringArray array;
+  vector<string> array;
 
   if (!m_strName.empty())
     array.insert(array.begin(), m_strName);
