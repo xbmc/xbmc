@@ -153,18 +153,18 @@ private:
     { return m_parser.GetSearchStringEncoding(); }
 
   bool Load();
-  std::vector<CStdString> Run(const CStdString& function,
+  std::vector<std::string> Run(const CStdString& function,
                               const CScraperUrl& url,
                               XFILE::CCurlFile& http,
-                              const std::vector<CStdString>* extras = NULL);
-  std::vector<CStdString> RunNoThrow(const CStdString& function,
+                              const std::vector<std::string>* extras = NULL);
+  std::vector<std::string> RunNoThrow(const CStdString& function,
                               const CScraperUrl& url,
                               XFILE::CCurlFile& http,
-                              const std::vector<CStdString>* extras = NULL);
+                              const std::vector<std::string>* extras = NULL);
   CStdString InternalRun(const CStdString& function,
                          const CScraperUrl& url,
                          XFILE::CCurlFile& http,
-                         const std::vector<CStdString>* extras);
+                         const std::vector<std::string>* extras);
 
   bool m_fLoaded;
   CStdString m_language;
