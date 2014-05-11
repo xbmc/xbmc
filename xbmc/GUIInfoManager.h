@@ -903,7 +903,7 @@ protected:
   bool GetEpgInfoTag(EPG::CEpgInfoTag& tag) const;
 
   // Conditional string parameters are stored here
-  CStdStringArray m_stringParameters;
+  std::vector<std::string> m_stringParameters;
 
   // Array of multiple information mapped to a single integer lookup
   std::vector<GUIInfo> m_multiInfo;
