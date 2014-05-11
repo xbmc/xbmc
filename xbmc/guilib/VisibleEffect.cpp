@@ -189,7 +189,8 @@ CSlideEffect::CSlideEffect(const TiXmlElement *node) : CAnimEffect(node, EFFECT_
     vector<string> commaSeparated = StringUtils::Split(startPos, ",");
     if (commaSeparated.size() > 1)
       m_startY = (float)atof(commaSeparated[1].c_str());
-    m_startX = (float)atof(commaSeparated[0].c_str());
+    if (!commaSeparated.empty())
+      m_startX = (float)atof(commaSeparated[0].c_str());
   }
   const char *endPos = node->Attribute("end");
   if (endPos)
@@ -197,7 +198,8 @@ CSlideEffect::CSlideEffect(const TiXmlElement *node) : CAnimEffect(node, EFFECT_
     vector<string> commaSeparated = StringUtils::Split(endPos, ",");
     if (commaSeparated.size() > 1)
       m_endY = (float)atof(commaSeparated[1].c_str());
-    m_endX = (float)atof(commaSeparated[0].c_str());
+    if (!commaSeparated.empty())
+      m_endX = (float)atof(commaSeparated[0].c_str());
   }
 }
 
@@ -227,7 +229,8 @@ CRotateEffect::CRotateEffect(const TiXmlElement *node, EFFECT_TYPE effect) : CAn
       vector<string> commaSeparated = StringUtils::Split(centerPos, ",");
       if (commaSeparated.size() > 1)
         m_center.y = (float)atof(commaSeparated[1].c_str());
-      m_center.x = (float)atof(commaSeparated[0].c_str());
+      if (!commaSeparated.empty())
+        m_center.x = (float)atof(commaSeparated[0].c_str());
     }
   }
 }
@@ -320,7 +323,8 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEff
       vector<string> commaSeparated = StringUtils::Split(centerPos, ",");
       if (commaSeparated.size() > 1)
         m_center.y = (float)atof(commaSeparated[1].c_str());
-      m_center.x = (float)atof(commaSeparated[0].c_str());
+      if (!commaSeparated.empty())
+        m_center.x = (float)atof(commaSeparated[0].c_str());
     }
   }
   else
