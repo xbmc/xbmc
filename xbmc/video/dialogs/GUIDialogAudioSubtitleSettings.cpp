@@ -125,17 +125,17 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == SETTING_AUDIO_VOLUME)
   {
-    m_volume = static_cast<const CSettingNumber*>(setting)->GetValue();
+    m_volume = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
     g_application.SetVolume(m_volume, false); // false - value is not in percent
   }
   else if (settingId == SETTING_AUDIO_VOLUME_AMPLIFICATION)
   {
-    videoSettings.m_VolumeAmplification = static_cast<const CSettingNumber*>(setting)->GetValue();
+    videoSettings.m_VolumeAmplification = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
     g_application.m_pPlayer->SetDynamicRangeCompression((long)(videoSettings.m_VolumeAmplification * 100));
   }
   else if (settingId == SETTING_AUDIO_DELAY)
   {
-    videoSettings.m_AudioDelay = static_cast<const CSettingNumber*>(setting)->GetValue();
+    videoSettings.m_AudioDelay = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
     g_application.m_pPlayer->SetAVDelay(videoSettings.m_AudioDelay);
   }
   else if (settingId == SETTING_AUDIO_STREAM)
@@ -178,7 +178,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(const CSetting *setting)
   }
   else if (settingId == SETTING_SUBTITLE_DELAY)
   {
-    videoSettings.m_SubtitleDelay = static_cast<const CSettingNumber*>(setting)->GetValue();
+    videoSettings.m_SubtitleDelay = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
     g_application.m_pPlayer->SetSubTitleDelay(videoSettings.m_SubtitleDelay);
   }
   else if (settingId == SETTING_SUBTITLE_STREAM)
