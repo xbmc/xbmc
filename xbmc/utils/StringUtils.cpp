@@ -554,10 +554,13 @@ CStdStringArray StringUtils::SplitString(const CStdString& input, const CStdStri
 
 vector<string> StringUtils::Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings /* = 0 */)
 {
+  vector<string> strArray;
+  if (input.empty())
+    return strArray;
+
   CStdStringArray result;
   SplitString(input, delimiter, result, iMaxStrings);
 
-  vector<string> strArray;
   for (unsigned int index = 0; index < result.size(); index++)
     strArray.push_back(result.at(index));
 

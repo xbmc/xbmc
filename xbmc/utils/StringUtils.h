@@ -92,6 +92,15 @@ public:
   static CStdString Join(const std::vector<std::string> &strings, const CStdString& delimiter);
   static int SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results, unsigned int iMaxStrings = 0);
   static CStdStringArray SplitString(const CStdString& input, const CStdString& delimiter, unsigned int iMaxStrings = 0);
+  /*! \brief Splits the given input string using the given delimiter into separate strings.
+
+   If the given input string is empty the result will be an empty array (not
+   an array containing an empty string).
+
+   \param input Input string to be split
+   \param delimiter Delimiter to be used to split the input string
+   \param iMaxStrings (optional) Maximum number of splitted strings
+   */
   static std::vector<std::string> Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings = 0);
   static int FindNumber(const CStdString& strInput, const CStdString &strFind);
   static int64_t AlphaNumericCompare(const wchar_t *left, const wchar_t *right);
