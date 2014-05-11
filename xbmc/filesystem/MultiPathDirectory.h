@@ -40,8 +40,8 @@ public:
   static bool GetPaths(const CURL& url, std::vector<CStdString>& vecPaths);
   static bool GetPaths(const CStdString& strPath, std::vector<CStdString>& vecPaths);
   static bool HasPath(const CStdString& strPath, const CStdString& strPathToFind);
-  static CStdString ConstructMultiPath(const std::vector<CStdString> &vecPaths);
-  static CStdString ConstructMultiPath(const std::set<CStdString> &setPaths);
+  static CStdString ConstructMultiPath(const std::vector<std::string> &vecPaths);
+  static CStdString ConstructMultiPath(const std::set<std::string> &setPaths);
 
 private:
   void MergeItems(CFileItemList &items);

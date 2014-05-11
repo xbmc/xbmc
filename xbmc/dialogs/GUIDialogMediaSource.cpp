@@ -516,9 +516,9 @@ void CGUIDialogMediaSource::OnPathAdd()
   HighlightItem(m_paths->Size() - 1);
 }
 
-vector<CStdString> CGUIDialogMediaSource::GetPaths()
+vector<string> CGUIDialogMediaSource::GetPaths() const
 {
-  vector<CStdString> paths;
+  vector<string> paths;
   for (int i = 0; i < m_paths->Size(); i++)
   {
     if (!m_paths->Get(i)->GetPath().empty())

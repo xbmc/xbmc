@@ -1235,7 +1235,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
     }
 
     // doesnt match a name, so try the source path
-    vector<CStdString> vecPaths;
+    vector<string> vecPaths;
 
     // add any concatenated paths if they exist
     if (share.vecPaths.size() > 0)
@@ -1329,7 +1329,7 @@ CStdString CUtil::TranslateSpecialSource(const CStdString &strSpecial)
 
 CStdString CUtil::MusicPlaylistsLocation()
 {
-  vector<CStdString> vec;
+  vector<string> vec;
   vec.push_back(URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "music"));
   vec.push_back(URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "mixed"));
   return XFILE::CMultiPathDirectory::ConstructMultiPath(vec);
@@ -1337,7 +1337,7 @@ CStdString CUtil::MusicPlaylistsLocation()
 
 CStdString CUtil::VideoPlaylistsLocation()
 {
-  vector<CStdString> vec;
+  vector<string> vec;
   vec.push_back(URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "video"));
   vec.push_back(URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "mixed"));
   return XFILE::CMultiPathDirectory::ConstructMultiPath(vec);

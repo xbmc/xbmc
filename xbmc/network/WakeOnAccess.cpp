@@ -507,7 +507,7 @@ void CWakeOnAccess::QueueMACDiscoveryForHost(const CStdString& host)
 
 static void AddHostsFromMediaSource(const CMediaSource& source, std::vector<std::string>& hosts)
 {
-  for (CStdStringArray::const_iterator it = source.vecPaths.begin() ; it != source.vecPaths.end(); it++)
+  for (vector<string>::const_iterator it = source.vecPaths.begin() ; it != source.vecPaths.end(); it++)
   {
     CURL url(*it);
 
