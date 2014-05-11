@@ -131,10 +131,10 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
     const TiXmlElement *updateElem = updates->FirstChildElement(SETTING_XML_ELM_UPDATE);
     while (updateElem != NULL)
     {
-      CSettingUpdate update;
-      if (update.Deserialize(updateElem))
+      CSettingUpdate settingUpdate;
+      if (settingUpdate.Deserialize(updateElem))
       {
-        if (!m_updates.insert(update).second)
+        if (!m_updates.insert(settingUpdate).second)
           CLog::Log(LOGWARNING, "CSetting: duplicate <update> definition for \"%s\"", m_id.c_str());
       }
       else
