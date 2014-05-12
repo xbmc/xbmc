@@ -31,6 +31,7 @@ typedef const struct __CFString * CFStringRef;
 extern "C"
 {
 #endif
+  const char *getIosPlatformString(void);
   bool        DarwinIsAppleTV2(void);
   bool        DarwinIsMavericks(void);
   bool        DarwinHasRetina(void);
