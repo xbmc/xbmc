@@ -17,6 +17,14 @@ int CGUIDialogPlexMedia::ProcessResumeChoice(const CFileItem& file)
 {
   bool resumeItem = false;
 
+  if (file.GetProperty("forceStartOffset").asBoolean())
+  {
+    // this means that this command comes from the remote API for example.
+    // so we need to trust that the client has already set the correct
+    // start offset, no need to prompt the user again.
+    return file.m_lStartOffset;
+  }
+
   if (!file.m_bIsFolder && file.HasProperty("viewOffset") &&
       !file.GetProperty("viewOffset").asString().empty())
   {
