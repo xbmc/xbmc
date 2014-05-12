@@ -457,6 +457,7 @@ CAESinkPULSE::CAESinkPULSE()
   m_Channels = 0;
   m_Stream = NULL;
   m_Context = NULL;
+  m_IsStreamPaused = false;
 }
 
 CAESinkPULSE::~CAESinkPULSE()
@@ -725,6 +726,7 @@ void CAESinkPULSE::Deinitialize()
     pa_stream_disconnect(m_Stream);
     pa_stream_unref(m_Stream);
     m_Stream = NULL;
+    m_IsStreamPaused = false;
   }
 
   if (m_Context)
