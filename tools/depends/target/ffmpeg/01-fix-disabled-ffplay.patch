@@ -1,0 +1,43 @@
+--- a/configure	2014-05-11 21:20:43.000000000 -0400
++++ b/configure	2014-05-11 21:21:22.000000000 -0400
+@@ -4571,22 +4571,24 @@ if enabled libdc1394; then
+     die "ERROR: No version of libdc1394 found "
+ fi
+ 
+-SDL_CONFIG="${cross_prefix}sdl-config"
+-if check_pkg_config sdl SDL_events.h SDL_PollEvent; then
+-    check_cpp_condition SDL.h "(SDL_MAJOR_VERSION<<16 | SDL_MINOR_VERSION<<8 | SDL_PATCHLEVEL) >= 0x010201" $sdl_cflags &&
+-    check_cpp_condition SDL.h "(SDL_MAJOR_VERSION<<16 | SDL_MINOR_VERSION<<8 | SDL_PATCHLEVEL) < 0x010300" $sdl_cflags &&
+-    enable sdl
+-else
+-  if "${SDL_CONFIG}" --version > /dev/null 2>&1; then
+-    sdl_cflags=$("${SDL_CONFIG}" --cflags)
+-    sdl_libs=$("${SDL_CONFIG}" --libs)
+-    check_func_headers SDL_version.h SDL_Linked_Version $sdl_cflags $sdl_libs &&
+-    check_cpp_condition SDL.h "(SDL_MAJOR_VERSION<<16 | SDL_MINOR_VERSION<<8 | SDL_PATCHLEVEL) >= 0x010201" $sdl_cflags &&
+-    check_cpp_condition SDL.h "(SDL_MAJOR_VERSION<<16 | SDL_MINOR_VERSION<<8 | SDL_PATCHLEVEL) < 0x010300" $sdl_cflags &&
+-    enable sdl
+-  fi
++if enabled ffplay; then
++    SDL_CONFIG="${cross_prefix}sdl-config"
++    if check_pkg_config sdl SDL_events.h SDL_PollEvent; then
++        check_cpp_condition SDL.h "(SDL_MAJOR_VERSION<<16 | SDL_MINOR_VERSION<<8 | SDL_PATCHLEVEL) >= 0x010201" $sdl_cflags &&
++        check_cpp_condition SDL.h "(SDL_MAJOR_VERSION<<16 | SDL_MINOR_VERSION<<8 | SDL_PATCHLEVEL) < 0x010300" $sdl_cflags &&
++        enable sdl
++    else
++      if "${SDL_CONFIG}" --version > /dev/null 2>&1; then
++        sdl_cflags=$("${SDL_CONFIG}" --cflags)
++        sdl_libs=$("${SDL_CONFIG}" --libs)
++        check_func_headers SDL_version.h SDL_Linked_Version $sdl_cflags $sdl_libs &&
++        check_cpp_condition SDL.h "(SDL_MAJOR_VERSION<<16 | SDL_MINOR_VERSION<<8 | SDL_PATCHLEVEL) >= 0x010201" $sdl_cflags &&
++        check_cpp_condition SDL.h "(SDL_MAJOR_VERSION<<16 | SDL_MINOR_VERSION<<8 | SDL_PATCHLEVEL) < 0x010300" $sdl_cflags &&
++        enable sdl
++      fi
++    fi
++    enabled sdl && add_cflags $sdl_cflags && add_extralibs $sdl_libs
+ fi
+-enabled sdl && add_cflags $sdl_cflags && add_extralibs $sdl_libs
+ 
+ texi2html --help 2> /dev/null | grep -q 'init-file' && enable texi2html || disable texi2html
+ makeinfo --version > /dev/null 2>&1 && enable makeinfo  || disable makeinfo
+
