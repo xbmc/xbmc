@@ -452,10 +452,10 @@ PLT_DeviceHost::ProcessHttpPostRequest(NPT_HttpRequest&              request,
 #endif
 
     if (NPT_FAILED(FindServiceByControlURL(url, service, true)))
-        goto bad_request;
+        goto bad_request_find_service;
 
     if (!request.GetHeaders().GetHeaderValue("SOAPAction"))
-        goto bad_request;
+        goto bad_request_soap_header_value;
 
     // extract the soap action name from the header
     soap_action_header = *request.GetHeaders().GetHeaderValue("SOAPAction");
@@ -469,43 +469,43 @@ PLT_DeviceHost::ProcessHttpPostRequest(NPT_HttpRequest&              request,
                  prefix, 
                  soap_action_name);
     if (ret != 2)
-        goto bad_request;
+        goto bad_request_soap_action_header;
 
     // read the xml body and parse it
     if (NPT_FAILED(PLT_HttpHelper::ParseBody(request, xml)))
-        goto bad_request;
+        goto bad_request_body_parse_error;
 
     // check envelope
     if (xml->GetTag().Compare("Envelope", true))
-        goto bad_request;
+        goto bad_request_no_envelope;
 
 #if defined(PLATINUM_UPNP_SPECS_STRICT)
     // check namespace
     if (!xml->GetNamespace() || xml->GetNamespace()->Compare("http://schemas.xmlsoap.org/soap/envelope/"))
-        goto bad_request;
+        goto bad_request_upnp_not_strict;
 
     // check encoding
     attr = xml->GetAttribute("encodingStyle", "http://schemas.xmlsoap.org/soap/envelope/");
     if (!attr || attr->Compare("http://schemas.xmlsoap.org/soap/encoding/"))
-        goto bad_request;
+        goto bad_request_bad_encoding;
 #endif
 
     // read action
     soap_body = PLT_XmlHelper::GetChild(xml, "Body");
     if (soap_body == NULL)
-        goto bad_request;
+        goto bad_request_soap_body;
 
     PLT_XmlHelper::GetChild(soap_body, soap_action);
     if (soap_action == NULL)
-        goto bad_request;
+        goto bad_request_soap_action_body;
 
     // verify action name is identical to SOAPACTION header*/
     if (soap_action->GetTag().Compare(soap_action_name, true))
-        goto bad_request;
+        goto bad_request_action_mismatch;
 
     // verify namespace
     if (!soap_action->GetNamespace() || soap_action->GetNamespace()->Compare(service->GetServiceType()))
-        goto bad_request;
+        goto bad_request_bad_namespace;
 
     // create a buffer for our response body and call the service
     if ((action_desc = service->FindActionDesc(soap_action_name)) == NULL) {
@@ -591,8 +591,64 @@ done:
     return NPT_SUCCESS;
 
 bad_request:
+    // generic 500 now unused
     delete xml;
     response.SetStatus(500, "Bad Request");
+    return NPT_SUCCESS;
+
+bad_request_find_service:
+    delete xml;
+    response.SetStatus(500, "Bad Request: Service by URL");
+    return NPT_SUCCESS;
+
+bad_request_soap_header_value:
+    delete xml;
+    response.SetStatus(500, "Bad Request: SOAP Header");
+    return NPT_SUCCESS;
+
+bad_request_soap_action_header:
+    delete xml;
+    response.SetStatus(500, "Bad Request: SOAP Action in Header");
+    return NPT_SUCCESS;
+
+bad_request_body_parse_error:
+    delete xml;
+    response.SetStatus(500, "Bad Request: Error Parsing XML Body");
+    return NPT_SUCCESS;
+
+bad_request_no_envelope:
+    delete xml;
+    response.SetStatus(500, "Bad Request: SOAP Envelope");
+    return NPT_SUCCESS;
+
+bad_request_upnp_not_strict:
+    delete xml;
+    response.SetStatus(500, "Bad Request: SOAP not Strict");
+    return NPT_SUCCESS;
+
+bad_request_bad_encoding:
+    delete xml;
+    response.SetStatus(500, "Bad Request: SOAP Encoding");
+    return NPT_SUCCESS;
+
+bad_request_soap_body:
+    delete xml;
+    response.SetStatus(500, "Bad Request: SOAP Body");
+    return NPT_SUCCESS;
+
+bad_request_soap_action_body:
+    delete xml;
+    response.SetStatus(500, "Bad Request: SOAP Action in Body");
+    return NPT_SUCCESS;
+
+bad_request_action_mismatch:
+    delete xml;
+    response.SetStatus(500, "Bad Request: SOAP Action Mismatch");
+    return NPT_SUCCESS;
+
+bad_request_bad_namespace:
+    delete xml;
+    response.SetStatus(500, "Bad Request: Bad Namespace");
     return NPT_SUCCESS;
 }
 
@@ -831,4 +887,3 @@ PLT_DeviceHost::OnAction(PLT_ActionReference&          action,
     action->SetError(401, "Invalid Action");
     return NPT_FAILURE;
 }
-
