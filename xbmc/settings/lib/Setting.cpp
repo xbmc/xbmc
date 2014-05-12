@@ -319,7 +319,9 @@ bool CSettingList::Deserialize(const TiXmlNode *node, bool update /* = false */)
     return false;
   }
 
-  if (!m_definition->Deserialize(node, update))
+  // deserialize the setting definition in update mode because we don't care
+  // about an invalid <default> value (which is never used)
+  if (!m_definition->Deserialize(node, true))
     return false;
 
   const TiXmlNode *constraints = node->FirstChild(SETTING_XML_ELM_CONSTRAINTS);
