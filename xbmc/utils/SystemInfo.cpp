@@ -979,6 +979,8 @@ std::string CSysInfo::GetUserAgent()
   result += "Unknown";
 #endif
   result += ")";
+  // add fork ID here in form:
+  // result += " XBMC_FORK_" + "forkname" + "/" + "1.0"; // default fork number is '1.0'
 #ifdef TARGET_RASPBERRY_PI
   result += " XBMC_HW_RaspberryPi/1.0";
 #elif defined (TARGET_DARWIN_IOS)
@@ -990,6 +992,9 @@ std::string CSysInfo::GetUserAgent()
   StringUtils::Replace(iDevVer, ',', '.');
   result += " XBMC_HW_" + iDev + "/" + iDevVer;
 #endif
+  // add more device IDs here if needed. 
+  // keep only one device ID in result! Form:
+  // result += " XBMC_HW_" + "deviceID" + "/" + "1.0"; // '1.0' if device has no version
 
 #if defined(TARGET_ANDROID)
   // Android has no CPU string by default, so add it as additional parameter
