@@ -445,8 +445,11 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
         if (ctrl)
           ctrl->SetFocus(true);
 
-        m_clearFilterButton->SetFocus(false);
-        m_clearFilterButton->SetVisible(false);
+        if (m_clearFilterButton)
+        {
+          m_clearFilterButton->SetFocus(false);
+          m_clearFilterButton->SetVisible(false);
+        }
 
         g_plexApplication.filterManager->saveFiltersToDisk();
         Update(m_sectionRoot.Get(), false, true);
