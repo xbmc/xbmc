@@ -857,6 +857,10 @@ msgctxt "#44300"
 msgid "Allow control of Plex/HT from Plex Clients"
 msgstr "Allow control of Plex/HT from Plex Clients"
 
+msgctxt "#44406"
+msgid "Use FFMPEG AVIO for Network transport"
+msgstr "Use FFMPEG AVIO for Network transport"
+
 #### These are error strings shown from channels
 #### errorcode + 50000
 msgctxt "#52000"
