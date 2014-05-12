@@ -121,4 +121,7 @@
 			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 		</control>
 	</include>
+				<texture>b-nowplaying.png</texture>
+				<texturefocus>b-nowplaying.png</texturefocus>
+				<texturenofocus>b-nowplaying.png</texturenofocus>
 </includes>
