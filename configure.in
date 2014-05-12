@@ -168,7 +168,6 @@ libnfs_not_found="== Could not find libnfs. NFS client support disabled. =="
 libnfs_disabled="== NFS support disabled. =="
 libafpclient_not_found="== Could not find libafpclient. AFP client support disabled. =="
 libafpclient_disabled="== AFP support disabled. =="
-libshairport_not_found="== Could not find libshairport. =="
 libshairplay_not_found="== Could not find libshairplay. =="
 samba_disabled="== SAMBA support disabled. =="
 libplist_not_found="== Could not find libplist. AirPlay support disabled. =="
@@ -1565,7 +1564,7 @@ if test "$use_airplay" != "no"; then
   fi
 fi
 
-# libshairplay for AirTunes (prefered lib)
+# libshairplay for AirTunes
 USE_AIRTUNES=0
 if test "x$use_airtunes" != "xno"; then
   AC_CHECK_HEADERS([shairplay/raop.h],USE_AIRTUNES=1,
@@ -1574,29 +1573,14 @@ if test "x$use_airtunes" != "xno"; then
 
   if test "x$USE_AIRTUNES" != "x0"; then
     XB_FIND_SONAME([SHAIRPLAY], [shairplay], [USE_AIRTUNES])
-    USE_LIBSHAIRPLAY=1
     AC_CHECK_MEMBERS([struct raop_callbacks_s.cls],,,
                      [[#include <shairplay/raop.h>]])
     AC_DEFINE([HAVE_LIBSHAIRPLAY],[1],["Define to 1 if you have libshairplay."])
   fi
 
-  #libshairport - as a fallback for AirTunes
-  if test "x$USE_AIRTUNES" == "x0"; then
-    AC_CHECK_HEADERS([shairport/shairport.h],USE_AIRTUNES=1,
-     [AC_MSG_NOTICE($libshairport_not_found)
-     ])
-
-    if test "x$USE_AIRTUNES" != "x0"; then
-      XB_FIND_SONAME([SHAIRPORT], [shairport], [USE_AIRTUNES])
-      AC_CHECK_MEMBERS([struct AudioOutput.ao_set_metadata],,,
-                       [[#include <shairport/shairport.h>]])
-      AC_DEFINE([HAVE_LIBSHAIRPORT],[1],["Define to 1 if you have libshairport."])
-    fi
-  fi
-
   if test "x$USE_AIRTUNES" == "x0"; then
     if test "x$use_airtunes" == "xyes"; then
-      AC_MSG_ERROR("No airtunes library could be found. (libshairport/libshairplay)")
+      AC_MSG_ERROR("No airtunes library could be found. (libshairplay)")
     fi
     use_airtunes="no"
   fi
@@ -2409,11 +2393,7 @@ else
 fi
 
 if test "x$use_airtunes" != "xno"; then
-  if test "x$USE_LIBSHAIRPLAY" == "x1"; then
-    final_message="$final_message\n  AirTunes support (libshairplay):\tYes"  
-  else
-    final_message="$final_message\n  AirTunes support (libshairport):\tYes"
-  fi
+  final_message="$final_message\n  AirTunes support (libshairplay):\tYes"  
 else
   final_message="$final_message\n  AirTunes support:\tNo"
 fi
