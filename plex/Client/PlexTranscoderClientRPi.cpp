@@ -111,8 +111,8 @@ bool CPlexTranscoderClientRPi::ShouldTranscode(CPlexServerPtr server, const CFil
       audioChannels = selectedItem->GetProperty("mediaTag-audioChannels").asInteger();
 
   // default capping values
-  m_maxVideoBitrate = 20000;
-  m_maxAudioBitrate = 1000;
+  m_maxVideoBitrate = 200000;
+  m_maxAudioBitrate = 100000;
   int maxBitDepth = 8;
 
   // grab some other information in the audio / video streams
@@ -180,18 +180,6 @@ bool CPlexTranscoderClientRPi::ShouldTranscode(CPlexServerPtr server, const CFil
     bShouldTranscode = true;
     ReasonWhy.Format("Unknown audio codec : %s",audioCodec);
   }
-  // Then we eventually cap the video bitrate
-  else if (videoBitRate > m_maxVideoBitrate)
-  {
-    bShouldTranscode = true;
-    ReasonWhy.Format("Video bitrate is too high : %d kbps, (max :%d kbps)",videoBitRate,m_maxVideoBitrate);
-  }
-  // Then we eventually cap the audio bitrate if total bandwidth exceeds the limit
-  else if ((audioBitRate > m_maxAudioBitrate) && ((audioBitRate + videoBitRate) > (m_maxVideoBitrate + m_maxAudioBitrate)))
-  {
-    bShouldTranscode = true;
-    ReasonWhy.Format("Audio bitrate is too high : %d kbps, (max :%d kbps)",audioBitRate,m_maxAudioBitrate);
-  }
   else if (bitDepth > maxBitDepth)
   {
     bShouldTranscode = true;
@@ -200,6 +188,10 @@ bool CPlexTranscoderClientRPi::ShouldTranscode(CPlexServerPtr server, const CFil
 
   if (bShouldTranscode)
   {
+    // cap the transcode bitrate for qualities
+    if (m_maxVideoBitrate > 20000)
+      m_maxVideoBitrate = 20000;
+
     CLog::Log(LOGDEBUG,"RPi ShouldTranscode decided to transcode, Reason : %s",ReasonWhy.c_str());
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Transcoding", ReasonWhy);
   }
