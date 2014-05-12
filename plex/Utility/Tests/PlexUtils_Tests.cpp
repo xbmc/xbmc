@@ -256,6 +256,15 @@ TEST(PlexUtilsGetPlexContent, mixedMedia)
   EXPECT_EQ("mixedcontent", PlexUtils::GetPlexContent(item));
 }
 
+TEST(PlexUtilsGetPlexContent, mixedMediaInternalURL)
+{
+  CFileItem item;
+  item.SetPath("plexserver://playqueue/");
+  item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
+  item.SetProperty("hasMixedMembers", true);
+  EXPECT_EQ("mixedcontent", PlexUtils::GetPlexContent(item));
+}
+
 class PlexUtilsGetPrettyMediaItemNameTest : public ::testing::Test
 {
 public:

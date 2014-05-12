@@ -856,7 +856,8 @@ string PlexUtils::GetPlexContent(const CFileItem &item)
   if (boost::starts_with(itemUrl.GetFileName(), "system/services/url/lookup"))
     singleItem = true;
 
-  if (boost::starts_with(itemUrl.GetFileName(), "playQueues/") &&
+  if ((boost::starts_with(itemUrl.GetFileName(), "playQueues/") ||
+       itemUrl.Get() == "plexserver://playqueue/") &&
       item.GetProperty("hasMixedMembers").asBoolean())
     return "mixedcontent";
 
