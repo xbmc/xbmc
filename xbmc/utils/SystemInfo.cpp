@@ -905,7 +905,10 @@ std::string CSysInfo::GetUAWindowsVersion()
 
 std::string CSysInfo::GetUserAgent()
 {
-  std::string result;
+  static std::string result;
+  if (!result.empty())
+    return result;
+
   result = "XBMC/" + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION_SHORT) + " (";
 #if defined(TARGET_WINDOWS)
   result += GetUAWindowsVersion();
