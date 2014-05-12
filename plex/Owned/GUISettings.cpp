@@ -897,6 +897,12 @@ void CGUISettings::Initialize()
   AddBool(NULL, "videoplayer.usepbo", 13424, true);
 #endif
 
+#ifdef TARGET_RASPBERRY_PI
+  AddBool(adv, "videoplayer.useffmpegavio", 44406, true);
+#else
+  AddBool(adv, "videoplayer.useffmpegavio", 44406, false);
+#endif
+
 
   // Plex "Network" Settings
   AddGroup(SETTINGS_SERVICE, 14036);

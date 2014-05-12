@@ -43,6 +43,9 @@
 #include "filesystem/File.h"
 #include "utils/URIUtils.h"
 
+/* PLEX */
+#include "GUISettings.h"
+/* END PLEX */
 
 #ifndef __PLEX__
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content)
@@ -149,7 +152,15 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer *pPlayer, 
 #endif
 
   // our file interface handles all these types of streams
-  return (new CDVDInputStreamFile());
+  /* PLEX */
+  if ((file.substr(0, 13) == "plexserver://") && (g_guiSettings.GetBool("videoplayer.useffmpegavio")))
+  {
+    return new CDVDInputStreamFFmpeg();
+  }
+  else
+  /* END PLEX */
+    return (new CDVDInputStreamFile());
+
 }
 
 #endif
