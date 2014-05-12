@@ -194,6 +194,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int  m_videoBusyDialogDelay_ms;
     bool m_videoDisableSWMultithreading;
     StagefrightConfig m_stagefrightConfig;
+    bool m_mediacodecForceSoftwareRendring;
 
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
