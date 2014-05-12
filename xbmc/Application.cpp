@@ -5181,7 +5181,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     if (g_windowManager.HasModalDialog() || (IsPlayingVideo() && g_guiSettings.GetBool("screensaver.usedimonpause")) || g_PVRManager.IsRunningChannelScan())
     {
       if (!CAddonMgr::Get().GetAddon("screensaver.xbmc.builtin.dim", m_screenSaver))
-        m_screenSaver.reset(new CScreenSaver(""));
+        m_screenSaver.reset(new CScreenSaver("screensaver.xbmc.builtin.dim"));
     }
     // Check if we are Playing Audio and Vis instead Screensaver!
 #ifndef __PLEX__
