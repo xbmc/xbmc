@@ -981,6 +981,14 @@ std::string CSysInfo::GetUserAgent()
   result += ")";
 #ifdef TARGET_RASPBERRY_PI
   result += " XBMC_HW_RaspberryPi/1.0";
+#elif defined (TARGET_DARWIN_IOS)
+  std::string iDevVer;
+  if (iDevStrDigit == std::string::npos)
+    iDevVer = "0.0";
+  else
+    iDevVer.assign(iDevStr, iDevStrDigit, std::string::npos);
+  StringUtils::Replace(iDevVer, ',', '.');
+  result += " XBMC_HW_" + iDev + "/" + iDevVer;
 #endif
 
 #if defined(TARGET_ANDROID)
