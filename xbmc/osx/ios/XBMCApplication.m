@@ -148,7 +148,7 @@ XBMCController *m_xbmcController;
 #define GSEVENT_FLAGS 12
 #define GSEVENTKEY_KEYCODE 15
 #define GSEVENTKEY_KEYCODE_IOS7 17
-#define GSEVENTKEY_KEYCODE_64_BIT 19
+#define GSEVENTKEY_KEYCODE_64_BIT 13
 #define GSEVENT_TYPE_KEYUP 11
 
 #define MSHookMessageEx(class, selector, replacement, result) \
@@ -197,13 +197,13 @@ static void XBMCsendEvent(id _self, SEL _cmd, UIEvent *event)
     // a GSEventRecord among other things
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-    int *eventMem = (int *)[event performSelector:@selector(_gsEvent)];
+    NSInteger *eventMem = (NSInteger *)[event performSelector:@selector(_gsEvent)];
 #pragma clang diagnostic pop
 
     if (eventMem) 
     {
       // So far we got a GSEvent :)
-      int eventType = eventMem[GSEVENT_TYPE];
+      NSInteger eventType = eventMem[GSEVENT_TYPE];
       if (eventType == GSEVENT_TYPE_KEYUP) 
       {
         // support 32 and 64bit arm here...
@@ -232,10 +232,6 @@ __attribute__((constructor)) static void HookKeyboard(void)
 {
   if (sizeof(NSUInteger) == 8)
   {
-    kGKKeyboardDirectionDown = 31;
-    kGKKeyboardDirectionUp = 30;
-    kGKKeyboardDirectionRight = 29;
-    kGKKeyboardDirectionLeft = 28;
     LOG(@"Detected 64bit system!!!");
   }
   else
