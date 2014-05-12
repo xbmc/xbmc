@@ -623,6 +623,16 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
       // use base class implementation
       return CGUIControl::OnAction(action);
 
+    case ACTION_NEXT_ITEM:
+      // skip +12h
+      ScrollToBlockOffset(m_blockOffset + (12 * 60  / MINSPERBLOCK));
+      return true;
+
+    case ACTION_PREV_ITEM:
+      // skip -12h
+      ScrollToBlockOffset(m_blockOffset - (12 * 60 / MINSPERBLOCK));
+      return true;
+
     case ACTION_PAGE_UP:
       if (m_channelOffset == 0)
       { // already on the first page, so move to the first item
