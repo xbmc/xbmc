@@ -20,9 +20,9 @@ using namespace PLAYLIST;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexPlayQueueManager::create(const CFileItem& container, const CStdString& uri,
-                                   const CStdString& startItemKey, bool shuffle)
+                                   const CPlexPlayQueueOptions& options)
 {
-  if (m_currentImpl && m_playQueueVersion > 1)
+  if (m_currentImpl && m_playQueueVersion > 1 && options.showPrompts)
   {
     CFileItemList list;
     if (m_currentImpl->getCurrent(list))
@@ -43,7 +43,7 @@ void CPlexPlayQueueManager::create(const CFileItem& container, const CStdString&
   if (impl)
   {
     m_currentImpl = impl;
-    m_currentImpl->create(container, uri, startItemKey, shuffle);
+    m_currentImpl->create(container, uri, options);
   }
 }
 
@@ -295,13 +295,14 @@ bool CPlexPlayQueueManager::getCurrentPlayQueue(CFileItemList& list)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexPlayQueueManager::loadPlayQueue(const CPlexServerPtr& server,
-                                          const std::string& playQueueID)
+                                          const std::string& playQueueID,
+                                          const CPlexPlayQueueOptions& options)
 {
   if (!server || playQueueID.empty())
     return false;
 
   m_currentImpl = IPlexPlayQueueBasePtr(new CPlexPlayQueueServer(server));
-  m_currentImpl->get(playQueueID, true);
+  m_currentImpl->get(playQueueID, options);
   return true;
 }
 

@@ -959,3 +959,18 @@ ePlexMediaFilterTypes PlexUtils::GetFilterType(const CFileItem& item)
       return PLEX_MEDIA_FILTER_TYPE_NONE;
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void PlexUtils::SetItemResumeOffset(const CFileItemPtr& item, int64_t offint)
+{
+  if (offint == -1)
+    offint = item->GetProperty("viewOffset").asInteger(0);
+
+  item->SetProperty("viewOffset", offint);
+  if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK)
+    item->m_lStartOffset = (offint / 1000) * 75;
+  else
+    item->m_lStartOffset = offint != 0 ? STARTOFFSET_RESUME : 0;
+
+  item->SetProperty("forceStartOffset", true);
+}

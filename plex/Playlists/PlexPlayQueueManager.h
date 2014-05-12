@@ -4,8 +4,47 @@
 #include "PlexTypes.h"
 #include "FileItem.h"
 #include "Client/PlexServer.h"
+#include "PlexJobs.h"
 #include "gtest/gtest_prod.h"
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+class CPlexPlayQueueOptions
+{
+public:
+  CPlexPlayQueueOptions(bool playing = true, bool prompts = true, bool doshuffle = false,
+                        const std::string& startItem = "")
+    : startPlaying(playing), showPrompts(prompts), shuffle(doshuffle), startItemKey(startItem)
+  {}
+
+  // if the PQ should start playing when it's loaded or created
+  bool startPlaying;
+
+  // if we should show resume / media choice dialogs
+  bool showPrompts;
+
+  // if the PQ should be shuffled
+  bool shuffle;
+
+  // The key of the item that should be played first.
+  std::string startItemKey;
+
+  // a resume offset of the FIRST item in the PQ
+  int64_t resumeOffset;
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+class CPlexPlayQueueFetchJob : public CPlexDirectoryFetchJob
+{
+public:
+  CPlexPlayQueueFetchJob(const CURL& url, const CPlexPlayQueueOptions& options)
+    : CPlexDirectoryFetchJob(url), m_options(options)
+  { }
+
+  CPlexPlayQueueOptions m_options;
+  IPlexPlayQueueBasePtr m_caller;
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 class IPlexPlayQueueBase
 {
 public:
@@ -14,18 +53,20 @@ public:
     return false;
   }
   virtual void create(const CFileItem& container, const CStdString& uri = "",
-                      const CStdString& startItemKey = "", bool shuffle = false) = 0;
+                      const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions()) = 0;
   virtual bool refreshCurrent() = 0;
   virtual bool getCurrent(CFileItemList& list) = 0;
   virtual void removeItem(const CFileItemPtr& item) = 0;
   virtual bool addItem(const CFileItemPtr& item, bool next) = 0;
   virtual int getCurrentID() = 0;
-  virtual void get(const CStdString& playQueueID, bool startPlay) = 0;
+  virtual void get(const CStdString& playQueueID,
+                   const CPlexPlayQueueOptions& = CPlexPlayQueueOptions()) = 0;
   virtual CPlexServerPtr server() const = 0;
 };
 
 typedef boost::shared_ptr<IPlexPlayQueueBase> IPlexPlayQueueBasePtr;
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 class CPlexPlayQueueManager
 {
   friend class PlayQueueManagerTest;
@@ -41,7 +82,7 @@ public:
   }
 
   void create(const CFileItem& container, const CStdString& uri = "",
-              const CStdString& startItemKey = "", bool shuffle = false);
+              const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions());
   void clear();
 
   static CStdString getURIFromItem(const CFileItem& item, const CStdString& uri = "");
@@ -60,7 +101,8 @@ public:
   }
 
   bool getCurrentPlayQueue(CFileItemList& list);
-  bool loadPlayQueue(const CPlexServerPtr& server, const std::string& playQueueID);
+  bool loadPlayQueue(const CPlexServerPtr& server, const std::string& playQueueID,
+                     const CPlexPlayQueueOptions& = CPlexPlayQueueOptions());
   void loadSavedPlayQueue();
   void playCurrentId(int id);
 

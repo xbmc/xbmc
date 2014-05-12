@@ -80,24 +80,6 @@ public:
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-class CPlexPlayQueueFetchJob : public CPlexDirectoryFetchJob
-{
-public:
-  CPlexPlayQueueFetchJob(const CURL& url, bool startPlaying = true, bool shuffle = false,
-                         const CStdString& startItem = "")
-    : CPlexDirectoryFetchJob(url), m_startPlaying(startPlaying), m_shuffle(shuffle),
-      m_startItem(startItem)
-  {
-
-  }
-
-  bool m_startPlaying;
-  bool m_shuffle;
-  CStdString m_startItem;
-  IPlexPlayQueueBasePtr m_caller;
-};
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 class CPlexRecursiveFetchJob : public CJob
 {
 public:

@@ -79,43 +79,29 @@ CFileItemPtr CPlexRemotePlayHandler::getItemFromContainer(const std::string& key
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexRemotePlayHandler::setStartPosition(const CFileItemPtr& item, const ArgMap& arguments)
+int64_t CPlexRemotePlayHandler::getStartPosition(const ArgMap& arguments)
 {
-  item->m_lStartOffset = 0;
   std::string offset;
   if (arguments.find("viewOffset") != arguments.end())
     offset = arguments.find("viewOffset")->second;
   else if (arguments.find("offset") != arguments.end())
     offset = arguments.find("offset")->second;
 
+  int64_t offint = 0;
+
   if (!offset.empty())
   {
-    int offint = -1;
-
-    try { offint = boost::lexical_cast<int>(offset); }
-    catch (boost::bad_lexical_cast) { }
-
-    if (offint != -1)
-    {
-      item->SetProperty("viewOffset", offint);
-      if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK)
-        item->m_lStartOffset = (offint / 1000) * 75;
-      else
-        item->m_lStartOffset = offint != 0 ? STARTOFFSET_RESUME : 0;
-    }
-    else if (item->HasProperty("viewOffset"))
-    {
-      item->m_lStartOffset = STARTOFFSET_RESUME;
-    }
+    try { offint = boost::lexical_cast<int64_t>(offset); }
+    catch (boost::bad_lexical_cast) { offint = -1; }
   }
 
-  /* make sure that the playlist player doesn't reset our position */
-  item->SetProperty("forceStartOffset", true);
+  return offint;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexRemoteResponse CPlexRemotePlayHandler::playPlayQueue(const CPlexServerPtr& server,
-                                                          const CStdString& playQueueUrl)
+                                                          const CStdString& playQueueUrl,
+                                                          const ArgMap& arguments)
 {
 
   // chop of /playQueues/ and all arguments
@@ -127,7 +113,12 @@ CPlexRemoteResponse CPlexRemotePlayHandler::playPlayQueue(const CPlexServerPtr& 
   CLog::Log(LOGDEBUG, "CPlexRemotePlayHandler::playPlayQueue asked to play a playQueue: %s",
             playQueueId.c_str());
 
-  g_plexApplication.playQueueManager->loadPlayQueue(server, playQueueId);
+  CPlexPlayQueueOptions options;
+  options.startPlaying = true;
+  options.showPrompts = false;
+  options.resumeOffset = getStartPosition(arguments);
+
+  g_plexApplication.playQueueManager->loadPlayQueue(server, playQueueId, options);
   return CPlexRemoteResponse();
 }
 
@@ -150,11 +141,14 @@ CPlexRemoteResponse CPlexRemotePlayHandler::handle(const CStdString& url, const 
   if (!getKeyAndContainerUrl(arguments, key, containerPath))
     return CPlexRemoteResponse(500, "Could not parse key argument");
 
+  g_application.WakeUpScreenSaverAndDPMS();
+  g_application.ResetSystemIdleTimer();
+
   CURL dirURL;
   if (!containerPath.empty())
   {
     if (boost::starts_with(containerPath, "/playQueues"))
-      return playPlayQueue(server, containerPath);
+      return playPlayQueue(server, containerPath, arguments);
     else
       dirURL = server->BuildPlexURL(containerPath);
   }
@@ -162,7 +156,6 @@ CPlexRemoteResponse CPlexRemotePlayHandler::handle(const CStdString& url, const 
   {
     dirURL = server->BuildPlexURL(key);
   }
-
 
   CFileItemList list;
   if (!getContainer(dirURL, list))
@@ -176,16 +169,17 @@ CPlexRemoteResponse CPlexRemotePlayHandler::handle(const CStdString& url, const 
     return CPlexRemoteResponse(500, "Could not find that item");
   }
 
-  setStartPosition(item, arguments);
-
-  g_application.WakeUpScreenSaverAndDPMS();
-  g_application.ResetSystemIdleTimer();
+  PlexUtils::SetItemResumeOffset(item, getStartPosition(arguments));
 
   if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK && !containerPath.empty())
   {
-    g_plexApplication.playQueueManager->create(list, "",
-                                               item->GetProperty("unprocessed_key").asString(),
-                                               false);
+    CPlexPlayQueueOptions options;
+    options.startPlaying = true;
+    options.showPrompts = false;
+    options.shuffle = false;
+    options.startItemKey = item->GetProperty("unprocessed_key").asString();
+
+    g_plexApplication.playQueueManager->create(list, "", options);
   }
   else if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTO)
   {

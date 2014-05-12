@@ -16,11 +16,10 @@ CPlexPlayQueueLocal::CPlexPlayQueueLocal(const CPlexServerPtr& server) : m_serve
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexPlayQueueLocal::create(const CFileItem& container, const CStdString& uri,
-                                 const CStdString& startItemKey, bool shuffle)
+                                 const CPlexPlayQueueOptions& options)
 {
   CURL containerURL(container.GetPath());
-  g_plexApplication.busy.blockWaitingForJob(new CPlexPlayQueueFetchJob(containerURL, true, shuffle,
-                                                                       startItemKey), this);
+  g_plexApplication.busy.blockWaitingForJob(new CPlexPlayQueueFetchJob(containerURL, options), this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,11 +69,11 @@ int CPlexPlayQueueLocal::getCurrentID()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexPlayQueueLocal::get(const CStdString& playQueueID, bool startPlay)
+void CPlexPlayQueueLocal::get(const CStdString& playQueueID, const CPlexPlayQueueOptions &options)
 {
   if (m_list && m_list->GetProperty("playQueueID").asString() == playQueueID)
     CApplicationMessenger::Get().PlexUpdatePlayQueue(PlexUtils::GetMediaTypeFromItem(m_list),
-                                                     false);
+                                                     options.startPlaying);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,12 +108,15 @@ void CPlexPlayQueueLocal::OnJobComplete(unsigned int jobID, bool success, CJob* 
     m_list->SetPath("plexserver://playqueue/");
 
     /* If we need to shuffle the list do it here */
-    if (fj->m_shuffle)
+    if (fj->m_options.shuffle)
       m_list->Randomize();
 
-    if (!fj->m_startItem.empty())
+    if (!fj->m_options.showPrompts && m_list->Get(0))
+      m_list->Get(0)->SetProperty("forceStartOffset", true);
+
+    if (!fj->m_options.startItemKey.empty())
     {
-      CFileItemPtr item = m_list->Get(fj->m_startItem);
+      CFileItemPtr item = m_list->Get(fj->m_options.startItemKey);
       if (item && item->HasMusicInfoTag())
         m_list->SetProperty("playQueueSelectedItemID", item->GetMusicInfoTag()->GetDatabaseId());
     }
@@ -124,6 +126,6 @@ void CPlexPlayQueueLocal::OnJobComplete(unsigned int jobID, bool success, CJob* 
     else
       m_list->SetProperty("playQueueID", rand());
 
-    CApplicationMessenger::Get().PlexUpdatePlayQueue(type, fj->m_startPlaying);
+    CApplicationMessenger::Get().PlexUpdatePlayQueue(type, fj->m_options.startPlaying);
   }
 }

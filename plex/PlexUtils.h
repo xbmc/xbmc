@@ -64,6 +64,7 @@ namespace PlexUtils
   std::string GetCompositeImageUrl(const CFileItem& item, const CStdString& args);
   std::string GetPlexContent(const CFileItem& item);
   ePlexMediaFilterTypes GetFilterType(const CFileItem& item);
+  void SetItemResumeOffset(const CFileItemPtr& item, int64_t offint);
 }
 
 #if defined(HAVE_EXECINFO_H)

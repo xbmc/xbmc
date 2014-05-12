@@ -303,3 +303,33 @@ TEST_F(PlexUtilsGetPrettyMediaItemNameTest, sdVideo)
   mediaItem->SetProperty("mediaTag-videoResolution", "SD");
   EXPECT_STREQ("SD H264 - English (AC3 5.1)", PlexUtils::GetPrettyMediaItemName(mediaItem));
 }
+
+TEST(PlexUtilsSetItemStartOfset, noOffset)
+{
+  CFileItemPtr item = CFileItemPtr(new CFileItem);
+
+  PlexUtils::SetItemResumeOffset(item, 0);
+
+  EXPECT_EQ(item->GetProperty("viewOffset").asInteger(), 0);
+  EXPECT_EQ(item->m_lStartOffset, 0);
+}
+
+TEST(PlexUtilsSetItemStartOffset, offset)
+{
+  CFileItemPtr item = CFileItemPtr(new CFileItem);
+  PlexUtils::SetItemResumeOffset(item, 120);
+
+  EXPECT_EQ(item->GetProperty("viewOffset").asInteger(), 120);
+  EXPECT_EQ(item->m_lStartOffset, STARTOFFSET_RESUME);
+}
+
+TEST(PlexUtilsSetItemStartOffset, setStartPosition_audioTrack)
+{
+  CFileItemPtr item = CFileItemPtr(new CFileItem);
+  item->SetPlexDirectoryType(PLEX_DIR_TYPE_TRACK);
+
+  PlexUtils::SetItemResumeOffset(item, 120);
+  EXPECT_EQ(item->GetProperty("viewOffset").asInteger(), 120);
+  EXPECT_EQ(item->m_lStartOffset, (120 / 1000) * 75);
+  EXPECT_TRUE(item->GetProperty("forceStartOffset").asBoolean());
+}

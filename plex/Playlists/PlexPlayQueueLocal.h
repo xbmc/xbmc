@@ -18,13 +18,14 @@ public:
   }
 
   virtual void create(const CFileItem& container, const CStdString& uri,
-                      const CStdString& startItemKey, bool shuffle);
+                      const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions());
   virtual bool refreshCurrent();
   virtual bool getCurrent(CFileItemList& list);
   virtual void removeItem(const CFileItemPtr &item);
   virtual bool addItem(const CFileItemPtr &item, bool next);
   virtual int getCurrentID();
-  virtual void get(const CStdString &playQueueID, bool startPlay);
+  virtual void get(const CStdString &playQueueID,
+                   const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions());
   virtual CPlexServerPtr server() const
   {
     return m_server;

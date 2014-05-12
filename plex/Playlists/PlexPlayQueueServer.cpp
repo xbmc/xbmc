@@ -52,13 +52,14 @@ CURL CPlexPlayQueueServer::getPlayQueueURL(ePlexMediaType type, const std::strin
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CPlexPlayQueueServer::sendRequest(const CURL& url, const CStdString& verb, bool startPlaying)
+bool CPlexPlayQueueServer::sendRequest(const CURL& url, const CStdString& verb,
+                                       const CPlexPlayQueueOptions& options)
 {
   CURL u(url);
 
   // This is the window size, let's add it here so we know that it's on all requests
   u.SetOption("window", "50");
-  CPlexPlayQueueFetchJob* job = new CPlexPlayQueueFetchJob(u, startPlaying);
+  CPlexPlayQueueFetchJob* job = new CPlexPlayQueueFetchJob(u, options);
   job->m_caller = shared_from_this();
   if (!verb.empty())
     job->m_dir.SetHTTPVerb(verb);
@@ -68,7 +69,7 @@ bool CPlexPlayQueueServer::sendRequest(const CURL& url, const CStdString& verb, 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexPlayQueueServer::create(const CFileItem& container, const CStdString& uri,
-                                  const CStdString& startItemKey, bool shuffle)
+                                  const CPlexPlayQueueOptions &options)
 {
 
   ePlexMediaType type = PlexUtils::GetMediaTypeFromItem(container);
@@ -82,12 +83,12 @@ void CPlexPlayQueueServer::create(const CFileItem& container, const CStdString& 
     realUri = CPlexPlayQueueManager::getURIFromItem(container);
   }
 
-  CURL u = getPlayQueueURL(type, realUri, startItemKey, shuffle, false, 0, false);
+  CURL u = getPlayQueueURL(type, realUri, options.startItemKey, options.shuffle, false, 0, false);
 
   if (u.Get().empty())
     return;
 
-  sendRequest(u, "POST", true);
+  sendRequest(u, "POST", options);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,7 +101,7 @@ bool CPlexPlayQueueServer::refreshCurrent()
   CStdString path;
   path.Format("/playQueues/%d", id);
 
-  sendRequest(m_server->BuildPlexURL(path), "", false);
+  sendRequest(m_server->BuildPlexURL(path), "", CPlexPlayQueueOptions(false, false));
   return true;
 }
 
@@ -128,7 +129,7 @@ void CPlexPlayQueueServer::removeItem(const CFileItemPtr& item)
               (int)item->GetProperty("playQueueItemID").asInteger());
   CURL u = m_server->BuildPlexURL(path);
 
-  sendRequest(u, "DELETE", false);
+  sendRequest(u, "DELETE", CPlexPlayQueueOptions(false, false));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,7 +149,7 @@ bool CPlexPlayQueueServer::addItem(const CFileItemPtr& item, bool next)
     if (u.Get().empty())
       return false;
 
-    return sendRequest(u, "PUT", false);
+    return sendRequest(u, "PUT", CPlexPlayQueueOptions(false, false));
   }
   return false;
 }
@@ -163,11 +164,11 @@ int CPlexPlayQueueServer::getCurrentID()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexPlayQueueServer::get(const CStdString &playQueueID, bool startPlaying)
+void CPlexPlayQueueServer::get(const CStdString &playQueueID, const CPlexPlayQueueOptions &options)
 {
   CStdString path;
   path.Format("/playQueues/%s", playQueueID);
-  sendRequest(m_server->BuildPlexURL(path), "", startPlaying);
+  sendRequest(m_server->BuildPlexURL(path), "", options);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -207,7 +208,11 @@ void CPlexPlayQueueServer::OnJobComplete(unsigned int jobID, bool success, CJob*
         CLog::Log(LOGDEBUG, "CPlexPlayQueueServer::OnJobComplete new list %s => %s",
                   m_list->Get(0)->GetLabel().c_str(), m_list->Get(m_list->Size() - 1)->GetLabel().c_str());
     }
-    CApplicationMessenger::Get().PlexUpdatePlayQueue(type, fj->m_startPlaying);
+
+    if (!fj->m_options.showPrompts && m_list->Get(0))
+      PlexUtils::SetItemResumeOffset(m_list->Get(0), fj->m_options.resumeOffset);
+
+    CApplicationMessenger::Get().PlexUpdatePlayQueue(type, fj->m_options.startPlaying);
   }
   else
   {

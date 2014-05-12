@@ -946,7 +946,14 @@ void CGUIPlexMediaWindow::PlayAll(bool shuffle, const CFileItemPtr& fromHere)
 
   // take out the plexserver://plex part from above when passing it down
   CStdString uri = CPlexPlayQueueManager::getURIFromItem(*m_vecItems, uriPart.Get().substr(17, std::string::npos));
-  g_plexApplication.playQueueManager->create(*m_vecItems, uri, fromHereKey, shuffle);
+
+  CPlexPlayQueueOptions options;
+  options.startItemKey = fromHereKey;
+  options.startPlaying = true;
+  options.shuffle = shuffle;
+  options.showPrompts = true;
+
+  g_plexApplication.playQueueManager->create(*m_vecItems, uri, options);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

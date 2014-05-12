@@ -31,21 +31,22 @@ public:
     return (!server->IsSecondary() && serverVersion > CPlexServerVersion("0.9.9.6.0-abc123"));
   }
 
-  virtual void create(const CFileItem &container, const CStdString& uri,
-                      const CStdString& startItemKey, bool shuffle);
+  virtual void create(const CFileItem &container, const CStdString& uri = "",
+                      const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions());
   virtual bool refreshCurrent();
   virtual bool getCurrent(CFileItemList& list);
   virtual void removeItem(const CFileItemPtr& item);
   virtual bool addItem(const CFileItemPtr& item, bool next);
   virtual int getCurrentID();
-  virtual void get(const CStdString &playQueueID, bool startPlaying);
+  virtual void get(const CStdString& playQueueID,
+                   const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions());
   virtual CPlexServerPtr server() const
   {
     return m_server;
   }
 
 protected:
-  bool sendRequest(const CURL &url, const CStdString &verb, bool startPlaying);
+  bool sendRequest(const CURL &url, const CStdString &verb, const CPlexPlayQueueOptions& options);
   CURL getPlayQueueURL(ePlexMediaType type, const std::string& uri, const std::string& key="",
                        bool shuffle = false, bool continuous = false, int limit = 0,
                        bool next = false);
