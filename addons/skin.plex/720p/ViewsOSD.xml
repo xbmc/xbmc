@@ -590,7 +590,7 @@
 					<onup>200</onup>
 					<ondown>200</ondown>
 					<enable>System.PlexPlayQueue(video)</enable>
-					<onclick>ActivateWindow(10094)</onclick>
+					<onclick>ReplaceWindow(10094)</onclick>
 					<visible allowhiddenfocus="true">Control.HasFocus(717)</visible>
 					<colordiffuse>orange</colordiffuse>
 				</control>

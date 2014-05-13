@@ -22,5 +22,6 @@
 		<include>debugInfos</include>
 		<include>Grid</include>
 		<include>WindowFade</include>
+		<include>Non16x9Cache</include>
 	</controls>
 </window>

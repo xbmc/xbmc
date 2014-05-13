@@ -2,7 +2,286 @@
 <window type="dialog" id="400">
 	<defaultcontrol always="true">300</defaultcontrol>
 	<controls>
+		<!-- now playing -->
 		<control type="group">
+			<visible>Window.IsVisible(nowplaying)</visible>
+			<!-- move if flipped -->
+			<animation effect="slide" start="0,0" end="-440,0" time="1000" condition="MusicPlayer.NowPlayingFlipped">Conditional</animation>
+			<posy>350</posy>
+			<posx>500</posx>
+			<control type="image">
+				<posx>80</posx>
+				<posy>0</posy>
+				<width>550</width>
+				<height>60</height>
+				<include>BlackRounded</include>
+				<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
+			</control>
+			<!-- osd -->
+			<control type="group" id="300">
+				<posx>100</posx>
+				<posy>5</posy>
+				<defaultcontrol always="true">711</defaultcontrol>
+				<!-- repeat -->
+				<control type="group">
+					<posy>9</posy>
+					<posx>0</posx>
+					<control type="image">
+						<width>32</width>
+						<height>30</height>
+						<texture>b-repeat.png</texture>
+						<visible>!Control.HasFocus(708) + !Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
+						<colordiffuse>FFFFFFFF</colordiffuse>
+					</control>
+					<control type="image">
+						<width>32</width>
+						<height>30</height>
+						<texture>b-repeat-one.png</texture>
+						<visible>!Control.HasFocus(708) + Playlist.IsRepeatOne</visible>
+						<colordiffuse>orangeLight</colordiffuse>
+					</control>
+					<control type="image">
+						<width>32</width>
+						<height>30</height>
+						<texture>b-repeat-all.png</texture>
+						<visible>!Control.HasFocus(708) + Playlist.IsRepeat</visible>
+						<colordiffuse>orangeLight</colordiffuse>
+					</control>
+					<control type="image">
+						<width>32</width>
+						<height>30</height>
+						<texture>b-repeat.png</texture>
+						<visible>Control.HasFocus(708) + !Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
+						<colordiffuse>orange</colordiffuse>
+					</control>
+					<control type="image">
+						<width>32</width>
+						<height>30</height>
+						<texture>b-repeat-one.png</texture>
+						<visible>Control.HasFocus(708) + Playlist.IsRepeatOne</visible>
+						<colordiffuse>orange</colordiffuse>
+					</control>
+					<control type="image">
+						<width>32</width>
+						<height>30</height>
+						<texture>b-repeat-all.png</texture>
+						<visible>Control.HasFocus(708) + Playlist.IsRepeat</visible>
+						<colordiffuse>orange</colordiffuse>
+					</control>
+					<control type="button" id="708">
+						<width>32</width>
+						<height>30</height>
+						<onleft>714</onleft>
+						<onright>709</onright>
+						<onup>-</onup>
+						<texturefocus>-</texturefocus>
+						<texturenofocus>-</texturenofocus>
+						<onclick>XBMC.PlayerControl(Repeat)</onclick>
+						<visible allowhiddenfocus="true">Control.HasFocus(708)</visible>
+					</control>
+				</control>
+				<!-- shuffle -->
+				<control type="group">
+					<visible>!System.PlexPlayQueue(Music)</visible>
+					<posy>9</posy>
+					<posx>54</posx>
+					<control type="image">
+						<width>40</width>
+						<height>30</height>
+						<texture>b-shuffle.png</texture>
+						<visible>!Control.HasFocus(709) + !Playlist.IsRandom</visible>
+						<colordiffuse>FFFFFFFF</colordiffuse>
+					</control>
+					<control type="image">
+						<width>40</width>
+						<height>30</height>
+						<texture>b-shuffle.png</texture>
+						<visible>!Control.HasFocus(709) + Playlist.IsRandom</visible>
+						<colordiffuse>orangeLight</colordiffuse>
+					</control>
+					<control type="image">
+						<width>40</width>
+						<height>30</height>
+						<texture>b-shuffle.png</texture>
+						<visible>Control.HasFocus(709) + Playlist.IsRandom</visible>
+						<colordiffuse>orange</colordiffuse>
+					</control>
+					<control type="button" id="709">
+						<width>40</width>
+						<height>30</height>
+						<onleft>708</onleft>
+						<onright>710</onright>
+						<onup>-</onup>
+						<texturefocus>b-shuffle.png</texturefocus>
+						<texturenofocus>-</texturenofocus>
+						<onclick>XBMC.PlayerControl(Random)</onclick>
+						<visible allowhiddenfocus="true">Control.HasFocus(709)</visible>
+						<colordiffuse>orange</colordiffuse>
+					</control>
+					<!--><control type="group">
+						<posy>-17</posy>
+						<posx>583</posx>
+						<control type="label">
+							<width>48</width>
+							<height>48</height>
+							<label>off</label>
+							<font>Regular-16</font>
+							<visible>!Playlist.IsRandom</visible>
+						</control>
+						<control type="label">
+							<width>48</width>
+							<height>48</height>
+							<label>on</label>
+							<font>Regular-16</font>
+							<textcolor>orange</textcolor>
+							<visible>Playlist.IsRandom</visible>
+						</control>
+					</control>-->
+				</control>
+				<!-- previous -->
+				<control type="group">
+					<posy>13</posy>
+					<posx>177</posx>
+					<control type="image">
+						<width>22</width>
+						<height>22</height>
+						<texture>b-previous.png</texture>
+						<visible>!Control.HasFocus(710)</visible>
+						<colordiffuse>FFFFFFFF</colordiffuse>
+					</control>
+					<control type="button" id="710">
+						<width>22</width>
+						<height>22</height>
+						<texturefocus>b-previous.png</texturefocus>
+						<texturenofocus>b-previous.png</texturenofocus>
+						<onleft>709</onleft>
+						<onright>711</onright>
+						<onup>200</onup>
+						<ondown>200</ondown>
+						<onclick>PlayerControl(Previous)</onclick>
+						<visible allowhiddenfocus="true">Control.HasFocus(710)</visible>
+						<colordiffuse>orange</colordiffuse>
+					</control>
+				</control>
+				<!-- play/pause -->
+				<control type="group">
+					<posy>13</posy>
+					<posx>220</posx>
+					<control type="image">
+						<width>20</width>
+						<height>22</height>
+						<texture>b-pause2.png</texture>
+						<visible>!Control.HasFocus(711) + !Player.Paused</visible>
+						<colordiffuse>FFFFFFFF</colordiffuse>
+					</control>
+					<control type="image">
+						<width>20</width>
+						<height>22</height>
+						<texture>b-play2.png</texture>
+						<visible>!Control.HasFocus(711) + Player.Paused</visible>
+						<colordiffuse>FFFFFFFF</colordiffuse>
+					</control>
+					<control type="togglebutton" id="711">
+						<width>20</width>
+						<height>22</height>
+						<texturefocus>b-pause2.png</texturefocus>
+						<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
+						<alttexturefocus>b-play2.png</alttexturefocus>
+						<onleft>710</onleft>
+						<onright>712</onright>
+						<onup>200</onup>
+						<ondown>200</ondown>
+						<onclick>PlayerControl(Play)</onclick>
+						<onfocus condition="!Player.HasAudio">Dialog.Close(PlayerControls)</onfocus>
+						<visible allowhiddenfocus="true">Control.HasFocus(711)</visible>
+						<colordiffuse>orange</colordiffuse>
+					</control>
+				</control>
+				<!-- next -->
+				<control type="group">
+					<posy>13</posy>
+					<posx>260</posx>
+					<control type="image">
+						<width>22</width>
+						<height>22</height>
+						<texture>b-next.png</texture>
+						<visible>!Control.HasFocus(712)</visible>
+						<colordiffuse>FFFFFFFF</colordiffuse>
+					</control>
+					<control type="button" id="712">
+						<width>22</width>
+						<height>22</height>
+						<texturefocus>b-next.png</texturefocus>
+						<texturenofocus>b-next.png</texturenofocus>
+						<onleft>711</onleft>
+						<onright>713</onright>
+						<onup>200</onup>
+						<ondown>200</ondown>
+						<onclick>PlayerControl(Next)</onclick>
+						<onclick condition="!MusicPlayer.HasNext">Dialog.Close(PlayerControls)</onclick>
+						<visible allowhiddenfocus="true">Control.HasFocus(712)</visible>
+						<colordiffuse>orange</colordiffuse>
+					</control>
+				</control>
+				<!-- stop -->
+				<control type="group">
+					<posy>13</posy>
+					<posx>310</posx>
+					<control type="image">
+						<width>22</width>
+						<height>22</height>
+						<texture>b-stop.png</texture>
+						<visible>!Control.HasFocus(713)</visible>
+						<colordiffuse>FFFFFFFF</colordiffuse>
+					</control>
+					<control type="button" id="713">
+						<width>22</width>
+						<height>22</height>
+						<texturefocus>b-stop.png</texturefocus>
+						<texturenofocus>b-stop.png</texturenofocus>
+						<onleft>712</onleft>
+						<onright>714</onright>
+						<onup>200</onup>
+						<ondown>200</ondown>
+						<onclick>PlayerControl(Stop)</onclick>
+						<onclick>Dialog.Close(PlayerControls)</onclick>
+						<onfocus condition="!Player.HasAudio">Dialog.Close(PlayerControls)</onfocus>
+						<visible allowhiddenfocus="true">Control.HasFocus(713)</visible>
+						<colordiffuse>orange</colordiffuse>
+					</control>
+				</control>
+				<!-- pq -->
+				<control type="group">
+					<posy>14</posy>
+					<posx>490</posx>
+					<control type="image">
+						<width>20</width>
+						<height>20</height>
+						<texture>b-list.png</texture>
+						<visible>!Control.HasFocus(714)</visible>
+						<colordiffuse>FFFFFFFF</colordiffuse>
+					</control>
+					<control type="button" id="714">
+						<width>20</width>
+						<height>20</height>
+						<texturefocus>b-list.png</texturefocus>
+						<texturenofocus>-</texturenofocus>
+						<onleft>713</onleft>
+						<onright>708</onright>
+						<onup>200</onup>
+						<ondown>200</ondown>
+						<enable>System.PlexPlayQueue(music)</enable>
+						<onclick>Dialog.Close(PlayerControls)</onclick>
+						<onclick>ReplaceWindow(10094)</onclick>
+						<visible allowhiddenfocus="true">Control.HasFocus(714)</visible>
+						<colordiffuse>orange</colordiffuse>
+					</control>
+				</control>
+			</control>
+		</control>
+		<!-- full -->
+		<control type="group">
+			<visible>!Window.IsVisible(nowplaying)</visible>
 			<posy>100</posy>
 			<posx>500</posx>
 			<!-- bg's -->
@@ -226,7 +505,7 @@
 					<control type="button" id="708">
 						<width>32</width>
 						<height>30</height>
-						<onleft>713</onleft>
+						<onleft>714</onleft>
 						<onright>709</onright>
 						<onup>-</onup>
 						<texturefocus>-</texturefocus>
@@ -237,6 +516,7 @@
 				</control>
 				<!-- shuffle -->
 				<control type="group">
+					<visible>!System.PlexPlayQueue(Music)</visible>
 					<posy>9</posy>
 					<posx>52</posx>
 					<control type="image">
@@ -387,13 +667,40 @@
 						<texturefocus>b-stop.png</texturefocus>
 						<texturenofocus>b-stop.png</texturenofocus>
 						<onleft>712</onleft>
-						<onright>708</onright>
+						<onright>714</onright>
 						<onup>200</onup>
 						<ondown>200</ondown>
 						<onclick>PlayerControl(Stop)</onclick>
 						<onclick>Dialog.Close(PlayerControls)</onclick>
 						<onfocus condition="!Player.HasAudio">Dialog.Close(PlayerControls)</onfocus>
 						<visible allowhiddenfocus="true">Control.HasFocus(713)</visible>
+						<colordiffuse>orange</colordiffuse>
+					</control>
+				</control>
+				<!-- pq -->
+				<control type="group">
+					<posy>14</posy>
+					<posx>310</posx>
+					<control type="image">
+						<width>20</width>
+						<height>20</height>
+						<texture>b-list.png</texture>
+						<visible>!Control.HasFocus(714)</visible>
+						<colordiffuse>FF666666</colordiffuse>
+					</control>
+					<control type="button" id="714">
+						<width>20</width>
+						<height>20</height>
+						<texturefocus>b-list.png</texturefocus>
+						<texturenofocus>-</texturenofocus>
+						<onleft>713</onleft>
+						<onright>708</onright>
+						<onup>200</onup>
+						<ondown>200</ondown>
+						<enable>System.PlexPlayQueue(music)</enable>
+						<onclick>ReplaceWindow(10094)</onclick>
+						<onclick>Dialog.Close(PlayerControls)</onclick>
+						<visible allowhiddenfocus="true">Control.HasFocus(714)</visible>
 						<colordiffuse>orange</colordiffuse>
 					</control>
 				</control>

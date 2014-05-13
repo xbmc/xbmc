@@ -16,5 +16,6 @@
 		<!-- top-level ui (IncludesGlobals.xml & Debug.xml) -->
 		<!--<include>TopBar</include>-->		
 		<include>debugInfos</include>
+		<include>Non16x9Cache</include>
 	</controls>
 </window>
