@@ -756,36 +756,36 @@ OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTim
   }
   else
   {
-  for (unsigned int i = 0; i < outOutputData->mNumberBuffers; i++)
-  {
-    if (sink->m_outputBitstream)
+    for (unsigned int i = 0; i < outOutputData->mNumberBuffers; i++)
     {
-      /* HACK for bitstreaming AC3/DTS via PCM.
-       We reverse the float->S16LE conversion done in the stream or device */
-      static const float mul = 1.0f / (INT16_MAX + 1);
-
-      unsigned int wanted = std::min(outOutputData->mBuffers[i].mDataByteSize / sizeof(float), (size_t)sink->m_format.m_frameSamples)  * sizeof(int16_t);
-      if (wanted <= sink->m_buffer->GetReadSize())
+      if (sink->m_outputBitstream)
       {
-        sink->m_buffer->Read((unsigned char *)sink->m_outputBuffer, wanted);
-        int16_t *src = sink->m_outputBuffer;
-        float  *dest = (float*)outOutputData->mBuffers[i].mData;
-        for (unsigned int i = 0; i < wanted / 2; i++)
-          *dest++ = *src++ * mul;
-      }
-    }
-    else
-    {
-      /* buffers appear to come from CA already zero'd, so just copy what is wanted */
-      unsigned int wanted = outOutputData->mBuffers[i].mDataByteSize;
-      unsigned int bytes = std::min(sink->m_buffer->GetReadSize(), wanted);
-      sink->m_buffer->Read((unsigned char*)outOutputData->mBuffers[i].mData, bytes);
-      LogLevel(bytes, wanted);
-    }
+        /* HACK for bitstreaming AC3/DTS via PCM.
+         We reverse the float->S16LE conversion done in the stream or device */
+        static const float mul = 1.0f / (INT16_MAX + 1);
 
-    // tell the sink we're good for more data
-    condVar.notifyAll();
-  }
+        unsigned int wanted = std::min(outOutputData->mBuffers[i].mDataByteSize / sizeof(float), (size_t)sink->m_format.m_frameSamples)  * sizeof(int16_t);
+        if (wanted <= sink->m_buffer->GetReadSize())
+        {
+          sink->m_buffer->Read((unsigned char *)sink->m_outputBuffer, wanted);
+          int16_t *src = sink->m_outputBuffer;
+          float  *dest = (float*)outOutputData->mBuffers[i].mData;
+          for (unsigned int i = 0; i < wanted / 2; i++)
+            *dest++ = *src++ * mul;
+        }
+      }
+      else
+      {
+        /* buffers appear to come from CA already zero'd, so just copy what is wanted */
+        unsigned int wanted = outOutputData->mBuffers[i].mDataByteSize;
+        unsigned int bytes = std::min(sink->m_buffer->GetReadSize(), wanted);
+        sink->m_buffer->Read((unsigned char*)outOutputData->mBuffers[i].mData, bytes);
+        LogLevel(bytes, wanted);
+      }
+
+      // tell the sink we're good for more data
+      condVar.notifyAll();
+    }
   }
   return noErr;
 }
