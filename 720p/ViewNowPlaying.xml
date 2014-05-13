@@ -404,7 +404,8 @@
 	<!-- Currently Playing Testing Suite, to DELETE later on -->
 	<variable name="CurrentlyPlayingTitle1">
 		<value condition="Player.HasAudio">$INFO[MusicPlayer.Artist]</value>
-		<value condition="Player.HasVideo">$INFO[VideoPlayer.Title]</value>
+		<value condition="Player.HasVideo + !IsEmpty(VideoPlayer.TVShowTitle)">$INFO[VideoPlayer.TVShowTitle]</value>
+		<value condition="Player.HasVideo + IsEmpty(VideoPlayer.TVShowTitle)">$INFO[VideoPlayer.Title]</value>
 	</variable>
 	<variable name="CurrentlyPlayingTitle2">
 		<value condition="Player.HasAudio">$INFO[MusicPlayer.Album]</value>
@@ -603,6 +604,78 @@
 					</control>
 				</control>
 			</control>
+		</control>
+	</include>
+	<include name="CurrentlyPlayingSideBar">
+		<control type="group">
+			<!-- music covers -->
+			<control type="group">
+				<posy>540</posy>
+				<posx>12</posx>
+				<control type="group">
+					<visible>Player.HasAudio</visible>
+					<control type="image">
+						<width>50</width>
+						<height>50</height>
+						<texture>default-square-big.png</texture>
+					</control>
+					<control type="image">
+						<width>50</width>
+						<height>50</height>
+						<texture diffuse="mask-square-big.png">$INFO[MusicPlayer.Cover]</texture>
+						<aspectratio scalediffuse="false">scale</aspectratio>
+					</control>
+				</control>
+				<control type="group">
+					<posy>60</posy>
+					<visible>MusicPlayer.HasNext</visible>
+					<control type="image">
+						<width>50</width>
+						<height>50</height>
+						<texture>default-square-small.png</texture>
+					</control>
+					<control type="image">
+						<width>50</width>
+						<height>50</height>
+						<texture diffuse="mask-square.png">$INFO[MusicPlayer.Offset(1).Cover]</texture>
+						<aspectratio scalediffuse="false">scale</aspectratio>
+					</control>
+				</control>
+			</control>
+			<!-- video posters -->
+			<control type="group">
+				<posy>575</posy>
+				<posx>12</posx>
+				<control type="group">
+					<visible>Player.HasVideo</visible>
+					<control type="image">
+						<width>50</width>
+						<height>75</height>
+						<texture background="true">default-poster-middle.png</texture>
+					</control>
+					<control type="image">
+						<width>50</width>
+						<height>75</height>
+						<texture background="true" diffuse="mask-poster-middle.png">$INFO[Player.Art(poster)]</texture>
+						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+					</control>
+				</control>
+				<!--><control type="group">
+					<posy>85</posy>
+					<visible>Player.HasVideo</visible>
+					<control type="image">
+						<width>50</width>
+						<height>75</height>
+						<texture background="true">default-poster-middle.png</texture>
+					</control>
+					<control type="image">
+						<width>50</width>
+						<height>75</height>
+						<texture background="true" diffuse="mask-poster-middle.png">$INFO[Player.Offset(1).Art(poster)]</texture>
+						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+					</control>
+				</control>-->
+			</control>			
 		</control>
 	</include>
 </includes>

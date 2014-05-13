@@ -15,7 +15,7 @@
 				<width>550</width>
 				<height>60</height>
 				<include>BlackRounded</include>
-				<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
+				<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
 			</control>
 			<!-- osd -->
 			<control type="group" id="300">
