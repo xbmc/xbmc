@@ -10,13 +10,14 @@
 bool CPlexRemotePlayHandler::getKeyAndContainerUrl(const ArgMap& arguments, std::string& key, std::string& containerKey)
 {
   std::string containerPath;
-  std::string keyPath = arguments.find("key")->second;
 
   if (arguments.find("key") == arguments.end())
   {
     CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia need a key argument!");
     return false;
   }
+
+  std::string keyPath = arguments.find("key")->second;
 
   if (arguments.find("containerKey") != arguments.end())
     containerPath = arguments.find("containerKey")->second;
