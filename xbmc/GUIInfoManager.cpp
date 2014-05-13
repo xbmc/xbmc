@@ -1053,6 +1053,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         if (prop.name == videoplayer[i].str)
           return videoplayer[i].val;
       }
+      /* PLEX */
+      if (prop.name == "plexcontent" && prop.num_params())
+        return AddMultiInfo(GUIInfo(VIDEOPLAYER_PLEXCONTENT, ConditionalStringParameter(prop.param()), 0));
+      /* END PLEX */
     }
     else if (cat.name == "slideshow")
     {
@@ -3111,6 +3115,23 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           else if (pq == "any" && type != PLEX_MEDIA_TYPE_UNKNOWN)
             bReturn = true;
         }
+      case VIDEOPLAYER_PLEXCONTENT:
+      {
+        CStdString matchStr = m_stringParameters[info.GetData1()];
+
+        CStdStringArray matchVec = StringUtils::SplitString(matchStr, ";");
+        CStdString content = PlexUtils::GetPlexContent(*m_currentFile);
+
+        BOOST_FOREACH(CStdString& match, matchVec)
+        {
+          match = StringUtils::Trim(match);
+          if(match.Equals(content))
+          {
+            bReturn = true;
+            break;
+          }
+        }
+      }
      /* END PLEX */
     }
   }

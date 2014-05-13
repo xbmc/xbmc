@@ -1,4 +1,5 @@
 if(ENABLE_TESTING)
-	find_all_sources(. SRCS)
-	add_library(PlexTestingUtils OBJECT ${SRCS})
+	add_library(PlexTestingUtils OBJECT PlexTestUtils.cpp)
 endif(ENABLE_TESTING)
+
+plex_add_testcase(PlexGUIInfoManagerTests.cpp)
