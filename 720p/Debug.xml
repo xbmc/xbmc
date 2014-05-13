@@ -650,6 +650,10 @@
 					<include>debugFont</include>
 					<label>ListItem.Status / Overlay : [COLOR=orangeLight]$VAR[ItemStatus] $INFO[ListItem.Overlay, / ][/COLOR]</label>
 				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>VideoPlayer.PlexContent : [COLOR=orangeLight]$VAR[ItemStatus] $INFO[VideoPlayer.PlexContent][/COLOR]</label>
+				</control>
 			</control>
 			<!-- VIDEO PLAYER SPECIFIC -->
 			<control type="grouplist">
