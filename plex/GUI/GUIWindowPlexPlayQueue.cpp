@@ -39,6 +39,11 @@ bool CGUIWindowPlexPlayQueue::Update(const CStdString& strDirectory, bool update
 {
   if (CGUIPlexMediaWindow::Update(strDirectory, updateFilterPath))
   {
+    if (m_vecItems->Size() == 0)
+    {
+      OnBack(ACTION_NAV_BACK);
+      return true;
+    }
     if (PlexUtils::IsPlayingPlaylist() && g_application.CurrentFileItemPtr())
       m_viewControl.SetSelectedItem(g_application.CurrentFileItemPtr()->GetPath());
 

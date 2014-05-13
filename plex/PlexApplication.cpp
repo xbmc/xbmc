@@ -33,6 +33,7 @@
 #include "GUIWindowManager.h"
 #include "Utility/PlexProfiler.h"
 #include "Client/PlexTranscoderClient.h"
+#include "music/tags/MusicInfoTag.h"
 
 #include "network/UdpClient.h"
 #include "DNSNameCache.h"
@@ -318,8 +319,8 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char* 
     if (g_application.IsPlayingVideo() && osd && osd->IsOpenedFromPause())
       CApplicationMessenger::Get().Close(osd, false);
   }
-  else if (flag == ANNOUNCEMENT::Player && stricmp(sender, "xbmc") == 0
-           && stricmp(message, "OnPause") == 0)
+  else if (flag == ANNOUNCEMENT::Player && stricmp(sender, "xbmc") == 0 &&
+           stricmp(message, "OnPause") == 0)
   {
     if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
     {
@@ -327,6 +328,26 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char* 
           = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
       if (g_application.IsPlayingVideo() && osd && !osd->IsActive())
         CApplicationMessenger::Get().DoModal(osd, WINDOW_DIALOG_VIDEO_OSD, "pauseOpen", false);
+    }
+  }
+  else if (flag == ANNOUNCEMENT::Player && stricmp(sender, "xbmc") == 0 &&
+           stricmp(message, "OnStop") == 0)
+  {
+    if (g_plexApplication.playQueueManager->getCurrentPlayQueueType() == PLEX_MEDIA_TYPE_VIDEO)
+    {
+      CFileItemList list;
+      CFileItemPtr lastItem;
+
+      if (g_plexApplication.playQueueManager->getCurrentPlayQueue(list) && list.Get(list.Size() - 1))
+        lastItem = list.Get(list.Size() - 1);
+
+      if (lastItem && lastItem->HasMusicInfoTag() && g_application.CurrentFileItemPtr() &&
+          lastItem->GetProperty("playQueueItemID").asInteger() ==
+            g_application.CurrentFileItemPtr()->GetProperty("playQueueItemID").asInteger(-1))
+      {
+        CLog::Log(LOGDEBUG, "PlexApplication::Announce clearing video playQueue");
+        g_plexApplication.playQueueManager->clear();
+      }
     }
   }
 }
