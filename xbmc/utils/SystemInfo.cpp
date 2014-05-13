@@ -860,7 +860,7 @@ CStdString CSysInfo::GetUAWindowsVersion()
 CStdString CSysInfo::GetUserAgent()
 {
   CStdString result;
-  result = "XBMC/" + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION) + " (";
+  result = "XBMC/" + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION_SHORT) + " (";
 #if defined(TARGET_WINDOWS)
   result += GetUAWindowsVersion();
 #elif defined(TARGET_DARWIN)
