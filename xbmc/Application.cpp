@@ -410,8 +410,6 @@ CApplication::CApplication(void)
   XInitThreads();
 #endif
 
-  // we start in frontend
-  m_bInBackground = false;
 
   /* for now always keep this around */
 #ifdef HAS_KARAOKE
@@ -2198,7 +2196,7 @@ float CApplication::GetDimScreenSaverLevel() const
 void CApplication::Render()
 {
   // do not render if we are stopped or in background
-  if (m_bStop || m_bInBackground)
+  if (m_bStop)
     return;
 
   MEASURE_FUNCTION;
@@ -4621,8 +4619,6 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
 
 void CApplication::CheckScreenSaverAndDPMS()
 {
-  if (m_bInBackground)
-    return;
   if (!m_dpmsIsActive)
     g_Windowing.ResetOSScreensaver();
 
@@ -4712,15 +4708,6 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     return;
   else if (!m_screenSaver->ID().empty())
     g_windowManager.ActivateWindow(WINDOW_SCREENSAVER);
-}
-
-void CApplication::SetInBackground(bool background)
-{
-  if (!background)
-  {
-    ResetScreenSaverTimer();
-  }
-  m_bInBackground = background;
 }
 
 void CApplication::CheckShutdown()
