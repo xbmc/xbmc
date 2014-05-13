@@ -61,6 +61,7 @@ public:
   bool          GetMixingSupport();
   bool          SetCurrentVolume(Float32 vol);
   bool          GetPreferredChannelLayout(CCoreAudioChannelLayout &layout);
+  bool          GetPreferredChannelLayoutForStereo(CCoreAudioChannelLayout &layout);
   bool          GetDataSources(CoreAudioDataSourceList *pList);
   Float64       GetNominalSampleRate();
   bool          SetNominalSampleRate(Float64 sampleRate);
