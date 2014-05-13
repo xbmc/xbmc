@@ -25,6 +25,7 @@
 #include "LocalizeStrings.h"
 #include "GUI/GUIDialogPlexMedia.h"
 #include "PlayListPlayer.h"
+#include "music/tags/MusicInfoTag.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexMediaDecisionEngine::checkItemPlayability(const CFileItem& item)
@@ -106,6 +107,10 @@ bool CPlexMediaDecisionEngine::resolveItem(const CFileItem& _item, CFileItem &re
     resolvedItem.m_lStartOffset = offset;
     resolvedItem.m_lEndOffset = item.m_lEndOffset;
     resolvedItem.SetProperty("viewOffset", item.GetProperty("viewOffset"));
+
+    if (item.HasProperty("playQueueItemID") && !resolvedItem.HasProperty("playQueueItemID"))
+      resolvedItem.SetProperty("playQueueItemID", item.GetProperty("playQueueItemID"));
+
     return true;
   }
   return false;
