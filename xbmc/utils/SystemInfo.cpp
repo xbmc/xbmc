@@ -881,6 +881,10 @@ CStdString CSysInfo::GetUserAgent()
 #endif
   result += "; http://xbmc.org)";
 
+  std::string fullVer(g_infoManager.GetLabel(SYSTEM_BUILD_VERSION));
+  StringUtils::Replace(fullVer, ' ', '-');
+  result += ") Version/" + fullVer;
+
   return result;
 }
 
