@@ -971,6 +971,17 @@ std::string CSysInfo::GetUserAgent()
   result += GetUnameVersion();
 #endif
 
+#if defined(TARGET_ANDROID)
+  // Android has no CPU string by default, so add it as additional parameter
+  struct utsname un1;
+  if (uname(&un1) == 0)
+  {
+    std::string cpuStr(un1.machine);
+    StringUtils::Replace(cpuStr, ' ', '_');
+    result += " XBMC_CPU/" + cpuStr;
+  }
+#endif
+
   std::string fullVer(g_infoManager.GetLabel(SYSTEM_BUILD_VERSION));
   StringUtils::Replace(fullVer, ' ', '-');
   result += ") Version/" + fullVer;
