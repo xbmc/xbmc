@@ -2209,8 +2209,12 @@ float CApplication::GetDimScreenSaverLevel() const
 void CApplication::Render()
 {
   // do not render if we are stopped or in background
-  if (m_bStop || m_bInBackground)
+  if (m_bStop)
     return;
+  if (m_bInBackground){
+    Sleep(100);
+    return;
+  }
 
   MEASURE_FUNCTION;
 
