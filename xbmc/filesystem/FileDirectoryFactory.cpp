@@ -50,7 +50,10 @@
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 #include "URL.h"
+#include "addons/AddonManager.h"
+#include "addons/AudioDecoder.h"
 
+using namespace ADDON;
 using namespace XFILE;
 using namespace PLAYLIST;
 using namespace std;
@@ -66,6 +69,25 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
 {
   if (url.IsProtocol("stack")) // disqualify stack as we need to work with each of the parts instead
     return NULL;
+
+  std::string strExtension=URIUtils::GetExtension(url);
+  StringUtils::ToLower(strExtension);
+  VECADDONS codecs;
+  CAddonMgr::Get().GetAddons(ADDON_AUDIODECODER, codecs);
+  for (size_t i=0;i<codecs.size();++i)
+  {
+    std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));
+    if (!strExtension.empty() && dec->HasTracks() &&
+        dec->GetExtensions().find(strExtension) != std::string::npos)
+    {
+      CAudioDecoder* result = new CAudioDecoder(*dec);
+      static_cast<AudioDecoderDll&>(*result).Create();
+      if (result->ContainsFiles(url))
+        return result;
+      delete result;
+      return NULL;
+    }
+  }
 
 #ifdef HAS_FILESYSTEM
   if ((url.IsFileType("ogg") || url.IsFileType("oga")) && CFile::Exists(url))

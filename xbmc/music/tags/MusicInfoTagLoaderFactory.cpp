@@ -40,6 +40,10 @@
 #include "cores/paplayer/ASAPCodec.h"
 #endif
 
+#include "addons/AddonManager.h"
+#include "addons/AudioDecoder.h"
+
+using namespace ADDON;
 using namespace MUSIC_INFO;
 
 CMusicInfoTagLoaderFactory::CMusicInfoTagLoaderFactory()
@@ -65,6 +69,20 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const std::string&
   if (strExtension.empty())
     return NULL;
 
+  VECADDONS codecs;
+  CAddonMgr::Get().GetAddons(ADDON_AUDIODECODER, codecs);
+  for (size_t i=0;i<codecs.size();++i)
+  {
+    std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));
+    if (dec->HasTags() && dec->GetExtensions().find("."+strExtension) != std::string::npos)
+    {
+      CAudioDecoder* result = new CAudioDecoder(*dec);
+      static_cast<AudioDecoderDll&>(*result).Create();
+      return result;
+    }
+  }
+
+
   if (strExtension == "aac" ||
       strExtension == "ape" || strExtension == "mac" ||
       strExtension == "mp3" || 
@@ -75,11 +93,8 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const std::string&
       strExtension == "ogg" || strExtension == "oga" || strExtension == "oggstream" ||
       strExtension == "aif" || strExtension == "aiff" ||
       strExtension == "wav" ||
-#ifdef HAS_MOD_PLAYER
-      ModPlayer::IsSupportedFormat(strExtension) ||
       strExtension == "mod" || strExtension == "nsf" || strExtension == "nsfstream" ||
       strExtension == "s3m" || strExtension == "it" || strExtension == "xm" ||
-#endif
       strExtension == "wv")
   {
     CTagLoaderTagLib *pTagLoader = new CTagLoaderTagLib();

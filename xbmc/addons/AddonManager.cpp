@@ -20,6 +20,7 @@
 #include "AddonManager.h"
 #include "Addon.h"
 #include "AudioEncoder.h"
+#include "AudioDecoder.h"
 #include "DllLibCPluff.h"
 #include "utils/StringUtils.h"
 #include "utils/JobManager.h"
@@ -117,6 +118,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
     case ADDON_SCREENSAVER:
     case ADDON_PVRDLL:
     case ADDON_AUDIOENCODER:
+    case ADDON_AUDIODECODER:
       { // begin temporary platform handling for Dlls
         // ideally platforms issues will be handled by C-Pluff
         // this is not an attempt at a solution
@@ -163,6 +165,8 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         }
         else if (type == ADDON_AUDIOENCODER)
           return AddonPtr(new CAudioEncoder(props));
+        else if (type == ADDON_AUDIODECODER)
+          return AddonPtr(new CAudioDecoder(props));
         else
           return AddonPtr(new CScreenSaver(props));
       }
@@ -757,6 +761,8 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new PVR::CPVRClient(addonProps));
     case ADDON_AUDIOENCODER:
       return AddonPtr(new CAudioEncoder(addonProps));
+    case ADDON_AUDIODECODER:
+      return AddonPtr(new CAudioDecoder(addonProps));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(addonProps));
     case ADDON_CONTEXT_ITEM:

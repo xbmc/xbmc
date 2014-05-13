@@ -828,7 +828,10 @@ msgctxt "#200"
 msgid "Audio encoders"
 msgstr ""
 
-#empty string with id 201
+#: xbmc/filesystem/AddonsDirectory.cpp
+msgctxt "#201"
+msgid "Audio decoders"
+msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#202"
