@@ -55,6 +55,49 @@ using namespace rapidxml;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexDirectory::GetXMLData(CStdString& data)
+{
+  bool httpSuccess;
+  CStopWatch httpTimer;
+  httpTimer.StartZero();
+
+  if (m_verb == "POST" || !m_body.empty())
+  {
+    httpSuccess = m_file.Post(m_url.Get(), m_body, data);
+  }
+  else if (m_verb == "GET")
+  {
+    httpSuccess = m_file.Get(m_url.Get(), data);
+  }
+  else if (m_verb == "PUT")
+  {
+    httpSuccess = m_file.Put(m_url.Get(), data);
+  }
+  else if (m_verb == "DELETE")
+  {
+    httpSuccess = m_file.Delete(m_url.Get(), data);
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory UNKNOWN VERB %s :-(", m_verb.c_str());
+    return false;
+  }
+
+  if (!httpSuccess)
+  {
+    CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory failed to fetch data from %s: %ld", m_url.Get().c_str(), m_file.GetLastHTTPResponseCode());
+    if (m_file.GetLastHTTPResponseCode() == 500)
+    {
+      /* internal server error, we should handle this .. */
+    }
+    return false;
+  }
+
+  CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory::Timing took %f seconds to download XML document", httpTimer.GetElapsedSeconds());
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
 {
   m_url = url;
@@ -85,8 +128,6 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
   if (boost::starts_with(m_url.GetFileName(), "library/metadata") && !boost::ends_with(m_url.GetFileName(), "children"))
     m_url.SetOption("checkFiles", "1");
 
-  bool httpSuccess;
-
   if (m_url.HasProtocolOption("containerSize"))
   {
     m_url.SetOption("X-Plex-Container-Size", m_url.GetProtocolOption("containerSize"));
@@ -98,39 +139,10 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     m_url.RemoveProtocolOption("containerStart");
   }
 
-  CStopWatch httpTimer;
-  httpTimer.StartZero();
-
-  if (m_verb == "POST" || !m_body.empty())
-    httpSuccess = m_file.Post(m_url.Get(), m_body, m_data);
-  else if (m_verb == "GET")
-    httpSuccess = m_file.Get(m_url.Get(), m_data);
-  else if (m_verb == "PUT")
-    httpSuccess = m_file.Put(m_url.Get(), m_data);
-  else if (m_verb == "DELETE")
-    httpSuccess = m_file.Delete(m_url.Get(), m_data);
-  else
-  {
-    CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory UNKNOWN VERB %s :-(", m_verb.c_str());
+  if (!GetXMLData(m_data))
     return false;
-  }
-
-
-  if (!httpSuccess)
-  {
-    CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory failed to fetch data from %s: %ld", m_url.Get().c_str(), m_file.GetLastHTTPResponseCode());
-    if (m_file.GetLastHTTPResponseCode() == 500)
-    {
-      /* internal server error, we should handle this .. */
-    }
-    return false;
-  }
-
-  CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory::Timing took %f seconds to download XML document", httpTimer.GetElapsedSeconds());
 
   {
-
-
 #ifdef USE_RAPIDXML
 
     xml_document<> doc;    // character type defaults to char

@@ -18,6 +18,7 @@
 
 #include <map>
 #include <boost/foreach.hpp>
+#include <boost/scoped_array.hpp>
 
 #include "PlexTypes.h"
 #include "JobManager.h"
@@ -35,6 +36,8 @@ namespace XFILE
     {
     }
 
+    // make it easy to override network access in tests.
+    virtual bool GetXMLData(CStdString& data);
     bool GetDirectory(const CURL& url, CFileItemList& items);
 
     /* plexserver://shared */

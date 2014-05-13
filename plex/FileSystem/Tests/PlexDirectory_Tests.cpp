@@ -67,3 +67,75 @@ TEST(PlexDirectoryReadChildren, mixedMembers)
 
   EXPECT_TRUE(item.GetProperty("hasMixedMembers").asBoolean());
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+const char youtubePrefsXML[] =
+    "<?xml version=\"1.0\" ?>\n"
+    "<MediaContainer identifier=\"com.plexapp.plugins.youtube\" noHistory=\"0\" replaceParent=\"0\" size=\"3\">\n"
+    "<Setting default=\"0\" id=\"youtube_region\" label=\"Preferred Region for Videos and channels\" secure=\"false\" type=\"enum\" value=\"22\" values=\"All/ALL|Australia/AU|Brazil/BR|Canada/CA|Czech Republic/CZ|France/FR|Germany/DE|Great Britain/GB|Hong Kong/HK|India/IN|Ireland/IE|Israel/IL|Italy/IT|Japan/JP|Mexico/MX|Netherlands/NL|New Zealand/NZ|Poland/PL|Russia/RU|South Africa/ZA|South Korea/KR|Spain/ES|Sweden/SE|Taiwan/TW|United States/US\"/>\n"
+    "<Setting default=\"\" id=\"youtube_user\" label=\"Username\" option=\"\" secure=\"true\" type=\"text\" value=\"\"/>\n"
+    "<Setting default=\"\" id=\"youtube_passwd\" label=\"Password\" option=\"hidden\" secure=\"true\" type=\"text\" value=\"\"/>\n"
+    "</MediaContainer>\n";
+
+class PlexDirectoryFakeDataTest : public XFILE::CPlexDirectory
+{
+public:
+  PlexDirectoryFakeDataTest(const std::string& fakedata) : CPlexDirectory(), m_fakedata(fakedata) {}
+
+  bool GetXMLData(CStdString& data)
+  {
+    data = m_fakedata;
+    return true;
+  }
+
+  std::string m_fakedata;
+};
+
+TEST(PlexDirectoryYoutubeTest, parsePrefs)
+{
+  PlexDirectoryFakeDataTest dir(youtubePrefsXML);
+  CFileItemList list;
+  EXPECT_TRUE(dir.GetDirectory("http://10.0.42.200:32400/:/plugins/com.plexapp.plugins.youtube/prefs", list));
+  EXPECT_STREQ(youtubePrefsXML, dir.GetData());
+}
+
+void gen_random(char *s, const int len) {
+    static const char alphanum[] =
+        "0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
+
+    for (int i = 0; i < len; ++i) {
+        s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+    }
+
+    s[len] = 0;
+}
+
+TEST(PlexDirectoryOverflowTest, morethan1024)
+{
+  char randomdata[2049];
+  gen_random(randomdata, 2048);
+
+  std::string xmldata = "<MediaContainer id=\"" + std::string(randomdata) + "\" />";
+
+  PlexDirectoryFakeDataTest dir(xmldata);
+  CFileItemList list;
+  EXPECT_TRUE(dir.GetDirectory("plexserver://10.0.2.200:32400/foobar", list));
+  EXPECT_EQ(list.GetProperty("id").asString().size(), 2048);
+  EXPECT_STREQ(randomdata, list.GetProperty("id").asString().c_str());
+}
+
+TEST(PlexDirectoryOverflowTest, exactly1024)
+{
+  char randomdata[1001];
+  gen_random(randomdata, 1000);
+
+  std::string xmldata = "<MediaContainer id=\"" + std::string(randomdata) + "\" />";
+
+  PlexDirectoryFakeDataTest dir(xmldata);
+  CFileItemList list;
+  EXPECT_TRUE(dir.GetDirectory("plexserver://10.0.2.200:32400/foobar", list));
+  EXPECT_EQ(list.GetProperty("id").asString().size(), 1000);
+  EXPECT_STREQ(randomdata, list.GetProperty("id").asString().c_str());
+}
