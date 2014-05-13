@@ -2803,7 +2803,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#666"
-msgid "Verbose logging..."
+msgid "Enable component-specific logging"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -2811,7 +2811,52 @@ msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr ""
 
-#empty strings from id 668 to 699
+#: system/settings/settings.xml
+msgctxt "#668"
+msgid "Specify component-specific logging..."
+msgstr ""
+
+#: xbmc/settings/AdvancedSettings.cpp
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr ""
+
+#: xbmc/settings/AdvancedSettings.cpp
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr ""
+
+#: xbmc/settings/AdvancedSettings.cpp
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr ""
+
+#: xbmc/settings/AdvancedSettings.cpp
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr ""
+
+#: xbmc/settings/AdvancedSettings.cpp
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr ""
+
+#: xbmc/settings/AdvancedSettings.cpp
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr ""
+
+#: xbmc/settings/AdvancedSettings.cpp
+msgctxt "#675"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr ""
+
+#: xbmc/settings/AdvancedSettings.cpp
+msgctxt "#676"
+msgid "Verbose logging for AUDIO component"
+msgstr ""
+
+#empty strings from id 677 to 699
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -14995,10 +15040,10 @@ msgctxt "#36393"
 msgid "Folder used to save screenshots taken within XBMC."
 msgstr ""
 
-#. Description of setting "System -> Debugging -> Verbose logging..." with label #666
+#. Description of setting "System -> Debugging -> Enable component-specific logging" with label #666
 #: system/settings/settings.xml
 msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
+msgid "Enables log messages from additional libraries to be included in the log."
 msgstr ""
 
 #. Description of settings category "System -> Master lock" with label #12360
@@ -15263,7 +15308,13 @@ msgctxt "#36509"
 msgid "Monoscopic - 2D"
 msgstr ""
 
-#empty strings from id 36510 to 36519
+#. Description of setting "System -> Debugging -> Component-specific logging..." with label #668
+#: system/settings/settings.xml
+msgctxt "#36510"
+msgid "Specify additional libraries whose log messages are to be included in the log."
+msgstr ""
+
+#empty strings from id 36511 to 36519
 #reserved strings for 3d modes 36509 - 36520
 
 #: system/settings/settings.xml

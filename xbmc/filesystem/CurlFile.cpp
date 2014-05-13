@@ -65,7 +65,7 @@ extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *out
   if (info == CURLINFO_DATA_IN || info == CURLINFO_DATA_OUT)
     return 0;
 
-  if ((g_advancedSettings.m_extraLogLevels & LOGCURL) == 0)
+  if (!g_advancedSettings.CanLogComponent(LOGCURL))
     return 0;
 
   CStdString strLine;

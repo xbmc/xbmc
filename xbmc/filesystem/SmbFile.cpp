@@ -147,7 +147,7 @@ void CSMB::Init()
     // setup our context
     m_context = smbc_new_context();
 #ifdef DEPRECATED_SMBC_INTERFACE
-    smbc_setDebug(m_context, (g_advancedSettings.m_extraLogLevels & LOGSAMBA)?10:0);
+    smbc_setDebug(m_context, g_advancedSettings.CanLogComponent(LOGSAMBA) ? 10 : 0);
     smbc_setFunctionAuthData(m_context, xb_smbc_auth);
     orig_cache = smbc_getFunctionGetCachedServer(m_context);
     smbc_setFunctionGetCachedServer(m_context, xb_smbc_cache);
@@ -156,7 +156,7 @@ void CSMB::Init()
     smbc_setTimeout(m_context, g_advancedSettings.m_sambaclienttimeout * 1000);
     smbc_setUser(m_context, strdup("guest"));
 #else
-    m_context->debug = (g_advancedSettings.m_extraLogLevels & LOGSAMBA?10:0);
+    m_context->debug = (g_advancedSettings.CanLogComponent(LOGSAMBA) ? 10 : 0);
     m_context->callbacks.auth_fn = xb_smbc_auth;
     orig_cache = m_context->callbacks.get_cached_srv_fn;
     m_context->callbacks.get_cached_srv_fn = xb_smbc_cache;

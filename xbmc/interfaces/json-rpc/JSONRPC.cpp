@@ -232,7 +232,7 @@ CStdString CJSONRPC::MethodCall(const CStdString &inputString, ITransportLayer *
   CVariant inputroot, outputroot, result;
   bool hasResponse = false;
 
-  if(g_advancedSettings.m_extraLogLevels & LOGJSONRPC)
+  if(g_advancedSettings.CanLogComponent(LOGJSONRPC))
     CLog::Log(LOGDEBUG, "JSONRPC: Incoming request: %s", inputString.c_str());
 
   inputroot = CJSONVariantParser::Parse((unsigned char *)inputString.c_str(), inputString.length());

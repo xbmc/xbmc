@@ -79,7 +79,7 @@ CDVDInputStreamRTMP::CDVDInputStreamRTMP() : CDVDInputStream(DVDSTREAM_TYPE_RTMP
       default: level = RTMP_LOGCRIT; break;
     }
 
-    if (g_advancedSettings.m_extraLogLevels & LOGRTMP)
+    if (g_advancedSettings.CanLogComponent(LOGRTMP))
       level = RTMP_LOGDEBUG2;
 
     m_libRTMP.LogSetLevel(level);
