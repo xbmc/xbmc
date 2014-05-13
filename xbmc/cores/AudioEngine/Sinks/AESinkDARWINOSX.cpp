@@ -24,6 +24,7 @@
 #include "cores/AudioEngine/Utils/AERingBuffer.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioHelpers.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioHardware.h"
+#include "cores/AudioEngine/Sinks/osx/CoreAudioChannelLayout.h"
 #include "osx/DarwinUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -33,6 +34,7 @@
 #include <sstream>
 
 #define CA_MAX_CHANNELS 16
+// default channel map - in case it can't be fetched from the device
 static enum AEChannel CAChannelMap[CA_MAX_CHANNELS + 1] = {
   AE_CH_FL , AE_CH_FR , AE_CH_BL , AE_CH_BR , AE_CH_FC , AE_CH_LFE , AE_CH_SL , AE_CH_SR ,
   AE_CH_UNKNOWN1 ,
@@ -45,6 +47,188 @@ static enum AEChannel CAChannelMap[CA_MAX_CHANNELS + 1] = {
   AE_CH_UNKNOWN8 ,
   AE_CH_NULL
 };
+
+// map coraudio channel labels to activeae channel labels
+static enum AEChannel CAChannelToAEChannel(AudioChannelLabel CAChannelLabel)
+{
+  enum AEChannel ret = AE_CH_NULL;
+  static unsigned int unknownChannel = AE_CH_UNKNOWN1;
+  switch(CAChannelLabel)
+  {
+    case kAudioChannelLabel_Left:
+      ret = AE_CH_FL;
+      break;
+    case kAudioChannelLabel_Right:
+      ret = AE_CH_FR;
+      break;
+    case kAudioChannelLabel_Center:
+      ret = AE_CH_FC;
+      break;
+    case kAudioChannelLabel_LFEScreen:
+      ret = AE_CH_LFE;
+      break;
+    case kAudioChannelLabel_LeftSurroundDirect:
+      ret = AE_CH_SL;
+      break;
+    case kAudioChannelLabel_RightSurroundDirect:
+      ret = AE_CH_SR;
+      break;
+    case kAudioChannelLabel_LeftCenter:
+      ret = AE_CH_FLOC;
+      break;
+    case kAudioChannelLabel_RightCenter:
+      ret = AE_CH_FROC;
+      break;
+    case kAudioChannelLabel_CenterSurround:
+      ret = AE_CH_TC;
+      break;
+    case kAudioChannelLabel_LeftSurround:
+      ret = AE_CH_SL;
+      break;
+    case kAudioChannelLabel_RightSurround:
+      ret = AE_CH_SR;
+      break;
+    case kAudioChannelLabel_VerticalHeightLeft:
+      ret = AE_CH_TFL;
+      break;
+    case kAudioChannelLabel_VerticalHeightRight:
+      ret = AE_CH_TFR;
+      break;
+    case kAudioChannelLabel_VerticalHeightCenter:
+      ret = AE_CH_TFC;
+      break;
+    case kAudioChannelLabel_TopCenterSurround:
+      ret = AE_CH_TC;
+      break;
+    case kAudioChannelLabel_TopBackLeft:
+      ret = AE_CH_TBL;
+      break;
+    case kAudioChannelLabel_TopBackRight:
+      ret = AE_CH_TBR;
+      break;
+    case kAudioChannelLabel_TopBackCenter:
+      ret = AE_CH_TBC;
+      break;
+    case kAudioChannelLabel_RearSurroundLeft:
+      ret = AE_CH_BL;
+      break;
+    case kAudioChannelLabel_RearSurroundRight:
+      ret = AE_CH_BR;
+      break;
+    case kAudioChannelLabel_LeftWide:
+      ret = AE_CH_BLOC;
+      break;
+    case kAudioChannelLabel_RightWide:
+      ret = AE_CH_BROC;
+      break;
+    case kAudioChannelLabel_LFE2:
+      ret = AE_CH_LFE;
+      break;
+    case kAudioChannelLabel_LeftTotal:
+      ret = AE_CH_FL;
+      break;
+    case kAudioChannelLabel_RightTotal:
+      ret = AE_CH_FR;
+      break;
+    case kAudioChannelLabel_HearingImpaired:
+      ret = AE_CH_FC;
+      break;
+    case kAudioChannelLabel_Narration:
+      ret = AE_CH_FC;
+      break;
+    case kAudioChannelLabel_Mono:
+      ret = AE_CH_FC;
+      break;
+    case kAudioChannelLabel_DialogCentricMix:
+      ret = AE_CH_FC;
+      break;
+    case kAudioChannelLabel_CenterSurroundDirect:
+      ret = AE_CH_TC;
+      break;
+    case kAudioChannelLabel_Haptic:
+      ret = AE_CH_FC;
+      break;
+    default:
+      ret = (enum AEChannel)unknownChannel++;
+  }
+  if (unknownChannel > AE_CH_UNKNOWN8)
+    unknownChannel = AE_CH_UNKNOWN1;
+    
+  return ret;
+}
+
+//Note: in multichannel mode CA will either pull 2 channels of data (stereo) or 6/8 channels of data
+//(every speaker setup with more then 2 speakers). The difference between the number of real speakers
+//and 6/8 channels needs to be padded with unknown channels so that the sample size fits 6/8 channels
+//
+//device [in] - the device whose channel layout should be used
+//channelMap [in/out] - if filled it will it indicates that we are called from initialize and we log the requested map, out returns the channelMap for device
+//channelsPerFrame [in] - the number of channels this device is configured to (e.x. 2 or 6/8)
+static void GetAEChannelMap(CCoreAudioDevice &device, CAEChannelInfo &channelMap, unsigned int channelsPerFrame)
+{
+  CCoreAudioChannelLayout calayout;
+  bool logMapping = channelMap.Count() > 0; // only log if the engine requests a layout during init
+  bool mapAvailable = false;
+  unsigned int numberChannelsInDeviceLayout = CA_MAX_CHANNELS; // default 8 channels from CAChannelMap
+  AudioChannelLayout *layout = NULL;
+
+  // try to fetch either the multichannel or the stereo channel layout from the device
+  if (channelsPerFrame == 2 || channelMap.Count() == 2)
+    mapAvailable = device.GetPreferredChannelLayoutForStereo(calayout);
+  else
+    mapAvailable = device.GetPreferredChannelLayout(calayout);
+
+  // if a map was fetched - check if it is usable
+  if (mapAvailable)
+  {
+    layout = calayout;
+    if (layout == NULL || layout->mChannelLayoutTag != kAudioChannelLayoutTag_UseChannelDescriptions)
+      mapAvailable = false;// wrong map format
+    else
+      numberChannelsInDeviceLayout = layout->mNumberChannelDescriptions;
+  }
+
+  // start the mapping action
+  // the number of channels to be added to the outgoing channelmap
+  // this is CA_MAX_CHANNELS at max and might be lower for some output devices (channelsPerFrame)
+  unsigned int numChannelsToMap = std::min((unsigned int)CA_MAX_CHANNELS, (unsigned int)channelsPerFrame);
+  std::string layoutStr;
+
+  if (logMapping)
+  {
+    CLog::Log(LOGDEBUG, "%s Engine requests layout %s", __FUNCTION__, ((std::string)channelMap).c_str());
+
+    if (mapAvailable)
+      CLog::Log(LOGDEBUG, "%s trying to map to %s layout: %s", __FUNCTION__, channelsPerFrame == 2 ? "stereo" : "multichannel", calayout.ChannelLayoutToString(*layout, layoutStr));
+    else
+      CLog::Log(LOGDEBUG, "%s no map available - using static multichannel map layout", __FUNCTION__);
+  }
+    
+  channelMap.Reset();// start with an empty map
+
+  for (unsigned int channel = 0; channel < numChannelsToMap; channel++)
+  {
+    // we only try to map channels which are defined in the device layout
+    enum AEChannel currentChannel;
+    if (channel < numberChannelsInDeviceLayout)
+    {
+      // get the channel from the fetched map
+      if (mapAvailable)
+        currentChannel = CAChannelToAEChannel(layout->mChannelDescriptions[channel].mChannelLabel);
+      else// get the channel from the default map
+        currentChannel = CAChannelMap[channel];
+
+    }
+    else// fill with unknown channels
+      currentChannel = CAChannelToAEChannel(kAudioChannelLabel_Unknown);
+
+    if(!channelMap.HasChannel(currentChannel))// only add if not already added
+      channelMap += currentChannel;
+  }
+
+  if (logMapping)
+    CLog::Log(LOGDEBUG, "%s mapped channels to layout %s", __FUNCTION__, ((std::string)channelMap).c_str());
+}
 
 static bool HasSampleRate(const AESampleRateList &list, const unsigned int samplerate)
 {
@@ -197,15 +381,6 @@ static void EnumerateDevices(CADeviceList &list)
                 break;
             }
 
-            // add channel info
-            CAEChannelInfo channel_info;
-            for (UInt32 chan = 0; chan < CA_MAX_CHANNELS && chan < desc.mChannelsPerFrame; ++chan)
-            {
-              if (!device.m_channels.HasChannel(CAChannelMap[chan]))
-                device.m_channels += CAChannelMap[chan];
-              channel_info += CAChannelMap[chan];
-            }
-
             // add sample rate info
             // for devices which return kAudioStreamAnyRatee
             // we add 44.1khz and 48khz - user can use
@@ -264,7 +439,9 @@ static void EnumerateDevices(CADeviceList &list)
       device.m_deviceType = AE_DEVTYPE_HDMI;
     if (hasDisplayPortName)
       device.m_deviceType = AE_DEVTYPE_DP;
-    
+      
+    //get channel map to match the devices channel layout as set in audio-midi-setup
+    GetAEChannelMap(caDevice, device.m_channels, caDevice.GetTotalOutputChannels());
     
     list.push_back(std::make_pair(deviceID, device));
     //in the first place of the list add the default device
@@ -567,14 +744,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
 
   /* Update our AE format */
   format.m_sampleRate    = outputFormat.mSampleRate;
-  if (outputFormat.mChannelsPerFrame != format.m_channelLayout.Count())
-  { /* update the channel count.  We assume that they're layed out as given in CAChannelMap.
-       if they're not, this is plain wrong */
-    format.m_channelLayout.Reset();
-    for (unsigned int i = 0; i < outputFormat.mChannelsPerFrame && i < CA_MAX_CHANNELS; i++)
-      format.m_channelLayout += CAChannelMap[i];
-  }
-
+  
   m_outputBitstream   = passthrough && outputFormat.mFormatID == kAudioFormatLinearPCM;
 
   std::string formatString;
@@ -595,6 +765,10 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   m_outputStream.GetVirtualFormat(&virtualFormat);
   CLog::Log(LOGDEBUG, "%s: New Virtual Format: %s", __FUNCTION__, StreamDescriptionToString(virtualFormat, formatString));
   CLog::Log(LOGDEBUG, "%s: New Physical Format: %s", __FUNCTION__, StreamDescriptionToString(outputFormat, formatString));
+
+  // update the channel map based on the new stream format
+  GetAEChannelMap(m_device, format.m_channelLayout, outputFormat.mChannelsPerFrame);
+
 
   m_latentFrames = m_device.GetNumLatencyFrames();
   m_latentFrames += m_outputStream.GetNumLatencyFrames();
