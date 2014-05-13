@@ -24,6 +24,8 @@
 #include <vector>
 #include "PlatformDefs.h" // for SYSTEMTIME
 
+#define CARCHIVE_BUFFER_MAX 4096
+
 namespace XFILE
 {
   class CFile;
@@ -69,18 +71,66 @@ public:
   CArchive& operator<<(const std::vector<int>& iArray);
 
   // loading
-  CArchive& operator>>(float& f);
-  CArchive& operator>>(double& d);
-  CArchive& operator>>(short int& s);
-  CArchive& operator>>(unsigned short int& us);
-  CArchive& operator>>(int& i);
-  CArchive& operator>>(unsigned int& ui);
-  CArchive& operator>>(long int& l);
-  CArchive& operator>>(unsigned long int& ul);
-  CArchive& operator>>(long long int& ll);
-  CArchive& operator>>(unsigned long long int& ull);
-  CArchive& operator>>(bool& b);
-  CArchive& operator>>(char& c);
+  inline CArchive& operator>>(float& f)
+  {
+    return streamin(&f, sizeof(f));
+  }
+
+  inline CArchive& operator>>(double& d)
+  {
+    return streamin(&d, sizeof(d));
+  }
+
+  inline CArchive& operator>>(short int& s)
+  {
+    return streamin(&s, sizeof(s));
+  }
+
+  inline CArchive& operator>>(unsigned short int& us)
+  {
+    return streamin(&us, sizeof(us));
+  }
+
+  inline CArchive& operator>>(int& i)
+  {
+    return streamin(&i, sizeof(i));
+  }
+
+  inline CArchive& operator>>(unsigned int& ui)
+  {
+    return streamin(&ui, sizeof(ui));
+  }
+
+  inline CArchive& operator>>(long int& l)
+  {
+    return streamin(&l, sizeof(l));
+  }
+
+  inline CArchive& operator>>(unsigned long int& ul)
+  {
+    return streamin(&ul, sizeof(ul));
+  }
+
+  inline CArchive& operator>>(long long int& ll)
+  {
+    return streamin(&ll, sizeof(ll));
+  }
+
+  inline CArchive& operator>>(unsigned long long int& ull)
+  {
+    return streamin(&ull, sizeof(ull));
+  }
+
+  inline CArchive& operator>>(bool& b)
+  {
+    return streamin(&b, sizeof(b));
+  }
+
+  inline CArchive& operator>>(char& c)
+  {
+    return streamin(&c, sizeof(c));
+  }
+
   CArchive& operator>>(std::string &str);
   CArchive& operator>>(std::wstring& wstr);
   CArchive& operator>>(SYSTEMTIME& time);
@@ -97,12 +147,50 @@ public:
   enum Mode {load = 0, store};
 
 protected:
-  CArchive& streamout(const void* dataPtr, size_t size);
-  CArchive& streamin(void* dataPtr, const size_t size);
-  void FlushBuffer();
+  inline CArchive &streamout(const void *dataPtr, size_t size)
+  {
+    const uint8_t *ptr = (const uint8_t *) dataPtr;
+    /* Note, the buffer is flushed as soon as it is full (m_BufferRemain == size) rather
+     * than waiting until we attempt to put more data into an already full buffer */
+    if (m_BufferRemain > size)
+    {
+      memcpy(m_BufferPos, ptr, size);
+      m_BufferPos += size;
+      m_BufferRemain -= size;
+      return *this;
+    }
+    else
+    {
+      return streamout_bufferwrap(ptr, size);
+    }
+  }
+
+  inline CArchive &streamin(void *dataPtr, size_t size)
+  {
+    uint8_t *ptr = (uint8_t *) dataPtr;
+    /* Note, refilling the buffer is deferred until we know we need to read more from it */
+    if (m_BufferRemain >= size)
+    {
+      memcpy(ptr, m_BufferPos, size);
+      m_BufferPos += size;
+      m_BufferRemain -= size;
+      return *this;
+    }
+    else
+    {
+      return streamin_bufferwrap(ptr, size);
+    }
+  }
+
   XFILE::CFile* m_pFile;
   int m_iMode;
   uint8_t *m_pBuffer;
-  int m_BufferPos;
-};
+  uint8_t *m_BufferPos;
+  size_t m_BufferRemain;
 
+private:
+  void FlushBuffer();
+  CArchive &streamout_bufferwrap(const uint8_t *ptr, size_t size);
+  void FillBuffer();
+  CArchive &streamin_bufferwrap(uint8_t *ptr, size_t size);
+};
