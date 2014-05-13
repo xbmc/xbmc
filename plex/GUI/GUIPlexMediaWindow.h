@@ -54,7 +54,7 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback
 
   public:
     CGUIPlexMediaWindow(int windowId = WINDOW_VIDEO_NAV, const CStdString &xml = "MyVideoNav.xml") :
-      CGUIMediaWindow(windowId, xml), m_returningFromSkinLoad(false), m_pagingOffset(0), m_currentJobId(-1), m_hasAdvancedFilters(false), m_clearFilterButton(NULL) {};
+      CGUIMediaWindow(windowId, xml), m_returningFromSkinLoad(false), m_pagingOffset(0), m_currentJobId(-1), m_hasAdvancedFilters(false), m_clearFilterButton(NULL) { m_loadType = LOAD_ON_GUI_INIT; };
     bool OnMessage(CGUIMessage &message);
     bool OnAction(const CAction& action);
     virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
