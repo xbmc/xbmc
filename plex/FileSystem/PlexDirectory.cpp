@@ -148,8 +148,12 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     xml_document<> doc;    // character type defaults to char
     try
     {
-      m_xmlData = m_data;
-      doc.parse<0>((char*)m_xmlData.c_str());    // 0 means default parse flags
+      if (m_data.size() > 1023)
+        m_xmlData.reset(new char[m_data.size() + 1]);
+
+      std::copy(m_data.begin(), m_data.end(), m_xmlData.get());
+      m_xmlData[m_data.size()] = '\0';
+      doc.parse<0>(m_xmlData.get());    // 0 means default parse flags
     }
     catch (...)
     {

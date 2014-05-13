@@ -32,7 +32,7 @@ namespace XFILE
   class CPlexDirectory : public IDirectory
   {
   public:
-    CPlexDirectory() : m_verb("GET")
+    CPlexDirectory() : m_verb("GET"), m_xmlData(new char[1024])
     {
     }
 
@@ -111,7 +111,7 @@ namespace XFILE
   private:
     CStdString m_body;
     CStdString m_data;
-    CStdString m_xmlData;
+    boost::scoped_array<char> m_xmlData;
     CURL m_url;
 
     CPlexFile m_file;
