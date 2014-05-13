@@ -103,7 +103,8 @@ void CPVRDatabase::CreateTables()
         "idGroup         integer primary key,"
         "bIsRadio        bool, "
         "iGroupType      integer, "
-        "sName           varchar(64)"
+        "sName           varchar(64), "
+        "iLastWatched    integer"
       ")"
   );
 
@@ -112,8 +113,7 @@ void CPVRDatabase::CreateTables()
       "CREATE TABLE map_channelgroups_channels ("
         "idChannel      integer, "
         "idGroup        integer, "
-        "iChannelNumber integer, "
-        "iLastWatched   integer"
+        "iChannelNumber integer"
       ")"
   );
 
