@@ -294,7 +294,7 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
     return;
   }
   CSettingGroup *groupSaveAsDefault = AddGroup(category);
-  if (groupSubtitles == NULL)
+  if (groupSaveAsDefault == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogAudioSubtitleSettings: unable to setup settings");
     return;
