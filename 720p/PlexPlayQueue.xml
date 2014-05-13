@@ -1164,20 +1164,20 @@
 							<shadowcolor>ff222222</shadowcolor>
 						</control>
 						<control type="group">
-							<visible>Container.PlexContent(Episodes)</visible>
+							<visible>ListItem.Type(Episode)</visible>
 							<include>EpisodeThumbOverlay</include>
-							<control type="label">
-								<include>EpisodeThumbOverlayTitle</include>
-								<textcolor>white</textcolor>
-								<visible>IsEmpty(Container.Property(mixedParents))</visible>
-							</control>
 							<control type="label">
 								<include>EpisodeThumbOverlayTitle2</include>
 								<textcolor>white</textcolor>
-								<visible>!IsEmpty(Container.Property(mixedParents))</visible>
 							</control>
 						</control>
-						<include>PosterThumbUnwatchedOverlay</include>
+						<control type="image">
+							<posy>87</posy>
+							<posx>176</posx>
+							<width>28</width>
+							<height>28</height>
+							<info>ListItem.Overlay</info>
+						</control>
 						<control type="image">
 							<posx>100</posx>
 							<posy>50</posy>
@@ -1224,20 +1224,21 @@
 							<shadowcolor>ff222222</shadowcolor>
 						</control>
 						<control type="group">
-							<visible>Container.PlexContent(Episodes)</visible>
+							<visible>ListItem.Type(Episode)</visible>
 							<include>EpisodeThumbOverlay</include>
 							<control type="label">
-								<include>EpisodeThumbOverlayTitle</include>
-								<textcolor>white</textcolor>
-								<visible>IsEmpty(Container.Property(mixedParents))</visible>
-							</control>
-							<control type="label">
 								<include>EpisodeThumbOverlayTitle2</include>
-								<textcolor>white</textcolor>
-								<visible>!IsEmpty(Container.Property(mixedParents))</visible>
+								<shadowcolor>ff222222</shadowcolor>
+								<textcolor>orangeLight</textcolor>
 							</control>
 						</control>
-						<include>PosterThumbUnwatchedOverlay</include>
+						<control type="image">
+							<posy>87</posy>
+							<posx>176</posx>
+							<width>28</width>
+							<height>28</height>
+							<info>ListItem.Overlay</info>
+						</control>
 						<include>EpisodeSelectedBorder</include>
 						<control type="image">
 							<posx>100</posx>
