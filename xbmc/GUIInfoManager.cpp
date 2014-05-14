@@ -463,6 +463,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "audiostream",      VIDEOPLAYER_AUDIOSTREAM },
                                   { "subtitlestream",   VIDEOPLAYER_SUBTITLESTREAM },
                                   { "durationstr",      VIDEOPLAYER_DURATION_STRING },
+                                  { "plexcontentstr",   VIDEOPLAYER_PLEXCONTENT_STRING },
                                   /* END PLEX */
                                   { "parentalrating",   VIDEOPLAYER_PARENTAL_RATING }};
 
@@ -1565,6 +1566,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   case VIDEOPLAYER_AUDIOSTREAM:
   case VIDEOPLAYER_SUBTITLESTREAM:
   case VIDEOPLAYER_DURATION_STRING:
+  case VIDEOPLAYER_PLEXCONTENT_STRING:
   /* END PLEX */
   case VIDEOPLAYER_LASTPLAYED:
     strLabel = GetVideoLabel(info);
@@ -4169,6 +4171,10 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
         }
         else
           return GetItemLabel(m_currentFile.get(), LISTITEM_DURATION);
+      }
+    case VIDEOPLAYER_PLEXCONTENT_STRING:
+      {
+        return PlexUtils::GetPlexContent(*m_currentFile);
       }
     /* END PLEX */
     case VIDEOPLAYER_PLAYCOUNT:
