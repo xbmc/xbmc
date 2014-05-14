@@ -465,6 +465,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "subtitlestream",   VIDEOPLAYER_SUBTITLESTREAM },
                                   { "durationstr",      VIDEOPLAYER_DURATION_STRING },
                                   { "plexcontentstr",   VIDEOPLAYER_PLEXCONTENT_STRING },
+                                  { "hasnext",          VIDEOPLAYER_HASNEXT },
                                   /* END PLEX */
                                   { "parentalrating",   VIDEOPLAYER_PARENTAL_RATING }};
 
@@ -2462,6 +2463,13 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 #else
     bReturn = false;
 #endif
+  }
+  else if (condition == VIDEOPLAYER_HASNEXT)
+  {
+    // requires current playlist be PLAYLIST_MUSIC
+    bReturn = false;
+    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
+      bReturn = (g_playlistPlayer.GetCurrentSong() < (g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size() - 1)); // not last song
   }
   /* END PLEX */
   else if (g_application.IsPlaying())

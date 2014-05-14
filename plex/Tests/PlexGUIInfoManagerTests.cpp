@@ -41,6 +41,9 @@ class PlexGUIInfoManagerTest : public ::testing::Test
 
     delete g_application.m_pPlayer;
     g_application.m_pPlayer = NULL;
+
+    g_playlistPlayer.Clear();
+    g_playlistPlayer.Reset();
   }
 };
 
@@ -107,4 +110,27 @@ TEST_F(PlexGUIInfoManagerTest, VideoPlayerOffset)
   value = g_infoManager.TranslateString("VideoPlayer.Offset(3).Title");
   EXPECT_GT(value, 0);
   EXPECT_STREQ("3", g_infoManager.GetLabel(value));
+}
+
+TEST_F(PlexGUIInfoManagerTest, VideoPlayerHasNextFalse)
+{
+  EXPECT_FALSE(g_infoManager.EvaluateBool("VideoPlayer.HasNext"));
+}
+
+TEST_F(PlexGUIInfoManagerTest, videoPlayerHasNextTrue)
+{
+  ADD_PL_ITEM("1");
+  ADD_PL_ITEM("2");
+
+  g_playlistPlayer.SetCurrentSong(0);
+  EXPECT_TRUE(g_infoManager.EvaluateBool("VideoPlayer.HasNext"));
+}
+
+TEST_F(PlexGUIInfoManagerTest, videoPlayerHasNextEndOfPL)
+{
+  ADD_PL_ITEM("1");
+  ADD_PL_ITEM("2");
+
+  g_playlistPlayer.SetCurrentSong(1);
+  EXPECT_FALSE(g_infoManager.EvaluateBool("VideoPlayer.HasNext"));
 }
