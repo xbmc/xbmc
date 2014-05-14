@@ -658,8 +658,9 @@ double CAESinkDARWINOSX::GetCacheTotal()
 CCriticalSection mutex;
 XbmcThreads::ConditionVariable condVar;
 
-unsigned int CAESinkDARWINOSX::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio, bool blocking)
+unsigned int CAESinkDARWINOSX::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
 {
+  uint8_t *buffer = data[0]+offset*m_format.m_frameSize;
   if (m_buffer->GetWriteSize() < frames * m_format.m_frameSize)
   { // no space to write - wait for a bit
     CSingleLock lock(mutex);
@@ -680,7 +681,7 @@ unsigned int CAESinkDARWINOSX::AddPackets(uint8_t *data, unsigned int frames, bo
 
   unsigned int write_frames = std::min(frames, m_buffer->GetWriteSize() / m_format.m_frameSize);
   if (write_frames)
-    m_buffer->Write(data, write_frames * m_format.m_frameSize);
+    m_buffer->Write(buffer, write_frames * m_format.m_frameSize);
 
   return write_frames;
 }

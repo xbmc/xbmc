@@ -60,7 +60,7 @@ double CAESinkProfiler::GetDelay()
   return 0.0f;
 }
 
-unsigned int CAESinkProfiler::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio, bool blocking)
+unsigned int CAESinkProfiler::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
 {
   int64_t ts = CurrentHostCounter();
   CLog::Log(LOGDEBUG, "CAESinkProfiler::AddPackets - latency %f ms", (float)(ts - m_ts) / 1000000.0f);

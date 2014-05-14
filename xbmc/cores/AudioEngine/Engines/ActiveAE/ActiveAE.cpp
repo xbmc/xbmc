@@ -1094,8 +1094,10 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     {
       // check if we support input format of stream
       if (!AE_IS_RAW((*it)->m_format.m_dataFormat) && 
-          CActiveAEResample::GetAVSampleFormat((*it)->m_format.m_dataFormat) == AV_SAMPLE_FMT_FLT &&
-          (*it)->m_format.m_dataFormat != AE_FMT_FLOAT)
+          ((CActiveAEResample::GetAVSampleFormat((*it)->m_format.m_dataFormat) == AV_SAMPLE_FMT_FLT &&
+          (*it)->m_format.m_dataFormat != AE_FMT_FLOAT) ||
+          (CActiveAEResample::GetAVSampleFormat((*it)->m_format.m_dataFormat) == AV_SAMPLE_FMT_FLTP &&
+          (*it)->m_format.m_dataFormat != AE_FMT_FLOATP)))
       {
         (*it)->m_convertFn = CAEConvert::ToFloat((*it)->m_format.m_dataFormat);
         (*it)->m_format.m_dataFormat = AE_FMT_FLOAT;

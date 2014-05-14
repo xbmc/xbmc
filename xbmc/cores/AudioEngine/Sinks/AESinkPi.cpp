@@ -306,9 +306,10 @@ double CAESinkPi::GetCacheTotal()
   return AUDIO_PLAYBUFFER;
 }
 
-unsigned int CAESinkPi::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio, bool blocking)
+unsigned int CAESinkPi::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
 {
   unsigned int sent = 0;
+  uint8_t *buffer = data[0]+offset*m_format.m_frameSize;
 
   if (!m_Initialized)
     return frames;
@@ -320,25 +321,20 @@ unsigned int CAESinkPi::AddPackets(uint8_t *data, unsigned int frames, bool hasA
     double delay = GetDelay();
     double ideal_submission_time = AUDIO_PLAYBUFFER - delay;
     // ideal amount of audio we'd like submit (to make delay match AUDIO_PLAYBUFFER)
-    int timeout = blocking ? 1000 : 0;
+    int timeout = 1000;
     int ideal_submission_samples = ideal_submission_time / (m_sinkbuffer_sec_per_byte * m_format.m_frameSize);
     // if we are almost full then sleep (to avoid repeatedly sending a few samples)
     bool too_laggy = ideal_submission_time < 0.25 * AUDIO_PLAYBUFFER;
     int sleeptime = (int)(AUDIO_PLAYBUFFER * 0.25 * 1000.0);
     if (too_laggy)
     {
-      if (blocking)
-      {
-        Sleep(sleeptime);
-        continue;
-      }
-      break;
+      Sleep(sleeptime);
+      continue;
     }
     omx_buffer = m_omx_render.GetInputBuffer(timeout);
     if (omx_buffer == NULL)
     {
-      if (blocking)
-        CLog::Log(LOGERROR, "COMXAudio::Decode timeout");
+      CLog::Log(LOGERROR, "COMXAudio::Decode timeout");
       break;
     }
 
@@ -348,7 +344,7 @@ unsigned int CAESinkPi::AddPackets(uint8_t *data, unsigned int frames, bool hasA
     omx_buffer->nFilledLen = samples * m_format.m_frameSize;
     omx_buffer->nTimeStamp = ToOMXTime(0);
     omx_buffer->nFlags = 0;
-    memcpy(omx_buffer->pBuffer, (uint8_t *)data + sent * m_format.m_frameSize, omx_buffer->nFilledLen);
+    memcpy(omx_buffer->pBuffer, (uint8_t *)buffer + sent * m_format.m_frameSize, omx_buffer->nFilledLen);
 
     sent += samples;
 

@@ -292,7 +292,10 @@ AVSampleFormat CActiveAEResample::GetAVSampleFormat(AEDataFormat format)
   else if (format == AE_FMT_FLOATP)  return AV_SAMPLE_FMT_FLTP;
   else if (format == AE_FMT_DOUBLEP) return AV_SAMPLE_FMT_DBLP;
 
-  return AV_SAMPLE_FMT_FLT;
+  if (AE_IS_PLANAR(format))
+    return AV_SAMPLE_FMT_FLTP;
+  else
+    return AV_SAMPLE_FMT_FLT;
 }
 
 AEDataFormat CActiveAEResample::GetAESampleFormat(AVSampleFormat format, int bits)

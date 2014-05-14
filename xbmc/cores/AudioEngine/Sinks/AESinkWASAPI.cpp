@@ -403,7 +403,7 @@ double CAESinkWASAPI::GetCacheTotal()
   return m_sinkLatency;
 }
 
-unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio, bool blocking)
+unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
 {
   if (!m_initialized)
     return 0;
@@ -420,9 +420,10 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
 
   unsigned int NumFramesRequested = m_format.m_frames;
   unsigned int FramesToCopy = std::min(m_format.m_frames - m_bufferPtr, frames);
+  uint8_t *buffer = data[0]+offset*m_format.m_frameSize;
   if (m_bufferPtr != 0 || frames != m_format.m_frames)
   {
-    memcpy(m_pBuffer+m_bufferPtr*m_format.m_frameSize, data, FramesToCopy*m_format.m_frameSize);
+    memcpy(m_pBuffer+m_bufferPtr*m_format.m_frameSize, buffer, FramesToCopy*m_format.m_frameSize);
     m_bufferPtr += FramesToCopy;
     if (m_bufferPtr != m_format.m_frames)
       return frames;
@@ -472,25 +473,13 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
 
   /* Wait for Audio Driver to tell us it's got a buffer available */
   DWORD eventAudioCallback;
-  if(!blocking)
-    eventAudioCallback = WaitForSingleObject(m_needDataEvent, 0);
-  else
-    eventAudioCallback = WaitForSingleObject(m_needDataEvent, 1100);
+  eventAudioCallback = WaitForSingleObject(m_needDataEvent, 1100);
 
-  if (!blocking)
+  if(eventAudioCallback != WAIT_OBJECT_0 || !&buf)
   {
-    if(eventAudioCallback != WAIT_OBJECT_0)
-	  return 0;
+    CLog::Log(LOGERROR, __FUNCTION__": Endpoint Buffer timed out");
+    return INT_MAX;
   }
-  else
-  {
-    if(eventAudioCallback != WAIT_OBJECT_0 || !&buf)
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Endpoint Buffer timed out");
-      return INT_MAX;
-    }
-  }
-
 
   if (!m_running)
     return 0;
@@ -515,7 +504,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
     #endif
     return INT_MAX;
   }
-  memcpy(buf, m_bufferPtr == 0 ? data : m_pBuffer, NumFramesRequested * m_format.m_frameSize); //fill buffer
+  memcpy(buf, m_bufferPtr == 0 ? buffer : m_pBuffer, NumFramesRequested * m_format.m_frameSize); //fill buffer
   m_bufferPtr = 0;
   hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested, flags); //pass back to audio driver
   if (FAILED(hr))
@@ -530,7 +519,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
   if (FramesToCopy != frames)
   {
     m_bufferPtr = frames-FramesToCopy;
-    memcpy(m_pBuffer, data+FramesToCopy*m_format.m_frameSize, m_bufferPtr*m_format.m_frameSize);
+    memcpy(m_pBuffer, buffer+FramesToCopy*m_format.m_frameSize, m_bufferPtr*m_format.m_frameSize);
   }
 
   return frames;
