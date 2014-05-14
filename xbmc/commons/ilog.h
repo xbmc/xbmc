@@ -39,17 +39,17 @@
 #define LOGNONE    7
 
 // extra masks - from bit 5
-#define LOGMASKBIT 5
-#define LOGMASK   ((1 << LOGMASKBIT)-1)
+#define LOGMASKBIT  5
+#define LOGMASK     ((1 << LOGMASKBIT) - 1)
 
-#define LOGSAMBA  (1 << (LOGMASKBIT+0))
-#define LOGCURL   (1 << (LOGMASKBIT+1))
-#define LOGCMYTH  (1 << (LOGMASKBIT+2))
-#define LOGFFMPEG (1 << (LOGMASKBIT+3))
-#define LOGRTMP   (1 << (LOGMASKBIT+4))
-#define LOGDBUS   (1 << (LOGMASKBIT+5))
-#define LOGJSONRPC   (1 << (LOGMASKBIT+6))
-#define LOGAUDIO  (1 << (LOGMASKBIT+7))
+#define LOGSAMBA    (1 << (LOGMASKBIT + 0))
+#define LOGCURL     (1 << (LOGMASKBIT + 1))
+#define LOGCMYTH    (1 << (LOGMASKBIT + 2))
+#define LOGFFMPEG   (1 << (LOGMASKBIT + 3))
+#define LOGRTMP     (1 << (LOGMASKBIT + 4))
+#define LOGDBUS     (1 << (LOGMASKBIT + 5))
+#define LOGJSONRPC  (1 << (LOGMASKBIT + 6))
+#define LOGAUDIO    (1 << (LOGMASKBIT + 7))
 
 #ifdef __GNUC__
 #define ATTRIB_LOG_FORMAT __attribute__((format(printf,3,4)))

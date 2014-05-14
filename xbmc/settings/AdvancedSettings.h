@@ -26,6 +26,8 @@
 #include "utils/StdString.h"
 #include "utils/GlobalsHandling.h"
 
+class CVariant;
+
 class TiXmlElement;
 namespace ADDON
 {
@@ -120,8 +122,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     virtual void OnSettingChanged(const CSetting *setting);
 
-    virtual void OnSettingAction(const CSetting *setting);
-
     void Initialize();
     bool Initialized() { return m_initialized; };
     void AddSettingsFile(const CStdString &filename);
@@ -132,6 +132,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     static void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
     static void GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings);
     static void GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions);
+
+    bool CanLogComponent(int component) const;
+    static void SettingOptionsLoggingComponentsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
     int m_audioHeadRoom;
     float m_ac3Gain;
@@ -207,6 +210,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_songInfoDuration;
     int m_logLevel;
     int m_logLevelHint;
+    bool m_extraLogEnabled;
     int m_extraLogLevels;
     CStdString m_cddbAddress;
 
@@ -392,7 +396,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_initialized;
 
     void SetDebugMode(bool debug);
-    void SetExtraLogsFromAddon(ADDON::IAddon* addon);
 
     // runtime settings which cannot be set from advancedsettings.xml
     CStdString m_pictureExtensions;
@@ -408,6 +411,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     CStdString m_logFolder;
 
     CStdString m_userAgent;
+
+  private:
+    void setExtraLogLevel(const std::vector<CVariant> &components);
 };
 
 XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);

@@ -343,7 +343,8 @@ void CGUIControlListSetting::Update(bool updateDisplayOnly /* = false */)
   CGUIControlBaseSetting::Update();
   
   CFileItemList options;
-  if (GetItems(m_pSetting, options))
+  bool optionsValid = GetItems(m_pSetting, options);
+  if (optionsValid && !static_cast<const CSettingControlList*>(m_pSetting->GetControl())->HideValue())
   {
     std::vector<std::string> labels;
     for (int index = 0; index < options.Size(); index++)
@@ -355,6 +356,8 @@ void CGUIControlListSetting::Update(bool updateDisplayOnly /* = false */)
 
     m_pButton->SetLabel2(StringUtils::Join(labels, ", "));
   }
+  else
+    m_pButton->SetLabel2(StringUtils::Empty);
 
   // disable the control if it has less than two items
   if (!m_pButton->IsDisabled() && options.Size() <= 1)

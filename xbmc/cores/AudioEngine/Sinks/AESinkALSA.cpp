@@ -1174,7 +1174,7 @@ bool CAESinkALSA::GetELD(snd_hctl_t *hctl, int device, CAEDeviceInfo& info, bool
 
 void CAESinkALSA::sndLibErrorHandler(const char *file, int line, const char *function, int err, const char *fmt, ...)
 {
-  if(!(g_advancedSettings.m_extraLogLevels & LOGAUDIO))
+  if(!g_advancedSettings.CanLogComponent(LOGAUDIO))
     return;
 
   va_list arg;

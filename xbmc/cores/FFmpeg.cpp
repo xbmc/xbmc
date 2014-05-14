@@ -89,7 +89,7 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
   AVClass* avc= ptr ? *(AVClass**)ptr : NULL;
 
   if(level >= AV_LOG_DEBUG &&
-     (g_advancedSettings.m_extraLogLevels & LOGFFMPEG) == 0)
+     !g_advancedSettings.CanLogComponent(LOGFFMPEG))
     return;
   else if(g_advancedSettings.m_logLevel <= LOG_LEVEL_NORMAL)
     return;

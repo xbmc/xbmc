@@ -163,6 +163,7 @@ bool CSettingControlList::Deserialize(const TiXmlNode *node, bool update /* = fa
   
   XMLUtils::GetInt(node, SETTING_XML_ELM_CONTROL_HEADING, m_heading);
   XMLUtils::GetBoolean(node, SETTING_XML_ELM_CONTROL_MULTISELECT, m_multiselect);
+  XMLUtils::GetBoolean(node, SETTING_XML_ELM_CONTROL_HIDEVALUE, m_hideValue);
 
   return true;
 }

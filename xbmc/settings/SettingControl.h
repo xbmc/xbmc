@@ -144,7 +144,8 @@ class CSettingControlList : public ISettingControl
 public:
   CSettingControlList()
     : m_heading(-1),
-      m_multiselect(false)
+      m_multiselect(false),
+      m_hideValue(false)
   { }
   virtual ~CSettingControlList() { }
 
@@ -157,10 +158,13 @@ public:
   void SetHeading(int heading) { m_heading = heading; }
   bool CanMultiSelect() const { return m_multiselect; }
   void SetMultiSelect(bool multiselect) { m_multiselect = multiselect; }
+  bool HideValue() const { return m_hideValue; }
+  void SetHideValue(bool hideValue) { m_hideValue = hideValue; }
 
 protected:  
   int m_heading;
   bool m_multiselect;
+  bool m_hideValue;
 };
 
 class CSettingControlSlider;
