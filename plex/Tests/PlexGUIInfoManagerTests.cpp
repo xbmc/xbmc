@@ -5,13 +5,24 @@
 #include "DVDPlayer.h"
 #include "Application.h"
 
-class FakeVideoPlayer  : public CDVDPlayer
+class FakeVideoPlayer : public CDVDPlayer
 {
 public:
-  FakeVideoPlayer() : CDVDPlayer(g_application) {}
-  bool IsPlaying() const { return true; }
-  bool HasVideo() const { return true; }
-  int64_t GetTime() { return currentTime; }
+  FakeVideoPlayer() : CDVDPlayer(g_application)
+  {
+  }
+  bool IsPlaying() const
+  {
+    return true;
+  }
+  bool HasVideo() const
+  {
+    return true;
+  }
+  int64_t GetTime()
+  {
+    return currentTime;
+  }
 
   int64_t currentTime;
 };
@@ -49,7 +60,6 @@ TEST_F(PlexGUIInfoManagerTest, videoPlayerPlexContentNoItem)
   EXPECT_FALSE(g_infoManager.EvaluateBool("VideoPlayer.PlexContent(movie)"));
 }
 
-
 TEST_F(PlexGUIInfoManagerTest, videoPlayerPropertyPlexContent)
 {
   CFileItemPtr item = CFileItemPtr(new CFileItem);
@@ -75,4 +85,26 @@ TEST_F(PlexGUIInfoManagerTest, playerOnNewFalse)
 {
   ((FakeVideoPlayer*)g_application.m_pPlayer)->currentTime = 6000;
   EXPECT_FALSE(g_infoManager.EvaluateBool("Player.OnNew"));
+}
+
+#define ADD_PL_ITEM(a)                                                                             \
+  {                                                                                                \
+    CFileItemPtr item = CFileItemPtr(new CFileItem);                                               \
+    item->SetLabel(a);                                                                             \
+    g_playlistPlayer.Add(PLAYLIST_VIDEO, item);                                                    \
+  }
+
+TEST_F(PlexGUIInfoManagerTest, VideoPlayerOffset)
+{
+  ADD_PL_ITEM("1");
+  ADD_PL_ITEM("2");
+  ADD_PL_ITEM("3");
+
+  int value = g_infoManager.TranslateString("VideoPlayer.Offset(2).Title");
+  EXPECT_GT(value, 0);
+  EXPECT_STREQ("2", g_infoManager.GetLabel(value));
+
+  value = g_infoManager.TranslateString("VideoPlayer.Offset(3).Title");
+  EXPECT_GT(value, 0);
+  EXPECT_STREQ("3", g_infoManager.GetLabel(value));
 }

@@ -787,7 +787,9 @@ public:
 
   CStdString GetMusicLabel(int item);
   CStdString GetMusicTagLabel(int info, const CFileItem *item);
+#ifndef __PLEX__
   CStdString GetVideoLabel(int item);
+#endif
   CStdString GetPlaylistLabel(int item) const;
   CStdString GetMusicPartyModeLabel(int item);
   const CStdString GetMusicPlaylistInfo(const GUIInfo& info);
@@ -858,6 +860,8 @@ public:
   bool GetSeeking() const { return m_playerSeeking; };
   bool GetSlideshowShowDescription();
   void SetSlideshowShowDescription(bool show);
+  CStdString GetVideoLabel(int item, const CFileItemPtr& file = CFileItemPtr());
+  const CStdString GetVideoPlaylistInfo(const GUIInfo &info);
   /* END PLEX */
 
 protected:
@@ -972,6 +976,7 @@ protected:
   CCriticalSection m_critInfo;
 
   /* PLEX */
+  int TranslateVideoPlayerString(const CStdString& info) const;
   bool GetItemBool(const CGUIListItem *item, int condition, int secondCondition=0) const;
   bool m_slideshowShowDescription;
   CMusicThumbLoader *m_musicThumbLoader;

@@ -1285,6 +1285,17 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
           return AddMultiInfo(GUIInfo(ret, id, offset, INFOFLAG_LISTITEM_WRAP));
       }
     }
+    /* PLEX */
+    else if (info[0].name == "videoplayer")
+    {
+      if (info[1].name == "offset")
+      {
+        int position = atoi(info[1].param().c_str());
+        int value = TranslateVideoPlayerString(info[2].name);
+        return AddMultiInfo(GUIInfo(value, 1, position));
+      }
+    }
+    /* END PLEX */
   }
 
   return 0;
@@ -3384,6 +3395,10 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
       return addon->Icon();
   }
   /* PLEX */
+  else if (info.m_info >= VIDEOPLAYER_TITLE && info.m_info <= VIDEOPLAYER_HAS_EPG)
+  {
+    return GetVideoPlaylistInfo(info);
+  }
   else if (info.m_info == CONTAINER_FIRST_TITLE)
   {
     CGUIMediaWindow *window = (CGUIMediaWindow*)GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
@@ -3933,6 +3948,7 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
   return "";
 }
 
+#ifndef __PLEX__
 CStdString CGUIInfoManager::GetVideoLabel(int item)
 {
   if (!g_application.IsPlayingVideo())
@@ -4161,34 +4177,6 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
           return m_currentFile->GetVideoInfoTag()->m_lastPlayed.GetAsLocalizedDateTime();
         break;
       }
-    /* PLEX */
-    case VIDEOPLAYER_AUDIOSTREAM:
-      {
-        if (g_application.CurrentFileItemPtr()->HasProperty("selectedAudioStream"))
-          return g_application.CurrentFileItemPtr()->GetProperty("selectedAudioStream").asString();
-        return g_localizeStrings.Get(1446);
-      }
-    case VIDEOPLAYER_SUBTITLESTREAM:
-      {
-        if (g_application.CurrentFileItemPtr()->HasProperty("selectedSubtitleStream"))
-          return g_application.CurrentFileItemPtr()->GetProperty("selectedSubtitleStream").asString();
-        return g_localizeStrings.Get(1446);
-      }
-    case VIDEOPLAYER_DURATION_STRING:
-      {
-        if (m_currentFile->HasVideoInfoTag())
-        {
-          if (m_currentFile->GetVideoInfoTag()->GetDuration() > 0)
-            return StringUtils::SecondsToTimeString(m_currentFile->GetVideoInfoTag()->GetDuration(), TIME_FORMAT_GUESS);
-        }
-        else
-          return GetItemLabel(m_currentFile.get(), LISTITEM_DURATION);
-      }
-    case VIDEOPLAYER_PLEXCONTENT_STRING:
-      {
-        return PlexUtils::GetPlexContent(*m_currentFile);
-      }
-    /* END PLEX */
     case VIDEOPLAYER_PLAYCOUNT:
       {
         CStdString strPlayCount;
@@ -4200,6 +4188,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
   }
   return "";
 }
+#endif
 
 int64_t CGUIInfoManager::GetPlayTime() const
 {
@@ -5943,6 +5932,308 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition, int s
     return (item->IsFileItem() && ((const CFileItem *)item)->HasVideoInfoTag() && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds > 0);
   return false;
 }
+
+int CGUIInfoManager::TranslateVideoPlayerString(const CStdString& info) const
+{
+  for (size_t i = 0; i < sizeof(videoplayer) / sizeof(infomap); i++)
+  {
+    if (info == videoplayer[i].str)
+      return videoplayer[i].val;
+  }
+  return 0;
+}
+
+const CStdString CGUIInfoManager::GetVideoPlaylistInfo(const GUIInfo& info)
+{
+  PLAYLIST::CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
+  if (playlist.size() < 1)
+    return "";
+  int index = info.GetData2();
+  if (info.GetData1() == 1)
+  { // relative index (requires current playlist is PLAYLIST_MUSIC)
+    if (g_playlistPlayer.GetCurrentPlaylist() != PLAYLIST_VIDEO)
+      return "";
+    index = g_playlistPlayer.GetNextSong(index);
+  }
+  if (index < 0 || index >= playlist.size())
+    return "";
+  CFileItemPtr playlistItem = playlist[index];
+
+  return GetVideoLabel(info.m_info, playlistItem);
+}
+
+CStdString CGUIInfoManager::GetVideoLabel(int item, const CFileItemPtr& file)
+{
+  if (!g_application.IsPlayingVideo())
+    return "";
+
+  CFileItemPtr fileItem = file;
+  if (!file)
+    fileItem = m_currentFile;
+
+  if (item == VIDEOPLAYER_TITLE)
+  {
+    if (fileItem->HasPVRChannelInfoTag())
+    {
+      CEpgInfoTag tag;
+      return fileItem->GetPVRChannelInfoTag()->GetEPGNow(tag) ?
+          tag.Title() :
+          g_guiSettings.GetBool("epg.hidenoinfoavailable") ?
+              StringUtils::EmptyString :
+              g_localizeStrings.Get(19055); // no information available
+    }
+    if (fileItem->HasPVRRecordingInfoTag() && !fileItem->GetPVRRecordingInfoTag()->m_strTitle.IsEmpty())
+      return fileItem->GetPVRRecordingInfoTag()->m_strTitle;
+    if (fileItem->HasVideoInfoTag() && !fileItem->GetVideoInfoTag()->m_strTitle.IsEmpty())
+      return fileItem->GetVideoInfoTag()->m_strTitle;
+    // don't have the title, so use dvdplayer, label, or drop down to title from path
+    if (!g_application.m_pPlayer->GetPlayingTitle().IsEmpty())
+      return g_application.m_pPlayer->GetPlayingTitle();
+    if (!fileItem->GetLabel().IsEmpty())
+      return fileItem->GetLabel();
+    return CUtil::GetTitleFromPath(fileItem->GetPath());
+  }
+  else if (item == VIDEOPLAYER_PLAYLISTLEN)
+  {
+    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
+      return GetPlaylistLabel(PLAYLIST_LENGTH);
+  }
+  else if (item == VIDEOPLAYER_PLAYLISTPOS)
+  {
+    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
+      return GetPlaylistLabel(PLAYLIST_POSITION);
+  }
+  else if (fileItem->HasPVRChannelInfoTag())
+  {
+    CPVRChannel* tag = fileItem->GetPVRChannelInfoTag();
+    CEpgInfoTag epgTag;
+
+    switch (item)
+    {
+    /* Now playing infos */
+    case VIDEOPLAYER_ORIGINALTITLE:
+      return tag->GetEPGNow(epgTag) ?
+          epgTag.Title() :
+          g_guiSettings.GetBool("epg.hidenoinfoavailable") ?
+              StringUtils::EmptyString :
+              g_localizeStrings.Get(19055); // no information available
+    case VIDEOPLAYER_GENRE:
+      return tag->GetEPGNow(epgTag) ? StringUtils::Join(epgTag.Genre(), g_advancedSettings.m_videoItemSeparator) : StringUtils::EmptyString;
+    case VIDEOPLAYER_PLOT:
+      return tag->GetEPGNow(epgTag) ? epgTag.Plot() : StringUtils::EmptyString;
+    case VIDEOPLAYER_PLOT_OUTLINE:
+      return tag->GetEPGNow(epgTag) ? epgTag.PlotOutline() : StringUtils::EmptyString;
+    case VIDEOPLAYER_STARTTIME:
+      return tag->GetEPGNow(epgTag) ? epgTag.StartAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
+    case VIDEOPLAYER_ENDTIME:
+      return tag->GetEPGNow(epgTag) ? epgTag.EndAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
+
+    /* Next playing infos */
+    case VIDEOPLAYER_NEXT_TITLE:
+      return tag->GetEPGNext(epgTag) ?
+          epgTag.Title() :
+          g_guiSettings.GetBool("epg.hidenoinfoavailable") ?
+              StringUtils::EmptyString :
+              g_localizeStrings.Get(19055); // no information available
+    case VIDEOPLAYER_NEXT_GENRE:
+      return tag->GetEPGNext(epgTag) ? StringUtils::Join(epgTag.Genre(), g_advancedSettings.m_videoItemSeparator) : StringUtils::EmptyString;
+    case VIDEOPLAYER_NEXT_PLOT:
+      return tag->GetEPGNext(epgTag) ? epgTag.Plot() : StringUtils::EmptyString;
+    case VIDEOPLAYER_NEXT_PLOT_OUTLINE:
+      return tag->GetEPGNext(epgTag) ? epgTag.PlotOutline() : StringUtils::EmptyString;
+    case VIDEOPLAYER_NEXT_STARTTIME:
+      return tag->GetEPGNext(epgTag) ? epgTag.StartAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
+    case VIDEOPLAYER_NEXT_ENDTIME:
+      return tag->GetEPGNext(epgTag) ? epgTag.EndAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
+    case VIDEOPLAYER_NEXT_DURATION:
+      {
+        CStdString duration;
+        if (tag->GetEPGNext(epgTag) && epgTag.GetDuration() > 0)
+          duration = StringUtils::SecondsToTimeString(epgTag.GetDuration());
+        return duration;
+      }
+
+    case VIDEOPLAYER_PARENTAL_RATING:
+      {
+        CStdString rating;
+        if (tag->GetEPGNow(epgTag) && epgTag.ParentalRating() > 0)
+          rating.Format("%i", epgTag.ParentalRating());
+        return rating;
+      }
+      break;
+
+    /* General channel infos */
+    case VIDEOPLAYER_CHANNEL_NAME:
+      return tag->ChannelName();
+    case VIDEOPLAYER_CHANNEL_NUMBER:
+      {
+        CStdString strNumber;
+        strNumber.Format("%i", tag->ChannelNumber());
+        return strNumber;
+      }
+    case VIDEOPLAYER_CHANNEL_GROUP:
+      {
+        if (tag && !tag->IsRadio())
+          return g_PVRManager.GetPlayingGroup(false)->GroupName();
+      }
+    }
+  }
+  else if (fileItem->HasVideoInfoTag())
+  {
+    switch (item)
+    {
+    case VIDEOPLAYER_ORIGINALTITLE:
+      return fileItem->GetVideoInfoTag()->m_strOriginalTitle;
+      break;
+    case VIDEOPLAYER_GENRE:
+      return StringUtils::Join(fileItem->GetVideoInfoTag()->m_genre, g_advancedSettings.m_videoItemSeparator);
+      break;
+    case VIDEOPLAYER_DIRECTOR:
+      return StringUtils::Join(fileItem->GetVideoInfoTag()->m_director, g_advancedSettings.m_videoItemSeparator);
+      break;
+    case VIDEOPLAYER_RATING:
+      {
+        CStdString strRating;
+        if (fileItem->GetVideoInfoTag()->m_fRating > 0.f)
+          strRating.Format("%.1f", fileItem->GetVideoInfoTag()->m_fRating);
+        return strRating;
+      }
+      break;
+    case VIDEOPLAYER_RATING_AND_VOTES:
+      {
+        CStdString strRatingAndVotes;
+        if (fileItem->GetVideoInfoTag()->m_fRating > 0.f)
+        {
+          if (fileItem->GetVideoInfoTag()->m_strVotes.IsEmpty())
+            strRatingAndVotes.Format("%.1f", fileItem->GetVideoInfoTag()->m_fRating);
+          else
+            strRatingAndVotes.Format("%.1f (%s %s)", fileItem->GetVideoInfoTag()->m_fRating, fileItem->GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
+        }
+        return strRatingAndVotes;
+      }
+      break;
+    case VIDEOPLAYER_YEAR:
+      {
+        CStdString strYear;
+        if (fileItem->GetVideoInfoTag()->m_iYear > 0)
+          strYear.Format("%i", fileItem->GetVideoInfoTag()->m_iYear);
+        return strYear;
+      }
+      break;
+    case VIDEOPLAYER_PREMIERED:
+      {
+        CDateTime dateTime;
+        if (fileItem->GetVideoInfoTag()->m_firstAired.IsValid())
+          dateTime = fileItem->GetVideoInfoTag()->m_firstAired;
+        else if (fileItem->GetVideoInfoTag()->m_premiered.IsValid())
+          dateTime = fileItem->GetVideoInfoTag()->m_premiered;
+
+        if (dateTime.IsValid())
+          return dateTime.GetAsLocalizedDate();
+        break;
+      }
+      break;
+    case VIDEOPLAYER_PLOT:
+      return fileItem->GetVideoInfoTag()->m_strPlot;
+    case VIDEOPLAYER_TRAILER:
+      return fileItem->GetVideoInfoTag()->m_strTrailer;
+    case VIDEOPLAYER_PLOT_OUTLINE:
+      return fileItem->GetVideoInfoTag()->m_strPlotOutline;
+    case VIDEOPLAYER_EPISODE:
+      {
+        CStdString strEpisode;
+        if (fileItem->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
+          strEpisode.Format("S%i", fileItem->GetVideoInfoTag()->m_iSpecialSortEpisode);
+        else if(fileItem->GetVideoInfoTag()->m_iEpisode > 0)
+          strEpisode.Format("%i", fileItem->GetVideoInfoTag()->m_iEpisode);
+        return strEpisode;
+      }
+      break;
+    case VIDEOPLAYER_SEASON:
+      {
+        CStdString strSeason;
+        if (fileItem->GetVideoInfoTag()->m_iSpecialSortSeason > 0)
+          strSeason.Format("%i", fileItem->GetVideoInfoTag()->m_iSpecialSortSeason);
+        else if(fileItem->GetVideoInfoTag()->m_iSeason > 0)
+          strSeason.Format("%i", fileItem->GetVideoInfoTag()->m_iSeason);
+        return strSeason;
+      }
+      break;
+    case VIDEOPLAYER_TVSHOW:
+      return fileItem->GetVideoInfoTag()->m_strShowTitle;
+
+    case VIDEOPLAYER_STUDIO:
+      return StringUtils::Join(fileItem->GetVideoInfoTag()->m_studio, g_advancedSettings.m_videoItemSeparator);
+    case VIDEOPLAYER_COUNTRY:
+      return StringUtils::Join(fileItem->GetVideoInfoTag()->m_country, g_advancedSettings.m_videoItemSeparator);
+    case VIDEOPLAYER_MPAA:
+      return fileItem->GetVideoInfoTag()->m_strMPAARating;
+    case VIDEOPLAYER_TOP250:
+      {
+        CStdString strTop250;
+        if (fileItem->GetVideoInfoTag()->m_iTop250 > 0)
+          strTop250.Format("%i", fileItem->GetVideoInfoTag()->m_iTop250);
+        return strTop250;
+      }
+      break;
+    case VIDEOPLAYER_CAST:
+      return fileItem->GetVideoInfoTag()->GetCast();
+    case VIDEOPLAYER_CAST_AND_ROLE:
+      return fileItem->GetVideoInfoTag()->GetCast(true);
+    case VIDEOPLAYER_ARTIST:
+      return StringUtils::Join(fileItem->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator);
+    case VIDEOPLAYER_ALBUM:
+      return fileItem->GetVideoInfoTag()->m_strAlbum;
+    case VIDEOPLAYER_WRITER:
+      return StringUtils::Join(fileItem->GetVideoInfoTag()->m_writingCredits, g_advancedSettings.m_videoItemSeparator);
+    case VIDEOPLAYER_TAGLINE:
+      return fileItem->GetVideoInfoTag()->m_strTagLine;
+    case VIDEOPLAYER_LASTPLAYED:
+      {
+        if (fileItem->GetVideoInfoTag()->m_lastPlayed.IsValid())
+          return fileItem->GetVideoInfoTag()->m_lastPlayed.GetAsLocalizedDateTime();
+        break;
+      }
+    /* PLEX */
+    case VIDEOPLAYER_AUDIOSTREAM:
+      {
+        if (g_application.CurrentFileItemPtr()->HasProperty("selectedAudioStream"))
+          return g_application.CurrentFileItemPtr()->GetProperty("selectedAudioStream").asString();
+        return g_localizeStrings.Get(1446);
+      }
+    case VIDEOPLAYER_SUBTITLESTREAM:
+      {
+        if (g_application.CurrentFileItemPtr()->HasProperty("selectedSubtitleStream"))
+          return g_application.CurrentFileItemPtr()->GetProperty("selectedSubtitleStream").asString();
+        return g_localizeStrings.Get(1446);
+      }
+    case VIDEOPLAYER_DURATION_STRING:
+      {
+        if (fileItem->HasVideoInfoTag())
+        {
+          if (fileItem->GetVideoInfoTag()->GetDuration() > 0)
+            return StringUtils::SecondsToTimeString(fileItem->GetVideoInfoTag()->GetDuration(), TIME_FORMAT_GUESS);
+        }
+        else
+          return GetItemLabel(fileItem.get(), LISTITEM_DURATION);
+      }
+    case VIDEOPLAYER_PLEXCONTENT_STRING:
+      {
+        return PlexUtils::GetPlexContent(*fileItem);
+      }
+    /* END PLEX */
+    case VIDEOPLAYER_PLAYCOUNT:
+      {
+        CStdString strPlayCount;
+        if (fileItem->GetVideoInfoTag()->m_playCount > 0)
+          strPlayCount.Format("%i", fileItem->GetVideoInfoTag()->m_playCount);
+        return strPlayCount;
+      }
+    }
+  }
+  return "";
+}
+
 /* END PLEX */
 
 bool CGUIInfoManager::GetEpgInfoTag(CEpgInfoTag& tag) const
