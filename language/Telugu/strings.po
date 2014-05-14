@@ -27,7 +27,7 @@ msgstr "సంగీతం"
 
 msgctxt "#3"
 msgid "Videos"
-msgstr "దృశ్యకాలు"
+msgstr "వీడియోలు"
 
 msgctxt "#4"
 msgid "TV-Guide"
@@ -507,7 +507,7 @@ msgstr "వాతావరణం"
 
 msgctxt "#13621"
 msgid "Apple Remote support could not be enabled."
-msgstr "Apple రిమోట్ మద్దతు కాలేదు"
+msgstr "ఆపిల్ రిమోట్ ఇక్కడ పనిచేయదు"
 
 msgctxt "#14068"
 msgid "Enter the IP address"
@@ -691,4 +691,4 @@ msgstr "Blu-ray ప్లేబ్యాక్ విఫలమైంది"
 
 msgctxt "#25009"
 msgid "The menu of this Blu-ray is not supported"
-msgstr "ఈ Blu-ray మెను మద్దతు లేదు"
+msgstr "ఈ Blu-ray మెను ఇక్కడ పనిచేయదు"
