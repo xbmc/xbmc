@@ -2856,7 +2856,12 @@ msgctxt "#676"
 msgid "Verbose logging for AUDIO component"
 msgstr ""
 
-#empty strings from id 677 to 699
+#: xbmc/settings/AdvancedSettings.cpp
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr ""
+
+#empty strings from id 678 to 699
 
 msgctxt "#700"
 msgid "Cleaning up library"
