@@ -189,6 +189,7 @@ typedef struct
 const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },           // bools from here
                                   /* PLEX */
                                   { "hasmusicplaylist",       PLAYER_HAS_MUSIC_PLAYLIST },
+                                  { "onnew",            PLAYER_ONNEW },
                                   /* END PLEX */
                                   { "hasaudio",         PLAYER_HAS_AUDIO },
                                   { "hasvideo",         PLAYER_HAS_VIDEO },
@@ -2659,6 +2660,17 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case PLAYER_HAS_MUSIC_PLAYLIST:
       bReturn = g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC;
       break;
+
+    case PLAYER_ONNEW:
+      {
+        bReturn = false;
+        if (g_application.IsPlaying())
+        {
+          if (g_application.GetTime() < 5)
+            bReturn = true;
+        }
+        break;
+      }
 
     /* END PLEX */
 

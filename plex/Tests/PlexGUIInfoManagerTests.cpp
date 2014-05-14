@@ -11,6 +11,9 @@ public:
   FakeVideoPlayer() : CDVDPlayer(g_application) {}
   bool IsPlaying() const { return true; }
   bool HasVideo() const { return true; }
+  int64_t GetTime() { return currentTime; }
+
+  int64_t currentTime;
 };
 
 class PlexGUIInfoManagerTest : public ::testing::Test
@@ -60,4 +63,16 @@ TEST_F(PlexGUIInfoManagerTest, videoPlayerPropertyPlexContent)
   int value = g_infoManager.TranslateSingleString("VideoPlayer.PlexContentStr");
   EXPECT_GT(value, 0);
   EXPECT_STREQ("movie", g_infoManager.GetLabel(value));
+}
+
+TEST_F(PlexGUIInfoManagerTest, playerOnNewTrue)
+{
+  ((FakeVideoPlayer*)g_application.m_pPlayer)->currentTime = 1000;
+  EXPECT_TRUE(g_infoManager.EvaluateBool("Player.OnNew"));
+}
+
+TEST_F(PlexGUIInfoManagerTest, playerOnNewFalse)
+{
+  ((FakeVideoPlayer*)g_application.m_pPlayer)->currentTime = 6000;
+  EXPECT_FALSE(g_infoManager.EvaluateBool("Player.OnNew"));
 }
