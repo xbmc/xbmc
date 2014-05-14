@@ -380,7 +380,6 @@ void CAdvancedSettings::Initialize()
   m_guiVisualizeDirtyRegions = false;
   m_guiAlgorithmDirtyRegions = 3;
   m_guiDirtyRegionNoFlipTimeout = 0;
-  m_logEnableAirtunes = false;
   m_airTunesPort = 36666;
   m_airPlayPort = 36667;
 
@@ -852,7 +851,6 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
 
   //airtunes + airplay
-  XMLUtils::GetBoolean(pRootElement, "enableairtunesdebuglog", m_logEnableAirtunes);
   XMLUtils::GetInt(pRootElement,     "airtunesport", m_airTunesPort);
   XMLUtils::GetInt(pRootElement,     "airplayport", m_airPlayPort);  
 
@@ -1386,6 +1384,9 @@ void CAdvancedSettings::SettingOptionsLoggingComponentsFiller(const CSetting *se
 #endif
 #ifdef HAS_ALSA
   list.push_back(std::make_pair(g_localizeStrings.Get(676), LOGAUDIO));
+#endif
+#ifdef HAS_AIRTUNES
+  list.push_back(std::make_pair(g_localizeStrings.Get(677), LOGAIRTUNES));
 #endif
 }
 

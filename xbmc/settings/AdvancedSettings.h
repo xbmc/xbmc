@@ -215,7 +215,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     CStdString m_cddbAddress;
 
     //airtunes + airplay
-    bool m_logEnableAirtunes;
     int m_airTunesPort;
     int m_airPlayPort;
 
