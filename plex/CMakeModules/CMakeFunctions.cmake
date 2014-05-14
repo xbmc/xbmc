@@ -74,6 +74,7 @@ function(plex_add_testcase)
 
       include_directories(${root}/lib/gtest ${root}/lib/gtest/include ${FFMPEG_INCLUDE_DIRS})
       add_library(${CASE_BIN} OBJECT ${CASE_FILE})
+      add_dependencies(${CASE_BIN} ffmpeg)
     endforeach()
 
     set_property(GLOBAL APPEND PROPERTY PLEX_TEST_CASES ${TESTCASES})
