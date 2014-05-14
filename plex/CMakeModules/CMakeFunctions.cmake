@@ -74,6 +74,7 @@ function(plex_add_testcase)
 
       include_directories(${root}/lib/gtest ${root}/lib/gtest/include)
       add_library(${CASE_BIN} OBJECT ${CASE_FILE})
+      add_dependencies(${CASE_BIN} PlexMain)
     endforeach()
 
     set_property(GLOBAL APPEND PROPERTY PLEX_TEST_CASES ${TESTCASES})
