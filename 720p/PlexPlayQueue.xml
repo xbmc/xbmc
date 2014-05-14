@@ -985,7 +985,7 @@
 							<label>$VAR[PlayQueueVideoTitle2]</label>
 							<font>Bold-30</font>
 							<include>WhiteShadow</include>
-							<visible>!Container.PlexContent(Movies) + !Container.PlexContent(Clips) + !ListItem.Type(Movie)</visible>
+							<visible>[Player.HasVideo + ![VideoPlayer.PlexContent(movie) | VideoPlayer.PlexContent(clip)]] | [!Player.HasVideo + !ListItem.Type(movie) + !ListItem.Type(clip)]</visible>
 						</control>
 						<control type="label">
 							<posy>40</posy>
@@ -994,7 +994,7 @@
 							<label>$VAR[PlayQueueVideoTitle2]</label>
 							<font>Regular-18</font>
 							<include>WhiteShadow</include>
-							<visible>Container.PlexContent(Movies) | Container.PlexContent(Clips) | ListItem.Type(Movie)</visible>
+							<visible>[Player.HasVideo + [VideoPlayer.PlexContent(movie) | VideoPlayer.PlexContent(clip)]] | [!Player.HasVideo + [ListItem.Type(movie) | ListItem.Type(clip)]]</visible>
 						</control>
 						<control type="label">
 							<posy>70</posy>
