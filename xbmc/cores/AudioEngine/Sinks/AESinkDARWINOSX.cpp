@@ -332,7 +332,7 @@ void RegisterDeviceChangedCB(bool bRegister, void *ref)
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAESinkDARWINOSX::CAESinkDARWINOSX()
-: m_latentFrames(0), m_outputBitstream(false), m_outputBuffer(NULL), m_buffer(NULL)
+: m_latentFrames(0), m_outputBitstream(false), m_outputBuffer(NULL), m_planar(false), m_planarBuffer(NULL), m_buffer(NULL)
 {
   // By default, kAudioHardwarePropertyRunLoop points at the process's main thread on SnowLeopard,
   // If your process lacks such a run loop, you can set kAudioHardwarePropertyRunLoop to NULL which
@@ -352,6 +352,7 @@ CAESinkDARWINOSX::CAESinkDARWINOSX()
   }
   RegisterDeviceChangedCB(true, this);
   m_started = false;
+  m_planar = false;
 }
 
 CAESinkDARWINOSX::~CAESinkDARWINOSX()
@@ -501,6 +502,14 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
     index++;
   }
 
+  m_planar = false;
+  if (streams.size() > 1 && outputFormat.mChannelsPerFrame == 1)
+  {
+    CLog::Log(LOGDEBUG, "%s Found planar audio with %u channels?", __FUNCTION__, streams.size());
+    outputFormat.mChannelsPerFrame = std::min((size_t)format.m_channelLayout.Count(), streams.size());
+    m_planar = true;
+  }
+
   if (!outputFormat.mFormatID)
   {
     CLog::Log(LOGERROR, "%s, Unable to find suitable stream", __FUNCTION__);
@@ -552,6 +561,9 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
     /* TODO: Do we need this? */
     m_device.SetNominalSampleRate(format.m_sampleRate);
   }
+
+  if (m_planar)
+    m_planarBuffer = new float[format.m_frameSamples];
 
   unsigned int num_buffers = 4;
   m_buffer = new AERingBuffer(num_buffers * format.m_frames * format.m_frameSize);
@@ -610,6 +622,10 @@ void CAESinkDARWINOSX::Deinitialize()
 
   delete[] m_outputBuffer;
   m_outputBuffer = NULL;
+
+  m_planar = false;
+  delete[] m_planarBuffer;
+  m_planarBuffer = NULL;
 
   m_started = false;
 }
@@ -718,35 +734,58 @@ OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTim
   CAESinkDARWINOSX *sink = (CAESinkDARWINOSX*)inClientData;
 
   sink->m_started = true;
-  for (unsigned int i = 0; i < outOutputData->mNumberBuffers; i++)
+  if (sink->m_planar)
   {
-    if (sink->m_outputBitstream)
+    unsigned int channels = std::min((unsigned int)outOutputData->mNumberBuffers, sink->m_format.m_channelLayout.Count());
+    unsigned int wanted = outOutputData->mBuffers[0].mDataByteSize;
+    unsigned int bytes = std::min(sink->m_buffer->GetReadSize() / channels, wanted);
+    sink->m_buffer->Read((unsigned char *)sink->m_planarBuffer, bytes * channels);
+    // transform from interleaved to planar
+    const float *src = sink->m_planarBuffer;
+    for (unsigned int i = 0; i < bytes / sizeof(float); i++)
     {
-      /* HACK for bitstreaming AC3/DTS via PCM.
-       We reverse the float->S16LE conversion done in the stream or device */
-      static const float mul = 1.0f / (INT16_MAX + 1);
-
-      unsigned int wanted = std::min(outOutputData->mBuffers[i].mDataByteSize / sizeof(float), (size_t)sink->m_format.m_frameSamples)  * sizeof(int16_t);
-      if (wanted <= sink->m_buffer->GetReadSize())
+      for (unsigned int j = 0; j < channels; j++)
       {
-        sink->m_buffer->Read((unsigned char *)sink->m_outputBuffer, wanted);
-        int16_t *src = sink->m_outputBuffer;
-        float  *dest = (float*)outOutputData->mBuffers[i].mData;
-        for (unsigned int i = 0; i < wanted / 2; i++)
-          *dest++ = *src++ * mul;
+        float *dst = (float *)outOutputData->mBuffers[j].mData;
+        dst[i] = *src++;
       }
     }
-    else
-    {
-      /* buffers appear to come from CA already zero'd, so just copy what is wanted */
-      unsigned int wanted = outOutputData->mBuffers[i].mDataByteSize;
-      unsigned int bytes = std::min(sink->m_buffer->GetReadSize(), wanted);
-      sink->m_buffer->Read((unsigned char*)outOutputData->mBuffers[i].mData, bytes);
-      LogLevel(bytes, wanted);
-    }
-
+    LogLevel(bytes, wanted);
     // tell the sink we're good for more data
     condVar.notifyAll();
+  }
+  else
+  {
+    for (unsigned int i = 0; i < outOutputData->mNumberBuffers; i++)
+    {
+      if (sink->m_outputBitstream)
+      {
+        /* HACK for bitstreaming AC3/DTS via PCM.
+         We reverse the float->S16LE conversion done in the stream or device */
+        static const float mul = 1.0f / (INT16_MAX + 1);
+
+        unsigned int wanted = std::min(outOutputData->mBuffers[i].mDataByteSize / sizeof(float), (size_t)sink->m_format.m_frameSamples)  * sizeof(int16_t);
+        if (wanted <= sink->m_buffer->GetReadSize())
+        {
+          sink->m_buffer->Read((unsigned char *)sink->m_outputBuffer, wanted);
+          int16_t *src = sink->m_outputBuffer;
+          float  *dest = (float*)outOutputData->mBuffers[i].mData;
+          for (unsigned int i = 0; i < wanted / 2; i++)
+            *dest++ = *src++ * mul;
+        }
+      }
+      else
+      {
+        /* buffers appear to come from CA already zero'd, so just copy what is wanted */
+        unsigned int wanted = outOutputData->mBuffers[i].mDataByteSize;
+        unsigned int bytes = std::min(sink->m_buffer->GetReadSize(), wanted);
+        sink->m_buffer->Read((unsigned char*)outOutputData->mBuffers[i].mData, bytes);
+        LogLevel(bytes, wanted);
+      }
+
+      // tell the sink we're good for more data
+      condVar.notifyAll();
+    }
   }
   return noErr;
 }
