@@ -771,7 +771,7 @@
 									</control>
 								</control>
 								<include>PlayQueueOSDButtons</include>
-								</control>
+							</control>
 						</control>
 						<!-- infos Left -->
 						<control type="group">
