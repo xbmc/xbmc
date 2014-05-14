@@ -214,7 +214,7 @@ TEST(PlexUtilsGetPlexContent, folders)
 TEST(PlexUtilsGetPlexContent, singleItems)
 {
   CFileItem item;
-  item.SetPath("http://1.0.0.0:32400/library/metadata/1234");
+  item.SetProperty("key", "http://1.0.0.0:32400/library/metadata/1234");
   item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
   EXPECT_EQ(PlexUtils::GetPlexContent(item), "movie");
   item.SetPlexDirectoryType(PLEX_DIR_TYPE_EPISODE);
@@ -226,7 +226,7 @@ TEST(PlexUtilsGetPlexContent, singleItems)
 TEST(PlexUtilsGetPlexContent, metadataChildren)
 {
   CFileItem item;
-  item.SetPath("http://1.0.0.0:32400/library/metadata/1234/children");
+  item.SetProperty("key", "http://1.0.0.0:32400/library/metadata/1234/children");
   item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
   EXPECT_EQ(PlexUtils::GetPlexContent(item), "movies");
 }
@@ -234,7 +234,7 @@ TEST(PlexUtilsGetPlexContent, metadataChildren)
 TEST(PlexUtilsGetPlexContent, channelItems)
 {
   CFileItem item;
-  item.SetPath("http://1.0.0.0:32400/system/services/url/lookup?url=youtubesomething");
+  item.SetProperty("key", "http://1.0.0.0:32400/system/services/url/lookup?url=youtubesomething");
   item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
   EXPECT_EQ(PlexUtils::GetPlexContent(item), "movie");
 }
@@ -242,7 +242,7 @@ TEST(PlexUtilsGetPlexContent, channelItems)
 TEST(PlexUtilsGetPlexContent, noMixedMedia)
 {
   CFileItem item;
-  item.SetPath("http://10.0.0.0:32400/playQueues/123");
+  item.SetProperty("key", "http://10.0.0.0:32400/playQueues/123");
   item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
   EXPECT_EQ("movies", PlexUtils::GetPlexContent(item));
 }
@@ -250,7 +250,7 @@ TEST(PlexUtilsGetPlexContent, noMixedMedia)
 TEST(PlexUtilsGetPlexContent, mixedMedia)
 {
   CFileItem item;
-  item.SetPath("http://10.0.0.0:32400/playQueues/123");
+  item.SetProperty("key", "http://10.0.0.0:32400/playQueues/123");
   item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
   item.SetProperty("hasMixedMembers", true);
   EXPECT_EQ("mixedcontent", PlexUtils::GetPlexContent(item));
@@ -259,7 +259,7 @@ TEST(PlexUtilsGetPlexContent, mixedMedia)
 TEST(PlexUtilsGetPlexContent, mixedMediaInternalURL)
 {
   CFileItem item;
-  item.SetPath("plexserver://playqueue/");
+  item.SetProperty("key", "plexserver://playqueue/");
   item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
   item.SetProperty("hasMixedMembers", true);
   EXPECT_EQ("mixedcontent", PlexUtils::GetPlexContent(item));
@@ -268,7 +268,7 @@ TEST(PlexUtilsGetPlexContent, mixedMediaInternalURL)
 TEST(PlexUtilsGetPlexContent, singleFileItem)
 {
   CFileItem item;
-  item.SetPath("plexserver://abc123/library/parts/file.mkv");
+  item.SetProperty("key", "plexserver://abc123/library/parts/file.mkv");
   item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
   EXPECT_EQ("movie", PlexUtils::GetPlexContent(item));
 }

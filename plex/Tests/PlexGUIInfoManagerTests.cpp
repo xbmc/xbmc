@@ -34,7 +34,7 @@ TEST_F(PlexGUIInfoManagerTest, videoPlayerPlexContentBasic)
 {
   CFileItemPtr item = CFileItemPtr(new CFileItem);
   item->SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
-  item->SetPath("plexserver://abc123/library/parts/2575/file.avi");
+  item->SetProperty("key", "plexserver://abc123/library/parts/2575/file.avi");
 
   g_infoManager.SetCurrentItem(*item);
   EXPECT_TRUE(g_infoManager.EvaluateBool("VideoPlayer.PlexContent(movie)"));
@@ -51,7 +51,7 @@ TEST_F(PlexGUIInfoManagerTest, videoPlayerPropertyPlexContent)
 {
   CFileItemPtr item = CFileItemPtr(new CFileItem);
   item->SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
-  item->SetPath("plexserver://abc123/library/parts/2575/file.avi");
+  item->SetProperty("key", "plexserver://abc123/library/parts/2575/file.avi");
 
   // if it doesn't have a videoinfo tag it will not work
   item->GetVideoInfoTag();

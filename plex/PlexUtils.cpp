@@ -861,7 +861,7 @@ string PlexUtils::GetPlexContent(const CFileItem &item)
     return "folders";
 
   // check if we are requesting a single item
-  CURL itemUrl(item.GetPath());
+  CURL itemUrl(item.GetProperty("key").asString());
   bool singleItem = IsSingleItem(itemUrl.GetFileName());
 
   // This is also a single item, from channels
