@@ -72,9 +72,8 @@ function(plex_add_testcase)
       get_filename_component(CASE_BIN "${CASE}" NAME_WE)
       list(APPEND TESTCASES "${CASE_BIN}")
 
-      include_directories(${root}/lib/gtest ${root}/lib/gtest/include)
+      include_directories(${root}/lib/gtest ${root}/lib/gtest/include ${FFMPEG_INCLUDE_DIRS})
       add_library(${CASE_BIN} OBJECT ${CASE_FILE})
-      add_dependencies(${CASE_BIN} PlexMain)
     endforeach()
 
     set_property(GLOBAL APPEND PROPERTY PLEX_TEST_CASES ${TESTCASES})
