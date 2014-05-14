@@ -103,6 +103,7 @@ ADD_MSVC_PRECOMPILED_HEADER("pch_plex.h" "pch_plex.cpp" PLEX_ALL_SRCS)
 
 # build all plex related source files
 add_library(PlexMain OBJECT ${PLEX_ALL_SRCS})
+add_dependencies(PlexMain ffmpeg)
 
 # build test cases
 if(ENABLE_TESTING)
