@@ -265,6 +265,14 @@ TEST(PlexUtilsGetPlexContent, mixedMediaInternalURL)
   EXPECT_EQ("mixedcontent", PlexUtils::GetPlexContent(item));
 }
 
+TEST(PlexUtilsGetPlexContent, singleFileItem)
+{
+  CFileItem item;
+  item.SetPath("plexserver://abc123/library/parts/file.mkv");
+  item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
+  EXPECT_EQ("movie", PlexUtils::GetPlexContent(item));
+}
+
 class PlexUtilsGetPrettyMediaItemNameTest : public ::testing::Test
 {
 public:

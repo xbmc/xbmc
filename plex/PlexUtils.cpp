@@ -833,6 +833,20 @@ string PlexUtils::GetCompositeImageUrl(const CFileItem &item, const CStdString &
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+static bool IsSingleItem(const CStdString& filePath)
+{
+  bool singleItem = false;
+
+  if (boost::starts_with(filePath, "library/metadata") && !boost::ends_with(filePath, "/children") &&
+      !boost::ends_with(filePath, "/allLeaves"))
+    singleItem = true;
+  else if (boost::starts_with(filePath, "library/parts"))
+    singleItem = true;
+
+  return singleItem;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 string PlexUtils::GetPlexContent(const CFileItem &item)
 {
@@ -848,9 +862,7 @@ string PlexUtils::GetPlexContent(const CFileItem &item)
 
   // check if we are requesting a single item
   CURL itemUrl(item.GetPath());
-  bool singleItem = (boost::starts_with(itemUrl.GetFileName(), "library/metadata") &&
-                     !boost::ends_with(itemUrl.GetFileName(), "/children") &&
-                     !boost::ends_with(itemUrl.GetFileName(), "/allLeaves"));
+  bool singleItem = IsSingleItem(itemUrl.GetFileName());
 
   // This is also a single item, from channels
   if (boost::starts_with(itemUrl.GetFileName(), "system/services/url/lookup"))
