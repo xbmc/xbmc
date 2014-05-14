@@ -1,0 +1,37 @@
+From 1dbb70de6caf307d87aa61e21fe324bbb1709a39 Mon Sep 17 00:00:00 2001
+From: montellese <montellese@xbmc.org>
+Date: Tue, 13 May 2014 21:31:41 +0200
+Subject: [PATCH] platinum: enable logging
+
+---
+ lib/libUPnP/Makefile.in | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/lib/libUPnP/Makefile.in b/lib/libUPnP/Makefile.in
+index e1f9462..e194a58 100644
+--- a/lib/libUPnP/Makefile.in
++++ b/lib/libUPnP/Makefile.in
+@@ -43,9 +43,11 @@ SRCS= Platinum/Source/Core/PltAction.cpp \
+       Neptune/Source/Core/NptHash.cpp \
+       Neptune/Source/Core/NptHttp.cpp \
+       Neptune/Source/Core/NptList.cpp \
++      Neptune/Source/Core/NptLogging.cpp \
+       Neptune/Source/Core/NptMessaging.cpp \
+       Neptune/Source/Core/NptNetwork.cpp \
+       Neptune/Source/Core/NptQueue.cpp \
++      Neptune/Source/Core/NptResults.cpp \
+       Neptune/Source/Core/NptRingBuffer.cpp \
+       Neptune/Source/Core/NptSimpleMessageQueue.cpp \
+       Neptune/Source/Core/NptSockets.cpp \
+@@ -89,6 +91,8 @@ endif
+ 
+ INCLUDES=-I./Neptune/Source/Core -I./Platinum/Source/Core -I./Platinum/Source/Platinum -I./Platinum/Source/Devices/MediaConnect -I./Platinum/Source/Devices/MediaRenderer -I./Platinum/Source/Devices/MediaServer -I./Neptune/Source/System/Posix -I./Platinum/Source/Extras
+ 
++CXXFLAGS+=-DNPT_CONFIG_ENABLE_LOGGING
++
+ LIB=libupnp.a
+ 
+ include ../../Makefile.include
+-- 
+1.7.11.msysgit.0
+
