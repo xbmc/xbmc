@@ -56,6 +56,24 @@ PlexIntStringMap CPlexTranscoderClient::getOnlineQualties()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+int CPlexTranscoderClient::getIntegerRepresentation(int qualitySetting)
+{
+  switch (qualitySetting)
+  {
+    case PLEX_ONLINE_QUALITY_1080p:
+      return 1080;
+    case PLEX_ONLINE_QUALITY_720p:
+      return 720;
+    case PLEX_ONLINE_QUALITY_480p:
+      return 480;
+    case PLEX_ONLINE_QUALITY_SD:
+      return 320;
+    default:
+      return -1;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 int CPlexTranscoderClient::getBandwidthForQuality(int quality)
 {
   switch (quality)
@@ -71,6 +89,57 @@ int CPlexTranscoderClient::getBandwidthForQuality(int quality)
     default:
       return 400 * 8;
   }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+int CPlexTranscoderClient::autoSelectQuality(const CFileItem& file, int target)
+{
+  int selectedMediaItem = 0;
+  int onlineQuality = CPlexTranscoderClient::getIntegerRepresentation(target);
+
+  // Try to pick something that's equal or less than the preferred resolution.
+  std::map<int, int> qualityMap;
+  std::vector<int> qualities;
+  int sd = getIntegerRepresentation(PLEX_ONLINE_QUALITY_SD);
+
+  for (size_t i = 0; i < file.m_mediaItems.size(); i++)
+  {
+    CFileItemPtr item = file.m_mediaItems[i];
+    CStdString videoRes =
+        CStdString(item->GetProperty("mediaTag-videoResolution").asString()).ToUpper();
+
+    // Compute the quality, subsequent SDs get lesser values, assuming they're ordered
+    // descending.
+    int q = sd;
+    if (videoRes != "SD" && videoRes.empty() == false)
+    {
+      try { q = boost::lexical_cast<int>(videoRes); }
+      catch (...) { }
+    }
+    else
+    {
+      sd -= 10;
+    }
+
+    qualityMap[q] = i;
+    qualities.push_back(q);
+  }
+
+  // Sort on quality descending.
+  std::sort(qualities.begin(), qualities.end());
+  std::reverse(qualities.begin(), qualities.end());
+
+  int pickedIndex = qualities[qualities.size() - 1];
+  BOOST_FOREACH(int q, qualities)
+  {
+    if (q <= onlineQuality)
+    {
+      pickedIndex = qualityMap[q];
+      selectedMediaItem = file.m_mediaItems[pickedIndex]->GetProperty("id").asInteger();
+      break;
+    }
+  }
+  return selectedMediaItem;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

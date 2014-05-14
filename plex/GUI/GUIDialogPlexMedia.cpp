@@ -79,46 +79,7 @@ int CGUIDialogPlexMedia::ProcessMediaChoice(const CFileItem& file)
     }
     else
     {
-      if (isLibraryItem == false)
-      {
-        // Try to pick something that's equal or less than the preferred resolution.
-        std::map<int, int> qualityMap;
-        std::vector<int> qualities;
-        int sd = PLEX_ONLINE_QUALITY_SD;
-
-        for (size_t i = 0; i < file.m_mediaItems.size(); i++)
-        {
-          CFileItemPtr item = file.m_mediaItems[i];
-          CStdString videoRes =
-          CStdString(item->GetProperty("mediaTag-videoResolution").asString()).ToUpper();
-
-          // Compute the quality, subsequent SDs get lesser values, assuming they're ordered
-          // descending.
-          int q = sd;
-          if (videoRes != "SD" && videoRes.empty() == false)
-            q = boost::lexical_cast<int>(videoRes);
-          else
-            sd -= 10;
-
-          qualityMap[q] = i;
-          qualities.push_back(q);
-        }
-
-        // Sort on quality descending.
-        std::sort(qualities.begin(), qualities.end());
-        std::reverse(qualities.begin(), qualities.end());
-
-        int pickedIndex = qualities[qualities.size() - 1];
-        BOOST_FOREACH(int q, qualities)
-        {
-          if (q <= onlineQuality)
-          {
-            pickedIndex = qualityMap[q];
-            selectedMediaItem = file.m_mediaItems[pickedIndex]->GetProperty("id").asInteger();
-            break;
-          }
-        }
-      }
+      selectedMediaItem = CPlexTranscoderClient::autoSelectQuality(file, onlineQuality);
     }
   }
   else

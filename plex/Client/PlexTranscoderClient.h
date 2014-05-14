@@ -48,6 +48,8 @@ public:
   static int getBandwidthForQuality(int quality);
   static PlexTranscodeMode getServerTranscodeMode(const CPlexServerPtr& server);
   static PlexTranscodeMode getItemTranscodeMode(const CFileItem& item);
+  static int getIntegerRepresentation(int qualitySetting);
+  static int autoSelectQuality(const CFileItem &file, int target);
 };
 
 #endif /* defined(__Plex_Home_Theater__PlexTranscoderClient__) */
