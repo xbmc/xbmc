@@ -3007,6 +3007,49 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
   }
 }
 
+void CVideoDatabase::DeleteSeason(int idSeason, bool bKeepId /* = false */)
+{
+  if (idSeason < 0)
+    return;
+
+  try
+  {
+    if (m_pDB.get() == NULL ||
+        m_pDS.get() == NULL ||
+        m_pDS2.get() == NULL)
+      return;
+
+    BeginTransaction();
+
+    CStdString strSQL = PrepareSQL("SELECT episode.idEpisode, path.strPath, files.strFileName FROM episode "
+                                   "JOIN seasons ON seasons.idSeason = %d AND episode.idShow = seasons.idShow AND episode.c%02d = seasons.season "
+                                   "JOIN files ON files.idFile = episode.idFile "
+                                   "JOIN path ON path.idPath = files.idPath",
+                                   idSeason, VIDEODB_ID_EPISODE_SEASON);
+    m_pDS2->query(strSQL.c_str());
+    while (!m_pDS2->eof())
+    {
+      CStdString strPath = m_pDS2->fv("path.strPath").get_asString();
+      CStdString strFileName = m_pDS2->fv("files.strFilename").get_asString();
+
+      CStdString strFilenameAndPath;
+      ConstructPath(strFilenameAndPath, strPath, strFileName);
+
+      DeleteEpisode(strFilenameAndPath, m_pDS2->fv(0).get_asInt(), bKeepId);
+      m_pDS2->next();
+    }
+
+    ExecuteQuery(PrepareSQL("DELETE FROM seasons WHERE idSeason = %i", idSeason));
+
+    CommitTransaction();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%d) failed", __FUNCTION__, idSeason);
+    RollbackTransaction();
+  }
+}
+
 void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
 {
   if (idEpisode < 0)
