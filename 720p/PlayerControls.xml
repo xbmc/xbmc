@@ -292,6 +292,7 @@
 						<posy>0</posy>
 						<width>1150</width>
 						<height>660</height>
+						<fadetime>500</fadetime>
 						<texture background="true" diffuse="mask-osd-pq-bg.png">$INFO[Player.Art(fanart)]</texture>
 						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
@@ -499,6 +500,7 @@
 							<width>400</width>
 							<height>400</height>
 							<texture>$INFO[MusicPlayer.Cover]</texture>
+							<fadetime>500</fadetime>
 							<aspectratio scalediffuse="false" align="right">stretch</aspectratio>
 							<visible>Player.HasAudio</visible>
 						</control>
@@ -585,6 +587,7 @@
 								<width>55</width>
 								<height>55</height>
 								<texture>$INFO[MusicPlayer.Offset(1).Cover]</texture>
+								<fadetime>500</fadetime>
 								<aspectratio scalediffuse="false" align="right">stretch</aspectratio>
 							</control>
 						</control>
