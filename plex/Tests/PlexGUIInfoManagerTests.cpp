@@ -90,6 +90,26 @@ TEST_F(PlexGUIInfoManagerTest, playerOnNewFalse)
   EXPECT_FALSE(g_infoManager.EvaluateBool("Player.OnNew"));
 }
 
+TEST_F(PlexGUIInfoManagerTest, playerOnNewStartOffset)
+{
+  ((FakeVideoPlayer*)g_application.m_pPlayer)->currentTime = (60 * 1000) + 1000;
+
+  // resume one minute in
+  g_application.CurrentFileItem().m_lStartOffset = STARTOFFSET_RESUME;
+  g_application.CurrentFileItem().SetProperty("viewOffset", 60 * 1000);
+  EXPECT_TRUE(g_infoManager.EvaluateBool("Player.OnNew"));
+}
+
+TEST_F(PlexGUIInfoManagerTest, playerOnNewStartOffsetFalse)
+{
+  ((FakeVideoPlayer*)g_application.m_pPlayer)->currentTime = (60 * 1000) + 6000;
+
+  // resume one minute in
+  g_application.CurrentFileItem().m_lStartOffset = STARTOFFSET_RESUME;
+  g_application.CurrentFileItem().SetProperty("viewOffset", 60 * 1000);
+  EXPECT_FALSE(g_infoManager.EvaluateBool("Player.OnNew"));
+}
+
 #define ADD_PL_ITEM(a)                                                                             \
   {                                                                                                \
     CFileItemPtr item = CFileItemPtr(new CFileItem);                                               \
