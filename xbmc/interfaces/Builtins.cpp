@@ -609,7 +609,7 @@ int CBuiltins::Execute(const CStdString& execString)
       if (params.size() > 2)
         data = CJSONVariantParser::Parse((const unsigned char *)params[2].c_str(), params[2].size());
 
-      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, params[0], params[1], data);
+      ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Other, params[0], params[1], data);
     }
     else
       CLog::Log(LOGERROR, "XBMC.NotifyAll needs two parameters");

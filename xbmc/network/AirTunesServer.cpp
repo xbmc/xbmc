@@ -415,7 +415,7 @@ CAirTunesServer::CAirTunesServer(int port, bool nonlocal)
   m_port = port;
   m_pLibShairplay = new DllLibShairplay();
   m_pPipe         = new XFILE::CPipeFile;  
-  CAnnouncementManager::AddAnnouncer(this);
+  CAnnouncementManager::Get().AddAnnouncer(this);
 }
 
 CAirTunesServer::~CAirTunesServer()
@@ -426,7 +426,7 @@ CAirTunesServer::~CAirTunesServer()
   }
   delete m_pLibShairplay;
   delete m_pPipe;
-  CAnnouncementManager::RemoveAnnouncer(this);
+  CAnnouncementManager::Get().RemoveAnnouncer(this);
 }
 
 bool CAirTunesServer::Initialize(const CStdString &password)
