@@ -745,11 +745,11 @@
 							<posy>0</posy>
 							<defaultcontrol always="true">711</defaultcontrol>
 							<!-- same artist and/or album -->
-							<animation effect="slide" start="0,0" end="0,294" time="0" condition="Container.UniformProperty(Artist) | Container.UniformProperty(Album)">Conditional</animation>
+							<animation effect="slide" start="0,0" end="0,294" time="0" condition="[Container.UniformProperty(Artist) | Container.UniformProperty(Album)] | [!MusicPlayer.Offset(1).Exists] | [MusicPlayer.Offset(1).Exists + !MusicPlayer.Offset(2).Exists]">Conditional</animation>
 							<!-- 3 or 6 or 9 covers -->
-							<animation effect="slide" start="0,0" end="0,49" time="0" condition="[[MusicPlayer.Offset(3).Exists + !MusicPlayer.Offset(4).Exists] | [MusicPlayer.Offset(6).Exists + !MusicPlayer.Offset(7).Exists] | [MusicPlayer.Offset(9).Exists + !MusicPlayer.Offset(10).Exists]] + !Container.UniformProperty(Album)">Conditional</animation>
+							<animation effect="slide" start="0,0" end="0,49" time="0" condition="[[MusicPlayer.Offset(3).Exists + !MusicPlayer.Offset(4).Exists] | [MusicPlayer.Offset(6).Exists + !MusicPlayer.Offset(7).Exists] | [MusicPlayer.Offset(9).Exists + !MusicPlayer.Offset(10).Exists]] + !Container.UniformProperty(Album) + !Container.UniformProperty(Artist)">Conditional</animation>
 							<!-- 5 or 8 covers -->
-							<animation effect="slide" start="0,0" end="0,84" time="0" condition="[[MusicPlayer.Offset(5).Exists + !MusicPlayer.Offset(6).Exists] | [MusicPlayer.Offset(8).Exists + !MusicPlayer.Offset(9).Exists]] + !Container.UniformProperty(Album)">Conditional</animation>
+							<animation effect="slide" start="0,0" end="0,84" time="0" condition="[[MusicPlayer.Offset(5).Exists + !MusicPlayer.Offset(6).Exists] | [MusicPlayer.Offset(8).Exists + !MusicPlayer.Offset(9).Exists]] + !Container.UniformProperty(Album) + !Container.UniformProperty(Artist)">Conditional</animation>
 							<!-- progress bar -->
 							<control type="group">
 								<visible>Player.HasAudio</visible>
