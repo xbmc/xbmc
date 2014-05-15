@@ -280,7 +280,6 @@
 	<!-- mini now playing in the side bar -->
 	<include name="NowPlayingSideBar">
 		<control type="group">
-			<include>leftMenuSlide</include>
 			<animation effect="fade" time="500">VisibleChange</animation>
 			<!-- music -->
 			<control type="group">
@@ -302,7 +301,7 @@
 					</control>
 				</control>
 				<control type="group">
-					<visible>Player.HasAudio</visible>
+					<visible>Player.HasAudio + !Control.IsVisible(999)</visible>
 					<posy>60</posy>
 					<control type="image">
 						<posx>-13</posx>
@@ -400,7 +399,7 @@
 			</control>
 			<!-- player toast -->
 			<control type="group">
-				<visible>Player.HasAudio + Player.OnNew</visible>				
+				<visible>Player.HasAudio + Player.OnNew + !Control.IsVisible(999)</visible>				
 				<animation effect="fade" time="500">VisibleChange</animation>
 				<posy>589</posy>
 				<posx>80</posx>
