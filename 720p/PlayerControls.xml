@@ -662,35 +662,35 @@
 									<height>27</height>
 									<texture>b-repeat-one2.png</texture>
 									<visible>!Control.HasFocus(708) + Playlist.IsRepeatOne</visible>
-									<colordiffuse>FFFFFFFF</colordiffuse>
+									<colordiffuse>orange</colordiffuse>
 								</control>
 								<control type="image">
 									<width>42</width>
 									<height>27</height>
 									<texture>b-repeat-all2.png</texture>
 									<visible>!Control.HasFocus(708) + Playlist.IsRepeat</visible>
-									<colordiffuse>FFFFFFFF</colordiffuse>
+									<colordiffuse>orange</colordiffuse>
 								</control>
 								<control type="image">
 									<width>42</width>
 									<height>27</height>
 									<texture>b-repeat2.png</texture>
 									<visible>Control.HasFocus(708) + !Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
-									<colordiffuse>orange</colordiffuse>
+									<colordiffuse>orangeLight</colordiffuse>
 								</control>
 								<control type="image">
 									<width>42</width>
 									<height>27</height>
 									<texture>b-repeat-one2.png</texture>
 									<visible>Control.HasFocus(708) + Playlist.IsRepeatOne</visible>
-									<colordiffuse>orange</colordiffuse>
+									<colordiffuse>orangeLight</colordiffuse>
 								</control>
 								<control type="image">
 									<width>42</width>
 									<height>27</height>
 									<texture>b-repeat-all2.png</texture>
 									<visible>Control.HasFocus(708) + Playlist.IsRepeat</visible>
-									<colordiffuse>orange</colordiffuse>
+									<colordiffuse>orangeLight</colordiffuse>
 								</control>
 								<control type="button" id="708">
 									<width>42</width>
