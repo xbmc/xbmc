@@ -694,7 +694,7 @@
 								<control type="button" id="708">
 									<width>32</width>
 									<height>30</height>
-									<onleft>3</onleft>
+									<onleft>714</onleft>
 									<onright>710</onright>
 									<texturefocus>-</texturefocus>
 									<texturenofocus>-</texturenofocus>
@@ -830,7 +830,7 @@
 									<texturefocus>b-nowplaying.png</texturefocus>
 									<texturenofocus>b-nowplaying.png</texturenofocus>
 									<onleft>713</onleft>
-									<onright>708</onright>
+									<onright>3</onright>
 									<onup>3</onup>
 									<ondown>3</ondown>
 									<onclick>fullscreen</onclick>
