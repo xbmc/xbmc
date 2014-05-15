@@ -7,9 +7,10 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CGUIDialogPlexPlayQueue::CGUIDialogPlexPlayQueue()
-  : CGUIDialogSelect(WINDOW_DIALOG_PLEX_PLAYQUEUE, "DialogPlexPlayQueue.xml")
+  : CGUIDialogSelect(WINDOW_DIALOG_PLAYER_CONTROLS, "PlayerControls.xml")
 {
   m_multiSelection = false;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

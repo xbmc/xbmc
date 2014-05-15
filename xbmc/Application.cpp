@@ -1419,7 +1419,9 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIDialogButtonMenu);
 #endif
     g_windowManager.Add(new CGUIDialogMuteBug);
+#ifndef __PLEX__
     g_windowManager.Add(new CGUIDialogPlayerControls);
+#endif
 #ifdef HAS_KARAOKE
     g_windowManager.Add(new CGUIDialogKaraokeSongSelectorSmall);
     g_windowManager.Add(new CGUIDialogKaraokeSongSelectorLarge);
