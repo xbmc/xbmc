@@ -58,6 +58,7 @@ protected:
   void OnSettings();
   void OnChangeLog();
   void OnRollback();
+  void OnLaunch();
 
   /*! \brief check if the add-on is a dependency of others, and if so prompt the user.
    \param heading the label for the heading of the prompt dialog
