@@ -162,6 +162,28 @@ CUrlOptions CPlexTimeline::getTimeline(bool forServer)
         location = "fullScreenMusic";
 
       options.AddOption("location", location);
+
+      // PlayQueue Information
+      if (PlexUtils::IsPlayingPlaylist())
+      {
+        if (m_item->HasProperty("playQueueID"))
+          options.AddOption("playQueueID", m_item->GetProperty("playQueueID").asString());
+
+        if (m_item && m_item->HasMusicInfoTag())
+        {
+          try
+          {
+            std::string pqid = boost::lexical_cast<std::string>(m_item->GetMusicInfoTag()->GetDatabaseId());
+            options.AddOption("playQueueItemID", pqid);
+          }
+          catch (...)
+          {
+          }
+        }
+
+        if (m_item->HasProperty("playQueueVersion"))
+          options.AddOption("playQueueVersion", m_item->GetProperty("playQueueVersion").asString());
+      }
     }
     else if (m_continuing)
       options.AddOption("continuing", "1");
@@ -173,30 +195,6 @@ CUrlOptions CPlexTimeline::getTimeline(bool forServer)
       else
         options.AddOption("seekRange", "0-0");
     }
-
-    if (PlexUtils::IsPlayingPlaylist())
-    {
-      int playQueueId = g_plexApplication.playQueueManager->getCurrentID();
-      if (playQueueId != -1)
-        options.AddOption("playQueueID", boost::lexical_cast<std::string>(playQueueId));
-
-      if (m_item && m_item->HasMusicInfoTag())
-      {
-        try
-        {
-          std::string pqid = boost::lexical_cast<std::string>(m_item->GetMusicInfoTag()->GetDatabaseId());
-          options.AddOption("playQueueItemID", pqid);
-        }
-        catch (...)
-        {
-        }
-      }
-
-      int playQueueVersion = g_plexApplication.playQueueManager->getCurrentPlayQueueVersion();
-      options.AddOption("playQueueVersion", boost::lexical_cast<std::string>(playQueueVersion));
-
-    }
-
   }
 
   return options;

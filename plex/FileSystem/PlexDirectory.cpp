@@ -510,6 +510,9 @@ void CPlexDirectory::ReadChildren(XML_ELEMENT* root, CFileItemList& container)
 
     if (container.HasProperty("playQueueID"))
       item->SetProperty("playQueueID", container.GetProperty("playQueueID"));
+
+    if (container.HasProperty("playQueueVersion"))
+      item->SetProperty("playQueueVersion", container.GetProperty("playQueueVersion"));
     
     item->m_bIsFolder = IsFolder(item, element);
 
