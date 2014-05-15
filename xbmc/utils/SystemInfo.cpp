@@ -853,6 +853,8 @@ CStdString CSysInfo::GetUAWindowsVersion()
       strVersion.append("; Win64; x64");
     else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64)
       strVersion.append("; Win64; IA64");
+    else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM)
+      strVersion.append("; ARM");
   }
   return strVersion;
 }
