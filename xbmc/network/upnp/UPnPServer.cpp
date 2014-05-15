@@ -102,7 +102,10 @@ CUPnPServer::SetupServices()
     PLT_Service* service = NULL;
     NPT_Result result = FindServiceById("urn:upnp-org:serviceId:ContentDirectory", service);
     if (service)
+    {
+      service->SetStateVariable("SearchCapabilities", "upnp:class");
       service->SetStateVariable("SortCapabilities", "res@duration,res@size,res@bitrate,dc:date,dc:title,dc:size,upnp:album,upnp:artist,upnp:albumArtist,upnp:episodeNumber,upnp:genre,upnp:originalTrackNumber,upnp:rating");
+    }
 
     m_scanning = true;
     OnScanCompleted(AudioLibrary);
