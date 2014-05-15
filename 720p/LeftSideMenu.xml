@@ -517,16 +517,16 @@
 				</control>
 				<!-- Play All -->
 				<control type="button" id="104">
-					<texturefocus>b-pp-play-s.png</texturefocus>
-					<texturenofocus>b-pp-play.png</texturenofocus>
+					<texturefocus>b-pp-play-s2.png</texturefocus>
+					<texturenofocus>b-pp-play2.png</texturenofocus>
 					<onclick>Plex.PlayAll()</onclick>
 					<include>leftMenuBarButton</include>
 					<visible>![Window.IsActive(501) + Container.PlexFilter(recentlyAdded)] + !Container.PlexFilter(recentlyViewedShows)</visible>
 				</control>
 				<!-- Shuffle All -->
 				<control type="button" id="105">
-					<texturefocus>left-menu-shuffle-icon-s.png</texturefocus>
-					<texturenofocus>left-menu-shuffle-icon-u.png</texturenofocus>
+					<texturefocus>left-menu-shuffle-icon-s2.png</texturefocus>
+					<texturenofocus>left-menu-shuffle-icon-u2.png</texturenofocus>
 					<onclick>Plex.ShuffleAll()</onclick>
 					<include>leftMenuBarButton</include>
 					<visible>![Window.IsActive(501) + Container.PlexFilter(recentlyAdded)] + !Container.PlexFilter(recentlyViewedShows)</visible>
