@@ -238,6 +238,24 @@ const struct SDbTableOffsets DbTvShowOffsets[] =
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
 {
+  VIDEODB_ID_SEASON_MIN = -1,
+  VIDEODB_ID_SEASON_ID = 0,
+  VIDEODB_ID_SEASON_TVSHOW_ID = 1,
+  VIDEODB_ID_SEASON_NUMBER = 2,
+  VIDEODB_ID_SEASON_TVSHOW_PATH = 3,
+  VIDEODB_ID_SEASON_TVSHOW_TITLE = 4,
+  VIDEODB_ID_SEASON_TVSHOW_PLOT = 5,
+  VIDEODB_ID_SEASON_TVSHOW_PREMIERED = 6,
+  VIDEODB_ID_SEASON_TVSHOW_GENRE = 7,
+  VIDEODB_ID_SEASON_TVSHOW_STUDIO = 8,
+  VIDEODB_ID_SEASON_TVSHOW_MPAA = 9,
+  VIDEODB_ID_SEASON_EPISODES_TOTAL = 10,
+  VIDEODB_ID_SEASON_EPISODES_WATCHED = 11,
+  VIDEODB_ID_SEASON_MAX
+} VIDEODB_SEASON_IDS;
+
+typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
+{
   VIDEODB_ID_EPISODE_MIN = -1,
   VIDEODB_ID_EPISODE_TITLE = 0,
   VIDEODB_ID_EPISODE_PLOT = 1,
@@ -653,6 +671,7 @@ public:
   bool GetMoviesByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription());
   bool GetSetsByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items, bool ignoreSingleMovieSets = false);
   bool GetTvShowsByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription());
+  bool GetSeasonsByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items, bool appendFullShowPath = true, const SortDescription &sortDescription = SortDescription());
   bool GetEpisodesByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items, bool appendFullShowPath = true, const SortDescription &sortDescription = SortDescription());
   bool GetMusicVideosByWhere(const CStdString &baseDir, const Filter &filter, CFileItemList& items, bool checkLocks = true, const SortDescription &sortDescription = SortDescription());
   
