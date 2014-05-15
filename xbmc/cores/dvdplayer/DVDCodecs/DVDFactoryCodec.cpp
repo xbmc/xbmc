@@ -388,7 +388,9 @@ CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
   switch (hint.codec)
   {
     case AV_CODEC_ID_TEXT:
+#ifdef AV_CODEC_ID_SUBRIP
     case AV_CODEC_ID_SUBRIP:
+#endif
       pCodec = OpenCodec(new CDVDOverlayCodecText(), hint, options);
       if( pCodec ) return pCodec;
       break;
