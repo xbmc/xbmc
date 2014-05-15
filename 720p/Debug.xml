@@ -256,6 +256,20 @@
 					<include>debugFont</include>
 					<label/>
 				</control>
+					<control type="label">
+						<include>debugFont</include>
+						<label>Player.OnNew : [COLOR=orangeLight]NEW[/COLOR]</label>
+						<visible>Player.OnNew</visible>
+					</control>
+					<control type="label">
+						<include>debugFont</include>
+						<label>Player.OnNew : [COLOR=orangeLight]not new[/COLOR]</label>
+						<visible>!Player.OnNew</visible>
+					</control>
+					<control type="label">
+						<include>debugFont</include>
+						<label/>
+					</control>
 				<control type="label">
 					<include>debugFont</include>
 					<label>Container.FolderThumb : [COLOR=orangeLight]$INFO[Container.FolderThumb][/COLOR]</label>
@@ -663,16 +677,6 @@
 					<include>debugFont</include>
 					<label>VideoPlayer.HasNext : [COLOR=orangeLight][/COLOR]</label>
 					<visible>!VideoPlayer.HasNext</visible>
-				</control>
-				<control type="label">
-					<include>debugFont</include>
-					<label>Player.OnNew : [COLOR=orangeLight]NEW[/COLOR]</label>
-					<visible>Player.OnNew</visible>
-				</control>
-				<control type="label">
-					<include>debugFont</include>
-					<label>Player.OnNew : [COLOR=orangeLight][/COLOR]</label>
-					<visible>!Player.OnNew</visible>
 				</control>
 				<control type="label">
 					<include>debugFont</include>
