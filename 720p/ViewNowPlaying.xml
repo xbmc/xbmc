@@ -301,7 +301,17 @@
 				</control>
 				<control type="group">
 					<visible>Player.HasAudio</visible>
-					<posy>60</posy>
+					<posy>60</posy>					
+					<control type="image">
+						<posy>-3</posy>
+						<posx>-3</posx>
+						<width>56</width>
+						<height>56</height>
+						<texture>transparent.png</texture>
+						<bordertexture>orange.png</bordertexture>
+						<bordersize>2</bordersize>
+						<visible>Control.HasFocus(106) + Player.HasAudio</visible>
+					</control>
 					<control type="image">
 						<width>50</width>
 						<height>50</height>
@@ -339,13 +349,23 @@
 					<control type="image">
 						<width>50</width>
 						<height>75</height>
-						<texture background="true" diffuse="mask-poster-middle.png">$INFO[VideoPlayer.Offset(1).Art(poster)]</texture>
+						<texture background="true" diffuse="mask-poster-middle.png">$INFO[VideoPlayer.Offset(1).Cover]</texture>
 						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 					</control>
 				</control>
 				<control type="group">
 					<posy>85</posy>
 					<visible>Player.HasVideo</visible>
+					<control type="image">
+						<posy>-3</posy>
+						<posx>-3</posx>
+						<width>56</width>
+						<height>81</height>
+						<texture>transparent.png</texture>
+						<bordertexture>orange.png</bordertexture>
+						<bordersize>2</bordersize>
+						<visible>Control.HasFocus(106) + Player.HasVideo + [VideoPlayer.PlexContent(episode) | VideoPlayer.PlexContent(movie)]</visible>
+					</control>
 					<control type="image">
 						<width>50</width>
 						<height>75</height>
