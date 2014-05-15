@@ -391,7 +391,7 @@
 			</control>
 			<!-- player toast -->
 			<control type="group">
-				<visible>Player.OnNew</visible>				
+				<visible>Player.HasAudio + Player.OnNew</visible>				
 				<animation effect="fade" time="500">VisibleChange</animation>
 				<posy>589</posy>
 				<posx>80</posx>
