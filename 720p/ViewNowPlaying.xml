@@ -340,7 +340,7 @@
 			<control type="group">
 				<posy>483</posy>
 				<posx>12</posx>
-				<control type="group">
+				<!--><control type="group">
 					<visible>VideoPlayer.HasNext</visible>
 					<control type="image">
 						<width>50</width>
@@ -353,7 +353,7 @@
 						<texture background="true" diffuse="mask-poster-middle.png">$INFO[VideoPlayer.Offset(1).Cover]</texture>
 						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 					</control>
-				</control>
+				</control>-->
 				<control type="group">
 					<posy>85</posy>
 					<visible>Player.HasVideo</visible>
