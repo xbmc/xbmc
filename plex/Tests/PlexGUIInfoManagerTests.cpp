@@ -94,6 +94,7 @@ TEST_F(PlexGUIInfoManagerTest, playerOnNewFalse)
   {                                                                                                \
     CFileItemPtr item = CFileItemPtr(new CFileItem);                                               \
     item->SetLabel(a);                                                                             \
+    item->SetArt("thumb", std::string("thumb_") + a);                                              \
     g_playlistPlayer.Add(PLAYLIST_VIDEO, item);                                                    \
   }
 
@@ -110,6 +111,16 @@ TEST_F(PlexGUIInfoManagerTest, VideoPlayerOffset)
   value = g_infoManager.TranslateString("VideoPlayer.Offset(3).Title");
   EXPECT_GT(value, 0);
   EXPECT_STREQ("3", g_infoManager.GetLabel(value));
+}
+
+TEST_F(PlexGUIInfoManagerTest, videoPlayerOffsetArt)
+{
+  ADD_PL_ITEM("1");
+  ADD_PL_ITEM("2");
+
+  int value = g_infoManager.TranslateString("VideoPlayer.Offset(2).Cover");
+  EXPECT_GT(value, 0);
+  EXPECT_STREQ("thumb_2", g_infoManager.GetLabel(value));
 }
 
 TEST_F(PlexGUIInfoManagerTest, VideoPlayerHasNextFalse)
@@ -134,3 +145,4 @@ TEST_F(PlexGUIInfoManagerTest, videoPlayerHasNextEndOfPL)
   g_playlistPlayer.SetCurrentSong(1);
   EXPECT_FALSE(g_infoManager.EvaluateBool("VideoPlayer.HasNext"));
 }
+

@@ -5967,6 +5967,9 @@ const CStdString CGUIInfoManager::GetVideoPlaylistInfo(const GUIInfo& info)
     return "";
   CFileItemPtr playlistItem = playlist[index];
 
+  if (info.m_info == VIDEOPLAYER_COVER)
+    return playlistItem->HasArt("thumb") ? playlistItem->GetArt("thumb") : "DefaultVideoCover.png";
+
   return GetVideoLabel(info.m_info, playlistItem);
 }
 
