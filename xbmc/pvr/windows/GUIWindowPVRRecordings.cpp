@@ -67,6 +67,11 @@ CStdString CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
   CStdString resumeString;
   if (item.IsPVRRecording())
   {
+    CVideoDatabase db;
+    if (!db.Open())
+      return resumeString;
+    
+    CStdString itemPath(item.GetPVRRecordingInfoTag()->m_strFileNameAndPath);
 
     // First try to find the resume position on the back-end, if that fails use video database
     int positionInSeconds = item.GetPVRRecordingInfoTag()->GetLastPlayedPosition();
@@ -76,26 +81,16 @@ CStdString CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
       CBookmark bookmark;
       bookmark.timeInSeconds = positionInSeconds;
       bookmark.totalTimeInSeconds = (double)item.GetPVRRecordingInfoTag()->GetDuration();
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        CStdString itemPath(item.GetPVRRecordingInfoTag()->m_strFileNameAndPath);
-        db.AddBookMarkToFile(itemPath, bookmark, CBookmark::RESUME);
-        db.Close();
-      }
+      db.AddBookMarkToFile(itemPath, bookmark, CBookmark::RESUME);
     }
     else if (positionInSeconds < 0)
     {
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        CBookmark bookmark;
-        CStdString itemPath(item.GetPVRRecordingInfoTag()->m_strFileNameAndPath);
-        if (db.GetResumeBookMark(itemPath, bookmark) )
-          positionInSeconds = lrint(bookmark.timeInSeconds);
-        db.Close();
-      }
+      CBookmark bookmark;
+      if (db.GetResumeBookMark(itemPath, bookmark) )
+        positionInSeconds = lrint(bookmark.timeInSeconds);
     }
+    
+    db.Close();
 
     // Suppress resume from 0
     if (positionInSeconds > 0)
@@ -143,19 +138,6 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
   if (pItem->HasPVRRecordingInfoTag() &&
       g_PVRClients->HasMenuHooks(pItem->GetPVRRecordingInfoTag()->m_iClientId, PVR_MENUHOOK_RECORDING))
     buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
-
-  // Update sort by button
-//if (m_guiState->GetSortMethod()!=SortByNone)
-//{
-//  CStdString sortLabel;
-//  sortLabel.Format(g_localizeStrings.Get(550).c_str(), g_localizeStrings.Get(m_guiState->GetSortMethodLabel()).c_str());
-//  buttons.Add(CONTEXT_BUTTON_SORTBY, sortLabel);   /* Sort method */
-//
-//  if (m_guiState->GetDisplaySortOrder()==SortOrderAscending)
-//    buttons.Add(CONTEXT_BUTTON_SORTASC, 584);        /* Sort up or down */
-//  else
-//    buttons.Add(CONTEXT_BUTTON_SORTASC, 585);        /* Sort up or down */
-//}
 }
 
 bool CGUIWindowPVRRecordings::OnAction(const CAction &action)

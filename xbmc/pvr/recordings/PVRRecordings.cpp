@@ -297,19 +297,6 @@ int CPVRRecordings::GetNumRecordings()
   return m_recordings.size();
 }
 
-int CPVRRecordings::GetRecordings(CFileItemList* results)
-{
-  CSingleLock lock(m_critSection);
-
-  for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
-  {
-    CFileItemPtr pFileItem(new CFileItem(*m_recordings.at(iRecordingPtr)));
-    results->Add(pFileItem);
-  }
-
-  return m_recordings.size();
-}
-
 bool CPVRRecordings::DeleteRecording(const CFileItem &item)
 {
   if (!item.IsPVRRecording())

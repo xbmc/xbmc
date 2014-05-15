@@ -63,7 +63,6 @@ namespace PVR
     void Update(void);
 
     int GetNumRecordings();
-    int GetRecordings(CFileItemList* results);
     bool DeleteRecording(const CFileItem &item);
     bool RenameRecording(CFileItem &item, CStdString &strNewName);
     bool SetRecordingsPlayCount(const CFileItemPtr &item, int count);
