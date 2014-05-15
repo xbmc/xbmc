@@ -287,7 +287,7 @@
 				<posy>528</posy>
 				<posx>12</posx>
 				<control type="group">
-					<visible>MusicPlayer.HasNext + !Container.UniformProperty(Album)</visible>
+					<visible>MusicPlayer.HasNext + !Container.UniformProperty(Album) + Window.IsActive(1)</visible>
 					<control type="image">
 						<width>50</width>
 						<height>50</height>
@@ -304,6 +304,14 @@
 				<control type="group">
 					<visible>Player.HasAudio</visible>
 					<posy>60</posy>
+					<control type="image">
+						<posx>-13</posx>
+						<posy>-13</posy>
+						<width>77</width>
+						<height>77</height>
+						<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+						<texture background="true" border="30">shadow.png</texture>
+					</control>
 					<control type="image">
 						<posy>-3</posy>
 						<posx>-3</posx>
@@ -457,7 +465,7 @@
 					<posx>35</posx>
 					<control type="label">
 						<posy>10</posy>
-						<width>320</width>
+						<width>200</width>
 						<label>$INFO[MusicPlayer.Title]</label>
 						<font>Bold-16</font>
 						<textcolor>white</textcolor>
@@ -466,7 +474,7 @@
 					</control>
 					<control type="label">
 						<posy>32</posy>
-						<width>320</width>
+						<width>200</width>
 						<label>$INFO[MusicPlayer.Artist]</label>
 						<font>Regular-16</font>
 						<textcolor>white</textcolor>
