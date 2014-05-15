@@ -326,170 +326,165 @@
 					<!-- separator -->
 					<control type="image">
 						<posy>0</posy>
-						<posx>665</posx>
+						<posx>485</posx>
 						<width>1</width>
 						<height>660</height>
 						<texture>orange.png</texture>
 					</control>
 				</control>
+				<!-- list -->
 				<control type="group">
-					<posx>124</posx>
 					<posy>65</posy>
+					<posx>585</posx>
 					<control type="group">
 						<posy>0</posy>
 						<posx>0</posx>
 						<control type="list" id="3">
 							<width>641</width>
 							<height>600</height>
-							<onleft>-</onleft>
-							<onright>300</onright>
+							<onleft>300</onleft>
+							<onright>3</onright>
 							<onup>3</onup>
 							<ondown>3</ondown>
 							<pagecontrol>61</pagecontrol>
 							<scrolltime>200</scrolltime>
 							<itemlayout height="49" width="641">
+								<control type="group">
+									<posx>25</posx>
+									<control type="image">
+										<posx>0</posx>
+										<posy>0</posy>
+										<width>615</width>
+										<height>50</height>
+										<texture>border-bottom-grey.png</texture>
+									</control>
+									<control type="label">
+										<posx>15</posx>
+										<width>560</width>
+										<height>50</height>
+										<align>left</align>
+										<aligny>center</aligny>
+										<label>$VAR[PlayQueueTitle]</label>
+										<font>Regular-17</font>
+										<include>White2</include>
+										<visible>!ListItem.IsPlaying</visible>
+									</control>
+									<control type="label">
+										<posx>600</posx>
+										<width>80</width>
+										<height>50</height>
+										<align>right</align>
+										<aligny>center</aligny>
+										<label>$INFO[ListItem.DurationStr]</label>
+										<font>Regular-17</font>
+										<include>White2</include>
+										<visible>!ListItem.IsPlaying</visible>
+									</control>
+									<control type="image">
+										<posx>0</posx>
+										<posy>0</posy>
+										<width>615</width>
+										<height>50</height>
+										<texture aspectratio="stretch">black.png</texture>
+										<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
+										<visible>ListItem.IsPlaying</visible>
+									</control>
+									<control type="label">
+										<posx>15</posx>
+										<width>560</width>
+										<height>50</height>
+										<align>left</align>
+										<aligny>center</aligny>
+										<label>$VAR[PlayQueueTitle]</label>
+										<font>Bold-17</font>
+										<scroll>true</scroll>
+										<selectedcolor>orangeLight</selectedcolor>
+										<shadowcolor>FF000000</shadowcolor>
+										<visible>ListItem.IsPlaying</visible>
+									</control>
+									<control type="label">
+										<posx>600</posx>
+										<width>80</width>
+										<height>50</height>
+										<align>right</align>
+										<aligny>center</aligny>
+										<label>$INFO[ListItem.DurationStr]</label>
+										<font>Bold-17</font>
+										<selectedcolor>orangeLight</selectedcolor>
+										<shadowcolor>FF000000</shadowcolor>
+										<visible>ListItem.IsPlaying</visible>
+									</control>
+								</control>
 								<control type="image">
 									<posx>0</posx>
-									<posy>0</posy>
-									<width>615</width>
-									<height>50</height>
-									<texture>border-bottom-grey.png</texture>
-								</control>
-								<control type="label">
-									<posx>15</posx>
-									<width>560</width>
-									<height>50</height>
-									<align>left</align>
-									<aligny>center</aligny>
-									<label>$VAR[PlayQueueTitle]</label>
-									<font>Regular-17</font>
-									<include>White2</include>
-									<visible>!ListItem.IsPlaying</visible>
-								</control>
-								<control type="label">
-									<posx>600</posx>
-									<width>80</width>
-									<height>50</height>
-									<align>right</align>
-									<aligny>center</aligny>
-									<label>$INFO[ListItem.DurationStr]</label>
-									<font>Regular-17</font>
-									<include>White2</include>
-									<visible>!ListItem.IsPlaying</visible>
-								</control>
-								<control type="image">
-									<posx>0</posx>
-									<posy>0</posy>
-									<width>615</width>
-									<height>50</height>
-									<texture aspectratio="stretch">black.png</texture>
-									<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
-									<visible>ListItem.IsPlaying</visible>
-								</control>
-								<control type="label">
-									<posx>15</posx>
-									<width>560</width>
-									<height>50</height>
-									<align>left</align>
-									<aligny>center</aligny>
-									<label>$VAR[PlayQueueTitle]</label>
-									<font>Bold-17</font>
-									<scroll>true</scroll>
-									<selectedcolor>orangeLight</selectedcolor>
-									<shadowcolor>FF000000</shadowcolor>
-									<visible>ListItem.IsPlaying</visible>
-								</control>
-								<control type="label">
-									<posx>600</posx>
-									<width>80</width>
-									<height>50</height>
-									<align>right</align>
-									<aligny>center</aligny>
-									<label>$INFO[ListItem.DurationStr]</label>
-									<font>Bold-17</font>
-									<selectedcolor>orangeLight</selectedcolor>
-									<shadowcolor>FF000000</shadowcolor>
-									<visible>ListItem.IsPlaying</visible>
-								</control>
-								<control type="image">
-									<posx>627</posx>
 									<posy>10</posy>
-									<texture flipx="true">arrow-big.png</texture>
+									<texture>arrow-big.png</texture>
 									<colordiffuse>orange</colordiffuse>
 									<visible>ListItem.IsPlaying</visible>
 								</control>
 							</itemlayout>
 							<focusedlayout height="49" width="605">
-								<control type="image">
-									<posx>0</posx>
-									<posy>0</posy>
-									<width>615</width>
-									<height>50</height>
-									<texture aspectratio="stretch">black.png</texture>
-									<animation effect="slide" start="0,-42" end="0,0" time="200" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
-									<animation effect="slide" start="0,42" end="0,0" time="200" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
+								<control type="group">
+									<posx>25</posx>
+									<control type="image">
+										<posx>0</posx>
+										<posy>0</posy>
+										<width>615</width>
+										<height>50</height>
+										<texture aspectratio="stretch">black.png</texture>
+										<animation effect="slide" start="0,-42" end="0,0" time="200" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
+										<animation effect="slide" start="0,42" end="0,0" time="200" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
+									</control>
+									<control type="image">
+										<posx>0</posx>
+										<posy>0</posy>
+										<width>615</width>
+										<height>50</height>
+										<texture aspectratio="stretch">black.png</texture>
+										<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
+										<visible>ListItem.IsPlaying</visible>
+									</control>
+									<control type="label">
+										<posx>15</posx>
+										<width>560</width>
+										<height>50</height>
+										<align>left</align>
+										<aligny>center</aligny>
+										<label>$VAR[PlayQueueTitle]</label>
+										<font>Bold-17</font>
+										<scroll>true</scroll>
+										<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnNext">Focus</animation>
+										<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnPrevious">Focus</animation>
+										<textcolor>orangeLight</textcolor>
+									</control>
+									<control type="label">
+										<posx>600</posx>
+										<width>80</width>
+										<height>50</height>
+										<align>right</align>
+										<aligny>center</aligny>
+										<label>$INFO[ListItem.DurationStr]</label>
+										<font>Bold-17</font>
+										<textcolor>orangeLight</textcolor>
+										<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnNext">Focus</animation>
+										<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnPrevious">Focus</animation>
+									</control>
 								</control>
 								<control type="image">
 									<posx>0</posx>
-									<posy>0</posy>
-									<width>615</width>
-									<height>50</height>
-									<texture aspectratio="stretch">black.png</texture>
-									<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
-									<visible>ListItem.IsPlaying</visible>
-								</control>
-								<control type="label">
-									<posx>15</posx>
-									<width>560</width>
-									<height>50</height>
-									<align>left</align>
-									<aligny>center</aligny>
-									<label>$VAR[PlayQueueTitle]</label>
-									<font>Bold-17</font>
-									<scroll>true</scroll>
-									<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnNext">Focus</animation>
-									<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnPrevious">Focus</animation>
-									<textcolor>orangeLight</textcolor>
-								</control>
-								<control type="label">
-									<posx>600</posx>
-									<width>80</width>
-									<height>50</height>
-									<align>right</align>
-									<aligny>center</aligny>
-									<label>$INFO[ListItem.DurationStr]</label>
-									<font>Bold-17</font>
-									<textcolor>orangeLight</textcolor>
-									<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnNext">Focus</animation>
-									<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnPrevious">Focus</animation>
-								</control>
-								<control type="image">
-									<posx>627</posx>
 									<posy>10</posy>
-									<texture flipx="true">arrow-big.png</texture>
+									<texture>arrow-big.png</texture>
 									<colordiffuse>orange</colordiffuse>
 									<visible>ListItem.IsPlaying</visible>
 								</control>
 							</focusedlayout>
 						</control>
-						<!--><control type="scrollbar" id="61">
-						<description>Scroll Bar</description>
-						<posy>-5</posy>
-						<posx>608</posx>
-						<width>20</width>
-						<height>300</height>
-					</control>-->
 					</control>
 				</control>
-			</control>
-			<!-- full pq + OSD -->
-			<control type="group">
-				<visible>!Window.IsVisible(nowplaying)</visible>
-				<posy>0</posy>
-				<posx>0</posx>
+				<!-- now/next playing & OSD -->
 				<control type="group">
 					<posy>40</posy>
-					<posx>766</posx>
+					<posx>100</posx>
 					<!-- now playing -->
 					<control type="group">
 						<posy>100</posy>
@@ -809,7 +804,7 @@
 									<onup>3</onup>
 									<ondown>3</ondown>
 									<onclick>PlayerControl(Stop)</onclick>
-									<onclick>Control.SetFocus(54)</onclick>
+									<onclick>Dialog.Close(playercontrols)</onclick>
 									<visible allowhiddenfocus="true">Control.HasFocus(713)</visible>
 									<colordiffuse>orange</colordiffuse>
 								</control>
@@ -844,5 +839,7 @@
 				</control>
 			</control>
 		</control>
+		<include>debugInfos</include>
+		<include>Grid</include>
 	</controls>
 </window>
