@@ -107,17 +107,6 @@ static const int64_t SECS_TO_100NS = 10000000;
 using namespace XFILE;
 using namespace PLAYLIST;
 
-#ifdef HAS_DX
-static D3DGAMMARAMP oldramp, flashramp;
-#elif defined(HAS_SDL_2D)
-static uint16_t oldrampRed[256];
-static uint16_t oldrampGreen[256];
-static uint16_t oldrampBlue[256];
-static uint16_t flashrampRed[256];
-static uint16_t flashrampGreen[256];
-static uint16_t flashrampBlue[256];
-#endif
-
 #if !defined(TARGET_WINDOWS)
 unsigned int CUtil::s_randomSeed = time(NULL);
 #endif

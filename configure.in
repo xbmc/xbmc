@@ -2087,7 +2087,6 @@ else
     USE_OPENGL=1
   else
     final_message="$final_message\n  OpenGL:\tNo (Very Slow)"
-    SDL_DEFINES="$SDL_DEFINES -DHAS_SDL_2D"
     USE_OPENGL=0
   fi
 fi
