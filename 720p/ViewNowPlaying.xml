@@ -227,7 +227,7 @@
 		<aligny>center</aligny>
 		<info>Player.Progress</info>
 		<texturebg border="8">OSDProgressBack2.png</texturebg>
-		<midtexture border="8">OSDProgressMid-white2.png</midtexture>
+		<midtexture border="8">OSDProgressMid-orange.png</midtexture>
 	</include>
 	<!-- Animations -->
 	<include name="Fade">
@@ -321,7 +321,7 @@
 						<aligny>center</aligny>
 						<info>Player.Progress</info>
 						<texturebg>OSDProgressBack2.png</texturebg>
-						<midtexture>base.png</midtexture>
+						<midtexture>orange.png</midtexture>
 					</control>
 				</control>
 			</control>
@@ -364,7 +364,7 @@
 						<aligny>center</aligny>
 						<info>Player.Progress</info>
 						<texturebg>OSDProgressBack2.png</texturebg>
-						<midtexture>base.png</midtexture>
+						<midtexture>orange.png</midtexture>
 					</control>
 				</control>
 			</control>			

@@ -326,7 +326,7 @@
 			<aligny>center</aligny>
 			<info>Player.Progress</info>
 			<texturebg border="8">OSDProgressBack2.png</texturebg>
-			<midtexture border="8">OSDProgressMid-white2.png</midtexture>
+			<midtexture border="8">OSDProgressMid-orange.png</midtexture>
 		</control>
 		<control type="label">
 			<posx>235</posx>
