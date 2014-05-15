@@ -32,7 +32,15 @@ CUrlOptions CPlexTimeline::getTimeline(bool forServer)
 
     options.AddOption("ratingKey", m_item->GetProperty("ratingKey").asString());
     options.AddOption("key", m_item->GetProperty("unprocessed_key").asString());
-    options.AddOption("containerKey", m_item->GetProperty("containerKey").asString());
+
+    CStdString container = m_item->GetProperty("containerKey").asString();
+
+    // We need to set our own container since the one from the item can be
+    // just /playQueues
+    if (m_item->HasProperty("playQueueID"))
+      container.Format("/playQueues/%s", m_item->GetProperty("playQueueID").asString());
+
+    options.AddOption("containerKey", container);
 
     if (m_item->HasProperty("guid"))
       options.AddOption("guid", m_item->GetProperty("guid").asString());
