@@ -281,6 +281,7 @@
 	<include name="NowPlayingSideBar">
 		<control type="group">
 			<include>leftMenuSlide</include>
+			<animation effect="fade" time="500">VisibleChange</animation>
 			<!-- music -->
 			<control type="group">
 				<posy>528</posy>
