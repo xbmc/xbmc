@@ -10,7 +10,7 @@
 		<include>HomeLists</include>
 		<include>Clock</include>
 		<include>NowPlayingOverlay</include>
-		<include>NowPlayingSideBar</include>
+		<include>NowPlayingSideBar-</include>
 		<include>debugInfos</include>
 		<include>Grid</include>
 		<include>CurrentlyPlaying</include>
