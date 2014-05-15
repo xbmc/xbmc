@@ -288,6 +288,15 @@
 				<control type="group">
 					<posx>100</posx>
 					<posy>30</posy>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>1150</width>
+						<height>660</height>
+						<texture background="true" diffuse="mask-osd-pq-bg.png">black.png</texture>
+						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					</control>
 					<control type="largeimage">
 						<posx>0</posx>
 						<posy>0</posy>
