@@ -287,7 +287,7 @@
 				<posy>528</posy>
 				<posx>12</posx>
 				<control type="group">
-					<visible>MusicPlayer.HasNext</visible>
+					<visible>MusicPlayer.HasNext + !Container.UniformProperty(Album)</visible>
 					<control type="image">
 						<width>50</width>
 						<height>50</height>
