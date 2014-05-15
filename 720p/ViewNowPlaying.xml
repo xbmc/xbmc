@@ -281,6 +281,7 @@
 	<include name="NowPlayingSideBar">
 		<control type="group">
 			<include>leftMenuSlide</include>
+			<!-- music -->
 			<control type="group">
 				<posy>528</posy>
 				<posx>12</posx>
@@ -301,7 +302,7 @@
 				</control>
 				<control type="group">
 					<visible>Player.HasAudio</visible>
-					<posy>60</posy>					
+					<posy>60</posy>
 					<control type="image">
 						<posy>-3</posy>
 						<posx>-3</posx>
@@ -335,7 +336,7 @@
 					</control>
 				</control>
 			</control>
-			<!-- video posters -->
+			<!-- video -->
 			<control type="group">
 				<posy>483</posy>
 				<posx>12</posx>
@@ -387,7 +388,101 @@
 						<midtexture>orange.png</midtexture>
 					</control>
 				</control>
-			</control>			
+			</control>
+			<!-- player toast -->
+			<control type="group">
+				<visible>Player.OnNew</visible>				
+				<animation effect="fade" time="500">VisibleChange</animation>
+				<posy>589</posy>
+				<posx>80</posx>
+				<!-- backgrounds -->
+				<control type="group">
+					<control type="image">
+						<posx>3</posx>
+						<posy>-12</posy>
+						<width>267</width>
+						<height>126</height>
+						<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+						<texture background="true" border="50">shadow.png</texture>
+					</control>
+					<control type="image">
+						<posy>20</posy>
+						<posx>0</posx>
+						<width>16</width>
+						<height>32</height>
+						<aspectratio>scale</aspectratio>
+						<texture flipx="true">arrow-big.png</texture>
+						<colordiffuse>FF000000</colordiffuse>
+					</control>
+					<control type="image">
+						<posy>0</posy>
+						<posx>16</posx>
+						<width>240</width>
+						<height>100</height>
+						<include>BlackRounded</include>
+					</control>
+					<control type="largeimage">
+						<posy>0</posy>
+						<posx>16</posx>
+						<width>240</width>
+						<height>100</height>
+						<fadetime>500</fadetime>
+						<texture background="true" diffuse="mask-thumb-round-big.png">$INFO[Player.Art(fanart)]</texture>
+						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					</control>
+					<control type="image">
+						<posy>0</posy>
+						<posx>16</posx>
+						<width>240</width>
+						<height>100</height>
+						<texture background="true" diffuse="mask-thumb-round-big.png">black.png</texture>
+						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+						<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
+					</control>
+					<control type="image">
+						<posy>0</posy>
+						<posx>16</posx>
+						<width>240</width>
+						<height>100</height>
+						<texture background="true" diffuse="mask-thumb-round-big.png">bg-overlay-grainy.png</texture>
+						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+						<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+					</control>
+				</control>
+				<!-- infos -->
+				<control type="group">
+					<posy>20</posy>
+					<posx>35</posx>
+					<control type="label">
+						<posy>10</posy>
+						<width>320</width>
+						<label>$INFO[MusicPlayer.Title]</label>
+						<font>Bold-16</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>ff222222</shadowcolor>
+						<align>left</align>
+					</control>
+					<control type="label">
+						<posy>32</posy>
+						<width>320</width>
+						<label>$INFO[MusicPlayer.Artist]</label>
+						<font>Regular-16</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>ff222222</shadowcolor>
+						<align>left</align>
+					</control>
+					<control type="label">
+						<posy>54</posy>
+						<width>200</width>
+						<label>$INFO[MusicPlayer.Album]</label>
+						<font>Regular-16</font>
+						<textcolor>FF999999</textcolor>
+						<shadowcolor>ff222222</shadowcolor>
+						<align>left</align>
+					</control>
+				</control>
+			</control>
 		</control>
 	</include>
 	<!-- full now playing -->
