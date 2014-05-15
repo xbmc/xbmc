@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <window type="dialog" id="400">
 	<defaultcontrol always="true">300</defaultcontrol>
+	<include>DialogFadeInOut</include>
 	<controls>
 		<!-- now playing -->
 		<control type="group">
@@ -512,7 +513,7 @@
 							<height>118</height>
 							<texture border="10">base.png</texture>
 							<colordiffuse>FF000000</colordiffuse>
-							<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
+							<animation effect="fade" start="100" end="80" time="0" condition="true">Conditional</animation>
 						</control>
 						<!-- infos -->
 						<control type="group">
