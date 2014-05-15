@@ -960,12 +960,6 @@ bool CPVRChannelGroupsUpdateJob::DoWork(void)
   return g_PVRChannelGroups->Update(false);
 }
 
-bool CPVRChannelSettingsSaveJob::DoWork(void)
-{
-  g_PVRManager.SaveCurrentChannelSettings();
-  return true;
-}
-
 bool CPVRManager::OpenLiveStream(const CFileItem &channel)
 {
   bool bReturn(false);
@@ -1477,11 +1471,6 @@ void CPVRManager::TriggerChannelsUpdate(void)
 void CPVRManager::TriggerChannelGroupsUpdate(void)
 {
   QueueJob(new CPVRChannelGroupsUpdateJob());
-}
-
-void CPVRManager::TriggerSaveChannelSettings(void)
-{
-  QueueJob(new CPVRChannelSettingsSaveJob());
 }
 
 void CPVRManager::TriggerSearchMissingChannelIcons(void)

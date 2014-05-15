@@ -392,11 +392,6 @@ namespace PVR
     void TriggerChannelGroupsUpdate(void);
 
     /*!
-     * @brief Let the background thread save the current video settings.
-     */
-    void TriggerSaveChannelSettings(void);
-
-    /*!
      * @brief Let the background thread search for missing channel icons.
      */
     void TriggerSearchMissingChannelIcons(void);
@@ -726,16 +721,6 @@ namespace PVR
     virtual const char *GetType() const { return "pvr-update-channelgroups"; }
 
     virtual bool DoWork();
-  };
-
-  class CPVRChannelSettingsSaveJob : public CJob
-  {
-  public:
-    CPVRChannelSettingsSaveJob(void) {}
-    virtual ~CPVRChannelSettingsSaveJob() {}
-    virtual const char *GetType() const { return "pvr-save-channelsettings"; }
-
-    bool DoWork();
   };
 
   class CPVRChannelSwitchJob : public CJob
