@@ -216,12 +216,18 @@ void CPlayList::IncrementOrder(int iPosition, int iOrder)
 
 void CPlayList::Clear()
 {
-  m_vecItems.erase(m_vecItems.begin(), m_vecItems.end());
+  bool announce = false;
+  if (!m_vecItems.empty())
+  {
+    m_vecItems.erase(m_vecItems.begin(), m_vecItems.end());
+    announce = true;
+  }
   m_strPlayListName = "";
   m_iPlayableItems = -1;
   m_bWasPlayed = false;
 
-  AnnounceClear();
+  if (announce)
+    AnnounceClear();
 }
 
 int CPlayList::size() const
