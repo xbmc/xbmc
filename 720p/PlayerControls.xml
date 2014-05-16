@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 <window type="dialog" id="400">
 	<defaultcontrol always="true">300</defaultcontrol>
+	<onload condition="Window.IsActive(nowplaying)">Dialog.Close(playercontrols)</onload>
 	<include>DialogFadeInOut</include>
 	<controls>
-		<!-- now playing -->
+		<!-- DEACTIVATED - now playing -->
 		<control type="group">
-			<visible>Window.IsVisible(nowplaying)</visible>
+			<visible>false</visible>
 			<!-- move if flipped -->
 			<animation effect="slide" start="0,0" end="-440,0" time="1000" condition="MusicPlayer.NowPlayingFlipped">Conditional</animation>
 			<posy>350</posy>
