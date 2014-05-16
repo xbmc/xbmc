@@ -289,7 +289,7 @@ bool CAddonInstaller::InstallFromZip(const CStdString &path)
   if (xml.LoadFile(archive) && CAddonMgr::Get().LoadAddonDescriptionFromMemory(xml.RootElement(), addon))
   {
     // set the correct path
-    addon->Props().path = path;
+    addon->Props().path = items[0]->GetPath();
 
     // install the addon
     return DoInstall(addon);
