@@ -344,16 +344,16 @@ void CGUIDialogSettingsBase::SetupControls(bool createSettings /* = true */)
     m_categories.push_back(m_dummyCategory);
 
   // get all controls
-  m_pOriginalSpin = (CGUISpinControlEx*)GetControl(CONTROL_DEFAULT_SPIN);
-  m_pOriginalSlider = (CGUISettingsSliderControl*)GetControl(CONTROL_DEFAULT_SLIDER);
-  m_pOriginalRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_DEFAULT_RADIOBUTTON);
-  m_pOriginalCategoryButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_CATEGORY_BUTTON);
-  m_pOriginalButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_BUTTON);
-  m_pOriginalImage = (CGUIImage *)GetControl(CONTROL_DEFAULT_SEPARATOR);
-  m_pOriginalEdit = (CGUIEditControl *)GetControl(CONTROL_DEFAULT_EDIT);
-  if (!m_pOriginalEdit || m_pOriginalEdit->GetControlType() != CGUIControl::GUICONTROL_EDIT)
+  m_pOriginalSpin = dynamic_cast<CGUISpinControlEx*>(GetControl(CONTROL_DEFAULT_SPIN));
+  m_pOriginalSlider = dynamic_cast<CGUISettingsSliderControl*>(GetControl(CONTROL_DEFAULT_SLIDER));
+  m_pOriginalRadioButton = dynamic_cast<CGUIRadioButtonControl *>(GetControl(CONTROL_DEFAULT_RADIOBUTTON));
+  m_pOriginalCategoryButton = dynamic_cast<CGUIButtonControl *>(GetControl(CONTROL_DEFAULT_CATEGORY_BUTTON));
+  m_pOriginalButton = dynamic_cast<CGUIButtonControl *>(GetControl(CONTROL_DEFAULT_BUTTON));
+  m_pOriginalImage = dynamic_cast<CGUIImage *>(GetControl(CONTROL_DEFAULT_SEPARATOR));
+  m_pOriginalEdit = dynamic_cast<CGUIEditControl *>(GetControl(CONTROL_DEFAULT_EDIT));
+
+  if (!m_pOriginalEdit && m_pOriginalButton)
   {
-    delete m_pOriginalEdit;
     m_pOriginalEdit = new CGUIEditControl(*m_pOriginalButton);
     m_newOriginalEdit = true;
   }
@@ -369,7 +369,7 @@ void CGUIDialogSettingsBase::SetupControls(bool createSettings /* = true */)
   if (m_pOriginalCategoryButton != NULL)
   {
     // setup our control groups...
-    CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CATEGORY_GROUP_ID);
+    CGUIControlGroupList *group = dynamic_cast<CGUIControlGroupList *>(GetControl(CATEGORY_GROUP_ID));
     if (!group)
       return;
 
@@ -402,7 +402,7 @@ void CGUIDialogSettingsBase::SetupControls(bool createSettings /* = true */)
 void CGUIDialogSettingsBase::FreeControls()
 {
   // clear the category group
-  CGUIControlGroupList *control = (CGUIControlGroupList *)GetControl(CATEGORY_GROUP_ID);
+  CGUIControlGroupList *control = dynamic_cast<CGUIControlGroupList *>(GetControl(CATEGORY_GROUP_ID));
   if (control)
   {
     control->FreeResources();
@@ -429,7 +429,7 @@ void CGUIDialogSettingsBase::DeleteControls()
 void CGUIDialogSettingsBase::FreeSettingsControls()
 {
   // clear the settings group
-  CGUIControlGroupList *control = (CGUIControlGroupList *)GetControl(SETTINGS_GROUP_ID);
+  CGUIControlGroupList *control = dynamic_cast<CGUIControlGroupList *>(GetControl(SETTINGS_GROUP_ID));
   if (control)
   {
     control->FreeResources();
@@ -486,7 +486,7 @@ std::set<std::string> CGUIDialogSettingsBase::CreateSettings()
   if (m_iCategory < 0 || m_iCategory >= (int)m_categories.size())
     m_iCategory = 0;
 
-  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(SETTINGS_GROUP_ID);
+  CGUIControlGroupList *group = dynamic_cast<CGUIControlGroupList *>(GetControl(SETTINGS_GROUP_ID));
   if (group == NULL)
     return settingMap;
 
@@ -688,7 +688,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSettingControl(CGUIControl *pControl, Ba
   pControl->SetVisible(true);
   pControl->SetWidth(width);
   
-  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(SETTINGS_GROUP_ID);
+  CGUIControlGroupList *group = dynamic_cast<CGUIControlGroupList *>(GetControl(SETTINGS_GROUP_ID));
   if (group != NULL)
   {
     pControl->AllocResources();
