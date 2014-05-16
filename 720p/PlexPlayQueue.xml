@@ -1159,7 +1159,47 @@
 									<include>Black</include>
 								</control>
 							</control>
-							<include>PlayQueueOSDButtons</include>
+							<control type="group" id="300">
+								<posy>0</posy>
+								<posx>-50</posx>
+								<!-- repeat -->
+								<control type="group">
+									<posy>11</posy>
+									<posx>45</posx>
+									<include>OSDRepeatButton</include>
+								</control>
+								<!-- previous -->
+								<control type="group">
+									<posy>13</posy>
+									<posx>220</posx>
+									<include>OSDPreviousButton</include>
+								</control>
+								<!-- play/pause -->
+								<control type="group">
+									<posy>13</posy>
+									<posx>262</posx>
+									<include>OSDPlayButton</include>
+								</control>
+								<!-- next -->
+								<control type="group">
+									<posy>13</posy>
+									<posx>302</posx>
+									<include>OSDNextButton</include>
+								</control>
+								<!-- stop -->
+								<control type="group">
+									<posy>13</posy>
+									<posx>421</posx>
+									<include>OSDStopButton</include>
+								</control>
+								<!-- fullscreen player -->
+								<control type="group">
+									<posy>13</posy>
+									<posx>461</posx>
+									<include>OSDPlayerButton</include>
+									<onright>54</onright>
+								</control>
+							</control>
 						</control>
 					</control>
 				</control>
