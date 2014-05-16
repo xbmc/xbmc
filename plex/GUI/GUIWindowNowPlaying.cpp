@@ -75,8 +75,8 @@ bool CGUIWindowNowPlaying::OnAction(const CAction &action)
     g_playlistPlayer.PlayPrevious();
     return true;
   }
-  
-  return false;
+
+  return CGUIWindow::OnAction(action);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,6 +91,9 @@ bool CGUIWindowNowPlaying::OnMessage(CGUIMessage& message)
     }
     case GUI_MSG_WINDOW_INIT:
     {
+      if (g_windowManager.GetTopMostModalDialogID(true) != WINDOW_INVALID)
+        g_windowManager.GetWindow(g_windowManager.GetTopMostModalDialogID(true))->Close();
+
       m_isFlipped = false;
       g_plexApplication.timer->SetTimeout(g_advancedSettings.m_nowPlayingFlipTime * 1000, this);
       break;
