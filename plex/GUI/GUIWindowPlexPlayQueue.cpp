@@ -37,7 +37,11 @@ void CGUIWindowPlexPlayQueue::GetContextButtons(int itemNumber, CContextButtons&
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowPlexPlayQueue::Update(const CStdString& strDirectory, bool updateFilterPath)
 {
-  if (CGUIPlexMediaWindow::Update(strDirectory, updateFilterPath))
+  CStdString dirPath = strDirectory;
+  if (strDirectory.empty())
+    dirPath = "plexserver://playqueue/";
+
+  if (CGUIPlexMediaWindow::Update(dirPath, updateFilterPath))
   {
     if (m_vecItems->Size() == 0)
     {
