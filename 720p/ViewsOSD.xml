@@ -206,7 +206,8 @@
 			<texturenofocus>-</texturenofocus>
 			<onleft condition="Window.IsActive(playercontrols)">714</onleft>
 			<onleft condition="Window.IsActive(nowplaying)">713</onleft>
-			<onright condition="Window.IsActive(playercontrols) | Window.IsActive(plexplayqueue)">54</onright>
+			<onright condition="Window.IsActive(playercontrols)">3</onright>
+			<onright condition="Window.IsActive(plexplayqueue)">54</onright>
 			<onright condition="Window.IsActive(nowplaying)">708</onright>
 			<onup condition="Window.IsActive(plexplayqueue)">54</onup>
 			<ondown condition="Window.IsActive(plexplayqueue)">54</ondown>
