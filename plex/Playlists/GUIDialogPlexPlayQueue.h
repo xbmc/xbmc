@@ -9,6 +9,7 @@ public:
   CGUIDialogPlexPlayQueue();
   bool OnMessage(CGUIMessage& message);
   void LoadPlayQueue();
+  bool IsMediaWindow() { return true; }
 private:
   void ItemSelected();
 };
