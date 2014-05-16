@@ -399,7 +399,7 @@
 			</control>
 			<!-- player toast -->
 			<control type="group">
-				<visible>Player.HasAudio + Player.OnNew + !Control.IsVisible(999)</visible>				
+				<visible>Player.HasAudio + Player.OnNew</visible>				
 				<animation effect="fade" time="500">VisibleChange</animation>
 				<posy>589</posy>
 				<posx>80</posx>
@@ -651,6 +651,61 @@
 				<posx>30</posx>
 				<visible>MusicPlayer.NowPlayingFlipped</visible>
 				<include>PauseIcon</include>
+			</control>
+		</control>		
+		<!-- osd -->
+		<control type="group">
+			<!-- move if flipped -->
+			<animation effect="slide" start="0,0" end="-440,0" time="1000" condition="MusicPlayer.NowPlayingFlipped">Conditional</animation>
+			<posy>350</posy>
+			<posx>500</posx>
+			<control type="image">
+				<posx>80</posx>
+				<posy>0</posy>
+				<width>550</width>
+				<height>60</height>
+				<include>BlackRounded</include>
+				<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+			</control>
+			<control type="group" id="300">
+				<posy>6</posy>
+				<posx>55</posx>
+				<!-- repeat -->
+				<control type="group">
+					<posy>11</posy>
+					<posx>45</posx>
+					<include>OSDRepeatButton</include>
+				</control>
+				<!-- previous -->
+				<control type="group">
+					<posy>13</posy>
+					<posx>238</posx>
+					<include>OSDPreviousButton</include>
+				</control>
+				<!-- play/pause -->
+				<control type="group">
+					<posy>13</posy>
+					<posx>280</posx>
+					<include>OSDPlayButton</include>
+				</control>
+				<!-- next -->
+				<control type="group">
+					<posy>13</posy>
+					<posx>319</posx>
+					<include>OSDNextButton</include>
+				</control>
+				<!-- stop -->
+				<control type="group">
+					<posy>13</posy>
+					<posx>490</posx>
+					<include>OSDStopButton</include>
+				</control>
+				<!-- pq -->
+				<control type="group">
+					<posy>14</posy>
+					<posx>534</posx>
+					<include>OSDPlayqueueButton</include>
+				</control>
 			</control>
 		</control>
 	</include>
