@@ -942,31 +942,12 @@
 						<posy>129</posy>
 						<width>860</width>
 						<height>330</height>
+						<!-- tv & movie -->
 						<itemlayout width="139" height="330">
-							<!-- movie & episode when both lists are visible -->
-							<control type="group">
-								<posy>-3</posy>
-								<visible>[ListItem.Type(episode) | ListItem.Type(movie)] + Control.IsVisible(11007)</visible>
-								<animation effect="fade" start="100" end="50" time="300" condition="ControlGroup(7007).HasFocus">Conditional</animation>
-								<control type="group">
-									<include>ListItemPoster</include>
-									<include>ListItemInProgress</include>
-								</control>
-								<control type="group">
-									<visible>ListItem.Type(episode)</visible>
-									<include>ListItemPosterCard</include>
-									<include>ListItemPosterTitleTV2</include>
-									<include>ListItemInProgress</include>
-								</control>
-								<control type="image">
-									<visible>ControlGroup(7007).HasFocus</visible>
-									<include>ListItemPosterDimmer</include>
-								</control>
-							</control>
 							<!-- movie & episode when only this list is visible -->
 							<control type="group">
 								<posy>100</posy>
-								<visible>[ListItem.Type(episode) | ListItem.Type(movie)] + !Control.IsVisible(11007)</visible>
+								<visible>[ListItem.Type(episode) | ListItem.Type(movie) | ListItem.Type(clip)]</visible>
 								<animation effect="fade" start="100" end="50" time="300" condition="ControlGroup(7007).HasFocus">Conditional</animation>
 								<control type="group">
 									<include>ListItemPoster</include>
@@ -977,27 +958,46 @@
 									<include>ListItemPosterCard</include>
 									<include>ListItemPosterTitleTV2</include>
 									<include>ListItemInProgress</include>
-								</control>
-								<control type="image">
-									<visible>ControlGroup(7007).HasFocus</visible>
-									<include>ListItemPosterDimmer</include>
 								</control>
 							</control>
 						</itemlayout>
 						<focusedlayout width="139" height="330">
-							<!-- movie & episode when both lists are visible -->
-							<control type="group">
-								<posy>-3</posy>
-								<visible>[ListItem.Type(episode) | ListItem.Type(movie)] + Control.IsVisible(11007)</visible>
-								<include>ListItemPoster</include>
-								<include>ListItemPosterSelectedBorder</include>
-							</control>
 							<!-- movie & episode when only this list is visible -->
 							<control type="group">
 								<posy>100</posy>
-								<visible>[ListItem.Type(episode) | ListItem.Type(movie)] + !Control.IsVisible(11007)</visible>
+								<visible>[ListItem.Type(episode) | ListItem.Type(movie) | ListItem.Type(clip)]</visible>
 								<include>ListItemPoster</include>
 								<include>ListItemPosterSelectedBorder</include>
+								<control type="group">
+									<visible>ListItem.Type(episode)</visible>
+									<include>ListItemPosterCard</include>
+									<include>ListItemPosterTitleTV2</include>
+									<include>ListItemInProgress</include>
+								</control>
+							</control>
+						</focusedlayout>
+						<!-- clips -->
+						<itemlayout width="211" height="230" condition="[ListItem.Type(clip)]">
+							<!-- when only this list is visible -->
+							<control type="group">
+								<posy>103</posy>
+								<visible>ListItem.Type(clip)</visible>
+								<include>ListItemWideCard</include>
+								<include>ListItemWide</include>
+								<include>ListItemWideTitleProvider</include>
+								<include>ListItemWideTitle</include>
+							</control>
+						</itemlayout>
+						<focusedlayout width="211" height="230" condition="[ListItem.Type(clip)]">
+							<!-- when only this list is visible -->
+							<control type="group">
+								<posy>108</posy>
+								<visible>ListItem.Type(clip)</visible>
+								<include>ListItemWideCard</include>
+								<include>ListItemWide</include>
+								<include>ListItemWideTitleProvider</include>
+								<include>ListItemWideTitle</include>
+								<include>ListItemWideSelectedBorder</include>
 							</control>
 						</focusedlayout>
 					</control>
