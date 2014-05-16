@@ -3555,6 +3555,8 @@ void CApplication::Stop(int exitCode)
     CLog::Log(LOGNOTICE, "stop player");
     m_pPlayer->ClosePlayer();
 
+    CAnnouncementManager::Deinitialize();
+
     StopPVRManager();
     StopServices();
     //Sleep(5000);
