@@ -1388,7 +1388,7 @@ bool CGUIPlexMediaWindow::MatchPlexContent(const CStdString &matchStr)
 bool CGUIPlexMediaWindow::MatchPlexFilter(const CStdString &matchStr)
 {
   if (!m_sectionFilter)
-    return matchStr.empty();
+    return "all";
 
   CStdStringArray matchVec = StringUtils::SplitString(matchStr, ";");
   CStdString filterName = m_sectionFilter->currentPrimaryFilter();
