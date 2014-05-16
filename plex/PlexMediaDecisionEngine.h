@@ -26,8 +26,11 @@ public:
   CFileItem m_choosenMedia;
 
 private:
+  // allow override for tests.
+  virtual CFileItemPtr GetUrl(const CStdString &url);
+  virtual CFileItemPtr ResolveIndirect(CFileItemPtr item);
+
   CStdString GetPartURL(CFileItemPtr mediaPart);
-  CFileItemPtr ResolveIndirect(CFileItemPtr item);
   void AddHeaders();
 
   bool m_success;

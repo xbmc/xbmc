@@ -260,20 +260,12 @@ CFileItemPtr CPlexMediaDecisionJob::ResolveIndirect(CFileItemPtr item)
 
   if (!m_bStop)
   {
-    CFileItemList list;
-    if (!m_dir.GetDirectory(partUrl, list))
-      return CFileItemPtr();
-
-    CFileItemPtr i = list.Get(0);
+    CFileItemPtr i = GetUrl(partUrl.Get());
 
     if (!i || i->m_mediaItems.size() == 0)
       return CFileItemPtr();
 
     item = i->m_mediaItems[0];
-
-    /* check if we got some httpHeaders from this mediaContainer */
-    if (list.HasProperty("httpHeaders"))
-      item->SetProperty("httpHeaders", list.GetProperty("httpHeaders"));
   }
 
   CLog::Log(LOGDEBUG, "CPlexMediaDecisionJob::ResolveIndirect Recursing %s", m_choosenMedia.GetPath().c_str());
@@ -336,6 +328,21 @@ CStdString CPlexMediaDecisionJob::GetPartURL(CFileItemPtr mediaPart)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+CFileItemPtr CPlexMediaDecisionJob::GetUrl(const CStdString& url)
+{
+  CFileItemList list;
+  if (m_dir.GetDirectory(url, list))
+  {
+    /* check if we got some httpHeaders from this mediaContainer */
+    if (list.HasProperty("httpHeaders") && list.Get(0))
+      list.Get(0)->SetProperty("httpHeaders", list.GetProperty("httpHeaders"));
+
+    return list.Get(0);
+  }
+  return CFileItemPtr();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 /* this method is responsible for resolving and chosing what media item
  * should be passed to the player core */
 bool CPlexMediaDecisionJob::DoWork()
@@ -344,17 +351,11 @@ bool CPlexMediaDecisionJob::DoWork()
   if (m_item.IsPlexMediaServerLibrary() && m_item.IsVideo() &&
       !m_item.GetProperty("isSynthesized").asBoolean())
   {
-    CFileItemListPtr list = CFileItemListPtr(new CFileItemList);
-
-    CLog::Log(LOGDEBUG, "CPlexMediaDecisionJob::DoWork loading extra information for item");
-
-    if (!m_dir.GetDirectory(m_item.GetPath(), *list))
+    CFileItemPtr i = GetUrl(m_item.GetPath());
+    if (!i)
       return false;
 
-    m_choosenMedia = *list->Get(0);
-
-    // since this item is loaded again we need to call the extra info loader
-    g_plexApplication.extraInfo->LoadExtraInfoForItem(list);
+    m_choosenMedia = *i;
   }
   else
   {

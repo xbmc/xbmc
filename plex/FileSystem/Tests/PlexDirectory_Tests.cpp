@@ -77,20 +77,6 @@ const char youtubePrefsXML[] =
     "<Setting default=\"\" id=\"youtube_passwd\" label=\"Password\" option=\"hidden\" secure=\"true\" type=\"text\" value=\"\"/>\n"
     "</MediaContainer>\n";
 
-class PlexDirectoryFakeDataTest : public XFILE::CPlexDirectory
-{
-public:
-  PlexDirectoryFakeDataTest(const std::string& fakedata) : CPlexDirectory(), m_fakedata(fakedata) {}
-
-  bool GetXMLData(CStdString& data)
-  {
-    data = m_fakedata;
-    return true;
-  }
-
-  std::string m_fakedata;
-};
-
 TEST(PlexDirectoryYoutubeTest, parsePrefs)
 {
   PlexDirectoryFakeDataTest dir(youtubePrefsXML);

@@ -4,3 +4,4 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include "PlexTypes.h"
+#include "Tests/PlexTestUtils.h"

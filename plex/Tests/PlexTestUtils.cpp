@@ -2,6 +2,7 @@
 #include "PlexApplication.h"
 #include "Client/PlexServerManager.h"
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void PlexServerManagerTestUtility::SetUp()
 {
   if (!server)
@@ -15,7 +16,15 @@ void PlexServerManagerTestUtility::SetUp()
   g_plexApplication.serverManager = CPlexServerManagerPtr(new CPlexServerManager(server));
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void PlexServerManagerTestUtility::TearDown()
 {
   g_plexApplication.serverManager.reset();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool PlexTestUtils::listFromXML(const CStdString& xml, CFileItemList& list)
+{
+  PlexDirectoryFakeDataTest dir(xml);
+  return dir.GetDirectory("plexserver://abc123/library/sections/1/all", list);
 }

@@ -1,3 +1,4 @@
 plex_add_testcase(PlexServer_Tests.cpp)
 plex_add_testcase(PlexServerVersion_Tests.cpp)
 plex_add_testcase(PlexTranscoderClient_Tests.cpp)
+plex_add_testcase(PlexMediaDecisionEngine_Tests.cpp)
