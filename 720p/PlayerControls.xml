@@ -657,223 +657,45 @@
 							<posx>0</posx>
 							<!-- repeat -->
 							<control type="group">
-								<posy>9</posy>
+								<posy>11</posy>
 								<posx>45</posx>
-								<control type="image">
-									<width>43</width>
-									<height>27</height>
-									<texture>b-repeat2.png</texture>
-									<visible>!Control.HasFocus(708) + !Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
-									<colordiffuse>FFCCCCCC</colordiffuse>
-								</control>
-								<control type="image">
-									<width>42</width>
-									<height>27</height>
-									<texture>b-repeat-one2.png</texture>
-									<visible>!Control.HasFocus(708) + Playlist.IsRepeatOne</visible>
-									<colordiffuse>orange</colordiffuse>
-								</control>
-								<control type="image">
-									<width>42</width>
-									<height>27</height>
-									<texture>b-repeat-all2.png</texture>
-									<visible>!Control.HasFocus(708) + Playlist.IsRepeat</visible>
-									<colordiffuse>orange</colordiffuse>
-								</control>
-								<control type="image">
-									<width>42</width>
-									<height>27</height>
-									<texture>b-repeat2.png</texture>
-									<visible>Control.HasFocus(708) + !Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
-									<colordiffuse>orangeLight</colordiffuse>
-								</control>
-								<control type="image">
-									<width>42</width>
-									<height>27</height>
-									<texture>b-repeat-one2.png</texture>
-									<visible>Control.HasFocus(708) + Playlist.IsRepeatOne</visible>
-									<colordiffuse>orangeLight</colordiffuse>
-								</control>
-								<control type="image">
-									<width>42</width>
-									<height>27</height>
-									<texture>b-repeat-all2.png</texture>
-									<visible>Control.HasFocus(708) + Playlist.IsRepeat</visible>
-									<colordiffuse>orangeLight</colordiffuse>
-								</control>
-								<control type="button" id="708">
-									<width>42</width>
-									<height>24</height>
-									<onleft>715</onleft>
-									<onright>710</onright>
-									<texturefocus>-</texturefocus>
-									<texturenofocus>-</texturenofocus>
-									<onclick>XBMC.PlayerControl(Repeat)</onclick>
-									<onup>3</onup>
-									<ondown>3</ondown>
-									<visible allowhiddenfocus="true">Control.HasFocus(708)</visible>
-								</control>
+								<include>OSDRepeatButton</include>
 							</control>
 							<!-- previous -->
 							<control type="group">
 								<posy>13</posy>
 								<posx>190</posx>
-								<control type="image">
-									<width>22</width>
-									<height>22</height>
-									<texture>b-previous.png</texture>
-									<visible>!Control.HasFocus(710)</visible>
-									<colordiffuse>FFCCCCCC</colordiffuse>
-								</control>
-								<control type="button" id="710">
-									<width>22</width>
-									<height>22</height>
-									<texturefocus>b-previous.png</texturefocus>
-									<texturenofocus>b-previous.png</texturenofocus>
-									<onleft>708</onleft>
-									<onright>711</onright>
-									<onup>3</onup>
-									<ondown>3</ondown>
-									<onclick>PlayerControl(Previous)</onclick>
-									<visible allowhiddenfocus="true">Control.HasFocus(710)</visible>
-									<colordiffuse>orange</colordiffuse>
-								</control>
+								<include>OSDPreviousButton</include>
 							</control>
 							<!-- play/pause -->
 							<control type="group">
 								<posy>13</posy>
 								<posx>232</posx>
-								<control type="image">
-									<width>20</width>
-									<height>22</height>
-									<texture>b-pause2.png</texture>
-									<visible>!Control.HasFocus(711) + !Player.Paused</visible>
-									<colordiffuse>FFCCCCCC</colordiffuse>
-								</control>
-								<control type="image">
-									<width>20</width>
-									<height>22</height>
-									<texture>b-play2.png</texture>
-									<visible>!Control.HasFocus(711) + Player.Paused</visible>
-									<colordiffuse>FFCCCCCC</colordiffuse>
-								</control>
-								<control type="togglebutton" id="711">
-									<width>20</width>
-									<height>22</height>
-									<texturefocus>b-pause2.png</texturefocus>
-									<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
-									<alttexturefocus>b-play2.png</alttexturefocus>
-									<onleft>710</onleft>
-									<onright>712</onright>
-									<onup>3</onup>
-									<ondown>3</ondown>
-									<onclick>PlayerControl(Play)</onclick>
-									<visible allowhiddenfocus="true">Control.HasFocus(711)</visible>
-									<colordiffuse>orange</colordiffuse>
-								</control>
+								<include>OSDPlayButton</include>
 							</control>
 							<!-- next -->
 							<control type="group">
 								<posy>13</posy>
 								<posx>272</posx>
-								<control type="image">
-									<width>22</width>
-									<height>22</height>
-									<texture>b-next.png</texture>
-									<visible>!Control.HasFocus(712)</visible>
-									<colordiffuse>FFCCCCCC</colordiffuse>
-								</control>
-								<control type="button" id="712">
-									<width>22</width>
-									<height>22</height>
-									<texturefocus>b-next.png</texturefocus>
-									<texturenofocus>b-next.png</texturenofocus>
-									<onleft>711</onleft>
-									<onright>713</onright>
-									<onup>3</onup>
-									<ondown>3</ondown>
-									<onclick>PlayerControl(Next)</onclick>
-									<visible allowhiddenfocus="true">Control.HasFocus(712)</visible>
-									<colordiffuse>orange</colordiffuse>
-								</control>
+								<include>OSDNextButton</include>
 							</control>
 							<!-- stop -->
 							<control type="group">
-								<posy>12</posy>
+								<posy>13</posy>
 								<posx>326</posx>
-								<control type="image">
-									<width>23</width>
-									<height>23</height>
-									<texture>b-stop3.png</texture>
-									<visible>!Control.HasFocus(713)</visible>
-									<colordiffuse>FFCCCCCC</colordiffuse>
-								</control>
-								<control type="button" id="713">
-									<width>23</width>
-									<height>23</height>
-									<texturefocus>b-stop3.png</texturefocus>
-									<texturenofocus>b-stop3.png</texturenofocus>
-									<onleft>712</onleft>
-									<onright>714</onright>
-									<onup>3</onup>
-									<ondown>3</ondown>
-									<onclick>PlayerControl(Stop)</onclick>
-									<onclick>Dialog.Close(playercontrols)</onclick>
-									<visible allowhiddenfocus="true">Control.HasFocus(713)</visible>
-									<colordiffuse>orange</colordiffuse>
-								</control>
+								<include>OSDStopButton</include>
 							</control>
-							<!-- now playing -->
+							<!-- fullscreen player -->
 							<control type="group">
-								<posy>11</posy>
-								<posx>364</posx>
-								<control type="image">
-									<width>43</width>
-									<height>24</height>
-									<texture>b-nowplaying3.png</texture>
-									<visible>!Control.HasFocus(714)</visible>
-									<colordiffuse>FFCCCCCC</colordiffuse>
-								</control>
-								<control type="button" id="714">
-									<width>43</width>
-									<height>24</height>
-									<texturefocus>b-nowplaying3.png</texturefocus>
-									<texturenofocus>b-nowplaying3.png</texturenofocus>
-									<onleft>713</onleft>
-									<onright>715</onright>
-									<onup>3</onup>
-									<ondown>3</ondown>
-									<onclick>fullscreen</onclick>
-									<visible allowhiddenfocus="true">Control.HasFocus(714)</visible>
-									<colordiffuse>orange</colordiffuse>
-								</control>
+								<posy>13</posy>
+								<posx>366</posx>
+								<include>OSDPlayerButton</include>
 							</control>
 							<!-- pq -->
 							<control type="group">
-								<posy>13</posy>
+								<posy>14</posy>
 								<posx>422</posx>
-								<control type="image">
-									<width>20</width>
-									<height>20</height>
-									<texture>b-list.png</texture>
-									<visible>!Control.HasFocus(715)</visible>
-									<colordiffuse>FFCCCCCC</colordiffuse>
-								</control>
-								<control type="button" id="715">
-									<width>20</width>
-									<height>20</height>
-									<texturefocus>b-list.png</texturefocus>
-									<texturenofocus>-</texturenofocus>
-									<onleft>714</onleft>
-									<onright>3</onright>
-									<onup>3</onup>
-									<ondown>3</ondown>
-									<enable>System.PlexPlayQueue(music)</enable>
-									<onclick>Dialog.Close(PlayerControls)</onclick>
-									<onclick>ReplaceWindow(10094)</onclick>
-									<visible allowhiddenfocus="true">Control.HasFocus(715)</visible>
-									<colordiffuse>orange</colordiffuse>
-								</control>
+								<include>OSDPlayqueueButton</include>
 							</control>
 						</control>
 					</control>

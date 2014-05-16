@@ -182,6 +182,7 @@
 	<!-- Card -->
 	<include name="ListItemFullInfo">
 		<control type="group">
+			<include>FadeDialog</include>
 			<visible>Control.IsVisible(58)</visible>
 			<include>rightSideSlide</include>
 			<include>ListItemFullInfoLeftSlide</include>
