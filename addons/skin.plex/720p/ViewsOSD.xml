@@ -53,10 +53,8 @@
 			<texturefocus>-</texturefocus>
 			<texturenofocus>-</texturenofocus>
 			<onclick>XBMC.PlayerControl(Repeat)</onclick>
-			<onup condition="Window.IsActive(plexplayqueue)">54</onup>
-			<ondown condition="Window.IsActive(plexplayqueue)">54</ondown>
-			<onup condition="Window.IsActive(playercontrols)">3</onup>
-			<ondown condition="Window.IsActive(playercontrols)">3</ondown>
+			<onup condition="Window.IsActive(plexplayqueue) | Window.IsActive(playercontrols)">555</onup>
+			<ondown condition="Window.IsActive(plexplayqueue) | Window.IsActive(playercontrols)">555</ondown>
 			<visible allowhiddenfocus="true">Control.HasFocus(708)</visible>
 		</control>
 	</include>
@@ -75,10 +73,8 @@
 			<texturenofocus>b-previous.png</texturenofocus>
 			<onleft>708</onleft>
 			<onright>711</onright>
-			<onup condition="Window.IsActive(plexplayqueue)">54</onup>
-			<ondown condition="Window.IsActive(plexplayqueue)">54</ondown>
-			<onup condition="Window.IsActive(playercontrols)">3</onup>
-			<ondown condition="Window.IsActive(playercontrols)">3</ondown>
+			<onup condition="Window.IsActive(plexplayqueue) | Window.IsActive(playercontrols)">555</onup>
+			<ondown condition="Window.IsActive(plexplayqueue) | Window.IsActive(playercontrols)">555</ondown>
 			<onclick>PlayerControl(Previous)</onclick>
 			<visible allowhiddenfocus="true">Control.HasFocus(710)</visible>
 			<colordiffuse>orange</colordiffuse>
@@ -107,10 +103,8 @@
 			<alttexturefocus>b-play2.png</alttexturefocus>
 			<onleft>710</onleft>
 			<onright>712</onright>
-			<onup condition="Window.IsActive(plexplayqueue)">54</onup>
-			<ondown condition="Window.IsActive(plexplayqueue)">54</ondown>
-			<onup condition="Window.IsActive(playercontrols)">3</onup>
-			<ondown condition="Window.IsActive(playercontrols)">3</ondown>
+			<onup condition="Window.IsActive(plexplayqueue) | Window.IsActive(playercontrols)">555</onup>
+			<ondown condition="Window.IsActive(plexplayqueue) | Window.IsActive(playercontrols)">555</ondown>
 			<onclick>PlayerControl(Play)</onclick>
 			<visible allowhiddenfocus="true">Control.HasFocus(711)</visible>
 			<colordiffuse>orange</colordiffuse>
@@ -181,11 +175,9 @@
 			<texturenofocus>b-nowplaying3.png</texturenofocus>
 			<onleft>713</onleft>
 			<onright condition="Window.IsActive(playercontrols)">715</onright>
-			<onright condition="Window.IsActive(plexplayqueue)">54</onright>
-			<onup condition="Window.IsActive(plexplayqueue)">54</onup>
-			<ondown condition="Window.IsActive(plexplayqueue)">54</ondown>
-			<onup condition="Window.IsActive(playercontrols)">3</onup>
-			<ondown condition="Window.IsActive(playercontrols)">3</ondown>
+			<onright condition="Window.IsActive(plexplayqueue)">555</onright>
+			<onup condition="Window.IsActive(plexplayqueue) | Window.IsActive(playercontrols)">555</onup>
+			<ondown condition="Window.IsActive(plexplayqueue) | Window.IsActive(playercontrols)">555</ondown>
 			<onclick>fullscreen</onclick>
 			<visible allowhiddenfocus="true">Control.HasFocus(714)</visible>
 			<colordiffuse>orange</colordiffuse>
@@ -206,12 +198,10 @@
 			<texturenofocus>-</texturenofocus>
 			<onleft condition="Window.IsActive(playercontrols)">714</onleft>
 			<onleft condition="Window.IsActive(nowplaying)">713</onleft>
-			<onright condition="Window.IsActive(playercontrols) | Window.IsActive(plexplayqueue)">54</onright>
+			<onright condition="Window.IsActive(plexplayqueue) | Window.IsActive(playercontrols)">555</onright>
 			<onright condition="Window.IsActive(nowplaying)">708</onright>
-			<onup condition="Window.IsActive(plexplayqueue)">54</onup>
-			<ondown condition="Window.IsActive(plexplayqueue)">54</ondown>
-			<onup condition="Window.IsActive(playercontrols)">3</onup>
-			<ondown condition="Window.IsActive(playercontrols)">3</ondown>
+			<onup condition="Window.IsActive(plexplayqueue) | Window.IsActive(playercontrols)">555</onup>
+			<ondown condition="Window.IsActive(plexplayqueue) | Window.IsActive(playercontrols)">555</ondown>
 			<enable>System.PlexPlayQueue(music)</enable>
 			<onclick>Dialog.Close(PlayerControls)</onclick>
 			<onclick>ReplaceWindow(10094)</onclick>
@@ -892,7 +882,7 @@
 							<font>Regular-16</font>
 							<textcolor>FF666666</textcolor>
 							<shadowcolor>FF000000</shadowcolor>
-							<visible>!Control.HasFocus(71ç)</visible>
+							<visible>!Control.HasFocus(71&#xE7;)</visible>
 						</control>
 						<control type="label">
 							<posy>0</posy>

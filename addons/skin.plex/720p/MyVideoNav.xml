@@ -48,7 +48,6 @@
 		<include>LeftSideMenu</include>
 		<!--<include>TopBar</include>-->
 		<!--><include>CommonSortLetters</include>-->
-		<include>NowPlayingSideBar</include>
 		<include>debugInfos</include>
 		<include>Grid</include>
 		<include>WindowFade</include>

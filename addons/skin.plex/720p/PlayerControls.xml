@@ -348,7 +348,7 @@
 				<control type="group">
 					<posy>65</posy>
 					<posx>585</posx>
-					<control type="group">
+					<control type="group" id="555">
 						<posy>0</posy>
 						<posx>0</posx>
 						<control type="list" id="3">
