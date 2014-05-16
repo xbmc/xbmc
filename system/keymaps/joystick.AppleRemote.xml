@@ -119,7 +119,7 @@
       <button id="4">StepForward</button>
       <button id="5">Pause</button>
       <button id="6">OSD</button>
-      <button id="7">OSD</button>
+      <button id="7">PreviousMenu</button>
       <button id="8">Stop</button>
       <button id="9">BigStepBack</button>
       <button id="10">BigStepForward</button>
@@ -317,17 +317,4 @@
       <button id="6">Close</button>
     </joystick>
   </NumericInput>
-  <NowPlaying>
-    <joystick name="AppleRemote">
-      <button id="1">VolumeUp</button>                                  <!--- Up --->
-      <button id="2">VolumeDown</button>                                <!--- Down --->
-      <button id="3">SkipPrevious</button>                              <!--- Left --->
-      <button id="4">SkipNext</button>                                  <!--- Right --->
-      <button id="5">Pause</button>                                     <!--- Play --->
-      <button id="6">PreviousMenu</button>                              <!--- Menu --->
-      <button id="9">Rewind</button>                                    <!--- Hold Left --->
-      <button id="10">FastForward</button>                              <!--- Hold Right --->
-      <button id="8">Stop</button>                                     <!--- Hold Menu --->
-    </joystick>
-  </NowPlaying>
 </keymap>
