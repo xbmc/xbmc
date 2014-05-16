@@ -317,4 +317,9 @@
       <button id="6">Close</button>
     </joystick>
   </NumericInput>
+  <NowPlaying>
+    <joystick name="AppleRemote">
+      <button id="8">Stop</button>
+    </joystick>
+  </NowPlaying>
 </keymap>
