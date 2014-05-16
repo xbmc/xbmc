@@ -18,9 +18,9 @@ CXXFLAGS_FOR_BUILD += \
   -I@abs_top_srcdir@/lib \
   -I@abs_top_srcdir@/xbmc \
   -I@abs_top_srcdir@/xbmc/linux \
-  @SDL_CFLAGS@
+  $(shell pkg-config sdl SDL_image --cflags)
 
-LDFLAGS_FOR_BUILD += @SDL_LIBS@ -llzo2
+LDFLAGS_FOR_BUILD += $(shell pkg-config sdl SDL_image --libs)  -llzo2
 LDFLAGS_FOR_BUILD += -L@abs_top_srcdir@/lib/libsquish -lsquish-native
 
 ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
@@ -35,4 +35,8 @@ $(TARGET): $(SRCS) @abs_top_srcdir@/xbmc/guilib/XBTF.h
 	${MAKE} -C @abs_top_srcdir@/lib/libsquish/ libsquish-native.so
 	$(CXX_FOR_BUILD) $(CXXFLAGS_FOR_BUILD) $(DEFINES) $(NATIVE_ARCH) $(SRCS) $(LDFLAGS_FOR_BUILD) -o $(TARGET)
 
-include @abs_top_srcdir@/Makefile.include
+ifneq (,$(wildcard @abs_top_srcdir@/tools/depends/Makefile.include))
+  include @abs_top_srcdir@/tools/depends/Makefile.include
+else
+  include @abs_top_srcdir@/Makefile.include
+endif
