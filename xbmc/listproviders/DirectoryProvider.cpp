@@ -291,12 +291,12 @@ void CDirectoryProvider::RegisterListProvider(bool hasLibraryContent)
   if (hasLibraryContent && !m_isAnnounced)
   {
     m_isAnnounced = true;
-    CAnnouncementManager::AddAnnouncer(this);
+    CAnnouncementManager::Get().AddAnnouncer(this);
   }
   else if (!hasLibraryContent && m_isAnnounced)
   {
     m_isAnnounced = false;
-    CAnnouncementManager::RemoveAnnouncer(this);
+    CAnnouncementManager::Get().RemoveAnnouncer(this);
   }
 }
 

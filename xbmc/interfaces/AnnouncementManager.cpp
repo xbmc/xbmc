@@ -36,8 +36,25 @@
 using namespace std;
 using namespace ANNOUNCEMENT;
 
-#define m_announcers XBMC_GLOBAL_USE(ANNOUNCEMENT::CAnnouncementManager::Globals).m_announcers
-#define m_critSection XBMC_GLOBAL_USE(ANNOUNCEMENT::CAnnouncementManager::Globals).m_critSection
+CAnnouncementManager::CAnnouncementManager()
+{ }
+
+CAnnouncementManager::~CAnnouncementManager()
+{
+  Deinitialize();
+}
+
+CAnnouncementManager& CAnnouncementManager::Get()
+{
+  static CAnnouncementManager s_instance;
+  return s_instance;
+}
+
+void CAnnouncementManager::Deinitialize()
+{
+  CSingleLock lock (m_critSection);
+  m_announcers.clear();
+}
 
 void CAnnouncementManager::AddAnnouncer(IAnnouncer *listener)
 {

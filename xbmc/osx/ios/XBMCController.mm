@@ -211,12 +211,12 @@ public:
   {
     if (NULL==g_announceReceiver) {
       g_announceReceiver = new AnnounceReceiver();
-      ANNOUNCEMENT::CAnnouncementManager::AddAnnouncer(g_announceReceiver);
+      ANNOUNCEMENT::CAnnouncementManager::Get().AddAnnouncer(g_announceReceiver);
     }
   }
   static void dealloc()
   {
-    ANNOUNCEMENT::CAnnouncementManager::RemoveAnnouncer(g_announceReceiver);
+    ANNOUNCEMENT::CAnnouncementManager::Get().RemoveAnnouncer(g_announceReceiver);
     delete g_announceReceiver;
   }
 private:

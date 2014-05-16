@@ -274,7 +274,7 @@ void CEdenVideoArtUpdater::Process()
   }
   handle->MarkFinished();
 
-  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanFinished");
+  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanFinished");
 
   items.Clear();
 }
