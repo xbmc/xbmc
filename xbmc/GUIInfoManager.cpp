@@ -2683,11 +2683,12 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case PLAYER_ONNEW:
       {
         bReturn = false;
-        if (g_application.IsPlaying())
+        if (g_application.IsPlaying() && !g_application.IsPaused())
         {
           int seconds = 5;
           if (g_application.CurrentFileItem().m_lStartOffset -1 &&
-              g_application.CurrentFileItem().HasProperty("viewOffset"))
+              g_application.CurrentFileItem().HasProperty("viewOffset") &&
+              g_application.CurrentFileItem().IsVideo())
             seconds += (int)(g_application.CurrentFileItem().GetProperty("viewOffset").asInteger() / 1000.0);
 
           if (g_application.GetTime() < seconds)
