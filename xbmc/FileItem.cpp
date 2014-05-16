@@ -3320,3 +3320,18 @@ int CFileItem::GetVideoContentType() const
   return type;
 }
 
+
+bool CFileItem::IsResumePointSet() const
+{
+  return (HasVideoInfoTag() && GetVideoInfoTag()->m_resumePoint.IsSet());
+}
+
+double CFileItem::GetCurrentResumeTime() const
+{
+  if (HasVideoInfoTag() && GetVideoInfoTag()->m_resumePoint.IsSet())
+  {
+    return GetVideoInfoTag()->m_resumePoint.timeInSeconds;
+  }
+  // Resume from start when resume point is invalid
+  return 0;
+}
