@@ -70,21 +70,8 @@ CStdString CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
 
     // First try to find the resume position on the back-end, if that fails use video database
     int positionInSeconds = item.GetPVRRecordingInfoTag()->GetLastPlayedPosition();
-    // If the back-end does report a saved position then make sure there is a corresponding resume bookmark
-    if (positionInSeconds > 0)
-    {
-      CBookmark bookmark;
-      bookmark.timeInSeconds = positionInSeconds;
-      bookmark.totalTimeInSeconds = (double)item.GetPVRRecordingInfoTag()->GetDuration();
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        CStdString itemPath(item.GetPVRRecordingInfoTag()->m_strFileNameAndPath);
-        db.AddBookMarkToFile(itemPath, bookmark, CBookmark::RESUME);
-        db.Close();
-      }
-    }
-    else if (positionInSeconds < 0)
+    // If the back-end does report a saved position it will be picked up by FileItem
+    if (positionInSeconds < 0)
     {
       CVideoDatabase db;
       if (db.Open())
