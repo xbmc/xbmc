@@ -745,11 +745,11 @@
 							<posy>0</posy>
 							<defaultcontrol always="true">711</defaultcontrol>
 							<!-- same artist and/or album -->
-							<animation effect="slide" start="0,0" end="0,294" time="0" condition="Container.UniformProperty(Artist) | Container.UniformProperty(Album)">Conditional</animation>
+							<animation effect="slide" start="0,0" end="0,294" time="0" condition="[Container.UniformProperty(Artist) | Container.UniformProperty(Album)] | [!MusicPlayer.Offset(1).Exists] | [MusicPlayer.Offset(1).Exists + !MusicPlayer.Offset(2).Exists]">Conditional</animation>
 							<!-- 3 or 6 or 9 covers -->
-							<animation effect="slide" start="0,0" end="0,49" time="0" condition="[[MusicPlayer.Offset(3).Exists + !MusicPlayer.Offset(4).Exists] | [MusicPlayer.Offset(6).Exists + !MusicPlayer.Offset(7).Exists] | [MusicPlayer.Offset(9).Exists + !MusicPlayer.Offset(10).Exists]] + !Container.UniformProperty(Album)">Conditional</animation>
+							<animation effect="slide" start="0,0" end="0,49" time="0" condition="[[MusicPlayer.Offset(3).Exists + !MusicPlayer.Offset(4).Exists] | [MusicPlayer.Offset(6).Exists + !MusicPlayer.Offset(7).Exists] | [MusicPlayer.Offset(9).Exists + !MusicPlayer.Offset(10).Exists]] + !Container.UniformProperty(Album) + !Container.UniformProperty(Artist)">Conditional</animation>
 							<!-- 5 or 8 covers -->
-							<animation effect="slide" start="0,0" end="0,84" time="0" condition="[[MusicPlayer.Offset(5).Exists + !MusicPlayer.Offset(6).Exists] | [MusicPlayer.Offset(8).Exists + !MusicPlayer.Offset(9).Exists]] + !Container.UniformProperty(Album)">Conditional</animation>
+							<animation effect="slide" start="0,0" end="0,84" time="0" condition="[[MusicPlayer.Offset(5).Exists + !MusicPlayer.Offset(6).Exists] | [MusicPlayer.Offset(8).Exists + !MusicPlayer.Offset(9).Exists]] + !Container.UniformProperty(Album) + !Container.UniformProperty(Artist)">Conditional</animation>
 							<!-- progress bar -->
 							<control type="group">
 								<visible>Player.HasAudio</visible>
@@ -771,7 +771,7 @@
 									</control>
 								</control>
 								<include>PlayQueueOSDButtons</include>
-								</control>
+							</control>
 						</control>
 						<!-- infos Left -->
 						<control type="group">
@@ -985,7 +985,7 @@
 							<label>$VAR[PlayQueueVideoTitle2]</label>
 							<font>Bold-30</font>
 							<include>WhiteShadow</include>
-							<visible>!Container.PlexContent(Movies) + !Container.PlexContent(Clips) + !ListItem.Type(Movie)</visible>
+							<visible>[Player.HasVideo + ![VideoPlayer.PlexContent(movie) | VideoPlayer.PlexContent(clip)]] | [!Player.HasVideo + !ListItem.Type(movie) + !ListItem.Type(clip)]</visible>
 						</control>
 						<control type="label">
 							<posy>40</posy>
@@ -994,7 +994,7 @@
 							<label>$VAR[PlayQueueVideoTitle2]</label>
 							<font>Regular-18</font>
 							<include>WhiteShadow</include>
-							<visible>Container.PlexContent(Movies) | Container.PlexContent(Clips) | ListItem.Type(Movie)</visible>
+							<visible>[Player.HasVideo + [VideoPlayer.PlexContent(movie) | VideoPlayer.PlexContent(clip)]] | [!Player.HasVideo + [ListItem.Type(movie) | ListItem.Type(clip)]]</visible>
 						</control>
 						<control type="label">
 							<posy>70</posy>
@@ -1164,20 +1164,20 @@
 							<shadowcolor>ff222222</shadowcolor>
 						</control>
 						<control type="group">
-							<visible>Container.PlexContent(Episodes)</visible>
+							<visible>ListItem.Type(Episode)</visible>
 							<include>EpisodeThumbOverlay</include>
-							<control type="label">
-								<include>EpisodeThumbOverlayTitle</include>
-								<textcolor>white</textcolor>
-								<visible>IsEmpty(Container.Property(mixedParents))</visible>
-							</control>
 							<control type="label">
 								<include>EpisodeThumbOverlayTitle2</include>
 								<textcolor>white</textcolor>
-								<visible>!IsEmpty(Container.Property(mixedParents))</visible>
 							</control>
 						</control>
-						<include>PosterThumbUnwatchedOverlay</include>
+						<control type="image">
+							<posy>87</posy>
+							<posx>176</posx>
+							<width>28</width>
+							<height>28</height>
+							<info>ListItem.Overlay</info>
+						</control>
 						<control type="image">
 							<posx>100</posx>
 							<posy>50</posy>
@@ -1224,20 +1224,21 @@
 							<shadowcolor>ff222222</shadowcolor>
 						</control>
 						<control type="group">
-							<visible>Container.PlexContent(Episodes)</visible>
+							<visible>ListItem.Type(Episode)</visible>
 							<include>EpisodeThumbOverlay</include>
 							<control type="label">
-								<include>EpisodeThumbOverlayTitle</include>
-								<textcolor>white</textcolor>
-								<visible>IsEmpty(Container.Property(mixedParents))</visible>
-							</control>
-							<control type="label">
 								<include>EpisodeThumbOverlayTitle2</include>
-								<textcolor>white</textcolor>
-								<visible>!IsEmpty(Container.Property(mixedParents))</visible>
+								<shadowcolor>ff222222</shadowcolor>
+								<textcolor>orangeLight</textcolor>
 							</control>
 						</control>
-						<include>PosterThumbUnwatchedOverlay</include>
+						<control type="image">
+							<posy>87</posy>
+							<posx>176</posx>
+							<width>28</width>
+							<height>28</height>
+							<info>ListItem.Overlay</info>
+						</control>
 						<include>EpisodeSelectedBorder</include>
 						<control type="image">
 							<posx>100</posx>

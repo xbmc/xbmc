@@ -256,6 +256,20 @@
 					<include>debugFont</include>
 					<label/>
 				</control>
+					<control type="label">
+						<include>debugFont</include>
+						<label>Player.OnNew : [COLOR=orangeLight]NEW[/COLOR]</label>
+						<visible>Player.OnNew</visible>
+					</control>
+					<control type="label">
+						<include>debugFont</include>
+						<label>Player.OnNew : [COLOR=orangeLight]not new[/COLOR]</label>
+						<visible>!Player.OnNew</visible>
+					</control>
+					<control type="label">
+						<include>debugFont</include>
+						<label/>
+					</control>
 				<control type="label">
 					<include>debugFont</include>
 					<label>Container.FolderThumb : [COLOR=orangeLight]$INFO[Container.FolderThumb][/COLOR]</label>
@@ -650,6 +664,24 @@
 					<include>debugFont</include>
 					<label>ListItem.Status / Overlay : [COLOR=orangeLight]$VAR[ItemStatus] $INFO[ListItem.Overlay, / ][/COLOR]</label>
 				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>VideoPlayer.PlexContent : [COLOR=orangeLight]$INFO[VideoPlayer.PlexContentStr][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>VideoPlayer.HasNext : [COLOR=orangeLight]yes[/COLOR]</label>
+					<visible>VideoPlayer.HasNext</visible>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>VideoPlayer.HasNext : [COLOR=orangeLight][/COLOR]</label>
+					<visible>!VideoPlayer.HasNext</visible>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>VideoPlayer.Offset(1).Title : [COLOR=orangeLight]$INFO[VideoPlayer.Offset(1).Title][/COLOR]</label>
+				</control>
 			</control>
 			<!-- VIDEO PLAYER SPECIFIC -->
 			<control type="grouplist">
@@ -708,7 +740,7 @@
 			<!-- TV SPECIFIC -->
 			<control type="grouplist">
 				<posx>820</posx>
-				<posy>340</posy>
+				<posy>400</posy>
 				<width>390</width>
 				<height>680</height>
 				<orientation>vertical</orientation>
