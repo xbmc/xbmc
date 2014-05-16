@@ -25,7 +25,7 @@ bool CGUIDialogPlexPlayQueue::OnMessage(CGUIMessage& message)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIDialogPlexPlayQueue::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_SELECT_ITEM)
+  if (action.GetID() == ACTION_SELECT_ITEM && GetFocusedControlID() == 3)
   {
     ItemSelected();
     return true;
