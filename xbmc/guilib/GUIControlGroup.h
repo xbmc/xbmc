@@ -68,6 +68,7 @@ public:
   int GetFocusedControlID() const;
   CGUIControl *GetFocusedControl() const;
   const CGUIControl *GetControl(int id) const;
+  CGUIControl *GetControl(int id);
   virtual CGUIControl *GetFirstFocusableControl(int id);
   void GetContainers(std::vector<CGUIControl *> &containers) const;
 

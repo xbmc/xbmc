@@ -434,16 +434,35 @@ bool CGUIControlGroup::HasVisibleID(int id) const
   return false;
 }
 
-const CGUIControl* CGUIControlGroup::GetControl(int iControl) const
+CGUIControl *CGUIControlGroup::GetControl(int iControl)
 {
   CGUIControl *pPotential = NULL;
+  LookupMap::iterator first = m_lookup.find(iControl);
+  if (first != m_lookup.end())
+  {
+    LookupMap::iterator last = m_lookup.upper_bound(iControl);
+    for (LookupMap::iterator i = first; i != last; ++i)
+    {
+      CGUIControl *control = i->second;
+      if (control->IsVisible())
+        return control;
+      else if (!pPotential)
+        pPotential = control;
+    }
+  }
+  return pPotential;
+}
+
+const CGUIControl* CGUIControlGroup::GetControl(int iControl) const
+{
+  const CGUIControl *pPotential = NULL;
   LookupMap::const_iterator first = m_lookup.find(iControl);
   if (first != m_lookup.end())
   {
     LookupMap::const_iterator last = m_lookup.upper_bound(iControl);
     for (LookupMap::const_iterator i = first; i != last; ++i)
     {
-      CGUIControl *control = i->second;
+      const CGUIControl *control = i->second;
       if (control->IsVisible())
         return control;
       else if (!pPotential)
