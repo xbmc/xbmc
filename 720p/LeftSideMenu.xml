@@ -72,7 +72,6 @@
 				<animation effect="rotate" end="-180" center="36,689" time="500" condition="ControlGroup(1300).HasFocus">Conditional</animation>
 				<visible>[!Container.PlexContent(Albums) | [Container.PlexContent(Albums) + !IsEmpty(Container.Property(primaryFilterActivated))]] + !Container.PlexContent(Songs) + !Container.PlexContent(Seasons) + [!Container.PlexContent(Episodes) | [Container.PlexContent(Episodes) + !IsEmpty(Container.Property(primaryFilterActivated)) + IsEmpty(Container.Property(PlexPreplay))]] + ![Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
 			</control>
-			<include>NowPlayingSideBar</include>
 		</control>
 	</include>
 	<include name="leftMenuBgSettings">
@@ -757,7 +756,8 @@
 					<include>leftMenuFormat</include>
 					<include>leftMenuSortingButton</include>
 				</control>
-			</control>
+			</control>			
+			<include>NowPlayingSideBar</include>
 		</control>
 	</include>
 	<!-- Settings menu -->
