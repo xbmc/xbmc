@@ -24,19 +24,20 @@
 #include "guilib/GUIWindow.h"
 #include "ThumbLoader.h"
 #include "Stopwatch.h"
+#include "PlexGlobalTimer.h"
 
-class CGUIWindowNowPlaying : public CGUIWindow
+class CGUIWindowNowPlaying : public CGUIWindow, public IPlexGlobalTimeout
 {
 public:
   CGUIWindowNowPlaying(void);
   virtual ~CGUIWindowNowPlaying(void);
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void Render();
   bool IsFlipped(){ return m_isFlipped; }; 
+
+  void OnTimeout();
   
 private:
   bool m_isFlipped;
-  CMusicThumbLoader m_thumbLoader;
   CStopWatch m_flipTimer;
 };
