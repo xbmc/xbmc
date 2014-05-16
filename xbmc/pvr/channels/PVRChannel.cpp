@@ -54,6 +54,7 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
   m_bIsRadio                = bRadio;
   m_bIsHidden               = false;
   m_bIsUserSetIcon          = false;
+  m_bIsUserSetName          = false;
   m_bIsLocked               = false;
   m_strIconPath             = StringUtils::EmptyString;
   m_strChannelName          = StringUtils::EmptyString;
@@ -84,6 +85,7 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
   m_bIsRadio                = channel.bIsRadio;
   m_bIsHidden               = channel.bIsHidden;
   m_bIsUserSetIcon          = false;
+  m_bIsUserSetName          = false;
   m_bIsLocked               = false;
   m_strIconPath             = channel.strIconPath;
   m_strChannelName          = channel.strChannelName;
@@ -121,6 +123,7 @@ CPVRChannel &CPVRChannel::operator=(const CPVRChannel &channel)
   m_bIsRadio                = channel.m_bIsRadio;
   m_bIsHidden               = channel.m_bIsHidden;
   m_bIsUserSetIcon          = channel.m_bIsUserSetIcon;
+  m_bIsUserSetName          = channel.m_bIsUserSetName;
   m_bIsLocked               = channel.m_bIsLocked;
   m_strIconPath             = channel.m_strIconPath;
   m_strChannelName          = channel.m_strChannelName;
@@ -209,9 +212,11 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
   SetClientChannelName(channel.ClientChannelName());
 
   CSingleLock lock(m_critSection);
-  if (m_strChannelName.empty())
+  
+  // only update the channel name and icon if the user hasn't changed them manually
+  if (m_strChannelName.empty() || !IsUserSetName())
     SetChannelName(channel.ClientChannelName());
-  if (m_strIconPath.empty()||(!m_strIconPath.Equals(channel.IconPath()) && !IsUserSetIcon()))
+  if (m_strIconPath.empty() || !IsUserSetIcon())
     SetIconPath(channel.IconPath());
 
   return m_bChanged;
@@ -317,7 +322,7 @@ bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bIsUserSetIcon
   return false;
 }
 
-bool CPVRChannel::SetChannelName(const CStdString &strChannelName)
+bool CPVRChannel::SetChannelName(const CStdString &strChannelName, bool bIsUserSetName /*= false*/)
 {
   CStdString strName(strChannelName);
 
@@ -327,8 +332,17 @@ bool CPVRChannel::SetChannelName(const CStdString &strChannelName)
   CSingleLock lock(m_critSection);
   if (m_strChannelName != strName)
   {
-    /* update the channel name */
     m_strChannelName = strName;
+    m_bIsUserSetName = bIsUserSetName;
+    
+    /* if the user changes the name manually to an empty string we reset the 
+       flag and use the name from the client instead */
+    if (bIsUserSetName && strChannelName.empty())
+    {
+      m_bIsUserSetName = false;
+      m_strChannelName = ClientChannelName();
+    }
+    
     SetChanged();
     m_bChanged = true;
 
@@ -753,6 +767,12 @@ bool CPVRChannel::IsUserSetIcon(void) const
 bool CPVRChannel::IsIconExists() const
 {
   return  CFile::Exists(IconPath());
+}
+
+bool CPVRChannel::IsUserSetName() const
+{
+  CSingleLock lock(m_critSection);
+  return m_bIsUserSetName;
 }
 
 CStdString CPVRChannel::ChannelName(void) const
