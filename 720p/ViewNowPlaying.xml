@@ -301,7 +301,7 @@
 					</control>
 				</control>
 				<control type="group">
-					<visible>Player.HasAudio + !Control.IsVisible(999)</visible>
+					<visible>Player.HasAudio</visible>
 					<posy>60</posy>
 					<control type="image">
 						<posx>-13</posx>
