@@ -47,13 +47,16 @@
 		<control type="button" id="708">
 			<width>37</width>
 			<height>24</height>
-			<onleft>715</onleft>
+			<onleft condition="Window.IsActive(playercontrols) | Window.IsActive(nowplaying)">715</onleft>
+			<onleft condition="Window.IsActive(plexplayqueue)">714</onleft>
 			<onright>710</onright>
 			<texturefocus>-</texturefocus>
 			<texturenofocus>-</texturenofocus>
 			<onclick>XBMC.PlayerControl(Repeat)</onclick>
-			<onup>3</onup>
-			<ondown>3</ondown>
+			<onup condition="Window.IsActive(plexplayqueue)">54</onup>
+			<ondown condition="Window.IsActive(plexplayqueue)">54</ondown>
+			<onup condition="Window.IsActive(playercontrols)">3</onup>
+			<ondown condition="Window.IsActive(playercontrols)">3</ondown>
 			<visible allowhiddenfocus="true">Control.HasFocus(708)</visible>
 		</control>
 	</include>
@@ -72,8 +75,10 @@
 			<texturenofocus>b-previous.png</texturenofocus>
 			<onleft>708</onleft>
 			<onright>711</onright>
-			<onup>3</onup>
-			<ondown>3</ondown>
+			<onup condition="Window.IsActive(plexplayqueue)">54</onup>
+			<ondown condition="Window.IsActive(plexplayqueue)">54</ondown>
+			<onup condition="Window.IsActive(playercontrols)">3</onup>
+			<ondown condition="Window.IsActive(playercontrols)">3</ondown>
 			<onclick>PlayerControl(Previous)</onclick>
 			<visible allowhiddenfocus="true">Control.HasFocus(710)</visible>
 			<colordiffuse>orange</colordiffuse>
@@ -102,8 +107,10 @@
 			<alttexturefocus>b-play2.png</alttexturefocus>
 			<onleft>710</onleft>
 			<onright>712</onright>
-			<onup>3</onup>
-			<ondown>3</ondown>
+			<onup condition="Window.IsActive(plexplayqueue)">54</onup>
+			<ondown condition="Window.IsActive(plexplayqueue)">54</ondown>
+			<onup condition="Window.IsActive(playercontrols)">3</onup>
+			<ondown condition="Window.IsActive(playercontrols)">3</ondown>
 			<onclick>PlayerControl(Play)</onclick>
 			<visible allowhiddenfocus="true">Control.HasFocus(711)</visible>
 			<colordiffuse>orange</colordiffuse>
@@ -124,8 +131,10 @@
 			<texturenofocus>b-next.png</texturenofocus>
 			<onleft>711</onleft>
 			<onright>713</onright>
-			<onup>3</onup>
-			<ondown>3</ondown>
+			<onup condition="Window.IsActive(plexplayqueue)">54</onup>
+			<ondown condition="Window.IsActive(plexplayqueue)">54</ondown>
+			<onup condition="Window.IsActive(playercontrols)">3</onup>
+			<ondown condition="Window.IsActive(playercontrols)">3</ondown>
 			<onclick>PlayerControl(Next)</onclick>
 			<visible allowhiddenfocus="true">Control.HasFocus(712)</visible>
 			<colordiffuse>orange</colordiffuse>
@@ -145,9 +154,12 @@
 			<texturefocus>b-stop3.png</texturefocus>
 			<texturenofocus>b-stop3.png</texturenofocus>
 			<onleft>712</onleft>
-			<onright>714</onright>
-			<onup>3</onup>
-			<ondown>3</ondown>
+			<onright condition="Window.IsActive(playercontrols) | Window.IsActive(plexplayqueue)">714</onright>
+			<onright condition="Window.IsActive(nowplaying)">715</onright>
+			<onup condition="Window.IsActive(plexplayqueue)">54</onup>
+			<ondown condition="Window.IsActive(plexplayqueue)">54</ondown>
+			<onup condition="Window.IsActive(playercontrols)">3</onup>
+			<ondown condition="Window.IsActive(playercontrols)">3</ondown>
 			<onclick>PlayerControl(Stop)</onclick>
 			<onclick>Dialog.Close(playercontrols)</onclick>
 			<visible allowhiddenfocus="true">Control.HasFocus(713)</visible>
@@ -168,9 +180,12 @@
 			<texturefocus>b-nowplaying3.png</texturefocus>
 			<texturenofocus>b-nowplaying3.png</texturenofocus>
 			<onleft>713</onleft>
-			<onright>715</onright>
-			<onup>3</onup>
-			<ondown>3</ondown>
+			<onright condition="Window.IsActive(playercontrols)">715</onright>
+			<onright condition="Window.IsActive(plexplayqueue)">54</onright>
+			<onup condition="Window.IsActive(plexplayqueue)">54</onup>
+			<ondown condition="Window.IsActive(plexplayqueue)">54</ondown>
+			<onup condition="Window.IsActive(playercontrols)">3</onup>
+			<ondown condition="Window.IsActive(playercontrols)">3</ondown>
 			<onclick>fullscreen</onclick>
 			<visible allowhiddenfocus="true">Control.HasFocus(714)</visible>
 			<colordiffuse>orange</colordiffuse>
@@ -189,10 +204,14 @@
 			<height>20</height>
 			<texturefocus>b-list.png</texturefocus>
 			<texturenofocus>-</texturenofocus>
-			<onleft>714</onleft>
-			<onright>3</onright>
-			<onup>3</onup>
-			<ondown>3</ondown>
+			<onleft condition="Window.IsActive(playercontrols)">714</onleft>
+			<onleft condition="Window.IsActive(nowplaying)">713</onleft>
+			<onright condition="Window.IsActive(playercontrols) | Window.IsActive(plexplayqueue)">54</onright>
+			<onright condition="Window.IsActive(nowplaying)">708</onright>
+			<onup condition="Window.IsActive(plexplayqueue)">54</onup>
+			<ondown condition="Window.IsActive(plexplayqueue)">54</ondown>
+			<onup condition="Window.IsActive(playercontrols)">3</onup>
+			<ondown condition="Window.IsActive(playercontrols)">3</ondown>
 			<enable>System.PlexPlayQueue(music)</enable>
 			<onclick>Dialog.Close(PlayerControls)</onclick>
 			<onclick>ReplaceWindow(10094)</onclick>
