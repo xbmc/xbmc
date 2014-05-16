@@ -90,10 +90,11 @@ public:
 
   void playQueueUpdated(const ePlexMediaType& type, bool startPlaying, int id = -1);
 
-  ePlexMediaType getCurrentPlayQueueType() const
+  virtual ePlexMediaType getCurrentPlayQueueType() const
   {
     return m_playQueueType;
   }
+  virtual EPlexDirectoryType getCurrentPlayQueueDirType() const;
 
   int getCurrentPlayQueuePlaylist() const
   {

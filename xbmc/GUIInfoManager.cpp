@@ -3147,9 +3147,12 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         {
           CStdString pq = m_stringParameters[info.GetData1()];
           ePlexMediaType type = g_plexApplication.playQueueManager->getCurrentPlayQueueType();
+          EPlexDirectoryType dirType = g_plexApplication.playQueueManager->getCurrentPlayQueueDirType();
           if (pq == "music" && type == PLEX_MEDIA_TYPE_MUSIC)
             bReturn = true;
-          else if (pq == "video" && type == PLEX_MEDIA_TYPE_VIDEO)
+          else if (pq == "clip" && type == PLEX_MEDIA_TYPE_VIDEO && dirType == PLEX_DIR_TYPE_CLIP)
+            bReturn = true;
+          else if (pq == "video" && type == PLEX_MEDIA_TYPE_VIDEO && dirType != PLEX_DIR_TYPE_CLIP)
             bReturn = true;
           else if (pq == "any" && type != PLEX_MEDIA_TYPE_UNKNOWN)
             bReturn = true;

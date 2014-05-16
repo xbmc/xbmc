@@ -4,6 +4,8 @@
 #include "IPlayer.h"
 #include "DVDPlayer.h"
 #include "Application.h"
+#include "PlexApplication.h"
+#include "Playlists/PlexPlayQueueManager.h"
 
 class FakeVideoPlayer : public CDVDPlayer
 {
@@ -33,6 +35,7 @@ public:
 
 class PlexGUIInfoManagerTest : public ::testing::Test
 {
+public:
   void SetUp()
   {
     g_application.m_pPlayer = new FakeVideoPlayer;
@@ -172,3 +175,53 @@ TEST_F(PlexGUIInfoManagerTest, videoPlayerHasNextEndOfPL)
   EXPECT_FALSE(g_infoManager.EvaluateBool("VideoPlayer.HasNext"));
 }
 
+class PlexPlayQueueManagerFake : public CPlexPlayQueueManager
+{
+public:
+  PlexPlayQueueManagerFake(ePlexMediaType type, EPlexDirectoryType dirType)
+    : CPlexPlayQueueManager(), type(type), dirType(dirType)
+  {  }
+
+  EPlexDirectoryType getCurrentPlayQueueDirType() const { return dirType; }
+  ePlexMediaType getCurrentPlayQueueType() const { return type; }
+
+  ePlexMediaType type;
+  EPlexDirectoryType dirType;
+};
+
+class PlexGUIInfoManagerPlayQueueTest : public PlexGUIInfoManagerTest
+{
+public:
+  void TearDown()
+  {
+    PlexGUIInfoManagerTest::TearDown();
+    g_plexApplication.playQueueManager.reset();
+  }
+};
+
+TEST_F(PlexGUIInfoManagerPlayQueueTest, music)
+{
+  g_plexApplication.playQueueManager =
+      CPlexPlayQueueManagerPtr(new PlexPlayQueueManagerFake(PLEX_MEDIA_TYPE_MUSIC, PLEX_DIR_TYPE_ALBUM));
+  EXPECT_TRUE(g_infoManager.EvaluateBool("System.PlexPlayQueue(music)"));
+  EXPECT_FALSE(g_infoManager.EvaluateBool("System.PlexPlayQueue(video)"));
+  EXPECT_FALSE(g_infoManager.EvaluateBool("System.PlexPlayQueue(clip)"));
+}
+
+TEST_F(PlexGUIInfoManagerPlayQueueTest, video)
+{
+  g_plexApplication.playQueueManager =
+      CPlexPlayQueueManagerPtr(new PlexPlayQueueManagerFake(PLEX_MEDIA_TYPE_VIDEO, PLEX_DIR_TYPE_MOVIE));
+  EXPECT_TRUE(g_infoManager.EvaluateBool("System.PlexPlayQueue(video)"));
+  EXPECT_FALSE(g_infoManager.EvaluateBool("System.PlexPlayQueue(clip)"));
+  EXPECT_FALSE(g_infoManager.EvaluateBool("System.PlexPlayQueue(music)"));
+}
+
+TEST_F(PlexGUIInfoManagerPlayQueueTest, clip)
+{
+  g_plexApplication.playQueueManager =
+      CPlexPlayQueueManagerPtr(new PlexPlayQueueManagerFake(PLEX_MEDIA_TYPE_VIDEO, PLEX_DIR_TYPE_CLIP));
+  EXPECT_TRUE(g_infoManager.EvaluateBool("System.PlexPlayQueue(clip)"));
+  EXPECT_FALSE(g_infoManager.EvaluateBool("System.PlexPlayQueue(videirrppo)"));
+  EXPECT_FALSE(g_infoManager.EvaluateBool("System.PlexPlayQueue(music)"));
+}
