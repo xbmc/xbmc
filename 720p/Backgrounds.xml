@@ -166,6 +166,11 @@
 				<visible>ControlGroup(7005).HasFocus</visible>
 				<info background="true">Container(11004).ListItem.Art(thumb)</info>
 			</control>
+			<control type="multiimage">
+				<include>BGHomeList</include>
+				<visible>ControlGroup(7005).HasFocus + System.PlexPlayQueue(Clip)</visible>
+				<info background="true">Container(11005).ListItem.Art(thumb)</info>
+			</control>
 			<control type="image">
 				<include>FullScreenScaled</include>
 				<texture>bg-overlay-grainy.png</texture>
