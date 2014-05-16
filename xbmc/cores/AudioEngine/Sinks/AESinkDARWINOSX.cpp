@@ -505,7 +505,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   m_planar = false;
   if (streams.size() > 1 && outputFormat.mChannelsPerFrame == 1)
   {
-    CLog::Log(LOGDEBUG, "%s Found planar audio with %u channels?", __FUNCTION__, streams.size());
+    CLog::Log(LOGDEBUG, "%s Found planar audio with %u channels?", __FUNCTION__, (unsigned int)streams.size());
     outputFormat.mChannelsPerFrame = std::min((size_t)format.m_channelLayout.Count(), streams.size());
     m_planar = true;
   }
