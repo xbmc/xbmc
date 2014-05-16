@@ -23,6 +23,10 @@ public:
   {
     return currentTime;
   }
+  bool IsPaused() const
+  {
+    return false;
+  }
 
   int64_t currentTime;
 };
@@ -97,6 +101,7 @@ TEST_F(PlexGUIInfoManagerTest, playerOnNewStartOffset)
   // resume one minute in
   g_application.CurrentFileItem().m_lStartOffset = STARTOFFSET_RESUME;
   g_application.CurrentFileItem().SetProperty("viewOffset", 60 * 1000);
+  g_application.CurrentFileItem().SetProperty("type", "movie");
   EXPECT_TRUE(g_infoManager.EvaluateBool("Player.OnNew"));
 }
 
@@ -107,6 +112,7 @@ TEST_F(PlexGUIInfoManagerTest, playerOnNewStartOffsetFalse)
   // resume one minute in
   g_application.CurrentFileItem().m_lStartOffset = STARTOFFSET_RESUME;
   g_application.CurrentFileItem().SetProperty("viewOffset", 60 * 1000);
+  g_application.CurrentFileItem().SetProperty("type", "movie");
   EXPECT_FALSE(g_infoManager.EvaluateBool("Player.OnNew"));
 }
 
