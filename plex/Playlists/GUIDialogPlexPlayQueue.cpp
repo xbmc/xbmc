@@ -18,13 +18,20 @@ bool CGUIDialogPlexPlayQueue::OnMessage(CGUIMessage& message)
 {
   if (message.GetMessage() == GUI_MSG_WINDOW_INIT)
     LoadPlayQueue();
-  else if (message.GetMessage() == GUI_MSG_CLICKED)
+
+  return CGUIDialogSelect::OnMessage(message);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIDialogPlexPlayQueue::OnAction(const CAction &action)
+{
+  if (action.GetID() == ACTION_SELECT_ITEM)
   {
     ItemSelected();
     return true;
   }
 
-  return CGUIDialogSelect::OnMessage(message);
+  return CGUIDialogSelect::OnAction(action);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,7 +45,6 @@ void CGUIDialogPlexPlayQueue::LoadPlayQueue()
     if (g_application.CurrentFileItemPtr() && g_application.CurrentFileItemPtr()->HasMusicInfoTag())
       currentItemId = g_application.CurrentFileItemPtr()->GetMusicInfoTag()->GetDatabaseId();
   }
-
 
   if (dir.GetDirectory("plexserver://playqueue/", list))
   {

@@ -8,6 +8,7 @@ class CGUIDialogPlexPlayQueue : public CGUIDialogSelect
 public:
   CGUIDialogPlexPlayQueue();
   bool OnMessage(CGUIMessage& message);
+  bool OnAction(const CAction &action);
   void LoadPlayQueue();
   bool IsMediaWindow() { return true; }
 private:
