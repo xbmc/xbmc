@@ -17,7 +17,7 @@ public:
     return true;
   }
 
-  virtual void create(const CFileItem& container, const CStdString& uri,
+  virtual bool create(const CFileItem& container, const CStdString& uri,
                       const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions());
   virtual bool refreshCurrent();
   virtual bool getCurrent(CFileItemList& list);

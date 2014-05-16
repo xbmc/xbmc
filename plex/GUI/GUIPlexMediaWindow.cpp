@@ -890,19 +890,24 @@ void CGUIPlexMediaWindow::QueueItem(const CFileItemPtr& item, bool next)
 
   ePlexMediaType type = g_plexApplication.playQueueManager->getCurrentPlayQueueType();
 
+  bool success = false;
   if (type == PLEX_MEDIA_TYPE_UNKNOWN || (type == PLEX_MEDIA_TYPE_MUSIC && IsVideoContainer()) ||
       (type == PLEX_MEDIA_TYPE_VIDEO && IsMusicContainer()))
   {
-    g_plexApplication.playQueueManager->create(*item);
+    CPlexPlayQueueOptions options;
+    options.startPlaying = false;
+    success = g_plexApplication.playQueueManager->create(*item, "", options);
   }
   else
   {
-    if (g_plexApplication.playQueueManager->addItem(item, next))
-    {
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
-                                            "Item Queued", "The item was added the current queue..",
-                                            2500L, false);
-    }
+    success = g_plexApplication.playQueueManager->addItem(item, next);
+  }
+
+  if (success)
+  {
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
+                                          "Item Queued", "The item was added the current queue..",
+                                          2500L, false);
   }
 }
 

@@ -31,7 +31,7 @@ public:
     return (!server->IsSecondary() && serverVersion > CPlexServerVersion("0.9.9.6.0-abc123"));
   }
 
-  virtual void create(const CFileItem &container, const CStdString& uri = "",
+  virtual bool create(const CFileItem &container, const CStdString& uri = "",
                       const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions());
   virtual bool refreshCurrent();
   virtual bool getCurrent(CFileItemList& list);

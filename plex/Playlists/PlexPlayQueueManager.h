@@ -52,7 +52,7 @@ public:
   {
     return false;
   }
-  virtual void create(const CFileItem& container, const CStdString& uri = "",
+  virtual bool create(const CFileItem& container, const CStdString& uri = "",
                       const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions()) = 0;
   virtual bool refreshCurrent() = 0;
   virtual bool getCurrent(CFileItemList& list) = 0;
@@ -81,7 +81,7 @@ public:
 
   }
 
-  void create(const CFileItem& container, const CStdString& uri = "",
+  bool create(const CFileItem& container, const CStdString& uri = "",
               const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions());
   void clear();
 

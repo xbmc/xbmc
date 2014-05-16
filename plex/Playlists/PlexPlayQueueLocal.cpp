@@ -15,11 +15,11 @@ CPlexPlayQueueLocal::CPlexPlayQueueLocal(const CPlexServerPtr& server) : m_serve
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexPlayQueueLocal::create(const CFileItem& container, const CStdString& uri,
+bool CPlexPlayQueueLocal::create(const CFileItem& container, const CStdString& uri,
                                  const CPlexPlayQueueOptions& options)
 {
   CURL containerURL(container.GetPath());
-  g_plexApplication.busy.blockWaitingForJob(new CPlexPlayQueueFetchJob(containerURL, options), this);
+  return g_plexApplication.busy.blockWaitingForJob(new CPlexPlayQueueFetchJob(containerURL, options), this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

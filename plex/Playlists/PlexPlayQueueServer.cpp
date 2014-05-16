@@ -68,13 +68,13 @@ bool CPlexPlayQueueServer::sendRequest(const CURL& url, const CStdString& verb,
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexPlayQueueServer::create(const CFileItem& container, const CStdString& uri,
+bool CPlexPlayQueueServer::create(const CFileItem& container, const CStdString& uri,
                                   const CPlexPlayQueueOptions &options)
 {
 
   ePlexMediaType type = PlexUtils::GetMediaTypeFromItem(container);
   if (type == PLEX_MEDIA_TYPE_UNKNOWN)
-    return;
+    return false;
 
   CStdString realUri(uri);
   if (realUri.empty())
@@ -86,9 +86,9 @@ void CPlexPlayQueueServer::create(const CFileItem& container, const CStdString& 
   CURL u = getPlayQueueURL(type, realUri, options.startItemKey, options.shuffle, false, 0, false);
 
   if (u.Get().empty())
-    return;
+    return false;
 
-  sendRequest(u, "POST", options);
+  return sendRequest(u, "POST", options);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

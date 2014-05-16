@@ -19,7 +19,7 @@
 using namespace PLAYLIST;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexPlayQueueManager::create(const CFileItem& container, const CStdString& uri,
+bool CPlexPlayQueueManager::create(const CFileItem& container, const CStdString& uri,
                                    const CPlexPlayQueueOptions& options)
 {
   if (m_currentImpl && m_playQueueVersion > 1 && options.showPrompts)
@@ -34,7 +34,7 @@ void CPlexPlayQueueManager::create(const CFileItem& container, const CStdString&
         bool canceled;
         if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(52604), g_localizeStrings.Get(52605),
                                               g_localizeStrings.Get(52606), "", canceled) || canceled)
-          return;
+          return false;
       }
     }
   }
@@ -43,8 +43,10 @@ void CPlexPlayQueueManager::create(const CFileItem& container, const CStdString&
   if (impl)
   {
     m_currentImpl = impl;
-    m_currentImpl->create(container, uri, options);
+    return m_currentImpl->create(container, uri, options);
   }
+
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
