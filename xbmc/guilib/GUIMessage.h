@@ -43,8 +43,8 @@
 #define GUI_MSG_ENABLED         8   // enable control
 #define GUI_MSG_DISABLED        9   // disable control
 
-#define GUI_MSG_SELECTED       10   // control = selected
-#define GUI_MSG_DESELECTED     11   // control = not selected
+#define GUI_MSG_SET_SELECTED   10   // control = selected
+#define GUI_MSG_SET_DESELECTED 11   // control = not selected
 
 #define GUI_MSG_LABEL_ADD      12   // add label control (for controls supporting more then 1 label)
 
@@ -143,7 +143,7 @@
  */
 #define CONTROL_SELECT(controlID) \
 do { \
- CGUIMessage msg(GUI_MSG_SELECTED, GetID(), controlID); \
+ CGUIMessage msg(GUI_MSG_SET_SELECTED, GetID(), controlID); \
  OnMessage(msg); \
 } while(0)
 
@@ -153,7 +153,7 @@ do { \
  */
 #define CONTROL_DESELECT(controlID) \
 do { \
- CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), controlID); \
+ CGUIMessage msg(GUI_MSG_SET_DESELECTED, GetID(), controlID); \
  OnMessage(msg); \
 } while(0)
 
@@ -268,7 +268,7 @@ do { \
 
 #define SET_CONTROL_SELECTED(dwSenderId, controlID, bSelect) \
 do { \
- CGUIMessage msg(bSelect?GUI_MSG_SELECTED:GUI_MSG_DESELECTED, dwSenderId, controlID); \
+ CGUIMessage msg(bSelect?GUI_MSG_SET_SELECTED:GUI_MSG_SET_DESELECTED, dwSenderId, controlID); \
  OnMessage(msg); \
 } while(0)
 
