@@ -596,13 +596,14 @@ void CDVDPlayerAudio::SetSyncType(bool passthrough)
   if (passthrough && m_synctype == SYNC_RESAMPLE)
     m_synctype = SYNC_SKIPDUP;
 
-  //tell dvdplayervideo how much it can change the speed
   //if SetMaxSpeedAdjust returns false, it means no video is played and we need to use clock feedback
   double maxspeedadjust = 0.0;
   if (m_synctype == SYNC_RESAMPLE)
     maxspeedadjust = m_maxspeedadjust;
 
-  if (!m_pClock->SetMaxSpeedAdjust(maxspeedadjust))
+  m_pClock->SetMaxSpeedAdjust(maxspeedadjust);
+
+  if (m_pClock->GetMaster() == MASTER_CLOCK_AUDIO)
     m_synctype = SYNC_DISCON;
 
   if(m_synctype == SYNC_DISCON && m_pClock->GetMaster() != MASTER_CLOCK_AUDIO)
@@ -621,8 +622,11 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
 {
   double clock = m_pClock->GetClock();
   double error = m_dvdAudio.GetPlayingPts() - clock;
+  EMasterClock master = m_pClock->GetMaster();
 
-  if( (fabs(error) > DVD_MSEC_TO_TIME(100) || m_syncclock) && m_pClock->GetMaster() == MASTER_CLOCK_AUDIO )
+  if( (fabs(error) > DVD_MSEC_TO_TIME(100) || m_syncclock)
+  &&  (master == MASTER_CLOCK_AUDIO
+    || master == MASTER_CLOCK_AUDIO_VIDEOREF) )
   {
     m_pClock->Discontinuity(clock+error);
     CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity1 - was:%f, should be:%f, error:%f", clock, clock+error, error);
@@ -660,7 +664,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
         error = m_error;
       }
 
-      if (fabs(error) > limit - 0.001 && m_pClock->GetMaster() == MASTER_CLOCK_AUDIO)
+      if (fabs(error) > limit - 0.001)
       {
         m_pClock->Discontinuity(clock+error);
         CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity2 - was:%f, should be:%f, error:%f", clock, clock+error, error);

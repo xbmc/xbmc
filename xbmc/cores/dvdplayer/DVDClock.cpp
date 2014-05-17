@@ -24,6 +24,7 @@
 #include "utils/MathUtils.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "settings/Settings.h"
 
 int64_t CDVDClock::m_systemOffset;
 int64_t CDVDClock::m_systemFrequency;
@@ -41,7 +42,6 @@ CDVDClock::CDVDClock()
   m_bReset = true;
   m_iDisc = 0;
   m_maxspeedadjust = 0.0;
-  m_speedadjust = false;
 
   m_startClock = 0;
 
@@ -175,12 +175,11 @@ void CDVDClock::Resume()
   }
 }
 
-bool CDVDClock::SetMaxSpeedAdjust(double speed)
+void CDVDClock::SetMaxSpeedAdjust(double speed)
 {
   CSingleLock lock(m_speedsection);
 
   m_maxspeedadjust = speed;
-  return m_speedadjust;
 }
 
 //returns the refreshrate if the videoreferenceclock is running, -1 otherwise
@@ -188,11 +187,7 @@ int CDVDClock::UpdateFramerate(double fps, double* interval /*= NULL*/)
 {
   //sent with fps of 0 means we are not playing video
   if(fps == 0.0)
-  {
-    CSingleLock lock(m_speedsection);
-    m_speedadjust = false;
     return -1;
-  }
 
   //check if the videoreferenceclock is running, will return -1 if not
   int rate = g_VideoReferenceClock.GetRefreshRate(interval);
@@ -201,8 +196,6 @@ int CDVDClock::UpdateFramerate(double fps, double* interval /*= NULL*/)
     return -1;
 
   CSingleLock lock(m_speedsection);
-
-  m_speedadjust = true;
 
   double weight = (double)rate / (double)MathUtils::round_int(fps);
 
@@ -266,5 +259,13 @@ EMasterClock CDVDClock::GetMaster()
 void CDVDClock::SetMaster(EMasterClock master)
 {
   CExclusiveLock lock(m_critSection);
+
+  if(m_master != master)
+  {
+    /* if we switched from video ref clock, we need to normalize speed */
+    if(m_master == MASTER_CLOCK_AUDIO_VIDEOREF)
+      g_VideoReferenceClock.SetSpeed(1.0);
+  }
+
   m_master = master;
 }

@@ -85,6 +85,7 @@
 #include "LangInfo.h"
 #include "URL.h"
 #include "utils/LangCodeExpander.h"
+#include "video/VideoReferenceClock.h"
 
 using namespace std;
 using namespace PVR;
@@ -3298,7 +3299,12 @@ void CDVDPlayer::UpdateClockMaster()
 {
   EMasterClock clock;
   if(m_CurrentAudio.id >= 0)
-    clock = MASTER_CLOCK_AUDIO;
+  {
+    if(m_CurrentVideo.id >= 0 && g_VideoReferenceClock.GetRefreshRate() > 0)
+      clock = MASTER_CLOCK_AUDIO_VIDEOREF;
+    else
+      clock = MASTER_CLOCK_AUDIO;
+  }
   else if(m_CurrentVideo.id >= 0)
     clock = MASTER_CLOCK_VIDEO;
   else

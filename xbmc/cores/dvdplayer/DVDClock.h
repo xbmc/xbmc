@@ -39,6 +39,7 @@ enum EMasterClock
 {
   MASTER_CLOCK_NONE,
   MASTER_CLOCK_AUDIO,
+  MASTER_CLOCK_AUDIO_VIDEOREF,
   MASTER_CLOCK_VIDEO,
   MASTER_CLOCK_INPUT,
 };
@@ -68,7 +69,7 @@ public:
    * allow it to adjust speed for a better match */
   int UpdateFramerate(double fps, double* interval = NULL);
 
-  bool   SetMaxSpeedAdjust(double speed);
+  void   SetMaxSpeedAdjust(double speed);
 
   static double GetAbsoluteClock(bool interpolated = true);
   static double GetFrequency() { return (double)m_systemFrequency ; }
@@ -93,7 +94,6 @@ protected:
   static CCriticalSection m_systemsection;
 
   double           m_maxspeedadjust;
-  bool             m_speedadjust;
   CCriticalSection m_speedsection;
   static CDVDClock *m_playerclock;
 };

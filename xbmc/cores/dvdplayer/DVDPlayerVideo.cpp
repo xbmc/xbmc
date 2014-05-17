@@ -286,9 +286,6 @@ void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
     CDVDCodecUtils::FreePicture(m_pTempOverlayPicture);
     m_pTempOverlayPicture = NULL;
   }
-
-  //tell the clock we stopped playing video
-  m_pClock->UpdateFramerate(0.0);
 }
 
 void CDVDPlayerVideo::OnStartup()
