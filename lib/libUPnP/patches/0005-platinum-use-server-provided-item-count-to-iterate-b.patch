@@ -1,9 +1,8 @@
-From db5f6f17dad070f8046a80bf6077914b7fe86182 Mon Sep 17 00:00:00 2001
+From 883f4f02d741317f5c8c6866d38b4b78dd79adf1 Mon Sep 17 00:00:00 2001
 From: Alasdair Campbell <alcoheca@gmail.com>
 Date: Wed, 6 Jun 2012 18:40:00 +0100
-Subject: [PATCH 07/21] [UPnP] reinstated: '[UPnP] use server provided item
- count to iterate browse req' by elupus @
- cb110ea28b7506cb31d6ab4fd347fad1c96ec9ed
+Subject: [PATCH 05/24] platinum: use server provided item count to iterate
+ browse req
 
 all other modifications to libPlatinum/Neptune since codiqs last commit have
 been checked and are not required / have been included upstream
@@ -39,7 +38,7 @@ ec70e260e95becc5bfcd86512b245776ef9653ea
  1 file changed, 12 insertions(+), 4 deletions(-)
 
 diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp
-index 2bd23f8..091ae00 100644
+index f6391fb..96c36df 100644
 --- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp
 +++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp
 @@ -36,6 +36,7 @@

@@ -1,7 +1,7 @@
-From 3d0063a78b969478fe6965e31aa5dd4d8f5b45d9 Mon Sep 17 00:00:00 2001
+From e4e282340a1524a5a01cce7ac9c03646d4df14a9 Mon Sep 17 00:00:00 2001
 From: Joakim Plate <elupus@ecce.se>
 Date: Sat, 19 Jan 2013 19:00:30 +0100
-Subject: [PATCH 17/21] Platinum: don't disregard PLT_MediaObjects only for
+Subject: [PATCH 17/24] platinum: don't disregard PLT_MediaObjects only for
  lacking resources
 
 This could cause us to misscount the number of media objects in a upnp
@@ -12,10 +12,10 @@ us duplicated items in lists.
  1 file changed, 5 deletions(-)
 
 diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
-index 3856001..f4d793d 100644
+index af6bc3b..514a1ab 100644
 --- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
 +++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
-@@ -723,11 +723,6 @@ PLT_MediaItem::FromDidl(NPT_XmlElementNode* entry)
+@@ -722,11 +722,6 @@ PLT_MediaItem::FromDidl(NPT_XmlElementNode* entry)
      }
  
      NPT_Result result = PLT_MediaObject::FromDidl(entry);

@@ -1,7 +1,7 @@
-From 8e9605a51d2d05c6f8784eed86e5764506bc57b2 Mon Sep 17 00:00:00 2001
+From a650caab79695b0caaef7b860ae59086a335bb30 Mon Sep 17 00:00:00 2001
 From: Alasdair Campbell <alcoheca@gmail.com>
 Date: Sat, 6 Oct 2012 23:35:52 +0100
-Subject: [PATCH 11/21] [UPnP] support video ratings
+Subject: [PATCH 11/24] platinum: support video ratings
 
 ---
  lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h        | 8 +++++---
@@ -36,10 +36,10 @@ index c50d450..8d9704f 100644
  #define PLT_FILTER_FIELD_PROGRAMTITLE               "upnp:programTitle"
  #define PLT_FILTER_FIELD_SERIESTITLE                "upnp:seriesTitle"
 diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
-index 64437d2..0a55eef 100644
+index d46d1a5..3416112 100644
 --- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
 +++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
-@@ -318,6 +318,13 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
+@@ -317,6 +317,13 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
          didl += "</upnp:icon>";
      }
  
@@ -53,7 +53,7 @@ index 64437d2..0a55eef 100644
      // original track number
      if ((mask & PLT_FILTER_MASK_ORIGINALTRACK) && m_MiscInfo.original_track_number > 0) {
          didl += "<upnp:originalTrackNumber>";
-@@ -529,6 +536,7 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
+@@ -528,6 +535,7 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
      PLT_XmlHelper::GetChildText(entry, "description", m_Description.description, didl_namespace_dc);
      PLT_XmlHelper::GetChildText(entry, "longDescription", m_Description.long_description, didl_namespace_upnp);
      PLT_XmlHelper::GetChildText(entry, "icon", m_Description.icon_uri, didl_namespace_upnp);

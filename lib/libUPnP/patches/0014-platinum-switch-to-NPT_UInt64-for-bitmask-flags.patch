@@ -1,7 +1,7 @@
-From 5e3cec1f974afc902a916e3cfb931c584d61245b Mon Sep 17 00:00:00 2001
+From 7f93296d158095f59169d12c4181af060f4b9884 Mon Sep 17 00:00:00 2001
 From: Alasdair Campbell <alcoheca@gmail.com>
 Date: Fri, 26 Oct 2012 12:30:04 +0100
-Subject: [PATCH 14/21] Platinum: switch to NPT_UInt64 for bitmask flags
+Subject: [PATCH 14/24] platinum: switch to NPT_UInt64 for bitmask flags
 
 ---
  .../Source/Devices/MediaServer/PltDidl.cpp         |  6 +-
@@ -133,7 +133,7 @@ index 8d9704f..29ce9ca 100644
  
  #endif /* _PLT_DIDL_H_ */
 diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
-index 01cf13f..a3561fd 100644
+index b10d75a..31bc16c 100644
 --- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
 +++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
 @@ -215,7 +215,7 @@ PLT_MediaObject::ToDidl(const NPT_String& filter, NPT_String& didl)
@@ -145,7 +145,7 @@ index 01cf13f..a3561fd 100644
  {
      // title is required
      didl += "<dc:title>";
-@@ -683,7 +683,7 @@ PLT_MediaItem::ToDidl(const NPT_String& filter, NPT_String& didl)
+@@ -682,7 +682,7 @@ PLT_MediaItem::ToDidl(const NPT_String& filter, NPT_String& didl)
  |   PLT_MediaItem::ToDidl
  +---------------------------------------------------------------------*/
  NPT_Result
@@ -154,7 +154,7 @@ index 01cf13f..a3561fd 100644
  {
      didl += "<item id=\"";
  
-@@ -774,7 +774,7 @@ PLT_MediaContainer::ToDidl(const NPT_String& filter, NPT_String& didl)
+@@ -773,7 +773,7 @@ PLT_MediaContainer::ToDidl(const NPT_String& filter, NPT_String& didl)
  |   PLT_MediaContainer::ToDidl
  +---------------------------------------------------------------------*/
  NPT_Result
@@ -164,7 +164,7 @@ index 01cf13f..a3561fd 100644
  	// container id property
      didl += "<container id=\"";
 diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
-index 84704b1..6cd597d 100644
+index fe04f34..2449276 100644
 --- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
 +++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
 @@ -196,7 +196,7 @@ public:
@@ -195,7 +195,7 @@ index 84704b1..6cd597d 100644
  
  public:
 diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
-index 5722b82..e83a73b 100644
+index e8cb7c6..94f1ab3 100644
 --- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
 +++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
 @@ -118,7 +118,7 @@ protected:

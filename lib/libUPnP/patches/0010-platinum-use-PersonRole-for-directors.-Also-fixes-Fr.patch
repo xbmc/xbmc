@@ -1,7 +1,7 @@
-From b4bfe2c005f264691f77982127790e45fe6ac51d Mon Sep 17 00:00:00 2001
+From 501fb90b02537c45837526677220c67b8d8eb3f3 Mon Sep 17 00:00:00 2001
 From: Alasdair Campbell <alcoheca@gmail.com>
 Date: Sun, 7 Oct 2012 10:46:54 +0100
-Subject: [PATCH 10/21] Platinum: use PersonRole for directors. Also fixes
+Subject: [PATCH 10/24] platinum: use PersonRole for directors. Also fixes
  ::FromDidl for authors, actors, directors -
  previously duplicate entries were present
 
@@ -73,7 +73,7 @@ index f6eaf14..c50d450 100644
  #define PLT_FILTER_FIELD_GENRE                      "upnp:genre"
  #define PLT_FILTER_FIELD_ALBUMARTURI                "upnp:albumArtURI"
 diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
-index 214f13d..64437d2 100644
+index 3ec7696..d46d1a5 100644
 --- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
 +++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
 @@ -253,6 +253,11 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
@@ -88,7 +88,7 @@ index 214f13d..64437d2 100644
      // album
      if ((mask & PLT_FILTER_MASK_ALBUM) && !m_Affiliation.album.IsEmpty()) {
          didl += "<upnp:album>";
-@@ -489,15 +494,22 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
+@@ -488,15 +493,22 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
      m_Title = m_Title.SubString(0, 256);    
      m_ObjectClass.type =  m_ObjectClass.type.SubString(0, 256);
  
@@ -101,7 +101,7 @@ index 214f13d..64437d2 100644
      m_People.authors.FromDidl(children);
      
 +    children.Clear();
-     PLT_XmlHelper::GetChildren(entry, children, "actors", didl_namespace_upnp);
+     PLT_XmlHelper::GetChildren(entry, children, "actor", didl_namespace_upnp);
      m_People.actors.FromDidl(children);
  
 +    children.Clear();
@@ -112,7 +112,7 @@ index 214f13d..64437d2 100644
      PLT_XmlHelper::GetChildText(entry, "programTitle", m_Recorded.program_title, didl_namespace_upnp);
      PLT_XmlHelper::GetChildText(entry, "seriesTitle", m_Recorded.series_title, didl_namespace_upnp);
 diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
-index 8261244..84704b1 100644
+index cc3bdf9..fe04f34 100644
 --- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
 +++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
 @@ -91,7 +91,7 @@ typedef struct {

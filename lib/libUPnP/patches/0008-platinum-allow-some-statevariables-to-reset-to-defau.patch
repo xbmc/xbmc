@@ -1,7 +1,7 @@
-From ad0db59a112ff4cf62ffc18c9565e48b90c4e4e2 Mon Sep 17 00:00:00 2001
+From 73a60837afb1a0ddf03ac500665c28853d95dca8 Mon Sep 17 00:00:00 2001
 From: Alasdair Campbell <alcoheca@gmail.com>
 Date: Tue, 9 Oct 2012 10:14:39 +0100
-Subject: [PATCH 04/21] Platinum: allow some statevariables to reset to
+Subject: [PATCH 08/24] platinum: allow some statevariables to reset to
  default value after sending completed (needed for
  ContainerUpdateIDs usage)
 
@@ -13,10 +13,10 @@ Subject: [PATCH 04/21] Platinum: allow some statevariables to reset to
  4 files changed, 34 insertions(+), 6 deletions(-)
 
 diff --git a/lib/libUPnP/Platinum/Source/Core/PltService.cpp b/lib/libUPnP/Platinum/Source/Core/PltService.cpp
-index 3280b15..62bdc49 100644
+index b1fec51..b86fb23 100644
 --- a/lib/libUPnP/Platinum/Source/Core/PltService.cpp
 +++ b/lib/libUPnP/Platinum/Source/Core/PltService.cpp
-@@ -460,14 +460,14 @@ PLT_Service::IsSubscribable()
+@@ -459,14 +459,14 @@ PLT_Service::IsSubscribable()
  |   PLT_Service::SetStateVariable
  +---------------------------------------------------------------------*/
  NPT_Result
@@ -33,8 +33,8 @@ index 3280b15..62bdc49 100644
  }
  
  /*----------------------------------------------------------------------
-@@ -838,6 +838,13 @@ PLT_Service::NotifyChanged()
-         delete sub;
+@@ -835,6 +835,13 @@ PLT_Service::NotifyChanged()
+         m_Subscribers.Erase(sub_iter++);
      }
  
 +    // some state variables must be cleared immediatly after sending
@@ -48,7 +48,7 @@ index 3280b15..62bdc49 100644
  }
  
 diff --git a/lib/libUPnP/Platinum/Source/Core/PltService.h b/lib/libUPnP/Platinum/Source/Core/PltService.h
-index c03a552..9bd4d12 100644
+index 84959f2..0401ea2 100644
 --- a/lib/libUPnP/Platinum/Source/Core/PltService.h
 +++ b/lib/libUPnP/Platinum/Source/Core/PltService.h
 @@ -216,8 +216,9 @@ public:
@@ -63,20 +63,20 @@ index c03a552..9bd4d12 100644
      /**
       Certain state variables notifications must not be sent faster than a certain 
 diff --git a/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp b/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp
-index 229e304..47aeb5a 100644
+index c3eb7cc..d38392e 100644
 --- a/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp
 +++ b/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp
-@@ -48,7 +48,8 @@ NPT_SET_LOCAL_LOGGER("platinum.core.statevariable")
- PLT_StateVariable::PLT_StateVariable(PLT_Service* service) : 
+@@ -49,7 +49,8 @@ PLT_StateVariable::PLT_StateVariable(PLT_Service* service) :
      m_Service(service), 
      m_AllowedValueRange(NULL),
+     m_IsSendingEvents(false),
 -    m_IsSendingEventsIndirectly(true)
 +    m_IsSendingEventsIndirectly(true),
 +    m_ShouldClearOnSend(false)
  {
  }
  
-@@ -145,7 +146,7 @@ PLT_StateVariable::SetRate(NPT_TimeInterval rate)
+@@ -146,7 +147,7 @@ PLT_StateVariable::SetRate(NPT_TimeInterval rate)
  |   PLT_StateVariable::SetValue
  +---------------------------------------------------------------------*/
  NPT_Result
@@ -85,7 +85,7 @@ index 229e304..47aeb5a 100644
  {
      if (value == NULL) {
          return NPT_FAILURE;
-@@ -159,6 +160,7 @@ PLT_StateVariable::SetValue(const char* value)
+@@ -160,6 +161,7 @@ PLT_StateVariable::SetValue(const char* value)
          }
  
          m_Value = value;
@@ -93,7 +93,7 @@ index 229e304..47aeb5a 100644
          m_Service->AddChanged(this); 
      }
  
-@@ -183,6 +185,16 @@ PLT_StateVariable::IsReadyToPublish()
+@@ -184,6 +186,16 @@ PLT_StateVariable::IsReadyToPublish()
  }
  
  /*----------------------------------------------------------------------

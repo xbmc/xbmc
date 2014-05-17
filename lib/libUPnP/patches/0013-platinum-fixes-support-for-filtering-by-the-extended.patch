@@ -1,7 +1,7 @@
-From 3f9fff2f4372991836c1691d8c5fb2a91424c2aa Mon Sep 17 00:00:00 2001
+From 38538aa36eaf64d7bcff662735ae9b5a0c1db08c Mon Sep 17 00:00:00 2001
 From: Alasdair Campbell <alcoheca@gmail.com>
 Date: Thu, 25 Oct 2012 11:59:46 +0100
-Subject: [PATCH 13/21] upnp: fixes support for filtering by the extended
+Subject: [PATCH 13/24] platinum: fixes support for filtering by the extended
  properties we need
 
 ---
@@ -42,7 +42,7 @@ index 2c20b25..6ad2ec4 100644
              mask |= PLT_FILTER_MASK_RES;
          } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_DURATION, len, true) == 0 ||
 diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
-index 0a55eef..01cf13f 100644
+index 3416112..b10d75a 100644
 --- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
 +++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
 @@ -171,6 +171,7 @@ PLT_MediaObject::Reset()
@@ -54,7 +54,7 @@ index 0a55eef..01cf13f 100644
      m_Affiliation.album     = "";
      m_Affiliation.genres.Clear();
 diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
-index e628af9..5722b82 100644
+index 0fe43b5..e8cb7c6 100644
 --- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
 +++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
 @@ -118,7 +118,7 @@ protected:

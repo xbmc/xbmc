@@ -1,7 +1,7 @@
-From 76de0e319e443f8fde00979682280005930ffcf9 Mon Sep 17 00:00:00 2001
+From 058d7557b61afc45d83f98477f3ef5d1ab6cb571 Mon Sep 17 00:00:00 2001
 From: Alasdair Campbell <alcoheca@gmail.com>
 Date: Thu, 11 Oct 2012 13:22:35 +0100
-Subject: [PATCH 12/21] [UPnP] increase number of requested items per
+Subject: [PATCH 12/24] platinum: increase number of requested items per
  iteration. gives 2-3 times speed up.
 
 ---
@@ -9,7 +9,7 @@ Subject: [PATCH 12/21] [UPnP] increase number of requested items per
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp
-index 091ae00..bea1064 100644
+index 96c36df..24219ff 100644
 --- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp
 +++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp
 @@ -262,7 +262,7 @@ PLT_SyncMediaBrowser::BrowseSync(PLT_DeviceDataReference&      device,

@@ -1,8 +1,8 @@
-From 152462afb82c13dd2a723f1c256c07e86457ccc3 Mon Sep 17 00:00:00 2001
+From 5b2c16078401c8de2fdd7530df8d8d485c288495 Mon Sep 17 00:00:00 2001
 From: Memphiz <memphis@machzwo.de>
 Date: Fri, 26 Oct 2012 18:08:59 +0200
-Subject: [PATCH 16/21] [osx] - fix compilation by using the right suffix for
- 64bit constants
+Subject: [PATCH 16/24] platinum: fix compilation by using the right suffix
+ for 64bit constants
 
 ---
  .../Platinum/Source/Devices/MediaServer/PltDidl.h  | 72 +++++++++++-----------

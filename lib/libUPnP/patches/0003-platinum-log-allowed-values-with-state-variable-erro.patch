@@ -1,18 +1,18 @@
-From 58d8b1df5f6c631bd43c1bcda810a786c23de9ac Mon Sep 17 00:00:00 2001
+From 60f546b6f4a54a399a0cd0cece84486b7018c477 Mon Sep 17 00:00:00 2001
 From: Alasdair Campbell <alcoheca@gmail.com>
 Date: Wed, 6 Jun 2012 17:04:31 +0100
-Subject: [PATCH 02/21] [UPnP] Platinum - log allowed values with state
- variable errors
+Subject: [PATCH 03/24] platinum: log allowed values with state variable
+ errors
 
 ---
  lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp | 14 +++++++++-----
  1 file changed, 9 insertions(+), 5 deletions(-)
 
 diff --git a/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp b/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp
-index 5dd2d61..229e304 100644
+index a772bbf..c3eb7cc 100644
 --- a/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp
 +++ b/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp
-@@ -197,12 +197,16 @@ PLT_StateVariable::ValidateValue(const char* value)
+@@ -198,12 +198,16 @@ PLT_StateVariable::ValidateValue(const char* value)
              NPT_List<NPT_String>::Iterator val = values.GetFirstItem();
              while (val) {
                  val->Trim(" ");

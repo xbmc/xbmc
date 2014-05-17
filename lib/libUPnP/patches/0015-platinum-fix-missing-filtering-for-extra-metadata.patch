@@ -1,7 +1,7 @@
-From 9f4aff60ebe92e98df47ae61e243af1a845c1c42 Mon Sep 17 00:00:00 2001
+From c6d2a53c63a065a974c3f8fd1df29c30c2e2b40a Mon Sep 17 00:00:00 2001
 From: Alasdair Campbell <alcoheca@gmail.com>
 Date: Fri, 26 Oct 2012 12:57:58 +0100
-Subject: [PATCH 15/21] Platinum: fix missing filtering for extra metadata
+Subject: [PATCH 15/24] platinum: fix missing filtering for extra metadata
 
 ---
  lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp      | 6 ++++++
@@ -52,10 +52,10 @@ index 29ce9ca..9af9725 100644
  #define PLT_FILTER_FIELD_SEARCHABLE                 "@searchable"
  #define PLT_FILTER_FIELD_CHILDCOUNT                 "@childcount"
 diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
-index a3561fd..3856001 100644
+index 31bc16c..af6bc3b 100644
 --- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
 +++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
-@@ -334,21 +334,21 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
+@@ -333,21 +333,21 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
      }
  
      // last playback position

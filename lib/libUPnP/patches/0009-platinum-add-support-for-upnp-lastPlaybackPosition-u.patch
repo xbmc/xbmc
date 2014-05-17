@@ -1,7 +1,7 @@
-From e36e418d536733d04dc4cbab2ee520a31e4cfe69 Mon Sep 17 00:00:00 2001
+From 5f4aa26956ebc15e774186955e49cc7c77896f0e Mon Sep 17 00:00:00 2001
 From: Alasdair Campbell <alcoheca@gmail.com>
 Date: Mon, 30 Jul 2012 13:02:34 +0100
-Subject: [PATCH 09/21] [UPnP] add support for upnp:lastPlaybackPosition,
+Subject: [PATCH 09/24] platinum: add support for upnp:lastPlaybackPosition,
  upnp:lastPlaybackTime and upnp:playbackCount
 
 ---
@@ -10,7 +10,7 @@ Subject: [PATCH 09/21] [UPnP] add support for upnp:lastPlaybackPosition,
  2 files changed, 46 insertions(+)
 
 diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
-index 5b974e8..214f13d 100644
+index 62e0ba9..3ec7696 100644
 --- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
 +++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
 @@ -183,6 +183,9 @@ PLT_MediaObject::Reset()
@@ -23,7 +23,7 @@ index 5b974e8..214f13d 100644
      m_MiscInfo.dvdregioncode		 = 0;
      m_MiscInfo.toc					 = "";
      m_MiscInfo.user_annotation		 = "";
-@@ -317,6 +320,27 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
+@@ -316,6 +319,27 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
          didl += "</upnp:originalTrackNumber>";
      }
  
@@ -51,7 +51,7 @@ index 5b974e8..214f13d 100644
      // program title
      if (mask & PLT_FILTER_MASK_PROGRAMTITLE && !m_Recorded.program_title.IsEmpty()) {
          didl += "<upnp:programTitle>";
-@@ -511,6 +535,25 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
+@@ -510,6 +534,25 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
      if (NPT_FAILED(str.ToInteger(value))) value = 0;
      m_MiscInfo.original_track_number = value;
  
@@ -78,7 +78,7 @@ index 5b974e8..214f13d 100644
      PLT_XmlHelper::GetChildren(entry, children, "res");
      for (NPT_Cardinal i=0; i<children.GetItemCount(); i++) {
 diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
-index 3ebc3b0..8261244 100644
+index 81f3dc8..cc3bdf9 100644
 --- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
 +++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
 @@ -130,6 +130,9 @@ typedef struct {

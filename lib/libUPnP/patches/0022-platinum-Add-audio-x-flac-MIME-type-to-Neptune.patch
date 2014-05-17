@@ -1,7 +1,7 @@
-From 0308017deff74d962190b9621d4dfeaa1df20ef8 Mon Sep 17 00:00:00 2001
+From c7dc8e23d0646200424179c16ccac2961df8da86 Mon Sep 17 00:00:00 2001
 From: mossywell <mark@mossywell.com>
 Date: Fri, 28 Mar 2014 07:26:49 +0000
-Subject: [PATCH 24/24] Neptune Add audio/x-flac MIME type
+Subject: [PATCH 22/24] platinum: Add audio/x-flac MIME type to Neptune
 
 Change streaming FLAC MIME type from application/octet to audio/x-flac to
 support Frontier Silicon systems (such as the Axis X3) that require
@@ -16,10 +16,10 @@ FLAC not added to DefaultDlnaMap as * suffices.
  1 file changed, 1 insertion(+)
 
 diff --git a/lib/libUPnP/Neptune/Source/Core/NptHttp.cpp b/lib/libUPnP/Neptune/Source/Core/NptHttp.cpp
-index 07586f9..d2e36b1 100644
+index 1700afc..8c5d587 100644
 --- a/lib/libUPnP/Neptune/Source/Core/NptHttp.cpp
 +++ b/lib/libUPnP/Neptune/Source/Core/NptHttp.cpp
-@@ -2880,6 +2880,7 @@ NPT_HttpFileRequestHandler_DefaultFileTypeMap[] = {
+@@ -2779,6 +2779,7 @@ NPT_HttpFileRequestHandler_DefaultFileTypeMap[] = {
      {"aif",  "audio/x-aiff"},
      {"aifc", "audio/x-aiff"},
      {"aiff", "audio/x-aiff"},
@@ -28,5 +28,5 @@ index 07586f9..d2e36b1 100644
      {"mpa",  "audio/mpeg"},
      {"mp2",  "audio/mpeg"},
 -- 
-1.8.4.msysgit.0
+1.7.11.msysgit.0
 

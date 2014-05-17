@@ -1,17 +1,17 @@
-From a3e34ef19a3dd3751b382374cfed64ac55765cde Mon Sep 17 00:00:00 2001
+From 365faa24a48af37eb9c31f650187ff38be4eccb2 Mon Sep 17 00:00:00 2001
 From: Joakim Plate <elupus@ecce.se>
 Date: Sun, 4 Nov 2012 17:23:18 +0100
-Subject: [PATCH 18/21] Platinum: add SetNextAVTransportURI support to media
+Subject: [PATCH 18/24] platinum: add SetNextAVTransportURI support to media
  renderer base
 
 ---
  .../Devices/MediaRenderer/AVTransportSCPD.cpp      | 1889 ++++++++++----------
  .../Devices/MediaRenderer/AVTransportSCPD.xml      |   20 +
- .../Devices/MediaRenderer/PltMediaController.cpp   |   12 +-
+ .../Devices/MediaRenderer/PltMediaController.cpp   |    4 +
  .../Devices/MediaRenderer/PltMediaController.h     |    5 +
  .../Devices/MediaRenderer/PltMediaRenderer.cpp     |   30 +
  .../Devices/MediaRenderer/PltMediaRenderer.h       |    2 +
- 6 files changed, 1016 insertions(+), 942 deletions(-)
+ 6 files changed, 1012 insertions(+), 938 deletions(-)
 
 diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/AVTransportSCPD.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/AVTransportSCPD.cpp
 index 1c1fa44..64014ed 100644
@@ -1945,25 +1945,10 @@ index 63a3ee9..f9ee988 100644
           <argumentList>
              <argument>
 diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/PltMediaController.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/PltMediaController.cpp
-index 638a6cb..520145c 100644
+index 11e4e6a..87aabf3 100644
 --- a/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/PltMediaController.cpp
 +++ b/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/PltMediaController.cpp
-@@ -562,10 +562,10 @@ PLT_MediaController::SetNextAVTransportURI(PLT_DeviceDataReference& device,
- {
-     PLT_ActionReference action;
-     NPT_CHECK_SEVERE(m_CtrlPoint->CreateAction(
--                                               device, 
--                                               "urn:schemas-upnp-org:service:AVTransport:1", 
--                                               "SetNextAVTransportURI", 
--                                               action));
-+        device,
-+        "urn:schemas-upnp-org:service:AVTransport:1",
-+        "SetNextAVTransportURI",
-+        action));
-     
-     // set the uri
-     if (NPT_FAILED(action->SetArgumentValue("NextURI", next_uri))) {
-@@ -867,6 +867,10 @@ PLT_MediaController::OnActionResponse(NPT_Result           res,
+@@ -882,6 +882,10 @@ PLT_MediaController::OnActionResponse(NPT_Result           res,
          if (NPT_FAILED(FindRenderer(uuid, device))) res = NPT_FAILURE;
          m_Delegate->OnSetAVTransportURIResult(res, device, userdata);
      }
@@ -1975,7 +1960,7 @@ index 638a6cb..520145c 100644
          if (NPT_FAILED(FindRenderer(uuid, device))) res = NPT_FAILURE;
          m_Delegate->OnSetPlayModeResult(res, device, userdata);
 diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/PltMediaController.h b/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/PltMediaController.h
-index f5f0615..c91ce64 100644
+index 672c12a..bfd909c 100644
 --- a/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/PltMediaController.h
 +++ b/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/PltMediaController.h
 @@ -176,6 +176,11 @@ public:
@@ -1991,10 +1976,10 @@ index f5f0615..c91ce64 100644
          NPT_Result               /* res */,
          PLT_DeviceDataReference& /* device */,
 diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/PltMediaRenderer.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/PltMediaRenderer.cpp
-index 6c9653d..80e04f5 100644
+index 2a6986b..88144f7 100644
 --- a/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/PltMediaRenderer.cpp
 +++ b/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/PltMediaRenderer.cpp
-@@ -249,6 +249,9 @@ PLT_MediaRenderer::OnAction(PLT_ActionReference&          action,
+@@ -258,6 +258,9 @@ PLT_MediaRenderer::OnAction(PLT_ActionReference&          action,
      if (name.Compare("SetAVTransportURI", true) == 0) {
          return OnSetAVTransportURI(action);
      }
@@ -2004,7 +1989,7 @@ index 6c9653d..80e04f5 100644
      if (name.Compare("SetPlayMode", true) == 0) {
          return OnSetPlayMode(action);
      }
-@@ -417,6 +420,33 @@ PLT_MediaRenderer::OnSetAVTransportURI(PLT_ActionReference& action)
+@@ -426,6 +429,33 @@ PLT_MediaRenderer::OnSetAVTransportURI(PLT_ActionReference& action)
  }
  
  /*----------------------------------------------------------------------
