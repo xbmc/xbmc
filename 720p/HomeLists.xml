@@ -943,11 +943,11 @@
 						<width>860</width>
 						<height>330</height>
 						<!-- tv & movie -->
-						<itemlayout width="139" height="330">
+						<itemlayout width="139" height="330" condition="System.PlexPlayQueue(Video)">
 							<!-- movie & episode when only this list is visible -->
 							<control type="group">
 								<posy>100</posy>
-								<visible>[ListItem.Type(episode) | ListItem.Type(movie) | ListItem.Type(clip)]</visible>
+								<visible>[ListItem.Type(episode) | ListItem.Type(movie)]</visible>
 								<animation effect="fade" start="100" end="50" time="300" condition="ControlGroup(7007).HasFocus">Conditional</animation>
 								<control type="group">
 									<include>ListItemPoster</include>
@@ -961,11 +961,11 @@
 								</control>
 							</control>
 						</itemlayout>
-						<focusedlayout width="139" height="330">
+						<focusedlayout width="139" height="330" condition="System.PlexPlayQueue(Video)">
 							<!-- movie & episode when only this list is visible -->
 							<control type="group">
 								<posy>100</posy>
-								<visible>[ListItem.Type(episode) | ListItem.Type(movie) | ListItem.Type(clip)]</visible>
+								<visible>[ListItem.Type(episode) | ListItem.Type(movie)]</visible>
 								<include>ListItemPoster</include>
 								<include>ListItemPosterSelectedBorder</include>
 								<control type="group">
@@ -977,7 +977,7 @@
 							</control>
 						</focusedlayout>
 						<!-- clips -->
-						<itemlayout width="211" height="230" condition="[ListItem.Type(clip)]">
+						<itemlayout width="211" height="230" condition="System.PlexPlayQueue(Clip)">
 							<!-- when only this list is visible -->
 							<control type="group">
 								<posy>103</posy>
@@ -988,10 +988,10 @@
 								<include>ListItemWideTitle</include>
 							</control>
 						</itemlayout>
-						<focusedlayout width="211" height="230" condition="[ListItem.Type(clip)]">
+						<focusedlayout width="211" height="230" condition="System.PlexPlayQueue(Clip)">
 							<!-- when only this list is visible -->
 							<control type="group">
-								<posy>108</posy>
+								<posy>103</posy>
 								<visible>ListItem.Type(clip)</visible>
 								<include>ListItemWideCard</include>
 								<include>ListItemWide</include>
