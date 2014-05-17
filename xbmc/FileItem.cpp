@@ -3320,3 +3320,26 @@ int CFileItem::GetVideoContentType() const
   return type;
 }
 
+bool CFileItem::IsResumePointSet() const
+{
+  return (HasVideoInfoTag() && GetVideoInfoTag()->m_resumePoint.IsSet()) ||
+      (HasPVRRecordingInfoTag() && GetPVRRecordingInfoTag()->GetLastPlayedPosition() > 0);
+}
+
+double CFileItem::GetCurrentResumeTime() const
+{
+  if (HasPVRRecordingInfoTag())
+  {
+    // This will retrieve 'fresh' resume information from the PVR server
+    int rc = GetPVRRecordingInfoTag()->GetLastPlayedPosition();
+    if (rc > 0)
+      return rc;
+    // Fall through to default value
+  }
+  if (HasVideoInfoTag() && GetVideoInfoTag()->m_resumePoint.IsSet())
+  {
+    return GetVideoInfoTag()->m_resumePoint.timeInSeconds;
+  }
+  // Resume from start when resume points are invalid or the PVR server returns an error
+  return 0;
+}
