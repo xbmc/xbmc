@@ -309,7 +309,6 @@ void CGUIDialogPVRGuideSearch::OnSearch()
 void CGUIDialogPVRGuideSearch::Update()
 {
   CGUIEditControl        *pEdit;
-  CGUIRadioButtonControl *pRadioButton;
 
   if (!m_searchFilter)
     return;
@@ -321,26 +320,13 @@ void CGUIDialogPVRGuideSearch::Update()
     pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_TEXT, 16017);
   }
 
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_CASE_SENS);
-  if (pRadioButton) pRadioButton->SetSelected(m_searchFilter->m_bIsCaseSensitive);
-
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_INC_DESC);
-  if (pRadioButton) pRadioButton->SetSelected(m_searchFilter->m_bSearchInDescription);
-
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_FTA_ONLY);
-  if (pRadioButton) pRadioButton->SetSelected(m_searchFilter->m_bFTAOnly);
-
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_UNK_GENRE);
-  if (pRadioButton) pRadioButton->SetSelected(m_searchFilter->m_bIncludeUnknownGenres);
-
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_IGNORE_REC);
-  if (pRadioButton) pRadioButton->SetSelected(m_searchFilter->m_bIgnorePresentRecordings);
-
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_IGNORE_TMR);
-  if (pRadioButton) pRadioButton->SetSelected(m_searchFilter->m_bIgnorePresentTimers);
-
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_SPIN_NO_REPEATS);
-  if (pRadioButton) pRadioButton->SetSelected(m_searchFilter->m_bPreventRepeats);
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_CASE_SENS, m_searchFilter->m_bIsCaseSensitive);
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_INC_DESC, m_searchFilter->m_bSearchInDescription);
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_FTA_ONLY, m_searchFilter->m_bFTAOnly);
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_UNK_GENRE, m_searchFilter->m_bIncludeUnknownGenres);
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_IGNORE_REC, m_searchFilter->m_bIgnorePresentRecordings);
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_IGNORE_TMR, m_searchFilter->m_bIgnorePresentTimers);
+  SET_CONTROL_SELECTED(GetID(), CONTROL_SPIN_NO_REPEATS, m_searchFilter->m_bPreventRepeats);
 
   /* Set time fields */
   pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_START_TIME);

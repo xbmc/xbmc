@@ -87,7 +87,7 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
   // set alphabetic (capitals)
   UpdateButtons();
 
-  CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
+  CGUILabelControl* pEdit = dynamic_cast<CGUILabelControl*>(GetControl(CTL_LABEL_EDIT));
   if (pEdit)
   {
     pEdit->ShowCursor();
@@ -376,7 +376,7 @@ void CGUIDialogKeyboardGeneric::FrameMove()
 
 void CGUIDialogKeyboardGeneric::UpdateLabel() // FIXME seems to be called twice for one USB SDL keyboard action/character
 {
-  CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
+  CGUILabelControl* pEdit = dynamic_cast<CGUILabelControl*>(GetControl(CTL_LABEL_EDIT));
   if (pEdit)
   {
     CStdStringW edit = m_strEdit;
@@ -526,36 +526,10 @@ char CGUIDialogKeyboardGeneric::GetCharacter(int iButton)
 
 void CGUIDialogKeyboardGeneric::UpdateButtons()
 {
-  if (m_bShift)
-  { // show the button depressed
-    CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CTL_BUTTON_SHIFT);
-    OnMessage(msg);
-  }
-  else
-  {
-    CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CTL_BUTTON_SHIFT);
-    OnMessage(msg);
-  }
-  if (m_keyType == CAPS)
-  {
-    CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CTL_BUTTON_CAPS);
-    OnMessage(msg);
-  }
-  else
-  {
-    CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CTL_BUTTON_CAPS);
-    OnMessage(msg);
-  }
-  if (m_keyType == SYMBOLS)
-  {
-    CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CTL_BUTTON_SYMBOLS);
-    OnMessage(msg);
-  }
-  else
-  {
-    CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CTL_BUTTON_SYMBOLS);
-    OnMessage(msg);
-  }
+  SET_CONTROL_SELECTED(GetID(), CTL_BUTTON_SHIFT, m_bShift);
+  SET_CONTROL_SELECTED(GetID(), CTL_BUTTON_CAPS, m_keyType == CAPS);
+  SET_CONTROL_SELECTED(GetID(), CTL_BUTTON_SYMBOLS, m_keyType == SYMBOLS);
+
   char szLabel[2];
   szLabel[0] = 32;
   szLabel[1] = 0;
@@ -623,7 +597,7 @@ void CGUIDialogKeyboardGeneric::SetCursorPos(int iPos)
   else if (iPos > (int)m_strEdit.size())
     iPos = (int)m_strEdit.size();
   m_iCursorPos = iPos;
-  CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
+  CGUILabelControl* pEdit = dynamic_cast<CGUILabelControl*>(GetControl(CTL_LABEL_EDIT));
   if (pEdit)
   {
     pEdit->SetCursorPos(m_iCursorPos + (m_hiddenInput ? 0 : m_iEditingOffset));
@@ -673,7 +647,7 @@ void CGUIDialogKeyboardGeneric::OnIPAddress()
     utf8String = utf8String.substr(0, start) + ip.c_str() + utf8String.substr(start + length);
     g_charsetConverter.utf8ToW(utf8String, m_strEdit);
     UpdateLabel();
-    CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
+    CGUILabelControl* pEdit = dynamic_cast<CGUILabelControl*>(GetControl(CTL_LABEL_EDIT));
     if (pEdit)
       pEdit->SetCursorPos(m_strEdit.size());
   }

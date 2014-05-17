@@ -122,7 +122,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
 
   if (passToVis)
   {
-    CGUIControl *control = (CGUIControl *)GetControl(CONTROL_VIS);
+    CGUIControl *control = GetControl(CONTROL_VIS);
     if (control)
       return control->OnAction(action);
   }
@@ -138,7 +138,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
   case GUI_MSG_VISUALISATION_RELOAD:
   case GUI_MSG_PLAYBACK_STARTED:
     {
-      CGUIControl *control = (CGUIControl *)GetControl(CONTROL_VIS);
+      CGUIControl *control = GetControl(CONTROL_VIS);
       if (control)
         return control->OnMessage(message);
     }

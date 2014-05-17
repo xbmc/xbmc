@@ -558,7 +558,7 @@ void CGUIDialogAddonSettings::SaveSettings(void)
 
 void CGUIDialogAddonSettings::FreeSections()
 {
-  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_SECTION_AREA);
+  CGUIControlGroupList *group = dynamic_cast<CGUIControlGroupList *>(GetControl(CONTROL_SECTION_AREA));
   if (group)
   {
     group->FreeResources();
@@ -572,7 +572,7 @@ void CGUIDialogAddonSettings::FreeSections()
 void CGUIDialogAddonSettings::FreeControls()
 {
   // clear the category group
-  CGUIControlGroupList *control = (CGUIControlGroupList *)GetControl(CONTROL_SETTINGS_AREA);
+  CGUIControlGroupList *control = dynamic_cast<CGUIControlGroupList *>(GetControl(CONTROL_SETTINGS_AREA));
   if (control)
   {
     control->FreeResources();
@@ -582,8 +582,8 @@ void CGUIDialogAddonSettings::FreeControls()
 
 void CGUIDialogAddonSettings::CreateSections()
 {
-  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_SECTION_AREA);
-  CGUIButtonControl *originalButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_SECTION_BUTTON);
+  CGUIControlGroupList *group = dynamic_cast<CGUIControlGroupList *>(GetControl(CONTROL_SECTION_AREA));
+  CGUIButtonControl *originalButton = dynamic_cast<CGUIButtonControl *>(GetControl(CONTROL_DEFAULT_SECTION_BUTTON));
   if (!m_addon)
     return;
 
@@ -634,12 +634,12 @@ void CGUIDialogAddonSettings::CreateControls()
 {
   FreeControls();
 
-  CGUISpinControlEx *pOriginalSpin = (CGUISpinControlEx*)GetControl(CONTROL_DEFAULT_SPIN);
-  CGUIRadioButtonControl *pOriginalRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_DEFAULT_RADIOBUTTON);
-  CGUIButtonControl *pOriginalButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_BUTTON);
-  CGUIImage *pOriginalImage = (CGUIImage *)GetControl(CONTROL_DEFAULT_SEPARATOR);
-  CGUILabelControl *pOriginalLabel = (CGUILabelControl *)GetControl(CONTROL_DEFAULT_LABEL_SEPARATOR);
-  CGUISettingsSliderControl *pOriginalSlider = (CGUISettingsSliderControl *)GetControl(CONTROL_DEFAULT_SLIDER);
+  CGUISpinControlEx *pOriginalSpin = dynamic_cast<CGUISpinControlEx*>(GetControl(CONTROL_DEFAULT_SPIN));
+  CGUIRadioButtonControl *pOriginalRadioButton = dynamic_cast<CGUIRadioButtonControl *>(GetControl(CONTROL_DEFAULT_RADIOBUTTON));
+  CGUIButtonControl *pOriginalButton = dynamic_cast<CGUIButtonControl *>(GetControl(CONTROL_DEFAULT_BUTTON));
+  CGUIImage *pOriginalImage = dynamic_cast<CGUIImage *>(GetControl(CONTROL_DEFAULT_SEPARATOR));
+  CGUILabelControl *pOriginalLabel = dynamic_cast<CGUILabelControl *>(GetControl(CONTROL_DEFAULT_LABEL_SEPARATOR));
+  CGUISettingsSliderControl *pOriginalSlider = dynamic_cast<CGUISettingsSliderControl *>(GetControl(CONTROL_DEFAULT_SLIDER));
 
   if (!m_addon || !pOriginalSpin || !pOriginalRadioButton || !pOriginalButton || !pOriginalImage
                || !pOriginalLabel || !pOriginalSlider)
@@ -652,8 +652,7 @@ void CGUIDialogAddonSettings::CreateControls()
   pOriginalLabel->SetVisible(false);
   pOriginalSlider->SetVisible(false);
 
-  // clear the category group
-  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_SETTINGS_AREA);
+  CGUIControlGroupList *group = dynamic_cast<CGUIControlGroupList *>(GetControl(CONTROL_SETTINGS_AREA));
   if (!group)
     return;
 

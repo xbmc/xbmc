@@ -41,7 +41,6 @@
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
-#include "guilib/GUISelectButtonControl.h"
 #include "FileItem.h"
 #include "video/VideoReferenceClock.h"
 #include "settings/AdvancedSettings.h"
@@ -358,7 +357,7 @@ void CGUIWindowFullScreen::OnWindowLoaded()
   // override the clear colour - we must never clear fullscreen
   m_clearBackground = 0;
 
-  CGUIProgressControl* pProgress = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
+  CGUIProgressControl* pProgress = dynamic_cast<CGUIProgressControl*>(GetControl(CONTROL_PROGRESS));
   if(pProgress)
   {
     if( pProgress->GetInfo() == 0 || !pProgress->HasVisibleCondition())
@@ -369,14 +368,14 @@ void CGUIWindowFullScreen::OnWindowLoaded()
     }
   }
 
-  CGUILabelControl* pLabel = (CGUILabelControl*)GetControl(LABEL_BUFFERING);
+  CGUILabelControl* pLabel = dynamic_cast<CGUILabelControl*>(GetControl(LABEL_BUFFERING));
   if(pLabel && !pLabel->HasVisibleCondition())
   {
     pLabel->SetVisibleCondition("player.caching");
     pLabel->SetVisible(true);
   }
 
-  pLabel = (CGUILabelControl*)GetControl(LABEL_CURRENT_TIME);
+  pLabel = dynamic_cast<CGUILabelControl*>(GetControl(LABEL_CURRENT_TIME));
   if(pLabel && !pLabel->HasVisibleCondition())
   {
     pLabel->SetVisibleCondition("player.displayafterseek");
@@ -828,7 +827,7 @@ void CGUIWindowFullScreen::ChangetheTVGroup(bool next)
   if (!g_PVRManager.IsStarted())
     return;
 
-  CGUISelectButtonControl* pButton = (CGUISelectButtonControl*)GetControl(CONTROL_GROUP_CHOOSER);
+  CGUIControl* pButton = GetControl(CONTROL_GROUP_CHOOSER);
   if (!pButton)
     return;
 

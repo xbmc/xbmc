@@ -123,7 +123,7 @@ void CGUIMediaWindow::LoadAdditionalTags(TiXmlElement *root)
     for (unsigned int i = 0; i < views.size(); i++)
     {
       int controlID = atol(views[i].c_str());
-      CGUIControl *control = (CGUIControl *)GetControl(controlID);
+      CGUIControl *control = GetControl(controlID);
       if (control && control->IsContainer())
         m_viewControl.AddView(control);
     }
@@ -533,16 +533,7 @@ void CGUIMediaWindow::UpdateButtons()
     else
     {
       CONTROL_ENABLE(CONTROL_BTNSORTASC);
-      if (m_guiState->GetDisplaySortOrder() == SortOrderAscending)
-      {
-        CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CONTROL_BTNSORTASC);
-        g_windowManager.SendMessage(msg);
-      }
-      else
-      {
-        CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CONTROL_BTNSORTASC);
-        g_windowManager.SendMessage(msg);
-      }
+      SET_CONTROL_SELECTED(GetID(), CONTROL_BTNSORTASC, m_guiState->GetDisplaySortOrder() != SortOrderAscending);
     }
 
     // Update list/thumb control
