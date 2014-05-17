@@ -140,6 +140,11 @@
  */
 #define GUI_MSG_IS_SELECTED    45
 
+/*!
+ \brief Bind a set of labels to a spin (or similar) control
+ */
+#define GUI_MSG_SET_LABELS     46
+
 #define GUI_MSG_USER         1000
 
 /*!
@@ -239,6 +244,17 @@ do { \
  CGUIMessage msg(GUI_MSG_LABEL2_SET, GetID(), controlID); \
  msg.SetLabel(label); \
  OnMessage(msg); \
+} while(0)
+
+/*!
+ \ingroup winmsg
+ \brief Set a bunch of labels on the given control
+ */
+#define SET_CONTROL_LABELS(controlID, defaultValue, labels) \
+do { \
+CGUIMessage msg(GUI_MSG_SET_LABELS, GetID(), controlID, defaultValue); \
+msg.SetPointer(labels); \
+OnMessage(msg); \
 } while(0)
 
 /*!

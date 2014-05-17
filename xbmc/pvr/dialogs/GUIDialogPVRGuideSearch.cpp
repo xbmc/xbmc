@@ -22,7 +22,6 @@
 #include "Application.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIEditControl.h"
-#include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/StringUtils.h"
 
@@ -65,14 +64,10 @@ CGUIDialogPVRGuideSearch::CGUIDialogPVRGuideSearch(void) :
 
 void CGUIDialogPVRGuideSearch::UpdateChannelSpin(void)
 {
-  CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_CHANNELS);
-  if (!pSpin)
-    return;
-
   int iChannelGroup = GetSpinValue(CONTROL_SPIN_GROUPS);
 
-  pSpin->Clear();
-  pSpin->AddLabel(g_localizeStrings.Get(19217), EPG_SEARCH_UNSET);
+  vector< pair<string, int> > labels;
+  labels.push_back(make_pair(g_localizeStrings.Get(19217), EPG_SEARCH_UNSET));
 
   int iGroupId = (iChannelGroup == EPG_SEARCH_UNSET) ?
       XBMC_INTERNAL_GROUP_TV :
@@ -88,90 +83,71 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin(void)
       continue;
 
     int iChannelNumber = group->GetChannelNumber(*channel->GetPVRChannelInfoTag());
-    pSpin->AddLabel(channel->GetPVRChannelInfoTag()->ChannelName().c_str(), iChannelNumber);
+    labels.push_back(make_pair(channel->GetPVRChannelInfoTag()->ChannelName(), iChannelNumber));
   }
 
-  pSpin->SetValue(m_searchFilter->m_iChannelNumber);
+  SET_CONTROL_LABELS(CONTROL_SPIN_CHANNELS, m_searchFilter->m_iChannelNumber, &labels);
 }
 
 void CGUIDialogPVRGuideSearch::UpdateGroupsSpin(void)
 {
-  CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_GROUPS);
-  if (!pSpin)
-    return;
-
   std::vector<CPVRChannelGroupPtr> group;
   std::vector<CPVRChannelGroupPtr>::const_iterator it;
 
-  pSpin->Clear();
+  vector< pair<string, int> > labels;
 
   /* tv groups */
   group = g_PVRChannelGroups->GetTV()->GetMembers();
   for (it = group.begin(); it != group.end(); ++it)
-    pSpin->AddLabel((*it)->GroupName(), (*it)->GroupID());
+    labels.push_back(make_pair((*it)->GroupName(), (*it)->GroupID()));
 
   /* radio groups */
   group = g_PVRChannelGroups->GetRadio()->GetMembers();
   for (it = group.begin(); it != group.end(); ++it)
-    pSpin->AddLabel((*it)->GroupName(), (*it)->GroupID());
+    labels.push_back(make_pair((*it)->GroupName(), (*it)->GroupID()));
 
-  pSpin->SetValue(m_searchFilter->m_iChannelGroup);
+  SET_CONTROL_LABELS(CONTROL_SPIN_GROUPS, m_searchFilter->m_iChannelGroup, &labels);
 }
 
 void CGUIDialogPVRGuideSearch::UpdateGenreSpin(void)
 {
-  CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_GENRE);
-  if (!pSpin)
-    return;
+  vector< pair<string, int> > labels;
+  labels.push_back(make_pair(g_localizeStrings.Get(593),   EPG_SEARCH_UNSET));
+  labels.push_back(make_pair(g_localizeStrings.Get(19500), EPG_EVENT_CONTENTMASK_MOVIEDRAMA));
+  labels.push_back(make_pair(g_localizeStrings.Get(19516), EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS));
+  labels.push_back(make_pair(g_localizeStrings.Get(19532), EPG_EVENT_CONTENTMASK_SHOW));
+  labels.push_back(make_pair(g_localizeStrings.Get(19548), EPG_EVENT_CONTENTMASK_SPORTS));
+  labels.push_back(make_pair(g_localizeStrings.Get(19564), EPG_EVENT_CONTENTMASK_CHILDRENYOUTH));
+  labels.push_back(make_pair(g_localizeStrings.Get(19580), EPG_EVENT_CONTENTMASK_MUSICBALLETDANCE));
+  labels.push_back(make_pair(g_localizeStrings.Get(19596), EPG_EVENT_CONTENTMASK_ARTSCULTURE));
+  labels.push_back(make_pair(g_localizeStrings.Get(19612), EPG_EVENT_CONTENTMASK_SOCIALPOLITICALECONOMICS));
+  labels.push_back(make_pair(g_localizeStrings.Get(19628), EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE));
+  labels.push_back(make_pair(g_localizeStrings.Get(19644), EPG_EVENT_CONTENTMASK_LEISUREHOBBIES));
+  labels.push_back(make_pair(g_localizeStrings.Get(19660), EPG_EVENT_CONTENTMASK_SPECIAL));
+  labels.push_back(make_pair(g_localizeStrings.Get(19499), EPG_EVENT_CONTENTMASK_USERDEFINED));
 
-  pSpin->Clear();
-  pSpin->AddLabel(g_localizeStrings.Get(593), EPG_SEARCH_UNSET);
-  pSpin->AddLabel(g_localizeStrings.Get(19500), EPG_EVENT_CONTENTMASK_MOVIEDRAMA);
-  pSpin->AddLabel(g_localizeStrings.Get(19516), EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS);
-  pSpin->AddLabel(g_localizeStrings.Get(19532), EPG_EVENT_CONTENTMASK_SHOW);
-  pSpin->AddLabel(g_localizeStrings.Get(19548), EPG_EVENT_CONTENTMASK_SPORTS);
-  pSpin->AddLabel(g_localizeStrings.Get(19564), EPG_EVENT_CONTENTMASK_CHILDRENYOUTH);
-  pSpin->AddLabel(g_localizeStrings.Get(19580), EPG_EVENT_CONTENTMASK_MUSICBALLETDANCE);
-  pSpin->AddLabel(g_localizeStrings.Get(19596), EPG_EVENT_CONTENTMASK_ARTSCULTURE);
-  pSpin->AddLabel(g_localizeStrings.Get(19612), EPG_EVENT_CONTENTMASK_SOCIALPOLITICALECONOMICS);
-  pSpin->AddLabel(g_localizeStrings.Get(19628), EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE);
-  pSpin->AddLabel(g_localizeStrings.Get(19644), EPG_EVENT_CONTENTMASK_LEISUREHOBBIES);
-  pSpin->AddLabel(g_localizeStrings.Get(19660), EPG_EVENT_CONTENTMASK_SPECIAL);
-  pSpin->AddLabel(g_localizeStrings.Get(19499), EPG_EVENT_CONTENTMASK_USERDEFINED);
-  pSpin->SetValue(m_searchFilter->m_iGenreType);
+  SET_CONTROL_LABELS(CONTROL_SPIN_GENRE, m_searchFilter->m_iGenreType, &labels);
 }
 
 void CGUIDialogPVRGuideSearch::UpdateDurationSpin(void)
 {
   /* minimum duration */
-  CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_MIN_DURATION);
-  if (!pSpin)
-    return;
+  vector< pair<string, int> > labels;
 
-  pSpin->Clear();
-  pSpin->AddLabel("-", EPG_SEARCH_UNSET);
+  labels.push_back(make_pair("-", EPG_SEARCH_UNSET));
   for (int i = 1; i < 12*60/5; i++)
-  {
-    CStdString string;
-    string = StringUtils::Format(g_localizeStrings.Get(14044).c_str(), i*5);
-    pSpin->AddLabel(string, i*5);
-  }
-  pSpin->SetValue(m_searchFilter->m_iMinimumDuration);
+    labels.push_back(make_pair(StringUtils::Format(g_localizeStrings.Get(14044).c_str(), i*5), i*5));
+
+  SET_CONTROL_LABELS(CONTROL_SPIN_MIN_DURATION, m_searchFilter->m_iMinimumDuration, &labels);
 
   /* maximum duration */
-  pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_MAX_DURATION);
-  if (!pSpin)
-    return;
+  labels.clear();
 
-  pSpin->Clear();
-  pSpin->AddLabel("-", EPG_SEARCH_UNSET);
+  labels.push_back(make_pair("-", EPG_SEARCH_UNSET));
   for (int i = 1; i < 12*60/5; i++)
-  {
-    CStdString string;
-    string = StringUtils::Format(g_localizeStrings.Get(14044).c_str(), i*5);
-    pSpin->AddLabel(string, i*5);
-  }
-  pSpin->SetValue(m_searchFilter->m_iMaximumDuration);
+    labels.push_back(make_pair(StringUtils::Format(g_localizeStrings.Get(14044).c_str(), i*5), i*5));
+
+  SET_CONTROL_LABELS(CONTROL_SPIN_MAX_DURATION, m_searchFilter->m_iMaximumDuration, &labels);
 }
 
 bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)

@@ -29,7 +29,6 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIEditControl.h"
-#include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
@@ -735,12 +734,11 @@ void CGUIDialogPVRChannelManager::Update()
     m_channelItems->Add(channelFile);
   }
 
-  CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(SPIN_EPGSOURCE_SELECTION);
-  if (pSpin)
   {
-    pSpin->Clear();
-    pSpin->AddLabel(g_localizeStrings.Get(19210), 0);
+    vector< pair<string, int> > labels;
+    labels.push_back(make_pair(g_localizeStrings.Get(19210), 0));
     /// TODO: Add Labels for EPG scrapers here
+    SET_CONTROL_LABELS(SPIN_EPGSOURCE_SELECTION, 0, &labels);
   }
 
   Renumber();
