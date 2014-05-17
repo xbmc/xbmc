@@ -22,7 +22,6 @@
 #include "Application.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIEditControl.h"
-#include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/StringUtils.h"
@@ -243,12 +242,18 @@ void CGUIDialogPVRGuideSearch::ReadDateTime(const CStdString &strDate, const CSt
   dateTime.SetDateTime(dateTime.GetYear(), dateTime.GetMonth(), dateTime.GetDay(), iHours, iMinutes, 0);
 }
 
+bool CGUIDialogPVRGuideSearch::IsRadioSelected(int controlID)
+{
+  CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), controlID);
+  OnMessage(msg);
+  return (msg.GetParam1() == 1);
+}
+
 void CGUIDialogPVRGuideSearch::OnSearch()
 {
   CStdString              strTmp;
   CGUISpinControlEx      *pSpin;
   CGUIEditControl        *pEdit;
-  CGUIRadioButtonControl *pRadioButton;
 
   if (!m_searchFilter)
     return;
@@ -256,26 +261,13 @@ void CGUIDialogPVRGuideSearch::OnSearch()
   pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_SEARCH);
   if (pEdit) m_searchFilter->m_strSearchTerm = pEdit->GetLabel2();
 
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_INC_DESC);
-  if (pRadioButton) m_searchFilter->m_bSearchInDescription = pRadioButton->IsSelected();
-
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_CASE_SENS);
-  if (pRadioButton) m_searchFilter->m_bIsCaseSensitive = pRadioButton->IsSelected();
-
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_FTA_ONLY);
-  if (pRadioButton) m_searchFilter->m_bFTAOnly = pRadioButton->IsSelected();
-
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_UNK_GENRE);
-  if (pRadioButton) m_searchFilter->m_bIncludeUnknownGenres = pRadioButton->IsSelected();
-
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_IGNORE_REC);
-  if (pRadioButton) m_searchFilter->m_bIgnorePresentRecordings = pRadioButton->IsSelected();
-
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_IGNORE_TMR);
-  if (pRadioButton) m_searchFilter->m_bIgnorePresentTimers = pRadioButton->IsSelected();
-
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_SPIN_NO_REPEATS);
-  if (pRadioButton) m_searchFilter->m_bPreventRepeats = pRadioButton->IsSelected();
+  m_searchFilter->m_bSearchInDescription = IsRadioSelected(CONTROL_BTN_INC_DESC);
+  m_searchFilter->m_bIsCaseSensitive = IsRadioSelected(CONTROL_BTN_CASE_SENS);
+  m_searchFilter->m_bFTAOnly = IsRadioSelected(CONTROL_BTN_FTA_ONLY);
+  m_searchFilter->m_bIncludeUnknownGenres = IsRadioSelected(CONTROL_BTN_UNK_GENRE);
+  m_searchFilter->m_bIgnorePresentRecordings = IsRadioSelected(CONTROL_BTN_IGNORE_REC);
+  m_searchFilter->m_bIgnorePresentTimers = IsRadioSelected(CONTROL_BTN_IGNORE_TMR);
+  m_searchFilter->m_bPreventRepeats = IsRadioSelected(CONTROL_SPIN_NO_REPEATS);
 
   pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_GENRE);
   if (pSpin) m_searchFilter->m_iGenreType = pSpin->GetValue();

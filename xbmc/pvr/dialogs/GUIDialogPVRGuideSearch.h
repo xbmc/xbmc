@@ -52,6 +52,8 @@ namespace PVR
     void ReadDateTime(const CStdString &strDate, const CStdString &strTime, CDateTime &dateTime) const;
     void Update();
 
+    bool IsRadioSelected(int controlID);
+
     bool m_bConfirmed;
     bool m_bCanceled;
     EPG::EpgSearchFilter *m_searchFilter;

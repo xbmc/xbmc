@@ -29,7 +29,6 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIEditControl.h"
-#include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
@@ -242,14 +241,15 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioTV(CGUIMessage &message)
 
 bool CGUIDialogPVRChannelManager::OnClickButtonRadioActive(CGUIMessage &message)
 {
-  CGUIRadioButtonControl *pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_ACTIVE);
-  if (pRadioButton)
+  CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), RADIOBUTTON_ACTIVE);
+  if (OnMessage(msg))
   {
+    bool selected(msg.GetParam1() == 1);
     CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
     if (pItem)
     {
       pItem->SetProperty("Changed", true);
-      pItem->SetProperty("ActiveChannel", pRadioButton->IsSelected());
+      pItem->SetProperty("ActiveChannel", selected);
       m_bContainsChanges = true;
       Renumber();
       return true;
@@ -261,26 +261,27 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioActive(CGUIMessage &message)
 
 bool CGUIDialogPVRChannelManager::OnClickButtonRadioParentalLocked(CGUIMessage &message)
 {
-  CGUIRadioButtonControl *pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_PARENTAL_LOCK);
+  CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), RADIOBUTTON_PARENTAL_LOCK);
+  if (!OnMessage(msg))
+    return false;
+
+  bool selected(msg.GetParam1() == 1);
 
   // ask for PIN first
   if (!g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262).c_str()))
-  {
-    pRadioButton->SetSelected(!pRadioButton->IsSelected());
+  { // failed - reset to previou
+    SET_CONTROL_SELECTED(GetID(), RADIOBUTTON_PARENTAL_LOCK, !selected);
     return false;
   }
 
-  if (pRadioButton)
+  CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
+  if (pItem)
   {
-    CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
-    if (pItem)
-    {
-      pItem->SetProperty("Changed", true);
-      pItem->SetProperty("ParentalLocked", pRadioButton->IsSelected());
-      m_bContainsChanges = true;
-      Renumber();
-      return true;
-    }
+    pItem->SetProperty("Changed", true);
+    pItem->SetProperty("ParentalLocked", selected);
+    m_bContainsChanges = true;
+    Renumber();
+    return true;
   }
 
   return false;
@@ -366,14 +367,15 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage &message)
 
 bool CGUIDialogPVRChannelManager::OnClickButtonUseEPG(CGUIMessage &message)
 {
-  CGUIRadioButtonControl *pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_USEEPG);
-  if (pRadioButton)
+  CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), RADIOBUTTON_USEEPG);
+  if (OnMessage(msg))
   {
+    bool selected(msg.GetParam1() == 1);
     CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
     if (pItem)
     {
       pItem->SetProperty("Changed", true);
-      pItem->SetProperty("UseEPG", pRadioButton->IsSelected());
+      pItem->SetProperty("UseEPG", selected);
       m_bContainsChanges = true;
 
       return true;
