@@ -9,6 +9,8 @@ testMain
 *.cproject
 .classpath
 *.sublime-*
+# KDevelop 4
+*.kdev4
 
 # generated files etc
 config.cache
