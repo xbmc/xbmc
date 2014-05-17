@@ -12369,7 +12369,18 @@ msgctxt "#24125"
 msgid "Custom location"
 msgstr ""
 
-#empty strings from id 24126 to 24999
+#: system/settings/settings.xml
+msgctxt "#24126"
+msgid "Auto download first subtitle"
+msgstr ""
+
+#. Description of setting "Videos -> Subtitles -> Auto download first subtitle" with label #24126
+#: system/settings/settings.xml
+msgctxt "#24127"
+msgid "Automatically download first subtitle from the search result list"
+msgstr ""
+
+#empty strings from id 24128 to 24999
 
 msgctxt "#25000"
 msgid "Notifications"

@@ -105,6 +105,7 @@ CGUIDialogSubtitles::CGUIDialogSubtitles(void)
   m_serviceItems = new CFileItemList;
   m_pausedOnRun = false;
   m_updateSubsList = false;
+  m_LastAutoDownloaded = "";
 }
 
 CGUIDialogSubtitles::~CGUIDialogSubtitles(void)
@@ -358,6 +359,16 @@ void CGUIDialogSubtitles::OnSearchComplete(const CFileItemList *items)
   m_subtitles->Assign(*items);
   UpdateStatus(SEARCH_COMPLETE);
   m_updateSubsList = true;
+
+  if (!items->IsEmpty() && g_application.m_pPlayer->GetSubtitleCount() == 0 &&
+    m_LastAutoDownloaded != g_application.CurrentFile() && CSettings::Get().GetBool("subtitles.downloadfirst"))
+  {
+    CFileItemPtr item = items->Get(0);
+    CLog::Log(LOGDEBUG, "%s - Automatically download first subtitle: %s", __FUNCTION__, item->GetLabel2().c_str());
+    m_LastAutoDownloaded = g_application.CurrentFile();
+    Download(*item);
+  }
+
   SetInvalid();
 }
 
