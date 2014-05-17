@@ -71,7 +71,7 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin(void)
   if (!pSpin || !pSpinGroups)
     return;
 
-  int iChannelGroup = pSpin->GetValue();
+  int iChannelGroup = pSpinGroups->GetValue();
 
   pSpin->Clear();
   pSpin->AddLabel(g_localizeStrings.Get(19217), EPG_SEARCH_UNSET);
