@@ -92,6 +92,8 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin(void)
     int iChannelNumber = group->GetChannelNumber(*channel->GetPVRChannelInfoTag());
     pSpin->AddLabel(channel->GetPVRChannelInfoTag()->ChannelName().c_str(), iChannelNumber);
   }
+
+  pSpin->SetValue(m_searchFilter->m_iChannelNumber);
 }
 
 void CGUIDialogPVRGuideSearch::UpdateGroupsSpin(void)
