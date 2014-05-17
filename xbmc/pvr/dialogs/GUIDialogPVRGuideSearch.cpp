@@ -103,6 +103,8 @@ void CGUIDialogPVRGuideSearch::UpdateGroupsSpin(void)
   std::vector<CPVRChannelGroupPtr> group;
   std::vector<CPVRChannelGroupPtr>::const_iterator it;
 
+  pSpin->Clear();
+
   /* tv groups */
   group = g_PVRChannelGroups->GetTV()->GetMembers();
   for (it = group.begin(); it != group.end(); ++it)
