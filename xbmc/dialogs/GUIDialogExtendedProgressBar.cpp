@@ -163,7 +163,6 @@ void CGUIDialogExtendedProgressBar::UpdateState(unsigned int currentTime)
   if (fProgress > -1.0f)
   {
     SET_CONTROL_VISIBLE(CONTROL_PROGRESS);
-    CGUIProgressControl* pProgressCtrl=(CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
-    if (pProgressCtrl) pProgressCtrl->SetPercentage(fProgress);
+    CONTROL_SELECT_ITEM(CONTROL_PROGRESS, (unsigned int)fProgress);
   }
 }
