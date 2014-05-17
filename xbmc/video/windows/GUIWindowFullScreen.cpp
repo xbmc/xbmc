@@ -41,7 +41,6 @@
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
-#include "guilib/GUISelectButtonControl.h"
 #include "FileItem.h"
 #include "video/VideoReferenceClock.h"
 #include "settings/AdvancedSettings.h"
@@ -828,7 +827,7 @@ void CGUIWindowFullScreen::ChangetheTVGroup(bool next)
   if (!g_PVRManager.IsStarted())
     return;
 
-  CGUISelectButtonControl* pButton = (CGUISelectButtonControl*)GetControl(CONTROL_GROUP_CHOOSER);
+  CGUIControl* pButton = GetControl(CONTROL_GROUP_CHOOSER);
   if (!pButton)
     return;
 

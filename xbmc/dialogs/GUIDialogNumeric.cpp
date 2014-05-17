@@ -86,7 +86,7 @@ void CGUIDialogNumeric::OnInitWindow()
     break;
   }
 
-  const CGUILabelControl *control = (const CGUILabelControl *)GetControl(CONTROL_HEADING_LABEL);
+  const CGUIControl *control = GetControl(CONTROL_HEADING_LABEL);
   if (control != NULL)
     data["title"] = control->GetDescription();
 

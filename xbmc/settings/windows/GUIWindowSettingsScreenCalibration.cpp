@@ -219,7 +219,7 @@ unsigned int CGUIWindowSettingsScreenCalibration::FindCurrentResolution()
 
 void CGUIWindowSettingsScreenCalibration::NextControl()
 { // set the old control invisible and not focused, and choose the next control
-  CGUIControl *pControl = (CGUIControl *)GetControl(m_iControl);
+  CGUIControl *pControl = GetControl(m_iControl);
   if (pControl)
   {
     pControl->SetVisible(false);
@@ -306,7 +306,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
 
   if (iControl == CONTROL_PIXEL_RATIO)
   {
-    CGUIResizeControl *pControl = (CGUIResizeControl*)GetControl(CONTROL_PIXEL_RATIO);
+    CGUIControl *pControl = GetControl(CONTROL_PIXEL_RATIO);
     if (pControl)
     {
       float fWidth = (float)pControl->GetWidth();
@@ -412,7 +412,7 @@ void CGUIWindowSettingsScreenCalibration::DoProcess(unsigned int currentTime, CD
   for (int i = CONTROL_TOP_LEFT; i <= CONTROL_PIXEL_RATIO; i++)
   {
     SET_CONTROL_VISIBLE(i);
-    CGUIControl *control = (CGUIControl *)GetControl(i);
+    CGUIControl *control = GetControl(i);
     if (control)
       control->DoProcess(currentTime, dirtyregions);
   }

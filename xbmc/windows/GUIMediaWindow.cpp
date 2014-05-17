@@ -123,7 +123,7 @@ void CGUIMediaWindow::LoadAdditionalTags(TiXmlElement *root)
     for (unsigned int i = 0; i < views.size(); i++)
     {
       int controlID = atol(views[i].c_str());
-      CGUIControl *control = (CGUIControl *)GetControl(controlID);
+      CGUIControl *control = GetControl(controlID);
       if (control && control->IsContainer())
         m_viewControl.AddView(control);
     }

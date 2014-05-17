@@ -169,17 +169,17 @@ void CGUIDialogContextMenu::SetupButtons()
   if (!pGroupList)
   {
     // if we don't have grouplist update the navigation of the first and last buttons
-    pControl = (CGUIControl *)GetControl(BUTTON_START);
+    pControl = GetControl(BUTTON_START);
     if (pControl)
       pControl->SetNavigationAction(ACTION_MOVE_UP, BUTTON_END);
-    pControl = (CGUIControl *)GetControl(BUTTON_END);
+    pControl = GetControl(BUTTON_END);
     if (pControl)
       pControl->SetNavigationAction(ACTION_MOVE_DOWN, BUTTON_START);
   }
 #endif
 
   // fix up background images placement and size
-  pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
+  pControl = GetControl(BACKGROUND_IMAGE);
   if (pControl)
   {
     // first set size of background image
@@ -203,18 +203,18 @@ void CGUIDialogContextMenu::SetupButtons()
     if (pGroupList && pGroupList->GetOrientation() == HORIZONTAL)
     {
       // if there is grouplist control with horizontal orientation - adjust width of top and bottom background
-      CGUIControl* pControl2 = (CGUIControl *)GetControl(BACKGROUND_TOP);
+      CGUIControl* pControl2 = GetControl(BACKGROUND_TOP);
       if (pControl2)
         pControl2->SetWidth(pControl->GetWidth());
 
-      pControl2 = (CGUIControl *)GetControl(BACKGROUND_BOTTOM);
+      pControl2 = GetControl(BACKGROUND_BOTTOM);
       if (pControl2)
         pControl2->SetWidth(pControl->GetWidth());
     }
     else
     {
       // adjust position of bottom background
-      CGUIControl* pControl2 = (CGUIControl *)GetControl(BACKGROUND_BOTTOM);
+      CGUIControl* pControl2 = GetControl(BACKGROUND_BOTTOM);
       if (pControl2)
         pControl2->SetPosition(pControl2->GetXPosition(), pControl->GetYPosition() + pControl->GetHeight());
     }
@@ -278,7 +278,7 @@ float CGUIDialogContextMenu::GetHeight() const
 
 float CGUIDialogContextMenu::GetWidth() const
 {
-  CGUIControl *pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
+  const CGUIControl *pControl = GetControl(BACKGROUND_IMAGE);
   if (pControl)
     return pControl->GetWidth();
   else

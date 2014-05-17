@@ -461,7 +461,7 @@ EVENT_RESULT CGUIWindow::OnMouseAction(const CAction &action)
   CMouseEvent event(action.GetID(), action.GetHoldTime(), action.GetAmount(2), action.GetAmount(3));
   if (m_exclusiveMouseControl)
   {
-    CGUIControl *child = (CGUIControl *)GetControl(m_exclusiveMouseControl);
+    CGUIControl *child = GetControl(m_exclusiveMouseControl);
     if (child)
     {
       CPoint renderPos = child->GetRenderPosition() - CPoint(child->GetXPosition(), child->GetYPosition());
@@ -641,7 +641,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
         // get the control to focus
         CGUIControl* pFocusedControl = GetFirstFocusableControl(message.GetControlId());
-        if (!pFocusedControl) pFocusedControl = (CGUIControl *)GetControl(message.GetControlId());
+        if (!pFocusedControl) pFocusedControl = GetControl(message.GetControlId());
 
         // and focus it
         if (pFocusedControl)
@@ -866,7 +866,7 @@ bool CGUIWindow::ControlGroupHasFocus(int groupID, int controlID)
   // 1.  Run through and get control with groupID (assume unique)
   // 2.  Get it's selected item.
   CGUIControl *group = GetFirstFocusableControl(groupID);
-  if (!group) group = (CGUIControl *)GetControl(groupID);
+  if (!group) group = GetControl(groupID);
 
   if (group && group->IsGroup())
   {
@@ -1007,7 +1007,7 @@ void CGUIWindow::DumpTextureUse()
 void CGUIWindow::ChangeButtonToEdit(int id, bool singleLabel /* = false*/)
 {
 #ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
-  CGUIControl *name = (CGUIControl *)GetControl(id);
+  CGUIControl *name = GetControl(id);
   if (name && name->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
   { // change it to an edit control
     CGUIEditControl *edit = new CGUIEditControl(*(const CGUIButtonControl *)name);
