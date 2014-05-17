@@ -342,13 +342,13 @@ void CGUIDialogPVRGuideSearch::Update()
   pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_START_TIME);
   if (pEdit)
   {
-    pEdit->SetLabel2(m_searchFilter->m_endDateTime.GetAsLocalizedTime("", false));
+    pEdit->SetLabel2(m_searchFilter->m_startDateTime.GetAsLocalizedTime("", false));
     pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_TIME, 14066);
   }
   pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_STOP_TIME);
   if (pEdit)
   {
-    pEdit->SetLabel2(m_searchFilter->m_startDateTime.GetAsLocalizedTime("", false));
+    pEdit->SetLabel2(m_searchFilter->m_endDateTime.GetAsLocalizedTime("", false));
     pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_TIME, 14066);
   }
   pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_START_DATE);
