@@ -19,9 +19,6 @@
  */
 
 #include "GUIDialogButtonMenu.h"
-#include "guilib/GUILabelControl.h"
-#include "guilib/GUIButtonControl.h"
-
 
 #define CONTROL_BUTTON_LABEL  3100
 
@@ -48,17 +45,11 @@ bool CGUIDialogButtonMenu::OnMessage(CGUIMessage &message)
 
 void CGUIDialogButtonMenu::FrameMove()
 {
-  // get the label control
-  CGUILabelControl *pLabel = (CGUILabelControl *)GetControl(CONTROL_BUTTON_LABEL);
-  if (pLabel)
+  // get the active control, and put it's label into the label control
+  const CGUIControl *pControl = GetFocusedControl();
+  if (pControl && (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTON || pControl->GetControlType() == CGUIControl::GUICONTROL_TOGGLEBUTTON))
   {
-    // get the active window, and put it's label into the label control
-    const CGUIControl *pControl = GetFocusedControl();
-    if (pControl && (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTON || pControl->GetControlType() == CGUIControl::GUICONTROL_TOGGLEBUTTON))
-    {
-      CGUIButtonControl *pButton = (CGUIButtonControl *)pControl;
-      pLabel->SetLabel(pButton->GetLabel());
-    }
+    SET_CONTROL_LABEL(CONTROL_BUTTON_LABEL, pControl->GetDescription());
   }
   CGUIDialog::FrameMove();
 }

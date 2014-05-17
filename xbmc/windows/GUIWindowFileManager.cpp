@@ -27,7 +27,6 @@
 #include "filesystem/ZipManager.h"
 #include "filesystem/FileDirectoryFactory.h"
 #include "dialogs/GUIDialogContextMenu.h"
-#include "guilib/GUIListContainer.h"
 #include "dialogs/GUIDialogMediaSource.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
@@ -804,10 +803,12 @@ void CGUIWindowFileManager::Refresh()
 
 int CGUIWindowFileManager::GetSelectedItem(int iControl)
 {
-  if (iControl < 0 || iControl > 1) return -1;
-  CGUIListContainer *pControl = (CGUIListContainer *)GetControl(iControl + CONTROL_LEFT_LIST);
-  if (!pControl || !m_vecItems[iControl]->Size()) return -1;
-  return pControl->GetSelectedItem();
+  if (iControl < 0 || iControl > 1 || m_vecItems[iControl]->IsEmpty())
+    return -1;
+  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl + CONTROL_LEFT_LIST);
+  if (OnMessage(msg))
+    return (int)msg.GetParam1();
+  return -1;
 }
 
 void CGUIWindowFileManager::GoParentFolder(int iList)
