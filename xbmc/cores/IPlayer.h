@@ -164,7 +164,6 @@ public:
   virtual void SetSubTitleDelay(float fValue = 0.0f){};
   virtual float GetSubTitleDelay()    { return 0.0f; }
   virtual int  GetSubtitleCount()     { return 0; }
-  virtual int  GetSubtitle()          { return -1; }
   virtual void GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info){};
   virtual void SetSubtitle(int iStream){};
   virtual bool GetSubtitleVisible(){ return false;};
@@ -172,7 +171,6 @@ public:
   virtual int  AddSubtitle(const CStdString& strSubPath) {return -1;};
 
   virtual int  GetAudioStreamCount()  { return 0; }
-  virtual int  GetAudioStream()       { return -1; }
   virtual void SetAudioStream(int iStream){};
   virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info){};
 

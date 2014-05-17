@@ -769,6 +769,9 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
   SelectionStreams streams;
   bool valid;
 
+  m_callback.OnSetAudioStream(-1);
+  m_callback.OnSetSubtitleStream(-1);
+
   // open video stream
   streams = m_SelectionStreams.Get(STREAM_VIDEO, PredicateVideoPriority);
   valid   = false;
@@ -2962,6 +2965,8 @@ bool CDVDPlayer::OpenAudioStream(int iStream, int source, bool reset)
   /* audio normally won't consume full cpu, so let it have prio */
   m_dvdPlayerAudio.SetPriority(GetPriority()+1);
   CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream = GetAudioStream();
+
+  m_callback.OnSetAudioStream(GetAudioStream());
   return true;
 }
 
@@ -3148,6 +3153,8 @@ bool CDVDPlayer::OpenSubtitleStream(int iStream, int source)
   m_CurrentSubtitle.started = false;
 
   CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = GetSubtitle();
+
+  m_callback.OnSetSubtitleStream(GetSubtitle());
   return true;
 }
 

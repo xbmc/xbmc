@@ -58,6 +58,8 @@ public:
   CApplicationPlayer();
 
   int m_iPlaySpeed;
+  int m_iAudioStream;
+  int m_iSubtitleStream;
 
   // player management
   void CloseFile(bool reopen = false);
@@ -81,7 +83,6 @@ public:
   void  DoAudioWork();
   void  GetAudioCapabilities(std::vector<int> &audioCaps);
   void  GetAudioInfo( CStdString& strAudioInfo);
-  int   GetAudioStream();
   int   GetAudioStreamCount();
   void  GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
   int   GetCacheLevel() const;
@@ -98,7 +99,6 @@ public:
   void  GetRenderFeatures(std::vector<int> &renderFeatures);
   void  GetScalingMethods(std::vector<int> &scalingMethods);
   bool  GetStreamDetails(CStreamDetails &details);
-  int   GetSubtitle();
   void  GetSubtitleCapabilities(std::vector<int> &subCaps);
   int   GetSubtitleCount();
   void  GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info);
@@ -144,4 +144,8 @@ public:
   bool  SwitchChannel(const PVR::CPVRChannel &channel);
   void  ToFFRW(int iSpeed = 0);
   void  UnRegisterAudioCallback();
+
+  // information kept by proxy
+  int   GetSubtitle();
+  int   GetAudioStream();
 };

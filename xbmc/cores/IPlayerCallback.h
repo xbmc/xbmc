@@ -33,4 +33,6 @@ public:
   virtual void OnPlayBackSeek(int iTime, int seekOffset) {};
   virtual void OnPlayBackSeekChapter(int iChapter) {};
   virtual void OnPlayBackSpeedChanged(int iSpeed) {};
+  virtual void OnSetAudioStream(int stream) {};
+  virtual void OnSetSubtitleStream(int stream) {};
 };
