@@ -71,7 +71,7 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin(void)
   if (!pSpin || !pSpinGroups)
     return;
 
-  int iChannelGroup = pSpin->GetValue();
+  int iChannelGroup = pSpinGroups->GetValue();
 
   pSpin->Clear();
   pSpin->AddLabel(g_localizeStrings.Get(19217), EPG_SEARCH_UNSET);
@@ -92,6 +92,8 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin(void)
     int iChannelNumber = group->GetChannelNumber(*channel->GetPVRChannelInfoTag());
     pSpin->AddLabel(channel->GetPVRChannelInfoTag()->ChannelName().c_str(), iChannelNumber);
   }
+
+  pSpin->SetValue(m_searchFilter->m_iChannelNumber);
 }
 
 void CGUIDialogPVRGuideSearch::UpdateGroupsSpin(void)
@@ -102,6 +104,8 @@ void CGUIDialogPVRGuideSearch::UpdateGroupsSpin(void)
 
   std::vector<CPVRChannelGroupPtr> group;
   std::vector<CPVRChannelGroupPtr>::const_iterator it;
+
+  pSpin->Clear();
 
   /* tv groups */
   group = g_PVRChannelGroups->GetTV()->GetMembers();
@@ -342,13 +346,13 @@ void CGUIDialogPVRGuideSearch::Update()
   pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_START_TIME);
   if (pEdit)
   {
-    pEdit->SetLabel2(m_searchFilter->m_endDateTime.GetAsLocalizedTime("", false));
+    pEdit->SetLabel2(m_searchFilter->m_startDateTime.GetAsLocalizedTime("", false));
     pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_TIME, 14066);
   }
   pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_STOP_TIME);
   if (pEdit)
   {
-    pEdit->SetLabel2(m_searchFilter->m_startDateTime.GetAsLocalizedTime("", false));
+    pEdit->SetLabel2(m_searchFilter->m_endDateTime.GetAsLocalizedTime("", false));
     pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_TIME, 14066);
   }
   pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_START_DATE);
