@@ -38,6 +38,7 @@
 #include "utils/log.h"
 #include "URL.h"
 #include "profiles/ProfilesManager.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "GUIUserMessages.h"
 #include "FileItem.h"
@@ -98,9 +99,15 @@ DLNA_ORG_FLAGS_VAL = '01500000000000000000000000000000'
 |   NPT_Console::Output
 +---------------------------------------------------------------------*/
 void
-NPT_Console::Output(const char* message)
+NPT_Console::Output(const char* msg) { }
+
+void
+UPnPLogger(const NPT_LogRecord* record)
 {
-    CLog::Log(LOGDEBUG, "%s", message);
+    if (!g_advancedSettings.CanLogComponent(LOGUPNP))
+        return;
+
+    CLog::Log((record->m_Level / 100) - 1, "Platinum [%s]: %s", record->m_LoggerName, record->m_Message);
 }
 
 namespace UPNP
@@ -391,10 +398,15 @@ private:
 CUPnP::CUPnP() :
     m_MediaBrowser(NULL),
     m_MediaController(NULL),
+    m_LogHandler(NULL),
     m_ServerHolder(new CDeviceHostReferenceHolder()),
     m_RendererHolder(new CRendererReferenceHolder()),
     m_CtrlPointHolder(new CCtrlPointReferenceHolder())
 {
+    NPT_LogManager::GetDefault().Configure("plist:.level=FINE;.handlers=CustomHandler;");
+    NPT_LogHandler::Create("CustomHandler", "xbmc", m_LogHandler);
+    m_LogHandler->SetCustomHandlerFunction(&UPnPLogger);
+
     // initialize upnp context
     m_UPnP = new PLT_UPnP();
 
@@ -423,6 +435,7 @@ CUPnP::~CUPnP()
     StopServer();
 
     delete m_UPnP;
+    delete m_LogHandler;
     delete m_ServerHolder;
     delete m_RendererHolder;
     delete m_CtrlPointHolder;

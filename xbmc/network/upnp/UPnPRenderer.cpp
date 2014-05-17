@@ -43,6 +43,8 @@
 #include "playlists/PlayList.h"
 #include "GUIUserMessages.h"
 
+NPT_SET_LOCAL_LOGGER("xbmc.upnp.renderer")
+
 using namespace ANNOUNCEMENT;
 
 namespace UPNP
