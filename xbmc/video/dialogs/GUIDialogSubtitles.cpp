@@ -30,7 +30,6 @@
 #include "filesystem/PluginDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
-#include "guilib/GUIImage.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/Key.h"
 #include "settings/MediaSettings.h"
@@ -287,12 +286,9 @@ bool CGUIDialogSubtitles::SetService(const std::string &service)
 
     SET_CONTROL_LABEL(CONTROL_NAMELABEL, currentService->GetLabel());
 
-    CGUIImage* image = (CGUIImage*)GetControl(CONTROL_NAMELOGO);
-    if (image)
-    {
-      std::string icon = URIUtils::AddFileToFolder(currentService->GetProperty("Addon.Path").asString(), "logo.png");
-      image->SetFileName(icon);
-    }
+    std::string icon = URIUtils::AddFileToFolder(currentService->GetProperty("Addon.Path").asString(), "logo.png");
+    SET_CONTROL_FILENAME(CONTROL_NAMELOGO, icon);
+
     if (g_application.m_pPlayer->GetSubtitleCount() == 0)
       SET_CONTROL_HIDDEN(CONTROL_SUBSEXIST);
     else

@@ -145,6 +145,17 @@
  */
 #define GUI_MSG_SET_LABELS     46
 
+/*!
+ \brief Set the filename for an image control
+ */
+#define GUI_MSG_SET_FILENAME   47
+
+/*!
+ \brief Get the filename of an image control
+ */
+
+#define GUI_MSG_GET_FILENAME   48
+
 #define GUI_MSG_USER         1000
 
 /*!
@@ -254,6 +265,17 @@ do { \
 do { \
 CGUIMessage msg(GUI_MSG_SET_LABELS, GetID(), controlID, defaultValue); \
 msg.SetPointer(labels); \
+OnMessage(msg); \
+} while(0)
+
+/*!
+ \ingroup winmsg
+ \brief Set the label of the current control
+ */
+#define SET_CONTROL_FILENAME(controlID,label) \
+do { \
+CGUIMessage msg(GUI_MSG_SET_FILENAME, GetID(), controlID); \
+msg.SetLabel(label); \
 OnMessage(msg); \
 } while(0)
 

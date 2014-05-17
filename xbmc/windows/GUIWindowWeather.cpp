@@ -22,7 +22,6 @@
 #include "GUIUserMessages.h"
 #include "dialogs/GUIDialogOK.h"
 #include "GUIWindowWeather.h"
-#include "guilib/GUIImage.h"
 #include "utils/Weather.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/URIUtils.h"
@@ -205,9 +204,7 @@ void CGUIWindowWeather::UpdateButtons()
   SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_WIND, g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_WIND));
   SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_DEWP, g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_DEWP) + (CStdString)g_langInfo.GetTempUnitString());
   SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_HUMI, g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_HUMI));
-
-  CGUIImage *pImage = (CGUIImage *)GetControl(WEATHER_IMAGE_CURRENT_ICON);
-  if (pImage) pImage->SetFileName(g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
+  SET_CONTROL_FILENAME(WEATHER_IMAGE_CURRENT_ICON, g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
 
   //static labels
   SET_CONTROL_LABEL(CONTROL_STATICTEMP, 401);  //Temperature
@@ -223,8 +220,7 @@ void CGUIWindowWeather::UpdateButtons()
     SET_CONTROL_LABEL(CONTROL_LABELD0HI + (i*10), g_weatherManager.GetForecast(i).m_high + (CStdString)g_langInfo.GetTempUnitString());
     SET_CONTROL_LABEL(CONTROL_LABELD0LOW + (i*10), g_weatherManager.GetForecast(i).m_low + (CStdString)g_langInfo.GetTempUnitString());
     SET_CONTROL_LABEL(CONTROL_LABELD0GEN + (i*10), g_weatherManager.GetForecast(i).m_overview);
-    pImage = (CGUIImage *)GetControl(CONTROL_IMAGED0IMG + (i * 10));
-    if (pImage) pImage->SetFileName(g_weatherManager.GetForecast(i).m_icon);
+    SET_CONTROL_FILENAME(CONTROL_IMAGED0IMG + (i*10), g_weatherManager.GetForecast(i).m_icon);
   }
 }
 
