@@ -231,16 +231,19 @@ int CGUIDialogPVRGuideSearch::GetSpinValue(int controlID)
   return (int)msg.GetParam1();
 }
 
+string CGUIDialogPVRGuideSearch::GetEditValue(int controlID)
+{
+  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), controlID);
+  OnMessage(msg);
+  return msg.GetLabel();
+}
+
 void CGUIDialogPVRGuideSearch::OnSearch()
 {
-  CStdString              strTmp;
-  CGUIEditControl        *pEdit;
-
   if (!m_searchFilter)
     return;
 
-  pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_SEARCH);
-  if (pEdit) m_searchFilter->m_strSearchTerm = pEdit->GetLabel2();
+  m_searchFilter->m_strSearchTerm = GetEditValue(CONTROL_EDIT_SEARCH);
 
   m_searchFilter->m_bSearchInDescription = IsRadioSelected(CONTROL_BTN_INC_DESC);
   m_searchFilter->m_bIsCaseSensitive = IsRadioSelected(CONTROL_BTN_CASE_SENS);
@@ -256,32 +259,21 @@ void CGUIDialogPVRGuideSearch::OnSearch()
   m_searchFilter->m_iChannelNumber = GetSpinValue(CONTROL_SPIN_CHANNELS);
   m_searchFilter->m_iChannelGroup = GetSpinValue(CONTROL_SPIN_GROUPS);
 
-  pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_START_TIME);
-  if (pEdit) strTmp = pEdit->GetLabel2();
-
-  pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_START_DATE);
-  if (pEdit) ReadDateTime(pEdit->GetLabel2(), strTmp, m_searchFilter->m_startDateTime);
-  strTmp.clear();
-
-  pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_STOP_TIME);
-  if (pEdit) strTmp = pEdit->GetLabel2();
-
-  pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_STOP_DATE);
-  if (pEdit) ReadDateTime(pEdit->GetLabel2(), strTmp, m_searchFilter->m_endDateTime);
+  CStdString strTmp = GetEditValue(CONTROL_EDIT_START_TIME);
+  ReadDateTime(GetEditValue(CONTROL_EDIT_START_DATE), strTmp, m_searchFilter->m_startDateTime);
+  strTmp = GetEditValue(CONTROL_EDIT_STOP_TIME);
+  ReadDateTime(GetEditValue(CONTROL_EDIT_STOP_DATE), strTmp, m_searchFilter->m_endDateTime);
 }
 
 void CGUIDialogPVRGuideSearch::Update()
 {
-  CGUIEditControl        *pEdit;
-
   if (!m_searchFilter)
     return;
 
-  pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_SEARCH);
-  if (pEdit)
+  SET_CONTROL_LABEL2(CONTROL_EDIT_SEARCH, m_searchFilter->m_strSearchTerm);
   {
-    pEdit->SetLabel2(m_searchFilter->m_strSearchTerm);
-    pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_TEXT, 16017);
+    CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), CONTROL_EDIT_SEARCH, CGUIEditControl::INPUT_TYPE_TEXT, 16017);
+    OnMessage(msg);
   }
 
   SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_CASE_SENS, m_searchFilter->m_bIsCaseSensitive);
@@ -293,29 +285,25 @@ void CGUIDialogPVRGuideSearch::Update()
   SET_CONTROL_SELECTED(GetID(), CONTROL_SPIN_NO_REPEATS, m_searchFilter->m_bPreventRepeats);
 
   /* Set time fields */
-  pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_START_TIME);
-  if (pEdit)
+  SET_CONTROL_LABEL2(CONTROL_EDIT_START_TIME, m_searchFilter->m_startDateTime.GetAsLocalizedTime("", false));
   {
-    pEdit->SetLabel2(m_searchFilter->m_startDateTime.GetAsLocalizedTime("", false));
-    pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_TIME, 14066);
+    CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), CONTROL_EDIT_START_TIME, CGUIEditControl::INPUT_TYPE_TIME, 14066);
+    OnMessage(msg);
   }
-  pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_STOP_TIME);
-  if (pEdit)
+  SET_CONTROL_LABEL2(CONTROL_EDIT_STOP_TIME, m_searchFilter->m_endDateTime.GetAsLocalizedTime("", false));
   {
-    pEdit->SetLabel2(m_searchFilter->m_endDateTime.GetAsLocalizedTime("", false));
-    pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_TIME, 14066);
+    CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), CONTROL_EDIT_STOP_TIME, CGUIEditControl::INPUT_TYPE_TIME, 14066);
+    OnMessage(msg);
   }
-  pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_START_DATE);
-  if (pEdit)
+  SET_CONTROL_LABEL2(CONTROL_EDIT_START_DATE, m_searchFilter->m_startDateTime.GetAsDBDate());
   {
-    pEdit->SetLabel2(m_searchFilter->m_startDateTime.GetAsDBDate());
-    pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_DATE, 14067);
+    CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), CONTROL_EDIT_START_DATE, CGUIEditControl::INPUT_TYPE_DATE, 14067);
+    OnMessage(msg);
   }
-  pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_STOP_DATE);
-  if (pEdit)
+  SET_CONTROL_LABEL2(CONTROL_EDIT_STOP_DATE, m_searchFilter->m_endDateTime.GetAsDBDate());
   {
-    pEdit->SetLabel2(m_searchFilter->m_endDateTime.GetAsDBDate());
-    pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_DATE, 14067);
+    CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), CONTROL_EDIT_STOP_DATE, CGUIEditControl::INPUT_TYPE_DATE, 14067);
+    OnMessage(msg);
   }
 
   UpdateDurationSpin();

@@ -288,14 +288,14 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioParentalLocked(CGUIMessage &
 
 bool CGUIDialogPVRChannelManager::OnClickButtonEditName(CGUIMessage &message)
 {
-  CGUIEditControl *pEdit = (CGUIEditControl *)GetControl(EDIT_NAME);
-  if (pEdit)
+  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), EDIT_NAME);
+  if (OnMessage(msg))
   {
     CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
     if (pItem)
     {
       pItem->SetProperty("Changed", true);
-      pItem->SetProperty("Name", pEdit->GetLabel2());
+      pItem->SetProperty("Name", msg.GetLabel());
       m_bContainsChanges = true;
 
       return true;
@@ -667,8 +667,6 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
 
 void CGUIDialogPVRChannelManager::SetData(int iItem)
 {
-  CGUIEditControl        *pEdit;
-
   /* Check file item is in list range and get his pointer */
   if (iItem < 0 || iItem >= (int)m_channelItems->Size()) return;
 
@@ -676,12 +674,9 @@ void CGUIDialogPVRChannelManager::SetData(int iItem)
   if (!pItem)
     return;
 
-  pEdit = (CGUIEditControl *)GetControl(EDIT_NAME);
-  if (pEdit)
-  {
-    pEdit->SetLabel2(pItem->GetProperty("Name").asString());
-    pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_TEXT, 19208);
-  }
+  SET_CONTROL_LABEL2(EDIT_NAME, pItem->GetProperty("Name").asString());
+  CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), EDIT_NAME, CGUIEditControl::INPUT_TYPE_TEXT, 19208);
+  OnMessage(msg);
 
   SET_CONTROL_SELECTED(GetID(), RADIOBUTTON_ACTIVE, pItem->GetProperty("ActiveChannel").asBoolean());
   SET_CONTROL_SELECTED(GetID(), RADIOBUTTON_USEEPG, pItem->GetProperty("UseEPG").asBoolean());
