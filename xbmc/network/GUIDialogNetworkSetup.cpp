@@ -153,9 +153,8 @@ void CGUIDialogNetworkSetup::OnInitWindow()
 void CGUIDialogNetworkSetup::OnDeinitWindow(int nextWindowID)
 {
   // clear protocol spinner
-  CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(CONTROL_PROTOCOL);
-  if (pSpin)
-    pSpin->Clear();
+  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PROTOCOL);
+  OnMessage(msg);
 
   CGUIDialog::OnDeinitWindow(nextWindowID);
 }
@@ -197,10 +196,10 @@ void CGUIDialogNetworkSetup::OnCancel()
 
 void CGUIDialogNetworkSetup::OnProtocolChange()
 {
-  CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(CONTROL_PROTOCOL);
-  if (!pSpin)
+  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_PROTOCOL);
+  if (!OnMessage(msg))
     return;
-  m_protocol = (NET_PROTOCOL)pSpin->GetValue();
+  m_protocol = (NET_PROTOCOL)msg.GetParam1();
   // set defaults for the port
   if (m_protocol == NET_PROTOCOL_FTP)
     m_port = "21";

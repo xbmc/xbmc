@@ -66,11 +66,10 @@ CGUIDialogPVRGuideSearch::CGUIDialogPVRGuideSearch(void) :
 void CGUIDialogPVRGuideSearch::UpdateChannelSpin(void)
 {
   CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_CHANNELS);
-  CGUISpinControlEx *pSpinGroups = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_GROUPS);
-  if (!pSpin || !pSpinGroups)
+  if (!pSpin)
     return;
 
-  int iChannelGroup = pSpinGroups->GetValue();
+  int iChannelGroup = GetSpinValue(CONTROL_SPIN_GROUPS);
 
   pSpin->Clear();
   pSpin->AddLabel(g_localizeStrings.Get(19217), EPG_SEARCH_UNSET);
@@ -249,10 +248,16 @@ bool CGUIDialogPVRGuideSearch::IsRadioSelected(int controlID)
   return (msg.GetParam1() == 1);
 }
 
+int CGUIDialogPVRGuideSearch::GetSpinValue(int controlID)
+{
+  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), controlID);
+  OnMessage(msg);
+  return (int)msg.GetParam1();
+}
+
 void CGUIDialogPVRGuideSearch::OnSearch()
 {
   CStdString              strTmp;
-  CGUISpinControlEx      *pSpin;
   CGUIEditControl        *pEdit;
 
   if (!m_searchFilter)
@@ -269,20 +274,11 @@ void CGUIDialogPVRGuideSearch::OnSearch()
   m_searchFilter->m_bIgnorePresentTimers = IsRadioSelected(CONTROL_BTN_IGNORE_TMR);
   m_searchFilter->m_bPreventRepeats = IsRadioSelected(CONTROL_SPIN_NO_REPEATS);
 
-  pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_GENRE);
-  if (pSpin) m_searchFilter->m_iGenreType = pSpin->GetValue();
-
-  pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_MIN_DURATION);
-  if (pSpin) m_searchFilter->m_iMinimumDuration = pSpin->GetValue();
-
-  pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_MAX_DURATION);
-  if (pSpin) m_searchFilter->m_iMaximumDuration = pSpin->GetValue();
-
-  pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_CHANNELS);
-  if (pSpin) m_searchFilter->m_iChannelNumber = pSpin->GetValue();
-
-  pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_GROUPS);
-  if (pSpin) m_searchFilter->m_iChannelGroup = pSpin->GetValue();
+  m_searchFilter->m_iGenreType = GetSpinValue(CONTROL_SPIN_GENRE);
+  m_searchFilter->m_iMinimumDuration = GetSpinValue(CONTROL_SPIN_MIN_DURATION);
+  m_searchFilter->m_iMaximumDuration = GetSpinValue(CONTROL_SPIN_MAX_DURATION);
+  m_searchFilter->m_iChannelNumber = GetSpinValue(CONTROL_SPIN_CHANNELS);
+  m_searchFilter->m_iChannelGroup = GetSpinValue(CONTROL_SPIN_GROUPS);
 
   pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_START_TIME);
   if (pEdit) strTmp = pEdit->GetLabel2();

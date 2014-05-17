@@ -53,6 +53,7 @@ namespace PVR
     void Update();
 
     bool IsRadioSelected(int controlID);
+    int  GetSpinValue(int controlID);
 
     bool m_bConfirmed;
     bool m_bCanceled;
