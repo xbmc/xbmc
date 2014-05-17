@@ -526,36 +526,10 @@ char CGUIDialogKeyboardGeneric::GetCharacter(int iButton)
 
 void CGUIDialogKeyboardGeneric::UpdateButtons()
 {
-  if (m_bShift)
-  { // show the button depressed
-    CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CTL_BUTTON_SHIFT);
-    OnMessage(msg);
-  }
-  else
-  {
-    CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CTL_BUTTON_SHIFT);
-    OnMessage(msg);
-  }
-  if (m_keyType == CAPS)
-  {
-    CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CTL_BUTTON_CAPS);
-    OnMessage(msg);
-  }
-  else
-  {
-    CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CTL_BUTTON_CAPS);
-    OnMessage(msg);
-  }
-  if (m_keyType == SYMBOLS)
-  {
-    CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CTL_BUTTON_SYMBOLS);
-    OnMessage(msg);
-  }
-  else
-  {
-    CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CTL_BUTTON_SYMBOLS);
-    OnMessage(msg);
-  }
+  SET_CONTROL_SELECTED(GetID(), CTL_BUTTON_SHIFT, m_bShift);
+  SET_CONTROL_SELECTED(GetID(), CTL_BUTTON_CAPS, m_keyType == CAPS);
+  SET_CONTROL_SELECTED(GetID(), CTL_BUTTON_SYMBOLS, m_keyType == SYMBOLS);
+
   char szLabel[2];
   szLabel[0] = 32;
   szLabel[1] = 0;

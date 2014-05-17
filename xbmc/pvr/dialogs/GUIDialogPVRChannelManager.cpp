@@ -667,7 +667,6 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
 void CGUIDialogPVRChannelManager::SetData(int iItem)
 {
   CGUIEditControl        *pEdit;
-  CGUIRadioButtonControl *pRadioButton;
 
   /* Check file item is in list range and get his pointer */
   if (iItem < 0 || iItem >= (int)m_channelItems->Size()) return;
@@ -683,14 +682,9 @@ void CGUIDialogPVRChannelManager::SetData(int iItem)
     pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_TEXT, 19208);
   }
 
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_ACTIVE);
-  if (pRadioButton) pRadioButton->SetSelected(pItem->GetProperty("ActiveChannel").asBoolean());
-
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_USEEPG);
-  if (pRadioButton) pRadioButton->SetSelected(pItem->GetProperty("UseEPG").asBoolean());
-
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_PARENTAL_LOCK);
-  if (pRadioButton) pRadioButton->SetSelected(pItem->GetProperty("ParentalLocked").asBoolean());
+  SET_CONTROL_SELECTED(GetID(), RADIOBUTTON_ACTIVE, pItem->GetProperty("ActiveChannel").asBoolean());
+  SET_CONTROL_SELECTED(GetID(), RADIOBUTTON_USEEPG, pItem->GetProperty("UseEPG").asBoolean());
+  SET_CONTROL_SELECTED(GetID(), RADIOBUTTON_PARENTAL_LOCK, pItem->GetProperty("ParentalLocked").asBoolean());
 }
 
 void CGUIDialogPVRChannelManager::Update()
