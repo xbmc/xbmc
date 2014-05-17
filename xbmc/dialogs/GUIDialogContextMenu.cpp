@@ -122,18 +122,14 @@ void CGUIDialogContextMenu::SetupButtons()
     return;
 
   // disable the template button control
-  CGUIButtonControl *pButtonTemplate = (CGUIButtonControl *)GetFirstFocusableControl(BUTTON_TEMPLATE);
-  if (!pButtonTemplate) pButtonTemplate = (CGUIButtonControl *)GetControl(BUTTON_TEMPLATE);
+  CGUIButtonControl *pButtonTemplate = dynamic_cast<CGUIButtonControl *>(GetFirstFocusableControl(BUTTON_TEMPLATE));
+  if (!pButtonTemplate)
+    pButtonTemplate = dynamic_cast<CGUIButtonControl *>(GetControl(BUTTON_TEMPLATE));
   if (!pButtonTemplate)
     return;
   pButtonTemplate->SetVisible(false);
 
-  CGUIControlGroupList* pGroupList = NULL;
-  {
-    const CGUIControl* pControl = GetControl(GROUP_LIST);
-    if (pControl && pControl->GetControlType() == GUICONTROL_GROUPLIST)
-      pGroupList = (CGUIControlGroupList*)pControl;
-  }
+  CGUIControlGroupList* pGroupList = dynamic_cast<CGUIControlGroupList *>(GetControl(GROUP_LIST));
 
   // add our buttons
   for (unsigned int i = 0; i < m_buttons.size(); i++)
@@ -678,12 +674,8 @@ void CGUIDialogContextMenu::OnWindowLoaded()
   m_coordX = m_posX;
   m_coordY = m_posY;
   
-  const CGUIControlGroupList* pGroupList = NULL;
-  const CGUIControl* pControl = GetControl(GROUP_LIST);
-  if (pControl && pControl->GetControlType() == GUICONTROL_GROUPLIST)
-    pGroupList = (CGUIControlGroupList*)pControl;
-
-  pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
+  const CGUIControlGroupList* pGroupList = dynamic_cast<const CGUIControlGroupList *>(GetControl(GROUP_LIST));
+  const CGUIControl *pControl = GetControl(BACKGROUND_IMAGE);
   if (pControl && pGroupList)
   {
     if (pGroupList->GetOrientation() == VERTICAL)
