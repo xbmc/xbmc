@@ -249,7 +249,7 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
   // disable the UI calibration for our controls
   // and set their limits
   // also, set them to invisible if they don't have focus
-  CGUIMoverControl *pControl = (CGUIMoverControl*)GetControl(CONTROL_TOP_LEFT);
+  CGUIMoverControl *pControl = dynamic_cast<CGUIMoverControl*>(GetControl(CONTROL_TOP_LEFT));
   RESOLUTION_INFO info = g_graphicsContext.GetResInfo(m_Res[m_iCurRes]);
   if (pControl)
   {
@@ -262,7 +262,7 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
     pControl->SetLocation(info.Overscan.left,
                           info.Overscan.top, false);
   }
-  pControl = (CGUIMoverControl*)GetControl(CONTROL_BOTTOM_RIGHT);
+  pControl = dynamic_cast<CGUIMoverControl*>(GetControl(CONTROL_BOTTOM_RIGHT));
   if (pControl)
   {
     pControl->SetLimits(info.iWidth*3 / 4,
@@ -275,7 +275,7 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
                           info.Overscan.bottom, false);
   }
   // Subtitles and OSD controls can only move up and down
-  pControl = (CGUIMoverControl*)GetControl(CONTROL_SUBTITLES);
+  pControl = dynamic_cast<CGUIMoverControl*>(GetControl(CONTROL_SUBTITLES));
   if (pControl)
   {
     pControl->SetLimits(0, info.iHeight*3 / 4,
@@ -285,7 +285,7 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
     pControl->SetLocation(0, info.iSubtitles, false);
   }
   // lastly the pixel ratio control...
-  CGUIResizeControl *pResize = (CGUIResizeControl*)GetControl(CONTROL_PIXEL_RATIO);
+  CGUIResizeControl *pResize = dynamic_cast<CGUIResizeControl*>(GetControl(CONTROL_PIXEL_RATIO));
   if (pResize)
   {
     pResize->SetLimits(info.iWidth*0.25f, info.iHeight*0.5f,
@@ -321,7 +321,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
   }
   else
   {
-    CGUIMoverControl *pControl = (CGUIMoverControl*)GetControl(iControl);
+    const CGUIMoverControl *pControl = dynamic_cast<const CGUIMoverControl*>(GetControl(iControl));
     if (pControl)
     {
       switch (iControl)

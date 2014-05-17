@@ -57,7 +57,7 @@ bool CGUIDialogSlider::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     if (message.GetSenderId() == CONTROL_SLIDER)
     {
-      CGUISliderControl *slider = (CGUISliderControl *)GetControl(CONTROL_SLIDER);
+      CGUISliderControl *slider = dynamic_cast<CGUISliderControl *>(GetControl(CONTROL_SLIDER));
       if (slider && m_callback)
       {
         m_callback->OnSliderChange(m_callbackData, slider);
@@ -76,7 +76,7 @@ bool CGUIDialogSlider::OnMessage(CGUIMessage& message)
 void CGUIDialogSlider::SetSlider(const CStdString &label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData)
 {
   SET_CONTROL_LABEL(CONTROL_HEADING, label);
-  CGUISliderControl *slider = (CGUISliderControl *)GetControl(CONTROL_SLIDER);
+  CGUISliderControl *slider = dynamic_cast<CGUISliderControl *>(GetControl(CONTROL_SLIDER));
   m_callback = callback;
   m_callbackData = callbackData;
   if (slider)

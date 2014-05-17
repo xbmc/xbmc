@@ -87,7 +87,7 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
   // set alphabetic (capitals)
   UpdateButtons();
 
-  CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
+  CGUILabelControl* pEdit = dynamic_cast<CGUILabelControl*>(GetControl(CTL_LABEL_EDIT));
   if (pEdit)
   {
     pEdit->ShowCursor();
@@ -376,7 +376,7 @@ void CGUIDialogKeyboardGeneric::FrameMove()
 
 void CGUIDialogKeyboardGeneric::UpdateLabel() // FIXME seems to be called twice for one USB SDL keyboard action/character
 {
-  CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
+  CGUILabelControl* pEdit = dynamic_cast<CGUILabelControl*>(GetControl(CTL_LABEL_EDIT));
   if (pEdit)
   {
     CStdStringW edit = m_strEdit;
@@ -623,7 +623,7 @@ void CGUIDialogKeyboardGeneric::SetCursorPos(int iPos)
   else if (iPos > (int)m_strEdit.size())
     iPos = (int)m_strEdit.size();
   m_iCursorPos = iPos;
-  CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
+  CGUILabelControl* pEdit = dynamic_cast<CGUILabelControl*>(GetControl(CTL_LABEL_EDIT));
   if (pEdit)
   {
     pEdit->SetCursorPos(m_iCursorPos + (m_hiddenInput ? 0 : m_iEditingOffset));
@@ -673,7 +673,7 @@ void CGUIDialogKeyboardGeneric::OnIPAddress()
     utf8String = utf8String.substr(0, start) + ip.c_str() + utf8String.substr(start + length);
     g_charsetConverter.utf8ToW(utf8String, m_strEdit);
     UpdateLabel();
-    CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
+    CGUILabelControl* pEdit = dynamic_cast<CGUILabelControl*>(GetControl(CTL_LABEL_EDIT));
     if (pEdit)
       pEdit->SetCursorPos(m_strEdit.size());
   }

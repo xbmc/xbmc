@@ -338,7 +338,7 @@ void CGUIDialogNumeric::FrameMove()
     start = m_block * 4;
     end = m_block * 4 + 3;
   }
-  CGUILabelControl *pLabel = (CGUILabelControl *)GetControl(CONTROL_INPUT_LABEL);
+  CGUILabelControl *pLabel = dynamic_cast<CGUILabelControl *>(GetControl(CONTROL_INPUT_LABEL));
   if (pLabel)
   {
     pLabel->SetLabel(strLabel);
