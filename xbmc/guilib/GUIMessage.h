@@ -293,11 +293,6 @@ do { \
  OnMessage(msg); \
 } while(0)
 
-#define BIND_CONTROL(i,c,pv) \
-do { \
- pv = ((c*)GetControl(i));\
-} while(0)
-
 /*!
 \ingroup winmsg
 \brief Click message sent from controls to windows.
