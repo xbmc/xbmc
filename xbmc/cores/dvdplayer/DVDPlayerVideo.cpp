@@ -1162,10 +1162,10 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   // sync clock if we are master
   if(m_pClock->GetMaster() == MASTER_CLOCK_VIDEO)
   {
-    double error = iClockSleep - iFrameSleep;
-    if( abs(error)  > DVD_MSEC_TO_TIME(10) )
-      m_pClock->Discontinuity(iPlayingClock + error, iCurrentClock, "CDVDPlayerVideo::OutputPicture");
-
+    m_pClock->Update( iPlayingClock + iClockSleep - iFrameSleep
+                    , iCurrentClock
+                    , DVD_MSEC_TO_TIME(10)
+                    , "CDVDPlayerVideo::OutputPicture");
   }
 
   // present the current pts of this frame to user, and include the actual

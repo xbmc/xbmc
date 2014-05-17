@@ -58,7 +58,7 @@ public:
   double GetClock(bool interpolated = true);
   double GetClock(double& absolute, bool interpolated = true);
 
-  void Discontinuity(double clock, double absolute, const char* log);
+  bool Update(double clock, double absolute, double limit, const char* log);
   void Discontinuity(double clock, double absolute);
   void Discontinuity(double clock = 0LL)
   {

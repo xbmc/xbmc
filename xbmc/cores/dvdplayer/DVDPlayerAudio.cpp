@@ -629,7 +629,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   &&  (master == MASTER_CLOCK_AUDIO
     || master == MASTER_CLOCK_AUDIO_VIDEOREF) )
   {
-    m_pClock->Discontinuity(clock+error, absolute, "CDVDPlayerAudio::HandleSyncError1");
+    m_pClock->Update(clock+error, absolute, 0.0, "CDVDPlayerAudio::HandleSyncError1");
     m_errors.Flush();
     m_error = 0;
     m_syncclock = false;
@@ -663,8 +663,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
         error = m_error;
       }
 
-      if (fabs(error) > limit - 0.001)
-        m_pClock->Discontinuity(clock+error, absolute, "CDVDPlayerAudio::HandleSyncError2");
+      m_pClock->Update(clock+error, absolute, limit - 0.001, "CDVDPlayerAudio::HandleSyncError2");
     }
     else if (m_synctype == SYNC_RESAMPLE)
     {

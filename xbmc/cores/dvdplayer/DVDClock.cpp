@@ -145,19 +145,25 @@ void CDVDClock::SetSpeed(int iSpeed)
   m_systemUsed = newfreq;
 }
 
-void CDVDClock::Discontinuity(double clock, double absolute, const char* log)
+bool CDVDClock::Update(double clock, double absolute, double limit, const char* log)
 {
   CExclusiveLock lock(m_critSection);
   double was_absolute = SystemToAbsolute(m_startClock);
   double was_clock    = m_iDisc + absolute - was_absolute;
-  Discontinuity(clock, absolute);
   lock.Leave();
+  if(std::abs(clock - was_clock) > limit)
+  {
+    Discontinuity(clock, absolute);
 
-  CLog::Log(LOGDEBUG, "CDVDClock::Discontinuity - %s - was:%f, should be:%f, error:%f"
-            , log
-            , was_clock
-            , clock
-            , clock - was_clock);
+    CLog::Log(LOGDEBUG, "CDVDClock::Discontinuity - %s - was:%f, should be:%f, error:%f"
+                      , log
+                      , was_clock
+                      , clock
+                      , clock - was_clock);
+    return true;
+  }
+  else
+    return false;
 }
 
 void CDVDClock::Discontinuity(double clock, double absolute)
