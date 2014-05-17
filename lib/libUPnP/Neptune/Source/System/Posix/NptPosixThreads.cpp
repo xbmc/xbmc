@@ -57,7 +57,12 @@ private:
 +---------------------------------------------------------------------*/
 NPT_PosixMutex::NPT_PosixMutex()
 {
-    pthread_mutex_init(&m_Mutex, NULL);
+    // Recursive by default
+    pthread_mutexattr_t attr;
+    pthread_mutexattr_init(&attr);
+    pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+
+    pthread_mutex_init(&m_Mutex, &attr);
 }
 
 /*----------------------------------------------------------------------

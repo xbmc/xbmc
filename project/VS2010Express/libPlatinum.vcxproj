@@ -91,9 +91,17 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptAutomaticCleaner.h" />
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptAutoreleasePool.h" />
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptCrypto.h" />
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptDigest.h" />
     <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptHash.h" />
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptJson.h" />
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptTlsDefaultTrustAnchorsBase.h" />
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptTlsDefaultTrustAnchorsExtended.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltMimeType.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltProtocolInfo.h" />
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltUtilities.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Platinum\Platinum.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltAction.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltArgument.h" />
@@ -177,9 +185,16 @@
     <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Threads.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptAutomaticCleaner.cpp" />
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptCrypto.cpp" />
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptDigest.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptHash.cpp" />
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptJson.cpp" />
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Bsd\NptBsdResolver.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Posix\NptPosixEnvironment.cpp" />
-    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Posix\NptPosixTime.cpp" />
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Console.cpp" />
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Win32\NptWin32SerialPort.cpp" />
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Time.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltAction.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltArgument.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltConstants.cpp" />

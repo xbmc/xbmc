@@ -300,7 +300,7 @@ CMediaCrawler::OnBrowseDevice(PLT_ActionReference&          action,
 
     // create a container for our result
     // this will be filled in by OnBrowseResponse
-    CMediaCrawlerBrowseInfoReference browse_info(new CMediaCrawlerBrowseInfo(), true);
+    CMediaCrawlerBrowseInfoReference browse_info(new CMediaCrawlerBrowseInfo());
     browse_info->shared_var.SetValue(0);
 
     // send off the browse packet.  Note that this will

@@ -59,12 +59,17 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FrameStreamer", "FrameStrea
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Neptune", "..\..\..\..\Neptune\Build\Targets\x86-microsoft-win32-vs2008\Neptune\Neptune.vcproj", "{12AFF2E5-6D95-4809-9728-9551677C078A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5A06F861-0EFF-417B-89C3-963A172CE6EE} = {5A06F861-0EFF-417B-89C3-963A172CE6EE}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TimeTest", "TimeTest\TimeTest.vcproj", "{94EC393E-7CD5-4969-B7B3-829C9A3A4D57}"
 	ProjectSection(ProjectDependencies) = postProject
 		{568611D3-AFA7-4294-99C1-E9AED0D8057E} = {568611D3-AFA7-4294-99C1-E9AED0D8057E}
 		{12AFF2E5-6D95-4809-9728-9551677C078A} = {12AFF2E5-6D95-4809-9728-9551677C078A}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "axTLS", "..\..\..\..\Neptune\Build\Targets\x86-microsoft-win32-vs2008\axTLS\axTLS.vcproj", "{5A06F861-0EFF-417B-89C3-963A172CE6EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -196,6 +201,16 @@ Global
 		{94EC393E-7CD5-4969-B7B3-829C9A3A4D57}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{94EC393E-7CD5-4969-B7B3-829C9A3A4D57}.Release|Win32.ActiveCfg = Release|Win32
 		{94EC393E-7CD5-4969-B7B3-829C9A3A4D57}.Release|Win32.Build.0 = Release|Win32
+		{5A06F861-0EFF-417B-89C3-963A172CE6EE}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{5A06F861-0EFF-417B-89C3-963A172CE6EE}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{5A06F861-0EFF-417B-89C3-963A172CE6EE}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{5A06F861-0EFF-417B-89C3-963A172CE6EE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5A06F861-0EFF-417B-89C3-963A172CE6EE}.Debug|Win32.Build.0 = Debug|Win32
+		{5A06F861-0EFF-417B-89C3-963A172CE6EE}.Release|Any CPU.ActiveCfg = Release|Win32
+		{5A06F861-0EFF-417B-89C3-963A172CE6EE}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{5A06F861-0EFF-417B-89C3-963A172CE6EE}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{5A06F861-0EFF-417B-89C3-963A172CE6EE}.Release|Win32.ActiveCfg = Release|Win32
+		{5A06F861-0EFF-417B-89C3-963A172CE6EE}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

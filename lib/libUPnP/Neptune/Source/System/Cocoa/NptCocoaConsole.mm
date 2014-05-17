@@ -14,6 +14,7 @@
 #import <Foundation/Foundation.h>
 #include "NptConfig.h"
 #include "NptConsole.h"
+#include "NptUtils.h"
 
 /*----------------------------------------------------------------------
 |       NPT_Console::Output
@@ -21,6 +22,10 @@
 void
 NPT_Console::Output(const char* message)
 {
-    NSLog(@"%s", message);
+    // trim extra \r\n
+    char *msg = (char *)message;
+    msg[NPT_StringLength(message)-2] = 0;
+    
+    NSLog(@"%s", msg);
 }
 

@@ -38,6 +38,7 @@
 #include "PltHttp.h"
 #include "PltDatagramStream.h"
 #include "PltVersion.h"
+#include "PltUtilities.h"
 
 NPT_SET_LOCAL_LOGGER("platinum.core.http")
 
@@ -248,22 +249,7 @@ PLT_HttpHelper::ParseBody(const NPT_HttpMessage& message,
     NPT_String body;
     NPT_CHECK_WARNING(GetBody(message, body));
 
-    // parse body
-    NPT_XmlParser parser;
-    NPT_XmlNode*  node;
-    NPT_Result result = parser.Parse(body, node);
-    if (NPT_FAILED(result)) {
-        NPT_LOG_FINEST_1("Failed to parse %s", body.IsEmpty()?"(empty string)":body.GetChars());
-        NPT_CHECK_WARNING(result);
-    }
-    
-    tree = node->AsElementNode();
-    if (!tree) {
-        delete node;
-        return NPT_FAILURE;
-    }
-
-    return NPT_SUCCESS;
+    return PLT_XmlHelper::Parse(body, tree);
 }
 
 /*----------------------------------------------------------------------
@@ -400,8 +386,10 @@ PLT_HttpHelper::GetDeviceSignature(const NPT_HttpRequest& request)
         return PLT_DEVICE_WINDOWS;
     } else if (agent && (agent->Find("Mac", 0, true) >= 0 || agent->Find("OS X", 0, true) >= 0 || agent->Find("OSX", 0, true) >= 0)) {
         return PLT_DEVICE_MAC;
+    } else if (agent && (agent->Find("VLC", 0, true) >= 0 || agent->Find("VideoLan", 0, true) >= 0)) {
+        return PLT_DEVICE_VLC;
     } else {
-        NPT_LOG_FINE_1("Unknown device signature (ua=%s)", agent?agent->GetChars():"none");
+        NPT_LOG_FINER_1("Unknown device signature (ua=%s)", agent?agent->GetChars():"none");
     }
 
 	return PLT_DEVICE_UNKNOWN;

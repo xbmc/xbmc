@@ -329,7 +329,7 @@ private:
      Called by PLT_DeviceHost when it receives a request for a new subscription.
      */
     NPT_Result ProcessNewSubscription(
-        PLT_TaskManager*         task_manager,
+        PLT_TaskManagerReference task_manager,
         const NPT_SocketAddress& addr, 
         const NPT_String&        callback_urls, 
         int                      timeout, 
@@ -361,22 +361,22 @@ protected:
     friend class PLT_DeviceHost;    // ProcessXXSubscription
     
     //members
-    PLT_DeviceData*                 m_Device;
-    NPT_String                      m_ServiceType;
-    NPT_String                      m_ServiceID;
-	NPT_String						m_ServiceName;
-    NPT_String                      m_SCPDURL;
-    NPT_String                      m_ControlURL;
-    NPT_String                      m_EventSubURL;
-    PLT_ServiceEventTask*           m_EventTask;
-    NPT_Array<PLT_ActionDesc*>      m_ActionDescs;
-    NPT_List<PLT_StateVariable*>    m_StateVars;
-    NPT_Mutex                       m_Lock;
-    NPT_List<PLT_StateVariable*>    m_StateVarsChanged;
-    NPT_List<PLT_StateVariable*>    m_StateVarsToPublish;
-    NPT_List<PLT_EventSubscriber*>  m_Subscribers;
-    bool                            m_EventingPaused;
-    NPT_String                      m_LastChangeNamespace;
+    PLT_DeviceData*                         m_Device;
+    NPT_String                              m_ServiceType;
+    NPT_String                              m_ServiceID;
+	NPT_String                              m_ServiceName;
+    NPT_String                              m_SCPDURL;
+    NPT_String                              m_ControlURL;
+    NPT_String                              m_EventSubURL;
+    PLT_ServiceEventTask*                   m_EventTask;
+    NPT_Array<PLT_ActionDesc*>              m_ActionDescs;
+    NPT_List<PLT_StateVariable*>            m_StateVars;
+    NPT_Mutex                               m_Lock;
+    NPT_List<PLT_StateVariable*>            m_StateVarsChanged;
+    NPT_List<PLT_StateVariable*>            m_StateVarsToPublish;
+    NPT_List<PLT_EventSubscriberReference>  m_Subscribers;
+    bool                                    m_EventingPaused;
+    NPT_String                              m_LastChangeNamespace;
 };
 
 /*----------------------------------------------------------------------

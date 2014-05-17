@@ -1,0 +1,292 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\Source\Core\Neptune.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptBase64.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptBufferedStreams.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptCommon.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptConsole.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptCrypto.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptDataBuffer.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptDebug.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptDigest.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptDynamicLibraries.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptFile.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptHash.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptHttp.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptJson.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptList.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptLogging.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptMessaging.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptNetwork.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptQueue.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptResults.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptRingBuffer.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptSimpleMessageQueue.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptSockets.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptStreams.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptStrings.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptSystem.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptThreads.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptTime.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptTls.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptUri.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptUtils.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptXml.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptZip.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\WinRT\NptWinRtConsole.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\WinRT\NptWinRtDebug.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\WinRT\NptWinRtEnvironment.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\WinRT\NptWinRtFile.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\WinRT\NptWinRtNetwork.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\WinRT\NptWinRtPch.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\WinRT\NptWinRtSockets.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\WinRT\NptWinRtSystem.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\WinRT\NptWinRtThreads.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\WinRT\NptWinRtTime.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\Source\Core\Neptune.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptArray.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptAutoreleasePool.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptBase64.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptBufferedStreams.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptCommon.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptConfig.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptConsole.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptConstants.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptCrypto.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptDataBuffer.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptDebug.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptDefs.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptDigest.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptDynamicCast.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptDynamicLibraries.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptFile.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptHash.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptHttp.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptInterfaces.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptJson.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptList.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptLogging.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptMap.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptMessaging.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptNetwork.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptQueue.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptReferences.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptResults.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptRingBuffer.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptSelectableMessageQueue.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptSerialPort.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptSimpleMessageQueue.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptSockets.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptStack.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptStreams.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptStrings.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptSystem.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptThreads.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptTime.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptTls.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptTlsDefaultTrustAnchorsBase.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptTlsDefaultTrustAnchorsExtended.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptTypes.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptUri.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptUtils.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptVersion.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptXml.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptZip.h" />
+    <ClInclude Include="..\..\..\..\Source\System\WinRT\NptWinRtThreads.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and '$(VisualStudioVersion)' == ''">$(VCTargetsPath11)</VCTargetsPath>
+    <ProjectGuid>{4d304d49-41f5-48c2-bc88-898af70f421c}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectName>Neptune</ProjectName>
+    <RootNamespace>Neptune</RootNamespace>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
+    <AppContainerApplication>true</AppContainerApplication>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>true</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <PrecompiledHeaderFile />
+      <PrecompiledHeaderOutputFile />
+      <AdditionalIncludeDirectories>$(ProjectDir);$(IntDir);%(AdditionalIncludeDirectories);..\..\..\..\Source\Core</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;NPT_CONFIG_ENABLE_LOGGING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>true</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <PrecompiledHeaderFile />
+      <PrecompiledHeaderOutputFile />
+      <AdditionalIncludeDirectories>$(ProjectDir);$(IntDir);%(AdditionalIncludeDirectories);..\..\..\..\Source\Core</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;NPT_CONFIG_ENABLE_LOGGING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

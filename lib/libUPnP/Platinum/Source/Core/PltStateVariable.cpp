@@ -48,6 +48,7 @@ NPT_SET_LOCAL_LOGGER("platinum.core.statevariable")
 PLT_StateVariable::PLT_StateVariable(PLT_Service* service) : 
     m_Service(service), 
     m_AllowedValueRange(NULL),
+    m_IsSendingEvents(false),
     m_IsSendingEventsIndirectly(true),
     m_ShouldClearOnSend(false)
 {

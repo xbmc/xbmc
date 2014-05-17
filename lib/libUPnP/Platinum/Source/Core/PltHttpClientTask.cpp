@@ -48,6 +48,7 @@ PLT_HttpClientSocketTask::PLT_HttpClientSocketTask(NPT_HttpRequest* request /* =
     m_WaitForever(wait_forever)
 {
     m_Client.SetUserAgent(*PLT_Constants::GetInstance().GetDefaultUserAgent());
+    m_Client.SetTimeouts(60000, 60000, 60000);
     if (request) m_Requests.Push(request);
 }
 

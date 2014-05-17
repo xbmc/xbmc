@@ -176,10 +176,10 @@ LibraryModule(name                  = 'axTLS',
 
 extra_cpp_flags = []
 if not env.has_key('NPT_CONFIG_NO_ZIP'):
-    extra_cpp_flags = ['NPT_CONFIG_ENABLE_ZIP']
+    env.AppendUnique(CPPDEFINES=['NPT_CONFIG_ENABLE_ZIP'])
     
 if not env.has_key('NPT_CONFIG_NO_SSL'):
-    extra_cpp_flags += ['NPT_CONFIG_ENABLE_TLS']
+    env.AppendUnique(CPPDEFINES=['NPT_CONFIG_ENABLE_TLS'])
     tls_data_dirs  = ['Data/TLS']
     tls_tests      = ['Tls1']
 else:
@@ -189,10 +189,9 @@ else:
 LibraryModule(name                  = 'Neptune',
               build_source_dirs     = ['Core']+tls_data_dirs,
               build_source_files    = env['NPT_SYSTEM_SOURCES'],
-              extra_cpp_defines     = extra_cpp_flags,
               linked_modules        = env['NPT_EXTRA_LIBS']+['Zlib']+['axTLS'])
            
-for app in ['NetPump', 'NetConfig', 'NetPing', 'NetEcho', 'NetGet', 'NetResolve', 'MiniHttpServer']:
+for app in ['NetPump', 'NetConfig', 'NetPing', 'NetEcho', 'NetGet', 'NetResolve', 'NetBench', 'MiniHttpServer', 'ZipHttpServer']:
     Application(app, 'Source/Apps/'+app)
     
 tests = ['Arrays1', 
@@ -214,6 +213,7 @@ tests = ['Arrays1',
 		 'Messages2', 
 		 'Url1', 
 		 'Zip1', 
+		 'Zip2', 
 		 'Time1', 
 		 'Sockets1', 
 		 'FileTest1', 

@@ -67,17 +67,23 @@ PLT_Simple::~PLT_Simple()
 NPT_Result
 PLT_Simple::SetupServices()
 {
+    NPT_Result res;
     PLT_Service* service = new PLT_Service(
         this,
         "urn:schemas-upnp-org:service:Test:1", 
         "urn:upnp-org:serviceId:Test.001",
         "Test");
-    NPT_CHECK_FATAL(service->SetSCPDXML((const char*)SCPDXML_SIMPLE));
-    NPT_CHECK_FATAL(AddService(service));
+    
+    NPT_CHECK_LABEL_FATAL(res = service->SetSCPDXML((const char*)SCPDXML_SIMPLE), failure);
+    NPT_CHECK_LABEL_FATAL(res = AddService(service), failure);
 
     service->SetStateVariable("Status", "True");
 
     return NPT_SUCCESS;
+    
+failure:
+    delete service;
+    return res;
 }
 
 const char* SCPDXML_SIMPLE =

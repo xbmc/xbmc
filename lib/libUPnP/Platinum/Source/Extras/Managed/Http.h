@@ -245,13 +245,13 @@ private:
 
 	static DeviceSignature ParseDeviceSignature(PLT_DeviceSignature signature)
 	{
-		switch (signature)
+		switch (signature) 
 		{
-		case PLT_XBOX:
+		case PLT_DEVICE_XBOX:
 			return DeviceSignature::XBox;
-		case PLT_PS3:
+		case PLT_DEVICE_PS3:
 			return DeviceSignature::PS3;
-		case PLT_WMP:
+		case PLT_DEVICE_WMP:
 			return DeviceSignature::WMP;
 		default:
 			return DeviceSignature::Unknown;

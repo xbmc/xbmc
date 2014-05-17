@@ -1,17 +1,17 @@
-From dc013f1ce379537617080a93ccb155ab1dc2f24a Mon Sep 17 00:00:00 2001
+From f9eff4bb16d36222c265681576707407627cf161 Mon Sep 17 00:00:00 2001
 From: Memphiz <memphis@machzwo.de>
 Date: Sat, 25 May 2013 23:06:14 +0200
-Subject: [PATCH 06/21] [platinum] - fix shadowed local var
+Subject: [PATCH 21/24] platinum: fix shadowed local var
 
 ---
  lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp b/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp
-index 7b46539..a8eb4e2 100644
+index e303cc6..f733d5c 100644
 --- a/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp
 +++ b/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp
-@@ -215,8 +215,8 @@ PLT_StateVariable::ValidateValue(const char* value)
+@@ -216,8 +216,8 @@ PLT_StateVariable::ValidateValue(const char* value)
                          (const char*)*val,
                          (const char*)m_Name);
                      for (unsigned long i=0; i < m_AllowedValues.GetItemCount(); i++) {

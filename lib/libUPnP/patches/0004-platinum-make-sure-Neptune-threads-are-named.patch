@@ -1,0 +1,45 @@
+From e8af954923d374303564863c8fe6a41499bf43c5 Mon Sep 17 00:00:00 2001
+From: Alasdair Campbell <alcoheca@gmail.com>
+Date: Wed, 6 Jun 2012 19:22:09 +0100
+Subject: [PATCH 04/24] platinum: make sure Neptune threads are named
+
+---
+ .../Source/System/Win32/NptWin32Threads.cpp        | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Threads.cpp b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Threads.cpp
+index 9666a4c..8de7d74 100644
+--- a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Threads.cpp
++++ b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Threads.cpp
+@@ -521,6 +521,28 @@ NPT_Win32Thread::EntryPoint(void* argument)
+     NPT_System::GetCurrentTimeStamp(now);
+     NPT_System::SetRandomSeed((NPT_UInt32)(now.ToNanos()) + ::GetCurrentThreadId());
+ 
++    // set a default name
++    #pragma pack(push,8)
++    struct THREADNAME_INFO
++    {
++      DWORD  dwType;     // must be 0x1000
++      LPCSTR szName;     // pointer to name (in same addr space)
++      DWORD  dwThreadID; // thread ID (-1 caller thread)
++      DWORD  dwFlags;    // reserved for future use, most be zero
++    } info;
++    #pragma pack(pop)
++    info.dwType     = 0x1000;
++    info.szName     = "Neptune Thread";
++    info.dwThreadID = GetCurrentThreadId();
++    info.dwFlags    = 0;
++    __try
++    {
++      RaiseException(0x406d1388, 0, sizeof(info) / sizeof(ULONG_PTR), (ULONG_PTR *)&info);
++    }
++    __except(EXCEPTION_EXECUTE_HANDLER)
++    {
++    }
++
+     // run the thread 
+     thread->Run();
+     
+-- 
+1.7.11.msysgit.0
+

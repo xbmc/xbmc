@@ -1,0 +1,32 @@
+From e4e282340a1524a5a01cce7ac9c03646d4df14a9 Mon Sep 17 00:00:00 2001
+From: Joakim Plate <elupus@ecce.se>
+Date: Sat, 19 Jan 2013 19:00:30 +0100
+Subject: [PATCH 17/24] platinum: don't disregard PLT_MediaObjects only for
+ lacking resources
+
+This could cause us to misscount the number of media objects in a upnp
+browse request, and re-request items we already had in list giving
+us duplicated items in lists.
+---
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+index af6bc3b..514a1ab 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+@@ -722,11 +722,6 @@ PLT_MediaItem::FromDidl(NPT_XmlElementNode* entry)
+     }
+ 
+     NPT_Result result = PLT_MediaObject::FromDidl(entry);
+-    
+-    // make sure we have at least one valid resource
+-    if (m_Resources.GetItemCount() == 0) {
+-        NPT_CHECK_SEVERE(NPT_ERROR_INVALID_PARAMETERS);
+-    }
+ 
+     return result;
+ }
+-- 
+1.7.11.msysgit.0
+

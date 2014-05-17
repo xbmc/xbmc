@@ -45,12 +45,6 @@
 NPT_SET_LOCAL_LOGGER("platinum.core.ssdp")
 
 /*----------------------------------------------------------------------
-|   constants
-+---------------------------------------------------------------------*/
-const int NPT_SSDP_MAX_LINE_SIZE  = 2048;
-const int NPT_SSDP_MAX_DGRAM_SIZE = 4096;
-
-/*----------------------------------------------------------------------
 |   PLT_SsdpSender::SendSsdp
 +---------------------------------------------------------------------*/
 NPT_Result
@@ -255,23 +249,26 @@ PLT_SsdpAnnounceInterfaceIterator::operator()(NPT_NetworkInterface*& net_if) con
         url = NPT_HttpUrl("239.255.255.250", 1900, "*");    
         NPT_CHECK_SEVERE(multicast_socket.SetInterface(addr));
         socket = &multicast_socket;
-        multicast_socket.SetTimeToLive(4);
+        multicast_socket.SetTimeToLive(PLT_Constants::GetInstance().GetAnnounceMulticastTimeToLive());
     }
     
     NPT_HttpRequest req(url, "NOTIFY", NPT_HTTP_PROTOCOL_1_1);
     PLT_HttpHelper::SetHost(req, "239.255.255.250:1900");
     
-    // put a location only if alive message
-    if (!m_IsByeBye) {
+    // Location header valid only for ssdp:alive or ssdp:update messages
+    if (m_Type != PLT_ANNOUNCETYPE_BYEBYE) {
         PLT_UPnPMessageHelper::SetLocation(req, m_Device->GetDescriptionUrl(addr.ToString()));
     }
 
-    NPT_CHECK_SEVERE(m_Device->Announce(req, *socket, m_IsByeBye));
+    NPT_CHECK_SEVERE(m_Device->Announce(req, *socket, m_Type));
 
 #if defined(PLATINUM_UPNP_SPECS_STRICT)
     // delay alive only as we don't want to delay when stopping
-    if (!m_IsByeBye) NPT_System::Sleep(NPT_TimeInterval(PLT_DLNA_SSDP_DELAY_GROUP));
-    NPT_CHECK_SEVERE(m_Device->Announce(req, *socket, m_IsByeBye));
+    if (m_Type != PLT_ANNOUNCETYPE_BYEBYE) {
+        NPT_System::Sleep(NPT_TimeInterval(PLT_DLNA_SSDP_DELAY_GROUP));
+    }
+    
+    NPT_CHECK_SEVERE(m_Device->Announce(req, *socket, m_Type));
 #endif
 
     return NPT_SUCCESS;
@@ -294,22 +291,22 @@ PLT_SsdpDeviceAnnounceTask::DoRun()
             m_IsByeByeFirst = false;
             
             if (m_ExtraBroadcast) {
-                if_list.Apply(PLT_SsdpAnnounceInterfaceIterator(m_Device, true, m_ExtraBroadcast));
+                if_list.Apply(PLT_SsdpAnnounceInterfaceIterator(m_Device, PLT_ANNOUNCETYPE_BYEBYE, true));
             }
             
             // multicast now
-            if_list.Apply(PLT_SsdpAnnounceInterfaceIterator(m_Device, true, false));
+            if_list.Apply(PLT_SsdpAnnounceInterfaceIterator(m_Device, PLT_ANNOUNCETYPE_BYEBYE, false));
             
             // schedule to announce alive in 200 ms
             if (IsAborting(200)) break;
         }
         
         if (m_ExtraBroadcast) {
-            if_list.Apply(PLT_SsdpAnnounceInterfaceIterator(m_Device, false, m_ExtraBroadcast));
+            if_list.Apply(PLT_SsdpAnnounceInterfaceIterator(m_Device, PLT_ANNOUNCETYPE_ALIVE, true));
         }
         
         // multicast now
-        if_list.Apply(PLT_SsdpAnnounceInterfaceIterator(m_Device, false, false));
+        if_list.Apply(PLT_SsdpAnnounceInterfaceIterator(m_Device, PLT_ANNOUNCETYPE_ALIVE, false));
         
         
 cleanup:
@@ -341,6 +338,15 @@ PLT_SsdpListenTask::GetInputStream(NPT_InputStreamReference& stream)
         stream = m_Datagram;
         return NPT_SUCCESS;
     }
+}
+
+/*----------------------------------------------------------------------
+|    PLT_SsdpListenTask::GetInfo
++---------------------------------------------------------------------*/
+void 
+PLT_SsdpListenTask::DoAbort()
+{
+    PLT_HttpServerSocketTask::DoAbort();
 }
 
 /*----------------------------------------------------------------------
@@ -473,7 +479,10 @@ PLT_SsdpSearchTask::DoRun()
                 response = NULL;
             } else if (res != NPT_ERROR_TIMEOUT) {
                 NPT_LOG_WARNING_1("PLT_SsdpSearchTask got an error (%d) waiting for response", res);
-                NPT_System::Sleep(NPT_TimeInterval(.5f));
+                if (IsAborting(0))
+                    break;
+                
+                NPT_System::Sleep(NPT_TimeInterval(.15f));
             }
 
             input_stream = NULL;

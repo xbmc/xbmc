@@ -162,14 +162,14 @@ PLT_Xbox360::SetupIcons()
 |   PLT_DeviceHost::Announce
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_Xbox360::Announce(PLT_DeviceData*  device, 
-                      NPT_HttpRequest& req, 
-                      NPT_UdpSocket&   socket, 
-                      bool             byebye)
+PLT_Xbox360::Announce(PLT_DeviceData*      device,
+                      NPT_HttpRequest&     req,
+                      NPT_UdpSocket&       socket,
+                      PLT_SsdpAnnounceType type)
 {
     AnnouncePresence(socket, "");
 
-    return PLT_MediaRenderer::Announce(device, req, socket, byebye);
+    return PLT_MediaRenderer::Announce(device, req, socket, type);
 }
 
 /*----------------------------------------------------------------------

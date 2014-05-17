@@ -44,6 +44,10 @@ public:
     NPT_Result Peek(NPT_QueueItem*& item, NPT_Timeout timeout);
 
 private:
+    void       Abort();
+    NPT_Result GetTimeOut(NPT_Timeout timeout, struct timespec& timed);
+    
+private:
     // members
     NPT_Cardinal             m_MaxItems;
     pthread_mutex_t          m_Mutex;
@@ -52,6 +56,7 @@ private:
     NPT_Cardinal             m_PushersWaitingCount;
     NPT_Cardinal             m_PoppersWaitingCount;
     NPT_List<NPT_QueueItem*> m_Items;
+    bool                     m_Aborting;
 };
 
 /*----------------------------------------------------------------------
@@ -60,7 +65,8 @@ private:
 NPT_PosixQueue::NPT_PosixQueue(NPT_Cardinal max_items) : 
     m_MaxItems(max_items), 
     m_PushersWaitingCount(0),
-    m_PoppersWaitingCount(0)
+    m_PoppersWaitingCount(0),
+    m_Aborting(false)
 {
     pthread_mutex_init(&m_Mutex, NULL);
     pthread_cond_init(&m_CanPushCondition, NULL);
@@ -72,6 +78,8 @@ NPT_PosixQueue::NPT_PosixQueue(NPT_Cardinal max_items) :
 +---------------------------------------------------------------------*/
 NPT_PosixQueue::~NPT_PosixQueue()
 {
+    Abort();
+    
     // destroy resources
     pthread_cond_destroy(&m_CanPushCondition);
     pthread_cond_destroy(&m_CanPopCondition);
@@ -79,12 +87,45 @@ NPT_PosixQueue::~NPT_PosixQueue()
 }
 
 /*----------------------------------------------------------------------
-|       NPT_PosixQueue::Push
+|       NPT_PosixQueue::Abort
++---------------------------------------------------------------------*/
+void
+NPT_PosixQueue::Abort()
+{
+    pthread_cond_t abort_condition;
+    pthread_cond_init(&abort_condition, NULL);
+
+    struct timespec timed;
+    GetTimeOut(20, timed);
+
+    // acquire mutex
+    if (pthread_mutex_lock(&m_Mutex)) {
+        return;
+    }
+
+    // tell other threads that they should exit immediately
+    m_Aborting = true;
+
+    // notify clients
+    pthread_cond_broadcast(&m_CanPopCondition);
+    pthread_cond_broadcast(&m_CanPushCondition);
+
+    // wait for all waiters to exit
+    while (m_PoppersWaitingCount > 0 || m_PushersWaitingCount > 0) {
+        pthread_cond_timedwait(&abort_condition,
+                               &m_Mutex,
+                               &timed);
+    }
+    
+    pthread_mutex_unlock(&m_Mutex);
+}
+
+/*----------------------------------------------------------------------
+|       NPT_PosixQueue::GetTimeOut
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_PosixQueue::Push(NPT_QueueItem* item, NPT_Timeout timeout)
+NPT_PosixQueue::GetTimeOut(NPT_Timeout timeout, struct timespec& timed)
 {
-    struct timespec timed;
     if (timeout != NPT_TIMEOUT_INFINITE) {
         // get current time from system
         struct timeval now;
@@ -101,6 +142,19 @@ NPT_PosixQueue::Push(NPT_QueueItem* item, NPT_Timeout timeout)
         // setup timeout
         timed.tv_sec  = now.tv_sec;
         timed.tv_nsec = now.tv_usec * 1000;
+    }
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|       NPT_PosixQueue::Push
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_PosixQueue::Push(NPT_QueueItem* item, NPT_Timeout timeout)
+{
+    struct timespec timed;
+    if (timeout != NPT_TIMEOUT_INFINITE) {
+        NPT_CHECK(GetTimeOut(timeout, timed));
     }
 
     // lock the mutex that protects the list
@@ -126,6 +180,11 @@ NPT_PosixQueue::Push(NPT_QueueItem* item, NPT_Timeout timeout)
                     result = NPT_ERROR_TIMEOUT;
                     break;
                 }
+            }
+
+            if (m_Aborting) {
+                result = NPT_ERROR_INTERRUPTED;
+                break;
             }
         }
     }
@@ -154,21 +213,7 @@ NPT_PosixQueue::Pop(NPT_QueueItem*& item, NPT_Timeout timeout)
 {
     struct timespec timed;
     if (timeout != NPT_TIMEOUT_INFINITE) {
-        // get current time from system
-        struct timeval now;
-        if (gettimeofday(&now, NULL)) {
-            return NPT_FAILURE;
-        }
-
-        now.tv_usec += timeout * 1000;
-        if (now.tv_usec >= 1000000) {
-            now.tv_sec += now.tv_usec / 1000000;
-            now.tv_usec = now.tv_usec % 1000000;
-        }
-
-        // setup timeout
-        timed.tv_sec  = now.tv_sec;
-        timed.tv_nsec = now.tv_usec * 1000;
+        NPT_CHECK(GetTimeOut(timeout, timed));
     }
 
     // lock the mutex that protects the list
@@ -194,6 +239,11 @@ NPT_PosixQueue::Pop(NPT_QueueItem*& item, NPT_Timeout timeout)
                     break;
                 }
             }
+            
+            if (m_Aborting) {
+                result = NPT_ERROR_INTERRUPTED;
+                break;
+            }
         }
     } else {
         result = m_Items.PopHead(item);
@@ -218,21 +268,7 @@ NPT_PosixQueue::Peek(NPT_QueueItem*& item, NPT_Timeout timeout)
 {
     struct timespec timed;
     if (timeout != NPT_TIMEOUT_INFINITE) {
-        // get current time from system
-        struct timeval now;
-        if (gettimeofday(&now, NULL)) {
-            return NPT_FAILURE;
-        }
-
-        now.tv_usec += timeout * 1000;
-        if (now.tv_usec >= 1000000) {
-            now.tv_sec += now.tv_usec / 1000000;
-            now.tv_usec = now.tv_usec % 1000000;
-        }
-
-        // setup timeout
-        timed.tv_sec  = now.tv_sec;
-        timed.tv_nsec = now.tv_usec * 1000;
+        NPT_CHECK(GetTimeOut(timeout, timed));
     }
 
     // lock the mutex that protects the list
@@ -258,6 +294,11 @@ NPT_PosixQueue::Peek(NPT_QueueItem*& item, NPT_Timeout timeout)
                     result = NPT_ERROR_TIMEOUT;
                     break;
                 }
+            }
+
+            if (m_Aborting) {
+                result = NPT_ERROR_INTERRUPTED;
+                break;
             }
 
             head = m_Items.GetFirstItem();

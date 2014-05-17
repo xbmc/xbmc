@@ -76,9 +76,9 @@ NPT_DateTime::GetLocalTimeZone()
 
     localtime_r(&epoch, &tm_local);
 
-#if defined(__CYGWIN__) || defined(_MSC_VER)
-     return (int)timezone/60;
+#if defined(__CYGWIN__)
+     return (NPT_Int32)timezone/60;
 #else
-     return tm_local.tm_gmtoff/60;
+     return (NPT_Int32)tm_local.tm_gmtoff/60;
 #endif
 }

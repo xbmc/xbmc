@@ -184,7 +184,7 @@ class PLT_MediaObject
 protected:
     NPT_IMPLEMENT_DYNAMIC_CAST(PLT_MediaObject)
 
-    PLT_MediaObject() {}
+    PLT_MediaObject() : m_Restricted(true) {}
 
 public:
     virtual ~PLT_MediaObject() {}

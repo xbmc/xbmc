@@ -84,7 +84,7 @@ PLT_MediaRenderer::~PLT_MediaRenderer()
 NPT_Result
 PLT_MediaRenderer::SetupServices()
 {
-    PLT_Service* service;
+    NPT_Reference<PLT_Service> service;
 
     {
         /* AVTransport */
@@ -95,7 +95,7 @@ PLT_MediaRenderer::SetupServices()
             "AVTransport",
             "urn:schemas-upnp-org:metadata-1-0/AVT/");
         NPT_CHECK_FATAL(service->SetSCPDXML((const char*) RDR_AVTransportSCPD));
-        NPT_CHECK_FATAL(AddService(service));
+        NPT_CHECK_FATAL(AddService(service.AsPointer()));
 
         service->SetStateVariableRate("LastChange", NPT_TimeInterval(0.2f));
         service->SetStateVariable("A_ARG_TYPE_InstanceID", "0"); 
@@ -148,6 +148,9 @@ PLT_MediaRenderer::SetupServices()
         // GetTransportSettings
         service->SetStateVariable("CurrentPlayMode", "NORMAL");
         service->SetStateVariable("CurrentRecordQualityMode", "NOT_IMPLEMENTED");
+        
+        service.Detach();
+        service = NULL;
     }
 
     {
@@ -158,13 +161,16 @@ PLT_MediaRenderer::SetupServices()
             "urn:upnp-org:serviceId:ConnectionManager",
             "ConnectionManager");
         NPT_CHECK_FATAL(service->SetSCPDXML((const char*) RDR_ConnectionManagerSCPD));
-        NPT_CHECK_FATAL(AddService(service));
+        NPT_CHECK_FATAL(AddService(service.AsPointer()));
 
         service->SetStateVariable("CurrentConnectionIDs", "0");
 
         // put all supported mime types here instead
         service->SetStateVariable("SinkProtocolInfo", "http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVMED_PRO,http-get:*:video/x-ms-asf:DLNA.ORG_PN=MPEG4_P2_ASF_SP_G726,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVMED_FULL,http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_MED,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVMED_BASE,http-get:*:audio/L16;rate=44100;channels=1:DLNA.ORG_PN=LPCM,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_PAL,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_NTSC,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVHIGH_PRO,http-get:*:audio/L16;rate=44100;channels=2:DLNA.ORG_PN=LPCM,http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_SM,http-get:*:video/x-ms-asf:DLNA.ORG_PN=VC1_ASF_AP_L1_WMA,http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMDRM_WMABASE,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVHIGH_FULL,http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMAFULL,http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMABASE,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVSPLL_BASE,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_NTSC_XAC3,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMDRM_WMVSPLL_BASE,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVSPML_BASE,http-get:*:video/x-ms-asf:DLNA.ORG_PN=MPEG4_P2_ASF_ASP_L5_SO_G726,http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_LRG,http-get:*:audio/mpeg:DLNA.ORG_PN=MP3,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_PAL_XAC3,http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMAPRO,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG1,http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_TN,http-get:*:video/x-ms-asf:DLNA.ORG_PN=MPEG4_P2_ASF_ASP_L4_SO_G726,http-get:*:audio/L16;rate=48000;channels=2:DLNA.ORG_PN=LPCM,http-get:*:audio/mpeg:DLNA.ORG_PN=MP3X,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVSPML_MP3,http-get:*:video/x-ms-wmv:*");
         service->SetStateVariable("SourceProtocolInfo", "");
+        
+        service.Detach();
+        service = NULL;
     }
 
     {
@@ -176,7 +182,7 @@ PLT_MediaRenderer::SetupServices()
             "RenderingControl",
             "urn:schemas-upnp-org:metadata-1-0/RCS/");
         NPT_CHECK_FATAL(service->SetSCPDXML((const char*) RDR_RenderingControlSCPD));
-        NPT_CHECK_FATAL(AddService(service));
+        NPT_CHECK_FATAL(AddService(service.AsPointer()));
 
         service->SetStateVariableRate("LastChange", NPT_TimeInterval(0.2f));
 
@@ -188,6 +194,9 @@ PLT_MediaRenderer::SetupServices()
         service->SetStateVariableExtraAttribute("VolumeDB", "Channel", "Master");
 
         service->SetStateVariable("PresetNameList", "FactoryDefaults");
+        
+        service.Detach();
+        service = NULL;
     }
 
     return NPT_SUCCESS;

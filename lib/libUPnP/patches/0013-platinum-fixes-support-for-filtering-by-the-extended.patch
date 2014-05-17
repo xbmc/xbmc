@@ -1,0 +1,71 @@
+From 38538aa36eaf64d7bcff662735ae9b5a0c1db08c Mon Sep 17 00:00:00 2001
+From: Alasdair Campbell <alcoheca@gmail.com>
+Date: Thu, 25 Oct 2012 11:59:46 +0100
+Subject: [PATCH 13/24] platinum: fixes support for filtering by the extended
+ properties we need
+
+---
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp         | 6 ++++++
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp    | 1 +
+ .../Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h       | 2 +-
+ 3 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
+index 2c20b25..6ad2ec4 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
+@@ -92,6 +92,8 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
+             mask |= PLT_FILTER_MASK_ARTIST;
+         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ACTOR, len, true) == 0) {
+             mask |= PLT_FILTER_MASK_ACTOR;
++        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_DIRECTOR, len, true) == 0) {
++            mask |= PLT_FILTER_MASK_DIRECTOR;
+         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_AUTHOR, len, true) == 0) {
+             mask |= PLT_FILTER_MASK_AUTHOR;       
+         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_DATE, len, true) == 0) {
+@@ -105,6 +107,8 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
+             mask |= PLT_FILTER_MASK_ALBUMARTURI;
+         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_DESCRIPTION, len, true) == 0) {
+             mask |= PLT_FILTER_MASK_DESCRIPTION;
++        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_LONGDESCRIPTION, len, true) == 0) {
++            mask |= PLT_FILTER_MASK_LONGDESCRIPTION;
+         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ORIGINALTRACK, len, true) == 0) {
+             mask |= PLT_FILTER_MASK_ORIGINALTRACK;
+         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_SEARCHABLE, len, true) == 0) {
+@@ -123,6 +127,8 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
+             mask |= PLT_FILTER_MASK_SERIESTITLE;
+         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_EPISODE, len, true) == 0) {
+             mask |= PLT_FILTER_MASK_EPISODE;
++        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RATING, len, true) == 0) {
++            mask |= PLT_FILTER_MASK_RATING;
+         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES, len, true) == 0) {
+             mask |= PLT_FILTER_MASK_RES;
+         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_DURATION, len, true) == 0 ||
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+index 3416112..b10d75a 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+@@ -171,6 +171,7 @@ PLT_MediaObject::Reset()
+     m_People.actors.Clear();
+     m_People.artists.Clear();    
+     m_People.authors.Clear();
++    m_People.directors.Clear();
+ 
+     m_Affiliation.album     = "";
+     m_Affiliation.genres.Clear();
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+index 0fe43b5..e8cb7c6 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+@@ -118,7 +118,7 @@ protected:
+                           NPT_Int32                index, 
+                           NPT_Int32                count,
+                           bool                     browse_metadata = false,
+-                          const char*              filter = "dc:date,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:album,upnp:artist,upnp:author,searchable,childCount", // explicitely specify res otherwise WMP won't return a URL!
++                          const char*              filter = "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,searchable,childCount", // explicitely specify res otherwise WMP won't return a URL!
+                           const char*              sort = "");
+ private:
+     NPT_Result Find(const char* ip, PLT_DeviceDataReference& device);
+-- 
+1.7.11.msysgit.0
+

@@ -1,0 +1,13 @@
+### Compiler settings
+#LoadTool('gcc-generic', env, gcc_cross_prefix='pnacl', gcc_strict=False)
+env['ENV']['PATH'] = os.environ['PATH'] + ':' + env['ENV']['PATH']
+
+env['CC']     = 'pnacl-clang'
+env['CXX']    = 'pnacl-clang++'
+env['LINK']   = 'pnacl-clang++'
+env['RANLIB'] = 'pnacl-ranlib'
+env['AR']     = 'pnacl-ar'
+
+### Neptune System Files
+env['NPT_SYSTEM_SOURCES']={'System/StdC':'*.cpp', 'System/Posix':'NptPosixThreads.cpp NptPosixSystem.cpp', 'System/Nacl':'*.cpp', 'System/Null':'NptNullSerialPort.cpp'}
+env['NPT_EXTRA_LIBS']=['m', 'pthread']

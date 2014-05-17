@@ -1,0 +1,26 @@
+From 058d7557b61afc45d83f98477f3ef5d1ab6cb571 Mon Sep 17 00:00:00 2001
+From: Alasdair Campbell <alcoheca@gmail.com>
+Date: Thu, 11 Oct 2012 13:22:35 +0100
+Subject: [PATCH 12/24] platinum: increase number of requested items per
+ iteration. gives 2-3 times speed up.
+
+---
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp
+index 96c36df..24219ff 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp
+@@ -262,7 +262,7 @@ PLT_SyncMediaBrowser::BrowseSync(PLT_DeviceDataReference&      device,
+             device,
+             (const char*)object_id,
+             index,
+-            metadata?1:30, // DLNA recommendations for browsing children is no more than 30 at a time
++            metadata?1:200, // DLNA recommendations for browsing children is no more than 30 at a time
+             metadata);		
+         NPT_CHECK_LABEL_WARNING(res, done);
+         
+-- 
+1.7.11.msysgit.0
+

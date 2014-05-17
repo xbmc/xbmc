@@ -141,7 +141,7 @@ public:
     PLT_DeviceMapFinderByIp(const char* ip) : m_IP(ip) {}
 
     bool operator()(const PLT_DeviceMapEntry* const& entry) const {
-        PLT_DeviceDataReference device = entry->GetValue();
+        const PLT_DeviceDataReference& device = entry->GetValue();
         return (device->GetURLBase().GetHost() == m_IP);
     }
 

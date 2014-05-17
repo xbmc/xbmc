@@ -162,8 +162,8 @@ int asn1_get_private_key(const uint8_t *buf, int len, RSA_CTX **rsa_ctx)
         return X509_INVALID_PRIV_KEY;
     }
 
-    /* initialise the RNG */
-    RNG_initialize(buf, len);
+    /* Use the private key to mix up the RNG if possible. */
+    RNG_custom_init(buf, len);
 
     mod_len = asn1_get_int(buf, &offset, &modulus);
     pub_len = asn1_get_int(buf, &offset, &pub_exp);
@@ -300,38 +300,38 @@ end_oid:
 static int asn1_get_printable_str(const uint8_t *buf, int *offset, char **str)
 {
     int len = X509_NOT_OK;
-    int string_type = buf[*offset]; /* GBG */
+    int asn1_type = buf[*offset];
     
     /* some certs have this awful crud in them for some reason */
-    if (string_type != ASN1_PRINTABLE_STR &&  
-        string_type != ASN1_TELETEX_STR   &&  
-        string_type != ASN1_IA5_STR       &&  
-        string_type != ASN1_UNICODE_STR   &&
-        string_type != ASN1_UTF8_STR      &&
-        string_type != ASN1_UNIVERSAL_STR)
+    if (asn1_type != ASN1_PRINTABLE_STR &&  
+        asn1_type != ASN1_PRINTABLE_STR2 &&  
+        asn1_type != ASN1_TELETEX_STR   &&  
+        asn1_type != ASN1_IA5_STR       &&  
+        asn1_type != ASN1_UNICODE_STR   &&
+        asn1_type != ASN1_UNIVERSAL_STR)
         goto end_pnt_str;
 
-        (*offset)++;
-        len = get_asn1_length(buf, offset);
+    (*offset)++;
+    len = get_asn1_length(buf, offset);
 
-        if (string_type == ASN1_UNICODE_STR)
-        {
-            int i;
-            *str = (char *)malloc(len/2+1);     /* allow for null */
+    if (asn1_type == ASN1_UNICODE_STR)
+    {
+        int i;
+        *str = (char *)malloc(len/2+1);     /* allow for null */
 
-            for (i = 0; i < len; i += 2)
-                (*str)[i/2] = buf[*offset + i + 1];
+        for (i = 0; i < len; i += 2)
+            (*str)[i/2] = buf[*offset + i + 1];
 
-            (*str)[len/2] = 0;                  /* null terminate */
-        }
-        else
-        {
-            *str = (char *)malloc(len+1);       /* allow for null */
-            memcpy(*str, &buf[*offset], len);
-            (*str)[len] = 0;                    /* null terminate */
-        }
+        (*str)[len/2] = 0;                  /* null terminate */
+    }
+    else
+    {
+        *str = (char *)malloc(len+1);       /* allow for null */
+        memcpy(*str, &buf[*offset], len);
+        (*str)[len] = 0;                    /* null terminate */
+    }
 
-        *offset += len;
+    *offset += len;
 
 end_pnt_str:
     return len;
@@ -390,7 +390,7 @@ asn1_oid_to_string(const uint8_t *oid, int len)
     
     /* other values */
     {
-        unsigned long value = 0;
+        unsigned int /* GBG long */ value = 0;
         for (i=1; i<len; i++) {
             value = (value<<7) + (oid[i]&0x7F);
             if ((oid[i]&0x80) == 0) {

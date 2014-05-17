@@ -270,6 +270,7 @@ public:
     NPT_Result Play(PLT_DeviceDataReference&  device, NPT_UInt32 instance_id, NPT_String speed, void* userdata);
     NPT_Result Previous(PLT_DeviceDataReference& device, NPT_UInt32 instance_id, void* userdata);
     NPT_Result Seek(PLT_DeviceDataReference&  device, NPT_UInt32 instance_id, NPT_String unit, NPT_String target, void* userdata);
+    bool       CanSetNextAVTransportURI(PLT_DeviceDataReference& device);
     NPT_Result SetAVTransportURI(PLT_DeviceDataReference& device, NPT_UInt32 instance_id, const char* uri, const char* metadata, void* userdata);
     NPT_Result SetNextAVTransportURI(PLT_DeviceDataReference& device, NPT_UInt32 instance_id, const char* next_uri, const char* next_metadata, void* userdata);
     NPT_Result SetPlayMode(PLT_DeviceDataReference&  device, NPT_UInt32 instance_id, NPT_String new_play_mode, void* userdata);

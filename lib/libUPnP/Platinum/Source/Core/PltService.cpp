@@ -78,7 +78,6 @@ PLT_Service::~PLT_Service()
  {
      m_ActionDescs.Apply(NPT_ObjectDeleter<PLT_ActionDesc>());
      m_StateVars.Apply(NPT_ObjectDeleter<PLT_StateVariable>());
-     m_Subscribers.Apply(NPT_ObjectDeleter<PLT_EventSubscriber>());
 
      m_ActionDescs.Clear();
      m_StateVars.Clear();
@@ -415,7 +414,7 @@ PLT_ActionDesc*
 PLT_Service::FindActionDesc(const char* name)
 {
     PLT_ActionDesc* action = NULL;
-    NPT_ContainerFind(m_ActionDescs, PLT_ActionDescNameFinder(this, name), action);
+    NPT_ContainerFind(m_ActionDescs, PLT_ActionDescNameFinder(name), action);
     return action;
 }
 
@@ -525,7 +524,7 @@ PLT_Service::IncStateVariable(const char* name)
 |   PLT_Service::ProcessNewSubscription
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_Service::ProcessNewSubscription(PLT_TaskManager*         task_manager,
+PLT_Service::ProcessNewSubscription(PLT_TaskManagerReference task_manager,
                                     const NPT_SocketAddress& addr, 
                                     const NPT_String&        callback_urls, 
                                     int                      timeout, 
@@ -559,7 +558,7 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*         task_manager,
     PLT_UPnPMessageHelper::GenerateGUID(sid);
     sid = "uuid:" + sid;
 
-    PLT_EventSubscriber* subscriber = new PLT_EventSubscriber(task_manager, this, sid, timeout);
+    PLT_EventSubscriberReference subscriber(new PLT_EventSubscriber(task_manager, this, sid, timeout));
     // parse the callback URLs
     bool reachable = false;
     if (callback_urls[0] == '<') {
@@ -608,8 +607,10 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*         task_manager,
 
         // schedule a recurring event notification task if not running already
         if (!m_EventTask) {
-            m_EventTask = new PLT_ServiceEventTask(this);
-            task_manager->StartTask(m_EventTask);
+            PLT_ServiceEventTask *task = new PLT_ServiceEventTask(this);
+            NPT_CHECK_SEVERE(task_manager->StartTask(task));
+            
+            m_EventTask = task;
         }
 
         m_Subscribers.Add(subscriber);
@@ -619,7 +620,6 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*         task_manager,
 
 cleanup:
     response.SetStatus(412, "Precondition Failed");
-    delete subscriber;
     return NPT_FAILURE;
 }
 
@@ -639,7 +639,7 @@ PLT_Service::ProcessRenewSubscription(const NPT_SocketAddress& addr,
         sid.GetChars());
 
     // first look if we don't have a subscriber with same callbackURL
-    PLT_EventSubscriber* subscriber = NULL;
+    PLT_EventSubscriberReference subscriber;
     if (NPT_SUCCEEDED(NPT_ContainerFind(m_Subscribers, 
                                         PLT_EventSubscriberFinderBySID(sid), 
                                         subscriber))) {
@@ -660,7 +660,6 @@ PLT_Service::ProcessRenewSubscription(const NPT_SocketAddress& addr,
         } else {
             NPT_LOG_FINE_1("Subscriber \"%s\" didn't renew in time", (const char*)subscriber->GetSID());
             m_Subscribers.Remove(subscriber);
-            delete subscriber;
         }
     }
 
@@ -682,7 +681,7 @@ PLT_Service::ProcessCancelSubscription(const NPT_SocketAddress& /* addr */,
     NPT_AutoLock lock(m_Lock);
 
     // first look if we don't have a subscriber with same callbackURL
-    PLT_EventSubscriber* sub = NULL;
+    PLT_EventSubscriberReference sub;
     if (NPT_SUCCEEDED(NPT_ContainerFind(m_Subscribers, 
                                         PLT_EventSubscriberFinderBySID(sid), 
                                         sub))) {
@@ -692,7 +691,6 @@ PLT_Service::ProcessCancelSubscription(const NPT_SocketAddress& /* addr */,
 
         // remove sub
         m_Subscribers.Remove(sub);
-        delete sub;
         return NPT_SUCCESS;
     }
 
@@ -815,9 +813,9 @@ PLT_Service::NotifyChanged()
     if (vars_ready.GetItemCount() == 0) return NPT_SUCCESS;
     
     // send vars that are ready to go and remove old subscribers 
-    NPT_List<PLT_EventSubscriber*>::Iterator sub_iter = m_Subscribers.GetFirstItem();
+    NPT_List<PLT_EventSubscriberReference>::Iterator sub_iter = m_Subscribers.GetFirstItem();
     while (sub_iter) {
-        PLT_EventSubscriber* sub = *sub_iter;
+        PLT_EventSubscriberReference sub = *sub_iter;
 
         NPT_TimeStamp now, expiration;
         NPT_System::GetCurrentTimeStamp(now);
@@ -835,7 +833,6 @@ PLT_Service::NotifyChanged()
         }
             
         m_Subscribers.Erase(sub_iter++);
-        delete sub;
     }
 
     // some state variables must be cleared immediatly after sending

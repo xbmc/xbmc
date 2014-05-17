@@ -1,0 +1,26 @@
+From 091b91cdba14242c965dc5a41d74ba00386a5d91 Mon Sep 17 00:00:00 2001
+From: Alasdair Campbell <alcoheca@gmail.com>
+Date: Fri, 14 Sep 2012 11:12:03 +0100
+Subject: [PATCH 07/24] platinum: also support sort criterias in format
+ res@<property>
+
+---
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.cpp
+index b8ce964..e275069 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.cpp
+@@ -342,6 +342,8 @@ PLT_MediaServer::ParseSort(const NPT_String& sort, NPT_List<NPT_String>& list)
+     NPT_List<NPT_String>::Iterator property = list.GetFirstItem();
+     while (property) {
+         NPT_List<NPT_String> parsed_property = (*property).Split(":");
++        if (parsed_property.GetItemCount() != 2)
++          parsed_property = (*property).Split("@");
+         if (parsed_property.GetItemCount() != 2 || 
+             (!(*property).StartsWith("-") && !(*property).StartsWith("+"))) {
+             NPT_LOG_WARNING_1("Invalid SortCriteria property %s", (*property).GetChars());
+-- 
+1.7.11.msysgit.0
+

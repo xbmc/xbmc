@@ -252,7 +252,7 @@ PLT_SyncMediaBrowser::BrowseSync(PLT_DeviceDataReference&      device,
     if (cache && NPT_SUCCEEDED(m_Cache.Get(device->GetUUID(), object_id, list))) return NPT_SUCCESS;
 
     do {	
-        PLT_BrowseDataReference browse_data(new PLT_BrowseData(), true);
+        PLT_BrowseDataReference browse_data(new PLT_BrowseData());
 
         // send off the browse packet.  Note that this will
         // not block.  There is a call to WaitForResponse in order

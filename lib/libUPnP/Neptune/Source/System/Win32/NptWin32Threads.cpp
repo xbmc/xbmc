@@ -198,19 +198,23 @@ class NPT_Win32SharedVariable : public NPT_SharedVariableInterface
     int        GetValue();
     NPT_Result WaitUntilEquals(int value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE);
     NPT_Result WaitWhileEquals(int value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE);
+	NPT_Result WaitWhileOrUntilEquals(int value, NPT_Timeout timeout, bool until);
 
  private:
     // members
-    volatile int   m_Value;
-    NPT_Mutex      m_Lock;
-    NPT_Win32Event m_Event;
+    volatile int          m_Value;
+	volatile unsigned int m_Waiters;
+    NPT_Mutex             m_Lock;
+    NPT_Win32Event        m_Event;
 };
 
 /*----------------------------------------------------------------------
 |   NPT_Win32SharedVariable::NPT_Win32SharedVariable
 +---------------------------------------------------------------------*/
 NPT_Win32SharedVariable::NPT_Win32SharedVariable(int value) : 
-    m_Value(value)
+    m_Value(value),
+	m_Waiters(0),
+	m_Event(true)
 {
 }
 
@@ -230,7 +234,7 @@ NPT_Win32SharedVariable::SetValue(int value)
     m_Lock.Lock();
     if (value != m_Value) {
         m_Value = value;
-        m_Event.Signal();
+        if (m_Waiters) m_Event.Signal();
     }
     m_Lock.Unlock();
 }
@@ -246,26 +250,51 @@ NPT_Win32SharedVariable::GetValue()
 }
 
 /*----------------------------------------------------------------------
+|   NPT_Win32SharedVariable::WaitWhileOrUntilEquals
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_Win32SharedVariable::WaitWhileOrUntilEquals(int value, NPT_Timeout timeout, bool until)
+{
+    do {
+        m_Lock.Lock();
+        if (until) {
+			if (m_Value == value) break;
+		} else {
+			if (m_Value != value) break;
+		}
+		++m_Waiters;
+		m_Lock.Unlock();
+        
+        NPT_Result result = m_Event.Wait(timeout);
+		bool last_waiter = true;
+		m_Lock.Lock();
+		if (--m_Waiters == 0) {
+			m_Event.Reset();
+		} else {
+			last_waiter = false;
+		}
+		m_Lock.Unlock();
+
+        if (NPT_FAILED(result)) return result;
+
+		// FIXME: this is suboptimal, but we need it to ensure we don't busy-loop
+		if (!last_waiter) {
+			Sleep(10);
+		}
+    } while (true);
+
+    m_Lock.Unlock();
+    
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
 |   NPT_Win32SharedVariable::WaitUntilEquals
 +---------------------------------------------------------------------*/
 NPT_Result
 NPT_Win32SharedVariable::WaitUntilEquals(int value, NPT_Timeout timeout)
 {
-    do {
-        m_Lock.Lock();
-        if (m_Value == value) {
-            break;
-        }
-        m_Lock.Unlock();
-        {
-             NPT_Result result = m_Event.Wait(timeout);
-             if (NPT_FAILED(result)) return result;
-        }
-    } while (1);
-
-    m_Lock.Unlock();
-    
-    return NPT_SUCCESS;
+	return WaitWhileOrUntilEquals(value, timeout, true);
 }
 
 /*----------------------------------------------------------------------
@@ -274,21 +303,7 @@ NPT_Win32SharedVariable::WaitUntilEquals(int value, NPT_Timeout timeout)
 NPT_Result
 NPT_Win32SharedVariable::WaitWhileEquals(int value, NPT_Timeout timeout)
 {
-    do {
-        m_Lock.Lock();
-        if (m_Value != value) {
-            break;
-        }
-        m_Lock.Unlock();
-        {
-             NPT_Result result = m_Event.Wait(timeout);
-             if (NPT_FAILED(result)) return result;
-        }
-    } while (1);
-
-    m_Lock.Unlock();
-    
-    return NPT_SUCCESS;
+	return WaitWhileOrUntilEquals(value, timeout, false);
 }
 
 /*----------------------------------------------------------------------

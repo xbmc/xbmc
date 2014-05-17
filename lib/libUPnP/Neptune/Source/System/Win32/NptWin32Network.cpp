@@ -167,10 +167,9 @@ NPT_NetworkInterface::GetNetworkInterfaces(NPT_List<NPT_NetworkInterface*>& inte
         if (result == NO_ERROR) {
             break;
         } else {
-            if (result == ERROR_BUFFER_OVERFLOW) {
-                // free and try again
-                free(iface_list);
-            } else {
+            // free and try again
+            free(iface_list);
+            if (result != ERROR_BUFFER_OVERFLOW) {
                 return NPT_FAILURE;
             }
         }
@@ -239,6 +238,7 @@ NPT_NetworkInterface::GetNetworkInterfaces(NPT_List<NPT_NetworkInterface*>& inte
         interfaces.Add(iface_object);   
     }
 
+    free(iface_list);
     return NPT_SUCCESS;
 }
 #else

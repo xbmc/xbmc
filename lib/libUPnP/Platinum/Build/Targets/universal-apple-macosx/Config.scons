@@ -3,7 +3,7 @@ LoadTool('gcc-generic', env)
 ### Special for the MAC: universal flags
 universal_flags =  [('-arch', 'x86_64'), ('-arch', 'i386'), ('-isysroot', '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk'), '-mmacosx-version-min=10.5']
 #env.AppendUnique(CCFLAGS   = universal_flags + ['-fno-common', '-fno-stack-protector'])
-#env.AppendUnique(LINKFLAGS = universal_flags + [('-framework', 'SystemConfiguration'), ('-framework', 'Cocoa'), '-mmacosx-version-min=10.5'])
+env.AppendUnique(LINKFLAGS = [('-framework', 'SystemConfiguration'), ('-framework', 'Cocoa'), '-mmacosx-version-min=10.5'])
 
 ### Neptune System Files
-env['NPT_SYSTEM_SOURCES']={'System/StdC':'*.cpp', 'System/Bsd':'*.cpp', 'System/Posix':'*.cpp', 'System/Null':'NptNullSerialPort.cpp', 'System/Null':'NptNullAutoreleasePool.cpp'}
+env['NPT_SYSTEM_SOURCES']={'System/StdC':'*.cpp', 'System/Bsd':'*.cpp', 'System/Posix':'*.cpp', 'System/Null':'NptNullSerialPort.cpp', '/System/Apple':'*.mm'}

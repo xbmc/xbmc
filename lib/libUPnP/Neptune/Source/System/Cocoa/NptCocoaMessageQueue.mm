@@ -12,11 +12,7 @@
 +---------------------------------------------------------------------*/
 #include "NptConfig.h"
 
-#if !defined(TARGET_OS_IPHONE) || !TARGET_OS_IPHONE
-#include <Cocoa/Cocoa.h>
-#else
-#include <UIKit/UIKit.h> 
-#endif
+#import <Foundation/Foundation.h>
 #include "NptCocoaMessageQueue.h"
 
 /*----------------------------------------------------------------------
@@ -92,8 +88,7 @@ NPT_CocoaMessageQueue::QueueMessage(NPT_Message*        message,
                                     NPT_MessageHandler* handler)
 {
     // create a capsule to represent the message and handler
-    NPT_CocoaMessageCapsule* capsule = [NPT_CocoaMessageCapsule alloc];
-    [capsule initWithMessage: message andHandler: handler];
+    NPT_CocoaMessageCapsule* capsule = [[NPT_CocoaMessageCapsule alloc] initWithMessage: message andHandler: handler];
     
     // trigger the handling of the message on the main thread
     [capsule performSelectorOnMainThread: @selector(handle)

@@ -60,15 +60,9 @@ const unsigned int NPT_BSD_NETWORK_MAX_ADDR_LIST_LENGTH = 1024;
 |   MapGetAddrInfoErrorCode
 +---------------------------------------------------------------------*/
 static NPT_Result
-MapGetAddrInfoErrorCode(int error_code)
+MapGetAddrInfoErrorCode(int /*error_code*/)
 {
-    switch (error_code) {
-        case EAI_AGAIN:
-            return NPT_ERROR_TIMEOUT;
-            
-        default: 
-            return NPT_ERROR_HOST_UNKNOWN;
-    }
+    return NPT_ERROR_HOST_UNKNOWN;
 }
 
 /*----------------------------------------------------------------------

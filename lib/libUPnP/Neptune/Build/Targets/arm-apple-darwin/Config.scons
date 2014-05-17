@@ -1,11 +1,11 @@
-env['ENV']['PATH'] = ['/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin', '/Developer/usr/bin', '/usr/bin', '/bin', '/usr/sbin', '/sbin']
+LoadTool('gcc-generic', env, gcc_cross_prefix='llvm')
 
-### Load the tools
-LoadTool('gcc-generic', env)
-
-universal_flags =  [('-arch', 'armv6'), ('-isysroot', '/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS2.0.sdk'), '-miphoneos-version-min=2.0']
-env.AppendUnique(CCFLAGS   = universal_flags)
+env.AppendUnique(CPPFLAGS  = ['-emit-llvm', '-E', '-D__arm__', '-isystem', '/Developer/SDKs/iPhone/include'])
+#env['CXX']     = 'llvm-gcc'
+#env['LD']      = 'llc'
+#env['LINK']    = 'llc'
+#env['LDFLAGS'] = '-syslibroot,/Developer/SDKs/iPhone/heavenly,-lSystem,-lgcc_s_v6.1,-L/Developer/SDKs/iPhone/heavenly/usr/lib/dynamic-no-pic/crt1.o'
 
 ### Neptune System Files
-env['NPT_SYSTEM_SOURCES']={'System/StdC':'*.cpp', 'System/Bsd':'*.cpp', 'System/Posix':'*.cpp', 'System/Null':'NptNullSerialPort.cpp'}
+env['NPT_SYSTEM_SOURCES']={'System/StdC':'*.cpp', 'System/Bsd':'*.cpp', 'System/Posix':'*.cpp'}
 

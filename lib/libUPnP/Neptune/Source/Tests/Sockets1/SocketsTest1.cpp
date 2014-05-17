@@ -59,7 +59,7 @@ public:
 
     NPT_TcpServerSocket m_Socket;
     NPT_SharedVariable  m_Ready;
-    bool                m_Interrupted;
+    volatile bool       m_Interrupted;
 };
 
 /*----------------------------------------------------------------------
@@ -114,7 +114,8 @@ main(int /*argc*/, char** /*argv*/)
     NPT_TcpServerSocket* tcp_server = NULL;
     CancellerThread*     canceller  = NULL;
     
-    NPT_SocketAddress address(NPT_IpAddress(127,0,0,1), 10000);
+	NPT_SocketAddress address(NPT_IpAddress(127,0,0,1), 10000);
+#if 0
     result = RemoteIpAddress.ResolveName("www.google.com");
     CHECK(result == NPT_SUCCESS);
 
@@ -175,7 +176,8 @@ main(int /*argc*/, char** /*argv*/)
     NPT_Console::OutputF("[01] connect returns %d : %s\n", result, NPT_ResultText(result));
     CHECK(result == NPT_SUCCESS);
     delete tcp_client;
-    
+#endif
+
     for (int i=0; i<2; i++) {
         NPT_Console::OutputF("\n--- test for cancelled connection, shutdown=%d\n", i);
         address.SetIpAddress(NPT_IpAddress(1,1,1,1));

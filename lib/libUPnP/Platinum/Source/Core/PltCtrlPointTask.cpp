@@ -45,10 +45,12 @@
 +---------------------------------------------------------------------*/
 PLT_CtrlPointGetDescriptionTask::PLT_CtrlPointGetDescriptionTask(const NPT_HttpUrl& url,
                                                                  PLT_CtrlPoint*     ctrl_point,
-                                                                 NPT_TimeInterval   leasetime) :
+                                                                 NPT_TimeInterval   leasetime,
+                                                                 NPT_String         uuid) :
     PLT_HttpClientSocketTask(new NPT_HttpRequest(url, "GET", NPT_HTTP_PROTOCOL_1_1)), 
     m_CtrlPoint(ctrl_point),
-    m_LeaseTime(leasetime)
+    m_LeaseTime(leasetime),
+    m_UUID(uuid)
 {
 }
 
@@ -74,7 +76,8 @@ PLT_CtrlPointGetDescriptionTask::ProcessResponse(NPT_Result                    r
         request, 
         context, 
         response,
-        m_LeaseTime);
+        m_LeaseTime,
+        m_UUID);
 }
 
 /*----------------------------------------------------------------------
@@ -85,13 +88,6 @@ PLT_CtrlPointGetSCPDsTask::PLT_CtrlPointGetSCPDsTask(PLT_CtrlPoint*           ct
     PLT_HttpClientSocketTask(), 
     m_CtrlPoint(ctrl_point),
     m_RootDevice(root_device)
-{
-}
-
-/*----------------------------------------------------------------------
-|    PLT_CtrlPointGetSCPDsTask::~PLT_CtrlPointGetSCPDsTask
-+---------------------------------------------------------------------*/
-PLT_CtrlPointGetSCPDsTask::~PLT_CtrlPointGetSCPDsTask() 
 {
 }
 
@@ -146,7 +142,7 @@ PLT_CtrlPointInvokeActionTask::ProcessResponse(NPT_Result                    res
     NPT_COMPILER_UNUSED(request);
     NPT_COMPILER_UNUSED(context);
 
-    return m_CtrlPoint->ProcessActionResponse(res, response, m_Action, m_Userdata);
+    return m_CtrlPoint->ProcessActionResponse(res, request, context, response, m_Action, m_Userdata);
 }
 
 /*----------------------------------------------------------------------

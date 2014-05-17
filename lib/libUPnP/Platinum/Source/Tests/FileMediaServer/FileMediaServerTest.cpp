@@ -49,6 +49,7 @@ NPT_SET_LOCAL_LOGGER("platinum.media.server.file.test")
 struct Options {
     const char* path;
     const char* friendly_name;
+    const char* guid;
     NPT_UInt32  port;
 } Options;
 
@@ -58,7 +59,7 @@ struct Options {
 static void
 PrintUsageAndExit()
 {
-    fprintf(stderr, "usage: FileMediaServerTest [-f <friendly_name>] [-p <port>] [-b] <path>\n");
+    fprintf(stderr, "usage: FileMediaServerTest [-f <friendly_name>] [-p <port>] [-g <guid>] <path>\n");
     fprintf(stderr, "-f : optional upnp device friendly name\n");
     fprintf(stderr, "-p : optional http port\n");
     fprintf(stderr, "<path> : local path to serve\n");
@@ -76,11 +77,14 @@ ParseCommandLine(char** args)
     /* default values */
     Options.path     = NULL;
     Options.friendly_name = NULL;
+    Options.guid = NULL;
     Options.port = 0;
 
     while ((arg = *args++)) {
         if (!strcmp(arg, "-f")) {
             Options.friendly_name = *args++;
+        } else if (!strcmp(arg, "-g")) {
+            Options.guid = *args++;
         } else if (!strcmp(arg, "-p")) {
             if (NPT_FAILED(NPT_ParseInteger32(*args++, Options.port))) {
                 fprintf(stderr, "ERROR: invalid argument\n");
@@ -108,13 +112,13 @@ int
 main(int /* argc */, char** argv)
 {
     // setup Neptune logging
-    NPT_LogManager::GetDefault().Configure("plist:.level=INFO;.handlers=ConsoleHandler;.ConsoleHandler.colors=off;.ConsoleHandler.filter=42");
+    NPT_LogManager::GetDefault().Configure("plist:.level=FINE;.handlers=ConsoleHandler;.ConsoleHandler.colors=off;.ConsoleHandler.filter=42");
 
     /* parse command line */
     ParseCommandLine(argv+1);
 
-	/* for DLNA faster testing */
-	//PLT_Constants::GetInstance().m_DefaultDeviceLease = 30.;
+	/* for faster DLNA faster testing */
+    PLT_Constants::GetInstance().SetDefaultDeviceLease(NPT_TimeInterval(60.));
     
     PLT_UPnP upnp;
     PLT_DeviceHostReference device(
@@ -122,7 +126,7 @@ main(int /* argc */, char** argv)
             Options.path, 
             Options.friendly_name?Options.friendly_name:"Platinum UPnP Media Server",
             false,
-            "SAMEDEVICEGUID", // NULL for random ID
+            Options.guid, // NULL for random ID
             (NPT_UInt16)Options.port)
             );
 

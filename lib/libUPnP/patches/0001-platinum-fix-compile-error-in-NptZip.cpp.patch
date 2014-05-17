@@ -1,0 +1,25 @@
+From 9886ea3ec0cbdb198b31c8ece1b9a4100f4204b0 Mon Sep 17 00:00:00 2001
+From: montellese <montellese@xbmc.org>
+Date: Sat, 10 May 2014 10:05:06 +0200
+Subject: [PATCH 01/24] platinum: fix compile error in NptZip.cpp
+
+---
+ lib/libUPnP/Neptune/Source/Core/NptZip.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptZip.cpp b/lib/libUPnP/Neptune/Source/Core/NptZip.cpp
+index 463a07f..bed1e55 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptZip.cpp
++++ b/lib/libUPnP/Neptune/Source/Core/NptZip.cpp
+@@ -280,7 +280,7 @@ NPT_ZipFile::GetInputStream(Entry& entry, NPT_InputStreamReference& zip_stream,
+         return NPT_ERROR_NOT_SUPPORTED;
+     }
+ #else
+-    if (entry.m_CompressionMethod != NPT_ZIP_COMPRESSION_METHOD_NONE) {
++    if (entry.m_CompressionMethod != NPT_ZIP_FILE_COMPRESSION_METHOD_NONE) {
+         return NPT_ERROR_NOT_SUPPORTED;
+     }
+ #endif
+-- 
+1.7.11.msysgit.0
+

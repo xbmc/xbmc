@@ -1,0 +1,32 @@
+From a6f7512f1d377a65fc5bf1976431454780d53d73 Mon Sep 17 00:00:00 2001
+From: davilla <davilla@4pi.com>
+Date: Thu, 11 Apr 2013 13:22:36 -0400
+Subject: [PATCH 20/24] platinum: fixed compiler warning about unused var
+
+---
+ lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp b/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp
+index d38392e..e303cc6 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp
++++ b/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp
+@@ -211,6 +211,7 @@ PLT_StateVariable::ValidateValue(const char* value)
+             while (val) {
+                 val->Trim(" ");
+                 if (!m_AllowedValues.Find(NPT_StringFinder(*val))) {
++#if defined(NPT_CONFIG_ENABLE_LOGGING)
+                     NPT_LOG_WARNING_2("Invalid value of %s for state variable %s",
+                         (const char*)*val,
+                         (const char*)m_Name);
+@@ -218,6 +219,7 @@ PLT_StateVariable::ValidateValue(const char* value)
+                         NPT_String *val = *m_AllowedValues.GetItem(i);
+                         NPT_LOG_WARNING_1("Allowed: %s", (const char*)*val);
+                     }
++#endif
+                     return NPT_ERROR_INVALID_PARAMETERS;
+                 }
+                 ++val;
+-- 
+1.7.11.msysgit.0
+

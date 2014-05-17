@@ -37,6 +37,7 @@
 +---------------------------------------------------------------------*/
 #include "PltMicroMediaController.h"
 #include "PltLeaks.h"
+#include "PltDownloader.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -177,14 +178,20 @@ PLT_MicroMediaController::OnMSAdded(PLT_DeviceDataReference& device)
             "urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1", 
             "IsAuthorized", 
             action);
-        if (!action.IsNull()) PLT_SyncMediaBrowser::m_CtrlPoint->InvokeAction(action, 0);
+        if (!action.IsNull()) {
+            action->SetArgumentValue("DeviceID", "");
+            PLT_SyncMediaBrowser::m_CtrlPoint->InvokeAction(action, 0);
+        }
 
         PLT_SyncMediaBrowser::m_CtrlPoint->CreateAction(
             device, 
             "urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1", 
             "IsValidated", 
             action);
-        if (!action.IsNull()) PLT_SyncMediaBrowser::m_CtrlPoint->InvokeAction(action, 0);
+        if (!action.IsNull()) {
+            action->SetArgumentValue("DeviceID", "");
+            PLT_SyncMediaBrowser::m_CtrlPoint->InvokeAction(action, 0);
+        }
     }
 
     return true; 
@@ -232,6 +239,25 @@ PLT_MicroMediaController::OnMRRemoved(PLT_DeviceDataReference& device)
 }
 
 /*----------------------------------------------------------------------
+|   PLT_MicroMediaController::OnMRStateVariablesChanged
++---------------------------------------------------------------------*/
+void
+PLT_MicroMediaController::OnMRStateVariablesChanged(PLT_Service*                  service,
+                                                    NPT_List<PLT_StateVariable*>* vars)
+{
+    NPT_String uuid = service->GetDevice()->GetUUID();
+    NPT_List<PLT_StateVariable*>::Iterator var = vars->GetFirstItem();
+    while (var) {
+        printf("Received state var \"%s:%s:%s\" changes: \"%s\"\n",
+               (const char*)uuid,
+               (const char*)service->GetServiceID(),
+               (const char*)(*var)->GetName(),
+               (const char*)(*var)->GetValue());
+        ++var;
+    }
+}
+
+/*----------------------------------------------------------------------
 |   PLT_MicroMediaController::ChooseIDGetCurMediaServerFromTable
 +---------------------------------------------------------------------*/
 void
@@ -270,6 +296,7 @@ PLT_MicroMediaController::DoBrowse(const char* object_id, /* = NULL */
 {
     NPT_Result res = NPT_FAILURE;
     PLT_DeviceDataReference device;
+    
     GetCurMediaServer(device);
     if (!device.IsNull()) {
         NPT_String cur_object_id;
@@ -455,6 +482,78 @@ PLT_MicroMediaController::HandleCmd_info()
             }
         }
 
+        m_MostRecentBrowseResults = NULL;
+    }
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MicroMediaController::HandleCmd_download
++---------------------------------------------------------------------*/
+void
+PLT_MicroMediaController::HandleCmd_download()
+{
+    NPT_String              object_id;
+    PLT_StringMap           tracks;
+    PLT_DeviceDataReference device;
+    
+    // issue a browse
+    DoBrowse();
+    
+    if (!m_MostRecentBrowseResults.IsNull()) {
+        // create a map item id -> item title
+        NPT_List<PLT_MediaObject*>::Iterator item = m_MostRecentBrowseResults->GetFirstItem();
+        while (item) {
+            if (!(*item)->IsContainer()) {
+                tracks.Put((*item)->m_ObjectID, (*item)->m_Title);
+            }
+            ++item;
+        }
+        
+        // let the user choose which one
+        object_id = ChooseIDFromTable(tracks);
+        
+        if (object_id.GetLength()) {
+            // issue a browse with metadata
+            DoBrowse(object_id, true);
+            
+            // look back for the PLT_MediaItem in the results
+            PLT_MediaObject* track = NULL;
+            if (!m_MostRecentBrowseResults.IsNull() &&
+                NPT_SUCCEEDED(NPT_ContainerFind(*m_MostRecentBrowseResults, PLT_MediaItemIDFinder(object_id), track))) {
+                
+                if (track->m_Resources.GetItemCount() > 0) {
+                    printf("\tResource[0].uri: %s\n", track->m_Resources[0].m_Uri.GetChars());
+                    printf("\n");
+                    NPT_HttpUrl url(track->m_Resources[0].m_Uri.GetChars());
+                    if (url.IsValid()) {
+                        // Extract filename from URL
+                        NPT_String filename = NPT_FilePath::BaseName(url.GetPath(true).GetChars(), false);
+                        NPT_String extension = NPT_FilePath::FileExtension(url.GetPath(true).GetChars());
+                        printf("Downloading %s%s\n", filename.GetChars(), extension.GetChars());
+                        
+                        for (int i=0; i<3; i++) {
+                            NPT_String filepath = NPT_String::Format("%s_%d%s", filename.GetChars(), i, extension.GetChars());
+                            
+                            // Open file for writing
+                            NPT_File file(filepath);
+                            file.Open(NPT_FILE_OPEN_MODE_WRITE | NPT_FILE_OPEN_MODE_CREATE | NPT_FILE_OPEN_MODE_TRUNCATE);
+                            NPT_OutputStreamReference output;
+                            file.GetOutputStream(output);
+                            
+                            // trigger 3 download
+                            PLT_Downloader* downloader = new PLT_Downloader(url, output);
+                            NPT_TimeInterval delay(5.);
+                            m_DownloadTaskManager.StartTask(downloader, &delay);
+                        }
+                    }
+                } else {
+                    printf("No resources found");
+                }
+            } else {
+                printf("Couldn't find the track\n");
+            }
+        }
+        
         m_MostRecentBrowseResults = NULL;
     }
 }
@@ -688,6 +787,7 @@ PLT_MicroMediaController::HandleCmd_help()
     printf(" ls      -   list the contents of the current directory on the active \n");
     printf("             media server\n");
     printf(" info    -   display media info\n");
+    printf(" down    -   download media to current directory\n");
     printf(" cd      - * traverse down one level in the content tree on the active\n");
     printf("             media server\n");
     printf(" cd ..   -   traverse up one level in the content tree on the active\n");
@@ -732,6 +832,8 @@ PLT_MicroMediaController::ProcessCommandLoop()
             HandleCmd_ls();
         } else if (0 == strcmp(command, "info")) {
             HandleCmd_info();
+        } else if (0 == strcmp(command, "down")) {
+            HandleCmd_download();
         } else if (0 == strcmp(command, "cd")) {
             HandleCmd_cd(command);
         } else if (0 == strcmp(command, "cd ..")) {

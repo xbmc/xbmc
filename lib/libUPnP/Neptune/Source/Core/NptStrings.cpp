@@ -824,7 +824,7 @@ const NPT_String&
 NPT_String::Replace(char a, const char* str) 
 {
     // check args
-    if (m_Chars == NULL || a == '\0' || str == NULL || str[0] == '\0') return *this;
+    if (m_Chars == NULL || a == '\0' || str == NULL) return *this;
 
     // optimization
     if (NPT_StringLength(str) == 1) return Replace(a, str[0]);
@@ -1054,7 +1054,7 @@ NPT_String::TrimLeft(const char* chars)
 
     // shift chars to the left
     char* d = m_Chars;
-    GetBuffer()->SetLength(GetLength()-(s-d));
+    GetBuffer()->SetLength(GetLength()-(NPT_Size)(s-d));
     while ((*d++ = *s++)) {};
     return *this;
 }

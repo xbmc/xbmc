@@ -1,0 +1,39 @@
+From 60f546b6f4a54a399a0cd0cece84486b7018c477 Mon Sep 17 00:00:00 2001
+From: Alasdair Campbell <alcoheca@gmail.com>
+Date: Wed, 6 Jun 2012 17:04:31 +0100
+Subject: [PATCH 03/24] platinum: log allowed values with state variable
+ errors
+
+---
+ lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp b/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp
+index a772bbf..c3eb7cc 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp
++++ b/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp
+@@ -198,12 +198,16 @@ PLT_StateVariable::ValidateValue(const char* value)
+             NPT_List<NPT_String>::Iterator val = values.GetFirstItem();
+             while (val) {
+                 val->Trim(" ");
+-				if (!m_AllowedValues.Find(NPT_StringFinder(*val))) {
+-					NPT_LOG_WARNING_2("Invalid value of %s for state variable %s", 
+-						(const char*)*val,
+-						(const char*)m_Name);
++                if (!m_AllowedValues.Find(NPT_StringFinder(*val))) {
++                    NPT_LOG_WARNING_2("Invalid value of %s for state variable %s",
++                        (const char*)*val,
++                        (const char*)m_Name);
++                    for (unsigned long i=0; i < m_AllowedValues.GetItemCount(); i++) {
++                        NPT_String *val = *m_AllowedValues.GetItem(i);
++                        NPT_LOG_WARNING_1("Allowed: %s", (const char*)*val);
++                    }
+                     return NPT_ERROR_INVALID_PARAMETERS;
+-				}
++                }
+                 ++val;
+             }
+         }
+-- 
+1.7.11.msysgit.0
+
