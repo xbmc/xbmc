@@ -69,6 +69,11 @@ public:
     m_count++;
   }
 
+  void    Update(double error)
+  {
+    m_buffer += error * m_count;
+  }
+
   void    Flush()
   {
     m_buffer = 0.0f;

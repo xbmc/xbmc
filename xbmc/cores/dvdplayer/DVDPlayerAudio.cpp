@@ -703,6 +703,7 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
       {
         CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Dropping packet of %d ms", DVD_TIME_TO_MSEC(audioframe.duration));
         m_error += audioframe.duration;
+        m_errors.Update(audioframe.duration);
       }
     }
     else if(m_error > limit)
@@ -711,6 +712,7 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
       m_dvdAudio.AddPackets(audioframe);
       m_dvdAudio.AddPackets(audioframe);
       m_error -= audioframe.duration;
+      m_errors.Update(-audioframe.duration);
     }
     else
       m_dvdAudio.AddPackets(audioframe);
