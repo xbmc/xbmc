@@ -168,6 +168,8 @@ public:
   virtual void OnPlayBackSeek(int iTime, int seekOffset);
   virtual void OnPlayBackSeekChapter(int iChapter);
   virtual void OnPlayBackSpeedChanged(int iSpeed);
+  virtual void OnSetAudioStream(int stream);
+  virtual void OnSetSubtitleStream(int stream);
   bool PlayMedia(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const CStdString& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist, int track=0);

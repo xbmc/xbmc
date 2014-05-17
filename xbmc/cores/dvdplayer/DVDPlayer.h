@@ -204,7 +204,6 @@ public:
   virtual void SetSubTitleDelay(float fValue = 0.0f);
   virtual float GetSubTitleDelay();
   virtual int GetSubtitleCount();
-  virtual int GetSubtitle();
   virtual void GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info);
   virtual void SetSubtitle(int iStream);
   virtual bool GetSubtitleVisible();
@@ -212,7 +211,6 @@ public:
   virtual int  AddSubtitle(const CStdString& strSubPath);
 
   virtual int GetAudioStreamCount();
-  virtual int GetAudioStream();
   virtual void SetAudioStream(int iStream);
 
   virtual TextCacheStruct_t* GetTeletextCache();
@@ -329,6 +327,8 @@ protected:
   bool IsValidStream(CCurrentStream& stream);
   bool IsBetterStream(CCurrentStream& current, CDemuxStream* stream);
   bool CheckDelayedChannelEntry(void);
+  int GetAudioStream();
+  int GetSubtitle();
 
   bool OpenInputStream();
   bool OpenDemuxStream();

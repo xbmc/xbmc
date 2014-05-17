@@ -4360,6 +4360,16 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
 #endif
 }
 
+void CApplication::OnSetAudioStream(int stream)
+{
+  m_pPlayer->m_iAudioStream = stream;
+}
+
+void CApplication::OnSetSubtitleStream(int stream)
+{
+  m_pPlayer->m_iSubtitleStream = stream;
+}
+
 bool CApplication::IsPlayingFullScreenVideo() const
 {
   return m_pPlayer->IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo();

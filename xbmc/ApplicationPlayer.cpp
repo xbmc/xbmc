@@ -320,7 +320,7 @@ int CApplicationPlayer::GetAudioStream()
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    return player->GetAudioStream();
+    return m_iAudioStream;
   else
     return 0;
 }
@@ -329,7 +329,7 @@ int CApplicationPlayer::GetSubtitle()
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    return player->GetSubtitle();
+    return m_iSubtitleStream;
   else
     return 0;
 }
