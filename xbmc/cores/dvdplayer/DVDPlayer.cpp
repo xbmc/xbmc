@@ -534,8 +534,6 @@ CDVDPlayer::~CDVDPlayer()
 
 bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
-  try
-  {
     CLog::Log(LOGNOTICE, "DVDPlayer: Opening: %s", CURL::GetRedacted(file.GetPath()).c_str());
 
     // if playing a file close it first
@@ -571,12 +569,6 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
       return false;
 
     return true;
-  }
-  catch(...)
-  {
-    CLog::Log(LOGERROR, "%s - Exception thrown on open", __FUNCTION__);
-    return false;
-  }
 }
 
 bool CDVDPlayer::CloseFile(bool reopen)
@@ -716,8 +708,6 @@ bool CDVDPlayer::OpenDemuxStream()
 
   CLog::Log(LOGNOTICE, "Creating Demuxer");
 
-  try
-  {
     int attempts = 10;
     while(!m_bStop && attempts-- > 0)
     {
@@ -739,13 +729,6 @@ bool CDVDPlayer::OpenDemuxStream()
       CLog::Log(LOGERROR, "%s - Error creating demuxer", __FUNCTION__);
       return false;
     }
-
-  }
-  catch(...)
-  {
-    CLog::Log(LOGERROR, "%s - Exception thrown when opening demuxer", __FUNCTION__);
-    return false;
-  }
 
   m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
   m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NAV);
@@ -1338,8 +1321,6 @@ void CDVDPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
 {
     /* process packet if it belongs to selected stream. for dvd's don't allow automatic opening of streams*/
 
-    try
-    {
       if (CheckIsCurrent(m_CurrentAudio, pStream, pPacket))
         ProcessAudioData(pStream, pPacket);
       else if (CheckIsCurrent(m_CurrentVideo, pStream, pPacket))
@@ -1353,12 +1334,6 @@ void CDVDPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
         pStream->SetDiscard(AVDISCARD_ALL);
         CDVDDemuxUtils::FreeDemuxPacket(pPacket); // free it since we won't do anything with it
       }
-    }
-    catch(...)
-    {
-      CLog::Log(LOGERROR, "%s - Exception thrown when processing demux packet", __FUNCTION__);
-    }
-
 }
 
 void CDVDPlayer::CheckStreamChanges(CCurrentStream& current, CDemuxStream* stream)
@@ -2009,8 +1984,6 @@ void CDVDPlayer::SendPlayerMessage(CDVDMsg* pMsg, unsigned int target)
 
 void CDVDPlayer::OnExit()
 {
-  try
-  {
     CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit()");
 
     // set event to inform openfile something went wrong in case openfile is still waiting for this event
@@ -2033,14 +2006,6 @@ void CDVDPlayer::OnExit()
 
     m_messenger.End();
 
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s - Exception thrown when trying to close down player, memory leak will follow", __FUNCTION__);
-    m_pInputStream = NULL;
-    m_pDemuxer = NULL;
-  }
-
   m_bStop = true;
   // if we didn't stop playing, advance to the next item in xbmc's playlist
   if(m_PlayerOptions.identify == false)
@@ -2062,8 +2027,6 @@ void CDVDPlayer::HandleMessages()
   while (m_messenger.Get(&pMsg, 0) == MSGQ_OK)
   {
 
-    try
-    {
       if (pMsg->IsType(CDVDMsg::PLAYER_SEEK) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK)         == 0
                                              && m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK_CHAPTER) == 0)
       {
@@ -2373,11 +2336,6 @@ void CDVDPlayer::HandleMessages()
             m_State = state;
         }
       }
-    }
-    catch (...)
-    {
-      CLog::Log(LOGERROR, "%s - Exception thrown when handling message", __FUNCTION__);
-    }
 
     pMsg->Release();
   }
