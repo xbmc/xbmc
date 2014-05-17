@@ -89,6 +89,7 @@ ifeq ($(findstring osx,$(ARCH)),osx)
 .SUFFIXES : .m .mm
 
 SRCS+= Neptune/Source/System/Apple/NptAppleAutoreleasePool.mm
+SRCS+= Neptune/Source/System/Apple/NptAppleLogConfig.mm
 SRCS+= Neptune/Source/System/Cocoa/NptCocoaEnviroment.mm
 
 else
