@@ -5,7 +5,7 @@ DEPS=Makefile ../../Makefile.include.in
 
 # lib name, version
 LIBNAME=SDL_image
-VERSION=1.2.7
+VERSION=1.2.12
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
@@ -18,7 +18,7 @@ LIBDYLIB=$(PLATFORM)/.libs/lib$(LIBNAME).a
 all: .installed-$(PLATFORM)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):
-	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
+	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) https://www.libsdl.org/projects/SDL_image/release/$(ARCHIVE)
 
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)

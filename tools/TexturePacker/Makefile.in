@@ -18,9 +18,9 @@ CXXFLAGS_FOR_BUILD += \
   -I@abs_top_srcdir@/lib \
   -I@abs_top_srcdir@/xbmc \
   -I@abs_top_srcdir@/xbmc/linux \
-  $(shell pkg-config sdl SDL_image --cflags)
+  $(shell PATH="$(PATH)" pkg-config sdl SDL_image --cflags)
 
-LDFLAGS_FOR_BUILD += $(shell pkg-config sdl SDL_image --libs)  -llzo2
+LDFLAGS_FOR_BUILD += $(shell PATH="$(PATH)" pkg-config sdl SDL_image --libs)  -llzo2
 LDFLAGS_FOR_BUILD += -L@abs_top_srcdir@/lib/libsquish -lsquish-native
 
 ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
