@@ -102,6 +102,7 @@
 	<variable name="PlexPlayQueue">
 		<value condition="System.PlexPlayQueue(video)">Video</value>
 		<value condition="System.PlexPlayQueue(music)">Music</value>
+		<value condition="System.PlexPlayQueue(clip)">Clip</value>
 		<value condition="!System.PlexPlayQueue(any)">None</value>
 	</variable>
 	<variable name="HomeListSelectedItemType">
