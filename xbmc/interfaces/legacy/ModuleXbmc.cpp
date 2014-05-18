@@ -113,12 +113,6 @@ namespace XBMCAddon
       CApplicationMessenger::Get().ExecBuiltIn(function,wait);
     }
 
-    String executehttpapi(const char* httpcommand) 
-    {
-      XBMC_TRACE;
-      THROW_UNIMP("executehttpapi");
-    }
-
     String executeJSONRPC(const char* jsonrpccommand)
     {
       XBMC_TRACE;
