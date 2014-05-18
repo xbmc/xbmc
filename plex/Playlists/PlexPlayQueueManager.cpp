@@ -298,10 +298,12 @@ bool CPlexPlayQueueManager::getCurrentPlayQueue(CFileItemList& list)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 EPlexDirectoryType CPlexPlayQueueManager::getCurrentPlayQueueDirType() const
 {
-  CFileItemList list;
-  if (m_currentImpl && m_currentImpl->getCurrent(list))
+  const CFileItemList* list;
+  if (m_currentImpl)
   {
-    return list.GetPlexDirectoryType();
+    list = m_currentImpl->getCurrent();
+    if (list)
+      return list->GetPlexDirectoryType();
   }
 
   return PLEX_DIR_TYPE_UNKNOWN;

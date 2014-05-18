@@ -35,6 +35,7 @@ public:
                       const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions());
   virtual bool refreshCurrent();
   virtual bool getCurrent(CFileItemList& list);
+  virtual const CFileItemList* getCurrent() { return m_list.get(); }
   virtual void removeItem(const CFileItemPtr& item);
   virtual bool addItem(const CFileItemPtr& item, bool next);
   virtual int getCurrentID();

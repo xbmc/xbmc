@@ -56,6 +56,7 @@ public:
                       const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions()) = 0;
   virtual bool refreshCurrent() = 0;
   virtual bool getCurrent(CFileItemList& list) = 0;
+  virtual const CFileItemList* getCurrent() = 0;
   virtual void removeItem(const CFileItemPtr& item) = 0;
   virtual bool addItem(const CFileItemPtr& item, bool next) = 0;
   virtual int getCurrentID() = 0;
