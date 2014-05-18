@@ -14,6 +14,7 @@
 #include "guilib/GUIFontManager.h"
 #include "GUIInfoManager.h"
 #include "addons/AddonManager.h"
+#include "ApplicationMessenger.h"
 
 using namespace XFILE;
 
@@ -23,6 +24,7 @@ CGUIPlexScreenSaverPhoto::CGUIPlexScreenSaverPhoto() : CGUIDialog(WINDOW_DIALOG_
   m_needsScaling = false;
   m_animations.push_back(CAnimation::CreateFader(0, 100, 0, 700, ANIM_TYPE_WINDOW_OPEN));
   m_animations.push_back(CAnimation::CreateFader(100, 0, 0, 700, ANIM_TYPE_WINDOW_CLOSE));
+  m_loadType = LOAD_EVERY_TIME;
 
   m_renderOrder = INT_MAX;
   m_multiImage = NULL;
@@ -130,6 +132,14 @@ bool CGUIPlexScreenSaverPhoto::OnMessage(CGUIMessage &message)
       m_imageLabel = NULL;
 
       break;
+    }
+    case GUI_MSG_LABEL_BIND:
+    {
+      if (m_multiImage && message.GetControlId() == m_multiImage->GetID())
+      {
+        m_multiImage->OnMessage(message);
+        return true;
+      }
     }
 
   }
@@ -293,12 +303,10 @@ void CGUIPlexScreenSaverPhoto::OnJobComplete(unsigned int jobID, bool success, C
                                         CTextureInfo(),
                                         15000, 500, true, true, 0);
       m_multiImage->SetVisible(true);
-
       m_multiImage->SetAspectRatio(CAspectRatio(CAspectRatio::AR_KEEP));
 
       CGUIMessage msg(GUI_MSG_LABEL_BIND, 0, m_multiImage->GetID(), 0, 0, m_images.get());
-      m_multiImage->OnMessage(msg);
-
+      CApplicationMessenger::Get().SendGUIMessage(msg, GetID());
    }
   }
 }

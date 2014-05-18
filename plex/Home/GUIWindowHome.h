@@ -52,7 +52,8 @@ public:
   CGUIWindowHome(void);
   virtual ~CGUIWindowHome(void) {}
   virtual bool OnMessage(CGUIMessage& message);
-
+  void Render() { CGUIWindow::Render(); }
+  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) { CGUIWindow::Process(currentTime, dirtyregions); }
 
 private:
   virtual bool OnAction(const CAction &action);

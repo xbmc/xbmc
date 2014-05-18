@@ -33,10 +33,6 @@
 #include "utils/Job.h"
 #include "threads/CriticalSection.h"
 
-/* PLEX */
-#include "threads/SingleLock.h"
-/* END PLEX */
-
 /*!
  \ingroup controls
  \brief
@@ -69,7 +65,8 @@ public:
   /* PLEX */
   CStdString GetCurrentPlexLabel()
   {
-    CSingleLock lk(m_section);
+    if (m_files.size() < 1)
+      return "";
 
     std::string path = m_files[m_currentImage];
     if (m_plexLabels.find(path) != m_plexLabels.end())
