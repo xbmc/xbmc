@@ -91,16 +91,16 @@ void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *m
   if (flag & VideoLibrary)
   {
    if (strcmp(message, "OnScanFinished") == 0)
-     OnDatabaseUpdated("video");
+     OnScanFinished("video");
    else if (strcmp(message, "OnScanStarted") == 0)
-     OnDatabaseScanStarted("video");
+     OnScanStarted("video");
   }
   else if (flag & AudioLibrary)
   {
    if (strcmp(message, "OnScanFinished") == 0)
-     OnDatabaseUpdated("music");
+     OnScanFinished("music");
    else if (strcmp(message, "OnScanStarted") == 0)
-     OnDatabaseScanStarted("music");
+     OnScanStarted("music");
   }
   else if (flag & GUI)
   {
@@ -302,25 +302,25 @@ void XBPython::OnScreensaverDeactivated()
   }
 }
 
-void XBPython::OnDatabaseUpdated(const std::string &database)
+void XBPython::OnScanStarted(const std::string &library)
 {
   XBMC_TRACE;
   LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
   for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
     if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
-      (*it)->OnDatabaseUpdated(database);
+      (*it)->OnScanStarted(library);
   }
 }
 
-void XBPython::OnDatabaseScanStarted(const std::string &database)
+void XBPython::OnScanFinished(const std::string &library)
 {
   XBMC_TRACE;
   LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
   for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
     if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
-      (*it)->OnDatabaseScanStarted(database);
+      (*it)->OnScanFinished(library);
   }
 }
 
