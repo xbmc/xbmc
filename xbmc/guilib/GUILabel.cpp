@@ -23,7 +23,7 @@
 
 CGUILabel::CGUILabel(float posX, float posY, float width, float height, const CLabelInfo& labelInfo, CGUILabel::OVER_FLOW overflow)
     : m_label(labelInfo)
-    , m_textLayout(labelInfo.font, overflow == OVER_FLOW_WRAP, height)
+    , m_textLayout(labelInfo.resourceProvider, labelInfo.font, overflow == OVER_FLOW_WRAP, height)
     , m_scrolling(overflow == OVER_FLOW_SCROLL)
     , m_overflowType(overflow)
     , m_selected(false)

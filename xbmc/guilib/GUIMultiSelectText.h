@@ -21,6 +21,7 @@
  */
 
 #include "GUIButtonControl.h"
+#include "IResourceProvider.h"
 
 /*!
  \ingroup controls
@@ -72,7 +73,7 @@ protected:
   class CSelectableString
   {
   public:
-    CSelectableString(CGUIFont *font, const CStdString &text, bool selectable, const CStdString &clickAction);
+    CSelectableString(GUIResourceProviderPtr provider, CGUIFont *font, const CStdString &text, bool selectable, const CStdString &clickAction);
     CGUITextLayout m_text;
     float m_length;
     bool m_selectable;
