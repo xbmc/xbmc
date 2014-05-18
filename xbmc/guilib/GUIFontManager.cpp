@@ -42,7 +42,6 @@ using namespace std;
 
 GUIFontManager::GUIFontManager(void)
 {
-  m_fontsetUnicode=false;
   m_canReload = true;
 }
 
@@ -336,7 +335,6 @@ void GUIFontManager::Clear()
   m_vecFonts.clear();
   m_vecFontFiles.clear();
   m_vecFontInfo.clear();
-  m_fontsetUnicode=false;
 }
 
 void GUIFontManager::LoadFonts(const CStdString& strFontSet)
@@ -369,12 +367,8 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
         // Check if this is the fontset that we want
         if (idAttr != NULL && stricmp(strFontSet.c_str(), idAttr) == 0)
         {
-          m_fontsetUnicode=false;
           // Check if this is the a ttf fontset
           if (unicodeAttr != NULL && stricmp(unicodeAttr, "true") == 0)
-            m_fontsetUnicode=true;
-
-          if (m_fontsetUnicode)
           {
             LoadFonts(pChild->FirstChild());
             break;
@@ -485,89 +479,6 @@ bool GUIFontManager::OpenFontFile(CXBMCTinyXML& xmlDoc)
   }
 
   return true;
-}
-
-bool GUIFontManager::GetFirstFontSetUnicode(CStdString& strFontSet)
-{
-  strFontSet.clear();
-
-  // Load our font file
-  CXBMCTinyXML xmlDoc;
-  if (!OpenFontFile(xmlDoc))
-    return false;
-
-  TiXmlElement* pRootElement = xmlDoc.RootElement();
-  const TiXmlNode *pChild = pRootElement->FirstChild();
-
-  CStdString strValue = pChild->Value();
-  if (strValue == "fontset")
-  {
-    while (pChild)
-    {
-      strValue = pChild->Value();
-      if (strValue == "fontset")
-      {
-        const char* idAttr = ((TiXmlElement*) pChild)->Attribute("id");
-
-        const char* unicodeAttr = ((TiXmlElement*) pChild)->Attribute("unicode");
-
-        // Check if this is a fontset with a ttf attribute set to true
-        if (unicodeAttr != NULL && stricmp(unicodeAttr, "true") == 0)
-        {
-          //  This is the first ttf fontset
-          strFontSet=idAttr;
-          break;
-        }
-
-      }
-
-      pChild = pChild->NextSibling();
-    }
-
-    // If no fontset was loaded
-    if (pChild == NULL)
-      CLog::Log(LOGWARNING, "file doesnt have <fontset> with attribute unicode=\"true\"");
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "file doesnt have <fontset> in <fonts>, but rather %s", strValue.c_str());
-  }
-
-  return !strFontSet.empty();
-}
-
-bool GUIFontManager::IsFontSetUnicode(const CStdString& strFontSet)
-{
-  CXBMCTinyXML xmlDoc;
-  if (!OpenFontFile(xmlDoc))
-    return false;
-
-  TiXmlElement* pRootElement = xmlDoc.RootElement();
-  const TiXmlNode *pChild = pRootElement->FirstChild();
-
-  CStdString strValue = pChild->Value();
-  if (strValue == "fontset")
-  {
-    while (pChild)
-    {
-      strValue = pChild->Value();
-      if (strValue == "fontset")
-      {
-        const char* idAttr = ((TiXmlElement*) pChild)->Attribute("id");
-
-        const char* unicodeAttr = ((TiXmlElement*) pChild)->Attribute("unicode");
-
-        // Check if this is the fontset that we want
-        if (idAttr != NULL && stricmp(strFontSet.c_str(), idAttr) == 0)
-          return (unicodeAttr != NULL && stricmp(unicodeAttr, "true") == 0);
-
-      }
-
-      pChild = pChild->NextSibling();
-    }
-  }
-
-  return false;
 }
 
 void GUIFontManager::SettingOptionsFontsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)

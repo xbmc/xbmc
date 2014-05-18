@@ -76,10 +76,6 @@ public:
   void Clear();
   void FreeFontFile(CGUIFontTTFBase *pFont);
 
-  bool IsFontSetUnicode() const { return m_fontsetUnicode; }
-  bool IsFontSetUnicode(const CStdString& strFontSet);
-  bool GetFirstFontSetUnicode(CStdString& strFontSet);
-
   static void SettingOptionsFontsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
 
 protected:
@@ -92,7 +88,6 @@ protected:
   std::vector<CGUIFont*> m_vecFonts;
   std::vector<CGUIFontTTFBase*> m_vecFontFiles;
   std::vector<OrigFontInfo> m_vecFontInfo;
-  bool m_fontsetUnicode;
   RESOLUTION_INFO m_skinResolution;
   bool m_canReload;
 };
