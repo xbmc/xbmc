@@ -671,7 +671,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   CGUIControl::ActionMap actions;
 
   int pageControl = 0;
-  CGUIInfoColor colorDiffuse(0xFFFFFFFF);
+  CGUIInfoColor colorDiffuse(m_provider, 0xffffffff);
   int defaultControl = 0;
   bool  defaultAlways = false;
   CStdString strTmp;
@@ -694,20 +694,22 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   float fInterval = 0.1f;
   bool bReverse = true;
   bool bReveal = false;
-  CTextureInfo textureBackground, textureLeft, textureRight, textureMid, textureOverlay;
-  CTextureInfo textureNib, textureNibFocus, textureBar, textureBarFocus;
-  CTextureInfo textureLeftFocus, textureRightFocus;
-  CTextureInfo textureUp, textureDown;
-  CTextureInfo textureUpFocus, textureDownFocus;
-  CTextureInfo texture, borderTexture;
+  CTextureInfo textureBackground(m_provider), textureLeft(m_provider), textureRight(m_provider);
+  CTextureInfo textureMid(m_provider), textureOverlay(m_provider);
+  CTextureInfo textureNib(m_provider), textureNibFocus(m_provider);
+  CTextureInfo textureBar(m_provider), textureBarFocus(m_provider);
+  CTextureInfo textureLeftFocus(m_provider), textureRightFocus(m_provider);
+  CTextureInfo textureUp(m_provider), textureDown(m_provider);
+  CTextureInfo textureUpFocus(m_provider), textureDownFocus(m_provider);
+  CTextureInfo texture(m_provider), borderTexture(m_provider);
   CGUIInfoLabel textureFile;
-  CTextureInfo textureCheckMark, textureCheckMarkNF;
-  CTextureInfo textureFocus, textureNoFocus;
-  CTextureInfo textureAltFocus, textureAltNoFocus;
-  CTextureInfo textureRadioOnFocus, textureRadioOnNoFocus;
-  CTextureInfo textureRadioOffFocus, textureRadioOffNoFocus;
-  CTextureInfo imageNoFocus, imageFocus;
-  CTextureInfo textureProgressIndicator;
+  CTextureInfo textureCheckMark(m_provider), textureCheckMarkNF(m_provider);
+  CTextureInfo textureFocus(m_provider), textureNoFocus(m_provider);
+  CTextureInfo textureAltFocus(m_provider), textureAltNoFocus(m_provider);
+  CTextureInfo textureRadioOnFocus(m_provider), textureRadioOnNoFocus(m_provider);
+  CTextureInfo textureRadioOffFocus(m_provider), textureRadioOffNoFocus(m_provider);
+  CTextureInfo imageNoFocus(m_provider), imageFocus(m_provider);
+  CTextureInfo textureProgressIndicator(m_provider);
   CGUIInfoLabel texturePath;
   CRect borderSize;
 
@@ -750,11 +752,11 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   bool scrollOut = true;
   int preloadItems = 0;
 
-  CLabelInfo labelInfo;
-  CLabelInfo spinInfo;
+  CLabelInfo labelInfo(m_provider);
+  CLabelInfo spinInfo(m_provider);
 
-  CGUIInfoColor textColor3;
-  CGUIInfoColor headlineColor;
+  CGUIInfoColor textColor3(m_provider);
+  CGUIInfoColor headlineColor(m_provider);
 
   float radioWidth = 0;
   float radioHeight = 0;
