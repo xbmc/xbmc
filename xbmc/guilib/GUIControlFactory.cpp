@@ -60,7 +60,6 @@
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/XMLUtils.h"
-#include "GUIColorManager.h"
 #include "utils/RssManager.h"
 #include "utils/StringUtils.h"
 #include "GUIAction.h"
@@ -541,17 +540,6 @@ bool CGUIControlFactory::GetScroller(const TiXmlNode *control, const CStdString 
       scroller = CScroller(scrollTime, CAnimEffect::GetTweener(node));
       return true;
     }
-  }
-  return false;
-}
-
-bool CGUIControlFactory::GetColor(const TiXmlNode *control, const char *strTag, color_t &value)
-{
-  const TiXmlElement* node = control->FirstChildElement(strTag);
-  if (node && node->FirstChild())
-  {
-    value = g_colorManager.GetColor(node->FirstChild()->Value());
-    return true;
   }
   return false;
 }

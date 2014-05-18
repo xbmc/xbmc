@@ -127,6 +127,18 @@ public:
    */
   virtual CGUIFont *GetFont(const std::string &fontName) const;
 
+  /*! \brief load the skin colors
+   Loads the default system colors, default skin colors, then chosen skin colors.
+   \param colorFile color file to load
+   */
+  void LoadColors(const std::string &colorFile);
+
+  /*! \brief retrieve a color by name.
+   \param color the name of the color to retrieve
+   \return the color value, if found, else 0xffffffff (white).
+   */
+  virtual color_t GetColor(const std::string &color) const;
+
   static void SettingOptionsSkinColorsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsSkinFontsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsSkinSoundFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
@@ -152,6 +164,7 @@ protected:
 
   void LoadFonts(const TiXmlNode* fontNode, const RESOLUTION_INFO &fontRes);
   static void GetStyle(const TiXmlNode *fontNode, int &iStyle);
+  bool LoadColors(const TiXmlElement *rootElement);
 
   RESOLUTION_INFO m_defaultRes;
   std::vector<RESOLUTION_INFO> m_resolutions;
@@ -163,6 +176,10 @@ protected:
   CStdString m_currentAspect;
 
   std::vector<CStartupWindow> m_startupWindows;
+
+  typedef std::map<std::string, color_t> ColorMap;
+  ColorMap m_colors;
+
   bool m_debugging;
 };
 

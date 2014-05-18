@@ -1951,6 +1951,7 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
 
   g_colorManager.Load(CSettings::Get().GetString("lookandfeel.skincolors"));
 
+  g_SkinInfo->LoadColors(CSettings::Get().GetString("lookandfeel.skincolors"));
   g_SkinInfo->LoadFonts(CSettings::Get().GetString("lookandfeel.font"));
 
   // load in the skin strings

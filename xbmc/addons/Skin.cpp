@@ -334,6 +334,7 @@ void CSkinInfo::LoadFonts(const TiXmlNode* fontNode, const RESOLUTION_INFO &font
 {
   while (fontNode)
   {
+    std::string temp;
     std::string fontName;
     std::string fileName;
     int iSize = 20;
@@ -347,8 +348,10 @@ void CSkinInfo::LoadFonts(const TiXmlNode* fontNode, const RESOLUTION_INFO &font
     XMLUtils::GetInt(fontNode, "size", iSize);
     XMLUtils::GetFloat(fontNode, "linespacing", lineSpacing);
     XMLUtils::GetFloat(fontNode, "aspect", aspect);
-    CGUIControlFactory::GetColor(fontNode, "shadow", shadowColor);
-    CGUIControlFactory::GetColor(fontNode, "color", textColor);
+    if (XMLUtils::GetString(fontNode, "shadow", temp))
+      shadowColor = GetColor(temp);
+    if (XMLUtils::GetString(fontNode, "color", temp))
+      textColor = GetColor(temp);
     XMLUtils::GetString(fontNode, "filename", fileName);
     GetStyle(fontNode, iStyle);
 
@@ -389,6 +392,75 @@ void CSkinInfo::GetStyle(const TiXmlNode *fontNode, int &iStyle)
 CGUIFont *CSkinInfo::GetFont(const std::string &fontName) const
 {
   return g_fontManager.GetFont(fontName);
+}
+
+// load the color file in
+void CSkinInfo::LoadColors(const std::string &colorFile)
+{
+  m_colors.clear();
+
+  // load the global color map if it exists
+  CXBMCTinyXML xmlDoc;
+  if (xmlDoc.LoadFile(CSpecialProtocol::TranslatePathConvertCase("special://xbmc/system/colors.xml")))
+    LoadColors(xmlDoc.RootElement());
+
+  // first load the default color map if it exists
+  std::string basePath = URIUtils::AddFileToFolder(g_SkinInfo->Path(), "colors");
+  std::string path = URIUtils::AddFileToFolder(basePath, "defaults.xml");
+
+  if (xmlDoc.LoadFile(CSpecialProtocol::TranslatePathConvertCase(path)))
+    LoadColors(xmlDoc.RootElement());
+
+  // now the color map requested
+  if (StringUtils::EqualsNoCase(colorFile, "SKINDEFAULT"))
+    return; // nothing to do
+
+  path = URIUtils::AddFileToFolder(basePath, colorFile);
+  if (!URIUtils::HasExtension(path))
+    path += ".xml";
+
+  CLog::Log(LOGINFO, "Loading colors from %s", path.c_str());
+  if (xmlDoc.LoadFile(path))
+    LoadColors(xmlDoc.RootElement());
+}
+
+bool CSkinInfo::LoadColors(const TiXmlElement *rootElement)
+{
+  if (!rootElement || rootElement->ValueStr() != "colors")
+  {
+    CLog::Log(LOGERROR, "color file doesnt start with <colors>");
+    return false;
+  }
+
+  const TiXmlElement *color = rootElement->FirstChildElement("color");
+  while (color)
+  {
+    if (color->FirstChild() && color->Attribute("name"))
+    {
+      color_t value = 0xffffffff;
+      sscanf(color->FirstChild()->ValueStr().c_str(), "%x", (unsigned int*) &value);
+      std::string name = color->Attribute("name");
+      m_colors[name] = value;
+    }
+    color = color->NextSiblingElement("color");
+  }
+  return true;
+}
+
+// lookup a color and return it's hex value
+color_t CSkinInfo::GetColor(const std::string &color) const
+{
+  // look in our color map
+  std::string trimmed(color);
+  StringUtils::TrimLeft(trimmed, "= ");
+  ColorMap::const_iterator it = m_colors.find(trimmed);
+  if (it != m_colors.end())
+    return (*it).second;
+
+  // try converting hex directly
+  color_t value = 0;
+  sscanf(trimmed.c_str(), "%x", &value);
+  return value;
 }
 
 void CSkinInfo::SettingOptionsSkinColorsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
