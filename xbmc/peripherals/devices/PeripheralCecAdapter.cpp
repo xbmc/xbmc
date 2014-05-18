@@ -33,6 +33,7 @@
 #include "peripherals/Peripherals.h"
 #include "peripherals/bus/PeripheralBus.h"
 #include "pictures/GUIWindowSlideShow.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
@@ -1181,7 +1182,7 @@ int CPeripheralCecAdapter::CecLogMessage(void *cbParam, const cec_log_message me
     break;
   }
 
-  if (iLevel >= 0)
+  if (iLevel >= CEC_LOG_NOTICE || (iLevel >= 0 && g_advancedSettings.CanLogComponent(LOGCEC)))
     CLog::Log(iLevel, "%s - %s", __FUNCTION__, message.message);
 
   return 1;

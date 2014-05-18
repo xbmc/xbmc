@@ -52,6 +52,7 @@
 #define LOGAUDIO    (1 << (LOGMASKBIT + 7))
 #define LOGAIRTUNES (1 << (LOGMASKBIT + 8))
 #define LOGUPNP     (1 << (LOGMASKBIT + 9))
+#define LOGCEC      (1 << (LOGMASKBIT + 10))
 
 #ifdef __GNUC__
 #define ATTRIB_LOG_FORMAT __attribute__((format(printf,3,4)))
