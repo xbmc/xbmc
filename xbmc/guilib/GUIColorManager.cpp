@@ -107,15 +107,13 @@ bool CGUIColorManager::LoadXML(CXBMCTinyXML &xmlDoc)
 color_t CGUIColorManager::GetColor(const CStdString &color) const
 {
   // look in our color map
-  CStdString trimmed(color);
-  StringUtils::TrimLeft(trimmed, "= ");
-  icColor it = m_colors.find(trimmed);
+  icColor it = m_colors.find(color);
   if (it != m_colors.end())
     return (*it).second;
 
   // try converting hex directly
   color_t value = 0;
-  sscanf(trimmed.c_str(), "%x", &value);
+  sscanf(color.c_str(), "%x", &value);
   return value;
 }
 
