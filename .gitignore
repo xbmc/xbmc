@@ -516,6 +516,12 @@ lib/cpluff/stamp-h1
 /tools/EventClients/Clients/OSXRemote/build/
 /tools/EventClients/Clients/WiiRemote/WiiRemote
 
+# /tools/darwin/
+/tools/darwin/Configurations/App.xcconfig
+/tools/darwin/Configurations/Common.xcconfig
+/tools/darwin/packaging/xbmc-ios/mkdeb-xbmc-ios.sh
+/tools/darwin/packaging/xbmc-atv2/mkdeb-xbmc-atv2.sh
+
 # /tools/Linux/
 /tools/Linux/xbmc.sh
 /tools/Linux/xbmc-standalone.sh

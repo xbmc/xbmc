@@ -14360,7 +14360,6 @@
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "";
 				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
-				XBMC_DEPENDS_ROOT = "/Users/Shared/xbmc-depends";
 				ZERO_LINK = NO;
 			};
 			name = Debug;
@@ -14427,7 +14426,6 @@
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "";
 				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
-				XBMC_DEPENDS_ROOT = "/Users/Shared/xbmc-depends";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -14466,7 +14464,6 @@
 				PRODUCT_NAME = XBMC.app;
 				SDKROOT = macosx;
 				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
-				XBMC_DEPENDS_ROOT = "/Users/Shared/xbmc-depends";
 			};
 			name = Debug;
 		};
@@ -14481,7 +14478,6 @@
 				PRODUCT_NAME = XBMC.app;
 				SDKROOT = macosx;
 				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
-				XBMC_DEPENDS_ROOT = "/Users/Shared/xbmc-depends";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -14542,7 +14538,6 @@
 				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = frappliance;
 				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
-				XBMC_DEPENDS_ROOT = "/Users/Shared/xbmc-depends";
 			};
 			name = Debug;
 		};
@@ -14604,7 +14599,6 @@
 				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = frappliance;
 				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(ARCHS)-target";
-				XBMC_DEPENDS_ROOT = "/Users/Shared/xbmc-depends";
 				ZERO_LINK = NO;
 			};
 			name = Release;

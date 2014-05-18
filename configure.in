@@ -626,11 +626,15 @@ case $host in
      PYTHON_CPPFLAGS="-I${prefix}/include/python2.6"
      PYTHON_SITE_PKG="${prefix}/lib/python2.6/site-packages"
      PYTHON_NOVERSIONCHECK="no-check"
+     DEPENDS_ROOT_FOR_XCODE=$(echo ${prefix%/*})
+     AC_SUBST([DEPENDS_ROOT_FOR_XCODE])
      ;;
   *86*-apple-darwin*)
      use_joystick=no
      use_vtbdecoder=no
      ARCH="x86-osx"
+     DEPENDS_ROOT_FOR_XCODE=$(echo ${prefix%/*})
+     AC_SUBST([DEPENDS_ROOT_FOR_XCODE])
      ;;
   powerpc-apple-darwin*)
      use_joystick=no
@@ -638,6 +642,8 @@ case $host in
      use_crystalhd=no
      ARCH="powerpc-osx"
      use_arch="ppc"
+     DEPENDS_ROOT_FOR_XCODE=$(echo ${prefix%/*})
+     AC_SUBST([DEPENDS_ROOT_FOR_XCODE])
      ;;
   powerpc-*-linux-gnu*|powerpc-*-linux-uclibc*)
      ARCH="powerpc-linux"
@@ -2558,6 +2564,10 @@ OUTPUT_FILES="Makefile \
     xbmc/android/jni/Makefile \
     xbmc/utils/Makefile \
     xbmc/main/Makefile \
+    tools/darwin/Configurations/App.xcconfig \
+    tools/darwin/Configurations/Common.xcconfig \
+    tools/darwin/packaging/xbmc-ios/mkdeb-xbmc-ios.sh \
+    tools/darwin/packaging/xbmc-atv2/mkdeb-xbmc-atv2.sh \
     project/cmake/xbmc-config.cmake"
 
 if test "$use_wayland" = "yes"; then
