@@ -24,12 +24,16 @@
 #include "Util.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "guilib/GUIControlFactory.h" // for colors
+#include "guilib/GUIFont.h"
+#include "guilib/GUIFontManager.h"
 #include "guilib/WindowIDs.h"
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/XMLUtils.h"
 
 // fallback for new skin resolution code
 #include "filesystem/Directory.h"
@@ -272,6 +276,121 @@ bool CSkinInfo::IsInUse() const
 const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const CStdString& name, int context)
 {
   return m_includes.CreateSkinVariable(name, context);
+}
+
+void CSkinInfo::LoadFonts(const std::string& fontSet)
+{
+  // Get the file to load fonts from:
+
+  // TODO: What do we use the skin resolution for in the font manager, and how can we pass this around?
+  RESOLUTION_INFO fontRes;
+  const std::string strPath = GetSkinPath("Font.xml", &fontRes);
+  CLog::Log(LOGINFO, "Loading fonts from %s", strPath.c_str());
+
+  CXBMCTinyXML xmlDoc;
+  if (!xmlDoc.LoadFile(strPath))
+  {
+    CLog::Log(LOGERROR, "Couldn't load %s", strPath.c_str());
+    return;
+  }
+
+  TiXmlElement* pRootElement = xmlDoc.RootElement();
+  if (!pRootElement || pRootElement->ValueStr() != "fonts")
+  {
+    CLog::Log(LOGERROR, "file %s doesnt start with <fonts>", strPath.c_str());
+    return;
+  }
+
+  // take note of the first font available in case we can't load the one specified
+  std::string firstFont;
+
+  const TiXmlElement *pChild = pRootElement->FirstChildElement("fontset");
+  while (pChild)
+  {
+    const char* idAttr = pChild->Attribute("id");
+    if (idAttr)
+    {
+      if (firstFont.empty())
+        firstFont = idAttr;
+
+      if (StringUtils::EqualsNoCase(fontSet, idAttr))
+      {
+        LoadFonts(pChild->FirstChild("font"), fontRes);
+        return;
+      }
+    }
+    pChild = pChild->NextSiblingElement("fontset");
+  }
+
+  // no fontset was loaded, try the first
+  if (!firstFont.empty())
+  {
+    CLog::Log(LOGWARNING, "file doesnt have <fontset> with name '%s', defaulting to first fontset", fontSet.c_str());
+    LoadFonts(firstFont);
+  }
+  else
+    CLog::Log(LOGERROR, "file '%s' doesnt have a valid <fontset>", strPath.c_str());
+}
+
+void CSkinInfo::LoadFonts(const TiXmlNode* fontNode, const RESOLUTION_INFO &fontRes)
+{
+  while (fontNode)
+  {
+    std::string fontName;
+    std::string fileName;
+    int iSize = 20;
+    float aspect = 1.0f;
+    float lineSpacing = 1.0f;
+    color_t shadowColor = 0;
+    color_t textColor = 0;
+    int iStyle = FONT_STYLE_NORMAL;
+
+    XMLUtils::GetString(fontNode, "name", fontName);
+    XMLUtils::GetInt(fontNode, "size", iSize);
+    XMLUtils::GetFloat(fontNode, "linespacing", lineSpacing);
+    XMLUtils::GetFloat(fontNode, "aspect", aspect);
+    CGUIControlFactory::GetColor(fontNode, "shadow", shadowColor);
+    CGUIControlFactory::GetColor(fontNode, "color", textColor);
+    XMLUtils::GetString(fontNode, "filename", fileName);
+    GetStyle(fontNode, iStyle);
+
+    if (!fontName.empty() && URIUtils::HasExtension(fileName, ".ttf"))
+    {
+      // TODO: Why do we tolower() this shit?
+      CStdString strFontFileName = fileName;
+      StringUtils::ToLower(strFontFileName);
+      g_fontManager.LoadTTF(fontName, strFontFileName, textColor, shadowColor, iSize, iStyle, fontRes, false, lineSpacing, aspect);
+    }
+    fontNode = fontNode->NextSibling("font");
+  }
+}
+
+void CSkinInfo::GetStyle(const TiXmlNode *fontNode, int &iStyle)
+{
+  std::string style;
+  iStyle = FONT_STYLE_NORMAL;
+  if (XMLUtils::GetString(fontNode, "style", style))
+  {
+    vector<string> styles = StringUtils::Tokenize(style, " ");
+    for (vector<string>::const_iterator i = styles.begin(); i != styles.end(); ++i)
+    {
+      if (*i == "bold")
+        iStyle |= FONT_STYLE_BOLD;
+      else if (*i == "italics")
+        iStyle |= FONT_STYLE_ITALICS;
+      else if (*i == "bolditalics") // backward compatibility
+        iStyle |= (FONT_STYLE_BOLD | FONT_STYLE_ITALICS);
+      else if (*i == "uppercase")
+        iStyle |= FONT_STYLE_UPPERCASE;
+      else if (*i == "lowercase")
+        iStyle |= FONT_STYLE_LOWERCASE;
+    }
+  }
+}
+
+CGUIFont *CSkinInfo::GetFont(const std::string &fontName)
+{
+  return g_fontManager.GetFont(fontName);
 }
 
 void CSkinInfo::SettingOptionsSkinColorsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)

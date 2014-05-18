@@ -113,6 +113,11 @@ public:
   void LoadIncludes();
   const INFO::CSkinVariableString* CreateSkinVariable(const CStdString& name, int context);
 
+  /*! \brief load Fonts.xml for the skin, adding fonts to the font manager
+   \param fontSet the name of the <fontset> to load.
+   */
+  void LoadFonts(const std::string &fontSet);
+
   static void SettingOptionsSkinColorsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsSkinFontsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsSkinSoundFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
@@ -135,6 +140,9 @@ protected:
   void GetDefaultResolution(const cp_extension_t *ext, const char *tag, RESOLUTION &res, const RESOLUTION &def) const;
 
   bool LoadStartupWindows(const cp_extension_t *ext);
+
+  void LoadFonts(const TiXmlNode* fontNode, const RESOLUTION_INFO &fontRes);
+  static void GetStyle(const TiXmlNode *fontNode, int &iStyle);
 
   RESOLUTION_INFO m_defaultRes;
   std::vector<RESOLUTION_INFO> m_resolutions;
