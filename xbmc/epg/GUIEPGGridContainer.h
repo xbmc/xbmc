@@ -25,6 +25,7 @@
 #include "guilib/GUIControl.h"
 #include "guilib/GUIListItemLayout.h"
 #include "guilib/IGUIContainer.h"
+#include "guilib/IResourceProvider.h"
 
 namespace EPG
 {
@@ -71,7 +72,7 @@ namespace EPG
     virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
     virtual void DoRender();
     virtual void Render();
-    void LoadLayout(TiXmlElement *layout);
+    void LoadLayout(TiXmlElement *layout, GUIResourceProviderPtr provider);
     void LoadContent(TiXmlElement *content);
 
     virtual CGUIListItemPtr GetListItem(int offset, unsigned int flag = 0) const;

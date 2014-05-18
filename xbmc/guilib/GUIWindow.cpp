@@ -279,7 +279,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
 void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup, const CRect &rect)
 {
   // get control type
-  CGUIControlFactory factory;
+  CGUIControlFactory factory(g_SkinInfo);
 
   CGUIControl* pGUIControl = factory.Create(GetID(), rect, pControl);
   if (pGUIControl)

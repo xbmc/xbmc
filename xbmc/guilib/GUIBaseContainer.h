@@ -27,6 +27,7 @@
 
 #include "IGUIContainer.h"
 #include "GUIListItemLayout.h"
+#include "IResourceProvider.h"
 #include "utils/Stopwatch.h"
 
 /*!
@@ -69,7 +70,7 @@ public:
   virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
-  void LoadLayout(TiXmlElement *layout);
+  void LoadLayout(TiXmlElement *layout, GUIResourceProviderPtr provider);
   void LoadListProvider(TiXmlElement *content, int defaultItem, bool defaultAlways);
 
   virtual CGUIListItemPtr GetListItem(int offset, unsigned int flag = 0) const;

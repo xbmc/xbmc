@@ -281,8 +281,6 @@ const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const CStdString&
 void CSkinInfo::LoadFonts(const std::string& fontSet)
 {
   // Get the file to load fonts from:
-
-  // TODO: What do we use the skin resolution for in the font manager, and how can we pass this around?
   RESOLUTION_INFO fontRes;
   const std::string strPath = GetSkinPath("Font.xml", &fontRes);
   CLog::Log(LOGINFO, "Loading fonts from %s", strPath.c_str());
@@ -388,7 +386,7 @@ void CSkinInfo::GetStyle(const TiXmlNode *fontNode, int &iStyle)
   }
 }
 
-CGUIFont *CSkinInfo::GetFont(const std::string &fontName)
+CGUIFont *CSkinInfo::GetFont(const std::string &fontName) const
 {
   return g_fontManager.GetFont(fontName);
 }

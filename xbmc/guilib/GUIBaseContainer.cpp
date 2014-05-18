@@ -1064,13 +1064,13 @@ void CGUIBaseContainer::Reset()
   ResetAutoScrolling();
 }
 
-void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
+void CGUIBaseContainer::LoadLayout(TiXmlElement *layout, GUIResourceProviderPtr provider)
 {
   TiXmlElement *itemElement = layout->FirstChildElement("itemlayout");
   while (itemElement)
   { // we have a new item layout
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, GetParentID(), false);
+    itemLayout.LoadLayout(itemElement, GetParentID(), false, provider);
     m_layouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("itemlayout");
   }
@@ -1078,7 +1078,7 @@ void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   { // we have a new item layout
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, GetParentID(), true);
+    itemLayout.LoadLayout(itemElement, GetParentID(), true, provider);
     m_focusedLayouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("focusedlayout");
   }

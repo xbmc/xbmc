@@ -25,15 +25,18 @@
 #include "Addon.h"
 #include "guilib/GraphicContext.h" // needed for the RESOLUTION members
 #include "guilib/GUIIncludes.h"    // needed for the GUIInclude member
+#include "guilib/IResourceProvider.h"
+
 #define CREDIT_LINE_LENGTH 50
 
 class TiXmlNode;
 class CSetting;
+class CGUIFont;
 
 namespace ADDON
 {
 
-class CSkinInfo : public CAddon
+class CSkinInfo : public CAddon, public IGUIResourceProvider
 {
 public:
   class CStartupWindow
@@ -117,6 +120,12 @@ public:
    \param fontSet the name of the <fontset> to load.
    */
   void LoadFonts(const std::string &fontSet);
+
+  /*! \brief fetch a font from the skin
+   \param fontName the name of the font (from Fonts.xml) to fetch
+   \return a CGUIFont pointer with the font, NULL if not found
+   */
+  virtual CGUIFont *GetFont(const std::string &fontName) const;
 
   static void SettingOptionsSkinColorsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsSkinFontsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
