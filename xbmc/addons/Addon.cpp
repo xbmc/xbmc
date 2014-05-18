@@ -134,10 +134,12 @@ const CStdString GetIcon(const ADDON::TYPE& type)
       y.clear(); \
   }
 
+#define SS(x) (x) ? x : ""
+
 AddonProps::AddonProps(const cp_extension_t *ext)
   : id(ext->plugin->identifier)
-  , version(ext->plugin->version)
-  , minversion(ext->plugin->abi_bw_compatibility)
+  , version(SS(ext->plugin->version))
+  , minversion(SS(ext->plugin->abi_bw_compatibility))
   , name(ext->plugin->name)
   , path(ext->plugin->plugin_path)
   , author(ext->plugin->provider_name)
@@ -171,8 +173,8 @@ AddonProps::AddonProps(const cp_extension_t *ext)
 
 AddonProps::AddonProps(const cp_plugin_info_t *plugin)
   : id(plugin->identifier)
-  , version(plugin->version)
-  , minversion(plugin->abi_bw_compatibility)
+  , version(SS(plugin->version))
+  , minversion(SS(plugin->abi_bw_compatibility))
   , name(plugin->name)
   , path(plugin->plugin_path)
   , author(plugin->provider_name)
@@ -185,8 +187,8 @@ void AddonProps::Serialize(CVariant &variant) const
 {
   variant["addonid"] = id;
   variant["type"] = TranslateType(type);
-  variant["version"] = version.c_str();
-  variant["minversion"] = minversion.c_str();
+  variant["version"] = version.asString();
+  variant["minversion"] = minversion.asString();
   variant["name"] = name;
   variant["license"] = license;
   variant["summary"] = summary;
@@ -215,7 +217,7 @@ void AddonProps::Serialize(CVariant &variant) const
   {
     CVariant dep(CVariant::VariantTypeObject);
     dep["addonid"] = it->first;
-    dep["version"] = it->second.first.c_str();
+    dep["version"] = it->second.first.asString();
     dep["optional"] = it->second.second;
     variant["dependencies"].push_back(dep);
   }
@@ -240,7 +242,7 @@ void AddonProps::BuildDependencies(const cp_plugin_info_t *plugin)
     return;
   for (unsigned int i = 0; i < plugin->num_imports; ++i)
     dependencies.insert(make_pair(CStdString(plugin->imports[i].plugin_id),
-                        make_pair(AddonVersion(plugin->imports[i].version), plugin->imports[i].optional != 0)));
+                                  make_pair(AddonVersion(SS(plugin->imports[i].version)), plugin->imports[i].optional != 0)));
 }
 
 /**
@@ -645,7 +647,7 @@ CStdString GetXbmcApiVersionDependency(ADDON::AddonPtr addon)
     if (!(it == deps.end()))
     {
       const ADDON::AddonVersion * xbmcApiVersion = &(it->second.first);
-      version = xbmcApiVersion->c_str();
+      version = xbmcApiVersion->asString();
     }
   }
 

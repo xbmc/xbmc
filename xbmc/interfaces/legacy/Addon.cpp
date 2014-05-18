@@ -70,8 +70,8 @@ namespace XBMCAddon
         else
         {
           throw AddonException("Could not get AddonPtr given a script id of %s."
-                               "If you are trying to use 'os.getcwd' to set the path, you cannot do that in a %s plugin.", 
-                               id.c_str(), version.Print().c_str());
+                               "If you are trying to use 'os.getcwd' to set the path, you cannot do that in a version %s plugin.", 
+                               id.c_str(), version.asString().c_str());
         }
       }
 
@@ -158,7 +158,7 @@ namespace XBMCAddon
       else if (strcmpi(id, "type") == 0)
         return ADDON::TranslateType(pAddon->Type());
       else if (strcmpi(id, "version") == 0)
-        return String(pAddon->Version().c_str());
+        return pAddon->Version().asString();
       else
         throw AddonException("'%s' is an invalid Id", id);
     }

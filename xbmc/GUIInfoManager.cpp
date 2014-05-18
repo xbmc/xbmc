@@ -3314,7 +3314,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     if (addon && info.m_info == SYSTEM_ADDON_ICON)
       return addon->Icon();
     if (addon && info.m_info == SYSTEM_ADDON_VERSION)
-      return addon->Version().c_str();
+      return addon->Version().asString();
   }
   else if (info.m_info == PLAYLIST_LENGTH ||
            info.m_info == PLAYLIST_POSITION ||

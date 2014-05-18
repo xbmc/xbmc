@@ -187,7 +187,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       AddonPtr addon2;
       database.GetAddon(items[i]->GetProperty("Addon.ID").asString(),addon2);
       if (addon2 && addon2->Version() > AddonVersion(items[i]->GetProperty("Addon.Version").asString())
-                 && !database.IsAddonBlacklisted(addon2->ID(),addon2->Version().c_str()))
+                 && !database.IsAddonBlacklisted(addon2->ID(),addon2->Version().asString()))
       {
         items[i]->SetProperty("Addon.Status",g_localizeStrings.Get(24068));
         items[i]->SetProperty("Addon.UpdateAvail", true);
@@ -264,7 +264,7 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon, const CS
   item->SetLabel(strLabel);
 
   if (!(basePath.Equals("addons://") && addon->Type() == ADDON_REPOSITORY))
-    item->SetLabel2(addon->Version().c_str());
+    item->SetLabel2(addon->Version().asString());
   item->SetArt("thumb", addon->Icon());
   item->SetLabelPreformated(true);
   item->SetIconImage("DefaultAddon.png");

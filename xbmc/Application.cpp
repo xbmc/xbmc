@@ -1941,7 +1941,7 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
 
   UnloadSkin();
 
-  CLog::Log(LOGINFO, "  load skin from: %s (version: %s)", skin->Path().c_str(), skin->Version().c_str());
+  CLog::Log(LOGINFO, "  load skin from: %s (version: %s)", skin->Path().c_str(), skin->Version().asString().c_str());
   g_SkinInfo = skin;
   g_SkinInfo->Start();
 

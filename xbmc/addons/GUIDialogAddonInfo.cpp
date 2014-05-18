@@ -180,7 +180,7 @@ void CGUIDialogAddonInfo::UpdateControls()
 
 void CGUIDialogAddonInfo::OnUpdate()
 {
-  CStdString referer = StringUtils::Format("Referer=%s-%s.zip",m_localAddon->ID().c_str(),m_localAddon->Version().c_str());
+  CStdString referer = StringUtils::Format("Referer=%s-%s.zip",m_localAddon->ID().c_str(),m_localAddon->Version().asString().c_str());
   CAddonInstaller::Get().Install(m_addon->ID(), true, referer); // force install
   Close();
 }
@@ -307,7 +307,7 @@ void CGUIDialogAddonInfo::OnRollback()
   for (unsigned int i=0;i<m_rollbackVersions.size();++i)
   {
     CStdString label(m_rollbackVersions[i]);
-    if (m_rollbackVersions[i].Equals(m_localAddon->Version().c_str()))
+    if (m_rollbackVersions[i] == m_localAddon->Version().asString())
      label += " "+g_localizeStrings.Get(24094);
    if (database.IsAddonBlacklisted(m_localAddon->ID(),label))
      label += " "+g_localizeStrings.Get(24095);

@@ -396,7 +396,7 @@ bool CAddonMgr::GetAllOutdatedAddons(VECADDONS &addons, bool getLocalVersion /*=
 
         if (temp[j]->Version() < repoAddon->Version() &&
             !m_database.IsAddonBlacklisted(temp[j]->ID(),
-                                           repoAddon->Version().c_str()))
+                                           repoAddon->Version().asString().c_str()))
         {
           if (getLocalVersion)
             repoAddon->Props().version = temp[j]->Version();

@@ -564,7 +564,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const CStd
   CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper "
     "(path: '%s', content: '%s', version: '%s')", __FUNCTION__, sTitle.c_str(),
     Name().c_str(), Path().c_str(),
-    ADDON::TranslateContent(Content()).c_str(), Version().c_str());
+    ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
 
   std::vector<CScraperUrl> vcscurl;
   if (IsNoop())
@@ -690,7 +690,7 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl, const CStdStr
   CLog::Log(LOGDEBUG, "%s: Searching for '%s - %s' using %s scraper "
     "(path: '%s', content: '%s', version: '%s')", __FUNCTION__, sArtist.c_str(),
     sAlbum.c_str(), Name().c_str(), Path().c_str(),
-    ADDON::TranslateContent(Content()).c_str(), Version().c_str());
+    ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
 
   std::vector<CMusicAlbumInfo> vcali;
   if (IsNoop())
@@ -787,7 +787,7 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl,
   CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper "
     "(file: '%s', content: '%s', version: '%s')", __FUNCTION__, sArtist.c_str(),
     Name().c_str(), Path().c_str(),
-    ADDON::TranslateContent(Content()).c_str(), Version().c_str());
+    ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
 
   std::vector<CMusicArtistInfo> vcari;
   if (IsNoop())
@@ -870,7 +870,7 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
   CLog::Log(LOGDEBUG, "%s: Searching '%s' using %s scraper "
     "(file: '%s', content: '%s', version: '%s')", __FUNCTION__,
     scurl.m_url[0].m_url.c_str(), Name().c_str(), Path().c_str(),
-    ADDON::TranslateContent(Content()).c_str(), Version().c_str());
+    ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
 
   vector<CStdString> vcsIn;
   vcsIn.push_back(scurl.m_url[0].m_url);
@@ -932,7 +932,7 @@ bool CScraper::GetVideoDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl
   CLog::Log(LOGDEBUG, "%s: Reading %s '%s' using %s scraper "
     "(file: '%s', content: '%s', version: '%s')", __FUNCTION__,
     fMovie ? MediaTypeMovie : MediaTypeEpisode, scurl.m_url[0].m_url.c_str(), Name().c_str(), Path().c_str(),
-    ADDON::TranslateContent(Content()).c_str(), Version().c_str());
+    ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
 
   video.Reset();
   CStdString sFunc = fMovie ? "GetDetails" : "GetEpisodeDetails";
@@ -972,7 +972,7 @@ bool CScraper::GetAlbumDetails(CCurlFile &fcurl, const CScraperUrl &scurl, CAlbu
   CLog::Log(LOGDEBUG, "%s: Reading '%s' using %s scraper "
     "(file: '%s', content: '%s', version: '%s')", __FUNCTION__,
     scurl.m_url[0].m_url.c_str(), Name().c_str(), Path().c_str(),
-    ADDON::TranslateContent(Content()).c_str(), Version().c_str());
+    ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
 
   vector<CStdString> vcsOut = RunNoThrow("GetAlbumDetails", scurl, fcurl);
 
@@ -1003,7 +1003,7 @@ bool CScraper::GetArtistDetails(CCurlFile &fcurl, const CScraperUrl &scurl,
   CLog::Log(LOGDEBUG, "%s: Reading '%s' ('%s') using %s scraper "
     "(file: '%s', content: '%s', version: '%s')", __FUNCTION__,
     scurl.m_url[0].m_url.c_str(), sSearch.c_str(), Name().c_str(), Path().c_str(),
-    ADDON::TranslateContent(Content()).c_str(), Version().c_str());
+    ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
 
   // pass in the original search string for chaining to search other sites
   vector<CStdString> vcIn;

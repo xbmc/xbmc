@@ -336,7 +336,7 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
     { // we have it but our version isn't good enough, or we don't have it and we need it
       if (!database.GetAddon(addonID, dep) || !dep->MeetsVersion(version))
       { // we don't have it in a repo, or we have it but the version isn't good enough, so dep isn't satisfied.
-        CLog::Log(LOGDEBUG, "Addon %s requires %s version %s which is not available", addon->ID().c_str(), addonID.c_str(), version.c_str());
+        CLog::Log(LOGDEBUG, "Addon %s requires %s version %s which is not available", addon->ID().c_str(), addonID.c_str(), version.asString().c_str());
         database.Close();
         return false;
       }
@@ -645,7 +645,7 @@ bool CAddonInstallJob::Install(const CStdString &installFrom, const AddonPtr& re
 {
   // The first thing we do is install dependencies
   ADDONDEPS deps = m_addon->GetDeps();
-  CStdString referer = StringUtils::Format("Referer=%s-%s.zip",m_addon->ID().c_str(),m_addon->Version().c_str());
+  CStdString referer = StringUtils::Format("Referer=%s-%s.zip",m_addon->ID().c_str(),m_addon->Version().asString().c_str());
   for (ADDONDEPS::iterator it  = deps.begin(); it != deps.end(); ++it)
   {
     if (it->first.Equals("xbmc.metadata"))
@@ -681,7 +681,7 @@ bool CAddonInstallJob::Install(const CStdString &installFrom, const AddonPtr& re
     CStdString s = StringUtils::Format("plugin://%s/?action=install"
                                        "&package=%s&version=%s", repo->ID().c_str(),
                                        m_addon->ID().c_str(),
-                                       m_addon->Version().c_str());
+                                       m_addon->Version().asString().c_str());
     if (!CDirectory::GetDirectory(s, dummy))
       return false;
   }

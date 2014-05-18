@@ -24,43 +24,26 @@
 #include <ctype.h>
 
 #include "AddonVersion.h"
-#include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 
 namespace ADDON
 {
-  AddonVersion::AddonVersion(const CStdString& version)
+  AddonVersion::AddonVersion(const std::string& version)
+  : mEpoch(0), mUpstream(version.empty() ? "0.0.0" : version)
   {
-    m_originalVersion = version;
-    if (m_originalVersion.empty())
-      m_originalVersion = "0.0.0";
-    const char *epoch_end = strchr(m_originalVersion.c_str(), ':');
-    if (epoch_end != NULL)
-      mEpoch = atoi(m_originalVersion.c_str());
-    else
-      mEpoch = 0;
+    size_t pos = mUpstream.find(':');
+    if (pos != std::string::npos)
+    {
+      mEpoch = strtol(mUpstream.c_str(), NULL, 10);
+      mUpstream.erase(0, pos+1);
+    }
 
-    const char *upstream_start;
-    if (epoch_end)
-      upstream_start = epoch_end + 1;
-    else
-      upstream_start = m_originalVersion.c_str();
-
-    const char *upstream_end = strrchr(upstream_start, '-');
-    size_t upstream_size;
-    if (upstream_end == NULL)
-      upstream_size = strlen(upstream_start);
-    else
-      upstream_size = upstream_end - upstream_start;
-
-    mUpstream = (char*) malloc(upstream_size + 1);
-    strncpy(mUpstream, upstream_start, upstream_size);
-    mUpstream[upstream_size] = '\0';
-
-    if (upstream_end == NULL)
-      mRevision = strdup("0");
-    else
-      mRevision = strdup(upstream_end + 1);
+    pos = mUpstream.find('-');
+    if (pos != std::string::npos)
+    {
+      mRevision = mUpstream.substr(pos+1);
+      mUpstream.erase(pos);
+    }
   }
 
   /**Compare two components of a Debian-style version.  Return -1, 0, or 1
@@ -107,31 +90,37 @@ namespace ADDON
 
   bool AddonVersion::operator<(const AddonVersion& other) const
   {
-    if (Epoch() != other.Epoch())
-      return Epoch() < other.Epoch();
+    if (mEpoch != other.mEpoch)
+      return mEpoch < other.mEpoch;
 
-    int result = CompareComponent(Upstream(), other.Upstream());
+    int result = CompareComponent(mUpstream.c_str(), other.mUpstream.c_str());
     if (result)
       return (result < 0);
 
-    return (CompareComponent(Revision(), other.Revision()) < 0);
+    return (CompareComponent(mRevision.c_str(), other.mRevision.c_str()) < 0);
   }
 
   bool AddonVersion::operator==(const AddonVersion& other) const
   {
-    return Epoch() == other.Epoch()
-      && CompareComponent(Upstream(), other.Upstream()) == 0
-      && CompareComponent(Revision(), other.Revision()) == 0;
+    return mEpoch == other.mEpoch
+      && CompareComponent(mUpstream.c_str(), other.mUpstream.c_str()) == 0
+      && CompareComponent(mRevision.c_str(), other.mRevision.c_str()) == 0;
   }
 
   bool AddonVersion::empty() const
   {
-    return m_originalVersion.empty() || m_originalVersion == "0.0.0";
+    return mEpoch == 0 && mUpstream == "0.0.0" && mRevision.empty();
   }
 
-  CStdString AddonVersion::Print() const
+  std::string AddonVersion::asString() const
   {
-    return StringUtils::Format("%s %s", g_localizeStrings.Get(24051).c_str(), m_originalVersion.c_str());
+    std::string out;
+    if (mEpoch)
+      out = StringUtils::Format("%i:", mEpoch);
+    out += mUpstream;
+    if (!mRevision.empty())
+      out += "-" + mRevision;
+    return out;
   }
 
   bool AddonVersion::SplitFileName(CStdString& ID, CStdString& version,
@@ -145,30 +134,5 @@ namespace ADDON
     version = version.substr(0, version.size() - 4);
 
     return true;
-  }
-
-  bool AddonVersion::Test()
-  {
-    AddonVersion v1_0("1.0");
-    AddonVersion v1_00("1.00");
-    AddonVersion v1_0_0("1.0.0");
-    AddonVersion v1_1("1.1");
-    AddonVersion v1_01("1.01");
-    AddonVersion v1_0_1("1.0.1");
-
-    bool ret = false;
-
-    // These are totally sane
-    ret = (v1_0 < v1_1) && (v1_0 < v1_01) && (v1_0 < v1_0_1) &&
-          (v1_1 > v1_0_1) && (v1_01 > v1_0_1);
-
-    // These are rather sane
-    ret &= (v1_0 != v1_0_0) && (v1_0 < v1_0_0) && (v1_0_0 > v1_0) &&
-           (v1_00 != v1_0_0) && (v1_00 < v1_0_0) && (v1_0_0 > v1_00);
-
-    ret &= (v1_0 == v1_00) && !(v1_0 < v1_00) && !(v1_0 > v1_00);
-    ret &= (v1_1 == v1_01) && !(v1_1 < v1_01) && !(v1_1 > v1_01);
-
-    return ret;
   }
 }
