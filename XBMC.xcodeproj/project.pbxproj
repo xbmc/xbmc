@@ -60,7 +60,6 @@
 		18B7C7B21294222E009E7A26 /* GUIBorderedImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C75D1294222E009E7A26 /* GUIBorderedImage.cpp */; };
 		18B7C7B31294222E009E7A26 /* GUIButtonControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C75E1294222E009E7A26 /* GUIButtonControl.cpp */; };
 		18B7C7B51294222E009E7A26 /* GUICheckMarkControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7601294222E009E7A26 /* GUICheckMarkControl.cpp */; };
-		18B7C7B61294222E009E7A26 /* GUIColorManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7611294222E009E7A26 /* GUIColorManager.cpp */; };
 		18B7C7B71294222E009E7A26 /* GUIControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7621294222E009E7A26 /* GUIControl.cpp */; };
 		18B7C7B81294222E009E7A26 /* GUIControlFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7631294222E009E7A26 /* GUIControlFactory.cpp */; };
 		18B7C7B91294222E009E7A26 /* GUIControlGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7641294222E009E7A26 /* GUIControlGroup.cpp */; };
@@ -1739,7 +1738,6 @@
 		DFF0F27D17528350002DA3A4 /* GUIBorderedImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C75D1294222E009E7A26 /* GUIBorderedImage.cpp */; };
 		DFF0F27E17528350002DA3A4 /* GUIButtonControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C75E1294222E009E7A26 /* GUIButtonControl.cpp */; };
 		DFF0F27F17528350002DA3A4 /* GUICheckMarkControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7601294222E009E7A26 /* GUICheckMarkControl.cpp */; };
-		DFF0F28017528350002DA3A4 /* GUIColorManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7611294222E009E7A26 /* GUIColorManager.cpp */; };
 		DFF0F28117528350002DA3A4 /* GUIControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7621294222E009E7A26 /* GUIControl.cpp */; };
 		DFF0F28217528350002DA3A4 /* GUIControlFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7631294222E009E7A26 /* GUIControlFactory.cpp */; };
 		DFF0F28317528350002DA3A4 /* GUIControlGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7641294222E009E7A26 /* GUIControlGroup.cpp */; };
@@ -3022,7 +3020,6 @@
 		E49912E6174E5DAD00741B6D /* GUIBorderedImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C75D1294222E009E7A26 /* GUIBorderedImage.cpp */; };
 		E49912E7174E5DAD00741B6D /* GUIButtonControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C75E1294222E009E7A26 /* GUIButtonControl.cpp */; };
 		E49912E8174E5DAD00741B6D /* GUICheckMarkControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7601294222E009E7A26 /* GUICheckMarkControl.cpp */; };
-		E49912E9174E5DAD00741B6D /* GUIColorManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7611294222E009E7A26 /* GUIColorManager.cpp */; };
 		E49912EA174E5DAD00741B6D /* GUIControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7621294222E009E7A26 /* GUIControl.cpp */; };
 		E49912EB174E5DAD00741B6D /* GUIControlFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7631294222E009E7A26 /* GUIControlFactory.cpp */; };
 		E49912EC174E5DAD00741B6D /* GUIControlGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7641294222E009E7A26 /* GUIControlGroup.cpp */; };
@@ -3792,7 +3789,6 @@
 		18B7C7031294222D009E7A26 /* GUIButtonControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIButtonControl.h; sourceTree = "<group>"; };
 		18B7C7051294222D009E7A26 /* GUICallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUICallback.h; sourceTree = "<group>"; };
 		18B7C7061294222D009E7A26 /* GUICheckMarkControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUICheckMarkControl.h; sourceTree = "<group>"; };
-		18B7C7071294222D009E7A26 /* GUIColorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIColorManager.h; sourceTree = "<group>"; };
 		18B7C7081294222D009E7A26 /* GUIControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIControl.h; sourceTree = "<group>"; };
 		18B7C7091294222D009E7A26 /* GUIControlFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIControlFactory.h; sourceTree = "<group>"; };
 		18B7C70A1294222D009E7A26 /* GUIControlGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIControlGroup.h; sourceTree = "<group>"; };
@@ -3878,7 +3874,6 @@
 		18B7C75D1294222E009E7A26 /* GUIBorderedImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIBorderedImage.cpp; sourceTree = "<group>"; };
 		18B7C75E1294222E009E7A26 /* GUIButtonControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIButtonControl.cpp; sourceTree = "<group>"; };
 		18B7C7601294222E009E7A26 /* GUICheckMarkControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUICheckMarkControl.cpp; sourceTree = "<group>"; };
-		18B7C7611294222E009E7A26 /* GUIColorManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIColorManager.cpp; sourceTree = "<group>"; };
 		18B7C7621294222E009E7A26 /* GUIControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIControl.cpp; sourceTree = "<group>"; };
 		18B7C7631294222E009E7A26 /* GUIControlFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIControlFactory.cpp; sourceTree = "<group>"; };
 		18B7C7641294222E009E7A26 /* GUIControlGroup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIControlGroup.cpp; sourceTree = "<group>"; };
@@ -6526,8 +6521,6 @@
 				18B7C7051294222D009E7A26 /* GUICallback.h */,
 				18B7C7601294222E009E7A26 /* GUICheckMarkControl.cpp */,
 				18B7C7061294222D009E7A26 /* GUICheckMarkControl.h */,
-				18B7C7611294222E009E7A26 /* GUIColorManager.cpp */,
-				18B7C7071294222D009E7A26 /* GUIColorManager.h */,
 				18B7C7621294222E009E7A26 /* GUIControl.cpp */,
 				18B7C7081294222D009E7A26 /* GUIControl.h */,
 				18B7C7631294222E009E7A26 /* GUIControlFactory.cpp */,
@@ -11172,7 +11165,6 @@
 				18B7C7B21294222E009E7A26 /* GUIBorderedImage.cpp in Sources */,
 				18B7C7B31294222E009E7A26 /* GUIButtonControl.cpp in Sources */,
 				18B7C7B51294222E009E7A26 /* GUICheckMarkControl.cpp in Sources */,
-				18B7C7B61294222E009E7A26 /* GUIColorManager.cpp in Sources */,
 				18B7C7B71294222E009E7A26 /* GUIControl.cpp in Sources */,
 				18B7C7B81294222E009E7A26 /* GUIControlFactory.cpp in Sources */,
 				18B7C7B91294222E009E7A26 /* GUIControlGroup.cpp in Sources */,
@@ -12267,7 +12259,6 @@
 				DFF0F27D17528350002DA3A4 /* GUIBorderedImage.cpp in Sources */,
 				DFF0F27E17528350002DA3A4 /* GUIButtonControl.cpp in Sources */,
 				DFF0F27F17528350002DA3A4 /* GUICheckMarkControl.cpp in Sources */,
-				DFF0F28017528350002DA3A4 /* GUIColorManager.cpp in Sources */,
 				DFF0F28117528350002DA3A4 /* GUIControl.cpp in Sources */,
 				DFF0F28217528350002DA3A4 /* GUIControlFactory.cpp in Sources */,
 				DFF0F28317528350002DA3A4 /* GUIControlGroup.cpp in Sources */,
@@ -13472,7 +13463,6 @@
 				E49912E6174E5DAD00741B6D /* GUIBorderedImage.cpp in Sources */,
 				E49912E7174E5DAD00741B6D /* GUIButtonControl.cpp in Sources */,
 				E49912E8174E5DAD00741B6D /* GUICheckMarkControl.cpp in Sources */,
-				E49912E9174E5DAD00741B6D /* GUIColorManager.cpp in Sources */,
 				E49912EA174E5DAD00741B6D /* GUIControl.cpp in Sources */,
 				E49912EB174E5DAD00741B6D /* GUIControlFactory.cpp in Sources */,
 				E49912EC174E5DAD00741B6D /* GUIControlGroup.cpp in Sources */,

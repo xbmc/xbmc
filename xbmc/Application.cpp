@@ -43,7 +43,6 @@
 #include "GUIInfoManager.h"
 #include "playlists/PlayListFactory.h"
 #include "guilib/GUIFontManager.h"
-#include "guilib/GUIColorManager.h"
 #include "guilib/StereoscopicsManager.h"
 #include "guilib/GUITextLayout.h"
 #include "addons/Skin.h"
@@ -1949,8 +1948,6 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
   g_graphicsContext.SetMediaDir(skin->Path());
   g_directoryCache.ClearSubPaths(skin->Path());
 
-  g_colorManager.Load(CSettings::Get().GetString("lookandfeel.skincolors"));
-
   g_SkinInfo->LoadColors(CSettings::Get().GetString("lookandfeel.skincolors"));
   g_SkinInfo->LoadFonts(CSettings::Get().GetString("lookandfeel.font"));
 
@@ -2048,8 +2045,6 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
   g_largeTextureManager.CleanupUnusedImages(true);
 
   g_fontManager.Clear();
-
-  g_colorManager.Clear();
 
   g_infoManager.Clear();
 

@@ -12,7 +12,6 @@ SRCS += GUIBaseContainer.cpp
 SRCS += GUIBorderedImage.cpp
 SRCS += GUIButtonControl.cpp
 SRCS += GUICheckMarkControl.cpp
-SRCS += GUIColorManager.cpp
 SRCS += GUIControl.cpp
 SRCS += GUIControlFactory.cpp
 SRCS += GUIControlGroup.cpp

@@ -534,7 +534,6 @@
     <ClCompile Include="..\..\xbmc\guilib\GUIBorderedImage.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIButtonControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUICheckMarkControl.cpp" />
-    <ClCompile Include="..\..\xbmc\guilib\GUIColorManager.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIControlFactory.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIControlGroup.cpp" />
@@ -2062,7 +2061,6 @@
     <ClInclude Include="..\..\xbmc\guilib\GUIButtonControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUICallback.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUICheckMarkControl.h" />
-    <ClInclude Include="..\..\xbmc\guilib\GUIColorManager.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIControlFactory.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIControlGroup.h" />
