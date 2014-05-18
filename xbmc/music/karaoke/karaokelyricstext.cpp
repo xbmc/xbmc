@@ -143,10 +143,12 @@ bool CKaraokeLyricsText::InitGraphics()
   CStdString fontPath = URIUtils::AddFileToFolder("special://home/media/Fonts/", CSettings::Get().GetString("karaoke.font"));
   if (!XFILE::CFile::Exists(fontPath))
       fontPath = URIUtils::AddFileToFolder("special://xbmc/media/Fonts/", CSettings::Get().GetString("karaoke.font"));
+  // We scale based on PAL4x3 - this at least ensures all sizing is constant across resolutions.
+  RESOLUTION_INFO pal(720, 576, 0);
   m_karaokeFont = g_fontManager.LoadTTF("__karaoke__", fontPath,
-                  m_colorLyrics, 0, CSettings::Get().GetInt("karaoke.fontheight"), FONT_STYLE_BOLD );
+                  m_colorLyrics, 0, CSettings::Get().GetInt("karaoke.fontheight"), FONT_STYLE_BOLD, pal, false, 1.0f, 1.0f, true );
   CGUIFont *karaokeBorder = g_fontManager.LoadTTF("__karaokeborder__", fontPath,
-                            m_colorLyrics, 0, CSettings::Get().GetInt("karaoke.fontheight"), FONT_STYLE_BOLD, true );
+                            m_colorLyrics, 0, CSettings::Get().GetInt("karaoke.fontheight"), FONT_STYLE_BOLD, pal, true, 1.0f, 1.0f, true );
 
   if ( !m_karaokeFont )
   {

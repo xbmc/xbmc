@@ -64,7 +64,7 @@ public:
 
   void Unload(const CStdString& strFontName);
   void LoadFonts(const std::string &fontSet);
-  CGUIFont* LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, bool border = false, float lineSpacing = 1.0f, float aspect = 1.0f, const RESOLUTION_INFO *res = NULL, bool preserveAspect = false);
+  CGUIFont* LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, const RESOLUTION_INFO &res, bool border = false, float lineSpacing = 1.0f, float aspect = 1.0f, bool preserveAspect = false);
   CGUIFont* GetFont(const CStdString& strFontName, bool fallback = true);
 
   /*! \brief return a default font
@@ -81,14 +81,13 @@ public:
 protected:
   void ReloadTTFFonts();
   static void RescaleFontSizeAndAspect(float *size, float *aspect, const RESOLUTION_INFO &sourceRes, bool preserveAspect);
-  void LoadFonts(const TiXmlNode* fontNode);
+  void LoadFonts(const TiXmlNode* fontNode, const RESOLUTION_INFO &fontRes);
   CGUIFontTTFBase* GetFontFile(const CStdString& strFontFile);
   static void GetStyle(const TiXmlNode *fontNode, int &iStyle);
 
   std::vector<CGUIFont*> m_vecFonts;
   std::vector<CGUIFontTTFBase*> m_vecFontFiles;
   std::vector<OrigFontInfo> m_vecFontInfo;
-  RESOLUTION_INFO m_skinResolution;
   bool m_canReload;
 };
 

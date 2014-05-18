@@ -84,7 +84,7 @@ void CSplash::Show(const CStdString& message)
     if (!m_layoutWasLoading)
     {
       // load arial font, white body, no shadow, size: 20, no additional styling
-      CGUIFont *messageFont = g_fontManager.LoadTTF("__splash__", "arial.ttf", 0xFFFFFFFF, 0, 20, FONT_STYLE_NORMAL, false, 1.0f, 1.0f, &res);
+      CGUIFont *messageFont = g_fontManager.LoadTTF("__splash__", "arial.ttf", 0xFFFFFFFF, 0, 20, FONT_STYLE_NORMAL, res, false, 1.0f, 1.0f);
       if (messageFont)
         m_messageLayout = new CGUITextLayout(messageFont, true, 0);
       m_layoutWasLoading = true;

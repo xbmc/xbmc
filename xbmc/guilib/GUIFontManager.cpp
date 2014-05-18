@@ -91,7 +91,7 @@ static bool CheckFont(CStdString& strPath, const CStdString& newPath,
   return true;
 }
 
-CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, bool border, float lineSpacing, float aspect, const RESOLUTION_INFO *sourceRes, bool preserveAspect)
+CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, const RESOLUTION_INFO &sourceRes, bool border, float lineSpacing, float aspect, bool preserveAspect)
 {
   float originalAspect = aspect;
 
@@ -100,11 +100,8 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   if (pFont)
     return pFont;
 
-  if (!sourceRes) // no source res specified, so assume the skin res
-    sourceRes = &m_skinResolution;
-
   float newSize = (float)iSize;
-  RescaleFontSizeAndAspect(&newSize, &aspect, *sourceRes, preserveAspect);
+  RescaleFontSizeAndAspect(&newSize, &aspect, sourceRes, preserveAspect);
 
   // First try to load the font from the skin
   CStdString strPath;
@@ -142,7 +139,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
       if (strFilename != "arial.ttf")
       {
         CLog::Log(LOGERROR, "Couldn't load font name: %s(%s), trying to substitute arial.ttf", strFontName.c_str(), strFilename.c_str());
-        return LoadTTF(strFontName, "arial.ttf", textColor, shadowColor, iSize, iStyle, border, lineSpacing, originalAspect);
+        return LoadTTF(strFontName, "arial.ttf", textColor, shadowColor, iSize, iStyle, sourceRes, border, lineSpacing, originalAspect);
       }
       CLog::Log(LOGERROR, "Couldn't load font name:%s file:%s", strFontName.c_str(), strPath.c_str());
 
@@ -162,7 +159,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   fontInfo.aspect = originalAspect;
   fontInfo.fontFilePath = strPath;
   fontInfo.fileName = strFilename;
-  fontInfo.sourceRes = *sourceRes;
+  fontInfo.sourceRes = sourceRes;
   fontInfo.preserveAspect = preserveAspect;
   fontInfo.border = border;
   m_vecFontInfo.push_back(fontInfo);
@@ -317,7 +314,7 @@ CGUIFont* GUIFontManager::GetDefaultFont(bool border)
     { // create it
       CGUIFont *font13 = m_vecFonts[font13index];
       OrigFontInfo fontInfo = m_vecFontInfo[font13index];
-      font13border = LoadTTF("__defaultborder__", fontInfo.fileName, 0xFF000000, 0, fontInfo.size, font13->GetStyle(), true, 1.0f, fontInfo.aspect, &fontInfo.sourceRes, fontInfo.preserveAspect);
+      font13border = LoadTTF("__defaultborder__", fontInfo.fileName, 0xFF000000, 0, fontInfo.size, font13->GetStyle(), fontInfo.sourceRes, true, 1.0f, fontInfo.aspect, fontInfo.preserveAspect);
     }
     return font13border;
   }
@@ -340,7 +337,8 @@ void GUIFontManager::Clear()
 void GUIFontManager::LoadFonts(const std::string& fontSet)
 {
   // Get the file to load fonts from:
-  const std::string strPath = g_SkinInfo->GetSkinPath("Font.xml", &m_skinResolution);
+  RESOLUTION_INFO fontRes;
+  const std::string strPath = g_SkinInfo->GetSkinPath("Font.xml", &fontRes);
   CLog::Log(LOGINFO, "Loading fonts from %s", strPath.c_str());
 
   CXBMCTinyXML xmlDoc;
@@ -371,7 +369,7 @@ void GUIFontManager::LoadFonts(const std::string& fontSet)
 
       if (StringUtils::EqualsNoCase(fontSet, idAttr))
       {
-        LoadFonts(pChild->FirstChild("font"));
+        LoadFonts(pChild->FirstChild("font"), fontRes);
         return;
       }
     }
@@ -388,7 +386,7 @@ void GUIFontManager::LoadFonts(const std::string& fontSet)
     CLog::Log(LOGERROR, "file '%s' doesnt have a valid <fontset>", strPath.c_str());
 }
 
-void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
+void GUIFontManager::LoadFonts(const TiXmlNode* fontNode, const RESOLUTION_INFO &fontRes)
 {
   while (fontNode)
   {
@@ -415,7 +413,7 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
       // TODO: Why do we tolower() this shit?
       CStdString strFontFileName = fileName;
       StringUtils::ToLower(strFontFileName);
-      LoadTTF(fontName, strFontFileName, textColor, shadowColor, iSize, iStyle, false, lineSpacing, aspect);
+      LoadTTF(fontName, strFontFileName, textColor, shadowColor, iSize, iStyle, fontRes, false, lineSpacing, aspect);
     }
     fontNode = fontNode->NextSibling("font");
   }
