@@ -38,7 +38,7 @@ msgstr "Extreem"
 
 msgctxt "#30005"
 msgid "Nervous Mode [more mode changes]"
-msgstr "Nerveus modus [meer modus veranderingen]"
+msgstr "Nerveuze modus [meer modus veranderingen]"
 
 msgctxt "#30006"
 msgid "Speed [skip some frames]"

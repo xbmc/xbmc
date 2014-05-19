@@ -39,3 +39,11 @@ msgstr "Logging prolisso per le librerie RTMP"
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
 msgstr "Logging prolisso per le chiamate DBUS"
+
+msgctxt "#30006"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Logging verboso per le richieste JSON-RPC"
+
+msgctxt "#30007"
+msgid "Verbose logging for AUDIO component"
+msgstr "Logging verboso per le componenti audio"

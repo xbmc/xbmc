@@ -50,7 +50,7 @@ msgstr "Temps de refresc màxim"
 
 msgctxt "#30008"
 msgid "Enable Stereo 3D"
-msgstr "Habilita l'Stereo 3D"
+msgstr "Habilita l'estèreo 3D"
 
 msgctxt "#30009"
 msgid "Preset Pack"

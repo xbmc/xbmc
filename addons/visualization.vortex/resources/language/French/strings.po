@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Random Presets"
-msgstr "Préréglages aléatoires"
+msgstr "Présélections aléatoires"
 
 msgctxt "#30001"
 msgid "Time Between Presets"
@@ -30,7 +30,7 @@ msgstr "Ajout aléatoire de temps"
 
 msgctxt "#30003"
 msgid "Lock Preset"
-msgstr "Verrouiller Préréglage"
+msgstr "Verrouiller la présélection"
 
 msgctxt "#30004"
 msgid "Enable Transitions"
@@ -38,7 +38,7 @@ msgstr "Activer les transitions"
 
 msgctxt "#30005"
 msgid "Stop first preset"
-msgstr "Arrêter le premier préréglage"
+msgstr "Arrêter la première présélection"
 
 msgctxt "#30006"
 msgid "Show FPS"

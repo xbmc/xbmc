@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.pvr-ios.xbmc.org"
 		name="XBMC.org PVR Add-ons"
-		version="1.1.8"
+		version="1.1.9"
 		provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -42,7 +42,7 @@
 		<summary lang="hr">Instaliraj PVR dodatke s XBMC.org</summary>
 		<summary lang="hu">PVR kiegészítők telepítése az XBMC.org-ról</summary>
 		<summary lang="id">Pasang Pengaya PVR dari XBMC.org</summary>
-		<summary lang="it">Installa add-on da XBMC.org</summary>
+		<summary lang="it">Installa addon da XBMC.org</summary>
 		<summary lang="ko">XBMC.org에서 PVR 애드온 설치</summary>
 		<summary lang="lt">Įdiekite PVR priedą iš XBMC.org</summary>
 		<summary lang="lv">Instalēt PVR pielikumus no XBMC.org</summary>
@@ -80,8 +80,8 @@
 		<description lang="hr">reuzmite i instalirajte PVR dodatke sa službenog XBMC.org repozitorija dodataka.[CR]  Korištenjm službenog repozitorija biti ćete u mogućnosti iskoristiti prednost našeg zrcalnog poslužitelja u svrhu bržeg preuzimanja iz regije bliže vama.[CR]  Svi dodaci na ovom repozitoriju prošli su osnovno testiranje. Ako pronađete slomljeni ili dodatak koji ne radi, prijavite ga XBMC timu da ga možemo popraviti.</description>
 		<description lang="hu">PVR Kiegészítők letöltése és telepítése a hivatalos XBMC.org tárolóhelyről.[CR] A hivatalos tárolóhely használatával kihasználhatod szerteágazó tükör-kiszolgáló hálózatunkat, ami segít a gyorsabb letöltésben egy hozzád közelebb eső körzet használatával.[CR]  Minden kiegészítő ezen a tárolóhelyen átment egy alaptesztelésen. Ha mégis hibás vagy nem működő kiegészítőt találsz, kérünk jelezd az XBMC csapatnak, hogy megtegyük a szükséges lépéseket.</description>
 		<description lang="id">Unduh dan pasang pengaya dari repositori pengaya resmi XBMC.org. [CR] Dengan menggunakan repositori resmi anda akan mendapat keuntungan dari miror berkas kami yang luas dimana dapat membantu anda untuk lebih cepat mengunduh dari daerah yang dekat dengan anda. [CR] Semua pengaya pada repository telah melalui uji coba standar, jika anda menemukan pengaya yang rusak atau tidak bekerja tolong laporkan kepada tim XBMC agar kami bisa menindak lanjutinya.</description>
-		<description lang="it">Scarica ed installa gli add-on dalla libreria ufficiale di XBMC.org[CR]  Usando la libreria ufficiale avrai il vantaggio di ottenere download più veloci con mirror più vicini alla tua località.[CR]  Tutti gli add-on in questa libreria sono stati sottoposti a test di base, se ne trovi uno non funzionante o corrotto, per favore riporta il problema al team di XBMC così potremmo prendere provvedimenti.</description>
-		<description lang="ko">공식 XBMC.org 애드온 저장소에서 PVR 애드온을 다운로드하여 설치합니다.[CR] 공식 저장소를 사용하면 파일 미러링 서비스를 통해 사용자와 가까운 곳에서 빠르게 다운로드할 수 있습니다.[CR] 저장소의 모든 애드온은 기본 테스트를 거치지만 작동이 되지 않거나 손상된 추가기능을 발견하면 필요한 조치를 취할 수 있게 Team XBMC로 알려주시기 바랍니다.</description>
+		<description lang="it">Scarica ed installa gli addon dalla libreria ufficiale di XBMC.org[CR]  Usando la libreria ufficiale avrai il vantaggio di ottenere download più veloci con mirror più vicini alla tua località.[CR]  Tutti gli addon in questa libreria sono stati sottoposti a test di base, se ne trovi uno non funzionante o corrotto, per favore riporta il problema al team di XBMC così potremmo prendere provvedimenti.</description>
+		<description lang="ko">공식 XBMC.org 애드온 저장소에서 PVR 애드온을 다운로드하여 설치합니다.[CR] 공식 저장소를 사용하면 파일 미러링 서비스를 통해 사용자와 가까운 곳에서 빠르게 다운로드할 수 있습니다.[CR] 저장소의 모든 애드온은 기본 테스트를 거치지만 작동이 되지 않거나 손상된 애드온을 발견하면 필요한 조치를 취할 수 있게 Team XBMC로 알려주시기 바랍니다.</description>
 		<description lang="lt">Atsisiųskite ir įdiekite PVR priedą iš oficialios XBMC.org priedų saugyklos. [Cr] Naudojant oficialią saugyklą galėsite pasinaudoti mūsų  failų Veidrodine saugyklos paslauga katra padės jums greičiau parsisiųsti iš artimiausios vietos šalia jūsų. [CR] Visi priedai šioje saugykloje yra perėję pagrindinį testavimą, jei atsisiuntėte neveikiantį ar/arba sugadintą priedą praneškite 'Team XBMC', kad galėtume imtis visų būtinų priemonių klaidai ištaisyti.</description>
 		<description lang="lv">Lejupielādējiet un instalējiet PVR pielikumus no oficiālā XBMC.org pielikumu repozitorija.[CR]  Izmantojot oficiālo repozitoriju, varēsiet izmantot mūsu plašo spoguļu pakalpojumu, lai iegūtu ātrākas lejupielādes no reģiona, kas vistuvāk.[CR]  Visi pielikumi šajā repozitorijā ir izgājuši pamata testēšanu, bet, ja atrodat saplīsušu vai nestrādājošu pielikumu, lūdzu, ziņojiet par to Team XBMC, lai varam izpildīt nepieciešamās labošanas darbības.</description>
 		<description lang="nl">Download en installeer PVR add-ons van het officiële XBMC.org add-on depot.[CR] Wanneer u het officiële depot gebruikt beschikt u over onze uitgebreide mirrorservice, waardoor u snel kan downloaden van locaties in uw buurt.[CR] Alle add-ons in dit depot ondergingen standaardtests; indien u een defecte of niet-werkende add-on vindt, meld dit dan aan Team XBMC zodat zij actie kunnen ondernemen.</description>
@@ -127,9 +127,9 @@
 		<disclaimer lang="hu">Nem minden itt található kiegészítőt az XBMC csapat készített és nem vállal felelősséget azok tartalmáért</disclaimer>
 		<disclaimer lang="id">Tim XBMC tidak membuat semua pengaya pada repository ini dan tidak bertanggung jawab atas isinya.</disclaimer>
 		<disclaimer lang="is">XBMC teymið gerir ekki allar þessar viðbætur og er ekki ábyrgt fyrir innihaldi þeirra.</disclaimer>
-		<disclaimer lang="it">Il team di XBMC non ha creato tutti gli add-on di questa libreria e non è responsabile per il loro contenuto</disclaimer>
+		<disclaimer lang="it">Il team di XBMC non ha creato tutti gli addon di questa libreria e non è responsabile per il loro contenuto</disclaimer>
 		<disclaimer lang="ja">XBMC チームが、このリポジトリ上の全アドオンを作ったわけではありません。また、その内容についても責任は負いかねます。</disclaimer>
-		<disclaimer lang="ko">Team XBMC는 이 저장소의 모든 애드온을 제작하지 않았으며, 애드온 컨텐츠에 대한 책임이 없습니다.</disclaimer>
+		<disclaimer lang="ko">Team XBMC는 이 저장소의 모든 애드온을 제작하지 않았으며, 애드온 콘텐츠에 대한 책임이 없습니다.</disclaimer>
 		<disclaimer lang="ku">تیمی XBMC هەموو پێوەکراوەکانی دروست نەکردووە بۆیە بەرپرسیار نیە لە پێکهاتە و ناوەڕۆکەکانی</disclaimer>
 		<disclaimer lang="lt">XBMC komanda netestavo priedų šioje saugykloje ir neatsako arba nėra atsakinga už jų turinį</disclaimer>
 		<disclaimer lang="lv">XBMC komanda nav izveidojusi visus šīs krātuves paplašinājumus un nav atbildīga par to saturu</disclaimer>

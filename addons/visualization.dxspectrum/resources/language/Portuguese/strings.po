@@ -34,7 +34,7 @@ msgstr "Pontos"
 
 msgctxt "#30004"
 msgid "Bar Height"
-msgstr "Altura das barras"
+msgstr "Altura das Barras"
 
 msgctxt "#30005"
 msgid "Small"
@@ -58,11 +58,11 @@ msgstr "Velocidade"
 
 msgctxt "#30010"
 msgid "Very Slow"
-msgstr "Muito lento"
+msgstr "Muito lenta"
 
 msgctxt "#30011"
 msgid "Slow"
-msgstr "Lento"
+msgstr "Lenta"
 
 msgctxt "#30012"
 msgid "Default"
@@ -70,8 +70,8 @@ msgstr "Padrão"
 
 msgctxt "#30013"
 msgid "Fast"
-msgstr "Rápido"
+msgstr "Rápida"
 
 msgctxt "#30014"
 msgid "Very Fast"
-msgstr "Muito rápido"
+msgstr "Muito rápida"

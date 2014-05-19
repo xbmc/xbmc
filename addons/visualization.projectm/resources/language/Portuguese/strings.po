@@ -46,15 +46,15 @@ msgstr "Duração de Pré-Selecção Suave"
 
 msgctxt "#30007"
 msgid "Preset Duration"
-msgstr "Duração de pré-selecção"
+msgstr "Duração de Pré-Selecção"
 
 msgctxt "#30008"
 msgid "Beat Sensitivity"
-msgstr "Sensibilidade ao ritmo"
+msgstr "Sensibilidade ao Ritmo"
 
 msgctxt "#30009"
 msgid "Preset Pack"
-msgstr "Conjunto de pré-selecções"
+msgstr "Conjunto de Pré-Selecções"
 
 msgctxt "#30010"
 msgid "Default Pack"

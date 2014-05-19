@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Random Presets"
-msgstr "Losowe efekty"
+msgstr "Efekty losowe "
 
 msgctxt "#30001"
 msgid "Time Between Presets"
@@ -42,7 +42,7 @@ msgstr "Zatrzymaj pierwsze ustawienie"
 
 msgctxt "#30006"
 msgid "Show FPS"
-msgstr "Pokaż FPS "
+msgstr "Pokaż szybkość klatek"
 
 msgctxt "#30007"
 msgid "Show debug console"

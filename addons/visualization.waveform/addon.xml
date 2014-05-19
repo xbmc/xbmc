@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.waveform"
-  version="1.0.20"
+  version="1.0.21"
   name="Waveform"
   provider-name="MrC">
   <extension
@@ -46,8 +46,8 @@
     <summary lang="ms">Visual di skrin menunjukkan 2 graf gelombang</summary>
     <summary lang="nl">Visualisatie die twee grafieken in golfvorm weergeeft</summary>
     <summary lang="no">Visualisering som viser to bølgeformede grafer på skjermen</summary>
-    <summary lang="pl">Wizualizacja pokazująca dwie fale dźwięku</summary>
-    <summary lang="pt">Visualização que mostra 2 gráficos ondulantes no ecrã</summary>
+    <summary lang="pl">Wizualizacja pokazująca dwukanałowy analizator widma akustycznego</summary>
+    <summary lang="pt">Visualização que mostra 2 gráficos em forma de onda no ecrã</summary>
     <summary lang="pt_BR">Visualização que mostra 2 gráficos ondulantes</summary>
     <summary lang="ro">Vizualizare care arată 2 grafice Waveform pe ecran</summary>
     <summary lang="ru">Визуализация, показывающая  на экране 2 волновых графика</summary>
@@ -100,8 +100,8 @@
     <description lang="ms">Gelombang merupakan visual ringkas yang menunjukkan 2 graf gelombang, saluran kiri dan kanan yang bergerak mengikut rentak musik</description>
     <description lang="nl">Waveform is een simpele muziekvisualisatie die twee golfvormen op het scherm toont, respectievelijk voor het linker- en rechtergeluidskanaal. De golfvormen bewegen mee met de beat van de muziek.</description>
     <description lang="no">Waveform er en enkel visualisering. Waveform viser to bølgeformede grafer på skjermen som beveger seg i takt med musikken. En for venstre og en for høyre lydkanal.</description>
-    <description lang="pl">Waveform jest prostą wizualizacją pokazującą dwie fale dźwiękowe na ekranie. Każda na jeden kanał dźwięku.</description>
-    <description lang="pt">O Waveform é uma visualização simples que mostra 2 gráficos ondulantes no ecrã, um para cada canal estéreo. Estas ondas movem-se ao ritmo da música.</description>
+    <description lang="pl">Prosty dwukanałowy analizator widma akustycznego, który porusza się w rytm muzyki, tworząc efekt fali w całym zakresie widma. Wizualizacja jest świetna i charakteryzuje się niskim obciążeniem procesora.</description>
+    <description lang="pt">O Waveform é uma visualização simples que mostra 2 Gráficos em forma de onda no ecrã. Um para cada canal estéreo que se movem ao ritmo da música</description>
     <description lang="pt_BR">O Waveform é um visualizador simples que mostra 2 gráficos ondulantes na tela, um para cada canal estéreo</description>
     <description lang="ro">Waveform este o vizualizare simplă care arată 2 grafice în formă de undă pe ecran, câte unul pentru fiecare canal stâng și drept și care se mișcă după bătăile muzicii.</description>
     <description lang="ru">В этой визуализации отображаются 2 графика для левого и правого каналов, которые движутся в такт музыке</description>

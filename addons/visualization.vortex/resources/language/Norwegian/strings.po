@@ -36,9 +36,21 @@ msgctxt "#30004"
 msgid "Enable Transitions"
 msgstr "Aktiver Oversettelse "
 
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "Stopp første forvalg"
+
 msgctxt "#30006"
 msgid "Show FPS"
 msgstr "Vis FPS"
+
+msgctxt "#30007"
+msgid "Show debug console"
+msgstr "Vis feilsøkingskonsoll "
+
+msgctxt "#30008"
+msgid "Show audio analysis"
+msgstr "Vis lyd analyse"
 
 msgctxt "#30050"
 msgid "%2.0f secs"
