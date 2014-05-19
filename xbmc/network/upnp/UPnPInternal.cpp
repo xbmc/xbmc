@@ -301,6 +301,9 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     if(object.m_ReferenceID == object.m_ObjectID)
         object.m_ReferenceID = "";
 
+    for (unsigned int index = 0; index < tag.m_studio.size(); index++)
+        object.m_People.publisher.Add(tag.m_studio[index].c_str());
+
     for (unsigned int index = 0; index < tag.m_genre.size(); index++)
       object.m_Affiliation.genres.Add(tag.m_genre.at(index).c_str());
 
@@ -690,6 +693,10 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
         tag.m_premiered    = date;
     }
     tag.m_iYear       = date.GetYear();
+
+    for (unsigned int index = 0; index < object.m_People.publisher.GetItemCount(); index++)
+        tag.m_studio.push_back(object.m_People.publisher.GetItem(index)->GetChars());
+
     for (unsigned int index = 0; index < object.m_Affiliation.genres.GetItemCount(); index++)
     {
       // ignore single "Unknown" genre inserted by Platinum
