@@ -225,3 +225,10 @@ TEST_F(PlexGUIInfoManagerPlayQueueTest, clip)
   EXPECT_FALSE(g_infoManager.EvaluateBool("System.PlexPlayQueue(videirrppo)"));
   EXPECT_FALSE(g_infoManager.EvaluateBool("System.PlexPlayQueue(music)"));
 }
+
+TEST_F(PlexGUIInfoManagerPlayQueueTest, caseSensitive)
+{
+  g_plexApplication.playQueueManager =
+      CPlexPlayQueueManagerPtr(new PlexPlayQueueManagerFake(PLEX_MEDIA_TYPE_VIDEO, PLEX_DIR_TYPE_CLIP));
+  EXPECT_TRUE(g_infoManager.EvaluateBool("System.PlexPlayQueue(CliP)"));
+}

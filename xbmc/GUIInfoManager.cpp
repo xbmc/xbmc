@@ -3146,6 +3146,8 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case SYSTEM_PLEX_PLAYQUEUE:
         {
           CStdString pq = m_stringParameters[info.GetData1()];
+          boost::to_lower(pq);
+
           ePlexMediaType type = g_plexApplication.playQueueManager->getCurrentPlayQueueType();
           EPlexDirectoryType dirType = g_plexApplication.playQueueManager->getCurrentPlayQueueDirType();
           if (pq == "music" && type == PLEX_MEDIA_TYPE_MUSIC)
