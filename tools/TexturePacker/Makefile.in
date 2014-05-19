@@ -17,9 +17,10 @@ CXXFLAGS_FOR_BUILD += \
   -I. \
   -I@abs_top_srcdir@/lib \
   -I@abs_top_srcdir@/xbmc \
-  -I@abs_top_srcdir@/xbmc/linux
+  -I@abs_top_srcdir@/xbmc/linux \
+  $(shell PATH="$(PATH)" pkg-config sdl SDL_image --cflags)
 
-LDFLAGS_FOR_BUILD += -lSDL_image -lSDL -llzo2
+LDFLAGS_FOR_BUILD += $(shell PATH="$(PATH)" pkg-config sdl SDL_image --libs)  -llzo2
 LDFLAGS_FOR_BUILD += -L@abs_top_srcdir@/lib/libsquish -lsquish-native
 
 ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
@@ -31,7 +32,11 @@ all: $(TARGET)
 
 $(TARGET): $(SRCS) @abs_top_srcdir@/xbmc/guilib/XBTF.h
 # TexturePacker run native on build system, build it with native tools
-	make -C @abs_top_srcdir@/lib/libsquish/ libsquish-native.so
+	${MAKE} -C @abs_top_srcdir@/lib/libsquish/ libsquish-native.so
 	$(CXX_FOR_BUILD) $(CXXFLAGS_FOR_BUILD) $(DEFINES) $(NATIVE_ARCH) $(SRCS) $(LDFLAGS_FOR_BUILD) -o $(TARGET)
 
-include @abs_top_srcdir@/Makefile.include
+ifneq (,$(wildcard @abs_top_srcdir@/tools/depends/Makefile.include))
+  include @abs_top_srcdir@/tools/depends/Makefile.include
+else
+  include @abs_top_srcdir@/Makefile.include
+endif
