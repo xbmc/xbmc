@@ -305,7 +305,7 @@ bool CPlexTextureCacheJob::CacheTexture(CBaseTexture **texture)
     return true;
 
   int bytesRead, bufferSize = 131072;
-  unsigned char buffer[bufferSize];
+  unsigned char buffer[131072];
   bool outputFileOpenned = false;
 
   if (m_inputFile.Open(image, READ_NO_CACHE))
