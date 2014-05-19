@@ -233,7 +233,6 @@ public:
   {
   }
   virtual bool CacheTexture(CBaseTexture** texture = NULL);
-  virtual void Cancel();
 };
 
 #endif /* defined(__Plex_Home_Theater__PlexJobs__) */

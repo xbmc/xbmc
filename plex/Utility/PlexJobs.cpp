@@ -348,10 +348,3 @@ bool CPlexTextureCacheJob::CacheTexture(CBaseTexture **texture)
     return false;
   }
 }
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexTextureCacheJob::Cancel()
-{
-  m_inputFile.Close();
-  m_outputFile.Close();
-}
