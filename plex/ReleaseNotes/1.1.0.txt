@@ -1,0 +1,27 @@
+
+* New
+      - Play Queues
+      - New home screen fanout caching (Thanks to Lionel Chazallon)
+      - New experimental FFMPEG AVIO transport option (Thanks to Lionel)
+      - Faster Directory parsing (Thanks to Lionel)
+      - Faster texture caching (Thanks to Lionel)
+      - Support for new Server Composition Images in shared content views.
+
+* Fixes
+      - Reset screensaver time when navigating from remote (Thanks to Lionel)
+      - Dependencies now build with Clang 5 on OSX.
+      - Screensaver label is now not so short.
+      - Several crashes fixed (When playing videos, when searching etc.)
+      - Several fixes with regards to mobile app servers
+      - Please Wait toast is now greatly improved at several places.
+      - Allow local access of files even when we don't own the server. (Thanks to Zachary Kotlarek)
+      - Fix black screen when music screensaver is activated.
+      - Fix dim screensaver when playing movies.
+      - Some playback related fixes.
+
+* Notes
+      - MediaStream is now removed. If you still need it go to github.com/plexinc/plex-mediastream.git
+      - Lot of skin changes, see https://github.com/plexinc/plex-home-theater-public/wiki/Skinning-guide
+      - If you get empty thumbnails in Shared Content, the servers needs to be updated.
+      - Apple Remote keymapping has changed a bit, see current mapping: https://support.plex.tv/hc/en-us/articles/202594808
+
