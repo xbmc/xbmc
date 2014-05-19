@@ -110,6 +110,62 @@ PLT_PersonRoles::FromDidl(const NPT_Array<NPT_XmlElementNode*>& nodes)
 }
 
 /*----------------------------------------------------------------------
+|   PLT_Artworks::Add
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_Artworks::Add(const NPT_String& type, const NPT_String& url)
+{
+    PLT_Artwork artwork;
+    artwork.type = type;
+    artwork.url = url;
+
+    return NPT_List<PLT_Artwork>::Add(artwork);
+}
+
+/*----------------------------------------------------------------------
+|   PLT_Artworks::ToDidl
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_Artworks::ToDidl(NPT_String& didl, const NPT_String& tag)
+{
+    NPT_String tmp;
+    for (NPT_List<PLT_Artwork>::Iterator it =
+         NPT_List<PLT_Artwork>::GetFirstItem(); it; it++) {
+        if (it->type.IsEmpty()) continue;
+
+        tmp += "<xbmc:" + tag;
+        if (!it->type.IsEmpty()) {
+            tmp += " type=\"";
+            PLT_Didl::AppendXmlEscape(tmp, it->type);
+            tmp += "\"";
+        }
+        tmp += ">";
+        PLT_Didl::AppendXmlEscape(tmp, it->url);
+        tmp += "</xbmc:" + tag + ">";
+    }
+
+    didl += tmp;
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_Artworks::ToDidl
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_Artworks::FromDidl(const NPT_Array<NPT_XmlElementNode*>& nodes)
+{
+    for (NPT_Cardinal i=0; i<nodes.GetItemCount(); i++) {
+        PLT_Artwork artwork;
+        const NPT_String* url = nodes[i]->GetText();
+        const NPT_String* type = nodes[i]->GetAttribute("type");
+        if (type) artwork.type = *type;
+        if (url) artwork.url = *url;
+        NPT_CHECK(NPT_List<PLT_Artwork>::Add(artwork));
+    }
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
 |   PLT_MediaItemResource::PLT_MediaItemResource
 +---------------------------------------------------------------------*/
 PLT_MediaItemResource::PLT_MediaItemResource()
@@ -199,6 +255,11 @@ PLT_MediaObject::Reset()
     m_Recorded.episode_season = 0;
 
     m_Resources.Clear();
+
+    m_XbmcInfo.date_added = "";
+    m_XbmcInfo.rating = 0.0f;
+    m_XbmcInfo.votes = "";
+    m_XbmcInfo.artwork.Clear();
 
     m_Didl = "";
 
@@ -472,6 +533,32 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
         }
     }
 
+    // xbmc dateadded
+    if ((mask & PLT_FILTER_MASK_XBMC_DATEADDED) && !m_XbmcInfo.date_added.IsEmpty()) {
+        didl += "<xbmc:dateadded>";
+        PLT_Didl::AppendXmlEscape(didl, m_XbmcInfo.date_added);
+        didl += "</xbmc:dateadded>";
+    } 
+
+    // xbmc rating
+    if (mask & PLT_FILTER_MASK_XBMC_RATING) {
+        didl += "<xbmc:rating>";
+        didl += NPT_String::Format("%.1f", m_XbmcInfo.rating);
+        didl += "</xbmc:rating>";
+    }
+
+    // xbmc votes
+    if (mask & PLT_FILTER_MASK_XBMC_VOTES && !m_XbmcInfo.votes.IsEmpty()) {
+        didl += "<xbmc:votes>";
+        PLT_Didl::AppendXmlEscape(didl, m_XbmcInfo.votes);
+        didl += "</xbmc:votes>";
+    }
+
+    // xbmc artwork
+    if (mask & PLT_FILTER_MASK_XBMC_ARTWORK) {
+        m_XbmcInfo.artwork.ToDidl(didl, "artwork");
+    }
+
     // class is required
     didl += "<upnp:class";
 	if (!m_ObjectClass.friendly_name.IsEmpty()) {
@@ -671,6 +758,28 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
         }    
         m_Resources.Add(resource);
     }
+
+    PLT_XmlHelper::GetChildText(entry, "dateadded", m_XbmcInfo.date_added, didl_namespace_xbmc, 256);
+    // parse date and make sure it's valid
+    for (int format=0; format<=NPT_DateTime::FORMAT_RFC_1036; format++) {
+        NPT_DateTime date;
+        if (NPT_SUCCEEDED(date.FromString(m_XbmcInfo.date_added, (NPT_DateTime::Format)format))) {
+            parsed_date = date.ToString((NPT_DateTime::Format)format);
+            break;
+        }
+    }
+    m_XbmcInfo.date_added = parsed_date;
+
+    PLT_XmlHelper::GetChildText(entry, "rating", str, didl_namespace_xbmc);
+    NPT_Float floatValue;
+    if (NPT_FAILED(str.ToFloat(floatValue))) floatValue = 0.0;
+    m_XbmcInfo.rating = floatValue;
+
+    PLT_XmlHelper::GetChildText(entry, "votes", m_XbmcInfo.votes, didl_namespace_xbmc, 256);
+
+    children.Clear();
+    PLT_XmlHelper::GetChildren(entry, children, "artwork", didl_namespace_xbmc);
+    m_XbmcInfo.artwork.FromDidl(children);
 
     // re serialize the entry didl as a we might need to pass it to a renderer
     // we may have modified the tree to "fix" issues, so as not to break a renderer
