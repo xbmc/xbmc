@@ -274,7 +274,7 @@ SectionEnd
 ;--------------------------------
 ;vs redist installer Section
 
-Section "Microsoft Visual C++ 2008/2010 Redistributable Package (x86)" SEC_VCREDIST
+Section "Microsoft Visual C++ 2008/2010/2013 Redistributable Package (x86)" SEC_VCREDIST
 
   SectionIn 1 2 #section is in install type Full/Normal and when not installed
   
@@ -292,6 +292,13 @@ Section "Microsoft Visual C++ 2008/2010 Redistributable Package (x86)" SEC_VCRED
   DetailPrint "Running VS Redist Setup..."
   ExecWait '"$TEMP\vc2010\vcredist_x86.exe" /q' $VSRedistSetupError
   RMDir /r "$TEMP\vc2010"
+  
+  ;vc120
+  SetOutPath "$TEMP\vc2013"
+  File "${xbmc_root}\..\dependencies\vcredist\2013\vcredist_x86.exe"
+  DetailPrint "Running VS Redist Setup..."
+  ExecWait '"$TEMP\vc2013\vcredist_x86.exe" /q' $VSRedistSetupError
+  RMDir /r "$TEMP\vc2013"
  
   DetailPrint "Finished VS Redist Setup"
   SetOutPath "$INSTDIR"
