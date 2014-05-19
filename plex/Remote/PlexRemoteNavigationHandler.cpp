@@ -69,8 +69,8 @@ CPlexRemoteResponse CPlexRemoteNavigationHandler::handle(const CStdString &url, 
   {
     CAction actionId(action);
 
+    g_application.ResetScreenSaverTimer();
     g_application.WakeUpScreenSaverAndDPMS();
-
     g_application.ResetSystemIdleTimer();
 
     if (!g_application.IsPlaying())
