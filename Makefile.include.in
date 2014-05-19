@@ -53,6 +53,7 @@ DEFINES+= \
 	-DBIN_INSTALL_PATH="\"$(libdir)/xbmc\"" \
 	-DINSTALL_PATH="\"$(datarootdir)/xbmc\"" \
 	@SDL_DEFINES@ \
+	@UPNP_DEFINES@ \
 	@DEFS@ \
 
 ifeq ($(findstring osx,$(ARCH)), osx)

@@ -100,8 +100,6 @@ endif
 
 INCLUDES=-I./Neptune/Source/Core -I./Platinum/Source/Core -I./Platinum/Source/Platinum -I./Platinum/Source/Devices/MediaConnect -I./Platinum/Source/Devices/MediaRenderer -I./Platinum/Source/Devices/MediaServer -I./Neptune/Source/System/Posix -I./Platinum/Source/Extras
 
-CXXFLAGS+=-DNPT_CONFIG_ENABLE_LOGGING
-
 LIB=libupnp.a
 
 include ../../Makefile.include
