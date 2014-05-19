@@ -776,18 +776,11 @@ void CGUIPlexMediaWindow::GetContextButtons(int itemNumber, CContextButtons &but
   if (g_application.IsPlaying())
     buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
 
-  if (g_plexApplication.playQueueManager->getCurrentPlayQueuePlaylist() != PLAYLIST_NONE)
-  {
-    if ((IsVideoContainer() &&
-         g_plexApplication.playQueueManager->getCurrentPlayQueuePlaylist() == PLAYLIST_VIDEO) ||
-        (IsMusicContainer() &&
-         g_plexApplication.playQueueManager->getCurrentPlayQueuePlaylist() == PLAYLIST_MUSIC))
-    {
-      // now enable queueing
-      buttons.Add(CONTEXT_BUTTON_PLAY_ONLY_THIS, 52602);
-      buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 52603);
-    }
-  }
+  buttons.Add(CONTEXT_BUTTON_PLAY_ONLY_THIS, 52602);
+
+  ePlexMediaType itemType = PlexUtils::GetMediaTypeFromItem(*m_vecItems);
+  if (g_plexApplication.playQueueManager->getCurrentPlayQueueType() == itemType)
+    buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 52603);
 
   if (IsVideoContainer() && item->IsPlexMediaServerLibrary())
   {
@@ -897,6 +890,11 @@ void CGUIPlexMediaWindow::QueueItem(const CFileItemPtr& item, bool next)
     CPlexPlayQueueOptions options;
     options.startPlaying = false;
     success = g_plexApplication.playQueueManager->create(*item, "", options);
+
+    if ((g_application.IsPlayingAudio() && IsVideoContainer()) ||
+        (g_application.IsPlayingVideo() && IsMusicContainer()))
+      CApplicationMessenger::Get().MediaStop();
+
   }
   else
   {
