@@ -295,11 +295,11 @@ msgstr "Zmienny"
 
 msgctxt "#98"
 msgid "View: Auto"
-msgstr "Widok: Auto"
+msgstr "Widok: Automatyczny"
 
 msgctxt "#99"
 msgid "View: Auto big"
-msgstr "Widok: Auto szeroki"
+msgstr "Widok: Szeroki"
 
 msgctxt "#100"
 msgid "View: Icons"
@@ -467,7 +467,7 @@ msgstr "Procesor:"
 
 msgctxt "#141"
 msgid "GPU:"
-msgstr "Procesor graficzny:"
+msgstr "Procesor grafiki:"
 
 msgctxt "#142"
 msgid "Time:"
@@ -535,7 +535,7 @@ msgstr "Wideo"
 
 msgctxt "#158"
 msgid "Free memory"
-msgstr "Wolnej pamięci"
+msgstr "Wolna pamięć"
 
 msgctxt "#159"
 msgid "No link"
@@ -587,7 +587,7 @@ msgstr "Dopasuj częstotliwość odświeżania do materiału"
 
 msgctxt "#171"
 msgid "Sort title"
-msgstr "Sortuj tytuł"
+msgstr "Tytuł sortowania"
 
 msgctxt "#172"
 msgid "Release date"
@@ -687,7 +687,7 @@ msgstr "Wczytywanie informacji o filmie"
 
 msgctxt "#199"
 msgid "Web interface"
-msgstr "Interfejs WWW"
+msgstr "Interfejs webowy"
 
 msgctxt "#202"
 msgid "Tagline"
@@ -1091,7 +1091,7 @@ msgstr "Język interfejsu"
 
 msgctxt "#312"
 msgid "(0=auto)"
-msgstr "(0=auto)"
+msgstr "(0=automatycznie)"
 
 msgctxt "#313"
 msgid "Cleaning database"
@@ -1567,7 +1567,7 @@ msgstr "Usuń film z biblioteki"
 
 msgctxt "#433"
 msgid "Really remove '%s'?"
-msgstr "Jesteś pewny, że chcesz usunąć '%s'?"
+msgstr "Na pewno chcesz usunąć '%s'?"
 
 msgctxt "#434"
 msgid "From %s at %i %s"
@@ -1623,7 +1623,7 @@ msgstr "DVD"
 
 msgctxt "#447"
 msgid "Autorun media"
-msgstr "Odtwarzanie automatyczne"
+msgstr "Odtwarzaj automatyczne"
 
 msgctxt "#448"
 msgid "Dolby Digital Plus (E-AC3) capable receiver"
@@ -2159,7 +2159,7 @@ msgstr "Nieaktywne"
 
 msgctxt "#595"
 msgid "Repeat: Off"
-msgstr "Powtórz: Nic"
+msgstr "Powtórz: Wyłączone"
 
 msgctxt "#596"
 msgid "Repeat: One"
@@ -3199,7 +3199,7 @@ msgstr "burze"
 
 msgctxt "#1402"
 msgid "Thunder"
-msgstr "pioruny"
+msgstr "wyładowania atmosferyczne "
 
 msgctxt "#1403"
 msgid "Sun"
@@ -3259,7 +3259,7 @@ msgstr "mgliście"
 
 msgctxt "#1417"
 msgid "Grains"
-msgstr "granulki"
+msgstr "śnieg ziarnisty"
 
 msgctxt "#1418"
 msgid "Thunderstorms"
@@ -3291,7 +3291,7 @@ msgstr "pochmurnie"
 
 msgctxt "#1425"
 msgid "Pellets"
-msgstr "Grudki"
+msgstr "śnieg ziarnisty"
 
 msgctxt "#1426"
 msgid "Hail"
@@ -3535,7 +3535,7 @@ msgstr "Zaawansowany"
 
 msgctxt "#10039"
 msgid "Expert"
-msgstr "Ekspercki"
+msgstr "Ekspert"
 
 msgctxt "#10040"
 msgid "Add-on browser"
@@ -3719,7 +3719,7 @@ msgstr "Informacje o filmie"
 
 msgctxt "#12000"
 msgid "Select dialogue"
-msgstr "Okno dialogowe wyboru"
+msgstr "Okno dialogowe Wybierz"
 
 msgctxt "#12001"
 msgid "Music/Info"
@@ -3743,7 +3743,7 @@ msgstr "Tryb pełnoekranowy"
 
 msgctxt "#12006"
 msgid "Audio visualisation"
-msgstr "Wizualizacja audio"
+msgstr "Wizualizacja dźwięku"
 
 msgctxt "#12008"
 msgid "File stacking dialogue"
@@ -3923,7 +3923,7 @@ msgstr "Przetwarzanie %s"
 
 msgctxt "#12351"
 msgid "The art cache in your video library needs updating."
-msgstr "Bufor grafik w Twojej bibliotece wideo wymaga aktualizacji."
+msgstr "Bufor grafik w bibliotece wideo wymaga aktualizacji."
 
 msgctxt "#12352"
 msgid "No downloading is needed."
@@ -4255,7 +4255,7 @@ msgstr "VDPAU poziom skalowania HQ"
 
 msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
-msgstr "Korekcja poziomu kolorów VDPAU (YCbCr i RGB)"
+msgstr "Korekcja poziomu kolorów VDPAU"
 
 msgctxt "#13123"
 msgid "Keep skin?"
@@ -4783,7 +4783,7 @@ msgstr "Brak predefiniowanych ustawień\ndla tej wizualizacji"
 
 msgctxt "#13390"
 msgid "There are no settings available\nfor this visualisation"
-msgstr "Nie ma dostępnych opcji \ndla tej wizualizacji"
+msgstr "Brak dostępnych opcji \ndla tej wizualizacji"
 
 msgctxt "#13391"
 msgid "Eject/Load"
@@ -5231,7 +5231,7 @@ msgstr "Miniatury, jeżeli nie ma plików"
 
 msgctxt "#14016"
 msgid "At least one file and thumb"
-msgstr "Przynajmniej jeden plik i ikona"
+msgstr "Przynajmniej jeden plik i miniatura"
 
 msgctxt "#14017"
 msgid "Percentage of thumbs"
@@ -5491,7 +5491,7 @@ msgstr "DVD"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
-msgstr "Odtwarzaj dyski DVD automatycznie."
+msgstr "Odtwarzaj dyski DVD automatycznie"
 
 msgctxt "#14089"
 msgid "Font to use for text subtitles"
@@ -5635,7 +5635,7 @@ msgstr "Użyj do odtwarzania..."
 
 msgctxt "#15214"
 msgid "Use smoothed A/V synchronisation"
-msgstr "Użyj płynniejszej synchronizacji A/V"
+msgstr "Używaj płynnej synchronizacji A/V"
 
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
@@ -5731,7 +5731,7 @@ msgstr "Brak"
 
 msgctxt "#16019"
 msgid "Auto select"
-msgstr "Auto wybór"
+msgstr "Automatycznie"
 
 msgctxt "#16020"
 msgid "De-interlace"
@@ -5807,11 +5807,11 @@ msgstr "Metoda usuwania przeplotu"
 
 msgctxt "#16039"
 msgid "Off"
-msgstr "Nieakwyne"
+msgstr "Nieaktywne"
 
 msgctxt "#16040"
 msgid "Auto"
-msgstr "Auto"
+msgstr "Automatycznie"
 
 msgctxt "#16041"
 msgid "On"
@@ -5939,11 +5939,11 @@ msgstr "Odwrócone Telecine"
 
 msgctxt "#16315"
 msgid "Lanczos3 optimised"
-msgstr "Lanczos3 (zoptymalizowany)"
+msgstr "Lanczos3 zoptymalizowany"
 
 msgctxt "#16316"
 msgid "Auto"
-msgstr "Auto"
+msgstr "Automatycznie"
 
 msgctxt "#16317"
 msgid "Temporal (Half)"
@@ -5971,7 +5971,7 @@ msgstr "Spline36"
 
 msgctxt "#16323"
 msgid "Spline36 optimised"
-msgstr "Spline36 optymalizowany"
+msgstr "Spline36 zoptymalizowany"
 
 msgctxt "#16324"
 msgid "Software Blend"
@@ -5979,7 +5979,7 @@ msgstr "Software Blend"
 
 msgctxt "#16325"
 msgid "VDPAU - Bob"
-msgstr "DXVA Bob"
+msgstr "VDPAU - Bob"
 
 msgctxt "#16326"
 msgid "DXVA-HD"
@@ -6027,7 +6027,7 @@ msgstr "Importowanie danych przewodnika telewizyjnego"
 
 msgctxt "#19005"
 msgid "PVR stream information"
-msgstr "Informacja o strumieniu PVR"
+msgstr "Informacja o strumieniu Telewizyjnym"
 
 msgctxt "#19006"
 msgid "Receiving device"
@@ -6055,7 +6055,7 @@ msgstr "UNC"
 
 msgctxt "#19012"
 msgid "PVR Backend"
-msgstr "Serwer PVR"
+msgstr "Serwer TV"
 
 msgctxt "#19013"
 msgid "Free to air"
@@ -6071,7 +6071,7 @@ msgstr "Szyfrowanie"
 
 msgctxt "#19016"
 msgid "PVR Backend %i - %s"
-msgstr "Serwer PVR %i - %s"
+msgstr "Serwer TV %i - %s"
 
 msgctxt "#19017"
 msgid "TV recordings"
@@ -6159,7 +6159,7 @@ msgstr "Pokazuj jakość sygnału"
 
 msgctxt "#19038"
 msgid "Not supported by the PVR backend."
-msgstr "Nieobsługiwane przez serwer PVR"
+msgstr "Nieobsługiwane przez serwer TV"
 
 msgctxt "#19039"
 msgid "Are you sure you want to hide this channel?"
@@ -6167,7 +6167,7 @@ msgstr "Czy na pewno chcesz ukryć kanał?"
 
 msgctxt "#19040"
 msgid "Timer"
-msgstr "Zaplanowane nagrania"
+msgstr "Zaplanuj zamknięcie"
 
 msgctxt "#19041"
 msgid "Are you sure you want to rename this recording?"
@@ -6187,7 +6187,7 @@ msgstr "Sprawdź konfigurację lub szczegóły w pliku dziennika."
 
 msgctxt "#19045"
 msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
-msgstr "Nie uruchomiono jeszcze żadnego klienta PVR. Zaczekaj aż klient PVR zostanie uruchomiony lub sprawdź szczegóły w pliku dziennika."
+msgstr "Nie uruchomiono jeszcze żadnego klienta TV. Zaczekaj aż klient TV zostanie uruchomiony lub sprawdź szczegóły w pliku dziennika."
 
 msgctxt "#19046"
 msgid "New channel"
@@ -6439,7 +6439,7 @@ msgstr "Wystąpił nieoczekiwany błąd. Spróbuj później lub sprawdź szczeg�
 
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
-msgstr "Błąd serwera PVR. Sprawdź szczegóły w pliku dziennika."
+msgstr "Błąd serwera TV. Sprawdź szczegóły w pliku dziennika."
 
 msgctxt "#19114"
 msgid "Version"
@@ -6459,7 +6459,7 @@ msgstr "Szukaj kanałów"
 
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
-msgstr "Nie można używać funkcji PVR podczas wyszukiwania."
+msgstr "Nie można używać funkcji TV podczas wyszukiwania."
 
 msgctxt "#19119"
 msgid "On which server do you want to search?"
@@ -6571,7 +6571,7 @@ msgstr "Grupy"
 
 msgctxt "#19147"
 msgid "The PVR backend does not support this action. Check the log for details."
-msgstr "Serwer PVR nie wspiera tej operacji. Sprawdź szczegóły w pliku dziennika."
+msgstr "Serwer TV nie wspiera tej operacji. Sprawdź szczegóły w pliku dziennika."
 
 msgctxt "#19148"
 msgid "Channel"
@@ -6643,7 +6643,7 @@ msgstr "Przełącz"
 
 msgctxt "#19166"
 msgid "PVR information"
-msgstr "Informacja PVR"
+msgstr "Informacje TV"
 
 msgctxt "#19167"
 msgid "Scan for missing icons"
@@ -6659,7 +6659,7 @@ msgstr "Limit czasu na uruchomienie odtwarzania"
 
 msgctxt "#19171"
 msgid "Start playback minimised"
-msgstr "Uruchom odtwarzanie zminimalizowane"
+msgstr "Uruchomiaj odtwarzanie zminimalizowane"
 
 msgctxt "#19172"
 msgid "Instant recording duration"
@@ -6711,11 +6711,11 @@ msgstr "Okres wyświetlania informacji o kanale"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
-msgstr "Resetuj bazę PVR"
+msgstr "Resetuj bazę TV"
 
 msgctxt "#19186"
 msgid "All data in the PVR database is being erased"
-msgstr "Wszystkie dane bazy PVR są usuwane"
+msgstr "Wszystkie dane bazy TV są usuwane"
 
 msgctxt "#19187"
 msgid "Reset the EPG database"
@@ -6735,11 +6735,11 @@ msgstr "Zminimalizowane"
 
 msgctxt "#19191"
 msgid "PVR service"
-msgstr "Usługa PVR"
+msgstr "Usługa TV"
 
 msgctxt "#19192"
 msgid "None of the connected PVR backends supports scanning for channels."
-msgstr "Żaden z podłączonych serwerów PVR nie wspiera skanowania kanałów."
+msgstr "Żaden z podłączonych serwerów TV nie wspiera skanowania kanałów."
 
 msgctxt "#19193"
 msgid "The channel scan cannot be started. Check the log for details."
@@ -6755,7 +6755,7 @@ msgstr "Czynności klienta"
 
 msgctxt "#19196"
 msgid "PVR client specific actions"
-msgstr "Specyficzne operacje klienta PVR"
+msgstr "Specyficzne operacje klienta TV"
 
 msgctxt "#19197"
 msgid "Recording started on: %s"
@@ -6831,7 +6831,7 @@ msgstr "Wprowadź poprawny adres URL dla nowego kanału"
 
 msgctxt "#19215"
 msgid "The PVR backend does not support timers."
-msgstr "Serwer PVR nie wspiera planowania nagrań."
+msgstr "Serwer TV nie wspiera planowania nagrań."
 
 msgctxt "#19216"
 msgid "All radio channels"
@@ -6911,7 +6911,7 @@ msgstr "Używaj numerów kanałów z serwera (działa tylko z 1 wtyczką PVR)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
-msgstr "Menedżer PVR startuje"
+msgstr "Menedżer TV startuje"
 
 msgctxt "#19236"
 msgid "Loading channels from clients"
@@ -6931,19 +6931,19 @@ msgstr "Uruchamianie wątków działających w tle"
 
 msgctxt "#19240"
 msgid "No PVR Add-on enabled"
-msgstr "Żadna wtyczka PVR nie została aktywowana"
+msgstr "Brak aktywnej wtyczki PVR"
 
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
-msgstr "Menedżer PVR został uruchomiony bez jakichkolwiek"
+msgstr "Menedżer TV został uruchomiony bez żadnej aktywnej"
 
 msgctxt "#19242"
 msgid "enabled PVR Add-on. Enable at least one Add-on"
-msgstr "Aktywuj przynajmniej jedną wtyczkę PVR, aby oglądać telewizję."
+msgstr "wtyczki PVR. Aktywuj przynajmniej jedną wtyczkę, aby"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
-msgstr "by korzystać z funkcjonalności PVR."
+msgstr "korzystać z funkcji odtwarzania i nagrywania TV."
 
 msgctxt "#19244"
 msgid "Backend idle time"
@@ -7067,7 +7067,7 @@ msgstr "Wtyczka umożliwiająca użycie funkcji serwera PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Odwiedź xbmc.org/pvr by dowiedzieć się więcej."
+msgstr "Odwiedź stronę xbmc.org/pvr by dowiedzieć się więcej."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -7751,7 +7751,7 @@ msgstr "Pokazuj informacje systemowe"
 
 msgctxt "#20086"
 msgid "Show available disk space C: E: F:"
-msgstr "Pokazuj wolne miejsce dysków C: E: F:"
+msgstr "Pokazuj wolne miejsce na dyskach C: E: F:"
 
 msgctxt "#20087"
 msgid "Show available disk space E: F: G:"
@@ -8051,7 +8051,7 @@ msgstr "Razem"
 
 msgctxt "#20162"
 msgid "Used"
-msgstr "zajęte"
+msgstr "Zajęte"
 
 msgctxt "#20163"
 msgid "of"
@@ -8235,11 +8235,11 @@ msgstr "Imprezujemy! (wideo)"
 
 msgctxt "#20251"
 msgid "Mixing drinks (videos)"
-msgstr "Robię drinki (wideo)"
+msgstr "Robimy drinki (wideo)"
 
 msgctxt "#20252"
 msgid "Filling glasses (videos)"
-msgstr "Napełniam szklaneczki (wideo)"
+msgstr "Napełniamy szklaneczki (wideo)"
 
 msgctxt "#20253"
 msgid "WebDAV server (HTTP)"
@@ -8787,7 +8787,7 @@ msgstr "Serie"
 
 msgctxt "#20435"
 msgid "Combine split video items"
-msgstr "Scalaj podzielone elementy wideo"
+msgstr "Scalaj podzielone pliki wideo"
 
 msgctxt "#20436"
 msgid "Export actor thumbs?"
@@ -9059,7 +9059,7 @@ msgstr "Pokazuj pasek przewijania"
 
 msgctxt "#21384"
 msgid "Make watched filtering a toggle in video library"
-msgstr "Filtrowanie oglądanych pozycji jako przełącznik w trybie biblioteki"
+msgstr "Filtr oglądanych pozycji jako przełącznik w trybie biblioteki"
 
 msgctxt "#21385"
 msgid "Open"
@@ -9747,15 +9747,15 @@ msgstr "Wersja OpenGL:"
 
 msgctxt "#22010"
 msgid "GPU temperature:"
-msgstr "Temperatura GPU:"
+msgstr "Temperatura procesora grafiki:"
 
 msgctxt "#22011"
 msgid "CPU temperature:"
-msgstr "Temperatura CPU:"
+msgstr "Temperatura procesora:"
 
 msgctxt "#22012"
 msgid "Total memory"
-msgstr "Całkowity rozmiar pamięci"
+msgstr "Rozmiar pamięci"
 
 msgctxt "#22013"
 msgid "Profile data"
@@ -9859,7 +9859,7 @@ msgstr "biały/niebieski"
 
 msgctxt "#22043"
 msgid "black/white"
-msgstr "czarno/biała"
+msgstr "czarno/biały"
 
 msgctxt "#22079"
 msgid "Default select action"
@@ -9923,19 +9923,19 @@ msgstr "Naciśnij OK po zakończeniu odtwarzania"
 
 msgctxt "#24000"
 msgid "Add-on"
-msgstr "Wtyczka"
+msgstr "Dodatek"
 
 msgctxt "#24001"
 msgid "Add-ons"
-msgstr "Wtyczki"
+msgstr "Dodatki"
 
 msgctxt "#24002"
 msgid "Add-on options"
-msgstr "Opcje wtyczki"
+msgstr "Opcje dodatku"
 
 msgctxt "#24003"
 msgid "Add-on Information"
-msgstr "O wtyczce"
+msgstr "O dodatku"
 
 msgctxt "#24005"
 msgid "Media sources"
@@ -9967,7 +9967,7 @@ msgstr "Napisy"
 
 msgctxt "#24013"
 msgid "Lyrics"
-msgstr "Tekst piosenki"
+msgstr "Tekst utworu"
 
 msgctxt "#24014"
 msgid "TV information"
@@ -9991,7 +9991,7 @@ msgstr "Usługi"
 
 msgctxt "#24019"
 msgid "PVR clients"
-msgstr "Klienci PVR"
+msgstr "Klienci TV"
 
 msgctxt "#24020"
 msgid "Configure"
@@ -9999,11 +9999,11 @@ msgstr "Ustaw"
 
 msgctxt "#24021"
 msgid "Disable"
-msgstr "Dezaktywuj"
+msgstr "Wyłącz"
 
 msgctxt "#24022"
 msgid "Enable"
-msgstr "Aktywuj"
+msgstr "Włącz"
 
 msgctxt "#24023"
 msgid "Disabled"
@@ -10147,7 +10147,7 @@ msgstr "Automatyczna aktualizacja"
 
 msgctxt "#24064"
 msgid "Add-on enabled"
-msgstr "Wtyczka aktywne"
+msgstr "Wtyczka aktywna"
 
 msgctxt "#24065"
 msgid "Add-on updated"
@@ -10191,7 +10191,7 @@ msgstr "Potrzebny restart"
 
 msgctxt "#24075"
 msgid "Disable"
-msgstr "Dezaktywuj"
+msgstr "Wyłącz"
 
 msgctxt "#24076"
 msgid "Add-on Required"
@@ -10327,7 +10327,7 @@ msgstr "Wprowadź tekst do wyszukania"
 
 msgctxt "#24122"
 msgid "Update all"
-msgstr "Zaktualizuj wszystko"
+msgstr "Zaktualizuj wszystkie wtyczki"
 
 msgctxt "#24123"
 msgid "Pause the current video while searching for subtitles and resume once the subtitle is available."
@@ -10447,7 +10447,7 @@ msgstr "Długi"
 
 msgctxt "#33014"
 msgid "Use DVD player instead of regular player"
-msgstr "Użyj odtwarzacza DVD zamiast zwykłego"
+msgstr "Użyj odtwarzacza DVD zamiast normalnego"
 
 msgctxt "#33015"
 msgid "Ask for download before playing video"
@@ -10591,7 +10591,7 @@ msgstr "Skonfiguruj"
 
 msgctxt "#33060"
 msgid "Power"
-msgstr "Zasilanie"
+msgstr "Koniec"
 
 msgctxt "#33061"
 msgid "Menu"
@@ -10611,11 +10611,11 @@ msgstr "Edytor"
 
 msgctxt "#33066"
 msgid "About your"
-msgstr "O"
+msgstr "Informacje o"
 
 msgctxt "#33067"
 msgid "Star rating"
-msgstr "Ocena \"gwiazdkowa\""
+msgstr "Ocena "
 
 msgctxt "#33068"
 msgid "Background"
@@ -10635,7 +10635,7 @@ msgstr "Zdefiniowane tła"
 
 msgctxt "#33072"
 msgid "View Readme"
-msgstr "Przeglądaj Readme"
+msgstr "Zapoznaj się z informacjami"
 
 msgctxt "#33073"
 msgid "View Changelog"
@@ -10651,11 +10651,11 @@ msgstr "Wymagany XBMC w wersji %s lub nowszej."
 
 msgctxt "#33076"
 msgid "Please update XBMC."
-msgstr "Zaktualizuj XBMC."
+msgstr "Zaktualizuj XBMC"
 
 msgctxt "#33077"
 msgid "No data found!"
-msgstr "Dane niedostępne!"
+msgstr "Brak danych!"
 
 msgctxt "#33078"
 msgid "Next page"
@@ -10823,11 +10823,11 @@ msgstr "192.0"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"
-msgstr "Nie mogę znaleźć następnej pozycji do odtworzenia"
+msgstr "Nie można odnaleźć następnej pozycji do odtworzenia"
 
 msgctxt "#34202"
 msgid "Can't find a previous item to play"
-msgstr "Nie mogę znaleźć poprzedniej pozycji do odtworzenia"
+msgstr "Nie można odnaleźć poprzedniej pozycji do odtworzenia"
 
 msgctxt "#34300"
 msgid "Failed to start Zeroconf"
@@ -10851,7 +10851,7 @@ msgstr "AirPlay oraz AirTunes wymagają działającego ZeroConf."
 
 msgctxt "#34400"
 msgid "Video Rendering"
-msgstr "Rendering wideo"
+msgstr "Renderowanie wideo"
 
 msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
@@ -11055,7 +11055,7 @@ msgstr "Wyślij sygnał 'nieaktywne źródło' zamykając XBMC"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
-msgstr "Przestaw urządzenia w tryb czuwania, gdy PC jest przestawiane w tryb czuwania"
+msgstr "Przełącz urządzenia w tryb czuwania, gdy PC jest przełączane w tryb czuwania"
 
 msgctxt "#36027"
 msgid "This device needs servicing"
@@ -11395,7 +11395,7 @@ msgstr "Określa poziom powiększenia materiałów wideo o proporcjach 4:3 na wy
 
 msgctxt "#36172"
 msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
-msgstr "Poziom konwersji VDPAU wraz z zaawansowanymi aplikacjami, takimi jak XBMC wpływania na konwersję przestrzeni kolorów."
+msgstr "Poziom konwersji VDPAU dostarcza zaawansowanym aplikacjom takim, jak XBMC wpływać na konwersję przestrzeni kolorów."
 
 msgctxt "#36173"
 msgid "Enable upscaling using VDPAU."
@@ -11511,11 +11511,11 @@ msgstr "Domyślnie używany ekstraktor teledysków przy aktualizacji biblioteki.
 
 msgctxt "#36201"
 msgid "Settings for PVR/Live TV features."
-msgstr "Ustawienia funkcji odtwarzania i nagrywania telewizji"
+msgstr "Ustawienia funkcji odtwarzania i nagrywania programów telewizyjnych"
 
 msgctxt "#36202"
 msgid "Category for general settings for PVR/Live TV features."
-msgstr "Kategoria z ogólnymi ustawieniami odtwarzania i nagrywania telewizji."
+msgstr "Kategoria z ogólnymi ustawieniami odtwarzania i nagrywania programów telewizyjnych. "
 
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
@@ -11743,7 +11743,7 @@ msgstr "Wybierz domyślny serwis informacji o wykonawcach. Więcej opcji w mened
 
 msgctxt "#36259"
 msgid "Check for new and removed media files on XBMC startup."
-msgstr "Sprawdź nowe i usunięte pliki multimedialne przy uruchomieniu XBMC."
+msgstr "Wyszukuje nowych i usuniętych plików multimedialnych przy uruchomieniu XBMC."
 
 msgctxt "#36260"
 msgid "No info available yet."
@@ -12507,7 +12507,7 @@ msgstr "Monofoniczny (2D)"
 
 msgctxt "#36530"
 msgid "Preferred mode"
-msgstr "Preferowany tryb"
+msgstr "Tryb preferowany"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."

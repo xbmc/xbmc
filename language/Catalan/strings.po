@@ -1225,6 +1225,10 @@ msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "Receptor compatible DTS-HD"
 
+msgctxt "#348"
+msgid "Enable passthrough"
+msgstr "Habilita el passthrough"
+
 msgctxt "#349"
 msgid "TrueHD capable receiver"
 msgstr "Receptor compatible TrueHD"
@@ -1505,6 +1509,10 @@ msgctxt "#420"
 msgid "Best Match"
 msgstr "Millor coincidència"
 
+msgctxt "#421"
+msgid "Keep audio device alive"
+msgstr "Mantenir viu el dispositiu d'àudio"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Esborra la informació de l'àlbum"
@@ -1648,6 +1656,10 @@ msgstr "Mode"
 msgctxt "#457"
 msgid "Switch view"
 msgstr "Canviar vista"
+
+msgctxt "#458"
+msgid "Limit sampling rate (kHz)"
+msgstr "Limita la velocitat de mostreig (kHz)"
 
 msgctxt "#459"
 msgid "Subs"
@@ -2231,7 +2243,7 @@ msgstr "Totes les cançons de"
 
 msgctxt "#626"
 msgid "In progress TV shows"
-msgstr "Programes de Televisió en progrés"
+msgstr "Sèries de TV en progrés"
 
 msgctxt "#629"
 msgid "View mode"
@@ -4487,7 +4499,7 @@ msgstr "Mostra les notíces dels canals RSS"
 
 msgctxt "#13306"
 msgid "Show parent folder items"
-msgstr "Show parent folder items"
+msgstr "Mostra la icona d'accés a la carpeta superior"
 
 msgctxt "#13307"
 msgid "Track naming template"
@@ -4767,7 +4779,7 @@ msgstr "Expulsa/Carrega"
 
 msgctxt "#13392"
 msgid "Use visualisation if playing audio"
-msgstr "Utilitzeu la visualització si es reprodueix àudio"
+msgstr "Utilitza la visualització si es reprodueix àudio"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4957,9 +4969,69 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Permet l'acceleració per maquinari (MediaCodec)"
 
+msgctxt "#13440"
+msgid "Allow multi threaded software decoding"
+msgstr "Permeteu descodificació per programari multi fil"
+
+msgctxt "#13441"
+msgid "Use Mpeg-2 VDPAU"
+msgstr "Utilitza Mpeg-2 VDPAU"
+
+msgctxt "#13442"
+msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "Activeu aquesta opció per a utilitzar acceleració per maquinari per a codecs Mpeg-(1/2). Si es deshabilita es farà servir la CPU. Targetes Radeon antigues tenen tendència a fallar amb aquesta opció activada."
+
+msgctxt "#13443"
+msgid "Use Mpeg-4 VDPAU"
+msgstr "Utilitza Mpeg-4 VDPAU"
+
+msgctxt "#13444"
+msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "Activeu aquesta opció per a utilitzar acceleració per maquinari per al codec Mpeg-4. Si es deshabilita es farà servir la CPU. Algun maquinari basat en ION té problemes amb aquesta opció activada per defecte."
+
+msgctxt "#13445"
+msgid "Use VC-1 VDPAU"
+msgstr "Utilitza VC-1 VDPAU"
+
+msgctxt "#13446"
+msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
+msgstr "Activeu aquesta opció per a utilitzar acceleració per maquinari per a codecs basats en VC-1. Si es deshabilita es farà servir la CPU. Maquinari AMD amb VDPAU no pot descodificar VC-1 simple."
+
+msgctxt "#13447"
+msgid "Use Mpeg-2 VAAPI"
+msgstr "Utilitza Mpeg-2 VAAPI"
+
+msgctxt "#13448"
+msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
+msgstr "Activeu aquesta opció per a utilitzar acceleració per maquinari per a codecs Mpeg-(1/2). Si es deshabilita es farà servir la CPU. Alguns vídeos Mpeg-2 poden tenir artefactes verds."
+
+msgctxt "#13449"
+msgid "Use Mpeg-4 VAAPI"
+msgstr "Utilitza Mpeg-4 VAAPI"
+
+msgctxt "#13450"
+msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
+msgstr "Activeu aquesta opció per a utilitzar acceleració per maquinari per al codec Mpeg-4. Si es deshabilita es farà servir la CPU."
+
+msgctxt "#13451"
+msgid "Use VC-1 VAAPI"
+msgstr "Utilitza VC-1 VAAPI"
+
+msgctxt "#13452"
+msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 Interlaced fails hard on Intel hardware."
+msgstr "Activeu aquesta opció per a utilitzar acceleració per maquinari per a codecs basats en VC-1. Si es deshabilita es farà servir la CPU. Especialment VC-1 entrellaçat falla completament en maquinari Intel."
+
+msgctxt "#13454"
+msgid "Decoding method"
+msgstr "Mètode de descodificació"
+
 msgctxt "#13455"
 msgid "Software"
 msgstr "Programari"
+
+msgctxt "#13456"
+msgid "Hardware accelerated"
+msgstr "Accelerat per maquinari"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5185,9 +5257,25 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Memòria cau del vídeo - DVD-ROM"
 
+msgctxt "#14027"
+msgid "Video cache - Local Network"
+msgstr "Memòria cau de vídeo - Xarxa local"
+
+msgctxt "#14028"
+msgid "Video cache - Internet"
+msgstr "Memòria cau de vídeo - Internet"
+
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Memòria cau de l'àudio - DVD-ROM"
+
+msgctxt "#14031"
+msgid "Audio cache - Local Network"
+msgstr "Memòria cau d'àudio - Xarxa local"
+
+msgctxt "#14032"
+msgid "Audio cache - Internet"
+msgstr "Memória cau d'àudio - Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -5200,6 +5288,10 @@ msgstr "Xarxa local"
 msgctxt "#14036"
 msgid "Services"
 msgstr "Serveis"
+
+msgctxt "#14037"
+msgid "DVD cache - Local Network"
+msgstr "Memòria cau de DVD - Xarxa local"
 
 msgctxt "#14038"
 msgid "Network settings changed"
@@ -5440,6 +5532,10 @@ msgstr "Acceleració"
 msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Font no disponible"
+
+msgctxt "#15013"
+msgid "What would you like to do with media items from %s"
+msgstr "Què voleu fer amb els medis de %s"
 
 msgctxt "#15014"
 msgid "Keep"
@@ -6737,6 +6833,10 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
+msgctxt "#19223"
+msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
+msgstr "No s'ha pogut activar cap complement de PVR. Comprova la configuració o el registre per a obtenir més informació."
+
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Enregistrament avortat"
@@ -6777,6 +6877,10 @@ msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Mostra una notificació en actualitzar els temporitzadors"
 
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
+msgstr "Utilitza els números de canal del servei (només funciona amb 1 afegitó PVR activat)"
+
 msgctxt "#19235"
 msgid "PVR manager is starting up"
 msgstr "S'està iniciant el gestor PVR"
@@ -6796,6 +6900,10 @@ msgstr "Carregant els enregistraments dels clients"
 msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Iniciant els fils de segon pla"
+
+msgctxt "#19240"
+msgid "No PVR Add-on enabled"
+msgstr "No hi ha cap complement PVR activat"
 
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
@@ -6925,6 +7033,10 @@ msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Necessitau un sintonitzador, programari de rerefons, i un"
 
+msgctxt "#19273"
+msgid "Add-on for the backend to be able to use PVR."
+msgstr "Complement per al servei que permet utilitzar el PVR."
+
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
 msgstr "Visiteu xbmc.org/pvr per saber més."
@@ -6956,6 +7068,10 @@ msgstr "Configuració específica del client"
 msgctxt "#19281"
 msgid "Confirm channel switches by pressing OK"
 msgstr "Confirma el canvi de canal prement «D'acord»"
+
+msgctxt "#19282"
+msgid "Current icon"
+msgstr "Icona actual"
 
 msgctxt "#19283"
 msgid "No icon"
@@ -8053,6 +8169,10 @@ msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Downloading artist info failed"
 
+msgctxt "#20220"
+msgid "Override song tags with online information"
+msgstr "Sobreescriu les etiquetes de la cançó amb informació en línia"
+
 msgctxt "#20240"
 msgid "Android music"
 msgstr "Música android"
@@ -8185,6 +8305,10 @@ msgctxt "#20321"
 msgid "Scanning albums using %s"
 msgstr "S'estan escanejant els àlbums utilitzant %s"
 
+msgctxt "#20323"
+msgid "Movie plot"
+msgstr "Trama de la pel·lícula"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "Play part..."
@@ -8196,6 +8320,10 @@ msgstr "Calibration reset"
 msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "This will reset the calibration values for %s"
+
+msgctxt "#20327"
+msgid "to its default values."
+msgstr "als seus valors per defecte."
 
 msgctxt "#20328"
 msgid "Browse for destination"
@@ -8291,7 +8419,7 @@ msgstr "vots"
 
 msgctxt "#20351"
 msgid "TV show information"
-msgstr "Informació de sèrie de TV"
+msgstr "Informació de la sèrie de TV"
 
 msgctxt "#20352"
 msgid "Episode information"
@@ -8299,7 +8427,7 @@ msgstr "Informació de l'episodi"
 
 msgctxt "#20353"
 msgid "Loading TV show details"
-msgstr "Carregant detalls del programa de TV"
+msgstr "Carregant detalls de la sèrie de TV"
 
 msgctxt "#20354"
 msgid "Fetching episode guide"
@@ -8311,7 +8439,7 @@ msgstr "Loading info for episodes in directory"
 
 msgctxt "#20356"
 msgid "Select TV show:"
-msgstr "Seleccioneu un programa de TV:"
+msgstr "Seleccioneu una sèrie de TV:"
 
 msgctxt "#20357"
 msgid "Enter the TV show name"
@@ -8339,7 +8467,7 @@ msgstr "Remove episode from library"
 
 msgctxt "#20363"
 msgid "Remove TV show from library"
-msgstr "Eliminar programa de TV de la biblioteca"
+msgstr "Elimina la sèrie de TV de la biblioteca"
 
 msgctxt "#20364"
 msgid "TV show"
@@ -8395,7 +8523,7 @@ msgstr "Títol original"
 
 msgctxt "#20377"
 msgid "Refresh TV show information"
-msgstr "Actualitzar informació del programa de TV"
+msgstr "Actualitza la informació de la sèrie de TV"
 
 msgctxt "#20378"
 msgid "Refresh info for all episodes?"
@@ -8403,7 +8531,7 @@ msgstr "Refresh info for all episodes?"
 
 msgctxt "#20379"
 msgid "Selected folder contains a single TV show"
-msgstr "La carpeta seleccionada conté un únic programa de TV"
+msgstr "La carpeta seleccionada conté una única sèrie de TV"
 
 msgctxt "#20380"
 msgid "Exclude selected folder from scans"
@@ -8419,11 +8547,11 @@ msgstr "Selected folder contains a single video"
 
 msgctxt "#20384"
 msgid "Link to TV show"
-msgstr "Enllaçar a programa de TV"
+msgstr "Enllaça a la sèrie de TV"
 
 msgctxt "#20385"
 msgid "Remove link to TV show"
-msgstr "Eliminar enllaç a programa de TV"
+msgstr "Elimina enllaç a la sèrie de TV"
 
 msgctxt "#20386"
 msgid "Recently added movies"
@@ -8435,7 +8563,7 @@ msgstr "Recently added episodes"
 
 msgctxt "#20388"
 msgid "Studios"
-msgstr "Studios"
+msgstr "Estudis"
 
 msgctxt "#20389"
 msgid "Music videos"
@@ -8519,7 +8647,7 @@ msgstr "S'està baixant la informació del videoclip"
 
 msgctxt "#20409"
 msgid "Downloading TV show information"
-msgstr "S'està baixant la informació del programa de televisió"
+msgstr "S'està baixant la informació de la sèrie de TV"
 
 msgctxt "#20410"
 msgid "Trailer"
@@ -8528,6 +8656,10 @@ msgstr "Trailer"
 msgctxt "#20411"
 msgid "Flatten"
 msgstr "Flatten"
+
+msgctxt "#20412"
+msgid "Flatten TV show seasons"
+msgstr "Aplana les temporades de les sèries de TV"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -8817,13 +8949,21 @@ msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Elimina recurs compartit"
 
+msgctxt "#21366"
+msgid "Custom subtitle folder"
+msgstr "Carpeta personalitzada de subtítols"
+
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Movie & alternate subtitle directory"
 
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
-msgstr "Substitueix les fonts dels subtítols ASS/SSA"
+msgstr "Sobreescriu les fonts dels subtítols ASS/SSA"
+
+msgctxt "#21369"
+msgid "Enable mouse and touch screen support"
+msgstr "Activa el suport de ratolí i pantalla tàctil"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -9180,6 +9320,10 @@ msgstr "Ordena per"
 msgctxt "#21459"
 msgid "mixed"
 msgstr "mesclat"
+
+msgctxt "#21460"
+msgid "Subtitle position on screen"
+msgstr "Posició dels subtítols a la pantalla"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -9901,6 +10045,10 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Actualitzacions disponibles"
 
+msgctxt "#24044"
+msgid "Dependencies not met. Please contact Add-on author."
+msgstr "Les dependències no es poden satisfer. Contacteu amb l'autor del complement."
+
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "El complement no té l'estructura correcta"
@@ -10077,6 +10225,10 @@ msgctxt "#24105"
 msgid "Pause when searching for subtitles"
 msgstr "Pausa quan s'estiguin cercant subtítols"
 
+msgctxt "#24106"
+msgid "Specify where downloaded subtitles should be saved, the same location as the video or a custom location."
+msgstr "Especifiqueu on s'han de desar els subtítols descarregats: la mateixa ubicació que el vídeo o una ubicació personalitzada."
+
 msgctxt "#24107"
 msgid "Searching for subtitles ..."
 msgstr "Cercant subtítols ..."
@@ -10105,6 +10257,10 @@ msgctxt "#24114"
 msgid "No subtitle services installed"
 msgstr "No hi ha serveis de subtítols instal·lats"
 
+msgctxt "#24115"
+msgid "Subtitle storage location"
+msgstr "Ubicació dels subtítols"
+
 msgctxt "#24116"
 msgid "Default TV Service"
 msgstr "Servei de TV per defecte"
@@ -10112,6 +10268,10 @@ msgstr "Servei de TV per defecte"
 msgctxt "#24118"
 msgid "Default Movie Service"
 msgstr "Servei de pel·lícules per defecte"
+
+msgctxt "#24120"
+msgid "Manual search string"
+msgstr "Cadena de cerca manual"
 
 msgctxt "#24121"
 msgid "Enter search string"
@@ -10148,6 +10308,10 @@ msgstr "Títol: %d"
 msgctxt "#25006"
 msgid "Select playback item"
 msgstr "Seleccioneu l'element de la reproducció"
+
+msgctxt "#25007"
+msgid "Chapters: %u - duration: %s"
+msgstr "Capítols: %u - durada: %s"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -10973,6 +11137,10 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "No hi ha informació disponible"
 
+msgctxt "#36140"
+msgid "Enable the video library."
+msgstr "Habilita la biblioteca de vídeo."
+
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
 msgstr "Mostra l'argument dels elements no vistos de la Videoteca."
@@ -11064,6 +11232,10 @@ msgstr "No hi ha informació disponible"
 msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
 msgstr "Elimina els nodes de títol, gènere, etc de la vista de biblioteca. Seleccionar una categoria et porta directament a la vista del títol."
+
+msgctxt "#36190"
+msgid "Override ASS/SSA subtitles fonts."
+msgstr "Sobreescriu les fonts dels subtítols ASS/SSA"
 
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
@@ -11357,6 +11529,10 @@ msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
 msgstr "Comprova els patrons per al calibratge del maquinari de la pantalla."
 
+msgctxt "#36362"
+msgid "Select the number of channels supported by the audio connection, or the number of speakers if connected by analog connections. This setting does not apply to passthrough audio. Note - SPDIF supports 2.0 channels only but can still output multichannel audio using a format supported by passthrough."
+msgstr "Trieu el nombre de canals suportats per la connexió d'àudio o el nombre d'altaveus si la connexió és analògica. Aquesta configuració no s'aplica si l'àudio es fa passar directament (passthrough). Nota - SPDIF suporta 2.0 canals només però pot fer sortir àudio multicanal utilitzant un format suportat pel passthrough."
+
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Potencia els fluxos AC3 que s'han combinat a 2 canals."
@@ -11477,9 +11653,17 @@ msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Defineix les localitzacions utilitzades per a recuperar informació meteorològica."
 
+msgctxt "#36425"
+msgid "Show context menu"
+msgstr "Mostra el menú contextual"
+
 msgctxt "#36426"
 msgid "Switch to channel"
 msgstr "Canvia al canal"
+
+msgctxt "#36427"
+msgid "Show information"
+msgstr "Mostra la informació"
 
 msgctxt "#36428"
 msgid "Record"
@@ -11593,6 +11777,14 @@ msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Habilita el maquinari de descodificació d'arxius de vídeo."
 
+msgctxt "#36545"
+msgid "Subtitle stereoscopic depth"
+msgstr "Profunditat estereoscòpica dels subtítols"
+
+msgctxt "#36548"
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
+msgstr "Limita la resolució de la interfície per a estalviar memòria. No afecta a la reproducció de vídeo. Utilitzeu 1080 per a no limitar-la. Requereix reiniciar."
+
 msgctxt "#37000"
 msgid "(Visually Impaired)"
 msgstr "(Discapacitat visual)"
@@ -11637,6 +11829,14 @@ msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Potencia el canal central al reduir el nombre de canals"
 
+msgctxt "#37021"
+msgid "Set GUI resolution limit"
+msgstr "Establir límit de resolució de la interfície"
+
 msgctxt "#37022"
 msgid "UPnP Player"
 msgstr "Reproductor UPnP"
+
+msgctxt "#37023"
+msgid "Do you wish to stop playback on the remote device?"
+msgstr "Voleu parar la reproducció al dispositiu remot?"

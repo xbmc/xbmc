@@ -695,7 +695,7 @@ msgstr "Slagzin"
 
 msgctxt "#203"
 msgid "Plot outline"
-msgstr "Plot"
+msgstr "Plotsamenvatting"
 
 msgctxt "#205"
 msgid "Votes"
@@ -911,7 +911,7 @@ msgstr "Wachten op start..."
 
 msgctxt "#262"
 msgid "Scripts output"
-msgstr "Uitvoer scripts"
+msgstr "Scripts uitvoer"
 
 msgctxt "#263"
 msgid "Allow control of XBMC via HTTP"
@@ -1119,7 +1119,7 @@ msgstr "Verwijderde nummers markeren"
 
 msgctxt "#319"
 msgid "Error cleaning songs"
-msgstr "Fout tijdens reorganiseren nummers"
+msgstr "Fout tijdens opschonen nummers"
 
 msgctxt "#320"
 msgid "Cleaning artists..."
@@ -1207,7 +1207,7 @@ msgstr "Diverse artiesten"
 
 msgctxt "#341"
 msgid "Play disc"
-msgstr "DVD afspelen"
+msgstr "Schijf afspelen"
 
 msgctxt "#342"
 msgid "Movies"
@@ -1259,7 +1259,7 @@ msgstr "Zwart"
 
 msgctxt "#354"
 msgid "Matrix trails"
-msgstr "Matrix Sporen"
+msgstr "Matrixsporen"
 
 msgctxt "#355"
 msgid "Screensaver time"
@@ -1271,7 +1271,7 @@ msgstr "Schermbeveiliging mode"
 
 msgctxt "#357"
 msgid "Shutdown function timer"
-msgstr "Uitschakel timer functie"
+msgstr "Schakel functie timer uit"
 
 msgctxt "#358"
 msgid "All albums"
@@ -1435,11 +1435,11 @@ msgstr "Vernieuwingstijd"
 
 msgctxt "#398"
 msgid "Temperature units"
-msgstr "Temperatuur eenheden"
+msgstr "Temperatuureenheden"
 
 msgctxt "#399"
 msgid "Speed units"
-msgstr "Windsnelheid eenheden"
+msgstr "Windsnelheideenheden"
 
 msgctxt "#400"
 msgid "Weather"
@@ -1479,7 +1479,7 @@ msgstr "Weersverwachting opzoeken"
 
 msgctxt "#411"
 msgid "Getting weather for:"
-msgstr "Weersverwachting ophalen voor"
+msgstr "Weersverwachting ophalen voor:"
 
 msgctxt "#412"
 msgid "Unable to get weather data"
@@ -1543,7 +1543,7 @@ msgstr "Geen CDDB-informatie gevonden."
 
 msgctxt "#427"
 msgid "Disc"
-msgstr "Schijf:"
+msgstr "Schijf"
 
 msgctxt "#428"
 msgid "Insert correct CD/DVD"
@@ -1551,7 +1551,7 @@ msgstr "Voer de juiste CD/DVD in"
 
 msgctxt "#429"
 msgid "Please insert the following disc:"
-msgstr "Voer de volgende CD/DVD in"
+msgstr "Voer de volgende CD/DVD in:"
 
 msgctxt "#430"
 msgid "Sort by: DVD#"
@@ -1575,11 +1575,11 @@ msgstr "Uit het %s met %i %s"
 
 msgctxt "#435"
 msgid "No optical disc drive detected"
-msgstr "Er is geen optisch disk station gedetecteerd"
+msgstr "Er is geen optisch diskstation gedetecteerd"
 
 msgctxt "#436"
 msgid "You need an optical disc drive to play this video"
-msgstr "U heeft een optisch disk station nodig om deze video te kunnen afspelen"
+msgstr "U heeft een optisch diskstation nodig om deze video te kunnen afspelen"
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -2171,11 +2171,11 @@ msgstr "Herhalen: Alles"
 
 msgctxt "#600"
 msgid "Rip audio CD"
-msgstr "Cd kopiëren"
+msgstr "Cd rippen"
 
 msgctxt "#601"
 msgid "Medium"
-msgstr "Middelmatig"
+msgstr "Gem."
 
 msgctxt "#602"
 msgid "Standard"
@@ -2191,7 +2191,7 @@ msgstr "Constante bitsnelheid"
 
 msgctxt "#605"
 msgid "Ripping..."
-msgstr "Kopiëren..."
+msgstr "Rippen..."
 
 msgctxt "#607"
 msgid "To:"

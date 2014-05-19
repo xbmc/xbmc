@@ -5745,6 +5745,10 @@ msgctxt "#33078"
 msgid "Next page"
 msgstr "የሚቀጥለው ገጽ"
 
+msgctxt "#33081"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "ይህ ፋይል በጣም ትልቅ ነው ማጫወት የሚፈልጉትን ክፍል ይምረጡ"
+
 msgctxt "#33084"
 msgid "Auto login"
 msgstr "ራሱ በራሱ መግቢያ"

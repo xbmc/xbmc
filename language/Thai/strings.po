@@ -11147,7 +11147,7 @@ msgstr "แก้ไข RSS feeds."
 
 msgctxt "#36113"
 msgid "Category containing all locale/regional settings."
-msgstr "หมวดหมู่ที่ประกอบด้วย การตั้งค่าทั้งหมดของ ท้องถิ่น/ภูมิภาค."
+msgstr "หมวดหมู่ที่ประกอบด้วย การตั้งค่าทั้งหมดของท้องถิ่น/ภูมิภาค."
 
 msgctxt "#36114"
 msgid "Chooses the language of the user interface."
@@ -11193,6 +11193,18 @@ msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "อนุญาตให้สามารถลบและเปลี่ยนชื่อแฟ้ม ด้วยส่วนติดต่อผู้ใช้, ผ่านทางเมนูตามเนื้อหา (กด C บนแป้นพิมพ์, ตัวอย่าง เช่น, การเรียกเมนูนี้)."
 
+msgctxt "#36126"
+msgid "Show the add source button in root sections of the user interface."
+msgstr "แสดงปุ่มเพิ่มแหล่งข้อมูล ในส่วนแรกสุดของส่วนติดต่อผู้ใช้."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories when listing files."
+msgstr "แสดงแฟ้มและไดเรกทอรีที่ซ่อน เมื่อเรียกแสดงแฟ้ม."
+
+msgctxt "#36128"
+msgid "Category containing all screensaver settings."
+msgstr "หมวดหมู่ที่ประกอบด้วย การตั้งค่าถนอมหน้าจอทั้งหมด."
+
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
 msgstr "ตั้งระยะเวลาที่ไม่ได้ใช้งาน ก่อนจะแสดงผลการพักหน้าจอ"
@@ -11228,6 +11240,18 @@ msgstr "ยังไม่มีข้อมูล."
 msgctxt "#36137"
 msgid "No info available yet."
 msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36138"
+msgid "Section that contains settings related to videos and how they are handled."
+msgstr "ส่วนที่มีการตั้งค่า ซึ่งเกี่ยวข้องกับวิดีโอและวิธีการจัดการ."
+
+msgctxt "#36139"
+msgid "Category containing the settings for how the video library is handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับวิธีการจัดการ คลังข้อมูลวิดีโอ."
+
+msgctxt "#36140"
+msgid "Enable the video library."
+msgstr "เปิดใช้งาน คลังข้อมูลวิดีโอ"
 
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
@@ -11265,9 +11289,53 @@ msgctxt "#36150"
 msgid "Import a XML file into the Video Library database."
 msgstr "นำเข้าแฟ้ม XML ไปยังฐานข้อมูล คลังวิดีโอ."
 
+msgctxt "#36151"
+msgid "Category containing settings for how video playback is handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับจัดการ วิธีการเล่นกลับวิดีโอ."
+
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list."
+msgstr "เปิดใช้งาน เล่นวิดีโอถัดไปในรายการโดยอัตโนมัติ."
+
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "ปรับกระบวนการที่ใช้ ในการประมวลผลและแสดงผลวิดีโอ."
+
+msgctxt "#36156"
+msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
+msgstr "เปิดใช้งาน การถอดรหัสด้วยฮาร์ดแวร์ VAAPI สำหรับแฟ้มวิดีโอ, ส่วนใหญ่จะใช้สำหรับกราฟิกอินเทล และบางกรณีในกราฟิกเอเอ็มดี."
+
+msgctxt "#36158"
+msgid "Enable DXVA2 hardware decoding of video files."
+msgstr "เปิดใช้งาน การถอดรหัสด้วยฮาร์ดแวร์ DXVA2 สำหรับแฟ้มวิดีโอ ."
+
+msgctxt "#36159"
+msgid "Enable CrystalHD decoding of video files."
+msgstr "เปิดใช้งาน การถอดรหัสด้วย CrystalHD สำหรับแฟ้มวิดีโอ."
+
+msgctxt "#36160"
+msgid "Enable VDA hardware decoding of video files."
+msgstr "เปิดใช้งาน การถอดรหัสด้วยฮาร์ดแวร์ VDA สำหรับแฟ้มวิดีโอ."
+
+msgctxt "#36161"
+msgid "Enable OpenMax hardware decoding of video files."
+msgstr "เปิดใช้งาน การถอดรหัสด้วยฮาร์ดแวร์ OpenMax สำหรับแฟ้มวิดีโอ."
+
+msgctxt "#36162"
+msgid "Enable VideoToolbox hardware decoding of video files."
+msgstr "เปิดใช้งาน การถอดรหัสด้วยฮาร์ดแวร์ VideoToolbox สำหรับแฟ้มวิดีโอ."
+
+msgctxt "#36163"
+msgid "Enable decoding of video files using pixel buffer objects."
+msgstr "เปิดใช้งาน การถอดรหัสไฟล์วิดีโอ โดยการใช้วัตถุของบัฟเฟอร์พิกเซล."
+
+msgctxt "#36164"
+msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
+msgstr "ยินยอมให้เปลี่ยนอัตราการรีเฟรชของจอแสดงผล ให้เข้ากันกับเฟรมเรตของวิดีโอ. ซึ่งอาจทำให้การเล่นวิดีโอลื่นไหลยิ่งขึ้น."
+
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change."
+msgstr "หยุดชั่วขณะ ในช่วงระยะเวลาหนึ่ง ขณะทำการเปลี่ยนอัตรารีเฟรช."
 
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
@@ -11297,6 +11365,10 @@ msgctxt "#36172"
 msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
 msgstr "การแปลงในระดับสตูดิโอ VDPAU เปิดโอกาสให้โปรแกรมขั้นสูงเช่น XBMC สามารถควบคุมการแปลง ขอบเขตการแสดงผลของสี."
 
+msgctxt "#36173"
+msgid "Enable upscaling using VDPAU."
+msgstr "เปิดใช้งาน การปรับขนาดภาพโดยใช้ VDPAU."
+
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
 msgstr "เปิดใช้งาน เทเลเท็กซ์เมื่อดูสตรีมทีวีสด."
@@ -11305,9 +11377,17 @@ msgctxt "#36175"
 msgid "Scale Teletext to 4:3 ratio."
 msgstr "ปรับขนาดเทเลเท็กซ์ ไปยังสัดส่วน 4:3"
 
+msgctxt "#36176"
+msgid "Category containing settings for how video file lists are handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับจัดการกับ วิธีแสดงรายการแฟ้ม."
+
 msgctxt "#36177"
 msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
 msgstr "สลับค่าระหว่าง เลือก, เล่น (ค่าเริ่มต้น), เล่นต่อ และ แสดงข้อมูล. เลือกจะเลือกรายการ, อย่างเช่น เปิดไดเรกทอรีในโหมดแฟ้ม. เล่นต่อ จะดำเนินการวิดีโอจากตำแหน่งสุดท้ายที่คุณได้ดูไป, แม้หลังจากเริ่มระบบใหม่แล้ว."
+
+msgctxt "#36178"
+msgid "Extract thumbnails and metadata information such as codec and aspect ratio from videos."
+msgstr "ดึงรูปย่อและข้อมูลหลัก อย่างเช่น การเข้ารหัสและอัตราส่วนภาพจากวิดีโอ."
 
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
@@ -11321,9 +11401,41 @@ msgctxt "#36181"
 msgid "No info available yet."
 msgstr "ยังไม่มีข้อมูล."
 
+msgctxt "#36182"
+msgid "Combines multi-part video files, DVD folders, and movie folders down to a single item in non-library views."
+msgstr "รวม แฟ้มวิดีโอ หลาย-ส่วน เข้าด้วยกัน, โฟลเดอร์ดีวีดี, และโฟลเดอร์ภาพยนตร์ ยุบรวมเป็นรายการเดียว ในมุมมอง ที่ไม่ใช่คลังข้อมูล."
+
 msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
 msgstr "นำหมวดย่อย ชื่อเรื่อง, ประเภท และอื่นๆ ออกจากมุมมองคลังข้อมูล. การเลือกหมวด จะนำคุณไปสู่มุมมองชื่อเรื่องโดยตรง."
+
+msgctxt "#36184"
+msgid "Category containing settings for how subtitles are handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับวิธีจัดการกับคำบรรยาย."
+
+msgctxt "#36185"
+msgid "Set the font type to be used for subtitles."
+msgstr "กำหนดรูปแบบตัวอักษร เพื่อใช้สำหรับคำบรรยาย."
+
+msgctxt "#36186"
+msgid "Set the font size to be used for subtitles."
+msgstr "กำหนดขนาดตัวอักษร เพื่อใช้สำหรับคำบรรยาย."
+
+msgctxt "#36187"
+msgid "Set the font style to be used for subtitles."
+msgstr "กำหนดลักษณะตัวอักษร เพื่อใช้สำหรับคำบรรยาย."
+
+msgctxt "#36188"
+msgid "Set the font colour to be used for subtitles."
+msgstr "กำหนดสีตัวอักษร เพื่อใช้สำหรับคำบรรยาย."
+
+msgctxt "#36189"
+msgid "Set the font character set to be used for subtitles."
+msgstr "กำหนดชุดอักขระของตัวอักษร เพื่อใช้สำหรับคำบรรยาย."
+
+msgctxt "#36190"
+msgid "Override ASS/SSA subtitles fonts."
+msgstr "แทนที่แบบอักษร คำบรรยาย ASS / SSA."
 
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
@@ -11332,6 +11444,10 @@ msgstr "ตั้งค่าไดเรกทอรีที่กำหนด
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr "ตำแหน่งของคำบรรยาย บนหน้าจอ."
+
+msgctxt "#36193"
+msgid "Category containing settings for how DVDs are handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับวิธีจัดการ แผ่นดีวีดี."
 
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
@@ -11369,6 +11485,10 @@ msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "นำเข้ากลุ่มช่องรายการจาก PVR backend (ถ้ารองรับ). การกระทำนี้จะลบกลุ่มที่สร้างโดยผู้ใช้ ถ้าไม่พบกลุ่มใน backend."
 
+msgctxt "#36205"
+msgid "Sort the channels by channel number on the backend, but use XBMC's own numbering for channels."
+msgstr "จัดเรียงช่องรายการ โดยหมายเลขบน backend, แต่ยังใช้หมายเลขของ XBMC เอง สำหรับช่องรายการ."
+
 msgctxt "#36206"
 msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
 msgstr "ใช้หมายเลขจาก backend, แทนการกำหนดค่าด้วยตนเองผ่าน XBMC."
@@ -11384,6 +11504,14 @@ msgstr "สั่ง backend ในการค้นหาข่อง(ถ้�
 msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "ลบ ฐานข้อมูล ช่องรายการ/EPG แล้วนำเข้าข้อมูลจาก backend ในภายหลัง."
+
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends."
+msgstr "จำนวนวัน ที่ข้อมูล EPG จะถูกนำเข้าจาก backends."
+
+msgctxt "#36221"
+msgid "Time between EPG data imports from backends."
+msgstr "ระยะเวลา ในระหว่าง ข้อมูล EPG นำเข้าจาก backends."
 
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
@@ -11401,6 +11529,10 @@ msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "แสดงผล กระแสของช่องรายการที่เลือก ในช่องขนาดเล็ก แทนการแสดงแบบเต็มจอ."
 
+msgctxt "#36228"
+msgid "Continue with the last viewed channel on startup."
+msgstr "เล่นต่อด้วยช่องที่ดูล่าสุด ในตอนเริ่มต้น."
+
 msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "แสดงข้อมูลคุณภาพสัญญาณ ในหน้าต่างแสดงข้อมูลการเข้ารหัส (ถ้ารองรับโดย ส่วนเสริม และ backend)."
@@ -11409,6 +11541,26 @@ msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "การกดปุ่มหมายเลขในโหมดเต็มจอ จะเปลี่ยนไปยังช่องรายการ ตามหมายเลขที่ป้อนโดยอัตโนมัติ ภายใน 1 วินาที."
 
+msgctxt "#36234"
+msgid "Duration of instant recordings when pressing the record button."
+msgstr "ระยะเวลาของการบันทึกโดยทันที เมื่อทำการกดปุ่มบันทึก."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Not supported by all Add-ons and backends."
+msgstr "ลำดับความสำคัญของการบันทึก. ตัวเลขที่มากขึ้น หมายถึง ลำดับความสำคัญสูงกว่า. อาจไม่รองรับ โดย ส่วนเสริม และ backends ทั้งหมด."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Not supported by all Add-ons and backends."
+msgstr "ลบการบันทึกหลังจากเวลานี้. อาจไม่รองรับ โดย ส่วนเสริม และ backends ทั้งหมด."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Not supported by all Add-ons and backends."
+msgstr "เริ่มการบันทึกก่อนเวลาจริง. อาจไม่รองรับ โดย ส่วนเสริม และ backends ทั้งหมด."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Not supported by all Add-ons and backends."
+msgstr "จบการบันทึกหลังจากเวลาจริง. อาจไม่รองรับ โดย ส่วนเสริม และ backends ทั้งหมด."
+
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "แสดงการแจ้งเตือน เมื่อการตั้งเวลาถูก เพิ่ม, เสร็จสิ้น หรือ เอาออก โดย backend."
@@ -11416,6 +11568,14 @@ msgstr "แสดงการแจ้งเตือน เมื่อกา�
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
 msgstr "ดำเนินการ \"คำสั่งปลุก\" ด้านล่าง เมื่อออกจาก XBMC หรือเข้าสู่โหมดการจำศีล. บันทึกเวลาของกำหนดการบันทึก จะถูกส่งเป็นค่าตัวแปร."
+
+msgctxt "#36242"
+msgid "The command will not be executed when a recording will be started within this timeout."
+msgstr "คำสั่งจะไม่ถูกดำเนินการ เมื่อการบันทึกจะเริ่มภายในเวลาที่กำหนดนี้."
+
+msgctxt "#36243"
+msgid "The command to execute."
+msgstr "คำสั่งที่จะดำเนินการ."
 
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
@@ -11432,6 +11592,14 @@ msgstr "ถามรหัส pin เพื่อเข้าถึงช่อ�
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "ป้อนรหัส pin ใหม่ เพื่อปลดล็อคช่องรายดาร ที่ถูกล็อคโดยผู้ปกครอง."
+
+msgctxt "#36250"
+msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration."
+msgstr "ขอรหัส pin อีกครั้ง เมื่อพยายามที่จะเข้าถึงช่องรายการที่ถูกล็อคโดยผู้ปกครอง และรหัสจะไม่ถูกถามในช่วงเวลานี้."
+
+msgctxt "#36253"
+msgid "Section that contains settings related to music files and how they are handled."
+msgstr "ส่วนที่มีการตั้งค่า ซึ่งเกี่ยวข้องกับแฟ้มเพลงและวิธีการจัดการ."
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
@@ -11460,6 +11628,10 @@ msgstr "ส่งออกฐานข้อมูลเพลงไปยัง
 msgctxt "#36263"
 msgid "Import a XML file into the Music Library database."
 msgstr "นำเข้าแฟ้ม XML ไปยัง ฐานข้อมูลคลังเพลง."
+
+msgctxt "#36264"
+msgid "Category containing settings for how music playback is handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับวิธีจัดการ การเล่นเพลง."
 
 msgctxt "#36265"
 msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
@@ -11493,6 +11665,10 @@ msgctxt "#36281"
 msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
 msgstr "XBMC จะค้นหารูปย่อ บนการแบ่งปันทางไกลและสื่อออปติคอล. ซึ่งมักจะทำให้การแสดงรายการ ของโฟลเดอร์เครือข่ายช้าลง."
 
+msgctxt "#36282"
+msgid "Category containing settings for how CDs are handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับวิธีจัดการ แผ่นซีดี."
+
 msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
 msgstr "เล่นแผ่น ซีดี โดยอัตโนมัติ เมื่อใส่แผ่นในไดว์."
@@ -11521,6 +11697,10 @@ msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr "ดันแผ่นดิสค์ออกโดยอัตโนมัติ หลังจากการริปเสร็จสมบูรณ์."
 
+msgctxt "#36292"
+msgid "Category containing the settings for how karaoke is handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับวิธีจัดการ เล่นคาราโอเกะ."
+
 msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
 msgstr "เมื่อเล่นแฟ้มเพลงใดๆ, XBMC จะค้นหาแฟ้ม .cdg ที่ตรงกัน แล้วแสดงกราฟิกนั้น."
@@ -11536,6 +11716,10 @@ msgstr "ยังไม่มีข้อมูล."
 msgctxt "#36303"
 msgid "No info available yet."
 msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36305"
+msgid "Category containing settings for how picture file lists are handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับวิธีจัดการ แสดงรายการแฟ้มรูปภาพ."
 
 msgctxt "#36306"
 msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
@@ -11553,6 +11737,10 @@ msgctxt "#36310"
 msgid "No info available yet."
 msgstr "ยังไม่มีข้อมูล."
 
+msgctxt "#36311"
+msgid "Category containing settings for how picture slideshows are handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับวิธีจัดการ แสดงภาพสไลด์."
+
 msgctxt "#36312"
 msgid "Select the amount of time that each image is displayed in a slideshow."
 msgstr "เลือกระยะเวลา ที่แต่ละภาพจะถูกแสดงในการแสดงภาพนิ่ง."
@@ -11565,6 +11753,10 @@ msgctxt "#36314"
 msgid "View slideshow images in a random order."
 msgstr "ดูรูปภาพในการแสดงภาพนิ่ง แบบสุ่มลำดับ."
 
+msgctxt "#36316"
+msgid "Category containing settings for how weather addons are handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับวิธีจัดการ ส่วนเสริมสภาพอากาศ."
+
 msgctxt "#36317"
 msgid "Select up to three locations for which the weather can be displayed."
 msgstr "เลือกได้ถึงสามตำแหน่งพื้นที่ สำหรับสภาพอากาศที่สามารถแสดงผลได้."
@@ -11573,13 +11765,25 @@ msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
 msgstr "กำหนดค่าเริ่มต้น แหล่งข้อมูลสภาพอากาศ. ดูตัวเลือกใน การจัดการ ส่วนเสริม."
 
+msgctxt "#36320"
+msgid "Category containing settings used for all services."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับทุกบริการ."
+
 msgctxt "#36321"
 msgid "Display name of the XBMC installation when using various network services."
 msgstr "แสดงชื่อของการติดตั้ง XBMC เมื่อใช้งาน บริการบนเครือช่ายต่างๆ."
 
+msgctxt "#36322"
+msgid "Category containing settings for how the UPnP service is handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับวิธีจัดการ บริการ UPnP."
+
 msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
 msgstr "เมื่อมีการอัพเดตคลังข้อมูลเกิดขึ้น ไม่ว่าด้วยดนเองหรืออัตโนมัติ, แจ้งเตือน ลูกข่าย UPnP."
+
+msgctxt "#36327"
+msgid "Category containing settings for how the webserver service is handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับวิธีจัดการ บริการเว็บเซิร์ฟเวอร์."
 
 msgctxt "#36328"
 msgid "Enable remote users to control XBMC through the built-in webserver."
@@ -11597,6 +11801,10 @@ msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "เลือกใช้ส่วนติดต่อผ่านเว็บ ที่ได้ติดตั้งผ่าน ตัวจัดการ ส่วนเสริม."
 
+msgctxt "#36333"
+msgid "Category containing settings for how the remote control service is handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับวิธีจัดการ บริการควบคุมระยะไกล."
+
 msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
 msgstr "อนุญาตให้โปรแกรมบนคอมพิวเตอร์เครื่องนี้ ควบคุม XBMC ผ่านเว็บอินเตอร์เฟส หรือ โปรโตคอล อินเตอร์เฟซ JSON-RPC."
@@ -11604,6 +11812,14 @@ msgstr "อนุญาตให้โปรแกรมบนคอมพิว
 msgctxt "#36338"
 msgid "Allow programs on the network to control XBMC."
 msgstr "อนุญาตให้โปรแกรมบนเครือข่าย ควบคุม XBMC."
+
+msgctxt "#36341"
+msgid "Category containing settings for how the zeroconf network discovery service is handled, required for AirPlay."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับวิธีจัดการ บริการค้นหาเครือข่าย zeroconf, จำเป็นสำหรับ AirPlay."
+
+msgctxt "#36346"
+msgid "Category containing settings for how the SMB Client (samba) service is handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับวิธีจัดการ บริการลูกข่าย SMB (samba)."
 
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
@@ -11620,6 +11836,10 @@ msgstr "ลดการฉีกของภาพในแนวตั้ง."
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
 msgstr "แบบลวดลายทดสอบ การปรับเทียบฮาร์ดแวร์การแสดงผล."
+
+msgctxt "#36360"
+msgid "Category containing settings for how audio output is handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับวิธีจัดการ การส่งสัญญาณเสียงออก."
 
 msgctxt "#36361"
 msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
@@ -11665,6 +11885,10 @@ msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
 msgstr "ตั้งค่าวิธีการจัดการเสียงของส่วนติดต่อผู้ใช้, อย่างเช่น การเลื่อนเมนูและการแจ้งเตือนที่สำคัญ."
 
+msgctxt "#36374"
+msgid "Category containing settings for how input devices are handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับวิธีจัดการ อุปกรณ์ป้อนข้อมูล."
+
 msgctxt "#36376"
 msgid "When activated, your keyboard arrows will move the selection on the virtual keyboard. When deactivated, they will move the cursor from your text."
 msgstr "เมื่อเปิดใช้งาน, ปุุ่มลูกศรบนแป้นพิมพ์ของคุณจะใช้เลื่อนการเลือกบนแป้นพิมพ์เสมือน. เมื่อปิดการใช้, จะเลื่อนตัวชี้จากข้อความของคุณ."
@@ -11676,6 +11900,10 @@ msgstr "ใช้เมาท์หรืออุปกรณ์หน้าจ
 msgctxt "#36378"
 msgid "Use a joystick to control XBMC."
 msgstr "ใช้จอยสติ๊กในการควบคุม XBMC."
+
+msgctxt "#36379"
+msgid "Category containing settings for internet access."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับการเข้าถึงอินเตอร์เน็ต."
 
 msgctxt "#36380"
 msgid "If your internet connection uses a proxy, configure it here."
@@ -11705,6 +11933,10 @@ msgctxt "#36386"
 msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
 msgstr "หากคุณมีการจำกัดค่าแบนด์วิดธ์, XBMC จะพยายามให้อยู่ในขอบเขตเหล่านี้."
 
+msgctxt "#36387"
+msgid "Category containing settings for power saving."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับการประหยัดพลังงาน."
+
 msgctxt "#36389"
 msgid "Define how long XBMC should idle before shutting down."
 msgstr "กำหนดระยะเวลาที่ XBMC ไม่ได้ใช้งาน ก่อนที่จะทำการปิดระบบ."
@@ -11712,6 +11944,10 @@ msgstr "กำหนดระยะเวลาที่ XBMC ไม่ได้
 msgctxt "#36390"
 msgid "Define what action XBMC should do when it has been idle for a long period of time."
 msgstr "กำหนดการทำงานที่ XBMC จะต้องกระทำ เมื่อไม่ได้ถูกใช้งานในช่วงเวลานาน."
+
+msgctxt "#36391"
+msgid "Category containing settings for debugging functions."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับการทำหน้าที่แก้ไขจุดบกพร่อง."
 
 msgctxt "#36392"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
@@ -11725,6 +11961,10 @@ msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
 msgstr "ระบุคลังข้อมูลเพิ่มเติม ที่จะรวมเข้าในบันทึกการแก้ไขจุดบกพร่อง."
 
+msgctxt "#36395"
+msgid "Category containing settings for the master lock function."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับการทำงานของมาสเตอร์ล็อค."
+
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
 msgstr "กำหนดรหัส PIN ที่ใช้สำหรับ ล็อคผู้ดูแลระบบ."
@@ -11732,6 +11972,10 @@ msgstr "กำหนดรหัส PIN ที่ใช้สำหรับ ล
 msgctxt "#36398"
 msgid "Define the maximum number of retries before XBMC is closed down."
 msgstr "กำหนดจำนวนของการลองใหม่ ก่อนที่ XBMC จะปิดไป."
+
+msgctxt "#36399"
+msgid "Category containing settings for the cache function."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับการทำงานของแคช."
 
 msgctxt "#36410"
 msgid "No info available yet."
@@ -11904,6 +12148,22 @@ msgstr "ใช้พื้นผิวคุณภาพสูงขึ้น �
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
 msgstr "จำกัดความละเอียดของ GUI เพื่อประหยัดหน่วยความจำ. ไม่ส่งผลกับการเล่นวิดีโอ. ใช้ 1080 เพื่อไม่จำกัด. จำเป็นต้องเริ่มระบบใหม่."
+
+msgctxt "#36600"
+msgid "Category containing the settings for how the music library is handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับวิธีจัดการ คลังข้อมูลเพลง."
+
+msgctxt "#36601"
+msgid "Category containing settings for how music file lists are handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับวิธีจัดการ รายการแฟ้มเพลง."
+
+msgctxt "#36602"
+msgid "Category containing settings for how the AirPlay service is handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับวิธีจัดการ บริการ AirPlay."
+
+msgctxt "#36603"
+msgid "Category containing settings for how video output is handled."
+msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับวิธีจัดการ การส่งออกสัญญาณวิดีโอ."
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"

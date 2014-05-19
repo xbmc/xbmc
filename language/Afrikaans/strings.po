@@ -869,6 +869,10 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Kies bestemmingvouer"
 
+msgctxt "#252"
+msgid "Stereo upmix"
+msgstr "Stereo opmeng"
+
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Aantal kanale"
@@ -1080,6 +1084,10 @@ msgstr "Nie-intervleg"
 msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Oorspronklike stroom se taal"
+
+msgctxt "#309"
+msgid "User interface language"
+msgstr "Gebruiker koppelvlak taal"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1657,6 +1665,10 @@ msgctxt "#457"
 msgid "Switch view"
 msgstr "Ruil vertoon"
 
+msgctxt "#458"
+msgid "Limit sampling rate (kHz)"
+msgstr "Beperk monster tempo (kHz)"
+
 msgctxt "#459"
 msgid "Subs"
 msgstr "Onderskrifte"
@@ -1824,6 +1836,10 @@ msgstr "Laai media inligting vanaf lêers..."
 msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "Sorteer volgens: Gebruik"
+
+msgctxt "#510"
+msgid "Enable visualisations"
+msgstr "Aktiveer visualiserings"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
@@ -2269,6 +2285,14 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "Verpersoonlik"
 
+msgctxt "#637"
+msgid "ReplayGain"
+msgstr "TerugspeelWins"
+
+msgctxt "#638"
+msgid "ReplayGain volume adjustments"
+msgstr "TerugspeelWins volume verstellings"
+
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "Gebruik snit vlakke"
@@ -2276,6 +2300,18 @@ msgstr "Gebruik snit vlakke"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "Gebruik album vlakke"
+
+msgctxt "#641"
+msgid "PreAmp Level - ReplayGained files"
+msgstr "VoorVersterker Vlak - TerugspeelWins lêers"
+
+msgctxt "#642"
+msgid "PreAmp Level - Non ReplayGained files"
+msgstr "VoorVersterker Vlak - Nie TerugspeelWins lêers"
+
+msgctxt "#643"
+msgid "Avoid clipping on ReplayGained files"
+msgstr "Verhoed afsny op TerugspeelWins lêers"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -2368,6 +2404,10 @@ msgstr "Kompressie vlak"
 msgctxt "#666"
 msgid "Verbose logging..."
 msgstr "Verbose meld..."
+
+msgctxt "#667"
+msgid "Enable Dolby Digital transcoding"
+msgstr "Stel Dolby Digital transkodering in staat"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2912,6 +2952,10 @@ msgstr "%i van %i items gevind"
 msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Program Byvoegsels"
+
+msgctxt "#1044"
+msgid "Set plug-in thumb"
+msgstr "Stel inprop duim"
 
 msgctxt "#1045"
 msgid "Add-on settings"
@@ -3477,6 +3521,10 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Terugstel"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Basies"
+
 msgctxt "#10037"
 msgid "Standard"
 msgstr "Standaard"
@@ -3484,6 +3532,18 @@ msgstr "Standaard"
 msgctxt "#10038"
 msgid "Advanced"
 msgstr "Gevorderde"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Ekspert"
+
+msgctxt "#10040"
+msgid "Add-on browser"
+msgstr "Byvoegsel blaaier"
+
+msgctxt "#10041"
+msgid "Reset above settings to default"
+msgstr "Herstel boonste na bestek verstellings"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -3496,6 +3556,18 @@ msgstr "Help"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "Geen hulp beskikbaar"
+
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr "Herstel al die sigbare verstellings na hul bestek waardes."
+
+msgctxt "#10046"
+msgid "No categories available"
+msgstr "Geen kategorieë beskikbaar"
+
+msgctxt "#10047"
+msgid "Try changing the setting level to see additional categories and settings."
+msgstr "Probeer die verstelling vlak verander om addisionele kategorië en verstellings te sien."
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
@@ -3673,6 +3745,10 @@ msgctxt "#12006"
 msgid "Audio visualisation"
 msgstr "Oudio visualisering"
 
+msgctxt "#12008"
+msgid "File stacking dialogue"
+msgstr "Lêer stapel dialoog"
+
 msgctxt "#12009"
 msgid "Rebuild index..."
 msgstr "Herbou indeks..."
@@ -3828,6 +3904,10 @@ msgstr "Toegang geweier"
 msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Wagwoord herprobeer limiet oorskry."
+
+msgctxt "#12347"
+msgid "The system will now power down."
+msgstr "Die stelsel sal nou afskakel."
 
 msgctxt "#12348"
 msgid "Item locked"
@@ -4005,6 +4085,10 @@ msgctxt "#13013"
 msgid "Reboot"
 msgstr "Reboot"
 
+msgctxt "#13014"
+msgid "Minimise"
+msgstr "Minimeer"
+
 msgctxt "#13015"
 msgid "Power button action"
 msgstr "Krag knoppie aksie"
@@ -4125,6 +4209,10 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Stoor resolusie?"
 
+msgctxt "#13111"
+msgid "Would you like to keep this change?"
+msgstr "Wil jy hierdie verandering behou?"
+
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "Hoë kwaliteit opskandering"
@@ -4164,6 +4252,14 @@ msgstr "VDPAU"
 msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
 msgstr "VDPAU HQ Opskandering vlak"
+
+msgctxt "#13122"
+msgid "VDPAU Studio level colour conversion"
+msgstr "VDPAU Ateljee vlak kleur omskakeling"
+
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr "Behou omslag?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4216,6 +4312,10 @@ msgstr "Portaal"
 msgctxt "#13161"
 msgid "Primary DNS"
 msgstr "Primêre DNS"
+
+msgctxt "#13162"
+msgid "Initialise failed"
+msgstr "Initialiseer het gefaal"
 
 msgctxt "#13170"
 msgid "Never"
@@ -4461,6 +4561,10 @@ msgctxt "#13318"
 msgid "Recursive slideshow"
 msgstr "Herhalende skyfievertoning"
 
+msgctxt "#13319"
+msgid "Randomise"
+msgstr "Lukraak"
+
 msgctxt "#13320"
 msgid "Stereo"
 msgstr "Stereo"
@@ -4673,9 +4777,21 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr "Vooropgestel"
 
+msgctxt "#13389"
+msgid "There are no presets available\nfor this visualisation"
+msgstr "Daar is geen vooropgestelde stellings beskikbaar\nvir hierdie visualisering"
+
+msgctxt "#13390"
+msgid "There are no settings available\nfor this visualisation"
+msgstr "Daar is geen verstellings beskikbaar\nvir hierdie visualisering"
+
 msgctxt "#13391"
 msgid "Eject/Load"
 msgstr "Uitwerp/Inlaai"
+
+msgctxt "#13392"
+msgid "Use visualisation if playing audio"
+msgstr "Gebruik visualisering as oudio speel"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4853,6 +4969,22 @@ msgctxt "#13436"
 msgid "Allow hardware acceleration (libstagefright)"
 msgstr "Laat hardeware versnelling toe (libstagefright)"
 
+msgctxt "#13437"
+msgid "Prefer VDPAU Video Mixer"
+msgstr "Verkies VDPAU Video Menger"
+
+msgctxt "#13438"
+msgid "Allow hardware acceleration (amcodec)"
+msgstr "Laat hardeware versnelling toe (amcodec)"
+
+msgctxt "#13439"
+msgid "Allow hardware acceleration (MediaCodec)"
+msgstr "Laat hardeware versnelling toe (MediaCodec)"
+
+msgctxt "#13440"
+msgid "Allow multi threaded software decoding"
+msgstr "Laat multi draad sagteware dekodering toe"
+
 msgctxt "#13441"
 msgid "Use Mpeg-2 VDPAU"
 msgstr "Gebruik Mpeg-2 VDPAU"
@@ -4877,9 +5009,17 @@ msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
 msgstr "Gebruik VC-1 VAAPI"
 
+msgctxt "#13454"
+msgid "Decoding method"
+msgstr "Dekoderings metode"
+
 msgctxt "#13455"
 msgid "Software"
 msgstr "Sagteware"
+
+msgctxt "#13456"
+msgid "Hardware accelerated"
+msgstr "Hardeware versnel"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -4896,6 +5036,10 @@ msgstr "Video klok (Laat val/Dupe oudio)"
 msgctxt "#13503"
 msgid "Video clock (Resample audio)"
 msgstr "Video klok (Hermonster oudio)"
+
+msgctxt "#13504"
+msgid "Maximum speedup/slowdown amount (%)"
+msgstr "Maksimum vinniger/stadiger hoeveelheid (%)"
 
 msgctxt "#13505"
 msgid "Resample quality"
@@ -4961,6 +5105,14 @@ msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f Sekondes"
 
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d Minuut"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d Minute"
+
 msgctxt "#13600"
 msgid "Apple remote"
 msgstr "Apple afstandbeheer"
@@ -4992,6 +5144,10 @@ msgstr "Multi Afstandbeheer (Harmony)"
 msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Apple Afstandbeheer Fout"
+
+msgctxt "#13621"
+msgid "Apple Remote support could not be enabled."
+msgstr "Apple afgeleë ondersteuning kon nie in staat gestel word."
 
 msgctxt "#14000"
 msgid "Stack"
@@ -5085,13 +5241,33 @@ msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "Tik die naaste groot dorp in"
 
+msgctxt "#14025"
+msgid "Video/Audio/DVD cache - Hard disk"
+msgstr "Video/Oudio/DVD kas - Hardeskyf"
+
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Video stoor - DVD-ROM"
 
+msgctxt "#14027"
+msgid "Video cache - Local Network"
+msgstr "Video kas - Lokale Netwerk"
+
+msgctxt "#14028"
+msgid "Video cache - Internet"
+msgstr "Video kas - Internet"
+
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Oudio stoor - DVD-ROM"
+
+msgctxt "#14031"
+msgid "Audio cache - Local Network"
+msgstr "Oudio kas - Lokale Netwerk"
+
+msgctxt "#14032"
+msgid "Audio cache - Internet"
+msgstr "Oudio kas - Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -5104,6 +5280,10 @@ msgstr "Lokale Netwerk"
 msgctxt "#14036"
 msgid "Services"
 msgstr "Dienste"
+
+msgctxt "#14037"
+msgid "DVD cache - Local Network"
+msgstr "DVD kas - Lokale Netwerk"
 
 msgctxt "#14038"
 msgid "Network settings changed"
@@ -5341,6 +5521,14 @@ msgctxt "#14101"
 msgid "Acceleration"
 msgstr "Versnelling"
 
+msgctxt "#15012"
+msgid "Unavailable source"
+msgstr "Onbeskikbare bron"
+
+msgctxt "#15013"
+msgid "What would you like to do with media items from %s"
+msgstr "Wat wil jy doen met media items vanaf %s"
+
 msgctxt "#15014"
 msgid "Keep"
 msgstr "Hou"
@@ -5420,6 +5608,10 @@ msgstr "Nie gekonnekteer"
 msgctxt "#15213"
 msgid "Play using..."
 msgstr "Speel met..."
+
+msgctxt "#15214"
+msgid "Use smoothed A/V synchronisation"
+msgstr "Gebruik gladgemaakte A/V sinchronisasie"
 
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
@@ -5561,6 +5753,10 @@ msgctxt "#16031"
 msgid "No matching songs in the library."
 msgstr "Geen ooreenstemmende liedjies in die biblioteek."
 
+msgctxt "#16032"
+msgid "Could not initialise database."
+msgstr "Kon nie databasis initialiseer."
+
 msgctxt "#16033"
 msgid "Could not open database."
 msgstr "Kon nie databasis oopmaak."
@@ -5620,6 +5816,10 @@ msgstr "Merk as ongekyk"
 msgctxt "#16105"
 msgid "Edit title"
 msgstr "Redigeer titel"
+
+msgctxt "#16106"
+msgid "Manage..."
+msgstr "Bestuur..."
 
 msgctxt "#16107"
 msgid "Edit sort title"
@@ -5713,6 +5913,10 @@ msgctxt "#16314"
 msgid "Inverse Telecine"
 msgstr "Inverse Telecine"
 
+msgctxt "#16315"
+msgid "Lanczos3 optimised"
+msgstr "Lanczos3 geoptimeer"
+
 msgctxt "#16316"
 msgid "Auto"
 msgstr "Auto"
@@ -5741,9 +5945,17 @@ msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
 
+msgctxt "#16323"
+msgid "Spline36 optimised"
+msgstr "Spline36 geoptimeer"
+
 msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Sagteware Meng"
+
+msgctxt "#16325"
+msgid "VDPAU - Bob"
+msgstr "VDPAU - Bob"
 
 msgctxt "#16326"
 msgid "DXVA-HD"
@@ -5840,6 +6052,10 @@ msgstr "PVR Agterkant %i - %s"
 msgctxt "#19017"
 msgid "TV recordings"
 msgstr "TV opnames"
+
+msgctxt "#19018"
+msgid "Folder with channel icons"
+msgstr "Gids met kanaal ikone"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -6045,6 +6261,10 @@ msgctxt "#19069"
 msgid "EPG"
 msgstr "EPG"
 
+msgctxt "#19070"
+msgid "Go to now"
+msgstr "Gaan na nou"
+
 msgctxt "#19071"
 msgid "EPG update interval"
 msgstr "EPG opdateer interval"
@@ -6157,6 +6377,18 @@ msgctxt "#19098"
 msgid "Warning"
 msgstr "Waarskuwing"
 
+msgctxt "#19099"
+msgid "Service"
+msgstr "Diens"
+
+msgctxt "#19100"
+msgid "Mux"
+msgstr "Mux"
+
+msgctxt "#19101"
+msgid "Provider"
+msgstr "Verskaffer"
+
 msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Skakel asb oor na 'n ander kanaal."
@@ -6204,6 +6436,10 @@ msgstr "Soek vir kanale"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "Kan nie PVR funksies gebruik terwyl soek nie."
+
+msgctxt "#19119"
+msgid "On which server do you want to search?"
+msgstr "Op watter bediener wil jy soek?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -6397,6 +6633,10 @@ msgctxt "#19170"
 msgid "Timeout when starting playback"
 msgstr "Tydverstreke wanneer begin terugspeel"
 
+msgctxt "#19171"
+msgid "Start playback minimised"
+msgstr "Begin terugspeel geminimeer"
+
 msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr "Oombliklike opname tydsduur"
@@ -6464,6 +6704,10 @@ msgstr "EPG word herstel"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "Sit laaste kanaal voort met loods"
+
+msgctxt "#19190"
+msgid "Minimised"
+msgstr "Geminimeer"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6585,6 +6829,10 @@ msgctxt "#19220"
 msgid "Channels in"
 msgstr "Kanale in"
 
+msgctxt "#19221"
+msgid "Synchronise channel groups with backend(s)"
+msgstr "Sinchroniseer kanaal groepe met agterkant(e)"
+
 msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
@@ -6612,6 +6860,10 @@ msgstr "Opname uitgewis"
 msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
 msgstr "Maak kanaal OSD toe na kanale verander het"
+
+msgctxt "#19230"
+msgid "Prevent EPG updates during playback"
+msgstr "Verhoed EPG opdaterings gedurende terugspeel"
 
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
@@ -6645,9 +6897,17 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Begin agtergrond drade"
 
+msgctxt "#19240"
+msgid "No PVR Add-on enabled"
+msgstr "Geen PVR Byvoegsel geaktiveer"
+
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "Die PVR bestuurder is in staat gestel sonder enige"
+
+msgctxt "#19242"
+msgid "enabled PVR Add-on. Enable at least one Add-on"
+msgstr "PVR Byvoegsel geaktiveer. Stel ten minste een Byvoegsel in staat"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6761,9 +7021,17 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Alle opnames"
 
+msgctxt "#19271"
+msgid "No PVR Add-ons could be found"
+msgstr "Geen PVR Byvoegsels kon gevind word"
+
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Jy benodig 'n instemmer, agterkant sagteware, en"
+
+msgctxt "#19273"
+msgid "Add-on for the backend to be able to use PVR."
+msgstr "Byvoegsel vir die agterkant om PVR te kan gebruik."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -7449,6 +7717,14 @@ msgctxt "#20085"
 msgid "Show system info"
 msgstr "Wys stelsel info"
 
+msgctxt "#20086"
+msgid "Show available disk space C: E: F:"
+msgstr "Vertoon beskikbare skyf spasie C: E: F:"
+
+msgctxt "#20087"
+msgid "Show available disk space E: F: G:"
+msgstr "Vertoon beskikbare skyf spasie E: F: G:"
+
 msgctxt "#20088"
 msgid "Weather info"
 msgstr "Weer info"
@@ -8041,6 +8317,10 @@ msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "Hierdie sal die kalibrasie waardes vir %s"
 
+msgctxt "#20327"
+msgid "to its default values."
+msgstr "na sy bestek waardes."
+
 msgctxt "#20328"
 msgid "Browse for destination"
 msgstr "Soek vir destinasie"
@@ -8373,9 +8653,17 @@ msgctxt "#20411"
 msgid "Flatten"
 msgstr "Verplat"
 
+msgctxt "#20412"
+msgid "Flatten TV show seasons"
+msgstr "Verplat TV skou seisoene"
+
 msgctxt "#20413"
 msgid "Get fanart"
 msgstr "Kry Ondersteunerkuns"
+
+msgctxt "#20414"
+msgid "Show fanart in video and music libraries"
+msgstr "Wys ondersteunerkuns in video en musiek biblioteke"
 
 msgctxt "#20415"
 msgid "Scanning for new content"
@@ -8657,6 +8945,10 @@ msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Verwyder media saamdeel"
 
+msgctxt "#21366"
+msgid "Custom subtitle folder"
+msgstr "Pasgemaakte subtitel gids"
+
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Fliek & alternatiewe subtitel gids"
@@ -8664,6 +8956,10 @@ msgstr "Fliek & alternatiewe subtitel gids"
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
 msgstr "Oorskryf ASS/SSA subtitel fonts"
+
+msgctxt "#21369"
+msgid "Enable mouse and touch screen support"
+msgstr "Stel muis en raakskerm ondersteuning in staat"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -9020,6 +9316,10 @@ msgstr "Groepeer met"
 msgctxt "#21459"
 msgid "mixed"
 msgstr "gemeng"
+
+msgctxt "#21460"
+msgid "Subtitle position on screen"
+msgstr "Subtitel posisie op skerm"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -9449,6 +9749,10 @@ msgctxt "#22020"
 msgid "Guide"
 msgstr "Gids"
 
+msgctxt "#22021"
+msgid "Allowed error in aspect ratio to minimise black bars"
+msgstr "Toegelate fout in aspek verhouding om swart stawe te minimeer"
+
 msgctxt "#22022"
 msgid "Show video files in listings"
 msgstr "Wys video lêers in lyste"
@@ -9737,13 +10041,29 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Beskikbare opdaterings"
 
+msgctxt "#24044"
+msgid "Dependencies not met. Please contact Add-on author."
+msgstr "Afhanklikhede nie nagekom. Kontak asseblief Byvoegsel outeur."
+
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Byvoegsel het nie die regte struktuur nie"
 
+msgctxt "#24046"
+msgid "%s is used by the following installed Add-on(s)"
+msgstr "%s word gebruik deur die volgende geïnstalleerde Byvoegsel(s)"
+
+msgctxt "#24047"
+msgid "This Add-on cannot be uninstalled"
+msgstr "Hierdie Byvoegsel kan nie deïnstalleer word"
+
 msgctxt "#24048"
 msgid "Rollback"
 msgstr "Terugrol"
+
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr "Onversoenbaar"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
@@ -9849,6 +10169,10 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "Sluit Byvoegsel bestuurder"
 
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr "Hierdie Byvoegsel kan nie deaktiveer word"
+
 msgctxt "#24094"
 msgid "(current)"
 msgstr "(huidige)"
@@ -9856,6 +10180,10 @@ msgstr "(huidige)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(geswartlys)"
+
+msgctxt "#24096"
+msgid "Add-on is incompatible or has been marked broken in repository."
+msgstr "Byvoegsel is onversoenbaar of is as gebreek gemerk in stoorplek."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9885,6 +10213,26 @@ msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "Oortreksel kort paar lêers"
 
+msgctxt "#24104"
+msgid "Add-on is incompatible due to unmet dependencies."
+msgstr "Byvoegsel is onversoenbaar weens onvervulde afhanklikhede."
+
+msgctxt "#24105"
+msgid "Pause when searching for subtitles"
+msgstr "Pouseer wanneer vir subtitels soek"
+
+msgctxt "#24106"
+msgid "Specify where downloaded subtitles should be saved, the same location as the video or a custom location."
+msgstr "Spesifiseer waar afgelaaide subtitels gestoor moet word: dieselfde plek as die video of 'n pasgemaakte ligging."
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Soek vir subtitels..."
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "%d subtitels gevind"
+
 msgctxt "#24109"
 msgid "No subtitles found"
 msgstr "Geen subtitels gevind"
@@ -9893,13 +10241,41 @@ msgctxt "#24110"
 msgid "Downloading subtitles ..."
 msgstr "Laai subtitels af..."
 
+msgctxt "#24111"
+msgid "Languages to download subtitles for"
+msgstr "Tale om subtitels voor af te laai"
+
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "Gefaal om subtitel af te laai"
+
+msgctxt "#24114"
+msgid "No subtitle services installed"
+msgstr "Geen subtitel dienste geinstalleer"
+
+msgctxt "#24115"
+msgid "Subtitle storage location"
+msgstr "Subtitel stoor ligging"
+
 msgctxt "#24116"
 msgid "Default TV Service"
 msgstr "Bestek TV Diens"
 
+msgctxt "#24117"
+msgid "Select service that will be used as default to search for TV Show subtitles."
+msgstr "Selekteer diens wat by bestek gebruik gaan word om vir TV skou subtitels te soek."
+
 msgctxt "#24118"
 msgid "Default Movie Service"
 msgstr "Bestek Fliek Diens"
+
+msgctxt "#24119"
+msgid "Select service that will be used as default to search for Movie subtitles."
+msgstr "Selekteer diens wat by bestek gebruik gaan word om Fliek subtitels te soek."
+
+msgctxt "#24120"
+msgid "Manual search string"
+msgstr "Hand soek string"
 
 msgctxt "#24121"
 msgid "Enter search string"
@@ -9908,6 +10284,18 @@ msgstr "Tik soek string in"
 msgctxt "#24122"
 msgid "Update all"
 msgstr "Opdateer almal"
+
+msgctxt "#24123"
+msgid "Pause the current video while searching for subtitles and resume once the subtitle is available."
+msgstr "Pouseer die huidige video terwyl vir subtitels soek en hervat sodra die subtitel beskikbaar is."
+
+msgctxt "#24124"
+msgid "Next to the video"
+msgstr "Langs die video"
+
+msgctxt "#24125"
+msgid "Custom location"
+msgstr "Pasgemaakte ligging"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -9921,6 +10309,10 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Kies van alle titels ..."
 
+msgctxt "#25003"
+msgid "Show Blu-ray menus"
+msgstr "Vertoon Blu-ray kieslyste"
+
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Speel hoof titel: %d"
@@ -9932,6 +10324,18 @@ msgstr "Titel: %d"
 msgctxt "#25006"
 msgid "Select playback item"
 msgstr "Selekteer terugspeel item"
+
+msgctxt "#25007"
+msgid "Chapters: %u - duration: %s"
+msgstr "Hoofstukke: %u - duur: %s"
+
+msgctxt "#25008"
+msgid "Playback of Blu-ray failed"
+msgstr "Terugspeel van Blu-ray het gefaal"
+
+msgctxt "#25009"
+msgid "The menu of this Blu-ray is not supported"
+msgstr "Die kieslys van hierdie Blu-ray word nie ondersteun"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -10401,6 +10805,10 @@ msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr "Init video filters/skaleerders het gefaal, val terug na bilineêre skalering"
 
+msgctxt "#34402"
+msgid "Failed to initialise audio device"
+msgstr "Gefaal om oudio apparaat te initialiseer"
+
 msgctxt "#34403"
 msgid "Check your audiosettings"
 msgstr "Kyk na jou klank instellings"
@@ -10432,6 +10840,10 @@ msgstr "Randapparatuur"
 msgctxt "#35001"
 msgid "Generic HID device"
 msgstr "Generiese HID toestel"
+
+msgctxt "#35002"
+msgid "Generic network adaptor"
+msgstr "Generiese netwerk kaart"
 
 msgctxt "#35003"
 msgid "Generic disk"
@@ -10489,6 +10901,10 @@ msgctxt "#35504"
 msgid "Product ID"
 msgstr "Produk ID"
 
+msgctxt "#36000"
+msgid "Pulse-Eight CEC adaptor"
+msgstr "Pulse-Eight CEC kaart"
+
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
 msgstr "Pulse-Eight Nyxboard"
@@ -10508,6 +10924,10 @@ msgstr "Druk \"gebruiker\" knoppie bevel"
 msgctxt "#36005"
 msgid "Enable switch side commands"
 msgstr "Stel bevele vir ruil sy in staat"
+
+msgctxt "#36006"
+msgid "Could not open the adaptor"
+msgstr "Kon nie die passtuk oopmaak"
 
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
@@ -10529,6 +10949,10 @@ msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "Kon nie die CEC com poort opspoor nie. Stel dit handrolies op."
 
+msgctxt "#36012"
+msgid "Could not initialise the CEC adaptor. Please check your settings."
+msgstr "Kon nie die CEC passtuk initialiseer. Gaan asb jou verstellings na."
+
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "HDMI poort nommer"
@@ -10536,6 +10960,10 @@ msgstr "HDMI poort nommer"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Gekonnekteer"
+
+msgctxt "#36017"
+msgid "Could not initialise the CEC adaptor: libCEC was not found on your system."
+msgstr "Kon nie die CEC passtuk inisialiseer: libCEC is nie op jou stelsel gevind nie."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10589,6 +11017,14 @@ msgctxt "#36030"
 msgid "Connection lost"
 msgstr "Konneksie verloor"
 
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adaptor"
+msgstr "Hierdie gebruiker het nie toestemming om die CEC passtuk oop te maak"
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adaptor"
+msgstr "Die poort is besig. Slegs een program kan toegang tot die CEC passtuk verkry"
+
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
 msgstr "Pauseer terugspeel wanneer na 'n ander bron oorskakel"
@@ -10621,6 +11057,22 @@ msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Item vouer"
 
+msgctxt "#36042"
+msgid "Use limited colour range (16-235)"
+msgstr "Gebruik beperkte kleur reeks (16-235)"
+
+msgctxt "#36101"
+msgid "Change the look and feel of the user interface."
+msgstr "Verander die lyk en voel van die gebruiker koppelvlak."
+
+msgctxt "#36102"
+msgid "Category containing all Skin related settings."
+msgstr "Kategorie wat al die Oortreksel verwante verstellings bevat."
+
+msgctxt "#36103"
+msgid "Select the skin for the user interface. This will define the look and feel of XBMC."
+msgstr "Selekteer die oortreksel vir die gebruiker koppelvlak. Hierdie sal die lyk en voel van XBMC definieer."
+
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
 msgstr "Verander spesifieke oortreksel verstellings. Die beskikbare opsies hang af van die gebruikte oortreksel."
@@ -10633,9 +11085,21 @@ msgctxt "#36106"
 msgid "Change the colours of your selected skin."
 msgstr "Verander die kleure van jou gekose oortreksel."
 
+msgctxt "#36107"
+msgid "Choose the fonts displayed in the user interface. The font sets are configured by your skin."
+msgstr "Kies die skrifte wat in die gebruiker koppelvlak vertoon word. Die skrif stelle word gekonfigureer deur jou oortreksel."
+
+msgctxt "#36108"
+msgid "Resize the view of the user interface."
+msgstr "Herskaleer die aansig van die gebruiker koppelvlak."
+
 msgctxt "#36109"
 msgid "Select the media window that XBMC displays on startup."
 msgstr "Selekteer die media venster wat XBMC vertoon wanneer begin."
+
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the user interface."
+msgstr "Selekteer of deaktiveer die klank skema gebruik in die gebruiker koppelvlak."
 
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
@@ -10645,9 +11109,21 @@ msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Redigeer die RSS voere."
 
+msgctxt "#36113"
+msgid "Category containing all locale/regional settings."
+msgstr "Kategorie bevat alle lokale/streeks verstellings."
+
+msgctxt "#36114"
+msgid "Chooses the language of the user interface."
+msgstr "Kies die taal van die gebruiker koppelvlak."
+
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
 msgstr "Selekteer die formate vir temperatuur, tyd en datum. Die beskikbare opsies hang af van die geselekteerde taal."
+
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the user interface."
+msgstr "Kies watter karakter stel gebruik word om teks in die gebruiker koppelvlak te vertoon."
 
 msgctxt "#36117"
 msgid "Select country location."
@@ -10665,6 +11141,10 @@ msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
 msgstr "Selekteer die bestek subtitels wanneer verskillende tale beskikbaar is."
 
+msgctxt "#36121"
+msgid "Category containing settings related to how file lists are displayed."
+msgstr "Kategorie bevat verstellings verwant aan hoe lêers vertoon word."
+
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
 msgstr "Vertoon die (..) item in lyste om die ouer vouer te besoek."
@@ -10676,6 +11156,18 @@ msgstr "Vertoon lêer uitbreidings op media lêers. Byvoorbeeld, 'You Enjoy Myse
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Laat toe dat lêers uitgevee en hernoem word deur die gebruiker koppelvlak, via die konteks kieslys (druk bv. C op 'n sleutelbord om hierdie kieslys op te roep)."
+
+msgctxt "#36126"
+msgid "Show the add source button in root sections of the user interface."
+msgstr "Vertoon die voeg bron by knoppie in wortel seksies van die gebruiker koppelvlak."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories when listing files."
+msgstr "Vertoon versteekte lêers en vouers wanneer lêers lys."
+
+msgctxt "#36128"
+msgid "Category containing all screensaver settings."
+msgstr "Kategorie bevat al die skermskut verstellings."
 
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
@@ -10704,6 +11196,18 @@ msgstr "Nog geen info beskikbaar."
 msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Nog geen info beskikbaar."
+
+msgctxt "#36138"
+msgid "Section that contains settings related to videos and how they are handled."
+msgstr "Seksie wat verstellings bevat verwant aan videos en hoe hulle hanteer word."
+
+msgctxt "#36139"
+msgid "Category containing the settings for how the video library is handled."
+msgstr "Kategorie bevat die verstellings vir hoe die video biblioteek hanteer word."
+
+msgctxt "#36140"
+msgid "Enable the video library."
+msgstr "Stel die video biblioteek in staat."
 
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
@@ -10741,9 +11245,53 @@ msgctxt "#36150"
 msgid "Import a XML file into the Video Library database."
 msgstr "Voer 'n XML lêer in die Video Biblioteek databasis in."
 
+msgctxt "#36151"
+msgid "Category containing settings for how video playback is handled."
+msgstr "Kategorie bevat die verstellings van hoe video terugspeel hanteer word."
+
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list."
+msgstr "Stel outomatiese terugspeel van die volgende lêer in die lys in staat."
+
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Verstel die metode gebruik om die video te verwerk en te vertoon."
+
+msgctxt "#36156"
+msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
+msgstr "Stel VAAPI hardeware dekodering van video lêers in staat, hoofsaaklik gebruik vir Intel grafika en in sommige gevalle AMD grafika."
+
+msgctxt "#36158"
+msgid "Enable DXVA2 hardware decoding of video files."
+msgstr "Stel DXVA2 hardeware dekodering van video lêers in staat."
+
+msgctxt "#36159"
+msgid "Enable CrystalHD decoding of video files."
+msgstr "Stel CrystalHD dekodering van video lêers in staat."
+
+msgctxt "#36160"
+msgid "Enable VDA hardware decoding of video files."
+msgstr "Stel VDA hardeware dekodering van video lêers in staat."
+
+msgctxt "#36161"
+msgid "Enable OpenMax hardware decoding of video files."
+msgstr "Stel OpenMax hardeware dekodering van video lêers in staat."
+
+msgctxt "#36162"
+msgid "Enable VideoToolbox hardware decoding of video files."
+msgstr "Stel VideoToolbox hardeware dekodering van video lêers in staat."
+
+msgctxt "#36163"
+msgid "Enable decoding of video files using pixel buffer objects."
+msgstr "Stel dekodering van video lêers met pieksel buffer objekte in staat."
+
+msgctxt "#36164"
+msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
+msgstr "Laat toe dat die verfris tempo van die vertoon verander sodat dit die video raam tempo beste pas. Dit mag gladder video terugspeel gee."
+
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change."
+msgstr "Pouseer vir 'n kort tydjie gedurende 'n verfris tempo verandering."
 
 msgctxt "#36167"
 msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
@@ -10756,6 +11304,10 @@ msgstr "Laat video speler toe om die aspekverhouding met 'n sekere hoeveelheid t
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "Selekteer die zoem vlak wat 4:3 videos op wye skerms vertoon word."
+
+msgctxt "#36173"
+msgid "Enable upscaling using VDPAU."
+msgstr "Stel opskalering met VDPAU in staat."
 
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
@@ -10773,6 +11325,30 @@ msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Nog geen info beskikbaar."
 
+msgctxt "#36184"
+msgid "Category containing settings for how subtitles are handled."
+msgstr "Kategorie wat verstellings bevat vir hoe subtitels hanteer word."
+
+msgctxt "#36185"
+msgid "Set the font type to be used for subtitles."
+msgstr "Stel skrif tipe om vir subtitels te gebruik."
+
+msgctxt "#36186"
+msgid "Set the font size to be used for subtitles."
+msgstr "Stel die skrif grootte om vir subtitels te gebruilk."
+
+msgctxt "#36187"
+msgid "Set the font style to be used for subtitles."
+msgstr "Stel die skrif styl om vir subtitels te gebruilk."
+
+msgctxt "#36188"
+msgid "Set the font colour to be used for subtitles."
+msgstr "Stel die skrif kleur om vir subtitels te gebruilk."
+
+msgctxt "#36189"
+msgid "Set the font character set to be used for subtitles."
+msgstr "Stel die skrif karakter stel om vir subtitels te gebruilk."
+
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr "Posisie van subtitels op die skerm."
@@ -10789,9 +11365,101 @@ msgctxt "#36197"
 msgid "No info available yet."
 msgstr "Nog geen info beskikbaar."
 
+msgctxt "#36201"
+msgid "Settings for PVR/Live TV features."
+msgstr "Verstellings vir PVR/Live TV funksies."
+
+msgctxt "#36202"
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Kategorie vir algemene verstellings vir PVR/Live TV funksies."
+
+msgctxt "#36211"
+msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
+msgstr "Kategorie vir PVR kieslyste en op die skerm vertoon verstellings, sowel as kanaal inligting vensters."
+
+msgctxt "#36212"
+msgid "Display programming information when changing channels, such as the current TV show."
+msgstr "Vertoon program inligting wanneer kanale verander, soos die huidige TV skou."
+
+msgctxt "#36213"
+msgid "Hide the programming information automatically after a few seconds, defined below."
+msgstr "Versteek die program inligting outomaties na 'n paar sekondes, onder gedefinieer."
+
+msgctxt "#36214"
+msgid "Close the on screen display controls after switching channels."
+msgstr "Maak op die skerm kontroles toe na kanale verander het."
+
+msgctxt "#36215"
+msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
+msgstr "Hoe lank die program inligting vertoon word wanneer die 'versteek outomaties' verstelling aangeskakel is."
+
+msgctxt "#36216"
+msgid "Folder where channel icons are stored."
+msgstr "Gids waar kanaal ikone gestoor word."
+
+msgctxt "#36217"
+msgid "Scan for missing channel icons."
+msgstr "Soek vir ontbrekende ikone."
+
+msgctxt "#36218"
+msgid "Category for electronic programming guide settings."
+msgstr "Kategorie vir elektroniese program gids verstellings."
+
+msgctxt "#36219"
+msgid "Default electronic programming guide window to show."
+msgstr "Bestek elektroniese program gids venster om te vertoon."
+
+msgctxt "#36226"
+msgid "Category for PVR playback and channel switching settings."
+msgstr "Kategorie vir PVR terugspeel en kanaal skakel verstellings."
+
+msgctxt "#36243"
+msgid "The command to execute."
+msgstr "Die bevel om uit te voer."
+
+msgctxt "#36254"
+msgid "Enable the music library."
+msgstr "Stel die video biblioteek in staat."
+
+msgctxt "#36257"
+msgid "Select the default album information source."
+msgstr "Selekteer die bestek album inligting bron."
+
 msgctxt "#36260"
 msgid "No info available yet."
 msgstr "Nog geen info beskikbaar."
+
+msgctxt "#36276"
+msgid "Used for formatting the second column in file lists."
+msgstr "Word gebruik om die tweede kolom in lêer lyste te formateer."
+
+msgctxt "#36283"
+msgid "Autorun CDs when inserted in drive."
+msgstr "Outoloop CDs wanneer in dryf sit."
+
+msgctxt "#36284"
+msgid "Read the information belonging to an audio CD from an internet database."
+msgstr "Lees die informasie wat aan 'n oudio CD behoort vanaf 'n internet databasis."
+
+msgctxt "#36285"
+msgid "Select the location on your hard drive where ripped tracks will be saved to."
+msgstr "Selekteer die ligging op jou hardeskyf waar geripte snitte na gestoor word."
+
+msgctxt "#36287"
+msgid "Select which audio encoder to use when ripping."
+msgstr "Selekteer watter oudio enkodeerder om te gebruik wanneer rip."
+
+msgctxt "#36288"
+msgid "Select which quality you want to rip your files."
+msgstr "Selekteer watter kwaliteit jy jou lêers wil rip."
+
+msgctxt "#36289"
+msgid "Select which bitrate to use for the specified audio encoder for audio compression."
+msgstr "Selekteer watter bistempo om te gebruik vir die gespesifiseerde oudio enkodeerder vir oudio kompressie."
+
+msgctxt "#36291"
+msgid "Auto eject disc after rip is complete."
+msgstr "Outo werp skyf uit na rip klaar is."
 
 msgctxt "#36301"
 msgid "No info available yet."
@@ -10809,9 +11477,125 @@ msgctxt "#36306"
 msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
 msgstr "As EXIF inligting bestaan (datum, tyd, kamera gebruik, ens.), sal dit vertoon word."
 
+msgctxt "#36309"
+msgid "Show videos in picture file lists."
+msgstr "Wys videos in prent lêer lyste."
+
 msgctxt "#36310"
 msgid "No info available yet."
 msgstr "Nog geen info beskikbaar."
+
+msgctxt "#36315"
+msgid "Section that contains weather related settings."
+msgstr "Seksie wat weer verwante verstellings bevat."
+
+msgctxt "#36329"
+msgid "Define the webserver port."
+msgstr "Definieer die webbediener poort."
+
+msgctxt "#36330"
+msgid "Define the webserver username."
+msgstr "Definieer die webbediener gebruikernaam."
+
+msgctxt "#36331"
+msgid "Define the webserver password."
+msgstr "Definieer die webbediener wagwoord."
+
+msgctxt "#36335"
+msgid "Define the remote control port."
+msgstr "Definieer die afstand beheer poort."
+
+msgctxt "#36336"
+msgid "Define the remote control port range."
+msgstr "Definieer die afstand beheer poort bereik."
+
+msgctxt "#36338"
+msgid "Allow programs on the network to control XBMC."
+msgstr "Laat programme op die netwerk toe om XBMC te beheer."
+
+msgctxt "#36339"
+msgid "Initial repeat delay (ms)."
+msgstr "Aanvanklike herhaal vertraging (ms)."
+
+msgctxt "#36340"
+msgid "Continuous repeat delay (ms)."
+msgstr "Aanhoudende herhaal vertraging (ms)."
+
+msgctxt "#36344"
+msgid "Enable AirPlay password protection."
+msgstr "Stel AirPlay wagwoord beskerming in staat."
+
+msgctxt "#36345"
+msgid "Sets the AirPlay password."
+msgstr "Stel die AirPlay wagwoord."
+
+msgctxt "#36355"
+msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
+msgstr "In 'n multi-skerm konfigurasie word die skerms waarop XBMC nie vertoon word nie verdoof."
+
+msgctxt "#36356"
+msgid "Eliminate vertical tearing."
+msgstr "Elimineer vertikale skeuring."
+
+msgctxt "#36358"
+msgid "Test patterns for display hardware calibration."
+msgstr "Toets patrone vir vertoon hardeware kalibrasie."
+
+msgctxt "#36363"
+msgid "Boost AC3 streams that have been downmixed to 2 channels."
+msgstr "Versterk AC3 strome wat na 2 kanale afgemeng is."
+
+msgctxt "#36365"
+msgid "Select this option if your receiver is capable of decoding AC3 streams."
+msgstr "Selekteer hierdie opsie as jou ontvanger AC3 strome kan dekodeer."
+
+msgctxt "#36366"
+msgid "Select this option if your receiver is capable of decoding DTS streams."
+msgstr "Selekteer hierdie opsie as jou ontvanger DTS strome kan dekodeer."
+
+msgctxt "#36369"
+msgid "Select this option if your receiver is capable of decoding TrueHD streams."
+msgstr "Selekteer hierdie opsie as jou ontvanger TrueHD strome kan dekodeer."
+
+msgctxt "#36370"
+msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
+msgstr "Selekteer hierdie opsie as jou ontvanger DTS-HD strome kan dekodeer."
+
+msgctxt "#36378"
+msgid "Use a joystick to control XBMC."
+msgstr "Gebruik 'n speelstok om XBMC te beheer."
+
+msgctxt "#36380"
+msgid "If your internet connection uses a proxy, configure it here."
+msgstr "As jou internet konneksie 'n proxy gebruik, konfigureer dit hier."
+
+msgctxt "#36381"
+msgid "Configure which proxy type is used."
+msgstr "Konfigureer watter tipe proxy gebruik word."
+
+msgctxt "#36382"
+msgid "Configure the proxy server address."
+msgstr "Konfigureer die proxy bediener adres."
+
+msgctxt "#36383"
+msgid "Configure the proxy server port."
+msgstr "Konfigureer die proxy bediener poort."
+
+msgctxt "#36384"
+msgid "Configure the proxy server username."
+msgstr "Konfigureer die proxy bediener gebruiker naam."
+
+msgctxt "#36385"
+msgid "Configure the proxy server password."
+msgstr "Konfigureer die proxy bediener wagwoord."
+
+msgctxt "#36386"
+msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
+msgstr "As jy beperkte bandwydte het, sal XBMC probeer om binne hierdie perke te bly."
+
+msgctxt "#36389"
+msgid "Define how long XBMC should idle before shutting down."
+msgstr "Definieer hoe lank XBMC moet luier voor afskakel."
 
 msgctxt "#36410"
 msgid "No info available yet."
@@ -10837,13 +11621,25 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr "Nog geen info beskikbaar."
 
+msgctxt "#36416"
+msgid "Specify the type of remote used."
+msgstr "Spesifiseer die tipe afstand beheer gebruik."
+
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Definieer liggings gebruik vir onttrekking van weer inligting."
 
+msgctxt "#36425"
+msgid "Show context menu"
+msgstr "Vertoon konteks kieslys"
+
 msgctxt "#36426"
 msgid "Switch to channel"
 msgstr "Skakel oor na kanaal"
+
+msgctxt "#36427"
+msgid "Show information"
+msgstr "Wys inligting"
 
 msgctxt "#36428"
 msgid "Record"
@@ -10905,6 +11701,66 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Selfde as fliek (outospeur)"
 
+msgctxt "#36526"
+msgid "Disable stereoscopic mode when playback is stopped"
+msgstr "Deaktiveer stereoskopiese modus wanneer terugspeel stop"
+
+msgctxt "#36527"
+msgid "This video is stereoscopic. Select playback mode"
+msgstr "Hierdie video is stereoskopies. Selekteer terugspeel modus"
+
+msgctxt "#36528"
+msgid "Select stereoscopic mode"
+msgstr "Selekteer stereoskopiese modus"
+
+msgctxt "#36529"
+msgid "Mono (2D)"
+msgstr "Mono (2D)"
+
+msgctxt "#36530"
+msgid "Preferred mode"
+msgstr "Verkose modus"
+
+msgctxt "#36531"
+msgid "Select alternate mode..."
+msgstr "Selekteer alternatiewe modus..."
+
+msgctxt "#36532"
+msgid "Same as movie"
+msgstr "Selfde as fliek"
+
+msgctxt "#36535"
+msgid "Stereoscopic mode of video"
+msgstr "Stereoskopiese modus van video"
+
+msgctxt "#36536"
+msgid "Stereoscopic mode inverted"
+msgstr "Stereoskopiese modus omgekeer"
+
+msgctxt "#36540"
+msgid "The preferred stereoscopic 3D mode."
+msgstr "Die verkose stereoskopiese 3D modus."
+
+msgctxt "#36541"
+msgid "Allows volume control from AirPlay clients."
+msgstr "Laat volume beheer vanaf AirPlay kliënte toe."
+
+msgctxt "#36542"
+msgid "Output to both analogue (headphones) and HDMI"
+msgstr "Speel uit na beide analoog (oorfone) en HDMI"
+
+msgctxt "#36543"
+msgid "Enable this to make dialogue louder compared to background sounds when downmixing multichannel audio"
+msgstr "Stel hierdie in staat om dialoog harder te maak in vergelyking met agtergrond klanke wanneer multikanaal oudio afmeng"
+
+msgctxt "#36544"
+msgid "Enable hardware decoding of video files."
+msgstr "Stel hardeware dekodering van video lêers in staat."
+
+msgctxt "#36545"
+msgid "Subtitle stereoscopic depth"
+msgstr "Subtitel stereoskopiese diepte"
+
 msgctxt "#37000"
 msgid "(Visually Impaired)"
 msgstr "(Visueel Gestremd)"
@@ -10937,6 +11793,10 @@ msgctxt "#37015"
 msgid "Browse Into"
 msgstr "Soek In"
 
+msgctxt "#37016"
+msgid "Select this option if your receiver is capable of decoding E-AC3 streams."
+msgstr "Selekteer hierdie opsie as jou ontvanger E-AC3 strome kan dekodeer."
+
 msgctxt "#37017"
 msgid "Dual audio output"
 msgstr "Dubbele oudio uittree"
@@ -10945,6 +11805,18 @@ msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Versterk middel kanaal wanneer afmeng"
 
+msgctxt "#37020"
+msgid "Enable higher colour depth artwork"
+msgstr "Stel hoër kleur diepte kunswerke in staat"
+
+msgctxt "#37021"
+msgid "Set GUI resolution limit"
+msgstr "Stel GUI resolusie limiet"
+
 msgctxt "#37022"
 msgid "UPnP Player"
 msgstr "UPnP Speler"
+
+msgctxt "#37023"
+msgid "Do you wish to stop playback on the remote device?"
+msgstr "Wil jy terugspeel stop op die afgeleë toestel?"

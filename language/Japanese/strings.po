@@ -1179,7 +1179,7 @@ msgstr "フレームレートの調整"
 
 msgctxt "#337"
 msgid "Output configuration"
-msgstr "アウトプット設定"
+msgstr "出力設定"
 
 msgctxt "#338"
 msgid "Fixed"
@@ -2567,11 +2567,11 @@ msgstr "青緑色"
 
 msgctxt "#766"
 msgid "Light grey"
-msgstr "Reserved"
+msgstr "淡灰色"
 
 msgctxt "#767"
 msgid "Grey"
-msgstr "Reserved"
+msgstr "灰色"
 
 msgctxt "#770"
 msgid "Error %i: share not available"
@@ -2688,6 +2688,10 @@ msgstr "インターネット接続"
 msgctxt "#799"
 msgid "Library Update"
 msgstr "ライブラリの更新"
+
+msgctxt "#800"
+msgid "Music library needs to rescan tags from files."
+msgstr "音楽ライブラリを再スキャンする必要があります"
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
@@ -3787,7 +3791,7 @@ msgstr "パスワードが合いません"
 
 msgctxt "#12345"
 msgid "Access denied"
-msgstr "アクセスが否定されます"
+msgstr "アクセスが拒否されました"
 
 msgctxt "#12346"
 msgid "Password retry limit exceeded."
@@ -4029,6 +4033,18 @@ msgctxt "#13032"
 msgid "Waiting for services to launch..."
 msgstr "サービス起動中..."
 
+msgctxt "#13034"
+msgid "Updated for %s"
+msgstr "%s が更新されました"
+
+msgctxt "#13035"
+msgid "Found for %s"
+msgstr "%s が見つかりました"
+
+msgctxt "#13036"
+msgid "Failed for %s"
+msgstr "%s に失敗しました"
+
 msgctxt "#13050"
 msgid "Running low on battery"
 msgstr "バッテリ残量が少なくなっています"
@@ -4103,7 +4119,7 @@ msgstr "VDPAU"
 
 msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
-msgstr "VDPAU HQ Upscaling level"
+msgstr "VDPAU HQ アップスケーリングレベル"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4359,11 +4375,11 @@ msgstr "トラック命名テンプレート"
 
 msgctxt "#13308"
 msgid "Do you wish to reboot your system"
-msgstr "システムを再起動しますか?"
+msgstr "システム全体を再起動しますか?"
 
 msgctxt "#13309"
 msgid "instead of just XBMC?"
-msgstr "XBMC の再起動ではありません"
+msgstr "（XBMC の再起動ではありません）"
 
 msgctxt "#13310"
 msgid "Zoom effect"
@@ -4891,11 +4907,11 @@ msgstr "%.1f 秒"
 
 msgctxt "#13554"
 msgid "%d Minute"
-msgstr "%d　分"
+msgstr "%d 分"
 
 msgctxt "#13555"
 msgid "%d Minutes"
-msgstr "%d　分"
+msgstr "%d 分"
 
 msgctxt "#13600"
 msgid "Apple remote"
@@ -9733,6 +9749,14 @@ msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "スキンはいくつかのファイルをなくしています。"
 
+msgctxt "#24116"
+msgid "Default TV Service"
+msgstr "デフォルト TV サービス"
+
+msgctxt "#24118"
+msgid "Default Movie Service"
+msgstr "デフォルト映画サービス"
+
 msgctxt "#24121"
 msgid "Enter search string"
 msgstr "検索文字列を入力"
@@ -10485,6 +10509,10 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "情報がまだありません。"
 
+msgctxt "#36140"
+msgid "Enable the video library."
+msgstr "ビデオライブラリを有効に"
+
 msgctxt "#36145"
 msgid "Group movies into 'Movie sets' when browsing the movie library."
 msgstr "ムービーライブラリを閲覧時、ムービーセットとしてグループ化します。"
@@ -10492,6 +10520,10 @@ msgstr "ムービーライブラリを閲覧時、ムービーセットとして
 msgctxt "#36146"
 msgid "Check for new media files on XBMC startup."
 msgstr "XBMC 起動時に新しいメディアファイルをチェックします。"
+
+msgctxt "#36173"
+msgid "Enable upscaling using VDPAU."
+msgstr "VDPAU によるアップスケーリングを有効に"
 
 msgctxt "#36181"
 msgid "No info available yet."
@@ -10548,6 +10580,10 @@ msgstr "情報がまだありません。"
 msgctxt "#36310"
 msgid "No info available yet."
 msgstr "情報がまだありません。"
+
+msgctxt "#36378"
+msgid "Use a joystick to control XBMC."
+msgstr "XBMC の操作にジョイスティックを使用"
 
 msgctxt "#36410"
 msgid "No info available yet."
