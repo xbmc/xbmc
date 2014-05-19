@@ -90,6 +90,8 @@
 #define PLT_FILTER_MASK_LASTPLAYBACK                NPT_UINT64_C(0x0000000200000000)
 #define PLT_FILTER_MASK_PLAYCOUNT                   NPT_UINT64_C(0x0000000400000000)
 
+#define PLT_FILTER_MASK_PUBLISHER                   NPT_UINT64_C(0x0000000800000000)
+
 #define PLT_FILTER_FIELD_TITLE                      "dc:title"
 #define PLT_FILTER_FIELD_CREATOR                    "dc:creator"
 #define PLT_FILTER_FIELD_DATE                       "dc:date"
@@ -118,6 +120,7 @@
 #define PLT_FILTER_FIELD_CONTAINER_CHILDCOUNT       "container@childCount"
 #define PLT_FILTER_FIELD_CONTAINER_SEARCHABLE       "container@searchable"
 #define PLT_FILTER_FIELD_REFID                      "@refID"
+#define PLT_FILTER_FIELD_PUBLISHER                  "dc:publisher"
 
 #define PLT_FILTER_FIELD_RES                        "res"
 #define PLT_FILTER_FIELD_RES_DURATION               "res@duration"

@@ -135,6 +135,8 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
             mask |= PLT_FILTER_MASK_EPISODE;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RATING, len, true) == 0) {
             mask |= PLT_FILTER_MASK_RATING;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_PUBLISHER, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_PUBLISHER;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES, len, true) == 0) {
             mask |= PLT_FILTER_MASK_RES;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_DURATION, len, true) == 0 ||

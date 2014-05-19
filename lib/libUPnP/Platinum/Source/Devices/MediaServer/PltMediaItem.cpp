@@ -172,6 +172,7 @@ PLT_MediaObject::Reset()
     m_People.artists.Clear();    
     m_People.authors.Clear();
     m_People.directors.Clear();
+    m_People.publisher.Clear();
 
     m_Affiliation.album     = "";
     m_Affiliation.genres.Clear();
@@ -257,6 +258,20 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
     // director
     if (mask & PLT_FILTER_MASK_DIRECTOR) {
         m_People.directors.ToDidl(didl, "director");
+    }
+
+    // publisher
+    if (mask & PLT_FILTER_MASK_PUBLISHER) {
+        // Add unknown publisher
+        if (m_People.publisher.GetItemCount() == 0)
+            m_People.publisher.Add("Unknown");
+
+        for (NPT_List<NPT_String>::Iterator it =
+             m_People.publisher.GetFirstItem(); it; ++it) {
+            didl += "<dc:publisher>";
+            PLT_Didl::AppendXmlEscape(didl, (*it));
+            didl += "</dc:publisher>";
+        }
     }
 
     // album
@@ -516,6 +531,14 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     children.Clear();
     PLT_XmlHelper::GetChildren(entry, children, "director", didl_namespace_upnp);
     m_People.directors.FromDidl(children);
+
+    children.Clear();
+    PLT_XmlHelper::GetChildren(entry, children, "publisher", didl_namespace_dc);
+    for (NPT_Cardinal i=0; i<children.GetItemCount(); i++) {
+        if (children[i]->GetText()) {
+          m_People.publisher.Add(*children[i]->GetText());
+        }
+    }
 
     PLT_XmlHelper::GetChildText(entry, "album", m_Affiliation.album, didl_namespace_upnp, 256);
     PLT_XmlHelper::GetChildText(entry, "programTitle", m_Recorded.program_title, didl_namespace_upnp);

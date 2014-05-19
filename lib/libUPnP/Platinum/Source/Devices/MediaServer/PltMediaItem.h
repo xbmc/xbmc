@@ -92,7 +92,7 @@ typedef struct {
     PLT_PersonRoles authors;
     NPT_String      producer; //TODO: can be multiple
     PLT_PersonRoles directors;
-    NPT_String      publisher; //TODO: can be multiple
+    NPT_List<NPT_String> publisher;
     NPT_String      contributor; // should match m_Creator (dc:creator) //TODO: can be multiple
 } PLT_PeopleInfo;
 
