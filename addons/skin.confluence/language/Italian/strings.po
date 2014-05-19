@@ -230,7 +230,7 @@ msgstr "Mostra la visualizzazione nello sfondo \"In Riproduzione\""
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Riproduci le sigle TV (sonore) nell'archivio video (add-on TvTunes)"
+msgstr "Riproduci le sigle TV nell'archivio video (addon TvTunes)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -246,7 +246,7 @@ msgstr "Nascondi Fanart nella visualizzazione full screen"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
-msgstr "Add-on Testi"
+msgstr "Addon Testi"
 
 msgctxt "#31134"
 msgid "Home Page Videos Sub-menu"
@@ -462,7 +462,7 @@ msgstr "[B]CONFIGURA IMPOSTAZIONI DI SISTEMA[/B][CR][CR]Imposta e calibra il vid
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]CONFIGURA GLI ADD-ONS[/B][CR][CR]Gestisci i tuoi Add-ons installati · Cerca ed installa gli Add-ons da xbmc.org[CR]Modifica le impostazioni degli Add-ons"
+msgstr "[B]CONFIGURA GLI ADDON[/B][CR][CR]Gestisci i tuoi addon installati · Cerca ed installa gli addon da xbmc.org[CR]Modifica le impostazioni degli Addon"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"

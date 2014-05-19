@@ -26,7 +26,7 @@ msgstr "የሀይል ምርጫዎች"
 
 msgctxt "#31004"
 msgid "Working..."
-msgstr "በመስራት ላይ "
+msgstr "በመስራት ላይ... "
 
 msgctxt "#31005"
 msgid "Hide Information"
@@ -139,6 +139,10 @@ msgstr "የስርአቱ ሙዚቃ ፋይሎች"
 msgctxt "#31059"
 msgid "Current playlist"
 msgstr "አሁን የሚጫወተው ዝርዝር"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "ይህ ፋይል በጣም ትልቅ ነው ማጫወት የሚፈልጉትን ክፍል ይምረጡ"
 
 msgctxt "#31061"
 msgid "Current Selected"

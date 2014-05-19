@@ -590,7 +590,7 @@ msgstr "FILMY"
 
 msgctxt "#31955"
 msgid "TV SHOWS"
-msgstr "TV SHOW"
+msgstr "TV SERIÁLY"
 
 msgctxt "#31956"
 msgid "MUSIC"

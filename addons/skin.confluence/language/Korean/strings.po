@@ -26,7 +26,7 @@ msgstr "전원 옵션"
 
 msgctxt "#31004"
 msgid "Working..."
-msgstr "동작중..."
+msgstr "작업 중..."
 
 msgctxt "#31005"
 msgid "Hide Information"
@@ -338,7 +338,7 @@ msgstr "자료수집기를 선택하세요"
 
 msgctxt "#31314"
 msgid "Content Scanning Options"
-msgstr "컨텐츠 검색 옵션"
+msgstr "콘텐츠 검색 옵션"
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
