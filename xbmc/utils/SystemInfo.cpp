@@ -52,11 +52,12 @@
 #include "utils/AMLUtils.h"
 #endif
 
-/* Target identification */
+/* Platform identification */
 #if defined(TARGET_DARWIN)
 #include <Availability.h>
 #elif defined(TARGET_ANDROID)
 #include <android/api-level.h>
+#include <sys/system_properties.h>
 #elif defined(TARGET_FREEBSD)
 #include <sys/param.h>
 #elif defined(TARGET_LINUX)
@@ -821,13 +822,54 @@ CStdString CSysInfo::GetUnameVersion()
 }
 #endif
 
+#ifdef TARGET_ANDROID
+std::string CSysInfo::GetAndroidVersionString(void)
+{
+  static std::string versionString;
+  if (versionString.empty())
+  {
+    char versionCStr[PROP_VALUE_MAX];
+    int propLen = __system_property_get("ro.build.version.release", versionCStr);
+    versionString.assign(versionCStr, (propLen > 0 && propLen <= PROP_VALUE_MAX) ? propLen : 0);
+
+    if (versionString.empty() || std::string("0123456789").find(versionCStr[0]) == std::string::npos)
+      versionString.assign("0.0.0"); // can't correctly detect Android version
+    else
+    {
+      size_t pointPos = versionString.find('.');
+      if (pointPos == std::string::npos)
+        versionString += ".0.0";
+      else if (versionString.find('.', pointPos + 1) == std::string::npos)
+        versionString += ".0";
+    }
+  }
+  
+  return versionString;
+}
+
+std::string CSysInfo::GetAndroidDeviceName(void)
+{
+  static std::string deviceName;
+  static bool inited = false;
+  if (!inited)
+  {
+    char deviceCStr[PROP_VALUE_MAX];
+    int propLen = __system_property_get("ro.product.model", deviceCStr);
+    deviceName.assign(deviceCStr, (propLen > 0 && propLen <= PROP_VALUE_MAX) ? propLen : 0);
+    inited = true;
+  }
+
+  return deviceName;
+}
+#endif // TARGET_ANDROID
+
 #if defined(TARGET_WINDOWS)
-CStdString CSysInfo::GetUAWindowsVersion()
+std::string CSysInfo::GetUAWindowsVersion()
 {
   OSVERSIONINFOEX osvi = {};
 
   osvi.dwOSVersionInfoSize = sizeof(osvi);
-  CStdString strVersion = "Windows NT";
+  std::string strVersion = "Windows NT";
 
   if (GetVersionEx((OSVERSIONINFO *)&osvi))
   {
@@ -842,44 +884,137 @@ CStdString CSysInfo::GetUAWindowsVersion()
   {
     if (bIsWow)
     {
-      strVersion.append(";WOW64");
+      strVersion.append("; WOW64");
       GetNativeSystemInfo(&si);     // different function to read the info under Wow
     }
   }
 
-  if (si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64)
-    strVersion.append(";Win64;x64");
-  else if (si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_IA64)
-    strVersion.append(";Win64;IA64");
-
+  if (!bIsWow)
+  {
+    if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
+      strVersion.append("; Win64; x64");
+    else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64)
+      strVersion.append("; Win64; IA64");
+    else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM)
+      strVersion.append("; ARM");
+  }
   return strVersion;
 }
 #endif
 
 
-CStdString CSysInfo::GetUserAgent()
+std::string CSysInfo::GetUserAgent()
 {
-  CStdString result;
-  result = "XBMC/" + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION) + " (";
+  static std::string result;
+  if (!result.empty())
+    return result;
+
+  result = "XBMC/" + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION_SHORT) + " (";
 #if defined(TARGET_WINDOWS)
   result += GetUAWindowsVersion();
 #elif defined(TARGET_DARWIN)
 #if defined(TARGET_DARWIN_IOS)
-  result += "iOS; ";
+  std::string iDevStr(getIosPlatformString()); // device model name with number of model version
+  size_t iDevStrDigit = iDevStr.find_first_of("0123456789");
+  std::string iDev(iDevStr, 0, iDevStrDigit);  // device model name without number 
+  if (iDevStrDigit == 0)
+    iDev = "unknown";
+  result += iDev + "; ";
+  std::string iOSVerison(GetIOSVersionString());
+  size_t lastDotPos = iOSVerison.rfind('.');
+  if (lastDotPos != std::string::npos && iOSVerison.find('.') != lastDotPos
+      && iOSVerison.find_first_not_of('0', lastDotPos + 1) == std::string::npos)
+    iOSVerison.erase(lastDotPos);
+  StringUtils::Replace(iOSVerison, '.', '_');
+  if (iDev == "iPad" || iDev == "AppleTV")
+    result += "CPU OS ";
+  else
+    result += "CPU iPhone OS ";
+  result += iOSVerison + " like Mac OS X";
 #else
-  result += "Mac OS X; ";
+  result += "Macintosh; ";
+  std::string cpuFam(GetBuildTargetCpuFamily());
+  if (cpuFam == "x86")
+    result += "Intel ";
+  else if (cpuFam == "PowerPC")
+    result += "PPC ";
+  result += "Mac OS X ";
+  std::string OSXVersion(GetOSXVersionString());
+  StringUtils::Replace(OSXVersion, '.', '_');
+  result += OSXVersion;
 #endif
-  result += GetUnameVersion();
-#elif defined(TARGET_FREEBSD)
-  result += "FreeBSD; ";
-  result += GetUnameVersion();
+#elif defined(TARGET_ANDROID)
+  result += "Linux; Android ";
+  std::string versionStr(GetAndroidVersionString());
+  const size_t verLen = versionStr.length();
+  if (verLen >= 2 && versionStr.compare(verLen - 2, 2, ".0", 2) == 0)
+    versionStr.erase(verLen - 2); // remove last ".0" if any
+  result += versionStr;
+  std::string deviceInfo(GetAndroidDeviceName());
+
+  char buildId[PROP_VALUE_MAX];
+  int propLen = __system_property_get("ro.build.id", buildId);
+  if (propLen > 0 && propLen <= PROP_VALUE_MAX)
+  {
+    if (!deviceInfo.empty())
+      deviceInfo += " ";
+    deviceInfo += "Build/";
+    deviceInfo.append(buildId, propLen);
+  }
+
+  if (!deviceInfo.empty())
+    result += "; " + deviceInfo;
 #elif defined(TARGET_POSIX)
-  result += "Linux; ";
-  result += GetLinuxDistro();
-  result += "; ";
-  result += GetUnameVersion();
+  result += "X11; ";
+  struct utsname un;
+  if (uname(&un) == 0)
+  {
+    std::string cpuStr(un.machine);
+    if (cpuStr == "x86_64" && GetXbmcBitness() == 32)
+      cpuStr = "i686 (x86_64)";
+    result += un.sysname;
+    result += " ";
+    result += cpuStr;
+  }
+  else
+    result += "Unknown";
+#else
+  result += "Unknown";
 #endif
-  result += "; http://xbmc.org)";
+  result += ")";
+  // add fork ID here in form:
+  // result += " XBMC_FORK_" + "forkname" + "/" + "1.0"; // default fork number is '1.0'
+#ifdef TARGET_RASPBERRY_PI
+  result += " XBMC_HW_RaspberryPi/1.0";
+#elif defined (TARGET_DARWIN_IOS)
+  std::string iDevVer;
+  if (iDevStrDigit == std::string::npos)
+    iDevVer = "0.0";
+  else
+    iDevVer.assign(iDevStr, iDevStrDigit, std::string::npos);
+  StringUtils::Replace(iDevVer, ',', '.');
+  result += " XBMC_HW_" + iDev + "/" + iDevVer;
+#endif
+  // add more device IDs here if needed. 
+  // keep only one device ID in result! Form:
+  // result += " XBMC_HW_" + "deviceID" + "/" + "1.0"; // '1.0' if device has no version
+
+#if defined(TARGET_ANDROID)
+  // Android has no CPU string by default, so add it as additional parameter
+  struct utsname un1;
+  if (uname(&un1) == 0)
+  {
+    std::string cpuStr(un1.machine);
+    StringUtils::Replace(cpuStr, ' ', '_');
+    result += " XBMC_CPU/" + cpuStr;
+  }
+#endif
+
+  result += " XBMC_BITNESS/" + StringUtils::Format("%d", GetXbmcBitness());
+
+  std::string fullVer(g_infoManager.GetLabel(SYSTEM_BUILD_VERSION));
+  StringUtils::Replace(fullVer, ' ', '-');
+  result += " Version/" + fullVer;
 
   return result;
 }

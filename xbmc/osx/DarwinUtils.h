@@ -31,12 +31,15 @@ typedef const struct __CFString * CFStringRef;
 extern "C"
 {
 #endif
+  const char *getIosPlatformString(void);
   bool        DarwinIsAppleTV2(void);
   bool        DarwinIsMavericks(void);
   bool        DarwinHasRetina(void);
   const char *GetDarwinOSReleaseString(void);
   const char *GetDarwinVersionString(void);
   float       GetIOSVersion(void);
+  const char *GetIOSVersionString(void);
+  const char *GetOSXVersionString(void); 
   int         GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize);
   int         GetDarwinExecutablePath(char* path, uint32_t *pathsize);
   const char *DarwinGetXbmcRootFolder(void);

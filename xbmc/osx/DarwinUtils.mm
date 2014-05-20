@@ -85,60 +85,79 @@ enum iosPlatform
 };
 
 // platform strings are based on http://theiphonewiki.com/wiki/Models
+const char* getIosPlatformString(void)
+{
+  static std::string iOSPlatformString;
+  if (iOSPlatformString.empty())
+  {
+#if defined(TARGET_DARWIN_IOS)
+    // Gets a string with the device model
+    size_t size;  
+    sysctlbyname("hw.machine", NULL, &size, NULL, 0);  
+    char *machine = new char[size];  
+    if (sysctlbyname("hw.machine", machine, &size, NULL, 0) == 0 && machine[0])
+      iOSPlatformString.assign(machine, size -1);
+   else
+#endif
+      iOSPlatformString = "unknown0,0";
+
+#if defined(TARGET_DARWIN_IOS)
+    delete [] machine;
+#endif
+  }
+
+  return iOSPlatformString.c_str();
+}
+
 enum iosPlatform getIosPlatform()
 {
+  static enum iosPlatform eDev = iDeviceUnknown;
 #if defined(TARGET_DARWIN_IOS)
-  // Gets a string with the device model
-  size_t size;  
-  sysctlbyname("hw.machine", NULL, &size, NULL, 0);  
-  char *machine = new char[size];  
-  sysctlbyname("hw.machine", machine, &size, NULL, 0);  
-  NSString *platform = [NSString stringWithCString:machine encoding:NSUTF8StringEncoding];  
-  delete [] machine; 
-  
-  if ([platform isEqualToString:@"iPhone1,1"])    return iPhone2G;
-  if ([platform isEqualToString:@"iPhone1,2"])    return iPhone3G;
-  if ([platform isEqualToString:@"iPhone2,1"])    return iPhone3GS;
-  if ([platform isEqualToString:@"iPhone3,1"])    return iPhone4;
-  if ([platform isEqualToString:@"iPhone3,2"])    return iPhone4;
-  if ([platform isEqualToString:@"iPhone3,3"])    return iPhone4CDMA;    
-  if ([platform isEqualToString:@"iPhone4,1"])    return iPhone4S;
-  if ([platform isEqualToString:@"iPhone5,1"])    return iPhone5;
-  if ([platform isEqualToString:@"iPhone5,2"])    return iPhone5GSMCDMA;
-  if ([platform isEqualToString:@"iPhone5,3"])    return iPhone5CGSM;
-  if ([platform isEqualToString:@"iPhone5,4"])    return iPhone5CGlobal;
-  if ([platform isEqualToString:@"iPhone6,1"])    return iPhone5SGSM;
-  if ([platform isEqualToString:@"iPhone6,2"])    return iPhone5SGlobal;
-  
-  if ([platform isEqualToString:@"iPod1,1"])      return iPodTouch1G;
-  if ([platform isEqualToString:@"iPod2,1"])      return iPodTouch2G;
-  if ([platform isEqualToString:@"iPod3,1"])      return iPodTouch3G;
-  if ([platform isEqualToString:@"iPod4,1"])      return iPodTouch4G;
-  if ([platform isEqualToString:@"iPod5,1"])      return iPodTouch5G;
-  
-  if ([platform isEqualToString:@"iPad1,1"])      return iPad;
-  if ([platform isEqualToString:@"iPad1,2"])      return iPad;
-  if ([platform isEqualToString:@"iPad2,1"])      return iPad2WIFI;
-  if ([platform isEqualToString:@"iPad2,2"])      return iPad2;
-  if ([platform isEqualToString:@"iPad2,3"])      return iPad2CDMA;
-  if ([platform isEqualToString:@"iPad2,4"])      return iPad2;
-  if ([platform isEqualToString:@"iPad2,5"])      return iPadMiniWIFI;
-  if ([platform isEqualToString:@"iPad2,6"])      return iPadMini;
-  if ([platform isEqualToString:@"iPad2,7"])      return iPadMiniGSMCDMA;
-  if ([platform isEqualToString:@"iPad3,1"])      return iPad3WIFI;
-  if ([platform isEqualToString:@"iPad3,2"])      return iPad3GSMCDMA;
-  if ([platform isEqualToString:@"iPad3,3"])      return iPad3;
-  if ([platform isEqualToString:@"iPad3,4"])      return iPad4WIFI;
-  if ([platform isEqualToString:@"iPad3,5"])      return iPad4;
-  if ([platform isEqualToString:@"iPad3,6"])      return iPad4GSMCDMA;
-  if ([platform isEqualToString:@"iPad4,1"])      return iPadAirWifi;
-  if ([platform isEqualToString:@"iPad4,2"])      return iPadAirCellular;
-  if ([platform isEqualToString:@"iPad4,4"])      return iPadMini2Wifi;
-  if ([platform isEqualToString:@"iPad4,5"])      return iPadMini2Cellular;
-  
-  if ([platform isEqualToString:@"AppleTV2,1"])   return AppleTV2;
+  if (eDev == iDeviceUnknown)
+  {
+    std::string devStr(getIosPlatformString());
+    
+    if (devStr == "iPhone1,1") eDev = iPhone2G;
+    else if (devStr == "iPhone1,2") eDev = iPhone3G;
+    else if (devStr == "iPhone2,1") eDev = iPhone3GS;
+    else if (devStr == "iPhone3,1") eDev = iPhone4;
+    else if (devStr == "iPhone3,2") eDev = iPhone4;
+    else if (devStr == "iPhone3,3") eDev = iPhone4CDMA;    
+    else if (devStr == "iPhone4,1") eDev = iPhone4S;
+    else if (devStr == "iPhone5,1") eDev = iPhone5;
+    else if (devStr == "iPhone5,2") eDev = iPhone5GSMCDMA;
+    else if (devStr == "iPhone5,3") eDev = iPhone5CGSM;
+    else if (devStr == "iPhone5,4") eDev = iPhone5CGlobal;
+    else if (devStr == "iPhone6,1") eDev = iPhone5SGSM;
+    else if (devStr == "iPhone6,2") eDev = iPhone5SGlobal;
+    else if (devStr == "iPod1,1") eDev = iPodTouch1G;
+    else if (devStr == "iPod2,1") eDev = iPodTouch2G;
+    else if (devStr == "iPod3,1") eDev = iPodTouch3G;
+    else if (devStr == "iPod4,1") eDev = iPodTouch4G;
+    else if (devStr == "iPod5,1") eDev = iPodTouch5G;
+    else if (devStr == "iPad1,1") eDev = iPad;
+    else if (devStr == "iPad1,2") eDev = iPad;
+    else if (devStr == "iPad2,1") eDev = iPad2WIFI;
+    else if (devStr == "iPad2,2") eDev = iPad2;
+    else if (devStr == "iPad2,3") eDev = iPad2CDMA;
+    else if (devStr == "iPad2,4") eDev = iPad2;
+    else if (devStr == "iPad2,5") eDev = iPadMiniWIFI;
+    else if (devStr == "iPad2,6") eDev = iPadMini;
+    else if (devStr == "iPad2,7") eDev = iPadMiniGSMCDMA;
+    else if (devStr == "iPad3,1") eDev = iPad3WIFI;
+    else if (devStr == "iPad3,2") eDev = iPad3GSMCDMA;
+    else if (devStr == "iPad3,3") eDev = iPad3;
+    else if (devStr == "iPad3,4") eDev = iPad4WIFI;
+    else if (devStr == "iPad3,5") eDev = iPad4;
+    else if (devStr == "iPad3,6") eDev = iPad4GSMCDMA;
+    else if (devStr == "iPad4,1") eDev = iPadAirWifi;
+    else if (devStr == "iPad4,2") eDev = iPadAirCellular;
+    else if (devStr == "iPad4,4") eDev = iPadMini2Wifi;
+    else if (devStr == "iPad4,5") eDev = iPadMini2Cellular;
+    else if (devStr == "AppleTV2,1") eDev = AppleTV2;
+  }
 #endif
-  return iDeviceUnknown;
+  return eDev;
 }
 
 bool DarwinIsAppleTV2(void)
@@ -215,6 +234,38 @@ float GetIOSVersion(void)
 #endif
 
   return(version);
+}
+
+const char *GetIOSVersionString(void)
+{
+#if defined(TARGET_DARWIN_IOS)
+  static std::string iOSVersionString;
+  if (iOSVersionString.empty())
+  {
+    CCocoaAutoPool pool;
+    iOSVersionString.assign((const char*)[[[UIDevice currentDevice] systemVersion] UTF8String]);
+  }
+  return iOSVersionString.c_str();
+#else
+  return "0.0";
+#endif
+}
+
+const char *GetOSXVersionString(void)
+{
+#if defined(TARGET_DARWIN_OSX)
+  static std::string OSXVersionString;
+  if (OSXVersionString.empty())
+  {
+    CCocoaAutoPool pool;
+    OSXVersionString.assign((const char*)[[[NSDictionary dictionaryWithContentsOfFile:
+                         @"/System/Library/CoreServices/SystemVersion.plist"] objectForKey:@"ProductVersion"] UTF8String]);
+  }
+  
+  return OSXVersionString.c_str();
+#else
+  return "0.0";
+#endif
 }
 
 int  GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize)
