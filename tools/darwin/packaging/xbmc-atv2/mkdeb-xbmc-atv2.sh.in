@@ -1,9 +1,10 @@
 #!/bin/sh
 # usage: ./mkdeb-xbmc-atv2.sh release/debug (case insensitive)
 # Allows us to run mkdeb-xbmc-atv2.sh from anywhere in the three, rather than the tools/darwin/packaging/xbmc-atv2 folder only
+XBMC_DEPENDS_ROOT=@DEPENDS_ROOT_FOR_XCODE@
 SWITCH=`echo $1 | tr [A-Z] [a-z]`
 DIRNAME=`dirname $0`
-DSYM_TARGET_DIR=/Users/Shared/xbmc-depends/dSyms
+DSYM_TARGET_DIR=${XBMC_DEPENDS_ROOT}/dSyms
 DSYM_FILENAME=XBMC.frappliance.dSYM
 
 if [ ${SWITCH:-""} = "debug" ]; then
@@ -36,9 +37,9 @@ if [ -f "/usr/libexec/fauxsu/libfauxsu.dylib" ]; then
 elif [ -f "/usr/bin/sudo" ]; then
   SUDO="/usr/bin/sudo"
 fi
-if [ -f "/Users/Shared/xbmc-depends/buildtools-native/bin/dpkg-deb" ]; then
+if [ -f "$XBMC_DEPENDS_ROOT/buildtools-native/bin/dpkg-deb" ]; then
   # make sure we pickup our tar, gnutar will fail when dpkg -i
-  bin_path=$(cd /Users/Shared/xbmc-depends/buildtools-native/bin; pwd)
+  bin_path=$(cd ${XBMC_DEPENDS_ROOT}/buildtools-native/bin; pwd)
   export PATH=${bin_path}:${PATH}
 fi
 

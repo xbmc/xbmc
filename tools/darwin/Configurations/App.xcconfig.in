@@ -18,7 +18,7 @@
 //
 //
 
-XBMC_DEPENDS_ROOT = /Users/Shared/xbmc-depends
+XBMC_DEPENDS_ROOT = @DEPENDS_ROOT_FOR_XCODE@
 
 HEADER_SEARCH_PATHS = $(inherited) $SRCROOT xbmc xbmc/linux xbmc/osx xbmc/cores/dvdplayer lib $XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6
 
