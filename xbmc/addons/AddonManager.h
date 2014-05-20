@@ -90,6 +90,7 @@ namespace ADDON
      \param enabledOnly whether we only want enabled addons - set to false to allow both enabled and disabled addons - defaults to true.
      \return true if an addon matching the id of the given type is available and is enabled (if enabledOnly is true).
      */
+    bool HasAddon(const CStdString& id);
     bool GetAddon(const CStdString &id, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabledOnly = true);
     bool HasAddons(const TYPE &type, bool enabled = true);
     bool GetAddons(const TYPE &type, VECADDONS &addons, bool enabled = true);
