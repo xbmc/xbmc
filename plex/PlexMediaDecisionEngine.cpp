@@ -361,7 +361,7 @@ bool CPlexMediaDecisionJob::DoWork()
   {
     m_choosenMedia = m_item;
     if (m_choosenMedia.m_mediaItems.size() == 0)
-      return false;
+      return m_item.GetProperty("isSynthesized").asBoolean();
   }
   
   if (m_item.HasProperty("selectedMediaItem"))

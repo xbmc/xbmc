@@ -98,10 +98,29 @@ const char youtubeitem[] =
     "  </Video>"
     "</MediaContainer>";
 
+const char itunesItem[] =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+    "<MediaContainer size=\"14\" art=\"/:/resources/itunes-fanart.jpg\" content=\"songs\" identifier=\"com.plexapp.plugins.itunes\" title1=\"Assemblage 23\" title2=\"Early, Rare, and Unreleased 1988-1998\" viewGroup=\"track\">"
+    "<Track ratingKey=\"219\" thumb=\"/music/iTunes/thumbs/album/Assemblage%2023.Early,%20Rare,%20and%20Unreleased%201988-1998.jpg\" key=\"219.mp3\" artist=\"Assemblage 23\" album=\"Early, Rare, and Unreleased 1988-1998\" albumArtist=\"Assemblage 23\" track=\"Live Intro 96\" index=\"1\" file=\"/Users/tru/Music/Unsorted/Music/Assemblage_23/Early,_Rare,_and_Unreleased_1988-1998/01-Assemblage_23-Live_Intro_96.mp3\" compilation=\"0\" disc=\"1\" rating=\"0\" totalTime=\"82076\" size=\"1970219\" />"
+    "<Track ratingKey=\"221\" thumb=\"/music/iTunes/thumbs/album/Assemblage%2023.Early,%20Rare,%20and%20Unreleased%201988-1998.jpg\" key=\"221.mp3\" artist=\"Assemblage 23\" album=\"Early, Rare, and Unreleased 1988-1998\" albumArtist=\"Assemblage 23\" track=\"Mortuary\" index=\"2\" file=\"/Users/tru/Music/Unsorted/Music/Assemblage_23/Early,_Rare,_and_Unreleased_1988-1998/02-Assemblage_23-Mortuary.mp3\" compilation=\"0\" disc=\"1\" rating=\"0\" totalTime=\"206628\" size=\"5452951\" />"
+    "<Track ratingKey=\"223\" thumb=\"/music/iTunes/thumbs/album/Assemblage%2023.Early,%20Rare,%20and%20Unreleased%201988-1998.jpg\" key=\"223.mp3\" artist=\"Assemblage 23\" album=\"Early, Rare, and Unreleased 1988-1998\" albumArtist=\"Assemblage 23\" track=\"Anger\" index=\"3\" file=\"/Users/tru/Music/Unsorted/Music/Assemblage_23/Early,_Rare,_and_Unreleased_1988-1998/03-Assemblage_23-Anger.mp3\" compilation=\"0\" disc=\"1\" rating=\"0\" totalTime=\"216764\" size=\"5781299\" />"
+    "<Track ratingKey=\"225\" thumb=\"/music/iTunes/thumbs/album/Assemblage%2023.Early,%20Rare,%20and%20Unreleased%201988-1998.jpg\" key=\"225.mp3\" artist=\"Assemblage 23\" album=\"Early, Rare, and Unreleased 1988-1998\" albumArtist=\"Assemblage 23\" track=\"Chemical Restraint\" index=\"4\" file=\"/Users/tru/Music/Unsorted/Music/Assemblage_23/Early,_Rare,_and_Unreleased_1988-1998/04-Assemblage_23-Chemical_Restraint.mp3\" compilation=\"0\" disc=\"1\" rating=\"0\" totalTime=\"496666\" size=\"12816477\" />"
+    "<Track ratingKey=\"227\" thumb=\"/music/iTunes/thumbs/album/Assemblage%2023.Early,%20Rare,%20and%20Unreleased%201988-1998.jpg\" key=\"227.mp3\" artist=\"Assemblage 23\" album=\"Early, Rare, and Unreleased 1988-1998\" albumArtist=\"Assemblage 23\" track=\"Straightjacket\" index=\"5\" file=\"/Users/tru/Music/Unsorted/Music/Assemblage_23/Early,_Rare,_and_Unreleased_1988-1998/05-Assemblage_23-Straightjacket.mp3\" compilation=\"0\" disc=\"1\" rating=\"0\" totalTime=\"254119\" size=\"6434623\" />"
+    "<Track ratingKey=\"229\" thumb=\"/music/iTunes/thumbs/album/Assemblage%2023.Early,%20Rare,%20and%20Unreleased%201988-1998.jpg\" key=\"229.mp3\" artist=\"Assemblage 23\" album=\"Early, Rare, and Unreleased 1988-1998\" albumArtist=\"Assemblage 23\" track=\"Ambush\" index=\"6\" file=\"/Users/tru/Music/Unsorted/Music/Assemblage_23/Early,_Rare,_and_Unreleased_1988-1998/06-Assemblage_23-Ambush.mp3\" compilation=\"0\" disc=\"1\" rating=\"0\" totalTime=\"224600\" size=\"5799478\" />"
+    "<Track ratingKey=\"231\" thumb=\"/music/iTunes/thumbs/album/Assemblage%2023.Early,%20Rare,%20and%20Unreleased%201988-1998.jpg\" key=\"231.mp3\" artist=\"Assemblage 23\" album=\"Early, Rare, and Unreleased 1988-1998\" albumArtist=\"Assemblage 23\" track=\"Soma\" index=\"7\" file=\"/Users/tru/Music/Unsorted/Music/Assemblage_23/Early,_Rare,_and_Unreleased_1988-1998/07-Assemblage_23-Soma.mp3\" compilation=\"0\" disc=\"1\" rating=\"0\" totalTime=\"213812\" size=\"5185534\" />"
+    "<Track ratingKey=\"233\" thumb=\"/music/iTunes/thumbs/album/Assemblage%2023.Early,%20Rare,%20and%20Unreleased%201988-1998.jpg\" key=\"233.mp3\" artist=\"Assemblage 23\" album=\"Early, Rare, and Unreleased 1988-1998\" albumArtist=\"Assemblage 23\" track=\"The Angels Died\" index=\"8\" file=\"/Users/tru/Music/Unsorted/Music/Assemblage_23/Early,_Rare,_and_Unreleased_1988-1998/08-Assemblage_23-The_Angels_Died.mp3\" compilation=\"0\" disc=\"1\" rating=\"0\" totalTime=\"165668\" size=\"4073499\" />"
+    "<Track ratingKey=\"235\" thumb=\"/music/iTunes/thumbs/album/Assemblage%2023.Early,%20Rare,%20and%20Unreleased%201988-1998.jpg\" key=\"235.mp3\" artist=\"Assemblage 23\" album=\"Early, Rare, and Unreleased 1988-1998\" albumArtist=\"Assemblage 23\" track=\"Sometimes I Wish I Was Dead\" index=\"9\" file=\"/Users/tru/Music/Unsorted/Music/Assemblage_23/Early,_Rare,_and_Unreleased_1988-1998/09-Assemblage_23-Sometimes_I_Wish_I_Was_Dead.mp3\" compilation=\"0\" disc=\"1\" rating=\"0\" totalTime=\"252342\" size=\"5950894\" />"
+    "<Track ratingKey=\"237\" thumb=\"/music/iTunes/thumbs/album/Assemblage%2023.Early,%20Rare,%20and%20Unreleased%201988-1998.jpg\" key=\"237.mp3\" artist=\"Assemblage 23\" album=\"Early, Rare, and Unreleased 1988-1998\" albumArtist=\"Assemblage 23\" track=\"Underneath the Ice\" index=\"10\" file=\"/Users/tru/Music/Unsorted/Music/Assemblage_23/Early,_Rare,_and_Unreleased_1988-1998/10-Assemblage_23-Underneath_the_Ice.mp3\" compilation=\"0\" disc=\"1\" rating=\"0\" totalTime=\"294713\" size=\"7278276\" />"
+    "<Track ratingKey=\"239\" thumb=\"/music/iTunes/thumbs/album/Assemblage%2023.Early,%20Rare,%20and%20Unreleased%201988-1998.jpg\" key=\"239.mp3\" artist=\"Assemblage 23\" album=\"Early, Rare, and Unreleased 1988-1998\" albumArtist=\"Assemblage 23\" track=\"My Burden\" index=\"11\" file=\"/Users/tru/Music/Unsorted/Music/Assemblage_23/Early,_Rare,_and_Unreleased_1988-1998/11-Assemblage_23-My_Burden.mp3\" compilation=\"0\" disc=\"1\" rating=\"0\" totalTime=\"153338\" size=\"3669330\" />"
+    "<Track ratingKey=\"241\" thumb=\"/music/iTunes/thumbs/album/Assemblage%2023.Early,%20Rare,%20and%20Unreleased%201988-1998.jpg\" key=\"241.mp3\" artist=\"Assemblage 23\" album=\"Early, Rare, and Unreleased 1988-1998\" albumArtist=\"Assemblage 23\" track=\"The Fissure King\" index=\"12\" file=\"/Users/tru/Music/Unsorted/Music/Assemblage_23/Early,_Rare,_and_Unreleased_1988-1998/12-Assemblage_23-The_Fissure_King.mp3\" compilation=\"0\" disc=\"1\" rating=\"0\" totalTime=\"248084\" size=\"6408801\" />"
+    "<Track ratingKey=\"243\" thumb=\"/music/iTunes/thumbs/album/Assemblage%2023.Early,%20Rare,%20and%20Unreleased%201988-1998.jpg\" key=\"243.mp3\" artist=\"Assemblage 23\" album=\"Early, Rare, and Unreleased 1988-1998\" albumArtist=\"Assemblage 23\" track=\"Void\" index=\"13\" file=\"/Users/tru/Music/Unsorted/Music/Assemblage_23/Early,_Rare,_and_Unreleased_1988-1998/13-Assemblage_23-Void.mp3\" compilation=\"0\" disc=\"1\" rating=\"0\" totalTime=\"278047\" size=\"6583788\" />"
+    "<Track ratingKey=\"245\" thumb=\"/music/iTunes/thumbs/album/Assemblage%2023.Early,%20Rare,%20and%20Unreleased%201988-1998.jpg\" key=\"245.mp3\" artist=\"Assemblage 23\" album=\"Early, Rare, and Unreleased 1988-1998\" albumArtist=\"Assemblage 23\" track=\"Reqiuem\" index=\"14\" file=\"/Users/tru/Music/Unsorted/Music/Assemblage_23/Early,_Rare,_and_Unreleased_1988-1998/14-Assemblage_23-Reqiuem.mp3\" compilation=\"0\" disc=\"1\" rating=\"0\" totalTime=\"130168\" size=\"3255892\" />"
+    "</MediaContainer>";
+
 class PlexMediaDecisionJobFake : public CPlexMediaDecisionJob
 {
 public:
-  PlexMediaDecisionJobFake(const CFileItem& item, const CFileItemPtr& resolvedItem,
+  PlexMediaDecisionJobFake(const CFileItem& item, const CFileItemPtr& resolvedItem = CFileItemPtr(),
                            const CFileItemPtr& indItem = CFileItemPtr())
     : CPlexMediaDecisionJob(item)
   {
@@ -118,6 +137,8 @@ public:
         return indirectItem;
       return CFileItemPtr();
     }
+
+    EXPECT_TRUE(fakeResolveItem);
 
     return fakeResolveItem;
   }
@@ -176,4 +197,14 @@ TEST_F(PlexMediaDecisionEngineTest, channelResolv)
   EXPECT_TRUE(job.DoWork());
   CFileItem& media = job.m_choosenMedia;
   EXPECT_STREQ(indirectItem->m_mediaItems[0]->m_mediaParts[0]->GetPath(), media.GetPath());
+}
+
+TEST_F(PlexMediaDecisionEngineTest, itunesResolve)
+{
+  CFileItemPtr item = getDetailedItem(itunesItem);
+  EXPECT_TRUE(item->GetProperty("isSynthesized").asBoolean());
+
+  PlexMediaDecisionJobFake job(*item);
+  EXPECT_TRUE(job.DoWork());
+  EXPECT_STREQ("plexserver://abc123/library/sections/1/all/219.mp3", job.m_choosenMedia.GetPath());
 }
