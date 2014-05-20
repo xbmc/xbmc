@@ -109,7 +109,7 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    bool bDisablePVRAddon = addon->Type() == ADDON_PVRDLL && !HasAddon(addon->ID());
+    bool bDisablePVRAddon = addon->Type() == ADDON_PVRDLL && !CAddonMgr::Get().HasAddon(addon->ID());
 
     CStdString sql = PrepareSQL("insert into addon (id, type, name, summary,"
                                "description, stars, path, icon, changelog, "
