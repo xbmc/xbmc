@@ -670,32 +670,31 @@ bool CEpgContainer::CheckPlayingEvents(void)
 {
   bool bReturn(false);
   time_t iNow;
-  CSingleLock lock(m_critSection);
+  bool bFoundChanges(false);
 
-  CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
-  if (iNow >= m_iNextEpgActiveTagCheck)
   {
-    bool bFoundChanges(false);
     CSingleLock lock(m_critSection);
-
-    for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
-      bFoundChanges = it->second->CheckPlayingEvent() || bFoundChanges;
-    CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgActiveTagCheck);
-    m_iNextEpgActiveTagCheck += g_advancedSettings.m_iEpgActiveTagCheckInterval;
-
-    if (bFoundChanges)
+    CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
+    if (iNow >= m_iNextEpgActiveTagCheck)
     {
-      SetChanged();
-      NotifyObservers(ObservableMessageEpgActiveItem);
+      for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
+        bFoundChanges = it->second->CheckPlayingEvent() || bFoundChanges;
+      CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgActiveTagCheck);
+      m_iNextEpgActiveTagCheck += g_advancedSettings.m_iEpgActiveTagCheckInterval;
+
+      /* pvr tags always start on the full minute */
+      if (g_PVRManager.IsStarted())
+        m_iNextEpgActiveTagCheck -= m_iNextEpgActiveTagCheck % 60;
+
+      bReturn = true;
     }
-
-    /* pvr tags always start on the full minute */
-    if (g_PVRManager.IsStarted())
-      m_iNextEpgActiveTagCheck -= m_iNextEpgActiveTagCheck % 60;
-
-    bReturn = true;
   }
 
+  if (bFoundChanges)
+  {
+    SetChanged();
+    NotifyObservers(ObservableMessageEpgActiveItem);
+  }
   return bReturn;
 }
 
