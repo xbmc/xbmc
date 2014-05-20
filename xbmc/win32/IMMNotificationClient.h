@@ -156,7 +156,7 @@ public:
 
   HRESULT STDMETHODCALLTYPE OnPropertyValueChanged(LPCWSTR pwstrDeviceId, const PROPERTYKEY key)
   {
-    CLog::Log(LOGDEBUG, "%s: Changed device property of %s is {%8.8x-%4.4x-%4.4x-%2.2x%2.2x-%2.2x%2.2x%2.2x%2.2x%2.2x%2.2x}#%d", 
+    CLog::Log(LOGDEBUG, "%s: Changed device property of %S is {%8.8x-%4.4x-%4.4x-%2.2x%2.2x-%2.2x%2.2x%2.2x%2.2x%2.2x%2.2x}#%d", 
               __FUNCTION__, pwstrDeviceId, key.fmtid.Data1, key.fmtid.Data2, key.fmtid.Data3,
                                            key.fmtid.Data4[0], key.fmtid.Data4[1],
                                            key.fmtid.Data4[2], key.fmtid.Data4[3],
