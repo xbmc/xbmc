@@ -269,6 +269,7 @@ public:
   CApplicationPlayer* m_pPlayer;
 
   inline bool IsInScreenSaver() { return m_bScreenSave; };
+  inline bool IsDPMSActive() { return m_dpmsIsActive; };
   int m_iScreenSaveLock; // spiff: are we checking for a lock? if so, ignore the screensaver state, if -1 we have failed to input locks
 
   bool m_bPlaybackStarting;

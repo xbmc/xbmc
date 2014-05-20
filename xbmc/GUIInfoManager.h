@@ -390,6 +390,7 @@ namespace INFO
 #define SYSTEM_FRIENDLY_NAME        716
 #define SYSTEM_SCREENSAVER_ACTIVE   717
 #define SYSTEM_ADDON_VERSION        718
+#define SYSTEM_DPMS_ACTIVE          719
 
 #define LIBRARY_HAS_MUSIC           720
 #define LIBRARY_HAS_VIDEO           721
