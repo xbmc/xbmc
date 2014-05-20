@@ -56,7 +56,7 @@ protected:
   virtual void onAbort() { }
   virtual void onError();
 
-  char *m_source;
+  std::string m_sourceFile;
   unsigned int  m_argc;
   char **m_argv;
   CCriticalSection m_critical;
@@ -64,7 +64,8 @@ protected:
 private:
   void initializeModules(const std::map<std::string, PythonModuleInitialization> &modules);
   bool initializeModule(PythonModuleInitialization module);
-  void addPath(const std::string& path);
+  void addPath(const std::string& path); // add path in UTF-8 encoding
+  void addNativePath(const std::string& path); // add path in system/Python encoding
 
   std::string m_pythonPath;
   void *m_threadState;
