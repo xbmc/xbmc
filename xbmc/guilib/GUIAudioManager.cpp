@@ -174,8 +174,13 @@ void CGUIAudioManager::UnLoad()
     {
       IAESound* sound = it->second;
       FreeSound(sound);
+#ifndef __PLEX__
       m_actionSoundMap.erase(it++);
+#endif
     }
+    /* PLEX */
+    m_actionSoundMap.clear();
+    /* END PLEX */
   }
 }
 
