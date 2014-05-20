@@ -725,8 +725,17 @@ bool CApplication::Create()
 #else
   buildType = "Unknown";
 #endif
-  CLog::Log(LOGNOTICE, "Using %s XBMC x%d build, compiled " __DATE__ " by %s for %s %s %d-bit %s", buildType.c_str(), g_sysinfo.GetXbmcBitness(), compilerStr.c_str(),
-            g_sysinfo.GetBuildTargetPlatformName().c_str(), g_sysinfo.GetBuildTargetCpuFamily().c_str(), g_sysinfo.GetXbmcBitness(), g_sysinfo.GetBuildTargetPlatformVersion().c_str());
+  std::string specialVersion;
+#if defined(TARGET_DARWIN_IOS_ATV2)
+  specialVersion = " (version for AppleTV2)";
+#elif defined(TARGET_RASPBERRY_PI)
+  specialVersion = " (version for Raspberry Pi)";
+//#elif defined(some_ID) // uncomment for special version/fork
+//  specialVersion = " (version for XXXX)";
+#endif
+  CLog::Log(LOGNOTICE, "Using %s XBMC x%d build%s", buildType.c_str(), g_sysinfo.GetXbmcBitness(), specialVersion.c_str());
+  CLog::Log(LOGNOTICE, "XBMC compiled " __DATE__ " by %s for %s %s %d-bit %s", compilerStr.c_str(), g_sysinfo.GetBuildTargetPlatformName().c_str(), 
+            g_sysinfo.GetBuildTargetCpuFamily().c_str(), g_sysinfo.GetXbmcBitness(), g_sysinfo.GetBuildTargetPlatformVersion().c_str());
 
 #if defined(TARGET_DARWIN_OSX)
   CLog::Log(LOGNOTICE, "Running on Darwin OSX %s %d-bit %s", g_sysinfo.GetKernelCpuFamily().c_str(), g_sysinfo.GetKernelBitness(), g_sysinfo.GetUnameVersion().c_str());
