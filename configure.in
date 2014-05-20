@@ -2407,6 +2407,7 @@ fi
 if test "x$use_upnp" != "xno"; then
   final_message="$final_message\n  UPnP support:\t\tYes"
   USE_UPNP=1
+  UPNP_DEFINES="-DNPT_CONFIG_ENABLE_LOGGING -DPLT_HTTP_DEFAULT_USER_AGENT="\"UPnP/1.0 DLNADOC/1.50 XBMC\"" -DPLT_HTTP_DEFAULT_SERVER="\"UPnP/1.0 DLNADOC/1.50 XBMC\"""
   AC_DEFINE([USE_UPNP], [1], [Define to 1 to enable UPnP support.])
 else
   USE_UPNP=0
@@ -2659,6 +2660,7 @@ AC_SUBST(USE_ANDROID)
 AC_SUBST(GTEST_CONFIGURED)
 AC_SUBST(USE_DOXYGEN)
 AC_SUBST(USE_PVR_ADDONS)
+AC_SUBST(UPNP_DEFINES)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions
