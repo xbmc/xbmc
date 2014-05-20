@@ -1,3 +1,7 @@
+[B]2.4.0[/B]
+- Set minimum GUI version to 5.2.0
+- Rewrite of the PVR section 
+
 [B]2.2.14[/B]
 
 - Updated language files from Transifex
