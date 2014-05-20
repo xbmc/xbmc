@@ -95,11 +95,6 @@ namespace XBMCAddon
     void executebuiltin(const char* function, bool wait = false);
 
     /**
-     * executehttpapi(httpcommand) -- Not implemented anymore.
-     */
-    String executehttpapi(const char* httpcommand);
-
-    /**
      * executeJSONRPC(jsonrpccommand) -- Execute an JSONRPC command.
      * 
      * jsonrpccommand    : string - jsonrpc command to execute.
