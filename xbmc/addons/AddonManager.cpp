@@ -761,12 +761,13 @@ CStdString CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path)
 
 bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, vector<std::string> &result) const
 {
+  result.clear();
   if (!base || !path)
     return false;
   CStdString all = m_cpluff->lookup_cfg_value(base, path);
   if (all.empty())
     return false;
-  result = StringUtils::Split(all, " ");
+  StringUtils::Tokenize(all, result, " ");
   return true;
 }
 
