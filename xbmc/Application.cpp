@@ -736,18 +736,24 @@ bool CApplication::Create()
   CLog::Log(LOGNOTICE, "Running on FreeBSD %s %d-bit %s", g_sysinfo.GetKernelCpuFamily().c_str(), g_sysinfo.GetKernelBitness(), g_sysinfo.GetUnameVersion().c_str());
 #elif defined(TARGET_ANDROID)
   CLog::Log(LOGNOTICE, "Running on Android %s %d-bit API level %d (%s, %s)", g_sysinfo.GetKernelCpuFamily().c_str(), g_sysinfo.GetKernelBitness(), CJNIBuild::SDK_INT, g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str());
-#elif defined(TARGET_POSIX)
+#elif defined(TARGET_LINUX)
   CLog::Log(LOGNOTICE, "Running on Linux %s %d-bit (%s, %s)", g_sysinfo.GetKernelCpuFamily().c_str(), g_sysinfo.GetKernelBitness(), g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str());
-  CLog::Log(LOGNOTICE, "FFmpeg version: %s, statically linked: %d", FFMPEG_VERSION, USE_STATIC_FFMPEG);
-if (!strstr(FFMPEG_VERSION, FFMPEG_VER_SHA))
-{
-  if (strstr(FFMPEG_VERSION, "xbmc"))
-    CLog::Log(LOGNOTICE, "WARNING: unknown ffmpeg-xbmc version detected");
-  else
-    CLog::Log(LOGNOTICE, "WARNING: unsupported ffmpeg version detected");
-}
+#if USE_STATIC_FFMPEG
+  CLog::Log(LOGNOTICE, "FFmpeg statically linked, version: %s", FFMPEG_VERSION);
+#else  // !USE_STATIC_FFMPEG
+  CLog::Log(LOGNOTICE, "FFmpeg version: %s", FFMPEG_VERSION);
+#endif // !USE_STATIC_FFMPEG
+  if (!strstr(FFMPEG_VERSION, FFMPEG_VER_SHA))
+  {
+    if (strstr(FFMPEG_VERSION, "xbmc"))
+      CLog::Log(LOGNOTICE, "WARNING: unknown ffmpeg-xbmc version detected");
+    else
+      CLog::Log(LOGNOTICE, "WARNING: unsupported ffmpeg version detected");
+  }
 #elif defined(TARGET_WINDOWS)
   CLog::Log(LOGNOTICE, "Running on %s", g_sysinfo.GetKernelVersion().c_str());
+#else
+  CLog::Log(LOGNOTICE, "Running on unknown platform");
 #endif
   
   CLog::Log(LOGNOTICE, "Host CPU: %s, %d core%s available", g_cpuInfo.getCPUModel().c_str(), g_cpuInfo.getCPUCount(), (g_cpuInfo.getCPUCount()==1) ? "" : "s");
