@@ -4,6 +4,7 @@
 #include "GUIMessage.h"
 #include "settings/GUISettings.h"
 #include "Playlists/PlexPlayQueueManager.h"
+#include "Application.h"
 
 #include "PlexTypes.h"
 
@@ -320,6 +321,13 @@ CFileItemListPtr CPlexServerDataLoader::GetAllChannels() const
 void CPlexServerDataLoader::OnTimeout()
 {
   CSingleLock lk(m_serverLock);
+
+  // don't run any checks during video playback
+  if (g_application.IsPlayingVideo())
+  {
+    g_plexApplication.timer->SetTimeout(SECTION_REFRESH_INTERVAL, this);
+    return;
+  }
 
   std::pair<CStdString, CPlexServerPtr> p;
   BOOST_FOREACH(p, m_servers)
