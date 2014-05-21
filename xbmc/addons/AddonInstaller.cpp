@@ -383,7 +383,7 @@ void CAddonInstaller::UpdateRepos(bool force, bool wait)
     CAddonDatabase database;
     database.Open();
     CDateTime lastUpdate = database.GetRepoTimestamp(addons[i]->ID());
-    if (force || !lastUpdate.IsValid() || lastUpdate + CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
+    if (force || !lastUpdate.IsValid() || lastUpdate + CDateTimeSpan(0,24,0,0) < CDateTime::GetCurrentDateTime())
     {
       CLog::Log(LOGDEBUG,"Checking repositories for updates (triggered by %s)",addons[i]->Name().c_str());
       m_repoUpdateJob = CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(addons), this);
