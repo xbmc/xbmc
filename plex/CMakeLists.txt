@@ -98,9 +98,9 @@ endif(NOT TARGET_WIN32)
 
 get_property(PLEX_MODULE_SRCS GLOBAL PROPERTY SRCS_LIST)
 set(PLEX_ALL_SRCS ${PLEX_MODULE_SRCS} ${plex_SRCS} ${Headers})
+set(PCH_SRCS "${PLEX_ALL_SRCS} ${WIN32_SRC}")
 
-ADD_MSVC_PRECOMPILED_HEADER("pch_plex.h" "pch_plex.cpp" PLEX_ALL_SRCS)
-ADD_MSVC_PRECOMPILED_HEADER("pch_plex.h" "pch_plex.cpp" WIN32_SRC)
+ADD_MSVC_PRECOMPILED_HEADER("pch_plex.h" "pch_plex.cpp" PCH_SRCS)
 
 # build all plex related source files
 add_library(PlexMain OBJECT ${PLEX_ALL_SRCS})
