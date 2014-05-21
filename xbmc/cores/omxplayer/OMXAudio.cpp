@@ -244,7 +244,7 @@ bool COMXAudio::PortSettingsChanged()
   {
     // By default audio_render is the clock master, and if output samples don't fit the timestamps, it will speed up/slow down the clock.
     // This tends to be better for maintaining audio sync and avoiding audio glitches, but can affect video/display sync
-    if(CSettings::Get().GetBool("videoplayer.usedisplayasclock"))
+    if(CSettings::Get().GetBool("videoplayer.usedisplayasclock") || (CSettings::Get().GetBool("audiooutput.dualaudio") && CSettings::Get().GetString("audiooutput.audiodevice") != "PI:Analogue"))
     {
       OMX_CONFIG_BOOLEANTYPE configBool;
       OMX_INIT_STRUCTURE(configBool);
@@ -270,7 +270,7 @@ bool COMXAudio::PortSettingsChanged()
   {
     // By default audio_render is the clock master, and if output samples don't fit the timestamps, it will speed up/slow down the clock.
     // This tends to be better for maintaining audio sync and avoiding audio glitches, but can affect video/display sync
-    if(CSettings::Get().GetBool("videoplayer.usedisplayasclock"))
+    if(CSettings::Get().GetBool("videoplayer.usedisplayasclock") || (CSettings::Get().GetBool("audiooutput.dualaudio") && CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Analogue"))
     {
       OMX_CONFIG_BOOLEANTYPE configBool;
       OMX_INIT_STRUCTURE(configBool);
