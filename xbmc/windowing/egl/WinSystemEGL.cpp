@@ -33,6 +33,7 @@
 #include "EGLWrapper.h"
 #include "EGLQuirks.h"
 #include <vector>
+#include <float.h>
 ////////////////////////////////////////////////////////////////////////////////////////////
 CWinSystemEGL::CWinSystemEGL() : CWinSystemBase()
 {
@@ -382,7 +383,7 @@ void CWinSystemEGL::UpdateResolutions()
        resDesktop.iScreenWidth == resolutions[i].iScreenWidth &&
        resDesktop.iScreenHeight == resolutions[i].iScreenHeight &&
        (resDesktop.dwFlags & D3DPRESENTFLAG_MODEMASK) == (resolutions[i].dwFlags & D3DPRESENTFLAG_MODEMASK) &&
-       resDesktop.fRefreshRate == resolutions[i].fRefreshRate)
+       fabs(resDesktop.fRefreshRate - resolutions[i].fRefreshRate) < FLT_EPSILON)
     {
       ResDesktop = res_index;
     }
