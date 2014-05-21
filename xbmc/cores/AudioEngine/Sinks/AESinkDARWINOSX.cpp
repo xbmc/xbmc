@@ -759,6 +759,11 @@ OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTim
   {
     for (unsigned int i = 0; i < outOutputData->mNumberBuffers; i++)
     {
+      // NULL indicates a disabled stream
+      // skip it...
+      if (outOutputData->mBuffers[i].mData == NULL)
+        continue;
+
       if (sink->m_outputBitstream)
       {
         /* HACK for bitstreaming AC3/DTS via PCM.
