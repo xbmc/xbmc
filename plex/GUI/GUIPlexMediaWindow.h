@@ -126,6 +126,8 @@ private:
 
     CPlexThumbCacher m_thumbCache;
     CPlexSectionFilterPtr m_sectionFilter;
+
+    std::map<std::string, bool> m_contentMatch;
 };
 
 class CGUIPlexMusicWindow : public CGUIPlexMediaWindow

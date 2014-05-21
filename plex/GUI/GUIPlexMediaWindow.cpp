@@ -1029,6 +1029,8 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIPlexMediaWindow::CheckPlexFilters(CFileItemList &list)
 {
+  m_contentMatch.clear();
+
   if (m_sectionFilter)
   {
     list.SetProperty("hasAdvancedFilters", m_sectionFilter->hasAdvancedFilters() ? "yes" : "");
@@ -1369,27 +1371,31 @@ void CGUIPlexMediaWindow::AddFilters()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::MatchPlexContent(const CStdString &matchStr)
 {
-  CStdStringArray matchVec = StringUtils::SplitString(matchStr, ";");
-  CStdString content;
+  if (m_contentMatch.find(matchStr) != m_contentMatch.end())
+    return m_contentMatch[matchStr];
 
-  if (m_vecItems->HasProperty("PlexContent"))
-  {
-    content = m_vecItems->GetProperty("PlexContent").asString();
-  }
-  else
+  std::vector<std::string> matchVec;
+  matchVec = StringUtils::Split(matchStr, ";");
+
+  std::string content = m_vecItems->GetProperty("PlexContent").asString();
+  if (content.empty())
   {
     content = PlexUtils::GetPlexContent(*m_vecItems);
     m_vecItems->SetProperty("PlexContent", content);
   }
 
-  BOOST_FOREACH(CStdString& match, matchVec)
+  bool ret = false;
+
+  BOOST_FOREACH(std::string& match, matchVec)
   {
-    match = StringUtils::Trim(match);
-    if(match.Equals(content))
-      return true;
+    StringUtils::Trim(match);
+    StringUtils::ToLower(match);
+    if(match == content)
+      ret = true;
   }
 
-  return false;
+  m_contentMatch[matchStr] = ret;
+  return ret;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
