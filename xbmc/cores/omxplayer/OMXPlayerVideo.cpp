@@ -533,7 +533,7 @@ bool OMXPlayerVideo::OpenDecoder()
     return false;
 
   if (m_hints.fpsrate && m_hints.fpsscale)
-    m_fFrameRate = DVD_TIME_BASE / OMXClock::NormalizeFrameduration((double)DVD_TIME_BASE * m_hints.fpsscale / m_hints.fpsrate);
+    m_fFrameRate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * m_hints.fpsscale / m_hints.fpsrate);
   else
     m_fFrameRate = 25;
 
@@ -562,7 +562,6 @@ bool OMXPlayerVideo::OpenDecoder()
         m_omxVideo.GetDecoderName().c_str() , m_hints.width, m_hints.height, m_hints.profile, m_fFrameRate);
 
     m_codecname = m_omxVideo.GetDecoderName();
-    m_av_clock->SetRefreshRate(m_fFrameRate);
   }
 
   // start from assuming all recent frames had valid pts

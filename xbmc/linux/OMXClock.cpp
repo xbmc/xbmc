@@ -39,7 +39,6 @@ OMXClock::OMXClock()
 {
   m_pause       = false;
 
-  m_fps = 25.0f;
   m_omx_speed = DVD_PLAYSPEED_NORMAL;
   m_WaitMask = 0;
   m_eState = OMX_TIME_ClockStateStopped;
@@ -537,40 +536,6 @@ int64_t OMXClock::CurrentHostCounter(void)
 int64_t OMXClock::CurrentHostFrequency(void)
 {
   return( (int64_t)1000000000L );
-}
-
-int OMXClock::GetRefreshRate(double* interval)
-{
-  if(!interval)
-    return false;
-
-  *interval = m_fps;
-  return true;
-}
-
-double OMXClock::NormalizeFrameduration(double frameduration)
-{
-  //if the duration is within 20 microseconds of a common duration, use that
-  const double durations[] = {DVD_TIME_BASE * 1.001 / 24.0, DVD_TIME_BASE / 24.0, DVD_TIME_BASE / 25.0,
-                              DVD_TIME_BASE * 1.001 / 30.0, DVD_TIME_BASE / 30.0, DVD_TIME_BASE / 50.0,
-                              DVD_TIME_BASE * 1.001 / 60.0, DVD_TIME_BASE / 60.0};
-
-  double lowestdiff = DVD_TIME_BASE;
-  int    selected   = -1;
-  for (size_t i = 0; i < sizeof(durations) / sizeof(durations[0]); i++)
-  {
-    double diff = fabs(frameduration - durations[i]);
-    if (diff < DVD_MSEC_TO_TIME(0.02) && diff < lowestdiff)
-    {
-      selected = i;
-      lowestdiff = diff;
-    }
-  }
-
-  if (selected != -1)
-    return durations[selected];
-  else
-    return frameduration;
 }
 
 #endif

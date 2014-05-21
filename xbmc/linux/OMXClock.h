@@ -50,7 +50,6 @@ class OMXClock
 protected:
   bool              m_pause;
   pthread_mutex_t   m_lock;
-  double            m_fps;
   int               m_omx_speed;
   OMX_U32           m_WaitMask;
   OMX_TIME_CLOCKSTATE   m_eState;
@@ -88,9 +87,6 @@ public:
   bool HDMIClockSync(bool lock = true);
   static int64_t CurrentHostCounter(void);
   static int64_t CurrentHostFrequency(void);
-
-  int     GetRefreshRate(double* interval = NULL);
-  void    SetRefreshRate(double fps) { m_fps = fps; };
 
   static double NormalizeFrameduration(double frameduration);
 };
