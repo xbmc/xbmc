@@ -42,6 +42,8 @@ namespace XBMCAddon
       inline void    OnSettingsChanged() { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onSettingsChanged)); }
       inline void    OnScreensaverActivated() { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onScreensaverActivated)); }
       inline void    OnScreensaverDeactivated() { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onScreensaverDeactivated)); }
+      inline void    OnDPMSActivated() { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onDPMSActivated)); }
+      inline void    OnDPMSDeactivated() { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onDPMSDeactivated)); }
       inline void    OnScanStarted(const String &library)
       {
 	XBMC_TRACE;
@@ -80,6 +82,20 @@ namespace XBMCAddon
        * Will be called when screensaver goes off\n
        */
       virtual void    onScreensaverDeactivated() { XBMC_TRACE; }
+
+      /**
+       * onDPMSActivated() -- onDPMSActivated method.\n
+       * \n
+       * Will be called when energysaving/DPMS gets active\n
+       */
+      virtual void    onDPMSActivated() { XBMC_TRACE; }
+
+      /**
+       * onDPMSDeactivated() -- onDPMSDeactivated method.\n
+       * \n
+       * Will be called when energysaving/DPMS is turned off\n
+       */
+      virtual void    onDPMSDeactivated() { XBMC_TRACE; }
 
       /**
        * onScanStarted(library) -- onScanStarted method.\n

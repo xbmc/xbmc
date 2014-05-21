@@ -108,6 +108,10 @@ void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *m
      OnScreensaverDeactivated();
    else if (strcmp(message, "OnScreensaverActivated") == 0)
      OnScreensaverActivated();
+   else if (strcmp(message, "OnDPMSDeactivated") == 0)
+     OnDPMSDeactivated();
+   else if (strcmp(message, "OnDPMSActivated") == 0)
+     OnDPMSActivated();
   }
 
   OnNotification(sender, std::string(ANNOUNCEMENT::AnnouncementFlagToString(flag)) + "." + std::string(message), CJSONVariantWriter::Write(data, g_advancedSettings.m_jsonOutputCompact));
@@ -299,6 +303,28 @@ void XBPython::OnScreensaverDeactivated()
   {
     if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
       (*it)->OnScreensaverDeactivated();
+  }
+}
+
+void XBPython::OnDPMSActivated()
+{
+  XBMC_TRACE;
+  LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
+  for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
+  {
+    if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
+      (*it)->OnDPMSActivated();
+  }
+}
+
+void XBPython::OnDPMSDeactivated()
+{
+  XBMC_TRACE;
+  LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
+  for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
+  {
+    if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
+      (*it)->OnDPMSDeactivated();
   }
 }
 

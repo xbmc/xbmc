@@ -343,5 +343,23 @@
       { "name": "data", "type": "null", "required": true }
     ],
     "returns": null
+  },
+  "GUI.OnDPMSActivated": {
+    "type": "notification",
+    "description": "Energy saving/DPMS has been activated.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "null", "required": true }
+    ],
+    "returns": null
+  },
+  "GUI.OnDPMSDeactivated": {
+    "type": "notification",
+    "description": "Energy saving/DPMS has been deactivated.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "null", "required": true }
+    ],
+    "returns": null
   }
 }
