@@ -24,6 +24,13 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+				<!--
+					The following 3 categories allow the application to become the
+					default home application.
+				-->
+				<category android:name="android.intent.category.HOME" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.MONKEY" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
