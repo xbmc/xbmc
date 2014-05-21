@@ -53,6 +53,7 @@ public:
   std::string   GetName();
   bool          IsDigital(UInt32 &transportType);
   UInt32        GetTotalOutputChannels();
+  UInt32        GetNumChannelsOfStream(UInt32 streamIdx);
   bool          GetStreams(AudioStreamIdList *pList);
   bool          IsRunning();
   bool          SetHogStatus(bool hog);

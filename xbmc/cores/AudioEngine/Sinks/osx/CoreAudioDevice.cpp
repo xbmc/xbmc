@@ -23,6 +23,7 @@
 #include "CoreAudioChannelLayout.h"
 #include "CoreAudioHardware.h"
 #include "utils/log.h"
+#include "osx/DarwinUtils.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CCoreAudioDevice
@@ -304,6 +305,42 @@ UInt32 CCoreAudioDevice::GetTotalOutputChannels()
 
   free(pList);
 
+  return channels;
+}
+
+UInt32 CCoreAudioDevice::GetNumChannelsOfStream(UInt32 streamIdx)
+{
+  UInt32 channels = 0;
+  
+  if (!m_DeviceId)
+    return channels;
+  
+  AudioObjectPropertyAddress  propertyAddress;
+  propertyAddress.mScope    = kAudioDevicePropertyScopeOutput;
+  propertyAddress.mElement  = 0;
+  propertyAddress.mSelector = kAudioDevicePropertyStreamConfiguration;
+  
+  UInt32 size = 0;
+  OSStatus ret = AudioObjectGetPropertyDataSize(m_DeviceId, &propertyAddress, 0, NULL, &size);
+  if (ret != noErr)
+    return channels;
+  
+  AudioBufferList* pList = (AudioBufferList*)malloc(size);
+  ret = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &size, pList);
+  if (ret == noErr)
+  {
+    if (streamIdx < pList->mNumberBuffers)
+      channels = pList->mBuffers[streamIdx].mNumberChannels;
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "CCoreAudioDevice::GetNumChannelsOfStream: "
+              "Unable to get number of stream output channels - id: 0x%04x. Error = %s",
+              (uint)m_DeviceId, GetError(ret).c_str());
+  }
+  
+  free(pList);
+  
   return channels;
 }
 
