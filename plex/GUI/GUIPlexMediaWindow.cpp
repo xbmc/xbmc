@@ -1370,7 +1370,17 @@ void CGUIPlexMediaWindow::AddFilters()
 bool CGUIPlexMediaWindow::MatchPlexContent(const CStdString &matchStr)
 {
   CStdStringArray matchVec = StringUtils::SplitString(matchStr, ";");
-  CStdString content = PlexUtils::GetPlexContent(*m_vecItems);
+  CStdString content;
+
+  if (m_vecItems->HasProperty("PlexContent"))
+  {
+    content = m_vecItems->GetProperty("PlexContent").asString();
+  }
+  else
+  {
+    content = PlexUtils::GetPlexContent(*m_vecItems);
+    m_vecItems->SetProperty("PlexContent", content);
+  }
 
   BOOST_FOREACH(CStdString& match, matchVec)
   {
