@@ -264,6 +264,10 @@ namespace EPG
 
     void InsertFromDatabase(int iEpgID, const CStdString &strName, const CStdString &strScraperName);
 
+    typedef std::map<unsigned int, CEpg*> EPGMAP;
+    typedef EPGMAP::iterator              EPGMAP_ITR;
+    typedef EPGMAP::const_iterator        EPGMAP_CITR;
+
     CEpgDatabase m_database;           /*!< the EPG database */
 
     /** @name Configuration */
@@ -285,7 +289,7 @@ namespace EPG
     time_t       m_iNextEpgUpdate;         /*!< the time the EPG will be updated */
     time_t       m_iNextEpgActiveTagCheck; /*!< the time the EPG will be checked for active tag updates */
     unsigned int m_iNextEpgId;             /*!< the next epg ID that will be given to a new table when the db isn't being used */
-    std::map<unsigned int, CEpg*> m_epgs;  /*!< the EPGs in this container */
+    EPGMAP       m_epgs;                   /*!< the EPGs in this container */
     //@}
 
     CGUIDialogProgressBarHandle *  m_progressHandle; /*!< the progress dialog that is visible when updating the first time */
