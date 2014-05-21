@@ -1105,6 +1105,7 @@ bool CPVRClients::UpdateAddons(void)
 {
   VECADDONS addons;
   bool bReturn(CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true));
+  size_t usableClients;
 
   if (bReturn)
   {
@@ -1112,18 +1113,20 @@ bool CPVRClients::UpdateAddons(void)
     m_addons = addons;
   }
   
+  usableClients = m_addons.size();
+  
   // handle "new" addons which aren't yet in the db - these have to be added first
   for (unsigned iClientPtr = 0; iClientPtr < m_addons.size(); iClientPtr++)
   {
     const AddonPtr clientAddon = m_addons.at(iClientPtr);
-  
-    if (!m_addonDb.HasAddon(clientAddon->ID()))
+    if (RegisterClient(clientAddon) < 0)
     {
-      m_addonDb.AddAddon(clientAddon, -1);
+      CAddonMgr::Get().DisableAddon(clientAddon->ID(), true);
+      usableClients--;
     }
   }
 
-  if ((!bReturn || addons.size() == 0) && !m_bNoAddonWarningDisplayed &&
+  if ((!bReturn || usableClients == 0) && !m_bNoAddonWarningDisplayed &&
       !CAddonMgr::Get().HasAddons(ADDON_PVRDLL, false) &&
       (g_PVRManager.IsStarted() || g_PVRManager.IsInitialising()))
   {
