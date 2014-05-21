@@ -836,9 +836,13 @@ bool CPVRClients::IsKnownClient(const AddonPtr client) const
   return GetClientId(client) > 0;
 }
 
-int CPVRClients::RegisterClient(AddonPtr client)
+int CPVRClients::RegisterClient(AddonPtr client, bool* newRegistration/*=NULL*/)
 {
   int iClientId(-1);
+
+  if (newRegistration)
+    *newRegistration = false;
+
   if (!client->Enabled())
     return -1;
 
@@ -852,10 +856,15 @@ int CPVRClients::RegisterClient(AddonPtr client)
   iClientId = database->GetClientId(client->ID());
 
   // try to register the new client in the db
-  if (iClientId < 0 && (iClientId = database->Persist(client)) < 0)
+  if (iClientId < 0)
   {
-    CLog::Log(LOGERROR, "PVR - %s - can't add client '%s' to the database", __FUNCTION__, client->Name().c_str());
-    return -1;
+    if ((iClientId = database->Persist(client)) < 0)
+    {
+      CLog::Log(LOGERROR, "PVR - %s - can't add client '%s' to the database", __FUNCTION__, client->Name().c_str());
+      return -1;
+    }
+    else if (newRegistration)
+      *newRegistration = true;
   }
 
   PVR_CLIENT addon;
