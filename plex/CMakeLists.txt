@@ -93,7 +93,7 @@ endif(NOT TARGET_OSX)
 if(NOT TARGET_WIN32)
   list(REMOVE_ITEM plex_SRCS ./MediaCenterLaunchHost.cpp)
 else(NOT TARGET_WIN32)
-  set(WIN32_SRC ${root}/xbmc/win32/Win32DelayedDllLoad.cpp)
+  set(WIN32_SRC ${root}/xbmc/win32/Win32DelayedDllLoad.cpp pch_plex.cpp)
 endif(NOT TARGET_WIN32)
 
 get_property(PLEX_MODULE_SRCS GLOBAL PROPERTY SRCS_LIST)
