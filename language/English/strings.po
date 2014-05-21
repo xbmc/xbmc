@@ -2866,7 +2866,12 @@ msgctxt "#678"
 msgid "Verbose logging for UPnP components"
 msgstr ""
 
-#empty strings from id 679 to 699
+#: xbmc/settings/AdvancedSettings.cpp
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr ""
+
+#empty strings from id 680 to 699
 
 msgctxt "#700"
 msgid "Cleaning up library"
