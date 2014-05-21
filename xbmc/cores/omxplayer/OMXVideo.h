@@ -32,6 +32,7 @@
 #include "DVDDemuxers/DVDDemux.h"
 #include "xbmc/settings/VideoSettings.h"
 #include "threads/CriticalSection.h"
+#include "xbmc/rendering/RenderSystem.h"
 #include <string>
 
 #define VIDEO_BUFFERS 60
@@ -58,7 +59,7 @@ public:
   void Reset(void);
   void SetDropState(bool bDrop);
   std::string GetDecoderName() { return m_video_codec_name; };
-  void SetVideoRect(const CRect& SrcRect, const CRect& DestRect);
+  void SetVideoRect(const CRect& SrcRect, const CRect& DestRect, RENDER_STEREO_MODE video_mode, RENDER_STEREO_MODE display_mode);
   int GetInputBufferSize();
   void SubmitEOS();
   bool IsEOS();

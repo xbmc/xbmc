@@ -97,6 +97,9 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
 
   m_src_rect.SetRect(0, 0, 0, 0);
   m_dst_rect.SetRect(0, 0, 0, 0);
+  m_video_stereo_mode = RENDER_STEREO_MODE_OFF;
+  m_display_stereo_mode = RENDER_STEREO_MODE_OFF;
+  m_StereoInvert = false;
   m_started = false;
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_nextOverlay = DVD_NOPTS_VALUE;
@@ -120,6 +123,9 @@ bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints)
   // force SetVideoRect to be called initially
   m_src_rect.SetRect(0, 0, 0, 0);
   m_dst_rect.SetRect(0, 0, 0, 0);
+  m_video_stereo_mode = RENDER_STEREO_MODE_OFF;
+  m_display_stereo_mode = RENDER_STEREO_MODE_OFF;
+  m_StereoInvert = false;
 
   if (!m_DllBcmHost.Load())
     return false;
@@ -644,58 +650,85 @@ int OMXPlayerVideo::GetFreeSpace()
 
 void OMXPlayerVideo::SetVideoRect(const CRect &InSrcRect, const CRect &InDestRect)
 {
+  // we get called twice a frame for left/right. Can ignore the rights.
+  if (g_graphicsContext.GetStereoView() == RENDER_STEREO_VIEW_RIGHT)
+    return;
+
   CRect SrcRect = InSrcRect, DestRect = InDestRect;
-
-  // in 3d modes skip this - we get called as the gui switches from left eye to right eye
   unsigned flags = GetStereoModeFlags(GetStereoMode());
-
-  if (CONF_FLAGS_STEREO_MODE_MASK(flags))
-  {
-    if (g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_MONO)
-    {
-       if (GetStereoMode() == "left_right")
-         SrcRect.SetRect(0, 0, m_hints.width>>1, m_hints.height);
-       else if (GetStereoMode() == "right_left")
-         SrcRect.SetRect(m_hints.width>>1, 0, m_hints.width, m_hints.height);
-       else if (GetStereoMode() == "top_bottom")
-         SrcRect.SetRect(0, 0, m_hints.width, m_hints.height>>1);
-       else if (GetStereoMode() == "bottom_top")
-         SrcRect.SetRect(0, m_hints.height>>1, m_hints.width, m_hints.height);
-    }
-    else
-      SrcRect.SetRect(0, 0, m_hints.width, m_hints.height);
-    // interpreted as fullscreen
-    DestRect.SetRect(0, 0, 0, 0);
-  }
+  RENDER_STEREO_MODE video_stereo_mode = (flags & CONF_FLAGS_STEREO_MODE_SBS) ? RENDER_STEREO_MODE_SPLIT_VERTICAL :
+                                         (flags & CONF_FLAGS_STEREO_MODE_TAB) ? RENDER_STEREO_MODE_SPLIT_HORIZONTAL : RENDER_STEREO_MODE_OFF;
+  bool stereo_invert                   = (flags & CONF_FLAGS_STEREO_CADANCE_RIGHT_LEFT) ? true : false;
+  RENDER_STEREO_MODE display_stereo_mode = g_graphicsContext.GetStereoMode();
 
   // check if destination rect or video view mode has changed
-  if (m_dst_rect != DestRect || m_src_rect != SrcRect)
-  {
-    m_src_rect  = SrcRect;
-    m_dst_rect  = DestRect;
-  }
-  else
-  {
+  if (!(m_dst_rect != DestRect) && !(m_src_rect != SrcRect) && m_video_stereo_mode == video_stereo_mode && m_display_stereo_mode == display_stereo_mode && m_StereoInvert == stereo_invert)
     return;
-  }
+
+  CLog::Log(LOGDEBUG, "OMXPlayerVideo::%s %d,%d,%d,%d -> %d,%d,%d,%d (%d,%d,%d,%d,%s)", __func__,
+      (int)SrcRect.x1, (int)SrcRect.y1, (int)SrcRect.x2, (int)SrcRect.y2,
+      (int)DestRect.x1, (int)DestRect.y1, (int)DestRect.x2, (int)DestRect.y2,
+      video_stereo_mode, display_stereo_mode, CMediaSettings::Get().GetCurrentVideoSettings().m_StereoInvert, g_graphicsContext.GetStereoView(), OMXPlayerVideo::GetStereoMode().c_str());
+
+  m_src_rect = SrcRect;
+  m_dst_rect = DestRect;
+  m_video_stereo_mode = video_stereo_mode;
+  m_display_stereo_mode = display_stereo_mode;
+  m_StereoInvert = stereo_invert;
 
   // might need to scale up m_dst_rect to display size as video decodes
   // to separate video plane that is at display size.
   RESOLUTION res = g_graphicsContext.GetVideoResolution();
   CRect gui(0, 0, CDisplaySettings::Get().GetResolutionInfo(res).iWidth, CDisplaySettings::Get().GetResolutionInfo(res).iHeight);
   CRect display(0, 0, CDisplaySettings::Get().GetResolutionInfo(res).iScreenWidth, CDisplaySettings::Get().GetResolutionInfo(res).iScreenHeight);
-  CRect dst_rect(m_dst_rect);
+
+  switch (video_stereo_mode)
+  {
+  case RENDER_STEREO_MODE_SPLIT_VERTICAL:
+    // optimisation - use simpler display mode in common case of unscaled 3d with same display mode
+    if (video_stereo_mode == display_stereo_mode && DestRect.x1 == 0.0f && DestRect.x2 * 2.0f == gui.Width() && !stereo_invert)
+    {
+      SrcRect.x2 *= 2.0f;
+      DestRect.x2 *= 2.0f;
+      video_stereo_mode = RENDER_STEREO_MODE_OFF;
+      display_stereo_mode = RENDER_STEREO_MODE_OFF;
+    }
+    else if (stereo_invert)
+    {
+      SrcRect.x1 += m_hints.width / 2;
+      SrcRect.x2 += m_hints.width / 2;
+    }
+    break;
+
+  case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
+    // optimisation - use simpler display mode in common case of unscaled 3d with same display mode
+    if (video_stereo_mode == display_stereo_mode && DestRect.y1 == 0.0f && DestRect.y2 * 2.0f == gui.Height() && !stereo_invert)
+    {
+      SrcRect.y2 *= 2.0f;
+      DestRect.y2 *= 2.0f;
+      video_stereo_mode = RENDER_STEREO_MODE_OFF;
+      display_stereo_mode = RENDER_STEREO_MODE_OFF;
+    }
+    else if (stereo_invert)
+    {
+      SrcRect.y1 += m_hints.height / 2;
+      SrcRect.y2 += m_hints.height / 2;
+    }
+    break;
+
+  default: break;
+  }
 
   if (gui != display)
   {
     float xscale = display.Width()  / gui.Width();
     float yscale = display.Height() / gui.Height();
-    dst_rect.x1 *= xscale;
-    dst_rect.x2 *= xscale;
-    dst_rect.y1 *= yscale;
-    dst_rect.y2 *= yscale;
+    DestRect.x1 *= xscale;
+    DestRect.x2 *= xscale;
+    DestRect.y1 *= yscale;
+    DestRect.y2 *= yscale;
   }
-  m_omxVideo.SetVideoRect(SrcRect, dst_rect);
+  m_omxVideo.SetVideoRect(SrcRect, DestRect, video_stereo_mode, display_stereo_mode);
 }
 
 void OMXPlayerVideo::RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect)
