@@ -18,6 +18,10 @@
  *
  */
 
+/* PLEX */
+#include "pch.h"
+/* END PLEX */
+
 #include <DelayImp.h>
 #include "DllPaths_win32.h"
 #include "filesystem/SpecialProtocol.h"

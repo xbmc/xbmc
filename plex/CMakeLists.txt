@@ -94,18 +94,12 @@ if(NOT TARGET_WIN32)
   list(REMOVE_ITEM plex_SRCS ./MediaCenterLaunchHost.cpp)
 else(NOT TARGET_WIN32)
   set(WIN32_SRC ${root}/xbmc/win32/Win32DelayedDllLoad.cpp)
-  list(APPEND plex_SRCS ${root}/xbmc/win32/Win32DelayedDllLoad.cpp)
 endif(NOT TARGET_WIN32)
 
 get_property(PLEX_MODULE_SRCS GLOBAL PROPERTY SRCS_LIST)
 set(PLEX_ALL_SRCS ${PLEX_MODULE_SRCS} ${plex_SRCS} ${Headers})
 
 ADD_MSVC_PRECOMPILED_HEADER("pch_plex.h" "pch_plex.cpp" PLEX_ALL_SRCS)
-
-# this is a pretty ugly hack - we need Win32DelayedDllLoad to be built
-# with the PCH, but for some reason this seems to be the only way to
-# get that to work.
-list(REMOVE_ITEM PLEX_ALL_SRCS ${root}/xbmc/win32/Win32DelayedDllLoad.cpp)
 
 # build all plex related source files
 add_library(PlexMain OBJECT ${PLEX_ALL_SRCS})
