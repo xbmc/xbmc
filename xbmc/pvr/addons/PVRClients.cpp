@@ -78,7 +78,6 @@ void CPVRClients::Start(void)
 {
   Stop();
 
-  m_addonDb.Open();
   Create();
   SetPriority(-1);
 }
@@ -86,7 +85,6 @@ void CPVRClients::Start(void)
 void CPVRClients::Stop(void)
 {
   StopThread();
-  m_addonDb.Close();
 }
 
 bool CPVRClients::IsConnectedClient(int iClientId) const

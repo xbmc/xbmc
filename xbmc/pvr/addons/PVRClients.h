@@ -643,7 +643,6 @@ namespace PVR
     STREAMPROPS           m_streamProps;              /*!< the current stream's properties */
     bool                  m_bNoAddonWarningDisplayed; /*!< true when a warning was displayed that no add-ons were found, false otherwise */
     CCriticalSection      m_critSection;
-    CAddonDatabase        m_addonDb;
     std::map<int, time_t> m_connectionAttempts;       /*!< last connection attempt per add-on */
   };
 }
