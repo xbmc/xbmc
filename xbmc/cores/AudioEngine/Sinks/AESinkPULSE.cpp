@@ -548,19 +548,12 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   pa_format_info_set_channels(info[0], m_Channels);
 
   // PA requires m_encodedRate in order to do EAC3
-  unsigned int samplerate;
-  if (m_passthrough)
+  unsigned int samplerate = format.m_sampleRate;
+  if (m_passthrough && (AEFormatToPulseEncoding(format.m_dataFormat) == PA_ENCODING_EAC3_IEC61937))
   {
-    if (format.m_encodedRate == 0 || format.m_encodedRate > format.m_sampleRate)
-    {
-      CLog::Log(LOGNOTICE, "PulseAudio: Passthrough in use but m_encodedRate is not set or too large: %u - fallback to m_sampleRate", format.m_encodedRate);
-      samplerate = format.m_sampleRate;
-    }
-    else
-      samplerate = format.m_encodedRate;
+    // this is only used internally for PA to use EAC3
+    samplerate = format.m_encodedRate;
   }
-  else
-    samplerate = format.m_sampleRate;
 
   pa_format_info_set_rate(info[0], samplerate);
 
