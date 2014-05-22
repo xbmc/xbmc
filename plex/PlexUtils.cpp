@@ -26,6 +26,7 @@
 #include "Key.h"
 #include "GUI/GUIPlexMediaWindow.h"
 #include "Application.h"
+#include "threads/Atomics.h"
 
 #include "File.h"
 
@@ -987,7 +988,7 @@ CFileItemPtr PlexUtils::GetItemWithKey(const CFileItemList& list, const std::str
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void PlexUtils::PauseRendering(bool bPause, bool bUseWaitDialog)
 {
-  static int pauseRequestCount = 0;
+  static long pauseRequestCount = 0;
 
   // now handle the wait dialog stuff
   if (bUseWaitDialog)
@@ -1017,12 +1018,12 @@ void PlexUtils::PauseRendering(bool bPause, bool bUseWaitDialog)
   // job is finished
   if (bPause)
   {
-    pauseRequestCount++;
+    AtomicIncrement(&pauseRequestCount);
   }
   else
   {
     if (pauseRequestCount > 0)
-      pauseRequestCount--;
+      AtomicDecrement(&pauseRequestCount);
   }
 
   g_application.SetRenderGUI(pauseRequestCount == 0);
