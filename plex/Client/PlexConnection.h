@@ -39,7 +39,7 @@ public:
   static CStdString ConnectionTypeName(ConnectionType type);
   static CStdString ConnectionStateName(ConnectionState state);
 
-  ConnectionState TestReachability(CPlexServerPtr server);
+  virtual ConnectionState TestReachability(CPlexServerPtr server);
   CURL BuildURL(const CStdString& path) const;
 
   bool IsLocal() const

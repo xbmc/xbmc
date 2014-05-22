@@ -270,7 +270,11 @@ void CPlexServer::OnConnectionTest(CPlexServerConnTestThread* thread, CPlexConne
   if (thread)
   {
     CSingleLock lk(m_connTestThreadLock);
-    m_connTestThreads.erase(std::remove(m_connTestThreads.begin(), m_connTestThreads.end(), thread));
+    if (std::find(m_connTestThreads.begin(), m_connTestThreads.end(), thread) != m_connTestThreads.end())
+      m_connTestThreads.erase(std::remove(m_connTestThreads.begin(), m_connTestThreads.end(), thread),
+                              m_connTestThreads.end());
+    else
+      return;
   }
 
   CSingleLock tlk(m_testingLock);
