@@ -64,6 +64,31 @@
 #include <linux/version.h>
 #endif
 
+#ifdef TARGET_WINDOWS
+static bool sysGetVersionExWByRef(OSVERSIONINFOEXW& osVerInfo)
+{
+  ZeroMemory(&osVerInfo, sizeof(osVerInfo));
+  osVerInfo.dwOSVersionInfoSize = sizeof(osVerInfo);
+  
+  typedef NTSTATUS(__stdcall *RtlGetVersionPtr)(RTL_OSVERSIONINFOEXW* pOsInfo);
+  static HMODULE hNtDll = GetModuleHandleW(L"ntdll.dll");
+  if (hNtDll != NULL)
+  {
+    static RtlGetVersionPtr RtlGetVer = (RtlGetVersionPtr) GetProcAddress(hNtDll, "RtlGetVersion");
+    if (RtlGetVer && RtlGetVer(&osVerInfo) == 0)
+      return true;
+  }
+  // failed to get OS information directly from ntdll.dll
+  // use GetVersionExW() as fallback
+  // note: starting from Windows 8.1 GetVersionExW() may return unfaithful information
+  if (GetVersionExW((OSVERSIONINFOW*) &osVerInfo) != 0)
+      return true;
+
+  ZeroMemory(&osVerInfo, sizeof(osVerInfo));
+  return false;
+}
+#endif // TARGET_WINDOWS
+
 CSysInfo g_sysinfo;
 
 CSysInfoJob::CSysInfoJob()
@@ -429,10 +454,8 @@ CSysInfo::WindowsVersion CSysInfo::GetWindowsVersion()
 #ifdef TARGET_WINDOWS
   if (m_WinVer == WindowsVersionUnknown)
   {
-    OSVERSIONINFOEX osvi;
-    ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
-    osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-    if (GetVersionEx((OSVERSIONINFO *)&osvi))
+    OSVERSIONINFOEXW osvi = {};
+    if (sysGetVersionExWByRef(osvi))
     {
       if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0)
         m_WinVer = WindowsVersionVista;
@@ -540,12 +563,10 @@ CStdString CSysInfo::GetKernelVersion()
 
   return "";
 #else
-  OSVERSIONINFOEX osvi;
-  ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
-  osvi.dwOSVersionInfoSize = sizeof(osvi);
+  OSVERSIONINFOEXW osvi = {};
 
   std::string strKernel = "Windows";
-  if (GetVersionEx((OSVERSIONINFO *)&osvi))
+  if (sysGetVersionExWByRef(osvi))
   {
     switch (GetWindowsVersion())
     {
@@ -866,12 +887,10 @@ std::string CSysInfo::GetAndroidDeviceName(void)
 #if defined(TARGET_WINDOWS)
 std::string CSysInfo::GetUAWindowsVersion()
 {
-  OSVERSIONINFOEX osvi = {};
-
-  osvi.dwOSVersionInfoSize = sizeof(osvi);
+  OSVERSIONINFOEXW osvi = {};
   std::string strVersion = "Windows NT";
 
-  if (GetVersionEx((OSVERSIONINFO *)&osvi))
+  if (sysGetVersionExWByRef(osvi))
   {
     strVersion += StringUtils::Format(" %d.%d", osvi.dwMajorVersion, osvi.dwMinorVersion);
   }
