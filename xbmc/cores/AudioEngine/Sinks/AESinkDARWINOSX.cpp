@@ -99,10 +99,10 @@ static void EnumerateDevices(CADeviceList &list)
     {
       for (AudioStreamIdList::iterator j = streams.begin(); j != streams.end(); ++j)
       {
-        StreamFormatList streams;
-        if (CCoreAudioStream::GetAvailablePhysicalFormats(*j, &streams))
+        StreamFormatList streamFormats;
+        if (CCoreAudioStream::GetAvailablePhysicalFormats(*j, &streamFormats))
         {
-          for (StreamFormatList::iterator i = streams.begin(); i != streams.end(); ++i)
+          for (StreamFormatList::iterator i = streamFormats.begin(); i != streamFormats.end(); ++i)
           {
             AudioStreamBasicDescription desc = i->mFormat;
             std::string formatString;
