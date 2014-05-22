@@ -103,6 +103,7 @@ public:
   bool GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStdString& strHDDFirmware,CStdString& strHDDpw,CStdString& strHDDLockState);
   bool GetRefurbInfo(CStdString& rfi_FirstBootTime, CStdString& rfi_PowerCycleCount);
 
+  static std::string GetKernelName(bool emptyIfUnknown = false);
 #if defined(TARGET_LINUX)
   CStdString GetLinuxDistro();
 #endif

@@ -386,6 +386,31 @@ CStdString CSysInfo::GetCPUSerial()
   return "Serial: " + g_cpuInfo.getCPUSerial();
 }
 
+std::string CSysInfo::GetKernelName(bool emptyIfUnknown /*= false*/)
+{
+  static std::string kernelName;
+  if (kernelName.empty())
+  {
+#if defined(TARGET_WINDOWS)
+    OSVERSIONINFOEXW osvi;
+    if (sysGetVersionExWByRef(osvi) && osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
+      kernelName = "Windows NT";
+#elif defined(TARGET_POSIX)
+    struct utsname un;
+    if (uname(&un) == 0)
+      kernelName.assign(un.sysname);
+#endif // defined(TARGET_POSIX)
+
+    if (kernelName.empty())
+      kernelName = "Unknown kernel"; // can't detect
+  }
+
+  if (emptyIfUnknown && kernelName == "Unknown kernel")
+    return "";
+
+  return kernelName;
+}
+
 CStdString CSysInfo::GetManufacturer()
 {
   CStdString manufacturer = "";
