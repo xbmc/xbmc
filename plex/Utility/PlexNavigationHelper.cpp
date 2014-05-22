@@ -74,9 +74,9 @@ CStdString CPlexNavigationHelper::navigateToItem(CFileItemPtr item, const CURL &
   if (item->m_bIsFolder && (windowId == WINDOW_SHARED_CONTENT || windowId == WINDOW_HOME))
   {
     CURL u = CGUIPlexMediaWindow::GetRealDirectoryUrl(originalUrl);
-#if 0
-    u.SetProtocolOption("containerStart", "0");
-    u.SetProtocolOption("containerSize", boost::lexical_cast<std::string>(PLEX_DEFAULT_PAGE_SIZE));
+#ifdef USE_PAGING
+    u.SetOption("X-Plex-Container-Start", "0");
+    u.SetOption("X-Plex-Container-Size", boost::lexical_cast<std::string>(PLEX_DEFAULT_PAGE_SIZE));
 #endif
     cacheUrl = u.Get();
   }
