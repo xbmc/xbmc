@@ -143,7 +143,7 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
   if (item.m_mediaItems.size() > 0)
   {
     CFileItemPtr firstMedia = item.m_mediaItems[0];
-    const boost::unordered_map<CStdString, CVariant> pMap;
+    const boost::unordered_map<CStdString, CVariant> pMap = firstMedia->GetAllProperties();
     std::pair<CStdString, CVariant> p;
     BOOST_FOREACH(p, pMap)
       item.SetProperty(p.first, p.second);
