@@ -146,7 +146,10 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
     const boost::unordered_map<CStdString, CVariant> pMap = firstMedia->GetAllProperties();
     std::pair<CStdString, CVariant> p;
     BOOST_FOREACH(p, pMap)
-      item.SetProperty(p.first, p.second);
+    {
+      if (!item.HasProperty(p.first))
+        item.SetProperty(p.first, p.second);
+    }
 
     /* also forward art, this is the mediaTags */
     item.AppendArt(firstMedia->GetArt());
