@@ -101,13 +101,29 @@ DLNA_ORG_FLAGS_VAL = '01500000000000000000000000000000'
 void
 NPT_Console::Output(const char* msg) { }
 
+int ConvertLogLevel(int nptLogLevel)
+{
+    if (nptLogLevel >= NPT_LOG_LEVEL_FATAL)
+        return LOGFATAL;
+    if (nptLogLevel >= NPT_LOG_LEVEL_SEVERE)
+        return LOGERROR;
+    if (nptLogLevel >= NPT_LOG_LEVEL_WARNING)
+        return LOGWARNING;
+    if (nptLogLevel >= NPT_LOG_LEVEL_INFO)
+        return LOGNOTICE;
+    if (nptLogLevel >= NPT_LOG_LEVEL_FINE)
+        return LOGINFO;
+
+    return LOGDEBUG;
+}
+
 void
 UPnPLogger(const NPT_LogRecord* record)
 {
     if (!g_advancedSettings.CanLogComponent(LOGUPNP))
         return;
 
-    CLog::Log((record->m_Level / 100) - 1, "Platinum [%s]: %s", record->m_LoggerName, record->m_Message);
+    CLog::Log(ConvertLogLevel(record->m_Level), "Platinum [%s]: %s", record->m_LoggerName, record->m_Message);
 }
 
 namespace UPNP
