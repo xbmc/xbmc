@@ -304,16 +304,45 @@ OSStatus deviceChangedCB(AudioObjectID                       inObjectID,
                          const AudioObjectPropertyAddress    inAddresses[],
                          void*                               inClientData)
 {
-  CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - reenumerating");
-  CAEFactory::DeviceChange();
-  CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - done");
+  bool deviceChanged = false;
+  static AudioDeviceID oldDefaultDevice = 0;
+  AudioDeviceID currentDefaultOutputDevice = 0;
+
+  for (unsigned int i = 0; i < inNumberAddresses; i++)
+  {
+    switch (inAddresses[i].mSelector)
+    {
+      case kAudioHardwarePropertyDefaultOutputDevice:
+        currentDefaultOutputDevice = CCoreAudioHardware::GetDefaultOutputDevice();
+        // This listener is called on every change of the hardware
+        // device. So check if the default device has really changed.
+        if (oldDefaultDevice != currentDefaultOutputDevice)
+        {
+          deviceChanged = true;
+          oldDefaultDevice = currentDefaultOutputDevice;
+        }
+        break;
+      default:
+        deviceChanged = true;
+        break;
+    }
+    if (deviceChanged)
+      break;
+  }
+
+  if  (deviceChanged)
+  {
+    CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - reenumerating");
+    CAEFactory::DeviceChange();
+    CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - done");
+  }
   return noErr;
 }
 
 void RegisterDeviceChangedCB(bool bRegister, void *ref)
 {
   OSStatus ret = noErr;
-  const AudioObjectPropertyAddress inAdr =
+  AudioObjectPropertyAddress inAdr =
   {
     kAudioHardwarePropertyDevices,
     kAudioObjectPropertyScopeGlobal,
@@ -321,9 +350,17 @@ void RegisterDeviceChangedCB(bool bRegister, void *ref)
   };
 
   if (bRegister)
+  {
     ret = AudioObjectAddPropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
+    inAdr.mSelector = kAudioHardwarePropertyDefaultOutputDevice;
+    ret = AudioObjectAddPropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
+  }
   else
+  {
     ret = AudioObjectRemovePropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
+    inAdr.mSelector = kAudioHardwarePropertyDefaultOutputDevice;
+    ret = AudioObjectRemovePropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
+  }
 
   if (ret != noErr)
     CLog::Log(LOGERROR, "CCoreAudioAE::Deinitialize - error %s a listener callback for device changes!", bRegister?"attaching":"removing");
