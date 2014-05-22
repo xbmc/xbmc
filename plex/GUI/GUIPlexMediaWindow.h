@@ -111,8 +111,11 @@ private:
     int m_currentJobId;
     CURL m_sectionRoot;
     void UpdateSectionTitle();
-    bool m_hasAdvancedFilters;
+    bool UnwatchedEnabled() const;
+    std::string GetFilteredURI(const CFileItem &item) const;
 
+
+    bool m_hasAdvancedFilters;
     CCriticalSection m_filterValuesSection;
     std::string m_waitingForFilter;
     CEvent m_filterValuesEvent;

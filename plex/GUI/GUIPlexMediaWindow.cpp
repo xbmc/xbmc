@@ -716,6 +716,8 @@ bool CGUIPlexMediaWindow::OnSelect(int iItem)
     if (m_sectionFilter && m_sectionFilter->secondaryFiltersActivated())
     {
       CPlexSecondaryFilterPtr unwatchedFilter = m_sectionFilter->getSecondaryFilterOfName("unwatchedLeaves");
+      if (!unwatchedFilter)
+        unwatchedFilter = m_sectionFilter->getSecondaryFilterOfName("unwatched");
       if (unwatchedFilter && unwatchedFilter->isSelected())
       {
         CURL u(item->GetPath());
@@ -760,7 +762,8 @@ bool CGUIPlexMediaWindow::OnPlayMedia(int iItem)
   }
   else
   {
-    g_plexApplication.playQueueManager->create(*item, CPlexPlayQueueManager::getURIFromItem(*item));
+    std::string uri = GetFilteredURI(*item);
+    g_plexApplication.playQueueManager->create(*item, uri);
   }
 
   return true;
@@ -909,6 +912,59 @@ void CGUIPlexMediaWindow::QueueItem(const CFileItemPtr& item, bool next)
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIPlexMediaWindow::UnwatchedEnabled() const
+{
+  if (!m_sectionFilter)
+    return false;
+
+  CPlexSecondaryFilterPtr filter = m_sectionFilter->getSecondaryFilterOfName("unwatchedLeaves");
+  if (filter)
+    return filter->isSelected();
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+std::string CGUIPlexMediaWindow::GetFilteredURI(const CFileItem& item) const
+{
+  CURL itemUrl(item.GetPath());
+  CURL uri("plexserver://plex");
+
+  // first we check if this is the root, in that case we want to
+  // apply all our sorting and filtering that we have going on.
+  if (itemUrl.GetUrlWithoutOptions() == m_startDirectory && m_sectionFilter)
+  {
+    uri.SetFileName(m_sectionRoot.GetFileName());
+    uri = m_sectionFilter->addFiltersToUrl(uri);
+    if (uri.HasOption("unwatchedLeaves"))
+    {
+      uri.SetOption("unwatched", uri.GetOption("unwatchedLeaves"));
+      uri.RemoveOption("unwatchedLeaves");
+    }
+  }
+  else
+  {
+    uri.SetFileName(itemUrl.GetFileName());
+    // now forward the unwatched filter if set.
+    if (UnwatchedEnabled())
+      uri.SetOption("unwatched", "1");
+  }
+
+  if (item.GetPlexDirectoryType() == PLEX_DIR_TYPE_SHOW ||
+      (item.GetPlexDirectoryType() == PLEX_DIR_TYPE_SEASON && item.HasProperty("size")))
+  {
+    std::string fname = uri.GetFileName();
+    boost::replace_last(fname, "/children", "/allLeaves");
+    uri.SetFileName(fname);
+  }
+
+  // set sourceType
+  CStdString sourceType = boost::lexical_cast<CStdString>(PlexUtils::GetFilterType(item));
+  uri.SetOption("sourceType", sourceType);
+
+  return CPlexPlayQueueManager::getURIFromItem(item, uri.Get().substr(17, std::string::npos));
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIPlexMediaWindow::PlayAll(bool shuffle, const CFileItemPtr& fromHere)
 {
@@ -928,27 +984,8 @@ void CGUIPlexMediaWindow::PlayAll(bool shuffle, const CFileItemPtr& fromHere)
   if (fromHere)
     fromHereKey = fromHere->GetProperty("key").asString();
 
-  CURL itemsUrl(m_vecItems->GetPath());
-  CURL uriPart("plexserver://plex");
-
-  if (m_startDirectory == itemsUrl.GetUrlWithoutOptions())
-  {
-    uriPart.SetFileName(m_sectionRoot.GetFileName());
-    if (m_sectionFilter)
-      uriPart = m_sectionFilter->addFiltersToUrl(uriPart);
-  }
-  else
-    uriPart.SetFileName(itemsUrl.GetFileName());
-
-  CStdString sourceType = boost::lexical_cast<CStdString>(PlexUtils::GetFilterType(*m_vecItems));
-  uriPart.SetOption("sourceType", sourceType);
-
-  if (m_sectionFilter && m_sectionFilter->getSecondaryFilterOfName("unwatchedLeaves") &&
-      m_sectionFilter->getSecondaryFilterOfName("unwatchedLeaves")->isSelected())
-    uriPart.SetOption("unwatched", "1");
-
   // take out the plexserver://plex part from above when passing it down
-  CStdString uri = CPlexPlayQueueManager::getURIFromItem(*m_vecItems, uriPart.Get().substr(17, std::string::npos));
+  CStdString uri = GetFilteredURI(*m_vecItems);
 
   CPlexPlayQueueOptions options;
   options.startItemKey = fromHereKey;
