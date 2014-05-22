@@ -1016,7 +1016,9 @@ void PlexUtils::PauseRendering(bool bPause, bool bUseWaitDialog)
   // this allows several jobs to ask for pause and only resume when last
   // job is finished
   if (bPause)
+  {
     pauseRequestCount++;
+  }
   else
   {
     if (pauseRequestCount > 0)
