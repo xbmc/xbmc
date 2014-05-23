@@ -1,0 +1,13 @@
+* NEW
+      - Add the ability to queue items from the home window
+      - When you start playing music it will now take you to now playing directly
+      - Added opition to disable grainy effects in the fanart screensaver
+
+* FIXED
+      - Fix crash-on-start on certain windows machines
+      - Fix iTunes channel playback
+      - Allow queueing from the context menu even if we don't have a current PQ
+      - Fixed some performance in the navigation UI
+      - Fixed laggy busy wait dialog
+      - Fixed mediaTag properties
+      - Pause dataloading while playing movies, should improve playback
