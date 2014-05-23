@@ -176,6 +176,8 @@ void CGUIAudioManager::UnLoad()
       FreeSound(sound);
 #ifndef __PLEX__
       m_actionSoundMap.erase(it++);
+#else
+      it++;
 #endif
     }
     /* PLEX */
