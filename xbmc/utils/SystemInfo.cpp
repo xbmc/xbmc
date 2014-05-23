@@ -411,6 +411,42 @@ std::string CSysInfo::GetKernelName(bool emptyIfUnknown /*= false*/)
   return kernelName;
 }
 
+std::string CSysInfo::GetKernelVersionFull(void)
+{
+  static std::string kernelVersionFull;
+  if (!kernelVersionFull.empty())
+    return kernelVersionFull;
+
+#if defined(TARGET_WINDOWS)
+  OSVERSIONINFOEXW osvi;
+  if (sysGetVersionExWByRef(osvi))
+    kernelVersionFull = StringUtils::Format("%d.%d", osvi.dwMajorVersion, osvi.dwMinorVersion);
+#elif defined(TARGET_POSIX)
+  struct utsname un;
+  if (uname(&un) == 0)
+    kernelVersionFull.assign(un.release);
+#endif // defined(TARGET_POSIX)
+
+  if (kernelVersionFull.empty())
+    kernelVersionFull = "0.0.0"; // can't detect
+
+  return kernelVersionFull;
+}
+
+std::string CSysInfo::GetKernelVersion(void)
+{
+  static std::string kernelVersionClear;
+  if (kernelVersionClear.empty())
+  {
+    kernelVersionClear = GetKernelVersionFull();
+    const size_t erasePos = kernelVersionClear.find_first_not_of("0123456789.");
+    if (erasePos != std::string::npos)
+      kernelVersionClear.erase(erasePos);
+  }
+
+  return kernelVersionClear;
+}
+
 CStdString CSysInfo::GetManufacturer()
 {
   CStdString manufacturer = "";

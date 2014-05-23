@@ -104,6 +104,8 @@ public:
   bool GetRefurbInfo(CStdString& rfi_FirstBootTime, CStdString& rfi_PowerCycleCount);
 
   static std::string GetKernelName(bool emptyIfUnknown = false);
+  static std::string GetKernelVersionFull(void); // full version string, including "-generic", "-RELEASE" etc.
+  static std::string GetKernelVersion(void); // only digits with dots
 #if defined(TARGET_LINUX)
   CStdString GetLinuxDistro();
 #endif
