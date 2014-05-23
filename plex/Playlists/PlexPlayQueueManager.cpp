@@ -162,7 +162,7 @@ void CPlexPlayQueueManager::saveCurrentPlayQueue(const CPlexServerPtr& server,
   m_playQueueType = PlexUtils::GetMediaTypeFromItem(list);
 
   int playQueueID = list.GetProperty("playQueueID").asInteger();
-  if (playQueueID > 0)
+  if (playQueueID > 0 && !list.GetProperty("playQueueIsLocal").asBoolean())
   {
     CStdString path;
     path.Format("%d", playQueueID);

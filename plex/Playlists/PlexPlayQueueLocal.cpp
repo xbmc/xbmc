@@ -132,6 +132,8 @@ void CPlexPlayQueueLocal::OnJobComplete(unsigned int jobID, bool success, CJob* 
     else
       m_list->SetProperty("playQueueID", rand());
 
+    m_list->SetProperty("playQueueIsLocal", true);
+
     CApplicationMessenger::Get().PlexUpdatePlayQueue(type, fj->m_options.startPlaying);
   }
 }
