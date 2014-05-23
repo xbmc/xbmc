@@ -2506,10 +2506,16 @@
                 <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</condition>
               </and>
             </dependency>
+            <dependency type="enable">
+              <or>
+                <condition setting="videoplayer.usedisplayasclock" operator="!is">true</condition>
+                <condition setting="videoplayer.synctype" operator="!is">2</condition>
+              </or>
+            </dependency>
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="audiooutput.passthroughdevice" type="string" label="546" help="36372">
+        <setting id="audiooutput.passthroughdevice" type="string" parent="audiooutput.passthrough" label="546" help="36372">
           <level>2</level>
           <default>Default</default> <!-- will be properly set on startup -->
           <dependencies>
@@ -2526,7 +2532,7 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
-        <setting id="audiooutput.ac3passthrough" type="boolean" label="364" help="36365">
+        <setting id="audiooutput.ac3passthrough" type="boolean" parent="audiooutput.passthrough" label="364" help="36365">
           <level>2</level>
           <default>true</default>
           <dependencies>
@@ -2554,7 +2560,7 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="audiooutput.eac3passthrough" type="boolean" label="448" help="37016">
+        <setting id="audiooutput.eac3passthrough" type="boolean" parent="audiooutput.passthrough" label="448" help="37016">
           <level>2</level>
           <default>false</default>
           <dependencies>
@@ -2568,7 +2574,7 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="audiooutput.dtspassthrough" type="boolean" label="254" help="36366">
+        <setting id="audiooutput.dtspassthrough" type="boolean" parent="audiooutput.passthrough" label="254" help="36366">
           <level>2</level>
           <default>false</default>
           <dependencies>
@@ -2577,7 +2583,7 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="audiooutput.truehdpassthrough" type="boolean" label="349" help="36369">
+        <setting id="audiooutput.truehdpassthrough" type="boolean" parent="audiooutput.passthrough" label="349" help="36369">
           <level>2</level>
           <default>false</default>
           <dependencies>
@@ -2591,7 +2597,7 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="audiooutput.dtshdpassthrough" type="boolean" label="347" help="36370">
+        <setting id="audiooutput.dtshdpassthrough" type="boolean" parent="audiooutput.passthrough" label="347" help="36370">
           <level>2</level>
           <default>false</default>
           <dependencies>

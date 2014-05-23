@@ -27,6 +27,7 @@ using namespace ActiveAE;
 #include "cores/AudioEngine/Encoders/AEEncoderFFmpeg.h"
 
 #include "settings/Settings.h"
+#include "settings/lib/Setting.h"
 #include "settings/AdvancedSettings.h"
 #include "windowing/WindowingFactory.h"
 
@@ -2191,6 +2192,10 @@ void CActiveAE::OnSettingsChange(const std::string& setting)
 
 bool CActiveAE::SupportsRaw(AEDataFormat format, int samplerate)
 {
+  const CSetting *passthrough = CSettings::Get().GetSetting("audiooutput.passthrough");
+  if (!passthrough || !passthrough->IsEnabled())
+    return false;
+
   if (!m_sink.SupportsFormat(CSettings::Get().GetString("audiooutput.passthroughdevice"), format, samplerate))
     return false;
 
