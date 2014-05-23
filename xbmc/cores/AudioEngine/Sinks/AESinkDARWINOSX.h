@@ -59,8 +59,8 @@ private:
 
   bool               m_outputBitstream;   ///< true if we're bistreaming into a LinearPCM stream rather than AC3 stream.
   int16_t           *m_outputBuffer;      ///< buffer for bitstreaming
-  bool               m_planar;
-  float             *m_planarBuffer;      ///< buffer for planar conversion
+  unsigned int       m_planes;            ///< number of audio planes (1 if non-planar)
+  unsigned int       m_frameSizePerPlane; ///< frame size (per plane) in bytes
 
   AERingBuffer      *m_buffer;
   volatile bool      m_started;     // set once we get a callback from CoreAudio, which can take a little while.
