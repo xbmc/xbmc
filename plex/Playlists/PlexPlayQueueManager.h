@@ -77,7 +77,7 @@ class CPlexPlayQueueManager
   FRIEND_TEST(PlayQueueManagerTest, ReconcilePlayQueueChanges_largedataset);
 
 public:
-  CPlexPlayQueueManager() : m_playQueueVersion(0)
+  CPlexPlayQueueManager() : m_playQueueVersion(0), m_playQueueType(PLEX_MEDIA_TYPE_UNKNOWN)
   {
 
   }
@@ -107,6 +107,7 @@ public:
                      const CPlexPlayQueueOptions& = CPlexPlayQueueOptions());
   void loadSavedPlayQueue();
   void playCurrentId(int id);
+  void QueueItem(const CFileItemPtr &item, bool next);
 
   int getCurrentPlayQueueVersion() const
   {

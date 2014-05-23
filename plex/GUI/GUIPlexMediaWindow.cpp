@@ -532,7 +532,7 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
     if (m_viewControl.GetSelectedItem() != -1)
     {
       CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
-      QueueItem(pItem, false);
+      g_plexApplication.playQueueManager->QueueItem(pItem, false);
     }
   }
 
@@ -843,7 +843,7 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     case CONTEXT_BUTTON_QUEUE_ITEM:
     case CONTEXT_BUTTON_PLAY_ONLY_THIS:
     {
-      QueueItem(item, button == CONTEXT_BUTTON_PLAY_ONLY_THIS);
+      g_plexApplication.playQueueManager->QueueItem(item, button == CONTEXT_BUTTON_PLAY_ONLY_THIS);
       break;
     }
 
@@ -876,40 +876,6 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
 
   return true;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIPlexMediaWindow::QueueItem(const CFileItemPtr& item, bool next)
-{
-  if (!item)
-    return;
-
-  ePlexMediaType type = g_plexApplication.playQueueManager->getCurrentPlayQueueType();
-
-  bool success = false;
-  if (type == PLEX_MEDIA_TYPE_UNKNOWN || (type == PLEX_MEDIA_TYPE_MUSIC && IsVideoContainer()) ||
-      (type == PLEX_MEDIA_TYPE_VIDEO && IsMusicContainer()))
-  {
-    CPlexPlayQueueOptions options;
-    options.startPlaying = false;
-    success = g_plexApplication.playQueueManager->create(*item, "", options);
-
-    if ((g_application.IsPlayingAudio() && IsVideoContainer()) ||
-        (g_application.IsPlayingVideo() && IsMusicContainer()))
-      CApplicationMessenger::Get().MediaStop();
-
-  }
-  else
-  {
-    success = g_plexApplication.playQueueManager->addItem(item, next);
-  }
-
-  if (success)
-  {
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
-                                          "Item Queued", "The item was added the current queue..",
-                                          2500L, false);
-  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

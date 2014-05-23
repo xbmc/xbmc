@@ -15,6 +15,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "LocalizeStrings.h"
 #include "Application.h"
+#include "dialogs/GUIDialogKaiToast.h"
 
 using namespace PLAYLIST;
 
@@ -393,3 +394,40 @@ bool CPlexPlayQueueManager::refreshCurrent()
     return m_currentImpl->refreshCurrent();
   return false;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexPlayQueueManager::QueueItem(const CFileItemPtr& item, bool next)
+{
+  if (!item)
+    return;
+
+  ePlexMediaType type = getCurrentPlayQueueType();
+
+  bool isItemAudio = (PlexUtils::GetMediaTypeFromItem(*item)==PLEX_MEDIA_TYPE_MUSIC);
+  bool isItemVideo = (PlexUtils::GetMediaTypeFromItem(*item)==PLEX_MEDIA_TYPE_VIDEO);
+
+  bool success = false;
+  if (type == PLEX_MEDIA_TYPE_UNKNOWN || (type == PLEX_MEDIA_TYPE_MUSIC && isItemVideo) ||
+      (type == PLEX_MEDIA_TYPE_VIDEO && isItemAudio) )
+  {
+    CPlexPlayQueueOptions options;
+    options.startPlaying = false;
+    success = create(*item, "", options);
+
+    if ((g_application.IsPlayingAudio() && isItemVideo) ||
+        (g_application.IsPlayingVideo() && isItemAudio))
+      CApplicationMessenger::Get().MediaStop();
+  }
+  else
+  {
+    success = addItem(item, next);
+  }
+
+  if (success)
+  {
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
+                                          "Item Queued", "The item was added the current queue..",
+                                          2500L, false);
+  }
+}
+

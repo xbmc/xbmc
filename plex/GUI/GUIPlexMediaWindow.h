@@ -74,7 +74,6 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback
     void CheckPlexFilters(CFileItemList &list);
     void UpdateButtons();
     void PlayAll(bool shuffle, const CFileItemPtr &fromHere = CFileItemPtr());
-    void QueueItem(const CFileItemPtr &item, bool next);
     void PlayAllPlayQueue(const CPlexServerPtr &server, bool shuffle, const CFileItemPtr &fromHere);
     void PlayAllLocalPlaylist(bool shuffle, const CFileItemPtr &fromHere);
     bool MatchPlexContent(const CStdString& matchStr);
