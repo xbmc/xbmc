@@ -23,3 +23,7 @@ msgstr ""
 msgctxt "#30001"
 msgid "Show Image Info"
 msgstr ""
+
+msgctxt "#30002"
+msgid "Use grainy effect"
+msgstr ""

@@ -51,19 +51,6 @@ bool CGUIPlexScreenSaverPhoto::OnMessage(CGUIMessage &message)
 
         CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(art), this);
 
-        if (XFILE::CFile::Exists("special://xbmc/media/SlideshowOverlay.png"))
-        {
-          if (m_overlayImage)
-            delete m_overlayImage;
-
-          m_overlayImage = new CGUIImage(GetID(), 1235, 0, 0,
-                                         g_graphicsContext.GetWidth(),
-                                         g_graphicsContext.GetHeight(),
-                                         CTextureInfo());
-          m_overlayImage->SetFileName("special://xbmc/media/SlideshowOverlay.png");
-        }
-
-
         CLabelInfo info;
         info.textColor = 0xfff5f5f5;
         info.font = g_fontManager.GetFont("Regular-30", true);
@@ -108,8 +95,20 @@ bool CGUIPlexScreenSaverPhoto::OnMessage(CGUIMessage &message)
           m_imageLabel->UpdateInfo();
         }
 
-        m_moveTimer.restart();
+        if (screensaver->GetSetting("overlay") == "true" &&
+            XFILE::CFile::Exists("special://xbmc/media/SlideshowOverlay.png"))
+        {
+          if (m_overlayImage)
+            delete m_overlayImage;
 
+          m_overlayImage = new CGUIImage(GetID(), 1235, 0, 0,
+                                         g_graphicsContext.GetWidth(),
+                                         g_graphicsContext.GetHeight(),
+                                         CTextureInfo());
+          m_overlayImage->SetFileName("special://xbmc/media/SlideshowOverlay.png");
+        }
+
+        m_moveTimer.restart();
       }
       break;
     }
