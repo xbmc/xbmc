@@ -760,7 +760,7 @@ bool CApplication::Create()
       CLog::Log(LOGNOTICE, "WARNING: unsupported ffmpeg version detected");
   }
 #elif defined(TARGET_WINDOWS)
-  CLog::Log(LOGNOTICE, "Running on %s", g_sysinfo.GetKernelVersion().c_str());
+  CLog::Log(LOGNOTICE, "Running on %s", g_sysinfo.GetOsNameWithVersionInfo().c_str());
 #else
   CLog::Log(LOGNOTICE, "Running on unknown platform");
 #endif

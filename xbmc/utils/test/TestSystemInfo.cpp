@@ -98,9 +98,9 @@ TEST_F(TestSystemInfo, IsWindowsVersionAtLeast_Vista)
                                   CSysInfo::WindowsVersionVista)) << std::endl;
 }
 
-TEST_F(TestSystemInfo, GetKernelVersion)
+TEST_F(TestSystemInfo, GetOsNameWithVersionInfo)
 {
-  std::cout << "GetKernelVersion(): " << CSysInfo::GetKernelVersion() << std::endl;
+  std::cout << "GetOsNameWithVersionInfo(): " << CSysInfo::GetOsNameWithVersionInfo() << std::endl;
 }
 
 TEST_F(TestSystemInfo, GetCPUModel)

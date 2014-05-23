@@ -102,7 +102,7 @@ bool CSysInfoJob::DoWork()
   m_info.internetState     = GetInternetState();
   m_info.videoEncoder      = GetVideoEncoder();
   m_info.cpuFrequency      = GetCPUFreqInfo();
-  m_info.kernelVersion     = CSysInfo::GetKernelVersion();
+  m_info.kernelVersion     = CSysInfo::GetOsNameWithVersionInfo();
   m_info.macAddress        = GetMACAddress();
   m_info.batteryLevel      = GetBatteryLevel();
   return true;
@@ -575,7 +575,7 @@ int CSysInfo::GetXbmcBitness(void)
 #endif
 }
 
-CStdString CSysInfo::GetKernelVersion()
+std::string CSysInfo::GetOsNameWithVersionInfo(void)
 {
 #if defined(TARGET_DARWIN)
   return g_sysinfo.GetUnameVersion();

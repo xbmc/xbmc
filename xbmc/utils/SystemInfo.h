@@ -129,7 +129,7 @@ public:
   static int GetKernelBitness(void);
   static int GetXbmcBitness(void);
   static std::string GetKernelCpuFamily(void);
-  static CStdString GetKernelVersion();
+  static std::string GetOsNameWithVersionInfo(void);
   CStdString GetCPUModel();
   CStdString GetCPUBogoMips();
   CStdString GetCPUHardware();
