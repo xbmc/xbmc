@@ -149,8 +149,17 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
   
 bool CSetting::IsEnabled() const
 {
-  if (m_dependencies.empty())
+  if (m_dependencies.empty() && m_parentSetting.empty())
     return m_enabled;
+
+  // if the setting has a parent setting and that parent setting is disabled
+  // the setting should automatically also be disabled
+  if (!m_parentSetting.empty())
+  {
+    CSetting *parentSetting = m_settingsManager->GetSetting(m_parentSetting);
+    if (parentSetting != NULL && !parentSetting->IsEnabled())
+      return false;
+  }
 
   bool enabled = true;
   for (SettingDependencies::const_iterator depIt = m_dependencies.begin(); depIt != m_dependencies.end(); ++depIt)

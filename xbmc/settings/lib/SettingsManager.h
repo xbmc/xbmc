@@ -409,6 +409,7 @@ private:
   bool UpdateSettings(const TiXmlNode *root);
   bool UpdateSetting(const TiXmlNode *node, CSetting *setting, const CSettingUpdate& update);
   void UpdateSettingByDependency(const std::string &settingId, const CSettingDependency &dependency);
+  void UpdateSettingByDependency(const std::string &settingId, SettingDependencyType dependencyType);
 
   typedef enum {
     SettingOptionsFillerTypeNone = 0,
@@ -422,6 +423,7 @@ private:
   typedef struct {
     CSetting *setting;
     SettingDependencyMap dependencies;
+    std::set<std::string> children;
     CallbackSet callbacks;
   } Setting;
 
