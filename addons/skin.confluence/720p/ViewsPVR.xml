@@ -662,7 +662,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<left>725</left>
+						<left>225</left>
 						<top>0</top>
 						<width>500</width>
 						<height>40</height>
@@ -737,7 +737,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<left>725</left>
+						<left>225</left>
 						<top>0</top>
 						<width>500</width>
 						<height>40</height>
@@ -1810,7 +1810,7 @@
 							<texture border="5">StackFO.png</texture>
 						</control>
 						<control type="label">
-							<left>150</left>
+							<left>10</left>
 							<top>0</top>
 							<width>280</width>
 							<height>40</height>
@@ -1929,7 +1929,7 @@
 							<visible>Control.HasFocus(15)</visible>
 						</control>
 						<control type="label">
-							<left>150</left>
+							<left>10</left>
 							<top>0</top>
 							<width>280</width>
 							<height>40</height>
@@ -2147,7 +2147,7 @@
 							<texture border="5">StackFO.png</texture>
 						</control>
 						<control type="label">
-							<left>50</left>
+							<left>0</left>
 							<top>0</top>
 							<width>100</width>
 							<height>40</height>
@@ -2285,7 +2285,7 @@
 							<visible>Control.HasFocus(16)</visible>
 						</control>
 						<control type="label">
-							<left>50</left>
+							<left>0</left>
 							<top>0</top>
 							<width>100</width>
 							<height>40</height>

@@ -37,7 +37,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<left>680</left>
+						<left>280</left>
 						<top>0</top>
 						<width>400</width>
 						<height>40</height>
@@ -50,7 +50,7 @@
 						<visible>!Window.IsVisible(Videos)</visible>
 					</control>
 					<control type="label">
-						<left>620</left>
+						<left>220</left>
 						<top>0</top>
 						<width>400</width>
 						<height>40</height>
@@ -138,7 +138,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<left>680</left>
+						<left>280</left>
 						<top>0</top>
 						<width>400</width>
 						<height>40</height>
@@ -151,7 +151,7 @@
 						<visible>!Window.IsVisible(Videos)</visible>
 					</control>
 					<control type="label">
-						<left>620</left>
+						<left>220</left>
 						<top>0</top>
 						<width>400</width>
 						<height>40</height>
@@ -283,7 +283,7 @@
 						<visible>Container.Content(Episodes)</visible>
 					</control>
 					<control type="label">
-						<left>108</left>
+						<left>8</left>
 						<top>160</top>
 						<width>200</width>
 						<height>25</height>
@@ -326,7 +326,7 @@
 						<visible>Container.Content(Episodes)</visible>
 					</control>
 					<control type="label">
-						<left>108</left>
+						<left>8</left>
 						<top>160</top>
 						<width>200</width>
 						<height>25</height>
@@ -357,7 +357,7 @@
 						<texture background="true">$VAR[PosterThumb]</texture>
 					</control>
 					<control type="label">
-						<left>108</left>
+						<left>8</left>
 						<top>240</top>
 						<width>200</width>
 						<height>25</height>
@@ -388,7 +388,7 @@
 						<texture background="true">$VAR[PosterThumb]</texture>
 					</control>
 					<control type="label">
-						<left>108</left>
+						<left>8</left>
 						<top>240</top>
 						<width>200</width>
 						<height>25</height>
@@ -546,7 +546,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<left>1060</left>
+						<left>60</left>
 						<top>0</top>
 						<width>1000</width>
 						<height>40</height>
@@ -559,7 +559,7 @@
 						<visible>!Window.IsVisible(Videos)</visible>
 					</control>
 					<control type="label">
-						<left>1005</left>
+						<left>65</left>
 						<top>0</top>
 						<width>940</width>
 						<height>40</height>
@@ -654,7 +654,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<left>1060</left>
+						<left>60</left>
 						<top>0</top>
 						<width>1000</width>
 						<height>40</height>
@@ -667,7 +667,7 @@
 						<visible>!Window.IsVisible(Videos)</visible>
 					</control>
 					<control type="label">
-						<left>1005</left>
+						<left>65</left>
 						<top>0</top>
 						<width>940</width>
 						<height>40</height>

@@ -793,7 +793,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<left>510</left>
+						<left>10</left>
 						<top>0</top>
 						<width>500</width>
 						<height>40</height>
@@ -881,7 +881,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<left>510</left>
+						<left>10</left>
 						<top>0</top>
 						<width>500</width>
 						<height>40</height>
@@ -1243,7 +1243,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<left>510</left>
+						<left>10</left>
 						<top>0</top>
 						<width>500</width>
 						<height>40</height>
@@ -1331,7 +1331,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<left>510</left>
+						<left>10</left>
 						<top>0</top>
 						<width>500</width>
 						<height>40</height>

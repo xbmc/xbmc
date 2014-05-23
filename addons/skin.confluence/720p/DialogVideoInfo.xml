@@ -190,7 +190,7 @@
 						<scrolltime>200</scrolltime>
 						<itemlayout height="30">
 							<control type="label">
-								<left>165</left>
+								<left>5</left>
 								<top>0</top>
 								<width>160</width>
 								<height>30</height>
@@ -225,7 +225,7 @@
 								<include>VisibleFadeEffect</include>
 							</control>
 							<control type="label">
-								<left>165</left>
+								<left>5</left>
 								<top>0</top>
 								<width>160</width>
 								<height>30</height>
@@ -370,7 +370,7 @@
 						<scrolltime>200</scrolltime>
 						<itemlayout height="30">
 							<control type="label">
-								<left>165</left>
+								<left>5</left>
 								<top>0</top>
 								<width>160</width>
 								<height>30</height>
@@ -405,7 +405,7 @@
 								<include>VisibleFadeEffect</include>
 							</control>
 							<control type="label">
-								<left>165</left>
+								<left>5</left>
 								<top>0</top>
 								<width>160</width>
 								<height>30</height>
@@ -515,7 +515,7 @@
 						<scrolltime>200</scrolltime>
 						<itemlayout height="30">
 							<control type="label">
-								<left>165</left>
+								<left>5</left>
 								<top>0</top>
 								<width>160</width>
 								<height>30</height>
@@ -550,7 +550,7 @@
 								<include>VisibleFadeEffect</include>
 							</control>
 							<control type="label">
-								<left>165</left>
+								<left>5</left>
 								<top>0</top>
 								<width>160</width>
 								<height>30</height>
@@ -680,7 +680,7 @@
 						<scrolltime>200</scrolltime>
 						<itemlayout height="30">
 							<control type="label">
-								<left>165</left>
+								<left>5</left>
 								<top>0</top>
 								<width>160</width>
 								<height>30</height>
@@ -715,7 +715,7 @@
 								<include>VisibleFadeEffect</include>
 							</control>
 							<control type="label">
-								<left>165</left>
+								<left>5</left>
 								<top>0</top>
 								<width>160</width>
 								<height>30</height>

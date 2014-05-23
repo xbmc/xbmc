@@ -93,7 +93,7 @@
 				<scrolltime>200</scrolltime>
 				<itemlayout height="25">
 					<control type="label">
-						<left>275</left>
+						<left>0</left>
 						<top>0</top>
 						<width>550</width>
 						<height>25</height>
@@ -106,7 +106,7 @@
 				</itemlayout>
 				<focusedlayout height="25">
 					<control type="label">
-						<left>275</left>
+						<left>0</left>
 						<top>0</top>
 						<width>550</width>
 						<height>25</height>
@@ -120,7 +120,7 @@
 						<visible>!Control.HasFocus(110)</visible>
 					</control>
 					<control type="label">
-						<left>275</left>
+						<left>0</left>
 						<top>0</top>
 						<width>550</width>
 						<height>25</height>
