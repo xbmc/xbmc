@@ -115,7 +115,10 @@ void CPlexPlayQueueLocal::OnJobComplete(unsigned int jobID, bool success, CJob* 
       m_list->Randomize();
 
     if (!fj->m_options.showPrompts && m_list->Get(0))
-      m_list->Get(0)->SetProperty("forceStartOffset", true);
+    {
+      m_list->Get(0)->SetProperty("avoidPrompts", true);
+      PlexUtils::SetItemResumeOffset(m_list->Get(0), fj->m_options.resumeOffset);
+    }
 
     if (!fj->m_options.startItemKey.empty())
     {

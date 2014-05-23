@@ -58,7 +58,9 @@ int CGUIDialogPlexMedia::ProcessMediaChoice(const CFileItem& file)
     bool isLibraryItem = file.IsPlexMediaServerLibrary();
 
     // See if we're offering a choice.
-    if (isLibraryItem || (!isLibraryItem && onlineQuality == PLEX_ONLINE_QUALITY_ALWAYS_ASK))
+    // avoidPrompts comes from PlexPlayQueueServer
+    if (!file.GetProperty("avoidPrompts").asBoolean() &&
+        (isLibraryItem || (!isLibraryItem && onlineQuality == PLEX_ONLINE_QUALITY_ALWAYS_ASK)))
     {
       CContextButtons choices;
 
@@ -79,6 +81,12 @@ int CGUIDialogPlexMedia::ProcessMediaChoice(const CFileItem& file)
     }
     else
     {
+      if (onlineQuality == PLEX_ONLINE_QUALITY_ALWAYS_ASK)
+        // if we are here and the quality is always ask it must mean
+        // that we are not allowed to show any prompts, so let's just try
+        // hit something general, which in this case will be 720p.
+        onlineQuality = PLEX_ONLINE_QUALITY_720p;
+
       selectedMediaItem = CPlexTranscoderClient::autoSelectQuality(file, onlineQuality);
     }
   }

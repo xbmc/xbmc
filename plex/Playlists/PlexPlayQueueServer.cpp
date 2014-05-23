@@ -210,7 +210,10 @@ void CPlexPlayQueueServer::OnJobComplete(unsigned int jobID, bool success, CJob*
     }
 
     if (!fj->m_options.showPrompts && m_list->Get(0))
+    {
+      m_list->Get(0)->SetProperty("avoidPrompts", true);
       PlexUtils::SetItemResumeOffset(m_list->Get(0), fj->m_options.resumeOffset);
+    }
 
     CApplicationMessenger::Get().PlexUpdatePlayQueue(type, fj->m_options.startPlaying);
   }
