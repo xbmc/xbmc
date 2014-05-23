@@ -186,9 +186,9 @@
 							<texture border="5">MenuItemNF.png</texture>
 						</control>
 						<control type="label">
-							<left>250</left>
+							<left>10</left>
 							<top>4</top>
-							<width>380</width>
+							<width>240</width>
 							<height>25</height>
 							<font>font24_title</font>
 							<textcolor>grey3</textcolor>
@@ -197,9 +197,9 @@
 							<label>$INFO[ListItem.Label]</label>
 						</control>
 						<control type="label">
-							<left>250</left>
+							<left>10</left>
 							<top>32</top>
-							<width>870</width>
+							<width>240</width>
 							<height>20</height>
 							<font>font13</font>
 							<textcolor>grey2</textcolor>
@@ -218,9 +218,9 @@
 							<animation effect="fade" start="100" end="50" time="100" condition="!Control.HasFocus(9000)">Conditional</animation>
 						</control>
 						<control type="label">
-							<left>250</left>
+							<left>10</left>
 							<top>4</top>
-							<width>380</width>
+							<width>240</width>
 							<height>25</height>
 							<font>font24_title</font>
 							<textcolor>white</textcolor>
@@ -229,9 +229,9 @@
 							<label>$INFO[ListItem.Label]</label>
 						</control>
 						<control type="label">
-							<left>250</left>
+							<left>10</left>
 							<top>32</top>
-							<width>870</width>
+							<width>240</width>
 							<height>20</height>
 							<font>font13</font>
 							<textcolor>grey2</textcolor>
@@ -445,6 +445,7 @@
 									<width>80</width>
 									<height>115</height>
 									<texture background="true">$INFO[ListItem.Icon]</texture>
+									<aspectratio>keep</aspectratio>
 								</control>
 								<control type="image">
 									<left>50</left>
@@ -530,6 +531,7 @@
 									<width>80</width>
 									<height>115</height>
 									<texture background="true">$INFO[ListItem.Icon]</texture>
+									<aspectratio>keep</aspectratio>
 								</control>
 								<control type="image">
 									<left>50</left>
@@ -677,6 +679,7 @@
 									<width>360</width>
 									<height>65</height>
 									<texture background="true">$INFO[ListItem.Icon]</texture>
+									<aspectratio>keep</aspectratio>
 								</control>
 								<control type="image">
 									<left>330</left>
@@ -687,7 +690,7 @@
 									<visible>IntegerGreaterThan(ListItem.Property(PlayCount),0)</visible>
 								</control>
 								<control type="label">
-									<left>187</left>
+									<left>7</left>
 									<top>75</top>
 									<width>360</width>
 									<height>15</height>
@@ -698,7 +701,7 @@
 									<aligny>center</aligny>
 								</control>
 								<control type="label">
-									<left>187</left>
+									<left>7</left>
 									<top>95</top>
 									<width>360</width>
 									<height>15</height>
@@ -733,6 +736,7 @@
 									<width>360</width>
 									<height>65</height>
 									<texture background="true">$INFO[ListItem.Icon]</texture>
+									<aspectratio>keep</aspectratio>
 								</control>
 								<control type="image">
 									<left>330</left>
@@ -743,7 +747,7 @@
 									<visible>IntegerGreaterThan(ListItem.Property(PlayCount),0)</visible>
 								</control>
 								<control type="label">
-									<left>187</left>
+									<left>7</left>
 									<top>75</top>
 									<width>360</width>
 									<height>15</height>
@@ -754,7 +758,7 @@
 									<aligny>center</aligny>
 								</control>
 								<control type="label">
-									<left>187</left>
+									<left>7</left>
 									<top>95</top>
 									<width>360</width>
 									<height>15</height>
@@ -850,6 +854,7 @@
 									<width>80</width>
 									<height>115</height>
 									<texture background="true">$INFO[ListItem.Icon]</texture>
+									<aspectratio>keep</aspectratio>
 								</control>
 								<control type="label">
 									<left>100</left>
@@ -885,6 +890,7 @@
 									<width>80</width>
 									<height>115</height>
 									<texture background="true">$INFO[ListItem.Icon]</texture>
+									<aspectratio>keep</aspectratio>
 								</control>
 								<control type="label">
 									<left>100</left>
@@ -981,6 +987,7 @@
 									<height>90</height>
 									<aspectratio>scale</aspectratio>
 									<texture background="true">$INFO[ListItem.Icon]</texture>
+									<aspectratio>keep</aspectratio>
 								</control>
 								<control type="image">
 									<left>120</left>
@@ -1035,6 +1042,7 @@
 									<height>90</height>
 									<aspectratio>scale</aspectratio>
 									<texture background="true">$INFO[ListItem.Icon]</texture>
+									<aspectratio>keep</aspectratio>
 								</control>
 								<control type="image">
 									<left>120</left>
@@ -1149,6 +1157,7 @@
 									<width>120</width>
 									<height>90</height>
 									<texture background="true">$INFO[ListItem.Icon]</texture>
+									<aspectratio>keep</aspectratio>
 								</control>
 								<control type="image">
 									<left>100</left>
@@ -1213,6 +1222,7 @@
 									<width>120</width>
 									<height>90</height>
 									<texture background="true">$INFO[ListItem.Icon]</texture>
+									<aspectratio>keep</aspectratio>
 								</control>
 								<control type="image">
 									<left>100</left>
@@ -1644,6 +1654,7 @@
 									<width>90</width>
 									<height>90</height>
 									<texture background="true">$INFO[ListItem.Icon]</texture>
+									<aspectratio>keep</aspectratio>
 								</control>
 								<control type="label">
 									<left>110</left>
@@ -1700,6 +1711,7 @@
 									<width>90</width>
 									<height>90</height>
 									<texture background="true">$INFO[ListItem.Icon]</texture>
+									<aspectratio>keep</aspectratio>
 								</control>
 								<control type="label">
 									<left>110</left>

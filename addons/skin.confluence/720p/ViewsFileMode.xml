@@ -37,7 +37,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<left>680</left>
+						<left>280</left>
 						<top>0</top>
 						<width>400</width>
 						<height>40</height>
@@ -50,7 +50,7 @@
 						<visible>!Window.IsVisible(Videos)</visible>
 					</control>
 					<control type="label">
-						<left>620</left>
+						<left>220</left>
 						<top>0</top>
 						<width>400</width>
 						<height>40</height>
@@ -69,6 +69,7 @@
 						<width>40</width>
 						<height>26</height>
 						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<aspectratio>keep</aspectratio>
 						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
 						<visible>!ListItem.IsStereoscopic</visible>
 					</control>
@@ -87,6 +88,7 @@
 						<width>20</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
+						<aspectratio>keep</aspectratio>
 						<visible>Window.IsVisible(Videos) + !ListItem.IsResumable</visible>
 					</control>
 					<control type="image">
@@ -138,7 +140,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<left>680</left>
+						<left>280</left>
 						<top>0</top>
 						<width>400</width>
 						<height>40</height>
@@ -151,7 +153,7 @@
 						<visible>!Window.IsVisible(Videos)</visible>
 					</control>
 					<control type="label">
-						<left>620</left>
+						<left>220</left>
 						<top>0</top>
 						<width>400</width>
 						<height>40</height>
@@ -170,6 +172,7 @@
 						<width>40</width>
 						<height>26</height>
 						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<aspectratio>keep</aspectratio>
 						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
 						<visible>!ListItem.IsStereoscopic</visible>
 					</control>
@@ -188,6 +191,7 @@
 						<width>20</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
+						<aspectratio>keep</aspectratio>
 						<visible>Window.IsVisible(Videos) + !ListItem.IsResumable</visible>
 					</control>
 					<control type="image">
@@ -269,6 +273,7 @@
 						<bordertexture border="5">button-nofocus.png</bordertexture>
 						<bordersize>5</bordersize>
 						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
 						<visible>!Container.Content(Episodes)</visible>
 					</control>
 					<control type="image">
@@ -283,7 +288,7 @@
 						<visible>Container.Content(Episodes)</visible>
 					</control>
 					<control type="label">
-						<left>108</left>
+						<left>8</left>
 						<top>160</top>
 						<width>200</width>
 						<height>25</height>
@@ -312,6 +317,7 @@
 						<bordertexture border="5">folder-focus.png</bordertexture>
 						<bordersize>5</bordersize>
 						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
 						<visible>!Container.Content(Episodes)</visible>
 					</control>
 					<control type="image">
@@ -326,7 +332,7 @@
 						<visible>Container.Content(Episodes)</visible>
 					</control>
 					<control type="label">
-						<left>108</left>
+						<left>8</left>
 						<top>160</top>
 						<width>200</width>
 						<height>25</height>
@@ -355,9 +361,10 @@
 						<bordertexture border="5">button-nofocus.png</bordertexture>
 						<bordersize>5</bordersize>
 						<texture background="true">$VAR[PosterThumb]</texture>
+						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">
-						<left>108</left>
+						<left>8</left>
 						<top>240</top>
 						<width>200</width>
 						<height>25</height>
@@ -386,9 +393,10 @@
 						<bordertexture border="5">folder-focus.png</bordertexture>
 						<bordersize>5</bordersize>
 						<texture background="true">$VAR[PosterThumb]</texture>
+						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">
-						<left>108</left>
+						<left>8</left>
 						<top>240</top>
 						<width>200</width>
 						<height>25</height>
@@ -454,6 +462,7 @@
 						<bordertexture border="5">button-nofocus.png</bordertexture>
 						<bordersize>5</bordersize>
 						<texture background="true">$VAR[BannerThumb]</texture>
+						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="image">
 						<left>500</left>
@@ -473,6 +482,7 @@
 						<bordertexture border="5">folder-focus.png</bordertexture>
 						<bordersize>5</bordersize>
 						<texture background="true">$VAR[BannerThumb]</texture>
+						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="image">
 						<left>500</left>
@@ -532,6 +542,7 @@
 						<width>40</width>
 						<height>32</height>
 						<texture background="true">$INFO[ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">
 						<left>60</left>
@@ -546,7 +557,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<left>1060</left>
+						<left>60</left>
 						<top>0</top>
 						<width>1000</width>
 						<height>40</height>
@@ -559,7 +570,7 @@
 						<visible>!Window.IsVisible(Videos)</visible>
 					</control>
 					<control type="label">
-						<left>1005</left>
+						<left>65</left>
 						<top>0</top>
 						<width>940</width>
 						<height>40</height>
@@ -578,6 +589,7 @@
 						<width>40</width>
 						<height>26</height>
 						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<aspectratio>keep</aspectratio>
 						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
 						<visible>!ListItem.IsStereoscopic</visible>
 					</control>
@@ -596,6 +608,7 @@
 						<width>20</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
+						<aspectratio>keep</aspectratio>
 						<visible>Window.IsVisible(Videos) + !ListItem.IsResumable</visible>
 					</control>
 					<control type="image">
@@ -640,6 +653,7 @@
 						<width>40</width>
 						<height>32</height>
 						<texture background="true">$INFO[ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">
 						<left>60</left>
@@ -654,7 +668,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<left>1060</left>
+						<left>60</left>
 						<top>0</top>
 						<width>1000</width>
 						<height>40</height>
@@ -667,7 +681,7 @@
 						<visible>!Window.IsVisible(Videos)</visible>
 					</control>
 					<control type="label">
-						<left>1005</left>
+						<left>65</left>
 						<top>0</top>
 						<width>940</width>
 						<height>40</height>
@@ -686,6 +700,7 @@
 						<width>40</width>
 						<height>26</height>
 						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<aspectratio>keep</aspectratio>
 						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
 						<visible>!ListItem.IsStereoscopic</visible>
 					</control>
@@ -704,6 +719,7 @@
 						<width>20</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
+						<aspectratio>keep</aspectratio>
 						<visible>Window.IsVisible(Videos) + !ListItem.IsResumable</visible>
 					</control>
 					<control type="image">

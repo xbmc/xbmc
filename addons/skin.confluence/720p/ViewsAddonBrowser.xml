@@ -38,7 +38,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<left>555</left>
+						<left>55</left>
 						<top>0</top>
 						<width>500</width>
 						<height>40</height>
@@ -90,7 +90,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<left>555</left>
+						<left>55</left>
 						<top>0</top>
 						<width>500</width>
 						<height>40</height>
@@ -270,6 +270,7 @@
 						<bordersize>5</bordersize>
 						<fadetime>100</fadetime>
 						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="image">
 						<left>1</left>
@@ -281,12 +282,13 @@
 						<fadetime>100</fadetime>
 						<colordiffuse>ff333333</colordiffuse>
 						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
 						<visible>!IsEmpty(ListItem.Property(Addon.broken))</visible>
 					</control>
 					<control type="label">
-						<left>96</left>
+						<left>1</left>
 						<top>70</top>
-						<width>190</width>
+						<width>191</width>
 						<height>25</height>
 						<font>font13_title</font>
 						<textcolor>ffaa0000</textcolor>
@@ -299,9 +301,9 @@
 						<visible>!IsEmpty(ListItem.Property(Addon.broken))</visible>
 					</control>
 					<control type="label">
-						<left>96</left>
+						<left>1</left>
 						<top>160</top>
-						<width>190</width>
+						<width>191</width>
 						<height>25</height>
 						<font>font12</font>
 						<textcolor>grey2</textcolor>
@@ -321,6 +323,7 @@
 						<bordersize>5</bordersize>
 						<fadetime>100</fadetime>
 						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="image">
 						<left>1</left>
@@ -332,12 +335,13 @@
 						<fadetime>100</fadetime>
 						<colordiffuse>ff333333</colordiffuse>
 						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
 						<visible>!IsEmpty(ListItem.Property(Addon.broken))</visible>
 					</control>
 					<control type="label">
-						<left>96</left>
+						<left>1</left>
 						<top>70</top>
-						<width>190</width>
+						<width>191</width>
 						<height>25</height>
 						<font>font13_title</font>
 						<textcolor>ffaa0000</textcolor>
@@ -350,9 +354,9 @@
 						<visible>!IsEmpty(ListItem.Property(Addon.broken))</visible>
 					</control>
 					<control type="label">
-						<left>96</left>
+						<left>1</left>
 						<top>160</top>
-						<width>190</width>
+						<width>191</width>
 						<height>25</height>
 						<font>font12</font>
 						<textcolor>white</textcolor>

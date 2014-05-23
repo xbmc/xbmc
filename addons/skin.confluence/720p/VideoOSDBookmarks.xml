@@ -97,9 +97,9 @@
 					<info>ListItem.Icon</info>
 				</control>
 				<control type="label">
-					<left>112</left>
+					<left>7</left>
 					<top>185</top>
-					<width>225</width>
+					<width>226</width>
 					<height>15</height>
 					<font>font12</font>
 					<selectedcolor>selected</selectedcolor>
@@ -125,9 +125,9 @@
 					<info>ListItem.Icon</info>
 				</control>
 				<control type="label">
-					<left>112</left>
+					<left>7</left>
 					<top>185</top>
-					<width>225</width>
+					<width>226</width>
 					<height>15</height>
 					<font>font12</font>
 					<selectedcolor>selected</selectedcolor>

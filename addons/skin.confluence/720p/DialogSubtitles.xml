@@ -138,6 +138,7 @@
 							<width>26</width>
 							<height>26</height>
 							<texture>Subtitles/flags/$INFO[ListItem.Thumb].png</texture>
+							<aspectratio>keep</aspectratio>
 						</control>
 						<control type="label">
 							<left>40</left>
@@ -185,6 +186,7 @@
 							<width>90</width>
 							<height>17</height>
 							<texture>LeftRating/rating$INFO[ListItem.ActualIcon].png</texture>
+							<aspectratio>keep</aspectratio>
 						</control>
 					</itemlayout>
 					<focusedlayout width="800" height="36">
@@ -209,6 +211,7 @@
 							<width>26</width>
 							<height>26</height>
 							<texture>Subtitles/flags/$INFO[ListItem.Thumb].png</texture>
+							<aspectratio>keep</aspectratio>
 						</control>
 						<control type="label">
 							<left>40</left>
@@ -256,6 +259,7 @@
 							<width>90</width>
 							<height>17</height>
 							<texture>LeftRating/rating$INFO[ListItem.ActualIcon].png</texture>
+							<aspectratio>keep</aspectratio>
 						</control>
 					</focusedlayout>
 				</control>

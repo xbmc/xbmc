@@ -838,7 +838,7 @@
 						<texture>HomeSeperator.png</texture>
 					</control>
 					<control type="label">
-						<left>150</left>
+						<left>5</left>
 						<top>0</top>
 						<width>290</width>
 						<height>60</height>
@@ -865,7 +865,7 @@
 						<texture>HomeSeperator.png</texture>
 					</control>
 					<control type="label">
-						<left>150</left>
+						<left>5</left>
 						<top>0</top>
 						<width>290</width>
 						<height>60</height>
@@ -876,7 +876,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<left>150</left>
+						<left>5</left>
 						<top>0</top>
 						<width>290</width>
 						<height>60</height>

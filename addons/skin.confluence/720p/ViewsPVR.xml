@@ -169,6 +169,7 @@
 						<width>50</width>
 						<height>50</height>
 						<texture>$INFO[ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="image">
 						<left>5</left>
@@ -264,6 +265,7 @@
 						<width>50</width>
 						<height>50</height>
 						<texture>$INFO[ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="image">
 						<left>5</left>
@@ -477,6 +479,7 @@
 						<width>50</width>
 						<height>50</height>
 						<texture>$INFO[ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="image">
 						<left>5</left>
@@ -572,6 +575,7 @@
 						<width>50</width>
 						<height>50</height>
 						<texture>$INFO[ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="image">
 						<left>5</left>
@@ -648,6 +652,7 @@
 						<width>30</width>
 						<height>30</height>
 						<texture background="true" fallback="DefaultVideoCover.png">$INFO[ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">
 						<left>50</left>
@@ -662,7 +667,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<left>725</left>
+						<left>225</left>
 						<top>0</top>
 						<width>500</width>
 						<height>40</height>
@@ -679,6 +684,7 @@
 						<width>20</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
+						<aspectratio>keep</aspectratio>
 						<visible>!ListItem.IsResumable</visible>
 					</control>
 					<control type="image">
@@ -723,6 +729,7 @@
 						<width>30</width>
 						<height>30</height>
 						<texture background="true" fallback="DefaultVideoCover.png">$INFO[ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">
 						<left>50</left>
@@ -737,7 +744,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<left>725</left>
+						<left>225</left>
 						<top>0</top>
 						<width>500</width>
 						<height>40</height>
@@ -754,6 +761,7 @@
 						<width>20</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
+						<aspectratio>keep</aspectratio>
 						<visible>!ListItem.IsResumable</visible>
 					</control>
 					<control type="image">
@@ -1206,6 +1214,7 @@
 								<width>50</width>
 								<height>26</height>
 								<texture border="1">$INFO[ListItem.Icon]</texture>
+								<aspectratio>keep</aspectratio>
 							</control>
 							<control type="label">
 								<left>50</left>
@@ -1287,6 +1296,7 @@
 								<width>50</width>
 								<height>26</height>
 								<texture border="1">$INFO[ListItem.Icon]</texture>
+								<aspectratio>keep</aspectratio>
 							</control>
 							<control type="label">
 								<left>50</left>
@@ -1494,6 +1504,7 @@
 								<width>30</width>
 								<height>30</height>
 								<texture border="1">$INFO[ListItem.Icon]</texture>
+								<aspectratio>keep</aspectratio>
 							</control>
 							<control type="label">
 								<left>50</left>
@@ -1608,6 +1619,7 @@
 								<width>30</width>
 								<height>30</height>
 								<texture border="1">$INFO[ListItem.Icon]</texture>
+								<aspectratio>keep</aspectratio>
 							</control>
 							<control type="label">
 								<left>50</left>
@@ -1810,7 +1822,7 @@
 							<texture border="5">StackFO.png</texture>
 						</control>
 						<control type="label">
-							<left>150</left>
+							<left>10</left>
 							<top>0</top>
 							<width>280</width>
 							<height>40</height>
@@ -1929,7 +1941,7 @@
 							<visible>Control.HasFocus(15)</visible>
 						</control>
 						<control type="label">
-							<left>150</left>
+							<left>10</left>
 							<top>0</top>
 							<width>280</width>
 							<height>40</height>
@@ -2147,7 +2159,7 @@
 							<texture border="5">StackFO.png</texture>
 						</control>
 						<control type="label">
-							<left>50</left>
+							<left>0</left>
 							<top>0</top>
 							<width>100</width>
 							<height>40</height>
@@ -2164,6 +2176,7 @@
 							<width>30</width>
 							<height>30</height>
 							<info>ListItem.Icon</info>
+							<aspectratio>keep</aspectratio>
 						</control>
 						<control type="label">
 							<left>150</left>
@@ -2285,7 +2298,7 @@
 							<visible>Control.HasFocus(16)</visible>
 						</control>
 						<control type="label">
-							<left>50</left>
+							<left>0</left>
 							<top>0</top>
 							<width>100</width>
 							<height>40</height>
@@ -2302,6 +2315,7 @@
 							<width>30</width>
 							<height>30</height>
 							<info>ListItem.Icon</info>
+							<aspectratio>keep</aspectratio>
 						</control>
 						<control type="label">
 							<left>150</left>

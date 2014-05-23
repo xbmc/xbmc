@@ -214,6 +214,7 @@
 								<left>5</left>
 								<top>4</top>
 								<texture>$INFO[ListItem.Icon]</texture>
+								<aspectratio>keep</aspectratio>
 							</control>
 							<control type="label">
 								<left>40</left>
@@ -251,6 +252,7 @@
 								<left>5</left>
 								<top>4</top>
 								<texture>$INFO[ListItem.Icon]</texture>
+								<aspectratio>keep</aspectratio>
 							</control>
 							<control type="label">
 								<left>40</left>
@@ -331,6 +333,7 @@
 								<left>5</left>
 								<top>4</top>
 								<texture>$INFO[ListItem.Icon]</texture>
+								<aspectratio>keep</aspectratio>
 							</control>
 							<control type="label">
 								<left>40</left>
@@ -368,6 +371,7 @@
 								<left>5</left>
 								<top>4</top>
 								<texture>$INFO[ListItem.Icon]</texture>
+								<aspectratio>keep</aspectratio>
 							</control>
 							<control type="label">
 								<left>40</left>

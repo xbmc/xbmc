@@ -202,6 +202,7 @@
 						<width>40</width>
 						<height>40</height>
 						<texture>$INFO[ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
 					</control>
 				</itemlayout>
 				<focusedlayout height="70" width="410">
@@ -321,6 +322,7 @@
 						<width>40</width>
 						<height>40</height>
 						<texture>$INFO[ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
 					</control>
 				</focusedlayout>
 			</control>

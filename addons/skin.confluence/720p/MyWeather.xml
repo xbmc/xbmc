@@ -429,7 +429,7 @@
 							<texture border="0,5,0,5">MenuItemNF.png</texture>
 						</control>
 						<control type="label">
-							<left>300</left>
+							<left>150</left>
 							<top>5</top>
 							<width>300</width>
 							<height>25</height>
@@ -505,7 +505,7 @@
 							<include>VisibleFadeEffect</include>
 						</control>
 						<control type="label">
-							<left>300</left>
+							<left>150</left>
 							<top>5</top>
 							<width>300</width>
 							<height>25</height>

@@ -987,7 +987,7 @@
 				<texture diffuse="diffuse_mirror2.png" flipy="true" background="true">$INFO[ListItem.Icon]</texture>
 			</control>
 			<control type="label">
-				<left>91</left>
+				<left>1</left>
 				<top>125</top>
 				<width>180</width>
 				<height>20</height>
@@ -1030,7 +1030,7 @@
 				<texture diffuse="diffuse_mirror2.png" flipy="true" background="true">$INFO[ListItem.Icon]</texture>
 			</control>
 			<control type="label">
-				<left>91</left>
+				<left>1</left>
 				<top>125</top>
 				<width>180</width>
 				<height>20</height>
@@ -1042,7 +1042,7 @@
 				<visible>Control.HasFocus(9002)</visible>
 			</control>
 			<control type="label">
-				<left>91</left>
+				<left>1</left>
 				<top>125</top>
 				<width>180</width>
 				<height>20</height>
@@ -1096,7 +1096,7 @@
 			</control>
 			<control type="label">
 				<description>Episode Number</description>
-				<left>140</left>
+				<left>10</left>
 				<top>60</top>
 				<width>260</width>
 				<height>15</height>
@@ -1107,7 +1107,7 @@
 			</control>
 			<control type="label">
 				<description>Episode Name</description>
-				<left>140</left>
+				<left>10</left>
 				<top>80</top>
 				<width>260</width>
 				<height>15</height>
@@ -1118,7 +1118,7 @@
 			</control>
 			<control type="label">
 				<description>Next air date/time</description>
-				<left>140</left>
+				<left>10</left>
 				<top>100</top>
 				<width>260</width>
 				<height>15</height>
@@ -1129,7 +1129,7 @@
 			</control>
 			<control type="label">
 				<description>Duration</description>
-				<left>140</left>
+				<left>10</left>
 				<top>120</top>
 				<width>260</width>
 				<height>15</height>
@@ -1179,7 +1179,7 @@
 			</control>
 			<control type="label">
 				<description>Episode Number</description>
-				<left>140</left>
+				<left>10</left>
 				<top>60</top>
 				<width>260</width>
 				<height>15</height>
@@ -1190,7 +1190,7 @@
 			</control>
 			<control type="label">
 				<description>Episode Name</description>
-				<left>140</left>
+				<left>10</left>
 				<top>80</top>
 				<width>260</width>
 				<height>15</height>
@@ -1201,7 +1201,7 @@
 			</control>
 			<control type="label">
 				<description>Next air date/time</description>
-				<left>140</left>
+				<left>10</left>
 				<top>100</top>
 				<width>260</width>
 				<height>15</height>
@@ -1212,7 +1212,7 @@
 			</control>
 			<control type="label">
 				<description>Duration</description>
-				<left>140</left>
+				<left>10</left>
 				<top>120</top>
 				<width>260</width>
 				<height>15</height>

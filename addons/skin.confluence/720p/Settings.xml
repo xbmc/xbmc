@@ -84,9 +84,9 @@
 						<texture border="5">MenuItemNF.png</texture>
 					</control>
 					<control type="label">
-						<left>250</left>
+						<left>10</left>
 						<top>0</top>
-						<width>380</width>
+						<width>240</width>
 						<height>55</height>
 						<font>font24_title</font>
 						<textcolor>grey3</textcolor>
@@ -104,9 +104,9 @@
 						<texture border="5">MenuItemFO.png</texture>
 					</control>
 					<control type="label">
-						<left>250</left>
+						<left>10</left>
 						<top>0</top>
-						<width>380</width>
+						<width>240</width>
 						<height>55</height>
 						<font>font24_title</font>
 						<textcolor>white</textcolor>

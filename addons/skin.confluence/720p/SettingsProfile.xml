@@ -84,9 +84,9 @@
 						<texture border="5">MenuItemNF.png</texture>
 					</control>
 					<control type="label">
-						<left>250</left>
+						<left>10</left>
 						<top>0</top>
-						<width>380</width>
+						<width>240</width>
 						<height>55</height>
 						<font>font24_title</font>
 						<textcolor>grey3</textcolor>
@@ -105,9 +105,9 @@
 						<animation effect="fade" start="100" end="30" time="100" condition="!Control.HasFocus(9000)">Conditional</animation>
 					</control>
 					<control type="label">
-						<left>250</left>
+						<left>10</left>
 						<top>0</top>
-						<width>380</width>
+						<width>240</width>
 						<height>55</height>
 						<font>font24_title</font>
 						<textcolor>white</textcolor>
@@ -317,9 +317,10 @@
 							<bordertexture border="5">button-nofocus.png</bordertexture>
 							<bordersize>5</bordersize>
 							<texture fallback="unknown-user.png">$INFO[Listitem.Icon]</texture>
+							<aspectratio>keep</aspectratio>
 						</control>
 						<control type="label">
-							<left>94</left>
+							<left>6</left>
 							<top>145</top>
 							<width>178</width>
 							<height>25</height>
@@ -340,9 +341,10 @@
 							<bordertexture border="5">folder-focus.png</bordertexture>
 							<bordersize>5</bordersize>
 							<texture fallback="unknown-user.png">$INFO[Listitem.Icon]</texture>
+							<aspectratio>keep</aspectratio>
 						</control>
 						<control type="label">
-							<left>94</left>
+							<left>6</left>
 							<top>145</top>
 							<width>178</width>
 							<height>25</height>
