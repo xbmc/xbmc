@@ -44,19 +44,21 @@ public:
     m_iRead(0),
     m_iWritten(0),
     m_iSize(0),
+    m_planes(0),
     m_Buffer(NULL)
   {
   }
 
-  AERingBuffer(unsigned int size) :
+  AERingBuffer(unsigned int size, unsigned int planes = 1) :
     m_iReadPos(0),
     m_iWritePos(0),
     m_iRead(0),
     m_iWritten(0),
     m_iSize(0),
+    m_planes(0),
     m_Buffer(NULL)
   {
-    Create(size);
+    Create(size, planes);
   }
 
   ~AERingBuffer()
@@ -64,7 +66,9 @@ public:
 #ifdef AE_RING_BUFFER_DEBUG
     CLog::Log(LOGDEBUG, "AERingBuffer::~AERingBuffer: Deleting buffer.");
 #endif
-    _aligned_free(m_Buffer);
+    for (unsigned int i = 0; i < m_planes; i++)
+      _aligned_free(m_Buffer[i]);
+    delete[] m_Buffer;
   }
 
   /**
@@ -72,16 +76,19 @@ public:
    *
    * @return true on success, false otherwise
    */
-  bool Create(int size)
+  bool Create(int size, unsigned int planes = 1)
   {
-    m_Buffer =  (unsigned char*)_aligned_malloc(size,16);
-    if ( m_Buffer )
+    m_Buffer = new unsigned char*[planes];
+    for (unsigned int i = 0; i < planes; i++)
     {
-      m_iSize = size;
-      memset(m_Buffer, 0, m_iSize);
-      return true;
+      m_Buffer[i] = (unsigned char*)_aligned_malloc(size,16);
+      if (!m_Buffer[i])
+        return false;
+      memset(m_Buffer[i], 0, size);
     }
-    return false;
+    m_iSize = size;
+    m_planes = planes;
+    return true;
   }
 
   /**
@@ -105,12 +112,13 @@ public:
    *
    * @return AE_RING_BUFFER_OK on success, otherwise an error code
    */
-  int Write(unsigned char *src, unsigned int size)
+  int Write(unsigned char *src, unsigned int size, unsigned int plane = 0)
   {
     unsigned int space = GetWriteSize();
 
     //do we have enough space for all the data?
-    if (size > space) {
+    if (size > space || plane >= m_planes)
+    {
 #ifdef AE_RING_BUFFER_DEBUG
     CLog::Log(LOGDEBUG, "AERingBuffer: Not enough space, ignoring data. Requested: %u Available: %u",size, space);
 #endif
@@ -123,8 +131,7 @@ public:
 #ifdef AE_RING_BUFFER_DEBUG
       CLog::Log(LOGDEBUG, "AERingBuffer: Written to: %u size: %u space before: %u\n", m_iWritePos, size, space);
 #endif
-      memcpy(&(m_Buffer[m_iWritePos]), src, size);
-      m_iWritePos+=size;
+      memcpy(m_Buffer[plane] + m_iWritePos, src, size);
     }
     //need to wrap
     else
@@ -134,13 +141,12 @@ public:
 #ifdef AE_RING_BUFFER_DEBUG
       CLog::Log(LOGDEBUG, "AERingBuffer: Written to (split) first: %u second: %u size: %u space before: %u\n", first, second, size, space);
 #endif
-      memcpy(&(m_Buffer[m_iWritePos]), src, first);
-      memcpy(&(m_Buffer[0]), &src[first], second);
-      m_iWritePos = second;
+      memcpy(m_Buffer[plane] + m_iWritePos, src, first);
+      memcpy(m_Buffer[plane], src + first, second);
     }
+    if (plane + 1 == m_planes)
+      WriteFinished(size);
 
-    //we can increase the write count now
-    m_iWritten+=size;
     return AE_RING_BUFFER_OK;
   }
 
@@ -151,7 +157,7 @@ public:
    *
    * @return AE_RING_BUFFER_OK on success, otherwise an error code
    */
-  int Read(unsigned char *dest, unsigned int size)
+  int Read(unsigned char *dest, unsigned int size, unsigned int plane = 0)
   {
     unsigned int space = GetReadSize();
 
@@ -165,7 +171,7 @@ public:
     }
 
     //want to read more than we have available
-    if( size > space )
+    if( size > space || plane >= m_planes)
     {
 #ifdef AE_RING_BUFFER_DEBUG
       CLog::Log(LOGDEBUG, "AERingBuffer: Can't read %u bytes when we only have %u.", size, space);
@@ -180,8 +186,7 @@ public:
       CLog::Log(LOGDEBUG, "AERingBuffer: Reading from: %u size: %u space before: %u\n", m_iWritePos, size, space);
 #endif
       if (dest)
-        memcpy(dest, &(m_Buffer[m_iReadPos]), size);
-      m_iReadPos+=size;
+        memcpy(dest, m_Buffer[plane] + m_iReadPos, size);
     }
     //need to wrap
     else
@@ -193,13 +198,12 @@ public:
 #endif
       if (dest)
       {
-        memcpy(dest, &(m_Buffer[m_iReadPos]), first);
-        memcpy(&dest[first], &(m_Buffer[0]), second);
+        memcpy(dest, m_Buffer[plane] + m_iReadPos, first);
+        memcpy(dest + first, m_Buffer[plane], second);
       }
-      m_iReadPos = second;
     }
-    //we can increase the read count now
-    m_iRead+=size;
+    if (plane + 1 == m_planes)
+      ReadFinished(size);
 
     return AE_RING_BUFFER_OK;
   }
@@ -209,14 +213,19 @@ public:
    */
   void Dump()
   {
-    unsigned char* bufferContents =  (unsigned char *)_aligned_malloc(m_iSize + 1,16);
-    for (unsigned int i=0; i<m_iSize; i++) {
-      if (i >= m_iReadPos && i<m_iWritePos)
-        bufferContents[i] = m_Buffer[i];
-      else
-        bufferContents[i] = '_';
+    unsigned char *bufferContents =  (unsigned char *)_aligned_malloc(m_iSize*m_planes + 1,16);
+    unsigned char *dest = bufferContents;
+    for (unsigned int j = 0; j < m_planes; j++)
+    {
+      for (unsigned int i=0; i<m_iSize; i++)
+      {
+        if (i >= m_iReadPos && i<m_iWritePos)
+          *dest++ = m_Buffer[j][i];
+        else
+          *dest++ = '_';
+      }
     }
-    bufferContents[m_iSize] = '\0';
+    bufferContents[m_iSize*m_planes] = '\0';
     CLog::Log(LOGDEBUG, "AERingBuffer::Dump()\n%s",bufferContents);
     _aligned_free(bufferContents);
   }
@@ -247,11 +256,49 @@ public:
     return m_iSize;
   }
 
+  /**
+   * Returns the number of planes
+   */
+  unsigned int NumPlanes() const
+  {
+    return m_planes;
+  }
 private:
+  /**
+   * Increments the write pointer.
+   * Called at the end of writing to all planes.
+   */
+  void WriteFinished(unsigned int size)
+  {
+    if ( m_iSize > size + m_iWritePos )
+      m_iWritePos += size;
+    else // wrapping
+      m_iWritePos = size - (m_iSize - m_iWritePos);
+
+    //we can increase the write count now
+    m_iWritten+=size;
+  }
+
+  /**
+   * Increments the read pointer.
+   * Called at the end of reading to all planes.
+   */
+  void ReadFinished(unsigned int size)
+  {
+    if ( size + m_iReadPos < m_iSize )
+      m_iReadPos += size;
+    else
+      m_iReadPos = size - (m_iSize - m_iReadPos);
+
+    //we can increase the read count now
+    m_iRead+=size;
+  }
+
   unsigned int m_iReadPos;
   unsigned int m_iWritePos;
   unsigned int m_iRead;
   unsigned int m_iWritten;
   unsigned int m_iSize;
-  unsigned char *m_Buffer;
+  unsigned int m_planes;
+  unsigned char **m_Buffer;
 };
