@@ -66,7 +66,7 @@ bool CCoreAudioChannelLayout::CopyLayout(AudioChannelLayout& layout)
     kVariableLengthArray_deprecated = 1
   };
 
-    free(m_pLayout);
+  free(m_pLayout);
   m_pLayout = NULL;
 
   // This method always produces a layout with a ChannelDescriptions structure
