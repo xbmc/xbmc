@@ -118,6 +118,7 @@ typedef enum {
   FieldProductionCode,
   FieldTag,
   FieldChannelName,
+  FieldChannelNumber,
   FieldInstruments,
   FieldBiography,
   FieldBorn,

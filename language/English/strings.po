@@ -2302,7 +2302,11 @@ msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr ""
 
-#empty string with id 549
+#: /xbmc/xbmc/pvr/windows/GUIViewStatePVR.cpp
+#: /xbmc/xbmc/utils/SortUtils.cpp
+msgctxt "#549"
+msgid "Number"
+msgstr ""
 
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#550"
