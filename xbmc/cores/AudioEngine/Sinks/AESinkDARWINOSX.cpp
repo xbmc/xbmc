@@ -99,10 +99,10 @@ static void EnumerateDevices(CADeviceList &list)
     {
       for (AudioStreamIdList::iterator j = streams.begin(); j != streams.end(); ++j)
       {
-        StreamFormatList streams;
-        if (CCoreAudioStream::GetAvailablePhysicalFormats(*j, &streams))
+        StreamFormatList streamFormats;
+        if (CCoreAudioStream::GetAvailablePhysicalFormats(*j, &streamFormats))
         {
-          for (StreamFormatList::iterator i = streams.begin(); i != streams.end(); ++i)
+          for (StreamFormatList::iterator i = streamFormats.begin(); i != streamFormats.end(); ++i)
           {
             AudioStreamBasicDescription desc = i->mFormat;
             std::string formatString;
@@ -199,12 +199,12 @@ static void EnumerateDevices(CADeviceList &list)
             }
 
             // add sample rate info
-            // quirk devices which don't report a valid samplerate
-            // add 44.1khz and 48khz in that case - user can use
+            // for devices which return kAudioStreamAnyRatee
+            // we add 44.1khz and 48khz - user can use
             // the "fixed" audio config to force one of them
-            if (desc.mSampleRate == 0)
+            if (desc.mSampleRate == kAudioStreamAnyRate)
             {
-              CLog::Log(LOGWARNING, "%s no valid samplerate - adding 44.1khz and 48khz quirk", __FUNCTION__);
+              CLog::Log(LOGINFO, "%s reported samplerate is kAudioStreamAnyRate adding 44.1khz and 48khz", __FUNCTION__);
               desc.mSampleRate = 44100;
               if (!HasSampleRate(device.m_sampleRates, desc.mSampleRate))
                 device.m_sampleRates.push_back(desc.mSampleRate);
@@ -304,16 +304,45 @@ OSStatus deviceChangedCB(AudioObjectID                       inObjectID,
                          const AudioObjectPropertyAddress    inAddresses[],
                          void*                               inClientData)
 {
-  CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - reenumerating");
-  CAEFactory::DeviceChange();
-  CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - done");
+  bool deviceChanged = false;
+  static AudioDeviceID oldDefaultDevice = 0;
+  AudioDeviceID currentDefaultOutputDevice = 0;
+
+  for (unsigned int i = 0; i < inNumberAddresses; i++)
+  {
+    switch (inAddresses[i].mSelector)
+    {
+      case kAudioHardwarePropertyDefaultOutputDevice:
+        currentDefaultOutputDevice = CCoreAudioHardware::GetDefaultOutputDevice();
+        // This listener is called on every change of the hardware
+        // device. So check if the default device has really changed.
+        if (oldDefaultDevice != currentDefaultOutputDevice)
+        {
+          deviceChanged = true;
+          oldDefaultDevice = currentDefaultOutputDevice;
+        }
+        break;
+      default:
+        deviceChanged = true;
+        break;
+    }
+    if (deviceChanged)
+      break;
+  }
+
+  if  (deviceChanged)
+  {
+    CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - reenumerating");
+    CAEFactory::DeviceChange();
+    CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - done");
+  }
   return noErr;
 }
 
 void RegisterDeviceChangedCB(bool bRegister, void *ref)
 {
   OSStatus ret = noErr;
-  const AudioObjectPropertyAddress inAdr =
+  AudioObjectPropertyAddress inAdr =
   {
     kAudioHardwarePropertyDevices,
     kAudioObjectPropertyScopeGlobal,
@@ -321,9 +350,17 @@ void RegisterDeviceChangedCB(bool bRegister, void *ref)
   };
 
   if (bRegister)
+  {
     ret = AudioObjectAddPropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
+    inAdr.mSelector = kAudioHardwarePropertyDefaultOutputDevice;
+    ret = AudioObjectAddPropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
+  }
   else
+  {
     ret = AudioObjectRemovePropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
+    inAdr.mSelector = kAudioHardwarePropertyDefaultOutputDevice;
+    ret = AudioObjectRemovePropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
+  }
 
   if (ret != noErr)
     CLog::Log(LOGERROR, "CCoreAudioAE::Deinitialize - error %s a listener callback for device changes!", bRegister?"attaching":"removing");
@@ -478,11 +515,11 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
     {
       AudioStreamBasicDescription desc = j->mFormat;
 
-      // quirk devices with invalid sample rate
+      // for devices with kAudioStreamAnyRate
       // assume that the user uses a fixed config
       // and knows what he is doing - so we use
       // the requested samplerate here
-      if (desc.mSampleRate == 0)
+      if (desc.mSampleRate == kAudioStreamAnyRate)
         desc.mSampleRate = format.m_sampleRate;
 
       float score = ScoreStream(desc, format);
@@ -529,7 +566,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   m_outputBitstream   = passthrough && outputFormat.mFormatID == kAudioFormatLinearPCM;
 
   std::string formatString;
-  CLog::Log(LOGDEBUG, "%s: Selected stream[%u] - id: 0x%04X, Physical Format: %s %s", __FUNCTION__, outputIndex, outputStream, StreamDescriptionToString(outputFormat, formatString), m_outputBitstream ? "bitstreamed passthrough" : "");
+  CLog::Log(LOGDEBUG, "%s: Selected stream[%u] - id: 0x%04X, Physical Format: %s %s", __FUNCTION__, (unsigned int)outputIndex, (unsigned int)outputStream, StreamDescriptionToString(outputFormat, formatString), m_outputBitstream ? "bitstreamed passthrough" : "");
 
   SetHogMode(passthrough);
 
@@ -759,6 +796,11 @@ OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTim
   {
     for (unsigned int i = 0; i < outOutputData->mNumberBuffers; i++)
     {
+      // NULL indicates a disabled stream
+      // skip it...
+      if (outOutputData->mBuffers[i].mData == NULL)
+        continue;
+
       if (sink->m_outputBitstream)
       {
         /* HACK for bitstreaming AC3/DTS via PCM.

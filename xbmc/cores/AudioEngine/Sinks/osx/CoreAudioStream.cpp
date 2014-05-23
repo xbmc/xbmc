@@ -334,7 +334,8 @@ bool CCoreAudioStream::SetPhysicalFormat(AudioStreamBasicDescription* pDesc)
     }
     if (checkPhysicalFormat.mSampleRate == pDesc->mSampleRate &&
         checkPhysicalFormat.mFormatID   == pDesc->mFormatID   &&
-        checkPhysicalFormat.mFramesPerPacket == pDesc->mFramesPerPacket)
+        checkPhysicalFormat.mFramesPerPacket == pDesc->mFramesPerPacket &&
+        checkPhysicalFormat.mChannelsPerFrame == pDesc->mChannelsPerFrame)
     {
       // The right format is now active.
       CLog::Log(LOGDEBUG, "CCoreAudioStream::SetPhysicalFormat: "
