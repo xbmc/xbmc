@@ -172,14 +172,14 @@ CPlexRemoteResponse CPlexRemotePlayHandler::handle(const CStdString& url, const 
 
   PlexUtils::SetItemResumeOffset(item, getStartPosition(arguments));
 
+  CPlexPlayQueueOptions options;
+  options.startPlaying = true;
+  options.showPrompts = false;
+  options.shuffle = false;
+
   if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK && !containerPath.empty())
   {
-    CPlexPlayQueueOptions options;
-    options.startPlaying = true;
-    options.showPrompts = false;
-    options.shuffle = false;
     options.startItemKey = item->GetProperty("unprocessed_key").asString();
-
     g_plexApplication.playQueueManager->create(list, "", options);
   }
   else if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTO)
@@ -192,7 +192,10 @@ CPlexRemoteResponse CPlexRemotePlayHandler::handle(const CStdString& url, const 
     CApplicationMessenger::Get().PictureSlideShow(dirURL.Get(), false, list.Get(idx)->GetPath());
   }
   else
-    CApplicationMessenger::Get().PlayFile(*item);
+  {
+    options.resumeOffset = getStartPosition(arguments);
+    g_plexApplication.playQueueManager->create(*item, "", options);
+  }
 
   return CPlexRemoteResponse();
 }
