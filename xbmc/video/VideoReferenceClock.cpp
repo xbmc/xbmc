@@ -480,8 +480,8 @@ bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
   else if (buffpos > (int)sizeof(Buff) - 1)
   {
     buffpos = sizeof(Buff) - 1;
-    pclose(NvSettings);
   }
+  pclose(NvSettings);
   Buff[buffpos] = 0;
 
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: output of %s: %s", NVSETTINGSCMD, Buff);
