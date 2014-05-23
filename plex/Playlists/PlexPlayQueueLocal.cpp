@@ -19,6 +19,9 @@ bool CPlexPlayQueueLocal::create(const CFileItem& container, const CStdString& u
                                  const CPlexPlayQueueOptions& options)
 {
   CURL containerURL(container.GetPath());
+  if (container.GetProperty("isSynthesized").asBoolean())
+    containerURL = CURL(container.GetProperty("containerPath").asString());
+
   return g_plexApplication.busy.blockWaitingForJob(new CPlexPlayQueueFetchJob(containerURL, options), this);
 }
 
