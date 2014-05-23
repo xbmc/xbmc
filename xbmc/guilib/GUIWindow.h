@@ -232,10 +232,6 @@ protected:
 
   void LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup, const CRect &rect);
 
-//#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
-  void ChangeButtonToEdit(int id, bool singleLabel = false);
-//#endif
-
   std::vector<int> m_idRange;
   OVERLAY_STATE m_overlayState;
   RESOLUTION_INFO m_coordsRes; // resolution that the window coordinates are in.

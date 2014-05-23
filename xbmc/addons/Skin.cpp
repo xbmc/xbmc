@@ -37,20 +37,18 @@
 using namespace std;
 using namespace XFILE;
 
-#define SKIN_MIN_VERSION 2.1f
-
 boost::shared_ptr<ADDON::CSkinInfo> g_SkinInfo;
 
 namespace ADDON
 {
 
 CSkinInfo::CSkinInfo(const AddonProps &props, const RESOLUTION_INFO &resolution)
-  : CAddon(props), m_defaultRes(resolution)
+  : CAddon(props), m_defaultRes(resolution), m_version("")
 {
 }
 
 CSkinInfo::CSkinInfo(const cp_extension_t *ext)
-  : CAddon(ext)
+  : CAddon(ext), m_version("")
 {
   ELEMENTS elements;
   if (CAddonMgr::Get().GetExtElements(ext->configuration, "res", elements))
@@ -95,7 +93,9 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
   m_debugging = !strcmp(str.c_str(), "true");
 
   LoadStartupWindows(ext);
-  m_Version = 2.11;
+
+  // figure out the version
+  m_version = GetDependencyVersion("xbmc.gui");
 }
 
 CSkinInfo::~CSkinInfo()
@@ -180,11 +180,6 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION_INFO *re
 bool CSkinInfo::HasSkinFile(const CStdString &strFile) const
 {
   return CFile::Exists(GetSkinPath(strFile));
-}
-
-double CSkinInfo::GetMinVersion()
-{
-  return SKIN_MIN_VERSION;
 }
 
 void CSkinInfo::LoadIncludes()
