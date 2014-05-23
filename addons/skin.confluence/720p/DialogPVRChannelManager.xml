@@ -120,6 +120,7 @@
 						<width>30</width>
 						<height>30</height>
 						<texture>$INFO[ListItem.Property(Icon)]</texture>
+						<aspectratio>keep</aspectratio>
 						<visible>ListItem.Property(ActiveChannel)</visible>
 					</control>
 					<control type="image">
@@ -129,6 +130,7 @@
 						<height>30</height>
 						<colordiffuse>77FFFFFF</colordiffuse>
 						<texture>$INFO[ListItem.Property(Icon)]</texture>
+						<aspectratio>keep</aspectratio>
 						<visible>!ListItem.Property(ActiveChannel)</visible>
 					</control>
 					<control type="label">
@@ -181,6 +183,7 @@
 						<width>30</width>
 						<height>30</height>
 						<texture>$INFO[ListItem.Property(Icon)]</texture>
+						<aspectratio>keep</aspectratio>
 						<visible>ListItem.Property(ActiveChannel)</visible>
 					</control>
 					<control type="image">
@@ -190,6 +193,7 @@
 						<height>30</height>
 						<colordiffuse>77FFFFFF</colordiffuse>
 						<texture>$INFO[ListItem.Property(Icon)]</texture>
+						<aspectratio>keep</aspectratio>
 						<visible>!ListItem.Property(ActiveChannel)</visible>
 					</control>
 					<control type="label">

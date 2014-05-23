@@ -317,6 +317,7 @@
 							<bordertexture border="5">button-nofocus.png</bordertexture>
 							<bordersize>5</bordersize>
 							<texture fallback="unknown-user.png">$INFO[Listitem.Icon]</texture>
+							<aspectratio>keep</aspectratio>
 						</control>
 						<control type="label">
 							<left>6</left>
@@ -340,6 +341,7 @@
 							<bordertexture border="5">folder-focus.png</bordertexture>
 							<bordersize>5</bordersize>
 							<texture fallback="unknown-user.png">$INFO[Listitem.Icon]</texture>
+							<aspectratio>keep</aspectratio>
 						</control>
 						<control type="label">
 							<left>6</left>

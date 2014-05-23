@@ -61,6 +61,7 @@
 							<width>160</width>
 							<height>170</height>
 							<texture background="true">$INFO[ListItem.Icon]</texture>
+							<aspectratio>keep</aspectratio>
 							<bordertexture border="5">button-nofocus.png</bordertexture>
 							<bordersize>5</bordersize>
 						</control>
@@ -93,6 +94,7 @@
 							<width>160</width>
 							<height>170</height>
 							<texture background="true">$INFO[ListItem.Icon]</texture>
+							<aspectratio>keep</aspectratio>
 							<bordertexture border="5">folder-focus.png</bordertexture>
 							<bordersize>5</bordersize>
 							<visible>Control.HasFocus(8000)</visible>
@@ -103,6 +105,7 @@
 							<width>160</width>
 							<height>170</height>
 							<texture>$INFO[ListItem.Icon]</texture>
+							<aspectratio>keep</aspectratio>
 							<bordertexture border="5">button-nofocus.png</bordertexture>
 							<bordersize>5</bordersize>
 							<visible>!Control.HasFocus(8000)</visible>
