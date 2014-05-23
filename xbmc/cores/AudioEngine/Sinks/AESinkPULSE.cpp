@@ -767,7 +767,7 @@ double CAESinkPULSE::GetCacheTotal()
   return (float)m_BufferSize / (float)m_BytesPerSecond;
 }
 
-unsigned int CAESinkPULSE::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio, bool blocking)
+unsigned int CAESinkPULSE::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
 {
   if (!m_IsAllocated)
     return frames;
@@ -781,13 +781,14 @@ unsigned int CAESinkPULSE::AddPackets(uint8_t *data, unsigned int frames, bool h
 
   unsigned int available = frames * m_format.m_frameSize;
   unsigned int length = 0;
+  void *buffer = data[0]+offset*m_format.m_frameSize;
   // revisit me after Gotham - should use a callback for the write function
   while ((length = pa_stream_writable_size(m_Stream)) == 0)
     pa_threaded_mainloop_wait(m_MainLoop);
 
   length =  std::min((unsigned int)length, available);
 
-  int error = pa_stream_write(m_Stream, data, length, NULL, 0, PA_SEEK_RELATIVE);
+  int error = pa_stream_write(m_Stream, buffer, length, NULL, 0, PA_SEEK_RELATIVE);
   pa_threaded_mainloop_unlock(m_MainLoop);
 
   if (error)

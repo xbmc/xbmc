@@ -66,7 +66,6 @@ static int OSSSampleRateList[] =
 CAESinkOSS::CAESinkOSS()
 {
   m_fd = 0;
-  m_blockingNeedsUpdate = true;
 }
 
 CAESinkOSS::~CAESinkOSS()
@@ -341,8 +340,6 @@ void CAESinkOSS::Deinitialize()
 
   if (m_fd != -1)
     close(m_fd);
-  
-  m_blockingNeedsUpdate = true;
 }
 
 inline CAEChannelInfo CAESinkOSS::GetChannelLayout(AEAudioFormat format)
@@ -394,7 +391,7 @@ double CAESinkOSS::GetDelay()
   return (double)delay / (m_format.m_frameSize * m_format.m_sampleRate);
 }
 
-unsigned int CAESinkOSS::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio, bool blocking)
+unsigned int CAESinkOSS::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
 {
   int size = frames * m_format.m_frameSize;
   if (m_fd == -1)
@@ -403,24 +400,10 @@ unsigned int CAESinkOSS::AddPackets(uint8_t *data, unsigned int frames, bool has
     return INT_MAX;
   }
 
-  if(m_blockingNeedsUpdate)
-  {
-    if(!blocking)
-    {
-      if (fcntl(m_fd, F_SETFL,  fcntl(m_fd, F_GETFL, 0) | O_NONBLOCK) == -1)
-      {
-        CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to set non blocking writes");
-      }
-    }
-    m_blockingNeedsUpdate = false;
-  }
-
-  int wrote = write(m_fd, data, size);
+  void *buffer = data[0]+offset*m_format.m_frameSize;
+  int wrote = write(m_fd, buffer, size);
   if (wrote < 0)
   {
-    if(!blocking && (errno == EAGAIN || errno == EWOULDBLOCK))
-      return 0;
-
     CLog::Log(LOGERROR, "CAESinkOSS::AddPackets - Failed to write");
     return INT_MAX;
   }

@@ -334,14 +334,14 @@ void CAESinkDirectSound::Deinitialize()
   m_dwBufferLen = 0;
 }
 
-unsigned int CAESinkDirectSound::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio, bool blocking)
+unsigned int CAESinkDirectSound::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
 {
   if (!m_initialized)
     return 0;
 
   DWORD total = m_dwFrameSize * frames;
   DWORD len = total;
-  unsigned char* pBuffer = (unsigned char*)data;
+  unsigned char* pBuffer = (unsigned char*)data[0]+offset*m_format.m_frameSize;
 
   DWORD bufferStatus = 0;
   m_pBuffer->GetStatus(&bufferStatus);
@@ -357,10 +357,7 @@ unsigned int CAESinkDirectSound::AddPackets(uint8_t *data, unsigned int frames, 
       return INT_MAX;
     else
     {
-      if(blocking)
-        Sleep(total * 1000 / m_AvgBytesPerSec);
-      else
-        return 0;
+      Sleep(total * 1000 / m_AvgBytesPerSec);
     }
   }
 

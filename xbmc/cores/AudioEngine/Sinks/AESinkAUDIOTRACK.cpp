@@ -174,10 +174,12 @@ double CAESinkAUDIOTRACK::GetCacheTotal()
 
 // this method is supposed to block until all frames are written to the device buffer
 // when it returns ActiveAESink will take the next buffer out of a queue
-unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio, bool blocking)
+unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
 {
   if (!m_at_jni)
     return INT_MAX;
+
+  uint8_t *buffer = data[0]+offset*m_format.m_frameSize;
 
   // write as many frames of audio as we can fit into our internal buffer.
   int written = 0;
@@ -189,7 +191,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t *data, unsigned int frames, b
     if (m_at_jni->getPlayState() != CJNIAudioTrack::PLAYSTATE_PLAYING)
       m_at_jni->play();
 
-    written = m_at_jni->write((char*)data, 0, frames * m_sink_frameSize);
+    written = m_at_jni->write((char*)buffer, 0, frames * m_sink_frameSize);
     m_frames_written += written / m_sink_frameSize;
   }
 

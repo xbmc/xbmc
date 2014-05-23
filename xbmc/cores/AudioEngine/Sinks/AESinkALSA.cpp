@@ -521,7 +521,7 @@ double CAESinkALSA::GetCacheTotal()
   return (double)m_bufferSize * m_formatSampleRateMul;
 }
 
-unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio, bool blocking)
+unsigned int CAESinkALSA::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
 {
   if (!m_pcm)
   {
@@ -529,7 +529,8 @@ unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames, bool ha
     return INT_MAX;
   }
 
-  int ret = snd_pcm_writei(m_pcm, (void*)data, frames);
+  void *buffer = data[0]+offset*m_format.m_frameSize;
+  int ret = snd_pcm_writei(m_pcm, buffer, frames);
   if (ret < 0)
   {
     CLog::Log(LOGERROR, "CAESinkALSA - snd_pcm_writei(%d) %s - trying to recover", ret, snd_strerror(ret));
@@ -537,7 +538,7 @@ unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames, bool ha
     if(ret < 0)
     {
       HandleError("snd_pcm_writei(1)", ret);
-      ret = snd_pcm_writei(m_pcm, (void*)data, frames);
+      ret = snd_pcm_writei(m_pcm, buffer, frames);
       if (ret < 0)
       {
         HandleError("snd_pcm_writei(2)", ret);
