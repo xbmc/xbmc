@@ -849,7 +849,7 @@ string PlexUtils::GetPlexContent(const CFileItem &item)
   CURL itemUrl(item.GetProperty("key").asString());
   bool singleItem = item.GetProperty("size").asInteger() < 2 && !item.HasProperty("viewGroup");
 
-  if (boost::starts_with(itemUrl.GetFileName(), "playQueues/") ||
+  if (boost::starts_with(itemUrl.GetFileName(), "playQueues") ||
       itemUrl.Get() == "plexserver://playqueue/")
   {
     singleItem = false;
