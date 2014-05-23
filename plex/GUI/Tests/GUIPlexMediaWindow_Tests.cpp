@@ -38,6 +38,7 @@ TEST_F(PlexMediaWindowTests, matchPlexContent_twoArgs)
 TEST_F(PlexMediaWindowTests, matchPlexContent_spaces)
 {
   mw->GetVecItems()->SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
+  mw->GetVecItems()->SetProperty("size", "2");
   EXPECT_TRUE(mw->MatchPlexContent("    movies  ; foo "));
 }
 
@@ -50,6 +51,7 @@ TEST_F(PlexMediaWindowTests, matchPlexContent_nomatch)
 TEST_F(PlexMediaWindowTests, matchPlexContent_cased)
 {
   mw->GetVecItems()->SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
+  mw->GetVecItems()->SetProperty("size", "2");
   EXPECT_TRUE(mw->MatchPlexContent("MOVIES"));
   EXPECT_TRUE(mw->MatchPlexContent("movies"));
   EXPECT_TRUE(mw->MatchPlexContent("MovIes"));

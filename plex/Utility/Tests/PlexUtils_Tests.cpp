@@ -206,71 +206,89 @@ TEST(PlexUtilsGetPlexContent, homemovies)
 
 TEST(PlexUtilsGetPlexContent, folders)
 {
-  CFileItem item;
-  item.SetProperty("title2", "By Folder");
-  EXPECT_EQ(PlexUtils::GetPlexContent(item), "folders");
+  CFileItemList list;
+  EXPECT_TRUE(PlexTestUtils::listFromXML(testItem_byFolderDirectory, list));
+  EXPECT_EQ(PlexUtils::GetPlexContent(list), "folders");
 }
 
-TEST(PlexUtilsGetPlexContent, singleItems)
+TEST(PlexUtilsGetPlexContent, singleItemMovie)
 {
-  CFileItem item;
-  item.SetProperty("key", "http://1.0.0.0:32400/library/metadata/1234");
-  item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
-  EXPECT_EQ(PlexUtils::GetPlexContent(item), "movie");
-  item.SetPlexDirectoryType(PLEX_DIR_TYPE_EPISODE);
+  CFileItemList item;
+  EXPECT_TRUE(PlexTestUtils::listFromXML(testItem_movie, item));
+  EXPECT_EQ(PlexUtils::GetPlexContent(*item.Get(0)), "movie");
+}
+
+TEST(PlexUtilsGetPlexContent, singleItemEpisode)
+{
+  CFileItemList item;
+  EXPECT_TRUE(PlexTestUtils::listFromXML(testItem_episode, item));
+  EXPECT_EQ(PlexUtils::GetPlexContent(*item.Get(0)), "episode");
+}
+
+TEST(PlexUtilsGetPlexContent, singleItemClip)
+{
+  CFileItemList item;
+  EXPECT_TRUE(PlexTestUtils::listFromXML(testItem_channelYoutubeItem, item));
+  EXPECT_EQ(PlexUtils::GetPlexContent(*item.Get(0)), "clip");
+}
+
+TEST(PlexUtilsGetPlexContent, seasonListMany)
+{
+  CFileItemList item;
+  EXPECT_TRUE(PlexTestUtils::listFromXML(testItem_seasonListManyItems, item));
+  EXPECT_EQ(PlexUtils::GetPlexContent(item), "seasons");
+}
+
+TEST(PlexUtilsGetPlexContent, seasonListOne)
+{
+  CFileItemList item;
+  EXPECT_TRUE(PlexTestUtils::listFromXML(testItem_seasonListOneItem, item));
+  EXPECT_EQ(PlexUtils::GetPlexContent(item), "seasons");
+}
+
+TEST(PlexUtilsGetPlexContent, episodeListOne)
+{
+  CFileItemList item;
+  EXPECT_TRUE(PlexTestUtils::listFromXML(testItem_episodeListOneItem, item));
+  EXPECT_EQ(PlexUtils::GetPlexContent(item), "episodes");
+}
+
+TEST(PlexUtilsGetPlexContent, episodeListMany)
+{
+  CFileItemList item;
+  EXPECT_TRUE(PlexTestUtils::listFromXML(testItem_episodeListManyItems, item));
+  EXPECT_EQ(PlexUtils::GetPlexContent(item), "episodes");
+}
+
+TEST(PlexUtilsGetPlexContent, twitChannelItem)
+{
+  CFileItemList item;
+  EXPECT_TRUE(PlexTestUtils::listFromXML(testItem_channelTwit, item));
   EXPECT_EQ(PlexUtils::GetPlexContent(item), "episode");
-  item.SetPlexDirectoryType(PLEX_DIR_TYPE_CLIP);
-  EXPECT_EQ(PlexUtils::GetPlexContent(item), "clip");
-}
-
-TEST(PlexUtilsGetPlexContent, metadataChildren)
-{
-  CFileItem item;
-  item.SetProperty("key", "http://1.0.0.0:32400/library/metadata/1234/children");
-  item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
-  EXPECT_EQ(PlexUtils::GetPlexContent(item), "movies");
-}
-
-TEST(PlexUtilsGetPlexContent, channelItems)
-{
-  CFileItem item;
-  item.SetProperty("key", "http://1.0.0.0:32400/system/services/url/lookup?url=youtubesomething");
-  item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
-  EXPECT_EQ(PlexUtils::GetPlexContent(item), "movie");
 }
 
 TEST(PlexUtilsGetPlexContent, noMixedMedia)
 {
-  CFileItem item;
-  item.SetProperty("key", "http://10.0.0.0:32400/playQueues/123");
-  item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
+  CFileItemList item;
+  EXPECT_TRUE(PlexTestUtils::listFromXML(testItem_playQueueVideoMovie, item));
+  item.SetProperty("key", "http://10.0.0.0:32400/playQueues/771");
   EXPECT_EQ("movies", PlexUtils::GetPlexContent(item));
 }
 
 TEST(PlexUtilsGetPlexContent, mixedMedia)
 {
-  CFileItem item;
-  item.SetProperty("key", "http://10.0.0.0:32400/playQueues/123");
-  item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
-  item.SetProperty("hasMixedMembers", true);
+  CFileItemList item;
+  EXPECT_TRUE(PlexTestUtils::listFromXML(testItem_playQueueVideoMixedMovieEpisode, item));
+  item.SetProperty("key", "http://10.0.0.0:32400/playQueues/771");
   EXPECT_EQ("mixedcontent", PlexUtils::GetPlexContent(item));
 }
 
 TEST(PlexUtilsGetPlexContent, mixedMediaInternalURL)
 {
-  CFileItem item;
+  CFileItemList item;
+  EXPECT_TRUE(PlexTestUtils::listFromXML(testItem_playQueueVideoMixedMovieEpisode, item));
   item.SetProperty("key", "plexserver://playqueue/");
-  item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
-  item.SetProperty("hasMixedMembers", true);
   EXPECT_EQ("mixedcontent", PlexUtils::GetPlexContent(item));
-}
-
-TEST(PlexUtilsGetPlexContent, singleFileItem)
-{
-  CFileItem item;
-  item.SetProperty("key", "plexserver://abc123/library/parts/file.mkv");
-  item.SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
-  EXPECT_EQ("movie", PlexUtils::GetPlexContent(item));
 }
 
 class PlexUtilsGetPrettyMediaItemNameTest : public ::testing::Test

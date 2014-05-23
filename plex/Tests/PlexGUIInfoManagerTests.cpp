@@ -56,9 +56,9 @@ public:
 
 TEST_F(PlexGUIInfoManagerTest, videoPlayerPlexContentBasic)
 {
-  CFileItemPtr item = CFileItemPtr(new CFileItem);
-  item->SetPlexDirectoryType(PLEX_DIR_TYPE_MOVIE);
-  item->SetProperty("key", "plexserver://abc123/library/parts/2575/file.avi");
+  CFileItemList list;
+  EXPECT_TRUE(PlexTestUtils::listFromXML(testItem_movie, list));
+  CFileItemPtr item = list.Get(0);
 
   g_infoManager.SetCurrentItem(*item);
   EXPECT_TRUE(g_infoManager.EvaluateBool("VideoPlayer.PlexContent(movie)"));
