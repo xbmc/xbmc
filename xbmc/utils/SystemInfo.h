@@ -106,6 +106,7 @@ public:
   static std::string GetKernelName(bool emptyIfUnknown = false);
   static std::string GetKernelVersionFull(void); // full version string, including "-generic", "-RELEASE" etc.
   static std::string GetKernelVersion(void); // only digits with dots
+  static std::string GetOsName(bool emptyIfUnknown = false);
 #if defined(TARGET_LINUX)
   CStdString GetLinuxDistro();
 #endif

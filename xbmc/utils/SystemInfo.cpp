@@ -579,6 +579,39 @@ std::string CSysInfo::GetKernelVersion(void)
   return kernelVersionClear;
 }
 
+std::string CSysInfo::GetOsName(bool emptyIfUnknown /* = false*/)
+{
+  static std::string osName;
+  if (osName.empty())
+  {
+#if defined (TARGET_WINDOWS)
+    osName = GetKernelName() + "-based OS";
+#elif defined(TARGET_FREEBSD)
+    osName = GetKernelName(true); // FIXME: for FreeBSD OS name is a kernel name
+#elif defined(TARGET_DARWIN_IOS)
+    osName = "iOS";
+#elif defined(TARGET_DARWIN_OSX)
+    osName = "OS X";
+#elif defined (TARGET_ANDROID)
+    osName = "Android";
+#elif defined(TARGET_LINUX)
+    osName = getValueFromOs_release("NAME");
+    if (osName.empty())
+      osName = getValueFromLsb_release(lsb_rel_distributor);
+    if (osName.empty())
+      osName = getValueFromOs_release("ID");
+#endif // defined(TARGET_LINUX)
+
+    if (osName.empty())
+      osName = "Unknown OS";
+  }
+
+  if (emptyIfUnknown && osName == "Unknown OS")
+    return "";
+
+  return osName;
+}
+
 CStdString CSysInfo::GetManufacturer()
 {
   CStdString manufacturer = "";
