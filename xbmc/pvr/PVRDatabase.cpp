@@ -118,39 +118,6 @@ void CPVRDatabase::CreateTables()
       ")"
   );
 
-  CLog::Log(LOGDEBUG, "PVR - %s - creating table 'channelsettings'", __FUNCTION__);
-  m_pDS->exec(
-      "CREATE TABLE channelsettings ("
-        "idChannel            integer primary key, "
-        "iInterlaceMethod     integer, "
-        "iViewMode            integer, "
-        "fCustomZoomAmount    float, "
-        "fPixelRatio          float, "
-        "iAudioStream         integer, "
-        "iSubtitleStream      integer,"
-        "fSubtitleDelay       float, "
-        "bSubtitles           bool, "
-        "fBrightness          float, "
-        "fContrast            float, "
-        "fGamma               float,"
-        "fVolumeAmplification float, "
-        "fAudioDelay          float, "
-        "bOutputToAllSpeakers bool, "
-        "bCrop                bool, "
-        "iCropLeft            integer, "
-        "iCropRight           integer, "
-        "iCropTop             integer, "
-        "iCropBottom          integer, "
-        "fSharpness           float, "
-        "fNoiseReduction      float, "
-        "fCustomVerticalShift float, "
-        "bCustomNonLinStretch bool, "
-        "bPostProcess         bool, "
-        "iScalingMethod       integer, "
-        "iDeinterlaceMode     integer "
-      ")"
-  );
-
   // disable all PVR add-on when started the first time
   ADDON::VECADDONS addons;
   if (!CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true))
@@ -175,26 +142,6 @@ void CPVRDatabase::UpdateTables(int iVersion)
   if (iVersion < 13)
     m_pDS->exec("ALTER TABLE channels ADD idEpg integer;");
 
-  if (iVersion < 14)
-    m_pDS->exec("ALTER TABLE channelsettings ADD fCustomVerticalShift float;");
-
-  if (iVersion < 15)
-  {
-    m_pDS->exec("ALTER TABLE channelsettings ADD bCustomNonLinStretch bool;");
-    m_pDS->exec("ALTER TABLE channelsettings ADD bPostProcess bool;");
-    m_pDS->exec("ALTER TABLE channelsettings ADD iScalingMethod integer;");
-  }
-  if (iVersion < 16)
-  {
-    /* sqlite apparently can't delete columns from an existing table, so just leave the extra column alone */
-  }
-  if (iVersion < 17)
-  {
-    m_pDS->exec("ALTER TABLE channelsettings ADD iDeinterlaceMode integer");
-    m_pDS->exec("UPDATE channelsettings SET iDeinterlaceMode = 2 WHERE iInterlaceMethod NOT IN (0,1)"); // anything other than none: method auto => mode force
-    m_pDS->exec("UPDATE channelsettings SET iDeinterlaceMode = 1 WHERE iInterlaceMethod = 1"); // method auto => mode auto
-    m_pDS->exec("UPDATE channelsettings SET iDeinterlaceMode = 0, iInterlaceMethod = 1 WHERE iInterlaceMethod = 0"); // method none => mode off, method auto
-  }
   if (iVersion < 19)
   {
     // bit of a hack, but we need to keep the version/contents of the non-pvr databases the same to allow clean upgrades
@@ -227,6 +174,9 @@ void CPVRDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 24)
     m_pDS->exec("ALTER TABLE channels ADD bIsUserSetName bool");
+  
+  if (iVersion < 25)
+    m_pDS->exec("DROP TABLE IF EXISTS channelsettings");
 }
 
 int CPVRDatabase::GetLastChannelId(void)
@@ -353,118 +303,6 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
 
   m_pDS->close();
   return iReturn;
-}
-
-bool CPVRDatabase::DeleteChannelSettings()
-{
-  CLog::Log(LOGDEBUG, "PVR - %s - deleting all channel settings from the database", __FUNCTION__);
-  return DeleteValues("channelsettings");
-}
-
-bool CPVRDatabase::DeleteChannelSettings(const CPVRChannel &channel)
-{
-  bool bReturn(false);
-
-  /* invalid channel */
-  if (channel.ChannelID() <= 0)
-  {
-    CLog::Log(LOGERROR, "PVR - %s - invalid channel id: %i", __FUNCTION__, channel.ChannelID());
-    return bReturn;
-  }
-
-  Filter filter;
-  filter.AppendWhere(PrepareSQL("idChannel = %u", channel.ChannelID()));
-
-  return DeleteValues("channelsettings", filter);
-}
-
-bool CPVRDatabase::GetChannelSettings(const CPVRChannel &channel, CVideoSettings &settings)
-{
-  bool bReturn(false);
-
-  /* invalid channel */
-  if (channel.ChannelID() <= 0)
-  {
-    CLog::Log(LOGERROR, "PVR - %s - invalid channel id: %i", __FUNCTION__, channel.ChannelID());
-    return bReturn;
-  }
-
-  CStdString strQuery = PrepareSQL("SELECT * FROM channelsettings WHERE idChannel = %u;", channel.ChannelID());
-
-  if (ResultQuery(strQuery))
-  {
-    try
-    {
-      if (m_pDS->num_rows() > 0)
-      {
-        settings.m_AudioDelay           = m_pDS->fv("fAudioDelay").get_asFloat();
-        settings.m_AudioStream          = m_pDS->fv("iAudioStream").get_asInt();
-        settings.m_Brightness           = m_pDS->fv("fBrightness").get_asFloat();
-        settings.m_Contrast             = m_pDS->fv("fContrast").get_asFloat();
-        settings.m_CustomPixelRatio     = m_pDS->fv("fPixelRatio").get_asFloat();
-        settings.m_CustomNonLinStretch  = m_pDS->fv("bCustomNonLinStretch").get_asBool();
-        settings.m_NoiseReduction       = m_pDS->fv("fNoiseReduction").get_asFloat();
-        settings.m_PostProcess          = m_pDS->fv("bPostProcess").get_asBool();
-        settings.m_Sharpness            = m_pDS->fv("fSharpness").get_asFloat();
-        settings.m_CustomZoomAmount     = m_pDS->fv("fCustomZoomAmount").get_asFloat();
-        settings.m_CustomVerticalShift  = m_pDS->fv("fCustomVerticalShift").get_asFloat();
-        settings.m_Gamma                = m_pDS->fv("fGamma").get_asFloat();
-        settings.m_SubtitleDelay        = m_pDS->fv("fSubtitleDelay").get_asFloat();
-        settings.m_SubtitleOn           = m_pDS->fv("bSubtitles").get_asBool();
-        settings.m_SubtitleStream       = m_pDS->fv("iSubtitleStream").get_asInt();
-        settings.m_ViewMode             = m_pDS->fv("iViewMode").get_asInt();
-        settings.m_Crop                 = m_pDS->fv("bCrop").get_asBool();
-        settings.m_CropLeft             = m_pDS->fv("iCropLeft").get_asInt();
-        settings.m_CropRight            = m_pDS->fv("iCropRight").get_asInt();
-        settings.m_CropTop              = m_pDS->fv("iCropTop").get_asInt();
-        settings.m_CropBottom           = m_pDS->fv("iCropBottom").get_asInt();
-        settings.m_InterlaceMethod      = (EINTERLACEMETHOD)m_pDS->fv("iInterlaceMethod").get_asInt();
-        settings.m_DeinterlaceMode      = (EDEINTERLACEMODE)m_pDS->fv("iDeinterlaceMode").get_asInt();
-        settings.m_VolumeAmplification  = m_pDS->fv("fVolumeAmplification").get_asFloat();
-        settings.m_OutputToAllSpeakers  = m_pDS->fv("bOutputToAllSpeakers").get_asBool();
-        settings.m_ScalingMethod        = (ESCALINGMETHOD)m_pDS->fv("iScalingMethod").get_asInt();
-
-        bReturn = true;
-      }
-
-      m_pDS->close();
-    }
-    catch(...)
-    {
-      CLog::Log(LOGERROR, "PVR - %s - failed to get channel settings for channel '%s'", __FUNCTION__, channel.ChannelName().c_str());
-    }
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "PVR - %s - query failed", __FUNCTION__);
-  }
-
-  return bReturn;
-}
-
-bool CPVRDatabase::PersistChannelSettings(const CPVRChannel &channel, const CVideoSettings &settings)
-{
-  /* invalid channel */
-  if (channel.ChannelID() <= 0)
-  {
-    CLog::Log(LOGERROR, "PVR - %s - invalid channel id: %i", __FUNCTION__, channel.ChannelID());
-    return false;
-  }
-
-  CStdString strQuery = PrepareSQL(
-      "REPLACE INTO channelsettings "
-        "(idChannel, iInterlaceMethod, iViewMode, fCustomZoomAmount, fPixelRatio, iAudioStream, iSubtitleStream, fSubtitleDelay, "
-         "bSubtitles, fBrightness, fContrast, fGamma, fVolumeAmplification, fAudioDelay, bOutputToAllSpeakers, bCrop, iCropLeft, "
-         "iCropRight, iCropTop, iCropBottom, fSharpness, fNoiseReduction, fCustomVerticalShift, bCustomNonLinStretch, bPostProcess, iScalingMethod, iDeinterlaceMode) VALUES "
-         "(%i, %i, %i, %f, %f, %i, %i, %f, %i, %f, %f, %f, %f, %f, %i, %i, %i, %i, %i, %i, %f, %f, %f, %i, %i, %i, %i);",
-       channel.ChannelID(), settings.m_InterlaceMethod, settings.m_ViewMode, settings.m_CustomZoomAmount, settings.m_CustomPixelRatio,
-       settings.m_AudioStream, settings.m_SubtitleStream, settings.m_SubtitleDelay, settings.m_SubtitleOn ? 1 :0,
-       settings.m_Brightness, settings.m_Contrast, settings.m_Gamma, settings.m_VolumeAmplification, settings.m_AudioDelay,
-       settings.m_OutputToAllSpeakers ? 1 : 0, settings.m_Crop ? 1 : 0, settings.m_CropLeft, settings.m_CropRight, settings.m_CropTop,
-       settings.m_CropBottom, settings.m_Sharpness, settings.m_NoiseReduction, settings.m_CustomVerticalShift,
-       settings.m_CustomNonLinStretch ? 1 : 0, settings.m_PostProcess ? 1 : 0, settings.m_ScalingMethod, settings.m_DeinterlaceMode);
-
-  return ExecuteQuery(strQuery);
 }
 
 /********** Channel group methods **********/

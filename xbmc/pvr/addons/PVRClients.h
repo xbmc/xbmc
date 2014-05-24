@@ -72,16 +72,6 @@ namespace PVR
      */
     void Stop(void);
 
-    /*!
-     * @brief Load the settings for the current channel from the database.
-     */
-    void LoadCurrentChannelSettings(void);
-
-    /*!
-     * @brief Persist the current channel settings in the database.
-     */
-    void SaveCurrentChannelSettings(void);
-
     /*! @name Backend methods */
     //@{
 
@@ -633,7 +623,6 @@ namespace PVR
 
     bool                  m_bChannelScanRunning;      /*!< true when a channel scan is currently running, false otherwise */
     bool                  m_bIsSwitchingChannels;        /*!< true while switching channels */
-    bool                  m_bIsValidChannelSettings;  /*!< true if current channel settings are valid and can be saved */
     int                   m_playingClientId;          /*!< the ID of the client that is currently playing */
     bool                  m_bIsPlayingLiveTV;
     bool                  m_bIsPlayingRecording;

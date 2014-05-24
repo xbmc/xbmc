@@ -923,16 +923,6 @@ bool CPVRManager::CheckParentalPIN(const char *strTitle /* = NULL */)
   return bValidPIN;
 }
 
-void CPVRManager::SaveCurrentChannelSettings(void)
-{
-  m_addons->SaveCurrentChannelSettings();
-}
-
-void CPVRManager::LoadCurrentChannelSettings()
-{
-  m_addons->LoadCurrentChannelSettings();
-}
-
 void CPVRManager::SetPlayingGroup(CPVRChannelGroupPtr group)
 {
   if (m_channelGroups && group)
@@ -971,12 +961,6 @@ bool CPVRChannelsUpdateJob::DoWork(void)
 bool CPVRChannelGroupsUpdateJob::DoWork(void)
 {
   return g_PVRChannelGroups->Update(false);
-}
-
-bool CPVRChannelSettingsSaveJob::DoWork(void)
-{
-  g_PVRManager.SaveCurrentChannelSettings();
-  return true;
 }
 
 bool CPVRManager::OpenLiveStream(const CFileItem &channel)
@@ -1497,11 +1481,6 @@ void CPVRManager::TriggerChannelsUpdate(void)
 void CPVRManager::TriggerChannelGroupsUpdate(void)
 {
   QueueJob(new CPVRChannelGroupsUpdateJob());
-}
-
-void CPVRManager::TriggerSaveChannelSettings(void)
-{
-  QueueJob(new CPVRChannelSettingsSaveJob());
 }
 
 void CPVRManager::TriggerSearchMissingChannelIcons(void)
