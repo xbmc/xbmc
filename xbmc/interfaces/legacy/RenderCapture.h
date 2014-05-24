@@ -41,12 +41,14 @@ namespace XBMCAddon
       inline virtual ~RenderCapture() { g_renderManager.ReleaseRenderCapture(m_capture); }
 
       /**
-       * getWidth() -- returns width of captured image.
+       * getWidth() -- returns width of captured image as set during
+       *     RenderCapture.capture(). Returns 0 prior to calling capture.
        */
       inline int getWidth() { return m_capture->GetWidth(); }
 
       /**
-       * getHeight() -- returns height of captured image.
+       * getHeight() -- returns height of captured image as set during
+       *     RenderCapture.capture(). Returns 0 prior to calling capture.
        */
       inline int getHeight() { return m_capture->GetHeight(); }
 
@@ -62,6 +64,7 @@ namespace XBMCAddon
 
       /**
        * getAspectRatio() -- returns aspect ratio of currently displayed video.
+       *     This may be called prior to calling RenderCapture.capture().
        */
       inline float getAspectRatio() { return g_renderManager.GetAspectRatio(); }
 
