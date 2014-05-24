@@ -4378,26 +4378,20 @@ void CApplication::SaveFileState(bool bForeground /* = false */)
   if (m_progressTrackingItem->IsPVRChannel() || !CProfilesManager::Get().GetCurrentProfile().canWriteDatabases())
     return;
 
+  CJob* job = new CSaveFileStateJob(*m_progressTrackingItem,
+      *m_stackFileItemToUpdate,
+      m_progressTrackingVideoResumeBookmark,
+      m_progressTrackingPlayCountUpdate,
+      CMediaSettings::Get().GetCurrentVideoSettings());
+  
   if (bForeground)
   {
-    CSaveFileStateJob job(*m_progressTrackingItem,
-    *m_stackFileItemToUpdate,
-    m_progressTrackingVideoResumeBookmark,
-    m_progressTrackingPlayCountUpdate,
-    CMediaSettings::Get().GetCurrentVideoSettings());
-
     // Run job in the foreground to make sure it finishes
-    job.DoWork();
+    job->DoWork();
+    delete job;
   }
   else
-  {
-    CJob* job = new CSaveFileStateJob(*m_progressTrackingItem,
-        *m_stackFileItemToUpdate,
-        m_progressTrackingVideoResumeBookmark,
-        m_progressTrackingPlayCountUpdate,
-        CMediaSettings::Get().GetCurrentVideoSettings());
     CJobManager::GetInstance().AddJob(job, NULL, CJob::PRIORITY_NORMAL);
-  }
 }
 
 void CApplication::UpdateFileState()
