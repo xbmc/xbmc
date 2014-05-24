@@ -36,7 +36,6 @@ public:
 
   virtual bool Initialize(AEAudioFormat &format, std::string &device);
   virtual void Deinitialize();
-  virtual bool IsCompatible(const AEAudioFormat &format, const std::string &device);
 
   virtual double       GetDelay        ();
   virtual double       GetCacheTotal   ();
@@ -49,9 +48,6 @@ private:
   void SetHogMode(bool on);
 
   CAEDeviceInfo      m_info;
-  AEAudioFormat      m_format;
-
-  volatile bool      m_draining;
 
   CCoreAudioDevice   m_device;
   CCoreAudioStream   m_outputStream;

@@ -608,7 +608,6 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   m_buffer = new AERingBuffer(num_buffers * format.m_frames * m_frameSizePerPlane, m_planes);
   CLog::Log(LOGDEBUG, "%s: using buffer size: %u (%f ms)", __FUNCTION__, m_buffer->GetMaxSize(), (float)m_buffer->GetMaxSize() / (m_framesPerSecond * m_frameSizePerPlane));
 
-  m_format = format;
   if (passthrough)
     format.m_dataFormat = AE_FMT_S16NE;
   else
@@ -661,13 +660,6 @@ void CAESinkDARWINOSX::Deinitialize()
   m_planes = 1;
 
   m_started = false;
-}
-
-bool CAESinkDARWINOSX::IsCompatible(const AEAudioFormat &format, const std::string &device)
-{
-  return ((m_format.m_sampleRate    == format.m_sampleRate) &&
-          (m_format.m_dataFormat    == format.m_dataFormat) &&
-          (m_format.m_channelLayout == format.m_channelLayout));
 }
 
 double CAESinkDARWINOSX::GetDelay()
