@@ -220,6 +220,7 @@ namespace XBMCAddon
 
       /**
        * getPlayingFile() -- returns the current playing file as a string.
+       * Note: For LiveTV, returns a pvr:// url which is not translatable to an OS specific file or external url
        * 
        * Throws: Exception, if player is not playing a file.
        */
