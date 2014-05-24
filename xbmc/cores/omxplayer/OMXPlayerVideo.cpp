@@ -799,6 +799,9 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, f
     return;
   }
 
+  m_src_rect.SetRect(0, 0, 0, 0);
+  m_dst_rect.SetRect(0, 0, 0, 0);
+
   g_renderManager.RegisterRenderUpdateCallBack((const void*)this, RenderUpdateCallBack);
 }
 
