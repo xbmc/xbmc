@@ -460,7 +460,7 @@ msgstr ""
 
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#122"
-msgid "Confirm file delete?"
+msgid "Confirm delete"
 msgstr ""
 
 #: xbmc/windows/GUIWindowFileManager.cpp
@@ -7847,7 +7847,13 @@ msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr ""
 
-#empty strings from id 19112 to 19113
+msgctxt "#19112"
+msgid "Delete this recording?"
+msgstr ""
+
+msgctxt "#19113"
+msgid "Delete all recordings in this folder?"
+msgstr ""
 
 #: xbmc/windows/GUIWindowSystemInfo.cpp
 msgctxt "#19114"
