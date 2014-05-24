@@ -369,7 +369,12 @@ void RegisterDeviceChangedCB(bool bRegister, void *ref)
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAESinkDARWINOSX::CAESinkDARWINOSX()
-: m_latentFrames(0), m_outputBitstream(false), m_outputBuffer(NULL), m_planes(1), m_frameSizePerPlane(0), m_buffer(NULL)
+: m_latentFrames(0),
+  m_outputBitstream(false),
+  m_planes(1),
+  m_frameSizePerPlane(0),
+  m_buffer(NULL),
+  m_started(false)
 {
   // By default, kAudioHardwarePropertyRunLoop points at the process's main thread on SnowLeopard,
   // If your process lacks such a run loop, you can set kAudioHardwarePropertyRunLoop to NULL which
@@ -388,7 +393,6 @@ CAESinkDARWINOSX::CAESinkDARWINOSX()
     CLog::Log(LOGERROR, "CCoreAudioAE::constructor: kAudioHardwarePropertyRunLoop error.");
   }
   RegisterDeviceChangedCB(true, this);
-  m_started = false;
 }
 
 CAESinkDARWINOSX::~CAESinkDARWINOSX()
@@ -594,9 +598,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   m_frameSizePerPlane = format.m_frameSize / m_planes;
 
   if (m_outputBitstream)
-  {
-    m_outputBuffer = new int16_t[format.m_frameSamples];
-    /* TODO: Do we need this? */
+  { /* TODO: Do we need this? */
     m_device.SetNominalSampleRate(format.m_sampleRate);
   }
 
@@ -654,10 +656,6 @@ void CAESinkDARWINOSX::Deinitialize()
     m_buffer = NULL;
   }
   m_outputBitstream = false;
-
-  delete[] m_outputBuffer;
-  m_outputBuffer = NULL;
-
   m_planes = 1;
 
   m_started = false;
@@ -778,21 +776,22 @@ OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTim
        We reverse the float->S16LE conversion done in the stream or device */
       static const float mul = 1.0f / (INT16_MAX + 1);
 
-      unsigned int wanted = std::min(outOutputData->mBuffers[0].mDataByteSize / sizeof(float), (size_t)sink->m_frameSizePerPlane)  * sizeof(int16_t);
-      if (wanted <= sink->m_buffer->GetReadSize())
+      size_t wanted = outOutputData->mBuffers[0].mDataByteSize / sizeof(float) * sizeof(int16_t);
+      size_t bytes = std::min((size_t)sink->m_buffer->GetReadSize(), wanted);
+      for (unsigned int j = 0; j < bytes / sizeof(int16_t); j++)
       {
         for (unsigned int i = 0; i < sink->m_buffer->NumPlanes(); i++)
         {
-          sink->m_buffer->Read((unsigned char *)sink->m_outputBuffer, wanted, i);
+          int16_t src;
+          sink->m_buffer->Read((unsigned char *)&src, sizeof(int16_t), i);
           if (i < outOutputData->mNumberBuffers && outOutputData->mBuffers[i].mData)
           {
-            int16_t *src = sink->m_outputBuffer;
-            float  *dest = (float*)outOutputData->mBuffers[i].mData;
-            for (unsigned int i = 0; i < wanted / 2; i++)
-              *dest++ = *src++ * mul;
+            float *dest = (float *)outOutputData->mBuffers[i].mData;
+            dest[j] = src * mul;
           }
         }
       }
+      LogLevel(bytes, wanted);
     }
     else
     {
