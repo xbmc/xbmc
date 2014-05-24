@@ -4383,7 +4383,8 @@ void CApplication::SaveFileState(bool bForeground /* = false */)
     CSaveFileStateJob job(*m_progressTrackingItem,
     *m_stackFileItemToUpdate,
     m_progressTrackingVideoResumeBookmark,
-    m_progressTrackingPlayCountUpdate);
+    m_progressTrackingPlayCountUpdate,
+    CMediaSettings::Get().GetCurrentVideoSettings());
 
     // Run job in the foreground to make sure it finishes
     job.DoWork();
@@ -4393,7 +4394,8 @@ void CApplication::SaveFileState(bool bForeground /* = false */)
     CJob* job = new CSaveFileStateJob(*m_progressTrackingItem,
         *m_stackFileItemToUpdate,
         m_progressTrackingVideoResumeBookmark,
-        m_progressTrackingPlayCountUpdate);
+        m_progressTrackingPlayCountUpdate,
+        CMediaSettings::Get().GetCurrentVideoSettings());
     CJobManager::GetInstance().AddJob(job, NULL, CJob::PRIORITY_NORMAL);
   }
 }
