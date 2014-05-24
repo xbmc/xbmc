@@ -4930,12 +4930,24 @@ bool CVideoDatabase::UpdateVideoSortTitle(int idDb, const CStdString& strNewSort
 }
 
 /// \brief EraseVideoSettings() Erases the videoSettings table and reconstructs it
-void CVideoDatabase::EraseVideoSettings()
+void CVideoDatabase::EraseVideoSettings(const std::string &path /* = ""*/)
 {
   try
   {
-    CLog::Log(LOGINFO, "Deleting settings information for all movies");
-    m_pDS->exec("delete from settings");
+    std::string sql = "DELETE FROM settings";
+
+    if (!path.empty())
+    {
+      Filter pathFilter;
+      pathFilter.AppendWhere(PrepareSQL("idFile IN (SELECT idFile FROM files INNER JOIN path ON path.idPath = files.idPath AND path.strPath LIKE \"%s%%\")", path.c_str()));
+      sql += std::string(" WHERE ") + pathFilter.where.c_str();
+
+      CLog::Log(LOGINFO, "Deleting settings information for all files under %s", path.c_str());
+    }
+    else
+      CLog::Log(LOGINFO, "Deleting settings information for all files");
+    
+    m_pDS->exec(sql);
   }
   catch (...)
   {

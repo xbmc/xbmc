@@ -43,6 +43,7 @@
 #include "windows/GUIWindowPVRCommon.h"
 #include "utils/JobManager.h"
 #include "interfaces/AnnouncementManager.h"
+#include "video/VideoDatabase.h"
 
 #include "PVRManager.h"
 #include "PVRDatabase.h"
@@ -733,8 +734,16 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
       pDlgProgress->SetPercentage(70);
       pDlgProgress->Progress();
 
-      /* delete all channel settings */
-      m_database->DeleteChannelSettings();
+      /* delete all channel and recording settings */
+      CVideoDatabase videoDatabase;
+
+      if (videoDatabase.Open())
+      {
+        videoDatabase.EraseVideoSettings("pvr://channels/");
+        videoDatabase.EraseVideoSettings("pvr://recordings/");
+        videoDatabase.Close();
+      }
+      
       pDlgProgress->SetPercentage(80);
       pDlgProgress->Progress();
 
