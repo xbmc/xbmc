@@ -3864,7 +3864,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   if (!bRestart)
   {
-    SaveCurrentFileSettings();
+    SaveFileState(true);
 
     OutputDebugString("new file set audiostream:0\n");
     // Switch to default options
@@ -5746,26 +5746,6 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
     return true;
   }
   return false;
-}
-
-void CApplication::SaveCurrentFileSettings()
-{
-  // don't store settings for PVR in video database
-  if (m_itemCurrentFile->IsVideo() && !m_itemCurrentFile->IsPVRChannel())
-  {
-    // save video settings
-    if (CMediaSettings::Get().GetCurrentVideoSettings() != CMediaSettings::Get().GetDefaultVideoSettings())
-    {
-      CVideoDatabase dbs;
-      dbs.Open();
-      dbs.SetVideoSettings(m_itemCurrentFile->GetPath(), CMediaSettings::Get().GetCurrentVideoSettings());
-      dbs.Close();
-    }
-  }
-  else if (m_itemCurrentFile->IsPVRChannel())
-  {
-    g_PVRManager.SaveCurrentChannelSettings();
-  }
 }
 
 bool CApplication::AlwaysProcess(const CAction& action)

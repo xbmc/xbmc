@@ -450,8 +450,6 @@ protected:
   float NavigationIdleTime();
   static bool AlwaysProcess(const CAction& action);
 
-  void SaveCurrentFileSettings();
-
   bool InitDirectoriesLinux();
   bool InitDirectoriesOSX();
   bool InitDirectoriesWin32();
