@@ -31,7 +31,6 @@
 #include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
 #include "profiles/ProfilesManager.h"
-#include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -59,7 +58,6 @@
 #define SETTING_AUDIO_MAKE_DEFAULT             "audio.makedefault"
 
 using namespace std;
-using namespace PVR;
 
 CGUIDialogAudioSubtitleSettings::CGUIDialogAudioSubtitleSettings()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_AUDIO_OSD_SETTINGS, "VideoOSDSettings.xml"),
@@ -186,9 +184,6 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(const CSetting *setting)
     m_subtitleStream = videoSettings.m_SubtitleStream = static_cast<const CSettingInt*>(setting)->GetValue();
     g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
   }
-
-  if (g_PVRManager.IsPlayingRadio() || g_PVRManager.IsPlayingTV())
-    g_PVRManager.TriggerSaveChannelSettings();
 }
 
 void CGUIDialogAudioSubtitleSettings::OnSettingAction(const CSetting *setting)
