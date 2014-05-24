@@ -4375,7 +4375,7 @@ bool CApplication::IsFullScreen()
 
 void CApplication::SaveFileState(bool bForeground /* = false */)
 {
-  if (m_progressTrackingItem->IsPVRChannel() || !CProfilesManager::Get().GetCurrentProfile().canWriteDatabases())
+  if (!CProfilesManager::Get().GetCurrentProfile().canWriteDatabases())
     return;
 
   CJob* job = new CSaveFileStateJob(*m_progressTrackingItem,
