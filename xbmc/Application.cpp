@@ -1616,13 +1616,6 @@ void CApplication::StartServices()
   CLog::Log(LOGNOTICE, "start dvd mediatype detection");
   m_DetectDVDType.Create(false, THREAD_MINSTACKSIZE);
 #endif
-
-  CLog::Log(LOGNOTICE, "initializing playlistplayer");
-  g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, CMediaSettings::Get().DoesMusicPlaylistRepeat() ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
-  g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, CMediaSettings::Get().IsMusicPlaylistShuffled());
-  g_playlistPlayer.SetRepeat(PLAYLIST_VIDEO, CMediaSettings::Get().DoesVideoPlaylistRepeat() ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
-  g_playlistPlayer.SetShuffle(PLAYLIST_VIDEO, CMediaSettings::Get().IsVideoPlaylistShuffled());
-  CLog::Log(LOGNOTICE, "DONE initializing playlistplayer");
 }
 
 void CApplication::StopServices()

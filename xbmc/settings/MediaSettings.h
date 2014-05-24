@@ -23,6 +23,7 @@
 #include <string>
 
 #include "settings/lib/ISettingCallback.h"
+#include "settings/lib/ISettingsHandler.h"
 #include "settings/lib/ISubSettings.h"
 #include "settings/VideoSettings.h"
 #include "threads/CriticalSection.h"
@@ -38,7 +39,7 @@ typedef enum {
   WatchedModeWatched
 } WatchedMode;
 
-class CMediaSettings : public ISettingCallback, public ISubSettings
+class CMediaSettings : public ISettingCallback, public ISettingsHandler, public ISubSettings
 {
 public:
   static CMediaSettings& Get();
@@ -47,6 +48,7 @@ public:
   virtual bool Save(TiXmlNode *settings) const;
 
   virtual void OnSettingAction(const CSetting *setting);
+  virtual void OnSettingsLoaded();
 
   const CVideoSettings& GetDefaultVideoSettings() const { return m_defaultVideoSettings; }
   CVideoSettings& GetDefaultVideoSettings() { return m_defaultVideoSettings; }
