@@ -31,6 +31,7 @@ CCriticalSection CDVDClock::m_systemsection;
 CDVDClock *CDVDClock::m_playerclock = NULL;;
 
 CDVDClock::CDVDClock()
+  :  m_master(MASTER_CLOCK_NONE)
 {
   CSingleLock lock(m_systemsection);
   CheckSystemClock();
@@ -256,3 +257,14 @@ double CDVDClock::SystemToPlaying(int64_t system)
   return DVD_TIME_BASE * (double)(current - m_startClock) / m_systemUsed + m_iDisc;
 }
 
+EMasterClock CDVDClock::GetMaster()
+{
+  CSharedLock lock(m_critSection);
+  return m_master;
+}
+
+void CDVDClock::SetMaster(EMasterClock master)
+{
+  CExclusiveLock lock(m_critSection);
+  m_master = master;
+}

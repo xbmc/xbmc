@@ -35,11 +35,24 @@
 #define DVD_PLAYSPEED_PAUSE       0       // frame stepping
 #define DVD_PLAYSPEED_NORMAL      1000
 
+enum EMasterClock
+{
+  MASTER_CLOCK_NONE,
+  MASTER_CLOCK_AUDIO,
+  MASTER_CLOCK_VIDEO,
+  MASTER_CLOCK_INPUT,
+};
+
 class CDVDClock
 {
 public:
+
   CDVDClock();
   ~CDVDClock();
+
+  EMasterClock GetMaster();
+  void         SetMaster(EMasterClock master);
+
 
   double GetClock(bool interpolated = true);
   double GetClock(double& absolute, bool interpolated = true);
@@ -73,6 +86,7 @@ protected:
   int64_t m_pauseClock;
   double m_iDisc;
   bool m_bReset;
+  EMasterClock m_master;
 
   static int64_t m_systemFrequency;
   static int64_t m_systemOffset;
