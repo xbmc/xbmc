@@ -373,6 +373,7 @@ CAESinkDARWINOSX::CAESinkDARWINOSX()
   m_outputBitstream(false),
   m_planes(1),
   m_frameSizePerPlane(0),
+  m_framesPerSecond(0),
   m_buffer(NULL),
   m_started(false)
 {
@@ -596,6 +597,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   format.m_frameSamples  = format.m_frames * format.m_channelLayout.Count();
 
   m_frameSizePerPlane = format.m_frameSize / m_planes;
+  m_framesPerSecond   = format.m_sampleRate;
 
   if (m_outputBitstream)
   { /* TODO: Do we need this? */
@@ -604,7 +606,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
 
   unsigned int num_buffers = 4;
   m_buffer = new AERingBuffer(num_buffers * format.m_frames * m_frameSizePerPlane, m_planes);
-  CLog::Log(LOGDEBUG, "%s: using buffer size: %u (%f ms)", __FUNCTION__, m_buffer->GetMaxSize(), (float)m_buffer->GetMaxSize() / (format.m_sampleRate * m_frameSizePerPlane));
+  CLog::Log(LOGDEBUG, "%s: using buffer size: %u (%f ms)", __FUNCTION__, m_buffer->GetMaxSize(), (float)m_buffer->GetMaxSize() / (m_framesPerSecond * m_frameSizePerPlane));
 
   m_format = format;
   if (passthrough)
@@ -675,7 +677,7 @@ double CAESinkDARWINOSX::GetDelay()
     // Calculate the duration of the data in the cache
     double delay = (double)m_buffer->GetReadSize() / (double)m_frameSizePerPlane;
     delay += (double)m_latentFrames;
-    delay /= (double)m_format.m_sampleRate;
+    delay /= (double)m_framesPerSecond;
     return delay;
   }
   return 0.0;
@@ -683,7 +685,7 @@ double CAESinkDARWINOSX::GetDelay()
 
 double CAESinkDARWINOSX::GetCacheTotal()
 {
-  return (double)m_buffer->GetMaxSize() / (double)(m_frameSizePerPlane * m_format.m_sampleRate);
+  return (double)m_buffer->GetMaxSize() / (double)(m_frameSizePerPlane * m_framesPerSecond);
 }
 
 CCriticalSection mutex;
@@ -694,7 +696,7 @@ unsigned int CAESinkDARWINOSX::AddPackets(uint8_t **data, unsigned int frames, u
   if (m_buffer->GetWriteSize() < frames * m_frameSizePerPlane)
   { // no space to write - wait for a bit
     CSingleLock lock(mutex);
-    unsigned int timeout = 900 * frames / m_format.m_sampleRate;
+    unsigned int timeout = 900 * frames / m_framesPerSecond;
     if (!m_started)
       timeout = 4500;
 
@@ -723,7 +725,7 @@ void CAESinkDARWINOSX::Drain()
   int bytes = m_buffer->GetReadSize();
   int totalBytes = bytes;
   int maxNumTimeouts = 3;
-  unsigned int timeout = 900 * bytes / (m_format.m_sampleRate * m_frameSizePerPlane);
+  unsigned int timeout = 900 * bytes / (m_framesPerSecond * m_frameSizePerPlane);
   while (bytes && maxNumTimeouts > 0)
   {
     CSingleLock lock(mutex);
