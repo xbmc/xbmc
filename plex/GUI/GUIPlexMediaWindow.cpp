@@ -925,8 +925,11 @@ std::string CGUIPlexMediaWindow::GetFilteredURI(const CFileItem& item) const
   }
 
   // set sourceType
-  CStdString sourceType = boost::lexical_cast<CStdString>(PlexUtils::GetFilterType(item));
-  uri.SetOption("sourceType", sourceType);
+  if (item.m_bIsFolder)
+  {
+    CStdString sourceType = boost::lexical_cast<CStdString>(PlexUtils::GetFilterType(item));
+    uri.SetOption("sourceType", sourceType);
+  }
 
   return CPlexPlayQueueManager::getURIFromItem(item, uri.Get().substr(17, std::string::npos));
 }
