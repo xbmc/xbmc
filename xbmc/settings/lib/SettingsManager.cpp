@@ -207,6 +207,16 @@ void CSettingsManager::SetInitialized()
     if (itSettingDep->second.setting == NULL)
       continue;
 
+    // if the setting has a parent setting, add it to its children
+    std::string parentSettingId = itSettingDep->second.setting->GetParent();
+    if (!parentSettingId.empty())
+    {
+      SettingMap::iterator itParentSetting = m_settings.find(parentSettingId);
+      if (itParentSetting != m_settings.end())
+        itParentSetting->second.children.insert(itSettingDep->first);
+    }
+
+    // handle all dependencies of the setting
     const SettingDependencies& deps = itSettingDep->second.setting->GetDependencies();
     for (SettingDependencies::const_iterator depIt = deps.begin(); depIt != deps.end(); ++depIt)
     {
@@ -815,6 +825,20 @@ void CSettingsManager::OnSettingPropertyChanged(const CSetting *setting, const c
         callback != settingData.callbacks.end();
         ++callback)
     (*callback)->OnSettingPropertyChanged(setting, propertyName);
+
+  // check the changed property and if it may have an influence on the
+  // children of the setting
+  SettingDependencyType dependencyType = SettingDependencyTypeNone;
+  if (StringUtils::EqualsNoCase(propertyName, "enabled"))
+    dependencyType = SettingDependencyTypeEnable;
+  else if (StringUtils::EqualsNoCase(propertyName, "visible"))
+    dependencyType = SettingDependencyTypeVisible;
+
+  if (dependencyType != SettingDependencyTypeNone)
+  {
+    for (std::set<std::string>::const_iterator childIt = settingIt->second.children.begin(); childIt != settingIt->second.children.end(); ++childIt)
+      UpdateSettingByDependency(*childIt, dependencyType);
+  }
 }
 
 CSetting* CSettingsManager::CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager /* = NULL */) const
@@ -1018,11 +1042,16 @@ bool CSettingsManager::UpdateSetting(const TiXmlNode *node, CSetting *setting, c
 
 void CSettingsManager::UpdateSettingByDependency(const std::string &settingId, const CSettingDependency &dependency)
 {
+  UpdateSettingByDependency(settingId, dependency.GetType());
+}
+
+void CSettingsManager::UpdateSettingByDependency(const std::string &settingId, SettingDependencyType dependencyType)
+{
   CSetting *setting = GetSetting(settingId);
   if (setting == NULL)
     return;
 
-  switch (dependency.GetType())
+  switch (dependencyType)
   {
     case SettingDependencyTypeEnable:
       // just trigger the property changed callback and a call to
