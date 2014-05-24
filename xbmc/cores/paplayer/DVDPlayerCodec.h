@@ -27,6 +27,11 @@
 #include "cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodec.h"
 #include "cores/dvdplayer/DVDInputStreams/DVDInputStream.h"
 
+namespace ActiveAE
+{
+  class CActiveAEResample;
+};
+
 class DVDPlayerCodec : public ICodec
 {
 public:
@@ -43,6 +48,8 @@ public:
 
   void SetContentType(const CStdString &strContent);
 
+  bool NeedConvert(AEDataFormat fmt);
+
 private:
   CDVDDemux* m_pDemuxer;
   CDVDInputStream* m_pInputStream;
@@ -55,15 +62,21 @@ private:
   int m_nAudioStream;
 
   int m_audioPos;
-  DemuxPacket* m_pPacket ;
+  DemuxPacket* m_pPacket;
 
-  BYTE *m_decoded;
   int  m_nDecodedLen;
 
   CAEChannelInfo m_ChannelInfo;
 
   bool m_bInited;
   bool m_bCanSeek;
+
+  ActiveAE::CActiveAEResample *m_pResampler;
+  uint8_t *m_audioPlanes[8];
+  int m_planes;
+  bool m_needConvert;
+  AEDataFormat m_srcFormat;
+  int m_srcFrameSize;
 };
 
 #endif
