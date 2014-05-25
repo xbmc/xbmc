@@ -263,31 +263,25 @@ public:
 protected:
   friend class COMXSelectionStreams;
 
-  class OMXStreamLock : public CSingleLock
-  {
-  public:
-    inline OMXStreamLock(COMXPlayer* comxplayer) : CSingleLock(comxplayer->m_critStreamSection) {}
-  };
-
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
 
-  bool OpenAudioStream(int iStream, int source, bool reset = true);
-  bool OpenVideoStream(int iStream, int source, bool reset = true);
-  bool OpenSubtitleStream(int iStream, int source);
+  bool OpenStream(COMXCurrentStream& current, int iStream, int source, bool reset = true);
+  bool OpenStreamPlayer(COMXCurrentStream& current, CDVDStreamInfo& hint, bool reset);
+  bool OpenAudioStream(CDVDStreamInfo& hint, bool reset = true);
+  bool OpenVideoStream(CDVDStreamInfo& hint, bool reset = true);
+  bool OpenSubtitleStream(CDVDStreamInfo& hint);
+  bool OpenTeletextStream(CDVDStreamInfo& hint);
 
   /** \brief Switches forced subtitles to forced subtitles matching the language of the current audio track.
   *          If these are not available, subtitles are disabled.
   *   \return true if the subtitles were changed, false otherwise.
   */
   bool AdaptForcedSubtitles();
-  bool OpenTeletextStream(int iStream, int source);
-  bool CloseAudioStream(bool bWaitForBuffers);
-  bool CloseVideoStream(bool bWaitForBuffers);
-  bool CloseSubtitleStream(bool bKeepOverlays);
-  bool CloseTeletextStream(bool bWaitForBuffers);
+  bool CloseStream(COMXCurrentStream& current, bool bWaitForBuffers);
 
+  bool CheckIsCurrent(COMXCurrentStream& current, CDemuxStream* stream, DemuxPacket* pkg);
   void ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket);
@@ -323,15 +317,18 @@ protected:
   void CheckAutoSceneSkip();
   void CheckContinuity(COMXCurrentStream& current, DemuxPacket* pPacket);
   bool CheckSceneSkip(COMXCurrentStream& current);
-  bool CheckPlayerInit(COMXCurrentStream& current, unsigned int source);
+  bool CheckPlayerInit(COMXCurrentStream& current);
   bool CheckStartCaching(COMXCurrentStream& current);
   void UpdateCorrection(DemuxPacket* pkt, double correction);
   void UpdateTimestamps(COMXCurrentStream& current, DemuxPacket* pPacket);
+  IDVDStreamPlayer* GetStreamPlayer(unsigned int player);
   void SendPlayerMessage(CDVDMsg* pMsg, unsigned int target);
 
   bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);
   bool IsValidStream(COMXCurrentStream& stream);
   bool IsBetterStream(COMXCurrentStream& current, CDemuxStream* stream);
+  void CheckBetterStream(COMXCurrentStream& current, CDemuxStream* stream);
+  void CheckStreamChanges(COMXCurrentStream& current, CDemuxStream* stream);
   bool CheckDelayedChannelEntry(void);
 
   bool OpenInputStream();
@@ -390,8 +387,6 @@ protected:
   CDVDInputStream* m_pInputStream;  // input stream for current playing file
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
   CDVDDemux* m_pSubtitleDemuxer;
-
-  std::string m_lastSub;
 
   struct SDVDInfo
   {
@@ -482,7 +477,6 @@ protected:
   CCriticalSection m_StateSection;
 
   CEvent m_ready;
-  CCriticalSection m_critStreamSection; // need to have this lock when switching streams (audio / video)
 
   CEdl m_Edl;
 

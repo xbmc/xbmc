@@ -29,13 +29,14 @@
 #include "OMXAudio.h"
 #include "OMXAudioCodecOMX.h"
 #include "threads/Thread.h"
+#include "IDVDPlayer.h"
 
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDMessageQueue.h"
 #include "utils/BitstreamStats.h"
 #include "xbmc/linux/DllBCM.h"
 
-class OMXPlayerAudio : public CThread
+class OMXPlayerAudio : public CThread, public IDVDStreamPlayer
 {
 protected:
   CDVDMessageQueue      m_messageQueue;
@@ -81,10 +82,10 @@ public:
   bool HasData() const                              { return m_messageQueue.GetDataSize() > 0; }
   bool IsInited() const                             { return m_messageQueue.IsInited(); }
   int  GetLevel() const                             { return m_messageQueue.GetLevel(); }
-  bool IsStalled()                                  { return m_stalled;  }
+  bool IsStalled() const                            { return m_stalled;  }
   bool IsEOS();
   void WaitForBuffers();
-  bool CloseStream(bool bWaitForBuffers);
+  void CloseStream(bool bWaitForBuffers);
   bool CodecChange();
   bool Decode(DemuxPacket *pkt, bool bDropPacket);
   void Flush();

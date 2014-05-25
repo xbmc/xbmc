@@ -159,7 +159,7 @@ bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints, COMXVideo *codec)
   return true;
 }
 
-bool OMXPlayerVideo::CloseStream(bool bWaitForBuffers)
+void OMXPlayerVideo::CloseStream(bool bWaitForBuffers)
 {
   // wait until buffers are empty
   if (bWaitForBuffers && m_speed > 0) m_messageQueue.WaitUntilEmpty();
@@ -180,8 +180,6 @@ bool OMXPlayerVideo::CloseStream(bool bWaitForBuffers)
 
   if(m_DllBcmHost.IsLoaded())
     m_DllBcmHost.Unload();
-
-  return true;
 }
 
 void OMXPlayerVideo::OnStartup()

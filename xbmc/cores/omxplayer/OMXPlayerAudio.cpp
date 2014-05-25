@@ -149,7 +149,7 @@ void OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec)
   m_format.m_channelLayout = 0;
 }
 
-bool OMXPlayerAudio::CloseStream(bool bWaitForBuffers)
+void OMXPlayerAudio::CloseStream(bool bWaitForBuffers)
 {
   // wait until buffers are empty
   if (bWaitForBuffers && m_speed > 0) m_messageQueue.WaitUntilEmpty();
@@ -172,8 +172,6 @@ bool OMXPlayerAudio::CloseStream(bool bWaitForBuffers)
 
   m_speed         = DVD_PLAYSPEED_NORMAL;
   m_started       = false;
-
-  return true;
 }
 
 void OMXPlayerAudio::OnStartup()

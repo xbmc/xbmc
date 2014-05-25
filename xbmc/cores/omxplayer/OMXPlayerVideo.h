@@ -28,6 +28,7 @@
 #include "DVDStreamInfo.h"
 #include "OMXVideo.h"
 #include "threads/Thread.h"
+#include "IDVDPlayer.h"
 
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDCodecs/Video/DVDVideoCodec.h"
@@ -37,7 +38,7 @@
 #include "linux/DllBCM.h"
 #include "cores/VideoRenderers/RenderManager.h"
 
-class OMXPlayerVideo : public CThread
+class OMXPlayerVideo : public CThread, public IDVDStreamPlayer
 {
 protected:
   CDVDMessageQueue          m_messageQueue;
@@ -94,9 +95,9 @@ public:
   bool IsInited() const                             { return m_messageQueue.IsInited(); }
   void WaitForBuffers()                             { m_messageQueue.WaitUntilEmpty(); }
   int  GetLevel() const                             { return m_messageQueue.GetLevel(); }
-  bool IsStalled()                                  { return m_stalled;  }
+  bool IsStalled() const                            { return m_stalled;  }
   bool IsEOS();
-  bool CloseStream(bool bWaitForBuffers);
+  void CloseStream(bool bWaitForBuffers);
   void Output(double pts, bool bDropPacket);
   void Flush();
   bool OpenDecoder();
