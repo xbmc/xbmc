@@ -51,6 +51,7 @@ TagLibVFSStream::TagLibVFSStream(const string& strFileName, bool readOnly)
       m_bIsOpen = false;
   }
   m_strFileName = strFileName;
+  m_bIsReadOnly = readOnly || !m_bIsOpen;
 }
 
 /*!
@@ -239,6 +240,38 @@ bool TagLibVFSStream::isOpen() const
  */
 void TagLibVFSStream::seek(long offset, Position p)
 {
+  const long fileLen = length();
+  if (m_bIsReadOnly && fileLen > 0)
+  {
+    long startPos;
+    if (p == Beginning)
+      startPos = 0;
+    else if (p == Current)
+      startPos = tell();
+    else if (p == End)
+      startPos = fileLen;
+    else
+      return; // wrong Position value
+    
+    // When parsing some broken files, taglib may try to seek above end of file.
+    // If underlying VFS does not move I/O pointer in this case, taglib will parse
+    // same part of file several times and ends with error. To prevent this
+    // situation, force seek to last valid position so VFS move I/O pointer.
+    if (startPos >= 0)
+    {
+      if (offset < 0 && startPos + offset < 0)
+      {
+        m_file.Seek(0, SEEK_SET);
+        return;
+      }
+      if (offset > 0 && startPos + offset > fileLen)
+      {
+        m_file.Seek(fileLen, SEEK_SET);
+        return;
+      }
+    }
+  }
+
   switch(p)
   {
     case Beginning:
