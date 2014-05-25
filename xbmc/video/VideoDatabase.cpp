@@ -698,6 +698,88 @@ bool CVideoDatabase::GetPathHash(const CStdString &path, CStdString &hash)
   return false;
 }
 
+bool CVideoDatabase::GetSourcePath(const std::string &path, std::string &sourcePath)
+{
+  SScanSettings dummy;
+  return GetSourcePath(path, sourcePath, dummy);
+}
+
+bool CVideoDatabase::GetSourcePath(const std::string &path, std::string &sourcePath, SScanSettings& settings)
+{
+  try
+  {
+    if (path.empty() ||
+        m_pDB.get() == NULL || m_pDS.get() == NULL)
+      return false;
+
+    std::string strPath2;
+
+    if (URIUtils::IsMultiPath(path))
+      strPath2 = CMultiPathDirectory::GetFirstPath(path);
+    else
+      strPath2 = path;
+
+    std::string strPath1 = URIUtils::GetDirectory(strPath2);
+    int idPath = GetPathId(strPath1);
+
+    if (idPath > -1)
+    {
+      // check if the given path already is a source itself
+      std::string strSQL = PrepareSQL("SELECT path.useFolderNames, path.scanRecursive, path.noUpdate, path.exclude FROM path WHERE "
+                                        "path.idPath = %i AND "
+                                        "path.strContent IS NOT NULL AND path.strContent != '' AND "
+                                        "path.strScraper IS NOT NULL AND path.strScraper != ''", idPath);
+      if (m_pDS->query(strSQL.c_str()) && !m_pDS->eof())
+      {
+        settings.parent_name_root = settings.parent_name = m_pDS->fv(0).get_asBool();
+        settings.recurse = m_pDS->fv(1).get_asInt();
+        settings.noupdate = m_pDS->fv(2).get_asBool();
+        settings.exclude = m_pDS->fv(3).get_asBool();
+
+        m_pDS->close();
+        sourcePath = path;
+        return true;
+      }
+    }
+
+    // look for parent paths until there is one which is a source
+    CStdString strParent;
+    bool found = false;
+    while (URIUtils::GetParentPath(strPath1, strParent))
+    {
+      std::string strSQL = PrepareSQL("SELECT path.strContent, path.strScraper, path.scanRecursive, path.useFolderNames, path.noUpdate, path.exclude FROM path WHERE strPath = '%s'", strParent.c_str());
+      if (m_pDS->query(strSQL.c_str()) && !m_pDS->eof())
+      {
+        std::string strContent = m_pDS->fv(0).get_asString();
+        std::string strScraper = m_pDS->fv(1).get_asString();
+        if (!strContent.empty() && !strScraper.empty())
+        {
+          settings.parent_name_root = settings.parent_name = m_pDS->fv(2).get_asBool();
+          settings.recurse = m_pDS->fv(3).get_asInt();
+          settings.noupdate = m_pDS->fv(4).get_asBool();
+          settings.exclude = m_pDS->fv(5).get_asBool();
+          found = true;
+          break;
+        }
+      }
+
+      strPath1 = strParent;
+    }
+    m_pDS->close();
+
+    if (found)
+    {
+      sourcePath = strParent;
+      return true;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
 //********************************************************************************************************************************
 int CVideoDatabase::AddFile(const CStdString& strFileNameAndPath)
 {

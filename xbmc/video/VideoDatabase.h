@@ -565,6 +565,9 @@ public:
    */
   bool GetSubPaths(const CStdString& basepath, std::vector< std::pair<int, std::string> >& subpaths);
 
+  bool GetSourcePath(const std::string &path, std::string &sourcePath);
+  bool GetSourcePath(const std::string &path, std::string &sourcePath, VIDEO::SScanSettings& settings);
+
   // for music + musicvideo linkups - if no album and title given it will return the artist id, else the id of the matching video
   int GetMatchingMusicVideo(const CStdString& strArtist, const CStdString& strAlbum = "", const CStdString& strTitle = "");
 
