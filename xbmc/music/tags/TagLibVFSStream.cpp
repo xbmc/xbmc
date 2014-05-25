@@ -51,6 +51,7 @@ TagLibVFSStream::TagLibVFSStream(const string& strFileName, bool readOnly)
       m_bIsOpen = false;
   }
   m_strFileName = strFileName;
+  m_bIsReadOnly = readOnly || !m_bIsOpen;
 }
 
 /*!
