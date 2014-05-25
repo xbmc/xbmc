@@ -8239,10 +8239,10 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
     return cleanedIDs;
 
   // now grab them media items
-  std::string sql = PrepareSQL("SELECT %s.%s, %s.idFile, %s, path.idPath, parentPath.strPath, parentPath.useFolderNames FROM %s "
+  std::string sql = PrepareSQL("SELECT %s.%s, %s.idFile, path.idPath, parentPath.strPath FROM %s "
                                  "JOIN files ON files.idFile = %s.idFile "
                                  "JOIN path ON path.idPath = files.idPath ",
-                               table.c_str(), idField.c_str(), table.c_str(), parentPathIdField.c_str(), table.c_str(),
+                               table.c_str(), idField.c_str(), table.c_str(), table.c_str(),
                                table.c_str());
 
   if (isEpisode)
@@ -8254,20 +8254,25 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
                     table.c_str(), cleanableFileIDs.c_str());
 
   // map of parent path ID to boolean pair (if not exists and user choice)
-  std::map<int, std::pair<bool, bool> > parentPathsDeleteDecisions;
-  m_pDS->query(sql.c_str());
-  while (!m_pDS->eof())
+  std::map<int, std::pair<bool, bool> > sourcePathsDeleteDecisions;
+  m_pDS2->query(sql.c_str());
+  while (!m_pDS2->eof())
   {
-    int parentPathID = m_pDS->fv(2).get_asInt();
-    std::map<int, std::pair<bool, bool> >::const_iterator parentPathsDeleteDecision = parentPathsDeleteDecisions.find(parentPathID);
+    std::string parentPath = m_pDS2->fv(3).get_asString();
+
+    // try to find the source path the parent path belongs to
+    SScanSettings scanSettings;
+    std::string sourcePath;
+    GetSourcePath(parentPath, sourcePath, scanSettings);
+    int sourcePathID = GetPathId(sourcePath);
+    std::map<int, std::pair<bool, bool> >::const_iterator sourcePathsDeleteDecision = sourcePathsDeleteDecisions.find(sourcePathID);
     bool del = true;
-    if (parentPathsDeleteDecision == parentPathsDeleteDecisions.end())
+    if (sourcePathsDeleteDecision == sourcePathsDeleteDecisions.end())
     {
-      std::string parentPath = m_pDS->fv(4).get_asString();
-      bool parentPathNotExists = !CDirectory::Exists(parentPath, false);
+      bool sourcePathNotExists = !CDirectory::Exists(sourcePath, false);
       // if the parent path exists, the file will be deleted without asking
       // if the parent path doesn't exist, ask the user whether to remove all items it contained
-      if (parentPathNotExists)
+      if (sourcePathNotExists)
       {
         // in silent mode assume that the files are just temporarily missing
         if (silent)
@@ -8277,9 +8282,9 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
           CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
           if (pDialog != NULL)
           {
-            CURL parentUrl(parentPath);
+            CURL sourceUrl(sourcePath);
             pDialog->SetHeading(15012);
-            pDialog->SetText(StringUtils::Format(g_localizeStrings.Get(15013), parentUrl.GetWithoutUserDetails().c_str()));
+            pDialog->SetText(StringUtils::Format(g_localizeStrings.Get(15013), sourceUrl.GetWithoutUserDetails().c_str()));
             pDialog->SetChoice(0, 15015);
             pDialog->SetChoice(1, 15014);
 
@@ -8292,27 +8297,27 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
         }
       }
 
-      parentPathsDeleteDecisions.insert(make_pair(parentPathID, make_pair(parentPathNotExists, del)));
-      pathsDeleteDecisions.insert(make_pair(parentPathID, parentPathNotExists && del));
+      sourcePathsDeleteDecisions.insert(make_pair(sourcePathID, make_pair(sourcePathNotExists, del)));
+      pathsDeleteDecisions.insert(make_pair(sourcePathID, sourcePathNotExists && del));
     }
     // the only reason not to delete the file is if the parent path doesn't
     // exist and the user decided to delete all the items it contained
-    else if (parentPathsDeleteDecision->second.first &&
-             !parentPathsDeleteDecision->second.second)
+    else if (sourcePathsDeleteDecision->second.first &&
+             !sourcePathsDeleteDecision->second.second)
       del = false;
 
-    if (m_pDS->fv(5).get_asBool())
-      pathsDeleteDecisions.insert(make_pair(m_pDS->fv(3).get_asInt(), del));
+    if (scanSettings.parent_name)
+      pathsDeleteDecisions.insert(make_pair(m_pDS2->fv(2).get_asInt(), del));
 
     if (del)
     {
-      deletedFileIDs += m_pDS->fv(1).get_asString() + ",";
-      cleanedIDs.push_back(m_pDS->fv(0).get_asInt());
+      deletedFileIDs += m_pDS2->fv(1).get_asString() + ",";
+      cleanedIDs.push_back(m_pDS2->fv(0).get_asInt());
     }
 
-    m_pDS->next();
+    m_pDS2->next();
   }
-  m_pDS->close();
+  m_pDS2->close();
 
   return cleanedIDs;
 }
