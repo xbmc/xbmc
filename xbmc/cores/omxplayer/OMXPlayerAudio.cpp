@@ -499,7 +499,7 @@ void OMXPlayerAudio::WaitForBuffers()
     Sleep((int)(1000 * (delay - 0.5)));
 }
 
-bool OMXPlayerAudio::Passthrough() const
+bool OMXPlayerAudio::IsPassthrough() const
 {
   return m_passthrough;
 }

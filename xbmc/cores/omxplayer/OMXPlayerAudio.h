@@ -90,7 +90,7 @@ public:
   void Flush();
   bool AddPacket(DemuxPacket *pkt);
   AEDataFormat GetDataFormat(CDVDStreamInfo hints);
-  bool Passthrough() const;
+  bool IsPassthrough() const;
   bool OpenDecoder();
   void CloseDecoder();
   double GetDelay();

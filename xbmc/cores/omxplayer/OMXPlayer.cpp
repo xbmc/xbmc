@@ -2764,7 +2764,7 @@ bool CDVDPlayer::HasAudio() const
 
 bool CDVDPlayer::IsPassthrough() const
 {
-  return m_dvdPlayerAudio.Passthrough();
+  return m_dvdPlayerAudio.IsPassthrough();
 }
 
 bool CDVDPlayer::CanSeek()
@@ -3971,7 +3971,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
       case ACTION_MOUSE_LEFT_CLICK:
         {
           CRect rs, rd;
-          g_renderManager.GetVideoRect(rs, rd);
+          m_dvdPlayerVideo.GetVideoRect(rs, rd);
           CPoint pt(action.GetAmount(), action.GetAmount(1));
           if (!rd.PtInRect(pt))
             return false; // out of bounds
@@ -4195,8 +4195,8 @@ void CDVDPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
     }
   }
   info.videoCodecName = retVal;
-  info.videoAspectRatio = g_renderManager.GetAspectRatio();
-  g_renderManager.GetVideoRect(info.SrcRect, info.DestRect);
+  info.videoAspectRatio = m_dvdPlayerVideo.GetAspectRatio();
+  m_dvdPlayerVideo.GetVideoRect(info.SrcRect, info.DestRect);
   info.stereoMode = m_dvdPlayerVideo.GetStereoMode();
   if (info.stereoMode == "mono")
     info.stereoMode = "";
