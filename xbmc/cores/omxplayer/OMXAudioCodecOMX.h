@@ -39,8 +39,8 @@ public:
   virtual ~COMXAudioCodecOMX();
   bool Open(CDVDStreamInfo &hints);
   void Dispose();
-  int Decode(BYTE* pData, int iSize);
-  int GetData(BYTE** dst);
+  int Decode(BYTE* pData, int iSize, double dts, double pts);
+  int GetData(BYTE** dst, double &dts, double &pts);
   void Reset();
   int GetChannels();
   uint64_t GetChannelMap();
@@ -48,6 +48,7 @@ public:
   int GetBitsPerSample();
   static const char* GetName() { return "FFmpeg"; }
   int GetBitRate();
+  unsigned int GetFrameSize() { return m_frameSize; }
 
 protected:
   AVCodecContext* m_pCodecContext;
@@ -58,6 +59,7 @@ protected:
   AVFrame* m_pFrame1;
 
   BYTE *m_pBufferOutput;
+  int   m_iBufferOutputUsed;
   int   m_iBufferOutputAlloced;
 
   bool m_bOpenedCodec;
@@ -66,4 +68,7 @@ protected:
 
   bool m_bFirstFrame;
   bool m_bGotFrame;
+  bool m_bNoConcatenate;
+  unsigned int  m_frameSize;
+  double m_dts, m_pts;
 };

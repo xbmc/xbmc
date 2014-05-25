@@ -227,9 +227,10 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
 
   if(!OMX_IS_RAW(m_format.m_dataFormat) && !bDropPacket)
   {
+    double dts = pkt->dts, pts=pkt->pts;
     while(!m_bStop && data_len > 0)
     {
-      int len = m_pAudioCodec->Decode((BYTE *)data_dec, data_len);
+      int len = m_pAudioCodec->Decode((BYTE *)data_dec, data_len, dts, pts);
       if( (len < 0) || (len >  data_len) )
       {
         m_pAudioCodec->Reset();
@@ -240,7 +241,7 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
       data_len -= len;
 
       uint8_t *decoded;
-      int decoded_size = m_pAudioCodec->GetData(&decoded);
+      int decoded_size = m_pAudioCodec->GetData(&decoded, dts, pts);
 
       if(decoded_size <=0)
         continue;
@@ -274,7 +275,7 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
           if(m_silence)
             memset(decoded, 0x0, decoded_size);
 
-          ret = m_omxAudio.AddPackets(decoded, decoded_size, m_audioClock, m_audioClock);
+          ret = m_omxAudio.AddPackets(decoded, decoded_size, dts, pts, m_pAudioCodec->GetFrameSize());
 
           if(ret != decoded_size)
           {
@@ -312,7 +313,7 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
         if(m_silence)
           memset(pkt->pData, 0x0, pkt->iSize);
 
-        m_omxAudio.AddPackets(pkt->pData, pkt->iSize, m_audioClock, m_audioClock);
+        m_omxAudio.AddPackets(pkt->pData, pkt->iSize, m_audioClock, m_audioClock, 0);
       }
 
       m_audioStats.AddSampleBytes(pkt->iSize);

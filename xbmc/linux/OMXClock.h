@@ -57,6 +57,8 @@ protected:
   CDVDClock         *m_clock;
 private:
   COMXCoreComponent m_omx_clock;
+  double            m_last_media_time;
+  double            m_last_media_time_read;
 public:
   OMXClock();
   ~OMXClock();
