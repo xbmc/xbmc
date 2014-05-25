@@ -227,22 +227,14 @@ int64_t CWINFileSMB::Seek(int64_t iFilePosition, int iWhence)
   lPos.QuadPart = iFilePosition;
   int bSuccess;
 
-  int64_t length = GetLength();
-
   switch (iWhence)
   {
   case SEEK_SET:
-    if (iFilePosition <= length || length == 0)
-      bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_BEGIN);
-    else
-      bSuccess = false;
+    bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_BEGIN);
     break;
 
   case SEEK_CUR:
-    if ((GetPosition()+iFilePosition) <= length || length == 0)
-      bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_CURRENT);
-    else
-      bSuccess = false;
+    bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_CURRENT);
     break;
 
   case SEEK_END:
