@@ -51,6 +51,7 @@
 #include "xbmc/playlists/PlayListM3U.h"
 
 #include "utils/LangCodeExpander.h"
+#include "video/VideoReferenceClock.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/Key.h"
 
@@ -1965,9 +1966,10 @@ bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
     if(m_playSpeed == DVD_PLAYSPEED_NORMAL)
     {
       if(     source == DVDPLAYER_AUDIO)
-        setclock = !m_CurrentVideo.inited;
+        setclock = m_clock.GetMaster() == MASTER_CLOCK_AUDIO
+                || m_clock.GetMaster() == MASTER_CLOCK_AUDIO_VIDEOREF;
       else if(source == DVDPLAYER_VIDEO)
-        setclock = !m_CurrentAudio.inited;
+        setclock = m_clock.GetMaster() == MASTER_CLOCK_VIDEO;
     }
     else
     {
@@ -3168,19 +3170,6 @@ bool CDVDPlayer::OpenAudioStream(int iStream, int source, bool reset)
     return false;
   }
 
-  if( m_CurrentAudio.id < 0 &&  m_CurrentVideo.id >= 0 )
-  {
-    // up until now we wheren't playing audio, but we did play video
-    // this will change what is used to sync the dvdclock.
-    // since the new audio data doesn't have to have any relation
-    // to the current video data in the packet que, we have to
-    // wait for it to empty
-
-    // this happens if a new cell has audio data, but previous didn't
-    // and both have video data
-
-    SynchronizePlayers(SYNCSOURCE_AUDIO);
-  }
 
   CDVDStreamInfo hint(*pStream, true);
 
@@ -3206,6 +3195,8 @@ bool CDVDPlayer::OpenAudioStream(int iStream, int source, bool reset)
   m_CurrentAudio.stream = (void*)pStream;
   m_CurrentAudio.started = false;
   m_HasAudio = true;
+
+  UpdateClockMaster();
 
   /* we are potentially going to be waiting on this */
   m_dvdPlayerAudio.SendMessage(new CDVDMsg(CDVDMsg::PLAYER_STARTED), 1);
@@ -3289,6 +3280,8 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source, bool reset)
   m_CurrentVideo.stream = (void*)pStream;
   m_CurrentVideo.started = false;
   m_HasVideo = true;
+
+  UpdateClockMaster();
 
   /* we are potentially going to be waiting on this */
   m_dvdPlayerVideo.SendMessage(new CDVDMsg(CDVDMsg::PLAYER_STARTED), 1);
@@ -3497,6 +3490,7 @@ bool CDVDPlayer::CloseAudioStream(bool bWaitForBuffers)
   m_dvdPlayerAudio.CloseStream(bWaitForBuffers);
 
   m_CurrentAudio.Clear();
+  UpdateClockMaster();
   return true;
 }
 
@@ -3513,6 +3507,7 @@ bool CDVDPlayer::CloseVideoStream(bool bWaitForBuffers)
   m_dvdPlayerVideo.CloseStream(bWaitForBuffers);
 
   m_CurrentVideo.Clear();
+  UpdateClockMaster();
   return true;
 }
 
@@ -3544,6 +3539,33 @@ bool CDVDPlayer::CloseTeletextStream(bool bWaitForBuffers)
   m_CurrentTeletext.Clear();
   return true;
 }
+
+void CDVDPlayer::UpdateClockMaster()
+{
+  EMasterClock clock;
+  if(m_CurrentAudio.id >= 0)
+  {
+    if(m_CurrentVideo.id >= 0 && g_VideoReferenceClock.GetRefreshRate() > 0)
+      clock = MASTER_CLOCK_AUDIO_VIDEOREF;
+    else
+      clock = MASTER_CLOCK_AUDIO;
+  }
+  else if(m_CurrentVideo.id >= 0)
+    clock = MASTER_CLOCK_VIDEO;
+  else
+    clock = MASTER_CLOCK_NONE;
+
+  if (m_clock.GetMaster() != clock)
+  {
+    /* the new clock should be somewhat in sync with old */
+    if (clock == MASTER_CLOCK_AUDIO
+    ||  clock == MASTER_CLOCK_AUDIO_VIDEOREF)
+      SynchronizePlayers(SYNCSOURCE_AUDIO);
+
+    m_clock.SetMaster(clock);
+  }
+}
+
 
 void CDVDPlayer::FlushBuffers(bool queued, double pts, bool accurate)
 {

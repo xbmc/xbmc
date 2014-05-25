@@ -340,6 +340,7 @@ protected:
 
   void UpdateApplication(double timeout);
   void UpdatePlayState(double timeout);
+  void UpdateClockMaster();
   double m_UpdateApplication;
 
   bool m_bAbortRequest;
