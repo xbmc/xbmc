@@ -1007,6 +1007,13 @@ std::string StringUtils::Paramify(const std::string &param)
   return "\"" + result + "\"";
 }
 
+std::vector<std::string> StringUtils::Tokenize(const std::string &input, const std::string &delimiters)
+{
+  std::vector<std::string> tokens;
+  Tokenize(input, tokens, delimiters);
+  return tokens;
+}
+
 void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& tokens, const std::string& delimiters)
 {
   // Tokenize ripped from http://www.linuxselfhelp.com/HOWTO/C++Programming-HOWTO-7.html
