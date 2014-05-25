@@ -44,7 +44,6 @@ public:
 
   virtual bool Initialize(AEAudioFormat &format, std::string &device);
   virtual void Deinitialize();
-  virtual bool IsCompatible(const AEAudioFormat &format, const std::string &device);
 
   virtual double       GetDelay        ();
   virtual double       GetCacheTotal   ();

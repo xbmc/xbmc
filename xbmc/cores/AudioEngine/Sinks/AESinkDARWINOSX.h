@@ -36,7 +36,6 @@ public:
 
   virtual bool Initialize(AEAudioFormat &format, std::string &device);
   virtual void Deinitialize();
-  virtual bool IsCompatible(const AEAudioFormat &format, const std::string &device);
 
   virtual double       GetDelay        ();
   virtual double       GetCacheTotal   ();
@@ -49,18 +48,15 @@ private:
   void SetHogMode(bool on);
 
   CAEDeviceInfo      m_info;
-  AEAudioFormat      m_format;
-
-  volatile bool      m_draining;
 
   CCoreAudioDevice   m_device;
   CCoreAudioStream   m_outputStream;
   unsigned int       m_latentFrames;
 
   bool               m_outputBitstream;   ///< true if we're bistreaming into a LinearPCM stream rather than AC3 stream.
-  int16_t           *m_outputBuffer;      ///< buffer for bitstreaming
-  bool               m_planar;
-  float             *m_planarBuffer;      ///< buffer for planar conversion
+  unsigned int       m_planes;            ///< number of audio planes (1 if non-planar)
+  unsigned int       m_frameSizePerPlane; ///< frame size (per plane) in bytes
+  unsigned int       m_framesPerSecond;   ///< sample rate
 
   AERingBuffer      *m_buffer;
   volatile bool      m_started;     // set once we get a callback from CoreAudio, which can take a little while.

@@ -369,7 +369,13 @@ void RegisterDeviceChangedCB(bool bRegister, void *ref)
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAESinkDARWINOSX::CAESinkDARWINOSX()
-: m_latentFrames(0), m_outputBitstream(false), m_outputBuffer(NULL), m_planar(false), m_planarBuffer(NULL), m_buffer(NULL)
+: m_latentFrames(0),
+  m_outputBitstream(false),
+  m_planes(1),
+  m_frameSizePerPlane(0),
+  m_framesPerSecond(0),
+  m_buffer(NULL),
+  m_started(false)
 {
   // By default, kAudioHardwarePropertyRunLoop points at the process's main thread on SnowLeopard,
   // If your process lacks such a run loop, you can set kAudioHardwarePropertyRunLoop to NULL which
@@ -388,8 +394,6 @@ CAESinkDARWINOSX::CAESinkDARWINOSX()
     CLog::Log(LOGERROR, "CCoreAudioAE::constructor: kAudioHardwarePropertyRunLoop error.");
   }
   RegisterDeviceChangedCB(true, this);
-  m_started = false;
-  m_planar = false;
 }
 
 CAESinkDARWINOSX::~CAESinkDARWINOSX()
@@ -539,12 +543,12 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
     index++;
   }
 
-  m_planar = false;
+  m_planes = 1;
   if (streams.size() > 1 && outputFormat.mChannelsPerFrame == 1)
   {
     CLog::Log(LOGDEBUG, "%s Found planar audio with %u channels?", __FUNCTION__, (unsigned int)streams.size());
     outputFormat.mChannelsPerFrame = std::min((size_t)format.m_channelLayout.Count(), streams.size());
-    m_planar = true;
+    m_planes = outputFormat.mChannelsPerFrame;
   }
 
   if (!outputFormat.mFormatID)
@@ -592,25 +596,22 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   format.m_frames        = m_device.GetBufferSize();
   format.m_frameSamples  = format.m_frames * format.m_channelLayout.Count();
 
+  m_frameSizePerPlane = format.m_frameSize / m_planes;
+  m_framesPerSecond   = format.m_sampleRate;
+
   if (m_outputBitstream)
-  {
-    m_outputBuffer = new int16_t[format.m_frameSamples];
-    /* TODO: Do we need this? */
+  { /* TODO: Do we need this? */
     m_device.SetNominalSampleRate(format.m_sampleRate);
   }
 
-  if (m_planar)
-    m_planarBuffer = new float[format.m_frameSamples];
-
   unsigned int num_buffers = 4;
-  m_buffer = new AERingBuffer(num_buffers * format.m_frames * format.m_frameSize);
-  CLog::Log(LOGDEBUG, "%s: using buffer size: %u (%f ms)", __FUNCTION__, m_buffer->GetMaxSize(), (float)m_buffer->GetMaxSize() / (format.m_sampleRate * format.m_frameSize));
+  m_buffer = new AERingBuffer(num_buffers * format.m_frames * m_frameSizePerPlane, m_planes);
+  CLog::Log(LOGDEBUG, "%s: using buffer size: %u (%f ms)", __FUNCTION__, m_buffer->GetMaxSize(), (float)m_buffer->GetMaxSize() / (m_framesPerSecond * m_frameSizePerPlane));
 
-  m_format = format;
   if (passthrough)
     format.m_dataFormat = AE_FMT_S16NE;
   else
-    format.m_dataFormat = AE_FMT_FLOAT;
+    format.m_dataFormat = (m_planes > 1) ? AE_FMT_FLOATP : AE_FMT_FLOAT;
 
   // Register for data request callbacks from the driver and start
   m_device.AddIOProc(renderCallback, this);
@@ -656,22 +657,9 @@ void CAESinkDARWINOSX::Deinitialize()
     m_buffer = NULL;
   }
   m_outputBitstream = false;
-
-  delete[] m_outputBuffer;
-  m_outputBuffer = NULL;
-
-  m_planar = false;
-  delete[] m_planarBuffer;
-  m_planarBuffer = NULL;
+  m_planes = 1;
 
   m_started = false;
-}
-
-bool CAESinkDARWINOSX::IsCompatible(const AEAudioFormat &format, const std::string &device)
-{
-  return ((m_format.m_sampleRate    == format.m_sampleRate) &&
-          (m_format.m_dataFormat    == format.m_dataFormat) &&
-          (m_format.m_channelLayout == format.m_channelLayout));
 }
 
 double CAESinkDARWINOSX::GetDelay()
@@ -679,9 +667,9 @@ double CAESinkDARWINOSX::GetDelay()
   if (m_buffer)
   {
     // Calculate the duration of the data in the cache
-    double delay = (double)m_buffer->GetReadSize() / (double)m_format.m_frameSize;
+    double delay = (double)m_buffer->GetReadSize() / (double)m_frameSizePerPlane;
     delay += (double)m_latentFrames;
-    delay /= (double)m_format.m_sampleRate;
+    delay /= (double)m_framesPerSecond;
     return delay;
   }
   return 0.0;
@@ -689,7 +677,7 @@ double CAESinkDARWINOSX::GetDelay()
 
 double CAESinkDARWINOSX::GetCacheTotal()
 {
-  return (double)m_buffer->GetMaxSize() / (double)(m_format.m_frameSize * m_format.m_sampleRate);
+  return (double)m_buffer->GetMaxSize() / (double)(m_frameSizePerPlane * m_framesPerSecond);
 }
 
 CCriticalSection mutex;
@@ -697,11 +685,10 @@ XbmcThreads::ConditionVariable condVar;
 
 unsigned int CAESinkDARWINOSX::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
 {
-  uint8_t *buffer = data[0]+offset*m_format.m_frameSize;
-  if (m_buffer->GetWriteSize() < frames * m_format.m_frameSize)
+  if (m_buffer->GetWriteSize() < frames * m_frameSizePerPlane)
   { // no space to write - wait for a bit
     CSingleLock lock(mutex);
-    unsigned int timeout = 900 * frames / m_format.m_sampleRate;
+    unsigned int timeout = 900 * frames / m_framesPerSecond;
     if (!m_started)
       timeout = 4500;
 
@@ -716,10 +703,12 @@ unsigned int CAESinkDARWINOSX::AddPackets(uint8_t **data, unsigned int frames, u
     }
   }
 
-  unsigned int write_frames = std::min(frames, m_buffer->GetWriteSize() / m_format.m_frameSize);
+  unsigned int write_frames = std::min(frames, m_buffer->GetWriteSize() / m_frameSizePerPlane);
   if (write_frames)
-    m_buffer->Write(buffer, write_frames * m_format.m_frameSize);
-
+  {
+    for (unsigned int i = 0; i < m_buffer->NumPlanes(); i++)
+      m_buffer->Write(data[i] + offset * m_frameSizePerPlane, write_frames * m_frameSizePerPlane, i);
+  }
   return write_frames;
 }
 
@@ -728,7 +717,7 @@ void CAESinkDARWINOSX::Drain()
   int bytes = m_buffer->GetReadSize();
   int totalBytes = bytes;
   int maxNumTimeouts = 3;
-  unsigned int timeout = 900 * bytes / (m_format.m_sampleRate * m_format.m_frameSize);
+  unsigned int timeout = 900 * bytes / (m_framesPerSecond * m_frameSizePerPlane);
   while (bytes && maxNumTimeouts > 0)
   {
     CSingleLock lock(mutex);
@@ -772,63 +761,49 @@ OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTim
   CAESinkDARWINOSX *sink = (CAESinkDARWINOSX*)inClientData;
 
   sink->m_started = true;
-  if (sink->m_planar)
+  if (outOutputData->mNumberBuffers)
   {
-    unsigned int channels = std::min((unsigned int)outOutputData->mNumberBuffers, sink->m_format.m_channelLayout.Count());
-    unsigned int wanted = outOutputData->mBuffers[0].mDataByteSize;
-    unsigned int bytes = std::min(sink->m_buffer->GetReadSize() / channels, wanted);
-    sink->m_buffer->Read((unsigned char *)sink->m_planarBuffer, bytes * channels);
-    // transform from interleaved to planar
-    const float *src = sink->m_planarBuffer;
-    for (unsigned int i = 0; i < bytes / sizeof(float); i++)
+    /* NOTE: We assume that the buffers are all the same size... */
+    if (sink->m_outputBitstream)
     {
-      for (unsigned int j = 0; j < channels; j++)
-      {
-        float *dst = (float *)outOutputData->mBuffers[j].mData;
-        dst[i] = *src++;
-      }
-    }
-    LogLevel(bytes, wanted);
-    // tell the sink we're good for more data
-    condVar.notifyAll();
-  }
-  else
-  {
-    for (unsigned int i = 0; i < outOutputData->mNumberBuffers; i++)
-    {
-      // NULL indicates a disabled stream
-      // skip it...
-      if (outOutputData->mBuffers[i].mData == NULL)
-        continue;
+      /* HACK for bitstreaming AC3/DTS via PCM.
+       We reverse the float->S16LE conversion done in the stream or device */
+      static const float mul = 1.0f / (INT16_MAX + 1);
 
-      if (sink->m_outputBitstream)
+      size_t wanted = outOutputData->mBuffers[0].mDataByteSize / sizeof(float) * sizeof(int16_t);
+      size_t bytes = std::min((size_t)sink->m_buffer->GetReadSize(), wanted);
+      for (unsigned int j = 0; j < bytes / sizeof(int16_t); j++)
       {
-        /* HACK for bitstreaming AC3/DTS via PCM.
-         We reverse the float->S16LE conversion done in the stream or device */
-        static const float mul = 1.0f / (INT16_MAX + 1);
-
-        unsigned int wanted = std::min(outOutputData->mBuffers[i].mDataByteSize / sizeof(float), (size_t)sink->m_format.m_frameSamples)  * sizeof(int16_t);
-        if (wanted <= sink->m_buffer->GetReadSize())
+        for (unsigned int i = 0; i < sink->m_buffer->NumPlanes(); i++)
         {
-          sink->m_buffer->Read((unsigned char *)sink->m_outputBuffer, wanted);
-          int16_t *src = sink->m_outputBuffer;
-          float  *dest = (float*)outOutputData->mBuffers[i].mData;
-          for (unsigned int i = 0; i < wanted / 2; i++)
-            *dest++ = *src++ * mul;
+          int16_t src;
+          sink->m_buffer->Read((unsigned char *)&src, sizeof(int16_t), i);
+          if (i < outOutputData->mNumberBuffers && outOutputData->mBuffers[i].mData)
+          {
+            float *dest = (float *)outOutputData->mBuffers[i].mData;
+            dest[j] = src * mul;
+          }
         }
       }
-      else
-      {
-        /* buffers appear to come from CA already zero'd, so just copy what is wanted */
-        unsigned int wanted = outOutputData->mBuffers[i].mDataByteSize;
-        unsigned int bytes = std::min(sink->m_buffer->GetReadSize(), wanted);
-        sink->m_buffer->Read((unsigned char*)outOutputData->mBuffers[i].mData, bytes);
-        LogLevel(bytes, wanted);
-      }
-
-      // tell the sink we're good for more data
-      condVar.notifyAll();
+      LogLevel(bytes, wanted);
     }
+    else
+    {
+      /* buffers appear to come from CA already zero'd, so just copy what is wanted */
+      unsigned int wanted = outOutputData->mBuffers[0].mDataByteSize;
+      unsigned int bytes = std::min(sink->m_buffer->GetReadSize(), wanted);
+      for (unsigned int i = 0; i < sink->m_buffer->NumPlanes(); i++)
+      {
+        if (i < outOutputData->mNumberBuffers && outOutputData->mBuffers[i].mData)
+          sink->m_buffer->Read((unsigned char *)outOutputData->mBuffers[i].mData, bytes, i);
+        else
+          sink->m_buffer->Read(NULL, bytes, i);
+      }
+      LogLevel(bytes, wanted);
+    }
+
+    // tell the sink we're good for more data
+    condVar.notifyAll();
   }
   return noErr;
 }
