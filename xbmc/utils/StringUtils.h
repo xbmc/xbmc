@@ -182,6 +182,15 @@ public:
    \return Escaped/Paramified string
    */
   static std::string Paramify(const std::string &param);
+
+  /*! \brief Split a string by the specified delimiters.
+   Splits a string using one or more delimiting characters, ignoring empty tokens.
+   Differs from Split() in two ways:
+    1. The delimiters are treated as individual characters, rather than a single delimiting string.
+    2. Empty tokens are ignored.
+   \return a vector of tokens
+   */
+  static std::vector<std::string> Tokenize(const std::string& input, const std::string& delimiters);
   static void Tokenize(const std::string& input, std::vector<std::string>& tokens, const std::string& delimiters);
 private:
   static CStdString m_lastUUID;

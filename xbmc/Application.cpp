@@ -1948,19 +1948,7 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
   CLog::Log(LOGINFO, "  load fonts for skin...");
   g_graphicsContext.SetMediaDir(skin->Path());
   g_directoryCache.ClearSubPaths(skin->Path());
-  if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode(CSettings::Get().GetString("lookandfeel.font")))
-  {
-    CLog::Log(LOGINFO, "    language needs a ttf font, loading first ttf font available");
-    CStdString strFontSet;
-    if (g_fontManager.GetFirstFontSetUnicode(strFontSet))
-    {
-      CLog::Log(LOGINFO, "    new font is '%s'", strFontSet.c_str());
-      CSettings::Get().SetString("lookandfeel.font", strFontSet);
-      CSettings::Get().Save();
-    }
-    else
-      CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", CSettings::Get().GetString("locale.language").c_str());
-  }
+
   g_colorManager.Load(CSettings::Get().GetString("lookandfeel.skincolors"));
 
   g_fontManager.LoadFonts(CSettings::Get().GetString("lookandfeel.font"));
@@ -5822,25 +5810,15 @@ CPerformanceStats &CApplication::GetPerformanceStats()
 bool CApplication::SetLanguage(const CStdString &strLanguage)
 {
   CStdString strPreviousLanguage = CSettings::Get().GetString("locale.language");
-  CStdString strNewLanguage = strLanguage;
-  if (strNewLanguage != strPreviousLanguage)
+  if (strLanguage != strPreviousLanguage)
   {
-    CStdString strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strNewLanguage.c_str());
+    CStdString strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
     if (!g_langInfo.Load(strLangInfoPath))
       return false;
 
-    if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode())
-    {
-      CLog::Log(LOGINFO, "Language needs a ttf font, loading first ttf font available");
-      CStdString strFontSet;
-      if (g_fontManager.GetFirstFontSetUnicode(strFontSet))
-        strNewLanguage = strFontSet;
-      else
-        CLog::Log(LOGERROR, "No ttf font found but needed: %s", strFontSet.c_str());
-    }
-    CSettings::Get().SetString("locale.language", strNewLanguage);
+    CSettings::Get().SetString("locale.language", strLanguage);
 
-    if (!g_localizeStrings.Load("special://xbmc/language/", strNewLanguage))
+    if (!g_localizeStrings.Load("special://xbmc/language/", strLanguage))
       return false;
 
     // also tell our weather and skin to reload as these are localized
