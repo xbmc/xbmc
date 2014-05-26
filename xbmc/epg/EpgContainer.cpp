@@ -55,7 +55,7 @@ CEpgContainer::CEpgContainer(void) :
   m_updateEvent.Reset();
   m_bStarted = false;
   m_bLoaded = false;
-  m_bHasPendingUpdates = false;
+  m_pendingUpdates = 0;
 }
 
 CEpgContainer::~CEpgContainer(void)
@@ -232,21 +232,25 @@ void CEpgContainer::LoadFromDB(void)
 
 bool CEpgContainer::PersistTables(void)
 {
-  return m_database.Persist(*this);
+  m_critSection.lock();
+  std::map<unsigned int, CEpg*> copy = m_epgs;
+  m_critSection.unlock();
+  return m_database.Persist(copy);
 }
 
 bool CEpgContainer::PersistAll(void)
 {
   bool bReturn(true);
-  CSingleLock lock(m_critSection);
-  for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end() && !m_bStop; it++)
+  m_critSection.lock();
+  std::map<unsigned int, CEpg*> copy = m_epgs;
+  m_critSection.unlock();
+  
+  for (map<unsigned int, CEpg *>::iterator it = copy.begin(); it != copy.end() && !m_bStop; it++)
   {
     CEpg *epg = it->second;
     if (epg && epg->NeedsSave())
     {
-      lock.Leave();
       bReturn &= epg->Persist();
-      lock.Enter();
     }
   }
 
@@ -280,7 +284,7 @@ void CEpgContainer::Process(void)
     {
       {
         CSingleLock lock(m_critSection);
-        bHasPendingUpdates = m_bHasPendingUpdates;
+        bHasPendingUpdates = (m_pendingUpdates > 0);
       }
 
       if (bHasPendingUpdates)
@@ -498,6 +502,7 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   bool bInterrupted(false);
   unsigned int iUpdatedTables(0);
   bool bShowProgress(false);
+  int pendingUpdates(0);
 
   /* set start and end time */
   time_t start;
@@ -512,6 +517,7 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
     if (m_bIsUpdating || InterruptUpdate())
       return false;
     m_bIsUpdating = true;
+    pendingUpdates = m_pendingUpdates;
   }
 
   if (bShowProgress && !bOnlyPending)
@@ -581,9 +587,11 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   }
   else
   {
+    CSingleLock lock(m_critSection);
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
     m_iNextEpgUpdate += g_advancedSettings.m_iEpgUpdateCheckInterval;
-    m_bHasPendingUpdates = false;
+    if (m_pendingUpdates == pendingUpdates)
+      m_pendingUpdates = 0;
   }
 
   if (bShowProgress && !bOnlyPending)
@@ -707,5 +715,8 @@ bool CEpgContainer::IsInitialising(void) const
 void CEpgContainer::SetHasPendingUpdates(bool bHasPendingUpdates /* = true */)
 {
   CSingleLock lock(m_critSection);
-  m_bHasPendingUpdates = bHasPendingUpdates;
+  if (bHasPendingUpdates)
+    m_pendingUpdates++;
+  else
+    m_pendingUpdates = 0;
 }
