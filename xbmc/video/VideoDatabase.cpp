@@ -2080,26 +2080,27 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
 
     SetArtForItem(idMovie, MediaTypeMovie, artwork);
 
-    // query DB for any movies matching imdbid and year
-    CStdString strSQL = PrepareSQL("select files.playCount, files.lastPlayed from movie,files where files.idFile=movie.idFile and movie.c%02d='%s' and movie.c%02d=%i and movie.idMovie!=%i and files.playCount > 0", VIDEODB_ID_IDENT, details.m_strIMDBNumber.c_str(), VIDEODB_ID_YEAR, details.m_iYear, idMovie);
-    m_pDS->query(strSQL.c_str());
+    if (!details.m_strIMDBNumber.empty() && details.m_iYear)
+    { // query DB for any movies matching imdbid and year
+      CStdString strSQL = PrepareSQL("select files.playCount, files.lastPlayed from movie,files where files.idFile=movie.idFile and movie.c%02d='%s' and movie.c%02d=%i and movie.idMovie!=%i and files.playCount > 0", VIDEODB_ID_IDENT, details.m_strIMDBNumber.c_str(), VIDEODB_ID_YEAR, details.m_iYear, idMovie);
+      m_pDS->query(strSQL.c_str());
 
-    if (!m_pDS->eof())
-    {
-      int playCount = m_pDS->fv("files.playCount").get_asInt();
+      if (!m_pDS->eof())
+      {
+        int playCount = m_pDS->fv("files.playCount").get_asInt();
 
-      CDateTime lastPlayed;
-      lastPlayed.SetFromDBDateTime(m_pDS->fv("files.lastPlayed").get_asString());
+        CDateTime lastPlayed;
+        lastPlayed.SetFromDBDateTime(m_pDS->fv("files.lastPlayed").get_asString());
 
-      int idFile = GetFileId(strFilenameAndPath);
+        int idFile = GetFileId(strFilenameAndPath);
 
-      // update with playCount and lastPlayed
-      strSQL = PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", playCount, lastPlayed.GetAsDBDateTime().c_str(), idFile);
-      m_pDS->exec(strSQL.c_str());
+        // update with playCount and lastPlayed
+        strSQL = PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", playCount, lastPlayed.GetAsDBDateTime().c_str(), idFile);
+        m_pDS->exec(strSQL.c_str());
+      }
+
+      m_pDS->close();
     }
-
-    m_pDS->close();
-
     // update our movie table (we know it was added already above)
     // and insert the new row
     CStdString sql = "update movie set " + GetValueString(details, VIDEODB_ID_MIN, VIDEODB_ID_MAX, DbMovieOffsets);
