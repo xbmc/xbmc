@@ -1330,6 +1330,9 @@ void CGUIWindowFullScreen::ToggleOSD()
   CGUIDialogVideoOSD *pOSD = (CGUIDialogVideoOSD *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
   if (pOSD)
   {
+    /* PLEX */
+    CLog::Log(LOGDEBUG, "CGUIWindowFullScreen::Toggle OSD close: %s", pOSD->IsDialogRunning() ? "yes" : "no");
+    /* END PLEX */
     if (pOSD->IsDialogRunning())
       pOSD->Close();
     else

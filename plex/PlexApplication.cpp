@@ -310,13 +310,20 @@ void PlexApplication::Shutdown()
 void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char* sender,
                                const char* message, const CVariant& data)
 {
+  CLog::Log(LOGDEBUG, "PlexApplication::Announce got message %s:%s", sender, message);
+  {
+    CGUIDialogVideoOSD* osd
+        = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
+    if (osd)
+      CLog::Log(LOGDEBUG, "PlexApplication::Announce osd status, running: %s, openedfrompause: %s", osd->IsDialogRunning() ? "yes" : "no", osd->IsOpenedFromPause() ? "yes" : "no");
+  }
   if (flag == ANNOUNCEMENT::Player && stricmp(sender, "xbmc") == 0 && stricmp(message, "OnPlay") == 0)
   {
     m_triedToRestart = false;
 
     CGUIDialogVideoOSD* osd
         = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
-    if (g_application.IsPlayingVideo() && osd && osd->IsOpenedFromPause())
+    if (g_application.IsPlayingVideo() && osd && osd->IsDialogRunning() && osd->IsOpenedFromPause())
       CApplicationMessenger::Get().Close(osd, false);
   }
   else if (flag == ANNOUNCEMENT::Player && stricmp(sender, "xbmc") == 0 &&
@@ -326,7 +333,7 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char* 
     {
       CGUIDialogVideoOSD* osd
           = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
-      if (g_application.IsPlayingVideo() && osd && !osd->IsActive())
+      if (g_application.IsPlayingVideo() && osd && !osd->IsDialogRunning())
         CApplicationMessenger::Get().DoModal(osd, WINDOW_DIALOG_VIDEO_OSD, "pauseOpen", false);
     }
   }
