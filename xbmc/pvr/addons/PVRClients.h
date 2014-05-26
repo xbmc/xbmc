@@ -624,9 +624,10 @@ namespace PVR
     /*!
      * @brief Initialise and connect a client.
      * @param client The client to initialise.
+     * @param newRegistration pass in pointer to bool to return whether the client was newly registered.
      * @return The id of the client if it was created or found in the existing client map, -1 otherwise.
      */
-    int RegisterClient(ADDON::AddonPtr client);
+    int RegisterClient(ADDON::AddonPtr client, bool* newRegistration = NULL);
 
     int GetClientId(const ADDON::AddonPtr client) const;
 
@@ -643,7 +644,6 @@ namespace PVR
     STREAMPROPS           m_streamProps;              /*!< the current stream's properties */
     bool                  m_bNoAddonWarningDisplayed; /*!< true when a warning was displayed that no add-ons were found, false otherwise */
     CCriticalSection      m_critSection;
-    CAddonDatabase        m_addonDb;
     std::map<int, time_t> m_connectionAttempts;       /*!< last connection attempt per add-on */
   };
 }

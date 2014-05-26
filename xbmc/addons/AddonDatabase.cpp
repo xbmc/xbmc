@@ -109,8 +109,6 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    bool bDisablePVRAddon = addon->Type() == ADDON_PVRDLL && !HasAddon(addon->ID());
-
     CStdString sql = PrepareSQL("insert into addon (id, type, name, summary,"
                                "description, stars, path, icon, changelog, "
                                "fanart, addonID, version, author, disclaimer, minversion)"
@@ -142,9 +140,6 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
       sql = PrepareSQL("insert into dependencies(id, addon, version, optional) values (%i, '%s', '%s', %i)", idAddon, i->first.c_str(), i->second.first.asString().c_str(), i->second.second ? 1 : 0);
       m_pDS->exec(sql.c_str());
     }
-    // these need to be configured
-    if (bDisablePVRAddon)
-      DisableAddon(addon->ID(), true);
     return idAddon;
   }
   catch (...)
