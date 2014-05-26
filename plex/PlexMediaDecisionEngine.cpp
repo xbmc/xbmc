@@ -107,6 +107,7 @@ bool CPlexMediaDecisionEngine::resolveItem(const CFileItem& _item, CFileItem &re
     resolvedItem.m_lStartOffset = offset;
     resolvedItem.m_lEndOffset = item.m_lEndOffset;
     resolvedItem.SetProperty("viewOffset", item.GetProperty("viewOffset"));
+    resolvedItem.SetProperty("avoidPrompts", item.GetProperty("avoidPrompts"));
 
     if (item.HasProperty("playQueueItemID") && !resolvedItem.HasProperty("playQueueItemID"))
       resolvedItem.SetProperty("playQueueItemID", item.GetProperty("playQueueItemID"));
