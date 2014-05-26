@@ -189,11 +189,11 @@ public:
   virtual float GetPercentage();
   virtual float GetCachePercentage();
 
-  virtual void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdPlayerAudio.RegisterAudioCallback(pCallback); }
-  virtual void UnRegisterAudioCallback()                        { m_dvdPlayerAudio.UnRegisterAudioCallback(); }
-  virtual void SetVolume(float nVolume)                         { m_dvdPlayerAudio.SetVolume(nVolume); }
-  virtual void SetMute(bool bOnOff)                             { m_dvdPlayerAudio.SetMute(bOnOff); }
-  virtual void SetDynamicRangeCompression(long drc)             { m_dvdPlayerAudio.SetDynamicRangeCompression(drc); }
+  virtual void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdPlayerAudio->RegisterAudioCallback(pCallback); }
+  virtual void UnRegisterAudioCallback()                        { m_dvdPlayerAudio->UnRegisterAudioCallback(); }
+  virtual void SetVolume(float nVolume)                         { m_dvdPlayerAudio->SetVolume(nVolume); }
+  virtual void SetMute(bool bOnOff)                             { m_dvdPlayerAudio->SetMute(bOnOff); }
+  virtual void SetDynamicRangeCompression(long drc)             { m_dvdPlayerAudio->SetDynamicRangeCompression(drc); }
   virtual void GetAudioInfo(std::string& strAudioInfo);
   virtual void GetVideoInfo(std::string& strVideoInfo);
   virtual void GetGeneralInfo(std::string& strVideoInfo);
@@ -266,6 +266,8 @@ protected:
   virtual void OnExit();
   virtual void Process();
 
+  virtual void CreatePlayers();
+  virtual void DestroyPlayers();
   bool OpenStream(CCurrentStream& current, int iStream, int source, bool reset = true);
   bool OpenStreamPlayer(CCurrentStream& current, CDVDStreamInfo& hint, bool reset);
   bool OpenAudioStream(CDVDStreamInfo& hint, bool reset = true);
@@ -339,6 +341,7 @@ protected:
   void UpdateClockMaster();
   double m_UpdateApplication;
 
+  bool m_players_created;
   bool m_bAbortRequest;
 
   std::string  m_filename; // holds the actual filename
@@ -367,10 +370,10 @@ protected:
 
   CDVDMessageQueue m_messenger;     // thread messenger
 
-  CDVDPlayerVideo m_dvdPlayerVideo; // video part
-  CDVDPlayerAudio m_dvdPlayerAudio; // audio part
-  CDVDPlayerSubtitle m_dvdPlayerSubtitle; // subtitle part
-  CDVDTeletextData m_dvdPlayerTeletext; // teletext part
+  CDVDPlayerVideo *m_dvdPlayerVideo; // video part
+  CDVDPlayerAudio *m_dvdPlayerAudio; // audio part
+  CDVDPlayerSubtitle *m_dvdPlayerSubtitle; // subtitle part
+  CDVDTeletextData *m_dvdPlayerTeletext; // teletext part
 
   CDVDClock m_clock;                // master clock
   CDVDOverlayContainer m_overlayContainer;
