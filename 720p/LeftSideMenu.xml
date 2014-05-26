@@ -542,7 +542,7 @@
 			</control>
 			<!-- sidebar preplay -->
 			<control type="grouplist" id="998">
-				<visible>!IsEmpty(Container.Property(PlexPreplay))</visible>
+				<visible>[Container.PlexContent(Movie) | Container.PlexContent(Episode) | Container.PlexContent(Clip)] | [Container.PlexContent(Channel) + !IsEmpty(Container.Property(PlexPreplay))]</visible>
 				<posy>40</posy>
 				<posx>0</posx>
 				<width>74</width>
