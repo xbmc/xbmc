@@ -676,7 +676,16 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
       m_history.RemoveParentPath();
   }
 
-  if (m_guiState.get() && !m_guiState->HideParentDirItems() && !items.GetPath().empty())
+  bool showParent = true;
+
+  showParent &= (!m_guiState.get() || !m_guiState->HideParentDirItems());
+  showParent &= !items.GetPath().empty();
+
+  CVariant propVal;
+  if ((propVal = items.GetProperty("hideParentItem")).type() != CVariant::VariantTypeNull)
+    showParent &= !propVal.asBoolean();
+ 
+  if (showParent)
   {
     CFileItemPtr pItem(new CFileItem(".."));
     pItem->SetPath(strParentPath);
