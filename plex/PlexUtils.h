@@ -69,6 +69,8 @@ namespace PlexUtils
 
 #if defined(HAVE_EXECINFO_H)
 #define LOG_STACKTRACE  PlexUtils::LogStackTrace((char*)__PRETTY_FUNCTION__);
+#else
+#define LOG_STACKTRACE { }
 #endif
 
 #ifdef _WIN32
