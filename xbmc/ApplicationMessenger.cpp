@@ -1195,6 +1195,12 @@ void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const CS
   tMsg.lpVoid = pDialog;
   tMsg.dwParam1 = (DWORD)iWindowID;
   tMsg.strParam = param;
+
+  /* PLEX */
+  if (iWindowID == WINDOW_DIALOG_VIDEO_OSD)
+    LOG_STACKTRACE
+  /* END PLEX */
+
   SendMessage(tMsg, wait /* PLEX */);
 }
 

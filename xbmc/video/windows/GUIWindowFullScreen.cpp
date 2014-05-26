@@ -735,7 +735,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       if (g_application.IsPaused() && !g_application.IsBuffering() && !g_infoManager.GetSeeking())
       {
         CGUIDialogVideoOSD* osd = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
-        if (osd && !osd->IsActive())
+        if (osd && !osd->IsDialogRunning())
           CApplicationMessenger::Get().DoModal(osd, WINDOW_DIALOG_VIDEO_OSD, "pauseOpen", false);
       }
       /* END PLEX */

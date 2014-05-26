@@ -28,6 +28,10 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 
+/* PLEX */
+#include "PlexUtils.h"
+/* END PLEX */
+
 using namespace PVR;
 
 CGUIDialogVideoOSD::CGUIDialogVideoOSD(void)
@@ -124,6 +128,7 @@ bool CGUIDialogVideoOSD::OnMessage(CGUIMessage& message)
   /* PLEX */
   case GUI_MSG_WINDOW_INIT:
     {
+      LOG_STACKTRACE
       if (message.GetStringParam(0) == "pauseOpen")
         m_openedFromPause = true;
       else
