@@ -78,7 +78,7 @@ msgstr "Fanart"
 
 msgctxt "#31031"
 msgid "Pic Thumbs"
-msgstr "Miniatura e Imagem"
+msgstr "Miniatura/Imagem"
 
 msgctxt "#31032"
 msgid "Image Wrap"
@@ -438,27 +438,27 @@ msgstr "Baseada em Arial"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]CONFIGURAR AJUSTES DA VISUALIZAÇÃO[/B][CR][CR]Mudar de tema · Definir o idioma e a região · Opções da listagem de ficheiros[CR]Definir um protector de ecrã"
+msgstr "[B]CONFIGURAR DEFINIÇÕES DE APARÊNCIA[/B][CR][CR]Mudar de tema · Definir o idioma e a região · Opções de listagem de ficheiros[CR]Definir um protector de ecrã"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]CONFIGURAÇÕES DE VÍDEO[/B][CR][CR]Gerir Biblioteca de Vídeo · Opções de reprodução de vídeo · Opções de listagem de vídeo[CR]Definir tipo de letra das legendas"
+msgstr "[B]CONFIGURAR DEFINIÇÕES DE VÍDEO[/B][CR][CR]Gerir Biblioteca de Vídeo · Opções de reprodução de vídeo · Opções de listagem de vídeo[CR]Definir tipo de letra das legendas"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]CONFIGURAÇÕES DE MÚSICA[/B][CR][CR]Gerir Biblioteca de Música · Opções de reprodução · Opções de listagem[CR]Definir envio de músicas · Opções de karaoke"
+msgstr "[B]CONFIGURAR DEFINIÇÕES DE MÚSICA[/B][CR][CR]Gerir Biblioteca de Música · Opções de reprodução · Opções de listagem[CR]Definir envio de músicas · Opções de karaoke"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
-msgstr "[B]CONFIGURAÇÕES DE IMAGENS[/B][CR][CR]Opções de listagem de imagens · Configurar apresentação de slides"
+msgstr "[B]CONFIGURAR DEFINIÇÕES DE IMAGENS[/B][CR][CR]Opções de listagem de imagens · Configurar apresentação de slides"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
-msgstr "[B]CONFIGURAÇÕES METEOROLÓGICAS[/B][CR][CR]Definir três locais para informação meteorológica"
+msgstr "[B]CONFIGURAR DEFINIÇÕES METEOROLÓGICAS[/B][CR][CR]Definir três locais para informação meteorológica"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
-msgstr "[B]CONFIGURAÇÕES DE SISTEMA[/B][CR][CR]Configurar e calibrar ecrãs · Configurar saída de áudio · Configurar controlo remoto[CR]Configurar poupança de energia · Activar depuração · Configurar bloqueio geral"
+msgstr "[B]CONFIGURAR DEFINIÇÕES DO SISTEMA[/B][CR][CR]Configurar e calibrar ecrãs · Configurar saída de áudio · Configurar controlo remoto[CR]Configurar poupança de energia · Activar depuração · Configurar bloqueio geral"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
@@ -466,11 +466,11 @@ msgstr "[B]CONFIGURAR ADD-ONS[/B][CR][CR]Gerir os seus Add-ons instalados · Pro
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]CONFIGURAR DEFINIÇÕES DE TV[/B][CR][CR]Alterar Informação em Ecrã Cheio · Gerir definições de dados do EPG"
+msgstr "[B]CONFIGURAR DEFINIÇÕES DE TV[/B][CR][CR]Definir informação em ecrã cheio · Gerir definições de dados do EPG"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]CONFIGURAR SERVIÇOS[/B][CR][CR]Configurar controlo do XBMC via UPnP e HTTP · Configurar partilha de ficheiros[CR]Activar ZeroConf · Configurar AirPlay"
+msgstr "[B]CONFIGURAR DEFINIÇÕES DE SERVIÇOS[/B][CR][CR]Configurar controlo do XBMC via UPnP e HTTP · Configurar partilha de ficheiros[CR]Activar ZeroConf · Configurar AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -498,7 +498,7 @@ msgstr "Exibir ou ocultar o ecrã de início de sessão ao iniciar o XBMC"
 
 msgctxt "#31423"
 msgid "Select the profile that will be used at startup when the login screen is disabled."
-msgstr "Seleccionar o perfil que será usado de início quando o ecrã de início de sessão não é exibido"
+msgstr "Seleccionar o perfil que será usado inicialmente quando o ecrã de início de sessão não é exibido"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
