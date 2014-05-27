@@ -42,8 +42,18 @@ namespace XBMCAddon
       inline void    OnSettingsChanged() { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onSettingsChanged)); }
       inline void    OnScreensaverActivated() { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onScreensaverActivated)); }
       inline void    OnScreensaverDeactivated() { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onScreensaverDeactivated)); }
-      inline void    OnDatabaseUpdated(const String &database) { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onDatabaseUpdated,database)); }
-      inline void    OnDatabaseScanStarted(const String &database) { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onDatabaseScanStarted,database)); }
+      inline void    OnScanStarted(const String &library)
+      {
+	XBMC_TRACE;
+	invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onScanStarted,library));
+	invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onDatabaseScanStarted,library));
+      }
+      inline void    OnScanFinished(const String &library)
+      {
+	XBMC_TRACE;
+	invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onScanFinished,library));
+	invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onDatabaseUpdated,library));
+      }
       inline void    OnAbortRequested() { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onAbortRequested)); }
       inline void    OnNotification(const String &sender, const String &method, const String &data) { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor,const String,const String,const String>(this,&Monitor::onNotification,sender,method,data)); }
 
@@ -72,23 +82,33 @@ namespace XBMCAddon
       virtual void    onScreensaverDeactivated() { XBMC_TRACE; }
 
       /**
-       * onDatabaseUpdated(database) -- onDatabaseUpdated method.\n
+       * onScanStarted(library) -- onScanStarted method.\n
+       *\n
+       * library : video/music as string\n
+       *\n
+       * Will be called when library scan has started and return video or music to indicate which library is being scanned\n
+       */
+      virtual void    onScanStarted(const String library) { XBMC_TRACE; }
+
+      /**
+       * onScanFinished(library) -- onScanFinished method.\n
        * \n
-       * database : video/music as string\n
+       * library : video/music as string\n
        * \n
-       * Will be called when database gets updated and return video or music to indicate which DB has been changed\n
+       * Will be called when library scan has ended and return video or music to indicate which library has been scanned\n
+       */
+      virtual void    onScanFinished(const String library) { XBMC_TRACE; }
+
+      /**
+       * onDatabaseScanStarted(database) -- Deprecated, use onScanStarted().
+       */
+      virtual void    onDatabaseScanStarted(const String database) { XBMC_TRACE; }
+
+      /**
+       * onDatabaseUpdated(database) -- Deprecated, use onScanFinished().
        */
       virtual void    onDatabaseUpdated(const String database) { XBMC_TRACE; }
 
-      /**
-       * onDatabaseScanStarted(database) -- onDatabaseScanStarted method.\n
-       *\n
-       * database : video/music as string\n
-       *\n
-       * Will be called when database update starts and return video or music to indicate which DB is being updated\n
-       */
-      virtual void    onDatabaseScanStarted(const String database) { XBMC_TRACE; }
-      
       /**
        * onAbortRequested() -- onAbortRequested method.\n
        * \n
