@@ -39,6 +39,11 @@
 #include "utils/log.h"
 #ifdef TARGET_WINDOWS
 #include "dwmapi.h"
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN 1
+#endif // WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#include "utils/CharsetConverter.h"
 #endif
 #if defined(TARGET_DARWIN)
 #include "osx/DarwinUtils.h"
@@ -752,6 +757,86 @@ CStdString CSysInfo::GetModel()
   model = CJNIBuild::MODEL;
 #endif
   return model;
+}
+
+std::string CSysInfo::GetManufacturerName(void)
+{
+  static std::string manufName;
+  static bool inited = false;
+  if (!inited)
+  {
+#if defined(TARGET_ANDROID)
+    char deviceCStr[PROP_VALUE_MAX];
+    int propLen = __system_property_get("ro.product.manufacturer", deviceCStr);
+    manufName.assign(deviceCStr, (propLen > 0 && propLen <= PROP_VALUE_MAX) ? propLen : 0);
+#elif defined(TARGET_DARWIN)
+    manufName = "Apple";
+#elif defined(TARGET_WINDOWS)
+    HKEY hKey;
+    if (RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"HARDWARE\\DESCRIPTION\\System\\BIOS", 0, KEY_READ, &hKey) == ERROR_SUCCESS)
+    {
+      wchar_t buf[400]; // more than enough
+      DWORD bufSize = sizeof(buf);
+      DWORD valType;
+      if (RegQueryValueExW(hKey, L"SystemManufacturer", NULL, &valType, (LPBYTE)buf, &bufSize) == ERROR_SUCCESS && valType == REG_SZ)
+      {
+        g_charsetConverter.wToUTF8(std::wstring(buf, bufSize / sizeof(wchar_t)), manufName);
+        size_t zeroPos = manufName.find(char(0));
+        if (zeroPos != std::string::npos)
+          manufName.erase(zeroPos); // remove any extra zero-terminations
+        std::string lower(manufName);
+        StringUtils::ToLower(lower);
+        if (lower == "system manufacturer" || lower == "to be filled by o.e.m." || lower == "unknown" ||
+            lower == "unidentified")
+          manufName.clear();
+      }
+      RegCloseKey(hKey);
+    }
+#endif
+    inited = true;
+  }
+
+  return manufName;
+}
+
+std::string CSysInfo::GetModelName(void)
+{
+  static std::string modelName;
+  static bool inited = false;
+  if (!inited)
+  {
+#if defined(TARGET_ANDROID)
+    char deviceCStr[PROP_VALUE_MAX];
+    int propLen = __system_property_get("ro.product.model", deviceCStr);
+    modelName.assign(deviceCStr, (propLen > 0 && propLen <= PROP_VALUE_MAX) ? propLen : 0);
+#elif defined(TARGET_DARWIN_IOS)
+    modelName = getIosPlatformString();
+#elif defined(TARGET_WINDOWS)
+    HKEY hKey;
+    if (RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"HARDWARE\\DESCRIPTION\\System\\BIOS", 0, KEY_READ, &hKey) == ERROR_SUCCESS)
+    {
+      wchar_t buf[400]; // more than enough
+      DWORD bufSize = sizeof(buf);
+      DWORD valType; 
+      if (RegQueryValueExW(hKey, L"SystemProductName", NULL, &valType, (LPBYTE)buf, &bufSize) == ERROR_SUCCESS && valType == REG_SZ)
+      {
+        g_charsetConverter.wToUTF8(std::wstring(buf, bufSize / sizeof(wchar_t)), modelName);
+        size_t zeroPos = modelName.find(char(0));
+        if (zeroPos != std::string::npos)
+          modelName.erase(zeroPos); // remove any extra zero-terminations
+        std::string lower(modelName);
+        StringUtils::ToLower(lower);
+        if (lower == "system product name" || lower == "to be filled by o.e.m." || lower == "unknown" ||
+            lower == "unidentified")
+            modelName.clear();
+      }
+      RegCloseKey(hKey);
+    }
+#endif
+    inited = true;
+  }
+
+  return modelName;
 }
 
 CStdString CSysInfo::GetProduct()

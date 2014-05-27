@@ -143,6 +143,8 @@ public:
   CStdString GetManufacturer();
   CStdString GetProduct();
   CStdString GetModel();
+  static std::string GetManufacturerName(void);
+  static std::string GetModelName(void);
   bool GetDiskSpace(const CStdString& drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
   CStdString GetHddSpaceInfo(int& percent, int drive, bool shortText=false);
   CStdString GetHddSpaceInfo(int drive, bool shortText=false);
