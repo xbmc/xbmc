@@ -68,12 +68,6 @@ CFile::~CFile()
 }
 
 //*********************************************************************************************
-#ifdef TARGET_WINDOWS
-#define MALLOC_EXCP_MSG "auto_buffer: malloc failed!"
-#else
-#define MALLOC_EXCP_MSG
-#endif
-
 
 auto_buffer::auto_buffer(size_t size) : p(NULL), s(0)
 {
@@ -82,7 +76,7 @@ auto_buffer::auto_buffer(size_t size) : p(NULL), s(0)
 
   p = malloc(size);
   if (!p)
-    throw std::bad_alloc(MALLOC_EXCP_MSG);
+    throw std::bad_alloc();
   s = size;
 }
 
@@ -101,7 +95,7 @@ auto_buffer& auto_buffer::resize(size_t newSize)
 {
   void* newPtr = realloc(p, newSize);
   if (!newPtr && newSize)
-    throw std::bad_alloc(MALLOC_EXCP_MSG);
+    throw std::bad_alloc();
   p = newPtr;
   s = newSize;
   return *this;

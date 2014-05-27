@@ -26,7 +26,7 @@
 #define LINE_ENDING "\r\n"
 
 #define __STDC_FORMAT_MACROS
-#include "inttypes.h"
+#include <inttypes.h>
 
 typedef __int64       off64_t;
 typedef __int64       fpos64_t;
@@ -74,8 +74,10 @@ typedef long          __off_t;
 #define va_copy(dst, src) ((dst) = (src))
 #endif
 
+#if _MSC_VER < 1800
 #define lrint(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
 #define llrint(x) ((x) >= 0 ? ((__int64)((x) + 0.5)) : ((__int64)((x) - 0.5)))
+#endif
 
 #define strtoll(p, e, b) _strtoi64(p, e, b)
 
@@ -83,6 +85,10 @@ extern "C" char * strptime(const char *buf, const char *fmt, struct tm *tm);
 extern "C" int strverscmp (const char *s1, const char *s2);
 extern "C" char * strcasestr(const char* haystack, const char* needle);
 
+#if _MSC_VER >= 1800
+#define PRIdS       "Id"
+#define PRIuS       "Iu"
+#endif
 #endif // TARGET_WINDOWS
 
 #endif //__PLATFORM_DEFS_H__
