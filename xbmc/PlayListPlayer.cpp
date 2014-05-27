@@ -35,6 +35,10 @@
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 
+/* PLEX */
+#include "plex/GUI/GUIDialogPlexError.h"
+/* END PLEX */
+
 using namespace PLAYLIST;
 
 CPlayListPlayer::CPlayListPlayer(void)
@@ -273,7 +277,13 @@ bool CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
       CLog::Log(LOGDEBUG,"Playlist Player: one or more items failed to play... aborting playback");
 
       // open error dialog
+      /* PLEX */
+#ifdef __PLEX__
+      CGUIDialogPlexError::ShowError(16026, 16027, 16029, 0);
+#else
       CGUIDialogOK::ShowAndGetInput(16026, 16027, 16029, 0);
+#endif
+      /*END PLEX */
 
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
       g_windowManager.SendThreadMessage(msg);

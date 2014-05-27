@@ -364,6 +364,7 @@
 #include "plex/Client/PlexTranscoderClient.h"
 #include "plex/GUI/GUIWindowPlexPlayQueue.h"
 #include "plex/Playlists/GUIDialogPlexPlayQueue.h"
+#include "plex/GUI/GUIDialogPlexError.h"
 /* END PLEX */
 
 #if defined(TARGET_ANDROID)
@@ -4583,6 +4584,13 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
       g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
 #endif
   }
+  /* PLEX */
+  else
+  {
+    CGUIDialogPlexError::ShowError(g_localizeStrings.Get(52000), g_localizeStrings.Get(52010), "", "");
+  }
+  /* END PLEX */
+
   m_bPlaybackStarting = false;
 
   if (bResult)
