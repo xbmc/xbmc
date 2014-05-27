@@ -32,6 +32,11 @@
 #define POPUP_ICON_WARNING        404
 #define POPUP_ICON_ERROR          405
 
+/* PLEX */
+#define POPUP_CAPTION_TEXT2       406
+#define POPUP_NOTIFICATION_BUTTON2 407
+/* END PLEX */
+
 CGUIDialogKaiToast::TOASTQUEUE CGUIDialogKaiToast::m_notifications;
 CCriticalSection CGUIDialogKaiToast::m_critical;
 
@@ -131,6 +136,15 @@ bool CGUIDialogKaiToast::DoWork()
 
     SET_CONTROL_LABEL(POPUP_NOTIFICATION_BUTTON, toast.description);
 
+    /* PLEX */
+    SET_CONTROL_LABEL(POPUP_CAPTION_TEXT2, toast.caption);
+    SET_CONTROL_LABEL(POPUP_NOTIFICATION_BUTTON2, toast.description);
+    SET_CONTROL_HIDDEN(POPUP_ICON);
+    SET_CONTROL_HIDDEN(POPUP_ICON_INFO);
+    SET_CONTROL_HIDDEN(POPUP_ICON_WARNING);
+    SET_CONTROL_HIDDEN(POPUP_ICON_ERROR);
+    /* END PLEX */
+
     CGUIImage *image = (CGUIImage *)GetControl(POPUP_ICON);
     if (image)
     {
@@ -150,9 +164,17 @@ bool CGUIDialogKaiToast::DoWork()
           typeImage = image;
 
         if (typeImage)
+        {
+          /* PLEX */
+          SET_CONTROL_VISIBLE(typeImage->GetID());
+          /* END PLEX */
           strTypeImage = typeImage->GetFileName();
+        }
         else
+        {
+          SET_CONTROL_VISIBLE(POPUP_ICON);
           strTypeImage = m_defaultIcon;
+        }
       }
 
       image->SetFileName(strTypeImage);
