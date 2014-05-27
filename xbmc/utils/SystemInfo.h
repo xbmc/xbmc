@@ -108,6 +108,7 @@ public:
   static std::string GetKernelVersion(void); // only digits with dots
   static std::string GetOsName(bool emptyIfUnknown = false);
   static std::string GetOsVersion(void);
+  static std::string GetOsPrettyNameWithVersion(void);
 #if defined(TARGET_LINUX)
   CStdString GetLinuxDistro();
 #endif

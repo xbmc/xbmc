@@ -651,6 +651,91 @@ std::string CSysInfo::GetOsVersion(void)
   return osVersion;
 }
 
+std::string CSysInfo::GetOsPrettyNameWithVersion(void)
+{
+  static std::string osNameVer;
+  if (!osNameVer.empty())
+    return osNameVer;
+
+#if defined (TARGET_WINDOWS)
+  OSVERSIONINFOEXW osvi = {};
+
+  osNameVer = "Windows ";
+  if (sysGetVersionExWByRef(osvi))
+  {
+    switch (GetWindowsVersion())
+    {
+    case WindowsVersionVista:
+      if (osvi.wProductType == VER_NT_WORKSTATION)
+        osNameVer.append("Vista");
+      else
+        osNameVer.append("Server 2008");
+      break;
+    case WindowsVersionWin7:
+      if (osvi.wProductType == VER_NT_WORKSTATION)
+        osNameVer.append("7");
+      else
+        osNameVer.append("Server 2008 R2");
+      break;
+    case WindowsVersionWin8:
+      if (osvi.wProductType == VER_NT_WORKSTATION)
+        osNameVer.append("8");
+      else
+        osNameVer.append("Server 2012");
+      break;
+    case WindowsVersionWin8_1:
+      if (osvi.wProductType == VER_NT_WORKSTATION)
+        osNameVer.append("8.1");
+      else
+        osNameVer.append("Server 2012 R2");
+      break;
+    case WindowsVersionFuture:
+      osNameVer.append("Unknown Future Version");
+      break;
+    default:
+      osNameVer.append("Unknown version");
+      break;
+    }
+
+    // Append Service Pack version if any
+    if (osvi.wServicePackMajor > 0 || osvi.wServicePackMinor > 0)
+    {
+      osNameVer.append(StringUtils::Format(" SP%d", osvi.wServicePackMajor));
+      if (osvi.wServicePackMinor > 0)
+      {
+        osNameVer.append(StringUtils::Format(".%d", osvi.wServicePackMinor));
+      }
+    }
+  }
+  else
+    osNameVer.append(" unknown");
+#elif defined(TARGET_FREEBSD) || defined(TARGET_DARWIN_IOS) || defined(TARGET_DARWIN_OSX)
+  osNameVer = GetOsName() + " " + GetOsVersion();
+#elif defined(TARGET_ANDROID)
+  osNameVer = GetOsName() + " " + GetOsVersion() + " API level " +   StringUtils::Format("%d", CJNIBuild::SDK_INT);
+#elif defined(TARGET_LINUX)
+  osNameVer = getValueFromOs_release("PRETTY_NAME");
+  if (osNameVer.empty())
+  {
+    osNameVer = getValueFromLsb_release(lsb_rel_description);
+    std::string osName(GetOsName(true));
+    if (!osName.empty() && osNameVer.find(osName) == std::string::npos)
+      osNameVer = osName + osNameVer;
+    if (osNameVer.empty())
+      osNameVer = "Unknown Linux Distribution";
+  }
+
+  if (osNameVer.find(GetOsVersion()) == std::string::npos)
+    osNameVer += " " + GetOsVersion();
+#endif // defined(TARGET_LINUX)
+
+  if (osNameVer.empty())
+    osNameVer = "Unknown OS Unknown version";
+
+  return osNameVer;
+
+}
+
 CStdString CSysInfo::GetManufacturer()
 {
   CStdString manufacturer = "";
