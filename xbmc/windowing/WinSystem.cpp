@@ -100,8 +100,8 @@ void CWinSystemBase::SetWindowResolution(int width, int height)
   height = std::min(height, desktopInfo.iHeight);
 
   // not smaller than sensible values,
-  width = std::max(width, 1024);
-  height = std::max(height, 576);
+  width = std::max(width, 512);
+  height = std::max(height, 288);
 
   // Maintain 16:9 AR.
   height = (width * 9) / 16;
