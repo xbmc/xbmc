@@ -89,6 +89,138 @@ static bool sysGetVersionExWByRef(OSVERSIONINFOEXW& osVerInfo)
 }
 #endif // TARGET_WINDOWS
 
+#ifdef TARGET_LINUX
+static std::string getValueFromOs_release(std::string key)
+{
+  FILE* os_rel = fopen("/etc/os-release", "r");
+  if (!os_rel)
+    return "";
+
+  char* buf = new char[10 * 1024]; // more than enough
+  size_t len = fread(buf, 1, 10 * 1024, os_rel);
+  fclose(os_rel);
+  if (len == 0)
+    return "";
+
+  std::string content(buf, len);
+  delete[] buf;
+
+  // find begin of value string
+  size_t valStart = 0, seachPos;
+  key += '=';
+  if (content.compare(0, key.length(), key) == 0)
+    valStart = key.length();
+  else
+  {
+    key = "\n" + key;
+    seachPos = 0;
+    do
+    {
+      seachPos = content.find(key, seachPos);
+      if (seachPos == std::string::npos)
+        return "";
+      if (seachPos == 0 || content[seachPos - 1] != '\\')
+        valStart = seachPos + key.length();
+      else
+        seachPos++;
+    } while (valStart == 0);
+  }
+
+  if (content[valStart] == '\n')
+    return "";
+  
+  // find end of value string
+  seachPos = valStart;
+  do
+  {
+    seachPos = content.find('\n', seachPos + 1);
+  } while (seachPos != std::string::npos && content[seachPos - 1] == '\\');
+  size_t const valEnd = seachPos;
+
+  std::string value(content, valStart, valEnd - valStart);
+  if (value.empty())
+    return value;
+
+  // remove quotes
+  if (value[0] == '\'' || value[0] == '"')
+  {
+    if (value.length() < 2)
+      return value;
+    size_t qEnd = value.rfind(value[0]);
+    if (qEnd != std::string::npos)
+    {
+      value.erase(qEnd);
+      value.erase(0, 1);
+    }
+  }
+
+  // unescape characters
+  for (size_t slashPos = value.find('\\'); slashPos < value.length() - 1; slashPos = value.find('\\', slashPos))
+  {
+    if (value[slashPos + 1] == '\n')
+      value.erase(slashPos, 2);
+    else
+    {
+      value.erase(slashPos, 1);
+      slashPos++; // skip unescaped character
+    }
+  }
+
+  return value;
+}
+
+enum lsb_rel_info_type
+{
+  lsb_rel_distributor,
+  lsb_rel_description,
+  lsb_rel_release,
+  lsb_rel_codename
+};
+
+static std::string getValueFromLsb_release(enum lsb_rel_info_type infoType)
+{
+  std::string key, command("unset PYTHONHOME; unset PYTHONPATH; lsb_release ");
+  switch (infoType)
+  {
+  case lsb_rel_distributor:
+    command += "-i";
+    key = "Distributor ID:\t";
+    break;
+  case lsb_rel_description:
+    command += "-d";
+    key = "Description:\t";
+    break;
+  case lsb_rel_release:
+    command += "-r";
+    key = "Release:\t";
+    break;
+  case lsb_rel_codename:
+    command += "-c";
+    key = "Codename:\t";
+    break;
+  default:
+    return "";
+  }
+  FILE* lsb_rel = popen(command.c_str(), "r");
+  if (lsb_rel == NULL)
+    return "";
+
+  char buf[300]; // more than enough
+  if (fgets(buf, 300, lsb_rel) == NULL)
+  {
+    pclose(lsb_rel);
+    return "";
+  }
+  pclose(lsb_rel);
+
+  std::string response(buf);
+  if (response.compare(0, key.length(), key) != 0)
+    return "";
+
+  return response.substr(key.length(), response.find('\n') - key.length());
+}
+#endif // TARGET_LINUX
+
 CSysInfo g_sysinfo;
 
 CSysInfoJob::CSysInfoJob()
