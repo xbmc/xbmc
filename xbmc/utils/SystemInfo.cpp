@@ -612,6 +612,45 @@ std::string CSysInfo::GetOsName(bool emptyIfUnknown /* = false*/)
   return osName;
 }
 
+std::string CSysInfo::GetOsVersion(void)
+{
+  static std::string osVersion;
+  if (!osVersion.empty())
+    return osVersion;
+
+#if defined(TARGET_WINDOWS) || defined(TARGET_FREEBSD)
+  osVersion = GetKernelVersion(); // FIXME: for Win32 and FreeBSD OS version is a kernel version
+#elif defined(TARGET_DARWIN_IOS)
+  osVersion = GetIOSVersionString();
+#elif defined(TARGET_DARWIN_OSX)
+  osVersion = GetOSXVersionString();
+#elif defined(TARGET_ANDROID)
+  char versionCStr[PROP_VALUE_MAX];
+  int propLen = __system_property_get("ro.build.version.release", versionCStr);
+  osVersion.assign(versionCStr, (propLen > 0 && propLen <= PROP_VALUE_MAX) ? propLen : 0);
+
+  if (osVersion.empty() || std::string("0123456789").find(versionCStr[0]) == std::string::npos)
+    osVersion.clear(); // can't correctly detect Android version
+  else
+  {
+    size_t pointPos = osVersion.find('.');
+    if (pointPos == std::string::npos)
+      osVersion += ".0.0";
+    else if (osVersion.find('.', pointPos + 1) == std::string::npos)
+      osVersion += ".0";
+  }
+#elif defined(TARGET_LINUX)
+  osVersion = getValueFromOs_release("VERSION_ID");
+  if (osVersion.empty())
+    osVersion = getValueFromLsb_release(lsb_rel_release);
+#endif // defined(TARGET_LINUX)
+
+  if (osVersion.empty())
+    osVersion = "0.0";
+
+  return osVersion;
+}
+
 CStdString CSysInfo::GetManufacturer()
 {
   CStdString manufacturer = "";
