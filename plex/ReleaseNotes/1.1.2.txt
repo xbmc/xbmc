@@ -1,0 +1,5 @@
+- Fixes
+  * Fix "unable to create playqueue" error when pressing play on a item
+  * Changed the minimum size of the PHT window to 512x288
+  * Show pre-play left actionbar in all channels
+  * Debug info and possible fix for Video OSD
