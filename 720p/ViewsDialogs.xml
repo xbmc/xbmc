@@ -977,9 +977,9 @@
 	<include name="DialogKaiToast">
 		<control type="group">
 			<posx>710</posx>
-			<!-- default -->
+			<!-- default/info -->
 			<control type="group">
-				<visible>Control.IsVisible(400)</visible>
+				<visible>Control.IsVisible(400) | Control.IsVisible(403)</visible>
 				<posy>600</posy>
 				<control type="image">
 					<description>Background</description>
@@ -1038,9 +1038,9 @@
 					<height>1</height>
 				</control>
 			</control>
-			<!-- info/warning/error -->
+			<!-- warning/error -->
 			<control type="group">
-				<visible>Control.IsVisible(403) | Control.IsVisible(404) | Control.IsVisible(405)</visible>
+				<visible>Control.IsVisible(404) | Control.IsVisible(405)</visible>
 				<posy>550</posy>
 				<control type="image">
 					<description>Background</description>
@@ -1075,7 +1075,7 @@
 				</control>
 				<control type="group">
 					<posy>20</posy>
-					<control type="label" id="401">
+					<control type="label" id="406">
 						<posy>3</posy>
 						<description>Header</description>
 						<width>500</width>
@@ -1084,7 +1084,7 @@
 						<texturefocus>-</texturefocus>
 						<texturenofocus>-</texturenofocus>
 					</control>
-					<control type="label" id="402">
+					<control type="label" id="407">
 						<description>Message</description>
 						<posy>40</posy>
 						<posx>10</posx>
