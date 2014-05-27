@@ -95,6 +95,7 @@ namespace PVR
     virtual bool IsSelectedList(CGUIMessage &message) const;
 
     virtual bool OnAction(const CAction &action);
+    virtual bool OnMessage(CGUIMessage& message) { return false; }
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const = 0;

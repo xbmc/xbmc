@@ -181,8 +181,9 @@ void CGUIWindowPVR::OnInitWindow(void)
 
 bool CGUIWindowPVR::OnMessage(CGUIMessage& message)
 {
-  return (OnMessageFocus(message) ||OnMessageClick(message) ||
-      CGUIMediaWindow::OnMessage(message));
+  return ((m_currentSubwindow && m_currentSubwindow->OnMessage(message)) ||
+      OnMessageFocus(message) ||OnMessageClick(message) ||
+       CGUIMediaWindow::OnMessage(message));
 }
 
 void CGUIWindowPVR::OnWindowLoaded(void)
