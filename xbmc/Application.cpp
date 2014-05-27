@@ -4173,7 +4173,8 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // play state: none, starting; playing; stopped; ended.
     // last 3 states are set by playback callback, they are all ignored during starting,
     // but we recorded the state, here we can make up the callback for the state.
-    CLog::Log(LOGDEBUG,"%s : OpenFile succeed, play state %d", __FUNCTION__, m_ePlayState);
+    CLog::Log(LOGDEBUG,"%s : OpenFile succeed, play state %d", __FUNCTION__, m_ePlayState)
+    // Does this switch code is OK ?
     switch (m_ePlayState)
     {
       case PLAY_STATE_PLAYING:
