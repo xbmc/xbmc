@@ -239,7 +239,7 @@ bool CSysInfoJob::DoWork()
   m_info.internetState     = GetInternetState();
   m_info.videoEncoder      = GetVideoEncoder();
   m_info.cpuFrequency      = GetCPUFreqInfo();
-  m_info.kernelVersion     = CSysInfo::GetOsNameWithVersionInfo();
+  m_info.osVersionInfo     = CSysInfo::GetOsPrettyNameWithVersion() + " (kernel: " + CSysInfo::GetKernelName() + " " + CSysInfo::GetKernelVersionFull() + ")";
   m_info.macAddress        = GetMACAddress();
   m_info.batteryLevel      = GetBatteryLevel();
   return true;
@@ -357,8 +357,8 @@ CStdString CSysInfo::TranslateInfo(int info) const
     return m_info.videoEncoder;
   case NETWORK_MAC_ADDRESS:
     return m_info.macAddress;
-  case SYSTEM_KERNEL_VERSION:
-    return m_info.kernelVersion;
+  case SYSTEM_OS_VERSION_INFO:
+    return m_info.osVersionInfo;
   case SYSTEM_CPUFREQUENCY:
     return m_info.cpuFrequency;
   case SYSTEM_UPTIME:

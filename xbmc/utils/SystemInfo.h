@@ -51,7 +51,7 @@ public:
   INTERNET_STATE internetState;
   CStdString videoEncoder;
   CStdString cpuFrequency;
-  CStdString kernelVersion;
+  CStdString osVersionInfo;
   CStdString macAddress;
   CStdString batteryLevel;
 };
