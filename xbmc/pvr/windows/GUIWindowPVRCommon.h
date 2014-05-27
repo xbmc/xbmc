@@ -85,6 +85,7 @@ namespace PVR
 
     virtual const char *GetName(void) const;
     virtual PVRWindow GetWindowId(void) const { return m_window; }
+    virtual int  GetID(void) const; // GUIWindowPVR's control ID
     virtual bool IsFocused(void) const;
     virtual bool IsVisible(void) const;
     virtual bool IsActive(void) const;
