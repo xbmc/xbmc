@@ -7,7 +7,7 @@
 void CGUIDialogPlexError::ShowError(const CVariant &heading, const CVariant &line0,
                                     const CVariant &line1, const CVariant &line2)
 {
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, GetLocalizedString(heading), GetLocalizedString(line0), 10000, false);
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, GetLocalizedString(heading), GetLocalizedString(line0), 10000, false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
