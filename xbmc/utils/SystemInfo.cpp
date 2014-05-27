@@ -1365,16 +1365,30 @@ std::string CSysInfo::GetUserAgent()
 
   result = "XBMC/" + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION_SHORT) + " (";
 #if defined(TARGET_WINDOWS)
-  result += GetUAWindowsVersion();
+  result += GetKernelName() + " " + GetKernelVersion();
+  BOOL bIsWow = FALSE;
+  if (IsWow64Process(GetCurrentProcess(), &bIsWow) && bIsWow)
+      result.append("; WOW64");
+  else
+  {
+    SYSTEM_INFO si = {};
+    GetSystemInfo(&si);
+    if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
+      result.append("; Win64; x64");
+    else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64)
+      result.append("; Win64; IA64");
+    else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM)
+      result.append("; ARM");
+  }
 #elif defined(TARGET_DARWIN)
 #if defined(TARGET_DARWIN_IOS)
-  std::string iDevStr(getIosPlatformString()); // device model name with number of model version
+  std::string iDevStr(GetModelName()); // device model name with number of model version
   size_t iDevStrDigit = iDevStr.find_first_of("0123456789");
   std::string iDev(iDevStr, 0, iDevStrDigit);  // device model name without number 
   if (iDevStrDigit == 0)
     iDev = "unknown";
   result += iDev + "; ";
-  std::string iOSVerison(GetIOSVersionString());
+  std::string iOSVerison(GetOsVersion());
   size_t lastDotPos = iOSVerison.rfind('.');
   if (lastDotPos != std::string::npos && iOSVerison.find('.') != lastDotPos
       && iOSVerison.find_first_not_of('0', lastDotPos + 1) == std::string::npos)
@@ -1393,18 +1407,18 @@ std::string CSysInfo::GetUserAgent()
   else if (cpuFam == "PowerPC")
     result += "PPC ";
   result += "Mac OS X ";
-  std::string OSXVersion(GetOSXVersionString());
+  std::string OSXVersion(GetOsVersion());
   StringUtils::Replace(OSXVersion, '.', '_');
   result += OSXVersion;
 #endif
 #elif defined(TARGET_ANDROID)
   result += "Linux; Android ";
-  std::string versionStr(GetAndroidVersionString());
+  std::string versionStr(GetOsVersion());
   const size_t verLen = versionStr.length();
   if (verLen >= 2 && versionStr.compare(verLen - 2, 2, ".0", 2) == 0)
     versionStr.erase(verLen - 2); // remove last ".0" if any
   result += versionStr;
-  std::string deviceInfo(GetAndroidDeviceName());
+  std::string deviceInfo(GetModelName());
 
   char buildId[PROP_VALUE_MAX];
   int propLen = __system_property_get("ro.build.id", buildId);

@@ -122,7 +122,7 @@ public:
 #if defined(TARGET_WINDOWS)
   std::string GetUAWindowsVersion();
 #endif
-  std::string GetUserAgent();
+  static std::string GetUserAgent();
   bool HasInternet();
   bool IsAppleTV2();
   bool HasVideoToolBoxDecoder();
