@@ -977,8 +977,10 @@
 	<include name="DialogKaiToast">
 		<control type="group">
 			<posx>710</posx>
-			<posy>600</posy>
+			<!-- default -->
 			<control type="group">
+				<visible>Control.IsVisible(400)</visible>
+				<posy>600</posy>
 				<control type="image">
 					<description>Background</description>
 					<width>500</width>
@@ -1009,26 +1011,103 @@
 					<posy>85</posy>
 					<include>DialogArrow</include>
 				</control>
-			</control>
-			<control type="group">
-				<posy>20</posy>
-				<control type="label" id="401">
-					<description>Header</description>
-					<width>500</width>
-					<label>-</label>
-					<include>DialogHeading</include>
-					<texturefocus>-</texturefocus>
-					<texturenofocus>-</texturenofocus>
+				<control type="group">
+					<posy>20</posy>
+					<control type="label" id="401">
+						<posy>3</posy>
+						<description>Header</description>
+						<width>500</width>
+						<label>-</label>
+						<include>DialogHeading</include>
+						<texturefocus>-</texturefocus>
+						<texturenofocus>-</texturenofocus>
+					</control>
+					<control type="label" id="402">
+						<description>Message</description>
+						<posy>40</posy>
+						<posx>10</posx>
+						<width>480</width>
+						<label>-</label>
+						<align>center</align>
+						<texturefocus>-</texturefocus>
+						<texturenofocus>-</texturenofocus>
+					</control>
 				</control>
-				<control type="label" id="402">
-					<description>Message</description>
-					<posy>40</posy>
-					<posx>10</posx>
-					<width>480</width>
-					<label>-</label>
-					<align>center</align>
-					<texturefocus>-</texturefocus>
-					<texturenofocus>-</texturenofocus>
+				<control type="image" id="400">
+					<width>1</width>
+					<height>1</height>
+				</control>
+			</control>
+			<!-- info/warning/error -->
+			<control type="group">
+				<visible>Control.IsVisible(403) | Control.IsVisible(404) | Control.IsVisible(405)</visible>
+				<posy>550</posy>
+				<control type="image">
+					<description>Background</description>
+					<width>500</width>
+					<height>135</height>
+					<include>DialogBG</include>
+				</control>
+				<control type="image">
+					<description>Title bg</description>
+					<width>500</width>
+					<height>42</height>
+					<texture border="10" flipy="true">base-rounded-half.png</texture>
+					<colordiffuse>FFac3223</colordiffuse>
+				</control>
+				<control type="image">
+					<description>Title bg bottom border</description>
+					<width>500</width>
+					<height>42</height>
+					<include>DialogHeaderBorder</include>
+				</control>
+				<control type="image">
+					<description>Background border</description>
+					<width>502</width>
+					<height>137</height>
+					<include>DialogBorder</include>
+				</control>
+				<control type="image">
+					<description>Dialog arrow</description>
+					<posx>255</posx>
+					<posy>135</posy>
+					<include>DialogArrow</include>
+				</control>
+				<control type="group">
+					<posy>20</posy>
+					<control type="label" id="401">
+						<posy>3</posy>
+						<description>Header</description>
+						<width>500</width>
+						<label>-</label>
+						<include>DialogHeading</include>
+						<texturefocus>-</texturefocus>
+						<texturenofocus>-</texturenofocus>
+					</control>
+					<control type="label" id="402">
+						<description>Message</description>
+						<posy>40</posy>
+						<posx>10</posx>
+						<width>480</width>
+						<height>50</height>
+						<label>-</label>
+						<wrapmultiline>true</wrapmultiline>
+						<align>center</align>
+						<texturefocus>-</texturefocus>
+						<texturenofocus>-</texturenofocus>
+					</control>
+				</control>
+				<control type="image" id="403">
+					<width>1</width>
+					<height>1</height>
+				</control>
+				<control type="image" id="404">
+					<width>1</width>
+					<height>1</height>
+				</control>
+				<control type="image" id="405">
+					<width>1</width>
+					<height>1</height>
 				</control>
 			</control>
 		</control>
