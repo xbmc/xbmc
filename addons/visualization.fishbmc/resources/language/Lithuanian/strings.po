@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Detail [CPU intensive]"
-msgstr "Išsamiau [CPU intensyvus]"
+msgstr "Išsamiau [CPU intensyvumas]"
 
 msgctxt "#30001"
 msgid "Low"
@@ -38,7 +38,7 @@ msgstr "Ekstremalus"
 
 msgctxt "#30005"
 msgid "Nervous Mode [more mode changes]"
-msgstr "Nervinis režimas [vis daugiau režimas keisis]"
+msgstr "Nervingas režimas [daugiau režimo pakeitimų]"
 
 msgctxt "#30006"
 msgid "Speed [skip some frames]"
@@ -62,4 +62,4 @@ msgstr "Aukštas"
 
 msgctxt "#30011"
 msgid "Use a Persistence File [faster startup]"
-msgstr "Naudokite išlaikytą failą [greitesnis paleidimas]"
+msgstr "Naudoti nuolatinį failą [greitesnis paleidimas]"

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.euphoria"
-  version="1.0.21"
+  version="1.0.22"
   name="Euphoria"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -93,6 +93,7 @@
     <description lang="hr">Psihodeličan koliko čuvar zaslona može biti. Mogumbo kroz svoj plazma čuvar zaslona je bio vrh, ali od ovog vam je još više loše. Bilo bi vam bolje da pronađete jednu od onih vrećica za mučninu što dijele u avionima prije nego počnete zuriti u ovaj.</description>
     <description lang="hu">Ez a legpszihedelikusabb képernyővédő. mogumbo úgy gondolta, hogy a Plasma képernyővédő van a lista tetején,de ez még inkább kábító. Jobb ha keresel egy légibetegség zacskót mielőtt túl sokáig néznéd a képernyőt.</description>
     <description lang="id">Ini adalah sepsikedelik mungkin dari sebuah screensaver. mogumbo mengira Plasma savernya berada di puncak, Tapi ini bahkan lebih memabukkan. Anda sebaiknya mencari kantung mabuk terlebih dahulu sebelum menatapnya terlalu lama.</description>
+    <description lang="is">Þetta er líklega eins geggjað og skjáhvílur geta orðið. mogumbo hélt að Plasma skjáhvílan væri á toppnum, en þessi gerir þig meira flökurt. Best fyrir þig að redda þér ælupoka áður en þú starir á þetta í einhvern tíma. </description>
     <description lang="it">Questo è quanto di più psichedelico possa essere un salvaschermo. mogumbo pensava che il suo salvaschermo 'Plasma' fosse al massimo della psichedelicità, ma questo è anche più nauseante. Faresti meglio a cercare uno di quei sacchetti per il mal d'aria prima di fissarlo troppo a lungo.</description>
     <description lang="ja">This is about as psychedelic as screensavers get. mogumbo thought his Plasma saver was at the top of the scale, but this one is even more nauseating. You'd better find one of those air sickness bags before you stare at this one for too long.</description>
     <description lang="ko">싸이키델릭한 화면보호기입니다. 거의 토나올 정도의 화면보호기로 오래 쳐다보려면 봉투를 준비하는것이 좋을겁니다.</description>

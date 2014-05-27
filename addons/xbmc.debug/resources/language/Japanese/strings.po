@@ -39,3 +39,11 @@ msgstr "RTMP ライブラリの詳細なログ"
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
 msgstr "DBUS コールの詳細なログ"
+
+msgctxt "#30006"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "JSON-RPC リクエストの詳細なログ"
+
+msgctxt "#30007"
+msgid "Verbose logging for AUDIO component"
+msgstr "オーディオコンポーネントの詳細なログ"

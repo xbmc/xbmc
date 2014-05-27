@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.2.15"
+  version="2.2.16"
   name="Default"
   provider-name="Team XBMC">
   <requires>
@@ -36,13 +36,14 @@
     <summary lang="fi">Team XBMC:n WWW-käyttöliittymä. (XBMC:n oletus WWW-käyttöliittymä)</summary>
     <summary lang="fr">Interface Web de l'équipe d'XBMC. (Interface Web par défaut d'XBMC)</summary>
     <summary lang="fr_CA">Interface Web de l'équipe XBMC. (Interface Web par défaut d'XBMC)</summary>
-    <summary lang="gl">Interface web da equipa de XBMC. (Interface web predefinida de XBMC)</summary>
+    <summary lang="gl">Interface web do equipo de XBMC. (Interface web predefinida de XBMC)</summary>
     <summary lang="he">ממשק הדפדפן הרשמי של XBMC. (ברירת המחדל)</summary>
     <summary lang="hr">Tim XBMC Web sučelje. (XBMC-ovo uobičajeno web sučelje)</summary>
     <summary lang="hu">Az XBMC csapat Webes kezelőfelülete (XBMC alapértelmezett webes kezelőfelülete)</summary>
+    <summary lang="hy">XBMC Թիմի տեսքը (XBMC-ի նախնական տեսքը)</summary>
     <summary lang="id">Antar Muka Web Tim XBMC. (Antar muka web bawaan XBMC)</summary>
     <summary lang="it">Interfaccia Web del Team XBMC. (Interfaccia web di default per XBMC)</summary>
-    <summary lang="ja">Team XBMC Web Interface. (XBMC's default web interface)</summary>
+    <summary lang="ja">チーム XBMC Web インターフェース (XBMC のデフォルト Web インターフェース)</summary>
     <summary lang="ko">Team XBMC 웹 인터페이스. (XBMC 기본 웹 인터페이스)</summary>
     <summary lang="lt">Komandos XBMC Web sąsaja.(XBMC numatytoji žiniatinklio sąsaja)</summary>
     <summary lang="lv">Team XBMC tīmekļa sakarne. (XBMC noklusētā tīmekļa saskarne)</summary>
@@ -99,9 +100,10 @@
     <description lang="he">ממשק דפדפן ברירת המחדל עבור XBMC; מתאים למכשירים בעלי רזולוציות שונות</description>
     <description lang="hr">Uobičajeno web sučelje za XBMC; Dizajnirano za uređaje svih razlučivosti</description>
     <description lang="hu">Az XBMC alapértelmezett webes kezelőfelülete; Minden felbontásra alkalmas</description>
+    <description lang="hy">Նախնական տեսք XBMC-ի համար; Նախատեսված է բոլոր կրիչների համար</description>
     <description lang="id">Antar muka web bawaan bagi XBMC; Dirancang bagi perangkat dengan semua resolusi</description>
     <description lang="it">Interfaccia Web di default per XBMC; Realizzata per periferiche con qualunque risoluzione</description>
-    <description lang="ja">Default web interface for XBMC; Designed for devices of all resolutions</description>
+    <description lang="ja">XBMC のデフォルト Web インターフェースです。さまざまな解像度のデバイス用にデザインされています。</description>
     <description lang="ko">XBMC 기본 웹 인터페이스; 모든 해상도의 기기를 위해 디자인 됨</description>
     <description lang="lt">Numatytoji XBMC Web sąsaja skirta visų rezoliucijų prietaisams</description>
     <description lang="lv">Noklusētā XBMC tīmekļa sakarne; Piemērota visu izšķirtspēju iekārtām</description>

@@ -32,6 +32,10 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "สูงสุด"
 
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "ต่ำมาก"
+
 msgctxt "#30008"
 msgid "Low"
 msgstr "ต่ำ"
@@ -43,3 +47,7 @@ msgstr "ปกติ"
 msgctxt "#30010"
 msgid "High"
 msgstr "สูง"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "ใช้ไฟล์มาตรฐาน [บูธเร็วขึ้น]"

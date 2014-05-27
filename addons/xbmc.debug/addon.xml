@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.debug" version="0.1.18" provider-name="Team XBMC" name="Log">
+<addon id="xbmc.debug" version="0.1.19" provider-name="Team XBMC" name="Log">
   <backwards-compatibility abi="0.1"/>
   <requires>
     <c-pluff version="0.1"/>
@@ -27,12 +27,13 @@
     <summary lang="gl">Complemento para mellorar a personalización do rexistro</summary>
     <summary lang="hr">Dodatak za poboljšanje prilagodljivosti zapisivanja</summary>
     <summary lang="hu">Kiegészítő a naplózás testre szabásához</summary>
+    <summary lang="hy">Մանրամասն գրառումների բարելավումների ավելացում</summary>
     <summary lang="id">Addon untuk memperbaiki keleluasaan menggubah pencatatan log</summary>
-    <summary lang="is">Viðbót til þess að bæta skráningu á sérsniði</summary>
+    <summary lang="is">Viðbót til þess að bæta sérsnið á viðburðaskráningu</summary>
     <summary lang="it">Addon per migliorare la personalizzazione di logging</summary>
     <summary lang="ja">ログのカスタマイズ性をより良くするアドオン</summary>
     <summary lang="ko">로깅 개인화를 향상시켜주는 에드온</summary>
-    <summary lang="lt">Priedų registravimo adaptacija</summary>
+    <summary lang="lt">Priedas, kuris pagerina žurnalo rašymo adaptaciją</summary>
     <summary lang="lv">Pielikums, lai uzlabotu žurnāla pielāgošanu</summary>
     <summary lang="my">logging စိတ်ကြိုက်ပြုပြင် မှုကို တိုးတက်စေသော Addon</summary>
     <summary lang="nl">Addon voor het verbeteren van de aanpasbaarheid van logging</summary>
@@ -46,6 +47,7 @@
     <summary lang="sv">Tillägg för att förbättra loggningsanpassningar</summary>
     <summary lang="ta_IN">தனிப்பயனாக்கு பதிவை மேம்படுத்துவதற்கான துணை-பயன்</summary>
     <summary lang="tg">Барномаи иловагӣ барои такмили танзимоти воридшавӣ</summary>
+    <summary lang="th">ส่วนเสริมเพื่อพัฒนาการปรับแต่งบันทึกล็อค</summary>
     <summary lang="tr">Günlük kişiselleştirilebilirliğini geliştirmek için eklenti</summary>
     <summary lang="zh">增强日志定制功能的插件</summary>
     <summary lang="zh_TW">用以改善記錄檔之客製性靈活度的外掛</summary>
