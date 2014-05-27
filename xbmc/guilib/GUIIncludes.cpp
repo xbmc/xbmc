@@ -46,6 +46,7 @@ CGUIIncludes::CGUIIncludes()
   m_constantAttributes.insert("end");
   m_constantAttributes.insert("center");
   m_constantAttributes.insert("border");
+  m_constantAttributes.insert("repeat");
   
   m_constantNodes.insert("posx");
   m_constantNodes.insert("posy");
