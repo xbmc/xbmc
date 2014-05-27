@@ -12203,7 +12203,7 @@ msgstr "Kategorie enthält Einstellungen für Eingabegeräte."
 
 msgctxt "#36375"
 msgid "Configure any attached peripheral devices."
-msgstr "Konfigurieration eventuell vorhanener Peripheriegeräte."
+msgstr "Konfiguration eventuell vorhandener Peripheriegeräte."
 
 msgctxt "#36376"
 msgid "When activated, your keyboard arrows will move the selection on the virtual keyboard. When deactivated, they will move the cursor from your text."
@@ -12387,7 +12387,7 @@ msgstr "Umgehen des VDPAU-Mixers spart Ressourcen auf schwächeren Systemen, red
 
 msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
-msgstr "Hardware -ideodekodierung mit AMLogic-Dekoder aktivieren."
+msgstr "Hardware-Videodekodierung mit AMLogic-Dekoder aktivieren."
 
 msgctxt "#36423"
 msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."

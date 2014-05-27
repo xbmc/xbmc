@@ -963,7 +963,7 @@ msgstr "Позициониране на субтитрите"
 
 msgctxt "#275"
 msgid "Pixel ratio adjustment"
-msgstr "Регулиране съотношението на пиксели"
+msgstr "Регулиране съотношението между пикселите"
 
 msgctxt "#276"
 msgid "Adjust the arrow to change the amount of overscan"
@@ -1191,7 +1191,7 @@ msgstr "Конвертиране честотата на кадрите"
 
 msgctxt "#337"
 msgid "Output configuration"
-msgstr "Настройки на извеждането"
+msgstr "Настройки на изхода"
 
 msgctxt "#338"
 msgid "Fixed"
@@ -1279,7 +1279,7 @@ msgstr "Всички албуми"
 
 msgctxt "#359"
 msgid "Recently added albums"
-msgstr "Наскоро добавени албуми"
+msgstr "Последно добавени албуми"
 
 msgctxt "#360"
 msgid "Screensaver"
@@ -1863,7 +1863,7 @@ msgstr "Жанр"
 
 msgctxt "#517"
 msgid "Recently played albums"
-msgstr "Наскоро възпроизвеждани албуми"
+msgstr "Последно възпроизвеждани албуми"
 
 msgctxt "#518"
 msgid "Launch"
@@ -7907,7 +7907,7 @@ msgstr "Излезте"
 
 msgctxt "#20128"
 msgid "Go to root"
-msgstr "Към в основната папка"
+msgstr "Към основната папка"
 
 msgctxt "#20129"
 msgid "Weave"
@@ -8583,11 +8583,11 @@ msgstr "Премахни препратката към ТВ Сериал"
 
 msgctxt "#20386"
 msgid "Recently added movies"
-msgstr "Наскоро добавени филми"
+msgstr "Последно добавени филми"
 
 msgctxt "#20387"
 msgid "Recently added episodes"
-msgstr "Наскоро добавени епизоди"
+msgstr "Последно добавени епизоди"
 
 msgctxt "#20388"
 msgid "Studios"
@@ -8599,7 +8599,7 @@ msgstr "Музикални клипове"
 
 msgctxt "#20390"
 msgid "Recently added music videos"
-msgstr "Наскоро добавени музикални клипове"
+msgstr "Последно добавени музикални клипове"
 
 msgctxt "#20391"
 msgid "Music video"
@@ -9275,7 +9275,7 @@ msgstr "Начална папка"
 
 msgctxt "#21441"
 msgid "Watched count"
-msgstr "Брой гледани"
+msgstr "Брой изгледани"
 
 msgctxt "#21442"
 msgid "Episode title"
@@ -9339,7 +9339,7 @@ msgstr "Външна памет"
 
 msgctxt "#21457"
 msgid "Watched episode count"
-msgstr "Брой гледани епизода"
+msgstr "Брой изгледани епизода"
 
 msgctxt "#21458"
 msgid "Group by"
@@ -10371,7 +10371,7 @@ msgstr "Възпроизвеждането на Blu-ray е невъзможно"
 
 msgctxt "#25009"
 msgid "The menu of this Blu-ray is not supported"
-msgstr "Менюто на този Blu-ray не се поддържа"
+msgstr "Менюто на този Blu-ray диск не се поддържа"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -12123,7 +12123,7 @@ msgstr "Елиминира вертикалното разкъсване на к
 
 msgctxt "#36357"
 msgid "Calibrate the user interface by adjusting the overscan. Use this tool if the image being displayed is too large or small for your display."
-msgstr "Калибрирайте потребителския интерфейс чрез коригиране на областта на изображението. Ползвайте този инструмент, ако изображението не се събира на екрана или е по-малко от размерите на вашия дисплей."
+msgstr "Калибрирайте потребителския интерфейс чрез коригиране на областта на изображението. Ползвайте инструмента, ако изображението не се събира на екрана или е по-малко от размерите на вашия дисплей."
 
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."

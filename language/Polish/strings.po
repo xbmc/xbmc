@@ -391,7 +391,7 @@ msgstr "Potwierdź przenoszenie pliku"
 
 msgctxt "#122"
 msgid "Confirm file delete?"
-msgstr "Czy rzeczywiście chcesz usunąć plik?"
+msgstr "Potwierdź usunięcie pliku"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -3539,7 +3539,7 @@ msgstr "Ekspert"
 
 msgctxt "#10040"
 msgid "Add-on browser"
-msgstr "Przeglądarka wtyczek"
+msgstr "Menedżer wtyczek"
 
 msgctxt "#10041"
 msgid "Reset above settings to default"
@@ -6167,7 +6167,7 @@ msgstr "Czy na pewno chcesz ukryć kanał?"
 
 msgctxt "#19040"
 msgid "Timer"
-msgstr "Zaplanuj zamknięcie"
+msgstr "Plan nagrań"
 
 msgctxt "#19041"
 msgid "Are you sure you want to rename this recording?"
@@ -6235,11 +6235,11 @@ msgstr "Nowe nagranie"
 
 msgctxt "#19057"
 msgid "Edit timer"
-msgstr "Edytuj zaplanowane nagranie"
+msgstr "Modyfikuj nagranie"
 
 msgctxt "#19058"
 msgid "Timer enabled"
-msgstr "Zaplanowano nagranie "
+msgstr "Zmień stan"
 
 msgctxt "#19059"
 msgid "Stop recording"
@@ -6303,7 +6303,7 @@ msgstr "Opóźniaj zmiany kanału o"
 
 msgctxt "#19074"
 msgid "Active:"
-msgstr "Aktywny:"
+msgstr "Aktywne:"
 
 msgctxt "#19075"
 msgid "Name:"
@@ -6423,7 +6423,7 @@ msgstr "Wprowadź nazwę folderu nagrań"
 
 msgctxt "#19106"
 msgid "Next timer on"
-msgstr "Następne zaplanowane nagranie:"
+msgstr "Najbliższe nagranie:"
 
 msgctxt "#19107"
 msgid "at"
@@ -9923,19 +9923,19 @@ msgstr "Naciśnij OK po zakończeniu odtwarzania"
 
 msgctxt "#24000"
 msgid "Add-on"
-msgstr "Dodatek"
+msgstr "Wtyczka"
 
 msgctxt "#24001"
 msgid "Add-ons"
-msgstr "Dodatki"
+msgstr "Wtyczki"
 
 msgctxt "#24002"
 msgid "Add-on options"
-msgstr "Opcje dodatku"
+msgstr "Opcje wtyczki"
 
 msgctxt "#24003"
 msgid "Add-on Information"
-msgstr "O dodatku"
+msgstr "O wtyczce"
 
 msgctxt "#24005"
 msgid "Media sources"
@@ -10027,7 +10027,7 @@ msgstr "Serwis pogodowy"
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
-msgstr "Ta wtyczka nie może być skonfigurowana"
+msgstr "Tej wtyczki nie można konfigurować"
 
 msgctxt "#24031"
 msgid "Error loading settings"
@@ -10159,7 +10159,7 @@ msgstr "Anulować pobieranie wtyczki?"
 
 msgctxt "#24067"
 msgid "Currently downloading Add-ons"
-msgstr "Aktualnie pobierane wtyczki"
+msgstr "Wtyczki aktualnie pobierane"
 
 msgctxt "#24068"
 msgid "Update available"
@@ -10211,7 +10211,7 @@ msgstr "Zablokuj menedżer wtyczek"
 
 msgctxt "#24091"
 msgid "This Add-on cannot be disabled"
-msgstr "Tej wtyczki nie można dezaktywować"
+msgstr "Tej wtyczki nie można wyłączyć"
 
 msgctxt "#24094"
 msgid "(current)"
@@ -10239,7 +10239,7 @@ msgstr "Chcesz przełączyć się na tę skórę?"
 
 msgctxt "#24100"
 msgid "To use this feature you must download an Add-on:"
-msgstr "Aby użyć tej funkcji musisz pobrać wtyczki:"
+msgstr "Aby używać tej funkcji musisz pobrać wtyczkę:"
 
 msgctxt "#24101"
 msgid "Would you like to download this Add-on?"

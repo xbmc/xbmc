@@ -35,7 +35,7 @@ msgstr "Guia de TV"
 
 msgctxt "#5"
 msgid "Settings"
-msgstr "Configurações"
+msgstr "Definições"
 
 msgctxt "#6"
 msgid "XBMC SVN"
@@ -635,7 +635,7 @@ msgstr "A procurar álbum"
 
 msgctxt "#186"
 msgid "OK"
-msgstr "CONFIRMAR"
+msgstr "OK"
 
 msgctxt "#187"
 msgid "No albums found!"
@@ -775,7 +775,7 @@ msgstr "Matrizes de Teste ..."
 
 msgctxt "#227"
 msgid "Lookup audio CD track names from freedb.org"
-msgstr "Procurar nomes das faixas do CD áudio em freedb.org"
+msgstr "Procurar nomes das faixas de CD áudio em freedb.org"
 
 msgctxt "#228"
 msgid "Shuffle playlist on load"
@@ -3431,7 +3431,7 @@ msgstr "Gestor Ficheiros"
 
 msgctxt "#10004"
 msgid "Settings"
-msgstr "Configurações"
+msgstr "Definições"
 
 msgctxt "#10005"
 msgid "Music"
@@ -3967,7 +3967,7 @@ msgstr "Por favor introduza um código mestre válido"
 
 msgctxt "#12373"
 msgid "Settings & file manager"
-msgstr "Configurações e Gestão de ficheiros"
+msgstr "Definições e Gestão de ficheiros"
 
 msgctxt "#12376"
 msgid "Set as default for all videos"
@@ -4803,11 +4803,11 @@ msgstr "Calculando tamanho da pasta"
 
 msgctxt "#13395"
 msgid "Video settings"
-msgstr "Configurações de vídeo"
+msgstr "Definições de vídeo"
 
 msgctxt "#13396"
 msgid "Audio and subtitle settings"
-msgstr "Configurações de áudio e legendas"
+msgstr "Definições de áudio e legendas"
 
 msgctxt "#13397"
 msgid "Enable subtitles"
@@ -5379,7 +5379,7 @@ msgstr "Parar a análise"
 
 msgctxt "#14057"
 msgid "Not possible while scanning for media info"
-msgstr "Não é possível: a Biblioteca está em actualização"
+msgstr "Não é possível: a biblioteca está em actualização"
 
 msgctxt "#14058"
 msgid "Film grain effect"
@@ -5775,7 +5775,7 @@ msgstr "O Modo de festa foi cancelado."
 
 msgctxt "#16031"
 msgid "No matching songs in the library."
-msgstr "Não existem músicas coincidentes na Biblioteca."
+msgstr "Não existem músicas coincidentes na biblioteca."
 
 msgctxt "#16032"
 msgid "Could not initialise database."
@@ -8499,7 +8499,7 @@ msgstr "Carregando detalhes do episódio"
 
 msgctxt "#20362"
 msgid "Remove episode from library"
-msgstr "Remover episódio da Biblioteca"
+msgstr "Remover episódio da biblioteca"
 
 msgctxt "#20363"
 msgid "Remove TV show from library"
@@ -10683,7 +10683,7 @@ msgstr "Activar botão personalizado de scripts"
 
 msgctxt "#33084"
 msgid "Auto login"
-msgstr "Iniciação automática de perfil"
+msgstr "Início automático de perfil"
 
 msgctxt "#33100"
 msgid "Failed to start"

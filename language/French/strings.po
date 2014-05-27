@@ -199,7 +199,7 @@ msgstr "oct"
 
 msgctxt "#61"
 msgid "Nov"
-msgstr "ov"
+msgstr "nov"
 
 msgctxt "#62"
 msgid "Dec"
@@ -9351,7 +9351,7 @@ msgstr "Nombre d'épisodes vus"
 
 msgctxt "#21458"
 msgid "Group by"
-msgstr "Trier par "
+msgstr "Grouper par"
 
 msgctxt "#21459"
 msgid "mixed"

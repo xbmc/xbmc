@@ -2739,7 +2739,7 @@ msgstr "Forsinkelse for kontinuerlig repetisjon (ms)"
 
 msgctxt "#797"
 msgid "Maximum number of clients"
-msgstr "Maksimalt antall klienter"
+msgstr "Høyeste antall klienter"
 
 msgctxt "#798"
 msgid "Internet access"
@@ -5063,7 +5063,7 @@ msgstr "Videoklokking (resample lyd)"
 
 msgctxt "#13504"
 msgid "Maximum speedup/slowdown amount (%)"
-msgstr "Maksimum fremskyndelses-/forsinkelsesmengde (%)"
+msgstr "Høyeste fremskyndelses-/forsinkelsesmengde (%)"
 
 msgctxt "#13505"
 msgid "Resample quality"
@@ -11247,7 +11247,7 @@ msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36138"
 msgid "Section that contains settings related to videos and how they are handled."
-msgstr "Kategori som inneholder innstillinger for hvordan videoavspilling håndteres."
+msgstr "Seksjoner som inneholder innstillinger for hvordan videoavspilling håndteres."
 
 msgctxt "#36139"
 msgid "Category containing the settings for how the video library is handled."
@@ -11355,7 +11355,7 @@ msgstr "Lyd må være synkronisert, dette kan enten gjøres ved å gjensample, h
 
 msgctxt "#36168"
 msgid "Maximum video speed adjust to match actual screen refresh rate."
-msgstr "Avpass maksimum videohastighetjustering til skjermoppdateringsfrekvens."
+msgstr "Avpass høyeste videohastighetjustering til skjermoppdateringsfrekvens."
 
 msgctxt "#36169"
 msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
@@ -11693,6 +11693,22 @@ msgctxt "#36276"
 msgid "Used for formatting the second column in file lists."
 msgstr "Benyttes for å formatere den andre kolonnen i fillister."
 
+msgctxt "#36277"
+msgid "Control the way that the names of songs are displayed in the now playing list."
+msgstr "Reguler måten låtnavnblir vist i avspilles-nå-listen."
+
+msgctxt "#36278"
+msgid "Used for formatting the second column in the now playing list."
+msgstr "Benyttes for å formatere den andre kolonnen i avspilles-nå-listen."
+
+msgctxt "#36279"
+msgid "Control the way that the names of songs are displayed in library lists."
+msgstr "Reguler måten låtnavn blir vist i bibliotekslister."
+
+msgctxt "#36280"
+msgid "Used for formatting the second column in library lists."
+msgstr "Benyttes for å formatere den andre kolonnen i bibliotekslister."
+
 msgctxt "#36281"
 msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
 msgstr "XBMC vil søke etter miniatyrer på nettverksstasjoner og optiske medier. Dette kan forsinke visningen av nettverksmapper."
@@ -11725,6 +11741,10 @@ msgctxt "#36289"
 msgid "Select which bitrate to use for the specified audio encoder for audio compression."
 msgstr "Velg hvilken bitrate som skal brukes ved lydkomprimering for den spesifiserte lydkoderen."
 
+msgctxt "#36290"
+msgid "For FLAC define compression level, default 5."
+msgstr "Definer kompresjonsnivået for FLAC, standard 5."
+
 msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr "Løs ut plate automatisk når ripping er fullført."
@@ -11737,9 +11757,21 @@ msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
 msgstr "Når en musikkfil spilles av, vil XBMC lete etter en tilhørende .cdg-fil og vise dens illustrasjoner."
 
+msgctxt "#36294"
+msgid "Show song selection dialog once the last song in the queue has been played."
+msgstr "Vis låtutvalgsdialogen når den siste låten i køen er blitt avspilt."
+
 msgctxt "#36298"
 msgid "Select the character set used during karaoke."
 msgstr "Velg tegnsettet som brukes for karaoke."
+
+msgctxt "#36299"
+msgid "Export the karaoke numbered songs to HTML or CSV files."
+msgstr "Eksporter de nummererte karaokelåtene til HTML- eller CSV-filer."
+
+msgctxt "#36300"
+msgid "Import the karaoke numbered songs from HTML or CSV files."
+msgstr "Importer nummererte karaokelåter fra HTML- eller CSV-filer."
 
 msgctxt "#36301"
 msgid "No info available yet."
@@ -11773,6 +11805,10 @@ msgctxt "#36308"
 msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
 msgstr "Bilder vil automatisk bli rotert i henhold til informasjonen i EXIF-taggen, hvis dette finnes."
 
+msgctxt "#36309"
+msgid "Show videos in picture file lists."
+msgstr "Vis videoer i billedfillister."
+
 msgctxt "#36310"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
@@ -11793,6 +11829,10 @@ msgctxt "#36314"
 msgid "View slideshow images in a random order."
 msgstr "Vis lysbilder i en tilfeldig rekkefølge."
 
+msgctxt "#36315"
+msgid "Section that contains weather related settings."
+msgstr "Seksjon som inneholder værrelaterte innstillinger."
+
 msgctxt "#36316"
 msgid "Category containing settings for how weather addons are handled."
 msgstr "Kategori som inneholder innstillinger for hvordan værtillegg håndteres."
@@ -11803,11 +11843,15 @@ msgstr "Velg opp til tre plasseringer hvor været kan vises."
 
 msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
-msgstr "Spesifiser standardkilden for værinformasjon. Se tilleggsbehandleren for alternativer."
+msgstr "Angi standardkilden for værinformasjon. Se tilleggsbehandleren for alternativer."
 
 msgctxt "#36319"
 msgid "Section containing settings for how network services are handled."
 msgstr "Seksjon som inneholder innstillinger for hvordan nettverkstjenester håndteres."
+
+msgctxt "#36320"
+msgid "Category containing settings used for all services."
+msgstr "Kategori som inneholder innstillinger relatert til alle tjenester."
 
 msgctxt "#36321"
 msgid "Display name of the XBMC installation when using various network services."
@@ -11865,6 +11909,18 @@ msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
 msgstr "Tillat programmer på denne datamaskinen å kontrollere XBMC gjennom nettgrensesnittet eller JSON-RPC protokollen for grensesnitt."
 
+msgctxt "#36335"
+msgid "Define the remote control port."
+msgstr "Bestem fjernkontrollporten."
+
+msgctxt "#36336"
+msgid "Define the remote control port range."
+msgstr "Spesifiser portintervallet for fjernkontroll."
+
+msgctxt "#36337"
+msgid "Define the maximum number of clients that can connect."
+msgstr "Bestem høyeste antall klienter som kan kobles til."
+
 msgctxt "#36338"
 msgid "Allow programs on the network to control XBMC."
 msgstr "Tillat at programmer på nettverket kontrollerer XBMC."
@@ -11881,13 +11937,45 @@ msgctxt "#36341"
 msgid "Category containing settings for how the zeroconf network discovery service is handled, required for AirPlay."
 msgstr "Kategori som inneholder innstillinger for hvordan zeroconf nettverkstjenesten håndteres, nødvendig for AirPlay."
 
+msgctxt "#36342"
+msgid "Allows applications on the network to discover XBMC's running services."
+msgstr "Tillater programmer på nettverket å oppdage prosesser som kjører på XBMC."
+
+msgctxt "#36343"
+msgid "Allows XBMC to receive content from other AirPlay devices or applications."
+msgstr "Tillater XBMC å motta innhold fra andre AirPlay-enheter eller programmer."
+
+msgctxt "#36344"
+msgid "Enable AirPlay password protection."
+msgstr "Aktiver AirPlay-passordbeskyttelse."
+
+msgctxt "#36345"
+msgid "Sets the AirPlay password."
+msgstr "Fastsetter AirPlay-passordet."
+
 msgctxt "#36346"
 msgid "Category containing settings for how the SMB Client (samba) service is handled."
 msgstr "Kategori som inneholder innstillinger for hvordan SMB-klienten (samba) håndteres."
 
+msgctxt "#36347"
+msgid "If a WINS server is running on the network, enter its IP address here. Otherwise, leave blank."
+msgstr "Hvis en WINS-tjener kjører på nettverket, oppgi IP-addressen her. Hvis ikke, la være blank."
+
+msgctxt "#36348"
+msgid "If a WINS server is running on the network, enter its workgroup name here. Otherwise, leave blank."
+msgstr "Hvis en WINS-tjener kjører på nettverket, oppgi navnet til arbeidsgruppen her. Hvis ikke, la være blank."
+
+msgctxt "#36349"
+msgid "Section that contains the System related settings for the device XBMC is installed on."
+msgstr "Seksjon som inneholder systemrelaterte innstillinger for enheten XBMC er innstalert på."
+
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
 msgstr "Send 'Wake-On-Lan' automatisk til server(e) like før åpning av delte filer eller tjenester."
+
+msgctxt "#36351"
+msgid "Display XBMC in a window, or fullscreen on the selected screen."
+msgstr "Vis XBMC i et vindu, eller fullskjerm på den valgte skjerm."
 
 msgctxt "#36352"
 msgid "Changes the resolution that the user interface is displayed in."
@@ -11939,7 +12027,7 @@ msgstr "Velg dette alternativet hvis receiveren din er i stand til å avkode DTS
 
 msgctxt "#36367"
 msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
-msgstr "Velg maks antall lydkanaler/høyttalere tilgjengelig for avkoded lyd. Dersom optisk/coax-digitalutgang brukes må denne settes til 2.0"
+msgstr "Velg høyeste antall lydkanaler/høyttalere tilgjengelig for avkoded lyd. Dersom optisk/coax-digitalutgang brukes må denne settes til 2.0"
 
 msgctxt "#36368"
 msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital."
@@ -12013,6 +12101,14 @@ msgctxt "#36386"
 msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
 msgstr "Hvis du har begrenset båndbredde, så vil XBMC forsøke å holde seg innenfor disse verdiene."
 
+msgctxt "#36387"
+msgid "Category containing settings for power saving."
+msgstr "Kategori som inneholder innstillinger for strømsparing."
+
+msgctxt "#36388"
+msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected."
+msgstr "Slå av skjerm når inaktiv. Anvendelig for TV-er som slukkes når det ikke oppdages noe skjermsignal."
+
 msgctxt "#36389"
 msgid "Define how long XBMC should idle before shutting down."
 msgstr "Bestem hvor lenge XBMC bør være inaktiv før systemet avsluttes."
@@ -12020,6 +12116,10 @@ msgstr "Bestem hvor lenge XBMC bør være inaktiv før systemet avsluttes."
 msgctxt "#36390"
 msgid "Define what action XBMC should do when it has been idle for a long period of time."
 msgstr "Bestem hva XBMC skal gjøre når systemet har vært inaktivt i en lang tidsperiode."
+
+msgctxt "#36391"
+msgid "Category containing settings for debugging functions."
+msgstr "Kategori som inneholder innstillinger for feilrettingsfunksjoner."
 
 msgctxt "#36392"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
@@ -12033,21 +12133,61 @@ msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
 msgstr "Spesifiser ytterlige biblioteker som skal inkluderes i fejlrettingsloggen."
 
+msgctxt "#36395"
+msgid "Category containing settings for the master lock function."
+msgstr "Kategori som inneholder innstillinger for systemlåsfunksjoner."
+
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
 msgstr "Definer PIN-koden brukt for systemlåsen."
+
+msgctxt "#36397"
+msgid "If enabled, the master lock code is required to unlock XBMC on startup."
+msgstr "Hvis aktivert, så kreves systemlåspassordet for å låse opp XBMC ved oppstart."
 
 msgctxt "#36398"
 msgid "Define the maximum number of retries before XBMC is closed down."
 msgstr "Definer høyeste antall forsøk før XBMC blir avsluttet."
 
+msgctxt "#36399"
+msgid "Category containing settings for the cache function."
+msgstr "Kategori som inneholder innstillinger for mellomlagerfuksjoner."
+
+msgctxt "#36400"
+msgid "Enable cache for playback of Video, Audio or DVDs from hard disk."
+msgstr "Aktiver mellomlager for avspilling av Video, Lyd eller DVD-er fra harddisk."
+
+msgctxt "#36401"
+msgid "Enable cache for playback of Video from DVD-ROM."
+msgstr "Aktiver mellomlager for avspilling av Video fra DVD-ROM."
+
+msgctxt "#36402"
+msgid "Enable cache for Video playback from Local Network."
+msgstr "Aktiver mellomlager for Videoavspilling fra lokalnettverk."
+
 msgctxt "#36403"
 msgid "Enable cache for Video playback from Internet."
 msgstr "Aktiver mellomlager for Videoavspilling fra Internett."
 
+msgctxt "#36404"
+msgid "Enable cache for playback of Audio from DVD-ROM."
+msgstr "Aktiver mellomlager for avspilling av Lyd fra DVD-ROM."
+
+msgctxt "#36405"
+msgid "Enable cache for Audio playback from Local Network."
+msgstr "Aktiver mellomlager for Lydavspilling fra lokalnettverk."
+
 msgctxt "#36406"
 msgid "Enable cache for Audio playback from Internet."
 msgstr "Aktiver mellomlager for Lydavspilling fra Internett."
+
+msgctxt "#36407"
+msgid "Enable cache for playback of DVD from DVD-ROM."
+msgstr "Aktiver mellomlager for avspilling av DVD fra DVD-ROM."
+
+msgctxt "#36408"
+msgid "Enable cache for DVD playback from Local Network."
+msgstr "Aktiver mellomlager for DVD-avspilling fra lokalnettverk."
 
 msgctxt "#36409"
 msgid "Enable cache of unknown types from Internet."
@@ -12077,13 +12217,33 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
 
+msgctxt "#36416"
+msgid "Specify the type of remote used."
+msgstr "Spesifiser fjernkontolltypen som benyttes."
+
+msgctxt "#36417"
+msgid "Always run an XBMC helper so that the remote can be used to start XBMC."
+msgstr "Alltid kjør en XBMC-bakgrunnsprosesss slik at fjernkontrollen kan benyttes til å starte XBMC."
+
+msgctxt "#36418"
+msgid "Specify the delay between button sequences on a universal remote."
+msgstr "Angi forsinkelsen mellom knappetrykk på en universalfjernkontroll."
+
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Velg steder som brukes for å hente værinfo."
 
+msgctxt "#36421"
+msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality."
+msgstr "Å gå utenom VDPAU-mikser sparer ressurser på svake systemer, men gjør bildekvaliteten litt dårligere."
+
 msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
 msgstr "Aktiver maskinvareavkoding ved å benytte AMLogic-avkoder."
+
+msgctxt "#36423"
+msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
+msgstr "Aktiver multitrådprogramvareavkoding (mindre pålitelig enn standard enkelttrådmodus)."
 
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
@@ -12153,6 +12313,10 @@ msgctxt "#36509"
 msgid "Monoscopic - 2D"
 msgstr "Monoskopisk - 2D"
 
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic videos."
+msgstr "Avspillingsmodus for stereoskopiske videoer."
+
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Spør meg"
@@ -12163,7 +12327,7 @@ msgstr "Bruk foretrukket modus"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
-msgstr "Maksimal samplingsrate for spdif eller samplingsrate for fastsatt utgangskonfigurasjon."
+msgstr "Høyeste samplingsrate for SPDIF eller samplingsrate for fastsatt utgangskonfigurasjon."
 
 msgctxt "#36524"
 msgid "Preferred mode"
@@ -12213,9 +12377,17 @@ msgctxt "#36536"
 msgid "Stereoscopic mode inverted"
 msgstr "Invertert stereoskopisk modus"
 
+msgctxt "#36537"
+msgid "Set playback mode of stereoscopic 3D videos."
+msgstr "Fastsett avspillingsmodus for stereoskopiske 3D-videoer."
+
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Endrer det stereoskopiske 3D-moduset i brukergrensesnittet."
+
+msgctxt "#36540"
+msgid "The preferred stereoscopic 3D mode."
+msgstr "Det foretrukne, stereoskipiske 3D-modus."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."

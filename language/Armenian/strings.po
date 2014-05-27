@@ -2021,6 +2021,10 @@ msgctxt "#719"
 msgid "IP address"
 msgstr "IP հասցե"
 
+msgctxt "#733"
+msgid "Password"
+msgstr "Գաղտնաբառ"
+
 msgctxt "#738"
 msgid "Normal"
 msgstr "Նորմալ"
@@ -2124,6 +2128,10 @@ msgstr "Ստանդարտ"
 msgctxt "#14098"
 msgid "Play"
 msgstr "Նվագարկել"
+
+msgctxt "#15052"
+msgid "Password"
+msgstr "Գաղտնաբառ"
 
 msgctxt "#15109"
 msgid "Skin default"

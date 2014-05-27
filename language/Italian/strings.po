@@ -8875,7 +8875,7 @@ msgstr "Spiana la gerarchia della libreria."
 
 msgctxt "#20457"
 msgid "Movie set"
-msgstr "imposta filmato"
+msgstr "Set di film"
 
 msgctxt "#20458"
 msgid "Group movies in sets"
