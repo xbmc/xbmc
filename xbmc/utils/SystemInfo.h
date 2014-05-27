@@ -99,29 +99,12 @@ public:
 
   char MD5_Sign[32 + 1];
 
-  bool GetDVDInfo(CStdString& strDVDModel, CStdString& strDVDFirmware);
-  bool GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStdString& strHDDFirmware,CStdString& strHDDpw,CStdString& strHDDLockState);
-  bool GetRefurbInfo(CStdString& rfi_FirstBootTime, CStdString& rfi_PowerCycleCount);
-
   static std::string GetKernelName(bool emptyIfUnknown = false);
   static std::string GetKernelVersionFull(void); // full version string, including "-generic", "-RELEASE" etc.
   static std::string GetKernelVersion(void); // only digits with dots
   static std::string GetOsName(bool emptyIfUnknown = false);
   static std::string GetOsVersion(void);
   static std::string GetOsPrettyNameWithVersion(void);
-#if defined(TARGET_LINUX)
-  CStdString GetLinuxDistro();
-#endif
-#ifdef TARGET_POSIX
-  CStdString GetUnameVersion();
-#endif
-#ifdef TARGET_ANDROID
-  std::string GetAndroidVersionString(void);
-  std::string GetAndroidDeviceName(void);
-#endif
-#if defined(TARGET_WINDOWS)
-  std::string GetUAWindowsVersion();
-#endif
   static std::string GetUserAgent();
   bool HasInternet();
   bool IsAppleTV2();
@@ -134,15 +117,11 @@ public:
   static int GetKernelBitness(void);
   static int GetXbmcBitness(void);
   static std::string GetKernelCpuFamily(void);
-  static std::string GetOsNameWithVersionInfo(void);
   CStdString GetCPUModel();
   CStdString GetCPUBogoMips();
   CStdString GetCPUHardware();
   CStdString GetCPURevision();
   CStdString GetCPUSerial();
-  CStdString GetManufacturer();
-  CStdString GetProduct();
-  CStdString GetModel();
   static std::string GetManufacturerName(void);
   static std::string GetModelName(void);
   bool GetDiskSpace(const CStdString& drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
