@@ -918,7 +918,7 @@ std::string CSysInfo::GetKernelCpuFamily(void)
 {
 #ifdef TARGET_WINDOWS
   SYSTEM_INFO si;
-  GetSystemInfo(&si);
+  GetNativeSystemInfo(&si);
   if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL ||
       si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
     return "x86";
