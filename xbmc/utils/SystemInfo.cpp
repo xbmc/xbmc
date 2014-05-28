@@ -1162,12 +1162,11 @@ bool CSysInfo::IsAppleTV2()
 
 bool CSysInfo::HasVideoToolBoxDecoder()
 {
-  bool        result = false;
-
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
-  result = DarwinHasVideoToolboxDecoder();
+  return DarwinHasVideoToolboxDecoder();
+#else
+  return false;
 #endif
-  return result;
 }
 
 std::string CSysInfo::GetBuildTargetPlatformName(void)
