@@ -1172,11 +1172,11 @@ bool CSysInfo::HasVideoToolBoxDecoder()
 std::string CSysInfo::GetBuildTargetPlatformName(void)
 {
 #if defined(TARGET_DARWIN_OSX)
-  return "Darwin OSX";
+  return "OS X";
 #elif defined(TARGET_DARWIN_IOS_ATV2)
-  return "Darwin iOS ATV2";
+  return "iOS ATV2";
 #elif defined(TARGET_DARWIN_IOS)
-  return "Darwin iOS";
+  return "iOS";
 #elif defined(TARGET_FREEBSD)
   return "FreeBSD";
 #elif defined(TARGET_ANDROID)
@@ -1184,7 +1184,11 @@ std::string CSysInfo::GetBuildTargetPlatformName(void)
 #elif defined(TARGET_LINUX)
   return "Linux";
 #elif defined(TARGET_WINDOWS)
-  return "Win32";
+#ifdef NTDDI_VERSION
+  return "Windows NT";
+#else // !NTDDI_VERSION
+  return "unknown Win32 platform";
+#endif // !NTDDI_VERSION
 #else
   return "unknown platform";
 #endif
