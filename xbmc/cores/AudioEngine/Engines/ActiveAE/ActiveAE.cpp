@@ -1973,7 +1973,7 @@ bool CActiveAE::RunStages()
       CSampleBuffer *buffer;
       for (it = m_streams.begin(); it != m_streams.end(); ++it)
       {
-        if (!(*it)->m_resampleBuffers->m_outputSamples.empty())
+        if (!(*it)->m_resampleBuffers->m_outputSamples.empty() && !(*it)->m_paused)
         {
           buffer =  (*it)->m_resampleBuffers->m_outputSamples.front();
           (*it)->m_resampleBuffers->m_outputSamples.pop_front();
