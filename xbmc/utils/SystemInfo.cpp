@@ -1246,7 +1246,7 @@ std::string CSysInfo::GetBuildTargetPlatformVersionDecoded(void)
   return StringUtils::Format("version %d.%d.%d", (LINUX_VERSION_CODE >> 16) & 0xFF , (LINUX_VERSION_CODE >> 8) & 0xFF, LINUX_VERSION_CODE & 0xFF);
 #elif defined(TARGET_WINDOWS)
 #ifdef NTDDI_VERSION
-  std::string version(StringUtils::Format("version %d.%d", int(NTDDI_VERSION >> 24) & 0xFF, int(NTDDI_VERSION >> 24) & 0xFF));
+  std::string version(StringUtils::Format("version %d.%d", int(NTDDI_VERSION >> 24) & 0xFF, int(NTDDI_VERSION >> 16) & 0xFF));
   if (SPVER(NTDDI_VERSION))
     version += StringUtils::Format(" SP%d", int(SPVER(NTDDI_VERSION)));
   return version;

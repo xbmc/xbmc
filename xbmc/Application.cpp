@@ -734,8 +734,9 @@ bool CApplication::Create()
 //  specialVersion = " (version for XXXX)";
 #endif
   CLog::Log(LOGNOTICE, "Using %s XBMC x%d build%s", buildType.c_str(), g_sysinfo.GetXbmcBitness(), specialVersion.c_str());
-  CLog::Log(LOGNOTICE, "XBMC compiled " __DATE__ " by %s for %s %s %d-bit %s", compilerStr.c_str(), g_sysinfo.GetBuildTargetPlatformName().c_str(), 
-            g_sysinfo.GetBuildTargetCpuFamily().c_str(), g_sysinfo.GetXbmcBitness(), g_sysinfo.GetBuildTargetPlatformVersion().c_str());
+  CLog::Log(LOGNOTICE, "XBMC compiled " __DATE__ " by %s for %s %s %d-bit %s (%s)", compilerStr.c_str(), g_sysinfo.GetBuildTargetPlatformName().c_str(), 
+            g_sysinfo.GetBuildTargetCpuFamily().c_str(), g_sysinfo.GetXbmcBitness(), g_sysinfo.GetBuildTargetPlatformVersionDecoded().c_str(),
+            g_sysinfo.GetBuildTargetPlatformVersion().c_str());
 
   std::string deviceModel(g_sysinfo.GetModelName());
   if (!g_sysinfo.GetManufacturerName().empty())
