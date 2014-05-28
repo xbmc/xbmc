@@ -886,19 +886,18 @@ int CSysInfo::GetKernelBitness(void)
 {
 #ifdef TARGET_WINDOWS
   SYSTEM_INFO si;
-  GetSystemInfo(&si);
+  GetNativeSystemInfo(&si);
+  if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL || si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM)
+    return 32;
+
   if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
     return 64;
   
-  BOOL (WINAPI *ptrIsWow64) (HANDLE, PBOOL);
-  HMODULE hKernel32 = GetModuleHandleA("kernel32");
-  if (hKernel32 == NULL)
-    return 0; // Can't detect OS
-  ptrIsWow64 = (BOOL (WINAPI *) (HANDLE, PBOOL)) GetProcAddress(hKernel32, "IsWow64Process");
-  BOOL wow64proc = FALSE;
-  if (ptrIsWow64 == NULL || ptrIsWow64(GetCurrentProcess(), &wow64proc) == FALSE)
-    return 0; // Can't detect OS
-  return (wow64proc == FALSE) ? 32 : 64;
+  BOOL isWow64 = FALSE;
+  if (IsWow64Process(GetCurrentProcess(), &isWow64) && isWow64) // fallback
+    return 64;
+
+  return 0; // Can't detect OS
 #elif defined(TARGET_POSIX)
   struct utsname un;
   if (uname(&un) == 0)
