@@ -4,7 +4,7 @@ OBJS = libcurl.so \
   librtmp.so \
   libafpclient.so  \
   libplist.so libshairplay.so \
-  libxbogg.so libxbvorbis.so libxbvorbisfile.so libxbFLAC.so libxbmpeg2.so \
+  libxbogg.so libxbvorbis.so libxbvorbisfile.so libxbmpeg2.so \
   libxbmpeg2convert.so libnfs.so libass.so libbluray.so
 
 PLATFORM_OBJS =

@@ -31,12 +31,6 @@ $(LIBDYLIB): $(PLATFORM)
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM)/include install
 	$(MAKE) -C $(PLATFORM)/libmp3lame install
-ifeq ($(OS),android)
-	rm -f $(PREFIX)/lib/libmp3lame.la $(PREFIX)/lib/libmp3lame.so $(PREFIX)/lib/libmp3lame.so.0
-	mv -f $(PREFIX)/lib/libmp3lame.so.0.0.0 $(PREFIX)/lib/libmp3lame.so
-	$(RPL) -e "libmp3lame.so.0" "libmp3lame.so\x00\x00" $(PREFIX)/lib/libmp3lame.so
-	-$(READELF) --dynamic $(PREFIX)/lib/libmp3lame.so | grep ibrary
-endif
 	touch $@
 
 clean:
