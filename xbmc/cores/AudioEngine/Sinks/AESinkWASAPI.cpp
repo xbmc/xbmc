@@ -1030,8 +1030,14 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
 
   if (format.m_dataFormat <= AE_FMT_FLOAT)
     BuildWaveFormatExtensible(format, wfxex);
-  else
+  else if (AE_IS_RAW(format.m_dataFormat))
     BuildWaveFormatExtensibleIEC61397(format, wfxex_iec61937);
+  else
+  {
+    // planar formats are currently not supported by this sink
+    format.m_dataFormat = AE_FMT_FLOAT;
+    BuildWaveFormatExtensible(format, wfxex);
+  }
 
   /* Test for incomplete format and provide defaults */
   if (format.m_sampleRate == 0 ||
