@@ -1140,9 +1140,10 @@
 		<align>center</align>
 		<aligny>center</aligny>
 		<width>60</width>
-		<height>50</height>
+		<height>55</height>
 		<texturefocus>orange.png</texturefocus>
 		<texturenofocus>black.png</texturenofocus>
+		<focusedcolor>white</focusedcolor>
 	</include>
 	<include name="KeyboardButtonFaded">
 		<font>Regular-18</font>
@@ -1162,9 +1163,10 @@
 		<align>center</align>
 		<aligny>center</aligny>
 		<width>60</width>
-		<height>50</height>
+		<height>55</height>
 		<texturefocus>orange.png</texturefocus>
 		<texturenofocus>black.png</texturenofocus>
+		<focusedcolor>white</focusedcolor>
 	</include>
 	<include name="KeyboardButtonBigFaded">
 		<font>Regular-24</font>
@@ -1183,9 +1185,10 @@
 		<align>center</align>
 		<aligny>center</aligny>
 		<width>60</width>
-		<height>50</height>
+		<height>55</height>
 		<texturefocus>orange.png</texturefocus>
 		<texturenofocus>darkgrey.png</texturenofocus>
+		<focusedcolor>white</focusedcolor>
 	</include>
 	<include name="KeyboardButtonLighterNumeric">
 		<font>Regular-18</font>
@@ -1195,6 +1198,7 @@
 		<height>50</height>
 		<texturefocus>darkgrey.png</texturefocus>
 		<texturenofocus>darkgrey.png</texturenofocus>
+		<enable>!Window.IsVisible(109)</enable>
 		<animation effect="fade" start="100" end="30" time="300" condition="true">Conditional</animation>
 	</include>
 	<include name="KeyboardTextFieldBG">
@@ -1240,7 +1244,7 @@
 					<control type="label" id="310">
 						<description>Edit Text</description>
 						<width>570</width>
-						<height>75</height>
+						<height>88</height>
 						<include>KeyboardFont</include>
 					</control>
 				</control>
@@ -1704,7 +1708,9 @@
 					<control type="label" id="4">
 						<description>Edit Text</description>
 						<width>570</width>
-						<height>75</height>
+						<height>80</height>
+						<align>center</align>
+						<aligny>center</aligny>
 						<label>$LOCALIZE[12323]</label>
 						<textcolor>orangeLight</textcolor>
 						<disabledcolor>white</disabledcolor>
@@ -1712,7 +1718,7 @@
 					</control>
 				</control>
 				<!-- Row 1 -->
-				<control type="grouplist">
+				<control type="grouplist" id="501">
 					<itemgap>5</itemgap>
 					<width>1280</width>
 					<height>50</height>
@@ -1724,7 +1730,7 @@
 						<onleft>305</onleft>
 						<onright>50</onright>
 						<onup>307</onup>
-						<ondown>303</ondown>
+						<ondown>504</ondown>
 						<label>$LOCALIZE[12311]</label>
 						<include>KeyboardButton</include>
 					</control>
@@ -1733,7 +1739,7 @@
 						<onleft>49</onleft>
 						<onright>51</onright>
 						<onup>32</onup>
-						<ondown>65</ondown>
+						<ondown>504</ondown>
 						<label>$LOCALIZE[12312]</label>
 						<include>KeyboardButton</include>
 					</control>
@@ -1742,7 +1748,7 @@
 						<onleft>50</onleft>
 						<onright>52</onright>
 						<onup>32</onup>
-						<ondown>66</ondown>
+						<ondown>504</ondown>
 						<label>$LOCALIZE[12313]</label>
 						<include>KeyboardButton</include>
 					</control>
@@ -1751,7 +1757,7 @@
 						<onleft>51</onleft>
 						<onright>53</onright>
 						<onup>32</onup>
-						<ondown>67</ondown>
+						<ondown>504</ondown>
 						<label>$LOCALIZE[12314]</label>
 						<include>KeyboardButton</include>
 					</control>
@@ -1760,7 +1766,7 @@
 						<onleft>52</onleft>
 						<onright>54</onright>
 						<onup>32</onup>
-						<ondown>68</ondown>
+						<ondown>504</ondown>
 						<label>$LOCALIZE[12315]</label>
 						<include>KeyboardButton</include>
 					</control>
@@ -1769,7 +1775,7 @@
 						<onleft>53</onleft>
 						<onright>55</onright>
 						<onup>32</onup>
-						<ondown>68</ondown>
+						<ondown>504</ondown>
 						<label>$LOCALIZE[12316]</label>
 						<include>KeyboardButton</include>
 					</control>
@@ -1778,7 +1784,7 @@
 						<onleft>54</onleft>
 						<onright>56</onright>
 						<onup>32</onup>
-						<ondown>69</ondown>
+						<ondown>504</ondown>
 						<label>$LOCALIZE[12317]</label>
 						<include>KeyboardButton</include>
 					</control>
@@ -1787,7 +1793,7 @@
 						<onleft>55</onleft>
 						<onright>57</onright>
 						<onup>8</onup>
-						<ondown>70</ondown>
+						<ondown>504</ondown>
 						<label>$LOCALIZE[12318]</label>
 						<include>KeyboardButton</include>
 					</control>
@@ -1796,7 +1802,7 @@
 						<onleft>56</onleft>
 						<onright>48</onright>
 						<onup>8</onup>
-						<ondown>71</ondown>
+						<ondown>504</ondown>
 						<label>$LOCALIZE[12319]</label>
 						<include>KeyboardButton</include>
 					</control>
@@ -1805,7 +1811,7 @@
 						<onleft>57</onleft>
 						<onright>306</onright>
 						<onup>300</onup>
-						<ondown>72</ondown>
+						<ondown>504</ondown>
 						<label>$LOCALIZE[12310]</label>
 						<include>KeyboardButton</include>
 					</control>
@@ -2009,7 +2015,7 @@
 					</control>
 				</control>
 				<!-- Row 4 -->
-				<control type="grouplist">
+				<control type="grouplist" id="504">
 					<itemgap>5</itemgap>
 					<width>1280</width>
 					<height>50</height>
@@ -2027,6 +2033,7 @@
 						<alttexturenofocus>black.png</alttexturenofocus>
 						<alttexturefocus>black.png</alttexturefocus>
 						<include>KeyboardNumericFade</include>
+						<enable>!Window.IsVisible(109)</enable>
 					</control>
 					<control type="togglebutton" id="304">
 						<description>Symbols button</description>
@@ -2039,6 +2046,7 @@
 						<alttexturenofocus>black.png</alttexturenofocus>
 						<alttexturefocus>black.png</alttexturefocus>
 						<include>KeyboardNumericFade</include>
+						<enable>!Window.IsVisible(109)</enable>
 					</control>
 					<control type="button" id="85">
 						<description>'U' button</description>
@@ -2096,8 +2104,8 @@
 					</control>
 					<control type="button" id="20">
 						<description>Previous button</description>
-						<onup>307</onup>
-						<ondown>303</ondown>
+						<onup>501</onup>
+						<ondown>505</ondown>
 						<onleft>306</onleft>
 						<onright>49</onright>
 						<include>KeyboardButtonBig</include>
@@ -2107,17 +2115,17 @@
 						<description>Next button</description>
 						<onleft>48</onleft>
 						<onright>305</onright>
-						<onup>300</onup>
-						<ondown>73</ondown>
+						<onup>501</onup>
+						<ondown>505</ondown>
 						<label>&#x2192;</label>
 						<include>KeyboardButtonBig</include>
 					</control>
 				</control>
 				<!-- Row 5 -->
-				<control type="grouplist">
+				<control type="grouplist" id="505">
 					<itemgap>5</itemgap>
 					<width>1280</width>
-					<height>60</height>
+					<height>50</height>
 					<align>center</align>
 					<aligny>center</aligny>
 					<orientation>horizontal</orientation>
@@ -2131,6 +2139,7 @@
 						<include>KeyboardButtonFaded</include>
 						<label>IP</label>
 						<include>KeyboardNumericFade</include>
+						<enable>!Window.IsVisible(109)</enable>
 					</control>
 					<control type="button" id="32">
 						<description>SPACE button</description>
@@ -2142,20 +2151,21 @@
 						<include>KeyboardButtonFaded</include>
 						<label/>
 						<include>KeyboardNumericFade</include>
+						<enable>!Window.IsVisible(109)</enable>
 					</control>
 					<control type="button" id="23">
 						<description>BACKSPACE button</description>
 						<width>125</width>
 						<onleft>32</onleft>
 						<onright>300</onright>
-						<onup>88</onup>
-						<ondown>56</ondown>
+						<onup>504</onup>
+						<ondown>506</ondown>
 						<include>KeyboardButtonBig</include>
 						<label>&#x21A4;</label>
 					</control>
 				</control>
 				<!-- Row 6 -->
-				<control type="grouplist">
+				<control type="grouplist" id="506">
 					<itemgap>5</itemgap>
 					<width>1280</width>
 					<height>50</height>
@@ -2167,8 +2177,8 @@
 						<width>385</width>
 						<onleft>8</onleft>
 						<onright>307</onright>
-						<onup>90</onup>
-						<ondown>306</ondown>
+						<onup>505</onup>
+						<ondown>501</ondown>
 						<include>KeyboardButton</include>
 						<label>$LOCALIZE[20177]</label>
 					</control>
