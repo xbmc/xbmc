@@ -2245,9 +2245,6 @@ void COMXPlayer::OnExit()
   {
     CLog::Log(LOGNOTICE, "COMXPlayer::OnExit()");
 
-    m_av_clock.OMXStop();
-    m_av_clock.OMXStateIdle();
-
     // set event to inform openfile something went wrong in case openfile is still waiting for this event
     SetCaching(CACHESTATE_DONE);
 
@@ -2300,6 +2297,9 @@ void COMXPlayer::OnExit()
     m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NONE);
 
     m_messenger.End();
+
+    m_av_clock.OMXStop();
+    m_av_clock.OMXStateIdle();
 
     m_av_clock.OMXDeinitialize();
 
