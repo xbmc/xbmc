@@ -808,7 +808,7 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
     buffer = m_convertBuffer.pkt->data;
     break;
   case NEED_BYTESWAP:
-    Endian_Swap16_buf((uint16_t *)buffer[0], (uint16_t *)buffer, frames * samples->pkt->config.channels);
+    Endian_Swap16_buf((uint16_t *)buffer[0], (uint16_t *)buffer[0], frames * samples->pkt->config.channels);
     break;
   case CHECK_CONVERT:
     ConvertInit(samples);
