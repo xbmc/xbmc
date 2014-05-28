@@ -753,6 +753,9 @@
     <ClCompile Include="..\..\xbmc\addons\AddonStatusHandler.cpp">
       <Filter>addons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\AudioEncoder.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\Scraper.cpp">
       <Filter>addons</Filter>
     </ClCompile>
@@ -853,18 +856,6 @@
       <Filter>cdrip</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cdrip\EncoderFFmpeg.cpp">
-      <Filter>cdrip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cdrip\EncoderFlac.cpp">
-      <Filter>cdrip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cdrip\EncoderLame.cpp">
-      <Filter>cdrip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cdrip\EncoderVorbis.cpp">
-      <Filter>cdrip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cdrip\EncoderWav.cpp">
       <Filter>cdrip</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\GUIDialogAddonInfo.cpp">
@@ -3637,6 +3628,9 @@
     <ClInclude Include="..\..\xbmc\addons\AddonStatusHandler.h">
       <Filter>addons</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AudioEncoder.h">
+      <Filter>addons</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\DllAddon.h">
       <Filter>addons</Filter>
     </ClInclude>
@@ -3657,9 +3651,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\Skin.h">
       <Filter>addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cdrip\DllFlacEnc.h">
-      <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\PluginSource.h">
       <Filter>addons</Filter>
@@ -3736,40 +3727,16 @@
     <ClInclude Include="..\..\xbmc\music\Song.h">
       <Filter>music</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cdrip\EncoderWav.h">
-      <Filter>cdrip</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cdrip\CDDARipJob.h">
       <Filter>cdrip</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cdrip\CDDARipper.h">
       <Filter>cdrip</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cdrip\DllLameenc.h">
-      <Filter>cdrip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cdrip\DllOgg.h">
-      <Filter>cdrip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cdrip\DllVorbis.h">
-      <Filter>cdrip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cdrip\DllVorbisEnc.h">
-      <Filter>cdrip</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cdrip\Encoder.h">
       <Filter>cdrip</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cdrip\EncoderFFmpeg.h">
-      <Filter>cdrip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cdrip\EncoderFlac.h">
-      <Filter>cdrip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cdrip\EncoderLame.h">
-      <Filter>cdrip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cdrip\EncoderVorbis.h">
       <Filter>cdrip</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\DllLibCPluff.h">
