@@ -1201,18 +1201,58 @@ std::string CSysInfo::GetBuildTargetPlatformVersion(void)
 #define XSTR_MACRO(x) STR_MACRO(x)
 
 #if defined(TARGET_DARWIN_OSX)
-  return "version " XSTR_MACRO(__MAC_OS_X_VERSION_MIN_REQUIRED);
+  return XSTR_MACRO(__MAC_OS_X_VERSION_MIN_REQUIRED);
 #elif defined(TARGET_DARWIN_IOS)
-  return "version " XSTR_MACRO(__IPHONE_OS_VERSION_MIN_REQUIRED);
+  return XSTR_MACRO(__IPHONE_OS_VERSION_MIN_REQUIRED);
 #elif defined(TARGET_FREEBSD)
-  return "version " XSTR_MACRO(__FreeBSD_version);
+  return XSTR_MACRO(__FreeBSD_version);
 #elif defined(TARGET_ANDROID)
   return "API level " XSTR_MACRO(__ANDROID_API__);
 #elif defined(TARGET_LINUX)
-  std::string ver = StringUtils::Format("%i.%i.%i", LINUX_VERSION_CODE >> 16, (LINUX_VERSION_CODE >> 8) & 0xff, LINUX_VERSION_CODE & 0xff);
-  return ver;
+  return XSTR_MACRO(LINUX_VERSION_CODE);
 #elif defined(TARGET_WINDOWS)
-  return "version " XSTR_MACRO(NTDDI_VERSION);
+#ifdef NTDDI_VERSION
+  return XSTR_MACRO(NTDDI_VERSION);
+#else // !NTDDI_VERSION
+  return "(unknown Win32 platform)";
+#endif // !NTDDI_VERSION
+#else
+  return "(unknown platform)";
+#endif
+}
+
+std::string CSysInfo::GetBuildTargetPlatformVersionDecoded(void)
+{
+#if defined(TARGET_DARWIN_OSX)
+  return StringUtils::Format("version %d.%d", (__MAC_OS_X_VERSION_MIN_REQUIRED / 100) % 100, __MAC_OS_X_VERSION_MIN_REQUIRED % 100);
+#elif defined(TARGET_DARWIN_IOS)
+  return StringUtils::Format("version %d.%d.%d", (__IPHONE_OS_VERSION_MIN_REQUIRED / 10000) % 100, 
+                             (__IPHONE_OS_VERSION_MIN_REQUIRED / 100) % 100, __IPHONE_OS_VERSION_MIN_REQUIRED % 100);
+#elif defined(TARGET_FREEBSD)
+  // FIXME: should works well starting from FreeBSD 8.1
+  static const int major = (__FreeBSD_version / 100000) % 100;
+  static const int minor = (__FreeBSD_version / 1000) % 100;
+  static const int Rxx = __FreeBSD_version % 1000;
+  if ((major < 9 && Rxx == 0) ||
+      __FreeBSD_version == 900044 || __FreeBSD_version == 901000)
+    return StringUtils::Format("version %d.%d-RELEASE", major, minor);
+  if (Rxx >= 500)
+    return StringUtils::Format("version %d.%d-STABLE", major, minor);
+
+  return StringUtils::Format("version %d.%d-CURRENT", major, minor);
+#elif defined(TARGET_ANDROID)
+  return "API level " XSTR_MACRO(__ANDROID_API__);
+#elif defined(TARGET_LINUX)
+  return StringUtils::Format("version %d.%d.%d", (LINUX_VERSION_CODE >> 16) & 0xFF , (LINUX_VERSION_CODE >> 8) & 0xFF, LINUX_VERSION_CODE & 0xFF);
+#elif defined(TARGET_WINDOWS)
+#ifdef NTDDI_VERSION
+  std::string version(StringUtils::Format("version %d.%d", int(NTDDI_VERSION >> 24) & 0xFF, int(NTDDI_VERSION >> 24) & 0xFF));
+  if (SPVER(NTDDI_VERSION))
+    version += StringUtils::Format(" SP%d", int(SPVER(NTDDI_VERSION)));
+  return version;
+#else // !NTDDI_VERSION
+  return "(unknown Win32 platform)";
+#endif // !NTDDI_VERSION
 #else
   return "(unknown platform)";
 #endif
