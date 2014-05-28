@@ -28,7 +28,11 @@
 #else
 #include <time.h>
 #endif
+#ifndef THREADS_SYSTEMCLOCK_H_INCLUDED
+#define THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "SystemClock.h"
+#endif
+
 
 namespace XbmcThreads
 {

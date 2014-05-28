@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef UTILS_APPLICATION_H_INCLUDED
+#define UTILS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef UTILS_OBSERVER_H_INCLUDED
+#define UTILS_OBSERVER_H_INCLUDED
 #include "Observer.h"
+#endif
+
+#ifndef UTILS_THREADS_SINGLELOCK_H_INCLUDED
+#define UTILS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef UTILS_UTILS_JOBMANAGER_H_INCLUDED
+#define UTILS_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
 
 using namespace std;
 

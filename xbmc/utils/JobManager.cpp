@@ -18,13 +18,29 @@
  *
  */
 
+#ifndef UTILS_JOBMANAGER_H_INCLUDED
+#define UTILS_JOBMANAGER_H_INCLUDED
 #include "JobManager.h"
+#endif
+
 #include <algorithm>
 #include <stdexcept>
+#ifndef UTILS_THREADS_SINGLELOCK_H_INCLUDED
+#define UTILS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
-#include "utils/log.h"
+#endif
 
+#ifndef UTILS_UTILS_LOG_H_INCLUDED
+#define UTILS_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+
+#ifndef UTILS_SYSTEM_H_INCLUDED
+#define UTILS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 
 using namespace std;

@@ -24,21 +24,65 @@
 #include "system.h"
 #endif
 
+#ifndef OMXPLAYER_OMXIMAGE_H_INCLUDED
+#define OMXPLAYER_OMXIMAGE_H_INCLUDED
 #include "OMXImage.h"
+#endif
 
+
+#ifndef OMXPLAYER_UTILS_LOG_H_INCLUDED
+#define OMXPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef OMXPLAYER_LINUX_XMEMUTILS_H_INCLUDED
+#define OMXPLAYER_LINUX_XMEMUTILS_H_INCLUDED
 #include "linux/XMemUtils.h"
+#endif
+
 
 #include <sys/time.h>
 #include <inttypes.h>
+#ifndef OMXPLAYER_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define OMXPLAYER_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h"
+#endif
+
+#ifndef OMXPLAYER_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define OMXPLAYER_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef OMXPLAYER_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#define OMXPLAYER_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
 #include "settings/DisplaySettings.h"
+#endif
+
+#ifndef OMXPLAYER_SETTINGS_SETTINGS_H_INCLUDED
+#define OMXPLAYER_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef OMXPLAYER_LINUX_RBP_H_INCLUDED
+#define OMXPLAYER_LINUX_RBP_H_INCLUDED
 #include "linux/RBP.h"
+#endif
+
+#ifndef OMXPLAYER_UTILS_URIUTILS_H_INCLUDED
+#define OMXPLAYER_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef OMXPLAYER_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define OMXPLAYER_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef OMXPLAYER_APPLICATION_H_INCLUDED
+#define OMXPLAYER_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
 
 #ifdef _DEBUG
 #define CheckError() m_result = eglGetError(); if (m_result != EGL_SUCCESS) CLog::Log(LOGERROR, "EGL error in %s: %x",__FUNCTION__, m_result);

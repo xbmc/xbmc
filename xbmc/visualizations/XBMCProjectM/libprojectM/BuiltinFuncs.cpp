@@ -18,7 +18,11 @@
 #include <string>
 #include "Algorithms.hpp"
 #include <iostream>
+#ifndef LIBPROJECTM_FATAL_H_INCLUDED
+#define LIBPROJECTM_FATAL_H_INCLUDED
 #include "fatal.h"
+#endif
+
 using namespace Algorithms;
 
 std::map<std::string, Func*> BuiltinFuncs::builtin_func_tree;

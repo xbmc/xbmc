@@ -19,10 +19,18 @@
  */
 
 
+#ifndef UTILS_TIMESMOOTHER_H_INCLUDED
+#define UTILS_TIMESMOOTHER_H_INCLUDED
 #include "TimeSmoother.h"
+#endif
+
 #include <math.h>
 #include <limits>
+#ifndef UTILS_UTILS_MATHUTILS_H_INCLUDED
+#define UTILS_UTILS_MATHUTILS_H_INCLUDED
 #include "utils/MathUtils.h"
+#endif
+
 
 using namespace std;
 

@@ -20,11 +20,31 @@
  *
  */
 
+#ifndef THREADS_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define THREADS_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef THREADS_THREAD_H_INCLUDED
+#define THREADS_THREAD_H_INCLUDED
 #include "Thread.h"
+#endif
+
+#ifndef THREADS_THREADS_THREADLOCAL_H_INCLUDED
+#define THREADS_THREADS_THREADLOCAL_H_INCLUDED
 #include "threads/ThreadLocal.h"
+#endif
+
+#ifndef THREADS_THREADS_SINGLELOCK_H_INCLUDED
+#define THREADS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef THREADS_COMMONS_EXCEPTION_H_INCLUDED
+#define THREADS_COMMONS_EXCEPTION_H_INCLUDED
 #include "commons/Exception.h"
+#endif
+
 
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>

@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGMUTEBUG_H_INCLUDED
+#define DIALOGS_GUIDIALOGMUTEBUG_H_INCLUDED
 #include "GUIDialogMuteBug.h"
+#endif
+
+#ifndef DIALOGS_GUIUSERMESSAGES_H_INCLUDED
+#define DIALOGS_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef DIALOGS_APPLICATION_H_INCLUDED
+#define DIALOGS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
 
 // the MuteBug is a true modeless dialog
 

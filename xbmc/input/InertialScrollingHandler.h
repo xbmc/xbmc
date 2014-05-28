@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef INPUT_GUILIB_GEOMETRY_H_INCLUDED
+#define INPUT_GUILIB_GEOMETRY_H_INCLUDED
 #include "guilib/Geometry.h"
+#endif
+
 
 class CApplication;
 class CAction;

@@ -22,7 +22,11 @@
 #include <map>
 #include <string>
 
+#ifndef UTILS_UTILS_VARIANT_H_INCLUDED
+#define UTILS_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
 
 class CUrlOptions
 {

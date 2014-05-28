@@ -19,9 +19,21 @@
  *
  */
 
+#ifndef DIALOGS_FILEITEM_H_INCLUDED
+#define DIALOGS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "GUIDialogYesNo.h"
+#endif
+
+#ifndef DIALOGS_UTILS_VARIANT_H_INCLUDED
+#define DIALOGS_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
 
 class CGUIDialogPlayEject : public CGUIDialogYesNo
 {

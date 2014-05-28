@@ -24,13 +24,21 @@
 #include <cstdlib>
 
 #include "Common.hpp"
+#ifndef LIBPROJECTM_FATAL_H_INCLUDED
+#define LIBPROJECTM_FATAL_H_INCLUDED
 #include "fatal.h"
+#endif
+
 
 #include "Eval.hpp"
 #include "Expr.hpp"
 #include "Param.hpp"
 #include "Func.hpp"
+#ifndef LIBPROJECTM_WIPEMALLOC_H_INCLUDED
+#define LIBPROJECTM_WIPEMALLOC_H_INCLUDED
 #include "wipemalloc.h"
+#endif
+
 
 #include "BuiltinFuncs.hpp"
 

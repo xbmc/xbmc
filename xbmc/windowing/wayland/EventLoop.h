@@ -23,11 +23,27 @@
 
 #include <boost/weak_ptr.hpp>
 
+#ifndef WAYLAND_UTILS_STOPWATCH_H_INCLUDED
+#define WAYLAND_UTILS_STOPWATCH_H_INCLUDED
 #include "utils/Stopwatch.h"
+#endif
 
+
+#ifndef WAYLAND_EVENTLISTENER_H_INCLUDED
+#define WAYLAND_EVENTLISTENER_H_INCLUDED
 #include "EventListener.h"
+#endif
+
+#ifndef WAYLAND_EVENTQUEUESTRATEGY_H_INCLUDED
+#define WAYLAND_EVENTQUEUESTRATEGY_H_INCLUDED
 #include "EventQueueStrategy.h"
+#endif
+
+#ifndef WAYLAND_TIMEOUTMANAGER_H_INCLUDED
+#define WAYLAND_TIMEOUTMANAGER_H_INCLUDED
 #include "TimeoutManager.h"
+#endif
+
 
 class IDllWaylandClient;
 

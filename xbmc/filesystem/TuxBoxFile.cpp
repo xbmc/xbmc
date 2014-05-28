@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef FILESYSTEM_TUXBOXFILE_H_INCLUDED
+#define FILESYSTEM_TUXBOXFILE_H_INCLUDED
 #include "TuxBoxFile.h"
+#endif
+
 #include <errno.h>
 
 //Reserved for TuxBox Recording!

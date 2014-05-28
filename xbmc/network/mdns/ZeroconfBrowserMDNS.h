@@ -22,9 +22,21 @@
 #include <memory>
 #include <map>
 
+#ifndef MDNS_NETWORK_ZEROCONFBROWSER_H_INCLUDED
+#define MDNS_NETWORK_ZEROCONFBROWSER_H_INCLUDED
 #include "network/ZeroconfBrowser.h"
+#endif
+
+#ifndef MDNS_THREADS_THREAD_H_INCLUDED
+#define MDNS_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef MDNS_THREADS_CRITICALSECTION_H_INCLUDED
+#define MDNS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 #include <dns_sd.h>
 
 //platform specific implementation of  zeroconfbrowser interface using native os x APIs

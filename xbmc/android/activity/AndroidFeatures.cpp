@@ -18,11 +18,23 @@
  *
  */
 
+#ifndef ACTIVITY_ANDROIDFEATURES_H_INCLUDED
+#define ACTIVITY_ANDROIDFEATURES_H_INCLUDED
 #include "AndroidFeatures.h"
+#endif
+
+#ifndef ACTIVITY_UTILS_LOG_H_INCLUDED
+#define ACTIVITY_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #include <cpu-features.h>
+#ifndef ACTIVITY_ANDROID_JNI_JNITHREADING_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_JNITHREADING_H_INCLUDED
 #include "android/jni/JNIThreading.h"
+#endif
+
 
 bool CAndroidFeatures::HasNeon()
 {

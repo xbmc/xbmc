@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef WINDOWS_SYSTEM_H_INCLUDED
+#define WINDOWS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef WINDOWS_GUIWINDOWSCREENSAVER_H_INCLUDED
+#define WINDOWS_GUIWINDOWSCREENSAVER_H_INCLUDED
 #include "GUIWindowScreensaver.h"
+#endif
+
+#ifndef WINDOWS_ADDONS_ADDONMANAGER_H_INCLUDED
+#define WINDOWS_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef WINDOWS_APPLICATION_H_INCLUDED
+#define WINDOWS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef WINDOWS_GUIPASSWORD_H_INCLUDED
+#define WINDOWS_GUIPASSWORD_H_INCLUDED
 #include "GUIPassword.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef WINDOWS_GUIUSERMESSAGES_H_INCLUDED
+#define WINDOWS_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef WINDOWS_THREADS_SINGLELOCK_H_INCLUDED
+#define WINDOWS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 
 using namespace ADDON;
 

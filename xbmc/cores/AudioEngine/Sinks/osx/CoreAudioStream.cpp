@@ -18,11 +18,27 @@
  *
  */
 
+#ifndef OSX_COREAUDIOSTREAM_H_INCLUDED
+#define OSX_COREAUDIOSTREAM_H_INCLUDED
 #include "CoreAudioStream.h"
+#endif
 
+
+#ifndef OSX_COREAUDIOHELPERS_H_INCLUDED
+#define OSX_COREAUDIOHELPERS_H_INCLUDED
 #include "CoreAudioHelpers.h"
+#endif
+
+#ifndef OSX_UTILS_LOG_H_INCLUDED
+#define OSX_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef OSX_UTILS_STDSTRING_H_INCLUDED
+#define OSX_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 CCoreAudioStream::CCoreAudioStream() :
   m_StreamId  (0    )

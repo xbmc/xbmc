@@ -26,20 +26,60 @@
 #include "system.h"
 #endif
 
+#ifndef OMXPLAYER_OMXAUDIO_H_INCLUDED
+#define OMXPLAYER_OMXAUDIO_H_INCLUDED
 #include "OMXAudio.h"
+#endif
+
+#ifndef OMXPLAYER_APPLICATION_H_INCLUDED
+#define OMXPLAYER_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef OMXPLAYER_UTILS_LOG_H_INCLUDED
+#define OMXPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #define CLASSNAME "COMXAudio"
 
+#ifndef OMXPLAYER_LINUX_XMEMUTILS_H_INCLUDED
+#define OMXPLAYER_LINUX_XMEMUTILS_H_INCLUDED
 #include "linux/XMemUtils.h"
+#endif
 
+
+#ifndef OMXPLAYER_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define OMXPLAYER_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef OMXPLAYER_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define OMXPLAYER_SETTINGS_MEDIASETTINGS_H_INCLUDED
 #include "settings/MediaSettings.h"
+#endif
+
+#ifndef OMXPLAYER_SETTINGS_SETTINGS_H_INCLUDED
+#define OMXPLAYER_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef OMXPLAYER_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define OMXPLAYER_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef OMXPLAYER_CORES_AUDIOENGINE_UTILS_AECONVERT_H_INCLUDED
+#define OMXPLAYER_CORES_AUDIOENGINE_UTILS_AECONVERT_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEConvert.h"
+#endif
+
+#ifndef OMXPLAYER_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
+#define OMXPLAYER_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
 #include "cores/AudioEngine/AEFactory.h"
+#endif
+
 
 using namespace std;
 

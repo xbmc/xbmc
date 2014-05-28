@@ -23,7 +23,11 @@
 #include <string>
 #include <vector>
 
+#ifndef AUDIOENGINE_CORES_AUDIOENGINE_UTILS_AEDEVICEINFO_H_INCLUDED
+#define AUDIOENGINE_CORES_AUDIOENGINE_UTILS_AEDEVICEINFO_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
+#endif
+
 
 class IAESink;
 

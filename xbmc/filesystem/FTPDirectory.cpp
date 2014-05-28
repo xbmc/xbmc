@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef FILESYSTEM_FTPDIRECTORY_H_INCLUDED
+#define FILESYSTEM_FTPDIRECTORY_H_INCLUDED
 #include "FTPDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_FTPPARSE_H_INCLUDED
+#define FILESYSTEM_FTPPARSE_H_INCLUDED
 #include "FTPParse.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_CURLFILE_H_INCLUDED
+#define FILESYSTEM_CURLFILE_H_INCLUDED
 #include "CurlFile.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define FILESYSTEM_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
 #include "climits"
 
 using namespace XFILE;

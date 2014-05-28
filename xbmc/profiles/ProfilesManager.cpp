@@ -18,35 +18,139 @@
  *
  */
 
+#ifndef PROFILES_SYSTEM_H_INCLUDED
+#define PROFILES_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef PROFILES_PROFILESMANAGER_H_INCLUDED
+#define PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "ProfilesManager.h"
+#endif
+
+#ifndef PROFILES_APPLICATION_H_INCLUDED
+#define PROFILES_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef PROFILES_DATABASEMANAGER_H_INCLUDED
+#define PROFILES_DATABASEMANAGER_H_INCLUDED
 #include "DatabaseManager.h"
+#endif
+
+#ifndef PROFILES_FILEITEM_H_INCLUDED
+#define PROFILES_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef PROFILES_GUIINFOMANAGER_H_INCLUDED
+#define PROFILES_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef PROFILES_LANGINFO_H_INCLUDED
+#define PROFILES_LANGINFO_H_INCLUDED
 #include "LangInfo.h"
+#endif
+
+#ifndef PROFILES_PASSWORDMANAGER_H_INCLUDED
+#define PROFILES_PASSWORDMANAGER_H_INCLUDED
 #include "PasswordManager.h"
+#endif
+
+#ifndef PROFILES_UTIL_H_INCLUDED
+#define PROFILES_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef PROFILES_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define PROFILES_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef PROFILES_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define PROFILES_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef PROFILES_FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
+#define PROFILES_FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
 #include "filesystem/DirectoryCache.h"
+#endif
+
+#ifndef PROFILES_FILESYSTEM_FILE_H_INCLUDED
+#define PROFILES_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef PROFILES_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define PROFILES_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef PROFILES_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define PROFILES_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef PROFILES_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define PROFILES_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef PROFILES_INPUT_BUTTONTRANSLATOR_H_INCLUDED
+#define PROFILES_INPUT_BUTTONTRANSLATOR_H_INCLUDED
 #include "input/ButtonTranslator.h"
+#endif
+
+#ifndef PROFILES_INPUT_MOUSESTAT_H_INCLUDED
+#define PROFILES_INPUT_MOUSESTAT_H_INCLUDED
 #include "input/MouseStat.h"
+#endif
+
+#ifndef PROFILES_SETTINGS_SETTINGS_H_INCLUDED
+#define PROFILES_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
 #endif
+#ifndef PROFILES_THREADS_SINGLELOCK_H_INCLUDED
+#define PROFILES_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef PROFILES_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define PROFILES_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef PROFILES_UTILS_FILEUTILS_H_INCLUDED
+#define PROFILES_UTILS_FILEUTILS_H_INCLUDED
 #include "utils/FileUtils.h"
+#endif
+
+#ifndef PROFILES_UTILS_LOG_H_INCLUDED
+#define PROFILES_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef PROFILES_UTILS_STRINGUTILS_H_INCLUDED
+#define PROFILES_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef PROFILES_UTILS_URIUTILS_H_INCLUDED
+#define PROFILES_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef PROFILES_UTILS_XMLUTILS_H_INCLUDED
+#define PROFILES_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
 
 // TODO
 // eventually the profile should dictate where special://masterprofile/ is

@@ -18,21 +18,81 @@
  *
  */
 
+#ifndef PVR_APPLICATION_H_INCLUDED
+#define PVR_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef PVR_PVRGUIINFO_H_INCLUDED
+#define PVR_PVRGUIINFO_H_INCLUDED
 #include "PVRGUIInfo.h"
+#endif
+
+#ifndef PVR_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define PVR_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef PVR_UTILS_STRINGUTILS_H_INCLUDED
+#define PVR_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef PVR_GUIINFOMANAGER_H_INCLUDED
+#define PVR_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef PVR_UTIL_H_INCLUDED
+#define PVR_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef PVR_THREADS_SINGLELOCK_H_INCLUDED
+#define PVR_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef PVR_PVRMANAGER_H_INCLUDED
+#define PVR_PVRMANAGER_H_INCLUDED
 #include "PVRManager.h"
+#endif
+
+#ifndef PVR_PVR_ADDONS_PVRCLIENTS_H_INCLUDED
+#define PVR_PVR_ADDONS_PVRCLIENTS_H_INCLUDED
 #include "pvr/addons/PVRClients.h"
+#endif
+
+#ifndef PVR_PVR_TIMERS_PVRTIMERS_H_INCLUDED
+#define PVR_PVR_TIMERS_PVRTIMERS_H_INCLUDED
 #include "pvr/timers/PVRTimers.h"
+#endif
+
+#ifndef PVR_PVR_RECORDINGS_PVRRECORDINGS_H_INCLUDED
+#define PVR_PVR_RECORDINGS_PVRRECORDINGS_H_INCLUDED
 #include "pvr/recordings/PVRRecordings.h"
+#endif
+
+#ifndef PVR_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
+#define PVR_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
 #include "pvr/channels/PVRChannel.h"
+#endif
+
+#ifndef PVR_EPG_EPGINFOTAG_H_INCLUDED
+#define PVR_EPG_EPGINFOTAG_H_INCLUDED
 #include "epg/EpgInfoTag.h"
+#endif
+
+#ifndef PVR_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define PVR_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef PVR_SETTINGS_SETTINGS_H_INCLUDED
+#define PVR_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
 
 using namespace PVR;
 using namespace EPG;

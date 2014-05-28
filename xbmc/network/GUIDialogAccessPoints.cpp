@@ -18,15 +18,39 @@
  *
  */
 
+#ifndef NETWORK_GUIDIALOGACCESSPOINTS_H_INCLUDED
+#define NETWORK_GUIDIALOGACCESSPOINTS_H_INCLUDED
 #include "GUIDialogAccessPoints.h"
+#endif
+
+#ifndef NETWORK_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
+#define NETWORK_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
 #include "guilib/GUIKeyboardFactory.h"
+#endif
+
 #ifdef TARGET_POSIX
 #include "linux/NetworkLinux.h"
 #endif
+#ifndef NETWORK_APPLICATION_H_INCLUDED
+#define NETWORK_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef NETWORK_FILEITEM_H_INCLUDED
+#define NETWORK_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef NETWORK_GUILIB_KEY_H_INCLUDED
+#define NETWORK_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef NETWORK_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define NETWORK_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
 
 #define CONTROL_ACCESS_POINTS 3
 

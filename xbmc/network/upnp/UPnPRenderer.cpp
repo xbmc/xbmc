@@ -17,30 +17,126 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef UPNP_NETWORK_NETWORK_H_INCLUDED
+#define UPNP_NETWORK_NETWORK_H_INCLUDED
 #include "network/Network.h"
+#endif
+
+#ifndef UPNP_UPNPRENDERER_H_INCLUDED
+#define UPNP_UPNPRENDERER_H_INCLUDED
 #include "UPnPRenderer.h"
+#endif
+
+#ifndef UPNP_UPNP_H_INCLUDED
+#define UPNP_UPNP_H_INCLUDED
 #include "UPnP.h"
+#endif
+
+#ifndef UPNP_UPNPINTERNAL_H_INCLUDED
+#define UPNP_UPNPINTERNAL_H_INCLUDED
 #include "UPnPInternal.h"
+#endif
+
+#ifndef UPNP_PLATINUM_H_INCLUDED
+#define UPNP_PLATINUM_H_INCLUDED
 #include "Platinum.h"
+#endif
+
+#ifndef UPNP_APPLICATION_H_INCLUDED
+#define UPNP_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef UPNP_APPLICATIONMESSENGER_H_INCLUDED
+#define UPNP_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef UPNP_FILEITEM_H_INCLUDED
+#define UPNP_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef UPNP_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define UPNP_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef UPNP_GUIINFOMANAGER_H_INCLUDED
+#define UPNP_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef UPNP_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define UPNP_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef UPNP_GUILIB_KEY_H_INCLUDED
+#define UPNP_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef UPNP_PICTURES_GUIWINDOWSLIDESHOW_H_INCLUDED
+#define UPNP_PICTURES_GUIWINDOWSLIDESHOW_H_INCLUDED
 #include "pictures/GUIWindowSlideShow.h"
+#endif
+
+#ifndef UPNP_PICTURES_PICTUREINFOTAG_H_INCLUDED
+#define UPNP_PICTURES_PICTUREINFOTAG_H_INCLUDED
 #include "pictures/PictureInfoTag.h"
+#endif
+
+#ifndef UPNP_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#define UPNP_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
 #include "interfaces/AnnouncementManager.h"
+#endif
+
+#ifndef UPNP_SETTINGS_SETTINGS_H_INCLUDED
+#define UPNP_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef UPNP_TEXTUREDATABASE_H_INCLUDED
+#define UPNP_TEXTUREDATABASE_H_INCLUDED
 #include "TextureDatabase.h"
+#endif
+
+#ifndef UPNP_THUMBLOADER_H_INCLUDED
+#define UPNP_THUMBLOADER_H_INCLUDED
 #include "ThumbLoader.h"
+#endif
+
+#ifndef UPNP_URL_H_INCLUDED
+#define UPNP_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef UPNP_UTILS_URIUTILS_H_INCLUDED
+#define UPNP_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef UPNP_UTILS_VARIANT_H_INCLUDED
+#define UPNP_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef UPNP_UTILS_STRINGUTILS_H_INCLUDED
+#define UPNP_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UPNP_PLAYLISTS_PLAYLIST_H_INCLUDED
+#define UPNP_PLAYLISTS_PLAYLIST_H_INCLUDED
 #include "playlists/PlayList.h"
+#endif
+
+#ifndef UPNP_GUIUSERMESSAGES_H_INCLUDED
+#define UPNP_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
 
 using namespace ANNOUNCEMENT;
 

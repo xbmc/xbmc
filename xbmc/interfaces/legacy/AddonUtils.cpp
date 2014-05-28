@@ -19,12 +19,36 @@
  */
 
 
+#ifndef LEGACY_ADDONUTILS_H_INCLUDED
+#define LEGACY_ADDONUTILS_H_INCLUDED
 #include "AddonUtils.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define LEGACY_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h"
+#endif
+
+#ifndef LEGACY_UTILS_XBMCTINYXML_H_INCLUDED
+#define LEGACY_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef LEGACY_ADDONS_SKIN_H_INCLUDED
+#define LEGACY_ADDONS_SKIN_H_INCLUDED
 #include "addons/Skin.h"
+#endif
+
+#ifndef LEGACY_UTILS_LOG_H_INCLUDED
+#define LEGACY_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef LEGACY_THREADS_THREADLOCAL_H_INCLUDED
+#define LEGACY_THREADS_THREADLOCAL_H_INCLUDED
 #include "threads/ThreadLocal.h"
+#endif
+
 
 namespace XBMCAddonUtils
 {

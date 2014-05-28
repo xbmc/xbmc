@@ -21,15 +21,51 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#ifndef ROOT_NFOFILE_H_INCLUDED
+#define ROOT_NFOFILE_H_INCLUDED
 #include "NfoFile.h"
+#endif
+
+#ifndef ROOT_VIDEO_VIDEOINFODOWNLOADER_H_INCLUDED
+#define ROOT_VIDEO_VIDEOINFODOWNLOADER_H_INCLUDED
 #include "video/VideoInfoDownloader.h"
+#endif
+
+#ifndef ROOT_ADDONS_ADDONMANAGER_H_INCLUDED
+#define ROOT_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_FILE_H_INCLUDED
+#define ROOT_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef ROOT_FILEITEM_H_INCLUDED
+#define ROOT_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef ROOT_MUSIC_ALBUM_H_INCLUDED
+#define ROOT_MUSIC_ALBUM_H_INCLUDED
 #include "music/Album.h"
+#endif
+
+#ifndef ROOT_MUSIC_ARTIST_H_INCLUDED
+#define ROOT_MUSIC_ARTIST_H_INCLUDED
 #include "music/Artist.h"
+#endif
+
+#ifndef ROOT_SETTINGS_SETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef ROOT_UTILS_LOG_H_INCLUDED
+#define ROOT_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #include <vector>
 

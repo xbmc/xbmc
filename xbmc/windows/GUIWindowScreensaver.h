@@ -20,12 +20,20 @@
  *
  */
 
+#ifndef WINDOWS_GUILIB_GUIWINDOW_H_INCLUDED
+#define WINDOWS_GUILIB_GUIWINDOW_H_INCLUDED
 #include "guilib/GUIWindow.h"
+#endif
+
 #ifdef HAS_SCREENSAVER
 #include "addons/ScreenSaver.h"
 #endif
 
+#ifndef WINDOWS_THREADS_CRITICALSECTION_H_INCLUDED
+#define WINDOWS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 #define SCREENSAVER_FADE   1
 #define SCREENSAVER_BLACK  2

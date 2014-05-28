@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef FILESYSTEM_DIRECTORY_H_INCLUDED
+#define FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "Directory.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 class  DllLibbluray;
 typedef struct bluray BLURAY;

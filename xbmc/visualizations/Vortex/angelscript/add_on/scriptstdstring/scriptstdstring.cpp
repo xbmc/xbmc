@@ -1,6 +1,10 @@
 #include <assert.h>
 #include <sstream>
+#ifndef SCRIPTSTDSTRING_SCRIPTSTDSTRING_H_INCLUDED
+#define SCRIPTSTDSTRING_SCRIPTSTDSTRING_H_INCLUDED
 #include "scriptstdstring.h"
+#endif
+
 #include <string.h> // strstr
 
 using namespace std;

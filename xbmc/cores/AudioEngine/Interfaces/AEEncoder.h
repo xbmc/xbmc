@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef INTERFACES_DLLAVCODEC_H_INCLUDED
+#define INTERFACES_DLLAVCODEC_H_INCLUDED
 #include "DllAvCodec.h"
+#endif
+
+#ifndef INTERFACES_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
+#define INTERFACES_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
+#endif
+
 
 /**
  * IAEEncoder interface for on the fly audio compression

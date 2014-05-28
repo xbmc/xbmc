@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef PROGRAMS_WINDOWS_GUIMEDIAWINDOW_H_INCLUDED
+#define PROGRAMS_WINDOWS_GUIMEDIAWINDOW_H_INCLUDED
 #include "windows/GUIMediaWindow.h"
+#endif
+
+#ifndef PROGRAMS_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#define PROGRAMS_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
 #include "dialogs/GUIDialogProgress.h"
+#endif
+
+#ifndef PROGRAMS_THUMBLOADER_H_INCLUDED
+#define PROGRAMS_THUMBLOADER_H_INCLUDED
 #include "ThumbLoader.h"
+#endif
+
 
 class CGUIWindowPrograms :
       public CGUIMediaWindow, public IBackgroundLoaderObserver

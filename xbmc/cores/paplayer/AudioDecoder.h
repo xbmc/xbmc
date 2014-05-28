@@ -20,11 +20,31 @@
  *
  */
 
+#ifndef PAPLAYER_THREADS_THREAD_H_INCLUDED
+#define PAPLAYER_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef PAPLAYER_ICODEC_H_INCLUDED
+#define PAPLAYER_ICODEC_H_INCLUDED
 #include "ICodec.h"
+#endif
+
+#ifndef PAPLAYER_THREADS_CRITICALSECTION_H_INCLUDED
+#define PAPLAYER_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_RINGBUFFER_H_INCLUDED
+#define PAPLAYER_UTILS_RINGBUFFER_H_INCLUDED
 #include "utils/RingBuffer.h"
+#endif
+
+#ifndef PAPLAYER_CORES_AUDIOENGINE_UTILS_AECHANNELINFO_H_INCLUDED
+#define PAPLAYER_CORES_AUDIOENGINE_UTILS_AECHANNELINFO_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
+#endif
+
 
 class CFileItem;
 

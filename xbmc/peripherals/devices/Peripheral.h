@@ -20,8 +20,16 @@
  */
 
 #include <set>
+#ifndef DEVICES_UTILS_STDSTRING_H_INCLUDED
+#define DEVICES_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef DEVICES_PERIPHERALS_PERIPHERALTYPES_H_INCLUDED
+#define DEVICES_PERIPHERALS_PERIPHERALTYPES_H_INCLUDED
 #include "peripherals/PeripheralTypes.h"
+#endif
+
 
 class TiXmlDocument;
 

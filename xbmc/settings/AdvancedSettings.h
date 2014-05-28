@@ -21,10 +21,26 @@
 
 #include <vector>
 
+#ifndef SETTINGS_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
+#define SETTINGS_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
 #include "settings/lib/ISettingCallback.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_LIB_ISETTINGSHANDLER_H_INCLUDED
+#define SETTINGS_SETTINGS_LIB_ISETTINGSHANDLER_H_INCLUDED
 #include "settings/lib/ISettingsHandler.h"
+#endif
+
+#ifndef SETTINGS_UTILS_STDSTRING_H_INCLUDED
+#define SETTINGS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef SETTINGS_UTILS_GLOBALSHANDLING_H_INCLUDED
+#define SETTINGS_UTILS_GLOBALSHANDLING_H_INCLUDED
 #include "utils/GlobalsHandling.h"
+#endif
+
 
 class TiXmlElement;
 namespace ADDON

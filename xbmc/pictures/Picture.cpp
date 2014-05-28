@@ -18,21 +18,65 @@
  *
  */
 
+#ifndef PICTURES_SYSTEM_H_INCLUDED
+#define PICTURES_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
 
+#ifndef PICTURES_PICTURE_H_INCLUDED
+#define PICTURES_PICTURE_H_INCLUDED
 #include "Picture.h"
+#endif
+
+#ifndef PICTURES_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define PICTURES_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef PICTURES_SETTINGS_SETTINGS_H_INCLUDED
+#define PICTURES_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef PICTURES_FILEITEM_H_INCLUDED
+#define PICTURES_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef PICTURES_FILESYSTEM_FILE_H_INCLUDED
+#define PICTURES_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef PICTURES_UTILS_LOG_H_INCLUDED
+#define PICTURES_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef PICTURES_UTILS_URIUTILS_H_INCLUDED
+#define PICTURES_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef PICTURES_DLLSWSCALE_H_INCLUDED
+#define PICTURES_DLLSWSCALE_H_INCLUDED
 #include "DllSwScale.h"
+#endif
+
+#ifndef PICTURES_GUILIB_TEXTURE_H_INCLUDED
+#define PICTURES_GUILIB_TEXTURE_H_INCLUDED
 #include "guilib/Texture.h"
+#endif
+
+#ifndef PICTURES_GUILIB_IMAGEFACTORY_H_INCLUDED
+#define PICTURES_GUILIB_IMAGEFACTORY_H_INCLUDED
 #include "guilib/imagefactory.h"
+#endif
+
 #if defined(HAS_OMXPLAYER)
 #include "cores/omxplayer/OMXImage.h"
 #endif

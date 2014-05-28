@@ -20,25 +20,101 @@
 
 #include <limits.h>
 
+#ifndef SETTINGS_SYSTEM_H_INCLUDED
+#define SETTINGS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "AdvancedSettings.h"
+#endif
+
+#ifndef SETTINGS_APPLICATION_H_INCLUDED
+#define SETTINGS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef SETTINGS_NETWORK_DNSNAMECACHE_H_INCLUDED
+#define SETTINGS_NETWORK_DNSNAMECACHE_H_INCLUDED
 #include "network/DNSNameCache.h"
+#endif
+
+#ifndef SETTINGS_FILESYSTEM_FILE_H_INCLUDED
+#define SETTINGS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef SETTINGS_UTILS_LANGCODEEXPANDER_H_INCLUDED
+#define SETTINGS_UTILS_LANGCODEEXPANDER_H_INCLUDED
 #include "utils/LangCodeExpander.h"
+#endif
+
+#ifndef SETTINGS_LANGINFO_H_INCLUDED
+#define SETTINGS_LANGINFO_H_INCLUDED
 #include "LangInfo.h"
+#endif
+
+#ifndef SETTINGS_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define SETTINGS_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_LIB_SETTING_H_INCLUDED
+#define SETTINGS_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_SETTINGS_H_INCLUDED
+#define SETTINGS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef SETTINGS_UTILS_STRINGUTILS_H_INCLUDED
+#define SETTINGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef SETTINGS_UTILS_SYSTEMINFO_H_INCLUDED
+#define SETTINGS_UTILS_SYSTEMINFO_H_INCLUDED
 #include "utils/SystemInfo.h"
+#endif
+
+#ifndef SETTINGS_UTILS_URIUTILS_H_INCLUDED
+#define SETTINGS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef SETTINGS_UTILS_XMLUTILS_H_INCLUDED
+#define SETTINGS_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef SETTINGS_UTILS_LOG_H_INCLUDED
+#define SETTINGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef SETTINGS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define SETTINGS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef SETTINGS_ADDONS_IADDON_H_INCLUDED
+#define SETTINGS_ADDONS_IADDON_H_INCLUDED
 #include "addons/IAddon.h"
+#endif
+
+#ifndef SETTINGS_ADDONS_ADDONMANAGER_H_INCLUDED
+#define SETTINGS_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef SETTINGS_ADDONS_GUIDIALOGADDONSETTINGS_H_INCLUDED
+#define SETTINGS_ADDONS_GUIDIALOGADDONSETTINGS_H_INCLUDED
 #include "addons/GUIDialogAddonSettings.h"
+#endif
+
 #if defined(TARGET_DARWIN_IOS)
 #include "osx/DarwinUtils.h"
 #endif

@@ -21,7 +21,11 @@
 
 #include <set>
 
+#ifndef ROOT_IFILEITEMLISTMODIFIER_H_INCLUDED
+#define ROOT_IFILEITEMLISTMODIFIER_H_INCLUDED
 #include "IFileItemListModifier.h"
+#endif
+
 
 class CFileItemListModification : public IFileItemListModifier
 {

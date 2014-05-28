@@ -26,7 +26,11 @@
 #include <stdlib.h>
 #include <math.h>
 
+#ifndef LIBPROJECTM_FATAL_H_INCLUDED
+#define LIBPROJECTM_FATAL_H_INCLUDED
 #include "fatal.h"
+#endif
+
 #include "Common.hpp"
 
 #include "CustomShape.hpp"

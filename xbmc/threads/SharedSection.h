@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef THREADS_THREADS_CONDITION_H_INCLUDED
+#define THREADS_THREADS_CONDITION_H_INCLUDED
 #include "threads/Condition.h"
+#endif
+
+#ifndef THREADS_THREADS_SINGLELOCK_H_INCLUDED
+#define THREADS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef THREADS_THREADS_HELPERS_H_INCLUDED
+#define THREADS_THREADS_HELPERS_H_INCLUDED
 #include "threads/Helpers.h"
+#endif
+
 
 /**
  * A CSharedSection is a mutex that satisfies the Shared Lockable concept (see Lockables.h).

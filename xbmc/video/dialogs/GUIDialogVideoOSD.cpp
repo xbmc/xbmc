@@ -18,17 +18,57 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGVIDEOOSD_H_INCLUDED
+#define DIALOGS_GUIDIALOGVIDEOOSD_H_INCLUDED
 #include "GUIDialogVideoOSD.h"
-#include "Application.h"
-#include "FileItem.h"
-#include "GUIUserMessages.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
-#include "input/MouseStat.h"
-#include "cores/IPlayer.h"
+#endif
 
+#ifndef DIALOGS_APPLICATION_H_INCLUDED
+#define DIALOGS_APPLICATION_H_INCLUDED
+#include "Application.h"
+#endif
+
+#ifndef DIALOGS_FILEITEM_H_INCLUDED
+#define DIALOGS_FILEITEM_H_INCLUDED
+#include "FileItem.h"
+#endif
+
+#ifndef DIALOGS_GUIUSERMESSAGES_H_INCLUDED
+#define DIALOGS_GUIUSERMESSAGES_H_INCLUDED
+#include "GUIUserMessages.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_KEY_H_INCLUDED
+#define DIALOGS_GUILIB_KEY_H_INCLUDED
+#include "guilib/Key.h"
+#endif
+
+#ifndef DIALOGS_INPUT_MOUSESTAT_H_INCLUDED
+#define DIALOGS_INPUT_MOUSESTAT_H_INCLUDED
+#include "input/MouseStat.h"
+#endif
+
+#ifndef DIALOGS_CORES_IPLAYER_H_INCLUDED
+#define DIALOGS_CORES_IPLAYER_H_INCLUDED
+#include "cores/IPlayer.h"
+#endif
+
+
+#ifndef DIALOGS_PVR_PVRMANAGER_H_INCLUDED
+#define DIALOGS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef DIALOGS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define DIALOGS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#endif
+
 
 using namespace PVR;
 

@@ -18,14 +18,38 @@
  *
  */
 
+#ifndef WIN_WIN32EXCEPTION_H_INCLUDED
+#define WIN_WIN32EXCEPTION_H_INCLUDED
 #include "Win32Exception.h"
+#endif
+
 #include <eh.h>
 #include <dbghelp.h>
+#ifndef WIN_UTIL_H_INCLUDED
+#define WIN_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef WIN_WIN32UTIL_H_INCLUDED
+#define WIN_WIN32UTIL_H_INCLUDED
 #include "WIN32Util.h"
+#endif
+
+#ifndef WIN_UTILS_STRINGUTILS_H_INCLUDED
+#define WIN_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef WIN_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define WIN_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef WIN_UTILS_URIUTILS_H_INCLUDED
+#define WIN_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 
 #define LOG if(logger) logger->Log
 

@@ -22,9 +22,21 @@
 
 #include <vector>
 
+#ifndef DIALOGS_GUILIB_GUIDIALOG_H_INCLUDED
+#define DIALOGS_GUILIB_GUIDIALOG_H_INCLUDED
 #include "guilib/GUIDialog.h"
+#endif
+
+#ifndef DIALOGS_UTILS_VARIANT_H_INCLUDED
+#define DIALOGS_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef DIALOGS_THREADS_CRITICALSECTION_H_INCLUDED
+#define DIALOGS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 #define DIALOG_MAX_LINES 3
 #define DIALOG_MAX_CHOICES 2

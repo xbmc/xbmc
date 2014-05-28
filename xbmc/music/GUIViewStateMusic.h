@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef MUSIC_VIEW_GUIVIEWSTATE_H_INCLUDED
+#define MUSIC_VIEW_GUIVIEWSTATE_H_INCLUDED
 #include "view/GUIViewState.h"
+#endif
+
 
 class CGUIViewStateWindowMusic : public CGUIViewState
 {

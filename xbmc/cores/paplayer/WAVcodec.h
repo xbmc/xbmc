@@ -19,9 +19,21 @@
  */
 
 #pragma once
+#ifndef PAPLAYER_ICODEC_H_INCLUDED
+#define PAPLAYER_ICODEC_H_INCLUDED
 #include "ICodec.h"
+#endif
+
+#ifndef PAPLAYER_CACHINGCODEC_H_INCLUDED
+#define PAPLAYER_CACHINGCODEC_H_INCLUDED
 #include "CachingCodec.h"
+#endif
+
+#ifndef PAPLAYER_ADPCMCODEC_H_INCLUDED
+#define PAPLAYER_ADPCMCODEC_H_INCLUDED
 #include "ADPCMCodec.h"
+#endif
+
 
 class WAVCodec : public CachingCodec
 {

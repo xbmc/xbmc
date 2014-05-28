@@ -19,11 +19,27 @@
  *
  */
 
+#ifndef STORAGE_MEDIASOURCE_H_INCLUDED
+#define STORAGE_MEDIASOURCE_H_INCLUDED
 #include "MediaSource.h" // for VECSOURCES
+#endif
+
 #include <map>
+#ifndef STORAGE_UTILS_JOB_H_INCLUDED
+#define STORAGE_UTILS_JOB_H_INCLUDED
 #include "utils/Job.h"
+#endif
+
+#ifndef STORAGE_ISTORAGEPROVIDER_H_INCLUDED
+#define STORAGE_ISTORAGEPROVIDER_H_INCLUDED
 #include "IStorageProvider.h"
+#endif
+
+#ifndef STORAGE_THREADS_CRITICALSECTION_H_INCLUDED
+#define STORAGE_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 #ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;

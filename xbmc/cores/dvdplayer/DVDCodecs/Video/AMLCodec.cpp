@@ -18,21 +18,73 @@
  *
  */
 
+#ifndef VIDEO_SYSTEM_H_INCLUDED
+#define VIDEO_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
 
+
+#ifndef VIDEO_AMLCODEC_H_INCLUDED
+#define VIDEO_AMLCODEC_H_INCLUDED
 #include "AMLCodec.h"
-#include "DynamicDll.h"
+#endif
 
+#ifndef VIDEO_DYNAMICDLL_H_INCLUDED
+#define VIDEO_DYNAMICDLL_H_INCLUDED
+#include "DynamicDll.h"
+#endif
+
+
+#ifndef VIDEO_CORES_DVDPLAYER_DVDCLOCK_H_INCLUDED
+#define VIDEO_CORES_DVDPLAYER_DVDCLOCK_H_INCLUDED
 #include "cores/dvdplayer/DVDClock.h"
+#endif
+
+#ifndef VIDEO_CORES_VIDEORENDERERS_RENDERFLAGS_H_INCLUDED
+#define VIDEO_CORES_VIDEORENDERERS_RENDERFLAGS_H_INCLUDED
 #include "cores/VideoRenderers/RenderFlags.h"
+#endif
+
+#ifndef VIDEO_CORES_VIDEORENDERERS_RENDERMANAGER_H_INCLUDED
+#define VIDEO_CORES_VIDEORENDERERS_RENDERMANAGER_H_INCLUDED
 #include "cores/VideoRenderers/RenderManager.h"
+#endif
+
+#ifndef VIDEO_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define VIDEO_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_MEDIASETTINGS_H_INCLUDED
 #include "settings/MediaSettings.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_SETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef VIDEO_UTILS_AMLUTILS_H_INCLUDED
+#define VIDEO_UTILS_AMLUTILS_H_INCLUDED
 #include "utils/AMLUtils.h"
+#endif
+
+#ifndef VIDEO_UTILS_LOG_H_INCLUDED
+#define VIDEO_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef VIDEO_UTILS_STRINGUTILS_H_INCLUDED
+#define VIDEO_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef VIDEO_UTILS_TIMEUTILS_H_INCLUDED
+#define VIDEO_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
 
 #if defined(TARGET_ANDROID)
 #include "android/activity/AndroidFeatures.h"

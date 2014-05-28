@@ -18,23 +18,75 @@
  *
  */
 
+#ifndef DIALOGS_SYSTEM_H_INCLUDED
+#define DIALOGS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef DIALOGS_GUIDIALOGVIDEOSETTINGS_H_INCLUDED
+#define DIALOGS_GUIDIALOGVIDEOSETTINGS_H_INCLUDED
 #include "GUIDialogVideoSettings.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef DIALOGS_GUIPASSWORD_H_INCLUDED
+#define DIALOGS_GUIPASSWORD_H_INCLUDED
 #include "GUIPassword.h"
+#endif
+
+#ifndef DIALOGS_UTILS_MATHUTILS_H_INCLUDED
+#define DIALOGS_UTILS_MATHUTILS_H_INCLUDED
 #include "utils/MathUtils.h"
+#endif
+
+#ifndef DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
+#define DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #include "cores/VideoRenderers/RenderFlags.h"
 #endif
+#ifndef DIALOGS_VIDEO_VIDEODATABASE_H_INCLUDED
+#define DIALOGS_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
+#ifndef DIALOGS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define DIALOGS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef DIALOGS_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define DIALOGS_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_SETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_MEDIASETTINGS_H_INCLUDED
 #include "settings/MediaSettings.h"
+#endif
+
+#ifndef DIALOGS_ADDONS_SKIN_H_INCLUDED
+#define DIALOGS_ADDONS_SKIN_H_INCLUDED
 #include "addons/Skin.h"
+#endif
+
+#ifndef DIALOGS_PVR_PVRMANAGER_H_INCLUDED
+#define DIALOGS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
 
 using namespace std;
 using namespace PVR;

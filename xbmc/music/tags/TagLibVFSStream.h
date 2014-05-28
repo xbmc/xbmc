@@ -18,8 +18,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef TAGS_FILESYSTEM_FILE_H_INCLUDED
+#define TAGS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef TAGS_UTILS_STDSTRING_H_INCLUDED
+#define TAGS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 #include <taglib/tiostream.h>
 
 namespace MUSIC_INFO

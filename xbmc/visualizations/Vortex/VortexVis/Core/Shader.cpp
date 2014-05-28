@@ -17,8 +17,16 @@
  *
  */
 
+#ifndef CORE_SHADER_H_INCLUDED
+#define CORE_SHADER_H_INCLUDED
 #include "Shader.h"
+#endif
+
+#ifndef CORE_RENDERER_H_INCLUDED
+#define CORE_RENDERER_H_INCLUDED
 #include "Renderer.h"
+#endif
+
 
 void Shader::ReleaseAllShaders()
 {

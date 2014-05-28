@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef GL_SYSTEM_H_INCLUDED
+#define GL_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #ifdef HAS_GL
 #include "system_gl.h"

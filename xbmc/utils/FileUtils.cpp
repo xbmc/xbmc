@@ -17,21 +17,77 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef UTILS_FILEUTILS_H_INCLUDED
+#define UTILS_FILEUTILS_H_INCLUDED
 #include "FileUtils.h"
+#endif
+
+#ifndef UTILS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define UTILS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef UTILS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define UTILS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef UTILS_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
+#define UTILS_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
 #include "guilib/GUIKeyboardFactory.h"
+#endif
+
+#ifndef UTILS_UTILS_LOG_H_INCLUDED
+#define UTILS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef UTILS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define UTILS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef UTILS_JOBMANAGER_H_INCLUDED
+#define UTILS_JOBMANAGER_H_INCLUDED
 #include "JobManager.h"
+#endif
+
+#ifndef UTILS_FILEOPERATIONJOB_H_INCLUDED
+#define UTILS_FILEOPERATIONJOB_H_INCLUDED
 #include "FileOperationJob.h"
+#endif
+
+#ifndef UTILS_URIUTILS_H_INCLUDED
+#define UTILS_URIUTILS_H_INCLUDED
 #include "URIUtils.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_MULTIPATHDIRECTORY_H_INCLUDED
+#define UTILS_FILESYSTEM_MULTIPATHDIRECTORY_H_INCLUDED
 #include "filesystem/MultiPathDirectory.h"
+#endif
+
 #include <vector>
+#ifndef UTILS_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define UTILS_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
 #include "settings/MediaSourceSettings.h"
+#endif
+
+#ifndef UTILS_UTIL_H_INCLUDED
+#define UTILS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_STRINGUTILS_H_INCLUDED
 #include "StringUtils.h"
+#endif
+
+#ifndef UTILS_URL_H_INCLUDED
+#define UTILS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 using namespace XFILE;
 using namespace std;

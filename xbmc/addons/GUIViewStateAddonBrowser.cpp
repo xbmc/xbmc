@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef ADDONS_GUIVIEWSTATEADDONBROWSER_H_INCLUDED
+#define ADDONS_GUIVIEWSTATEADDONBROWSER_H_INCLUDED
 #include "GUIViewStateAddonBrowser.h"
+#endif
+
+#ifndef ADDONS_FILEITEM_H_INCLUDED
+#define ADDONS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef ADDONS_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define ADDONS_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h"
+#endif
+
+#ifndef ADDONS_GUILIB_WINDOWIDS_H_INCLUDED
+#define ADDONS_GUILIB_WINDOWIDS_H_INCLUDED
 #include "guilib/WindowIDs.h"
+#endif
+
+#ifndef ADDONS_VIEW_VIEWSTATE_H_INCLUDED
+#define ADDONS_VIEW_VIEWSTATE_H_INCLUDED
 #include "view/ViewState.h"
+#endif
+
+#ifndef ADDONS_ADDONS_ADDON_H_INCLUDED
+#define ADDONS_ADDONS_ADDON_H_INCLUDED
 #include "addons/Addon.h"
+#endif
+
+#ifndef ADDONS_ADDONS_ADDONMANAGER_H_INCLUDED
+#define ADDONS_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef ADDONS_ADDONDATABASE_H_INCLUDED
+#define ADDONS_ADDONDATABASE_H_INCLUDED
 #include "AddonDatabase.h"
+#endif
+
 
 using namespace XFILE;
 using namespace ADDON;

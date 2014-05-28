@@ -19,13 +19,41 @@
  *
  */
 
+#ifndef PERIPHERALS_SYSTEM_H_INCLUDED
+#define PERIPHERALS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef PERIPHERALS_BUS_PERIPHERALBUS_H_INCLUDED
+#define PERIPHERALS_BUS_PERIPHERALBUS_H_INCLUDED
 #include "bus/PeripheralBus.h"
+#endif
+
+#ifndef PERIPHERALS_DEVICES_PERIPHERAL_H_INCLUDED
+#define PERIPHERALS_DEVICES_PERIPHERAL_H_INCLUDED
 #include "devices/Peripheral.h"
+#endif
+
+#ifndef PERIPHERALS_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
+#define PERIPHERALS_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
 #include "settings/lib/ISettingCallback.h"
+#endif
+
+#ifndef PERIPHERALS_THREADS_CRITICALSECTION_H_INCLUDED
+#define PERIPHERALS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef PERIPHERALS_THREADS_THREAD_H_INCLUDED
+#define PERIPHERALS_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef PERIPHERALS_UTILS_OBSERVER_H_INCLUDED
+#define PERIPHERALS_UTILS_OBSERVER_H_INCLUDED
 #include "utils/Observer.h"
+#endif
+
 
 class CFileItemList;
 class CSetting;

@@ -19,11 +19,31 @@
  *
  */
 
+#ifndef ADDONS_IADDON_H_INCLUDED
+#define ADDONS_IADDON_H_INCLUDED
 #include "IAddon.h"
+#endif
+
+#ifndef ADDONS_ADDONS_ADDONVERSION_H_INCLUDED
+#define ADDONS_ADDONS_ADDONVERSION_H_INCLUDED
 #include "addons/AddonVersion.h"
+#endif
+
+#ifndef ADDONS_UTILS_XBMCTINYXML_H_INCLUDED
+#define ADDONS_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef ADDONS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define ADDONS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef ADDONS_UTILS_ISERIALIZABLE_H_INCLUDED
+#define ADDONS_UTILS_ISERIALIZABLE_H_INCLUDED
 #include "utils/ISerializable.h"
+#endif
+
 
 class TiXmlElement;
 class CAddonCallbacksAddon;

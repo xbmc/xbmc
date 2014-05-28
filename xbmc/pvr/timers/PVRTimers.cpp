@@ -18,21 +18,77 @@
  *
  */
 
+#ifndef TIMERS_FILEITEM_H_INCLUDED
+#define TIMERS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
-#include "settings/Settings.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogOK.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
-#include "utils/StringUtils.h"
-#include "URL.h"
+#endif
 
+#ifndef TIMERS_SETTINGS_SETTINGS_H_INCLUDED
+#define TIMERS_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef TIMERS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define TIMERS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef TIMERS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define TIMERS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef TIMERS_THREADS_SINGLELOCK_H_INCLUDED
+#define TIMERS_THREADS_SINGLELOCK_H_INCLUDED
+#include "threads/SingleLock.h"
+#endif
+
+#ifndef TIMERS_UTILS_LOG_H_INCLUDED
+#define TIMERS_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef TIMERS_UTILS_URIUTILS_H_INCLUDED
+#define TIMERS_UTILS_URIUTILS_H_INCLUDED
+#include "utils/URIUtils.h"
+#endif
+
+#ifndef TIMERS_UTILS_STRINGUTILS_H_INCLUDED
+#define TIMERS_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+#ifndef TIMERS_URL_H_INCLUDED
+#define TIMERS_URL_H_INCLUDED
+#include "URL.h"
+#endif
+
+
+#ifndef TIMERS_PVRTIMERS_H_INCLUDED
+#define TIMERS_PVRTIMERS_H_INCLUDED
 #include "PVRTimers.h"
+#endif
+
+#ifndef TIMERS_PVR_PVRMANAGER_H_INCLUDED
+#define TIMERS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef TIMERS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define TIMERS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#endif
+
+#ifndef TIMERS_EPG_EPGCONTAINER_H_INCLUDED
+#define TIMERS_EPG_EPGCONTAINER_H_INCLUDED
 #include "epg/EpgContainer.h"
+#endif
+
+#ifndef TIMERS_PVR_ADDONS_PVRCLIENTS_H_INCLUDED
+#define TIMERS_PVR_ADDONS_PVRCLIENTS_H_INCLUDED
 #include "pvr/addons/PVRClients.h"
+#endif
+
 
 using namespace std;
 using namespace PVR;

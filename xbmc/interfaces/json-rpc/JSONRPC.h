@@ -24,10 +24,26 @@
 #include <stdio.h>
 #include <string>
 
+#ifndef JSON_RPC_JSONRPCUTILS_H_INCLUDED
+#define JSON_RPC_JSONRPCUTILS_H_INCLUDED
 #include "JSONRPCUtils.h"
+#endif
+
+#ifndef JSON_RPC_JSONSERVICEDESCRIPTION_H_INCLUDED
+#define JSON_RPC_JSONSERVICEDESCRIPTION_H_INCLUDED
 #include "JSONServiceDescription.h"
+#endif
+
+#ifndef JSON_RPC_INTERFACES_IANNOUNCER_H_INCLUDED
+#define JSON_RPC_INTERFACES_IANNOUNCER_H_INCLUDED
 #include "interfaces/IAnnouncer.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_STDSTRING_H_INCLUDED
+#define JSON_RPC_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 namespace JSONRPC
 {

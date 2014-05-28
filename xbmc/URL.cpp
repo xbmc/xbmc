@@ -18,17 +18,61 @@
  *
  */
 
+#ifndef ROOT_URL_H_INCLUDED
+#define ROOT_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef ROOT_UTILS_REGEXP_H_INCLUDED
+#define ROOT_UTILS_REGEXP_H_INCLUDED
 #include "utils/RegExp.h"
+#endif
+
+#ifndef ROOT_UTILS_LOG_H_INCLUDED
+#define ROOT_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ROOT_UTILS_URIUTILS_H_INCLUDED
+#define ROOT_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef ROOT_UTILS_STRINGUTILS_H_INCLUDED
+#define ROOT_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ROOT_UTIL_H_INCLUDED
+#define ROOT_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_FILE_H_INCLUDED
+#define ROOT_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef ROOT_FILEITEM_H_INCLUDED
+#define ROOT_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
+#define ROOT_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
 #include "filesystem/StackDirectory.h"
+#endif
+
+#ifndef ROOT_ADDONS_ADDON_H_INCLUDED
+#define ROOT_ADDONS_ADDON_H_INCLUDED
 #include "addons/Addon.h"
+#endif
+
+#ifndef ROOT_UTILS_STRINGUTILS_H_INCLUDED
+#define ROOT_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 #ifndef TARGET_POSIX
 #include <sys\types.h>
 #include <sys\stat.h>

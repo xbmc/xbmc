@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef GUILIB_GUISCROLLBARCONTROL_H_INCLUDED
+#define GUILIB_GUISCROLLBARCONTROL_H_INCLUDED
 #include "GUIScrollBarControl.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 #define MIN_NIB_SIZE 4.0f
 

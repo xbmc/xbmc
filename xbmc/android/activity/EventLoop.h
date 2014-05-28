@@ -21,8 +21,16 @@
  
 #include <android_native_app_glue.h>
 
+#ifndef ACTIVITY_IACTIVITYHANDLER_H_INCLUDED
+#define ACTIVITY_IACTIVITYHANDLER_H_INCLUDED
 #include "IActivityHandler.h"
+#endif
+
+#ifndef ACTIVITY_IINPUTHANDLER_H_INCLUDED
+#define ACTIVITY_IINPUTHANDLER_H_INCLUDED
 #include "IInputHandler.h"
+#endif
+
  
 class CEventLoop
 {

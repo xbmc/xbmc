@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef LINUX_PLATFORMDEFS_H_INCLUDED
+#define LINUX_PLATFORMDEFS_H_INCLUDED
 #include "PlatformDefs.h"
+#endif
+
+#ifndef LINUX_ZEROCONFAVAHI_H_INCLUDED
+#define LINUX_ZEROCONFAVAHI_H_INCLUDED
 #include "ZeroconfAvahi.h"
+#endif
+
 
 #ifdef HAS_AVAHI
 

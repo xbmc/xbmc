@@ -20,8 +20,16 @@
  */
 
 
+#ifndef WINDOWS_FILESYSTEM_IDIRECTORY_H_INCLUDED
+#define WINDOWS_FILESYSTEM_IDIRECTORY_H_INCLUDED
 #include "filesystem/IDirectory.h"
+#endif
+
+#ifndef WINDOWS_URL_H_INCLUDED
+#define WINDOWS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 namespace XFILE
 {

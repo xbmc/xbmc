@@ -26,7 +26,11 @@
 
 #pragma once
 
+#ifndef FILESYSTEM_IFILE_H_INCLUDED
+#define FILESYSTEM_IFILE_H_INCLUDED
 #include "IFile.h"
+#endif
+
 #include <sstream>
 
 namespace XFILE

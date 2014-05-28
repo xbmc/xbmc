@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef INFOSCANNER_MUSICALBUMINFO_H_INCLUDED
+#define INFOSCANNER_MUSICALBUMINFO_H_INCLUDED
 #include "MusicAlbumInfo.h"
+#endif
+
+#ifndef INFOSCANNER_ADDONS_SCRAPER_H_INCLUDED
+#define INFOSCANNER_ADDONS_SCRAPER_H_INCLUDED
 #include "addons/Scraper.h"
+#endif
+
+#ifndef INFOSCANNER_UTILS_LOG_H_INCLUDED
+#define INFOSCANNER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef INFOSCANNER_UTILS_STRINGUTILS_H_INCLUDED
+#define INFOSCANNER_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef INFOSCANNER_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define INFOSCANNER_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
 
 using namespace std;
 using namespace MUSIC_GRABBER;

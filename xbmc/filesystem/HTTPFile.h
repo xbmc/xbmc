@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef FILESYSTEM_CURLFILE_H_INCLUDED
+#define FILESYSTEM_CURLFILE_H_INCLUDED
 #include "CurlFile.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 namespace XFILE
 {

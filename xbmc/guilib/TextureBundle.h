@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef GUILIB_UTILS_STDSTRING_H_INCLUDED
+#define GUILIB_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef GUILIB_TEXTUREBUNDLEXPR_H_INCLUDED
+#define GUILIB_TEXTUREBUNDLEXPR_H_INCLUDED
 #include "TextureBundleXPR.h"
+#endif
+
+#ifndef GUILIB_TEXTUREBUNDLEXBT_H_INCLUDED
+#define GUILIB_TEXTUREBUNDLEXBT_H_INCLUDED
 #include "TextureBundleXBT.h"
+#endif
+
 
 class CTextureBundle
 {

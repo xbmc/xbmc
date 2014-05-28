@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef RENDERING_RENDERSYSTEM_H_INCLUDED
+#define RENDERING_RENDERSYSTEM_H_INCLUDED
 #include "RenderSystem.h"
+#endif
+
 
 CRenderSystemBase::CRenderSystemBase()
 {

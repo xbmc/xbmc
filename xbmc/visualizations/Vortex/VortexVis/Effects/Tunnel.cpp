@@ -17,9 +17,21 @@
  *
  */
 
+#ifndef EFFECTS_TUNNEL_H_INCLUDED
+#define EFFECTS_TUNNEL_H_INCLUDED
 #include "Tunnel.h"
+#endif
+
+#ifndef EFFECTS_RENDERER_H_INCLUDED
+#define EFFECTS_RENDERER_H_INCLUDED
 #include "Renderer.h"
+#endif
+
+#ifndef EFFECTS_ANGELSCRIPT_H_INCLUDED
+#define EFFECTS_ANGELSCRIPT_H_INCLUDED
 #include "angelscript.h"
+#endif
+
 
 struct TunnelParameters
 {

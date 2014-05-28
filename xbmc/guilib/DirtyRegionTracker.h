@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef GUILIB_IDIRTYREGIONSOLVER_H_INCLUDED
+#define GUILIB_IDIRTYREGIONSOLVER_H_INCLUDED
 #include "IDirtyRegionSolver.h"
+#endif
+
+#ifndef GUILIB_DIRTYREGIONSOLVERS_H_INCLUDED
+#define GUILIB_DIRTYREGIONSOLVERS_H_INCLUDED
 #include "DirtyRegionSolvers.h"
+#endif
+
 
 #if defined(TARGET_DARWIN_IOS)
 #define DEFAULT_BUFFERING 4

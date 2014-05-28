@@ -19,7 +19,11 @@
  */
 #pragma once
 
+#ifndef WEBSOCKET_WEBSOCKETV8_H_INCLUDED
+#define WEBSOCKET_WEBSOCKETV8_H_INCLUDED
 #include "WebSocketV8.h"
+#endif
+
 
 class CWebSocketV13 : public CWebSocketV8
 {

@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef UTILS_STDSTRING_H_INCLUDED
+#define UTILS_STDSTRING_H_INCLUDED
 #include "StdString.h"
+#endif
+
 
 bool IsAliasShortcut(const std::string& path);
 void TranslateAliasShortcut(std::string &path);

@@ -20,8 +20,16 @@
 
 #pragma once
 
+#ifndef LEGACY_ADDONCALLBACK_H_INCLUDED
+#define LEGACY_ADDONCALLBACK_H_INCLUDED
 #include "AddonCallback.h"
+#endif
+
+#ifndef LEGACY_ADDONSTRING_H_INCLUDED
+#define LEGACY_ADDONSTRING_H_INCLUDED
 #include "AddonString.h"
+#endif
+
 
 namespace XBMCAddon
 {

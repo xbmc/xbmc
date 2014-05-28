@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef VIDEO_DVDVIDEOCODEC_H_INCLUDED
+#define VIDEO_DVDVIDEOCODEC_H_INCLUDED
 #include "DVDVideoCodec.h"
+#endif
+
+#ifndef VIDEO_DVDSTREAMINFO_H_INCLUDED
+#define VIDEO_DVDSTREAMINFO_H_INCLUDED
 #include "DVDStreamInfo.h"
+#endif
+
 
 class CAMLCodec;
 struct frame_queue;

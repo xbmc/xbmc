@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef JNI_CONNECTIVITYMANAGER_H_INCLUDED
+#define JNI_CONNECTIVITYMANAGER_H_INCLUDED
 #include "ConnectivityManager.h"
+#endif
+
+#ifndef JNI_NETWORKINFO_H_INCLUDED
+#define JNI_NETWORKINFO_H_INCLUDED
 #include "NetworkInfo.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

@@ -20,8 +20,16 @@
  */
 
 
+#ifndef FILESYSTEM_IFILEDIRECTORY_H_INCLUDED
+#define FILESYSTEM_IFILEDIRECTORY_H_INCLUDED
 #include "IFileDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define FILESYSTEM_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
 
 namespace XFILE
 {

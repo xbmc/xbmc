@@ -22,8 +22,16 @@
 #include <map>
 #include <string>
 
+#ifndef SETTINGS_SETTINGS_LIB_ISUBSETTINGS_H_INCLUDED
+#define SETTINGS_SETTINGS_LIB_ISUBSETTINGS_H_INCLUDED
 #include "settings/lib/ISubSettings.h"
+#endif
+
+#ifndef SETTINGS_THREADS_CRITICALSECTION_H_INCLUDED
+#define SETTINGS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 class TiXmlNode;
 

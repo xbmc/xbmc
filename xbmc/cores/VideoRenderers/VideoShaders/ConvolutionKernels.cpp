@@ -22,8 +22,16 @@
   #define _USE_MATH_DEFINES
 #endif
 
+#ifndef VIDEOSHADERS_CONVOLUTIONKERNELS_H_INCLUDED
+#define VIDEOSHADERS_CONVOLUTIONKERNELS_H_INCLUDED
 #include "ConvolutionKernels.h"
+#endif
+
+#ifndef VIDEOSHADERS_UTILS_MATHUTILS_H_INCLUDED
+#define VIDEOSHADERS_UTILS_MATHUTILS_H_INCLUDED
 #include "utils/MathUtils.h"
+#endif
+
 
 #ifndef M_PI
   #define M_PI       3.14159265358979323846

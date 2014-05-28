@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef PICTURES_DYNAMICDLL_H_INCLUDED
+#define PICTURES_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
+#ifndef PICTURES_LIB_LIBEXIF_LIBEXIF_H_INCLUDED
+#define PICTURES_LIB_LIBEXIF_LIBEXIF_H_INCLUDED
 #include "lib/libexif/libexif.h"
+#endif
+
 
 class DllLibExifInterface
 {

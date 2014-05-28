@@ -20,4 +20,8 @@
 
 #pragma once
 
+#ifndef THREADS_THREADS_PLATFORM_CRITICALSECTION_H_INCLUDED
+#define THREADS_THREADS_PLATFORM_CRITICALSECTION_H_INCLUDED
 #include "threads/platform/CriticalSection.h"
+#endif
+

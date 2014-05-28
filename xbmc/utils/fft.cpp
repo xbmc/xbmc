@@ -27,7 +27,11 @@
 
 #include <math.h>
 
+#ifndef UTILS_FFT_H_INCLUDED
+#define UTILS_FFT_H_INCLUDED
 #include "fft.h"
+#endif
+
 
 #ifndef M_PI
 #define M_PI  3.1415926535897932384626433832795

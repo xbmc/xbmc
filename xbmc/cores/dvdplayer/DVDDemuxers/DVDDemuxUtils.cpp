@@ -21,10 +21,26 @@
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
+#ifndef DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
+#define DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
 #include "DVDDemuxUtils.h"
+#endif
+
+#ifndef DVDDEMUXERS_DVDCLOCK_H_INCLUDED
+#define DVDDEMUXERS_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h"
+#endif
+
+#ifndef DVDDEMUXERS_UTILS_LOG_H_INCLUDED
+#define DVDDEMUXERS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DVDDEMUXERS_DLLAVCODEC_H_INCLUDED
+#define DVDDEMUXERS_DLLAVCODEC_H_INCLUDED
 #include "DllAvCodec.h"
+#endif
+
 
 void CDVDDemuxUtils::FreeDemuxPacket(DemuxPacket* pPacket)
 {

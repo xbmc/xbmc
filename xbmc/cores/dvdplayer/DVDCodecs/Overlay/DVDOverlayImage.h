@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef OVERLAY_PLATFORMDEFS_H_INCLUDED
+#define OVERLAY_PLATFORMDEFS_H_INCLUDED
 #include "PlatformDefs.h"
+#endif
+
+#ifndef OVERLAY_DVDOVERLAY_H_INCLUDED
+#define OVERLAY_DVDOVERLAY_H_INCLUDED
 #include "DVDOverlay.h"
+#endif
+
 #include <string.h>
 #include <stdlib.h>
 

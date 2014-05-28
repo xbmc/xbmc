@@ -21,7 +21,11 @@
 
 #include <map>
 
+#ifndef FILESYSTEM_UTILS_STDSTRING_H_INCLUDED
+#define FILESYSTEM_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 class CDirectoryHistory
 {

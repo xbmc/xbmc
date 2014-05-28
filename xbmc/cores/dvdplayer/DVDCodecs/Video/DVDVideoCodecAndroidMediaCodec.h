@@ -24,10 +24,26 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 
+#ifndef VIDEO_DVDVIDEOCODEC_H_INCLUDED
+#define VIDEO_DVDVIDEOCODEC_H_INCLUDED
 #include "DVDVideoCodec.h"
+#endif
+
+#ifndef VIDEO_DVDSTREAMINFO_H_INCLUDED
+#define VIDEO_DVDSTREAMINFO_H_INCLUDED
 #include "DVDStreamInfo.h"
+#endif
+
+#ifndef VIDEO_THREADS_THREAD_H_INCLUDED
+#define VIDEO_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef VIDEO_THREADS_SINGLELOCK_H_INCLUDED
+#define VIDEO_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 
 class CJNISurface;
 class CJNISurfaceTexture;

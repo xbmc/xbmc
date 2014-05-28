@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef DVDPLAYER_DVDPLAYERTELETEXT_H_INCLUDED
+#define DVDPLAYER_DVDPLAYERTELETEXT_H_INCLUDED
 #include "DVDPlayerTeletext.h"
+#endif
+
+#ifndef DVDPLAYER_DVDCLOCK_H_INCLUDED
+#define DVDPLAYER_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h"
+#endif
+
+#ifndef DVDPLAYER_DVDSTREAMINFO_H_INCLUDED
+#define DVDPLAYER_DVDSTREAMINFO_H_INCLUDED
 #include "DVDStreamInfo.h"
+#endif
+
+#ifndef DVDPLAYER_DVDCODECS_DVDCODECS_H_INCLUDED
+#define DVDPLAYER_DVDCODECS_DVDCODECS_H_INCLUDED
 #include "DVDCodecs/DVDCodecs.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_LOG_H_INCLUDED
+#define DVDPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DVDPLAYER_THREADS_SINGLELOCK_H_INCLUDED
+#define DVDPLAYER_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 
 using namespace std;
 

@@ -21,10 +21,26 @@
 
 #include <set>
 
+#ifndef JSON_RPC_JSONRPC_H_INCLUDED
+#define JSON_RPC_JSONRPC_H_INCLUDED
 #include "JSONRPC.h"
+#endif
+
+#ifndef JSON_RPC_JSONUTILS_H_INCLUDED
+#define JSON_RPC_JSONUTILS_H_INCLUDED
 #include "JSONUtils.h"
+#endif
+
+#ifndef JSON_RPC_FILEITEM_H_INCLUDED
+#define JSON_RPC_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_STDSTRING_H_INCLUDED
+#define JSON_RPC_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 class CThumbLoader;
 

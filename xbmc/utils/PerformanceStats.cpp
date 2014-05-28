@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef UTILS_PERFORMANCESTATS_H_INCLUDED
+#define UTILS_PERFORMANCESTATS_H_INCLUDED
 #include "PerformanceStats.h"
+#endif
+
+#ifndef UTILS_PERFORMANCESAMPLE_H_INCLUDED
+#define UTILS_PERFORMANCESAMPLE_H_INCLUDED
 #include "PerformanceSample.h"
+#endif
+
+#ifndef UTILS_LOG_H_INCLUDED
+#define UTILS_LOG_H_INCLUDED
 #include "log.h"
+#endif
+
 
 using namespace std;
 

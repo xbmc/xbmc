@@ -20,8 +20,16 @@
 
 #pragma once
 
+#ifndef WIN_THREADS_SINGLELOCK_H_INCLUDED
+#define WIN_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef WIN_THREADS_HELPERS_H_INCLUDED
+#define WIN_THREADS_HELPERS_H_INCLUDED
 #include "threads/Helpers.h"
+#endif
+
 
 #include <windows.h>
 

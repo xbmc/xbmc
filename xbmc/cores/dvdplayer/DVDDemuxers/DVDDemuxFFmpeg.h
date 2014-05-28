@@ -20,13 +20,37 @@
  *
  */
 
+#ifndef DVDDEMUXERS_DVDDEMUX_H_INCLUDED
+#define DVDDEMUXERS_DVDDEMUX_H_INCLUDED
 #include "DVDDemux.h"
-#include "DllAvFormat.h"
-#include "DllAvCodec.h"
-#include "DllAvUtil.h"
+#endif
 
+#ifndef DVDDEMUXERS_DLLAVFORMAT_H_INCLUDED
+#define DVDDEMUXERS_DLLAVFORMAT_H_INCLUDED
+#include "DllAvFormat.h"
+#endif
+
+#ifndef DVDDEMUXERS_DLLAVCODEC_H_INCLUDED
+#define DVDDEMUXERS_DLLAVCODEC_H_INCLUDED
+#include "DllAvCodec.h"
+#endif
+
+#ifndef DVDDEMUXERS_DLLAVUTIL_H_INCLUDED
+#define DVDDEMUXERS_DLLAVUTIL_H_INCLUDED
+#include "DllAvUtil.h"
+#endif
+
+
+#ifndef DVDDEMUXERS_THREADS_CRITICALSECTION_H_INCLUDED
+#define DVDDEMUXERS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef DVDDEMUXERS_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define DVDDEMUXERS_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
 
 #include <map>
 

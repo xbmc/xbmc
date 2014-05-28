@@ -20,10 +20,22 @@
 
 #pragma once
 
+#ifndef UTILS_THREADS_THREAD_H_INCLUDED
+#define UTILS_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef UTILS_UTILS_LOG_H_INCLUDED
+#define UTILS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 #include <queue>
+#ifndef UTILS_MEMORY_H_INCLUDED
+#define UTILS_MEMORY_H_INCLUDED
 #include "memory.h"
+#endif
+
 
 #define MSG_INTERNAL_BUFFER_SIZE 32
 

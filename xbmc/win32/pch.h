@@ -33,8 +33,16 @@
 #include <locale>
 #include <comdef.h>
 #define DIRECTINPUT_VERSION 0x0800
+#ifndef WIN32_DINPUT_H_INCLUDED
+#define WIN32_DINPUT_H_INCLUDED
 #include "DInput.h"
+#endif
+
+#ifndef WIN32_DSOUND_H_INCLUDED
+#define WIN32_DSOUND_H_INCLUDED
 #include "DSound.h"
+#endif
+
 #ifdef HAS_DX
 #include "D3D9.h"
 #include "D3DX9.h"

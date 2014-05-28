@@ -18,21 +18,81 @@
  *
  */
 
+#ifndef VIDEO_GUIVIEWSTATEVIDEO_H_INCLUDED
+#define VIDEO_GUIVIEWSTATEVIDEO_H_INCLUDED
 #include "GUIViewStateVideo.h"
+#endif
+
+#ifndef VIDEO_PLAYLISTPLAYER_H_INCLUDED
+#define VIDEO_PLAYLISTPLAYER_H_INCLUDED
 #include "PlayListPlayer.h"
+#endif
+
+#ifndef VIDEO_FILESYSTEM_PLUGINDIRECTORY_H_INCLUDED
+#define VIDEO_FILESYSTEM_PLUGINDIRECTORY_H_INCLUDED
 #include "filesystem/PluginDirectory.h"
+#endif
+
+#ifndef VIDEO_FILESYSTEM_PVRDIRECTORY_H_INCLUDED
+#define VIDEO_FILESYSTEM_PVRDIRECTORY_H_INCLUDED
 #include "filesystem/PVRDirectory.h"
+#endif
+
+#ifndef VIDEO_FILESYSTEM_VIDEODATABASEDIRECTORY_H_INCLUDED
+#define VIDEO_FILESYSTEM_VIDEODATABASEDIRECTORY_H_INCLUDED
 #include "filesystem/VideoDatabaseDirectory.h"
+#endif
+
+#ifndef VIDEO_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define VIDEO_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef VIDEO_VIDEODATABASE_H_INCLUDED
+#define VIDEO_VIDEODATABASE_H_INCLUDED
 #include "VideoDatabase.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_MEDIASETTINGS_H_INCLUDED
 #include "settings/MediaSettings.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
 #include "settings/MediaSourceSettings.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_SETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef VIDEO_FILEITEM_H_INCLUDED
+#define VIDEO_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef VIDEO_GUILIB_WINDOWIDS_H_INCLUDED
+#define VIDEO_GUILIB_WINDOWIDS_H_INCLUDED
 #include "guilib/WindowIDs.h"
+#endif
+
+#ifndef VIDEO_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define VIDEO_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef VIDEO_VIEW_VIEWSTATESETTINGS_H_INCLUDED
+#define VIDEO_VIEW_VIEWSTATESETTINGS_H_INCLUDED
 #include "view/ViewStateSettings.h"
+#endif
+
 
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;

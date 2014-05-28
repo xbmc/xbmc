@@ -18,21 +18,77 @@
  *
  */
 
+#ifndef PAPLAYER_PAPLAYER_H_INCLUDED
+#define PAPLAYER_PAPLAYER_H_INCLUDED
 #include "PAPlayer.h"
-#include "CodecFactory.h"
-#include "FileItem.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
-#include "music/tags/MusicInfoTag.h"
-#include "utils/TimeUtils.h"
-#include "utils/log.h"
-#include "utils/MathUtils.h"
-#include "utils/JobManager.h"
+#endif
 
+#ifndef PAPLAYER_CODECFACTORY_H_INCLUDED
+#define PAPLAYER_CODECFACTORY_H_INCLUDED
+#include "CodecFactory.h"
+#endif
+
+#ifndef PAPLAYER_FILEITEM_H_INCLUDED
+#define PAPLAYER_FILEITEM_H_INCLUDED
+#include "FileItem.h"
+#endif
+
+#ifndef PAPLAYER_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define PAPLAYER_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef PAPLAYER_SETTINGS_SETTINGS_H_INCLUDED
+#define PAPLAYER_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef PAPLAYER_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define PAPLAYER_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_TIMEUTILS_H_INCLUDED
+#define PAPLAYER_UTILS_TIMEUTILS_H_INCLUDED
+#include "utils/TimeUtils.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_LOG_H_INCLUDED
+#define PAPLAYER_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_MATHUTILS_H_INCLUDED
+#define PAPLAYER_UTILS_MATHUTILS_H_INCLUDED
+#include "utils/MathUtils.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_JOBMANAGER_H_INCLUDED
+#define PAPLAYER_UTILS_JOBMANAGER_H_INCLUDED
+#include "utils/JobManager.h"
+#endif
+
+
+#ifndef PAPLAYER_THREADS_SINGLELOCK_H_INCLUDED
+#define PAPLAYER_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef PAPLAYER_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
+#define PAPLAYER_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
 #include "cores/AudioEngine/AEFactory.h"
+#endif
+
+#ifndef PAPLAYER_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define PAPLAYER_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
+#ifndef PAPLAYER_CORES_AUDIOENGINE_INTERFACES_AESTREAM_H_INCLUDED
+#define PAPLAYER_CORES_AUDIOENGINE_INTERFACES_AESTREAM_H_INCLUDED
 #include "cores/AudioEngine/Interfaces/AEStream.h"
+#endif
+
 
 #define TIME_TO_CACHE_NEXT_FILE 5000 /* 5 seconds before end of song, start caching the next song */
 #define FAST_XFADE_TIME           80 /* 80 milliseconds */

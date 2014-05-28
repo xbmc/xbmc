@@ -18,13 +18,41 @@
  *
  */
 
+#ifndef GUILIB_SYSTEM_H_INCLUDED
+#define GUILIB_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef GUILIB_GUIVIDEOCONTROL_H_INCLUDED
+#define GUILIB_GUIVIDEOCONTROL_H_INCLUDED
 #include "GUIVideoControl.h"
+#endif
+
+#ifndef GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "GUIWindowManager.h"
+#endif
+
+#ifndef GUILIB_APPLICATION_H_INCLUDED
+#define GUILIB_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
+#ifndef GUILIB_WINDOWIDS_H_INCLUDED
+#define GUILIB_WINDOWIDS_H_INCLUDED
 #include "WindowIDs.h"
+#endif
+
+#ifndef GUILIB_CORES_IPLAYER_H_INCLUDED
+#define GUILIB_CORES_IPLAYER_H_INCLUDED
 #include "cores/IPlayer.h"
+#endif
+
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #else

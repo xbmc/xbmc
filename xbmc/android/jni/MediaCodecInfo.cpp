@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_MEDIACODECINFO_H_INCLUDED
+#define JNI_MEDIACODECINFO_H_INCLUDED
 #include "MediaCodecInfo.h"
+#endif
+
 
 #include "jutils/jutils-details.hpp"
 

@@ -19,9 +19,21 @@
  *
  */
 
+#ifndef FILESYSTEM_IDIRECTORY_H_INCLUDED
+#define FILESYSTEM_IDIRECTORY_H_INCLUDED
 #include "IDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_XBMCTINYXML_H_INCLUDED
+#define FILESYSTEM_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
 
 namespace XFILE
 {

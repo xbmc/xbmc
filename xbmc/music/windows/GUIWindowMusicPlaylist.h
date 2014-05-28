@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef WINDOWS_GUIWINDOWMUSICBASE_H_INCLUDED
+#define WINDOWS_GUIWINDOWMUSICBASE_H_INCLUDED
 #include "GUIWindowMusicBase.h"
+#endif
+
+#ifndef WINDOWS_BACKGROUNDINFOLOADER_H_INCLUDED
+#define WINDOWS_BACKGROUNDINFOLOADER_H_INCLUDED
 #include "BackgroundInfoLoader.h"
+#endif
+
 
 class CGUIWindowMusicPlayList : public CGUIWindowMusicBase, public IBackgroundLoaderObserver
 {

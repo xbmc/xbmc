@@ -18,22 +18,62 @@
  *
  */
 
+#ifndef SINKS_AESINKWASAPI_H_INCLUDED
+#define SINKS_AESINKWASAPI_H_INCLUDED
 #include "AESinkWASAPI.h"
+#endif
+
 #include <Audioclient.h>
 #include <avrt.h>
 #include <initguid.h>
 #include <stdint.h>
 
+#ifndef SINKS_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define SINKS_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
+#ifndef SINKS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define SINKS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef SINKS_UTILS_STDSTRING_H_INCLUDED
+#define SINKS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef SINKS_UTILS_LOG_H_INCLUDED
+#define SINKS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef SINKS_THREADS_SINGLELOCK_H_INCLUDED
+#define SINKS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef SINKS_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define SINKS_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef SINKS_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define SINKS_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef SINKS_CORES_AUDIOENGINE_UTILS_AEDEVICEINFO_H_INCLUDED
+#define SINKS_CORES_AUDIOENGINE_UTILS_AEDEVICEINFO_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
+#endif
+
 #include <Mmreg.h>
+#ifndef SINKS_UTILS_STRINGUTILS_H_INCLUDED
+#define SINKS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 #pragma comment(lib, "Avrt.lib")
 

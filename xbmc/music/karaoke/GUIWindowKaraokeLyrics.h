@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef KARAOKE_GUILIB_GUIWINDOW_H_INCLUDED
+#define KARAOKE_GUILIB_GUIWINDOW_H_INCLUDED
 #include "guilib/GUIWindow.h"
+#endif
+
 
 class CKaraokeLyrics;
 class CKaraokeWindowBackground;

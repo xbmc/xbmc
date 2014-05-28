@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef JNI_JNIBASE_H_INCLUDED
+#define JNI_JNIBASE_H_INCLUDED
 #include "JNIBase.h"
+#endif
+
+#ifndef JNI_LIST_H_INCLUDED
+#define JNI_LIST_H_INCLUDED
 #include "List.h"
+#endif
+
 
 class CJNIDhcpInfo;
 class CJNIWifiInfo;

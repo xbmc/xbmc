@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef WINDOWS_GUIWINDOWPVRCOMMON_H_INCLUDED
+#define WINDOWS_GUIWINDOWPVRCOMMON_H_INCLUDED
 #include "GUIWindowPVRCommon.h"
+#endif
+
+#ifndef WINDOWS_UTILS_OBSERVER_H_INCLUDED
+#define WINDOWS_UTILS_OBSERVER_H_INCLUDED
 #include "utils/Observer.h"
+#endif
+
 
 namespace PVR
 {

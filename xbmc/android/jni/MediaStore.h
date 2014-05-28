@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef JNI_JNIBASE_H_INCLUDED
+#define JNI_JNIBASE_H_INCLUDED
 #include "JNIBase.h"
+#endif
+
+#ifndef JNI_BASECOLUMNS_H_INCLUDED
+#define JNI_BASECOLUMNS_H_INCLUDED
 #include "BaseColumns.h"
+#endif
+
 
 class CJNIMediaStoreMediaColumns : public CJNIBaseColumns
 {

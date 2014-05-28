@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef TOUCH_ITOUCHINPUTHANDLING_H_INCLUDED
+#define TOUCH_ITOUCHINPUTHANDLING_H_INCLUDED
 #include "ITouchInputHandling.h"
+#endif
+
 
 void ITouchInputHandling::RegisterHandler(ITouchActionHandler *touchHandler)
 {

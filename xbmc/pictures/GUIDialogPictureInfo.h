@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef PICTURES_GUILIB_GUIDIALOG_H_INCLUDED
+#define PICTURES_GUILIB_GUIDIALOG_H_INCLUDED
 #include "guilib/GUIDialog.h"
+#endif
+
 
 class CFileItemList;
 

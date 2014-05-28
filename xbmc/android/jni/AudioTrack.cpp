@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_AUDIOTRACK_H_INCLUDED
+#define JNI_AUDIOTRACK_H_INCLUDED
 #include "AudioTrack.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

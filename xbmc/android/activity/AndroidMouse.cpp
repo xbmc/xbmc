@@ -18,13 +18,41 @@
  *
  */
 
+#ifndef ACTIVITY_ANDROIDMOUSE_H_INCLUDED
+#define ACTIVITY_ANDROIDMOUSE_H_INCLUDED
 #include "AndroidMouse.h"
+#endif
+
+#ifndef ACTIVITY_ANDROIDEXTRA_H_INCLUDED
+#define ACTIVITY_ANDROIDEXTRA_H_INCLUDED
 #include "AndroidExtra.h"
+#endif
+
+#ifndef ACTIVITY_XBMCAPP_H_INCLUDED
+#define ACTIVITY_XBMCAPP_H_INCLUDED
 #include "XBMCApp.h"
+#endif
+
+#ifndef ACTIVITY_APPLICATION_H_INCLUDED
+#define ACTIVITY_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef ACTIVITY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define ACTIVITY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef ACTIVITY_WINDOWING_WINEVENTS_H_INCLUDED
+#define ACTIVITY_WINDOWING_WINEVENTS_H_INCLUDED
 #include "windowing/WinEvents.h"
+#endif
+
+#ifndef ACTIVITY_INPUT_MOUSESTAT_H_INCLUDED
+#define ACTIVITY_INPUT_MOUSESTAT_H_INCLUDED
 #include "input/MouseStat.h"
+#endif
+
 
 //#define DEBUG_VERBOSE
 

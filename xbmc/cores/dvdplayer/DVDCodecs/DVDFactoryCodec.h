@@ -21,7 +21,11 @@
  */
 
 #include <vector>
+#ifndef DVDCODECS_CORES_VIDEORENDERERS_RENDERFORMATS_H_INCLUDED
+#define DVDCODECS_CORES_VIDEORENDERERS_RENDERFORMATS_H_INCLUDED
 #include "cores/VideoRenderers/RenderFormats.h"
+#endif
+
 
 class CDVDVideoCodec;
 class CDVDAudioCodec;

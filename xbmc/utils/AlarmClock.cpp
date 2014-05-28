@@ -18,13 +18,41 @@
  *
  */
 
+#ifndef UTILS_ALARMCLOCK_H_INCLUDED
+#define UTILS_ALARMCLOCK_H_INCLUDED
 #include "AlarmClock.h"
+#endif
+
+#ifndef UTILS_APPLICATIONMESSENGER_H_INCLUDED
+#define UTILS_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef UTILS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define UTILS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef UTILS_THREADS_SINGLELOCK_H_INCLUDED
+#define UTILS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef UTILS_LOG_H_INCLUDED
+#define UTILS_LOG_H_INCLUDED
 #include "log.h"
+#endif
+
+#ifndef UTILS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define UTILS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace std;
 

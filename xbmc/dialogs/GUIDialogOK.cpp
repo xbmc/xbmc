@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "GUIDialogOK.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
 
 #define ID_BUTTON_OK   10
 

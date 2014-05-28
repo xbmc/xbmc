@@ -19,13 +19,41 @@
  *
  */
 
+#ifndef ADDONS_THREADS_CRITICALSECTION_H_INCLUDED
+#define ADDONS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef ADDONS_THREADS_THREAD_H_INCLUDED
+#define ADDONS_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef ADDONS_UTILS_OBSERVER_H_INCLUDED
+#define ADDONS_UTILS_OBSERVER_H_INCLUDED
 #include "utils/Observer.h"
+#endif
+
+#ifndef ADDONS_PVRCLIENT_H_INCLUDED
+#define ADDONS_PVRCLIENT_H_INCLUDED
 #include "PVRClient.h"
+#endif
+
+#ifndef ADDONS_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
+#define ADDONS_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
 #include "pvr/channels/PVRChannel.h"
+#endif
+
+#ifndef ADDONS_PVR_RECORDINGS_PVRRECORDING_H_INCLUDED
+#define ADDONS_PVR_RECORDINGS_PVRRECORDING_H_INCLUDED
 #include "pvr/recordings/PVRRecording.h"
+#endif
+
+#ifndef ADDONS_ADDONS_ADDONDATABASE_H_INCLUDED
+#define ADDONS_ADDONS_ADDONDATABASE_H_INCLUDED
 #include "addons/AddonDatabase.h"
+#endif
+
 
 #include <vector>
 #include <deque>

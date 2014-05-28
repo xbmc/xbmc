@@ -23,8 +23,16 @@
 
 #include <boost/noncopyable.hpp>
 
+#ifndef WAYLAND_EVENTQUEUESTRATEGY_H_INCLUDED
+#define WAYLAND_EVENTQUEUESTRATEGY_H_INCLUDED
 #include "EventQueueStrategy.h"
+#endif
+
+#ifndef WAYLAND_POLLTHREAD_H_INCLUDED
+#define WAYLAND_POLLTHREAD_H_INCLUDED
 #include "PollThread.h"
+#endif
+
 
 class IDllWaylandClient;
 

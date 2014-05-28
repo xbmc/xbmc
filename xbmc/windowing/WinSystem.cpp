@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef WINDOWING_WINSYSTEM_H_INCLUDED
+#define WINDOWING_WINSYSTEM_H_INCLUDED
 #include "WinSystem.h"
+#endif
+
+#ifndef WINDOWING_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define WINDOWING_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h"
+#endif
+
+#ifndef WINDOWING_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#define WINDOWING_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
 #include "settings/DisplaySettings.h"
+#endif
+
+#ifndef WINDOWING_SETTINGS_LIB_SETTING_H_INCLUDED
+#define WINDOWING_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef WINDOWING_SETTINGS_SETTINGS_H_INCLUDED
+#define WINDOWING_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef WINDOWING_UTILS_STRINGUTILS_H_INCLUDED
+#define WINDOWING_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace std;
 

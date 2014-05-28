@@ -18,15 +18,43 @@
  *
  */
 
+#ifndef LEGACY_ADDONSTRING_H_INCLUDED
+#define LEGACY_ADDONSTRING_H_INCLUDED
 #include "AddonString.h"
+#endif
+
+#ifndef LEGACY_TUPLE_H_INCLUDED
+#define LEGACY_TUPLE_H_INCLUDED
 #include "Tuple.h"
+#endif
+
+#ifndef LEGACY_MONITOR_H_INCLUDED
+#define LEGACY_MONITOR_H_INCLUDED
 //#include "Monitor.h"
+#endif
 
+
+#ifndef LEGACY_UTILS_LANGCODEEXPANDER_H_INCLUDED
+#define LEGACY_UTILS_LANGCODEEXPANDER_H_INCLUDED
 #include "utils/LangCodeExpander.h"
-#include "utils/log.h"
-#include "utils/StdString.h"
+#endif
 
+#ifndef LEGACY_UTILS_LOG_H_INCLUDED
+#define LEGACY_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef LEGACY_UTILS_STDSTRING_H_INCLUDED
+#define LEGACY_UTILS_STDSTRING_H_INCLUDED
+#include "utils/StdString.h"
+#endif
+
+
+#ifndef LEGACY_SWIGHELPER_H_INCLUDED
+#define LEGACY_SWIGHELPER_H_INCLUDED
 #include "swighelper.h"
+#endif
+
 #include <vector>
 
 namespace XBMCAddon

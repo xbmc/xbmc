@@ -19,13 +19,29 @@
  */
 
 #include <time.h>
+#ifndef LINUX_SYSTEM_H_INCLUDED
+#define LINUX_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #ifdef TARGET_ANDROID
 #include "android/bionic_supplement/bionic_supplement.h"
 #endif
+#ifndef LINUX_PLATFORMINCLUDE_H_INCLUDED
+#define LINUX_PLATFORMINCLUDE_H_INCLUDED
 #include "PlatformInclude.h"
+#endif
+
+#ifndef LINUX_LINUXTIMEZONE_H_INCLUDED
+#define LINUX_LINUXTIMEZONE_H_INCLUDED
 #include "LinuxTimezone.h"
+#endif
+
+#ifndef LINUX_UTILS_SYSTEMINFO_H_INCLUDED
+#define LINUX_UTILS_SYSTEMINFO_H_INCLUDED
 #include "utils/SystemInfo.h"
+#endif
+
 #if defined(TARGET_DARWIN)
 #include "osx/OSXGNUReplacements.h"
 #endif
@@ -33,11 +49,31 @@
 #include "freebsd/FreeBSDGNUReplacements.h"
 #endif
 
+#ifndef LINUX_UTIL_H_INCLUDED
+#define LINUX_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef LINUX_UTILS_STRINGUTILS_H_INCLUDED
+#define LINUX_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef LINUX_XBDATETIME_H_INCLUDED
+#define LINUX_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef LINUX_SETTINGS_LIB_SETTING_H_INCLUDED
+#define LINUX_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef LINUX_SETTINGS_SETTINGS_H_INCLUDED
+#define LINUX_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
 
 using namespace std;
 

@@ -22,9 +22,21 @@
 #include <string>
 #include <vector>
 
+#ifndef LIB_ISETTING_H_INCLUDED
+#define LIB_ISETTING_H_INCLUDED
 #include "ISetting.h"
+#endif
+
+#ifndef LIB_SETTING_H_INCLUDED
+#define LIB_SETTING_H_INCLUDED
 #include "Setting.h"
+#endif
+
+#ifndef LIB_SETTINGCATEGORYACCESS_H_INCLUDED
+#define LIB_SETTINGCATEGORYACCESS_H_INCLUDED
 #include "SettingCategoryAccess.h"
+#endif
+
 
 class CSettingsManager;
 

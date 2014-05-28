@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef DVDDEMUXERS_DVDDEMUX_H_INCLUDED
+#define DVDDEMUXERS_DVDDEMUX_H_INCLUDED
 #include "DVDDemux.h"
+#endif
+
 
 #include <memory>
 

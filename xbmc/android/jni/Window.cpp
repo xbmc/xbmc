@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef JNI_WINDOW_H_INCLUDED
+#define JNI_WINDOW_H_INCLUDED
 #include "Window.h"
+#endif
+
+#ifndef JNI_VIEW_H_INCLUDED
+#define JNI_VIEW_H_INCLUDED
 #include "View.h"
+#endif
+
 
 #include "jutils/jutils-details.hpp"
 

@@ -17,4 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef WIN32_PCH_H_INCLUDED
+#define WIN32_PCH_H_INCLUDED
 #include "pch.h"
+#endif
+

@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef ACTIVITY_EVENTLOOP_H_INCLUDED
+#define ACTIVITY_EVENTLOOP_H_INCLUDED
 #include "EventLoop.h"
+#endif
+
+#ifndef ACTIVITY_XBMCAPP_H_INCLUDED
+#define ACTIVITY_XBMCAPP_H_INCLUDED
 #include "XBMCApp.h"
+#endif
+
+#ifndef ACTIVITY_ANDROIDEXTRA_H_INCLUDED
+#define ACTIVITY_ANDROIDEXTRA_H_INCLUDED
 #include "AndroidExtra.h"
+#endif
+
 
 #include <dlfcn.h>
 

@@ -19,10 +19,22 @@
  */
 #pragma once
 
+#ifndef VIDEO_SYSTEM_GL_H_INCLUDED
+#define VIDEO_SYSTEM_GL_H_INCLUDED
 #include "system_gl.h"
+#endif
 
+
+#ifndef VIDEO_DLLAVCODEC_H_INCLUDED
+#define VIDEO_DLLAVCODEC_H_INCLUDED
 #include "DllAvCodec.h"
+#endif
+
+#ifndef VIDEO_DVDVIDEOCODECFFMPEG_H_INCLUDED
+#define VIDEO_DVDVIDEOCODECFFMPEG_H_INCLUDED
 #include "DVDVideoCodecFFmpeg.h"
+#endif
+
 #include <libavcodec/vaapi.h>
 #include <va/va.h>
 #include <va/va_x11.h>

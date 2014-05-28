@@ -27,7 +27,11 @@
 
 #include <wayland-client.h>
 
+#ifndef WAYLAND_WINDOWING_WAYLANDPROTOCOL_H_INCLUDED
+#define WAYLAND_WINDOWING_WAYLANDPROTOCOL_H_INCLUDED
 #include "windowing/WaylandProtocol.h"
+#endif
+
 
 class IDllWaylandClient;
 

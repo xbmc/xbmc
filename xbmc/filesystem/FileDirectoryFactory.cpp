@@ -19,10 +19,26 @@
  */
 
 
+#ifndef FILESYSTEM_SYSTEM_H_INCLUDED
+#define FILESYSTEM_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef FILESYSTEM_UTIL_H_INCLUDED
+#define FILESYSTEM_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_FILEDIRECTORYFACTORY_H_INCLUDED
+#define FILESYSTEM_FILEDIRECTORYFACTORY_H_INCLUDED
 #include "FileDirectoryFactory.h"
+#endif
+
 #ifdef HAS_FILESYSTEM
 #include "OGGFileDirectory.h"
 #include "NSFFileDirectory.h"
@@ -38,17 +54,61 @@
 #if defined(TARGET_ANDROID)
 #include "APKDirectory.h"
 #endif
+#ifndef FILESYSTEM_ZIPDIRECTORY_H_INCLUDED
+#define FILESYSTEM_ZIPDIRECTORY_H_INCLUDED
 #include "ZipDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_SMARTPLAYLISTDIRECTORY_H_INCLUDED
+#define FILESYSTEM_SMARTPLAYLISTDIRECTORY_H_INCLUDED
 #include "SmartPlaylistDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
+#define FILESYSTEM_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
 #include "playlists/SmartPlayList.h"
+#endif
+
+#ifndef FILESYSTEM_PLAYLISTFILEDIRECTORY_H_INCLUDED
+#define FILESYSTEM_PLAYLISTFILEDIRECTORY_H_INCLUDED
 #include "PlaylistFileDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_PLAYLISTS_PLAYLISTFACTORY_H_INCLUDED
+#define FILESYSTEM_PLAYLISTS_PLAYLISTFACTORY_H_INCLUDED
 #include "playlists/PlayListFactory.h"
+#endif
+
+#ifndef FILESYSTEM_DIRECTORY_H_INCLUDED
+#define FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "Directory.h"
+#endif
+
+#ifndef FILESYSTEM_FILE_H_INCLUDED
+#define FILESYSTEM_FILE_H_INCLUDED
 #include "File.h"
+#endif
+
+#ifndef FILESYSTEM_ZIPMANAGER_H_INCLUDED
+#define FILESYSTEM_ZIPMANAGER_H_INCLUDED
 #include "ZipManager.h"
+#endif
+
+#ifndef FILESYSTEM_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define FILESYSTEM_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace XFILE;
 using namespace PLAYLIST;

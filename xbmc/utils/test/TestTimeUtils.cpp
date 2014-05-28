@@ -18,10 +18,22 @@
  *
  */
 
+#ifndef TEST_UTILS_TIMEUTILS_H_INCLUDED
+#define TEST_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
-#include "XBDateTime.h"
+#endif
 
+#ifndef TEST_XBDATETIME_H_INCLUDED
+#define TEST_XBDATETIME_H_INCLUDED
+#include "XBDateTime.h"
+#endif
+
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 TEST(TestTimeUtils, CurrentHostCounter)
 {

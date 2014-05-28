@@ -20,8 +20,16 @@
 
 #pragma once
 
+#ifndef LEGACY_ADDONSTRING_H_INCLUDED
+#define LEGACY_ADDONSTRING_H_INCLUDED
 #include "AddonString.h"
+#endif
+
+#ifndef LEGACY_TUPLE_H_INCLUDED
+#define LEGACY_TUPLE_H_INCLUDED
 #include "Tuple.h"
+#endif
+
 #include <vector>
 
 namespace XBMCAddon

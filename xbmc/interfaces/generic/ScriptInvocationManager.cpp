@@ -20,14 +20,46 @@
 
 #include <vector>
 
+#ifndef GENERIC_SCRIPTINVOCATIONMANAGER_H_INCLUDED
+#define GENERIC_SCRIPTINVOCATIONMANAGER_H_INCLUDED
 #include "ScriptInvocationManager.h"
+#endif
+
+#ifndef GENERIC_ILANGUAGEINVOCATIONHANDLER_H_INCLUDED
+#define GENERIC_ILANGUAGEINVOCATIONHANDLER_H_INCLUDED
 #include "ILanguageInvocationHandler.h"
+#endif
+
+#ifndef GENERIC_ILANGUAGEINVOKER_H_INCLUDED
+#define GENERIC_ILANGUAGEINVOKER_H_INCLUDED
 #include "ILanguageInvoker.h"
+#endif
+
+#ifndef GENERIC_LANGUAGEINVOKERTHREAD_H_INCLUDED
+#define GENERIC_LANGUAGEINVOKERTHREAD_H_INCLUDED
 #include "LanguageInvokerThread.h"
+#endif
+
+#ifndef GENERIC_FILESYSTEM_FILE_H_INCLUDED
+#define GENERIC_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef GENERIC_THREADS_SINGLELOCK_H_INCLUDED
+#define GENERIC_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef GENERIC_UTILS_STRINGUTILS_H_INCLUDED
+#define GENERIC_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef GENERIC_UTILS_URIUTILS_H_INCLUDED
+#define GENERIC_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

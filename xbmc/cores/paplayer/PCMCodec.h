@@ -19,7 +19,11 @@
  */
 
 #pragma once
+#ifndef PAPLAYER_CACHINGCODEC_H_INCLUDED
+#define PAPLAYER_CACHINGCODEC_H_INCLUDED
 #include "CachingCodec.h"
+#endif
+
 
 class PCMCodec : public CachingCodec
 {

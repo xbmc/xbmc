@@ -18,33 +18,133 @@
  *
  */
 
+#ifndef JNI_CONTEXT_H_INCLUDED
+#define JNI_CONTEXT_H_INCLUDED
 #include "Context.h"
+#endif
+
+#ifndef JNI_PACKAGEMANAGER_H_INCLUDED
+#define JNI_PACKAGEMANAGER_H_INCLUDED
 #include "PackageManager.h"
+#endif
+
 #include <android/log.h>
+#ifndef JNI_INTENT_H_INCLUDED
+#define JNI_INTENT_H_INCLUDED
 #include "Intent.h"
+#endif
+
+#ifndef JNI_INTENTFILTER_H_INCLUDED
+#define JNI_INTENTFILTER_H_INCLUDED
 #include "IntentFilter.h"
+#endif
+
+#ifndef JNI_CLASSLOADER_H_INCLUDED
+#define JNI_CLASSLOADER_H_INCLUDED
 #include "ClassLoader.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
+#ifndef JNI_BROADCASTRECEIVER_H_INCLUDED
+#define JNI_BROADCASTRECEIVER_H_INCLUDED
 #include "BroadcastReceiver.h"
+#endif
+
+#ifndef JNI_JNITHREADING_H_INCLUDED
+#define JNI_JNITHREADING_H_INCLUDED
 #include "JNIThreading.h"
+#endif
+
+#ifndef JNI_APPLICATIONINFO_H_INCLUDED
+#define JNI_APPLICATIONINFO_H_INCLUDED
 #include "ApplicationInfo.h"
+#endif
+
+#ifndef JNI_FILE_H_INCLUDED
+#define JNI_FILE_H_INCLUDED
 #include "File.h"
+#endif
+
+#ifndef JNI_CONTENTRESOLVER_H_INCLUDED
+#define JNI_CONTENTRESOLVER_H_INCLUDED
 #include "ContentResolver.h"
+#endif
+
+#ifndef JNI_BASECOLUMNS_H_INCLUDED
+#define JNI_BASECOLUMNS_H_INCLUDED
 #include "BaseColumns.h"
+#endif
+
+#ifndef JNI_MEDIASTORE_H_INCLUDED
+#define JNI_MEDIASTORE_H_INCLUDED
 #include "MediaStore.h"
+#endif
+
+#ifndef JNI_POWERMANAGER_H_INCLUDED
+#define JNI_POWERMANAGER_H_INCLUDED
 #include "PowerManager.h"
+#endif
+
+#ifndef JNI_CURSOR_H_INCLUDED
+#define JNI_CURSOR_H_INCLUDED
 #include "Cursor.h"
+#endif
+
+#ifndef JNI_CONNECTIVITYMANAGER_H_INCLUDED
+#define JNI_CONNECTIVITYMANAGER_H_INCLUDED
 #include "ConnectivityManager.h"
+#endif
+
+#ifndef JNI_AUDIOFORMAT_H_INCLUDED
+#define JNI_AUDIOFORMAT_H_INCLUDED
 #include "AudioFormat.h"
+#endif
+
+#ifndef JNI_AUDIOMANAGER_H_INCLUDED
+#define JNI_AUDIOMANAGER_H_INCLUDED
 #include "AudioManager.h"
+#endif
+
+#ifndef JNI_AUDIOTRACK_H_INCLUDED
+#define JNI_AUDIOTRACK_H_INCLUDED
 #include "AudioTrack.h"
+#endif
+
+#ifndef JNI_SURFACE_H_INCLUDED
+#define JNI_SURFACE_H_INCLUDED
 #include "Surface.h"
+#endif
+
+#ifndef JNI_MEDIACODEC_H_INCLUDED
+#define JNI_MEDIACODEC_H_INCLUDED
 #include "MediaCodec.h"
+#endif
+
+#ifndef JNI_MEDIACODECINFO_H_INCLUDED
+#define JNI_MEDIACODECINFO_H_INCLUDED
 #include "MediaCodecInfo.h"
+#endif
+
+#ifndef JNI_MEDIAFORMAT_H_INCLUDED
+#define JNI_MEDIAFORMAT_H_INCLUDED
 #include "MediaFormat.h"
+#endif
+
+#ifndef JNI_WINDOW_H_INCLUDED
+#define JNI_WINDOW_H_INCLUDED
 #include "Window.h"
+#endif
+
+#ifndef JNI_VIEW_H_INCLUDED
+#define JNI_VIEW_H_INCLUDED
 #include "View.h"
+#endif
+
+#ifndef JNI_BUILD_H_INCLUDED
+#define JNI_BUILD_H_INCLUDED
 #include "Build.h"
+#endif
+
 
 #include <android/native_activity.h>
 

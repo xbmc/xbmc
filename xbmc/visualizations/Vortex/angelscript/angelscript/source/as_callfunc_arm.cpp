@@ -37,7 +37,11 @@
 // Written by Fredrik Ehnbom in June 2009, based on as_callfunc_x86.cpp
 
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
 
 #ifndef AS_MAX_PORTABILITY
 #ifdef AS_ARM

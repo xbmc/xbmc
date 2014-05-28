@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef PAPLAYER_YMCODEC_H_INCLUDED
+#define PAPLAYER_YMCODEC_H_INCLUDED
 #include "YMCodec.h"
+#endif
+
+#ifndef PAPLAYER_CORES_DLLLOADER_DLLLOADER_H_INCLUDED
+#define PAPLAYER_CORES_DLLLOADER_DLLLOADER_H_INCLUDED
 #include "cores/DllLoader/DllLoader.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_LOG_H_INCLUDED
+#define PAPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 YMCodec::YMCodec()
 {

@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef DLLLOADER_LIBRARYLOADER_H_INCLUDED
+#define DLLLOADER_LIBRARYLOADER_H_INCLUDED
 #include "LibraryLoader.h"
+#endif
+
 
 class DllLoaderContainer
 {

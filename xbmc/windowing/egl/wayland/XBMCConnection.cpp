@@ -30,27 +30,91 @@
 
 #include <wayland-client.h>
 
+#ifndef WAYLAND_GUILIB_RESOLUTION_H_INCLUDED
+#define WAYLAND_GUILIB_RESOLUTION_H_INCLUDED
 #include "guilib/Resolution.h"
+#endif
+
+#ifndef WAYLAND_GUILIB_GUI3D_H_INCLUDED
+#define WAYLAND_GUILIB_GUI3D_H_INCLUDED
 #include "guilib/gui3d.h"
+#endif
 
+
+#ifndef WAYLAND_UTILS_STRINGUTILS_H_INCLUDED
+#define WAYLAND_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
 
+
+#ifndef WAYLAND_WINDOWING_DLLWAYLANDCLIENT_H_INCLUDED
+#define WAYLAND_WINDOWING_DLLWAYLANDCLIENT_H_INCLUDED
 #include "windowing/DllWaylandClient.h"
+#endif
+
+#ifndef WAYLAND_WINDOWING_DLLXKBCOMMON_H_INCLUDED
+#define WAYLAND_WINDOWING_DLLXKBCOMMON_H_INCLUDED
 #include "windowing/DllXKBCommon.h"
+#endif
 
+
+#ifndef WAYLAND_CALLBACK_H_INCLUDED
+#define WAYLAND_CALLBACK_H_INCLUDED
 #include "Callback.h"
+#endif
+
+#ifndef WAYLAND_COMPOSITOR_H_INCLUDED
+#define WAYLAND_COMPOSITOR_H_INCLUDED
 #include "Compositor.h"
+#endif
+
+#ifndef WAYLAND_DISPLAY_H_INCLUDED
+#define WAYLAND_DISPLAY_H_INCLUDED
 #include "Display.h"
+#endif
+
+#ifndef WAYLAND_OUTPUT_H_INCLUDED
+#define WAYLAND_OUTPUT_H_INCLUDED
 #include "Output.h"
+#endif
+
+#ifndef WAYLAND_REGISTRY_H_INCLUDED
+#define WAYLAND_REGISTRY_H_INCLUDED
 #include "Registry.h"
+#endif
+
+#ifndef WAYLAND_REGION_H_INCLUDED
+#define WAYLAND_REGION_H_INCLUDED
 #include "Region.h"
+#endif
+
+#ifndef WAYLAND_SHELL_H_INCLUDED
+#define WAYLAND_SHELL_H_INCLUDED
 #include "Shell.h"
+#endif
 
+
+#ifndef WAYLAND_WINDOWING_WAYLANDPROTOCOL_H_INCLUDED
+#define WAYLAND_WINDOWING_WAYLANDPROTOCOL_H_INCLUDED
 #include "windowing/WaylandProtocol.h"
-#include "XBMCConnection.h"
+#endif
 
+#ifndef WAYLAND_XBMCCONNECTION_H_INCLUDED
+#define WAYLAND_XBMCCONNECTION_H_INCLUDED
+#include "XBMCConnection.h"
+#endif
+
+
+#ifndef WAYLAND_WINDOWING_WAYLAND_WAYLAND11EVENTQUEUESTRATEGY_H_INCLUDED
+#define WAYLAND_WINDOWING_WAYLAND_WAYLAND11EVENTQUEUESTRATEGY_H_INCLUDED
 #include "windowing/wayland/Wayland11EventQueueStrategy.h"
+#endif
+
+#ifndef WAYLAND_WINDOWING_WAYLAND_WAYLAND12EVENTQUEUESTRATEGY_H_INCLUDED
+#define WAYLAND_WINDOWING_WAYLAND_WAYLAND12EVENTQUEUESTRATEGY_H_INCLUDED
 #include "windowing/wayland/Wayland12EventQueueStrategy.h"
+#endif
+
 
 namespace xbmc
 {

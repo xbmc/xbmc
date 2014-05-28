@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_SYSTEMCLOCK_H_INCLUDED
+#define JNI_SYSTEMCLOCK_H_INCLUDED
 #include "SystemClock.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef UTILS_ENDIANSWAP_H_INCLUDED
+#define UTILS_ENDIANSWAP_H_INCLUDED
 #include "EndianSwap.h"
+#endif
+
 
 /* based on libavformat/spdif.c */
 void Endian_Swap16_buf(uint16_t *dst, uint16_t *src, int w)

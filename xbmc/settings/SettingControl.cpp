@@ -20,12 +20,36 @@
 
 #include <vector>
 
+#ifndef SETTINGS_SETTINGCONTROL_H_INCLUDED
+#define SETTINGS_SETTINGCONTROL_H_INCLUDED
 #include "SettingControl.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_LIB_SETTINGDEFINITIONS_H_INCLUDED
+#define SETTINGS_SETTINGS_LIB_SETTINGDEFINITIONS_H_INCLUDED
 #include "settings/lib/SettingDefinitions.h"
+#endif
+
+#ifndef SETTINGS_UTILS_LOG_H_INCLUDED
+#define SETTINGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef SETTINGS_UTILS_STRINGUTILS_H_INCLUDED
+#define SETTINGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef SETTINGS_UTILS_XBMCTINYXML_H_INCLUDED
+#define SETTINGS_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef SETTINGS_UTILS_XMLUTILS_H_INCLUDED
+#define SETTINGS_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
 
 bool CSettingControlCheckmark::SetFormat(const std::string &format)
 {

@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef CORES_IPLAYER_H_INCLUDED
+#define CORES_IPLAYER_H_INCLUDED
 #include "IPlayer.h"
+#endif
+
+#ifndef CORES_THREADS_THREAD_H_INCLUDED
+#define CORES_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
 
 class CDummyVideoPlayer : public IPlayer, public CThread
 {

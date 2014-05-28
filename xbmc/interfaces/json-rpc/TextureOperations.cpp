@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef JSON_RPC_TEXTUREOPERATIONS_H_INCLUDED
+#define JSON_RPC_TEXTUREOPERATIONS_H_INCLUDED
 #include "TextureOperations.h"
+#endif
+
+#ifndef JSON_RPC_TEXTUREDATABASE_H_INCLUDED
+#define JSON_RPC_TEXTUREDATABASE_H_INCLUDED
 #include "TextureDatabase.h"
+#endif
+
+#ifndef JSON_RPC_TEXTURECACHE_H_INCLUDED
+#define JSON_RPC_TEXTURECACHE_H_INCLUDED
 #include "TextureCache.h"
+#endif
+
 
 using namespace JSONRPC;
 

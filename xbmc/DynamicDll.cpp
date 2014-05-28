@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef ROOT_DYNAMICDLL_H_INCLUDED
+#define ROOT_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
+#ifndef ROOT_SECTIONLOADER_H_INCLUDED
+#define ROOT_SECTIONLOADER_H_INCLUDED
 #include "SectionLoader.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_FILE_H_INCLUDED
+#define ROOT_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef ROOT_UTILS_LOG_H_INCLUDED
+#define ROOT_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 using namespace XFILE;
 

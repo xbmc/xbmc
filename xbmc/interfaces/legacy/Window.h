@@ -22,15 +22,43 @@
 
 #include <limits.h>
 
+#ifndef LEGACY_WINDOWEXCEPTION_H_INCLUDED
+#define LEGACY_WINDOWEXCEPTION_H_INCLUDED
 #include "WindowException.h"
+#endif
+
+#ifndef LEGACY_ADDONCALLBACK_H_INCLUDED
+#define LEGACY_ADDONCALLBACK_H_INCLUDED
 #include "AddonCallback.h"
+#endif
+
+#ifndef LEGACY_EXCEPTION_H_INCLUDED
+#define LEGACY_EXCEPTION_H_INCLUDED
 #include "Exception.h"
+#endif
+
+#ifndef LEGACY_CONTROL_H_INCLUDED
+#define LEGACY_CONTROL_H_INCLUDED
 #include "Control.h"
+#endif
+
+#ifndef LEGACY_ADDONSTRING_H_INCLUDED
+#define LEGACY_ADDONSTRING_H_INCLUDED
 #include "AddonString.h"
+#endif
 
+
+#ifndef LEGACY_SWIGHELPER_H_INCLUDED
+#define LEGACY_SWIGHELPER_H_INCLUDED
 #include "swighelper.h"
+#endif
 
+
+#ifndef LEGACY_GUILIB_GUIWINDOW_H_INCLUDED
+#define LEGACY_GUILIB_GUIWINDOW_H_INCLUDED
 #include "guilib/GUIWindow.h"
+#endif
+
 
 namespace XBMCAddon
 {

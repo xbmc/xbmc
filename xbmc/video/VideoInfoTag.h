@@ -20,12 +20,36 @@
  */
 
 #include <vector>
+#ifndef VIDEO_XBDATETIME_H_INCLUDED
+#define VIDEO_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef VIDEO_UTILS_SCRAPERURL_H_INCLUDED
+#define VIDEO_UTILS_SCRAPERURL_H_INCLUDED
 #include "utils/ScraperUrl.h"
+#endif
+
+#ifndef VIDEO_UTILS_FANART_H_INCLUDED
+#define VIDEO_UTILS_FANART_H_INCLUDED
 #include "utils/Fanart.h"
+#endif
+
+#ifndef VIDEO_UTILS_ISORTABLE_H_INCLUDED
+#define VIDEO_UTILS_ISORTABLE_H_INCLUDED
 #include "utils/ISortable.h"
+#endif
+
+#ifndef VIDEO_UTILS_STREAMDETAILS_H_INCLUDED
+#define VIDEO_UTILS_STREAMDETAILS_H_INCLUDED
 #include "utils/StreamDetails.h"
+#endif
+
+#ifndef VIDEO_VIDEO_BOOKMARK_H_INCLUDED
+#define VIDEO_VIDEO_BOOKMARK_H_INCLUDED
 #include "video/Bookmark.h"
+#endif
+
 
 class CArchive;
 class TiXmlNode;

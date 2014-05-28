@@ -18,22 +18,86 @@
  *
  */
 
+#ifndef INPUT_SYSTEM_H_INCLUDED
+#define INPUT_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef INPUT_INTERFACES_BUILTINS_H_INCLUDED
+#define INPUT_INTERFACES_BUILTINS_H_INCLUDED
 #include "interfaces/Builtins.h"
+#endif
+
+#ifndef INPUT_BUTTONTRANSLATOR_H_INCLUDED
+#define INPUT_BUTTONTRANSLATOR_H_INCLUDED
 #include "ButtonTranslator.h"
+#endif
+
+#ifndef INPUT_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define INPUT_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef INPUT_UTILS_URIUTILS_H_INCLUDED
+#define INPUT_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef INPUT_GUILIB_KEY_H_INCLUDED
+#define INPUT_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef INPUT_GUILIB_WINDOWIDS_H_INCLUDED
+#define INPUT_GUILIB_WINDOWIDS_H_INCLUDED
 #include "guilib/WindowIDs.h"
+#endif
+
+#ifndef INPUT_INPUT_XBMC_KEYSYM_H_INCLUDED
+#define INPUT_INPUT_XBMC_KEYSYM_H_INCLUDED
 #include "input/XBMC_keysym.h"
+#endif
+
+#ifndef INPUT_INPUT_XBMC_KEYTABLE_H_INCLUDED
+#define INPUT_INPUT_XBMC_KEYTABLE_H_INCLUDED
 #include "input/XBMC_keytable.h"
+#endif
+
+#ifndef INPUT_FILESYSTEM_FILE_H_INCLUDED
+#define INPUT_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef INPUT_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define INPUT_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef INPUT_FILEITEM_H_INCLUDED
+#define INPUT_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef INPUT_UTILS_STRINGUTILS_H_INCLUDED
+#define INPUT_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef INPUT_UTILS_LOG_H_INCLUDED
+#define INPUT_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef INPUT_UTILS_XBMCTINYXML_H_INCLUDED
+#define INPUT_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef INPUT_XBIRREMOTE_H_INCLUDED
+#define INPUT_XBIRREMOTE_H_INCLUDED
 #include "XBIRRemote.h"
+#endif
+
 
 #if defined(TARGET_WINDOWS)
 #include "input/windows/WINJoystick.h"

@@ -18,23 +18,79 @@
  *
  */
 
+#ifndef TAGS_SYSTEM_H_INCLUDED
+#define TAGS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef TAGS_MUSICINFOTAGLOADERFACTORY_H_INCLUDED
+#define TAGS_MUSICINFOTAGLOADERFACTORY_H_INCLUDED
 #include "MusicInfoTagLoaderFactory.h"
+#endif
+
+#ifndef TAGS_TAGLOADERTAGLIB_H_INCLUDED
+#define TAGS_TAGLOADERTAGLIB_H_INCLUDED
 #include "TagLoaderTagLib.h"
+#endif
+
+#ifndef TAGS_MUSICINFOTAGLOADERCDDA_H_INCLUDED
+#define TAGS_MUSICINFOTAGLOADERCDDA_H_INCLUDED
 #include "MusicInfoTagLoaderCDDA.h"
+#endif
+
+#ifndef TAGS_MUSICINFOTAGLOADERSHN_H_INCLUDED
+#define TAGS_MUSICINFOTAGLOADERSHN_H_INCLUDED
 #include "MusicInfoTagLoaderShn.h"
+#endif
+
 #ifdef HAS_MOD_PLAYER
 #include "cores/ModPlayer.h"
 #endif
+#ifndef TAGS_MUSICINFOTAGLOADERNSF_H_INCLUDED
+#define TAGS_MUSICINFOTAGLOADERNSF_H_INCLUDED
 #include "MusicInfoTagLoaderNSF.h"
+#endif
+
+#ifndef TAGS_MUSICINFOTAGLOADERSPC_H_INCLUDED
+#define TAGS_MUSICINFOTAGLOADERSPC_H_INCLUDED
 #include "MusicInfoTagLoaderSPC.h"
+#endif
+
+#ifndef TAGS_MUSICINFOTAGLOADERYM_H_INCLUDED
+#define TAGS_MUSICINFOTAGLOADERYM_H_INCLUDED
 #include "MusicInfoTagLoaderYM.h"
+#endif
+
+#ifndef TAGS_MUSICINFOTAGLOADERDATABASE_H_INCLUDED
+#define TAGS_MUSICINFOTAGLOADERDATABASE_H_INCLUDED
 #include "MusicInfoTagLoaderDatabase.h"
+#endif
+
+#ifndef TAGS_MUSICINFOTAGLOADERASAP_H_INCLUDED
+#define TAGS_MUSICINFOTAGLOADERASAP_H_INCLUDED
 #include "MusicInfoTagLoaderASAP.h"
+#endif
+
+#ifndef TAGS_MUSICINFOTAGLOADERMIDI_H_INCLUDED
+#define TAGS_MUSICINFOTAGLOADERMIDI_H_INCLUDED
 #include "MusicInfoTagLoaderMidi.h"
+#endif
+
+#ifndef TAGS_UTILS_STRINGUTILS_H_INCLUDED
+#define TAGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef TAGS_UTILS_URIUTILS_H_INCLUDED
+#define TAGS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef TAGS_FILEITEM_H_INCLUDED
+#define TAGS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
 
 #ifdef HAS_ASAP_CODEC
 #include "cores/paplayer/ASAPCodec.h"

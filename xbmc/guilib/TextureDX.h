@@ -20,7 +20,11 @@
 
 #pragma once
 
+#ifndef GUILIB_TEXTURE_H_INCLUDED
+#define GUILIB_TEXTURE_H_INCLUDED
 #include "Texture.h"
+#endif
+
 
 #ifdef HAS_DX
 

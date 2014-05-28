@@ -18,18 +18,66 @@
  *
  */
  
+#ifndef CORES_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define CORES_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef CORES_SYSTEM_H_INCLUDED
+#define CORES_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef CORES_DUMMYVIDEOPLAYER_H_INCLUDED
+#define CORES_DUMMYVIDEOPLAYER_H_INCLUDED
 #include "DummyVideoPlayer.h"
+#endif
+
+#ifndef CORES_GUILIB_GUIFONTMANAGER_H_INCLUDED
+#define CORES_GUILIB_GUIFONTMANAGER_H_INCLUDED
 #include "guilib/GUIFontManager.h"
+#endif
+
+#ifndef CORES_GUILIB_GUITEXTLAYOUT_H_INCLUDED
+#define CORES_GUILIB_GUITEXTLAYOUT_H_INCLUDED
 #include "guilib/GUITextLayout.h"
+#endif
+
+#ifndef CORES_GUILIB_GUIFONT_H_INCLUDED
+#define CORES_GUILIB_GUIFONT_H_INCLUDED
 #include "guilib/GUIFont.h" // for XBFONT_* defines
+#endif
+
+#ifndef CORES_APPLICATION_H_INCLUDED
+#define CORES_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef CORES_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define CORES_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef CORES_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define CORES_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef CORES_UTILS_LOG_H_INCLUDED
+#define CORES_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef CORES_UTILS_TIMEUTILS_H_INCLUDED
+#define CORES_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef CORES_UTILS_STRINGUTILS_H_INCLUDED
+#define CORES_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 CDummyVideoPlayer::CDummyVideoPlayer(IPlayerCallback& callback)
     : IPlayer(callback),

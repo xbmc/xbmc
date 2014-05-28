@@ -18,11 +18,27 @@
  *
  */
 
+#ifndef ROOT_XBMCCONTEXT_H_INCLUDED
+#define ROOT_XBMCCONTEXT_H_INCLUDED
 #include "XbmcContext.h"
+#endif
 
+
+#ifndef ROOT_THREADS_THREAD_H_INCLUDED
+#define ROOT_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef ROOT_COMMONS_EXCEPTION_H_INCLUDED
+#define ROOT_COMMONS_EXCEPTION_H_INCLUDED
 #include "commons/Exception.h"
+#endif
+
+#ifndef ROOT_UTILS_LOG_H_INCLUDED
+#define ROOT_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 namespace XBMC
 {

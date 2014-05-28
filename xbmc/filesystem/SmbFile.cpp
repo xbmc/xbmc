@@ -22,19 +22,67 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#ifndef FILESYSTEM_SYSTEM_H_INCLUDED
+#define FILESYSTEM_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef FILESYSTEM_SMBFILE_H_INCLUDED
+#define FILESYSTEM_SMBFILE_H_INCLUDED
 #include "SmbFile.h"
+#endif
+
+#ifndef FILESYSTEM_PASSWORDMANAGER_H_INCLUDED
+#define FILESYSTEM_PASSWORDMANAGER_H_INCLUDED
 #include "PasswordManager.h"
+#endif
+
+#ifndef FILESYSTEM_SMBDIRECTORY_H_INCLUDED
+#define FILESYSTEM_SMBDIRECTORY_H_INCLUDED
 #include "SMBDirectory.h"
+#endif
+
 #include <libsmbclient.h>
+#ifndef FILESYSTEM_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define FILESYSTEM_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef FILESYSTEM_SETTINGS_SETTINGS_H_INCLUDED
+#define FILESYSTEM_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
+#define FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UTIL_H_INCLUDED
+#define FILESYSTEM_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_TIMEUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef FILESYSTEM_COMMONS_EXCEPTION_H_INCLUDED
+#define FILESYSTEM_COMMONS_EXCEPTION_H_INCLUDED
 #include "commons/Exception.h"
+#endif
+
 
 using namespace XFILE;
 

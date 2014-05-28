@@ -20,19 +20,63 @@
 
 #pragma once
 
+#ifndef LEGACY_CORES_PLAYERCOREFACTORY_PLAYERCOREFACTORY_H_INCLUDED
+#define LEGACY_CORES_PLAYERCOREFACTORY_PLAYERCOREFACTORY_H_INCLUDED
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#endif
 
+
+#ifndef LEGACY_LISTITEM_H_INCLUDED
+#define LEGACY_LISTITEM_H_INCLUDED
 #include "ListItem.h"
-#include "PlayList.h"
-#include "InfoTagVideo.h"
-#include "Exception.h"
-#include "music/tags/MusicInfoTag.h"
-#include "AddonString.h"
-#include "InfoTagMusic.h"
-#include "AddonCallback.h"
-#include "Alternative.h"
+#endif
 
+#ifndef LEGACY_PLAYLIST_H_INCLUDED
+#define LEGACY_PLAYLIST_H_INCLUDED
+#include "PlayList.h"
+#endif
+
+#ifndef LEGACY_INFOTAGVIDEO_H_INCLUDED
+#define LEGACY_INFOTAGVIDEO_H_INCLUDED
+#include "InfoTagVideo.h"
+#endif
+
+#ifndef LEGACY_EXCEPTION_H_INCLUDED
+#define LEGACY_EXCEPTION_H_INCLUDED
+#include "Exception.h"
+#endif
+
+#ifndef LEGACY_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define LEGACY_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef LEGACY_ADDONSTRING_H_INCLUDED
+#define LEGACY_ADDONSTRING_H_INCLUDED
+#include "AddonString.h"
+#endif
+
+#ifndef LEGACY_INFOTAGMUSIC_H_INCLUDED
+#define LEGACY_INFOTAGMUSIC_H_INCLUDED
+#include "InfoTagMusic.h"
+#endif
+
+#ifndef LEGACY_ADDONCALLBACK_H_INCLUDED
+#define LEGACY_ADDONCALLBACK_H_INCLUDED
+#include "AddonCallback.h"
+#endif
+
+#ifndef LEGACY_ALTERNATIVE_H_INCLUDED
+#define LEGACY_ALTERNATIVE_H_INCLUDED
+#include "Alternative.h"
+#endif
+
+
+#ifndef LEGACY_SWIGHELPER_H_INCLUDED
+#define LEGACY_SWIGHELPER_H_INCLUDED
 #include "swighelper.h"
+#endif
+
 
 namespace XBMCAddon
 {

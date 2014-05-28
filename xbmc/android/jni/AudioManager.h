@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef JNI_JNIBASE_H_INCLUDED
+#define JNI_JNIBASE_H_INCLUDED
 #include "JNIBase.h"
+#endif
+
 
 class CJNIAudioManager : public CJNIBase
 {

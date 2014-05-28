@@ -17,7 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef LINUX_HALPROVIDER_H_INCLUDED
+#define LINUX_HALPROVIDER_H_INCLUDED
 #include "HALProvider.h"
+#endif
+
 #ifdef HAS_HAL
 #include "HALManager.h"
 #include "utils/log.h"

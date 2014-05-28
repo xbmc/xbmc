@@ -22,17 +22,61 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef FILESYSTEM_UPNPDIRECTORY_H_INCLUDED
+#define FILESYSTEM_UPNPDIRECTORY_H_INCLUDED
 #include "UPnPDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_NETWORK_UPNP_UPNP_H_INCLUDED
+#define FILESYSTEM_NETWORK_UPNP_UPNP_H_INCLUDED
 #include "network/upnp/UPnP.h"
+#endif
+
+#ifndef FILESYSTEM_NETWORK_UPNP_UPNPINTERNAL_H_INCLUDED
+#define FILESYSTEM_NETWORK_UPNP_UPNPINTERNAL_H_INCLUDED
 #include "network/upnp/UPnPInternal.h"
+#endif
+
+#ifndef FILESYSTEM_PLATINUM_H_INCLUDED
+#define FILESYSTEM_PLATINUM_H_INCLUDED
 #include "Platinum.h"
+#endif
+
+#ifndef FILESYSTEM_PLTSYNCMEDIABROWSER_H_INCLUDED
+#define FILESYSTEM_PLTSYNCMEDIABROWSER_H_INCLUDED
 #include "PltSyncMediaBrowser.h"
+#endif
+
+#ifndef FILESYSTEM_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define FILESYSTEM_VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "video/VideoInfoTag.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace MUSIC_INFO;
 using namespace XFILE;

@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef GENERIC_INPUT_TOUCH_GENERIC_IGENERICTOUCHGESTUREDETECTOR_H_INCLUDED
+#define GENERIC_INPUT_TOUCH_GENERIC_IGENERICTOUCHGESTUREDETECTOR_H_INCLUDED
 #include "input/touch/generic/IGenericTouchGestureDetector.h"
+#endif
+
 
 /*!
  * \ingroup touch_generic

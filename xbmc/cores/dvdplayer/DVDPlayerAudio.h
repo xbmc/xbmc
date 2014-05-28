@@ -19,16 +19,48 @@
  */
 
 #pragma once
+#ifndef DVDPLAYER_THREADS_THREAD_H_INCLUDED
+#define DVDPLAYER_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
 
+
+#ifndef DVDPLAYER_DVDAUDIO_H_INCLUDED
+#define DVDPLAYER_DVDAUDIO_H_INCLUDED
 #include "DVDAudio.h"
-#include "DVDClock.h"
-#include "DVDMessageQueue.h"
-#include "DVDDemuxers/DVDDemuxUtils.h"
-#include "DVDStreamInfo.h"
-#include "utils/BitstreamStats.h"
+#endif
 
+#ifndef DVDPLAYER_DVDCLOCK_H_INCLUDED
+#define DVDPLAYER_DVDCLOCK_H_INCLUDED
+#include "DVDClock.h"
+#endif
+
+#ifndef DVDPLAYER_DVDMESSAGEQUEUE_H_INCLUDED
+#define DVDPLAYER_DVDMESSAGEQUEUE_H_INCLUDED
+#include "DVDMessageQueue.h"
+#endif
+
+#ifndef DVDPLAYER_DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
+#define DVDPLAYER_DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
+#include "DVDDemuxers/DVDDemuxUtils.h"
+#endif
+
+#ifndef DVDPLAYER_DVDSTREAMINFO_H_INCLUDED
+#define DVDPLAYER_DVDSTREAMINFO_H_INCLUDED
+#include "DVDStreamInfo.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_BITSTREAMSTATS_H_INCLUDED
+#define DVDPLAYER_UTILS_BITSTREAMSTATS_H_INCLUDED
+#include "utils/BitstreamStats.h"
+#endif
+
+
+#ifndef DVDPLAYER_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
+#define DVDPLAYER_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
+#endif
+
 
 #include <list>
 #include <queue>

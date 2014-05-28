@@ -20,8 +20,16 @@
 
 #pragma once
 
+#ifndef FILESYSTEM_MUSICFILEDIRECTORY_H_INCLUDED
+#define FILESYSTEM_MUSICFILEDIRECTORY_H_INCLUDED
 #include "MusicFileDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_DLLASAP_H_INCLUDED
+#define FILESYSTEM_DLLASAP_H_INCLUDED
 #include "DllASAP.h"
+#endif
+
 
 namespace XFILE
 {

@@ -18,17 +18,61 @@
  *
  */
 
+#ifndef SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
 #include "MediaSourceSettings.h"
+#endif
+
+#ifndef SETTINGS_URL_H_INCLUDED
+#define SETTINGS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef SETTINGS_UTIL_H_INCLUDED
+#define SETTINGS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef SETTINGS_FILESYSTEM_FILE_H_INCLUDED
+#define SETTINGS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef SETTINGS_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define SETTINGS_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef SETTINGS_UTILS_LOG_H_INCLUDED
+#define SETTINGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef SETTINGS_UTILS_STRINGUTILS_H_INCLUDED
+#define SETTINGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef SETTINGS_UTILS_URIUTILS_H_INCLUDED
+#define SETTINGS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef SETTINGS_UTILS_XBMCTINYXML_H_INCLUDED
+#define SETTINGS_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef SETTINGS_UTILS_XMLUTILS_H_INCLUDED
+#define SETTINGS_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef SETTINGS_NETWORK_WAKEONACCESS_H_INCLUDED
+#define SETTINGS_NETWORK_WAKEONACCESS_H_INCLUDED
 #include "network/WakeOnAccess.h"
+#endif
+
 
 #define SOURCES_FILE  "sources.xml"
 #define XML_SOURCES   "sources"

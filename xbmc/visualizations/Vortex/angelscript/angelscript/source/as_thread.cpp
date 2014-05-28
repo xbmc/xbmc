@@ -36,9 +36,21 @@
 // Functions for multi threading support
 //
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
+#ifndef SOURCE_AS_THREAD_H_INCLUDED
+#define SOURCE_AS_THREAD_H_INCLUDED
 #include "as_thread.h"
+#endif
+
+#ifndef SOURCE_AS_ATOMIC_H_INCLUDED
+#define SOURCE_AS_ATOMIC_H_INCLUDED
 #include "as_atomic.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

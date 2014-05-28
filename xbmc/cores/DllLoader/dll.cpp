@@ -18,14 +18,42 @@
  *
  */
 
+#ifndef DLLLOADER_DLL_H_INCLUDED
+#define DLLLOADER_DLL_H_INCLUDED
 #include "dll.h"
+#endif
+
+#ifndef DLLLOADER_DLLLOADER_H_INCLUDED
+#define DLLLOADER_DLLLOADER_H_INCLUDED
 #include "DllLoader.h"
+#endif
+
+#ifndef DLLLOADER_DLLLOADERCONTAINER_H_INCLUDED
+#define DLLLOADER_DLLLOADERCONTAINER_H_INCLUDED
 #include "DllLoaderContainer.h"
+#endif
+
+#ifndef DLLLOADER_DLL_TRACKER_H_INCLUDED
+#define DLLLOADER_DLL_TRACKER_H_INCLUDED
 #include "dll_tracker.h"
+#endif
+
+#ifndef DLLLOADER_DLL_UTIL_H_INCLUDED
+#define DLLLOADER_DLL_UTIL_H_INCLUDED
 #include "dll_util.h"
+#endif
+
 #include <climits>
+#ifndef DLLLOADER_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define DLLLOADER_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef DLLLOADER_UTILS_LOG_H_INCLUDED
+#define DLLLOADER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #define DEFAULT_DLLPATH "special://xbmc/system/players/mplayer/codecs/"
 #define HIGH_WORD(a) ((uintptr_t)(a) >> 16)

@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef WINDOWS_GUILIB_GUIDIALOG_H_INCLUDED
+#define WINDOWS_GUILIB_GUIDIALOG_H_INCLUDED
 #include "guilib/GUIDialog.h"
+#endif
+
 #ifdef TARGET_POSIX
 #include "linux/LinuxResourceCounter.h"
 #endif

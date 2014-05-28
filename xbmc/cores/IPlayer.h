@@ -20,11 +20,31 @@
  *
  */
 
+#ifndef CORES_SYSTEM_H_INCLUDED
+#define CORES_SYSTEM_H_INCLUDED
 #include "system.h" // until we get sane int types used here
+#endif
+
+#ifndef CORES_IAUDIOCALLBACK_H_INCLUDED
+#define CORES_IAUDIOCALLBACK_H_INCLUDED
 #include "IAudioCallback.h"
+#endif
+
+#ifndef CORES_IPLAYERCALLBACK_H_INCLUDED
+#define CORES_IPLAYERCALLBACK_H_INCLUDED
 #include "IPlayerCallback.h"
+#endif
+
+#ifndef CORES_UTILS_STDSTRING_H_INCLUDED
+#define CORES_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef CORES_GUILIB_GEOMETRY_H_INCLUDED
+#define CORES_GUILIB_GEOMETRY_H_INCLUDED
 #include "guilib/Geometry.h"
+#endif
+
 
 struct TextCacheStruct_t;
 class TiXmlElement;

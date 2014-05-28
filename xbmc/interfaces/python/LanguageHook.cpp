@@ -19,13 +19,37 @@
  */
 
 
+#ifndef PYTHON_LANGUAGEHOOK_H_INCLUDED
+#define PYTHON_LANGUAGEHOOK_H_INCLUDED
 #include "LanguageHook.h"
-#include "CallbackHandler.h"
-#include "XBPython.h"
+#endif
 
+#ifndef PYTHON_CALLBACKHANDLER_H_INCLUDED
+#define PYTHON_CALLBACKHANDLER_H_INCLUDED
+#include "CallbackHandler.h"
+#endif
+
+#ifndef PYTHON_XBPYTHON_H_INCLUDED
+#define PYTHON_XBPYTHON_H_INCLUDED
+#include "XBPython.h"
+#endif
+
+
+#ifndef PYTHON_INTERFACES_LEGACY_ADDONUTILS_H_INCLUDED
+#define PYTHON_INTERFACES_LEGACY_ADDONUTILS_H_INCLUDED
 #include "interfaces/legacy/AddonUtils.h"
+#endif
+
+#ifndef PYTHON_UTILS_GLOBALSHANDLING_H_INCLUDED
+#define PYTHON_UTILS_GLOBALSHANDLING_H_INCLUDED
 #include "utils/GlobalsHandling.h"
+#endif
+
+#ifndef PYTHON_PYCONTEXT_H_INCLUDED
+#define PYTHON_PYCONTEXT_H_INCLUDED
 #include "PyContext.h"
+#endif
+
 
 namespace XBMCAddon
 {

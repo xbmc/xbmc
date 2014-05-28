@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef WIN32_WINDOWHELPER_H_INCLUDED
+#define WIN32_WINDOWHELPER_H_INCLUDED
 #include "WindowHelper.h"
+#endif
+
+#ifndef WIN32____UTIL_H_INCLUDED
+#define WIN32____UTIL_H_INCLUDED
 #include "../Util.h"
+#endif
+
 
 extern HWND g_hWnd;
 

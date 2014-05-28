@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef DLLLOADER_DLL_TRACKER_FILE_H_INCLUDED
+#define DLLLOADER_DLL_TRACKER_FILE_H_INCLUDED
 #include "dll_tracker_file.h"
+#endif
+
+#ifndef DLLLOADER_DLL_TRACKER_H_INCLUDED
+#define DLLLOADER_DLL_TRACKER_H_INCLUDED
 #include "dll_tracker.h"
+#endif
+
+#ifndef DLLLOADER_DLLLOADER_H_INCLUDED
+#define DLLLOADER_DLLLOADER_H_INCLUDED
 #include "DllLoader.h"
+#endif
+
+#ifndef DLLLOADER_THREADS_SINGLELOCK_H_INCLUDED
+#define DLLLOADER_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef DLLLOADER_UTILS_LOG_H_INCLUDED
+#define DLLLOADER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #ifdef TARGET_POSIX
 #define dll_open open

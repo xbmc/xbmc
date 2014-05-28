@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef GUILIB_GUIACTION_H_INCLUDED
+#define GUILIB_GUIACTION_H_INCLUDED
 #include "GUIAction.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "GUIWindowManager.h"
+#endif
+
+#ifndef GUILIB_GUICONTROL_H_INCLUDED
+#define GUILIB_GUICONTROL_H_INCLUDED
 #include "GUIControl.h"
+#endif
+
+#ifndef GUILIB_GUIINFOMANAGER_H_INCLUDED
+#define GUILIB_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
 
 using namespace std;
 

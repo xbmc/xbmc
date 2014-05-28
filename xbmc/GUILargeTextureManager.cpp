@@ -18,16 +18,56 @@
  *
  */
 
+#ifndef ROOT_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define ROOT_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef ROOT_GUILARGETEXTUREMANAGER_H_INCLUDED
+#define ROOT_GUILARGETEXTUREMANAGER_H_INCLUDED
 #include "GUILargeTextureManager.h"
+#endif
+
+#ifndef ROOT_SETTINGS_SETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef ROOT_GUILIB_TEXTURE_H_INCLUDED
+#define ROOT_GUILIB_TEXTURE_H_INCLUDED
 #include "guilib/Texture.h"
+#endif
+
+#ifndef ROOT_THREADS_SINGLELOCK_H_INCLUDED
+#define ROOT_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef ROOT_UTILS_TIMEUTILS_H_INCLUDED
+#define ROOT_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef ROOT_UTILS_JOBMANAGER_H_INCLUDED
+#define ROOT_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
+#ifndef ROOT_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define ROOT_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h"
+#endif
+
+#ifndef ROOT_UTILS_LOG_H_INCLUDED
+#define ROOT_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ROOT_TEXTURECACHE_H_INCLUDED
+#define ROOT_TEXTURECACHE_H_INCLUDED
 #include "TextureCache.h"
+#endif
+
 
 using namespace std;
 

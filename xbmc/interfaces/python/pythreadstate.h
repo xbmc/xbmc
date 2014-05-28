@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef PYTHON_THREADS_SINGLELOCK_H_INCLUDED
+#define PYTHON_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 
 //WARNING: since this will unlock/lock the python global interpreter lock,
 //         it will not work recursively

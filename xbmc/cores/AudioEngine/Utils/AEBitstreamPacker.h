@@ -21,7 +21,11 @@
 
 #include <stdint.h>
 #include <list>
+#ifndef UTILS_AEPACKIEC61937_H_INCLUDED
+#define UTILS_AEPACKIEC61937_H_INCLUDED
 #include "AEPackIEC61937.h"
+#endif
+
 
 class CAEStreamInfo;
 

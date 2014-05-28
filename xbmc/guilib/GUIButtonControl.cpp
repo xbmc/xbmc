@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef GUILIB_GUIBUTTONCONTROL_H_INCLUDED
+#define GUILIB_GUIBUTTONCONTROL_H_INCLUDED
 #include "GUIButtonControl.h"
+#endif
+
+#ifndef GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "GUIWindowManager.h"
+#endif
+
+#ifndef GUILIB_GUIDIALOG_H_INCLUDED
+#define GUILIB_GUIDIALOG_H_INCLUDED
 #include "GUIDialog.h"
+#endif
+
+#ifndef GUILIB_GUIFONTMANAGER_H_INCLUDED
+#define GUILIB_GUIFONTMANAGER_H_INCLUDED
 #include "GUIFontManager.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
 
 using namespace std;
 

@@ -17,29 +17,121 @@
 *  <http://www.gnu.org/licenses/>.
 *
 */
+#ifndef ADDONS_SCRAPER_H_INCLUDED
+#define ADDONS_SCRAPER_H_INCLUDED
 #include "Scraper.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_FILE_H_INCLUDED
+#define ADDONS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define ADDONS_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_CURLFILE_H_INCLUDED
+#define ADDONS_FILESYSTEM_CURLFILE_H_INCLUDED
 #include "filesystem/CurlFile.h"
+#endif
+
+#ifndef ADDONS_ADDONMANAGER_H_INCLUDED
+#define ADDONS_ADDONMANAGER_H_INCLUDED
 #include "AddonManager.h"
+#endif
+
+#ifndef ADDONS_UTILS_SCRAPERPARSER_H_INCLUDED
+#define ADDONS_UTILS_SCRAPERPARSER_H_INCLUDED
 #include "utils/ScraperParser.h"
+#endif
+
+#ifndef ADDONS_UTILS_SCRAPERURL_H_INCLUDED
+#define ADDONS_UTILS_SCRAPERURL_H_INCLUDED
 #include "utils/ScraperUrl.h"
+#endif
+
+#ifndef ADDONS_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define ADDONS_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef ADDONS_UTILS_LOG_H_INCLUDED
+#define ADDONS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ADDONS_MUSIC_INFOSCANNER_MUSICALBUMINFO_H_INCLUDED
+#define ADDONS_MUSIC_INFOSCANNER_MUSICALBUMINFO_H_INCLUDED
 #include "music/infoscanner/MusicAlbumInfo.h"
+#endif
+
+#ifndef ADDONS_MUSIC_INFOSCANNER_MUSICARTISTINFO_H_INCLUDED
+#define ADDONS_MUSIC_INFOSCANNER_MUSICARTISTINFO_H_INCLUDED
 #include "music/infoscanner/MusicArtistInfo.h"
+#endif
+
+#ifndef ADDONS_UTILS_FSTRCMP_H_INCLUDED
+#define ADDONS_UTILS_FSTRCMP_H_INCLUDED
 #include "utils/fstrcmp.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef ADDONS_FILEITEM_H_INCLUDED
+#define ADDONS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef ADDONS_UTILS_URIUTILS_H_INCLUDED
+#define ADDONS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef ADDONS_UTILS_XMLUTILS_H_INCLUDED
+#define ADDONS_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef ADDONS_UTILS_STRINGUTILS_H_INCLUDED
+#define ADDONS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ADDONS_MUSIC_MUSICDATABASE_H_INCLUDED
+#define ADDONS_MUSIC_MUSICDATABASE_H_INCLUDED
 #include "music/MusicDatabase.h"
+#endif
+
+#ifndef ADDONS_VIDEO_VIDEODATABASE_H_INCLUDED
+#define ADDONS_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
+#ifndef ADDONS_MUSIC_ALBUM_H_INCLUDED
+#define ADDONS_MUSIC_ALBUM_H_INCLUDED
 #include "music/Album.h"
+#endif
+
+#ifndef ADDONS_MUSIC_ARTIST_H_INCLUDED
+#define ADDONS_MUSIC_ARTIST_H_INCLUDED
 #include "music/Artist.h"
+#endif
+
+#ifndef ADDONS_UTIL_H_INCLUDED
+#define ADDONS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef ADDONS_URL_H_INCLUDED
+#define ADDONS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 #include <sstream>
 

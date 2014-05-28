@@ -20,11 +20,31 @@
  *
  */
 
+#ifndef DIALOGS_GUILIB_GUIDIALOG_H_INCLUDED
+#define DIALOGS_GUILIB_GUIDIALOG_H_INCLUDED
 #include "guilib/GUIDialog.h"
+#endif
+
+#ifndef DIALOGS_FILESYSTEM_VIRTUALDIRECTORY_H_INCLUDED
+#define DIALOGS_FILESYSTEM_VIRTUALDIRECTORY_H_INCLUDED
 #include "filesystem/VirtualDirectory.h"
+#endif
+
+#ifndef DIALOGS_FILESYSTEM_DIRECTORYHISTORY_H_INCLUDED
+#define DIALOGS_FILESYSTEM_DIRECTORYHISTORY_H_INCLUDED
 #include "filesystem/DirectoryHistory.h"
+#endif
+
+#ifndef DIALOGS_VIEW_GUIVIEWCONTROL_H_INCLUDED
+#define DIALOGS_VIEW_GUIVIEWCONTROL_H_INCLUDED
 #include "view/GUIViewControl.h"
+#endif
+
+#ifndef DIALOGS_PICTURES_PICTURETHUMBLOADER_H_INCLUDED
+#define DIALOGS_PICTURES_PICTURETHUMBLOADER_H_INCLUDED
 #include "pictures/PictureThumbLoader.h"
+#endif
+
 
 class CFileItem;
 class CFileItemList;

@@ -20,7 +20,11 @@
 
 #include <locale>
 
+#ifndef UTILS_JSONVARIANTWRITER_H_INCLUDED
+#define UTILS_JSONVARIANTWRITER_H_INCLUDED
 #include "JSONVariantWriter.h"
+#endif
+
 
 using namespace std;
 

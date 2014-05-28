@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef PAPLAYER_OGGCODEC_H_INCLUDED
+#define PAPLAYER_OGGCODEC_H_INCLUDED
 #include "OGGcodec.h"
+#endif
+
+#ifndef PAPLAYER_FILEITEM_H_INCLUDED
+#define PAPLAYER_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_LOG_H_INCLUDED
+#define PAPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_URIUTILS_H_INCLUDED
+#define PAPLAYER_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef PAPLAYER_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define PAPLAYER_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
+#ifndef PAPLAYER_MUSIC_TAGS_TAGLOADERTAGLIB_H_INCLUDED
+#define PAPLAYER_MUSIC_TAGS_TAGLOADERTAGLIB_H_INCLUDED
 #include "music/tags/TagLoaderTagLib.h"
+#endif
+
 
 OGGCodec::OGGCodec() : m_callback(m_file)
 {

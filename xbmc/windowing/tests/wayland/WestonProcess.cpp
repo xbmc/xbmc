@@ -29,10 +29,22 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+#ifndef WAYLAND_UTIL_H_INCLUDED
+#define WAYLAND_UTIL_H_INCLUDED
 #include "Util.h"
-#include "utils/StdString.h"
+#endif
 
+#ifndef WAYLAND_UTILS_STDSTRING_H_INCLUDED
+#define WAYLAND_UTILS_STDSTRING_H_INCLUDED
+#include "utils/StdString.h"
+#endif
+
+
+#ifndef WAYLAND_WESTONPROCESS_H_INCLUDED
+#define WAYLAND_WESTONPROCESS_H_INCLUDED
 #include "WestonProcess.h"
+#endif
+
 
 namespace xt = xbmc::test;
 

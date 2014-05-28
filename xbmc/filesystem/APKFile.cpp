@@ -22,12 +22,32 @@
 // Basically the same format as zip.
 // We might want to refactor CFileZip someday...
 //////////////////////////////////////////////////////////////////////
+#ifndef FILESYSTEM_SYSTEM_H_INCLUDED
+#define FILESYSTEM_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
 
+
+#ifndef FILESYSTEM_APKFILE_H_INCLUDED
+#define FILESYSTEM_APKFILE_H_INCLUDED
 #include "APKFile.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 
 #include <zip.h>
 

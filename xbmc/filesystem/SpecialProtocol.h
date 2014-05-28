@@ -20,7 +20,11 @@
  */
 
 #include <map>
+#ifndef FILESYSTEM_UTILS_STDSTRING_H_INCLUDED
+#define FILESYSTEM_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 // static class for path translation from our special:// URLs.
 

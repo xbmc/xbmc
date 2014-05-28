@@ -26,10 +26,26 @@
 //
 // ****************************************************************************
 
+#ifndef GUILIB_ANIMATEDGIF_H_INCLUDED
+#define GUILIB_ANIMATEDGIF_H_INCLUDED
 #include "AnimatedGif.h"
+#endif
+
+#ifndef GUILIB_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define GUILIB_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef GUILIB_UTILS_ENDIANSWAP_H_INCLUDED
+#define GUILIB_UTILS_ENDIANSWAP_H_INCLUDED
 #include "utils/EndianSwap.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #ifdef TARGET_WINDOWS
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);

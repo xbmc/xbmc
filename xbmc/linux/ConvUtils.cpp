@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef LINUX_PLATFORMDEFS_H_INCLUDED
+#define LINUX_PLATFORMDEFS_H_INCLUDED
 #include "PlatformDefs.h"
+#endif
+
 
 #ifdef TARGET_POSIX
 

@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef JNI_JNIBASE_H_INCLUDED
+#define JNI_JNIBASE_H_INCLUDED
 #include "JNIBase.h"
+#endif
+
+#ifndef JNI_BROADCASTRECEIVER_H_INCLUDED
+#define JNI_BROADCASTRECEIVER_H_INCLUDED
 #include "BroadcastReceiver.h"
+#endif
+
 
 struct ANativeActivity;
 class CJNIIntent;

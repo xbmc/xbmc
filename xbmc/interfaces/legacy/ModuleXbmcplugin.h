@@ -18,15 +18,39 @@
  *
  */
 
+#ifndef LEGACY_TUPLE_H_INCLUDED
+#define LEGACY_TUPLE_H_INCLUDED
 #include "Tuple.h"
+#endif
 
+
+#ifndef LEGACY_ADDONSTRING_H_INCLUDED
+#define LEGACY_ADDONSTRING_H_INCLUDED
 #include "AddonString.h"
+#endif
+
+#ifndef LEGACY_LISTITEM_H_INCLUDED
+#define LEGACY_LISTITEM_H_INCLUDED
 #include "ListItem.h"
+#endif
 
+
+#ifndef LEGACY_UTILS_LOG_H_INCLUDED
+#define LEGACY_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
 
+
+#ifndef LEGACY_SORTFILEITEM_H_INCLUDED
+#define LEGACY_SORTFILEITEM_H_INCLUDED
 #include "SortFileItem.h"
+#endif
+
+#ifndef LEGACY_SWIGHELPER_H_INCLUDED
+#define LEGACY_SWIGHELPER_H_INCLUDED
 #include "swighelper.h"
+#endif
+
 
 namespace XBMCAddon
 {

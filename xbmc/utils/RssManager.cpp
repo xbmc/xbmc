@@ -18,18 +18,66 @@
  *
  */
 
+#ifndef UTILS_RSSMANAGER_H_INCLUDED
+#define UTILS_RSSMANAGER_H_INCLUDED
 #include "RssManager.h"
+#endif
+
+#ifndef UTILS_ADDONS_ADDONINSTALLER_H_INCLUDED
+#define UTILS_ADDONS_ADDONINSTALLER_H_INCLUDED
 #include "addons/AddonInstaller.h"
+#endif
+
+#ifndef UTILS_ADDONS_ADDONMANAGER_H_INCLUDED
+#define UTILS_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef UTILS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define UTILS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_FILE_H_INCLUDED
+#define UTILS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef UTILS_INTERFACES_BUILTINS_H_INCLUDED
+#define UTILS_INTERFACES_BUILTINS_H_INCLUDED
 #include "interfaces/Builtins.h"
+#endif
+
+#ifndef UTILS_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define UTILS_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef UTILS_SETTINGS_LIB_SETTING_H_INCLUDED
+#define UTILS_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef UTILS_THREADS_SINGLELOCK_H_INCLUDED
+#define UTILS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef UTILS_UTILS_LOG_H_INCLUDED
+#define UTILS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef UTILS_UTILS_RSSREADER_H_INCLUDED
+#define UTILS_UTILS_RSSREADER_H_INCLUDED
 #include "utils/RssReader.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

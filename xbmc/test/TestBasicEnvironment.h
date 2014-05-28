@@ -19,7 +19,11 @@
  */
 #pragma once
 
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 class TestBasicEnvironment : public testing::Environment
 {

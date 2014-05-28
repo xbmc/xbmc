@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef GUILIB_IIMAGE_H_INCLUDED
+#define GUILIB_IIMAGE_H_INCLUDED
 #include "iimage.h"
+#endif
+
+#ifndef GUILIB_PICTURES_DLLIMAGELIB_H_INCLUDED
+#define GUILIB_PICTURES_DLLIMAGELIB_H_INCLUDED
 #include "pictures/DllImageLib.h"
+#endif
+
 
 class CXImage : public IImage
 {

@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef OVERLAY_SYSTEM_H_INCLUDED
+#define OVERLAY_SYSTEM_H_INCLUDED
 #include "system.h" // for SAFE_RELEASE
+#endif
+
+#ifndef OVERLAY_DVDOVERLAY_H_INCLUDED
+#define OVERLAY_DVDOVERLAY_H_INCLUDED
 #include "DVDOverlay.h"
+#endif
+
+#ifndef OVERLAY_______DVDSUBTITLES_DVDSUBTITLESLIBASS_H_INCLUDED
+#define OVERLAY_______DVDSUBTITLES_DVDSUBTITLESLIBASS_H_INCLUDED
 #include "../../DVDSubtitles/DVDSubtitlesLibass.h"
+#endif
+
 
 class CDVDOverlaySSA : public CDVDOverlay
 {

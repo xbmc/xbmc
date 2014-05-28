@@ -74,13 +74,21 @@ even if they're a different size
 
 */
 
+#ifndef VIDEORENDERERS_SYSTEM_H_INCLUDED
+#define VIDEORENDERERS_SYSTEM_H_INCLUDED
 #include "system.h" //HAS_DX, HAS_GL, HAS_GLES, opengl headers, direct3d headers
+#endif
+
 
 #ifdef HAS_DX
   #include "guilib/D3DResource.h"
 #endif
 
+#ifndef VIDEORENDERERS_THREADS_EVENT_H_INCLUDED
+#define VIDEORENDERERS_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
 
 enum ECAPTURESTATE
 {

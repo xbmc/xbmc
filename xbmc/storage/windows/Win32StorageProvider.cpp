@@ -17,13 +17,41 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef WINDOWS_WIN32STORAGEPROVIDER_H_INCLUDED
+#define WINDOWS_WIN32STORAGEPROVIDER_H_INCLUDED
 #include "Win32StorageProvider.h"
+#endif
+
+#ifndef WINDOWS_WIN32UTIL_H_INCLUDED
+#define WINDOWS_WIN32UTIL_H_INCLUDED
 #include "WIN32Util.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define WINDOWS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef WINDOWS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define WINDOWS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef WINDOWS_STORAGE_MEDIAMANAGER_H_INCLUDED
+#define WINDOWS_STORAGE_MEDIAMANAGER_H_INCLUDED
 #include "storage/MediaManager.h"
+#endif
+
+#ifndef WINDOWS_UTILS_JOBMANAGER_H_INCLUDED
+#define WINDOWS_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
+#ifndef WINDOWS_UTILS_LOG_H_INCLUDED
+#define WINDOWS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 bool CWin32StorageProvider::xbevent = false;
 

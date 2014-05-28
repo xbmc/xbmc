@@ -22,8 +22,16 @@
 #include <map>
 #include <string>
 
+#ifndef ROOT_URL_H_INCLUDED
+#define ROOT_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef ROOT_UTILS_URLOPTIONS_H_INCLUDED
+#define ROOT_UTILS_URLOPTIONS_H_INCLUDED
 #include "utils/UrlOptions.h"
+#endif
+
 
 class CDbUrl : public CUrlOptions
 {

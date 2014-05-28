@@ -18,19 +18,71 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGMEDIAFILTER_H_INCLUDED
+#define DIALOGS_GUIDIALOGMEDIAFILTER_H_INCLUDED
 #include "GUIDialogMediaFilter.h"
+#endif
+
+#ifndef DIALOGS_FILEITEM_H_INCLUDED
+#define DIALOGS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef DIALOGS_GUIUSERMESSAGES_H_INCLUDED
+#define DIALOGS_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef DIALOGS_XBDATETIME_H_INCLUDED
+#define DIALOGS_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef DIALOGS_DIALOGS_GUIDIALOGSELECT_H_INCLUDED
+#define DIALOGS_DIALOGS_GUIDIALOGSELECT_H_INCLUDED
 #include "dialogs/GUIDialogSelect.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef DIALOGS_MUSIC_MUSICDATABASE_H_INCLUDED
+#define DIALOGS_MUSIC_MUSICDATABASE_H_INCLUDED
 #include "music/MusicDatabase.h"
+#endif
+
+#ifndef DIALOGS_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
+#define DIALOGS_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
 #include "playlists/SmartPlayList.h"
+#endif
+
+#ifndef DIALOGS_UTILS_LOG_H_INCLUDED
+#define DIALOGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DIALOGS_UTILS_MATHUTILS_H_INCLUDED
+#define DIALOGS_UTILS_MATHUTILS_H_INCLUDED
 #include "utils/MathUtils.h"
+#endif
+
+#ifndef DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
+#define DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef DIALOGS_VIDEO_VIDEODATABASE_H_INCLUDED
+#define DIALOGS_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
 
 #define TIMEOUT_DELAY             500
 

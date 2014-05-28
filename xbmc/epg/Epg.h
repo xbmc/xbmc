@@ -20,14 +20,38 @@
  *
  */
 
+#ifndef EPG_FILEITEM_H_INCLUDED
+#define EPG_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
 
+
+#ifndef EPG_THREADS_CRITICALSECTION_H_INCLUDED
+#define EPG_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
 
+
+#ifndef EPG_EPGINFOTAG_H_INCLUDED
+#define EPG_EPGINFOTAG_H_INCLUDED
 #include "EpgInfoTag.h"
+#endif
+
+#ifndef EPG_EPGSEARCHFILTER_H_INCLUDED
+#define EPG_EPGSEARCHFILTER_H_INCLUDED
 #include "EpgSearchFilter.h"
+#endif
+
+#ifndef EPG_UTILS_OBSERVER_H_INCLUDED
+#define EPG_UTILS_OBSERVER_H_INCLUDED
 #include "utils/Observer.h"
+#endif
+
+#ifndef EPG_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
+#define EPG_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
 #include "pvr/channels/PVRChannel.h"
+#endif
+
 
 namespace PVR
 {

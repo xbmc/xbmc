@@ -18,13 +18,41 @@
  *
  */
 
+#ifndef ROOT_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define ROOT_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef ROOT_SYSTEM_H_INCLUDED
+#define ROOT_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef ROOT_SECTIONLOADER_H_INCLUDED
+#define ROOT_SECTIONLOADER_H_INCLUDED
 #include "SectionLoader.h"
+#endif
+
+#ifndef ROOT_CORES_DLLLOADER_DLLLOADERCONTAINER_H_INCLUDED
+#define ROOT_CORES_DLLLOADER_DLLLOADERCONTAINER_H_INCLUDED
 #include "cores/DllLoader/DllLoaderContainer.h"
+#endif
+
+#ifndef ROOT_THREADS_SINGLELOCK_H_INCLUDED
+#define ROOT_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef ROOT_UTILS_LOG_H_INCLUDED
+#define ROOT_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ROOT_UTILS_TIMEUTILS_H_INCLUDED
+#define ROOT_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
 
 using namespace std;
 

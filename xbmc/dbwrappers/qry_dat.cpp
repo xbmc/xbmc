@@ -30,8 +30,16 @@
  *              on string values that are 1 or 0
  **********************************************************************/
 
+#ifndef DBWRAPPERS_QRY_DAT_H_INCLUDED
+#define DBWRAPPERS_QRY_DAT_H_INCLUDED
 #include "qry_dat.h"
+#endif
+
+#ifndef DBWRAPPERS_SYSTEM_H_INCLUDED
+#define DBWRAPPERS_SYSTEM_H_INCLUDED
 #include "system.h" // for PRId64
+#endif
+
 
 #include <stdio.h>
 #include <stdlib.h>

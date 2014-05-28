@@ -21,8 +21,16 @@
  *
  */
 
+#ifndef FILESYSTEM_FILE_H_INCLUDED
+#define FILESYSTEM_FILE_H_INCLUDED
 #include "File.h"
+#endif
+
+#ifndef FILESYSTEM_IFILE_H_INCLUDED
+#define FILESYSTEM_IFILE_H_INCLUDED
 #include "IFile.h"
+#endif
+
 
 namespace XFILE
 {

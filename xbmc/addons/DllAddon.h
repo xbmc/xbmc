@@ -19,8 +19,16 @@
 *
 */
 
+#ifndef ADDONS_DYNAMICDLL_H_INCLUDED
+#define ADDONS_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
+#ifndef ADDONS_ADDONS_INCLUDE_XBMC_ADDON_CPP_DLL_H_INCLUDED
+#define ADDONS_ADDONS_INCLUDE_XBMC_ADDON_CPP_DLL_H_INCLUDED
 #include "addons/include/xbmc_addon_cpp_dll.h"
+#endif
+
 
 template <typename TheStruct, typename Props>
 class DllAddonInterface

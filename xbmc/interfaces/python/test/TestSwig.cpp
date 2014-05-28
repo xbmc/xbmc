@@ -18,9 +18,17 @@
  *
  */
 
+#ifndef TEST____SWIG_H_INCLUDED
+#define TEST____SWIG_H_INCLUDED
 #include "../swig.h"
+#endif
 
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 using namespace PythonBindings;
 

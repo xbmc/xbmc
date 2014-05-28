@@ -18,19 +18,67 @@
  *
  */
 
+#ifndef JSON_RPC_PVROPERATIONS_H_INCLUDED
+#define JSON_RPC_PVROPERATIONS_H_INCLUDED
 #include "PVROperations.h"
-#include "ApplicationMessenger.h"
-#include "utils/log.h"
+#endif
 
+#ifndef JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
+#define JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
+#include "ApplicationMessenger.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_LOG_H_INCLUDED
+#define JSON_RPC_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+
+#ifndef JSON_RPC_PVR_PVRMANAGER_H_INCLUDED
+#define JSON_RPC_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef JSON_RPC_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define JSON_RPC_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#endif
+
+#ifndef JSON_RPC_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
+#define JSON_RPC_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
 #include "pvr/channels/PVRChannel.h"
+#endif
+
+#ifndef JSON_RPC_PVR_TIMERS_PVRTIMERS_H_INCLUDED
+#define JSON_RPC_PVR_TIMERS_PVRTIMERS_H_INCLUDED
 #include "pvr/timers/PVRTimers.h"
+#endif
+
+#ifndef JSON_RPC_PVR_TIMERS_PVRTIMERINFOTAG_H_INCLUDED
+#define JSON_RPC_PVR_TIMERS_PVRTIMERINFOTAG_H_INCLUDED
 #include "pvr/timers/PVRTimerInfoTag.h"
+#endif
+
+#ifndef JSON_RPC_PVR_RECORDINGS_PVRRECORDINGS_H_INCLUDED
+#define JSON_RPC_PVR_RECORDINGS_PVRRECORDINGS_H_INCLUDED
 #include "pvr/recordings/PVRRecordings.h"
+#endif
+
+#ifndef JSON_RPC_PVR_TIMERS_PVRTIMERS_H_INCLUDED
+#define JSON_RPC_PVR_TIMERS_PVRTIMERS_H_INCLUDED
 #include "pvr/timers/PVRTimers.h"
+#endif
+
+#ifndef JSON_RPC_EPG_EPG_H_INCLUDED
+#define JSON_RPC_EPG_EPG_H_INCLUDED
 #include "epg/Epg.h"
+#endif
+
+#ifndef JSON_RPC_EPG_EPGCONTAINER_H_INCLUDED
+#define JSON_RPC_EPG_EPGCONTAINER_H_INCLUDED
 #include "epg/EpgContainer.h"
+#endif
+
 
 using namespace std;
 using namespace JSONRPC;

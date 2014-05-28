@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef ACTIVITY_ANDROIDKEY_H_INCLUDED
+#define ACTIVITY_ANDROIDKEY_H_INCLUDED
 #include "AndroidKey.h"
+#endif
+
+#ifndef ACTIVITY_ANDROIDEXTRA_H_INCLUDED
+#define ACTIVITY_ANDROIDEXTRA_H_INCLUDED
 #include "AndroidExtra.h"
+#endif
+
+#ifndef ACTIVITY_XBMCAPP_H_INCLUDED
+#define ACTIVITY_XBMCAPP_H_INCLUDED
 #include "XBMCApp.h"
+#endif
+
+#ifndef ACTIVITY_GUILIB_KEY_H_INCLUDED
+#define ACTIVITY_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef ACTIVITY_WINDOWING_WINEVENTS_H_INCLUDED
+#define ACTIVITY_WINDOWING_WINEVENTS_H_INCLUDED
 #include "windowing/WinEvents.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_KEYCHARACTERMAP_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_KEYCHARACTERMAP_H_INCLUDED
 #include "android/jni/KeyCharacterMap.h"
+#endif
+
 
 
 typedef struct {

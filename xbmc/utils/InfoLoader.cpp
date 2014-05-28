@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef UTILS_INFOLOADER_H_INCLUDED
+#define UTILS_INFOLOADER_H_INCLUDED
 #include "InfoLoader.h"
+#endif
+
+#ifndef UTILS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define UTILS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef UTILS_JOBMANAGER_H_INCLUDED
+#define UTILS_JOBMANAGER_H_INCLUDED
 #include "JobManager.h"
+#endif
+
+#ifndef UTILS_TIMEUTILS_H_INCLUDED
+#define UTILS_TIMEUTILS_H_INCLUDED
 #include "TimeUtils.h"
+#endif
+
 
 CInfoLoader::CInfoLoader(unsigned int timeToRefresh)
 {

@@ -23,14 +23,46 @@
 // Comment OUT, if not really debugging!!!:
 //#define DEBUG_KEYBOARD_GETCHAR
 
+#ifndef INPUT_KEYBOARDSTAT_H_INCLUDED
+#define INPUT_KEYBOARDSTAT_H_INCLUDED
 #include "KeyboardStat.h"
+#endif
+
+#ifndef INPUT_KEYBOARDLAYOUTCONFIGURATION_H_INCLUDED
+#define INPUT_KEYBOARDLAYOUTCONFIGURATION_H_INCLUDED
 #include "KeyboardLayoutConfiguration.h"
+#endif
+
+#ifndef INPUT_WINDOWING_XBMC_EVENTS_H_INCLUDED
+#define INPUT_WINDOWING_XBMC_EVENTS_H_INCLUDED
 #include "windowing/XBMC_events.h"
+#endif
+
+#ifndef INPUT_UTILS_TIMEUTILS_H_INCLUDED
+#define INPUT_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef INPUT_INPUT_XBMC_KEYTABLE_H_INCLUDED
+#define INPUT_INPUT_XBMC_KEYTABLE_H_INCLUDED
 #include "input/XBMC_keytable.h"
+#endif
+
+#ifndef INPUT_INPUT_XBMC_VKEYS_H_INCLUDED
+#define INPUT_INPUT_XBMC_VKEYS_H_INCLUDED
 #include "input/XBMC_vkeys.h"
+#endif
+
+#ifndef INPUT_PERIPHERALS_PERIPHERALS_H_INCLUDED
+#define INPUT_PERIPHERALS_PERIPHERALS_H_INCLUDED
 #include "peripherals/Peripherals.h"
+#endif
+
+#ifndef INPUT_PERIPHERALS_DEVICES_PERIPHERALHID_H_INCLUDED
+#define INPUT_PERIPHERALS_DEVICES_PERIPHERALHID_H_INCLUDED
 #include "peripherals/devices/PeripheralHID.h"
+#endif
+
 
 using namespace std;
 using namespace PERIPHERALS;

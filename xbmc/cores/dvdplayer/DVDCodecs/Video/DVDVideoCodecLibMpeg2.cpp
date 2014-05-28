@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef VIDEO_DVDVIDEOCODECLIBMPEG2_H_INCLUDED
+#define VIDEO_DVDVIDEOCODECLIBMPEG2_H_INCLUDED
 #include "DVDVideoCodecLibMpeg2.h"
+#endif
+
+#ifndef VIDEO_DVDCLOCK_H_INCLUDED
+#define VIDEO_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h"
+#endif
+
+#ifndef VIDEO_DVDSTREAMINFO_H_INCLUDED
+#define VIDEO_DVDSTREAMINFO_H_INCLUDED
 #include "DVDStreamInfo.h"
+#endif
+
+#ifndef VIDEO_UTILS_LOG_H_INCLUDED
+#define VIDEO_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 enum MPEGProfile
 {

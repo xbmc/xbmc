@@ -34,8 +34,16 @@
 // The implementation of the garbage collector
 //
 
+#ifndef SOURCE_AS_ATOMIC_H_INCLUDED
+#define SOURCE_AS_ATOMIC_H_INCLUDED
 #include "as_atomic.h"
+#endif
+
+#ifndef SOURCE_THREADS_ATOMICS_H_INCLUDED
+#define SOURCE_THREADS_ATOMICS_H_INCLUDED
 #include "threads/Atomics.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

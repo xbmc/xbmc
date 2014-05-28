@@ -22,13 +22,41 @@
 #include <map>
 #include <string>
 
+#ifndef DIALOGS_DBURL_H_INCLUDED
+#define DIALOGS_DBURL_H_INCLUDED
 #include "DbUrl.h"
+#endif
+
+#ifndef DIALOGS_DBWRAPPERS_DATABASE_H_INCLUDED
+#define DIALOGS_DBWRAPPERS_DATABASE_H_INCLUDED
 #include "dbwrappers/Database.h"
+#endif
+
+#ifndef DIALOGS_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
+#define DIALOGS_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
 #include "playlists/SmartPlayList.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_DIALOGS_GUIDIALOGSETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_DIALOGS_GUIDIALOGSETTINGS_H_INCLUDED
 #include "settings/dialogs/GUIDialogSettings.h"
+#endif
+
+#ifndef DIALOGS_THREADS_TIMER_H_INCLUDED
+#define DIALOGS_THREADS_TIMER_H_INCLUDED
 #include "threads/Timer.h"
+#endif
+
+#ifndef DIALOGS_UTILS_DATABASEUTILS_H_INCLUDED
+#define DIALOGS_UTILS_DATABASEUTILS_H_INCLUDED
 #include "utils/DatabaseUtils.h"
+#endif
+
+#ifndef DIALOGS_UTILS_STDSTRING_H_INCLUDED
+#define DIALOGS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 class CFileItemList;
 

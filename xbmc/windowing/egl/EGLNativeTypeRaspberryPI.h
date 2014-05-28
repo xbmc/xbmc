@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef EGL_EGLNATIVETYPE_H_INCLUDED
+#define EGL_EGLNATIVETYPE_H_INCLUDED
 #include "EGLNativeType.h"
+#endif
+
 #if defined(TARGET_RASPBERRY_PI)
 #include <semaphore.h>
 #include <bcm_host.h>

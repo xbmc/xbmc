@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef VIDEO_CONFIG_H_INCLUDED
+#define VIDEO_CONFIG_H_INCLUDED
 #include "config.h"
+#endif
+
 
 #if defined(TARGET_DARWIN_OSX)
 #include "system_gl.h"

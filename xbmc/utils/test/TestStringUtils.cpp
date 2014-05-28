@@ -18,9 +18,17 @@
  *
  */
 
+#ifndef TEST_UTILS_STRINGUTILS_H_INCLUDED
+#define TEST_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
 
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 TEST(TestStringUtils, Format)
 {

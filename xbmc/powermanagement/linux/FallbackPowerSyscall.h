@@ -18,8 +18,16 @@
  *
  */
 #pragma once
+#ifndef LINUX_POWERMANAGEMENT_IPOWERSYSCALL_H_INCLUDED
+#define LINUX_POWERMANAGEMENT_IPOWERSYSCALL_H_INCLUDED
 #include "powermanagement/IPowerSyscall.h"
+#endif
+
+#ifndef LINUX_SYSTEM_H_INCLUDED
+#define LINUX_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #if defined(TARGET_POSIX)
 
 class CFallbackPowerSyscall : public CPowerSyscallWithoutEvents

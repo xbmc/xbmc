@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_BYTEBUFFER_H_INCLUDED
+#define JNI_BYTEBUFFER_H_INCLUDED
 #include "ByteBuffer.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

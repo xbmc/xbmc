@@ -19,11 +19,31 @@
  *
  */
 
+#ifndef ADDONS_ADDONS_ADDON_H_INCLUDED
+#define ADDONS_ADDONS_ADDON_H_INCLUDED
 #include "addons/Addon.h"
+#endif
+
+#ifndef ADDONS_ADDONS_ADDONDLL_H_INCLUDED
+#define ADDONS_ADDONS_ADDONDLL_H_INCLUDED
 #include "addons/AddonDll.h"
+#endif
+
+#ifndef ADDONS_ADDONS_DLLPVRCLIENT_H_INCLUDED
+#define ADDONS_ADDONS_DLLPVRCLIENT_H_INCLUDED
 #include "addons/DllPVRClient.h"
+#endif
+
+#ifndef ADDONS_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
+#define ADDONS_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
 #include "pvr/channels/PVRChannel.h"
+#endif
+
+#ifndef ADDONS_PVR_RECORDINGS_PVRRECORDINGS_H_INCLUDED
+#define ADDONS_PVR_RECORDINGS_PVRRECORDINGS_H_INCLUDED
 #include "pvr/recordings/PVRRecordings.h"
+#endif
+
 
 namespace EPG
 {

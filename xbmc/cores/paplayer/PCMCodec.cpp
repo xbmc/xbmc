@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef PAPLAYER_PCMCODEC_H_INCLUDED
+#define PAPLAYER_PCMCODEC_H_INCLUDED
 #include "PCMCodec.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_LOG_H_INCLUDED
+#define PAPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_ENDIANSWAP_H_INCLUDED
+#define PAPLAYER_UTILS_ENDIANSWAP_H_INCLUDED
 #include "utils/EndianSwap.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_STRINGUTILS_H_INCLUDED
+#define PAPLAYER_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 PCMCodec::PCMCodec()
 {

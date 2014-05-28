@@ -19,12 +19,36 @@
  *
  */
 
+#ifndef VIDEO_DVDVIDEOCODEC_H_INCLUDED
+#define VIDEO_DVDVIDEOCODEC_H_INCLUDED
 #include "DVDVideoCodec.h"
+#endif
+
+#ifndef VIDEO_CORES_DVDPLAYER_DVDSTREAMINFO_H_INCLUDED
+#define VIDEO_CORES_DVDPLAYER_DVDSTREAMINFO_H_INCLUDED
 #include "cores/dvdplayer/DVDStreamInfo.h"
+#endif
+
+#ifndef VIDEO_CORES_VIDEORENDERERS_RENDERFEATURES_H_INCLUDED
+#define VIDEO_CORES_VIDEORENDERERS_RENDERFEATURES_H_INCLUDED
 #include "cores/VideoRenderers/RenderFeatures.h"
+#endif
+
+#ifndef VIDEO_GUILIB_GEOMETRY_H_INCLUDED
+#define VIDEO_GUILIB_GEOMETRY_H_INCLUDED
 #include "guilib/Geometry.h"
+#endif
+
+#ifndef VIDEO_RENDERING_RENDERSYSTEM_H_INCLUDED
+#define VIDEO_RENDERING_RENDERSYSTEM_H_INCLUDED
 #include "rendering/RenderSystem.h"
+#endif
+
+#ifndef VIDEO_THREADS_THREAD_H_INCLUDED
+#define VIDEO_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
 
 typedef struct am_private_t am_private_t;
 

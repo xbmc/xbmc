@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef NETWORK_DNSNAMECACHE_H_INCLUDED
+#define NETWORK_DNSNAMECACHE_H_INCLUDED
 #include "DNSNameCache.h"
+#endif
+
+#ifndef NETWORK_THREADS_SINGLELOCK_H_INCLUDED
+#define NETWORK_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef NETWORK_UTILS_LOG_H_INCLUDED
+#define NETWORK_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef NETWORK_UTILS_STRINGUTILS_H_INCLUDED
+#define NETWORK_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 #include <netinet/in.h>
 #include <arpa/inet.h>

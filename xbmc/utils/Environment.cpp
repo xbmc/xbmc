@@ -26,7 +26,11 @@
  *  Refined, updated, enhanced and modified for XBMC by Karlson2k.
  */
 
+#ifndef UTILS_ENVIRONMENT_H_INCLUDED
+#define UTILS_ENVIRONMENT_H_INCLUDED
 #include "Environment.h"
+#endif
+
 #include <stdlib.h>
 #ifdef TARGET_WINDOWS
 #include <Windows.h>

@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef ADDONS_ADDONS_ADDON_H_INCLUDED
+#define ADDONS_ADDONS_ADDON_H_INCLUDED
 #include "addons/Addon.h"
+#endif
+
+#ifndef ADDONS_WINDOWS_GUIMEDIAWINDOW_H_INCLUDED
+#define ADDONS_WINDOWS_GUIMEDIAWINDOW_H_INCLUDED
 #include "windows/GUIMediaWindow.h"
+#endif
+
+#ifndef ADDONS_THUMBLOADER_H_INCLUDED
+#define ADDONS_THUMBLOADER_H_INCLUDED
 #include "ThumbLoader.h"
+#endif
+
 
 class CFileItem;
 class CFileItemList;

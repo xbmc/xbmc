@@ -21,8 +21,16 @@
 
 #include <string>
 #include <stdint.h>
+#ifndef INTERFACES_CORES_AUDIOENGINE_INTERFACES_AE_H_INCLUDED
+#define INTERFACES_CORES_AUDIOENGINE_INTERFACES_AE_H_INCLUDED
 #include "cores/AudioEngine/Interfaces/AE.h" // for typedef's used in derived classes
+#endif
+
+#ifndef INTERFACES_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
+#define INTERFACES_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
+#endif
+
 
 class IAESink
 {

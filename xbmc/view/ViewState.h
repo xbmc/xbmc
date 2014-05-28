@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef VIEW_UTILS_SORTUTILS_H_INCLUDED
+#define VIEW_UTILS_SORTUTILS_H_INCLUDED
 #include "utils/SortUtils.h"
+#endif
+
 
 #define DEFAULT_VIEW_AUTO (VIEW_TYPE_AUTO << 16)
 #define DEFAULT_VIEW_LIST (VIEW_TYPE_LIST << 16)

@@ -25,7 +25,11 @@
  *
  */
 
+#ifndef GUILIB_GUIBUTTONCONTROL_H_INCLUDED
+#define GUILIB_GUIBUTTONCONTROL_H_INCLUDED
 #include "GUIButtonControl.h"
+#endif
+
 
 /*!
  \ingroup controls

@@ -20,11 +20,31 @@
 
 #pragma once
 
+#ifndef GUILIB_SYSTEM_H_INCLUDED
+#define GUILIB_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef GUILIB_GUI3D_H_INCLUDED
+#define GUILIB_GUI3D_H_INCLUDED
 #include "gui3d.h"
+#endif
+
+#ifndef GUILIB_UTILS_STDSTRING_H_INCLUDED
+#define GUILIB_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef GUILIB_XBTF_H_INCLUDED
+#define GUILIB_XBTF_H_INCLUDED
 #include "XBTF.h"
+#endif
+
+#ifndef GUILIB_GUILIB_IMAGEFACTORY_H_INCLUDED
+#define GUILIB_GUILIB_IMAGEFACTORY_H_INCLUDED
 #include "guilib/imagefactory.h"
+#endif
+
 
 #pragma pack(1)
 struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color

@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGFULLSCREENINFO_H_INCLUDED
+#define DIALOGS_GUIDIALOGFULLSCREENINFO_H_INCLUDED
 #include "GUIDialogFullScreenInfo.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_KEY_H_INCLUDED
+#define DIALOGS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
 
 CGUIDialogFullScreenInfo::CGUIDialogFullScreenInfo(void)
     : CGUIDialog(WINDOW_DIALOG_FULLSCREEN_INFO, "DialogFullScreenInfo.xml")

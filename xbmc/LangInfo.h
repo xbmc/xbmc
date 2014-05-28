@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef ROOT_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
+#define ROOT_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
 #include "settings/lib/ISettingCallback.h"
+#endif
+
+#ifndef ROOT_UTILS_STDSTRING_H_INCLUDED
+#define ROOT_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 #include <map>
 

@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef PICTURES_DYNAMICDLL_H_INCLUDED
+#define PICTURES_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
 
  #ifdef LoadImage
   #undef LoadImage

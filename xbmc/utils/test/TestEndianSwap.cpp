@@ -18,9 +18,17 @@
  *
  */
 
+#ifndef TEST_UTILS_ENDIANSWAP_H_INCLUDED
+#define TEST_UTILS_ENDIANSWAP_H_INCLUDED
 #include "utils/EndianSwap.h"
+#endif
 
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 TEST(TestEndianSwap, Endian_Swap16)
 {

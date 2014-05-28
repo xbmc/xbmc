@@ -21,7 +21,11 @@
 
 #include <map>
 
+#ifndef UTILS_SORTUTILS_H_INCLUDED
+#define UTILS_SORTUTILS_H_INCLUDED
 #include "SortUtils.h"
+#endif
+
 
 class ISortable
 {

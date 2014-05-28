@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef WINDOWS_GUIWINDOWSTARTUP_H_INCLUDED
+#define WINDOWS_GUIWINDOWSTARTUP_H_INCLUDED
 #include "GUIWindowStartup.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_KEY_H_INCLUDED
+#define WINDOWS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_WINDOWIDS_H_INCLUDED
+#define WINDOWS_GUILIB_WINDOWIDS_H_INCLUDED
 #include "guilib/WindowIDs.h"
+#endif
+
 
 CGUIWindowStartup::CGUIWindowStartup(void)
     : CGUIWindow(WINDOW_STARTUP_ANIM, "Startup.xml")

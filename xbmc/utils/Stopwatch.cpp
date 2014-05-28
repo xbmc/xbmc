@@ -18,12 +18,24 @@
  *
  */
 
+#ifndef UTILS_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define UTILS_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef UTILS_STOPWATCH_H_INCLUDED
+#define UTILS_STOPWATCH_H_INCLUDED
 #include "Stopwatch.h"
+#endif
+
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD)
 #include <sys/sysinfo.h>
 #endif
+#ifndef UTILS_UTILS_TIMEUTILS_H_INCLUDED
+#define UTILS_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
 
 CStopWatch::CStopWatch(bool useFrameTime /*=false*/)
 {

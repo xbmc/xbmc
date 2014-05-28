@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef DVDPLAYER_DVDDEMUXSPU_H_INCLUDED
+#define DVDPLAYER_DVDDEMUXSPU_H_INCLUDED
 #include "DVDDemuxSPU.h"
+#endif
+
+#ifndef DVDPLAYER_DVDCLOCK_H_INCLUDED
+#define DVDPLAYER_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_LOG_H_INCLUDED
+#define DVDPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #undef ALIGN
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))

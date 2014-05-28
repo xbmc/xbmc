@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef LIBSTAGEFRIGHTICS_DVDVIDEOCODEC_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_DVDVIDEOCODEC_H_INCLUDED
 #include "DVDVideoCodec.h"
+#endif
+
 
 class CStageFrightVideo;
 class CApplication;

@@ -26,8 +26,16 @@
 extern "C" {
   #include <ass/ass.h>
 }
+#ifndef DVDSUBTITLES_DYNAMICDLL_H_INCLUDED
+#define DVDSUBTITLES_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
+#ifndef DVDSUBTITLES_UTILS_LOG_H_INCLUDED
+#define DVDSUBTITLES_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #ifndef LIBASS_VERSION /* Legacy version. */
 typedef struct ass_library_s ASS_Library;

@@ -37,12 +37,36 @@
 
 #include <stdio.h> // fopen(), fprintf(), fclose()
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
+#ifndef SOURCE_AS_BYTECODE_H_INCLUDED
+#define SOURCE_AS_BYTECODE_H_INCLUDED
 #include "as_bytecode.h"
+#endif
+
+#ifndef SOURCE_AS_DEBUG_H_INCLUDED
+#define SOURCE_AS_DEBUG_H_INCLUDED
 #include "as_debug.h" // mkdir()
+#endif
+
+#ifndef SOURCE_AS_ARRAY_H_INCLUDED
+#define SOURCE_AS_ARRAY_H_INCLUDED
 #include "as_array.h"
+#endif
+
+#ifndef SOURCE_AS_STRING_H_INCLUDED
+#define SOURCE_AS_STRING_H_INCLUDED
 #include "as_string.h"
+#endif
+
+#ifndef SOURCE_AS_SCRIPTENGINE_H_INCLUDED
+#define SOURCE_AS_SCRIPTENGINE_H_INCLUDED
 #include "as_scriptengine.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

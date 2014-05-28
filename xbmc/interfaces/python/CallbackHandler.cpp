@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef PYTHON_CALLBACKHANDLER_H_INCLUDED
+#define PYTHON_CALLBACKHANDLER_H_INCLUDED
 #include "CallbackHandler.h"
+#endif
+
+#ifndef PYTHON_LANGUAGEHOOK_H_INCLUDED
+#define PYTHON_LANGUAGEHOOK_H_INCLUDED
 #include "LanguageHook.h"
+#endif
+
 
 namespace XBMCAddon
 {

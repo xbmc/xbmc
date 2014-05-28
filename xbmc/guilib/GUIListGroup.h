@@ -25,7 +25,11 @@
  *
  */
 
+#ifndef GUILIB_GUICONTROLGROUP_H_INCLUDED
+#define GUILIB_GUICONTROLGROUP_H_INCLUDED
 #include "GUIControlGroup.h"
+#endif
+
 
 /*!
  \ingroup controls

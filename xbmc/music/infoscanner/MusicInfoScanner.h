@@ -18,10 +18,26 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef INFOSCANNER_THREADS_THREAD_H_INCLUDED
+#define INFOSCANNER_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef INFOSCANNER_MUSIC_MUSICDATABASE_H_INCLUDED
+#define INFOSCANNER_MUSIC_MUSICDATABASE_H_INCLUDED
 #include "music/MusicDatabase.h"
+#endif
+
+#ifndef INFOSCANNER_MUSICALBUMINFO_H_INCLUDED
+#define INFOSCANNER_MUSICALBUMINFO_H_INCLUDED
 #include "MusicAlbumInfo.h"
+#endif
+
+#ifndef INFOSCANNER_MUSICINFOSCRAPER_H_INCLUDED
+#define INFOSCANNER_MUSICINFOSCRAPER_H_INCLUDED
 #include "MusicInfoScraper.h"
+#endif
+
 
 class CAlbum;
 class CArtist;

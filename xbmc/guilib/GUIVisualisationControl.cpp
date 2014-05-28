@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef GUILIB_GUIVISUALISATIONCONTROL_H_INCLUDED
+#define GUILIB_GUIVISUALISATIONCONTROL_H_INCLUDED
 #include "GUIVisualisationControl.h"
+#endif
+
+#ifndef GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "GUIWindowManager.h"
+#endif
+
+#ifndef GUILIB_GUIUSERMESSAGES_H_INCLUDED
+#define GUILIB_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef GUILIB_APPLICATION_H_INCLUDED
+#define GUILIB_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef GUILIB_ADDONS_ADDONMANAGER_H_INCLUDED
+#define GUILIB_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef GUILIB_ADDONS_VISUALISATION_H_INCLUDED
+#define GUILIB_ADDONS_VISUALISATION_H_INCLUDED
 #include "addons/Visualisation.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef GUILIB_GUILIB_IRENDERINGCALLBACK_H_INCLUDED
+#define GUILIB_GUILIB_IRENDERINGCALLBACK_H_INCLUDED
 #include "guilib/IRenderingCallback.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
 
 using namespace std;
 using namespace ADDON;

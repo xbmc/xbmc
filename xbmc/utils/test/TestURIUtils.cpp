@@ -18,11 +18,27 @@
  *
  */
 
+#ifndef TEST_UTILS_URIUTILS_H_INCLUDED
+#define TEST_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
-#include "settings/AdvancedSettings.h"
-#include "URL.h"
+#endif
 
+#ifndef TEST_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define TEST_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef TEST_URL_H_INCLUDED
+#define TEST_URL_H_INCLUDED
+#include "URL.h"
+#endif
+
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 class TestURIUtils : public testing::Test
 {

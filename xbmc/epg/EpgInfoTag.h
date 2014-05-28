@@ -20,12 +20,36 @@
  *
  */
 
+#ifndef EPG_ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
+#define EPG_ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
 #include "addons/include/xbmc_pvr_types.h"
+#endif
+
+#ifndef EPG_XBDATETIME_H_INCLUDED
+#define EPG_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef EPG_UTILS_ISERIALIZABLE_H_INCLUDED
+#define EPG_UTILS_ISERIALIZABLE_H_INCLUDED
 #include "utils/ISerializable.h"
+#endif
+
+#ifndef EPG_UTILS_STRINGUTILS_H_INCLUDED
+#define EPG_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef EPG_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
+#define EPG_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
 #include "pvr/channels/PVRChannel.h"
+#endif
+
+#ifndef EPG_PVR_TIMERS_PVRTIMERINFOTAG_H_INCLUDED
+#define EPG_PVR_TIMERS_PVRTIMERINFOTAG_H_INCLUDED
 #include "pvr/timers/PVRTimerInfoTag.h"
+#endif
+
 
 #include <boost/shared_ptr.hpp>
 

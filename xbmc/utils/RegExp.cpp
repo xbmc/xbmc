@@ -21,11 +21,31 @@
 #include <stdlib.h>
 #include <string.h>
 #include <algorithm> 
+#ifndef UTILS_REGEXP_H_INCLUDED
+#define UTILS_REGEXP_H_INCLUDED
 #include "RegExp.h"
+#endif
+
+#ifndef UTILS_STDSTRING_H_INCLUDED
+#define UTILS_STDSTRING_H_INCLUDED
 #include "StdString.h"
+#endif
+
+#ifndef UTILS_LOG_H_INCLUDED
+#define UTILS_LOG_H_INCLUDED
 #include "log.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UTILS_UTILS_UTF8UTILS_H_INCLUDED
+#define UTILS_UTILS_UTF8UTILS_H_INCLUDED
 #include "utils/Utf8Utils.h"
+#endif
+
 
 using namespace PCRE;
 

@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef DIALOGS_FILESYSTEM_FILE_H_INCLUDED
+#define DIALOGS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef DIALOGS_THREADS_THREAD_H_INCLUDED
+#define DIALOGS_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef DIALOGS_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define DIALOGS_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
 
 class CGUIDialogProgress;
 

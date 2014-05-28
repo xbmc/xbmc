@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef TAGS_UTILS_STDSTRING_H_INCLUDED
+#define TAGS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 namespace MUSIC_INFO
 {

@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef FILESYSTEM_DIRECTORYHISTORY_H_INCLUDED
+#define FILESYSTEM_DIRECTORYHISTORY_H_INCLUDED
 #include "DirectoryHistory.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 
 using namespace std;
 

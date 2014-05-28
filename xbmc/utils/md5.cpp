@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef UTILS_MD5_H_INCLUDED
+#define UTILS_MD5_H_INCLUDED
 #include "md5.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 typedef unsigned char md5byte;
 
@@ -97,7 +105,11 @@ CStdString XBMC::XBMC_MD5::GetMD5(const CStdString &text)
  * Still in the public domain.
  */
 
+#ifndef UTILS_MD5_H_INCLUDED
+#define UTILS_MD5_H_INCLUDED
 #include "md5.h"
+#endif
+
 
 #include <sys/types.h>		/* for stupid systems */
 #include <string.h>		/* for memcpy() */

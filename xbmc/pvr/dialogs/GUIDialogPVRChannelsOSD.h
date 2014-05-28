@@ -19,10 +19,26 @@
  *
  */
 
+#ifndef DIALOGS_GUILIB_GUIDIALOG_H_INCLUDED
+#define DIALOGS_GUILIB_GUIDIALOG_H_INCLUDED
 #include "guilib/GUIDialog.h"
+#endif
+
+#ifndef DIALOGS_VIEW_GUIVIEWCONTROL_H_INCLUDED
+#define DIALOGS_VIEW_GUIVIEWCONTROL_H_INCLUDED
 #include "view/GUIViewControl.h"
+#endif
+
+#ifndef DIALOGS_UTILS_OBSERVER_H_INCLUDED
+#define DIALOGS_UTILS_OBSERVER_H_INCLUDED
 #include "utils/Observer.h"
+#endif
+
+#ifndef DIALOGS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define DIALOGS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#endif
+
 #include <map>
 
 class CFileItemList;

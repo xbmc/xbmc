@@ -18,15 +18,43 @@
  *
  */
 
+#ifndef FILESYSTEM_ZEROCONFDIRECTORY_H_INCLUDED
+#define FILESYSTEM_ZEROCONFDIRECTORY_H_INCLUDED
 #include "ZeroconfDirectory.h"
+#endif
+
 #include <stdexcept>
 
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_NETWORK_ZEROCONFBROWSER_H_INCLUDED
+#define FILESYSTEM_NETWORK_ZEROCONFBROWSER_H_INCLUDED
 #include "network/ZeroconfBrowser.h"
+#endif
+
+#ifndef FILESYSTEM_DIRECTORY_H_INCLUDED
+#define FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "Directory.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 using namespace XFILE;
 

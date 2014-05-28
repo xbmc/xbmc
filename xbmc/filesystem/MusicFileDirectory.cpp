@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef FILESYSTEM_MUSICFILEDIRECTORY_H_INCLUDED
+#define FILESYSTEM_MUSICFILEDIRECTORY_H_INCLUDED
 #include "MusicFileDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define FILESYSTEM_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace MUSIC_INFO;
 using namespace XFILE;

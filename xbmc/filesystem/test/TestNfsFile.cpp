@@ -18,14 +18,30 @@
  *
  */
 
+#ifndef TEST_FILESYSTEM_NFSFILE_H_INCLUDED
+#define TEST_FILESYSTEM_NFSFILE_H_INCLUDED
 #include "filesystem/NFSFile.h"
+#endif
+
+#ifndef TEST_TEST_TESTUTILS_H_INCLUDED
+#define TEST_TEST_TESTUTILS_H_INCLUDED
 #include "test/TestUtils.h"
+#endif
+
 
 #include <errno.h>
 #include <string>
+#ifndef TEST_URL_H_INCLUDED
+#define TEST_URL_H_INCLUDED
 #include "URL.h"
+#endif
 
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 using ::testing::Test;
 using ::testing::WithParamInterface;

@@ -18,24 +18,92 @@
  *
  */
 
+#ifndef EPG_APPLICATION_H_INCLUDED
+#define EPG_APPLICATION_H_INCLUDED
 #include "Application.h"
-#include "threads/SingleLock.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/lib/Setting.h"
-#include "settings/Settings.h"
-#include "dialogs/GUIDialogExtendedProgressBar.h"
-#include "dialogs/GUIDialogProgress.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/log.h"
-#include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/timers/PVRTimers.h"
+#endif
 
+#ifndef EPG_THREADS_SINGLELOCK_H_INCLUDED
+#define EPG_THREADS_SINGLELOCK_H_INCLUDED
+#include "threads/SingleLock.h"
+#endif
+
+#ifndef EPG_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define EPG_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef EPG_SETTINGS_LIB_SETTING_H_INCLUDED
+#define EPG_SETTINGS_LIB_SETTING_H_INCLUDED
+#include "settings/lib/Setting.h"
+#endif
+
+#ifndef EPG_SETTINGS_SETTINGS_H_INCLUDED
+#define EPG_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef EPG_DIALOGS_GUIDIALOGEXTENDEDPROGRESSBAR_H_INCLUDED
+#define EPG_DIALOGS_GUIDIALOGEXTENDEDPROGRESSBAR_H_INCLUDED
+#include "dialogs/GUIDialogExtendedProgressBar.h"
+#endif
+
+#ifndef EPG_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#define EPG_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#include "dialogs/GUIDialogProgress.h"
+#endif
+
+#ifndef EPG_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define EPG_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef EPG_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define EPG_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef EPG_UTILS_LOG_H_INCLUDED
+#define EPG_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef EPG_PVR_PVRMANAGER_H_INCLUDED
+#define EPG_PVR_PVRMANAGER_H_INCLUDED
+#include "pvr/PVRManager.h"
+#endif
+
+#ifndef EPG_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define EPG_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#endif
+
+#ifndef EPG_PVR_TIMERS_PVRTIMERS_H_INCLUDED
+#define EPG_PVR_TIMERS_PVRTIMERS_H_INCLUDED
+#include "pvr/timers/PVRTimers.h"
+#endif
+
+
+#ifndef EPG_EPGCONTAINER_H_INCLUDED
+#define EPG_EPGCONTAINER_H_INCLUDED
 #include "EpgContainer.h"
+#endif
+
+#ifndef EPG_EPG_H_INCLUDED
+#define EPG_EPG_H_INCLUDED
 #include "Epg.h"
+#endif
+
+#ifndef EPG_EPGINFOTAG_H_INCLUDED
+#define EPG_EPGINFOTAG_H_INCLUDED
 #include "EpgInfoTag.h"
+#endif
+
+#ifndef EPG_EPGSEARCHFILTER_H_INCLUDED
+#define EPG_EPGSEARCHFILTER_H_INCLUDED
 #include "EpgSearchFilter.h"
+#endif
+
 
 using namespace std;
 using namespace EPG;

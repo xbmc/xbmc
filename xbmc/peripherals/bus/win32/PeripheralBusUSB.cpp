@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef WIN32_PERIPHERALBUSUSB_H_INCLUDED
+#define WIN32_PERIPHERALBUSUSB_H_INCLUDED
 #include "PeripheralBusUSB.h"
+#endif
+
+#ifndef WIN32_PERIPHERALS_PERIPHERALS_H_INCLUDED
+#define WIN32_PERIPHERALS_PERIPHERALS_H_INCLUDED
 #include "peripherals/Peripherals.h"
+#endif
+
+#ifndef WIN32_UTILS_LOG_H_INCLUDED
+#define WIN32_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef WIN32_UTILS_STRINGUTILS_H_INCLUDED
+#define WIN32_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 const static GUID USB_RAW_GUID = { 0xA5DCBF10, 0x6530, 0x11D2, { 0x90, 0x1F, 0x00, 0xC0, 0x4F, 0xB9, 0x51, 0xED } };
 const static GUID USB_HID_GUID = { 0x4D1E55B2, 0xF16F, 0x11CF, { 0x88, 0xCB, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30 } };

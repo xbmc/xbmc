@@ -20,7 +20,11 @@
  */
 
 #include <algorithm>
+#ifndef UTILS_AEAUDIOFORMAT_H_INCLUDED
+#define UTILS_AEAUDIOFORMAT_H_INCLUDED
 #include "AEAudioFormat.h"
+#endif
+
 
 class CAELimiter
 {

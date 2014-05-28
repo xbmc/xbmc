@@ -36,8 +36,16 @@
 //
 
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
+#ifndef SOURCE_AS_VARIABLESCOPE_H_INCLUDED
+#define SOURCE_AS_VARIABLESCOPE_H_INCLUDED
 #include "as_variablescope.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

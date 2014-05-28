@@ -21,10 +21,26 @@
   #define __STDC_LIMIT_MACROS
 #endif
 
+#ifndef UTILS_AECONVERT_H_INCLUDED
+#define UTILS_AECONVERT_H_INCLUDED
 #include "AEConvert.h"
+#endif
+
+#ifndef UTILS_AEUTIL_H_INCLUDED
+#define UTILS_AEUTIL_H_INCLUDED
 #include "AEUtil.h"
+#endif
+
+#ifndef UTILS_UTILS_MATHUTILS_H_INCLUDED
+#define UTILS_UTILS_MATHUTILS_H_INCLUDED
 #include "utils/MathUtils.h"
+#endif
+
+#ifndef UTILS_UTILS_ENDIANSWAP_H_INCLUDED
+#define UTILS_UTILS_ENDIANSWAP_H_INCLUDED
 #include "utils/EndianSwap.h"
+#endif
+
 #include <stdint.h>
 
 #if defined(TARGET_WINDOWS)

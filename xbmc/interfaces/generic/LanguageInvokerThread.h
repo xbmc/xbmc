@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef GENERIC_ILANGUAGEINVOKER_H_INCLUDED
+#define GENERIC_ILANGUAGEINVOKER_H_INCLUDED
 #include "ILanguageInvoker.h"
+#endif
+
+#ifndef GENERIC_THREADS_THREAD_H_INCLUDED
+#define GENERIC_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
 
 class CScriptInvocationManager;
 

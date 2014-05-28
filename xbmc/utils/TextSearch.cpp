@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef UTILS_TEXTSEARCH_H_INCLUDED
+#define UTILS_TEXTSEARCH_H_INCLUDED
 #include "TextSearch.h"
+#endif
+
 
 using namespace std;
 

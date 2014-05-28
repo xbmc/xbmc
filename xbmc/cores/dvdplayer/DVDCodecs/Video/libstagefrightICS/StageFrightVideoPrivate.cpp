@@ -21,22 +21,62 @@
 
 //#define DEBUG_VERBOSE 1
 
+#ifndef LIBSTAGEFRIGHTICS_STAGEFRIGHTVIDEOPRIVATE_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_STAGEFRIGHTVIDEOPRIVATE_H_INCLUDED
 #include "StageFrightVideoPrivate.h"
+#endif
+
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
+#ifndef LIBSTAGEFRIGHTICS_WINDOWING_EGL_EGLWRAPPER_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_WINDOWING_EGL_EGLWRAPPER_H_INCLUDED
 #include "windowing/egl/EGLWrapper.h"
-#include "Application.h"
-#include "ApplicationMessenger.h"
-#include "windowing/WindowingFactory.h"
-#include "settings/AdvancedSettings.h"
-#include "utils/log.h"
-#include "threads/Thread.h"
+#endif
 
+#ifndef LIBSTAGEFRIGHTICS_APPLICATION_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_APPLICATION_H_INCLUDED
+#include "Application.h"
+#endif
+
+#ifndef LIBSTAGEFRIGHTICS_APPLICATIONMESSENGER_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_APPLICATIONMESSENGER_H_INCLUDED
+#include "ApplicationMessenger.h"
+#endif
+
+#ifndef LIBSTAGEFRIGHTICS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef LIBSTAGEFRIGHTICS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef LIBSTAGEFRIGHTICS_UTILS_LOG_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef LIBSTAGEFRIGHTICS_THREADS_THREAD_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_THREADS_THREAD_H_INCLUDED
+#include "threads/Thread.h"
+#endif
+
+
+#ifndef LIBSTAGEFRIGHTICS_ANDROID_JNI_SURFACE_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_ANDROID_JNI_SURFACE_H_INCLUDED
 #include "android/jni/Surface.h"
+#endif
+
+#ifndef LIBSTAGEFRIGHTICS_ANDROID_JNI_SURFACETEXTURE_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_ANDROID_JNI_SURFACETEXTURE_H_INCLUDED
 #include "android/jni/SurfaceTexture.h"
+#endif
+
 
 #define CLASSNAME "CStageFrightVideoPrivate"
 

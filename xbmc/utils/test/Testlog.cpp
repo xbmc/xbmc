@@ -18,14 +18,38 @@
  *
  */
 
+#ifndef TEST_UTILS_LOG_H_INCLUDED
+#define TEST_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef TEST_UTILS_REGEXP_H_INCLUDED
+#define TEST_UTILS_REGEXP_H_INCLUDED
 #include "utils/RegExp.h"
+#endif
+
+#ifndef TEST_FILESYSTEM_FILE_H_INCLUDED
+#define TEST_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef TEST_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define TEST_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
 
+
+#ifndef TEST_TEST_TESTUTILS_H_INCLUDED
+#define TEST_TEST_TESTUTILS_H_INCLUDED
 #include "test/TestUtils.h"
+#endif
 
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 class Testlog : public testing::Test
 {

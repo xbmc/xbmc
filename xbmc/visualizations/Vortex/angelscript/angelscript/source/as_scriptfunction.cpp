@@ -37,13 +37,41 @@
 
 
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
+#ifndef SOURCE_AS_SCRIPTFUNCTION_H_INCLUDED
+#define SOURCE_AS_SCRIPTFUNCTION_H_INCLUDED
 #include "as_scriptfunction.h"
+#endif
+
+#ifndef SOURCE_AS_TOKENDEF_H_INCLUDED
+#define SOURCE_AS_TOKENDEF_H_INCLUDED
 #include "as_tokendef.h"
+#endif
+
+#ifndef SOURCE_AS_SCRIPTENGINE_H_INCLUDED
+#define SOURCE_AS_SCRIPTENGINE_H_INCLUDED
 #include "as_scriptengine.h"
+#endif
+
+#ifndef SOURCE_AS_CALLFUNC_H_INCLUDED
+#define SOURCE_AS_CALLFUNC_H_INCLUDED
 #include "as_callfunc.h"
+#endif
+
+#ifndef SOURCE_AS_BYTECODE_H_INCLUDED
+#define SOURCE_AS_BYTECODE_H_INCLUDED
 #include "as_bytecode.h"
+#endif
+
+#ifndef SOURCE_AS_TEXTS_H_INCLUDED
+#define SOURCE_AS_TEXTS_H_INCLUDED
 #include "as_texts.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

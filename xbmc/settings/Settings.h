@@ -25,11 +25,31 @@
 
 #include <boost/shared_ptr.hpp>
 
+#ifndef SETTINGS_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
+#define SETTINGS_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
 #include "settings/lib/ISettingCallback.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_LIB_ISETTINGCONTROLCREATOR_H_INCLUDED
+#define SETTINGS_SETTINGS_LIB_ISETTINGCONTROLCREATOR_H_INCLUDED
 #include "settings/lib/ISettingControlCreator.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_LIB_ISETTINGCREATOR_H_INCLUDED
+#define SETTINGS_SETTINGS_LIB_ISETTINGCREATOR_H_INCLUDED
 #include "settings/lib/ISettingCreator.h"
+#endif
+
+#ifndef SETTINGS_THREADS_CRITICALSECTION_H_INCLUDED
+#define SETTINGS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef SETTINGS_UTILS_VARIANT_H_INCLUDED
+#define SETTINGS_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
 
 class CSetting;
 class CSettingList;

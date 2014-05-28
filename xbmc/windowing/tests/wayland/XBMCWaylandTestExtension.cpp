@@ -17,7 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef WAYLAND_SYSTEM_H_INCLUDED
+#define WAYLAND_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #include <sstream>
 #include <vector>
@@ -39,7 +43,11 @@ extern "C"
 #include <weston/compositor.h>
 #undef private
 #include <wayland-server.h>
+#ifndef WAYLAND_XBMC_WAYLAND_TEST_SERVER_PROTOCOL_H_INCLUDED
+#define WAYLAND_XBMC_WAYLAND_TEST_SERVER_PROTOCOL_H_INCLUDED
 #include "xbmc_wayland_test_server_protocol.h"
+#endif
+
 }
 
 namespace xbmc

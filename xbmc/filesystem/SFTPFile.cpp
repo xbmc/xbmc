@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef FILESYSTEM_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define FILESYSTEM_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef FILESYSTEM_SFTPFILE_H_INCLUDED
+#define FILESYSTEM_SFTPFILE_H_INCLUDED
 #include "SFTPFile.h"
+#endif
+
 #ifdef HAS_FILESYSTEM_SFTP
 #include "threads/SingleLock.h"
 #include "utils/log.h"

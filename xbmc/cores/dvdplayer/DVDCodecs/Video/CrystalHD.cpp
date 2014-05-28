@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef VIDEO_SYSTEM_H_INCLUDED
+#define VIDEO_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #if defined(TARGET_WINDOWS)
 #include "WIN32Util.h"
 #include "util.h"

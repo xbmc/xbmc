@@ -19,13 +19,41 @@
  */
 
 
+#ifndef INPUT_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define INPUT_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef INPUT_INERTIALSCROLLINGHANDLER_H_INCLUDED
+#define INPUT_INERTIALSCROLLINGHANDLER_H_INCLUDED
 #include "InertialScrollingHandler.h"
+#endif
+
+#ifndef INPUT_APPLICATION_H_INCLUDED
+#define INPUT_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef INPUT_UTILS_TIMEUTILS_H_INCLUDED
+#define INPUT_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef INPUT_GUILIB_KEY_H_INCLUDED
+#define INPUT_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef INPUT_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define INPUT_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef INPUT_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define INPUT_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
 
 #include <cmath>
 

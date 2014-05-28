@@ -23,9 +23,21 @@
 #include <stdio.h>
 #include <string>
 
+#ifndef UTILS_COMMONS_ILOG_H_INCLUDED
+#define UTILS_COMMONS_ILOG_H_INCLUDED
 #include "commons/ilog.h"
+#endif
+
+#ifndef UTILS_THREADS_CRITICALSECTION_H_INCLUDED
+#define UTILS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef UTILS_UTILS_GLOBALSHANDLING_H_INCLUDED
+#define UTILS_UTILS_GLOBALSHANDLING_H_INCLUDED
 #include "utils/GlobalsHandling.h"
+#endif
+
 
 #ifdef __GNUC__
 #define ATTRIB_LOG_FORMAT __attribute__((format(printf,2,3)))

@@ -32,18 +32,62 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
+#ifndef FILESYSTEM_FILE_H_INCLUDED
+#define FILESYSTEM_FILE_H_INCLUDED
 #include "File.h"
+#endif
+
+#ifndef FILESYSTEM_FILEFACTORY_H_INCLUDED
+#define FILESYSTEM_FILEFACTORY_H_INCLUDED
 #include "FileFactory.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UTIL_H_INCLUDED
+#define FILESYSTEM_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 #include <limits>
+#ifndef FILESYSTEM_NPTUTILS_H_INCLUDED
+#define FILESYSTEM_NPTUTILS_H_INCLUDED
 #include "NptUtils.h"
+#endif
+
+#ifndef FILESYSTEM_NPTFILE_H_INCLUDED
+#define FILESYSTEM_NPTFILE_H_INCLUDED
 #include "NptFile.h"
+#endif
+
+#ifndef FILESYSTEM_NPTTHREADS_H_INCLUDED
+#define FILESYSTEM_NPTTHREADS_H_INCLUDED
 #include "NptThreads.h"
+#endif
+
+#ifndef FILESYSTEM_NPTINTERFACES_H_INCLUDED
+#define FILESYSTEM_NPTINTERFACES_H_INCLUDED
 #include "NptInterfaces.h"
+#endif
+
+#ifndef FILESYSTEM_NPTSTRINGS_H_INCLUDED
+#define FILESYSTEM_NPTSTRINGS_H_INCLUDED
 #include "NptStrings.h"
+#endif
+
+#ifndef FILESYSTEM_NPTDEBUG_H_INCLUDED
+#define FILESYSTEM_NPTDEBUG_H_INCLUDED
 #include "NptDebug.h"
+#endif
+
 
 #ifdef TARGET_WINDOWS
 #define S_IWUSR _S_IWRITE

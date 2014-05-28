@@ -17,7 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef LINUX_DEVICEKITDISKSPROVIDER_H_INCLUDED
+#define LINUX_DEVICEKITDISKSPROVIDER_H_INCLUDED
 #include "DeviceKitDisksProvider.h"
+#endif
+
 #ifdef HAS_DBUS
 #include "settings/AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"

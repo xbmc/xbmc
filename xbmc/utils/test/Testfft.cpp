@@ -18,11 +18,27 @@
  *
  */
 
+#ifndef TEST_UTILS_FFT_H_INCLUDED
+#define TEST_UTILS_FFT_H_INCLUDED
 #include "utils/fft.h"
-#include "utils/StdString.h"
-#include "utils/StringUtils.h"
+#endif
 
+#ifndef TEST_UTILS_STDSTRING_H_INCLUDED
+#define TEST_UTILS_STDSTRING_H_INCLUDED
+#include "utils/StdString.h"
+#endif
+
+#ifndef TEST_UTILS_STRINGUTILS_H_INCLUDED
+#define TEST_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 /* refdata[] below was generated using the following Python script.
 

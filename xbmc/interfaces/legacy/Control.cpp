@@ -18,30 +18,118 @@
  *
  */
 
+#ifndef LEGACY_CONTROL_H_INCLUDED
+#define LEGACY_CONTROL_H_INCLUDED
 #include "Control.h"
+#endif
+
+#ifndef LEGACY_LANGUAGEHOOK_H_INCLUDED
+#define LEGACY_LANGUAGEHOOK_H_INCLUDED
 #include "LanguageHook.h"
+#endif
+
+#ifndef LEGACY_ADDONUTILS_H_INCLUDED
+#define LEGACY_ADDONUTILS_H_INCLUDED
 #include "AddonUtils.h"
+#endif
 
+
+#ifndef LEGACY_GUILIB_GUILABEL_H_INCLUDED
+#define LEGACY_GUILIB_GUILABEL_H_INCLUDED
 #include "guilib/GUILabel.h"
-#include "guilib/GUIFontManager.h"
-#include "guilib/GUILabelControl.h"
-#include "guilib/GUIFadeLabelControl.h"
-#include "guilib/GUITextBox.h"
-#include "guilib/GUIButtonControl.h"
-#include "guilib/GUICheckMarkControl.h"
-#include "guilib/GUIImage.h"
-#include "guilib/GUIListContainer.h"
-#include "guilib/GUIProgressControl.h"
-#include "guilib/GUISliderControl.h"
-#include "guilib/GUIRadioButtonControl.h"
-#include "GUIInfoManager.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/GUIEditControl.h"
-#include "guilib/GUIControlFactory.h"
-#include "listproviders/StaticProvider.h"
+#endif
 
+#ifndef LEGACY_GUILIB_GUIFONTMANAGER_H_INCLUDED
+#define LEGACY_GUILIB_GUIFONTMANAGER_H_INCLUDED
+#include "guilib/GUIFontManager.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUILABELCONTROL_H_INCLUDED
+#define LEGACY_GUILIB_GUILABELCONTROL_H_INCLUDED
+#include "guilib/GUILabelControl.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIFADELABELCONTROL_H_INCLUDED
+#define LEGACY_GUILIB_GUIFADELABELCONTROL_H_INCLUDED
+#include "guilib/GUIFadeLabelControl.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUITEXTBOX_H_INCLUDED
+#define LEGACY_GUILIB_GUITEXTBOX_H_INCLUDED
+#include "guilib/GUITextBox.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIBUTTONCONTROL_H_INCLUDED
+#define LEGACY_GUILIB_GUIBUTTONCONTROL_H_INCLUDED
+#include "guilib/GUIButtonControl.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUICHECKMARKCONTROL_H_INCLUDED
+#define LEGACY_GUILIB_GUICHECKMARKCONTROL_H_INCLUDED
+#include "guilib/GUICheckMarkControl.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIIMAGE_H_INCLUDED
+#define LEGACY_GUILIB_GUIIMAGE_H_INCLUDED
+#include "guilib/GUIImage.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUILISTCONTAINER_H_INCLUDED
+#define LEGACY_GUILIB_GUILISTCONTAINER_H_INCLUDED
+#include "guilib/GUIListContainer.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIPROGRESSCONTROL_H_INCLUDED
+#define LEGACY_GUILIB_GUIPROGRESSCONTROL_H_INCLUDED
+#include "guilib/GUIProgressControl.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUISLIDERCONTROL_H_INCLUDED
+#define LEGACY_GUILIB_GUISLIDERCONTROL_H_INCLUDED
+#include "guilib/GUISliderControl.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIRADIOBUTTONCONTROL_H_INCLUDED
+#define LEGACY_GUILIB_GUIRADIOBUTTONCONTROL_H_INCLUDED
+#include "guilib/GUIRadioButtonControl.h"
+#endif
+
+#ifndef LEGACY_GUIINFOMANAGER_H_INCLUDED
+#define LEGACY_GUIINFOMANAGER_H_INCLUDED
+#include "GUIInfoManager.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define LEGACY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIEDITCONTROL_H_INCLUDED
+#define LEGACY_GUILIB_GUIEDITCONTROL_H_INCLUDED
+#include "guilib/GUIEditControl.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUICONTROLFACTORY_H_INCLUDED
+#define LEGACY_GUILIB_GUICONTROLFACTORY_H_INCLUDED
+#include "guilib/GUIControlFactory.h"
+#endif
+
+#ifndef LEGACY_LISTPROVIDERS_STATICPROVIDER_H_INCLUDED
+#define LEGACY_LISTPROVIDERS_STATICPROVIDER_H_INCLUDED
+#include "listproviders/StaticProvider.h"
+#endif
+
+
+#ifndef LEGACY_UTILS_XBMCTINYXML_H_INCLUDED
+#define LEGACY_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef LEGACY_UTILS_STRINGUTILS_H_INCLUDED
+#define LEGACY_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 namespace XBMCAddon
 {

@@ -24,7 +24,11 @@
 #include <stdlib.h>
 
 #include "Common.hpp"
+#ifndef LIBPROJECTM_FATAL_H_INCLUDED
+#define LIBPROJECTM_FATAL_H_INCLUDED
 #include "fatal.h"
+#endif
+
 
 #include "CustomShape.hpp"
 #include "Eval.hpp"
@@ -36,7 +40,11 @@
 #include <map>
 #include "ParamUtils.hpp"
 #include "InitCondUtils.hpp"
+#ifndef LIBPROJECTM_WIPEMALLOC_H_INCLUDED
+#define LIBPROJECTM_WIPEMALLOC_H_INCLUDED
 #include "wipemalloc.h"
+#endif
+
 #include "Algorithms.hpp"
 
 

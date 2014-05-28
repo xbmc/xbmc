@@ -18,28 +18,116 @@
  *
  */
 
+#ifndef UTILS_EDENVIDEOARTUPDATER_H_INCLUDED
+#define UTILS_EDENVIDEOARTUPDATER_H_INCLUDED
 #include "EdenVideoArtUpdater.h"
+#endif
+
+#ifndef UTILS_VIDEO_VIDEODATABASE_H_INCLUDED
+#define UTILS_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
+#ifndef UTILS_VIDEO_VIDEOINFOSCANNER_H_INCLUDED
+#define UTILS_VIDEO_VIDEOINFOSCANNER_H_INCLUDED
 #include "video/VideoInfoScanner.h"
+#endif
+
+#ifndef UTILS_FILEITEM_H_INCLUDED
+#define UTILS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef UTILS_UTILS_LOG_H_INCLUDED
+#define UTILS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef UTILS_UTILS_CRC32_H_INCLUDED
+#define UTILS_UTILS_CRC32_H_INCLUDED
 #include "utils/Crc32.h"
+#endif
+
+#ifndef UTILS_UTILS_URIUTILS_H_INCLUDED
+#define UTILS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef UTILS_UTILS_SCRAPERURL_H_INCLUDED
+#define UTILS_UTILS_SCRAPERURL_H_INCLUDED
 #include "utils/ScraperUrl.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UTILS_TEXTURECACHE_H_INCLUDED
+#define UTILS_TEXTURECACHE_H_INCLUDED
 #include "TextureCache.h"
+#endif
+
+#ifndef UTILS_TEXTURECACHEJOB_H_INCLUDED
+#define UTILS_TEXTURECACHEJOB_H_INCLUDED
 #include "TextureCacheJob.h"
+#endif
+
+#ifndef UTILS_PICTURES_PICTURE_H_INCLUDED
+#define UTILS_PICTURES_PICTURE_H_INCLUDED
 #include "pictures/Picture.h"
+#endif
+
+#ifndef UTILS_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define UTILS_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef UTILS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define UTILS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef UTILS_SETTINGS_SETTINGS_H_INCLUDED
+#define UTILS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef UTILS_GUILIB_TEXTURE_H_INCLUDED
+#define UTILS_GUILIB_TEXTURE_H_INCLUDED
 #include "guilib/Texture.h"
+#endif
+
+#ifndef UTILS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define UTILS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef UTILS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define UTILS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_FILE_H_INCLUDED
+#define UTILS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
+#define UTILS_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
 #include "filesystem/StackDirectory.h"
+#endif
+
+#ifndef UTILS_DIALOGS_GUIDIALOGEXTENDEDPROGRESSBAR_H_INCLUDED
+#define UTILS_DIALOGS_GUIDIALOGEXTENDEDPROGRESSBAR_H_INCLUDED
 #include "dialogs/GUIDialogExtendedProgressBar.h"
+#endif
+
+#ifndef UTILS_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#define UTILS_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
 #include "interfaces/AnnouncementManager.h"
+#endif
+
 
 using namespace std;
 using namespace VIDEO;

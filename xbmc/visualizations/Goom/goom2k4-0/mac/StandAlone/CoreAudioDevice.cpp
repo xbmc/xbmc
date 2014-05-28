@@ -7,7 +7,11 @@
  *
  */
 
+#ifndef STANDALONE_COREAUDIODEVICE_H_INCLUDED
+#define STANDALONE_COREAUDIODEVICE_H_INCLUDED
 #include "CoreAudioDevice.h"
+#endif
+
 
 
 CoreAudioDevice::CoreAudioDevice(AudioDeviceID devId):deviceID(devId) {}

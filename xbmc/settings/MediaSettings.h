@@ -22,10 +22,26 @@
 #include <map>
 #include <string>
 
+#ifndef SETTINGS_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
+#define SETTINGS_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
 #include "settings/lib/ISettingCallback.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_LIB_ISUBSETTINGS_H_INCLUDED
+#define SETTINGS_SETTINGS_LIB_ISUBSETTINGS_H_INCLUDED
 #include "settings/lib/ISubSettings.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_VIDEOSETTINGS_H_INCLUDED
+#define SETTINGS_SETTINGS_VIDEOSETTINGS_H_INCLUDED
 #include "settings/VideoSettings.h"
+#endif
+
+#ifndef SETTINGS_THREADS_CRITICALSECTION_H_INCLUDED
+#define SETTINGS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 #define VOLUME_DRC_MINIMUM 0    // 0dB
 #define VOLUME_DRC_MAXIMUM 6000 // 60dB

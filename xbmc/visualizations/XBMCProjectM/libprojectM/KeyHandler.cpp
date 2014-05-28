@@ -22,9 +22,17 @@
 #include <stdio.h>
 
 #include "Common.hpp"
+#ifndef LIBPROJECTM_FATAL_H_INCLUDED
+#define LIBPROJECTM_FATAL_H_INCLUDED
 #include "fatal.h"
+#endif
+
 #include "KeyHandler.hpp"
+#ifndef LIBPROJECTM_EVENT_H_INCLUDED
+#define LIBPROJECTM_EVENT_H_INCLUDED
 #include "event.h"
+#endif
+
 #include "BeatDetect.hpp"
 #include "PresetChooser.hpp"
 #include "Renderer.hpp"

@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef FILESYSTEM_SPECIALPROTOCOLDIRECTORY_H_INCLUDED
+#define FILESYSTEM_SPECIALPROTOCOLDIRECTORY_H_INCLUDED
 #include "SpecialProtocolDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "SpecialProtocol.h"
+#endif
+
+#ifndef FILESYSTEM_DIRECTORY_H_INCLUDED
+#define FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "Directory.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
 
 using namespace XFILE;
 

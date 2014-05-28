@@ -19,12 +19,36 @@
 */
 
 #include <algorithm>
+#ifndef UTILS_CHARSETDETECTION_H_INCLUDED
+#define UTILS_CHARSETDETECTION_H_INCLUDED
 #include "CharsetDetection.h"
+#endif
+
+#ifndef UTILS_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define UTILS_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UTILS_UTILS_UTF8UTILS_H_INCLUDED
+#define UTILS_UTILS_UTF8UTILS_H_INCLUDED
 #include "utils/Utf8Utils.h"
+#endif
+
+#ifndef UTILS_LANGINFO_H_INCLUDED
+#define UTILS_LANGINFO_H_INCLUDED
 #include "LangInfo.h"
+#endif
+
+#ifndef UTILS_UTILS_LOG_H_INCLUDED
+#define UTILS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 /* XML declaration can be virtually any size (with many-many whitespaces) 
  * but for in real world we don't need to process megabytes of data

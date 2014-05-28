@@ -18,19 +18,67 @@
  *
  */
 
+#ifndef UTILS_SCRAPERPARSER_H_INCLUDED
+#define UTILS_SCRAPERPARSER_H_INCLUDED
 #include "ScraperParser.h"
+#endif
 
+
+#ifndef UTILS_ADDONS_ADDONMANAGER_H_INCLUDED
+#define UTILS_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef UTILS_REGEXP_H_INCLUDED
+#define UTILS_REGEXP_H_INCLUDED
 #include "RegExp.h"
+#endif
+
+#ifndef UTILS_HTMLUTIL_H_INCLUDED
+#define UTILS_HTMLUTIL_H_INCLUDED
 #include "HTMLUtil.h"
+#endif
+
+#ifndef UTILS_ADDONS_SCRAPER_H_INCLUDED
+#define UTILS_ADDONS_SCRAPER_H_INCLUDED
 #include "addons/Scraper.h"
+#endif
+
+#ifndef UTILS_URL_H_INCLUDED
+#define UTILS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef UTILS_UTIL_H_INCLUDED
+#define UTILS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UTILS_LOG_H_INCLUDED
+#define UTILS_LOG_H_INCLUDED
 #include "log.h"
+#endif
+
+#ifndef UTILS_CHARSETCONVERTER_H_INCLUDED
+#define UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "CharsetConverter.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UTILS_UTILS_XSLTUTILS_H_INCLUDED
+#define UTILS_UTILS_XSLTUTILS_H_INCLUDED
 #include "utils/XSLTUtils.h"
+#endif
+
 #include <sstream>
 #include <cstring>
 

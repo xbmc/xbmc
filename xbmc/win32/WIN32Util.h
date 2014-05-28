@@ -20,12 +20,36 @@
  *
  */
 
+#ifndef WIN32_URL_H_INCLUDED
+#define WIN32_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef WIN32_CFGMGR32_H_INCLUDED
+#define WIN32_CFGMGR32_H_INCLUDED
 #include "Cfgmgr32.h"
+#endif
+
+#ifndef WIN32_MEDIASOURCE_H_INCLUDED
+#define WIN32_MEDIASOURCE_H_INCLUDED
 #include "MediaSource.h"
+#endif
+
+#ifndef WIN32_GUILIB_GEOMETRY_H_INCLUDED
+#define WIN32_GUILIB_GEOMETRY_H_INCLUDED
 #include "guilib/Geometry.h"
+#endif
+
+#ifndef WIN32_POWERMANAGEMENT_POWERMANAGER_H_INCLUDED
+#define WIN32_POWERMANAGEMENT_POWERMANAGER_H_INCLUDED
 #include "powermanagement/PowerManager.h"
+#endif
+
+#ifndef WIN32_UTILS_STOPWATCH_H_INCLUDED
+#define WIN32_UTILS_STOPWATCH_H_INCLUDED
 #include "utils/Stopwatch.h"
+#endif
+
 
 enum Drive_Types
 {

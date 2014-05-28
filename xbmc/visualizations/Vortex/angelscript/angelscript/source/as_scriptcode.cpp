@@ -37,8 +37,16 @@
 
 
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
+#ifndef SOURCE_AS_SCRIPTCODE_H_INCLUDED
+#define SOURCE_AS_SCRIPTCODE_H_INCLUDED
 #include "as_scriptcode.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

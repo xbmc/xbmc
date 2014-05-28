@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef ROOT_SYSTEM_H_INCLUDED
+#define ROOT_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #ifdef HAS_GL
   // always define GL_GLEXT_PROTOTYPES before include gl headers

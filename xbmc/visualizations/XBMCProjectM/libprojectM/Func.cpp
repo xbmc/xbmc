@@ -25,7 +25,11 @@
 #include <stdlib.h>
 
 #include "Common.hpp"
+#ifndef LIBPROJECTM_FATAL_H_INCLUDED
+#define LIBPROJECTM_FATAL_H_INCLUDED
 #include "fatal.h"
+#endif
+
 
 #include "Func.hpp"
 #include <map>

@@ -19,10 +19,26 @@
  *
  */
 
+#ifndef PICTURES_THREADS_CRITICALSECTION_H_INCLUDED
+#define PICTURES_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef PICTURES_GUILIB_GUI3D_H_INCLUDED
+#define PICTURES_GUILIB_GUI3D_H_INCLUDED
 #include "guilib/gui3d.h"
+#endif
+
+#ifndef PICTURES_UTILS_STDSTRING_H_INCLUDED
+#define PICTURES_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef PICTURES_GUILIB_DIRTYREGION_H_INCLUDED
+#define PICTURES_GUILIB_DIRTYREGION_H_INCLUDED
 #include "guilib/DirtyRegion.h"
+#endif
+
 
 typedef uint32_t color_t;
 

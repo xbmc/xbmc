@@ -18,8 +18,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef PICTURES_UTILS_STDSTRING_H_INCLUDED
+#define PICTURES_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef PICTURES_UTILS_JOB_H_INCLUDED
+#define PICTURES_UTILS_JOB_H_INCLUDED
 #include "utils/Job.h"
+#endif
+
 
 class CBaseTexture;
 

@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef DVDPLAYER_DVDCODECS_OVERLAY_DVDOVERLAY_H_INCLUDED
+#define DVDPLAYER_DVDCODECS_OVERLAY_DVDOVERLAY_H_INCLUDED
 #include "DVDCodecs/Overlay/DVDOverlay.h"
+#endif
+
+#ifndef DVDPLAYER_THREADS_CRITICALSECTION_H_INCLUDED
+#define DVDPLAYER_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 class CDVDInputStreamNavigator;
 class CDVDDemuxSPU;

@@ -23,10 +23,22 @@
 #include <vector>
 #include <string>
 
+#ifndef UTILS_THREADS_CRITICALSECTION_H_INCLUDED
+#define UTILS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
 
+
+#ifndef UTILS_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
+#define UTILS_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
 #include "settings/lib/ISettingCallback.h"
+#endif
+
+#ifndef UTILS_SETTINGS_LIB_ISETTINGSHANDLER_H_INCLUDED
+#define UTILS_SETTINGS_LIB_ISETTINGSHANDLER_H_INCLUDED
 #include "settings/lib/ISettingsHandler.h"
+#endif
+
 
 class CRssReader;
 class IRssObserver;

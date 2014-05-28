@@ -17,11 +17,31 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef TAGS_LIMITS_H_INCLUDED
+#define TAGS_LIMITS_H_INCLUDED
 #include "limits.h"
+#endif
+
+#ifndef TAGS_TAGLIBVFSSTREAM_H_INCLUDED
+#define TAGS_TAGLIBVFSSTREAM_H_INCLUDED
 #include "TagLibVFSStream.h"
+#endif
+
+#ifndef TAGS_FILESYSTEM_FILE_H_INCLUDED
+#define TAGS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef TAGS_UTILS_STDSTRING_H_INCLUDED
+#define TAGS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef TAGS_UTILS_LOG_H_INCLUDED
+#define TAGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 #include <taglib/tiostream.h>
 
 using namespace XFILE;

@@ -18,10 +18,22 @@
  *
  */
 
+#ifndef TEST_UTILS_TIMESMOOTHER_H_INCLUDED
+#define TEST_UTILS_TIMESMOOTHER_H_INCLUDED
 #include "utils/TimeSmoother.h"
-#include "threads/SystemClock.h"
+#endif
 
+#ifndef TEST_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define TEST_THREADS_SYSTEMCLOCK_H_INCLUDED
+#include "threads/SystemClock.h"
+#endif
+
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 TEST(TestTimeSmoother, General)
 {

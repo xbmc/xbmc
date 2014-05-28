@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef GUILIB_GUISELECTBUTTONCONTROL_H_INCLUDED
+#define GUILIB_GUISELECTBUTTONCONTROL_H_INCLUDED
 #include "GUISelectButtonControl.h"
+#endif
+
+#ifndef GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "GUIWindowManager.h"
+#endif
+
+#ifndef GUILIB_UTILS_TIMEUTILS_H_INCLUDED
+#define GUILIB_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
 
 CGUISelectButtonControl::CGUISelectButtonControl(int parentID, int controlID,
     float posX, float posY,

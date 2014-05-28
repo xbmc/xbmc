@@ -17,18 +17,66 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef ADDONS_ADDONMANAGER_H_INCLUDED
+#define ADDONS_ADDONMANAGER_H_INCLUDED
 #include "AddonManager.h"
+#endif
+
+#ifndef ADDONS_ADDON_H_INCLUDED
+#define ADDONS_ADDON_H_INCLUDED
 #include "Addon.h"
+#endif
+
+#ifndef ADDONS_DLLLIBCPLUFF_H_INCLUDED
+#define ADDONS_DLLLIBCPLUFF_H_INCLUDED
 #include "DllLibCPluff.h"
+#endif
+
+#ifndef ADDONS_UTILS_STRINGUTILS_H_INCLUDED
+#define ADDONS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ADDONS_UTILS_JOBMANAGER_H_INCLUDED
+#define ADDONS_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
+#ifndef ADDONS_THREADS_SINGLELOCK_H_INCLUDED
+#define ADDONS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef ADDONS_FILEITEM_H_INCLUDED
+#define ADDONS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef ADDONS_LANGINFO_H_INCLUDED
+#define ADDONS_LANGINFO_H_INCLUDED
 #include "LangInfo.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_SETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef ADDONS_UTILS_LOG_H_INCLUDED
+#define ADDONS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ADDONS_UTILS_XBMCTINYXML_H_INCLUDED
+#define ADDONS_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
 #ifdef HAS_VISUALISATION
 #include "Visualisation.h"
 #endif
@@ -42,13 +90,41 @@
 //#ifdef HAS_SCRAPERS
 #include "Scraper.h"
 //#endif
+#ifndef ADDONS_PLUGINSOURCE_H_INCLUDED
+#define ADDONS_PLUGINSOURCE_H_INCLUDED
 #include "PluginSource.h"
+#endif
+
+#ifndef ADDONS_REPOSITORY_H_INCLUDED
+#define ADDONS_REPOSITORY_H_INCLUDED
 #include "Repository.h"
+#endif
+
+#ifndef ADDONS_SKIN_H_INCLUDED
+#define ADDONS_SKIN_H_INCLUDED
 #include "Skin.h"
+#endif
+
+#ifndef ADDONS_SERVICE_H_INCLUDED
+#define ADDONS_SERVICE_H_INCLUDED
 #include "Service.h"
+#endif
+
+#ifndef ADDONS_PVR_PVRMANAGER_H_INCLUDED
+#define ADDONS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef ADDONS_PVR_ADDONS_PVRCLIENTS_H_INCLUDED
+#define ADDONS_PVR_ADDONS_PVRCLIENTS_H_INCLUDED
 #include "pvr/addons/PVRClients.h"
+#endif
+
+#ifndef ADDONS_UTIL_H_INCLUDED
+#define ADDONS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
 
 using namespace std;
 using namespace PVR;

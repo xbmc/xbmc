@@ -25,7 +25,11 @@
 
 #include <wayland-client.h>
 
+#ifndef WAYLAND_INPUT_LINUX_KEYMAP_H_INCLUDED
+#define WAYLAND_INPUT_LINUX_KEYMAP_H_INCLUDED
 #include "input/linux/Keymap.h"
+#endif
+
 
 class IDllWaylandClient;
 class IDllXKBCommon;

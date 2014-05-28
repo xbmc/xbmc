@@ -24,7 +24,11 @@
 
 #include <boost/shared_ptr.hpp>
 
+#ifndef UTILS_UTILS_IXMLDESERIALIZABLE_H_INCLUDED
+#define UTILS_UTILS_IXMLDESERIALIZABLE_H_INCLUDED
 #include "utils/IXmlDeserializable.h"
+#endif
+
 
 typedef enum {
   BooleanLogicOperationOr = 0,

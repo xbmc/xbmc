@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef WINDOWS_GUILIB_GUIWINDOW_H_INCLUDED
+#define WINDOWS_GUILIB_GUIWINDOW_H_INCLUDED
 #include "guilib/GUIWindow.h"
+#endif
+
+#ifndef WINDOWS_THREADS_CRITICALSECTION_H_INCLUDED
+#define WINDOWS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 class CGUIWindowFullScreen : public CGUIWindow
 {

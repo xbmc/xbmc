@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef NETWORK_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define NETWORK_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef NETWORK_SYSTEM_H_INCLUDED
+#define NETWORK_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #ifdef HAS_EVENT_SERVER
 

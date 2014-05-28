@@ -18,17 +18,61 @@
  *
  */
 
+#ifndef VIDEO_VIDEOINFODOWNLOADER_H_INCLUDED
+#define VIDEO_VIDEOINFODOWNLOADER_H_INCLUDED
 #include "VideoInfoDownloader.h"
+#endif
+
+#ifndef VIDEO_UTILS_XMLUTILS_H_INCLUDED
+#define VIDEO_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef VIDEO_UTILS_REGEXP_H_INCLUDED
+#define VIDEO_UTILS_REGEXP_H_INCLUDED
 #include "utils/RegExp.h"
+#endif
+
+#ifndef VIDEO_NFOFILE_H_INCLUDED
+#define VIDEO_NFOFILE_H_INCLUDED
 #include "NfoFile.h"
+#endif
+
+#ifndef VIDEO_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#define VIDEO_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
 #include "dialogs/GUIDialogProgress.h"
+#endif
+
+#ifndef VIDEO_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define VIDEO_DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef VIDEO_APPLICATIONMESSENGER_H_INCLUDED
+#define VIDEO_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef VIDEO_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define VIDEO_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef VIDEO_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define VIDEO_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef VIDEO_UTILS_LOG_H_INCLUDED
+#define VIDEO_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef VIDEO_UTILS_URIUTILS_H_INCLUDED
+#define VIDEO_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 
 using namespace std;
 using namespace VIDEO;

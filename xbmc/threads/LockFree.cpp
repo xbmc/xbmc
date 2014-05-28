@@ -22,7 +22,11 @@
 #pragma GCC optimization_level 0
 #endif
 
+#ifndef THREADS_LOCKFREE_H_INCLUDED
+#define THREADS_LOCKFREE_H_INCLUDED
 #include "LockFree.h"
+#endif
+
 #include <stdlib.h>
 
 ///////////////////////////////////////////////////////////////////////////

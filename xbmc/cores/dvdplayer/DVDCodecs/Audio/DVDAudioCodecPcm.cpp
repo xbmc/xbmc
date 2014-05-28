@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef AUDIO_DVDAUDIOCODECPCM_H_INCLUDED
+#define AUDIO_DVDAUDIOCODECPCM_H_INCLUDED
 #include "DVDAudioCodecPcm.h"
+#endif
+
+#ifndef AUDIO_DVDSTREAMINFO_H_INCLUDED
+#define AUDIO_DVDSTREAMINFO_H_INCLUDED
 #include "DVDStreamInfo.h"
+#endif
+
+#ifndef AUDIO_DVDCODECS_DVDCODECS_H_INCLUDED
+#define AUDIO_DVDCODECS_DVDCODECS_H_INCLUDED
 #include "DVDCodecs/DVDCodecs.h"
+#endif
+
 
 /* from g711.c by SUN microsystems (unrestricted use) */
 #define	SIGN_BIT	(0x80)		/* Sign bit for a A-law byte. */

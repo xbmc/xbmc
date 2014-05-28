@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef NETWORK_SYSTEM_H_INCLUDED
+#define NETWORK_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef NETWORK_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
+#define NETWORK_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
 #include "settings/lib/ISettingCallback.h"
+#endif
+
 
 #ifdef HAS_WEB_SERVER
 class CWebServer;

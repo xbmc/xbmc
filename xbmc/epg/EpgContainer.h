@@ -20,14 +20,42 @@
  *
  */
 
+#ifndef EPG_XBDATETIME_H_INCLUDED
+#define EPG_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
-#include "settings/lib/ISettingCallback.h"
-#include "threads/CriticalSection.h"
-#include "threads/Thread.h"
-#include "utils/Observer.h"
+#endif
 
+#ifndef EPG_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
+#define EPG_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
+#include "settings/lib/ISettingCallback.h"
+#endif
+
+#ifndef EPG_THREADS_CRITICALSECTION_H_INCLUDED
+#define EPG_THREADS_CRITICALSECTION_H_INCLUDED
+#include "threads/CriticalSection.h"
+#endif
+
+#ifndef EPG_THREADS_THREAD_H_INCLUDED
+#define EPG_THREADS_THREAD_H_INCLUDED
+#include "threads/Thread.h"
+#endif
+
+#ifndef EPG_UTILS_OBSERVER_H_INCLUDED
+#define EPG_UTILS_OBSERVER_H_INCLUDED
+#include "utils/Observer.h"
+#endif
+
+
+#ifndef EPG_EPG_H_INCLUDED
+#define EPG_EPG_H_INCLUDED
 #include "Epg.h"
+#endif
+
+#ifndef EPG_EPGDATABASE_H_INCLUDED
+#define EPG_EPGDATABASE_H_INCLUDED
 #include "EpgDatabase.h"
+#endif
+
 
 #include <map>
 

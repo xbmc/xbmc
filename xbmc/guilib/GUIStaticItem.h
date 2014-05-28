@@ -25,9 +25,21 @@
  \brief
  */
 
+#ifndef GUILIB_GUIINFOTYPES_H_INCLUDED
+#define GUILIB_GUIINFOTYPES_H_INCLUDED
 #include "GUIInfoTypes.h"
+#endif
+
+#ifndef GUILIB_XBMC_FILEITEM_H_INCLUDED
+#define GUILIB_XBMC_FILEITEM_H_INCLUDED
 #include "xbmc/FileItem.h"
+#endif
+
+#ifndef GUILIB_GUIACTION_H_INCLUDED
+#define GUILIB_GUIACTION_H_INCLUDED
 #include "GUIAction.h"
+#endif
+
 
 class TiXmlElement;
 

@@ -18,35 +18,139 @@
  *
  */
 
+#ifndef WINDOWS_SYSTEM_H_INCLUDED
+#define WINDOWS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef WINDOWS_APPLICATION_H_INCLUDED
+#define WINDOWS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef WINDOWS_APPLICATIONMESSENGER_H_INCLUDED
+#define WINDOWS_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef WINDOWS_GUIWINDOWLOGINSCREEN_H_INCLUDED
+#define WINDOWS_GUIWINDOWLOGINSCREEN_H_INCLUDED
 #include "GUIWindowLoginScreen.h"
+#endif
+
+#ifndef WINDOWS_PROFILES_PROFILE_H_INCLUDED
+#define WINDOWS_PROFILES_PROFILE_H_INCLUDED
 #include "profiles/Profile.h"
+#endif
+
+#ifndef WINDOWS_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define WINDOWS_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef WINDOWS_PROFILES_DIALOGS_GUIDIALOGPROFILESETTINGS_H_INCLUDED
+#define WINDOWS_PROFILES_DIALOGS_GUIDIALOGPROFILESETTINGS_H_INCLUDED
 #include "profiles/dialogs/GUIDialogProfileSettings.h"
+#endif
+
+#ifndef WINDOWS_PROFILES_WINDOWS_GUIWINDOWSETTINGSPROFILE_H_INCLUDED
+#define WINDOWS_PROFILES_WINDOWS_GUIWINDOWSETTINGSPROFILE_H_INCLUDED
 #include "profiles/windows/GUIWindowSettingsProfile.h"
+#endif
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGCONTEXTMENU_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGCONTEXTMENU_H_INCLUDED
 #include "dialogs/GUIDialogContextMenu.h"
+#endif
+
+#ifndef WINDOWS_GUIPASSWORD_H_INCLUDED
+#define WINDOWS_GUIPASSWORD_H_INCLUDED
 #include "GUIPassword.h"
+#endif
+
 #ifdef HAS_JSONRPC
 #include "interfaces/json-rpc/JSONRPC.h"
 #endif
+#ifndef WINDOWS_INTERFACES_BUILTINS_H_INCLUDED
+#define WINDOWS_INTERFACES_BUILTINS_H_INCLUDED
 #include "interfaces/Builtins.h"
+#endif
+
+#ifndef WINDOWS_UTILS_WEATHER_H_INCLUDED
+#define WINDOWS_UTILS_WEATHER_H_INCLUDED
 #include "utils/Weather.h"
+#endif
+
+#ifndef WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
+#define WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef WINDOWS_NETWORK_NETWORK_H_INCLUDED
+#define WINDOWS_NETWORK_NETWORK_H_INCLUDED
 #include "network/Network.h"
+#endif
+
+#ifndef WINDOWS_ADDONS_SKIN_H_INCLUDED
+#define WINDOWS_ADDONS_SKIN_H_INCLUDED
 #include "addons/Skin.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIMESSAGE_H_INCLUDED
+#define WINDOWS_GUILIB_GUIMESSAGE_H_INCLUDED
 #include "guilib/GUIMessage.h"
+#endif
+
+#ifndef WINDOWS_GUIUSERMESSAGES_H_INCLUDED
+#define WINDOWS_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_STEREOSCOPICSMANAGER_H_INCLUDED
+#define WINDOWS_GUILIB_STEREOSCOPICSMANAGER_H_INCLUDED
 #include "guilib/StereoscopicsManager.h"
+#endif
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef WINDOWS_FILEITEM_H_INCLUDED
+#define WINDOWS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_KEY_H_INCLUDED
+#define WINDOWS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define WINDOWS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef WINDOWS_ADDONS_ADDONMANAGER_H_INCLUDED
+#define WINDOWS_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef WINDOWS_VIEW_VIEWSTATE_H_INCLUDED
+#define WINDOWS_VIEW_VIEWSTATE_H_INCLUDED
 #include "view/ViewState.h"
+#endif
+
 
 #define CONTROL_BIG_LIST               52
 #define CONTROL_LABEL_HEADER            2

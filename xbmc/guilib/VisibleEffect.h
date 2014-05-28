@@ -29,11 +29,27 @@ class TiXmlElement;
 class Tweener;
 class CGUIListItem;
 
+#ifndef GUILIB_TRANSFORMMATRIX_H_INCLUDED
+#define GUILIB_TRANSFORMMATRIX_H_INCLUDED
 #include "TransformMatrix.h"  // needed for the TransformMatrix member
+#endif
+
+#ifndef GUILIB_GEOMETRY_H_INCLUDED
+#define GUILIB_GEOMETRY_H_INCLUDED
 #include "Geometry.h"         // for CPoint, CRect
+#endif
+
+#ifndef GUILIB_UTILS_STDSTRING_H_INCLUDED
+#define GUILIB_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 #include "boost/shared_ptr.hpp"
+#ifndef GUILIB_INTERFACES_INFO_INFOBOOL_H_INCLUDED
+#define GUILIB_INTERFACES_INFO_INFOBOOL_H_INCLUDED
 #include "interfaces/info/InfoBool.h"
+#endif
+
 
 enum ANIMATION_TYPE
 {

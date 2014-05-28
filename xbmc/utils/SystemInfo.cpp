@@ -20,23 +20,71 @@
 
 #include <limits.h>
 
+#ifndef UTILS_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define UTILS_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef UTILS_SYSTEM_H_INCLUDED
+#define UTILS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef UTILS_SYSTEMINFO_H_INCLUDED
+#define UTILS_SYSTEMINFO_H_INCLUDED
 #include "SystemInfo.h"
+#endif
+
 #ifndef TARGET_POSIX
 #include <conio.h>
 #else
 #include <sys/utsname.h>
 #endif
+#ifndef UTILS_GUIINFOMANAGER_H_INCLUDED
+#define UTILS_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_CURLFILE_H_INCLUDED
+#define UTILS_FILESYSTEM_CURLFILE_H_INCLUDED
 #include "filesystem/CurlFile.h"
+#endif
+
+#ifndef UTILS_NETWORK_NETWORK_H_INCLUDED
+#define UTILS_NETWORK_NETWORK_H_INCLUDED
 #include "network/Network.h"
+#endif
+
+#ifndef UTILS_APPLICATION_H_INCLUDED
+#define UTILS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef UTILS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define UTILS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef UTILS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define UTILS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef UTILS_CPUINFO_H_INCLUDED
+#define UTILS_CPUINFO_H_INCLUDED
 #include "CPUInfo.h"
+#endif
+
+#ifndef UTILS_UTILS_TIMEUTILS_H_INCLUDED
+#define UTILS_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef UTILS_UTILS_LOG_H_INCLUDED
+#define UTILS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 #ifdef TARGET_WINDOWS
 #include "dwmapi.h"
 #endif
@@ -44,9 +92,21 @@
 #include "osx/DarwinUtils.h"
 #include "osx/CocoaInterface.h"
 #endif
+#ifndef UTILS_POWERMANAGEMENT_POWERMANAGER_H_INCLUDED
+#define UTILS_POWERMANAGEMENT_POWERMANAGER_H_INCLUDED
 #include "powermanagement/PowerManager.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UTILS_UTILS_XMLUTILS_H_INCLUDED
+#define UTILS_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
 #if defined(TARGET_ANDROID)
 #include "android/jni/Build.h"
 #include "utils/AMLUtils.h"

@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef EGL_EGLNATIVETYPEAMLOGIC_H_INCLUDED
+#define EGL_EGLNATIVETYPEAMLOGIC_H_INCLUDED
 #include "EGLNativeTypeAmlogic.h"
+#endif
+
+#ifndef EGL_GUILIB_GUI3D_H_INCLUDED
+#define EGL_GUILIB_GUI3D_H_INCLUDED
 #include "guilib/gui3d.h"
+#endif
+
+#ifndef EGL_UTILS_AMLUTILS_H_INCLUDED
+#define EGL_UTILS_AMLUTILS_H_INCLUDED
 #include "utils/AMLUtils.h"
+#endif
+
+#ifndef EGL_UTILS_STRINGUTILS_H_INCLUDED
+#define EGL_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 #include <stdlib.h>
 #include <linux/fb.h>

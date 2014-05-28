@@ -24,8 +24,16 @@
 #include <vector>
 #include <string.h>
 #include <stdint.h>
+#ifndef ROOT_UTILS_STRINGUTILS_H_INCLUDED
+#define ROOT_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ROOT_MEDIASOURCE_H_INCLUDED
+#define ROOT_MEDIASOURCE_H_INCLUDED
 #include "MediaSource.h"
+#endif
+
 
 // A list of filesystem types for LegalPath/FileName
 #define LEGAL_NONE            0

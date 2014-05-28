@@ -18,9 +18,17 @@
  *
  */
 
+#ifndef TEST_UTILS_URLOPTIONS_H_INCLUDED
+#define TEST_UTILS_URLOPTIONS_H_INCLUDED
 #include "utils/UrlOptions.h"
+#endif
 
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 TEST(TestUrlOptions, Clear)
 {

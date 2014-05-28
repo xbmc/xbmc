@@ -26,12 +26,36 @@
 
 #include <boost/shared_ptr.hpp>
 
+#ifndef LIB_ISETTING_H_INCLUDED
+#define LIB_ISETTING_H_INCLUDED
 #include "ISetting.h"
+#endif
+
+#ifndef LIB_ISETTINGCALLBACK_H_INCLUDED
+#define LIB_ISETTINGCALLBACK_H_INCLUDED
 #include "ISettingCallback.h"
+#endif
+
+#ifndef LIB_ISETTINGCONTROL_H_INCLUDED
+#define LIB_ISETTINGCONTROL_H_INCLUDED
 #include "ISettingControl.h"
+#endif
+
+#ifndef LIB_SETTINGDEPENDENCY_H_INCLUDED
+#define LIB_SETTINGDEPENDENCY_H_INCLUDED
 #include "SettingDependency.h"
+#endif
+
+#ifndef LIB_SETTINGUPDATE_H_INCLUDED
+#define LIB_SETTINGUPDATE_H_INCLUDED
 #include "SettingUpdate.h"
+#endif
+
+#ifndef LIB_THREADS_SHAREDSECTION_H_INCLUDED
+#define LIB_THREADS_SHAREDSECTION_H_INCLUDED
 #include "threads/SharedSection.h"
+#endif
+
 
 /*!
  \ingroup settings

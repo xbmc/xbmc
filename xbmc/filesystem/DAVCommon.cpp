@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef FILESYSTEM_DAVCOMMON_H_INCLUDED
+#define FILESYSTEM_DAVCOMMON_H_INCLUDED
 #include "DAVCommon.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"   
+#endif
+
 
 using namespace XFILE;
 

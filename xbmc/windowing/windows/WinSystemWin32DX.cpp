@@ -19,10 +19,26 @@
  */
 
 
+#ifndef WINDOWS_WINSYSTEMWIN32DX_H_INCLUDED
+#define WINDOWS_WINSYSTEMWIN32DX_H_INCLUDED
 #include "WinSystemWin32DX.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUI3D_H_INCLUDED
+#define WINDOWS_GUILIB_GUI3D_H_INCLUDED
 #include "guilib/gui3d.h"
+#endif
+
+#ifndef WINDOWS_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define WINDOWS_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
 
 #ifdef HAS_DX
 

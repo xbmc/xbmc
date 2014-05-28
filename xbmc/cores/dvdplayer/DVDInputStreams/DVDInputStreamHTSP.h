@@ -19,8 +19,16 @@
  */
 
 #pragma once
+#ifndef DVDINPUTSTREAMS_DVDINPUTSTREAM_H_INCLUDED
+#define DVDINPUTSTREAMS_DVDINPUTSTREAM_H_INCLUDED
 #include "DVDInputStream.h"
+#endif
+
+#ifndef DVDINPUTSTREAMS_FILESYSTEM_HTSPSESSION_H_INCLUDED
+#define DVDINPUTSTREAMS_FILESYSTEM_HTSPSESSION_H_INCLUDED
 #include "filesystem/HTSPSession.h"
+#endif
+
 
 class CDVDInputStreamHTSP
   : public CDVDInputStream

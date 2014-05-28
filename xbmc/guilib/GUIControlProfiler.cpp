@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef GUILIB_GUICONTROLPROFILER_H_INCLUDED
+#define GUILIB_GUICONTROLPROFILER_H_INCLUDED
 #include "GUIControlProfiler.h"
+#endif
+
+#ifndef GUILIB_UTILS_XBMCTINYXML_H_INCLUDED
+#define GUILIB_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef GUILIB_UTILS_TIMEUTILS_H_INCLUDED
+#define GUILIB_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 bool CGUIControlProfiler::m_bIsRunning = false;
 

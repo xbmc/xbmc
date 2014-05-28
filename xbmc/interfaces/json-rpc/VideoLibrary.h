@@ -19,10 +19,26 @@
  *
  */
 
+#ifndef JSON_RPC_UTILS_DATABASEUTILS_H_INCLUDED
+#define JSON_RPC_UTILS_DATABASEUTILS_H_INCLUDED
 #include "utils/DatabaseUtils.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_STDSTRING_H_INCLUDED
+#define JSON_RPC_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef JSON_RPC_JSONRPC_H_INCLUDED
+#define JSON_RPC_JSONRPC_H_INCLUDED
 #include "JSONRPC.h"
+#endif
+
+#ifndef JSON_RPC_FILEITEMHANDLER_H_INCLUDED
+#define JSON_RPC_FILEITEMHANDLER_H_INCLUDED
 #include "FileItemHandler.h"
+#endif
+
 
 class CVideoDatabase;
 

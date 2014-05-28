@@ -23,19 +23,67 @@
 #include <map>
 #include <vector>
 
+#ifndef LEGACY_CORES_PLAYERCOREFACTORY_PLAYERCOREFACTORY_H_INCLUDED
+#define LEGACY_CORES_PLAYERCOREFACTORY_PLAYERCOREFACTORY_H_INCLUDED
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#endif
 
+
+#ifndef LEGACY_ADDONCLASS_H_INCLUDED
+#define LEGACY_ADDONCLASS_H_INCLUDED
 #include "AddonClass.h"
+#endif
+
+#ifndef LEGACY_TUPLE_H_INCLUDED
+#define LEGACY_TUPLE_H_INCLUDED
 #include "Tuple.h"
+#endif
+
+#ifndef LEGACY_DICTIONARY_H_INCLUDED
+#define LEGACY_DICTIONARY_H_INCLUDED
 #include "Dictionary.h"
+#endif
+
+#ifndef LEGACY_ALTERNATIVE_H_INCLUDED
+#define LEGACY_ALTERNATIVE_H_INCLUDED
 #include "Alternative.h"
+#endif
+
+#ifndef LEGACY_CALLBACKHANDLER_H_INCLUDED
+#define LEGACY_CALLBACKHANDLER_H_INCLUDED
 #include "CallbackHandler.h"
+#endif
+
+#ifndef LEGACY_LISTITEM_H_INCLUDED
+#define LEGACY_LISTITEM_H_INCLUDED
 #include "ListItem.h"
+#endif
+
+#ifndef LEGACY_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define LEGACY_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef LEGACY_FILEITEM_H_INCLUDED
+#define LEGACY_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef LEGACY_ADDONSTRING_H_INCLUDED
+#define LEGACY_ADDONSTRING_H_INCLUDED
 #include "AddonString.h"
+#endif
+
+#ifndef LEGACY_TUPLE_H_INCLUDED
+#define LEGACY_TUPLE_H_INCLUDED
 #include "Tuple.h"
+#endif
+
+#ifndef LEGACY_COMMONS_EXCEPTION_H_INCLUDED
+#define LEGACY_COMMONS_EXCEPTION_H_INCLUDED
 #include "commons/Exception.h"
+#endif
+
 
 
 namespace XBMCAddon

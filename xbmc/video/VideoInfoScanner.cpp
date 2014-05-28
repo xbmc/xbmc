@@ -18,37 +18,161 @@
  *
  */
 
+#ifndef VIDEO_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define VIDEO_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef VIDEO_FILEITEM_H_INCLUDED
+#define VIDEO_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef VIDEO_VIDEOINFOSCANNER_H_INCLUDED
+#define VIDEO_VIDEOINFOSCANNER_H_INCLUDED
 #include "VideoInfoScanner.h"
+#endif
+
+#ifndef VIDEO_ADDONS_ADDONMANAGER_H_INCLUDED
+#define VIDEO_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef VIDEO_FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
+#define VIDEO_FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
 #include "filesystem/DirectoryCache.h"
+#endif
+
+#ifndef VIDEO_UTIL_H_INCLUDED
+#define VIDEO_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef VIDEO_NFOFILE_H_INCLUDED
+#define VIDEO_NFOFILE_H_INCLUDED
 #include "NfoFile.h"
+#endif
+
+#ifndef VIDEO_UTILS_REGEXP_H_INCLUDED
+#define VIDEO_UTILS_REGEXP_H_INCLUDED
 #include "utils/RegExp.h"
+#endif
+
+#ifndef VIDEO_UTILS_MD5_H_INCLUDED
+#define VIDEO_UTILS_MD5_H_INCLUDED
 #include "utils/md5.h"
+#endif
+
+#ifndef VIDEO_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
+#define VIDEO_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
 #include "filesystem/StackDirectory.h"
+#endif
+
+#ifndef VIDEO_VIDEOINFODOWNLOADER_H_INCLUDED
+#define VIDEO_VIDEOINFODOWNLOADER_H_INCLUDED
 #include "VideoInfoDownloader.h"
+#endif
+
+#ifndef VIDEO_GUIINFOMANAGER_H_INCLUDED
+#define VIDEO_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef VIDEO_FILESYSTEM_FILE_H_INCLUDED
+#define VIDEO_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef VIDEO_DIALOGS_GUIDIALOGEXTENDEDPROGRESSBAR_H_INCLUDED
+#define VIDEO_DIALOGS_GUIDIALOGEXTENDEDPROGRESSBAR_H_INCLUDED
 #include "dialogs/GUIDialogExtendedProgressBar.h"
+#endif
+
+#ifndef VIDEO_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#define VIDEO_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
 #include "dialogs/GUIDialogProgress.h"
+#endif
+
+#ifndef VIDEO_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define VIDEO_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef VIDEO_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define VIDEO_DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef VIDEO_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#define VIDEO_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
 #include "interfaces/AnnouncementManager.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_SETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef VIDEO_UTILS_STRINGUTILS_H_INCLUDED
+#define VIDEO_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef VIDEO_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define VIDEO_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef VIDEO_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define VIDEO_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef VIDEO_UTILS_TIMEUTILS_H_INCLUDED
+#define VIDEO_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef VIDEO_UTILS_LOG_H_INCLUDED
+#define VIDEO_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef VIDEO_UTILS_URIUTILS_H_INCLUDED
+#define VIDEO_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef VIDEO_UTILS_VARIANT_H_INCLUDED
+#define VIDEO_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef VIDEO_VIDEO_VIDEOTHUMBLOADER_H_INCLUDED
+#define VIDEO_VIDEO_VIDEOTHUMBLOADER_H_INCLUDED
 #include "video/VideoThumbLoader.h"
+#endif
+
+#ifndef VIDEO_TEXTURECACHE_H_INCLUDED
+#define VIDEO_TEXTURECACHE_H_INCLUDED
 #include "TextureCache.h"
+#endif
+
+#ifndef VIDEO_GUIUSERMESSAGES_H_INCLUDED
+#define VIDEO_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef VIDEO_URL_H_INCLUDED
+#define VIDEO_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef JNI_JNIBASE_H_INCLUDED
+#define JNI_JNIBASE_H_INCLUDED
 #include "JNIBase.h"
+#endif
+
+#ifndef JNI_BYTEBUFFER_H_INCLUDED
+#define JNI_BYTEBUFFER_H_INCLUDED
 #include "ByteBuffer.h"
+#endif
+
 
 namespace jni
 {

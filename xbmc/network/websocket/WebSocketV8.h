@@ -18,7 +18,11 @@
  *
  */
 #pragma once
+#ifndef WEBSOCKET_WEBSOCKET_H_INCLUDED
+#define WEBSOCKET_WEBSOCKET_H_INCLUDED
 #include "WebSocket.h"
+#endif
+
 
 class CWebSocketV8 : public CWebSocket
 {

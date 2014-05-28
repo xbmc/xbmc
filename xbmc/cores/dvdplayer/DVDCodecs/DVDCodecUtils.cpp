@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef DVDCODECS_DVDCODECUTILS_H_INCLUDED
+#define DVDCODECS_DVDCODECUTILS_H_INCLUDED
 #include "DVDCodecUtils.h"
+#endif
+
+#ifndef DVDCODECS_DVDCLOCK_H_INCLUDED
+#define DVDCODECS_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h"
+#endif
+
+#ifndef DVDCODECS_CORES_VIDEORENDERERS_RENDERMANAGER_H_INCLUDED
+#define DVDCODECS_CORES_VIDEORENDERERS_RENDERMANAGER_H_INCLUDED
 #include "cores/VideoRenderers/RenderManager.h"
+#endif
+
+#ifndef DVDCODECS_UTILS_LOG_H_INCLUDED
+#define DVDCODECS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DVDCODECS_UTILS_FASTMEMCPY_H_INCLUDED
+#define DVDCODECS_UTILS_FASTMEMCPY_H_INCLUDED
 #include "utils/fastmemcpy.h"
+#endif
+
+#ifndef DVDCODECS_DLLSWSCALE_H_INCLUDED
+#define DVDCODECS_DLLSWSCALE_H_INCLUDED
 #include "DllSwScale.h"
+#endif
+
 
 // allocate a new picture (PIX_FMT_YUV420P)
 DVDVideoPicture* CDVDCodecUtils::AllocatePicture(int iWidth, int iHeight)

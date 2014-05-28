@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef FILESYSTEM_ISOFILE_H_INCLUDED
+#define FILESYSTEM_ISOFILE_H_INCLUDED
 #include "ISOFile.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_ISO9660_H_INCLUDED
+#define FILESYSTEM_ISO9660_H_INCLUDED
 #include "iso9660.h"
+#endif
+
 
 #include <sys/stat.h>
 

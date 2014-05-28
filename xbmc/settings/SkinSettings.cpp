@@ -20,13 +20,41 @@
 
 #include <string.h>
 
+#ifndef SETTINGS_SKINSETTINGS_H_INCLUDED
+#define SETTINGS_SKINSETTINGS_H_INCLUDED
 #include "SkinSettings.h"
+#endif
+
+#ifndef SETTINGS_GUIINFOMANAGER_H_INCLUDED
+#define SETTINGS_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_SETTINGS_H_INCLUDED
+#define SETTINGS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef SETTINGS_THREADS_SINGLELOCK_H_INCLUDED
+#define SETTINGS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef SETTINGS_UTILS_LOG_H_INCLUDED
+#define SETTINGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef SETTINGS_UTILS_STRINGUTILS_H_INCLUDED
+#define SETTINGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef SETTINGS_UTILS_XBMCTINYXML_H_INCLUDED
+#define SETTINGS_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
 
 #define XML_SKINSETTINGS  "skinsettings"
 #define XML_SETTING       "setting"

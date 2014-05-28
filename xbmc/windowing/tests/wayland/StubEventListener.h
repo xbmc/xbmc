@@ -21,7 +21,11 @@
  */
 #include <queue>
 
+#ifndef WAYLAND_WINDOWING_WAYLAND_EVENTLISTENER_H_INCLUDED
+#define WAYLAND_WINDOWING_WAYLAND_EVENTLISTENER_H_INCLUDED
 #include "windowing/wayland/EventListener.h"
+#endif
+
 
 class StubEventListener :
   public xbmc::IEventListener

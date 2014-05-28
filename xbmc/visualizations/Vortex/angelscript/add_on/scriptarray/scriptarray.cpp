@@ -3,7 +3,11 @@
 #include <string.h>
 #include <assert.h>
 
+#ifndef SCRIPTARRAY_SCRIPTARRAY_H_INCLUDED
+#define SCRIPTARRAY_SCRIPTARRAY_H_INCLUDED
 #include "scriptarray.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

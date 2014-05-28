@@ -18,17 +18,57 @@
  *
  */
 
+#ifndef RECORDINGS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define RECORDINGS_DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "dialogs/GUIDialogOK.h"
-#include "pvr/PVRManager.h"
-#include "settings/AdvancedSettings.h"
-#include "PVRRecordings.h"
-#include "pvr/addons/PVRClients.h"
-#include "utils/StringUtils.h"
-#include "utils/RegExp.h"
-#include "utils/StringUtils.h"
-#include "video/VideoDatabase.h"
+#endif
 
+#ifndef RECORDINGS_PVR_PVRMANAGER_H_INCLUDED
+#define RECORDINGS_PVR_PVRMANAGER_H_INCLUDED
+#include "pvr/PVRManager.h"
+#endif
+
+#ifndef RECORDINGS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define RECORDINGS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef RECORDINGS_PVRRECORDINGS_H_INCLUDED
+#define RECORDINGS_PVRRECORDINGS_H_INCLUDED
+#include "PVRRecordings.h"
+#endif
+
+#ifndef RECORDINGS_PVR_ADDONS_PVRCLIENTS_H_INCLUDED
+#define RECORDINGS_PVR_ADDONS_PVRCLIENTS_H_INCLUDED
+#include "pvr/addons/PVRClients.h"
+#endif
+
+#ifndef RECORDINGS_UTILS_STRINGUTILS_H_INCLUDED
+#define RECORDINGS_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+#ifndef RECORDINGS_UTILS_REGEXP_H_INCLUDED
+#define RECORDINGS_UTILS_REGEXP_H_INCLUDED
+#include "utils/RegExp.h"
+#endif
+
+#ifndef RECORDINGS_UTILS_STRINGUTILS_H_INCLUDED
+#define RECORDINGS_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+#ifndef RECORDINGS_VIDEO_VIDEODATABASE_H_INCLUDED
+#define RECORDINGS_VIDEO_VIDEODATABASE_H_INCLUDED
+#include "video/VideoDatabase.h"
+#endif
+
+
+#ifndef RECORDINGS_EPG_EPG_H_INCLUDED
+#define RECORDINGS_EPG_EPG_H_INCLUDED
 #include "epg/Epg.h"
+#endif
+
 
 using namespace PVR;
 using namespace EPG;

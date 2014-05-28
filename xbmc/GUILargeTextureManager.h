@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef ROOT_THREADS_CRITICALSECTION_H_INCLUDED
+#define ROOT_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef ROOT_UTILS_JOB_H_INCLUDED
+#define ROOT_UTILS_JOB_H_INCLUDED
 #include "utils/Job.h"
+#endif
+
+#ifndef ROOT_GUILIB_TEXTUREMANAGER_H_INCLUDED
+#define ROOT_GUILIB_TEXTUREMANAGER_H_INCLUDED
 #include "guilib/TextureManager.h"
+#endif
+
 
 /*!
  \ingroup textures,jobs

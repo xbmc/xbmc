@@ -18,12 +18,24 @@
  *
  */
 
+#ifndef AUDIO_DVDAUDIOCODECFFMPEG_H_INCLUDED
+#define AUDIO_DVDAUDIOCODECFFMPEG_H_INCLUDED
 #include "DVDAudioCodecFFmpeg.h"
+#endif
+
 #ifdef TARGET_POSIX
 #include "XMemUtils.h"
 #endif
+#ifndef AUDIO_______DVDSTREAMINFO_H_INCLUDED
+#define AUDIO_______DVDSTREAMINFO_H_INCLUDED
 #include "../../DVDStreamInfo.h"
+#endif
+
+#ifndef AUDIO_UTILS_LOG_H_INCLUDED
+#define AUDIO_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #if defined(TARGET_DARWIN)
 #include "settings/Settings.h"

@@ -24,8 +24,16 @@
   #include "config.h"
 #endif
 
+#ifndef DVDPLAYER_DVDDEMUXERS_DVDDEMUX_H_INCLUDED
+#define DVDPLAYER_DVDDEMUXERS_DVDDEMUX_H_INCLUDED
 #include "DVDDemuxers/DVDDemux.h"
+#endif
+
+#ifndef DVDPLAYER_DLLAVCODEC_H_INCLUDED
+#define DVDPLAYER_DLLAVCODEC_H_INCLUDED
 #include "DllAvCodec.h"
+#endif
+
 
 class CDemuxStream;
 

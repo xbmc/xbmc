@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef PAPLAYER_ICODEC_H_INCLUDED
+#define PAPLAYER_ICODEC_H_INCLUDED
 #include "ICodec.h"
+#endif
+
 
 class CachingCodec : public ICodec
 {

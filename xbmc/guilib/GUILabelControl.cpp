@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef GUILIB_GUILABELCONTROL_H_INCLUDED
+#define GUILIB_GUILABELCONTROL_H_INCLUDED
 #include "GUILabelControl.h"
+#endif
+
+#ifndef GUILIB_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define GUILIB_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace std;
 

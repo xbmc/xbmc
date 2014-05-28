@@ -21,7 +21,11 @@
 
 #include <string>
 
+#ifndef MUSIC_DBURL_H_INCLUDED
+#define MUSIC_DBURL_H_INCLUDED
 #include "DbUrl.h"
+#endif
+
 
 class CMusicDbUrl : public CDbUrl
 {

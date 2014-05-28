@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef AUDIO_DVDAUDIOCODEC_H_INCLUDED
+#define AUDIO_DVDAUDIOCODEC_H_INCLUDED
 #include "DVDAudioCodec.h"
+#endif
+
+#ifndef AUDIO_DLLLIBMAD_H_INCLUDED
+#define AUDIO_DLLLIBMAD_H_INCLUDED
 #include "DllLibMad.h"
+#endif
+
 
 #define MAD_INPUT_SIZE (8 * 1024)
 #define MAD_DECODED_SIZE (sizeof(float) * MAD_INPUT_SIZE)

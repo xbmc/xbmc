@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef ROOT_GITREVISION_H_INCLUDED
+#define ROOT_GITREVISION_H_INCLUDED
 #include "GitRevision.h"
+#endif
+
 
 #include <cstddef>
 

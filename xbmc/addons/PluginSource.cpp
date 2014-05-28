@@ -17,9 +17,21 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef ADDONS_PLUGINSOURCE_H_INCLUDED
+#define ADDONS_PLUGINSOURCE_H_INCLUDED
 #include "PluginSource.h"
+#endif
+
+#ifndef ADDONS_ADDONMANAGER_H_INCLUDED
+#define ADDONS_ADDONMANAGER_H_INCLUDED
 #include "AddonManager.h"
+#endif
+
+#ifndef ADDONS_UTILS_STRINGUTILS_H_INCLUDED
+#define ADDONS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace std;
 

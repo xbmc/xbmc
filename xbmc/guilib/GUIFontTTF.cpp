@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef GUILIB_GUIFONT_H_INCLUDED
+#define GUILIB_GUIFONT_H_INCLUDED
 #include "GUIFont.h"
+#endif
+
+#ifndef GUILIB_GUIFONTTTF_H_INCLUDED
+#define GUILIB_GUIFONTTTF_H_INCLUDED
 #include "GUIFontTTF.h"
+#endif
+
+#ifndef GUILIB_GUIFONTMANAGER_H_INCLUDED
+#define GUILIB_GUIFONTMANAGER_H_INCLUDED
 #include "GUIFontManager.h"
+#endif
+
+#ifndef GUILIB_TEXTURE_H_INCLUDED
+#define GUILIB_TEXTURE_H_INCLUDED
 #include "Texture.h"
+#endif
+
+#ifndef GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "GraphicContext.h"
+#endif
+
+#ifndef GUILIB_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define GUILIB_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef GUILIB_UTILS_MATHUTILS_H_INCLUDED
+#define GUILIB_UTILS_MATHUTILS_H_INCLUDED
 #include "utils/MathUtils.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
 
 #include <math.h>
 

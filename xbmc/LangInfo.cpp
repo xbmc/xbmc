@@ -18,24 +18,96 @@
  *
  */
 
+#ifndef ROOT_LANGINFO_H_INCLUDED
+#define ROOT_LANGINFO_H_INCLUDED
 #include "LangInfo.h"
+#endif
+
+#ifndef ROOT_APPLICATION_H_INCLUDED
+#define ROOT_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef ROOT_APPLICATIONMESSENGER_H_INCLUDED
+#define ROOT_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef ROOT_FILEITEM_H_INCLUDED
+#define ROOT_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef ROOT_UTIL_H_INCLUDED
+#define ROOT_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define ROOT_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef ROOT_GUILIB_GUIFONTMANAGER_H_INCLUDED
+#define ROOT_GUILIB_GUIFONTMANAGER_H_INCLUDED
 #include "guilib/GUIFontManager.h"
+#endif
+
+#ifndef ROOT_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define ROOT_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef ROOT_PVR_PVRMANAGER_H_INCLUDED
+#define ROOT_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef ROOT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef ROOT_SETTINGS_LIB_SETTING_H_INCLUDED
+#define ROOT_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef ROOT_SETTINGS_SETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef ROOT_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define ROOT_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef ROOT_UTILS_LOG_H_INCLUDED
+#define ROOT_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ROOT_UTILS_LANGCODEEXPANDER_H_INCLUDED
+#define ROOT_UTILS_LANGCODEEXPANDER_H_INCLUDED
 #include "utils/LangCodeExpander.h"
+#endif
+
+#ifndef ROOT_UTILS_STRINGUTILS_H_INCLUDED
+#define ROOT_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ROOT_UTILS_WEATHER_H_INCLUDED
+#define ROOT_UTILS_WEATHER_H_INCLUDED
 #include "utils/Weather.h"
+#endif
+
+#ifndef ROOT_UTILS_XBMCTINYXML_H_INCLUDED
+#define ROOT_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
 
 using namespace std;
 using namespace PVR;

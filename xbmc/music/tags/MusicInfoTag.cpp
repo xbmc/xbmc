@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef TAGS_MUSICINFOTAG_H_INCLUDED
+#define TAGS_MUSICINFOTAG_H_INCLUDED
 #include "MusicInfoTag.h"
+#endif
+
+#ifndef TAGS_MUSIC_ALBUM_H_INCLUDED
+#define TAGS_MUSIC_ALBUM_H_INCLUDED
 #include "music/Album.h"
+#endif
+
+#ifndef TAGS_MUSIC_ARTIST_H_INCLUDED
+#define TAGS_MUSIC_ARTIST_H_INCLUDED
 #include "music/Artist.h"
+#endif
+
+#ifndef TAGS_UTILS_STRINGUTILS_H_INCLUDED
+#define TAGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef TAGS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define TAGS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef TAGS_UTILS_VARIANT_H_INCLUDED
+#define TAGS_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
 
 using namespace MUSIC_INFO;
 

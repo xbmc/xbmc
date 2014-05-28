@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef GUILIB_UTILS_STDSTRING_H_INCLUDED
+#define GUILIB_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 #include <vector>
 

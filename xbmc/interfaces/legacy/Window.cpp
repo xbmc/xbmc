@@ -18,16 +18,56 @@
  *
  */
 
+#ifndef LEGACY_WINDOW_H_INCLUDED
+#define LEGACY_WINDOW_H_INCLUDED
 #include "Window.h"
+#endif
+
+#ifndef LEGACY_WINDOWINTERCEPTOR_H_INCLUDED
+#define LEGACY_WINDOWINTERCEPTOR_H_INCLUDED
 #include "WindowInterceptor.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIBUTTONCONTROL_H_INCLUDED
+#define LEGACY_GUILIB_GUIBUTTONCONTROL_H_INCLUDED
 #include "guilib/GUIButtonControl.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIEDITCONTROL_H_INCLUDED
+#define LEGACY_GUILIB_GUIEDITCONTROL_H_INCLUDED
 #include "guilib/GUIEditControl.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUICHECKMARKCONTROL_H_INCLUDED
+#define LEGACY_GUILIB_GUICHECKMARKCONTROL_H_INCLUDED
 #include "guilib/GUICheckMarkControl.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIRADIOBUTTONCONTROL_H_INCLUDED
+#define LEGACY_GUILIB_GUIRADIOBUTTONCONTROL_H_INCLUDED
 #include "guilib/GUIRadioButtonControl.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define LEGACY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef LEGACY_APPLICATION_H_INCLUDED
+#define LEGACY_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef LEGACY_APPLICATIONMESSENGER_H_INCLUDED
+#define LEGACY_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef LEGACY_UTILS_VARIANT_H_INCLUDED
+#define LEGACY_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
 
 #define ACTIVE_WINDOW g_windowManager.GetActiveWindow()
 

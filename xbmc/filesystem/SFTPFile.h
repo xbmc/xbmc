@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef FILESYSTEM_SYSTEM_H_INCLUDED
+#define FILESYSTEM_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #ifdef HAS_FILESYSTEM_SFTP
 #include "IFile.h"
 #include "FileItem.h"

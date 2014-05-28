@@ -18,26 +18,82 @@
  *
  */
 
+#ifndef PAPLAYER_SYSTEM_H_INCLUDED
+#define PAPLAYER_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef PAPLAYER_CODECFACTORY_H_INCLUDED
+#define PAPLAYER_CODECFACTORY_H_INCLUDED
 #include "CodecFactory.h"
+#endif
+
+#ifndef PAPLAYER_MP3CODEC_H_INCLUDED
+#define PAPLAYER_MP3CODEC_H_INCLUDED
 #include "MP3codec.h"
+#endif
+
+#ifndef PAPLAYER_OGGCODEC_H_INCLUDED
+#define PAPLAYER_OGGCODEC_H_INCLUDED
 #include "OGGcodec.h"
+#endif
+
+#ifndef PAPLAYER_MODPLUGCODEC_H_INCLUDED
+#define PAPLAYER_MODPLUGCODEC_H_INCLUDED
 #include "ModplugCodec.h"
+#endif
+
+#ifndef PAPLAYER_NSFCODEC_H_INCLUDED
+#define PAPLAYER_NSFCODEC_H_INCLUDED
 #include "NSFCodec.h"
+#endif
+
 #ifdef HAS_SPC_CODEC
 #include "SPCCodec.h"
 #endif
+#ifndef PAPLAYER_SIDCODEC_H_INCLUDED
+#define PAPLAYER_SIDCODEC_H_INCLUDED
 #include "SIDCodec.h"
+#endif
+
+#ifndef PAPLAYER_VGMCODEC_H_INCLUDED
+#define PAPLAYER_VGMCODEC_H_INCLUDED
 #include "VGMCodec.h"
+#endif
+
+#ifndef PAPLAYER_YMCODEC_H_INCLUDED
+#define PAPLAYER_YMCODEC_H_INCLUDED
 #include "YMCodec.h"
+#endif
+
+#ifndef PAPLAYER_TIMIDITYCODEC_H_INCLUDED
+#define PAPLAYER_TIMIDITYCODEC_H_INCLUDED
 #include "TimidityCodec.h"
+#endif
+
 #ifdef HAS_ASAP_CODEC
 #include "ASAPCodec.h"
 #endif
+#ifndef PAPLAYER_URL_H_INCLUDED
+#define PAPLAYER_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef PAPLAYER_DVDPLAYERCODEC_H_INCLUDED
+#define PAPLAYER_DVDPLAYERCODEC_H_INCLUDED
 #include "DVDPlayerCodec.h"
+#endif
+
+#ifndef PAPLAYER_PCMCODEC_H_INCLUDED
+#define PAPLAYER_PCMCODEC_H_INCLUDED
 #include "PCMCodec.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_STRINGUTILS_H_INCLUDED
+#define PAPLAYER_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {

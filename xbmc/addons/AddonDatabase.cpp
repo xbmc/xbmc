@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef ADDONS_ADDONDATABASE_H_INCLUDED
+#define ADDONS_ADDONDATABASE_H_INCLUDED
 #include "AddonDatabase.h"
+#endif
+
+#ifndef ADDONS_ADDONS_ADDONMANAGER_H_INCLUDED
+#define ADDONS_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef ADDONS_UTILS_LOG_H_INCLUDED
+#define ADDONS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ADDONS_UTILS_VARIANT_H_INCLUDED
+#define ADDONS_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef ADDONS_UTILS_STRINGUTILS_H_INCLUDED
+#define ADDONS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ADDONS_XBDATETIME_H_INCLUDED
+#define ADDONS_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef ADDONS_ADDONS_SERVICE_H_INCLUDED
+#define ADDONS_ADDONS_SERVICE_H_INCLUDED
 #include "addons/Service.h"
+#endif
+
+#ifndef ADDONS_DBWRAPPERS_DATASET_H_INCLUDED
+#define ADDONS_DBWRAPPERS_DATASET_H_INCLUDED
 #include "dbwrappers/dataset.h"
+#endif
+
+#ifndef ADDONS_PVR_PVRMANAGER_H_INCLUDED
+#define ADDONS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
 
 using namespace ADDON;
 using namespace std;

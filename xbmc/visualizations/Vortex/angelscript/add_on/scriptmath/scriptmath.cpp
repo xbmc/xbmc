@@ -1,7 +1,11 @@
 #include <assert.h>
 #include <math.h>
 #include <string.h>
+#ifndef SCRIPTMATH_SCRIPTMATH_H_INCLUDED
+#define SCRIPTMATH_SCRIPTMATH_H_INCLUDED
 #include "scriptmath.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

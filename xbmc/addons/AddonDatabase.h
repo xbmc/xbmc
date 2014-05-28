@@ -19,10 +19,26 @@
  *
  */
 
+#ifndef ADDONS_DBWRAPPERS_DATABASE_H_INCLUDED
+#define ADDONS_DBWRAPPERS_DATABASE_H_INCLUDED
 #include "dbwrappers/Database.h"
+#endif
+
+#ifndef ADDONS_ADDONS_ADDON_H_INCLUDED
+#define ADDONS_ADDONS_ADDON_H_INCLUDED
 #include "addons/Addon.h"
+#endif
+
+#ifndef ADDONS_UTILS_STDSTRING_H_INCLUDED
+#define ADDONS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef ADDONS_FILEITEM_H_INCLUDED
+#define ADDONS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
 
 class CAddonDatabase : public CDatabase
 {

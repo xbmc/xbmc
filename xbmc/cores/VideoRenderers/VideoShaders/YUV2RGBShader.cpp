@@ -19,17 +19,49 @@
  *
  */
 
+#ifndef VIDEOSHADERS_SYSTEM_H_INCLUDED
+#define VIDEOSHADERS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef VIDEOSHADERS____RENDERFLAGS_H_INCLUDED
+#define VIDEOSHADERS____RENDERFLAGS_H_INCLUDED
 #include "../RenderFlags.h"
+#endif
+
+#ifndef VIDEOSHADERS_YUV2RGBSHADER_H_INCLUDED
+#define VIDEOSHADERS_YUV2RGBSHADER_H_INCLUDED
 #include "YUV2RGBShader.h"
+#endif
+
+#ifndef VIDEOSHADERS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define VIDEOSHADERS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef VIDEOSHADERS_GUILIB_TRANSFORMMATRIX_H_INCLUDED
+#define VIDEOSHADERS_GUILIB_TRANSFORMMATRIX_H_INCLUDED
 #include "guilib/TransformMatrix.h"
+#endif
+
+#ifndef VIDEOSHADERS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define VIDEOSHADERS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef VIDEOSHADERS_UTILS_LOG_H_INCLUDED
+#define VIDEOSHADERS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 #if defined(HAS_GL) || defined(HAS_GLES)
 #include "utils/GLUtils.h"
 #endif
+#ifndef VIDEOSHADERS_CORES_VIDEORENDERERS_RENDERFORMATS_H_INCLUDED
+#define VIDEOSHADERS_CORES_VIDEORENDERERS_RENDERFORMATS_H_INCLUDED
 #include "cores/VideoRenderers/RenderFormats.h"
+#endif
+
 
 #include <string>
 #include <sstream>

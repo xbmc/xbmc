@@ -20,7 +20,11 @@
 
 #pragma once
 
+#ifndef DVDPLAYER_UTILS_STDSTRING_H_INCLUDED
+#define DVDPLAYER_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 class CFileItem;
 class CDVDDemux;

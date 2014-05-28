@@ -17,7 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef WAYLAND_STUBCURSORMANAGER_H_INCLUDED
+#define WAYLAND_STUBCURSORMANAGER_H_INCLUDED
 #include "StubCursorManager.h"
+#endif
+
 
 void
 StubCursorManager::SetCursor(uint32_t serial,

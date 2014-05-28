@@ -22,7 +22,11 @@
 #include <boost/function.hpp>
 #include <boost/noncopyable.hpp>
 
+#ifndef WAYLAND_THREADS_THREAD_H_INCLUDED
+#define WAYLAND_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
 
 namespace xbmc
 {

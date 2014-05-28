@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef UTILS_XBMCTINYXML_H_INCLUDED
+#define UTILS_XBMCTINYXML_H_INCLUDED
 #include "XBMCTinyXML.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_FILE_H_INCLUDED
+#define UTILS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UTILS_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define UTILS_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef UTILS_UTILS_CHARSETDETECTION_H_INCLUDED
+#define UTILS_UTILS_CHARSETDETECTION_H_INCLUDED
 #include "utils/CharsetDetection.h"
+#endif
+
+#ifndef UTILS_UTILS_UTF8UTILS_H_INCLUDED
+#define UTILS_UTILS_UTF8UTILS_H_INCLUDED
 #include "utils/Utf8Utils.h"
+#endif
+
+#ifndef UTILS_LANGINFO_H_INCLUDED
+#define UTILS_LANGINFO_H_INCLUDED
 #include "LangInfo.h"
+#endif
+
+#ifndef UTILS_REGEXP_H_INCLUDED
+#define UTILS_REGEXP_H_INCLUDED
 #include "RegExp.h"
+#endif
+
+#ifndef UTILS_UTILS_LOG_H_INCLUDED
+#define UTILS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #define MAX_ENTITY_LENGTH 8 // size of largest entity "&#xNNNN;"
 #define BUFFER_SIZE 4096

@@ -18,13 +18,41 @@
  *
  */
 
+#ifndef GUILIB_GUIINCLUDES_H_INCLUDED
+#define GUILIB_GUIINCLUDES_H_INCLUDED
 #include "GUIIncludes.h"
+#endif
+
+#ifndef GUILIB_ADDONS_SKIN_H_INCLUDED
+#define GUILIB_ADDONS_SKIN_H_INCLUDED
 #include "addons/Skin.h"
+#endif
+
+#ifndef GUILIB_GUIINFOMANAGER_H_INCLUDED
+#define GUILIB_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef GUILIB_UTILS_XBMCTINYXML_H_INCLUDED
+#define GUILIB_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef GUILIB_INTERFACES_INFO_SKINVARIABLE_H_INCLUDED
+#define GUILIB_INTERFACES_INFO_SKINVARIABLE_H_INCLUDED
 #include "interfaces/info/SkinVariable.h"
+#endif
+
 
 using namespace std;
 

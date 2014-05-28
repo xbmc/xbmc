@@ -35,13 +35,41 @@
 // This class describes the datatype for expressions during compilation
 //
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
+#ifndef SOURCE_AS_DATATYPE_H_INCLUDED
+#define SOURCE_AS_DATATYPE_H_INCLUDED
 #include "as_datatype.h"
+#endif
+
+#ifndef SOURCE_AS_TOKENDEF_H_INCLUDED
+#define SOURCE_AS_TOKENDEF_H_INCLUDED
 #include "as_tokendef.h"
+#endif
+
+#ifndef SOURCE_AS_OBJECTTYPE_H_INCLUDED
+#define SOURCE_AS_OBJECTTYPE_H_INCLUDED
 #include "as_objecttype.h"
+#endif
+
+#ifndef SOURCE_AS_SCRIPTENGINE_H_INCLUDED
+#define SOURCE_AS_SCRIPTENGINE_H_INCLUDED
 #include "as_scriptengine.h"
+#endif
+
+#ifndef SOURCE_AS_ARRAYOBJECT_H_INCLUDED
+#define SOURCE_AS_ARRAYOBJECT_H_INCLUDED
 #include "as_arrayobject.h"
+#endif
+
+#ifndef SOURCE_AS_TOKENIZER_H_INCLUDED
+#define SOURCE_AS_TOKENIZER_H_INCLUDED
 #include "as_tokenizer.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

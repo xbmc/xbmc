@@ -19,9 +19,21 @@
  *
  */
 
+#ifndef FILESYSTEM_IDIRECTORY_H_INCLUDED
+#define FILESYSTEM_IDIRECTORY_H_INCLUDED
 #include "IDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_DIRECTORY_H_INCLUDED
+#define FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "Directory.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_CRITICALSECTION_H_INCLUDED
+#define FILESYSTEM_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 #include <map>
 #include <set>

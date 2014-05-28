@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef INTERFACES_UTILS_STDSTRING_H_INCLUDED
+#define INTERFACES_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 class CBuiltins
 {

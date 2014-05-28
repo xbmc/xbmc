@@ -19,15 +19,39 @@
  *
  */
 
+#ifndef ENCODERS_CORES_AUDIOENGINE_INTERFACES_AEENCODER_H_INCLUDED
+#define ENCODERS_CORES_AUDIOENGINE_INTERFACES_AEENCODER_H_INCLUDED
 #include "cores/AudioEngine/Interfaces/AEEncoder.h"
+#endif
+
+#ifndef ENCODERS_CORES_AUDIOENGINE_UTILS_AEREMAP_H_INCLUDED
+#define ENCODERS_CORES_AUDIOENGINE_UTILS_AEREMAP_H_INCLUDED
 #include "cores/AudioEngine/Utils/AERemap.h"
+#endif
+
+#ifndef ENCODERS_CORES_AUDIOENGINE_UTILS_AEPACKIEC61937_H_INCLUDED
+#define ENCODERS_CORES_AUDIOENGINE_UTILS_AEPACKIEC61937_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEPackIEC61937.h"
+#endif
+
 
 /* ffmpeg re-defines this, so undef it to squash the warning */
 #undef restrict
+#ifndef ENCODERS_DLLAVCODEC_H_INCLUDED
+#define ENCODERS_DLLAVCODEC_H_INCLUDED
 #include "DllAvCodec.h"
+#endif
+
+#ifndef ENCODERS_DLLAVFORMAT_H_INCLUDED
+#define ENCODERS_DLLAVFORMAT_H_INCLUDED
 #include "DllAvFormat.h"
+#endif
+
+#ifndef ENCODERS_DLLSWRESAMPLE_H_INCLUDED
+#define ENCODERS_DLLSWRESAMPLE_H_INCLUDED
 #include "DllSwResample.h"
+#endif
+
 
 class CAEEncoderFFmpeg: public IAEEncoder
 {

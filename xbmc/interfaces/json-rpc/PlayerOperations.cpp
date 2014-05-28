@@ -18,32 +18,136 @@
  *
  */
 
+#ifndef JSON_RPC_PLAYEROPERATIONS_H_INCLUDED
+#define JSON_RPC_PLAYEROPERATIONS_H_INCLUDED
 #include "PlayerOperations.h"
+#endif
+
+#ifndef JSON_RPC_APPLICATION_H_INCLUDED
+#define JSON_RPC_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef JSON_RPC_UTIL_H_INCLUDED
+#define JSON_RPC_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef JSON_RPC_PLAYLISTPLAYER_H_INCLUDED
+#define JSON_RPC_PLAYLISTPLAYER_H_INCLUDED
 #include "PlayListPlayer.h"
+#endif
+
+#ifndef JSON_RPC_PLAYLISTS_PLAYLIST_H_INCLUDED
+#define JSON_RPC_PLAYLISTS_PLAYLIST_H_INCLUDED
 #include "playlists/PlayList.h"
+#endif
+
+#ifndef JSON_RPC_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define JSON_RPC_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef JSON_RPC_GUILIB_KEY_H_INCLUDED
+#define JSON_RPC_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef JSON_RPC_GUIUSERMESSAGES_H_INCLUDED
+#define JSON_RPC_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef JSON_RPC_PICTURES_GUIWINDOWSLIDESHOW_H_INCLUDED
+#define JSON_RPC_PICTURES_GUIWINDOWSLIDESHOW_H_INCLUDED
 #include "pictures/GUIWindowSlideShow.h"
+#endif
+
+#ifndef JSON_RPC_INTERFACES_BUILTINS_H_INCLUDED
+#define JSON_RPC_INTERFACES_BUILTINS_H_INCLUDED
 #include "interfaces/Builtins.h"
+#endif
+
+#ifndef JSON_RPC_PARTYMODEMANAGER_H_INCLUDED
+#define JSON_RPC_PARTYMODEMANAGER_H_INCLUDED
 #include "PartyModeManager.h"
+#endif
+
+#ifndef JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
+#define JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef JSON_RPC_FILEITEM_H_INCLUDED
+#define JSON_RPC_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef JSON_RPC_VIDEOLIBRARY_H_INCLUDED
+#define JSON_RPC_VIDEOLIBRARY_H_INCLUDED
 #include "VideoLibrary.h"
+#endif
+
+#ifndef JSON_RPC_VIDEO_VIDEODATABASE_H_INCLUDED
+#define JSON_RPC_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
+#ifndef JSON_RPC_AUDIOLIBRARY_H_INCLUDED
+#define JSON_RPC_AUDIOLIBRARY_H_INCLUDED
 #include "AudioLibrary.h"
+#endif
+
+#ifndef JSON_RPC_GUIINFOMANAGER_H_INCLUDED
+#define JSON_RPC_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef JSON_RPC_FILESYSTEM_FILE_H_INCLUDED
+#define JSON_RPC_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef JSON_RPC_PARTYMODEMANAGER_H_INCLUDED
+#define JSON_RPC_PARTYMODEMANAGER_H_INCLUDED
 #include "PartyModeManager.h"
+#endif
+
+#ifndef JSON_RPC_EPG_EPGINFOTAG_H_INCLUDED
+#define JSON_RPC_EPG_EPGINFOTAG_H_INCLUDED
 #include "epg/EpgInfoTag.h"
+#endif
+
+#ifndef JSON_RPC_MUSIC_MUSICDATABASE_H_INCLUDED
+#define JSON_RPC_MUSIC_MUSICDATABASE_H_INCLUDED
 #include "music/MusicDatabase.h"
+#endif
+
+#ifndef JSON_RPC_PVR_PVRMANAGER_H_INCLUDED
+#define JSON_RPC_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef JSON_RPC_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
+#define JSON_RPC_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
 #include "pvr/channels/PVRChannel.h"
+#endif
+
+#ifndef JSON_RPC_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define JSON_RPC_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#endif
+
+#ifndef JSON_RPC_CORES_IPLAYER_H_INCLUDED
+#define JSON_RPC_CORES_IPLAYER_H_INCLUDED
 #include "cores/IPlayer.h"
+#endif
+
+#ifndef JSON_RPC_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define JSON_RPC_SETTINGS_MEDIASETTINGS_H_INCLUDED
 #include "settings/MediaSettings.h"
+#endif
+
 
 using namespace JSONRPC;
 using namespace PLAYLIST;

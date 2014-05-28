@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef WINDOWS_GUILIB_GUIWINDOW_H_INCLUDED
+#define WINDOWS_GUILIB_GUIWINDOW_H_INCLUDED
 #include "guilib/GUIWindow.h"
+#endif
+
+#ifndef WINDOWS_UTILS_STOPWATCH_H_INCLUDED
+#define WINDOWS_UTILS_STOPWATCH_H_INCLUDED
 #include "utils/Stopwatch.h"
+#endif
+
 
 class CGUIWindowWeather : public CGUIWindow
 {

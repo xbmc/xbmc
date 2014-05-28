@@ -21,9 +21,21 @@
  */
 #include <boost/scoped_ptr.hpp>
 
+#ifndef WAYLAND_INPUT_LINUX_KEYMAP_H_INCLUDED
+#define WAYLAND_INPUT_LINUX_KEYMAP_H_INCLUDED
 #include "input/linux/Keymap.h"
+#endif
+
+#ifndef WAYLAND_KEYBOARD_H_INCLUDED
+#define WAYLAND_KEYBOARD_H_INCLUDED
 #include "Keyboard.h"
+#endif
+
+#ifndef WAYLAND_TIMEOUTMANAGER_H_INCLUDED
+#define WAYLAND_TIMEOUTMANAGER_H_INCLUDED
 #include "TimeoutManager.h"
+#endif
+
 
 class IDllXKBCommon;
 

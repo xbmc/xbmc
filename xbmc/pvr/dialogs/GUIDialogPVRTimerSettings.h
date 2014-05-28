@@ -19,9 +19,21 @@
  *
  */
 
+#ifndef DIALOGS_XBDATETIME_H_INCLUDED
+#define DIALOGS_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_DIALOGS_GUIDIALOGSETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_DIALOGS_GUIDIALOGSETTINGS_H_INCLUDED
 #include "settings/dialogs/GUIDialogSettings.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUILISTITEM_H_INCLUDED
+#define DIALOGS_GUILIB_GUILISTITEM_H_INCLUDED
 #include "guilib/GUIListItem.h"
+#endif
+
 
 class CFileItem;
 

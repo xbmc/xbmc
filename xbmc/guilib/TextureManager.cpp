@@ -18,22 +18,74 @@
  *
  */
 
+#ifndef GUILIB_TEXTUREMANAGER_H_INCLUDED
+#define GUILIB_TEXTUREMANAGER_H_INCLUDED
 #include "TextureManager.h"
+#endif
+
+#ifndef GUILIB_TEXTURE_H_INCLUDED
+#define GUILIB_TEXTURE_H_INCLUDED
 #include "Texture.h"
+#endif
+
+#ifndef GUILIB_ANIMATEDGIF_H_INCLUDED
+#define GUILIB_ANIMATEDGIF_H_INCLUDED
 #include "AnimatedGif.h"
+#endif
+
+#ifndef GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "GraphicContext.h"
+#endif
+
+#ifndef GUILIB_THREADS_SINGLELOCK_H_INCLUDED
+#define GUILIB_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef GUILIB_UTILS_URIUTILS_H_INCLUDED
+#define GUILIB_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef GUILIB_ADDONS_SKIN_H_INCLUDED
+#define GUILIB_ADDONS_SKIN_H_INCLUDED
 #include "addons/Skin.h"
+#endif
+
 #ifdef _DEBUG
 #include "utils/TimeUtils.h"
 #endif
+#ifndef GUILIB_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define GUILIB_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef GUILIB_FILESYSTEM_FILE_H_INCLUDED
+#define GUILIB_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef GUILIB_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define GUILIB_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef GUILIB_URL_H_INCLUDED
+#define GUILIB_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 #include <assert.h>
 
 #if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)

@@ -29,7 +29,11 @@
 
 */
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
 
 #include <stdarg.h>     // va_list, va_start(), etc
 #include <stdlib.h>     // strtod(), strtol()
@@ -41,8 +45,16 @@
 #include <memory.h>
 #endif
 
+#ifndef SOURCE_AS_STRING_H_INCLUDED
+#define SOURCE_AS_STRING_H_INCLUDED
 #include "as_string.h"
+#endif
+
+#ifndef SOURCE_AS_STRING_UTIL_H_INCLUDED
+#define SOURCE_AS_STRING_UTIL_H_INCLUDED
 #include "as_string_util.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

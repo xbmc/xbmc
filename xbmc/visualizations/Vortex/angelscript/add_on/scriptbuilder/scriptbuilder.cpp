@@ -1,4 +1,8 @@
+#ifndef SCRIPTBUILDER_SCRIPTBUILDER_H_INCLUDED
+#define SCRIPTBUILDER_SCRIPTBUILDER_H_INCLUDED
 #include "scriptbuilder.h"
+#endif
+
 #include <vector>
 using namespace std;
 

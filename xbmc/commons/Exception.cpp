@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef COMMONS_EXCEPTION_H_INCLUDED
+#define COMMONS_EXCEPTION_H_INCLUDED
 #include "Exception.h"
+#endif
+
 
 namespace XbmcCommons
 {

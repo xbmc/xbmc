@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef UTILS_UTILS_STOPWATCH_H_INCLUDED
+#define UTILS_UTILS_STOPWATCH_H_INCLUDED
 #include "utils/Stopwatch.h"
+#endif
+
 
 class CSeekHandler
 {

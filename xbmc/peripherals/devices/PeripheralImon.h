@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef DEVICES_PERIPHERALHID_H_INCLUDED
+#define DEVICES_PERIPHERALHID_H_INCLUDED
 #include "PeripheralHID.h"
+#endif
+
 
 class CSetting;
 

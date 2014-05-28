@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef DIALOGS_MEDIASOURCE_H_INCLUDED
+#define DIALOGS_MEDIASOURCE_H_INCLUDED
 #include "MediaSource.h"
+#endif
+
+#ifndef DIALOGS_PROFILES_PROFILE_H_INCLUDED
+#define DIALOGS_PROFILES_PROFILE_H_INCLUDED
 #include "profiles/Profile.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_DIALOGS_GUIDIALOGSETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_DIALOGS_GUIDIALOGSETTINGS_H_INCLUDED
 #include "settings/dialogs/GUIDialogSettings.h"
+#endif
+
 
 class CGUIDialogProfileSettings : public CGUIDialogSettings
 {

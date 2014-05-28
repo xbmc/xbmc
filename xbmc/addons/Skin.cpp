@@ -18,21 +18,73 @@
  *
  */
 
+#ifndef ADDONS_SKIN_H_INCLUDED
+#define ADDONS_SKIN_H_INCLUDED
 #include "Skin.h"
+#endif
+
+#ifndef ADDONS_ADDONMANAGER_H_INCLUDED
+#define ADDONS_ADDONMANAGER_H_INCLUDED
 #include "AddonManager.h"
+#endif
+
+#ifndef ADDONS_LANGINFO_H_INCLUDED
+#define ADDONS_LANGINFO_H_INCLUDED
 #include "LangInfo.h"
+#endif
+
+#ifndef ADDONS_UTIL_H_INCLUDED
+#define ADDONS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_FILE_H_INCLUDED
+#define ADDONS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define ADDONS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef ADDONS_GUILIB_WINDOWIDS_H_INCLUDED
+#define ADDONS_GUILIB_WINDOWIDS_H_INCLUDED
 #include "guilib/WindowIDs.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_SETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_LIB_SETTING_H_INCLUDED
+#define ADDONS_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef ADDONS_UTILS_URIUTILS_H_INCLUDED
+#define ADDONS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef ADDONS_UTILS_LOG_H_INCLUDED
+#define ADDONS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ADDONS_UTILS_STRINGUTILS_H_INCLUDED
+#define ADDONS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 // fallback for new skin resolution code
+#ifndef ADDONS_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define ADDONS_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

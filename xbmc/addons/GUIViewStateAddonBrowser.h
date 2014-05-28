@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef ADDONS_VIEW_GUIVIEWSTATE_H_INCLUDED
+#define ADDONS_VIEW_GUIVIEWSTATE_H_INCLUDED
 #include "view/GUIViewState.h"
+#endif
+
 
 class CGUIViewStateAddonBrowser : public CGUIViewState
 {

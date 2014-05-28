@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef ROOT_APPPARAMPARSER_H_INCLUDED
+#define ROOT_APPPARAMPARSER_H_INCLUDED
 #include "AppParamParser.h"
+#endif
+
+#ifndef ROOT_GUIINFOMANAGER_H_INCLUDED
+#define ROOT_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef ROOT_PLAYLISTPLAYER_H_INCLUDED
+#define ROOT_PLAYLISTPLAYER_H_INCLUDED
 #include "PlayListPlayer.h"
+#endif
+
+#ifndef ROOT_FILEITEM_H_INCLUDED
+#define ROOT_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef ROOT_APPLICATION_H_INCLUDED
+#define ROOT_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef ROOT_APPLICATIONMESSENGER_H_INCLUDED
+#define ROOT_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef ROOT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef ROOT_UTILS_LOG_H_INCLUDED
+#define ROOT_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 #ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
 #endif

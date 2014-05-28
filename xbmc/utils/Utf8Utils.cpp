@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef UTILS_UTF8UTILS_H_INCLUDED
+#define UTILS_UTF8UTILS_H_INCLUDED
 #include "Utf8Utils.h"
+#endif
+
 
 
 CUtf8Utils::utf8CheckResult CUtf8Utils::checkStrForUtf8(const std::string& str)

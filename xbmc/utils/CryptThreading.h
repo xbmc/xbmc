@@ -20,8 +20,16 @@
 
 #pragma once
 
+#ifndef UTILS_UTILS_GLOBALSHANDLING_H_INCLUDED
+#define UTILS_UTILS_GLOBALSHANDLING_H_INCLUDED
 #include "utils/GlobalsHandling.h"
+#endif
+
+#ifndef UTILS_THREADS_CRITICALSECTION_H_INCLUDED
+#define UTILS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 class CryptThreadingInitializer
 {

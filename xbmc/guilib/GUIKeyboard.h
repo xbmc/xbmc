@@ -21,7 +21,11 @@
 #pragma once
 
 #include <string>
+#ifndef GUILIB_THREADS_TIMER_H_INCLUDED
+#define GUILIB_THREADS_TIMER_H_INCLUDED
 #include "threads/Timer.h"
+#endif
+
 
 class CGUIKeyboard;
 enum FILTERING { FILTERING_NONE = 0, FILTERING_CURRENT, FILTERING_SEARCH };

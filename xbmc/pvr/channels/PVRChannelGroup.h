@@ -20,10 +20,26 @@
  *
  */
 
+#ifndef CHANNELS_FILEITEM_H_INCLUDED
+#define CHANNELS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef CHANNELS_PVRCHANNEL_H_INCLUDED
+#define CHANNELS_PVRCHANNEL_H_INCLUDED
 #include "PVRChannel.h"
+#endif
+
+#ifndef CHANNELS_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
+#define CHANNELS_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
 #include "settings/lib/ISettingCallback.h"
+#endif
+
+#ifndef CHANNELS_UTILS_JOBMANAGER_H_INCLUDED
+#define CHANNELS_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
 
 #include <boost/shared_ptr.hpp>
 

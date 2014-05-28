@@ -17,28 +17,116 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef UPNP_UPNPINTERNAL_H_INCLUDED
+#define UPNP_UPNPINTERNAL_H_INCLUDED
 #include "UPnPInternal.h"
+#endif
+
+#ifndef UPNP_UPNP_H_INCLUDED
+#define UPNP_UPNP_H_INCLUDED
 #include "UPnP.h"
+#endif
+
+#ifndef UPNP_UPNPSERVER_H_INCLUDED
+#define UPNP_UPNPSERVER_H_INCLUDED
 #include "UPnPServer.h"
+#endif
+
+#ifndef UPNP_PLATINUM_H_INCLUDED
+#define UPNP_PLATINUM_H_INCLUDED
 #include "Platinum.h"
+#endif
+
+#ifndef UPNP_URL_H_INCLUDED
+#define UPNP_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef UPNP_UTIL_H_INCLUDED
+#define UPNP_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef UPNP_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define UPNP_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef UPNP_UTILS_LOG_H_INCLUDED
+#define UPNP_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef UPNP_UTILS_STRINGUTILS_H_INCLUDED
+#define UPNP_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UPNP_UTILS_URIUTILS_H_INCLUDED
+#define UPNP_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef UPNP_FILEITEM_H_INCLUDED
+#define UPNP_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef UPNP_FILESYSTEM_FILE_H_INCLUDED
+#define UPNP_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef UPNP_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
+#define UPNP_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
 #include "filesystem/StackDirectory.h"
+#endif
+
+#ifndef UPNP_FILESYSTEM_MUSICDATABASEDIRECTORY_H_INCLUDED
+#define UPNP_FILESYSTEM_MUSICDATABASEDIRECTORY_H_INCLUDED
 #include "filesystem/MusicDatabaseDirectory.h"
+#endif
+
+#ifndef UPNP_FILESYSTEM_VIDEODATABASEDIRECTORY_H_INCLUDED
+#define UPNP_FILESYSTEM_VIDEODATABASEDIRECTORY_H_INCLUDED
 #include "filesystem/VideoDatabaseDirectory.h"
+#endif
+
+#ifndef UPNP_VIDEO_VIDEODATABASE_H_INCLUDED
+#define UPNP_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
+#ifndef UPNP_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define UPNP_VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "video/VideoInfoTag.h"
+#endif
+
+#ifndef UPNP_MUSIC_MUSICDATABASE_H_INCLUDED
+#define UPNP_MUSIC_MUSICDATABASE_H_INCLUDED
 #include "music/MusicDatabase.h"
+#endif
+
+#ifndef UPNP_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define UPNP_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef UPNP_TEXTUREDATABASE_H_INCLUDED
+#define UPNP_TEXTUREDATABASE_H_INCLUDED
 #include "TextureDatabase.h"
+#endif
+
+#ifndef UPNP_THUMBLOADER_H_INCLUDED
+#define UPNP_THUMBLOADER_H_INCLUDED
 #include "ThumbLoader.h"
+#endif
+
+#ifndef UPNP_UTILS_URIUTILS_H_INCLUDED
+#define UPNP_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 
 using namespace MUSIC_INFO;
 using namespace XFILE;

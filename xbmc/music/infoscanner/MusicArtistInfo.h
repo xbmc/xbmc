@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef INFOSCANNER_MUSIC_SONG_H_INCLUDED
+#define INFOSCANNER_MUSIC_SONG_H_INCLUDED
 #include "music/Song.h"
+#endif
+
+#ifndef INFOSCANNER_MUSIC_ARTIST_H_INCLUDED
+#define INFOSCANNER_MUSIC_ARTIST_H_INCLUDED
 #include "music/Artist.h"
+#endif
+
+#ifndef INFOSCANNER_ADDONS_SCRAPER_H_INCLUDED
+#define INFOSCANNER_ADDONS_SCRAPER_H_INCLUDED
 #include "addons/Scraper.h"
+#endif
+
 
 class CXBMCTinyXML;
 class CScraperUrl;

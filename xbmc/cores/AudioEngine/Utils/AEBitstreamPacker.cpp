@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef UTILS_AEBITSTREAMPACKER_H_INCLUDED
+#define UTILS_AEBITSTREAMPACKER_H_INCLUDED
 #include "AEBitstreamPacker.h"
+#endif
+
+#ifndef UTILS_AEPACKIEC61937_H_INCLUDED
+#define UTILS_AEPACKIEC61937_H_INCLUDED
 #include "AEPackIEC61937.h"
+#endif
+
+#ifndef UTILS_AESTREAMINFO_H_INCLUDED
+#define UTILS_AESTREAMINFO_H_INCLUDED
 #include "AEStreamInfo.h"
+#endif
+
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>

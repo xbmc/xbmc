@@ -29,8 +29,16 @@
 #include <stdio.h>
 
 #include "Common.hpp"
+#ifndef LIBPROJECTM_WIPEMALLOC_H_INCLUDED
+#define LIBPROJECTM_WIPEMALLOC_H_INCLUDED
 #include "wipemalloc.h"
+#endif
+
+#ifndef LIBPROJECTM_FFTSG_H_INCLUDED
+#define LIBPROJECTM_FFTSG_H_INCLUDED
 #include "fftsg.h"
+#endif
+
 #include "PCM.hpp"
 #include <cassert>
 

@@ -22,7 +22,11 @@
 
 #include <windows.h>
 #include <exception>
+#ifndef WIN_COMMONS_EXCEPTION_H_INCLUDED
+#define WIN_COMMONS_EXCEPTION_H_INCLUDED
 #include "commons/Exception.h"
+#endif
+
 
 class win32_exception: public XbmcCommons::UncheckedException
 {

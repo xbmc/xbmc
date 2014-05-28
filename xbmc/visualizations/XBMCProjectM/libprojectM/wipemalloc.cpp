@@ -24,7 +24,11 @@
  * Clean memory allocator
  */
 
+#ifndef LIBPROJECTM_WIPEMALLOC_H_INCLUDED
+#define LIBPROJECTM_WIPEMALLOC_H_INCLUDED
 #include "wipemalloc.h"
+#endif
+
 
  void *wipemalloc( size_t count ) {
     void *mem = malloc( count );

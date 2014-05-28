@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef VIEW_GUIVIEWCONTROL_H_INCLUDED
+#define VIEW_GUIVIEWCONTROL_H_INCLUDED
 #include "GUIViewControl.h"
+#endif
+
+#ifndef VIEW_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define VIEW_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef VIEW_UTILS_URIUTILS_H_INCLUDED
+#define VIEW_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef VIEW_UTILS_STRINGUTILS_H_INCLUDED
+#define VIEW_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef VIEW_FILEITEM_H_INCLUDED
+#define VIEW_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef VIEW_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define VIEW_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef VIEW_GUIINFOMANAGER_H_INCLUDED
+#define VIEW_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef VIEW_GUILIB_WINDOWIDS_H_INCLUDED
+#define VIEW_GUILIB_WINDOWIDS_H_INCLUDED
 #include "guilib/WindowIDs.h"
+#endif
+
+#ifndef VIEW_GUILIB_IGUICONTAINER_H_INCLUDED
+#define VIEW_GUILIB_IGUICONTAINER_H_INCLUDED
 #include "guilib/IGUIContainer.h"
+#endif
+
 
 CGUIViewControl::CGUIViewControl(void)
 {

@@ -18,13 +18,41 @@
  *
  */
 
+#ifndef JSON_RPC_VIDEOLIBRARY_H_INCLUDED
+#define JSON_RPC_VIDEOLIBRARY_H_INCLUDED
 #include "VideoLibrary.h"
+#endif
+
+#ifndef JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
+#define JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef JSON_RPC_TEXTUREDATABASE_H_INCLUDED
+#define JSON_RPC_TEXTUREDATABASE_H_INCLUDED
 #include "TextureDatabase.h"
+#endif
+
+#ifndef JSON_RPC_UTIL_H_INCLUDED
+#define JSON_RPC_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_STRINGUTILS_H_INCLUDED
+#define JSON_RPC_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_URIUTILS_H_INCLUDED
+#define JSON_RPC_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef JSON_RPC_VIDEO_VIDEODATABASE_H_INCLUDED
+#define JSON_RPC_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
 
 using namespace JSONRPC;
 

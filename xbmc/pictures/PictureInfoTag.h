@@ -19,11 +19,31 @@
  *
  */
 
+#ifndef PICTURES_UTILS_ISERIALIZABLE_H_INCLUDED
+#define PICTURES_UTILS_ISERIALIZABLE_H_INCLUDED
 #include "utils/ISerializable.h"
+#endif
+
+#ifndef PICTURES_UTILS_ISORTABLE_H_INCLUDED
+#define PICTURES_UTILS_ISORTABLE_H_INCLUDED
 #include "utils/ISortable.h"
+#endif
+
+#ifndef PICTURES_UTILS_ARCHIVE_H_INCLUDED
+#define PICTURES_UTILS_ARCHIVE_H_INCLUDED
 #include "utils/Archive.h"
+#endif
+
+#ifndef PICTURES_DLLLIBEXIF_H_INCLUDED
+#define PICTURES_DLLLIBEXIF_H_INCLUDED
 #include "DllLibExif.h"
+#endif
+
+#ifndef PICTURES_XBDATETIME_H_INCLUDED
+#define PICTURES_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
 
 #define SLIDE_FILE_NAME             900         // Note that not all image tags will be present for each image
 #define SLIDE_FILE_PATH             901

@@ -31,12 +31,28 @@
 
 #include <new>
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
 
+
+#ifndef SOURCE_AS_SCRIPTENGINE_H_INCLUDED
+#define SOURCE_AS_SCRIPTENGINE_H_INCLUDED
 #include "as_scriptengine.h"
+#endif
 
+
+#ifndef SOURCE_AS_SCRIPTOBJECT_H_INCLUDED
+#define SOURCE_AS_SCRIPTOBJECT_H_INCLUDED
 #include "as_scriptobject.h"
+#endif
+
+#ifndef SOURCE_AS_ARRAYOBJECT_H_INCLUDED
+#define SOURCE_AS_ARRAYOBJECT_H_INCLUDED
 #include "as_arrayobject.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

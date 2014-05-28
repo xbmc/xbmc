@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef ANDROID_STORAGE_ISTORAGEPROVIDER_H_INCLUDED
+#define ANDROID_STORAGE_ISTORAGEPROVIDER_H_INCLUDED
 #include "storage/IStorageProvider.h"
+#endif
+
 
 class CAndroidStorageProvider : public IStorageProvider
 {

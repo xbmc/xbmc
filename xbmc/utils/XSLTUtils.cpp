@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef UTILS_XSLTUTILS_H_INCLUDED
+#define UTILS_XSLTUTILS_H_INCLUDED
 #include "XSLTUtils.h"
+#endif
+
+#ifndef UTILS_LOG_H_INCLUDED
+#define UTILS_LOG_H_INCLUDED
 #include "log.h"
+#endif
+
 #include <libxslt/xslt.h>
 #include <libxslt/transform.h>
 

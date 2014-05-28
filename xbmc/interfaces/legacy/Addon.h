@@ -20,12 +20,32 @@
 
 #pragma once
 
+#ifndef LEGACY_SWIGHELPER_H_INCLUDED
+#define LEGACY_SWIGHELPER_H_INCLUDED
 #include "swighelper.h"
-#include "addons/IAddon.h"
+#endif
 
+#ifndef LEGACY_ADDONS_IADDON_H_INCLUDED
+#define LEGACY_ADDONS_IADDON_H_INCLUDED
+#include "addons/IAddon.h"
+#endif
+
+
+#ifndef LEGACY_ADDONSTRING_H_INCLUDED
+#define LEGACY_ADDONSTRING_H_INCLUDED
 #include "AddonString.h"
+#endif
+
+#ifndef LEGACY_ADDONCLASS_H_INCLUDED
+#define LEGACY_ADDONCLASS_H_INCLUDED
 #include "AddonClass.h"
+#endif
+
+#ifndef LEGACY_EXCEPTION_H_INCLUDED
+#define LEGACY_EXCEPTION_H_INCLUDED
 #include "Exception.h"
+#endif
+
 
 namespace XBMCAddon
 {

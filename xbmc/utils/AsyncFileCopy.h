@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef UTILS_THREADS_THREAD_H_INCLUDED
+#define UTILS_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_FILE_H_INCLUDED
+#define UTILS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
 
 class CAsyncFileCopy : public CThread, public XFILE::IFileCallback
 {

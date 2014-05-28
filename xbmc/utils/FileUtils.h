@@ -19,7 +19,11 @@
  *
  */
 #include <string>
+#ifndef UTILS_FILEITEM_H_INCLUDED
+#define UTILS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
 
 class CFileUtils
 {

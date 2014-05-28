@@ -18,23 +18,83 @@
  *
  */
 
+#ifndef RECORDINGS_FILEITEM_H_INCLUDED
+#define RECORDINGS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef RECORDINGS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define RECORDINGS_DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef RECORDINGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define RECORDINGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef RECORDINGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define RECORDINGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef RECORDINGS_UTIL_H_INCLUDED
+#define RECORDINGS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef RECORDINGS_URL_H_INCLUDED
+#define RECORDINGS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef RECORDINGS_UTILS_LOG_H_INCLUDED
+#define RECORDINGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef RECORDINGS_THREADS_SINGLELOCK_H_INCLUDED
+#define RECORDINGS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef RECORDINGS_VIDEO_VIDEODATABASE_H_INCLUDED
+#define RECORDINGS_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
+#ifndef RECORDINGS_SETTINGS_SETTINGS_H_INCLUDED
+#define RECORDINGS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
 
+
+#ifndef RECORDINGS_UTILS_URIUTILS_H_INCLUDED
+#define RECORDINGS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
-#include "utils/StringUtils.h"
+#endif
 
+#ifndef RECORDINGS_UTILS_STRINGUTILS_H_INCLUDED
+#define RECORDINGS_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+
+#ifndef RECORDINGS_PVR_PVRMANAGER_H_INCLUDED
+#define RECORDINGS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef RECORDINGS_PVR_ADDONS_PVRCLIENTS_H_INCLUDED
+#define RECORDINGS_PVR_ADDONS_PVRCLIENTS_H_INCLUDED
 #include "pvr/addons/PVRClients.h"
+#endif
+
+#ifndef RECORDINGS_PVRRECORDINGS_H_INCLUDED
+#define RECORDINGS_PVRRECORDINGS_H_INCLUDED
 #include "PVRRecordings.h"
+#endif
+
 
 using namespace PVR;
 

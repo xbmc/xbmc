@@ -26,7 +26,11 @@
 
 //#define AE_RING_BUFFER_DEBUG
 
+#ifndef UTILS_UTILS_LOG_H_INCLUDED
+#define UTILS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"  //CLog
+#endif
+
 #include <string.h>     //memset, memcpy
 
 /**

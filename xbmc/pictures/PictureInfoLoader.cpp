@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef PICTURES_PICTUREINFOLOADER_H_INCLUDED
+#define PICTURES_PICTUREINFOLOADER_H_INCLUDED
 #include "PictureInfoLoader.h"
+#endif
+
+#ifndef PICTURES_PICTUREINFOTAG_H_INCLUDED
+#define PICTURES_PICTUREINFOTAG_H_INCLUDED
 #include "PictureInfoTag.h"
+#endif
+
+#ifndef PICTURES_SETTINGS_SETTINGS_H_INCLUDED
+#define PICTURES_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef PICTURES_FILEITEM_H_INCLUDED
+#define PICTURES_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
 
 CPictureInfoLoader::CPictureInfoLoader()
 {

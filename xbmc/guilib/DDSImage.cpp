@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef GUILIB_DDSIMAGE_H_INCLUDED
+#define GUILIB_DDSIMAGE_H_INCLUDED
 #include "DDSImage.h"
+#endif
+
+#ifndef GUILIB_XBTF_H_INCLUDED
+#define GUILIB_XBTF_H_INCLUDED
 #include "XBTF.h"
+#endif
+
+#ifndef GUILIB_LIBSQUISH_SQUISH_H_INCLUDED
+#define GUILIB_LIBSQUISH_SQUISH_H_INCLUDED
 #include "libsquish/squish.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 #include <string.h>
 
 #ifndef NO_XBMC_FILESYSTEM

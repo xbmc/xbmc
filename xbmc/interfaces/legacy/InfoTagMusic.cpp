@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef LEGACY_INFOTAGMUSIC_H_INCLUDED
+#define LEGACY_INFOTAGMUSIC_H_INCLUDED
 #include "InfoTagMusic.h"
+#endif
+
+#ifndef LEGACY_UTILS_STRINGUTILS_H_INCLUDED
+#define LEGACY_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef LEGACY_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define LEGACY_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
 
 namespace XBMCAddon
 {

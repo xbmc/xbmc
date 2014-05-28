@@ -38,8 +38,16 @@
   #include <GLES2/gl2ext.h>
 #endif
 
+#ifndef WAVEFORM_ADDONS_INCLUDE_XBMC_VIS_DLL_H_INCLUDED
+#define WAVEFORM_ADDONS_INCLUDE_XBMC_VIS_DLL_H_INCLUDED
 #include "addons/include/xbmc_vis_dll.h"
+#endif
+
+#ifndef WAVEFORM_VISGUISHADER_H_INCLUDED
+#define WAVEFORM_VISGUISHADER_H_INCLUDED
 #include "VisGUIShader.h"
+#endif
+
 
 #define NUM_BANDS 16
 

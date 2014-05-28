@@ -23,7 +23,11 @@
 #include <boost/scoped_ptr.hpp>
 
 #include <EGL/egl.h>
+#ifndef EGL_EGLNATIVETYPE_H_INCLUDED
+#define EGL_EGLNATIVETYPE_H_INCLUDED
 #include "EGLNativeType.h"
+#endif
+
 
 class CEGLNativeTypeWayland : public CEGLNativeType
 {

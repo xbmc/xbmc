@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef GUILIB_GUISTATICITEM_H_INCLUDED
+#define GUILIB_GUISTATICITEM_H_INCLUDED
 #include "GUIStaticItem.h"
+#endif
+
+#ifndef GUILIB_UTILS_XMLUTILS_H_INCLUDED
+#define GUILIB_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef GUILIB_GUICONTROLFACTORY_H_INCLUDED
+#define GUILIB_GUICONTROLFACTORY_H_INCLUDED
 #include "GUIControlFactory.h"
+#endif
+
+#ifndef GUILIB_GUIINFOMANAGER_H_INCLUDED
+#define GUILIB_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef GUILIB_UTILS_VARIANT_H_INCLUDED
+#define GUILIB_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
 
 using namespace std;
 

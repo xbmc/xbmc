@@ -20,10 +20,22 @@
 
 #pragma once
 
+#ifndef LEGACY_GUILIB_GUIWINDOW_H_INCLUDED
+#define LEGACY_GUILIB_GUIWINDOW_H_INCLUDED
 #include "guilib/GUIWindow.h"
-#include "Window.h"
+#endif
 
+#ifndef LEGACY_WINDOW_H_INCLUDED
+#define LEGACY_WINDOW_H_INCLUDED
+#include "Window.h"
+#endif
+
+
+#ifndef LEGACY_THREADS_THREADLOCAL_H_INCLUDED
+#define LEGACY_THREADS_THREADLOCAL_H_INCLUDED
 #include "threads/ThreadLocal.h"
+#endif
+
 
 namespace XBMCAddon
 {

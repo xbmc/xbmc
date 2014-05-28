@@ -5,7 +5,11 @@
 #include <stdlib.h>
 #include "TimeKeeper.hpp"
 #include "RandomNumberGenerators.hpp"
+#ifndef LIBPROJECTM_SECTIONLOCK_H_INCLUDED
+#define LIBPROJECTM_SECTIONLOCK_H_INCLUDED
 #include "SectionLock.h"
+#endif
+
 
 TimeKeeper::TimeKeeper(double presetDuration, double smoothDuration, double easterEgg)
   {    

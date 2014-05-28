@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef MUSIC_ARTIST_H_INCLUDED
+#define MUSIC_ARTIST_H_INCLUDED
 #include "Artist.h"
+#endif
+
+#ifndef MUSIC_UTILS_XMLUTILS_H_INCLUDED
+#define MUSIC_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef MUSIC_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define MUSIC_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
 
 using namespace std;
 

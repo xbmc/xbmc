@@ -21,9 +21,21 @@
 
 #include <vector>
 
+#ifndef PROFILES_PROFILES_PROFILE_H_INCLUDED
+#define PROFILES_PROFILES_PROFILE_H_INCLUDED
 #include "profiles/Profile.h"
+#endif
+
+#ifndef PROFILES_SETTINGS_LIB_ISETTINGSHANDLER_H_INCLUDED
+#define PROFILES_SETTINGS_LIB_ISETTINGSHANDLER_H_INCLUDED
 #include "settings/lib/ISettingsHandler.h"
+#endif
+
+#ifndef PROFILES_THREADS_CRITICALSECTION_H_INCLUDED
+#define PROFILES_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 class TiXmlNode;
 

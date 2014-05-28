@@ -19,8 +19,16 @@
  */
 #pragma once
 
+#ifndef ADDONS_ADDONDLL_H_INCLUDED
+#define ADDONS_ADDONDLL_H_INCLUDED
 #include "AddonDll.h"
+#endif
+
+#ifndef ADDONS_INCLUDE_XBMC_SCR_TYPES_H_INCLUDED
+#define ADDONS_INCLUDE_XBMC_SCR_TYPES_H_INCLUDED
 #include "include/xbmc_scr_types.h"
+#endif
+
 
 typedef DllAddon<ScreenSaver, SCR_PROPS> DllScreenSaver;
 

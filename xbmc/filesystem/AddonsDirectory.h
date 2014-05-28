@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef FILESYSTEM_IDIRECTORY_H_INCLUDED
+#define FILESYSTEM_IDIRECTORY_H_INCLUDED
 #include "IDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_ADDONS_ADDONMANAGER_H_INCLUDED
+#define FILESYSTEM_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
 
 class CURL;
 typedef boost::shared_ptr<CFileItem> CFileItemPtr;

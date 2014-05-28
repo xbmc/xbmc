@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef HTTPREQUESTHANDLER_IHTTPREQUESTHANDLER_H_INCLUDED
+#define HTTPREQUESTHANDLER_IHTTPREQUESTHANDLER_H_INCLUDED
 #include "IHTTPRequestHandler.h"
+#endif
+
 
 class CHTTPWebinterfaceAddonsHandler : public IHTTPRequestHandler
 {

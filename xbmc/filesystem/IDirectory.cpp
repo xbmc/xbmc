@@ -18,13 +18,41 @@
  *
  */
 
+#ifndef FILESYSTEM_IDIRECTORY_H_INCLUDED
+#define FILESYSTEM_IDIRECTORY_H_INCLUDED
 #include "IDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_UTIL_H_INCLUDED
+#define FILESYSTEM_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef FILESYSTEM_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define FILESYSTEM_DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef FILESYSTEM_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
+#define FILESYSTEM_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
 #include "guilib/GUIKeyboardFactory.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_PASSWORDMANAGER_H_INCLUDED
+#define FILESYSTEM_PASSWORDMANAGER_H_INCLUDED
 #include "PasswordManager.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 
 using namespace XFILE;
 

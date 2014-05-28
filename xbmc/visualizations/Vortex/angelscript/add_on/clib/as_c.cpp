@@ -36,7 +36,11 @@
 //
 
 // Include the C++ interface header so we can call the proper methods
+#ifndef CLIB_______ANGELSCRIPT_INCLUDE_ANGELSCRIPT_H_INCLUDED
+#define CLIB_______ANGELSCRIPT_INCLUDE_ANGELSCRIPT_H_INCLUDED
 #include "../../angelscript/include/angelscript.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

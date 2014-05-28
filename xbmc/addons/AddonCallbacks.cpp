@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef ADDONS_ADDON_H_INCLUDED
+#define ADDONS_ADDON_H_INCLUDED
 #include "Addon.h"
+#endif
+
+#ifndef ADDONS_ADDONCALLBACKS_H_INCLUDED
+#define ADDONS_ADDONCALLBACKS_H_INCLUDED
 #include "AddonCallbacks.h"
+#endif
+
+#ifndef ADDONS_ADDONCALLBACKSADDON_H_INCLUDED
+#define ADDONS_ADDONCALLBACKSADDON_H_INCLUDED
 #include "AddonCallbacksAddon.h"
+#endif
+
+#ifndef ADDONS_ADDONCALLBACKSCODEC_H_INCLUDED
+#define ADDONS_ADDONCALLBACKSCODEC_H_INCLUDED
 #include "AddonCallbacksCodec.h"
+#endif
+
+#ifndef ADDONS_ADDONCALLBACKSGUI_H_INCLUDED
+#define ADDONS_ADDONCALLBACKSGUI_H_INCLUDED
 #include "AddonCallbacksGUI.h"
+#endif
+
+#ifndef ADDONS_ADDONCALLBACKSPVR_H_INCLUDED
+#define ADDONS_ADDONCALLBACKSPVR_H_INCLUDED
 #include "AddonCallbacksPVR.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define ADDONS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef ADDONS_UTILS_LOG_H_INCLUDED
+#define ADDONS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 namespace ADDON
 {

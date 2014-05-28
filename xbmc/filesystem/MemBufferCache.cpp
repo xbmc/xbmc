@@ -22,11 +22,31 @@
 #include "threads/SystemClock.h"
 #include "linux/PlatformDefs.h"
 #endif
+#ifndef FILESYSTEM_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define FILESYSTEM_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef FILESYSTEM_MEMBUFFERCACHE_H_INCLUDED
+#define FILESYSTEM_MEMBUFFERCACHE_H_INCLUDED
 #include "MemBufferCache.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
+#define FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_TIMEUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
 
 #include <math.h>
 

@@ -26,9 +26,21 @@
 
 #include <map>
 #include <vector>
+#ifndef MUSIC_ARTIST_H_INCLUDED
+#define MUSIC_ARTIST_H_INCLUDED
 #include "Artist.h"
+#endif
+
+#ifndef MUSIC_SONG_H_INCLUDED
+#define MUSIC_SONG_H_INCLUDED
 #include "Song.h"
+#endif
+
+#ifndef MUSIC_UTILS_SCRAPERURL_H_INCLUDED
+#define MUSIC_UTILS_SCRAPERURL_H_INCLUDED
 #include "utils/ScraperUrl.h"
+#endif
+
 
 class TiXmlNode;
 class CFileItem;

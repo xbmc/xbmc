@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_SCANRESULT_H_INCLUDED
+#define JNI_SCANRESULT_H_INCLUDED
 #include "ScanResult.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef GUILIB_GUIRENDERINGCONTROL_H_INCLUDED
+#define GUILIB_GUIRENDERINGCONTROL_H_INCLUDED
 #include "GUIRenderingControl.h"
+#endif
+
+#ifndef GUILIB_GUIUSERMESSAGES_H_INCLUDED
+#define GUILIB_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef GUILIB_THREADS_SINGLELOCK_H_INCLUDED
+#define GUILIB_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef GUILIB_GUILIB_IRENDERINGCALLBACK_H_INCLUDED
+#define GUILIB_GUILIB_IRENDERINGCALLBACK_H_INCLUDED
 #include "guilib/IRenderingCallback.h"
+#endif
+
+#ifndef GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
 
 using namespace std;
 

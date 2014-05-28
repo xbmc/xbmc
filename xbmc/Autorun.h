@@ -28,7 +28,11 @@
 //
 //
 
+#ifndef ROOT_SYSTEM_H_INCLUDED
+#define ROOT_SYSTEM_H_INCLUDED
 #include "system.h" // for HAS_DVD_DRIVE
+#endif
+
 
 #ifdef HAS_DVD_DRIVE
 

@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef UTILS_STDSTRING_H_INCLUDED
+#define UTILS_STDSTRING_H_INCLUDED
 #include "StdString.h"
+#endif
+
+#ifndef UTILS_JOB_H_INCLUDED
+#define UTILS_JOB_H_INCLUDED
 #include "Job.h"
+#endif
+
 
 class CInfoLoader : public IJobCallback
 {

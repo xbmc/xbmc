@@ -22,15 +22,39 @@
 
 #include <limits.h>
 
+#ifndef LEGACY_WINDOW_H_INCLUDED
+#define LEGACY_WINDOW_H_INCLUDED
 #include "Window.h"
+#endif
+
+#ifndef LEGACY_WINDOWS_GUIMEDIAWINDOW_H_INCLUDED
+#define LEGACY_WINDOWS_GUIMEDIAWINDOW_H_INCLUDED
 #include "windows/GUIMediaWindow.h"
+#endif
 
+
+#ifndef LEGACY_THREADS_THREAD_H_INCLUDED
+#define LEGACY_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
 
+
+#ifndef LEGACY_SWIGHELPER_H_INCLUDED
+#define LEGACY_SWIGHELPER_H_INCLUDED
 #include "swighelper.h"
-#include "FileItem.h"
+#endif
 
+#ifndef LEGACY_FILEITEM_H_INCLUDED
+#define LEGACY_FILEITEM_H_INCLUDED
+#include "FileItem.h"
+#endif
+
+
+#ifndef LEGACY_WINDOWDIALOGMIXIN_H_INCLUDED
+#define LEGACY_WINDOWDIALOGMIXIN_H_INCLUDED
 #include "WindowDialogMixin.h"
+#endif
+
 
 namespace XBMCAddon
 {

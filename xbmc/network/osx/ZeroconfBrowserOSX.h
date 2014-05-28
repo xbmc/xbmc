@@ -22,9 +22,21 @@
 #include <memory>
 #include <map>
 
+#ifndef OSX_NETWORK_ZEROCONFBROWSER_H_INCLUDED
+#define OSX_NETWORK_ZEROCONFBROWSER_H_INCLUDED
 #include "network/ZeroconfBrowser.h"
+#endif
+
+#ifndef OSX_THREADS_THREAD_H_INCLUDED
+#define OSX_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef OSX_THREADS_CRITICALSECTION_H_INCLUDED
+#define OSX_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 #include <CoreFoundation/CoreFoundation.h>
 #if defined(TARGET_DARWIN_OSX)

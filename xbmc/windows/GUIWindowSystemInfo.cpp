@@ -18,18 +18,54 @@
  *
  */
 
+#ifndef WINDOWS_SYSTEM_H_INCLUDED
+#define WINDOWS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef WINDOWS_GUIWINDOWSYSTEMINFO_H_INCLUDED
+#define WINDOWS_GUIWINDOWSYSTEMINFO_H_INCLUDED
 #include "GUIWindowSystemInfo.h"
+#endif
+
+#ifndef WINDOWS_GUIINFOMANAGER_H_INCLUDED
+#define WINDOWS_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_WINDOWIDS_H_INCLUDED
+#define WINDOWS_GUILIB_WINDOWIDS_H_INCLUDED
 #include "guilib/WindowIDs.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define WINDOWS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef WINDOWS_PVR_PVRMANAGER_H_INCLUDED
+#define WINDOWS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
 #ifdef HAS_SYSINFO
 #include "utils/SystemInfo.h"
 #endif
+#ifndef WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
+#define WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef WINDOWS_STORAGE_MEDIAMANAGER_H_INCLUDED
+#define WINDOWS_STORAGE_MEDIAMANAGER_H_INCLUDED
 #include "storage/MediaManager.h"
+#endif
+
 
 #define CONTROL_BT_STORAGE  94
 #define CONTROL_BT_DEFAULT  95

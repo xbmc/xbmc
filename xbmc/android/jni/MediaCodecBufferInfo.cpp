@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef JNI_MEDIACODECBUFFERINFO_H_INCLUDED
+#define JNI_MEDIACODECBUFFERINFO_H_INCLUDED
 #include "MediaCodecBufferInfo.h"
+#endif
+
+#ifndef JNI_CONTEXT_H_INCLUDED
+#define JNI_CONTEXT_H_INCLUDED
 #include "Context.h"
+#endif
+
+#ifndef JNI_CLASSLOADER_H_INCLUDED
+#define JNI_CLASSLOADER_H_INCLUDED
 #include "ClassLoader.h"
+#endif
+
 
 #include "jutils/jutils-details.hpp"
 

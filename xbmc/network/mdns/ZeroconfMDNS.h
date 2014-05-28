@@ -21,10 +21,22 @@
 
 #include <memory>
 
+#ifndef MDNS_NETWORK_ZEROCONF_H_INCLUDED
+#define MDNS_NETWORK_ZEROCONF_H_INCLUDED
 #include "network/Zeroconf.h"
+#endif
+
+#ifndef MDNS_THREADS_CRITICALSECTION_H_INCLUDED
+#define MDNS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 #include <dns_sd.h>
+#ifndef MDNS_THREADS_THREAD_H_INCLUDED
+#define MDNS_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
 
 class CZeroconfMDNS : public CZeroconf,public CThread
 {

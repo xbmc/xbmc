@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef FILESYSTEM_IDIRECTORY_H_INCLUDED
+#define FILESYSTEM_IDIRECTORY_H_INCLUDED
 #include "IDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_NFSFILE_H_INCLUDED
+#define FILESYSTEM_NFSFILE_H_INCLUDED
 #include "NFSFile.h"
+#endif
+
 
 namespace XFILE
 {

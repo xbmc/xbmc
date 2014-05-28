@@ -18,21 +18,77 @@
  *
  */
 
+#ifndef GUILIB_LIBSQUISH_SQUISH_H_INCLUDED
+#define GUILIB_LIBSQUISH_SQUISH_H_INCLUDED
 #include "libsquish/squish.h"
+#endif
+
+#ifndef GUILIB_SYSTEM_H_INCLUDED
+#define GUILIB_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef GUILIB_TEXTUREBUNDLEXBT_H_INCLUDED
+#define GUILIB_TEXTUREBUNDLEXBT_H_INCLUDED
 #include "TextureBundleXBT.h"
+#endif
+
+#ifndef GUILIB_TEXTURE_H_INCLUDED
+#define GUILIB_TEXTURE_H_INCLUDED
 #include "Texture.h"
+#endif
+
+#ifndef GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "GraphicContext.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef GUILIB_ADDONS_SKIN_H_INCLUDED
+#define GUILIB_ADDONS_SKIN_H_INCLUDED
 #include "addons/Skin.h"
+#endif
+
+#ifndef GUILIB_SETTINGS_SETTINGS_H_INCLUDED
+#define GUILIB_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef GUILIB_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define GUILIB_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef GUILIB_UTILS_ENDIANSWAP_H_INCLUDED
+#define GUILIB_UTILS_ENDIANSWAP_H_INCLUDED
 #include "utils/EndianSwap.h"
+#endif
+
+#ifndef GUILIB_UTILS_URIUTILS_H_INCLUDED
+#define GUILIB_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef GUILIB_XBTF_H_INCLUDED
+#define GUILIB_XBTF_H_INCLUDED
 #include "XBTF.h"
+#endif
+
 #include <lzo/lzo1x.h>
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 #ifdef TARGET_WINDOWS
 #pragma comment(lib,"liblzo2.lib")

@@ -19,9 +19,17 @@
  *
  */
 
+#ifndef ROOT_UTILS_STDSTRING_H_INCLUDED
+#define ROOT_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 #include <map>
+#ifndef ROOT_THREADS_CRITICALSECTION_H_INCLUDED
+#define ROOT_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 class CURL;
 

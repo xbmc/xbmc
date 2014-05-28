@@ -20,14 +20,38 @@
 
 // C++ Implementation: karaokelyricstextkar
 
+#ifndef KARAOKE_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define KARAOKE_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef KARAOKE_FILESYSTEM_FILE_H_INCLUDED
+#define KARAOKE_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef KARAOKE_SETTINGS_SETTINGS_H_INCLUDED
+#define KARAOKE_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef KARAOKE_UTILS_LOG_H_INCLUDED
+#define KARAOKE_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef KARAOKE_UTILS_UTF8UTILS_H_INCLUDED
+#define KARAOKE_UTILS_UTF8UTILS_H_INCLUDED
 #include "utils/Utf8Utils.h"
+#endif
+
 #include <math.h>
 
+#ifndef KARAOKE_KARAOKELYRICSTEXTKAR_H_INCLUDED
+#define KARAOKE_KARAOKELYRICSTEXTKAR_H_INCLUDED
 #include "karaokelyricstextkar.h"
+#endif
+
 
 
 // Parsed lyrics

@@ -21,7 +21,11 @@
 #pragma once
 
 #include <windows.h>
+#ifndef WIN_COMMONS_EXCEPTION_H_INCLUDED
+#define WIN_COMMONS_EXCEPTION_H_INCLUDED
 #include "commons/Exception.h"
+#endif
+
 
 namespace XbmcThreads
 {

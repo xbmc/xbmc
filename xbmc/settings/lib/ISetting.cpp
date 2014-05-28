@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef LIB_ISETTING_H_INCLUDED
+#define LIB_ISETTING_H_INCLUDED
 #include "ISetting.h"
+#endif
+
+#ifndef LIB_SETTINGDEFINITIONS_H_INCLUDED
+#define LIB_SETTINGDEFINITIONS_H_INCLUDED
 #include "SettingDefinitions.h"
+#endif
+
+#ifndef LIB_UTILS_LOG_H_INCLUDED
+#define LIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef LIB_UTILS_XBMCTINYXML_H_INCLUDED
+#define LIB_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef LIB_UTILS_XMLUTILS_H_INCLUDED
+#define LIB_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
 
 using namespace std;
 

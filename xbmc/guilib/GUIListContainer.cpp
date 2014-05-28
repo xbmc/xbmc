@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef GUILIB_SYSTEM_H_INCLUDED
+#define GUILIB_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef GUILIB_GUILISTCONTAINER_H_INCLUDED
+#define GUILIB_GUILISTCONTAINER_H_INCLUDED
 #include "GUIListContainer.h"
+#endif
+
+#ifndef GUILIB_GUILISTITEM_H_INCLUDED
+#define GUILIB_GUILISTITEM_H_INCLUDED
 #include "GUIListItem.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 CGUIListContainer::CGUIListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems)
     : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scroller, preloadItems)

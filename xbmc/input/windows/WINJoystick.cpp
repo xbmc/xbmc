@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef WINDOWS_WINJOYSTICK_H_INCLUDED
+#define WINDOWS_WINJOYSTICK_H_INCLUDED
 #include "WINJoystick.h"
+#endif
+
+#ifndef WINDOWS_INPUT_BUTTONTRANSLATOR_H_INCLUDED
+#define WINDOWS_INPUT_BUTTONTRANSLATOR_H_INCLUDED
 #include "input/ButtonTranslator.h"
+#endif
+
+#ifndef WINDOWS_PERIPHERALS_DEVICES_PERIPHERALIMON_H_INCLUDED
+#define WINDOWS_PERIPHERALS_DEVICES_PERIPHERALIMON_H_INCLUDED
 #include "peripherals/devices/PeripheralImon.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_LIB_SETTING_H_INCLUDED
+#define WINDOWS_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef WINDOWS_UTILS_LOG_H_INCLUDED
+#define WINDOWS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #include <math.h>
 

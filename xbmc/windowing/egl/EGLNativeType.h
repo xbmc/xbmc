@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef EGL_GUILIB_RESOLUTION_H_INCLUDED
+#define EGL_GUILIB_RESOLUTION_H_INCLUDED
 #include "guilib/Resolution.h"
+#endif
+
+#ifndef EGL_EGLQUIRKS_H_INCLUDED
+#define EGL_EGLQUIRKS_H_INCLUDED
 #include "EGLQuirks.h"
+#endif
+
 
 typedef void* XBNativeDisplayType;
 typedef void* XBNativeWindowType;

@@ -18,16 +18,36 @@
  *
  */
 
+#ifndef ROOT_SYSTEM_H_INCLUDED
+#define ROOT_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef ROOT_XBAPPLICATIONEX_H_INCLUDED
+#define ROOT_XBAPPLICATIONEX_H_INCLUDED
 #include "XBApplicationEx.h"
+#endif
+
+#ifndef ROOT_UTILS_LOG_H_INCLUDED
+#define ROOT_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ROOT_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define ROOT_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
 #else
 #define MEASURE_FUNCTION
 #endif
+#ifndef ROOT_COMMONS_EXCEPTION_H_INCLUDED
+#define ROOT_COMMONS_EXCEPTION_H_INCLUDED
 #include "commons/Exception.h"
+#endif
+
 
 // Put this here for easy enable and disable
 #ifndef _DEBUG

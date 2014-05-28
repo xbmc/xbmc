@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGPVRCUTTEROSD_H_INCLUDED
+#define DIALOGS_GUIDIALOGPVRCUTTEROSD_H_INCLUDED
 #include "GUIDialogPVRCutterOSD.h"
+#endif
+
+#ifndef DIALOGS_UTILS_LOG_H_INCLUDED
+#define DIALOGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 using namespace std;
 using namespace PVR;

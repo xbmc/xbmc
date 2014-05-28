@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef UTILS_SYSTEM_H_INCLUDED
+#define UTILS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef UTILS_LOG_H_INCLUDED
+#define UTILS_LOG_H_INCLUDED
 #include "log.h"
+#endif
+
+#ifndef UTILS_STDIO_UTF8_H_INCLUDED
+#define UTILS_STDIO_UTF8_H_INCLUDED
 #include "stdio_utf8.h"
+#endif
+
+#ifndef UTILS_STAT_UTF8_H_INCLUDED
+#define UTILS_STAT_UTF8_H_INCLUDED
 #include "stat_utf8.h"
+#endif
+
+#ifndef UTILS_THREADS_CRITICALSECTION_H_INCLUDED
+#define UTILS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef UTILS_THREADS_SINGLELOCK_H_INCLUDED
+#define UTILS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef UTILS_THREADS_THREAD_H_INCLUDED
+#define UTILS_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef UTILS_UTILS_STDSTRING_H_INCLUDED
+#define UTILS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 #if defined(TARGET_ANDROID)
 #include "android/activity/XBMCApp.h"
 #elif defined(TARGET_WINDOWS)

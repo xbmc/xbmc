@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef UTILS_SYSTEM_H_INCLUDED
+#define UTILS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef UTILS_AELIMITER_H_INCLUDED
+#define UTILS_AELIMITER_H_INCLUDED
 #include "AELimiter.h"
+#endif
+
+#ifndef UTILS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define UTILS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef UTILS_UTILS_MATHUTILS_H_INCLUDED
+#define UTILS_UTILS_MATHUTILS_H_INCLUDED
 #include "utils/MathUtils.h"
+#endif
+
 #include <algorithm>
 #include <math.h>
 

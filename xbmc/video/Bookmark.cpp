@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef VIDEO_BOOKMARK_H_INCLUDED
+#define VIDEO_BOOKMARK_H_INCLUDED
 #include "Bookmark.h"
+#endif
+
 
 CBookmark::CBookmark()
 {

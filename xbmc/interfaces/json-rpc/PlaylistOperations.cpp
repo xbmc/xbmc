@@ -18,16 +18,56 @@
  *
  */
 
+#ifndef JSON_RPC_PLAYLISTOPERATIONS_H_INCLUDED
+#define JSON_RPC_PLAYLISTOPERATIONS_H_INCLUDED
 #include "PlaylistOperations.h"
+#endif
+
+#ifndef JSON_RPC_PLAYLISTS_PLAYLIST_H_INCLUDED
+#define JSON_RPC_PLAYLISTS_PLAYLIST_H_INCLUDED
 #include "playlists/PlayList.h"
+#endif
+
+#ifndef JSON_RPC_PLAYLISTPLAYER_H_INCLUDED
+#define JSON_RPC_PLAYLISTPLAYER_H_INCLUDED
 #include "PlayListPlayer.h"
+#endif
+
+#ifndef JSON_RPC_UTIL_H_INCLUDED
+#define JSON_RPC_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef JSON_RPC_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define JSON_RPC_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef JSON_RPC_GUILIB_KEY_H_INCLUDED
+#define JSON_RPC_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef JSON_RPC_GUIUSERMESSAGES_H_INCLUDED
+#define JSON_RPC_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
+#define JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef JSON_RPC_PICTURES_GUIWINDOWSLIDESHOW_H_INCLUDED
+#define JSON_RPC_PICTURES_GUIWINDOWSLIDESHOW_H_INCLUDED
 #include "pictures/GUIWindowSlideShow.h"
+#endif
+
+#ifndef JSON_RPC_PICTURES_PICTUREINFOTAG_H_INCLUDED
+#define JSON_RPC_PICTURES_PICTUREINFOTAG_H_INCLUDED
 #include "pictures/PictureInfoTag.h"
+#endif
+
 
 using namespace JSONRPC;
 using namespace PLAYLIST;

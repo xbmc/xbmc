@@ -18,23 +18,91 @@
  *
  */
 
+#ifndef GUILIB_SYSTEM_H_INCLUDED
+#define GUILIB_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "GraphicContext.h"
+#endif
+
+#ifndef GUILIB_THREADS_SINGLELOCK_H_INCLUDED
+#define GUILIB_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef GUILIB_APPLICATION_H_INCLUDED
+#define GUILIB_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef GUILIB_APPLICATIONMESSENGER_H_INCLUDED
+#define GUILIB_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef GUILIB_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define GUILIB_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef GUILIB_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#define GUILIB_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
 #include "settings/DisplaySettings.h"
+#endif
+
+#ifndef GUILIB_SETTINGS_LIB_SETTING_H_INCLUDED
+#define GUILIB_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef GUILIB_SETTINGS_SETTINGS_H_INCLUDED
+#define GUILIB_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef GUILIB_CORES_VIDEORENDERERS_RENDERMANAGER_H_INCLUDED
+#define GUILIB_CORES_VIDEORENDERERS_RENDERMANAGER_H_INCLUDED
 #include "cores/VideoRenderers/RenderManager.h"
+#endif
+
+#ifndef GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef GUILIB_TEXTUREMANAGER_H_INCLUDED
+#define GUILIB_TEXTUREMANAGER_H_INCLUDED
 #include "TextureManager.h"
+#endif
+
+#ifndef GUILIB_INPUT_MOUSESTAT_H_INCLUDED
+#define GUILIB_INPUT_MOUSESTAT_H_INCLUDED
 #include "input/MouseStat.h"
+#endif
+
+#ifndef GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "GUIWindowManager.h"
+#endif
+
+#ifndef GUILIB_UTILS_JOBMANAGER_H_INCLUDED
+#define GUILIB_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
+#ifndef GUILIB_VIDEO_VIDEOREFERENCECLOCK_H_INCLUDED
+#define GUILIB_VIDEO_VIDEOREFERENCECLOCK_H_INCLUDED
 #include "video/VideoReferenceClock.h"
+#endif
+
+#ifndef GUILIB_CORES_IPLAYER_H_INCLUDED
+#define GUILIB_CORES_IPLAYER_H_INCLUDED
 #include "cores/IPlayer.h"
+#endif
+
 
 using namespace std;
 

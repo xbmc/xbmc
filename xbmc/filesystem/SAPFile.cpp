@@ -20,10 +20,26 @@
  *
  */
 
+#ifndef FILESYSTEM_SAPFILE_H_INCLUDED
+#define FILESYSTEM_SAPFILE_H_INCLUDED
 #include "SAPFile.h"
+#endif
+
+#ifndef FILESYSTEM_SAPDIRECTORY_H_INCLUDED
+#define FILESYSTEM_SAPDIRECTORY_H_INCLUDED
 #include "SAPDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
+#define FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 #include <sys/stat.h>
 #include <vector>

@@ -17,10 +17,22 @@
  *
  */
 
+#ifndef EFFECTS_VOICEPRINT_H_INCLUDED
+#define EFFECTS_VOICEPRINT_H_INCLUDED
 #include "VoicePrint.h"
+#endif
+
 #include <stdio.h>
+#ifndef EFFECTS_SHADER_H_INCLUDED
+#define EFFECTS_SHADER_H_INCLUDED
 #include "Shader.h"
+#endif
+
+#ifndef EFFECTS_ANGELSCRIPT_H_INCLUDED
+#define EFFECTS_ANGELSCRIPT_H_INCLUDED
 #include "angelscript.h"
+#endif
+
 
 char ColourRemapPixelShaderSrc[] =
 {

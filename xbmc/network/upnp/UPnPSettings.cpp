@@ -18,13 +18,41 @@
  *
  */
 
+#ifndef UPNP_UPNPSETTINGS_H_INCLUDED
+#define UPNP_UPNPSETTINGS_H_INCLUDED
 #include "UPnPSettings.h"
+#endif
+
+#ifndef UPNP_FILESYSTEM_FILE_H_INCLUDED
+#define UPNP_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef UPNP_THREADS_SINGLELOCK_H_INCLUDED
+#define UPNP_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef UPNP_UTILS_LOG_H_INCLUDED
+#define UPNP_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef UPNP_UTILS_STRINGUTILS_H_INCLUDED
+#define UPNP_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UPNP_UTILS_XBMCTINYXML_H_INCLUDED
+#define UPNP_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef UPNP_UTILS_XMLUTILS_H_INCLUDED
+#define UPNP_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
 
 #define XML_UPNP          "upnpserver"
 #define XML_SERVER_UUID   "UUID"

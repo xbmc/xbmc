@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef JNI_PACKAGEMANAGER_H_INCLUDED
+#define JNI_PACKAGEMANAGER_H_INCLUDED
 #include "PackageManager.h"
+#endif
+
+#ifndef JNI_INTENT_H_INCLUDED
+#define JNI_INTENT_H_INCLUDED
 #include "Intent.h"
+#endif
+
+#ifndef JNI_DRAWABLE_H_INCLUDED
+#define JNI_DRAWABLE_H_INCLUDED
 #include "Drawable.h"
+#endif
+
+#ifndef JNI_LIST_H_INCLUDED
+#define JNI_LIST_H_INCLUDED
 #include "List.h"
+#endif
+
+#ifndef JNI_CHARSEQUENCE_H_INCLUDED
+#define JNI_CHARSEQUENCE_H_INCLUDED
 #include "CharSequence.h"
+#endif
+
+#ifndef JNI_APPLICATIONINFO_H_INCLUDED
+#define JNI_APPLICATIONINFO_H_INCLUDED
 #include "ApplicationInfo.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

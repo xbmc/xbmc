@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef GUILIB_GUISLIDERCONTROL_H_INCLUDED
+#define GUILIB_GUISLIDERCONTROL_H_INCLUDED
 #include "GUISliderControl.h"
+#endif
+
+#ifndef GUILIB_GUIINFOMANAGER_H_INCLUDED
+#define GUILIB_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
+#ifndef GUILIB_UTILS_MATHUTILS_H_INCLUDED
+#define GUILIB_UTILS_MATHUTILS_H_INCLUDED
 #include "utils/MathUtils.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "GUIWindowManager.h"
+#endif
+
 
 static const SliderAction actions[] = {
   {"seek",    "PlayerControl(SeekPercentage(%2f))", PLAYER_PROGRESS, false},

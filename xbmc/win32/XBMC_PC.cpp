@@ -18,22 +18,82 @@
  *
  */
 
+#ifndef WIN32_APPPARAMPARSER_H_INCLUDED
+#define WIN32_APPPARAMPARSER_H_INCLUDED
 #include "AppParamParser.h"
+#endif
+
+#ifndef WIN32_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define WIN32_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef WIN32_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define WIN32_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef WIN32_UTILS_LOG_H_INCLUDED
+#define WIN32_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef WIN32_THREADS_PLATFORM_WIN_WIN32EXCEPTION_H_INCLUDED
+#define WIN32_THREADS_PLATFORM_WIN_WIN32EXCEPTION_H_INCLUDED
 #include "threads/platform/win/Win32Exception.h"
+#endif
+
+#ifndef WIN32_SHELLAPI_H_INCLUDED
+#define WIN32_SHELLAPI_H_INCLUDED
 #include "shellapi.h"
+#endif
+
+#ifndef WIN32_DBGHELP_H_INCLUDED
+#define WIN32_DBGHELP_H_INCLUDED
 #include "dbghelp.h"
+#endif
+
+#ifndef WIN32_XBDATETIME_H_INCLUDED
+#define WIN32_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef WIN32_THREADS_THREAD_H_INCLUDED
+#define WIN32_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef WIN32_APPLICATION_H_INCLUDED
+#define WIN32_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef WIN32_XBMCCONTEXT_H_INCLUDED
+#define WIN32_XBMCCONTEXT_H_INCLUDED
 #include "XbmcContext.h"
+#endif
+
+#ifndef WIN32_GUIINFOMANAGER_H_INCLUDED
+#define WIN32_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef WIN32_UTILS_STRINGUTILS_H_INCLUDED
+#define WIN32_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef WIN32_UTILS_CPUINFO_H_INCLUDED
+#define WIN32_UTILS_CPUINFO_H_INCLUDED
 #include "utils/CPUInfo.h"
+#endif
+
 #include <mmdeviceapi.h>
+#ifndef WIN32_WIN32_IMMNOTIFICATIONCLIENT_H_INCLUDED
+#define WIN32_WIN32_IMMNOTIFICATIONCLIENT_H_INCLUDED
 #include "win32/IMMNotificationClient.h"
+#endif
+
 
 #ifndef _DEBUG
 #define XBMC_TRACK_EXCEPTIONS

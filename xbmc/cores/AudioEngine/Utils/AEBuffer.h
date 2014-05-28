@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef UTILS_SYSTEM_H_INCLUDED
+#define UTILS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #ifdef _DEBUG
 #include "utils/StdString.h" /* needed for ASSERT */

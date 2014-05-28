@@ -20,12 +20,36 @@
 
 #include <string.h>
 
+#ifndef VIEW_VIEWSTATESETTINGS_H_INCLUDED
+#define VIEW_VIEWSTATESETTINGS_H_INCLUDED
 #include "ViewStateSettings.h"
+#endif
+
+#ifndef VIEW_THREADS_SINGLELOCK_H_INCLUDED
+#define VIEW_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef VIEW_UTILS_LOG_H_INCLUDED
+#define VIEW_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef VIEW_UTILS_STRINGUTILS_H_INCLUDED
+#define VIEW_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef VIEW_UTILS_XBMCTINYXML_H_INCLUDED
+#define VIEW_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef VIEW_UTILS_XMLUTILS_H_INCLUDED
+#define VIEW_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
 
 #define XML_VIEWSTATESETTINGS "viewstates"
 #define XML_VIEWMODE          "viewmode"

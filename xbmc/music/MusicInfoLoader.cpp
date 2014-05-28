@@ -18,23 +18,91 @@
  *
  */
 
+#ifndef MUSIC_MUSICINFOLOADER_H_INCLUDED
+#define MUSIC_MUSICINFOLOADER_H_INCLUDED
 #include "MusicInfoLoader.h"
+#endif
+
+#ifndef MUSIC_MUSICDATABASE_H_INCLUDED
+#define MUSIC_MUSICDATABASE_H_INCLUDED
 #include "MusicDatabase.h"
+#endif
+
+#ifndef MUSIC_MUSIC_INFOSCANNER_MUSICINFOSCANNER_H_INCLUDED
+#define MUSIC_MUSIC_INFOSCANNER_MUSICINFOSCANNER_H_INCLUDED
 #include "music/infoscanner/MusicInfoScanner.h"
+#endif
+
+#ifndef MUSIC_MUSIC_TAGS_MUSICINFOTAGLOADERFACTORY_H_INCLUDED
+#define MUSIC_MUSIC_TAGS_MUSICINFOTAGLOADERFACTORY_H_INCLUDED
 #include "music/tags/MusicInfoTagLoaderFactory.h"
+#endif
+
+#ifndef MUSIC_FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
+#define MUSIC_FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
 #include "filesystem/DirectoryCache.h"
+#endif
+
+#ifndef MUSIC_FILESYSTEM_MUSICDATABASEDIRECTORY_H_INCLUDED
+#define MUSIC_FILESYSTEM_MUSICDATABASEDIRECTORY_H_INCLUDED
 #include "filesystem/MusicDatabaseDirectory.h"
+#endif
+
+#ifndef MUSIC_FILESYSTEM_MUSICDATABASEDIRECTORY_DIRECTORYNODE_H_INCLUDED
+#define MUSIC_FILESYSTEM_MUSICDATABASEDIRECTORY_DIRECTORYNODE_H_INCLUDED
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
+#endif
+
+#ifndef MUSIC_FILESYSTEM_MUSICDATABASEDIRECTORY_QUERYPARAMS_H_INCLUDED
+#define MUSIC_FILESYSTEM_MUSICDATABASEDIRECTORY_QUERYPARAMS_H_INCLUDED
 #include "filesystem/MusicDatabaseDirectory/QueryParams.h"
+#endif
+
+#ifndef MUSIC_UTILS_URIUTILS_H_INCLUDED
+#define MUSIC_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef MUSIC_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define MUSIC_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef MUSIC_FILESYSTEM_FILE_H_INCLUDED
+#define MUSIC_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef MUSIC_SETTINGS_SETTINGS_H_INCLUDED
+#define MUSIC_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef MUSIC_FILEITEM_H_INCLUDED
+#define MUSIC_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef MUSIC_UTILS_LOG_H_INCLUDED
+#define MUSIC_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef MUSIC_ARTIST_H_INCLUDED
+#define MUSIC_ARTIST_H_INCLUDED
 #include "Artist.h"
+#endif
+
+#ifndef MUSIC_ALBUM_H_INCLUDED
+#define MUSIC_ALBUM_H_INCLUDED
 #include "Album.h"
+#endif
+
+#ifndef MUSIC_MUSICTHUMBLOADER_H_INCLUDED
+#define MUSIC_MUSICTHUMBLOADER_H_INCLUDED
 #include "MusicThumbLoader.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

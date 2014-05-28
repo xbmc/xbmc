@@ -18,18 +18,66 @@
  *
  */
 
+#ifndef ROOT_TEXTURECACHE_H_INCLUDED
+#define ROOT_TEXTURECACHE_H_INCLUDED
 #include "TextureCache.h"
+#endif
+
+#ifndef ROOT_TEXTURECACHEJOB_H_INCLUDED
+#define ROOT_TEXTURECACHEJOB_H_INCLUDED
 #include "TextureCacheJob.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_FILE_H_INCLUDED
+#define ROOT_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef ROOT_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define ROOT_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef ROOT_THREADS_SINGLELOCK_H_INCLUDED
+#define ROOT_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef ROOT_UTILS_CRC32_H_INCLUDED
+#define ROOT_UTILS_CRC32_H_INCLUDED
 #include "utils/Crc32.h"
+#endif
+
+#ifndef ROOT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef ROOT_UTILS_LOG_H_INCLUDED
+#define ROOT_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ROOT_UTILS_URIUTILS_H_INCLUDED
+#define ROOT_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef ROOT_UTILS_STRINGUTILS_H_INCLUDED
+#define ROOT_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ROOT_URL_H_INCLUDED
+#define ROOT_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef ROOT_UTILS_STRINGUTILS_H_INCLUDED
+#define ROOT_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace XFILE;
 

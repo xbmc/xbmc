@@ -25,8 +25,16 @@
  *
  */
 
+#ifndef GUILIB_GUIWINDOW_H_INCLUDED
+#define GUILIB_GUIWINDOW_H_INCLUDED
 #include "GUIWindow.h"
+#endif
+
+#ifndef GUILIB_WINDOWIDS_H_INCLUDED
+#define GUILIB_WINDOWIDS_H_INCLUDED
 #include "WindowIDs.h"
+#endif
+
 
 /*!
  \ingroup winmsg

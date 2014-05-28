@@ -18,19 +18,71 @@
  *
  */
 
+#ifndef JSON_RPC_FILEOPERATIONS_H_INCLUDED
+#define JSON_RPC_FILEOPERATIONS_H_INCLUDED
 #include "FileOperations.h"
+#endif
+
+#ifndef JSON_RPC_VIDEOLIBRARY_H_INCLUDED
+#define JSON_RPC_VIDEOLIBRARY_H_INCLUDED
 #include "VideoLibrary.h"
+#endif
+
+#ifndef JSON_RPC_AUDIOLIBRARY_H_INCLUDED
+#define JSON_RPC_AUDIOLIBRARY_H_INCLUDED
 #include "AudioLibrary.h"
+#endif
+
+#ifndef JSON_RPC_MEDIASOURCE_H_INCLUDED
+#define JSON_RPC_MEDIASOURCE_H_INCLUDED
 #include "MediaSource.h"
+#endif
+
+#ifndef JSON_RPC_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define JSON_RPC_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef JSON_RPC_FILESYSTEM_FILE_H_INCLUDED
+#define JSON_RPC_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef JSON_RPC_FILEITEM_H_INCLUDED
+#define JSON_RPC_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef JSON_RPC_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define JSON_RPC_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef JSON_RPC_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define JSON_RPC_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
 #include "settings/MediaSourceSettings.h"
+#endif
+
+#ifndef JSON_RPC_UTIL_H_INCLUDED
+#define JSON_RPC_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef JSON_RPC_URL_H_INCLUDED
+#define JSON_RPC_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_URIUTILS_H_INCLUDED
+#define JSON_RPC_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_FILEUTILS_H_INCLUDED
+#define JSON_RPC_UTILS_FILEUTILS_H_INCLUDED
 #include "utils/FileUtils.h"
+#endif
+
 
 using namespace XFILE;
 using namespace JSONRPC;

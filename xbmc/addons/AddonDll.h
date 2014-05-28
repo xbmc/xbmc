@@ -18,19 +18,71 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef ADDONS_ADDON_H_INCLUDED
+#define ADDONS_ADDON_H_INCLUDED
 #include "Addon.h"
+#endif
+
+#ifndef ADDONS_DLLADDON_H_INCLUDED
+#define ADDONS_DLLADDON_H_INCLUDED
 #include "DllAddon.h"
+#endif
+
+#ifndef ADDONS_ADDONMANAGER_H_INCLUDED
+#define ADDONS_ADDONMANAGER_H_INCLUDED
 #include "AddonManager.h"
+#endif
+
+#ifndef ADDONS_ADDONSTATUSHANDLER_H_INCLUDED
+#define ADDONS_ADDONSTATUSHANDLER_H_INCLUDED
 #include "AddonStatusHandler.h"
+#endif
+
+#ifndef ADDONS_ADDONCALLBACKS_H_INCLUDED
+#define ADDONS_ADDONCALLBACKS_H_INCLUDED
 #include "AddonCallbacks.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_DIALOGS_GUIDIALOGSETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_DIALOGS_GUIDIALOGSETTINGS_H_INCLUDED
 #include "settings/dialogs/GUIDialogSettings.h"
+#endif
+
+#ifndef ADDONS_UTILS_URIUTILS_H_INCLUDED
+#define ADDONS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_FILE_H_INCLUDED
+#define ADDONS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define ADDONS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define ADDONS_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef ADDONS_UTILS_LOG_H_INCLUDED
+#define ADDONS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ADDONS_INTERFACES_IANNOUNCER_H_INCLUDED
+#define ADDONS_INTERFACES_IANNOUNCER_H_INCLUDED
 #include "interfaces/IAnnouncer.h"
+#endif
+
+#ifndef ADDONS_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#define ADDONS_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
 #include "interfaces/AnnouncementManager.h"
+#endif
+
 
 using namespace XFILE;
 

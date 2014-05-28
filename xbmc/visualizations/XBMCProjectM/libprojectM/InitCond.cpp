@@ -25,14 +25,22 @@
 #include <string.h>
 
 #include "Common.hpp"
+#ifndef LIBPROJECTM_FATAL_H_INCLUDED
+#define LIBPROJECTM_FATAL_H_INCLUDED
 #include "fatal.h"
+#endif
+
 
 #include "Expr.hpp"
 #include "InitCond.hpp"
 #include "Param.hpp"
 #include <map>
 
+#ifndef LIBPROJECTM_WIPEMALLOC_H_INCLUDED
+#define LIBPROJECTM_WIPEMALLOC_H_INCLUDED
 #include "wipemalloc.h"
+#endif
+
 #include <cassert>
 #include <iostream>
 

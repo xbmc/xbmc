@@ -22,18 +22,46 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#ifndef FILESYSTEM_RTVDIRECTORY_H_INCLUDED
+#define FILESYSTEM_RTVDIRECTORY_H_INCLUDED
 #include "RTVDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_XBMCTINYXML_H_INCLUDED
+#define FILESYSTEM_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
 
 using namespace XFILE;
 
 extern "C"
 {
+#ifndef FILESYSTEM_LIB_LIBRTV_INTERFACE_H_INCLUDED
+#define FILESYSTEM_LIB_LIBRTV_INTERFACE_H_INCLUDED
 #include "lib/libRTV/interface.h"
+#endif
+
 }
 
 //////////////////////////////////////////////////////////////////////

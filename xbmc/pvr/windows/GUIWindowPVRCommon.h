@@ -20,10 +20,26 @@
  *
  */
 
+#ifndef WINDOWS_FILEITEM_H_INCLUDED
+#define WINDOWS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef WINDOWS_WINDOWS_GUIMEDIAWINDOW_H_INCLUDED
+#define WINDOWS_WINDOWS_GUIMEDIAWINDOW_H_INCLUDED
 #include "windows/GUIMediaWindow.h"
+#endif
+
+#ifndef WINDOWS_GUIWINDOWPVRCOMMON_H_INCLUDED
+#define WINDOWS_GUIWINDOWPVRCOMMON_H_INCLUDED
 #include "GUIWindowPVRCommon.h"
+#endif
+
+#ifndef WINDOWS_THREADS_CRITICALSECTION_H_INCLUDED
+#define WINDOWS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 namespace PVR
 {

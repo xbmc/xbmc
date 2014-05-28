@@ -23,8 +23,16 @@
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
+#ifndef WINDOWING_UTILS_LOG_H_INCLUDED
+#define WINDOWING_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef WINDOWING_DYNAMICDLL_H_INCLUDED
+#define WINDOWING_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
 
 struct wl_surface;
 struct wl_egl_window;

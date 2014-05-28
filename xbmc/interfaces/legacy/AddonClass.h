@@ -41,12 +41,32 @@
  */
 //#define XBMC_ADDON_DEBUG_MEMORY
 
+#ifndef LEGACY_ADDONSTRING_H_INCLUDED
+#define LEGACY_ADDONSTRING_H_INCLUDED
 #include "AddonString.h"
-#include "threads/SingleLock.h"
-#include "threads/Atomics.h"
-#include "utils/log.h"
+#endif
 
+#ifndef LEGACY_THREADS_SINGLELOCK_H_INCLUDED
+#define LEGACY_THREADS_SINGLELOCK_H_INCLUDED
+#include "threads/SingleLock.h"
+#endif
+
+#ifndef LEGACY_THREADS_ATOMICS_H_INCLUDED
+#define LEGACY_THREADS_ATOMICS_H_INCLUDED
+#include "threads/Atomics.h"
+#endif
+
+#ifndef LEGACY_UTILS_LOG_H_INCLUDED
+#define LEGACY_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+
+#ifndef LEGACY_ADDONUTILS_H_INCLUDED
+#define LEGACY_ADDONUTILS_H_INCLUDED
 #include "AddonUtils.h"
+#endif
+
 
 namespace XBMCAddon
 {

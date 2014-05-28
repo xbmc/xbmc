@@ -18,21 +18,57 @@
  *
  */
 
+#ifndef NETWORK_TCPSERVER_H_INCLUDED
+#define NETWORK_TCPSERVER_H_INCLUDED
 #include "TCPServer.h"
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#ifndef NETWORK_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define NETWORK_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef NETWORK_INTERFACES_JSON_RPC_JSONRPC_H_INCLUDED
+#define NETWORK_INTERFACES_JSON_RPC_JSONRPC_H_INCLUDED
 #include "interfaces/json-rpc/JSONRPC.h"
+#endif
+
+#ifndef NETWORK_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#define NETWORK_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
 #include "interfaces/AnnouncementManager.h"
+#endif
+
+#ifndef NETWORK_UTILS_LOG_H_INCLUDED
+#define NETWORK_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef NETWORK_UTILS_VARIANT_H_INCLUDED
+#define NETWORK_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef NETWORK_THREADS_SINGLELOCK_H_INCLUDED
+#define NETWORK_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef NETWORK_WEBSOCKET_WEBSOCKETMANAGER_H_INCLUDED
+#define NETWORK_WEBSOCKET_WEBSOCKETMANAGER_H_INCLUDED
 #include "websocket/WebSocketManager.h"
+#endif
+
+#ifndef NETWORK_NETWORK_H_INCLUDED
+#define NETWORK_NETWORK_H_INCLUDED
 #include "Network.h"
+#endif
+
 
 static const char     bt_service_name[] = "XBMC JSON-RPC";
 static const char     bt_service_desc[] = "Interface for XBMC remote control over bluetooth";

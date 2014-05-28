@@ -17,9 +17,21 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef ROOT_NETWORK_NETWORK_H_INCLUDED
+#define ROOT_NETWORK_NETWORK_H_INCLUDED
 #include "network/Network.h"
+#endif
+
+#ifndef ROOT_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define ROOT_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef ROOT_SYSTEM_H_INCLUDED
+#define ROOT_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #if defined(TARGET_DARWIN)
 #include <sys/param.h>
 #include <mach-o/dyld.h>
@@ -41,28 +53,92 @@
 #endif
 #include <stdlib.h>
 
+#ifndef ROOT_APPLICATION_H_INCLUDED
+#define ROOT_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef ROOT_UTIL_H_INCLUDED
+#define ROOT_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef ROOT_ADDONS_ADDON_H_INCLUDED
+#define ROOT_ADDONS_ADDON_H_INCLUDED
 #include "addons/Addon.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_PVRDIRECTORY_H_INCLUDED
+#define ROOT_FILESYSTEM_PVRDIRECTORY_H_INCLUDED
 #include "filesystem/PVRDirectory.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define ROOT_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
+#define ROOT_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
 #include "filesystem/StackDirectory.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_MULTIPATHDIRECTORY_H_INCLUDED
+#define ROOT_FILESYSTEM_MULTIPATHDIRECTORY_H_INCLUDED
 #include "filesystem/MultiPathDirectory.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define ROOT_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_RSSDIRECTORY_H_INCLUDED
+#define ROOT_FILESYSTEM_RSSDIRECTORY_H_INCLUDED
 #include "filesystem/RSSDirectory.h"
+#endif
+
 #ifdef HAS_FILESYSTEM_RAR
 #include "filesystem/RarManager.h"
 #endif
+#ifndef ROOT_FILESYSTEM_MYTHDIRECTORY_H_INCLUDED
+#define ROOT_FILESYSTEM_MYTHDIRECTORY_H_INCLUDED
 #include "filesystem/MythDirectory.h"
+#endif
+
 #ifdef HAS_UPNP
 #include "filesystem/UPnPDirectory.h"
 #endif
+#ifndef ROOT_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define ROOT_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef ROOT_UTILS_REGEXP_H_INCLUDED
+#define ROOT_UTILS_REGEXP_H_INCLUDED
 #include "utils/RegExp.h"
+#endif
+
+#ifndef ROOT_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define ROOT_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h"
+#endif
+
+#ifndef ROOT_GUILIB_TEXTUREMANAGER_H_INCLUDED
+#define ROOT_GUILIB_TEXTUREMANAGER_H_INCLUDED
 #include "guilib/TextureManager.h"
+#endif
+
+#ifndef ROOT_UTILS_FSTRCMP_H_INCLUDED
+#define ROOT_UTILS_FSTRCMP_H_INCLUDED
 #include "utils/fstrcmp.h"
+#endif
+
+#ifndef ROOT_STORAGE_MEDIAMANAGER_H_INCLUDED
+#define ROOT_STORAGE_MEDIAMANAGER_H_INCLUDED
 #include "storage/MediaManager.h"
+#endif
+
 #ifdef TARGET_WINDOWS
 #include "utils/CharsetConverter.h"
 #include <shlobj.h>
@@ -71,31 +147,99 @@
 #if defined(TARGET_DARWIN)
 #include "osx/DarwinUtils.h"
 #endif
+#ifndef ROOT_GUIUSERMESSAGES_H_INCLUDED
+#define ROOT_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_FILE_H_INCLUDED
+#define ROOT_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef ROOT_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_MEDIASETTINGS_H_INCLUDED
 #include "settings/MediaSettings.h"
+#endif
+
+#ifndef ROOT_SETTINGS_SETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef ROOT_UTILS_STRINGUTILS_H_INCLUDED
+#define ROOT_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ROOT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
 #ifdef HAS_IRSERVERSUITE
   #include "input/windows/IRServerSuite.h"
 #endif
+#ifndef ROOT_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define ROOT_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
-#include "utils/md5.h"
-#include "utils/TimeUtils.h"
-#include "utils/URIUtils.h"
-#include "utils/log.h"
-#include "utils/Environment.h"
+#endif
 
+#ifndef ROOT_UTILS_MD5_H_INCLUDED
+#define ROOT_UTILS_MD5_H_INCLUDED
+#include "utils/md5.h"
+#endif
+
+#ifndef ROOT_UTILS_TIMEUTILS_H_INCLUDED
+#define ROOT_UTILS_TIMEUTILS_H_INCLUDED
+#include "utils/TimeUtils.h"
+#endif
+
+#ifndef ROOT_UTILS_URIUTILS_H_INCLUDED
+#define ROOT_UTILS_URIUTILS_H_INCLUDED
+#include "utils/URIUtils.h"
+#endif
+
+#ifndef ROOT_UTILS_LOG_H_INCLUDED
+#define ROOT_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef ROOT_UTILS_ENVIRONMENT_H_INCLUDED
+#define ROOT_UTILS_ENVIRONMENT_H_INCLUDED
+#include "utils/Environment.h"
+#endif
+
+
+#ifndef ROOT_CORES_DVDPLAYER_DVDSUBTITLES_DVDSUBTITLETAGSAMI_H_INCLUDED
+#define ROOT_CORES_DVDPLAYER_DVDSUBTITLES_DVDSUBTITLETAGSAMI_H_INCLUDED
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleTagSami.h"
+#endif
+
+#ifndef ROOT_CORES_DVDPLAYER_DVDSUBTITLES_DVDSUBTITLESTREAM_H_INCLUDED
+#define ROOT_CORES_DVDPLAYER_DVDSUBTITLES_DVDSUBTITLESTREAM_H_INCLUDED
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleStream.h"
+#endif
+
+#ifndef ROOT_URL_H_INCLUDED
+#define ROOT_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef ROOT_UTILS_LANGCODEEXPANDER_H_INCLUDED
+#define ROOT_UTILS_LANGCODEEXPANDER_H_INCLUDED
 #include "utils/LangCodeExpander.h"
+#endif
+
 #ifdef HAVE_LIBCAP
   #include <sys/capability.h>
 #endif
 
+#ifndef ROOT_CORES_DVDPLAYER_DVDDEMUXERS_DVDDEMUX_H_INCLUDED
+#define ROOT_CORES_DVDPLAYER_DVDDEMUXERS_DVDDEMUX_H_INCLUDED
 #include "cores/dvdplayer/DVDDemuxers/DVDDemux.h"
+#endif
+
 
 using namespace std;
 

@@ -18,15 +18,47 @@
  *
  */
 
+#ifndef EPG_DBWRAPPERS_DATASET_H_INCLUDED
+#define EPG_DBWRAPPERS_DATASET_H_INCLUDED
 #include "dbwrappers/dataset.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/VideoSettings.h"
-#include "utils/log.h"
-#include "addons/include/xbmc_pvr_types.h"
+#endif
 
+#ifndef EPG_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define EPG_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef EPG_SETTINGS_VIDEOSETTINGS_H_INCLUDED
+#define EPG_SETTINGS_VIDEOSETTINGS_H_INCLUDED
+#include "settings/VideoSettings.h"
+#endif
+
+#ifndef EPG_UTILS_LOG_H_INCLUDED
+#define EPG_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef EPG_ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
+#define EPG_ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
+#include "addons/include/xbmc_pvr_types.h"
+#endif
+
+
+#ifndef EPG_EPGDATABASE_H_INCLUDED
+#define EPG_EPGDATABASE_H_INCLUDED
 #include "EpgDatabase.h"
+#endif
+
+#ifndef EPG_EPGCONTAINER_H_INCLUDED
+#define EPG_EPGCONTAINER_H_INCLUDED
 #include "EpgContainer.h"
+#endif
+
+#ifndef EPG_SYSTEM_H_INCLUDED
+#define EPG_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 using namespace std;
 using namespace dbiplus;

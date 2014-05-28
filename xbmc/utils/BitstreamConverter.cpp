@@ -22,7 +22,11 @@
 #define UINT16_MAX             (65535U)
 #endif
 
+#ifndef UTILS_BITSTREAMCONVERTER_H_INCLUDED
+#define UTILS_BITSTREAMCONVERTER_H_INCLUDED
 #include "BitstreamConverter.h"
+#endif
+
 
 enum {
     NAL_SLICE=1,

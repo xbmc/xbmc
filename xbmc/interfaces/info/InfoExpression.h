@@ -21,7 +21,11 @@
 #pragma once
 
 #include <vector>
+#ifndef INFO_INFOBOOL_H_INCLUDED
+#define INFO_INFOBOOL_H_INCLUDED
 #include "InfoBool.h"
+#endif
+
 
 class CGUIListItem;
 

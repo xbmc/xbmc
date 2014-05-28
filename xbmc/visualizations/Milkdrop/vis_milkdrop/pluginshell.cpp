@@ -131,12 +131,36 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //#include <xtl.h>
 #include <windows.h>
+#ifndef VIS_MILKDROP_PLUGINSHELL_H_INCLUDED
+#define VIS_MILKDROP_PLUGINSHELL_H_INCLUDED
 #include "pluginshell.h"
+#endif
+
+#ifndef VIS_MILKDROP_UTILITY_H_INCLUDED
+#define VIS_MILKDROP_UTILITY_H_INCLUDED
 #include "utility.h"
+#endif
+
+#ifndef VIS_MILKDROP_DEFINES_H_INCLUDED
+#define VIS_MILKDROP_DEFINES_H_INCLUDED
 #include "defines.h"
+#endif
+
+#ifndef VIS_MILKDROP_SHELL_DEFINES_H_INCLUDED
+#define VIS_MILKDROP_SHELL_DEFINES_H_INCLUDED
 #include "shell_defines.h"
+#endif
+
+#ifndef VIS_MILKDROP_RESOURCE_H_INCLUDED
+#define VIS_MILKDROP_RESOURCE_H_INCLUDED
 //#include "resource.h"
+#endif
+
+#ifndef VIS_MILKDROP_VIS_H_INCLUDED
+#define VIS_MILKDROP_VIS_H_INCLUDED
 //#include "vis.h"
+#endif
+
 #include <time.h>
 #include <stdio.h>
 #include <math.h>

@@ -25,10 +25,26 @@
  *
  */
 
+#ifndef GUILIB_GUITEXTLAYOUT_H_INCLUDED
+#define GUILIB_GUITEXTLAYOUT_H_INCLUDED
 #include "GUITextLayout.h"
+#endif
+
+#ifndef GUILIB_GUIINFOTYPES_H_INCLUDED
+#define GUILIB_GUIINFOTYPES_H_INCLUDED
 #include "GUIInfoTypes.h"
+#endif
+
+#ifndef GUILIB_GUIFONT_H_INCLUDED
+#define GUILIB_GUIFONT_H_INCLUDED
 #include "GUIFont.h"
+#endif
+
+#ifndef GUILIB_GEOMETRY_H_INCLUDED
+#define GUILIB_GEOMETRY_H_INCLUDED
 #include "Geometry.h"
+#endif
+
 
 class CLabelInfo
 {

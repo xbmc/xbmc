@@ -20,7 +20,11 @@
 // XmlDocument.cpp: implementation of the CXmlDocument class.
 //
 //////////////////////////////////////////////////////////////////////
+#ifndef CORE_XMLDOCUMENT_H_INCLUDED
+#define CORE_XMLDOCUMENT_H_INCLUDED
 #include "XmlDocument.h"
+#endif
+
 #include <stdio.h>  
 
 //////////////////////////////////////////////////////////////////////

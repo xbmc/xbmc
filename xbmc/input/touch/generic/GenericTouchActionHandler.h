@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef GENERIC_INPUT_TOUCH_ITOUCHACTIONHANDLER_H_INCLUDED
+#define GENERIC_INPUT_TOUCH_ITOUCHACTIONHANDLER_H_INCLUDED
 #include "input/touch/ITouchActionHandler.h"
+#endif
+
 
 /*!
  * \ingroup touch_generic

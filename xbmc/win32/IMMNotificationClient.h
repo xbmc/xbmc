@@ -21,10 +21,26 @@
 
 #include <Audioclient.h>
 #include <mmdeviceapi.h>
+#ifndef WIN32_SYSTEM_H_INCLUDED
+#define WIN32_SYSTEM_H_INCLUDED
 #include "system.h" // for SAFE_RELEASE
+#endif
+
+#ifndef WIN32_UTILS_LOG_H_INCLUDED
+#define WIN32_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef WIN32_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
+#define WIN32_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
 #include "cores/AudioEngine/AEFactory.h"
+#endif
+
+#ifndef WIN32_POWERMANAGEMENT_WINDOWS_WIN32POWERSYSCALL_H_INCLUDED
+#define WIN32_POWERMANAGEMENT_WINDOWS_WIN32POWERSYSCALL_H_INCLUDED
 #include "powermanagement/windows/Win32PowerSyscall.h"
+#endif
+
 
 class CMMNotificationClient : public IMMNotificationClient
 {

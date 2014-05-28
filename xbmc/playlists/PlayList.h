@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef PLAYLISTS_FILEITEM_H_INCLUDED
+#define PLAYLISTS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
 #include <boost/shared_ptr.hpp>
 
 namespace PLAYLIST

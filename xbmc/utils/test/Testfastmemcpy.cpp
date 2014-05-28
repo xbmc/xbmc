@@ -19,9 +19,17 @@
  */
 
 #include <stddef.h> // TODO: This should go in fastmemcpy.h instead.
+#ifndef TEST_UTILS_FASTMEMCPY_H_INCLUDED
+#define TEST_UTILS_FASTMEMCPY_H_INCLUDED
 #include "utils/fastmemcpy.h"
+#endif
 
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 static const char refdata[] = "\x01\x02\x03\x04\x05\x06\x07\x08"
                               "\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10"

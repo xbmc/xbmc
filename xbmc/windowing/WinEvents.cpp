@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef WINDOWING_WINEVENTS_H_INCLUDED
+#define WINDOWING_WINEVENTS_H_INCLUDED
 #include "WinEvents.h"
+#endif
+
+#ifndef WINDOWING_PERIPHERALS_PERIPHERALS_H_INCLUDED
+#define WINDOWING_PERIPHERALS_PERIPHERALS_H_INCLUDED
 #include "peripherals/Peripherals.h"
+#endif
+
+#ifndef WINDOWING_THREADS_SINGLELOCK_H_INCLUDED
+#define WINDOWING_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 
 #if   defined(TARGET_WINDOWS)
 #include "windows/WinEventsWin32.h"

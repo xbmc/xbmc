@@ -29,14 +29,38 @@
 #include <wayland-client.h>
 #include <xkbcommon/xkbcommon.h>
 
+#ifndef WAYLAND_UTILS_LOG_H_INCLUDED
+#define WAYLAND_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
 
+
+#ifndef WAYLAND_EVENTLISTENER_H_INCLUDED
+#define WAYLAND_EVENTLISTENER_H_INCLUDED
 #include "EventListener.h"
-#include "Keyboard.h"
-#include "KeyboardProcessor.h"
-#include "TimeoutManager.h"
+#endif
 
+#ifndef WAYLAND_KEYBOARD_H_INCLUDED
+#define WAYLAND_KEYBOARD_H_INCLUDED
+#include "Keyboard.h"
+#endif
+
+#ifndef WAYLAND_KEYBOARDPROCESSOR_H_INCLUDED
+#define WAYLAND_KEYBOARDPROCESSOR_H_INCLUDED
+#include "KeyboardProcessor.h"
+#endif
+
+#ifndef WAYLAND_TIMEOUTMANAGER_H_INCLUDED
+#define WAYLAND_TIMEOUTMANAGER_H_INCLUDED
+#include "TimeoutManager.h"
+#endif
+
+
+#ifndef WAYLAND_INPUT_LINUX_KEYMAP_H_INCLUDED
+#define WAYLAND_INPUT_LINUX_KEYMAP_H_INCLUDED
 #include "input/linux/Keymap.h"
+#endif
+
 
 
 xbmc::KeyboardProcessor::KeyboardProcessor(IEventListener &listener,

@@ -23,23 +23,87 @@
  * - use Observable here, so we can use event driven operations later
  */
 
+#ifndef CHANNELS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define CHANNELS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
-#include "settings/lib/Setting.h"
-#include "settings/Settings.h"
-#include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogYesNo.h"
-#include "dialogs/GUIDialogOK.h"
-#include "music/tags/MusicInfoTag.h"
-#include "utils/log.h"
-#include "Util.h"
-#include "utils/StringUtils.h"
-#include "threads/SingleLock.h"
+#endif
 
+#ifndef CHANNELS_SETTINGS_LIB_SETTING_H_INCLUDED
+#define CHANNELS_SETTINGS_LIB_SETTING_H_INCLUDED
+#include "settings/lib/Setting.h"
+#endif
+
+#ifndef CHANNELS_SETTINGS_SETTINGS_H_INCLUDED
+#define CHANNELS_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef CHANNELS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define CHANNELS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef CHANNELS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define CHANNELS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef CHANNELS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define CHANNELS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef CHANNELS_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define CHANNELS_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef CHANNELS_UTILS_LOG_H_INCLUDED
+#define CHANNELS_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef CHANNELS_UTIL_H_INCLUDED
+#define CHANNELS_UTIL_H_INCLUDED
+#include "Util.h"
+#endif
+
+#ifndef CHANNELS_UTILS_STRINGUTILS_H_INCLUDED
+#define CHANNELS_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+#ifndef CHANNELS_THREADS_SINGLELOCK_H_INCLUDED
+#define CHANNELS_THREADS_SINGLELOCK_H_INCLUDED
+#include "threads/SingleLock.h"
+#endif
+
+
+#ifndef CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
 #include "PVRChannelGroupsContainer.h"
+#endif
+
+#ifndef CHANNELS_PVR_PVRDATABASE_H_INCLUDED
+#define CHANNELS_PVR_PVRDATABASE_H_INCLUDED
 #include "pvr/PVRDatabase.h"
+#endif
+
+#ifndef CHANNELS_PVR_PVRMANAGER_H_INCLUDED
+#define CHANNELS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef CHANNELS_PVR_ADDONS_PVRCLIENTS_H_INCLUDED
+#define CHANNELS_PVR_ADDONS_PVRCLIENTS_H_INCLUDED
 #include "pvr/addons/PVRClients.h"
+#endif
+
+#ifndef CHANNELS_EPG_EPGCONTAINER_H_INCLUDED
+#define CHANNELS_EPG_EPGCONTAINER_H_INCLUDED
 #include "epg/EpgContainer.h"
+#endif
+
 
 using namespace PVR;
 using namespace EPG;

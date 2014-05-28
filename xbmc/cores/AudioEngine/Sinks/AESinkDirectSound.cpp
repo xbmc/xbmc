@@ -20,22 +20,58 @@
 
 #define INITGUID
 
+#ifndef SINKS_AESINKDIRECTSOUND_H_INCLUDED
+#define SINKS_AESINKDIRECTSOUND_H_INCLUDED
 #include "AESinkDirectSound.h"
+#endif
+
+#ifndef SINKS_UTILS_LOG_H_INCLUDED
+#define SINKS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 #include <initguid.h>
 #include <list>
+#ifndef SINKS_THREADS_SINGLELOCK_H_INCLUDED
+#define SINKS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef SINKS_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define SINKS_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef SINKS_UTILS_SYSTEMINFO_H_INCLUDED
+#define SINKS_UTILS_SYSTEMINFO_H_INCLUDED
 #include "utils/SystemInfo.h"
+#endif
+
+#ifndef SINKS_UTILS_TIMEUTILS_H_INCLUDED
+#define SINKS_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef SINKS_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define SINKS_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
 #include <Audioclient.h>
 #include <Mmreg.h>
 #include <mmdeviceapi.h>
 #include <Functiondiscoverykeys_devpkey.h>
 #include <Rpc.h>
+#ifndef SINKS_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define SINKS_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
+#ifndef SINKS_UTILS_STRINGUTILS_H_INCLUDED
+#define SINKS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 #pragma comment(lib, "Rpcrt4.lib")
 
 extern HWND g_hWnd;

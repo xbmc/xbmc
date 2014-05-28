@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef DVDSUBTITLES_DLLLIBASS_H_INCLUDED
+#define DVDSUBTITLES_DLLLIBASS_H_INCLUDED
 #include "DllLibass.h"
+#endif
+
+#ifndef DVDSUBTITLES_DVDRESOURCE_H_INCLUDED
+#define DVDSUBTITLES_DVDRESOURCE_H_INCLUDED
 #include "DVDResource.h"
+#endif
+
+#ifndef DVDSUBTITLES_THREADS_CRITICALSECTION_H_INCLUDED
+#define DVDSUBTITLES_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 /** Wrapper for Libass **/
 

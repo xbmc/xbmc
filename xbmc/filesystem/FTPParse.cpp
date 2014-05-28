@@ -28,7 +28,11 @@
 #endif // TARGET_WINDOWS
 #include <pcrecpp.h>
 #include <cmath>
+#ifndef FILESYSTEM_FTPPARSE_H_INCLUDED
+#define FILESYSTEM_FTPPARSE_H_INCLUDED
 #include "FTPParse.h"
+#endif
+
 
 CFTPParse::CFTPParse()
 {

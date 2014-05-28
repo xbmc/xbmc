@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef KARAOKE_GUILIB_GUIDIALOG_H_INCLUDED
+#define KARAOKE_GUILIB_GUIDIALOG_H_INCLUDED
 #include "guilib/GUIDialog.h"
+#endif
+
+#ifndef KARAOKE_MUSIC_MUSICDATABASE_H_INCLUDED
+#define KARAOKE_MUSIC_MUSICDATABASE_H_INCLUDED
 #include "music/MusicDatabase.h"
+#endif
+
+#ifndef KARAOKE_MUSIC_SONG_H_INCLUDED
+#define KARAOKE_MUSIC_SONG_H_INCLUDED
 #include "music/Song.h"
+#endif
+
 
 
 class CGUIDialogKaraokeSongSelector: public CGUIDialog

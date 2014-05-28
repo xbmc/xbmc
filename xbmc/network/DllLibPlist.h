@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef NETWORK_DYNAMICDLL_H_INCLUDED
+#define NETWORK_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
 
 #include <plist/plist.h>
 

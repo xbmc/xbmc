@@ -28,7 +28,11 @@
  */
 
 
+#ifndef DIRECTXSPECTRUM_______ADDONS_INCLUDE_XBMC_VIS_DLL_H_INCLUDED
+#define DIRECTXSPECTRUM_______ADDONS_INCLUDE_XBMC_VIS_DLL_H_INCLUDED
 #include "../../addons/include/xbmc_vis_dll.h"
+#endif
+
 #include <math.h>
 #include <D3D9.h>
 #include <d3dx9math.h>

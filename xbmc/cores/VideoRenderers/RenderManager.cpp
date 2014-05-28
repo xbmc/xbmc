@@ -18,26 +18,90 @@
  *
  */
 
+#ifndef VIDEORENDERERS_SYSTEM_H_INCLUDED
+#define VIDEORENDERERS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #if defined(HAS_GL)
   #include "system_gl.h"
 #endif
+#ifndef VIDEORENDERERS_RENDERMANAGER_H_INCLUDED
+#define VIDEORENDERERS_RENDERMANAGER_H_INCLUDED
 #include "RenderManager.h"
-#include "threads/CriticalSection.h"
-#include "video/VideoReferenceClock.h"
-#include "utils/MathUtils.h"
-#include "threads/Atomics.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
-#include "utils/TimeUtils.h"
-#include "utils/StringUtils.h"
+#endif
 
+#ifndef VIDEORENDERERS_THREADS_CRITICALSECTION_H_INCLUDED
+#define VIDEORENDERERS_THREADS_CRITICALSECTION_H_INCLUDED
+#include "threads/CriticalSection.h"
+#endif
+
+#ifndef VIDEORENDERERS_VIDEO_VIDEOREFERENCECLOCK_H_INCLUDED
+#define VIDEORENDERERS_VIDEO_VIDEOREFERENCECLOCK_H_INCLUDED
+#include "video/VideoReferenceClock.h"
+#endif
+
+#ifndef VIDEORENDERERS_UTILS_MATHUTILS_H_INCLUDED
+#define VIDEORENDERERS_UTILS_MATHUTILS_H_INCLUDED
+#include "utils/MathUtils.h"
+#endif
+
+#ifndef VIDEORENDERERS_THREADS_ATOMICS_H_INCLUDED
+#define VIDEORENDERERS_THREADS_ATOMICS_H_INCLUDED
+#include "threads/Atomics.h"
+#endif
+
+#ifndef VIDEORENDERERS_THREADS_SINGLELOCK_H_INCLUDED
+#define VIDEORENDERERS_THREADS_SINGLELOCK_H_INCLUDED
+#include "threads/SingleLock.h"
+#endif
+
+#ifndef VIDEORENDERERS_UTILS_LOG_H_INCLUDED
+#define VIDEORENDERERS_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef VIDEORENDERERS_UTILS_TIMEUTILS_H_INCLUDED
+#define VIDEORENDERERS_UTILS_TIMEUTILS_H_INCLUDED
+#include "utils/TimeUtils.h"
+#endif
+
+#ifndef VIDEORENDERERS_UTILS_STRINGUTILS_H_INCLUDED
+#define VIDEORENDERERS_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+
+#ifndef VIDEORENDERERS_APPLICATION_H_INCLUDED
+#define VIDEORENDERERS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef VIDEORENDERERS_APPLICATIONMESSENGER_H_INCLUDED
+#define VIDEORENDERERS_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef VIDEORENDERERS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define VIDEORENDERERS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef VIDEORENDERERS_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define VIDEORENDERERS_SETTINGS_MEDIASETTINGS_H_INCLUDED
 #include "settings/MediaSettings.h"
+#endif
+
+#ifndef VIDEORENDERERS_SETTINGS_SETTINGS_H_INCLUDED
+#define VIDEORENDERERS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef VIDEORENDERERS_GUILIB_GUIFONTMANAGER_H_INCLUDED
+#define VIDEORENDERERS_GUILIB_GUIFONTMANAGER_H_INCLUDED
 #include "guilib/GUIFontManager.h"
+#endif
+
 
 #if defined(HAS_GL)
   #include "LinuxRendererGL.h"
@@ -49,12 +113,28 @@
   #include "LinuxRenderer.h"
 #endif
 
+#ifndef VIDEORENDERERS_RENDERCAPTURE_H_INCLUDED
+#define VIDEORENDERERS_RENDERCAPTURE_H_INCLUDED
 #include "RenderCapture.h"
+#endif
+
 
 /* to use the same as player */
+#ifndef VIDEORENDERERS____DVDPLAYER_DVDCLOCK_H_INCLUDED
+#define VIDEORENDERERS____DVDPLAYER_DVDCLOCK_H_INCLUDED
 #include "../dvdplayer/DVDClock.h"
+#endif
+
+#ifndef VIDEORENDERERS____DVDPLAYER_DVDCODECS_VIDEO_DVDVIDEOCODEC_H_INCLUDED
+#define VIDEORENDERERS____DVDPLAYER_DVDCODECS_VIDEO_DVDVIDEOCODEC_H_INCLUDED
 #include "../dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
+#endif
+
+#ifndef VIDEORENDERERS____DVDPLAYER_DVDCODECS_DVDCODECUTILS_H_INCLUDED
+#define VIDEORENDERERS____DVDPLAYER_DVDCODECS_DVDCODECUTILS_H_INCLUDED
 #include "../dvdplayer/DVDCodecs/DVDCodecUtils.h"
+#endif
+
 
 #define MAXPRESENTDELAY 0.500
 

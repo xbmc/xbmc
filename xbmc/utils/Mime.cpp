@@ -20,15 +20,51 @@
 
 #include <algorithm>
 
+#ifndef UTILS_MIME_H_INCLUDED
+#define UTILS_MIME_H_INCLUDED
 #include "Mime.h"
+#endif
+
+#ifndef UTILS_FILEITEM_H_INCLUDED
+#define UTILS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef UTILS_STDSTRING_H_INCLUDED
+#define UTILS_STDSTRING_H_INCLUDED
 #include "StdString.h"
+#endif
+
+#ifndef UTILS_URIUTILS_H_INCLUDED
+#define UTILS_URIUTILS_H_INCLUDED
 #include "URIUtils.h"
+#endif
+
+#ifndef UTILS_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define UTILS_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef UTILS_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define UTILS_VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "video/VideoInfoTag.h"
+#endif
+
+#ifndef UTILS_URL_H_INCLUDED
+#define UTILS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_CURLFILE_H_INCLUDED
+#define UTILS_FILESYSTEM_CURLFILE_H_INCLUDED
 #include "filesystem/CurlFile.h"
+#endif
+
 
 using namespace std;
 

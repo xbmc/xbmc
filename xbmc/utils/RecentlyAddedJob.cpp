@@ -18,21 +18,81 @@
  *
  */
 
+#ifndef UTILS_UTILS_LOG_H_INCLUDED
+#define UTILS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef UTILS_VIDEO_VIDEODATABASE_H_INCLUDED
+#define UTILS_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
+#ifndef UTILS_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define UTILS_VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "video/VideoInfoTag.h"
+#endif
+
+#ifndef UTILS_FILEITEM_H_INCLUDED
+#define UTILS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef UTILS_RECENTLYADDEDJOB_H_INCLUDED
+#define UTILS_RECENTLYADDEDJOB_H_INCLUDED
 #include "RecentlyAddedJob.h"
+#endif
+
+#ifndef UTILS_GUILIB_GUIWINDOW_H_INCLUDED
+#define UTILS_GUILIB_GUIWINDOW_H_INCLUDED
 #include "guilib/GUIWindow.h"
+#endif
+
+#ifndef UTILS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define UTILS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef UTILS_GUILIB_WINDOWIDS_H_INCLUDED
+#define UTILS_GUILIB_WINDOWIDS_H_INCLUDED
 #include "guilib/WindowIDs.h"
+#endif
+
+#ifndef UTILS_MUSIC_MUSICDATABASE_H_INCLUDED
+#define UTILS_MUSIC_MUSICDATABASE_H_INCLUDED
 #include "music/MusicDatabase.h"
+#endif
+
+#ifndef UTILS_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define UTILS_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef UTILS_UTILS_VARIANT_H_INCLUDED
+#define UTILS_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UTILS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define UTILS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef UTILS_MUSIC_MUSICTHUMBLOADER_H_INCLUDED
+#define UTILS_MUSIC_MUSICTHUMBLOADER_H_INCLUDED
 #include "music/MusicThumbLoader.h"
+#endif
+
+#ifndef UTILS_VIDEO_VIDEOTHUMBLOADER_H_INCLUDED
+#define UTILS_VIDEO_VIDEOTHUMBLOADER_H_INCLUDED
 #include "video/VideoThumbLoader.h"
+#endif
+
 
 #define NUM_ITEMS 10
 

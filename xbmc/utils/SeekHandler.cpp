@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef UTILS_SEEKHANDLER_H_INCLUDED
+#define UTILS_SEEKHANDLER_H_INCLUDED
 #include "SeekHandler.h"
+#endif
+
+#ifndef UTILS_GUIINFOMANAGER_H_INCLUDED
+#define UTILS_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef UTILS_APPLICATION_H_INCLUDED
+#define UTILS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
 
 CSeekHandler::CSeekHandler()
 : m_requireSeek(false),

@@ -18,18 +18,66 @@
  *
  */
 
+#ifndef LEGACY_PLAYER_H_INCLUDED
+#define LEGACY_PLAYER_H_INCLUDED
 #include "Player.h"
+#endif
+
+#ifndef LEGACY_LISTITEM_H_INCLUDED
+#define LEGACY_LISTITEM_H_INCLUDED
 #include "ListItem.h"
+#endif
+
+#ifndef LEGACY_PLAYLIST_H_INCLUDED
+#define LEGACY_PLAYLIST_H_INCLUDED
 #include "PlayList.h"
+#endif
+
+#ifndef LEGACY_PLAYLISTPLAYER_H_INCLUDED
+#define LEGACY_PLAYLISTPLAYER_H_INCLUDED
 #include "PlayListPlayer.h"
+#endif
+
+#ifndef LEGACY_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define LEGACY_SETTINGS_MEDIASETTINGS_H_INCLUDED
 #include "settings/MediaSettings.h"
+#endif
+
+#ifndef LEGACY_APPLICATION_H_INCLUDED
+#define LEGACY_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef LEGACY_APPLICATIONMESSENGER_H_INCLUDED
+#define LEGACY_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef LEGACY_GUIINFOMANAGER_H_INCLUDED
+#define LEGACY_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef LEGACY_ADDONUTILS_H_INCLUDED
+#define LEGACY_ADDONUTILS_H_INCLUDED
 #include "AddonUtils.h"
+#endif
+
+#ifndef LEGACY_UTILS_LOG_H_INCLUDED
+#define LEGACY_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef LEGACY_CORES_IPLAYER_H_INCLUDED
+#define LEGACY_CORES_IPLAYER_H_INCLUDED
 #include "cores/IPlayer.h"
+#endif
+
+#ifndef LEGACY_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define LEGACY_SETTINGS_MEDIASETTINGS_H_INCLUDED
 #include "settings/MediaSettings.h"
+#endif
+
 
 namespace XBMCAddon
 {

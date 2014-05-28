@@ -19,18 +19,50 @@
  *
  */
 
+#ifndef FILESYSTEM_IDIRECTORY_H_INCLUDED
+#define FILESYSTEM_IDIRECTORY_H_INCLUDED
 #include "IDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_DIRECTORY_H_INCLUDED
+#define FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "Directory.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STDSTRING_H_INCLUDED
+#define FILESYSTEM_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef FILESYSTEM_SORTFILEITEM_H_INCLUDED
+#define FILESYSTEM_SORTFILEITEM_H_INCLUDED
 #include "SortFileItem.h"
+#endif
+
 
 #include <string>
 #include <map>
+#ifndef FILESYSTEM_THREADS_CRITICALSECTION_H_INCLUDED
+#define FILESYSTEM_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
-#include "addons/IAddon.h"
-#include "PlatformDefs.h"
+#endif
 
+#ifndef FILESYSTEM_ADDONS_IADDON_H_INCLUDED
+#define FILESYSTEM_ADDONS_IADDON_H_INCLUDED
+#include "addons/IAddon.h"
+#endif
+
+#ifndef FILESYSTEM_PLATFORMDEFS_H_INCLUDED
+#define FILESYSTEM_PLATFORMDEFS_H_INCLUDED
+#include "PlatformDefs.h"
+#endif
+
+
+#ifndef FILESYSTEM_THREADS_EVENT_H_INCLUDED
+#define FILESYSTEM_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
 
 class CURL;
 class CFileItem;

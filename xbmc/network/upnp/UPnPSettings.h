@@ -20,8 +20,16 @@
 #pragma once
 #include <string>
 
+#ifndef UPNP_SETTINGS_LIB_ISETTINGSHANDLER_H_INCLUDED
+#define UPNP_SETTINGS_LIB_ISETTINGSHANDLER_H_INCLUDED
 #include "settings/lib/ISettingsHandler.h"
+#endif
+
+#ifndef UPNP_THREADS_CRITICALSECTION_H_INCLUDED
+#define UPNP_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 class CUPnPSettings : public ISettingsHandler
 {

@@ -19,11 +19,31 @@
  */
 
 
+#ifndef TAGS_MUSICINFOTAGLOADERSPC_H_INCLUDED
+#define TAGS_MUSICINFOTAGLOADERSPC_H_INCLUDED
 #include "MusicInfoTagLoaderSPC.h"
+#endif
+
+#ifndef TAGS_SNESAPU_TYPES_H_INCLUDED
+#define TAGS_SNESAPU_TYPES_H_INCLUDED
 #include "snesapu/Types.h"
+#endif
+
+#ifndef TAGS_MUSICINFOTAG_H_INCLUDED
+#define TAGS_MUSICINFOTAG_H_INCLUDED
 #include "MusicInfoTag.h"
+#endif
+
+#ifndef TAGS_FILESYSTEM_FILE_H_INCLUDED
+#define TAGS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef TAGS_UTILS_LOG_H_INCLUDED
+#define TAGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 using namespace XFILE;
 using namespace MUSIC_INFO;

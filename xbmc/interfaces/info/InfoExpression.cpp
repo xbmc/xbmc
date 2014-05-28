@@ -18,10 +18,22 @@
  *
  */
 
+#ifndef INFO_INFOEXPRESSION_H_INCLUDED
+#define INFO_INFOEXPRESSION_H_INCLUDED
 #include "InfoExpression.h"
+#endif
+
 #include <stack>
+#ifndef INFO_UTILS_LOG_H_INCLUDED
+#define INFO_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef INFO_GUIINFOMANAGER_H_INCLUDED
+#define INFO_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
 
 using namespace std;
 using namespace INFO;

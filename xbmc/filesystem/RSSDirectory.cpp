@@ -18,22 +18,82 @@
  *
  */
 
+#ifndef FILESYSTEM_RSSDIRECTORY_H_INCLUDED
+#define FILESYSTEM_RSSDIRECTORY_H_INCLUDED
 #include "RSSDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_CURLFILE_H_INCLUDED
+#define FILESYSTEM_CURLFILE_H_INCLUDED
 #include "CurlFile.h"
+#endif
+
+#ifndef FILESYSTEM_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define FILESYSTEM_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef FILESYSTEM_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define FILESYSTEM_SETTINGS_MEDIASETTINGS_H_INCLUDED
 #include "settings/MediaSettings.h"
+#endif
+
+#ifndef FILESYSTEM_SETTINGS_SETTINGS_H_INCLUDED
+#define FILESYSTEM_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_XBMCTINYXML_H_INCLUDED
+#define FILESYSTEM_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_HTMLUTIL_H_INCLUDED
+#define FILESYSTEM_UTILS_HTMLUTIL_H_INCLUDED
 #include "utils/HTMLUtil.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define FILESYSTEM_VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "video/VideoInfoTag.h"
+#endif
+
+#ifndef FILESYSTEM_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define FILESYSTEM_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 #include "climits"
+#ifndef FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
+#define FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 
 using namespace XFILE;
 using namespace std;

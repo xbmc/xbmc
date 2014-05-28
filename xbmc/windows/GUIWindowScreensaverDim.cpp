@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef WINDOWS_GUIWINDOWSCREENSAVERDIM_H_INCLUDED
+#define WINDOWS_GUIWINDOWSCREENSAVERDIM_H_INCLUDED
 #include "GUIWindowScreensaverDim.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define WINDOWS_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUITEXTURE_H_INCLUDED
+#define WINDOWS_GUILIB_GUITEXTURE_H_INCLUDED
 #include "guilib/GUITexture.h"
+#endif
+
+#ifndef WINDOWS_APPLICATION_H_INCLUDED
+#define WINDOWS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
 #include <climits>
 
 CGUIWindowScreensaverDim::CGUIWindowScreensaverDim(void)

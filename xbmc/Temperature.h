@@ -20,7 +20,11 @@
  */
 
 #include <string>
+#ifndef ROOT_UTILS_ARCHIVE_H_INCLUDED
+#define ROOT_UTILS_ARCHIVE_H_INCLUDED
 #include "utils/Archive.h"
+#endif
+
 
 class CTemperature : public IArchivable
 {

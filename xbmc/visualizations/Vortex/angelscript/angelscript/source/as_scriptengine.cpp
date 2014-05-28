@@ -38,19 +38,71 @@
 
 #include <stdlib.h>
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
+#ifndef SOURCE_AS_SCRIPTENGINE_H_INCLUDED
+#define SOURCE_AS_SCRIPTENGINE_H_INCLUDED
 #include "as_scriptengine.h"
+#endif
+
+#ifndef SOURCE_AS_BUILDER_H_INCLUDED
+#define SOURCE_AS_BUILDER_H_INCLUDED
 #include "as_builder.h"
+#endif
+
+#ifndef SOURCE_AS_CONTEXT_H_INCLUDED
+#define SOURCE_AS_CONTEXT_H_INCLUDED
 #include "as_context.h"
+#endif
+
+#ifndef SOURCE_AS_STRING_UTIL_H_INCLUDED
+#define SOURCE_AS_STRING_UTIL_H_INCLUDED
 #include "as_string_util.h"
+#endif
+
+#ifndef SOURCE_AS_TOKENIZER_H_INCLUDED
+#define SOURCE_AS_TOKENIZER_H_INCLUDED
 #include "as_tokenizer.h"
+#endif
+
+#ifndef SOURCE_AS_TEXTS_H_INCLUDED
+#define SOURCE_AS_TEXTS_H_INCLUDED
 #include "as_texts.h"
+#endif
+
+#ifndef SOURCE_AS_MODULE_H_INCLUDED
+#define SOURCE_AS_MODULE_H_INCLUDED
 #include "as_module.h"
+#endif
+
+#ifndef SOURCE_AS_CALLFUNC_H_INCLUDED
+#define SOURCE_AS_CALLFUNC_H_INCLUDED
 #include "as_callfunc.h"
+#endif
+
+#ifndef SOURCE_AS_ARRAYOBJECT_H_INCLUDED
+#define SOURCE_AS_ARRAYOBJECT_H_INCLUDED
 #include "as_arrayobject.h"
+#endif
+
+#ifndef SOURCE_AS_GENERIC_H_INCLUDED
+#define SOURCE_AS_GENERIC_H_INCLUDED
 #include "as_generic.h"
+#endif
+
+#ifndef SOURCE_AS_SCRIPTOBJECT_H_INCLUDED
+#define SOURCE_AS_SCRIPTOBJECT_H_INCLUDED
 #include "as_scriptobject.h"
+#endif
+
+#ifndef SOURCE_AS_COMPILER_H_INCLUDED
+#define SOURCE_AS_COMPILER_H_INCLUDED
 #include "as_compiler.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

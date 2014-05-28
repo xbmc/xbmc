@@ -36,11 +36,31 @@
 // A class that holds a script module
 //
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
+#ifndef SOURCE_AS_MODULE_H_INCLUDED
+#define SOURCE_AS_MODULE_H_INCLUDED
 #include "as_module.h"
+#endif
+
+#ifndef SOURCE_AS_BUILDER_H_INCLUDED
+#define SOURCE_AS_BUILDER_H_INCLUDED
 #include "as_builder.h"
+#endif
+
+#ifndef SOURCE_AS_CONTEXT_H_INCLUDED
+#define SOURCE_AS_CONTEXT_H_INCLUDED
 #include "as_context.h"
+#endif
+
+#ifndef SOURCE_AS_TEXTS_H_INCLUDED
+#define SOURCE_AS_TEXTS_H_INCLUDED
 #include "as_texts.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

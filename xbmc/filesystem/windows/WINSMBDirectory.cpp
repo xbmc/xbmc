@@ -19,18 +19,66 @@
  */
 
 
+#ifndef WINDOWS_WINSMBDIRECTORY_H_INCLUDED
+#define WINDOWS_WINSMBDIRECTORY_H_INCLUDED
 #include "WINSMBDirectory.h"
+#endif
+
+#ifndef WINDOWS_URL_H_INCLUDED
+#define WINDOWS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef WINDOWS_UTILS_URIUTILS_H_INCLUDED
+#define WINDOWS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef WINDOWS_FILEITEM_H_INCLUDED
+#define WINDOWS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef WINDOWS_WIN32UTIL_H_INCLUDED
+#define WINDOWS_WIN32UTIL_H_INCLUDED
 #include "WIN32Util.h"
+#endif
+
+#ifndef WINDOWS_UTILS_AUTOPTRHANDLE_H_INCLUDED
+#define WINDOWS_UTILS_AUTOPTRHANDLE_H_INCLUDED
 #include "utils/AutoPtrHandle.h"
+#endif
+
+#ifndef WINDOWS_UTILS_LOG_H_INCLUDED
+#define WINDOWS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef WINDOWS_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define WINDOWS_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef WINDOWS_PASSWORDMANAGER_H_INCLUDED
+#define WINDOWS_PASSWORDMANAGER_H_INCLUDED
 #include "PasswordManager.h"
+#endif
+
+#ifndef WINDOWS_UTIL_H_INCLUDED
+#define WINDOWS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
+#define WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 #ifndef INVALID_FILE_ATTRIBUTES
 #define INVALID_FILE_ATTRIBUTES ((DWORD) -1)

@@ -25,7 +25,11 @@
  *
  */
 
+#ifndef GUILIB_GUIBASECONTAINER_H_INCLUDED
+#define GUILIB_GUIBASECONTAINER_H_INCLUDED
 #include "GUIBaseContainer.h"
+#endif
+
 
 /*!
  \ingroup controls

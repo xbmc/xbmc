@@ -20,11 +20,19 @@
  *
  */
 
+#ifndef GUILIB_UTILS_STDSTRING_H_INCLUDED
+#define GUILIB_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 #include <map>
 #include <set>
+#ifndef GUILIB_INTERFACES_INFO_INFOBOOL_H_INCLUDED
+#define GUILIB_INTERFACES_INFO_INFOBOOL_H_INCLUDED
 #include "interfaces/info/InfoBool.h"
+#endif
+
 
 // forward definitions
 class TiXmlElement;

@@ -20,7 +20,11 @@
  */
 
 #include <stdint.h>
+#ifndef UTILS_UTILS_STDSTRING_H_INCLUDED
+#define UTILS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 /**
  * The possible channels

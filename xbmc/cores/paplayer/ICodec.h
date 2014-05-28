@@ -20,11 +20,27 @@
  *
  */
 
+#ifndef PAPLAYER_UTILS_STDSTRING_H_INCLUDED
+#define PAPLAYER_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
-#include "filesystem/File.h"
-#include "music/tags/MusicInfoTag.h"
+#endif
 
+#ifndef PAPLAYER_FILESYSTEM_FILE_H_INCLUDED
+#define PAPLAYER_FILESYSTEM_FILE_H_INCLUDED
+#include "filesystem/File.h"
+#endif
+
+#ifndef PAPLAYER_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define PAPLAYER_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#include "music/tags/MusicInfoTag.h"
+#endif
+
+
+#ifndef PAPLAYER_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
+#define PAPLAYER_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
+#endif
+
 
 #define READ_EOF      -1
 #define READ_SUCCESS   0

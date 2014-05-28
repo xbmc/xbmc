@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef ROOT_APPLICATION_H_INCLUDED
+#define ROOT_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef ROOT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
 
 #ifdef TARGET_RASPBERRY_PI
 #include "linux/RBP.h"

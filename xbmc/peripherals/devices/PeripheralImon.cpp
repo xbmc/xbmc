@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef DEVICES_PERIPHERALIMON_H_INCLUDED
+#define DEVICES_PERIPHERALIMON_H_INCLUDED
 #include "PeripheralImon.h"
+#endif
+
+#ifndef DEVICES_UTILS_LOG_H_INCLUDED
+#define DEVICES_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DEVICES_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define DEVICES_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef DEVICES_SETTINGS_SETTINGS_H_INCLUDED
+#define DEVICES_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef DEVICES_THREADS_ATOMICS_H_INCLUDED
+#define DEVICES_THREADS_ATOMICS_H_INCLUDED
 #include "threads/Atomics.h"
+#endif
+
 #if defined (TARGET_WINDOWS)
 #include "system.h" // For HAS_SDL_JOYSTICK
 #if defined (HAS_SDL_JOYSTICK)

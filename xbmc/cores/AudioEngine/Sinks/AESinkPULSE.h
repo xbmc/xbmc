@@ -19,14 +19,38 @@
  *
  */
 
+#ifndef SINKS_SYSTEM_H_INCLUDED
+#define SINKS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
 
+
+#ifndef SINKS_CORES_AUDIOENGINE_INTERFACES_AESINK_H_INCLUDED
+#define SINKS_CORES_AUDIOENGINE_INTERFACES_AESINK_H_INCLUDED
 #include "cores/AudioEngine/Interfaces/AESink.h"
+#endif
+
+#ifndef SINKS_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
+#define SINKS_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
 #include "cores/AudioEngine/AEFactory.h"
+#endif
+
+#ifndef SINKS_UTILS_AEDEVICEINFO_H_INCLUDED
+#define SINKS_UTILS_AEDEVICEINFO_H_INCLUDED
 #include "Utils/AEDeviceInfo.h"
+#endif
+
+#ifndef SINKS_UTILS_AEUTIL_H_INCLUDED
+#define SINKS_UTILS_AEUTIL_H_INCLUDED
 #include "Utils/AEUtil.h"
+#endif
+
 #include <pulse/pulseaudio.h>
+#ifndef SINKS_THREADS_CRITICALSECTION_H_INCLUDED
+#define SINKS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 class CAESinkPULSE : public IAESink
 {

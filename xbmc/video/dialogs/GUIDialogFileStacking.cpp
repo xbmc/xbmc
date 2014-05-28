@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGFILESTACKING_H_INCLUDED
+#define DIALOGS_GUIDIALOGFILESTACKING_H_INCLUDED
 #include "GUIDialogFileStacking.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_KEY_H_INCLUDED
+#define DIALOGS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef DIALOGS_FILEITEM_H_INCLUDED
+#define DIALOGS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
+#define DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace std;
 

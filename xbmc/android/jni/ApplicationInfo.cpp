@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_APPLICATIONINFO_H_INCLUDED
+#define JNI_APPLICATIONINFO_H_INCLUDED
 #include "ApplicationInfo.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

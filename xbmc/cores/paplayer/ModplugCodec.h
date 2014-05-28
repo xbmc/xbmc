@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef PAPLAYER_ICODEC_H_INCLUDED
+#define PAPLAYER_ICODEC_H_INCLUDED
 #include "ICodec.h"
+#endif
+
+#ifndef PAPLAYER_DLLMODPLUG_H_INCLUDED
+#define PAPLAYER_DLLMODPLUG_H_INCLUDED
 #include "DllModplug.h"
+#endif
+
 
 class ModplugCodec : public ICodec
 {

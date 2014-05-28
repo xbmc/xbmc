@@ -18,8 +18,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef WINDOWS_STORAGE_ISTORAGEPROVIDER_H_INCLUDED
+#define WINDOWS_STORAGE_ISTORAGEPROVIDER_H_INCLUDED
 #include "storage/IStorageProvider.h"
+#endif
+
+#ifndef WINDOWS_UTILS_JOB_H_INCLUDED
+#define WINDOWS_UTILS_JOB_H_INCLUDED
 #include "utils/Job.h"
+#endif
+
 
 class CWin32StorageProvider : public IStorageProvider
 {

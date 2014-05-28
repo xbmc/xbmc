@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef FILESYSTEM_SLINGBOXDIRECTORY_H_INCLUDED
+#define FILESYSTEM_SLINGBOXDIRECTORY_H_INCLUDED
 #include "SlingboxDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
 
 using namespace XFILE;
 using namespace std;

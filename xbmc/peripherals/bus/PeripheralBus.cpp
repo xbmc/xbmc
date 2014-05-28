@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef BUS_PERIPHERALBUS_H_INCLUDED
+#define BUS_PERIPHERALBUS_H_INCLUDED
 #include "PeripheralBus.h"
+#endif
+
+#ifndef BUS_PERIPHERALS_PERIPHERALS_H_INCLUDED
+#define BUS_PERIPHERALS_PERIPHERALS_H_INCLUDED
 #include "peripherals/Peripherals.h"
+#endif
+
+#ifndef BUS_UTILS_VARIANT_H_INCLUDED
+#define BUS_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef BUS_UTILS_LOG_H_INCLUDED
+#define BUS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef BUS_FILEITEM_H_INCLUDED
+#define BUS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
 
 using namespace std;
 using namespace PERIPHERALS;

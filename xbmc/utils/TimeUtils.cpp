@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef UTILS_TIMEUTILS_H_INCLUDED
+#define UTILS_TIMEUTILS_H_INCLUDED
 #include "TimeUtils.h"
+#endif
+
+#ifndef UTILS_XBDATETIME_H_INCLUDED
+#define UTILS_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef UTILS_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define UTILS_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
 
 #if   defined(TARGET_DARWIN)
 #include <mach/mach_time.h>
@@ -31,7 +43,11 @@
 #include <time.h>
 #endif
 
+#ifndef UTILS_TIMESMOOTHER_H_INCLUDED
+#define UTILS_TIMESMOOTHER_H_INCLUDED
 #include "TimeSmoother.h"
+#endif
+
 
 int64_t CurrentHostCounter(void)
 {

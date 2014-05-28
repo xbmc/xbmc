@@ -20,10 +20,22 @@
 
 #pragma once
 
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
 
+
+#ifndef TEST_THREADS_THREAD_H_INCLUDED
+#define TEST_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef TEST_THREADS_ATOMICS_H_INCLUDED
+#define TEST_THREADS_ATOMICS_H_INCLUDED
 #include "threads/Atomics.h"
+#endif
+
 
 #define MILLIS(x) x
 

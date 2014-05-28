@@ -18,24 +18,92 @@
  *
  */
 
+#ifndef ADDONS_PVRCLIENTS_H_INCLUDED
+#define ADDONS_PVRCLIENTS_H_INCLUDED
 #include "PVRClients.h"
+#endif
 
+
+#ifndef ADDONS_APPLICATION_H_INCLUDED
+#define ADDONS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef ADDONS_APPLICATIONMESSENGER_H_INCLUDED
+#define ADDONS_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef ADDONS_GUIUSERMESSAGES_H_INCLUDED
+#define ADDONS_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef ADDONS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define ADDONS_DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef ADDONS_DIALOGS_GUIDIALOGSELECT_H_INCLUDED
+#define ADDONS_DIALOGS_GUIDIALOGSELECT_H_INCLUDED
 #include "dialogs/GUIDialogSelect.h"
+#endif
+
+#ifndef ADDONS_PVR_PVRMANAGER_H_INCLUDED
+#define ADDONS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef ADDONS_PVR_PVRDATABASE_H_INCLUDED
+#define ADDONS_PVR_PVRDATABASE_H_INCLUDED
 #include "pvr/PVRDatabase.h"
+#endif
+
+#ifndef ADDONS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define ADDONS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
 #include "settings/DisplaySettings.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_MEDIASETTINGS_H_INCLUDED
 #include "settings/MediaSettings.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_SETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef ADDONS_PVR_CHANNELS_PVRCHANNELGROUPS_H_INCLUDED
+#define ADDONS_PVR_CHANNELS_PVRCHANNELGROUPS_H_INCLUDED
 #include "pvr/channels/PVRChannelGroups.h"
+#endif
+
+#ifndef ADDONS_PVR_CHANNELS_PVRCHANNELGROUPINTERNAL_H_INCLUDED
+#define ADDONS_PVR_CHANNELS_PVRCHANNELGROUPINTERNAL_H_INCLUDED
 #include "pvr/channels/PVRChannelGroupInternal.h"
+#endif
+
+#ifndef ADDONS_PVR_RECORDINGS_PVRRECORDINGS_H_INCLUDED
+#define ADDONS_PVR_RECORDINGS_PVRRECORDINGS_H_INCLUDED
 #include "pvr/recordings/PVRRecordings.h"
+#endif
+
+#ifndef ADDONS_PVR_TIMERS_PVRTIMERS_H_INCLUDED
+#define ADDONS_PVR_TIMERS_PVRTIMERS_H_INCLUDED
 #include "pvr/timers/PVRTimers.h"
+#endif
+
+#ifndef ADDONS_CORES_IPLAYER_H_INCLUDED
+#define ADDONS_CORES_IPLAYER_H_INCLUDED
 #include "cores/IPlayer.h"
+#endif
+
 
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"

@@ -19,9 +19,21 @@
  *
  */
 
+#ifndef FILESYSTEM_IDIRECTORY_H_INCLUDED
+#define FILESYSTEM_IDIRECTORY_H_INCLUDED
 #include "IDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_MEDIASOURCE_H_INCLUDED
+#define FILESYSTEM_MEDIASOURCE_H_INCLUDED
 #include "MediaSource.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 struct afp_file_info;
 

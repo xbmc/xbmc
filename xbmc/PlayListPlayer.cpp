@@ -18,24 +18,96 @@
  *
  */
 
+#ifndef ROOT_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define ROOT_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef ROOT_PLAYLISTPLAYER_H_INCLUDED
+#define ROOT_PLAYLISTPLAYER_H_INCLUDED
 #include "PlayListPlayer.h"
+#endif
+
+#ifndef ROOT_PLAYLISTS_PLAYLISTFACTORY_H_INCLUDED
+#define ROOT_PLAYLISTS_PLAYLISTFACTORY_H_INCLUDED
 #include "playlists/PlayListFactory.h"
+#endif
+
+#ifndef ROOT_APPLICATION_H_INCLUDED
+#define ROOT_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef ROOT_PARTYMODEMANAGER_H_INCLUDED
+#define ROOT_PARTYMODEMANAGER_H_INCLUDED
 #include "PartyModeManager.h"
+#endif
+
+#ifndef ROOT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef ROOT_GUIUSERMESSAGES_H_INCLUDED
+#define ROOT_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef ROOT_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define ROOT_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef ROOT_PLAYLISTS_PLAYLIST_H_INCLUDED
+#define ROOT_PLAYLISTS_PLAYLIST_H_INCLUDED
 #include "playlists/PlayList.h"
+#endif
+
+#ifndef ROOT_UTILS_LOG_H_INCLUDED
+#define ROOT_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ROOT_UTILS_TIMEUTILS_H_INCLUDED
+#define ROOT_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef ROOT_UTILS_STRINGUTILS_H_INCLUDED
+#define ROOT_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ROOT_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define ROOT_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef ROOT_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define ROOT_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef ROOT_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#define ROOT_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
 #include "interfaces/AnnouncementManager.h"
+#endif
+
+#ifndef ROOT_GUILIB_KEY_H_INCLUDED
+#define ROOT_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
 
 using namespace PLAYLIST;
 

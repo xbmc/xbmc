@@ -20,10 +20,26 @@
  */
 
 #include <vector>
+#ifndef BUS_UTILS_STDSTRING_H_INCLUDED
+#define BUS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef BUS_THREADS_THREAD_H_INCLUDED
+#define BUS_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef BUS_PERIPHERALS_PERIPHERALTYPES_H_INCLUDED
+#define BUS_PERIPHERALS_PERIPHERALTYPES_H_INCLUDED
 #include "peripherals/PeripheralTypes.h"
+#endif
+
+#ifndef BUS_PERIPHERALS_DEVICES_PERIPHERAL_H_INCLUDED
+#define BUS_PERIPHERALS_DEVICES_PERIPHERAL_H_INCLUDED
 #include "peripherals/devices/Peripheral.h"
+#endif
+
 
 class CFileItemList;
 

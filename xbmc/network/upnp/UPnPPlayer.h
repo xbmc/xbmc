@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef UPNP_CORES_IPLAYER_H_INCLUDED
+#define UPNP_CORES_IPLAYER_H_INCLUDED
 #include "cores/IPlayer.h"
+#endif
+
 
 class PLT_MediaController;
 class CGUIDialogBusy;

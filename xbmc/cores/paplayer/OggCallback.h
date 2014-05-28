@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef PAPLAYER_DLLVORBISFILE_H_INCLUDED
+#define PAPLAYER_DLLVORBISFILE_H_INCLUDED
 #include "DllVorbisfile.h"
+#endif
+
+#ifndef PAPLAYER_FILESYSTEM_FILE_H_INCLUDED
+#define PAPLAYER_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
 
 class COggCallback
 {

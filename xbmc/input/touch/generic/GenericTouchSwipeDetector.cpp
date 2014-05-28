@@ -24,7 +24,11 @@
 #include <math.h>
 #include <stdlib.h>
 
+#ifndef GENERIC_GENERICTOUCHSWIPEDETECTOR_H_INCLUDED
+#define GENERIC_GENERICTOUCHSWIPEDETECTOR_H_INCLUDED
 #include "GenericTouchSwipeDetector.h"
+#endif
+
 
 // maximum time between touch down and up (in nanoseconds)
 #define SWIPE_MAX_TIME            500000000

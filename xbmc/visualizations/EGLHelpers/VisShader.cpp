@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef EGLHELPERS_VISSHADER_H_INCLUDED
+#define EGLHELPERS_VISSHADER_H_INCLUDED
 #include "VisShader.h"
+#endif
+
 #include <stdio.h>
 
 #define LOG_SIZE 1024

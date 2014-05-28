@@ -18,12 +18,28 @@
  *
  */
 
+#ifndef TEST_UTILS_ASYNCFILECOPY_H_INCLUDED
+#define TEST_UTILS_ASYNCFILECOPY_H_INCLUDED
 #include "utils/AsyncFileCopy.h"
+#endif
+
+#ifndef TEST_FILESYSTEM_FILE_H_INCLUDED
+#define TEST_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
 
+
+#ifndef TEST_TEST_TESTUTILS_H_INCLUDED
+#define TEST_TEST_TESTUTILS_H_INCLUDED
 #include "test/TestUtils.h"
+#endif
 
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 static const char refdata[] = "\x01\x02\x03\x04\x05\x06\x07\x08"
                               "\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10"

@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef AUDIO_DVDAUDIOCODEC_H_INCLUDED
+#define AUDIO_DVDAUDIOCODEC_H_INCLUDED
 #include "DVDAudioCodec.h"
+#endif
+
+#ifndef AUDIO_DVDCODECS_DVDCODECS_H_INCLUDED
+#define AUDIO_DVDCODECS_DVDCODECS_H_INCLUDED
 #include "DVDCodecs/DVDCodecs.h"
+#endif
+
+#ifndef AUDIO_DVDAUDIOCODECPCM_H_INCLUDED
+#define AUDIO_DVDAUDIOCODECPCM_H_INCLUDED
 #include "DVDAudioCodecPcm.h"
+#endif
+
 
 class CDVDAudioCodecLPcm : public CDVDAudioCodecPcm
 {

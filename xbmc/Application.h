@@ -20,12 +20,32 @@
  *
  */
 
+#ifndef ROOT_SYSTEM_H_INCLUDED
+#define ROOT_SYSTEM_H_INCLUDED
 #include "system.h" // for HAS_DVD_DRIVE et. al.
-#include "XBApplicationEx.h"
+#endif
 
+#ifndef ROOT_XBAPPLICATIONEX_H_INCLUDED
+#define ROOT_XBAPPLICATIONEX_H_INCLUDED
+#include "XBApplicationEx.h"
+#endif
+
+
+#ifndef ROOT_GUILIB_IMSGTARGETCALLBACK_H_INCLUDED
+#define ROOT_GUILIB_IMSGTARGETCALLBACK_H_INCLUDED
 #include "guilib/IMsgTargetCallback.h"
+#endif
+
+#ifndef ROOT_THREADS_CONDITION_H_INCLUDED
+#define ROOT_THREADS_CONDITION_H_INCLUDED
 #include "threads/Condition.h"
+#endif
+
+#ifndef ROOT_UTILS_GLOBALSHANDLING_H_INCLUDED
+#define ROOT_UTILS_GLOBALSHANDLING_H_INCLUDED
 #include "utils/GlobalsHandling.h"
+#endif
+
 
 #include <map>
 
@@ -46,26 +66,66 @@ namespace MEDIA_DETECT
 }
 class CPlayerController;
 
+#ifndef ROOT_CORES_IPLAYERCALLBACK_H_INCLUDED
+#define ROOT_CORES_IPLAYERCALLBACK_H_INCLUDED
 #include "cores/IPlayerCallback.h"
+#endif
+
+#ifndef ROOT_CORES_PLAYERCOREFACTORY_PLAYERCOREFACTORY_H_INCLUDED
+#define ROOT_CORES_PLAYERCOREFACTORY_PLAYERCOREFACTORY_H_INCLUDED
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#endif
+
+#ifndef ROOT_PLAYLISTPLAYER_H_INCLUDED
+#define ROOT_PLAYLISTPLAYER_H_INCLUDED
 #include "PlayListPlayer.h"
+#endif
+
+#ifndef ROOT_SETTINGS_LIB_ISETTINGSHANDLER_H_INCLUDED
+#define ROOT_SETTINGS_LIB_ISETTINGSHANDLER_H_INCLUDED
 #include "settings/lib/ISettingsHandler.h"
+#endif
+
+#ifndef ROOT_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
+#define ROOT_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
 #include "settings/lib/ISettingCallback.h"
+#endif
+
+#ifndef ROOT_SETTINGS_LIB_ISUBSETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_LIB_ISUBSETTINGS_H_INCLUDED
 #include "settings/lib/ISubSettings.h"
+#endif
+
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
 #endif
 #ifdef TARGET_WINDOWS
 #include "win32/WIN32Util.h"
 #endif
+#ifndef ROOT_UTILS_STOPWATCH_H_INCLUDED
+#define ROOT_UTILS_STOPWATCH_H_INCLUDED
 #include "utils/Stopwatch.h"
+#endif
+
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceStats.h"
 #endif
+#ifndef ROOT_WINDOWING_XBMC_EVENTS_H_INCLUDED
+#define ROOT_WINDOWING_XBMC_EVENTS_H_INCLUDED
 #include "windowing/XBMC_events.h"
-#include "threads/Thread.h"
+#endif
 
+#ifndef ROOT_THREADS_THREAD_H_INCLUDED
+#define ROOT_THREADS_THREAD_H_INCLUDED
+#include "threads/Thread.h"
+#endif
+
+
+#ifndef ROOT_APPLICATIONPLAYER_H_INCLUDED
+#define ROOT_APPLICATIONPLAYER_H_INCLUDED
 #include "ApplicationPlayer.h"
+#endif
+
 
 class CSeekHandler;
 class CKaraokeLyricsManager;

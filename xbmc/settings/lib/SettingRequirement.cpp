@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef LIB_SETTINGREQUIREMENT_H_INCLUDED
+#define LIB_SETTINGREQUIREMENT_H_INCLUDED
 #include "SettingRequirement.h"
+#endif
+
+#ifndef LIB_SETTINGSMANAGER_H_INCLUDED
+#define LIB_SETTINGSMANAGER_H_INCLUDED
 #include "SettingsManager.h"
+#endif
+
 
 bool CSettingRequirementCondition::Check() const
 {

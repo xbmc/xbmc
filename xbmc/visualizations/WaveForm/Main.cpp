@@ -21,7 +21,11 @@
 // Waveform.vis
 // A simple visualisation example by MrC
 
+#ifndef WAVEFORM_ADDONS_INCLUDE_XBMC_VIS_DLL_H_INCLUDED
+#define WAVEFORM_ADDONS_INCLUDE_XBMC_VIS_DLL_H_INCLUDED
 #include "addons/include/xbmc_vis_dll.h"
+#endif
+
 #include <stdio.h>
 #ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>

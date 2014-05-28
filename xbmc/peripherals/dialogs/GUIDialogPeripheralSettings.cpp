@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGPERIPHERALSETTINGS_H_INCLUDED
+#define DIALOGS_GUIDIALOGPERIPHERALSETTINGS_H_INCLUDED
 #include "GUIDialogPeripheralSettings.h"
+#endif
+
+#ifndef DIALOGS_ADDONS_SKIN_H_INCLUDED
+#define DIALOGS_ADDONS_SKIN_H_INCLUDED
 #include "addons/Skin.h"
+#endif
+
+#ifndef DIALOGS_PERIPHERALS_PERIPHERALS_H_INCLUDED
+#define DIALOGS_PERIPHERALS_PERIPHERALS_H_INCLUDED
 #include "peripherals/Peripherals.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_LIB_SETTING_H_INCLUDED
+#define DIALOGS_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef DIALOGS_UTILS_LOG_H_INCLUDED
+#define DIALOGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DIALOGS_VIDEO_DIALOGS_GUIDIALOGVIDEOSETTINGS_H_INCLUDED
+#define DIALOGS_VIDEO_DIALOGS_GUIDIALOGVIDEOSETTINGS_H_INCLUDED
 #include "video/dialogs/GUIDialogVideoSettings.h"
+#endif
+
 
 using namespace std;
 using namespace PERIPHERALS;

@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef PYTHON_INTERFACES_PYTHON_PYTHONINVOKER_H_INCLUDED
+#define PYTHON_INTERFACES_PYTHON_PYTHONINVOKER_H_INCLUDED
 #include "interfaces/python/PythonInvoker.h"
+#endif
+
 
 class CAddonPythonInvoker : public CPythonInvoker
 {

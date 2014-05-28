@@ -17,7 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef LEGACY_ADDONCALLBACK_H_INCLUDED
+#define LEGACY_ADDONCALLBACK_H_INCLUDED
 #include "AddonCallback.h"
+#endif
+
 
 namespace XBMCAddon
 {

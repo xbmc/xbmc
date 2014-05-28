@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_INTENTFILTER_H_INCLUDED
+#define JNI_INTENTFILTER_H_INCLUDED
 #include "IntentFilter.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef ACTIVEAE_ACTIVEAERESAMPLE_H_INCLUDED
+#define ACTIVEAE_ACTIVEAERESAMPLE_H_INCLUDED
 #include "ActiveAEResample.h"
+#endif
+
 
 using namespace ActiveAE;
 

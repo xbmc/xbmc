@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef UTILS_SORTUTILS_H_INCLUDED
+#define UTILS_SORTUTILS_H_INCLUDED
 #include "SortUtils.h"
+#endif
+
+#ifndef UTILS_URL_H_INCLUDED
+#define UTILS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef UTILS_UTIL_H_INCLUDED
+#define UTILS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef UTILS_XBDATETIME_H_INCLUDED
+#define UTILS_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef UTILS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define UTILS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef UTILS_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define UTILS_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef UTILS_UTILS_STDSTRING_H_INCLUDED
+#define UTILS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UTILS_UTILS_VARIANT_H_INCLUDED
+#define UTILS_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
 
 using namespace std;
 

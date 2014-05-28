@@ -18,26 +18,78 @@
  *
  */
 
+#ifndef VIDEO_SYSTEM_H_INCLUDED
+#define VIDEO_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
+#ifndef VIDEO_DVDVIDEOCODECFFMPEG_H_INCLUDED
+#define VIDEO_DVDVIDEOCODECFFMPEG_H_INCLUDED
 #include "DVDVideoCodecFFmpeg.h"
+#endif
+
+#ifndef VIDEO_DVDDEMUXERS_DVDDEMUX_H_INCLUDED
+#define VIDEO_DVDDEMUXERS_DVDDEMUX_H_INCLUDED
 #include "DVDDemuxers/DVDDemux.h"
+#endif
+
+#ifndef VIDEO_DVDSTREAMINFO_H_INCLUDED
+#define VIDEO_DVDSTREAMINFO_H_INCLUDED
 #include "DVDStreamInfo.h"
+#endif
+
+#ifndef VIDEO_DVDCLOCK_H_INCLUDED
+#define VIDEO_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h"
+#endif
+
+#ifndef VIDEO_DVDCODECS_DVDCODECS_H_INCLUDED
+#define VIDEO_DVDCODECS_DVDCODECS_H_INCLUDED
 #include "DVDCodecs/DVDCodecs.h"
+#endif
+
+#ifndef VIDEO_DVDCODECS_DVDCODECUTILS_H_INCLUDED
+#define VIDEO_DVDCODECS_DVDCODECUTILS_H_INCLUDED
 #include "DVDCodecs/DVDCodecUtils.h"
+#endif
+
+#ifndef VIDEO_DVDVIDEOPPFFMPEG_H_INCLUDED
+#define VIDEO_DVDVIDEOPPFFMPEG_H_INCLUDED
 #include "DVDVideoPPFFmpeg.h"
+#endif
+
 #if defined(TARGET_POSIX) || defined(TARGET_WINDOWS)
 #include "utils/CPUInfo.h"
 #endif
+#ifndef VIDEO_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_SETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_VIDEOSETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_VIDEOSETTINGS_H_INCLUDED
 #include "settings/VideoSettings.h"
+#endif
+
+#ifndef VIDEO_UTILS_LOG_H_INCLUDED
+#define VIDEO_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 #include "boost/shared_ptr.hpp"
+#ifndef VIDEO_THREADS_ATOMICS_H_INCLUDED
+#define VIDEO_THREADS_ATOMICS_H_INCLUDED
 #include "threads/Atomics.h"
+#endif
+
 
 #ifndef TARGET_POSIX
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
@@ -46,8 +98,16 @@
 #define RINT lrint
 #endif
 
+#ifndef VIDEO_CORES_VIDEORENDERERS_RENDERMANAGER_H_INCLUDED
+#define VIDEO_CORES_VIDEORENDERERS_RENDERMANAGER_H_INCLUDED
 #include "cores/VideoRenderers/RenderManager.h"
+#endif
+
+#ifndef VIDEO_CORES_VIDEORENDERERS_RENDERFORMATS_H_INCLUDED
+#define VIDEO_CORES_VIDEORENDERERS_RENDERFORMATS_H_INCLUDED
 #include "cores/VideoRenderers/RenderFormats.h"
+#endif
+
 
 #ifdef HAVE_LIBVDPAU
 #include "VDPAU.h"
@@ -61,7 +121,11 @@
 #ifdef TARGET_DARWIN_OSX
 #include "VDA.h"
 #endif
+#ifndef VIDEO_UTILS_STRINGUTILS_H_INCLUDED
+#define VIDEO_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace boost;
 

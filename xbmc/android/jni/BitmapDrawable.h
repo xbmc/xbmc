@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef JNI_DRAWABLE_H_INCLUDED
+#define JNI_DRAWABLE_H_INCLUDED
 #include "Drawable.h"
+#endif
+
 
 class CJNIBitmap;
 

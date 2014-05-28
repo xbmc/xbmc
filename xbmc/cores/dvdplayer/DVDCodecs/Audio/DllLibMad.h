@@ -27,7 +27,11 @@
 #else
   #include "libmad/mad.h"
 #endif
+#ifndef AUDIO_DYNAMICDLL_H_INCLUDED
+#define AUDIO_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
 
 class DllLibMadInterface
 {

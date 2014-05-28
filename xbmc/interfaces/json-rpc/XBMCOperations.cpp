@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef JSON_RPC_XBMCOPERATIONS_H_INCLUDED
+#define JSON_RPC_XBMCOPERATIONS_H_INCLUDED
 #include "XBMCOperations.h"
+#endif
+
+#ifndef JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
+#define JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef JSON_RPC_UTIL_H_INCLUDED
+#define JSON_RPC_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_VARIANT_H_INCLUDED
+#define JSON_RPC_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef JSON_RPC_POWERMANAGEMENT_POWERMANAGER_H_INCLUDED
+#define JSON_RPC_POWERMANAGEMENT_POWERMANAGER_H_INCLUDED
 #include "powermanagement/PowerManager.h"
+#endif
+
 
 using namespace JSONRPC;
 

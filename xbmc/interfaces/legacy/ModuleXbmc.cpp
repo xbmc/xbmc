@@ -23,45 +23,169 @@
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
+#ifndef LEGACY_NETWORK_NETWORK_H_INCLUDED
+#define LEGACY_NETWORK_NETWORK_H_INCLUDED
 #include "network/Network.h"
+#endif
 
+
+#ifndef LEGACY_MODULEXBMC_H_INCLUDED
+#define LEGACY_MODULEXBMC_H_INCLUDED
 #include "ModuleXbmc.h"
+#endif
 
+
+#ifndef LEGACY_APPLICATION_H_INCLUDED
+#define LEGACY_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef LEGACY_APPLICATIONMESSENGER_H_INCLUDED
+#define LEGACY_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef LEGACY_UTILS_URIUTILS_H_INCLUDED
+#define LEGACY_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef LEGACY_AOJSONRPC_H_INCLUDED
+#define LEGACY_AOJSONRPC_H_INCLUDED
 #include "aojsonrpc.h"
+#endif
+
 #ifndef TARGET_WINDOWS
 #include "XTimeUtils.h"
 #endif
+#ifndef LEGACY_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define LEGACY_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef LEGACY_GUIINFOMANAGER_H_INCLUDED
+#define LEGACY_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIAUDIOMANAGER_H_INCLUDED
+#define LEGACY_GUILIB_GUIAUDIOMANAGER_H_INCLUDED
 #include "guilib/GUIAudioManager.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define LEGACY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef LEGACY_FILESYSTEM_FILE_H_INCLUDED
+#define LEGACY_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef LEGACY_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define LEGACY_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef LEGACY_UTILS_CRC32_H_INCLUDED
+#define LEGACY_UTILS_CRC32_H_INCLUDED
 #include "utils/Crc32.h"
+#endif
+
+#ifndef LEGACY_FILEITEM_H_INCLUDED
+#define LEGACY_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef LEGACY_LANGINFO_H_INCLUDED
+#define LEGACY_LANGINFO_H_INCLUDED
 #include "LangInfo.h"
+#endif
+
+#ifndef LEGACY_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define LEGACY_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef LEGACY_SETTINGS_SETTINGS_H_INCLUDED
+#define LEGACY_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef LEGACY_GUILIB_TEXTUREMANAGER_H_INCLUDED
+#define LEGACY_GUILIB_TEXTUREMANAGER_H_INCLUDED
 #include "guilib/TextureManager.h"
+#endif
+
+#ifndef LEGACY_UTIL_H_INCLUDED
+#define LEGACY_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef LEGACY_URL_H_INCLUDED
+#define LEGACY_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef LEGACY_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
+#define LEGACY_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
 #include "cores/AudioEngine/AEFactory.h"
+#endif
+
+#ifndef LEGACY_STORAGE_MEDIAMANAGER_H_INCLUDED
+#define LEGACY_STORAGE_MEDIAMANAGER_H_INCLUDED
 #include "storage/MediaManager.h"
+#endif
+
+#ifndef LEGACY_UTILS_FILEUTILS_H_INCLUDED
+#define LEGACY_UTILS_FILEUTILS_H_INCLUDED
 #include "utils/FileUtils.h"
+#endif
+
+#ifndef LEGACY_UTILS_LANGCODEEXPANDER_H_INCLUDED
+#define LEGACY_UTILS_LANGCODEEXPANDER_H_INCLUDED
 #include "utils/LangCodeExpander.h"
+#endif
+
+#ifndef LEGACY_UTILS_STRINGUTILS_H_INCLUDED
+#define LEGACY_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef LEGACY_CALLBACKHANDLER_H_INCLUDED
+#define LEGACY_CALLBACKHANDLER_H_INCLUDED
 #include "CallbackHandler.h"
+#endif
+
+#ifndef LEGACY_ADDONUTILS_H_INCLUDED
+#define LEGACY_ADDONUTILS_H_INCLUDED
 #include "AddonUtils.h"
+#endif
 
+
+#ifndef LEGACY_LANGUAGEHOOK_H_INCLUDED
+#define LEGACY_LANGUAGEHOOK_H_INCLUDED
 #include "LanguageHook.h"
+#endif
 
+
+#ifndef LEGACY_CORES_VIDEORENDERERS_RENDERCAPTURE_H_INCLUDED
+#define LEGACY_CORES_VIDEORENDERERS_RENDERCAPTURE_H_INCLUDED
 #include "cores/VideoRenderers/RenderCapture.h"
+#endif
 
+
+#ifndef LEGACY_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define LEGACY_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef LEGACY_EXCEPTION_H_INCLUDED
+#define LEGACY_EXCEPTION_H_INCLUDED
 #include "Exception.h"
+#endif
+
 #include <vector>
 
 namespace XBMCAddon

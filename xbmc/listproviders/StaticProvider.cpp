@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef LISTPROVIDERS_STATICPROVIDER_H_INCLUDED
+#define LISTPROVIDERS_STATICPROVIDER_H_INCLUDED
 #include "StaticProvider.h"
+#endif
+
+#ifndef LISTPROVIDERS_UTILS_XMLUTILS_H_INCLUDED
+#define LISTPROVIDERS_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef LISTPROVIDERS_UTILS_TIMEUTILS_H_INCLUDED
+#define LISTPROVIDERS_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
 
 using namespace std;
 

@@ -17,17 +17,49 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef AUDIOENGINE_SYSTEM_H_INCLUDED
+#define AUDIOENGINE_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
 
+
+#ifndef AUDIOENGINE_AEFACTORY_H_INCLUDED
+#define AUDIOENGINE_AEFACTORY_H_INCLUDED
 #include "AEFactory.h"
+#endif
+
+#ifndef AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
 #include "Utils/AEUtil.h"
+#endif
 
+
+#ifndef AUDIOENGINE_ENGINES_ACTIVEAE_ACTIVEAE_H_INCLUDED
+#define AUDIOENGINE_ENGINES_ACTIVEAE_ACTIVEAE_H_INCLUDED
 #include "Engines/ActiveAE/ActiveAE.h"
+#endif
 
+
+#ifndef AUDIOENGINE_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define AUDIOENGINE_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef AUDIOENGINE_SETTINGS_LIB_SETTING_H_INCLUDED
+#define AUDIOENGINE_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef AUDIOENGINE_SETTINGS_SETTINGS_H_INCLUDED
+#define AUDIOENGINE_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef AUDIOENGINE_UTILS_STRINGUTILS_H_INCLUDED
+#define AUDIOENGINE_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 IAE* CAEFactory::AE = NULL;
 static float  g_fVolume = 1.0f;

@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef DEVICES_PERIPHERAL_H_INCLUDED
+#define DEVICES_PERIPHERAL_H_INCLUDED
 #include "Peripheral.h"
+#endif
+
+#ifndef DEVICES_INPUT_XBMC_KEYBOARD_H_INCLUDED
+#define DEVICES_INPUT_XBMC_KEYBOARD_H_INCLUDED
 #include "input/XBMC_keyboard.h"
+#endif
+
 
 namespace PERIPHERALS
 {

@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef UTILS_MD5_H_INCLUDED
+#define UTILS_MD5_H_INCLUDED
 #include "md5.h"
+#endif
+
+#ifndef UTILS_INFOLOADER_H_INCLUDED
+#define UTILS_INFOLOADER_H_INCLUDED
 #include "InfoLoader.h"
+#endif
+
+#ifndef UTILS_SETTINGS_LIB_ISUBSETTINGS_H_INCLUDED
+#define UTILS_SETTINGS_LIB_ISUBSETTINGS_H_INCLUDED
 #include "settings/lib/ISubSettings.h"
+#endif
+
 
 #define KB  (1024)          // 1 KiloByte (1KB)   1024 Byte (2^10 Byte)
 #define MB  (1024*KB)       // 1 MegaByte (1MB)   1024 KB (2^10 KB)

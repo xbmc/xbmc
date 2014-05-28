@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef NETWORK_GUILIB_GUIDIALOG_H_INCLUDED
+#define NETWORK_GUILIB_GUIDIALOG_H_INCLUDED
 #include "guilib/GUIDialog.h"
+#endif
+
 
 class CGUIDialogNetworkSetup :
       public CGUIDialog

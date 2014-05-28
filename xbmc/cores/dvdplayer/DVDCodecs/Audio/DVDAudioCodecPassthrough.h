@@ -22,11 +22,31 @@
 
 #include <list>
 
+#ifndef AUDIO_SYSTEM_H_INCLUDED
+#define AUDIO_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef AUDIO_DVDAUDIOCODEC_H_INCLUDED
+#define AUDIO_DVDAUDIOCODEC_H_INCLUDED
 #include "DVDAudioCodec.h"
+#endif
+
+#ifndef AUDIO_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
+#define AUDIO_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
+#endif
+
+#ifndef AUDIO_CORES_AUDIOENGINE_UTILS_AESTREAMINFO_H_INCLUDED
+#define AUDIO_CORES_AUDIOENGINE_UTILS_AESTREAMINFO_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
+#endif
+
+#ifndef AUDIO_CORES_AUDIOENGINE_UTILS_AEBITSTREAMPACKER_H_INCLUDED
+#define AUDIO_CORES_AUDIOENGINE_UTILS_AEBITSTREAMPACKER_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEBitstreamPacker.h"
+#endif
+
 
 class CDVDAudioCodecPassthrough : public CDVDAudioCodec
 {

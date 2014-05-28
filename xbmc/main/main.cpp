@@ -18,13 +18,41 @@
  *
  */
 
+#ifndef MAIN_SYSTEM_H_INCLUDED
+#define MAIN_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef MAIN_APPPARAMPARSER_H_INCLUDED
+#define MAIN_APPPARAMPARSER_H_INCLUDED
 #include "AppParamParser.h"
+#endif
+
+#ifndef MAIN_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define MAIN_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef MAIN_FILEITEM_H_INCLUDED
+#define MAIN_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef MAIN_PLAYLISTPLAYER_H_INCLUDED
+#define MAIN_PLAYLISTPLAYER_H_INCLUDED
 #include "PlayListPlayer.h"
+#endif
+
+#ifndef MAIN_UTILS_LOG_H_INCLUDED
+#define MAIN_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef MAIN_XBMC_H_INCLUDED
+#define MAIN_XBMC_H_INCLUDED
 #include "xbmc.h"
+#endif
+
 #ifdef TARGET_POSIX
 #include <sys/resource.h>
 #include <signal.h>
@@ -39,7 +67,11 @@
 #ifdef HAS_LIRC
 #include "input/linux/LIRC.h"
 #endif
+#ifndef MAIN_XBMCCONTEXT_H_INCLUDED
+#define MAIN_XBMCCONTEXT_H_INCLUDED
 #include "XbmcContext.h"
+#endif
+
 
 int main(int argc, char* argv[])
 {

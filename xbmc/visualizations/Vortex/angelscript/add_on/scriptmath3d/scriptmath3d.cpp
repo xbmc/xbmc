@@ -2,7 +2,11 @@
 #include <string.h> // strstr
 #include <new> // new()
 #include <math.h>
+#ifndef SCRIPTMATH3D_SCRIPTMATH3D_H_INCLUDED
+#define SCRIPTMATH3D_SCRIPTMATH3D_H_INCLUDED
 #include "scriptmath3d.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

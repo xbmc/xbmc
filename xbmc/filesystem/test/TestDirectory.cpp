@@ -18,13 +18,37 @@
  *
  */
 
+#ifndef TEST_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define TEST_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
-#include "filesystem/SpecialProtocol.h"
-#include "FileItem.h"
-#include "utils/URIUtils.h"
-#include "test/TestUtils.h"
+#endif
 
+#ifndef TEST_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define TEST_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef TEST_FILEITEM_H_INCLUDED
+#define TEST_FILEITEM_H_INCLUDED
+#include "FileItem.h"
+#endif
+
+#ifndef TEST_UTILS_URIUTILS_H_INCLUDED
+#define TEST_UTILS_URIUTILS_H_INCLUDED
+#include "utils/URIUtils.h"
+#endif
+
+#ifndef TEST_TEST_TESTUTILS_H_INCLUDED
+#define TEST_TEST_TESTUTILS_H_INCLUDED
+#include "test/TestUtils.h"
+#endif
+
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 TEST(TestDirectory, General)
 {

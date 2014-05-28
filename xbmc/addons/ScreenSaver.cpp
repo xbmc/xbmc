@@ -17,11 +17,31 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef ADDONS_SCREENSAVER_H_INCLUDED
+#define ADDONS_SCREENSAVER_H_INCLUDED
 #include "ScreenSaver.h"
+#endif
+
+#ifndef ADDONS_INTERFACES_GENERIC_SCRIPTINVOCATIONMANAGER_H_INCLUDED
+#define ADDONS_INTERFACES_GENERIC_SCRIPTINVOCATIONMANAGER_H_INCLUDED
 #include "interfaces/generic/ScriptInvocationManager.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
 #include "settings/DisplaySettings.h"
+#endif
+
+#ifndef ADDONS_UTILS_ALARMCLOCK_H_INCLUDED
+#define ADDONS_UTILS_ALARMCLOCK_H_INCLUDED
 #include "utils/AlarmClock.h"
+#endif
+
+#ifndef ADDONS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define ADDONS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
 
 // What sound does a python screensaver make?
 #define SCRIPT_ALARM "sssssscreensaver"

@@ -18,17 +18,61 @@
  *
  */
 
+#ifndef GUILIB_SYSTEM_H_INCLUDED
+#define GUILIB_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef GUILIB_GUIAUDIOMANAGER_H_INCLUDED
+#define GUILIB_GUIAUDIOMANAGER_H_INCLUDED
 #include "GUIAudioManager.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
+#ifndef GUILIB_INPUT_BUTTONTRANSLATOR_H_INCLUDED
+#define GUILIB_INPUT_BUTTONTRANSLATOR_H_INCLUDED
 #include "input/ButtonTranslator.h"
+#endif
+
+#ifndef GUILIB_SETTINGS_LIB_SETTING_H_INCLUDED
+#define GUILIB_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef GUILIB_THREADS_SINGLELOCK_H_INCLUDED
+#define GUILIB_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef GUILIB_UTILS_URIUTILS_H_INCLUDED
+#define GUILIB_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef GUILIB_UTILS_XBMCTINYXML_H_INCLUDED
+#define GUILIB_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef GUILIB_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define GUILIB_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef GUILIB_ADDONS_SKIN_H_INCLUDED
+#define GUILIB_ADDONS_SKIN_H_INCLUDED
 #include "addons/Skin.h"
+#endif
+
+#ifndef GUILIB_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
+#define GUILIB_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
 #include "cores/AudioEngine/AEFactory.h"
+#endif
+
 
 using namespace std;
 

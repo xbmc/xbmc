@@ -22,10 +22,22 @@
 #include <list>
 #include <map>
 
+#ifndef INTERFACES_SYSTEM_H_INCLUDED
+#define INTERFACES_SYSTEM_H_INCLUDED
 #include "system.h"
-#include "threads/CriticalSection.h"
+#endif
 
+#ifndef INTERFACES_THREADS_CRITICALSECTION_H_INCLUDED
+#define INTERFACES_THREADS_CRITICALSECTION_H_INCLUDED
+#include "threads/CriticalSection.h"
+#endif
+
+
+#ifndef INTERFACES_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
+#define INTERFACES_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
+#endif
+
 
 typedef std::pair<std::string, std::string> AEDevice;
 typedef std::vector<AEDevice> AEDeviceList;

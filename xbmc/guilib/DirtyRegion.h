@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef GUILIB_GEOMETRY_H_INCLUDED
+#define GUILIB_GEOMETRY_H_INCLUDED
 #include "Geometry.h"
+#endif
+
 #include <vector>
 
 class CDirtyRegion : public CRect

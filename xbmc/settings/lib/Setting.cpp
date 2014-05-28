@@ -20,13 +20,41 @@
 
 #include <sstream>
 
+#ifndef LIB_SETTING_H_INCLUDED
+#define LIB_SETTING_H_INCLUDED
 #include "Setting.h"
+#endif
+
+#ifndef LIB_SETTINGDEFINITIONS_H_INCLUDED
+#define LIB_SETTINGDEFINITIONS_H_INCLUDED
 #include "SettingDefinitions.h"
+#endif
+
+#ifndef LIB_SETTINGSMANAGER_H_INCLUDED
+#define LIB_SETTINGSMANAGER_H_INCLUDED
 #include "SettingsManager.h"
+#endif
+
+#ifndef LIB_UTILS_LOG_H_INCLUDED
+#define LIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef LIB_UTILS_STRINGUTILS_H_INCLUDED
+#define LIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef LIB_UTILS_XBMCTINYXML_H_INCLUDED
+#define LIB_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef LIB_UTILS_XMLUTILS_H_INCLUDED
+#define LIB_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
 
 CSetting::CSetting(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
   : ISetting(id, settingsManager),

@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef FILESYSTEM_SYSTEM_H_INCLUDED
+#define FILESYSTEM_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef FILESYSTEM_ZIPMANAGER_H_INCLUDED
+#define FILESYSTEM_ZIPMANAGER_H_INCLUDED
 #include "ZipManager.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_FILE_H_INCLUDED
+#define FILESYSTEM_FILE_H_INCLUDED
 #include "File.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define FILESYSTEM_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_ENDIANSWAP_H_INCLUDED
+#define FILESYSTEM_UTILS_ENDIANSWAP_H_INCLUDED
 #include "utils/EndianSwap.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "SpecialProtocol.h"
+#endif
+
 
 
 #ifndef min

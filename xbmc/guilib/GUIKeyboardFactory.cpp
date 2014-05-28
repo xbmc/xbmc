@@ -18,18 +18,62 @@
  *
  */
 
+#ifndef GUILIB_APPLICATION_H_INCLUDED
+#define GUILIB_APPLICATION_H_INCLUDED
 #include "Application.h"
-#include "ApplicationMessenger.h"
-#include "LocalizeStrings.h"
-#include "GUIKeyboardFactory.h"
-#include "dialogs/GUIDialogOK.h"
-#include "GUIUserMessages.h"
-#include "GUIWindowManager.h"
-#include "settings/Settings.h"
-#include "utils/md5.h"
-#include "utils/StringUtils.h"
+#endif
 
+#ifndef GUILIB_APPLICATIONMESSENGER_H_INCLUDED
+#define GUILIB_APPLICATIONMESSENGER_H_INCLUDED
+#include "ApplicationMessenger.h"
+#endif
+
+#ifndef GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#include "LocalizeStrings.h"
+#endif
+
+#ifndef GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
+#define GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
+#include "GUIKeyboardFactory.h"
+#endif
+
+#ifndef GUILIB_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define GUILIB_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef GUILIB_GUIUSERMESSAGES_H_INCLUDED
+#define GUILIB_GUIUSERMESSAGES_H_INCLUDED
+#include "GUIUserMessages.h"
+#endif
+
+#ifndef GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#include "GUIWindowManager.h"
+#endif
+
+#ifndef GUILIB_SETTINGS_SETTINGS_H_INCLUDED
+#define GUILIB_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef GUILIB_UTILS_MD5_H_INCLUDED
+#define GUILIB_UTILS_MD5_H_INCLUDED
+#include "utils/md5.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+
+#ifndef GUILIB_DIALOGS_GUIDIALOGKEYBOARDGENERIC_H_INCLUDED
+#define GUILIB_DIALOGS_GUIDIALOGKEYBOARDGENERIC_H_INCLUDED
 #include "dialogs/GUIDialogKeyboardGeneric.h"
+#endif
+
 #if defined(TARGET_DARWIN_IOS)
 #include "osx/ios/IOSKeyboard.h"
 #include "windowing/WindowingFactory.h"

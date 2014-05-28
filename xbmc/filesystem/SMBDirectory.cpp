@@ -29,18 +29,62 @@
 * debugging is set to a max of 10 for release builds (see local.h)
 */
 
+#ifndef FILESYSTEM_SYSTEM_H_INCLUDED
+#define FILESYSTEM_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
 
+
+#ifndef FILESYSTEM_SMBDIRECTORY_H_INCLUDED
+#define FILESYSTEM_SMBDIRECTORY_H_INCLUDED
 #include "SMBDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_UTIL_H_INCLUDED
+#define FILESYSTEM_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef FILESYSTEM_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define FILESYSTEM_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define FILESYSTEM_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
+#define FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef FILESYSTEM_PASSWORDMANAGER_H_INCLUDED
+#define FILESYSTEM_PASSWORDMANAGER_H_INCLUDED
 #include "PasswordManager.h"
+#endif
+
 
 #include <libsmbclient.h>
 

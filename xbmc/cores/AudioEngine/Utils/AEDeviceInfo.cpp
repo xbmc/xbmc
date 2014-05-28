@@ -19,8 +19,16 @@
  */
 
 #include <sstream>
+#ifndef UTILS_AEDEVICEINFO_H_INCLUDED
+#define UTILS_AEDEVICEINFO_H_INCLUDED
 #include "AEDeviceInfo.h"
+#endif
+
+#ifndef UTILS_AEUTIL_H_INCLUDED
+#define UTILS_AEUTIL_H_INCLUDED
 #include "AEUtil.h"
+#endif
+
 
 CAEDeviceInfo::operator std::string()
 {

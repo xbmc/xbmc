@@ -19,9 +19,21 @@
  *
  */
 
+#ifndef SINKS_SYSTEM_H_INCLUDED
+#define SINKS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef SINKS_THREADS_THREAD_H_INCLUDED
+#define SINKS_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef SINKS_CORES_AUDIOENGINE_INTERFACES_AESINK_H_INCLUDED
+#define SINKS_CORES_AUDIOENGINE_INTERFACES_AESINK_H_INCLUDED
 #include "cores/AudioEngine/Interfaces/AESink.h"
+#endif
+
 
 class CAESinkNULL : public CThread, public IAESink
 {

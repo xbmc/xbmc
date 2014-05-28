@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef ACTIVITY_ANDROIDJOYSTICK_H_INCLUDED
+#define ACTIVITY_ANDROIDJOYSTICK_H_INCLUDED
 #include "AndroidJoyStick.h"
+#endif
+
+#ifndef ACTIVITY_ANDROIDEXTRA_H_INCLUDED
+#define ACTIVITY_ANDROIDEXTRA_H_INCLUDED
 #include "AndroidExtra.h"
+#endif
+
+#ifndef ACTIVITY_XBMCAPP_H_INCLUDED
+#define ACTIVITY_XBMCAPP_H_INCLUDED
 #include "XBMCApp.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_VIEW_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_VIEW_H_INCLUDED
 #include "android/jni/View.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_ACTIVITY_ANDROIDFEATURES_H_INCLUDED
+#define ACTIVITY_ANDROID_ACTIVITY_ANDROIDFEATURES_H_INCLUDED
 #include "android/activity/AndroidFeatures.h"
+#endif
+
+#ifndef ACTIVITY_UTILS_LOG_H_INCLUDED
+#define ACTIVITY_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ACTIVITY_WINDOWING_WINEVENTS_H_INCLUDED
+#define ACTIVITY_WINDOWING_WINEVENTS_H_INCLUDED
 #include "windowing/WinEvents.h"
+#endif
+
+#ifndef ACTIVITY_WINDOWING_XBMC_EVENTS_H_INCLUDED
+#define ACTIVITY_WINDOWING_XBMC_EVENTS_H_INCLUDED
 #include "windowing/XBMC_events.h"
+#endif
+
+#ifndef ACTIVITY_UTILS_TIMEUTILS_H_INCLUDED
+#define ACTIVITY_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
 
 #include <android/input.h>
 

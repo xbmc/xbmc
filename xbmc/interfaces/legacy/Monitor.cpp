@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef LEGACY_MONITOR_H_INCLUDED
+#define LEGACY_MONITOR_H_INCLUDED
 #include "Monitor.h"
+#endif
+
 
 namespace XBMCAddon
 {

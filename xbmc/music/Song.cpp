@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef MUSIC_SONG_H_INCLUDED
+#define MUSIC_SONG_H_INCLUDED
 #include "Song.h"
+#endif
+
+#ifndef MUSIC_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define MUSIC_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef MUSIC_UTILS_VARIANT_H_INCLUDED
+#define MUSIC_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef MUSIC_FILEITEM_H_INCLUDED
+#define MUSIC_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef MUSIC_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define MUSIC_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef MUSIC_UTILS_STRINGUTILS_H_INCLUDED
+#define MUSIC_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace std;
 using namespace MUSIC_INFO;

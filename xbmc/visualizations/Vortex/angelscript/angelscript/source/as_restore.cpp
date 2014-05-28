@@ -35,10 +35,26 @@
 // Functions for saving and restoring module bytecode
 // asCRestore was originally written by Dennis Bollyn, dennis@gyrbo.be
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
+#ifndef SOURCE_AS_RESTORE_H_INCLUDED
+#define SOURCE_AS_RESTORE_H_INCLUDED
 #include "as_restore.h"
+#endif
+
+#ifndef SOURCE_AS_BYTECODE_H_INCLUDED
+#define SOURCE_AS_BYTECODE_H_INCLUDED
 #include "as_bytecode.h"
+#endif
+
+#ifndef SOURCE_AS_ARRAYOBJECT_H_INCLUDED
+#define SOURCE_AS_ARRAYOBJECT_H_INCLUDED
 #include "as_arrayobject.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

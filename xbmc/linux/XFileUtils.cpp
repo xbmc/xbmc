@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef LINUX_SYSTEM_H_INCLUDED
+#define LINUX_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef LINUX_PLATFORMINCLUDE_H_INCLUDED
+#define LINUX_PLATFORMINCLUDE_H_INCLUDED
 #include "PlatformInclude.h"
+#endif
+
+#ifndef LINUX_XFILEUTILS_H_INCLUDED
+#define LINUX_XFILEUTILS_H_INCLUDED
 #include "XFileUtils.h"
+#endif
+
+#ifndef LINUX_XTIMEUTILS_H_INCLUDED
+#define LINUX_XTIMEUTILS_H_INCLUDED
 #include "XTimeUtils.h"
+#endif
+
+#ifndef LINUX_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define LINUX_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
 
 #ifdef TARGET_POSIX
 #include "XHandle.h"

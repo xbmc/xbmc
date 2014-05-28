@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef VIDEO_DVDVIDEOPPFFMPEG_H_INCLUDED
+#define VIDEO_DVDVIDEOPPFFMPEG_H_INCLUDED
 #include "DVDVideoPPFFmpeg.h"
+#endif
+
+#ifndef VIDEO_UTILS_LOG_H_INCLUDED
+#define VIDEO_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg(const CStdString& mType)
 {

@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef OVERLAY_DVDOVERLAYCODEC_H_INCLUDED
+#define OVERLAY_DVDOVERLAYCODEC_H_INCLUDED
 #include "DVDOverlayCodec.h"
+#endif
+
 
 class CDVDOverlayText;
 

@@ -25,10 +25,22 @@
 #define _GNU_SOURCE
 #endif
 
+#ifndef WAYLAND_WINDOWING_DLLWAYLANDCLIENT_H_INCLUDED
+#define WAYLAND_WINDOWING_DLLWAYLANDCLIENT_H_INCLUDED
 #include "windowing/DllWaylandClient.h"
-#include "utils/log.h"
+#endif
 
+#ifndef WAYLAND_UTILS_LOG_H_INCLUDED
+#define WAYLAND_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+
+#ifndef WAYLAND_WAYLAND12EVENTQUEUESTRATEGY_H_INCLUDED
+#define WAYLAND_WAYLAND12EVENTQUEUESTRATEGY_H_INCLUDED
 #include "Wayland12EventQueueStrategy.h"
+#endif
+
 
 namespace xw12 = xbmc::wayland::version_12;
 

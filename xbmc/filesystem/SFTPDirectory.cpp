@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef FILESYSTEM_SFTPDIRECTORY_H_INCLUDED
+#define FILESYSTEM_SFTPDIRECTORY_H_INCLUDED
 #include "SFTPDirectory.h"
+#endif
+
 #ifdef HAS_FILESYSTEM_SFTP
 #include "utils/log.h"
 #include "URL.h"

@@ -19,10 +19,22 @@
 #define __cdecl
 #endif
 
+#ifndef FISHBMC_ADDONS_INCLUDE_XBMC_VIS_TYPES_H_INCLUDED
+#define FISHBMC_ADDONS_INCLUDE_XBMC_VIS_TYPES_H_INCLUDED
 #include "addons/include/xbmc_vis_types.h"
-#include "addons/include/xbmc_vis_dll.h"
+#endif
 
+#ifndef FISHBMC_ADDONS_INCLUDE_XBMC_VIS_DLL_H_INCLUDED
+#define FISHBMC_ADDONS_INCLUDE_XBMC_VIS_DLL_H_INCLUDED
+#include "addons/include/xbmc_vis_dll.h"
+#endif
+
+
+#ifndef FISHBMC_FISCHE_H_INCLUDED
+#define FISHBMC_FISCHE_H_INCLUDED
 #include "fische.h"
+#endif
+
 
 #include <cmath>
 #include <cstring>

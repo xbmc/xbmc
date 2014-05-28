@@ -18,25 +18,101 @@
  *
  */
 
+#ifndef GUILIB_GUIFONTMANAGER_H_INCLUDED
+#define GUILIB_GUIFONTMANAGER_H_INCLUDED
 #include "GUIFontManager.h"
+#endif
+
+#ifndef GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "GraphicContext.h"
+#endif
+
+#ifndef GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "GUIWindowManager.h"
+#endif
+
+#ifndef GUILIB_ADDONS_SKIN_H_INCLUDED
+#define GUILIB_ADDONS_SKIN_H_INCLUDED
 #include "addons/Skin.h"
+#endif
+
+#ifndef GUILIB_GUIFONTTTF_H_INCLUDED
+#define GUILIB_GUIFONTTTF_H_INCLUDED
 #include "GUIFontTTF.h"
+#endif
+
+#ifndef GUILIB_GUIFONT_H_INCLUDED
+#define GUILIB_GUIFONT_H_INCLUDED
 #include "GUIFont.h"
+#endif
+
+#ifndef GUILIB_UTILS_XMLUTILS_H_INCLUDED
+#define GUILIB_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef GUILIB_GUICONTROLFACTORY_H_INCLUDED
+#define GUILIB_GUICONTROLFACTORY_H_INCLUDED
 #include "GUIControlFactory.h"
+#endif
+
+#ifndef GUILIB_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define GUILIB_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef GUILIB_FILESYSTEM_FILE_H_INCLUDED
+#define GUILIB_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef GUILIB_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define GUILIB_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef GUILIB_SETTINGS_LIB_SETTING_H_INCLUDED
+#define GUILIB_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef GUILIB_UTILS_URIUTILS_H_INCLUDED
+#define GUILIB_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef GUILIB_FILEITEM_H_INCLUDED
+#define GUILIB_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef GUILIB_URL_H_INCLUDED
+#define GUILIB_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef GUILIB_UTIL_H_INCLUDED
+#define GUILIB_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
 
 using namespace std;
 

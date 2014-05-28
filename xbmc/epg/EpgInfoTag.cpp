@@ -18,19 +18,71 @@
  *
  */
 
+#ifndef EPG_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define EPG_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef EPG_EPG_H_INCLUDED
+#define EPG_EPG_H_INCLUDED
 #include "Epg.h"
+#endif
+
+#ifndef EPG_EPGINFOTAG_H_INCLUDED
+#define EPG_EPGINFOTAG_H_INCLUDED
 #include "EpgInfoTag.h"
+#endif
+
+#ifndef EPG_EPGCONTAINER_H_INCLUDED
+#define EPG_EPGCONTAINER_H_INCLUDED
 #include "EpgContainer.h"
+#endif
+
+#ifndef EPG_EPGDATABASE_H_INCLUDED
+#define EPG_EPGDATABASE_H_INCLUDED
 #include "EpgDatabase.h"
+#endif
+
+#ifndef EPG_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define EPG_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#endif
+
+#ifndef EPG_PVR_TIMERS_PVRTIMERS_H_INCLUDED
+#define EPG_PVR_TIMERS_PVRTIMERS_H_INCLUDED
 #include "pvr/timers/PVRTimers.h"
+#endif
+
+#ifndef EPG_PVR_PVRMANAGER_H_INCLUDED
+#define EPG_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef EPG_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define EPG_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef EPG_SETTINGS_SETTINGS_H_INCLUDED
+#define EPG_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef EPG_UTILS_LOG_H_INCLUDED
+#define EPG_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef EPG_UTILS_VARIANT_H_INCLUDED
+#define EPG_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef EPG_ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
+#define EPG_ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
 #include "addons/include/xbmc_pvr_types.h"
+#endif
+
 
 using namespace std;
 using namespace EPG;

@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef DLLLOADER_SYSTEM_H_INCLUDED
+#define DLLLOADER_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef DLLLOADER_DLLLOADER_H_INCLUDED
+#define DLLLOADER_DLLLOADER_H_INCLUDED
 #include "DllLoader.h"
+#endif
+
+#ifndef DLLLOADER_DLLLOADERCONTAINER_H_INCLUDED
+#define DLLLOADER_DLLLOADERCONTAINER_H_INCLUDED
 #include "DllLoaderContainer.h"
+#endif
+
 
 CoffLoader::CoffLoader() :
   hModule           (NULL ),

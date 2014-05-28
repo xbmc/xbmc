@@ -18,10 +18,22 @@
  *
  */
 
+#ifndef TEST_UTILS_MIME_H_INCLUDED
+#define TEST_UTILS_MIME_H_INCLUDED
 #include "utils/Mime.h"
-#include "FileItem.h"
+#endif
 
+#ifndef TEST_FILEITEM_H_INCLUDED
+#define TEST_FILEITEM_H_INCLUDED
+#include "FileItem.h"
+#endif
+
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 TEST(TestMime, GetMimeType_string)
 {

@@ -3,7 +3,11 @@
 #include <iostream>
 #include <stdio.h>
 
+#ifndef LIBPROJECTM_FATAL_H_INCLUDED
+#define LIBPROJECTM_FATAL_H_INCLUDED
 #include "fatal.h"
+#endif
+
 #include "BuiltinParams.hpp"
 #include "Algorithms.hpp"
 #include "InitCondUtils.hpp"

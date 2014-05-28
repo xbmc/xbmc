@@ -26,9 +26,21 @@
 #include <Python.h>
 #include <osdefs.h>
 
+#ifndef PYTHON_SYSTEM_H_INCLUDED
+#define PYTHON_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef PYTHON_ADDONPYTHONINVOKER_H_INCLUDED
+#define PYTHON_ADDONPYTHONINVOKER_H_INCLUDED
 #include "AddonPythonInvoker.h"
+#endif
+
+#ifndef PYTHON_ADDONS_ADDONVERSION_H_INCLUDED
+#define PYTHON_ADDONS_ADDONVERSION_H_INCLUDED
 #include "addons/AddonVersion.h"
+#endif
+
 
 #define MODULE "xbmc"
 

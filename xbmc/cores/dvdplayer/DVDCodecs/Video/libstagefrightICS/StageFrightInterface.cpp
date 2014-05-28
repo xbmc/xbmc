@@ -18,11 +18,27 @@
  *
  */
 
+#ifndef LIBSTAGEFRIGHTICS_STAGEFRIGHTINTERFACE_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_STAGEFRIGHTINTERFACE_H_INCLUDED
 #include "StageFrightInterface.h"
-#include "StageFrightVideo.h"
+#endif
 
+#ifndef LIBSTAGEFRIGHTICS_STAGEFRIGHTVIDEO_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_STAGEFRIGHTVIDEO_H_INCLUDED
+#include "StageFrightVideo.h"
+#endif
+
+
+#ifndef LIBSTAGEFRIGHTICS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef LIBSTAGEFRIGHTICS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
 
 void* create_stf(CApplication* application, CApplicationMessenger* applicationMessenger, CWinSystemEGL* windowing, CAdvancedSettings* advsettings)
 {

@@ -18,28 +18,116 @@
  *
  */
 
+#ifndef VIDEO_VIDEOTHUMBLOADER_H_INCLUDED
+#define VIDEO_VIDEOTHUMBLOADER_H_INCLUDED
 #include "VideoThumbLoader.h"
+#endif
+
+#ifndef VIDEO_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
+#define VIDEO_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
 #include "filesystem/StackDirectory.h"
+#endif
+
+#ifndef VIDEO_UTILS_URIUTILS_H_INCLUDED
+#define VIDEO_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef VIDEO_URL_H_INCLUDED
+#define VIDEO_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef VIDEO_FILESYSTEM_FILE_H_INCLUDED
+#define VIDEO_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef VIDEO_FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
+#define VIDEO_FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
 #include "filesystem/DirectoryCache.h"
+#endif
+
+#ifndef VIDEO_FILEITEM_H_INCLUDED
+#define VIDEO_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_SETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_VIDEOSETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_VIDEOSETTINGS_H_INCLUDED
 #include "settings/VideoSettings.h"
+#endif
+
+#ifndef VIDEO_GUIUSERMESSAGES_H_INCLUDED
+#define VIDEO_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef VIDEO_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define VIDEO_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef VIDEO_GUILIB_STEREOSCOPICSMANAGER_H_INCLUDED
+#define VIDEO_GUILIB_STEREOSCOPICSMANAGER_H_INCLUDED
 #include "guilib/StereoscopicsManager.h"
+#endif
+
+#ifndef VIDEO_RENDERING_RENDERSYSTEM_H_INCLUDED
+#define VIDEO_RENDERING_RENDERSYSTEM_H_INCLUDED
 #include "rendering/RenderSystem.h"
+#endif
+
+#ifndef VIDEO_TEXTURECACHE_H_INCLUDED
+#define VIDEO_TEXTURECACHE_H_INCLUDED
 #include "TextureCache.h"
+#endif
+
+#ifndef VIDEO_UTILS_LOG_H_INCLUDED
+#define VIDEO_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef VIDEO_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define VIDEO_VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "video/VideoInfoTag.h"
+#endif
+
+#ifndef VIDEO_VIDEO_VIDEODATABASE_H_INCLUDED
+#define VIDEO_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
+#ifndef VIDEO_CORES_DVDPLAYER_DVDFILEINFO_H_INCLUDED
+#define VIDEO_CORES_DVDPLAYER_DVDFILEINFO_H_INCLUDED
 #include "cores/dvdplayer/DVDFileInfo.h"
+#endif
+
+#ifndef VIDEO_VIDEO_VIDEOINFOSCANNER_H_INCLUDED
+#define VIDEO_VIDEO_VIDEOINFOSCANNER_H_INCLUDED
 #include "video/VideoInfoScanner.h"
+#endif
+
+#ifndef VIDEO_MUSIC_MUSICDATABASE_H_INCLUDED
+#define VIDEO_MUSIC_MUSICDATABASE_H_INCLUDED
 #include "music/MusicDatabase.h"
+#endif
+
+#ifndef VIDEO_UTILS_STRINGUTILS_H_INCLUDED
+#define VIDEO_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
 
 using namespace XFILE;
 using namespace std;

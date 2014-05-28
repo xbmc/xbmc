@@ -6,7 +6,11 @@
 //
 
 #include <windows.h>
+#ifndef CLIB_ANGELSCRIPT_C_H_INCLUDED
+#define CLIB_ANGELSCRIPT_C_H_INCLUDED
 #include "angelscript_c.h"
+#endif
+
 
 BOOL APIENTRY DllMain( HANDLE hModule,
                        DWORD  ul_reason_for_call,

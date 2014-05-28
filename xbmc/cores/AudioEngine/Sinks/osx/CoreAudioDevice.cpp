@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef OSX_COREAUDIODEVICE_H_INCLUDED
+#define OSX_COREAUDIODEVICE_H_INCLUDED
 #include "CoreAudioDevice.h"
+#endif
+
+#ifndef OSX_COREAUDIOHELPERS_H_INCLUDED
+#define OSX_COREAUDIOHELPERS_H_INCLUDED
 #include "CoreAudioHelpers.h"
+#endif
+
+#ifndef OSX_COREAUDIOCHANNELLAYOUT_H_INCLUDED
+#define OSX_COREAUDIOCHANNELLAYOUT_H_INCLUDED
 #include "CoreAudioChannelLayout.h"
+#endif
+
+#ifndef OSX_COREAUDIOHARDWARE_H_INCLUDED
+#define OSX_COREAUDIOHARDWARE_H_INCLUDED
 #include "CoreAudioHardware.h"
+#endif
+
+#ifndef OSX_UTILS_LOG_H_INCLUDED
+#define OSX_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CCoreAudioDevice

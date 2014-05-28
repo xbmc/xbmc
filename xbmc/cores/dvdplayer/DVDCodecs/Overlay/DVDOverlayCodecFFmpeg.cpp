@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef OVERLAY_DVDOVERLAYCODECFFMPEG_H_INCLUDED
+#define OVERLAY_DVDOVERLAYCODECFFMPEG_H_INCLUDED
 #include "DVDOverlayCodecFFmpeg.h"
+#endif
+
+#ifndef OVERLAY_DVDOVERLAYTEXT_H_INCLUDED
+#define OVERLAY_DVDOVERLAYTEXT_H_INCLUDED
 #include "DVDOverlayText.h"
+#endif
+
+#ifndef OVERLAY_DVDOVERLAYSPU_H_INCLUDED
+#define OVERLAY_DVDOVERLAYSPU_H_INCLUDED
 #include "DVDOverlaySpu.h"
+#endif
+
+#ifndef OVERLAY_DVDOVERLAYIMAGE_H_INCLUDED
+#define OVERLAY_DVDOVERLAYIMAGE_H_INCLUDED
 #include "DVDOverlayImage.h"
+#endif
+
+#ifndef OVERLAY_DVDSTREAMINFO_H_INCLUDED
+#define OVERLAY_DVDSTREAMINFO_H_INCLUDED
 #include "DVDStreamInfo.h"
+#endif
+
+#ifndef OVERLAY_DVDCLOCK_H_INCLUDED
+#define OVERLAY_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h"
+#endif
+
+#ifndef OVERLAY_UTILS_LOG_H_INCLUDED
+#define OVERLAY_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef OVERLAY_UTILS_ENDIANSWAP_H_INCLUDED
+#define OVERLAY_UTILS_ENDIANSWAP_H_INCLUDED
 #include "utils/EndianSwap.h"
+#endif
+
 
 CDVDOverlayCodecFFmpeg::CDVDOverlayCodecFFmpeg() : CDVDOverlayCodec("FFmpeg Subtitle Decoder")
 {

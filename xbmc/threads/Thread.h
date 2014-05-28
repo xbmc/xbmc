@@ -26,10 +26,26 @@
 
 #include <string>
 #include <stdint.h>
+#ifndef THREADS_EVENT_H_INCLUDED
+#define THREADS_EVENT_H_INCLUDED
 #include "Event.h"
+#endif
+
+#ifndef THREADS_THREADS_THREADIMPL_H_INCLUDED
+#define THREADS_THREADS_THREADIMPL_H_INCLUDED
 #include "threads/ThreadImpl.h"
+#endif
+
+#ifndef THREADS_THREADS_THREADLOCAL_H_INCLUDED
+#define THREADS_THREADS_THREADLOCAL_H_INCLUDED
 #include "threads/ThreadLocal.h"
+#endif
+
+#ifndef THREADS_COMMONS_ILOG_H_INCLUDED
+#define THREADS_COMMONS_ILOG_H_INCLUDED
 #include "commons/ilog.h"
+#endif
+
 
 #ifdef TARGET_DARWIN
 #include <mach/mach.h>

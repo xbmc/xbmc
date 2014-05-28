@@ -18,7 +18,11 @@
  *
  */
 #include <cstring>
+#ifndef GUILIB_XBTF_H_INCLUDED
+#define GUILIB_XBTF_H_INCLUDED
 #include "XBTF.h"
+#endif
+
 
 CXBTFFrame::CXBTFFrame()
 {

@@ -21,7 +21,11 @@
 #include <string>
 #include <vector>
 
+#ifndef LIB_SETTINGREQUIREMENT_H_INCLUDED
+#define LIB_SETTINGREQUIREMENT_H_INCLUDED
 #include "SettingRequirement.h"
+#endif
+
 
 class CSettingsManager;
 class TiXmlNode;

@@ -19,21 +19,65 @@
  *
  */
 
+#ifndef ACTIVEAE_SYSTEM_H_INCLUDED
+#define ACTIVEAE_SYSTEM_H_INCLUDED
 #include "system.h"
-#include "threads/Thread.h"
+#endif
 
+#ifndef ACTIVEAE_THREADS_THREAD_H_INCLUDED
+#define ACTIVEAE_THREADS_THREAD_H_INCLUDED
+#include "threads/Thread.h"
+#endif
+
+
+#ifndef ACTIVEAE_ACTIVEAESINK_H_INCLUDED
+#define ACTIVEAE_ACTIVEAESINK_H_INCLUDED
 #include "ActiveAESink.h"
+#endif
+
+#ifndef ACTIVEAE_ACTIVEAERESAMPLE_H_INCLUDED
+#define ACTIVEAE_ACTIVEAERESAMPLE_H_INCLUDED
 #include "ActiveAEResample.h"
+#endif
+
+#ifndef ACTIVEAE_CORES_AUDIOENGINE_INTERFACES_AESTREAM_H_INCLUDED
+#define ACTIVEAE_CORES_AUDIOENGINE_INTERFACES_AESTREAM_H_INCLUDED
 #include "cores/AudioEngine/Interfaces/AEStream.h"
+#endif
+
+#ifndef ACTIVEAE_CORES_AUDIOENGINE_INTERFACES_AESOUND_H_INCLUDED
+#define ACTIVEAE_CORES_AUDIOENGINE_INTERFACES_AESOUND_H_INCLUDED
 #include "cores/AudioEngine/Interfaces/AESound.h"
+#endif
+
+#ifndef ACTIVEAE_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
+#define ACTIVEAE_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
 #include "cores/AudioEngine/AEFactory.h"
+#endif
+
+#ifndef ACTIVEAE_GUILIB_DISPRESOURCE_H_INCLUDED
+#define ACTIVEAE_GUILIB_DISPRESOURCE_H_INCLUDED
 #include "guilib/DispResource.h"
+#endif
+
 #include <queue>
 
 // ffmpeg
+#ifndef ACTIVEAE_DLLAVFORMAT_H_INCLUDED
+#define ACTIVEAE_DLLAVFORMAT_H_INCLUDED
 #include "DllAvFormat.h"
+#endif
+
+#ifndef ACTIVEAE_DLLAVCODEC_H_INCLUDED
+#define ACTIVEAE_DLLAVCODEC_H_INCLUDED
 #include "DllAvCodec.h"
+#endif
+
+#ifndef ACTIVEAE_DLLAVUTIL_H_INCLUDED
+#define ACTIVEAE_DLLAVUTIL_H_INCLUDED
 #include "DllAvUtil.h"
+#endif
+
 
 class IAESink;
 class IAEEncoder;

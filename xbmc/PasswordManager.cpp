@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef ROOT_PASSWORDMANAGER_H_INCLUDED
+#define ROOT_PASSWORDMANAGER_H_INCLUDED
 #include "PasswordManager.h"
+#endif
+
+#ifndef ROOT_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define ROOT_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef ROOT_PROFILES_DIALOGS_GUIDIALOGLOCKSETTINGS_H_INCLUDED
+#define ROOT_PROFILES_DIALOGS_GUIDIALOGLOCKSETTINGS_H_INCLUDED
 #include "profiles/dialogs/GUIDialogLockSettings.h"
+#endif
+
+#ifndef ROOT_URL_H_INCLUDED
+#define ROOT_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef ROOT_UTILS_XMLUTILS_H_INCLUDED
+#define ROOT_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef ROOT_THREADS_SINGLELOCK_H_INCLUDED
+#define ROOT_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef ROOT_UTILS_LOG_H_INCLUDED
+#define ROOT_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_FILE_H_INCLUDED
+#define ROOT_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
 
 using namespace std;
 

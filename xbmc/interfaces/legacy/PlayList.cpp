@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef LEGACY_PLAYLIST_H_INCLUDED
+#define LEGACY_PLAYLIST_H_INCLUDED
 #include "PlayList.h"
+#endif
+
+#ifndef LEGACY_PLAYLISTPLAYER_H_INCLUDED
+#define LEGACY_PLAYLISTPLAYER_H_INCLUDED
 #include "PlayListPlayer.h"
+#endif
+
+#ifndef LEGACY_APPLICATION_H_INCLUDED
+#define LEGACY_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef LEGACY_PLAYLISTS_PLAYLISTFACTORY_H_INCLUDED
+#define LEGACY_PLAYLISTS_PLAYLISTFACTORY_H_INCLUDED
 #include "playlists/PlayListFactory.h"
+#endif
+
+#ifndef LEGACY_UTILS_URIUTILS_H_INCLUDED
+#define LEGACY_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 
 using namespace PLAYLIST;
 

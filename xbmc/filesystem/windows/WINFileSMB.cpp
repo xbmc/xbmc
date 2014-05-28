@@ -20,18 +20,54 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef WINDOWS_WINFILESMB_H_INCLUDED
+#define WINDOWS_WINFILESMB_H_INCLUDED
 #include "WINFileSMB.h"
+#endif
+
+#ifndef WINDOWS_URL_H_INCLUDED
+#define WINDOWS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
 
 #include <sys/stat.h>
 #include <io.h>
+#ifndef WINDOWS_UTILS_LOG_H_INCLUDED
+#define WINDOWS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef WINDOWS_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define WINDOWS_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef WINDOWS_UTILS_URIUTILS_H_INCLUDED
+#define WINDOWS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef WINDOWS_WINSMBDIRECTORY_H_INCLUDED
+#define WINDOWS_WINSMBDIRECTORY_H_INCLUDED
 #include "WINSMBDirectory.h"
+#endif
+
+#ifndef WINDOWS_UTIL_H_INCLUDED
+#define WINDOWS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef WINDOWS_WIN32_WIN32UTIL_H_INCLUDED
+#define WINDOWS_WIN32_WIN32UTIL_H_INCLUDED
 #include "win32/WIN32Util.h"
+#endif
+
 
 using namespace XFILE;
 

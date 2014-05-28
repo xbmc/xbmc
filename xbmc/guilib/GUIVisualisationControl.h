@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef GUILIB_GUIRENDERINGCONTROL_H_INCLUDED
+#define GUILIB_GUIRENDERINGCONTROL_H_INCLUDED
 #include "GUIRenderingControl.h"
+#endif
+
+#ifndef GUILIB_ADDONS_IADDON_H_INCLUDED
+#define GUILIB_ADDONS_IADDON_H_INCLUDED
 #include "addons/IAddon.h"
+#endif
+
 
 class CGUIVisualisationControl : public CGUIRenderingControl
 {

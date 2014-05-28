@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef GUILIB_TEXTURE_H_INCLUDED
+#define GUILIB_TEXTURE_H_INCLUDED
 #include "Texture.h"
+#endif
+
+#ifndef GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef GUILIB_UTILS_URIUTILS_H_INCLUDED
+#define GUILIB_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef GUILIB_DDSIMAGE_H_INCLUDED
+#define GUILIB_DDSIMAGE_H_INCLUDED
 #include "DDSImage.h"
+#endif
+
+#ifndef GUILIB_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define GUILIB_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef GUILIB_FILESYSTEM_FILE_H_INCLUDED
+#define GUILIB_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef GUILIB_UTILS_FILEUTILS_H_INCLUDED
+#define GUILIB_UTILS_FILEUTILS_H_INCLUDED
 #include "utils/FileUtils.h"
+#endif
+
 #if defined(TARGET_DARWIN_IOS)
 #include <ImageIO/ImageIO.h>
 #include "filesystem/File.h"

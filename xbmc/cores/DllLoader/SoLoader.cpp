@@ -19,10 +19,26 @@
  */
 
 #include <dlfcn.h>
+#ifndef DLLLOADER_SOLOADER_H_INCLUDED
+#define DLLLOADER_SOLOADER_H_INCLUDED
 #include "SoLoader.h"
+#endif
+
+#ifndef DLLLOADER_UTILS_STDSTRING_H_INCLUDED
+#define DLLLOADER_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef DLLLOADER_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define DLLLOADER_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef DLLLOADER_UTILS_LOG_H_INCLUDED
+#define DLLLOADER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 #if defined(TARGET_ANDROID)
 #include "android/loader/AndroidDyload.h"
 #endif

@@ -22,13 +22,41 @@
 
 #include <vector>
 
+#ifndef LEGACY_WINDOWEXCEPTION_H_INCLUDED
+#define LEGACY_WINDOWEXCEPTION_H_INCLUDED
 #include "WindowException.h"
+#endif
+
+#ifndef LEGACY_ADDONCLASS_H_INCLUDED
+#define LEGACY_ADDONCLASS_H_INCLUDED
 #include "AddonClass.h"
+#endif
+
+#ifndef LEGACY_ADDONSTRING_H_INCLUDED
+#define LEGACY_ADDONSTRING_H_INCLUDED
 #include "AddonString.h"
+#endif
+
+#ifndef LEGACY_APPLICATIONMESSENGER_H_INCLUDED
+#define LEGACY_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef LEGACY_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#define LEGACY_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
 #include "dialogs/GUIDialogProgress.h"
+#endif
+
+#ifndef LEGACY_DIALOGS_GUIDIALOGEXTENDEDPROGRESSBAR_H_INCLUDED
+#define LEGACY_DIALOGS_GUIDIALOGEXTENDEDPROGRESSBAR_H_INCLUDED
 #include "dialogs/GUIDialogExtendedProgressBar.h"
+#endif
+
+#ifndef LEGACY_ALTERNATIVE_H_INCLUDED
+#define LEGACY_ALTERNATIVE_H_INCLUDED
 #include "Alternative.h"
+#endif
+
 
 #define INPUT_ALPHANUM        0
 #define INPUT_NUMERIC         1

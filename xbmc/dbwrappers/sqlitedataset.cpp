@@ -29,10 +29,26 @@
 #include <iostream>
 #include <string>
 
+#ifndef DBWRAPPERS_SQLITEDATASET_H_INCLUDED
+#define DBWRAPPERS_SQLITEDATASET_H_INCLUDED
 #include "sqlitedataset.h"
+#endif
+
+#ifndef DBWRAPPERS_UTILS_LOG_H_INCLUDED
+#define DBWRAPPERS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DBWRAPPERS_SYSTEM_H_INCLUDED
+#define DBWRAPPERS_SYSTEM_H_INCLUDED
 #include "system.h" // for Sleep(), OutputDebugString() and GetLastError()
+#endif
+
+#ifndef DBWRAPPERS_UTILS_URIUTILS_H_INCLUDED
+#define DBWRAPPERS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 
 #ifdef TARGET_WINDOWS
 #pragma comment(lib, "sqlite3.lib")

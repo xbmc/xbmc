@@ -17,13 +17,41 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef STORAGE_AUTORUNMEDIAJOB_H_INCLUDED
+#define STORAGE_AUTORUNMEDIAJOB_H_INCLUDED
 #include "AutorunMediaJob.h"
+#endif
+
+#ifndef STORAGE_APPLICATION_H_INCLUDED
+#define STORAGE_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef STORAGE_INTERFACES_BUILTINS_H_INCLUDED
+#define STORAGE_INTERFACES_BUILTINS_H_INCLUDED
 #include "interfaces/Builtins.h"
+#endif
+
+#ifndef STORAGE_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define STORAGE_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef STORAGE_DIALOGS_GUIDIALOGSELECT_H_INCLUDED
+#define STORAGE_DIALOGS_GUIDIALOGSELECT_H_INCLUDED
 #include "dialogs/GUIDialogSelect.h"
+#endif
+
+#ifndef STORAGE_GUILIB_KEY_H_INCLUDED
+#define STORAGE_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef STORAGE_UTILS_STRINGUTILS_H_INCLUDED
+#define STORAGE_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 CAutorunMediaJob::CAutorunMediaJob(const CStdString &label, const CStdString &path)
 {

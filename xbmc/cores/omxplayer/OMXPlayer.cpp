@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef OMXPLAYER_SYSTEM_H_INCLUDED
+#define OMXPLAYER_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #if defined (HAS_OMXPLAYER)
 

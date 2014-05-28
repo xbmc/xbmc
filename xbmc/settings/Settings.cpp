@@ -18,30 +18,110 @@
  *
  */
 
+#ifndef SETTINGS_SYSTEM_H_INCLUDED
+#define SETTINGS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
 
+
+#ifndef SETTINGS_SETTINGS_H_INCLUDED
+#define SETTINGS_SETTINGS_H_INCLUDED
 #include "Settings.h"
+#endif
+
+#ifndef SETTINGS_APPLICATION_H_INCLUDED
+#define SETTINGS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef SETTINGS_AUTORUN_H_INCLUDED
+#define SETTINGS_AUTORUN_H_INCLUDED
 #include "Autorun.h"
+#endif
+
+#ifndef SETTINGS_GUIPASSWORD_H_INCLUDED
+#define SETTINGS_GUIPASSWORD_H_INCLUDED
 #include "GUIPassword.h"
+#endif
+
+#ifndef SETTINGS_LANGINFO_H_INCLUDED
+#define SETTINGS_LANGINFO_H_INCLUDED
 #include "LangInfo.h"
+#endif
+
+#ifndef SETTINGS_UTIL_H_INCLUDED
+#define SETTINGS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef SETTINGS_ADDONS_ADDONMANAGER_H_INCLUDED
+#define SETTINGS_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef SETTINGS_ADDONS_SKIN_H_INCLUDED
+#define SETTINGS_ADDONS_SKIN_H_INCLUDED
 #include "addons/Skin.h"
+#endif
+
+#ifndef SETTINGS_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
+#define SETTINGS_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
 #include "cores/AudioEngine/AEFactory.h"
+#endif
+
+#ifndef SETTINGS_CORES_DVDPLAYER_DVDCODECS_VIDEO_DVDVIDEOCODEC_H_INCLUDED
+#define SETTINGS_CORES_DVDPLAYER_DVDCODECS_VIDEO_DVDVIDEOCODEC_H_INCLUDED
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
+#endif
+
 #if defined(HAVE_LIBCRYSTALHD)
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #endif // defined(HAVE_LIBCRYSTALHD)
+#ifndef SETTINGS_CORES_PLAYERCOREFACTORY_PLAYERCOREFACTORY_H_INCLUDED
+#define SETTINGS_CORES_PLAYERCOREFACTORY_PLAYERCOREFACTORY_H_INCLUDED
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#endif
+
+#ifndef SETTINGS_CORES_VIDEORENDERERS_BASERENDERER_H_INCLUDED
+#define SETTINGS_CORES_VIDEORENDERERS_BASERENDERER_H_INCLUDED
 #include "cores/VideoRenderers/BaseRenderer.h"
+#endif
+
+#ifndef SETTINGS_FILESYSTEM_FILE_H_INCLUDED
+#define SETTINGS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef SETTINGS_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define SETTINGS_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h"
+#endif
+
+#ifndef SETTINGS_GUILIB_GUIAUDIOMANAGER_H_INCLUDED
+#define SETTINGS_GUILIB_GUIAUDIOMANAGER_H_INCLUDED
 #include "guilib/GUIAudioManager.h"
+#endif
+
+#ifndef SETTINGS_GUILIB_GUIFONTMANAGER_H_INCLUDED
+#define SETTINGS_GUILIB_GUIFONTMANAGER_H_INCLUDED
 #include "guilib/GUIFontManager.h"
+#endif
+
+#ifndef SETTINGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define SETTINGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef SETTINGS_GUILIB_STEREOSCOPICSMANAGER_H_INCLUDED
+#define SETTINGS_GUILIB_STEREOSCOPICSMANAGER_H_INCLUDED
 #include "guilib/StereoscopicsManager.h"
+#endif
+
+#ifndef SETTINGS_INPUT_MOUSESTAT_H_INCLUDED
+#define SETTINGS_INPUT_MOUSESTAT_H_INCLUDED
 #include "input/MouseStat.h"
+#endif
+
 #if defined(TARGET_WINDOWS)
 #include "input/windows/WINJoystick.h"
 #elif defined(HAS_SDL_JOYSTICK)
@@ -50,39 +130,147 @@
 #if defined(TARGET_POSIX)
 #include "linux/LinuxTimezone.h"
 #endif // defined(TARGET_POSIX)
+#ifndef SETTINGS_NETWORK_NETWORKSERVICES_H_INCLUDED
+#define SETTINGS_NETWORK_NETWORKSERVICES_H_INCLUDED
 #include "network/NetworkServices.h"
+#endif
+
+#ifndef SETTINGS_NETWORK_UPNP_UPNPSETTINGS_H_INCLUDED
+#define SETTINGS_NETWORK_UPNP_UPNPSETTINGS_H_INCLUDED
 #include "network/upnp/UPnPSettings.h"
+#endif
+
+#ifndef SETTINGS_NETWORK_WAKEONACCESS_H_INCLUDED
+#define SETTINGS_NETWORK_WAKEONACCESS_H_INCLUDED
 #include "network/WakeOnAccess.h"
+#endif
+
 #if defined(TARGET_DARWIN_OSX)
 #include "osx/XBMCHelper.h"
 #endif // defined(TARGET_DARWIN_OSX)
 #if defined(TARGET_DARWIN)
 #include "osx/DarwinUtils.h"
 #endif
+#ifndef SETTINGS_PERIPHERALS_PERIPHERALS_H_INCLUDED
+#define SETTINGS_PERIPHERALS_PERIPHERALS_H_INCLUDED
 #include "peripherals/Peripherals.h"
+#endif
+
+#ifndef SETTINGS_POWERMANAGEMENT_POWERMANAGER_H_INCLUDED
+#define SETTINGS_POWERMANAGEMENT_POWERMANAGER_H_INCLUDED
 #include "powermanagement/PowerManager.h"
+#endif
+
+#ifndef SETTINGS_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define SETTINGS_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef SETTINGS_PVR_PVRMANAGER_H_INCLUDED
+#define SETTINGS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef SETTINGS_PVR_WINDOWS_GUIWINDOWPVRGUIDE_H_INCLUDED
+#define SETTINGS_PVR_WINDOWS_GUIWINDOWPVRGUIDE_H_INCLUDED
 #include "pvr/windows/GUIWindowPVRGuide.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define SETTINGS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#define SETTINGS_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
 #include "settings/DisplaySettings.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define SETTINGS_SETTINGS_MEDIASETTINGS_H_INCLUDED
 #include "settings/MediaSettings.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define SETTINGS_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
 #include "settings/MediaSourceSettings.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_SETTINGADDON_H_INCLUDED
+#define SETTINGS_SETTINGS_SETTINGADDON_H_INCLUDED
 #include "settings/SettingAddon.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_SETTINGCONTROL_H_INCLUDED
+#define SETTINGS_SETTINGS_SETTINGCONTROL_H_INCLUDED
 #include "settings/SettingControl.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_SETTINGPATH_H_INCLUDED
+#define SETTINGS_SETTINGS_SETTINGPATH_H_INCLUDED
 #include "settings/SettingPath.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_SKINSETTINGS_H_INCLUDED
+#define SETTINGS_SETTINGS_SKINSETTINGS_H_INCLUDED
 #include "settings/SkinSettings.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_LIB_SETTINGSMANAGER_H_INCLUDED
+#define SETTINGS_SETTINGS_LIB_SETTINGSMANAGER_H_INCLUDED
 #include "settings/lib/SettingsManager.h"
+#endif
+
+#ifndef SETTINGS_THREADS_SINGLELOCK_H_INCLUDED
+#define SETTINGS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef SETTINGS_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define SETTINGS_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef SETTINGS_UTILS_LOG_H_INCLUDED
+#define SETTINGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef SETTINGS_UTILS_RSSMANAGER_H_INCLUDED
+#define SETTINGS_UTILS_RSSMANAGER_H_INCLUDED
 #include "utils/RssManager.h"
+#endif
+
+#ifndef SETTINGS_UTILS_STRINGUTILS_H_INCLUDED
+#define SETTINGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef SETTINGS_UTILS_SYSTEMINFO_H_INCLUDED
+#define SETTINGS_UTILS_SYSTEMINFO_H_INCLUDED
 #include "utils/SystemInfo.h"
+#endif
+
+#ifndef SETTINGS_UTILS_WEATHER_H_INCLUDED
+#define SETTINGS_UTILS_WEATHER_H_INCLUDED
 #include "utils/Weather.h"
+#endif
+
+#ifndef SETTINGS_UTILS_XBMCTINYXML_H_INCLUDED
+#define SETTINGS_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef SETTINGS_VIEW_VIEWSTATESETTINGS_H_INCLUDED
+#define SETTINGS_VIEW_VIEWSTATESETTINGS_H_INCLUDED
 #include "view/ViewStateSettings.h"
+#endif
+
+#ifndef SETTINGS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define SETTINGS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
 #if defined(TARGET_ANDROID)
 #include "android/activity/AndroidFeatures.h"
 #endif

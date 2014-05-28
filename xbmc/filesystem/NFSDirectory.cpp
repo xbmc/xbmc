@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef FILESYSTEM_SYSTEM_H_INCLUDED
+#define FILESYSTEM_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #ifdef HAS_FILESYSTEM_NFS
 #include "DllLibNfs.h"

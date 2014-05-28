@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef DVDINPUTSTREAMS_DVDINPUTSTREAM_H_INCLUDED
+#define DVDINPUTSTREAMS_DVDINPUTSTREAM_H_INCLUDED
 #include "DVDInputStream.h"
+#endif
+
 #include "boost/shared_ptr.hpp"
 
 class CDVDInputStreamStack : public CDVDInputStream

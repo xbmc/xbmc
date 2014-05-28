@@ -17,7 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef WINDOWING_SYSTEM_H_INCLUDED
+#define WINDOWING_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #if defined (HAVE_WAYLAND)
 

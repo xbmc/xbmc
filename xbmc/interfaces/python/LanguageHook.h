@@ -26,8 +26,16 @@
 
 #include <Python.h>
 
+#ifndef PYTHON_INTERFACES_LEGACY_LANGUAGEHOOK_H_INCLUDED
+#define PYTHON_INTERFACES_LEGACY_LANGUAGEHOOK_H_INCLUDED
 #include "interfaces/legacy/LanguageHook.h"
+#endif
+
+#ifndef PYTHON_THREADS_EVENT_H_INCLUDED
+#define PYTHON_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
 
 #include <set>
 #include <map>

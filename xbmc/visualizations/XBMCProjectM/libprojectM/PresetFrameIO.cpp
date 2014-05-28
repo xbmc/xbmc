@@ -1,5 +1,9 @@
 #include "PresetFrameIO.hpp"
+#ifndef LIBPROJECTM_WIPEMALLOC_H_INCLUDED
+#define LIBPROJECTM_WIPEMALLOC_H_INCLUDED
 #include "wipemalloc.h"
+#endif
+
 #include <math.h>
 #include <cassert>
 #include <iostream>

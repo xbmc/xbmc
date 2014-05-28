@@ -18,8 +18,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef OSX_UTILS_STDSTRING_H_INCLUDED
+#define OSX_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef OSX_STORAGE_ISTORAGEPROVIDER_H_INCLUDED
+#define OSX_STORAGE_ISTORAGEPROVIDER_H_INCLUDED
 #include "storage/IStorageProvider.h"
+#endif
+
 
 class CDarwinStorageProvider : public IStorageProvider
 {

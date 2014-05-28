@@ -23,18 +23,66 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#ifndef FILESYSTEM_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define FILESYSTEM_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef FILESYSTEM_SYSTEM_H_INCLUDED
+#define FILESYSTEM_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef FILESYSTEM_SHOUTCASTFILE_H_INCLUDED
+#define FILESYSTEM_SHOUTCASTFILE_H_INCLUDED
 #include "ShoutcastFile.h"
+#endif
+
+#ifndef FILESYSTEM_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define FILESYSTEM_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_REGEXP_H_INCLUDED
+#define FILESYSTEM_UTILS_REGEXP_H_INCLUDED
 #include "utils/RegExp.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_HTMLUTIL_H_INCLUDED
+#define FILESYSTEM_UTILS_HTMLUTIL_H_INCLUDED
 #include "utils/HTMLUtil.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define FILESYSTEM_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_TIMEUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef FILESYSTEM_APPLICATIONMESSENGER_H_INCLUDED
+#define FILESYSTEM_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_FILECACHE_H_INCLUDED
+#define FILESYSTEM_FILECACHE_H_INCLUDED
 #include "FileCache.h"
+#endif
+
 #include <climits>
 
 using namespace XFILE;

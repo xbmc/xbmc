@@ -18,30 +18,126 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGMUSICINFO_H_INCLUDED
+#define DIALOGS_GUIDIALOGMUSICINFO_H_INCLUDED
 #include "GUIDialogMusicInfo.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIIMAGE_H_INCLUDED
+#define DIALOGS_GUILIB_GUIIMAGE_H_INCLUDED
 #include "guilib/GUIImage.h"
+#endif
+
+#ifndef DIALOGS_DIALOGS_GUIDIALOGFILEBROWSER_H_INCLUDED
+#define DIALOGS_DIALOGS_GUIDIALOGFILEBROWSER_H_INCLUDED
 #include "dialogs/GUIDialogFileBrowser.h"
+#endif
+
+#ifndef DIALOGS_GUIPASSWORD_H_INCLUDED
+#define DIALOGS_GUIPASSWORD_H_INCLUDED
 #include "GUIPassword.h"
+#endif
+
+#ifndef DIALOGS_MUSIC_MUSICDATABASE_H_INCLUDED
+#define DIALOGS_MUSIC_MUSICDATABASE_H_INCLUDED
 #include "music/MusicDatabase.h"
+#endif
+
+#ifndef DIALOGS_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define DIALOGS_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef DIALOGS_URL_H_INCLUDED
+#define DIALOGS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef DIALOGS_FILESYSTEM_FILE_H_INCLUDED
+#define DIALOGS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef DIALOGS_FILEITEM_H_INCLUDED
+#define DIALOGS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef DIALOGS_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define DIALOGS_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef DIALOGS_STORAGE_MEDIAMANAGER_H_INCLUDED
+#define DIALOGS_STORAGE_MEDIAMANAGER_H_INCLUDED
 #include "storage/MediaManager.h"
+#endif
+
+#ifndef DIALOGS_UTILS_ASYNCFILECOPY_H_INCLUDED
+#define DIALOGS_UTILS_ASYNCFILECOPY_H_INCLUDED
 #include "utils/AsyncFileCopy.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
 #include "settings/MediaSourceSettings.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_SETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_KEY_H_INCLUDED
+#define DIALOGS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef DIALOGS_UTILS_LOG_H_INCLUDED
+#define DIALOGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DIALOGS_UTILS_URIUTILS_H_INCLUDED
+#define DIALOGS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
+#define DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef DIALOGS_TEXTURECACHE_H_INCLUDED
+#define DIALOGS_TEXTURECACHE_H_INCLUDED
 #include "TextureCache.h"
+#endif
+
+#ifndef DIALOGS_MUSIC_MUSICTHUMBLOADER_H_INCLUDED
+#define DIALOGS_MUSIC_MUSICTHUMBLOADER_H_INCLUDED
 #include "music/MusicThumbLoader.h"
+#endif
+
+#ifndef DIALOGS_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define DIALOGS_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

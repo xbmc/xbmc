@@ -18,14 +18,26 @@
  *
  */
 
+#ifndef MDNS_ZEROCONFMDNS_H_INCLUDED
+#define MDNS_ZEROCONFMDNS_H_INCLUDED
 #include "ZeroconfMDNS.h"
+#endif
+
 
 #include <string>
 #include <sstream>
 #include <threads/SingleLock.h>
 #include <utils/log.h>
+#ifndef MDNS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define MDNS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef MDNS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define MDNS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
 #if defined(TARGET_WINDOWS)
 #include "win32/WIN32Util.h"
 #endif //TARGET_WINDOWS

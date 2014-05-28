@@ -18,46 +18,202 @@
  *
  */
 
+#ifndef PVR_APPLICATION_H_INCLUDED
+#define PVR_APPLICATION_H_INCLUDED
 #include "Application.h"
-#include "ApplicationMessenger.h"
-#include "GUIInfoManager.h"
-#include "dialogs/GUIDialogOK.h"
-#include "dialogs/GUIDialogNumeric.h"
-#include "dialogs/GUIDialogProgress.h"
-#include "dialogs/GUIDialogExtendedProgressBar.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogYesNo.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
-#include "music/tags/MusicInfoTag.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/MediaSettings.h"
-#include "settings/lib/Setting.h"
-#include "settings/Settings.h"
-#include "threads/SingleLock.h"
-#include "windows/GUIWindowPVR.h"
-#include "utils/log.h"
-#include "utils/Stopwatch.h"
-#include "utils/StringUtils.h"
-#include "threads/Atomics.h"
-#include "windows/GUIWindowPVRCommon.h"
-#include "utils/JobManager.h"
-#include "interfaces/AnnouncementManager.h"
+#endif
 
-#include "PVRManager.h"
-#include "PVRDatabase.h"
-#include "PVRGUIInfo.h"
-#include "addons/PVRClients.h"
-#include "channels/PVRChannel.h"
-#include "channels/PVRChannelGroupsContainer.h"
-#include "channels/PVRChannelGroupInternal.h"
-#include "epg/EpgContainer.h"
-#include "recordings/PVRRecordings.h"
-#include "timers/PVRTimers.h"
+#ifndef PVR_APPLICATIONMESSENGER_H_INCLUDED
+#define PVR_APPLICATIONMESSENGER_H_INCLUDED
+#include "ApplicationMessenger.h"
+#endif
+
+#ifndef PVR_GUIINFOMANAGER_H_INCLUDED
+#define PVR_GUIINFOMANAGER_H_INCLUDED
+#include "GUIInfoManager.h"
+#endif
+
+#ifndef PVR_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define PVR_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef PVR_DIALOGS_GUIDIALOGNUMERIC_H_INCLUDED
+#define PVR_DIALOGS_GUIDIALOGNUMERIC_H_INCLUDED
+#include "dialogs/GUIDialogNumeric.h"
+#endif
+
+#ifndef PVR_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#define PVR_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#include "dialogs/GUIDialogProgress.h"
+#endif
+
+#ifndef PVR_DIALOGS_GUIDIALOGEXTENDEDPROGRESSBAR_H_INCLUDED
+#define PVR_DIALOGS_GUIDIALOGEXTENDEDPROGRESSBAR_H_INCLUDED
+#include "dialogs/GUIDialogExtendedProgressBar.h"
+#endif
+
+#ifndef PVR_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define PVR_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef PVR_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define PVR_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef PVR_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define PVR_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef PVR_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define PVR_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef PVR_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define PVR_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef PVR_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define PVR_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef PVR_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define PVR_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#include "settings/MediaSettings.h"
+#endif
+
+#ifndef PVR_SETTINGS_LIB_SETTING_H_INCLUDED
+#define PVR_SETTINGS_LIB_SETTING_H_INCLUDED
+#include "settings/lib/Setting.h"
+#endif
+
+#ifndef PVR_SETTINGS_SETTINGS_H_INCLUDED
+#define PVR_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef PVR_THREADS_SINGLELOCK_H_INCLUDED
+#define PVR_THREADS_SINGLELOCK_H_INCLUDED
+#include "threads/SingleLock.h"
+#endif
+
+#ifndef PVR_WINDOWS_GUIWINDOWPVR_H_INCLUDED
+#define PVR_WINDOWS_GUIWINDOWPVR_H_INCLUDED
+#include "windows/GUIWindowPVR.h"
+#endif
+
+#ifndef PVR_UTILS_LOG_H_INCLUDED
+#define PVR_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef PVR_UTILS_STOPWATCH_H_INCLUDED
+#define PVR_UTILS_STOPWATCH_H_INCLUDED
+#include "utils/Stopwatch.h"
+#endif
+
+#ifndef PVR_UTILS_STRINGUTILS_H_INCLUDED
+#define PVR_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+#ifndef PVR_THREADS_ATOMICS_H_INCLUDED
+#define PVR_THREADS_ATOMICS_H_INCLUDED
+#include "threads/Atomics.h"
+#endif
+
+#ifndef PVR_WINDOWS_GUIWINDOWPVRCOMMON_H_INCLUDED
+#define PVR_WINDOWS_GUIWINDOWPVRCOMMON_H_INCLUDED
+#include "windows/GUIWindowPVRCommon.h"
+#endif
+
+#ifndef PVR_UTILS_JOBMANAGER_H_INCLUDED
+#define PVR_UTILS_JOBMANAGER_H_INCLUDED
+#include "utils/JobManager.h"
+#endif
+
+#ifndef PVR_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#define PVR_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
 #include "interfaces/AnnouncementManager.h"
+#endif
+
+
+#ifndef PVR_PVRMANAGER_H_INCLUDED
+#define PVR_PVRMANAGER_H_INCLUDED
+#include "PVRManager.h"
+#endif
+
+#ifndef PVR_PVRDATABASE_H_INCLUDED
+#define PVR_PVRDATABASE_H_INCLUDED
+#include "PVRDatabase.h"
+#endif
+
+#ifndef PVR_PVRGUIINFO_H_INCLUDED
+#define PVR_PVRGUIINFO_H_INCLUDED
+#include "PVRGUIInfo.h"
+#endif
+
+#ifndef PVR_ADDONS_PVRCLIENTS_H_INCLUDED
+#define PVR_ADDONS_PVRCLIENTS_H_INCLUDED
+#include "addons/PVRClients.h"
+#endif
+
+#ifndef PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
+#define PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
+#include "channels/PVRChannel.h"
+#endif
+
+#ifndef PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#include "channels/PVRChannelGroupsContainer.h"
+#endif
+
+#ifndef PVR_CHANNELS_PVRCHANNELGROUPINTERNAL_H_INCLUDED
+#define PVR_CHANNELS_PVRCHANNELGROUPINTERNAL_H_INCLUDED
+#include "channels/PVRChannelGroupInternal.h"
+#endif
+
+#ifndef PVR_EPG_EPGCONTAINER_H_INCLUDED
+#define PVR_EPG_EPGCONTAINER_H_INCLUDED
+#include "epg/EpgContainer.h"
+#endif
+
+#ifndef PVR_RECORDINGS_PVRRECORDINGS_H_INCLUDED
+#define PVR_RECORDINGS_PVRRECORDINGS_H_INCLUDED
+#include "recordings/PVRRecordings.h"
+#endif
+
+#ifndef PVR_TIMERS_PVRTIMERS_H_INCLUDED
+#define PVR_TIMERS_PVRTIMERS_H_INCLUDED
+#include "timers/PVRTimers.h"
+#endif
+
+#ifndef PVR_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#define PVR_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#include "interfaces/AnnouncementManager.h"
+#endif
+
+#ifndef PVR_ADDONS_ADDONINSTALLER_H_INCLUDED
+#define PVR_ADDONS_ADDONINSTALLER_H_INCLUDED
 #include "addons/AddonInstaller.h"
+#endif
+
+#ifndef PVR_GUILIB_KEY_H_INCLUDED
+#define PVR_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef PVR_DIALOGS_GUIDIALOGPVRCHANNELMANAGER_H_INCLUDED
+#define PVR_DIALOGS_GUIDIALOGPVRCHANNELMANAGER_H_INCLUDED
 #include "dialogs/GUIDialogPVRChannelManager.h"
+#endif
+
 
 using namespace std;
 using namespace MUSIC_INFO;

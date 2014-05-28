@@ -20,18 +20,62 @@
 
 // C++ Implementation: karaokewindowbackground
 
+#ifndef KARAOKE_SYSTEM_H_INCLUDED
+#define KARAOKE_SYSTEM_H_INCLUDED
 #include "system.h"
-#include "settings/AdvancedSettings.h"
-#include "guilib/GUIWindowManager.h"
-#include "Application.h"
-#include "GUIUserMessages.h"
-#include "guilib/GUIVisualisationControl.h"
-#include "guilib/GUIImage.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
+#endif
 
+#ifndef KARAOKE_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define KARAOKE_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef KARAOKE_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define KARAOKE_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef KARAOKE_APPLICATION_H_INCLUDED
+#define KARAOKE_APPLICATION_H_INCLUDED
+#include "Application.h"
+#endif
+
+#ifndef KARAOKE_GUIUSERMESSAGES_H_INCLUDED
+#define KARAOKE_GUIUSERMESSAGES_H_INCLUDED
+#include "GUIUserMessages.h"
+#endif
+
+#ifndef KARAOKE_GUILIB_GUIVISUALISATIONCONTROL_H_INCLUDED
+#define KARAOKE_GUILIB_GUIVISUALISATIONCONTROL_H_INCLUDED
+#include "guilib/GUIVisualisationControl.h"
+#endif
+
+#ifndef KARAOKE_GUILIB_GUIIMAGE_H_INCLUDED
+#define KARAOKE_GUILIB_GUIIMAGE_H_INCLUDED
+#include "guilib/GUIImage.h"
+#endif
+
+#ifndef KARAOKE_THREADS_SINGLELOCK_H_INCLUDED
+#define KARAOKE_THREADS_SINGLELOCK_H_INCLUDED
+#include "threads/SingleLock.h"
+#endif
+
+#ifndef KARAOKE_UTILS_LOG_H_INCLUDED
+#define KARAOKE_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+
+#ifndef KARAOKE_KARAOKEWINDOWBACKGROUND_H_INCLUDED
+#define KARAOKE_KARAOKEWINDOWBACKGROUND_H_INCLUDED
 #include "karaokewindowbackground.h"
+#endif
+
+#ifndef KARAOKE_KARAOKEVIDEOBACKGROUND_H_INCLUDED
+#define KARAOKE_KARAOKEVIDEOBACKGROUND_H_INCLUDED
 #include "karaokevideobackground.h"
+#endif
+
 
 
 #define CONTROL_ID_VIS           1

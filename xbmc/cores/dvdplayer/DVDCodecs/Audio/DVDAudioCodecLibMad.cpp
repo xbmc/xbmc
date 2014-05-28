@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef AUDIO_DVDAUDIOCODECLIBMAD_H_INCLUDED
+#define AUDIO_DVDAUDIOCODECLIBMAD_H_INCLUDED
 #include "DVDAudioCodecLibMad.h"
+#endif
+
+#ifndef AUDIO_DVDSTREAMINFO_H_INCLUDED
+#define AUDIO_DVDSTREAMINFO_H_INCLUDED
 #include "DVDStreamInfo.h"
+#endif
+
 
 CDVDAudioCodecLibMad::CDVDAudioCodecLibMad() : CDVDAudioCodec()
 {

@@ -22,12 +22,36 @@
 #include <vector>
 #include <sys/socket.h>
 
+#ifndef NETWORK_INTERFACES_JSON_RPC_ICLIENT_H_INCLUDED
+#define NETWORK_INTERFACES_JSON_RPC_ICLIENT_H_INCLUDED
 #include "interfaces/json-rpc/IClient.h"
+#endif
+
+#ifndef NETWORK_INTERFACES_JSON_RPC_IJSONRPCANNOUNCER_H_INCLUDED
+#define NETWORK_INTERFACES_JSON_RPC_IJSONRPCANNOUNCER_H_INCLUDED
 #include "interfaces/json-rpc/IJSONRPCAnnouncer.h"
+#endif
+
+#ifndef NETWORK_INTERFACES_JSON_RPC_ITRANSPORTLAYER_H_INCLUDED
+#define NETWORK_INTERFACES_JSON_RPC_ITRANSPORTLAYER_H_INCLUDED
 #include "interfaces/json-rpc/ITransportLayer.h"
+#endif
+
+#ifndef NETWORK_THREADS_CRITICALSECTION_H_INCLUDED
+#define NETWORK_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef NETWORK_THREADS_THREAD_H_INCLUDED
+#define NETWORK_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef NETWORK_WEBSOCKET_WEBSOCKET_H_INCLUDED
+#define NETWORK_WEBSOCKET_WEBSOCKET_H_INCLUDED
 #include "websocket/WebSocket.h"
+#endif
+
 
 namespace JSONRPC
 {

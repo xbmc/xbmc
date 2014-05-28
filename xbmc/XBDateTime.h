@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef ROOT_UTILS_STDSTRING_H_INCLUDED
+#define ROOT_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef ROOT_UTILS_ARCHIVE_H_INCLUDED
+#define ROOT_UTILS_ARCHIVE_H_INCLUDED
 #include "utils/Archive.h"
+#endif
+
 
 /*! \brief TIME_FORMAT enum/bitmask used for formatting time strings
  Note the use of bitmasking, e.g.

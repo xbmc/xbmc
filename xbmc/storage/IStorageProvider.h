@@ -18,8 +18,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef STORAGE_SYSTEM_H_INCLUDED
+#define STORAGE_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef STORAGE_MEDIASOURCE_H_INCLUDED
+#define STORAGE_MEDIASOURCE_H_INCLUDED
 #include "MediaSource.h"
+#endif
+
 #ifdef HAS_DVD_DRIVE
 #include "cdioSupport.h"
 #endif

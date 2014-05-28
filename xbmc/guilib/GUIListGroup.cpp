@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef GUILIB_GUILISTGROUP_H_INCLUDED
+#define GUILIB_GUILISTGROUP_H_INCLUDED
 #include "GUIListGroup.h"
+#endif
+
+#ifndef GUILIB_GUILISTLABEL_H_INCLUDED
+#define GUILIB_GUILISTLABEL_H_INCLUDED
 #include "GUIListLabel.h"
+#endif
+
+#ifndef GUILIB_GUIMULTISELECTTEXT_H_INCLUDED
+#define GUILIB_GUIMULTISELECTTEXT_H_INCLUDED
 #include "GUIMultiSelectText.h"
+#endif
+
+#ifndef GUILIB_GUIBORDEREDIMAGE_H_INCLUDED
+#define GUILIB_GUIBORDEREDIMAGE_H_INCLUDED
 #include "GUIBorderedImage.h"
+#endif
+
+#ifndef GUILIB_GUICONTROLPROFILER_H_INCLUDED
+#define GUILIB_GUICONTROLPROFILER_H_INCLUDED
 #include "GUIControlProfiler.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 CGUIListGroup::CGUIListGroup(int parentID, int controlID, float posX, float posY, float width, float height)
 : CGUIControlGroup(parentID, controlID, posX, posY, width, height)

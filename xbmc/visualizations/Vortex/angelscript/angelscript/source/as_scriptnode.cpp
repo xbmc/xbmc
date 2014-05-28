@@ -37,8 +37,16 @@
 
 
 
+#ifndef SOURCE_AS_SCRIPTNODE_H_INCLUDED
+#define SOURCE_AS_SCRIPTNODE_H_INCLUDED
 #include "as_scriptnode.h"
+#endif
+
+#ifndef SOURCE_AS_SCRIPTENGINE_H_INCLUDED
+#define SOURCE_AS_SCRIPTENGINE_H_INCLUDED
 #include "as_scriptengine.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

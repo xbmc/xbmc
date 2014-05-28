@@ -20,10 +20,26 @@
  *
  */
 
+#ifndef WINDOWS_WINDOWS_GUIMEDIAWINDOW_H_INCLUDED
+#define WINDOWS_WINDOWS_GUIMEDIAWINDOW_H_INCLUDED
 #include "windows/GUIMediaWindow.h"
+#endif
+
+#ifndef WINDOWS_VIDEO_VIDEODATABASE_H_INCLUDED
+#define WINDOWS_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
+#ifndef WINDOWS_PLAYLISTPLAYER_H_INCLUDED
+#define WINDOWS_PLAYLISTPLAYER_H_INCLUDED
 #include "PlayListPlayer.h"
+#endif
+
+#ifndef WINDOWS_VIDEO_VIDEOTHUMBLOADER_H_INCLUDED
+#define WINDOWS_VIDEO_VIDEOTHUMBLOADER_H_INCLUDED
 #include "video/VideoThumbLoader.h"
+#endif
+
 
 enum VideoSelectAction
 {

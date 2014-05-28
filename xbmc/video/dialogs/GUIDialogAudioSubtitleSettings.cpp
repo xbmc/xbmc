@@ -18,30 +18,126 @@
  *
  */
 
+#ifndef DIALOGS_SYSTEM_H_INCLUDED
+#define DIALOGS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef DIALOGS_GUIDIALOGAUDIOSUBTITLESETTINGS_H_INCLUDED
+#define DIALOGS_GUIDIALOGAUDIOSUBTITLESETTINGS_H_INCLUDED
 #include "GUIDialogAudioSubtitleSettings.h"
+#endif
+
+#ifndef DIALOGS_DIALOGS_GUIDIALOGFILEBROWSER_H_INCLUDED
+#define DIALOGS_DIALOGS_GUIDIALOGFILEBROWSER_H_INCLUDED
 #include "dialogs/GUIDialogFileBrowser.h"
+#endif
+
+#ifndef DIALOGS_GUIPASSWORD_H_INCLUDED
+#define DIALOGS_GUIPASSWORD_H_INCLUDED
 #include "GUIPassword.h"
+#endif
+
+#ifndef DIALOGS_UTILS_URIUTILS_H_INCLUDED
+#define DIALOGS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef DIALOGS_APPLICATION_H_INCLUDED
+#define DIALOGS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef DIALOGS_VIDEO_VIDEODATABASE_H_INCLUDED
+#define DIALOGS_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
+#ifndef DIALOGS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define DIALOGS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef DIALOGS_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define DIALOGS_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef DIALOGS_FILESYSTEM_FILE_H_INCLUDED
+#define DIALOGS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef DIALOGS_URL_H_INCLUDED
+#define DIALOGS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef DIALOGS_FILEITEM_H_INCLUDED
+#define DIALOGS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef DIALOGS_ADDONS_SKIN_H_INCLUDED
+#define DIALOGS_ADDONS_SKIN_H_INCLUDED
 #include "addons/Skin.h"
+#endif
+
+#ifndef DIALOGS_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define DIALOGS_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_MEDIASETTINGS_H_INCLUDED
 #include "settings/MediaSettings.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
 #include "settings/MediaSourceSettings.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_SETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef DIALOGS_PVR_PVRMANAGER_H_INCLUDED
+#define DIALOGS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef DIALOGS_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define DIALOGS_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
+#ifndef DIALOGS_CORES_IPLAYER_H_INCLUDED
+#define DIALOGS_CORES_IPLAYER_H_INCLUDED
 #include "cores/IPlayer.h"
+#endif
+
+#ifndef DIALOGS_UTILS_LANGCODEEXPANDER_H_INCLUDED
+#define DIALOGS_UTILS_LANGCODEEXPANDER_H_INCLUDED
 #include "utils/LangCodeExpander.h"
+#endif
+
+#ifndef DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
+#define DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

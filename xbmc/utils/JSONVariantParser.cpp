@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef UTILS_JSONVARIANTPARSER_H_INCLUDED
+#define UTILS_JSONVARIANTPARSER_H_INCLUDED
 #include "JSONVariantParser.h"
+#endif
+
 
 yajl_callbacks CJSONVariantParser::callbacks = {
   CJSONVariantParser::ParseNull,

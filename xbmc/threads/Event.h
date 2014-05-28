@@ -22,8 +22,16 @@
 
 #include <vector>
 
+#ifndef THREADS_THREADS_CONDITION_H_INCLUDED
+#define THREADS_THREADS_CONDITION_H_INCLUDED
 #include "threads/Condition.h"
+#endif
+
+#ifndef THREADS_THREADS_SINGLELOCK_H_INCLUDED
+#define THREADS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 
 // forward declare the CEventGroup
 namespace XbmcThreads

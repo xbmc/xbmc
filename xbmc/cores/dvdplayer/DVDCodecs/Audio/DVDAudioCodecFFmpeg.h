@@ -20,11 +20,31 @@
  *
  */
 
+#ifndef AUDIO_DVDAUDIOCODEC_H_INCLUDED
+#define AUDIO_DVDAUDIOCODEC_H_INCLUDED
 #include "DVDAudioCodec.h"
+#endif
+
+#ifndef AUDIO_DLLAVCODEC_H_INCLUDED
+#define AUDIO_DLLAVCODEC_H_INCLUDED
 #include "DllAvCodec.h"
+#endif
+
+#ifndef AUDIO_DLLAVFORMAT_H_INCLUDED
+#define AUDIO_DLLAVFORMAT_H_INCLUDED
 #include "DllAvFormat.h"
+#endif
+
+#ifndef AUDIO_DLLAVUTIL_H_INCLUDED
+#define AUDIO_DLLAVUTIL_H_INCLUDED
 #include "DllAvUtil.h"
+#endif
+
+#ifndef AUDIO_DLLSWRESAMPLE_H_INCLUDED
+#define AUDIO_DLLSWRESAMPLE_H_INCLUDED
 #include "DllSwResample.h"
+#endif
+
 
 class CDVDAudioCodecFFmpeg : public CDVDAudioCodec
 {

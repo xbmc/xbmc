@@ -18,23 +18,67 @@
  *
  */
 
+#ifndef FILESYSTEM_HTSPSESSION_H_INCLUDED
+#define FILESYSTEM_HTSPSESSION_H_INCLUDED
 #include "HTSPSession.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define FILESYSTEM_VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "video/VideoInfoTag.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define FILESYSTEM_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
 
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <sys/socket.h>
 
 extern "C" {
+#ifndef FILESYSTEM_LIBHTS_NET_H_INCLUDED
+#define FILESYSTEM_LIBHTS_NET_H_INCLUDED
 #include "libhts/net.h"
+#endif
+
+#ifndef FILESYSTEM_LIBHTS_HTSMSG_H_INCLUDED
+#define FILESYSTEM_LIBHTS_HTSMSG_H_INCLUDED
 #include "libhts/htsmsg.h"
+#endif
+
+#ifndef FILESYSTEM_LIBHTS_HTSMSG_BINARY_H_INCLUDED
+#define FILESYSTEM_LIBHTS_HTSMSG_BINARY_H_INCLUDED
 #include "libhts/htsmsg_binary.h"
+#endif
+
+#ifndef FILESYSTEM_LIBHTS_SHA1_H_INCLUDED
+#define FILESYSTEM_LIBHTS_SHA1_H_INCLUDED
 #include "libhts/sha1.h"
+#endif
+
 }
 
 

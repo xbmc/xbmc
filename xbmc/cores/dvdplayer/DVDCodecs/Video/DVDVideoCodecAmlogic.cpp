@@ -20,12 +20,36 @@
 
 #include <math.h>
 
+#ifndef VIDEO_DVDVIDEOCODECAMLOGIC_H_INCLUDED
+#define VIDEO_DVDVIDEOCODECAMLOGIC_H_INCLUDED
 #include "DVDVideoCodecAmlogic.h"
+#endif
+
+#ifndef VIDEO_DVDCLOCK_H_INCLUDED
+#define VIDEO_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h"
+#endif
+
+#ifndef VIDEO_DVDSTREAMINFO_H_INCLUDED
+#define VIDEO_DVDSTREAMINFO_H_INCLUDED
 #include "DVDStreamInfo.h"
+#endif
+
+#ifndef VIDEO_AMLCODEC_H_INCLUDED
+#define VIDEO_AMLCODEC_H_INCLUDED
 #include "AMLCodec.h"
+#endif
+
+#ifndef VIDEO_UTILS_BITSTREAMCONVERTER_H_INCLUDED
+#define VIDEO_UTILS_BITSTREAMCONVERTER_H_INCLUDED
 #include "utils/BitstreamConverter.h"
+#endif
+
+#ifndef VIDEO_UTILS_LOG_H_INCLUDED
+#define VIDEO_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #define __MODULE_NAME__ "DVDVideoCodecAmlogic"
 

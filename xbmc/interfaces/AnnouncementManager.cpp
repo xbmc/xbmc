@@ -18,18 +18,62 @@
  *
  */
 
+#ifndef INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#define INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
 #include "AnnouncementManager.h"
+#endif
+
+#ifndef INTERFACES_THREADS_SINGLELOCK_H_INCLUDED
+#define INTERFACES_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 #include <stdio.h>
+#ifndef INTERFACES_UTILS_LOG_H_INCLUDED
+#define INTERFACES_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef INTERFACES_UTILS_VARIANT_H_INCLUDED
+#define INTERFACES_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef INTERFACES_UTILS_STRINGUTILS_H_INCLUDED
+#define INTERFACES_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef INTERFACES_FILEITEM_H_INCLUDED
+#define INTERFACES_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef INTERFACES_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define INTERFACES_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef INTERFACES_MUSIC_MUSICDATABASE_H_INCLUDED
+#define INTERFACES_MUSIC_MUSICDATABASE_H_INCLUDED
 #include "music/MusicDatabase.h"
+#endif
+
+#ifndef INTERFACES_VIDEO_VIDEODATABASE_H_INCLUDED
+#define INTERFACES_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
+#ifndef INTERFACES_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
+#define INTERFACES_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
 #include "pvr/channels/PVRChannel.h"
+#endif
+
+#ifndef INTERFACES_PLAYLISTPLAYER_H_INCLUDED
+#define INTERFACES_PLAYLISTPLAYER_H_INCLUDED
 #include "PlayListPlayer.h"
+#endif
+
 
 #define LOOKUP_PROPERTY "database-lookup"
 

@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef UTILS_HTMLTABLE_H_INCLUDED
+#define UTILS_HTMLTABLE_H_INCLUDED
 #include "HTMLTable.h"
+#endif
+
+#ifndef UTILS_HTMLUTIL_H_INCLUDED
+#define UTILS_HTMLUTIL_H_INCLUDED
 #include "HTMLUtil.h"
+#endif
+
 
 
 using namespace HTML;

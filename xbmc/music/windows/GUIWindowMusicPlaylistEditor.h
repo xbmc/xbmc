@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef WINDOWS_GUIWINDOWMUSICBASE_H_INCLUDED
+#define WINDOWS_GUIWINDOWMUSICBASE_H_INCLUDED
 #include "GUIWindowMusicBase.h"
+#endif
+
 
 class CFileItemList;
 

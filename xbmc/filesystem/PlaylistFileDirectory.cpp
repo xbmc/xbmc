@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef FILESYSTEM_PLAYLISTFILEDIRECTORY_H_INCLUDED
+#define FILESYSTEM_PLAYLISTFILEDIRECTORY_H_INCLUDED
 #include "PlaylistFileDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_PLAYLISTS_PLAYLISTFACTORY_H_INCLUDED
+#define FILESYSTEM_PLAYLISTS_PLAYLISTFACTORY_H_INCLUDED
 #include "playlists/PlayListFactory.h"
+#endif
+
+#ifndef FILESYSTEM_FILE_H_INCLUDED
+#define FILESYSTEM_FILE_H_INCLUDED
 #include "File.h"
+#endif
+
+#ifndef FILESYSTEM_PLAYLISTS_PLAYLIST_H_INCLUDED
+#define FILESYSTEM_PLAYLISTS_PLAYLIST_H_INCLUDED
 #include "playlists/PlayList.h"
+#endif
+
 
 using namespace std;
 using namespace PLAYLIST;

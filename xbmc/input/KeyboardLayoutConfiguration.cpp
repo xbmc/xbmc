@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef INPUT_KEYBOARDLAYOUTCONFIGURATION_H_INCLUDED
+#define INPUT_KEYBOARDLAYOUTCONFIGURATION_H_INCLUDED
 #include "KeyboardLayoutConfiguration.h"
+#endif
+
+#ifndef INPUT_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define INPUT_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef INPUT_UTILS_XBMCTINYXML_H_INCLUDED
+#define INPUT_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
 
 using namespace std;
 CKeyboardLayoutConfiguration g_keyboardLayoutConfiguration;

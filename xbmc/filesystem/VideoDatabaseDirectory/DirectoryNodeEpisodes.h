@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef VIDEODATABASEDIRECTORY_DIRECTORYNODE_H_INCLUDED
+#define VIDEODATABASEDIRECTORY_DIRECTORYNODE_H_INCLUDED
 #include "DirectoryNode.h"
+#endif
+
 
 namespace XFILE
 {

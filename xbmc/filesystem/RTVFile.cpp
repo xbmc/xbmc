@@ -22,9 +22,21 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#ifndef FILESYSTEM_RTVFILE_H_INCLUDED
+#define FILESYSTEM_RTVFILE_H_INCLUDED
 #include "RTVFile.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 #include <errno.h>
 #include <sys/stat.h>
 #ifdef TARGET_WINDOWS
@@ -32,7 +44,11 @@
 #endif
 extern "C"
 {
+#ifndef FILESYSTEM_LIB_LIBRTV_INTERFACE_H_INCLUDED
+#define FILESYSTEM_LIB_LIBRTV_INTERFACE_H_INCLUDED
 #include "lib/libRTV/interface.h"
+#endif
+
 }
 
 

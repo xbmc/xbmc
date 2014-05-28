@@ -18,10 +18,22 @@
  *
  */
 
+#ifndef LEGACY_WINDOWDIALOG_H_INCLUDED
+#define LEGACY_WINDOWDIALOG_H_INCLUDED
 #include "WindowDialog.h"
+#endif
 
+
+#ifndef LEGACY_GUILIB_GUIWINDOW_H_INCLUDED
+#define LEGACY_GUILIB_GUIWINDOW_H_INCLUDED
 #include "guilib/GUIWindow.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define LEGACY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
 
 namespace XBMCAddon
 {

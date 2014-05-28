@@ -19,10 +19,26 @@
  *
  */
 
+#ifndef INTERFACES_IANNOUNCER_H_INCLUDED
+#define INTERFACES_IANNOUNCER_H_INCLUDED
 #include "IAnnouncer.h"
+#endif
+
+#ifndef INTERFACES_FILEITEM_H_INCLUDED
+#define INTERFACES_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef INTERFACES_THREADS_CRITICALSECTION_H_INCLUDED
+#define INTERFACES_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef INTERFACES_UTILS_GLOBALSHANDLING_H_INCLUDED
+#define INTERFACES_UTILS_GLOBALSHANDLING_H_INCLUDED
 #include "utils/GlobalsHandling.h"
+#endif
+
 #include <vector>
 
 namespace ANNOUNCEMENT

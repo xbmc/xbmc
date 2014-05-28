@@ -20,7 +20,11 @@
 
 #include <Python.h>
 
+#ifndef PYTHON_INTERFACES_LEGACY_CALLBACKHANDLER_H_INCLUDED
+#define PYTHON_INTERFACES_LEGACY_CALLBACKHANDLER_H_INCLUDED
 #include "interfaces/legacy/CallbackHandler.h"
+#endif
+
 
 namespace XBMCAddon
 {

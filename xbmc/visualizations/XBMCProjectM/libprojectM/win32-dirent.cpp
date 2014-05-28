@@ -8,7 +8,11 @@
 
 */
 
+#ifndef LIBPROJECTM_WIN32_DIRENT_H_INCLUDED
+#define LIBPROJECTM_WIN32_DIRENT_H_INCLUDED
 #include "win32-dirent.h"
+#endif
+
 #include <errno.h>
 #include <io.h> /* _findfirst and _findnext set errno iff they return -1 */
 #include <stdlib.h>

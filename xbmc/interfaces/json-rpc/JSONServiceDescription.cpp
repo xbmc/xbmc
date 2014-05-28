@@ -18,29 +18,121 @@
  *
  */
 
+#ifndef JSON_RPC_SERVICEDESCRIPTION_H_INCLUDED
+#define JSON_RPC_SERVICEDESCRIPTION_H_INCLUDED
 #include "ServiceDescription.h"
+#endif
+
+#ifndef JSON_RPC_JSONSERVICEDESCRIPTION_H_INCLUDED
+#define JSON_RPC_JSONSERVICEDESCRIPTION_H_INCLUDED
 #include "JSONServiceDescription.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_LOG_H_INCLUDED
+#define JSON_RPC_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_STDSTRING_H_INCLUDED
+#define JSON_RPC_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_JSONVARIANTPARSER_H_INCLUDED
+#define JSON_RPC_UTILS_JSONVARIANTPARSER_H_INCLUDED
 #include "utils/JSONVariantParser.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_STRINGUTILS_H_INCLUDED
+#define JSON_RPC_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef JSON_RPC_JSONRPC_H_INCLUDED
+#define JSON_RPC_JSONRPC_H_INCLUDED
 #include "JSONRPC.h"
+#endif
+
+#ifndef JSON_RPC_PLAYEROPERATIONS_H_INCLUDED
+#define JSON_RPC_PLAYEROPERATIONS_H_INCLUDED
 #include "PlayerOperations.h"
+#endif
+
+#ifndef JSON_RPC_PLAYLISTOPERATIONS_H_INCLUDED
+#define JSON_RPC_PLAYLISTOPERATIONS_H_INCLUDED
 #include "PlaylistOperations.h"
+#endif
+
+#ifndef JSON_RPC_FILEOPERATIONS_H_INCLUDED
+#define JSON_RPC_FILEOPERATIONS_H_INCLUDED
 #include "FileOperations.h"
+#endif
+
+#ifndef JSON_RPC_AUDIOLIBRARY_H_INCLUDED
+#define JSON_RPC_AUDIOLIBRARY_H_INCLUDED
 #include "AudioLibrary.h"
+#endif
+
+#ifndef JSON_RPC_VIDEOLIBRARY_H_INCLUDED
+#define JSON_RPC_VIDEOLIBRARY_H_INCLUDED
 #include "VideoLibrary.h"
+#endif
+
+#ifndef JSON_RPC_GUIOPERATIONS_H_INCLUDED
+#define JSON_RPC_GUIOPERATIONS_H_INCLUDED
 #include "GUIOperations.h"
+#endif
+
+#ifndef JSON_RPC_ADDONSOPERATIONS_H_INCLUDED
+#define JSON_RPC_ADDONSOPERATIONS_H_INCLUDED
 #include "AddonsOperations.h"
+#endif
+
+#ifndef JSON_RPC_SYSTEMOPERATIONS_H_INCLUDED
+#define JSON_RPC_SYSTEMOPERATIONS_H_INCLUDED
 #include "SystemOperations.h"
+#endif
+
+#ifndef JSON_RPC_INPUTOPERATIONS_H_INCLUDED
+#define JSON_RPC_INPUTOPERATIONS_H_INCLUDED
 #include "InputOperations.h"
+#endif
+
+#ifndef JSON_RPC_XBMCOPERATIONS_H_INCLUDED
+#define JSON_RPC_XBMCOPERATIONS_H_INCLUDED
 #include "XBMCOperations.h"
+#endif
+
+#ifndef JSON_RPC_APPLICATIONOPERATIONS_H_INCLUDED
+#define JSON_RPC_APPLICATIONOPERATIONS_H_INCLUDED
 #include "ApplicationOperations.h"
+#endif
+
+#ifndef JSON_RPC_PVROPERATIONS_H_INCLUDED
+#define JSON_RPC_PVROPERATIONS_H_INCLUDED
 #include "PVROperations.h"
+#endif
+
+#ifndef JSON_RPC_PROFILESOPERATIONS_H_INCLUDED
+#define JSON_RPC_PROFILESOPERATIONS_H_INCLUDED
 #include "ProfilesOperations.h"
+#endif
+
+#ifndef JSON_RPC_FAVOURITESOPERATIONS_H_INCLUDED
+#define JSON_RPC_FAVOURITESOPERATIONS_H_INCLUDED
 #include "FavouritesOperations.h"
+#endif
+
+#ifndef JSON_RPC_TEXTUREOPERATIONS_H_INCLUDED
+#define JSON_RPC_TEXTUREOPERATIONS_H_INCLUDED
 #include "TextureOperations.h"
+#endif
+
+#ifndef JSON_RPC_SETTINGSOPERATIONS_H_INCLUDED
+#define JSON_RPC_SETTINGSOPERATIONS_H_INCLUDED
 #include "SettingsOperations.h"
+#endif
+
 
 using namespace std;
 using namespace JSONRPC;

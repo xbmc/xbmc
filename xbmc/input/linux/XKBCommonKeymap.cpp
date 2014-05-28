@@ -27,10 +27,22 @@
 
 #include <xkbcommon/xkbcommon.h>
 
+#ifndef LINUX_APPLICATION_H_INCLUDED
+#define LINUX_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
 
+
+#ifndef LINUX_WINDOWING_DLLXKBCOMMON_H_INCLUDED
+#define LINUX_WINDOWING_DLLXKBCOMMON_H_INCLUDED
 #include "windowing/DllXKBCommon.h"
+#endif
+
+#ifndef LINUX_XKBCOMMONKEYMAP_H_INCLUDED
+#define LINUX_XKBCOMMONKEYMAP_H_INCLUDED
 #include "XKBCommonKeymap.h"
+#endif
+
 
 struct xkb_context *
 CXKBKeymap::CreateXKBContext(IDllXKBCommon &xkbCommonLibrary)

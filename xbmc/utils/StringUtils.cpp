@@ -29,9 +29,21 @@
 //------------------------------------------------------------------------
 
 
+#ifndef UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_STRINGUTILS_H_INCLUDED
 #include "StringUtils.h"
+#endif
+
+#ifndef UTILS_UTILS_REGEXP_H_INCLUDED
+#define UTILS_UTILS_REGEXP_H_INCLUDED
 #include "utils/RegExp.h"
+#endif
+
+#ifndef UTILS_UTILS_FSTRCMP_H_INCLUDED
+#define UTILS_UTILS_FSTRCMP_H_INCLUDED
 #include "utils/fstrcmp.h"
+#endif
+
 #include <locale>
 
 #include <math.h>

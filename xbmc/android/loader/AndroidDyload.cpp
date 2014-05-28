@@ -6,8 +6,16 @@
 #include <vector>
 #include <dlfcn.h>
 #include <fcntl.h>
+#ifndef LOADER_ANDROID_ACTIVITY_XBMCAPP_H_INCLUDED
+#define LOADER_ANDROID_ACTIVITY_XBMCAPP_H_INCLUDED
 #include "android/activity/XBMCApp.h"
+#endif
+
+#ifndef LOADER_ANDROIDDYLOAD_H_INCLUDED
+#define LOADER_ANDROIDDYLOAD_H_INCLUDED
 #include "AndroidDyload.h"
+#endif
+
 using namespace std;
 
 //#define DEBUG_SPEW

@@ -20,7 +20,11 @@
 
 #pragma once
 #include "deque"
+#ifndef FILESYSTEM_SYSTEM_H_INCLUDED
+#define FILESYSTEM_SYSTEM_H_INCLUDED
 #include "system.h" // for SOCKET
+#endif
+
 
 #include <algorithm>
 #include <string>

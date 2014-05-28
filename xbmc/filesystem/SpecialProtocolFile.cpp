@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef FILESYSTEM_SPECIALPROTOCOLFILE_H_INCLUDED
+#define FILESYSTEM_SPECIALPROTOCOLFILE_H_INCLUDED
 #include "SpecialProtocolFile.h"
+#endif
+
+#ifndef FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "SpecialProtocol.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 #include <sys/stat.h>
 

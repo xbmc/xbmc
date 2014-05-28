@@ -21,8 +21,16 @@
 
 #pragma once
 
+#ifndef VIDEORENDERERS_THREADS_CRITICALSECTION_H_INCLUDED
+#define VIDEORENDERERS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef VIDEORENDERERS_BASERENDERER_H_INCLUDED
+#define VIDEORENDERERS_BASERENDERER_H_INCLUDED
 #include "BaseRenderer.h"
+#endif
+
 
 #include <vector>
 

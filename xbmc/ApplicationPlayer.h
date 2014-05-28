@@ -21,8 +21,16 @@
  */
 
 #include <boost/shared_ptr.hpp>
+#ifndef ROOT_THREADS_SINGLELOCK_H_INCLUDED
+#define ROOT_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef ROOT_CORES_PLAYERCOREFACTORY_PLAYERCOREFACTORY_H_INCLUDED
+#define ROOT_CORES_PLAYERCOREFACTORY_PLAYERCOREFACTORY_H_INCLUDED
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#endif
+
 
 typedef enum
 {

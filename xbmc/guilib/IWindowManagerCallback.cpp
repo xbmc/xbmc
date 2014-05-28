@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef GUILIB_IWINDOWMANAGERCALLBACK_H_INCLUDED
+#define GUILIB_IWINDOWMANAGERCALLBACK_H_INCLUDED
 #include "IWindowManagerCallback.h"
+#endif
+
 
 
 IWindowManagerCallback::IWindowManagerCallback(void)

@@ -18,20 +18,72 @@
  *
  */
 
+#ifndef CHANNELS_FILEITEM_H_INCLUDED
+#define CHANNELS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/log.h"
-#include "Util.h"
-#include "filesystem/File.h"
-#include "utils/StringUtils.h"
-#include "threads/SingleLock.h"
+#endif
 
+#ifndef CHANNELS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define CHANNELS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef CHANNELS_UTILS_LOG_H_INCLUDED
+#define CHANNELS_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef CHANNELS_UTIL_H_INCLUDED
+#define CHANNELS_UTIL_H_INCLUDED
+#include "Util.h"
+#endif
+
+#ifndef CHANNELS_FILESYSTEM_FILE_H_INCLUDED
+#define CHANNELS_FILESYSTEM_FILE_H_INCLUDED
+#include "filesystem/File.h"
+#endif
+
+#ifndef CHANNELS_UTILS_STRINGUTILS_H_INCLUDED
+#define CHANNELS_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+#ifndef CHANNELS_THREADS_SINGLELOCK_H_INCLUDED
+#define CHANNELS_THREADS_SINGLELOCK_H_INCLUDED
+#include "threads/SingleLock.h"
+#endif
+
+
+#ifndef CHANNELS_PVR_CHANNELS_PVRCHANNELGROUPINTERNAL_H_INCLUDED
+#define CHANNELS_PVR_CHANNELS_PVRCHANNELGROUPINTERNAL_H_INCLUDED
 #include "pvr/channels/PVRChannelGroupInternal.h"
+#endif
+
+#ifndef CHANNELS_EPG_EPGCONTAINER_H_INCLUDED
+#define CHANNELS_EPG_EPGCONTAINER_H_INCLUDED
 #include "epg/EpgContainer.h"
+#endif
+
+#ifndef CHANNELS_PVR_TIMERS_PVRTIMERS_H_INCLUDED
+#define CHANNELS_PVR_TIMERS_PVRTIMERS_H_INCLUDED
 #include "pvr/timers/PVRTimers.h"
+#endif
+
+#ifndef CHANNELS_PVR_PVRDATABASE_H_INCLUDED
+#define CHANNELS_PVR_PVRDATABASE_H_INCLUDED
 #include "pvr/PVRDatabase.h"
+#endif
+
+#ifndef CHANNELS_PVR_PVRMANAGER_H_INCLUDED
+#define CHANNELS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef CHANNELS_PVR_ADDONS_PVRCLIENTS_H_INCLUDED
+#define CHANNELS_PVR_ADDONS_PVRCLIENTS_H_INCLUDED
 #include "pvr/addons/PVRClients.h"
+#endif
+
 
 using namespace PVR;
 using namespace EPG;

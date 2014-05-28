@@ -20,10 +20,26 @@
  *
  */
 
+#ifndef PICTURES_WINDOWS_GUIMEDIAWINDOW_H_INCLUDED
+#define PICTURES_WINDOWS_GUIMEDIAWINDOW_H_INCLUDED
 #include "windows/GUIMediaWindow.h"
+#endif
+
+#ifndef PICTURES_GUIWINDOWSLIDESHOW_H_INCLUDED
+#define PICTURES_GUIWINDOWSLIDESHOW_H_INCLUDED
 #include "GUIWindowSlideShow.h"
+#endif
+
+#ifndef PICTURES_PICTURETHUMBLOADER_H_INCLUDED
+#define PICTURES_PICTURETHUMBLOADER_H_INCLUDED
 #include "PictureThumbLoader.h"
+#endif
+
+#ifndef PICTURES_DLLIMAGELIB_H_INCLUDED
+#define PICTURES_DLLIMAGELIB_H_INCLUDED
 #include "DllImageLib.h"
+#endif
+
 
 class CGUIDialogProgress;
 

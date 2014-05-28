@@ -22,13 +22,37 @@
 
 #include <math.h>
 
+#ifndef KARAOKE_UTILS_MATHUTILS_H_INCLUDED
+#define KARAOKE_UTILS_MATHUTILS_H_INCLUDED
 #include "utils/MathUtils.h"
-#include "Application.h"
-#include "music/MusicDatabase.h"
-#include "settings/AdvancedSettings.h"
-#include "utils/log.h"
+#endif
 
+#ifndef KARAOKE_APPLICATION_H_INCLUDED
+#define KARAOKE_APPLICATION_H_INCLUDED
+#include "Application.h"
+#endif
+
+#ifndef KARAOKE_MUSIC_MUSICDATABASE_H_INCLUDED
+#define KARAOKE_MUSIC_MUSICDATABASE_H_INCLUDED
+#include "music/MusicDatabase.h"
+#endif
+
+#ifndef KARAOKE_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define KARAOKE_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef KARAOKE_UTILS_LOG_H_INCLUDED
+#define KARAOKE_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+
+#ifndef KARAOKE_KARAOKELYRICS_H_INCLUDED
+#define KARAOKE_KARAOKELYRICS_H_INCLUDED
 #include "karaokelyrics.h"
+#endif
+
 
 CKaraokeLyrics::CKaraokeLyrics()
 {

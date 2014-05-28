@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef LINUX_UDEVPROVIDER_H_INCLUDED
+#define LINUX_UDEVPROVIDER_H_INCLUDED
 #include "UDevProvider.h"
+#endif
+
 
 #ifdef HAVE_LIBUDEV
 

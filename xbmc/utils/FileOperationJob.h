@@ -19,10 +19,26 @@
  *
  */
 
+#ifndef UTILS_SYSTEM_H_INCLUDED
+#define UTILS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef UTILS_FILEITEM_H_INCLUDED
+#define UTILS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef UTILS_JOB_H_INCLUDED
+#define UTILS_JOB_H_INCLUDED
 #include "Job.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_FILE_H_INCLUDED
+#define UTILS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
 
 class CGUIDialogProgressBarHandle;
 

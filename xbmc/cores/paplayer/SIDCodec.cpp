@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef PAPLAYER_SIDCODEC_H_INCLUDED
+#define PAPLAYER_SIDCODEC_H_INCLUDED
 #include "SIDCodec.h"
+#endif
+
+#ifndef PAPLAYER_CORES_DLLLOADER_DLLLOADER_H_INCLUDED
+#define PAPLAYER_CORES_DLLLOADER_DLLLOADER_H_INCLUDED
 #include "cores/DllLoader/DllLoader.h"
+#endif
+
+#ifndef PAPLAYER_FILEITEM_H_INCLUDED
+#define PAPLAYER_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_LOG_H_INCLUDED
+#define PAPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_URIUTILS_H_INCLUDED
+#define PAPLAYER_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef PAPLAYER_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define PAPLAYER_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
 
 SIDCodec::SIDCodec()
 {

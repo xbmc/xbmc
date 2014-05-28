@@ -21,15 +21,51 @@
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
+#ifndef FILESYSTEM_NETWORK_NETWORK_H_INCLUDED
+#define FILESYSTEM_NETWORK_NETWORK_H_INCLUDED
 #include "network/Network.h"
+#endif
+
+#ifndef FILESYSTEM_SYSTEM_H_INCLUDED
+#define FILESYSTEM_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef FILESYSTEM_FILEFACTORY_H_INCLUDED
+#define FILESYSTEM_FILEFACTORY_H_INCLUDED
 #include "FileFactory.h"
+#endif
+
+#ifndef FILESYSTEM_HDFILE_H_INCLUDED
+#define FILESYSTEM_HDFILE_H_INCLUDED
 #include "HDFile.h"
+#endif
+
+#ifndef FILESYSTEM_CURLFILE_H_INCLUDED
+#define FILESYSTEM_CURLFILE_H_INCLUDED
 #include "CurlFile.h"
+#endif
+
+#ifndef FILESYSTEM_HTTPFILE_H_INCLUDED
+#define FILESYSTEM_HTTPFILE_H_INCLUDED
 #include "HTTPFile.h"
+#endif
+
+#ifndef FILESYSTEM_DAVFILE_H_INCLUDED
+#define FILESYSTEM_DAVFILE_H_INCLUDED
 #include "DAVFile.h"
+#endif
+
+#ifndef FILESYSTEM_SHOUTCASTFILE_H_INCLUDED
+#define FILESYSTEM_SHOUTCASTFILE_H_INCLUDED
 #include "ShoutcastFile.h"
+#endif
+
+#ifndef FILESYSTEM_FILEREADERFILE_H_INCLUDED
+#define FILESYSTEM_FILEREADERFILE_H_INCLUDED
 #include "FileReaderFile.h"
+#endif
+
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
 #include "windows/WINFileSmb.h"
@@ -61,7 +97,11 @@
 #if defined(TARGET_ANDROID)
 #include "APKFile.h"
 #endif
+#ifndef FILESYSTEM_ZIPFILE_H_INCLUDED
+#define FILESYSTEM_ZIPFILE_H_INCLUDED
 #include "ZipFile.h"
+#endif
+
 #ifdef HAS_FILESYSTEM_RAR
 #include "RarFile.h"
 #endif
@@ -80,22 +120,86 @@
 #ifdef HAS_UPNP
 #include "UPnPFile.h"
 #endif
+#ifndef FILESYSTEM_PIPESMANAGER_H_INCLUDED
+#define FILESYSTEM_PIPESMANAGER_H_INCLUDED
 #include "PipesManager.h"
+#endif
+
+#ifndef FILESYSTEM_PIPEFILE_H_INCLUDED
+#define FILESYSTEM_PIPEFILE_H_INCLUDED
 #include "PipeFile.h"
+#endif
+
+#ifndef FILESYSTEM_MUSICDATABASEFILE_H_INCLUDED
+#define FILESYSTEM_MUSICDATABASEFILE_H_INCLUDED
 #include "MusicDatabaseFile.h"
+#endif
+
+#ifndef FILESYSTEM_SPECIALPROTOCOLFILE_H_INCLUDED
+#define FILESYSTEM_SPECIALPROTOCOLFILE_H_INCLUDED
 #include "SpecialProtocolFile.h"
+#endif
+
+#ifndef FILESYSTEM_MULTIPATHFILE_H_INCLUDED
+#define FILESYSTEM_MULTIPATHFILE_H_INCLUDED
 #include "MultiPathFile.h"
+#endif
+
+#ifndef FILESYSTEM_TUXBOXFILE_H_INCLUDED
+#define FILESYSTEM_TUXBOXFILE_H_INCLUDED
 #include "TuxBoxFile.h"
+#endif
+
+#ifndef FILESYSTEM_UDFFILE_H_INCLUDED
+#define FILESYSTEM_UDFFILE_H_INCLUDED
 #include "UDFFile.h"
+#endif
+
+#ifndef FILESYSTEM_MYTHFILE_H_INCLUDED
+#define FILESYSTEM_MYTHFILE_H_INCLUDED
 #include "MythFile.h"
+#endif
+
+#ifndef FILESYSTEM_HDHOMERUNFILE_H_INCLUDED
+#define FILESYSTEM_HDHOMERUNFILE_H_INCLUDED
 #include "HDHomeRunFile.h"
+#endif
+
+#ifndef FILESYSTEM_SLINGBOXFILE_H_INCLUDED
+#define FILESYSTEM_SLINGBOXFILE_H_INCLUDED
 #include "SlingboxFile.h"
+#endif
+
+#ifndef FILESYSTEM_IMAGEFILE_H_INCLUDED
+#define FILESYSTEM_IMAGEFILE_H_INCLUDED
 #include "ImageFile.h"
+#endif
+
+#ifndef FILESYSTEM_APPLICATION_H_INCLUDED
+#define FILESYSTEM_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_NETWORK_WAKEONACCESS_H_INCLUDED
+#define FILESYSTEM_NETWORK_WAKEONACCESS_H_INCLUDED
 #include "network/WakeOnAccess.h"
+#endif
+
 
 using namespace XFILE;
 

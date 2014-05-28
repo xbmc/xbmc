@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef TAGS_IMUSICINFOTAGLOADER_H_INCLUDED
+#define TAGS_IMUSICINFOTAGLOADER_H_INCLUDED
 #include "ImusicInfoTagLoader.h"
+#endif
+
 
 namespace MUSIC_INFO
 {

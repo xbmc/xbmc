@@ -20,13 +20,29 @@
  *
  */
 
+#ifndef VIDEO_SYSTEM_H_INCLUDED
+#define VIDEO_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef VIDEO_DLLAVFORMAT_H_INCLUDED
+#define VIDEO_DLLAVFORMAT_H_INCLUDED
 #include "DllAvFormat.h"
+#endif
+
+#ifndef VIDEO_DLLAVCODEC_H_INCLUDED
+#define VIDEO_DLLAVCODEC_H_INCLUDED
 #include "DllAvCodec.h"
+#endif
+
 
 #include <vector>
 #include <string>
+#ifndef VIDEO_CORES_VIDEORENDERERS_RENDERFORMATS_H_INCLUDED
+#define VIDEO_CORES_VIDEORENDERERS_RENDERFORMATS_H_INCLUDED
 #include "cores/VideoRenderers/RenderFormats.h"
+#endif
+
 
 struct DVDCodecAvailableType 
 {

@@ -22,11 +22,31 @@
 
 #include <math.h>
 
+#ifndef KARAOKE_FILESYSTEM_FILE_H_INCLUDED
+#define KARAOKE_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef KARAOKE_UTILS_LOG_H_INCLUDED
+#define KARAOKE_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef KARAOKE_UTILS_URIUTILS_H_INCLUDED
+#define KARAOKE_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef KARAOKE_UTILS_STRINGUTILS_H_INCLUDED
+#define KARAOKE_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef KARAOKE_KARAOKELYRICSTEXTUSTAR_H_INCLUDED
+#define KARAOKE_KARAOKELYRICSTEXTUSTAR_H_INCLUDED
 #include "karaokelyricstextustar.h"
+#endif
+
 
 
 CKaraokeLyricsTextUStar::CKaraokeLyricsTextUStar( const CStdString & lyricsFile )

@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef ROOT_UTILS_STDSTRING_H_INCLUDED
+#define ROOT_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef ROOT_FILEITEM_H_INCLUDED
+#define ROOT_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
 
 class CAppParamParser
 {

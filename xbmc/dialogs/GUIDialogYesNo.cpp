@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "GUIDialogYesNo.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_KEY_H_INCLUDED
+#define DIALOGS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
 
 #define CONTROL_NO_BUTTON 10
 #define CONTROL_YES_BUTTON 11

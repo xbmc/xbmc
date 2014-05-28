@@ -19,9 +19,21 @@
  *
  */
 
+#ifndef VIDEO_SYSTEM_H_INCLUDED
+#define VIDEO_SYSTEM_H_INCLUDED
 #include "system.h" // for HAS_XRANDR, and Win32 types
+#endif
+
+#ifndef VIDEO_THREADS_THREAD_H_INCLUDED
+#define VIDEO_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef VIDEO_THREADS_CRITICALSECTION_H_INCLUDED
+#define VIDEO_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 //TODO: get rid of #ifdef hell, abstract implementations in separate classes
 

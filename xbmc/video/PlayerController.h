@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef VIDEO_DIALOGS_GUIDIALOGSLIDER_H_INCLUDED
+#define VIDEO_DIALOGS_GUIDIALOGSLIDER_H_INCLUDED
 #include "dialogs/GUIDialogSlider.h"
+#endif
+
 
 /*! \brief Player controller class to handle user actions.
 

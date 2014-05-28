@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef FILESYSTEM_UTILS_STDSTRING_H_INCLUDED
+#define FILESYSTEM_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef FILESYSTEM_IDIRECTORY_H_INCLUDED
+#define FILESYSTEM_IDIRECTORY_H_INCLUDED
 #include "IDirectory.h"
+#endif
+
 
 class CFileItemList;
 class CFileItem;

@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef OSX_SYSTEM_H_INCLUDED
+#define OSX_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #if defined(TARGET_DARWIN_OSX)
 #include <list>

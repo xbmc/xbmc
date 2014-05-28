@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef VIDEO_DBURL_H_INCLUDED
+#define VIDEO_DBURL_H_INCLUDED
 #include "DbUrl.h"
+#endif
+
 
 class CVideoDbUrl : public CDbUrl
 {

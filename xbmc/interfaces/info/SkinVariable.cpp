@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef INFO_SKINVARIABLE_H_INCLUDED
+#define INFO_SKINVARIABLE_H_INCLUDED
 #include "SkinVariable.h"
+#endif
+
+#ifndef INFO_GUIINFOMANAGER_H_INCLUDED
+#define INFO_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef INFO_UTILS_XBMCTINYXML_H_INCLUDED
+#define INFO_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
 
 using namespace std;
 using namespace INFO;

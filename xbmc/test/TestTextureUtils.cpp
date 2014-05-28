@@ -18,10 +18,22 @@
  *
  */
 
+#ifndef TEST_URL_H_INCLUDED
+#define TEST_URL_H_INCLUDED
 #include "URL.h"
-#include "TextureDatabase.h"
+#endif
 
+#ifndef TEST_TEXTUREDATABASE_H_INCLUDED
+#define TEST_TEXTUREDATABASE_H_INCLUDED
+#include "TextureDatabase.h"
+#endif
+
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 using ::testing::ValuesIn;
 

@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef WIN32_STDAFX_H_INCLUDED
+#define WIN32_STDAFX_H_INCLUDED
 #include "stdafx.h"
+#endif
+
+#ifndef WIN32_WMIINTERFACE_H_INCLUDED
+#define WIN32_WMIINTERFACE_H_INCLUDED
 #include "WMIInterface.h"
+#endif
+
+#ifndef WIN32____UTIL_H_INCLUDED
+#define WIN32____UTIL_H_INCLUDED
 #include "../Util.h"
+#endif
+
 
 using namespace std;
 

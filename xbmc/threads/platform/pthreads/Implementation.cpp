@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef PTHREADS_THREADS_LOCKABLES_H_INCLUDED
+#define PTHREADS_THREADS_LOCKABLES_H_INCLUDED
 #include "threads/Lockables.h"
+#endif
+
+#ifndef PTHREADS_THREADS_PLATFORM_PTHREADS_CRITICALSECTION_H_INCLUDED
+#define PTHREADS_THREADS_PLATFORM_PTHREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/platform/pthreads/CriticalSection.h"
+#endif
+
+#ifndef PTHREADS_THREADS_HELPERS_H_INCLUDED
+#define PTHREADS_THREADS_HELPERS_H_INCLUDED
 #include "threads/Helpers.h"
+#endif
+
 
 #include <pthread.h>
 

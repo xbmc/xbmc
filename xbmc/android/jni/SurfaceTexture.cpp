@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef JNI_JNIBASE_H_INCLUDED
+#define JNI_JNIBASE_H_INCLUDED
 #include "JNIBase.h"
+#endif
+
+#ifndef JNI_CONTEXT_H_INCLUDED
+#define JNI_CONTEXT_H_INCLUDED
 #include "Context.h"
+#endif
+
+#ifndef JNI_CLASSLOADER_H_INCLUDED
+#define JNI_CLASSLOADER_H_INCLUDED
 #include "ClassLoader.h"
+#endif
+
+#ifndef JNI_SURFACETEXTURE_H_INCLUDED
+#define JNI_SURFACETEXTURE_H_INCLUDED
 #include "SurfaceTexture.h"
+#endif
+
 
 #include "jutils/jutils-details.hpp"
 

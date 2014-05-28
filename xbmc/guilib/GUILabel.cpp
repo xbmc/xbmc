@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef GUILIB_GUILABEL_H_INCLUDED
+#define GUILIB_GUILABEL_H_INCLUDED
 #include "GUILabel.h"
+#endif
+
 #include <limits>
 
 CGUILabel::CGUILabel(float posX, float posY, float width, float height, const CLabelInfo& labelInfo, CGUILabel::OVER_FLOW overflow)

@@ -17,7 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef JNI_WIFIMANAGERMULTICASTLOCK_H_INCLUDED
+#define JNI_WIFIMANAGERMULTICASTLOCK_H_INCLUDED
 #include "WifiManagerMulticastLock.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

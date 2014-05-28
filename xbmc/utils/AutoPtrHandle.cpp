@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef UTILS_AUTOPTRHANDLE_H_INCLUDED
+#define UTILS_AUTOPTRHANDLE_H_INCLUDED
 #include "AutoPtrHandle.h"
+#endif
+
 
 using namespace AUTOPTR;
 

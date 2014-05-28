@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef ADDONS_ADDON_H_INCLUDED
+#define ADDONS_ADDON_H_INCLUDED
 #include "Addon.h"
+#endif
+
+#ifndef ADDONS_ADDONMANAGER_H_INCLUDED
+#define ADDONS_ADDONMANAGER_H_INCLUDED
 #include "AddonManager.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_SETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define ADDONS_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_FILE_H_INCLUDED
+#define ADDONS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef ADDONS_SYSTEM_H_INCLUDED
+#define ADDONS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
@@ -33,10 +57,26 @@
 #ifdef TARGET_FREEBSD
 #include "freebsd/FreeBSDGNUReplacements.h"
 #endif
+#ifndef ADDONS_UTILS_LOG_H_INCLUDED
+#define ADDONS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ADDONS_UTILS_STRINGUTILS_H_INCLUDED
+#define ADDONS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ADDONS_UTILS_URIUTILS_H_INCLUDED
+#define ADDONS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef ADDONS_URL_H_INCLUDED
+#define ADDONS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 #include <vector>
 #include <string.h>
 #include <ostream>

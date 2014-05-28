@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef GUILIB_SYSTEM_H_INCLUDED
+#define GUILIB_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef GUILIB_GUILISTITEMLAYOUT_H_INCLUDED
+#define GUILIB_GUILISTITEMLAYOUT_H_INCLUDED
 #include "GUIListItemLayout.h"
+#endif
+
+#ifndef GUILIB_FILEITEM_H_INCLUDED
+#define GUILIB_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef GUILIB_GUICONTROLFACTORY_H_INCLUDED
+#define GUILIB_GUICONTROLFACTORY_H_INCLUDED
 #include "GUIControlFactory.h"
+#endif
+
+#ifndef GUILIB_GUIINFOMANAGER_H_INCLUDED
+#define GUILIB_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef GUILIB_GUILISTLABEL_H_INCLUDED
+#define GUILIB_GUILISTLABEL_H_INCLUDED
 #include "GUIListLabel.h"
+#endif
+
+#ifndef GUILIB_GUIIMAGE_H_INCLUDED
+#define GUILIB_GUIIMAGE_H_INCLUDED
 #include "GUIImage.h"
+#endif
+
+#ifndef GUILIB_UTILS_XBMCTINYXML_H_INCLUDED
+#define GUILIB_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
 
 using namespace std;
 

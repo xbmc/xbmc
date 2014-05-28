@@ -20,7 +20,11 @@
 
 #pragma once
 
+#ifndef THREADS_THREADS_HELPERS_H_INCLUDED
+#define THREADS_THREADS_HELPERS_H_INCLUDED
 #include "threads/Helpers.h"
+#endif
+
 
 namespace XbmcThreads
 {

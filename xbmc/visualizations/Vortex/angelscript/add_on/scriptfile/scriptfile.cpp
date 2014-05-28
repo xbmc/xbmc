@@ -1,4 +1,8 @@
+#ifndef SCRIPTFILE_SCRIPTFILE_H_INCLUDED
+#define SCRIPTFILE_SCRIPTFILE_H_INCLUDED
 #include "scriptfile.h"
+#endif
+
 #include <new>
 #include <assert.h>
 #include <string>

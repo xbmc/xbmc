@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_SLINGBOXFILE_H_INCLUDED
+#define FILESYSTEM_SLINGBOXFILE_H_INCLUDED
 #include "SlingboxFile.h"
+#endif
+
+#ifndef FILESYSTEM_FILESYSTEM_FILE_H_INCLUDED
+#define FILESYSTEM_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef FILESYSTEM_LIB_SLINGBOXLIB_SLINGBOXLIB_H_INCLUDED
+#define FILESYSTEM_LIB_SLINGBOXLIB_SLINGBOXLIB_H_INCLUDED
 #include "lib/SlingboxLib/SlingboxLib.h"
+#endif
+
+#ifndef FILESYSTEM_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define FILESYSTEM_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_XMLUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 using namespace XFILE;
 using namespace std;

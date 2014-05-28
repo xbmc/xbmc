@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef JNI_BUFFER_H_INCLUDED
+#define JNI_BUFFER_H_INCLUDED
 #include "Buffer.h"
+#endif
+
 
 class CJNIByteBuffer : public CJNIBuffer
 {

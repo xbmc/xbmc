@@ -20,8 +20,16 @@
  */
 
 
+#ifndef FILESYSTEM_MUSICFILEDIRECTORY_H_INCLUDED
+#define FILESYSTEM_MUSICFILEDIRECTORY_H_INCLUDED
 #include "MusicFileDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_DLLVORBISFILE_H_INCLUDED
+#define FILESYSTEM_DLLVORBISFILE_H_INCLUDED
 #include "DllVorbisfile.h"
+#endif
+
 
 namespace XFILE
 {

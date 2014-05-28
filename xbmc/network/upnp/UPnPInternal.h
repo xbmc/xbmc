@@ -18,12 +18,36 @@
  *
  */
 #pragma once
+#ifndef UPNP_SYSTEM_H_INCLUDED
+#define UPNP_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef UPNP_UTILS_STDSTRING_H_INCLUDED
+#define UPNP_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef UPNP_NPTTYPES_H_INCLUDED
+#define UPNP_NPTTYPES_H_INCLUDED
 #include "NptTypes.h"
+#endif
+
+#ifndef UPNP_NPTREFERENCES_H_INCLUDED
+#define UPNP_NPTREFERENCES_H_INCLUDED
 #include "NptReferences.h"
+#endif
+
+#ifndef UPNP_NPTSTRINGS_H_INCLUDED
+#define UPNP_NPTSTRINGS_H_INCLUDED
 #include "NptStrings.h"
+#endif
+
+#ifndef UPNP_FILEITEM_H_INCLUDED
+#define UPNP_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
 
 class CUPnPServer;
 class CFileItem;

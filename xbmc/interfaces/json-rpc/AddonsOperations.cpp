@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef JSON_RPC_ADDONSOPERATIONS_H_INCLUDED
+#define JSON_RPC_ADDONSOPERATIONS_H_INCLUDED
 #include "AddonsOperations.h"
+#endif
+
+#ifndef JSON_RPC_JSONUTILS_H_INCLUDED
+#define JSON_RPC_JSONUTILS_H_INCLUDED
 #include "JSONUtils.h"
+#endif
+
+#ifndef JSON_RPC_ADDONS_ADDONMANAGER_H_INCLUDED
+#define JSON_RPC_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef JSON_RPC_ADDONS_ADDONDATABASE_H_INCLUDED
+#define JSON_RPC_ADDONS_ADDONDATABASE_H_INCLUDED
 #include "addons/AddonDatabase.h"
+#endif
+
+#ifndef JSON_RPC_ADDONS_PLUGINSOURCE_H_INCLUDED
+#define JSON_RPC_ADDONS_PLUGINSOURCE_H_INCLUDED
 #include "addons/PluginSource.h"
+#endif
+
+#ifndef JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
+#define JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef JSON_RPC_TEXTURECACHE_H_INCLUDED
+#define JSON_RPC_TEXTURECACHE_H_INCLUDED
 #include "TextureCache.h"
+#endif
+
+#ifndef JSON_RPC_FILESYSTEM_FILE_H_INCLUDED
+#define JSON_RPC_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_STRINGUTILS_H_INCLUDED
+#define JSON_RPC_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace std;
 using namespace JSONRPC;

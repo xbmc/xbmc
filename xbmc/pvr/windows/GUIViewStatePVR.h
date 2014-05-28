@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef WINDOWS_VIEW_GUIVIEWSTATE_H_INCLUDED
+#define WINDOWS_VIEW_GUIVIEWSTATE_H_INCLUDED
 #include "view/GUIViewState.h"
+#endif
+
+#ifndef WINDOWS_GUIWINDOWPVRCOMMON_H_INCLUDED
+#define WINDOWS_GUIWINDOWPVRCOMMON_H_INCLUDED
 #include "GUIWindowPVRCommon.h"
+#endif
+
 
 namespace PVR
 {

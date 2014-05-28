@@ -18,23 +18,91 @@
  *
  */
 
+#ifndef ADDONS_REPOSITORY_H_INCLUDED
+#define ADDONS_REPOSITORY_H_INCLUDED
 #include "Repository.h"
+#endif
+
+#ifndef ADDONS_ADDONS_ADDONDATABASE_H_INCLUDED
+#define ADDONS_ADDONS_ADDONDATABASE_H_INCLUDED
 #include "addons/AddonDatabase.h"
+#endif
+
+#ifndef ADDONS_ADDONS_ADDONINSTALLER_H_INCLUDED
+#define ADDONS_ADDONS_ADDONINSTALLER_H_INCLUDED
 #include "addons/AddonInstaller.h"
+#endif
+
+#ifndef ADDONS_ADDONS_ADDONMANAGER_H_INCLUDED
+#define ADDONS_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef ADDONS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define ADDONS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef ADDONS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define ADDONS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_FILE_H_INCLUDED
+#define ADDONS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_PLUGINDIRECTORY_H_INCLUDED
+#define ADDONS_FILESYSTEM_PLUGINDIRECTORY_H_INCLUDED
 #include "filesystem/PluginDirectory.h"
+#endif
+
+#ifndef ADDONS_PVR_PVRMANAGER_H_INCLUDED
+#define ADDONS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_SETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef ADDONS_UTILS_LOG_H_INCLUDED
+#define ADDONS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ADDONS_UTILS_STRINGUTILS_H_INCLUDED
+#define ADDONS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ADDONS_UTILS_URIUTILS_H_INCLUDED
+#define ADDONS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef ADDONS_UTILS_XBMCTINYXML_H_INCLUDED
+#define ADDONS_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef ADDONS_FILEITEM_H_INCLUDED
+#define ADDONS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef ADDONS_TEXTUREDATABASE_H_INCLUDED
+#define ADDONS_TEXTUREDATABASE_H_INCLUDED
 #include "TextureDatabase.h"
+#endif
+
+#ifndef ADDONS_URL_H_INCLUDED
+#define ADDONS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

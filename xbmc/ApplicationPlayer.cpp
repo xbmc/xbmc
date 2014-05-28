@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef ROOT_APPLICATIONPLAYER_H_INCLUDED
+#define ROOT_APPLICATIONPLAYER_H_INCLUDED
 #include "ApplicationPlayer.h"
+#endif
+
+#ifndef ROOT_CORES_IPLAYER_H_INCLUDED
+#define ROOT_CORES_IPLAYER_H_INCLUDED
 #include "cores/IPlayer.h"
+#endif
+
+#ifndef ROOT_APPLICATION_H_INCLUDED
+#define ROOT_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
 
 #define VOLUME_MINIMUM 0.0f        // -60dB
 #define VOLUME_MAXIMUM 1.0f        // 0dB

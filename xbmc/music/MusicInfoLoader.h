@@ -18,8 +18,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef MUSIC_BACKGROUNDINFOLOADER_H_INCLUDED
+#define MUSIC_BACKGROUNDINFOLOADER_H_INCLUDED
 #include "BackgroundInfoLoader.h"
+#endif
+
+#ifndef MUSIC_MUSICDATABASE_H_INCLUDED
+#define MUSIC_MUSICDATABASE_H_INCLUDED
 #include "MusicDatabase.h"
+#endif
+
 
 class CFileItemList;
 class CMusicThumbLoader;

@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef TEST_UTILS_HTTPHEADER_H_INCLUDED
+#define TEST_UTILS_HTTPHEADER_H_INCLUDED
 #include "utils/HttpHeader.h"
+#endif
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 TEST(TestHttpHeader, General)
 {

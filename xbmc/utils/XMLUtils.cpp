@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef UTILS_XMLUTILS_H_INCLUDED
+#define UTILS_XMLUTILS_H_INCLUDED
 #include "XMLUtils.h"
+#endif
+
+#ifndef UTILS_URL_H_INCLUDED
+#define UTILS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_STRINGUTILS_H_INCLUDED
 #include "StringUtils.h"
+#endif
+
 #ifdef TARGET_WINDOWS
 #include "PlatformDefs.h" //for strcasecmp
 #endif

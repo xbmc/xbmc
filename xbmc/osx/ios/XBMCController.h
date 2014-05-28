@@ -24,7 +24,11 @@
 #import <AudioToolbox/AudioToolbox.h>
 
 #import "XBMC_events.h"
+#ifndef IOS_XBMC_KEYSYM_H_INCLUDED
+#define IOS_XBMC_KEYSYM_H_INCLUDED
 #include "XBMC_keysym.h"
+#endif
+
 
 @class IOSEAGLView;
 

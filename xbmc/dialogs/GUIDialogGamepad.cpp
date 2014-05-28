@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGGAMEPAD_H_INCLUDED
+#define DIALOGS_GUIDIALOGGAMEPAD_H_INCLUDED
 #include "GUIDialogGamepad.h"
+#endif
+
+#ifndef DIALOGS_UTILS_MD5_H_INCLUDED
+#define DIALOGS_UTILS_MD5_H_INCLUDED
 #include "utils/md5.h"
+#endif
+
+#ifndef DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
+#define DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIAUDIOMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIAUDIOMANAGER_H_INCLUDED
 #include "guilib/GUIAudioManager.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "GUIDialogOK.h"
+#endif
+
+#ifndef DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
+#define DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_KEY_H_INCLUDED
+#define DIALOGS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
 
 CGUIDialogGamepad::CGUIDialogGamepad(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_GAMEPAD, "DialogGamepad.xml")

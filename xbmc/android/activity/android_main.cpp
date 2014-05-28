@@ -21,9 +21,21 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <android_native_app_glue.h>
+#ifndef ACTIVITY_EVENTLOOP_H_INCLUDED
+#define ACTIVITY_EVENTLOOP_H_INCLUDED
 #include "EventLoop.h"
+#endif
+
+#ifndef ACTIVITY_XBMCAPP_H_INCLUDED
+#define ACTIVITY_XBMCAPP_H_INCLUDED
 #include "XBMCApp.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_SURFACETEXTURE_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_SURFACETEXTURE_H_INCLUDED
 #include "android/jni/SurfaceTexture.h"
+#endif
+
 
 // copied from new android_native_app_glue.c
 static void process_input(struct android_app* app, struct android_poll_source* source) {

@@ -28,10 +28,26 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
+#ifndef VIS_MILKDROP_DXCONTEXT_H_INCLUDED
+#define VIS_MILKDROP_DXCONTEXT_H_INCLUDED
 #include "DXContext.h"
+#endif
+
+#ifndef VIS_MILKDROP_UTILITY_H_INCLUDED
+#define VIS_MILKDROP_UTILITY_H_INCLUDED
 #include "utility.h"
+#endif
+
+#ifndef VIS_MILKDROP_SHELL_DEFINES_H_INCLUDED
+#define VIS_MILKDROP_SHELL_DEFINES_H_INCLUDED
 #include "shell_defines.h"
+#endif
+
+#ifndef VIS_MILKDROP_RESOURCE_H_INCLUDED
+#define VIS_MILKDROP_RESOURCE_H_INCLUDED
 //#include "resource.h"
+#endif
+
 #include <stdio.h>
 
 #define COMPILE_MULTIMON_STUBS 1
@@ -42,7 +58,11 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
+#ifndef VIS_MILKDROP_VIS_H_INCLUDED
+#define VIS_MILKDROP_VIS_H_INCLUDED
 //#include "vis.h"
+#endif
+
 //extern winampVisModule mod1;
 
 // note: the use of delayimp.lib, and the '/delayload' options below,

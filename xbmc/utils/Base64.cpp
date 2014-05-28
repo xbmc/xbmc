@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef UTILS_BASE64_H_INCLUDED
+#define UTILS_BASE64_H_INCLUDED
 #include "Base64.h"
+#endif
+
 
 #define PADDING '='
 

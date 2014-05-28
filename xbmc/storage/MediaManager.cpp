@@ -18,16 +18,40 @@
  *
  */
 
+#ifndef STORAGE_SYSTEM_H_INCLUDED
+#define STORAGE_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef STORAGE_MEDIAMANAGER_H_INCLUDED
+#define STORAGE_MEDIAMANAGER_H_INCLUDED
 #include "MediaManager.h"
+#endif
+
+#ifndef STORAGE_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define STORAGE_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef STORAGE_URL_H_INCLUDED
+#define STORAGE_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef STORAGE_UTILS_URIUTILS_H_INCLUDED
+#define STORAGE_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 #ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
 #include "utils/CharsetConverter.h"
 #endif
+#ifndef STORAGE_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define STORAGE_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
 #ifdef HAS_DVD_DRIVE
 #ifndef TARGET_WINDOWS
 // TODO: switch all ports to use auto sources
@@ -35,24 +59,88 @@
 #include "filesystem/iso9660.h"
 #endif
 #endif
+#ifndef STORAGE_AUTORUN_H_INCLUDED
+#define STORAGE_AUTORUN_H_INCLUDED
 #include "Autorun.h"
+#endif
+
+#ifndef STORAGE_GUIUSERMESSAGES_H_INCLUDED
+#define STORAGE_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef STORAGE_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define STORAGE_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
 #include "settings/MediaSourceSettings.h"
+#endif
+
+#ifndef STORAGE_SETTINGS_SETTINGS_H_INCLUDED
+#define STORAGE_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef STORAGE_UTILS_XBMCTINYXML_H_INCLUDED
+#define STORAGE_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef STORAGE_THREADS_SINGLELOCK_H_INCLUDED
+#define STORAGE_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef STORAGE_UTILS_LOG_H_INCLUDED
+#define STORAGE_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef STORAGE_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define STORAGE_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef STORAGE_UTILS_JOBMANAGER_H_INCLUDED
+#define STORAGE_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
+#ifndef STORAGE_UTILS_STRINGUTILS_H_INCLUDED
+#define STORAGE_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef STORAGE_AUTORUNMEDIAJOB_H_INCLUDED
+#define STORAGE_AUTORUNMEDIAJOB_H_INCLUDED
 #include "AutorunMediaJob.h"
+#endif
 
+
+#ifndef STORAGE_FILEITEM_H_INCLUDED
+#define STORAGE_FILEITEM_H_INCLUDED
 #include "FileItem.h"
-#include "filesystem/File.h"
-#include "filesystem/DirectoryFactory.h"
-#include "filesystem/Directory.h"
+#endif
 
+#ifndef STORAGE_FILESYSTEM_FILE_H_INCLUDED
+#define STORAGE_FILESYSTEM_FILE_H_INCLUDED
+#include "filesystem/File.h"
+#endif
+
+#ifndef STORAGE_FILESYSTEM_DIRECTORYFACTORY_H_INCLUDED
+#define STORAGE_FILESYSTEM_DIRECTORYFACTORY_H_INCLUDED
+#include "filesystem/DirectoryFactory.h"
+#endif
+
+#ifndef STORAGE_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define STORAGE_FILESYSTEM_DIRECTORY_H_INCLUDED
+#include "filesystem/Directory.h"
+#endif
+
+
+#ifndef STORAGE_CORES_DVDPLAYER_DVDINPUTSTREAMS_DVDINPUTSTREAMNAVIGATOR_H_INCLUDED
+#define STORAGE_CORES_DVDPLAYER_DVDINPUTSTREAMS_DVDINPUTSTREAMNAVIGATOR_H_INCLUDED
 #include "cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.h"
+#endif
+
 
 #if defined(TARGET_DARWIN)
 #include "osx/DarwinStorageProvider.h"

@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef INFOSCANNER_MUSICARTISTINFO_H_INCLUDED
+#define INFOSCANNER_MUSICARTISTINFO_H_INCLUDED
 #include "MusicArtistInfo.h"
+#endif
+
+#ifndef INFOSCANNER_ADDONS_SCRAPER_H_INCLUDED
+#define INFOSCANNER_ADDONS_SCRAPER_H_INCLUDED
 #include "addons/Scraper.h"
+#endif
+
+#ifndef INFOSCANNER_UTILS_LOG_H_INCLUDED
+#define INFOSCANNER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

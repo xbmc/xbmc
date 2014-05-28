@@ -1,7 +1,11 @@
 #include <assert.h>
 #include <string.h> // strstr
 #include <stdio.h>  // sprintf
+#ifndef SCRIPTSTRING_SCRIPTSTRING_H_INCLUDED
+#define SCRIPTSTRING_SCRIPTSTRING_H_INCLUDED
 #include "scriptstring.h"
+#endif
+
 using namespace std;
 
 BEGIN_AS_NAMESPACE

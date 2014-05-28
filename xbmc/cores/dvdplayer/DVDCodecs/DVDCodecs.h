@@ -26,7 +26,11 @@
 
 #include <string>
 #include <vector>
+#ifndef DVDCODECS_CORES_VIDEORENDERERS_RENDERFORMATS_H_INCLUDED
+#define DVDCODECS_CORES_VIDEORENDERERS_RENDERFORMATS_H_INCLUDED
 #include "cores/VideoRenderers/RenderFormats.h"
+#endif
+
 
 // 0x100000 is the video starting range
 

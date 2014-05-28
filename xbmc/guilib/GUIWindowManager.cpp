@@ -18,22 +18,86 @@
  *
  */
 
+#ifndef GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "GUIWindowManager.h"
+#endif
+
+#ifndef GUILIB_GUIAUDIOMANAGER_H_INCLUDED
+#define GUILIB_GUIAUDIOMANAGER_H_INCLUDED
 #include "GUIAudioManager.h"
+#endif
+
+#ifndef GUILIB_GUIDIALOG_H_INCLUDED
+#define GUILIB_GUIDIALOG_H_INCLUDED
 #include "GUIDialog.h"
+#endif
+
+#ifndef GUILIB_APPLICATION_H_INCLUDED
+#define GUILIB_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef GUILIB_APPLICATIONMESSENGER_H_INCLUDED
+#define GUILIB_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef GUILIB_GUIPASSWORD_H_INCLUDED
+#define GUILIB_GUIPASSWORD_H_INCLUDED
 #include "GUIPassword.h"
+#endif
+
+#ifndef GUILIB_GUIINFOMANAGER_H_INCLUDED
+#define GUILIB_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef GUILIB_THREADS_SINGLELOCK_H_INCLUDED
+#define GUILIB_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef GUILIB_UTILS_URIUTILS_H_INCLUDED
+#define GUILIB_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef GUILIB_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define GUILIB_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef GUILIB_SETTINGS_SETTINGS_H_INCLUDED
+#define GUILIB_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef GUILIB_ADDONS_SKIN_H_INCLUDED
+#define GUILIB_ADDONS_SKIN_H_INCLUDED
 #include "addons/Skin.h"
+#endif
+
+#ifndef GUILIB_GUITEXTURE_H_INCLUDED
+#define GUILIB_GUITEXTURE_H_INCLUDED
 #include "GUITexture.h"
+#endif
+
+#ifndef GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef GUILIB_UTILS_VARIANT_H_INCLUDED
+#define GUILIB_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
 
 using namespace std;
 

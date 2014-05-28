@@ -20,12 +20,36 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef FILESYSTEM_UDFDIRECTORY_H_INCLUDED
+#define FILESYSTEM_UDFDIRECTORY_H_INCLUDED
 #include "UDFDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_UDF25_H_INCLUDED
+#define FILESYSTEM_UDF25_H_INCLUDED
 #include "udf25.h"
+#endif
+
+#ifndef FILESYSTEM_UTIL_H_INCLUDED
+#define FILESYSTEM_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 
 using namespace XFILE;
 

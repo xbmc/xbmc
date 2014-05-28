@@ -27,32 +27,116 @@
 
 #include <algorithm>
 
+#ifndef PYTHON_SYSTEM_H_INCLUDED
+#define PYTHON_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef PYTHON_CORES_DLLLOADER_DLLLOADERCONTAINER_H_INCLUDED
+#define PYTHON_CORES_DLLLOADER_DLLLOADERCONTAINER_H_INCLUDED
 #include "cores/DllLoader/DllLoaderContainer.h"
+#endif
+
+#ifndef PYTHON_GUIPASSWORD_H_INCLUDED
+#define PYTHON_GUIPASSWORD_H_INCLUDED
 #include "GUIPassword.h"
+#endif
+
+#ifndef PYTHON_XBPYTHON_H_INCLUDED
+#define PYTHON_XBPYTHON_H_INCLUDED
 #include "XBPython.h"
+#endif
+
+#ifndef PYTHON_FILESYSTEM_FILE_H_INCLUDED
+#define PYTHON_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef PYTHON_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define PYTHON_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef PYTHON_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define PYTHON_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef PYTHON_UTILS_JSONVARIANTWRITER_H_INCLUDED
+#define PYTHON_UTILS_JSONVARIANTWRITER_H_INCLUDED
 #include "utils/JSONVariantWriter.h"
+#endif
+
+#ifndef PYTHON_UTILS_LOG_H_INCLUDED
+#define PYTHON_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef PYTHON_PYTHREADSTATE_H_INCLUDED
+#define PYTHON_PYTHREADSTATE_H_INCLUDED
 #include "pythreadstate.h"
+#endif
+
+#ifndef PYTHON_UTILS_TIMEUTILS_H_INCLUDED
+#define PYTHON_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef PYTHON_UTIL_H_INCLUDED
+#define PYTHON_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef PYTHON_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define PYTHON_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h"
+#endif
+
 #ifdef TARGET_WINDOWS
 #include "utils/Environment.h"
 #endif
+#ifndef PYTHON_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define PYTHON_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
 
+
+#ifndef PYTHON_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define PYTHON_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
-#include "addons/Addon.h"
-#include "interfaces/AnnouncementManager.h"
+#endif
 
+#ifndef PYTHON_ADDONS_ADDON_H_INCLUDED
+#define PYTHON_ADDONS_ADDON_H_INCLUDED
+#include "addons/Addon.h"
+#endif
+
+#ifndef PYTHON_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#define PYTHON_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#include "interfaces/AnnouncementManager.h"
+#endif
+
+
+#ifndef PYTHON_INTERFACES_LEGACY_MONITOR_H_INCLUDED
+#define PYTHON_INTERFACES_LEGACY_MONITOR_H_INCLUDED
 #include "interfaces/legacy/Monitor.h"
+#endif
+
+#ifndef PYTHON_INTERFACES_LEGACY_ADDONUTILS_H_INCLUDED
+#define PYTHON_INTERFACES_LEGACY_ADDONUTILS_H_INCLUDED
 #include "interfaces/legacy/AddonUtils.h"
+#endif
+
+#ifndef PYTHON_INTERFACES_PYTHON_ADDONPYTHONINVOKER_H_INCLUDED
+#define PYTHON_INTERFACES_PYTHON_ADDONPYTHONINVOKER_H_INCLUDED
 #include "interfaces/python/AddonPythonInvoker.h"
+#endif
+
+#ifndef PYTHON_INTERFACES_PYTHON_PYTHONINVOKER_H_INCLUDED
+#define PYTHON_INTERFACES_PYTHON_PYTHONINVOKER_H_INCLUDED
 #include "interfaces/python/PythonInvoker.h"
+#endif
+
 
 using namespace ANNOUNCEMENT;
 

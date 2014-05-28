@@ -20,18 +20,62 @@
  *
  */
 
+#ifndef FILESYSTEM_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define FILESYSTEM_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef FILESYSTEM_SYSTEM_H_INCLUDED
+#define FILESYSTEM_SYSTEM_H_INCLUDED
 #include "system.h" // WIN32INCLUDES - not sure why this is needed
+#endif
+
+#ifndef FILESYSTEM_GUIUSERMESSAGES_H_INCLUDED
+#define FILESYSTEM_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef FILESYSTEM_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define FILESYSTEM_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
 #include <string.h>
+#ifndef FILESYSTEM_SAPDIRECTORY_H_INCLUDED
+#define FILESYSTEM_SAPDIRECTORY_H_INCLUDED
 #include "SAPDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
+#define FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_TIMEUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 #if defined(TARGET_DARWIN)
 #include "osx/OSXGNUReplacements.h" // strnlen
 #endif

@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef PICTURES_SLIDESHOWPICTURE_H_INCLUDED
+#define PICTURES_SLIDESHOWPICTURE_H_INCLUDED
 #include "SlideShowPicture.h"
+#endif
+
+#ifndef PICTURES_SYSTEM_H_INCLUDED
+#define PICTURES_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef PICTURES_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define PICTURES_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h"
+#endif
+
+#ifndef PICTURES_GUILIB_TEXTURE_H_INCLUDED
+#define PICTURES_GUILIB_TEXTURE_H_INCLUDED
 #include "guilib/Texture.h"
+#endif
+
+#ifndef PICTURES_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define PICTURES_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef PICTURES_SETTINGS_SETTINGS_H_INCLUDED
+#define PICTURES_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef PICTURES_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define PICTURES_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef PICTURES_UTILS_LOG_H_INCLUDED
+#define PICTURES_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef PICTURES_THREADS_SINGLELOCK_H_INCLUDED
+#define PICTURES_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 #ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
 #endif

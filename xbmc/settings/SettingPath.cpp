@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef SETTINGS_SETTINGPATH_H_INCLUDED
+#define SETTINGS_SETTINGPATH_H_INCLUDED
 #include "SettingPath.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_LIB_SETTINGSMANAGER_H_INCLUDED
+#define SETTINGS_SETTINGS_LIB_SETTINGSMANAGER_H_INCLUDED
 #include "settings/lib/SettingsManager.h"
+#endif
+
+#ifndef SETTINGS_UTILS_LOG_H_INCLUDED
+#define SETTINGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef SETTINGS_UTILS_STRINGUTILS_H_INCLUDED
+#define SETTINGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef SETTINGS_UTILS_XBMCTINYXML_H_INCLUDED
+#define SETTINGS_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef SETTINGS_UTILS_XMLUTILS_H_INCLUDED
+#define SETTINGS_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
 
 #define XML_ELM_DEFAULT     "default"
 #define XML_ELM_CONSTRAINTS "constraints"

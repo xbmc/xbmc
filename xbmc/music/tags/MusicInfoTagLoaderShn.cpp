@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef TAGS_MUSICINFOTAGLOADERSHN_H_INCLUDED
+#define TAGS_MUSICINFOTAGLOADERSHN_H_INCLUDED
 #include "MusicInfoTagLoaderShn.h"
+#endif
+
+#ifndef TAGS_MUSICINFOTAG_H_INCLUDED
+#define TAGS_MUSICINFOTAG_H_INCLUDED
 #include "MusicInfoTag.h"
+#endif
+
+#ifndef TAGS_UTILS_LOG_H_INCLUDED
+#define TAGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 using namespace MUSIC_INFO;
 

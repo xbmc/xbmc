@@ -17,23 +17,91 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef ROOT_SYSTEM_H_INCLUDED
+#define ROOT_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef ROOT_CORES_VIDEORENDERERS_RENDERMANAGER_H_INCLUDED
+#define ROOT_CORES_VIDEORENDERERS_RENDERMANAGER_H_INCLUDED
 #include "cores/VideoRenderers/RenderManager.h"
+#endif
+
+#ifndef ROOT_INPUT_MOUSESTAT_H_INCLUDED
+#define ROOT_INPUT_MOUSESTAT_H_INCLUDED
 #include "input/MouseStat.h"
+#endif
+
+#ifndef ROOT_APPLICATION_H_INCLUDED
+#define ROOT_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef ROOT_GUILARGETEXTUREMANAGER_H_INCLUDED
+#define ROOT_GUILARGETEXTUREMANAGER_H_INCLUDED
 #include "GUILargeTextureManager.h"
+#endif
+
+#ifndef ROOT_GUILIB_TEXTUREMANAGER_H_INCLUDED
+#define ROOT_GUILIB_TEXTUREMANAGER_H_INCLUDED
 #include "guilib/TextureManager.h"
+#endif
+
+#ifndef ROOT_UTILS_ALARMCLOCK_H_INCLUDED
+#define ROOT_UTILS_ALARMCLOCK_H_INCLUDED
 #include "utils/AlarmClock.h"
+#endif
+
+#ifndef ROOT_GUIINFOMANAGER_H_INCLUDED
+#define ROOT_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_DLLLIBCURL_H_INCLUDED
+#define ROOT_FILESYSTEM_DLLLIBCURL_H_INCLUDED
 #include "filesystem/DllLibCurl.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
+#define ROOT_FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
 #include "filesystem/DirectoryCache.h"
+#endif
+
+#ifndef ROOT_GUIPASSWORD_H_INCLUDED
+#define ROOT_GUIPASSWORD_H_INCLUDED
 #include "GUIPassword.h"
+#endif
+
+#ifndef ROOT_LANGINFO_H_INCLUDED
+#define ROOT_LANGINFO_H_INCLUDED
 #include "LangInfo.h"
+#endif
+
+#ifndef ROOT_UTILS_LANGCODEEXPANDER_H_INCLUDED
+#define ROOT_UTILS_LANGCODEEXPANDER_H_INCLUDED
 #include "utils/LangCodeExpander.h"
+#endif
+
+#ifndef ROOT_PARTYMODEMANAGER_H_INCLUDED
+#define ROOT_PARTYMODEMANAGER_H_INCLUDED
 #include "PartyModeManager.h"
+#endif
+
+#ifndef ROOT_PLAYLISTPLAYER_H_INCLUDED
+#define ROOT_PLAYLISTPLAYER_H_INCLUDED
 #include "PlayListPlayer.h"
+#endif
+
+#ifndef ROOT_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define ROOT_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef ROOT_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define ROOT_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
@@ -46,7 +114,11 @@
 #if defined(HAS_FILESYSTEM_RAR)
 #include "filesystem/RarManager.h"
 #endif
+#ifndef ROOT_FILESYSTEM_ZIPMANAGER_H_INCLUDED
+#define ROOT_FILESYSTEM_ZIPMANAGER_H_INCLUDED
 #include "filesystem/ZipManager.h"
+#endif
+
 
 #ifdef TARGET_RASPBERRY_PI
 #include "linux/RBP.h"

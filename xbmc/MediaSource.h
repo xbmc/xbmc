@@ -19,9 +19,17 @@
  *
  */
 
+#ifndef ROOT_UTILS_STDSTRING_H_INCLUDED
+#define ROOT_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 #include <vector>
+#ifndef ROOT_GUIPASSWORD_H_INCLUDED
+#define ROOT_GUIPASSWORD_H_INCLUDED
 #include "GUIPassword.h"
+#endif
+
 
 /*!
 \ingroup windows

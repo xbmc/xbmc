@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef DIALOGS_GUILIB_GUIDIALOG_H_INCLUDED
+#define DIALOGS_GUILIB_GUIDIALOG_H_INCLUDED
 #include "guilib/GUIDialog.h"
+#endif
+
+#ifndef DIALOGS_DIALOGS_GUIDIALOGSLIDER_H_INCLUDED
+#define DIALOGS_DIALOGS_GUIDIALOGSLIDER_H_INCLUDED
 #include "dialogs/GUIDialogSlider.h"
+#endif
+
 
 class CGUISpinControlEx;
 class CGUIButtonControl;

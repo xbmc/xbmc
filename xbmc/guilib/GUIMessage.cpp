@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef GUILIB_GUIMESSAGE_H_INCLUDED
+#define GUILIB_GUIMESSAGE_H_INCLUDED
 #include "GUIMessage.h"
+#endif
+
+#ifndef GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "LocalizeStrings.h"
+#endif
+
 
 using namespace std;
 

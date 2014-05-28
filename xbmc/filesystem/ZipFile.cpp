@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef FILESYSTEM_ZIPFILE_H_INCLUDED
+#define FILESYSTEM_ZIPFILE_H_INCLUDED
 #include "ZipFile.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 
 #include <sys/stat.h>
 

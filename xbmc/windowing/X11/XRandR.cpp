@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef X11_XRANDR_H_INCLUDED
+#define X11_XRANDR_H_INCLUDED
 #include "XRandR.h"
+#endif
+
 
 #ifdef HAS_XRANDR
 

@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef TEST_SYSTEM_H_INCLUDED
+#define TEST_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #ifdef HAS_FILESYSTEM_RAR
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"

@@ -21,12 +21,32 @@
 /* TODO: gtest/gtest.h needs to come in before utils/RegExp.h.
  * Investigate why.
  */
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
 
+
+#ifndef TEST_UTILS_REGEXP_H_INCLUDED
+#define TEST_UTILS_REGEXP_H_INCLUDED
 #include "utils/RegExp.h"
+#endif
+
+#ifndef TEST_UTILS_LOG_H_INCLUDED
+#define TEST_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef TEST_FILESYSTEM_FILE_H_INCLUDED
+#define TEST_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef TEST_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define TEST_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
 
 TEST(TestRegExp, RegFind)
 {

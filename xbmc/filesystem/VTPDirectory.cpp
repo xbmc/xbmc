@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef FILESYSTEM_VTPDIRECTORY_H_INCLUDED
+#define FILESYSTEM_VTPDIRECTORY_H_INCLUDED
 #include "VTPDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_VTPSESSION_H_INCLUDED
+#define FILESYSTEM_VTPSESSION_H_INCLUDED
 #include "VTPSession.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
 
 
 using namespace std;

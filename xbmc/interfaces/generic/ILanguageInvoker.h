@@ -22,8 +22,16 @@
 #include <string>
 #include <vector>
 
+#ifndef GENERIC_ILANGUAGEINVOCATIONHANDLER_H_INCLUDED
+#define GENERIC_ILANGUAGEINVOCATIONHANDLER_H_INCLUDED
 #include "ILanguageInvocationHandler.h"
+#endif
+
+#ifndef GENERIC_ADDONS_IADDON_H_INCLUDED
+#define GENERIC_ADDONS_IADDON_H_INCLUDED
 #include "addons/IAddon.h"
+#endif
+
 
 class CLanguageInvokerThread;
 

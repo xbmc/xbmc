@@ -18,33 +18,125 @@
  *
  */
 
+#ifndef DIALOGS_SYSTEM_H_INCLUDED
+#define DIALOGS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef DIALOGS_GUIDIALOGVIDEOBOOKMARKS_H_INCLUDED
+#define DIALOGS_GUIDIALOGVIDEOBOOKMARKS_H_INCLUDED
 #include "GUIDialogVideoBookmarks.h"
+#endif
+
+#ifndef DIALOGS_VIDEO_VIDEODATABASE_H_INCLUDED
+#define DIALOGS_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
+#ifndef DIALOGS_APPLICATION_H_INCLUDED
+#define DIALOGS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #include "cores/VideoRenderers/RenderCapture.h"
 #endif
+#ifndef DIALOGS_PICTURES_PICTURE_H_INCLUDED
+#define DIALOGS_PICTURES_PICTURE_H_INCLUDED
 #include "pictures/Picture.h"
+#endif
+
+#ifndef DIALOGS_DIALOGS_GUIDIALOGCONTEXTMENU_H_INCLUDED
+#define DIALOGS_DIALOGS_GUIDIALOGCONTEXTMENU_H_INCLUDED
 #include "dialogs/GUIDialogContextMenu.h"
+#endif
+
+#ifndef DIALOGS_VIEW_VIEWSTATE_H_INCLUDED
+#define DIALOGS_VIEW_VIEWSTATE_H_INCLUDED
 #include "view/ViewState.h"
+#endif
+
+#ifndef DIALOGS_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define DIALOGS_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef DIALOGS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define DIALOGS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef DIALOGS_FILEITEM_H_INCLUDED
+#define DIALOGS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_TEXTURE_H_INCLUDED
+#define DIALOGS_GUILIB_TEXTURE_H_INCLUDED
 #include "guilib/Texture.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef DIALOGS_UTILS_CRC32_H_INCLUDED
+#define DIALOGS_UTILS_CRC32_H_INCLUDED
 #include "utils/Crc32.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_KEY_H_INCLUDED
+#define DIALOGS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
+#define DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef DIALOGS_UTILS_URIUTILS_H_INCLUDED
+#define DIALOGS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef DIALOGS_THREADS_SINGLELOCK_H_INCLUDED
+#define DIALOGS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef DIALOGS_UTILS_LOG_H_INCLUDED
+#define DIALOGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DIALOGS_UTILS_VARIANT_H_INCLUDED
+#define DIALOGS_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef DIALOGS_UTIL_H_INCLUDED
+#define DIALOGS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef DIALOGS_CORES_IPLAYER_H_INCLUDED
+#define DIALOGS_CORES_IPLAYER_H_INCLUDED
 #include "cores/IPlayer.h"
+#endif
+
 
 using namespace std;
 

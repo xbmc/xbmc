@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef GUILIB_GUILISTLABEL_H_INCLUDED
+#define GUILIB_GUILISTLABEL_H_INCLUDED
 #include "GUIListLabel.h"
+#endif
+
 #include <limits>
 
 CGUIListLabel::CGUIListLabel(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoLabel &info, bool alwaysScroll)

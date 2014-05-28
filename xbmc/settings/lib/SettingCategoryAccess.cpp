@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef LIB_SETTINGCATEGORYACCESS_H_INCLUDED
+#define LIB_SETTINGCATEGORYACCESS_H_INCLUDED
 #include "SettingCategoryAccess.h"
+#endif
+
+#ifndef LIB_SETTINGCONDITIONS_H_INCLUDED
+#define LIB_SETTINGCONDITIONS_H_INCLUDED
 #include "SettingConditions.h"
+#endif
+
+#ifndef LIB_SETTINGSMANAGER_H_INCLUDED
+#define LIB_SETTINGSMANAGER_H_INCLUDED
 #include "SettingsManager.h"
+#endif
+
+#ifndef LIB_UTILS_LOG_H_INCLUDED
+#define LIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 bool CSettingCategoryAccessCondition::Check() const
 {

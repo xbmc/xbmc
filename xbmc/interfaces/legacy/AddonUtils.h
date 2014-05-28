@@ -29,7 +29,11 @@
 
 //#define ENABLE_XBMC_TRACE_API
 
+#ifndef LEGACY_THREADS_SINGLELOCK_H_INCLUDED
+#define LEGACY_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 
 #include <vector>
 

@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef VIDEO_UTILS_STDSTRING_H_INCLUDED
+#define VIDEO_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 #define FLOFSIZE 4
 #define SUBTITLE_CACHESIZE 50

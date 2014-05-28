@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef JSON_RPC_JSONRPC_H_INCLUDED
+#define JSON_RPC_JSONRPC_H_INCLUDED
 #include "JSONRPC.h"
+#endif
+
 
 namespace JSONRPC
 {

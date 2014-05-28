@@ -21,20 +21,76 @@
 #include <float.h>
 #include <stdlib.h>
 
+#ifndef SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#define SETTINGS_DISPLAYSETTINGS_H_INCLUDED
 #include "DisplaySettings.h"
+#endif
+
+#ifndef SETTINGS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define SETTINGS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef SETTINGS_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define SETTINGS_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h"
+#endif
+
+#ifndef SETTINGS_GUILIB_GUI3D_H_INCLUDED
+#define SETTINGS_GUILIB_GUI3D_H_INCLUDED
 #include "guilib/gui3d.h"
+#endif
+
+#ifndef SETTINGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define SETTINGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef SETTINGS_GUILIB_STEREOSCOPICSMANAGER_H_INCLUDED
+#define SETTINGS_GUILIB_STEREOSCOPICSMANAGER_H_INCLUDED
 #include "guilib/StereoscopicsManager.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define SETTINGS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_LIB_SETTING_H_INCLUDED
+#define SETTINGS_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_SETTINGS_H_INCLUDED
+#define SETTINGS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef SETTINGS_THREADS_SINGLELOCK_H_INCLUDED
+#define SETTINGS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef SETTINGS_UTILS_LOG_H_INCLUDED
+#define SETTINGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef SETTINGS_UTILS_STRINGUTILS_H_INCLUDED
+#define SETTINGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef SETTINGS_UTILS_XMLUTILS_H_INCLUDED
+#define SETTINGS_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef SETTINGS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define SETTINGS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
 
 // 0.1 second increments
 #define MAX_REFRESH_CHANGE_DELAY 200

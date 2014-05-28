@@ -53,8 +53,16 @@ d4rk@xbmc.org
 
 */
 
+#ifndef XBMCPROJECTM_ADDONS_INCLUDE_XBMC_VIS_DLL_H_INCLUDED
+#define XBMCPROJECTM_ADDONS_INCLUDE_XBMC_VIS_DLL_H_INCLUDED
 #include "addons/include/xbmc_vis_dll.h"
+#endif
+
+#ifndef XBMCPROJECTM_ADDONS_INCLUDE_XBMC_ADDON_CPP_DLL_H_INCLUDED
+#define XBMCPROJECTM_ADDONS_INCLUDE_XBMC_ADDON_CPP_DLL_H_INCLUDED
 #include "addons/include/xbmc_addon_cpp_dll.h"
+#endif
+
 #include <GL/glew.h>
 #include "libprojectM/projectM.hpp"
 #include <string>

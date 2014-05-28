@@ -18,35 +18,151 @@
  *
  */
 
+#ifndef ADDONS_GUIWINDOWADDONBROWSER_H_INCLUDED
+#define ADDONS_GUIWINDOWADDONBROWSER_H_INCLUDED
 #include "GUIWindowAddonBrowser.h"
+#endif
+
+#ifndef ADDONS_ADDONS_ADDONMANAGER_H_INCLUDED
+#define ADDONS_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef ADDONS_ADDONS_REPOSITORY_H_INCLUDED
+#define ADDONS_ADDONS_REPOSITORY_H_INCLUDED
 #include "addons/Repository.h"
+#endif
+
+#ifndef ADDONS_GUIDIALOGADDONINFO_H_INCLUDED
+#define ADDONS_GUIDIALOGADDONINFO_H_INCLUDED
 #include "GUIDialogAddonInfo.h"
+#endif
+
+#ifndef ADDONS_GUIDIALOGADDONSETTINGS_H_INCLUDED
+#define ADDONS_GUIDIALOGADDONSETTINGS_H_INCLUDED
 #include "GUIDialogAddonSettings.h"
+#endif
+
+#ifndef ADDONS_DIALOGS_GUIDIALOGBUSY_H_INCLUDED
+#define ADDONS_DIALOGS_GUIDIALOGBUSY_H_INCLUDED
 #include "dialogs/GUIDialogBusy.h"
+#endif
+
+#ifndef ADDONS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define ADDONS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef ADDONS_DIALOGS_GUIDIALOGSELECT_H_INCLUDED
+#define ADDONS_DIALOGS_GUIDIALOGSELECT_H_INCLUDED
 #include "dialogs/GUIDialogSelect.h"
+#endif
+
+#ifndef ADDONS_DIALOGS_GUIDIALOGFILEBROWSER_H_INCLUDED
+#define ADDONS_DIALOGS_GUIDIALOGFILEBROWSER_H_INCLUDED
 #include "dialogs/GUIDialogFileBrowser.h"
+#endif
+
+#ifndef ADDONS_GUIUSERMESSAGES_H_INCLUDED
+#define ADDONS_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef ADDONS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define ADDONS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef ADDONS_UTILS_URIUTILS_H_INCLUDED
+#define ADDONS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef ADDONS_URL_H_INCLUDED
+#define ADDONS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef ADDONS_FILEITEM_H_INCLUDED
+#define ADDONS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_FILE_H_INCLUDED
+#define ADDONS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define ADDONS_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_ADDONSDIRECTORY_H_INCLUDED
+#define ADDONS_FILESYSTEM_ADDONSDIRECTORY_H_INCLUDED
 #include "filesystem/AddonsDirectory.h"
+#endif
+
+#ifndef ADDONS_ADDONS_ADDONINSTALLER_H_INCLUDED
+#define ADDONS_ADDONS_ADDONINSTALLER_H_INCLUDED
 #include "addons/AddonInstaller.h"
+#endif
+
+#ifndef ADDONS_UTILS_JOBMANAGER_H_INCLUDED
+#define ADDONS_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
+#ifndef ADDONS_UTILS_LOG_H_INCLUDED
+#define ADDONS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ADDONS_THREADS_SINGLELOCK_H_INCLUDED
+#define ADDONS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_SETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
 #include "settings/MediaSourceSettings.h"
+#endif
+
+#ifndef ADDONS_UTILS_STRINGUTILS_H_INCLUDED
+#define ADDONS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ADDONS_ADDONDATABASE_H_INCLUDED
+#define ADDONS_ADDONDATABASE_H_INCLUDED
 #include "AddonDatabase.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef ADDONS_STORAGE_MEDIAMANAGER_H_INCLUDED
+#define ADDONS_STORAGE_MEDIAMANAGER_H_INCLUDED
 #include "storage/MediaManager.h"
+#endif
+
+#ifndef ADDONS_LANGINFO_H_INCLUDED
+#define ADDONS_LANGINFO_H_INCLUDED
 #include "LangInfo.h"
+#endif
+
+#ifndef ADDONS_GUILIB_KEY_H_INCLUDED
+#define ADDONS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
 
 #define CONTROL_AUTOUPDATE    5
 #define CONTROL_SHUTUP        6

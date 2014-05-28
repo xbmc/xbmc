@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef WINDOWS_WINSYSTEMWIN32_H_INCLUDED
+#define WINDOWS_WINSYSTEMWIN32_H_INCLUDED
 #include "WinSystemWin32.h"
+#endif
+
+#ifndef WINDOWS_WINEVENTSWIN32_H_INCLUDED
+#define WINDOWS_WINEVENTSWIN32_H_INCLUDED
 #include "WinEventsWin32.h"
+#endif
+
+#ifndef WINDOWS_RESOURCE_H_INCLUDED
+#define WINDOWS_RESOURCE_H_INCLUDED
 #include "resource.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUI3D_H_INCLUDED
+#define WINDOWS_GUILIB_GUI3D_H_INCLUDED
 #include "guilib/gui3d.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
 #include "settings/DisplaySettings.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef WINDOWS_UTILS_LOG_H_INCLUDED
+#define WINDOWS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef WINDOWS_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define WINDOWS_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
 
 #ifdef TARGET_WINDOWS
 #include <tpcshrd.h>

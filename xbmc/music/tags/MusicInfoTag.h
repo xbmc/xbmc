@@ -27,10 +27,26 @@ class CArtist;
 #include <string>
 #include <stdint.h>
 
+#ifndef TAGS_UTILS_ARCHIVE_H_INCLUDED
+#define TAGS_UTILS_ARCHIVE_H_INCLUDED
 #include "utils/Archive.h"
+#endif
+
+#ifndef TAGS_UTILS_ISERIALIZABLE_H_INCLUDED
+#define TAGS_UTILS_ISERIALIZABLE_H_INCLUDED
 #include "utils/ISerializable.h"
+#endif
+
+#ifndef TAGS_UTILS_ISORTABLE_H_INCLUDED
+#define TAGS_UTILS_ISORTABLE_H_INCLUDED
 #include "utils/ISortable.h"
+#endif
+
+#ifndef TAGS_XBDATETIME_H_INCLUDED
+#define TAGS_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
 
 #define REPLAY_GAIN_HAS_TRACK_INFO 1
 #define REPLAY_GAIN_HAS_ALBUM_INFO 2

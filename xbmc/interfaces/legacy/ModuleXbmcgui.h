@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef LEGACY_SWIGHELPER_H_INCLUDED
+#define LEGACY_SWIGHELPER_H_INCLUDED
 #include "swighelper.h"
+#endif
+
+#ifndef LEGACY_DIALOG_H_INCLUDED
+#define LEGACY_DIALOG_H_INCLUDED
 #include "Dialog.h"
+#endif
+
 
 namespace XBMCAddon
 {

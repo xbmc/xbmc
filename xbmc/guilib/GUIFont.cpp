@@ -18,15 +18,43 @@
  *
  */
 
+#ifndef GUILIB_GUIFONT_H_INCLUDED
+#define GUILIB_GUIFONT_H_INCLUDED
 #include "GUIFont.h"
+#endif
+
+#ifndef GUILIB_GUIFONTTTF_H_INCLUDED
+#define GUILIB_GUIFONTTTF_H_INCLUDED
 #include "GUIFontTTF.h"
+#endif
+
+#ifndef GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "GraphicContext.h"
+#endif
 
+
+#ifndef GUILIB_THREADS_SINGLELOCK_H_INCLUDED
+#define GUILIB_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
-#include "utils/TimeUtils.h"
-#include "utils/MathUtils.h"
+#endif
 
+#ifndef GUILIB_UTILS_TIMEUTILS_H_INCLUDED
+#define GUILIB_UTILS_TIMEUTILS_H_INCLUDED
+#include "utils/TimeUtils.h"
+#endif
+
+#ifndef GUILIB_UTILS_MATHUTILS_H_INCLUDED
+#define GUILIB_UTILS_MATHUTILS_H_INCLUDED
+#include "utils/MathUtils.h"
+#endif
+
+
+#ifndef GUILIB_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define GUILIB_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
 
 #define ROUND(x) (float)(MathUtils::round_int(x))
 

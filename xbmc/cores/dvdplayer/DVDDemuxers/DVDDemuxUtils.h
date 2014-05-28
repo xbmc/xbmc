@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef DVDDEMUXERS_DVDDEMUXPACKET_H_INCLUDED
+#define DVDDEMUXERS_DVDDEMUXPACKET_H_INCLUDED
 #include "DVDDemuxPacket.h"
+#endif
+
 
 class CDVDDemuxUtils
 {

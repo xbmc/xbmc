@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef PLAYLISTS_PLAYLISTXML_H_INCLUDED
+#define PLAYLISTS_PLAYLISTXML_H_INCLUDED
 #include "PlayListXML.h"
+#endif
+
+#ifndef PLAYLISTS_FILESYSTEM_FILE_H_INCLUDED
+#define PLAYLISTS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef PLAYLISTS_UTIL_H_INCLUDED
+#define PLAYLISTS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef PLAYLISTS_UTILS_REGEXP_H_INCLUDED
+#define PLAYLISTS_UTILS_REGEXP_H_INCLUDED
 #include "utils/RegExp.h"
+#endif
+
+#ifndef PLAYLISTS_UTILS_LOG_H_INCLUDED
+#define PLAYLISTS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef PLAYLISTS_UTILS_URIUTILS_H_INCLUDED
+#define PLAYLISTS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef PLAYLISTS_UTILS_XMLUTILS_H_INCLUDED
+#define PLAYLISTS_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef PLAYLISTS_UTILS_VARIANT_H_INCLUDED
+#define PLAYLISTS_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
 
 using namespace PLAYLIST;
 using namespace XFILE;

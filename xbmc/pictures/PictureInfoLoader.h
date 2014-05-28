@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef PICTURES_BACKGROUNDINFOLOADER_H_INCLUDED
+#define PICTURES_BACKGROUNDINFOLOADER_H_INCLUDED
 #include "BackgroundInfoLoader.h"
+#endif
+
+#ifndef PICTURES_UTILS_STDSTRING_H_INCLUDED
+#define PICTURES_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 class CPictureInfoLoader : public CBackgroundInfoLoader
 {

@@ -26,9 +26,21 @@
 #pragma once
 
 #include <stdlib.h>
+#ifndef GUILIB_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
+#define GUILIB_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
 #include "settings/lib/ISettingCallback.h"
+#endif
+
+#ifndef GUILIB_GUILIB_IMSGTARGETCALLBACK_H_INCLUDED
+#define GUILIB_GUILIB_IMSGTARGETCALLBACK_H_INCLUDED
 #include "guilib/IMsgTargetCallback.h"
+#endif
+
+#ifndef GUILIB_RENDERING_RENDERSYSTEM_H_INCLUDED
+#define GUILIB_RENDERING_RENDERSYSTEM_H_INCLUDED
 #include "rendering/RenderSystem.h"
+#endif
+
 
 class CAction;
 

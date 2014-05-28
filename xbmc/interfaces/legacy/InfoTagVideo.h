@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef LEGACY_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define LEGACY_VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "video/VideoInfoTag.h"
+#endif
+
+#ifndef LEGACY_ADDONCLASS_H_INCLUDED
+#define LEGACY_ADDONCLASS_H_INCLUDED
 #include "AddonClass.h"
+#endif
+
 
 #pragma once
 

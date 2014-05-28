@@ -24,7 +24,11 @@
 #include <limits>
 #include <boost/shared_ptr.hpp>
 
+#ifndef JSON_RPC_JSONUTILS_H_INCLUDED
+#define JSON_RPC_JSONUTILS_H_INCLUDED
 #include "JSONUtils.h"
+#endif
+
 
 namespace JSONRPC
 {

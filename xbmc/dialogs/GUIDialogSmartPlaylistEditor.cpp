@@ -18,19 +18,71 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGSMARTPLAYLISTEDITOR_H_INCLUDED
+#define DIALOGS_GUIDIALOGSMARTPLAYLISTEDITOR_H_INCLUDED
 #include "GUIDialogSmartPlaylistEditor.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
+#define DIALOGS_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
 #include "guilib/GUIKeyboardFactory.h"
+#endif
+
+#ifndef DIALOGS_UTIL_H_INCLUDED
+#define DIALOGS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
+#define DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef DIALOGS_UTILS_URIUTILS_H_INCLUDED
+#define DIALOGS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef DIALOGS_GUIDIALOGSMARTPLAYLISTRULE_H_INCLUDED
+#define DIALOGS_GUIDIALOGSMARTPLAYLISTRULE_H_INCLUDED
 #include "GUIDialogSmartPlaylistRule.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef DIALOGS_FILESYSTEM_FILE_H_INCLUDED
+#define DIALOGS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef DIALOGS_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define DIALOGS_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_SETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef DIALOGS_FILEITEM_H_INCLUDED
+#define DIALOGS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_KEY_H_INCLUDED
+#define DIALOGS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
 
 using namespace std;
 

@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGVOLUMEBAR_H_INCLUDED
+#define DIALOGS_GUIDIALOGVOLUMEBAR_H_INCLUDED
 #include "GUIDialogVolumeBar.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_KEY_H_INCLUDED
+#define DIALOGS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef DIALOGS_UTILS_TIMEUTILS_H_INCLUDED
+#define DIALOGS_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
 
 #define VOLUME_BAR_DISPLAY_TIME 1000L
 

@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef WINDOWS_WIN32POWERSYSCALL_H_INCLUDED
+#define WINDOWS_WIN32POWERSYSCALL_H_INCLUDED
 #include "Win32PowerSyscall.h"
+#endif
+
+#ifndef WINDOWS_POWERMANAGEMENT_POWERMANAGER_H_INCLUDED
+#define WINDOWS_POWERMANAGEMENT_POWERMANAGER_H_INCLUDED
 #include "powermanagement/PowerManager.h"
+#endif
+
 #ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
 

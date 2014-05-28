@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef GUILIB_GUISPINCONTROL_H_INCLUDED
+#define GUILIB_GUISPINCONTROL_H_INCLUDED
 #include "GUISpinControl.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace std;
 

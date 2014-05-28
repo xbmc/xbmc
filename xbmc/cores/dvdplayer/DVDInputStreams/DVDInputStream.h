@@ -21,12 +21,32 @@
  */
 
 #include <string>
+#ifndef DVDINPUTSTREAMS_UTILS_BITSTREAMSTATS_H_INCLUDED
+#define DVDINPUTSTREAMS_UTILS_BITSTREAMSTATS_H_INCLUDED
 #include "utils/BitstreamStats.h"
-#include "filesystem/IFileTypes.h"
+#endif
 
+#ifndef DVDINPUTSTREAMS_FILESYSTEM_IFILETYPES_H_INCLUDED
+#define DVDINPUTSTREAMS_FILESYSTEM_IFILETYPES_H_INCLUDED
+#include "filesystem/IFileTypes.h"
+#endif
+
+
+#ifndef DVDINPUTSTREAMS_FILEITEM_H_INCLUDED
+#define DVDINPUTSTREAMS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef DVDINPUTSTREAMS_URL_H_INCLUDED
+#define DVDINPUTSTREAMS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef DVDINPUTSTREAMS_GUILIB_GEOMETRY_H_INCLUDED
+#define DVDINPUTSTREAMS_GUILIB_GEOMETRY_H_INCLUDED
 #include "guilib/Geometry.h"
+#endif
+
 
 enum DVDStreamType
 {

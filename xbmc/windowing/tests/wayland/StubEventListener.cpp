@@ -19,7 +19,11 @@
  */
 #include <stdexcept>
 
+#ifndef WAYLAND_STUBEVENTLISTENER_H_INCLUDED
+#define WAYLAND_STUBEVENTLISTENER_H_INCLUDED
 #include "StubEventListener.h"
+#endif
+
 
 StubEventListener::StubEventListener() :
   m_focused(false)

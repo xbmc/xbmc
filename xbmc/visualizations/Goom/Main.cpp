@@ -28,15 +28,27 @@ Goom Visualization Interface for XBMC
 
 #define __STDC_LIMIT_MACROS
 
+#ifndef GOOM_______ADDONS_INCLUDE_XBMC_VIS_DLL_H_INCLUDED
+#define GOOM_______ADDONS_INCLUDE_XBMC_VIS_DLL_H_INCLUDED
 #include "../../addons/include/xbmc_vis_dll.h"
+#endif
+
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 #include <string>
 extern "C" {
+#ifndef GOOM_GOOM_H_INCLUDED
+#define GOOM_GOOM_H_INCLUDED
 #include "goom.h"
+#endif
+
 }
+#ifndef GOOM_GOOM_CONFIG_H_INCLUDED
+#define GOOM_GOOM_CONFIG_H_INCLUDED
 #include "goom_config.h"
+#endif
+
 #include <GL/glew.h>
 
 extern int  preset_index;

@@ -23,15 +23,51 @@
 #include <set>
 #include <vector>
 
+#ifndef LIB_ISETTING_H_INCLUDED
+#define LIB_ISETTING_H_INCLUDED
 #include "ISetting.h"
+#endif
+
+#ifndef LIB_ISETTINGCALLBACK_H_INCLUDED
+#define LIB_ISETTINGCALLBACK_H_INCLUDED
 #include "ISettingCallback.h"
+#endif
+
+#ifndef LIB_ISETTINGCONTROLCREATOR_H_INCLUDED
+#define LIB_ISETTINGCONTROLCREATOR_H_INCLUDED
 #include "ISettingControlCreator.h"
+#endif
+
+#ifndef LIB_ISETTINGCREATOR_H_INCLUDED
+#define LIB_ISETTINGCREATOR_H_INCLUDED
 #include "ISettingCreator.h"
+#endif
+
+#ifndef LIB_ISETTINGSHANDLER_H_INCLUDED
+#define LIB_ISETTINGSHANDLER_H_INCLUDED
 #include "ISettingsHandler.h"
+#endif
+
+#ifndef LIB_ISUBSETTINGS_H_INCLUDED
+#define LIB_ISUBSETTINGS_H_INCLUDED
 #include "ISubSettings.h"
+#endif
+
+#ifndef LIB_SETTINGCONDITIONS_H_INCLUDED
+#define LIB_SETTINGCONDITIONS_H_INCLUDED
 #include "SettingConditions.h"
+#endif
+
+#ifndef LIB_SETTINGDEPENDENCY_H_INCLUDED
+#define LIB_SETTINGDEPENDENCY_H_INCLUDED
 #include "SettingDependency.h"
+#endif
+
+#ifndef LIB_THREADS_SHAREDSECTION_H_INCLUDED
+#define LIB_THREADS_SHAREDSECTION_H_INCLUDED
 #include "threads/SharedSection.h"
+#endif
+
 
 class CSettingSection;
 class CSettingUpdate;

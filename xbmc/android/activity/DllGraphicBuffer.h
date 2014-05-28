@@ -23,8 +23,16 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
+#ifndef ACTIVITY_DYNAMICDLL_H_INCLUDED
+#define ACTIVITY_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
+#ifndef ACTIVITY_GRAPHICBUFFER_H_INCLUDED
+#define ACTIVITY_GRAPHICBUFFER_H_INCLUDED
 #include "GraphicBuffer.h"
+#endif
+
 class DllGraphicBufferInterface
 {
 public:

@@ -17,8 +17,16 @@
  *
  */
 
+#ifndef CORE_EFFECTBASE_H_INCLUDED
+#define CORE_EFFECTBASE_H_INCLUDED
 #include "EffectBase.h"
+#endif
+
+#ifndef CORE_ANGELSCRIPT_H_INCLUDED
+#define CORE_ANGELSCRIPT_H_INCLUDED
 #include "angelscript.h"
+#endif
+
 
 void EffectBase::RegisterScriptInterface( class asIScriptEngine* pScriptEngine )
 {

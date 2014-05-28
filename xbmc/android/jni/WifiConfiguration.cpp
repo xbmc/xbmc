@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_WIFICONFIGURATION_H_INCLUDED
+#define JNI_WIFICONFIGURATION_H_INCLUDED
 #include "WifiConfiguration.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

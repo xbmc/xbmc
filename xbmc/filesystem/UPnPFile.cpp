@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef FILESYSTEM_UPNPFILE_H_INCLUDED
+#define FILESYSTEM_UPNPFILE_H_INCLUDED
 #include "UPnPFile.h"
+#endif
+
+#ifndef FILESYSTEM_UPNPDIRECTORY_H_INCLUDED
+#define FILESYSTEM_UPNPDIRECTORY_H_INCLUDED
 #include "UPnPDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_FILEFACTORY_H_INCLUDED
+#define FILESYSTEM_FILEFACTORY_H_INCLUDED
 #include "FileFactory.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 using namespace XFILE;
 

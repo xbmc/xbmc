@@ -23,9 +23,21 @@
 
 #include <wayland-client.h>
 
+#ifndef WAYLAND_WINDOWING_DLLWAYLANDCLIENT_H_INCLUDED
+#define WAYLAND_WINDOWING_DLLWAYLANDCLIENT_H_INCLUDED
 #include "windowing/DllWaylandClient.h"
+#endif
+
+#ifndef WAYLAND_WINDOWING_WAYLANDPROTOCOL_H_INCLUDED
+#define WAYLAND_WINDOWING_WAYLANDPROTOCOL_H_INCLUDED
 #include "windowing/WaylandProtocol.h"
+#endif
+
+#ifndef WAYLAND_POINTER_H_INCLUDED
+#define WAYLAND_POINTER_H_INCLUDED
 #include "Pointer.h"
+#endif
+
 
 namespace xw = xbmc::wayland;
 

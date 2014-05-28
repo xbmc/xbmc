@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef ADDONS_GUILIB_GUIDIALOG_H_INCLUDED
+#define ADDONS_GUILIB_GUIDIALOG_H_INCLUDED
 #include "guilib/GUIDialog.h"
+#endif
+
+#ifndef ADDONS_ADDONS_IADDON_H_INCLUDED
+#define ADDONS_ADDONS_IADDON_H_INCLUDED
 #include "addons/IAddon.h"
+#endif
+
+#ifndef ADDONS_UTILS_JOB_H_INCLUDED
+#define ADDONS_UTILS_JOB_H_INCLUDED
 #include "utils/Job.h"
+#endif
+
 
 class CGUIDialogAddonInfo :
       public CGUIDialog,

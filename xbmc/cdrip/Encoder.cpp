@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef CDRIP_ENCODER_H_INCLUDED
+#define CDRIP_ENCODER_H_INCLUDED
 #include "Encoder.h"
+#endif
+
+#ifndef CDRIP_FILESYSTEM_FILE_H_INCLUDED
+#define CDRIP_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef CDRIP_UTILS_LOG_H_INCLUDED
+#define CDRIP_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 CEncoder::CEncoder()
 {

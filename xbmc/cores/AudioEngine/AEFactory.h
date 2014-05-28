@@ -21,8 +21,16 @@
 
 #include <vector>
 
+#ifndef AUDIOENGINE_INTERFACES_AE_H_INCLUDED
+#define AUDIOENGINE_INTERFACES_AE_H_INCLUDED
 #include "Interfaces/AE.h"
+#endif
+
+#ifndef AUDIOENGINE_THREADS_THREAD_H_INCLUDED
+#define AUDIOENGINE_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
 
 class CSetting;
 

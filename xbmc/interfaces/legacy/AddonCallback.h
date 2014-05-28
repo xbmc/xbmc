@@ -20,10 +20,26 @@
 
 #pragma once
 
+#ifndef LEGACY_ADDONCLASS_H_INCLUDED
+#define LEGACY_ADDONCLASS_H_INCLUDED
 #include "AddonClass.h"
+#endif
+
+#ifndef LEGACY_CALLBACKFUNCTION_H_INCLUDED
+#define LEGACY_CALLBACKFUNCTION_H_INCLUDED
 #include "CallbackFunction.h"
+#endif
+
+#ifndef LEGACY_CALLBACKHANDLER_H_INCLUDED
+#define LEGACY_CALLBACKHANDLER_H_INCLUDED
 #include "CallbackHandler.h"
+#endif
+
+#ifndef LEGACY_LANGUAGEHOOK_H_INCLUDED
+#define LEGACY_LANGUAGEHOOK_H_INCLUDED
 #include "LanguageHook.h"
+#endif
+
 
 namespace XBMCAddon
 {

@@ -21,29 +21,97 @@
 
 //#define DEBUG_VERBOSE 1
 
+#ifndef LIBSTAGEFRIGHTICS_SYSTEM_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef LIBSTAGEFRIGHTICS_SYSTEM_GL_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_SYSTEM_GL_H_INCLUDED
 #include "system_gl.h"
+#endif
 
+
+#ifndef LIBSTAGEFRIGHTICS_STAGEFRIGHTVIDEO_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_STAGEFRIGHTVIDEO_H_INCLUDED
 #include "StageFrightVideo.h"
+#endif
+
+#ifndef LIBSTAGEFRIGHTICS_STAGEFRIGHTVIDEOPRIVATE_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_STAGEFRIGHTVIDEOPRIVATE_H_INCLUDED
 #include "StageFrightVideoPrivate.h"
+#endif
 
+
+#ifndef LIBSTAGEFRIGHTICS_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h"
-#include "DVDClock.h"
-#include "utils/log.h"
-#include "utils/fastmemcpy.h"
-#include "threads/Thread.h"
-#include "threads/Event.h"
-#include "Application.h"
-#include "ApplicationMessenger.h"
-#include "settings/AdvancedSettings.h"
-#include "android/jni/Build.h"
+#endif
 
+#ifndef LIBSTAGEFRIGHTICS_DVDCLOCK_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_DVDCLOCK_H_INCLUDED
+#include "DVDClock.h"
+#endif
+
+#ifndef LIBSTAGEFRIGHTICS_UTILS_LOG_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef LIBSTAGEFRIGHTICS_UTILS_FASTMEMCPY_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_UTILS_FASTMEMCPY_H_INCLUDED
+#include "utils/fastmemcpy.h"
+#endif
+
+#ifndef LIBSTAGEFRIGHTICS_THREADS_THREAD_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_THREADS_THREAD_H_INCLUDED
+#include "threads/Thread.h"
+#endif
+
+#ifndef LIBSTAGEFRIGHTICS_THREADS_EVENT_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_THREADS_EVENT_H_INCLUDED
+#include "threads/Event.h"
+#endif
+
+#ifndef LIBSTAGEFRIGHTICS_APPLICATION_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_APPLICATION_H_INCLUDED
+#include "Application.h"
+#endif
+
+#ifndef LIBSTAGEFRIGHTICS_APPLICATIONMESSENGER_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_APPLICATIONMESSENGER_H_INCLUDED
+#include "ApplicationMessenger.h"
+#endif
+
+#ifndef LIBSTAGEFRIGHTICS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef LIBSTAGEFRIGHTICS_ANDROID_JNI_BUILD_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_ANDROID_JNI_BUILD_H_INCLUDED
+#include "android/jni/Build.h"
+#endif
+
+
+#ifndef LIBSTAGEFRIGHTICS_XBMC_GUILIB_FRAMEBUFFEROBJECT_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_XBMC_GUILIB_FRAMEBUFFEROBJECT_H_INCLUDED
 #include "xbmc/guilib/FrameBufferObject.h"
+#endif
+
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
+#ifndef LIBSTAGEFRIGHTICS_WINDOWING_EGL_EGLWRAPPER_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_WINDOWING_EGL_EGLWRAPPER_H_INCLUDED
 #include "windowing/egl/EGLWrapper.h"
+#endif
+
+#ifndef LIBSTAGEFRIGHTICS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
 
 #include <new>
 

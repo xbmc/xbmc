@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef CDRIP_ENCODERLAME_H_INCLUDED
+#define CDRIP_ENCODERLAME_H_INCLUDED
 #include "EncoderLame.h"
+#endif
+
+#ifndef CDRIP_SETTINGS_SETTINGS_H_INCLUDED
+#define CDRIP_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef CDRIP_UTILS_LOG_H_INCLUDED
+#define CDRIP_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #ifdef TARGET_WINDOWS
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);

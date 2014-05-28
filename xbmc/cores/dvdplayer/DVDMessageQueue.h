@@ -20,11 +20,23 @@
  *
  */
 
+#ifndef DVDPLAYER_DVDMESSAGE_H_INCLUDED
+#define DVDPLAYER_DVDMESSAGE_H_INCLUDED
 #include "DVDMessage.h"
+#endif
+
 #include <string>
 #include <list>
+#ifndef DVDPLAYER_THREADS_CRITICALSECTION_H_INCLUDED
+#define DVDPLAYER_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef DVDPLAYER_THREADS_EVENT_H_INCLUDED
+#define DVDPLAYER_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
 
 struct DVDMessageListItem
 {

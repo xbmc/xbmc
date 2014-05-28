@@ -20,12 +20,36 @@
  *
  */
 
+#ifndef VIDEO_THREADS_THREAD_H_INCLUDED
+#define VIDEO_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "VideoInfoTag.h"
+#endif
+
+#ifndef VIDEO_ADDONS_SCRAPER_H_INCLUDED
+#define VIDEO_ADDONS_SCRAPER_H_INCLUDED
 #include "addons/Scraper.h"
+#endif
+
+#ifndef VIDEO_EPISODE_H_INCLUDED
+#define VIDEO_EPISODE_H_INCLUDED
 #include "Episode.h"
+#endif
+
+#ifndef VIDEO_XBDATETIME_H_INCLUDED
+#define VIDEO_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef VIDEO_FILESYSTEM_CURLFILE_H_INCLUDED
+#define VIDEO_FILESYSTEM_CURLFILE_H_INCLUDED
 #include "filesystem/CurlFile.h"
+#endif
+
 
 // forward declarations
 class CXBMCTinyXML;

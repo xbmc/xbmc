@@ -18,10 +18,18 @@
  *
  */
 
+#ifndef DLLLOADER_LIBRARYLOADER_H_INCLUDED
+#define DLLLOADER_LIBRARYLOADER_H_INCLUDED
 #include "LibraryLoader.h"
+#endif
+
 #include <string.h>
 #include <stdlib.h>
+#ifndef DLLLOADER_UTILS_LOG_H_INCLUDED
+#define DLLLOADER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 LibraryLoader::LibraryLoader(const char* libraryFile)
 {

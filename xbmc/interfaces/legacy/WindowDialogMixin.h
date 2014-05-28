@@ -20,7 +20,11 @@
 
 #pragma once
 
+#ifndef LEGACY_WINDOW_H_INCLUDED
+#define LEGACY_WINDOW_H_INCLUDED
 #include "Window.h"
+#endif
+
 
 // These messages are a side effect of the way dialogs work through the
 // main ApplicationMessenger. At some point it would be nice to remove

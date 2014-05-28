@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef GUILIB_DIRTYREGIONSOLVERS_H_INCLUDED
+#define GUILIB_DIRTYREGIONSOLVERS_H_INCLUDED
 #include "DirtyRegionSolvers.h"
+#endif
+
+#ifndef GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "GraphicContext.h"
+#endif
+
 #include <stdio.h>
 
 void CUnionDirtyRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionList &output)

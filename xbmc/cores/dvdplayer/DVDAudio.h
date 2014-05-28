@@ -23,14 +23,30 @@
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
+#ifndef DVDPLAYER_THREADS_CRITICALSECTION_H_INCLUDED
+#define DVDPLAYER_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef DVDPLAYER_PLATFORMDEFS_H_INCLUDED
+#define DVDPLAYER_PLATFORMDEFS_H_INCLUDED
 #include "PlatformDefs.h"
+#endif
+
 #include <queue>
 
+#ifndef DVDPLAYER_CORES_AUDIOENGINE_UTILS_AECHANNELINFO_H_INCLUDED
+#define DVDPLAYER_CORES_AUDIOENGINE_UTILS_AECHANNELINFO_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
+#endif
+
 class IAEStream;
 
+#ifndef DVDPLAYER_DLLAVCODEC_H_INCLUDED
+#define DVDPLAYER_DLLAVCODEC_H_INCLUDED
 #include "DllAvCodec.h"
+#endif
+
 
 typedef struct stDVDAudioFrame DVDAudioFrame;
 

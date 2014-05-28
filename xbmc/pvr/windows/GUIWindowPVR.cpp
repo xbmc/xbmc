@@ -18,22 +18,78 @@
  *
  */
 
+#ifndef WINDOWS_GUIWINDOWPVR_H_INCLUDED
+#define WINDOWS_GUIWINDOWPVR_H_INCLUDED
 #include "GUIWindowPVR.h"
+#endif
 
+
+#ifndef WINDOWS_GUIWINDOWPVRCHANNELS_H_INCLUDED
+#define WINDOWS_GUIWINDOWPVRCHANNELS_H_INCLUDED
 #include "GUIWindowPVRChannels.h"
-#include "GUIWindowPVRGuide.h"
-#include "GUIWindowPVRRecordings.h"
-#include "GUIWindowPVRSearch.h"
-#include "GUIWindowPVRTimers.h"
+#endif
 
+#ifndef WINDOWS_GUIWINDOWPVRGUIDE_H_INCLUDED
+#define WINDOWS_GUIWINDOWPVRGUIDE_H_INCLUDED
+#include "GUIWindowPVRGuide.h"
+#endif
+
+#ifndef WINDOWS_GUIWINDOWPVRRECORDINGS_H_INCLUDED
+#define WINDOWS_GUIWINDOWPVRRECORDINGS_H_INCLUDED
+#include "GUIWindowPVRRecordings.h"
+#endif
+
+#ifndef WINDOWS_GUIWINDOWPVRSEARCH_H_INCLUDED
+#define WINDOWS_GUIWINDOWPVRSEARCH_H_INCLUDED
+#include "GUIWindowPVRSearch.h"
+#endif
+
+#ifndef WINDOWS_GUIWINDOWPVRTIMERS_H_INCLUDED
+#define WINDOWS_GUIWINDOWPVRTIMERS_H_INCLUDED
+#include "GUIWindowPVRTimers.h"
+#endif
+
+
+#ifndef WINDOWS_PVR_PVRMANAGER_H_INCLUDED
+#define WINDOWS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef WINDOWS_PVR_ADDONS_PVRCLIENTS_H_INCLUDED
+#define WINDOWS_PVR_ADDONS_PVRCLIENTS_H_INCLUDED
 #include "pvr/addons/PVRClients.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIMESSAGE_H_INCLUDED
+#define WINDOWS_GUILIB_GUIMESSAGE_H_INCLUDED
 #include "guilib/GUIMessage.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_KEY_H_INCLUDED
+#define WINDOWS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGBUSY_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGBUSY_H_INCLUDED
 #include "dialogs/GUIDialogBusy.h"
+#endif
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef WINDOWS_THREADS_SINGLELOCK_H_INCLUDED
+#define WINDOWS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 
 using namespace PVR;
 

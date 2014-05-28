@@ -20,9 +20,21 @@
 
 #pragma once
 
+#ifndef LEGACY_WINDOW_H_INCLUDED
+#define LEGACY_WINDOW_H_INCLUDED
 #include "Window.h"
+#endif
+
+#ifndef LEGACY_WINDOWINTERCEPTOR_H_INCLUDED
+#define LEGACY_WINDOWINTERCEPTOR_H_INCLUDED
 #include "WindowInterceptor.h"
+#endif
+
+#ifndef LEGACY_WINDOWDIALOGMIXIN_H_INCLUDED
+#define LEGACY_WINDOWDIALOGMIXIN_H_INCLUDED
 #include "WindowDialogMixin.h"
+#endif
+
 
 namespace XBMCAddon
 {

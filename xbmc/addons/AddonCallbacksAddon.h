@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef ADDONS_ADDONCALLBACKS_H_INCLUDED
+#define ADDONS_ADDONCALLBACKS_H_INCLUDED
 #include "AddonCallbacks.h"
+#endif
+
 
 namespace ADDON
 {

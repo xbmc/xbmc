@@ -24,7 +24,11 @@
  * Platform-independent timer
  */
 
+#ifndef LIBPROJECTM_TIMER_H_INCLUDED
+#define LIBPROJECTM_TIMER_H_INCLUDED
 #include "timer.h"
+#endif
+
 #include <stdlib.h>
 
 #ifndef WIN32

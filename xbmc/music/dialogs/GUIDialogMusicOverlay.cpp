@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGMUSICOVERLAY_H_INCLUDED
+#define DIALOGS_GUIDIALOGMUSICOVERLAY_H_INCLUDED
 #include "GUIDialogMusicOverlay.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_KEY_H_INCLUDED
+#define DIALOGS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef DIALOGS_INPUT_MOUSESTAT_H_INCLUDED
+#define DIALOGS_INPUT_MOUSESTAT_H_INCLUDED
 #include "input/MouseStat.h"
+#endif
+
 
 #define CONTROL_LOGO_PIC    1
 

@@ -24,7 +24,11 @@
 #include <stdlib.h>
 #include <iostream>
 
+#ifndef LIBPROJECTM_FATAL_H_INCLUDED
+#define LIBPROJECTM_FATAL_H_INCLUDED
 #include "fatal.h"
+#endif
+
 #include "Common.hpp"
 
 #include "Expr.hpp"
@@ -33,7 +37,11 @@
 #include "PerPixelEqn.hpp"
 #include <map>
 
+#ifndef LIBPROJECTM_WIPEMALLOC_H_INCLUDED
+#define LIBPROJECTM_WIPEMALLOC_H_INCLUDED
 #include "wipemalloc.h"
+#endif
+
 #include <cassert>
 /* Evaluates a per pixel equation */
 void PerPixelEqn::evaluate(int mesh_i, int mesh_j) {

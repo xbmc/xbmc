@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef JNI_JNIBASE_H_INCLUDED
+#define JNI_JNIBASE_H_INCLUDED
 #include "JNIBase.h"
+#endif
+
+#ifndef JNI_ENUM_H_INCLUDED
+#define JNI_ENUM_H_INCLUDED
 #include "Enum.h"
+#endif
+
 
 class CJNINetworkInfoState : public CJNIEnum
 {

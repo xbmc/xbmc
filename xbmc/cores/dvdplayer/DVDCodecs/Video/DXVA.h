@@ -19,16 +19,44 @@
  */
 #pragma once
 
+#ifndef VIDEO_DLLAVCODEC_H_INCLUDED
+#define VIDEO_DLLAVCODEC_H_INCLUDED
 #include "DllAvCodec.h"
+#endif
+
+#ifndef VIDEO_DVDCODECS_VIDEO_DVDVIDEOCODECFFMPEG_H_INCLUDED
+#define VIDEO_DVDCODECS_VIDEO_DVDVIDEOCODECFFMPEG_H_INCLUDED
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
+#endif
+
+#ifndef VIDEO_GUILIB_D3DRESOURCE_H_INCLUDED
+#define VIDEO_GUILIB_D3DRESOURCE_H_INCLUDED
 #include "guilib/D3DResource.h"
+#endif
+
+#ifndef VIDEO_THREADS_EVENT_H_INCLUDED
+#define VIDEO_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
+#ifndef VIDEO_DVDRESOURCE_H_INCLUDED
+#define VIDEO_DVDRESOURCE_H_INCLUDED
 #include "DVDResource.h"
+#endif
+
 #include <dxva2api.h>
 #include <deque>
 #include <vector>
+#ifndef VIDEO_SETTINGS_VIDEOSETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_VIDEOSETTINGS_H_INCLUDED
 #include "settings/VideoSettings.h"
+#endif
+
+#ifndef VIDEO_GUILIB_GEOMETRY_H_INCLUDED
+#define VIDEO_GUILIB_GEOMETRY_H_INCLUDED
 #include "guilib/Geometry.h"
+#endif
+
 
 namespace DXVA {
 

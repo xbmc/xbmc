@@ -18,18 +18,38 @@
  *
  */
 
+#ifndef EGL_SYSTEM_H_INCLUDED
+#define EGL_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #include <EGL/egl.h>
+#ifndef EGL_EGLNATIVETYPEANDROID_H_INCLUDED
+#define EGL_EGLNATIVETYPEANDROID_H_INCLUDED
 #include "EGLNativeTypeAndroid.h"
+#endif
+
+#ifndef EGL_UTILS_LOG_H_INCLUDED
+#define EGL_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef EGL_GUILIB_GUI3D_H_INCLUDED
+#define EGL_GUILIB_GUI3D_H_INCLUDED
 #include "guilib/gui3d.h"
+#endif
+
 #if defined(TARGET_ANDROID)
   #include "android/activity/XBMCApp.h"
   #if defined(HAS_AMLPLAYER) || defined(HAS_LIBAMCODEC)
     #include "utils/AMLUtils.h"
   #endif
 #endif
+#ifndef EGL_UTILS_STRINGUTILS_H_INCLUDED
+#define EGL_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 CEGLNativeTypeAndroid::CEGLNativeTypeAndroid()
 {

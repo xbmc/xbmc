@@ -18,30 +18,110 @@
  *
  */
 
+#ifndef GUILIB_SYSTEM_H_INCLUDED
+#define GUILIB_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef GUILIB_GUIWINDOW_H_INCLUDED
+#define GUILIB_GUIWINDOW_H_INCLUDED
 #include "GUIWindow.h"
+#endif
+
+#ifndef GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "GUIWindowManager.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
+#ifndef GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "LocalizeStrings.h"
+#endif
+
+#ifndef GUILIB_GUICONTROLFACTORY_H_INCLUDED
+#define GUILIB_GUICONTROLFACTORY_H_INCLUDED
 #include "GUIControlFactory.h"
+#endif
+
+#ifndef GUILIB_GUICONTROLGROUP_H_INCLUDED
+#define GUILIB_GUICONTROLGROUP_H_INCLUDED
 #include "GUIControlGroup.h"
+#endif
+
+#ifndef GUILIB_GUICONTROLPROFILER_H_INCLUDED
+#define GUILIB_GUICONTROLPROFILER_H_INCLUDED
 #include "GUIControlProfiler.h"
+#endif
+
 #ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
 #include "GUIEditControl.h"
 #endif
 
+#ifndef GUILIB_ADDONS_SKIN_H_INCLUDED
+#define GUILIB_ADDONS_SKIN_H_INCLUDED
 #include "addons/Skin.h"
+#endif
+
+#ifndef GUILIB_GUIINFOMANAGER_H_INCLUDED
+#define GUILIB_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef GUILIB_THREADS_SINGLELOCK_H_INCLUDED
+#define GUILIB_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef GUILIB_UTILS_TIMEUTILS_H_INCLUDED
+#define GUILIB_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef GUILIB_INPUT_BUTTONTRANSLATOR_H_INCLUDED
+#define GUILIB_INPUT_BUTTONTRANSLATOR_H_INCLUDED
 #include "input/ButtonTranslator.h"
+#endif
+
+#ifndef GUILIB_UTILS_XMLUTILS_H_INCLUDED
+#define GUILIB_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef GUILIB_GUIAUDIOMANAGER_H_INCLUDED
+#define GUILIB_GUIAUDIOMANAGER_H_INCLUDED
 #include "GUIAudioManager.h"
+#endif
+
+#ifndef GUILIB_APPLICATION_H_INCLUDED
+#define GUILIB_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef GUILIB_APPLICATIONMESSENGER_H_INCLUDED
+#define GUILIB_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef GUILIB_UTILS_VARIANT_H_INCLUDED
+#define GUILIB_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"

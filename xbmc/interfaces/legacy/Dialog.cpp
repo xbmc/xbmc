@@ -17,19 +17,67 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef LEGACY_LANGUAGEHOOK_H_INCLUDED
+#define LEGACY_LANGUAGEHOOK_H_INCLUDED
 #include "LanguageHook.h"
+#endif
 
+
+#ifndef LEGACY_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define LEGACY_DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef LEGACY_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define LEGACY_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef LEGACY_DIALOGS_GUIDIALOGSELECT_H_INCLUDED
+#define LEGACY_DIALOGS_GUIDIALOGSELECT_H_INCLUDED
 #include "dialogs/GUIDialogSelect.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define LEGACY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef LEGACY_DIALOGS_GUIDIALOGFILEBROWSER_H_INCLUDED
+#define LEGACY_DIALOGS_GUIDIALOGFILEBROWSER_H_INCLUDED
 #include "dialogs/GUIDialogFileBrowser.h"
+#endif
+
+#ifndef LEGACY_DIALOGS_GUIDIALOGNUMERIC_H_INCLUDED
+#define LEGACY_DIALOGS_GUIDIALOGNUMERIC_H_INCLUDED
 #include "dialogs/GUIDialogNumeric.h"
+#endif
+
+#ifndef LEGACY_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define LEGACY_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
 #include "settings/MediaSourceSettings.h"
+#endif
+
+#ifndef LEGACY_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define LEGACY_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef LEGACY_MODULEXBMCGUI_H_INCLUDED
+#define LEGACY_MODULEXBMCGUI_H_INCLUDED
 #include "ModuleXbmcgui.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
+#define LEGACY_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
 #include "guilib/GUIKeyboardFactory.h"
+#endif
+
+#ifndef LEGACY_UTILS_STRINGUTILS_H_INCLUDED
+#define LEGACY_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 #define ACTIVE_WINDOW g_windowManager.GetActiveWindow()
 

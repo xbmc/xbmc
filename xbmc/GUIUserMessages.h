@@ -22,7 +22,11 @@
  *
  */
 
+#ifndef ROOT_GUILIB_GUIMESSAGE_H_INCLUDED
+#define ROOT_GUILIB_GUIMESSAGE_H_INCLUDED
 #include "guilib/GUIMessage.h"
+#endif
+
 
 //  Source related messages
 #define GUI_MSG_REMOVED_MEDIA           GUI_MSG_USER + 1

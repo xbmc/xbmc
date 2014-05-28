@@ -18,17 +18,49 @@
  *
  */
 
+#ifndef DVDINPUTSTREAMS_DVDINPUTSTREAMHTSP_H_INCLUDED
+#define DVDINPUTSTREAMS_DVDINPUTSTREAMHTSP_H_INCLUDED
 #include "DVDInputStreamHTSP.h"
+#endif
+
+#ifndef DVDINPUTSTREAMS_URL_H_INCLUDED
+#define DVDINPUTSTREAMS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef DVDINPUTSTREAMS_FILEITEM_H_INCLUDED
+#define DVDINPUTSTREAMS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef DVDINPUTSTREAMS_UTILS_LOG_H_INCLUDED
+#define DVDINPUTSTREAMS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 #include <limits.h>
 
 extern "C" {
+#ifndef DVDINPUTSTREAMS_LIB_LIBHTS_NET_H_INCLUDED
+#define DVDINPUTSTREAMS_LIB_LIBHTS_NET_H_INCLUDED
 #include "lib/libhts/net.h"
+#endif
+
+#ifndef DVDINPUTSTREAMS_LIB_LIBHTS_HTSMSG_H_INCLUDED
+#define DVDINPUTSTREAMS_LIB_LIBHTS_HTSMSG_H_INCLUDED
 #include "lib/libhts/htsmsg.h"
+#endif
+
+#ifndef DVDINPUTSTREAMS_LIB_LIBHTS_HTSMSG_BINARY_H_INCLUDED
+#define DVDINPUTSTREAMS_LIB_LIBHTS_HTSMSG_BINARY_H_INCLUDED
 #include "lib/libhts/htsmsg_binary.h"
+#endif
+
+#ifndef DVDINPUTSTREAMS_LIB_LIBHTS_SHA1_H_INCLUDED
+#define DVDINPUTSTREAMS_LIB_LIBHTS_SHA1_H_INCLUDED
 #include "lib/libhts/sha1.h"
+#endif
+
 }
 
 using namespace std;

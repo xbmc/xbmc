@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef ADDONS_ADDON_H_INCLUDED
+#define ADDONS_ADDON_H_INCLUDED
 #include "Addon.h"
+#endif
+
+#ifndef ADDONS_UTILS_JOB_H_INCLUDED
+#define ADDONS_UTILS_JOB_H_INCLUDED
 #include "utils/Job.h"
+#endif
+
 
 namespace ADDON
 {

@@ -20,10 +20,26 @@
  *
  */
 
+#ifndef UTILS_INFOLOADER_H_INCLUDED
+#define UTILS_INFOLOADER_H_INCLUDED
 #include "InfoLoader.h"
+#endif
+
+#ifndef UTILS_STDSTRING_H_INCLUDED
+#define UTILS_STDSTRING_H_INCLUDED
 #include "StdString.h"
+#endif
+
+#ifndef UTILS_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
+#define UTILS_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
 #include "settings/lib/ISettingCallback.h"
+#endif
+
+#ifndef UTILS_UTILS_GLOBALSHANDLING_H_INCLUDED
+#define UTILS_UTILS_GLOBALSHANDLING_H_INCLUDED
 #include "utils/GlobalsHandling.h"
+#endif
+
 
 #include <map>
 

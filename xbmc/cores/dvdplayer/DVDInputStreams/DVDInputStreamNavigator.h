@@ -20,13 +20,33 @@
  *
  */
 
+#ifndef DVDINPUTSTREAMS_DVDINPUTSTREAM_H_INCLUDED
+#define DVDINPUTSTREAMS_DVDINPUTSTREAM_H_INCLUDED
 #include "DVDInputStream.h"
-#include "../IDVDPlayer.h"
-#include "../DVDCodecs/Overlay/DVDOverlaySpu.h"
-#include <string>
-#include "guilib/Geometry.h"
+#endif
 
+#ifndef DVDINPUTSTREAMS____IDVDPLAYER_H_INCLUDED
+#define DVDINPUTSTREAMS____IDVDPLAYER_H_INCLUDED
+#include "../IDVDPlayer.h"
+#endif
+
+#ifndef DVDINPUTSTREAMS____DVDCODECS_OVERLAY_DVDOVERLAYSPU_H_INCLUDED
+#define DVDINPUTSTREAMS____DVDCODECS_OVERLAY_DVDOVERLAYSPU_H_INCLUDED
+#include "../DVDCodecs/Overlay/DVDOverlaySpu.h"
+#endif
+
+#include <string>
+#ifndef DVDINPUTSTREAMS_GUILIB_GEOMETRY_H_INCLUDED
+#define DVDINPUTSTREAMS_GUILIB_GEOMETRY_H_INCLUDED
+#include "guilib/Geometry.h"
+#endif
+
+
+#ifndef DVDINPUTSTREAMS_DLLDVDNAV_H_INCLUDED
+#define DVDINPUTSTREAMS_DLLDVDNAV_H_INCLUDED
 #include "DllDvdNav.h"
+#endif
+
 
 #define DVD_VIDEO_BLOCKSIZE         DVD_VIDEO_LB_LEN // 2048 bytes
 

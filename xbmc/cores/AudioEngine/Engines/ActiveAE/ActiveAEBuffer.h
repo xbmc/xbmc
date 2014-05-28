@@ -19,10 +19,26 @@
  *
  */
 
+#ifndef ACTIVEAE_DLLAVUTIL_H_INCLUDED
+#define ACTIVEAE_DLLAVUTIL_H_INCLUDED
 #include "DllAvUtil.h"
+#endif
+
+#ifndef ACTIVEAE_DLLSWRESAMPLE_H_INCLUDED
+#define ACTIVEAE_DLLSWRESAMPLE_H_INCLUDED
 #include "DllSwResample.h"
+#endif
+
+#ifndef ACTIVEAE_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
+#define ACTIVEAE_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
+#endif
+
+#ifndef ACTIVEAE_CORES_AUDIOENGINE_INTERFACES_AE_H_INCLUDED
+#define ACTIVEAE_CORES_AUDIOENGINE_INTERFACES_AE_H_INCLUDED
 #include "cores/AudioEngine/Interfaces/AE.h"
+#endif
+
 #include <deque>
 
 namespace ActiveAE

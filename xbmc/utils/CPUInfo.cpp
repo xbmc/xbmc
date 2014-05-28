@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef UTILS_CPUINFO_H_INCLUDED
+#define UTILS_CPUINFO_H_INCLUDED
 #include "CPUInfo.h"
+#endif
+
+#ifndef UTILS_TEMPERATURE_H_INCLUDED
+#define UTILS_TEMPERATURE_H_INCLUDED
 #include "Temperature.h"
+#endif
+
 #include <string>
 #include <string.h>
 
@@ -86,9 +94,21 @@
 
 #endif
 
+#ifndef UTILS_LOG_H_INCLUDED
+#define UTILS_LOG_H_INCLUDED
 #include "log.h"
+#endif
+
+#ifndef UTILS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define UTILS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace std;
 

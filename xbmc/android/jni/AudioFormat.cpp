@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef JNI_AUDIOFORMAT_H_INCLUDED
+#define JNI_AUDIOFORMAT_H_INCLUDED
 #include "AudioFormat.h"
+#endif
+
+#ifndef JNI_JNIBASE_H_INCLUDED
+#define JNI_JNIBASE_H_INCLUDED
 #include "JNIBase.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

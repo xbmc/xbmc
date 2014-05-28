@@ -19,11 +19,31 @@
  */
 
 #include <DelayImp.h>
+#ifndef WIN32_DLLPATHS_WIN32_H_INCLUDED
+#define WIN32_DLLPATHS_WIN32_H_INCLUDED
 #include "DllPaths_win32.h"
+#endif
+
+#ifndef WIN32_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define WIN32_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef WIN32_APPLICATION_H_INCLUDED
+#define WIN32_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef WIN32_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define WIN32_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef WIN32_UTILS_STRINGUTILS_H_INCLUDED
+#define WIN32_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 FARPROC WINAPI delayHookNotifyFunc (unsigned dliNotify, PDelayLoadInfo pdli)
 {

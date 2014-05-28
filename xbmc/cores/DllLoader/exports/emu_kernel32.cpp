@@ -18,19 +18,43 @@
  *
  */
 
+#ifndef EXPORTS_EMU_KERNEL32_H_INCLUDED
+#define EXPORTS_EMU_KERNEL32_H_INCLUDED
 #include "emu_kernel32.h"
-#include "emu_dummy.h"
-#include "utils/log.h"
+#endif
 
+#ifndef EXPORTS_EMU_DUMMY_H_INCLUDED
+#define EXPORTS_EMU_DUMMY_H_INCLUDED
+#include "emu_dummy.h"
+#endif
+
+#ifndef EXPORTS_UTILS_LOG_H_INCLUDED
+#define EXPORTS_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+
+#ifndef EXPORTS_STORAGE_IOSUPPORT_H_INCLUDED
+#define EXPORTS_STORAGE_IOSUPPORT_H_INCLUDED
 #include "storage/IoSupport.h"
+#endif
+
 
 #ifndef TARGET_POSIX
 #include <process.h>
 #include "utils/CharsetConverter.h"
 #endif
 
+#ifndef EXPORTS____DLL_TRACKER_H_INCLUDED
+#define EXPORTS____DLL_TRACKER_H_INCLUDED
 #include "../dll_tracker.h"
+#endif
+
+#ifndef EXPORTS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define EXPORTS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
 
 #ifdef TARGET_POSIX
 #include "../../../linux/PlatformInclude.h"

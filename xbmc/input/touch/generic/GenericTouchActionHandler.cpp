@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef GENERIC_GENERICTOUCHACTIONHANDLER_H_INCLUDED
+#define GENERIC_GENERICTOUCHACTIONHANDLER_H_INCLUDED
 #include "GenericTouchActionHandler.h"
+#endif
+
+#ifndef GENERIC_APPLICATIONMESSENGER_H_INCLUDED
+#define GENERIC_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef GENERIC_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define GENERIC_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef GENERIC_GUILIB_KEY_H_INCLUDED
+#define GENERIC_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef GENERIC_WINDOWING_WINEVENTS_H_INCLUDED
+#define GENERIC_WINDOWING_WINEVENTS_H_INCLUDED
 #include "windowing/WinEvents.h"
+#endif
+
 
 CGenericTouchActionHandler &CGenericTouchActionHandler::Get()
 {

@@ -21,13 +21,41 @@
 #include <errno.h>
 #include <iphlpapi.h>
 #include <IcmpAPI.h>
+#ifndef WINDOWS_PLATFORMDEFS_H_INCLUDED
+#define WINDOWS_PLATFORMDEFS_H_INCLUDED
 #include "PlatformDefs.h"
+#endif
+
+#ifndef WINDOWS_NETWORKWIN32_H_INCLUDED
+#define WINDOWS_NETWORKWIN32_H_INCLUDED
 #include "NetworkWin32.h"
+#endif
+
+#ifndef WINDOWS_UTILS_LOG_H_INCLUDED
+#define WINDOWS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef WINDOWS_THREADS_SINGLELOCK_H_INCLUDED
+#define WINDOWS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef WINDOWS_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define WINDOWS_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
+#define WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef WINDOWS_WIN32_WIN32UTIL_H_INCLUDED
+#define WINDOWS_WIN32_WIN32UTIL_H_INCLUDED
 #include "win32/WIN32Util.h"
+#endif
+
 
 // undefine if you want to build without the wlan stuff
 // might be needed for VS2003

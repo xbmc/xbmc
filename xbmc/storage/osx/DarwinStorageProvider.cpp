@@ -18,17 +18,41 @@
  *
  */
 
+#ifndef OSX_DARWINSTORAGEPROVIDER_H_INCLUDED
+#define OSX_DARWINSTORAGEPROVIDER_H_INCLUDED
 #include "DarwinStorageProvider.h"
+#endif
+
+#ifndef OSX_UTILS_REGEXP_H_INCLUDED
+#define OSX_UTILS_REGEXP_H_INCLUDED
 #include "utils/RegExp.h"
+#endif
+
+#ifndef OSX_UTILS_STDSTRING_H_INCLUDED
+#define OSX_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef OSX_UTIL_H_INCLUDED
+#define OSX_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef OSX_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define OSX_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
 
 #include <sys/mount.h>
 #if defined(TARGET_DARWIN_OSX)
 #include <DiskArbitration/DiskArbitration.h>
 #endif
+#ifndef OSX_OSX_COCOAINTERFACE_H_INCLUDED
+#define OSX_OSX_COCOAINTERFACE_H_INCLUDED
 #include "osx/CocoaInterface.h"
+#endif
+
 
 bool CDarwinStorageProvider::m_event = false;
 

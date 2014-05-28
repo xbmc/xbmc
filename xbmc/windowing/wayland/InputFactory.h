@@ -21,12 +21,36 @@
  */
 #include <boost/scoped_ptr.hpp>
 
+#ifndef WAYLAND_CURSORMANAGER_H_INCLUDED
+#define WAYLAND_CURSORMANAGER_H_INCLUDED
 #include "CursorManager.h"
+#endif
+
+#ifndef WAYLAND_SEAT_H_INCLUDED
+#define WAYLAND_SEAT_H_INCLUDED
 #include "Seat.h"
+#endif
+
+#ifndef WAYLAND_POINTER_H_INCLUDED
+#define WAYLAND_POINTER_H_INCLUDED
 #include "Pointer.h"
+#endif
+
+#ifndef WAYLAND_POINTERPROCESSOR_H_INCLUDED
+#define WAYLAND_POINTERPROCESSOR_H_INCLUDED
 #include "PointerProcessor.h"
+#endif
+
+#ifndef WAYLAND_KEYBOARD_H_INCLUDED
+#define WAYLAND_KEYBOARD_H_INCLUDED
 #include "Keyboard.h"
+#endif
+
+#ifndef WAYLAND_KEYBOARDPROCESSOR_H_INCLUDED
+#define WAYLAND_KEYBOARDPROCESSOR_H_INCLUDED
 #include "KeyboardProcessor.h"
+#endif
+
 
 class IDllWaylandClient;
 class IDllXKBCommon;

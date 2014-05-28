@@ -24,25 +24,73 @@
 #include "system.h"
 #endif
 
+#ifndef OMXPLAYER_OMXPLAYERAUDIO_H_INCLUDED
+#define OMXPLAYER_OMXPLAYERAUDIO_H_INCLUDED
 #include "OMXPlayerAudio.h"
+#endif
+
 
 #include <stdio.h>
 #include <unistd.h>
 #include <iomanip>
 
+#ifndef OMXPLAYER_LINUX_XMEMUTILS_H_INCLUDED
+#define OMXPLAYER_LINUX_XMEMUTILS_H_INCLUDED
 #include "linux/XMemUtils.h"
+#endif
+
+#ifndef OMXPLAYER_UTILS_BITSTREAMSTATS_H_INCLUDED
+#define OMXPLAYER_UTILS_BITSTREAMSTATS_H_INCLUDED
 #include "utils/BitstreamStats.h"
+#endif
 
+
+#ifndef OMXPLAYER_DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
+#define OMXPLAYER_DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
 #include "DVDDemuxers/DVDDemuxUtils.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
-#include "utils/MathUtils.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
-#include "utils/TimeUtils.h"
+#endif
 
+#ifndef OMXPLAYER_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define OMXPLAYER_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
+#ifndef OMXPLAYER_UTILS_MATHUTILS_H_INCLUDED
+#define OMXPLAYER_UTILS_MATHUTILS_H_INCLUDED
+#include "utils/MathUtils.h"
+#endif
+
+#ifndef OMXPLAYER_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define OMXPLAYER_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef OMXPLAYER_SETTINGS_SETTINGS_H_INCLUDED
+#define OMXPLAYER_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef OMXPLAYER_UTILS_TIMEUTILS_H_INCLUDED
+#define OMXPLAYER_UTILS_TIMEUTILS_H_INCLUDED
+#include "utils/TimeUtils.h"
+#endif
+
+
+#ifndef OMXPLAYER_OMXPLAYER_H_INCLUDED
+#define OMXPLAYER_OMXPLAYER_H_INCLUDED
 #include "OMXPlayer.h"
+#endif
+
+#ifndef OMXPLAYER_LINUX_RBP_H_INCLUDED
+#define OMXPLAYER_LINUX_RBP_H_INCLUDED
 #include "linux/RBP.h"
+#endif
+
+#ifndef OMXPLAYER_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
+#define OMXPLAYER_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
 #include "cores/AudioEngine/AEFactory.h"
+#endif
+
 
 #include <iostream>
 #include <sstream>

@@ -19,7 +19,11 @@
 *
 */
 #include "boost/shared_ptr.hpp"
+#ifndef ADDONS_UTILS_STDSTRING_H_INCLUDED
+#define ADDONS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 #include <boost/enable_shared_from_this.hpp>
 

@@ -37,10 +37,26 @@
 
 
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
+#ifndef SOURCE_AS_PARSER_H_INCLUDED
+#define SOURCE_AS_PARSER_H_INCLUDED
 #include "as_parser.h"
+#endif
+
+#ifndef SOURCE_AS_TOKENDEF_H_INCLUDED
+#define SOURCE_AS_TOKENDEF_H_INCLUDED
 #include "as_tokendef.h"
+#endif
+
+#ifndef SOURCE_AS_TEXTS_H_INCLUDED
+#define SOURCE_AS_TEXTS_H_INCLUDED
 #include "as_texts.h"
+#endif
+
 
 #ifdef _MSC_VER
 #pragma warning(disable:4702) // unreachable code

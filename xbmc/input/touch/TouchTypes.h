@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef TOUCH_UTILS_VECTOR_H_INCLUDED
+#define TOUCH_UTILS_VECTOR_H_INCLUDED
 #include "utils/Vector.h"
+#endif
+
 
 /*!
  * \ingroup touch

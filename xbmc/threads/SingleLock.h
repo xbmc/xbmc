@@ -25,8 +25,16 @@
 
 #pragma once
 
+#ifndef THREADS_THREADS_CRITICALSECTION_H_INCLUDED
+#define THREADS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef THREADS_THREADS_LOCKABLES_H_INCLUDED
+#define THREADS_THREADS_LOCKABLES_H_INCLUDED
 #include "threads/Lockables.h"
+#endif
+
 
 /**
  * This implements a "guard" pattern for a CCriticalSection that

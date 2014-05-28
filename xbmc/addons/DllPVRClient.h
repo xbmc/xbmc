@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef ADDONS_DLLADDON_H_INCLUDED
+#define ADDONS_DLLADDON_H_INCLUDED
 #include "DllAddon.h"
+#endif
+
+#ifndef ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
+#define ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
 #include "include/xbmc_pvr_types.h"
+#endif
+
 
 class DllPVRClient : public DllAddon<PVRClient, PVR_PROPERTIES>
 {

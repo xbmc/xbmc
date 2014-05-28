@@ -20,12 +20,32 @@
 
 #include <sstream>
 
+#ifndef ACTIVEAE_ACTIVEAESINK_H_INCLUDED
+#define ACTIVEAE_ACTIVEAESINK_H_INCLUDED
 #include "ActiveAESink.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
-#include "utils/EndianSwap.h"
-#include "ActiveAE.h"
+#endif
 
+#ifndef ACTIVEAE_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define ACTIVEAE_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
+#ifndef ACTIVEAE_UTILS_ENDIANSWAP_H_INCLUDED
+#define ACTIVEAE_UTILS_ENDIANSWAP_H_INCLUDED
+#include "utils/EndianSwap.h"
+#endif
+
+#ifndef ACTIVEAE_ACTIVEAE_H_INCLUDED
+#define ACTIVEAE_ACTIVEAE_H_INCLUDED
+#include "ActiveAE.h"
+#endif
+
+
+#ifndef ACTIVEAE_SETTINGS_SETTINGS_H_INCLUDED
+#define ACTIVEAE_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
 
 using namespace ActiveAE;
 

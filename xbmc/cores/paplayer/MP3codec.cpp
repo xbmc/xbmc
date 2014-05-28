@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef PAPLAYER_MP3CODEC_H_INCLUDED
+#define PAPLAYER_MP3CODEC_H_INCLUDED
 #include "MP3codec.h"
+#endif
+
+#ifndef PAPLAYER_FILEITEM_H_INCLUDED
+#define PAPLAYER_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_LOG_H_INCLUDED
+#define PAPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef PAPLAYER_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define PAPLAYER_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
+#ifndef PAPLAYER_MUSIC_TAGS_TAGLOADERTAGLIB_H_INCLUDED
+#define PAPLAYER_MUSIC_TAGS_TAGLOADERTAGLIB_H_INCLUDED
 #include "music/tags/TagLoaderTagLib.h"
+#endif
+
 
 #define BYTES2INT(b1,b2,b3,b4) (((b1 & 0xFF) << (3*8)) | \
 ((b2 & 0xFF) << (2*8)) | \

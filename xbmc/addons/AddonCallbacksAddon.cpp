@@ -18,20 +18,76 @@
  *
  */
 
+#ifndef ADDONS_APPLICATION_H_INCLUDED
+#define ADDONS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef ADDONS_ADDON_H_INCLUDED
+#define ADDONS_ADDON_H_INCLUDED
 #include "Addon.h"
+#endif
+
+#ifndef ADDONS_ADDONCALLBACKSADDON_H_INCLUDED
+#define ADDONS_ADDONCALLBACKSADDON_H_INCLUDED
 #include "AddonCallbacksAddon.h"
+#endif
+
+#ifndef ADDONS_UTILS_LOG_H_INCLUDED
+#define ADDONS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ADDONS_LANGINFO_H_INCLUDED
+#define ADDONS_LANGINFO_H_INCLUDED
 #include "LangInfo.h"
+#endif
+
+#ifndef ADDONS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define ADDONS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_FILE_H_INCLUDED
+#define ADDONS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define ADDONS_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef ADDONS_UTILS_URIUTILS_H_INCLUDED
+#define ADDONS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef ADDONS_FILEITEM_H_INCLUDED
+#define ADDONS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef ADDONS_NETWORK_NETWORK_H_INCLUDED
+#define ADDONS_NETWORK_NETWORK_H_INCLUDED
 #include "network/Network.h"
+#endif
+
+#ifndef ADDONS_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define ADDONS_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef ADDONS_UTILS_STRINGUTILS_H_INCLUDED
+#define ADDONS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ADDONS_CORES_DVDPLAYER_DVDCODECS_DVDCODECS_H_INCLUDED
+#define ADDONS_CORES_DVDPLAYER_DVDCODECS_DVDCODECS_H_INCLUDED
 #include "cores/dvdplayer/DVDCodecs/DVDCodecs.h"
+#endif
+
 
 using namespace XFILE;
 

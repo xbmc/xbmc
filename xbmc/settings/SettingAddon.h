@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef SETTINGS_SETTINGS_LIB_SETTING_H_INCLUDED
+#define SETTINGS_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef SETTINGS_ADDONS_IADDON_H_INCLUDED
+#define SETTINGS_ADDONS_IADDON_H_INCLUDED
 #include "addons/IAddon.h"
+#endif
+
 
 class CSettingAddon : public CSettingString
 {

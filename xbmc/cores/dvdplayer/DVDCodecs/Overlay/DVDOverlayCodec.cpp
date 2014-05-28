@@ -17,8 +17,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef OVERLAY_DVDOVERLAYCODEC_H_INCLUDED
+#define OVERLAY_DVDOVERLAYCODEC_H_INCLUDED
 #include "DVDOverlayCodec.h"
+#endif
+
+#ifndef OVERLAY_CORES_DVDPLAYER_DVDCLOCK_H_INCLUDED
+#define OVERLAY_CORES_DVDPLAYER_DVDCLOCK_H_INCLUDED
 #include "cores/dvdplayer/DVDClock.h"
+#endif
+
 
 void CDVDOverlayCodec::GetAbsoluteTimes(double &starttime, double &stoptime, DemuxPacket *pkt, bool &replace, double offset/* = 0.0*/)
 {

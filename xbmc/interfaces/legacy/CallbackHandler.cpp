@@ -18,11 +18,27 @@
  *
  */
 
+#ifndef LEGACY_CALLBACKHANDLER_H_INCLUDED
+#define LEGACY_CALLBACKHANDLER_H_INCLUDED
 #include "CallbackHandler.h"
+#endif
+
+#ifndef LEGACY_ADDONUTILS_H_INCLUDED
+#define LEGACY_ADDONUTILS_H_INCLUDED
 #include "AddonUtils.h"
+#endif
+
+#ifndef LEGACY_THREADS_SINGLELOCK_H_INCLUDED
+#define LEGACY_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 #include <vector>
+#ifndef LEGACY_COMMONS_EXCEPTION_H_INCLUDED
+#define LEGACY_COMMONS_EXCEPTION_H_INCLUDED
 #include "commons/Exception.h"
+#endif
+
 
 namespace XBMCAddon
 {

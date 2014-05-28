@@ -472,18 +472,46 @@ Order of Function Calls
 
 */
 
+#ifndef VIS_MILKDROP_PLUGIN_H_INCLUDED
+#define VIS_MILKDROP_PLUGIN_H_INCLUDED
 #include "plugin.h"
+#endif
+
+#ifndef VIS_MILKDROP_UTILITY_H_INCLUDED
+#define VIS_MILKDROP_UTILITY_H_INCLUDED
 #include "utility.h"
+#endif
+
+#ifndef VIS_MILKDROP_SUPPORT_H_INCLUDED
+#define VIS_MILKDROP_SUPPORT_H_INCLUDED
 #include "support.h"
+#endif
+
+#ifndef VIS_MILKDROP_RESOURCE_H_INCLUDED
+#define VIS_MILKDROP_RESOURCE_H_INCLUDED
 //#include "resource.h"
+#endif
+
+#ifndef VIS_MILKDROP_DEFINES_H_INCLUDED
+#define VIS_MILKDROP_DEFINES_H_INCLUDED
 #include "defines.h"
+#endif
+
+#ifndef VIS_MILKDROP_SHELL_DEFINES_H_INCLUDED
+#define VIS_MILKDROP_SHELL_DEFINES_H_INCLUDED
 #include "shell_defines.h"
+#endif
+
 #include <stdio.h>
 #include <io.h>
 #include <time.h>      // for time()
 //#include <commctrl.h>  // for sliders
 #include <assert.h>
+#ifndef VIS_MILKDROP____XMLDOCUMENT_H_INCLUDED
+#define VIS_MILKDROP____XMLDOCUMENT_H_INCLUDED
 //#include "../XmlDocument.h"
+#endif
+
 
 #define FRAND ((rand() % 7381)/7380.0f)
 #define strnicmp _strnicmp

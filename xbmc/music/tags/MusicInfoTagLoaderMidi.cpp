@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef TAGS_MUSICINFOTAGLOADERMIDI_H_INCLUDED
+#define TAGS_MUSICINFOTAGLOADERMIDI_H_INCLUDED
 #include "MusicInfoTagLoaderMidi.h"
+#endif
+
+#ifndef TAGS_UTILS_URIUTILS_H_INCLUDED
+#define TAGS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef TAGS_MUSICINFOTAG_H_INCLUDED
+#define TAGS_MUSICINFOTAG_H_INCLUDED
 #include "MusicInfoTag.h"
+#endif
+
 
 using namespace XFILE;
 using namespace MUSIC_INFO;

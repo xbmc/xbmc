@@ -1,6 +1,14 @@
 #include "Renderer.hpp"
+#ifndef LIBPROJECTM_WIPEMALLOC_H_INCLUDED
+#define LIBPROJECTM_WIPEMALLOC_H_INCLUDED
 #include "wipemalloc.h"
+#endif
+
+#ifndef LIBPROJECTM_MATH_H_INCLUDED
+#define LIBPROJECTM_MATH_H_INCLUDED
 #include "math.h"
+#endif
+
 #include "Common.hpp"
 #include "CustomShape.hpp"
 #include "CustomWave.hpp"
@@ -8,7 +16,11 @@
 #include "TextureManager.hpp"
 #include <iostream>
 #include <cassert>
+#ifndef LIBPROJECTM_SECTIONLOCK_H_INCLUDED
+#define LIBPROJECTM_SECTIONLOCK_H_INCLUDED
 #include "SectionLock.h"
+#endif
+
 
 class Preset;
 

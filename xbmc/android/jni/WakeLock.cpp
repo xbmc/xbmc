@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_WAKELOCK_H_INCLUDED
+#define JNI_WAKELOCK_H_INCLUDED
 #include "WakeLock.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

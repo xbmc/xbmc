@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef CHANNELS_PVRCHANNELGROUP_H_INCLUDED
+#define CHANNELS_PVRCHANNELGROUP_H_INCLUDED
 #include "PVRChannelGroup.h"
+#endif
+
+#ifndef CHANNELS_UTILS_OBSERVER_H_INCLUDED
+#define CHANNELS_UTILS_OBSERVER_H_INCLUDED
 #include "utils/Observer.h"
+#endif
+
 
 namespace PVR
 {

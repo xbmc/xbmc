@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_ENUM_H_INCLUDED
+#define JNI_ENUM_H_INCLUDED
 #include "Enum.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

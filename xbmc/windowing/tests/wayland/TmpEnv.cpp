@@ -19,7 +19,11 @@
  */
 #include <stdlib.h>
 
+#ifndef WAYLAND_TMPENV_H_INCLUDED
+#define WAYLAND_TMPENV_H_INCLUDED
 #include "TmpEnv.h"
+#endif
+
 
 TmpEnv::TmpEnv(const char *env,
                const char *val) :

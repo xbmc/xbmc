@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef INFOSCANNER_MUSICINFOSCRAPER_H_INCLUDED
+#define INFOSCANNER_MUSICINFOSCRAPER_H_INCLUDED
 #include "MusicInfoScraper.h"
+#endif
+
+#ifndef INFOSCANNER_UTILS_LOG_H_INCLUDED
+#define INFOSCANNER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef INFOSCANNER_FILESYSTEM_CURLFILE_H_INCLUDED
+#define INFOSCANNER_FILESYSTEM_CURLFILE_H_INCLUDED
 #include "filesystem/CurlFile.h"
+#endif
+
 
 using namespace MUSIC_GRABBER;
 using namespace ADDON;

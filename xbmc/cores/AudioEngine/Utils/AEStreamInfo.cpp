@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef UTILS_AESTREAMINFO_H_INCLUDED
+#define UTILS_AESTREAMINFO_H_INCLUDED
 #include "AEStreamInfo.h"
+#endif
+
 
 #define IEC61937_PREAMBLE1 0xF872
 #define IEC61937_PREAMBLE2 0x4E1F

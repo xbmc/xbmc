@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef GUILIB_SYSTEM_H_INCLUDED
+#define GUILIB_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef GUILIB_TEXTUREBUNDLE_H_INCLUDED
+#define GUILIB_TEXTUREBUNDLE_H_INCLUDED
 #include "TextureBundle.h"
+#endif
+
 
 CTextureBundle::CTextureBundle(void)
 {

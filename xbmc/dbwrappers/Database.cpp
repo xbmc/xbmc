@@ -18,20 +18,76 @@
  *
  */
 
+#ifndef DBWRAPPERS_DATABASE_H_INCLUDED
+#define DBWRAPPERS_DATABASE_H_INCLUDED
 #include "Database.h"
+#endif
+
+#ifndef DBWRAPPERS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define DBWRAPPERS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef DBWRAPPERS_UTILS_CRC32_H_INCLUDED
+#define DBWRAPPERS_UTILS_CRC32_H_INCLUDED
 #include "utils/Crc32.h"
+#endif
+
+#ifndef DBWRAPPERS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define DBWRAPPERS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef DBWRAPPERS_FILESYSTEM_FILE_H_INCLUDED
+#define DBWRAPPERS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef DBWRAPPERS_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define DBWRAPPERS_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef DBWRAPPERS_UTILS_AUTOPTRHANDLE_H_INCLUDED
+#define DBWRAPPERS_UTILS_AUTOPTRHANDLE_H_INCLUDED
 #include "utils/AutoPtrHandle.h"
+#endif
+
+#ifndef DBWRAPPERS_UTILS_LOG_H_INCLUDED
+#define DBWRAPPERS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DBWRAPPERS_UTILS_SORTUTILS_H_INCLUDED
+#define DBWRAPPERS_UTILS_SORTUTILS_H_INCLUDED
 #include "utils/SortUtils.h"
+#endif
+
+#ifndef DBWRAPPERS_UTILS_URIUTILS_H_INCLUDED
+#define DBWRAPPERS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef DBWRAPPERS_UTILS_STRINGUTILS_H_INCLUDED
+#define DBWRAPPERS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef DBWRAPPERS_SQLITEDATASET_H_INCLUDED
+#define DBWRAPPERS_SQLITEDATASET_H_INCLUDED
 #include "sqlitedataset.h"
+#endif
+
+#ifndef DBWRAPPERS_DATABASEMANAGER_H_INCLUDED
+#define DBWRAPPERS_DATABASEMANAGER_H_INCLUDED
 #include "DatabaseManager.h"
+#endif
+
+#ifndef DBWRAPPERS_DBURL_H_INCLUDED
+#define DBWRAPPERS_DBURL_H_INCLUDED
 #include "DbUrl.h"
+#endif
+
 
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"

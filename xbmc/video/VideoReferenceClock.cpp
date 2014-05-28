@@ -17,15 +17,47 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef VIDEO_SYSTEM_H_INCLUDED
+#define VIDEO_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #include <list>
+#ifndef VIDEO_UTILS_STDSTRING_H_INCLUDED
+#define VIDEO_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef VIDEO_VIDEOREFERENCECLOCK_H_INCLUDED
+#define VIDEO_VIDEOREFERENCECLOCK_H_INCLUDED
 #include "VideoReferenceClock.h"
+#endif
+
+#ifndef VIDEO_UTILS_MATHUTILS_H_INCLUDED
+#define VIDEO_UTILS_MATHUTILS_H_INCLUDED
 #include "utils/MathUtils.h"
+#endif
+
+#ifndef VIDEO_UTILS_LOG_H_INCLUDED
+#define VIDEO_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef VIDEO_UTILS_TIMEUTILS_H_INCLUDED
+#define VIDEO_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef VIDEO_UTILS_STRINGUTILS_H_INCLUDED
+#define VIDEO_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef VIDEO_THREADS_SINGLELOCK_H_INCLUDED
+#define VIDEO_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
   #include <sstream>

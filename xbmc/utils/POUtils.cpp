@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef UTILS_UTILS_POUTILS_H_INCLUDED
+#define UTILS_UTILS_POUTILS_H_INCLUDED
 #include "utils/POUtils.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_FILE_H_INCLUDED
+#define UTILS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef UTILS_UTILS_LOG_H_INCLUDED
+#define UTILS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 #include <stdlib.h>
 
 CPODocument::CPODocument()

@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef FILESYSTEM_PIPEFILE_H_INCLUDED
+#define FILESYSTEM_PIPEFILE_H_INCLUDED
 #include "PipeFile.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
+#define FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef FILESYSTEM_PIPESMANAGER_H_INCLUDED
+#define FILESYSTEM_PIPESMANAGER_H_INCLUDED
 #include "PipesManager.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 using namespace XFILE;
 

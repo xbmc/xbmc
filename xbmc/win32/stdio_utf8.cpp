@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef WIN32_STDIO_UTF8_H_INCLUDED
+#define WIN32_STDIO_UTF8_H_INCLUDED
 #include "stdio_utf8.h"
+#endif
+
+#ifndef WIN32_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define WIN32_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
 
 int remove_utf8(const char* __filename)
 {

@@ -19,10 +19,26 @@
  */
 
 #include <cstring>
+#ifndef UTILS_ARCHIVE_H_INCLUDED
+#define UTILS_ARCHIVE_H_INCLUDED
 #include "Archive.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_FILE_H_INCLUDED
+#define UTILS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef UTILS_VARIANT_H_INCLUDED
+#define UTILS_VARIANT_H_INCLUDED
 #include "Variant.h"
+#endif
+
+#ifndef UTILS_UTILS_LOG_H_INCLUDED
+#define UTILS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #ifdef __GNUC__
 #pragma GCC diagnostic ignored "-Wlong-long"

@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef PAPLAYER_OGGCALLBACK_H_INCLUDED
+#define PAPLAYER_OGGCALLBACK_H_INCLUDED
 #include "OggCallback.h"
+#endif
+
+#ifndef PAPLAYER_FILEITEM_H_INCLUDED
+#define PAPLAYER_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
 
 COggCallback::COggCallback(XFILE::CFile& file) : m_file(file)
 {

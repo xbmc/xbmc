@@ -18,13 +18,41 @@
  *
  */
 
+#ifndef GUILIB_VISIBLEEFFECT_H_INCLUDED
+#define GUILIB_VISIBLEEFFECT_H_INCLUDED
 #include "VisibleEffect.h"
+#endif
+
+#ifndef GUILIB_GUIINFOMANAGER_H_INCLUDED
+#define GUILIB_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef GUILIB_ADDONS_SKIN_H_INCLUDED
+#define GUILIB_ADDONS_SKIN_H_INCLUDED
 #include "addons/Skin.h" // for the effect time adjustments
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef GUILIB_TWEEN_H_INCLUDED
+#define GUILIB_TWEEN_H_INCLUDED
 #include "Tween.h"
+#endif
+
+#ifndef GUILIB_UTILS_XBMCTINYXML_H_INCLUDED
+#define GUILIB_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
 
 using namespace std;
 

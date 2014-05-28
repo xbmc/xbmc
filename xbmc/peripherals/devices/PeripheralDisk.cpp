@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef DEVICES_PERIPHERALDISK_H_INCLUDED
+#define DEVICES_PERIPHERALDISK_H_INCLUDED
 #include "PeripheralDisk.h"
+#endif
+
+#ifndef DEVICES_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define DEVICES_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
 
 using namespace PERIPHERALS;
 

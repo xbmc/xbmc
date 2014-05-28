@@ -18,11 +18,27 @@
  *
  */
 
+#ifndef TEST_UTILS_SYSTEMINFO_H_INCLUDED
+#define TEST_UTILS_SYSTEMINFO_H_INCLUDED
 #include "utils/SystemInfo.h"
-#include "settings/Settings.h"
-#include "GUIInfoManager.h"
+#endif
 
+#ifndef TEST_SETTINGS_SETTINGS_H_INCLUDED
+#define TEST_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef TEST_GUIINFOMANAGER_H_INCLUDED
+#define TEST_GUIINFOMANAGER_H_INCLUDED
+#include "GUIInfoManager.h"
+#endif
+
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 class TestSystemInfo : public testing::Test
 {

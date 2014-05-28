@@ -19,14 +19,46 @@
  *
  */
 
+#ifndef JSON_RPC_ICLIENT_H_INCLUDED
+#define JSON_RPC_ICLIENT_H_INCLUDED
 #include "IClient.h"
+#endif
+
+#ifndef JSON_RPC_ITRANSPORTLAYER_H_INCLUDED
+#define JSON_RPC_ITRANSPORTLAYER_H_INCLUDED
 #include "ITransportLayer.h"
+#endif
+
+#ifndef JSON_RPC_FILEITEM_H_INCLUDED
+#define JSON_RPC_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef JSON_RPC_GUIUSERMESSAGES_H_INCLUDED
+#define JSON_RPC_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef JSON_RPC_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define JSON_RPC_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef JSON_RPC_INTERFACES_IANNOUNCER_H_INCLUDED
+#define JSON_RPC_INTERFACES_IANNOUNCER_H_INCLUDED
 #include "interfaces/IAnnouncer.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_STDSTRING_H_INCLUDED
+#define JSON_RPC_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_VARIANT_H_INCLUDED
+#define JSON_RPC_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
 
 namespace JSONRPC
 {

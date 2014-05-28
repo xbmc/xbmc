@@ -17,7 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef SINKS_SYSTEM_H_INCLUDED
+#define SINKS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #ifdef HAS_PULSEAUDIO
 #include "AESinkPULSE.h"
 #include "utils/log.h"

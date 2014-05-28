@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef UTILS_AECHANNELINFO_H_INCLUDED
+#define UTILS_AECHANNELINFO_H_INCLUDED
 #include "AEChannelInfo.h"
+#endif
+
 
 /**
  * The various data formats

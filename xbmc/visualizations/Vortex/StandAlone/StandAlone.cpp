@@ -23,7 +23,11 @@
 
 #include <windows.h>
 #include <d3d9.h>
+#ifndef STANDALONE_VORTEX_H_INCLUDED
+#define STANDALONE_VORTEX_H_INCLUDED
 #include "Vortex.h"
+#endif
+
 #include <math.h>
 
 IDirect3D9*	pD3D9 = NULL;

@@ -19,11 +19,31 @@
  *
  */
 
+#ifndef PVR_THREADS_CRITICALSECTION_H_INCLUDED
+#define PVR_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef PVR_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define PVR_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef PVR_UTILS_OBSERVER_H_INCLUDED
+#define PVR_UTILS_OBSERVER_H_INCLUDED
 #include "utils/Observer.h"
+#endif
+
+#ifndef PVR_THREADS_THREAD_H_INCLUDED
+#define PVR_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef PVR_ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
+#define PVR_ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
 #include "addons/include/xbmc_pvr_types.h"
+#endif
+
 
 namespace EPG
 {

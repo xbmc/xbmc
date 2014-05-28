@@ -18,62 +18,266 @@
  *
  */
 
+#ifndef INTERFACES_NETWORK_NETWORK_H_INCLUDED
+#define INTERFACES_NETWORK_NETWORK_H_INCLUDED
 #include "network/Network.h"
-#include "system.h"
-#include "utils/AlarmClock.h"
-#include "utils/Screenshot.h"
-#include "Application.h"
-#include "ApplicationMessenger.h"
-#include "Autorun.h"
-#include "Builtins.h"
-#include "input/ButtonTranslator.h"
-#include "FileItem.h"
-#include "addons/GUIDialogAddonSettings.h"
-#include "dialogs/GUIDialogFileBrowser.h"
-#include "guilib/GUIKeyboardFactory.h"
-#include "guilib/Key.h"
-#include "guilib/StereoscopicsManager.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogNumeric.h"
-#include "dialogs/GUIDialogProgress.h"
-#include "dialogs/GUIDialogYesNo.h"
-#include "GUIUserMessages.h"
-#include "windows/GUIWindowLoginScreen.h"
-#include "video/windows/GUIWindowVideoBase.h"
-#include "addons/GUIWindowAddonBrowser.h"
-#include "addons/Addon.h" // for TranslateType, TranslateContent
-#include "addons/AddonInstaller.h"
-#include "addons/AddonManager.h"
-#include "addons/PluginSource.h"
-#include "interfaces/generic/ScriptInvocationManager.h"
-#include "interfaces/AnnouncementManager.h"
-#include "network/NetworkServices.h"
-#include "utils/log.h"
-#include "storage/MediaManager.h"
-#include "utils/RssManager.h"
-#include "utils/JSONVariantParser.h"
-#include "PartyModeManager.h"
-#include "profiles/ProfilesManager.h"
-#include "settings/DisplaySettings.h"
-#include "settings/Settings.h"
-#include "settings/MediaSettings.h"
-#include "settings/MediaSourceSettings.h"
-#include "settings/SkinSettings.h"
-#include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
-#include "Util.h"
-#include "URL.h"
-#include "music/MusicDatabase.h"
-#include "cores/IPlayer.h"
+#endif
 
+#ifndef INTERFACES_SYSTEM_H_INCLUDED
+#define INTERFACES_SYSTEM_H_INCLUDED
+#include "system.h"
+#endif
+
+#ifndef INTERFACES_UTILS_ALARMCLOCK_H_INCLUDED
+#define INTERFACES_UTILS_ALARMCLOCK_H_INCLUDED
+#include "utils/AlarmClock.h"
+#endif
+
+#ifndef INTERFACES_UTILS_SCREENSHOT_H_INCLUDED
+#define INTERFACES_UTILS_SCREENSHOT_H_INCLUDED
+#include "utils/Screenshot.h"
+#endif
+
+#ifndef INTERFACES_APPLICATION_H_INCLUDED
+#define INTERFACES_APPLICATION_H_INCLUDED
+#include "Application.h"
+#endif
+
+#ifndef INTERFACES_APPLICATIONMESSENGER_H_INCLUDED
+#define INTERFACES_APPLICATIONMESSENGER_H_INCLUDED
+#include "ApplicationMessenger.h"
+#endif
+
+#ifndef INTERFACES_AUTORUN_H_INCLUDED
+#define INTERFACES_AUTORUN_H_INCLUDED
+#include "Autorun.h"
+#endif
+
+#ifndef INTERFACES_BUILTINS_H_INCLUDED
+#define INTERFACES_BUILTINS_H_INCLUDED
+#include "Builtins.h"
+#endif
+
+#ifndef INTERFACES_INPUT_BUTTONTRANSLATOR_H_INCLUDED
+#define INTERFACES_INPUT_BUTTONTRANSLATOR_H_INCLUDED
+#include "input/ButtonTranslator.h"
+#endif
+
+#ifndef INTERFACES_FILEITEM_H_INCLUDED
+#define INTERFACES_FILEITEM_H_INCLUDED
+#include "FileItem.h"
+#endif
+
+#ifndef INTERFACES_ADDONS_GUIDIALOGADDONSETTINGS_H_INCLUDED
+#define INTERFACES_ADDONS_GUIDIALOGADDONSETTINGS_H_INCLUDED
+#include "addons/GUIDialogAddonSettings.h"
+#endif
+
+#ifndef INTERFACES_DIALOGS_GUIDIALOGFILEBROWSER_H_INCLUDED
+#define INTERFACES_DIALOGS_GUIDIALOGFILEBROWSER_H_INCLUDED
+#include "dialogs/GUIDialogFileBrowser.h"
+#endif
+
+#ifndef INTERFACES_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
+#define INTERFACES_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
+#include "guilib/GUIKeyboardFactory.h"
+#endif
+
+#ifndef INTERFACES_GUILIB_KEY_H_INCLUDED
+#define INTERFACES_GUILIB_KEY_H_INCLUDED
+#include "guilib/Key.h"
+#endif
+
+#ifndef INTERFACES_GUILIB_STEREOSCOPICSMANAGER_H_INCLUDED
+#define INTERFACES_GUILIB_STEREOSCOPICSMANAGER_H_INCLUDED
+#include "guilib/StereoscopicsManager.h"
+#endif
+
+#ifndef INTERFACES_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define INTERFACES_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef INTERFACES_DIALOGS_GUIDIALOGNUMERIC_H_INCLUDED
+#define INTERFACES_DIALOGS_GUIDIALOGNUMERIC_H_INCLUDED
+#include "dialogs/GUIDialogNumeric.h"
+#endif
+
+#ifndef INTERFACES_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#define INTERFACES_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#include "dialogs/GUIDialogProgress.h"
+#endif
+
+#ifndef INTERFACES_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define INTERFACES_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef INTERFACES_GUIUSERMESSAGES_H_INCLUDED
+#define INTERFACES_GUIUSERMESSAGES_H_INCLUDED
+#include "GUIUserMessages.h"
+#endif
+
+#ifndef INTERFACES_WINDOWS_GUIWINDOWLOGINSCREEN_H_INCLUDED
+#define INTERFACES_WINDOWS_GUIWINDOWLOGINSCREEN_H_INCLUDED
+#include "windows/GUIWindowLoginScreen.h"
+#endif
+
+#ifndef INTERFACES_VIDEO_WINDOWS_GUIWINDOWVIDEOBASE_H_INCLUDED
+#define INTERFACES_VIDEO_WINDOWS_GUIWINDOWVIDEOBASE_H_INCLUDED
+#include "video/windows/GUIWindowVideoBase.h"
+#endif
+
+#ifndef INTERFACES_ADDONS_GUIWINDOWADDONBROWSER_H_INCLUDED
+#define INTERFACES_ADDONS_GUIWINDOWADDONBROWSER_H_INCLUDED
+#include "addons/GUIWindowAddonBrowser.h"
+#endif
+
+#ifndef INTERFACES_ADDONS_ADDON_H_INCLUDED
+#define INTERFACES_ADDONS_ADDON_H_INCLUDED
+#include "addons/Addon.h" // for TranslateType, TranslateContent
+#endif
+
+#ifndef INTERFACES_ADDONS_ADDONINSTALLER_H_INCLUDED
+#define INTERFACES_ADDONS_ADDONINSTALLER_H_INCLUDED
+#include "addons/AddonInstaller.h"
+#endif
+
+#ifndef INTERFACES_ADDONS_ADDONMANAGER_H_INCLUDED
+#define INTERFACES_ADDONS_ADDONMANAGER_H_INCLUDED
+#include "addons/AddonManager.h"
+#endif
+
+#ifndef INTERFACES_ADDONS_PLUGINSOURCE_H_INCLUDED
+#define INTERFACES_ADDONS_PLUGINSOURCE_H_INCLUDED
+#include "addons/PluginSource.h"
+#endif
+
+#ifndef INTERFACES_INTERFACES_GENERIC_SCRIPTINVOCATIONMANAGER_H_INCLUDED
+#define INTERFACES_INTERFACES_GENERIC_SCRIPTINVOCATIONMANAGER_H_INCLUDED
+#include "interfaces/generic/ScriptInvocationManager.h"
+#endif
+
+#ifndef INTERFACES_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#define INTERFACES_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#include "interfaces/AnnouncementManager.h"
+#endif
+
+#ifndef INTERFACES_NETWORK_NETWORKSERVICES_H_INCLUDED
+#define INTERFACES_NETWORK_NETWORKSERVICES_H_INCLUDED
+#include "network/NetworkServices.h"
+#endif
+
+#ifndef INTERFACES_UTILS_LOG_H_INCLUDED
+#define INTERFACES_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef INTERFACES_STORAGE_MEDIAMANAGER_H_INCLUDED
+#define INTERFACES_STORAGE_MEDIAMANAGER_H_INCLUDED
+#include "storage/MediaManager.h"
+#endif
+
+#ifndef INTERFACES_UTILS_RSSMANAGER_H_INCLUDED
+#define INTERFACES_UTILS_RSSMANAGER_H_INCLUDED
+#include "utils/RssManager.h"
+#endif
+
+#ifndef INTERFACES_UTILS_JSONVARIANTPARSER_H_INCLUDED
+#define INTERFACES_UTILS_JSONVARIANTPARSER_H_INCLUDED
+#include "utils/JSONVariantParser.h"
+#endif
+
+#ifndef INTERFACES_PARTYMODEMANAGER_H_INCLUDED
+#define INTERFACES_PARTYMODEMANAGER_H_INCLUDED
+#include "PartyModeManager.h"
+#endif
+
+#ifndef INTERFACES_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define INTERFACES_PROFILES_PROFILESMANAGER_H_INCLUDED
+#include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef INTERFACES_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#define INTERFACES_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#include "settings/DisplaySettings.h"
+#endif
+
+#ifndef INTERFACES_SETTINGS_SETTINGS_H_INCLUDED
+#define INTERFACES_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef INTERFACES_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define INTERFACES_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#include "settings/MediaSettings.h"
+#endif
+
+#ifndef INTERFACES_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define INTERFACES_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#include "settings/MediaSourceSettings.h"
+#endif
+
+#ifndef INTERFACES_SETTINGS_SKINSETTINGS_H_INCLUDED
+#define INTERFACES_SETTINGS_SKINSETTINGS_H_INCLUDED
+#include "settings/SkinSettings.h"
+#endif
+
+#ifndef INTERFACES_UTILS_STRINGUTILS_H_INCLUDED
+#define INTERFACES_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+#ifndef INTERFACES_UTILS_URIUTILS_H_INCLUDED
+#define INTERFACES_UTILS_URIUTILS_H_INCLUDED
+#include "utils/URIUtils.h"
+#endif
+
+#ifndef INTERFACES_UTIL_H_INCLUDED
+#define INTERFACES_UTIL_H_INCLUDED
+#include "Util.h"
+#endif
+
+#ifndef INTERFACES_URL_H_INCLUDED
+#define INTERFACES_URL_H_INCLUDED
+#include "URL.h"
+#endif
+
+#ifndef INTERFACES_MUSIC_MUSICDATABASE_H_INCLUDED
+#define INTERFACES_MUSIC_MUSICDATABASE_H_INCLUDED
+#include "music/MusicDatabase.h"
+#endif
+
+#ifndef INTERFACES_CORES_IPLAYER_H_INCLUDED
+#define INTERFACES_CORES_IPLAYER_H_INCLUDED
+#include "cores/IPlayer.h"
+#endif
+
+
+#ifndef INTERFACES_FILESYSTEM_PLUGINDIRECTORY_H_INCLUDED
+#define INTERFACES_FILESYSTEM_PLUGINDIRECTORY_H_INCLUDED
 #include "filesystem/PluginDirectory.h"
+#endif
+
 #ifdef HAS_FILESYSTEM_RAR
 #include "filesystem/RarManager.h"
 #endif
+#ifndef INTERFACES_FILESYSTEM_ZIPMANAGER_H_INCLUDED
+#define INTERFACES_FILESYSTEM_ZIPMANAGER_H_INCLUDED
 #include "filesystem/ZipManager.h"
+#endif
 
+
+#ifndef INTERFACES_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define INTERFACES_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef INTERFACES_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define INTERFACES_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
 
 #ifdef HAS_LIRC
 #include "input/linux/LIRC.h"
@@ -94,8 +298,16 @@
 #endif
 
 #include <vector>
+#ifndef INTERFACES_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define INTERFACES_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef INTERFACES_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#define INTERFACES_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
 #include "settings/DisplaySettings.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

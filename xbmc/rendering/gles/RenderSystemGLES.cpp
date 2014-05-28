@@ -19,7 +19,11 @@
  */
 
 
+#ifndef GLES_SYSTEM_H_INCLUDED
+#define GLES_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #if HAS_GLES == 2
 

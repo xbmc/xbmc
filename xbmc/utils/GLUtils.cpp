@@ -18,12 +18,32 @@
  *
  */
 
+#ifndef UTILS_SYSTEM_H_INCLUDED
+#define UTILS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
 
+
+#ifndef UTILS_GLUTILS_H_INCLUDED
+#define UTILS_GLUTILS_H_INCLUDED
 #include "GLUtils.h"
+#endif
+
+#ifndef UTILS_LOG_H_INCLUDED
+#define UTILS_LOG_H_INCLUDED
 #include "log.h"
+#endif
+
+#ifndef UTILS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define UTILS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef UTILS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define UTILS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
 
 void _VerifyGLState(const char* szfile, const char* szfunction, int lineno){
 #if defined(HAS_GL) && defined(_DEBUG)

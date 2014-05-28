@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef LEGACY_CALLBACKFUNCTION_H_INCLUDED
+#define LEGACY_CALLBACKFUNCTION_H_INCLUDED
 #include "CallbackFunction.h"
+#endif
+
 
 namespace XBMCAddon
 {

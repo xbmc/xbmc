@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef UTILS_SYSTEM_H_INCLUDED
+#define UTILS_SYSTEM_H_INCLUDED
 #include "system.h" // for HANDLE and SOCKET
+#endif
+
 #include <stdlib.h>
 
 namespace AUTOPTR

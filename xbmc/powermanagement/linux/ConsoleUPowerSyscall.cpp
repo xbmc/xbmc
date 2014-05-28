@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef LINUX_SYSTEM_H_INCLUDED
+#define LINUX_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef LINUX_CONSOLEUPOWERSYSCALL_H_INCLUDED
+#define LINUX_CONSOLEUPOWERSYSCALL_H_INCLUDED
 #include "ConsoleUPowerSyscall.h"
+#endif
+
+#ifndef LINUX_UTILS_LOG_H_INCLUDED
+#define LINUX_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #ifdef HAS_DBUS
 

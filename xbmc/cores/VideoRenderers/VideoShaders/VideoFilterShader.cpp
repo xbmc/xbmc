@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef VIDEOSHADERS_SYSTEM_H_INCLUDED
+#define VIDEOSHADERS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #if defined(HAS_GL) || HAS_GLES == 2
 #include <string>

@@ -18,30 +18,126 @@
  *
  */
 
+#ifndef WINDOWS_SYSTEM_H_INCLUDED
+#define WINDOWS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef WINDOWS_GUIWINDOWMUSICSONGS_H_INCLUDED
+#define WINDOWS_GUIWINDOWMUSICSONGS_H_INCLUDED
 #include "GUIWindowMusicSongs.h"
+#endif
+
+#ifndef WINDOWS_UTIL_H_INCLUDED
+#define WINDOWS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef WINDOWS_GUIINFOMANAGER_H_INCLUDED
+#define WINDOWS_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef WINDOWS_APPLICATION_H_INCLUDED
+#define WINDOWS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef WINDOWS_CUEDOCUMENT_H_INCLUDED
+#define WINDOWS_CUEDOCUMENT_H_INCLUDED
 #include "CueDocument.h"
+#endif
+
+#ifndef WINDOWS_GUIPASSWORD_H_INCLUDED
+#define WINDOWS_GUIPASSWORD_H_INCLUDED
 #include "GUIPassword.h"
+#endif
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef WINDOWS_GUIUSERMESSAGES_H_INCLUDED
+#define WINDOWS_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef WINDOWS_FILEITEM_H_INCLUDED
+#define WINDOWS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef WINDOWS_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define WINDOWS_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef WINDOWS_STORAGE_MEDIAMANAGER_H_INCLUDED
+#define WINDOWS_STORAGE_MEDIAMANAGER_H_INCLUDED
 #include "storage/MediaManager.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
 #include "settings/MediaSourceSettings.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_KEY_H_INCLUDED
+#define WINDOWS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define WINDOWS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef WINDOWS_UTILS_LOG_H_INCLUDED
+#define WINDOWS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef WINDOWS_UTILS_URIUTILS_H_INCLUDED
+#define WINDOWS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
+#define WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef WINDOWS_AUTORUN_H_INCLUDED
+#define WINDOWS_AUTORUN_H_INCLUDED
 #include "Autorun.h"
+#endif
+
+#ifndef WINDOWS_CDRIP_CDDARIPPER_H_INCLUDED
+#define WINDOWS_CDRIP_CDDARIPPER_H_INCLUDED
 #include "cdrip/CDDARipper.h"
+#endif
+
+#ifndef WINDOWS_CORES_IPLAYER_H_INCLUDED
+#define WINDOWS_CORES_IPLAYER_H_INCLUDED
 #include "cores/IPlayer.h"
+#endif
+
+#ifndef WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
+#define WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3

@@ -23,25 +23,97 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
+#ifndef NETWORK_SYSTEM_H_INCLUDED
+#define NETWORK_SYSTEM_H_INCLUDED
 #include "system.h"
-#include "network/Network.h"
-#include "Application.h"
-#include "DNSNameCache.h"
-#include "dialogs/GUIDialogProgress.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "filesystem/SpecialProtocol.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
-#include "settings/MediaSourceSettings.h"
-#include "utils/JobManager.h"
-#include "utils/log.h"
-#include "utils/XMLUtils.h"
-#include "utils/URIUtils.h"
-#include "utils/StringUtils.h"
+#endif
 
+#ifndef NETWORK_NETWORK_NETWORK_H_INCLUDED
+#define NETWORK_NETWORK_NETWORK_H_INCLUDED
+#include "network/Network.h"
+#endif
+
+#ifndef NETWORK_APPLICATION_H_INCLUDED
+#define NETWORK_APPLICATION_H_INCLUDED
+#include "Application.h"
+#endif
+
+#ifndef NETWORK_DNSNAMECACHE_H_INCLUDED
+#define NETWORK_DNSNAMECACHE_H_INCLUDED
+#include "DNSNameCache.h"
+#endif
+
+#ifndef NETWORK_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#define NETWORK_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#include "dialogs/GUIDialogProgress.h"
+#endif
+
+#ifndef NETWORK_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define NETWORK_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef NETWORK_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define NETWORK_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef NETWORK_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define NETWORK_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef NETWORK_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define NETWORK_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef NETWORK_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define NETWORK_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef NETWORK_SETTINGS_SETTINGS_H_INCLUDED
+#define NETWORK_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef NETWORK_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define NETWORK_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#include "settings/MediaSourceSettings.h"
+#endif
+
+#ifndef NETWORK_UTILS_JOBMANAGER_H_INCLUDED
+#define NETWORK_UTILS_JOBMANAGER_H_INCLUDED
+#include "utils/JobManager.h"
+#endif
+
+#ifndef NETWORK_UTILS_LOG_H_INCLUDED
+#define NETWORK_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef NETWORK_UTILS_XMLUTILS_H_INCLUDED
+#define NETWORK_UTILS_XMLUTILS_H_INCLUDED
+#include "utils/XMLUtils.h"
+#endif
+
+#ifndef NETWORK_UTILS_URIUTILS_H_INCLUDED
+#define NETWORK_UTILS_URIUTILS_H_INCLUDED
+#include "utils/URIUtils.h"
+#endif
+
+#ifndef NETWORK_UTILS_STRINGUTILS_H_INCLUDED
+#define NETWORK_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+
+#ifndef NETWORK_WAKEONACCESS_H_INCLUDED
+#define NETWORK_WAKEONACCESS_H_INCLUDED
 #include "WakeOnAccess.h"
+#endif
+
 
 using namespace std;
 

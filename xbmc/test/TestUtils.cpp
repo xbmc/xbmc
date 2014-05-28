@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef TEST_TESTUTILS_H_INCLUDED
+#define TEST_TESTUTILS_H_INCLUDED
 #include "TestUtils.h"
+#endif
+
+#ifndef TEST_UTIL_H_INCLUDED
+#define TEST_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef TEST_FILESYSTEM_FILE_H_INCLUDED
+#define TEST_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef TEST_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define TEST_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef TEST_UTILS_STRINGUTILS_H_INCLUDED
+#define TEST_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 #ifdef TARGET_WINDOWS
 #include <windows.h>

@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef CDRIP_DYNAMICDLL_H_INCLUDED
+#define CDRIP_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
+#ifndef CDRIP_LAME_LAME_H_INCLUDED
+#define CDRIP_LAME_LAME_H_INCLUDED
 #include "lame/lame.h"
+#endif
+
 
 class DllLameEncInterface
 {

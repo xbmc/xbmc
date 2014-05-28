@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef WIN32_STAT_UTF8_H_INCLUDED
+#define WIN32_STAT_UTF8_H_INCLUDED
 #include "stat_utf8.h"
+#endif
+
+#ifndef WIN32_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define WIN32_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
 
 int stat64_utf8(const char* __file, struct stat64* __buf)
 {

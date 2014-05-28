@@ -18,16 +18,48 @@
  *
  */
 
+#ifndef ACTIVEAE_SYSTEM_H_INCLUDED
+#define ACTIVEAE_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef ACTIVEAE_THREADS_SINGLELOCK_H_INCLUDED
+#define ACTIVEAE_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef ACTIVEAE_UTILS_LOG_H_INCLUDED
+#define ACTIVEAE_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ACTIVEAE_UTILS_MATHUTILS_H_INCLUDED
+#define ACTIVEAE_UTILS_MATHUTILS_H_INCLUDED
 #include "utils/MathUtils.h"
+#endif
 
+
+#ifndef ACTIVEAE_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
+#define ACTIVEAE_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
 #include "cores/AudioEngine/AEFactory.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
 
+#ifndef ACTIVEAE_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define ACTIVEAE_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
+
+#ifndef ACTIVEAE_ACTIVEAE_H_INCLUDED
+#define ACTIVEAE_ACTIVEAE_H_INCLUDED
 #include "ActiveAE.h"
+#endif
+
+#ifndef ACTIVEAE_ACTIVEAESTREAM_H_INCLUDED
+#define ACTIVEAE_ACTIVEAESTREAM_H_INCLUDED
 #include "ActiveAEStream.h"
+#endif
+
 
 using namespace ActiveAE;
 

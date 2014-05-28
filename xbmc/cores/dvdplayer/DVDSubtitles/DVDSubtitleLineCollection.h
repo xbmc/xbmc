@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef DVDSUBTITLES____DVDCODECS_OVERLAY_DVDOVERLAY_H_INCLUDED
+#define DVDSUBTITLES____DVDCODECS_OVERLAY_DVDOVERLAY_H_INCLUDED
 #include "../DVDCodecs/Overlay/DVDOverlay.h"
+#endif
+
 
 typedef struct stListElement
 {

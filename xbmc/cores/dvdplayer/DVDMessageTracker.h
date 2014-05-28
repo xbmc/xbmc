@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef DVDPLAYER_DVD_CONFIG_H_INCLUDED
+#define DVDPLAYER_DVD_CONFIG_H_INCLUDED
 #include "dvd_config.h"
+#endif
+
 
 #ifdef DVDDEBUG_MESSAGE_TRACKER
 

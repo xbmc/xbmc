@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef PAPLAYER_CACHINGCODEC_H_INCLUDED
+#define PAPLAYER_CACHINGCODEC_H_INCLUDED
 #include "CachingCodec.h"
+#endif
+
+#ifndef PAPLAYER_DLLVORBISFILE_H_INCLUDED
+#define PAPLAYER_DLLVORBISFILE_H_INCLUDED
 #include "DllVorbisfile.h"
+#endif
+
+#ifndef PAPLAYER_OGGCALLBACK_H_INCLUDED
+#define PAPLAYER_OGGCALLBACK_H_INCLUDED
 #include "OggCallback.h"
+#endif
+
 
 class OGGCodec : public CachingCodec
 {

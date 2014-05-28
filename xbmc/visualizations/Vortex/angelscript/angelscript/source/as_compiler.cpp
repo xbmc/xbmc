@@ -37,13 +37,41 @@
 
 #include <math.h> // fmodf()
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
+#ifndef SOURCE_AS_COMPILER_H_INCLUDED
+#define SOURCE_AS_COMPILER_H_INCLUDED
 #include "as_compiler.h"
+#endif
+
+#ifndef SOURCE_AS_TOKENDEF_H_INCLUDED
+#define SOURCE_AS_TOKENDEF_H_INCLUDED
 #include "as_tokendef.h"
+#endif
+
+#ifndef SOURCE_AS_TOKENIZER_H_INCLUDED
+#define SOURCE_AS_TOKENIZER_H_INCLUDED
 #include "as_tokenizer.h"
+#endif
+
+#ifndef SOURCE_AS_STRING_UTIL_H_INCLUDED
+#define SOURCE_AS_STRING_UTIL_H_INCLUDED
 #include "as_string_util.h"
+#endif
+
+#ifndef SOURCE_AS_TEXTS_H_INCLUDED
+#define SOURCE_AS_TEXTS_H_INCLUDED
 #include "as_texts.h"
+#endif
+
+#ifndef SOURCE_AS_PARSER_H_INCLUDED
+#define SOURCE_AS_PARSER_H_INCLUDED
 #include "as_parser.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

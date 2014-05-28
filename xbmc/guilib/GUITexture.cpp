@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef GUILIB_GUITEXTURE_H_INCLUDED
+#define GUILIB_GUITEXTURE_H_INCLUDED
 #include "GUITexture.h"
+#endif
+
+#ifndef GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "GraphicContext.h"
+#endif
+
+#ifndef GUILIB_TEXTUREMANAGER_H_INCLUDED
+#define GUILIB_TEXTUREMANAGER_H_INCLUDED
 #include "TextureManager.h"
+#endif
+
+#ifndef GUILIB_GUILARGETEXTUREMANAGER_H_INCLUDED
+#define GUILIB_GUILARGETEXTUREMANAGER_H_INCLUDED
 #include "GUILargeTextureManager.h"
+#endif
+
+#ifndef GUILIB_UTILS_MATHUTILS_H_INCLUDED
+#define GUILIB_UTILS_MATHUTILS_H_INCLUDED
 #include "utils/MathUtils.h"
+#endif
+
 
 using namespace std;
 

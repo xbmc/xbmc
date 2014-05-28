@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef UTILS_BITSTREAMSTATS_H_INCLUDED
+#define UTILS_BITSTREAMSTATS_H_INCLUDED
 #include "BitstreamStats.h"
+#endif
+
+#ifndef UTILS_UTILS_TIMEUTILS_H_INCLUDED
+#define UTILS_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
 
 int64_t BitstreamStats::m_tmFreq;
 

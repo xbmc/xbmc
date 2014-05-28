@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef FILESYSTEM_MUSICDATABASEFILE_H_INCLUDED
+#define FILESYSTEM_MUSICDATABASEFILE_H_INCLUDED
 #include "MusicDatabaseFile.h"
+#endif
+
+#ifndef FILESYSTEM_MUSIC_MUSICDATABASE_H_INCLUDED
+#define FILESYSTEM_MUSIC_MUSICDATABASE_H_INCLUDED
 #include "music/MusicDatabase.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 
 #include <sys/stat.h>
 

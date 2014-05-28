@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef AUDIOENGINE_AESINKFACTORY_H_INCLUDED
+#define AUDIOENGINE_AESINKFACTORY_H_INCLUDED
 #include "AESinkFactory.h"
+#endif
+
+#ifndef AUDIOENGINE_INTERFACES_AESINK_H_INCLUDED
+#define AUDIOENGINE_INTERFACES_AESINK_H_INCLUDED
 #include "Interfaces/AESink.h"
+#endif
+
 #if defined(TARGET_WINDOWS)
   #include "Sinks/AESinkWASAPI.h"
   #include "Sinks/AESinkDirectSound.h"
@@ -42,12 +50,32 @@
 #else
   #pragma message("NOTICE: No audio sink for target platform.  Audio output will not be available.")
 #endif
+#ifndef AUDIOENGINE_SINKS_AESINKPROFILER_H_INCLUDED
+#define AUDIOENGINE_SINKS_AESINKPROFILER_H_INCLUDED
 #include "Sinks/AESinkProfiler.h"
-#include "Sinks/AESinkNULL.h"
+#endif
 
+#ifndef AUDIOENGINE_SINKS_AESINKNULL_H_INCLUDED
+#define AUDIOENGINE_SINKS_AESINKNULL_H_INCLUDED
+#include "Sinks/AESinkNULL.h"
+#endif
+
+
+#ifndef AUDIOENGINE_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define AUDIOENGINE_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef AUDIOENGINE_UTILS_SYSTEMINFO_H_INCLUDED
+#define AUDIOENGINE_UTILS_SYSTEMINFO_H_INCLUDED
 #include "utils/SystemInfo.h"
+#endif
+
+#ifndef AUDIOENGINE_UTILS_LOG_H_INCLUDED
+#define AUDIOENGINE_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 void CAESinkFactory::ParseDevice(std::string &device, std::string &driver)
 {

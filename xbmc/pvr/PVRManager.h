@@ -21,13 +21,41 @@
 
 #include <map>
 
+#ifndef PVR_ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
+#define PVR_ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
 #include "addons/include/xbmc_pvr_types.h"
+#endif
+
+#ifndef PVR_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
+#define PVR_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
 #include "settings/lib/ISettingCallback.h"
+#endif
+
+#ifndef PVR_THREADS_EVENT_H_INCLUDED
+#define PVR_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
+#ifndef PVR_THREADS_THREAD_H_INCLUDED
+#define PVR_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef PVR_UTILS_JOBMANAGER_H_INCLUDED
+#define PVR_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
+#ifndef PVR_UTILS_OBSERVER_H_INCLUDED
+#define PVR_UTILS_OBSERVER_H_INCLUDED
 #include "utils/Observer.h"
+#endif
+
+#ifndef PVR_INTERFACES_IANNOUNCER_H_INCLUDED
+#define PVR_INTERFACES_IANNOUNCER_H_INCLUDED
 #include "interfaces/IAnnouncer.h"
+#endif
+
 
 class CGUIDialogProgressBarHandle;
 class CStopWatch;

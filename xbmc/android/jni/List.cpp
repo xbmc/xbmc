@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef JNI_LIST_H_INCLUDED
+#define JNI_LIST_H_INCLUDED
 #include "List.h"
+#endif
+
+#ifndef JNI_VIEW_H_INCLUDED
+#define JNI_VIEW_H_INCLUDED
 #include "View.h"
+#endif
+
+#ifndef JNI_SCANRESULT_H_INCLUDED
+#define JNI_SCANRESULT_H_INCLUDED
 #include "ScanResult.h"
+#endif
+
+#ifndef JNI_WIFICONFIGURATION_H_INCLUDED
+#define JNI_WIFICONFIGURATION_H_INCLUDED
 #include "WifiConfiguration.h"
+#endif
+
+#ifndef JNI_APPLICATIONINFO_H_INCLUDED
+#define JNI_APPLICATIONINFO_H_INCLUDED
 #include "ApplicationInfo.h"
+#endif
+
 
 #include "jutils/jutils-details.hpp"
 

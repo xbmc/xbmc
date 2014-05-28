@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef GUILIB_SYSTEM_H_INCLUDED
+#define GUILIB_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #if defined(HAS_GL) || HAS_GLES == 2
 #include "FrameBufferObject.h"

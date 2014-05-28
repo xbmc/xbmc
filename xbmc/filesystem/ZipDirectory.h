@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef FILESYSTEM_IFILEDIRECTORY_H_INCLUDED
+#define FILESYSTEM_IFILEDIRECTORY_H_INCLUDED
 #include "IFileDirectory.h"
+#endif
+
 
 namespace XFILE
 {

@@ -18,13 +18,37 @@
  *
  */
 
+#ifndef TEST_SETTINGS_SETTINGS_H_INCLUDED
+#define TEST_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
-#include "utils/CharsetConverter.h"
-#include "utils/StdString.h"
-#include "utils/Utf8Utils.h"
-#include "system.h"
+#endif
 
+#ifndef TEST_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define TEST_UTILS_CHARSETCONVERTER_H_INCLUDED
+#include "utils/CharsetConverter.h"
+#endif
+
+#ifndef TEST_UTILS_STDSTRING_H_INCLUDED
+#define TEST_UTILS_STDSTRING_H_INCLUDED
+#include "utils/StdString.h"
+#endif
+
+#ifndef TEST_UTILS_UTF8UTILS_H_INCLUDED
+#define TEST_UTILS_UTF8UTILS_H_INCLUDED
+#include "utils/Utf8Utils.h"
+#endif
+
+#ifndef TEST_SYSTEM_H_INCLUDED
+#define TEST_SYSTEM_H_INCLUDED
+#include "system.h"
+#endif
+
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 static const uint16_t refutf16LE1[] = { 0xff54, 0xff45, 0xff53, 0xff54,
                                         0xff3f, 0xff55, 0xff54, 0xff46,

@@ -20,13 +20,41 @@
 
 #include <sstream>
 
+#ifndef UTILS_DATABASEUTILS_H_INCLUDED
+#define UTILS_DATABASEUTILS_H_INCLUDED
 #include "DatabaseUtils.h"
+#endif
+
+#ifndef UTILS_DBWRAPPERS_DATASET_H_INCLUDED
+#define UTILS_DBWRAPPERS_DATASET_H_INCLUDED
 #include "dbwrappers/dataset.h"
+#endif
+
+#ifndef UTILS_MUSIC_MUSICDATABASE_H_INCLUDED
+#define UTILS_MUSIC_MUSICDATABASE_H_INCLUDED
 #include "music/MusicDatabase.h"
+#endif
+
+#ifndef UTILS_UTILS_LOG_H_INCLUDED
+#define UTILS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef UTILS_UTILS_VARIANT_H_INCLUDED
+#define UTILS_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UTILS_VIDEO_VIDEODATABASE_H_INCLUDED
+#define UTILS_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
 
 std::string DatabaseUtils::MediaTypeToString(MediaType mediaType)
 {

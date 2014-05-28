@@ -18,12 +18,32 @@
  *
  */
 
+#ifndef DVDPLAYER_DVDCLOCK_H_INCLUDED
+#define DVDPLAYER_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h"
+#endif
+
+#ifndef DVDPLAYER_VIDEO_VIDEOREFERENCECLOCK_H_INCLUDED
+#define DVDPLAYER_VIDEO_VIDEOREFERENCECLOCK_H_INCLUDED
 #include "video/VideoReferenceClock.h"
+#endif
+
 #include <math.h>
+#ifndef DVDPLAYER_UTILS_MATHUTILS_H_INCLUDED
+#define DVDPLAYER_UTILS_MATHUTILS_H_INCLUDED
 #include "utils/MathUtils.h"
+#endif
+
+#ifndef DVDPLAYER_THREADS_SINGLELOCK_H_INCLUDED
+#define DVDPLAYER_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_LOG_H_INCLUDED
+#define DVDPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 int64_t CDVDClock::m_systemOffset;
 int64_t CDVDClock::m_systemFrequency;

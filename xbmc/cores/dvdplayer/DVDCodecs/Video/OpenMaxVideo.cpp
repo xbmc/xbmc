@@ -24,16 +24,52 @@
 #include "system.h"
 #endif
 
+#ifndef VIDEO_OPENMAXVIDEO_H_INCLUDED
+#define VIDEO_OPENMAXVIDEO_H_INCLUDED
 #include "OpenMaxVideo.h"
+#endif
 
+
+#ifndef VIDEO_DVDCLOCK_H_INCLUDED
+#define VIDEO_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h"
+#endif
+
+#ifndef VIDEO_DVDSTREAMINFO_H_INCLUDED
+#define VIDEO_DVDSTREAMINFO_H_INCLUDED
 #include "DVDStreamInfo.h"
+#endif
+
+#ifndef VIDEO_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define VIDEO_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef VIDEO_DVDVIDEOCODEC_H_INCLUDED
+#define VIDEO_DVDVIDEOCODEC_H_INCLUDED
 #include "DVDVideoCodec.h"
+#endif
+
+#ifndef VIDEO_UTILS_LOG_H_INCLUDED
+#define VIDEO_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef VIDEO_UTILS_TIMEUTILS_H_INCLUDED
+#define VIDEO_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef VIDEO_APPLICATIONMESSENGER_H_INCLUDED
+#define VIDEO_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef VIDEO_APPLICATION_H_INCLUDED
+#define VIDEO_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
 
 #include <OMX_Core.h>
 #include <OMX_Component.h>

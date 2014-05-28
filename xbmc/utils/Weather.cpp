@@ -21,29 +21,121 @@
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
+#ifndef UTILS_WEATHER_H_INCLUDED
+#define UTILS_WEATHER_H_INCLUDED
 #include "Weather.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_ZIPMANAGER_H_INCLUDED
+#define UTILS_FILESYSTEM_ZIPMANAGER_H_INCLUDED
 #include "filesystem/ZipManager.h"
+#endif
+
+#ifndef UTILS_XMLUTILS_H_INCLUDED
+#define UTILS_XMLUTILS_H_INCLUDED
 #include "XMLUtils.h"
+#endif
+
+#ifndef UTILS_UTILS_POUTILS_H_INCLUDED
+#define UTILS_UTILS_POUTILS_H_INCLUDED
 #include "utils/POUtils.h"
+#endif
+
+#ifndef UTILS_TEMPERATURE_H_INCLUDED
+#define UTILS_TEMPERATURE_H_INCLUDED
 #include "Temperature.h"
+#endif
+
+#ifndef UTILS_NETWORK_NETWORK_H_INCLUDED
+#define UTILS_NETWORK_NETWORK_H_INCLUDED
 #include "network/Network.h"
+#endif
+
+#ifndef UTILS_APPLICATION_H_INCLUDED
+#define UTILS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef UTILS_SETTINGS_LIB_SETTING_H_INCLUDED
+#define UTILS_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef UTILS_SETTINGS_SETTINGS_H_INCLUDED
+#define UTILS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef UTILS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define UTILS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef UTILS_GUIUSERMESSAGES_H_INCLUDED
+#define UTILS_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef UTILS_XBDATETIME_H_INCLUDED
+#define UTILS_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef UTILS_LANGINFO_H_INCLUDED
+#define UTILS_LANGINFO_H_INCLUDED
 #include "LangInfo.h"
+#endif
+
+#ifndef UTILS_GUILIB_WINDOWIDS_H_INCLUDED
+#define UTILS_GUILIB_WINDOWIDS_H_INCLUDED
 #include "guilib/WindowIDs.h"
+#endif
+
+#ifndef UTILS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define UTILS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define UTILS_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_STRINGUTILS_H_INCLUDED
 #include "StringUtils.h"
+#endif
+
+#ifndef UTILS_URIUTILS_H_INCLUDED
+#define UTILS_URIUTILS_H_INCLUDED
 #include "URIUtils.h"
+#endif
+
+#ifndef UTILS_LOG_H_INCLUDED
+#define UTILS_LOG_H_INCLUDED
 #include "log.h"
+#endif
+
+#ifndef UTILS_ADDONS_ADDONMANAGER_H_INCLUDED
+#define UTILS_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef UTILS_INTERFACES_GENERIC_SCRIPTINVOCATIONMANAGER_H_INCLUDED
+#define UTILS_INTERFACES_GENERIC_SCRIPTINVOCATIONMANAGER_H_INCLUDED
 #include "interfaces/generic/ScriptInvocationManager.h"
+#endif
+
+#ifndef UTILS_CHARSETCONVERTER_H_INCLUDED
+#define UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "CharsetConverter.h"
+#endif
+
+#ifndef UTILS_ADDONS_GUIDIALOGADDONSETTINGS_H_INCLUDED
+#define UTILS_ADDONS_GUIDIALOGADDONSETTINGS_H_INCLUDED
 #include "addons/GUIDialogAddonSettings.h"
+#endif
+
 
 using namespace std;
 using namespace ADDON;

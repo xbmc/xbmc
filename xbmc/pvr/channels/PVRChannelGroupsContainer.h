@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef CHANNELS_PVRCHANNELGROUPS_H_INCLUDED
+#define CHANNELS_PVRCHANNELGROUPS_H_INCLUDED
 #include "PVRChannelGroups.h"
+#endif
+
+#ifndef CHANNELS_THREADS_THREAD_H_INCLUDED
+#define CHANNELS_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef CHANNELS_THREADS_CRITICALSECTION_H_INCLUDED
+#define CHANNELS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 namespace PVR
 {

@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef UTILS_STRINGVALIDATION_H_INCLUDED
+#define UTILS_STRINGVALIDATION_H_INCLUDED
 #include "StringValidation.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UTILS_UTILS_VARIANT_H_INCLUDED
+#define UTILS_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
 
 bool StringValidation::IsInteger(const std::string &input, void *data)
 {

@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef FILESYSTEM_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define FILESYSTEM_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef FILESYSTEM_MUSICSEARCHDIRECTORY_H_INCLUDED
+#define FILESYSTEM_MUSICSEARCHDIRECTORY_H_INCLUDED
 #include "MusicSearchDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_MUSIC_MUSICDATABASE_H_INCLUDED
+#define FILESYSTEM_MUSIC_MUSICDATABASE_H_INCLUDED
 #include "music/MusicDatabase.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_TIMEUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef FILESYSTEM_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define FILESYSTEM_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
 
 using namespace XFILE;
 

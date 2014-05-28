@@ -17,8 +17,16 @@
  *
  */
 
+#ifndef CORE_DEBUGCONSOLE_H_INCLUDED
+#define CORE_DEBUGCONSOLE_H_INCLUDED
 #include "DebugConsole.h"
+#endif
+
+#ifndef CORE_RENDERER_H_INCLUDED
+#define CORE_RENDERER_H_INCLUDED
 #include "Renderer.h"
+#endif
+
 #include <stdio.h>
 
 #define NUM_LINES ( 100 )

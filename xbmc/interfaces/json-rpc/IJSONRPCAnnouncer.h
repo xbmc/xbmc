@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef JSON_RPC_INTERFACES_IANNOUNCER_H_INCLUDED
+#define JSON_RPC_INTERFACES_IANNOUNCER_H_INCLUDED
 #include "interfaces/IAnnouncer.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_JSONVARIANTWRITER_H_INCLUDED
+#define JSON_RPC_UTILS_JSONVARIANTWRITER_H_INCLUDED
 #include "utils/JSONVariantWriter.h"
+#endif
+
 
 namespace JSONRPC
 {

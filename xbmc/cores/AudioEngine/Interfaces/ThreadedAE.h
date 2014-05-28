@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef INTERFACES_AE_H_INCLUDED
+#define INTERFACES_AE_H_INCLUDED
 #include "AE.h"
+#endif
+
+#ifndef INTERFACES_THREADS_THREAD_H_INCLUDED
+#define INTERFACES_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
 
 class IThreadedAE : public IAE, public IRunnable
 {

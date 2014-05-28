@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef DLLLOADER_UTILS_LOG_H_INCLUDED
+#define DLLLOADER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DLLLOADER_DLL_UTIL_H_INCLUDED
+#define DLLLOADER_DLL_UTIL_H_INCLUDED
 #include "dll_util.h"
+#endif
+
 
 #ifdef TARGET_WINDOWS
 #include <windows.h>

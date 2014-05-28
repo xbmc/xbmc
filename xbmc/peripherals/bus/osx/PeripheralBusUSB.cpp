@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef OSX_PERIPHERALBUSUSB_H_INCLUDED
+#define OSX_PERIPHERALBUSUSB_H_INCLUDED
 #include "PeripheralBusUSB.h"
+#endif
+
+#ifndef OSX_PERIPHERALS_PERIPHERALS_H_INCLUDED
+#define OSX_PERIPHERALS_PERIPHERALS_H_INCLUDED
 #include "peripherals/Peripherals.h"
+#endif
+
+#ifndef OSX_UTILS_LOG_H_INCLUDED
+#define OSX_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef OSX_OSX_DARWINUTILS_H_INCLUDED
+#define OSX_OSX_DARWINUTILS_H_INCLUDED
 #include "osx/DarwinUtils.h"
+#endif
+
 
 #include <sys/param.h>
 

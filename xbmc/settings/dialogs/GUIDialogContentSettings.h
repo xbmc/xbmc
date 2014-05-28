@@ -22,9 +22,21 @@
 
 #include <vector>
 
+#ifndef DIALOGS_ADDONS_SCRAPER_H_INCLUDED
+#define DIALOGS_ADDONS_SCRAPER_H_INCLUDED
 #include "addons/Scraper.h"
+#endif
+
+#ifndef DIALOGS_ADDONS_ADDONMANAGER_H_INCLUDED
+#define DIALOGS_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_DIALOGS_GUIDIALOGSETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_DIALOGS_GUIDIALOGSETTINGS_H_INCLUDED
 #include "settings/dialogs/GUIDialogSettings.h"
+#endif
+
 
 namespace VIDEO
 {

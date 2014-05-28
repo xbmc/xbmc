@@ -18,17 +18,45 @@
  *
  */
 
+#ifndef NETWORK_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define NETWORK_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef NETWORK_UDPCLIENT_H_INCLUDED
+#define NETWORK_UDPCLIENT_H_INCLUDED
 #include "UdpClient.h"
+#endif
+
 #ifdef TARGET_POSIX
 #include <sys/ioctl.h>
 #endif
+#ifndef NETWORK_NETWORK_H_INCLUDED
+#define NETWORK_NETWORK_H_INCLUDED
 #include "Network.h"
-#include "guilib/GraphicContext.h"
-#include "utils/log.h"
-#include "utils/TimeUtils.h"
+#endif
 
+#ifndef NETWORK_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define NETWORK_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#include "guilib/GraphicContext.h"
+#endif
+
+#ifndef NETWORK_UTILS_LOG_H_INCLUDED
+#define NETWORK_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef NETWORK_UTILS_TIMEUTILS_H_INCLUDED
+#define NETWORK_UTILS_TIMEUTILS_H_INCLUDED
+#include "utils/TimeUtils.h"
+#endif
+
+
+#ifndef NETWORK_THREADS_SINGLELOCK_H_INCLUDED
+#define NETWORK_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 
 #include <arpa/inet.h>
 

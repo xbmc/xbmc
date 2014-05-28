@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef UTILS_UTILS_STDSTRING_H_INCLUDED
+#define UTILS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef UTILS_UTILS_XBMCTINYXML_H_INCLUDED
+#define UTILS_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
 
 class CDateTime;
 

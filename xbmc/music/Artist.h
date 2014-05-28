@@ -23,8 +23,16 @@
 #include <map>
 #include <vector>
 
+#ifndef MUSIC_UTILS_SCRAPERURL_H_INCLUDED
+#define MUSIC_UTILS_SCRAPERURL_H_INCLUDED
 #include "utils/ScraperUrl.h"
+#endif
+
+#ifndef MUSIC_UTILS_FANART_H_INCLUDED
+#define MUSIC_UTILS_FANART_H_INCLUDED
 #include "utils/Fanart.h"
+#endif
+
 
 class TiXmlNode;
 class CAlbum;

@@ -18,21 +18,77 @@
  *
  */
 
+#ifndef KARAOKE_KARAOKEVIDEOBACKGROUND_H_INCLUDED
+#define KARAOKE_KARAOKEVIDEOBACKGROUND_H_INCLUDED
 #include "karaokevideobackground.h"
+#endif
 
+
+#ifndef KARAOKE_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define KARAOKE_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h"
+#endif
+
+#ifndef KARAOKE_GUILIB_TEXTURE_H_INCLUDED
+#define KARAOKE_GUILIB_TEXTURE_H_INCLUDED
 #include "guilib/Texture.h"
+#endif
+
+#ifndef KARAOKE_GUILIB_GUITEXTURE_H_INCLUDED
+#define KARAOKE_GUILIB_GUITEXTURE_H_INCLUDED
 #include "guilib/GUITexture.h"
+#endif
+
+#ifndef KARAOKE_APPLICATION_H_INCLUDED
+#define KARAOKE_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef KARAOKE_DLLAVFORMAT_H_INCLUDED
+#define KARAOKE_DLLAVFORMAT_H_INCLUDED
 #include "DllAvFormat.h"
+#endif
+
+#ifndef KARAOKE_DLLAVCODEC_H_INCLUDED
+#define KARAOKE_DLLAVCODEC_H_INCLUDED
 #include "DllAvCodec.h"
+#endif
+
+#ifndef KARAOKE_DLLAVUTIL_H_INCLUDED
+#define KARAOKE_DLLAVUTIL_H_INCLUDED
 #include "DllAvUtil.h"
+#endif
+
+#ifndef KARAOKE_DLLSWSCALE_H_INCLUDED
+#define KARAOKE_DLLSWSCALE_H_INCLUDED
 #include "DllSwScale.h"
+#endif
+
+#ifndef KARAOKE_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define KARAOKE_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef KARAOKE_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define KARAOKE_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef KARAOKE_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#define KARAOKE_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
 #include "settings/DisplaySettings.h"
+#endif
+
+#ifndef KARAOKE_VIDEO_FFMPEGVIDEODECODER_H_INCLUDED
+#define KARAOKE_VIDEO_FFMPEGVIDEODECODER_H_INCLUDED
 #include "video/FFmpegVideoDecoder.h"
+#endif
+
+#ifndef KARAOKE_SYSTEM_H_INCLUDED
+#define KARAOKE_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 KaraokeVideoBackground::KaraokeVideoBackground()
 {

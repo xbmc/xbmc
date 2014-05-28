@@ -24,7 +24,11 @@
 #include <stdlib.h>
 
 #include <cassert>
+#ifndef LIBPROJECTM_FATAL_H_INCLUDED
+#define LIBPROJECTM_FATAL_H_INCLUDED
 #include "fatal.h"
+#endif
+
 #include "Common.hpp"
 
 #include "CustomWave.hpp"
@@ -35,7 +39,11 @@
 #include "PerPointEqn.hpp"
 #include <map>
 #include <iostream>
+#ifndef LIBPROJECTM_WIPEMALLOC_H_INCLUDED
+#define LIBPROJECTM_WIPEMALLOC_H_INCLUDED
 #include "wipemalloc.h"
+#endif
+
 
 /* Evaluates a per point equation for the current custom wave given by interface_wave ptr */
 void PerPointEqn::evaluate(int i)

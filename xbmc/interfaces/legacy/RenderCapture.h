@@ -20,12 +20,36 @@
 
 #pragma once
 
+#ifndef LEGACY_CORES_VIDEORENDERERS_RENDERMANAGER_H_INCLUDED
+#define LEGACY_CORES_VIDEORENDERERS_RENDERMANAGER_H_INCLUDED
 #include "cores/VideoRenderers/RenderManager.h"
+#endif
+
+#ifndef LEGACY_CORES_VIDEORENDERERS_RENDERCAPTURE_H_INCLUDED
+#define LEGACY_CORES_VIDEORENDERERS_RENDERCAPTURE_H_INCLUDED
 #include "cores/VideoRenderers/RenderCapture.h"
+#endif
+
+#ifndef LEGACY_ADDONCLASS_H_INCLUDED
+#define LEGACY_ADDONCLASS_H_INCLUDED
 #include "AddonClass.h"
+#endif
+
+#ifndef LEGACY_LANGUAGEHOOK_H_INCLUDED
+#define LEGACY_LANGUAGEHOOK_H_INCLUDED
 #include "LanguageHook.h"
+#endif
+
+#ifndef LEGACY_EXCEPTION_H_INCLUDED
+#define LEGACY_EXCEPTION_H_INCLUDED
 #include "Exception.h"
+#endif
+
+#ifndef LEGACY_COMMONS_BUFFER_H_INCLUDED
+#define LEGACY_COMMONS_BUFFER_H_INCLUDED
 #include "commons/Buffer.h"
+#endif
+
 
 namespace XBMCAddon
 {

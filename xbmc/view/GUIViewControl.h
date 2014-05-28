@@ -21,8 +21,16 @@
  */
 
 #include <vector>
+#ifndef VIEW_UTILS_STDSTRING_H_INCLUDED
+#define VIEW_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef VIEW_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define VIEW_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h" // for VIEW_TYPE
+#endif
+
 
 class CGUIControl;
 class CFileItemList;

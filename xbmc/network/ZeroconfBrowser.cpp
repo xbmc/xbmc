@@ -17,10 +17,22 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef NETWORK_SYSTEM_H_INCLUDED
+#define NETWORK_SYSTEM_H_INCLUDED
 #include "system.h" //HAS_ZEROCONF define
+#endif
+
+#ifndef NETWORK_ZEROCONFBROWSER_H_INCLUDED
+#define NETWORK_ZEROCONFBROWSER_H_INCLUDED
 #include "ZeroconfBrowser.h"
+#endif
+
 #include <stdexcept>
+#ifndef NETWORK_UTILS_LOG_H_INCLUDED
+#define NETWORK_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #if defined (HAS_AVAHI)
 #include "linux/ZeroconfBrowserAvahi.h"
@@ -31,9 +43,21 @@
 #include "mdns/ZeroconfBrowserMDNS.h"
 #endif
 
+#ifndef NETWORK_THREADS_CRITICALSECTION_H_INCLUDED
+#define NETWORK_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef NETWORK_THREADS_SINGLELOCK_H_INCLUDED
+#define NETWORK_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef NETWORK_THREADS_ATOMICS_H_INCLUDED
+#define NETWORK_THREADS_ATOMICS_H_INCLUDED
 #include "threads/Atomics.h"
+#endif
+
 
 #if !defined(HAS_ZEROCONF)
 //dummy implementation used if no zeroconf is present

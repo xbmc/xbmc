@@ -20,7 +20,11 @@
  
 #include <stdio.h>
 
+#ifndef UTILS_HTTPRESPONSE_H_INCLUDED
+#define UTILS_HTTPRESPONSE_H_INCLUDED
 #include "HttpResponse.h"
+#endif
+
 
 #define SPACE     " "
 #define SEPARATOR ": "

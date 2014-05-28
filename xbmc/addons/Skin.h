@@ -22,9 +22,21 @@
 
 #include <vector>
 
+#ifndef ADDONS_ADDON_H_INCLUDED
+#define ADDONS_ADDON_H_INCLUDED
 #include "Addon.h"
+#endif
+
+#ifndef ADDONS_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define ADDONS_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h" // needed for the RESOLUTION members
+#endif
+
+#ifndef ADDONS_GUILIB_GUIINCLUDES_H_INCLUDED
+#define ADDONS_GUILIB_GUIINCLUDES_H_INCLUDED
 #include "guilib/GUIIncludes.h"    // needed for the GUIInclude member
+#endif
+
 #define CREDIT_LINE_LENGTH 50
 
 class TiXmlNode;

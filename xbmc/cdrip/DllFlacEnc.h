@@ -27,7 +27,11 @@
 #include <FLAC/stream_encoder.h>
 #include <FLAC/metadata.h>
 
+#ifndef CDRIP_DYNAMICDLL_H_INCLUDED
+#define CDRIP_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
 
 class DllFlacEncInterface
 {

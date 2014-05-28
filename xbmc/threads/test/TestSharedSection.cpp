@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef TEST_THREADS_SHAREDSECTION_H_INCLUDED
+#define TEST_THREADS_SHAREDSECTION_H_INCLUDED
 #include "threads/SharedSection.h"
+#endif
+
+#ifndef TEST_THREADS_SINGLELOCK_H_INCLUDED
+#define TEST_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef TEST_THREADS_EVENT_H_INCLUDED
+#define TEST_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
+#ifndef TEST_THREADS_ATOMICS_H_INCLUDED
+#define TEST_THREADS_ATOMICS_H_INCLUDED
 #include "threads/Atomics.h"
+#endif
+
+#ifndef TEST_THREADS_TEST_TESTHELPERS_H_INCLUDED
+#define TEST_THREADS_TEST_TESTHELPERS_H_INCLUDED
 #include "threads/test/TestHelpers.h"
+#endif
+
 
 #include <stdio.h>
 

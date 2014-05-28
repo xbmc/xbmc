@@ -19,11 +19,31 @@
  *
  */
 
+#ifndef ADDONS_CORES_DVDPLAYER_DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
+#define ADDONS_CORES_DVDPLAYER_DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
 #include "cores/dvdplayer/DVDDemuxers/DVDDemuxUtils.h"
+#endif
+
+#ifndef ADDONS_ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
+#define ADDONS_ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
 #include "addons/include/xbmc_pvr_types.h"
+#endif
+
+#ifndef ADDONS_ADDONS_INCLUDE_XBMC_CODEC_TYPES_H_INCLUDED
+#define ADDONS_ADDONS_INCLUDE_XBMC_CODEC_TYPES_H_INCLUDED
 #include "addons/include/xbmc_codec_types.h"
+#endif
+
+#ifndef ADDONS_______ADDONS_LIBRARY_XBMC_ADDON_LIBXBMC_ADDON_H_INCLUDED
+#define ADDONS_______ADDONS_LIBRARY_XBMC_ADDON_LIBXBMC_ADDON_H_INCLUDED
 #include "../../addons/library.xbmc.addon/libXBMC_addon.h"
+#endif
+
+#ifndef ADDONS_______ADDONS_LIBRARY_XBMC_GUI_LIBXBMC_GUI_H_INCLUDED
+#define ADDONS_______ADDONS_LIBRARY_XBMC_GUI_LIBXBMC_GUI_H_INCLUDED
 #include "../../addons/library.xbmc.gui/libXBMC_gui.h"
+#endif
+
 
 typedef void (*AddOnLogCallback)(void *addonData, const ADDON::addon_log_t loglevel, const char *msg);
 typedef void (*AddOnQueueNotification)(void *addonData, const ADDON::queue_msg_t type, const char *msg);

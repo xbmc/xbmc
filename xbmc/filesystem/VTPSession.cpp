@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef FILESYSTEM_VTPSESSION_H_INCLUDED
+#define FILESYSTEM_VTPSESSION_H_INCLUDED
 #include "VTPSession.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #include <stdlib.h>
 #include <stdio.h>

@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef WINDOWS_IRSSMESSAGE_H_INCLUDED
+#define WINDOWS_IRSSMESSAGE_H_INCLUDED
 #include "IrssMessage.h"
+#endif
+
 
 CIrssMessage::CIrssMessage()
 {

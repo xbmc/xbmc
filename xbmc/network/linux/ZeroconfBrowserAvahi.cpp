@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef LINUX_ZEROCONFBROWSERAVAHI_H_INCLUDED
+#define LINUX_ZEROCONFBROWSERAVAHI_H_INCLUDED
 #include "ZeroconfBrowserAvahi.h"
+#endif
+
 
 #ifdef HAS_AVAHI
 

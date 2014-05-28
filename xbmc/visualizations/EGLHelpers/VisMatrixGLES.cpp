@@ -18,7 +18,11 @@
 *
 */
 
+#ifndef EGLHELPERS_VISMATRIXGLES_H_INCLUDED
+#define EGLHELPERS_VISMATRIXGLES_H_INCLUDED
 #include "VisMatrixGLES.h"
+#endif
+
 #include <cmath>
 
 #define MODE_WITHIN_RANGE(m)       ((m >= 0) && (m < (int)MM_MATRIXSIZE))

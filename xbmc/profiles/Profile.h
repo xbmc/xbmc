@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef PROFILES_GUIPASSWORD_H_INCLUDED
+#define PROFILES_GUIPASSWORD_H_INCLUDED
 #include "GUIPassword.h"
+#endif
+
+#ifndef PROFILES_UTILS_STDSTRING_H_INCLUDED
+#define PROFILES_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 #include <vector>
 

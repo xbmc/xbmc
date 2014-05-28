@@ -20,13 +20,41 @@
  *
  */
 
+#ifndef PYTHON_CORES_IPLAYERCALLBACK_H_INCLUDED
+#define PYTHON_CORES_IPLAYERCALLBACK_H_INCLUDED
 #include "cores/IPlayerCallback.h"
+#endif
+
+#ifndef PYTHON_THREADS_CRITICALSECTION_H_INCLUDED
+#define PYTHON_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef PYTHON_THREADS_EVENT_H_INCLUDED
+#define PYTHON_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
+#ifndef PYTHON_THREADS_THREAD_H_INCLUDED
+#define PYTHON_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef PYTHON_INTERFACES_IANNOUNCER_H_INCLUDED
+#define PYTHON_INTERFACES_IANNOUNCER_H_INCLUDED
 #include "interfaces/IAnnouncer.h"
+#endif
+
+#ifndef PYTHON_INTERFACES_GENERIC_ILANGUAGEINVOCATIONHANDLER_H_INCLUDED
+#define PYTHON_INTERFACES_GENERIC_ILANGUAGEINVOCATIONHANDLER_H_INCLUDED
 #include "interfaces/generic/ILanguageInvocationHandler.h"
+#endif
+
+#ifndef PYTHON_ADDONS_IADDON_H_INCLUDED
+#define PYTHON_ADDONS_IADDON_H_INCLUDED
 #include "addons/IAddon.h"
+#endif
+
 
 #include <boost/shared_ptr.hpp>
 #include <vector>

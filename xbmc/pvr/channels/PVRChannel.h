@@ -20,12 +20,36 @@
  *
  */
 
+#ifndef CHANNELS_XBDATETIME_H_INCLUDED
+#define CHANNELS_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef CHANNELS_FILEITEM_H_INCLUDED
+#define CHANNELS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef CHANNELS_ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
+#define CHANNELS_ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
 #include "addons/include/xbmc_pvr_types.h"
+#endif
+
+#ifndef CHANNELS_UTILS_OBSERVER_H_INCLUDED
+#define CHANNELS_UTILS_OBSERVER_H_INCLUDED
 #include "utils/Observer.h"
+#endif
+
+#ifndef CHANNELS_THREADS_CRITICALSECTION_H_INCLUDED
+#define CHANNELS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef CHANNELS_UTILS_ISERIALIZABLE_H_INCLUDED
+#define CHANNELS_UTILS_ISERIALIZABLE_H_INCLUDED
 #include "utils/ISerializable.h"
+#endif
+
 
 #include <boost/shared_ptr.hpp>
 

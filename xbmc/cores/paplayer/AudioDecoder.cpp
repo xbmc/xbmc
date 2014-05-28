@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef PAPLAYER_AUDIODECODER_H_INCLUDED
+#define PAPLAYER_AUDIODECODER_H_INCLUDED
 #include "AudioDecoder.h"
+#endif
+
+#ifndef PAPLAYER_CODECFACTORY_H_INCLUDED
+#define PAPLAYER_CODECFACTORY_H_INCLUDED
 #include "CodecFactory.h"
+#endif
+
+#ifndef PAPLAYER_APPLICATION_H_INCLUDED
+#define PAPLAYER_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef PAPLAYER_SETTINGS_SETTINGS_H_INCLUDED
+#define PAPLAYER_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef PAPLAYER_FILEITEM_H_INCLUDED
+#define PAPLAYER_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef PAPLAYER_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define PAPLAYER_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef PAPLAYER_THREADS_SINGLELOCK_H_INCLUDED
+#define PAPLAYER_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_LOG_H_INCLUDED
+#define PAPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 #include <math.h>
 
 CAudioDecoder::CAudioDecoder()

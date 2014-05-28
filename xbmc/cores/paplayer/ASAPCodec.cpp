@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef PAPLAYER_ASAPCODEC_H_INCLUDED
+#define PAPLAYER_ASAPCODEC_H_INCLUDED
 #include "ASAPCodec.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_URIUTILS_H_INCLUDED
+#define PAPLAYER_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef PAPLAYER_FILESYSTEM_FILE_H_INCLUDED
+#define PAPLAYER_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
 
 
 ASAPCodec::ASAPCodec()

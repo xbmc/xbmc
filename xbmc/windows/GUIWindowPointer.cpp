@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef WINDOWS_GUIWINDOWPOINTER_H_INCLUDED
+#define WINDOWS_GUIWINDOWPOINTER_H_INCLUDED
 #include "GUIWindowPointer.h"
+#endif
+
+#ifndef WINDOWS_INPUT_MOUSESTAT_H_INCLUDED
+#define WINDOWS_INPUT_MOUSESTAT_H_INCLUDED
 #include "input/MouseStat.h"
+#endif
+
+#ifndef WINDOWS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define WINDOWS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
 #include <climits>
 #define ID_POINTER 10
 

@@ -23,7 +23,11 @@
 #include <vector>
 #include <netinet/in.h>
 
+#ifndef FILESYSTEM_SYSTEM_H_INCLUDED
+#define FILESYSTEM_SYSTEM_H_INCLUDED
 #include "system.h" // for SOCKET
+#endif
+
 
 //#define VTP_STANDALONE
 

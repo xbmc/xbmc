@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef JNI_MEDIACODEC_H_INCLUDED
+#define JNI_MEDIACODEC_H_INCLUDED
 #include "MediaCodec.h"
+#endif
+
+#ifndef JNI_MEDIACRYPTO_H_INCLUDED
+#define JNI_MEDIACRYPTO_H_INCLUDED
 #include "MediaCrypto.h"
+#endif
+
+#ifndef JNI_MEDIACODECCRYPTOINFO_H_INCLUDED
+#define JNI_MEDIACODECCRYPTOINFO_H_INCLUDED
 #include "MediaCodecCryptoInfo.h"
+#endif
+
+#ifndef JNI_NETWORKINFO_H_INCLUDED
+#define JNI_NETWORKINFO_H_INCLUDED
 #include "NetworkInfo.h"
+#endif
+
+#ifndef JNI_SURFACE_H_INCLUDED
+#define JNI_SURFACE_H_INCLUDED
 #include "Surface.h"
+#endif
+
 
 #include "jutils/jutils-details.hpp"
 

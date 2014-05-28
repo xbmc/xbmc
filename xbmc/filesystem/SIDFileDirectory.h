@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef FILESYSTEM_MUSICFILEDIRECTORY_H_INCLUDED
+#define FILESYSTEM_MUSICFILEDIRECTORY_H_INCLUDED
 #include "MusicFileDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_DLLSIDPLAY2_H_INCLUDED
+#define FILESYSTEM_DLLSIDPLAY2_H_INCLUDED
 #include "DllSidplay2.h"
+#endif
+
 
 namespace XFILE
 {

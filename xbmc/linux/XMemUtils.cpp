@@ -22,7 +22,11 @@
  *
  */
 
+#ifndef LINUX_XMEMUTILS_H_INCLUDED
+#define LINUX_XMEMUTILS_H_INCLUDED
 #include "XMemUtils.h"
+#endif
+
 
 #if defined(TARGET_DARWIN)
 #include <mach/mach.h>

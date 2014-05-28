@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef PTHREADS_CONFIG_H_INCLUDED
+#define PTHREADS_CONFIG_H_INCLUDED
 #include "config.h"
+#endif
+
 #include <limits.h>
 #if defined(TARGET_ANDROID)
 #include <unistd.h>

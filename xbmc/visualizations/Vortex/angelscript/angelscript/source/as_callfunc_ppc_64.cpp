@@ -37,7 +37,11 @@
 // This version is 64 bit PPC specific
 //
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
 
 #ifndef AS_MAX_PORTABILITY
 #ifdef AS_PPC_64

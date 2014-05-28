@@ -20,10 +20,22 @@
 
 #pragma once
 
+#ifndef LEGACY_ADDONCLASS_H_INCLUDED
+#define LEGACY_ADDONCLASS_H_INCLUDED
 #include "AddonClass.h"
-#include "CallbackHandler.h"
+#endif
 
+#ifndef LEGACY_CALLBACKHANDLER_H_INCLUDED
+#define LEGACY_CALLBACKHANDLER_H_INCLUDED
+#include "CallbackHandler.h"
+#endif
+
+
+#ifndef LEGACY_THREADS_EVENT_H_INCLUDED
+#define LEGACY_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
 
 /**
  * This class is an interface that can be used to define programming language

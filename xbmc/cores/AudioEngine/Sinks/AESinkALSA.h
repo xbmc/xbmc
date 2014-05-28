@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef SINKS_SYSTEM_H_INCLUDED
+#define SINKS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #ifdef HAS_ALSA
 
 #include "cores/AudioEngine/Interfaces/AESink.h"

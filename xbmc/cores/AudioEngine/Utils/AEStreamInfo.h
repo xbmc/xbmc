@@ -19,15 +19,31 @@
  *
  */
 
+#ifndef UTILS_AEPACKIEC61937_H_INCLUDED
+#define UTILS_AEPACKIEC61937_H_INCLUDED
 #include "AEPackIEC61937.h"
+#endif
+
+#ifndef UTILS_AECHANNELINFO_H_INCLUDED
+#define UTILS_AECHANNELINFO_H_INCLUDED
 #include "AEChannelInfo.h"
+#endif
+
 #include <stdint.h>
 #include <list>
 
 /* ffmpeg re-defines this, so undef it to squash the warning */
 #undef restrict
+#ifndef UTILS_DLLAVCODEC_H_INCLUDED
+#define UTILS_DLLAVCODEC_H_INCLUDED
 #include "DllAvCodec.h"
+#endif
+
+#ifndef UTILS_DLLAVFORMAT_H_INCLUDED
+#define UTILS_DLLAVFORMAT_H_INCLUDED
 #include "DllAvFormat.h"
+#endif
+
 
 class CAEStreamInfo
 {

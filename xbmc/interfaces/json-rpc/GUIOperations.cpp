@@ -18,19 +18,71 @@
  *
  */
 
+#ifndef JSON_RPC_GUIOPERATIONS_H_INCLUDED
+#define JSON_RPC_GUIOPERATIONS_H_INCLUDED
 #include "GUIOperations.h"
+#endif
+
+#ifndef JSON_RPC_APPLICATION_H_INCLUDED
+#define JSON_RPC_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
+#define JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef JSON_RPC_GUIINFOMANAGER_H_INCLUDED
+#define JSON_RPC_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef JSON_RPC_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define JSON_RPC_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef JSON_RPC_GUILIB_KEY_H_INCLUDED
+#define JSON_RPC_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef JSON_RPC_INTERFACES_BUILTINS_H_INCLUDED
+#define JSON_RPC_INTERFACES_BUILTINS_H_INCLUDED
 #include "interfaces/Builtins.h"
+#endif
+
+#ifndef JSON_RPC_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define JSON_RPC_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef JSON_RPC_ADDONS_ADDONMANAGER_H_INCLUDED
+#define JSON_RPC_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef JSON_RPC_SETTINGS_SETTINGS_H_INCLUDED
+#define JSON_RPC_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_VARIANT_H_INCLUDED
+#define JSON_RPC_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef JSON_RPC_GUILIB_STEREOSCOPICSMANAGER_H_INCLUDED
+#define JSON_RPC_GUILIB_STEREOSCOPICSMANAGER_H_INCLUDED
 #include "guilib/StereoscopicsManager.h"
+#endif
+
+#ifndef JSON_RPC_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define JSON_RPC_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
 
 using namespace std;
 using namespace JSONRPC;

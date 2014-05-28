@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef GUILIB_GUIMOVERCONTROL_H_INCLUDED
+#define GUILIB_GUIMOVERCONTROL_H_INCLUDED
 #include "GUIMoverControl.h"
+#endif
+
+#ifndef GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "GUIWindowManager.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
+#ifndef GUILIB_UTILS_TIMEUTILS_H_INCLUDED
+#define GUILIB_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
 
 // time to reset accelerated cursors (digital movement)
 #define MOVE_TIME_OUT 500L

@@ -20,8 +20,16 @@
 
 #pragma once
 
+#ifndef LISTPROVIDERS_ILISTPROVIDER_H_INCLUDED
+#define LISTPROVIDERS_ILISTPROVIDER_H_INCLUDED
 #include "IListProvider.h"
+#endif
+
+#ifndef LISTPROVIDERS_GUILIB_GUISTATICITEM_H_INCLUDED
+#define LISTPROVIDERS_GUILIB_GUISTATICITEM_H_INCLUDED
 #include "guilib/GUIStaticItem.h"
+#endif
+
 
 class CStaticListProvider : public IListProvider
 {

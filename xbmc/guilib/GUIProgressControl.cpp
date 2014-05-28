@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef GUILIB_GUIPROGRESSCONTROL_H_INCLUDED
+#define GUILIB_GUIPROGRESSCONTROL_H_INCLUDED
 #include "GUIProgressControl.h"
+#endif
+
+#ifndef GUILIB_GUIINFOMANAGER_H_INCLUDED
+#define GUILIB_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef GUILIB_GUILISTITEM_H_INCLUDED
+#define GUILIB_GUILISTITEM_H_INCLUDED
 #include "GUIListItem.h"
+#endif
+
+#ifndef GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "GUIWindowManager.h"
+#endif
+
+#ifndef GUILIB_FILEITEM_H_INCLUDED
+#define GUILIB_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 CGUIProgressControl::CGUIProgressControl(int parentID, int controlID,
                                          float posX, float posY, float width,

@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef ROOT_THREADS_THREAD_H_INCLUDED
+#define ROOT_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef ROOT_IPROGRESSCALLBACK_H_INCLUDED
+#define ROOT_IPROGRESSCALLBACK_H_INCLUDED
 #include "IProgressCallback.h"
+#endif
+
+#ifndef ROOT_THREADS_CRITICALSECTION_H_INCLUDED
+#define ROOT_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 #include <vector>
 #include "boost/shared_ptr.hpp"

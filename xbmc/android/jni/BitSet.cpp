@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_BITSET_H_INCLUDED
+#define JNI_BITSET_H_INCLUDED
 #include "BitSet.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

@@ -20,10 +20,26 @@
  *
  */
 
+#ifndef INFOSCANNER_MUSICALBUMINFO_H_INCLUDED
+#define INFOSCANNER_MUSICALBUMINFO_H_INCLUDED
 #include "MusicAlbumInfo.h"
+#endif
+
+#ifndef INFOSCANNER_MUSICARTISTINFO_H_INCLUDED
+#define INFOSCANNER_MUSICARTISTINFO_H_INCLUDED
 #include "MusicArtistInfo.h"
+#endif
+
+#ifndef INFOSCANNER_ADDONS_SCRAPER_H_INCLUDED
+#define INFOSCANNER_ADDONS_SCRAPER_H_INCLUDED
 #include "addons/Scraper.h"
+#endif
+
+#ifndef INFOSCANNER_THREADS_THREAD_H_INCLUDED
+#define INFOSCANNER_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
 
 namespace XFILE
 {

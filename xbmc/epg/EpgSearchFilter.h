@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef EPG_XBDATETIME_H_INCLUDED
+#define EPG_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
 
 class CFileItemList;
 

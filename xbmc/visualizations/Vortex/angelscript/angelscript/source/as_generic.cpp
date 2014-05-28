@@ -35,10 +35,26 @@
 // This class handles the call to a function registered with asCALL_GENERIC
 //
 
+#ifndef SOURCE_AS_GENERIC_H_INCLUDED
+#define SOURCE_AS_GENERIC_H_INCLUDED
 #include "as_generic.h"
+#endif
+
+#ifndef SOURCE_AS_SCRIPTFUNCTION_H_INCLUDED
+#define SOURCE_AS_SCRIPTFUNCTION_H_INCLUDED
 #include "as_scriptfunction.h"
+#endif
+
+#ifndef SOURCE_AS_OBJECTTYPE_H_INCLUDED
+#define SOURCE_AS_OBJECTTYPE_H_INCLUDED
 #include "as_objecttype.h"
+#endif
+
+#ifndef SOURCE_AS_SCRIPTENGINE_H_INCLUDED
+#define SOURCE_AS_SCRIPTENGINE_H_INCLUDED
 #include "as_scriptengine.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

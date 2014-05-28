@@ -18,17 +18,61 @@
  *
  */
 
+#ifndef GUILIB_GUIEDITCONTROL_H_INCLUDED
+#define GUILIB_GUIEDITCONTROL_H_INCLUDED
 #include "GUIEditControl.h"
+#endif
+
+#ifndef GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "GUIWindowManager.h"
+#endif
+
+#ifndef GUILIB_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define GUILIB_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
+#define GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
 #include "GUIKeyboardFactory.h"
+#endif
+
+#ifndef GUILIB_DIALOGS_GUIDIALOGNUMERIC_H_INCLUDED
+#define GUILIB_DIALOGS_GUIDIALOGNUMERIC_H_INCLUDED
 #include "dialogs/GUIDialogNumeric.h"
+#endif
+
+#ifndef GUILIB_INPUT_XBMC_VKEYS_H_INCLUDED
+#define GUILIB_INPUT_XBMC_VKEYS_H_INCLUDED
 #include "input/XBMC_vkeys.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
+#ifndef GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "LocalizeStrings.h"
+#endif
+
+#ifndef GUILIB_XBDATETIME_H_INCLUDED
+#define GUILIB_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef GUILIB_UTILS_MD5_H_INCLUDED
+#define GUILIB_UTILS_MD5_H_INCLUDED
 #include "utils/md5.h"
+#endif
+
 
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaInterface.h"

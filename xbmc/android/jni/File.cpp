@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_FILE_H_INCLUDED
+#define JNI_FILE_H_INCLUDED
 #include "File.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

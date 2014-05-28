@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGBOXBASE_H_INCLUDED
+#define DIALOGS_GUIDIALOGBOXBASE_H_INCLUDED
 #include "GUIDialogBoxBase.h"
+#endif
+
+#ifndef DIALOGS_IPROGRESSCALLBACK_H_INCLUDED
+#define DIALOGS_IPROGRESSCALLBACK_H_INCLUDED
 #include "IProgressCallback.h"
+#endif
+
 
 class CGUIDialogProgress :
       public CGUIDialogBoxBase, public IProgressCallback

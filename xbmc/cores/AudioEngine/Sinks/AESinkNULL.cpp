@@ -18,14 +18,30 @@
  *
  */
 
+#ifndef SINKS_SYSTEM_H_INCLUDED
+#define SINKS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #include <stdint.h>
 #include <limits.h>
 
+#ifndef SINKS_AESINKNULL_H_INCLUDED
+#define SINKS_AESINKNULL_H_INCLUDED
 #include "AESinkNULL.h"
+#endif
+
+#ifndef SINKS_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define SINKS_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
+#ifndef SINKS_UTILS_LOG_H_INCLUDED
+#define SINKS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 CAESinkNULL::CAESinkNULL()
   : CThread("AESinkNull"),

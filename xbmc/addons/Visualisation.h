@@ -19,10 +19,26 @@
  */
 #pragma once
 
+#ifndef ADDONS_ADDONDLL_H_INCLUDED
+#define ADDONS_ADDONDLL_H_INCLUDED
 #include "AddonDll.h"
+#endif
+
+#ifndef ADDONS_CORES_IAUDIOCALLBACK_H_INCLUDED
+#define ADDONS_CORES_IAUDIOCALLBACK_H_INCLUDED
 #include "cores/IAudioCallback.h"
+#endif
+
+#ifndef ADDONS_INCLUDE_XBMC_VIS_TYPES_H_INCLUDED
+#define ADDONS_INCLUDE_XBMC_VIS_TYPES_H_INCLUDED
 #include "include/xbmc_vis_types.h"
+#endif
+
+#ifndef ADDONS_GUILIB_IRENDERINGCALLBACK_H_INCLUDED
+#define ADDONS_GUILIB_IRENDERINGCALLBACK_H_INCLUDED
 #include "guilib/IRenderingCallback.h"
+#endif
+
 
 #include <map>
 #include <list>

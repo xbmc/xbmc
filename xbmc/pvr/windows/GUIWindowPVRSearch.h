@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef WINDOWS_GUIWINDOWPVRCOMMON_H_INCLUDED
+#define WINDOWS_GUIWINDOWPVRCOMMON_H_INCLUDED
 #include "GUIWindowPVRCommon.h"
+#endif
+
+#ifndef WINDOWS_EPG_EPGSEARCHFILTER_H_INCLUDED
+#define WINDOWS_EPG_EPGSEARCHFILTER_H_INCLUDED
 #include "epg/EpgSearchFilter.h"
+#endif
+
 
 namespace PVR
 {

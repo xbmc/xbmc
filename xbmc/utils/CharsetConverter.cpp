@@ -18,17 +18,57 @@
  *
  */
 
+#ifndef UTILS_CHARSETCONVERTER_H_INCLUDED
+#define UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "CharsetConverter.h"
+#endif
+
+#ifndef UTILS_UTIL_H_INCLUDED
+#define UTILS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 #include <fribidi/fribidi.h>
+#ifndef UTILS_LANGINFO_H_INCLUDED
+#define UTILS_LANGINFO_H_INCLUDED
 #include "LangInfo.h"
+#endif
+
+#ifndef UTILS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define UTILS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef UTILS_SETTINGS_LIB_SETTING_H_INCLUDED
+#define UTILS_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef UTILS_SETTINGS_SETTINGS_H_INCLUDED
+#define UTILS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef UTILS_THREADS_SINGLELOCK_H_INCLUDED
+#define UTILS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef UTILS_UTILS_UTF8UTILS_H_INCLUDED
+#define UTILS_UTILS_UTF8UTILS_H_INCLUDED
 #include "utils/Utf8Utils.h"
+#endif
+
+#ifndef UTILS_LOG_H_INCLUDED
+#define UTILS_LOG_H_INCLUDED
 #include "log.h"
+#endif
+
 
 #include <errno.h>
 #include <iconv.h>

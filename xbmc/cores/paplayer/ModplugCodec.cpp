@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef PAPLAYER_MODPLUGCODEC_H_INCLUDED
+#define PAPLAYER_MODPLUGCODEC_H_INCLUDED
 #include "ModplugCodec.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_URIUTILS_H_INCLUDED
+#define PAPLAYER_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef PAPLAYER_FILESYSTEM_FILE_H_INCLUDED
+#define PAPLAYER_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_LOG_H_INCLUDED
+#define PAPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_STRINGUTILS_H_INCLUDED
+#define PAPLAYER_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 #include <cstdlib>
 #include <cstdio>
 

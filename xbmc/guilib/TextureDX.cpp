@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef GUILIB_TEXTUREDX_H_INCLUDED
+#define GUILIB_TEXTUREDX_H_INCLUDED
 #include "TextureDX.h"
+#endif
+
+#ifndef GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #ifdef HAS_DX
 

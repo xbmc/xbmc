@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef UTILS_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define UTILS_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef UTILS_ASYNCFILECOPY_H_INCLUDED
+#define UTILS_ASYNCFILECOPY_H_INCLUDED
 #include "AsyncFileCopy.h"
+#endif
+
+#ifndef UTILS_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#define UTILS_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
 #include "dialogs/GUIDialogProgress.h"
+#endif
+
+#ifndef UTILS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define UTILS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef UTILS_LOG_H_INCLUDED
+#define UTILS_LOG_H_INCLUDED
 #include "log.h"
+#endif
+
+#ifndef UTILS_UTILS_TIMEUTILS_H_INCLUDED
+#define UTILS_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UTILS_URL_H_INCLUDED
+#define UTILS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 CAsyncFileCopy::CAsyncFileCopy() : CThread("AsyncFileCopy")
 {

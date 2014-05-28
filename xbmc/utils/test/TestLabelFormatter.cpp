@@ -18,14 +18,38 @@
  *
  */
 
+#ifndef TEST_UTILS_LABELFORMATTER_H_INCLUDED
+#define TEST_UTILS_LABELFORMATTER_H_INCLUDED
 #include "utils/LabelFormatter.h"
+#endif
+
+#ifndef TEST_FILESYSTEM_FILE_H_INCLUDED
+#define TEST_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef TEST_SETTINGS_SETTINGS_H_INCLUDED
+#define TEST_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef TEST_FILEITEM_H_INCLUDED
+#define TEST_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
 
+
+#ifndef TEST_TEST_TESTUTILS_H_INCLUDED
+#define TEST_TEST_TESTUTILS_H_INCLUDED
 #include "test/TestUtils.h"
+#endif
 
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 /* Set default settings used by CLabelFormatter. */
 class TestLabelFormatter : public testing::Test

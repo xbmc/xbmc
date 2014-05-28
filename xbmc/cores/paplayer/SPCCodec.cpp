@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef PAPLAYER_SPCCODEC_H_INCLUDED
+#define PAPLAYER_SPCCODEC_H_INCLUDED
 #include "SPCCodec.h"
+#endif
+
+#ifndef PAPLAYER_CORES_DLLLOADER_DLLLOADER_H_INCLUDED
+#define PAPLAYER_CORES_DLLLOADER_DLLLOADER_H_INCLUDED
 #include "cores/DllLoader/DllLoader.h"
+#endif
+
+#ifndef PAPLAYER_CORES_DLLLOADER_SOLOADER_H_INCLUDED
+#define PAPLAYER_CORES_DLLLOADER_SOLOADER_H_INCLUDED
 #include "cores/DllLoader/SoLoader.h"
+#endif
+
+#ifndef PAPLAYER_MUSIC_TAGS_MUSICINFOTAGLOADERSPC_H_INCLUDED
+#define PAPLAYER_MUSIC_TAGS_MUSICINFOTAGLOADERSPC_H_INCLUDED
 #include "music/tags/MusicInfoTagLoaderSPC.h"
+#endif
+
+#ifndef PAPLAYER_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define PAPLAYER_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef PAPLAYER_FILESYSTEM_FILE_H_INCLUDED
+#define PAPLAYER_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef PAPLAYER_DYNAMICDLL_H_INCLUDED
+#define PAPLAYER_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
+#ifndef PAPLAYER_UTIL_H_INCLUDED
+#define PAPLAYER_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_LOG_H_INCLUDED
+#define PAPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 #ifdef TARGET_WINDOWS
 #include "cores/DllLoader/Win32DllLoader.h"
 #endif

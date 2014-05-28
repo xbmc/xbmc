@@ -23,10 +23,22 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 
+#ifndef WAYLAND_UTILS_STOPWATCH_H_INCLUDED
+#define WAYLAND_UTILS_STOPWATCH_H_INCLUDED
 #include "utils/Stopwatch.h"
+#endif
 
+
+#ifndef WAYLAND_EVENTQUEUESTRATEGY_H_INCLUDED
+#define WAYLAND_EVENTQUEUESTRATEGY_H_INCLUDED
 #include "EventQueueStrategy.h"
+#endif
+
+#ifndef WAYLAND_EVENTLOOP_H_INCLUDED
+#define WAYLAND_EVENTLOOP_H_INCLUDED
 #include "EventLoop.h"
+#endif
+
 
 namespace xwe = xbmc::wayland::events;
 

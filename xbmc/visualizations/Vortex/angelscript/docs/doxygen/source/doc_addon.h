@@ -919,7 +919,11 @@ it has no need for them as AngelScript already supports native calling conventio
 \section doc_addon_autowrap_1 Example usage
 
 \code
+#ifndef SOURCE_ASWRAPPEDCALL_H_INCLUDED
+#define SOURCE_ASWRAPPEDCALL_H_INCLUDED
 #include "aswrappedcall.h"
+#endif
+
 
 // The application function that we want to register
 void DoSomething(std::string param1, int param2);
@@ -977,7 +981,11 @@ Example:
 \code
 #include <stdio.h>
 #include <assert.h>
+#ifndef SOURCE_ANGELSCRIPT_C_H_INCLUDED
+#define SOURCE_ANGELSCRIPT_C_H_INCLUDED
 #include "angelscript_c.h"
+#endif
+
 
 void MessageCallback(asSMessageInfo *msg, void *);
 void PrintSomething();

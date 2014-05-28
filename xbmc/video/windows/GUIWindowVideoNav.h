@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef WINDOWS_GUIWINDOWVIDEOBASE_H_INCLUDED
+#define WINDOWS_GUIWINDOWVIDEOBASE_H_INCLUDED
 #include "GUIWindowVideoBase.h"
+#endif
+
 
 class CFileItemList;
 

@@ -19,9 +19,21 @@
  *
  */
 
+#ifndef PICTURES_UTILS_STDSTRING_H_INCLUDED
+#define PICTURES_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef PICTURES_UTILS_JOBMANAGER_H_INCLUDED
+#define PICTURES_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
+#ifndef PICTURES_THUMBLOADER_H_INCLUDED
+#define PICTURES_THUMBLOADER_H_INCLUDED
 #include "ThumbLoader.h"
+#endif
+
 
 class CPictureThumbLoader : public CThumbLoader, public CJobQueue
 {

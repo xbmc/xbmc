@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef HTTPREQUESTHANDLER_IHTTPREQUESTHANDLER_H_INCLUDED
+#define HTTPREQUESTHANDLER_IHTTPREQUESTHANDLER_H_INCLUDED
 #include "IHTTPRequestHandler.h"
+#endif
+
 
 void IHTTPRequestHandler::AddPostField(const std::string &key, const std::string &value)
 {

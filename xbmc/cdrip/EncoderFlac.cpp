@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef CDRIP_ENCODERFLAC_H_INCLUDED
+#define CDRIP_ENCODERFLAC_H_INCLUDED
 #include "EncoderFlac.h"
+#endif
+
+#ifndef CDRIP_UTILS_LOG_H_INCLUDED
+#define CDRIP_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef CDRIP_FILESYSTEM_FILE_H_INCLUDED
+#define CDRIP_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef CDRIP_SETTINGS_SETTINGS_H_INCLUDED
+#define CDRIP_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
 
 CEncoderFlac::CEncoderFlac() : m_encoder(0), m_samplesBuf(new FLAC__int32[SAMPLES_BUF_SIZE])
 {

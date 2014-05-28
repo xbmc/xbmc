@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef SETTINGS_SETTINGADDON_H_INCLUDED
+#define SETTINGS_SETTINGADDON_H_INCLUDED
 #include "SettingAddon.h"
+#endif
+
+#ifndef SETTINGS_ADDONS_ADDON_H_INCLUDED
+#define SETTINGS_ADDONS_ADDON_H_INCLUDED
 #include "addons/Addon.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_LIB_SETTINGSMANAGER_H_INCLUDED
+#define SETTINGS_SETTINGS_LIB_SETTINGSMANAGER_H_INCLUDED
 #include "settings/lib/SettingsManager.h"
+#endif
+
+#ifndef SETTINGS_UTILS_LOG_H_INCLUDED
+#define SETTINGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef SETTINGS_UTILS_XBMCTINYXML_H_INCLUDED
+#define SETTINGS_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef SETTINGS_UTILS_XMLUTILS_H_INCLUDED
+#define SETTINGS_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
 
 #define XML_ELM_DEFAULT     "default"
 

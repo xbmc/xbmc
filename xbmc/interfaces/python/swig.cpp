@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef PYTHON_LANGUAGEHOOK_H_INCLUDED
+#define PYTHON_LANGUAGEHOOK_H_INCLUDED
 #include "LanguageHook.h"
+#endif
+
+#ifndef PYTHON_SWIG_H_INCLUDED
+#define PYTHON_SWIG_H_INCLUDED
 #include "swig.h"
+#endif
+
+#ifndef PYTHON_UTILS_STRINGUTILS_H_INCLUDED
+#define PYTHON_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef PYTHON_INTERFACES_LEGACY_ADDONSTRING_H_INCLUDED
+#define PYTHON_INTERFACES_LEGACY_ADDONSTRING_H_INCLUDED
 #include "interfaces/legacy/AddonString.h"
+#endif
+
 
 #include <string>
 

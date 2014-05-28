@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef GUILIB_GUIRADIOBUTTONCONTROL_H_INCLUDED
+#define GUILIB_GUIRADIOBUTTONCONTROL_H_INCLUDED
 #include "GUIRadioButtonControl.h"
+#endif
+
+#ifndef GUILIB_GUIINFOMANAGER_H_INCLUDED
+#define GUILIB_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef GUILIB_GUIFONTMANAGER_H_INCLUDED
+#define GUILIB_GUIFONTMANAGER_H_INCLUDED
 #include "GUIFontManager.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
 
 CGUIRadioButtonControl::CGUIRadioButtonControl(int parentID, int controlID, float posX, float posY, float width, float height,
     const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus,

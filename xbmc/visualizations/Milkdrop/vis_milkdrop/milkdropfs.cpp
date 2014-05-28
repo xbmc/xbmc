@@ -27,12 +27,36 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
+#ifndef VIS_MILKDROP_PLUGIN_H_INCLUDED
+#define VIS_MILKDROP_PLUGIN_H_INCLUDED
 #include "plugin.h"
+#endif
+
+#ifndef VIS_MILKDROP_RESOURCE_H_INCLUDED
+#define VIS_MILKDROP_RESOURCE_H_INCLUDED
 //#include "resource.h"
+#endif
+
+#ifndef VIS_MILKDROP_SUPPORT_H_INCLUDED
+#define VIS_MILKDROP_SUPPORT_H_INCLUDED
 #include "support.h"
+#endif
+
+#ifndef VIS_MILKDROP_EVALLIB\EVAL_H_INCLUDED
+#define VIS_MILKDROP_EVALLIB\EVAL_H_INCLUDED
 #include "evallib\eval.h"		// for math. expr. eval - thanks Francis! (in SourceOffSite, it's the 'vis_avs\evallib' project.)
+#endif
+
+#ifndef VIS_MILKDROP_EVALLIB\COMPILER_H_INCLUDED
+#define VIS_MILKDROP_EVALLIB\COMPILER_H_INCLUDED
 #include "evallib\compiler.h"
+#endif
+
+#ifndef VIS_MILKDROP_UTILITY_H_INCLUDED
+#define VIS_MILKDROP_UTILITY_H_INCLUDED
 #include "utility.h"
+#endif
+
 
 #include <stdlib.h>
 #include <stdio.h>

@@ -18,16 +18,56 @@
  *
  */
 
+#ifndef DVDPLAYER_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define DVDPLAYER_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef DVDPLAYER_DVDMESSAGE_H_INCLUDED
+#define DVDPLAYER_DVDMESSAGE_H_INCLUDED
 #include "DVDMessage.h"
+#endif
+
+#ifndef DVDPLAYER_DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
+#define DVDPLAYER_DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
 #include "DVDDemuxers/DVDDemuxUtils.h"
+#endif
+
+#ifndef DVDPLAYER_DVDSTREAMINFO_H_INCLUDED
+#define DVDPLAYER_DVDSTREAMINFO_H_INCLUDED
 #include "DVDStreamInfo.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_TIMEUTILS_H_INCLUDED
+#define DVDPLAYER_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_LOG_H_INCLUDED
+#define DVDPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DVDPLAYER_THREADS_CRITICALSECTION_H_INCLUDED
+#define DVDPLAYER_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef DVDPLAYER_THREADS_CONDITION_H_INCLUDED
+#define DVDPLAYER_THREADS_CONDITION_H_INCLUDED
 #include "threads/Condition.h"
+#endif
+
+#ifndef DVDPLAYER_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define DVDPLAYER_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_MATHUTILS_H_INCLUDED
+#define DVDPLAYER_UTILS_MATHUTILS_H_INCLUDED
 #include "utils/MathUtils.h"
+#endif
+
 
 class CDVDMsgGeneralSynchronizePriv
 {

@@ -18,12 +18,36 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef LINUX_STORAGE_ISTORAGEPROVIDER_H_INCLUDED
+#define LINUX_STORAGE_ISTORAGEPROVIDER_H_INCLUDED
 #include "storage/IStorageProvider.h"
+#endif
+
+#ifndef LINUX_HALPROVIDER_H_INCLUDED
+#define LINUX_HALPROVIDER_H_INCLUDED
 #include "HALProvider.h"
+#endif
+
+#ifndef LINUX_DEVICEKITDISKSPROVIDER_H_INCLUDED
+#define LINUX_DEVICEKITDISKSPROVIDER_H_INCLUDED
 #include "DeviceKitDisksProvider.h"
+#endif
+
+#ifndef LINUX_UDEVPROVIDER_H_INCLUDED
+#define LINUX_UDEVPROVIDER_H_INCLUDED
 #include "UDevProvider.h"
+#endif
+
+#ifndef LINUX_UDISKSPROVIDER_H_INCLUDED
+#define LINUX_UDISKSPROVIDER_H_INCLUDED
 #include "UDisksProvider.h"
+#endif
+
+#ifndef LINUX_POSIXMOUNTPROVIDER_H_INCLUDED
+#define LINUX_POSIXMOUNTPROVIDER_H_INCLUDED
 #include "PosixMountProvider.h"
+#endif
+
 
 class CLinuxStorageProvider : public IStorageProvider
 {

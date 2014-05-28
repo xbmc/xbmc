@@ -20,7 +20,11 @@
 
 #pragma once
 
+#ifndef TEST_UTILS_GLOBALSHANDLING_H_INCLUDED
+#define TEST_UTILS_GLOBALSHANDLING_H_INCLUDED
 #include "utils/GlobalsHandling.h"
+#endif
+
 
 #include <iostream>
 

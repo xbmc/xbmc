@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef UTILS_BOOLEANLOGIC_H_INCLUDED
+#define UTILS_BOOLEANLOGIC_H_INCLUDED
 #include "BooleanLogic.h"
+#endif
+
+#ifndef UTILS_UTILS_LOG_H_INCLUDED
+#define UTILS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UTILS_UTILS_XBMCTINYXML_H_INCLUDED
+#define UTILS_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
 
 bool CBooleanLogicValue::Deserialize(const TiXmlNode *node)
 {

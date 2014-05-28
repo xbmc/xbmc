@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef VIDEO_DVDVIDEOCODEC_H_INCLUDED
+#define VIDEO_DVDVIDEOCODEC_H_INCLUDED
 #include "DVDVideoCodec.h"
+#endif
+
+#ifndef VIDEO_DLLLIBMPEG2_H_INCLUDED
+#define VIDEO_DLLLIBMPEG2_H_INCLUDED
 #include "DllLibMpeg2.h"
+#endif
+
 
 class CDVDVideoCodecLibMpeg2 : public CDVDVideoCodec
 {

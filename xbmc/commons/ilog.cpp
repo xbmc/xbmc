@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef COMMONS_COMMONS_ILOG_H_INCLUDED
+#define COMMONS_COMMONS_ILOG_H_INCLUDED
 #include "commons/ilog.h"
+#endif
+
+#ifndef COMMONS_UTILS_STDSTRING_H_INCLUDED
+#define COMMONS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef COMMONS_UTILS_STRINGUTILS_H_INCLUDED
+#define COMMONS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 namespace XbmcCommons
 {

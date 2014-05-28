@@ -19,15 +19,31 @@
  */
 
 #include <sys/stat.h>
+#ifndef GUILIB_XBTFREADER_H_INCLUDED
+#define GUILIB_XBTFREADER_H_INCLUDED
 #include "XBTFReader.h"
+#endif
+
+#ifndef GUILIB_UTILS_ENDIANSWAP_H_INCLUDED
+#define GUILIB_UTILS_ENDIANSWAP_H_INCLUDED
 #include "utils/EndianSwap.h"
+#endif
+
+#ifndef GUILIB_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define GUILIB_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
 #ifdef TARGET_WINDOWS
 #include "FileSystem/SpecialProtocol.h"
 #endif
 
 #include <string.h>
+#ifndef GUILIB_PLATFORMDEFS_H_INCLUDED
+#define GUILIB_PLATFORMDEFS_H_INCLUDED
 #include "PlatformDefs.h"
+#endif
+
 
 #define READ_STR(str, size, file) \
   if (!fread(str, size, 1, file)) \

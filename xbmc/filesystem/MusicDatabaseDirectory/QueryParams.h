@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef MUSICDATABASEDIRECTORY_DIRECTORYNODE_H_INCLUDED
+#define MUSICDATABASEDIRECTORY_DIRECTORYNODE_H_INCLUDED
 #include "DirectoryNode.h"
+#endif
+
 
 namespace XFILE
 {

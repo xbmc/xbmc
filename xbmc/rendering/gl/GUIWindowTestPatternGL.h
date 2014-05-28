@@ -22,7 +22,11 @@
  *
  */
 
+#ifndef GL_SETTINGS_WINDOWS_GUIWINDOWTESTPATTERN_H_INCLUDED
+#define GL_SETTINGS_WINDOWS_GUIWINDOWTESTPATTERN_H_INCLUDED
 #include "settings/windows/GUIWindowTestPattern.h"
+#endif
+
 
 class CGUIWindowTestPatternGL : public CGUIWindowTestPattern
 {

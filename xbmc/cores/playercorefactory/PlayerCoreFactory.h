@@ -22,11 +22,31 @@
 
 #include <vector>
 
+#ifndef PLAYERCOREFACTORY_SYSTEM_H_INCLUDED
+#define PLAYERCOREFACTORY_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef PLAYERCOREFACTORY_CORES_IPLAYERCALLBACK_H_INCLUDED
+#define PLAYERCOREFACTORY_CORES_IPLAYERCALLBACK_H_INCLUDED
 #include "cores/IPlayerCallback.h"
+#endif
+
+#ifndef PLAYERCOREFACTORY_SETTINGS_LIB_ISETTINGSHANDLER_H_INCLUDED
+#define PLAYERCOREFACTORY_SETTINGS_LIB_ISETTINGSHANDLER_H_INCLUDED
 #include "settings/lib/ISettingsHandler.h"
+#endif
+
+#ifndef PLAYERCOREFACTORY_THREADS_CRITICALSECTION_H_INCLUDED
+#define PLAYERCOREFACTORY_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef PLAYERCOREFACTORY_UTILS_STDSTRING_H_INCLUDED
+#define PLAYERCOREFACTORY_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 /*----------------------------------------------------------------------
 |   forward references

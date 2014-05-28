@@ -18,40 +18,156 @@
  *
  */
 
+#ifndef DVDPLAYER_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define DVDPLAYER_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
-#include "DVDFileInfo.h"
-#include "FileItem.h"
-#include "settings/AdvancedSettings.h"
-#include "pictures/Picture.h"
-#include "video/VideoInfoTag.h"
-#include "filesystem/StackDirectory.h"
-#include "utils/log.h"
-#include "utils/TimeUtils.h"
-#include "utils/URIUtils.h"
+#endif
 
+#ifndef DVDPLAYER_DVDFILEINFO_H_INCLUDED
+#define DVDPLAYER_DVDFILEINFO_H_INCLUDED
+#include "DVDFileInfo.h"
+#endif
+
+#ifndef DVDPLAYER_FILEITEM_H_INCLUDED
+#define DVDPLAYER_FILEITEM_H_INCLUDED
+#include "FileItem.h"
+#endif
+
+#ifndef DVDPLAYER_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define DVDPLAYER_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef DVDPLAYER_PICTURES_PICTURE_H_INCLUDED
+#define DVDPLAYER_PICTURES_PICTURE_H_INCLUDED
+#include "pictures/Picture.h"
+#endif
+
+#ifndef DVDPLAYER_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define DVDPLAYER_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#include "video/VideoInfoTag.h"
+#endif
+
+#ifndef DVDPLAYER_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
+#define DVDPLAYER_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
+#include "filesystem/StackDirectory.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_LOG_H_INCLUDED
+#define DVDPLAYER_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_TIMEUTILS_H_INCLUDED
+#define DVDPLAYER_UTILS_TIMEUTILS_H_INCLUDED
+#include "utils/TimeUtils.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_URIUTILS_H_INCLUDED
+#define DVDPLAYER_UTILS_URIUTILS_H_INCLUDED
+#include "utils/URIUtils.h"
+#endif
+
+
+#ifndef DVDPLAYER_DVDCLOCK_H_INCLUDED
+#define DVDPLAYER_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h"
+#endif
+
+#ifndef DVDPLAYER_DVDSTREAMINFO_H_INCLUDED
+#define DVDPLAYER_DVDSTREAMINFO_H_INCLUDED
 #include "DVDStreamInfo.h"
+#endif
+
+#ifndef DVDPLAYER_DVDINPUTSTREAMS_DVDINPUTSTREAM_H_INCLUDED
+#define DVDPLAYER_DVDINPUTSTREAMS_DVDINPUTSTREAM_H_INCLUDED
 #include "DVDInputStreams/DVDInputStream.h"
+#endif
+
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreams/DVDInputStreamBluray.h"
 #endif
+#ifndef DVDPLAYER_DVDINPUTSTREAMS_DVDFACTORYINPUTSTREAM_H_INCLUDED
+#define DVDPLAYER_DVDINPUTSTREAMS_DVDFACTORYINPUTSTREAM_H_INCLUDED
 #include "DVDInputStreams/DVDFactoryInputStream.h"
-#include "DVDDemuxers/DVDDemux.h"
-#include "DVDDemuxers/DVDDemuxUtils.h"
-#include "DVDDemuxers/DVDFactoryDemuxer.h"
-#include "DVDDemuxers/DVDDemuxFFmpeg.h"
-#include "DVDCodecs/DVDCodecs.h"
-#include "DVDCodecs/DVDFactoryCodec.h"
-#include "DVDCodecs/Video/DVDVideoCodec.h"
-#include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
-#include "DVDDemuxers/DVDDemuxVobsub.h"
+#endif
 
+#ifndef DVDPLAYER_DVDDEMUXERS_DVDDEMUX_H_INCLUDED
+#define DVDPLAYER_DVDDEMUXERS_DVDDEMUX_H_INCLUDED
+#include "DVDDemuxers/DVDDemux.h"
+#endif
+
+#ifndef DVDPLAYER_DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
+#define DVDPLAYER_DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
+#include "DVDDemuxers/DVDDemuxUtils.h"
+#endif
+
+#ifndef DVDPLAYER_DVDDEMUXERS_DVDFACTORYDEMUXER_H_INCLUDED
+#define DVDPLAYER_DVDDEMUXERS_DVDFACTORYDEMUXER_H_INCLUDED
+#include "DVDDemuxers/DVDFactoryDemuxer.h"
+#endif
+
+#ifndef DVDPLAYER_DVDDEMUXERS_DVDDEMUXFFMPEG_H_INCLUDED
+#define DVDPLAYER_DVDDEMUXERS_DVDDEMUXFFMPEG_H_INCLUDED
+#include "DVDDemuxers/DVDDemuxFFmpeg.h"
+#endif
+
+#ifndef DVDPLAYER_DVDCODECS_DVDCODECS_H_INCLUDED
+#define DVDPLAYER_DVDCODECS_DVDCODECS_H_INCLUDED
+#include "DVDCodecs/DVDCodecs.h"
+#endif
+
+#ifndef DVDPLAYER_DVDCODECS_DVDFACTORYCODEC_H_INCLUDED
+#define DVDPLAYER_DVDCODECS_DVDFACTORYCODEC_H_INCLUDED
+#include "DVDCodecs/DVDFactoryCodec.h"
+#endif
+
+#ifndef DVDPLAYER_DVDCODECS_VIDEO_DVDVIDEOCODEC_H_INCLUDED
+#define DVDPLAYER_DVDCODECS_VIDEO_DVDVIDEOCODEC_H_INCLUDED
+#include "DVDCodecs/Video/DVDVideoCodec.h"
+#endif
+
+#ifndef DVDPLAYER_DVDCODECS_VIDEO_DVDVIDEOCODECFFMPEG_H_INCLUDED
+#define DVDPLAYER_DVDCODECS_VIDEO_DVDVIDEOCODECFFMPEG_H_INCLUDED
+#include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
+#endif
+
+#ifndef DVDPLAYER_DVDDEMUXERS_DVDDEMUXVOBSUB_H_INCLUDED
+#define DVDPLAYER_DVDDEMUXERS_DVDDEMUXVOBSUB_H_INCLUDED
+#include "DVDDemuxers/DVDDemuxVobsub.h"
+#endif
+
+
+#ifndef DVDPLAYER_DLLAVCODEC_H_INCLUDED
+#define DVDPLAYER_DLLAVCODEC_H_INCLUDED
 #include "DllAvCodec.h"
+#endif
+
+#ifndef DVDPLAYER_DLLSWSCALE_H_INCLUDED
+#define DVDPLAYER_DLLSWSCALE_H_INCLUDED
 #include "DllSwScale.h"
+#endif
+
+#ifndef DVDPLAYER_FILESYSTEM_FILE_H_INCLUDED
+#define DVDPLAYER_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef DVDPLAYER_TEXTURECACHE_H_INCLUDED
+#define DVDPLAYER_TEXTURECACHE_H_INCLUDED
 #include "TextureCache.h"
+#endif
+
+#ifndef DVDPLAYER_UTIL_H_INCLUDED
+#define DVDPLAYER_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_LANGCODEEXPANDER_H_INCLUDED
+#define DVDPLAYER_UTILS_LANGCODEEXPANDER_H_INCLUDED
 #include "utils/LangCodeExpander.h"
+#endif
+
 
 
 bool CDVDFileInfo::GetFileDuration(const CStdString &path, int& duration)

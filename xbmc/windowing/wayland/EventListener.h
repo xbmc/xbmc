@@ -19,7 +19,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef WAYLAND_WINDOWING_XBMC_EVENTS_H_INCLUDED
+#define WAYLAND_WINDOWING_XBMC_EVENTS_H_INCLUDED
 #include "windowing/XBMC_events.h"
+#endif
+
 
 namespace xbmc
 {

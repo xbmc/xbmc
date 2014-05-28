@@ -21,13 +21,41 @@
  *
  */
 
+#ifndef FILESYSTEM_DAAPFILE_H_INCLUDED
+#define FILESYSTEM_DAAPFILE_H_INCLUDED
 #include "DAAPFile.h"
+#endif
+
+#ifndef FILESYSTEM_DAAPDIRECTORY_H_INCLUDED
+#define FILESYSTEM_DAAPDIRECTORY_H_INCLUDED
 #include "DAAPDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define FILESYSTEM_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 namespace XFILE
 {

@@ -35,7 +35,11 @@
 #if !defined(TARGET_FREEBSD)
 #include <sys/timeb.h>
 #endif
+#ifndef EXPORTS_SYSTEM_H_INCLUDED
+#define EXPORTS_SYSTEM_H_INCLUDED
 #include "system.h" // for HAS_DVD_DRIVE
+#endif
+
 #ifdef HAS_DVD_DRIVE
   #ifdef TARGET_POSIX
     #include <sys/ioctl.h>
@@ -52,20 +56,72 @@
 #ifdef TARGET_POSIX
 #include "PlatformDefs.h" // for __stat64
 #endif
+#ifndef EXPORTS_UTIL_H_INCLUDED
+#define EXPORTS_UTIL_H_INCLUDED
 #include "Util.h"
-#include "filesystem/SpecialProtocol.h"
-#include "URL.h"
-#include "filesystem/File.h"
-#include "settings/Settings.h"
-#include "FileItem.h"
-#include "filesystem/Directory.h"
+#endif
 
+#ifndef EXPORTS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define EXPORTS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef EXPORTS_URL_H_INCLUDED
+#define EXPORTS_URL_H_INCLUDED
+#include "URL.h"
+#endif
+
+#ifndef EXPORTS_FILESYSTEM_FILE_H_INCLUDED
+#define EXPORTS_FILESYSTEM_FILE_H_INCLUDED
+#include "filesystem/File.h"
+#endif
+
+#ifndef EXPORTS_SETTINGS_SETTINGS_H_INCLUDED
+#define EXPORTS_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef EXPORTS_FILEITEM_H_INCLUDED
+#define EXPORTS_FILEITEM_H_INCLUDED
+#include "FileItem.h"
+#endif
+
+#ifndef EXPORTS_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define EXPORTS_FILESYSTEM_DIRECTORY_H_INCLUDED
+#include "filesystem/Directory.h"
+#endif
+
+
+#ifndef EXPORTS_EMU_MSVCRT_H_INCLUDED
+#define EXPORTS_EMU_MSVCRT_H_INCLUDED
 #include "emu_msvcrt.h"
+#endif
+
+#ifndef EXPORTS_EMU_DUMMY_H_INCLUDED
+#define EXPORTS_EMU_DUMMY_H_INCLUDED
 #include "emu_dummy.h"
+#endif
+
+#ifndef EXPORTS_EMU_KERNEL32_H_INCLUDED
+#define EXPORTS_EMU_KERNEL32_H_INCLUDED
 #include "emu_kernel32.h"
+#endif
+
+#ifndef EXPORTS_UTIL_EMUFILEWRAPPER_H_INCLUDED
+#define EXPORTS_UTIL_EMUFILEWRAPPER_H_INCLUDED
 #include "util/EmuFileWrapper.h"
+#endif
+
+#ifndef EXPORTS_UTILS_LOG_H_INCLUDED
+#define EXPORTS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef EXPORTS_THREADS_SINGLELOCK_H_INCLUDED
+#define EXPORTS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 #ifndef TARGET_POSIX
 #include "utils/CharsetConverter.h"
 #include "utils/URIUtils.h"
@@ -75,8 +131,16 @@
 #elif !defined(TARGET_WINDOWS)
 #include <dlfcn.h>
 #endif
+#ifndef EXPORTS_UTILS_ENVIRONMENT_H_INCLUDED
+#define EXPORTS_UTILS_ENVIRONMENT_H_INCLUDED
 #include "utils/Environment.h"
+#endif
+
+#ifndef EXPORTS_UTILS_STRINGUTILS_H_INCLUDED
+#define EXPORTS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

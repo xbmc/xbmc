@@ -21,13 +21,41 @@
  */
 
 #include <set>
+#ifndef PICTURES_GUILIB_GUIWINDOW_H_INCLUDED
+#define PICTURES_GUILIB_GUIWINDOW_H_INCLUDED
 #include "guilib/GUIWindow.h"
+#endif
+
+#ifndef PICTURES_THREADS_THREAD_H_INCLUDED
+#define PICTURES_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef PICTURES_THREADS_CRITICALSECTION_H_INCLUDED
+#define PICTURES_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef PICTURES_THREADS_EVENT_H_INCLUDED
+#define PICTURES_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
+#ifndef PICTURES_SLIDESHOWPICTURE_H_INCLUDED
+#define PICTURES_SLIDESHOWPICTURE_H_INCLUDED
 #include "SlideShowPicture.h"
+#endif
+
+#ifndef PICTURES_DLLIMAGELIB_H_INCLUDED
+#define PICTURES_DLLIMAGELIB_H_INCLUDED
 #include "DllImageLib.h"
+#endif
+
+#ifndef PICTURES_UTILS_SORTUTILS_H_INCLUDED
+#define PICTURES_UTILS_SORTUTILS_H_INCLUDED
 #include "utils/SortUtils.h"
+#endif
+
 
 class CFileItemList;
 class CVariant;

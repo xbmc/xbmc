@@ -23,9 +23,21 @@
 #include <string>
 #include "boost/shared_ptr.hpp"
 
+#ifndef UTILS_DATABASEUTILS_H_INCLUDED
+#define UTILS_DATABASEUTILS_H_INCLUDED
 #include "DatabaseUtils.h"
+#endif
+
+#ifndef UTILS_SORTFILEITEM_H_INCLUDED
+#define UTILS_SORTFILEITEM_H_INCLUDED
 #include "SortFileItem.h"
+#endif
+
+#ifndef UTILS_LABELFORMATTER_H_INCLUDED
+#define UTILS_LABELFORMATTER_H_INCLUDED
 #include "LabelFormatter.h"
+#endif
+
 
 typedef enum {
   SortOrderNone = 0,

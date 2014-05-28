@@ -21,7 +21,11 @@
 #include <stdexcept>
 
 #include <wayland-client.h>
+#ifndef WAYLAND_WAYLANDLIBRARIES_H_INCLUDED
+#define WAYLAND_WAYLANDLIBRARIES_H_INCLUDED
 #include "WaylandLibraries.h"
+#endif
+
 
 namespace xw = xbmc::wayland;
 

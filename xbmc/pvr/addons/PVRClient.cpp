@@ -19,17 +19,61 @@
  */
 
 #include <vector>
+#ifndef ADDONS_APPLICATION_H_INCLUDED
+#define ADDONS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef ADDONS_PVRCLIENT_H_INCLUDED
+#define ADDONS_PVRCLIENT_H_INCLUDED
 #include "PVRClient.h"
+#endif
+
+#ifndef ADDONS_PVR_PVRMANAGER_H_INCLUDED
+#define ADDONS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef ADDONS_EPG_EPG_H_INCLUDED
+#define ADDONS_EPG_EPG_H_INCLUDED
 #include "epg/Epg.h"
+#endif
+
+#ifndef ADDONS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define ADDONS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#endif
+
+#ifndef ADDONS_PVR_TIMERS_PVRTIMERS_H_INCLUDED
+#define ADDONS_PVR_TIMERS_PVRTIMERS_H_INCLUDED
 #include "pvr/timers/PVRTimers.h"
+#endif
+
+#ifndef ADDONS_PVR_TIMERS_PVRTIMERINFOTAG_H_INCLUDED
+#define ADDONS_PVR_TIMERS_PVRTIMERINFOTAG_H_INCLUDED
 #include "pvr/timers/PVRTimerInfoTag.h"
+#endif
+
+#ifndef ADDONS_PVR_RECORDINGS_PVRRECORDINGS_H_INCLUDED
+#define ADDONS_PVR_RECORDINGS_PVRRECORDINGS_H_INCLUDED
 #include "pvr/recordings/PVRRecordings.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_SETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef ADDONS_UTILS_LOG_H_INCLUDED
+#define ADDONS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 using namespace std;
 using namespace ADDON;

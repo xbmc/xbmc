@@ -21,7 +21,11 @@
 
 #include <stdlib.h>
 
+#ifndef TOUCH_INPUT_TOUCH_ITOUCHACTIONHANDLER_H_INCLUDED
+#define TOUCH_INPUT_TOUCH_ITOUCHACTIONHANDLER_H_INCLUDED
 #include "input/touch/ITouchActionHandler.h"
+#endif
+
 
 /*!
  * \ingroup touch

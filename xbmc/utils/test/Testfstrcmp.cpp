@@ -18,11 +18,27 @@
  *
  */
 
+#ifndef TEST_UTILS_FSTRCMP_H_INCLUDED
+#define TEST_UTILS_FSTRCMP_H_INCLUDED
 #include "utils/fstrcmp.h"
-#include "utils/StdString.h"
-#include "utils/StringUtils.h"
+#endif
 
+#ifndef TEST_UTILS_STDSTRING_H_INCLUDED
+#define TEST_UTILS_STDSTRING_H_INCLUDED
+#include "utils/StdString.h"
+#endif
+
+#ifndef TEST_UTILS_STRINGUTILS_H_INCLUDED
+#define TEST_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 TEST(Testfstrcmp, General)
 {

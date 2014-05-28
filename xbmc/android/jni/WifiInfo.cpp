@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_WIFIINFO_H_INCLUDED
+#define JNI_WIFIINFO_H_INCLUDED
 #include "WifiInfo.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

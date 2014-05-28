@@ -22,14 +22,42 @@
 
 #include <list>
 
+#ifndef PAPLAYER_CORES_IPLAYER_H_INCLUDED
+#define PAPLAYER_CORES_IPLAYER_H_INCLUDED
 #include "cores/IPlayer.h"
-#include "threads/Thread.h"
-#include "AudioDecoder.h"
-#include "threads/SharedSection.h"
-#include "utils/Job.h"
+#endif
 
+#ifndef PAPLAYER_THREADS_THREAD_H_INCLUDED
+#define PAPLAYER_THREADS_THREAD_H_INCLUDED
+#include "threads/Thread.h"
+#endif
+
+#ifndef PAPLAYER_AUDIODECODER_H_INCLUDED
+#define PAPLAYER_AUDIODECODER_H_INCLUDED
+#include "AudioDecoder.h"
+#endif
+
+#ifndef PAPLAYER_THREADS_SHAREDSECTION_H_INCLUDED
+#define PAPLAYER_THREADS_SHAREDSECTION_H_INCLUDED
+#include "threads/SharedSection.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_JOB_H_INCLUDED
+#define PAPLAYER_UTILS_JOB_H_INCLUDED
+#include "utils/Job.h"
+#endif
+
+
+#ifndef PAPLAYER_CORES_IAUDIOCALLBACK_H_INCLUDED
+#define PAPLAYER_CORES_IAUDIOCALLBACK_H_INCLUDED
 #include "cores/IAudioCallback.h"
+#endif
+
+#ifndef PAPLAYER_CORES_AUDIOENGINE_UTILS_AECHANNELINFO_H_INCLUDED
+#define PAPLAYER_CORES_AUDIOENGINE_UTILS_AECHANNELINFO_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
+#endif
+
 
 class IAEStream;
 

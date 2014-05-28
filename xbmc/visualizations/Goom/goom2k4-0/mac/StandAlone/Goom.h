@@ -10,7 +10,11 @@
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/glu.h>
 #include <OpenGL/glext.h>
+#ifndef STANDALONE_SRC_GOOM_H_INCLUDED
+#define STANDALONE_SRC_GOOM_H_INCLUDED
 #include "src/goom.h"
+#endif
+
 
 @interface Goom : NSObject {
 

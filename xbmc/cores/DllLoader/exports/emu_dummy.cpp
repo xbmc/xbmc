@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef EXPORTS_EMU_DUMMY_H_INCLUDED
+#define EXPORTS_EMU_DUMMY_H_INCLUDED
 #include "emu_dummy.h"
+#endif
+
+#ifndef EXPORTS_UTILS_LOG_H_INCLUDED
+#define EXPORTS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 extern "C" void not_implement( const char* debuginfo)
 {

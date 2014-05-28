@@ -20,5 +20,9 @@
 
 #pragma once
 
+#ifndef THREADS_THREADS_PLATFORM_THREADIMPL_H_INCLUDED
+#define THREADS_THREADS_PLATFORM_THREADIMPL_H_INCLUDED
 #include "threads/platform/ThreadImpl.h"
+#endif
+
 

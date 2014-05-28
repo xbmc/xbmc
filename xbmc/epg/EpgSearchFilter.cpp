@@ -18,19 +18,63 @@
  *
  */
 
+#ifndef EPG_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define EPG_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef EPG_UTILS_TEXTSEARCH_H_INCLUDED
+#define EPG_UTILS_TEXTSEARCH_H_INCLUDED
 #include "utils/TextSearch.h"
+#endif
+
+#ifndef EPG_UTILS_LOG_H_INCLUDED
+#define EPG_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef EPG_FILEITEM_H_INCLUDED
+#define EPG_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef EPG____ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
+#define EPG____ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
 #include "../addons/include/xbmc_pvr_types.h"
+#endif
 
+
+#ifndef EPG_EPGSEARCHFILTER_H_INCLUDED
+#define EPG_EPGSEARCHFILTER_H_INCLUDED
 #include "EpgSearchFilter.h"
-#include "EpgContainer.h"
+#endif
 
+#ifndef EPG_EPGCONTAINER_H_INCLUDED
+#define EPG_EPGCONTAINER_H_INCLUDED
+#include "EpgContainer.h"
+#endif
+
+
+#ifndef EPG_PVR_PVRMANAGER_H_INCLUDED
+#define EPG_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef EPG_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define EPG_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#endif
+
+#ifndef EPG_PVR_RECORDINGS_PVRRECORDINGS_H_INCLUDED
+#define EPG_PVR_RECORDINGS_PVRRECORDINGS_H_INCLUDED
 #include "pvr/recordings/PVRRecordings.h"
+#endif
+
+#ifndef EPG_PVR_TIMERS_PVRTIMERS_H_INCLUDED
+#define EPG_PVR_TIMERS_PVRTIMERS_H_INCLUDED
 #include "pvr/timers/PVRTimers.h"
+#endif
+
 
 using namespace std;
 using namespace EPG;

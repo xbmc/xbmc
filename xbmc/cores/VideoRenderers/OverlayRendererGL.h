@@ -20,8 +20,16 @@
  */
 
 #pragma once
+#ifndef VIDEORENDERERS_SYSTEM_GL_H_INCLUDED
+#define VIDEORENDERERS_SYSTEM_GL_H_INCLUDED
 #include "system_gl.h"
+#endif
+
+#ifndef VIDEORENDERERS_OVERLAYRENDERER_H_INCLUDED
+#define VIDEORENDERERS_OVERLAYRENDERER_H_INCLUDED
 #include "OverlayRenderer.h"
+#endif
+
 
 class CDVDOverlay;
 class CDVDOverlayImage;

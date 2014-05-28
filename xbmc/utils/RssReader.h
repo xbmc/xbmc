@@ -22,11 +22,31 @@
 #include <list>
 #include <vector>
 
+#ifndef UTILS_THREADS_CRITICALSECTION_H_INCLUDED
+#define UTILS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef UTILS_THREADS_THREAD_H_INCLUDED
+#define UTILS_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef UTILS_UTILS_IRSSOBSERVER_H_INCLUDED
+#define UTILS_UTILS_IRSSOBSERVER_H_INCLUDED
 #include "utils/IRssObserver.h"
+#endif
+
+#ifndef UTILS_UTILS_STDSTRING_H_INCLUDED
+#define UTILS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef UTILS_UTILS_XBMCTINYXML_H_INCLUDED
+#define UTILS_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
 
 class CRssReader : public CThread
 {

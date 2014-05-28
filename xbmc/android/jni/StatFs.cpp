@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_STATFS_H_INCLUDED
+#define JNI_STATFS_H_INCLUDED
 #include "StatFs.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

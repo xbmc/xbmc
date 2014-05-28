@@ -18,17 +18,61 @@
  *
  */
 
+#ifndef JSON_RPC_APPLICATIONOPERATIONS_H_INCLUDED
+#define JSON_RPC_APPLICATIONOPERATIONS_H_INCLUDED
 #include "ApplicationOperations.h"
+#endif
+
+#ifndef JSON_RPC_INPUTOPERATIONS_H_INCLUDED
+#define JSON_RPC_INPUTOPERATIONS_H_INCLUDED
 #include "InputOperations.h"
+#endif
+
+#ifndef JSON_RPC_APPLICATION_H_INCLUDED
+#define JSON_RPC_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
+#define JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef JSON_RPC_FILEITEM_H_INCLUDED
+#define JSON_RPC_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef JSON_RPC_UTIL_H_INCLUDED
+#define JSON_RPC_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_LOG_H_INCLUDED
+#define JSON_RPC_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef JSON_RPC_GUIINFOMANAGER_H_INCLUDED
+#define JSON_RPC_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef JSON_RPC_SYSTEM_H_INCLUDED
+#define JSON_RPC_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef JSON_RPC_GITREVISION_H_INCLUDED
+#define JSON_RPC_GITREVISION_H_INCLUDED
 #include "GitRevision.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_STRINGUTILS_H_INCLUDED
+#define JSON_RPC_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace JSONRPC;
 

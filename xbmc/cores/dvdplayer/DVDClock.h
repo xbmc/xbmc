@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef DVDPLAYER_SYSTEM_H_INCLUDED
+#define DVDPLAYER_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef DVDPLAYER_THREADS_SHAREDSECTION_H_INCLUDED
+#define DVDPLAYER_THREADS_SHAREDSECTION_H_INCLUDED
 #include "threads/SharedSection.h"
+#endif
+
+#ifndef DVDPLAYER_THREADS_CRITICALSECTION_H_INCLUDED
+#define DVDPLAYER_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 #define DVD_TIME_BASE 1000000
 #define DVD_NOPTS_VALUE    (-1LL<<52) // should be possible to represent in both double and int64_t

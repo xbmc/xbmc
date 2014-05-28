@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef VIDEO_DVDVIDEOCODEC_H_INCLUDED
+#define VIDEO_DVDVIDEOCODEC_H_INCLUDED
 #include "DVDVideoCodec.h"
+#endif
+
+#ifndef VIDEO_DLLPOSTPROC_H_INCLUDED
+#define VIDEO_DLLPOSTPROC_H_INCLUDED
 #include "DllPostProc.h"
+#endif
+
 
 class CDVDVideoPPFFmpeg
 {

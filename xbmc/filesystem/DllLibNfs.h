@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef FILESYSTEM_DYNAMICDLL_H_INCLUDED
+#define FILESYSTEM_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
 
 #ifdef __cplusplus
 extern "C" {

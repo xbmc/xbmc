@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef OVERLAY_DVDOVERLAY_H_INCLUDED
+#define OVERLAY_DVDOVERLAY_H_INCLUDED
 #include "DVDOverlay.h"
+#endif
+
+#ifndef OVERLAY_PLATFORMDEFS_H_INCLUDED
+#define OVERLAY_PLATFORMDEFS_H_INCLUDED
 #include "PlatformDefs.h"
+#endif
+
+#ifndef OVERLAY_CORES_DVDPLAYER_DVDDEMUXERS_DVDDEMUX_H_INCLUDED
+#define OVERLAY_CORES_DVDPLAYER_DVDDEMUXERS_DVDDEMUX_H_INCLUDED
 #include "cores/dvdplayer/DVDDemuxers/DVDDemux.h"
+#endif
+
 
 #include <string>
 

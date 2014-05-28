@@ -18,20 +18,76 @@
  *
  */
 
+#ifndef GUILIB_GUIBASECONTAINER_H_INCLUDED
+#define GUILIB_GUIBASECONTAINER_H_INCLUDED
 #include "GUIBaseContainer.h"
+#endif
+
+#ifndef GUILIB_GUICONTROLFACTORY_H_INCLUDED
+#define GUILIB_GUICONTROLFACTORY_H_INCLUDED
 #include "GUIControlFactory.h"
+#endif
+
+#ifndef GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "GUIWindowManager.h"
+#endif
+
+#ifndef GUILIB_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define GUILIB_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef GUILIB_GUIINFOMANAGER_H_INCLUDED
+#define GUILIB_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef GUILIB_UTILS_TIMEUTILS_H_INCLUDED
+#define GUILIB_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef GUILIB_UTILS_SORTUTILS_H_INCLUDED
+#define GUILIB_UTILS_SORTUTILS_H_INCLUDED
 #include "utils/SortUtils.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef GUILIB_FILEITEM_H_INCLUDED
+#define GUILIB_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
+#ifndef GUILIB_UTILS_MATHUTILS_H_INCLUDED
+#define GUILIB_UTILS_MATHUTILS_H_INCLUDED
 #include "utils/MathUtils.h"
+#endif
+
+#ifndef GUILIB_UTILS_XBMCTINYXML_H_INCLUDED
+#define GUILIB_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef GUILIB_LISTPROVIDERS_ILISTPROVIDER_H_INCLUDED
+#define GUILIB_LISTPROVIDERS_ILISTPROVIDER_H_INCLUDED
 #include "listproviders/IListProvider.h"
+#endif
+
 
 using namespace std;
 

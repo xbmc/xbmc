@@ -27,20 +27,68 @@
 
 #include <wayland-client.h>
 
+#ifndef WAYLAND_WINDOWING_DLLWAYLANDCLIENT_H_INCLUDED
+#define WAYLAND_WINDOWING_DLLWAYLANDCLIENT_H_INCLUDED
 #include "windowing/DllWaylandClient.h"
+#endif
+
+#ifndef WAYLAND_WINDOWING_DLLWAYLANDEGL_H_INCLUDED
+#define WAYLAND_WINDOWING_DLLWAYLANDEGL_H_INCLUDED
 #include "windowing/DllWaylandEgl.h"
+#endif
 
+
+#ifndef WAYLAND_CALLBACK_H_INCLUDED
+#define WAYLAND_CALLBACK_H_INCLUDED
 #include "Callback.h"
-#include "Compositor.h"
-#include "OpenGLSurface.h"
-#include "Output.h"
-#include "Region.h"
-#include "Shell.h"
-#include "ShellSurface.h"
-#include "Surface.h"
+#endif
 
+#ifndef WAYLAND_COMPOSITOR_H_INCLUDED
+#define WAYLAND_COMPOSITOR_H_INCLUDED
+#include "Compositor.h"
+#endif
+
+#ifndef WAYLAND_OPENGLSURFACE_H_INCLUDED
+#define WAYLAND_OPENGLSURFACE_H_INCLUDED
+#include "OpenGLSurface.h"
+#endif
+
+#ifndef WAYLAND_OUTPUT_H_INCLUDED
+#define WAYLAND_OUTPUT_H_INCLUDED
+#include "Output.h"
+#endif
+
+#ifndef WAYLAND_REGION_H_INCLUDED
+#define WAYLAND_REGION_H_INCLUDED
+#include "Region.h"
+#endif
+
+#ifndef WAYLAND_SHELL_H_INCLUDED
+#define WAYLAND_SHELL_H_INCLUDED
+#include "Shell.h"
+#endif
+
+#ifndef WAYLAND_SHELLSURFACE_H_INCLUDED
+#define WAYLAND_SHELLSURFACE_H_INCLUDED
+#include "ShellSurface.h"
+#endif
+
+#ifndef WAYLAND_SURFACE_H_INCLUDED
+#define WAYLAND_SURFACE_H_INCLUDED
+#include "Surface.h"
+#endif
+
+
+#ifndef WAYLAND_WINDOWING_WAYLANDPROTOCOL_H_INCLUDED
+#define WAYLAND_WINDOWING_WAYLANDPROTOCOL_H_INCLUDED
 #include "windowing/WaylandProtocol.h"
+#endif
+
+#ifndef WAYLAND_XBMCSURFACE_H_INCLUDED
+#define WAYLAND_XBMCSURFACE_H_INCLUDED
 #include "XBMCSurface.h"
+#endif
+
 
 namespace xbmc
 {

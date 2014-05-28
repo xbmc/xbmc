@@ -18,14 +18,42 @@
  *
  */
 
+#ifndef ACTIVEAE_CORES_AUDIOENGINE_INTERFACES_AESOUND_H_INCLUDED
+#define ACTIVEAE_CORES_AUDIOENGINE_INTERFACES_AESOUND_H_INCLUDED
 #include "cores/AudioEngine/Interfaces/AESound.h"
+#endif
 
+
+#ifndef ACTIVEAE_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
+#define ACTIVEAE_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
 #include "cores/AudioEngine/AEFactory.h"
+#endif
+
+#ifndef ACTIVEAE_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
+#define ACTIVEAE_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
+#endif
+
+#ifndef ACTIVEAE_ACTIVEAE_H_INCLUDED
+#define ACTIVEAE_ACTIVEAE_H_INCLUDED
 #include "ActiveAE.h"
+#endif
+
+#ifndef ACTIVEAE_ACTIVEAESOUND_H_INCLUDED
+#define ACTIVEAE_ACTIVEAESOUND_H_INCLUDED
 #include "ActiveAESound.h"
+#endif
+
+#ifndef ACTIVEAE_UTILS_LOG_H_INCLUDED
+#define ACTIVEAE_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ACTIVEAE_DLLAVUTIL_H_INCLUDED
+#define ACTIVEAE_DLLAVUTIL_H_INCLUDED
 #include "DllAvUtil.h"
+#endif
+
 
 using namespace ActiveAE;
 using namespace XFILE;

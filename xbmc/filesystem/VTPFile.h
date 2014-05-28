@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef FILESYSTEM_IFILE_H_INCLUDED
+#define FILESYSTEM_IFILE_H_INCLUDED
 #include "IFile.h"
+#endif
+
+#ifndef FILESYSTEM_ILIVETV_H_INCLUDED
+#define FILESYSTEM_ILIVETV_H_INCLUDED
 #include "ILiveTV.h"
+#endif
+
 
 #include <sys/socket.h>
 

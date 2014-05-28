@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef DIALOGS_GUILIB_GUIDIALOG_H_INCLUDED
+#define DIALOGS_GUILIB_GUIDIALOG_H_INCLUDED
 #include "guilib/GUIDialog.h"
+#endif
+
+#ifndef DIALOGS_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
+#define DIALOGS_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
 #include "playlists/SmartPlayList.h"
+#endif
+
 
 class CFileItemList;
 

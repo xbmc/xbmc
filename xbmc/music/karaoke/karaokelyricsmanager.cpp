@@ -20,20 +20,68 @@
 
 // C++ Implementation: karaokelyricsmanager
 
+#ifndef KARAOKE_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define KARAOKE_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef KARAOKE_APPLICATION_H_INCLUDED
+#define KARAOKE_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef KARAOKE_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define KARAOKE_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef KARAOKE_SETTINGS_SETTINGS_H_INCLUDED
+#define KARAOKE_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
 
+
+#ifndef KARAOKE_KARAOKELYRICS_H_INCLUDED
+#define KARAOKE_KARAOKELYRICS_H_INCLUDED
 #include "karaokelyrics.h"
-#include "karaokelyricsfactory.h"
-#include "karaokelyricsmanager.h"
+#endif
 
+#ifndef KARAOKE_KARAOKELYRICSFACTORY_H_INCLUDED
+#define KARAOKE_KARAOKELYRICSFACTORY_H_INCLUDED
+#include "karaokelyricsfactory.h"
+#endif
+
+#ifndef KARAOKE_KARAOKELYRICSMANAGER_H_INCLUDED
+#define KARAOKE_KARAOKELYRICSMANAGER_H_INCLUDED
+#include "karaokelyricsmanager.h"
+#endif
+
+
+#ifndef KARAOKE_GUIDIALOGKARAOKESONGSELECTOR_H_INCLUDED
+#define KARAOKE_GUIDIALOGKARAOKESONGSELECTOR_H_INCLUDED
 #include "GUIDialogKaraokeSongSelector.h"
+#endif
+
+#ifndef KARAOKE_GUIWINDOWKARAOKELYRICS_H_INCLUDED
+#define KARAOKE_GUIWINDOWKARAOKELYRICS_H_INCLUDED
 #include "GUIWindowKaraokeLyrics.h"
+#endif
+
+#ifndef KARAOKE_THREADS_SINGLELOCK_H_INCLUDED
+#define KARAOKE_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef KARAOKE_UTILS_LOG_H_INCLUDED
+#define KARAOKE_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef KARAOKE_UTILS_TIMEUTILS_H_INCLUDED
+#define KARAOKE_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
 
 CKaraokeLyricsManager::CKaraokeLyricsManager()
 {

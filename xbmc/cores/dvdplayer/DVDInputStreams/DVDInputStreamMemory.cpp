@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef DVDINPUTSTREAMS_DVDINPUTSTREAMMEMORY_H_INCLUDED
+#define DVDINPUTSTREAMS_DVDINPUTSTREAMMEMORY_H_INCLUDED
 #include "DVDInputStreamMemory.h"
+#endif
+
 
 CDVDInputStreamMemory::CDVDInputStreamMemory() : CDVDInputStream(DVDSTREAM_TYPE_MEMORY)
 {

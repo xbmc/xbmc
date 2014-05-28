@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef GENERIC_INPUT_TOUCH_ITOUCHINPUTHANDLING_H_INCLUDED
+#define GENERIC_INPUT_TOUCH_ITOUCHINPUTHANDLING_H_INCLUDED
 #include "input/touch/ITouchInputHandling.h"
+#endif
+
+#ifndef GENERIC_INPUT_TOUCH_TOUCHTYPES_H_INCLUDED
+#define GENERIC_INPUT_TOUCH_TOUCHTYPES_H_INCLUDED
 #include "input/touch/TouchTypes.h"
+#endif
+
 
 #define TOUCH_MAX_POINTERS  2
 

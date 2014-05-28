@@ -17,7 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef WAYLAND_SYSTEM_H_INCLUDED
+#define WAYLAND_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #if defined(HAVE_WAYLAND_XBMC_PROTO)
 

@@ -1,4 +1,8 @@
+#ifndef SCRIPTANY_SCRIPTANY_H_INCLUDED
+#define SCRIPTANY_SCRIPTANY_H_INCLUDED
 #include "scriptany.h"
+#endif
+
 #include <new>
 #include <assert.h>
 #include <string.h>

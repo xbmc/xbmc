@@ -18,22 +18,74 @@
  *
  */
 
+#ifndef WINDOWS_SYSTEM_H_INCLUDED
+#define WINDOWS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef WINDOWS_GUIUSERMESSAGES_H_INCLUDED
+#define WINDOWS_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef WINDOWS_GUIWINDOWWEATHER_H_INCLUDED
+#define WINDOWS_GUIWINDOWWEATHER_H_INCLUDED
 #include "GUIWindowWeather.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIIMAGE_H_INCLUDED
+#define WINDOWS_GUILIB_GUIIMAGE_H_INCLUDED
 #include "guilib/GUIImage.h"
+#endif
+
+#ifndef WINDOWS_UTILS_WEATHER_H_INCLUDED
+#define WINDOWS_UTILS_WEATHER_H_INCLUDED
 #include "utils/Weather.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef WINDOWS_UTILS_URIUTILS_H_INCLUDED
+#define WINDOWS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
+#ifndef WINDOWS_LANGINFO_H_INCLUDED
+#define WINDOWS_LANGINFO_H_INCLUDED
 #include "LangInfo.h"
+#endif
+
+#ifndef WINDOWS_UTILS_LOG_H_INCLUDED
+#define WINDOWS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef WINDOWS_UTILS_SYSTEMINFO_H_INCLUDED
+#define WINDOWS_UTILS_SYSTEMINFO_H_INCLUDED
 #include "utils/SystemInfo.h"
+#endif
+
+#ifndef WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
+#define WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef WINDOWS_ADDONS_ADDONMANAGER_H_INCLUDED
+#define WINDOWS_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
 
 using namespace ADDON;
 

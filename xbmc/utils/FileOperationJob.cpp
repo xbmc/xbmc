@@ -18,21 +18,81 @@
  *
  */
 
+#ifndef UTILS_FILEOPERATIONJOB_H_INCLUDED
+#define UTILS_FILEOPERATIONJOB_H_INCLUDED
 #include "FileOperationJob.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_FILE_H_INCLUDED
+#define UTILS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define UTILS_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_ZIPMANAGER_H_INCLUDED
+#define UTILS_FILESYSTEM_ZIPMANAGER_H_INCLUDED
 #include "filesystem/ZipManager.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_FILEDIRECTORYFACTORY_H_INCLUDED
+#define UTILS_FILESYSTEM_FILEDIRECTORYFACTORY_H_INCLUDED
 #include "filesystem/FileDirectoryFactory.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_MULTIPATHDIRECTORY_H_INCLUDED
+#define UTILS_FILESYSTEM_MULTIPATHDIRECTORY_H_INCLUDED
 #include "filesystem/MultiPathDirectory.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define UTILS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef UTILS_LOG_H_INCLUDED
+#define UTILS_LOG_H_INCLUDED
 #include "log.h"
+#endif
+
+#ifndef UTILS_UTIL_H_INCLUDED
+#define UTILS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef UTILS_URIUTILS_H_INCLUDED
+#define UTILS_URIUTILS_H_INCLUDED
 #include "URIUtils.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UTILS_URL_H_INCLUDED
+#define UTILS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef UTILS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define UTILS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef UTILS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define UTILS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef UTILS_DIALOGS_GUIDIALOGEXTENDEDPROGRESSBAR_H_INCLUDED
+#define UTILS_DIALOGS_GUIDIALOGEXTENDEDPROGRESSBAR_H_INCLUDED
 #include "dialogs/GUIDialogExtendedProgressBar.h"
+#endif
+
 
 #ifdef HAS_FILESYSTEM_RAR
 #include "filesystem/RarManager.h"

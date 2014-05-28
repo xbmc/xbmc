@@ -18,16 +18,40 @@
  *
  */
 
+#ifndef SINKS_SYSTEM_H_INCLUDED
+#define SINKS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #include <stdint.h>
 #include <limits.h>
 
+#ifndef SINKS_CORES_AUDIOENGINE_SINKS_AESINKPROFILER_H_INCLUDED
+#define SINKS_CORES_AUDIOENGINE_SINKS_AESINKPROFILER_H_INCLUDED
 #include "cores/AudioEngine/Sinks/AESinkProfiler.h"
+#endif
+
+#ifndef SINKS_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define SINKS_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
+#ifndef SINKS_UTILS_STDSTRING_H_INCLUDED
+#define SINKS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef SINKS_UTILS_LOG_H_INCLUDED
+#define SINKS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef SINKS_UTILS_TIMEUTILS_H_INCLUDED
+#define SINKS_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
 
 CAESinkProfiler::CAESinkProfiler()
 {

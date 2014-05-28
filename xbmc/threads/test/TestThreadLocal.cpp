@@ -18,10 +18,22 @@
  *
  */
 
+#ifndef TEST_THREADS_THREADLOCAL_H_INCLUDED
+#define TEST_THREADS_THREADLOCAL_H_INCLUDED
 #include "threads/ThreadLocal.h"
+#endif
 
+
+#ifndef TEST_THREADS_EVENT_H_INCLUDED
+#define TEST_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
+#ifndef TEST_TESTHELPERS_H_INCLUDED
+#define TEST_TESTHELPERS_H_INCLUDED
 #include "TestHelpers.h"
+#endif
+
 
 using namespace XbmcThreads;
 

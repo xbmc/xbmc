@@ -18,9 +18,21 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef LEGACY_SYSTEM_H_INCLUDED
+#define LEGACY_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef LEGACY_INTERFACES_JSON_RPC_ITRANSPORTLAYER_H_INCLUDED
+#define LEGACY_INTERFACES_JSON_RPC_ITRANSPORTLAYER_H_INCLUDED
 #include "interfaces/json-rpc/ITransportLayer.h"
+#endif
+
+#ifndef LEGACY_INTERFACES_JSON_RPC_JSONRPC_H_INCLUDED
+#define LEGACY_INTERFACES_JSON_RPC_JSONRPC_H_INCLUDED
 #include "interfaces/json-rpc/JSONRPC.h"
+#endif
+
 
 #ifdef HAS_JSONRPC
 class CAddOnTransport : public JSONRPC::ITransportLayer

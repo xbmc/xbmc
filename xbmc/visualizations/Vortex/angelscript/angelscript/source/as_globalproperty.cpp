@@ -31,8 +31,16 @@
 
 
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
+#ifndef SOURCE_AS_PROPERTY_H_INCLUDED
+#define SOURCE_AS_PROPERTY_H_INCLUDED
 #include "as_property.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

@@ -35,9 +35,21 @@
  *
  */
 
+#ifndef RECORDINGS_ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
+#define RECORDINGS_ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
 #include "addons/include/xbmc_pvr_types.h"
+#endif
+
+#ifndef RECORDINGS_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define RECORDINGS_VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "video/VideoInfoTag.h"
+#endif
+
+#ifndef RECORDINGS_XBDATETIME_H_INCLUDED
+#define RECORDINGS_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
 
 namespace PVR
 {

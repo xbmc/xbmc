@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef INPUT_SYSTEM_H_INCLUDED
+#define INPUT_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef INPUT_SDLJOYSTICK_H_INCLUDED
+#define INPUT_SDLJOYSTICK_H_INCLUDED
 #include "SDLJoystick.h"
+#endif
+
+#ifndef INPUT_BUTTONTRANSLATOR_H_INCLUDED
+#define INPUT_BUTTONTRANSLATOR_H_INCLUDED
 #include "ButtonTranslator.h"
+#endif
+
+#ifndef INPUT_PERIPHERALS_DEVICES_PERIPHERALIMON_H_INCLUDED
+#define INPUT_PERIPHERALS_DEVICES_PERIPHERALIMON_H_INCLUDED
 #include "peripherals/devices/PeripheralImon.h"
+#endif
+
+#ifndef INPUT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define INPUT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef INPUT_SETTINGS_LIB_SETTING_H_INCLUDED
+#define INPUT_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef INPUT_UTILS_LOG_H_INCLUDED
+#define INPUT_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef INPUT_UTILS_STRINGUTILS_H_INCLUDED
+#define INPUT_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 #include <math.h>
 

@@ -18,10 +18,22 @@
  *
  */
 
+#ifndef TEST_UTILS_STOPWATCH_H_INCLUDED
+#define TEST_UTILS_STOPWATCH_H_INCLUDED
 #include "utils/Stopwatch.h"
-#include "threads/Thread.h"
+#endif
 
+#ifndef TEST_THREADS_THREAD_H_INCLUDED
+#define TEST_THREADS_THREAD_H_INCLUDED
+#include "threads/Thread.h"
+#endif
+
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 class CTestStopWatchThread : public CThread
 {

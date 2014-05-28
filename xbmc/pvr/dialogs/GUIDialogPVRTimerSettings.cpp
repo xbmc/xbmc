@@ -18,16 +18,52 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGPVRTIMERSETTINGS_H_INCLUDED
+#define DIALOGS_GUIDIALOGPVRTIMERSETTINGS_H_INCLUDED
 #include "GUIDialogPVRTimerSettings.h"
-#include "guilib/GUIKeyboardFactory.h"
-#include "dialogs/GUIDialogNumeric.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/StringUtils.h"
+#endif
 
+#ifndef DIALOGS_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
+#define DIALOGS_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
+#include "guilib/GUIKeyboardFactory.h"
+#endif
+
+#ifndef DIALOGS_DIALOGS_GUIDIALOGNUMERIC_H_INCLUDED
+#define DIALOGS_DIALOGS_GUIDIALOGNUMERIC_H_INCLUDED
+#include "dialogs/GUIDialogNumeric.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
+#define DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+
+#ifndef DIALOGS_PVR_PVRMANAGER_H_INCLUDED
+#define DIALOGS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef DIALOGS_PVR_TIMERS_PVRTIMERINFOTAG_H_INCLUDED
+#define DIALOGS_PVR_TIMERS_PVRTIMERINFOTAG_H_INCLUDED
 #include "pvr/timers/PVRTimerInfoTag.h"
+#endif
+
+#ifndef DIALOGS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define DIALOGS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#endif
+
+#ifndef DIALOGS_PVR_ADDONS_PVRCLIENT_H_INCLUDED
+#define DIALOGS_PVR_ADDONS_PVRCLIENT_H_INCLUDED
 #include "pvr/addons/PVRClient.h"
+#endif
+
 
 using namespace std;
 using namespace PVR;

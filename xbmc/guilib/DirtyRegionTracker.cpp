@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef GUILIB_DIRTYREGIONTRACKER_H_INCLUDED
+#define GUILIB_DIRTYREGIONTRACKER_H_INCLUDED
 #include "DirtyRegionTracker.h"
+#endif
+
+#ifndef GUILIB_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define GUILIB_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 #include <stdio.h>
 
 CDirtyRegionTracker::CDirtyRegionTracker(int buffering)

@@ -17,7 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef LINUX_DBUSUTIL_H_INCLUDED
+#define LINUX_DBUSUTIL_H_INCLUDED
 #include "DBusUtil.h"
+#endif
+
 #ifdef HAS_DBUS
 #include "utils/log.h"
 

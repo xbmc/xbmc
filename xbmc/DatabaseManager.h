@@ -22,8 +22,16 @@
 
 #include <map>
 #include <string>
+#ifndef ROOT_THREADS_CRITICALSECTION_H_INCLUDED
+#define ROOT_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef ROOT_THREADS_EVENT_H_INCLUDED
+#define ROOT_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
 
 class CDatabase;
 class DatabaseSettings;

@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef UTILS_RINGBUFFER_H_INCLUDED
+#define UTILS_RINGBUFFER_H_INCLUDED
 #include "RingBuffer.h"
+#endif
+
+#ifndef UTILS_THREADS_SINGLELOCK_H_INCLUDED
+#define UTILS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 
 #include <cstring>
 #include <cstdlib>

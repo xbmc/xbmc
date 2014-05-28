@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef PLAYLISTS_PLAYLISTURL_H_INCLUDED
+#define PLAYLISTS_PLAYLISTURL_H_INCLUDED
 #include "PlayListURL.h"
+#endif
+
+#ifndef PLAYLISTS_FILESYSTEM_FILE_H_INCLUDED
+#define PLAYLISTS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef PLAYLISTS_UTILS_URIUTILS_H_INCLUDED
+#define PLAYLISTS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef PLAYLISTS_UTILS_STRINGUTILS_H_INCLUDED
+#define PLAYLISTS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace PLAYLIST;
 using namespace XFILE;

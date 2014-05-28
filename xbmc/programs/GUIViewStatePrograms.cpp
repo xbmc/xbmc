@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef PROGRAMS_GUIVIEWSTATEPROGRAMS_H_INCLUDED
+#define PROGRAMS_GUIVIEWSTATEPROGRAMS_H_INCLUDED
 #include "GUIViewStatePrograms.h"
+#endif
+
+#ifndef PROGRAMS_FILEITEM_H_INCLUDED
+#define PROGRAMS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef PROGRAMS_VIEW_VIEWSTATE_H_INCLUDED
+#define PROGRAMS_VIEW_VIEWSTATE_H_INCLUDED
 #include "view/ViewState.h"
+#endif
+
+#ifndef PROGRAMS_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define PROGRAMS_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
 #include "settings/MediaSourceSettings.h"
+#endif
+
+#ifndef PROGRAMS_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define PROGRAMS_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef PROGRAMS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define PROGRAMS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef PROGRAMS_GUILIB_WINDOWIDS_H_INCLUDED
+#define PROGRAMS_GUILIB_WINDOWIDS_H_INCLUDED
 #include "guilib/WindowIDs.h"
+#endif
+
+#ifndef PROGRAMS_SETTINGS_SETTINGS_H_INCLUDED
+#define PROGRAMS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef PROGRAMS_VIEW_VIEWSTATESETTINGS_H_INCLUDED
+#define PROGRAMS_VIEW_VIEWSTATESETTINGS_H_INCLUDED
 #include "view/ViewStateSettings.h"
+#endif
+
 
 using namespace XFILE;
 

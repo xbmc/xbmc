@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef ROOT_AUTOSWITCH_H_INCLUDED
+#define ROOT_AUTOSWITCH_H_INCLUDED
 #include "AutoSwitch.h"
+#endif
+
+#ifndef ROOT_FILEITEM_H_INCLUDED
+#define ROOT_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef ROOT_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define ROOT_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef ROOT_GUILIB_WINDOWIDS_H_INCLUDED
+#define ROOT_GUILIB_WINDOWIDS_H_INCLUDED
 #include "guilib/WindowIDs.h"
+#endif
+
+#ifndef ROOT_SETTINGS_SETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef ROOT_VIEW_VIEWSTATE_H_INCLUDED
+#define ROOT_VIEW_VIEWSTATE_H_INCLUDED
 #include "view/ViewState.h"
+#endif
+
 
 #define METHOD_BYFOLDERS  0
 #define METHOD_BYFILES   1

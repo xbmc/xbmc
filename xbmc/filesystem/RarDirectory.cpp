@@ -18,13 +18,41 @@
  *
  */
 
+#ifndef FILESYSTEM_RARDIRECTORY_H_INCLUDED
+#define FILESYSTEM_RARDIRECTORY_H_INCLUDED
 #include "RarDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_RARMANAGER_H_INCLUDED
+#define FILESYSTEM_RARMANAGER_H_INCLUDED
 #include "RarManager.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 namespace XFILE
 {

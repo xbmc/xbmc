@@ -23,7 +23,11 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 
+#ifndef DBWRAPPERS_UTILS_STDSTRING_H_INCLUDED
+#define DBWRAPPERS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 class CDatabase;
 class CVariant;

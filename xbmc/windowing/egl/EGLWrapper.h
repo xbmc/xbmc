@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef EGL_GUILIB_RESOLUTION_H_INCLUDED
+#define EGL_GUILIB_RESOLUTION_H_INCLUDED
 #include "guilib/Resolution.h"
+#endif
+
 #include <EGL/egl.h>
 class CEGLNativeType;
 class CEGLWrapper

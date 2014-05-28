@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef DEVICES_PERIPHERALNYXBOARD_H_INCLUDED
+#define DEVICES_PERIPHERALNYXBOARD_H_INCLUDED
 #include "PeripheralNyxboard.h"
+#endif
+
+#ifndef DEVICES_PERIPHERALHID_H_INCLUDED
+#define DEVICES_PERIPHERALHID_H_INCLUDED
 #include "PeripheralHID.h"
+#endif
+
+#ifndef DEVICES_GUILIB_KEY_H_INCLUDED
+#define DEVICES_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef DEVICES_UTILS_LOG_H_INCLUDED
+#define DEVICES_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DEVICES_APPLICATION_H_INCLUDED
+#define DEVICES_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
 
 using namespace PERIPHERALS;
 using namespace std;

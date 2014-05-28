@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef CDRIP_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define CDRIP_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef CDRIP_SYSTEM_H_INCLUDED
+#define CDRIP_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #ifdef HAS_CDDA_RIPPER
 

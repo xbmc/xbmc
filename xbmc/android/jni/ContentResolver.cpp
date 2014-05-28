@@ -18,10 +18,22 @@
  *
  */
 
+#ifndef JNI_CONTENTRESOLVER_H_INCLUDED
+#define JNI_CONTENTRESOLVER_H_INCLUDED
 #include "ContentResolver.h"
+#endif
+
+#ifndef JNI_CURSOR_H_INCLUDED
+#define JNI_CURSOR_H_INCLUDED
 #include "Cursor.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
+#ifndef JNI_URI_H_INCLUDED
+#define JNI_URI_H_INCLUDED
 #include "URI.h"
+#endif
+
 
 using namespace jni;
 

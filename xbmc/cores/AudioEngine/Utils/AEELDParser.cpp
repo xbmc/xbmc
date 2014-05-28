@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef UTILS_AEELDPARSER_H_INCLUDED
+#define UTILS_AEELDPARSER_H_INCLUDED
 #include "AEELDParser.h"
+#endif
+
+#ifndef UTILS_AEDEVICEINFO_H_INCLUDED
+#define UTILS_AEDEVICEINFO_H_INCLUDED
 #include "AEDeviceInfo.h"
+#endif
+
+#ifndef UTILS_UTILS_ENDIANSWAP_H_INCLUDED
+#define UTILS_UTILS_ENDIANSWAP_H_INCLUDED
 #include "utils/EndianSwap.h"
+#endif
+
 #include <string.h>
 
 #include <stdio.h>

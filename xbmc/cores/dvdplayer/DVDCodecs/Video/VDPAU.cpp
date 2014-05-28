@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef VIDEO_SYSTEM_H_INCLUDED
+#define VIDEO_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #ifdef HAVE_LIBVDPAU
 #include <dlfcn.h>
 #include "windowing/WindowingFactory.h"

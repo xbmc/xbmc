@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef TAGS_IMUSICINFOTAGLOADER_H_INCLUDED
+#define TAGS_IMUSICINFOTAGLOADER_H_INCLUDED
 #include "ImusicInfoTagLoader.h"
+#endif
+
+#ifndef TAGS_DLLNOSEFART_H_INCLUDED
+#define TAGS_DLLNOSEFART_H_INCLUDED
 #include "DllNosefart.h"
+#endif
+
 
 namespace MUSIC_INFO
 {

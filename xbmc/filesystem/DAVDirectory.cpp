@@ -18,17 +18,57 @@
  *
  */
 
+#ifndef FILESYSTEM_DAVDIRECTORY_H_INCLUDED
+#define FILESYSTEM_DAVDIRECTORY_H_INCLUDED
 #include "DAVDirectory.h"
+#endif
 
+
+#ifndef FILESYSTEM_DAVCOMMON_H_INCLUDED
+#define FILESYSTEM_DAVCOMMON_H_INCLUDED
 #include "DAVCommon.h"
+#endif
+
+#ifndef FILESYSTEM_DAVFILE_H_INCLUDED
+#define FILESYSTEM_DAVFILE_H_INCLUDED
 #include "DAVFile.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_CURLFILE_H_INCLUDED
+#define FILESYSTEM_CURLFILE_H_INCLUDED
 #include "CurlFile.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_REGEXP_H_INCLUDED
+#define FILESYSTEM_UTILS_REGEXP_H_INCLUDED
 #include "utils/RegExp.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 
 using namespace XFILE;
 

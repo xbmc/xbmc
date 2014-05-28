@@ -23,7 +23,11 @@
  *
  */
 
+#ifndef UTILS_HTTPPARSER_H_INCLUDED
+#define UTILS_HTTPPARSER_H_INCLUDED
 #include "HttpParser.h"
+#endif
+
 
 HttpParser::HttpParser() :
     _headerStart(0),

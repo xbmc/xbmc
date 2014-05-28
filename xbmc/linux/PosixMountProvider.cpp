@@ -17,11 +17,31 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef LINUX_POSIXMOUNTPROVIDER_H_INCLUDED
+#define LINUX_POSIXMOUNTPROVIDER_H_INCLUDED
 #include "PosixMountProvider.h"
+#endif
+
+#ifndef LINUX_UTILS_REGEXP_H_INCLUDED
+#define LINUX_UTILS_REGEXP_H_INCLUDED
 #include "utils/RegExp.h"
+#endif
+
+#ifndef LINUX_UTILS_STDSTRING_H_INCLUDED
+#define LINUX_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef LINUX_UTILS_URIUTILS_H_INCLUDED
+#define LINUX_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef LINUX_UTILS_LOG_H_INCLUDED
+#define LINUX_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 CPosixMountProvider::CPosixMountProvider()
 {

@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef CDRIP_ENCODERVORBIS_H_INCLUDED
+#define CDRIP_ENCODERVORBIS_H_INCLUDED
 #include "EncoderVorbis.h"
+#endif
+
+#ifndef CDRIP_SETTINGS_SETTINGS_H_INCLUDED
+#define CDRIP_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef CDRIP_UTILS_LOG_H_INCLUDED
+#define CDRIP_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 CEncoderVorbis::CEncoderVorbis()
 {

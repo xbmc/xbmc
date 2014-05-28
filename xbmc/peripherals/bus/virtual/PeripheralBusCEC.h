@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef VIRTUAL_PERIPHERALS_BUS_PERIPHERALBUS_H_INCLUDED
+#define VIRTUAL_PERIPHERALS_BUS_PERIPHERALBUS_H_INCLUDED
 #include "peripherals/bus/PeripheralBus.h"
+#endif
+
+#ifndef VIRTUAL_PERIPHERALS_DEVICES_PERIPHERAL_H_INCLUDED
+#define VIRTUAL_PERIPHERALS_DEVICES_PERIPHERAL_H_INCLUDED
 #include "peripherals/devices/Peripheral.h"
+#endif
+
 
 // undefine macro isset, it collides with function in cectypes.h
 #ifdef isset

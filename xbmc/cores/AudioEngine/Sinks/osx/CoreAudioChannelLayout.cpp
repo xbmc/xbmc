@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef OSX_COREAUDIOCHANNELLAYOUT_H_INCLUDED
+#define OSX_COREAUDIOCHANNELLAYOUT_H_INCLUDED
 #include "CoreAudioChannelLayout.h"
+#endif
+
 
 #include <AudioToolbox/AudioToolbox.h>
 

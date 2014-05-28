@@ -20,9 +20,17 @@
  *
  */
 
+#ifndef GUILIB_UTILS_STDSTRING_H_INCLUDED
+#define GUILIB_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 #include <map>
+#ifndef GUILIB_XBTFREADER_H_INCLUDED
+#define GUILIB_XBTFREADER_H_INCLUDED
 #include "XBTFReader.h"
+#endif
+
 
 class CBaseTexture;
 

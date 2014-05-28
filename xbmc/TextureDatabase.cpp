@@ -18,13 +18,41 @@
  *
  */
 
+#ifndef ROOT_TEXTUREDATABASE_H_INCLUDED
+#define ROOT_TEXTUREDATABASE_H_INCLUDED
 #include "TextureDatabase.h"
+#endif
+
+#ifndef ROOT_UTILS_LOG_H_INCLUDED
+#define ROOT_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ROOT_XBDATETIME_H_INCLUDED
+#define ROOT_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef ROOT_DBWRAPPERS_DATASET_H_INCLUDED
+#define ROOT_DBWRAPPERS_DATASET_H_INCLUDED
 #include "dbwrappers/dataset.h"
+#endif
+
+#ifndef ROOT_URL_H_INCLUDED
+#define ROOT_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef ROOT_UTILS_STRINGUTILS_H_INCLUDED
+#define ROOT_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ROOT_UTILS_VARIANT_H_INCLUDED
+#define ROOT_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
 
 enum TextureField
 {

@@ -18,15 +18,47 @@
  *
  */
 
+#ifndef OSX_SYSTEM_H_INCLUDED
+#define OSX_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
 
+
+#ifndef OSX_ZEROCONFBROWSEROSX_H_INCLUDED
+#define OSX_ZEROCONFBROWSEROSX_H_INCLUDED
 #include "ZeroconfBrowserOSX.h"
+#endif
+
+#ifndef OSX_GUIUSERMESSAGES_H_INCLUDED
+#define OSX_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef OSX_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define OSX_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef OSX_GUILIB_GUIMESSAGE_H_INCLUDED
+#define OSX_GUILIB_GUIMESSAGE_H_INCLUDED
 #include "guilib/GUIMessage.h"
+#endif
+
+#ifndef OSX_THREADS_SINGLELOCK_H_INCLUDED
+#define OSX_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef OSX_UTILS_LOG_H_INCLUDED
+#define OSX_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef OSX_OSX_DARWINUTILS_H_INCLUDED
+#define OSX_OSX_DARWINUTILS_H_INCLUDED
 #include "osx/DarwinUtils.h"
+#endif
+
 
 #include <arpa/inet.h>
 #include <netinet/in.h>

@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef FILESYSTEM_HDDIRECTORY_H_INCLUDED
+#define FILESYSTEM_HDDIRECTORY_H_INCLUDED
 #include "HDDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_UTIL_H_INCLUDED
+#define FILESYSTEM_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef FILESYSTEM_ISO9660_H_INCLUDED
+#define FILESYSTEM_ISO9660_H_INCLUDED
 #include "iso9660.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_AUTOPTRHANDLE_H_INCLUDED
+#define FILESYSTEM_UTILS_AUTOPTRHANDLE_H_INCLUDED
 #include "utils/AutoPtrHandle.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_ALIASSHORTCUTUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_ALIASSHORTCUTUTILS_H_INCLUDED
 #include "utils/AliasShortcutUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 
 #ifdef TARGET_WINDOWS
 #include "utils/CharsetConverter.h"

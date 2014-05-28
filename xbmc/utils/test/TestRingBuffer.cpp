@@ -18,9 +18,17 @@
  *
  */
 
+#ifndef TEST_UTILS_RINGBUFFER_H_INCLUDED
+#define TEST_UTILS_RINGBUFFER_H_INCLUDED
 #include "utils/RingBuffer.h"
+#endif
 
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 TEST(TestRingBuffer, General)
 {

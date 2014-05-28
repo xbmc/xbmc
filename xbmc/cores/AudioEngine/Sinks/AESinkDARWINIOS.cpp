@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef SINKS_CORES_AUDIOENGINE_SINKS_AESINKDARWINIOS_H_INCLUDED
+#define SINKS_CORES_AUDIOENGINE_SINKS_AESINKDARWINIOS_H_INCLUDED
 #include "cores/AudioEngine/Sinks/AESinkDARWINIOS.h"
+#endif
+
+#ifndef SINKS_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define SINKS_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
+#ifndef SINKS_CORES_AUDIOENGINE_UTILS_AERINGBUFFER_H_INCLUDED
+#define SINKS_CORES_AUDIOENGINE_UTILS_AERINGBUFFER_H_INCLUDED
 #include "cores/AudioEngine/Utils/AERingBuffer.h"
+#endif
+
+#ifndef SINKS_CORES_AUDIOENGINE_SINKS_OSX_COREAUDIOHELPERS_H_INCLUDED
+#define SINKS_CORES_AUDIOENGINE_SINKS_OSX_COREAUDIOHELPERS_H_INCLUDED
 #include "cores/AudioEngine/Sinks/osx/CoreAudioHelpers.h"
+#endif
+
+#ifndef SINKS_OSX_DARWINUTILS_H_INCLUDED
+#define SINKS_OSX_DARWINUTILS_H_INCLUDED
 #include "osx/DarwinUtils.h"
+#endif
+
+#ifndef SINKS_UTILS_LOG_H_INCLUDED
+#define SINKS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef SINKS_UTILS_STRINGUTILS_H_INCLUDED
+#define SINKS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef SINKS_THREADS_CONDITION_H_INCLUDED
+#define SINKS_THREADS_CONDITION_H_INCLUDED
 #include "threads/Condition.h"
+#endif
+
+#ifndef SINKS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define SINKS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
 
 #include <sstream>
 #include <AudioToolbox/AudioToolbox.h>

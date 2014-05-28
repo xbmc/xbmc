@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef UTILS_AEBUFFER_H_INCLUDED
+#define UTILS_AEBUFFER_H_INCLUDED
 #include "AEBuffer.h"
+#endif
+
+#ifndef UTILS_UTILS_STDSTRING_H_INCLUDED
+#define UTILS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h" /* needed for ASSERT */
+#endif
+
 #include <algorithm>
 
 CAEBuffer::CAEBuffer() :

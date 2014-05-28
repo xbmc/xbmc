@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef DIALOGS_APPLICATION_H_INCLUDED
+#define DIALOGS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef DIALOGS_GUIDIALOGBOXBASE_H_INCLUDED
+#define DIALOGS_GUIDIALOGBOXBASE_H_INCLUDED
 #include "GUIDialogBoxBase.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef DIALOGS_THREADS_SINGLELOCK_H_INCLUDED
+#define DIALOGS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
+#define DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace std;
 

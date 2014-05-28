@@ -22,10 +22,26 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
+#ifndef NETWORK_NETWORK_H_INCLUDED
+#define NETWORK_NETWORK_H_INCLUDED
 #include "Network.h"
+#endif
+
+#ifndef NETWORK_APPLICATIONMESSENGER_H_INCLUDED
+#define NETWORK_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef NETWORK_NETWORK_NETWORKSERVICES_H_INCLUDED
+#define NETWORK_NETWORK_NETWORKSERVICES_H_INCLUDED
 #include "network/NetworkServices.h"
+#endif
+
+#ifndef NETWORK_UTILS_LOG_H_INCLUDED
+#define NETWORK_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 #ifdef TARGET_WINDOWS
 #include "utils/SystemInfo.h"
 #include "win32/WIN32Util.h"

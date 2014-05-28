@@ -18,21 +18,81 @@
  *
  */
 
+#ifndef FILESYSTEM_LIBRARYDIRECTORY_H_INCLUDED
+#define FILESYSTEM_LIBRARYDIRECTORY_H_INCLUDED
 #include "LibraryDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_DIRECTORY_H_INCLUDED
+#define FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "Directory.h"
+#endif
+
+#ifndef FILESYSTEM_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
+#define FILESYSTEM_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
 #include "playlists/SmartPlayList.h"
+#endif
+
+#ifndef FILESYSTEM_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define FILESYSTEM_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef FILESYSTEM_SMARTPLAYLISTDIRECTORY_H_INCLUDED
+#define FILESYSTEM_SMARTPLAYLISTDIRECTORY_H_INCLUDED
 #include "SmartPlaylistDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_XMLUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef FILESYSTEM_GUILIB_GUICONTROLFACTORY_H_INCLUDED
+#define FILESYSTEM_GUILIB_GUICONTROLFACTORY_H_INCLUDED
 #include "guilib/GUIControlFactory.h" // for label parsing
+#endif
+
+#ifndef FILESYSTEM_GUILIB_TEXTUREMANAGER_H_INCLUDED
+#define FILESYSTEM_GUILIB_TEXTUREMANAGER_H_INCLUDED
 #include "guilib/TextureManager.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_FILE_H_INCLUDED
+#define FILESYSTEM_FILE_H_INCLUDED
 #include "File.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_GUIINFOMANAGER_H_INCLUDED
+#define FILESYSTEM_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

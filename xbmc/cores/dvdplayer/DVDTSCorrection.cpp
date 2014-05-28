@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef DVDPLAYER_DVDTSCORRECTION_H_INCLUDED
+#define DVDPLAYER_DVDTSCORRECTION_H_INCLUDED
 #include "DVDTSCorrection.h"
+#endif
+
+#ifndef DVDPLAYER_DVDCLOCK_H_INCLUDED
+#define DVDPLAYER_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h"
+#endif
+
+#ifndef DVDPLAYER_DVDCODECS_DVDCODECUTILS_H_INCLUDED
+#define DVDPLAYER_DVDCODECS_DVDCODECUTILS_H_INCLUDED
 #include "DVDCodecs/DVDCodecUtils.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_LOG_H_INCLUDED
+#define DVDPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_STRINGUTILS_H_INCLUDED
+#define DVDPLAYER_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 #include <cmath>
 
 #define MAXERR DVD_MSEC_TO_TIME(2.5)

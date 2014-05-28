@@ -20,8 +20,16 @@
  */
 
 #include <string>
+#ifndef UTILS_THREADS_THREAD_H_INCLUDED
+#define UTILS_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef UTILS_TEXTUREDATABASE_H_INCLUDED
+#define UTILS_TEXTUREDATABASE_H_INCLUDED
 #include "TextureDatabase.h"
+#endif
+
 
 class CFileItem;
 

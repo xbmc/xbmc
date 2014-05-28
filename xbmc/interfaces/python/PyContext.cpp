@@ -20,9 +20,21 @@
 
 #include <Python.h>
 
+#ifndef PYTHON_PYCONTEXT_H_INCLUDED
+#define PYTHON_PYCONTEXT_H_INCLUDED
 #include "PyContext.h"
+#endif
+
+#ifndef PYTHON_THREADS_THREADLOCAL_H_INCLUDED
+#define PYTHON_THREADS_THREADLOCAL_H_INCLUDED
 #include "threads/ThreadLocal.h"
+#endif
+
+#ifndef PYTHON_UTILS_LOG_H_INCLUDED
+#define PYTHON_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 namespace XBMCAddon
 {

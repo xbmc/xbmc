@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef GUILIB_GUIFIXEDLISTCONTAINER_H_INCLUDED
+#define GUILIB_GUIFIXEDLISTCONTAINER_H_INCLUDED
 #include "GUIFixedListContainer.h"
+#endif
+
+#ifndef GUILIB_GUILISTITEM_H_INCLUDED
+#define GUILIB_GUILISTITEM_H_INCLUDED
 #include "GUIListItem.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
 
 CGUIFixedListContainer::CGUIFixedListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems, int fixedPosition, int cursorRange)
     : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scroller, preloadItems)

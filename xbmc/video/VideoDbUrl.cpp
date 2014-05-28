@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef VIDEO_VIDEODBURL_H_INCLUDED
+#define VIDEO_VIDEODBURL_H_INCLUDED
 #include "VideoDbUrl.h"
+#endif
+
+#ifndef VIDEO_FILESYSTEM_VIDEODATABASEDIRECTORY_H_INCLUDED
+#define VIDEO_FILESYSTEM_VIDEODATABASEDIRECTORY_H_INCLUDED
 #include "filesystem/VideoDatabaseDirectory.h"
+#endif
+
+#ifndef VIDEO_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
+#define VIDEO_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
 #include "playlists/SmartPlayList.h"
+#endif
+
+#ifndef VIDEO_UTILS_STRINGUTILS_H_INCLUDED
+#define VIDEO_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef VIDEO_UTILS_VARIANT_H_INCLUDED
+#define VIDEO_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

@@ -20,15 +20,39 @@
  *
  */
 
+#ifndef ROOT_THREADS_CRITICALSECTION_H_INCLUDED
+#define ROOT_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef ROOT_UTILS_STDSTRING_H_INCLUDED
+#define ROOT_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef ROOT_GUILIB_WINDOWIDS_H_INCLUDED
+#define ROOT_GUILIB_WINDOWIDS_H_INCLUDED
 #include "guilib/WindowIDs.h"
+#endif
+
+#ifndef ROOT_THREADS_THREAD_H_INCLUDED
+#define ROOT_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef ROOT_THREADS_EVENT_H_INCLUDED
+#define ROOT_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
 #include <boost/shared_ptr.hpp>
 
 #include <queue>
+#ifndef ROOT_UTILS_GLOBALSHANDLING_H_INCLUDED
+#define ROOT_UTILS_GLOBALSHANDLING_H_INCLUDED
 #include "utils/GlobalsHandling.h"
+#endif
+
 
 class CFileItem;
 class CFileItemList;

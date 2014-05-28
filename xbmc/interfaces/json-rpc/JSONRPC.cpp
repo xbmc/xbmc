@@ -20,17 +20,61 @@
 
 #include <string.h>
 
+#ifndef JSON_RPC_JSONRPC_H_INCLUDED
+#define JSON_RPC_JSONRPC_H_INCLUDED
 #include "JSONRPC.h"
+#endif
+
+#ifndef JSON_RPC_SERVICEDESCRIPTION_H_INCLUDED
+#define JSON_RPC_SERVICEDESCRIPTION_H_INCLUDED
 #include "ServiceDescription.h"
+#endif
+
+#ifndef JSON_RPC_DBWRAPPERS_DATABASEQUERY_H_INCLUDED
+#define JSON_RPC_DBWRAPPERS_DATABASEQUERY_H_INCLUDED
 #include "dbwrappers/DatabaseQuery.h"
+#endif
+
+#ifndef JSON_RPC_INPUT_BUTTONTRANSLATOR_H_INCLUDED
+#define JSON_RPC_INPUT_BUTTONTRANSLATOR_H_INCLUDED
 #include "input/ButtonTranslator.h"
+#endif
+
+#ifndef JSON_RPC_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#define JSON_RPC_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
 #include "interfaces/AnnouncementManager.h"
+#endif
+
+#ifndef JSON_RPC_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
+#define JSON_RPC_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
 #include "playlists/SmartPlayList.h"
+#endif
+
+#ifndef JSON_RPC_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define JSON_RPC_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_LOG_H_INCLUDED
+#define JSON_RPC_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_STRINGUTILS_H_INCLUDED
+#define JSON_RPC_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_VARIANT_H_INCLUDED
+#define JSON_RPC_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef JSON_RPC_TEXTUREDATABASE_H_INCLUDED
+#define JSON_RPC_TEXTUREDATABASE_H_INCLUDED
 #include "TextureDatabase.h"
+#endif
+
 
 using namespace ANNOUNCEMENT;
 using namespace JSONRPC;

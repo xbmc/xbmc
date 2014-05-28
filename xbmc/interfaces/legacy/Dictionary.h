@@ -21,7 +21,11 @@
 #pragma once
 
 #include <map>
+#ifndef LEGACY_ADDONSTRING_H_INCLUDED
+#define LEGACY_ADDONSTRING_H_INCLUDED
 #include "AddonString.h"
+#endif
+
 
 namespace XBMCAddon
 {

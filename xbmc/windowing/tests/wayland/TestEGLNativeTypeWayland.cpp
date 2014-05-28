@@ -17,7 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef WAYLAND_SYSTEM_H_INCLUDED
+#define WAYLAND_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #define WL_EGL_PLATFORM
 
@@ -35,14 +39,42 @@
 #include "xbmc_wayland_test_client_protocol.h"
 #endif
 
+#ifndef WAYLAND_WINDOWING_EGL_WAYLAND_DISPLAY_H_INCLUDED
+#define WAYLAND_WINDOWING_EGL_WAYLAND_DISPLAY_H_INCLUDED
 #include "windowing/egl/wayland/Display.h"
-#include "windowing/egl/wayland/Registry.h"
-#include "windowing/egl/wayland/Surface.h"
-#include "windowing/egl/EGLNativeTypeWayland.h"
+#endif
 
+#ifndef WAYLAND_WINDOWING_EGL_WAYLAND_REGISTRY_H_INCLUDED
+#define WAYLAND_WINDOWING_EGL_WAYLAND_REGISTRY_H_INCLUDED
+#include "windowing/egl/wayland/Registry.h"
+#endif
+
+#ifndef WAYLAND_WINDOWING_EGL_WAYLAND_SURFACE_H_INCLUDED
+#define WAYLAND_WINDOWING_EGL_WAYLAND_SURFACE_H_INCLUDED
+#include "windowing/egl/wayland/Surface.h"
+#endif
+
+#ifndef WAYLAND_WINDOWING_EGL_EGLNATIVETYPEWAYLAND_H_INCLUDED
+#define WAYLAND_WINDOWING_EGL_EGLNATIVETYPEWAYLAND_H_INCLUDED
+#include "windowing/egl/EGLNativeTypeWayland.h"
+#endif
+
+
+#ifndef WAYLAND_TMPENV_H_INCLUDED
+#define WAYLAND_TMPENV_H_INCLUDED
 #include "TmpEnv.h"
+#endif
+
+#ifndef WAYLAND_WESTONTEST_H_INCLUDED
+#define WAYLAND_WESTONTEST_H_INCLUDED
 #include "WestonTest.h"
+#endif
+
+#ifndef WAYLAND_XBMCWAYLAND_H_INCLUDED
+#define WAYLAND_XBMCWAYLAND_H_INCLUDED
 #include "XBMCWayland.h"
+#endif
+
 
 using ::testing::Values;
 using ::testing::WithParamInterface;

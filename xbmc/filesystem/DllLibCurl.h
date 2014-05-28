@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef FILESYSTEM_DYNAMICDLL_H_INCLUDED
+#define FILESYSTEM_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_CRITICALSECTION_H_INCLUDED
+#define FILESYSTEM_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 /* put types of curl in namespace to avoid namespace pollution */
 namespace XCURL

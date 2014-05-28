@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGBOXBASE_H_INCLUDED
+#define DIALOGS_GUIDIALOGBOXBASE_H_INCLUDED
 #include "GUIDialogBoxBase.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUILISTITEM_H_INCLUDED
+#define DIALOGS_GUILIB_GUILISTITEM_H_INCLUDED
 #include "guilib/GUIListItem.h"
+#endif
+
+#ifndef DIALOGS_VIEW_GUIVIEWCONTROL_H_INCLUDED
+#define DIALOGS_VIEW_GUIVIEWCONTROL_H_INCLUDED
 #include "view/GUIViewControl.h"
+#endif
+
 
 class CFileItem;
 class CFileItemList;

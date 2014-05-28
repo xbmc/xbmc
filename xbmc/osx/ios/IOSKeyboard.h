@@ -19,7 +19,11 @@
  */
 #pragma once
 
+#ifndef IOS_GUILIB_GUIKEYBOARD_H_INCLUDED
+#define IOS_GUILIB_GUIKEYBOARD_H_INCLUDED
 #include "guilib/GUIKeyboard.h"
+#endif
+
 
 class CIOSKeyboard : public CGUIKeyboard
 {

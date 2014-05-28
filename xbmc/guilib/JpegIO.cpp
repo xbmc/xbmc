@@ -20,14 +20,46 @@
  *
 */
 
+#ifndef GUILIB_LIB_LIBEXIF_LIBEXIF_H_INCLUDED
+#define GUILIB_LIB_LIBEXIF_LIBEXIF_H_INCLUDED
 #include "lib/libexif/libexif.h"
+#endif
+
+#ifndef GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef GUILIB_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define GUILIB_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef GUILIB_FILESYSTEM_FILE_H_INCLUDED
+#define GUILIB_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef GUILIB_XBTF_H_INCLUDED
+#define GUILIB_XBTF_H_INCLUDED
 #include "XBTF.h"
+#endif
+
+#ifndef GUILIB_JPEGIO_H_INCLUDED
+#define GUILIB_JPEGIO_H_INCLUDED
 #include "JpegIO.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 #include <setjmp.h>
 
 #define EXIF_TAG_ORIENTATION    0x0112

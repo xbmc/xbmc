@@ -18,25 +18,101 @@
  *
  */
 
+#ifndef ROOT_GUIPASSWORD_H_INCLUDED
+#define ROOT_GUIPASSWORD_H_INCLUDED
 #include "GUIPassword.h"
+#endif
+
+#ifndef ROOT_GUIUSERMESSAGES_H_INCLUDED
+#define ROOT_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef ROOT_APPLICATIONMESSENGER_H_INCLUDED
+#define ROOT_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGGAMEPAD_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGGAMEPAD_H_INCLUDED
 #include "dialogs/GUIDialogGamepad.h"
+#endif
+
+#ifndef ROOT_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
+#define ROOT_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
 #include "guilib/GUIKeyboardFactory.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGNUMERIC_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGNUMERIC_H_INCLUDED
 #include "dialogs/GUIDialogNumeric.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef ROOT_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define ROOT_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef ROOT_PROFILES_DIALOGS_GUIDIALOGLOCKSETTINGS_H_INCLUDED
+#define ROOT_PROFILES_DIALOGS_GUIDIALOGLOCKSETTINGS_H_INCLUDED
 #include "profiles/dialogs/GUIDialogLockSettings.h"
+#endif
+
+#ifndef ROOT_PROFILES_DIALOGS_GUIDIALOGPROFILESETTINGS_H_INCLUDED
+#define ROOT_PROFILES_DIALOGS_GUIDIALOGPROFILESETTINGS_H_INCLUDED
 #include "profiles/dialogs/GUIDialogProfileSettings.h"
+#endif
+
+#ifndef ROOT_UTIL_H_INCLUDED
+#define ROOT_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef ROOT_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
 #include "settings/MediaSourceSettings.h"
+#endif
+
+#ifndef ROOT_SETTINGS_SETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef ROOT_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define ROOT_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef ROOT_FILEITEM_H_INCLUDED
+#define ROOT_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef ROOT_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define ROOT_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef ROOT_UTILS_LOG_H_INCLUDED
+#define ROOT_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ROOT_UTILS_STRINGUTILS_H_INCLUDED
+#define ROOT_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ROOT_VIEW_VIEWSTATESETTINGS_H_INCLUDED
+#define ROOT_VIEW_VIEWSTATESETTINGS_H_INCLUDED
 #include "view/ViewStateSettings.h"
+#endif
+
 
 CGUIPassword::CGUIPassword(void)
 {

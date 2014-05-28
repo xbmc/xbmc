@@ -18,48 +18,212 @@
  *
  */
 
+#ifndef WINDOWS_SYSTEM_H_INCLUDED
+#define WINDOWS_SYSTEM_H_INCLUDED
 #include "system.h"
-#include "GUIWindowFileManager.h"
-#include "Application.h"
-#include "ApplicationMessenger.h"
-#include "Util.h"
-#include "filesystem/Directory.h"
-#include "filesystem/ZipManager.h"
-#include "filesystem/FileDirectoryFactory.h"
-#include "dialogs/GUIDialogContextMenu.h"
-#include "guilib/GUIListContainer.h"
-#include "dialogs/GUIDialogMediaSource.h"
-#include "GUIPassword.h"
-#include "GUIUserMessages.h"
-#include "interfaces/generic/ScriptInvocationManager.h"
-#include "pictures/GUIWindowSlideShow.h"
-#include "playlists/PlayListFactory.h"
-#include "network/Network.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
-#include "dialogs/GUIDialogOK.h"
-#include "dialogs/GUIDialogYesNo.h"
-#include "guilib/GUIKeyboardFactory.h"
-#include "dialogs/GUIDialogProgress.h"
-#include "dialogs/GUIDialogExtendedProgressBar.h"
-#include "filesystem/FavouritesDirectory.h"
-#include "playlists/PlayList.h"
-#include "utils/AsyncFileCopy.h"
-#include "storage/MediaManager.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/MediaSourceSettings.h"
-#include "settings/Settings.h"
-#include "input/MouseStat.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/StringUtils.h"
-#include "utils/log.h"
+#endif
 
+#ifndef WINDOWS_GUIWINDOWFILEMANAGER_H_INCLUDED
+#define WINDOWS_GUIWINDOWFILEMANAGER_H_INCLUDED
+#include "GUIWindowFileManager.h"
+#endif
+
+#ifndef WINDOWS_APPLICATION_H_INCLUDED
+#define WINDOWS_APPLICATION_H_INCLUDED
+#include "Application.h"
+#endif
+
+#ifndef WINDOWS_APPLICATIONMESSENGER_H_INCLUDED
+#define WINDOWS_APPLICATIONMESSENGER_H_INCLUDED
+#include "ApplicationMessenger.h"
+#endif
+
+#ifndef WINDOWS_UTIL_H_INCLUDED
+#define WINDOWS_UTIL_H_INCLUDED
+#include "Util.h"
+#endif
+
+#ifndef WINDOWS_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define WINDOWS_FILESYSTEM_DIRECTORY_H_INCLUDED
+#include "filesystem/Directory.h"
+#endif
+
+#ifndef WINDOWS_FILESYSTEM_ZIPMANAGER_H_INCLUDED
+#define WINDOWS_FILESYSTEM_ZIPMANAGER_H_INCLUDED
+#include "filesystem/ZipManager.h"
+#endif
+
+#ifndef WINDOWS_FILESYSTEM_FILEDIRECTORYFACTORY_H_INCLUDED
+#define WINDOWS_FILESYSTEM_FILEDIRECTORYFACTORY_H_INCLUDED
+#include "filesystem/FileDirectoryFactory.h"
+#endif
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGCONTEXTMENU_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGCONTEXTMENU_H_INCLUDED
+#include "dialogs/GUIDialogContextMenu.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUILISTCONTAINER_H_INCLUDED
+#define WINDOWS_GUILIB_GUILISTCONTAINER_H_INCLUDED
+#include "guilib/GUIListContainer.h"
+#endif
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGMEDIASOURCE_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGMEDIASOURCE_H_INCLUDED
+#include "dialogs/GUIDialogMediaSource.h"
+#endif
+
+#ifndef WINDOWS_GUIPASSWORD_H_INCLUDED
+#define WINDOWS_GUIPASSWORD_H_INCLUDED
+#include "GUIPassword.h"
+#endif
+
+#ifndef WINDOWS_GUIUSERMESSAGES_H_INCLUDED
+#define WINDOWS_GUIUSERMESSAGES_H_INCLUDED
+#include "GUIUserMessages.h"
+#endif
+
+#ifndef WINDOWS_INTERFACES_GENERIC_SCRIPTINVOCATIONMANAGER_H_INCLUDED
+#define WINDOWS_INTERFACES_GENERIC_SCRIPTINVOCATIONMANAGER_H_INCLUDED
+#include "interfaces/generic/ScriptInvocationManager.h"
+#endif
+
+#ifndef WINDOWS_PICTURES_GUIWINDOWSLIDESHOW_H_INCLUDED
+#define WINDOWS_PICTURES_GUIWINDOWSLIDESHOW_H_INCLUDED
+#include "pictures/GUIWindowSlideShow.h"
+#endif
+
+#ifndef WINDOWS_PLAYLISTS_PLAYLISTFACTORY_H_INCLUDED
+#define WINDOWS_PLAYLISTS_PLAYLISTFACTORY_H_INCLUDED
+#include "playlists/PlayListFactory.h"
+#endif
+
+#ifndef WINDOWS_NETWORK_NETWORK_H_INCLUDED
+#define WINDOWS_NETWORK_NETWORK_H_INCLUDED
+#include "network/Network.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_KEY_H_INCLUDED
+#define WINDOWS_GUILIB_KEY_H_INCLUDED
+#include "guilib/Key.h"
+#endif
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
+#define WINDOWS_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
+#include "guilib/GUIKeyboardFactory.h"
+#endif
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#include "dialogs/GUIDialogProgress.h"
+#endif
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGEXTENDEDPROGRESSBAR_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGEXTENDEDPROGRESSBAR_H_INCLUDED
+#include "dialogs/GUIDialogExtendedProgressBar.h"
+#endif
+
+#ifndef WINDOWS_FILESYSTEM_FAVOURITESDIRECTORY_H_INCLUDED
+#define WINDOWS_FILESYSTEM_FAVOURITESDIRECTORY_H_INCLUDED
+#include "filesystem/FavouritesDirectory.h"
+#endif
+
+#ifndef WINDOWS_PLAYLISTS_PLAYLIST_H_INCLUDED
+#define WINDOWS_PLAYLISTS_PLAYLIST_H_INCLUDED
+#include "playlists/PlayList.h"
+#endif
+
+#ifndef WINDOWS_UTILS_ASYNCFILECOPY_H_INCLUDED
+#define WINDOWS_UTILS_ASYNCFILECOPY_H_INCLUDED
+#include "utils/AsyncFileCopy.h"
+#endif
+
+#ifndef WINDOWS_STORAGE_MEDIAMANAGER_H_INCLUDED
+#define WINDOWS_STORAGE_MEDIAMANAGER_H_INCLUDED
+#include "storage/MediaManager.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#include "settings/MediaSourceSettings.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef WINDOWS_INPUT_MOUSESTAT_H_INCLUDED
+#define WINDOWS_INPUT_MOUSESTAT_H_INCLUDED
+#include "input/MouseStat.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define WINDOWS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
+#define WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+#ifndef WINDOWS_UTILS_LOG_H_INCLUDED
+#define WINDOWS_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+
+#ifndef WINDOWS_UTILS_JOBMANAGER_H_INCLUDED
+#define WINDOWS_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
+#ifndef WINDOWS_UTILS_FILEOPERATIONJOB_H_INCLUDED
+#define WINDOWS_UTILS_FILEOPERATIONJOB_H_INCLUDED
 #include "utils/FileOperationJob.h"
+#endif
+
+#ifndef WINDOWS_UTILS_FILEUTILS_H_INCLUDED
+#define WINDOWS_UTILS_FILEUTILS_H_INCLUDED
 #include "utils/FileUtils.h"
+#endif
+
+#ifndef WINDOWS_UTILS_URIUTILS_H_INCLUDED
+#define WINDOWS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef WINDOWS_AUTORUN_H_INCLUDED
+#define WINDOWS_AUTORUN_H_INCLUDED
 #include "Autorun.h"
+#endif
+
+#ifndef WINDOWS_URL_H_INCLUDED
+#define WINDOWS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

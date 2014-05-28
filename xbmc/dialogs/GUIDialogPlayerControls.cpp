@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGPLAYERCONTROLS_H_INCLUDED
+#define DIALOGS_GUIDIALOGPLAYERCONTROLS_H_INCLUDED
 #include "GUIDialogPlayerControls.h"
+#endif
+
 
 
 CGUIDialogPlayerControls::CGUIDialogPlayerControls(void)

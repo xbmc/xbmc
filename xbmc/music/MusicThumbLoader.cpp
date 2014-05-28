@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef MUSIC_MUSICTHUMBLOADER_H_INCLUDED
+#define MUSIC_MUSICTHUMBLOADER_H_INCLUDED
 #include "MusicThumbLoader.h"
+#endif
+
+#ifndef MUSIC_FILEITEM_H_INCLUDED
+#define MUSIC_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef MUSIC_TEXTUREDATABASE_H_INCLUDED
+#define MUSIC_TEXTUREDATABASE_H_INCLUDED
 #include "TextureDatabase.h"
+#endif
+
+#ifndef MUSIC_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define MUSIC_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef MUSIC_MUSIC_TAGS_MUSICINFOTAGLOADERFACTORY_H_INCLUDED
+#define MUSIC_MUSIC_TAGS_MUSICINFOTAGLOADERFACTORY_H_INCLUDED
 #include "music/tags/MusicInfoTagLoaderFactory.h"
+#endif
+
+#ifndef MUSIC_MUSIC_INFOSCANNER_MUSICINFOSCANNER_H_INCLUDED
+#define MUSIC_MUSIC_INFOSCANNER_MUSICINFOSCANNER_H_INCLUDED
 #include "music/infoscanner/MusicInfoScanner.h"
+#endif
+
+#ifndef MUSIC_MUSIC_ARTIST_H_INCLUDED
+#define MUSIC_MUSIC_ARTIST_H_INCLUDED
 #include "music/Artist.h"
+#endif
+
+#ifndef MUSIC_VIDEO_VIDEOTHUMBLOADER_H_INCLUDED
+#define MUSIC_VIDEO_VIDEOTHUMBLOADER_H_INCLUDED
 #include "video/VideoThumbLoader.h"
+#endif
+
 
 using namespace std;
 using namespace MUSIC_INFO;

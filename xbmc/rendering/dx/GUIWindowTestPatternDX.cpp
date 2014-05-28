@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef DX_GUIWINDOWTESTPATTERNDX_H_INCLUDED
+#define DX_GUIWINDOWTESTPATTERNDX_H_INCLUDED
 #include "GUIWindowTestPatternDX.h"
+#endif
+
+#ifndef DX_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define DX_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
 #ifndef M_PI
   #define M_PI       3.14159265358979323846
 #endif

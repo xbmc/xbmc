@@ -17,10 +17,22 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef NETWORK_SYSTEM_H_INCLUDED
+#define NETWORK_SYSTEM_H_INCLUDED
 #include "system.h" //HAS_ZEROCONF define
+#endif
+
 #include <assert.h>
+#ifndef NETWORK_ZEROCONF_H_INCLUDED
+#define NETWORK_ZEROCONF_H_INCLUDED
 #include "Zeroconf.h"
+#endif
+
+#ifndef NETWORK_SETTINGS_SETTINGS_H_INCLUDED
+#define NETWORK_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
 
 #if defined(HAS_AVAHI)
 #include "linux/ZeroconfAvahi.h"
@@ -31,10 +43,26 @@
 #include "mdns/ZeroconfMDNS.h"
 #endif
 
+#ifndef NETWORK_THREADS_CRITICALSECTION_H_INCLUDED
+#define NETWORK_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef NETWORK_THREADS_SINGLELOCK_H_INCLUDED
+#define NETWORK_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef NETWORK_THREADS_ATOMICS_H_INCLUDED
+#define NETWORK_THREADS_ATOMICS_H_INCLUDED
 #include "threads/Atomics.h"
+#endif
+
+#ifndef NETWORK_UTILS_JOBMANAGER_H_INCLUDED
+#define NETWORK_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
 
 #ifndef HAS_ZEROCONF
 //dummy implementation used if no zeroconf is present

@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef FILESYSTEM_IMAGEFILE_H_INCLUDED
+#define FILESYSTEM_IMAGEFILE_H_INCLUDED
 #include "ImageFile.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_TEXTURECACHE_H_INCLUDED
+#define FILESYSTEM_TEXTURECACHE_H_INCLUDED
 #include "TextureCache.h"
+#endif
+
 
 using namespace XFILE;
 using namespace std;

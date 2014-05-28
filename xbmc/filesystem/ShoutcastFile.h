@@ -24,11 +24,31 @@
 
 #pragma once
 
+#ifndef FILESYSTEM_IFILE_H_INCLUDED
+#define FILESYSTEM_IFILE_H_INCLUDED
 #include "IFile.h"
+#endif
+
+#ifndef FILESYSTEM_CURLFILE_H_INCLUDED
+#define FILESYSTEM_CURLFILE_H_INCLUDED
 #include "CurlFile.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STDSTRING_H_INCLUDED
+#define FILESYSTEM_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef FILESYSTEM_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define FILESYSTEM_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_THREAD_H_INCLUDED
+#define FILESYSTEM_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
 
 namespace XFILE
 {

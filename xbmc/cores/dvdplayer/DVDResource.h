@@ -21,7 +21,11 @@
  */
 
 #include <assert.h>
+#ifndef DVDPLAYER_THREADS_ATOMICS_H_INCLUDED
+#define DVDPLAYER_THREADS_ATOMICS_H_INCLUDED
 #include "threads/Atomics.h"
+#endif
+
 
 template<typename T> struct IDVDResourceCounted
 {

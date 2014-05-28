@@ -27,9 +27,21 @@
 //////////////////////////////////////////////////////////////////////
 
 
+#ifndef FILESYSTEM_IFILE_H_INCLUDED
+#define FILESYSTEM_IFILE_H_INCLUDED
 #include "IFile.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_CRITICALSECTION_H_INCLUDED
+#define FILESYSTEM_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 #define NT_STATUS_CONNECTION_REFUSED long(0xC0000000 | 0x0236)
 #define NT_STATUS_INVALID_HANDLE long(0xC0000000 | 0x0008)

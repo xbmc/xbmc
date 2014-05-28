@@ -35,8 +35,16 @@
 // This class holds extra type info for the compiler
 //
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
+#ifndef SOURCE_AS_TYPEINFO_H_INCLUDED
+#define SOURCE_AS_TYPEINFO_H_INCLUDED
 #include "as_typeinfo.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

@@ -21,10 +21,22 @@
 
 #include <vector>
 
+#ifndef NETWORK_SYSTEM_H_INCLUDED
+#define NETWORK_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
 
+
+#ifndef NETWORK_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
+#define NETWORK_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
 #include "settings/lib/ISettingCallback.h"
+#endif
+
+#ifndef NETWORK_UTILS_STDSTRING_H_INCLUDED
+#define NETWORK_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 enum EncMode { ENC_NONE = 0, ENC_WEP = 1, ENC_WPA = 2, ENC_WPA2 = 3 };
 enum NetworkAssignment { NETWORK_DASH = 0, NETWORK_DHCP = 1, NETWORK_STATIC = 2, NETWORK_DISABLED = 3 };

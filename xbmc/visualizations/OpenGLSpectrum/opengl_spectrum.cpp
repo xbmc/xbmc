@@ -31,7 +31,11 @@
 
 #define __STDC_LIMIT_MACROS
 
+#ifndef OPENGLSPECTRUM_ADDONS_INCLUDE_XBMC_VIS_DLL_H_INCLUDED
+#define OPENGLSPECTRUM_ADDONS_INCLUDE_XBMC_VIS_DLL_H_INCLUDED
 #include "addons/include/xbmc_vis_dll.h"
+#endif
+
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>

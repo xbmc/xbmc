@@ -20,21 +20,77 @@
  *
  */
 
+#ifndef FILESYSTEM_FILE_H_INCLUDED
+#define FILESYSTEM_FILE_H_INCLUDED
 #include "File.h"
-#include "IFile.h"
-#include "FileFactory.h"
-#include "Application.h"
-#include "DirectoryCache.h"
-#include "Directory.h"
-#include "FileCache.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
-#include "utils/BitstreamStats.h"
-#include "Util.h"
-#include "URL.h"
-#include "utils/StringUtils.h"
+#endif
 
+#ifndef FILESYSTEM_IFILE_H_INCLUDED
+#define FILESYSTEM_IFILE_H_INCLUDED
+#include "IFile.h"
+#endif
+
+#ifndef FILESYSTEM_FILEFACTORY_H_INCLUDED
+#define FILESYSTEM_FILEFACTORY_H_INCLUDED
+#include "FileFactory.h"
+#endif
+
+#ifndef FILESYSTEM_APPLICATION_H_INCLUDED
+#define FILESYSTEM_APPLICATION_H_INCLUDED
+#include "Application.h"
+#endif
+
+#ifndef FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
+#define FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
+#include "DirectoryCache.h"
+#endif
+
+#ifndef FILESYSTEM_DIRECTORY_H_INCLUDED
+#define FILESYSTEM_DIRECTORY_H_INCLUDED
+#include "Directory.h"
+#endif
+
+#ifndef FILESYSTEM_FILECACHE_H_INCLUDED
+#define FILESYSTEM_FILECACHE_H_INCLUDED
+#include "FileCache.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_BITSTREAMSTATS_H_INCLUDED
+#define FILESYSTEM_UTILS_BITSTREAMSTATS_H_INCLUDED
+#include "utils/BitstreamStats.h"
+#endif
+
+#ifndef FILESYSTEM_UTIL_H_INCLUDED
+#define FILESYSTEM_UTIL_H_INCLUDED
+#include "Util.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
+#include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+
+#ifndef FILESYSTEM_COMMONS_EXCEPTION_H_INCLUDED
+#define FILESYSTEM_COMMONS_EXCEPTION_H_INCLUDED
 #include "commons/Exception.h"
+#endif
+
 
 using namespace XFILE;
 using namespace std;

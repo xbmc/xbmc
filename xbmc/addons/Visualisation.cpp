@@ -17,21 +17,81 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef ADDONS_SYSTEM_H_INCLUDED
+#define ADDONS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef ADDONS_VISUALISATION_H_INCLUDED
+#define ADDONS_VISUALISATION_H_INCLUDED
 #include "Visualisation.h"
+#endif
+
+#ifndef ADDONS_UTILS_FFT_H_INCLUDED
+#define ADDONS_UTILS_FFT_H_INCLUDED
 #include "utils/fft.h"
+#endif
+
+#ifndef ADDONS_GUIINFOMANAGER_H_INCLUDED
+#define ADDONS_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef ADDONS_APPLICATION_H_INCLUDED
+#define ADDONS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef ADDONS_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define ADDONS_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_SETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
 #include "settings/DisplaySettings.h"
+#endif
+
+#ifndef ADDONS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define ADDONS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef ADDONS_UTILS_URIUTILS_H_INCLUDED
+#define ADDONS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef ADDONS_UTILS_STRINGUTILS_H_INCLUDED
+#define ADDONS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ADDONS_CORES_IPLAYER_H_INCLUDED
+#define ADDONS_CORES_IPLAYER_H_INCLUDED
 #include "cores/IPlayer.h"
+#endif
+
+#ifndef ADDONS_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
+#define ADDONS_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
 #include "cores/AudioEngine/AEFactory.h"
+#endif
+
+#ifndef ADDONS_CORES_AUDIOENGINE_UTILS_AECONVERT_H_INCLUDED
+#define ADDONS_CORES_AUDIOENGINE_UTILS_AECONVERT_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEConvert.h"
+#endif
+
 #ifdef TARGET_POSIX
 #include <dlfcn.h>
 #include "filesystem/SpecialProtocol.h"

@@ -19,9 +19,21 @@
  *
  */
 
+#ifndef JSON_RPC_FILEITEMHANDLER_H_INCLUDED
+#define JSON_RPC_FILEITEMHANDLER_H_INCLUDED
 #include "FileItemHandler.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_STDSTRING_H_INCLUDED
+#define JSON_RPC_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef JSON_RPC_PVR_CHANNELS_PVRCHANNELGROUP_H_INCLUDED
+#define JSON_RPC_PVR_CHANNELS_PVRCHANNELGROUP_H_INCLUDED
 #include "pvr/channels/PVRChannelGroup.h"
+#endif
+
 
 namespace JSONRPC
 {

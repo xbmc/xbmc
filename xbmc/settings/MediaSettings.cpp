@@ -20,24 +20,96 @@
 
 #include <limits.h>
 
+#ifndef SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define SETTINGS_MEDIASETTINGS_H_INCLUDED
 #include "MediaSettings.h"
+#endif
+
+#ifndef SETTINGS_APPLICATION_H_INCLUDED
+#define SETTINGS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef SETTINGS_UTIL_H_INCLUDED
+#define SETTINGS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef SETTINGS_DIALOGS_GUIDIALOGCONTEXTMENU_H_INCLUDED
+#define SETTINGS_DIALOGS_GUIDIALOGCONTEXTMENU_H_INCLUDED
 #include "dialogs/GUIDialogContextMenu.h"
+#endif
+
+#ifndef SETTINGS_DIALOGS_GUIDIALOGFILEBROWSER_H_INCLUDED
+#define SETTINGS_DIALOGS_GUIDIALOGFILEBROWSER_H_INCLUDED
 #include "dialogs/GUIDialogFileBrowser.h"
+#endif
+
+#ifndef SETTINGS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define SETTINGS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef SETTINGS_GUILIB_WINDOWIDS_H_INCLUDED
+#define SETTINGS_GUILIB_WINDOWIDS_H_INCLUDED
 #include "guilib/WindowIDs.h"
+#endif
+
+#ifndef SETTINGS_INTERFACES_BUILTINS_H_INCLUDED
+#define SETTINGS_INTERFACES_BUILTINS_H_INCLUDED
 #include "interfaces/Builtins.h"
+#endif
+
+#ifndef SETTINGS_MUSIC_MUSICDATABASE_H_INCLUDED
+#define SETTINGS_MUSIC_MUSICDATABASE_H_INCLUDED
 #include "music/MusicDatabase.h"
+#endif
+
+#ifndef SETTINGS_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define SETTINGS_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_LIB_SETTING_H_INCLUDED
+#define SETTINGS_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef SETTINGS_STORAGE_MEDIAMANAGER_H_INCLUDED
+#define SETTINGS_STORAGE_MEDIAMANAGER_H_INCLUDED
 #include "storage/MediaManager.h"
+#endif
+
+#ifndef SETTINGS_THREADS_SINGLELOCK_H_INCLUDED
+#define SETTINGS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef SETTINGS_UTILS_LOG_H_INCLUDED
+#define SETTINGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef SETTINGS_UTILS_URIUTILS_H_INCLUDED
+#define SETTINGS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef SETTINGS_UTILS_XBMCTINYXML_H_INCLUDED
+#define SETTINGS_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef SETTINGS_UTILS_XMLUTILS_H_INCLUDED
+#define SETTINGS_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef SETTINGS_VIDEO_VIDEODATABASE_H_INCLUDED
+#define SETTINGS_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
 
 using namespace std;
 

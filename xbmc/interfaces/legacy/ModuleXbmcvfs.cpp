@@ -18,13 +18,41 @@
  *
  */
 
+#ifndef LEGACY_MODULEXBMCVFS_H_INCLUDED
+#define LEGACY_MODULEXBMCVFS_H_INCLUDED
 #include "ModuleXbmcvfs.h"
+#endif
+
+#ifndef LEGACY_LANGUAGEHOOK_H_INCLUDED
+#define LEGACY_LANGUAGEHOOK_H_INCLUDED
 #include "LanguageHook.h"
+#endif
+
+#ifndef LEGACY_FILESYSTEM_FILE_H_INCLUDED
+#define LEGACY_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef LEGACY_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define LEGACY_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef LEGACY_UTILS_FILEUTILS_H_INCLUDED
+#define LEGACY_UTILS_FILEUTILS_H_INCLUDED
 #include "utils/FileUtils.h"
+#endif
+
+#ifndef LEGACY_UTILS_URIUTILS_H_INCLUDED
+#define LEGACY_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef LEGACY_UTIL_H_INCLUDED
+#define LEGACY_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
 
 namespace XBMCAddon
 {

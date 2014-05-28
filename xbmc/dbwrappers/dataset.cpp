@@ -26,8 +26,16 @@
  *
  **********************************************************************/
 
+#ifndef DBWRAPPERS_DATASET_H_INCLUDED
+#define DBWRAPPERS_DATASET_H_INCLUDED
 #include "dataset.h"
+#endif
+
+#ifndef DBWRAPPERS_UTILS_LOG_H_INCLUDED
+#define DBWRAPPERS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 #include <cstring>
 
 #ifndef __GNUC__

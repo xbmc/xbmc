@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef FILESYSTEM_SYSTEM_H_INCLUDED
+#define FILESYSTEM_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #if defined(TARGET_ANDROID)
 #include "IFile.h"

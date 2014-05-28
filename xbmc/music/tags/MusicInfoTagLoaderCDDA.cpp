@@ -18,13 +18,41 @@
  *
  */
 
+#ifndef TAGS_SYSTEM_H_INCLUDED
+#define TAGS_SYSTEM_H_INCLUDED
 #include "system.h" // for HAS_DVD_DRIVE
+#endif
+
+#ifndef TAGS_MUSICINFOTAGLOADERCDDA_H_INCLUDED
+#define TAGS_MUSICINFOTAGLOADERCDDA_H_INCLUDED
 #include "MusicInfoTagLoaderCDDA.h"
+#endif
+
+#ifndef TAGS_NETWORK_CDDB_H_INCLUDED
+#define TAGS_NETWORK_CDDB_H_INCLUDED
 #include "network/cddb.h"
+#endif
+
+#ifndef TAGS_MUSICINFOTAG_H_INCLUDED
+#define TAGS_MUSICINFOTAG_H_INCLUDED
 #include "MusicInfoTag.h"
+#endif
+
+#ifndef TAGS_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define TAGS_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef TAGS_STORAGE_MEDIAMANAGER_H_INCLUDED
+#define TAGS_STORAGE_MEDIAMANAGER_H_INCLUDED
 #include "storage/MediaManager.h"
+#endif
+
+#ifndef TAGS_UTILS_LOG_H_INCLUDED
+#define TAGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 using namespace MUSIC_INFO;
 

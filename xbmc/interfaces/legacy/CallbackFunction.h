@@ -20,7 +20,11 @@
 
 #pragma once
 
+#ifndef LEGACY_ADDONCLASS_H_INCLUDED
+#define LEGACY_ADDONCLASS_H_INCLUDED
 #include "AddonClass.h"
+#endif
+
 
 namespace XBMCAddon
 {

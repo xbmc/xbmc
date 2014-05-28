@@ -29,48 +29,200 @@
 #include <android/configuration.h>
 #include <jni.h>
 
+#ifndef ACTIVITY_XBMCAPP_H_INCLUDED
+#define ACTIVITY_XBMCAPP_H_INCLUDED
 #include "XBMCApp.h"
+#endif
 
+
+#ifndef ACTIVITY_INPUT_MOUSESTAT_H_INCLUDED
+#define ACTIVITY_INPUT_MOUSESTAT_H_INCLUDED
 #include "input/MouseStat.h"
+#endif
+
+#ifndef ACTIVITY_INPUT_XBMC_KEYSYM_H_INCLUDED
+#define ACTIVITY_INPUT_XBMC_KEYSYM_H_INCLUDED
 #include "input/XBMC_keysym.h"
+#endif
+
+#ifndef ACTIVITY_GUILIB_KEY_H_INCLUDED
+#define ACTIVITY_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef ACTIVITY_WINDOWING_XBMC_EVENTS_H_INCLUDED
+#define ACTIVITY_WINDOWING_XBMC_EVENTS_H_INCLUDED
 #include "windowing/XBMC_events.h"
+#endif
+
 #include <android/log.h>
 
+#ifndef ACTIVITY_APPLICATION_H_INCLUDED
+#define ACTIVITY_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef ACTIVITY_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define ACTIVITY_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef ACTIVITY_XBMC_H_INCLUDED
+#define ACTIVITY_XBMC_H_INCLUDED
 #include "xbmc.h"
+#endif
+
+#ifndef ACTIVITY_WINDOWING_WINEVENTS_H_INCLUDED
+#define ACTIVITY_WINDOWING_WINEVENTS_H_INCLUDED
 #include "windowing/WinEvents.h"
+#endif
+
+#ifndef ACTIVITY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define ACTIVITY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef ACTIVITY_UTILS_LOG_H_INCLUDED
+#define ACTIVITY_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ACTIVITY_APPLICATIONMESSENGER_H_INCLUDED
+#define ACTIVITY_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef ACTIVITY_UTILS_STRINGUTILS_H_INCLUDED
+#define ACTIVITY_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ACTIVITY_APPPARAMPARSER_H_INCLUDED
+#define ACTIVITY_APPPARAMPARSER_H_INCLUDED
 #include "AppParamParser.h"
+#endif
+
+#ifndef ACTIVITY_XBMCCONTEXT_H_INCLUDED
+#define ACTIVITY_XBMCCONTEXT_H_INCLUDED
 #include "XbmcContext.h"
+#endif
+
 #include <android/bitmap.h>
+#ifndef ACTIVITY_ANDROID_JNI_JNITHREADING_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_JNITHREADING_H_INCLUDED
 #include "android/jni/JNIThreading.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_BROADCASTRECEIVER_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_BROADCASTRECEIVER_H_INCLUDED
 #include "android/jni/BroadcastReceiver.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_INTENT_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_INTENT_H_INCLUDED
 #include "android/jni/Intent.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_PACKAGEMANAGER_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_PACKAGEMANAGER_H_INCLUDED
 #include "android/jni/PackageManager.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_CONTEXT_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_CONTEXT_H_INCLUDED
 #include "android/jni/Context.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_AUDIOMANAGER_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_AUDIOMANAGER_H_INCLUDED
 #include "android/jni/AudioManager.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_POWERMANAGER_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_POWERMANAGER_H_INCLUDED
 #include "android/jni/PowerManager.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_WAKELOCK_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_WAKELOCK_H_INCLUDED
 #include "android/jni/WakeLock.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_ENVIRONMENT_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_ENVIRONMENT_H_INCLUDED
 #include "android/jni/Environment.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_FILE_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_FILE_H_INCLUDED
 #include "android/jni/File.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_INTENTFILTER_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_INTENTFILTER_H_INCLUDED
 #include "android/jni/IntentFilter.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_NETWORKINFO_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_NETWORKINFO_H_INCLUDED
 #include "android/jni/NetworkInfo.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_CONNECTIVITYMANAGER_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_CONNECTIVITYMANAGER_H_INCLUDED
 #include "android/jni/ConnectivityManager.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_SYSTEM_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_SYSTEM_H_INCLUDED
 #include "android/jni/System.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_APPLICATIONINFO_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_APPLICATIONINFO_H_INCLUDED
 #include "android/jni/ApplicationInfo.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_STATFS_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_STATFS_H_INCLUDED
 #include "android/jni/StatFs.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_BITMAPDRAWABLE_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_BITMAPDRAWABLE_H_INCLUDED
 #include "android/jni/BitmapDrawable.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_BITMAP_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_BITMAP_H_INCLUDED
 #include "android/jni/Bitmap.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_CHARSEQUENCE_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_CHARSEQUENCE_H_INCLUDED
 #include "android/jni/CharSequence.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_URI_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_URI_H_INCLUDED
 #include "android/jni/URI.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_CURSOR_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_CURSOR_H_INCLUDED
 #include "android/jni/Cursor.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_CONTENTRESOLVER_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_CONTENTRESOLVER_H_INCLUDED
 #include "android/jni/ContentResolver.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_MEDIASTORE_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_MEDIASTORE_H_INCLUDED
 #include "android/jni/MediaStore.h"
+#endif
+
 
 #define GIGABYTES       1073741824
 

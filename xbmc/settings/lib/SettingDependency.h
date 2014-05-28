@@ -23,8 +23,16 @@
 #include <set>
 #include <string>
 
+#ifndef LIB_SETTINGCONDITIONS_H_INCLUDED
+#define LIB_SETTINGCONDITIONS_H_INCLUDED
 #include "SettingConditions.h"
+#endif
+
+#ifndef LIB_UTILS_BOOLEANLOGIC_H_INCLUDED
+#define LIB_UTILS_BOOLEANLOGIC_H_INCLUDED
 #include "utils/BooleanLogic.h"
+#endif
+
 
 typedef enum {
   SettingDependencyTypeNone   = 0,

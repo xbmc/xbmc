@@ -23,7 +23,11 @@
 //////////////////////////////////////////////////////////////////////
 
 #pragma once
+#ifndef FILESYSTEM_IDIRECTORY_H_INCLUDED
+#define FILESYSTEM_IDIRECTORY_H_INCLUDED
 #include "IDirectory.h"
+#endif
+
 
 namespace XFILE
 {

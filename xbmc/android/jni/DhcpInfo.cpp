@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_DHCPINFO_H_INCLUDED
+#define JNI_DHCPINFO_H_INCLUDED
 #include "DhcpInfo.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

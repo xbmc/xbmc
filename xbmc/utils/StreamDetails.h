@@ -19,9 +19,21 @@
  *
  */
 
+#ifndef UTILS_UTILS_STDSTRING_H_INCLUDED
+#define UTILS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef UTILS_ARCHIVE_H_INCLUDED
+#define UTILS_ARCHIVE_H_INCLUDED
 #include "Archive.h"
+#endif
+
+#ifndef UTILS_ISERIALIZABLE_H_INCLUDED
+#define UTILS_ISERIALIZABLE_H_INCLUDED
 #include "ISerializable.h"
+#endif
+
 #include <vector>
 
 class CStreamDetails;

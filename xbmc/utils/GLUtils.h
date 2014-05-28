@@ -31,8 +31,16 @@
 // if not it's just an empty inline stub, and thus won't affect performance
 // and will be optimized out.
 
+#ifndef UTILS_SYSTEM_H_INCLUDED
+#define UTILS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef UTILS_SYSTEM_GL_H_INCLUDED
+#define UTILS_SYSTEM_GL_H_INCLUDED
 #include "system_gl.h"
+#endif
+
 
 void _VerifyGLState(const char* szfile, const char* szfunction, int lineno);
 #if defined(GL_DEBUGGING) && (defined(HAS_GL) || defined(HAS_GLES))

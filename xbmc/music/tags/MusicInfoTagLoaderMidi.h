@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef TAGS_IMUSICINFOTAGLOADER_H_INCLUDED
+#define TAGS_IMUSICINFOTAGLOADER_H_INCLUDED
 #include "ImusicInfoTagLoader.h"
+#endif
+
+#ifndef TAGS_CORES_PAPLAYER_TIMIDITYCODEC_H_INCLUDED
+#define TAGS_CORES_PAPLAYER_TIMIDITYCODEC_H_INCLUDED
 #include "cores/paplayer/TimidityCodec.h"
+#endif
+
 
 namespace MUSIC_INFO
 {

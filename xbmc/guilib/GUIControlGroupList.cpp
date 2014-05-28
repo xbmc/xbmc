@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef GUILIB_GUICONTROLGROUPLIST_H_INCLUDED
+#define GUILIB_GUICONTROLGROUPLIST_H_INCLUDED
 #include "GUIControlGroupList.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
+#ifndef GUILIB_GUIINFOMANAGER_H_INCLUDED
+#define GUILIB_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef GUILIB_GUICONTROLPROFILER_H_INCLUDED
+#define GUILIB_GUICONTROLPROFILER_H_INCLUDED
 #include "GUIControlProfiler.h"
+#endif
+
+#ifndef GUILIB_GUIFONT_H_INCLUDED
+#define GUILIB_GUIFONT_H_INCLUDED
 #include "GUIFont.h" // for XBFONT_* definitions
+#endif
+
 
 CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float posX, float posY, float width, float height, float itemGap, int pageControl, ORIENTATION orientation, bool useControlPositions, uint32_t alignment, const CScroller& scroller)
 : CGUIControlGroup(parentID, controlID, posX, posY, width, height)

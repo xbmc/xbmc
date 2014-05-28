@@ -18,18 +18,62 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGPVRGUIDEINFO_H_INCLUDED
+#define DIALOGS_GUIDIALOGPVRGUIDEINFO_H_INCLUDED
 #include "GUIDialogPVRGuideInfo.h"
-#include "Application.h"
-#include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogOK.h"
-#include "dialogs/GUIDialogYesNo.h"
-#include "guilib/LocalizeStrings.h"
+#endif
 
+#ifndef DIALOGS_APPLICATION_H_INCLUDED
+#define DIALOGS_APPLICATION_H_INCLUDED
+#include "Application.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef DIALOGS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define DIALOGS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef DIALOGS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define DIALOGS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#include "guilib/LocalizeStrings.h"
+#endif
+
+
+#ifndef DIALOGS_PVR_PVRMANAGER_H_INCLUDED
+#define DIALOGS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef DIALOGS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define DIALOGS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#endif
+
+#ifndef DIALOGS_EPG_EPGINFOTAG_H_INCLUDED
+#define DIALOGS_EPG_EPGINFOTAG_H_INCLUDED
 #include "epg/EpgInfoTag.h"
+#endif
+
+#ifndef DIALOGS_PVR_TIMERS_PVRTIMERS_H_INCLUDED
+#define DIALOGS_PVR_TIMERS_PVRTIMERS_H_INCLUDED
 #include "pvr/timers/PVRTimers.h"
+#endif
+
+#ifndef DIALOGS_PVR_TIMERS_PVRTIMERINFOTAG_H_INCLUDED
+#define DIALOGS_PVR_TIMERS_PVRTIMERINFOTAG_H_INCLUDED
 #include "pvr/timers/PVRTimerInfoTag.h"
+#endif
+
 
 using namespace std;
 using namespace PVR;

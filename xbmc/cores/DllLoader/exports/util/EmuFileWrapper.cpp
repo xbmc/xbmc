@@ -18,9 +18,21 @@
  *
  */
  
+#ifndef UTIL_EMUFILEWRAPPER_H_INCLUDED
+#define UTIL_EMUFILEWRAPPER_H_INCLUDED
 #include "EmuFileWrapper.h"
+#endif
+
+#ifndef UTIL_FILESYSTEM_FILE_H_INCLUDED
+#define UTIL_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef UTIL_THREADS_SINGLELOCK_H_INCLUDED
+#define UTIL_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 
 CEmuFileWrapper g_emuFileWrapper;
 

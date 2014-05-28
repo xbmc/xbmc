@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef OVERLAY_SYSTEM_H_INCLUDED
+#define OVERLAY_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef OVERLAY_DVDCLOCK_H_INCLUDED
+#define OVERLAY_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h"
+#endif
+
+#ifndef OVERLAY_DVDOVERLAYCODECTX3G_H_INCLUDED
+#define OVERLAY_DVDOVERLAYCODECTX3G_H_INCLUDED
 #include "DVDOverlayCodecTX3G.h"
+#endif
+
+#ifndef OVERLAY_DVDOVERLAYTEXT_H_INCLUDED
+#define OVERLAY_DVDOVERLAYTEXT_H_INCLUDED
 #include "DVDOverlayText.h"
+#endif
+
+#ifndef OVERLAY_DVDSTREAMINFO_H_INCLUDED
+#define OVERLAY_DVDSTREAMINFO_H_INCLUDED
 #include "DVDStreamInfo.h"
+#endif
+
+#ifndef OVERLAY_DVDCODECS_DVDCODECS_H_INCLUDED
+#define OVERLAY_DVDCODECS_DVDCODECS_H_INCLUDED
 #include "DVDCodecs/DVDCodecs.h"
+#endif
+
+#ifndef OVERLAY_SETTINGS_SETTINGS_H_INCLUDED
+#define OVERLAY_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef OVERLAY_UTILS_LOG_H_INCLUDED
+#define OVERLAY_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef OVERLAY_UTILS_STRINGUTILS_H_INCLUDED
+#define OVERLAY_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 // 3GPP/TX3G (aka MPEG-4 Timed Text) Subtitle support
 // 3GPP -> 3rd Generation Partnership Program

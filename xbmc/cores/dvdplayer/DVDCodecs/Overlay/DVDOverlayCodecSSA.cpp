@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef OVERLAY_DVDOVERLAYCODECSSA_H_INCLUDED
+#define OVERLAY_DVDOVERLAYCODECSSA_H_INCLUDED
 #include "DVDOverlayCodecSSA.h"
+#endif
+
+#ifndef OVERLAY_DVDOVERLAYSSA_H_INCLUDED
+#define OVERLAY_DVDOVERLAYSSA_H_INCLUDED
 #include "DVDOverlaySSA.h"
+#endif
+
+#ifndef OVERLAY_DVDSTREAMINFO_H_INCLUDED
+#define OVERLAY_DVDSTREAMINFO_H_INCLUDED
 #include "DVDStreamInfo.h"
+#endif
+
+#ifndef OVERLAY_DVDCODECS_DVDCODECS_H_INCLUDED
+#define OVERLAY_DVDCODECS_DVDCODECS_H_INCLUDED
 #include "DVDCodecs/DVDCodecs.h"
+#endif
+
+#ifndef OVERLAY_DVDCLOCK_H_INCLUDED
+#define OVERLAY_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h"
+#endif
+
+#ifndef OVERLAY_UTIL_H_INCLUDED
+#define OVERLAY_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef OVERLAY_UTILS_AUTOPTRHANDLE_H_INCLUDED
+#define OVERLAY_UTILS_AUTOPTRHANDLE_H_INCLUDED
 #include "utils/AutoPtrHandle.h"
+#endif
+
+#ifndef OVERLAY_UTILS_STRINGUTILS_H_INCLUDED
+#define OVERLAY_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace AUTOPTR;
 using namespace std;

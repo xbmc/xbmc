@@ -20,16 +20,52 @@
 
 #include <sstream>
 
+#ifndef LEGACY_LISTITEM_H_INCLUDED
+#define LEGACY_LISTITEM_H_INCLUDED
 #include "ListItem.h"
-#include "AddonUtils.h"
+#endif
 
+#ifndef LEGACY_ADDONUTILS_H_INCLUDED
+#define LEGACY_ADDONUTILS_H_INCLUDED
+#include "AddonUtils.h"
+#endif
+
+
+#ifndef LEGACY_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define LEGACY_VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "video/VideoInfoTag.h"
+#endif
+
+#ifndef LEGACY_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define LEGACY_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef LEGACY_PICTURES_PICTUREINFOTAG_H_INCLUDED
+#define LEGACY_PICTURES_PICTUREINFOTAG_H_INCLUDED
 #include "pictures/PictureInfoTag.h"
+#endif
+
+#ifndef LEGACY_UTILS_LOG_H_INCLUDED
+#define LEGACY_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef LEGACY_UTILS_VARIANT_H_INCLUDED
+#define LEGACY_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef LEGACY_UTILS_STRINGUTILS_H_INCLUDED
+#define LEGACY_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef LEGACY_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define LEGACY_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
 
 namespace XBMCAddon
 {

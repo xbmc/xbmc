@@ -18,15 +18,47 @@
  *
  */
 
+#ifndef GUILIB_GUICONTROL_H_INCLUDED
+#define GUILIB_GUICONTROL_H_INCLUDED
 #include "GUIControl.h"
+#endif
 
+
+#ifndef GUILIB_GUIINFOMANAGER_H_INCLUDED
+#define GUILIB_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "LocalizeStrings.h"
+#endif
+
+#ifndef GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "GUIWindowManager.h"
+#endif
+
+#ifndef GUILIB_GUICONTROLPROFILER_H_INCLUDED
+#define GUILIB_GUICONTROLPROFILER_H_INCLUDED
 #include "GUIControlProfiler.h"
+#endif
+
+#ifndef GUILIB_INPUT_MOUSESTAT_H_INCLUDED
+#define GUILIB_INPUT_MOUSESTAT_H_INCLUDED
 #include "input/MouseStat.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
 
 using namespace std;
 

@@ -19,11 +19,31 @@
  */
 
 #pragma once
+#ifndef FILESYSTEM_IDIRECTORY_H_INCLUDED
+#define FILESYSTEM_IDIRECTORY_H_INCLUDED
 #include "IDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_THREAD_H_INCLUDED
+#define FILESYSTEM_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_CRITICALSECTION_H_INCLUDED
+#define FILESYSTEM_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_EVENT_H_INCLUDED
+#define FILESYSTEM_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
+#ifndef FILESYSTEM_HTSPSESSION_H_INCLUDED
+#define FILESYSTEM_HTSPSESSION_H_INCLUDED
 #include "HTSPSession.h"
+#endif
+
 #include "boost/shared_ptr.hpp"
 
 class CURL;

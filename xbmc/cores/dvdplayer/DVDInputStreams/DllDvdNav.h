@@ -24,7 +24,11 @@ extern "C" {
 #define DVDNAV_COMPILE
  #include <stdint.h>
 
+#ifndef DVDINPUTSTREAMS_DVDNAV_DVDNAV_H_INCLUDED
+#define DVDINPUTSTREAMS_DVDNAV_DVDNAV_H_INCLUDED
  #include "dvdnav/dvdnav.h"
+#endif
+
 
  #ifndef WIN32
  #define WIN32
@@ -34,15 +38,31 @@ extern "C" {
  #define HAVE_CONFIG_H
  #endif
 
+#ifndef DVDINPUTSTREAMS_DVDNAV_DVDNAV_INTERNAL_H_INCLUDED
+#define DVDINPUTSTREAMS_DVDNAV_DVDNAV_INTERNAL_H_INCLUDED
  #include "dvdnav/dvdnav_internal.h"
+#endif
+
+#ifndef DVDINPUTSTREAMS_DVDNAV_VM_H_INCLUDED
+#define DVDINPUTSTREAMS_DVDNAV_VM_H_INCLUDED
  #include "dvdnav/vm.h"
+#endif
+
+#ifndef DVDINPUTSTREAMS_DVDNAV_DVD_TYPES_H_INCLUDED
+#define DVDINPUTSTREAMS_DVDNAV_DVD_TYPES_H_INCLUDED
  #include "dvdnav/dvd_types.h"
+#endif
+
 
  #ifdef WIN32 // WIN32INCLUDES
  #undef HAVE_CONFIG_H
  #endif
 }
+#ifndef DVDINPUTSTREAMS_DYNAMICDLL_H_INCLUDED
+#define DVDINPUTSTREAMS_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
 
 class DllDvdNavInterface
 {

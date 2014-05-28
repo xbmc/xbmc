@@ -20,7 +20,11 @@
 
 #pragma once
 
+#ifndef WIN_THREADS_LOCKABLES_H_INCLUDED
+#define WIN_THREADS_LOCKABLES_H_INCLUDED
 #include "threads/Lockables.h"
+#endif
+
 
 #include <windows.h>
 

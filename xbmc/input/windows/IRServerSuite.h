@@ -20,9 +20,21 @@
  */
 
 #include <winsock2.h>
+#ifndef WINDOWS_UTILS_STDSTRING_H_INCLUDED
+#define WINDOWS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef WINDOWS_IRSSMESSAGE_H_INCLUDED
+#define WINDOWS_IRSSMESSAGE_H_INCLUDED
 #include "IrssMessage.h"
+#endif
+
+#ifndef WINDOWS_THREADS_THREAD_H_INCLUDED
+#define WINDOWS_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
 
 class CRemoteControl : CThread
 {

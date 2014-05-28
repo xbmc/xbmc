@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef ADDONS_DIALOGS_GUIDIALOGBOXBASE_H_INCLUDED
+#define ADDONS_DIALOGS_GUIDIALOGBOXBASE_H_INCLUDED
 #include "dialogs/GUIDialogBoxBase.h"
+#endif
+
+#ifndef ADDONS_ADDONS_ADDON_H_INCLUDED
+#define ADDONS_ADDONS_ADDON_H_INCLUDED
 #include "addons/Addon.h"
+#endif
+
 
 class CGUIDialogAddonSettings : public CGUIDialogBoxBase
 {

@@ -20,9 +20,21 @@
 
 #include <sstream>
 
+#ifndef ROOT_DBURL_H_INCLUDED
+#define ROOT_DBURL_H_INCLUDED
 #include "DbUrl.h"
+#endif
+
+#ifndef ROOT_UTILS_STRINGUTILS_H_INCLUDED
+#define ROOT_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ROOT_UTILS_URIUTILS_H_INCLUDED
+#define ROOT_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 
 using namespace std;
 

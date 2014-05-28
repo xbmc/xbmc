@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef DLLLOADER_COFFLDR_H_INCLUDED
+#define DLLLOADER_COFFLDR_H_INCLUDED
 #include "coffldr.h"
+#endif
+
+#ifndef DLLLOADER_LIBRARYLOADER_H_INCLUDED
+#define DLLLOADER_LIBRARYLOADER_H_INCLUDED
 #include "LibraryLoader.h"
+#endif
+
 
 #if defined(__linux__) && !defined(__powerpc__) && !defined(__arm__)
 #define USE_LDT_KEEPER

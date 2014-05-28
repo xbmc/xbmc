@@ -18,33 +18,141 @@
  *
  */
 
+#ifndef DIALOGS_SYSTEM_H_INCLUDED
+#define DIALOGS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef DIALOGS_GUIUSERMESSAGES_H_INCLUDED
+#define DIALOGS_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef DIALOGS_APPLICATION_H_INCLUDED
+#define DIALOGS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef DIALOGS_GUIDIALOGSUBTITLES_H_INCLUDED
+#define DIALOGS_GUIDIALOGSUBTITLES_H_INCLUDED
 #include "GUIDialogSubtitles.h"
+#endif
+
+#ifndef DIALOGS_ADDONS_ADDONMANAGER_H_INCLUDED
+#define DIALOGS_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef DIALOGS_CORES_IPLAYER_H_INCLUDED
+#define DIALOGS_CORES_IPLAYER_H_INCLUDED
 #include "cores/IPlayer.h"
+#endif
+
+#ifndef DIALOGS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define DIALOGS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef DIALOGS_FILESYSTEM_ADDONSDIRECTORY_H_INCLUDED
+#define DIALOGS_FILESYSTEM_ADDONSDIRECTORY_H_INCLUDED
 #include "filesystem/AddonsDirectory.h"
+#endif
+
+#ifndef DIALOGS_FILESYSTEM_FILE_H_INCLUDED
+#define DIALOGS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef DIALOGS_FILESYSTEM_PLUGINDIRECTORY_H_INCLUDED
+#define DIALOGS_FILESYSTEM_PLUGINDIRECTORY_H_INCLUDED
 #include "filesystem/PluginDirectory.h"
+#endif
+
+#ifndef DIALOGS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define DIALOGS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef DIALOGS_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
+#define DIALOGS_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
 #include "filesystem/StackDirectory.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIIMAGE_H_INCLUDED
+#define DIALOGS_GUILIB_GUIIMAGE_H_INCLUDED
 #include "guilib/GUIImage.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
+#define DIALOGS_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
 #include "guilib/GUIKeyboardFactory.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_KEY_H_INCLUDED
+#define DIALOGS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_MEDIASETTINGS_H_INCLUDED
 #include "settings/MediaSettings.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_SETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_VIDEOSETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_VIDEOSETTINGS_H_INCLUDED
 #include "settings/VideoSettings.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_LIB_SETTING_H_INCLUDED
+#define DIALOGS_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef DIALOGS_UTILS_JOBMANAGER_H_INCLUDED
+#define DIALOGS_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
+#ifndef DIALOGS_UTILS_LANGCODEEXPANDER_H_INCLUDED
+#define DIALOGS_UTILS_LANGCODEEXPANDER_H_INCLUDED
 #include "utils/LangCodeExpander.h"
+#endif
+
+#ifndef DIALOGS_UTILS_LOG_H_INCLUDED
+#define DIALOGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
+#define DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef DIALOGS_UTILS_URIUTILS_H_INCLUDED
+#define DIALOGS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef DIALOGS_URL_H_INCLUDED
+#define DIALOGS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef DIALOGS_UTIL_H_INCLUDED
+#define DIALOGS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef DIALOGS_VIDEO_VIDEODATABASE_H_INCLUDED
+#define DIALOGS_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
 
 using namespace ADDON;
 using namespace XFILE;

@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef FILESYSTEM_HTTPFILE_H_INCLUDED
+#define FILESYSTEM_HTTPFILE_H_INCLUDED
 #include "HTTPFile.h"
+#endif
+
 
 using namespace XFILE;
 

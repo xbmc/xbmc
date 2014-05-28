@@ -27,7 +27,11 @@
 #include <stdlib.h>
 
 #include "Common.hpp"
+#ifndef LIBPROJECTM_FATAL_H_INCLUDED
+#define LIBPROJECTM_FATAL_H_INCLUDED
 #include "fatal.h"
+#endif
+
 
 #include "CustomWave.hpp"
 #include "CustomShape.hpp"
@@ -43,7 +47,11 @@
 #include <map>
 #include "ParamUtils.hpp"
 
+#ifndef LIBPROJECTM_WIPEMALLOC_H_INCLUDED
+#define LIBPROJECTM_WIPEMALLOC_H_INCLUDED
 #include "wipemalloc.h"
+#endif
+
 #include <iostream>
 #include <sstream>
 #include "BuiltinFuncs.hpp"

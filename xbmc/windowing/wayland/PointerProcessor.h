@@ -19,7 +19,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef WAYLAND_POINTER_H_INCLUDED
+#define WAYLAND_POINTER_H_INCLUDED
 #include "Pointer.h"
+#endif
+
 
 struct wl_surface;
 

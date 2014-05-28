@@ -18,28 +18,92 @@
  *
  */
 
+#ifndef CDRIP_CDDARIPJOB_H_INCLUDED
+#define CDRIP_CDDARIPJOB_H_INCLUDED
 #include "CDDARipJob.h"
+#endif
+
+#ifndef CDRIP_SYSTEM_H_INCLUDED
+#define CDRIP_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #ifdef HAVE_LIBMP3LAME
 #include "EncoderLame.h"
 #endif
 #ifdef HAVE_LIBVORBISENC
 #include "EncoderVorbis.h"
 #endif
+#ifndef CDRIP_ENCODERWAV_H_INCLUDED
+#define CDRIP_ENCODERWAV_H_INCLUDED
 #include "EncoderWav.h"
+#endif
+
+#ifndef CDRIP_ENCODERFFMPEG_H_INCLUDED
+#define CDRIP_ENCODERFFMPEG_H_INCLUDED
 #include "EncoderFFmpeg.h"
+#endif
+
+#ifndef CDRIP_ENCODERFLAC_H_INCLUDED
+#define CDRIP_ENCODERFLAC_H_INCLUDED
 #include "EncoderFlac.h"
+#endif
+
+#ifndef CDRIP_FILEITEM_H_INCLUDED
+#define CDRIP_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef CDRIP_UTILS_LOG_H_INCLUDED
+#define CDRIP_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef CDRIP_UTIL_H_INCLUDED
+#define CDRIP_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef CDRIP_DIALOGS_GUIDIALOGEXTENDEDPROGRESSBAR_H_INCLUDED
+#define CDRIP_DIALOGS_GUIDIALOGEXTENDEDPROGRESSBAR_H_INCLUDED
 #include "dialogs/GUIDialogExtendedProgressBar.h"
+#endif
+
+#ifndef CDRIP_FILESYSTEM_FILE_H_INCLUDED
+#define CDRIP_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef CDRIP_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define CDRIP_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef CDRIP_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define CDRIP_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef CDRIP_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define CDRIP_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef CDRIP_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define CDRIP_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef CDRIP_UTILS_STRINGUTILS_H_INCLUDED
+#define CDRIP_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef CDRIP_STORAGE_MEDIAMANAGER_H_INCLUDED
+#define CDRIP_STORAGE_MEDIAMANAGER_H_INCLUDED
 #include "storage/MediaManager.h"
+#endif
+
 
 using namespace MUSIC_INFO;
 using namespace XFILE;

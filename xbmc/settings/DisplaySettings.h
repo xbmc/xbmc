@@ -23,11 +23,31 @@
 #include <set>
 #include <vector>
 
+#ifndef SETTINGS_GUILIB_RESOLUTION_H_INCLUDED
+#define SETTINGS_GUILIB_RESOLUTION_H_INCLUDED
 #include "guilib/Resolution.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
+#define SETTINGS_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
 #include "settings/lib/ISettingCallback.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_LIB_ISUBSETTINGS_H_INCLUDED
+#define SETTINGS_SETTINGS_LIB_ISUBSETTINGS_H_INCLUDED
 #include "settings/lib/ISubSettings.h"
+#endif
+
+#ifndef SETTINGS_THREADS_CRITICALSECTION_H_INCLUDED
+#define SETTINGS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef SETTINGS_UTILS_OBSERVER_H_INCLUDED
+#define SETTINGS_UTILS_OBSERVER_H_INCLUDED
 #include "utils/Observer.h"
+#endif
+
 
 class TiXmlNode;
 

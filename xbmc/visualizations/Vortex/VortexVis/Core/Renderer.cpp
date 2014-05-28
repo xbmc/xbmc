@@ -17,11 +17,23 @@
  *
  */
 
+#ifndef CORE_RENDERER_H_INCLUDED
+#define CORE_RENDERER_H_INCLUDED
 #include "Renderer.h"
+#endif
+
 #include <d3dx9.h>
+#ifndef CORE_DEBUGCONSOLE_H_INCLUDED
+#define CORE_DEBUGCONSOLE_H_INCLUDED
 #include "DebugConsole.h"
+#endif
+
 #include <stdio.h>
+#ifndef CORE_SHADER_H_INCLUDED
+#define CORE_SHADER_H_INCLUDED
 #include "Shader.h"
+#endif
+
 
 D3DVERTEXELEMENT9 declPosNormalColUV[] =
 {	// stream, offset, type, method, usage, usage index 

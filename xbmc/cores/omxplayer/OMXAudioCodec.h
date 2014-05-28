@@ -20,13 +20,21 @@
  *
  */
 
+#ifndef OMXPLAYER_SYSTEM_H_INCLUDED
+#define OMXPLAYER_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
 #include <vector>
+#ifndef OMXPLAYER_DLLAVCODEC_H_INCLUDED
+#define OMXPLAYER_DLLAVCODEC_H_INCLUDED
 #include "DllAvCodec.h"
+#endif
+
 
 struct AVStream;
 

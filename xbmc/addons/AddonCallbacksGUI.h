@@ -20,10 +20,26 @@
  */
 
 
+#ifndef ADDONS_ADDONCALLBACKS_H_INCLUDED
+#define ADDONS_ADDONCALLBACKS_H_INCLUDED
 #include "AddonCallbacks.h"
+#endif
+
+#ifndef ADDONS_WINDOWS_GUIMEDIAWINDOW_H_INCLUDED
+#define ADDONS_WINDOWS_GUIMEDIAWINDOW_H_INCLUDED
 #include "windows/GUIMediaWindow.h"
+#endif
+
+#ifndef ADDONS_THREADS_EVENT_H_INCLUDED
+#define ADDONS_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
+#ifndef ADDONS_GUILIB_IRENDERINGCALLBACK_H_INCLUDED
+#define ADDONS_GUILIB_IRENDERINGCALLBACK_H_INCLUDED
 #include "guilib/IRenderingCallback.h"
+#endif
+
 
 class CGUISpinControlEx;
 class CGUIButtonControl;

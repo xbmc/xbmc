@@ -26,8 +26,16 @@
 
 #include <cstdarg>
 
+#ifndef WINDOWING_UTILS_LOG_H_INCLUDED
+#define WINDOWING_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef WINDOWING_DYNAMICDLL_H_INCLUDED
+#define WINDOWING_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
 
 struct wl_proxy;
 struct wl_interface;

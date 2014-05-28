@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef GENERIC_GENERICTOUCHPINCHDETECTOR_H_INCLUDED
+#define GENERIC_GENERICTOUCHPINCHDETECTOR_H_INCLUDED
 #include "GenericTouchPinchDetector.h"
+#endif
+
 
 bool CGenericTouchPinchDetector::OnTouchDown(unsigned int index, const Pointer &pointer)
 {

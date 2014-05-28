@@ -18,20 +18,68 @@
  *
  */
 
+#ifndef PAPLAYER_DVDPLAYERCODEC_H_INCLUDED
+#define PAPLAYER_DVDPLAYERCODEC_H_INCLUDED
 #include "DVDPlayerCodec.h"
+#endif
+
+#ifndef PAPLAYER_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define PAPLAYER_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
 
+
+#ifndef PAPLAYER_CORES_DVDPLAYER_DVDINPUTSTREAMS_DVDFACTORYINPUTSTREAM_H_INCLUDED
+#define PAPLAYER_CORES_DVDPLAYER_DVDINPUTSTREAMS_DVDFACTORYINPUTSTREAM_H_INCLUDED
 #include "cores/dvdplayer/DVDInputStreams/DVDFactoryInputStream.h"
-#include "cores/dvdplayer/DVDDemuxers/DVDFactoryDemuxer.h"
-#include "cores/dvdplayer/DVDDemuxers/DVDDemuxUtils.h"
-#include "cores/dvdplayer/DVDStreamInfo.h"
-#include "cores/dvdplayer/DVDCodecs/DVDFactoryCodec.h"
-#include "music/tags/TagLoaderTagLib.h"
-#include "utils/log.h"
-#include "settings/Settings.h"
-#include "URL.h"
+#endif
 
+#ifndef PAPLAYER_CORES_DVDPLAYER_DVDDEMUXERS_DVDFACTORYDEMUXER_H_INCLUDED
+#define PAPLAYER_CORES_DVDPLAYER_DVDDEMUXERS_DVDFACTORYDEMUXER_H_INCLUDED
+#include "cores/dvdplayer/DVDDemuxers/DVDFactoryDemuxer.h"
+#endif
+
+#ifndef PAPLAYER_CORES_DVDPLAYER_DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
+#define PAPLAYER_CORES_DVDPLAYER_DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
+#include "cores/dvdplayer/DVDDemuxers/DVDDemuxUtils.h"
+#endif
+
+#ifndef PAPLAYER_CORES_DVDPLAYER_DVDSTREAMINFO_H_INCLUDED
+#define PAPLAYER_CORES_DVDPLAYER_DVDSTREAMINFO_H_INCLUDED
+#include "cores/dvdplayer/DVDStreamInfo.h"
+#endif
+
+#ifndef PAPLAYER_CORES_DVDPLAYER_DVDCODECS_DVDFACTORYCODEC_H_INCLUDED
+#define PAPLAYER_CORES_DVDPLAYER_DVDCODECS_DVDFACTORYCODEC_H_INCLUDED
+#include "cores/dvdplayer/DVDCodecs/DVDFactoryCodec.h"
+#endif
+
+#ifndef PAPLAYER_MUSIC_TAGS_TAGLOADERTAGLIB_H_INCLUDED
+#define PAPLAYER_MUSIC_TAGS_TAGLOADERTAGLIB_H_INCLUDED
+#include "music/tags/TagLoaderTagLib.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_LOG_H_INCLUDED
+#define PAPLAYER_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef PAPLAYER_SETTINGS_SETTINGS_H_INCLUDED
+#define PAPLAYER_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef PAPLAYER_URL_H_INCLUDED
+#define PAPLAYER_URL_H_INCLUDED
+#include "URL.h"
+#endif
+
+
+#ifndef PAPLAYER_AUDIODECODER_H_INCLUDED
+#define PAPLAYER_AUDIODECODER_H_INCLUDED
 #include "AudioDecoder.h"
+#endif
+
 
 DVDPlayerCodec::DVDPlayerCodec()
 {

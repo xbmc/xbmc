@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef DIALOGS_SETTINGS_DIALOGS_GUIDIALOGSETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_DIALOGS_GUIDIALOGSETTINGS_H_INCLUDED
 #include "settings/dialogs/GUIDialogSettings.h"
+#endif
+
 
 class CGUIDialogVideoSettings :
       public CGUIDialogSettings

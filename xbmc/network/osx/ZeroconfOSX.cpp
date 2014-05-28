@@ -18,11 +18,27 @@
  *
  */
 
+#ifndef OSX_SYSTEM_H_INCLUDED
+#define OSX_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
 
+
+#ifndef OSX_ZEROCONFOSX_H_INCLUDED
+#define OSX_ZEROCONFOSX_H_INCLUDED
 #include "ZeroconfOSX.h"
+#endif
+
+#ifndef OSX_THREADS_SINGLELOCK_H_INCLUDED
+#define OSX_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef OSX_UTILS_LOG_H_INCLUDED
+#define OSX_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #include <string>
 #include <sstream>

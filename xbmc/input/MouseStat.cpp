@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef INPUT_MOUSESTAT_H_INCLUDED
+#define INPUT_MOUSESTAT_H_INCLUDED
 #include "MouseStat.h"
+#endif
+
+#ifndef INPUT_GUILIB_KEY_H_INCLUDED
+#define INPUT_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef INPUT_SETTINGS_LIB_SETTING_H_INCLUDED
+#define INPUT_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef INPUT_UTILS_TIMEUTILS_H_INCLUDED
+#define INPUT_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef INPUT_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define INPUT_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
 
 CMouseStat::CMouseStat()
 {

@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef PICTURES_PICTUREINFOTAG_H_INCLUDED
+#define PICTURES_PICTUREINFOTAG_H_INCLUDED
 #include "PictureInfoTag.h"
+#endif
+
+#ifndef PICTURES_XBDATETIME_H_INCLUDED
+#define PICTURES_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef PICTURES_UTIL_H_INCLUDED
+#define PICTURES_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef PICTURES_UTILS_VARIANT_H_INCLUDED
+#define PICTURES_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef PICTURES_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define PICTURES_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef PICTURES_UTILS_STRINGUTILS_H_INCLUDED
+#define PICTURES_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace std;
 

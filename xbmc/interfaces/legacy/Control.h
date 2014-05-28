@@ -20,15 +20,47 @@
 
 #pragma once
 
+#ifndef LEGACY_GUILIB_GUICONTROL_H_INCLUDED
+#define LEGACY_GUILIB_GUICONTROL_H_INCLUDED
 #include "guilib/GUIControl.h"
-#include "guilib/GUIFont.h"
-#include "guilib/Key.h"
+#endif
 
+#ifndef LEGACY_GUILIB_GUIFONT_H_INCLUDED
+#define LEGACY_GUILIB_GUIFONT_H_INCLUDED
+#include "guilib/GUIFont.h"
+#endif
+
+#ifndef LEGACY_GUILIB_KEY_H_INCLUDED
+#define LEGACY_GUILIB_KEY_H_INCLUDED
+#include "guilib/Key.h"
+#endif
+
+
+#ifndef LEGACY_ALTERNATIVE_H_INCLUDED
+#define LEGACY_ALTERNATIVE_H_INCLUDED
 #include "Alternative.h"
+#endif
+
+#ifndef LEGACY_TUPLE_H_INCLUDED
+#define LEGACY_TUPLE_H_INCLUDED
 #include "Tuple.h"
+#endif
+
+#ifndef LEGACY_LISTITEM_H_INCLUDED
+#define LEGACY_LISTITEM_H_INCLUDED
 #include "ListItem.h"
+#endif
+
+#ifndef LEGACY_SWIGHELPER_H_INCLUDED
+#define LEGACY_SWIGHELPER_H_INCLUDED
 #include "swighelper.h"
+#endif
+
+#ifndef LEGACY_WINDOWEXCEPTION_H_INCLUDED
+#define LEGACY_WINDOWEXCEPTION_H_INCLUDED
 #include "WindowException.h"
+#endif
+
 
 
 // hardcoded offsets for button controls (and controls that use button controls)

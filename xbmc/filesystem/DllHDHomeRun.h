@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef FILESYSTEM_DYNAMICDLL_H_INCLUDED
+#define FILESYSTEM_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
+#ifndef FILESYSTEM_LIB_LIBHDHOMERUN_HDHOMERUN_H_INCLUDED
+#define FILESYSTEM_LIB_LIBHDHOMERUN_HDHOMERUN_H_INCLUDED
 #include "lib/libhdhomerun/hdhomerun.h"
+#endif
+
 
 class DllHdHomeRunInterface
 {

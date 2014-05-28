@@ -23,8 +23,16 @@
 #include <set>
 #include <string>
 
+#ifndef LIB_SETTINGDEFINITIONS_H_INCLUDED
+#define LIB_SETTINGDEFINITIONS_H_INCLUDED
 #include "SettingDefinitions.h"
+#endif
+
+#ifndef LIB_UTILS_BOOLEANLOGIC_H_INCLUDED
+#define LIB_UTILS_BOOLEANLOGIC_H_INCLUDED
 #include "utils/BooleanLogic.h"
+#endif
+
 
 class CSettingsManager;
 

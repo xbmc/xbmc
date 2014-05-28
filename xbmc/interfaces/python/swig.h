@@ -24,12 +24,32 @@
 #include <string>
 #include <stdint.h>
 
+#ifndef PYTHON_UTILS_STDSTRING_H_INCLUDED
+#define PYTHON_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
-#include "interfaces/legacy/Exception.h"
-#include "interfaces/legacy/AddonClass.h"
-#include "interfaces/legacy/Window.h"
+#endif
 
+#ifndef PYTHON_INTERFACES_LEGACY_EXCEPTION_H_INCLUDED
+#define PYTHON_INTERFACES_LEGACY_EXCEPTION_H_INCLUDED
+#include "interfaces/legacy/Exception.h"
+#endif
+
+#ifndef PYTHON_INTERFACES_LEGACY_ADDONCLASS_H_INCLUDED
+#define PYTHON_INTERFACES_LEGACY_ADDONCLASS_H_INCLUDED
+#include "interfaces/legacy/AddonClass.h"
+#endif
+
+#ifndef PYTHON_INTERFACES_LEGACY_WINDOW_H_INCLUDED
+#define PYTHON_INTERFACES_LEGACY_WINDOW_H_INCLUDED
+#include "interfaces/legacy/Window.h"
+#endif
+
+
+#ifndef PYTHON_COMMONS_TYPEINDEX_H_INCLUDED
+#define PYTHON_COMMONS_TYPEINDEX_H_INCLUDED
 #include "commons/typeindex.h"
+#endif
+
 
 namespace PythonBindings
 {

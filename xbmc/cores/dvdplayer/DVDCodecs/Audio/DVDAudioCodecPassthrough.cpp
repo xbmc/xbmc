@@ -18,14 +18,42 @@
  *
  */
 
+#ifndef AUDIO_DVDAUDIOCODECPASSTHROUGH_H_INCLUDED
+#define AUDIO_DVDAUDIOCODECPASSTHROUGH_H_INCLUDED
 #include "DVDAudioCodecPassthrough.h"
-#include "DVDCodecs/DVDCodecs.h"
-#include "DVDStreamInfo.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
-#include "settings/Settings.h"
-#include "utils/log.h"
+#endif
 
+#ifndef AUDIO_DVDCODECS_DVDCODECS_H_INCLUDED
+#define AUDIO_DVDCODECS_DVDCODECS_H_INCLUDED
+#include "DVDCodecs/DVDCodecs.h"
+#endif
+
+#ifndef AUDIO_DVDSTREAMINFO_H_INCLUDED
+#define AUDIO_DVDSTREAMINFO_H_INCLUDED
+#include "DVDStreamInfo.h"
+#endif
+
+#ifndef AUDIO_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define AUDIO_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
+#ifndef AUDIO_SETTINGS_SETTINGS_H_INCLUDED
+#define AUDIO_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef AUDIO_UTILS_LOG_H_INCLUDED
+#define AUDIO_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+
+#ifndef AUDIO_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
+#define AUDIO_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
 #include "cores/AudioEngine/AEFactory.h"
+#endif
+
 
 CDVDAudioCodecPassthrough::CDVDAudioCodecPassthrough(void) :
   m_buffer    (NULL),

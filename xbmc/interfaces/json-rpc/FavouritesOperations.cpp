@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef JSON_RPC_FAVOURITESOPERATIONS_H_INCLUDED
+#define JSON_RPC_FAVOURITESOPERATIONS_H_INCLUDED
 #include "FavouritesOperations.h"
+#endif
+
+#ifndef JSON_RPC_FILESYSTEM_FAVOURITESDIRECTORY_H_INCLUDED
+#define JSON_RPC_FILESYSTEM_FAVOURITESDIRECTORY_H_INCLUDED
 #include "filesystem/FavouritesDirectory.h"
+#endif
+
+#ifndef JSON_RPC_INPUT_BUTTONTRANSLATOR_H_INCLUDED
+#define JSON_RPC_INPUT_BUTTONTRANSLATOR_H_INCLUDED
 #include "input/ButtonTranslator.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_REGEXP_H_INCLUDED
+#define JSON_RPC_UTILS_REGEXP_H_INCLUDED
 #include "utils/RegExp.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_STRINGUTILS_H_INCLUDED
+#define JSON_RPC_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef JSON_RPC_UTIL_H_INCLUDED
+#define JSON_RPC_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_URIUTILS_H_INCLUDED
+#define JSON_RPC_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef JSON_RPC_GUILIB_WINDOWIDS_H_INCLUDED
+#define JSON_RPC_GUILIB_WINDOWIDS_H_INCLUDED
 #include "guilib/WindowIDs.h"
+#endif
+
 #include <vector>
 
 using namespace std;

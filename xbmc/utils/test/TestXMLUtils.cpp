@@ -18,11 +18,27 @@
  *
  */
 
+#ifndef TEST_UTILS_XMLUTILS_H_INCLUDED
+#define TEST_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
-#include "utils/StringUtils.h"
-#include "XBDateTime.h"
+#endif
 
+#ifndef TEST_UTILS_STRINGUTILS_H_INCLUDED
+#define TEST_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+#ifndef TEST_XBDATETIME_H_INCLUDED
+#define TEST_XBDATETIME_H_INCLUDED
+#include "XBDateTime.h"
+#endif
+
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 TEST(TestXMLUtils, GetHex)
 {

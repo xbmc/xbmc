@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef OSX_WINDOWING_WINEVENTSSDL_H_INCLUDED
+#define OSX_WINDOWING_WINEVENTSSDL_H_INCLUDED
 #include "windowing/WinEventsSDL.h"
+#endif
+
 
 class CWinEventsOSX : public CWinEventsSDL
 {

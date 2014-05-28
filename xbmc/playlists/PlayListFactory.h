@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef PLAYLISTS_UTILS_STDSTRING_H_INCLUDED
+#define PLAYLISTS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 class CFileItem;
 

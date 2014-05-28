@@ -20,11 +20,31 @@
 #include <math.h>
 #include <sstream>
 
+#ifndef UTILS_AEREMAP_H_INCLUDED
+#define UTILS_AEREMAP_H_INCLUDED
 #include "AERemap.h"
+#endif
+
+#ifndef UTILS_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
+#define UTILS_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
 #include "cores/AudioEngine/AEFactory.h"
+#endif
+
+#ifndef UTILS_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define UTILS_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
+#ifndef UTILS_UTILS_LOG_H_INCLUDED
+#define UTILS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef UTILS_SETTINGS_SETTINGS_H_INCLUDED
+#define UTILS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
 
 using namespace std;
 

@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef GUILIB_GUITEXTLAYOUT_H_INCLUDED
+#define GUILIB_GUITEXTLAYOUT_H_INCLUDED
 #include "GUITextLayout.h"
+#endif
+
+#ifndef GUILIB_GUIFONT_H_INCLUDED
+#define GUILIB_GUIFONT_H_INCLUDED
 #include "GUIFont.h"
+#endif
+
+#ifndef GUILIB_GUICONTROL_H_INCLUDED
+#define GUILIB_GUICONTROL_H_INCLUDED
 #include "GUIControl.h"
+#endif
+
+#ifndef GUILIB_GUICOLORMANAGER_H_INCLUDED
+#define GUILIB_GUICOLORMANAGER_H_INCLUDED
 #include "GUIColorManager.h"
+#endif
+
+#ifndef GUILIB_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define GUILIB_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace std;
 

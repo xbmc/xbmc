@@ -22,7 +22,11 @@
 #include <set>
 #include <string>
 
+#ifndef LIB_SETTINGCONDITIONS_H_INCLUDED
+#define LIB_SETTINGCONDITIONS_H_INCLUDED
 #include "SettingConditions.h"
+#endif
+
 
 class CSettingRequirementCondition : public CSettingConditionItem
 {

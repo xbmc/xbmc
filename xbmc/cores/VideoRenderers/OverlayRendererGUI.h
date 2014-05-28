@@ -20,7 +20,11 @@
 
 #pragma once
 
+#ifndef VIDEORENDERERS_OVERLAYRENDERER_H_INCLUDED
+#define VIDEORENDERERS_OVERLAYRENDERER_H_INCLUDED
 #include "OverlayRenderer.h"
+#endif
+
 #include <string>
 
 enum SubtitleAlign

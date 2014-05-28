@@ -18,14 +18,42 @@
  *
  */
 
+#ifndef VIDEO_SYSTEM_H_INCLUDED
+#define VIDEO_SYSTEM_H_INCLUDED
 #include "system.h"
-#include "DllAvFormat.h"
-#include "DllAvCodec.h"
-#include "DllAvUtil.h"
-#include "DllSwScale.h"
-#include "guilib/Texture.h"
+#endif
 
+#ifndef VIDEO_DLLAVFORMAT_H_INCLUDED
+#define VIDEO_DLLAVFORMAT_H_INCLUDED
+#include "DllAvFormat.h"
+#endif
+
+#ifndef VIDEO_DLLAVCODEC_H_INCLUDED
+#define VIDEO_DLLAVCODEC_H_INCLUDED
+#include "DllAvCodec.h"
+#endif
+
+#ifndef VIDEO_DLLAVUTIL_H_INCLUDED
+#define VIDEO_DLLAVUTIL_H_INCLUDED
+#include "DllAvUtil.h"
+#endif
+
+#ifndef VIDEO_DLLSWSCALE_H_INCLUDED
+#define VIDEO_DLLSWSCALE_H_INCLUDED
+#include "DllSwScale.h"
+#endif
+
+#ifndef VIDEO_GUILIB_TEXTURE_H_INCLUDED
+#define VIDEO_GUILIB_TEXTURE_H_INCLUDED
+#include "guilib/Texture.h"
+#endif
+
+
+#ifndef VIDEO_FFMPEGVIDEODECODER_H_INCLUDED
+#define VIDEO_FFMPEGVIDEODECODER_H_INCLUDED
 #include "FFmpegVideoDecoder.h"
+#endif
+
 
 
 FFmpegVideoDecoder::FFmpegVideoDecoder()

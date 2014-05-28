@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef WINDOWS_SYSTEM_H_INCLUDED
+#define WINDOWS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef WINDOWS_GUIWINDOWSETTINGS_H_INCLUDED
+#define WINDOWS_GUIWINDOWSETTINGS_H_INCLUDED
 #include "GUIWindowSettings.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_WINDOWIDS_H_INCLUDED
+#define WINDOWS_GUILIB_WINDOWIDS_H_INCLUDED
 #include "guilib/WindowIDs.h"
+#endif
+
 
 CGUIWindowSettings::CGUIWindowSettings(void)
     : CGUIWindow(WINDOW_SETTINGS_MENU, "Settings.xml")

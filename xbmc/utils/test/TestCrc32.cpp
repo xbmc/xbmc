@@ -18,9 +18,17 @@
  *
  */
 
+#ifndef TEST_UTILS_CRC32_H_INCLUDED
+#define TEST_UTILS_CRC32_H_INCLUDED
 #include "utils/Crc32.h"
+#endif
 
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 static const char refdata[] = "abcdefghijklmnopqrstuvwxyz"
                               "ABCDEFGHIJKLMNOPQRSTUVWXYZ"

@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef JNI_JNIBASE_H_INCLUDED
+#define JNI_JNIBASE_H_INCLUDED
 #include "JNIBase.h"
+#endif
+
+#ifndef JNI_SURFACE_H_INCLUDED
+#define JNI_SURFACE_H_INCLUDED
 #include "Surface.h"
+#endif
+
+#ifndef JNI_SURFACETEXTURE_H_INCLUDED
+#define JNI_SURFACETEXTURE_H_INCLUDED
 #include "SurfaceTexture.h"
+#endif
+
 
 #include "jutils/jutils-details.hpp"
 

@@ -24,8 +24,16 @@
 #include "config.h"
 #endif
 
+#ifndef VIDEO_DYNAMICDLL_H_INCLUDED
+#define VIDEO_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
+#ifndef VIDEO_DVDVIDEOCODEC_H_INCLUDED
+#define VIDEO_DVDVIDEOCODEC_H_INCLUDED
 #include "DVDVideoCodec.h"
+#endif
+
 
 class CApplication;
 class CApplicationMessenger;

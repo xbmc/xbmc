@@ -18,9 +18,17 @@
  *
  */
 
+#ifndef JNI_INTENT_H_INCLUDED
+#define JNI_INTENT_H_INCLUDED
 #include "Intent.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
+#ifndef JNI_URI_H_INCLUDED
+#define JNI_URI_H_INCLUDED
 #include "URI.h"
+#endif
+
 
 using namespace jni;
 

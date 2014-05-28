@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef AUDIO_DVDAUDIOCODECLPCM_H_INCLUDED
+#define AUDIO_DVDAUDIOCODECLPCM_H_INCLUDED
 #include "DVDAudioCodecLPcm.h"
+#endif
+
+#ifndef AUDIO_DVDSTREAMINFO_H_INCLUDED
+#define AUDIO_DVDSTREAMINFO_H_INCLUDED
 #include "DVDStreamInfo.h"
+#endif
+
 
 CDVDAudioCodecLPcm::CDVDAudioCodecLPcm() : CDVDAudioCodecPcm()
 {

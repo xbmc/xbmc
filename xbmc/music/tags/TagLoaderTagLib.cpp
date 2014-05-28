@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef TAGS_TAGLOADERTAGLIB_H_INCLUDED
+#define TAGS_TAGLOADERTAGLIB_H_INCLUDED
 #include "TagLoaderTagLib.h"
+#endif
+
 
 #include <vector>
 
@@ -38,14 +42,46 @@
 #include <taglib/tstring.h>
 #include <taglib/tpropertymap.h>
 
+#ifndef TAGS_TAGLIBVFSSTREAM_H_INCLUDED
+#define TAGS_TAGLIBVFSSTREAM_H_INCLUDED
 #include "TagLibVFSStream.h"
+#endif
+
+#ifndef TAGS_MUSICINFOTAG_H_INCLUDED
+#define TAGS_MUSICINFOTAG_H_INCLUDED
 #include "MusicInfoTag.h"
+#endif
+
+#ifndef TAGS_UTILS_URIUTILS_H_INCLUDED
+#define TAGS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef TAGS_UTILS_LOG_H_INCLUDED
+#define TAGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef TAGS_UTILS_STRINGUTILS_H_INCLUDED
+#define TAGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef TAGS_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define TAGS_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef TAGS_UTILS_BASE64_H_INCLUDED
+#define TAGS_UTILS_BASE64_H_INCLUDED
 #include "utils/Base64.h"
+#endif
+
+#ifndef TAGS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define TAGS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
 
 using namespace std;
 using namespace TagLib;

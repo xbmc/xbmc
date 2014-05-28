@@ -18,8 +18,16 @@
  *
  */
 #pragma once
+#ifndef LINUX_SYSTEM_H_INCLUDED
+#define LINUX_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef LINUX_UTILS_STDSTRING_H_INCLUDED
+#define LINUX_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 #include <vector>
 
 struct DBusConnection;

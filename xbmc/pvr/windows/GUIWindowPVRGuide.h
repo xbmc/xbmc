@@ -20,11 +20,31 @@
  *
  */
 
+#ifndef WINDOWS_GUIWINDOWPVRCOMMON_H_INCLUDED
+#define WINDOWS_GUIWINDOWPVRCOMMON_H_INCLUDED
 #include "GUIWindowPVRCommon.h"
+#endif
+
+#ifndef WINDOWS_EPG_GUIEPGGRIDCONTAINER_H_INCLUDED
+#define WINDOWS_EPG_GUIEPGGRIDCONTAINER_H_INCLUDED
 #include "epg/GUIEPGGridContainer.h"
+#endif
+
+#ifndef WINDOWS_THREADS_CRITICALSECTION_H_INCLUDED
+#define WINDOWS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef WINDOWS_UTILS_OBSERVER_H_INCLUDED
+#define WINDOWS_UTILS_OBSERVER_H_INCLUDED
 #include "utils/Observer.h"
+#endif
+
+#ifndef WINDOWS____CHANNELS_PVRCHANNELGROUP_H_INCLUDED
+#define WINDOWS____CHANNELS_PVRCHANNELGROUP_H_INCLUDED
 #include "../channels/PVRChannelGroup.h"
+#endif
+
 
 class CSetting;
 

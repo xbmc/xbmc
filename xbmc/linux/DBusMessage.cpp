@@ -17,7 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef LINUX_DBUSMESSAGE_H_INCLUDED
+#define LINUX_DBUSMESSAGE_H_INCLUDED
 #include "DBusMessage.h"
+#endif
+
 #ifdef HAS_DBUS
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"

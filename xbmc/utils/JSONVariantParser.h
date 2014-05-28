@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef UTILS_SYSTEM_H_INCLUDED
+#define UTILS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef UTILS_VARIANT_H_INCLUDED
+#define UTILS_VARIANT_H_INCLUDED
 #include "Variant.h"
+#endif
+
 
 #include <yajl/yajl_parse.h>
 #include <yajl/yajl_gen.h>

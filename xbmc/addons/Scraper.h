@@ -18,11 +18,31 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef ADDONS_ADDONS_ADDON_H_INCLUDED
+#define ADDONS_ADDONS_ADDON_H_INCLUDED
 #include "addons/Addon.h"
+#endif
+
+#ifndef ADDONS_XBDATETIME_H_INCLUDED
+#define ADDONS_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef ADDONS_UTILS_SCRAPERURL_H_INCLUDED
+#define ADDONS_UTILS_SCRAPERURL_H_INCLUDED
 #include "utils/ScraperUrl.h"
+#endif
+
+#ifndef ADDONS_UTILS_SCRAPERPARSER_H_INCLUDED
+#define ADDONS_UTILS_SCRAPERPARSER_H_INCLUDED
 #include "utils/ScraperParser.h"
+#endif
+
+#ifndef ADDONS_VIDEO_EPISODE_H_INCLUDED
+#define ADDONS_VIDEO_EPISODE_H_INCLUDED
 #include "video/Episode.h"
+#endif
+
 
 class CAlbum;
 class CArtist;

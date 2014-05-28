@@ -17,10 +17,22 @@
  *
  */
 
+#ifndef EFFECTS_MAP_H_INCLUDED
+#define EFFECTS_MAP_H_INCLUDED
 #include "map.h"
-#include "angelscript.h"
+#endif
 
+#ifndef EFFECTS_ANGELSCRIPT_H_INCLUDED
+#define EFFECTS_ANGELSCRIPT_H_INCLUDED
+#include "angelscript.h"
+#endif
+
+
+#ifndef EFFECTS_SHADER_H_INCLUDED
+#define EFFECTS_SHADER_H_INCLUDED
 #include "Shader.h"
+#endif
+
 
 #define GRID_WIDTH (32)
 #define GRID_HEIGHT (24)

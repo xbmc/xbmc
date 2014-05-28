@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef GUILIB_DIRECTXGRAPHICS_H_INCLUDED
+#define GUILIB_DIRECTXGRAPHICS_H_INCLUDED
 #include "DirectXGraphics.h"
+#endif
+
+#ifndef GUILIB_TEXTURE_H_INCLUDED
+#define GUILIB_TEXTURE_H_INCLUDED
 #include "Texture.h"
+#endif
+
+#ifndef GUILIB_XBTF_H_INCLUDED
+#define GUILIB_XBTF_H_INCLUDED
 #include "XBTF.h"
+#endif
+
 
 LPVOID XPhysicalAlloc(SIZE_T s, DWORD ulPhysicalAddress, DWORD ulAlignment, DWORD flProtect)
 {

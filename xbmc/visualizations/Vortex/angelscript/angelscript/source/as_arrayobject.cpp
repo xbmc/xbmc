@@ -32,9 +32,21 @@
 #include <new>
 #include <stdlib.h>
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
+#ifndef SOURCE_AS_ARRAYOBJECT_H_INCLUDED
+#define SOURCE_AS_ARRAYOBJECT_H_INCLUDED
 #include "as_arrayobject.h"
+#endif
+
+#ifndef SOURCE_AS_TEXTS_H_INCLUDED
+#define SOURCE_AS_TEXTS_H_INCLUDED
 #include "as_texts.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

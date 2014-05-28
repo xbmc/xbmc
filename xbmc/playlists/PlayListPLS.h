@@ -18,7 +18,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef PLAYLISTS_PLAYLIST_H_INCLUDED
+#define PLAYLISTS_PLAYLIST_H_INCLUDED
 #include "PlayList.h"
+#endif
+
 
 namespace PLAYLIST
 {

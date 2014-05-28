@@ -18,20 +18,52 @@
  *
  */
 
+#ifndef DLLLOADER_DLLLOADERCONTAINER_H_INCLUDED
+#define DLLLOADER_DLLLOADERCONTAINER_H_INCLUDED
 #include "DllLoaderContainer.h"
+#endif
+
 #ifdef TARGET_POSIX
 #include "SoLoader.h"
 #endif
 #ifdef TARGET_WINDOWS
 #include "Win32DllLoader.h"
 #endif
+#ifndef DLLLOADER_DLLLOADER_H_INCLUDED
+#define DLLLOADER_DLLLOADER_H_INCLUDED
 #include "DllLoader.h"
+#endif
+
+#ifndef DLLLOADER_DLL_TRACKER_H_INCLUDED
+#define DLLLOADER_DLL_TRACKER_H_INCLUDED
 #include "dll_tracker.h" // for python unload hack
+#endif
+
+#ifndef DLLLOADER_FILESYSTEM_FILE_H_INCLUDED
+#define DLLLOADER_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef DLLLOADER_UTILS_URIUTILS_H_INCLUDED
+#define DLLLOADER_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef DLLLOADER_UTILS_STRINGUTILS_H_INCLUDED
+#define DLLLOADER_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef DLLLOADER_UTILS_LOG_H_INCLUDED
+#define DLLLOADER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DLLLOADER_URL_H_INCLUDED
+#define DLLLOADER_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 #define ENV_PARTIAL_PATH "special://xbmcbin/system/;" \
                  "special://xbmcbin/system/players/mplayer/;" \

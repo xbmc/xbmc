@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_CHARSEQUENCE_H_INCLUDED
+#define JNI_CHARSEQUENCE_H_INCLUDED
 #include "CharSequence.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

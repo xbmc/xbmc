@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGTELETEXT_H_INCLUDED
+#define DIALOGS_GUIDIALOGTELETEXT_H_INCLUDED
 #include "GUIDialogTeletext.h"
+#endif
+
+#ifndef DIALOGS_UTILS_LOG_H_INCLUDED
+#define DIALOGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DIALOGS_APPLICATION_H_INCLUDED
+#define DIALOGS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUITEXTURE_H_INCLUDED
+#define DIALOGS_GUILIB_GUITEXTURE_H_INCLUDED
 #include "guilib/GUITexture.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_TEXTURE_H_INCLUDED
+#define DIALOGS_GUILIB_TEXTURE_H_INCLUDED
 #include "guilib/Texture.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef DIALOGS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define DIALOGS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef DIALOGS_CORES_IPLAYER_H_INCLUDED
+#define DIALOGS_CORES_IPLAYER_H_INCLUDED
 #include "cores/IPlayer.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_SETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
 
 using namespace std;
 

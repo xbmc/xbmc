@@ -18,21 +18,81 @@
  *
  */
 
+#ifndef JSON_RPC_AUDIOLIBRARY_H_INCLUDED
+#define JSON_RPC_AUDIOLIBRARY_H_INCLUDED
 #include "AudioLibrary.h"
+#endif
+
+#ifndef JSON_RPC_MUSIC_MUSICDATABASE_H_INCLUDED
+#define JSON_RPC_MUSIC_MUSICDATABASE_H_INCLUDED
 #include "music/MusicDatabase.h"
+#endif
+
+#ifndef JSON_RPC_FILEITEM_H_INCLUDED
+#define JSON_RPC_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef JSON_RPC_UTIL_H_INCLUDED
+#define JSON_RPC_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_STRINGUTILS_H_INCLUDED
+#define JSON_RPC_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_URIUTILS_H_INCLUDED
+#define JSON_RPC_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef JSON_RPC_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define JSON_RPC_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef JSON_RPC_MUSIC_ARTIST_H_INCLUDED
+#define JSON_RPC_MUSIC_ARTIST_H_INCLUDED
 #include "music/Artist.h"
+#endif
+
+#ifndef JSON_RPC_MUSIC_ALBUM_H_INCLUDED
+#define JSON_RPC_MUSIC_ALBUM_H_INCLUDED
 #include "music/Album.h"
+#endif
+
+#ifndef JSON_RPC_MUSIC_SONG_H_INCLUDED
+#define JSON_RPC_MUSIC_SONG_H_INCLUDED
 #include "music/Song.h"
+#endif
+
+#ifndef JSON_RPC_MUSIC_ARTIST_H_INCLUDED
+#define JSON_RPC_MUSIC_ARTIST_H_INCLUDED
 #include "music/Artist.h"
+#endif
+
+#ifndef JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
+#define JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef JSON_RPC_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define JSON_RPC_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef JSON_RPC_FILESYSTEM_FILE_H_INCLUDED
+#define JSON_RPC_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef JSON_RPC_SETTINGS_SETTINGS_H_INCLUDED
+#define JSON_RPC_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
 
 using namespace MUSIC_INFO;
 using namespace JSONRPC;

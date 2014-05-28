@@ -18,13 +18,33 @@
  *
  */
 
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
 
+
+#ifndef TEST_TESTBASICENVIRONMENT_H_INCLUDED
+#define TEST_TESTBASICENVIRONMENT_H_INCLUDED
 #include "TestBasicEnvironment.h"
-#include "TestUtils.h"
+#endif
 
+#ifndef TEST_TESTUTILS_H_INCLUDED
+#define TEST_TESTUTILS_H_INCLUDED
+#include "TestUtils.h"
+#endif
+
+
+#ifndef TEST_THREADS_THREAD_H_INCLUDED
+#define TEST_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef TEST_COMMONS_ILOG_H_INCLUDED
+#define TEST_COMMONS_ILOG_H_INCLUDED
 #include "commons/ilog.h"
+#endif
+
 
 #include <cstdio>
 #include <cstdlib>

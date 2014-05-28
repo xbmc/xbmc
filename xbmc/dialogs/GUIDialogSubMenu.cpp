@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGSUBMENU_H_INCLUDED
+#define DIALOGS_GUIDIALOGSUBMENU_H_INCLUDED
 #include "GUIDialogSubMenu.h"
+#endif
+
 
 CGUIDialogSubMenu::CGUIDialogSubMenu(int id, const CStdString &xmlFile)
     : CGUIDialog(id, xmlFile)

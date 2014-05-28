@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef LINUX_PERIPHERALS_BUS_PERIPHERALBUS_H_INCLUDED
+#define LINUX_PERIPHERALS_BUS_PERIPHERALBUS_H_INCLUDED
 #include "peripherals/bus/PeripheralBus.h"
+#endif
+
+#ifndef LINUX_PERIPHERALS_DEVICES_PERIPHERAL_H_INCLUDED
+#define LINUX_PERIPHERALS_DEVICES_PERIPHERAL_H_INCLUDED
 #include "peripherals/devices/Peripheral.h"
+#endif
+
 
 struct udev;
 struct udev_monitor;

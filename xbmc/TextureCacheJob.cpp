@@ -18,21 +18,81 @@
  *
  */
 
+#ifndef ROOT_TEXTURECACHEJOB_H_INCLUDED
+#define ROOT_TEXTURECACHEJOB_H_INCLUDED
 #include "TextureCacheJob.h"
+#endif
+
+#ifndef ROOT_TEXTURECACHE_H_INCLUDED
+#define ROOT_TEXTURECACHE_H_INCLUDED
 #include "TextureCache.h"
+#endif
+
+#ifndef ROOT_GUILIB_TEXTURE_H_INCLUDED
+#define ROOT_GUILIB_TEXTURE_H_INCLUDED
 #include "guilib/Texture.h"
+#endif
+
+#ifndef ROOT_GUILIB_DDSIMAGE_H_INCLUDED
+#define ROOT_GUILIB_DDSIMAGE_H_INCLUDED
 #include "guilib/DDSImage.h"
+#endif
+
+#ifndef ROOT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef ROOT_SETTINGS_SETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef ROOT_UTILS_LOG_H_INCLUDED
+#define ROOT_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_FILE_H_INCLUDED
+#define ROOT_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef ROOT_PICTURES_PICTURE_H_INCLUDED
+#define ROOT_PICTURES_PICTURE_H_INCLUDED
 #include "pictures/Picture.h"
+#endif
+
+#ifndef ROOT_UTILS_URIUTILS_H_INCLUDED
+#define ROOT_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef ROOT_UTILS_STRINGUTILS_H_INCLUDED
+#define ROOT_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ROOT_URL_H_INCLUDED
+#define ROOT_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef ROOT_FILEITEM_H_INCLUDED
+#define ROOT_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef ROOT_MUSIC_MUSICTHUMBLOADER_H_INCLUDED
+#define ROOT_MUSIC_MUSICTHUMBLOADER_H_INCLUDED
 #include "music/MusicThumbLoader.h"
+#endif
+
+#ifndef ROOT_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define ROOT_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
 #if defined(HAS_OMXPLAYER)
 #include "cores/omxplayer/OMXImage.h"
 #endif

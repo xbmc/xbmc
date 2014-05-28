@@ -38,28 +38,92 @@
 
 #pragma once
 
+#ifndef VIDEO_SYSTEM_GL_H_INCLUDED
+#define VIDEO_SYSTEM_GL_H_INCLUDED
 #include "system_gl.h"
+#endif
 
+
+#ifndef VIDEO_DLLAVUTIL_H_INCLUDED
+#define VIDEO_DLLAVUTIL_H_INCLUDED
 #include "DllAvUtil.h"
+#endif
+
+#ifndef VIDEO_DVDVIDEOCODEC_H_INCLUDED
+#define VIDEO_DVDVIDEOCODEC_H_INCLUDED
 #include "DVDVideoCodec.h"
+#endif
+
+#ifndef VIDEO_DVDVIDEOCODECFFMPEG_H_INCLUDED
+#define VIDEO_DVDVIDEOCODECFFMPEG_H_INCLUDED
 #include "DVDVideoCodecFFmpeg.h"
+#endif
+
+#ifndef VIDEO_LIBAVCODEC_VDPAU_H_INCLUDED
+#define VIDEO_LIBAVCODEC_VDPAU_H_INCLUDED
 #include "libavcodec/vdpau.h"
+#endif
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #define GLX_GLXEXT_PROTOTYPES
 #include <GL/glx.h>
 
+#ifndef VIDEO_DLLAVUTIL_H_INCLUDED
+#define VIDEO_DLLAVUTIL_H_INCLUDED
 #include "DllAvUtil.h"
+#endif
+
+#ifndef VIDEO_DVDVIDEOCODEC_H_INCLUDED
+#define VIDEO_DVDVIDEOCODEC_H_INCLUDED
 #include "DVDVideoCodec.h"
+#endif
+
+#ifndef VIDEO_DVDVIDEOCODECFFMPEG_H_INCLUDED
+#define VIDEO_DVDVIDEOCODECFFMPEG_H_INCLUDED
 #include "DVDVideoCodecFFmpeg.h"
+#endif
+
+#ifndef VIDEO_LIBAVCODEC_VDPAU_H_INCLUDED
+#define VIDEO_LIBAVCODEC_VDPAU_H_INCLUDED
 #include "libavcodec/vdpau.h"
+#endif
+
+#ifndef VIDEO_THREADS_CRITICALSECTION_H_INCLUDED
+#define VIDEO_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef VIDEO_THREADS_SHAREDSECTION_H_INCLUDED
+#define VIDEO_THREADS_SHAREDSECTION_H_INCLUDED
 #include "threads/SharedSection.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_VIDEOSETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_VIDEOSETTINGS_H_INCLUDED
 #include "settings/VideoSettings.h"
+#endif
+
+#ifndef VIDEO_GUILIB_DISPRESOURCE_H_INCLUDED
+#define VIDEO_GUILIB_DISPRESOURCE_H_INCLUDED
 #include "guilib/DispResource.h"
+#endif
+
+#ifndef VIDEO_THREADS_EVENT_H_INCLUDED
+#define VIDEO_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
+#ifndef VIDEO_THREADS_THREAD_H_INCLUDED
+#define VIDEO_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef VIDEO_UTILS_ACTORPROTOCOL_H_INCLUDED
+#define VIDEO_UTILS_ACTORPROTOCOL_H_INCLUDED
 #include "utils/ActorProtocol.h"
+#endif
+
 #include <list>
 
 using namespace Actor;

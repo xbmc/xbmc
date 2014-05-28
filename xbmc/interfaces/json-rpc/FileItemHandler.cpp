@@ -21,29 +21,121 @@
 #include <map>
 #include <string.h>
 
+#ifndef JSON_RPC_FILEITEMHANDLER_H_INCLUDED
+#define JSON_RPC_FILEITEMHANDLER_H_INCLUDED
 #include "FileItemHandler.h"
+#endif
+
+#ifndef JSON_RPC_PLAYLISTOPERATIONS_H_INCLUDED
+#define JSON_RPC_PLAYLISTOPERATIONS_H_INCLUDED
 #include "PlaylistOperations.h"
+#endif
+
+#ifndef JSON_RPC_AUDIOLIBRARY_H_INCLUDED
+#define JSON_RPC_AUDIOLIBRARY_H_INCLUDED
 #include "AudioLibrary.h"
+#endif
+
+#ifndef JSON_RPC_VIDEOLIBRARY_H_INCLUDED
+#define JSON_RPC_VIDEOLIBRARY_H_INCLUDED
 #include "VideoLibrary.h"
+#endif
+
+#ifndef JSON_RPC_FILEOPERATIONS_H_INCLUDED
+#define JSON_RPC_FILEOPERATIONS_H_INCLUDED
 #include "FileOperations.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_URIUTILS_H_INCLUDED
+#define JSON_RPC_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_ISERIALIZABLE_H_INCLUDED
+#define JSON_RPC_UTILS_ISERIALIZABLE_H_INCLUDED
 #include "utils/ISerializable.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_VARIANT_H_INCLUDED
+#define JSON_RPC_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef JSON_RPC_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define JSON_RPC_VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "video/VideoInfoTag.h"
+#endif
+
+#ifndef JSON_RPC_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define JSON_RPC_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef JSON_RPC_PICTURES_PICTUREINFOTAG_H_INCLUDED
+#define JSON_RPC_PICTURES_PICTUREINFOTAG_H_INCLUDED
 #include "pictures/PictureInfoTag.h"
+#endif
+
+#ifndef JSON_RPC_VIDEO_VIDEODATABASE_H_INCLUDED
+#define JSON_RPC_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
+#ifndef JSON_RPC_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define JSON_RPC_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef JSON_RPC_FILESYSTEM_FILE_H_INCLUDED
+#define JSON_RPC_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef JSON_RPC_TEXTUREDATABASE_H_INCLUDED
+#define JSON_RPC_TEXTUREDATABASE_H_INCLUDED
 #include "TextureDatabase.h"
+#endif
+
+#ifndef JSON_RPC_VIDEO_VIDEOTHUMBLOADER_H_INCLUDED
+#define JSON_RPC_VIDEO_VIDEOTHUMBLOADER_H_INCLUDED
 #include "video/VideoThumbLoader.h"
+#endif
+
+#ifndef JSON_RPC_MUSIC_MUSICTHUMBLOADER_H_INCLUDED
+#define JSON_RPC_MUSIC_MUSICTHUMBLOADER_H_INCLUDED
 #include "music/MusicThumbLoader.h"
+#endif
+
+#ifndef JSON_RPC_UTIL_H_INCLUDED
+#define JSON_RPC_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef JSON_RPC_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
+#define JSON_RPC_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
 #include "pvr/channels/PVRChannel.h"
+#endif
+
+#ifndef JSON_RPC_PVR_RECORDINGS_PVRRECORDING_H_INCLUDED
+#define JSON_RPC_PVR_RECORDINGS_PVRRECORDING_H_INCLUDED
 #include "pvr/recordings/PVRRecording.h"
+#endif
+
+#ifndef JSON_RPC_PVR_TIMERS_PVRTIMERINFOTAG_H_INCLUDED
+#define JSON_RPC_PVR_TIMERS_PVRTIMERINFOTAG_H_INCLUDED
 #include "pvr/timers/PVRTimerInfoTag.h"
+#endif
+
+#ifndef JSON_RPC_EPG_EPG_H_INCLUDED
+#define JSON_RPC_EPG_EPG_H_INCLUDED
 #include "epg/Epg.h"
+#endif
+
+#ifndef JSON_RPC_EPG_EPGCONTAINER_H_INCLUDED
+#define JSON_RPC_EPG_EPGCONTAINER_H_INCLUDED
 #include "epg/EpgContainer.h"
+#endif
+
 
 using namespace MUSIC_INFO;
 using namespace JSONRPC;

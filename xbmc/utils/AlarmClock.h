@@ -20,10 +20,26 @@
  *
  */
 
+#ifndef UTILS_STDSTRING_H_INCLUDED
+#define UTILS_STDSTRING_H_INCLUDED
 #include "StdString.h"
+#endif
+
+#ifndef UTILS_STOPWATCH_H_INCLUDED
+#define UTILS_STOPWATCH_H_INCLUDED
 #include "Stopwatch.h"
+#endif
+
+#ifndef UTILS_THREADS_CRITICALSECTION_H_INCLUDED
+#define UTILS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef UTILS_THREADS_THREAD_H_INCLUDED
+#define UTILS_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
 
 #include <map>
 

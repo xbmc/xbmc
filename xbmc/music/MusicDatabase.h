@@ -22,11 +22,31 @@
 \brief
 */
 #pragma once
+#ifndef MUSIC_DBWRAPPERS_DATABASE_H_INCLUDED
+#define MUSIC_DBWRAPPERS_DATABASE_H_INCLUDED
 #include "dbwrappers/Database.h"
+#endif
+
+#ifndef MUSIC_ALBUM_H_INCLUDED
+#define MUSIC_ALBUM_H_INCLUDED
 #include "Album.h"
+#endif
+
+#ifndef MUSIC_ADDONS_SCRAPER_H_INCLUDED
+#define MUSIC_ADDONS_SCRAPER_H_INCLUDED
 #include "addons/Scraper.h"
+#endif
+
+#ifndef MUSIC_UTILS_SORTUTILS_H_INCLUDED
+#define MUSIC_UTILS_SORTUTILS_H_INCLUDED
 #include "utils/SortUtils.h"
+#endif
+
+#ifndef MUSIC_MUSICDBURL_H_INCLUDED
+#define MUSIC_MUSICDBURL_H_INCLUDED
 #include "MusicDbUrl.h"
+#endif
+
 
 class CArtist;
 class CFileItem;

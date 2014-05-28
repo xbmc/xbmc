@@ -19,10 +19,26 @@
  *
  */
 
+#ifndef ACTIVITY_ANDROIDTOUCH_H_INCLUDED
+#define ACTIVITY_ANDROIDTOUCH_H_INCLUDED
 #include "AndroidTouch.h"
+#endif
+
+#ifndef ACTIVITY_ANDROIDKEY_H_INCLUDED
+#define ACTIVITY_ANDROIDKEY_H_INCLUDED
 #include "AndroidKey.h"
+#endif
+
+#ifndef ACTIVITY_ANDROIDMOUSE_H_INCLUDED
+#define ACTIVITY_ANDROIDMOUSE_H_INCLUDED
 #include "AndroidMouse.h"
+#endif
+
+#ifndef ACTIVITY_ANDROIDJOYSTICK_H_INCLUDED
+#define ACTIVITY_ANDROIDJOYSTICK_H_INCLUDED
 #include "AndroidJoyStick.h"
+#endif
+
 
 class IInputHandler
 : public CAndroidKey

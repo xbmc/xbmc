@@ -28,7 +28,11 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
+#ifndef VIS_MILKDROP_UTILITY_H_INCLUDED
+#define VIS_MILKDROP_UTILITY_H_INCLUDED
 #include "utility.h"
+#endif
+
 #include <stdio.h>
 #include <math.h>
 #include <windows.h>

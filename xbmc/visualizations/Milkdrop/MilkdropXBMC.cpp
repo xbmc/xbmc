@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef MILKDROP_VIS_MILKDROP_PLUGIN_H_INCLUDED
+#define MILKDROP_VIS_MILKDROP_PLUGIN_H_INCLUDED
 #include "vis_milkdrop/Plugin.h"
+#endif
+
+#ifndef MILKDROP_______ADDONS_INCLUDE_XBMC_VIS_DLL_H_INCLUDED
+#define MILKDROP_______ADDONS_INCLUDE_XBMC_VIS_DLL_H_INCLUDED
 #include "../../addons/include/xbmc_vis_dll.h"
+#endif
+
+#ifndef MILKDROP_XMLDOCUMENT_H_INCLUDED
+#define MILKDROP_XMLDOCUMENT_H_INCLUDED
 #include "XmlDocument.h"
+#endif
+
 #include <string>
 #include <direct.h>
 

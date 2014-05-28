@@ -19,8 +19,16 @@
 *
 */
 
+#ifndef EGLHELPERS_VISSHADER_H_INCLUDED
+#define EGLHELPERS_VISSHADER_H_INCLUDED
 #include "VisShader.h"
+#endif
+
+#ifndef EGLHELPERS_VISMATRIXGLES_H_INCLUDED
+#define EGLHELPERS_VISMATRIXGLES_H_INCLUDED
 #include "VisMatrixGLES.h"
+#endif
+
 
 class CVisGUIShader : public CVisGLSLShaderProgram, public CVisMatrixGLES
 {

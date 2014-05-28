@@ -20,9 +20,21 @@
 
 #pragma once
 
+#ifndef ROOT_DBWRAPPERS_DATABASE_H_INCLUDED
+#define ROOT_DBWRAPPERS_DATABASE_H_INCLUDED
 #include "dbwrappers/Database.h"
+#endif
+
+#ifndef ROOT_TEXTURECACHEJOB_H_INCLUDED
+#define ROOT_TEXTURECACHEJOB_H_INCLUDED
 #include "TextureCacheJob.h"
+#endif
+
+#ifndef ROOT_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
+#define ROOT_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
 #include "playlists/SmartPlayList.h"
+#endif
+
 
 class CVariant;
 

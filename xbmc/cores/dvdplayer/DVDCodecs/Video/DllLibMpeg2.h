@@ -32,8 +32,16 @@ extern "C" {
   #include <mpeg2dec/mpeg2convert.h>
 #endif
 }
+#ifndef VIDEO_DYNAMICDLL_H_INCLUDED
+#define VIDEO_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
+#ifndef VIDEO_UTILS_LOG_H_INCLUDED
+#define VIDEO_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 class DllLibMpeg2Interface
 {

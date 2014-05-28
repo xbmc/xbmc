@@ -18,17 +18,61 @@
  *
  */
 
+#ifndef WINDOWS_GUIWINDOWHOME_H_INCLUDED
+#define WINDOWS_GUIWINDOWHOME_H_INCLUDED
 #include "GUIWindowHome.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_KEY_H_INCLUDED
+#define WINDOWS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_WINDOWIDS_H_INCLUDED
+#define WINDOWS_GUILIB_WINDOWIDS_H_INCLUDED
 #include "guilib/WindowIDs.h"
+#endif
+
+#ifndef WINDOWS_UTILS_JOBMANAGER_H_INCLUDED
+#define WINDOWS_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
+#ifndef WINDOWS_UTILS_RECENTLYADDEDJOB_H_INCLUDED
+#define WINDOWS_UTILS_RECENTLYADDEDJOB_H_INCLUDED
 #include "utils/RecentlyAddedJob.h"
+#endif
+
+#ifndef WINDOWS_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#define WINDOWS_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
 #include "interfaces/AnnouncementManager.h"
+#endif
+
+#ifndef WINDOWS_UTILS_LOG_H_INCLUDED
+#define WINDOWS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef WINDOWS_UTILS_VARIANT_H_INCLUDED
+#define WINDOWS_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef WINDOWS_APPLICATION_H_INCLUDED
+#define WINDOWS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
 
 using namespace ANNOUNCEMENT;
 

@@ -18,45 +18,201 @@
  *
  */
 
+#ifndef ROOT_FILEITEM_H_INCLUDED
+#define ROOT_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef ROOT_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define ROOT_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef ROOT_UTILS_STRINGUTILS_H_INCLUDED
+#define ROOT_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ROOT_UTILS_URIUTILS_H_INCLUDED
+#define ROOT_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef ROOT_UTIL_H_INCLUDED
+#define ROOT_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef ROOT_PLAYLISTS_PLAYLISTFACTORY_H_INCLUDED
+#define ROOT_PLAYLISTS_PLAYLISTFACTORY_H_INCLUDED
 #include "playlists/PlayListFactory.h"
+#endif
+
+#ifndef ROOT_UTILS_CRC32_H_INCLUDED
+#define ROOT_UTILS_CRC32_H_INCLUDED
 #include "utils/Crc32.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define ROOT_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
+#define ROOT_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
 #include "filesystem/StackDirectory.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_CURLFILE_H_INCLUDED
+#define ROOT_FILESYSTEM_CURLFILE_H_INCLUDED
 #include "filesystem/CurlFile.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_MULTIPATHDIRECTORY_H_INCLUDED
+#define ROOT_FILESYSTEM_MULTIPATHDIRECTORY_H_INCLUDED
 #include "filesystem/MultiPathDirectory.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_MUSICDATABASEDIRECTORY_H_INCLUDED
+#define ROOT_FILESYSTEM_MUSICDATABASEDIRECTORY_H_INCLUDED
 #include "filesystem/MusicDatabaseDirectory.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_VIDEODATABASEDIRECTORY_H_INCLUDED
+#define ROOT_FILESYSTEM_VIDEODATABASEDIRECTORY_H_INCLUDED
 #include "filesystem/VideoDatabaseDirectory.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_VIDEODATABASEDIRECTORY_QUERYPARAMS_H_INCLUDED
+#define ROOT_FILESYSTEM_VIDEODATABASEDIRECTORY_QUERYPARAMS_H_INCLUDED
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
+#endif
+
+#ifndef ROOT_MUSIC_TAGS_MUSICINFOTAGLOADERFACTORY_H_INCLUDED
+#define ROOT_MUSIC_TAGS_MUSICINFOTAGLOADERFACTORY_H_INCLUDED
 #include "music/tags/MusicInfoTagLoaderFactory.h"
+#endif
+
+#ifndef ROOT_CUEDOCUMENT_H_INCLUDED
+#define ROOT_CUEDOCUMENT_H_INCLUDED
 #include "CueDocument.h"
+#endif
+
+#ifndef ROOT_VIDEO_VIDEODATABASE_H_INCLUDED
+#define ROOT_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
+#ifndef ROOT_MUSIC_MUSICDATABASE_H_INCLUDED
+#define ROOT_MUSIC_MUSICDATABASE_H_INCLUDED
 #include "music/MusicDatabase.h"
+#endif
+
+#ifndef ROOT_UTILS_TUXBOXUTIL_H_INCLUDED
+#define ROOT_UTILS_TUXBOXUTIL_H_INCLUDED
 #include "utils/TuxBoxUtil.h"
+#endif
+
+#ifndef ROOT_EPG_EPG_H_INCLUDED
+#define ROOT_EPG_EPG_H_INCLUDED
 #include "epg/Epg.h"
+#endif
+
+#ifndef ROOT_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
+#define ROOT_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
 #include "pvr/channels/PVRChannel.h"
+#endif
+
+#ifndef ROOT_PVR_RECORDINGS_PVRRECORDING_H_INCLUDED
+#define ROOT_PVR_RECORDINGS_PVRRECORDING_H_INCLUDED
 #include "pvr/recordings/PVRRecording.h"
+#endif
+
+#ifndef ROOT_PVR_TIMERS_PVRTIMERINFOTAG_H_INCLUDED
+#define ROOT_PVR_TIMERS_PVRTIMERINFOTAG_H_INCLUDED
 #include "pvr/timers/PVRTimerInfoTag.h"
+#endif
+
+#ifndef ROOT_UTILS_OBSERVER_H_INCLUDED
+#define ROOT_UTILS_OBSERVER_H_INCLUDED
 #include "utils/Observer.h"
+#endif
+
+#ifndef ROOT_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define ROOT_VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "video/VideoInfoTag.h"
+#endif
+
+#ifndef ROOT_THREADS_SINGLELOCK_H_INCLUDED
+#define ROOT_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef ROOT_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define ROOT_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef ROOT_PICTURES_PICTUREINFOTAG_H_INCLUDED
+#define ROOT_PICTURES_PICTUREINFOTAG_H_INCLUDED
 #include "pictures/PictureInfoTag.h"
+#endif
+
+#ifndef ROOT_MUSIC_ARTIST_H_INCLUDED
+#define ROOT_MUSIC_ARTIST_H_INCLUDED
 #include "music/Artist.h"
+#endif
+
+#ifndef ROOT_MUSIC_ALBUM_H_INCLUDED
+#define ROOT_MUSIC_ALBUM_H_INCLUDED
 #include "music/Album.h"
+#endif
+
+#ifndef ROOT_MUSIC_SONG_H_INCLUDED
+#define ROOT_MUSIC_SONG_H_INCLUDED
 #include "music/Song.h"
+#endif
+
+#ifndef ROOT_URL_H_INCLUDED
+#define ROOT_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef ROOT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef ROOT_SETTINGS_SETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef ROOT_UTILS_REGEXP_H_INCLUDED
+#define ROOT_UTILS_REGEXP_H_INCLUDED
 #include "utils/RegExp.h"
+#endif
+
+#ifndef ROOT_UTILS_LOG_H_INCLUDED
+#define ROOT_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ROOT_UTILS_VARIANT_H_INCLUDED
+#define ROOT_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef ROOT_MUSIC_KARAOKE_KARAOKELYRICSFACTORY_H_INCLUDED
+#define ROOT_MUSIC_KARAOKE_KARAOKELYRICSFACTORY_H_INCLUDED
 #include "music/karaoke/karaokelyricsfactory.h"
+#endif
+
+#ifndef ROOT_UTILS_MIME_H_INCLUDED
+#define ROOT_UTILS_MIME_H_INCLUDED
 #include "utils/Mime.h"
+#endif
+
 #ifdef HAS_ASAP_CODEC
 #include "cores/paplayer/ASAPCodec.h"
 #endif

@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef UTILS_FANART_H_INCLUDED
+#define UTILS_FANART_H_INCLUDED
 #include "Fanart.h"
+#endif
+
+#ifndef UTILS_UTILS_XBMCTINYXML_H_INCLUDED
+#define UTILS_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef UTILS_URIUTILS_H_INCLUDED
+#define UTILS_URIUTILS_H_INCLUDED
 #include "URIUtils.h"
+#endif
+
+#ifndef UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_STRINGUTILS_H_INCLUDED
 #include "StringUtils.h"
+#endif
+
 
 const unsigned int CFanart::max_fanart_colors=3;
 

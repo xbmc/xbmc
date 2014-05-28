@@ -22,11 +22,31 @@
 #include <map>
 #include <string>
 
+#ifndef VIEW_VIEWSTATE_H_INCLUDED
+#define VIEW_VIEWSTATE_H_INCLUDED
 #include "ViewState.h"
+#endif
+
+#ifndef VIEW_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define VIEW_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h"
+#endif
+
+#ifndef VIEW_SETTINGS_LIB_ISUBSETTINGS_H_INCLUDED
+#define VIEW_SETTINGS_LIB_ISUBSETTINGS_H_INCLUDED
 #include "settings/lib/ISubSettings.h"
+#endif
+
+#ifndef VIEW_SETTINGS_LIB_SETTING_H_INCLUDED
+#define VIEW_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef VIEW_THREADS_CRITICALSECTION_H_INCLUDED
+#define VIEW_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 class TiXmlNode;
 

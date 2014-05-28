@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef PICTURES_VIEW_GUIVIEWSTATE_H_INCLUDED
+#define PICTURES_VIEW_GUIVIEWSTATE_H_INCLUDED
 #include "view/GUIViewState.h"
+#endif
+
 
 class CGUIViewStateWindowPictures : public CGUIViewState
 {

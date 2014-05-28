@@ -18,16 +18,56 @@
  *
  */
 
+#ifndef KARAOKE_SYSTEM_H_INCLUDED
+#define KARAOKE_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef KARAOKE_FILESYSTEM_FILE_H_INCLUDED
+#define KARAOKE_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef KARAOKE_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#define KARAOKE_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
 #include "settings/DisplaySettings.h"
+#endif
+
+#ifndef KARAOKE_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define KARAOKE_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h"
+#endif
+
+#ifndef KARAOKE_GUILIB_TEXTURE_H_INCLUDED
+#define KARAOKE_GUILIB_TEXTURE_H_INCLUDED
 #include "guilib/Texture.h"
+#endif
+
+#ifndef KARAOKE_GUILIB_GUITEXTURE_H_INCLUDED
+#define KARAOKE_GUILIB_GUITEXTURE_H_INCLUDED
 #include "guilib/GUITexture.h"
+#endif
+
+#ifndef KARAOKE_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define KARAOKE_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef KARAOKE_UTILS_MATHUTILS_H_INCLUDED
+#define KARAOKE_UTILS_MATHUTILS_H_INCLUDED
 #include "utils/MathUtils.h"
+#endif
+
+#ifndef KARAOKE_UTILS_LOG_H_INCLUDED
+#define KARAOKE_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef KARAOKE_KARAOKELYRICSCDG_H_INCLUDED
+#define KARAOKE_KARAOKELYRICSCDG_H_INCLUDED
 #include "karaokelyricscdg.h"
+#endif
+
 
 
 CKaraokeLyricsCDG::CKaraokeLyricsCDG( const CStdString& cdgFile )

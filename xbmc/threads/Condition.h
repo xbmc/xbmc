@@ -20,9 +20,17 @@
 
 #pragma once
 
+#ifndef THREADS_THREADS_PLATFORM_CONDITION_H_INCLUDED
+#define THREADS_THREADS_PLATFORM_CONDITION_H_INCLUDED
 #include "threads/platform/Condition.h"
+#endif
 
+
+#ifndef THREADS_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define THREADS_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
 #include <stdio.h>
 
 namespace XbmcThreads

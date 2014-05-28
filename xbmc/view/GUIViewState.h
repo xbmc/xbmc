@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef VIEW_UTILS_LABELFORMATTER_H_INCLUDED
+#define VIEW_UTILS_LABELFORMATTER_H_INCLUDED
 #include "utils/LabelFormatter.h"
+#endif
+
+#ifndef VIEW_UTILS_SORTUTILS_H_INCLUDED
+#define VIEW_UTILS_SORTUTILS_H_INCLUDED
 #include "utils/SortUtils.h"
+#endif
+
+#ifndef VIEW_MEDIASOURCE_H_INCLUDED
+#define VIEW_MEDIASOURCE_H_INCLUDED
 #include "MediaSource.h"
+#endif
+
 
 class CViewState; // forward
 class CFileItemList;

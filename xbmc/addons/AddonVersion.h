@@ -22,7 +22,11 @@
 #include <string.h>
 #include <iostream>
 #include <boost/operators.hpp>
+#ifndef ADDONS_UTILS_STDSTRING_H_INCLUDED
+#define ADDONS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 namespace ADDON
 {

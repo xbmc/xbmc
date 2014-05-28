@@ -18,9 +18,17 @@
  *
  */
 
+#ifndef TEST_UTILS_TEST_TESTGLOBALSHANDLINGPATTERN1_H_INCLUDED
+#define TEST_UTILS_TEST_TESTGLOBALSHANDLINGPATTERN1_H_INCLUDED
 #include "utils/test/TestGlobalsHandlingPattern1.h"
+#endif
 
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 using namespace xbmcutil;
 using namespace test;

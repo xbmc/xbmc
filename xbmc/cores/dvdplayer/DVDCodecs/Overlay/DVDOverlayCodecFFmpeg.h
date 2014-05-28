@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef OVERLAY_DVDOVERLAYCODEC_H_INCLUDED
+#define OVERLAY_DVDOVERLAYCODEC_H_INCLUDED
 #include "DVDOverlayCodec.h"
+#endif
+
+#ifndef OVERLAY_DLLAVCODEC_H_INCLUDED
+#define OVERLAY_DLLAVCODEC_H_INCLUDED
 #include "DllAvCodec.h"
+#endif
+
+#ifndef OVERLAY_DLLAVUTIL_H_INCLUDED
+#define OVERLAY_DLLAVUTIL_H_INCLUDED
 #include "DllAvUtil.h"
+#endif
+
 
 class CDVDOverlaySpu;
 class CDVDOverlayText;

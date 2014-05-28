@@ -26,10 +26,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#ifndef FILESYSTEM_SYSTEM_H_INCLUDED
+#define FILESYSTEM_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UDF25_H_INCLUDED
+#define FILESYSTEM_UDF25_H_INCLUDED
 #include "udf25.h"
+#endif
+
+#ifndef FILESYSTEM_FILE_H_INCLUDED
+#define FILESYSTEM_FILE_H_INCLUDED
 #include "File.h"
+#endif
+
 
 /* For direct data access, LSB first */
 #define GETN1(p) ((uint8_t)data[p])

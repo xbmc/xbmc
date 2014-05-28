@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef GUILIB_GUIFADELABELCONTROL_H_INCLUDED
+#define GUILIB_GUIFADELABELCONTROL_H_INCLUDED
 #include "GUIFadeLabelControl.h"
+#endif
+
 
 using namespace std;
 

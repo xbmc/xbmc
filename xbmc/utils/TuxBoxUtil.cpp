@@ -22,25 +22,101 @@
 // GeminiServer
 //
 
+#ifndef UTILS_TUXBOXUTIL_H_INCLUDED
+#define UTILS_TUXBOXUTIL_H_INCLUDED
 #include "TuxBoxUtil.h"
+#endif
+
+#ifndef UTILS_URIUTILS_H_INCLUDED
+#define UTILS_URIUTILS_H_INCLUDED
 #include "URIUtils.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_CURLFILE_H_INCLUDED
+#define UTILS_FILESYSTEM_CURLFILE_H_INCLUDED
 #include "filesystem/CurlFile.h"
+#endif
+
+#ifndef UTILS_DIALOGS_GUIDIALOGCONTEXTMENU_H_INCLUDED
+#define UTILS_DIALOGS_GUIDIALOGCONTEXTMENU_H_INCLUDED
 #include "dialogs/GUIDialogContextMenu.h"
+#endif
+
+#ifndef UTILS_APPLICATION_H_INCLUDED
+#define UTILS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef UTILS_APPLICATIONMESSENGER_H_INCLUDED
+#define UTILS_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef UTILS_GUIINFOMANAGER_H_INCLUDED
+#define UTILS_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef UTILS_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define UTILS_VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "video/VideoInfoTag.h"
+#endif
+
+#ifndef UTILS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define UTILS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef UTILS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define UTILS_DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef UTILS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define UTILS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_FILE_H_INCLUDED
+#define UTILS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef UTILS_URL_H_INCLUDED
+#define UTILS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef UTILS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define UTILS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef UTILS_FILEITEM_H_INCLUDED
+#define UTILS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef UTILS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define UTILS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_STRINGUTILS_H_INCLUDED
 #include "StringUtils.h"
+#endif
+
+#ifndef UTILS_UTILS_XBMCTINYXML_H_INCLUDED
+#define UTILS_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef UTILS_LOG_H_INCLUDED
+#define UTILS_LOG_H_INCLUDED
 #include "log.h"
+#endif
+
 
 using namespace XFILE;
 using namespace std;

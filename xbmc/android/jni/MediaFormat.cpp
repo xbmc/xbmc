@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef JNI_JNIBASE_H_INCLUDED
+#define JNI_JNIBASE_H_INCLUDED
 #include "JNIBase.h"
+#endif
+
+#ifndef JNI_MEDIAFORMAT_H_INCLUDED
+#define JNI_MEDIAFORMAT_H_INCLUDED
 #include "MediaFormat.h"
+#endif
+
 
 #include "jutils/jutils-details.hpp"
 

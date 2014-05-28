@@ -20,9 +20,21 @@
  */
 /***************************************************************************/
 
+#ifndef LIBSTAGEFRIGHTICS_THREADS_THREAD_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef LIBSTAGEFRIGHTICS_XBMC_GUILIB_FRAMEBUFFEROBJECT_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_XBMC_GUILIB_FRAMEBUFFEROBJECT_H_INCLUDED
 #include "xbmc/guilib/FrameBufferObject.h"
+#endif
+
+#ifndef LIBSTAGEFRIGHTICS_CORES_VIDEORENDERERS_RENDERFORMATS_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_CORES_VIDEORENDERERS_RENDERFORMATS_H_INCLUDED
 #include "cores/VideoRenderers/RenderFormats.h"
+#endif
+
 
 #include <android/native_window.h>
 #include <android/native_window_jni.h>
@@ -43,7 +55,11 @@
 #include <ui/PixelFormat.h>
 #include <gui/SurfaceTexture.h>
 
+#ifndef LIBSTAGEFRIGHTICS_SYSTEM_GL_H_INCLUDED
+#define LIBSTAGEFRIGHTICS_SYSTEM_GL_H_INCLUDED
 #include "system_gl.h"
+#endif
+
 
 #include <map>
 #include <list>

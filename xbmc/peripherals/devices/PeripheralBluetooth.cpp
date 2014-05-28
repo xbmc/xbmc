@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef DEVICES_PERIPHERALBLUETOOTH_H_INCLUDED
+#define DEVICES_PERIPHERALBLUETOOTH_H_INCLUDED
 #include "PeripheralBluetooth.h"
+#endif
+
+#ifndef DEVICES_UTILS_LOG_H_INCLUDED
+#define DEVICES_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 using namespace PERIPHERALS;
 

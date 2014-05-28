@@ -18,16 +18,56 @@
  *
  */
 
+#ifndef ROOT_DATABASEMANAGER_H_INCLUDED
+#define ROOT_DATABASEMANAGER_H_INCLUDED
 #include "DatabaseManager.h"
+#endif
+
+#ifndef ROOT_UTILS_LOG_H_INCLUDED
+#define ROOT_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ROOT_ADDONS_ADDONDATABASE_H_INCLUDED
+#define ROOT_ADDONS_ADDONDATABASE_H_INCLUDED
 #include "addons/AddonDatabase.h"
+#endif
+
+#ifndef ROOT_VIEW_VIEWDATABASE_H_INCLUDED
+#define ROOT_VIEW_VIEWDATABASE_H_INCLUDED
 #include "view/ViewDatabase.h"
+#endif
+
+#ifndef ROOT_TEXTUREDATABASE_H_INCLUDED
+#define ROOT_TEXTUREDATABASE_H_INCLUDED
 #include "TextureDatabase.h"
+#endif
+
+#ifndef ROOT_MUSIC_MUSICDATABASE_H_INCLUDED
+#define ROOT_MUSIC_MUSICDATABASE_H_INCLUDED
 #include "music/MusicDatabase.h"
+#endif
+
+#ifndef ROOT_VIDEO_VIDEODATABASE_H_INCLUDED
+#define ROOT_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
+#ifndef ROOT_PVR_PVRDATABASE_H_INCLUDED
+#define ROOT_PVR_PVRDATABASE_H_INCLUDED
 #include "pvr/PVRDatabase.h"
+#endif
+
+#ifndef ROOT_EPG_EPGDATABASE_H_INCLUDED
+#define ROOT_EPG_EPGDATABASE_H_INCLUDED
 #include "epg/EpgDatabase.h"
+#endif
+
+#ifndef ROOT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
 
 using namespace std;
 using namespace EPG;

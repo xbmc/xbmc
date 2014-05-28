@@ -20,11 +20,31 @@
  *
  */
 
+#ifndef DIALOGS_GUILIB_GUIDIALOG_H_INCLUDED
+#define DIALOGS_GUILIB_GUIDIALOG_H_INCLUDED
 #include "guilib/GUIDialog.h"
+#endif
+
+#ifndef DIALOGS_MUSIC_SONG_H_INCLUDED
+#define DIALOGS_MUSIC_SONG_H_INCLUDED
 #include "music/Song.h"
+#endif
+
+#ifndef DIALOGS_MUSIC_ARTIST_H_INCLUDED
+#define DIALOGS_MUSIC_ARTIST_H_INCLUDED
 #include "music/Artist.h"
+#endif
+
+#ifndef DIALOGS_MUSIC_ALBUM_H_INCLUDED
+#define DIALOGS_MUSIC_ALBUM_H_INCLUDED
 #include "music/Album.h"
+#endif
+
+#ifndef DIALOGS_FILEITEM_H_INCLUDED
+#define DIALOGS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
 
 class CFileItem;
 class CFileItemList;

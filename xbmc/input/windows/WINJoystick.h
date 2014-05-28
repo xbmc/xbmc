@@ -22,8 +22,16 @@
 #include <vector>
 #include <string>
 #include <stdint.h>
+#ifndef WINDOWS_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
+#define WINDOWS_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
 #include "settings/lib/ISettingCallback.h"
+#endif
+
+#ifndef WINDOWS_THREADS_CRITICALSECTION_H_INCLUDED
+#define WINDOWS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 #define JACTIVE_BUTTON 0x00000001
 #define JACTIVE_AXIS   0x00000002

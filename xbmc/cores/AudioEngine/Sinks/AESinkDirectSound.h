@@ -21,10 +21,22 @@
 
 #include <stdint.h>
 #include <dsound.h>
+#ifndef SINKS_CORES_AUDIOENGINE_INTERFACES_AESINK_H_INCLUDED
+#define SINKS_CORES_AUDIOENGINE_INTERFACES_AESINK_H_INCLUDED
 #include "cores/AudioEngine/Interfaces/AESink.h"
-#include "cores/AudioEngine/Utils/AEDeviceInfo.h"
+#endif
 
+#ifndef SINKS_CORES_AUDIOENGINE_UTILS_AEDEVICEINFO_H_INCLUDED
+#define SINKS_CORES_AUDIOENGINE_UTILS_AEDEVICEINFO_H_INCLUDED
+#include "cores/AudioEngine/Utils/AEDeviceInfo.h"
+#endif
+
+
+#ifndef SINKS_THREADS_CRITICALSECTION_H_INCLUDED
+#define SINKS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 class CAESinkDirectSound : public IAESink
 {

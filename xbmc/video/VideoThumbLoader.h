@@ -20,9 +20,21 @@
  */
 
 #include <map>
+#ifndef VIDEO_THUMBLOADER_H_INCLUDED
+#define VIDEO_THUMBLOADER_H_INCLUDED
 #include "ThumbLoader.h"
+#endif
+
+#ifndef VIDEO_UTILS_JOBMANAGER_H_INCLUDED
+#define VIDEO_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
+#ifndef VIDEO_FILEITEM_H_INCLUDED
+#define VIDEO_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
 
 class CStreamDetails;
 class CVideoDatabase;

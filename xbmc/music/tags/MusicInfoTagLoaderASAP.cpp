@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef TAGS_MUSICINFOTAGLOADERASAP_H_INCLUDED
+#define TAGS_MUSICINFOTAGLOADERASAP_H_INCLUDED
 #include "MusicInfoTagLoaderASAP.h"
+#endif
+
+#ifndef TAGS_UTILS_URIUTILS_H_INCLUDED
+#define TAGS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef TAGS_UTILS_STRINGUTILS_H_INCLUDED
+#define TAGS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef TAGS_MUSICINFOTAG_H_INCLUDED
+#define TAGS_MUSICINFOTAG_H_INCLUDED
 #include "MusicInfoTag.h"
+#endif
+
 
 using namespace MUSIC_INFO;
 

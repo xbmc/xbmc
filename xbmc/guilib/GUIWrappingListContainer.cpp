@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef GUILIB_GUIWRAPPINGLISTCONTAINER_H_INCLUDED
+#define GUILIB_GUIWRAPPINGLISTCONTAINER_H_INCLUDED
 #include "GUIWrappingListContainer.h"
+#endif
+
+#ifndef GUILIB_FILEITEM_H_INCLUDED
+#define GUILIB_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 CGUIWrappingListContainer::CGUIWrappingListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems, int fixedPosition)
     : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scroller, preloadItems)

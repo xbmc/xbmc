@@ -21,13 +21,33 @@
  *
  */
 
+#ifndef FILESYSTEM_DAAPFILE_H_INCLUDED
+#define FILESYSTEM_DAAPFILE_H_INCLUDED
 #include "DAAPFile.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
+#define FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 #include <sys/stat.h>
 
+#ifndef FILESYSTEM_LIB_LIBXDAAP_PRIVATE_H_INCLUDED
+#define FILESYSTEM_LIB_LIBXDAAP_PRIVATE_H_INCLUDED
 #include "lib/libXDAAP/private.h"
+#endif
+
 
 using namespace XFILE;
 

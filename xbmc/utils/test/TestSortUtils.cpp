@@ -18,10 +18,22 @@
  *
  */
 
+#ifndef TEST_UTILS_SORTUTILS_H_INCLUDED
+#define TEST_UTILS_SORTUTILS_H_INCLUDED
 #include "utils/SortUtils.h"
-#include "utils/Variant.h"
+#endif
 
+#ifndef TEST_UTILS_VARIANT_H_INCLUDED
+#define TEST_UTILS_VARIANT_H_INCLUDED
+#include "utils/Variant.h"
+#endif
+
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 TEST(TestSortUtils, Sort_SortBy)
 {

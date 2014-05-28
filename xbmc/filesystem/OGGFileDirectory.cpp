@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef FILESYSTEM_OGGFILEDIRECTORY_H_INCLUDED
+#define FILESYSTEM_OGGFILEDIRECTORY_H_INCLUDED
 #include "OGGFileDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_CORES_PAPLAYER_OGGCALLBACK_H_INCLUDED
+#define FILESYSTEM_CORES_PAPLAYER_OGGCALLBACK_H_INCLUDED
 #include "cores/paplayer/OggCallback.h"
+#endif
+
+#ifndef FILESYSTEM_FILE_H_INCLUDED
+#define FILESYSTEM_FILE_H_INCLUDED
 #include "File.h"
+#endif
+
 
 using namespace MUSIC_INFO;
 using namespace XFILE;

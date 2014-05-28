@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef ROOT_BACKGROUNDINFOLOADER_H_INCLUDED
+#define ROOT_BACKGROUNDINFOLOADER_H_INCLUDED
 #include "BackgroundInfoLoader.h"
+#endif
+
+#ifndef ROOT_UTILS_STDSTRING_H_INCLUDED
+#define ROOT_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 class CTextureDatabase;
 

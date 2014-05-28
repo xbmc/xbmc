@@ -23,10 +23,26 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 
+#ifndef PLAYLISTS_DBWRAPPERS_DATABASEQUERY_H_INCLUDED
+#define PLAYLISTS_DBWRAPPERS_DATABASEQUERY_H_INCLUDED
 #include "dbwrappers/DatabaseQuery.h"
+#endif
+
+#ifndef PLAYLISTS_UTILS_SORTUTILS_H_INCLUDED
+#define PLAYLISTS_UTILS_SORTUTILS_H_INCLUDED
 #include "utils/SortUtils.h"
+#endif
+
+#ifndef PLAYLISTS_UTILS_STDSTRING_H_INCLUDED
+#define PLAYLISTS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef PLAYLISTS_UTILS_XBMCTINYXML_H_INCLUDED
+#define PLAYLISTS_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
 
 class CVariant;
 

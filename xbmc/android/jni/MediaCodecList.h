@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef JNI_JNIBASE_H_INCLUDED
+#define JNI_JNIBASE_H_INCLUDED
 #include "JNIBase.h"
+#endif
+
+#ifndef JNI_MEDIACODECINFO_H_INCLUDED
+#define JNI_MEDIACODECINFO_H_INCLUDED
 #include "MediaCodecInfo.h"
+#endif
+
 
 class CJNIMediaCodecList : public CJNIBase
 {

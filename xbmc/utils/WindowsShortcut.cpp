@@ -22,8 +22,16 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#ifndef UTILS_SC_H_INCLUDED
+#define UTILS_SC_H_INCLUDED
 #include "sc.h"
+#endif
+
+#ifndef UTILS_WINDOWSSHORTCUT_H_INCLUDED
+#define UTILS_WINDOWSSHORTCUT_H_INCLUDED
 #include "WindowsShortcut.h"
+#endif
+
 
 #ifdef _DEBUG
 #undef THIS_FILE

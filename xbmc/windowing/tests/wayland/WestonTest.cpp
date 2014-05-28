@@ -24,12 +24,32 @@
 
 #include <signal.h>
 
+#ifndef WAYLAND_TEST_TESTUTILS_H_INCLUDED
+#define WAYLAND_TEST_TESTUTILS_H_INCLUDED
 #include "test/TestUtils.h"
-#include "utils/log.h"
+#endif
 
+#ifndef WAYLAND_UTILS_LOG_H_INCLUDED
+#define WAYLAND_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+
+#ifndef WAYLAND_TMPENV_H_INCLUDED
+#define WAYLAND_TMPENV_H_INCLUDED
 #include "TmpEnv.h"
+#endif
+
+#ifndef WAYLAND_WESTONPROCESS_H_INCLUDED
+#define WAYLAND_WESTONPROCESS_H_INCLUDED
 #include "WestonProcess.h"
+#endif
+
+#ifndef WAYLAND_WESTONTEST_H_INCLUDED
+#define WAYLAND_WESTONTEST_H_INCLUDED
 #include "WestonTest.h"
+#endif
+
 
 namespace xt = xbmc::test;
 

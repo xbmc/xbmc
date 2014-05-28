@@ -18,15 +18,51 @@
  *
  */
  
+#ifndef DIALOGS_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define DIALOGS_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef DIALOGS_GUIDIALOGCACHE_H_INCLUDED
+#define DIALOGS_GUIDIALOGCACHE_H_INCLUDED
 #include "GUIDialogCache.h"
+#endif
+
+#ifndef DIALOGS_APPLICATIONMESSENGER_H_INCLUDED
+#define DIALOGS_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef DIALOGS_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#define DIALOGS_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
 #include "dialogs/GUIDialogProgress.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef DIALOGS_UTILS_LOG_H_INCLUDED
+#define DIALOGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DIALOGS_THREADS_SINGLELOCK_H_INCLUDED
+#define DIALOGS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef DIALOGS_UTILS_TIMEUTILS_H_INCLUDED
+#define DIALOGS_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
 
 CGUIDialogCache::CGUIDialogCache(DWORD dwDelay, const CStdString& strHeader, const CStdString& strMsg) : CThread("GUIDialogCache")
 {

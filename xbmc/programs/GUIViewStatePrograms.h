@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef PROGRAMS_VIEW_GUIVIEWSTATE_H_INCLUDED
+#define PROGRAMS_VIEW_GUIVIEWSTATE_H_INCLUDED
 #include "view/GUIViewState.h"
+#endif
+
 
 class CGUIViewStateWindowPrograms : public CGUIViewState
 {

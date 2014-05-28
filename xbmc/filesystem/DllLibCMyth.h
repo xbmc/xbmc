@@ -19,11 +19,23 @@
  *
  */
 
+#ifndef FILESYSTEM_DYNAMICDLL_H_INCLUDED
+#define FILESYSTEM_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
 
 extern "C" {
+#ifndef FILESYSTEM_CMYTH_INCLUDE_CMYTH_CMYTH_H_INCLUDED
+#define FILESYSTEM_CMYTH_INCLUDE_CMYTH_CMYTH_H_INCLUDED
 #include "cmyth/include/cmyth/cmyth.h"
+#endif
+
+#ifndef FILESYSTEM_CMYTH_INCLUDE_REFMEM_REFMEM_H_INCLUDED
+#define FILESYSTEM_CMYTH_INCLUDE_REFMEM_REFMEM_H_INCLUDED
 #include "cmyth/include/refmem/refmem.h"
+#endif
+
 }
 
 class DllLibCMythInterface

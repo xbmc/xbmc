@@ -21,9 +21,21 @@
  */
 #include <boost/noncopyable.hpp>
 
+#ifndef WAYLAND_WINDOWING_DLLWAYLANDCLIENT_H_INCLUDED
+#define WAYLAND_WINDOWING_DLLWAYLANDCLIENT_H_INCLUDED
 #include "windowing/DllWaylandClient.h"
+#endif
+
+#ifndef WAYLAND_WINDOWING_DLLWAYLANDEGL_H_INCLUDED
+#define WAYLAND_WINDOWING_DLLWAYLANDEGL_H_INCLUDED
 #include "windowing/DllWaylandEgl.h"
+#endif
+
+#ifndef WAYLAND_WINDOWING_DLLXKBCOMMON_H_INCLUDED
+#define WAYLAND_WINDOWING_DLLXKBCOMMON_H_INCLUDED
 #include "windowing/DllXKBCommon.h"
+#endif
+
 
 namespace xbmc
 {

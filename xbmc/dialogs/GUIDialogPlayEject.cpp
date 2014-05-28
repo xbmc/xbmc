@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef DIALOGS_AUTORUN_H_INCLUDED
+#define DIALOGS_AUTORUN_H_INCLUDED
 #include "Autorun.h"
+#endif
+
+#ifndef DIALOGS_GUIDIALOGPLAYEJECT_H_INCLUDED
+#define DIALOGS_GUIDIALOGPLAYEJECT_H_INCLUDED
 #include "GUIDialogPlayEject.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef DIALOGS_STORAGE_MEDIAMANAGER_H_INCLUDED
+#define DIALOGS_STORAGE_MEDIAMANAGER_H_INCLUDED
 #include "storage/MediaManager.h"
+#endif
+
+#ifndef DIALOGS_UTILS_LOG_H_INCLUDED
+#define DIALOGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DIALOGS_UTILS_URIUTILS_H_INCLUDED
+#define DIALOGS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef DIALOGS_UTILS_XMLUTILS_H_INCLUDED
+#define DIALOGS_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef DIALOGS_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define DIALOGS_VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "video/VideoInfoTag.h"
+#endif
+
 
 #define ID_BUTTON_PLAY      11
 #define ID_BUTTON_EJECT     10

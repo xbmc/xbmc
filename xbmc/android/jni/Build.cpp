@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_BUILD_H_INCLUDED
+#define JNI_BUILD_H_INCLUDED
 #include "Build.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

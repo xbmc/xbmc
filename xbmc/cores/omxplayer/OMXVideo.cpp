@@ -24,17 +24,53 @@
 #include "system.h"
 #endif
 
+#ifndef OMXPLAYER_OMXVIDEO_H_INCLUDED
+#define OMXPLAYER_OMXVIDEO_H_INCLUDED
 #include "OMXVideo.h"
+#endif
 
+
+#ifndef OMXPLAYER_UTILS_LOG_H_INCLUDED
+#define OMXPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
-#include "linux/XMemUtils.h"
-#include "DVDDemuxers/DVDDemuxUtils.h"
-#include "settings/AdvancedSettings.h"
-#include "xbmc/guilib/GraphicContext.h"
-#include "settings/Settings.h"
-#include "utils/BitstreamConverter.h"
+#endif
 
+#ifndef OMXPLAYER_LINUX_XMEMUTILS_H_INCLUDED
+#define OMXPLAYER_LINUX_XMEMUTILS_H_INCLUDED
+#include "linux/XMemUtils.h"
+#endif
+
+#ifndef OMXPLAYER_DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
+#define OMXPLAYER_DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
+#include "DVDDemuxers/DVDDemuxUtils.h"
+#endif
+
+#ifndef OMXPLAYER_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define OMXPLAYER_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef OMXPLAYER_XBMC_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define OMXPLAYER_XBMC_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#include "xbmc/guilib/GraphicContext.h"
+#endif
+
+#ifndef OMXPLAYER_SETTINGS_SETTINGS_H_INCLUDED
+#define OMXPLAYER_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef OMXPLAYER_UTILS_BITSTREAMCONVERTER_H_INCLUDED
+#define OMXPLAYER_UTILS_BITSTREAMCONVERTER_H_INCLUDED
+#include "utils/BitstreamConverter.h"
+#endif
+
+
+#ifndef OMXPLAYER_LINUX_RBP_H_INCLUDED
+#define OMXPLAYER_LINUX_RBP_H_INCLUDED
 #include "linux/RBP.h"
+#endif
+
 
 #include <sys/time.h>
 #include <inttypes.h>

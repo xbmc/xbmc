@@ -18,19 +18,71 @@
  *
  */
 
+#ifndef PICTURES_PICTURETHUMBLOADER_H_INCLUDED
+#define PICTURES_PICTURETHUMBLOADER_H_INCLUDED
 #include "PictureThumbLoader.h"
+#endif
+
+#ifndef PICTURES_PICTURE_H_INCLUDED
+#define PICTURES_PICTURE_H_INCLUDED
 #include "Picture.h"
+#endif
+
+#ifndef PICTURES_FILESYSTEM_FILE_H_INCLUDED
+#define PICTURES_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef PICTURES_FILEITEM_H_INCLUDED
+#define PICTURES_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef PICTURES_TEXTURECACHE_H_INCLUDED
+#define PICTURES_TEXTURECACHE_H_INCLUDED
 #include "TextureCache.h"
+#endif
+
+#ifndef PICTURES_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define PICTURES_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef PICTURES_FILESYSTEM_MULTIPATHDIRECTORY_H_INCLUDED
+#define PICTURES_FILESYSTEM_MULTIPATHDIRECTORY_H_INCLUDED
 #include "filesystem/MultiPathDirectory.h"
+#endif
+
+#ifndef PICTURES_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define PICTURES_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef PICTURES_GUIUSERMESSAGES_H_INCLUDED
+#define PICTURES_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef PICTURES_UTILS_URIUTILS_H_INCLUDED
+#define PICTURES_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef PICTURES_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define PICTURES_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef PICTURES_SETTINGS_SETTINGS_H_INCLUDED
+#define PICTURES_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef PICTURES_VIDEO_VIDEOTHUMBLOADER_H_INCLUDED
+#define PICTURES_VIDEO_VIDEOTHUMBLOADER_H_INCLUDED
 #include "video/VideoThumbLoader.h"
+#endif
+
 
 using namespace XFILE;
 using namespace std;

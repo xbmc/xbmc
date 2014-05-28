@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGPVRRECORDINGINFO_H_INCLUDED
+#define DIALOGS_GUIDIALOGPVRRECORDINGINFO_H_INCLUDED
 #include "GUIDialogPVRRecordingInfo.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef DIALOGS_FILEITEM_H_INCLUDED
+#define DIALOGS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
 
 using namespace std;
 using namespace PVR;

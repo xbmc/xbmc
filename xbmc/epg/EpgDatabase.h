@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef EPG_DBWRAPPERS_DATABASE_H_INCLUDED
+#define EPG_DBWRAPPERS_DATABASE_H_INCLUDED
 #include "dbwrappers/Database.h"
+#endif
+
+#ifndef EPG_XBDATETIME_H_INCLUDED
+#define EPG_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
 
 namespace EPG
 {

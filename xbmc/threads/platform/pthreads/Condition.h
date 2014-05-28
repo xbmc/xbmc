@@ -20,8 +20,16 @@
 
 #pragma once
 
+#ifndef PTHREADS_THREADS_SINGLELOCK_H_INCLUDED
+#define PTHREADS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef PTHREADS_THREADS_HELPERS_H_INCLUDED
+#define PTHREADS_THREADS_HELPERS_H_INCLUDED
 #include "threads/Helpers.h"
+#endif
+
 
 #include <pthread.h>
 

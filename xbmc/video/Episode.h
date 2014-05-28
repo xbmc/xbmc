@@ -18,8 +18,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef VIDEO_UTILS_SCRAPERURL_H_INCLUDED
+#define VIDEO_UTILS_SCRAPERURL_H_INCLUDED
 #include "utils/ScraperUrl.h"
+#endif
+
+#ifndef VIDEO_XBDATETIME_H_INCLUDED
+#define VIDEO_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
 
 // single episode information
 namespace VIDEO

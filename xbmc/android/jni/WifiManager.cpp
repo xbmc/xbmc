@@ -18,13 +18,41 @@
  *
  */
 
+#ifndef JNI_WIFIMANAGER_H_INCLUDED
+#define JNI_WIFIMANAGER_H_INCLUDED
 #include "WifiManager.h"
+#endif
+
+#ifndef JNI_DHCPINFO_H_INCLUDED
+#define JNI_DHCPINFO_H_INCLUDED
 #include "DhcpInfo.h"
+#endif
+
+#ifndef JNI_LIST_H_INCLUDED
+#define JNI_LIST_H_INCLUDED
 #include "List.h"
+#endif
+
+#ifndef JNI_WIFIINFO_H_INCLUDED
+#define JNI_WIFIINFO_H_INCLUDED
 #include "WifiInfo.h"
+#endif
+
+#ifndef JNI_WIFICONFIGURATION_H_INCLUDED
+#define JNI_WIFICONFIGURATION_H_INCLUDED
 #include "WifiConfiguration.h"
+#endif
+
+#ifndef JNI_SCANRESULT_H_INCLUDED
+#define JNI_SCANRESULT_H_INCLUDED
 #include "ScanResult.h"
+#endif
+
+#ifndef JNI_WIFIMANAGERMULTICASTLOCK_H_INCLUDED
+#define JNI_WIFIMANAGERMULTICASTLOCK_H_INCLUDED
 #include "WifiManagerMulticastLock.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

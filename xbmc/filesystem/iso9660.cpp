@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef FILESYSTEM_SYSTEM_H_INCLUDED
+#define FILESYSTEM_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 /*
  Redbook   : CDDA
@@ -42,11 +50,31 @@ ISO9660
 
 
 */
+#ifndef FILESYSTEM_ISO9660_H_INCLUDED
+#define FILESYSTEM_ISO9660_H_INCLUDED
 #include "iso9660.h"
+#endif
+
+#ifndef FILESYSTEM_STORAGE_IOSUPPORT_H_INCLUDED
+#define FILESYSTEM_STORAGE_IOSUPPORT_H_INCLUDED
 #include "storage/IoSupport.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define FILESYSTEM_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
+#define FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef FILESYSTEM_IFILE_H_INCLUDED
+#define FILESYSTEM_IFILE_H_INCLUDED
 #include "IFile.h"
+#endif
+
 
 #ifndef TARGET_WINDOWS
 #include "storage/DetectDVDType.h"  // for MODE2_DATA_SIZE etc.

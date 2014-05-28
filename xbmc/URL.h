@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef ROOT_UTILS_STDSTRING_H_INCLUDED
+#define ROOT_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef ROOT_UTILS_URLOPTIONS_H_INCLUDED
+#define ROOT_UTILS_URLOPTIONS_H_INCLUDED
 #include "utils/UrlOptions.h"
+#endif
+
 
 #ifdef TARGET_WINDOWS
 #undef SetPort // WIN32INCLUDES this is defined as SetPortA in WinSpool.h which is being included _somewhere_

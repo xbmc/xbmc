@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef UTILS_ACTORPROTOCOL_H_INCLUDED
+#define UTILS_ACTORPROTOCOL_H_INCLUDED
 #include "ActorProtocol.h"
+#endif
+
 
 using namespace Actor;
 

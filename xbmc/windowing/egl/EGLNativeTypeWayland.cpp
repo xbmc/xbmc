@@ -17,7 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef EGL_SYSTEM_H_INCLUDED
+#define EGL_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #if defined(HAVE_WAYLAND)
 
@@ -54,7 +58,11 @@
 
 #endif
 
+#ifndef EGL_EGLNATIVETYPEWAYLAND_H_INCLUDED
+#define EGL_EGLNATIVETYPEWAYLAND_H_INCLUDED
 #include "EGLNativeTypeWayland.h"
+#endif
+
 
 #if defined(HAVE_WAYLAND)
 namespace xw = xbmc::wayland;

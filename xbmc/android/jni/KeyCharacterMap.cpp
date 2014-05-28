@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_KEYCHARACTERMAP_H_INCLUDED
+#define JNI_KEYCHARACTERMAP_H_INCLUDED
 #include "KeyCharacterMap.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

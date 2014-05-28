@@ -18,17 +18,61 @@
  *
  */
 
+#ifndef GUILIB_SYSTEM_H_INCLUDED
+#define GUILIB_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef GUILIB_GUIFONT_H_INCLUDED
+#define GUILIB_GUIFONT_H_INCLUDED
 #include "GUIFont.h"
+#endif
+
+#ifndef GUILIB_GUIFONTTTFGL_H_INCLUDED
+#define GUILIB_GUIFONTTTFGL_H_INCLUDED
 #include "GUIFontTTFGL.h"
+#endif
+
+#ifndef GUILIB_GUIFONTMANAGER_H_INCLUDED
+#define GUILIB_GUIFONTMANAGER_H_INCLUDED
 #include "GUIFontManager.h"
+#endif
+
+#ifndef GUILIB_TEXTURE_H_INCLUDED
+#define GUILIB_TEXTURE_H_INCLUDED
 #include "Texture.h"
+#endif
+
+#ifndef GUILIB_TEXTUREMANAGER_H_INCLUDED
+#define GUILIB_TEXTUREMANAGER_H_INCLUDED
 #include "TextureManager.h"
+#endif
+
+#ifndef GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "GraphicContext.h"
+#endif
+
+#ifndef GUILIB_GUI3D_H_INCLUDED
+#define GUILIB_GUI3D_H_INCLUDED
 #include "gui3d.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef GUILIB_UTILS_GLUTILS_H_INCLUDED
+#define GUILIB_UTILS_GLUTILS_H_INCLUDED
 #include "utils/GLUtils.h"
+#endif
+
+#ifndef GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
 
 // stuff for freetype
 #include <ft2build.h>

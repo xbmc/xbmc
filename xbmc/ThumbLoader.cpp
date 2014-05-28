@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef ROOT_THUMBLOADER_H_INCLUDED
+#define ROOT_THUMBLOADER_H_INCLUDED
 #include "ThumbLoader.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_FILE_H_INCLUDED
+#define ROOT_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef ROOT_FILEITEM_H_INCLUDED
+#define ROOT_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef ROOT_TEXTURECACHE_H_INCLUDED
+#define ROOT_TEXTURECACHE_H_INCLUDED
 #include "TextureCache.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

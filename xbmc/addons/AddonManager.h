@@ -18,19 +18,43 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef ADDONS_ADDON_H_INCLUDED
+#define ADDONS_ADDON_H_INCLUDED
 #include "Addon.h"
+#endif
+
+#ifndef ADDONS_THREADS_CRITICALSECTION_H_INCLUDED
+#define ADDONS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef ADDONS_UTILS_STDSTRING_H_INCLUDED
+#define ADDONS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef ADDONS_UTILS_OBSERVER_H_INCLUDED
+#define ADDONS_UTILS_OBSERVER_H_INCLUDED
 #include "utils/Observer.h"
+#endif
+
 #include <vector>
 #include <map>
 #include <deque>
+#ifndef ADDONS_ADDONDATABASE_H_INCLUDED
+#define ADDONS_ADDONDATABASE_H_INCLUDED
 #include "AddonDatabase.h"
+#endif
+
 
 class DllLibCPluff;
 extern "C"
 {
+#ifndef ADDONS_LIB_CPLUFF_LIBCPLUFF_CPLUFF_H_INCLUDED
+#define ADDONS_LIB_CPLUFF_LIBCPLUFF_CPLUFF_H_INCLUDED
 #include "lib/cpluff/libcpluff/cpluff.h"
+#endif
+
 }
 
 namespace ADDON

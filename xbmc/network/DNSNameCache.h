@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef NETWORK_UTILS_STDSTRING_H_INCLUDED
+#define NETWORK_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 #include <vector>
 

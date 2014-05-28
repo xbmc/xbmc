@@ -18,18 +18,66 @@
  *
  */
 
+#ifndef FILESYSTEM_SYSTEM_H_INCLUDED
+#define FILESYSTEM_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef FILESYSTEM_VIRTUALDIRECTORY_H_INCLUDED
+#define FILESYSTEM_VIRTUALDIRECTORY_H_INCLUDED
 #include "VirtualDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_DIRECTORYFACTORY_H_INCLUDED
+#define FILESYSTEM_DIRECTORYFACTORY_H_INCLUDED
 #include "DirectoryFactory.h"
+#endif
+
+#ifndef FILESYSTEM_UTIL_H_INCLUDED
+#define FILESYSTEM_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_DIRECTORY_H_INCLUDED
+#define FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "Directory.h"
+#endif
+
+#ifndef FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
+#define FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
 #include "DirectoryCache.h"
+#endif
+
+#ifndef FILESYSTEM_SOURCESDIRECTORY_H_INCLUDED
+#define FILESYSTEM_SOURCESDIRECTORY_H_INCLUDED
 #include "SourcesDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_STORAGE_MEDIAMANAGER_H_INCLUDED
+#define FILESYSTEM_STORAGE_MEDIAMANAGER_H_INCLUDED
 #include "storage/MediaManager.h"
+#endif
+
+#ifndef FILESYSTEM_FILE_H_INCLUDED
+#define FILESYSTEM_FILE_H_INCLUDED
 #include "File.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
 #ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
 #endif

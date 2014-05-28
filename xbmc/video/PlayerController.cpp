@@ -18,26 +18,90 @@
  *
  */
 
+#ifndef VIDEO_PLAYERCONTROLLER_H_INCLUDED
+#define VIDEO_PLAYERCONTROLLER_H_INCLUDED
 #include "PlayerController.h"
+#endif
+
+#ifndef VIDEO_UTILS_STDSTRING_H_INCLUDED
+#define VIDEO_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
 #include "settings/DisplaySettings.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_MEDIASETTINGS_H_INCLUDED
 #include "settings/MediaSettings.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_SETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef VIDEO_CORES_IPLAYER_H_INCLUDED
+#define VIDEO_CORES_IPLAYER_H_INCLUDED
 #include "cores/IPlayer.h"
+#endif
+
+#ifndef VIDEO_GUILIB_KEY_H_INCLUDED
+#define VIDEO_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef VIDEO_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define VIDEO_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef VIDEO_GUILIB_GUISLIDERCONTROL_H_INCLUDED
+#define VIDEO_GUILIB_GUISLIDERCONTROL_H_INCLUDED
 #include "guilib/GUISliderControl.h"
+#endif
+
+#ifndef VIDEO_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define VIDEO_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef VIDEO_VIDEO_DIALOGS_GUIDIALOGAUDIOSUBTITLESETTINGS_H_INCLUDED
+#define VIDEO_VIDEO_DIALOGS_GUIDIALOGAUDIOSUBTITLESETTINGS_H_INCLUDED
 #include "video/dialogs/GUIDialogAudioSubtitleSettings.h"
+#endif
+
+#ifndef VIDEO_VIDEO_WINDOWS_GUIWINDOWFULLSCREEN_H_INCLUDED
+#define VIDEO_VIDEO_WINDOWS_GUIWINDOWFULLSCREEN_H_INCLUDED
 #include "video/windows/GUIWindowFullScreen.h"
+#endif
+
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #include "cores/VideoRenderers/OverlayRendererGUI.h"
 #endif
+#ifndef VIDEO_APPLICATION_H_INCLUDED
+#define VIDEO_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef VIDEO_UTILS_LANGCODEEXPANDER_H_INCLUDED
+#define VIDEO_UTILS_LANGCODEEXPANDER_H_INCLUDED
 #include "utils/LangCodeExpander.h"
+#endif
+
+#ifndef VIDEO_UTILS_STRINGUTILS_H_INCLUDED
+#define VIDEO_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 CPlayerController::CPlayerController()
 {

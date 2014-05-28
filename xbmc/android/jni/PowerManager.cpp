@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef JNI_POWERMANAGER_H_INCLUDED
+#define JNI_POWERMANAGER_H_INCLUDED
 #include "PowerManager.h"
+#endif
+
+#ifndef JNI_WAKELOCK_H_INCLUDED
+#define JNI_WAKELOCK_H_INCLUDED
 #include "WakeLock.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

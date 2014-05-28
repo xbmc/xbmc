@@ -17,7 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef DVDINPUTSTREAMS_SYSTEM_H_INCLUDED
+#define DVDINPUTSTREAMS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #ifdef HAVE_LIBBLURAY
 
 #include "DVDInputStreamBluray.h"

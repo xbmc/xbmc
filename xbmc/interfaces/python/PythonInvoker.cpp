@@ -26,29 +26,109 @@
 #include <Python.h>
 #include <osdefs.h>
 
+#ifndef PYTHON_SYSTEM_H_INCLUDED
+#define PYTHON_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef PYTHON_PYTHONINVOKER_H_INCLUDED
+#define PYTHON_PYTHONINVOKER_H_INCLUDED
 #include "PythonInvoker.h"
+#endif
+
+#ifndef PYTHON_APPLICATION_H_INCLUDED
+#define PYTHON_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef PYTHON_APPLICATIONMESSENGER_H_INCLUDED
+#define PYTHON_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef PYTHON_ADDONS_ADDONMANAGER_H_INCLUDED
+#define PYTHON_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef PYTHON_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define PYTHON_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef PYTHON_FILESYSTEM_FILE_H_INCLUDED
+#define PYTHON_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef PYTHON_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define PYTHON_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef PYTHON_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define PYTHON_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h"
+#endif
+
+#ifndef PYTHON_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define PYTHON_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef PYTHON_INTERFACES_LEGACY_ADDON_H_INCLUDED
+#define PYTHON_INTERFACES_LEGACY_ADDON_H_INCLUDED
 #include "interfaces/legacy/Addon.h"
+#endif
+
+#ifndef PYTHON_INTERFACES_PYTHON_LANGUAGEHOOK_H_INCLUDED
+#define PYTHON_INTERFACES_PYTHON_LANGUAGEHOOK_H_INCLUDED
 #include "interfaces/python/LanguageHook.h"
+#endif
+
+#ifndef PYTHON_INTERFACES_PYTHON_PYCONTEXT_H_INCLUDED
+#define PYTHON_INTERFACES_PYTHON_PYCONTEXT_H_INCLUDED
 #include "interfaces/python/PyContext.h"
+#endif
+
+#ifndef PYTHON_INTERFACES_PYTHON_PYTHREADSTATE_H_INCLUDED
+#define PYTHON_INTERFACES_PYTHON_PYTHREADSTATE_H_INCLUDED
 #include "interfaces/python/pythreadstate.h"
+#endif
+
+#ifndef PYTHON_INTERFACES_PYTHON_SWIG_H_INCLUDED
+#define PYTHON_INTERFACES_PYTHON_SWIG_H_INCLUDED
 #include "interfaces/python/swig.h"
+#endif
+
+#ifndef PYTHON_INTERFACES_PYTHON_XBPYTHON_H_INCLUDED
+#define PYTHON_INTERFACES_PYTHON_XBPYTHON_H_INCLUDED
 #include "interfaces/python/XBPython.h"
+#endif
+
+#ifndef PYTHON_THREADS_SINGLELOCK_H_INCLUDED
+#define PYTHON_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 #if defined(TARGET_WINDOWS)
 #include "utils/CharsetConverter.h"
 #endif // defined(TARGET_WINDOWS)
+#ifndef PYTHON_UTILS_LOG_H_INCLUDED
+#define PYTHON_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef PYTHON_UTILS_STRINGUTILS_H_INCLUDED
+#define PYTHON_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef PYTHON_UTILS_URIUTILS_H_INCLUDED
+#define PYTHON_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 
 #ifdef TARGET_WINDOWS
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);

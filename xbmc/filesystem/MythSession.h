@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef FILESYSTEM_THREADS_CRITICALSECTION_H_INCLUDED
+#define FILESYSTEM_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_THREAD_H_INCLUDED
+#define FILESYSTEM_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
 
 typedef struct cmyth_ringbuf   *cmyth_ringbuf_t;
 typedef struct cmyth_conn      *cmyth_conn_t;

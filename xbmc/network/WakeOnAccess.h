@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef NETWORK_URL_H_INCLUDED
+#define NETWORK_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef NETWORK_XBDATETIME_H_INCLUDED
+#define NETWORK_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef NETWORK_UTILS_JOB_H_INCLUDED
+#define NETWORK_UTILS_JOB_H_INCLUDED
 #include "utils/Job.h"
+#endif
+
+#ifndef NETWORK_SETTINGS_LIB_ISETTINGSHANDLER_H_INCLUDED
+#define NETWORK_SETTINGS_LIB_ISETTINGSHANDLER_H_INCLUDED
 #include "settings/lib/ISettingsHandler.h"
+#endif
+
 
 class CWakeOnAccess : private IJobCallback, public ISettingsHandler
 {

@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef FILESYSTEM_IDIRECTORY_H_INCLUDED
+#define FILESYSTEM_IDIRECTORY_H_INCLUDED
 #include "IDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_REGEXP_H_INCLUDED
+#define FILESYSTEM_UTILS_REGEXP_H_INCLUDED
 #include "utils/RegExp.h"
+#endif
+
 
 namespace XFILE
 {

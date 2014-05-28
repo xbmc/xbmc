@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef INTERFACES_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
+#define INTERFACES_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
+#endif
+
+#ifndef INTERFACES_CORES_IAUDIOCALLBACK_H_INCLUDED
+#define INTERFACES_CORES_IAUDIOCALLBACK_H_INCLUDED
 #include "cores/IAudioCallback.h"
+#endif
+
 #include <stdint.h>
 
 /**

@@ -20,14 +20,46 @@
  *
  */
 
+#ifndef VIDEO_DVDVIDEOCODEC_H_INCLUDED
+#define VIDEO_DVDVIDEOCODEC_H_INCLUDED
 #include "DVDVideoCodec.h"
+#endif
+
+#ifndef VIDEO_DVDRESOURCE_H_INCLUDED
+#define VIDEO_DVDRESOURCE_H_INCLUDED
 #include "DVDResource.h"
+#endif
+
+#ifndef VIDEO_DLLAVCODEC_H_INCLUDED
+#define VIDEO_DLLAVCODEC_H_INCLUDED
 #include "DllAvCodec.h"
+#endif
+
+#ifndef VIDEO_DLLAVFORMAT_H_INCLUDED
+#define VIDEO_DLLAVFORMAT_H_INCLUDED
 #include "DllAvFormat.h"
+#endif
+
+#ifndef VIDEO_DLLAVUTIL_H_INCLUDED
+#define VIDEO_DLLAVUTIL_H_INCLUDED
 #include "DllAvUtil.h"
+#endif
+
+#ifndef VIDEO_DLLSWSCALE_H_INCLUDED
+#define VIDEO_DLLSWSCALE_H_INCLUDED
 #include "DllSwScale.h"
+#endif
+
+#ifndef VIDEO_DLLAVFILTER_H_INCLUDED
+#define VIDEO_DLLAVFILTER_H_INCLUDED
 #include "DllAvFilter.h"
+#endif
+
+#ifndef VIDEO_DLLPOSTPROC_H_INCLUDED
+#define VIDEO_DLLPOSTPROC_H_INCLUDED
 #include "DllPostProc.h"
+#endif
+
 
 class CCriticalSection;
 

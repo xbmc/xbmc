@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef DVDINPUTSTREAMS_DVDINPUTSTREAM_H_INCLUDED
+#define DVDINPUTSTREAMS_DVDINPUTSTREAM_H_INCLUDED
 #include "DVDInputStream.h"
+#endif
+
+#ifndef DVDINPUTSTREAMS_URL_H_INCLUDED
+#define DVDINPUTSTREAMS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 CDVDInputStream::CDVDInputStream(DVDStreamType streamType)
 {

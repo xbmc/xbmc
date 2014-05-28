@@ -18,16 +18,36 @@
  *
  */
 
+#ifndef MDNS_ZEROCONFBROWSERMDNS_H_INCLUDED
+#define MDNS_ZEROCONFBROWSERMDNS_H_INCLUDED
 #include "ZeroconfBrowserMDNS.h"
+#endif
+
 #include <utils/log.h>
 #include <threads/SingleLock.h>
+#ifndef MDNS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define MDNS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef MDNS_GUILIB_GUIMESSAGE_H_INCLUDED
+#define MDNS_GUILIB_GUIMESSAGE_H_INCLUDED
 #include "guilib/GUIMessage.h"
+#endif
+
+#ifndef MDNS_GUIUSERMESSAGES_H_INCLUDED
+#define MDNS_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
 #if defined(TARGET_WINDOWS)
 #include "win32/WIN32Util.h"
 #endif //TARGET_WINDOWS
+#ifndef MDNS_NETWORK_DNSNAMECACHE_H_INCLUDED
+#define MDNS_NETWORK_DNSNAMECACHE_H_INCLUDED
 #include "network/DNSNameCache.h"
+#endif
+
 #include <netinet/in.h>
 #include <arpa/inet.h>
 

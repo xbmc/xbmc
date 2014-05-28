@@ -17,7 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef LINUX_UDISKSPROVIDER_H_INCLUDED
+#define LINUX_UDISKSPROVIDER_H_INCLUDED
 #include "UDisksProvider.h"
+#endif
+
 #ifdef HAS_DBUS
 #include "settings/AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"

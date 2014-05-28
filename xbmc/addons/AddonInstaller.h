@@ -19,10 +19,26 @@
  *
  */
 
+#ifndef ADDONS_UTILS_FILEOPERATIONJOB_H_INCLUDED
+#define ADDONS_UTILS_FILEOPERATIONJOB_H_INCLUDED
 #include "utils/FileOperationJob.h"
+#endif
+
+#ifndef ADDONS_ADDONS_ADDON_H_INCLUDED
+#define ADDONS_ADDONS_ADDON_H_INCLUDED
 #include "addons/Addon.h"
+#endif
+
+#ifndef ADDONS_UTILS_STOPWATCH_H_INCLUDED
+#define ADDONS_UTILS_STOPWATCH_H_INCLUDED
 #include "utils/Stopwatch.h"
+#endif
+
+#ifndef ADDONS_THREADS_EVENT_H_INCLUDED
+#define ADDONS_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
 
 class CAddonDatabase;
 

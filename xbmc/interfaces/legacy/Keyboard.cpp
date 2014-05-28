@@ -18,13 +18,37 @@
  *
  */
 
+#ifndef LEGACY_KEYBOARD_H_INCLUDED
+#define LEGACY_KEYBOARD_H_INCLUDED
 #include "Keyboard.h"
-#include "LanguageHook.h"
+#endif
 
+#ifndef LEGACY_LANGUAGEHOOK_H_INCLUDED
+#define LEGACY_LANGUAGEHOOK_H_INCLUDED
+#include "LanguageHook.h"
+#endif
+
+
+#ifndef LEGACY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define LEGACY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
+#define LEGACY_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
 #include "guilib/GUIKeyboardFactory.h"
+#endif
+
+#ifndef LEGACY_DIALOGS_GUIDIALOGKEYBOARDGENERIC_H_INCLUDED
+#define LEGACY_DIALOGS_GUIDIALOGKEYBOARDGENERIC_H_INCLUDED
 #include "dialogs/GUIDialogKeyboardGeneric.h"
+#endif
+
+#ifndef LEGACY_APPLICATIONMESSENGER_H_INCLUDED
+#define LEGACY_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
 
 namespace XBMCAddon
 {

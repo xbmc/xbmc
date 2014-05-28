@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef FILESYSTEM_SIDFILEDIRECTORY_H_INCLUDED
+#define FILESYSTEM_SIDFILEDIRECTORY_H_INCLUDED
 #include "SIDFileDirectory.h"
+#endif
+
 
 using namespace MUSIC_INFO;
 using namespace XFILE;

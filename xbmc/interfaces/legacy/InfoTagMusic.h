@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef LEGACY_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define LEGACY_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef LEGACY_ADDONCLASS_H_INCLUDED
+#define LEGACY_ADDONCLASS_H_INCLUDED
 #include "AddonClass.h"
+#endif
+
 
 #pragma once
 

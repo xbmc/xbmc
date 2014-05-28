@@ -22,13 +22,37 @@
 
 #include <math.h>
 
+#ifndef KARAOKE_FILESYSTEM_FILE_H_INCLUDED
+#define KARAOKE_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
-#include "settings/AdvancedSettings.h"
-#include "utils/MathUtils.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
+#endif
 
+#ifndef KARAOKE_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define KARAOKE_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef KARAOKE_UTILS_MATHUTILS_H_INCLUDED
+#define KARAOKE_UTILS_MATHUTILS_H_INCLUDED
+#include "utils/MathUtils.h"
+#endif
+
+#ifndef KARAOKE_UTILS_LOG_H_INCLUDED
+#define KARAOKE_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef KARAOKE_UTILS_URIUTILS_H_INCLUDED
+#define KARAOKE_UTILS_URIUTILS_H_INCLUDED
+#include "utils/URIUtils.h"
+#endif
+
+
+#ifndef KARAOKE_KARAOKELYRICSTEXTLRC_H_INCLUDED
+#define KARAOKE_KARAOKELYRICSTEXTLRC_H_INCLUDED
 #include "karaokelyricstextlrc.h"
+#endif
+
 
 enum ParserState
 {

@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef PAPLAYER_TIMIDITYCODEC_H_INCLUDED
+#define PAPLAYER_TIMIDITYCODEC_H_INCLUDED
 #include "TimidityCodec.h"
+#endif
+
+#ifndef PAPLAYER_URL_H_INCLUDED
+#define PAPLAYER_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef PAPLAYER____DLLLOADER_LIBRARYLOADER_H_INCLUDED
+#define PAPLAYER____DLLLOADER_LIBRARYLOADER_H_INCLUDED
 #include "../DllLoader/LibraryLoader.h"
+#endif
+
+#ifndef PAPLAYER____DLLLOADER_SOLOADER_H_INCLUDED
+#define PAPLAYER____DLLLOADER_SOLOADER_H_INCLUDED
 #include "../DllLoader/SoLoader.h"
+#endif
+
+#ifndef PAPLAYER____DLLLOADER_DLLLOADER_H_INCLUDED
+#define PAPLAYER____DLLLOADER_DLLLOADER_H_INCLUDED
 #include "../DllLoader/DllLoader.h"
+#endif
+
+#ifndef PAPLAYER_UTIL_H_INCLUDED
+#define PAPLAYER_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_LOG_H_INCLUDED
+#define PAPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef PAPLAYER_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define PAPLAYER_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
 #ifdef TARGET_WINDOWS
 #include "../DllLoader/Win32DllLoader.h"
 #endif

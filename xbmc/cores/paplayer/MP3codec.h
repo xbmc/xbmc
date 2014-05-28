@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef PAPLAYER_CACHINGCODEC_H_INCLUDED
+#define PAPLAYER_CACHINGCODEC_H_INCLUDED
 #include "CachingCodec.h"
+#endif
+
+#ifndef PAPLAYER____DVDPLAYER_DVDCODECS_AUDIO_DLLLIBMAD_H_INCLUDED
+#define PAPLAYER____DVDPLAYER_DVDCODECS_AUDIO_DLLLIBMAD_H_INCLUDED
 #include "../dvdplayer/DVDCodecs/Audio/DllLibMad.h"
+#endif
+
 
 enum madx_sig {
 	ERROR_OCCURED,

@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef GENERIC_LANGUAGEINVOKERTHREAD_H_INCLUDED
+#define GENERIC_LANGUAGEINVOKERTHREAD_H_INCLUDED
 #include "LanguageInvokerThread.h"
+#endif
+
+#ifndef GENERIC_SCRIPTINVOCATIONMANAGER_H_INCLUDED
+#define GENERIC_SCRIPTINVOCATIONMANAGER_H_INCLUDED
 #include "ScriptInvocationManager.h"
+#endif
+
 
 CLanguageInvokerThread::CLanguageInvokerThread(ILanguageInvoker *invoker, CScriptInvocationManager *invocationManager)
   : ILanguageInvoker(NULL),

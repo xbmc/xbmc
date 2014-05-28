@@ -23,7 +23,11 @@
 #include <stdarg.h>
 #include <limits>
 
+#ifndef THREADS_EVENT_H_INCLUDED
+#define THREADS_EVENT_H_INCLUDED
 #include "Event.h"
+#endif
+
 
 void CEvent::addGroup(XbmcThreads::CEventGroup* group)
 {

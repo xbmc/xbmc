@@ -18,20 +18,68 @@
  *
  */
 
+#ifndef CHANNELS_PVRCHANNELGROUPS_H_INCLUDED
+#define CHANNELS_PVRCHANNELGROUPS_H_INCLUDED
 #include "PVRChannelGroups.h"
+#endif
 
+
+#ifndef CHANNELS_FILEITEM_H_INCLUDED
+#define CHANNELS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
-#include "settings/Settings.h"
-#include "guilib/GUIWindowManager.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "URL.h"
-#include "filesystem/File.h"
+#endif
 
+#ifndef CHANNELS_SETTINGS_SETTINGS_H_INCLUDED
+#define CHANNELS_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef CHANNELS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define CHANNELS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef CHANNELS_UTILS_LOG_H_INCLUDED
+#define CHANNELS_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef CHANNELS_UTILS_STRINGUTILS_H_INCLUDED
+#define CHANNELS_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+#ifndef CHANNELS_URL_H_INCLUDED
+#define CHANNELS_URL_H_INCLUDED
+#include "URL.h"
+#endif
+
+#ifndef CHANNELS_FILESYSTEM_FILE_H_INCLUDED
+#define CHANNELS_FILESYSTEM_FILE_H_INCLUDED
+#include "filesystem/File.h"
+#endif
+
+
+#ifndef CHANNELS_PVRCHANNELGROUPINTERNAL_H_INCLUDED
+#define CHANNELS_PVRCHANNELGROUPINTERNAL_H_INCLUDED
 #include "PVRChannelGroupInternal.h"
+#endif
+
+#ifndef CHANNELS_PVR_PVRDATABASE_H_INCLUDED
+#define CHANNELS_PVR_PVRDATABASE_H_INCLUDED
 #include "pvr/PVRDatabase.h"
+#endif
+
+#ifndef CHANNELS_PVR_PVRMANAGER_H_INCLUDED
+#define CHANNELS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef CHANNELS_PVR_ADDONS_PVRCLIENTS_H_INCLUDED
+#define CHANNELS_PVR_ADDONS_PVRCLIENTS_H_INCLUDED
 #include "pvr/addons/PVRClients.h"
+#endif
+
 
 using namespace PVR;
 

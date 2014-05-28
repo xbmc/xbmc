@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef LINUX_RBP_H_INCLUDED
+#define LINUX_RBP_H_INCLUDED
 #include "RBP.h"
+#endif
+
 #if defined(TARGET_RASPBERRY_PI)
 
 #include "utils/log.h"

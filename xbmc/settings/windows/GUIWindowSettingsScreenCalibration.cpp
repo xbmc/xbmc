@@ -18,23 +18,79 @@
  *
  */
 
+#ifndef WINDOWS_SYSTEM_H_INCLUDED
+#define WINDOWS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef WINDOWS_GUIWINDOWSETTINGSSCREENCALIBRATION_H_INCLUDED
+#define WINDOWS_GUIWINDOWSETTINGSSCREENCALIBRATION_H_INCLUDED
 #include "GUIWindowSettingsScreenCalibration.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIMOVERCONTROL_H_INCLUDED
+#define WINDOWS_GUILIB_GUIMOVERCONTROL_H_INCLUDED
 #include "guilib/GUIMoverControl.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIRESIZECONTROL_H_INCLUDED
+#define WINDOWS_GUILIB_GUIRESIZECONTROL_H_INCLUDED
 #include "guilib/GUIResizeControl.h"
+#endif
+
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
+#ifndef WINDOWS_APPLICATION_H_INCLUDED
+#define WINDOWS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
 #include "settings/DisplaySettings.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_KEY_H_INCLUDED
+#define WINDOWS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define WINDOWS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef WINDOWS_UTILS_LOG_H_INCLUDED
+#define WINDOWS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
+#define WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef WINDOWS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define WINDOWS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
 
 using namespace std;
 

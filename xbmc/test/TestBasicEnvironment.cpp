@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef TEST_TESTBASICENVIRONMENT_H_INCLUDED
+#define TEST_TESTBASICENVIRONMENT_H_INCLUDED
 #include "TestBasicEnvironment.h"
+#endif
+
+#ifndef TEST_TESTUTILS_H_INCLUDED
+#define TEST_TESTUTILS_H_INCLUDED
 #include "TestUtils.h"
+#endif
+
+#ifndef TEST_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define TEST_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef TEST_FILESYSTEM_FILE_H_INCLUDED
+#define TEST_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef TEST_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define TEST_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef TEST_POWERMANAGEMENT_POWERMANAGER_H_INCLUDED
+#define TEST_POWERMANAGEMENT_POWERMANAGER_H_INCLUDED
 #include "powermanagement/PowerManager.h"
+#endif
+
+#ifndef TEST_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define TEST_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef TEST_SETTINGS_SETTINGS_H_INCLUDED
+#define TEST_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef TEST_UTIL_H_INCLUDED
+#define TEST_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
 
 #include <cstdio>
 #include <cstdlib>

@@ -18,19 +18,71 @@
  *
  */
 
+#ifndef UTILS_XMLUTILS_H_INCLUDED
+#define UTILS_XMLUTILS_H_INCLUDED
 #include "XMLUtils.h"
+#endif
+
+#ifndef UTILS_SCRAPERURL_H_INCLUDED
+#define UTILS_SCRAPERURL_H_INCLUDED
 #include "ScraperUrl.h"
+#endif
+
+#ifndef UTILS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define UTILS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef UTILS_HTMLUTIL_H_INCLUDED
+#define UTILS_HTMLUTIL_H_INCLUDED
 #include "HTMLUtil.h"
+#endif
+
+#ifndef UTILS_CHARSETCONVERTER_H_INCLUDED
+#define UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "CharsetConverter.h"
+#endif
+
+#ifndef UTILS_UTILS_CHARSETDETECTION_H_INCLUDED
+#define UTILS_UTILS_CHARSETDETECTION_H_INCLUDED
 #include "utils/CharsetDetection.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UTILS_URL_H_INCLUDED
+#define UTILS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_CURLFILE_H_INCLUDED
+#define UTILS_FILESYSTEM_CURLFILE_H_INCLUDED
 #include "filesystem/CurlFile.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_ZIPFILE_H_INCLUDED
+#define UTILS_FILESYSTEM_ZIPFILE_H_INCLUDED
 #include "filesystem/ZipFile.h"
+#endif
+
+#ifndef UTILS_URIUTILS_H_INCLUDED
+#define UTILS_URIUTILS_H_INCLUDED
 #include "URIUtils.h"
+#endif
+
+#ifndef UTILS_UTILS_XBMCTINYXML_H_INCLUDED
+#define UTILS_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef UTILS_UTILS_MIME_H_INCLUDED
+#define UTILS_UTILS_MIME_H_INCLUDED
 #include "utils/Mime.h"
+#endif
+
 
 #include <cstring>
 #include <sstream>

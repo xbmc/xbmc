@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#define DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
 #include "GUIDialogProgress.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIPROGRESSCONTROL_H_INCLUDED
+#define DIALOGS_GUILIB_GUIPROGRESSCONTROL_H_INCLUDED
 #include "guilib/GUIProgressControl.h"
+#endif
+
+#ifndef DIALOGS_APPLICATION_H_INCLUDED
+#define DIALOGS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef DIALOGS_GUIINFOMANAGER_H_INCLUDED
+#define DIALOGS_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef DIALOGS_THREADS_SINGLELOCK_H_INCLUDED
+#define DIALOGS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef DIALOGS_UTILS_LOG_H_INCLUDED
+#define DIALOGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 using namespace std;
 

@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef PAPLAYER_NSFCODEC_H_INCLUDED
+#define PAPLAYER_NSFCODEC_H_INCLUDED
 #include "NSFCodec.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_LOG_H_INCLUDED
+#define PAPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_REGEXP_H_INCLUDED
+#define PAPLAYER_UTILS_REGEXP_H_INCLUDED
 #include "utils/RegExp.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_URIUTILS_H_INCLUDED
+#define PAPLAYER_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 
 NSFCodec::NSFCodec()
 {

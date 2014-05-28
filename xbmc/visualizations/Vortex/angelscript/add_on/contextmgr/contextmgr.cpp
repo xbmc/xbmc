@@ -1,7 +1,11 @@
 #include <assert.h>
 #include <string>
 
+#ifndef CONTEXTMGR_CONTEXTMGR_H_INCLUDED
+#define CONTEXTMGR_CONTEXTMGR_H_INCLUDED
 #include "contextmgr.h"
+#endif
+
 
 using namespace std;
 

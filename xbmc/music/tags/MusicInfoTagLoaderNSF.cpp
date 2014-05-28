@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef TAGS_MUSICINFOTAGLOADERNSF_H_INCLUDED
+#define TAGS_MUSICINFOTAGLOADERNSF_H_INCLUDED
 #include "MusicInfoTagLoaderNSF.h"
+#endif
+
+#ifndef TAGS_MUSICINFOTAG_H_INCLUDED
+#define TAGS_MUSICINFOTAG_H_INCLUDED
 #include "MusicInfoTag.h"
+#endif
+
+#ifndef TAGS_UTILS_LOG_H_INCLUDED
+#define TAGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #include <fstream>
 

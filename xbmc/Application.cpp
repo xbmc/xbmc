@@ -18,89 +18,369 @@
  *
  */
 
+#ifndef ROOT_NETWORK_NETWORK_H_INCLUDED
+#define ROOT_NETWORK_NETWORK_H_INCLUDED
 #include "network/Network.h"
+#endif
+
+#ifndef ROOT_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define ROOT_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef ROOT_SYSTEM_H_INCLUDED
+#define ROOT_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef ROOT_APPLICATION_H_INCLUDED
+#define ROOT_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef ROOT_INTERFACES_BUILTINS_H_INCLUDED
+#define ROOT_INTERFACES_BUILTINS_H_INCLUDED
 #include "interfaces/Builtins.h"
+#endif
+
+#ifndef ROOT_UTILS_VARIANT_H_INCLUDED
+#define ROOT_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef ROOT_UTILS_SPLASH_H_INCLUDED
+#define ROOT_UTILS_SPLASH_H_INCLUDED
 #include "utils/Splash.h"
+#endif
+
+#ifndef ROOT_LANGINFO_H_INCLUDED
+#define ROOT_LANGINFO_H_INCLUDED
 #include "LangInfo.h"
+#endif
+
+#ifndef ROOT_UTILS_SCREENSHOT_H_INCLUDED
+#define ROOT_UTILS_SCREENSHOT_H_INCLUDED
 #include "utils/Screenshot.h"
+#endif
+
+#ifndef ROOT_UTIL_H_INCLUDED
+#define ROOT_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef ROOT_URL_H_INCLUDED
+#define ROOT_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef ROOT_GUILIB_TEXTUREMANAGER_H_INCLUDED
+#define ROOT_GUILIB_TEXTUREMANAGER_H_INCLUDED
 #include "guilib/TextureManager.h"
+#endif
+
+#ifndef ROOT_CORES_IPLAYER_H_INCLUDED
+#define ROOT_CORES_IPLAYER_H_INCLUDED
 #include "cores/IPlayer.h"
+#endif
+
+#ifndef ROOT_CORES_DVDPLAYER_DVDFILEINFO_H_INCLUDED
+#define ROOT_CORES_DVDPLAYER_DVDFILEINFO_H_INCLUDED
 #include "cores/dvdplayer/DVDFileInfo.h"
+#endif
+
+#ifndef ROOT_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
+#define ROOT_CORES_AUDIOENGINE_AEFACTORY_H_INCLUDED
 #include "cores/AudioEngine/AEFactory.h"
+#endif
+
+#ifndef ROOT_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define ROOT_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
+#ifndef ROOT_PLAYLISTPLAYER_H_INCLUDED
+#define ROOT_PLAYLISTPLAYER_H_INCLUDED
 #include "PlayListPlayer.h"
+#endif
+
+#ifndef ROOT_AUTORUN_H_INCLUDED
+#define ROOT_AUTORUN_H_INCLUDED
 #include "Autorun.h"
+#endif
+
+#ifndef ROOT_VIDEO_BOOKMARK_H_INCLUDED
+#define ROOT_VIDEO_BOOKMARK_H_INCLUDED
 #include "video/Bookmark.h"
+#endif
+
+#ifndef ROOT_NETWORK_NETWORKSERVICES_H_INCLUDED
+#define ROOT_NETWORK_NETWORKSERVICES_H_INCLUDED
 #include "network/NetworkServices.h"
+#endif
+
+#ifndef ROOT_GUILIB_GUICONTROLPROFILER_H_INCLUDED
+#define ROOT_GUILIB_GUICONTROLPROFILER_H_INCLUDED
 #include "guilib/GUIControlProfiler.h"
+#endif
+
+#ifndef ROOT_UTILS_LANGCODEEXPANDER_H_INCLUDED
+#define ROOT_UTILS_LANGCODEEXPANDER_H_INCLUDED
 #include "utils/LangCodeExpander.h"
+#endif
+
+#ifndef ROOT_GUIINFOMANAGER_H_INCLUDED
+#define ROOT_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef ROOT_PLAYLISTS_PLAYLISTFACTORY_H_INCLUDED
+#define ROOT_PLAYLISTS_PLAYLISTFACTORY_H_INCLUDED
 #include "playlists/PlayListFactory.h"
+#endif
+
+#ifndef ROOT_GUILIB_GUIFONTMANAGER_H_INCLUDED
+#define ROOT_GUILIB_GUIFONTMANAGER_H_INCLUDED
 #include "guilib/GUIFontManager.h"
+#endif
+
+#ifndef ROOT_GUILIB_GUICOLORMANAGER_H_INCLUDED
+#define ROOT_GUILIB_GUICOLORMANAGER_H_INCLUDED
 #include "guilib/GUIColorManager.h"
+#endif
+
+#ifndef ROOT_GUILIB_STEREOSCOPICSMANAGER_H_INCLUDED
+#define ROOT_GUILIB_STEREOSCOPICSMANAGER_H_INCLUDED
 #include "guilib/StereoscopicsManager.h"
+#endif
+
+#ifndef ROOT_GUILIB_GUITEXTLAYOUT_H_INCLUDED
+#define ROOT_GUILIB_GUITEXTLAYOUT_H_INCLUDED
 #include "guilib/GUITextLayout.h"
+#endif
+
+#ifndef ROOT_ADDONS_SKIN_H_INCLUDED
+#define ROOT_ADDONS_SKIN_H_INCLUDED
 #include "addons/Skin.h"
+#endif
+
+#ifndef ROOT_INTERFACES_GENERIC_SCRIPTINVOCATIONMANAGER_H_INCLUDED
+#define ROOT_INTERFACES_GENERIC_SCRIPTINVOCATIONMANAGER_H_INCLUDED
 #include "interfaces/generic/ScriptInvocationManager.h"
+#endif
+
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
+#ifndef ROOT_INPUT_BUTTONTRANSLATOR_H_INCLUDED
+#define ROOT_INPUT_BUTTONTRANSLATOR_H_INCLUDED
 #include "input/ButtonTranslator.h"
+#endif
+
+#ifndef ROOT_GUILIB_GUIAUDIOMANAGER_H_INCLUDED
+#define ROOT_GUILIB_GUIAUDIOMANAGER_H_INCLUDED
 #include "guilib/GUIAudioManager.h"
+#endif
+
+#ifndef ROOT_GUIPASSWORD_H_INCLUDED
+#define ROOT_GUIPASSWORD_H_INCLUDED
 #include "GUIPassword.h"
+#endif
+
+#ifndef ROOT_INPUT_INERTIALSCROLLINGHANDLER_H_INCLUDED
+#define ROOT_INPUT_INERTIALSCROLLINGHANDLER_H_INCLUDED
 #include "input/InertialScrollingHandler.h"
+#endif
+
+#ifndef ROOT_APPLICATIONMESSENGER_H_INCLUDED
+#define ROOT_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef ROOT_SECTIONLOADER_H_INCLUDED
+#define ROOT_SECTIONLOADER_H_INCLUDED
 #include "SectionLoader.h"
+#endif
+
+#ifndef ROOT_CORES_DLLLOADER_DLLLOADERCONTAINER_H_INCLUDED
+#define ROOT_CORES_DLLLOADER_DLLLOADERCONTAINER_H_INCLUDED
 #include "cores/DllLoader/DllLoaderContainer.h"
+#endif
+
+#ifndef ROOT_GUIUSERMESSAGES_H_INCLUDED
+#define ROOT_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
+#define ROOT_FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
 #include "filesystem/DirectoryCache.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
+#define ROOT_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
 #include "filesystem/StackDirectory.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define ROOT_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_DLLLIBCURL_H_INCLUDED
+#define ROOT_FILESYSTEM_DLLLIBCURL_H_INCLUDED
 #include "filesystem/DllLibCurl.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_MYTHSESSION_H_INCLUDED
+#define ROOT_FILESYSTEM_MYTHSESSION_H_INCLUDED
 #include "filesystem/MythSession.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_PLUGINDIRECTORY_H_INCLUDED
+#define ROOT_FILESYSTEM_PLUGINDIRECTORY_H_INCLUDED
 #include "filesystem/PluginDirectory.h"
+#endif
+
 #ifdef HAS_FILESYSTEM_SAP
 #include "filesystem/SAPDirectory.h"
 #endif
 #ifdef HAS_FILESYSTEM_HTSP
 #include "filesystem/HTSPDirectory.h"
 #endif
+#ifndef ROOT_UTILS_TUXBOXUTIL_H_INCLUDED
+#define ROOT_UTILS_TUXBOXUTIL_H_INCLUDED
 #include "utils/TuxBoxUtil.h"
+#endif
+
+#ifndef ROOT_UTILS_SYSTEMINFO_H_INCLUDED
+#define ROOT_UTILS_SYSTEMINFO_H_INCLUDED
 #include "utils/SystemInfo.h"
+#endif
+
+#ifndef ROOT_UTILS_TIMEUTILS_H_INCLUDED
+#define ROOT_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef ROOT_GUILARGETEXTUREMANAGER_H_INCLUDED
+#define ROOT_GUILARGETEXTUREMANAGER_H_INCLUDED
 #include "GUILargeTextureManager.h"
+#endif
+
+#ifndef ROOT_TEXTURECACHE_H_INCLUDED
+#define ROOT_TEXTURECACHE_H_INCLUDED
 #include "TextureCache.h"
+#endif
+
+#ifndef ROOT_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
+#define ROOT_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
 #include "playlists/SmartPlayList.h"
+#endif
+
 #ifdef HAS_FILESYSTEM_RAR
 #include "filesystem/RarManager.h"
 #endif
+#ifndef ROOT_PLAYLISTS_PLAYLIST_H_INCLUDED
+#define ROOT_PLAYLISTS_PLAYLIST_H_INCLUDED
 #include "playlists/PlayList.h"
-#include "profiles/ProfilesManager.h"
-#include "windowing/WindowingFactory.h"
-#include "powermanagement/PowerManager.h"
-#include "powermanagement/DPMSSupport.h"
-#include "settings/SettingAddon.h"
-#include "settings/Settings.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/DisplaySettings.h"
-#include "settings/MediaSettings.h"
-#include "settings/MediaSourceSettings.h"
-#include "settings/SkinSettings.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/CPUInfo.h"
-#include "utils/RssManager.h"
-#include "utils/SeekHandler.h"
-#include "view/ViewStateSettings.h"
+#endif
 
+#ifndef ROOT_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define ROOT_PROFILES_PROFILESMANAGER_H_INCLUDED
+#include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef ROOT_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define ROOT_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef ROOT_POWERMANAGEMENT_POWERMANAGER_H_INCLUDED
+#define ROOT_POWERMANAGEMENT_POWERMANAGER_H_INCLUDED
+#include "powermanagement/PowerManager.h"
+#endif
+
+#ifndef ROOT_POWERMANAGEMENT_DPMSSUPPORT_H_INCLUDED
+#define ROOT_POWERMANAGEMENT_DPMSSUPPORT_H_INCLUDED
+#include "powermanagement/DPMSSupport.h"
+#endif
+
+#ifndef ROOT_SETTINGS_SETTINGADDON_H_INCLUDED
+#define ROOT_SETTINGS_SETTINGADDON_H_INCLUDED
+#include "settings/SettingAddon.h"
+#endif
+
+#ifndef ROOT_SETTINGS_SETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef ROOT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef ROOT_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#include "settings/DisplaySettings.h"
+#endif
+
+#ifndef ROOT_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#include "settings/MediaSettings.h"
+#endif
+
+#ifndef ROOT_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#include "settings/MediaSourceSettings.h"
+#endif
+
+#ifndef ROOT_SETTINGS_SKINSETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_SKINSETTINGS_H_INCLUDED
+#include "settings/SkinSettings.h"
+#endif
+
+#ifndef ROOT_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define ROOT_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef ROOT_UTILS_CPUINFO_H_INCLUDED
+#define ROOT_UTILS_CPUINFO_H_INCLUDED
+#include "utils/CPUInfo.h"
+#endif
+
+#ifndef ROOT_UTILS_RSSMANAGER_H_INCLUDED
+#define ROOT_UTILS_RSSMANAGER_H_INCLUDED
+#include "utils/RssManager.h"
+#endif
+
+#ifndef ROOT_UTILS_SEEKHANDLER_H_INCLUDED
+#define ROOT_UTILS_SEEKHANDLER_H_INCLUDED
+#include "utils/SeekHandler.h"
+#endif
+
+#ifndef ROOT_VIEW_VIEWSTATESETTINGS_H_INCLUDED
+#define ROOT_VIEW_VIEWSTATESETTINGS_H_INCLUDED
+#include "view/ViewStateSettings.h"
+#endif
+
+
+#ifndef ROOT_INPUT_KEYBOARDSTAT_H_INCLUDED
+#define ROOT_INPUT_KEYBOARDSTAT_H_INCLUDED
 #include "input/KeyboardStat.h"
+#endif
+
+#ifndef ROOT_INPUT_XBMC_VKEYS_H_INCLUDED
+#define ROOT_INPUT_XBMC_VKEYS_H_INCLUDED
 #include "input/XBMC_vkeys.h"
+#endif
+
+#ifndef ROOT_INPUT_MOUSESTAT_H_INCLUDED
+#define ROOT_INPUT_MOUSESTAT_H_INCLUDED
 #include "input/MouseStat.h"
+#endif
+
 
 #ifdef HAS_SDL
 #include <SDL/SDL.h>
@@ -126,7 +406,11 @@
 #ifdef HAS_FILESYSTEM_SFTP
 #include "filesystem/SFTPFile.h"
 #endif
+#ifndef ROOT_PARTYMODEMANAGER_H_INCLUDED
+#define ROOT_PARTYMODEMANAGER_H_INCLUDED
 #include "PartyModeManager.h"
+#endif
+
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -135,8 +419,16 @@
 #include "music/karaoke/GUIDialogKaraokeSongSelector.h"
 #include "music/karaoke/GUIWindowKaraokeLyrics.h"
 #endif
+#ifndef ROOT_NETWORK_ZEROCONF_H_INCLUDED
+#define ROOT_NETWORK_ZEROCONF_H_INCLUDED
 #include "network/Zeroconf.h"
+#endif
+
+#ifndef ROOT_NETWORK_ZEROCONFBROWSER_H_INCLUDED
+#define ROOT_NETWORK_ZEROCONFBROWSER_H_INCLUDED
 #include "network/ZeroconfBrowser.h"
+#endif
+
 #ifndef TARGET_POSIX
 #include "threads/platform/win/Win32Exception.h"
 #endif
@@ -159,123 +451,523 @@
 #if defined(HAVE_LIBCRYSTALHD)
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #endif
+#ifndef ROOT_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#define ROOT_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
 #include "interfaces/AnnouncementManager.h"
+#endif
+
+#ifndef ROOT_PERIPHERALS_PERIPHERALS_H_INCLUDED
+#define ROOT_PERIPHERALS_PERIPHERALS_H_INCLUDED
 #include "peripherals/Peripherals.h"
+#endif
+
+#ifndef ROOT_PERIPHERALS_DIALOGS_GUIDIALOGPERIPHERALMANAGER_H_INCLUDED
+#define ROOT_PERIPHERALS_DIALOGS_GUIDIALOGPERIPHERALMANAGER_H_INCLUDED
 #include "peripherals/dialogs/GUIDialogPeripheralManager.h"
+#endif
+
+#ifndef ROOT_PERIPHERALS_DIALOGS_GUIDIALOGPERIPHERALSETTINGS_H_INCLUDED
+#define ROOT_PERIPHERALS_DIALOGS_GUIDIALOGPERIPHERALSETTINGS_H_INCLUDED
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
+#endif
+
+#ifndef ROOT_PERIPHERALS_DEVICES_PERIPHERALIMON_H_INCLUDED
+#define ROOT_PERIPHERALS_DEVICES_PERIPHERALIMON_H_INCLUDED
 #include "peripherals/devices/PeripheralImon.h"
+#endif
+
+#ifndef ROOT_MUSIC_INFOSCANNER_MUSICINFOSCANNER_H_INCLUDED
+#define ROOT_MUSIC_INFOSCANNER_MUSICINFOSCANNER_H_INCLUDED
 #include "music/infoscanner/MusicInfoScanner.h"
+#endif
+
 
 // Windows includes
+#ifndef ROOT_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define ROOT_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef ROOT_WINDOWS_GUIWINDOWHOME_H_INCLUDED
+#define ROOT_WINDOWS_GUIWINDOWHOME_H_INCLUDED
 #include "windows/GUIWindowHome.h"
+#endif
+
+#ifndef ROOT_SETTINGS_WINDOWS_GUIWINDOWSETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_WINDOWS_GUIWINDOWSETTINGS_H_INCLUDED
 #include "settings/windows/GUIWindowSettings.h"
+#endif
+
+#ifndef ROOT_WINDOWS_GUIWINDOWFILEMANAGER_H_INCLUDED
+#define ROOT_WINDOWS_GUIWINDOWFILEMANAGER_H_INCLUDED
 #include "windows/GUIWindowFileManager.h"
+#endif
+
+#ifndef ROOT_SETTINGS_WINDOWS_GUIWINDOWSETTINGSCATEGORY_H_INCLUDED
+#define ROOT_SETTINGS_WINDOWS_GUIWINDOWSETTINGSCATEGORY_H_INCLUDED
 #include "settings/windows/GUIWindowSettingsCategory.h"
+#endif
+
+#ifndef ROOT_MUSIC_WINDOWS_GUIWINDOWMUSICPLAYLIST_H_INCLUDED
+#define ROOT_MUSIC_WINDOWS_GUIWINDOWMUSICPLAYLIST_H_INCLUDED
 #include "music/windows/GUIWindowMusicPlaylist.h"
+#endif
+
+#ifndef ROOT_MUSIC_WINDOWS_GUIWINDOWMUSICSONGS_H_INCLUDED
+#define ROOT_MUSIC_WINDOWS_GUIWINDOWMUSICSONGS_H_INCLUDED
 #include "music/windows/GUIWindowMusicSongs.h"
+#endif
+
+#ifndef ROOT_MUSIC_WINDOWS_GUIWINDOWMUSICNAV_H_INCLUDED
+#define ROOT_MUSIC_WINDOWS_GUIWINDOWMUSICNAV_H_INCLUDED
 #include "music/windows/GUIWindowMusicNav.h"
+#endif
+
+#ifndef ROOT_MUSIC_WINDOWS_GUIWINDOWMUSICPLAYLISTEDITOR_H_INCLUDED
+#define ROOT_MUSIC_WINDOWS_GUIWINDOWMUSICPLAYLISTEDITOR_H_INCLUDED
 #include "music/windows/GUIWindowMusicPlaylistEditor.h"
+#endif
+
+#ifndef ROOT_VIDEO_WINDOWS_GUIWINDOWVIDEOPLAYLIST_H_INCLUDED
+#define ROOT_VIDEO_WINDOWS_GUIWINDOWVIDEOPLAYLIST_H_INCLUDED
 #include "video/windows/GUIWindowVideoPlaylist.h"
+#endif
+
+#ifndef ROOT_MUSIC_DIALOGS_GUIDIALOGMUSICINFO_H_INCLUDED
+#define ROOT_MUSIC_DIALOGS_GUIDIALOGMUSICINFO_H_INCLUDED
 #include "music/dialogs/GUIDialogMusicInfo.h"
+#endif
+
+#ifndef ROOT_VIDEO_DIALOGS_GUIDIALOGVIDEOINFO_H_INCLUDED
+#define ROOT_VIDEO_DIALOGS_GUIDIALOGVIDEOINFO_H_INCLUDED
 #include "video/dialogs/GUIDialogVideoInfo.h"
+#endif
+
+#ifndef ROOT_VIDEO_WINDOWS_GUIWINDOWVIDEONAV_H_INCLUDED
+#define ROOT_VIDEO_WINDOWS_GUIWINDOWVIDEONAV_H_INCLUDED
 #include "video/windows/GUIWindowVideoNav.h"
+#endif
+
+#ifndef ROOT_PROFILES_WINDOWS_GUIWINDOWSETTINGSPROFILE_H_INCLUDED
+#define ROOT_PROFILES_WINDOWS_GUIWINDOWSETTINGSPROFILE_H_INCLUDED
 #include "profiles/windows/GUIWindowSettingsProfile.h"
+#endif
+
 #ifdef HAS_GL
 #include "rendering/gl/GUIWindowTestPatternGL.h"
 #endif
 #ifdef HAS_DX
 #include "rendering/dx/GUIWindowTestPatternDX.h"
 #endif
+#ifndef ROOT_SETTINGS_WINDOWS_GUIWINDOWSETTINGSSCREENCALIBRATION_H_INCLUDED
+#define ROOT_SETTINGS_WINDOWS_GUIWINDOWSETTINGSSCREENCALIBRATION_H_INCLUDED
 #include "settings/windows/GUIWindowSettingsScreenCalibration.h"
+#endif
+
+#ifndef ROOT_PROGRAMS_GUIWINDOWPROGRAMS_H_INCLUDED
+#define ROOT_PROGRAMS_GUIWINDOWPROGRAMS_H_INCLUDED
 #include "programs/GUIWindowPrograms.h"
+#endif
+
+#ifndef ROOT_PICTURES_GUIWINDOWPICTURES_H_INCLUDED
+#define ROOT_PICTURES_GUIWINDOWPICTURES_H_INCLUDED
 #include "pictures/GUIWindowPictures.h"
+#endif
+
+#ifndef ROOT_WINDOWS_GUIWINDOWWEATHER_H_INCLUDED
+#define ROOT_WINDOWS_GUIWINDOWWEATHER_H_INCLUDED
 #include "windows/GUIWindowWeather.h"
+#endif
+
+#ifndef ROOT_WINDOWS_GUIWINDOWLOGINSCREEN_H_INCLUDED
+#define ROOT_WINDOWS_GUIWINDOWLOGINSCREEN_H_INCLUDED
 #include "windows/GUIWindowLoginScreen.h"
+#endif
+
+#ifndef ROOT_ADDONS_GUIWINDOWADDONBROWSER_H_INCLUDED
+#define ROOT_ADDONS_GUIWINDOWADDONBROWSER_H_INCLUDED
 #include "addons/GUIWindowAddonBrowser.h"
+#endif
+
+#ifndef ROOT_MUSIC_WINDOWS_GUIWINDOWVISUALISATION_H_INCLUDED
+#define ROOT_MUSIC_WINDOWS_GUIWINDOWVISUALISATION_H_INCLUDED
 #include "music/windows/GUIWindowVisualisation.h"
+#endif
+
+#ifndef ROOT_WINDOWS_GUIWINDOWDEBUGINFO_H_INCLUDED
+#define ROOT_WINDOWS_GUIWINDOWDEBUGINFO_H_INCLUDED
 #include "windows/GUIWindowDebugInfo.h"
+#endif
+
+#ifndef ROOT_WINDOWS_GUIWINDOWPOINTER_H_INCLUDED
+#define ROOT_WINDOWS_GUIWINDOWPOINTER_H_INCLUDED
 #include "windows/GUIWindowPointer.h"
+#endif
+
+#ifndef ROOT_WINDOWS_GUIWINDOWSYSTEMINFO_H_INCLUDED
+#define ROOT_WINDOWS_GUIWINDOWSYSTEMINFO_H_INCLUDED
 #include "windows/GUIWindowSystemInfo.h"
+#endif
+
+#ifndef ROOT_WINDOWS_GUIWINDOWSCREENSAVER_H_INCLUDED
+#define ROOT_WINDOWS_GUIWINDOWSCREENSAVER_H_INCLUDED
 #include "windows/GUIWindowScreensaver.h"
+#endif
+
+#ifndef ROOT_WINDOWS_GUIWINDOWSCREENSAVERDIM_H_INCLUDED
+#define ROOT_WINDOWS_GUIWINDOWSCREENSAVERDIM_H_INCLUDED
 #include "windows/GUIWindowScreensaverDim.h"
+#endif
+
+#ifndef ROOT_PICTURES_GUIWINDOWSLIDESHOW_H_INCLUDED
+#define ROOT_PICTURES_GUIWINDOWSLIDESHOW_H_INCLUDED
 #include "pictures/GUIWindowSlideShow.h"
+#endif
+
+#ifndef ROOT_WINDOWS_GUIWINDOWSTARTUP_H_INCLUDED
+#define ROOT_WINDOWS_GUIWINDOWSTARTUP_H_INCLUDED
 #include "windows/GUIWindowStartup.h"
+#endif
+
+#ifndef ROOT_VIDEO_WINDOWS_GUIWINDOWFULLSCREEN_H_INCLUDED
+#define ROOT_VIDEO_WINDOWS_GUIWINDOWFULLSCREEN_H_INCLUDED
 #include "video/windows/GUIWindowFullScreen.h"
+#endif
+
+#ifndef ROOT_VIDEO_DIALOGS_GUIDIALOGVIDEOOSD_H_INCLUDED
+#define ROOT_VIDEO_DIALOGS_GUIDIALOGVIDEOOSD_H_INCLUDED
 #include "video/dialogs/GUIDialogVideoOSD.h"
+#endif
+
+#ifndef ROOT_MUSIC_DIALOGS_GUIDIALOGMUSICOVERLAY_H_INCLUDED
+#define ROOT_MUSIC_DIALOGS_GUIDIALOGMUSICOVERLAY_H_INCLUDED
 #include "music/dialogs/GUIDialogMusicOverlay.h"
+#endif
+
+#ifndef ROOT_VIDEO_DIALOGS_GUIDIALOGVIDEOOVERLAY_H_INCLUDED
+#define ROOT_VIDEO_DIALOGS_GUIDIALOGVIDEOOVERLAY_H_INCLUDED
 #include "video/dialogs/GUIDialogVideoOverlay.h"
+#endif
+
+#ifndef ROOT_VIDEO_VIDEOINFOSCANNER_H_INCLUDED
+#define ROOT_VIDEO_VIDEOINFOSCANNER_H_INCLUDED
 #include "video/VideoInfoScanner.h"
+#endif
+
+#ifndef ROOT_VIDEO_PLAYERCONTROLLER_H_INCLUDED
+#define ROOT_VIDEO_PLAYERCONTROLLER_H_INCLUDED
 #include "video/PlayerController.h"
+#endif
+
 
 // Dialog includes
+#ifndef ROOT_MUSIC_DIALOGS_GUIDIALOGMUSICOSD_H_INCLUDED
+#define ROOT_MUSIC_DIALOGS_GUIDIALOGMUSICOSD_H_INCLUDED
 #include "music/dialogs/GUIDialogMusicOSD.h"
+#endif
+
+#ifndef ROOT_MUSIC_DIALOGS_GUIDIALOGVISUALISATIONPRESETLIST_H_INCLUDED
+#define ROOT_MUSIC_DIALOGS_GUIDIALOGVISUALISATIONPRESETLIST_H_INCLUDED
 #include "music/dialogs/GUIDialogVisualisationPresetList.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGTEXTVIEWER_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGTEXTVIEWER_H_INCLUDED
 #include "dialogs/GUIDialogTextViewer.h"
+#endif
+
+#ifndef ROOT_NETWORK_GUIDIALOGNETWORKSETUP_H_INCLUDED
+#define ROOT_NETWORK_GUIDIALOGNETWORKSETUP_H_INCLUDED
 #include "network/GUIDialogNetworkSetup.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGMEDIASOURCE_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGMEDIASOURCE_H_INCLUDED
 #include "dialogs/GUIDialogMediaSource.h"
+#endif
+
+#ifndef ROOT_VIDEO_DIALOGS_GUIDIALOGVIDEOSETTINGS_H_INCLUDED
+#define ROOT_VIDEO_DIALOGS_GUIDIALOGVIDEOSETTINGS_H_INCLUDED
 #include "video/dialogs/GUIDialogVideoSettings.h"
+#endif
+
+#ifndef ROOT_VIDEO_DIALOGS_GUIDIALOGAUDIOSUBTITLESETTINGS_H_INCLUDED
+#define ROOT_VIDEO_DIALOGS_GUIDIALOGAUDIOSUBTITLESETTINGS_H_INCLUDED
 #include "video/dialogs/GUIDialogAudioSubtitleSettings.h"
+#endif
+
+#ifndef ROOT_VIDEO_DIALOGS_GUIDIALOGVIDEOBOOKMARKS_H_INCLUDED
+#define ROOT_VIDEO_DIALOGS_GUIDIALOGVIDEOBOOKMARKS_H_INCLUDED
 #include "video/dialogs/GUIDialogVideoBookmarks.h"
+#endif
+
+#ifndef ROOT_PROFILES_DIALOGS_GUIDIALOGPROFILESETTINGS_H_INCLUDED
+#define ROOT_PROFILES_DIALOGS_GUIDIALOGPROFILESETTINGS_H_INCLUDED
 #include "profiles/dialogs/GUIDialogProfileSettings.h"
+#endif
+
+#ifndef ROOT_PROFILES_DIALOGS_GUIDIALOGLOCKSETTINGS_H_INCLUDED
+#define ROOT_PROFILES_DIALOGS_GUIDIALOGLOCKSETTINGS_H_INCLUDED
 #include "profiles/dialogs/GUIDialogLockSettings.h"
+#endif
+
+#ifndef ROOT_SETTINGS_DIALOGS_GUIDIALOGCONTENTSETTINGS_H_INCLUDED
+#define ROOT_SETTINGS_DIALOGS_GUIDIALOGCONTENTSETTINGS_H_INCLUDED
 #include "settings/dialogs/GUIDialogContentSettings.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGBUSY_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGBUSY_H_INCLUDED
 #include "dialogs/GUIDialogBusy.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGKEYBOARDGENERIC_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGKEYBOARDGENERIC_H_INCLUDED
 #include "dialogs/GUIDialogKeyboardGeneric.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
 #include "dialogs/GUIDialogProgress.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGEXTENDEDPROGRESSBAR_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGEXTENDEDPROGRESSBAR_H_INCLUDED
 #include "dialogs/GUIDialogExtendedProgressBar.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGSELECT_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGSELECT_H_INCLUDED
 #include "dialogs/GUIDialogSelect.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGSEEKBAR_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGSEEKBAR_H_INCLUDED
 #include "dialogs/GUIDialogSeekBar.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGVOLUMEBAR_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGVOLUMEBAR_H_INCLUDED
 #include "dialogs/GUIDialogVolumeBar.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGMUTEBUG_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGMUTEBUG_H_INCLUDED
 #include "dialogs/GUIDialogMuteBug.h"
+#endif
+
+#ifndef ROOT_VIDEO_DIALOGS_GUIDIALOGFILESTACKING_H_INCLUDED
+#define ROOT_VIDEO_DIALOGS_GUIDIALOGFILESTACKING_H_INCLUDED
 #include "video/dialogs/GUIDialogFileStacking.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGNUMERIC_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGNUMERIC_H_INCLUDED
 #include "dialogs/GUIDialogNumeric.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGGAMEPAD_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGGAMEPAD_H_INCLUDED
 #include "dialogs/GUIDialogGamepad.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGSUBMENU_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGSUBMENU_H_INCLUDED
 #include "dialogs/GUIDialogSubMenu.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGFAVOURITES_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGFAVOURITES_H_INCLUDED
 #include "dialogs/GUIDialogFavourites.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGBUTTONMENU_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGBUTTONMENU_H_INCLUDED
 #include "dialogs/GUIDialogButtonMenu.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGCONTEXTMENU_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGCONTEXTMENU_H_INCLUDED
 #include "dialogs/GUIDialogContextMenu.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGPLAYERCONTROLS_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGPLAYERCONTROLS_H_INCLUDED
 #include "dialogs/GUIDialogPlayerControls.h"
+#endif
+
+#ifndef ROOT_MUSIC_DIALOGS_GUIDIALOGSONGINFO_H_INCLUDED
+#define ROOT_MUSIC_DIALOGS_GUIDIALOGSONGINFO_H_INCLUDED
 #include "music/dialogs/GUIDialogSongInfo.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGSMARTPLAYLISTEDITOR_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGSMARTPLAYLISTEDITOR_H_INCLUDED
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGSMARTPLAYLISTRULE_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGSMARTPLAYLISTRULE_H_INCLUDED
 #include "dialogs/GUIDialogSmartPlaylistRule.h"
+#endif
+
+#ifndef ROOT_PICTURES_GUIDIALOGPICTUREINFO_H_INCLUDED
+#define ROOT_PICTURES_GUIDIALOGPICTUREINFO_H_INCLUDED
 #include "pictures/GUIDialogPictureInfo.h"
+#endif
+
+#ifndef ROOT_ADDONS_GUIDIALOGADDONSETTINGS_H_INCLUDED
+#define ROOT_ADDONS_GUIDIALOGADDONSETTINGS_H_INCLUDED
 #include "addons/GUIDialogAddonSettings.h"
+#endif
+
+#ifndef ROOT_ADDONS_GUIDIALOGADDONINFO_H_INCLUDED
+#define ROOT_ADDONS_GUIDIALOGADDONINFO_H_INCLUDED
 #include "addons/GUIDialogAddonInfo.h"
+#endif
+
 #ifdef HAS_LINUX_NETWORK
 #include "network/GUIDialogAccessPoints.h"
 #endif
 
 /* PVR related include Files */
+#ifndef ROOT_PVR_PVRMANAGER_H_INCLUDED
+#define ROOT_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef ROOT_PVR_TIMERS_PVRTIMERS_H_INCLUDED
+#define ROOT_PVR_TIMERS_PVRTIMERS_H_INCLUDED
 #include "pvr/timers/PVRTimers.h"
+#endif
+
+#ifndef ROOT_PVR_WINDOWS_GUIWINDOWPVR_H_INCLUDED
+#define ROOT_PVR_WINDOWS_GUIWINDOWPVR_H_INCLUDED
 #include "pvr/windows/GUIWindowPVR.h"
+#endif
+
+#ifndef ROOT_PVR_DIALOGS_GUIDIALOGPVRCHANNELMANAGER_H_INCLUDED
+#define ROOT_PVR_DIALOGS_GUIDIALOGPVRCHANNELMANAGER_H_INCLUDED
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
+#endif
+
+#ifndef ROOT_PVR_DIALOGS_GUIDIALOGPVRCHANNELSOSD_H_INCLUDED
+#define ROOT_PVR_DIALOGS_GUIDIALOGPVRCHANNELSOSD_H_INCLUDED
 #include "pvr/dialogs/GUIDialogPVRChannelsOSD.h"
+#endif
+
+#ifndef ROOT_PVR_DIALOGS_GUIDIALOGPVRCUTTEROSD_H_INCLUDED
+#define ROOT_PVR_DIALOGS_GUIDIALOGPVRCUTTEROSD_H_INCLUDED
 #include "pvr/dialogs/GUIDialogPVRCutterOSD.h"
+#endif
+
+#ifndef ROOT_PVR_DIALOGS_GUIDIALOGPVRDIRECTOROSD_H_INCLUDED
+#define ROOT_PVR_DIALOGS_GUIDIALOGPVRDIRECTOROSD_H_INCLUDED
 #include "pvr/dialogs/GUIDialogPVRDirectorOSD.h"
+#endif
+
+#ifndef ROOT_PVR_DIALOGS_GUIDIALOGPVRGROUPMANAGER_H_INCLUDED
+#define ROOT_PVR_DIALOGS_GUIDIALOGPVRGROUPMANAGER_H_INCLUDED
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
+#endif
+
+#ifndef ROOT_PVR_DIALOGS_GUIDIALOGPVRGUIDEINFO_H_INCLUDED
+#define ROOT_PVR_DIALOGS_GUIDIALOGPVRGUIDEINFO_H_INCLUDED
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
+#endif
+
+#ifndef ROOT_PVR_DIALOGS_GUIDIALOGPVRGUIDEOSD_H_INCLUDED
+#define ROOT_PVR_DIALOGS_GUIDIALOGPVRGUIDEOSD_H_INCLUDED
 #include "pvr/dialogs/GUIDialogPVRGuideOSD.h"
+#endif
+
+#ifndef ROOT_PVR_DIALOGS_GUIDIALOGPVRGUIDESEARCH_H_INCLUDED
+#define ROOT_PVR_DIALOGS_GUIDIALOGPVRGUIDESEARCH_H_INCLUDED
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
+#endif
+
+#ifndef ROOT_PVR_DIALOGS_GUIDIALOGPVRRECORDINGINFO_H_INCLUDED
+#define ROOT_PVR_DIALOGS_GUIDIALOGPVRRECORDINGINFO_H_INCLUDED
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
+#endif
+
+#ifndef ROOT_PVR_DIALOGS_GUIDIALOGPVRTIMERSETTINGS_H_INCLUDED
+#define ROOT_PVR_DIALOGS_GUIDIALOGPVRTIMERSETTINGS_H_INCLUDED
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
+#endif
 
+
+#ifndef ROOT_EPG_EPGCONTAINER_H_INCLUDED
+#define ROOT_EPG_EPGCONTAINER_H_INCLUDED
 #include "epg/EpgContainer.h"
+#endif
 
+
+#ifndef ROOT_VIDEO_DIALOGS_GUIDIALOGFULLSCREENINFO_H_INCLUDED
+#define ROOT_VIDEO_DIALOGS_GUIDIALOGFULLSCREENINFO_H_INCLUDED
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
+#endif
+
+#ifndef ROOT_VIDEO_DIALOGS_GUIDIALOGTELETEXT_H_INCLUDED
+#define ROOT_VIDEO_DIALOGS_GUIDIALOGTELETEXT_H_INCLUDED
 #include "video/dialogs/GUIDialogTeletext.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGSLIDER_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGSLIDER_H_INCLUDED
 #include "dialogs/GUIDialogSlider.h"
+#endif
+
+#ifndef ROOT_GUILIB_GUICONTROLFACTORY_H_INCLUDED
+#define ROOT_GUILIB_GUICONTROLFACTORY_H_INCLUDED
 #include "guilib/GUIControlFactory.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGCACHE_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGCACHE_H_INCLUDED
 #include "dialogs/GUIDialogCache.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGPLAYEJECT_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGPLAYEJECT_H_INCLUDED
 #include "dialogs/GUIDialogPlayEject.h"
+#endif
+
+#ifndef ROOT_DIALOGS_GUIDIALOGMEDIAFILTER_H_INCLUDED
+#define ROOT_DIALOGS_GUIDIALOGMEDIAFILTER_H_INCLUDED
 #include "dialogs/GUIDialogMediaFilter.h"
+#endif
+
+#ifndef ROOT_VIDEO_DIALOGS_GUIDIALOGSUBTITLES_H_INCLUDED
+#define ROOT_VIDEO_DIALOGS_GUIDIALOGSUBTITLES_H_INCLUDED
 #include "video/dialogs/GUIDialogSubtitles.h"
+#endif
+
+#ifndef ROOT_UTILS_XMLUTILS_H_INCLUDED
+#define ROOT_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef ROOT_ADDONS_ADDONINSTALLER_H_INCLUDED
+#define ROOT_ADDONS_ADDONINSTALLER_H_INCLUDED
 #include "addons/AddonInstaller.h"
+#endif
+
 
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -308,14 +1000,46 @@
 #include "linux/HALManager.h"
 #endif
 
+#ifndef ROOT_STORAGE_MEDIAMANAGER_H_INCLUDED
+#define ROOT_STORAGE_MEDIAMANAGER_H_INCLUDED
 #include "storage/MediaManager.h"
+#endif
+
+#ifndef ROOT_UTILS_JOBMANAGER_H_INCLUDED
+#define ROOT_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
+#ifndef ROOT_UTILS_SAVEFILESTATEJOB_H_INCLUDED
+#define ROOT_UTILS_SAVEFILESTATEJOB_H_INCLUDED
 #include "utils/SaveFileStateJob.h"
+#endif
+
+#ifndef ROOT_UTILS_ALARMCLOCK_H_INCLUDED
+#define ROOT_UTILS_ALARMCLOCK_H_INCLUDED
 #include "utils/AlarmClock.h"
+#endif
+
+#ifndef ROOT_UTILS_RSSREADER_H_INCLUDED
+#define ROOT_UTILS_RSSREADER_H_INCLUDED
 #include "utils/RssReader.h"
+#endif
+
+#ifndef ROOT_UTILS_STRINGUTILS_H_INCLUDED
+#define ROOT_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ROOT_UTILS_WEATHER_H_INCLUDED
+#define ROOT_UTILS_WEATHER_H_INCLUDED
 #include "utils/Weather.h"
+#endif
+
+#ifndef ROOT_DATABASEMANAGER_H_INCLUDED
+#define ROOT_DATABASEMANAGER_H_INCLUDED
 #include "DatabaseManager.h"
+#endif
+
 
 #ifdef TARGET_POSIX
 #include "XHandle.h"

@@ -22,14 +22,46 @@
 #include <string.h>
 #include <stdlib.h>
 
+#ifndef JSON_RPC_JSONRPCUTILS_H_INCLUDED
+#define JSON_RPC_JSONRPCUTILS_H_INCLUDED
 #include "JSONRPCUtils.h"
+#endif
+
+#ifndef JSON_RPC_XBDATETIME_H_INCLUDED
+#define JSON_RPC_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_SORTUTILS_H_INCLUDED
+#define JSON_RPC_UTILS_SORTUTILS_H_INCLUDED
 #include "utils/SortUtils.h"
+#endif
+
+#ifndef JSON_RPC_INTERFACES_IANNOUNCER_H_INCLUDED
+#define JSON_RPC_INTERFACES_IANNOUNCER_H_INCLUDED
 #include "interfaces/IAnnouncer.h"
+#endif
+
+#ifndef JSON_RPC_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
+#define JSON_RPC_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
 #include "playlists/SmartPlayList.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_JSONVARIANTWRITER_H_INCLUDED
+#define JSON_RPC_UTILS_JSONVARIANTWRITER_H_INCLUDED
 #include "utils/JSONVariantWriter.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_JSONVARIANTPARSER_H_INCLUDED
+#define JSON_RPC_UTILS_JSONVARIANTPARSER_H_INCLUDED
 #include "utils/JSONVariantParser.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_STRINGUTILS_H_INCLUDED
+#define JSON_RPC_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 namespace JSONRPC
 {

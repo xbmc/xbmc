@@ -18,17 +18,49 @@
  *
  */
 
+#ifndef VIEW_VIEWDATABASE_H_INCLUDED
+#define VIEW_VIEWDATABASE_H_INCLUDED
 #include "ViewDatabase.h"
+#endif
+
+#ifndef VIEW_UTILS_URIUTILS_H_INCLUDED
+#define VIEW_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef VIEW_VIEW_VIEWSTATE_H_INCLUDED
+#define VIEW_VIEW_VIEWSTATE_H_INCLUDED
 #include "view/ViewState.h"
+#endif
+
+#ifndef VIEW_UTILS_LEGACYPATHTRANSLATION_H_INCLUDED
+#define VIEW_UTILS_LEGACYPATHTRANSLATION_H_INCLUDED
 #include "utils/LegacyPathTranslation.h"
+#endif
+
+#ifndef VIEW_UTILS_LOG_H_INCLUDED
+#define VIEW_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef VIEW_UTILS_STRINGUTILS_H_INCLUDED
+#define VIEW_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 #ifdef TARGET_POSIX
 #include "linux/ConvUtils.h" // GetLastError()
 #endif
+#ifndef VIEW_DBWRAPPERS_DATASET_H_INCLUDED
+#define VIEW_DBWRAPPERS_DATASET_H_INCLUDED
 #include "dbwrappers/dataset.h"
+#endif
+
+#ifndef VIEW_SORTFILEITEM_H_INCLUDED
+#define VIEW_SORTFILEITEM_H_INCLUDED
 #include "SortFileItem.h"
+#endif
+
 
 
 //********************************************************************************************************************************

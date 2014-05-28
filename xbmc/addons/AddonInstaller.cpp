@@ -18,29 +18,121 @@
  *
  */
 
+#ifndef ADDONS_ADDONINSTALLER_H_INCLUDED
+#define ADDONS_ADDONINSTALLER_H_INCLUDED
 #include "AddonInstaller.h"
+#endif
+
+#ifndef ADDONS_SERVICE_H_INCLUDED
+#define ADDONS_SERVICE_H_INCLUDED
 #include "Service.h"
+#endif
+
+#ifndef ADDONS_UTILS_LOG_H_INCLUDED
+#define ADDONS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ADDONS_UTILS_FILEUTILS_H_INCLUDED
+#define ADDONS_UTILS_FILEUTILS_H_INCLUDED
 #include "utils/FileUtils.h"
+#endif
+
+#ifndef ADDONS_UTILS_URIUTILS_H_INCLUDED
+#define ADDONS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef ADDONS_UTIL_H_INCLUDED
+#define ADDONS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef ADDONS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define ADDONS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define ADDONS_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_SETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef ADDONS_APPLICATIONMESSENGER_H_INCLUDED
+#define ADDONS_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_FAVOURITESDIRECTORY_H_INCLUDED
+#define ADDONS_FILESYSTEM_FAVOURITESDIRECTORY_H_INCLUDED
 #include "filesystem/FavouritesDirectory.h"
+#endif
+
+#ifndef ADDONS_UTILS_JOBMANAGER_H_INCLUDED
+#define ADDONS_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
+#ifndef ADDONS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define ADDONS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef ADDONS_ADDONS_ADDONMANAGER_H_INCLUDED
+#define ADDONS_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef ADDONS_ADDONS_REPOSITORY_H_INCLUDED
+#define ADDONS_ADDONS_REPOSITORY_H_INCLUDED
 #include "addons/Repository.h"
+#endif
+
+#ifndef ADDONS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define ADDONS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"      // for callback
+#endif
+
+#ifndef ADDONS_GUIUSERMESSAGES_H_INCLUDED
+#define ADDONS_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"              // for callback
+#endif
+
+#ifndef ADDONS_UTILS_STRINGUTILS_H_INCLUDED
+#define ADDONS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ADDONS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define ADDONS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef ADDONS_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#define ADDONS_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
 #include "dialogs/GUIDialogProgress.h"
+#endif
+
+#ifndef ADDONS_URL_H_INCLUDED
+#define ADDONS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef ADDONS_PVR_PVRMANAGER_H_INCLUDED
+#define ADDONS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

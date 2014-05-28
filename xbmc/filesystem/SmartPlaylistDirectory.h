@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef FILESYSTEM_IFILEDIRECTORY_H_INCLUDED
+#define FILESYSTEM_IFILEDIRECTORY_H_INCLUDED
 #include "IFileDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_SORTUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_SORTUTILS_H_INCLUDED
 #include "utils/SortUtils.h"
+#endif
+
 
 class CSmartPlaylist;
 

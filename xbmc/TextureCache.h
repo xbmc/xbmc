@@ -21,10 +21,26 @@
 #pragma once
 
 #include <set>
+#ifndef ROOT_UTILS_STDSTRING_H_INCLUDED
+#define ROOT_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef ROOT_UTILS_JOBMANAGER_H_INCLUDED
+#define ROOT_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
+#ifndef ROOT_TEXTUREDATABASE_H_INCLUDED
+#define ROOT_TEXTUREDATABASE_H_INCLUDED
 #include "TextureDatabase.h"
+#endif
+
+#ifndef ROOT_THREADS_EVENT_H_INCLUDED
+#define ROOT_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
 
 class CURL;
 class CBaseTexture;

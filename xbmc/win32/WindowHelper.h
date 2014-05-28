@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef WIN32_THREADS_THREAD_H_INCLUDED
+#define WIN32_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
 
 class CWHelper: public CThread
 {

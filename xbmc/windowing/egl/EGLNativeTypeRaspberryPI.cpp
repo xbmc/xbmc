@@ -17,15 +17,43 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef EGL_SYSTEM_H_INCLUDED
+#define EGL_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #include <EGL/egl.h>
+#ifndef EGL_EGLNATIVETYPERASPBERRYPI_H_INCLUDED
+#define EGL_EGLNATIVETYPERASPBERRYPI_H_INCLUDED
 #include "EGLNativeTypeRaspberryPI.h"
+#endif
+
+#ifndef EGL_UTILS_LOG_H_INCLUDED
+#define EGL_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef EGL_GUILIB_GUI3D_H_INCLUDED
+#define EGL_GUILIB_GUI3D_H_INCLUDED
 #include "guilib/gui3d.h"
+#endif
+
+#ifndef EGL_LINUX_DLLBCM_H_INCLUDED
+#define EGL_LINUX_DLLBCM_H_INCLUDED
 #include "linux/DllBCM.h"
+#endif
+
+#ifndef EGL_UTILS_STRINGUTILS_H_INCLUDED
+#define EGL_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef EGL_SETTINGS_SETTINGS_H_INCLUDED
+#define EGL_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
 
 #ifndef __VIDEOCORE4__
 #define __VIDEOCORE4__

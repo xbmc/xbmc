@@ -18,22 +18,86 @@
  *
  */
 
+#ifndef FILESYSTEM_DIRECTORY_H_INCLUDED
+#define FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "Directory.h"
+#endif
+
+#ifndef FILESYSTEM_DIRECTORYFACTORY_H_INCLUDED
+#define FILESYSTEM_DIRECTORYFACTORY_H_INCLUDED
 #include "DirectoryFactory.h"
+#endif
+
+#ifndef FILESYSTEM_FILEDIRECTORYFACTORY_H_INCLUDED
+#define FILESYSTEM_FILEDIRECTORYFACTORY_H_INCLUDED
 #include "FileDirectoryFactory.h"
+#endif
+
+#ifndef FILESYSTEM_COMMONS_EXCEPTION_H_INCLUDED
+#define FILESYSTEM_COMMONS_EXCEPTION_H_INCLUDED
 #include "commons/Exception.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
+#define FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
 #include "DirectoryCache.h"
+#endif
+
+#ifndef FILESYSTEM_SETTINGS_SETTINGS_H_INCLUDED
+#define FILESYSTEM_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_JOB_H_INCLUDED
+#define FILESYSTEM_UTILS_JOB_H_INCLUDED
 #include "utils/Job.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_JOBMANAGER_H_INCLUDED
+#define FILESYSTEM_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
+#ifndef FILESYSTEM_APPLICATION_H_INCLUDED
+#define FILESYSTEM_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef FILESYSTEM_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define FILESYSTEM_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef FILESYSTEM_DIALOGS_GUIDIALOGBUSY_H_INCLUDED
+#define FILESYSTEM_DIALOGS_GUIDIALOGBUSY_H_INCLUDED
 #include "dialogs/GUIDialogBusy.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
+#define FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

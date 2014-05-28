@@ -18,11 +18,27 @@
  *
  */
 
+#ifndef TEST_UTILS_XBMCTINYXML_H_INCLUDED
+#define TEST_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
-#include "utils/StringUtils.h"
-#include "test/TestUtils.h"
+#endif
 
+#ifndef TEST_UTILS_STRINGUTILS_H_INCLUDED
+#define TEST_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+#ifndef TEST_TEST_TESTUTILS_H_INCLUDED
+#define TEST_TEST_TESTUTILS_H_INCLUDED
+#include "test/TestUtils.h"
+#endif
+
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 TEST(TestXBMCTinyXML, ParseFromString)
 {

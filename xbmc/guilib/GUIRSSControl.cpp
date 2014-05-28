@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef GUILIB_GUIRSSCONTROL_H_INCLUDED
+#define GUILIB_GUIRSSCONTROL_H_INCLUDED
 #include "GUIRSSControl.h"
+#endif
+
+#ifndef GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "GUIWindowManager.h"
+#endif
+
+#ifndef GUILIB_SETTINGS_SETTINGS_H_INCLUDED
+#define GUILIB_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef GUILIB_THREADS_CRITICALSECTION_H_INCLUDED
+#define GUILIB_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef GUILIB_THREADS_SINGLELOCK_H_INCLUDED
+#define GUILIB_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef GUILIB_UTILS_RSSMANAGER_H_INCLUDED
+#define GUILIB_UTILS_RSSMANAGER_H_INCLUDED
 #include "utils/RssManager.h"
+#endif
+
+#ifndef GUILIB_UTILS_RSSREADER_H_INCLUDED
+#define GUILIB_UTILS_RSSREADER_H_INCLUDED
 #include "utils/RssReader.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace std;
 

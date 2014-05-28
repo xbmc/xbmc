@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef NETWORK_WEBSERVER_H_INCLUDED
+#define NETWORK_WEBSERVER_H_INCLUDED
 #include "WebServer.h"
+#endif
+
 #ifdef HAS_WEB_SERVER
 #include "URL.h"
 #include "Util.h"

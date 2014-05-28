@@ -19,27 +19,95 @@
  *
  */
 
+#ifndef OMXPLAYER_CORES_IPLAYER_H_INCLUDED
+#define OMXPLAYER_CORES_IPLAYER_H_INCLUDED
 #include "cores/IPlayer.h"
+#endif
+
+#ifndef OMXPLAYER_THREADS_THREAD_H_INCLUDED
+#define OMXPLAYER_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
 
+
+#ifndef OMXPLAYER_CORES_DVDPLAYER_IDVDPLAYER_H_INCLUDED
+#define OMXPLAYER_CORES_DVDPLAYER_IDVDPLAYER_H_INCLUDED
 #include "cores/dvdplayer/IDVDPlayer.h"
+#endif
 
+
+#ifndef OMXPLAYER_DVDMESSAGEQUEUE_H_INCLUDED
+#define OMXPLAYER_DVDMESSAGEQUEUE_H_INCLUDED
 #include "DVDMessageQueue.h"
+#endif
+
+#ifndef OMXPLAYER_OMXCORE_H_INCLUDED
+#define OMXPLAYER_OMXCORE_H_INCLUDED
 #include "OMXCore.h"
+#endif
+
+#ifndef OMXPLAYER_OMXCLOCK_H_INCLUDED
+#define OMXPLAYER_OMXCLOCK_H_INCLUDED
 #include "OMXClock.h"
+#endif
+
+#ifndef OMXPLAYER_OMXPLAYERAUDIO_H_INCLUDED
+#define OMXPLAYER_OMXPLAYERAUDIO_H_INCLUDED
 #include "OMXPlayerAudio.h"
+#endif
+
+#ifndef OMXPLAYER_OMXPLAYERVIDEO_H_INCLUDED
+#define OMXPLAYER_OMXPLAYERVIDEO_H_INCLUDED
 #include "OMXPlayerVideo.h"
+#endif
+
+#ifndef OMXPLAYER_DVDPLAYERSUBTITLE_H_INCLUDED
+#define OMXPLAYER_DVDPLAYERSUBTITLE_H_INCLUDED
 #include "DVDPlayerSubtitle.h"
+#endif
+
+#ifndef OMXPLAYER_DVDPLAYERTELETEXT_H_INCLUDED
+#define OMXPLAYER_DVDPLAYERTELETEXT_H_INCLUDED
 #include "DVDPlayerTeletext.h"
+#endif
 
+
+#ifndef OMXPLAYER_DVDCHAPTERREADER_H_INCLUDED
+#define OMXPLAYER_DVDCHAPTERREADER_H_INCLUDED
 //#include "DVDChapterReader.h"
-#include "DVDSubtitles/DVDFactorySubtitle.h"
-#include "utils/BitstreamStats.h"
+#endif
 
+#ifndef OMXPLAYER_DVDSUBTITLES_DVDFACTORYSUBTITLE_H_INCLUDED
+#define OMXPLAYER_DVDSUBTITLES_DVDFACTORYSUBTITLE_H_INCLUDED
+#include "DVDSubtitles/DVDFactorySubtitle.h"
+#endif
+
+#ifndef OMXPLAYER_UTILS_BITSTREAMSTATS_H_INCLUDED
+#define OMXPLAYER_UTILS_BITSTREAMSTATS_H_INCLUDED
+#include "utils/BitstreamStats.h"
+#endif
+
+
+#ifndef OMXPLAYER_LINUX_DLLBCM_H_INCLUDED
+#define OMXPLAYER_LINUX_DLLBCM_H_INCLUDED
 #include "linux/DllBCM.h"
+#endif
+
+#ifndef OMXPLAYER_EDL_H_INCLUDED
+#define OMXPLAYER_EDL_H_INCLUDED
 #include "Edl.h"
+#endif
+
+#ifndef OMXPLAYER_FILEITEM_H_INCLUDED
+#define OMXPLAYER_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef OMXPLAYER_THREADS_SINGLELOCK_H_INCLUDED
+#define OMXPLAYER_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 
 class COMXPlayer;
 class OMXPlayerVideo;

@@ -18,14 +18,42 @@
  *
  */
 
+#ifndef LEGACY_ADDON_H_INCLUDED
+#define LEGACY_ADDON_H_INCLUDED
 #include "Addon.h"
-#include "LanguageHook.h"
+#endif
 
+#ifndef LEGACY_LANGUAGEHOOK_H_INCLUDED
+#define LEGACY_LANGUAGEHOOK_H_INCLUDED
+#include "LanguageHook.h"
+#endif
+
+
+#ifndef LEGACY_ADDONS_ADDONMANAGER_H_INCLUDED
+#define LEGACY_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef LEGACY_ADDONS_GUIDIALOGADDONSETTINGS_H_INCLUDED
+#define LEGACY_ADDONS_GUIDIALOGADDONSETTINGS_H_INCLUDED
 #include "addons/GUIDialogAddonSettings.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define LEGACY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef LEGACY_GUIUSERMESSAGES_H_INCLUDED
+#define LEGACY_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef LEGACY_UTILS_STRINGUTILS_H_INCLUDED
+#define LEGACY_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace ADDON;
 

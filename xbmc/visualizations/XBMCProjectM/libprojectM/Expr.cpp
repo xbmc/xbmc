@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef LIBPROJECTM_WIPEMALLOC_H_INCLUDED
+#define LIBPROJECTM_WIPEMALLOC_H_INCLUDED
 #include "wipemalloc.h"
+#endif
+
 
 #include "Expr.hpp"
 #include <cassert>

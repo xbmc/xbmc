@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef DVDINPUTSTREAMS_DYNAMICDLL_H_INCLUDED
+#define DVDINPUTSTREAMS_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
 
 #include <librtmp/log.h>
 #include <librtmp/rtmp.h>

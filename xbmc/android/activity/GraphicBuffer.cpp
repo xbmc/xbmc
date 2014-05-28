@@ -52,10 +52,26 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+#ifndef ACTIVITY_DLLGRAPHICBUFFER_H_INCLUDED
+#define ACTIVITY_DLLGRAPHICBUFFER_H_INCLUDED
 #include "DllGraphicBuffer.h"
+#endif
+
+#ifndef ACTIVITY_GRAPHICBUFFER_H_INCLUDED
+#define ACTIVITY_GRAPHICBUFFER_H_INCLUDED
 #include "GraphicBuffer.h"
+#endif
+
+#ifndef ACTIVITY_XBMCAPP_H_INCLUDED
+#define ACTIVITY_XBMCAPP_H_INCLUDED
 #include "XBMCApp.h"
+#endif
+
+#ifndef ACTIVITY_UTILS_LOG_H_INCLUDED
+#define ACTIVITY_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 DllGraphicBuffer *CGraphicBuffer::m_dll = NULL;
 

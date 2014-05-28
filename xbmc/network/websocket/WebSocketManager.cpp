@@ -20,13 +20,41 @@
 
 #include <string>
 
+#ifndef WEBSOCKET_WEBSOCKETMANAGER_H_INCLUDED
+#define WEBSOCKET_WEBSOCKETMANAGER_H_INCLUDED
 #include "WebSocketManager.h"
+#endif
+
+#ifndef WEBSOCKET_WEBSOCKET_H_INCLUDED
+#define WEBSOCKET_WEBSOCKET_H_INCLUDED
 #include "WebSocket.h"
+#endif
+
+#ifndef WEBSOCKET_WEBSOCKETV8_H_INCLUDED
+#define WEBSOCKET_WEBSOCKETV8_H_INCLUDED
 #include "WebSocketV8.h"
+#endif
+
+#ifndef WEBSOCKET_WEBSOCKETV13_H_INCLUDED
+#define WEBSOCKET_WEBSOCKETV13_H_INCLUDED
 #include "WebSocketV13.h"
+#endif
+
+#ifndef WEBSOCKET_UTILS_HTTPPARSER_H_INCLUDED
+#define WEBSOCKET_UTILS_HTTPPARSER_H_INCLUDED
 #include "utils/HttpParser.h"
+#endif
+
+#ifndef WEBSOCKET_UTILS_HTTPRESPONSE_H_INCLUDED
+#define WEBSOCKET_UTILS_HTTPRESPONSE_H_INCLUDED
 #include "utils/HttpResponse.h"
+#endif
+
+#ifndef WEBSOCKET_UTILS_LOG_H_INCLUDED
+#define WEBSOCKET_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #define WS_HTTP_METHOD          "GET"
 #define WS_HTTP_TAG             "HTTP/"

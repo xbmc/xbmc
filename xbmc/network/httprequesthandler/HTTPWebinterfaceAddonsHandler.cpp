@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef HTTPREQUESTHANDLER_HTTPWEBINTERFACEADDONSHANDLER_H_INCLUDED
+#define HTTPREQUESTHANDLER_HTTPWEBINTERFACEADDONSHANDLER_H_INCLUDED
 #include "HTTPWebinterfaceAddonsHandler.h"
+#endif
+
+#ifndef HTTPREQUESTHANDLER_NETWORK_WEBSERVER_H_INCLUDED
+#define HTTPREQUESTHANDLER_NETWORK_WEBSERVER_H_INCLUDED
 #include "network/WebServer.h"
+#endif
+
+#ifndef HTTPREQUESTHANDLER_ADDONS_ADDONMANAGER_H_INCLUDED
+#define HTTPREQUESTHANDLER_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
 
 #define ADDON_HEADER      "<html><head><title>Add-on List</title></head><body>\n<h1>Available web interfaces:</h1>\n<ul>\n"
 

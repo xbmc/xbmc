@@ -20,17 +20,37 @@
  *
  */
 
+#ifndef AUDIO_SYSTEM_H_INCLUDED
+#define AUDIO_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef AUDIO_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
+#define AUDIO_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
+#endif
+
+#ifndef AUDIO_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define AUDIO_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
+#ifndef AUDIO_DVDCLOCK_H_INCLUDED
+#define AUDIO_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h"
+#endif
+
 
 
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
 #include <vector>
+#ifndef AUDIO_DLLAVCODEC_H_INCLUDED
+#define AUDIO_DLLAVCODEC_H_INCLUDED
 #include "DllAvCodec.h"
+#endif
+
 
 struct AVStream;
 

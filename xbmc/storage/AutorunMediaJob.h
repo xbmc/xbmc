@@ -18,9 +18,21 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef STORAGE_SYSTEM_H_INCLUDED
+#define STORAGE_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef STORAGE_UTILS_STDSTRING_H_INCLUDED
+#define STORAGE_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef STORAGE_UTILS_JOB_H_INCLUDED
+#define STORAGE_UTILS_JOB_H_INCLUDED
 #include "utils/Job.h"
+#endif
+
 
 class CAutorunMediaJob : public CJob
 {

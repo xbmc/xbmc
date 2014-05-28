@@ -22,9 +22,21 @@
 #include <map>
 #include <string>
 
+#ifndef PYTHON_INTERFACES_GENERIC_ILANGUAGEINVOKER_H_INCLUDED
+#define PYTHON_INTERFACES_GENERIC_ILANGUAGEINVOKER_H_INCLUDED
 #include "interfaces/generic/ILanguageInvoker.h"
+#endif
+
+#ifndef PYTHON_THREADS_CRITICALSECTION_H_INCLUDED
+#define PYTHON_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef PYTHON_THREADS_EVENT_H_INCLUDED
+#define PYTHON_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
 
 class CPythonInvoker : public ILanguageInvoker
 {

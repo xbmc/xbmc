@@ -22,7 +22,11 @@
 
 #include <string>
 #include <vector>
+#ifndef UTILS_PLATFORMDEFS_H_INCLUDED
+#define UTILS_PLATFORMDEFS_H_INCLUDED
 #include "PlatformDefs.h" // for SYSTEMTIME
+#endif
+
 
 namespace XFILE
 {

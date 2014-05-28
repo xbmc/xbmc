@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef EXTERNALPLAYER_CORES_IPLAYER_H_INCLUDED
+#define EXTERNALPLAYER_CORES_IPLAYER_H_INCLUDED
 #include "cores/IPlayer.h"
+#endif
+
+#ifndef EXTERNALPLAYER_THREADS_THREAD_H_INCLUDED
+#define EXTERNALPLAYER_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
 
 class CGUIDialogOK;
 

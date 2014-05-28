@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "VideoInfoTag.h"
+#endif
+
+#ifndef VIDEO_UTILS_XMLUTILS_H_INCLUDED
+#define VIDEO_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef VIDEO_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define VIDEO_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef VIDEO_UTILS_LOG_H_INCLUDED
+#define VIDEO_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef VIDEO_UTILS_STRINGUTILS_H_INCLUDED
+#define VIDEO_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef VIDEO_UTILS_VARIANT_H_INCLUDED
+#define VIDEO_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef VIDEO_TEXTUREDATABASE_H_INCLUDED
+#define VIDEO_TEXTUREDATABASE_H_INCLUDED
 #include "TextureDatabase.h"
+#endif
+
+#ifndef VIDEO_FILESYSTEM_FILE_H_INCLUDED
+#define VIDEO_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
 
 #include <sstream>
 

@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef LINUX_SYSTEM_H_INCLUDED
+#define LINUX_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef LINUX_XTIMEUTILS_H_INCLUDED
+#define LINUX_XTIMEUTILS_H_INCLUDED
 #include "XTimeUtils.h"
+#endif
+
+#ifndef LINUX_LINUXTIMEZONE_H_INCLUDED
+#define LINUX_LINUXTIMEZONE_H_INCLUDED
 #include "LinuxTimezone.h"
+#endif
+
 
 #if defined(TARGET_DARWIN)
 #include "threads/Atomics.h"

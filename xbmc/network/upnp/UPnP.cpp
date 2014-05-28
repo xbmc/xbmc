@@ -24,29 +24,121 @@
 
 #include <set>
 
+#ifndef UPNP_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define UPNP_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef UPNP_UPNP_H_INCLUDED
+#define UPNP_UPNP_H_INCLUDED
 #include "UPnP.h"
+#endif
+
+#ifndef UPNP_UPNPINTERNAL_H_INCLUDED
+#define UPNP_UPNPINTERNAL_H_INCLUDED
 #include "UPnPInternal.h"
+#endif
+
+#ifndef UPNP_UPNPRENDERER_H_INCLUDED
+#define UPNP_UPNPRENDERER_H_INCLUDED
 #include "UPnPRenderer.h"
+#endif
+
+#ifndef UPNP_UPNPSERVER_H_INCLUDED
+#define UPNP_UPNPSERVER_H_INCLUDED
 #include "UPnPServer.h"
+#endif
+
+#ifndef UPNP_UPNPSETTINGS_H_INCLUDED
+#define UPNP_UPNPSETTINGS_H_INCLUDED
 #include "UPnPSettings.h"
+#endif
+
+#ifndef UPNP_UTILS_URIUTILS_H_INCLUDED
+#define UPNP_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef UPNP_APPLICATION_H_INCLUDED
+#define UPNP_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef UPNP_APPLICATIONMESSENGER_H_INCLUDED
+#define UPNP_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef UPNP_NETWORK_NETWORK_H_INCLUDED
+#define UPNP_NETWORK_NETWORK_H_INCLUDED
 #include "network/Network.h"
+#endif
+
+#ifndef UPNP_UTILS_LOG_H_INCLUDED
+#define UPNP_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef UPNP_PLATINUM_H_INCLUDED
+#define UPNP_PLATINUM_H_INCLUDED
 #include "Platinum.h"
+#endif
+
+#ifndef UPNP_URL_H_INCLUDED
+#define UPNP_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef UPNP_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define UPNP_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef UPNP_SETTINGS_SETTINGS_H_INCLUDED
+#define UPNP_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef UPNP_GUIUSERMESSAGES_H_INCLUDED
+#define UPNP_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef UPNP_FILEITEM_H_INCLUDED
+#define UPNP_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef UPNP_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define UPNP_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef UPNP_GUIINFOMANAGER_H_INCLUDED
+#define UPNP_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef UPNP_UTILS_TIMEUTILS_H_INCLUDED
+#define UPNP_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef UPNP_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define UPNP_VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "video/VideoInfoTag.h"
+#endif
+
+#ifndef UPNP_GUILIB_KEY_H_INCLUDED
+#define UPNP_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef UPNP_UTIL_H_INCLUDED
+#define UPNP_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
 
 using namespace std;
 using namespace UPNP;

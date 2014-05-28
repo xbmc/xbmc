@@ -19,9 +19,21 @@
  *
  */
 
+#ifndef UTILS_AEAUDIOFORMAT_H_INCLUDED
+#define UTILS_AEAUDIOFORMAT_H_INCLUDED
 #include "AEAudioFormat.h"
+#endif
+
+#ifndef UTILS_UTILS_STDSTRING_H_INCLUDED
+#define UTILS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef UTILS_PLATFORMDEFS_H_INCLUDED
+#define UTILS_PLATFORMDEFS_H_INCLUDED
 #include "PlatformDefs.h"
+#endif
+
 #include <math.h>
 
 #ifdef TARGET_WINDOWS

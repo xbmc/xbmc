@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef GUILIB_GUIINFOTYPES_H_INCLUDED
+#define GUILIB_GUIINFOTYPES_H_INCLUDED
 #include "GUIInfoTypes.h"
+#endif
+
+#ifndef GUILIB_GUIINFOMANAGER_H_INCLUDED
+#define GUILIB_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef GUILIB_ADDONS_ADDONMANAGER_H_INCLUDED
+#define GUILIB_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "LocalizeStrings.h"
+#endif
+
+#ifndef GUILIB_GUICOLORMANAGER_H_INCLUDED
+#define GUILIB_GUICOLORMANAGER_H_INCLUDED
 #include "GUIColorManager.h"
+#endif
+
+#ifndef GUILIB_GUILISTITEM_H_INCLUDED
+#define GUILIB_GUILISTITEM_H_INCLUDED
 #include "GUIListItem.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef GUILIB_ADDONS_SKIN_H_INCLUDED
+#define GUILIB_ADDONS_SKIN_H_INCLUDED
 #include "addons/Skin.h"
+#endif
+
 
 using namespace std;
 using ADDON::CAddonMgr;

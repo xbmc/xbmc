@@ -18,13 +18,41 @@
  *
  */
 
+#ifndef DLLLOADER_DLL_TRACKER_LIBRARY_H_INCLUDED
+#define DLLLOADER_DLL_TRACKER_LIBRARY_H_INCLUDED
 #include "dll_tracker_library.h"
+#endif
+
+#ifndef DLLLOADER_DLL_TRACKER_H_INCLUDED
+#define DLLLOADER_DLL_TRACKER_H_INCLUDED
 #include "dll_tracker.h"
+#endif
+
+#ifndef DLLLOADER_DLL_H_INCLUDED
+#define DLLLOADER_DLL_H_INCLUDED
 #include "dll.h"
+#endif
+
+#ifndef DLLLOADER_DLLLOADER_H_INCLUDED
+#define DLLLOADER_DLLLOADER_H_INCLUDED
 #include "DllLoader.h"
+#endif
+
+#ifndef DLLLOADER_DLLLOADERCONTAINER_H_INCLUDED
+#define DLLLOADER_DLLLOADERCONTAINER_H_INCLUDED
 #include "DllLoaderContainer.h"
+#endif
+
+#ifndef DLLLOADER_THREADS_SINGLELOCK_H_INCLUDED
+#define DLLLOADER_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef DLLLOADER_UTILS_LOG_H_INCLUDED
+#define DLLLOADER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 extern "C" inline void tracker_library_track(uintptr_t caller, HMODULE hHandle)
 {

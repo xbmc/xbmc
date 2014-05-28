@@ -18,19 +18,55 @@
  *
  */
 
+#ifndef UTILS_AEWAVLOADER_H_INCLUDED
+#define UTILS_AEWAVLOADER_H_INCLUDED
 #include "AEWAVLoader.h"
+#endif
 
 
+
+#ifndef UTILS_SYSTEM_H_INCLUDED
+#define UTILS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef UTILS_UTILS_LOG_H_INCLUDED
+#define UTILS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef UTILS_UTILS_ENDIANSWAP_H_INCLUDED
+#define UTILS_UTILS_ENDIANSWAP_H_INCLUDED
 #include "utils/EndianSwap.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_FILE_H_INCLUDED
+#define UTILS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef UTILS_URL_H_INCLUDED
+#define UTILS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 #include <samplerate.h>
 
+#ifndef UTILS_AECONVERT_H_INCLUDED
+#define UTILS_AECONVERT_H_INCLUDED
 #include "AEConvert.h"
+#endif
+
+#ifndef UTILS_AEUTIL_H_INCLUDED
+#define UTILS_AEUTIL_H_INCLUDED
 #include "AEUtil.h"
+#endif
+
+#ifndef UTILS_AEREMAP_H_INCLUDED
+#define UTILS_AEREMAP_H_INCLUDED
 #include "AERemap.h"
+#endif
+
 
 #ifdef TARGET_WINDOWS
 #pragma comment(lib, "libsamplerate-0.lib")

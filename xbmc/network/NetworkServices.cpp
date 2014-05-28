@@ -18,18 +18,54 @@
  *
  */
 
+#ifndef NETWORK_NETWORKSERVICES_H_INCLUDED
+#define NETWORK_NETWORKSERVICES_H_INCLUDED
 #include "NetworkServices.h"
+#endif
+
+#ifndef NETWORK_APPLICATION_H_INCLUDED
+#define NETWORK_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef NETWORK_APPLICATIONMESSENGER_H_INCLUDED
+#define NETWORK_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef NETWORK_GUIINFOMANAGER_H_INCLUDED
+#define NETWORK_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
 #ifdef TARGET_LINUX
 #include "Util.h"
 #endif
+#ifndef NETWORK_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define NETWORK_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef NETWORK_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define NETWORK_DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef NETWORK_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define NETWORK_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef NETWORK_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define NETWORK_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef NETWORK_NETWORK_NETWORK_H_INCLUDED
+#define NETWORK_NETWORK_NETWORK_H_INCLUDED
 #include "network/Network.h"
+#endif
+
 
 #ifdef HAS_AIRPLAY
 #include "network/AirPlayServer.h"
@@ -73,11 +109,31 @@
 #include "osx/XBMCHelper.h"
 #endif
 
+#ifndef NETWORK_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define NETWORK_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef NETWORK_SETTINGS_LIB_SETTING_H_INCLUDED
+#define NETWORK_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef NETWORK_SETTINGS_SETTINGS_H_INCLUDED
+#define NETWORK_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef NETWORK_UTILS_LOG_H_INCLUDED
+#define NETWORK_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef NETWORK_UTILS_RSSMANAGER_H_INCLUDED
+#define NETWORK_UTILS_RSSMANAGER_H_INCLUDED
 #include "utils/RssManager.h"
+#endif
+
 
 using namespace std;
 #ifdef HAS_JSONRPC

@@ -20,7 +20,11 @@
  */
 
 #include <map>
+#ifndef MUSIC_THUMBLOADER_H_INCLUDED
+#define MUSIC_THUMBLOADER_H_INCLUDED
 #include "ThumbLoader.h"
+#endif
+
 
 class CFileItem;
 class CMusicDatabase;

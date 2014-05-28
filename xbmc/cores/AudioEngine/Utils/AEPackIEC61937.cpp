@@ -19,8 +19,16 @@
  */
 
 #include <cassert>
+#ifndef UTILS_SYSTEM_H_INCLUDED
+#define UTILS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef UTILS_AEPACKIEC61937_H_INCLUDED
+#define UTILS_AEPACKIEC61937_H_INCLUDED
 #include "AEPackIEC61937.h"
+#endif
+
 
 #define IEC61937_PREAMBLE1  0xF872
 #define IEC61937_PREAMBLE2  0x4E1F

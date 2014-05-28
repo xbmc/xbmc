@@ -19,10 +19,18 @@
  *
  */
 
+#ifndef ADDONS_DYNAMICDLL_H_INCLUDED
+#define ADDONS_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
 
 extern "C" {
+#ifndef ADDONS_LIB_CPLUFF_LIBCPLUFF_CPLUFF_H_INCLUDED
+#define ADDONS_LIB_CPLUFF_LIBCPLUFF_CPLUFF_H_INCLUDED
 #include "lib/cpluff/libcpluff/cpluff.h"
+#endif
+
 }
 
 class DllLibCPluffInterface

@@ -18,20 +18,72 @@
  *
  */
 
+#ifndef DLLLOADER_STDIO_H_INCLUDED
+#define DLLLOADER_STDIO_H_INCLUDED
 #include "stdio.h"
-#include "Win32DllLoader.h"
-#include "DllLoader.h"
-#include "DllLoaderContainer.h"
-#include "utils/StdString.h"
-#include "Util.h"
-#include "utils/log.h"
-#include "filesystem/SpecialProtocol.h"
-#include "utils/CharsetConverter.h"
+#endif
 
+#ifndef DLLLOADER_WIN32DLLLOADER_H_INCLUDED
+#define DLLLOADER_WIN32DLLLOADER_H_INCLUDED
+#include "Win32DllLoader.h"
+#endif
+
+#ifndef DLLLOADER_DLLLOADER_H_INCLUDED
+#define DLLLOADER_DLLLOADER_H_INCLUDED
+#include "DllLoader.h"
+#endif
+
+#ifndef DLLLOADER_DLLLOADERCONTAINER_H_INCLUDED
+#define DLLLOADER_DLLLOADERCONTAINER_H_INCLUDED
+#include "DllLoaderContainer.h"
+#endif
+
+#ifndef DLLLOADER_UTILS_STDSTRING_H_INCLUDED
+#define DLLLOADER_UTILS_STDSTRING_H_INCLUDED
+#include "utils/StdString.h"
+#endif
+
+#ifndef DLLLOADER_UTIL_H_INCLUDED
+#define DLLLOADER_UTIL_H_INCLUDED
+#include "Util.h"
+#endif
+
+#ifndef DLLLOADER_UTILS_LOG_H_INCLUDED
+#define DLLLOADER_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef DLLLOADER_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define DLLLOADER_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef DLLLOADER_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define DLLLOADER_UTILS_CHARSETCONVERTER_H_INCLUDED
+#include "utils/CharsetConverter.h"
+#endif
+
+
+#ifndef DLLLOADER_DLL_TRACKER_LIBRARY_H_INCLUDED
+#define DLLLOADER_DLL_TRACKER_LIBRARY_H_INCLUDED
 #include "dll_tracker_library.h"
+#endif
+
+#ifndef DLLLOADER_DLL_TRACKER_FILE_H_INCLUDED
+#define DLLLOADER_DLL_TRACKER_FILE_H_INCLUDED
 #include "dll_tracker_file.h"
+#endif
+
+#ifndef DLLLOADER_EXPORTS_EMU_KERNEL32_H_INCLUDED
+#define DLLLOADER_EXPORTS_EMU_KERNEL32_H_INCLUDED
 #include "exports/emu_kernel32.h"
+#endif
+
+#ifndef DLLLOADER_EXPORTS_EMU_MSVCRT_H_INCLUDED
+#define DLLLOADER_EXPORTS_EMU_MSVCRT_H_INCLUDED
 #include "exports/emu_msvcrt.h"
+#endif
+
 
 extern "C" FILE _iob[];
 extern "C" FARPROC WINAPI dllWin32GetProcAddress(HMODULE hModule, LPCSTR function);

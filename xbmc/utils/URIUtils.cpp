@@ -18,19 +18,71 @@
  *
  */
 
+#ifndef UTILS_NETWORK_NETWORK_H_INCLUDED
+#define UTILS_NETWORK_NETWORK_H_INCLUDED
 #include "network/Network.h"
+#endif
+
+#ifndef UTILS_URIUTILS_H_INCLUDED
+#define UTILS_URIUTILS_H_INCLUDED
 #include "URIUtils.h"
+#endif
+
+#ifndef UTILS_APPLICATION_H_INCLUDED
+#define UTILS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef UTILS_FILEITEM_H_INCLUDED
+#define UTILS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_MULTIPATHDIRECTORY_H_INCLUDED
+#define UTILS_FILESYSTEM_MULTIPATHDIRECTORY_H_INCLUDED
 #include "filesystem/MultiPathDirectory.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_MYTHDIRECTORY_H_INCLUDED
+#define UTILS_FILESYSTEM_MYTHDIRECTORY_H_INCLUDED
 #include "filesystem/MythDirectory.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define UTILS_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
+#define UTILS_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
 #include "filesystem/StackDirectory.h"
+#endif
+
+#ifndef UTILS_NETWORK_DNSNAMECACHE_H_INCLUDED
+#define UTILS_NETWORK_DNSNAMECACHE_H_INCLUDED
 #include "network/DNSNameCache.h"
+#endif
+
+#ifndef UTILS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define UTILS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef UTILS_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define UTILS_SETTINGS_MEDIASETTINGS_H_INCLUDED
 #include "settings/MediaSettings.h"
+#endif
+
+#ifndef UTILS_URL_H_INCLUDED
+#define UTILS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_STRINGUTILS_H_INCLUDED
 #include "StringUtils.h"
+#endif
+
 
 #include <netinet/in.h>
 #include <arpa/inet.h>

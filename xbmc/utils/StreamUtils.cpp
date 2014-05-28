@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef UTILS_STREAMUTILS_H_INCLUDED
+#define UTILS_STREAMUTILS_H_INCLUDED
 #include "StreamUtils.h"
+#endif
+
 
 int StreamUtils::GetCodecPriority(const CStdString &codec)
 {

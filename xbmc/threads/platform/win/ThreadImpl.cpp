@@ -19,7 +19,11 @@
  */
 
 #include <windows.h>
+#ifndef WIN_THREADS_PLATFORM_WIN_WIN32EXCEPTION_H_INCLUDED
+#define WIN_THREADS_PLATFORM_WIN_WIN32EXCEPTION_H_INCLUDED
 #include "threads/platform/win/Win32Exception.h"
+#endif
+
 
 void CThread::SpawnThread(unsigned stacksize)
 {

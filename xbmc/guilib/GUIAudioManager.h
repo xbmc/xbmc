@@ -22,11 +22,31 @@
 
 #include <map>
 
+#ifndef GUILIB_CORES_AUDIOENGINE_INTERFACES_AESOUND_H_INCLUDED
+#define GUILIB_CORES_AUDIOENGINE_INTERFACES_AESOUND_H_INCLUDED
 #include "cores/AudioEngine/Interfaces/AESound.h"
+#endif
+
+#ifndef GUILIB_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
+#define GUILIB_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
 #include "settings/lib/ISettingCallback.h"
+#endif
+
+#ifndef GUILIB_THREADS_CRITICALSECTION_H_INCLUDED
+#define GUILIB_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef GUILIB_UTILS_STDSTRING_H_INCLUDED
+#define GUILIB_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 // forward definitions
 class CAction;

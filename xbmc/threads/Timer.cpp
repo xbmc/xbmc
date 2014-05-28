@@ -20,8 +20,16 @@
 
 #include <algorithm>
 
+#ifndef THREADS_TIMER_H_INCLUDED
+#define THREADS_TIMER_H_INCLUDED
 #include "Timer.h"
+#endif
+
+#ifndef THREADS_SYSTEMCLOCK_H_INCLUDED
+#define THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "SystemClock.h"
+#endif
+
 
 CTimer::CTimer(ITimerCallback *callback)
   : CThread("Timer"),

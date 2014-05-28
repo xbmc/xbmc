@@ -19,9 +19,21 @@
  *
  */
 
+#ifndef ROOT_CORES_DLLLOADER_LIBRARYLOADER_H_INCLUDED
+#define ROOT_CORES_DLLLOADER_LIBRARYLOADER_H_INCLUDED
 #include "cores/DllLoader/LibraryLoader.h"
+#endif
+
+#ifndef ROOT_UTILS_STDSTRING_H_INCLUDED
+#define ROOT_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef ROOT_DLLPATHS_H_INCLUDED
+#define ROOT_DLLPATHS_H_INCLUDED
 #include "DllPaths.h"
+#endif
+
 
 ///////////////////////////////////////////////////////////
 //

@@ -26,13 +26,37 @@
 
 #include <android/native_activity.h>
 
+#ifndef ACTIVITY_IACTIVITYHANDLER_H_INCLUDED
+#define ACTIVITY_IACTIVITYHANDLER_H_INCLUDED
 #include "IActivityHandler.h"
-#include "IInputHandler.h"
+#endif
 
+#ifndef ACTIVITY_IINPUTHANDLER_H_INCLUDED
+#define ACTIVITY_IINPUTHANDLER_H_INCLUDED
+#include "IInputHandler.h"
+#endif
+
+
+#ifndef ACTIVITY_XBMC_H_INCLUDED
+#define ACTIVITY_XBMC_H_INCLUDED
 #include "xbmc.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_CONTEXT_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_CONTEXT_H_INCLUDED
 #include "android/jni/Context.h"
+#endif
+
+#ifndef ACTIVITY_ANDROID_JNI_BROADCASTRECEIVER_H_INCLUDED
+#define ACTIVITY_ANDROID_JNI_BROADCASTRECEIVER_H_INCLUDED
 #include "android/jni/BroadcastReceiver.h"
+#endif
+
+#ifndef ACTIVITY_THREADS_EVENT_H_INCLUDED
+#define ACTIVITY_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
 
 // forward delares
 class CJNIWakeLock;

@@ -38,10 +38,26 @@
 
 #include <stdlib.h>
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
+#ifndef SOURCE_AS_MEMORY_H_INCLUDED
+#define SOURCE_AS_MEMORY_H_INCLUDED
 #include "as_memory.h"
+#endif
+
+#ifndef SOURCE_AS_SCRIPTNODE_H_INCLUDED
+#define SOURCE_AS_SCRIPTNODE_H_INCLUDED
 #include "as_scriptnode.h"
+#endif
+
+#ifndef SOURCE_AS_BYTECODE_H_INCLUDED
+#define SOURCE_AS_BYTECODE_H_INCLUDED
 #include "as_bytecode.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

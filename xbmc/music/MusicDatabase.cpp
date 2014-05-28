@@ -18,54 +18,234 @@
  *
  */
 
+#ifndef MUSIC_NETWORK_NETWORK_H_INCLUDED
+#define MUSIC_NETWORK_NETWORK_H_INCLUDED
 #include "network/Network.h"
+#endif
+
+#ifndef MUSIC_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define MUSIC_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef MUSIC_SYSTEM_H_INCLUDED
+#define MUSIC_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef MUSIC_MUSICDATABASE_H_INCLUDED
+#define MUSIC_MUSICDATABASE_H_INCLUDED
 #include "MusicDatabase.h"
+#endif
+
+#ifndef MUSIC_NETWORK_CDDB_H_INCLUDED
+#define MUSIC_NETWORK_CDDB_H_INCLUDED
 #include "network/cddb.h"
+#endif
+
+#ifndef MUSIC_FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
+#define MUSIC_FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
 #include "filesystem/DirectoryCache.h"
+#endif
+
+#ifndef MUSIC_FILESYSTEM_MUSICDATABASEDIRECTORY_DIRECTORYNODE_H_INCLUDED
+#define MUSIC_FILESYSTEM_MUSICDATABASEDIRECTORY_DIRECTORYNODE_H_INCLUDED
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
+#endif
+
+#ifndef MUSIC_FILESYSTEM_MUSICDATABASEDIRECTORY_QUERYPARAMS_H_INCLUDED
+#define MUSIC_FILESYSTEM_MUSICDATABASEDIRECTORY_QUERYPARAMS_H_INCLUDED
 #include "filesystem/MusicDatabaseDirectory/QueryParams.h"
+#endif
+
+#ifndef MUSIC_FILESYSTEM_MUSICDATABASEDIRECTORY_H_INCLUDED
+#define MUSIC_FILESYSTEM_MUSICDATABASEDIRECTORY_H_INCLUDED
 #include "filesystem/MusicDatabaseDirectory.h"
+#endif
+
+#ifndef MUSIC_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define MUSIC_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef MUSIC_GUIINFOMANAGER_H_INCLUDED
+#define MUSIC_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef MUSIC_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define MUSIC_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef MUSIC_ADDONS_ADDONMANAGER_H_INCLUDED
+#define MUSIC_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef MUSIC_ADDONS_SCRAPER_H_INCLUDED
+#define MUSIC_ADDONS_SCRAPER_H_INCLUDED
 #include "addons/Scraper.h"
+#endif
+
+#ifndef MUSIC_ADDONS_ADDON_H_INCLUDED
+#define MUSIC_ADDONS_ADDON_H_INCLUDED
 #include "addons/Addon.h"
+#endif
+
+#ifndef MUSIC_UTILS_URIUTILS_H_INCLUDED
+#define MUSIC_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef MUSIC_ARTIST_H_INCLUDED
+#define MUSIC_ARTIST_H_INCLUDED
 #include "Artist.h"
+#endif
+
+#ifndef MUSIC_ALBUM_H_INCLUDED
+#define MUSIC_ALBUM_H_INCLUDED
 #include "Album.h"
+#endif
+
+#ifndef MUSIC_SONG_H_INCLUDED
+#define MUSIC_SONG_H_INCLUDED
 #include "Song.h"
+#endif
+
+#ifndef MUSIC_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define MUSIC_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef MUSIC_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define MUSIC_DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef MUSIC_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#define MUSIC_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
 #include "dialogs/GUIDialogProgress.h"
+#endif
+
+#ifndef MUSIC_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define MUSIC_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef MUSIC_DIALOGS_GUIDIALOGSELECT_H_INCLUDED
+#define MUSIC_DIALOGS_GUIDIALOGSELECT_H_INCLUDED
 #include "dialogs/GUIDialogSelect.h"
+#endif
+
+#ifndef MUSIC_FILESYSTEM_FILE_H_INCLUDED
+#define MUSIC_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef MUSIC_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define MUSIC_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef MUSIC_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define MUSIC_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef MUSIC_FILEITEM_H_INCLUDED
+#define MUSIC_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef MUSIC_APPLICATION_H_INCLUDED
+#define MUSIC_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
 #ifdef HAS_KARAOKE
 #include "karaoke/karaokelyricsfactory.h"
 #endif
+#ifndef MUSIC_STORAGE_MEDIAMANAGER_H_INCLUDED
+#define MUSIC_STORAGE_MEDIAMANAGER_H_INCLUDED
 #include "storage/MediaManager.h"
+#endif
+
+#ifndef MUSIC_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define MUSIC_SETTINGS_MEDIASETTINGS_H_INCLUDED
 #include "settings/MediaSettings.h"
+#endif
+
+#ifndef MUSIC_SETTINGS_SETTINGS_H_INCLUDED
+#define MUSIC_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef MUSIC_UTILS_STRINGUTILS_H_INCLUDED
+#define MUSIC_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef MUSIC_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define MUSIC_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef MUSIC_UTILS_LEGACYPATHTRANSLATION_H_INCLUDED
+#define MUSIC_UTILS_LEGACYPATHTRANSLATION_H_INCLUDED
 #include "utils/LegacyPathTranslation.h"
+#endif
+
+#ifndef MUSIC_UTILS_LOG_H_INCLUDED
+#define MUSIC_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef MUSIC_UTILS_TIMEUTILS_H_INCLUDED
+#define MUSIC_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef MUSIC_TEXTURECACHE_H_INCLUDED
+#define MUSIC_TEXTURECACHE_H_INCLUDED
 #include "TextureCache.h"
+#endif
+
+#ifndef MUSIC_ADDONS_ADDONINSTALLER_H_INCLUDED
+#define MUSIC_ADDONS_ADDONINSTALLER_H_INCLUDED
 #include "addons/AddonInstaller.h"
+#endif
+
+#ifndef MUSIC_UTILS_AUTOPTRHANDLE_H_INCLUDED
+#define MUSIC_UTILS_AUTOPTRHANDLE_H_INCLUDED
 #include "utils/AutoPtrHandle.h"
+#endif
+
+#ifndef MUSIC_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#define MUSIC_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
 #include "interfaces/AnnouncementManager.h"
+#endif
+
+#ifndef MUSIC_DBWRAPPERS_DATASET_H_INCLUDED
+#define MUSIC_DBWRAPPERS_DATASET_H_INCLUDED
 #include "dbwrappers/dataset.h"
+#endif
+
+#ifndef MUSIC_UTILS_XMLUTILS_H_INCLUDED
+#define MUSIC_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef MUSIC_URL_H_INCLUDED
+#define MUSIC_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef MUSIC_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
+#define MUSIC_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
 #include "playlists/SmartPlayList.h"
+#endif
+
 
 using namespace std;
 using namespace AUTOPTR;

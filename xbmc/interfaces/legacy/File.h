@@ -20,11 +20,31 @@
 
 #pragma once
 
+#ifndef LEGACY_FILESYSTEM_FILE_H_INCLUDED
+#define LEGACY_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef LEGACY_ADDONSTRING_H_INCLUDED
+#define LEGACY_ADDONSTRING_H_INCLUDED
 #include "AddonString.h"
+#endif
+
+#ifndef LEGACY_ADDONCLASS_H_INCLUDED
+#define LEGACY_ADDONCLASS_H_INCLUDED
 #include "AddonClass.h"
+#endif
+
+#ifndef LEGACY_LANGUAGEHOOK_H_INCLUDED
+#define LEGACY_LANGUAGEHOOK_H_INCLUDED
 #include "LanguageHook.h"
+#endif
+
+#ifndef LEGACY_COMMONS_BUFFER_H_INCLUDED
+#define LEGACY_COMMONS_BUFFER_H_INCLUDED
 #include "commons/Buffer.h"
+#endif
+
 
 #include <algorithm>
 

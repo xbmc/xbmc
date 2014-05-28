@@ -22,7 +22,11 @@
 #include <string.h>
 #include <sstream>
 
+#ifndef UTILS_VARIANT_H_INCLUDED
+#define UTILS_VARIANT_H_INCLUDED
 #include "Variant.h"
+#endif
+
 
 #ifndef strtoll
 #ifdef TARGET_WINDOWS

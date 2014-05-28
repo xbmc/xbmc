@@ -18,23 +18,79 @@
  *
  */
 
+#ifndef EPG_GUILIB_KEY_H_INCLUDED
+#define EPG_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef EPG_GUILIB_GUICONTROLFACTORY_H_INCLUDED
+#define EPG_GUILIB_GUICONTROLFACTORY_H_INCLUDED
 #include "guilib/GUIControlFactory.h"
+#endif
+
+#ifndef EPG_GUILIB_GUILISTITEM_H_INCLUDED
+#define EPG_GUILIB_GUILISTITEM_H_INCLUDED
 #include "guilib/GUIListItem.h"
+#endif
+
+#ifndef EPG_GUILIB_GUIFONTMANAGER_H_INCLUDED
+#define EPG_GUILIB_GUIFONTMANAGER_H_INCLUDED
 #include "guilib/GUIFontManager.h"
+#endif
+
+#ifndef EPG_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define EPG_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef EPG_GUILIB_DIRTYREGION_H_INCLUDED
+#define EPG_GUILIB_DIRTYREGION_H_INCLUDED
 #include "guilib/DirtyRegion.h"
+#endif
+
 #include <tinyxml.h>
+#ifndef EPG_UTILS_LOG_H_INCLUDED
+#define EPG_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef EPG_UTILS_MATHUTILS_H_INCLUDED
+#define EPG_UTILS_MATHUTILS_H_INCLUDED
 #include "utils/MathUtils.h"
+#endif
+
+#ifndef EPG_UTILS_VARIANT_H_INCLUDED
+#define EPG_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef EPG_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define EPG_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef EPG_GUIINFOMANAGER_H_INCLUDED
+#define EPG_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
 
+
+#ifndef EPG_EPG_EPG_H_INCLUDED
+#define EPG_EPG_EPG_H_INCLUDED
 #include "epg/Epg.h"
-#include "pvr/channels/PVRChannel.h"
+#endif
 
+#ifndef EPG_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
+#define EPG_PVR_CHANNELS_PVRCHANNEL_H_INCLUDED
+#include "pvr/channels/PVRChannel.h"
+#endif
+
+
+#ifndef EPG_GUIEPGGRIDCONTAINER_H_INCLUDED
+#define EPG_GUIEPGGRIDCONTAINER_H_INCLUDED
 #include "GUIEPGGridContainer.h"
+#endif
+
 
 using namespace PVR;
 using namespace EPG;

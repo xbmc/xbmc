@@ -19,13 +19,41 @@
  *
  */
 
+#ifndef PVR_ADDONS_ADDON_H_INCLUDED
+#define PVR_ADDONS_ADDON_H_INCLUDED
 #include "addons/Addon.h"
+#endif
+
+#ifndef PVR_ADDONS_ADDONDLL_H_INCLUDED
+#define PVR_ADDONS_ADDONDLL_H_INCLUDED
 #include "addons/AddonDll.h"
+#endif
+
+#ifndef PVR_ADDONS_DLLPVRCLIENT_H_INCLUDED
+#define PVR_ADDONS_DLLPVRCLIENT_H_INCLUDED
 #include "addons/DllPVRClient.h"
+#endif
+
+#ifndef PVR_PVRMANAGER_H_INCLUDED
+#define PVR_PVRMANAGER_H_INCLUDED
 #include "PVRManager.h"
+#endif
+
+#ifndef PVR_DBWRAPPERS_DATABASE_H_INCLUDED
+#define PVR_DBWRAPPERS_DATABASE_H_INCLUDED
 #include "dbwrappers/Database.h"
+#endif
+
+#ifndef PVR_XBDATETIME_H_INCLUDED
+#define PVR_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef PVR_UTILS_LOG_H_INCLUDED
+#define PVR_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 class CVideoSettings;
 

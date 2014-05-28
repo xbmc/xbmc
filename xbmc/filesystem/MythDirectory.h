@@ -19,9 +19,21 @@
  *
  */
 
+#ifndef FILESYSTEM_IDIRECTORY_H_INCLUDED
+#define FILESYSTEM_IDIRECTORY_H_INCLUDED
 #include "IDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_MYTHSESSION_H_INCLUDED
+#define FILESYSTEM_MYTHSESSION_H_INCLUDED
 #include "MythSession.h"
+#endif
+
+#ifndef FILESYSTEM_XBDATETIME_H_INCLUDED
+#define FILESYSTEM_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
 
 namespace XFILE
 {

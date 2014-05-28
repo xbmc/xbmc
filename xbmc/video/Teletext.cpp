@@ -25,14 +25,46 @@
  * Many thanks to the TuxBox Teletext Team for this great work.
  */
 
+#ifndef VIDEO_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define VIDEO_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef VIDEO_TELETEXT_H_INCLUDED
+#define VIDEO_TELETEXT_H_INCLUDED
 #include "Teletext.h"
+#endif
+
+#ifndef VIDEO_APPLICATION_H_INCLUDED
+#define VIDEO_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef VIDEO_UTILS_LOG_H_INCLUDED
+#define VIDEO_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef VIDEO_UTILS_TIMEUTILS_H_INCLUDED
+#define VIDEO_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef VIDEO_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define VIDEO_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef VIDEO_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define VIDEO_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h"
+#endif
+
+#ifndef VIDEO_CORES_IPLAYER_H_INCLUDED
+#define VIDEO_CORES_IPLAYER_H_INCLUDED
 #include "cores/IPlayer.h"
+#endif
+
 
 #ifdef HAS_SDL
 #include <SDL/SDL_stdinc.h>

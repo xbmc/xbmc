@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef GUILIB_GUICONTROLGROUP_H_INCLUDED
+#define GUILIB_GUICONTROLGROUP_H_INCLUDED
 #include "GUIControlGroup.h"
+#endif
+
+#ifndef GUILIB_GUICONTROLPROFILER_H_INCLUDED
+#define GUILIB_GUICONTROLPROFILER_H_INCLUDED
 #include "GUIControlProfiler.h"
+#endif
+
 
 using namespace std;
 

@@ -57,7 +57,11 @@ need for any special settings.
 
 \code
 // Include the library interface
+#ifndef SOURCE_ANGELSCRIPT_H_INCLUDED
+#define SOURCE_ANGELSCRIPT_H_INCLUDED
 #include "angelscript.h"
+#endif
+
 
 // ... Start using the library
 \endcode
@@ -77,7 +81,11 @@ To use the library you only need to include the %angelscript.h header file.
 
 \code
 // Include the library interface
+#ifndef SOURCE_ANGELSCRIPT_H_INCLUDED
+#define SOURCE_ANGELSCRIPT_H_INCLUDED
 #include "angelscript.h"
+#endif
+
 
 // ... Start using the library
 \endcode
@@ -97,7 +105,11 @@ the %angelscript.h header file.
 \code
 // Include the library interface
 #define ANGELSCRIPT_DLL_LIBRARY_IMPORT
+#ifndef SOURCE_ANGELSCRIPT_H_INCLUDED
+#define SOURCE_ANGELSCRIPT_H_INCLUDED
 #include "angelscript.h"
+#endif
+
 
 // ... Start using the library
 \endcode
@@ -117,7 +129,11 @@ function prototypes, as you will most likely want to use these names for the fun
 \code
 // Include the library interface
 #define ANGELSCRIPT_DLL_MANUAL_IMPORT
+#ifndef SOURCE_ANGELSCRIPT_H_INCLUDED
+#define SOURCE_ANGELSCRIPT_H_INCLUDED
 #include "angelscript.h"
+#endif
+
 
 // Declare the function pointers
 typedef asIScriptEngine * AS_CALL t_asCreateScriptEngine(int);

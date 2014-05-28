@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef MUSIC_MUSICDBURL_H_INCLUDED
+#define MUSIC_MUSICDBURL_H_INCLUDED
 #include "MusicDbUrl.h"
+#endif
+
+#ifndef MUSIC_FILESYSTEM_MUSICDATABASEDIRECTORY_H_INCLUDED
+#define MUSIC_FILESYSTEM_MUSICDATABASEDIRECTORY_H_INCLUDED
 #include "filesystem/MusicDatabaseDirectory.h"
+#endif
+
+#ifndef MUSIC_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
+#define MUSIC_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
 #include "playlists/SmartPlayList.h"
+#endif
+
+#ifndef MUSIC_UTILS_STRINGUTILS_H_INCLUDED
+#define MUSIC_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef MUSIC_UTILS_VARIANT_H_INCLUDED
+#define MUSIC_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

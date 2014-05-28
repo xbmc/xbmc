@@ -22,7 +22,11 @@
 #include <string>
 #include <list>
 #include <map>
+#ifndef LOADER_THREADS_SINGLELOCK_H_INCLUDED
+#define LOADER_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 
 struct recursivelibdep
 {

@@ -21,7 +21,11 @@
 // XmlDocument.cpp: implementation of the CXmlDocument class.
 //
 //////////////////////////////////////////////////////////////////////
+#ifndef MILKDROP_XMLDOCUMENT_H_INCLUDED
+#define MILKDROP_XMLDOCUMENT_H_INCLUDED
 #include "XmlDocument.h"
+#endif
+
 #include <stdio.h>  
 
 #define strnicmp _strnicmp

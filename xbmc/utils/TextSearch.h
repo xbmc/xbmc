@@ -20,7 +20,11 @@
  */
 
 #include <vector>
+#ifndef UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_STRINGUTILS_H_INCLUDED
 #include "StringUtils.h"
+#endif
+
 
 typedef enum TextSearchDefault
 {

@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef OVERLAY_DVDOVERLAY_H_INCLUDED
+#define OVERLAY_DVDOVERLAY_H_INCLUDED
 #include "DVDOverlay.h"
+#endif
+
 
 class CDVDOverlaySpu : public CDVDOverlay
 {

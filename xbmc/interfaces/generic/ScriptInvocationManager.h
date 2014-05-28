@@ -23,8 +23,16 @@
 #include <set>
 #include <boost/shared_ptr.hpp>
 
+#ifndef GENERIC_ADDONS_IADDON_H_INCLUDED
+#define GENERIC_ADDONS_IADDON_H_INCLUDED
 #include "addons/IAddon.h"
+#endif
+
+#ifndef GENERIC_THREADS_CRITICALSECTION_H_INCLUDED
+#define GENERIC_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 class ILanguageInvocationHandler;
 class ILanguageInvoker;

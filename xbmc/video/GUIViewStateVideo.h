@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef VIDEO_VIEW_GUIVIEWSTATE_H_INCLUDED
+#define VIDEO_VIEW_GUIVIEWSTATE_H_INCLUDED
 #include "view/GUIViewState.h"
+#endif
+
 
 class CGUIViewStateWindowVideo : public CGUIViewState
 {

@@ -22,9 +22,21 @@
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 
+#ifndef WAYLAND_WINDOWING_DLLWAYLANDCLIENT_H_INCLUDED
+#define WAYLAND_WINDOWING_DLLWAYLANDCLIENT_H_INCLUDED
 #include "windowing/DllWaylandClient.h"
+#endif
+
+#ifndef WAYLAND_WINDOWING_WAYLANDPROTOCOL_H_INCLUDED
+#define WAYLAND_WINDOWING_WAYLANDPROTOCOL_H_INCLUDED
 #include "windowing/WaylandProtocol.h"
+#endif
+
+#ifndef WAYLAND_CALLBACK_H_INCLUDED
+#define WAYLAND_CALLBACK_H_INCLUDED
 #include "Callback.h"
+#endif
+
 
 namespace xw = xbmc::wayland;
 

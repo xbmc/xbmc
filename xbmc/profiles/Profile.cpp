@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef PROFILES_PROFILE_H_INCLUDED
+#define PROFILES_PROFILE_H_INCLUDED
 #include "Profile.h"
+#endif
+
+#ifndef PROFILES_GUIINFOMANAGER_H_INCLUDED
+#define PROFILES_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef PROFILES_UTILS_XMLUTILS_H_INCLUDED
+#define PROFILES_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
 
 CProfile::CLock::CLock(LockType type, const CStdString &password)
 {

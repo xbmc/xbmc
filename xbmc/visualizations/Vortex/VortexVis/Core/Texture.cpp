@@ -17,8 +17,16 @@
  *
  */
 
+#ifndef CORE_TEXTURE_H_INCLUDED
+#define CORE_TEXTURE_H_INCLUDED
 #include "Texture.h"
+#endif
+
+#ifndef CORE_RENDERER_H_INCLUDED
+#define CORE_RENDERER_H_INCLUDED
 #include "Renderer.h"
+#endif
+
 #include <new>
 #include <stdio.h>
 

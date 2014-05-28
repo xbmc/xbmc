@@ -18,58 +18,250 @@
  *
  */
 
+#ifndef WINDOWS_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define WINDOWS_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
-#include "GUIMediaWindow.h"
-#include "GUIUserMessages.h"
-#include "Util.h"
-#include "PlayListPlayer.h"
-#include "addons/AddonManager.h"
-#include "addons/PluginSource.h"
-#include "filesystem/PluginDirectory.h"
-#include "filesystem/MultiPathDirectory.h"
-#include "GUIPassword.h"
-#include "Application.h"
-#include "ApplicationMessenger.h"
-#include "network/Network.h"
-#include "utils/RegExp.h"
-#include "PartyModeManager.h"
-#include "dialogs/GUIDialogMediaSource.h"
-#include "GUIWindowFileManager.h"
-#include "filesystem/FavouritesDirectory.h"
-#include "utils/LabelFormatter.h"
-#include "dialogs/GUIDialogProgress.h"
-#include "profiles/ProfilesManager.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
-#include "URL.h"
+#endif
 
+#ifndef WINDOWS_GUIMEDIAWINDOW_H_INCLUDED
+#define WINDOWS_GUIMEDIAWINDOW_H_INCLUDED
+#include "GUIMediaWindow.h"
+#endif
+
+#ifndef WINDOWS_GUIUSERMESSAGES_H_INCLUDED
+#define WINDOWS_GUIUSERMESSAGES_H_INCLUDED
+#include "GUIUserMessages.h"
+#endif
+
+#ifndef WINDOWS_UTIL_H_INCLUDED
+#define WINDOWS_UTIL_H_INCLUDED
+#include "Util.h"
+#endif
+
+#ifndef WINDOWS_PLAYLISTPLAYER_H_INCLUDED
+#define WINDOWS_PLAYLISTPLAYER_H_INCLUDED
+#include "PlayListPlayer.h"
+#endif
+
+#ifndef WINDOWS_ADDONS_ADDONMANAGER_H_INCLUDED
+#define WINDOWS_ADDONS_ADDONMANAGER_H_INCLUDED
+#include "addons/AddonManager.h"
+#endif
+
+#ifndef WINDOWS_ADDONS_PLUGINSOURCE_H_INCLUDED
+#define WINDOWS_ADDONS_PLUGINSOURCE_H_INCLUDED
+#include "addons/PluginSource.h"
+#endif
+
+#ifndef WINDOWS_FILESYSTEM_PLUGINDIRECTORY_H_INCLUDED
+#define WINDOWS_FILESYSTEM_PLUGINDIRECTORY_H_INCLUDED
+#include "filesystem/PluginDirectory.h"
+#endif
+
+#ifndef WINDOWS_FILESYSTEM_MULTIPATHDIRECTORY_H_INCLUDED
+#define WINDOWS_FILESYSTEM_MULTIPATHDIRECTORY_H_INCLUDED
+#include "filesystem/MultiPathDirectory.h"
+#endif
+
+#ifndef WINDOWS_GUIPASSWORD_H_INCLUDED
+#define WINDOWS_GUIPASSWORD_H_INCLUDED
+#include "GUIPassword.h"
+#endif
+
+#ifndef WINDOWS_APPLICATION_H_INCLUDED
+#define WINDOWS_APPLICATION_H_INCLUDED
+#include "Application.h"
+#endif
+
+#ifndef WINDOWS_APPLICATIONMESSENGER_H_INCLUDED
+#define WINDOWS_APPLICATIONMESSENGER_H_INCLUDED
+#include "ApplicationMessenger.h"
+#endif
+
+#ifndef WINDOWS_NETWORK_NETWORK_H_INCLUDED
+#define WINDOWS_NETWORK_NETWORK_H_INCLUDED
+#include "network/Network.h"
+#endif
+
+#ifndef WINDOWS_UTILS_REGEXP_H_INCLUDED
+#define WINDOWS_UTILS_REGEXP_H_INCLUDED
+#include "utils/RegExp.h"
+#endif
+
+#ifndef WINDOWS_PARTYMODEMANAGER_H_INCLUDED
+#define WINDOWS_PARTYMODEMANAGER_H_INCLUDED
+#include "PartyModeManager.h"
+#endif
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGMEDIASOURCE_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGMEDIASOURCE_H_INCLUDED
+#include "dialogs/GUIDialogMediaSource.h"
+#endif
+
+#ifndef WINDOWS_GUIWINDOWFILEMANAGER_H_INCLUDED
+#define WINDOWS_GUIWINDOWFILEMANAGER_H_INCLUDED
+#include "GUIWindowFileManager.h"
+#endif
+
+#ifndef WINDOWS_FILESYSTEM_FAVOURITESDIRECTORY_H_INCLUDED
+#define WINDOWS_FILESYSTEM_FAVOURITESDIRECTORY_H_INCLUDED
+#include "filesystem/FavouritesDirectory.h"
+#endif
+
+#ifndef WINDOWS_UTILS_LABELFORMATTER_H_INCLUDED
+#define WINDOWS_UTILS_LABELFORMATTER_H_INCLUDED
+#include "utils/LabelFormatter.h"
+#endif
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#include "dialogs/GUIDialogProgress.h"
+#endif
+
+#ifndef WINDOWS_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define WINDOWS_PROFILES_PROFILESMANAGER_H_INCLUDED
+#include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef WINDOWS_URL_H_INCLUDED
+#define WINDOWS_URL_H_INCLUDED
+#include "URL.h"
+#endif
+
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGSMARTPLAYLISTEDITOR_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGSMARTPLAYLISTEDITOR_H_INCLUDED
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
+#endif
+
+#ifndef WINDOWS_ADDONS_GUIDIALOGADDONSETTINGS_H_INCLUDED
+#define WINDOWS_ADDONS_GUIDIALOGADDONSETTINGS_H_INCLUDED
 #include "addons/GUIDialogAddonSettings.h"
+#endif
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef WINDOWS_PLAYLISTS_PLAYLIST_H_INCLUDED
+#define WINDOWS_PLAYLISTS_PLAYLIST_H_INCLUDED
 #include "playlists/PlayList.h"
+#endif
+
+#ifndef WINDOWS_STORAGE_MEDIAMANAGER_H_INCLUDED
+#define WINDOWS_STORAGE_MEDIAMANAGER_H_INCLUDED
 #include "storage/MediaManager.h"
+#endif
+
+#ifndef WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
+#define WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef WINDOWS_UTILS_URIUTILS_H_INCLUDED
+#define WINDOWS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_KEY_H_INCLUDED
+#define WINDOWS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define WINDOWS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef WINDOWS_UTILS_TIMEUTILS_H_INCLUDED
+#define WINDOWS_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef WINDOWS_FILESYSTEM_FILE_H_INCLUDED
+#define WINDOWS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef WINDOWS_FILESYSTEM_FILEDIRECTORYFACTORY_H_INCLUDED
+#define WINDOWS_FILESYSTEM_FILEDIRECTORYFACTORY_H_INCLUDED
 #include "filesystem/FileDirectoryFactory.h"
+#endif
+
+#ifndef WINDOWS_UTILS_LOG_H_INCLUDED
+#define WINDOWS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef WINDOWS_UTILS_FILEUTILS_H_INCLUDED
+#define WINDOWS_UTILS_FILEUTILS_H_INCLUDED
 #include "utils/FileUtils.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIEDITCONTROL_H_INCLUDED
+#define WINDOWS_GUILIB_GUIEDITCONTROL_H_INCLUDED
 #include "guilib/GUIEditControl.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
+#define WINDOWS_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
 #include "guilib/GUIKeyboardFactory.h"
+#endif
+
+#ifndef WINDOWS_INTERFACES_BUILTINS_H_INCLUDED
+#define WINDOWS_INTERFACES_BUILTINS_H_INCLUDED
 #include "interfaces/Builtins.h"
+#endif
+
+#ifndef WINDOWS_INTERFACES_GENERIC_SCRIPTINVOCATIONMANAGER_H_INCLUDED
+#define WINDOWS_INTERFACES_GENERIC_SCRIPTINVOCATIONMANAGER_H_INCLUDED
 #include "interfaces/generic/ScriptInvocationManager.h"
+#endif
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGMEDIAFILTER_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGMEDIAFILTER_H_INCLUDED
 #include "dialogs/GUIDialogMediaFilter.h"
+#endif
+
+#ifndef WINDOWS_FILESYSTEM_SMARTPLAYLISTDIRECTORY_H_INCLUDED
+#define WINDOWS_FILESYSTEM_SMARTPLAYLISTDIRECTORY_H_INCLUDED
 #include "filesystem/SmartPlaylistDirectory.h"
+#endif
+
 #if defined(TARGET_ANDROID)
 #include "xbmc/android/activity/XBMCApp.h"
 #endif
+#ifndef WINDOWS_FILEITEMLISTMODIFICATION_H_INCLUDED
+#define WINDOWS_FILEITEMLISTMODIFICATION_H_INCLUDED
 #include "FileItemListModification.h"
+#endif
+
 
 #define CONTROL_BTNVIEWASICONS       2
 #define CONTROL_BTNSORTBY            3

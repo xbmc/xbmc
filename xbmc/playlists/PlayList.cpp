@@ -18,16 +18,52 @@
  *
  */
 
+#ifndef PLAYLISTS_PLAYLIST_H_INCLUDED
+#define PLAYLISTS_PLAYLIST_H_INCLUDED
 #include "PlayList.h"
+#endif
+
+#ifndef PLAYLISTS_PLAYLISTFACTORY_H_INCLUDED
+#define PLAYLISTS_PLAYLISTFACTORY_H_INCLUDED
 #include "PlayListFactory.h"
+#endif
+
 #include <sstream>
+#ifndef PLAYLISTS_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define PLAYLISTS_VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "video/VideoInfoTag.h"
+#endif
+
+#ifndef PLAYLISTS_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define PLAYLISTS_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef PLAYLISTS_FILESYSTEM_FILE_H_INCLUDED
+#define PLAYLISTS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef PLAYLISTS_UTILS_LOG_H_INCLUDED
+#define PLAYLISTS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef PLAYLISTS_UTILS_URIUTILS_H_INCLUDED
+#define PLAYLISTS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef PLAYLISTS_UTILS_VARIANT_H_INCLUDED
+#define PLAYLISTS_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef PLAYLISTS_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#define PLAYLISTS_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
 #include "interfaces/AnnouncementManager.h"
+#endif
+
 
 //using namespace std;
 using namespace MUSIC_INFO;

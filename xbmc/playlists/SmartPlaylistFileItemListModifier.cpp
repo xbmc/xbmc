@@ -20,11 +20,31 @@
 
 #include <map>
 
+#ifndef PLAYLISTS_SMARTPLAYLISTFILEITEMLISTMODIFIER_H_INCLUDED
+#define PLAYLISTS_SMARTPLAYLISTFILEITEMLISTMODIFIER_H_INCLUDED
 #include "SmartPlaylistFileItemListModifier.h"
+#endif
+
+#ifndef PLAYLISTS_FILEITEM_H_INCLUDED
+#define PLAYLISTS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef PLAYLISTS_URL_H_INCLUDED
+#define PLAYLISTS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef PLAYLISTS_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
+#define PLAYLISTS_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
 #include "playlists/SmartPlayList.h"
+#endif
+
+#ifndef PLAYLISTS_UTILS_STRINGUTILS_H_INCLUDED
+#define PLAYLISTS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 #define URL_OPTION_XSP              "xsp"
 #define PROPERTY_SORT_ORDER         "sort.order"

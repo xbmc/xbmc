@@ -18,18 +18,54 @@
  *
  */
 
+#ifndef ANDROID_SYSTEM_H_INCLUDED
+#define ANDROID_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
 
+
+#ifndef ANDROID_WINEVENTSANDROID_H_INCLUDED
+#define ANDROID_WINEVENTSANDROID_H_INCLUDED
 #include "WinEventsAndroid.h"
+#endif
 
+
+#ifndef ANDROID_APPLICATION_H_INCLUDED
+#define ANDROID_APPLICATION_H_INCLUDED
 #include "Application.h"
-#include "guilib/GUIWindowManager.h"
-#include "input/XBMC_vkeys.h"
-#include "input/SDLJoystick.h"
-#include "utils/log.h"
-#include "windowing/WindowingFactory.h"
+#endif
 
+#ifndef ANDROID_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define ANDROID_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef ANDROID_INPUT_XBMC_VKEYS_H_INCLUDED
+#define ANDROID_INPUT_XBMC_VKEYS_H_INCLUDED
+#include "input/XBMC_vkeys.h"
+#endif
+
+#ifndef ANDROID_INPUT_SDLJOYSTICK_H_INCLUDED
+#define ANDROID_INPUT_SDLJOYSTICK_H_INCLUDED
+#include "input/SDLJoystick.h"
+#endif
+
+#ifndef ANDROID_UTILS_LOG_H_INCLUDED
+#define ANDROID_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef ANDROID_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define ANDROID_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#include "windowing/WindowingFactory.h"
+#endif
+
+
+#ifndef ANDROID_ANDROID_JNI_VIEW_H_INCLUDED
+#define ANDROID_ANDROID_JNI_VIEW_H_INCLUDED
 #include "android/jni/View.h"
+#endif
+
 
 #define DEBUG_MESSAGEPUMP 0
 

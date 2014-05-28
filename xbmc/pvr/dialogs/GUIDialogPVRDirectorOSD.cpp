@@ -25,8 +25,16 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGPVRDIRECTOROSD_H_INCLUDED
+#define DIALOGS_GUIDIALOGPVRDIRECTOROSD_H_INCLUDED
 #include "GUIDialogPVRDirectorOSD.h"
+#endif
+
+#ifndef DIALOGS_UTILS_LOG_H_INCLUDED
+#define DIALOGS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 using namespace PVR;
 

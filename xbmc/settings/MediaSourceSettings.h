@@ -21,8 +21,16 @@
 
 #include <string>
 
+#ifndef SETTINGS_MEDIASOURCE_H_INCLUDED
+#define SETTINGS_MEDIASOURCE_H_INCLUDED
 #include "MediaSource.h"
+#endif
+
+#ifndef SETTINGS_SETTINGS_LIB_ISETTINGSHANDLER_H_INCLUDED
+#define SETTINGS_SETTINGS_LIB_ISETTINGSHANDLER_H_INCLUDED
 #include "settings/lib/ISettingsHandler.h"
+#endif
+
 
 class TiXmlNode;
 

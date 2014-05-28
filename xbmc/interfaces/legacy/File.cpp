@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef LEGACY_FILE_H_INCLUDED
+#define LEGACY_FILE_H_INCLUDED
 #include "File.h"
+#endif
+
 
 namespace XBMCAddon
 {

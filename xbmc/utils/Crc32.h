@@ -20,7 +20,11 @@
 
 #pragma once
 
+#ifndef UTILS_STDSTRING_H_INCLUDED
+#define UTILS_STDSTRING_H_INCLUDED
 #include "StdString.h"
+#endif
+
 
 class Crc32
 {

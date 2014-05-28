@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef JNI_BROADCASTRECEIVER_H_INCLUDED
+#define JNI_BROADCASTRECEIVER_H_INCLUDED
 #include "BroadcastReceiver.h"
+#endif
+
+#ifndef JNI_INTENT_H_INCLUDED
+#define JNI_INTENT_H_INCLUDED
 #include "Intent.h"
+#endif
+
+#ifndef JNI_CONTEXT_H_INCLUDED
+#define JNI_CONTEXT_H_INCLUDED
 #include "Context.h"
+#endif
+
+#ifndef JNI_CLASSLOADER_H_INCLUDED
+#define JNI_CLASSLOADER_H_INCLUDED
 #include "ClassLoader.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

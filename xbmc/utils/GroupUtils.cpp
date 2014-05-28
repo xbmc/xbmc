@@ -21,14 +21,46 @@
 #include <map>
 #include <set>
 
+#ifndef UTILS_GROUPUTILS_H_INCLUDED
+#define UTILS_GROUPUTILS_H_INCLUDED
 #include "GroupUtils.h"
+#endif
+
+#ifndef UTILS_FILEITEM_H_INCLUDED
+#define UTILS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UTILS_UTILS_VARIANT_H_INCLUDED
+#define UTILS_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef UTILS_VIDEO_VIDEODBURL_H_INCLUDED
+#define UTILS_VIDEO_VIDEODBURL_H_INCLUDED
 #include "video/VideoDbUrl.h"
+#endif
+
+#ifndef UTILS_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define UTILS_VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "video/VideoInfoTag.h"
+#endif
+
+#ifndef UTILS_UTILS_URIUTILS_H_INCLUDED
+#define UTILS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_MULTIPATHDIRECTORY_H_INCLUDED
+#define UTILS_FILESYSTEM_MULTIPATHDIRECTORY_H_INCLUDED
 #include "filesystem/MultiPathDirectory.h"
+#endif
+
 
 using namespace std;
 

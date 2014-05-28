@@ -18,16 +18,56 @@
  *
  */
 
+#ifndef JSON_RPC_INPUTOPERATIONS_H_INCLUDED
+#define JSON_RPC_INPUTOPERATIONS_H_INCLUDED
 #include "InputOperations.h"
+#endif
+
+#ifndef JSON_RPC_APPLICATION_H_INCLUDED
+#define JSON_RPC_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
+#define JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef JSON_RPC_GUILIB_GUIAUDIOMANAGER_H_INCLUDED
+#define JSON_RPC_GUILIB_GUIAUDIOMANAGER_H_INCLUDED
 #include "guilib/GUIAudioManager.h"
+#endif
+
+#ifndef JSON_RPC_GUILIB_GUIWINDOW_H_INCLUDED
+#define JSON_RPC_GUILIB_GUIWINDOW_H_INCLUDED
 #include "guilib/GUIWindow.h"
+#endif
+
+#ifndef JSON_RPC_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define JSON_RPC_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef JSON_RPC_INPUT_BUTTONTRANSLATOR_H_INCLUDED
+#define JSON_RPC_INPUT_BUTTONTRANSLATOR_H_INCLUDED
 #include "input/ButtonTranslator.h"
+#endif
+
+#ifndef JSON_RPC_INPUT_XBMC_KEYBOARD_H_INCLUDED
+#define JSON_RPC_INPUT_XBMC_KEYBOARD_H_INCLUDED
 #include "input/XBMC_keyboard.h"
+#endif
+
+#ifndef JSON_RPC_INPUT_XBMC_VKEYS_H_INCLUDED
+#define JSON_RPC_INPUT_XBMC_VKEYS_H_INCLUDED
 #include "input/XBMC_vkeys.h"
+#endif
+
+#ifndef JSON_RPC_THREADS_SINGLELOCK_H_INCLUDED
+#define JSON_RPC_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 
 using namespace JSONRPC;
 

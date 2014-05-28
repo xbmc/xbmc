@@ -36,15 +36,51 @@
 //
 
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
+#ifndef SOURCE_AS_BUILDER_H_INCLUDED
+#define SOURCE_AS_BUILDER_H_INCLUDED
 #include "as_builder.h"
+#endif
+
+#ifndef SOURCE_AS_PARSER_H_INCLUDED
+#define SOURCE_AS_PARSER_H_INCLUDED
 #include "as_parser.h"
+#endif
+
+#ifndef SOURCE_AS_COMPILER_H_INCLUDED
+#define SOURCE_AS_COMPILER_H_INCLUDED
 #include "as_compiler.h"
+#endif
+
+#ifndef SOURCE_AS_TOKENDEF_H_INCLUDED
+#define SOURCE_AS_TOKENDEF_H_INCLUDED
 #include "as_tokendef.h"
+#endif
+
+#ifndef SOURCE_AS_STRING_UTIL_H_INCLUDED
+#define SOURCE_AS_STRING_UTIL_H_INCLUDED
 #include "as_string_util.h"
+#endif
+
+#ifndef SOURCE_AS_OUTPUTBUFFER_H_INCLUDED
+#define SOURCE_AS_OUTPUTBUFFER_H_INCLUDED
 #include "as_outputbuffer.h"
+#endif
+
+#ifndef SOURCE_AS_TEXTS_H_INCLUDED
+#define SOURCE_AS_TEXTS_H_INCLUDED
 #include "as_texts.h"
+#endif
+
+#ifndef SOURCE_AS_SCRIPTOBJECT_H_INCLUDED
+#define SOURCE_AS_SCRIPTOBJECT_H_INCLUDED
 #include "as_scriptobject.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef GUILIB_GUIPANELCONTAINER_H_INCLUDED
+#define GUILIB_GUIPANELCONTAINER_H_INCLUDED
 #include "GUIPanelContainer.h"
+#endif
+
+#ifndef GUILIB_GUILISTITEM_H_INCLUDED
+#define GUILIB_GUILISTITEM_H_INCLUDED
 #include "GUIListItem.h"
+#endif
+
+#ifndef GUILIB_GUIINFOMANAGER_H_INCLUDED
+#define GUILIB_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
 
 using namespace std;
 

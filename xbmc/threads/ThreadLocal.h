@@ -20,5 +20,9 @@
 
 #pragma once
 
+#ifndef THREADS_THREADS_PLATFORM_THREADLOCAL_H_INCLUDED
+#define THREADS_THREADS_PLATFORM_THREADLOCAL_H_INCLUDED
 #include "threads/platform/ThreadLocal.h"
+#endif
+
 

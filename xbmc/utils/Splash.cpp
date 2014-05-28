@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef UTILS_SYSTEM_H_INCLUDED
+#define UTILS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef UTILS_SPLASH_H_INCLUDED
+#define UTILS_SPLASH_H_INCLUDED
 #include "Splash.h"
+#endif
+
+#ifndef UTILS_GUILIB_GUIIMAGE_H_INCLUDED
+#define UTILS_GUILIB_GUIIMAGE_H_INCLUDED
 #include "guilib/GUIImage.h"
+#endif
+
+#ifndef UTILS_GUILIB_GUILABELCONTROL_H_INCLUDED
+#define UTILS_GUILIB_GUILABELCONTROL_H_INCLUDED
 #include "guilib/GUILabelControl.h"
+#endif
+
+#ifndef UTILS_GUILIB_GUIFONTMANAGER_H_INCLUDED
+#define UTILS_GUILIB_GUIFONTMANAGER_H_INCLUDED
 #include "guilib/GUIFontManager.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_FILE_H_INCLUDED
+#define UTILS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef UTILS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define UTILS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef UTILS_RENDERING_RENDERSYSTEM_H_INCLUDED
+#define UTILS_RENDERING_RENDERSYSTEM_H_INCLUDED
 #include "rendering/RenderSystem.h"
+#endif
+
+#ifndef UTILS_LOG_H_INCLUDED
+#define UTILS_LOG_H_INCLUDED
 #include "log.h"
+#endif
+
 
 using namespace XFILE;
 

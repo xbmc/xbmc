@@ -18,16 +18,40 @@
  *
  */
 
+#ifndef UTILS_SCREENSHOT_H_INCLUDED
+#define UTILS_SCREENSHOT_H_INCLUDED
 #include "Screenshot.h"
+#endif
 
+
+#ifndef UTILS_SYSTEM_H_INCLUDED
+#define UTILS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #include <vector>
 
+#ifndef UTILS_UTIL_H_INCLUDED
+#define UTILS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
 
+
+#ifndef UTILS_APPLICATION_H_INCLUDED
+#define UTILS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef UTILS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define UTILS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef UTILS_PICTURES_PICTURE_H_INCLUDED
+#define UTILS_PICTURES_PICTURE_H_INCLUDED
 #include "pictures/Picture.h"
+#endif
+
 
 #ifdef TARGET_RASPBERRY_PI
 #include "xbmc/linux/RBP.h"
@@ -37,15 +61,47 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
 
+#ifndef UTILS_FILESYSTEM_FILE_H_INCLUDED
+#define UTILS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
-#include "guilib/GraphicContext.h"
+#endif
 
+#ifndef UTILS_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define UTILS_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#include "guilib/GraphicContext.h"
+#endif
+
+
+#ifndef UTILS_UTILS_JOBMANAGER_H_INCLUDED
+#define UTILS_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
+#ifndef UTILS_UTILS_URIUTILS_H_INCLUDED
+#define UTILS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef UTILS_UTILS_LOG_H_INCLUDED
+#define UTILS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef UTILS_SETTINGS_SETTINGPATH_H_INCLUDED
+#define UTILS_SETTINGS_SETTINGPATH_H_INCLUDED
 #include "settings/SettingPath.h"
+#endif
+
+#ifndef UTILS_SETTINGS_SETTINGS_H_INCLUDED
+#define UTILS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef UTILS_SETTINGS_WINDOWS_GUICONTROLSETTINGS_H_INCLUDED
+#define UTILS_SETTINGS_WINDOWS_GUICONTROLSETTINGS_H_INCLUDED
 #include "settings/windows/GUIControlSettings.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

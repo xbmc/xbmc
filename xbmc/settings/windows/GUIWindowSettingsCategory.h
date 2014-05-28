@@ -22,13 +22,41 @@
 
 #include <vector>
 
+#ifndef WINDOWS_GUICONTROLSETTINGS_H_INCLUDED
+#define WINDOWS_GUICONTROLSETTINGS_H_INCLUDED
 #include "GUIControlSettings.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIWINDOW_H_INCLUDED
+#define WINDOWS_GUILIB_GUIWINDOW_H_INCLUDED
 #include "guilib/GUIWindow.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_LIB_SETTINGDEPENDENCY_H_INCLUDED
+#define WINDOWS_SETTINGS_LIB_SETTINGDEPENDENCY_H_INCLUDED
 #include "settings/lib/SettingDependency.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_LIB_SETTINGSECTION_H_INCLUDED
+#define WINDOWS_SETTINGS_LIB_SETTINGSECTION_H_INCLUDED
 #include "settings/lib/SettingSection.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_LIB_SETTINGSMANAGER_H_INCLUDED
+#define WINDOWS_SETTINGS_LIB_SETTINGSMANAGER_H_INCLUDED
 #include "settings/lib/SettingsManager.h"
+#endif
+
+#ifndef WINDOWS_THREADS_TIMER_H_INCLUDED
+#define WINDOWS_THREADS_TIMER_H_INCLUDED
 #include "threads/Timer.h"
+#endif
+
 
 typedef boost::shared_ptr<CGUIControlBaseSetting> BaseSettingControlPtr;
 

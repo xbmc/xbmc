@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef VIDEO_TELETEXTDEFINES_H_INCLUDED
+#define VIDEO_TELETEXTDEFINES_H_INCLUDED
 #include "TeletextDefines.h"
+#endif
+
+#ifndef VIDEO_GUILIB_KEY_H_INCLUDED
+#define VIDEO_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef VIDEO_GUILIB_GUITEXTURE_H_INCLUDED
+#define VIDEO_GUILIB_GUITEXTURE_H_INCLUDED
 #include "guilib/GUITexture.h"
+#endif
+
 
 // stuff for freetype
 #include <ft2build.h>

@@ -32,9 +32,17 @@
 #include <fcntl.h>
 #include <sys/poll.h>
 
+#ifndef WAYLAND_UTILS_LOG_H_INCLUDED
+#define WAYLAND_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
 
+
+#ifndef WAYLAND_POLLTHREAD_H_INCLUDED
+#define WAYLAND_POLLTHREAD_H_INCLUDED
 #include "PollThread.h"
+#endif
+
 
 namespace xwe = xbmc::wayland::events;
 

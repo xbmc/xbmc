@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef INFO_INFOBOOL_H_INCLUDED
+#define INFO_INFOBOOL_H_INCLUDED
 #include "InfoBool.h"
+#endif
+
+#ifndef INFO_UTILS_STRINGUTILS_H_INCLUDED
+#define INFO_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 namespace INFO
 {

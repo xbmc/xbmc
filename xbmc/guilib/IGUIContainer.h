@@ -20,7 +20,11 @@
 
 #pragma once
 
+#ifndef GUILIB_GUICONTROL_H_INCLUDED
+#define GUILIB_GUICONTROL_H_INCLUDED
 #include "GUIControl.h"
+#endif
+
 #include "boost/shared_ptr.hpp"
 
 typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;

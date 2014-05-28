@@ -22,7 +22,11 @@
 
 class CBaseTexture;
 
+#ifndef GUILIB_GUI3D_H_INCLUDED
+#define GUILIB_GUI3D_H_INCLUDED
 #include "gui3d.h"
+#endif
+
 
 LPVOID XPhysicalAlloc(SIZE_T s, DWORD ulPhysicalAddress, DWORD ulAlignment, DWORD flProtect);
 void XPhysicalFree(LPVOID lpAddress);

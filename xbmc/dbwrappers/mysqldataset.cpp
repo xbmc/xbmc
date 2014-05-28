@@ -22,9 +22,21 @@
 #include <string>
 #include <set>
 
+#ifndef DBWRAPPERS_UTILS_LOG_H_INCLUDED
+#define DBWRAPPERS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DBWRAPPERS_SYSTEM_H_INCLUDED
+#define DBWRAPPERS_SYSTEM_H_INCLUDED
 #include "system.h" // for GetLastError()
+#endif
+
+#ifndef DBWRAPPERS_NETWORK_WAKEONACCESS_H_INCLUDED
+#define DBWRAPPERS_NETWORK_WAKEONACCESS_H_INCLUDED
 #include "network/WakeOnAccess.h"
+#endif
+
 
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"

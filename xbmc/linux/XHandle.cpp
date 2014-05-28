@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef LINUX_XHANDLE_H_INCLUDED
+#define LINUX_XHANDLE_H_INCLUDED
 #include "XHandle.h"
+#endif
+
+#ifndef LINUX_UTILS_LOG_H_INCLUDED
+#define LINUX_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef LINUX_THREADS_SINGLELOCK_H_INCLUDED
+#define LINUX_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 
 int CXHandle::m_objectTracker[10] = {0};
 

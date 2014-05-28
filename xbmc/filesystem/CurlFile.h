@@ -19,10 +19,22 @@
  *
  */
 
+#ifndef FILESYSTEM_IFILE_H_INCLUDED
+#define FILESYSTEM_IFILE_H_INCLUDED
 #include "IFile.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_RINGBUFFER_H_INCLUDED
+#define FILESYSTEM_UTILS_RINGBUFFER_H_INCLUDED
 #include "utils/RingBuffer.h"
+#endif
+
 #include <map>
+#ifndef FILESYSTEM_UTILS_HTTPHEADER_H_INCLUDED
+#define FILESYSTEM_UTILS_HTTPHEADER_H_INCLUDED
 #include "utils/HttpHeader.h"
+#endif
+
 
 namespace XCURL
 {

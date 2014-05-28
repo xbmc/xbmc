@@ -18,32 +18,136 @@
  *
  */
 
+#ifndef VIEW_VIEW_GUIVIEWSTATE_H_INCLUDED
+#define VIEW_VIEW_GUIVIEWSTATE_H_INCLUDED
 #include "view/GUIViewState.h"
+#endif
+
+#ifndef VIEW_PVR_WINDOWS_GUIVIEWSTATEPVR_H_INCLUDED
+#define VIEW_PVR_WINDOWS_GUIVIEWSTATEPVR_H_INCLUDED
 #include "pvr/windows/GUIViewStatePVR.h"
+#endif
+
+#ifndef VIEW_ADDONS_GUIVIEWSTATEADDONBROWSER_H_INCLUDED
+#define VIEW_ADDONS_GUIVIEWSTATEADDONBROWSER_H_INCLUDED
 #include "addons/GUIViewStateAddonBrowser.h"
+#endif
+
+#ifndef VIEW_MUSIC_GUIVIEWSTATEMUSIC_H_INCLUDED
+#define VIEW_MUSIC_GUIVIEWSTATEMUSIC_H_INCLUDED
 #include "music/GUIViewStateMusic.h"
+#endif
+
+#ifndef VIEW_VIDEO_GUIVIEWSTATEVIDEO_H_INCLUDED
+#define VIEW_VIDEO_GUIVIEWSTATEVIDEO_H_INCLUDED
 #include "video/GUIViewStateVideo.h"
+#endif
+
+#ifndef VIEW_PICTURES_GUIVIEWSTATEPICTURES_H_INCLUDED
+#define VIEW_PICTURES_GUIVIEWSTATEPICTURES_H_INCLUDED
 #include "pictures/GUIViewStatePictures.h"
+#endif
+
+#ifndef VIEW_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define VIEW_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef VIEW_PROGRAMS_GUIVIEWSTATEPROGRAMS_H_INCLUDED
+#define VIEW_PROGRAMS_GUIVIEWSTATEPROGRAMS_H_INCLUDED
 #include "programs/GUIViewStatePrograms.h"
+#endif
+
+#ifndef VIEW_PLAYLISTPLAYER_H_INCLUDED
+#define VIEW_PLAYLISTPLAYER_H_INCLUDED
 #include "PlayListPlayer.h"
+#endif
+
+#ifndef VIEW_UTILS_URIUTILS_H_INCLUDED
+#define VIEW_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef VIEW_URL_H_INCLUDED
+#define VIEW_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef VIEW_GUIPASSWORD_H_INCLUDED
+#define VIEW_GUIPASSWORD_H_INCLUDED
 #include "GUIPassword.h"
+#endif
+
+#ifndef VIEW_VIEWDATABASE_H_INCLUDED
+#define VIEW_VIEWDATABASE_H_INCLUDED
 #include "ViewDatabase.h"
+#endif
+
+#ifndef VIEW_AUTOSWITCH_H_INCLUDED
+#define VIEW_AUTOSWITCH_H_INCLUDED
 #include "AutoSwitch.h"
+#endif
+
+#ifndef VIEW_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define VIEW_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef VIEW_ADDONS_ADDON_H_INCLUDED
+#define VIEW_ADDONS_ADDON_H_INCLUDED
 #include "addons/Addon.h"
+#endif
+
+#ifndef VIEW_ADDONS_ADDONMANAGER_H_INCLUDED
+#define VIEW_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef VIEW_ADDONS_PLUGINSOURCE_H_INCLUDED
+#define VIEW_ADDONS_PLUGINSOURCE_H_INCLUDED
 #include "addons/PluginSource.h"
+#endif
+
+#ifndef VIEW_VIEW_VIEWSTATE_H_INCLUDED
+#define VIEW_VIEW_VIEWSTATE_H_INCLUDED
 #include "view/ViewState.h"
+#endif
+
+#ifndef VIEW_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define VIEW_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef VIEW_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define VIEW_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
 #include "settings/MediaSourceSettings.h"
+#endif
+
+#ifndef VIEW_SETTINGS_SETTINGS_H_INCLUDED
+#define VIEW_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef VIEW_FILEITEM_H_INCLUDED
+#define VIEW_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef VIEW_GUILIB_KEY_H_INCLUDED
+#define VIEW_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef VIEW_FILESYSTEM_ADDONSDIRECTORY_H_INCLUDED
+#define VIEW_FILESYSTEM_ADDONSDIRECTORY_H_INCLUDED
 #include "filesystem/AddonsDirectory.h"
+#endif
+
+#ifndef VIEW_GUILIB_TEXTUREMANAGER_H_INCLUDED
+#define VIEW_GUILIB_TEXTUREMANAGER_H_INCLUDED
 #include "guilib/TextureManager.h"
+#endif
+
 
 #if defined(TARGET_ANDROID)
 #include "filesystem/AndroidAppDirectory.h"

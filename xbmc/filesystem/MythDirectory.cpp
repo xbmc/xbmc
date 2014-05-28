@@ -18,25 +18,89 @@
  *
  */
 
+#ifndef FILESYSTEM_MYTHDIRECTORY_H_INCLUDED
+#define FILESYSTEM_MYTHDIRECTORY_H_INCLUDED
 #include "MythDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_MYTHSESSION_H_INCLUDED
+#define FILESYSTEM_MYTHSESSION_H_INCLUDED
 #include "MythSession.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_DLLLIBCMYTH_H_INCLUDED
+#define FILESYSTEM_DLLLIBCMYTH_H_INCLUDED
 #include "DllLibCMyth.h"
+#endif
+
+#ifndef FILESYSTEM_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define FILESYSTEM_VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "video/VideoInfoTag.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define FILESYSTEM_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef FILESYSTEM_SETTINGS_SETTINGS_H_INCLUDED
+#define FILESYSTEM_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define FILESYSTEM_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
+#define FILESYSTEM_DIRECTORYCACHE_H_INCLUDED
 #include "DirectoryCache.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_TIMEUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
 
 extern "C"
 {
+#ifndef FILESYSTEM_CMYTH_INCLUDE_CMYTH_CMYTH_H_INCLUDED
+#define FILESYSTEM_CMYTH_INCLUDE_CMYTH_CMYTH_H_INCLUDED
 #include "cmyth/include/cmyth/cmyth.h"
+#endif
+
+#ifndef FILESYSTEM_CMYTH_INCLUDE_REFMEM_REFMEM_H_INCLUDED
+#define FILESYSTEM_CMYTH_INCLUDE_REFMEM_REFMEM_H_INCLUDED
 #include "cmyth/include/refmem/refmem.h"
+#endif
+
 }
 
 using namespace XFILE;

@@ -24,8 +24,16 @@
   #include "config.h"
 #endif
 #include <vorbis/vorbisenc.h>
+#ifndef CDRIP_UTILS_LOG_H_INCLUDED
+#define CDRIP_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef CDRIP_DYNAMICDLL_H_INCLUDED
+#define CDRIP_DYNAMICDLL_H_INCLUDED
 #include "DynamicDll.h"
+#endif
+
 
 class DllVorbisEncInterface
 {

@@ -20,7 +20,11 @@
 
 //#define DEBUG_VERBOSE 1
 
+#ifndef VIDEORENDERERS_SYSTEM_H_INCLUDED
+#define VIDEORENDERERS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif

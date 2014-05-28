@@ -18,19 +18,55 @@
  *
  */
 
+#ifndef SINKS_AESINKAUDIOTRACK_H_INCLUDED
+#define SINKS_AESINKAUDIOTRACK_H_INCLUDED
 #include "AESinkAUDIOTRACK.h"
+#endif
+
+#ifndef SINKS_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define SINKS_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
+#ifndef SINKS_CORES_AUDIOENGINE_UTILS_AERINGBUFFER_H_INCLUDED
+#define SINKS_CORES_AUDIOENGINE_UTILS_AERINGBUFFER_H_INCLUDED
 #include "cores/AudioEngine/Utils/AERingBuffer.h"
+#endif
+
+#ifndef SINKS_ANDROID_ACTIVITY_XBMCAPP_H_INCLUDED
+#define SINKS_ANDROID_ACTIVITY_XBMCAPP_H_INCLUDED
 #include "android/activity/XBMCApp.h"
+#endif
+
+#ifndef SINKS_SETTINGS_SETTINGS_H_INCLUDED
+#define SINKS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
 #if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
 #endif
+#ifndef SINKS_UTILS_LOG_H_INCLUDED
+#define SINKS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
 
+
+#ifndef SINKS_ANDROID_JNI_AUDIOFORMAT_H_INCLUDED
+#define SINKS_ANDROID_JNI_AUDIOFORMAT_H_INCLUDED
 #include "android/jni/AudioFormat.h"
+#endif
+
+#ifndef SINKS_ANDROID_JNI_AUDIOMANAGER_H_INCLUDED
+#define SINKS_ANDROID_JNI_AUDIOMANAGER_H_INCLUDED
 #include "android/jni/AudioManager.h"
+#endif
+
+#ifndef SINKS_ANDROID_JNI_AUDIOTRACK_H_INCLUDED
+#define SINKS_ANDROID_JNI_AUDIOTRACK_H_INCLUDED
 #include "android/jni/AudioTrack.h"
+#endif
+
 
 using namespace jni;
 

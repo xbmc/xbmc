@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef FILESYSTEM_UTILS_XBMCTINYXML_H_INCLUDED
+#define FILESYSTEM_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
 
 namespace XFILE
 {

@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef OVERLAY_SYSTEM_H_INCLUDED
+#define OVERLAY_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef OVERLAY_DVDCLOCK_H_INCLUDED
+#define OVERLAY_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h"
+#endif
+
+#ifndef OVERLAY_DVDOVERLAYCODECTEXT_H_INCLUDED
+#define OVERLAY_DVDOVERLAYCODECTEXT_H_INCLUDED
 #include "DVDOverlayCodecText.h"
+#endif
+
+#ifndef OVERLAY_DVDOVERLAYTEXT_H_INCLUDED
+#define OVERLAY_DVDOVERLAYTEXT_H_INCLUDED
 #include "DVDOverlayText.h"
+#endif
+
+#ifndef OVERLAY_DVDSTREAMINFO_H_INCLUDED
+#define OVERLAY_DVDSTREAMINFO_H_INCLUDED
 #include "DVDStreamInfo.h"
+#endif
+
+#ifndef OVERLAY_DVDCODECS_DVDCODECS_H_INCLUDED
+#define OVERLAY_DVDCODECS_DVDCODECS_H_INCLUDED
 #include "DVDCodecs/DVDCodecs.h"
+#endif
+
+#ifndef OVERLAY_UTILS_LOG_H_INCLUDED
+#define OVERLAY_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef OVERLAY_CORES_DVDPLAYER_DVDSUBTITLES_DVDSUBTITLETAGSAMI_H_INCLUDED
+#define OVERLAY_CORES_DVDPLAYER_DVDSUBTITLES_DVDSUBTITLETAGSAMI_H_INCLUDED
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleTagSami.h"
+#endif
+
 
 CDVDOverlayCodecText::CDVDOverlayCodecText() : CDVDOverlayCodec("Text Subtitle Decoder")
 {

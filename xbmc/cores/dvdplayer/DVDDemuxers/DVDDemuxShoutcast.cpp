@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef DVDDEMUXERS_DVDCODECS_DVDCODECS_H_INCLUDED
+#define DVDDEMUXERS_DVDCODECS_DVDCODECS_H_INCLUDED
 #include "DVDCodecs/DVDCodecs.h"
+#endif
+
+#ifndef DVDDEMUXERS_DVDINPUTSTREAMS_DVDINPUTSTREAMHTTP_H_INCLUDED
+#define DVDDEMUXERS_DVDINPUTSTREAMS_DVDINPUTSTREAMHTTP_H_INCLUDED
 #include "DVDInputStreams/DVDInputStreamHttp.h"
+#endif
+
+#ifndef DVDDEMUXERS_DVDDEMUXSHOUTCAST_H_INCLUDED
+#define DVDDEMUXERS_DVDDEMUXSHOUTCAST_H_INCLUDED
 #include "DVDDemuxShoutcast.h"
+#endif
+
+#ifndef DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
+#define DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
 #include "DVDDemuxUtils.h"
+#endif
+
+#ifndef DVDDEMUXERS_DVDCLOCK_H_INCLUDED
+#define DVDDEMUXERS_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h" // for DVD_TIME_BASE
+#endif
+
+#ifndef DVDDEMUXERS__________UTILS_HTTPHEADER_H_INCLUDED
+#define DVDDEMUXERS__________UTILS_HTTPHEADER_H_INCLUDED
 #include "../../../utils/HttpHeader.h"
+#endif
+
 
 #define ICY_NOTICE1           "icy-notice1" // string
 #define ICY_NOTICE2           "icy-notice2" // string

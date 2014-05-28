@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_URI_H_INCLUDED
+#define JNI_URI_H_INCLUDED
 #include "URI.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

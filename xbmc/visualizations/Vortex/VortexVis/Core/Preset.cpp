@@ -17,11 +17,23 @@
  *
  */
 
+#ifndef CORE_PRESET_H_INCLUDED
+#define CORE_PRESET_H_INCLUDED
 #include "Preset.h"
+#endif
+
 #include <stdio.h>
 #include <string.h>
+#ifndef CORE_DEBUGCONSOLE_H_INCLUDED
+#define CORE_DEBUGCONSOLE_H_INCLUDED
 #include "DebugConsole.h"
+#endif
+
+#ifndef CORE_ANGELSCRIPT_H_INCLUDED
+#define CORE_ANGELSCRIPT_H_INCLUDED
 #include "angelscript.h"
+#endif
+
 
 const char * constants = 
 "const int PRIM_POINTLIST     = 1;"

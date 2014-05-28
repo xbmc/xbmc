@@ -24,9 +24,21 @@
 * for DESCRIPTION see 'DVDInputStreamPVRManager.cpp'
 */
 
+#ifndef DVDINPUTSTREAMS_DVDINPUTSTREAM_H_INCLUDED
+#define DVDINPUTSTREAMS_DVDINPUTSTREAM_H_INCLUDED
 #include "DVDInputStream.h"
+#endif
+
+#ifndef DVDINPUTSTREAMS_FILEITEM_H_INCLUDED
+#define DVDINPUTSTREAMS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef DVDINPUTSTREAMS_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define DVDINPUTSTREAMS_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
 
 namespace XFILE {
 class IFile;

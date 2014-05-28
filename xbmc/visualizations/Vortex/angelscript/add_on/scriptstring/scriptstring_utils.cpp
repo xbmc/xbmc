@@ -1,5 +1,9 @@
 #include <assert.h>
+#ifndef SCRIPTSTRING_SCRIPTSTRING_H_INCLUDED
+#define SCRIPTSTRING_SCRIPTSTRING_H_INCLUDED
 #include "scriptstring.h"
+#endif
+
 #include <string.h> // strstr
 
 

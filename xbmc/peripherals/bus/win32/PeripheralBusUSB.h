@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef WIN32_PERIPHERALS_BUS_PERIPHERALBUS_H_INCLUDED
+#define WIN32_PERIPHERALS_BUS_PERIPHERALBUS_H_INCLUDED
 #include "peripherals/bus/PeripheralBus.h"
+#endif
+
+#ifndef WIN32_PERIPHERALS_DEVICES_PERIPHERAL_H_INCLUDED
+#define WIN32_PERIPHERALS_DEVICES_PERIPHERAL_H_INCLUDED
 #include "peripherals/devices/Peripheral.h"
+#endif
+
 #include <setupapi.h> //needed for GUID
 
 namespace PERIPHERALS

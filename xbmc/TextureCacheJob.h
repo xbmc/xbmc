@@ -20,8 +20,16 @@
 
 #pragma once
 
+#ifndef ROOT_UTILS_STDSTRING_H_INCLUDED
+#define ROOT_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef ROOT_UTILS_JOB_H_INCLUDED
+#define ROOT_UTILS_JOB_H_INCLUDED
 #include "utils/Job.h"
+#endif
+
 
 class CBaseTexture;
 

@@ -18,12 +18,36 @@
  *
  */
  
+#ifndef FILESYSTEM_HDHOMERUNDIRECTORY_H_INCLUDED
+#define FILESYSTEM_HDHOMERUNDIRECTORY_H_INCLUDED
 #include "HDHomeRunDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef FILESYSTEM_DLLHDHOMERUN_H_INCLUDED
+#define FILESYSTEM_DLLHDHOMERUN_H_INCLUDED
 #include "DllHDHomeRun.h"
+#endif
+
 
 using namespace XFILE;
 using namespace std;

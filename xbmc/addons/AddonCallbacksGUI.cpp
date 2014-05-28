@@ -18,26 +18,106 @@
  *
  */
 
+#ifndef ADDONS_APPLICATION_H_INCLUDED
+#define ADDONS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef ADDONS_APPLICATIONMESSENGER_H_INCLUDED
+#define ADDONS_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef ADDONS_ADDON_H_INCLUDED
+#define ADDONS_ADDON_H_INCLUDED
 #include "Addon.h"
+#endif
+
+#ifndef ADDONS_ADDONCALLBACKSGUI_H_INCLUDED
+#define ADDONS_ADDONCALLBACKSGUI_H_INCLUDED
 #include "AddonCallbacksGUI.h"
+#endif
+
+#ifndef ADDONS_UTILS_LOG_H_INCLUDED
+#define ADDONS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ADDONS_SKIN_H_INCLUDED
+#define ADDONS_SKIN_H_INCLUDED
 #include "Skin.h"
+#endif
+
+#ifndef ADDONS_FILEITEM_H_INCLUDED
+#define ADDONS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef ADDONS_FILESYSTEM_FILE_H_INCLUDED
+#define ADDONS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef ADDONS_UTILS_URIUTILS_H_INCLUDED
+#define ADDONS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef ADDONS_UTILS_TIMEUTILS_H_INCLUDED
+#define ADDONS_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef ADDONS_UTILS_STRINGUTILS_H_INCLUDED
+#define ADDONS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ADDONS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define ADDONS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef ADDONS_GUILIB_KEY_H_INCLUDED
+#define ADDONS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef ADDONS_GUILIB_TEXTUREMANAGER_H_INCLUDED
+#define ADDONS_GUILIB_TEXTUREMANAGER_H_INCLUDED
 #include "guilib/TextureManager.h"
+#endif
+
+#ifndef ADDONS_GUILIB_GUISPINCONTROLEX_H_INCLUDED
+#define ADDONS_GUILIB_GUISPINCONTROLEX_H_INCLUDED
 #include "guilib/GUISpinControlEx.h"
+#endif
+
+#ifndef ADDONS_GUILIB_GUIRADIOBUTTONCONTROL_H_INCLUDED
+#define ADDONS_GUILIB_GUIRADIOBUTTONCONTROL_H_INCLUDED
 #include "guilib/GUIRadioButtonControl.h"
+#endif
+
+#ifndef ADDONS_GUILIB_GUISETTINGSSLIDERCONTROL_H_INCLUDED
+#define ADDONS_GUILIB_GUISETTINGSSLIDERCONTROL_H_INCLUDED
 #include "guilib/GUISettingsSliderControl.h"
+#endif
+
+#ifndef ADDONS_GUILIB_GUIEDITCONTROL_H_INCLUDED
+#define ADDONS_GUILIB_GUIEDITCONTROL_H_INCLUDED
 #include "guilib/GUIEditControl.h"
+#endif
+
+#ifndef ADDONS_GUILIB_GUIPROGRESSCONTROL_H_INCLUDED
+#define ADDONS_GUILIB_GUIPROGRESSCONTROL_H_INCLUDED
 #include "guilib/GUIProgressControl.h"
+#endif
+
+#ifndef ADDONS_GUILIB_GUIRENDERINGCONTROL_H_INCLUDED
+#define ADDONS_GUILIB_GUIRENDERINGCONTROL_H_INCLUDED
 #include "guilib/GUIRenderingControl.h"
+#endif
+
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3

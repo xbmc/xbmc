@@ -21,8 +21,16 @@
 
 #include <string>
 #include <vector>
+#ifndef UTILS_AEAUDIOFORMAT_H_INCLUDED
+#define UTILS_AEAUDIOFORMAT_H_INCLUDED
 #include "AEAudioFormat.h"
+#endif
+
+#ifndef UTILS_CORES_AUDIOENGINE_UTILS_AECHANNELINFO_H_INCLUDED
+#define UTILS_CORES_AUDIOENGINE_UTILS_AECHANNELINFO_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
+#endif
+
 
 typedef std::vector<unsigned int     > AESampleRateList;
 typedef std::vector<enum AEDataFormat> AEDataFormatList;

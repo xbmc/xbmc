@@ -21,10 +21,26 @@
 
 #include <set>
 
+#ifndef GENERIC_INPUT_TOUCH_ITOUCHINPUTHANDLER_H_INCLUDED
+#define GENERIC_INPUT_TOUCH_ITOUCHINPUTHANDLER_H_INCLUDED
 #include "input/touch/ITouchInputHandler.h"
+#endif
+
+#ifndef GENERIC_INPUT_TOUCH_TOUCHTYPES_H_INCLUDED
+#define GENERIC_INPUT_TOUCH_TOUCHTYPES_H_INCLUDED
 #include "input/touch/TouchTypes.h"
+#endif
+
+#ifndef GENERIC_THREADS_CRITICALSECTION_H_INCLUDED
+#define GENERIC_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef GENERIC_THREADS_TIMER_H_INCLUDED
+#define GENERIC_THREADS_TIMER_H_INCLUDED
 #include "threads/Timer.h"
+#endif
+
 
 #define TOUCH_MAX_POINTERS  2
 

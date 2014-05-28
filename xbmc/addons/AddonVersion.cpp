@@ -23,9 +23,21 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+#ifndef ADDONS_ADDONVERSION_H_INCLUDED
+#define ADDONS_ADDONVERSION_H_INCLUDED
 #include "AddonVersion.h"
+#endif
+
+#ifndef ADDONS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define ADDONS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef ADDONS_UTILS_STRINGUTILS_H_INCLUDED
+#define ADDONS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 namespace ADDON
 {

@@ -19,7 +19,11 @@
  */
 
 
+#ifndef GUILIB_SYSTEM_H_INCLUDED
+#define GUILIB_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #if HAS_GLES == 2
 #include "system_gl.h"

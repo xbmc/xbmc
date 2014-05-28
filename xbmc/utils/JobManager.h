@@ -22,9 +22,21 @@
 #include <queue>
 #include <vector>
 #include <string>
+#ifndef UTILS_THREADS_CRITICALSECTION_H_INCLUDED
+#define UTILS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef UTILS_THREADS_THREAD_H_INCLUDED
+#define UTILS_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef UTILS_JOB_H_INCLUDED
+#define UTILS_JOB_H_INCLUDED
 #include "Job.h"
+#endif
+
 
 class CJobManager;
 

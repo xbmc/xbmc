@@ -19,7 +19,11 @@
  */
 
 #pragma once
+#ifndef FILESYSTEM_IDIRECTORY_H_INCLUDED
+#define FILESYSTEM_IDIRECTORY_H_INCLUDED
 #include "IDirectory.h"
+#endif
+
 //txt-records as of http://www.dns-sd.org/ServiceTypes.html
 #define TXT_RECORD_PATH_KEY     "path"
 #define TXT_RECORD_USERNAME_KEY "u"

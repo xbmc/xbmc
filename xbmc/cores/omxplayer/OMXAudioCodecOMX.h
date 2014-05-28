@@ -20,14 +20,42 @@
  *
  */
 
+#ifndef OMXPLAYER_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
+#define OMXPLAYER_CORES_AUDIOENGINE_UTILS_AEAUDIOFORMAT_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
-#include "DllAvCodec.h"
-#include "DllAvFormat.h"
-#include "DllAvUtil.h"
-#include "DllSwResample.h"
+#endif
 
+#ifndef OMXPLAYER_DLLAVCODEC_H_INCLUDED
+#define OMXPLAYER_DLLAVCODEC_H_INCLUDED
+#include "DllAvCodec.h"
+#endif
+
+#ifndef OMXPLAYER_DLLAVFORMAT_H_INCLUDED
+#define OMXPLAYER_DLLAVFORMAT_H_INCLUDED
+#include "DllAvFormat.h"
+#endif
+
+#ifndef OMXPLAYER_DLLAVUTIL_H_INCLUDED
+#define OMXPLAYER_DLLAVUTIL_H_INCLUDED
+#include "DllAvUtil.h"
+#endif
+
+#ifndef OMXPLAYER_DLLSWRESAMPLE_H_INCLUDED
+#define OMXPLAYER_DLLSWRESAMPLE_H_INCLUDED
+#include "DllSwResample.h"
+#endif
+
+
+#ifndef OMXPLAYER_DVDSTREAMINFO_H_INCLUDED
+#define OMXPLAYER_DVDSTREAMINFO_H_INCLUDED
 #include "DVDStreamInfo.h"
+#endif
+
+#ifndef OMXPLAYER_LINUX_PLATFORMDEFS_H_INCLUDED
+#define OMXPLAYER_LINUX_PLATFORMDEFS_H_INCLUDED
 #include "linux/PlatformDefs.h"
+#endif
+
 
 class COMXAudioCodecOMX
 {

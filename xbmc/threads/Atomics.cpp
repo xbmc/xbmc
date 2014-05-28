@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef THREADS_ATOMICS_H_INCLUDED
+#define THREADS_ATOMICS_H_INCLUDED
 #include "Atomics.h"
+#endif
+
+#ifndef THREADS_SYSTEM_H_INCLUDED
+#define THREADS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 ///////////////////////////////////////////////////////////////////////////
 // 32-bit atomic compare-and-swap
 // Returns previous value of *pAddr

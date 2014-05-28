@@ -19,11 +19,31 @@
  */
 
 #include <math.h>
+#ifndef UTILS_STREAMDETAILS_H_INCLUDED
+#define UTILS_STREAMDETAILS_H_INCLUDED
 #include "StreamDetails.h"
+#endif
+
+#ifndef UTILS_STREAMUTILS_H_INCLUDED
+#define UTILS_STREAMUTILS_H_INCLUDED
 #include "StreamUtils.h"
+#endif
+
+#ifndef UTILS_VARIANT_H_INCLUDED
+#define UTILS_VARIANT_H_INCLUDED
 #include "Variant.h"
+#endif
+
+#ifndef UTILS_LANGINFO_H_INCLUDED
+#define UTILS_LANGINFO_H_INCLUDED
 #include "LangInfo.h"
+#endif
+
+#ifndef UTILS_UTILS_LANGCODEEXPANDER_H_INCLUDED
+#define UTILS_UTILS_LANGCODEEXPANDER_H_INCLUDED
 #include "utils/LangCodeExpander.h"
+#endif
+
 
 const float VIDEOASPECT_EPSILON = 0.025f;
 

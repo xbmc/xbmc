@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef FILESYSTEM_UTILS_STDSTRING_H_INCLUDED
+#define FILESYSTEM_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_VARIANT_H_INCLUDED
+#define FILESYSTEM_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
 
 class CFileItemList;
 

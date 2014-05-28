@@ -25,7 +25,11 @@
 #include <vector>
 #include <map>
 
+#ifndef NETWORK_UTILS_STDSTRING_H_INCLUDED
+#define NETWORK_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 #ifdef TARGET_WINDOWS
 #undef SetPort // WIN32INCLUDES this is defined as SetPortA in WinSpool.h which is being included _somewhere_

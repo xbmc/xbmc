@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
 #include "PVRChannelGroupsContainer.h"
+#endif
+
+#ifndef CHANNELS_URL_H_INCLUDED
+#define CHANNELS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef CHANNELS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define CHANNELS_DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef CHANNELS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define CHANNELS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef CHANNELS_UTILS_STRINGUTILS_H_INCLUDED
+#define CHANNELS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef CHANNELS_UTILS_URIUTILS_H_INCLUDED
+#define CHANNELS_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef CHANNELS_UTILS_LOG_H_INCLUDED
+#define CHANNELS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef CHANNELS_PVR_PVRMANAGER_H_INCLUDED
+#define CHANNELS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef CHANNELS_UTILS_STRINGUTILS_H_INCLUDED
+#define CHANNELS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace PVR;
 

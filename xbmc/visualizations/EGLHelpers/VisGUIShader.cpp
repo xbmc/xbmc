@@ -18,7 +18,11 @@
 *
 */
 
+#ifndef EGLHELPERS_VISGUISHADER_H_INCLUDED
+#define EGLHELPERS_VISGUISHADER_H_INCLUDED
 #include "VisGUIShader.h"
+#endif
+
 
 CVisGUIShader::CVisGUIShader(const char *vert, const char *frag ) : CVisGLSLShaderProgram(vert, frag)
 {

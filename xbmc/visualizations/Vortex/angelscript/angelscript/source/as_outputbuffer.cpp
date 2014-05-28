@@ -36,9 +36,21 @@
 // be sent to the real output stream
 //
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
+#ifndef SOURCE_AS_OUTPUTBUFFER_H_INCLUDED
+#define SOURCE_AS_OUTPUTBUFFER_H_INCLUDED
 #include "as_outputbuffer.h"
+#endif
+
+#ifndef SOURCE_AS_SCRIPTENGINE_H_INCLUDED
+#define SOURCE_AS_SCRIPTENGINE_H_INCLUDED
 #include "as_scriptengine.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

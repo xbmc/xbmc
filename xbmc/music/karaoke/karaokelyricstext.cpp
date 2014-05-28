@@ -22,19 +22,71 @@
 
 #include <math.h>
 
+#ifndef KARAOKE_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define KARAOKE_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef KARAOKE_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#define KARAOKE_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
 #include "settings/DisplaySettings.h"
+#endif
+
+#ifndef KARAOKE_SETTINGS_SETTINGS_H_INCLUDED
+#define KARAOKE_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef KARAOKE_GUILIB_GUITEXTLAYOUT_H_INCLUDED
+#define KARAOKE_GUILIB_GUITEXTLAYOUT_H_INCLUDED
 #include "guilib/GUITextLayout.h"
+#endif
+
+#ifndef KARAOKE_GUILIB_GUIFONT_H_INCLUDED
+#define KARAOKE_GUILIB_GUIFONT_H_INCLUDED
 #include "guilib/GUIFont.h"
+#endif
+
+#ifndef KARAOKE_KARAOKELYRICSTEXT_H_INCLUDED
+#define KARAOKE_KARAOKELYRICSTEXT_H_INCLUDED
 #include "karaokelyricstext.h"
+#endif
+
+#ifndef KARAOKE_UTILS_URIUTILS_H_INCLUDED
+#define KARAOKE_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef KARAOKE_FILESYSTEM_FILE_H_INCLUDED
+#define KARAOKE_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef KARAOKE_GUILIB_GUIFONTMANAGER_H_INCLUDED
+#define KARAOKE_GUILIB_GUIFONTMANAGER_H_INCLUDED
 #include "guilib/GUIFontManager.h"
+#endif
+
+#ifndef KARAOKE_ADDONS_SKIN_H_INCLUDED
+#define KARAOKE_ADDONS_SKIN_H_INCLUDED
 #include "addons/Skin.h"
+#endif
+
+#ifndef KARAOKE_UTILS_MATHUTILS_H_INCLUDED
+#define KARAOKE_UTILS_MATHUTILS_H_INCLUDED
 #include "utils/MathUtils.h"
+#endif
+
+#ifndef KARAOKE_UTILS_LOG_H_INCLUDED
+#define KARAOKE_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef KARAOKE_UTILS_STRINGUTILS_H_INCLUDED
+#define KARAOKE_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 typedef struct
 {

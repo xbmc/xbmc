@@ -20,29 +20,89 @@
 #include <windows.h>
 #include <io.h>
 
+#ifndef CORE_VORTEX_H_INCLUDED
+#define CORE_VORTEX_H_INCLUDED
 #include "Vortex.h"
+#endif
+
+#ifndef CORE_RENDERER_H_INCLUDED
+#define CORE_RENDERER_H_INCLUDED
 #include "Renderer.h"
+#endif
+
 #include <math.h>
+#ifndef CORE_FFT_H_INCLUDED
+#define CORE_FFT_H_INCLUDED
 #include "fft.h"
+#endif
+
+#ifndef CORE_PRESET_H_INCLUDED
+#define CORE_PRESET_H_INCLUDED
 #include "Preset.h"
+#endif
+
+#ifndef CORE_TEXTURE_H_INCLUDED
+#define CORE_TEXTURE_H_INCLUDED
 #include "Texture.h"
+#endif
+
+#ifndef CORE_MESH_H_INCLUDED
+#define CORE_MESH_H_INCLUDED
 #include "Mesh.h"
+#endif
+
+#ifndef CORE_SHADER_H_INCLUDED
+#define CORE_SHADER_H_INCLUDED
 #include "Shader.h"
+#endif
+
+#ifndef CORE_XMLDOCUMENT_H_INCLUDED
+#define CORE_XMLDOCUMENT_H_INCLUDED
 #include "XmlDocument.h"
+#endif
+
 
 #include <string>
 using namespace std;
 
+#ifndef CORE_ANGELSCRIPT_H_INCLUDED
+#define CORE_ANGELSCRIPT_H_INCLUDED
 #include "angelscript.h"
-#include "../../angelscript/add_on/scriptstring/scriptstring.h"
+#endif
 
+#ifndef CORE_______ANGELSCRIPT_ADD_ON_SCRIPTSTRING_SCRIPTSTRING_H_INCLUDED
+#define CORE_______ANGELSCRIPT_ADD_ON_SCRIPTSTRING_SCRIPTSTRING_H_INCLUDED
+#include "../../angelscript/add_on/scriptstring/scriptstring.h"
+#endif
+
+
+#ifndef CORE_DEBUGCONSOLE_H_INCLUDED
+#define CORE_DEBUGCONSOLE_H_INCLUDED
 #include "DebugConsole.h"
+#endif
+
+#ifndef CORE_____________ADDONS_INCLUDE_XBMC_VIS_TYPES_H_INCLUDED
+#define CORE_____________ADDONS_INCLUDE_XBMC_VIS_TYPES_H_INCLUDED
 #include "../../../../addons/include/xbmc_vis_types.h"
+#endif
+
 
 // Effects
+#ifndef CORE_MAP_H_INCLUDED
+#define CORE_MAP_H_INCLUDED
 #include "Map.h"
+#endif
+
+#ifndef CORE_VOICEPRINT_H_INCLUDED
+#define CORE_VOICEPRINT_H_INCLUDED
 #include "VoicePrint.h"
+#endif
+
+#ifndef CORE_TUNNEL_H_INCLUDED
+#define CORE_TUNNEL_H_INCLUDED
 #include "Tunnel.h"
+#endif
+
 
 #define NUM_FREQUENCIES (512)
 #define TEXTURE_FRAMEBUFFER (1)

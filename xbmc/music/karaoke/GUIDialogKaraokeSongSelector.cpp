@@ -18,13 +18,41 @@
  *
  */
 
+#ifndef KARAOKE_GUIDIALOGKARAOKESONGSELECTOR_H_INCLUDED
+#define KARAOKE_GUIDIALOGKARAOKESONGSELECTOR_H_INCLUDED
 #include "GUIDialogKaraokeSongSelector.h"
+#endif
+
+#ifndef KARAOKE_PLAYLISTPLAYER_H_INCLUDED
+#define KARAOKE_PLAYLISTPLAYER_H_INCLUDED
 #include "PlayListPlayer.h"
+#endif
+
+#ifndef KARAOKE_PLAYLISTS_PLAYLIST_H_INCLUDED
+#define KARAOKE_PLAYLISTS_PLAYLIST_H_INCLUDED
 #include "playlists/PlayList.h"
+#endif
+
+#ifndef KARAOKE_GUILIB_KEY_H_INCLUDED
+#define KARAOKE_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef KARAOKE_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define KARAOKE_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef KARAOKE_UTILS_LOG_H_INCLUDED
+#define KARAOKE_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef KARAOKE_UTILS_STRINGUTILS_H_INCLUDED
+#define KARAOKE_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 #define CONTROL_LABEL_SONGNUMBER    401
 #define CONTROL_LABEL_SONGNAME      402

@@ -19,26 +19,106 @@
  *
  */
 
+#ifndef UPNP_UPNPPLAYER_H_INCLUDED
+#define UPNP_UPNPPLAYER_H_INCLUDED
 #include "UPnPPlayer.h"
+#endif
+
+#ifndef UPNP_UPNP_H_INCLUDED
+#define UPNP_UPNP_H_INCLUDED
 #include "UPnP.h"
+#endif
+
+#ifndef UPNP_UPNPINTERNAL_H_INCLUDED
+#define UPNP_UPNPINTERNAL_H_INCLUDED
 #include "UPnPInternal.h"
+#endif
+
+#ifndef UPNP_PLATINUM_H_INCLUDED
+#define UPNP_PLATINUM_H_INCLUDED
 #include "Platinum.h"
+#endif
+
+#ifndef UPNP_PLTMEDIACONTROLLER_H_INCLUDED
+#define UPNP_PLTMEDIACONTROLLER_H_INCLUDED
 #include "PltMediaController.h"
+#endif
+
+#ifndef UPNP_PLTDIDL_H_INCLUDED
+#define UPNP_PLTDIDL_H_INCLUDED
 #include "PltDidl.h"
+#endif
+
+#ifndef UPNP_FILEITEM_H_INCLUDED
+#define UPNP_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef UPNP_THREADS_EVENT_H_INCLUDED
+#define UPNP_THREADS_EVENT_H_INCLUDED
 #include "threads/Event.h"
+#endif
+
+#ifndef UPNP_UTILS_LOG_H_INCLUDED
+#define UPNP_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef UPNP_UTILS_TIMEUTILS_H_INCLUDED
+#define UPNP_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef UPNP_GUIINFOMANAGER_H_INCLUDED
+#define UPNP_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef UPNP_THUMBLOADER_H_INCLUDED
+#define UPNP_THUMBLOADER_H_INCLUDED
 #include "ThumbLoader.h"
+#endif
+
+#ifndef UPNP_VIDEO_VIDEOTHUMBLOADER_H_INCLUDED
+#define UPNP_VIDEO_VIDEOTHUMBLOADER_H_INCLUDED
 #include "video/VideoThumbLoader.h"
+#endif
+
+#ifndef UPNP_MUSIC_MUSICTHUMBLOADER_H_INCLUDED
+#define UPNP_MUSIC_MUSICTHUMBLOADER_H_INCLUDED
 #include "music/MusicThumbLoader.h"
+#endif
+
+#ifndef UPNP_APPLICATIONMESSENGER_H_INCLUDED
+#define UPNP_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef UPNP_APPLICATION_H_INCLUDED
+#define UPNP_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef UPNP_DIALOGS_GUIDIALOGBUSY_H_INCLUDED
+#define UPNP_DIALOGS_GUIDIALOGBUSY_H_INCLUDED
 #include "dialogs/GUIDialogBusy.h"
+#endif
+
+#ifndef UPNP_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define UPNP_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef UPNP_GUILIB_KEY_H_INCLUDED
+#define UPNP_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef UPNP_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define UPNP_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
 
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp.player")

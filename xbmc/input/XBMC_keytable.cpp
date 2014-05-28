@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef INPUT_SYSTEM_H_INCLUDED
+#define INPUT_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef INPUT_UTILS_STDSTRING_H_INCLUDED
+#define INPUT_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef INPUT_UTILS_STRINGUTILS_H_INCLUDED
+#define INPUT_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef INPUT_INPUT_XBMC_KEYSYM_H_INCLUDED
+#define INPUT_INPUT_XBMC_KEYSYM_H_INCLUDED
 #include "input/XBMC_keysym.h"
+#endif
+
+#ifndef INPUT_INPUT_XBMC_VKEYS_H_INCLUDED
+#define INPUT_INPUT_XBMC_VKEYS_H_INCLUDED
 #include "input/XBMC_vkeys.h"
+#endif
+
+#ifndef INPUT_INPUT_XBMC_KEYTABLE_H_INCLUDED
+#define INPUT_INPUT_XBMC_KEYTABLE_H_INCLUDED
 #include "input/XBMC_keytable.h"
+#endif
+
 
 // The array of XBMCKEYTABLEs used in XBMC.
 // scancode, sym, unicode, ascii, vkey, keyname

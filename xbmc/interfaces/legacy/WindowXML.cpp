@@ -18,17 +18,57 @@
  *
  */
 
+#ifndef LEGACY_WINDOWXML_H_INCLUDED
+#define LEGACY_WINDOWXML_H_INCLUDED
 #include "WindowXML.h"
+#endif
 
+
+#ifndef LEGACY_WINDOWINTERCEPTOR_H_INCLUDED
+#define LEGACY_WINDOWINTERCEPTOR_H_INCLUDED
 #include "WindowInterceptor.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define LEGACY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef LEGACY_GUILIB_TEXTUREMANAGER_H_INCLUDED
+#define LEGACY_GUILIB_TEXTUREMANAGER_H_INCLUDED
 #include "guilib/TextureManager.h"
+#endif
+
+#ifndef LEGACY_SETTINGS_SETTINGS_H_INCLUDED
+#define LEGACY_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef LEGACY_ADDONS_SKIN_H_INCLUDED
+#define LEGACY_ADDONS_SKIN_H_INCLUDED
 #include "addons/Skin.h"
+#endif
+
+#ifndef LEGACY_FILESYSTEM_FILE_H_INCLUDED
+#define LEGACY_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef LEGACY_UTILS_URIUTILS_H_INCLUDED
+#define LEGACY_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef LEGACY_UTILS_STRINGUTILS_H_INCLUDED
+#define LEGACY_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef LEGACY_ADDONS_ADDON_H_INCLUDED
+#define LEGACY_ADDONS_ADDON_H_INCLUDED
 #include "addons/Addon.h"
+#endif
+
 
 // These #defs are for WindowXML
 #define CONTROL_BTNVIEWASICONS  2

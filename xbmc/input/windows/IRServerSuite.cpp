@@ -18,13 +18,41 @@
  *
  */
 
+#ifndef WINDOWS_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define WINDOWS_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef WINDOWS_IRSERVERSUITE_H_INCLUDED
+#define WINDOWS_IRSERVERSUITE_H_INCLUDED
 #include "IRServerSuite.h"
+#endif
+
+#ifndef WINDOWS_IRSSMESSAGE_H_INCLUDED
+#define WINDOWS_IRSSMESSAGE_H_INCLUDED
 #include "IrssMessage.h"
+#endif
+
+#ifndef WINDOWS_INPUT_BUTTONTRANSLATOR_H_INCLUDED
+#define WINDOWS_INPUT_BUTTONTRANSLATOR_H_INCLUDED
 #include "input/ButtonTranslator.h"
+#endif
+
+#ifndef WINDOWS_UTILS_LOG_H_INCLUDED
+#define WINDOWS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef WINDOWS_UTILS_TIMEUTILS_H_INCLUDED
+#define WINDOWS_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
 #include <Ws2tcpip.h>
 
 #define IRSS_PORT 24000

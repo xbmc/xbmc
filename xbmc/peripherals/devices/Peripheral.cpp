@@ -18,14 +18,46 @@
  *
  */
 
+#ifndef DEVICES_PERIPHERAL_H_INCLUDED
+#define DEVICES_PERIPHERAL_H_INCLUDED
 #include "Peripheral.h"
+#endif
+
+#ifndef DEVICES_PERIPHERALS_PERIPHERALS_H_INCLUDED
+#define DEVICES_PERIPHERALS_PERIPHERALS_H_INCLUDED
 #include "peripherals/Peripherals.h"
+#endif
+
+#ifndef DEVICES_UTILS_LOG_H_INCLUDED
+#define DEVICES_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DEVICES_UTILS_STRINGUTILS_H_INCLUDED
+#define DEVICES_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef DEVICES_SETTINGS_LIB_SETTING_H_INCLUDED
+#define DEVICES_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef DEVICES_UTILS_XBMCTINYXML_H_INCLUDED
+#define DEVICES_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef DEVICES_UTILS_URIUTILS_H_INCLUDED
+#define DEVICES_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef DEVICES_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define DEVICES_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
 
 using namespace PERIPHERALS;
 using namespace std;

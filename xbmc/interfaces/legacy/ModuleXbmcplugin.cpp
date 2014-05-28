@@ -18,10 +18,22 @@
  *
  */
 
+#ifndef LEGACY_MODULEXBMCPLUGIN_H_INCLUDED
+#define LEGACY_MODULEXBMCPLUGIN_H_INCLUDED
 #include "ModuleXbmcplugin.h"
+#endif
 
+
+#ifndef LEGACY_FILESYSTEM_PLUGINDIRECTORY_H_INCLUDED
+#define LEGACY_FILESYSTEM_PLUGINDIRECTORY_H_INCLUDED
 #include "filesystem/PluginDirectory.h"
+#endif
+
+#ifndef LEGACY_FILEITEM_H_INCLUDED
+#define LEGACY_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
 
 namespace XBMCAddon
 {

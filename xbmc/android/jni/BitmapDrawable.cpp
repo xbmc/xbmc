@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef JNI_BITMAPDRAWABLE_H_INCLUDED
+#define JNI_BITMAPDRAWABLE_H_INCLUDED
 #include "BitmapDrawable.h"
+#endif
+
+#ifndef JNI_BITMAP_H_INCLUDED
+#define JNI_BITMAP_H_INCLUDED
 #include "Bitmap.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

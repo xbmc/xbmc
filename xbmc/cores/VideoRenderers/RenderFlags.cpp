@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef VIDEORENDERERS_RENDERFLAGS_H_INCLUDED
+#define VIDEORENDERERS_RENDERFLAGS_H_INCLUDED
 #include "RenderFlags.h"
+#endif
+
 #include <string>
 #include <map>
 

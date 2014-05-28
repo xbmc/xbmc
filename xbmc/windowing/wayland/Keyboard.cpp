@@ -27,11 +27,31 @@
 
 #include <wayland-client.h>
 
+#ifndef WAYLAND_WINDOWING_DLLWAYLANDCLIENT_H_INCLUDED
+#define WAYLAND_WINDOWING_DLLWAYLANDCLIENT_H_INCLUDED
 #include "windowing/DllWaylandClient.h"
+#endif
+
+#ifndef WAYLAND_WINDOWING_DLLXKBCOMMON_H_INCLUDED
+#define WAYLAND_WINDOWING_DLLXKBCOMMON_H_INCLUDED
 #include "windowing/DllXKBCommon.h"
+#endif
+
+#ifndef WAYLAND_WINDOWING_WAYLANDPROTOCOL_H_INCLUDED
+#define WAYLAND_WINDOWING_WAYLANDPROTOCOL_H_INCLUDED
 #include "windowing/WaylandProtocol.h"
+#endif
+
+#ifndef WAYLAND_INPUT_LINUX_XKBCOMMONKEYMAP_H_INCLUDED
+#define WAYLAND_INPUT_LINUX_XKBCOMMONKEYMAP_H_INCLUDED
 #include "input/linux/XKBCommonKeymap.h"
+#endif
+
+#ifndef WAYLAND_KEYBOARD_H_INCLUDED
+#define WAYLAND_KEYBOARD_H_INCLUDED
 #include "Keyboard.h"
+#endif
+
 
 namespace xw = xbmc::wayland;
 

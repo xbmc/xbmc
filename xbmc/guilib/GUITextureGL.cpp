@@ -18,15 +18,39 @@
  *
  */
 
+#ifndef GUILIB_SYSTEM_H_INCLUDED
+#define GUILIB_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #if defined(HAS_GL)
 #include "GUITextureGL.h"
 #endif
+#ifndef GUILIB_TEXTURE_H_INCLUDED
+#define GUILIB_TEXTURE_H_INCLUDED
 #include "Texture.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef GUILIB_UTILS_GLUTILS_H_INCLUDED
+#define GUILIB_UTILS_GLUTILS_H_INCLUDED
 #include "utils/GLUtils.h"
+#endif
+
+#ifndef GUILIB_GUILIB_GEOMETRY_H_INCLUDED
+#define GUILIB_GUILIB_GEOMETRY_H_INCLUDED
 #include "guilib/Geometry.h"
+#endif
+
+#ifndef GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
 
 #if defined(HAS_GL)
 

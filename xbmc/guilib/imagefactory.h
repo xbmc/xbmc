@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef GUILIB_IIMAGE_H_INCLUDED
+#define GUILIB_IIMAGE_H_INCLUDED
 #include "iimage.h"
+#endif
+
+#ifndef GUILIB_URL_H_INCLUDED
+#define GUILIB_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 class ImageFactory
 {

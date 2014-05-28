@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef DVDPLAYER_THREADS_THREAD_H_INCLUDED
+#define DVDPLAYER_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef DVDPLAYER_DVDMESSAGEQUEUE_H_INCLUDED
+#define DVDPLAYER_DVDMESSAGEQUEUE_H_INCLUDED
 #include "DVDMessageQueue.h"
+#endif
+
+#ifndef DVDPLAYER_VIDEO_TELETEXTDEFINES_H_INCLUDED
+#define DVDPLAYER_VIDEO_TELETEXTDEFINES_H_INCLUDED
 #include "video/TeletextDefines.h"
+#endif
+
 
 class CDVDStreamInfo;
 

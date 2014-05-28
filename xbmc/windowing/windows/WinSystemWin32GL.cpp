@@ -24,10 +24,26 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef WINDOWS_WINSYSTEMWIN32GL_H_INCLUDED
+#define WINDOWS_WINSYSTEMWIN32GL_H_INCLUDED
 #include "WinSystemWin32GL.h"
+#endif
+
+#ifndef WINDOWS_WIN32UTIL_H_INCLUDED
+#define WINDOWS_WIN32UTIL_H_INCLUDED
 #include "WIN32Util.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUI3D_H_INCLUDED
+#define WINDOWS_GUILIB_GUI3D_H_INCLUDED
 #include "guilib/gui3d.h"
+#endif
+
 
 #ifdef HAS_GL
 #include <GL/glew.h>

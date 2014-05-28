@@ -17,33 +17,141 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef UPNP_UPNPSERVER_H_INCLUDED
+#define UPNP_UPNPSERVER_H_INCLUDED
 #include "UPnPServer.h"
+#endif
+
+#ifndef UPNP_UPNPINTERNAL_H_INCLUDED
+#define UPNP_UPNPINTERNAL_H_INCLUDED
 #include "UPnPInternal.h"
+#endif
+
+#ifndef UPNP_APPLICATION_H_INCLUDED
+#define UPNP_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef UPNP_VIEW_GUIVIEWSTATE_H_INCLUDED
+#define UPNP_VIEW_GUIVIEWSTATE_H_INCLUDED
 #include "view/GUIViewState.h"
+#endif
+
+#ifndef UPNP_PLATINUM_H_INCLUDED
+#define UPNP_PLATINUM_H_INCLUDED
 #include "Platinum.h"
+#endif
+
+#ifndef UPNP_VIDEO_VIDEOTHUMBLOADER_H_INCLUDED
+#define UPNP_VIDEO_VIDEOTHUMBLOADER_H_INCLUDED
 #include "video/VideoThumbLoader.h"
+#endif
+
+#ifndef UPNP_MUSIC_ARTIST_H_INCLUDED
+#define UPNP_MUSIC_ARTIST_H_INCLUDED
 #include "music/Artist.h"
+#endif
+
+#ifndef UPNP_MUSIC_MUSICTHUMBLOADER_H_INCLUDED
+#define UPNP_MUSIC_MUSICTHUMBLOADER_H_INCLUDED
 #include "music/MusicThumbLoader.h"
+#endif
+
+#ifndef UPNP_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#define UPNP_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
 #include "interfaces/AnnouncementManager.h"
+#endif
+
+#ifndef UPNP_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define UPNP_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef UPNP_FILESYSTEM_MUSICDATABASEDIRECTORY_H_INCLUDED
+#define UPNP_FILESYSTEM_MUSICDATABASEDIRECTORY_H_INCLUDED
 #include "filesystem/MusicDatabaseDirectory.h"
+#endif
+
+#ifndef UPNP_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define UPNP_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef UPNP_FILESYSTEM_VIDEODATABASEDIRECTORY_H_INCLUDED
+#define UPNP_FILESYSTEM_VIDEODATABASEDIRECTORY_H_INCLUDED
 #include "filesystem/VideoDatabaseDirectory.h"
+#endif
+
+#ifndef UPNP_GUILIB_WINDOWIDS_H_INCLUDED
+#define UPNP_GUILIB_WINDOWIDS_H_INCLUDED
 #include "guilib/WindowIDs.h"
+#endif
+
+#ifndef UPNP_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define UPNP_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
+#ifndef UPNP_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define UPNP_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef UPNP_SETTINGS_SETTINGS_H_INCLUDED
+#define UPNP_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef UPNP_UTILS_LOG_H_INCLUDED
+#define UPNP_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef UPNP_UTILS_MD5_H_INCLUDED
+#define UPNP_UTILS_MD5_H_INCLUDED
 #include "utils/md5.h"
+#endif
+
+#ifndef UPNP_UTILS_STRINGUTILS_H_INCLUDED
+#define UPNP_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef UPNP_UTILS_URIUTILS_H_INCLUDED
+#define UPNP_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef UPNP_UTIL_H_INCLUDED
+#define UPNP_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef UPNP_MUSIC_MUSICDATABASE_H_INCLUDED
+#define UPNP_MUSIC_MUSICDATABASE_H_INCLUDED
 #include "music/MusicDatabase.h"
+#endif
+
+#ifndef UPNP_VIDEO_VIDEODATABASE_H_INCLUDED
+#define UPNP_VIDEO_VIDEODATABASE_H_INCLUDED
 #include "video/VideoDatabase.h"
+#endif
+
+#ifndef UPNP_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define UPNP_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef UPNP_XBMC_GUIUSERMESSAGES_H_INCLUDED
+#define UPNP_XBMC_GUIUSERMESSAGES_H_INCLUDED
 #include "xbmc/GUIUserMessages.h"
+#endif
+
+#ifndef UPNP_UTILS_FILEUTILS_H_INCLUDED
+#define UPNP_UTILS_FILEUTILS_H_INCLUDED
 #include "utils/FileUtils.h"
+#endif
+
 
 using namespace std;
 using namespace ANNOUNCEMENT;

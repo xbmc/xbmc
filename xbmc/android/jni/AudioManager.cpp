@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_AUDIOMANAGER_H_INCLUDED
+#define JNI_AUDIOMANAGER_H_INCLUDED
 #include "AudioManager.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

@@ -18,17 +18,61 @@
  *
  */
 
+#ifndef GUILIB_GUIMULTIIMAGE_H_INCLUDED
+#define GUILIB_GUIMULTIIMAGE_H_INCLUDED
 #include "GUIMultiImage.h"
+#endif
+
+#ifndef GUILIB_TEXTUREMANAGER_H_INCLUDED
+#define GUILIB_TEXTUREMANAGER_H_INCLUDED
 #include "TextureManager.h"
+#endif
+
+#ifndef GUILIB_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define GUILIB_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef GUILIB_UTILS_URIUTILS_H_INCLUDED
+#define GUILIB_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef GUILIB_UTILS_JOBMANAGER_H_INCLUDED
+#define GUILIB_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
+#ifndef GUILIB_FILEITEM_H_INCLUDED
+#define GUILIB_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef GUILIB_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define GUILIB_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
+#ifndef GUILIB_TEXTURECACHE_H_INCLUDED
+#define GUILIB_TEXTURECACHE_H_INCLUDED
 #include "TextureCache.h"
+#endif
+
+#ifndef GUILIB_WINDOWIDS_H_INCLUDED
+#define GUILIB_WINDOWIDS_H_INCLUDED
 #include "WindowIDs.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_BASECOLUMNS_H_INCLUDED
+#define JNI_BASECOLUMNS_H_INCLUDED
 #include "BaseColumns.h"
+#endif
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;

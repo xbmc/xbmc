@@ -20,11 +20,31 @@
  *
  */
 
+#ifndef WINDOWS_GUILIB_GUIWINDOW_H_INCLUDED
+#define WINDOWS_GUILIB_GUIWINDOW_H_INCLUDED
 #include "guilib/GUIWindow.h"
+#endif
+
+#ifndef WINDOWS_FILESYSTEM_VIRTUALDIRECTORY_H_INCLUDED
+#define WINDOWS_FILESYSTEM_VIRTUALDIRECTORY_H_INCLUDED
 #include "filesystem/VirtualDirectory.h"
+#endif
+
+#ifndef WINDOWS_FILESYSTEM_DIRECTORYHISTORY_H_INCLUDED
+#define WINDOWS_FILESYSTEM_DIRECTORYHISTORY_H_INCLUDED
 #include "filesystem/DirectoryHistory.h"
+#endif
+
+#ifndef WINDOWS_THREADS_CRITICALSECTION_H_INCLUDED
+#define WINDOWS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef WINDOWS_UTILS_JOBMANAGER_H_INCLUDED
+#define WINDOWS_UTILS_JOBMANAGER_H_INCLUDED
 #include "utils/JobManager.h"
+#endif
+
 
 class CFileItem;
 class CFileItemList;

@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef INFO_GUILIB_GUIINFOTYPES_H_INCLUDED
+#define INFO_GUILIB_GUIINFOTYPES_H_INCLUDED
 #include "guilib/GUIInfoTypes.h"
+#endif
+
+#ifndef INFO_INTERFACES_INFO_INFOBOOL_H_INCLUDED
+#define INFO_INTERFACES_INFO_INFOBOOL_H_INCLUDED
 #include "interfaces/info/InfoBool.h"
+#endif
+
 
 class TiXmlElement;
 

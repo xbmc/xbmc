@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef ADDONS_APPLICATION_H_INCLUDED
+#define ADDONS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef ADDONS_ADDON_H_INCLUDED
+#define ADDONS_ADDON_H_INCLUDED
 #include "Addon.h"
+#endif
+
+#ifndef ADDONS_ADDONCALLBACKSCODEC_H_INCLUDED
+#define ADDONS_ADDONCALLBACKSCODEC_H_INCLUDED
 #include "AddonCallbacksCodec.h"
+#endif
+
+#ifndef ADDONS_DLLAVCODEC_H_INCLUDED
+#define ADDONS_DLLAVCODEC_H_INCLUDED
 #include "DllAvCodec.h"
+#endif
+
+#ifndef ADDONS_DLLAVFORMAT_H_INCLUDED
+#define ADDONS_DLLAVFORMAT_H_INCLUDED
 #include "DllAvFormat.h"
+#endif
+
+#ifndef ADDONS_UTILS_STRINGUTILS_H_INCLUDED
+#define ADDONS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 namespace ADDON
 {

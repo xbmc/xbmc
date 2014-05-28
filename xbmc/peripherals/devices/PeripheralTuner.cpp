@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef DEVICES_PERIPHERALTUNER_H_INCLUDED
+#define DEVICES_PERIPHERALTUNER_H_INCLUDED
 #include "PeripheralTuner.h"
+#endif
+
+#ifndef DEVICES_UTILS_LOG_H_INCLUDED
+#define DEVICES_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 using namespace PERIPHERALS;
 

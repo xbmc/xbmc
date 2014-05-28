@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef JNI_MEDIACODECCRYPTOINFO_H_INCLUDED
+#define JNI_MEDIACODECCRYPTOINFO_H_INCLUDED
 #include "MediaCodecCryptoInfo.h"
+#endif
+
 
 #include "jutils/jutils-details.hpp"
 

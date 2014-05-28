@@ -20,9 +20,21 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef FILESYSTEM_UDFFILE_H_INCLUDED
+#define FILESYSTEM_UDFFILE_H_INCLUDED
 #include "UDFFile.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_UTIL_H_INCLUDED
+#define FILESYSTEM_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
 
 #include <sys/stat.h>
 #include <errno.h>

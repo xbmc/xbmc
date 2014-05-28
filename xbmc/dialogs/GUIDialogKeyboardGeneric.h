@@ -20,9 +20,21 @@
 
 #pragma once
 
+#ifndef DIALOGS_GUILIB_GUIKEYBOARD_H_INCLUDED
+#define DIALOGS_GUILIB_GUIKEYBOARD_H_INCLUDED
 #include "guilib/GUIKeyboard.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIDIALOG_H_INCLUDED
+#define DIALOGS_GUILIB_GUIDIALOG_H_INCLUDED
 #include "guilib/GUIDialog.h"
+#endif
+
+#ifndef DIALOGS_UTILS_VARIANT_H_INCLUDED
+#define DIALOGS_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
 
 enum KEYBOARD {CAPS, LOWER, SYMBOLS };
 

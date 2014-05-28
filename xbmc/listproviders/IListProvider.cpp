@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef LISTPROVIDERS_ILISTPROVIDER_H_INCLUDED
+#define LISTPROVIDERS_ILISTPROVIDER_H_INCLUDED
 #include "IListProvider.h"
+#endif
+
+#ifndef LISTPROVIDERS_UTILS_XBMCTINYXML_H_INCLUDED
+#define LISTPROVIDERS_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef LISTPROVIDERS_STATICPROVIDER_H_INCLUDED
+#define LISTPROVIDERS_STATICPROVIDER_H_INCLUDED
 #include "StaticProvider.h"
+#endif
+
+#ifndef LISTPROVIDERS_DIRECTORYPROVIDER_H_INCLUDED
+#define LISTPROVIDERS_DIRECTORYPROVIDER_H_INCLUDED
 #include "DirectoryProvider.h"
+#endif
+
 
 IListProvider *IListProvider::Create(const TiXmlNode *node, int parentID)
 {

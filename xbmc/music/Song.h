@@ -23,11 +23,31 @@
 */
 #pragma once
 
+#ifndef MUSIC_UTILS_STDSTRING_H_INCLUDED
+#define MUSIC_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef MUSIC_UTILS_ISERIALIZABLE_H_INCLUDED
+#define MUSIC_UTILS_ISERIALIZABLE_H_INCLUDED
 #include "utils/ISerializable.h"
+#endif
+
+#ifndef MUSIC_XBDATETIME_H_INCLUDED
+#define MUSIC_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef MUSIC_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define MUSIC_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h" // for EmbeddedArt
+#endif
+
+#ifndef MUSIC_ARTIST_H_INCLUDED
+#define MUSIC_ARTIST_H_INCLUDED
 #include "Artist.h"
+#endif
+
 #include <map>
 #include <vector>
 

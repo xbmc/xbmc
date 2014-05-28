@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef DEVICES_PERIPHERALNIC_H_INCLUDED
+#define DEVICES_PERIPHERALNIC_H_INCLUDED
 #include "PeripheralNIC.h"
+#endif
+
+#ifndef DEVICES_UTILS_LOG_H_INCLUDED
+#define DEVICES_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DEVICES_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define DEVICES_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
 
 using namespace PERIPHERALS;
 using namespace std;

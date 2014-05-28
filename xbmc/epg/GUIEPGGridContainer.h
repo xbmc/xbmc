@@ -20,11 +20,31 @@
  *
  */
 
+#ifndef EPG_XBDATETIME_H_INCLUDED
+#define EPG_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef EPG_FILEITEM_H_INCLUDED
+#define EPG_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef EPG_GUILIB_GUICONTROL_H_INCLUDED
+#define EPG_GUILIB_GUICONTROL_H_INCLUDED
 #include "guilib/GUIControl.h"
+#endif
+
+#ifndef EPG_GUILIB_GUILISTITEMLAYOUT_H_INCLUDED
+#define EPG_GUILIB_GUILISTITEMLAYOUT_H_INCLUDED
 #include "guilib/GUIListItemLayout.h"
+#endif
+
+#ifndef EPG_GUILIB_IGUICONTAINER_H_INCLUDED
+#define EPG_GUILIB_IGUICONTAINER_H_INCLUDED
 #include "guilib/IGUIContainer.h"
+#endif
+
 
 namespace PVR
 {

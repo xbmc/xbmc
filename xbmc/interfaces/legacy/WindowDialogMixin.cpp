@@ -18,11 +18,27 @@
  *
  */
 
+#ifndef LEGACY_WINDOWDIALOGMIXIN_H_INCLUDED
+#define LEGACY_WINDOWDIALOGMIXIN_H_INCLUDED
 #include "WindowDialogMixin.h"
-#include "WindowInterceptor.h"
+#endif
 
+#ifndef LEGACY_WINDOWINTERCEPTOR_H_INCLUDED
+#define LEGACY_WINDOWINTERCEPTOR_H_INCLUDED
+#include "WindowInterceptor.h"
+#endif
+
+
+#ifndef LEGACY_APPLICATIONMESSENGER_H_INCLUDED
+#define LEGACY_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define LEGACY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
 
 namespace XBMCAddon
 {

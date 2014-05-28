@@ -58,12 +58,36 @@
 #else
   #include <net/if_arp.h>
 #endif
+#ifndef LINUX_PLATFORMDEFS_H_INCLUDED
+#define LINUX_PLATFORMDEFS_H_INCLUDED
 #include "PlatformDefs.h"
+#endif
+
+#ifndef LINUX_NETWORKLINUX_H_INCLUDED
+#define LINUX_NETWORKLINUX_H_INCLUDED
 #include "NetworkLinux.h"
+#endif
+
+#ifndef LINUX_UTIL_H_INCLUDED
+#define LINUX_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef LINUX_UTILS_STRINGUTILS_H_INCLUDED
+#define LINUX_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef LINUX_UTILS_LOG_H_INCLUDED
+#define LINUX_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef LINUX_UTILS_STRINGUTILS_H_INCLUDED
+#define LINUX_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace std;
 

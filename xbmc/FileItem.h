@@ -24,15 +24,51 @@
  *
  */
 
+#ifndef ROOT_GUILIB_GUILISTITEM_H_INCLUDED
+#define ROOT_GUILIB_GUILISTITEM_H_INCLUDED
 #include "guilib/GUIListItem.h"
+#endif
+
+#ifndef ROOT_UTILS_ARCHIVE_H_INCLUDED
+#define ROOT_UTILS_ARCHIVE_H_INCLUDED
 #include "utils/Archive.h"
+#endif
+
+#ifndef ROOT_UTILS_ISERIALIZABLE_H_INCLUDED
+#define ROOT_UTILS_ISERIALIZABLE_H_INCLUDED
 #include "utils/ISerializable.h"
+#endif
+
+#ifndef ROOT_UTILS_ISORTABLE_H_INCLUDED
+#define ROOT_UTILS_ISORTABLE_H_INCLUDED
 #include "utils/ISortable.h"
+#endif
+
+#ifndef ROOT_XBDATETIME_H_INCLUDED
+#define ROOT_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef ROOT_UTILS_SORTUTILS_H_INCLUDED
+#define ROOT_UTILS_SORTUTILS_H_INCLUDED
 #include "utils/SortUtils.h"
+#endif
+
+#ifndef ROOT_UTILS_LABELFORMATTER_H_INCLUDED
+#define ROOT_UTILS_LABELFORMATTER_H_INCLUDED
 #include "utils/LabelFormatter.h"
+#endif
+
+#ifndef ROOT_GUIPASSWORD_H_INCLUDED
+#define ROOT_GUIPASSWORD_H_INCLUDED
 #include "GUIPassword.h"
+#endif
+
+#ifndef ROOT_THREADS_CRITICALSECTION_H_INCLUDED
+#define ROOT_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 #include <vector>
 #include "boost/shared_ptr.hpp"

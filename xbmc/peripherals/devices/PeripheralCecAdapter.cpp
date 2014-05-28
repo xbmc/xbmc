@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef DEVICES_SYSTEM_H_INCLUDED
+#define DEVICES_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #if defined(HAVE_LIBCEC)
 #include "PeripheralCecAdapter.h"
 #include "input/XBIRRemote.h"

@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef FILESYSTEM_MUSICFILEDIRECTORY_H_INCLUDED
+#define FILESYSTEM_MUSICFILEDIRECTORY_H_INCLUDED
 #include "MusicFileDirectory.h"
+#endif
+
 
 namespace XFILE
 {

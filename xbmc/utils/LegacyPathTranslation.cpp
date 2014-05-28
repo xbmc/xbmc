@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef UTILS_LEGACYPATHTRANSLATION_H_INCLUDED
+#define UTILS_LEGACYPATHTRANSLATION_H_INCLUDED
 #include "LegacyPathTranslation.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 typedef struct Translator {
   const char *legacyPath;

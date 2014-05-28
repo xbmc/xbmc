@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef UTILS_UTILS_STDSTRING_H_INCLUDED
+#define UTILS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef UTILS_AEAUDIOFORMAT_H_INCLUDED
+#define UTILS_AEAUDIOFORMAT_H_INCLUDED
 #include "AEAudioFormat.h"
+#endif
+
 
 class CAEWAVLoader
 {

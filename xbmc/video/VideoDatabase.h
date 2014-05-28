@@ -18,12 +18,36 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef VIDEO_DBWRAPPERS_DATABASE_H_INCLUDED
+#define VIDEO_DBWRAPPERS_DATABASE_H_INCLUDED
 #include "dbwrappers/Database.h"
+#endif
+
+#ifndef VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "VideoInfoTag.h"
+#endif
+
+#ifndef VIDEO_ADDONS_SCRAPER_H_INCLUDED
+#define VIDEO_ADDONS_SCRAPER_H_INCLUDED
 #include "addons/Scraper.h"
+#endif
+
+#ifndef VIDEO_BOOKMARK_H_INCLUDED
+#define VIDEO_BOOKMARK_H_INCLUDED
 #include "Bookmark.h"
+#endif
+
+#ifndef VIDEO_UTILS_SORTUTILS_H_INCLUDED
+#define VIDEO_UTILS_SORTUTILS_H_INCLUDED
 #include "utils/SortUtils.h"
+#endif
+
+#ifndef VIDEO_VIDEO_VIDEODBURL_H_INCLUDED
+#define VIDEO_VIDEO_VIDEODBURL_H_INCLUDED
 #include "video/VideoDbUrl.h"
+#endif
+
 
 #include <memory>
 #include <set>

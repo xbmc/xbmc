@@ -17,7 +17,11 @@
  *
  */
 
+#ifndef CORE_MESH_H_INCLUDED
+#define CORE_MESH_H_INCLUDED
 #include "Mesh.h"
+#endif
+
 #include <new>
 #include <stdio.h>
 

@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef DVDPLAYER_DVDCODECS_VIDEO_DVDVIDEOCODEC_H_INCLUDED
+#define DVDPLAYER_DVDCODECS_VIDEO_DVDVIDEOCODEC_H_INCLUDED
 #include "DVDCodecs/Video/DVDVideoCodec.h"
+#endif
+
+#ifndef DVDPLAYER_DVDCODECS_OVERLAY_DVDOVERLAY_H_INCLUDED
+#define DVDPLAYER_DVDCODECS_OVERLAY_DVDOVERLAY_H_INCLUDED
 #include "DVDCodecs/Overlay/DVDOverlay.h"
+#endif
+
 
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"

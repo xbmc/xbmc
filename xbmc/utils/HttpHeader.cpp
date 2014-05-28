@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef UTILS_HTTPHEADER_H_INCLUDED
+#define UTILS_HTTPHEADER_H_INCLUDED
 #include "HttpHeader.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 // header white space characters according to RFC 2616
 const char* const CHttpHeader::m_whitespaceChars = " \t";

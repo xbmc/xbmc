@@ -30,11 +30,31 @@
 #define INT64_C __int64
 #endif
 
+#ifndef CDRIP_ENCODERFFMPEG_H_INCLUDED
+#define CDRIP_ENCODERFFMPEG_H_INCLUDED
 #include "EncoderFFmpeg.h"
+#endif
+
+#ifndef CDRIP_FILESYSTEM_FILE_H_INCLUDED
+#define CDRIP_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef CDRIP_UTILS_LOG_H_INCLUDED
+#define CDRIP_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef CDRIP_SETTINGS_SETTINGS_H_INCLUDED
+#define CDRIP_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef CDRIP_UTILS_URIUTILS_H_INCLUDED
+#define CDRIP_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 
 /* AV_PKT_FLAG_KEY was named PKT_FLAG_KEY in older versions of libavcodec */
 #ifndef AV_PKT_FLAG_KEY

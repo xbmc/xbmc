@@ -19,7 +19,11 @@
  */
 
 #import <UIKit/UIKit.h>
+#ifndef IOS_IOSKEYBOARD_H_INCLUDED
+#define IOS_IOSKEYBOARD_H_INCLUDED
 #include "IOSKeyboard.h"
+#endif
+
 
 @interface KeyboardView : UIView <UITextFieldDelegate>
 {

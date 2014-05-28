@@ -18,25 +18,89 @@
  *
  */
 
+#ifndef UTILS_NETWORK_NETWORK_H_INCLUDED
+#define UTILS_NETWORK_NETWORK_H_INCLUDED
 #include "network/Network.h"
+#endif
+
+#ifndef UTILS_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define UTILS_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef UTILS_RSSREADER_H_INCLUDED
+#define UTILS_RSSREADER_H_INCLUDED
 #include "RssReader.h"
+#endif
+
+#ifndef UTILS_UTILS_HTMLUTIL_H_INCLUDED
+#define UTILS_UTILS_HTMLUTIL_H_INCLUDED
 #include "utils/HTMLUtil.h"
+#endif
+
+#ifndef UTILS_APPLICATION_H_INCLUDED
+#define UTILS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef UTILS_CHARSETCONVERTER_H_INCLUDED
+#define UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "CharsetConverter.h"
+#endif
+
+#ifndef UTILS_URL_H_INCLUDED
+#define UTILS_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_FILE_H_INCLUDED
+#define UTILS_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef UTILS_FILESYSTEM_CURLFILE_H_INCLUDED
+#define UTILS_FILESYSTEM_CURLFILE_H_INCLUDED
 #include "filesystem/CurlFile.h"
+#endif
+
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaInterface.h"
 #endif
+#ifndef UTILS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define UTILS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef UTILS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define UTILS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef UTILS_GUILIB_GUIRSSCONTROL_H_INCLUDED
+#define UTILS_GUILIB_GUIRSSCONTROL_H_INCLUDED
 #include "guilib/GUIRSSControl.h"
+#endif
+
+#ifndef UTILS_UTILS_TIMEUTILS_H_INCLUDED
+#define UTILS_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef UTILS_THREADS_SINGLELOCK_H_INCLUDED
+#define UTILS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef UTILS_LOG_H_INCLUDED
+#define UTILS_LOG_H_INCLUDED
 #include "log.h"
+#endif
+
+#ifndef UTILS_UTILS_FILEUTILS_H_INCLUDED
+#define UTILS_UTILS_FILEUTILS_H_INCLUDED
 #include "utils/FileUtils.h"
+#endif
+
 
 #define RSS_COLOR_BODY      0
 #define RSS_COLOR_HEADLINE  1

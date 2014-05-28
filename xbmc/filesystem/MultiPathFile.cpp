@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef FILESYSTEM_MULTIPATHFILE_H_INCLUDED
+#define FILESYSTEM_MULTIPATHFILE_H_INCLUDED
 #include "MultiPathFile.h"
+#endif
+
+#ifndef FILESYSTEM_MULTIPATHDIRECTORY_H_INCLUDED
+#define FILESYSTEM_MULTIPATHDIRECTORY_H_INCLUDED
 #include "MultiPathDirectory.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 using namespace XFILE;
 using namespace std;

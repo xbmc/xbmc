@@ -22,12 +22,24 @@
  *
  */
 
+#ifndef FILESYSTEM_IDIRECTORY_H_INCLUDED
+#define FILESYSTEM_IDIRECTORY_H_INCLUDED
 #include "IDirectory.h"
+#endif
+
 
 extern "C"
 {
+#ifndef FILESYSTEM_LIB_LIBXDAAP_CLIENT_H_INCLUDED
+#define FILESYSTEM_LIB_LIBXDAAP_CLIENT_H_INCLUDED
 #include "lib/libXDAAP/client.h"
+#endif
+
+#ifndef FILESYSTEM_LIB_LIBXDAAP_PRIVATE_H_INCLUDED
+#define FILESYSTEM_LIB_LIBXDAAP_PRIVATE_H_INCLUDED
 #include "lib/libXDAAP/private.h"
+#endif
+
 }
 
 namespace XFILE

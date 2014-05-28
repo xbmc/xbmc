@@ -19,10 +19,26 @@
  *
  */
 
+#ifndef JSON_RPC_JSONRPC_H_INCLUDED
+#define JSON_RPC_JSONRPC_H_INCLUDED
 #include "JSONRPC.h"
+#endif
+
+#ifndef JSON_RPC_GUILIB_KEY_H_INCLUDED
+#define JSON_RPC_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef JSON_RPC_THREADS_CRITICALSECTION_H_INCLUDED
+#define JSON_RPC_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_STDSTRING_H_INCLUDED
+#define JSON_RPC_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 namespace JSONRPC
 {

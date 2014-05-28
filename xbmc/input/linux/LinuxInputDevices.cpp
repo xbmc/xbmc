@@ -27,7 +27,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef LINUX_SYSTEM_H_INCLUDED
+#define LINUX_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #if defined(HAS_LINUX_EVENTS)
 
 #if defined(HAS_LIBAMCODEC)

@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef FILESYSTEM_FILEREADERFILE_H_INCLUDED
+#define FILESYSTEM_FILEREADERFILE_H_INCLUDED
 #include "FileReaderFile.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
 
 using namespace XFILE;
 

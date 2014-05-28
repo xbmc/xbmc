@@ -20,7 +20,11 @@
 
 #pragma once
 
+#ifndef GUILIB_TEXTUREGL_H_INCLUDED
+#define GUILIB_TEXTUREGL_H_INCLUDED
 #include "TextureGL.h"
+#endif
+
 
 #if defined(HAS_OMXPLAYER)
 

@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef LIB_SETTINGCONDITIONS_H_INCLUDED
+#define LIB_SETTINGCONDITIONS_H_INCLUDED
 #include "SettingConditions.h"
+#endif
+
+#ifndef LIB_SETTINGDEFINITIONS_H_INCLUDED
+#define LIB_SETTINGDEFINITIONS_H_INCLUDED
 #include "SettingDefinitions.h"
+#endif
+
+#ifndef LIB_SETTINGSMANAGER_H_INCLUDED
+#define LIB_SETTINGSMANAGER_H_INCLUDED
 #include "SettingsManager.h"
+#endif
+
+#ifndef LIB_UTILS_STRINGUTILS_H_INCLUDED
+#define LIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef LIB_UTILS_XBMCTINYXML_H_INCLUDED
+#define LIB_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
 
 bool CSettingConditionItem::Deserialize(const TiXmlNode *node)
 {

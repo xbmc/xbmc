@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef DIALOGS_GUILIB_GUIDIALOG_H_INCLUDED
+#define DIALOGS_GUILIB_GUIDIALOG_H_INCLUDED
 #include "guilib/GUIDialog.h"
+#endif
+
+#ifndef DIALOGS_VIDEO_TELETEXT_H_INCLUDED
+#define DIALOGS_VIDEO_TELETEXT_H_INCLUDED
 #include "video/Teletext.h"
+#endif
+
 
 class CBaseTexture;
 

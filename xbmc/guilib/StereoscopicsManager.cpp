@@ -24,28 +24,112 @@
  */
 
 #include <stdlib.h>
+#ifndef GUILIB_STEREOSCOPICSMANAGER_H_INCLUDED
+#define GUILIB_STEREOSCOPICSMANAGER_H_INCLUDED
 #include "StereoscopicsManager.h"
+#endif
 
+
+#ifndef GUILIB_APPLICATION_H_INCLUDED
+#define GUILIB_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef GUILIB_APPLICATIONMESSENGER_H_INCLUDED
+#define GUILIB_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef GUILIB_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define GUILIB_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef GUILIB_DIALOGS_GUIDIALOGSELECT_H_INCLUDED
+#define GUILIB_DIALOGS_GUIDIALOGSELECT_H_INCLUDED
 #include "dialogs/GUIDialogSelect.h"
+#endif
+
+#ifndef GUILIB_FILEITEM_H_INCLUDED
+#define GUILIB_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef GUILIB_GUIINFOMANAGER_H_INCLUDED
+#define GUILIB_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef GUILIB_GUIUSERMESSAGES_H_INCLUDED
+#define GUILIB_GUIUSERMESSAGES_H_INCLUDED
 #include "GUIUserMessages.h"
+#endif
+
+#ifndef GUILIB_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define GUILIB_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef GUILIB_GUILIB_KEY_H_INCLUDED
+#define GUILIB_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef GUILIB_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define GUILIB_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef GUILIB_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define GUILIB_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef GUILIB_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
+#define GUILIB_SETTINGS_LIB_ISETTINGCALLBACK_H_INCLUDED
 #include "settings/lib/ISettingCallback.h"
+#endif
+
+#ifndef GUILIB_SETTINGS_LIB_SETTING_H_INCLUDED
+#define GUILIB_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef GUILIB_SETTINGS_SETTINGS_H_INCLUDED
+#define GUILIB_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef GUILIB_RENDERING_RENDERSYSTEM_H_INCLUDED
+#define GUILIB_RENDERING_RENDERSYSTEM_H_INCLUDED
 #include "rendering/RenderSystem.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef GUILIB_UTILS_REGEXP_H_INCLUDED
+#define GUILIB_UTILS_REGEXP_H_INCLUDED
 #include "utils/RegExp.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef GUILIB_URL_H_INCLUDED
+#define GUILIB_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define GUILIB_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
 
 
 struct StereoModeMap

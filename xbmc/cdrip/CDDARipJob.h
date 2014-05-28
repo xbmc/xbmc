@@ -19,9 +19,21 @@
 *
 */
 
+#ifndef CDRIP_UTILS_JOB_H_INCLUDED
+#define CDRIP_UTILS_JOB_H_INCLUDED
 #include "utils/Job.h"
+#endif
+
+#ifndef CDRIP_UTILS_STDSTRING_H_INCLUDED
+#define CDRIP_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef CDRIP_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
+#define CDRIP_MUSIC_TAGS_MUSICINFOTAG_H_INCLUDED
 #include "music/tags/MusicInfoTag.h"
+#endif
+
 
 class CEncoder;
 

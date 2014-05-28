@@ -20,13 +20,37 @@
 #include <wayland-client.h>
 #include <xkbcommon/xkbcommon.h>
 
+#ifndef WAYLAND_WINDOWING_DLLWAYLANDCLIENT_H_INCLUDED
+#define WAYLAND_WINDOWING_DLLWAYLANDCLIENT_H_INCLUDED
 #include "windowing/DllWaylandClient.h"
-#include "windowing/DllXKBCommon.h"
+#endif
 
+#ifndef WAYLAND_WINDOWING_DLLXKBCOMMON_H_INCLUDED
+#define WAYLAND_WINDOWING_DLLXKBCOMMON_H_INCLUDED
+#include "windowing/DllXKBCommon.h"
+#endif
+
+
+#ifndef WAYLAND_CURSORMANAGER_H_INCLUDED
+#define WAYLAND_CURSORMANAGER_H_INCLUDED
 #include "CursorManager.h"
+#endif
+
+#ifndef WAYLAND_EVENTLISTENER_H_INCLUDED
+#define WAYLAND_EVENTLISTENER_H_INCLUDED
 #include "EventListener.h"
+#endif
+
+#ifndef WAYLAND_POINTER_H_INCLUDED
+#define WAYLAND_POINTER_H_INCLUDED
 #include "Pointer.h"
+#endif
+
+#ifndef WAYLAND_POINTERPROCESSOR_H_INCLUDED
+#define WAYLAND_POINTERPROCESSOR_H_INCLUDED
 #include "PointerProcessor.h"
+#endif
+
 
 xbmc::PointerProcessor::PointerProcessor(IEventListener &listener,
                                          ICursorManager &manager) :

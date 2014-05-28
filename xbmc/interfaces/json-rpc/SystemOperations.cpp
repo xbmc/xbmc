@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef JSON_RPC_SYSTEMOPERATIONS_H_INCLUDED
+#define JSON_RPC_SYSTEMOPERATIONS_H_INCLUDED
 #include "SystemOperations.h"
+#endif
+
+#ifndef JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
+#define JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef JSON_RPC_INTERFACES_BUILTINS_H_INCLUDED
+#define JSON_RPC_INTERFACES_BUILTINS_H_INCLUDED
 #include "interfaces/Builtins.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_VARIANT_H_INCLUDED
+#define JSON_RPC_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef JSON_RPC_POWERMANAGEMENT_POWERMANAGER_H_INCLUDED
+#define JSON_RPC_POWERMANAGEMENT_POWERMANAGER_H_INCLUDED
 #include "powermanagement/PowerManager.h"
+#endif
+
 
 using namespace JSONRPC;
 

@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef PAPLAYER_SYSTEM_H_INCLUDED
+#define PAPLAYER_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef PAPLAYER_WAVCODEC_H_INCLUDED
+#define PAPLAYER_WAVCODEC_H_INCLUDED
 #include "WAVcodec.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_ENDIANSWAP_H_INCLUDED
+#define PAPLAYER_UTILS_ENDIANSWAP_H_INCLUDED
 #include "utils/EndianSwap.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_LOG_H_INCLUDED
+#define PAPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef PAPLAYER_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define PAPLAYER_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
 
 #if defined(TARGET_WINDOWS)
 #include <mmreg.h>

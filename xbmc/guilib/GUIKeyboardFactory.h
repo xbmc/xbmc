@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef GUILIB_GUIDIALOG_H_INCLUDED
+#define GUILIB_GUIDIALOG_H_INCLUDED
 #include "GUIDialog.h"
+#endif
+
+#ifndef GUILIB_UTILS_VARIANT_H_INCLUDED
+#define GUILIB_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef GUILIB_GUIKEYBOARD_H_INCLUDED
+#define GUILIB_GUIKEYBOARD_H_INCLUDED
 #include "GUIKeyboard.h"
+#endif
+
 
 class CGUIKeyboardFactory
 {

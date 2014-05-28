@@ -33,7 +33,11 @@
 // ****************************************************************************
 
 
+#ifndef GUILIB_TEXTURE_H_INCLUDED
+#define GUILIB_TEXTURE_H_INCLUDED
 #include "Texture.h" // for COLOR
+#endif
+
 
 #pragma pack(1)
 

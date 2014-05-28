@@ -21,7 +21,11 @@
  */
 #include <boost/noncopyable.hpp>
 
+#ifndef LINUX_INPUT_LINUX_KEYMAP_H_INCLUDED
+#define LINUX_INPUT_LINUX_KEYMAP_H_INCLUDED
 #include "input/linux/Keymap.h"
+#endif
+
 
 struct xkb_keymap;
 struct xkb_state;

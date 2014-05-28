@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef VIDEO_DVDVIDEOCODEC_H_INCLUDED
+#define VIDEO_DVDVIDEOCODEC_H_INCLUDED
 #include "DVDVideoCodec.h"
+#endif
+
 #include <CoreVideo/CoreVideo.h>
 
 class DllSwScale;

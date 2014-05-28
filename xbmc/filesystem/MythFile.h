@@ -19,15 +19,39 @@
  *
  */
 
+#ifndef FILESYSTEM_IFILE_H_INCLUDED
+#define FILESYSTEM_IFILE_H_INCLUDED
 #include "IFile.h"
+#endif
+
+#ifndef FILESYSTEM_ILIVETV_H_INCLUDED
+#define FILESYSTEM_ILIVETV_H_INCLUDED
 #include "ILiveTV.h"
+#endif
+
+#ifndef FILESYSTEM_MYTHSESSION_H_INCLUDED
+#define FILESYSTEM_MYTHSESSION_H_INCLUDED
 #include "MythSession.h"
+#endif
+
+#ifndef FILESYSTEM_XBDATETIME_H_INCLUDED
+#define FILESYSTEM_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef FILESYSTEM_VIDEO_VIDEOINFOTAG_H_INCLUDED
+#define FILESYSTEM_VIDEO_VIDEOINFOTAG_H_INCLUDED
 #include "video/VideoInfoTag.h"
+#endif
+
 #include <queue>
 
 extern "C" {
+#ifndef FILESYSTEM_CMYTH_INCLUDE_CMYTH_CMYTH_H_INCLUDED
+#define FILESYSTEM_CMYTH_INCLUDE_CMYTH_CMYTH_H_INCLUDED
 #include "cmyth/include/cmyth/cmyth.h"
+#endif
+
 }
 
 class DllLibCMyth;

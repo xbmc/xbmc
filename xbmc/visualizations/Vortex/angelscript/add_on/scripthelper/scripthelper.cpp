@@ -1,5 +1,9 @@
 #include <string.h>
+#ifndef SCRIPTHELPER_SCRIPTHELPER_H_INCLUDED
+#define SCRIPTHELPER_SCRIPTHELPER_H_INCLUDED
 #include "scripthelper.h"
+#endif
+
 #include <string>
 
 using namespace std;

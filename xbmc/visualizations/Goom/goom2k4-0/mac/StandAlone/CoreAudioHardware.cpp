@@ -7,7 +7,11 @@
  *
  */
 
+#ifndef STANDALONE_COREAUDIOHARDWARE_H_INCLUDED
+#define STANDALONE_COREAUDIOHARDWARE_H_INCLUDED
 #include "CoreAudioHardware.h"
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 

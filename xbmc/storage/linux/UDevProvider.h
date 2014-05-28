@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef LINUX_STORAGE_ISTORAGEPROVIDER_H_INCLUDED
+#define LINUX_STORAGE_ISTORAGEPROVIDER_H_INCLUDED
 #include "storage/IStorageProvider.h"
+#endif
+
 
 #ifdef HAVE_LIBUDEV
 

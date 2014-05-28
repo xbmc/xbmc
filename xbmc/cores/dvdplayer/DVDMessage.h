@@ -29,10 +29,26 @@
 #endif
 
 // include as less is possible to prevent dependencies
+#ifndef DVDPLAYER_SYSTEM_H_INCLUDED
+#define DVDPLAYER_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef DVDPLAYER_DVDDEMUXERS_DVDDEMUX_H_INCLUDED
+#define DVDPLAYER_DVDDEMUXERS_DVDDEMUX_H_INCLUDED
 #include "DVDDemuxers/DVDDemux.h"
+#endif
+
+#ifndef DVDPLAYER_DVDMESSAGETRACKER_H_INCLUDED
+#define DVDPLAYER_DVDMESSAGETRACKER_H_INCLUDED
 #include "DVDMessageTracker.h"
+#endif
+
+#ifndef DVDPLAYER_DVDRESOURCE_H_INCLUDED
+#define DVDPLAYER_DVDRESOURCE_H_INCLUDED
 #include "DVDResource.h"
+#endif
+
 
 #include <assert.h>
 

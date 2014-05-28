@@ -18,16 +18,48 @@
  *
  */
 
+#ifndef FILESYSTEM_SYSTEM_H_INCLUDED
+#define FILESYSTEM_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
 
+
+#ifndef FILESYSTEM_DAVFILE_H_INCLUDED
+#define FILESYSTEM_DAVFILE_H_INCLUDED
 #include "DAVFile.h"
+#endif
 
+
+#ifndef FILESYSTEM_DAVCOMMON_H_INCLUDED
+#define FILESYSTEM_DAVCOMMON_H_INCLUDED
 #include "DAVCommon.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_DLLLIBCURL_H_INCLUDED
+#define FILESYSTEM_DLLLIBCURL_H_INCLUDED
 #include "DllLibCurl.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_XBMCTINYXML_H_INCLUDED
+#define FILESYSTEM_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_REGEXP_H_INCLUDED
+#define FILESYSTEM_UTILS_REGEXP_H_INCLUDED
 #include "utils/RegExp.h"
+#endif
+
 
 using namespace XFILE;
 using namespace XCURL;

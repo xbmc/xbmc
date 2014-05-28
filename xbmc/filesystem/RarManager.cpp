@@ -18,22 +18,82 @@
  *
  */
 
+#ifndef FILESYSTEM_SYSTEM_H_INCLUDED
+#define FILESYSTEM_SYSTEM_H_INCLUDED
 #include "system.h"
-#include "RarManager.h"
-#include "Util.h"
-#include "utils/CharsetConverter.h"
-#include "utils/URIUtils.h"
-#include "threads/SingleLock.h"
-#include "Directory.h"
-#include "SpecialProtocol.h"
-#include "settings/AdvancedSettings.h"
-#include "FileItem.h"
-#include "utils/log.h"
-#include "filesystem/File.h"
+#endif
 
+#ifndef FILESYSTEM_RARMANAGER_H_INCLUDED
+#define FILESYSTEM_RARMANAGER_H_INCLUDED
+#include "RarManager.h"
+#endif
+
+#ifndef FILESYSTEM_UTIL_H_INCLUDED
+#define FILESYSTEM_UTIL_H_INCLUDED
+#include "Util.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define FILESYSTEM_UTILS_CHARSETCONVERTER_H_INCLUDED
+#include "utils/CharsetConverter.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
+#define FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
+#include "threads/SingleLock.h"
+#endif
+
+#ifndef FILESYSTEM_DIRECTORY_H_INCLUDED
+#define FILESYSTEM_DIRECTORY_H_INCLUDED
+#include "Directory.h"
+#endif
+
+#ifndef FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#include "SpecialProtocol.h"
+#endif
+
+#ifndef FILESYSTEM_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define FILESYSTEM_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
+#include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_FILESYSTEM_FILE_H_INCLUDED
+#define FILESYSTEM_FILESYSTEM_FILE_H_INCLUDED
+#include "filesystem/File.h"
+#endif
+
+
+#ifndef FILESYSTEM_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define FILESYSTEM_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef FILESYSTEM_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define FILESYSTEM_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 #include <set>
 

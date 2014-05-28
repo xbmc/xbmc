@@ -24,8 +24,16 @@
 #ifdef TARGET_WINDOWS
 #include "PlatformDefs.h"
 #endif
+#ifndef PERIPHERALS_UTILS_STDSTRING_H_INCLUDED
+#define PERIPHERALS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef PERIPHERALS_UTILS_STRINGUTILS_H_INCLUDED
+#define PERIPHERALS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 class CSetting;
 

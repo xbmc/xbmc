@@ -18,18 +18,66 @@
  *
  */
 
+#ifndef PROGRAMS_SYSTEM_H_INCLUDED
+#define PROGRAMS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef PROGRAMS_GUIWINDOWPROGRAMS_H_INCLUDED
+#define PROGRAMS_GUIWINDOWPROGRAMS_H_INCLUDED
 #include "GUIWindowPrograms.h"
+#endif
+
+#ifndef PROGRAMS_UTIL_H_INCLUDED
+#define PROGRAMS_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef PROGRAMS_ADDONS_GUIDIALOGADDONINFO_H_INCLUDED
+#define PROGRAMS_ADDONS_GUIDIALOGADDONINFO_H_INCLUDED
 #include "addons/GUIDialogAddonInfo.h"
+#endif
+
+#ifndef PROGRAMS_AUTORUN_H_INCLUDED
+#define PROGRAMS_AUTORUN_H_INCLUDED
 #include "Autorun.h"
+#endif
+
+#ifndef PROGRAMS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define PROGRAMS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef PROGRAMS_FILEITEM_H_INCLUDED
+#define PROGRAMS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef PROGRAMS_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define PROGRAMS_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
 #include "settings/MediaSourceSettings.h"
+#endif
+
+#ifndef PROGRAMS_GUILIB_KEY_H_INCLUDED
+#define PROGRAMS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef PROGRAMS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define PROGRAMS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef PROGRAMS_UTILS_LOG_H_INCLUDED
+#define PROGRAMS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef PROGRAMS_UTILS_STRINGUTILS_H_INCLUDED
+#define PROGRAMS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 #define CONTROL_BTNVIEWASICONS 2
 #define CONTROL_BTNSORTBY      3

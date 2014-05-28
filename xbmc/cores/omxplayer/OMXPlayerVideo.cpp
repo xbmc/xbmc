@@ -31,24 +31,84 @@
 #include <iostream>
 #include <sstream>
 
+#ifndef OMXPLAYER_OMXPLAYERVIDEO_H_INCLUDED
+#define OMXPLAYER_OMXPLAYERVIDEO_H_INCLUDED
 #include "OMXPlayerVideo.h"
+#endif
 
+
+#ifndef OMXPLAYER_LINUX_XMEMUTILS_H_INCLUDED
+#define OMXPLAYER_LINUX_XMEMUTILS_H_INCLUDED
 #include "linux/XMemUtils.h"
+#endif
+
+#ifndef OMXPLAYER_UTILS_BITSTREAMSTATS_H_INCLUDED
+#define OMXPLAYER_UTILS_BITSTREAMSTATS_H_INCLUDED
 #include "utils/BitstreamStats.h"
+#endif
 
+
+#ifndef OMXPLAYER_DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
+#define OMXPLAYER_DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
 #include "DVDDemuxers/DVDDemuxUtils.h"
-#include "DVDCodecs/DVDCodecUtils.h"
-#include "windowing/WindowingFactory.h"
-#include "DVDOverlayRenderer.h"
-#include "settings/DisplaySettings.h"
-#include "settings/Settings.h"
-#include "settings/MediaSettings.h"
-#include "cores/VideoRenderers/RenderFormats.h"
-#include "cores/VideoRenderers/RenderFlags.h"
-#include "guilib/GraphicContext.h"
+#endif
 
+#ifndef OMXPLAYER_DVDCODECS_DVDCODECUTILS_H_INCLUDED
+#define OMXPLAYER_DVDCODECS_DVDCODECUTILS_H_INCLUDED
+#include "DVDCodecs/DVDCodecUtils.h"
+#endif
+
+#ifndef OMXPLAYER_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define OMXPLAYER_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef OMXPLAYER_DVDOVERLAYRENDERER_H_INCLUDED
+#define OMXPLAYER_DVDOVERLAYRENDERER_H_INCLUDED
+#include "DVDOverlayRenderer.h"
+#endif
+
+#ifndef OMXPLAYER_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#define OMXPLAYER_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#include "settings/DisplaySettings.h"
+#endif
+
+#ifndef OMXPLAYER_SETTINGS_SETTINGS_H_INCLUDED
+#define OMXPLAYER_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef OMXPLAYER_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define OMXPLAYER_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#include "settings/MediaSettings.h"
+#endif
+
+#ifndef OMXPLAYER_CORES_VIDEORENDERERS_RENDERFORMATS_H_INCLUDED
+#define OMXPLAYER_CORES_VIDEORENDERERS_RENDERFORMATS_H_INCLUDED
+#include "cores/VideoRenderers/RenderFormats.h"
+#endif
+
+#ifndef OMXPLAYER_CORES_VIDEORENDERERS_RENDERFLAGS_H_INCLUDED
+#define OMXPLAYER_CORES_VIDEORENDERERS_RENDERFLAGS_H_INCLUDED
+#include "cores/VideoRenderers/RenderFlags.h"
+#endif
+
+#ifndef OMXPLAYER_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define OMXPLAYER_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#include "guilib/GraphicContext.h"
+#endif
+
+
+#ifndef OMXPLAYER_OMXPLAYER_H_INCLUDED
+#define OMXPLAYER_OMXPLAYER_H_INCLUDED
 #include "OMXPlayer.h"
+#endif
+
+#ifndef OMXPLAYER_LINUX_RBP_H_INCLUDED
+#define OMXPLAYER_LINUX_RBP_H_INCLUDED
 #include "linux/RBP.h"
+#endif
+
 
 using namespace RenderManager;
 

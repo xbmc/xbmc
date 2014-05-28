@@ -20,7 +20,11 @@
 
 #include <math.h>
 
+#ifndef UTILS_VECTOR_H_INCLUDED
+#define UTILS_VECTOR_H_INCLUDED
 #include "Vector.h"
+#endif
+
 
 CVector::CVector()
 {

@@ -18,12 +18,28 @@
  *
  */
 
+#ifndef OVERLAY_DVDOVERLAYCODECCC_H_INCLUDED
+#define OVERLAY_DVDOVERLAYCODECCC_H_INCLUDED
 #include "DVDOverlayCodecCC.h"
+#endif
+
+#ifndef OVERLAY_DVDOVERLAYTEXT_H_INCLUDED
+#define OVERLAY_DVDOVERLAYTEXT_H_INCLUDED
 #include "DVDOverlayText.h"
+#endif
+
+#ifndef OVERLAY_DVDCLOCK_H_INCLUDED
+#define OVERLAY_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h"
+#endif
+
 
 extern "C" {
+#ifndef OVERLAY_LIBSPUCC_CC_DECODER_H_INCLUDED
+#define OVERLAY_LIBSPUCC_CC_DECODER_H_INCLUDED
 #include "libspucc/cc_decoder.h"
+#endif
+
 }
 CDVDOverlayCodecCC::CDVDOverlayCodecCC() : CDVDOverlayCodec("Closed Caption")
 {

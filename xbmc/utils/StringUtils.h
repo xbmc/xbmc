@@ -33,8 +33,16 @@
 #include <stdint.h>
 #include <string>
 
+#ifndef UTILS_XBDATETIME_H_INCLUDED
+#define UTILS_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef UTILS_UTILS_STDSTRING_H_INCLUDED
+#define UTILS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 class StringUtils
 {

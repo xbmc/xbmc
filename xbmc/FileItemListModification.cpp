@@ -18,9 +18,17 @@
  *
  */
 
+#ifndef ROOT_FILEITEMLISTMODIFICATION_H_INCLUDED
+#define ROOT_FILEITEMLISTMODIFICATION_H_INCLUDED
 #include "FileItemListModification.h"
+#endif
 
+
+#ifndef ROOT_PLAYLISTS_SMARTPLAYLISTFILEITEMLISTMODIFIER_H_INCLUDED
+#define ROOT_PLAYLISTS_SMARTPLAYLISTFILEITEMLISTMODIFIER_H_INCLUDED
 #include "playlists/SmartPlaylistFileItemListModifier.h"
+#endif
+
 
 using namespace std;
 

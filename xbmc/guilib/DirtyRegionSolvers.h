@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef GUILIB_IDIRTYREGIONSOLVER_H_INCLUDED
+#define GUILIB_IDIRTYREGIONSOLVER_H_INCLUDED
 #include "IDirtyRegionSolver.h"
+#endif
+
 
 class CUnionDirtyRegionSolver : public IDirtyRegionSolver
 {

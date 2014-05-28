@@ -18,7 +18,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef LINUX_SYSTEM_H_INCLUDED
+#define LINUX_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #ifdef HAS_DBUS
 #include "DBusMessage.h"
 #include "utils/Variant.h"

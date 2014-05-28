@@ -18,30 +18,122 @@
  *
  */
 
+#ifndef WIN32_WIN32UTIL_H_INCLUDED
+#define WIN32_WIN32UTIL_H_INCLUDED
 #include "WIN32Util.h"
+#endif
+
+#ifndef WIN32_UTIL_H_INCLUDED
+#define WIN32_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef WIN32_UTILS_URIUTILS_H_INCLUDED
+#define WIN32_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef WIN32_STORAGE_CDIOSUPPORT_H_INCLUDED
+#define WIN32_STORAGE_CDIOSUPPORT_H_INCLUDED
 #include "storage/cdioSupport.h"
+#endif
+
+#ifndef WIN32_POWRPROF_H_INCLUDED
+#define WIN32_POWRPROF_H_INCLUDED
 #include "PowrProf.h"
+#endif
+
+#ifndef WIN32_WINDOWHELPER_H_INCLUDED
+#define WIN32_WINDOWHELPER_H_INCLUDED
 #include "WindowHelper.h"
+#endif
+
+#ifndef WIN32_APPLICATION_H_INCLUDED
+#define WIN32_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
 #include <shlobj.h>
+#ifndef WIN32_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define WIN32_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef WIN32_MY_NTDDSCSI_H_INCLUDED
+#define WIN32_MY_NTDDSCSI_H_INCLUDED
 #include "my_ntddscsi.h"
+#endif
+
+#ifndef WIN32_SETUPAPI_H_INCLUDED
+#define WIN32_SETUPAPI_H_INCLUDED
 #include "Setupapi.h"
+#endif
+
+#ifndef WIN32_STORAGE_MEDIAMANAGER_H_INCLUDED
+#define WIN32_STORAGE_MEDIAMANAGER_H_INCLUDED
 #include "storage/MediaManager.h"
+#endif
+
+#ifndef WIN32_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define WIN32_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
+#ifndef WIN32_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define WIN32_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef WIN32_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define WIN32_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef WIN32_UTILS_LOG_H_INCLUDED
+#define WIN32_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef WIN32_DLLPATHS_WIN32_H_INCLUDED
+#define WIN32_DLLPATHS_WIN32_H_INCLUDED
 #include "DllPaths_win32.h"
+#endif
+
+#ifndef WIN32_FILESYSTEM_FILE_H_INCLUDED
+#define WIN32_FILESYSTEM_FILE_H_INCLUDED
 #include "FileSystem/File.h"
+#endif
+
+#ifndef WIN32_UTILS_URIUTILS_H_INCLUDED
+#define WIN32_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef WIN32_POWERMANAGEMENT\POWERMANAGER_H_INCLUDED
+#define WIN32_POWERMANAGEMENT\POWERMANAGER_H_INCLUDED
 #include "powermanagement\PowerManager.h"
+#endif
+
+#ifndef WIN32_UTILS_SYSTEMINFO_H_INCLUDED
+#define WIN32_UTILS_SYSTEMINFO_H_INCLUDED
 #include "utils/SystemInfo.h"
+#endif
+
+#ifndef WIN32_UTILS_ENVIRONMENT_H_INCLUDED
+#define WIN32_UTILS_ENVIRONMENT_H_INCLUDED
 #include "utils/Environment.h"
+#endif
+
+#ifndef WIN32_UTILS_URIUTILS_H_INCLUDED
+#define WIN32_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef WIN32_UTILS_STRINGUTILS_H_INCLUDED
+#define WIN32_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 // default Broadcom registy bits (setup when installing a CrystalHD card)
 #define BC_REG_PATH       "Software\\Broadcom\\MediaPC"

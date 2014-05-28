@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef UTILS_JOB_H_INCLUDED
+#define UTILS_JOB_H_INCLUDED
 #include "Job.h"
+#endif
+
 
 enum ERecentlyAddedFlag
 {

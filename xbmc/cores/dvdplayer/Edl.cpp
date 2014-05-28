@@ -18,22 +18,74 @@
  *
  */
 
+#ifndef DVDPLAYER_EDL_H_INCLUDED
+#define DVDPLAYER_EDL_H_INCLUDED
 #include "Edl.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_STRINGUTILS_H_INCLUDED
+#define DVDPLAYER_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_URIUTILS_H_INCLUDED
+#define DVDPLAYER_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef DVDPLAYER_FILESYSTEM_FILE_H_INCLUDED
+#define DVDPLAYER_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef DVDPLAYER_FILESYSTEM_MYTHFILE_H_INCLUDED
+#define DVDPLAYER_FILESYSTEM_MYTHFILE_H_INCLUDED
 #include "filesystem/MythFile.h"
+#endif
+
+#ifndef DVDPLAYER_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define DVDPLAYER_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_LOG_H_INCLUDED
+#define DVDPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_XBMCTINYXML_H_INCLUDED
+#define DVDPLAYER_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef DVDPLAYER_PLATFORMDEFS_H_INCLUDED
+#define DVDPLAYER_PLATFORMDEFS_H_INCLUDED
 #include "PlatformDefs.h"
+#endif
+
+#ifndef DVDPLAYER_URL_H_INCLUDED
+#define DVDPLAYER_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef DVDPLAYER_PVR_RECORDINGS_PVRRECORDINGS_H_INCLUDED
+#define DVDPLAYER_PVR_RECORDINGS_PVRRECORDINGS_H_INCLUDED
 #include "pvr/recordings/PVRRecordings.h"
+#endif
+
+#ifndef DVDPLAYER_PVR_PVRMANAGER_H_INCLUDED
+#define DVDPLAYER_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
 
 extern "C"
 {
+#ifndef DVDPLAYER_CMYTH_INCLUDE_CMYTH_CMYTH_H_INCLUDED
+#define DVDPLAYER_CMYTH_INCLUDE_CMYTH_CMYTH_H_INCLUDED
 #include "cmyth/include/cmyth/cmyth.h"
+#endif
+
 }
 
 using namespace std;

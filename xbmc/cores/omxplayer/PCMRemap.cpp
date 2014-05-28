@@ -28,12 +28,36 @@
 #include <stdio.h>
 #include <math.h>
 
+#ifndef OMXPLAYER_MATHUTILS_H_INCLUDED
+#define OMXPLAYER_MATHUTILS_H_INCLUDED
 //#include "MathUtils.h"
+#endif
+
+#ifndef OMXPLAYER_PCMREMAP_H_INCLUDED
+#define OMXPLAYER_PCMREMAP_H_INCLUDED
 #include "PCMRemap.h"
+#endif
+
+#ifndef OMXPLAYER_UTILS_LOG_H_INCLUDED
+#define OMXPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef OMXPLAYER_UTILS_STRINGUTILS_H_INCLUDED
+#define OMXPLAYER_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef OMXPLAYER_SETTINGS_SETTINGS_H_INCLUDED
+#define OMXPLAYER_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef OMXPLAYER_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define OMXPLAYER_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
 #ifdef _WIN32
 #include "../win32/PlatformDefs.h"
 #endif

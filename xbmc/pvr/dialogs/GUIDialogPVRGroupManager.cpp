@@ -18,18 +18,62 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGPVRGROUPMANAGER_H_INCLUDED
+#define DIALOGS_GUIDIALOGPVRGROUPMANAGER_H_INCLUDED
 #include "GUIDialogPVRGroupManager.h"
-#include "FileItem.h"
-#include "guilib/GUIKeyboardFactory.h"
-#include "dialogs/GUIDialogOK.h"
-#include "dialogs/GUIDialogYesNo.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/StringUtils.h"
+#endif
 
+#ifndef DIALOGS_FILEITEM_H_INCLUDED
+#define DIALOGS_FILEITEM_H_INCLUDED
+#include "FileItem.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
+#define DIALOGS_GUILIB_GUIKEYBOARDFACTORY_H_INCLUDED
+#include "guilib/GUIKeyboardFactory.h"
+#endif
+
+#ifndef DIALOGS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define DIALOGS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef DIALOGS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define DIALOGS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_KEY_H_INCLUDED
+#define DIALOGS_GUILIB_KEY_H_INCLUDED
+#include "guilib/Key.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
+#define DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+
+#ifndef DIALOGS_PVR_PVRMANAGER_H_INCLUDED
+#define DIALOGS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef DIALOGS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define DIALOGS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#endif
+
 
 using namespace std;
 using namespace PVR;

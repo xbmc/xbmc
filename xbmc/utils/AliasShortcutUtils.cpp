@@ -25,7 +25,11 @@
 #else
 #endif
 
+#ifndef UTILS_ALIASSHORTCUTUTILS_H_INCLUDED
+#define UTILS_ALIASSHORTCUTUTILS_H_INCLUDED
 #include "AliasShortcutUtils.h"
+#endif
+
 
 bool IsAliasShortcut(const std::string& path)
 {

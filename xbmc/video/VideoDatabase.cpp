@@ -18,47 +18,211 @@
  *
  */
 
+#ifndef VIDEO_APPLICATIONMESSENGER_H_INCLUDED
+#define VIDEO_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef VIDEO_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define VIDEO_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
+#ifndef VIDEO_VIDEODATABASE_H_INCLUDED
+#define VIDEO_VIDEODATABASE_H_INCLUDED
 #include "VideoDatabase.h"
+#endif
+
+#ifndef VIDEO_VIDEO_WINDOWS_GUIWINDOWVIDEOBASE_H_INCLUDED
+#define VIDEO_VIDEO_WINDOWS_GUIWINDOWVIDEOBASE_H_INCLUDED
 #include "video/windows/GUIWindowVideoBase.h"
+#endif
+
+#ifndef VIDEO_UTILS_REGEXP_H_INCLUDED
+#define VIDEO_UTILS_REGEXP_H_INCLUDED
 #include "utils/RegExp.h"
+#endif
+
+#ifndef VIDEO_ADDONS_ADDONMANAGER_H_INCLUDED
+#define VIDEO_ADDONS_ADDONMANAGER_H_INCLUDED
 #include "addons/AddonManager.h"
+#endif
+
+#ifndef VIDEO_GUIINFOMANAGER_H_INCLUDED
+#define VIDEO_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef VIDEO_UTIL_H_INCLUDED
+#define VIDEO_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef VIDEO_UTILS_URIUTILS_H_INCLUDED
+#define VIDEO_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
+#ifndef VIDEO_UTILS_XMLUTILS_H_INCLUDED
+#define VIDEO_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef VIDEO_GUIPASSWORD_H_INCLUDED
+#define VIDEO_GUIPASSWORD_H_INCLUDED
 #include "GUIPassword.h"
+#endif
+
+#ifndef VIDEO_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
+#define VIDEO_FILESYSTEM_STACKDIRECTORY_H_INCLUDED
 #include "filesystem/StackDirectory.h"
+#endif
+
+#ifndef VIDEO_FILESYSTEM_MULTIPATHDIRECTORY_H_INCLUDED
+#define VIDEO_FILESYSTEM_MULTIPATHDIRECTORY_H_INCLUDED
 #include "filesystem/MultiPathDirectory.h"
+#endif
+
+#ifndef VIDEO_VIDEOINFOSCANNER_H_INCLUDED
+#define VIDEO_VIDEOINFOSCANNER_H_INCLUDED
 #include "VideoInfoScanner.h"
+#endif
+
+#ifndef VIDEO_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define VIDEO_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef VIDEO_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define VIDEO_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef VIDEO_FILESYSTEM_FILE_H_INCLUDED
+#define VIDEO_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
+#ifndef VIDEO_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define VIDEO_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef VIDEO_DIALOGS_GUIDIALOGEXTENDEDPROGRESSBAR_H_INCLUDED
+#define VIDEO_DIALOGS_GUIDIALOGEXTENDEDPROGRESSBAR_H_INCLUDED
 #include "dialogs/GUIDialogExtendedProgressBar.h"
+#endif
+
+#ifndef VIDEO_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
+#define VIDEO_DIALOGS_GUIDIALOGPROGRESS_H_INCLUDED
 #include "dialogs/GUIDialogProgress.h"
+#endif
+
+#ifndef VIDEO_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define VIDEO_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef VIDEO_FILEITEM_H_INCLUDED
+#define VIDEO_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef VIDEO_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define VIDEO_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_MEDIASETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_MEDIASETTINGS_H_INCLUDED
 #include "settings/MediaSettings.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
 #include "settings/MediaSourceSettings.h"
+#endif
+
+#ifndef VIDEO_SETTINGS_SETTINGS_H_INCLUDED
+#define VIDEO_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef VIDEO_UTILS_STRINGUTILS_H_INCLUDED
+#define VIDEO_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef VIDEO_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define VIDEO_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef VIDEO_UTILS_TIMEUTILS_H_INCLUDED
+#define VIDEO_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef VIDEO_UTILS_LOG_H_INCLUDED
+#define VIDEO_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef VIDEO_TEXTURECACHE_H_INCLUDED
+#define VIDEO_TEXTURECACHE_H_INCLUDED
 #include "TextureCache.h"
+#endif
+
+#ifndef VIDEO_ADDONS_ADDONINSTALLER_H_INCLUDED
+#define VIDEO_ADDONS_ADDONINSTALLER_H_INCLUDED
 #include "addons/AddonInstaller.h"
+#endif
+
+#ifndef VIDEO_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
+#define VIDEO_INTERFACES_ANNOUNCEMENTMANAGER_H_INCLUDED
 #include "interfaces/AnnouncementManager.h"
+#endif
+
+#ifndef VIDEO_DBWRAPPERS_DATASET_H_INCLUDED
+#define VIDEO_DBWRAPPERS_DATASET_H_INCLUDED
 #include "dbwrappers/dataset.h"
+#endif
+
+#ifndef VIDEO_UTILS_LABELFORMATTER_H_INCLUDED
+#define VIDEO_UTILS_LABELFORMATTER_H_INCLUDED
 #include "utils/LabelFormatter.h"
+#endif
+
+#ifndef VIDEO_XBDATETIME_H_INCLUDED
+#define VIDEO_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef VIDEO_URL_H_INCLUDED
+#define VIDEO_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef VIDEO_VIDEO_VIDEODBURL_H_INCLUDED
+#define VIDEO_VIDEO_VIDEODBURL_H_INCLUDED
 #include "video/VideoDbUrl.h"
+#endif
+
+#ifndef VIDEO_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
+#define VIDEO_PLAYLISTS_SMARTPLAYLIST_H_INCLUDED
 #include "playlists/SmartPlayList.h"
+#endif
+
+#ifndef VIDEO_UTILS_GROUPUTILS_H_INCLUDED
+#define VIDEO_UTILS_GROUPUTILS_H_INCLUDED
 #include "utils/GroupUtils.h"
+#endif
+
 
 using namespace std;
 using namespace dbiplus;

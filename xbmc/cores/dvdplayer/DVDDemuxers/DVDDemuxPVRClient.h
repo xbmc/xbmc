@@ -19,12 +19,28 @@
  *
  */
 
+#ifndef DVDDEMUXERS_DVDDEMUX_H_INCLUDED
+#define DVDDEMUXERS_DVDDEMUX_H_INCLUDED
 #include "DVDDemux.h"
-#include <map>
-#include "DllAvCodec.h"
-#include "DllAvFormat.h"
+#endif
 
+#include <map>
+#ifndef DVDDEMUXERS_DLLAVCODEC_H_INCLUDED
+#define DVDDEMUXERS_DLLAVCODEC_H_INCLUDED
+#include "DllAvCodec.h"
+#endif
+
+#ifndef DVDDEMUXERS_DLLAVFORMAT_H_INCLUDED
+#define DVDDEMUXERS_DLLAVFORMAT_H_INCLUDED
+#include "DllAvFormat.h"
+#endif
+
+
+#ifndef DVDDEMUXERS_PVR_ADDONS_PVRCLIENT_H_INCLUDED
+#define DVDDEMUXERS_PVR_ADDONS_PVRCLIENT_H_INCLUDED
 #include "pvr/addons/PVRClient.h"
+#endif
+
 
 class CDVDDemuxPVRClient;
 struct PVR_STREAM_PROPERTIES;

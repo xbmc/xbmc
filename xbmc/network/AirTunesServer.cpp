@@ -21,12 +21,20 @@
  *
  */
 
+#ifndef NETWORK_NETWORK_NETWORK_H_INCLUDED
+#define NETWORK_NETWORK_NETWORK_H_INCLUDED
 #include "network/Network.h"
+#endif
+
 #if !defined(TARGET_WINDOWS)
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 #endif
 
+#ifndef NETWORK_AIRTUNESSERVER_H_INCLUDED
+#define NETWORK_AIRTUNESSERVER_H_INCLUDED
 #include "AirTunesServer.h"
+#endif
+
 
 #ifdef HAS_AIRPLAY
 #include "network/AirPlayServer.h"

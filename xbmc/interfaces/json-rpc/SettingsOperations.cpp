@@ -18,16 +18,56 @@
  *
  */
 
+#ifndef JSON_RPC_SETTINGSOPERATIONS_H_INCLUDED
+#define JSON_RPC_SETTINGSOPERATIONS_H_INCLUDED
 #include "SettingsOperations.h"
+#endif
+
+#ifndef JSON_RPC_ADDONS_ADDON_H_INCLUDED
+#define JSON_RPC_ADDONS_ADDON_H_INCLUDED
 #include "addons/Addon.h"
+#endif
+
+#ifndef JSON_RPC_SETTINGS_SETTINGADDON_H_INCLUDED
+#define JSON_RPC_SETTINGS_SETTINGADDON_H_INCLUDED
 #include "settings/SettingAddon.h"
+#endif
+
+#ifndef JSON_RPC_SETTINGS_SETTINGCONTROL_H_INCLUDED
+#define JSON_RPC_SETTINGS_SETTINGCONTROL_H_INCLUDED
 #include "settings/SettingControl.h"
+#endif
+
+#ifndef JSON_RPC_SETTINGS_SETTINGPATH_H_INCLUDED
+#define JSON_RPC_SETTINGS_SETTINGPATH_H_INCLUDED
 #include "settings/SettingPath.h"
+#endif
+
+#ifndef JSON_RPC_SETTINGS_SETTINGS_H_INCLUDED
+#define JSON_RPC_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef JSON_RPC_SETTINGS_LIB_SETTING_H_INCLUDED
+#define JSON_RPC_SETTINGS_LIB_SETTING_H_INCLUDED
 #include "settings/lib/Setting.h"
+#endif
+
+#ifndef JSON_RPC_SETTINGS_LIB_SETTINGSECTION_H_INCLUDED
+#define JSON_RPC_SETTINGS_LIB_SETTINGSECTION_H_INCLUDED
 #include "settings/lib/SettingSection.h"
+#endif
+
+#ifndef JSON_RPC_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define JSON_RPC_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_STRINGUTILS_H_INCLUDED
+#define JSON_RPC_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace std;
 using namespace JSONRPC;

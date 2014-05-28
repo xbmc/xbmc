@@ -20,10 +20,22 @@
 #include <windows.h>
 #include <io.h>
 #include <vector>
+#ifndef VORTEXXBMC_VORTEX_H_INCLUDED
+#define VORTEXXBMC_VORTEX_H_INCLUDED
 #include "Vortex.h"
+#endif
 
+
+#ifndef VORTEXXBMC__________ADDONS_INCLUDE_XBMC_VIS_DLL_H_INCLUDED
+#define VORTEXXBMC__________ADDONS_INCLUDE_XBMC_VIS_DLL_H_INCLUDED
 #include "../../../addons/include/xbmc_vis_dll.h"
+#endif
+
+#ifndef VORTEXXBMC__________ADDONS_INCLUDE_XBMC_ADDON_CPP_DLL_H_INCLUDED
+#define VORTEXXBMC__________ADDONS_INCLUDE_XBMC_ADDON_CPP_DLL_H_INCLUDED
 #include "../../../addons/include/xbmc_addon_cpp_dll.h"
+#endif
+
 
 
 Vortex* g_Vortex = NULL;

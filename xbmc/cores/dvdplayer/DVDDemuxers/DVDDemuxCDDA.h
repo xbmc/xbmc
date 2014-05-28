@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef DVDDEMUXERS_DVDDEMUX_H_INCLUDED
+#define DVDDEMUXERS_DVDDEMUX_H_INCLUDED
 #include "DVDDemux.h"
+#endif
+
+#ifndef DVDDEMUXERS_UTILS_LOG_H_INCLUDED
+#define DVDDEMUXERS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #ifdef TARGET_WINDOWS
 #define __attribute__(dummy_val)

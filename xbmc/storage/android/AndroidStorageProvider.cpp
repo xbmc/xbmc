@@ -18,15 +18,47 @@
  *
  */
 
+#ifndef ANDROID_ANDROIDSTORAGEPROVIDER_H_INCLUDED
+#define ANDROID_ANDROIDSTORAGEPROVIDER_H_INCLUDED
 #include "AndroidStorageProvider.h"
-#include "android/activity/XBMCApp.h"
-#include "guilib/LocalizeStrings.h"
-#include "filesystem/File.h"
+#endif
 
+#ifndef ANDROID_ANDROID_ACTIVITY_XBMCAPP_H_INCLUDED
+#define ANDROID_ANDROID_ACTIVITY_XBMCAPP_H_INCLUDED
+#include "android/activity/XBMCApp.h"
+#endif
+
+#ifndef ANDROID_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define ANDROID_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef ANDROID_FILESYSTEM_FILE_H_INCLUDED
+#define ANDROID_FILESYSTEM_FILE_H_INCLUDED
+#include "filesystem/File.h"
+#endif
+
+
+#ifndef ANDROID_UTILS_LOG_H_INCLUDED
+#define ANDROID_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ANDROID_UTILS_REGEXP_H_INCLUDED
+#define ANDROID_UTILS_REGEXP_H_INCLUDED
 #include "utils/RegExp.h"
+#endif
+
+#ifndef ANDROID_UTILS_STRINGUTILS_H_INCLUDED
+#define ANDROID_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef ANDROID_UTILS_URIUTILS_H_INCLUDED
+#define ANDROID_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>

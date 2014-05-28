@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef DVDPLAYER_DVDMESSAGEQUEUE_H_INCLUDED
+#define DVDPLAYER_DVDMESSAGEQUEUE_H_INCLUDED
 #include "DVDMessageQueue.h"
+#endif
+
+#ifndef DVDPLAYER_DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
+#define DVDPLAYER_DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
 #include "DVDDemuxers/DVDDemuxUtils.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_LOG_H_INCLUDED
+#define DVDPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DVDPLAYER_THREADS_SINGLELOCK_H_INCLUDED
+#define DVDPLAYER_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef DVDPLAYER_DVDCLOCK_H_INCLUDED
+#define DVDPLAYER_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_MATHUTILS_H_INCLUDED
+#define DVDPLAYER_UTILS_MATHUTILS_H_INCLUDED
 #include "utils/MathUtils.h"
+#endif
+
 
 using namespace std;
 

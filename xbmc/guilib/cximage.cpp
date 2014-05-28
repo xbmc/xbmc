@@ -18,8 +18,16 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#ifndef GUILIB_CXIMAGE_H_INCLUDED
+#define GUILIB_CXIMAGE_H_INCLUDED
 #include "cximage.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 CXImage::CXImage(const std::string& strMimeType): m_strMimeType(strMimeType), m_thumbnailbuffer(NULL)
 {

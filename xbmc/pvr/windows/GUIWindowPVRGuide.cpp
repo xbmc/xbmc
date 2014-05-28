@@ -18,22 +18,82 @@
  *
  */
 
+#ifndef WINDOWS_GUIWINDOWPVRGUIDE_H_INCLUDED
+#define WINDOWS_GUIWINDOWPVRGUIDE_H_INCLUDED
 #include "GUIWindowPVRGuide.h"
+#endif
 
+
+#ifndef WINDOWS_APPLICATION_H_INCLUDED
+#define WINDOWS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef WINDOWS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define WINDOWS_DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_KEY_H_INCLUDED
+#define WINDOWS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef WINDOWS_PVR_PVRMANAGER_H_INCLUDED
+#define WINDOWS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef WINDOWS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define WINDOWS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#endif
+
+#ifndef WINDOWS_EPG_EPGCONTAINER_H_INCLUDED
+#define WINDOWS_EPG_EPGCONTAINER_H_INCLUDED
 #include "epg/EpgContainer.h"
+#endif
+
+#ifndef WINDOWS_PVR_WINDOWS_GUIWINDOWPVR_H_INCLUDED
+#define WINDOWS_PVR_WINDOWS_GUIWINDOWPVR_H_INCLUDED
 #include "pvr/windows/GUIWindowPVR.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef WINDOWS_THREADS_SINGLELOCK_H_INCLUDED
+#define WINDOWS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef WINDOWS_UTILS_LOG_H_INCLUDED
+#define WINDOWS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef WINDOWS_PVR_ADDONS_PVRCLIENTS_H_INCLUDED
+#define WINDOWS_PVR_ADDONS_PVRCLIENTS_H_INCLUDED
 #include "pvr/addons/PVRClients.h"
+#endif
+
+#ifndef WINDOWS_PVR_TIMERS_PVRTIMERS_H_INCLUDED
+#define WINDOWS_PVR_TIMERS_PVRTIMERS_H_INCLUDED
 #include "pvr/timers/PVRTimers.h"
+#endif
+
 
 using namespace PVR;
 using namespace EPG;

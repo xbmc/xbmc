@@ -23,7 +23,11 @@
 #include <string>
 #include <map>
 #include <vector>
+#ifndef NETWORK_UTILS_JOB_H_INCLUDED
+#define NETWORK_UTILS_JOB_H_INCLUDED
 #include "utils/Job.h"
+#endif
+
 
 class CCriticalSection;
 /// this class provides support for zeroconf

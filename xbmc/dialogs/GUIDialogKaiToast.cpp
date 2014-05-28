@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "GUIDialogKaiToast.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIIMAGE_H_INCLUDED
+#define DIALOGS_GUILIB_GUIIMAGE_H_INCLUDED
 #include "guilib/GUIImage.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIAUDIOMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIAUDIOMANAGER_H_INCLUDED
 #include "guilib/GUIAudioManager.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef DIALOGS_THREADS_SINGLELOCK_H_INCLUDED
+#define DIALOGS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef DIALOGS_UTILS_TIMEUTILS_H_INCLUDED
+#define DIALOGS_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
 
 #define POPUP_ICON                400
 #define POPUP_CAPTION_TEXT        401

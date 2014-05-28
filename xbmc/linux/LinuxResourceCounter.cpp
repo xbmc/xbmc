@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef LINUX_PLATFORMINCLUDE_H_INCLUDED
+#define LINUX_PLATFORMINCLUDE_H_INCLUDED
 #include "PlatformInclude.h"
+#endif
+
+#ifndef LINUX_LINUXRESOURCECOUNTER_H_INCLUDED
+#define LINUX_LINUXRESOURCECOUNTER_H_INCLUDED
 #include "LinuxResourceCounter.h"
+#endif
+
+#ifndef LINUX_UTILS_LOG_H_INCLUDED
+#define LINUX_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #include <errno.h>
 

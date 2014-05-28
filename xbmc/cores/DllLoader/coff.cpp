@@ -20,8 +20,16 @@
 
 #include <stdlib.h>
 #include <string.h>
+#ifndef DLLLOADER_COFF_H_INCLUDED
+#define DLLLOADER_COFF_H_INCLUDED
 #include "coff.h"
+#endif
+
+#ifndef DLLLOADER_COFFLDR_H_INCLUDED
+#define DLLLOADER_COFFLDR_H_INCLUDED
 #include "coffldr.h"
+#endif
+
 
 //#define DUMPING_DATA 1
 
@@ -29,7 +37,11 @@
 #pragma warning (disable:4806)
 #endif
 
+#ifndef DLLLOADER_UTILS_LOG_H_INCLUDED
+#define DLLLOADER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 #define printf(format, ...) CLog::Log(LOGDEBUG, format , ##__VA_ARGS__)
 
 const char *DATA_DIR_NAME[16] =

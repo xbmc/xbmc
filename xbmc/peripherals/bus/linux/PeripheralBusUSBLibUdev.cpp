@@ -18,13 +18,25 @@
  *
  */
 
+#ifndef LINUX_PERIPHERALBUSUSBLIBUDEV_H_INCLUDED
+#define LINUX_PERIPHERALBUSUSBLIBUDEV_H_INCLUDED
 #include "PeripheralBusUSBLibUdev.h"
+#endif
+
+#ifndef LINUX_PERIPHERALS_PERIPHERALS_H_INCLUDED
+#define LINUX_PERIPHERALS_PERIPHERALS_H_INCLUDED
 #include "peripherals/Peripherals.h"
+#endif
+
 extern "C" {
 #include <libudev.h>
 }
 #include <poll.h>
+#ifndef LINUX_UTILS_LOG_H_INCLUDED
+#define LINUX_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #ifndef USB_CLASS_PER_INTERFACE
 #define USB_CLASS_PER_INTERFACE         0

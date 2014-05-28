@@ -19,7 +19,11 @@
  */
 #pragma once
 
+#ifndef ADDONS_ADDON_H_INCLUDED
+#define ADDONS_ADDON_H_INCLUDED
 #include "Addon.h"
+#endif
+
 
 namespace ADDON
 {

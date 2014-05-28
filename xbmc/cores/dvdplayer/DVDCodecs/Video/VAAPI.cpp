@@ -17,7 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef VIDEO_SYSTEM_H_INCLUDED
+#define VIDEO_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 #ifdef HAVE_LIBVA
 #include "windowing/WindowingFactory.h"
 #include "VAAPI.h"

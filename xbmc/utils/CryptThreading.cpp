@@ -22,9 +22,21 @@
 #error "The threading options for the cryptography libraries don't need to be and shouldn't be set on Windows. Do not include CryptThreading in your windows project."
 #endif
 
+#ifndef UTILS_CRYPTTHREADING_H_INCLUDED
+#define UTILS_CRYPTTHREADING_H_INCLUDED
 #include "CryptThreading.h"
+#endif
+
+#ifndef UTILS_THREADS_THREAD_H_INCLUDED
+#define UTILS_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef UTILS_UTILS_LOG_H_INCLUDED
+#define UTILS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"

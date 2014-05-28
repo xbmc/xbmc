@@ -19,8 +19,16 @@
  */
 
 #pragma once
+#ifndef DVDDEMUXERS_DVDDEMUX_H_INCLUDED
+#define DVDDEMUXERS_DVDDEMUX_H_INCLUDED
 #include "DVDDemux.h"
+#endif
+
+#ifndef DVDDEMUXERS_FILESYSTEM_HTSPSESSION_H_INCLUDED
+#define DVDDEMUXERS_FILESYSTEM_HTSPSESSION_H_INCLUDED
 #include "filesystem/HTSPSession.h"
+#endif
+
 
 class CDVDInputStreamHTSP;
 typedef struct htsmsg htsmsg_t;

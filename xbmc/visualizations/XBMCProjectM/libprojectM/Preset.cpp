@@ -34,7 +34,11 @@
 #include "Parser.hpp"
 #include "ParamUtils.hpp"
 #include "InitCondUtils.hpp"
+#ifndef LIBPROJECTM_FATAL_H_INCLUDED
+#define LIBPROJECTM_FATAL_H_INCLUDED
 #include "fatal.h"
+#endif
+
 #include <iostream>
 #include <sstream>
 

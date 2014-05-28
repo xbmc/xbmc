@@ -22,9 +22,21 @@
 
 #include <vector>
 
+#ifndef CHANNELS_FILEITEM_H_INCLUDED
+#define CHANNELS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef CHANNELS_PVRCHANNELGROUP_H_INCLUDED
+#define CHANNELS_PVRCHANNELGROUP_H_INCLUDED
 #include "PVRChannelGroup.h"
+#endif
+
+#ifndef CHANNELS_THREADS_CRITICALSECTION_H_INCLUDED
+#define CHANNELS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 namespace PVR
 {

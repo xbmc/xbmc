@@ -18,13 +18,37 @@
  *
  */
 
+#ifndef DLLLOADER_DLLLOADER_H_INCLUDED
+#define DLLLOADER_DLLLOADER_H_INCLUDED
 #include "DllLoader.h"
+#endif
+
+#ifndef DLLLOADER_DLLLOADERCONTAINER_H_INCLUDED
+#define DLLLOADER_DLLLOADERCONTAINER_H_INCLUDED
 #include "DllLoaderContainer.h"
+#endif
+
+#ifndef DLLLOADER_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
+#define DLLLOADER_FILESYSTEM_SPECIALPROTOCOL_H_INCLUDED
 #include "filesystem/SpecialProtocol.h"
+#endif
+
+#ifndef DLLLOADER_DLL_TRACKER_H_INCLUDED
+#define DLLLOADER_DLL_TRACKER_H_INCLUDED
 #include "dll_tracker.h"
+#endif
+
+#ifndef DLLLOADER_DLL_UTIL_H_INCLUDED
+#define DLLLOADER_DLL_UTIL_H_INCLUDED
 #include "dll_util.h"
+#endif
+
 #include <limits>
+#ifndef DLLLOADER_UTILS_LOG_H_INCLUDED
+#define DLLLOADER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #ifdef TARGET_WINDOWS
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -32,7 +56,11 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #define fopen_utf8 fopen
 #endif
 
+#ifndef DLLLOADER_COMMONS_EXCEPTION_H_INCLUDED
+#define DLLLOADER_COMMONS_EXCEPTION_H_INCLUDED
 #include "commons/Exception.h"
+#endif
+
 
 #define DLL_PROCESS_DETACH   0
 #define DLL_PROCESS_ATTACH   1

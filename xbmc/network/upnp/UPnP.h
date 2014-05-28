@@ -23,7 +23,11 @@
  */
 #pragma once
 
+#ifndef UPNP_UTILS_STDSTRING_H_INCLUDED
+#define UPNP_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 class PLT_UPnP;
 class PLT_SyncMediaBrowser;

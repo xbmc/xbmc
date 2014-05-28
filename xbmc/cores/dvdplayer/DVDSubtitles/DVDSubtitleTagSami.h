@@ -21,7 +21,11 @@
  */
 
 #include <stdio.h>
+#ifndef DVDSUBTITLES_UTILS_STDSTRING_H_INCLUDED
+#define DVDSUBTITLES_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 
 #define FLAG_BOLD   0
 #define FLAG_ITALIC 1

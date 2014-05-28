@@ -18,17 +18,33 @@
  * See 'LICENSE.txt' included within this release
  *
  */
+#ifndef LIBPROJECTM_WIPEMALLOC_H_INCLUDED
+#define LIBPROJECTM_WIPEMALLOC_H_INCLUDED
 #include "wipemalloc.h"
+#endif
 
+
+#ifndef LIBPROJECTM_FATAL_H_INCLUDED
+#define LIBPROJECTM_FATAL_H_INCLUDED
 #include "fatal.h"
+#endif
+
 #include "Common.hpp"
+#ifndef LIBPROJECTM_COMPARE_H_INCLUDED
+#define LIBPROJECTM_COMPARE_H_INCLUDED
 #include "compare.h"
+#endif
+
 #ifdef WIN32
 #include "win32-dirent.h"
 #define CMAKE_INSTALL_PREFIX  ""
 #endif
 
+#ifndef LIBPROJECTM_TIMER_H_INCLUDED
+#define LIBPROJECTM_TIMER_H_INCLUDED
 #include "timer.h"
+#endif
+
 #include <iostream>
 #ifdef LINUX
 #include "time.h"
@@ -49,7 +65,11 @@
 #include "Preset.hpp"
 #include "PerPixelEqn.hpp"
 #include "PresetMerge.hpp"
+#ifndef LIBPROJECTM_MENU_H_INCLUDED
+#define LIBPROJECTM_MENU_H_INCLUDED
 //#include "menu.h"
+#endif
+
 #include "PCM.hpp"                    //Sound data handler (buffering, FFT, etc.)
 #include "CustomWave.hpp"
 #include "CustomShape.hpp"
@@ -65,7 +85,11 @@
 #ifdef USE_THREADS
 #include "pthread.h"
 #endif
+#ifndef LIBPROJECTM_SECTIONLOCK_H_INCLUDED
+#define LIBPROJECTM_SECTIONLOCK_H_INCLUDED
 #include "SectionLock.h"
+#endif
+
 /*
 DLLEXPORT projectM::projectM ( int gx, int gy, int fps, int texsize, int width, int height, std::string preset_url,std::string title_fonturl, std::string title_menuurl ) :beatDetect ( 0 ),  renderer ( 0 ), settings.presetURL ( preset_url ), title_fontURL ( title_fonturl ), menu_fontURL ( menu_fontURL ), smoothFrame ( 0 ), m_presetQueuePos(0)
 {

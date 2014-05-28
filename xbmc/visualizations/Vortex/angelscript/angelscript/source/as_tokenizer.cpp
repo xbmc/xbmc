@@ -35,9 +35,21 @@
 // This class identifies tokens from the script code
 //
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
+#ifndef SOURCE_AS_TOKENIZER_H_INCLUDED
+#define SOURCE_AS_TOKENIZER_H_INCLUDED
 #include "as_tokenizer.h"
+#endif
+
+#ifndef SOURCE_AS_TOKENDEF_H_INCLUDED
+#define SOURCE_AS_TOKENDEF_H_INCLUDED
 #include "as_tokendef.h"
+#endif
+
 
 #if !defined(AS_NO_MEMORY_H)
 #include <memory.h>

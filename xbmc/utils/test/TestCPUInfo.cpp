@@ -18,15 +18,31 @@
  *
  */
 
+#ifndef TEST_UTILS_CPUINFO_H_INCLUDED
+#define TEST_UTILS_CPUINFO_H_INCLUDED
 #include "utils/CPUInfo.h"
+#endif
+
+#ifndef TEST_TEMPERATURE_H_INCLUDED
+#define TEST_TEMPERATURE_H_INCLUDED
 #include "Temperature.h"
+#endif
+
+#ifndef TEST_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define TEST_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
 
 #ifdef TARGET_POSIX
 #include "../linux/XTimeUtils.h"
 #endif
 
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 TEST(TestCPUInfo, getUsedPercentage)
 {

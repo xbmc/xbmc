@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef ROOT_GUILIB_IMSGTARGETCALLBACK_H_INCLUDED
+#define ROOT_GUILIB_IMSGTARGETCALLBACK_H_INCLUDED
 #include "guilib/IMsgTargetCallback.h"
+#endif
+
 #include <boost/shared_ptr.hpp>
 
 #define PLAYLIST_NONE    -1

@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef GUILIB_IMAGEFACTORY_H_INCLUDED
+#define GUILIB_IMAGEFACTORY_H_INCLUDED
 #include "imagefactory.h"
+#endif
+
+#ifndef GUILIB_GUILIB_JPEGIO_H_INCLUDED
+#define GUILIB_GUILIB_JPEGIO_H_INCLUDED
 #include "guilib/JpegIO.h"
+#endif
+
+#ifndef GUILIB_GUILIB_CXIMAGE_H_INCLUDED
+#define GUILIB_GUILIB_CXIMAGE_H_INCLUDED
 #include "guilib/cximage.h"
+#endif
+
+#ifndef GUILIB_UTILS_MIME_H_INCLUDED
+#define GUILIB_UTILS_MIME_H_INCLUDED
 #include "utils/Mime.h"
+#endif
+
 
 IImage* ImageFactory::CreateLoader(const std::string& strFileName)
 {

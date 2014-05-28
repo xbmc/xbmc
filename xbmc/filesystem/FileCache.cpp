@@ -18,18 +18,62 @@
  *
  */
 
+#ifndef FILESYSTEM_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define FILESYSTEM_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
-#include "utils/AutoPtrHandle.h"
-#include "FileCache.h"
-#include "threads/Thread.h"
-#include "File.h"
-#include "URL.h"
+#endif
 
+#ifndef FILESYSTEM_UTILS_AUTOPTRHANDLE_H_INCLUDED
+#define FILESYSTEM_UTILS_AUTOPTRHANDLE_H_INCLUDED
+#include "utils/AutoPtrHandle.h"
+#endif
+
+#ifndef FILESYSTEM_FILECACHE_H_INCLUDED
+#define FILESYSTEM_FILECACHE_H_INCLUDED
+#include "FileCache.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_THREAD_H_INCLUDED
+#define FILESYSTEM_THREADS_THREAD_H_INCLUDED
+#include "threads/Thread.h"
+#endif
+
+#ifndef FILESYSTEM_FILE_H_INCLUDED
+#define FILESYSTEM_FILE_H_INCLUDED
+#include "File.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
+#include "URL.h"
+#endif
+
+
+#ifndef FILESYSTEM_CIRCULARCACHE_H_INCLUDED
+#define FILESYSTEM_CIRCULARCACHE_H_INCLUDED
 #include "CircularCache.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
+#define FILESYSTEM_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_TIMEUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef FILESYSTEM_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define FILESYSTEM_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
 
 using namespace AUTOPTR;
 using namespace XFILE;

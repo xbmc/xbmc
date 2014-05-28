@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef LEGACY_LANGUAGEHOOK_H_INCLUDED
+#define LEGACY_LANGUAGEHOOK_H_INCLUDED
 #include "LanguageHook.h"
+#endif
+
+#ifndef LEGACY_THREADS_THREAD_H_INCLUDED
+#define LEGACY_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef LEGACY_THREADS_THREADLOCAL_H_INCLUDED
+#define LEGACY_THREADS_THREADLOCAL_H_INCLUDED
 #include "threads/ThreadLocal.h"
+#endif
+
+#ifndef LEGACY_UTILS_GLOBALSHANDLING_H_INCLUDED
+#define LEGACY_UTILS_GLOBALSHANDLING_H_INCLUDED
 #include "utils/GlobalsHandling.h"
+#endif
+
 
 namespace XBMCAddon
 {

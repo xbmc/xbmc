@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef ROOT_MUSIC_SONG_H_INCLUDED
+#define ROOT_MUSIC_SONG_H_INCLUDED
 #include "music/Song.h"
+#endif
+
+#ifndef ROOT_FILESYSTEM_FILE_H_INCLUDED
+#define ROOT_FILESYSTEM_FILE_H_INCLUDED
 #include "filesystem/File.h"
+#endif
+
 
 #define MAX_PATH_SIZE 1024
 

@@ -18,10 +18,22 @@
  *
  */
 
+#ifndef TEST_UTILS_HTTPPARSER_H_INCLUDED
+#define TEST_UTILS_HTTPPARSER_H_INCLUDED
 #include "utils/HttpParser.h"
-#include "utils/StdString.h"
+#endif
 
+#ifndef TEST_UTILS_STDSTRING_H_INCLUDED
+#define TEST_UTILS_STDSTRING_H_INCLUDED
+#include "utils/StdString.h"
+#endif
+
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 TEST(TestHttpParser, General)
 {

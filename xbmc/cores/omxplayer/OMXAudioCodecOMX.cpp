@@ -18,13 +18,25 @@
  *
  */
 
+#ifndef OMXPLAYER_OMXAUDIOCODECOMX_H_INCLUDED
+#define OMXPLAYER_OMXAUDIOCODECOMX_H_INCLUDED
 #include "OMXAudioCodecOMX.h"
+#endif
+
 #ifdef TARGET_LINUX
 #include "XMemUtils.h"
 #endif
+#ifndef OMXPLAYER_UTILS_LOG_H_INCLUDED
+#define OMXPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
 
+
+#ifndef OMXPLAYER_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define OMXPLAYER_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
 
 COMXAudioCodecOMX::COMXAudioCodecOMX()
 {

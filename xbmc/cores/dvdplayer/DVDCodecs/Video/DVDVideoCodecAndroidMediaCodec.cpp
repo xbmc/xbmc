@@ -26,25 +26,93 @@
 // SDK16+ which is 4.1 Jellybean and above.
 //
 
+#ifndef VIDEO_DVDVIDEOCODECANDROIDMEDIACODEC_H_INCLUDED
+#define VIDEO_DVDVIDEOCODECANDROIDMEDIACODEC_H_INCLUDED
 #include "DVDVideoCodecAndroidMediaCodec.h"
+#endif
 
+
+#ifndef VIDEO_APPLICATION_H_INCLUDED
+#define VIDEO_APPLICATION_H_INCLUDED
 #include "Application.h"
-#include "ApplicationMessenger.h"
-#include "DVDClock.h"
-#include "threads/Atomics.h"
-#include "utils/BitstreamConverter.h"
-#include "utils/CPUInfo.h"
-#include "utils/log.h"
+#endif
 
+#ifndef VIDEO_APPLICATIONMESSENGER_H_INCLUDED
+#define VIDEO_APPLICATIONMESSENGER_H_INCLUDED
+#include "ApplicationMessenger.h"
+#endif
+
+#ifndef VIDEO_DVDCLOCK_H_INCLUDED
+#define VIDEO_DVDCLOCK_H_INCLUDED
+#include "DVDClock.h"
+#endif
+
+#ifndef VIDEO_THREADS_ATOMICS_H_INCLUDED
+#define VIDEO_THREADS_ATOMICS_H_INCLUDED
+#include "threads/Atomics.h"
+#endif
+
+#ifndef VIDEO_UTILS_BITSTREAMCONVERTER_H_INCLUDED
+#define VIDEO_UTILS_BITSTREAMCONVERTER_H_INCLUDED
+#include "utils/BitstreamConverter.h"
+#endif
+
+#ifndef VIDEO_UTILS_CPUINFO_H_INCLUDED
+#define VIDEO_UTILS_CPUINFO_H_INCLUDED
+#include "utils/CPUInfo.h"
+#endif
+
+#ifndef VIDEO_UTILS_LOG_H_INCLUDED
+#define VIDEO_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+
+#ifndef VIDEO_ANDROID_JNI_BYTEBUFFER_H_INCLUDED
+#define VIDEO_ANDROID_JNI_BYTEBUFFER_H_INCLUDED
 #include "android/jni/ByteBuffer.h"
+#endif
+
+#ifndef VIDEO_ANDROID_JNI_MEDIACODEC_H_INCLUDED
+#define VIDEO_ANDROID_JNI_MEDIACODEC_H_INCLUDED
 #include "android/jni/MediaCodec.h"
+#endif
+
+#ifndef VIDEO_ANDROID_JNI_MEDIACRYPTO_H_INCLUDED
+#define VIDEO_ANDROID_JNI_MEDIACRYPTO_H_INCLUDED
 #include "android/jni/MediaCrypto.h"
+#endif
+
+#ifndef VIDEO_ANDROID_JNI_MEDIAFORMAT_H_INCLUDED
+#define VIDEO_ANDROID_JNI_MEDIAFORMAT_H_INCLUDED
 #include "android/jni/MediaFormat.h"
+#endif
+
+#ifndef VIDEO_ANDROID_JNI_MEDIACODECLIST_H_INCLUDED
+#define VIDEO_ANDROID_JNI_MEDIACODECLIST_H_INCLUDED
 #include "android/jni/MediaCodecList.h"
+#endif
+
+#ifndef VIDEO_ANDROID_JNI_MEDIACODECINFO_H_INCLUDED
+#define VIDEO_ANDROID_JNI_MEDIACODECINFO_H_INCLUDED
 #include "android/jni/MediaCodecInfo.h"
+#endif
+
+#ifndef VIDEO_ANDROID_JNI_SURFACE_H_INCLUDED
+#define VIDEO_ANDROID_JNI_SURFACE_H_INCLUDED
 #include "android/jni/Surface.h"
+#endif
+
+#ifndef VIDEO_ANDROID_JNI_SURFACETEXTURE_H_INCLUDED
+#define VIDEO_ANDROID_JNI_SURFACETEXTURE_H_INCLUDED
 #include "android/jni/SurfaceTexture.h"
+#endif
+
+#ifndef VIDEO_ANDROID_ACTIVITY_ANDROIDFEATURES_H_INCLUDED
+#define VIDEO_ANDROID_ACTIVITY_ANDROIDFEATURES_H_INCLUDED
 #include "android/activity/AndroidFeatures.h"
+#endif
+
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>

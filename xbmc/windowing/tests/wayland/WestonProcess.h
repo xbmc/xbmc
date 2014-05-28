@@ -19,7 +19,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef WAYLAND_SYSTEM_H_INCLUDED
+#define WAYLAND_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #include <boost/noncopyable.hpp>
 

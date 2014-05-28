@@ -20,11 +20,31 @@
  *
  */
 
+#ifndef FILESYSTEM_SYSTEM_H_INCLUDED
+#define FILESYSTEM_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef FILESYSTEM_HDFILE_H_INCLUDED
+#define FILESYSTEM_HDFILE_H_INCLUDED
 #include "HDFile.h"
+#endif
+
+#ifndef FILESYSTEM_UTIL_H_INCLUDED
+#define FILESYSTEM_UTIL_H_INCLUDED
 #include "Util.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
 #include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_ALIASSHORTCUTUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_ALIASSHORTCUTUTILS_H_INCLUDED
 #include "utils/AliasShortcutUtils.h"
+#endif
+
 #ifdef TARGET_POSIX
 #include "XHandle.h"
 #endif
@@ -39,7 +59,11 @@
 #include "utils/URIUtils.h"
 #include "win32/WIN32Util.h"
 #endif
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #include <algorithm>
 

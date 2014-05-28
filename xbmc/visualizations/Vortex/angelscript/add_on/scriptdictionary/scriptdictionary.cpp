@@ -1,6 +1,10 @@
 #include <assert.h>
 #include <string.h>
+#ifndef SCRIPTDICTIONARY_SCRIPTDICTIONARY_H_INCLUDED
+#define SCRIPTDICTIONARY_SCRIPTDICTIONARY_H_INCLUDED
 #include "scriptdictionary.h"
+#endif
+
 
 BEGIN_AS_NAMESPACE
 

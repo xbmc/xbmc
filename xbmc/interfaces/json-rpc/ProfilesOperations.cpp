@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef JSON_RPC_PROFILESOPERATIONS_H_INCLUDED
+#define JSON_RPC_PROFILESOPERATIONS_H_INCLUDED
 #include "ProfilesOperations.h"
+#endif
+
+#ifndef JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
+#define JSON_RPC_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef JSON_RPC_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define JSON_RPC_GUILIB_LOCALIZESTRINGS_H_INCLUDED
 #include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef JSON_RPC_PROFILES_PROFILESMANAGER_H_INCLUDED
+#define JSON_RPC_PROFILES_PROFILESMANAGER_H_INCLUDED
 #include "profiles/ProfilesManager.h"
+#endif
+
+#ifndef JSON_RPC_UTILS_MD5_H_INCLUDED
+#define JSON_RPC_UTILS_MD5_H_INCLUDED
 #include "utils/md5.h"
+#endif
+
 
 using namespace JSONRPC;
 

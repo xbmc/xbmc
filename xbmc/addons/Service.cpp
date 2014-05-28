@@ -17,11 +17,31 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef ADDONS_SERVICE_H_INCLUDED
+#define ADDONS_SERVICE_H_INCLUDED
 #include "Service.h"
+#endif
+
+#ifndef ADDONS_ADDONMANAGER_H_INCLUDED
+#define ADDONS_ADDONMANAGER_H_INCLUDED
 #include "AddonManager.h"
+#endif
+
+#ifndef ADDONS_INTERFACES_GENERIC_SCRIPTINVOCATIONMANAGER_H_INCLUDED
+#define ADDONS_INTERFACES_GENERIC_SCRIPTINVOCATIONMANAGER_H_INCLUDED
 #include "interfaces/generic/ScriptInvocationManager.h"
+#endif
+
+#ifndef ADDONS_UTILS_LOG_H_INCLUDED
+#define ADDONS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ADDONS_SYSTEM_H_INCLUDED
+#define ADDONS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 using namespace std;
 

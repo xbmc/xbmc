@@ -29,7 +29,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#ifndef LIBPROJECTM_WIPEMALLOC_H_INCLUDED
+#define LIBPROJECTM_WIPEMALLOC_H_INCLUDED
 #include "wipemalloc.h"
+#endif
+
 
 #include "Common.hpp"
 #include "PCM.hpp"

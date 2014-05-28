@@ -19,7 +19,11 @@
  *
  */
 
+#ifndef SINKS_SYSTEM_H_INCLUDED
+#define SINKS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #if defined(TARGET_RASPBERRY_PI)
 

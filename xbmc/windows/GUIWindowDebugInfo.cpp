@@ -18,21 +18,81 @@
  *
  */
 
+#ifndef WINDOWS_GUIWINDOWDEBUGINFO_H_INCLUDED
+#define WINDOWS_GUIWINDOWDEBUGINFO_H_INCLUDED
 #include "GUIWindowDebugInfo.h"
+#endif
+
+#ifndef WINDOWS_INPUT_MOUSESTAT_H_INCLUDED
+#define WINDOWS_INPUT_MOUSESTAT_H_INCLUDED
 #include "input/MouseStat.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef WINDOWS_ADDONS_SKIN_H_INCLUDED
+#define WINDOWS_ADDONS_SKIN_H_INCLUDED
 #include "addons/Skin.h"
+#endif
+
+#ifndef WINDOWS_UTILS_CPUINFO_H_INCLUDED
+#define WINDOWS_UTILS_CPUINFO_H_INCLUDED
 #include "utils/CPUInfo.h"
+#endif
+
+#ifndef WINDOWS_UTILS_LOG_H_INCLUDED
+#define WINDOWS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef WINDOWS_INPUT_BUTTONTRANSLATOR_H_INCLUDED
+#define WINDOWS_INPUT_BUTTONTRANSLATOR_H_INCLUDED
 #include "input/ButtonTranslator.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUICONTROLFACTORY_H_INCLUDED
+#define WINDOWS_GUILIB_GUICONTROLFACTORY_H_INCLUDED
 #include "guilib/GUIControlFactory.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIFONTMANAGER_H_INCLUDED
+#define WINDOWS_GUILIB_GUIFONTMANAGER_H_INCLUDED
 #include "guilib/GUIFontManager.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUITEXTLAYOUT_H_INCLUDED
+#define WINDOWS_GUILIB_GUITEXTLAYOUT_H_INCLUDED
 #include "guilib/GUITextLayout.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUICONTROLPROFILER_H_INCLUDED
+#define WINDOWS_GUILIB_GUICONTROLPROFILER_H_INCLUDED
 #include "guilib/GUIControlProfiler.h"
+#endif
+
+#ifndef WINDOWS_GUIINFOMANAGER_H_INCLUDED
+#define WINDOWS_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef WINDOWS_UTILS_VARIANT_H_INCLUDED
+#define WINDOWS_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
+#ifndef WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
+#define WINDOWS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 #include <climits>
 

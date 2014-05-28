@@ -37,9 +37,21 @@
  * number of the tag reported by the PVR backend and can not be played!
  */
 
+#ifndef TIMERS_XBDATETIME_H_INCLUDED
+#define TIMERS_XBDATETIME_H_INCLUDED
 #include "XBDateTime.h"
+#endif
+
+#ifndef TIMERS_ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
+#define TIMERS_ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
 #include "addons/include/xbmc_pvr_types.h"
+#endif
+
+#ifndef TIMERS_UTILS_ISERIALIZABLE_H_INCLUDED
+#define TIMERS_UTILS_ISERIALIZABLE_H_INCLUDED
 #include "utils/ISerializable.h"
+#endif
+
 
 #include <boost/shared_ptr.hpp>
 

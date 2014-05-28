@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef TEST_TESTHELPERS_H_INCLUDED
+#define TEST_TESTHELPERS_H_INCLUDED
 #include "TestHelpers.h"
+#endif
+
+#ifndef TEST_THREADS_ATOMICS_H_INCLUDED
+#define TEST_THREADS_ATOMICS_H_INCLUDED
 #include "threads/Atomics.h"
+#endif
+
 
 #include <boost/shared_array.hpp>
 #include <iostream>

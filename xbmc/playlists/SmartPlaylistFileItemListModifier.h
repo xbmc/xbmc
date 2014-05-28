@@ -21,7 +21,11 @@
 
 #include <string>
 
+#ifndef PLAYLISTS_IFILEITEMLISTMODIFIER_H_INCLUDED
+#define PLAYLISTS_IFILEITEMLISTMODIFIER_H_INCLUDED
 #include "IFileItemListModifier.h"
+#endif
+
 
 class CSmartPlaylistFileItemListModifier : public IFileItemListModifier
 {

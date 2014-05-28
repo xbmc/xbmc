@@ -20,11 +20,27 @@
 
 #pragma once
 
+#ifndef LEGACY_PLAYLISTS_PLAYLIST_H_INCLUDED
+#define LEGACY_PLAYLISTS_PLAYLIST_H_INCLUDED
 #include "playlists/PlayList.h"
-#include "AddonClass.h"
-#include "Exception.h"
+#endif
 
+#ifndef LEGACY_ADDONCLASS_H_INCLUDED
+#define LEGACY_ADDONCLASS_H_INCLUDED
+#include "AddonClass.h"
+#endif
+
+#ifndef LEGACY_EXCEPTION_H_INCLUDED
+#define LEGACY_EXCEPTION_H_INCLUDED
+#include "Exception.h"
+#endif
+
+
+#ifndef LEGACY_LISTITEM_H_INCLUDED
+#define LEGACY_LISTITEM_H_INCLUDED
 #include "ListItem.h"
+#endif
+
 
 namespace XBMCAddon
 {

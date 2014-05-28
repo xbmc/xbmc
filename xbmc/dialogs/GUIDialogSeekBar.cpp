@@ -18,13 +18,41 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGSEEKBAR_H_INCLUDED
+#define DIALOGS_GUIDIALOGSEEKBAR_H_INCLUDED
 #include "GUIDialogSeekBar.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUISLIDERCONTROL_H_INCLUDED
+#define DIALOGS_GUILIB_GUISLIDERCONTROL_H_INCLUDED
 #include "guilib/GUISliderControl.h"
+#endif
+
+#ifndef DIALOGS_APPLICATION_H_INCLUDED
+#define DIALOGS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef DIALOGS_GUIINFOMANAGER_H_INCLUDED
+#define DIALOGS_GUIINFOMANAGER_H_INCLUDED
 #include "GUIInfoManager.h"
+#endif
+
+#ifndef DIALOGS_UTILS_TIMEUTILS_H_INCLUDED
+#define DIALOGS_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef DIALOGS_FILEITEM_H_INCLUDED
+#define DIALOGS_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef DIALOGS_UTILS_SEEKHANDLER_H_INCLUDED
+#define DIALOGS_UTILS_SEEKHANDLER_H_INCLUDED
 #include "utils/SeekHandler.h"
+#endif
+
 
 #define SEEK_BAR_DISPLAY_TIME 2000L
 #define SEEK_BAR_SEEK_TIME     500L

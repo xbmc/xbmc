@@ -17,18 +17,66 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef ADDONS_ADDONSTATUSHANDLER_H_INCLUDED
+#define ADDONS_ADDONSTATUSHANDLER_H_INCLUDED
 #include "AddonStatusHandler.h"
+#endif
+
+#ifndef ADDONS_ADDONMANAGER_H_INCLUDED
+#define ADDONS_ADDONMANAGER_H_INCLUDED
 #include "AddonManager.h"
+#endif
+
+#ifndef ADDONS_THREADS_SINGLELOCK_H_INCLUDED
+#define ADDONS_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef ADDONS_APPLICATIONMESSENGER_H_INCLUDED
+#define ADDONS_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef ADDONS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define ADDONS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef ADDONS_GUIDIALOGADDONSETTINGS_H_INCLUDED
+#define ADDONS_GUIDIALOGADDONSETTINGS_H_INCLUDED
 #include "GUIDialogAddonSettings.h"
+#endif
+
+#ifndef ADDONS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
+#define ADDONS_DIALOGS_GUIDIALOGYESNO_H_INCLUDED
 #include "dialogs/GUIDialogYesNo.h"
+#endif
+
+#ifndef ADDONS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define ADDONS_DIALOGS_GUIDIALOGOK_H_INCLUDED
 #include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef ADDONS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define ADDONS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
 #include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef ADDONS_SETTINGS_SETTINGS_H_INCLUDED
+#define ADDONS_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef ADDONS_UTILS_LOG_H_INCLUDED
+#define ADDONS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef ADDONS_UTILS_STRINGUTILS_H_INCLUDED
+#define ADDONS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 namespace ADDON
 {

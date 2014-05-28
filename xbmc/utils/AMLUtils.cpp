@@ -25,9 +25,21 @@
 #include <fcntl.h>
 #include <string>
 
+#ifndef UTILS_UTILS_CPUINFO_H_INCLUDED
+#define UTILS_UTILS_CPUINFO_H_INCLUDED
 #include "utils/CPUInfo.h"
+#endif
+
+#ifndef UTILS_UTILS_LOG_H_INCLUDED
+#define UTILS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 int aml_set_sysfs_str(const char *path, const char *val)
 {

@@ -18,9 +18,17 @@
  *
  */
 
+#ifndef TEST_UTILS_MD5_H_INCLUDED
+#define TEST_UTILS_MD5_H_INCLUDED
 #include "utils/md5.h"
+#endif
 
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 TEST(Testmd5, ZeroLengthString)
 {

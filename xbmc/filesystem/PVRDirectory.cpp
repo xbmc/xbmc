@@ -18,19 +18,67 @@
  *
  */
 
+#ifndef FILESYSTEM_PVRDIRECTORY_H_INCLUDED
+#define FILESYSTEM_PVRDIRECTORY_H_INCLUDED
 #include "PVRDirectory.h"
-#include "FileItem.h"
-#include "Util.h"
-#include "URL.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
-#include "guilib/LocalizeStrings.h"
+#endif
 
+#ifndef FILESYSTEM_FILEITEM_H_INCLUDED
+#define FILESYSTEM_FILEITEM_H_INCLUDED
+#include "FileItem.h"
+#endif
+
+#ifndef FILESYSTEM_UTIL_H_INCLUDED
+#define FILESYSTEM_UTIL_H_INCLUDED
+#include "Util.h"
+#endif
+
+#ifndef FILESYSTEM_URL_H_INCLUDED
+#define FILESYSTEM_URL_H_INCLUDED
+#include "URL.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_LOG_H_INCLUDED
+#define FILESYSTEM_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#define FILESYSTEM_UTILS_URIUTILS_H_INCLUDED
+#include "utils/URIUtils.h"
+#endif
+
+#ifndef FILESYSTEM_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define FILESYSTEM_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#include "guilib/LocalizeStrings.h"
+#endif
+
+
+#ifndef FILESYSTEM_PVR_PVRMANAGER_H_INCLUDED
+#define FILESYSTEM_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef FILESYSTEM_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define FILESYSTEM_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#endif
+
+#ifndef FILESYSTEM_PVR_CHANNELS_PVRCHANNELGROUP_H_INCLUDED
+#define FILESYSTEM_PVR_CHANNELS_PVRCHANNELGROUP_H_INCLUDED
 #include "pvr/channels/PVRChannelGroup.h"
+#endif
+
+#ifndef FILESYSTEM_PVR_RECORDINGS_PVRRECORDINGS_H_INCLUDED
+#define FILESYSTEM_PVR_RECORDINGS_PVRRECORDINGS_H_INCLUDED
 #include "pvr/recordings/PVRRecordings.h"
+#endif
+
+#ifndef FILESYSTEM_PVR_TIMERS_PVRTIMERS_H_INCLUDED
+#define FILESYSTEM_PVR_TIMERS_PVRTIMERS_H_INCLUDED
 #include "pvr/timers/PVRTimers.h"
+#endif
+
 
 using namespace std;
 using namespace XFILE;

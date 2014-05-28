@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef THREADS_EVENT_H_INCLUDED
+#define THREADS_EVENT_H_INCLUDED
 #include "Event.h"
+#endif
+
+#ifndef THREADS_THREAD_H_INCLUDED
+#define THREADS_THREAD_H_INCLUDED
 #include "Thread.h"
+#endif
+
 
 class ITimerCallback
 {

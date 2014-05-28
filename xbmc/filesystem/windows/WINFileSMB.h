@@ -27,8 +27,16 @@
 
 #pragma once
 
+#ifndef WINDOWS_FILESYSTEM_IFILE_H_INCLUDED
+#define WINDOWS_FILESYSTEM_IFILE_H_INCLUDED
 #include "filesystem/IFile.h"
+#endif
+
+#ifndef WINDOWS_UTILS_AUTOPTRHANDLE_H_INCLUDED
+#define WINDOWS_UTILS_AUTOPTRHANDLE_H_INCLUDED
 #include "utils/AutoPtrHandle.h"
+#endif
+
 
 namespace XFILE
 {

@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef OVERLAY_CORES_VIDEORENDERERS_OVERLAYRENDERER_H_INCLUDED
+#define OVERLAY_CORES_VIDEORENDERERS_OVERLAYRENDERER_H_INCLUDED
 #include "cores/VideoRenderers/OverlayRenderer.h"
+#endif
+
+#ifndef OVERLAY_THREADS_ATOMICS_H_INCLUDED
+#define OVERLAY_THREADS_ATOMICS_H_INCLUDED
 #include "threads/Atomics.h"
+#endif
+
 #include <assert.h>
 #include <vector>
 

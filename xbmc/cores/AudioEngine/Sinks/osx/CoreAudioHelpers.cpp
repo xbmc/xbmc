@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef OSX_COREAUDIOHELPERS_H_INCLUDED
+#define OSX_COREAUDIOHELPERS_H_INCLUDED
 #include "CoreAudioHelpers.h"
+#endif
+
 
 #include <sstream>
 

@@ -18,7 +18,11 @@
  *
  */
 
+#ifndef X11_SYSTEM_H_INCLUDED
+#define X11_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #ifdef HAS_GLX
 

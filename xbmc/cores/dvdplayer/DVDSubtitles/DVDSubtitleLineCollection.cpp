@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef DVDSUBTITLES_DVDSUBTITLELINECOLLECTION_H_INCLUDED
+#define DVDSUBTITLES_DVDSUBTITLELINECOLLECTION_H_INCLUDED
 #include "DVDSubtitleLineCollection.h"
+#endif
+
+#ifndef DVDSUBTITLES_DVDCLOCK_H_INCLUDED
+#define DVDSUBTITLES_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h"
+#endif
+
 
 
 CDVDSubtitleLineCollection::CDVDSubtitleLineCollection()

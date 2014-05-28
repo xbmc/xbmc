@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef WINDOWS_GUILIB_GUIWINDOW_H_INCLUDED
+#define WINDOWS_GUILIB_GUIWINDOW_H_INCLUDED
 #include "guilib/GUIWindow.h"
+#endif
+
+#ifndef WINDOWS_INTERFACES_IANNOUNCER_H_INCLUDED
+#define WINDOWS_INTERFACES_IANNOUNCER_H_INCLUDED
 #include "interfaces/IAnnouncer.h"
+#endif
+
+#ifndef WINDOWS_UTILS_JOB_H_INCLUDED
+#define WINDOWS_UTILS_JOB_H_INCLUDED
 #include "utils/Job.h"
+#endif
+
 
 class CGUIWindowHome :
       public CGUIWindow,

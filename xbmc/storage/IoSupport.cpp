@@ -24,9 +24,21 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#ifndef STORAGE_SYSTEM_H_INCLUDED
+#define STORAGE_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef STORAGE_IOSUPPORT_H_INCLUDED
+#define STORAGE_IOSUPPORT_H_INCLUDED
 #include "IoSupport.h"
+#endif
+
+#ifndef STORAGE_UTILS_LOG_H_INCLUDED
+#define STORAGE_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 #ifdef TARGET_WINDOWS
 #include "my_ntddcdrm.h"
 #include "WIN32Util.h"
@@ -59,9 +71,21 @@
 #ifdef TARGET_FREEBSD
 #include <sys/syslimits.h>
 #endif
+#ifndef STORAGE_CDIOSUPPORT_H_INCLUDED
+#define STORAGE_CDIOSUPPORT_H_INCLUDED
 #include "cdioSupport.h"
+#endif
+
+#ifndef STORAGE_FILESYSTEM_ISO9660_H_INCLUDED
+#define STORAGE_FILESYSTEM_ISO9660_H_INCLUDED
 #include "filesystem/iso9660.h"
+#endif
+
+#ifndef STORAGE_MEDIAMANAGER_H_INCLUDED
+#define STORAGE_MEDIAMANAGER_H_INCLUDED
 #include "MediaManager.h"
+#endif
+
 #ifdef TARGET_POSIX
 #include "XHandle.h"
 #endif

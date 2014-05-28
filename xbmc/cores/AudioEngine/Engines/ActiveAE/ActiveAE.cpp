@@ -18,17 +18,49 @@
  *
  */
 
+#ifndef ACTIVEAE_ACTIVEAE_H_INCLUDED
+#define ACTIVEAE_ACTIVEAE_H_INCLUDED
 #include "ActiveAE.h"
+#endif
+
 
 using namespace ActiveAE;
+#ifndef ACTIVEAE_ACTIVEAESOUND_H_INCLUDED
+#define ACTIVEAE_ACTIVEAESOUND_H_INCLUDED
 #include "ActiveAESound.h"
-#include "ActiveAEStream.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
-#include "cores/AudioEngine/Encoders/AEEncoderFFmpeg.h"
+#endif
 
+#ifndef ACTIVEAE_ACTIVEAESTREAM_H_INCLUDED
+#define ACTIVEAE_ACTIVEAESTREAM_H_INCLUDED
+#include "ActiveAEStream.h"
+#endif
+
+#ifndef ACTIVEAE_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#define ACTIVEAE_CORES_AUDIOENGINE_UTILS_AEUTIL_H_INCLUDED
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
+
+#ifndef ACTIVEAE_CORES_AUDIOENGINE_ENCODERS_AEENCODERFFMPEG_H_INCLUDED
+#define ACTIVEAE_CORES_AUDIOENGINE_ENCODERS_AEENCODERFFMPEG_H_INCLUDED
+#include "cores/AudioEngine/Encoders/AEEncoderFFmpeg.h"
+#endif
+
+
+#ifndef ACTIVEAE_SETTINGS_SETTINGS_H_INCLUDED
+#define ACTIVEAE_SETTINGS_SETTINGS_H_INCLUDED
 #include "settings/Settings.h"
+#endif
+
+#ifndef ACTIVEAE_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define ACTIVEAE_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef ACTIVEAE_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define ACTIVEAE_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
 
 #define MAX_CACHE_LEVEL 0.5   // total cache time of stream in seconds
 #define MAX_WATER_LEVEL 0.25  // buffered time after stream stages in seconds

@@ -18,11 +18,27 @@
  *
  */
 
+#ifndef LINUX_PERIPHERALBUSUSBLIBUSB_H_INCLUDED
+#define LINUX_PERIPHERALBUSUSBLIBUSB_H_INCLUDED
 #include "PeripheralBusUSBLibUSB.h"
+#endif
+
+#ifndef LINUX_PERIPHERALS_PERIPHERALS_H_INCLUDED
+#define LINUX_PERIPHERALS_PERIPHERALS_H_INCLUDED
 #include "peripherals/Peripherals.h"
+#endif
+
 #include <usb.h>
+#ifndef LINUX_UTILS_LOG_H_INCLUDED
+#define LINUX_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef LINUX_UTILS_STRINGUTILS_H_INCLUDED
+#define LINUX_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace PERIPHERALS;
 

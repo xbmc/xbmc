@@ -18,14 +18,42 @@
  *
  */
 
+#ifndef TEST_UTILS_DATABASEUTILS_H_INCLUDED
+#define TEST_UTILS_DATABASEUTILS_H_INCLUDED
 #include "utils/DatabaseUtils.h"
-#include "video/VideoDatabase.h"
-#include "music/MusicDatabase.h"
-#include "dbwrappers/qry_dat.h"
-#include "utils/Variant.h"
-#include "utils/StringUtils.h"
+#endif
 
+#ifndef TEST_VIDEO_VIDEODATABASE_H_INCLUDED
+#define TEST_VIDEO_VIDEODATABASE_H_INCLUDED
+#include "video/VideoDatabase.h"
+#endif
+
+#ifndef TEST_MUSIC_MUSICDATABASE_H_INCLUDED
+#define TEST_MUSIC_MUSICDATABASE_H_INCLUDED
+#include "music/MusicDatabase.h"
+#endif
+
+#ifndef TEST_DBWRAPPERS_QRY_DAT_H_INCLUDED
+#define TEST_DBWRAPPERS_QRY_DAT_H_INCLUDED
+#include "dbwrappers/qry_dat.h"
+#endif
+
+#ifndef TEST_UTILS_VARIANT_H_INCLUDED
+#define TEST_UTILS_VARIANT_H_INCLUDED
+#include "utils/Variant.h"
+#endif
+
+#ifndef TEST_UTILS_STRINGUTILS_H_INCLUDED
+#define TEST_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 class TestDatabaseUtilsHelper
 {

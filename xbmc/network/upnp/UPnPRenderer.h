@@ -18,8 +18,16 @@
  *
  */
 #pragma once
+#ifndef UPNP_PLTMEDIARENDERER_H_INCLUDED
+#define UPNP_PLTMEDIARENDERER_H_INCLUDED
 #include "PltMediaRenderer.h"
+#endif
+
+#ifndef UPNP_INTERFACES_IANNOUNCER_H_INCLUDED
+#define UPNP_INTERFACES_IANNOUNCER_H_INCLUDED
 #include "interfaces/IAnnouncer.h"
+#endif
+
 
 namespace UPNP
 {

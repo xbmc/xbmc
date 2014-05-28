@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef LIB_ISETTINGCONTROL_H_INCLUDED
+#define LIB_ISETTINGCONTROL_H_INCLUDED
 #include "ISettingControl.h"
+#endif
+
+#ifndef LIB_SETTINGDEFINITIONS_H_INCLUDED
+#define LIB_SETTINGDEFINITIONS_H_INCLUDED
 #include "SettingDefinitions.h"
+#endif
+
+#ifndef LIB_UTILS_LOG_H_INCLUDED
+#define LIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef LIB_UTILS_STRINGUTILS_H_INCLUDED
+#define LIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef LIB_UTILS_XBMCTINYXML_H_INCLUDED
+#define LIB_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
 
 bool ISettingControl::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {

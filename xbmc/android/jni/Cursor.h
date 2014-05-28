@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef JNI_JNIBASE_H_INCLUDED
+#define JNI_JNIBASE_H_INCLUDED
 #include "JNIBase.h"
+#endif
+
+#ifndef JNI_MEDIASTORE_H_INCLUDED
+#define JNI_MEDIASTORE_H_INCLUDED
 #include "MediaStore.h"
+#endif
+
 
 class CJNIURI;
 

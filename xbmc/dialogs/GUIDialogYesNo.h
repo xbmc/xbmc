@@ -21,7 +21,11 @@
  */
 
 #include <string>
+#ifndef DIALOGS_GUIDIALOGBOXBASE_H_INCLUDED
+#define DIALOGS_GUIDIALOGBOXBASE_H_INCLUDED
 #include "GUIDialogBoxBase.h"
+#endif
+
 
 class CGUIDialogYesNo :
       public CGUIDialogBoxBase

@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef DVDDEMUXERS_DVDDEMUX_H_INCLUDED
+#define DVDDEMUXERS_DVDDEMUX_H_INCLUDED
 #include "DVDDemux.h"
+#endif
+
+#ifndef DVDDEMUXERS_DVDCODECS_DVDCODECS_H_INCLUDED
+#define DVDDEMUXERS_DVDCODECS_DVDCODECS_H_INCLUDED
 #include "DVDCodecs/DVDCodecs.h"
+#endif
+
 
 void CDemuxStreamTeletext::GetStreamInfo(std::string& strInfo)
 {

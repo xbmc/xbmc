@@ -56,7 +56,11 @@
 
 #pragma once
 #include <stdint.h>
+#ifndef ACTIVITY_GUILIB_XBTF_H_INCLUDED
+#define ACTIVITY_GUILIB_XBTF_H_INCLUDED
 #include "guilib/XBTF.h"
+#endif
+
 
 class DllGraphicBuffer;
 

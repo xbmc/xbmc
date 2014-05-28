@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef UTILS_CRC32_H_INCLUDED
+#define UTILS_CRC32_H_INCLUDED
 #include "Crc32.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 uint32_t  crc_tab[256] =
 {

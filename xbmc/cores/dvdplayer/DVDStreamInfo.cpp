@@ -18,10 +18,22 @@
  *
  */
 
+#ifndef DVDPLAYER_DVDSTREAMINFO_H_INCLUDED
+#define DVDPLAYER_DVDSTREAMINFO_H_INCLUDED
 #include "DVDStreamInfo.h"
+#endif
 
+
+#ifndef DVDPLAYER_DVDCODECS_DVDCODECS_H_INCLUDED
+#define DVDPLAYER_DVDCODECS_DVDCODECS_H_INCLUDED
 #include "DVDCodecs/DVDCodecs.h"
+#endif
+
+#ifndef DVDPLAYER_DVDDEMUXERS_DVDDEMUX_H_INCLUDED
+#define DVDPLAYER_DVDDEMUXERS_DVDDEMUX_H_INCLUDED
 #include "DVDDemuxers/DVDDemux.h"
+#endif
+
 
 CDVDStreamInfo::CDVDStreamInfo()                                                     { extradata = NULL; Clear(); }
 CDVDStreamInfo::CDVDStreamInfo(const CDVDStreamInfo &right, bool withextradata )     { extradata = NULL; Clear(); Assign(right, withextradata); }

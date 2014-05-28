@@ -18,15 +18,47 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGPVRGUIDEOSD_H_INCLUDED
+#define DIALOGS_GUIDIALOGPVRGUIDEOSD_H_INCLUDED
 #include "GUIDialogPVRGuideOSD.h"
-#include "FileItem.h"
-#include "GUIDialogPVRGuideInfo.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
-#include "view/ViewState.h"
-#include "epg/Epg.h"
+#endif
 
+#ifndef DIALOGS_FILEITEM_H_INCLUDED
+#define DIALOGS_FILEITEM_H_INCLUDED
+#include "FileItem.h"
+#endif
+
+#ifndef DIALOGS_GUIDIALOGPVRGUIDEINFO_H_INCLUDED
+#define DIALOGS_GUIDIALOGPVRGUIDEINFO_H_INCLUDED
+#include "GUIDialogPVRGuideInfo.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_KEY_H_INCLUDED
+#define DIALOGS_GUILIB_KEY_H_INCLUDED
+#include "guilib/Key.h"
+#endif
+
+#ifndef DIALOGS_VIEW_VIEWSTATE_H_INCLUDED
+#define DIALOGS_VIEW_VIEWSTATE_H_INCLUDED
+#include "view/ViewState.h"
+#endif
+
+#ifndef DIALOGS_EPG_EPG_H_INCLUDED
+#define DIALOGS_EPG_EPG_H_INCLUDED
+#include "epg/Epg.h"
+#endif
+
+
+#ifndef DIALOGS_PVR_PVRMANAGER_H_INCLUDED
+#define DIALOGS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
 
 using namespace std;
 using namespace PVR;

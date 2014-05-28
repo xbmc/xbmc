@@ -18,18 +18,62 @@
  *
  */
 
+#ifndef PVR_PVRDATABASE_H_INCLUDED
+#define PVR_PVRDATABASE_H_INCLUDED
 #include "PVRDatabase.h"
-#include "dbwrappers/dataset.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/VideoSettings.h"
-#include "settings/Settings.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
+#endif
 
+#ifndef PVR_DBWRAPPERS_DATASET_H_INCLUDED
+#define PVR_DBWRAPPERS_DATASET_H_INCLUDED
+#include "dbwrappers/dataset.h"
+#endif
+
+#ifndef PVR_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define PVR_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef PVR_SETTINGS_VIDEOSETTINGS_H_INCLUDED
+#define PVR_SETTINGS_VIDEOSETTINGS_H_INCLUDED
+#include "settings/VideoSettings.h"
+#endif
+
+#ifndef PVR_SETTINGS_SETTINGS_H_INCLUDED
+#define PVR_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef PVR_UTILS_LOG_H_INCLUDED
+#define PVR_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef PVR_UTILS_STRINGUTILS_H_INCLUDED
+#define PVR_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+
+#ifndef PVR_PVRMANAGER_H_INCLUDED
+#define PVR_PVRMANAGER_H_INCLUDED
 #include "PVRManager.h"
+#endif
+
+#ifndef PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
 #include "channels/PVRChannelGroupsContainer.h"
+#endif
+
+#ifndef PVR_CHANNELS_PVRCHANNELGROUPINTERNAL_H_INCLUDED
+#define PVR_CHANNELS_PVRCHANNELGROUPINTERNAL_H_INCLUDED
 #include "channels/PVRChannelGroupInternal.h"
+#endif
+
+#ifndef PVR_ADDONS_PVRCLIENT_H_INCLUDED
+#define PVR_ADDONS_PVRCLIENT_H_INCLUDED
 #include "addons/PVRClient.h"
+#endif
+
 
 using namespace std;
 using namespace dbiplus;

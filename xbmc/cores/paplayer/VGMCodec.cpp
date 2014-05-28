@@ -18,9 +18,21 @@
  *
  */
 
+#ifndef PAPLAYER_VGMCODEC_H_INCLUDED
+#define PAPLAYER_VGMCODEC_H_INCLUDED
 #include "VGMCodec.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_LOG_H_INCLUDED
+#define PAPLAYER_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef PAPLAYER_UTILS_URIUTILS_H_INCLUDED
+#define PAPLAYER_UTILS_URIUTILS_H_INCLUDED
 #include "utils/URIUtils.h"
+#endif
+
 
 VGMCodec::VGMCodec()
 {

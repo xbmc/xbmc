@@ -18,8 +18,16 @@
  *
  */
 
+#ifndef UTILS_HTMLUTIL_H_INCLUDED
+#define UTILS_HTMLUTIL_H_INCLUDED
 #include "HTMLUtil.h"
+#endif
+
+#ifndef UTILS_UTILS_STRINGUTILS_H_INCLUDED
+#define UTILS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
 
 using namespace std;
 using namespace HTML;

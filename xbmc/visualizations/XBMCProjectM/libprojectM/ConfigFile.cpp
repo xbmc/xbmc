@@ -1,6 +1,10 @@
 // ConfigFile.cpp
 
+#ifndef LIBPROJECTM_CONFIGFILE_H_INCLUDED
+#define LIBPROJECTM_CONFIGFILE_H_INCLUDED
 #include "ConfigFile.h"
+#endif
+
 
 using std::string;
 

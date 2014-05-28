@@ -25,9 +25,21 @@
  *
  */
 
+#ifndef GUILIB_IGUICONTAINER_H_INCLUDED
+#define GUILIB_IGUICONTAINER_H_INCLUDED
 #include "IGUIContainer.h"
+#endif
+
+#ifndef GUILIB_GUILISTITEMLAYOUT_H_INCLUDED
+#define GUILIB_GUILISTITEMLAYOUT_H_INCLUDED
 #include "GUIListItemLayout.h"
+#endif
+
+#ifndef GUILIB_UTILS_STOPWATCH_H_INCLUDED
+#define GUILIB_UTILS_STOPWATCH_H_INCLUDED
 #include "utils/Stopwatch.h"
+#endif
+
 
 /*!
  \ingroup controls

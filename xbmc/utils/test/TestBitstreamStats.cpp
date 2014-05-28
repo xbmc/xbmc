@@ -18,10 +18,22 @@
  *
  */
 
+#ifndef TEST_THREADS_THREAD_H_INCLUDED
+#define TEST_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
-#include "utils/BitstreamStats.h"
+#endif
 
+#ifndef TEST_UTILS_BITSTREAMSTATS_H_INCLUDED
+#define TEST_UTILS_BITSTREAMSTATS_H_INCLUDED
+#include "utils/BitstreamStats.h"
+#endif
+
+
+#ifndef TEST_GTEST_GTEST_H_INCLUDED
+#define TEST_GTEST_GTEST_H_INCLUDED
 #include "gtest/gtest.h"
+#endif
+
 
 #define BITS (256 * 8)
 #define BYTES (256)

@@ -18,22 +18,82 @@
  *
  */
 
+#ifndef MUSIC_GUIVIEWSTATEMUSIC_H_INCLUDED
+#define MUSIC_GUIVIEWSTATEMUSIC_H_INCLUDED
 #include "GUIViewStateMusic.h"
-#include "PlayListPlayer.h"
-#include "video/VideoDatabase.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/MediaSourceSettings.h"
-#include "settings/Settings.h"
-#include "FileItem.h"
-#include "guilib/WindowIDs.h"
-#include "Util.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/log.h"
-#include "view/ViewStateSettings.h"
+#endif
 
+#ifndef MUSIC_PLAYLISTPLAYER_H_INCLUDED
+#define MUSIC_PLAYLISTPLAYER_H_INCLUDED
+#include "PlayListPlayer.h"
+#endif
+
+#ifndef MUSIC_VIDEO_VIDEODATABASE_H_INCLUDED
+#define MUSIC_VIDEO_VIDEODATABASE_H_INCLUDED
+#include "video/VideoDatabase.h"
+#endif
+
+#ifndef MUSIC_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define MUSIC_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef MUSIC_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#define MUSIC_SETTINGS_MEDIASOURCESETTINGS_H_INCLUDED
+#include "settings/MediaSourceSettings.h"
+#endif
+
+#ifndef MUSIC_SETTINGS_SETTINGS_H_INCLUDED
+#define MUSIC_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef MUSIC_FILEITEM_H_INCLUDED
+#define MUSIC_FILEITEM_H_INCLUDED
+#include "FileItem.h"
+#endif
+
+#ifndef MUSIC_GUILIB_WINDOWIDS_H_INCLUDED
+#define MUSIC_GUILIB_WINDOWIDS_H_INCLUDED
+#include "guilib/WindowIDs.h"
+#endif
+
+#ifndef MUSIC_UTIL_H_INCLUDED
+#define MUSIC_UTIL_H_INCLUDED
+#include "Util.h"
+#endif
+
+#ifndef MUSIC_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define MUSIC_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef MUSIC_UTILS_LOG_H_INCLUDED
+#define MUSIC_UTILS_LOG_H_INCLUDED
+#include "utils/log.h"
+#endif
+
+#ifndef MUSIC_VIEW_VIEWSTATESETTINGS_H_INCLUDED
+#define MUSIC_VIEW_VIEWSTATESETTINGS_H_INCLUDED
+#include "view/ViewStateSettings.h"
+#endif
+
+
+#ifndef MUSIC_FILESYSTEM_DIRECTORY_H_INCLUDED
+#define MUSIC_FILESYSTEM_DIRECTORY_H_INCLUDED
 #include "filesystem/Directory.h"
+#endif
+
+#ifndef MUSIC_FILESYSTEM_MUSICDATABASEDIRECTORY_H_INCLUDED
+#define MUSIC_FILESYSTEM_MUSICDATABASEDIRECTORY_H_INCLUDED
 #include "filesystem/MusicDatabaseDirectory.h"
+#endif
+
+#ifndef MUSIC_FILESYSTEM_VIDEODATABASEDIRECTORY_H_INCLUDED
+#define MUSIC_FILESYSTEM_VIDEODATABASEDIRECTORY_H_INCLUDED
 #include "filesystem/VideoDatabaseDirectory.h"
+#endif
+
 
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;

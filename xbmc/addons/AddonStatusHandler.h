@@ -19,10 +19,26 @@
  *
  */
 
+#ifndef ADDONS_THREADS_THREAD_H_INCLUDED
+#define ADDONS_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef ADDONS_IADDON_H_INCLUDED
+#define ADDONS_IADDON_H_INCLUDED
 #include "IAddon.h"
+#endif
+
+#ifndef ADDONS_INCLUDE_XBMC_ADDON_TYPES_H_INCLUDED
+#define ADDONS_INCLUDE_XBMC_ADDON_TYPES_H_INCLUDED
 #include "include/xbmc_addon_types.h"
+#endif
+
+#ifndef ADDONS_THREADS_CRITICALSECTION_H_INCLUDED
+#define ADDONS_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 namespace ADDON
 {

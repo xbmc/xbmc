@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef GUILIB_GUILISTGROUP_H_INCLUDED
+#define GUILIB_GUILISTGROUP_H_INCLUDED
 #include "GUIListGroup.h"
+#endif
+
+#ifndef GUILIB_GUITEXTURE_H_INCLUDED
+#define GUILIB_GUITEXTURE_H_INCLUDED
 #include "GUITexture.h"
+#endif
+
+#ifndef GUILIB_GUIINFOTYPES_H_INCLUDED
+#define GUILIB_GUIINFOTYPES_H_INCLUDED
 #include "GUIInfoTypes.h"
+#endif
+
 
 class CGUIListItem;
 class CFileItem;

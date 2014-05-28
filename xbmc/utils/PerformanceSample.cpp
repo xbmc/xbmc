@@ -18,16 +18,36 @@
  *
  */
 
+#ifndef UTILS_SYSTEM_H_INCLUDED
+#define UTILS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef UTILS_PERFORMANCESAMPLE_H_INCLUDED
+#define UTILS_PERFORMANCESAMPLE_H_INCLUDED
 #include "PerformanceSample.h"
+#endif
+
 
 #ifdef TARGET_POSIX
 #include "linux/PlatformInclude.h"
 #endif
 
+#ifndef UTILS_APPLICATION_H_INCLUDED
+#define UTILS_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef UTILS_LOG_H_INCLUDED
+#define UTILS_LOG_H_INCLUDED
 #include "log.h"
+#endif
+
+#ifndef UTILS_TIMEUTILS_H_INCLUDED
+#define UTILS_TIMEUTILS_H_INCLUDED
 #include "TimeUtils.h"
+#endif
+
 
 using namespace std;
 

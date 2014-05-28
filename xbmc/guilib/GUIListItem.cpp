@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef GUILIB_GUILISTITEM_H_INCLUDED
+#define GUILIB_GUILISTITEM_H_INCLUDED
 #include "GUIListItem.h"
+#endif
+
+#ifndef GUILIB_GUILISTITEMLAYOUT_H_INCLUDED
+#define GUILIB_GUILISTITEMLAYOUT_H_INCLUDED
 #include "GUIListItemLayout.h"
+#endif
+
+#ifndef GUILIB_UTILS_ARCHIVE_H_INCLUDED
+#define GUILIB_UTILS_ARCHIVE_H_INCLUDED
 #include "utils/Archive.h"
+#endif
+
+#ifndef GUILIB_UTILS_CHARSETCONVERTER_H_INCLUDED
+#define GUILIB_UTILS_CHARSETCONVERTER_H_INCLUDED
 #include "utils/CharsetConverter.h"
+#endif
+
+#ifndef GUILIB_UTILS_STRINGUTILS_H_INCLUDED
+#define GUILIB_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef GUILIB_UTILS_VARIANT_H_INCLUDED
+#define GUILIB_UTILS_VARIANT_H_INCLUDED
 #include "utils/Variant.h"
+#endif
+
 
 using namespace std;
 

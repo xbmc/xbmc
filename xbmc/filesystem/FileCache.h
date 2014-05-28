@@ -19,11 +19,31 @@
  *
  */
 
+#ifndef FILESYSTEM_IFILE_H_INCLUDED
+#define FILESYSTEM_IFILE_H_INCLUDED
 #include "IFile.h"
+#endif
+
+#ifndef FILESYSTEM_CACHESTRATEGY_H_INCLUDED
+#define FILESYSTEM_CACHESTRATEGY_H_INCLUDED
 #include "CacheStrategy.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_CRITICALSECTION_H_INCLUDED
+#define FILESYSTEM_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
+#ifndef FILESYSTEM_FILE_H_INCLUDED
+#define FILESYSTEM_FILE_H_INCLUDED
 #include "File.h"
+#endif
+
+#ifndef FILESYSTEM_THREADS_THREAD_H_INCLUDED
+#define FILESYSTEM_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
 
 namespace XFILE
 {

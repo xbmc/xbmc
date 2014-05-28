@@ -22,8 +22,16 @@
 #include <memory>
 #include <vector>
 
+#ifndef OSX_NETWORK_ZEROCONF_H_INCLUDED
+#define OSX_NETWORK_ZEROCONF_H_INCLUDED
 #include "network/Zeroconf.h"
+#endif
+
+#ifndef OSX_THREADS_CRITICALSECTION_H_INCLUDED
+#define OSX_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 
 #include <CoreFoundation/CoreFoundation.h>
 #if defined(TARGET_DARWIN_OSX)

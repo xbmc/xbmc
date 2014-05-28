@@ -20,7 +20,11 @@
  *
  */
 
+#ifndef DVDSUBTITLES_SYSTEM_H_INCLUDED
+#define DVDSUBTITLES_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 #include <string>
 #include <sstream>

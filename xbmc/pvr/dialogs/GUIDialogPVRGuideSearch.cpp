@@ -18,19 +18,67 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGPVRGUIDESEARCH_H_INCLUDED
+#define DIALOGS_GUIDIALOGPVRGUIDESEARCH_H_INCLUDED
 #include "GUIDialogPVRGuideSearch.h"
-#include "Application.h"
-#include "guilib/LocalizeStrings.h"
-#include "guilib/GUIEditControl.h"
-#include "guilib/GUIRadioButtonControl.h"
-#include "guilib/GUISpinControlEx.h"
-#include "guilib/GUIWindowManager.h"
-#include "utils/StringUtils.h"
+#endif
 
+#ifndef DIALOGS_APPLICATION_H_INCLUDED
+#define DIALOGS_APPLICATION_H_INCLUDED
+#include "Application.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIEDITCONTROL_H_INCLUDED
+#define DIALOGS_GUILIB_GUIEDITCONTROL_H_INCLUDED
+#include "guilib/GUIEditControl.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIRADIOBUTTONCONTROL_H_INCLUDED
+#define DIALOGS_GUILIB_GUIRADIOBUTTONCONTROL_H_INCLUDED
+#include "guilib/GUIRadioButtonControl.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUISPINCONTROLEX_H_INCLUDED
+#define DIALOGS_GUILIB_GUISPINCONTROLEX_H_INCLUDED
+#include "guilib/GUISpinControlEx.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
+#define DIALOGS_UTILS_STRINGUTILS_H_INCLUDED
+#include "utils/StringUtils.h"
+#endif
+
+
+#ifndef DIALOGS_ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
+#define DIALOGS_ADDONS_INCLUDE_XBMC_PVR_TYPES_H_INCLUDED
 #include "addons/include/xbmc_pvr_types.h"
+#endif
+
+#ifndef DIALOGS_PVR_PVRMANAGER_H_INCLUDED
+#define DIALOGS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef DIALOGS_EPG_EPGSEARCHFILTER_H_INCLUDED
+#define DIALOGS_EPG_EPGSEARCHFILTER_H_INCLUDED
 #include "epg/EpgSearchFilter.h"
+#endif
+
+#ifndef DIALOGS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define DIALOGS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#endif
+
 
 using namespace std;
 using namespace PVR;

@@ -19,8 +19,16 @@
  *
  */
 
+#ifndef PLAYERCOREFACTORY_FILEITEM_H_INCLUDED
+#define PLAYERCOREFACTORY_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef PLAYERCOREFACTORY_PLAYERCOREFACTORY_H_INCLUDED
+#define PLAYERCOREFACTORY_PLAYERCOREFACTORY_H_INCLUDED
 #include "PlayerCoreFactory.h"
+#endif
+
 
 class CRegExp;
 class TiXmlElement;

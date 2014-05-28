@@ -24,10 +24,22 @@
 // This include should be moved to commons but even as it is,
 // it wont cause a linker circular dependency since it's just
 // a header.
+#ifndef COMMONS_UTILS_STRINGUTILS_H_INCLUDED
+#define COMMONS_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef COMMONS_UTILS_STDSTRING_H_INCLUDED
+#define COMMONS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
 //---------------------------------------------------------
+#ifndef COMMONS_ILOG_H_INCLUDED
+#define COMMONS_ILOG_H_INCLUDED
 #include "ilog.h"
+#endif
+
 
 #ifdef __GNUC__
 // The 'this' pointer counts as a parameter on member methods.

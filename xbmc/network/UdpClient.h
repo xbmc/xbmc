@@ -23,12 +23,28 @@
  *
  */
 
+#ifndef NETWORK_UTILS_STDSTRING_H_INCLUDED
+#define NETWORK_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef NETWORK_THREADS_THREAD_H_INCLUDED
+#define NETWORK_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef NETWORK_THREADS_CRITICALSECTION_H_INCLUDED
+#define NETWORK_THREADS_CRITICALSECTION_H_INCLUDED
 #include "threads/CriticalSection.h"
+#endif
+
 #include <sys/socket.h>
 #include <netinet/in.h>
+#ifndef NETWORK_SYSTEM_H_INCLUDED
+#define NETWORK_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
 
 class CUdpClient : CThread
 {

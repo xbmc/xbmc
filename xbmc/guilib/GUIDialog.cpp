@@ -18,15 +18,51 @@
  *
  */
 
+#ifndef GUILIB_GUIDIALOG_H_INCLUDED
+#define GUILIB_GUIDIALOG_H_INCLUDED
 #include "GUIDialog.h"
+#endif
+
+#ifndef GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "GUIWindowManager.h"
+#endif
+
+#ifndef GUILIB_GUILABELCONTROL_H_INCLUDED
+#define GUILIB_GUILABELCONTROL_H_INCLUDED
 #include "GUILabelControl.h"
+#endif
+
+#ifndef GUILIB_GUIAUDIOMANAGER_H_INCLUDED
+#define GUILIB_GUIAUDIOMANAGER_H_INCLUDED
 #include "GUIAudioManager.h"
+#endif
+
+#ifndef GUILIB_THREADS_SINGLELOCK_H_INCLUDED
+#define GUILIB_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef GUILIB_UTILS_TIMEUTILS_H_INCLUDED
+#define GUILIB_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
+#ifndef GUILIB_APPLICATION_H_INCLUDED
+#define GUILIB_APPLICATION_H_INCLUDED
 #include "Application.h"
+#endif
+
+#ifndef GUILIB_APPLICATIONMESSENGER_H_INCLUDED
+#define GUILIB_APPLICATIONMESSENGER_H_INCLUDED
 #include "ApplicationMessenger.h"
+#endif
+
+#ifndef GUILIB_KEY_H_INCLUDED
+#define GUILIB_KEY_H_INCLUDED
 #include "Key.h"
+#endif
+
 
 CGUIDialog::CGUIDialog(int id, const CStdString &xmlFile)
     : CGUIWindow(id, xmlFile)

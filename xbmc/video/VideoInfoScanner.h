@@ -18,10 +18,26 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef VIDEO_THREADS_THREAD_H_INCLUDED
+#define VIDEO_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
+
+#ifndef VIDEO_VIDEODATABASE_H_INCLUDED
+#define VIDEO_VIDEODATABASE_H_INCLUDED
 #include "VideoDatabase.h"
+#endif
+
+#ifndef VIDEO_ADDONS_SCRAPER_H_INCLUDED
+#define VIDEO_ADDONS_SCRAPER_H_INCLUDED
 #include "addons/Scraper.h"
+#endif
+
+#ifndef VIDEO_NFOFILE_H_INCLUDED
+#define VIDEO_NFOFILE_H_INCLUDED
 #include "NfoFile.h"
+#endif
+
 
 class CRegExp;
 class CFileItem;

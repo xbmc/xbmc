@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef WINDOWS_GUIWINDOWTESTPATTERN_H_INCLUDED
+#define WINDOWS_GUIWINDOWTESTPATTERN_H_INCLUDED
 #include "GUIWindowTestPattern.h"
+#endif
+
+#ifndef WINDOWS_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
+#define WINDOWS_SETTINGS_DISPLAYSETTINGS_H_INCLUDED
 #include "settings/DisplaySettings.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define WINDOWS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_KEY_H_INCLUDED
+#define WINDOWS_GUILIB_KEY_H_INCLUDED
 #include "guilib/Key.h"
+#endif
+
+#ifndef WINDOWS_GUILIB_WINDOWIDS_H_INCLUDED
+#define WINDOWS_GUILIB_WINDOWIDS_H_INCLUDED
 #include "guilib/WindowIDs.h"
+#endif
+
+#ifndef WINDOWS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
+#define WINDOWS_WINDOWING_WINDOWINGFACTORY_H_INCLUDED
 #include "windowing/WindowingFactory.h"
+#endif
+
 
 
 CGUIWindowTestPattern::CGUIWindowTestPattern(void)

@@ -18,10 +18,26 @@
  *
  */
 
+#ifndef GUILIB_GUIIMAGE_H_INCLUDED
+#define GUILIB_GUIIMAGE_H_INCLUDED
 #include "GUIImage.h"
+#endif
+
+#ifndef GUILIB_TEXTUREMANAGER_H_INCLUDED
+#define GUILIB_TEXTUREMANAGER_H_INCLUDED
 #include "TextureManager.h"
+#endif
+
+#ifndef GUILIB_UTILS_LOG_H_INCLUDED
+#define GUILIB_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef GUILIB_UTILS_TIMEUTILS_H_INCLUDED
+#define GUILIB_UTILS_TIMEUTILS_H_INCLUDED
 #include "utils/TimeUtils.h"
+#endif
+
 
 using namespace std;
 

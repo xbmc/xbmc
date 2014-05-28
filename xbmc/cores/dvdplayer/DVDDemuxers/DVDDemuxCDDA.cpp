@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef DVDDEMUXERS_DVDINPUTSTREAMS_DVDINPUTSTREAM_H_INCLUDED
+#define DVDDEMUXERS_DVDINPUTSTREAMS_DVDINPUTSTREAM_H_INCLUDED
 #include "DVDInputStreams/DVDInputStream.h"
+#endif
+
+#ifndef DVDDEMUXERS_DVDDEMUXCDDA_H_INCLUDED
+#define DVDDEMUXERS_DVDDEMUXCDDA_H_INCLUDED
 #include "DVDDemuxCDDA.h"
+#endif
+
+#ifndef DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
+#define DVDDEMUXERS_DVDDEMUXUTILS_H_INCLUDED
 #include "DVDDemuxUtils.h"
+#endif
+
+#ifndef DVDDEMUXERS_UTILS_LOG_H_INCLUDED
+#define DVDDEMUXERS_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
+#ifndef DVDDEMUXERS____DVDCLOCK_H_INCLUDED
+#define DVDDEMUXERS____DVDCLOCK_H_INCLUDED
 #include "../DVDClock.h"
+#endif
+
 
 // CDDA audio demuxer based on AirTunes audio Demuxer.
 

@@ -20,8 +20,16 @@
  *
  */
 
+#ifndef NETWORK_NETWORK_NETWORK_H_INCLUDED
+#define NETWORK_NETWORK_NETWORK_H_INCLUDED
 #include "network/Network.h"
+#endif
+
+#ifndef NETWORK_AIRPLAYSERVER_H_INCLUDED
+#define NETWORK_AIRPLAYSERVER_H_INCLUDED
 #include "AirPlayServer.h"
+#endif
+
 
 #ifdef HAS_AIRPLAY
 

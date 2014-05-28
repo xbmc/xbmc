@@ -18,26 +18,102 @@
  *
  */
 
+#ifndef DIALOGS_GUIDIALOGPVRCHANNELSOSD_H_INCLUDED
+#define DIALOGS_GUIDIALOGPVRCHANNELSOSD_H_INCLUDED
 #include "GUIDialogPVRChannelsOSD.h"
-#include "Application.h"
-#include "ApplicationMessenger.h"
-#include "FileItem.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
-#include "guilib/LocalizeStrings.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogOK.h"
-#include "GUIDialogPVRGuideInfo.h"
-#include "view/ViewState.h"
-#include "settings/Settings.h"
-#include "GUIInfoManager.h"
-#include "cores/IPlayer.h"
+#endif
 
+#ifndef DIALOGS_APPLICATION_H_INCLUDED
+#define DIALOGS_APPLICATION_H_INCLUDED
+#include "Application.h"
+#endif
+
+#ifndef DIALOGS_APPLICATIONMESSENGER_H_INCLUDED
+#define DIALOGS_APPLICATIONMESSENGER_H_INCLUDED
+#include "ApplicationMessenger.h"
+#endif
+
+#ifndef DIALOGS_FILEITEM_H_INCLUDED
+#define DIALOGS_FILEITEM_H_INCLUDED
+#include "FileItem.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define DIALOGS_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_KEY_H_INCLUDED
+#define DIALOGS_GUILIB_KEY_H_INCLUDED
+#include "guilib/Key.h"
+#endif
+
+#ifndef DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#define DIALOGS_GUILIB_LOCALIZESTRINGS_H_INCLUDED
+#include "guilib/LocalizeStrings.h"
+#endif
+
+#ifndef DIALOGS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#define DIALOGS_DIALOGS_GUIDIALOGKAITOAST_H_INCLUDED
+#include "dialogs/GUIDialogKaiToast.h"
+#endif
+
+#ifndef DIALOGS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#define DIALOGS_DIALOGS_GUIDIALOGOK_H_INCLUDED
+#include "dialogs/GUIDialogOK.h"
+#endif
+
+#ifndef DIALOGS_GUIDIALOGPVRGUIDEINFO_H_INCLUDED
+#define DIALOGS_GUIDIALOGPVRGUIDEINFO_H_INCLUDED
+#include "GUIDialogPVRGuideInfo.h"
+#endif
+
+#ifndef DIALOGS_VIEW_VIEWSTATE_H_INCLUDED
+#define DIALOGS_VIEW_VIEWSTATE_H_INCLUDED
+#include "view/ViewState.h"
+#endif
+
+#ifndef DIALOGS_SETTINGS_SETTINGS_H_INCLUDED
+#define DIALOGS_SETTINGS_SETTINGS_H_INCLUDED
+#include "settings/Settings.h"
+#endif
+
+#ifndef DIALOGS_GUIINFOMANAGER_H_INCLUDED
+#define DIALOGS_GUIINFOMANAGER_H_INCLUDED
+#include "GUIInfoManager.h"
+#endif
+
+#ifndef DIALOGS_CORES_IPLAYER_H_INCLUDED
+#define DIALOGS_CORES_IPLAYER_H_INCLUDED
+#include "cores/IPlayer.h"
+#endif
+
+
+#ifndef DIALOGS_PVR_PVRMANAGER_H_INCLUDED
+#define DIALOGS_PVR_PVRMANAGER_H_INCLUDED
 #include "pvr/PVRManager.h"
+#endif
+
+#ifndef DIALOGS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define DIALOGS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#endif
+
+#ifndef DIALOGS_EPG_EPG_H_INCLUDED
+#define DIALOGS_EPG_EPG_H_INCLUDED
 #include "epg/Epg.h"
+#endif
+
+#ifndef DIALOGS_PVR_TIMERS_PVRTIMERINFOTAG_H_INCLUDED
+#define DIALOGS_PVR_TIMERS_PVRTIMERINFOTAG_H_INCLUDED
 #include "pvr/timers/PVRTimerInfoTag.h"
+#endif
+
+#ifndef DIALOGS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
+#define DIALOGS_PVR_CHANNELS_PVRCHANNELGROUPSCONTAINER_H_INCLUDED
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#endif
+
 
 using namespace std;
 using namespace PVR;

@@ -18,12 +18,36 @@
  *
  */
 
+#ifndef MUSIC_ALBUM_H_INCLUDED
+#define MUSIC_ALBUM_H_INCLUDED
 #include "Album.h"
+#endif
+
+#ifndef MUSIC_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define MUSIC_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
 #include "settings/AdvancedSettings.h"
+#endif
+
+#ifndef MUSIC_UTILS_STRINGUTILS_H_INCLUDED
+#define MUSIC_UTILS_STRINGUTILS_H_INCLUDED
 #include "utils/StringUtils.h"
+#endif
+
+#ifndef MUSIC_UTILS_XMLUTILS_H_INCLUDED
+#define MUSIC_UTILS_XMLUTILS_H_INCLUDED
 #include "utils/XMLUtils.h"
+#endif
+
+#ifndef MUSIC_UTILS_MATHUTILS_H_INCLUDED
+#define MUSIC_UTILS_MATHUTILS_H_INCLUDED
 #include "utils/MathUtils.h"
+#endif
+
+#ifndef MUSIC_FILEITEM_H_INCLUDED
+#define MUSIC_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
 
 using namespace std;
 using namespace MUSIC_INFO;

@@ -28,7 +28,11 @@
    andreas@angelcode.com
 */
 
+#ifndef SOURCE_AS_CONFIG_H_INCLUDED
+#define SOURCE_AS_CONFIG_H_INCLUDED
 #include "as_config.h"
+#endif
+
 
 #include <stdarg.h>		// va_list, va_start(), etc
 #include <stdlib.h>     // strtod(), strtol()
@@ -38,7 +42,11 @@
 #include <memory.h>
 #endif
 
+#ifndef SOURCE_AS_STRING_H_INCLUDED
+#define SOURCE_AS_STRING_H_INCLUDED
 #include "as_string.h"
+#endif
+
 
 asCString::asCString()
 {

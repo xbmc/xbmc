@@ -20,9 +20,21 @@
  *
  */
 
+#ifndef DVDDEMUXERS_UTILS_STDSTRING_H_INCLUDED
+#define DVDDEMUXERS_UTILS_STDSTRING_H_INCLUDED
 #include "utils/StdString.h"
+#endif
+
+#ifndef DVDDEMUXERS_SYSTEM_H_INCLUDED
+#define DVDDEMUXERS_SYSTEM_H_INCLUDED
 #include "system.h"
+#endif
+
+#ifndef DVDDEMUXERS_DVDDEMUXPACKET_H_INCLUDED
+#define DVDDEMUXERS_DVDDEMUXPACKET_H_INCLUDED
 #include "DVDDemuxPacket.h"
+#endif
+
 
 class CDVDInputStream;
 
@@ -34,7 +46,11 @@ class CDVDInputStream;
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
+#ifndef DVDDEMUXERS_DLLAVCODEC_H_INCLUDED
+#define DVDDEMUXERS_DLLAVCODEC_H_INCLUDED
 #include "DllAvCodec.h"
+#endif
+
 
 #ifndef __GNUC__
 #pragma warning(pop)

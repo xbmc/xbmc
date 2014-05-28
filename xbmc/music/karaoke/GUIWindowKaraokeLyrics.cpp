@@ -18,16 +18,52 @@
  *
  */
 
+#ifndef KARAOKE_APPLICATION_H_INCLUDED
+#define KARAOKE_APPLICATION_H_INCLUDED
 #include "Application.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
-#include "settings/AdvancedSettings.h"
+#endif
 
+#ifndef KARAOKE_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define KARAOKE_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef KARAOKE_GUILIB_KEY_H_INCLUDED
+#define KARAOKE_GUILIB_KEY_H_INCLUDED
+#include "guilib/Key.h"
+#endif
+
+#ifndef KARAOKE_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#define KARAOKE_SETTINGS_ADVANCEDSETTINGS_H_INCLUDED
+#include "settings/AdvancedSettings.h"
+#endif
+
+
+#ifndef KARAOKE_GUIDIALOGKARAOKESONGSELECTOR_H_INCLUDED
+#define KARAOKE_GUIDIALOGKARAOKESONGSELECTOR_H_INCLUDED
 #include "GUIDialogKaraokeSongSelector.h"
+#endif
+
+#ifndef KARAOKE_GUIWINDOWKARAOKELYRICS_H_INCLUDED
+#define KARAOKE_GUIWINDOWKARAOKELYRICS_H_INCLUDED
 #include "GUIWindowKaraokeLyrics.h"
+#endif
+
+#ifndef KARAOKE_KARAOKELYRICS_H_INCLUDED
+#define KARAOKE_KARAOKELYRICS_H_INCLUDED
 #include "karaokelyrics.h"
+#endif
+
+#ifndef KARAOKE_KARAOKEWINDOWBACKGROUND_H_INCLUDED
+#define KARAOKE_KARAOKEWINDOWBACKGROUND_H_INCLUDED
 #include "karaokewindowbackground.h"
+#endif
+
+#ifndef KARAOKE_THREADS_SINGLELOCK_H_INCLUDED
+#define KARAOKE_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
 
 
 CGUIWindowKaraokeLyrics::CGUIWindowKaraokeLyrics(void)

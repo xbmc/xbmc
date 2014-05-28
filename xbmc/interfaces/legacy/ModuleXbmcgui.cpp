@@ -18,11 +18,31 @@
  *
  */
 
+#ifndef LEGACY_MODULEXBMCGUI_H_INCLUDED
+#define LEGACY_MODULEXBMCGUI_H_INCLUDED
 #include "ModuleXbmcgui.h"
+#endif
+
+#ifndef LEGACY_LANGUAGEHOOK_H_INCLUDED
+#define LEGACY_LANGUAGEHOOK_H_INCLUDED
 #include "LanguageHook.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GRAPHICCONTEXT_H_INCLUDED
+#define LEGACY_GUILIB_GRAPHICCONTEXT_H_INCLUDED
 #include "guilib/GraphicContext.h"
+#endif
+
+#ifndef LEGACY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
+#define LEGACY_GUILIB_GUIWINDOWMANAGER_H_INCLUDED
 #include "guilib/GUIWindowManager.h"
+#endif
+
+#ifndef LEGACY_UTILS_LOG_H_INCLUDED
+#define LEGACY_UTILS_LOG_H_INCLUDED
 #include "utils/log.h"
+#endif
+
 
 #define NOTIFICATION_INFO     "info"
 #define NOTIFICATION_WARNING  "warning"

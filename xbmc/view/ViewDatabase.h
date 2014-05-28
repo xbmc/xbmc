@@ -18,7 +18,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef VIEW_DBWRAPPERS_DATABASE_H_INCLUDED
+#define VIEW_DBWRAPPERS_DATABASE_H_INCLUDED
 #include "dbwrappers/Database.h"
+#endif
+
 
 class CViewState;
 

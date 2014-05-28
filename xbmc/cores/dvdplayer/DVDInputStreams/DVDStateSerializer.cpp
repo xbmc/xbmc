@@ -25,9 +25,21 @@
 #include "system.h"
 #endif
 
+#ifndef DVDINPUTSTREAMS_DLLDVDNAV_H_INCLUDED
+#define DVDINPUTSTREAMS_DLLDVDNAV_H_INCLUDED
 #include "DllDvdNav.h"
+#endif
+
+#ifndef DVDINPUTSTREAMS_UTILS_XBMCTINYXML_H_INCLUDED
+#define DVDINPUTSTREAMS_UTILS_XBMCTINYXML_H_INCLUDED
 #include "utils/XBMCTinyXML.h"
+#endif
+
+#ifndef DVDINPUTSTREAMS_DVDSTATESERIALIZER_H_INCLUDED
+#define DVDINPUTSTREAMS_DVDSTATESERIALIZER_H_INCLUDED
 #include "DVDStateSerializer.h"
+#endif
+
 #include <sstream>
 
 bool CDVDStateSerializer::test( const dvd_state_t *state  )

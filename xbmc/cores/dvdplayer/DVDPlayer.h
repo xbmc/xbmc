@@ -20,27 +20,95 @@
  *
  */
 
+#ifndef DVDPLAYER_CORES_IPLAYER_H_INCLUDED
+#define DVDPLAYER_CORES_IPLAYER_H_INCLUDED
 #include "cores/IPlayer.h"
+#endif
+
+#ifndef DVDPLAYER_THREADS_THREAD_H_INCLUDED
+#define DVDPLAYER_THREADS_THREAD_H_INCLUDED
 #include "threads/Thread.h"
+#endif
 
+
+#ifndef DVDPLAYER_IDVDPLAYER_H_INCLUDED
+#define DVDPLAYER_IDVDPLAYER_H_INCLUDED
 #include "IDVDPlayer.h"
+#endif
 
+
+#ifndef DVDPLAYER_DVDMESSAGEQUEUE_H_INCLUDED
+#define DVDPLAYER_DVDMESSAGEQUEUE_H_INCLUDED
 #include "DVDMessageQueue.h"
+#endif
+
+#ifndef DVDPLAYER_DVDCLOCK_H_INCLUDED
+#define DVDPLAYER_DVDCLOCK_H_INCLUDED
 #include "DVDClock.h"
+#endif
+
+#ifndef DVDPLAYER_DVDPLAYERAUDIO_H_INCLUDED
+#define DVDPLAYER_DVDPLAYERAUDIO_H_INCLUDED
 #include "DVDPlayerAudio.h"
+#endif
+
+#ifndef DVDPLAYER_DVDPLAYERVIDEO_H_INCLUDED
+#define DVDPLAYER_DVDPLAYERVIDEO_H_INCLUDED
 #include "DVDPlayerVideo.h"
+#endif
+
+#ifndef DVDPLAYER_DVDPLAYERSUBTITLE_H_INCLUDED
+#define DVDPLAYER_DVDPLAYERSUBTITLE_H_INCLUDED
 #include "DVDPlayerSubtitle.h"
+#endif
+
+#ifndef DVDPLAYER_DVDPLAYERTELETEXT_H_INCLUDED
+#define DVDPLAYER_DVDPLAYERTELETEXT_H_INCLUDED
 #include "DVDPlayerTeletext.h"
+#endif
 
+
+#ifndef DVDPLAYER_DVDCHAPTERREADER_H_INCLUDED
+#define DVDPLAYER_DVDCHAPTERREADER_H_INCLUDED
 //#include "DVDChapterReader.h"
-#include "DVDSubtitles/DVDFactorySubtitle.h"
-#include "utils/BitstreamStats.h"
+#endif
 
+#ifndef DVDPLAYER_DVDSUBTITLES_DVDFACTORYSUBTITLE_H_INCLUDED
+#define DVDPLAYER_DVDSUBTITLES_DVDFACTORYSUBTITLE_H_INCLUDED
+#include "DVDSubtitles/DVDFactorySubtitle.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_BITSTREAMSTATS_H_INCLUDED
+#define DVDPLAYER_UTILS_BITSTREAMSTATS_H_INCLUDED
+#include "utils/BitstreamStats.h"
+#endif
+
+
+#ifndef DVDPLAYER_EDL_H_INCLUDED
+#define DVDPLAYER_EDL_H_INCLUDED
 #include "Edl.h"
+#endif
+
+#ifndef DVDPLAYER_FILEITEM_H_INCLUDED
+#define DVDPLAYER_FILEITEM_H_INCLUDED
 #include "FileItem.h"
+#endif
+
+#ifndef DVDPLAYER_THREADS_SINGLELOCK_H_INCLUDED
+#define DVDPLAYER_THREADS_SINGLELOCK_H_INCLUDED
 #include "threads/SingleLock.h"
+#endif
+
+#ifndef DVDPLAYER_UTILS_STREAMDETAILS_H_INCLUDED
+#define DVDPLAYER_UTILS_STREAMDETAILS_H_INCLUDED
 #include "utils/StreamDetails.h"
+#endif
+
+#ifndef DVDPLAYER_THREADS_SYSTEMCLOCK_H_INCLUDED
+#define DVDPLAYER_THREADS_SYSTEMCLOCK_H_INCLUDED
 #include "threads/SystemClock.h"
+#endif
+
 
 
 class CDVDInputStream;

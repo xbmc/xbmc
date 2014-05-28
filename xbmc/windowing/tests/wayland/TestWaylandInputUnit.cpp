@@ -23,11 +23,27 @@
 
 #include <wayland-client-protocol.h>
 
+#ifndef WAYLAND_WINDOWING_WAYLAND_POINTER_H_INCLUDED
+#define WAYLAND_WINDOWING_WAYLAND_POINTER_H_INCLUDED
 #include "windowing/wayland/Pointer.h"
-#include "windowing/wayland/PointerProcessor.h"
+#endif
 
+#ifndef WAYLAND_WINDOWING_WAYLAND_POINTERPROCESSOR_H_INCLUDED
+#define WAYLAND_WINDOWING_WAYLAND_POINTERPROCESSOR_H_INCLUDED
+#include "windowing/wayland/PointerProcessor.h"
+#endif
+
+
+#ifndef WAYLAND_STUBCURSORMANAGER_H_INCLUDED
+#define WAYLAND_STUBCURSORMANAGER_H_INCLUDED
 #include "StubCursorManager.h"
+#endif
+
+#ifndef WAYLAND_STUBEVENTLISTENER_H_INCLUDED
+#define WAYLAND_STUBEVENTLISTENER_H_INCLUDED
 #include "StubEventListener.h"
+#endif
+
 
 using ::testing::Values;
 using ::testing::WithParamInterface;
