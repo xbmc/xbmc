@@ -3122,7 +3122,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case CONTAINER_PLEXCONTENT:
         {
           CStdString match = m_stringParameters[info.GetData2()];
-          CGUIWindow* window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+          CGUIWindow* window = dynamic_cast<CGUIPlexMediaWindow *>(GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW));
           if (window)
             bReturn = ((CGUIPlexMediaWindow *)window)->MatchPlexContent(match);
         }
@@ -3130,7 +3130,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case CONTAINER_PLEXFILTER:
         {
           CStdString match = m_stringParameters[info.GetData2()];
-          CGUIWindow* window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+          CGUIWindow* window = dynamic_cast<CGUIPlexMediaWindow *>(GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW));
           if (window)
             bReturn = ((CGUIPlexMediaWindow *)window)->MatchPlexFilter(match);
         }
@@ -3138,7 +3138,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case CONTAINER_UNIFORM_PROPERTY:
         {
           CStdString property = m_stringParameters[info.GetData2()];
-          CGUIWindow* window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+          CGUIWindow* window = dynamic_cast<CGUIPlexMediaWindow *>(GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW));
           if (window)
             bReturn = ((CGUIPlexMediaWindow *)window)->MatchUniformProperty(property);
         }
