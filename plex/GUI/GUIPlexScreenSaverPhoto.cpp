@@ -302,7 +302,10 @@ void CGUIPlexScreenSaverPhoto::OnJobComplete(unsigned int jobID, bool success, C
                                         CTextureInfo(),
                                         15000, 500, true, true, 0);
       m_multiImage->SetVisible(true);
-      m_multiImage->SetAspectRatio(CAspectRatio(CAspectRatio::AR_KEEP));
+
+      CAspectRatio ar(CAspectRatio::AR_SCALE);
+      ar.align = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_TOP;
+      m_multiImage->SetAspectRatio(ar);
 
       CGUIMessage msg(GUI_MSG_LABEL_BIND, 0, m_multiImage->GetID(), 0, 0, m_images.get());
       CApplicationMessenger::Get().SendGUIMessage(msg, GetID());
