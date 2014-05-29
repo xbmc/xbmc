@@ -43,7 +43,8 @@ enum AEDataFormat
   
   AE_FMT_S24BE4,
   AE_FMT_S24LE4,
-  AE_FMT_S24NE4, /* S24 in 4 bytes */
+  AE_FMT_S24NE4,    // 24 bits in lower 3 bytes
+  AE_FMT_S24NE4MSB, // S32 with bits_per_sample < 32
 
   AE_FMT_S24BE3,
   AE_FMT_S24LE3,
@@ -66,6 +67,7 @@ enum AEDataFormat
   AE_FMT_S16NEP,
   AE_FMT_S32NEP,
   AE_FMT_S24NE4P,
+  AE_FMT_S24NE4MSBP,
   AE_FMT_S24NE3P,
   AE_FMT_DOUBLEP,
   AE_FMT_FLOATP,

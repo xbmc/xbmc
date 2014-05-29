@@ -2593,6 +2593,7 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
   dst_config.sample_rate = m_internalFormat.m_sampleRate;
   dst_config.fmt = CActiveAEResample::GetAVSampleFormat(m_internalFormat.m_dataFormat);
   dst_config.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_internalFormat.m_dataFormat);
+  dst_config.dither_bits = CAEUtil::DataFormatToDitherBits(m_internalFormat.m_dataFormat);
 
   CActiveAEResample *resampler = new CActiveAEResample();
   resampler->Init(dst_config.channel_layout,
@@ -2600,11 +2601,13 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
                   dst_config.sample_rate,
                   dst_config.fmt,
                   dst_config.bits_per_sample,
+                  dst_config.dither_bits,
                   orig_config.channel_layout,
                   orig_config.channels,
                   orig_config.sample_rate,
                   orig_config.fmt,
                   orig_config.bits_per_sample,
+                  orig_config.dither_bits,
                   false,
                   true,
                   NULL,

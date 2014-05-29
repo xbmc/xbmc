@@ -41,7 +41,7 @@ CActiveAEResample::~CActiveAEResample()
     swr_free(&m_pContext);
 }
 
-bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, int dst_bits, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, int src_bits, bool upmix, bool normalize, CAEChannelInfo *remapLayout, AEQuality quality)
+bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, int dst_bits, int dst_dither, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, int src_bits, int src_dither, bool upmix, bool normalize, CAEChannelInfo *remapLayout, AEQuality quality)
 {
   if (!m_loaded)
     return false;
@@ -51,11 +51,13 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
   m_dst_rate = dst_rate;
   m_dst_fmt = dst_fmt;
   m_dst_bits = dst_bits;
+  m_dst_dither_bits = dst_dither;
   m_src_chan_layout = src_chan_layout;
   m_src_channels = src_channels;
   m_src_rate = src_rate;
   m_src_fmt = src_fmt;
   m_src_bits = src_bits;
+  m_src_dither_bits = src_dither;
 
   if (m_dst_chan_layout == 0)
     m_dst_chan_layout = av_get_default_channel_layout(m_dst_channels);
@@ -195,6 +197,24 @@ int CActiveAEResample::Resample(uint8_t **dst_buffer, int dst_samples, uint8_t *
     CLog::Log(LOGERROR, "CActiveAEResample::Resample - resample failed");
     return 0;
   }
+
+  // shift bits if destination format requires it, swr_resamples aligns to the left
+  if (m_dst_fmt == AV_SAMPLE_FMT_S32 || m_dst_fmt == AV_SAMPLE_FMT_S32P)
+  {
+    if (m_dst_bits != 32 && (m_dst_dither_bits + m_dst_bits) != 32)
+    {
+      int planes = av_sample_fmt_is_planar(m_dst_fmt) ? m_dst_channels : 1;
+      int samples = ret * m_dst_channels / planes;
+      for (int i=0; i<planes; i++)
+      {
+        uint32_t* buf = (uint32_t*)dst_buffer[i];
+        for (int j=0; j<samples; j++)
+        {
+          *buf = *buf >> m_dst_dither_bits;
+        }
+      }
+    }
+  }
   return ret;
 }
 
@@ -282,6 +302,7 @@ AVSampleFormat CActiveAEResample::GetAVSampleFormat(AEDataFormat format)
   else if (format == AE_FMT_S16NE)  return AV_SAMPLE_FMT_S16;
   else if (format == AE_FMT_S32NE)  return AV_SAMPLE_FMT_S32;
   else if (format == AE_FMT_S24NE4) return AV_SAMPLE_FMT_S32;
+  else if (format == AE_FMT_S24NE4MSB)return AV_SAMPLE_FMT_S32;
   else if (format == AE_FMT_FLOAT)  return AV_SAMPLE_FMT_FLT;
   else if (format == AE_FMT_DOUBLE) return AV_SAMPLE_FMT_DBL;
 
@@ -289,6 +310,7 @@ AVSampleFormat CActiveAEResample::GetAVSampleFormat(AEDataFormat format)
   else if (format == AE_FMT_S16NEP)  return AV_SAMPLE_FMT_S16P;
   else if (format == AE_FMT_S32NEP)  return AV_SAMPLE_FMT_S32P;
   else if (format == AE_FMT_S24NE4P) return AV_SAMPLE_FMT_S32P;
+  else if (format == AE_FMT_S24NE4MSBP)return AV_SAMPLE_FMT_S32P;
   else if (format == AE_FMT_FLOATP)  return AV_SAMPLE_FMT_FLTP;
   else if (format == AE_FMT_DOUBLEP) return AV_SAMPLE_FMT_DBLP;
 
