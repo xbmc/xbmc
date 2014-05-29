@@ -36,6 +36,13 @@ int CHTTPImageHandler::HandleHTTPRequest(const HTTPRequest &request)
   {
     m_path = request.url.substr(7);
 
+    /* In old version of libmicrohttpd the path was decoded, this was wrong.
+     * This was fix in version 0.9.35.0 : https://gnunet.org/bugs/view.php?id=3371
+     * The path must be decoded in XBMC */
+#if MHD_VERSION >= 0x00093500
+    m_path = CURL::Decode(m_path);
+#endif
+
     XFILE::CImageFile imageFile;
     if (imageFile.Exists(m_path))
     {
