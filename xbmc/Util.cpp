@@ -1363,33 +1363,16 @@ void CUtil::DeleteDirectoryCache(const CStdString &prefix)
 }
 
 
-void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, bool bUseFileDirectories)
+void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, unsigned int flags /* = DIR_FLAG_DEFAULTS */)
 {
   CFileItemList myItems;
-  int flags = DIR_FLAG_DEFAULTS;
-  if (!bUseFileDirectories)
-    flags |= DIR_FLAG_NO_FILE_DIRS;
   CDirectory::GetDirectory(strPath,myItems,strMask,flags);
   for (int i=0;i<myItems.Size();++i)
   {
     if (myItems[i]->m_bIsFolder)
-      CUtil::GetRecursiveListing(myItems[i]->GetPath(),items,strMask,bUseFileDirectories);
+      CUtil::GetRecursiveListing(myItems[i]->GetPath(),items,strMask,flags);
     else
       items.Add(myItems[i]);
-  }
-}
-
-void CUtil::GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& item)
-{
-  CFileItemList myItems;
-  CDirectory::GetDirectory(strPath,myItems,"",DIR_FLAG_NO_FILE_DIRS);
-  for (int i=0;i<myItems.Size();++i)
-  {
-    if (myItems[i]->m_bIsFolder && !myItems[i]->GetPath().Equals(".."))
-    {
-      item.Add(myItems[i]);
-      CUtil::GetRecursiveDirsListing(myItems[i]->GetPath(),item);
-    }
   }
 }
 

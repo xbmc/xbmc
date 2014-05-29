@@ -272,7 +272,7 @@ namespace VIDEO
       }
       if (!bSkip)
       { // need to fetch the folder
-        CDirectory::GetDirectory(strDirectory, items, g_advancedSettings.m_videoExtensions);
+        CDirectory::GetDirectory(strDirectory, items, g_advancedSettings.m_videoExtensions, DIR_FLAG_NO_FILE_INFO);
         items.Stack();
         // compute hash
         GetPathHash(items, hash);
@@ -308,7 +308,7 @@ namespace VIDEO
 
       if (foundDirectly && !settings.parent_name_root)
       {
-        CDirectory::GetDirectory(strDirectory, items, g_advancedSettings.m_videoExtensions);
+        CDirectory::GetDirectory(strDirectory, items, g_advancedSettings.m_videoExtensions, DIR_FLAG_NO_FILE_INFO);
         items.SetPath(strDirectory);
         GetPathHash(items, hash);
         bSkip = true;
@@ -666,14 +666,10 @@ namespace VIDEO
 
     if (item->m_bIsFolder)
     {
-      CUtil::GetRecursiveListing(item->GetPath(), items, g_advancedSettings.m_videoExtensions, true);
       CStdString hash, dbHash;
-      int numFilesInFolder = GetPathHash(items, hash);
-
+      hash = GetRecursiveFastHash(item->GetPath());
       if (m_database.GetPathHash(item->GetPath(), dbHash) && dbHash == hash)
       {
-        m_currentItem += numFilesInFolder;
-
         // update our dialog with our progress
         if (m_handle)
         {
@@ -684,6 +680,7 @@ namespace VIDEO
         }
         return;
       }
+      CUtil::GetRecursiveListing(item->GetPath(), items, g_advancedSettings.m_videoExtensions, DIR_FLAG_NO_FILE_INFO);
       m_pathsToClean.insert(m_database.GetPathId(item->GetPath()));
       m_database.GetPathsForTvShow(m_database.GetTvShowId(item->GetPath()), m_pathsToClean);
       item->SetProperty("hash", hash);
@@ -1653,7 +1650,6 @@ namespace VIDEO
 
   int CVideoInfoScanner::GetPathHash(const CFileItemList &items, CStdString &hash)
   {
-    // Create a hash based on the filenames, filesize and filedate.  Also count the number of files
     if (0 == items.Size()) return 0;
     XBMC::XBMC_MD5 md5state;
     int count = 0;
@@ -1661,11 +1657,15 @@ namespace VIDEO
     {
       const CFileItemPtr pItem = items[i];
       md5state.append(pItem->GetPath());
-      md5state.append((unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
-      FILETIME time = pItem->m_dateTime;
-      md5state.append((unsigned char *)&time, sizeof(FILETIME));
       if (pItem->IsVideo() && !pItem->IsPlayList() && !pItem->IsNFO())
+      {
+        CStdString strPath = pItem->GetPath();
+        while (URIUtils::IsInArchive(strPath))
+          strPath = URIUtils::GetParentPath(strPath);
+
+        md5state.append(GetFastHash(strPath));
         count++;
+      }
     }
     md5state.getDigest(hash);
     return count;
@@ -1692,6 +1692,26 @@ namespace VIDEO
       if (time)
         return StringUtils::Format("fast%"PRId64, time);
     }
+    return "";
+  }
+
+  CStdString CVideoInfoScanner::GetRecursiveFastHash(const CStdString &directory) const
+  {
+    CFileItemList items;
+    items.Add(CFileItemPtr(new CFileItem(directory.c_str(), true)));
+    CUtil::GetRecursiveListing(directory, items, "/", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
+
+    int64_t time = 0;
+    for (int i=0; i < items.Size(); ++i)
+    {
+      struct __stat64 buffer;
+      if (XFILE::CFile::Stat(items[i]->GetPath(), &buffer) == 0)
+        time += buffer.st_mtime ? buffer.st_mtime : buffer.st_ctime;
+    }
+
+    if (time)
+      return StringUtils::Format("fast%"PRId64, time);
+
     return "";
   }
 
