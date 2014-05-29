@@ -199,6 +199,14 @@ int CActiveAEResample::Resample(uint8_t **dst_buffer, int dst_samples, uint8_t *
   }
 
   // shift bits if destination format requires it, swr_resamples aligns to the left
+  // Example:
+  // ALSA uses SNE24NE that means 24 bit load in 32 bit package and 0 dither bits
+  // WASAPI uses SNE24NEMSB which is 24 bit load in 32 bit package and 8 dither bits
+  // dither bits are always assumed from the right
+  // FFmpeg internally calculates with S24NEMSB which means, that we need to shift the
+  // data 8 bits to the right in order to get the correct alignment of 0 dither bits
+  // if we want to use ALSA as output. For WASAPI nothing had to be done.
+  // SNE24NEMSB 1 1 1 0 >> 8 = 0 1 1 1 = SNE24NE
   if (m_dst_fmt == AV_SAMPLE_FMT_S32 || m_dst_fmt == AV_SAMPLE_FMT_S32P)
   {
     if (m_dst_bits != 32 && (m_dst_dither_bits + m_dst_bits) != 32)
