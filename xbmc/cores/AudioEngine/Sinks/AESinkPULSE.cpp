@@ -73,20 +73,12 @@ static pa_sample_format AEFormatToPulseFormat(AEDataFormat format)
 {
   switch (format)
   {
-    case AE_FMT_U8    : return PA_SAMPLE_U8;
-    case AE_FMT_S16LE : return PA_SAMPLE_S16LE;
-    case AE_FMT_S16BE : return PA_SAMPLE_S16BE;
-    case AE_FMT_S16NE : return PA_SAMPLE_S16NE;
-    case AE_FMT_S24LE3: return PA_SAMPLE_S24LE;
-    case AE_FMT_S24BE3: return PA_SAMPLE_S24BE;
-    case AE_FMT_S24NE3: return PA_SAMPLE_S24NE;
-    case AE_FMT_S24LE4: return PA_SAMPLE_S24_32LE;
-    case AE_FMT_S24BE4: return PA_SAMPLE_S24_32BE;
-    case AE_FMT_S24NE4: return PA_SAMPLE_S24_32NE;
-    case AE_FMT_S32BE : return PA_SAMPLE_S32BE;
-    case AE_FMT_S32LE : return PA_SAMPLE_S32LE;
-    case AE_FMT_S32NE : return PA_SAMPLE_S32NE;
-    case AE_FMT_FLOAT : return PA_SAMPLE_FLOAT32;
+    case AE_FMT_U8     : return PA_SAMPLE_U8;
+    case AE_FMT_S16NE  : return PA_SAMPLE_S16NE;
+    case AE_FMT_S24NE3 : return PA_SAMPLE_S24NE;
+    case AE_FMT_S24NE4 : return PA_SAMPLE_S24_32NE;
+    case AE_FMT_S32NE  : return PA_SAMPLE_S32NE;
+    case AE_FMT_FLOAT  : return PA_SAMPLE_FLOAT32;
 
     case AE_FMT_AC3:
     case AE_FMT_DTS:
@@ -113,17 +105,9 @@ static pa_encoding AEFormatToPulseEncoding(AEDataFormat format)
 
 static AEDataFormat defaultDataFormats[] = {
   AE_FMT_U8,
-  AE_FMT_S16LE,
-  AE_FMT_S16BE,
   AE_FMT_S16NE,
-  AE_FMT_S24LE3,
-  AE_FMT_S24BE3,
   AE_FMT_S24NE3,
-  AE_FMT_S24LE4,
-  AE_FMT_S24BE4,
   AE_FMT_S24NE4,
-  AE_FMT_S32BE,
-  AE_FMT_S32LE,
   AE_FMT_S32NE,
   AE_FMT_FLOAT
 };
