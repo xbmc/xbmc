@@ -82,7 +82,6 @@ const unsigned int CAEUtil::DataFormatToBits(const enum AEDataFormat dataFormat)
   static const unsigned int formats[AE_FMT_MAX] =
   {
     8,                   /* U8     */
-    8,                   /* S8     */
 
     16,                  /* S16BE  */
     16,                  /* S16LE  */
@@ -150,7 +149,6 @@ const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
   static const char *formats[AE_FMT_MAX] =
   {
     "AE_FMT_U8",
-    "AE_FMT_S8",
 
     "AE_FMT_S16BE",
     "AE_FMT_S16LE",

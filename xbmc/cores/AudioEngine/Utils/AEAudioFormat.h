@@ -31,7 +31,6 @@ enum AEDataFormat
   AE_FMT_INVALID = -1,
 
   AE_FMT_U8,
-  AE_FMT_S8,
 
   AE_FMT_S16BE,
   AE_FMT_S16LE,
