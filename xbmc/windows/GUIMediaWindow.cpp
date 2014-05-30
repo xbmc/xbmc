@@ -82,6 +82,7 @@
 #include "Client/PlexServerManager.h"
 #include "plex/PlexApplication.h"
 #include "ViewDatabase.h"
+#include "GUI/GUIDialogPlexError.h"
 /* END PLEX */
 
 #define CONTROL_BTNVIEWASICONS       2
@@ -847,9 +848,14 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
     m_vecItems->ClearProperties();
 
     if (items.m_wasListingCancelled == false)
+    {
       CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", strDirectory.c_str());
+      CGUIDialogPlexError::ShowError("GetDirectory Failed for :", strDirectory,"","");
+    }
     else
+    {
       CLog::Log(LOGINFO,"CGUIMediaWindow::GetDirectory(%s) was canceled", strDirectory.c_str());
+    }
 
 #ifndef __PLEX__
     CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", strDirectory.c_str());
