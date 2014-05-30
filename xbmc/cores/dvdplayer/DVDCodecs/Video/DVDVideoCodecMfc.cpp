@@ -64,6 +64,7 @@ bool CDVDVideoCodecMfc::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) {
     MFC5 = true;
     MFC6 = false;
     // MFC5 requires FIMC convertor
+    converter = new FimcConverter();
     if (!converter->OpenDevice()) {
       CLog::Log(LOGDEBUG, "%s::%s - FIMC device not found", CLASSNAME, __func__);
       return false;

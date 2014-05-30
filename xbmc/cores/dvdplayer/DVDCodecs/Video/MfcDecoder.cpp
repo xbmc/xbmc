@@ -131,7 +131,7 @@ bool MfcDecoder::OpenDevice() {
             //formats.push_back(vid_fmtdesc);
             if (vid_fmtdesc.pixelformat == V4L2_PIX_FMT_NV12MT)
               hasNV12MTSupport = true;
-            if (vid_fmtdesc.pixelformat == V4L2_PIX_FMT_NV12);
+            if (vid_fmtdesc.pixelformat == V4L2_PIX_FMT_NV12)
               hasNV12Support = true;
           }
           return hasNV12MTSupport||hasNV12Support;
