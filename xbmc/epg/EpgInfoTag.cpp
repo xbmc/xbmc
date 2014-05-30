@@ -117,6 +117,10 @@ CEpgInfoTag::CEpgInfoTag(const CEpgInfoTag &tag) :
     m_strPlot(tag.m_strPlot),
     m_genre(tag.m_genre),
     m_strEpisodeName(tag.m_strEpisodeName),
+    m_strActor(tag.m_strActor),
+    m_strDirector(tag.m_strDirector),
+    m_strSubtitle(tag.m_strSubtitle),
+    m_strWriter(tag.m_strWriter),
     m_strIconPath(tag.m_strIconPath),
     m_strFileNameAndPath(tag.m_strFileNameAndPath),
     m_startTime(tag.m_startTime),
@@ -155,6 +159,10 @@ bool CEpgInfoTag::operator ==(const CEpgInfoTag& right) const
           m_strPlot            == right.m_strPlot &&
           m_genre              == right.m_genre &&
           m_strEpisodeName     == right.m_strEpisodeName &&
+          m_strActor           == right.m_strActor &&
+          m_strDirector        == right.m_strDirector &&
+          m_strSubtitle        == right.m_strSubtitle &&
+          m_strWriter          == right.m_strWriter &&
           m_strIconPath        == right.m_strIconPath &&
           m_strFileNameAndPath == right.m_strFileNameAndPath &&
           m_startTime          == right.m_startTime &&
@@ -189,6 +197,10 @@ CEpgInfoTag &CEpgInfoTag::operator =(const CEpgInfoTag &other)
   m_strPlot            = other.m_strPlot;
   m_genre              = other.m_genre;
   m_strEpisodeName     = other.m_strEpisodeName;
+  m_strActor           = other.m_strActor;
+  m_strDirector        = other.m_strDirector;
+  m_strSubtitle        = other.m_strSubtitle;
+  m_strWriter          = other.m_strWriter;
   m_strIconPath        = other.m_strIconPath;
   m_strFileNameAndPath = other.m_strFileNameAndPath;
   m_startTime          = other.m_startTime;
@@ -218,6 +230,10 @@ void CEpgInfoTag::Serialize(CVariant &value) const
   value["progress"] = Progress();
   value["progresspercentage"] = ProgressPercentage();
   value["episodename"] = m_strEpisodeName;
+  value["actor"] = m_strActor;
+  value["director"] = m_strDirector;
+  value["subtitle"] = m_strSubtitle;
+  value["writer"] = m_strWriter;
   value["episodenum"] = m_iEpisodeNumber;
   value["episodepart"] = m_iEpisodePart;
   value["hastimer"] = HasTimer();
@@ -776,6 +792,106 @@ CStdString CEpgInfoTag::Icon(void) const
   return retVal;
 }
 
+void CEpgInfoTag::SetActor(const CStdString &strActor)
+{
+  bool bUpdate(false);
+  {
+    CSingleLock lock(m_critSection);
+    if (m_strActor != strActor)
+    {
+      m_strActor = strActor;
+      m_bChanged = true;
+      bUpdate = true;
+    }
+  }
+  if (bUpdate)
+    UpdatePath();
+}
+
+CStdString CEpgInfoTag::Actor(void) const
+{
+  CStdString retVal;
+
+  CSingleLock lock(m_critSection);
+  retVal = m_strActor;
+  return retVal;
+}
+
+void CEpgInfoTag::SetDirector(const CStdString &strDirector)
+{
+  bool bUpdate(false);
+  {
+    CSingleLock lock(m_critSection);
+    if (m_strDirector != strDirector)
+    {
+      m_strDirector = strDirector;
+      m_bChanged = true;
+      bUpdate = true;
+    }
+  }
+  if (bUpdate)
+    UpdatePath();
+}
+
+CStdString CEpgInfoTag::Director(void) const
+{
+  CStdString retVal;
+
+  CSingleLock lock(m_critSection);
+  retVal = m_strDirector;
+  return retVal;
+}
+
+void CEpgInfoTag::SetSubtitle(const CStdString &strSubtitle)
+{
+  bool bUpdate(false);
+  {
+    CSingleLock lock(m_critSection);
+    if (m_strSubtitle != strSubtitle)
+    {
+      m_strSubtitle = strSubtitle;
+      m_bChanged = true;
+      bUpdate = true;
+    }
+  }
+  if (bUpdate)
+    UpdatePath();
+}
+
+CStdString CEpgInfoTag::Subtitle(void) const
+{
+  CStdString retVal;
+
+  CSingleLock lock(m_critSection);
+  retVal = m_strSubtitle;
+  return retVal;
+}
+
+void CEpgInfoTag::SetWriter(const CStdString &strWriter)
+{
+  bool bUpdate(false);
+  {
+    CSingleLock lock(m_critSection);
+    if (m_strWriter != strWriter)
+    {
+      m_strWriter = strWriter;
+      m_bChanged = true;
+      bUpdate = true;
+    }
+  }
+  if (bUpdate)
+    UpdatePath();
+}
+
+CStdString CEpgInfoTag::Writer(void) const
+{
+  CStdString retVal;
+
+  CSingleLock lock(m_critSection);
+  retVal = m_strWriter;
+  return retVal;
+}
+
 void CEpgInfoTag::SetPath(const CStdString &strFileNameAndPath)
 {
   CSingleLock lock(m_critSection);
@@ -867,6 +983,10 @@ void CEpgInfoTag::Update(const EPG_TAG &tag)
   SetEpisodeNum(tag.iEpisodeNumber);
   SetEpisodePart(tag.iEpisodePartNumber);
   SetEpisodeName(tag.strEpisodeName);
+  SetActor(tag.strActor);
+  SetDirector(tag.strDirector);
+  SetSubtitle(tag.strSubtitle);
+  SetWriter(tag.strWriter);
   SetStarRating(tag.iStarRating);
   SetIcon(tag.strIconPath);
 }
@@ -892,6 +1012,10 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
         m_iEpisodePart       != tag.m_iEpisodePart ||
         m_iSeriesNumber      != tag.m_iSeriesNumber ||
         m_strEpisodeName     != tag.m_strEpisodeName ||
+        m_strActor           != tag.m_strActor ||
+        m_strDirector        != tag.m_strDirector ||
+        m_strSubtitle        != tag.m_strSubtitle ||
+        m_strWriter          != tag.m_strWriter ||		
         m_iUniqueBroadcastID != tag.m_iUniqueBroadcastID ||
         EpgID()              != tag.EpgID() ||
         m_pvrChannel         != tag.m_pvrChannel ||
@@ -912,6 +1036,10 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
       m_endTime            = tag.m_endTime;
       m_iGenreType         = tag.m_iGenreType;
       m_iGenreSubType      = tag.m_iGenreSubType;
+      m_strActor           = tag.m_strActor;
+      m_strDirector        = tag.m_strDirector;
+      m_strSubtitle        = tag.m_strSubtitle;
+      m_strWriter          = tag.m_strWriter;
       m_epg                = tag.m_epg;
       m_pvrChannel         = tag.m_pvrChannel;
       if (m_iGenreType == EPG_GENRE_USE_STRING)
