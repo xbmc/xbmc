@@ -59,6 +59,7 @@ struct CoreInfo
   std::string m_strRevision;
   std::string m_strSerial;
   CoreInfo() : m_id(0), m_fSpeed(.0), m_fPct(.0), m_user(0LL), m_nice(0LL), m_system(0LL), m_idle(0LL), m_io(0LL) {}
+  bool operator<(const CoreInfo& other) { return m_id < other.m_id; }
 };
 
 class CCPUInfo

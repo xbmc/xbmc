@@ -53,6 +53,8 @@
 #endif
 
 #ifdef TARGET_WINDOWS
+#include "utils/CharsetConverter.h"
+#include <algorithm>
 #include <intrin.h>
 
 // Defines to help with calls to CPUID
@@ -138,26 +140,69 @@ CCPUInfo::CCPUInfo(void)
   }
 
 #elif defined(TARGET_WINDOWS)
-  char rgValue [128];
-  HKEY hKey;
-  DWORD dwSize=128;
-  DWORD dwMHz=0;
-  LONG ret = RegOpenKeyEx(HKEY_LOCAL_MACHINE,"HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0",0, KEY_READ, &hKey);
-  ret = RegQueryValueEx(hKey,"ProcessorNameString", NULL, NULL, (LPBYTE)rgValue, &dwSize);
-  if(ret == 0)
-    m_cpuModel = rgValue;
+  HKEY hKeyCpuRoot;
+
+  if (RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"HARDWARE\\DESCRIPTION\\System\\CentralProcessor", 0, KEY_READ, &hKeyCpuRoot) == ERROR_SUCCESS)
+  {
+    DWORD num = 0;
+    std::vector<CoreInfo> cpuCores;
+    wchar_t subKeyName[200]; // more than enough
+    DWORD subKeyNameLen = sizeof(subKeyName) / sizeof(wchar_t);
+    while (RegEnumKeyExW(hKeyCpuRoot, num++, subKeyName, &subKeyNameLen, NULL, NULL, NULL, NULL) == ERROR_SUCCESS)
+    {
+      HKEY hCpuKey;
+      if (RegOpenKeyExW(hKeyCpuRoot, subKeyName, 0, KEY_QUERY_VALUE, &hCpuKey) == ERROR_SUCCESS)
+      {
+        CoreInfo cpuCore;
+        if (swscanf_s(subKeyName, L"%i", &cpuCore.m_id) != 1)
+          cpuCore.m_id = num - 1;
+        wchar_t buf[300]; // more than enough
+        DWORD bufSize = sizeof(buf);
+        DWORD valType;
+        if (RegQueryValueExW(hCpuKey, L"ProcessorNameString", NULL, &valType, (LPBYTE)buf, &bufSize) == ERROR_SUCCESS &&
+            valType == REG_SZ)
+        {
+          g_charsetConverter.wToUTF8(std::wstring(buf, bufSize / sizeof(wchar_t)), cpuCore.m_strModel);
+          cpuCore.m_strModel = cpuCore.m_strModel.substr(0, cpuCore.m_strModel.find(char(0))); // remove extra null terminations
+          StringUtils::RemoveDuplicatedSpacesAndTabs(cpuCore.m_strModel);
+          StringUtils::Trim(cpuCore.m_strModel);
+        }
+        bufSize = sizeof(buf);
+        if (RegQueryValueExW(hCpuKey, L"VendorIdentifier", NULL, &valType, (LPBYTE)buf, &bufSize) == ERROR_SUCCESS &&
+            valType == REG_SZ)
+        {
+          g_charsetConverter.wToUTF8(std::wstring(buf, bufSize / sizeof(wchar_t)), cpuCore.m_strVendor);
+          cpuCore.m_strVendor = cpuCore.m_strVendor.substr(0, cpuCore.m_strVendor.find(char(0))); // remove extra null terminations
+        }
+        DWORD mhzVal;
+        bufSize = sizeof(mhzVal);
+        if (RegQueryValueExW(hCpuKey, L"~MHz", NULL, &valType, (LPBYTE)&mhzVal, &bufSize) == ERROR_SUCCESS &&
+            valType == REG_DWORD)
+          cpuCore.m_fSpeed = double(mhzVal);
+
+        RegCloseKey(hCpuKey);
+
+        if (cpuCore.m_strModel.empty())
+          cpuCore.m_strModel = "Unknown";
+        cpuCores.push_back(cpuCore);
+      }
+      subKeyNameLen = sizeof(subKeyName) / sizeof(wchar_t); // restore length value
+    }
+    DWORD err = GetLastError();
+    RegCloseKey(hKeyCpuRoot);
+    std::sort(cpuCores.begin(), cpuCores.end()); // sort cores by id
+    for (size_t i = 0; i < cpuCores.size(); i++)
+      m_cores[i] = cpuCores[i]; // add in sorted order
+  }
+
+  if (!m_cores.empty())
+    m_cpuModel = m_cores.begin()->second.m_strModel;
   else
     m_cpuModel = "Unknown";
 
-  RegCloseKey(hKey);
-
   SYSTEM_INFO siSysInfo;
-  GetSystemInfo(&siSysInfo);
+  GetNativeSystemInfo(&siSysInfo);
   m_cpuCount = siSysInfo.dwNumberOfProcessors;
-
-  CoreInfo core;
-  m_cores[0] = core;
-
 #elif defined(TARGET_FREEBSD)
   size_t len;
   int i;
