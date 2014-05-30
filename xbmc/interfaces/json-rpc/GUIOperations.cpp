@@ -74,6 +74,10 @@ JSONRPC_STATUS CGUIOperations::ShowNotification(const CStdString &method, ITrans
   string message = parameterObject["message"].asString();
   unsigned int displaytime = (unsigned int)parameterObject["displaytime"].asUnsignedInteger();
 
+  /* PLEX */
+  transform(image.begin(), image.end(), image.begin(), ::tolower);
+  /* END PLEX */
+
   if (image.compare("info") == 0)
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, title, message, displaytime);
   else if (image.compare("warning") == 0)
