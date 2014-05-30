@@ -345,6 +345,58 @@ namespace EPG
     CStdString EpisodeName(void) const;
 
     /*!
+     * @brief Change the actor of this event.
+     * @param strActor The new actor.
+     */
+    void SetActor(const CStdString &strActor);
+
+    /*!
+     * @brief Get the actor of this event.
+     * @param bOverrideParental True to override parental control, false check it.
+     * @return The actor.
+     */
+    CStdString Actor(void) const;
+
+    /*!
+     * @brief Change the director of this event.
+     * @param strDirector The new director.
+     */
+    void SetDirector(const CStdString &strDirector);
+
+    /*!
+     * @brief Get the director of this event.
+     * @param bOverrideParental True to override parental control, false check it.
+     * @return The director.
+     */
+    CStdString Director(void) const;	
+
+    /*!
+     * @brief Change the subtitle of this event.
+     * @param strSubtitle The new subtitle.
+     */
+    void SetSubtitle(const CStdString &strSubtitle);
+
+    /*!
+     * @brief Get the subtitle of this event.
+     * @param bOverrideParental True to override parental control, false check it.
+     * @return The subtitle.
+     */
+    CStdString Subtitle(void) const;
+
+    /*!
+     * @brief Change the writer of this event.
+     * @param strWriter The new writer.
+     */
+    void SetWriter(const CStdString &strWriter);
+
+    /*!
+     * @brief Get the writer of this event.
+     * @param bOverrideParental True to override parental control, false check it.
+     * @return The writer.
+     */
+    CStdString Writer(void) const;
+    
+    /*!
      * @brief Change the path to the icon for this event.
      * @param strIconPath The new path.
      */
@@ -451,6 +503,10 @@ namespace EPG
     CStdString               m_strPlot;            /*!< plot */
     std::vector<std::string> m_genre;            /*!< genre */
     CStdString               m_strEpisodeName;     /*!< episode name */
+    CStdString               m_strActor;           /*!< actor */
+    CStdString               m_strDirector;        /*!< director */
+    CStdString               m_strSubtitle;        /*!< subtitle */
+    CStdString               m_strWriter;          /*!< writer */
     CStdString               m_strIconPath;        /*!< the path to the icon */
     CStdString               m_strFileNameAndPath; /*!< the filename and path */
     CDateTime                m_startTime;          /*!< event start time */
