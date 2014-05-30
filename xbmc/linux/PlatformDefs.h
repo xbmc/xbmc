@@ -220,11 +220,6 @@ typedef void*         LPVOID;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
 typedef HANDLE        HDC;
 typedef void*       HWND;
-#if defined(TARGET_DARWIN_OSX)
-typedef SInt32      HRESULT;
-#else
-typedef LONG        HRESULT;
-#endif
 typedef BYTE*       LPBYTE;
 typedef DWORD*        LPDWORD;
 typedef CONST CHAR*   LPCSTR;
@@ -429,21 +424,6 @@ typedef struct _MEMORYSTATUSEX
   uint64_t ullTotalVirtual;
   uint64_t ullAvailVirtual;
 } MEMORYSTATUSEX, *LPMEMORYSTATUSEX;
-
-// Common HRESULT values
-#ifndef NOERROR
-#define NOERROR           (0L)
-#endif
-#ifndef S_OK
-#define S_OK            (0L)
-#endif
-#ifndef E_FAIL
-#define E_FAIL            (0x80004005L)
-#endif
-#ifndef E_OUTOFMEMORY
-#define E_OUTOFMEMORY         (0x8007000EL)
-#endif
-#define FAILED(Status)            ((HRESULT)(Status)<0)
 
 // Basic D3D stuff
 typedef struct _RECT {

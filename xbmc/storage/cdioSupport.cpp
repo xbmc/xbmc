@@ -253,14 +253,14 @@ CCdIoSupport::~CCdIoSupport()
 {
 }
 
-HRESULT CCdIoSupport::EjectTray()
+bool CCdIoSupport::EjectTray()
 {
-  return E_FAIL;
+  return false;
 }
 
-HRESULT CCdIoSupport::CloseTray()
+bool CCdIoSupport::CloseTray()
 {
-  return E_FAIL;
+  return false;
 }
 
 HANDLE CCdIoSupport::OpenCDROM()
