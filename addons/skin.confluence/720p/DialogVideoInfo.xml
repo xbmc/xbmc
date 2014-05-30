@@ -986,8 +986,8 @@
 						<description>Fetch TvTunes stuff</description>
 						<include>ButtonInfoDialogsCommonValues</include>
 						<label>31127</label>
-						<onclick>XBMC.RunScript(script.tvtunes,mode=solo&amp;tvpath=$INFO[ListItem.FilenameAndPath]&amp;tvname=$INFO[ListItem.TVShowTitle])</onclick>
-						<visible>Skin.HasSetting(ActivateTvTunes) + System.HasAddon(script.tvtunes) + IsEmpty(Window(movieinformation).Property("TvTunes_HideVideoInfoButton")) + [Container.Content(TVShows) | Container.Content(Movies)]</visible>
+						<onclick>XBMC.RunScript(script.tvtunes,mode=solo)</onclick>
+						<visible>Skin.HasSetting(ActivateTvTunes) + System.HasAddon(script.tvtunes) + [Container.Content(TVShows) | Container.Content(movies) | Container.Content(musicvideos)] + IsEmpty(Window(movieinformation).Property("TvTunes_HideVideoInfoButton"))</visible>
 					</control>
 				</control>
 			</control>
