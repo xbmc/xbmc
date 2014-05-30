@@ -95,20 +95,6 @@ using namespace std;
 // In milliseconds
 #define MINIMUM_TIME_BETWEEN_READS 500
 
-#ifdef TARGET_WINDOWS
-/* replacement gettimeofday implementation, copy from dvdnav_internal.h */
-#include <sys/timeb.h>
-static inline int _private_gettimeofday( struct timeval *tv, void *tz )
-{
-  struct timeb t;
-  ftime( &t );
-  tv->tv_sec = t.time;
-  tv->tv_usec = t.millitm * 1000;
-  return 0;
-}
-#define gettimeofday(TV, TZ) _private_gettimeofday((TV), (TZ))
-#endif
-
 CCPUInfo::CCPUInfo(void)
 {
   m_fProcStat = m_fProcTemperature = m_fCPUFreq = NULL;
