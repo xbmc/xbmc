@@ -127,40 +127,6 @@ CCPUInfo::CCPUInfo(void)
     cpuVendor = buffer;
   
 #endif
-  
-  // The CPU features
-  len = 512;
-  if (sysctlbyname("machdep.cpu.features", &buffer, &len, NULL, 0) == 0)
-  {
-    char* needle = buffer;
-    if (needle)
-    {
-      char* tok = NULL,
-      * save;
-      tok = strtok_r(needle, " ", &save);
-      while (tok)
-      {
-        if (0 == strcmp(tok, "MMX"))
-          m_cpuFeatures |= CPU_FEATURE_MMX;
-        else if (0 == strcmp(tok, "MMXEXT"))
-          m_cpuFeatures |= CPU_FEATURE_MMX2;
-        else if (0 == strcmp(tok, "SSE"))
-          m_cpuFeatures |= CPU_FEATURE_SSE;
-        else if (0 == strcmp(tok, "SSE2"))
-          m_cpuFeatures |= CPU_FEATURE_SSE2;
-        else if (0 == strcmp(tok, "SSE3"))
-          m_cpuFeatures |= CPU_FEATURE_SSE3;
-        else if (0 == strcmp(tok, "SSSE3"))
-          m_cpuFeatures |= CPU_FEATURE_SSSE3;
-        else if (0 == strcmp(tok, "SSE4.1"))
-          m_cpuFeatures |= CPU_FEATURE_SSE4;
-        else if (0 == strcmp(tok, "SSE4.2"))
-          m_cpuFeatures |= CPU_FEATURE_SSE42;
-        tok = strtok_r(NULL, " ", &save);
-      }
-    }
-  }
-
   // Go through each core.
   for (int i=0; i<m_cpuCount; i++)
   {
@@ -794,29 +760,31 @@ void CCPUInfo::ReadCPUFeatures()
     m_cpuFeatures |= CPU_FEATURE_ALTIVEC;
   #elif defined(TARGET_DARWIN_IOS)
   #else
-    size_t len = 512;
+    size_t len = 512 - 1; // '-1' for trailing space
     char buffer[512] ={0};
 
     if (sysctlbyname("machdep.cpu.features", &buffer, &len, NULL, 0) == 0)
     {
       strcat(buffer, " ");
-      if (strstr(buffer,"MMX"))
+      if (strstr(buffer,"MMX "))
         m_cpuFeatures |= CPU_FEATURE_MMX;
+      if (strstr(buffer,"MMXEXT "))
+        m_cpuFeatures |= CPU_FEATURE_MMX2;
       if (strstr(buffer,"SSE "))
         m_cpuFeatures |= CPU_FEATURE_SSE;
-      if (strstr(buffer,"SSE2"))
+      if (strstr(buffer,"SSE2 "))
         m_cpuFeatures |= CPU_FEATURE_SSE2;
       if (strstr(buffer,"SSE3 "))
         m_cpuFeatures |= CPU_FEATURE_SSE3;
-      if (strstr(buffer,"SSSE3"))
+      if (strstr(buffer,"SSSE3 "))
         m_cpuFeatures |= CPU_FEATURE_SSSE3;
-      if (strstr(buffer,"SSE4.1"))
+      if (strstr(buffer,"SSE4.1 "))
         m_cpuFeatures |= CPU_FEATURE_SSE4;
-      if (strstr(buffer,"SSE4.2"))
+      if (strstr(buffer,"SSE4.2 "))
         m_cpuFeatures |= CPU_FEATURE_SSE42;
       if (strstr(buffer,"3DNOW "))
         m_cpuFeatures |= CPU_FEATURE_3DNOW;
-      if (strstr(buffer,"3DNOWEXT"))
+      if (strstr(buffer,"3DNOWEXT "))
        m_cpuFeatures |= CPU_FEATURE_3DNOWEXT;
     }
     else
