@@ -72,6 +72,10 @@ void CEpgDatabase::CreateTables(void)
         "iEpisodeId      integer, "
         "iEpisodePart    integer, "
         "sEpisodeName    varchar(128)"
+        "sActor          text, "
+        "sDirector       text, "
+        "sSubtitle       text, "
+        "sWriter         text, "
       ")"
   );
   CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'lastepgscan'", __FUNCTION__);
@@ -220,6 +224,10 @@ int CEpgDatabase::Get(CEpg &epg)
         newTag.m_iEpisodeNumber     = m_pDS->fv("iEpisodeId").get_asInt();
         newTag.m_iEpisodePart       = m_pDS->fv("iEpisodePart").get_asInt();
         newTag.m_strEpisodeName     = m_pDS->fv("sEpisodeName").get_asString().c_str();
+        newTag.m_strActor           = m_pDS->fv("sActor").get_asString().c_str();
+        newTag.m_strDirector        = m_pDS->fv("sDirector").get_asString().c_str();
+        newTag.m_strSubtitle        = m_pDS->fv("sSubtitle").get_asString().c_str();
+        newTag.m_strWriter          = m_pDS->fv("sWriter").get_asString().c_str();
         newTag.m_iSeriesNumber      = m_pDS->fv("iSeriesId").get_asInt();
 
         epg.AddEntry(newTag);
@@ -328,12 +336,12 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
     strQuery = PrepareSQL("REPLACE INTO epgtags (idEpg, iStartTime, "
         "iEndTime, sTitle, sPlotOutline, sPlot, iGenreType, iGenreSubType, sGenre, "
         "iFirstAired, iParentalRating, iStarRating, bNotify, iSeriesId, "
-        "iEpisodeId, iEpisodePart, sEpisodeName, iBroadcastUid) "
-        "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i);",
+        "iEpisodeId, iEpisodePart, sEpisodeName, sActor, sDirector, sSubtitle, sWriter, iBroadcastUid) "
+        "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', '%s', '%s', '%s', '%s', %i);",
         tag.EpgID(), iStartTime, iEndTime,
         tag.Title(true).c_str(), tag.PlotOutline(true).c_str(), tag.Plot(true).c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
         iFirstAired, tag.ParentalRating(), tag.StarRating(), tag.Notify(),
-        tag.SeriesNum(), tag.EpisodeNum(), tag.EpisodePart(), tag.EpisodeName().c_str(),
+        tag.SeriesNum(), tag.EpisodeNum(), tag.EpisodePart(), tag.EpisodeName().c_str(), tag.Actor().c_str(), tag.Director().c_str(), tag.Subtitle().c_str(), tag.Writer().c_str(),
         tag.UniqueBroadcastID());
   }
   else
@@ -341,12 +349,12 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
     strQuery = PrepareSQL("REPLACE INTO epgtags (idEpg, iStartTime, "
         "iEndTime, sTitle, sPlotOutline, sPlot, iGenreType, iGenreSubType, sGenre, "
         "iFirstAired, iParentalRating, iStarRating, bNotify, iSeriesId, "
-        "iEpisodeId, iEpisodePart, sEpisodeName, iBroadcastUid, idBroadcast) "
-        "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i, %i);",
+        "iEpisodeId, iEpisodePart, sEpisodeName, sActor, sDirector, sSubtitle, sWriter, iBroadcastUid, idBroadcast) "
+        "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', '%s', '%s', '%s', '%s', %i, %i);",
         tag.EpgID(), iStartTime, iEndTime,
         tag.Title(true).c_str(), tag.PlotOutline(true).c_str(), tag.Plot(true).c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
         iFirstAired, tag.ParentalRating(), tag.StarRating(), tag.Notify(),
-        tag.SeriesNum(), tag.EpisodeNum(), tag.EpisodePart(), tag.EpisodeName().c_str(),
+        tag.SeriesNum(), tag.EpisodeNum(), tag.EpisodePart(), tag.EpisodeName().c_str(), tag.Actor().c_str(), tag.Director().c_str(), tag.Subtitle().c_str(), tag.Writer().c_str(),
         tag.UniqueBroadcastID(), iBroadcastId);
   }
 
