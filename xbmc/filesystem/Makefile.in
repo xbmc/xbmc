@@ -57,6 +57,7 @@ SRCS += PlaylistFileDirectory.cpp
 SRCS += PipeFile.cpp
 SRCS += PipesManager.cpp
 SRCS += PluginDirectory.cpp
+SRCS += posix/PosixDirectory.cpp
 SRCS += PVRFile.cpp
 SRCS += PVRDirectory.cpp
 SRCS += RSSDirectory.cpp
