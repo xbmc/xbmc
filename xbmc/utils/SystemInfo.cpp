@@ -69,6 +69,10 @@
 #include <linux/version.h>
 #endif
 
+/* Expand macro before stringify */
+#define STR_MACRO(x) #x
+#define XSTR_MACRO(x) STR_MACRO(x)
+
 #ifdef TARGET_WINDOWS
 static bool sysGetVersionExWByRef(OSVERSIONINFOEXW& osVerInfo)
 {
@@ -1196,10 +1200,6 @@ std::string CSysInfo::GetBuildTargetPlatformName(void)
 
 std::string CSysInfo::GetBuildTargetPlatformVersion(void)
 {
-/* Expand macro before stringify */
-#define STR_MACRO(x) #x
-#define XSTR_MACRO(x) STR_MACRO(x)
-
 #if defined(TARGET_DARWIN_OSX)
   return XSTR_MACRO(__MAC_OS_X_VERSION_MIN_REQUIRED);
 #elif defined(TARGET_DARWIN_IOS)
@@ -1273,6 +1273,33 @@ std::string CSysInfo::GetBuildTargetCpuFamily(void)
   return "PowerPC";
 #else
   return "unknown CPU family";
+#endif
+}
+
+std::string CSysInfo::GetUsedCompilerNameAndVer(void)
+{
+#if defined(__clang__)
+#ifdef __clang_version__
+  return "Clang " XSTR_MACRO(__clang_version__);
+#else // ! __clang_version__
+  return "Clang " XSTR_MACRO(__clang_major__) "." XSTR_MACRO(__clang_minor__) "." XSTR_MACRO(__clang_patchlevel__);
+#endif //! __clang_version__
+#elif defined (__INTEL_COMPILER)
+  return "Intel Compiler " XSTR_MACRO(__INTEL_COMPILER);
+#elif defined (__GNUC__)
+  std::string compilerStr;
+#ifdef __llvm__
+  /* Note: this will not detect GCC + DragonEgg */
+  compilerStr = "llvm-gcc ";
+#else // __llvm__
+  compilerStr = "GCC ";
+#endif // !__llvm__
+  compilerStr += XSTR_MACRO(__GNUC__) "." XSTR_MACRO(__GNUC_MINOR__) "." XSTR_MACRO(__GNUC_PATCHLEVEL__);
+  return compilerStr;
+#elif defined (_MSC_VER)
+  return "MSVC " XSTR_MACRO(_MSC_FULL_VER);
+#else
+  return "unknown compiler";
 #endif
 }
 

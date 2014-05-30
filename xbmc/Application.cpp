@@ -695,28 +695,6 @@ bool CApplication::Create()
   CLog::Log(LOGNOTICE, "Starting XBMC (%s). Platform: %s %s %d-bit", g_infoManager.GetVersion().c_str(), g_sysinfo.GetBuildTargetPlatformName().c_str(),
             g_sysinfo.GetBuildTargetCpuFamily().c_str(), g_sysinfo.GetXbmcBitness());
 
-/* Expand macro before stringify */
-#define STR_MACRO(x) #x
-#define XSTR_MACRO(x) STR_MACRO(x)
-
-  std::string compilerStr;
-#if defined(__clang__)
-  compilerStr = "Clang " XSTR_MACRO(__clang_major__) "." XSTR_MACRO(__clang_minor__) "." XSTR_MACRO(__clang_patchlevel__);
-#elif defined (__INTEL_COMPILER)
-  compilerStr = "Intel Compiler " XSTR_MACRO(__INTEL_COMPILER);
-#elif defined (__GNUC__)
-#ifdef __llvm__
-  /* Note: this will not detect GCC + DragonEgg */
-  compilerStr = "llvm-gcc "; 
-#else // __llvm__
-  compilerStr = "GCC ";
-#endif // !__llvm__
-  compilerStr += XSTR_MACRO(__GNUC__) "." XSTR_MACRO(__GNUC_MINOR__) "." XSTR_MACRO(__GNUC_PATCHLEVEL__);
-#elif defined (_MSC_VER)
-  compilerStr = "MSVC " XSTR_MACRO(_MSC_FULL_VER);
-#else
-  compilerStr = "unknown compiler";
-#endif
   std::string buildType;
 #if defined(_DEBUG)
   buildType = "Debug";
@@ -734,7 +712,7 @@ bool CApplication::Create()
 //  specialVersion = " (version for XXXX)";
 #endif
   CLog::Log(LOGNOTICE, "Using %s XBMC x%d build%s", buildType.c_str(), g_sysinfo.GetXbmcBitness(), specialVersion.c_str());
-  CLog::Log(LOGNOTICE, "XBMC compiled " __DATE__ " by %s for %s %s %d-bit %s (%s)", compilerStr.c_str(), g_sysinfo.GetBuildTargetPlatformName().c_str(), 
+  CLog::Log(LOGNOTICE, "XBMC compiled " __DATE__ " by %s for %s %s %d-bit %s (%s)", g_sysinfo.GetUsedCompilerNameAndVer().c_str(), g_sysinfo.GetBuildTargetPlatformName().c_str(),
             g_sysinfo.GetBuildTargetCpuFamily().c_str(), g_sysinfo.GetXbmcBitness(), g_sysinfo.GetBuildTargetPlatformVersionDecoded().c_str(),
             g_sysinfo.GetBuildTargetPlatformVersion().c_str());
 

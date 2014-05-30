@@ -136,6 +136,8 @@ public:
   static std::string GetBuildTargetPlatformVersionDecoded(void);
   static std::string GetBuildTargetCpuFamily(void);
 
+  static std::string GetUsedCompilerNameAndVer(void);
+
 protected:
   virtual CJob *GetJob() const;
   virtual CStdString TranslateInfo(int info) const;
