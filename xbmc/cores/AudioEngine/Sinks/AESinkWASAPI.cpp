@@ -111,7 +111,7 @@ struct sampleFormat
 /* Sample formats go from float -> 32 bit int -> 24 bit int (packed in 32) -> -> 24 bit int -> 16 bit int */
 static const sampleFormat testFormats[] = { {KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, 32, 32, AE_FMT_FLOAT},
                                             {KSDATAFORMAT_SUBTYPE_PCM, 32, 32, AE_FMT_S32NE},
-                                            {KSDATAFORMAT_SUBTYPE_PCM, 32, 24, AE_FMT_S24NE4},
+                                            {KSDATAFORMAT_SUBTYPE_PCM, 32, 24, AE_FMT_S24NE4MSB},
                                             {KSDATAFORMAT_SUBTYPE_PCM, 24, 24, AE_FMT_S24NE3},
                                             {KSDATAFORMAT_SUBTYPE_PCM, 16, 16, AE_FMT_S16NE} };
 
@@ -747,9 +747,14 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
         wfxex.Format.wBitsPerSample     = CAEUtil::DataFormatToBits((AEDataFormat) p);
         wfxex.Format.nBlockAlign        = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
         wfxex.Format.nAvgBytesPerSec    = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
-        if (p <= AE_FMT_S24NE4 && p >= AE_FMT_S24BE4)
+        if (p == AE_FMT_S24NE4MSB)
         {
           wfxex.Samples.wValidBitsPerSample = 24;
+        }
+        else if (p <= AE_FMT_S24NE4 && p >= AE_FMT_S24BE4)
+        {
+          // not supported
+          continue;
         }
         else
         {
@@ -920,7 +925,7 @@ void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATE
     wfxex.Format.nChannels       = (WORD)format.m_channelLayout.Count();
     wfxex.Format.nSamplesPerSec  = format.m_sampleRate;
     wfxex.Format.wBitsPerSample  = CAEUtil::DataFormatToBits((AEDataFormat) format.m_dataFormat);
-    wfxex.SubFormat              = format.m_dataFormat <= AE_FMT_FLOAT ? KSDATAFORMAT_SUBTYPE_PCM : KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
+    wfxex.SubFormat              = format.m_dataFormat < AE_FMT_FLOAT ? KSDATAFORMAT_SUBTYPE_PCM : KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
   }
   else //Raw bitstream
   {
@@ -968,7 +973,7 @@ void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATE
     }
   }
 
-  if (wfxex.Format.wBitsPerSample == 32 && wfxex.SubFormat != KSDATAFORMAT_SUBTYPE_IEEE_FLOAT)
+  if (format.m_dataFormat == AE_FMT_S24NE4MSB)
     wfxex.Samples.wValidBitsPerSample = 24;
   else
     wfxex.Samples.wValidBitsPerSample = wfxex.Format.wBitsPerSample;
@@ -1138,7 +1143,7 @@ initialize:
       else if (wfxex.Samples.wValidBitsPerSample == 32)
         format.m_dataFormat = AE_FMT_S32NE;
       else
-        format.m_dataFormat = AE_FMT_S24NE4;
+        format.m_dataFormat = AE_FMT_S24NE4MSB;
     }
     else if (wfxex.Format.wBitsPerSample == 24)
       format.m_dataFormat = AE_FMT_S24NE3;
