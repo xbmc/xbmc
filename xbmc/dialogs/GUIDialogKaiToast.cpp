@@ -176,6 +176,8 @@ bool CGUIDialogKaiToast::DoWork()
           strTypeImage = m_defaultIcon;
         }
       }
+      else
+        SET_CONTROL_VISIBLE(POPUP_ICON);
 
       image->SetFileName(strTypeImage);
     }
