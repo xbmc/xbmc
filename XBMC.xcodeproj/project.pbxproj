@@ -1291,9 +1291,7 @@
 		DFB65FCC15373AE7006B8FF1 /* AEBitstreamPacker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA315373AE7006B8FF1 /* AEBitstreamPacker.cpp */; };
 		DFB65FCD15373AE7006B8FF1 /* AEBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA515373AE7006B8FF1 /* AEBuffer.cpp */; };
 		DFB65FCE15373AE7006B8FF1 /* AEChannelInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA715373AE7006B8FF1 /* AEChannelInfo.cpp */; };
-		DFB65FCF15373AE7006B8FF1 /* AEConvert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA915373AE7006B8FF1 /* AEConvert.cpp */; };
 		DFB65FD015373AE7006B8FF1 /* AEPackIEC61937.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAB15373AE7006B8FF1 /* AEPackIEC61937.cpp */; };
-		DFB65FD115373AE7006B8FF1 /* AERemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAD15373AE7006B8FF1 /* AERemap.cpp */; };
 		DFB65FD215373AE7006B8FF1 /* AEStreamInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAF15373AE7006B8FF1 /* AEStreamInfo.cpp */; };
 		DFB65FD315373AE7006B8FF1 /* AEUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FB115373AE7006B8FF1 /* AEUtil.cpp */; };
 		DFB6610915374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB6610615374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp */; };
@@ -1428,11 +1426,9 @@
 		DFF0F13E17528350002DA3A4 /* AEBitstreamPacker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA315373AE7006B8FF1 /* AEBitstreamPacker.cpp */; };
 		DFF0F13F17528350002DA3A4 /* AEBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA515373AE7006B8FF1 /* AEBuffer.cpp */; };
 		DFF0F14017528350002DA3A4 /* AEChannelInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA715373AE7006B8FF1 /* AEChannelInfo.cpp */; };
-		DFF0F14117528350002DA3A4 /* AEConvert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA915373AE7006B8FF1 /* AEConvert.cpp */; };
 		DFF0F14217528350002DA3A4 /* AEDeviceInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B98A1154B79C30065A238 /* AEDeviceInfo.cpp */; };
 		DFF0F14317528350002DA3A4 /* AELimiter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7CEAEF165629530059C9EB /* AELimiter.cpp */; };
 		DFF0F14417528350002DA3A4 /* AEPackIEC61937.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAB15373AE7006B8FF1 /* AEPackIEC61937.cpp */; };
-		DFF0F14517528350002DA3A4 /* AERemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAD15373AE7006B8FF1 /* AERemap.cpp */; };
 		DFF0F14617528350002DA3A4 /* AEStreamInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAF15373AE7006B8FF1 /* AEStreamInfo.cpp */; };
 		DFF0F14717528350002DA3A4 /* AEUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FB115373AE7006B8FF1 /* AEUtil.cpp */; };
 		DFF0F14917528350002DA3A4 /* AEFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6515373AE7006B8FF1 /* AEFactory.cpp */; };
@@ -2711,11 +2707,9 @@
 		E49911A6174E5CFE00741B6D /* AEBitstreamPacker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA315373AE7006B8FF1 /* AEBitstreamPacker.cpp */; };
 		E49911A7174E5CFE00741B6D /* AEBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA515373AE7006B8FF1 /* AEBuffer.cpp */; };
 		E49911A8174E5CFE00741B6D /* AEChannelInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA715373AE7006B8FF1 /* AEChannelInfo.cpp */; };
-		E49911A9174E5CFE00741B6D /* AEConvert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA915373AE7006B8FF1 /* AEConvert.cpp */; };
 		E49911AA174E5CFE00741B6D /* AEDeviceInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B98A1154B79C30065A238 /* AEDeviceInfo.cpp */; };
 		E49911AB174E5CFE00741B6D /* AELimiter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7CEAEF165629530059C9EB /* AELimiter.cpp */; };
 		E49911AC174E5CFE00741B6D /* AEPackIEC61937.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAB15373AE7006B8FF1 /* AEPackIEC61937.cpp */; };
-		E49911AD174E5CFE00741B6D /* AERemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAD15373AE7006B8FF1 /* AERemap.cpp */; };
 		E49911AE174E5CFE00741B6D /* AEStreamInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAF15373AE7006B8FF1 /* AEStreamInfo.cpp */; };
 		E49911AF174E5CFE00741B6D /* AEUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FB115373AE7006B8FF1 /* AEUtil.cpp */; };
 		E49911B1174E5CFE00741B6D /* AEFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6515373AE7006B8FF1 /* AEFactory.cpp */; };
@@ -5028,12 +5022,8 @@
 		DFB65FA615373AE7006B8FF1 /* AEBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEBuffer.h; sourceTree = "<group>"; };
 		DFB65FA715373AE7006B8FF1 /* AEChannelInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEChannelInfo.cpp; sourceTree = "<group>"; };
 		DFB65FA815373AE7006B8FF1 /* AEChannelInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEChannelInfo.h; sourceTree = "<group>"; };
-		DFB65FA915373AE7006B8FF1 /* AEConvert.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEConvert.cpp; sourceTree = "<group>"; };
-		DFB65FAA15373AE7006B8FF1 /* AEConvert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEConvert.h; sourceTree = "<group>"; };
 		DFB65FAB15373AE7006B8FF1 /* AEPackIEC61937.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEPackIEC61937.cpp; sourceTree = "<group>"; };
 		DFB65FAC15373AE7006B8FF1 /* AEPackIEC61937.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEPackIEC61937.h; sourceTree = "<group>"; };
-		DFB65FAD15373AE7006B8FF1 /* AERemap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AERemap.cpp; sourceTree = "<group>"; };
-		DFB65FAE15373AE7006B8FF1 /* AERemap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AERemap.h; sourceTree = "<group>"; };
 		DFB65FAF15373AE7006B8FF1 /* AEStreamInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEStreamInfo.cpp; sourceTree = "<group>"; };
 		DFB65FB015373AE7006B8FF1 /* AEStreamInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEStreamInfo.h; sourceTree = "<group>"; };
 		DFB65FB115373AE7006B8FF1 /* AEUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEUtil.cpp; sourceTree = "<group>"; };
@@ -8366,16 +8356,12 @@
 				DFB65FA615373AE7006B8FF1 /* AEBuffer.h */,
 				DFB65FA715373AE7006B8FF1 /* AEChannelInfo.cpp */,
 				DFB65FA815373AE7006B8FF1 /* AEChannelInfo.h */,
-				DFB65FA915373AE7006B8FF1 /* AEConvert.cpp */,
-				DFB65FAA15373AE7006B8FF1 /* AEConvert.h */,
 				7C0B98A1154B79C30065A238 /* AEDeviceInfo.cpp */,
 				7C0B98A2154B79C30065A238 /* AEDeviceInfo.h */,
 				7C7CEAEF165629530059C9EB /* AELimiter.cpp */,
 				7C7CEAF0165629530059C9EB /* AELimiter.h */,
 				DFB65FAB15373AE7006B8FF1 /* AEPackIEC61937.cpp */,
 				DFB65FAC15373AE7006B8FF1 /* AEPackIEC61937.h */,
-				DFB65FAD15373AE7006B8FF1 /* AERemap.cpp */,
-				DFB65FAE15373AE7006B8FF1 /* AERemap.h */,
 				DF5EEEFB17CE977A003DEC49 /* AERingBuffer.h */,
 				DFB65FAF15373AE7006B8FF1 /* AEStreamInfo.cpp */,
 				DFB65FB015373AE7006B8FF1 /* AEStreamInfo.h */,
@@ -11393,9 +11379,7 @@
 				DFB65FCC15373AE7006B8FF1 /* AEBitstreamPacker.cpp in Sources */,
 				DFB65FCD15373AE7006B8FF1 /* AEBuffer.cpp in Sources */,
 				DFB65FCE15373AE7006B8FF1 /* AEChannelInfo.cpp in Sources */,
-				DFB65FCF15373AE7006B8FF1 /* AEConvert.cpp in Sources */,
 				DFB65FD015373AE7006B8FF1 /* AEPackIEC61937.cpp in Sources */,
-				DFB65FD115373AE7006B8FF1 /* AERemap.cpp in Sources */,
 				DFB65FD215373AE7006B8FF1 /* AEStreamInfo.cpp in Sources */,
 				DFB65FD315373AE7006B8FF1 /* AEUtil.cpp in Sources */,
 				DFB6610915374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp in Sources */,
@@ -11954,11 +11938,9 @@
 				DFF0F13E17528350002DA3A4 /* AEBitstreamPacker.cpp in Sources */,
 				DFF0F13F17528350002DA3A4 /* AEBuffer.cpp in Sources */,
 				DFF0F14017528350002DA3A4 /* AEChannelInfo.cpp in Sources */,
-				DFF0F14117528350002DA3A4 /* AEConvert.cpp in Sources */,
 				DFF0F14217528350002DA3A4 /* AEDeviceInfo.cpp in Sources */,
 				DFF0F14317528350002DA3A4 /* AELimiter.cpp in Sources */,
 				DFF0F14417528350002DA3A4 /* AEPackIEC61937.cpp in Sources */,
-				DFF0F14517528350002DA3A4 /* AERemap.cpp in Sources */,
 				DFF0F14617528350002DA3A4 /* AEStreamInfo.cpp in Sources */,
 				DFF0F14717528350002DA3A4 /* AEUtil.cpp in Sources */,
 				DFF0F14917528350002DA3A4 /* AEFactory.cpp in Sources */,
@@ -13158,11 +13140,9 @@
 				E49911A6174E5CFE00741B6D /* AEBitstreamPacker.cpp in Sources */,
 				E49911A7174E5CFE00741B6D /* AEBuffer.cpp in Sources */,
 				E49911A8174E5CFE00741B6D /* AEChannelInfo.cpp in Sources */,
-				E49911A9174E5CFE00741B6D /* AEConvert.cpp in Sources */,
 				E49911AA174E5CFE00741B6D /* AEDeviceInfo.cpp in Sources */,
 				E49911AB174E5CFE00741B6D /* AELimiter.cpp in Sources */,
 				E49911AC174E5CFE00741B6D /* AEPackIEC61937.cpp in Sources */,
-				E49911AD174E5CFE00741B6D /* AERemap.cpp in Sources */,
 				E49911AE174E5CFE00741B6D /* AEStreamInfo.cpp in Sources */,
 				E49911AF174E5CFE00741B6D /* AEUtil.cpp in Sources */,
 				E49911B1174E5CFE00741B6D /* AEFactory.cpp in Sources */,
