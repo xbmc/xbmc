@@ -55,6 +55,12 @@ extern "C" {
 #define AUDIO_DECODE_OUTPUT_BUFFER (32*1024)
 static const char rounded_up_channels_shift[] = {0,0,1,2,2,3,3,3,3};
 
+static const GUID KSDATAFORMAT_SUBTYPE_PCM = {
+  WAVE_FORMAT_PCM,
+  0x0000, 0x0010,
+  {0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}
+};
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -580,7 +586,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   memset(&m_wave_header, 0x0, sizeof(m_wave_header));
 
   m_wave_header.Format.nChannels  = 2;
-  m_wave_header.dwChannelMask     = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
+  m_wave_header.dwChannelMask = 3; // SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
 
   if (!m_Passthrough)
   {
