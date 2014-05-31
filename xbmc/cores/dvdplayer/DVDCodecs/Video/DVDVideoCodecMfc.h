@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2012 Team XBMC
+ *      Copyright (C) 2005-2014 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,12 +20,11 @@
  *
  */
 
-#define memzero(x) memset(&(x), 0, sizeof (x))
-
 #include "MfcDecoder.h"
 #include "FimcConverter.h"
 
 #include "DVDClock.h"
+#include "utils/log.h"
 #include "guilib/GraphicContext.h"
 #include "settings/DisplaySettings.h"
 #include <queue>
@@ -33,7 +32,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 #ifdef __cplusplus
 }
 #endif
@@ -51,23 +49,21 @@ public:
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual bool ClearPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
-  virtual const char* GetName() { return decoder->GetOutputName(); };
+  virtual const char* GetName() { return m->decoder != NULL ? m_decoder->GetOutputName() : ""; };
 
 private:
-  MfcDecoder *decoder;
-  FimcConverter *converter;
+  MfcDecoder                   *m_decoder;
+  FimcConverter                *m_converter;
 
-  unsigned int m_iDecodedWidth;
-  unsigned int m_iDecodedHeight;
-  unsigned int m_iConvertedWidth;
-  unsigned int m_iConvertedHeight;
+  unsigned int                  m_iDecodedWidth;
+  unsigned int                  m_iDecodedHeight;
+  unsigned int                  m_iConvertedWidth;
+  unsigned int                  m_iConvertedHeight;
 
-  std::priority_queue<double> m_pts;
-  std::priority_queue<double> m_dts;
+  std::priority_queue<double>   m_pts;
+  std::priority_queue<double>   m_dts;
 
-  bool MFC5;
-  bool MFC6;
-  bool m_bDropPictures;
-  DVDVideoPicture   m_videoBuffer;
+  bool                          m_NV12Support;
+  bool                          m_bDropPictures;
+  DVDVideoPicture               m_videoBuffer;
 };
-

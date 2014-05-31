@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2012 Team XBMC
+ *      Copyright (C) 2005-2014 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,6 +21,7 @@
  */
 
 #include "DVDStreamInfo.h"
+#include "utils/log.h"
 
 #include "xbmc/linux/LinuxV4l2.h"
 
@@ -29,7 +30,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 #ifdef __cplusplus
 }
 #endif
@@ -38,34 +38,30 @@ class FimcConverter
 {
 public:
   FimcConverter();
-  ~FimcConverter();
+  virtual ~FimcConverter();
   void Dispose();
 
-  bool OpenDevice();
-  bool RequestBuffers(int buffers);
-  bool SetOutputFormat(struct v4l2_format* fmt);
-  bool SetOutputCrop(struct v4l2_crop* crop);
-  bool SetCaptureFormat(struct v4l2_format* fmt);
-  bool SetCaptureCrop(struct v4l2_crop* crop);
-  bool SetupCaptureBuffers();
+  bool        OpenDevice();
+  bool        RequestBuffers(int buffers);
+  bool        SetOutputFormat(struct v4l2_format* fmt);
+  bool        SetOutputCrop(struct v4l2_crop* crop);
+  bool        SetCaptureFormat(struct v4l2_format* fmt);
+  bool        SetCaptureCrop(struct v4l2_crop* crop);
+  bool        SetupCaptureBuffers();
 
-  bool StartConverter();
-  bool QueueCaptureBuffer();
-  bool QueueOutputBuffer(int index, V4L2Buffer* v4l2MFCCaptureBuffer, int *status);
-  bool DequeueOutputBuffer(int *status);
-  bool DequeueCaptureBuffer(int *status);
+  bool        StartConverter();
+  bool        QueueCaptureBuffer();
+  bool        QueueOutputBuffer(int index, V4L2Buffer* v4l2MFCCaptureBuffer, int *status);
+  bool        DequeueOutputBuffer(int *status);
+  bool        DequeueCaptureBuffer(int *status);
   V4L2Buffer* GetCurrentCaptureBuffer() { return &m_v4l2FIMCCaptureBuffers[m_iFIMCdequeuedBufferNumber]; };
 private:
-  int m_iConverterHandle;
-
-  int m_FIMCCaptureBuffersCount;
+  int         m_iConverterHandle;
+  int         m_FIMCCaptureBuffersCount;
   V4L2Buffer *m_v4l2FIMCCaptureBuffers;
-
-  int m_iFIMCCapturePlane1Size;
-  int m_iFIMCCapturePlane2Size;
-  int m_iFIMCCapturePlane3Size;
-
-  int m_iFIMCdequeuedBufferNumber;
-  bool m_bFIMCStartConverter;
+  int         m_iFIMCCapturePlane1Size;
+  int         m_iFIMCCapturePlane2Size;
+  int         m_iFIMCCapturePlane3Size;
+  int         m_iFIMCdequeuedBufferNumber;
+  bool        m_bFIMCStartConverter;
 };
-

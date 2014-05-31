@@ -22,23 +22,27 @@
 
 #include <linux/videodev2.h>
 
-#define V4L2_ERROR -1
-#define V4L2_BUSY  1
-#define V4L2_READY 2
-#define V4L2_OK    3
+#define V4L2_ERROR                   -1
+#define V4L2_BUSY                     1
+#define V4L2_READY                    2
+#define V4L2_OK                       3
+
+#define V4L2_NUM_MAX_PLANES           3
+
+#ifndef V4L2_CAP_VIDEO_M2M_MPLANE
+#define V4L2_CAP_VIDEO_M2M_MPLANE     0x00004000
+#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#define V4L2_NUM_MAX_PLANES 3
 
 typedef struct V4L2Buffer
 {
   int   iSize[V4L2_NUM_MAX_PLANES];
   int   iOffset[V4L2_NUM_MAX_PLANES];
   int   iBytesUsed[V4L2_NUM_MAX_PLANES];
-  void  *cPlane[V4L2_NUM_MAX_PLANES];
+  void *cPlane[V4L2_NUM_MAX_PLANES];
   int   iNumPlanes;
   int   iIndex;
   bool  bQueue;
@@ -54,21 +58,19 @@ public:
   CLinuxV4l2();
   virtual ~CLinuxV4l2();
 
-  static int RequestBuffer(int device, enum v4l2_buf_type type, enum v4l2_memory memory, int numBuffers);
-  static bool StreamOn(int device, enum v4l2_buf_type type, int onoff);
-  static bool MmapBuffers(int device, int count, V4L2Buffer *v4l2Buffers, enum v4l2_buf_type type, enum v4l2_memory memory, bool queue = true);
-  static V4L2Buffer *FreeBuffers(int count, V4L2Buffer *v4l2Buffers);
+  static int          RequestBuffer(int device, enum v4l2_buf_type type, enum v4l2_memory memory, int numBuffers);
+  static bool         StreamOn(int device, enum v4l2_buf_type type, int onoff);
+  static bool         MmapBuffers(int device, int count, V4L2Buffer *v4l2Buffers, enum v4l2_buf_type type, enum v4l2_memory memory, bool queue = true);
+  static V4L2Buffer  *FreeBuffers(int count, V4L2Buffer *v4l2Buffers);
 
-  static int DequeueBuffer(int device, enum v4l2_buf_type type, enum v4l2_memory memory, int planes);
-  static int QueueBuffer(int device, enum v4l2_buf_type type, enum v4l2_memory memory, 
-      int planes, int index, V4L2Buffer *buffer);
+  static int          DequeueBuffer(int device, enum v4l2_buf_type type, enum v4l2_memory memory, int planes);
+  static int          QueueBuffer(int device, enum v4l2_buf_type type, enum v4l2_memory memory, int planes, int index, V4L2Buffer *buffer);
 
-  static int PollInput(int device, int timeout);
-  static int PollOutput(int device, int timeout);
-  static int SetControllValue(int device, int id, int value);
+  static int          PollInput(int device, int timeout);
+  static int          PollOutput(int device, int timeout);
+  static int          SetControllValue(int device, int id, int value);
 };
 
 inline int v4l2_align(int v, int a) {
   return ((v + a - 1) / a) * a;
 }
-
