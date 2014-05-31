@@ -4285,7 +4285,7 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
 
 void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const ScraperPtr& scraper, const VIDEO::SScanSettings& settings)
 {
-  // if we have a multipath, set scraper for all contained paths too
+  // if we have a multipath, set scraper for all contained paths
   if(URIUtils::IsMultiPath(filePath))
   {
     vector<CStdString> paths;
@@ -4293,6 +4293,8 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const Scraper
 
     for(unsigned i=0;i<paths.size();i++)
       SetScraperForPath(paths[i],scraper,settings);
+
+    return;
   }
 
   try
@@ -4645,11 +4647,16 @@ void CVideoDatabase::UpdateTables(int iVersion)
       m_pDS->exec(PrepareSQL("DELETE FROM tvshowlinkpath WHERE idShow=%i AND idPath=%i", i->show, i->pathId));
     }
   }
+  if (iVersion < 85)
+  {
+    // drop multipaths from the path table - they're not needed for anything at all
+    m_pDS->exec("DELETE FROM path WHERE strPath LIKE 'multipath://%'");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 84;
+  return 85;
 }
 
 bool CVideoDatabase::LookupByFolders(const CStdString &path, bool shows)
