@@ -1633,13 +1633,15 @@ bool CActiveAE::RunStages()
     CSampleBuffer *buffer;
     if (!(*it)->m_drain)
     {
+      float buftime = (float)(*it)->m_inputBuffers->m_format.m_frames / (*it)->m_inputBuffers->m_format.m_sampleRate;
+      time += buftime * (*it)->m_processingSamples.size();
       while (time < MAX_CACHE_LEVEL && !(*it)->m_inputBuffers->m_freeSamples.empty())
       {
         buffer = (*it)->m_inputBuffers->GetFreeBuffer();
         (*it)->m_processingSamples.push_back(buffer);
         (*it)->m_streamPort->SendInMessage(CActiveAEDataProtocol::STREAMBUFFER, &buffer, sizeof(CSampleBuffer*));
         (*it)->IncFreeBuffers();
-        time += (float)buffer->pkt->max_nb_samples / buffer->pkt->config.sample_rate;
+        time += buftime;
       }
     }
     else
