@@ -729,6 +729,27 @@ if test "$GIT_REV" = ""; then
 fi
 final_message="$final_message\n  git Rev.:\t${GIT_REV}"
 
+# detect Xbmc soname version
+# version can be overridden by setting the following as ENV vars when running configure
+APP_VERSION_MAJOR=${APP_VERSION_MAJOR-$(${AWK} '/VERSION_MAJOR/ {print $2}' version.txt)}
+APP_VERSION_MINOR=${APP_VERSION_MINOR-$(${AWK} '/VERSION_MINOR/ {print $2}' version.txt)}
+APP_VERSION_TAG=${APP_VERSION_TAG-$(${AWK} '/VERSION_TAG/ {print $2}' version.txt)}
+APP_VERSION_TAG_LC=$(echo $APP_VERSION_TAG | ${AWK} '{print tolower($0)}')
+APP_VERSION_CODE=${APP_VERSION_CODE-$(${AWK} '/VERSION_CODE/ {print $2}' version.txt)}
+APP_ADDON_API=${APP_ADDON_API-$(${AWK} '/ADDON_API/ {print $2}' version.txt)}
+if test "$APP_VERSION_MAJOR" != "" && test "$APP_VERSION_MINOR" != "" && test "$APP_VERSION_TAG" != "" \
+&& test "$APP_VERSION_CODE" != "" && test "$APP_ADDON_API" != ""; then
+  final_message="$final_message\n  Xbmc Version:\t${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}-${APP_VERSION_TAG}"
+  AC_SUBST(APP_VERSION_MAJOR)
+  AC_SUBST(APP_VERSION_MINOR)
+  AC_SUBST(APP_VERSION_TAG)
+  AC_SUBST(APP_VERSION_TAG_LC)
+  AC_SUBST(APP_VERSION_CODE)
+  AC_SUBST(APP_ADDON_API)
+else
+  AC_MSG_ERROR(could not detect XBMC Version, make sure version.txt is complete)
+fi
+
 if test "$host_vendor" = "apple"; then
   echo "#define GIT_REV \"$GIT_REV\"" > git_revision.h
 else
@@ -2569,7 +2590,11 @@ OUTPUT_FILES="Makefile \
     tools/darwin/Configurations/Common.xcconfig \
     tools/darwin/packaging/xbmc-ios/mkdeb-xbmc-ios.sh \
     tools/darwin/packaging/xbmc-atv2/mkdeb-xbmc-atv2.sh \
-    project/cmake/xbmc-config.cmake"
+    tools/darwin/packaging/xbmc-osx/mkdmg-xbmc-osx.sh \
+    xbmc/osx/Info.plist \
+    project/cmake/xbmc-config.cmake \
+    tools/android/packaging/xbmc/AndroidManifest.xml \
+    addons/xbmc.addon/addon.xml"
 
 if test "$use_wayland" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES xbmc/windowing/tests/wayland/Makefile"

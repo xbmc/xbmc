@@ -28,7 +28,7 @@ macro (build_addon target prefix libs)
   TARGET_LINK_LIBRARIES(${target} ${${libs}})
   addon_version(${target} ${prefix})
   SET_TARGET_PROPERTIES(${target} PROPERTIES VERSION ${${prefix}_VERSION}
-                                             SOVERSION 13.0
+                                             SOVERSION ${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}
                                              PREFIX "")
   IF(OS STREQUAL "android")
     SET_TARGET_PROPERTIES(${target} PROPERTIES PREFIX "lib")
