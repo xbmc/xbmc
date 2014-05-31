@@ -73,8 +73,8 @@ function getVersion {
     getGitRev
     if [[ $RELEASEV == "auto" ]]
     then 
-        local MAJORVER=$(grep VERSION_MAJOR $REPO_DIR/xbmc/GUIInfoManager.h | awk '{ print $3 }')
-        local MINORVER=$(grep VERSION_MINOR $REPO_DIR/xbmc/GUIInfoManager.h | awk '{ print $3 }')
+        local MAJORVER=$(grep VERSION_MAJOR $REPO_DIR/version.txt | awk '{ print $2 }')
+        local MINORVER=$(grep VERSION_MINOR $REPO_DIR/version.txt | awk '{ print $2 }')
         RELEASEV=${MAJORVER}.${MINORVER}
     else
         PACKAGEVERSION="${RELEASEV}~git$(date '+%Y%m%d.%H%M')-${TAG}"

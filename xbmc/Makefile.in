@@ -11,7 +11,6 @@ SRCS=Application.cpp \
      DynamicDll.cpp \
      FileItem.cpp \
      FileItemListModification.cpp \
-     GitRevision.cpp \
      GUIInfoManager.cpp \
      GUILargeTextureManager.cpp \
      GUIPassword.cpp \
@@ -35,10 +34,17 @@ SRCS=Application.cpp \
      XBDateTime.cpp \
      xbmc.cpp \
      XbmcContext.cpp \
+     CompileInfo.cpp \
 
 LIB=xbmc.a
 
-DISTCLEAN_FILES=DllPaths_generated.h
+DISTCLEAN_FILES=DllPaths_generated.h CompileInfo.cpp
+
+all: $(SRCS) $(LIB)
+
+include gen-compileinfo.mk
+CompileInfo.cpp: ../version.txt CompileInfo.cpp.in
+	make -f gen-compileinfo.mk
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

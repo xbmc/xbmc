@@ -20,7 +20,7 @@
 
 #include "network/Network.h"
 #include "system.h"
-#include "GitRevision.h"
+#include "CompileInfo.h"
 #include "GUIInfoManager.h"
 #include "windows/GUIMediaWindow.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -4211,15 +4211,15 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
 // in the HTTP request user agent.
 std::string CGUIInfoManager::GetVersionShort(void)
 {
-  return StringUtils::Format("%d.%d%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG);
+  if (strlen(CCompileInfo::GetSuffix()) == 0)
+    return StringUtils::Format("%d.%d", CCompileInfo::GetMajor(), CCompileInfo::GetMinor());
+  else
+    return StringUtils::Format("%d.%d-%s", CCompileInfo::GetMajor(), CCompileInfo::GetMinor(), CCompileInfo::GetSuffix());
 }
 
 CStdString CGUIInfoManager::GetVersion()
 {
-  if (GetXbmcGitRevision())
-    return GetVersionShort() + " Git:" + GetXbmcGitRevision();
-
-  return GetVersionShort();
+  return GetVersionShort() + " Git:" + CCompileInfo::GetSCMID();
 }
 
 CStdString CGUIInfoManager::GetBuild()

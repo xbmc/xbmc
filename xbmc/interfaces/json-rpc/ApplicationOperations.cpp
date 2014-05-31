@@ -27,8 +27,9 @@
 #include "utils/log.h"
 #include "GUIInfoManager.h"
 #include "system.h"
-#include "GitRevision.h"
+#include "CompileInfo.h"
 #include "utils/StringUtils.h"
+#include <string.h>
 
 using namespace JSONRPC;
 
@@ -119,16 +120,15 @@ JSONRPC_STATUS CApplicationOperations::GetPropertyValue(const CStdString &proper
   else if (property.Equals("version"))
   {
     result = CVariant(CVariant::VariantTypeObject);
-    result["major"] = VERSION_MAJOR;
-    result["minor"] = VERSION_MINOR;
-    if (GetXbmcGitRevision())
-      result["revision"] = GetXbmcGitRevision();
-    CStdString tag(VERSION_TAG);
-    if (StringUtils::EqualsNoCase(tag, "-pre"))
+    result["major"] = CCompileInfo::GetMajor();
+    result["minor"] = CCompileInfo::GetMinor();
+    result["revision"] = CCompileInfo::GetSCMID();
+    std::string tag = CCompileInfo::GetSuffix();
+    if (StringUtils::EqualsNoCase(tag, "pre"))
       result["tag"] = "alpha";
-    else if (StringUtils::StartsWithNoCase(tag, "-beta"))
+    else if (StringUtils::StartsWithNoCase(tag, "beta"))
       result["tag"] = "beta";
-    else if (StringUtils::StartsWithNoCase(tag, "-rc"))
+    else if (StringUtils::StartsWithNoCase(tag, "rc"))
       result["tag"] = "releasecandidate";
     else if (tag.empty())
       result["tag"] = "stable";
