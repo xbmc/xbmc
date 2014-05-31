@@ -73,7 +73,7 @@ public:
   {
     m_buffer = 0.0f;
     m_count  = 0;
-    m_timer.Set(2000);
+    m_timer.Set(200);
   }
 
   double  Get()

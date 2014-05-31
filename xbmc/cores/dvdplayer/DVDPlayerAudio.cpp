@@ -36,13 +36,6 @@
 #include <iomanip>
 #include <math.h>
 
-/* for sync-based resampling */
-#define PROPORTIONAL 20.0
-#define PROPREF       0.01
-#define PROPDIVMIN    2.0
-#define PROPDIVMAX   40.0
-#define INTEGRAL    200.0
-
 using namespace std;
 
 void CPTSInputQueue::Add(int64_t bytes, double pts)
@@ -667,24 +660,27 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
     }
     else if (m_synctype == SYNC_RESAMPLE)
     {
-      //reset the integral on big errors, failsafe
-      if (fabs(m_error) > DVD_TIME_BASE)
-        m_integral = 0;
-      else if (fabs(m_error) > DVD_MSEC_TO_TIME(5))
-        m_integral += m_error / DVD_TIME_BASE / INTEGRAL;
+      const double max_resample = 1.2;                  /* slowest speed allowed */
+      const double min_resample = 0.8;                  /* fastest speed allowed */
+      const double Kp           = 0.5  / DVD_TIME_BASE; /* proportional factor (limited by sampling time) */
+      const double Ti           = 50;                   /* time factor for integral */
+      const double Tt           = 25;                   /* time factor for integral windup correction */
 
-      double proportional = 0.0;
+      double ratio;
+      /* simple PI regulator for resampling */
+      ratio  = 1.0 / m_pClock->GetClockSpeed();
+      ratio += Kp * m_error + m_integral;
 
-      //on big errors use more proportional
-      if (fabs(m_error / DVD_TIME_BASE) > 0.0)
-      {
-        double proportionaldiv = PROPORTIONAL * (PROPREF / fabs(m_error / DVD_TIME_BASE));
-        if (proportionaldiv < PROPDIVMIN) proportionaldiv = PROPDIVMIN;
-        else if (proportionaldiv > PROPDIVMAX) proportionaldiv = PROPDIVMAX;
+      /* saturate output */
+      if     (ratio > max_resample) m_resampleratio = max_resample;
+      else if(ratio < min_resample) m_resampleratio = min_resample;
+      else                          m_resampleratio = ratio;
 
-        proportional = m_error / DVD_TIME_BASE / proportionaldiv;
-      }
-      m_resampleratio = 1.0 / m_pClock->GetClockSpeed() + proportional + m_integral;
+      /* accumulate integral */
+      m_integral += (Kp  / Ti) * m_error;
+
+      /* handle anti windup */
+      m_integral += (1.0 / Tt) * (m_resampleratio - ratio);
     }
   }
 }
