@@ -67,8 +67,8 @@ bool MfcDecoder::OpenDevice()
         char target[1024];
         int ret;
 
-        snprintf(sysname, 64, "/sys/class/video4linux/%s", ent->d_name);
-        snprintf(name, 64, "/sys/class/video4linux/%s/name", ent->d_name);
+        snprintf(sysname, sizeof(sysname), "/sys/class/video4linux/%s", ent->d_name);
+        snprintf(name, sizeof(name), "/sys/class/video4linux/%s/name", ent->d_name);
 
         FILE* fp = fopen(name, "r");
         if (fp == NULL)
@@ -95,7 +95,7 @@ bool MfcDecoder::OpenDevice()
         if (p == NULL)
           continue;
 
-        snprintf(devname, 64, "/dev/%s", ++p);
+        snprintf(devname, sizeof(devname), "/dev/%s", ++p);
 
         if (m_iDecoderHandle < 0 && strncmp(drivername, "s5p-mfc-dec", 11) == 0)
         {
