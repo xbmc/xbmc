@@ -1,28 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug (DirectX)|Win32">
-      <Configuration>Debug (DirectX)</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug (OpenGL)|Win32">
-      <Configuration>Debug (OpenGL)</Configuration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Debug Testsuite|Win32">
       <Configuration>Debug Testsuite</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release (DirectX)|Win32">
-      <Configuration>Release (DirectX)</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release (OpenGL)|Win32">
-      <Configuration>Release (OpenGL)</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Template|Win32">
-      <Configuration>Template</Configuration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -33,17 +21,12 @@
   </PropertyGroup>
   <Import Project="$(SolutionDir)\XBMC.core-defaults.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>MultiByte</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
@@ -55,23 +38,14 @@
     <CharacterSet>MultiByte</CharacterSet>
     <CLRSupport>false</CLRSupport>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <CharacterSet>MultiByte</CharacterSet>
-  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(SolutionDir)\XBMC.defaults.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(SolutionDir)\XBMC.defaults.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(SolutionDir)\XBMC.defaults.props" />
   </ImportGroup>
@@ -79,69 +53,26 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(SolutionDir)\XBMC.defaults.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(SolutionDir)\XBMC.defaults.props" />
-  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">XBMC\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">XBMC\$(Configuration)\objs\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">XBMC\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">XBMC\$(Configuration)\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">XBMC\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">XBMC\$(Configuration)\objs\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">XBMC\$(Configuration)\objs\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">XBMC\$(Configuration)\objs\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">XBMC\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">XBMC\$(Configuration)\objs\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">XBMC\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">XBMC\$(Configuration)\objs\</IntDir>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">XBMC\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">XBMC\$(Configuration)\objs\</IntDir>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">xbmc-test</TargetName>
-    <CustomBuildBeforeTargets Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">
+    <CustomBuildBeforeTargets Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     </CustomBuildBeforeTargets>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">
-    <ClCompile>
-      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\lib;..\..\lib\win32\ffmpeg;..\..\lib\libUPnP;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Extras;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\lib\win32;..\..\xbmc\cores\AudioEngine\;..\..\addons\library.xbmc.gui;..\..\addons\library.xbmc.addon;..\..\addons\library.xbmc.pvr;..\..\addons\library.xbmc.codec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;__STDC_CONSTANT_MACROS;XMD_H;TAGLIB_STATIC;NPT_CONFIG_ENABLE_LOGGING;PLT_HTTP_DEFAULT_USER_AGENT="UPnP/1.0 DLNADOC/1.50 XBMC";PLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ExceptionHandling>Async</ExceptionHandling>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <DebugInformationFormat>
-      </DebugInformationFormat>
-      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <ObjectFileName>$(IntDir)\a\a\%(RelativeDir)</ObjectFileName>
-    </ClCompile>
-    <Link>
-      <AdditionalOptions>/IGNORE:4089 /ignore:4254 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>DInput8.lib;DSound.lib;winmm.lib;Mpr.lib;Iphlpapi.lib;PowrProf.lib;setupapi.lib;dwmapi.lib;yajl.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)XBMC.exe</OutputFile>
-      <IgnoreSpecificDefaultLibraries>libc;msvcrt;libci;msvcprt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <DelayLoadDLLs>libxslt.dll;dnssd.dll;dwmapi.dll;libmicrohttpd-5.dll;ssh.dll;sqlite3.dll;avcodec-55.dll;avfilter-4.dll;avformat-55.dll;avutil-52.dll;postproc-52.dll;swresample-0.dll;swscale-2.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(OutDir)XBMC.pdb</ProgramDatabaseFile>
-      <RandomizedBaseAddress>true</RandomizedBaseAddress>
-      <DataExecutionPrevention>true</DataExecutionPrevention>
-      <AdditionalLibraryDirectories>..\..\lib\win32\ffmpeg\.libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-    </Link>
-    <Manifest>
-      <AdditionalManifestFiles>VC90.CRT.x86.manifest;win81.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
-      <EnableDPIAwareness>true</EnableDPIAwareness>
-    </Manifest>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\lib;..\..\lib\win32\ffmpeg;..\..\lib\libUPnP;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Extras;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\lib\win32;..\..\xbmc\cores\AudioEngine\;..\..\addons\library.xbmc.gui;..\..\addons\library.xbmc.addon;..\..\addons\library.xbmc.pvr;..\..\addons\library.xbmc.codec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;D3D_DEBUG_INFO;__STDC_CONSTANT_MACROS;_SECURE_SCL=0;TAGLIB_STATIC;NPT_CONFIG_ENABLE_LOGGING;PLT_HTTP_DEFAULT_USER_AGENT="UPnP/1.0 DLNADOC/1.50 XBMC";PLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -207,7 +138,7 @@
       <EnableDPIAwareness>true</EnableDPIAwareness>
     </Manifest>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\lib;..\..\lib\win32\ffmpeg;..\..\lib\libUPnP;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Extras;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\lib\win32;..\..\xbmc\cores\AudioEngine\;..\..\addons\library.xbmc.gui;..\..\addons\library.xbmc.addon;..\..\addons\library.xbmc.pvr;..\..\addons\library.xbmc.codec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -236,42 +167,6 @@
       <AdditionalManifestFiles>VC90.CRT.x86.manifest;win81.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
       <EnableDPIAwareness>true</EnableDPIAwareness>
     </Manifest>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">
-    <ClCompile>
-      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\lib;..\..\lib\win32\ffmpeg;..\..\lib\libUPnP;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Extras;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\lib\win32;..\..\xbmc\cores\AudioEngine\;..\..\addons\library.xbmc.gui;..\..\addons\library.xbmc.addon;..\..\addons\library.xbmc.pvr;..\..\addons\library.xbmc.codec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;__STDC_CONSTANT_MACROS;_SECURE_SCL=0;TAGLIB_STATIC;NPT_CONFIG_ENABLE_LOGGING;PLT_HTTP_DEFAULT_USER_AGENT="UPnP/1.0 DLNADOC/1.50 XBMC";PLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ExceptionHandling>Async</ExceptionHandling>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <ObjectFileName>$(IntDir)\a\a\%(RelativeDir)</ObjectFileName>
-    </ClCompile>
-    <Link>
-      <AdditionalOptions>/IGNORE:4089 /ignore:4254 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>DInput8.lib;DSound.lib;winmm.lib;Mpr.lib;Iphlpapi.lib;PowrProf.lib;setupapi.lib;dwmapi.lib;yajl.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)XBMC.exe</OutputFile>
-      <IgnoreSpecificDefaultLibraries>libc;msvcrt;libcmt;msvcrtd;msvcprtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ModuleDefinitionFile>
-      </ModuleDefinitionFile>
-      <DelayLoadDLLs>libxslt.dll;dnssd.dll;dwmapi.dll;libmicrohttpd-5.dll;ssh.dll;sqlite3.dll;avcodec-55.dll;avfilter-4.dll;avformat-55.dll;avutil-52.dll;postproc-52.dll;swresample-0.dll;swscale-2.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
-      <ProgramDatabaseFile>$(OutDir)XBMC.pdb</ProgramDatabaseFile>
-      <EntryPointSymbol>
-      </EntryPointSymbol>
-      <RandomizedBaseAddress>true</RandomizedBaseAddress>
-      <DataExecutionPrevention>true</DataExecutionPrevention>
-      <AdditionalLibraryDirectories>..\..\lib\win32\ffmpeg\.libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-    </Link>
-    <Manifest>
-      <AdditionalManifestFiles>VC90.CRT.x86.manifest;win81.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
-      <EnableDPIAwareness>true</EnableDPIAwareness>
-    </Manifest>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
-    <ClCompile>
-      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\lib;..\..\lib\win32\ffmpeg;..\..\lib\libUPnP;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Extras;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\lib\win32;..\..\xbmc\cores\AudioEngine\;..\..\addons\library.xbmc.gui;..\..\addons\library.xbmc.addon;..\..\addons\library.xbmc.pvr;..\..\addons\library.xbmc.codec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\lib\SlingboxLib\SlingboxLib.cpp" />
@@ -464,34 +359,24 @@
     <ClCompile Include="..\..\xbmc\filesystem\SpecialProtocolFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\StackDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\test\TestDirectory.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\test\TestFile.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\test\TestFileFactory.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\test\TestRarFile.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\test\TestZipFile.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\TuxBoxDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\TuxBoxFile.cpp" />
@@ -522,11 +407,6 @@
     <ClCompile Include="..\..\xbmc\guilib\DirectXGraphics.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\DirtyRegionSolvers.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\DirtyRegionTracker.cpp" />
-    <ClCompile Include="..\..\xbmc\guilib\FrameBufferObject.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GraphicContext.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIAction.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIAudioManager.cpp" />
@@ -548,11 +428,6 @@
     <ClCompile Include="..\..\xbmc\guilib\GUIFontManager.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIFontTTF.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIFontTTFDX.cpp" />
-    <ClCompile Include="..\..\xbmc\guilib\GUIFontTTFGL.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUIImage.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIIncludes.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIInfoTypes.cpp" />
@@ -586,16 +461,6 @@
     <ClCompile Include="..\..\xbmc\guilib\GUITextLayout.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUITexture.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUITextureD3D.cpp" />
-    <ClCompile Include="..\..\xbmc\guilib\GUITextureGL.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUITextureGLES.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUIToggleButtonControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIVideoControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIVisualisationControl.cpp" />
@@ -608,22 +473,12 @@
     <ClCompile Include="..\..\xbmc\guilib\Key.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\LocalizeStrings.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\MatrixGLES.cpp" />
-    <ClCompile Include="..\..\xbmc\guilib\Shader.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\StereoscopicsManager.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\Texture.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\TextureBundle.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\TextureBundleXBT.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\TextureBundleXPR.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\TextureDX.cpp" />
-    <ClCompile Include="..\..\xbmc\guilib\TextureGL.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\TextureManager.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\VisibleEffect.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\XBTF.cpp" />
@@ -705,11 +560,8 @@
     <ClCompile Include="..\..\xbmc\interfaces\python\PythonInvoker.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\python\swig.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\python\test\TestSwig.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\XBPython.cpp" />
     <ClCompile Include="..\..\xbmc\LangInfo.cpp" />
@@ -883,16 +735,6 @@
     <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVRTimers.cpp" />
     <ClCompile Include="..\..\xbmc\rendering\dx\GUIWindowTestPatternDX.cpp" />
     <ClCompile Include="..\..\xbmc\rendering\dx\RenderSystemDX.cpp" />
-    <ClCompile Include="..\..\xbmc\rendering\gl\GUIWindowTestPatternGL.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\rendering\gl\RenderSystemGL.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\rendering\RenderSystem.cpp" />
     <ClCompile Include="..\..\xbmc\SectionLoader.cpp" />
     <ClCompile Include="..\..\xbmc\settings\AdvancedSettings.cpp" />
@@ -935,34 +777,24 @@
     <ClCompile Include="..\..\xbmc\SystemGlobals.cpp" />
     <ClCompile Include="..\..\xbmc\Temperature.cpp" />
     <ClCompile Include="..\..\xbmc\test\TestBasicEnvironment.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\test\TestFileItem.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\test\TestTextureUtils.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\test\TestUtils.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\test\xbmc-test.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\TextureCache.cpp" />
     <ClCompile Include="..\..\xbmc\TextureCacheJob.cpp" />
@@ -1018,14 +850,10 @@
     <ClInclude Include="..\..\xbmc\filesystem\windows\WINFileSMB.h" />
     <ClInclude Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.h" />
     <CustomBuild Include="..\..\xbmc\GitRevision.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL update_git_rev.bat</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">..\..\xbmc\win32\git_rev.h</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">..\..\.git\HEAD;..\..\xbmc\win32\git_rev.tmpl</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL update_git_rev.bat</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">..\..\xbmc\win32\git_rev.h</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">..\..\.git\HEAD;..\..\xbmc\win32\git_rev.tmpl</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Retrieving the git revision</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Retrieving the git revision</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CALL update_git_rev.bat</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\xbmc\win32\git_rev.h</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\.git\HEAD;..\..\xbmc\win32\git_rev.tmpl</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Retrieving the git revision</Message>
     </CustomBuild>
     <ClInclude Include="..\..\xbmc\guilib\cximage.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboard.h" />
@@ -1279,11 +1107,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\ZipManager.h" />
     <ClInclude Include="..\..\xbmc\network\mdns\ZeroconfBrowserMDNS.h" />
     <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralImon.h" />
-    <ClInclude Include="..\..\xbmc\system_gl.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\AddonsOperations.h" />
     <ClCompile Include="..\..\xbmc\ThumbLoader.cpp" />
     <ClCompile Include="..\..\xbmc\utils\ActorProtocol.cpp" />
@@ -1293,11 +1116,8 @@
     <ClCompile Include="..\..\xbmc\utils\RssManager.cpp" />
     <ClCompile Include="..\..\xbmc\utils\StringValidation.cpp" />
     <ClCompile Include="..\..\xbmc\utils\test\TestUrlOptions.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\Utf8Utils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Vector.cpp" />
@@ -1327,17 +1147,9 @@
     <ClCompile Include="..\..\xbmc\utils\FileOperationJob.cpp" />
     <ClCompile Include="..\..\xbmc\utils\FileUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\fstrcmp.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CompileAsCpp</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CompileAsCpp</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CompileAsCpp</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CompileAsCpp</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">CompileAsCpp</CompileAs>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\GLUtils.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsCpp</CompileAs>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\GroupUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\HTMLTable.cpp" />
@@ -1373,306 +1185,206 @@
     <ClCompile Include="..\..\xbmc\utils\StringUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\SystemInfo.cpp" />
     <ClCompile Include="..\..\xbmc\utils\test\TestFileOperationJob.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestFileUtils.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\Testfstrcmp.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestGlobalsHandling.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestHTMLTable.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestHTMLUtil.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestHttpHeader.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestHttpParser.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestHttpResponse.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestJobManager.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestJSONVariantParser.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestJSONVariantWriter.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestLabelFormatter.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestLangCodeExpander.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\Testlog.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestMathUtils.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\Testmd5.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestMime.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestPerformanceSample.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestPOUtils.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestRegExp.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestRingBuffer.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestScraperParser.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestScraperUrl.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestSortUtils.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestStdString.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestStopwatch.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestStreamDetails.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestStreamUtils.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestStringUtils.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestSystemInfo.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestTimeSmoother.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestTimeUtils.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestURIUtils.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestVariant.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestXBMCTinyXML.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestXMLUtils.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\TextSearch.cpp" />
     <ClCompile Include="..\..\xbmc\utils\test\TestAlarmClock.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestAliasShortcutUtils.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestArchive.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestAsyncFileCopy.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestBase64.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestBitstreamStats.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestCharsetConverter.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestCPUInfo.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestCrc32.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestDatabaseUtils.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestEndianSwap.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\Testfastmemcpy.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\Testfft.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\TimeSmoother.cpp" />
     <ClCompile Include="..\..\xbmc\utils\TimeUtils.cpp" />
@@ -1713,11 +1425,9 @@
     <ClCompile Include="..\..\xbmc\view\ViewDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\view\ViewStateSettings.cpp" />
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\win32\stat_utf8.cpp" />
     <ClCompile Include="..\..\xbmc\win32\stdio_utf8.cpp" />
@@ -1766,11 +1476,9 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecText.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecTX3G.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\libspucc\cc_decoder.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CompileAsCpp</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CompileAsCpp</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CompileAsCpp</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsCpp</CompileAs>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemux.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxFFmpeg.cpp" />
@@ -1829,28 +1537,13 @@
     <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\emu_msvcrt.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\util\EmuFileWrapper.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\BaseRenderer.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\LinuxRendererGL.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRenderer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererDX.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererGL.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererUtil.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderFlags.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderManager.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\WinRenderer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\ConvolutionKernels.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\VideoFilterShader.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\YUV2RGBShader.cpp" />
     <ClCompile Include="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\playercorefactory\PlayerCoreFactory.cpp" />
@@ -1876,31 +1569,25 @@
     <ClCompile Include="..\..\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeYearSong.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\MusicDatabaseDirectory\QueryParams.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNode.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeEpisodes.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMoviesOverview.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMusicVideosOverview.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeOverview.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeRecentlyAddedEpisodes.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeRecentlyAddedMovies.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeRecentlyAddedMusicVideos.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeRoot.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeSeasons.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeTitleMovies.cpp" />
@@ -1908,11 +1595,9 @@
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeTitleTvShows.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeTvShowsOverview.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\QueryParams.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\Addon.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonManager.cpp" />
@@ -1931,11 +1616,6 @@
     <ClCompile Include="..\..\xbmc\windowing\windows\WinEventsWin32.cpp" />
     <ClCompile Include="..\..\xbmc\windowing\windows\WinSystemWin32.cpp" />
     <ClCompile Include="..\..\xbmc\windowing\windows\WinSystemWin32DX.cpp" />
-    <ClCompile Include="..\..\xbmc\windowing\windows\WinSystemWin32GL.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\windowing\WinEvents.cpp" />
     <ClCompile Include="..\..\xbmc\windowing\WinSystem.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIMediaWindow.cpp" />
@@ -1952,12 +1632,9 @@
     <ClCompile Include="..\..\xbmc\XBApplicationEx.cpp" />
     <ClCompile Include="..\..\xbmc\XBDateTime.cpp" />
     <ClCompile Include="..\..\xbmc\xbmc.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\XbmcContext.cpp" />
   </ItemGroup>
@@ -2045,11 +1722,6 @@
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegion.h" />
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegionSolvers.h" />
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegionTracker.h" />
-    <ClInclude Include="..\..\xbmc\guilib\FrameBufferObject.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\Geometry.h" />
     <ClInclude Include="..\..\xbmc\guilib\GraphicContext.h" />
     <ClInclude Include="..\..\xbmc\guilib\gui3d.h" />
@@ -2074,11 +1746,6 @@
     <ClInclude Include="..\..\xbmc\guilib\GUIFontManager.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIFontTTF.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIFontTTFDX.h" />
-    <ClInclude Include="..\..\xbmc\guilib\GUIFontTTFGL.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIImage.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIIncludes.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIInfoTypes.h" />
@@ -2111,16 +1778,6 @@
     <ClInclude Include="..\..\xbmc\guilib\GUITextLayout.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUITexture.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUITextureD3D.h" />
-    <ClInclude Include="..\..\xbmc\guilib\GUITextureGL.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUITextureGLES.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIToggleButtonControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIVideoControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIVisualisationControl.h" />
@@ -2135,22 +1792,12 @@
     <ClInclude Include="..\..\xbmc\guilib\LocalizeStrings.h" />
     <ClInclude Include="..\..\xbmc\guilib\MatrixGLES.h" />
     <ClInclude Include="..\..\xbmc\guilib\Resolution.h" />
-    <ClInclude Include="..\..\xbmc\guilib\Shader.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\StereoscopicsManager.h" />
     <ClInclude Include="..\..\xbmc\guilib\Texture.h" />
     <ClInclude Include="..\..\xbmc\guilib\TextureBundle.h" />
     <ClInclude Include="..\..\xbmc\guilib\TextureBundleXBT.h" />
     <ClInclude Include="..\..\xbmc\guilib\TextureBundleXPR.h" />
     <ClInclude Include="..\..\xbmc\guilib\TextureDX.h" />
-    <ClInclude Include="..\..\xbmc\guilib\TextureGL.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\TextureManager.h" />
     <ClInclude Include="..\..\xbmc\guilib\TransformMatrix.h" />
     <ClInclude Include="..\..\xbmc\guilib\Tween.h" />
@@ -2341,16 +1988,6 @@
     <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRTimers.h" />
     <ClInclude Include="..\..\xbmc\rendering\dx\GUIWindowTestPatternDX.h" />
     <ClInclude Include="..\..\xbmc\rendering\dx\RenderSystemDX.h" />
-    <ClInclude Include="..\..\xbmc\rendering\gl\GUIWindowTestPatternGL.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\rendering\gl\RenderSystemGL.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\rendering\RenderSystem.h" />
     <ClInclude Include="..\..\xbmc\SectionLoader.h" />
     <ClInclude Include="..\..\xbmc\settings\AdvancedSettings.h" />
@@ -2366,16 +2003,12 @@
     <ClInclude Include="..\..\xbmc\system.h" />
     <ClInclude Include="..\..\xbmc\Temperature.h" />
     <ClInclude Include="..\..\xbmc\test\TestBasicEnvironment.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\test\TestUtils.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\TextureCache.h" />
     <ClInclude Include="..\..\xbmc\TextureCacheJob.h" />
@@ -2408,11 +2041,6 @@
     <ClInclude Include="..\..\xbmc\utils\FileUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\fstrcmp.h" />
     <ClInclude Include="..\..\xbmc\utils\GlobalsHandling.h" />
-    <ClInclude Include="..\..\xbmc\utils\GLUtils.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\GroupUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\HTMLTable.h" />
     <ClInclude Include="..\..\xbmc\utils\HTMLUtil.h" />
@@ -2453,10 +2081,8 @@
     <ClInclude Include="..\..\xbmc\utils\StringUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\SystemInfo.h" />
     <ClCompile Include="..\..\xbmc\utils\test\TestGlobalsHandlingPattern1.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClInclude Include="..\..\xbmc\utils\TextSearch.h" />
     <ClInclude Include="..\..\xbmc\utils\TimeSmoother.h" />
@@ -2645,28 +2271,13 @@
     <ClInclude Include="..\..\xbmc\cores\DllLoader\exports\emu_msvcrt.h" />
     <ClInclude Include="..\..\xbmc\cores\DllLoader\exports\util\EmuFileWrapper.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\BaseRenderer.h" />
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\LinuxRendererGL.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRenderer.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererDX.h" />
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererGL.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererUtil.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\RenderFlags.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\RenderManager.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\WinRenderer.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\ConvolutionKernels.h" />
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\VideoFilterShader.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\YUV2RGBShader.h" />
     <ClInclude Include="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.h" />
     <ClInclude Include="..\..\xbmc\cores\playercorefactory\PlayerCoreConfig.h" />
@@ -2733,11 +2344,6 @@
     <ClInclude Include="..\..\xbmc\windowing\windows\WinEventsWin32.h" />
     <ClInclude Include="..\..\xbmc\windowing\windows\WinSystemWin32.h" />
     <ClInclude Include="..\..\xbmc\windowing\windows\WinSystemWin32DX.h" />
-    <ClInclude Include="..\..\xbmc\windowing\windows\WinSystemWin32GL.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\windowing\WinEvents.h" />
     <ClInclude Include="..\..\xbmc\windowing\WinSystem.h" />
     <ClInclude Include="..\..\xbmc\windowing\XBMC_events.h" />
@@ -2806,105 +2412,60 @@
   <ItemGroup>
     <CustomBuild Include="..\..\xbmc\interfaces\swig\AddonModuleXbmc.i">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Generating SWIG bindings</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Generating SWIG bindings</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Generating SWIG bindings</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Generating SWIG bindings</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">Generating SWIG bindings</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Generating SWIG bindings</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\xbmc\interfaces\swig\AddonModuleXbmcaddon.i">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Generating SWIG bindings</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Generating SWIG bindings</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Generating SWIG bindings</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Generating SWIG bindings</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">Generating SWIG bindings</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Generating SWIG bindings</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\xbmc\interfaces\swig\AddonModuleXbmcgui.i">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Generating SWIG bindings</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Generating SWIG bindings</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Generating SWIG bindings</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Generating SWIG bindings</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">Generating SWIG bindings</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Generating SWIG bindings</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\xbmc\interfaces\swig\AddonModuleXbmcplugin.i">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Generating SWIG bindings</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Generating SWIG bindings</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Generating SWIG bindings</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Generating SWIG bindings</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">Generating SWIG bindings</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Generating SWIG bindings</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\xbmc\interfaces\swig\AddonModuleXbmcvfs.i">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Generating SWIG bindings</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Generating SWIG bindings</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Generating SWIG bindings</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Generating SWIG bindings</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">Generating SWIG bindings</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Generating SWIG bindings</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
@@ -2912,92 +2473,62 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\xbmc\interfaces\json-rpc\schema\license.txt">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\xbmc\interfaces\json-rpc\schema\methods.json">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\xbmc\interfaces\json-rpc\schema\notifications.json">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\xbmc\interfaces\json-rpc\schema\types.json">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\xbmc\interfaces\json-rpc\schema\version.txt">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Generating ServiceDescription.h for JSON-RPC API</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL ..\..\tools\windows\JsonSchemaBuilder.bat</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
     </CustomBuild>
     <None Include="..\..\xbmc\interfaces\swig\ControlListAddItemMethods.i" />
   </ItemGroup>

@@ -1,10 +1,7 @@
 @ECHO OFF
 SETLOCAL ENABLEDELAYEDEXPANSION
 rem ----Usage----
-rem BuildSetup [gl|dx] [clean|noclean]
-rem vs2010 for compiling with visual studio 2010
-rem gl for opengl build
-rem dx for directx build (default)
+rem BuildSetup [clean|noclean]
 rem clean to force a full rebuild
 rem noclean to force a build without clean
 rem noprompt to avoid all prompts
@@ -19,7 +16,6 @@ rem Config
 rem If you get an error that Visual studio was not found, SET your path for VSNET main executable.
 rem -------------------------------------------------------------
 rem	CONFIG START
-SET target=dx
 SET buildmode=ask
 SET promptlevel=prompt
 SET buildmingwlibs=true
@@ -27,8 +23,6 @@ SET exitcode=0
 SET useshell=rxvt
 SET BRANCH=na
 FOR %%b in (%1, %2, %3, %4, %5) DO (
-	IF %%b==dx SET target=dx
-	IF %%b==gl SET target=gl
 	IF %%b==clean SET buildmode=clean
 	IF %%b==noclean SET buildmode=noclean
 	IF %%b==noprompt SET promptlevel=noprompt
@@ -36,7 +30,7 @@ FOR %%b in (%1, %2, %3, %4, %5) DO (
 	IF %%b==sh SET useshell=sh
 )
 
-SET buildconfig=Release (DirectX)
+SET buildconfig=Release
 set WORKSPACE=%CD%\..\..
 
 

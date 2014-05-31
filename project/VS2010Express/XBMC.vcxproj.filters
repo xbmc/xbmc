@@ -154,9 +154,6 @@
     <Filter Include="rendering\dx">
       <UniqueIdentifier>{266c0d5e-8d84-4809-b060-f5968049f11a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="rendering\gl">
-      <UniqueIdentifier>{c23bb4dd-e0dc-4e0e-aaa5-d66798a0fc34}</UniqueIdentifier>
-    </Filter>
     <Filter Include="storage\windows">
       <UniqueIdentifier>{04b51f60-cfb4-43fd-8f23-40a7d0ac5c31}</UniqueIdentifier>
     </Filter>
@@ -615,16 +612,10 @@
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\BaseRenderer.cpp">
       <Filter>cores\VideoRenderers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\LinuxRendererGL.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRenderer.cpp">
       <Filter>cores\VideoRenderers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererDX.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererGL.cpp">
       <Filter>cores\VideoRenderers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererUtil.cpp">
@@ -640,9 +631,6 @@
       <Filter>cores\VideoRenderers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\ConvolutionKernels.cpp">
-      <Filter>cores\VideoRenderers\Shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\VideoFilterShader.cpp">
       <Filter>cores\VideoRenderers\Shaders</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\YUV2RGBShader.cpp">
@@ -976,9 +964,6 @@
     <ClCompile Include="..\..\xbmc\guilib\DirectXGraphics.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\FrameBufferObject.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUIAudioManager.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -1145,9 +1130,6 @@
       <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\MatrixGLES.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\Shader.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\TextureBundle.cpp">
@@ -1407,12 +1389,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\rendering\dx\RenderSystemDX.cpp">
       <Filter>rendering\dx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\rendering\gl\GUIWindowTestPatternGL.cpp">
-      <Filter>rendering\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\rendering\gl\RenderSystemGL.cpp">
-      <Filter>rendering\gl</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\settings\AdvancedSettings.cpp">
       <Filter>settings</Filter>
@@ -1730,9 +1706,6 @@
       <Filter>cores\dvdplayer\DVDDemuxers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\TextSearch.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\GLUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\win32\stdio_utf8.cpp">
@@ -2355,18 +2328,6 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUIFontTTFGL.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUITextureGL.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUITextureGLES.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\TextureGL.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GraphicContext.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -2458,9 +2419,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\dbwrappers\sqlitedataset.cpp">
       <Filter>dbwrappers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\windowing\windows\WinSystemWin32GL.cpp">
-      <Filter>windowing\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\PlayListPlayer.cpp" />
     <ClCompile Include="..\..\xbmc\utils\RecentlyAddedJob.cpp">
@@ -3535,16 +3493,10 @@
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\BaseRenderer.h">
       <Filter>cores\VideoRenderers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\LinuxRendererGL.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRenderer.h">
       <Filter>cores\VideoRenderers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererDX.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererGL.h">
       <Filter>cores\VideoRenderers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererUtil.h">
@@ -3560,9 +3512,6 @@
       <Filter>cores\VideoRenderers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\ConvolutionKernels.h">
-      <Filter>cores\VideoRenderers\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\VideoFilterShader.h">
       <Filter>cores\VideoRenderers\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\YUV2RGBShader.h">
@@ -3924,9 +3873,6 @@
     <ClInclude Include="..\..\xbmc\guilib\DirectXGraphics.h">
       <Filter>guilib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\FrameBufferObject.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\Geometry.h">
       <Filter>guilib</Filter>
     </ClInclude>
@@ -4111,9 +4057,6 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\Resolution.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\Shader.h">
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\TextureBundle.h">
@@ -4416,12 +4359,6 @@
     <ClInclude Include="..\..\xbmc\rendering\dx\RenderSystemDX.h">
       <Filter>rendering\dx</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\rendering\gl\GUIWindowTestPatternGL.h">
-      <Filter>rendering\gl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\rendering\gl\RenderSystemGL.h">
-      <Filter>rendering\gl</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\AdvancedSettings.h">
       <Filter>settings</Filter>
     </ClInclude>
@@ -4683,9 +4620,6 @@
     <ClInclude Include="..\..\xbmc\windowing\windows\WinSystemWin32DX.h">
       <Filter>windowing\windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\windowing\windows\WinSystemWin32GL.h">
-      <Filter>windowing\windows</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\GUIViewStateAddonBrowser.h">
       <Filter>addons</Filter>
     </ClInclude>
@@ -4780,9 +4714,6 @@
       <Filter>cores\dvdplayer\DVDDemuxers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\TextSearch.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\utils\GLUtils.h">
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\win32\stdio_utf8.h">
@@ -5456,18 +5387,6 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.h">
       <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\TextureGL.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUIFontTTFGL.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUITextureGL.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUITextureGLES.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\TextureManager.h">
       <Filter>guilib</Filter>
     </ClInclude>
@@ -5560,7 +5479,6 @@
     <ClInclude Include="..\..\xbmc\dbwrappers\sqlitedataset.h">
       <Filter>dbwrappers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\system_gl.h" />
     <ClInclude Include="..\..\xbmc\PlayListPlayer.h" />
     <ClInclude Include="..\..\xbmc\BackgroundInfoLoader.h" />
     <ClInclude Include="..\..\xbmc\utils\RecentlyAddedJob.h">
