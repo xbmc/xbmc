@@ -35,27 +35,48 @@
 #define DVD_PLAYSPEED_PAUSE       0       // frame stepping
 #define DVD_PLAYSPEED_NORMAL      1000
 
+enum EMasterClock
+{
+  MASTER_CLOCK_NONE,
+  MASTER_CLOCK_AUDIO,
+  MASTER_CLOCK_AUDIO_VIDEOREF,
+  MASTER_CLOCK_VIDEO,
+  MASTER_CLOCK_INPUT,
+};
+
 class CDVDClock
 {
 public:
+
   CDVDClock();
   ~CDVDClock();
+
+  EMasterClock GetMaster();
+  void         SetMaster(EMasterClock master);
+
 
   double GetClock(bool interpolated = true);
   double GetClock(double& absolute, bool interpolated = true);
 
-  void Discontinuity(double currentPts = 0LL);
+  bool Update(double clock, double absolute, double limit, const char* log);
+  void Discontinuity(double clock, double absolute);
+  void Discontinuity(double clock = 0LL)
+  {
+    Discontinuity(clock, GetAbsoluteClock());
+  }
 
   void Reset() { m_bReset = true; }
   void Pause();
   void Resume();
   void SetSpeed(int iSpeed);
 
+  double GetClockSpeed(); /**< get the current speed of the clock relative normal system time */
+
   /* tells clock at what framerate video is, to  *
    * allow it to adjust speed for a better match */
   int UpdateFramerate(double fps, double* interval = NULL);
 
-  bool   SetMaxSpeedAdjust(double speed);
+  void   SetMaxSpeedAdjust(double speed);
 
   static double GetAbsoluteClock(bool interpolated = true);
   static double GetFrequency() { return (double)m_systemFrequency ; }
@@ -65,6 +86,7 @@ public:
 protected:
   static void   CheckSystemClock();
   static double SystemToAbsolute(int64_t system);
+  static int64_t AbsoluteToSystem(double absolute);
   double        SystemToPlaying(int64_t system);
 
   CSharedSection m_critSection;
@@ -73,14 +95,13 @@ protected:
   int64_t m_pauseClock;
   double m_iDisc;
   bool m_bReset;
+  EMasterClock m_master;
 
   static int64_t m_systemFrequency;
   static int64_t m_systemOffset;
   static CCriticalSection m_systemsection;
 
   double           m_maxspeedadjust;
-  bool             m_speedadjust;
   CCriticalSection m_speedsection;
-  static bool      m_ismasterclock;
   static CDVDClock *m_playerclock;
 };

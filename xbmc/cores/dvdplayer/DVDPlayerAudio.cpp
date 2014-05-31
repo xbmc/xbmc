@@ -596,14 +596,18 @@ void CDVDPlayerAudio::SetSyncType(bool passthrough)
   if (passthrough && m_synctype == SYNC_RESAMPLE)
     m_synctype = SYNC_SKIPDUP;
 
-  //tell dvdplayervideo how much it can change the speed
   //if SetMaxSpeedAdjust returns false, it means no video is played and we need to use clock feedback
   double maxspeedadjust = 0.0;
   if (m_synctype == SYNC_RESAMPLE)
     maxspeedadjust = m_maxspeedadjust;
 
-  if (!m_pClock->SetMaxSpeedAdjust(maxspeedadjust))
+  m_pClock->SetMaxSpeedAdjust(maxspeedadjust);
+
+  if (m_pClock->GetMaster() == MASTER_CLOCK_AUDIO)
     m_synctype = SYNC_DISCON;
+
+  if(m_synctype == SYNC_DISCON && m_pClock->GetMaster() != MASTER_CLOCK_AUDIO)
+    m_synctype = SYNC_SKIPDUP;
 
   if (m_synctype != m_prevsynctype)
   {
@@ -616,14 +620,16 @@ void CDVDPlayerAudio::SetSyncType(bool passthrough)
 
 void CDVDPlayerAudio::HandleSyncError(double duration)
 {
-  double clock = m_pClock->GetClock();
+  double absolute;
+  double clock = m_pClock->GetClock(absolute);
   double error = m_dvdAudio.GetPlayingPts() - clock;
+  EMasterClock master = m_pClock->GetMaster();
 
-  if( fabs(error) > DVD_MSEC_TO_TIME(100) || m_syncclock )
+  if( (fabs(error) > DVD_MSEC_TO_TIME(100) || m_syncclock)
+  &&  (master == MASTER_CLOCK_AUDIO
+    || master == MASTER_CLOCK_AUDIO_VIDEOREF) )
   {
-    m_pClock->Discontinuity(clock+error);
-    CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity1 - was:%f, should be:%f, error:%f", clock, clock+error, error);
-
+    m_pClock->Update(clock+error, absolute, 0.0, "CDVDPlayerAudio::HandleSyncError1");
     m_errors.Flush();
     m_error = 0;
     m_syncclock = false;
@@ -657,11 +663,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
         error = m_error;
       }
 
-      if (fabs(error) > limit - 0.001)
-      {
-        m_pClock->Discontinuity(clock+error);
-        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity2 - was:%f, should be:%f, error:%f", clock, clock+error, error);
-      }
+      m_pClock->Update(clock+error, absolute, limit - 0.001, "CDVDPlayerAudio::HandleSyncError2");
     }
     else if (m_synctype == SYNC_RESAMPLE)
     {
@@ -682,7 +684,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
 
         proportional = m_error / DVD_TIME_BASE / proportionaldiv;
       }
-      m_resampleratio = 1.0 / g_VideoReferenceClock.GetSpeed() + proportional + m_integral;
+      m_resampleratio = 1.0 / m_pClock->GetClockSpeed() + proportional + m_integral;
     }
   }
 }
