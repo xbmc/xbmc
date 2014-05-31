@@ -33,7 +33,6 @@
 #include "utils/StringUtils.h"
 #include "cores/IPlayer.h"
 #include "cores/AudioEngine/AEFactory.h"
-#include "cores/AudioEngine/Utils/AEConvert.h"
 #ifdef TARGET_POSIX
 #include <dlfcn.h>
 #include "filesystem/SpecialProtocol.h"

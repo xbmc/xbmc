@@ -38,7 +38,6 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
-#include "cores/AudioEngine/Utils/AEConvert.h"
 #include "cores/AudioEngine/AEFactory.h"
 
 extern "C" {

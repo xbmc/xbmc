@@ -263,7 +263,6 @@ snd_pcm_format_t CAESinkALSA::AEFormatToALSAFormat(const enum AEDataFormat forma
 
   switch (format)
   {
-    case AE_FMT_S8    : return SND_PCM_FORMAT_S8;
     case AE_FMT_U8    : return SND_PCM_FORMAT_U8;
     case AE_FMT_S16NE : return SND_PCM_FORMAT_S16;
     case AE_FMT_S16LE : return SND_PCM_FORMAT_S16_LE;

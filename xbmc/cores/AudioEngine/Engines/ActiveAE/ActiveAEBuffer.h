@@ -38,6 +38,7 @@ struct SampleConfig
   int channels;
   int sample_rate;
   int bits_per_sample;
+  int dither_bits;
 };
 
 /**

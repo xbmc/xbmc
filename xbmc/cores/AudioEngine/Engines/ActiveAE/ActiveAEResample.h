@@ -37,7 +37,7 @@ class CActiveAEResample
 public:
   CActiveAEResample();
   virtual ~CActiveAEResample();
-  bool Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, int dst_bits, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, int src_bits, bool upmix, bool normalize, CAEChannelInfo *remapLayout, AEQuality quality);
+  bool Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, int dst_bits, int dst_dither, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, int src_bits, int src_dither, bool upmix, bool normalize, CAEChannelInfo *remapLayout, AEQuality quality);
   int Resample(uint8_t **dst_buffer, int dst_samples, uint8_t **src_buffer, int src_samples, double ratio);
   int64_t GetDelay(int64_t base);
   int GetBufferedSamples();
@@ -47,7 +47,6 @@ public:
   static uint64_t GetAVChannelLayout(CAEChannelInfo &info);
 //  static CAEChannelInfo GetAEChannelLayout(uint64_t layout);
   static AVSampleFormat GetAVSampleFormat(AEDataFormat format);
-  static AEDataFormat GetAESampleFormat(AVSampleFormat format, int bits);
   static uint64_t GetAVChannel(enum AEChannel aechannel);
   int GetAVChannelIndex(enum AEChannel aechannel, uint64_t layout);
 
@@ -58,6 +57,7 @@ protected:
   int m_src_channels, m_dst_channels;
   AVSampleFormat m_src_fmt, m_dst_fmt;
   int m_src_bits, m_dst_bits;
+  int m_src_dither_bits, m_dst_dither_bits;
   SwrContext *m_pContext;
   double m_rematrix[AE_CH_MAX][AE_CH_MAX];
 };

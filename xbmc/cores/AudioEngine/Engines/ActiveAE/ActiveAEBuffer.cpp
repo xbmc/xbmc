@@ -107,6 +107,7 @@ bool CActiveAEBufferPool::Create(unsigned int totaltime)
   SampleConfig config;
   config.fmt = CActiveAEResample::GetAVSampleFormat(m_format.m_dataFormat);
   config.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_format.m_dataFormat);
+  config.dither_bits = CAEUtil::DataFormatToDitherBits(m_format.m_dataFormat);
   config.channels = m_format.m_channelLayout.Count();
   config.sample_rate = m_format.m_sampleRate;
   config.channel_layout = CActiveAEResample::GetAVChannelLayout(m_format.m_channelLayout);
@@ -174,11 +175,13 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, boo
                                 m_format.m_sampleRate,
                                 CActiveAEResample::GetAVSampleFormat(m_format.m_dataFormat),
                                 CAEUtil::DataFormatToUsedBits(m_format.m_dataFormat),
+                                CAEUtil::DataFormatToDitherBits(m_format.m_dataFormat),
                                 CActiveAEResample::GetAVChannelLayout(m_inputFormat.m_channelLayout),
                                 m_inputFormat.m_channelLayout.Count(),
                                 m_inputFormat.m_sampleRate,
                                 CActiveAEResample::GetAVSampleFormat(m_inputFormat.m_dataFormat),
                                 CAEUtil::DataFormatToUsedBits(m_inputFormat.m_dataFormat),
+                                CAEUtil::DataFormatToDitherBits(m_format.m_dataFormat),
                                 upmix,
                                 m_normalize,
                                 remap ? &m_format.m_channelLayout : NULL,
@@ -200,11 +203,13 @@ void CActiveAEBufferPoolResample::ChangeResampler()
                                 m_format.m_sampleRate,
                                 CActiveAEResample::GetAVSampleFormat(m_format.m_dataFormat),
                                 CAEUtil::DataFormatToUsedBits(m_format.m_dataFormat),
+                                CAEUtil::DataFormatToDitherBits(m_format.m_dataFormat),
                                 CActiveAEResample::GetAVChannelLayout(m_inputFormat.m_channelLayout),
                                 m_inputFormat.m_channelLayout.Count(),
                                 m_inputFormat.m_sampleRate,
                                 CActiveAEResample::GetAVSampleFormat(m_inputFormat.m_dataFormat),
                                 CAEUtil::DataFormatToUsedBits(m_inputFormat.m_dataFormat),
+                                CAEUtil::DataFormatToDitherBits(m_format.m_dataFormat),
                                 m_stereoUpmix,
                                 m_normalize,
                                 NULL,

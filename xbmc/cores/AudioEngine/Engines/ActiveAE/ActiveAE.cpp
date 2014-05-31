@@ -1092,17 +1092,6 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     std::list<CActiveAEStream*>::iterator it;
     for(it=m_streams.begin(); it!=m_streams.end(); ++it)
     {
-      // check if we support input format of stream
-      if (!AE_IS_RAW((*it)->m_format.m_dataFormat) && 
-          ((CActiveAEResample::GetAVSampleFormat((*it)->m_format.m_dataFormat) == AV_SAMPLE_FMT_FLT &&
-          (*it)->m_format.m_dataFormat != AE_FMT_FLOAT) ||
-          (CActiveAEResample::GetAVSampleFormat((*it)->m_format.m_dataFormat) == AV_SAMPLE_FMT_FLTP &&
-          (*it)->m_format.m_dataFormat != AE_FMT_FLOATP)))
-      {
-        (*it)->m_convertFn = CAEConvert::ToFloat((*it)->m_format.m_dataFormat);
-        (*it)->m_format.m_dataFormat = AE_FMT_FLOAT;
-      }
-
       if (!(*it)->m_inputBuffers)
       {
         // align input buffers with period of sink or encoder
@@ -2593,6 +2582,7 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
   dst_config.sample_rate = m_internalFormat.m_sampleRate;
   dst_config.fmt = CActiveAEResample::GetAVSampleFormat(m_internalFormat.m_dataFormat);
   dst_config.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_internalFormat.m_dataFormat);
+  dst_config.dither_bits = CAEUtil::DataFormatToDitherBits(m_internalFormat.m_dataFormat);
 
   CActiveAEResample *resampler = new CActiveAEResample();
   resampler->Init(dst_config.channel_layout,
@@ -2600,11 +2590,13 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
                   dst_config.sample_rate,
                   dst_config.fmt,
                   dst_config.bits_per_sample,
+                  dst_config.dither_bits,
                   orig_config.channel_layout,
                   orig_config.channels,
                   orig_config.sample_rate,
                   orig_config.fmt,
                   orig_config.bits_per_sample,
+                  orig_config.dither_bits,
                   false,
                   true,
                   NULL,

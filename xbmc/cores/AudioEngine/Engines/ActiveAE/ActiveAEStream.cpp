@@ -52,7 +52,6 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat *format)
   m_streamFreeBuffers = 0;
   m_streamIsBuffering = true;
   m_streamSlave = NULL;
-  m_convertFn = NULL;
   m_leftoverBuffer = new uint8_t[m_format.m_frameSize];
   m_leftoverBytes = 0;
   m_forceResampler = false;
@@ -149,11 +148,13 @@ void CActiveAEStream::InitRemapper()
                      m_format.m_sampleRate,
                      CActiveAEResample::GetAVSampleFormat(m_format.m_dataFormat),
                      CAEUtil::DataFormatToUsedBits(m_format.m_dataFormat),
+                     CAEUtil::DataFormatToDitherBits(m_format.m_dataFormat),
                      avLayout,
                      m_format.m_channelLayout.Count(),
                      m_format.m_sampleRate,
                      CActiveAEResample::GetAVSampleFormat(m_format.m_dataFormat),
                      CAEUtil::DataFormatToUsedBits(m_format.m_dataFormat),
+                     CAEUtil::DataFormatToDitherBits(m_format.m_dataFormat),
                      false,
                      false,
                      &remapLayout,
@@ -236,11 +237,7 @@ unsigned int CActiveAEStream::AddData(void *data, unsigned int size)
       int samples = std::min(freeSamples, availableSamples);
       int bytes = samples * m_format.m_frameSize;
 
-      //TODO: handle planar formats
-      if (m_convertFn)
-        m_convertFn(buf, samples*m_currentBuffer->pkt->config.channels, (float*)(m_currentBuffer->pkt->data[0] + start));
-      else
-        memcpy(m_currentBuffer->pkt->data[0] + start, buf, bytes);
+      memcpy(m_currentBuffer->pkt->data[0] + start, buf, bytes);
       {
         CSingleLock lock(*m_statsLock);
         m_currentBuffer->pkt->nb_samples += samples;

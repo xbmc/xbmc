@@ -67,9 +67,6 @@ void CActiveAESink::Dispose()
 
   delete m_sampleOfSilence.pkt;
   m_sampleOfSilence.pkt = NULL;
-
-  delete m_convertBuffer.pkt;
-  m_convertBuffer.pkt = NULL;
 }
 
 AEDeviceType CActiveAESink::GetDeviceType(const std::string &device)
@@ -758,6 +755,7 @@ void CActiveAESink::OpenSink()
   SampleConfig config;
   config.fmt = CActiveAEResample::GetAVSampleFormat(m_sinkFormat.m_dataFormat);
   config.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_sinkFormat.m_dataFormat);
+  config.dither_bits = CAEUtil::DataFormatToDitherBits(m_sinkFormat.m_dataFormat);
   config.channel_layout = CActiveAEResample::GetAVChannelLayout(m_sinkFormat.m_channelLayout);
   config.channels = m_sinkFormat.m_channelLayout.Count();
   config.sample_rate = m_sinkFormat.m_sampleRate;
@@ -769,10 +767,7 @@ void CActiveAESink::OpenSink()
   if (!passthrough)
     GenerateNoise();
 
-  delete m_convertBuffer.pkt;
-  m_convertBuffer.pkt = NULL;
-  m_convertFn = NULL;
-  m_convertState = CHECK_CONVERT;
+  m_swapState = CHECK_SWAP;
 }
 
 void CActiveAESink::ReturnBuffers()
@@ -798,26 +793,16 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
   unsigned int written = 0;
   double sinkDelay = 0.0;
 
-  switch(m_convertState)
+  switch(m_swapState)
   {
-  case SKIP_CONVERT:
-    break;
-  case NEED_CONVERT:
-    EnsureConvertBuffer(samples);
-    Convert(samples);
-    buffer = m_convertBuffer.pkt->data;
+  case SKIP_SWAP:
     break;
   case NEED_BYTESWAP:
     Endian_Swap16_buf((uint16_t *)buffer[0], (uint16_t *)buffer[0], frames * samples->pkt->config.channels);
     break;
-  case CHECK_CONVERT:
-    ConvertInit(samples);
-    if (m_convertState == NEED_CONVERT)
-    {
-      Convert(samples);
-      buffer = m_convertBuffer.pkt->data;
-    }
-    else if (m_convertState == NEED_BYTESWAP)
+  case CHECK_SWAP:
+    SwapInit(samples);
+    if (m_swapState == NEED_BYTESWAP)
       Endian_Swap16_buf((uint16_t *)buffer[0], (uint16_t *)buffer[0], frames * samples->pkt->config.channels);
     break;
   default:
@@ -856,49 +841,14 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
   return sinkDelay*1000;
 }
 
-void CActiveAESink::ConvertInit(CSampleBuffer* samples)
+void CActiveAESink::SwapInit(CSampleBuffer* samples)
 {
-  if (CActiveAEResample::GetAESampleFormat(samples->pkt->config.fmt, samples->pkt->config.bits_per_sample) != m_sinkFormat.m_dataFormat)
+  if (AE_IS_RAW(m_requestedFormat.m_dataFormat) && CAEUtil::S16NeedsByteSwap(AE_FMT_S16NE, m_sinkFormat.m_dataFormat))
   {
-    m_convertFn = CAEConvert::FrFloat(m_sinkFormat.m_dataFormat);
-    EnsureConvertBuffer(samples);
-    m_convertState = NEED_CONVERT;
-  }
-  else if (AE_IS_RAW(m_requestedFormat.m_dataFormat) && CAEUtil::S16NeedsByteSwap(AE_FMT_S16NE, m_sinkFormat.m_dataFormat))
-  {
-    m_convertState = NEED_BYTESWAP;
+    m_swapState = NEED_BYTESWAP;
   }
   else
-    m_convertState = SKIP_CONVERT;
-}
-
-void CActiveAESink::EnsureConvertBuffer(CSampleBuffer* samples)
-{
-  if (m_convertBuffer.pkt && samples->pkt->max_nb_samples <= m_convertBuffer.pkt->max_nb_samples)
-    return;
-
-  delete m_convertBuffer.pkt;
-
-  SampleConfig config;
-  config.fmt = CActiveAEResample::GetAVSampleFormat(m_sinkFormat.m_dataFormat);
-  config.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_sinkFormat.m_dataFormat);
-  config.channel_layout = CActiveAEResample::GetAVChannelLayout(m_sinkFormat.m_channelLayout);
-  config.channels = m_sinkFormat.m_channelLayout.Count();
-  config.sample_rate = m_sinkFormat.m_sampleRate;
-
-  m_convertBuffer.pkt = new CSoundPacket(config, m_sinkFormat.m_frames);
-}
-
-void CActiveAESink::Convert(CSampleBuffer* samples)
-{
-  if (samples->pkt->planes != m_convertBuffer.pkt->planes)
-    assert(0);
-
-  int planes = samples->pkt->planes;
-  for (int i=0; i<planes; i++)
-  {
-    m_convertFn((float*)samples->pkt->data[0], samples->pkt->nb_samples * samples->pkt->config.channels / planes, m_convertBuffer.pkt->data[i]);
-  }
+    m_swapState = SKIP_SWAP;
 }
 
 #define PI 3.1415926536f
@@ -906,8 +856,7 @@ void CActiveAESink::Convert(CSampleBuffer* samples)
 void CActiveAESink::GenerateNoise()
 {
   int nb_floats = m_sampleOfSilence.pkt->max_nb_samples;
-  if (!AE_IS_PLANAR(m_sinkFormat.m_dataFormat))
-    nb_floats *= m_sampleOfSilence.pkt->config.channels;
+  nb_floats *= m_sampleOfSilence.pkt->config.channels;
 
   float *noise = (float*)_aligned_malloc(nb_floats*sizeof(float), 16);
 
@@ -924,40 +873,24 @@ void CActiveAESink::GenerateNoise()
     noise[i] = (float) sqrt( -2.0f * log( R1 )) * cos( 2.0f * PI * R2 ) * 0.00001f;
   }
 
-  AEDataFormat fmt = CActiveAEResample::GetAESampleFormat(m_sampleOfSilence.pkt->config.fmt, m_sampleOfSilence.pkt->config.bits_per_sample);
-  if (AE_IS_PLANAR(fmt))
-  {
-    switch(fmt)
-    {
-    case AE_FMT_U8P:
-      fmt = AE_FMT_U8;
-      break;
-    case AE_FMT_S16NEP:
-      fmt = AE_FMT_S16NE;
-      break;
-    case AE_FMT_S32NEP:
-      fmt = AE_FMT_S32NE;
-      break;
-    case AE_FMT_S24NE4P:
-      fmt = AE_FMT_S24NE4;
-      break;
-    case AE_FMT_FLOATP:
-      fmt = AE_FMT_FLOAT;
-      break;
-    case AE_FMT_DOUBLEP:
-      fmt = AE_FMT_DOUBLE;
-      break;
-    default:
-      assert(0);
-      break;
-    }
-  }
-  CAEConvert::AEConvertFrFn convertFn = CAEConvert::FrFloat(fmt);
+  SampleConfig config = m_sampleOfSilence.pkt->config;
+  CActiveAEResample resampler;
+  resampler.Init(config.channel_layout,
+                 config.channels,
+                 config.sample_rate,
+                 config.fmt,
+                 config.bits_per_sample,
+                 config.dither_bits,
+                 config.channel_layout,
+                 config.channels,
+                 config.sample_rate,
+                 AV_SAMPLE_FMT_FLT,
+                 CAEUtil::DataFormatToUsedBits(m_sinkFormat.m_dataFormat),
+                 CAEUtil::DataFormatToDitherBits(m_sinkFormat.m_dataFormat),
+                 false, false, NULL, AE_QUALITY_UNKNOWN);
+  resampler.Resample(m_sampleOfSilence.pkt->data, m_sampleOfSilence.pkt->max_nb_samples,
+                     (uint8_t**)&noise, m_sampleOfSilence.pkt->max_nb_samples, 1.0);
 
-  for (int i=0; i<m_sampleOfSilence.pkt->planes; i++)
-  {
-    convertFn(noise, nb_floats, m_sampleOfSilence.pkt->data[i]);
-  }
   _aligned_free(noise);
 }
 

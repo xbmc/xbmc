@@ -2340,13 +2340,7 @@
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Utils\AEChannelInfo.cpp">
       <Filter>cores\AudioEngine\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Utils\AEConvert.cpp">
-      <Filter>cores\AudioEngine\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Utils\AEPackIEC61937.cpp">
-      <Filter>cores\AudioEngine\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Utils\AERemap.cpp">
       <Filter>cores\AudioEngine\Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Utils\AEStreamInfo.cpp">
@@ -5447,13 +5441,7 @@
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AEChannelInfo.h">
       <Filter>cores\AudioEngine\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AEConvert.h">
-      <Filter>cores\AudioEngine\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AEPackIEC61937.h">
-      <Filter>cores\AudioEngine\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AERemap.h">
       <Filter>cores\AudioEngine\Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AEStreamInfo.h">
