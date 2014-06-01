@@ -187,7 +187,7 @@ bool MfcDecoder::SetupOutputFormat(CDVDStreamInfo &hints)
     default:
       return false;
   }
-  
+
   fmt.type = V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE;
   fmt.fmt.pix_mp.plane_fmt[0].sizeimage = STREAM_BUFFER_SIZE;
   fmt.fmt.pix_mp.num_planes = V4L2_NUM_MAX_PLANES;
@@ -197,7 +197,7 @@ bool MfcDecoder::SetupOutputFormat(CDVDStreamInfo &hints)
     CLog::Log(LOGERROR, "%s::%s - MFC OUTPUT S_FMT failed", CLASSNAME, __func__);
     return false;
   }
-  
+
   return true;
 }
 
@@ -223,7 +223,7 @@ bool MfcDecoder::SetupOutputBuffers()
   {
     CLog::Log(LOGERROR, "%s::%s - MFC OUTPUT REQBUFS failed", CLASSNAME, __func__);
     return false;
-  } 
+  }
   CLog::Log(LOGDEBUG, "%s::%s - MFC OUTPUT REQBUFS Number of MFC buffers is %d (requested %d)", CLASSNAME, __func__, m_MFCOutputBuffersCount, MFC_OUTPUT_BUFFERS_CNT);
 
   // Memory Map mfc output buffers
@@ -238,7 +238,7 @@ bool MfcDecoder::SetupOutputBuffers()
     CLog::Log(LOGERROR, "%s::%s - MFC Cannot mmap OUTPUT buffers", CLASSNAME, __func__);
     return false;
   }
-  
+
   CLog::Log(LOGDEBUG, "%s::%s - MFC OUTPUT Succesfully mmapped %d buffers", CLASSNAME, __func__, m_MFCOutputBuffersCount);
   return true;
 }
@@ -247,7 +247,7 @@ bool MfcDecoder::QueueHeader(CDVDStreamInfo &hints)
 {
   unsigned int extraSize = 0;
   uint8_t *extraData = NULL;
-  
+
   m_bVideoConvert = m_converter.Open(hints.codec, (uint8_t *)hints.extradata, hints.extrasize, true);
   if (m_bVideoConvert)
   {
@@ -265,7 +265,7 @@ bool MfcDecoder::QueueHeader(CDVDStreamInfo &hints)
       extraData = (uint8_t*)hints.extradata;
     }
   }
-  
+
   // Prepare header
   m_v4l2MFCOutputBuffers[0].iBytesUsed[0] = extraSize;
   fast_memcpy((uint8_t *)m_v4l2MFCOutputBuffers[0].cPlane[0], extraData, extraSize);
@@ -286,7 +286,7 @@ bool MfcDecoder::QueueHeader(CDVDStreamInfo &hints)
     CLog::Log(LOGERROR, "%s::%s - MFC OUTPUT Failed to Stream ON", CLASSNAME, __func__);
     return false;
   }
-  
+
   CLog::Log(LOGDEBUG, "%s::%s - MFC OUTPUT Stream ON", CLASSNAME, __func__);
   return true;
 }
@@ -316,7 +316,7 @@ bool MfcDecoder::GetCaptureFormat(struct v4l2_format* fmt)
   }
   m_iMFCCapturePlane1Size = fmt->fmt.pix_mp.plane_fmt[0].sizeimage;
   m_iMFCCapturePlane2Size = fmt->fmt.pix_mp.plane_fmt[1].sizeimage;
-  
+
   CLog::Log(LOGDEBUG, "%s::%s - MFC CAPTURE G_FMT: fmt (%dx%d), plane[0]=%d plane[1]=%d", CLASSNAME, __func__, fmt->fmt.pix_mp.width, fmt->fmt.pix_mp.height, m_iMFCCapturePlane1Size, m_iMFCCapturePlane2Size);
   return true;
 }
@@ -357,7 +357,7 @@ bool MfcDecoder::SetupCaptureBuffers()
     CLog::Log(LOGERROR, "%s::%s - MFC CAPTURE Cannot mmap memory for buffers", CLASSNAME, __func__);
     return false;
   }
-  
+
   for (int n = 0; n < m_MFCCaptureBuffersCount; n++)
   {
     m_v4l2MFCCaptureBuffers[n].iBytesUsed[0] = m_iMFCCapturePlane1Size;
@@ -372,7 +372,7 @@ bool MfcDecoder::SetupCaptureBuffers()
     CLog::Log(LOGERROR, "%s::%s - MFC CAPTURE Failed to Stream ON", CLASSNAME, __func__);
     return false;
   }
-  
+
   CLog::Log(LOGDEBUG, "%s::%s - MFC CAPTURE Stream ON", CLASSNAME, __func__);
   return true;
 }
@@ -386,7 +386,7 @@ bool MfcDecoder::DequeueHeader()
     CLog::Log(LOGERROR, "%s::%s - MFC OUTPUT error dequeue header, got number %d, errno %d", CLASSNAME, __func__, ret, errno);
     return false;
   }
-  
+
   m_v4l2MFCOutputBuffers[ret].bQueue = false;
   CLog::Log(LOGDEBUG, "%s::%s - MFC OUTPUT -> %d header", CLASSNAME, __func__, ret);
 

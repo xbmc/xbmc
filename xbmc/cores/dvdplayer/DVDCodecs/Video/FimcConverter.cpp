@@ -129,13 +129,13 @@ bool FimcConverter::SetOutputFormat(struct v4l2_format* fmt)
   fmt->fmt.pix_mp.field            = V4L2_FIELD_ANY;
   fmt->fmt.pix_mp.pixelformat      = V4L2_PIX_FMT_NV12MT;
   fmt->fmt.pix_mp.num_planes       = V4L2_NUM_MAX_PLANES;
- 
+
   if (ioctl(m_iConverterHandle, VIDIOC_S_FMT, fmt))
   {
     CLog::Log(LOGERROR, "%s::%s - FIMC OUTPUT S_FMT Failed", CLASSNAME, __func__);
     return false;
   }
-  
+
   CLog::Log(LOGDEBUG, "%s::%s - FIMC OUTPUT S_FMT (%dx%d)", CLASSNAME, __func__, fmt->fmt.pix_mp.width, fmt->fmt.pix_mp.height);
   return true;
 }
@@ -149,7 +149,7 @@ bool FimcConverter::SetOutputCrop(struct v4l2_crop* crop)
     CLog::Log(LOGERROR, "%s::%s - FIMC OUTPUT S_CROP Failed to set crop information", CLASSNAME, __func__);
     return false;
   }
-  
+
   CLog::Log(LOGDEBUG, "%s::%s - FIMC OUTPUT S_CROP (%dx%d)", CLASSNAME, __func__, crop->c.width, crop->c.height);
   return true;
 }
@@ -212,7 +212,7 @@ bool FimcConverter::SetupCaptureBuffers()
     CLog::Log(LOGERROR, "%s::%s - FIMC CAPTURE G_FMT Failed", CLASSNAME, __func__);
     return false;
   }
-  
+
   m_iFIMCCapturePlane1Size = fmt.fmt.pix_mp.plane_fmt[0].sizeimage;
   m_iFIMCCapturePlane2Size = fmt.fmt.pix_mp.plane_fmt[1].sizeimage;
   m_iFIMCCapturePlane3Size = fmt.fmt.pix_mp.plane_fmt[2].sizeimage;
@@ -239,7 +239,7 @@ bool FimcConverter::SetupCaptureBuffers()
     CLog::Log(LOGERROR, "%s::%s - FIMC CAPTURE Cannot mmap for capture buffers", CLASSNAME, __func__);
     return false;
   }
-  
+
   for (int n = 0; n < m_FIMCCaptureBuffersCount; n++)
   {
     m_v4l2FIMCCaptureBuffers[n].iBytesUsed[0] = m_iFIMCCapturePlane1Size;
@@ -302,7 +302,7 @@ bool FimcConverter::StartConverter()
       CLog::Log(LOGERROR, "%s::%s - FIMC CAPTURE Failed to Stream ON", CLASSNAME, __func__);
 
     m_bFIMCStartConverter = false;
-    return true; 
+    return true;
   }
   return false;
 }

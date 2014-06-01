@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2012 Team XBMC
+ *      Copyright (C) 2005-2014 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -40,7 +40,7 @@
 #endif
 #define CLASSNAME "CLinuxV4l2"
 
-CLinuxV4l2::CLinuxV4l2() 
+CLinuxV4l2::CLinuxV4l2()
 {
 }
 
@@ -53,7 +53,7 @@ int CLinuxV4l2::RequestBuffer(int device, enum v4l2_buf_type type, enum v4l2_mem
   struct v4l2_requestbuffers reqbuf;
   int ret = 0;
 
-  if(device < 0)
+  if (device < 0)
     return false;
 
   memset(&reqbuf, 0, sizeof(struct v4l2_requestbuffers));
@@ -77,11 +77,11 @@ bool CLinuxV4l2::StreamOn(int device, enum v4l2_buf_type type, int onoff)
   int ret = 0;
   enum v4l2_buf_type setType = type;
 
-  if(device < 0)
+  if (device < 0)
     return false;
 
   ret = ioctl(device, onoff, &setType);
-  if(ret)
+  if (ret)
     return false;
 
   return true;
@@ -94,10 +94,10 @@ bool CLinuxV4l2::MmapBuffers(int device, int count, V4L2Buffer *v4l2Buffers, enu
   int ret;
   int i, j;
 
-  if(device < 0 || !v4l2Buffers || count == 0)
+  if (device < 0 || !v4l2Buffers || count == 0)
     return false;
 
-  for(i = 0; i < count; i++)
+  for (i = 0; i < count; i++)
   {
     memset(&buf, 0, sizeof(struct v4l2_buffer));
     memset(&planes, 0, sizeof(struct v4l2_plane) * V4L2_NUM_MAX_PLANES);
@@ -117,17 +117,17 @@ bool CLinuxV4l2::MmapBuffers(int device, int count, V4L2Buffer *v4l2Buffers, enu
     V4L2Buffer *buffer = &v4l2Buffers[i];
 
     buffer->iNumPlanes = 0;
-    for (j = 0; j < V4L2_NUM_MAX_PLANES; j++) 
+    for (j = 0; j < V4L2_NUM_MAX_PLANES; j++)
     {
       //printf("%s::%s - plane %d %d size %d 0x%08x\n", CLASSNAME, __func__, i, j, buf.m.planes[j].length,
       //    buf.m.planes[j].m.userptr);
       buffer->iSize[j]       = buf.m.planes[j].length;
       buffer->iBytesUsed[j]  = buf.m.planes[j].bytesused;
-      if(buffer->iSize[j])
+      if (buffer->iSize[j])
       {
         buffer->cPlane[j] = mmap(NULL, buf.m.planes[j].length, PROT_READ | PROT_WRITE,
                        MAP_SHARED, device, buf.m.planes[j].m.mem_offset);
-        if(buffer->cPlane[j] == MAP_FAILED)
+        if (buffer->cPlane[j] == MAP_FAILED)
         {
           CLog::Log(LOGERROR, "%s::%s - Mmapping buffer", CLASSNAME, __func__);
           return false;
@@ -138,7 +138,7 @@ bool CLinuxV4l2::MmapBuffers(int device, int count, V4L2Buffer *v4l2Buffers, enu
     }
     buffer->iIndex = i;
 
-    if(queue)
+    if (queue)
     {
       ret = ioctl(device, VIDIOC_QBUF, &buf);
       if (ret)
@@ -157,15 +157,15 @@ V4L2Buffer *CLinuxV4l2::FreeBuffers(int count, V4L2Buffer *v4l2Buffers)
 {
   int i, j;
 
-  if(v4l2Buffers != NULL)
+  if (v4l2Buffers != NULL)
   {
-    for(i = 0; i < count; i++)
+    for (i = 0; i < count; i++)
     {
       V4L2Buffer *buffer = &v4l2Buffers[i];
 
       for (j = 0; j < buffer->iNumPlanes; j++)
       {
-        if(buffer->cPlane[j] && buffer->cPlane[j] != MAP_FAILED)
+        if (buffer->cPlane[j] && buffer->cPlane[j] != MAP_FAILED)
         {
           munmap(buffer->cPlane[j], buffer->iSize[j]);
           CLog::Log(LOGDEBUG, "%s::%s - unmap convert buffer", CLASSNAME, __func__);
@@ -183,7 +183,7 @@ int CLinuxV4l2::DequeueBuffer(int device, enum v4l2_buf_type type, enum v4l2_mem
   struct v4l2_plane  vplanes[V4L2_NUM_MAX_PLANES];
   int ret = 0;
 
-  if(device < 0)
+  if (device < 0)
     return V4L2_ERROR;
 
   memset(&vplanes, 0, sizeof(struct v4l2_plane) * V4L2_NUM_MAX_PLANES);
@@ -199,18 +199,18 @@ int CLinuxV4l2::DequeueBuffer(int device, enum v4l2_buf_type type, enum v4l2_mem
       CLog::Log(LOGERROR, "%s::%s - Dequeue buffer", CLASSNAME, __func__);
     return V4L2_ERROR;
   }
-  
+
   return vbuf.index;
 }
 
-int CLinuxV4l2::QueueBuffer(int device, enum v4l2_buf_type type, 
+int CLinuxV4l2::QueueBuffer(int device, enum v4l2_buf_type type,
     enum v4l2_memory memory, int planes, int index, V4L2Buffer *buffer)
 {
   struct v4l2_buffer vbuf;
   struct v4l2_plane  vplanes[V4L2_NUM_MAX_PLANES];
   int ret = 0;
 
-  if(!buffer || device <0)
+  if (!buffer || device <0)
     return V4L2_ERROR;
 
   memset(&vplanes, 0, sizeof(struct v4l2_plane) * V4L2_NUM_MAX_PLANES);
@@ -221,7 +221,7 @@ int CLinuxV4l2::QueueBuffer(int device, enum v4l2_buf_type type,
   vbuf.m.planes = vplanes;
   vbuf.length   = buffer->iNumPlanes;
 
-  for (int i = 0; i < buffer->iNumPlanes; i++) 
+  for (int i = 0; i < buffer->iNumPlanes; i++)
   {
     vplanes[i].m.userptr   = (unsigned long)buffer->cPlane[i];
     vplanes[i].length      = buffer->iSize[i];
@@ -291,7 +291,7 @@ int CLinuxV4l2::SetControllValue(int device, int id, int value)
 
   ret = ioctl(device, VIDIOC_S_CTRL, &control);
 
-  if(ret < 0) 
+  if (ret < 0)
   {
     CLog::Log(LOGERROR, "%s::%s - Set controll if %d value %d\n", CLASSNAME, __func__, id, value);
     return V4L2_ERROR;

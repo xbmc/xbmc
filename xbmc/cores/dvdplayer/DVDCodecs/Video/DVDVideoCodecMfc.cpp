@@ -80,7 +80,7 @@ bool CDVDVideoCodecMfc::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   {
     return false;
   }
-  
+
   if (!m_decoder->SetupOutputBuffers())
   {
     return false;
@@ -111,7 +111,7 @@ bool CDVDVideoCodecMfc::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     if (!m_converter->SetOutputFormat(&mfc_fmt))
     {
       return false;
-    }  
+    }
   }
 
   if (!m_decoder->RequestBuffers())
@@ -143,7 +143,7 @@ bool CDVDVideoCodecMfc::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
   if (!m_NV12Support)
   {
-    // Set FIMC crop based on MFC crop 
+    // Set FIMC crop based on MFC crop
     if (!m_converter->SetOutputCrop(&mfc_crop))
     {
       return false;
@@ -156,12 +156,12 @@ bool CDVDVideoCodecMfc::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     if (width%2)  width--;
     if (height%2) height--;
   }
-  
+
   if (!m_decoder->SetupCaptureBuffers())
   {
     return false;
   }
-  
+
   // with no FIMC we use for converted picture the decoded width and height
   m_iConvertedWidth = width;
   m_iConvertedHeight = height;
@@ -275,7 +275,7 @@ int CDVDVideoCodecMfc::Decode(BYTE* pData, int iSize, double dts, double pts)
       m_decoder->RemoveFirstDecodedCaptureBuffer();
     }
   }
-  
+
   if (!m_decoder->DequeueDecodedFrame(&ret))
   {
     return ret;
@@ -283,7 +283,7 @@ int CDVDVideoCodecMfc::Decode(BYTE* pData, int iSize, double dts, double pts)
   index = ret;
 
   if (m_NV12Support)
-  { 
+  {
     m_decoder->AddDecodedCaptureBuffer(index);
   }
 
@@ -300,12 +300,12 @@ int CDVDVideoCodecMfc::Decode(BYTE* pData, int iSize, double dts, double pts)
       {
         return VC_ERROR;
       }
-  
+
       if (!m_converter->QueueOutputBuffer(index, m_decoder->GetCaptureBuffer(index), &ret))
       {
         return VC_ERROR;
       }
- 
+
       m_decoder->SetCaptureBufferBusy(ret);
 
       if (m_converter->Startm_converter())
@@ -320,7 +320,7 @@ int CDVDVideoCodecMfc::Decode(BYTE* pData, int iSize, double dts, double pts)
       index = ret;
 
       m_decoder->SetCaptureBufferEmpty(ret);
-    
+
       if (!m_converter->DequeueCaptureBuffer(&ret))
       {
         if (ret != 0)
@@ -344,7 +344,7 @@ int CDVDVideoCodecMfc::Decode(BYTE* pData, int iSize, double dts, double pts)
       m_videoBuffer.data[1]         = 0;
       m_videoBuffer.data[2]         = 0;
       m_videoBuffer.data[3]         = 0;
-    
+
       m_videoBuffer.format          = RENDER_FMT_YUV420P;
       m_videoBuffer.iLineSize[0]    = m_iConvertedWidth;
       m_videoBuffer.iLineSize[1]    = m_iConvertedWidth >> 1;
@@ -398,7 +398,7 @@ int CDVDVideoCodecMfc::Decode(BYTE* pData, int iSize, double dts, double pts)
       return VC_ERROR;
     }
   }
-  
+
   return VC_PICTURE; // Picture is finally ready to be processed further
 }
 
