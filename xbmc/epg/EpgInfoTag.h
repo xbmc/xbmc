@@ -374,14 +374,14 @@ namespace EPG
      * @brief Change the subtitle of this event.
      * @param strSubtitle The new subtitle.
      */
-    void SetSubtitle(const CStdString &strSubtitle);
+    void SetOrigName(const CStdString &strOrigName);
 
     /*!
-     * @brief Get the subtitle of this event.
+     * @brief Get the origname of this event.
      * @param bOverrideParental True to override parental control, false check it.
-     * @return The subtitle.
+     * @return The origname.
      */
-    CStdString Subtitle(void) const;
+    CStdString OrigName(void) const;
 
     /*!
      * @brief Change the writer of this event.
@@ -501,11 +501,11 @@ namespace EPG
     CStdString               m_strTitle;           /*!< title */
     CStdString               m_strPlotOutline;     /*!< plot outline */
     CStdString               m_strPlot;            /*!< plot */
-    std::vector<std::string> m_genre;            /*!< genre */
+    std::vector<std::string> m_genre;              /*!< genre */
     CStdString               m_strEpisodeName;     /*!< episode name */
     CStdString               m_strActor;           /*!< actor */
     CStdString               m_strDirector;        /*!< director */
-    CStdString               m_strSubtitle;        /*!< subtitle */
+    CStdString               m_strOrigName;        /*!< original name */
     CStdString               m_strWriter;          /*!< writer */
     CStdString               m_strIconPath;        /*!< the path to the icon */
     CStdString               m_strFileNameAndPath; /*!< the filename and path */
