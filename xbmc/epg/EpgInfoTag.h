@@ -352,46 +352,39 @@ namespace EPG
 
     /*!
      * @brief Get the actor of this event.
-     * @param bOverrideParental True to override parental control, false check it.
      * @return The actor.
      */
     CStdString Actor(void) const;
 
     /*!
      * @brief Change the director of this event.
-     * @param strDirector The new director.
      */
     void SetDirector(const CStdString &strDirector);
 
     /*!
      * @brief Get the director of this event.
-     * @param bOverrideParental True to override parental control, false check it.
      * @return The director.
      */
     CStdString Director(void) const;	
 
     /*!
-     * @brief Change the subtitle of this event.
-     * @param strSubtitle The new subtitle.
+     * @brief Change the origname of this event.
      */
     void SetOrigName(const CStdString &strOrigName);
 
     /*!
      * @brief Get the origname of this event.
-     * @param bOverrideParental True to override parental control, false check it.
      * @return The origname.
      */
     CStdString OrigName(void) const;
 
     /*!
      * @brief Change the writer of this event.
-     * @param strWriter The new writer.
      */
     void SetWriter(const CStdString &strWriter);
 
     /*!
      * @brief Get the writer of this event.
-     * @param bOverrideParental True to override parental control, false check it.
      * @return The writer.
      */
     CStdString Writer(void) const;
