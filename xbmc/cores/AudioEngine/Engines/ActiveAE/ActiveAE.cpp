@@ -30,6 +30,8 @@ using namespace ActiveAE;
 #include "settings/AdvancedSettings.h"
 #include "windowing/WindowingFactory.h"
 
+#include "utils/TimeUtils.h"
+
 #define MAX_CACHE_LEVEL 0.5   // total cache time of stream in seconds
 #define MAX_WATER_LEVEL 0.25  // buffered time after stream stages in seconds
 #define MAX_BUFFER_TIME 0.1   // max time of a buffer in seconds
@@ -37,18 +39,18 @@ using namespace ActiveAE;
 void CEngineStats::Reset(unsigned int sampleRate)
 {
   CSingleLock lock(m_lock);
-  m_sinkUpdate = XbmcThreads::SystemClockMillis();
+  m_sinkUpdate = CurrentHostCounter();
   m_sinkDelay = 0;
   m_sinkSampleRate = sampleRate;
   m_bufferedSamples = 0;
   m_suspended = false;
 }
 
-void CEngineStats::UpdateSinkDelay(double delay, int samples)
+void CEngineStats::UpdateSinkDelay(const AEDelayStatus& status, int samples)
 {
   CSingleLock lock(m_lock);
-  m_sinkUpdate = XbmcThreads::SystemClockMillis();
-  m_sinkDelay = delay;
+  m_sinkUpdate = status.tick;
+  m_sinkDelay = status.delay;
   if (samples > m_bufferedSamples)
   {
     CLog::Log(LOGERROR, "CEngineStats::UpdateSinkDelay - inconsistency in buffer time");
@@ -80,8 +82,8 @@ void CEngineStats::AddSamples(int samples, std::list<CActiveAEStream*> &streams)
 float CEngineStats::GetDelay()
 {
   CSingleLock lock(m_lock);
-  unsigned int now = XbmcThreads::SystemClockMillis();
-  float delay = m_sinkDelay - (double)(now-m_sinkUpdate) / 1000;
+  int64_t now = CurrentHostCounter();
+  float delay = m_sinkDelay - (double)(now-m_sinkUpdate) / CurrentHostFrequency();
   delay += (float)m_bufferedSamples / m_sinkSampleRate;
 
   if (delay < 0)
@@ -94,8 +96,8 @@ float CEngineStats::GetDelay()
 float CEngineStats::GetDelay(CActiveAEStream *stream)
 {
   CSingleLock lock(m_lock);
-  unsigned int now = XbmcThreads::SystemClockMillis();
-  float delay = m_sinkDelay - (double)(now-m_sinkUpdate) / 1000;
+  int64_t now = CurrentHostCounter();
+  float delay = m_sinkDelay - (double)(now-m_sinkUpdate) / CurrentHostFrequency();
   delay += m_sinkLatency;
   delay += (float)m_bufferedSamples / m_sinkSampleRate;
 

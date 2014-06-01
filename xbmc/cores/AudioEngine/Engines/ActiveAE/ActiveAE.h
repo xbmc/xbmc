@@ -160,7 +160,7 @@ class CEngineStats
 {
 public:
   void Reset(unsigned int sampleRate);
-  void UpdateSinkDelay(double delay, int samples);
+  void UpdateSinkDelay(const AEDelayStatus& status, int samples);
   void AddSamples(int samples, std::list<CActiveAEStream*> &streams);
   float GetDelay();
   float GetDelay(CActiveAEStream *stream);
@@ -178,7 +178,7 @@ protected:
   float m_sinkLatency;
   int m_bufferedSamples;
   unsigned int m_sinkSampleRate;
-  unsigned int m_sinkUpdate;
+  int64_t      m_sinkUpdate;
   bool m_suspended;
   CCriticalSection m_lock;
 };

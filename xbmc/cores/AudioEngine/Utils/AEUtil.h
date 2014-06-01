@@ -57,6 +57,20 @@ enum AVSync
   SYNC_RESAMPLE
 };
 
+struct AEDelayStatus
+{
+  AEDelayStatus()
+  : delay(0.0)
+  , tick(0)
+  {}
+
+  void   SetDelay(double d);
+
+  double       delay;   /*!< delay in sink currently */
+  int64_t      tick;    /*!< timestamp when delay was calculated */
+};
+
+
 class CAEUtil
 {
 private:
