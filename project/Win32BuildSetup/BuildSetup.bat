@@ -200,13 +200,6 @@ set WORKSPACE=%CD%\..\..
   rem Exclude skins as they're copied by their own script
   Echo addons\skin.touched\>>exclude.txt
   Echo addons\skin.confluence\>>exclude.txt
-  rem other platform stuff
-  Echo lib-osx>>exclude.txt
-  Echo players\mplayer>>exclude.txt
-  Echo FileZilla Server.xml>>exclude.txt
-  Echo asound.conf>>exclude.txt
-  Echo voicemasks.xml>>exclude.txt
-  Echo Lircmap.xml>>exclude.txt
   
   md BUILD_WIN32\Xbmc
 
