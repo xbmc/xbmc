@@ -1,0 +1,124 @@
+From 5991b14604febf705150cfc568255d9592e37b07 Mon Sep 17 00:00:00 2001
+From: montellese <montellese@xbmc.org>
+Date: Mon, 19 May 2014 20:38:53 +0200
+Subject: [PATCH 02/11] platinum: add proper support for dc:publisher
+
+---
+ .../Source/Devices/MediaServer/PltDidl.cpp         |  2 ++
+ .../Platinum/Source/Devices/MediaServer/PltDidl.h  |  3 +++
+ .../Source/Devices/MediaServer/PltMediaItem.cpp    | 23 ++++++++++++++++++++++
+ .../Source/Devices/MediaServer/PltMediaItem.h      |  2 +-
+ .../Devices/MediaServer/PltSyncMediaBrowser.h      |  2 +-
+ 5 files changed, 30 insertions(+), 2 deletions(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
+index 73f9ed2..3d8c9fd 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
+@@ -135,6 +135,8 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
+             mask |= PLT_FILTER_MASK_EPISODE;
+         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RATING, len, true) == 0) {
+             mask |= PLT_FILTER_MASK_RATING;
++        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_PUBLISHER, len, true) == 0) {
++            mask |= PLT_FILTER_MASK_PUBLISHER;
+         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES, len, true) == 0) {
+             mask |= PLT_FILTER_MASK_RES;
+         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_DURATION, len, true) == 0 ||
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
+index 59d1605..ae67b43 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
+@@ -90,6 +90,8 @@
+ #define PLT_FILTER_MASK_LASTPLAYBACK                NPT_UINT64_C(0x0000000200000000)
+ #define PLT_FILTER_MASK_PLAYCOUNT                   NPT_UINT64_C(0x0000000400000000)
+ 
++#define PLT_FILTER_MASK_PUBLISHER                   NPT_UINT64_C(0x0000000800000000)
++
+ #define PLT_FILTER_FIELD_TITLE                      "dc:title"
+ #define PLT_FILTER_FIELD_CREATOR                    "dc:creator"
+ #define PLT_FILTER_FIELD_DATE                       "dc:date"
+@@ -118,6 +120,7 @@
+ #define PLT_FILTER_FIELD_CONTAINER_CHILDCOUNT       "container@childCount"
+ #define PLT_FILTER_FIELD_CONTAINER_SEARCHABLE       "container@searchable"
+ #define PLT_FILTER_FIELD_REFID                      "@refID"
++#define PLT_FILTER_FIELD_PUBLISHER                  "dc:publisher"
+ 
+ #define PLT_FILTER_FIELD_RES                        "res"
+ #define PLT_FILTER_FIELD_RES_DURATION               "res@duration"
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+index 1728eff..bd55cb5 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+@@ -172,6 +172,7 @@ PLT_MediaObject::Reset()
+     m_People.artists.Clear();    
+     m_People.authors.Clear();
+     m_People.directors.Clear();
++    m_People.publisher.Clear();
+ 
+     m_Affiliation.album     = "";
+     m_Affiliation.genres.Clear();
+@@ -259,6 +260,20 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
+         m_People.directors.ToDidl(didl, "director");
+     }
+ 
++    // publisher
++    if (mask & PLT_FILTER_MASK_PUBLISHER) {
++        // Add unknown publisher
++        if (m_People.publisher.GetItemCount() == 0)
++            m_People.publisher.Add("Unknown");
++
++        for (NPT_List<NPT_String>::Iterator it =
++             m_People.publisher.GetFirstItem(); it; ++it) {
++            didl += "<dc:publisher>";
++            PLT_Didl::AppendXmlEscape(didl, (*it));
++            didl += "</dc:publisher>";
++        }
++    }
++
+     // album
+     if ((mask & PLT_FILTER_MASK_ALBUM) && !m_Affiliation.album.IsEmpty()) {
+         didl += "<upnp:album>";
+@@ -517,6 +532,14 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
+     PLT_XmlHelper::GetChildren(entry, children, "director", didl_namespace_upnp);
+     m_People.directors.FromDidl(children);
+ 
++    children.Clear();
++    PLT_XmlHelper::GetChildren(entry, children, "publisher", didl_namespace_dc);
++    for (NPT_Cardinal i=0; i<children.GetItemCount(); i++) {
++        if (children[i]->GetText()) {
++          m_People.publisher.Add(*children[i]->GetText());
++        }
++    }
++
+     PLT_XmlHelper::GetChildText(entry, "album", m_Affiliation.album, didl_namespace_upnp, 256);
+     PLT_XmlHelper::GetChildText(entry, "programTitle", m_Recorded.program_title, didl_namespace_upnp);
+     PLT_XmlHelper::GetChildText(entry, "seriesTitle", m_Recorded.series_title, didl_namespace_upnp);
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
+index 2449276..9df90d5 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
+@@ -92,7 +92,7 @@ typedef struct {
+     PLT_PersonRoles authors;
+     NPT_String      producer; //TODO: can be multiple
+     PLT_PersonRoles directors;
+-    NPT_String      publisher; //TODO: can be multiple
++    NPT_List<NPT_String> publisher;
+     NPT_String      contributor; // should match m_Creator (dc:creator) //TODO: can be multiple
+ } PLT_PeopleInfo;
+ 
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+index 9888b88..c6fc3be 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+@@ -118,7 +118,7 @@ protected:
+                           NPT_Int32                index, 
+                           NPT_Int32                count,
+                           bool                     browse_metadata = false,
+-                          const char*              filter = "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:lastPlaybackPosition,upnp:lastPlaybackTime,upnp:playbackCount,upnp:originalTrackNumber,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,searchable,childCount,dc:title,dc:creator,upnp:actor,res@resolution", // explicitely specify res otherwise WMP won't return a URL!
++                          const char*              filter = "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:lastPlaybackPosition,upnp:lastPlaybackTime,upnp:playbackCount,upnp:originalTrackNumber,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,dc:publisher,searchable,childCount,dc:title,dc:creator,upnp:actor,res@resolution", // explicitely specify res otherwise WMP won't return a URL!
+                           const char*              sort = "");
+ private:
+     NPT_Result Find(const char* ip, PLT_DeviceDataReference& device);
+-- 
+1.7.11.msysgit.0
+

@@ -1,0 +1,25 @@
+From bfeb22157a8f6542939b16e444d989181914cee8 Mon Sep 17 00:00:00 2001
+From: montellese <montellese@xbmc.org>
+Date: Thu, 15 May 2014 18:24:46 +0200
+Subject: [PATCH 01/11] platinum: add already supported default filters
+
+---
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+index 94f1ab3..9888b88 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+@@ -118,7 +118,7 @@ protected:
+                           NPT_Int32                index, 
+                           NPT_Int32                count,
+                           bool                     browse_metadata = false,
+-                          const char*              filter = "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:lastPlaybackPosition,upnp:lastPlaybackTime,upnp:playbackCount,upnp:originalTrackNumber,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,searchable,childCount", // explicitely specify res otherwise WMP won't return a URL!
++                          const char*              filter = "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:lastPlaybackPosition,upnp:lastPlaybackTime,upnp:playbackCount,upnp:originalTrackNumber,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,searchable,childCount,dc:title,dc:creator,upnp:actor,res@resolution", // explicitely specify res otherwise WMP won't return a URL!
+                           const char*              sort = "");
+ private:
+     NPT_Result Find(const char* ip, PLT_DeviceDataReference& device);
+-- 
+1.7.11.msysgit.0
+

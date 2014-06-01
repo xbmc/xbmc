@@ -1,0 +1,284 @@
+From ac80794eedc6e240671ce3b60ecb4a24c58f84ab Mon Sep 17 00:00:00 2001
+From: montellese <montellese@xbmc.org>
+Date: Mon, 19 May 2014 20:56:25 +0200
+Subject: [PATCH 04/11] platinum: add support for xbmc specific fields
+ dateadded, rating, votes and artwork
+
+xbmc:dateadded to pass dateadded with items and not need to stat upnp resources for that
+xbmc:rating for number-based rating
+xbmc:votes for string-based votes number
+xbmc:artwork for a type-url-based mapping of artwork
+---
+ .../Source/Devices/MediaServer/PltDidl.cpp         |  12 ++-
+ .../Platinum/Source/Devices/MediaServer/PltDidl.h  |  11 +++
+ .../Source/Devices/MediaServer/PltMediaItem.cpp    | 109 +++++++++++++++++++++
+ .../Source/Devices/MediaServer/PltMediaItem.h      |  23 +++++
+ .../Devices/MediaServer/PltSyncMediaBrowser.h      |   2 +-
+ 5 files changed, 155 insertions(+), 2 deletions(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
+index 0758ad5..2bb6a04 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
+@@ -47,11 +47,13 @@ NPT_SET_LOCAL_LOGGER("platinum.media.server.didl")
+ const char* didl_header         = "<DIDL-Lite xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\""
+                                             " xmlns:dc=\"http://purl.org/dc/elements/1.1/\""
+                                             " xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\""
+-                                            " xmlns:dlna=\"urn:schemas-dlna-org:metadata-1-0/\">";
++                                            " xmlns:dlna=\"urn:schemas-dlna-org:metadata-1-0/\""
++                                            " xmlns:xbmc=\"urn:schemas-xbmc-org:metadata-1-0/\">";
+ const char* didl_footer         = "</DIDL-Lite>";
+ const char* didl_namespace_dc   = "http://purl.org/dc/elements/1.1/";
+ const char* didl_namespace_upnp = "urn:schemas-upnp-org:metadata-1-0/upnp/";
+ const char* didl_namespace_dlna = "urn:schemas-dlna-org:metadata-1-0/";
++const char* didl_namespace_xbmc = "urn:schemas-xbmc-org:metadata-1-0/";
+ 
+ /*----------------------------------------------------------------------
+ |   PLT_Didl::ConvertFilterToMask
+@@ -160,6 +162,14 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
+             mask |= PLT_FILTER_MASK_EPISODE_COUNT;
+         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_EPISODE_SEASON, len, true) == 0) {
+             mask |= PLT_FILTER_MASK_EPISODE_SEASON;
++        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_XBMC_DATEADDED, len, true) == 0) {
++            mask |= PLT_FILTER_MASK_XBMC_DATEADDED;
++        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_XBMC_RATING, len, true) == 0) {
++            mask |= PLT_FILTER_MASK_XBMC_RATING;
++        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_XBMC_VOTES, len, true) == 0) {
++            mask |= PLT_FILTER_MASK_XBMC_VOTES;
++        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_XBMC_ARTWORK, len, true) == 0) {
++            mask |= PLT_FILTER_MASK_XBMC_ARTWORK;
+         }
+ 
+         if (next_comma < 0) {
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
+index 2271162..0f7c892 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
+@@ -95,6 +95,11 @@
+ #define PLT_FILTER_MASK_EPISODE_COUNT               NPT_UINT64_C(0x0000001000000000)
+ #define PLT_FILTER_MASK_EPISODE_SEASON              NPT_UINT64_C(0x0000002000000000)
+ 
++#define PLT_FILTER_MASK_XBMC_DATEADDED              NPT_UINT64_C(0x0000100000000000)
++#define PLT_FILTER_MASK_XBMC_RATING                 NPT_UINT64_C(0x0000200000000000)
++#define PLT_FILTER_MASK_XBMC_VOTES                  NPT_UINT64_C(0x0000300000000000)
++#define PLT_FILTER_MASK_XBMC_ARTWORK                NPT_UINT64_C(0x0000400000000000)
++
+ #define PLT_FILTER_FIELD_TITLE                      "dc:title"
+ #define PLT_FILTER_FIELD_CREATOR                    "dc:creator"
+ #define PLT_FILTER_FIELD_DATE                       "dc:date"
+@@ -139,11 +144,17 @@
+ #define PLT_FILTER_FIELD_EPISODE_COUNT              "upnp:episodeCount"
+ #define PLT_FILTER_FIELD_EPISODE_SEASON             "upnp:episodeSeason"
+ 
++#define PLT_FILTER_FIELD_XBMC_DATEADDED             "xbmc:dateadded"
++#define PLT_FILTER_FIELD_XBMC_RATING                "xbmc:rating"
++#define PLT_FILTER_FIELD_XBMC_VOTES                 "xbmc:votes"
++#define PLT_FILTER_FIELD_XBMC_ARTWORK               "xbmc:artwork"
++
+ extern const char* didl_header;
+ extern const char* didl_footer;
+ extern const char* didl_namespace_dc;
+ extern const char* didl_namespace_upnp;
+ extern const char* didl_namespace_dlna;
++extern const char* didl_namespace_xbmc;
+ 
+ /*----------------------------------------------------------------------
+ |   PLT_Didl
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+index a8855cc..5c2ec84 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+@@ -110,6 +110,62 @@ PLT_PersonRoles::FromDidl(const NPT_Array<NPT_XmlElementNode*>& nodes)
+ }
+ 
+ /*----------------------------------------------------------------------
++|   PLT_Artworks::Add
+++---------------------------------------------------------------------*/
++NPT_Result
++PLT_Artworks::Add(const NPT_String& type, const NPT_String& url)
++{
++    PLT_Artwork artwork;
++    artwork.type = type;
++    artwork.url = url;
++
++    return NPT_List<PLT_Artwork>::Add(artwork);
++}
++
++/*----------------------------------------------------------------------
++|   PLT_Artworks::ToDidl
+++---------------------------------------------------------------------*/
++NPT_Result
++PLT_Artworks::ToDidl(NPT_String& didl, const NPT_String& tag)
++{
++    NPT_String tmp;
++    for (NPT_List<PLT_Artwork>::Iterator it =
++         NPT_List<PLT_Artwork>::GetFirstItem(); it; it++) {
++        if (it->type.IsEmpty()) continue;
++
++        tmp += "<xbmc:" + tag;
++        if (!it->type.IsEmpty()) {
++            tmp += " type=\"";
++            PLT_Didl::AppendXmlEscape(tmp, it->type);
++            tmp += "\"";
++        }
++        tmp += ">";
++        PLT_Didl::AppendXmlEscape(tmp, it->url);
++        tmp += "</xbmc:" + tag + ">";
++    }
++
++    didl += tmp;
++    return NPT_SUCCESS;
++}
++
++/*----------------------------------------------------------------------
++|   PLT_Artworks::ToDidl
+++---------------------------------------------------------------------*/
++NPT_Result
++PLT_Artworks::FromDidl(const NPT_Array<NPT_XmlElementNode*>& nodes)
++{
++    for (NPT_Cardinal i=0; i<nodes.GetItemCount(); i++) {
++        PLT_Artwork artwork;
++        const NPT_String* url = nodes[i]->GetText();
++        const NPT_String* type = nodes[i]->GetAttribute("type");
++        if (type) artwork.type = *type;
++        if (url) artwork.url = *url;
++        NPT_CHECK(NPT_List<PLT_Artwork>::Add(artwork));
++    }
++    return NPT_SUCCESS;
++}
++
++/*----------------------------------------------------------------------
+ |   PLT_MediaItemResource::PLT_MediaItemResource
+ +---------------------------------------------------------------------*/
+ PLT_MediaItemResource::PLT_MediaItemResource()
+@@ -200,6 +256,11 @@ PLT_MediaObject::Reset()
+ 
+     m_Resources.Clear();
+ 
++    m_XbmcInfo.date_added = "";
++    m_XbmcInfo.rating = 0.0f;
++    m_XbmcInfo.votes = "";
++    m_XbmcInfo.artwork.Clear();
++
+     m_Didl = "";
+ 
+     return NPT_SUCCESS;
+@@ -472,6 +533,32 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
+         }
+     }
+ 
++    // xbmc dateadded
++    if ((mask & PLT_FILTER_MASK_XBMC_DATEADDED) && !m_XbmcInfo.date_added.IsEmpty()) {
++        didl += "<xbmc:dateadded>";
++        PLT_Didl::AppendXmlEscape(didl, m_XbmcInfo.date_added);
++        didl += "</xbmc:dateadded>";
++    } 
++
++    // xbmc rating
++    if (mask & PLT_FILTER_MASK_XBMC_RATING) {
++        didl += "<xbmc:rating>";
++        didl += NPT_String::Format("%.1f", m_XbmcInfo.rating);
++        didl += "</xbmc:rating>";
++    }
++
++    // xbmc votes
++    if (mask & PLT_FILTER_MASK_XBMC_VOTES && !m_XbmcInfo.votes.IsEmpty()) {
++        didl += "<xbmc:votes>";
++        PLT_Didl::AppendXmlEscape(didl, m_XbmcInfo.votes);
++        didl += "</xbmc:votes>";
++    }
++
++    // xbmc artwork
++    if (mask & PLT_FILTER_MASK_XBMC_ARTWORK) {
++        m_XbmcInfo.artwork.ToDidl(didl, "artwork");
++    }
++
+     // class is required
+     didl += "<upnp:class";
+ 	if (!m_ObjectClass.friendly_name.IsEmpty()) {
+@@ -672,6 +759,28 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
+         m_Resources.Add(resource);
+     }
+ 
++    PLT_XmlHelper::GetChildText(entry, "dateadded", m_XbmcInfo.date_added, didl_namespace_xbmc, 256);
++    // parse date and make sure it's valid
++    for (int format=0; format<=NPT_DateTime::FORMAT_RFC_1036; format++) {
++        NPT_DateTime date;
++        if (NPT_SUCCEEDED(date.FromString(m_XbmcInfo.date_added, (NPT_DateTime::Format)format))) {
++            parsed_date = date.ToString((NPT_DateTime::Format)format);
++            break;
++        }
++    }
++    m_XbmcInfo.date_added = parsed_date;
++
++    PLT_XmlHelper::GetChildText(entry, "rating", str, didl_namespace_xbmc);
++    NPT_Float floatValue;
++    if (NPT_FAILED(str.ToFloat(floatValue))) floatValue = 0.0;
++    m_XbmcInfo.rating = floatValue;
++
++    PLT_XmlHelper::GetChildText(entry, "votes", m_XbmcInfo.votes, didl_namespace_xbmc, 256);
++
++    children.Clear();
++    PLT_XmlHelper::GetChildren(entry, children, "artwork", didl_namespace_xbmc);
++    m_XbmcInfo.artwork.FromDidl(children);
++
+     // re serialize the entry didl as a we might need to pass it to a renderer
+     // we may have modified the tree to "fix" issues, so as not to break a renderer
+     // (don't write xml prefix as this didl could be part of a larger document)
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
+index 34a69b7..56291a7 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
+@@ -151,6 +151,26 @@ typedef struct {
+     NPT_UInt32 episode_season;
+ } PLT_RecordedInfo;
+ 
++typedef struct {
++    NPT_String type;
++    NPT_String url;
++} PLT_Artwork;
++
++class PLT_Artworks  : public NPT_List<PLT_Artwork>
++{
++public:
++    NPT_Result Add(const NPT_String& type, const NPT_String& url);
++    NPT_Result ToDidl(NPT_String& didl, const NPT_String& tag);
++    NPT_Result FromDidl(const NPT_Array<NPT_XmlElementNode*>& nodes);
++};
++
++typedef struct {
++  NPT_String date_added;
++  NPT_Float rating;
++  NPT_String votes;
++  PLT_Artworks artwork;
++} PLT_XbmcInfo;
++
+ /*----------------------------------------------------------------------
+ |   PLT_MediaItemResource
+ +---------------------------------------------------------------------*/
+@@ -229,6 +249,9 @@ public:
+     /* resources related */
+     NPT_Array<PLT_MediaItemResource> m_Resources;
+ 
++    /* XBMC specific */
++    PLT_XbmcInfo m_XbmcInfo;
++
+     /* original DIDL for Control Points to pass to a renderer when invoking SetAVTransportURI */
+     NPT_String m_Didl;    
+ };
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+index 3c14dff..ffdddda 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+@@ -118,7 +118,7 @@ protected:
+                           NPT_Int32                index, 
+                           NPT_Int32                count,
+                           bool                     browse_metadata = false,
+-                          const char*              filter = "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:lastPlaybackPosition,upnp:lastPlaybackTime,upnp:playbackCount,upnp:originalTrackNumber,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,dc:publisher,searchable,childCount,dc:title,dc:creator,upnp:actor,res@resolution,upnp:episodeCount,upnp:episodeSeason", // explicitely specify res otherwise WMP won't return a URL!
++                          const char*              filter = "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:lastPlaybackPosition,upnp:lastPlaybackTime,upnp:playbackCount,upnp:originalTrackNumber,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,dc:publisher,searchable,childCount,dc:title,dc:creator,upnp:actor,res@resolution,upnp:episodeCount,upnp:episodeSeason,xbmc:dateadded,xbmc:rating,xbmc:votes,xbmc:artwork", // explicitely specify res otherwise WMP won't return a URL!
+                           const char*              sort = "");
+ private:
+     NPT_Result Find(const char* ip, PLT_DeviceDataReference& device);
+-- 
+1.7.11.msysgit.0
+
