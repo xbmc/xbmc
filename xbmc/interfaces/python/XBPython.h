@@ -83,6 +83,8 @@ public:
   void OnSettingsChanged(const CStdString &strings);
   void OnScreensaverActivated();
   void OnScreensaverDeactivated();
+  void OnDPMSActivated();
+  void OnDPMSDeactivated();
   void OnScanStarted(const std::string &library);
   void OnScanFinished(const std::string &library);
   void OnAbortRequested(const CStdString &ID="");
