@@ -49,7 +49,7 @@ public:
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual bool ClearPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
-  virtual const char* GetName() { return m->decoder != NULL ? m_decoder->GetOutputName() : ""; };
+  virtual const char* GetName() { return m_decoder != NULL ? m_decoder->GetOutputName() : ""; };
 
 private:
   MfcDecoder                   *m_decoder;

@@ -51,7 +51,7 @@ public:
   bool        HasNV12MTSupport();                            // NV12MT support should be in all MFC versions
   bool        HasNV12Support() { return m_hasNV12Support; }; // NV12 support should be starting with MFC6
   bool        SetupOutputFormat(CDVDStreamInfo &hints);
-  const char* GetOutputName() { return m_name != NULL ? m_name.c_str() : ""; };
+  const char* GetOutputName() { return m_name.c_str(); };
   bool        RequestBuffers();
   int         GetCaptureBuffersCount() { return m_MFCCaptureBuffersCount; };
   int         GetOutputBuffersCount()  { return m_MFCOutputBuffersCount;  };

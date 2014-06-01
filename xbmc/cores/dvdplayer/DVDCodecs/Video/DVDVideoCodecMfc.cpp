@@ -27,7 +27,7 @@
 
 CDVDVideoCodecMfc::CDVDVideoCodecMfc() : CDVDVideoCodec()
 {
-  m_decoder = new Mfc_decoder();
+  m_decoder = new MfcDecoder();
   m_converter = NULL;
 
   m_iDecodedWidth     = 0;
@@ -64,7 +64,7 @@ bool CDVDVideoCodecMfc::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   {
     m_NV12Support = false;
     // FIMC color convertor required
-    m_converter = new Fimc_converter();
+    m_converter = new FimcConverter();
     if (!m_converter->OpenDevice())
     {
       CLog::Log(LOGDEBUG, "%s::%s - FIMC device not found", CLASSNAME, __func__);
@@ -308,7 +308,7 @@ int CDVDVideoCodecMfc::Decode(BYTE* pData, int iSize, double dts, double pts)
 
       m_decoder->SetCaptureBufferBusy(ret);
 
-      if (m_converter->Startm_converter())
+      if (m_converter->StartConverter())
       {
         return VC_BUFFER; // Queue one more frame for double buffering on FIMC
       }

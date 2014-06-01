@@ -32,7 +32,7 @@
 MfcDecoder::MfcDecoder()
 {
   m_iDecoderHandle = -1;
-  hasNV12Support = false;
+  m_hasNV12Support = false;
   m_bVideoConvert = false;
   m_MFCOutputBuffersCount = 0;
   m_v4l2MFCOutputBuffers = NULL;
@@ -133,6 +133,7 @@ bool MfcDecoder::HasNV12MTSupport()
 {
   // we enumerate all the supported formats looking for NV12MT and NV12
   int index = 0;
+  int ret   = -1;
   bool hasNV12MTSupport = false;
   while (true)
   {
@@ -411,7 +412,7 @@ void MfcDecoder::SetCaptureBufferBusy(int index)
     m_v4l2MFCCaptureBuffers[index].bQueue = true;
 }
 
-V4L2Buffer* GetCaptureBuffer(int index)
+V4L2Buffer* MfcDecoder::GetCaptureBuffer(int index)
 {
   return m_v4l2MFCCaptureBuffers != NULL && index < m_MFCCaptureBuffersCount ? &(m_v4l2MFCCaptureBuffers[index]) : NULL;
 }
@@ -510,13 +511,12 @@ bool MfcDecoder::SendBuffer(int index, uint8_t* demuxer_content, int demuxer_byt
 
 void MfcDecoder::AddDecodedCaptureBuffer(int index)
 {
-  if (m_MFCDecodedCaptureBuffers != NULL)
-    m_MFCDecodedCaptureBuffers.push(index);
+  m_MFCDecodedCaptureBuffers.push(index);
 }
 
 void MfcDecoder::RemoveFirstDecodedCaptureBuffer()
 {
-  if (m_MFCDecodedCaptureBuffers != NULL && !m_MFCDecodedCaptureBuffers.empty())
+  if (!m_MFCDecodedCaptureBuffers.empty())
     m_MFCDecodedCaptureBuffers.pop();
 }
 
