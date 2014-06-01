@@ -147,8 +147,7 @@ public:
   static CStdString VideoPlaylistsLocation();
 
   static void GetSkinThemes(std::vector<CStdString>& vecTheme);
-  static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, bool bUseFileDirectories=false);
-  static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);
+  static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, unsigned int flags = 0 /* DIR_FLAG_DEFAULTS */);
   static void ForceForwardSlashes(CStdString& strPath);
 
   static double AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& strAlbum1, const CStdString& strArtistTemp1, const CStdString& strArtist1);

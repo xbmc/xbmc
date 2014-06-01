@@ -179,7 +179,7 @@ namespace VIDEO
      */
     void FetchActorThumbs(std::vector<SActorInfo>& actors, const CStdString& strPath);
 
-    static int GetPathHash(const CFileItemList &items, CStdString &hash);
+    int GetPathHash(const CFileItemList &items, CStdString &hash);
 
     /*! \brief Retrieve a "fast" hash of the given directory (if available)
      Performs a stat() on the directory, and uses modified time to create a "fast"
@@ -189,6 +189,15 @@ namespace VIDEO
      \return the hash of the folder of the form "fast<datetime>"
      */
     CStdString GetFastHash(const CStdString &directory) const;
+
+    /*! \brief Retrieve a "fast" hash of the given directory recursively (if available)
+     Performs a stat() on the directory, and uses modified time to create a "fast"
+     hash of the folder. If no modified time is available, the create time is used,
+     and if neither are available, an empty hash is returned.
+     \param directory folder to hash (recursively)
+     \return the hash of the folder of the form "fast<datetime>"
+     */
+    CStdString GetRecursiveFastHash(const CStdString &directory) const;
 
     /*! \brief Decide whether a folder listing could use the "fast" hash
      Fast hashing can be done whenever the folder contains no scannable subfolders, as the
