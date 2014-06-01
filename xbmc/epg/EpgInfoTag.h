@@ -346,7 +346,6 @@ namespace EPG
 
     /*!
      * @brief Change the actor of this event.
-     * @param strActor The new actor.
      */
     void SetActor(const CStdString &strActor);
 
