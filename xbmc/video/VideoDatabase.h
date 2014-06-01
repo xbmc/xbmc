@@ -642,9 +642,6 @@ public:
    */
   int AddFile(const CStdString& url);
 
-  int CVideoDatabase::AddHistory(const int idFile, const int idOwner);
-  int CVideoDatabase::GetHistoryId(const int idFile, const int idOwner);
-
   /*! \brief Add a file to the database, if necessary
    Works for both videodb:// items and normal fileitems
    \param item CFileItem to add.
@@ -859,4 +856,7 @@ private:
 
   static void AnnounceRemove(std::string content, int id, bool scanning = false);
   static void AnnounceUpdate(std::string content, int id);
+
+  int CVideoDatabase::AddHistory(const int idFile, const int idOwner);
+  int CVideoDatabase::GetHistoryId(const int idFile, const int idOwner);
 };
