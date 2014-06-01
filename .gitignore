@@ -1099,7 +1099,7 @@ lib/cpluff/stamp-h1
 /lib/vgmstream/win32/win32.lib
 
 #/lib/win32
-/lib/win32/2.2-Helix-alpha1.tar*
+/lib/win32/*.tar*
 /lib/win32/pax_global_header
 
 #/lib/win32/ffmpeg
