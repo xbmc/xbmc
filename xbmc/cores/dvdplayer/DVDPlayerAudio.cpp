@@ -36,13 +36,6 @@
 #include <iomanip>
 #include <math.h>
 
-/* for sync-based resampling */
-#define PROPORTIONAL 20.0
-#define PROPREF       0.01
-#define PROPDIVMIN    2.0
-#define PROPDIVMAX   40.0
-#define INTEGRAL    200.0
-
 using namespace std;
 
 void CPTSInputQueue::Add(int64_t bytes, double pts)
@@ -119,8 +112,8 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent)
   m_errors.Flush();
   m_syncclock = true;
   m_integral = 0;
-  m_prevskipped = false;
   m_maxspeedadjust = 0.0;
+  m_skipdup_keep = 0;
 
   m_messageQueue.SetMaxDataSize(6 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
@@ -191,7 +184,7 @@ void CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints, CDVDAudioCodec* codec )
   m_error = 0;
   m_errors.Flush();
   m_integral = 0;
-  m_prevskipped = false;
+  m_skipdup_keep = 0.0;
   m_syncclock = true;
   m_silence = false;
 
@@ -670,26 +663,34 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
 
       m_pClock->Update(clock+error, absolute, limit - 0.001, "CDVDPlayerAudio::HandleSyncError2");
     }
-    else if (m_synctype == SYNC_RESAMPLE)
+    else if (m_synctype == SYNC_RESAMPLE
+         ||  m_synctype == SYNC_SKIPDUP)
     {
-      //reset the integral on big errors, failsafe
-      if (fabs(m_error) > DVD_TIME_BASE)
-        m_integral = 0;
-      else if (fabs(m_error) > DVD_MSEC_TO_TIME(5))
-        m_integral += m_error / DVD_TIME_BASE / INTEGRAL;
+      const double max_resample = 1.2;                  /* slowest speed allowed */
+      const double min_resample = 0.8;                  /* fastest speed allowed */
+      const double Kp           = 0.5  / DVD_TIME_BASE; /* proportional factor (limited by sampling time) */
+      const double Ti           = 50;                   /* time factor for integral */
+      const double Tt           = 25;                   /* time factor for integral windup correction */
 
-      double proportional = 0.0;
+      double ratio;
+      /* simple PI regulator for resampling */
+      ratio  = 1.0 / m_pClock->GetClockSpeed();
+      ratio += Kp * m_error + m_integral;
 
-      //on big errors use more proportional
-      if (fabs(m_error / DVD_TIME_BASE) > 0.0)
-      {
-        double proportionaldiv = PROPORTIONAL * (PROPREF / fabs(m_error / DVD_TIME_BASE));
-        if (proportionaldiv < PROPDIVMIN) proportionaldiv = PROPDIVMIN;
-        else if (proportionaldiv > PROPDIVMAX) proportionaldiv = PROPDIVMAX;
+      /* saturate output */
+      if     (ratio > max_resample) m_resampleratio = max_resample;
+      else if(ratio < min_resample) m_resampleratio = min_resample;
+      else                          m_resampleratio = ratio;
 
-        proportional = m_error / DVD_TIME_BASE / proportionaldiv;
-      }
-      m_resampleratio = 1.0 / m_pClock->GetClockSpeed() + proportional + m_integral;
+      /* accumulate integral */
+      m_integral += (Kp  / Ti) * m_error;
+
+      /* handle anti windup */
+      m_integral += (1.0 / Tt) * (m_resampleratio - ratio);
+
+      /* reset skip dup so it's recalculated if very long */
+      if(m_skipdup_keep > DVD_TIME_BASE)
+        m_skipdup_keep = 0.0;
     }
   }
 }
@@ -703,31 +704,35 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
   else if (m_synctype == SYNC_SKIPDUP)
   {
     double limit = std::max(DVD_MSEC_TO_TIME(10), audioframe.duration * 2.0 / 3.0);
-    if (m_error < -limit)
+
+    if (m_error < -limit && m_skipdup_keep <= 0.0)
     {
-      m_prevskipped = !m_prevskipped;
-      if (m_prevskipped)
-        m_dvdAudio.AddPackets(audioframe);
-      else
-      {
-        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Dropping packet of %d ms", DVD_TIME_TO_MSEC(audioframe.duration));
-        m_error += audioframe.duration;
-      }
+      m_skipdup_keep = audioframe.duration / (1.0 - m_resampleratio);
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Dropping packet of %d ms of period %d", DVD_TIME_TO_MSEC(audioframe.duration), DVD_TIME_TO_MSEC(m_skipdup_keep));
+      m_error += audioframe.duration;
+      m_errors.Update(audioframe.duration);
     }
-    else if(m_error > limit)
+    else if(m_error > limit && m_skipdup_keep <= 0.0)
     {
-      CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Duplicating packet of %d ms", DVD_TIME_TO_MSEC(audioframe.duration));
+      m_skipdup_keep = audioframe.duration / (m_resampleratio - 1.0);
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Duplicating packet of %d of period %d", DVD_TIME_TO_MSEC(audioframe.duration), DVD_TIME_TO_MSEC(m_skipdup_keep));
       m_dvdAudio.AddPackets(audioframe);
       m_dvdAudio.AddPackets(audioframe);
       m_error -= audioframe.duration;
+      m_errors.Update(-audioframe.duration);
     }
     else
       m_dvdAudio.AddPackets(audioframe);
+
+    if(m_skipdup_keep > 0.0)
+      m_skipdup_keep -= audioframe.duration;
   }
   else if (m_synctype == SYNC_RESAMPLE)
   {
+    double base_speed = 1.0 / g_VideoReferenceClock.GetSpeed();
     m_dvdAudio.SetResampleRatio(m_resampleratio);
     m_dvdAudio.AddPackets(audioframe);
+    m_errors.Update(-audioframe.duration * (m_resampleratio - base_speed));
   }
 
   return true;

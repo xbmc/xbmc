@@ -69,11 +69,16 @@ public:
     m_count++;
   }
 
+  void    Update(double error)
+  {
+    m_buffer += error * m_count;
+  }
+
   void    Flush()
   {
     m_buffer = 0.0f;
     m_count  = 0;
-    m_timer.Set(2000);
+    m_timer.Set(200);
   }
 
   double  Get()
@@ -139,7 +144,6 @@ public:
   // holds stream information for current playing stream
   CDVDStreamInfo m_streaminfo;
 
-  CPTSOutputQueue m_ptsOutput;
   CPTSInputQueue  m_ptsInput;
 
   double GetCurrentPts()                            { CSingleLock lock(m_info_section); return m_info.pts; }
@@ -226,7 +230,7 @@ protected:
   bool   m_syncclock;
 
   double m_integral; //integral correction for resampler
-  bool   m_prevskipped;
+  double m_skipdup_keep;
   double m_maxspeedadjust;
   double m_resampleratio; //resample ratio when using SYNC_RESAMPLE, used for the codec info
 
