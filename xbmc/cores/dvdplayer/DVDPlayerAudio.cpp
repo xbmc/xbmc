@@ -475,8 +475,13 @@ void CDVDPlayerAudio::UpdatePlayerInfo()
 
   s << ", att:" << fixed << setprecision(1) << log(GetCurrentAttenuation()) * 20.0f << " dB";
 
+  SInfo info;
+  info.info        = s.str();
+  info.pts         = m_dvdAudio.GetPlayingPts();
+  info.passthrough = m_pAudioCodec && m_pAudioCodec->NeedPassthrough();
+
   { CSingleLock lock(m_info_section);
-    m_info = s.str();
+    m_info = info;
   }
 }
 
@@ -779,7 +784,7 @@ bool CDVDPlayerAudio::SwitchCodecIfNeeded()
 string CDVDPlayerAudio::GetPlayerInfo()
 {
   CSingleLock lock(m_info_section);
-  return m_info;
+  return m_info.info;
 }
 
 int CDVDPlayerAudio::GetAudioBitrate()
@@ -789,5 +794,6 @@ int CDVDPlayerAudio::GetAudioBitrate()
 
 bool CDVDPlayerAudio::IsPassthrough() const
 {
-  return m_pAudioCodec && m_pAudioCodec->NeedPassthrough();
+  CSingleLock lock(m_info_section);
+  return m_info.passthrough;
 }

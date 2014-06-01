@@ -142,7 +142,7 @@ public:
   CPTSOutputQueue m_ptsOutput;
   CPTSInputQueue  m_ptsInput;
 
-  double GetCurrentPts()                            { return m_dvdAudio.GetPlayingPts(); }
+  double GetCurrentPts()                            { CSingleLock lock(m_info_section); return m_info.pts; }
 
   bool IsStalled()                                  { return m_stalled;  }
   bool IsPassthrough() const;
@@ -230,8 +230,19 @@ protected:
   double m_maxspeedadjust;
   double m_resampleratio; //resample ratio when using SYNC_RESAMPLE, used for the codec info
 
+  struct SInfo
+  {
+    SInfo()
+    : pts(DVD_NOPTS_VALUE)
+    , passthrough(false)
+    {}
+
+    std::string      info;
+    double           pts;
+    bool             passthrough;
+  };
 
   CCriticalSection m_info_section;
-  std::string      m_info;
+  SInfo            m_info;
 };
 
