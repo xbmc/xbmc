@@ -29,6 +29,7 @@
  */
 
 #include "GUIControl.h"
+#include "IResourceProvider.h"
 
 class CTextureInfo; // forward
 class CAspectRatio;
@@ -43,7 +44,7 @@ class CGUIAction;
 class CGUIControlFactory
 {
 public:
-  CGUIControlFactory(void);
+  CGUIControlFactory(GUIResourceProviderPtr provider);
   virtual ~CGUIControlFactory(void);
   CGUIControl* Create(int parentID, const CRect &rect, TiXmlElement* pControlNode, bool insideContainer = false);
 
@@ -79,7 +80,6 @@ public:
   static bool GetInfoLabelFromElement(const TiXmlElement *element, CGUIInfoLabel &infoLabel, int parentID);
   static void GetInfoLabel(const TiXmlNode *pControlNode, const CStdString &labelTag, CGUIInfoLabel &infoLabel, int parentID);
   static void GetInfoLabels(const TiXmlNode *pControlNode, const CStdString &labelTag, std::vector<CGUIInfoLabel> &infoLabels, int parentID);
-  static bool GetColor(const TiXmlNode* pRootNode, const char* strTag, color_t &value);
   static bool GetInfoColor(const TiXmlNode* pRootNode, const char* strTag, CGUIInfoColor &value, int parentID);
   static CStdString FilterLabel(const CStdString &label);
   static bool GetConditionalVisibility(const TiXmlNode* control, CStdString &condition);
@@ -151,5 +151,7 @@ private:
   static bool GetDimensions(const TiXmlNode *node, const char *leftTag, const char *rightTag, const char *centerLeftTag,
                             const char *centerRightTag, const char *widthTag, const float parentSize, float &left,
                             float &width, float &min_width);
+
+  GUIResourceProviderPtr m_provider;
 };
 #endif

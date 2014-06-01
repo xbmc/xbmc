@@ -72,6 +72,7 @@ class CTextureInfo
 {
 public:
   CTextureInfo();
+  CTextureInfo(GUIResourceProviderPtr provider);
   CTextureInfo(const CStdString &file);
   CTextureInfo& operator=(const CTextureInfo &right);
   bool       useLarge;

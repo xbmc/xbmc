@@ -32,6 +32,13 @@ CTextureInfo::CTextureInfo()
   useLarge = false;
 }
 
+CTextureInfo::CTextureInfo(GUIResourceProviderPtr provider)
+: useLarge(false),
+  orientation(0),
+  diffuseColor(provider)
+{
+}
+
 CTextureInfo::CTextureInfo(const CStdString &file)
 {
   orientation = 0;

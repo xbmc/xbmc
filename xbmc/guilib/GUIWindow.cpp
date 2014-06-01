@@ -178,7 +178,9 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
   // now load in the skin file
   SetDefaults();
 
-  CGUIControlFactory::GetInfoColor(pRootElement, "backgroundcolor", m_clearBackground, GetID());
+  CGUIInfoColor background(g_SkinInfo);
+  if (CGUIControlFactory::GetInfoColor(pRootElement, "backgroundcolor", background, GetID()))
+    m_clearBackground = background;
   CGUIControlFactory::GetActions(pRootElement, "onload", m_loadActions);
   CGUIControlFactory::GetActions(pRootElement, "onunload", m_unloadActions);
   CGUIControlFactory::GetHitRect(pRootElement, m_hitRect);
@@ -279,7 +281,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
 void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup, const CRect &rect)
 {
   // get control type
-  CGUIControlFactory factory;
+  CGUIControlFactory factory(g_SkinInfo);
 
   CGUIControl* pGUIControl = factory.Create(GetID(), rect, pControl);
   if (pGUIControl)

@@ -26,8 +26,8 @@
 
 using namespace std;
 
-CGUIMultiSelectTextControl::CSelectableString::CSelectableString(CGUIFont *font, const CStdString &text, bool selectable, const CStdString &clickAction)
- : m_text(font, false)
+CGUIMultiSelectTextControl::CSelectableString::CSelectableString(GUIResourceProviderPtr provider, CGUIFont *font, const CStdString &text, bool selectable, const CStdString &clickAction)
+ : m_text(provider, font, false)
 {
   m_selectable = selectable;
   m_clickAction = clickAction;
@@ -339,7 +339,7 @@ void CGUIMultiSelectTextControl::UpdateText(const CStdString &text)
 void CGUIMultiSelectTextControl::AddString(const CStdString &text, bool selectable, const CStdString &clickAction)
 {
   if (!text.empty())
-    m_items.push_back(CSelectableString(m_label.font, text, selectable, clickAction));
+    m_items.push_back(CSelectableString(m_label.resourceProvider, m_label.font, text, selectable, clickAction));
 }
 
 void CGUIMultiSelectTextControl::PositionButtons()

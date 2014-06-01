@@ -1541,14 +1541,14 @@ void CGUIEPGGridContainer::ValidateOffset()
   }
 }
 
-void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
+void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout, GUIResourceProviderPtr provider)
 {
   /* layouts for the channel column */
   TiXmlElement *itemElement = layout->FirstChildElement("channellayout");
   while (itemElement)
   { // we have a new item layout
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, GetParentID(), false);
+    itemLayout.LoadLayout(itemElement, GetParentID(), false, provider);
     m_channelLayouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("channellayout");
   }
@@ -1556,7 +1556,7 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   { // we have a new item layout
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, GetParentID(), true);
+    itemLayout.LoadLayout(itemElement, GetParentID(), true, provider);
     m_focusedChannelLayouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("focusedchannellayout");
   }
@@ -1566,7 +1566,7 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   {
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, GetParentID(), true);
+    itemLayout.LoadLayout(itemElement, GetParentID(), true, provider);
     m_focusedProgrammeLayouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("focusedlayout");
   }
@@ -1574,7 +1574,7 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   {
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, GetParentID(), false);
+    itemLayout.LoadLayout(itemElement, GetParentID(), false, provider);
     m_programmeLayouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("itemlayout");
   }
@@ -1584,7 +1584,7 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   {
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, GetParentID(), false);
+    itemLayout.LoadLayout(itemElement, GetParentID(), false, provider);
     m_rulerLayouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("rulerlayout");
   }
