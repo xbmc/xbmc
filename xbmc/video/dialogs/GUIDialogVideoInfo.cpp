@@ -1202,6 +1202,7 @@ bool CGUIDialogVideoInfo::CanDeleteVideoItem(const CFileItemPtr &item)
   return params.GetMovieId()   != -1 ||
          params.GetEpisodeId() != -1 ||
          params.GetMVideoId()  != -1 ||
+         params.GetSetId()     != -1 ||
          (params.GetTvShowId() != -1 && params.GetSeason() <= -1 &&
           !CVideoDatabaseDirectory::IsAllItem(item->GetPath()));
 }
@@ -1239,6 +1240,9 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
     case VIDEODB_CONTENT_MUSICVIDEOS:
       heading = 20392;
       break;
+    case VIDEODB_CONTENT_MOVIE_SETS:
+      heading = 646;
+      break;
 
     default:
       return false;
@@ -1262,10 +1266,16 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
   if (!pDialog->IsConfirmed())
     return false;
 
-  CStdString path;
   CVideoDatabase database;
   database.Open();
 
+  if (type == VIDEODB_CONTENT_MOVIE_SETS)
+  {
+    database.DeleteSet(item->GetVideoInfoTag()->m_iDbId);
+    return true;
+  }
+
+  CStdString path;
   database.GetFilePathById(item->GetVideoInfoTag()->m_iDbId, path, type);
   if (path.empty())
     return false;
