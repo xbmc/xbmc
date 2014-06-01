@@ -659,7 +659,7 @@ namespace VIDEO
 
     if (item->m_bIsFolder)
     {
-      CUtil::GetRecursiveListing(item->GetPath(), items, g_advancedSettings.m_videoExtensions, true);
+      CUtil::GetRecursiveListing(item->GetPath(), items, g_advancedSettings.m_videoExtensions, DIR_FLAG_DEFAULTS);
       CStdString hash, dbHash;
       int numFilesInFolder = GetPathHash(items, hash);
 
