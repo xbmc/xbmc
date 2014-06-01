@@ -284,6 +284,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
     if (item.GetVideoInfoTag()->m_type == MediaTypeSeason)
     { // clear out the art - we're really grabbing the info on the show here
       item.ClearArt();
+      item.GetVideoInfoTag()->m_iDbId = item.GetVideoInfoTag()->m_iIdShow;
     }
     item.SetPath(item.GetVideoInfoTag()->GetPath());
     fromDB = true;
@@ -386,23 +387,21 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
   {
     m_database.Open(); // since we can be called from the music library
 
+    int dbId = item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_iDbId : -1;
     if (info->Content() == CONTENT_MOVIES)
     {
-      bHasInfo = m_database.GetMovieInfo(item->GetPath(), movieDetails);
+      bHasInfo = m_database.GetMovieInfo(item->GetPath(), movieDetails, dbId);
     }
     if (info->Content() == CONTENT_TVSHOWS)
     {
       if (item->m_bIsFolder)
       {
-        bHasInfo = m_database.GetTvShowInfo(item->GetPath(), movieDetails);
+        bHasInfo = m_database.GetTvShowInfo(item->GetPath(), movieDetails, dbId);
       }
       else
       {
-        int EpisodeHint=-1;
-        if (item->HasVideoInfoTag())
-          EpisodeHint = item->GetVideoInfoTag()->m_iEpisode;
         int idEpisode=-1;
-        if ((idEpisode = m_database.GetEpisodeId(item->GetPath(),EpisodeHint)) > -1)
+        if ((idEpisode = m_database.GetEpisodeId(item->GetPath(),dbId)) > -1)
         {
           bHasInfo = true;
           m_database.GetEpisodeInfo(item->GetPath(), movieDetails, idEpisode);
