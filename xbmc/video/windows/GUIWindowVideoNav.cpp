@@ -27,6 +27,7 @@
 #include "PlayListPlayer.h"
 #include "GUIPassword.h"
 #include "dialogs/GUIDialogFileBrowser.h"
+#include "filesystem/MultiPathDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "playlists/PlayListFactory.h"
 #include "dialogs/GUIDialogOK.h"
@@ -480,7 +481,12 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
     CFileItemPtr pItem = items[i];
     CFileItemPtr match;
     if (!content.empty()) /* optical media will be stacked down, so it's path won't match the base path */
-      match = dbItems.Get(pItem->IsOpticalMediaFile() ? pItem->GetLocalMetadataPath() : pItem->GetPath());
+    {
+      std:string pathToMatch = pItem->IsOpticalMediaFile() ? pItem->GetLocalMetadataPath() : pItem->GetPath();
+      if (URIUtils::IsMultiPath(pathToMatch))
+        pathToMatch = CMultiPathDirectory::GetFirstPath(pathToMatch);
+      match = dbItems.Get(pathToMatch);
+    }
     if (match)
     {
       pItem->UpdateInfo(*match, replaceLabels);
