@@ -5,11 +5,6 @@ AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_FILES([target/config.site native/config.site.native Makefile.include target/Toolchain.cmake])
 AC_CANONICAL_HOST
 m4_include([../../m4/xbmc_arch.m4])
-m4_include([../../m4/ax_require_defined.m4])
-m4_include([../../m4/ax_append_flag.m4])
-m4_include([../../m4/ax_check_compile_flag.m4])
-m4_include([../../m4/ax_append_compile_flags.m4])
-
 
 AC_ARG_WITH([toolchain],
   [AS_HELP_STRING([--with-toolchain],
@@ -35,18 +30,6 @@ AC_ARG_WITH([cpu],
   [AS_HELP_STRING([--with-cpu],
   [optional. specify target cpu. guessed if not specified])],
   [use_cpu=$withval],use_cpu=auto)
-
-AC_ARG_ENABLE([neon],
-  [AS_HELP_STRING([--enable-neon],
-  [enable neon support (default is no)])],
-  [use_neon=$enableval],
-  [use_neon=no])
-
-AC_ARG_ENABLE([tegra],
-  [AS_HELP_STRING([--enable-tegra],
-  [enable Tegra2 arm (default is no)])],
-  [use_tegra=$enableval],
-  [use_tegra=no])
 
 AC_ARG_WITH([ndk],
   [AS_HELP_STRING([--with-ndk],
@@ -110,25 +93,15 @@ platform_cc=gcc
 platform_cxx=g++
 case $host in
   arm*-*linux-android*)
-    if test "x$use_cpu" = "xauto" || test "x$use_cpu" = "xarmeabi-v7a"; then
+    if test "x$use_cpu" = "xauto"; then
       use_cpu="armeabi-v7a"
-      AX_APPEND_COMPILE_FLAGS([$passed_cflags -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp], [platform_cflags])
-      use_neon="yes"
-    fi
-    if test "$use_neon" = "yes"; then
-      AX_APPEND_COMPILE_FLAGS([$passed_cflags -mfpu=neon -mvectorize-with-neon-quad], [platform_cflags])
-    fi
-    if test "$use_tegra" = "yes"; then
-      AX_CHECK_COMPILE_FLAG(-mfpu=vfpv3-d16,
-        [AX_APPEND_COMPILE_FLAGS([$passed_cflags -Wno-psabi -Wa,-march=arv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork],
-          [platform_cflags])],
-        [AX_APPEND_COMPILE_FLAGS([$passed_cflags -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork],
-          [platform_cflags])],
-      )
     fi
     use_sdk="${use_sdk:-android-14}"
     deps_dir="$use_host-$use_sdk"
     platform_cflags="-DANDROID -Os -fexceptions"
+    if test "x$use_cpu" = "xarmeabi-v7a"; then
+      platform_cflags+=" -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon"
+    fi
     platform_ldflags="-L$prefix/$deps_dir/lib/$use_sdk"
     platform_cxxflags="$platform_cflags -frtti"
     platform_includes="-I$prefix/$deps_dir/include/$use_sdk"
@@ -160,17 +133,6 @@ case $host in
     if test "$use_platform" = "auto"; then
       if test "x$use_cpu" = "xauto"; then
         use_cpu=$host_cpu
-      fi
-      if test "$use_neon" = "yes"; then
-        AX_APPEND_COMPILE_FLAGS([$passed_cflags -mfpu=neon -mvectorize-with-neon-quad], [platform_cflags])
-      fi
-      if test "$use_tegra" = "yes"; then
-        AX_CHECK_COMPILE_FLAG(-mfpu=vfpv3-d16,
-          [AX_APPEND_COMPILE_FLAGS([$passed_cflags -Wno-psabi -Wa,-march=arv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork],
-            [platform_cflags])],
-          [AX_APPEND_COMPILE_FLAGS([$passed_cflags -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork],
-            [platform_cflags])],
-        )
       fi
       use_toolchain="${use_toolchain:-/usr}"
       platform_cflags="-Os -fPIC -DPIC"
