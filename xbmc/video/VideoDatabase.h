@@ -817,6 +817,13 @@ private:
    */
   virtual void CreateViews();
 
+  /*! \brief Helper to get a database id given a query.
+   Returns an integer, -1 if not found, and greater than 0 if found.
+   \param query the SQL that will retrieve a database id.
+   \return -1 if not found, else a valid database id (i.e. > 0)
+   */
+  int GetDbId(const std::string &query);
+
   /*! \brief Run a query on the main dataset and return the number of rows
    If no rows are found we close the dataset and return 0.
    \param sql the sql query to run

@@ -3269,6 +3269,18 @@ void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath, bool
   }
 }
 
+int CVideoDatabase::GetDbId(const std::string &query)
+{
+  std::string result = GetSingleValue(query);
+  if (!result.empty())
+  {
+    int idDb = strtol(result.c_str(), NULL, 10);
+    if (idDb > 0)
+      return idDb;
+  }
+  return -1;
+}
+
 void CVideoDatabase::DeleteStreamDetails(int idFile)
 {
     m_pDS->exec(PrepareSQL("delete from streamdetails where idFile=%i", idFile));
