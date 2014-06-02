@@ -32,7 +32,7 @@ namespace XFILE
   class CPlexDirectory : public IDirectory
   {
   public:
-    CPlexDirectory() : m_verb("GET"), m_xmlData(new char[1024])
+    CPlexDirectory() : m_verb("GET"), m_xmlData(new char[1024]), m_showErrors(false)
     {
     }
 
@@ -108,6 +108,9 @@ namespace XFILE
     bool ReadMediaContainer(XML_ELEMENT* root, CFileItemList& mediaContainer);
     void ReadChildren(XML_ELEMENT* element, CFileItemList& container);
 
+    inline void SetShowErrors(bool showErrors)  { m_showErrors = showErrors; }
+    inline bool ShouldShowErrors()  { return m_showErrors; }
+
   private:
     CStdString m_body;
     CStdString m_data;
@@ -117,6 +120,7 @@ namespace XFILE
     CPlexFile m_file;
 
     CStdString m_verb;
+    bool m_showErrors;
   };
 }
 
