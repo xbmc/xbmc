@@ -31,7 +31,7 @@ all: $(GENERATED_JSON) $(GENERATED_ADDON_JSON) $(LIB)
 ifeq ($(wildcard $(JSON_BUILDER)),)
   JSON_BUILDER = $(shell which JsonSchemaBuilder)
 ifeq ($(JSON_BUILDER),)
-  JSON_BUILDER = ../../../tools/depends/native/JsonSchemaBuilder/JsonSchemaBuilder
+  JSON_BUILDER = ../../../tools/depends/native/JsonSchemaBuilder/bin/JsonSchemaBuilder
 endif
 endif
 

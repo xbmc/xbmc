@@ -22,7 +22,7 @@ GENERATED_JSON = $(INTERFACES_DIR)/json-rpc/ServiceDescription.h addons/xbmc.jso
 ifeq ($(wildcard $(JSON_BUILDER)),)
   JSON_BUILDER = $(shell which JsonSchemaBuilder)
 ifeq ($(JSON_BUILDER),)
-  JSON_BUILDER = tools/depends/native/JsonSchemaBuilder/JsonSchemaBuilder
+  JSON_BUILDER = tools/depends/native/JsonSchemaBuilder/bin/JsonSchemaBuilder
 endif
 endif
 
@@ -75,7 +75,11 @@ $(GENERATED_JSON): $(JSON_BUILDER)
 	@echo Jsonbuilder: $(JSON_BUILDER)
 	make -C $(INTERFACES_DIR)/json-rpc $(notdir $@)
 
-ifneq ($(CROSS_COMPILING), yes)
 $(JSON_BUILDER):
-	make -C $(dir $@)
+ifeq ($(BOOTSTRAP_FROM_DEPENDS), yes)
+	@echo JsonSchemaBuilder not found. You didn\'t build depends. Check docs/README.\<yourplatform\>
+	@false
+else
+#build json builder - ".." because makefile is in the parent dir of "bin"
+	make -C $(abspath $(dir $@)..)
 endif
