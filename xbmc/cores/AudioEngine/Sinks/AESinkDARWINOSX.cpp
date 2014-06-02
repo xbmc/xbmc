@@ -192,6 +192,13 @@ static void GetAEChannelMap(CCoreAudioDevice &device, CAEChannelInfo &channelMap
   // the number of channels to be added to the outgoing channelmap
   // this is CA_MAX_CHANNELS at max and might be lower for some output devices (channelsPerFrame)
   unsigned int numChannelsToMap = std::min((unsigned int)CA_MAX_CHANNELS, (unsigned int)channelsPerFrame);
+
+  // if there was a map fetched we force the number of
+  // channels to map to channelsPerFrame (this allows mapping
+  // of more then CA_MAX_CHANNELS if needed)
+  if (mapAvailable)
+    numChannelsToMap = channelsPerFrame;
+
   std::string layoutStr;
 
   if (logMapping)
