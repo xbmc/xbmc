@@ -61,6 +61,17 @@ typedef struct PLT_BrowseData {
 
 typedef NPT_Reference<PLT_BrowseData> PLT_BrowseDataReference;
 
+typedef struct PLT_CapabilitiesData {
+    NPT_SharedVariable shared_var;
+    NPT_Result         res;
+    NPT_String         capabilities;
+} PLT_CapabilitiesData;
+
+typedef NPT_Reference<PLT_CapabilitiesData> PLT_CapabilitiesDataReference;
+
+// explicitely specify res otherwise WMP won't return a URL!
+#define PLT_DEFAULT_FILTER  "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:lastPlaybackPosition,upnp:lastPlaybackTime,upnp:playbackCount,upnp:originalTrackNumber,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,dc:publisher,searchable,childCount,dc:title,dc:creator,upnp:actor,res@resolution,upnp:episodeCount,upnp:episodeSeason,xbmc:dateadded,xbmc:rating,xbmc:votes,xbmc:artwork"
+
 /*----------------------------------------------------------------------
 |   PLT_MediaContainerListener
 +---------------------------------------------------------------------*/
@@ -96,6 +107,18 @@ public:
                                 PLT_DeviceDataReference& device, 
                                 PLT_BrowseInfo*          info, 
                                 void*                    userdata);
+    virtual void OnSearchResult(NPT_Result               res, 
+                                PLT_DeviceDataReference& device, 
+                                PLT_BrowseInfo*          info, 
+                                void*                    userdata);
+    virtual void OnGetSearchCapabilitiesResult(NPT_Result               res, 
+                                               PLT_DeviceDataReference& device, 
+                                               NPT_String               searchCapabilities, 
+                                               void*                    userdata);
+    virtual void OnGetSortCapabilitiesResult(NPT_Result               res,
+                                             PLT_DeviceDataReference& device,
+                                             NPT_String               sortCapabilities,
+                                             void*                    userdata);
 
     // methods
     void       SetContainerListener(PLT_MediaContainerChangesListener* listener) {
@@ -108,6 +131,19 @@ public:
                           NPT_Int32                     start = 0,
                           NPT_Cardinal                  max_results = 0); // 0 means all
 
+    NPT_Result SearchSync(PLT_DeviceDataReference&      device,
+                          const char*                   container_id,
+                          const char*                   search_criteria,
+                          PLT_MediaObjectListReference& list,
+                          NPT_Int32                     start = 0,
+                          NPT_Cardinal                  max_results = 0); // 0 means all
+
+    NPT_Result GetSearchCapabilitiesSync(PLT_DeviceDataReference& device,
+                                         NPT_String&              searchCapabilities);
+
+    NPT_Result GetSortCapabilitiesSync(PLT_DeviceDataReference& device,
+                                       NPT_String&              sortCapabilities);
+
     const NPT_Lock<PLT_DeviceMap>& GetMediaServersMap() const { return m_MediaServers; }
     bool IsCached(const char* uuid, const char* object_id);
 
@@ -118,8 +154,17 @@ protected:
                           NPT_Int32                index, 
                           NPT_Int32                count,
                           bool                     browse_metadata = false,
-                          const char*              filter = "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:lastPlaybackPosition,upnp:lastPlaybackTime,upnp:playbackCount,upnp:originalTrackNumber,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,searchable,childCount", // explicitely specify res otherwise WMP won't return a URL!
+                          const char*              filter = PLT_DEFAULT_FILTER,
                           const char*              sort = "");
+
+    NPT_Result SearchSync(PLT_BrowseDataReference& browse_data,
+                          PLT_DeviceDataReference& device, 
+                          const char*              container_id,
+                          const char*              search_criteria,
+                          NPT_Int32                index, 
+                          NPT_Int32                count,
+                          const char*              filter = PLT_DEFAULT_FILTER); // explicitely specify res otherwise WMP won't return a URL!
+
 private:
     NPT_Result Find(const char* ip, PLT_DeviceDataReference& device);
     NPT_Result WaitForResponse(NPT_SharedVariable& shared_var);

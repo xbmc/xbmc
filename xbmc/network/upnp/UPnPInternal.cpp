@@ -301,6 +301,13 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     if(object.m_ReferenceID == object.m_ObjectID)
         object.m_ReferenceID = "";
 
+    for (unsigned int index = 0; index < tag.m_studio.size(); index++)
+        object.m_People.publisher.Add(tag.m_studio[index].c_str());
+
+    object.m_XbmcInfo.date_added = tag.m_dateAdded.GetAsDBDate();
+    object.m_XbmcInfo.rating = tag.m_fRating;
+    object.m_XbmcInfo.votes = tag.m_strVotes;
+
     for (unsigned int index = 0; index < tag.m_genre.size(); index++)
       object.m_Affiliation.genres.Add(tag.m_genre.at(index).c_str());
 
@@ -587,9 +594,14 @@ BuildObject(CFileItem&                    item,
         object->m_ExtraInfo.album_arts.Add(art);
     }
 
-    fanart = item.GetArt("fanart");
-    if (upnp_server && !fanart.empty())
-        upnp_server->AddSafeResourceUri(object, rooturi, ips, CTextureUtils::GetWrappedImageURL(fanart), "xbmc.org:*:fanart:*");
+    for (CGUIListItem::ArtMap::const_iterator itArtwork = item.GetArt().begin(); itArtwork != item.GetArt().end(); ++itArtwork) {
+        if (!itArtwork->first.empty() && !itArtwork->second.empty()) {
+            std::string wrappedUrl = CTextureUtils::GetWrappedImageURL(itArtwork->second);
+            object->m_XbmcInfo.artwork.Add(itArtwork->first.c_str(),
+              upnp_server->BuildSafeResourceUri(rooturi, (*ips.GetFirstItem()).ToString(), wrappedUrl.c_str()));
+            upnp_server->AddSafeResourceUri(object, rooturi, ips, wrappedUrl.c_str(), ("xbmc.org:*:" + itArtwork->first + ":*").c_str());
+        }
+    }
 
     return object;
 
@@ -690,6 +702,14 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
         tag.m_premiered    = date;
     }
     tag.m_iYear       = date.GetYear();
+
+    for (unsigned int index = 0; index < object.m_People.publisher.GetItemCount(); index++)
+        tag.m_studio.push_back(object.m_People.publisher.GetItem(index)->GetChars());
+
+    tag.m_dateAdded.SetFromDateString((const char*)object.m_XbmcInfo.date_added);
+    tag.m_fRating = object.m_XbmcInfo.rating;
+    tag.m_strVotes = object.m_XbmcInfo.votes;
+
     for (unsigned int index = 0; index < object.m_Affiliation.genres.GetItemCount(); index++)
     {
       // ignore single "Unknown" genre inserted by Platinum
@@ -811,14 +831,10 @@ CFileItemPtr BuildObject(PLT_MediaObject* entry)
   else if(entry->m_Description.icon_uri.GetLength())
     pItem->SetArt("thumb", (const char*) entry->m_Description.icon_uri);
 
-  PLT_ProtocolInfo fanart_mask("xbmc.org", "*", "fanart", "*");
-  for(unsigned i = 0; i < entry->m_Resources.GetItemCount(); ++i) {
-    PLT_MediaItemResource& res = entry->m_Resources[i];
-    if(res.m_ProtocolInfo.Match(fanart_mask)) {
-      pItem->SetArt("fanart", (const char*)res.m_Uri);
-      break;
-    }
-  }
+  for (unsigned int index = 0; index < entry->m_XbmcInfo.artwork.GetItemCount(); index++)
+      pItem->SetArt(entry->m_XbmcInfo.artwork.GetItem(index)->type.GetChars(),
+                    entry->m_XbmcInfo.artwork.GetItem(index)->url.GetChars());
+
   // set the watched overlay, as this will not be set later due to
   // content set on file item list
   if (pItem->HasVideoInfoTag()) {

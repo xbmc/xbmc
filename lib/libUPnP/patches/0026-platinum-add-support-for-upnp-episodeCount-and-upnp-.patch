@@ -1,0 +1,131 @@
+From f4eef1767e642fd3b46ce18a4daf619903b74d46 Mon Sep 17 00:00:00 2001
+From: montellese <montellese@xbmc.org>
+Date: Tue, 31 Dec 2013 14:06:55 +0100
+Subject: [PATCH 03/11] platinum: add support for upnp:episodeCount and
+ upnp:episodeSeason from ContentDirectory v4
+
+---
+ .../Source/Devices/MediaServer/PltDidl.cpp         |  6 +++++-
+ .../Platinum/Source/Devices/MediaServer/PltDidl.h  |  6 ++++++
+ .../Source/Devices/MediaServer/PltMediaItem.cpp    | 22 ++++++++++++++++++++++
+ .../Source/Devices/MediaServer/PltMediaItem.h      |  2 ++
+ .../Devices/MediaServer/PltSyncMediaBrowser.h      |  2 +-
+ 5 files changed, 36 insertions(+), 2 deletions(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
+index 3d8c9fd..0758ad5 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
+@@ -156,7 +156,11 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
+             mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_NRAUDIOCHANNELS;
+ 		} else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_SAMPLEFREQUENCY, len, true) == 0) {
+             mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_SAMPLEFREQUENCY;
+-		}
++		} else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_EPISODE_COUNT, len, true) == 0) {
++            mask |= PLT_FILTER_MASK_EPISODE_COUNT;
++        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_EPISODE_SEASON, len, true) == 0) {
++            mask |= PLT_FILTER_MASK_EPISODE_SEASON;
++        }
+ 
+         if (next_comma < 0) {
+             return mask;
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
+index ae67b43..2271162 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
+@@ -92,6 +92,9 @@
+ 
+ #define PLT_FILTER_MASK_PUBLISHER                   NPT_UINT64_C(0x0000000800000000)
+ 
++#define PLT_FILTER_MASK_EPISODE_COUNT               NPT_UINT64_C(0x0000001000000000)
++#define PLT_FILTER_MASK_EPISODE_SEASON              NPT_UINT64_C(0x0000002000000000)
++
+ #define PLT_FILTER_FIELD_TITLE                      "dc:title"
+ #define PLT_FILTER_FIELD_CREATOR                    "dc:creator"
+ #define PLT_FILTER_FIELD_DATE                       "dc:date"
+@@ -133,6 +136,9 @@
+ #define PLT_FILTER_FIELD_RES_NRAUDIOCHANNELS        "res@nrAudioChannels"
+ #define PLT_FILTER_FIELD_RES_SAMPLEFREQUENCY        "res@sampleFrequency"
+ 
++#define PLT_FILTER_FIELD_EPISODE_COUNT              "upnp:episodeCount"
++#define PLT_FILTER_FIELD_EPISODE_SEASON             "upnp:episodeSeason"
++
+ extern const char* didl_header;
+ extern const char* didl_footer;
+ extern const char* didl_namespace_dc;
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+index bd55cb5..a8855cc 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+@@ -195,6 +195,8 @@ PLT_MediaObject::Reset()
+     m_Recorded.program_title  = "";
+     m_Recorded.series_title   = "";
+     m_Recorded.episode_number = 0;
++    m_Recorded.episode_count = 0;
++    m_Recorded.episode_season = 0;
+ 
+     m_Resources.Clear();
+ 
+@@ -389,6 +391,20 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
+         didl += "</upnp:episodeNumber>";
+     }
+ 
++    // episode count
++    if ((mask & PLT_FILTER_MASK_EPISODE_COUNT) && m_Recorded.episode_count > 0) {
++        didl += "<upnp:episodeCount>";
++        didl += NPT_String::FromInteger(m_Recorded.episode_count);
++        didl += "</upnp:episodeCount>";
++    }
++
++    // episode count
++    if ((mask & PLT_FILTER_MASK_EPISODE_SEASON)) {
++        didl += "<upnp:episodeSeason>";
++        didl += NPT_String::FromInteger(m_Recorded.episode_season);
++        didl += "</upnp:episodeSeason>";
++    }
++
+ 	if ((mask & PLT_FILTER_MASK_TOC) && !m_MiscInfo.toc.IsEmpty()) {
+         didl += "<upnp:toc>";
+ 		PLT_Didl::AppendXmlEscape(didl, m_MiscInfo.toc);
+@@ -547,6 +563,12 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
+     NPT_UInt32 value;
+     if (NPT_FAILED(str.ToInteger(value))) value = 0;
+     m_Recorded.episode_number = value;
++    PLT_XmlHelper::GetChildText(entry, "episodeCount", str, didl_namespace_upnp);
++    if (NPT_FAILED(str.ToInteger(value))) value = 0;
++    m_Recorded.episode_count = value;
++    PLT_XmlHelper::GetChildText(entry, "episodeSeason", str, didl_namespace_upnp);
++    if (NPT_FAILED(str.ToInteger(value))) value = -1;
++    m_Recorded.episode_season = value;
+ 
+     children.Clear();
+     PLT_XmlHelper::GetChildren(entry, children, "genre", didl_namespace_upnp);
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
+index 9df90d5..34a69b7 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
+@@ -147,6 +147,8 @@ typedef struct {
+     NPT_String program_title;
+     NPT_String series_title;
+     NPT_UInt32 episode_number;
++    NPT_UInt32 episode_count;
++    NPT_UInt32 episode_season;
+ } PLT_RecordedInfo;
+ 
+ /*----------------------------------------------------------------------
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+index c6fc3be..3c14dff 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+@@ -118,7 +118,7 @@ protected:
+                           NPT_Int32                index, 
+                           NPT_Int32                count,
+                           bool                     browse_metadata = false,
+-                          const char*              filter = "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:lastPlaybackPosition,upnp:lastPlaybackTime,upnp:playbackCount,upnp:originalTrackNumber,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,dc:publisher,searchable,childCount,dc:title,dc:creator,upnp:actor,res@resolution", // explicitely specify res otherwise WMP won't return a URL!
++                          const char*              filter = "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:lastPlaybackPosition,upnp:lastPlaybackTime,upnp:playbackCount,upnp:originalTrackNumber,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,dc:publisher,searchable,childCount,dc:title,dc:creator,upnp:actor,res@resolution,upnp:episodeCount,upnp:episodeSeason", // explicitely specify res otherwise WMP won't return a URL!
+                           const char*              sort = "");
+ private:
+     NPT_Result Find(const char* ip, PLT_DeviceDataReference& device);
+-- 
+1.7.11.msysgit.0
+

@@ -1,0 +1,236 @@
+From bf2fe4c362eaec89257d7649f18af2431dcc544a Mon Sep 17 00:00:00 2001
+From: montellese <montellese@xbmc.org>
+Date: Sat, 8 Feb 2014 15:15:32 +0100
+Subject: [PATCH 07/11] platinum: implement GetSortCapabilities in media
+ browser
+
+---
+ .../Source/Devices/MediaServer/PltMediaBrowser.cpp | 58 ++++++++++++++++++++++
+ .../Source/Devices/MediaServer/PltMediaBrowser.h   | 14 ++++++
+ .../Devices/MediaServer/PltSyncMediaBrowser.cpp    | 55 ++++++++++++++++++++
+ .../Devices/MediaServer/PltSyncMediaBrowser.h      |  7 +++
+ 4 files changed, 134 insertions(+)
+
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaBrowser.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaBrowser.cpp
+index 46b6f41..2478441 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaBrowser.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaBrowser.cpp
+@@ -332,6 +332,33 @@ PLT_MediaBrowser::GetSearchCapabilities(PLT_DeviceDataReference& device,
+ }
+ 
+ /*----------------------------------------------------------------------
++|   PLT_MediaBrowser::GetSortCapabilities
+++---------------------------------------------------------------------*/
++NPT_Result 
++PLT_MediaBrowser::GetSortCapabilities(PLT_DeviceDataReference& device,
++                                      void*                    userdata)
++{
++    // verify device still in our list
++    PLT_DeviceDataReference device_data;
++    NPT_CHECK_WARNING(FindServer(device->GetUUID(), device_data));
++
++    // create action
++    PLT_ActionReference action;
++    NPT_CHECK_SEVERE(m_CtrlPoint->CreateAction(
++        device, 
++        "urn:schemas-upnp-org:service:ContentDirectory:1",
++        "GetSortCapabilities",
++        action));
++
++    // invoke the action
++    if (NPT_FAILED(m_CtrlPoint->InvokeAction(action, userdata))) {
++        return NPT_ERROR_INVALID_PARAMETERS;
++    }
++
++    return NPT_SUCCESS;
++}
++
++/*----------------------------------------------------------------------
+ |   PLT_MediaBrowser::OnActionResponse
+ +---------------------------------------------------------------------*/
+ NPT_Result
+@@ -351,6 +378,8 @@ PLT_MediaBrowser::OnActionResponse(NPT_Result           res,
+         return OnSearchResponse(res, device, action, userdata);
+     } else if (actionName.Compare("GetSearchCapabilities", true) == 0) {
+         return OnGetSearchCapabilitiesResponse(res, device, action, userdata);
++    } else if (actionName.Compare("GetSortCapabilities", true) == 0) {
++        return OnGetSortCapabilitiesResponse(res, device, action, userdata);
+     }
+ 
+     return NPT_SUCCESS;
+@@ -494,6 +523,35 @@ bad_action:
+ }
+ 
+ /*----------------------------------------------------------------------
++|   PLT_MediaBrowser::OnGetSearchCapabilitiesResponse
+++---------------------------------------------------------------------*/
++NPT_Result
++PLT_MediaBrowser::OnGetSortCapabilitiesResponse(NPT_Result               res, 
++                                                PLT_DeviceDataReference& device, 
++                                                PLT_ActionReference&     action, 
++                                                void*                    userdata)
++{
++    NPT_String value;
++
++    if (!m_Delegate) return NPT_SUCCESS;
++
++    if (NPT_FAILED(res) || action->GetErrorCode() != 0) {
++        goto bad_action;
++    }
++
++    if (NPT_FAILED(action->GetArgumentValue("SortCaps", value)))  {
++        goto bad_action;
++    }
++
++    m_Delegate->OnGetSortCapabilitiesResult(NPT_SUCCESS, device, value, userdata);
++    return NPT_SUCCESS;
++
++bad_action:
++    m_Delegate->OnGetSortCapabilitiesResult(NPT_FAILURE, device, value, userdata);
++    return NPT_FAILURE;
++}
++
++/*----------------------------------------------------------------------
+ |   PLT_MediaBrowser::OnEventNotify
+ +---------------------------------------------------------------------*/
+ NPT_Result
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaBrowser.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaBrowser.h
+index 023630d..41ed84e 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaBrowser.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaBrowser.h
+@@ -97,6 +97,12 @@ public:
+         PLT_DeviceDataReference& /*device*/, 
+         NPT_String               /*searchCapabilities*/, 
+         void*                    /*userdata*/) {}
++
++	virtual void OnGetSortCapabilitiesResult(
++        NPT_Result               /*res*/,
++        PLT_DeviceDataReference& /*device*/,
++        NPT_String               /*sortCapabilities*/,
++        void*                    /*userdata*/) {}
+ };
+ 
+ /*----------------------------------------------------------------------
+@@ -133,6 +139,9 @@ public:
+     virtual NPT_Result GetSearchCapabilities(PLT_DeviceDataReference& device,
+                                              void*                    userdata = NULL);
+ 
++    virtual NPT_Result GetSortCapabilities(PLT_DeviceDataReference& device,
++                                           void*                    userdata = NULL);
++
+     // methods
+     virtual const NPT_Lock<PLT_DeviceDataReferenceList>& GetMediaServers() { return m_MediaServers; }
+     virtual NPT_Result FindServer(const char* uuid, PLT_DeviceDataReference& device);    
+@@ -160,6 +169,11 @@ protected:
+                                                      PLT_DeviceDataReference& device, 
+                                                      PLT_ActionReference&     action, 
+                                                      void*                    userdata);
++
++  virtual NPT_Result OnGetSortCapabilitiesResponse(NPT_Result               res,
++                                                   PLT_DeviceDataReference& device,
++                                                   PLT_ActionReference&     action,
++                                                   void*                    userdata);
+     
+ protected:
+     PLT_CtrlPointReference                m_CtrlPoint;
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp
+index 8ae9f72..27d81fa 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp
+@@ -191,6 +191,28 @@ PLT_SyncMediaBrowser::OnGetSearchCapabilitiesResult(NPT_Result               res
+ }
+ 
+ /*----------------------------------------------------------------------
++|   PLT_SyncMediaBrowser::OnGetSortCapabilitiesResult
+++---------------------------------------------------------------------*/
++void
++PLT_SyncMediaBrowser::OnGetSortCapabilitiesResult(NPT_Result               res,
++                                                  PLT_DeviceDataReference& device,
++                                                  NPT_String               sortCapabilities,
++                                                  void*                    userdata)
++{
++  NPT_COMPILER_UNUSED(device);
++
++  if (!userdata) return;
++
++  PLT_CapabilitiesDataReference* data = (PLT_CapabilitiesDataReference*) userdata;
++  (*data)->res = res;
++  if (NPT_SUCCEEDED(res)) {
++      (*data)->capabilities = sortCapabilities;
++  }
++  (*data)->shared_var.SetValue(1);
++  delete data;
++}
++
++/*----------------------------------------------------------------------
+ |   PLT_SyncMediaBrowser::OnMSStateVariablesChanged
+ +---------------------------------------------------------------------*/
+ void 
+@@ -335,6 +357,39 @@ done:
+ }
+ 
+ /*----------------------------------------------------------------------
++|   PLT_SyncMediaBrowser::GetSortCapabilitiesSync
+++---------------------------------------------------------------------*/
++NPT_Result
++PLT_SyncMediaBrowser::GetSortCapabilitiesSync(PLT_DeviceDataReference& device, 
++                                              NPT_String&              sortCapabilities)
++{
++    NPT_Result res;
++
++    PLT_CapabilitiesDataReference capabilities_data(new PLT_CapabilitiesData(), true);
++    capabilities_data->shared_var.SetValue(0);
++
++    // send of the GetSortCapabilities packet. Note that this will
++    // not block. There is a call to WaitForResponse in order
++    // to block until the response comes back.
++    res = PLT_MediaBrowser::GetSortCapabilities(device,
++        new PLT_CapabilitiesDataReference(capabilities_data));
++    NPT_CHECK_SEVERE(res);
++
++    res = WaitForResponse(capabilities_data->shared_var);
++    NPT_CHECK_LABEL_WARNING(res, done);
++
++    if (NPT_FAILED(capabilities_data->res)) {
++        res = capabilities_data->res;
++        NPT_CHECK_LABEL_WARNING(res, done);
++    }
++
++    sortCapabilities = capabilities_data->capabilities;
++
++done:
++    return res;
++}
++
++/*----------------------------------------------------------------------
+ |   PLT_SyncMediaBrowser::BrowseSync
+ +---------------------------------------------------------------------*/
+ NPT_Result
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+index 7054b72..21f1d28 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+@@ -115,6 +115,10 @@ public:
+                                                PLT_DeviceDataReference& device, 
+                                                NPT_String               searchCapabilities, 
+                                                void*                    userdata);
++    virtual void OnGetSortCapabilitiesResult(NPT_Result               res,
++                                             PLT_DeviceDataReference& device,
++                                             NPT_String               sortCapabilities,
++                                             void*                    userdata);
+ 
+     // methods
+     void       SetContainerListener(PLT_MediaContainerChangesListener* listener) {
+@@ -137,6 +141,9 @@ public:
+     NPT_Result GetSearchCapabilitiesSync(PLT_DeviceDataReference& device,
+                                          NPT_String&              searchCapabilities);
+ 
++    NPT_Result GetSortCapabilitiesSync(PLT_DeviceDataReference& device,
++                                       NPT_String&              sortCapabilities);
++
+     const NPT_Lock<PLT_DeviceMap>& GetMediaServersMap() const { return m_MediaServers; }
+     bool IsCached(const char* uuid, const char* object_id);
+ 
+-- 
+1.7.11.msysgit.0
+

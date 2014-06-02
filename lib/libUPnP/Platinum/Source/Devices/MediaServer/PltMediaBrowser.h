@@ -91,6 +91,18 @@ public:
         PLT_DeviceDataReference& /*device*/, 
         PLT_BrowseInfo*          /*info*/, 
         void*                    /*userdata*/) {}
+
+	virtual void OnGetSearchCapabilitiesResult(
+        NPT_Result               /*res*/, 
+        PLT_DeviceDataReference& /*device*/, 
+        NPT_String               /*searchCapabilities*/, 
+        void*                    /*userdata*/) {}
+
+	virtual void OnGetSortCapabilitiesResult(
+        NPT_Result               /*res*/,
+        PLT_DeviceDataReference& /*device*/,
+        NPT_String               /*sortCapabilities*/,
+        void*                    /*userdata*/) {}
 };
 
 /*----------------------------------------------------------------------
@@ -124,6 +136,12 @@ public:
                               const char*              filter = "dc:date,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:originalTrackNumber,upnp:album,upnp:artist,upnp:author", // explicitely specify res otherwise WMP won't return a URL!
 						  	  void*                    userdata = NULL);
 
+    virtual NPT_Result GetSearchCapabilities(PLT_DeviceDataReference& device,
+                                             void*                    userdata = NULL);
+
+    virtual NPT_Result GetSortCapabilities(PLT_DeviceDataReference& device,
+                                           void*                    userdata = NULL);
+
     // methods
     virtual const NPT_Lock<PLT_DeviceDataReferenceList>& GetMediaServers() { return m_MediaServers; }
     virtual NPT_Result FindServer(const char* uuid, PLT_DeviceDataReference& device);    
@@ -146,6 +164,16 @@ protected:
                                         PLT_DeviceDataReference& device, 
                                         PLT_ActionReference&     action, 
                                         void*                    userdata);
+
+  virtual NPT_Result OnGetSearchCapabilitiesResponse(NPT_Result               res, 
+                                                     PLT_DeviceDataReference& device, 
+                                                     PLT_ActionReference&     action, 
+                                                     void*                    userdata);
+
+  virtual NPT_Result OnGetSortCapabilitiesResponse(NPT_Result               res,
+                                                   PLT_DeviceDataReference& device,
+                                                   PLT_ActionReference&     action,
+                                                   void*                    userdata);
     
 protected:
     PLT_CtrlPointReference                m_CtrlPoint;

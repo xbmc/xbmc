@@ -1,0 +1,251 @@
+From 4a35702414b4c3be06d24b5b5c5da86c3f058078 Mon Sep 17 00:00:00 2001
+From: montellese <montellese@xbmc.org>
+Date: Sat, 8 Feb 2014 11:46:11 +0100
+Subject: [PATCH 06/11] platinum: implement GetSearchCapabilities in media
+ browser
+
+---
+ .../Source/Devices/MediaServer/PltMediaBrowser.cpp | 58 ++++++++++++++++++++++
+ .../Source/Devices/MediaServer/PltMediaBrowser.h   | 14 ++++++
+ .../Devices/MediaServer/PltSyncMediaBrowser.cpp    | 55 ++++++++++++++++++++
+ .../Devices/MediaServer/PltSyncMediaBrowser.h      | 15 ++++++
+ 4 files changed, 142 insertions(+)
+
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaBrowser.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaBrowser.cpp
+index 266397d..46b6f41 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaBrowser.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaBrowser.cpp
+@@ -305,6 +305,33 @@ PLT_MediaBrowser::Browse(PLT_DeviceDataReference& device,
+ }
+ 
+ /*----------------------------------------------------------------------
++|   PLT_MediaBrowser::GetSearchCapabilities
+++---------------------------------------------------------------------*/
++NPT_Result 
++PLT_MediaBrowser::GetSearchCapabilities(PLT_DeviceDataReference& device,
++                                        void*                    userdata)
++{
++    // verify device still in our list
++    PLT_DeviceDataReference device_data;
++    NPT_CHECK_WARNING(FindServer(device->GetUUID(), device_data));
++
++    // create action
++    PLT_ActionReference action;
++    NPT_CHECK_SEVERE(m_CtrlPoint->CreateAction(
++        device, 
++        "urn:schemas-upnp-org:service:ContentDirectory:1",
++        "GetSearchCapabilities",
++        action));
++
++    // invoke the action
++    if (NPT_FAILED(m_CtrlPoint->InvokeAction(action, userdata))) {
++        return NPT_ERROR_INVALID_PARAMETERS;
++    }
++
++    return NPT_SUCCESS;
++}
++
++/*----------------------------------------------------------------------
+ |   PLT_MediaBrowser::OnActionResponse
+ +---------------------------------------------------------------------*/
+ NPT_Result
+@@ -322,6 +349,8 @@ PLT_MediaBrowser::OnActionResponse(NPT_Result           res,
+         return OnBrowseResponse(res, device, action, userdata);
+     } else if (actionName.Compare("Search", true) == 0) {
+         return OnSearchResponse(res, device, action, userdata);
++    } else if (actionName.Compare("GetSearchCapabilities", true) == 0) {
++        return OnGetSearchCapabilitiesResponse(res, device, action, userdata);
+     }
+ 
+     return NPT_SUCCESS;
+@@ -436,6 +465,35 @@ bad_action:
+ }
+ 
+ /*----------------------------------------------------------------------
++|   PLT_MediaBrowser::OnGetSearchCapabilitiesResponse
+++---------------------------------------------------------------------*/
++NPT_Result
++PLT_MediaBrowser::OnGetSearchCapabilitiesResponse(NPT_Result               res, 
++                                                  PLT_DeviceDataReference& device, 
++                                                  PLT_ActionReference&     action, 
++                                                  void*                    userdata)
++{
++    NPT_String value;
++
++    if (!m_Delegate) return NPT_SUCCESS;
++
++    if (NPT_FAILED(res) || action->GetErrorCode() != 0) {
++        goto bad_action;
++    }
++
++    if (NPT_FAILED(action->GetArgumentValue("SearchCaps", value)))  {
++        goto bad_action;
++    }
++
++    m_Delegate->OnGetSearchCapabilitiesResult(NPT_SUCCESS, device, value, userdata);
++    return NPT_SUCCESS;
++
++bad_action:
++    m_Delegate->OnGetSearchCapabilitiesResult(NPT_FAILURE, device, value, userdata);
++    return NPT_FAILURE;
++}
++
++/*----------------------------------------------------------------------
+ |   PLT_MediaBrowser::OnEventNotify
+ +---------------------------------------------------------------------*/
+ NPT_Result
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaBrowser.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaBrowser.h
+index 2ee032b..023630d 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaBrowser.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaBrowser.h
+@@ -91,6 +91,12 @@ public:
+         PLT_DeviceDataReference& /*device*/, 
+         PLT_BrowseInfo*          /*info*/, 
+         void*                    /*userdata*/) {}
++
++	virtual void OnGetSearchCapabilitiesResult(
++        NPT_Result               /*res*/, 
++        PLT_DeviceDataReference& /*device*/, 
++        NPT_String               /*searchCapabilities*/, 
++        void*                    /*userdata*/) {}
+ };
+ 
+ /*----------------------------------------------------------------------
+@@ -124,6 +130,9 @@ public:
+                               const char*              filter = "dc:date,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:originalTrackNumber,upnp:album,upnp:artist,upnp:author", // explicitely specify res otherwise WMP won't return a URL!
+ 						  	  void*                    userdata = NULL);
+ 
++    virtual NPT_Result GetSearchCapabilities(PLT_DeviceDataReference& device,
++                                             void*                    userdata = NULL);
++
+     // methods
+     virtual const NPT_Lock<PLT_DeviceDataReferenceList>& GetMediaServers() { return m_MediaServers; }
+     virtual NPT_Result FindServer(const char* uuid, PLT_DeviceDataReference& device);    
+@@ -146,6 +155,11 @@ protected:
+                                         PLT_DeviceDataReference& device, 
+                                         PLT_ActionReference&     action, 
+                                         void*                    userdata);
++
++  virtual NPT_Result OnGetSearchCapabilitiesResponse(NPT_Result               res, 
++                                                     PLT_DeviceDataReference& device, 
++                                                     PLT_ActionReference&     action, 
++                                                     void*                    userdata);
+     
+ protected:
+     PLT_CtrlPointReference                m_CtrlPoint;
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp
+index 96e4121..8ae9f72 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp
+@@ -169,6 +169,28 @@ PLT_SyncMediaBrowser::OnSearchResult(NPT_Result               res,
+ }
+ 
+ /*----------------------------------------------------------------------
++|   PLT_SyncMediaBrowser::OnGetSearchCapabilitiesResult
+++---------------------------------------------------------------------*/
++void
++PLT_SyncMediaBrowser::OnGetSearchCapabilitiesResult(NPT_Result               res, 
++                                                    PLT_DeviceDataReference& device, 
++                                                    NPT_String               searchCapabilities, 
++                                                    void*                    userdata)
++{
++  NPT_COMPILER_UNUSED(device);
++
++  if (!userdata) return;
++
++  PLT_CapabilitiesDataReference* data = (PLT_CapabilitiesDataReference*) userdata;
++  (*data)->res = res;
++  if (NPT_SUCCEEDED(res)) {
++      (*data)->capabilities = searchCapabilities;
++  }
++  (*data)->shared_var.SetValue(1);
++  delete data;
++}
++
++/*----------------------------------------------------------------------
+ |   PLT_SyncMediaBrowser::OnMSStateVariablesChanged
+ +---------------------------------------------------------------------*/
+ void 
+@@ -280,6 +302,39 @@ PLT_SyncMediaBrowser::SearchSync(PLT_BrowseDataReference& browse_data,
+ }
+ 
+ /*----------------------------------------------------------------------
++|   PLT_SyncMediaBrowser::GetSearchCapabilitiesSync
+++---------------------------------------------------------------------*/
++NPT_Result
++PLT_SyncMediaBrowser::GetSearchCapabilitiesSync(PLT_DeviceDataReference& device, 
++                                                NPT_String&              searchCapabilities)
++{
++    NPT_Result res;
++
++    PLT_CapabilitiesDataReference capabilities_data(new PLT_CapabilitiesData(), true);
++    capabilities_data->shared_var.SetValue(0);
++
++    // send of the GetSearchCapabilities packet. Note that this will
++    // not block. There is a call to WaitForResponse in order
++    // to block until the response comes back.
++    res = PLT_MediaBrowser::GetSearchCapabilities(device,
++        new PLT_CapabilitiesDataReference(capabilities_data));
++    NPT_CHECK_SEVERE(res);
++
++    res = WaitForResponse(capabilities_data->shared_var);
++    NPT_CHECK_LABEL_WARNING(res, done);
++
++    if (NPT_FAILED(capabilities_data->res)) {
++        res = capabilities_data->res;
++        NPT_CHECK_LABEL_WARNING(res, done);
++    }
++
++    searchCapabilities = capabilities_data->capabilities;
++
++done:
++    return res;
++}
++
++/*----------------------------------------------------------------------
+ |   PLT_SyncMediaBrowser::BrowseSync
+ +---------------------------------------------------------------------*/
+ NPT_Result
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+index 5ef9f37..7054b72 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+@@ -61,6 +61,14 @@ typedef struct PLT_BrowseData {
+ 
+ typedef NPT_Reference<PLT_BrowseData> PLT_BrowseDataReference;
+ 
++typedef struct PLT_CapabilitiesData {
++    NPT_SharedVariable shared_var;
++    NPT_Result         res;
++    NPT_String         capabilities;
++} PLT_CapabilitiesData;
++
++typedef NPT_Reference<PLT_CapabilitiesData> PLT_CapabilitiesDataReference;
++
+ // explicitely specify res otherwise WMP won't return a URL!
+ #define PLT_DEFAULT_FILTER  "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:lastPlaybackPosition,upnp:lastPlaybackTime,upnp:playbackCount,upnp:originalTrackNumber,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,dc:publisher,searchable,childCount,dc:title,dc:creator,upnp:actor,res@resolution,upnp:episodeCount,upnp:episodeSeason,xbmc:dateadded,xbmc:rating,xbmc:votes,xbmc:artwork"
+ 
+@@ -103,6 +111,10 @@ public:
+                                 PLT_DeviceDataReference& device, 
+                                 PLT_BrowseInfo*          info, 
+                                 void*                    userdata);
++    virtual void OnGetSearchCapabilitiesResult(NPT_Result               res, 
++                                               PLT_DeviceDataReference& device, 
++                                               NPT_String               searchCapabilities, 
++                                               void*                    userdata);
+ 
+     // methods
+     void       SetContainerListener(PLT_MediaContainerChangesListener* listener) {
+@@ -122,6 +134,9 @@ public:
+                           NPT_Int32                     start = 0,
+                           NPT_Cardinal                  max_results = 0); // 0 means all
+ 
++    NPT_Result GetSearchCapabilitiesSync(PLT_DeviceDataReference& device,
++                                         NPT_String&              searchCapabilities);
++
+     const NPT_Lock<PLT_DeviceMap>& GetMediaServersMap() const { return m_MediaServers; }
+     bool IsCached(const char* uuid, const char* object_id);
+ 
+-- 
+1.7.11.msysgit.0
+

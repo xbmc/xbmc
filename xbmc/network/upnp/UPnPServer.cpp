@@ -102,7 +102,10 @@ CUPnPServer::SetupServices()
     PLT_Service* service = NULL;
     NPT_Result result = FindServiceById("urn:upnp-org:serviceId:ContentDirectory", service);
     if (service)
-      service->SetStateVariable("SortCapabilities", "res@duration,res@size,res@bitrate,dc:date,dc:title,dc:size,upnp:album,upnp:artist,upnp:albumArtist,upnp:episodeNumber,upnp:genre,upnp:originalTrackNumber,upnp:rating");
+    {
+      service->SetStateVariable("SearchCapabilities", "upnp:class");
+      service->SetStateVariable("SortCapabilities", "res@duration,res@size,res@bitrate,dc:date,dc:title,dc:size,upnp:album,upnp:artist,upnp:albumArtist,upnp:episodeNumber,upnp:genre,upnp:originalTrackNumber,upnp:rating,upnp:episodeCount,upnp:episodeSeason,xbmc:rating,xbmc:dateadded,xbmc:votes");
+    }
 
     m_scanning = true;
     OnScanCompleted(AudioLibrary);
@@ -1241,12 +1244,22 @@ CUPnPServer::SortItems(CFileItemList& items, const char* sort_criteria)
       sorting.sortBy = SortByArtist;
     else if (method.Equals("upnp:episodeNumber"))
       sorting.sortBy = SortByEpisodeNumber;
+    else if (method.Equals("upnp:episodeCount"))
+      sorting.sortBy = SortByNumberOfEpisodes;
+    else if (method.Equals("upnp:episodeSeason"))
+      sorting.sortBy = SortBySeason;
     else if (method.Equals("upnp:genre"))
       sorting.sortBy = SortByGenre;
     else if (method.Equals("upnp:originalTrackNumber"))
       sorting.sortBy = SortByTrackNumber;
     else if(method.Equals("upnp:rating"))
       sorting.sortBy = SortByMPAA;
+    else if (method.Equals("xbmc:rating"))
+      sorting.sortBy = SortByRating;
+    else if (method.Equals("xbmc:dateadded"))
+      sorting.sortBy = SortByDateAdded;
+    else if (method.Equals("xbmc:votes"))
+      sorting.sortBy = SortByVotes;
     else {
       CLog::Log(LOGINFO, "UPnP: unsupported sort criteria '%s' passed", method.c_str());
       continue; // needed so unidentified sort methods don't re-sort by label

@@ -110,6 +110,62 @@ PLT_PersonRoles::FromDidl(const NPT_Array<NPT_XmlElementNode*>& nodes)
 }
 
 /*----------------------------------------------------------------------
+|   PLT_Artworks::Add
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_Artworks::Add(const NPT_String& type, const NPT_String& url)
+{
+    PLT_Artwork artwork;
+    artwork.type = type;
+    artwork.url = url;
+
+    return NPT_List<PLT_Artwork>::Add(artwork);
+}
+
+/*----------------------------------------------------------------------
+|   PLT_Artworks::ToDidl
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_Artworks::ToDidl(NPT_String& didl, const NPT_String& tag)
+{
+    NPT_String tmp;
+    for (NPT_List<PLT_Artwork>::Iterator it =
+         NPT_List<PLT_Artwork>::GetFirstItem(); it; it++) {
+        if (it->type.IsEmpty()) continue;
+
+        tmp += "<xbmc:" + tag;
+        if (!it->type.IsEmpty()) {
+            tmp += " type=\"";
+            PLT_Didl::AppendXmlEscape(tmp, it->type);
+            tmp += "\"";
+        }
+        tmp += ">";
+        PLT_Didl::AppendXmlEscape(tmp, it->url);
+        tmp += "</xbmc:" + tag + ">";
+    }
+
+    didl += tmp;
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_Artworks::ToDidl
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_Artworks::FromDidl(const NPT_Array<NPT_XmlElementNode*>& nodes)
+{
+    for (NPT_Cardinal i=0; i<nodes.GetItemCount(); i++) {
+        PLT_Artwork artwork;
+        const NPT_String* url = nodes[i]->GetText();
+        const NPT_String* type = nodes[i]->GetAttribute("type");
+        if (type) artwork.type = *type;
+        if (url) artwork.url = *url;
+        NPT_CHECK(NPT_List<PLT_Artwork>::Add(artwork));
+    }
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
 |   PLT_MediaItemResource::PLT_MediaItemResource
 +---------------------------------------------------------------------*/
 PLT_MediaItemResource::PLT_MediaItemResource()
@@ -172,6 +228,7 @@ PLT_MediaObject::Reset()
     m_People.artists.Clear();    
     m_People.authors.Clear();
     m_People.directors.Clear();
+    m_People.publisher.Clear();
 
     m_Affiliation.album     = "";
     m_Affiliation.genres.Clear();
@@ -194,8 +251,15 @@ PLT_MediaObject::Reset()
     m_Recorded.program_title  = "";
     m_Recorded.series_title   = "";
     m_Recorded.episode_number = 0;
+    m_Recorded.episode_count = 0;
+    m_Recorded.episode_season = 0;
 
     m_Resources.Clear();
+
+    m_XbmcInfo.date_added = "";
+    m_XbmcInfo.rating = 0.0f;
+    m_XbmcInfo.votes = "";
+    m_XbmcInfo.artwork.Clear();
 
     m_Didl = "";
 
@@ -257,6 +321,20 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
     // director
     if (mask & PLT_FILTER_MASK_DIRECTOR) {
         m_People.directors.ToDidl(didl, "director");
+    }
+
+    // publisher
+    if (mask & PLT_FILTER_MASK_PUBLISHER) {
+        // Add unknown publisher
+        if (m_People.publisher.GetItemCount() == 0)
+            m_People.publisher.Add("Unknown");
+
+        for (NPT_List<NPT_String>::Iterator it =
+             m_People.publisher.GetFirstItem(); it; ++it) {
+            didl += "<dc:publisher>";
+            PLT_Didl::AppendXmlEscape(didl, (*it));
+            didl += "</dc:publisher>";
+        }
     }
 
     // album
@@ -374,6 +452,20 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
         didl += "</upnp:episodeNumber>";
     }
 
+    // episode count
+    if ((mask & PLT_FILTER_MASK_EPISODE_COUNT) && m_Recorded.episode_count > 0) {
+        didl += "<upnp:episodeCount>";
+        didl += NPT_String::FromInteger(m_Recorded.episode_count);
+        didl += "</upnp:episodeCount>";
+    }
+
+    // episode count
+    if ((mask & PLT_FILTER_MASK_EPISODE_SEASON)) {
+        didl += "<upnp:episodeSeason>";
+        didl += NPT_String::FromInteger(m_Recorded.episode_season);
+        didl += "</upnp:episodeSeason>";
+    }
+
 	if ((mask & PLT_FILTER_MASK_TOC) && !m_MiscInfo.toc.IsEmpty()) {
         didl += "<upnp:toc>";
 		PLT_Didl::AppendXmlEscape(didl, m_MiscInfo.toc);
@@ -439,6 +531,32 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
             PLT_Didl::AppendXmlEscape(didl, m_Resources[i].m_Uri);
             didl += "</res>";
         }
+    }
+
+    // xbmc dateadded
+    if ((mask & PLT_FILTER_MASK_XBMC_DATEADDED) && !m_XbmcInfo.date_added.IsEmpty()) {
+        didl += "<xbmc:dateadded>";
+        PLT_Didl::AppendXmlEscape(didl, m_XbmcInfo.date_added);
+        didl += "</xbmc:dateadded>";
+    } 
+
+    // xbmc rating
+    if (mask & PLT_FILTER_MASK_XBMC_RATING) {
+        didl += "<xbmc:rating>";
+        didl += NPT_String::Format("%.1f", m_XbmcInfo.rating);
+        didl += "</xbmc:rating>";
+    }
+
+    // xbmc votes
+    if (mask & PLT_FILTER_MASK_XBMC_VOTES && !m_XbmcInfo.votes.IsEmpty()) {
+        didl += "<xbmc:votes>";
+        PLT_Didl::AppendXmlEscape(didl, m_XbmcInfo.votes);
+        didl += "</xbmc:votes>";
+    }
+
+    // xbmc artwork
+    if (mask & PLT_FILTER_MASK_XBMC_ARTWORK) {
+        m_XbmcInfo.artwork.ToDidl(didl, "artwork");
     }
 
     // class is required
@@ -517,6 +635,14 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     PLT_XmlHelper::GetChildren(entry, children, "director", didl_namespace_upnp);
     m_People.directors.FromDidl(children);
 
+    children.Clear();
+    PLT_XmlHelper::GetChildren(entry, children, "publisher", didl_namespace_dc);
+    for (NPT_Cardinal i=0; i<children.GetItemCount(); i++) {
+        if (children[i]->GetText()) {
+          m_People.publisher.Add(*children[i]->GetText());
+        }
+    }
+
     PLT_XmlHelper::GetChildText(entry, "album", m_Affiliation.album, didl_namespace_upnp, 256);
     PLT_XmlHelper::GetChildText(entry, "programTitle", m_Recorded.program_title, didl_namespace_upnp);
     PLT_XmlHelper::GetChildText(entry, "seriesTitle", m_Recorded.series_title, didl_namespace_upnp);
@@ -524,6 +650,12 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     NPT_UInt32 value;
     if (NPT_FAILED(str.ToInteger(value))) value = 0;
     m_Recorded.episode_number = value;
+    PLT_XmlHelper::GetChildText(entry, "episodeCount", str, didl_namespace_upnp);
+    if (NPT_FAILED(str.ToInteger(value))) value = 0;
+    m_Recorded.episode_count = value;
+    PLT_XmlHelper::GetChildText(entry, "episodeSeason", str, didl_namespace_upnp);
+    if (NPT_FAILED(str.ToInteger(value))) value = -1;
+    m_Recorded.episode_season = value;
 
     children.Clear();
     PLT_XmlHelper::GetChildren(entry, children, "genre", didl_namespace_upnp);
@@ -626,6 +758,28 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
         }    
         m_Resources.Add(resource);
     }
+
+    PLT_XmlHelper::GetChildText(entry, "dateadded", m_XbmcInfo.date_added, didl_namespace_xbmc, 256);
+    // parse date and make sure it's valid
+    for (int format=0; format<=NPT_DateTime::FORMAT_RFC_1036; format++) {
+        NPT_DateTime date;
+        if (NPT_SUCCEEDED(date.FromString(m_XbmcInfo.date_added, (NPT_DateTime::Format)format))) {
+            parsed_date = date.ToString((NPT_DateTime::Format)format);
+            break;
+        }
+    }
+    m_XbmcInfo.date_added = parsed_date;
+
+    PLT_XmlHelper::GetChildText(entry, "rating", str, didl_namespace_xbmc);
+    NPT_Float floatValue;
+    if (NPT_FAILED(str.ToFloat(floatValue))) floatValue = 0.0;
+    m_XbmcInfo.rating = floatValue;
+
+    PLT_XmlHelper::GetChildText(entry, "votes", m_XbmcInfo.votes, didl_namespace_xbmc, 256);
+
+    children.Clear();
+    PLT_XmlHelper::GetChildren(entry, children, "artwork", didl_namespace_xbmc);
+    m_XbmcInfo.artwork.FromDidl(children);
 
     // re serialize the entry didl as a we might need to pass it to a renderer
     // we may have modified the tree to "fix" issues, so as not to break a renderer

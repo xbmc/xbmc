@@ -92,7 +92,7 @@ typedef struct {
     PLT_PersonRoles authors;
     NPT_String      producer; //TODO: can be multiple
     PLT_PersonRoles directors;
-    NPT_String      publisher; //TODO: can be multiple
+    NPT_List<NPT_String> publisher;
     NPT_String      contributor; // should match m_Creator (dc:creator) //TODO: can be multiple
 } PLT_PeopleInfo;
 
@@ -147,7 +147,29 @@ typedef struct {
     NPT_String program_title;
     NPT_String series_title;
     NPT_UInt32 episode_number;
+    NPT_UInt32 episode_count;
+    NPT_UInt32 episode_season;
 } PLT_RecordedInfo;
+
+typedef struct {
+    NPT_String type;
+    NPT_String url;
+} PLT_Artwork;
+
+class PLT_Artworks  : public NPT_List<PLT_Artwork>
+{
+public:
+    NPT_Result Add(const NPT_String& type, const NPT_String& url);
+    NPT_Result ToDidl(NPT_String& didl, const NPT_String& tag);
+    NPT_Result FromDidl(const NPT_Array<NPT_XmlElementNode*>& nodes);
+};
+
+typedef struct {
+  NPT_String date_added;
+  NPT_Float rating;
+  NPT_String votes;
+  PLT_Artworks artwork;
+} PLT_XbmcInfo;
 
 /*----------------------------------------------------------------------
 |   PLT_MediaItemResource
@@ -226,6 +248,9 @@ public:
 
     /* resources related */
     NPT_Array<PLT_MediaItemResource> m_Resources;
+
+    /* XBMC specific */
+    PLT_XbmcInfo m_XbmcInfo;
 
     /* original DIDL for Control Points to pass to a renderer when invoking SetAVTransportURI */
     NPT_String m_Didl;    
