@@ -246,7 +246,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
   int result = 0;
 
   // make sure the sent frame is clean
-  memset(&audioframe, 0, sizeof(DVDAudioFrame));
+  audioframe.nb_frames = 0;
 
   while (!m_bStop)
   {
@@ -280,7 +280,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
       // get decoded data and the size of it
       m_pAudioCodec->GetData(audioframe);
 
-      if (audioframe.size == 0)
+      if (audioframe.nb_frames == 0)
         continue;
 
       if (audioframe.pts == DVD_NOPTS_VALUE)
@@ -532,7 +532,7 @@ void CDVDPlayerAudio::Process()
       break;
     }
 
-    if( audioframe.size == 0 )
+    if( audioframe.nb_frames == 0 )
       continue;
 
     packetadded = true;
@@ -556,12 +556,16 @@ void CDVDPlayerAudio::Process()
 
     // Zero out the frame data if we are supposed to silence the audio
     if (m_silence)
-      memset(audioframe.data, 0, audioframe.size);
+    {
+      int size = audioframe.nb_frames * audioframe.framesize * audioframe.channel_count / audioframe.planes;
+      for (int i=0; i<audioframe.planes; i++)
+        memset(audioframe.data[i], 0, size);
+    }
 
     if(result & DECODE_FLAG_DROP)
     {
       // keep output times in sync
-     m_dvdAudio.SetPlayingPts(m_audioClock);
+      m_dvdAudio.SetPlayingPts(m_audioClock);
     }
     else
     {
