@@ -5451,7 +5451,7 @@ msgstr "Добавить в \"Избранное\""
 
 msgctxt "#14077"
 msgid "Remove from favourites"
-msgstr "Удалить из \"\"Избранного\""
+msgstr "Удалить из \"Избранного\""
 
 msgctxt "#14078"
 msgid "Colours"
