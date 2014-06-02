@@ -9,41 +9,15 @@ SET DEPS_DIR=..\BuildDependencies
 SET TMP_DIR=%DEPS_DIR%\tmp
 
 SET LIBNAME=xbmc-pvr-addons
-SET VERSION=2955e1dd62f4047b2782cb927f7671ae209f20d8
+SET VERSION=1db308ba7db2aa5ecea22cb032ec20e04e4e6730
 SET SOURCE=%LIBNAME%
 SET GIT_URL=git://github.com/opdenkamp/%LIBNAME%.git
 SET SOURCE_DIR=%TMP_DIR%\%SOURCE%
 SET BUILT_ADDONS_DIR=%SOURCE_DIR%\addons
 
-rem ***********************************************************************
-rem workaround to use vs2010 for pvr addons until they are switch to vs2013
-REM look for MSBuild.exe in .NET Framework 4.x
-FOR /F "tokens=3* delims= " %%A IN ('REG QUERY HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\4.0 /v MSBuildToolsPath') DO SET OLDNET=%%AMSBuild.exe
-IF NOT EXIST "!OLDNET!" (
-    FOR /F "tokens=3* delims= " %%A IN ('REG QUERY HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\4.0 /v MSBuildToolsPath') DO SET OLDNET=%%AMSBuild.exe
-)
-
-IF EXIST "!OLDNET!" (
-    set msbuildemitsolution=1
-    set OPTS_EXE="..\VS2010Express\XBMC for Windows.sln" /t:Build /p:Configuration="%buildconfig%"
-    set CLEAN_EXE="..\VS2010Express\XBMC for Windows.sln" /t:Clean /p:Configuration="%buildconfig%"
-) ELSE (
-    IF EXIST "%VS100COMNTOOLS%\..\IDE\devenv.com" (
-        set OLDNET="%VS100COMNTOOLS%\..\IDE\devenv.com"
-    ) ELSE IF EXIST "%VS100COMNTOOLS%\..\IDE\devenv.exe" (
-        set OLDNET="%VS100COMNTOOLS%\..\IDE\devenv.exe"
-    ) ELSE IF "%VS100COMNTOOLS%"=="" (
-        set OLDNET="%ProgramFiles%\Microsoft Visual Studio 10.0\Common7\IDE\VCExpress.exe"
-    ) ELSE IF EXIST "%VS100COMNTOOLS%\..\IDE\VCExpress.exe" (
-        set OLDNET="%VS100COMNTOOLS%\..\IDE\VCExpress.exe"
-    )
-)
-rem *************************************************************************
-
 REM check if MSBuild.exe is used because it requires different command line switches
 IF "%msbuildemitsolution%" == "1" (
-  rem set OPTS_EXE=%SOURCE_DIR%\project\VS2010Express\xbmc-pvr-addons.sln /t:Build /p:Configuration="Release" /property:VCTargetsPath="%MSBUILDROOT%Microsoft.Cpp\v4.0\V120"
-  set OPTS_EXE=%SOURCE_DIR%\project\VS2010Express\xbmc-pvr-addons.sln /t:Build /p:Configuration="Release"
+  set OPTS_EXE=%SOURCE_DIR%\project\VS2010Express\xbmc-pvr-addons.sln /t:Build /p:Configuration="Release" /property:VCTargetsPath="%MSBUILDROOT%Microsoft.Cpp\v4.0\V120\\"
 ) ELSE (
   set OPTS_EXE=%SOURCE_DIR%\project\VS2010Express\xbmc-pvr-addons.sln /build Release
 )
@@ -88,8 +62,7 @@ CD "%CUR_DIR%"
 
 REM build xbmc-pvr-addons.sln
 ECHO Building PVR addons
-rem "%MSBUILDROOT%12.0\bin\MSBuild.exe" %OPTS_EXE%
-%OLDNET% %OPTS_EXE%
+"%MSBUILDROOT%12.0\bin\MSBuild.exe" %OPTS_EXE%
 
 IF %errorlevel%==1 (
   goto fail
