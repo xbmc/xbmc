@@ -41,6 +41,16 @@ void   AEDelayStatus::SetDelay(double d)
   tick  = CurrentHostCounter();
 }
 
+double AEDelayStatus::GetDelay()
+{
+  double d = delay;
+  d -= (double)(CurrentHostCounter() - tick) / CurrentHostFrequency();
+  if(d < 0)
+    return 0.0;
+  else
+    return d;
+}
+
 CAEChannelInfo CAEUtil::GuessChLayout(const unsigned int channels)
 {
   CLog::Log(LOGWARNING, "CAEUtil::GuessChLayout - "

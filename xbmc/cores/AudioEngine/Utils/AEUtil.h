@@ -65,6 +65,7 @@ struct AEDelayStatus
   {}
 
   void   SetDelay(double d);
+  double GetDelay();
 
   double       delay;   /*!< delay in sink currently */
   int64_t      tick;    /*!< timestamp when delay was calculated */

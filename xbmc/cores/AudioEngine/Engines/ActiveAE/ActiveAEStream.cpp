@@ -280,7 +280,9 @@ unsigned int CActiveAEStream::AddData(void *data, unsigned int size)
 
 double CActiveAEStream::GetDelay()
 {
-  return AE.GetDelay(this);
+  AEDelayStatus status;
+  AE.GetDelay(status, this);
+  return status.GetDelay();
 }
 
 bool CActiveAEStream::IsBuffering()
