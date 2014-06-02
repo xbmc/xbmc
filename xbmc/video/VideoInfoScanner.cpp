@@ -263,7 +263,7 @@ namespace VIDEO
         m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(str), info->Name().c_str()));
       }
 
-      CStdString fastHash = GetFastHash(strDirectory);
+      CStdString fastHash = GetFastHash(strDirectory, regexps);
       if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.empty() && fastHash == dbHash)
       { // fast hashes match - no need to process anything
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change (fasthash)", CURL::GetRedacted(strDirectory).c_str());
@@ -297,7 +297,7 @@ namespace VIDEO
             OnDirectoryScanned(strDirectory);
         }
         // update the hash to a fast hash if needed
-        if (CanFastHash(items) && !fastHash.empty())
+        if (CanFastHash(items, regexps) && !fastHash.empty())
           hash = fastHash;
       }
     }
@@ -1664,18 +1664,23 @@ namespace VIDEO
     return count;
   }
 
-  bool CVideoInfoScanner::CanFastHash(const CFileItemList &items) const
+  bool CVideoInfoScanner::CanFastHash(const CFileItemList &items, const CStdStringArray &excludes) const
   {
-    // TODO: Probably should account for excluded folders here (eg samples), though that then
-    //       introduces possible problems if the user then changes the exclude regexps and
-    //       expects excluded folders that are inside a fast-hashed folder to then be picked
-    //       up. The chances that the user has a folder which contains only excluded folders
-    //       where some of those folders should be scanned recursively is pretty small.
-    return items.GetFolderCount() == 0;
+    for (int i = 0; i < items.Size(); ++i)
+    {
+      if (items[i]->m_bIsFolder && !CUtil::ExcludeFileOrFolder(items[i]->GetPath(), excludes))
+        return false;
+    }
+    return true;
   }
 
-  CStdString CVideoInfoScanner::GetFastHash(const CStdString &directory) const
+  CStdString CVideoInfoScanner::GetFastHash(const CStdString &directory, const CStdStringArray &excludes) const
   {
+    XBMC::XBMC_MD5 md5state;
+
+    if (excludes.size())
+      md5state.append(StringUtils::JoinString(excludes, "|"));
+
     struct __stat64 buffer;
     if (XFILE::CFile::Stat(directory, &buffer) == 0)
     {
@@ -1683,7 +1688,12 @@ namespace VIDEO
       if (!time)
         time = buffer.st_ctime;
       if (time)
-        return StringUtils::Format("fast%"PRId64, time);
+      {
+        md5state.append((unsigned char *)&time, sizeof(time));
+        CStdString pathHash;
+        md5state.getDigest(pathHash);
+        return pathHash;
+      }
     }
     return "";
   }
