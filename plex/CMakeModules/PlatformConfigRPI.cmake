@@ -35,6 +35,9 @@ else()
 endif()
 
 
+if(ENABLE_PYTHON)
+   list(APPEND LINK_PKG Python)
+endif(ENABLE_PYTHON)
 
 
 #        --disable-optical-drive 
@@ -116,6 +119,10 @@ set(USE_TEXTUREPACKER_NATIVE_ROOT 0)
 
 
 
+#### Use breakpad
+OPTION(ENABLE_DUMP_SYMBOLS "Create breakpad symbols" ON)
+
+
 set(BUILD_DVDCSS 0)
 set(SKIP_CONFIG_DVDCSS 1)
 set(DVDREAD_CFLAGS "-D_XBMC -UHAVE_DVDCSS_DVDCSS_H")
@@ -126,6 +133,7 @@ add_definitions(
     -D_ARMEL 
     -DTARGET_RASPBERRY_PI
     -DTARGET_RPI
+	-DTARGET_LINUX
     -DHAS_GLES=2
     -DHAVE_LIBGLESV2
     -DHAVE_OMXLIB
@@ -143,22 +151,35 @@ add_definitions(
     -DNDEBUG=1 
     -DDEBUG
     -DUSE_RAPIDXML
+    -DOPENELEC
 )
 
-#include_directories(
-#    /opt/vc/include/ 
-#    /opt/vc/include/EGL 
-#   # /opt/vc/include/GLES 
-#    /opt/vc/include/GLES2 
-#    /opt/vc/include/KHR 
-#    /opt/vc/include/VG 
-#    /opt/vc/include/WF 
-#    /opt/vc/include/vc/include  
-#)
+## remove annying useless warnings
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-reorder")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-sign-compare")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-function")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-but-set-variable")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-narrowing")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-format")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-address")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-strict-aliasing")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-sequence-point")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-maybe-uninitialized")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-parentheses")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-array-bounds")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-value")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-switch")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-pointer-arith")
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-maybe-uninitialized")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-but-set-variable")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-array-bounds")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-function")
 
-
-
+#set(CMAKE_EXE_LINKER_FLAGS_DEBUG  "${CMAKE_EXE_FLAGS} -Wno-clobbered")
 
 plex_find_library(GLESv2 0  0 system/usr/lib 1)
 plex_find_library(EGL 0 0  system/usr/lib 1)

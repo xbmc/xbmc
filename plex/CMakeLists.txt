@@ -21,12 +21,14 @@ include_directories(
 )
 
 if(ENABLE_AUTOUPDATE)
-  include(ExternalProject)
-  ExternalProject_Add(Update-Installer
-    CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}"
-    SOURCE_DIR ${plexdir}/Update-Installer
-    INSTALL_DIR "${CMAKE_BINARY_DIR}"
-  )
+  if (NOT TARGET_RPI)
+    include(ExternalProject)
+    ExternalProject_Add(Update-Installer
+      CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}"
+      SOURCE_DIR ${plexdir}/Update-Installer
+      INSTALL_DIR "${CMAKE_BINARY_DIR}"
+    )
+  endif(NOT TARGET_RPI)
   if(TARGET_OSX)
     install(FILES ${CMAKE_BINARY_DIR}/update_installer/updater
             PERMISSIONS WORLD_READ WORLD_EXECUTE OWNER_WRITE OWNER_EXECUTE OWNER_READ GROUP_EXECUTE GROUP_READ
@@ -151,6 +153,7 @@ set_target_properties(${PLEX_TARGET_NAME} PROPERTIES OUTPUT_NAME ${EXECUTABLE_NA
 set_target_properties(${PLEX_TARGET_NAME} PROPERTIES PDB_NAME "Plex Home Theater")
 
 if(ENABLE_DUMP_SYMBOLS)
+  message(STATUS "Generating breakpad symbols")
   GENERATE_BREAKPAD_SYMBOLS(${PLEX_TARGET_NAME})
   add_custom_target(symbols DEPENDS ${PLEX_TARGET_NAME}_symbols)
 endif(ENABLE_DUMP_SYMBOLS)
@@ -174,7 +177,7 @@ endif(ENABLE_PYTHON)
 # find all image files in the skin
 file(GLOB MEDIA_IMAGES_PLEX_SKIN ${root}/addons/skin.plex/Media/*.png ${root}/addons/skin.plex/Media/*.gif)
 
-if(COMPRESS_TEXTURES)
+if(COMPRESS_TEXTURES AND NOT TARGET_RPI)
   # Build the packed textures
   if(WIN32)
     set(WORKDIR ${root}/tools/TexturePacker)
@@ -222,8 +225,17 @@ else(TARGET_COMMON_DARWIN)
   install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
 endif(TARGET_COMMON_DARWIN)
 
+if(NOT DEFINED PLEX_SPLASH)
+  if(TARGET_RPI)
+    set(PLEX_SPLASH Splash-RPI.png)
+  else(TARGET_RPI)
+    set(PLEX_SPLASH Splash.png)
+  endif(TARGET_RPI)
+endif(NOT DEFINED PLEX_SPLASH)
+
+
 install(DIRECTORY ${root}/media ${root}/sounds ${root}/language DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
-        PATTERN Splash.png EXCLUDE
+        PATTERN ${PLEX_SPLASH} EXCLUDE
         PATTERN Credits.html EXCLUDE)
 
 install(DIRECTORY ${root}/system DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
@@ -245,15 +257,7 @@ install(DIRECTORY ${root}/addons DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
         PATTERN xbmc.python EXCLUDE
 )
 
-if(NOT DEFINED PLEX_SPLASH)
-  if(TARGET_RPI)
-    set(PLEX_SPLASH Splash-RPI.png)
-  else(TARGET_RPI)
-    set(PLEX_SPLASH Splash.png)
-  endif(TARGET_RPI)
-endif(NOT DEFINED PLEX_SPLASH)
-
-install(FILES ${plexdir}/Resources/${PLEX_SPLASH} DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME RENAME Splash.png)
+install(FILES ${plexdir}/Resources/${PLEX_SPLASH} DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME RENAME ${PLEX_SPLASH})
 
 install(DIRECTORY ${plexdir}/addons DESTINATION DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
 install(FILES ${plexdir}/Resources/plex-icon-120.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
