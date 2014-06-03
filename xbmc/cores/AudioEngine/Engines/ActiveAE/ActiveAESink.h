@@ -142,6 +142,7 @@ protected:
   AEAudioFormat m_sinkFormat, m_requestedFormat;
   CEngineStats *m_stats;
   float m_volume;
+  int m_sinkLatency;
 };
 
 }

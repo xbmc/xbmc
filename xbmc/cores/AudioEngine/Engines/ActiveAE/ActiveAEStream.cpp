@@ -192,59 +192,48 @@ unsigned int CActiveAEStream::GetSpace()
   return m_streamFreeBuffers * m_streamSpace;
 }
 
-unsigned int CActiveAEStream::AddData(void *data, unsigned int size)
+unsigned int CActiveAEStream::AddData(uint8_t* const *data, unsigned int offset, unsigned int frames, double pts)
 {
   Message *msg;
-  unsigned int copied = 0;
-  unsigned int bytesToCopy = size;
-  uint8_t *buf = (uint8_t*)data;
+  int copied = 0;
+  int sourceFrames = frames;
+  uint8_t* const *buf = data;
 
-  while(copied < size)
+  while(copied < frames)
   {
-    buf = ((uint8_t*)data) + copied;
-    bytesToCopy = size - copied;
+    sourceFrames = frames - copied;
 
     if (m_currentBuffer)
     {
-      // fill leftover buffer and copy it first
-      if (m_leftoverBytes && bytesToCopy >= (m_format.m_frameSize - m_leftoverBytes))
-      {
-        int fillbytes = m_format.m_frameSize - m_leftoverBytes;
-        memcpy(m_leftoverBuffer+m_leftoverBytes, buf, fillbytes);
-        copied += fillbytes;
-        // leftover buffer will be copied on next cycle
-        buf = m_leftoverBuffer;
-        bytesToCopy = m_format.m_frameSize;
-        m_leftoverBytes = 0;
-      }
-
       int start = m_currentBuffer->pkt->nb_samples *
                   m_currentBuffer->pkt->bytes_per_sample *
                   m_currentBuffer->pkt->config.channels /
                   m_currentBuffer->pkt->planes;
 
-      int freeSamples = m_currentBuffer->pkt->max_nb_samples - m_currentBuffer->pkt->nb_samples;
-      int availableSamples = bytesToCopy / m_format.m_frameSize;
+      int freeSpace = m_currentBuffer->pkt->max_nb_samples - m_currentBuffer->pkt->nb_samples;
+      int minFrames = std::min(freeSpace, sourceFrames);
+      int planes = m_currentBuffer->pkt->planes;
+      int bufOffset = (offset + copied)*m_format.m_frameSize/planes;
 
-      // if we don't have a full frame, copy to leftover buffer
-      if (!availableSamples && bytesToCopy)
+      if (!copied)
       {
-        memcpy(m_leftoverBuffer+m_leftoverBytes, buf, bytesToCopy);
-        m_leftoverBytes = bytesToCopy;
-        copied += bytesToCopy;
+        m_currentBuffer->timestamp = pts;
+        m_currentBuffer->clockId = m_clockId;
+        m_currentBuffer->pkt_start_offset = m_currentBuffer->pkt->nb_samples;
       }
 
-      int samples = std::min(freeSamples, availableSamples);
-      int bytes = samples * m_format.m_frameSize;
+      for (int i=0; i<planes; i++)
+      {
+        memcpy(m_currentBuffer->pkt->data[i]+start, buf[i]+bufOffset, minFrames*m_format.m_frameSize/planes);
+      }
+      copied += minFrames;
 
-      memcpy(m_currentBuffer->pkt->data[0] + start, buf, bytes);
       {
         CSingleLock lock(*m_statsLock);
-        m_currentBuffer->pkt->nb_samples += samples;
-        m_bufferedTime += (double)samples / m_currentBuffer->pkt->config.sample_rate;
+        m_currentBuffer->pkt->nb_samples += minFrames;
+        m_bufferedTime += (double)minFrames / m_currentBuffer->pkt->config.sample_rate;
       }
-      if (buf != m_leftoverBuffer)
-        copied += bytes;
+
       if (m_currentBuffer->pkt->nb_samples == m_currentBuffer->pkt->max_nb_samples)
       {
         MsgStreamSample msgData;
@@ -261,6 +250,7 @@ unsigned int CActiveAEStream::AddData(void *data, unsigned int size)
       if (msg->signal == CActiveAEDataProtocol::STREAMBUFFER)
       {
         m_currentBuffer = *((CSampleBuffer**)msg->data);
+        m_currentBuffer->timestamp = 0;
         msg->Release();
         DecFreeBuffers();
         continue;
@@ -283,6 +273,16 @@ double CActiveAEStream::GetDelay()
   AEDelayStatus status;
   AE.GetDelay(status, this);
   return status.GetDelay();
+}
+
+int64_t CActiveAEStream::GetPlayingPTS()
+{
+  return AE.GetPlayingPTS();
+}
+
+void CActiveAEStream::Discontinuity()
+{
+  m_clockId = AE.Discontinuity();
 }
 
 bool CActiveAEStream::IsBuffering()
