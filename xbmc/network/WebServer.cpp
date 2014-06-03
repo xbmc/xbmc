@@ -32,6 +32,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include <boost/make_shared.hpp>
 
 //#define WEBSERVER_DEBUG
 
@@ -51,7 +52,7 @@ using namespace std;
 using namespace JSONRPC;
 
 typedef struct {
-  CFile *file;
+  boost::shared_ptr<CFile> file;
   HttpRanges ranges;
   size_t rangeCount;
   int64_t rangesLength;
@@ -383,7 +384,7 @@ int CWebServer::CreateRedirect(struct MHD_Connection *connection, const string &
 
 int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, const string &strURL, HTTPMethod methodType, struct MHD_Response *&response, int &responseCode)
 {
-  CFile *file = new CFile();
+  boost::shared_ptr<CFile> file = boost::make_shared<CFile>();
 
 #ifdef WEBSERVER_DEBUG
   CLog::Log(LOGDEBUG, "webserver  [IN] %s", strURL.c_str());
@@ -403,7 +404,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
 
     // try to get the file's last modified date
     CDateTime lastModified;
-    if (!GetLastModifiedDateTime(file, lastModified))
+    if (!GetLastModifiedDateTime(file.get(), lastModified))
       lastModified.Reset();
 
     // get the MIME type for the Content-Type header
@@ -416,7 +417,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
       int64_t firstPosition = 0;
       int64_t lastPosition = fileLength - 1;
       uint64_t totalLength = 0;
-      HttpFileDownloadContext *context = new HttpFileDownloadContext();
+      std::auto_ptr<HttpFileDownloadContext> context(new HttpFileDownloadContext());
       context->file = file;
       context->rangesLength = fileLength;
       context->contentType = mimeType;
@@ -436,6 +437,9 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
           {
             getData = false;
             response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
+            if (response == NULL)
+              return MHD_NO;
+
             responseCode = MHD_HTTP_NOT_MODIFIED;
           }
         }
@@ -523,16 +527,12 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
         // create the response object
         response = MHD_create_response_from_callback(totalLength,
                                                      2048,
-                                                     &CWebServer::ContentReaderCallback, context,
+                                                     &CWebServer::ContentReaderCallback, context.get(),
                                                      &CWebServer::ContentReaderFreeCallback);
-      }
-
-      if (response == NULL)
-      {
-        file->Close();
-        delete file;
-        delete context;
-        return MHD_NO;
+        if (response == NULL)
+          return MHD_NO;
+        
+        context.release(); // ownership was passed to mhd
       }
 
       // add Content-Range header
@@ -547,11 +547,8 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
 
       response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
       if (response == NULL)
-      {
-        file->Close();
-        delete file;
         return MHD_NO;
-      }
+
       AddHeader(response, "Content-Length", contentLength);
     }
 
@@ -575,17 +572,9 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
     else
       expiryTime += CDateTimeSpan(365, 0, 0, 0);
     AddHeader(response, "Expires", expiryTime.GetAsRFC1123DateTime());
-
-    // only close the CFile instance if libmicrohttpd doesn't have to grab the data of the file
-    if (!getData)
-    {
-      file->Close();
-      delete file;
-    }
   }
   else
   {
-    delete file;
     CLog::Log(LOGERROR, "WebServer: Failed to open %s", strURL.c_str());
     return SendErrorResponse(connection, MHD_HTTP_NOT_FOUND, methodType);
   }
@@ -738,20 +727,11 @@ int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
 void CWebServer::ContentReaderFreeCallback(void *cls)
 {
   HttpFileDownloadContext *context = (HttpFileDownloadContext *)cls;
-  if (context == NULL)
-    return;
-
-  if (context->file != NULL)
-  {
-    context->file->Close();
-    delete context->file;
-    context->file = NULL;
-  }
+  delete context;
 
 #ifdef WEBSERVER_DEBUG
   CLog::Log(LOGDEBUG, "webserver [OUT] done");
 #endif
-  delete context;
 }
 
 struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
