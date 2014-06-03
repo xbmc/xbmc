@@ -19,7 +19,7 @@ all: $(SOURCE)/libxbmc.so
 
 
 $(SOURCE)/libxbmc.so:
-	cd $(SOURCE); ./bootstrap
+	cd $(SOURCE); BOOTSTRAP_FROM_DEPENDS=yes ./bootstrap
 	cd $(SOURCE); $(CONFIGURE)
 
 ../../Makefile.include:
