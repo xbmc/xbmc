@@ -93,7 +93,7 @@ class CAAudioUnitSink
     bool         mute(bool mute);
     bool         pause();
     void         drain();
-    double       getDelay();
+    void         getDelay(AEDelayStatus& status);
     double       cacheSize();
     unsigned int write(uint8_t *data, unsigned int byte_count);
     unsigned int chunkSize() { return m_bufferDuration * m_sampleRate; }
@@ -136,6 +136,10 @@ class CAAudioUnitSink
     bool                m_playing;
     bool                m_playing_saved;
     volatile bool       m_started;
+
+    CAESpinSection      m_render_section;
+    volatile int64_t    m_render_timestamp;
+    volatile uint32_t   m_render_frames;
 };
 
 CAAudioUnitSink::CAAudioUnitSink()
@@ -144,6 +148,8 @@ CAAudioUnitSink::CAAudioUnitSink()
 , m_playing(false)
 , m_playing_saved(false)
 , m_started(false)
+, m_render_timestamp(0)
+, m_render_frames(0)
 {
 }
 
@@ -211,13 +217,18 @@ bool CAAudioUnitSink::pause()
   return m_playing;
 }
 
-double CAAudioUnitSink::getDelay()
+void CAAudioUnitSink::getDelay(AEDelayStatus& status)
 {
-  double delay = (double)m_buffer->GetReadSize() / m_frameSize;
-  delay /= m_sampleRate;
-  delay += m_bufferDuration + m_outputLatency;
+  CAESpinLock lock(m_render_section);
+  do
+  {
+    status.delay  = (double)m_buffer->GetReadSize() / m_frameSize;
+    status.delay += (double)m_render_frames;
+    status.tick   = m_render_timestamp;
+  } while(lock.retry());
 
-  return delay;
+  status.delay /= m_sampleRate;
+  status.delay += m_bufferDuration + m_outputLatency;
 }
 
 double CAAudioUnitSink::cacheSize()
@@ -502,6 +513,7 @@ OSStatus CAAudioUnitSink::renderCallback(void *inRefCon, AudioUnitRenderActionFl
 {
   CAAudioUnitSink *sink = (CAAudioUnitSink*)inRefCon;
 
+  sink->m_render_section.enter();
   sink->m_started = true;
 
   for (unsigned int i = 0; i < ioData->mNumberBuffers; i++)
@@ -515,6 +527,10 @@ OSStatus CAAudioUnitSink::renderCallback(void *inRefCon, AudioUnitRenderActionFl
     if (bytes == 0)
       *ioActionFlags |= kAudioUnitRenderAction_OutputIsSilence;
   }
+
+  sink->m_render_timestamp = inTimeStamp->mHostTime;
+  sink->m_render_frames    = inNumberFrames;
+  sink->m_render_section.leave();
   // tell the sink we're good for more data
   condVar.notifyAll();
 
@@ -685,11 +701,12 @@ void CAESinkDARWINIOS::Deinitialize()
   m_audioSink = NULL;
 }
 
-double CAESinkDARWINIOS::GetDelay()
+void CAESinkDARWINIOS::GetDelay(AEDelayStatus& status)
 {
   if (m_audioSink)
-    return m_audioSink->getDelay();
-  return 0.0;
+    m_audioSink->getDelay(status);
+  else
+    status.SetDelay(0.0);
 }
 
 double CAESinkDARWINIOS::GetCacheTotal()
