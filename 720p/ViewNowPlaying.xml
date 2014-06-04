@@ -79,7 +79,8 @@
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
-			<posy>275</posy>
+			<posy>278</posy>
+			<posx>5</posx>
 			<width>500</width>
 			<textcolor>white</textcolor>
 			<font>Regular-24</font>
@@ -87,8 +88,8 @@
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
-			<posy>275</posy>
-			<posx>140r</posx>
+			<posy>278</posy>
+			<posx>138r</posx>
 			<width>100</width>
 			<textcolor>white</textcolor>
 			<font>Regular-24</font>
@@ -99,7 +100,7 @@
 	<include name="NextInfo">
 		<animation effect="fade" start="0" end="80" condition="true">Conditional</animation>
 		<control type="label">
-			<posy>38</posy>
+			<posy>48</posy>
 			<width>800</width>
 			<font>Bold-28</font>
 			<textcolor>white</textcolor>
@@ -108,7 +109,7 @@
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
-			<posy>80</posy>
+			<posy>90</posy>
 			<width>800</width>
 			<font>Regular-26</font>
 			<textcolor>greyLighter</textcolor>
@@ -117,7 +118,7 @@
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
-			<posy>120</posy>
+			<posy>130</posy>
 			<width>800</width>
 			<font>Regular-26</font>
 			<textcolor>greyLighter</textcolor>
@@ -128,7 +129,7 @@
 	</include>
 	<include name="CurrentInfoFlipped">
 		<control type="label">
-			<posy>5</posy>
+			<posy>10</posy>
 			<width>800</width>
 			<font>Bold-36</font>
 			<textcolor>white</textcolor>
@@ -137,7 +138,7 @@
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
-			<posy>53</posy>
+			<posy>58</posy>
 			<width>800</width>
 			<font>Regular-30</font>
 			<textcolor>greyLighter</textcolor>
@@ -146,7 +147,7 @@
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
-			<posy>100</posy>
+			<posy>105</posy>
 			<width>800</width>
 			<font>Regular-30</font>
 			<textcolor>greyLighter</textcolor>
@@ -155,8 +156,8 @@
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
-			<posy>275</posy>
-			<posx>-770</posx>
+			<posy>282</posy>
+			<posx>-780</posx>
 			<width>500</width>
 			<textcolor>white</textcolor>
 			<font>Regular-24</font>
@@ -164,7 +165,8 @@
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
-			<posy>275</posy>
+			<posy>282</posy>
+			<posx>-10</posx>
 			<width>500</width>
 			<textcolor>white</textcolor>
 			<font>Regular-24</font>
@@ -176,7 +178,7 @@
 	<include name="NextInfoFlipped">
 		<animation effect="fade" start="0" end="80" condition="true">Conditional</animation>
 		<control type="label">
-			<posy>38</posy>
+			<posy>33</posy>
 			<width>800</width>
 			<font>Bold-28</font>
 			<textcolor>white</textcolor>
@@ -184,7 +186,7 @@
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
-			<posy>80</posy>
+			<posy>77</posy>
 			<width>800</width>
 			<font>Regular-26</font>
 			<textcolor>greyLighter</textcolor>
@@ -192,7 +194,7 @@
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
-			<posy>120</posy>
+			<posy>117</posy>
 			<width>800</width>
 			<font>Regular-26</font>
 			<textcolor>greyLighter</textcolor>
@@ -555,33 +557,33 @@
 			<visible>!MusicPlayer.NowPlayingFlipped</visible>
 			<include>Flip</include>
 			<include>Fade</include>
-			<posx>40</posx>
-			<posy>20</posy>
+			<posx>36</posx>
+			<posy>36</posy>
 			<!-- 2 cover view -->
 			<control type="group">
 				<visible>MusicPlayer.HasNext</visible>
 				<control type="group">
-					<posy>-4</posy>
-					<posx>-4</posx>
+					<posy>-9</posy>
+					<posx>-9</posx>
 					<include>CurrentCover</include>
 				</control>
 				<control type="group">
 					<posy>25</posy>
-					<posx>430</posx>
+					<posx>432</posx>
 					<include>CurrentInfo</include>
 				</control>
 				<control type="progress">
-					<posx>540</posx>
+					<posx>545</posx>
 					<posy>292</posy>
 					<include>ProgressBar</include>
 				</control>
 				<control type="group">
-					<posx>956</posx>
-					<posy>396</posy>
+					<posx>960</posx>
+					<posy>400</posy>
 					<include>NextCover</include>
 				</control>
 				<control type="group">
-					<posx>940</posx>
+					<posx>934</posx>
 					<posy>500</posy>
 					<include>NextInfo</include>
 				</control>
@@ -613,8 +615,8 @@
 			<visible>MusicPlayer.NowPlayingFlipped</visible>
 			<include>Flip</include>
 			<include>Fade</include>
-			<posx>10</posx>
-			<posy>20</posy>
+			<posx>30</posx>
+			<posy>31</posy>
 			<!-- 2 cover view -->
 			<control type="group">
 				<visible>MusicPlayer.HasNext</visible>
@@ -629,8 +631,8 @@
 					<include>CurrentInfoFlipped</include>
 				</control>
 				<control type="progress">
-					<posx>130</posx>
-					<posy>292</posy>
+					<posx>120</posx>
+					<posy>297</posy>
 					<include>ProgressBar</include>
 				</control>
 				<control type="group">
@@ -685,8 +687,8 @@
 		<!-- osd -->
 		<control type="group">
 			<!-- move if flipped -->
-			<animation effect="slide" start="0,0" end="-440,0" time="1000" condition="MusicPlayer.NowPlayingFlipped">Conditional</animation>
-			<posy>350</posy>
+			<animation effect="slide" start="0,0" end="-430,0" time="1000" condition="MusicPlayer.NowPlayingFlipped">Conditional</animation>
+			<posy>366</posy>
 			<posx>500</posx>
 			<control type="image">
 				<posx>80</posx>
