@@ -417,9 +417,6 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVA.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVAHD.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodec.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
     </ClCompile>
@@ -622,6 +619,12 @@
       <Filter>cores\VideoRenderers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\WinRenderer.cpp">
+      <Filter>cores\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\DXVA.cpp">
+      <Filter>cores\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\DXVAHD.cpp">
       <Filter>cores\VideoRenderers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\ConvolutionKernels.cpp">
@@ -3184,9 +3187,6 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVA.h">
       <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVAHD.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlay.h">
       <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
     </ClInclude>
@@ -3494,6 +3494,12 @@
       <Filter>cores\VideoRenderers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\WinRenderer.h">
+      <Filter>cores\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\DXVA.h">
+      <Filter>cores\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\DXVAHD.h">
       <Filter>cores\VideoRenderers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\ConvolutionKernels.h">

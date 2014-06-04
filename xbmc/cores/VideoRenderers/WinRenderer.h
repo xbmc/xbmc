@@ -29,8 +29,8 @@
 #include "guilib/D3DResource.h"
 #include "RenderCapture.h"
 #include "settings/VideoSettings.h"
-#include "cores/dvdplayer/DVDCodecs/Video/DXVA.h"
-#include "cores/dvdplayer/DVDCodecs/Video/DXVAHD.h"
+#include "DXVA.h"
+#include "DXVAHD.h"
 #include "cores/VideoRenderers/RenderFlags.h"
 #include "cores/VideoRenderers/RenderFormats.h"
 
