@@ -23,6 +23,7 @@
 #include <string>
 
 #include "settings/lib/ISettingCallback.h"
+#include "settings/lib/ISettingsHandler.h"
 #include "settings/lib/ISubSettings.h"
 #include "settings/VideoSettings.h"
 #include "threads/CriticalSection.h"
@@ -38,7 +39,7 @@ typedef enum {
   WatchedModeWatched
 } WatchedMode;
 
-class CMediaSettings : public ISettingCallback, public ISubSettings
+class CMediaSettings : public ISettingCallback, public ISettingsHandler, public ISubSettings
 {
 public:
   static CMediaSettings& Get();
@@ -47,6 +48,7 @@ public:
   virtual bool Save(TiXmlNode *settings) const;
 
   virtual void OnSettingAction(const CSetting *setting);
+  virtual void OnSettingsLoaded();
 
   const CVideoSettings& GetDefaultVideoSettings() const { return m_defaultVideoSettings; }
   CVideoSettings& GetDefaultVideoSettings() { return m_defaultVideoSettings; }
@@ -73,14 +75,10 @@ public:
    */
   void CycleWatchedMode(const std::string &content);
 
-  bool DoesMusicPlaylistRepeat() const { return m_musicPlaylistRepeat; }
   void SetMusicPlaylistRepeat(bool repeats) { m_musicPlaylistRepeat = repeats; }
-  bool IsMusicPlaylistShuffled() const { return m_musicPlaylistShuffle; }
   void SetMusicPlaylistShuffled(bool shuffled) { m_musicPlaylistShuffle = shuffled; }
 
-  bool DoesVideoPlaylistRepeat() const { return m_videoPlaylistRepeat; }
   void SetVideoPlaylistRepeat(bool repeats) { m_videoPlaylistRepeat = repeats; }
-  bool IsVideoPlaylistShuffled() const { return m_videoPlaylistShuffle; }
   void SetVideoPlaylistShuffled(bool shuffled) { m_videoPlaylistShuffle = shuffled; }
 
   bool DoesVideoStartWindowed() const { return m_videoStartWindowed; }
