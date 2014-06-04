@@ -885,7 +885,7 @@ static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeSt
   void* pool = Cocoa_Create_AutoReleasePool();
 
   CVideoReferenceClock *VideoReferenceClock = reinterpret_cast<CVideoReferenceClock*>(displayLinkContext);
-  VideoReferenceClock->VblankHandler(inNow->hostTime, fps);
+  VideoReferenceClock->VblankHandler(inOutputTime->hostTime, fps);
 
   // Destroy the autorelease pool
   Cocoa_Destroy_AutoReleasePool(pool);
