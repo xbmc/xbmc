@@ -180,7 +180,9 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
     format.m_channelLayout = AE_CH_LAYOUT_2_0;
 
   // setup for a 50ms sink feed from SoftAE
-  if (format.m_dataFormat != AE_FMT_FLOAT && format.m_dataFormat != AE_FMT_S32LE)
+  if (format.m_dataFormat != AE_FMT_FLOATP && format.m_dataFormat != AE_FMT_FLOAT &&
+      format.m_dataFormat != AE_FMT_S32NE && format.m_dataFormat != AE_FMT_S32NEP && format.m_dataFormat != AE_FMT_S32LE &&
+      format.m_dataFormat != AE_FMT_S16NE && format.m_dataFormat != AE_FMT_S16NEP && format.m_dataFormat != AE_FMT_S16LE)
     format.m_dataFormat = AE_FMT_S16LE;
   unsigned int channels    = format.m_channelLayout.Count();
   unsigned int sample_size = CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3;
@@ -210,7 +212,13 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
   m_pcm_input.eEndian               = OMX_EndianLittle;
   m_pcm_input.bInterleaved          = OMX_TRUE;
   m_pcm_input.nBitPerSample         = sample_size * 8;
-  m_pcm_input.ePCMMode              = m_format.m_dataFormat == AE_FMT_FLOAT ? (OMX_AUDIO_PCMMODETYPE)0x8000 : OMX_AUDIO_PCMModeLinear;
+  // 0x8000 = float, 0x10000 = planar
+  uint32_t flags = 0;
+  if (m_format.m_dataFormat == AE_FMT_FLOAT || m_format.m_dataFormat == AE_FMT_FLOATP)
+   flags |= 0x8000;
+  if (AE_IS_PLANAR(m_format.m_dataFormat))
+   flags |= 0x10000;
+  m_pcm_input.ePCMMode              = flags == 0 ? OMX_AUDIO_PCMModeLinear : (OMX_AUDIO_PCMMODETYPE)flags;
   m_pcm_input.nChannels             = channels;
   m_pcm_input.nSamplingRate         = m_format.m_sampleRate;
 
@@ -306,13 +314,17 @@ double CAESinkPi::GetCacheTotal()
 
 unsigned int CAESinkPi::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
 {
-  uint8_t *buffer = data[0]+offset*m_format.m_frameSize;
-
   if (!m_Initialized || !frames)
     return frames;
 
   OMX_ERRORTYPE omx_err   = OMX_ErrorNone;
   OMX_BUFFERHEADERTYPE *omx_buffer = NULL;
+
+  unsigned int channels    = m_format.m_channelLayout.Count();
+  unsigned int sample_size = CAEUtil::DataFormatToBits(m_format.m_dataFormat) >> 3;
+  const int planes = AE_IS_PLANAR(m_format.m_dataFormat) ? channels : 1;
+  const int chans  = AE_IS_PLANAR(m_format.m_dataFormat) ? 1 : channels;
+  const int pitch  = chans * sample_size;
 
   AEDelayStatus status;
   GetDelay(status);
@@ -332,8 +344,13 @@ unsigned int CAESinkPi::AddPackets(uint8_t **data, unsigned int frames, unsigned
   assert(omx_buffer->nFilledLen <= omx_buffer->nAllocLen);
   omx_buffer->nTimeStamp = ToOMXTime(0);
   omx_buffer->nFlags = OMX_BUFFERFLAG_ENDOFFRAME;
-  memcpy(omx_buffer->pBuffer, buffer, omx_buffer->nFilledLen);
 
+  if (omx_buffer->nFilledLen)
+  {
+    int planesize = omx_buffer->nFilledLen / planes;
+    for (int i=0; i < planes; i++)
+      memcpy((uint8_t *)omx_buffer->pBuffer + i * planesize, data[i] + offset * pitch, planesize);
+  }
   omx_err = m_omx_render.EmptyThisBuffer(omx_buffer);
   if (omx_err != OMX_ErrorNone)
     CLog::Log(LOGERROR, "%s:%s frames=%d err=%x", CLASSNAME, __func__, frames, omx_err);
@@ -370,8 +387,13 @@ void CAESinkPi::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   for (unsigned int i=0; i<sizeof PassthroughSampleRates/sizeof *PassthroughSampleRates; i++)
     m_info.m_sampleRates.push_back(PassthroughSampleRates[i]);
   m_info.m_dataFormats.push_back(AE_FMT_FLOAT);
+  m_info.m_dataFormats.push_back(AE_FMT_S32NE);
+  m_info.m_dataFormats.push_back(AE_FMT_S16NE);
   m_info.m_dataFormats.push_back(AE_FMT_S32LE);
   m_info.m_dataFormats.push_back(AE_FMT_S16LE);
+  m_info.m_dataFormats.push_back(AE_FMT_FLOATP);
+  m_info.m_dataFormats.push_back(AE_FMT_S32NEP);
+  m_info.m_dataFormats.push_back(AE_FMT_S16NEP);
   m_info.m_dataFormats.push_back(AE_FMT_AC3);
   m_info.m_dataFormats.push_back(AE_FMT_DTS);
   m_info.m_dataFormats.push_back(AE_FMT_EAC3);
@@ -392,6 +414,9 @@ void CAESinkPi::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_dataFormats.push_back(AE_FMT_FLOAT);
   m_info.m_dataFormats.push_back(AE_FMT_S32LE);
   m_info.m_dataFormats.push_back(AE_FMT_S16LE);
+  m_info.m_dataFormats.push_back(AE_FMT_FLOATP);
+  m_info.m_dataFormats.push_back(AE_FMT_S32NEP);
+  m_info.m_dataFormats.push_back(AE_FMT_S16NEP);
 
   list.push_back(m_info);
 }
