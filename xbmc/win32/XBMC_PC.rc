@@ -53,8 +53,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 13,1,0,0
- PRODUCTVERSION 13,1,0,0
+ FILEVERSION 13,2,0,0
+ PRODUCTVERSION 13,2,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -71,12 +71,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Team XBMC"
             VALUE "FileDescription", "XBMC"
-            VALUE "FileVersion", "13.1"
+            VALUE "FileVersion", "13.2-ALPHA1"
             VALUE "InternalName", "XBMC.exe"
             VALUE "LegalCopyright", "Copyright (c) Team XBMC.  All rights reserved."
             VALUE "OriginalFilename", "XBMC.exe"
             VALUE "ProductName", "XBMC for Windows"
-            VALUE "ProductVersion", "13.1"
+            VALUE "ProductVersion", "13.2-ALPHA1"
         END
     END
     BLOCK "VarFileInfo"
