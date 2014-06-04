@@ -1,0 +1,2 @@
+include/vorbis/* include/vorbis
+lib/* lib

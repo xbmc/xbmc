@@ -1,0 +1,1 @@
+ogg http://mirrors.xbmc.org/build-deps/win32/libogg-vc100-1.2.0-lib.tar.bz2
