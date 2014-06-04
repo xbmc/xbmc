@@ -22,6 +22,7 @@
 
 #include "MediaSettings.h"
 #include "Application.h"
+#include "PlayListPlayer.h"
 #include "Util.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogFileBrowser.h"
@@ -172,6 +173,14 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
   }
 
   return true;
+}
+
+void CMediaSettings::OnSettingsLoaded()
+{
+  g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, m_musicPlaylistRepeat ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
+  g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, m_musicPlaylistShuffle);
+  g_playlistPlayer.SetRepeat(PLAYLIST_VIDEO, m_videoPlaylistRepeat ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
+  g_playlistPlayer.SetShuffle(PLAYLIST_VIDEO, m_videoPlaylistShuffle);
 }
 
 bool CMediaSettings::Save(TiXmlNode *settings) const

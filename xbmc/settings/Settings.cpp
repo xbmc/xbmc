@@ -636,6 +636,7 @@ void CSettings::InitializeISettingsHandlers()
 #if defined(TARGET_LINUX) && !defined(TARGET_ANDROID) && !defined(__UCLIBC__)
   m_settingsManager->RegisterSettingsHandler(&g_timezone);
 #endif
+  m_settingsManager->RegisterSettingsHandler(&CMediaSettings::Get());
 }
 
 void CSettings::InitializeISubSettings()
