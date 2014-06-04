@@ -45,6 +45,7 @@
 
 /* PLEX */
 #include "GUISettings.h"
+#include "plex/FileSystem/PlexFile.h"
 /* END PLEX */
 
 #ifndef __PLEX__
@@ -155,7 +156,14 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer *pPlayer, 
   /* PLEX */
   if ((file.substr(0, 13) == "plexserver://") && (g_guiSettings.GetBool("videoplayer.useffmpegavio")))
   {
-    return new CDVDInputStreamFFmpeg();
+    // translte the url
+    CURL finalURL(file);
+    XFILE::CPlexFile::BuildHTTPURL(finalURL);
+
+    if (finalURL.GetProtocol() != "https")
+      return new CDVDInputStreamFFmpeg();
+    else
+      return new CDVDInputStreamFile();
   }
   else
   /* END PLEX */
