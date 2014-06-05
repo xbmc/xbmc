@@ -27,7 +27,7 @@ echo "Building for $darwin-$arch"
 xcodepath=$(xcode-select -print-path)
 xcodebuild=$xcodepath/usr/bin/xcodebuild
 if [ $darwin = "osx" ]; then
-  sdkversion=10.8
+  sdkversion=10.9
 else
   sdkversion=$($xcodebuild -showsdks | grep iphoneos | sort | tail -n 1 | awk '{ print $2}')
 fi
@@ -43,7 +43,7 @@ outputpath=$ROOT/plex/Dependencies/xbmc-depends/$outputdir
 echo $outputpath
 cd $DEPENDDIR
 ./bootstrap
-./configure --with-sdk=10.8 --with-rootpath=$ROOT/plex/Dependencies/xbmc-depends --with-toolchain=/Users/Shared/xbmc-depends/toolchain --with-darwin=$darwin --with-arch=$arch
+./configure --with-sdk=${sdkversion} --with-rootpath=$ROOT/plex/Dependencies/xbmc-depends --with-toolchain=/Users/Shared/xbmc-depends/toolchain --with-darwin=$darwin --with-arch=$arch
 make || exit 1
 
 cd $ROOT

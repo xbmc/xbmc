@@ -2,9 +2,10 @@ include ../Makefile.include
 
 # lib name, version
 LIBNAME=SDL
-VERSION=1.2.14
+VERSION=1.2.15
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+BASE_URL=http://mirrors.xbmc.org/build-deps/sources/
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
@@ -23,8 +24,9 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); patch -p0 < ../01-SDL_SetWidthHeight.patch
-	cd $(SOURCE); patch -p0 < ../02-mmx.patch
-	cd $(SOURCE); patch -p0 < ../03-quartzWindowCrash.patch
+	cd $(SOURCE); patch -p0 < ../02-OSX_interpretKeyEvents.patch
+	cd $(SOURCE); patch -p0 < ../03-mavericks-compile.patch
+	cd $(SOURCE); patch -p0 < ../04-fix_external_screen_crash.patch
 	cd $(SOURCE); $(CONFIGURE)
 
 $(LIBDYLIB): $(SOURCE)

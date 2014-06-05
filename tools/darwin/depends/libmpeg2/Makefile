@@ -26,6 +26,8 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 		cd $(SOURCE); patch -p0 < ../02-neon.patch; \
 	fi
 	cd $(SOURCE); patch -p1 < ../03-config-fix.patch
+	cd $(SOURCE); patch -p1 < ../04-clang-fix.patch
+	cd $(SOURCE); autoreconf -vif
 	cd $(SOURCE); $(CONFIGURE)
 
 $(LIBDYLIB): $(SOURCE)
