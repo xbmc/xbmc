@@ -756,7 +756,7 @@ double CAESinkPULSE::GetCacheTotal()
 unsigned int CAESinkPULSE::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
 {
   if (!m_IsAllocated)
-    return frames;
+    return 0;
 
   if (m_IsStreamPaused)
   {
