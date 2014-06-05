@@ -448,11 +448,11 @@ int CCPUInfo::getUsedPercentage()
 #ifdef TARGET_WINDOWS
   if(userTicks + systemTicks == 0)
     return m_lastUsedPercentage;
-  int result = (int) ((userTicks + systemTicks - idleTicks) * 100 / (userTicks + systemTicks));
+  int result = (int) (double(userTicks + systemTicks - idleTicks) * 100.0 / double(userTicks + systemTicks) + 0.5);
 #else
   if(userTicks + niceTicks + systemTicks + idleTicks + ioTicks == 0)
     return m_lastUsedPercentage;
-  int result = (int) ((userTicks + niceTicks + systemTicks) * 100 / (userTicks + niceTicks + systemTicks + idleTicks + ioTicks));
+  int result = (int) (double(userTicks + niceTicks + systemTicks) * 100.0 / double(userTicks + niceTicks + systemTicks + idleTicks + ioTicks) + 0.5);
 #endif
 
   m_userTicks += userTicks;
