@@ -852,11 +852,14 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
     }
     case TMSG_PLEX_SAVE_SERVER_CACHE:
     {
-      CPlexServerCacheDatabase db;
-      if (db.Open())
+      if (!g_application.IsPlayingFullScreenVideo())
       {
-        db.cacheServers();
-        db.Close();
+        CPlexServerCacheDatabase db;
+        if (db.Open())
+        {
+          db.cacheServers();
+          db.Close();
+        }
       }
     }
     /* END PLEX */
