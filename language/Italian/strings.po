@@ -403,7 +403,7 @@ msgstr "Muovo questi file?"
 
 msgctxt "#125"
 msgid "Delete these files? - Deleting files cannot be undone!"
-msgstr "Elimino questi file? - I file potranno essere recuperati!"
+msgstr "Elimino questi file? - I file non potranno essere recuperati!"
 
 msgctxt "#126"
 msgid "Status"
@@ -2927,7 +2927,7 @@ msgstr "Preferiti"
 
 msgctxt "#1037"
 msgid "Video Add-ons"
-msgstr "Addon video"
+msgstr "Addon Video"
 
 msgctxt "#1038"
 msgid "Music Add-ons"

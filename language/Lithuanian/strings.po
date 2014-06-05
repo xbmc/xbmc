@@ -1263,11 +1263,11 @@ msgstr "Matricos takai"
 
 msgctxt "#355"
 msgid "Screensaver time"
-msgstr "Paleisti ekrano užsklandą..."
+msgstr "Ekrano užsklandos laikas"
 
 msgctxt "#356"
 msgid "Screensaver mode"
-msgstr "Ekrano užsklandos metodas"
+msgstr "Ekrano užsklandos režimas"
 
 msgctxt "#357"
 msgid "Shutdown function timer"
@@ -4431,7 +4431,7 @@ msgstr "Saugykla"
 
 msgctxt "#13278"
 msgid "Default"
-msgstr "Numatyta"
+msgstr "Numatytasis"
 
 msgctxt "#13279"
 msgid "Network"
@@ -4499,7 +4499,7 @@ msgstr "Aušintuvo greičio perrašymas"
 
 msgctxt "#13303"
 msgid "Fonts"
-msgstr "Šriftai"
+msgstr "Šriftas"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -4511,7 +4511,7 @@ msgstr "Įjungti RSS naujienas"
 
 msgctxt "#13306"
 msgid "Show parent folder items"
-msgstr "Rodyti pagrindiniame aplanke esančius elementus"
+msgstr "Rodyti viršaplankio elementus"
 
 msgctxt "#13307"
 msgid "Track naming template"
@@ -4791,7 +4791,7 @@ msgstr "Atidaryti/Uždaryti"
 
 msgctxt "#13392"
 msgid "Use visualisation if playing audio"
-msgstr "Naudoti vizualizaciją, kai atkuriama audio"
+msgstr "Naudoti vizualizaciją, jei atkuriamas garso įrašas"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -5503,7 +5503,7 @@ msgstr "Kalbos pasirinkimas"
 
 msgctxt "#14091"
 msgid "Character set"
-msgstr "Simbolių/ženklų rinkinys"
+msgstr "Simbolių rinkinys"
 
 msgctxt "#14092"
 msgid "Debugging"
@@ -5607,7 +5607,7 @@ msgstr "Navigacijos garsai"
 
 msgctxt "#15109"
 msgid "Skin default"
-msgstr "Standartinė teminė išvaizda"
+msgstr "Kaip numatyta"
 
 msgctxt "#15111"
 msgid "Theme"
@@ -5615,7 +5615,7 @@ msgstr "Tema"
 
 msgctxt "#15112"
 msgid "Default theme"
-msgstr "Standartinė tema"
+msgstr "Numatytoji tema"
 
 msgctxt "#15200"
 msgid "Last.fm"
@@ -7843,7 +7843,7 @@ msgstr "Šakninis"
 
 msgctxt "#20109"
 msgid "Zoom"
-msgstr "Padidintas"
+msgstr "Didinimas"
 
 msgctxt "#20110"
 msgid "UPnP settings"
@@ -8927,7 +8927,7 @@ msgstr "Išlaikyti dabartinį rinkinį (%s)"
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
-msgstr "Rodyti paslėptus failus ir aplankus"
+msgstr "Rodyti paslėptus failus ir katalogus"
 
 msgctxt "#21331"
 msgid "TuxBox client"
@@ -9763,7 +9763,7 @@ msgstr "Profilio duomenys"
 
 msgctxt "#22014"
 msgid "Use dim if paused during video playback"
-msgstr "Pritemdyti ekraną, pristabdžius vaizdo atkurimą"
+msgstr "Pritemdyti ekraną, jei vaizdo įrašo atkūrimas pristabdytas"
 
 msgctxt "#22015"
 msgid "All recordings"
@@ -9791,7 +9791,7 @@ msgstr "Gidas"
 
 msgctxt "#22021"
 msgid "Allowed error in aspect ratio to minimise black bars"
-msgstr "Leidžiama kraštinių santykio paklaida siekiant sumažinti juodas juostas"
+msgstr "Leistina kraštinių santykio paklaida juodų juostų sumažinimui"
 
 msgctxt "#22022"
 msgid "Show video files in listings"
@@ -11123,7 +11123,7 @@ msgstr "Pakeisti vartotojo sąsajos išvaizdą."
 
 msgctxt "#36102"
 msgid "Category containing all Skin related settings."
-msgstr "Kategorija, kurioje yra visi su temine išvaizda susiję parametrai."
+msgstr "Kategorija, kurioje yra visi su temine išvaizda susiję nustatymai."
 
 msgctxt "#36103"
 msgid "Select the skin for the user interface. This will define the look and feel of XBMC."
@@ -11215,7 +11215,7 @@ msgstr "Ignoruoti tam tikras žymas rūšiavimo metu. Pvz.: 'The Simpsons' bus r
 
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
-msgstr "Leisti panaikinti ir pervadinti failus per vartotojo sąsają, naudojant kontekstinį meniu (paspauskite 'C' ant klaviatūros, norėdami įjungti šį meniu)."
+msgstr "Leisti pašalinti ir pervadinti failus vartotojo sąsajoje, naudojant kontekstinį meniu (paspauskite 'C' ant klaviatūros, norėdami įjungti šį meniu)."
 
 msgctxt "#36126"
 msgid "Show the add source button in root sections of the user interface."
@@ -11251,7 +11251,7 @@ msgstr "Muzikos atkūrimo metu XBMC įjungs pasirinktą vizualizaciją, o ne ekr
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
-msgstr "Pritemdyti ekraną, kai media atkurimas pristabdytas. Negalioja 'Dim' ekrano užsklandos režimui."
+msgstr "Pritemdyti ekraną, kai media įrašo atkūrimas pristabdytas. Negalioja 'Dim' ekrano užsklandos režimui."
 
 msgctxt "#36135"
 msgid "No info available yet."

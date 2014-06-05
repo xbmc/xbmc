@@ -10995,11 +10995,11 @@ msgstr "Geräte, die den TV ausschalten, wenn XBMC beendet wird"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
-msgstr "Geräte in den Standby versetzen wenn der Bilschirmschoner aktiviert wird"
+msgstr "Geräte in Standby versetzen, wenn der Bilschirmschoner aktiviert wird"
 
 msgctxt "#36010"
 msgid "Wake devices when deactivating screensaver"
-msgstr "Geräte aufwecken wenn der Bildschirmschoner deaktiviert wird"
+msgstr "Geräte aufwecken, wenn der Bildschirmschoner deaktiviert wird"
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
@@ -11023,7 +11023,7 @@ msgstr "Der CEC Adapter konnte nicht initialisiert werden: libCEC ist nicht auf 
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
-msgstr "Spracheinstellung des Fernsehers in XBMC nutzen"
+msgstr "Spracheinstellung des TV in XBMC nutzen"
 
 msgctxt "#36019"
 msgid "Connected to HDMI device"
@@ -11031,7 +11031,7 @@ msgstr "Verbunden mit HDMI-Gerät"
 
 msgctxt "#36020"
 msgid "Make XBMC the active source when starting"
-msgstr "Setze beim Starten XBMC als aktive Quelle"
+msgstr "Beim Starten, XBMC als aktive HDMI-Quelle melden"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
@@ -11051,11 +11051,11 @@ msgstr "Konfiguration konnte nicht aktualisiert werden. Bitte Einstellungen prü
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
-msgstr "Sende 'inaktive Quelle' wenn XBMC beendet wird"
+msgstr "Beim Beenden, XBMC als inaktive HDMI-Quelle melden"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
-msgstr "Setze Geräte in Standby-Modus wenn PC in Standby versetzt wird."
+msgstr "Geräte in Standby versetzen, wenn XBMC in Bereitschaft versetzt wird"
 
 msgctxt "#36027"
 msgid "This device needs servicing"
@@ -11067,7 +11067,7 @@ msgstr "Ignorieren"
 
 msgctxt "#36029"
 msgid "When the TV is switched off"
-msgstr "Wenn der Fernseher ausgeschaltet wird"
+msgstr "Wenn der TV ausgeschaltet wird"
 
 msgctxt "#36030"
 msgid "Connection lost"
@@ -11099,7 +11099,7 @@ msgstr "TV"
 
 msgctxt "#36038"
 msgid "Amplifier / AVR device"
-msgstr "Verstärker / AV-Receiver"
+msgstr "Verstärker/AV-Receiver"
 
 msgctxt "#36039"
 msgid "TV and AVR device (explicit)"

@@ -1979,7 +1979,7 @@ msgstr "Dispositivo de salida passthrough"
 
 msgctxt "#547"
 msgid "No biography for this artist"
-msgstr "No hay biografía para este artista"
+msgstr "No hay biografía para este intérprete"
 
 msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
@@ -2015,7 +2015,7 @@ msgstr "Título"
 
 msgctxt "#557"
 msgid "Artist"
-msgstr "Artista"
+msgstr "Intérprete"
 
 msgctxt "#558"
 msgid "Album"
@@ -2051,7 +2051,7 @@ msgstr "Uso"
 
 msgctxt "#566"
 msgid "Album artist"
-msgstr "Álbum artista"
+msgstr "Intérprete del álbum"
 
 msgctxt "#567"
 msgid "Play count"
@@ -4711,7 +4711,7 @@ msgstr "Reproducir elemento"
 
 msgctxt "#13359"
 msgid "Set artist thumb"
-msgstr "Establecer miniatura de artista"
+msgstr "Establecer miniatura del intérprete"
 
 msgctxt "#13360"
 msgid "Automatically generate thumbnails"
@@ -4879,7 +4879,7 @@ msgstr "Descargando"
 
 msgctxt "#13414"
 msgid "Include artists who appear only on compilations"
-msgstr "Incluir artistas que sólo aparecen en recopilaciones"
+msgstr "Incluir intérpretes que sólo aparecen en recopilaciones"
 
 msgctxt "#13415"
 msgid "Render method"
@@ -8195,11 +8195,11 @@ msgstr "Importar la base de datos de la colección de música"
 
 msgctxt "#20198"
 msgid "No artist found!"
-msgstr "¡No se encontraron artistas!"
+msgstr "¡No se encontraron intérpretes!"
 
 msgctxt "#20199"
 msgid "Downloading artist info failed"
-msgstr "Falló la descarga de información de artista"
+msgstr "Falló la descarga de información del intérprete"
 
 msgctxt "#20220"
 msgid "Override song tags with online information"
@@ -8207,7 +8207,7 @@ msgstr "Sobreescribir las etiquetas de la canción con información online"
 
 msgctxt "#20221"
 msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
-msgstr "Con esta opción habilitada, cualquier información que se descargue de álbumes y artistas sobrescribirá todo lo que se haya establecido en las etiquetas de las canciones, como géneros, año, artistas etc. Es útil si dispones de indentificadores de MusicBrainz en las etiquetas.  "
+msgstr "Con esta opción habilitada, cualquier información que se descargue de álbumes e intérpretes sobrescribirá todo lo que se haya establecido en las etiquetas de las canciones, como géneros, año, intérpretes, etc. Es útil si dispones de indentificadores de MusicBrainz en las etiquetas.  "
 
 msgctxt "#20240"
 msgid "Android music"
@@ -8335,7 +8335,7 @@ msgstr "Analizando los programas de TV usando %s"
 
 msgctxt "#20320"
 msgid "Scanning artists using %s"
-msgstr "Analizando los artistas usando %s"
+msgstr "Analizando los intérpretes usando %s"
 
 msgctxt "#20321"
 msgid "Scanning albums using %s"
@@ -8631,7 +8631,7 @@ msgstr "Mezclado"
 
 msgctxt "#20396"
 msgid "Go to albums by artist"
-msgstr "Ir a álbumes por artista"
+msgstr "Ir a álbumes por intérprete"
 
 msgctxt "#20397"
 msgid "Go to album"
@@ -8647,7 +8647,7 @@ msgstr "Ir a videoclips desde el álbum"
 
 msgctxt "#20400"
 msgid "Go to music videos by artist"
-msgstr "Ir a videoclips por artista"
+msgstr "Ir a videoclips por intérprete"
 
 msgctxt "#20401"
 msgid "Play music video"
@@ -9639,7 +9639,7 @@ msgstr "Música guardada"
 
 msgctxt "#21884"
 msgid "Query info for all artists"
-msgstr "Solicitar información para todos los artistas"
+msgstr "Solicitar información para todos los intérpretes"
 
 msgctxt "#21885"
 msgid "Downloading album information"
@@ -9647,7 +9647,7 @@ msgstr "Descargando información de álbum"
 
 msgctxt "#21886"
 msgid "Downloading artist information"
-msgstr "Descargando información de artista"
+msgstr "Descargando información del intérprete"
 
 msgctxt "#21887"
 msgid "Biography"
@@ -9659,15 +9659,15 @@ msgstr "Discografía"
 
 msgctxt "#21889"
 msgid "Searching artist"
-msgstr "Buscando artista"
+msgstr "Buscando intérprete"
 
 msgctxt "#21890"
 msgid "Select artist"
-msgstr "Seleccionar artista"
+msgstr "Seleccionar intérprete"
 
 msgctxt "#21891"
 msgid "Artist information"
-msgstr "Información de artista"
+msgstr "Información del intérprete"
 
 msgctxt "#21892"
 msgid "Instruments"
@@ -9983,7 +9983,7 @@ msgstr "Información de álbum"
 
 msgctxt "#24017"
 msgid "Artist information"
-msgstr "Información del artista"
+msgstr "Información del intérprete"
 
 msgctxt "#24018"
 msgid "Services"
@@ -11727,11 +11727,11 @@ msgstr "Habilitar la colección de música"
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
-msgstr "Determina si quiere mostrar los artistas que sólo aparecen en recopilaciones en la vista de artistas de la colección."
+msgstr "Determina si quiere mostrar los intérpretes que sólo aparecen en recopilaciones en la vista de intérpretes de la colección."
 
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information via scrapers during scan."
-msgstr "Extraer información de album y artista automáticamente de scrapers durante el escaneo."
+msgstr "Extraer información de album e intérprete automáticamente de scrapers durante el escaneo."
 
 msgctxt "#36257"
 msgid "Select the default album information source."
@@ -11739,7 +11739,7 @@ msgstr "Seleccionar el servicio de información de álbum por defecto."
 
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
-msgstr "Selecciona la fuente de información por defecto para los artistas Vea los Ajustes de Addons para las opciones."
+msgstr "Selecciona la fuente de información por defecto para los intérpretes. Ver Ajustes de Addons para las opciones."
 
 msgctxt "#36259"
 msgid "Check for new and removed media files on XBMC startup."
@@ -11847,7 +11847,7 @@ msgstr "Selecciona la localización en su disco duro donde se almacenarán las p
 
 msgctxt "#36286"
 msgid "Control how saved music is named from the tags. Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
-msgstr "Control de la música cómo es guardada en el nombre de las etiquetas. Etiquetas: [B]%N[/B]: Número de pista, [B]%S[/B]: Número de disco, [B]%A[/B]: Artista, [B]%T[/B]: Título, [B]%B[/B]: Álbum, [B]%G[/B]: Género, [B]%Y[/B]: Año, [B]%F[/B]: Nombre de archivo, [B]%D[/B]: Duración, [B]%J[/B]: Fecha, [B]%R[/B]: Clasificación, [B]%I[/B]: Tamaño de archivo."
+msgstr "Control de la música cómo es guardada en el nombre de las etiquetas. Etiquetas: [B]%N[/B]: Número de pista, [B]%S[/B]: Número de disco, [B]%A[/B]: Intérprete, [B]%T[/B]: Título, [B]%B[/B]: Álbum, [B]%G[/B]: Género, [B]%Y[/B]: Año, [B]%F[/B]: Nombre de archivo, [B]%D[/B]: Duración, [B]%J[/B]: Fecha, [B]%R[/B]: Clasificación, [B]%I[/B]: Tamaño de archivo."
 
 msgctxt "#36287"
 msgid "Select which audio encoder to use when ripping."

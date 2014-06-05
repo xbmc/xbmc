@@ -775,7 +775,7 @@ msgstr "Тестови модели за калибриране..."
 
 msgctxt "#227"
 msgid "Lookup audio CD track names from freedb.org"
-msgstr "Търси имената на песните от аудио CD-та във freedb.org"
+msgstr "Търси имената на песните от аудио дискове във freedb.org"
 
 msgctxt "#228"
 msgid "Shuffle playlist on load"
@@ -2227,7 +2227,7 @@ msgstr "Виртуална папка"
 
 msgctxt "#620"
 msgid "Audio CDs"
-msgstr "Аудио CD-та"
+msgstr "Аудио дискове"
 
 msgctxt "#621"
 msgid "Encoder"
@@ -4879,7 +4879,7 @@ msgstr "Сваляне"
 
 msgctxt "#13414"
 msgid "Include artists who appear only on compilations"
-msgstr "Добави и артисти, които участват само в компилации"
+msgstr "Добавяй и артисти, които участват само в компилации"
 
 msgctxt "#13415"
 msgid "Render method"
@@ -4955,7 +4955,7 @@ msgstr "Разреши хардуерното ускорение (VideoToolbox)"
 
 msgctxt "#13433"
 msgid "Play the next video automatically"
-msgstr "Автоматично възпроизвеждане на следващото видео"
+msgstr "Възпроизвеждай автоматично следващото видео"
 
 msgctxt "#13434"
 msgid "Play only this"
@@ -8195,7 +8195,7 @@ msgstr "Свалянето на информация за артист се пр
 
 msgctxt "#20220"
 msgid "Override song tags with online information"
-msgstr "Замени информацията от етикетите на песните с онлайн информация"
+msgstr "Заменяй информацията от етикетите на песните с изтеглената инф."
 
 msgctxt "#20221"
 msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
@@ -9003,7 +9003,7 @@ msgstr "Миниатюри"
 
 msgctxt "#21372"
 msgid "Forced DVD player region"
-msgstr "Задължителен район за DVD плейъра"
+msgstr "Налагай следния район за DVD плейъра"
 
 msgctxt "#21373"
 msgid "Video output"
@@ -9623,7 +9623,7 @@ msgstr "Разреши контролирането на XBMC чрез UPnP"
 
 msgctxt "#21882"
 msgid "Attempt to skip introduction before DVD menu"
-msgstr "Пропускай интрото преди DVD меню (ако е възможно)"
+msgstr "Пропускай интрото предхождащо DVD менюто (ако е възможно)"
 
 msgctxt "#21883"
 msgid "Saved music"
@@ -10275,7 +10275,7 @@ msgstr "Сваляне на субтитри..."
 
 msgctxt "#24111"
 msgid "Languages to download subtitles for"
-msgstr "Сваляй субтитри за следните езици"
+msgstr "Сваляй субтитри на следните езици"
 
 msgctxt "#24112"
 msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
