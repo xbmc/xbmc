@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="skin.confluence"
-  version="2.2.16"
+  version="2.2.17"
   name="Confluence"
   provider-name="Jezz_X, Team XBMC">
   <requires>
@@ -51,7 +51,7 @@
     <summary lang="km">Confluence skin by Jezz_X. (XBMC's default skin)</summary>
     <summary lang="ko">Confluence 스킨 Jezz_X 만듦 (XBMC 기본 스킨)</summary>
     <summary lang="lt">Teminę išvaizdą Confluence sukūrė Jezz_X.(XBMC numatytoji teminė išvaizda)</summary>
-    <summary lang="lv">Confluence āda no Jeez_X. (XBMC pamatāda)</summary>
+    <summary lang="lv">Confluence apvalks no Jeez_X. (XBMC noklusētais apvalks)</summary>
     <summary lang="mk">Confluence skin by Jezz_X. (XBMC's default skin)</summary>
     <summary lang="ms">Penyatuan, kulit daripada Jezz_X. (Kulit lalai XBMC)</summary>
     <summary lang="nl">Confluence skin door Jezz_X. (XBMC's standaard skin)</summary>
@@ -113,7 +113,7 @@
     <description lang="mk">Confluence е подразбирачки изглед за XBMC 9.11 па нагоре. Тој е комбинација на концепти од повеќе популарни изгледи, и настојува да ги обедини и истакне нивните добри идеи во еден изглед разбирлив за корисници почетници</description>
     <description lang="ms">Penyatuan ialah kulit lalai untuk XBMC 9.11 dan ke atas. Ia merupakan gabungan konsep dari pelbagai kulit terkenal, dan berusaha untuk merangkumkan dan menyepadukan idea baik kulit-kulit tersebut menjadi satu kulit yang mudah difahami dan digunakan oleh pengguna baru XBMC .</description>
     <description lang="nl">Confluence is de standaard skin voor XBMC 9.11 en hoger. Het combineert de concepten van andere populaire skins, waarbij het tracht hun goede ideeën te integreren in een skin die gemakkelijk in gebruik is.</description>
-    <description lang="no">Confluence er standardskallet for XBMC 9.11 og oppover. Det er en kombinasjon av konseptene fra mange populære skall, og prøver å omfavne og integrere de gode idéene i et skall som bør være lett å forstå og benytte seg av for nye XBMC-brukere.</description>
+    <description lang="no">Confluence er standardskallet for XBMC 9.11 og nyere. Det er en kombinasjon av konseptene fra mange populære skall, og det forsøker å omfavne og integrere de gode idéene i et skall som bør være lett å forstå og benytte seg av for nye XBMC-brukere.</description>
     <description lang="pl">Confluence jest domyślną skóra dla XBMC w wersji 9.11 lub nowszych. Jest kombinacją pomysłów z wielu popularnych skór i próbą zawarcia tego, co w nich najlepsze w skórze, która będzie łatwa do opanowania dla początkującego użytkownika.</description>
     <description lang="pt">O tema "Confluence" é o tema predefinido do XBMC 9.11 e superior. É uma combinação de conceitos a partir de muitos temas populares e tenta integrar as boas ideias dos mesmos num tema que deverá ser fácil de entender e utilizar para os novos utilizadores do XBMC.</description>
     <description lang="pt_BR">Confluence é a skin padrão do XBMC 9.11 e acima. É uma combinação de conceitos das mais populares skins, visando abraçar e integrar as boas ideias em uma skin  que seja fácil de entender e usar, destinada  aos usuários iniciantes do XBMC. </description>
@@ -165,7 +165,7 @@
     <disclaimer lang="ja">Confluence は XBMC のデフォルトスキンですので、これを削除するとうまく動かなくなる可能性があります</disclaimer>
     <disclaimer lang="ko">Confluence는 XBMC의 기본스킨으로 제거시 문제가 생길 수 있습니다.</disclaimer>
     <disclaimer lang="lt">Confluence yra numatytoji XBMC teminė išvaizda, ją panaikinus ar pakeitus gali kilti problemų</disclaimer>
-    <disclaimer lang="lv">Confluence ir XBMC pamatāda, dzēšot to var rasties problēmas</disclaimer>
+    <disclaimer lang="lv">Confluence ir XMBC noklusētais apvalks, dzēšot to, var rasties problēmas</disclaimer>
     <disclaimer lang="mk">Confluence е подразбирачка маска, бришењето може да предизвика пречки</disclaimer>
     <disclaimer lang="ms">Penyatuan ialah kulit lalai XBMC, mengubahnya boleh menimbulkan isu.</disclaimer>
     <disclaimer lang="nl">Confluence is de standaard XBMC skin, het verwijderen van Confluence kan leiden tot problemen.</disclaimer>
