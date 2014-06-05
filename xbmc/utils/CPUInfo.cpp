@@ -804,19 +804,16 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
 std::string CCPUInfo::GetCoresUsageString() const
 {
   std::string strCores;
-  map<int, CoreInfo>::const_iterator iter = m_cores.begin();
-  while (iter != m_cores.end())
+  for (std::map<int, CoreInfo>::const_iterator it = m_cores.begin(); it != m_cores.end(); ++it)
   {
-    std::string strCore;
-#ifdef TARGET_WINDOWS
-    // atm we get only the average over all cores
-    strCore = StringUtils::Format("CPU %d core(s) average: %3.1f%% ", m_cpuCount, iter->second.m_fPct);
-#else
-    strCore = StringUtils::Format("CPU%d: %3.1f%% ", iter->first, iter->second.m_fPct);
-#endif
-    strCores+=strCore;
-    iter++;
+    if (!strCores.empty())
+      strCores += ' ';
+    if (it->second.m_fPct < 10.0)
+      strCores += StringUtils::Format("CPU%d: %1.1f%%", it->first, it->second.m_fPct);
+    else
+      strCores += StringUtils::Format("CPU%d: %3.0f%%", it->first, it->second.m_fPct);
   }
+
   return strCores;
 }
 
