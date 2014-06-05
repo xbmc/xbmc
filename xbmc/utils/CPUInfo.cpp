@@ -944,12 +944,3 @@ bool CCPUInfo::HasNeon()
 }
 
 CCPUInfo g_cpuInfo;
-/*
-int main()
-{
-  CCPUInfo c;
-  usleep(...);
-  int r = c.getUsedPercentage();
-  printf("%d\n", r);
-}
-*/
