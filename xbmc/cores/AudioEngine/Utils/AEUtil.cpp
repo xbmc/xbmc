@@ -44,7 +44,8 @@ void   AEDelayStatus::SetDelay(double d)
 double AEDelayStatus::GetDelay()
 {
   double d = delay;
-  d -= (double)(CurrentHostCounter() - tick) / CurrentHostFrequency();
+  if(tick)
+    d -= (double)(CurrentHostCounter() - tick) / CurrentHostFrequency();
   if(d < 0)
     return 0.0;
   else
