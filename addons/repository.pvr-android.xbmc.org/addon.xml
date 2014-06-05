@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.pvr-android.xbmc.org"
 		name="XBMC.org PVR Add-ons"
-		version="1.1.10"
+		version="1.1.11"
 		provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -86,6 +86,7 @@
 		<description lang="id">Unduh dan pasang pengaya dari repositori pengaya resmi XBMC.org. [CR] Dengan menggunakan repositori resmi anda akan mendapat keuntungan dari miror berkas kami yang luas dimana dapat membantu anda untuk lebih cepat mengunduh dari daerah yang dekat dengan anda. [CR] Semua pengaya pada repository telah melalui uji coba standar, jika anda menemukan pengaya yang rusak atau tidak bekerja tolong laporkan kepada tim XBMC agar kami bisa menindak lanjutinya.</description>
 		<description lang="is">Halaðu niður og settu inn viðbætur fyrir myndupptöku frá viðurkenndu viðbótasafni frá XBMC.org.[CR] Með því að nota opinbera geymsluna þá geturðu nýtt þér skráaspeglunarþjónustu okkar til að fá hraðara niðurhal frá stað nálægt þér.[CR] Allar viðbætur í þessari geymslu hafa farið í gegnum grunn prófanir, ef þú finnur bilaða viðbót eða einhverja sem virkar ekki þá tilkynntu það til Team XBMC svo við getum gripið til viðeigandi aðgerða.</description>
 		<description lang="it">Scarica ed installa gli addon dalla libreria ufficiale di XBMC.org[CR] Usando la libreria ufficiale avrai il vantaggio di ottenere download più veloci con mirror più vicini alla tua località.[CR] Tutti gli addon in questa libreria sono stati sottoposti a test di base, se ne trovi uno non funzionante o corrotto, per favore riporta il problema al team di XBMC così potremmo prendere provvedimenti.</description>
+		<description lang="ja">オフィシャルの XBMC.org リポジトリから PVR アドオンをダウンロードします。[CR] オフィシャルリポジトリを使うことで、お住まいのエリアに近いミラーサーバーから高速にアドオンをダウンロードすることが可能です。[CR] このリポジトリ上のアドオンは全て、簡単な動作テストを受けてはいますが、もしアドオンがおかしかったりうまく動作しなかったりした場合は、XBMC チームに連絡をお願いします。</description>
 		<description lang="ko">공식 XBMC.org 애드온 저장소에서 PVR 애드온을 다운로드하여 설치합니다.[CR] 공식 저장소를 사용하면 파일 미러링 서비스를 통해 사용자와 가까운 곳에서 빠르게 다운로드할 수 있습니다.[CR] 저장소의 모든 애드온은 기본 테스트를 거치지만 작동이 되지 않거나 손상된 애드온을 발견하면 필요한 조치를 취할 수 있게 Team XBMC로 알려주시기 바랍니다.</description>
 		<description lang="lt">Atsisiųskite ir įdiekite PVR priedą iš oficialios XBMC.org priedų saugyklos. [Cr] Naudojant oficialią saugyklą galėsite pasinaudoti mūsų  failų Veidrodine saugyklos paslauga katra padės jums greičiau parsisiųsti iš artimiausios vietos šalia jūsų. [CR] Visi priedai šioje saugykloje yra perėję pagrindinį testavimą, jei atsisiuntėte neveikiantį ar/arba sugadintą priedą praneškite 'Team XBMC', kad galėtume imtis visų būtinų priemonių klaidai ištaisyti.</description>
 		<description lang="lv">Lejupielādējiet un instalējiet PVR pielikumus no oficiālā XBMC.org pielikumu repozitorija.[CR]  Izmantojot oficiālo repozitoriju, varēsiet izmantot mūsu plašo spoguļu pakalpojumu, lai iegūtu ātrākas lejupielādes no reģiona, kas vistuvāk.[CR]  Visi pielikumi šajā repozitorijā ir izgājuši pamata testēšanu, bet, ja atrodat saplīsušu vai nestrādājošu pielikumu, lūdzu, ziņojiet par to Team XBMC, lai varam izpildīt nepieciešamās labošanas darbības.</description>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.black"
        name="Black"
-       version="1.0.22"
+       version="1.0.23"
        provider-name="Team XBMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -40,7 +40,7 @@
     <summary lang="ja">画面を黒くするスクリーンセーバー</summary>
     <summary lang="ko">화면을 검게하는 화면보호기</summary>
     <summary lang="lt">Ekrano užsklanda, kuri paverčia jūsų ekraną juodu fonu</summary>
-    <summary lang="lv">Ekrānsaudzētājs, kurš padara jūsu ekrānu melnu</summary>
+    <summary lang="lv">Ekrānsaudzētājs, kas padara jūsu ekrānu melnu</summary>
     <summary lang="mk">Заштита на екран која го прави екранот црн</summary>
     <summary lang="nl">Schermbeveiliging die uw scherm op zwart zet</summary>
     <summary lang="no">Skjermsparer som gjør skjermen din svart</summary>

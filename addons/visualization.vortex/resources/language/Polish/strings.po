@@ -46,7 +46,7 @@ msgstr "Pokaż szybkość klatek"
 
 msgctxt "#30007"
 msgid "Show debug console"
-msgstr "Pokazuj konsolę diagnozowania błędów"
+msgstr "Pokazuj konsolę diagnostyczną"
 
 msgctxt "#30008"
 msgid "Show audio analysis"

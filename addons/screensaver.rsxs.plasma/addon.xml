@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.plasma"
-  version="1.0.22"
+  version="1.0.23"
   name="Plasma"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -43,11 +43,11 @@
     <summary lang="it">Probabilmente il secondo salvaschermo più psichedelico di sempre</summary>
     <summary lang="ja">世界で2番目にサイケなスクリーンセーバー</summary>
     <summary lang="ko">아마도 지금까지 두번째로 가장 환상적인 화면보호기</summary>
-    <summary lang="lt">Tikriausiai antra labiausiai psichodeline ekrano uzsklanda pasaulyje.</summary>
+    <summary lang="lt">Tikriausiai antra labiausiai psichodelinė ekrano užsklanda pasaulyje.</summary>
     <summary lang="lv">Iespējams viens no vispsihodēliskākajiem ekrānsaudzētājiem pasaulē</summary>
     <summary lang="mk">Можеби втора нај психоделична заштита на екран</summary>
     <summary lang="nl">Waarschijnlijk de op één na meest psychedelische schermbeveiliging ooit</summary>
-    <summary lang="no">Helt sikkert den nest psykadeliske skjermsparern som fins</summary>
+    <summary lang="no">Helt sikkert den nest mest psykedeliske skjermspareren som finnes</summary>
     <summary lang="pl">Prawdopodobnie drugi, najbardziej psychodeliczny wygaszacz na świecie</summary>
     <summary lang="pt">Este é provavelmente o segundo melhor protector de ecrã psicadélico de sempre</summary>
     <summary lang="pt_BR">Provavelmente o segundo protetor de tela mais psicodélico</summary>
@@ -95,11 +95,11 @@
     <description lang="it">Probabilmente il secondo salvaschermo più psichedelico di sempre. Prova semplicemente a guardare tutti quei colori che si muovono.</description>
     <description lang="ja">Probably the second most psychedelic screensaver in existence. Just try to picture all those colors moving around.</description>
     <description lang="ko">아마도 존재하는 두번째로 가장 환상적인 화면보호기. 모든 색깔들이 움직이는 것을 상상해보세요.</description>
-    <description lang="lt">Turbut antra labiausiai psichodeline ekrano uzsklanda pasaulyje. Isbandykite ja ir pamatysite judanciu spalvu svente.</description>
+    <description lang="lt">Turbūt antra labiausiai psichodelinė ekrano užsklanda pasaulyje. Išbandykite ją ir pamatysite judančių spalvų šventę.</description>
     <description lang="lv">Iespējams viens no vispsihodēliskākajiem ekrānsaudzētājiem pasaulē. Pamēģiniet, lai gūtu priekšstatu par krāsu kustību un plūsmu visapkārt.</description>
     <description lang="mk">Можеби втора нај психоделична заштита на екран. Само обидете се да ги согледате сите тие бои кои се движат.</description>
     <description lang="nl">Waarschlijnlijk de op één na meest psychedelische schermbeveliging ooit. Probeer u het voor te stellen: al die kleuren die door elkaar lopen.</description>
-    <description lang="no">Helt sikkert den nest psykadeliske skjermsparern i verden. Bare prøv å se for deg alle de fargene som beveger seg rundt.</description>
+    <description lang="no">Helt sikkert den nest mest psykadeliske skjermsparern i verden. Bare prøv å se for deg alle de fargene som beveger seg rundt.</description>
     <description lang="pl">Prawdopodobnie drugi, najbardziej psychodeliczny wygaszacz na świecie. Spróbuj i zobacz ferie poruszających się barw.</description>
     <description lang="pt">É, provavelmente, o segundo melhor protector de ecrã psicadélico de sempre. Experimente-o e observe uma multitude de cores em movimento livre.</description>
     <description lang="pt_BR">Provavelmente, o segundo mais psicodélico screensaver existente.  Experimente-a para ver todas as cores moverem-se livremente.</description>

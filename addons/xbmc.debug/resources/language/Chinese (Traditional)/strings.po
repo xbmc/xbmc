@@ -39,3 +39,11 @@ msgstr "RTMP 資料庫的詳細記錄"
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
 msgstr "DBUS 呼叫的詳細記錄"
+
+msgctxt "#30006"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "JSON-RPC 請求的詳細記錄"
+
+msgctxt "#30007"
+msgid "Verbose logging for AUDIO component"
+msgstr "AUDIO 組件的詳細記錄"

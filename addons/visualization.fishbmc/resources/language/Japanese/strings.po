@@ -16,9 +16,13 @@ msgstr ""
 "Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "詳細 [CPU 周り]"
+
 msgctxt "#30001"
 msgid "Low"
-msgstr "最低気温"
+msgstr "低"
 
 msgctxt "#30002"
 msgid "Normal"
@@ -32,9 +36,13 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "エクストリーム (高音質)"
 
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "速度 [フレームスキップ]"
+
 msgctxt "#30008"
 msgid "Low"
-msgstr "最低気温"
+msgstr "低"
 
 msgctxt "#30009"
 msgid "Normal"

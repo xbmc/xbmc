@@ -38,7 +38,7 @@ msgstr "Søylehøyde"
 
 msgctxt "#30005"
 msgid "Small"
-msgstr "Liten"
+msgstr "Lav"
 
 msgctxt "#30006"
 msgid "Default"
@@ -46,11 +46,11 @@ msgstr "Standard"
 
 msgctxt "#30007"
 msgid "Big"
-msgstr "Stor"
+msgstr "Høy"
 
 msgctxt "#30008"
 msgid "Very Big"
-msgstr "Veldig stor"
+msgstr "Veldig høy"
 
 msgctxt "#30009"
 msgid "Speed"
@@ -70,8 +70,8 @@ msgstr "Standard"
 
 msgctxt "#30013"
 msgid "Fast"
-msgstr "Rask"
+msgstr "Raskt"
 
 msgctxt "#30014"
 msgid "Very Fast"
-msgstr "Veldig rask"
+msgstr "Veldig raskt"
