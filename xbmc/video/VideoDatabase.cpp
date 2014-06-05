@@ -3038,18 +3038,11 @@ void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */)
     strSQL=PrepareSQL("delete from writerlinkmovie where idMovie=%i", idMovie);
     m_pDS->exec(strSQL.c_str());
 
-    // TODO: Why are we deleting stream details here?
-    int idFile = GetDbId(PrepareSQL("SELECT idFile FROM movie WHERE idMovie=%i", idMovie));
-    DeleteStreamDetails(idFile);
-
     // keep the movie table entry, linking to tv shows, and bookmarks
     // so we can update the data in place
     // the ancilliary tables are still purged
     if (!bKeepId)
     {
-      // TODO: Why are we clearing bookmarks here?
-      ClearBookMarksOfFile(idFile);
-
       strSQL=PrepareSQL("delete from movie where idMovie=%i", idMovie);
       m_pDS->exec(strSQL.c_str());
 
@@ -3057,6 +3050,7 @@ void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */)
       m_pDS->exec(strSQL.c_str());
 
       // TODO: Why are we invalidating paths here?
+      int idFile = GetDbId(PrepareSQL("SELECT idFile FROM movie WHERE idMovie=%i", idMovie));
       std::string path = GetSingleValue(PrepareSQL("SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i", idFile));
       if (!path.empty())
         InvalidatePathHash(path);
@@ -3211,17 +3205,10 @@ void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
     strSQL=PrepareSQL("delete from writerlinkepisode where idEpisode=%i", idEpisode);
     m_pDS->exec(strSQL.c_str());
 
-    // TODO: Why are we deleting stream details here?
-    int idFile = GetDbId(PrepareSQL("SELECT idFile FROM episode WHERE idEpisode=%i", idEpisode));
-    DeleteStreamDetails(idFile);
-
     // keep episode table entry and bookmarks so we can update the data in place
     // the ancilliary tables are still purged
     if (!bKeepId)
     {
-      // TODO: Why are we clearing bookmarks here?
-      ClearBookMarksOfFile(idFile);
-
       strSQL=PrepareSQL("delete from episode where idEpisode=%i", idEpisode);
       m_pDS->exec(strSQL.c_str());
     }
@@ -3265,21 +3252,15 @@ void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
     strSQL=PrepareSQL("delete from studiolinkmusicvideo where idMVideo=%i", idMVideo);
     m_pDS->exec(strSQL.c_str());
 
-    // TODO: Why are we deleting stream details here?
-    int idFile = GetDbId(PrepareSQL("SELECT idFile FROM musicvideo WHERE idMVideo=%i", idMVideo));
-    DeleteStreamDetails(idFile);
-
     // keep the music video table entry and bookmarks so we can update data in place
     // the ancilliary tables are still purged
     if (!bKeepId)
     {
-      // TODO: Why are we clearing bookmarks here?
-      ClearBookMarksOfFile(idFile);
-
       strSQL=PrepareSQL("delete from musicvideo where idMVideo=%i", idMVideo);
       m_pDS->exec(strSQL.c_str());
 
       // TODO: Why are we invalidating paths here?
+      int idFile = GetDbId(PrepareSQL("SELECT idFile FROM musicvideo WHERE idMVideo=%i", idMVideo));
       std::string path = GetSingleValue(PrepareSQL("SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i", idFile));
       if (!path.empty())
         InvalidatePathHash(path);
