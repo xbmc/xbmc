@@ -56,6 +56,9 @@
 #include "utils/CharsetConverter.h"
 #include <algorithm>
 #include <intrin.h>
+#include <Pdh.h>
+#include <PdhMsg.h>
+#pragma comment(lib, "Pdh.lib")
 
 // Defines to help with calls to CPUID
 #define CPUID_INFOTYPE_STANDARD 0x00000001
@@ -99,7 +102,12 @@ using namespace std;
 
 CCPUInfo::CCPUInfo(void)
 {
+#ifdef TARGET_POSIX
   m_fProcStat = m_fProcTemperature = m_fCPUFreq = NULL;
+#elif defined(TARGET_WINDOWS)
+  m_cpuQueryFreq = NULL;
+  m_cpuQueryLoad = NULL;
+#endif
   m_lastUsedPercentage = 0;
   m_cpuFeatures = 0;
 
@@ -203,6 +211,25 @@ CCPUInfo::CCPUInfo(void)
   SYSTEM_INFO siSysInfo;
   GetNativeSystemInfo(&siSysInfo);
   m_cpuCount = siSysInfo.dwNumberOfProcessors;
+
+  if (PdhOpenQueryW(NULL, 0, &m_cpuQueryFreq) == ERROR_SUCCESS)
+  {
+    if (PdhAddEnglishCounterW(m_cpuQueryFreq, L"\\Processor Information(0,0)\\Processor Frequency", 0, &m_cpuFreqCounter) != ERROR_SUCCESS)
+      m_cpuFreqCounter = NULL;
+  }
+  else
+    m_cpuQueryFreq = NULL;
+  
+  if (PdhOpenQueryW(NULL, 0, &m_cpuQueryLoad) == ERROR_SUCCESS)
+  {
+    for (size_t i = 0; i < m_cores.size(); i++)
+    {
+      if (PdhAddEnglishCounterW(m_cpuQueryLoad, StringUtils::Format(L"\\Processor(%d)\\%% Idle Time", int(i)).c_str(), 0, &m_cores[i].m_coreCounter) != ERROR_SUCCESS)
+        m_cores[i].m_coreCounter = NULL;
+    }
+  }
+  else
+    m_cpuQueryLoad = NULL;
 #elif defined(TARGET_FREEBSD)
   size_t len;
   int i;
@@ -415,6 +442,7 @@ CCPUInfo::CCPUInfo(void)
 
 CCPUInfo::~CCPUInfo()
 {
+#ifdef TARGET_POSIX
   if (m_fProcStat != NULL)
     fclose(m_fProcStat);
 
@@ -423,6 +451,13 @@ CCPUInfo::~CCPUInfo()
 
   if (m_fCPUFreq != NULL)
     fclose(m_fCPUFreq);
+#elif defined(TARGET_WINDOWS)
+  if (m_cpuQueryFreq)
+    PdhCloseQuery(m_cpuQueryFreq);
+
+  if (m_cpuQueryLoad)
+    PdhCloseQuery(m_cpuQueryLoad);
+#endif
 }
 
 int CCPUInfo::getUsedPercentage()
@@ -477,14 +512,20 @@ float CCPUInfo::getCPUFrequency()
     return 0.f;
   return hz / 1000000.0;
 #elif defined TARGET_WINDOWS
-  HKEY hKey;
-  DWORD dwMHz=0;
-  DWORD dwSize=sizeof(dwMHz);
-  LONG ret = RegOpenKeyEx(HKEY_LOCAL_MACHINE,"HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0",0, KEY_READ, &hKey);
-  ret = RegQueryValueEx(hKey,"~MHz", NULL, NULL, (LPBYTE)&dwMHz, &dwSize);
-  RegCloseKey(hKey);
-  if(ret == 0)
-    return float(dwMHz);
+  float retVal = 0;
+  if (m_cpuFreqCounter && PdhCollectQueryData(m_cpuQueryFreq) == ERROR_SUCCESS)
+  {
+    PDH_RAW_COUNTER cnt;
+    DWORD cntType;
+    if (PdhGetRawCounterValue(m_cpuFreqCounter, &cntType, &cnt) == ERROR_SUCCESS &&
+        (cnt.CStatus == PDH_CSTATUS_VALID_DATA || cnt.CStatus == PDH_CSTATUS_NEW_DATA))
+    {
+      return float(cnt.FirstValue/1000.0);
+    }
+  }
+  
+  if (!m_cores.empty())
+    return float(m_cores.begin()->second.m_fSpeed);
   else
     return 0.f;
 #elif defined(TARGET_FREEBSD)
@@ -510,6 +551,7 @@ bool CCPUInfo::getTemperature(CTemperature& temperature)
   int         value = 0;
   char        scale = 0;
   
+#ifdef TARGET_POSIX
 #if defined(TARGET_DARWIN_OSX)
   value = SMCGetTemperature(SMC_KEY_CPU_TEMP);
   scale = 'c';
@@ -555,6 +597,7 @@ bool CCPUInfo::getTemperature(CTemperature& temperature)
   if (ret != 2)
     return false; 
 #endif
+#endif // TARGET_POSIX
 
   if (scale == 'C' || scale == 'c')
     temperature = CTemperature::CreateFromCelsius(value);
@@ -608,17 +651,39 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
   idle = coreIdle = ulTime.QuadPart;
 
   nice = 0;
-
-  coreUser -= m_cores[0].m_user;
-  coreSystem -= m_cores[0].m_system;
-  coreIdle -= m_cores[0].m_idle;
-  m_cores[0].m_fPct = ((double)(coreUser + coreSystem - coreIdle) * 100.0) / (double)(coreUser + coreSystem);
-  m_cores[0].m_user += coreUser;
-  m_cores[0].m_system += coreSystem;
-  m_cores[0].m_idle += coreIdle;
-
   io = 0;
 
+  if (m_cpuFreqCounter && PdhCollectQueryData(m_cpuQueryLoad) == ERROR_SUCCESS)
+  {
+    for (std::map<int, CoreInfo>::iterator it = m_cores.begin(); it != m_cores.end(); ++it)
+    {
+      CoreInfo& curCore = it->second; // simplify usage
+      PDH_RAW_COUNTER cnt;
+      DWORD cntType;
+      if (curCore.m_coreCounter && PdhGetRawCounterValue(curCore.m_coreCounter, &cntType, &cnt) == ERROR_SUCCESS &&
+          (cnt.CStatus == PDH_CSTATUS_VALID_DATA || cnt.CStatus == PDH_CSTATUS_NEW_DATA))
+      {
+        const LONGLONG coreTotal = cnt.SecondValue,
+                       coreIdle  = cnt.FirstValue;
+        const LONGLONG deltaTotal = coreTotal - curCore.m_total,
+                       deltaIdle  = coreIdle - curCore.m_idle;
+        const double load = (double(deltaTotal - deltaIdle) * 100.0) / double(deltaTotal);
+        
+        // win32 has some problems with calculation of load if load close to zero
+        curCore.m_fPct = (load < 0) ? 0 : load;
+        if (load >= 0 || deltaTotal > 5 * 10 * 1000 * 1000) // do not update (smooth) values for 5 seconds on negative loads
+        {
+          curCore.m_total = coreTotal;
+          curCore.m_idle = coreIdle;
+        }
+      }
+      else
+        curCore.m_fPct = (double(coreUser + coreSystem - coreIdle) * 100.0) / double(coreUser + coreSystem); // use CPU average as fallback
+    }
+  }
+  else
+    for (std::map<int, CoreInfo>::iterator it = m_cores.begin(); it != m_cores.end(); ++it)
+      it->second.m_fPct = (double(coreUser + coreSystem - coreIdle) * 100.0) / double(coreUser + coreSystem); // use CPU average as fallback
 #elif defined(TARGET_FREEBSD)
   long *cptimes;
   size_t len;

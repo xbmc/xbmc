@@ -27,6 +27,12 @@
 #include <map>
 #include "threads/SystemClock.h"
 
+#ifdef TARGET_WINDOWS
+// avoid inclusion of <windows.h> and others
+typedef void* HANDLE;
+typedef HANDLE PDH_HQUERY;
+typedef HANDLE PDH_HCOUNTER;
+#endif
 class CTemperature;
 
 #define CPU_FEATURE_MMX      1 << 0
@@ -47,18 +53,27 @@ struct CoreInfo
   int    m_id;
   double m_fSpeed;
   double m_fPct;
+#ifdef TARGET_POSIX
   unsigned long long m_user;
   unsigned long long m_nice;
   unsigned long long m_system;
-  unsigned long long m_idle;
   unsigned long long m_io;
+#elif defined(TARGET_WINDOWS)
+  PDH_HCOUNTER m_coreCounter;
+  unsigned long long m_total;
+#endif
+  unsigned long long m_idle;
   std::string m_strVendor;
   std::string m_strModel;
   std::string m_strBogoMips;
   std::string m_strHardware;
   std::string m_strRevision;
   std::string m_strSerial;
+#ifdef TARGET_POSIX
   CoreInfo() : m_id(0), m_fSpeed(.0), m_fPct(.0), m_user(0LL), m_nice(0LL), m_system(0LL), m_idle(0LL), m_io(0LL) {}
+#elif defined(TARGET_WINDOWS)
+  CoreInfo() : m_id(0), m_fSpeed(.0), m_fPct(.0), m_total(0LL), m_idle(0LL), m_coreCounter(NULL) {}
+#endif
   bool operator<(const CoreInfo& other) { return m_id < other.m_id; }
 };
 
@@ -91,9 +106,15 @@ private:
   void ReadCPUFeatures();
   bool HasNeon();
 
+#ifdef TARGET_POSIX
   FILE* m_fProcStat;
   FILE* m_fProcTemperature;
   FILE* m_fCPUFreq;
+#elif defined(TARGET_WINDOWS)
+  PDH_HQUERY m_cpuQueryFreq;
+  PDH_HQUERY m_cpuQueryLoad;
+  PDH_HCOUNTER m_cpuFreqCounter;
+#endif
 
   unsigned long long m_userTicks;
   unsigned long long m_niceTicks;
