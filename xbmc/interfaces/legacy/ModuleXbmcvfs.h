@@ -56,6 +56,9 @@ namespace XBMCAddon
      * 
      * file        : file to rename\n
      * newFileName : new filename, including the full path
+     *
+     * *Note, moving files between different filesystem (eg. local to nfs://) is not possible on\n
+     *        all platforms. You may have to do it manually by using the copy and deleteFile functions.\n
      * 
      * example:
      *   - success = xbmcvfs.rename(file,newFileName)
