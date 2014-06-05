@@ -32,9 +32,17 @@
 
 #include <sstream>
 
-#define CA_MAX_CHANNELS 8
+#define CA_MAX_CHANNELS 16
 static enum AEChannel CAChannelMap[CA_MAX_CHANNELS + 1] = {
   AE_CH_FL , AE_CH_FR , AE_CH_BL , AE_CH_BR , AE_CH_FC , AE_CH_LFE , AE_CH_SL , AE_CH_SR ,
+  AE_CH_UNKNOWN1 ,
+  AE_CH_UNKNOWN2 ,
+  AE_CH_UNKNOWN3 ,
+  AE_CH_UNKNOWN4 ,
+  AE_CH_UNKNOWN5 ,
+  AE_CH_UNKNOWN6 ,
+  AE_CH_UNKNOWN7 ,
+  AE_CH_UNKNOWN8 ,
   AE_CH_NULL
 };
 
