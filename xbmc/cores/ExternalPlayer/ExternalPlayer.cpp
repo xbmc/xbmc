@@ -322,6 +322,8 @@ void CExternalPlayer::Process()
     CLog::Log(LOGERROR,"%s: AudioEngine did not suspend before launching external player", __FUNCTION__);
   }
 
+  m_callback.OnPlayBackStarted();
+
   BOOL ret = TRUE;
 #if defined(TARGET_WINDOWS)
   ret = ExecuteAppW32(strFName.c_str(),strFArgs.c_str());
