@@ -123,8 +123,10 @@ void CWinSystemX11GL::SetVSyncImpl(bool enable)
 
   m_iVSyncErrors = 0;
 
-  if(!enable)
+  if(!enable) {
+    m_iVSyncMode = 0;
     return;
+  }
 
   /* already determined a good method? */
   if (m_iVSyncMode != 0)
