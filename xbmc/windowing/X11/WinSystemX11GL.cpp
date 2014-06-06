@@ -83,11 +83,11 @@ bool CWinSystemX11GL::PresentRenderImpl(const CDirtyRegionList& dirty)
     if(m_glXGetVideoSyncSGI(&before) != 0)
       CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Failed to get current retrace count", __FUNCTION__);
 
-    if(m_glXWaitVideoSyncSGI(2, (before+1)%2, &swap) != 0)
-      CLog::Log(LOGERROR, "%s - glXWaitVideoSyncSGI - Returned error", __FUNCTION__);
-
     glXSwapBuffers(m_dpy, m_glWindow);
     glFinish();
+
+    if(m_glXWaitVideoSyncSGI(2, (before+1)%2, &swap) != 0)
+      CLog::Log(LOGERROR, "%s - glXWaitVideoSyncSGI - Returned error", __FUNCTION__);
 
     if(m_glXGetVideoSyncSGI(&after) != 0)
       CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Failed to get current retrace count", __FUNCTION__);
