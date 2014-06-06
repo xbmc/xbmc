@@ -126,19 +126,24 @@ void CWinSystemX11GL::SetVSyncImpl(bool enable)
   if(!enable)
     return;
 
-  if (m_glXSwapIntervalEXT && !m_iVSyncMode)
+  /* already determined a good method? */
+  if (m_iVSyncMode != 0)
+    return;
+
+  if (m_glXSwapIntervalEXT)
   {
     m_glXSwapIntervalEXT(m_dpy, m_glWindow, 1);
     m_iVSyncMode = 6;
   }
-  if (m_glXSwapIntervalMESA && !m_iVSyncMode)
+  else if (m_glXSwapIntervalMESA)
   {
     if(m_glXSwapIntervalMESA(1) == 0)
       m_iVSyncMode = 2;
     else
       CLog::Log(LOGWARNING, "%s - glXSwapIntervalMESA failed", __FUNCTION__);
   }
-  if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI && !m_iVSyncMode)
+
+  if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI)
   {
     unsigned int count;
     if(m_glXGetVideoSyncSGI(&count) == 0)
