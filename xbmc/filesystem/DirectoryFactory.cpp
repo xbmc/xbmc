@@ -46,6 +46,9 @@
 #include "utils/log.h"
 #include "network/WakeOnAccess.h"
 
+#ifdef TARGET_POSIX
+#include "posix/PosixDirectory.h"
+#endif
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
 #include "windows/WINSMBDirectory.h"
@@ -135,7 +138,11 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
 
   CStdString strProtocol = url.GetProtocol();
 
+#ifdef TARGET_POSIX
+  if (strProtocol.size() == 0 || strProtocol == "file") return new CPosixDirectory();
+#else
   if (strProtocol.size() == 0 || strProtocol == "file") return new CHDDirectory();
+#endif
   if (strProtocol == "special") return new CSpecialProtocolDirectory();
   if (strProtocol == "sources") return new CSourcesDirectory();
   if (strProtocol == "addons") return new CAddonsDirectory();

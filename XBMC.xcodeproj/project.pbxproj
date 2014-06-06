@@ -288,6 +288,9 @@
 		7C99B7951340723F00FC2B16 /* GUIDialogPlayEject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B7931340723F00FC2B16 /* GUIDialogPlayEject.cpp */; };
 		7CAA20511079C8160096DE39 /* BaseRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */; };
 		7CAA25351085963B0096DE39 /* PasswordManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA25331085963B0096DE39 /* PasswordManager.cpp */; };
+		7CAA469019427AED00008885 /* PosixDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA468E19427AED00008885 /* PosixDirectory.cpp */; };
+		7CAA469119427AED00008885 /* PosixDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA468E19427AED00008885 /* PosixDirectory.cpp */; };
+		7CAA469219427AED00008885 /* PosixDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA468E19427AED00008885 /* PosixDirectory.cpp */; };
 		7CBEBB8412912BA400431822 /* fstrcmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 7CBEBB8212912BA300431822 /* fstrcmp.c */; };
 		7CC30DB116291A5C003E7579 /* MusicThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC30DAF16291A5C003E7579 /* MusicThumbLoader.cpp */; };
 		7CC30DC016291C2C003E7579 /* VideoThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC30DBE16291C2C003E7579 /* VideoThumbLoader.cpp */; };
@@ -4223,6 +4226,8 @@
 		7CAA25341085963B0096DE39 /* PasswordManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PasswordManager.h; sourceTree = "<group>"; };
 		7CAA25371085971C0096DE39 /* MusicArtistInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicArtistInfo.h; sourceTree = "<group>"; };
 		7CAA25381085971C0096DE39 /* ScraperUrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScraperUrl.h; sourceTree = "<group>"; };
+		7CAA468E19427AED00008885 /* PosixDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PosixDirectory.cpp; sourceTree = "<group>"; };
+		7CAA468F19427AED00008885 /* PosixDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PosixDirectory.h; sourceTree = "<group>"; };
 		7CBEBB8212912BA300431822 /* fstrcmp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fstrcmp.c; sourceTree = "<group>"; };
 		7CC30DAF16291A5C003E7579 /* MusicThumbLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicThumbLoader.cpp; sourceTree = "<group>"; };
 		7CC30DB016291A5C003E7579 /* MusicThumbLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicThumbLoader.h; sourceTree = "<group>"; };
@@ -7446,6 +7451,15 @@
 			name = osx;
 			sourceTree = "<group>";
 		};
+		7CAA468D19427AED00008885 /* posix */ = {
+			isa = PBXGroup;
+			children = (
+				7CAA468E19427AED00008885 /* PosixDirectory.cpp */,
+				7CAA468F19427AED00008885 /* PosixDirectory.h */,
+			);
+			path = posix;
+			sourceTree = "<group>";
+		};
 		7CCD9F52192753E30074CF51 /* Source */ = {
 			isa = PBXGroup;
 			children = (
@@ -9238,6 +9252,7 @@
 				E38E17430D25F9FA00618676 /* PlaylistFileDirectory.h */,
 				E38E17440D25F9FA00618676 /* PluginDirectory.cpp */,
 				E38E17450D25F9FA00618676 /* PluginDirectory.h */,
+				7CAA468D19427AED00008885 /* posix */,
 				C8482905156CFF24005A996F /* PVRDirectory.cpp */,
 				C8482906156CFF24005A996F /* PVRDirectory.h */,
 				C8482907156CFF24005A996F /* PVRFile.cpp */,
@@ -11854,6 +11869,7 @@
 				7CCDACB019275D1F0074CF51 /* NptStdcEnvironment.cpp in Sources */,
 				7CCDACC119275D790074CF51 /* NptAppleAutoreleasePool.mm in Sources */,
 				7CCDACCA19275D790074CF51 /* NptAppleLogConfig.mm in Sources */,
+				7CAA469019427AED00008885 /* PosixDirectory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13049,6 +13065,7 @@
 				7CCDACB219275D1F0074CF51 /* NptStdcEnvironment.cpp in Sources */,
 				7CCDACC319275D790074CF51 /* NptAppleAutoreleasePool.mm in Sources */,
 				7CCDACCC19275D790074CF51 /* NptAppleLogConfig.mm in Sources */,
+				7CAA469219427AED00008885 /* PosixDirectory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14246,6 +14263,7 @@
 				7CCDACB119275D1F0074CF51 /* NptStdcEnvironment.cpp in Sources */,
 				7CCDACC219275D790074CF51 /* NptAppleAutoreleasePool.mm in Sources */,
 				7CCDACCB19275D790074CF51 /* NptAppleLogConfig.mm in Sources */,
+				7CAA469119427AED00008885 /* PosixDirectory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
