@@ -11,7 +11,6 @@ xcopy include\ogg "%CUR_PATH%\include\ogg" /E /Q /I /Y
 xcopy include\vorbis "%CUR_PATH%\include\vorbis" /E /Q /I /Y
 copy bin\ogg.dll "%XBMC_PATH%\system\cdrip\" /Y
 copy bin\vorbis.dll "%XBMC_PATH%\system\cdrip\" /Y
-copy bin\vorbisenc.dll "%XBMC_PATH%\system\cdrip\" /Y
 copy bin\vorbisfile.dll "%XBMC_PATH%\system\players\paplayer\" /Y
 
 cd %LOC_PATH%
