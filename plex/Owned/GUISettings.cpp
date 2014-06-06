@@ -317,7 +317,8 @@ void CGUISettings::Initialize()
   AddInt(NULL, "input.appleremotesequencetime", 13603, 500, 50, 50, 1000, SPIN_CONTROL_INT_PLUS, MASK_MS, TEXT_OFF);
   AddSeparator(in, "input.sep1");
 #endif
-  AddBool(in, "input.remoteaskeyboard", 21449, false);
+  /* PLEX - Defaulted to true */
+  AddBool(in, "input.remoteaskeyboard", 21449, true);
 #if defined(TARGET_DARWIN_IOS)
   AddBool(NULL, "input.enablemouse", 21369, false);
 #else
