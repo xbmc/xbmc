@@ -641,7 +641,8 @@ namespace VIDEO
   {
     // enumerate episodes
     EPISODELIST files;
-    EnumerateSeriesFolder(item, files);
+    if (!EnumerateSeriesFolder(item, files))
+      return INFO_HAVE_ALREADY;
     if (files.size() == 0) // no update or no files
       return INFO_NOT_NEEDED;
 
@@ -653,30 +654,58 @@ namespace VIDEO
     return OnProcessSeriesFolder(files, scraper, useLocal, showInfo, progress);
   }
 
-  void CVideoInfoScanner::EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList)
+  bool CVideoInfoScanner::EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList)
   {
     CFileItemList items;
+    CStdStringArray regexps = g_advancedSettings.m_tvshowExcludeFromScanRegExps;
+
+    bool bSkip = false;
 
     if (item->m_bIsFolder)
     {
-      CUtil::GetRecursiveListing(item->GetPath(), items, g_advancedSettings.m_videoExtensions, DIR_FLAG_DEFAULTS);
       CStdString hash, dbHash;
-      int numFilesInFolder = GetPathHash(items, hash);
-
-      if (m_database.GetPathHash(item->GetPath(), dbHash) && dbHash == hash)
+      hash = GetRecursiveFastHash(item->GetPath(), regexps);
+      if (m_database.GetPathHash(item->GetPath(), dbHash) && !hash.empty() && dbHash == hash)
       {
-        m_currentItem += numFilesInFolder;
+        // fast hashes match - no need to process anything
+        bSkip = true;
+      }
 
+      // fast hash cannot be computed or we need to rescan. fetch the listing.
+      if (!bSkip)
+      {
+        int flags = DIR_FLAG_DEFAULTS;
+        if (!hash.empty())
+          flags |= DIR_FLAG_NO_FILE_INFO;
+
+        CUtil::GetRecursiveListing(item->GetPath(), items, g_advancedSettings.m_videoExtensions, flags);
+
+        // fast hash failed - compute slow one
+        if (hash.empty())
+        {
+          GetPathHash(items, hash);
+          if (dbHash == hash)
+          {
+            // slow hashes match - no need to process anything
+            bSkip = true;
+          }
+        }
+      }
+
+      if (bSkip)
+      {
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change", CURL::GetRedacted(item->GetPath()).c_str());
         // update our dialog with our progress
         if (m_handle)
-        {
-          if (m_itemCount>0)
-            m_handle->SetPercentage(m_currentItem*100.f/m_itemCount);
-
           OnDirectoryScanned(item->GetPath());
-        }
-        return;
+        return false;
       }
+
+      if (dbHash.empty())
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Scanning dir '%s' as not in the database", CURL::GetRedacted(item->GetPath()).c_str());
+      else
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '%s' due to change (%s != %s)", CURL::GetRedacted(item->GetPath()).c_str(), dbHash.c_str(), hash.c_str());
+
       m_pathsToClean.insert(m_database.GetPathId(item->GetPath()));
       m_database.GetPathsForTvShow(m_database.GetTvShowId(item->GetPath()), m_pathsToClean);
       item->SetProperty("hash", hash);
@@ -735,8 +764,6 @@ namespace VIDEO
     }
 
     // enumerate
-    CStdStringArray regexps = g_advancedSettings.m_tvshowExcludeFromScanRegExps;
-
     for (int i=0;i<items.Size();++i)
     {
       if (items[i]->m_bIsFolder)
@@ -762,6 +789,7 @@ namespace VIDEO
       if (!EnumerateEpisodeItem(items[i].get(), episodeList))
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Could not enumerate file %s", CURL::GetRedacted(CURL::Decode(items[i]->GetPath())).c_str());
     }
+    return true;
   }
 
   bool CVideoInfoScanner::ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList)
@@ -1694,6 +1722,44 @@ namespace VIDEO
         md5state.getDigest(pathHash);
         return pathHash;
       }
+    }
+    return "";
+  }
+
+  CStdString CVideoInfoScanner::GetRecursiveFastHash(const CStdString &directory, const CStdStringArray &excludes) const
+  {
+    CFileItemList items;
+    items.Add(CFileItemPtr(new CFileItem(directory, true)));
+    CUtil::GetRecursiveDirsListing(directory, items, DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
+
+    XBMC::XBMC_MD5 md5state;
+
+    if (excludes.size())
+      md5state.append(StringUtils::JoinString(excludes, "|"));
+
+    int64_t time = 0;
+    for (int i=0; i < items.Size(); ++i)
+    {
+      int64_t stat_time = 0;
+      struct __stat64 buffer;
+      if (XFILE::CFile::Stat(items[i]->GetPath(), &buffer) == 0)
+      {
+        // TODO: some filesystems may return the mtime/ctime inline, in which case this is
+        // unnecessarily expensive. Consider supporting Stat() in our directory cache?
+        stat_time = buffer.st_mtime ? buffer.st_mtime : buffer.st_ctime;
+        time += stat_time;
+      }
+
+      if (!stat_time)
+        return "";
+    }
+
+    if (time)
+    {
+      md5state.append((unsigned char *)&time, sizeof(time));
+      CStdString pathHash;
+      md5state.getDigest(pathHash);
+      return pathHash;
     }
     return "";
   }

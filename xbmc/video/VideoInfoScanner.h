@@ -193,6 +193,18 @@ namespace VIDEO
      */
     CStdString GetFastHash(const CStdString &directory, const CStdStringArray &excludes) const;
 
+    /*! \brief Retrieve a "fast" hash of the given directory recursively (if available)
+     Performs a stat() on the directory, and uses modified time to create a "fast"
+     hash of each folder. If no modified time is available, the create time is used,
+     and if neither are available, an empty hash is returned.
+     In case exclude from scan expressions are present, the string array will be appended
+     to the md5 hash to ensure we're doing a re-scan whenever the user modifies those.
+     \param directory folder to hash (recursively)
+     \param excludes string array of exclude expressions
+     \return the md5 hash of the folder
+     */
+    CStdString GetRecursiveFastHash(const CStdString &directory, const CStdStringArray &excludes) const;
+
     /*! \brief Decide whether a folder listing could use the "fast" hash
      Fast hashing can be done whenever the folder contains no scannable subfolders, as the
      fast hash technique uses modified time to determine when folder content changes, which
@@ -216,7 +228,7 @@ namespace VIDEO
      */
     INFO_RET OnProcessSeriesFolder(EPISODELIST& files, const ADDON::ScraperPtr &scraper, bool useLocal, const CVideoInfoTag& showInfo, CGUIDialogProgress* pDlgProgress = NULL);
 
-    void EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList);
+    bool EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList);
     bool EnumerateEpisodeItem(const CFileItem *item, EPISODELIST& episodeList);
     bool ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList);
 
