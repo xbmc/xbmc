@@ -547,6 +547,31 @@ bool CCoreAudioDevice::GetPreferredChannelLayout(CCoreAudioChannelLayout& layout
   return (ret == noErr);
 }
 
+bool CCoreAudioDevice::GetPreferredChannelLayoutForStereo(CCoreAudioChannelLayout &layout)
+{
+  if (!m_DeviceId)
+    return false;
+  
+  AudioObjectPropertyAddress  propertyAddress;
+  propertyAddress.mScope    = kAudioDevicePropertyScopeOutput;
+  propertyAddress.mElement  = 0;
+  propertyAddress.mSelector = kAudioDevicePropertyPreferredChannelsForStereo;
+
+  UInt32 channels[2];// this will receive the channel labels
+  UInt32 propertySize = sizeof(channels);
+
+  OSStatus ret = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &propertySize, &channels);
+  if (ret != noErr)
+    CLog::Log(LOGERROR, "CCoreAudioDevice::GetPreferredChannelLayoutForStereo: "
+              "Unable to retrieve preferred channel layout. Error = %s", GetError(ret).c_str());
+  else
+  {
+    // Copy/generate a layout into the result into the caller's instance
+    layout.CopyLayoutForStereo(channels);
+  }
+  return (ret == noErr);
+}
+
 bool CCoreAudioDevice::GetDataSources(CoreAudioDataSourceList* pList)
 {
   if (!pList || !m_DeviceId)
