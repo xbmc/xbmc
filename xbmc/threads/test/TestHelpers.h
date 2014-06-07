@@ -78,6 +78,10 @@ public:
   }
 
   inline thread() : f(NULL), cthread(NULL) {}
+  ~thread()
+  {
+    delete cthread;
+  }
 
   /**
    * Gcc-4.2 requires this to be 'const' to find the right constructor.
