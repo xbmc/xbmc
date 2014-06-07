@@ -62,12 +62,12 @@ CFileDirectoryFactory::~CFileDirectoryFactory(void)
 {}
 
 // return NULL + set pItem->m_bIsFolder to remove it completely from list.
-IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileItem* pItem, const CStdString& strMask)
+IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem, const CStdString& strMask)
 {
-  const CURL url(strPath);
-  if (URIUtils::IsStack(strPath)) // disqualify stack as we need to work with each of the parts instead
+  if (url.GetProtocol() == "stack") // disqualify stack as we need to work with each of the parts instead
     return NULL;
 
+  const CStdString strPath = url.Get();
   CStdString strExtension=URIUtils::GetExtension(strPath);
   StringUtils::ToLower(strExtension);
 
@@ -84,7 +84,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
     delete pDir;
     return NULL;
   }
-  if (strExtension.Equals(".nsf") && CFile::Exists(strPath))
+  if (strExtension.Equals(".nsf") && CFile::Exists(url))
   {
     IFileDirectory* pDir=new CNSFFileDirectory;
     //  Has the nsf file more than one track?
@@ -94,7 +94,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
     delete pDir;
     return NULL;
   }
-  if (strExtension.Equals(".sid") && CFile::Exists(strPath))
+  if (strExtension.Equals(".sid") && CFile::Exists(url))
   {
     IFileDirectory* pDir=new CSIDFileDirectory;
     //  Has the sid file more than one track?
@@ -105,7 +105,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
     return NULL;
   }
 #ifdef HAS_ASAP_CODEC
-  if (ASAPCodec::IsSupportedFormat(strExtension) && CFile::Exists(strPath))
+  if (ASAPCodec::IsSupportedFormat(strExtension) && CFile::Exists(url))
   {
     IFileDirectory* pDir=new CASAPFileDirectory;
     //  Has the asap file more than one track?

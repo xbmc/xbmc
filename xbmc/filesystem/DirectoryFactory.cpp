@@ -126,14 +126,13 @@ using namespace XFILE;
  \return IDirectory object to access the directories on the share.
  \sa IDirectory
  */
-IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
+IDirectory* CDirectoryFactory::Create(const CURL& url)
 {
-  CURL url(strPath);
   if (!CWakeOnAccess::Get().WakeUpHost(url))
     return NULL;
 
-  CFileItem item(strPath, false);
-  IFileDirectory* pDir=CFileDirectoryFactory::Create(strPath, &item);
+  CFileItem item(url.Get(), false);
+  IFileDirectory* pDir=CFileDirectoryFactory::Create(url, &item);
   if (pDir)
     return pDir;
 
@@ -179,7 +178,10 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
   if (strProtocol == "library") return new CLibraryDirectory();
   if (strProtocol == "favourites") return new CFavouritesDirectory();
   if (strProtocol == "filereader")
-    return CDirectoryFactory::Create(url.GetFileName());
+  {
+    CURL url2(url.GetFileName());
+    return CDirectoryFactory::Create(url2);
+  }
 #if defined(TARGET_ANDROID)
   if (strProtocol == "androidapp") return new CAndroidAppDirectory();
 #endif
