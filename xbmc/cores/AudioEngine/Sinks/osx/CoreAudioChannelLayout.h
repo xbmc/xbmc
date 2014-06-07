@@ -79,6 +79,7 @@ public:
   operator AudioChannelLayout*() {return m_pLayout;}
 
   bool                CopyLayout(AudioChannelLayout &layout);
+  bool                CopyLayoutForStereo(UInt32 layout[2]);
   static UInt32       GetChannelCountForLayout(AudioChannelLayout &layout);
   static const char*  ChannelLabelToString(UInt32 label);
   static const char*  ChannelLayoutToString(AudioChannelLayout &layout, std::string &str);

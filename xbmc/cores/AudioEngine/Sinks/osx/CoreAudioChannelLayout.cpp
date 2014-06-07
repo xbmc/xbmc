@@ -105,6 +105,34 @@ bool CCoreAudioChannelLayout::CopyLayout(AudioChannelLayout& layout)
   return (ret == noErr);
 }
 
+bool CCoreAudioChannelLayout::CopyLayoutForStereo(UInt32 layout[2])
+{
+  enum {
+    kVariableLengthArray_deprecated = 1
+  };
+  
+  free(m_pLayout);
+  m_pLayout = NULL;
+  
+  UInt32 channels = 2;
+  UInt32 size = sizeof(AudioChannelLayout) + (channels - kVariableLengthArray_deprecated) * sizeof(AudioChannelDescription);
+  
+  m_pLayout = (AudioChannelLayout*)malloc(size);
+  m_pLayout->mChannelLayoutTag = kAudioChannelLayoutTag_UseChannelDescriptions;
+  m_pLayout->mNumberChannelDescriptions = 2;//stereo
+
+  AudioChannelDescription desc;
+  desc.mChannelFlags = kAudioChannelFlags_AllOff;
+  memset(desc.mCoordinates, 0, sizeof(desc.mCoordinates));
+
+  desc.mChannelLabel = layout[0];// label for channel 1
+  m_pLayout->mChannelDescriptions[0] = desc;
+
+  desc.mChannelLabel = layout[1];// label for channel 2
+  m_pLayout->mChannelDescriptions[1] = desc;
+  return true;
+}
+
 UInt32 CCoreAudioChannelLayout::GetChannelCountForLayout(AudioChannelLayout& layout)
 {
   UInt32 channels = 0;
