@@ -30,6 +30,7 @@
 #include "utils/StringUtils.h"
 #include "threads/Condition.h"
 #include "threads/CriticalSection.h"
+#include "utils/TimeUtils.h"
 
 #include <sstream>
 
@@ -567,7 +568,9 @@ CAESinkDARWINOSX::CAESinkDARWINOSX()
   m_frameSizePerPlane(0),
   m_framesPerSecond(0),
   m_buffer(NULL),
-  m_started(false)
+  m_started(false),
+  m_render_tick(0),
+  m_render_delay(0.0)
 {
   // By default, kAudioHardwarePropertyRunLoop points at the process's main thread on SnowLeopard,
   // If your process lacks such a run loop, you can set kAudioHardwarePropertyRunLoop to NULL which
@@ -851,17 +854,27 @@ void CAESinkDARWINOSX::Deinitialize()
   m_started = false;
 }
 
-double CAESinkDARWINOSX::GetDelay()
+void CAESinkDARWINOSX::GetDelay(AEDelayStatus& status)
 {
-  if (m_buffer)
+  /* lockless way of guaranteeing consistency of tick/delay/buffer,
+   * this work since render callback is short and quick and higher
+   * priority compared to this thread, unsigned int are assumed
+   * aligned and having atomic read/write */
+  unsigned int size;
+  CAESpinLock lock(m_render_locker);
+  do
   {
-    // Calculate the duration of the data in the cache
-    double delay = (double)m_buffer->GetReadSize() / (double)m_frameSizePerPlane;
-    delay += (double)m_latentFrames;
-    delay /= (double)m_framesPerSecond;
-    return delay;
-  }
-  return 0.0;
+    status.tick  = m_render_tick;
+    status.delay = m_render_delay;
+    if(m_buffer)
+      size = m_buffer->GetReadSize();
+    else
+      size = 0;
+
+  } while(lock.retry());
+
+  status.delay += (double)size / (double)m_frameSizePerPlane / (double)m_framesPerSecond;
+  status.delay += (double)m_latentFrames / (double)m_framesPerSecond;
 }
 
 double CAESinkDARWINOSX::GetCacheTotal()
@@ -949,6 +962,7 @@ OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTim
 {
   CAESinkDARWINOSX *sink = (CAESinkDARWINOSX*)inClientData;
 
+  sink->m_render_locker.enter(); /* grab lock */
   sink->m_started = true;
   if (outOutputData->mNumberBuffers)
   {
@@ -994,5 +1008,9 @@ OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTim
     // tell the sink we're good for more data
     condVar.notifyAll();
   }
+
+  sink->m_render_delay = (double)(inOutputTime->mHostTime - inNow->mHostTime) / CurrentHostFrequency();
+  sink->m_render_tick  = inNow->mHostTime;
+  sink->m_render_locker.leave();
   return noErr;
 }

@@ -791,7 +791,6 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
   unsigned int maxFrames;
   int retry = 0;
   unsigned int written = 0;
-  double sinkDelay = 0.0;
 
   switch(m_swapState)
   {
@@ -809,6 +808,8 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
     break;
   }
 
+  AEDelayStatus status;
+
   while(frames > 0)
   {
     maxFrames = std::min(frames, m_sinkFormat.m_frames);
@@ -821,7 +822,8 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
       {
         m_extError = true;
         CLog::Log(LOGERROR, "CActiveAESink::OutputSamples - failed");
-        m_stats->UpdateSinkDelay(0, frames);
+        status.SetDelay(0);
+        m_stats->UpdateSinkDelay(status, frames);
         return 0;
       }
       else
@@ -831,14 +833,16 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
     {
       m_extError = true;
       CLog::Log(LOGERROR, "CActiveAESink::OutputSamples - sink returned error");
-      m_stats->UpdateSinkDelay(0, samples->pool ? maxFrames : 0);
+      status.SetDelay(0);
+      m_stats->UpdateSinkDelay(status, samples->pool ? maxFrames : 0);
       return 0;
     }
     frames -= written;
-    sinkDelay = m_sink->GetDelay();
-    m_stats->UpdateSinkDelay(sinkDelay, samples->pool ? written : 0);
+
+    m_sink->GetDelay(status);
+    m_stats->UpdateSinkDelay(status, samples->pool ? written : 0);
   }
-  return sinkDelay*1000;
+  return status.delay;
 }
 
 void CActiveAESink::SwapInit(CSampleBuffer* samples)

@@ -28,6 +28,7 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/StdString.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
 #include "utils/CharsetConverter.h"
@@ -41,6 +42,7 @@ const CLSID CLSID_MMDeviceEnumerator = __uuidof(MMDeviceEnumerator);
 const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
 const IID IID_IAudioClient = __uuidof(IAudioClient);
 const IID IID_IAudioRenderClient = __uuidof(IAudioRenderClient);
+const IID IID_IAudioClock = __uuidof(IAudioClock);
 
 static const unsigned int WASAPISampleRateCount = 10;
 static const unsigned int WASAPISampleRates[] = {384000, 192000, 176400, 96000, 88200, 48000, 44100, 32000, 22050, 11025};
@@ -180,6 +182,7 @@ CAESinkWASAPI::CAESinkWASAPI() :
   m_pDevice(NULL),
   m_pAudioClient(NULL),
   m_pRenderClient(NULL),
+  m_pAudioClock(NULL),
   m_encodedFormat(AE_FMT_INVALID),
   m_encodedChannels(0),
   m_encodedSampleRate(0),
@@ -192,7 +195,8 @@ CAESinkWASAPI::CAESinkWASAPI() :
   m_uiBufferLen(0),
   m_avgTimeWaiting(50),
   m_sinkLatency(0.0),
-  m_lastWriteToBuffer(0),
+  m_sinkFrames(0),
+  m_clockFreq(0),
   m_pBuffer(NULL),
   m_bufferPtr(0)
 {
@@ -311,6 +315,12 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
   hr = m_pAudioClient->GetService(IID_IAudioRenderClient, (void**)&m_pRenderClient);
   EXIT_ON_FAILURE(hr, __FUNCTION__": Could not initialize the WASAPI render client interface.")
 
+  hr = m_pAudioClient->GetService(IID_IAudioClock, (void**)&m_pAudioClock);
+  EXIT_ON_FAILURE(hr, __FUNCTION__": Could not initialize the WASAPI audio clock interface.")
+
+  hr = m_pAudioClock->GetFrequency(&m_clockFreq);
+  EXIT_ON_FAILURE(hr, __FUNCTION__": Retrieval of IAudioClock::GetFrequency failed.")
+
   m_needDataEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
   hr = m_pAudioClient->SetEventHandle(m_needDataEvent);
   EXIT_ON_FAILURE(hr, __FUNCTION__": Could not set the WASAPI event handler.");
@@ -334,6 +344,7 @@ failed:
   SAFE_RELEASE(pEnumerator);
   SAFE_RELEASE(m_pRenderClient);
   SAFE_RELEASE(m_pAudioClient);
+  SAFE_RELEASE(m_pAudioClock);
   SAFE_RELEASE(m_pDevice);
   if(m_needDataEvent)
   {
@@ -355,6 +366,7 @@ void CAESinkWASAPI::Deinitialize()
     {
     m_pAudioClient->Stop();  //stop the audio output
     m_pAudioClient->Reset(); //flush buffer and reset audio clock stream position
+    m_sinkFrames = 0;
     }
     catch (...)
     {
@@ -367,6 +379,7 @@ void CAESinkWASAPI::Deinitialize()
 
   SAFE_RELEASE(m_pRenderClient);
   SAFE_RELEASE(m_pAudioClient);
+  SAFE_RELEASE(m_pAudioClock);
   SAFE_RELEASE(m_pDevice);
 
   m_initialized = false;
@@ -375,24 +388,34 @@ void CAESinkWASAPI::Deinitialize()
   m_bufferPtr = 0;
 }
 
-double CAESinkWASAPI::GetDelay()
+/**
+ * @brief rescale uint64_t without overflowing on large values
+ */
+static uint64_t rescale_u64(uint64_t val, uint64_t num, uint64_t den)
 {
+  return ((val / den) * num) + (((val % den) * num) / den);
+}
+
+
+void CAESinkWASAPI::GetDelay(AEDelayStatus& status)
+{
+  HRESULT hr;
+  uint64_t pos, tick;
+  int retries = 0;
+
   if (!m_initialized)
-    return 0.0;
+    goto failed;
 
-  double time_played = 0.0;
-  if (m_running)
-  {
-    unsigned int now = XbmcThreads::SystemClockMillis();
-    time_played = (double)(now-m_lastWriteToBuffer) / 1000;
-  }
+  do {
+    hr = m_pAudioClock->GetPosition(&pos, &tick);
+  } while (hr != S_OK && ++retries < 100);
+  EXIT_ON_FAILURE(hr, __FUNCTION__": Retrieval of IAudioClock::GetPosition failed.")
 
-  double delay = m_sinkLatency - time_played + (double)m_bufferPtr / (double)m_format.m_sampleRate;
-
-  if (delay < 0)
-    delay = 0.0;
-
-  return delay;
+  status.delay = (double)(m_sinkFrames + m_bufferPtr) / m_format.m_sampleRate - (double)pos / m_clockFreq;
+  status.tick  = rescale_u64(tick, CurrentHostFrequency(), 10000000); /* convert from 100ns back to qpc ticks */
+  return;
+failed:
+  status.SetDelay(0);
 }
 
 double CAESinkWASAPI::GetCacheTotal()
@@ -458,6 +481,8 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
       m_isDirty = true; //flag new device or re-init needed
       return INT_MAX;
     }
+    m_sinkFrames += NumFramesRequested;
+
     hr = m_pAudioClient->Start(); //start the audio driver running
     if (FAILED(hr))
       CLog::Log(LOGERROR, __FUNCTION__": AudioClient Start Failed");
@@ -514,7 +539,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
     #endif
     return INT_MAX;
   }
-  m_lastWriteToBuffer = XbmcThreads::SystemClockMillis();
+  m_sinkFrames += NumFramesRequested;
 
   if (FramesToCopy != frames)
   {
@@ -1313,6 +1338,7 @@ void CAESinkWASAPI::Drain()
     {
       m_pAudioClient->Stop();  //stop the audio output
       m_pAudioClient->Reset(); //flush buffer and reset audio clock stream position
+      m_sinkFrames = 0;
     }
     catch (...)
     {

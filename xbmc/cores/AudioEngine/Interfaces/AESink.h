@@ -23,6 +23,7 @@
 #include <stdint.h>
 #include "cores/AudioEngine/Interfaces/AE.h" // for typedef's used in derived classes
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 class IAESink
 {
@@ -69,6 +70,16 @@ public:
    * @return number of frames consumed by the sink
   */
   virtual unsigned int AddPackets(uint8_t **data, unsigned int frames, unsigned int offset) = 0;
+
+
+  /*!
+   * @brief Return a timestamped status structure with delay and sink info
+   * @param status structure filled with sink status
+  */
+  virtual void GetDelay(AEDelayStatus& status)
+  {
+    status.SetDelay(GetDelay());
+  }
 
   /*
     Drain the sink

@@ -30,6 +30,8 @@ using namespace ActiveAE;
 #include "settings/AdvancedSettings.h"
 #include "windowing/WindowingFactory.h"
 
+#include "utils/TimeUtils.h"
+
 #define MAX_CACHE_LEVEL 0.5   // total cache time of stream in seconds
 #define MAX_WATER_LEVEL 0.25  // buffered time after stream stages in seconds
 #define MAX_BUFFER_TIME 0.1   // max time of a buffer in seconds
@@ -37,18 +39,16 @@ using namespace ActiveAE;
 void CEngineStats::Reset(unsigned int sampleRate)
 {
   CSingleLock lock(m_lock);
-  m_sinkUpdate = XbmcThreads::SystemClockMillis();
-  m_sinkDelay = 0;
+  m_sinkDelay.SetDelay(0.0);
   m_sinkSampleRate = sampleRate;
   m_bufferedSamples = 0;
   m_suspended = false;
 }
 
-void CEngineStats::UpdateSinkDelay(double delay, int samples)
+void CEngineStats::UpdateSinkDelay(const AEDelayStatus& status, int samples)
 {
   CSingleLock lock(m_lock);
-  m_sinkUpdate = XbmcThreads::SystemClockMillis();
-  m_sinkDelay = delay;
+  m_sinkDelay = status;
   if (samples > m_bufferedSamples)
   {
     CLog::Log(LOGERROR, "CEngineStats::UpdateSinkDelay - inconsistency in buffer time");
@@ -77,33 +77,21 @@ void CEngineStats::AddSamples(int samples, std::list<CActiveAEStream*> &streams)
   }
 }
 
-float CEngineStats::GetDelay()
+void CEngineStats::GetDelay(AEDelayStatus& status)
 {
   CSingleLock lock(m_lock);
-  unsigned int now = XbmcThreads::SystemClockMillis();
-  float delay = m_sinkDelay - (double)(now-m_sinkUpdate) / 1000;
-  delay += (float)m_bufferedSamples / m_sinkSampleRate;
-
-  if (delay < 0)
-    delay = 0.0;
-
-  return delay;
+  status = m_sinkDelay;
+  status.delay += (double)m_bufferedSamples / m_sinkSampleRate;
 }
 
 // this is used to sync a/v so we need to add sink latency here
-float CEngineStats::GetDelay(CActiveAEStream *stream)
+void CEngineStats::GetDelay(AEDelayStatus& status, CActiveAEStream *stream)
 {
   CSingleLock lock(m_lock);
-  unsigned int now = XbmcThreads::SystemClockMillis();
-  float delay = m_sinkDelay - (double)(now-m_sinkUpdate) / 1000;
-  delay += m_sinkLatency;
-  delay += (float)m_bufferedSamples / m_sinkSampleRate;
+  GetDelay(status);
 
-  if (delay < 0)
-    delay = 0.0;
-
-  delay += stream->m_bufferedTime / stream->m_streamResampleRatio;
-  return delay;
+  status.delay += m_sinkLatency;
+  status.delay += stream->m_bufferedTime / stream->m_streamResampleRatio;
 }
 
 float CEngineStats::GetCacheTime(CActiveAEStream *stream)
@@ -587,7 +575,11 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
             if (m_extKeepConfig)
               m_extDrainTimer.Set(m_extKeepConfig);
             else
-              m_extDrainTimer.Set(m_stats.GetDelay() * 1000);
+            {
+              AEDelayStatus status;
+              m_stats.GetDelay(status);
+              m_extDrainTimer.Set(status.GetDelay() * 1000);
+            }
             m_extDrain = true;
           }
           m_extTimeout = 0;
@@ -1911,8 +1903,10 @@ bool CActiveAE::RunStages()
             }
             else
               CLog::Log(LOGWARNING,"ActiveAE::%s - viz ran out of free buffers", __FUNCTION__);
+            AEDelayStatus status;
+            m_stats.GetDelay(status);
             unsigned int now = XbmcThreads::SystemClockMillis();
-            unsigned int timestamp = now + m_stats.GetDelay() * 1000;
+            unsigned int timestamp = now + status.GetDelay() * 1000;
             busy |= m_vizBuffers->ResampleBuffers(timestamp);
             while(!m_vizBuffers->m_outputSamples.empty())
             {

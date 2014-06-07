@@ -25,6 +25,7 @@
 #include "cores/AudioEngine/Sinks/osx/CoreAudioStream.h"
 
 class AERingBuffer;
+class AEDelayStatus;
 
 class CAESinkDARWINOSX : public IAESink
 {
@@ -37,7 +38,8 @@ public:
   virtual bool Initialize(AEAudioFormat &format, std::string &device);
   virtual void Deinitialize();
 
-  virtual double       GetDelay        ();
+  virtual double       GetDelay        () { return 0.0; /* unused dummy */ }
+  virtual void         GetDelay(AEDelayStatus& status);
   virtual double       GetCacheTotal   ();
   virtual unsigned int AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset);
   virtual void         Drain           ();
@@ -60,4 +62,8 @@ private:
 
   AERingBuffer      *m_buffer;
   volatile bool      m_started;     // set once we get a callback from CoreAudio, which can take a little while.
+
+  CAESpinSection         m_render_locker;
+  volatile int64_t       m_render_tick;
+  volatile double        m_render_delay;
 };

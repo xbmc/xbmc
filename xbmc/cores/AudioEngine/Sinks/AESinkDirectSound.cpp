@@ -242,6 +242,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   memset(&dsbdesc, 0, sizeof(DSBUFFERDESC));
   dsbdesc.dwSize = sizeof(DSBUFFERDESC);
   dsbdesc.dwFlags = DSBCAPS_GETCURRENTPOSITION2 /** Better position accuracy */
+                  | DSBCAPS_TRUEPLAYPOSITION    /** Vista+ accurate position */
                   | DSBCAPS_GLOBALFOCUS;         /** Allows background playing */
 
   dsbdesc.dwBufferBytes = m_dwBufferLen;

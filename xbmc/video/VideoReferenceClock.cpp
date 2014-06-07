@@ -654,7 +654,7 @@ void CVideoReferenceClock::RunD3D()
     if ((RasterStatus.InVBlank && LastLine > 0) || (RasterStatus.ScanLine < LastLine))
     {
       //calculate how many vblanks happened
-      Now = CurrentHostCounter();
+      Now = CurrentHostCounter() - m_SystemFrequency * RasterStatus.ScanLine / (m_Height * m_RefreshRate);
       VBlankTime = (double)(Now - LastVBlankTime) / (double)m_SystemFrequency;
       NrVBlanks = MathUtils::round_int(VBlankTime * (double)m_RefreshRate);
 
@@ -885,7 +885,7 @@ static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeSt
   void* pool = Cocoa_Create_AutoReleasePool();
 
   CVideoReferenceClock *VideoReferenceClock = reinterpret_cast<CVideoReferenceClock*>(displayLinkContext);
-  VideoReferenceClock->VblankHandler(inNow->hostTime, fps);
+  VideoReferenceClock->VblankHandler(inOutputTime->hostTime, fps);
 
   // Destroy the autorelease pool
   Cocoa_Destroy_AutoReleasePool(pool);
