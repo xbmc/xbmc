@@ -1,67 +1,73 @@
-[B]1.5.4[/B]
+v1.5.7
+- Fixed: append language to CreateSearchUrl cache file
+
+v1.5.6
 - Updated: language files from Transifex
 
-[B]1.5.3[/B]
+v1.5.4
+- Updated: language files from Transifex
+
+v1.5.3
 - Fixed: Language tag caching - round two (thx and credits to pgit)
 
-[B]1.5.2[/B]
+v1.5.2
 - Changed: Dropped the www from thetvdb URLs
 
-[B]1.5.1[/B]
+v1.5.1
 - Updated: Versioning for xbmc.metadata
 
-[B]1.5.0[/B]
+v1.5.0
 - Added: Language tag to caching (thx and credits to pgit)
 - Added: Caching for search results (thx and credits to pgit)
 - Removed: Poster preference as this is not needed for Frodo
 
-[B]1.4.5[/B]
+v1.4.5
 - Fixed: dvdorder setting won't apply in GetEpisodeDetails (thx and credits to scudlee)
 
-[B]1.4.4[/B]
+v1.4.4
 - Updated: language files from Transifex
 
-[B]1.4.3[/B]
+v1.4.3
 - Updated: language files from Transifex
 
-[B]1.4.2[/B]
+v1.4.2
 - Added: cache to GetTVDBId
 
-[B]1.4.1[/B]
+v1.4.1
 - Fixed: missing xml tag in GetTVDBId
 
-[B]1.4.0[/B]
+v1.4.0
 - Added: scraping of EpisodeID
 
-[B]1.3.1[/B]
+v1.3.1
 - Added: added back non-intentional removal of the imdb id lookup
 
-[B]1.3.0[/B]
+v1.3.0
 - Added: return the aspect attribute for thumb fields as banner or poster
 
-[B]1.2.4[/B]
+v1.2.4
 - Added: support for imdb url nfo's
 
-[B]1.2.3[/B]
+v1.2.3
 - Fixed: fixed broken scraping under certain circumtaces
 
-[B]1.2.2[/B]
+v1.2.2
 - Fixed: episodeguide url won't picked up sometimes
 
-[B]1.2.1[/B]
+v1.2.1
 - Fixed: won't parse longer search results
 
-[B]1.2.0[/B]
+v1.2.0
 - Added: episode runtime scraping
 
-[B]1.1.1[/B]
+v1.1.1
 - Fixed: episodeguide url won't picked up sometimes
 
-[B]1.1.0[/B]
+v1.1.0
 - Added: support decimals in episode numbers for DVD ordering
 
-[B]1.0.8[/B]
+v1.0.8
 - Fixed: fallback to other image languages if preferred doesn't exist
 
-[B]1.0.7[/B]
+v1.0.7
 - Fixed: season thumbs

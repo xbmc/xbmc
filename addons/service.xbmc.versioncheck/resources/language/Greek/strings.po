@@ -24,10 +24,6 @@ msgctxt "#32002"
 msgid "Visit XBMC.org for more information."
 msgstr "Επισκεφθείτε το XBMC.org για περισσότερες πληροφορίες."
 
-msgctxt "#32003"
-msgid "You are still using an older stable version of XBMC."
-msgstr "Χρησιμοποιείτε ακόμη μια παλιά σταθερή έκδοση του XBMC."
-
 msgctxt "#32004"
 msgid "You are still using an older RC version of XBMC."
 msgstr "Χρησιμοποιείτε ακόμη μια παλιά RC έκδοση του XBMC."
@@ -91,3 +87,7 @@ msgstr "Παρακαλώ εισάγετε τον κωδικό σας"
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
 msgstr "Linux: Αναβάθμιση όλου του συστήματος"
+
+msgctxt "#32024"
+msgid "Linux: Upgrade using apt"
+msgstr "Linux: Αναβάθμιση με χρήση apt"

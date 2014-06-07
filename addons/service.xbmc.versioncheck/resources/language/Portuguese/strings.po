@@ -18,15 +18,11 @@ msgstr ""
 
 msgctxt "#32001"
 msgid "We would like to recommend you to upgrade."
-msgstr "Gostaríamos de recomendar-lhe que actualizasse o XBMC."
+msgstr "Gostaríamos de lhe recomendar que actualizasse o XBMC."
 
 msgctxt "#32002"
 msgid "Visit XBMC.org for more information."
 msgstr "Visite xbmc.org para mais informação."
-
-msgctxt "#32003"
-msgid "You are still using an older stable version of XBMC."
-msgstr "Ainda está a usar uma versão estável antiga do XBMC."
 
 msgctxt "#32004"
 msgid "You are still using an older RC version of XBMC."
@@ -91,3 +87,7 @@ msgstr "Por favor, introduza a sua palavra-passe"
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
 msgstr "Linux: Actualização completa do sistema"
+
+msgctxt "#32024"
+msgid "Linux: Upgrade using apt"
+msgstr "Linux: Actualizar com apt"

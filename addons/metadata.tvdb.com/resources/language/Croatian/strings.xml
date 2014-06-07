@@ -4,7 +4,9 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
-    <string id="30002">Omogući "Fanart"</string>
-    <string id="30003">Preferirani poster</string>
+    <string id="30000">Koristi DVD poredak</string>
+    <string id="30001">Koristi potpuni poredak (Jedna sezona)</string>
+    <string id="30002">Omogući omote emisija</string>
+    <string id="30003">Preferiraj postere</string>
     <string id="30004">Jezik</string>
 </strings>

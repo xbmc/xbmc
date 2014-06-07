@@ -4,6 +4,8 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
+    <string id="30000">DVD オーダーを使用</string>
+    <string id="30001">完全オーダーを使用 (単一シーズン)</string>
     <string id="30002">ファンアートを有効に</string>
     <string id="30003">ポスターを使用</string>
     <string id="30004">言語</string>

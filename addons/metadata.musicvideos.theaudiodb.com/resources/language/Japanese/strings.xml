@@ -4,5 +4,6 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
-    <string id="30000">fanart.tv からアルバムサムネールを取得</string>
+    <string id="30000">fanart.tv からアルバムサムネイルを取得</string>
+    <string id="30001">theaudiodb.com からアルバムサムネイルを取得</string>
 </strings>

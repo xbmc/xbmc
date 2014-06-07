@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="service.xbmc.versioncheck"
        name="XBMC Version Check"
-      version="0.1.11"
+      version="0.1.21"
       provider-name="Team XBMC">
     <requires>
         <import addon="xbmc.addon" version="12.0.0"/>
@@ -10,76 +10,93 @@
     <extension point="xbmc.service" library="service.py" start="login"/>
     <extension point="xbmc.addon.metadata">
         <summary lang="be">XBMC Version Check checks if you are running latest released version.</summary>
-        <summary lang="bg">XBMC Version Check проверява ползвате ли най-новата версия на XBMC.</summary>
+        <summary lang="bg">Проверява дали ползвате най-новата версия на XBMC.</summary>
+        <summary lang="ca">XBMC Version Check comprova si està utilitzant la última versió publicada.</summary>
+        <summary lang="cs">Kontrola verze XBMC, zkontroluje, zda používáte nejnovější vydanou verzi.</summary>
         <summary lang="de">XBMC Version-Check prüft, ob die neuste Version von XBMC installiert ist.</summary>
         <summary lang="el">Ο Έλεγχος Έκδοσης XBMC εξετάζει αν έχετε την πιο πρόσφατη έκδοση του προγράμματος.</summary>
         <summary lang="en">XBMC Version Check checks if you are running latest released version.</summary>
+        <summary lang="en_NZ">XBMC Version Check checks if you are running latest released version.</summary>
         <summary lang="es">XBMC Version Check comprueba si está ejecutando la última versión de XBMC.</summary>
         <summary lang="es_MX">Comprobador de Version de XBMC  comprueba si se esta ejecutando ultima version publicada.</summary>
         <summary lang="fr">XBMC Version Check vérifie si vous utilisez la dernière version disponible.</summary>
+        <summary lang="fr_CA">Le contrôleur de version XBMC vérifie si vous utilisez la dernière version parue.</summary>
         <summary lang="gl">XBMC Version Check verifica se está a executar a última versión.</summary>
-        <summary lang="he">XBMC Version Check בודק אם אתה מפעיל את הגרסה הרשמית האחרונה.</summary>
+        <summary lang="he">בודק גרסת XBMC מוודא אם אתה מריץ את הגרסה הרשמית האחרונה.</summary>
         <summary lang="hr">XBMC provjeritelj inačice provjerava imate li posljednju inačicu izdanja.</summary>
         <summary lang="hu">Az XBMC verzió ellenőrző megvizsgálja, hogy a legújabb kiadást futtatja-e.</summary>
         <summary lang="id">XBMC Version Check mengecek apakah Anda menggunakan versi rilis terbaru.</summary>
         <summary lang="it">XBMC Version Check verifica se hai l'ultima versione rilasciata</summary>
         <summary lang="ko">XBMC Version Checks는 최신 정식 릴리즈 버전을 사용중인지 검사해줍니다.</summary>
+        <summary lang="lt">XBMC Version Check patikrina ar įdiegta naujiausia versiją.</summary>
         <summary lang="nl">XBMC Versie Check controleert of je de laatst beschikbare versie hebt.</summary>
         <summary lang="no">XBMC Versjonsettersyn sjekker om du kjører den sist utgitte versjonen.</summary>
-        <summary lang="pl">XBMC Version Check sprawdza czy używasz najnowszą wersję.</summary>
+        <summary lang="pl">Wtyczka sprawdza czy używasz najnowszą wersję XBMC.</summary>
         <summary lang="pt">O XBMC Version Check verifica se a sua versão de lançamento do XBMC está actualizada.</summary>
         <summary lang="pt_BR">XBMC Version Check verifica se você está executando a versão mais recente.</summary>
         <summary lang="ru">XBMC Version Check проверяет если вы используете последнюю версию</summary>
         <summary lang="sv">XBMC Version Check kontrollerar om du använder den senaste versionen.</summary>
-        <summary lang="zh">XBMC版本检查检查你使用的是否为最新发布的版本。</summary>
+        <summary lang="zh">XBMC 版本检查检查你使用的是否为最新发布的版本。</summary>
         <description lang="be">XBMC Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the xbmc.org website.</description>
         <description lang="bg">XBMC Version Check поддържа няколко платформи/дистрибуции. За повече информация посетете страницата www.xbmc.org.</description>
+        <description lang="ca">XBMC Version Check només és compatible amb una sèrie de plataformes / distribucions ja que les ultimes versions poden ser diferents entre elles. Per obtenir més informació, visiteu el lloc web xbmc.org.</description>
+        <description lang="cs">Kontrola verze XBMC podporuje pouze několik platforem/distribucí a verze mezi nimi se můžou lišit. Pro více informací navštivte webové stránky xbmc.org.</description>
         <description lang="de">XBMC Versions-Check unterstützt nur ein paar Plattformen/Distributionen, da sich die jeweiligen Veröffentlichungen unterscheiden können. Für weitere Informationen besuche die xbmc.org-Website.</description>
         <description lang="el">Ο Έλεγχος Έκδοσης XBMC υποστηρίζει μόνο ορισμένα λειτουργικά συστήματα/διανομές, καθώς οι εκδόσεις διαφέρουν για το καθένα. Για περισσότερες πληροφορίες επισκεφθείτε το xbmc.org</description>
         <description lang="en">XBMC Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the xbmc.org website.</description>
+        <description lang="en_NZ">XBMC Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the xbmc.org website.</description>
         <description lang="es">XBMC Version Check solo soporta un número limitado de plataformas/distribuciones, ya que los lanzamientos pueden diferir entre ellos. Para más información, visite la web de xbmc.org.</description>
         <description lang="fr">XBMC Version Check supporte seulement un nombre de plateformes/distributions qui peuvent varier entre elles. Visitez le site internet xbmc.org  pour plus d'informations.</description>
+        <description lang="fr_CA">Le contrôleur de version XBMC ne prend en charge qu'un certain nombre de plate-formes/distributions car les versions peuvent varier entre elles. Pour plus d'informations, visitez le site Web xbmc.org</description>
         <description lang="gl">XBMC Version Check só soporta un número limitado de plataformas/distribucións, xa que os lanzamentos poden diferir entre eles. Para máis información visitar o sitio web de xbmc.org.</description>
-        <description lang="he">XBMC Version Check תומך רק במספר פלטפורמות/הפצות מאחר שסימון הגרסאות שונה בין אחת לשניה. למידע נוסף בקר באתר xbmc.org.</description>
+        <description lang="he">בודק גרסת XBMC תומך רק במספר פלטפורמות/הפצות מאחר שסימון הגרסאות שונה בין אחת לשניה. למידע נוסף בקר באתר xbmc.org.</description>
         <description lang="hr">XBMC provjeritelj inačice samo podržava broj platformi/distribucija koliko to dopuštaju pojedina izdanja. Za više informacija posjetite xbmc.org web stranicu.</description>
         <description lang="hu">Az XBMC verzió-ellenőrző csak néhány platformot / disztribúciót támogat, mert a kiadások között különbségek lehetnek. További információkért keresse fel az xbmc.org oldalt.</description>
         <description lang="id">XBMC Version Check hanya mendukung beberapa platform/distro karena rilisnya mungkin berbeda-beda. Untuk informasi lebih lanjut kunjungi situs xbmc.org.</description>
         <description lang="it">XBMC Version Check supporta un numero di piattaforme e distribuzioni diverse tra loro. Per più informazioni visita il sito xbmc.org</description>
+        <description lang="ko">XBMC Versio Check는 일부 플랫폼/배포본만을 지원합니다. 자세한 정보는 xbmc.org 웹사이트에서 확인하세요</description>
+        <description lang="lt">XBMC Version Check palaiko tik platformos/distribucijos numerį, nes leidimai tarp jų gali skirtis. Apsilankykite xbmc.org interneto svetainėje, norėdami gauti daugiau informacijos.</description>
         <description lang="nl">XBMC Version Check ondersteunt maar enkele platforms/distros omdat er verschil kan zijn tussen versies.  Voor meer informatie bezoek XBMC.org website.</description>
         <description lang="no">XBMC Versjonsettersyn støtter kun noen plattformer/distribusjoner fordi utgivelser kan være forskjellige mellom dem. Besøk xbmc.org for mer informasjon.</description>
-        <description lang="pl">XBMC Version Check wspiera część platform/dystrybucji, jako że wydania mogą się różnić. Po więcej informacji odwiedź stronę xbmc.org.</description>
+        <description lang="pl">XBMC Version Check, jako że wydania mogą się różnić, wspiera tylko część platform/dystrybucji. Więcej informacji na stronie xbmc.org.</description>
         <description lang="pt">O XBMC Version Check suporta apenas algumas plataformas/distribuições, porque os lançamentos podem não ser sempre idênticos. Para mais informação, visite o site xbmc.org.</description>
         <description lang="pt_BR">XBMC Version Check somente suporta algumas plataformas/distros, que podem variar entre si. Para maiores informações visite o website xbmc.org</description>
+        <description lang="ru">Проверка новых версий XBMC поддерживается только на ряде платформ/дистрибутивов и они могут различаться между собой. Для получения доп. информации посетите сайт xbmc.org</description>
         <description lang="sv">XBMC Version Check stöder endeast ett antal plattformar/distributioner eftersom utgivningar kan skilja mellan dessa. För mer information besök xbmc.org webplatsen.</description>
-        <description lang="zh">XBMC版本检查只支持部分平台/发行版，它们之间的版本可能会有所不同。欲了解更多信息，请访问的xbmc.org网站。</description>
+        <description lang="zh">XBMC 版本检查只支持部分平台/发行版，它们之间的版本可能会有所不同。欲了解更多信息，请访问 xbmc.org 网站。</description>
         <disclaimer lang="be">Feel free to use this script. For information visit xbmc.org</disclaimer>
         <disclaimer lang="bg">Спокойно можете да ползвате скрипта за собствени цели. За информация посетете www.xbmc.org</disclaimer>
+        <disclaimer lang="ca">Sigues lliure d'utilitzar aquest script. Per més informació visita xbmc.org</disclaimer>
+        <disclaimer lang="cs">Neváhejte použít tento skript. Pro více informací navštivte xbmc.org</disclaimer>
         <disclaimer lang="de">Zögere nicht dieses Script zu benutzen. Für Informationen besuche xbmc.org</disclaimer>
         <disclaimer lang="el">Χρησιμοποιήστε αυτό το script ελεύθερα. Για πληροφορίες επισκεφθείτε το xbmc.org</disclaimer>
         <disclaimer lang="en">Feel free to use this script. For information visit xbmc.org</disclaimer>
+        <disclaimer lang="en_NZ">Feel free to use this script. For information visit xbmc.org</disclaimer>
         <disclaimer lang="es">Puede usar libremente este programa. Para más información, visite xbmc.org</disclaimer>
         <disclaimer lang="es_MX">Sientase libre de utilizar este script. Para mas información visita xbmc.org</disclaimer>
         <disclaimer lang="fr">Utilisez ce script si vous le désirez. Visitez le site Internet xbmc.org pour plus d'informations.</disclaimer>
+        <disclaimer lang="fr_CA">N'hésitez pas à utiliser ce script. Pour de l'information visitez xbmc.org</disclaimer>
         <disclaimer lang="gl">Síntase libre de usar este script, para máis información visitar xbmc.org.</disclaimer>
-        <disclaimer lang="he">תרגיש חופשי להשתמש בסקריפט זה. למידע נוסף בקר בכתובת xbmc.org</disclaimer>
+        <disclaimer lang="he">תרגיש חופשי להשתמש בסקריפט זה. למידע נוסף בקר ב-xbmc.org</disclaimer>
         <disclaimer lang="hr">Slobodno koristite ovu skriptu. Za više informacija posjetite xbmc.org</disclaimer>
         <disclaimer lang="hu">Használja bátran ezt a szkriptet! Információkért keresse fel az xbmc.org oldalt!</disclaimer>
         <disclaimer lang="id">Jangan sungkan menggunakan script ini. Untuk informasi hubungi xbmc.org</disclaimer>
         <disclaimer lang="it">Usa liberamente lo script. Per informazioni visita xbmc.org</disclaimer>
         <disclaimer lang="ko">이 스크립트를 자유롭게 사용하세요. 관련 정보는 xbmc.org를 방문하세요.</disclaimer>
+        <disclaimer lang="lt">Galite naudoti šį scenarijų. Apsilankykite xbmc.org, norėdami gauti daugiau informacijos.</disclaimer>
         <disclaimer lang="nl">Gebruik dit script vrijblijvend. Voor meer informatie bezoek XBMC.org</disclaimer>
         <disclaimer lang="no">Du har fri tillatelse til å benytte dette skriptet. Besøk xbmc.org for informasjon</disclaimer>
-        <disclaimer lang="pl">Zapraszamy do używania skryptu. Po więcej informacji odwiedź xbmc.org</disclaimer>
+        <disclaimer lang="pl">Zapraszamy do używania skryptu. Więcej informacji na stronie xbmc.org.</disclaimer>
         <disclaimer lang="pt">Esteja à vontade para usar este script. Para mais informação, visite xbmc.org.</disclaimer>
         <disclaimer lang="pt_BR">Sinta-se livre para usar este script. Para informações, visite xbmc.org</disclaimer>
         <disclaimer lang="ru">Используйте этот скрипт на свое усмотрение. Для информации посетите xbmc.org</disclaimer>
         <disclaimer lang="sv">Använd gärna detta skript. För information, besök xbmc.org</disclaimer>
-        <disclaimer lang="zh">请随意使用此脚本，更多信息访问xbmc.org</disclaimer>
+        <disclaimer lang="zh">请随意使用此脚本，更多信息访问 xbmc.org</disclaimer>
+        <platform>all</platform>
         <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
-        <platform>osx osx32 osx64 ios windx wingl linux</platform>
-        <website>http://xbmc.org</website>
-        <source>https://github.com/XBMC-Addons/service.xbmc.versioncheck</source>
         <forum>http://forum.xbmc.org/showthread.php?tid=160228</forum>
+        <website>http://xbmc.org</website>
         <email></email>
+        <source>https://github.com/XBMC-Addons/service.xbmc.versioncheck</source>
     </extension>
 </addon>

@@ -4,6 +4,15 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
+    <string id="30001">Sanatçı Resimlerini allmusic.com'dan al</string>
+    <string id="30002">Sanatçı Resimlerini last.fm'den al</string>
+    <string id="30003">Sanatçı Resimlerini HTBackdrops.com'dan al</string>
+    <string id="30005">Sanatçı Resimlerini fanart.tv'den al</string>
+    <string id="30006">Sanatçı Biyografisini Şuradan Al</string>
     <string id="30007">Çizim</string>
+    <string id="30008">Sanatçı Diskografisini Şuradan Al</string>
+    <string id="30009">Sanatçı Tarzını Şuradan Al</string>
+    <string id="30010">Sanatçı Türünü Şuradan Al</string>
+    <string id="30012">Sanatçı Kipini Şuradan Al</string>
     <string id="30015">Tercih Edilen Dil</string>
 </strings>

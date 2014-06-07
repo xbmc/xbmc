@@ -22,31 +22,27 @@ msgstr "我们建议你升级。"
 
 msgctxt "#32002"
 msgid "Visit XBMC.org for more information."
-msgstr "更多信息访问XBMC.org。"
-
-msgctxt "#32003"
-msgid "You are still using an older stable version of XBMC."
-msgstr "您仍在使用一个旧的稳定版XBMC。"
+msgstr "更多信息访问 XBMC.org。"
 
 msgctxt "#32004"
 msgid "You are still using an older RC version of XBMC."
-msgstr "您仍在使用一个旧的RC版XBMC。"
+msgstr "您仍在使用一个旧的 RC 版 XBMC。"
 
 msgctxt "#32005"
 msgid "You are still using an older beta version of XBMC."
-msgstr "您仍在使用一个旧的beta版XBMC。"
+msgstr "您仍在使用一个旧的 beta 版 XBMC。"
 
 msgctxt "#32006"
 msgid "You are still using an older alpha version of XBMC."
-msgstr "您仍在使用一个旧的alpha版XBMC。"
+msgstr "您仍在使用一个旧的 alpha 版 XBMC。"
 
 msgctxt "#32007"
 msgid "You are still using an older monthly version of XBMC."
-msgstr "您仍在使用一个旧的月度版XBMC。"
+msgstr "您仍在使用一个旧的月度版 XBMC。"
 
 msgctxt "#32008"
 msgid "You are still using an older non stable version of XBMC."
-msgstr "您仍在使用一个旧的非稳定版XBMC。"
+msgstr "您仍在使用一个旧的非稳定版 XBMC。"
 
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
@@ -70,7 +66,7 @@ msgstr "成功升级"
 
 msgctxt "#32014"
 msgid "Do you want to restart Xbmc to finish the upgrade?"
-msgstr "你要重启XBMC来完成升级吗？"
+msgstr "你要重启 XBMC 来完成升级吗？"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
@@ -78,11 +74,11 @@ msgstr "你要检查库中的新版本吗？"
 
 msgctxt "#32020"
 msgid "General"
-msgstr "常用"
+msgstr "常规"
 
 msgctxt "#32021"
 msgid "Enable XBMC version check?"
-msgstr "启用XBMC版本检查？"
+msgstr "启用 XBMC 版本检查？"
 
 msgctxt "#32022"
 msgid "Please enter your password"
@@ -91,3 +87,7 @@ msgstr "请输入你的密码"
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
 msgstr "Linux：升级完整的系统"
+
+msgctxt "#32024"
+msgid "Linux: Upgrade using apt"
+msgstr "Linux: 使用 apt 来更新"

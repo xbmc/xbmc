@@ -24,10 +24,6 @@ msgctxt "#32002"
 msgid "Visit XBMC.org for more information."
 msgstr "Odwiedź XBMC.org po więcej informacji."
 
-msgctxt "#32003"
-msgid "You are still using an older stable version of XBMC."
-msgstr "Nadal używasz starszej stabilnej wersji XBMC."
-
 msgctxt "#32004"
 msgid "You are still using an older RC version of XBMC."
 msgstr "Nadal używasz starszej wersji RC."
@@ -54,7 +50,7 @@ msgstr "Usunąć to przypomnienie?"
 
 msgctxt "#32010"
 msgid "You can enable/disable it through addon settings."
-msgstr "Można to włączyć/wyłączyć przez ustawienia wtyczki."
+msgstr "Można włączyć lub wyłączyć w ustawieniach wtyczki."
 
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
@@ -70,7 +66,7 @@ msgstr "Aktualizacja powiodła się"
 
 msgctxt "#32014"
 msgid "Do you want to restart Xbmc to finish the upgrade?"
-msgstr "Chcesz zrestartować Xbmc by dokończyć aktualizację?"
+msgstr "Chcesz zrestartować XBMC by dokończyć aktualizację?"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
@@ -91,3 +87,7 @@ msgstr "Proszę podać hasło"
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
 msgstr "Linux: aktualizacja systemu kompletna"
+
+msgctxt "#32024"
+msgid "Linux: Upgrade using apt"
+msgstr "Linux: Aktualizuj za pomocą menadżera pakietów (apt)"

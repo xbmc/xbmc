@@ -24,10 +24,6 @@ msgctxt "#32002"
 msgid "Visit XBMC.org for more information."
 msgstr "자세한 정보는 XBMC.org를 방문하세요."
 
-msgctxt "#32003"
-msgid "You are still using an older stable version of XBMC."
-msgstr "오래된 XBMC 안정 버전을 사용 중입니다."
-
 msgctxt "#32004"
 msgid "You are still using an older RC version of XBMC."
 msgstr "오래된 XBMC RC 버전을 사용중입니다."
@@ -54,7 +50,7 @@ msgstr "이 미리 알림을 삭제하겠습니까?"
 
 msgctxt "#32010"
 msgid "You can enable/disable it through addon settings."
-msgstr "추가기능 설정에서 사용/사용하지 않음을 선택할 수 있습니다."
+msgstr "애드온 설정에서 사용/사용하지 않음을 선택할 수 있습니다."
 
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
@@ -87,3 +83,11 @@ msgstr "XBMC 버전을 검사하겠습니까?"
 msgctxt "#32022"
 msgid "Please enter your password"
 msgstr "패스워드를 입력하세요"
+
+msgctxt "#32023"
+msgid "Linux: Upgrade complete system"
+msgstr "리눅스: 전체 시스템 업그레이드"
+
+msgctxt "#32024"
+msgid "Linux: Upgrade using apt"
+msgstr "리눅스: apt를 사용하여 업그레이드"

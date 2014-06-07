@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Malay language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ms/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Benarkan Seni Peminat Artis dari HTBackdrops.com</string>
+    <string id="30001">Benarkan Lakaran Kenit Artis dari allmusic.com</string>
+    <string id="30002">Benarkan Lakaran Kenit Artis dari last.fm</string>
+    <string id="30003">Benarkan Lakaran Kenit Artis dari HTBacksrops.com</string>
+    <string id="30004">Benarkan Seni Peminat Artis dari fanart.tv</string>
+    <string id="30005">Benarkan Lakaran Kenit Artis dari fanart.tv</string>
+    <string id="30006">Dapatkan Biogrfik Artis dari</string>
+    <string id="30007">Kerja Seni</string>
+    <string id="30008">Dapatkan Diskografi Artis dari</string>
+    <string id="30009">Dapatkan Genre Artis dari</string>
+    <string id="30010">Dapatkan Gaya Artis dari</string>
+    <string id="30011">Dapatkan Life-Span Artis dari</string>
+    <string id="30012">Dapatkan Suasana Artis dari</string>
+    <string id="30014">Dapatkan Tahun ktif Artis dari</string>
+    <string id="30015">Bahasa Dikehendaki</string>
+    <string id="30016">Jatih balik ke Biografi Artis dari</string>
+    <string id="30017">Jatuh balik ke Diskografi Artis dari</string>
+    <string id="30018">Jatuh balik ke Genre Artis dari</string>
+    <string id="30019">Jatuh balik ke Gaya Artis dari</string>
+    <string id="30020">Jatuh balik ke Life-Span Artis dari</string>
+    <string id="30021">Jatuh Balik</string>
+    <string id="30022">Benarkan Lakaran Kenit Artis dari theaudiodb.com</string>
+    <string id="30023">Benarkan Seni Peminat Artis dari theaudiodb.com</string>
+</strings>

@@ -24,10 +24,6 @@ msgctxt "#32002"
 msgid "Visit XBMC.org for more information."
 msgstr "Visita XBMC.org para mas informacion."
 
-msgctxt "#32003"
-msgid "You are still using an older stable version of XBMC."
-msgstr "Usted todavia esta utilizando una version vieja estable de XBMC."
-
 msgctxt "#32004"
 msgid "You are still using an older RC version of XBMC."
 msgstr "Usted todavia esta utilizando una version vieja RC de XBMC."

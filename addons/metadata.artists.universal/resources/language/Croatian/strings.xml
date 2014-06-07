@@ -4,7 +4,27 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
-    <string id="30004">Omogućite Fanart-s iz fanart.tv</string>
-    <string id="30005">Omogućite Umjetnine iz fanart.tv</string>
-    <string id="30023">Omogućiti Artist Fanarts iz theaudiodb.com</string>
+    <string id="30000">Omogući slike omota izvođača s HTBackdrops.com</string>
+    <string id="30001">Omogući minijature izvođača s allmusic.com</string>
+    <string id="30002">Omogući minijature izvođača s last.fm</string>
+    <string id="30003">Omogući minijature izvođača s HTBackdrops.com</string>
+    <string id="30004">Omogući slike omota Izvođača s fanart.tv</string>
+    <string id="30005">Omogući minijature izvođača s fanart.tv</string>
+    <string id="30006">Nabavi životopis izvođača sa</string>
+    <string id="30007">Slika omota</string>
+    <string id="30008">Nabavi diskografiju izvođača sa</string>
+    <string id="30009">Nabavi žanrove izvođača sa</string>
+    <string id="30010">Nabavi stilove izvođača sa</string>
+    <string id="30011">Nabavi životni vijek izvođača sa</string>
+    <string id="30012">Nabavi raspoloženje izvođača sa</string>
+    <string id="30014">Nabavi aktivne godine izvođača sa</string>
+    <string id="30015">Željeni jezik</string>
+    <string id="30016">Zamijeni biografiju izvođača sa</string>
+    <string id="30017">Zamijeni diskografiju izvođača sa</string>
+    <string id="30018">Zamijeni žanr izvođača sa</string>
+    <string id="30019">Zamijeni stilove izvođača sa</string>
+    <string id="30020">Zamijeni životni vijek izvođača sa</string>
+    <string id="30021">Zamjene</string>
+    <string id="30022">Omogući minijature izvođača s theaudiodb.com</string>
+    <string id="30023">Omogući slike omota Izvođača s theaudiodb.com</string>
 </strings>

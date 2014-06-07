@@ -36,7 +36,6 @@ def get_installedversion():
     version_installed = []
     if json_query.has_key('result') and json_query['result'].has_key('version'):
         version_installed  = json_query['result']['version']
-        log("Version installed %s" %version_installed)
     return version_installed
     
 def get_versionfilelist():

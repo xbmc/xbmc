@@ -4,6 +4,7 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
+    <string id="30000">Album ပုံ အသေးများကို fanart.tv မှ ရယူရန်</string>
     <string id="30003">သင့်လျှော်သော ဘာသာစကား</string>
     <string id="30009">အနုပညာလက်ရာ</string>
 </strings>

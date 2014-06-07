@@ -5,7 +5,8 @@
 
 <strings>
     <string id="30000">DVD order ကို အသုံးပြုရန်</string>
-    <string id="30002">Enable Fanart</string>
+    <string id="30001">Absolute Order ကို အသုံးပြုရန်</string>
+    <string id="30002">Fanart ကို လုပ်ဆောင်ခွင့်</string>
     <string id="30003">ပိုစတာ ပုံစံကို သဘောကျသည်</string>
     <string id="30004">ဘာသာစကား</string>
 </strings>
