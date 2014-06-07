@@ -233,6 +233,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         }
       }
     }
+    break;
   }
   return CGUIMediaWindow::OnMessage(message);
 }
