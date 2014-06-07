@@ -400,7 +400,7 @@ void CDAAPDirectory::AddToArtistAlbum(char *artist_s, char *album_s)
   }
 }
 
-int CDAAPDirectory::GetCurrLevel(CStdString strPath)
+int CDAAPDirectory::GetCurrLevel(const std::string &strPath)
 {
   size_t intSPos;
   size_t intEPos;

@@ -114,7 +114,7 @@ public:
   */
   virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ONCE; };
 
-  void SetMask(const CStdString& strMask);
+  void SetMask(const std::string& strMask);
   void SetFlags(int flags);
 
   /*! \brief Process additional requirements before the directory fetch is performed.
@@ -136,7 +136,7 @@ protected:
    \return true if keyboard input has been received. False if it hasn't.
    \sa ProcessRequirements
    */
-  bool GetKeyboardInput(const CVariant &heading, CStdString &input);
+  bool GetKeyboardInput(const CVariant &heading, std::string &input);
 
   /*! \brief Show an error dialog on failure of GetDirectory call
    Call this method from the GetDirectory method to set an error message to be shown to the user
@@ -157,7 +157,7 @@ protected:
    */
   void RequireAuthentication(const CStdString &url);
 
-  CStdString m_strFileMask;  ///< Holds the file mask specified by SetMask()
+  std::string m_strFileMask;  ///< Holds the file mask specified by SetMask()
 
   int m_flags; ///< Directory flags - see DIR_FLAG
 

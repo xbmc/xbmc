@@ -56,8 +56,8 @@ private:
   bool GetTvShowFolders(const CStdString& base, CFileItemList &items);
   bool GetChannels(const CStdString& base, CFileItemList &items);
 
-  CStdString GetValue(char* str)           { return m_session->GetValue(str); }
-  CDateTime  GetValue(cmyth_timestamp_t t) { return m_session->GetValue(t); }
+  std::string GetValue(char* str)           { return m_session->GetValue(str); }
+  CDateTime   GetValue(cmyth_timestamp_t t) { return m_session->GetValue(t); }
   bool IsVisible(const cmyth_proginfo_t program);
   bool IsMovie(const cmyth_proginfo_t program);
   bool IsTvShow(const cmyth_proginfo_t program);
