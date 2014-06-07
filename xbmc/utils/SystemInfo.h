@@ -51,7 +51,7 @@ public:
   INTERNET_STATE internetState;
   CStdString videoEncoder;
   CStdString cpuFrequency;
-  CStdString kernelVersion;
+  CStdString osVersionInfo;
   CStdString macAddress;
   CStdString batteryLevel;
 };
@@ -99,24 +99,13 @@ public:
 
   char MD5_Sign[32 + 1];
 
-  bool GetDVDInfo(CStdString& strDVDModel, CStdString& strDVDFirmware);
-  bool GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStdString& strHDDFirmware,CStdString& strHDDpw,CStdString& strHDDLockState);
-  bool GetRefurbInfo(CStdString& rfi_FirstBootTime, CStdString& rfi_PowerCycleCount);
-
-#if defined(TARGET_LINUX)
-  CStdString GetLinuxDistro();
-#endif
-#ifdef TARGET_POSIX
-  CStdString GetUnameVersion();
-#endif
-#ifdef TARGET_ANDROID
-  std::string GetAndroidVersionString(void);
-  std::string GetAndroidDeviceName(void);
-#endif
-#if defined(TARGET_WINDOWS)
-  std::string GetUAWindowsVersion();
-#endif
-  std::string GetUserAgent();
+  static std::string GetKernelName(bool emptyIfUnknown = false);
+  static std::string GetKernelVersionFull(void); // full version string, including "-generic", "-RELEASE" etc.
+  static std::string GetKernelVersion(void); // only digits with dots
+  static std::string GetOsName(bool emptyIfUnknown = false);
+  static std::string GetOsVersion(void);
+  static std::string GetOsPrettyNameWithVersion(void);
+  static std::string GetUserAgent();
   bool HasInternet();
   bool IsAppleTV2();
   bool HasVideoToolBoxDecoder();
@@ -128,15 +117,13 @@ public:
   static int GetKernelBitness(void);
   static int GetXbmcBitness(void);
   static std::string GetKernelCpuFamily(void);
-  static CStdString GetKernelVersion();
   CStdString GetCPUModel();
   CStdString GetCPUBogoMips();
   CStdString GetCPUHardware();
   CStdString GetCPURevision();
   CStdString GetCPUSerial();
-  CStdString GetManufacturer();
-  CStdString GetProduct();
-  CStdString GetModel();
+  static std::string GetManufacturerName(void);
+  static std::string GetModelName(void);
   bool GetDiskSpace(const CStdString& drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
   CStdString GetHddSpaceInfo(int& percent, int drive, bool shortText=false);
   CStdString GetHddSpaceInfo(int drive, bool shortText=false);
@@ -146,7 +133,10 @@ public:
 
   static std::string GetBuildTargetPlatformName(void);
   static std::string GetBuildTargetPlatformVersion(void);
+  static std::string GetBuildTargetPlatformVersionDecoded(void);
   static std::string GetBuildTargetCpuFamily(void);
+
+  static std::string GetUsedCompilerNameAndVer(void);
 
 protected:
   virtual CJob *GetJob() const;

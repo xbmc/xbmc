@@ -274,7 +274,8 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "currentcontrol",   SYSTEM_CURRENT_CONTROL },
                                   { "dvdlabel",         SYSTEM_DVD_LABEL },
                                   { "internetstate",    SYSTEM_INTERNET_STATE },
-                                  { "kernelversion",    SYSTEM_KERNEL_VERSION },
+                                  { "osversioninfo",    SYSTEM_OS_VERSION_INFO },
+                                  { "kernelversion",    SYSTEM_OS_VERSION_INFO }, // old, not correct name
                                   { "uptime",           SYSTEM_UPTIME },
                                   { "totaluptime",      SYSTEM_TOTALUPTIME },
                                   { "cpufrequency",     SYSTEM_CPUFREQUENCY },
@@ -1707,7 +1708,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
 
   case SYSTEM_VIDEO_ENCODER_INFO:
   case NETWORK_MAC_ADDRESS:
-  case SYSTEM_KERNEL_VERSION:
+  case SYSTEM_OS_VERSION_INFO:
   case SYSTEM_CPUFREQUENCY:
   case SYSTEM_INTERNET_STATE:
   case SYSTEM_UPTIME:
