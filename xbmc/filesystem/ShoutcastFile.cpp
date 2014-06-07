@@ -72,7 +72,7 @@ bool CShoutcastFile::Open(const CURL& url)
   url2.SetProtocolOptions(url2.GetProtocolOptions()+"&noshout=true&Icy-MetaData=1");
   url2.SetProtocol("http");
 
-  bool result = m_file.Open(url2.Get());
+  bool result = m_file.Open(url2);
   if (result)
   {
     m_tag.SetTitle(m_file.GetHttpHeader().GetValue("icy-name"));

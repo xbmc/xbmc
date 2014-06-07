@@ -206,7 +206,8 @@ char *session="XBMC-AirTunes";
 void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int channels, int samplerate)
 {
   XFILE::CPipeFile *pipe=(XFILE::CPipeFile *)cls;
-  pipe->OpenForWrite(XFILE::PipesManager::GetInstance().GetUniquePipeName());
+  const CURL pathToUrl(XFILE::PipesManager::GetInstance().GetUniquePipeName());
+  pipe->OpenForWrite(pathToUrl);
   pipe->SetOpenThreashold(300);
 
   Demux_BXA_FmtHeader header;

@@ -3895,7 +3895,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (URIUtils::IsUPnP(item.GetPath()))
   {
     CFileItem item_new(item);
-    if (XFILE::CUPnPDirectory::GetResource(item.GetPath(), item_new))
+    if (XFILE::CUPnPDirectory::GetResource(item.GetURL(), item_new))
       return PlayFile(item_new, false);
     return PLAYBACK_FAIL;
   }
@@ -4840,7 +4840,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 #ifdef HAS_UPNP
       if (URIUtils::IsUPnP(file.GetPath()))
       {
-        if (!XFILE::CUPnPDirectory::GetResource(file.GetPath(), file))
+        if (!XFILE::CUPnPDirectory::GetResource(file.GetURL(), file))
           return true;
       }
 #endif

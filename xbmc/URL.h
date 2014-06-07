@@ -29,9 +29,12 @@
 class CURL
 {
 public:
-  CURL(const CStdString& strURL);
+  explicit CURL(const CStdString& strURL);
   CURL();
   virtual ~CURL(void);
+
+  // explicit equals operator for std::string comparison
+  bool operator==(const std::string &url) const { return Get() == url; }
 
   void Reset();
   void Parse(const CStdString& strURL);

@@ -816,7 +816,8 @@ bool CCurlFile::Get(const CStdString& strURL, CStdString& strHTML)
 
 bool CCurlFile::Service(const CStdString& strURL, CStdString& strHTML)
 {
-  if (Open(strURL))
+  const CURL pathToUrl(strURL);
+  if (Open(pathToUrl))
   {
     if (ReadData(strHTML))
     {
@@ -875,8 +876,8 @@ bool CCurlFile::Download(const CStdString& strURL, const CStdString& strFileName
 // Detect whether we are "online" or not! Very simple and dirty!
 bool CCurlFile::IsInternet()
 {
-  CStdString strURL = "http://www.google.com";
-  bool found = Exists(strURL);
+  CURL url("http://www.google.com");
+  bool found = Exists(url);
   Close();
 
   return found;

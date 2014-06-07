@@ -38,7 +38,7 @@ CUPnPFile::~CUPnPFile()
 bool CUPnPFile::Open(const CURL& url)
 {
   CFileItem item_new;
-  if (CUPnPDirectory::GetResource(url.Get(), item_new))
+  if (CUPnPDirectory::GetResource(url, item_new))
   {
     //CLog::Log(LOGDEBUG,"FileUPnP - file redirect to %s.", item_new.GetPath().c_str());
     IFile *pNewImp = CFileFactory::CreateLoader(item_new.GetPath());    
@@ -55,7 +55,7 @@ bool CUPnPFile::Open(const CURL& url)
 int CUPnPFile::Stat(const CURL& url, struct __stat64* buffer)
 {
   CFileItem item_new;
-  if (CUPnPDirectory::GetResource(url.Get(), item_new))
+  if (CUPnPDirectory::GetResource(url, item_new))
   {
     //CLog::Log(LOGDEBUG,"FileUPnP - file redirect to %s.", item_new.GetPath().c_str());
     IFile *pNewImp = CFileFactory::CreateLoader(item_new.GetPath());
@@ -72,7 +72,7 @@ int CUPnPFile::Stat(const CURL& url, struct __stat64* buffer)
 bool CUPnPFile::Exists(const CURL& url)
 {
   CFileItem item_new;
-  if (CUPnPDirectory::GetResource(url.Get(), item_new))
+  if (CUPnPDirectory::GetResource(url, item_new))
   {
     //CLog::Log(LOGDEBUG,"FileUPnP - file redirect to %s.", item_new.GetPath().c_str());
     IFile *pNewImp = CFileFactory::CreateLoader(item_new.GetPath());

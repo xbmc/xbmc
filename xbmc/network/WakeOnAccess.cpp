@@ -509,7 +509,7 @@ static void AddHostsFromMediaSource(const CMediaSource& source, std::vector<std:
 {
   for (CStdStringArray::const_iterator it = source.vecPaths.begin() ; it != source.vecPaths.end(); it++)
   {
-    CURL url = *it;
+    CURL url(*it);
 
     AddHost (url.GetHostName(), hosts);
   }
@@ -549,7 +549,7 @@ void CWakeOnAccess::QueueMACDiscoveryForAllRemotes()
   // add from path substitutions ..
   for (CAdvancedSettings::StringMapping::iterator i = g_advancedSettings.m_pathSubstitutions.begin(); i != g_advancedSettings.m_pathSubstitutions.end(); ++i)
   {
-    CURL url = i->second;
+    CURL url(i->second);
 
     AddHost (url.GetHostName(), hosts);
   }

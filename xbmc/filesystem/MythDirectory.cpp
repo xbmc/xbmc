@@ -469,7 +469,7 @@ bool CMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
 
 bool CMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  m_session = CMythSession::AquireSession(strPath);
+  m_session = CMythSession::AquireSession(CURL(strPath));
   if (!m_session)
     return false;
 

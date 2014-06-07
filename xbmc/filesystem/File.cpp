@@ -394,7 +394,7 @@ bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
 
 bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
 {
-  CURL url = URIUtils::SubstitutePath(strFileName);
+  CURL url(URIUtils::SubstitutePath(strFileName));
   
   try
   {
@@ -482,12 +482,10 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
   if (!buffer)
     return -1;
 
-  CURL url;
-  
+  CURL url(URIUtils::SubstitutePath(strFileName));
+
   try
   {
-    url = URIUtils::SubstitutePath(strFileName);
-    
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
       return -1;
