@@ -115,6 +115,10 @@ bool CWinSystemX11GL::PresentRenderImpl(const CDirtyRegionList& dirty)
 
 void CWinSystemX11GL::SetVSyncImpl(bool enable)
 {
+  /* already enabled and a good method determined? */
+  if (enable && (m_iVSyncMode != 0))
+    return;
+
   /* turn of current setting first */
   if(m_glXSwapIntervalEXT)
     m_glXSwapIntervalEXT(m_dpy, m_glWindow, 0);
@@ -127,10 +131,6 @@ void CWinSystemX11GL::SetVSyncImpl(bool enable)
     m_iVSyncMode = 0;
     return;
   }
-
-  /* already determined a good method? */
-  if (m_iVSyncMode != 0)
-    return;
 
   if (m_glXSwapIntervalEXT)
   {
