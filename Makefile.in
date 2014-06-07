@@ -643,7 +643,7 @@ endif
 endif
 	@# Icons and links
 	@install -d $(DESTDIR)$(datarootdir)/applications
-	@install tools/Linux/xbmc.desktop $(DESTDIR)$(datarootdir)/applications/xbmc.desktop
+	@install -m 0644 tools/Linux/xbmc.desktop $(DESTDIR)$(datarootdir)/applications/xbmc.desktop
 	@install -d $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps
 	@install -m 0644 media/icon48x48.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps/xbmc.png
 	@install -d $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps
