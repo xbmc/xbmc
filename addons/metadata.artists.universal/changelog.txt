@@ -1,3 +1,10 @@
+[B]3.4.1[/B]
+Updated language files from Transifex
+
+[B]3.4.0[/B]
+Added: 2 new languages
+Removed: last.fm completely
+
 [B]3.3.0[/B]
 Added: Restore scraping from HTBackdrops.com using their new domain htbackdrops.org
 

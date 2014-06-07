@@ -24,10 +24,6 @@ msgctxt "#32002"
 msgid "Visit XBMC.org for more information."
 msgstr "Besök XBMC.org för mer information."
 
-msgctxt "#32003"
-msgid "You are still using an older stable version of XBMC."
-msgstr "Du använder fortfarande en äldre stabil version av XBMC."
-
 msgctxt "#32004"
 msgid "You are still using an older RC version of XBMC."
 msgstr "Du använder fortfarande en äldre RC version av XBMC."
@@ -50,7 +46,7 @@ msgstr "Du använder fortfarande en äldre ostabil version av XBMC."
 
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
-msgstr "Vill du ta bort denna påminnelse?"
+msgstr "Vill du radera denna påminnelse?"
 
 msgctxt "#32010"
 msgid "You can enable/disable it through addon settings."
@@ -91,3 +87,7 @@ msgstr "Var god ange ditt lösenord"
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
 msgstr "Linux: Uppdatera hela systemet"
+
+msgctxt "#32024"
+msgid "Linux: Upgrade using apt"
+msgstr "Linux: Uppgradera med apt"

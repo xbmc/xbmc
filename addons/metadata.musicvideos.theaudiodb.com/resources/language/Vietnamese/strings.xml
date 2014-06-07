@@ -5,4 +5,5 @@
 
 <strings>
     <string id="30000">Lấy hình đại diện album từ nguồn fanart.tv</string>
+    <string id="30001">Lấy hình đại diện album từ nguồn theaudiodb.com</string>
 </strings>

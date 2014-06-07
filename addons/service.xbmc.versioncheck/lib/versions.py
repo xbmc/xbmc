@@ -25,69 +25,90 @@ def compare_version(version_installed, versionlist):
     versionlist_beta = versionlist['releases']['beta']
     versionlist_alpha = versionlist['releases']['alpha']
     versionlist_prealpha = versionlist['releases']['prealpha'] 
+    log("Version installed %s" %version_installed)
     ### Check to upgrade to newest available stable version
     # check on smaller major version. Smaller version than available always notify
     oldversion = False
     msg = ''
+
+    # check if current major version is smaller than available major stable
+    # here we don't care if running non stable
     if version_installed['major'] < int(versionlist_stable[0]['major']):
         msg = 32003
-        oldversion = True
+        oldversion = "stable"
         log("Version available  %s" %versionlist_stable[0])
+        log("You are running an older version")
 
-    # check on same major version installed and available
+
+    # check if current major version is equal than available major stable
+    # however also check on minor version and still don't care about non stable
     elif version_installed['major'] == int(versionlist_stable[0]['major']):
-        # check on smaller minor version
         if version_installed['minor'] < int(versionlist_stable[0]['minor']):
+            msg = 32003
+            oldversion = "stable"
+            log("Version available  %s" %versionlist_stable[0])
+            log("You are running an older minor version")
+        # check for <= minor !stable
+        elif version_installed['tag'] != "stable" and version_installed['minor'] <= int(versionlist_stable[0]['minor']):
             msg = 32003
             oldversion = True
             log("Version available  %s" %versionlist_stable[0])
-        # check if not installed a stable so always notify
-        elif version_installed['minor'] == int(versionlist_stable[0]['minor']) and version_installed['tag'] != "stable":
-            msg = 32008
-            oldversion = True
-            log("Version available  %s" %versionlist_stable[0])
+            log("You are running an older non stable minor version")
         else:
-            log("Last available stable installed")
+            log("Version available  %s" %versionlist_stable[0])
+            log("There is no newer stable available")
 
-    ### Check to upgrade to newest available RC version if not installed stable
+    ## Check to upgrade to newest available RC version if not installed stable
     ## Check also oldversion hasn't been set true by previous check because if so this need to be skipped
-    if not oldversion and version_installed['tag'] != "stable":
-        if 'revision' in version_installed.keys():
-            # only check on equal or lower major because newer installed beta/alpha/prealpha version will be higher
-            if versionlist_rc and version_installed['major'] <= int(versionlist_rc[0]['major']):
-                if version_installed['revision'] <= versionlist_rc[0]['revision']:
+    elif version_installed['tag'] != "stable":
+        # check if you are using a RC lower than current RC
+        # then check if you are using a alpha/beta lower than current RC
+        if version_installed['major'] <= int(versionlist_rc[0]['major']):
+            if version_installed['tag'] in ["releasecandidate"]:
+                if version_installed['revision'] < versionlist_rc[0]['revision']:
                     msg = 32004
                     oldversion = True
                     log("Version available  %s" %versionlist_rc[0])
+                    log("You are running an older RC version")
+                elif version_installed['revision'] < versionlist_rc[0]['revision']:
+                    msg = 32004
+                    oldversion = True
+                    log("Version available  %s" %versionlist_rc[0])
+                    log("You are running an older non RC version")
+                else:
+                    log("Version available  %s" %versionlist_rc[0])
+                    log("You are running newest RC version")
 
-            # exclude if installed RC on checking for newer beta
-            if not oldversion and versionlist_beta and version_installed['tag'] not in ["releasecandidate"]:
-                if version_installed['major'] <= int(versionlist_beta[0]['major']):
-                    if version_installed['revision'] < versionlist_beta[0]['revision']:
-                        msg = 32005
-                        oldversion = True
-                        log("Version available  %s" %versionlist_beta[0])
-        
-            # exclude if installed RC or beta on checking for newer alpha
-            if not oldversion and versionlist_alpha and version_installed['tag'] not in ["releasecandidate", "beta"]:
-                if version_installed['major'] <= int(versionlist_alpha[0]['major']):
-                    if version_installed['revision'] < versionlist_alpha[0]['revision']:
-                        msg = 32006
-                        oldversion = True
-                        log("Version available  %s" %versionlist_alpha[0])
+        # exclude if you are running an RC
+        # check if you are using a beta lower than current beta
+        # then check if you are using a alpha/beta lower than current RC
+        if not oldversion and version_installed['tag'] not in ["releasecandidate"] and version_installed['major'] <= int(versionlist_beta[0]['major']):
+            if version_installed['tag'] in ["beta"]:
+                if version_installed['revision'] < versionlist_beta[0]['revision']:
+                    msg = 32005
+                    oldversion = True
+                    log("Version available  %s" %versionlist_beta[0])
+                    log("You are running an older beta version")
+                elif version_installed['revision'] < versionlist_beta[0]['revision']:
+                    msg = 32005
+                    oldversion = True
+                    log("Version available  %s" %versionlist_beta[0])
+                    log("You are running an older non beta version")
+                else:
+                    log("Version available  %s" %versionlist_beta[0])
+                    log("You are running newest beta version")
 
-            # exclude if installed RC, beta or alpha on checking for newer prealpha
-            if not oldversion and versionlist_prealpha and version_installed['tag'] not in ["releasecandidate", "beta", "alpha"]:
-                if version_installed['major'] <= int(versionlist_prealpha[0]['major']):
-                    if  version_installed['revision'] < versionlist_prealpha[0]['revision']:
-                        msg = 32007
-                        oldversion = True
-                        log("Version available  %s" %versionlist_prealpha[0])
+        # exclude if you are running an RC/beta
+        # check if you are using a beta lower than current beta
+        # then check if you are using a alpha/beta lower than current RC
+        if not oldversion and version_installed['tag'] in ["prealpha"] and version_installed['major'] <= int(versionlist_prealpha[0]['major']):
+            if version_installed['revision'] < versionlist_prealpha[0]['revision']:
+                msg = 32006
+                oldversion = True
+                log("Version available  %s" %versionlist_prealpha[0])
+                log("You are running an older alpha version")
+            else:
+                log("Version available  %s" %versionlist_prealpha[0])
+                log("You are running newest alpha version")
 
-        log("Nothing to see here, move along. Running a latest non stable release")
-        # Nothing to see here, move along
-    else:
-        log("Nothing to see here, move along. Running a stable release")
-        # Nothing to see here, move along
-        pass
     return oldversion, msg

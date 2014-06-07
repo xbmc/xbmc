@@ -22,11 +22,7 @@ msgstr "Препоръчваме Ви да актуализирате."
 
 msgctxt "#32002"
 msgid "Visit XBMC.org for more information."
-msgstr "Посетете www.xbmc.info за информация."
-
-msgctxt "#32003"
-msgid "You are still using an older stable version of XBMC."
-msgstr "Ползвате стара стабилна версия на XBMC."
+msgstr "Посетете www.xbmc.org за повече информация."
 
 msgctxt "#32004"
 msgid "You are still using an older RC version of XBMC."
@@ -50,7 +46,7 @@ msgstr "Ползвате стара нестабилна версия на XBMC.
 
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
-msgstr "Желаете ли изключите това напомняне?"
+msgstr "Желаете ли напомнянето да бъде изключено?"
 
 msgctxt "#32010"
 msgid "You can enable/disable it through addon settings."
@@ -58,7 +54,7 @@ msgstr "Можете да включите/изключите напомняне
 
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
-msgstr "Актуализирайте чрез вашия диспeчер на пакети  (apt)."
+msgstr "Актуализирайте чрез вашия диспечер на пакети  (apt)."
 
 msgctxt "#32012"
 msgid "A new version is available, do you want to upgrade now?"
@@ -82,8 +78,16 @@ msgstr "Основни"
 
 msgctxt "#32021"
 msgid "Enable XBMC version check?"
-msgstr "Да бъде ли проверяване версията на XBMC?"
+msgstr "Да се включи ли XBMC проверката за версия?"
 
 msgctxt "#32022"
 msgid "Please enter your password"
 msgstr "Моля, въведете паролата си"
+
+msgctxt "#32023"
+msgid "Linux: Upgrade complete system"
+msgstr "Линукс: Актуализиране на цялата система"
+
+msgctxt "#32024"
+msgid "Linux: Upgrade using apt"
+msgstr "Линукс: Актуализиране чрез apt"

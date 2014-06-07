@@ -4,9 +4,9 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
-    <string id="30000">Gunakan susunan DVD</string>
-    <string id="30001">Gunakan susunan mutlak (untuk satu musim)</string>
-    <string id="30002">Membolehkan Fanart</string>
-    <string id="30003">Poster pilihan</string>
+    <string id="30000">Guna Tertib DVD</string>
+    <string id="30001">Gunakan Penertiban Mutlak (Satu Musim)</string>
+    <string id="30002">Benarkan Seni Peminat</string>
+    <string id="30003">Utamakan Poster</string>
     <string id="30004">Bahasa</string>
 </strings>

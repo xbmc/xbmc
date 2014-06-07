@@ -31,7 +31,7 @@
 	<!-- input:	$1=query string -->
 	<!-- returns:	the url we should use to do the search -->
 	<CreateSearchUrl dest="3">
-		<RegExp input="$$1" output="&lt;url cache=&quot;cache-\1$$4.xml&quot;&gt;http://thetvdb.com/api/GetSeries.php?seriesname=\1$$4&amp;amp;language=$INFO[language]&lt;/url&gt;" dest="3">
+		<RegExp input="$$1" output="&lt;url cache=&quot;cache-\1$$4-$INFO[language].xml&quot;&gt;http://thetvdb.com/api/GetSeries.php?seriesname=\1$$4&amp;amp;language=$INFO[language]&lt;/url&gt;" dest="3">
 			<RegExp input="$$2" output="%20(\1)" dest="4">
 				<expression clear="yes">(.+)</expression>
 			</RegExp>

@@ -24,6 +24,70 @@ msgctxt "#32002"
 msgid "Visit XBMC.org for more information."
 msgstr "Для более полной информации посетите XBMC.org."
 
+msgctxt "#32004"
+msgid "You are still using an older RC version of XBMC."
+msgstr "Вы по-прежнему используете старую  версию (RC) XBMC."
+
+msgctxt "#32005"
+msgid "You are still using an older beta version of XBMC."
+msgstr "Вы по-прежнему используете старую бета-версию XBMC."
+
+msgctxt "#32006"
+msgid "You are still using an older alpha version of XBMC."
+msgstr "Вы по-прежнему используете старую альфа-версию XBMC."
+
+msgctxt "#32007"
+msgid "You are still using an older monthly version of XBMC."
+msgstr "Вы по-прежнему используете старую ежемесячную версию XBMC."
+
+msgctxt "#32008"
+msgid "You are still using an older non stable version of XBMC."
+msgstr "Вы по-прежнему используете старую нестабильную версию XBMC."
+
+msgctxt "#32009"
+msgid "Would you like to remove this reminder?"
+msgstr "Вы хотите убрать это напоминание?"
+
+msgctxt "#32010"
+msgid "You can enable/disable it through addon settings."
+msgstr "Вы можете включить/выключить это через настройки дополнения."
+
+msgctxt "#32011"
+msgid "Use your package manager(apt) to upgrade."
+msgstr "Используйте Ваш менеджер пакетов (apt) чтобы обновиться."
+
+msgctxt "#32012"
+msgid "A new version is available, do you want to upgrade now?"
+msgstr "Доступна новая версия, хотите ли Вы обновить её сейчас?"
+
+msgctxt "#32013"
+msgid "Upgrade successful"
+msgstr "Обновление завершено"
+
+msgctxt "#32014"
+msgid "Do you want to restart Xbmc to finish the upgrade?"
+msgstr "Перезагрузить XBMC, чтобы завершить обновление ?"
+
+msgctxt "#32015"
+msgid "Do you want to check the repository for a new version?"
+msgstr "Вы хотите проверить репозиторий на наличие новой версии?"
+
 msgctxt "#32020"
 msgid "General"
 msgstr "Основные"
+
+msgctxt "#32021"
+msgid "Enable XBMC version check?"
+msgstr "Включить проверку выхода новых версий XBMC?"
+
+msgctxt "#32022"
+msgid "Please enter your password"
+msgstr "Пожалуйста, введите Ваш пароль"
+
+msgctxt "#32023"
+msgid "Linux: Upgrade complete system"
+msgstr "Linux: Полное обновление системы"
+
+msgctxt "#32024"
+msgid "Linux: Upgrade using apt"
+msgstr "Linux: Обновление с помощью apt"

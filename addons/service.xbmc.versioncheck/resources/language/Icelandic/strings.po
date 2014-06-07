@@ -24,10 +24,6 @@ msgctxt "#32002"
 msgid "Visit XBMC.org for more information."
 msgstr "Farðu inn á XBMC.org til að fá fleiri upplýsingar."
 
-msgctxt "#32003"
-msgid "You are still using an older stable version of XBMC."
-msgstr "Þú ert enn að nota eldri örugga útgáfu af XBMC."
-
 msgctxt "#32005"
 msgid "You are still using an older beta version of XBMC."
 msgstr "Þú ert enn að nota eldri beta útgáfu af XBMC."

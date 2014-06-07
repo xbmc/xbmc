@@ -1,33 +1,72 @@
+v0.1.22
+- Updated language files from Transifex
+- Update with 13.1 Gotham rc1
+- Update with 13.1 Gotham beta2
+- Update with 13.1 Gotham beta1
+- Update with 13.0 Gotham
+
+v0.1.21
+- Update with 13.0 Gotham rc1
+- Update with 13.0 Gotham beta4
+
+v0.1.20
+- Fix missing apt option for Linux
+- Update with 13.0 Gotham beta3
+- Update with 13.0 Gotham beta2
+- Update with 13.0 Gotham beta1
+
+v0.1.19
+- Added Gotham alpha user notice
+
+v0.1.17
+- Update with 13.0 Gotham alpha11
+
+v0.1.16
+- Update with 12.3 Frodo stable
+
+v0.1.15
+- Add option for linux to disable check through "apt"
+
+v0.1.14
+- Update with 13.0 Gotham alpha10
+
+v0.1.13
+- Update with 13.0 Gotham alpha9
+
+v0.1.12
+- Fix encoding text encoding error for some languages
+- Update language files
+
 v0.1.11
 - Updated language files from Transifex
 - Fix problems with python2.7.5
-- Update with 13.0 Gotham_alpha8
+- Update with 13.0 Gotham alpha8
 
 v0.1.11
-- Update with 13.0 Gotham_alpha7
+- Update with 13.0 Gotham alpha7
 
 v0.1.9
-- Update with 13.0 Gotham_alpha6
+- Update with 13.0 Gotham alpha6
 - Updated language files from Transifex
 
 v0.1.7
-- Update with 13.0 Gotham_alpha5
+- Update with 13.0 Gotham alpha5
 
 v0.1.7
-- Update with 13.0 Gotham_alpha4
+- Update with 13.0 Gotham alpha4
 
 v0.1.6
 - Update with 12.2 Frodo stable
 - Added Linux full system upgrade
 
 v0.1.5
-- Update with 13.0 Gotham_alpha3
+- Update with 13.0 Gotham alpha3
 
 v0.1.4
 - We can now upgrade xbmc on Linux. This works either via polkit or shell wrapper as fallback
 
 v0.1.3
-- Update with 13.0 Gotham_alpha2
+- Update with 13.0 Gotham alpha2
 
 v0.1.2
 - Add notification for Ubuntu users checking through apt command

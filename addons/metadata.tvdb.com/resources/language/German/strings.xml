@@ -4,8 +4,8 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
-    <string id="30000">Nutze DVD Version</string>
-    <string id="30001">Nutze absolute Versionen (einzelne Staffeln)</string>
+    <string id="30000">Verwende DVD-Sortierung</string>
+    <string id="30001">Verwende absolute Sortierung (einzelne Staffel)</string>
     <string id="30002">Aktiviere Fanart</string>
     <string id="30003">Bevorzuge Poster</string>
     <string id="30004">Sprache</string>

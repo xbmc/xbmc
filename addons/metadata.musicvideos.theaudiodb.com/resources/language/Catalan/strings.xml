@@ -4,6 +4,6 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
-    <string id="30000">Agafa les miniatures d'àlbums de fanart.tv</string>
-    <string id="30001">Agafa les miniatures d'àlbums de theaudiodb.com</string>
+    <string id="30000">Obté les miniatures de l'àlbum de fanart.tv</string>
+    <string id="30001">Obté les miniatures de l'àlbum de theaudiodb.com</string>
 </strings>

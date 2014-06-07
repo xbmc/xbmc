@@ -5,6 +5,14 @@
 
 <strings>
     <string id="30000">Albüm Kapaklarını fanart.tv'den al</string>
+    <string id="30001">Albüm Kapaklarını Last.fm'den Al</string>
+    <string id="30002">Albüm İncelemesini Şuradan Al</string>
     <string id="30003">Tercih Edilen Dil</string>
+    <string id="30004">Albüm Değerlendirmesini Şuradan Al</string>
+    <string id="30005">Albüm Türünü Şuradan Al</string>
+    <string id="30006">Albüm Kipini Şuradan Al</string>
+    <string id="30007">Albüm Temalarını Şuradan Al</string>
+    <string id="30008">Albüm Kapaklarını allmusic.com'dan Al</string>
     <string id="30009">Çizim</string>
+    <string id="30010">Albüm Kapaklarını theaudiodb.com'dan Al</string>
 </strings>

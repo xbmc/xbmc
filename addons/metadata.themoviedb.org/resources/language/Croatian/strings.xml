@@ -4,11 +4,11 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
-    <string id="30000">Omogući "Fanart"</string>
-    <string id="30001">Preferiraj Najave filmova kroz  HD-Trailers.net</string>
-    <string id="30002">Preferirani Jezik</string>
-    <string id="30003">Nabavite ocijene od</string>
-    <string id="30004">Omogući Najave (YouTube)</string>
-    <string id="30005">Zadržite izvorni naslov</string>
-    <string id="30006">Preferiraj Cerfikate Država</string>
+    <string id="30000">Omogući omot filma</string>
+    <string id="30001">Preferiraj najave filmova sa HD-Trailers.net</string>
+    <string id="30002">Željeni jezik</string>
+    <string id="30003">Nabavi ocijene sa</string>
+    <string id="30004">Omogući najave filmova (YouTube)</string>
+    <string id="30005">Zadrži izvorni naslov</string>
+    <string id="30006">Željena država ovjere</string>
 </strings>

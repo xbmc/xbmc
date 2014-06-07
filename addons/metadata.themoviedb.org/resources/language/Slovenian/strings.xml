@@ -4,7 +4,7 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
-    <string id="30000">Vključi ozadja</string>
+    <string id="30000">Vključi grafike</string>
     <string id="30001">Privzeti napovedniki s HD-Trailers.net</string>
     <string id="30002">Privzet jezik</string>
     <string id="30003">Prenesi ocene z</string>

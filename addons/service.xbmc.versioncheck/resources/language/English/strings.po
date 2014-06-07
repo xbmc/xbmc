@@ -25,7 +25,7 @@ msgid "Visit XBMC.org for more information."
 msgstr ""
 
 msgctxt "#32003"
-msgid "You are still using an older stable version of XBMC."
+msgid "You are still using an older version of XBMC."
 msgstr ""
 
 msgctxt "#32004"
@@ -76,7 +76,11 @@ msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
 msgstr ""
 
-#empty strings from id 32016 to 32019
+msgctxt "#32016"
+msgid "There is a newer stable XBMC version available."
+msgstr ""
+
+#empty strings from id 32017 to 32019
 
 msgctxt "#32020"
 msgid "General"
@@ -92,4 +96,8 @@ msgstr ""
 
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
+msgstr ""
+
+msgctxt "#32024"
+msgid "Linux: Upgrade using apt"
 msgstr ""

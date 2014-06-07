@@ -67,9 +67,6 @@
 			<RegExp input="$$8" conditional="htbthumbs" output="&lt;chain function=&quot;GetHTBThumbsByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$8" conditional="lastfmartistthumbs" output="&lt;chain function=&quot;GetLastFMArtistThumbsByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
-				<expression/>
-			</RegExp>
 			<RegExp input="$$8" conditional="fanarttvfanart" output="&lt;chain function=&quot;GetFanartTvArtistFanartsByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
 				<expression/>
 			</RegExp>
@@ -90,18 +87,6 @@
 			</RegExp>
 			<RegExp input="$INFO[lifespansource]" output="&lt;chain function=&quot;GetMBLafeSpanByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
 				<expression>MusicBrainz</expression>
-			</RegExp>
-			<RegExp input="$INFO[biogsource]" output="&lt;chain function=&quot;GetLastFMBiographyByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
-				<expression>last.fm</expression>
-			</RegExp>
-			<RegExp input="$INFO[discogsource]" output="&lt;chain function=&quot;GetLastFMDiscographyByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
-				<expression>last.fm</expression>
-			</RegExp>
-			<RegExp input="$INFO[genressource]" output="&lt;chain function=&quot;GetLastFMArtistGenresByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
-				<expression>last.fm</expression>
-			</RegExp>
-			<RegExp input="$INFO[stylessource]" output="&lt;chain function=&quot;GetLastFMArtistStylesByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
-				<expression>last.fm</expression>
 			</RegExp>
 			<RegExp input="$INFO[biogsource]" output="&lt;chain function=&quot;GetTADBBiographyByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
 				<expression>TheAudioDb.com</expression>
@@ -157,20 +142,8 @@
 
 	<AMGFallback dest="5" clearbuffers="no">
 		<RegExp input="$$11" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$INFO[biogfbsource]" output="&lt;chain function=&quot;GetLastFMBiographyByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="11+">
-				<expression>last.fm</expression>
-			</RegExp>
-			<RegExp input="$INFO[discogfbsource]" output="&lt;chain function=&quot;GetLastFMDiscographyByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="11+">
-				<expression>last.fm</expression>
-			</RegExp>
 			<RegExp input="$INFO[discogfbsource]" output="&lt;chain function=&quot;GetMBDiscographyByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="11+">
 				<expression>MusicBrainz</expression>
-			</RegExp>
-			<RegExp input="$INFO[genresfbsource]" output="&lt;chain function=&quot;GetLastFMArtistGenresByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="11+">
-				<expression>last.fm</expression>
-			</RegExp>
-			<RegExp input="$INFO[stylesfbsource]" output="&lt;chain function=&quot;GetLastFMArtistStylesByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="11+">
-				<expression>last.fm</expression>
 			</RegExp>
 			<RegExp input="$INFO[lifespanfbsource]" output="&lt;chain function=&quot;GetMBLafeSpanByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="11+">
 				<expression>MusicBrainz</expression>

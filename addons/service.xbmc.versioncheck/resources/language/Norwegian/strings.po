@@ -24,10 +24,6 @@ msgctxt "#32002"
 msgid "Visit XBMC.org for more information."
 msgstr "Besøk XBMC.org for mer informasjon"
 
-msgctxt "#32003"
-msgid "You are still using an older stable version of XBMC."
-msgstr "Du bruker fortsatt en eldre, stabil versjon av XBMC."
-
 msgctxt "#32004"
 msgid "You are still using an older RC version of XBMC."
 msgstr "Du bruker fortsatt en eldre, RC-versjon av XBMC."
@@ -91,3 +87,7 @@ msgstr "Vennlingst skriv inn ditt passord"
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
 msgstr "Linux: Oppgrader hele systemet"
+
+msgctxt "#32024"
+msgid "Linux: Upgrade using apt"
+msgstr "Linux: Oppgrader med apt"

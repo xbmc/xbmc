@@ -16,6 +16,74 @@ msgstr ""
 "Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
+msgctxt "#32001"
+msgid "We would like to recommend you to upgrade."
+msgstr "Rádi bychom vám doporučili upgrade."
+
+msgctxt "#32002"
+msgid "Visit XBMC.org for more information."
+msgstr "Navštivte XBMC.org pro více informací."
+
+msgctxt "#32004"
+msgid "You are still using an older RC version of XBMC."
+msgstr "Stále používáte starší RC verzi XBMC."
+
+msgctxt "#32005"
+msgid "You are still using an older beta version of XBMC."
+msgstr "Stále používáte starší beta verzi XBMC."
+
+msgctxt "#32006"
+msgid "You are still using an older alpha version of XBMC."
+msgstr "Stále používáte starší alpha verzi XBMC."
+
+msgctxt "#32007"
+msgid "You are still using an older monthly version of XBMC."
+msgstr "Stále používáte starší měsíční verzi XBMC."
+
+msgctxt "#32008"
+msgid "You are still using an older non stable version of XBMC."
+msgstr "Stále používáte starší nestabilní verzi XBMC."
+
+msgctxt "#32009"
+msgid "Would you like to remove this reminder?"
+msgstr "Chtěli byste odstranit tuto připomínku?"
+
+msgctxt "#32010"
+msgid "You can enable/disable it through addon settings."
+msgstr "Můžete to povolit/zakázat pomocí nastavení rozšíření."
+
+msgctxt "#32011"
+msgid "Use your package manager(apt) to upgrade."
+msgstr "Použijte správce balíčků (APT) k upgradu."
+
+msgctxt "#32012"
+msgid "A new version is available, do you want to upgrade now?"
+msgstr "Nová verze je k dispozici, chcete upgradovat nyní?"
+
+msgctxt "#32013"
+msgid "Upgrade successful"
+msgstr "Aktualizace úspěšná"
+
+msgctxt "#32014"
+msgid "Do you want to restart Xbmc to finish the upgrade?"
+msgstr "Chcete restartovat XBMC pro dokončení aktualizace?"
+
+msgctxt "#32015"
+msgid "Do you want to check the repository for a new version?"
+msgstr "Chcete zjistit, jestli je v repositáři nová verze?"
+
 msgctxt "#32020"
 msgid "General"
 msgstr "Obecné"
+
+msgctxt "#32021"
+msgid "Enable XBMC version check?"
+msgstr "Povolit kontrolu verze XBMC?"
+
+msgctxt "#32022"
+msgid "Please enter your password"
+msgstr "Prosím, zadejte své heslo"
+
+msgctxt "#32023"
+msgid "Linux: Upgrade complete system"
+msgstr "Linux: Aktualizace celého systému"

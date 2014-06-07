@@ -4,6 +4,9 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
-    <string id="30002">Activar fanart</string>
+    <string id="30000">Utilitza l'ordre del DVD</string>
+    <string id="30001">Utilitza l'ordenament absolut (Temporada única)</string>
+    <string id="30002">Habilita el fanart</string>
+    <string id="30003">Dona preferència als pòsters</string>
     <string id="30004">Idioma</string>
 </strings>
