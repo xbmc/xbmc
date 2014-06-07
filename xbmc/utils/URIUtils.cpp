@@ -317,7 +317,7 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
   {
     CStackDirectory dir;
     CFileItemList items;
-    dir.GetDirectory(strPath,items);
+    dir.GetDirectory(url, items);
     items[0]->m_strDVDLabel = GetDirectory(items[0]->GetPath());
     if (StringUtils::StartsWithNoCase(items[0]->m_strDVDLabel, "rar://") || StringUtils::StartsWithNoCase(items[0]->m_strDVDLabel, "zip://"))
       GetParentPath(items[0]->m_strDVDLabel, strParent);

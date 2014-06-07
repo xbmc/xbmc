@@ -29,7 +29,7 @@ class CISO9660Directory :
 public:
   CISO9660Directory(void);
   virtual ~CISO9660Directory(void);
-  virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-  virtual bool Exists(const char* strPath);
+  virtual bool GetDirectory(const CURL& url, CFileItemList &items);
+  virtual bool Exists(const CURL& url);
 };
 }

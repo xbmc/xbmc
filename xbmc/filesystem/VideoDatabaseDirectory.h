@@ -30,8 +30,8 @@ namespace XFILE
   public:
     CVideoDatabaseDirectory(void);
     virtual ~CVideoDatabaseDirectory(void);
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-    virtual bool Exists(const char* strPath);
+    virtual bool GetDirectory(const CURL& url, CFileItemList &items);
+    virtual bool Exists(const CURL& url);
     virtual bool AllowAll() const { return true; }
     static VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryChildType(const CStdString& strPath);
     static VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryType(const CStdString& strPath);

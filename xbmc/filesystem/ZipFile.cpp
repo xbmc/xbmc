@@ -49,8 +49,7 @@ bool CZipFile::Open(const CURL&url)
   CStdString strOpts = url.GetOptions();
   CURL url2(url);
   url2.SetOptions("");
-  CStdString strPath = url2.Get();
-  if (!g_ZipManager.GetZipEntry(strPath,mZipItem))
+  if (!g_ZipManager.GetZipEntry(url2,mZipItem))
     return false;
 
   if ((mZipItem.flags & 64) == 64)
@@ -67,14 +66,14 @@ bool CZipFile::Open(const CURL&url)
 
   if (mZipItem.method != 0 && mZipItem.usize > ZIP_CACHE_LIMIT && strOpts != "?cache=no")
   {
-    if (!CFile::Exists("special://temp/" + URIUtils::GetFileName(strPath)))
+    if (!CFile::Exists("special://temp/" + URIUtils::GetFileName(url2)))
     {
       url2.SetOptions("?cache=no");
-      if (!CFile::Cache(url2.Get(), "special://temp/" + URIUtils::GetFileName(strPath)))
+      if (!CFile::Cache(url2, "special://temp/" + URIUtils::GetFileName(url2)))
         return false;
     }
     m_bCached = true;
-    return mFile.Open("special://temp/" + URIUtils::GetFileName(strPath));
+    return mFile.Open("special://temp/" + URIUtils::GetFileName(url2));
   }
 
   if (!mFile.Open(url.GetHostName())) // this is the zip-file, always open binary
@@ -238,7 +237,7 @@ int64_t CZipFile::Seek(int64_t iFilePosition, int iWhence)
 bool CZipFile::Exists(const CURL& url)
 {
   SZipEntry item;
-  if (g_ZipManager.GetZipEntry(url.Get(),item))
+  if (g_ZipManager.GetZipEntry(url,item))
     return true;
   return false;
 }
@@ -265,7 +264,7 @@ int CZipFile::Stat(struct __stat64 *buffer)
 
 int CZipFile::Stat(const CURL& url, struct __stat64* buffer)
 {
-  if (!g_ZipManager.GetZipEntry(url.Get(),mZipItem))
+  if (!g_ZipManager.GetZipEntry(url, mZipItem))
   {
     if (url.GetFileName().empty() && CFile::Exists(url.GetHostName()))
     { // when accessing the zip "root" recognize it as a directory

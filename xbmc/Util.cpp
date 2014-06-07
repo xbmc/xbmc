@@ -154,7 +154,7 @@ CStdString CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false */
   {
     CRSSDirectory dir;
     CFileItemList items;
-    if(dir.GetDirectory(url.Get(), items) && !items.m_strTitle.empty())
+    if(dir.GetDirectory(url, items) && !items.m_strTitle.empty())
       return items.m_strTitle;
   }
 

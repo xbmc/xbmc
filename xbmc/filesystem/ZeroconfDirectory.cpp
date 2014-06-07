@@ -169,9 +169,10 @@ bool GetDirectoryFromTxtRecords(CZeroconfBrowser::ZeroconfService zeroconf_servi
   return ret;
 }
 
-bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CZeroconfDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  assert(strPath.substr(0, 11) == "zeroconf://");
+  assert(url.GetProtocol() == "zeroconf");
+  CStdString strPath = url.Get();
   CStdString path = strPath.substr(11, strPath.length());
   URIUtils::RemoveSlashAtEnd(path);
   if(path.empty())

@@ -36,10 +36,9 @@ using namespace XFILE;
 CHTTPDirectory::CHTTPDirectory(void){}
 CHTTPDirectory::~CHTTPDirectory(void){}
 
-bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   CCurlFile http;
-  CURL url(strPath);
 
   CStdString strName, strLink;
   CStdString strBasePath = url.GetFileName();
@@ -130,9 +129,10 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       {
         CFileItemPtr pItem(new CFileItem(strNameTemp));
         pItem->SetProperty("IsHTTPDirectory", true);
-        url.SetFileName(strBasePath + strLinkBase);
-        url.SetOptions(strLinkOptions);
-        pItem->SetPath(url.Get());
+        CURL url2(url);
+        url2.SetFileName(strBasePath + strLinkBase);
+        url2.SetOptions(strLinkOptions);
+        pItem->SetURL(url2);
 
         if(URIUtils::HasSlashAtEnd(pItem->GetPath(), true))
           pItem->m_bIsFolder = true;
@@ -219,10 +219,9 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   return true;
 }
 
-bool CHTTPDirectory::Exists(const char* strPath)
+bool CHTTPDirectory::Exists(const CURL &url)
 {
   CCurlFile http;
-  CURL url(strPath);
   struct __stat64 buffer;
 
   if( http.Stat(url, &buffer) != 0 )

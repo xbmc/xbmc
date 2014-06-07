@@ -32,6 +32,6 @@ namespace XFILE
     virtual ~CSlingboxDirectory();
     
     virtual bool AllowAll() const { return true; }
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+    virtual bool GetDirectory(const CURL& url, CFileItemList &items);
   };
 }

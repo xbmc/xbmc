@@ -49,11 +49,11 @@ namespace XFILE
   {
   }
 
-  bool CSmartPlaylistDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
+  bool CSmartPlaylistDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   {
     // Load in the SmartPlaylist and get the WHERE query
     CSmartPlaylist playlist;
-    if (!playlist.Load(strPath))
+    if (!playlist.Load(url.Get()))
       return false;
     bool result = GetDirectory(playlist, items);
     if (result)
@@ -300,7 +300,7 @@ namespace XFILE
       return success;
   }
 
-  bool CSmartPlaylistDirectory::ContainsFiles(const CStdString& strPath)
+  bool CSmartPlaylistDirectory::ContainsFiles(const CURL& url)
   {
     // smart playlists always have files??
     return true;
@@ -338,9 +338,9 @@ namespace XFILE
     return "";
   }
 
-  bool CSmartPlaylistDirectory::Remove(const char *strPath)
+  bool CSmartPlaylistDirectory::Remove(const CURL& url)
   {
-    return XFILE::CFile::Delete(strPath);
+    return XFILE::CFile::Delete(url.Get());
   }
 }
 

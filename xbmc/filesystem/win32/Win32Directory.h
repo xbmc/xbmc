@@ -29,9 +29,9 @@ namespace XFILE
   public:
     CWin32Directory(void);
     virtual ~CWin32Directory(void);
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-    virtual bool Create(const char* strPath);
-    virtual bool Exists(const char* strPath);
-    virtual bool Remove(const char* strPath);
+    virtual bool GetDirectory(const CURL& url, CFileItemList &items);
+    virtual bool Create(const CURL& url);
+    virtual bool Exists(const CURL& url);
+    virtual bool Remove(const CURL& url);
   };
 }

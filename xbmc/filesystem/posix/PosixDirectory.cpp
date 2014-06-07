@@ -26,6 +26,7 @@
 #include "utils/URIUtils.h"
 #include "FileItem.h"
 #include "linux/XTimeUtils.h"
+#include "URL.h"
 
 #include <dirent.h>
 #include <sys/stat.h>
@@ -39,20 +40,18 @@ CPosixDirectory::CPosixDirectory(void)
 CPosixDirectory::~CPosixDirectory(void)
 {}
 
-bool CPosixDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items)
+bool CPosixDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  CStdString strPath = strPath1;
+  std::string root = url.Get();
 
-  if (IsAliasShortcut(strPath))
-    TranslateAliasShortcut(strPath);
+  if (IsAliasShortcut(root))
+    TranslateAliasShortcut(root);
 
-  const char* root = strPath;
-  struct dirent* entry;
-  DIR *dir = opendir(root);
-
+  DIR *dir = opendir(root.c_str());
   if (!dir)
     return false;
 
+  struct dirent* entry;
   while ((entry = readdir(dir)) != NULL)
   {
     if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
@@ -108,39 +107,30 @@ bool CPosixDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &it
   return true;
 }
 
-bool CPosixDirectory::Create(const char* strPath)
+bool CPosixDirectory::Create(const CURL& url)
 {
-  if (!strPath || !*strPath)
-    return false;
-
-  if (mkdir(strPath, 0755) != 0)
+  if (mkdir(url.Get().c_str(), 0755) != 0)
   {
     if (errno == EEXIST)
-      return Exists(strPath);
+      return Exists(url);
     else
       return false;
   }
   return true;
 }
 
-bool CPosixDirectory::Remove(const char* strPath)
+bool CPosixDirectory::Remove(const CURL& url)
 {
-  if (!strPath || !*strPath)
-    return false;
-
-  if (rmdir(strPath) == 0)
+  if (rmdir(url.Get().c_str()) == 0);
     return true;
 
-  return !Exists(strPath);
+  return !Exists(url);
 }
 
-bool CPosixDirectory::Exists(const char* strPath)
+bool CPosixDirectory::Exists(const CURL& url)
 {
-  if (!strPath || !*strPath)
-    return false;
-
   struct stat buffer;
-  if (stat(strPath, &buffer) != 0)
+  if (stat(url.Get().c_str(), &buffer) != 0)
     return false;
   return S_ISDIR(buffer.st_mode) ? true : false;
 }

@@ -182,15 +182,14 @@ bool CNFSDirectory::ResolveSymlink( const CStdString &dirName, struct nfsdirent 
   return retVal;
 }
 
-bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   // We accept nfs://server/path[/file]]]]
   int ret = 0;
   FILETIME fileTime, localTime;    
   CSingleLock lock(gNfsConnection); 
-  CURL url(strPath);
   CStdString strDirName="";
-  std::string myStrPath(strPath);
+  std::string myStrPath(url.Get());
   URIUtils::AddSlashAtEnd(myStrPath); //be sure the dir ends with a slash
    
   if(!gNfsConnection.Connect(url,strDirName))
@@ -292,13 +291,13 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   return true;
 }
 
-bool CNFSDirectory::Create(const char* strPath)
+bool CNFSDirectory::Create(const CURL& url2)
 {
   int ret = 0;
   bool success=true;
   
   CSingleLock lock(gNfsConnection);
-  CStdString folderName(strPath);
+  CStdString folderName(url2.Get());
   URIUtils::RemoveSlashAtEnd(folderName);//mkdir fails if a slash is at the end!!! 
   CURL url(folderName); 
   folderName = "";
@@ -314,12 +313,12 @@ bool CNFSDirectory::Create(const char* strPath)
   return success;
 }
 
-bool CNFSDirectory::Remove(const char* strPath)
+bool CNFSDirectory::Remove(const CURL& url2)
 {
   int ret = 0;
 
   CSingleLock lock(gNfsConnection);
-  CStdString folderName(strPath);
+  CStdString folderName(url2.Get());
   URIUtils::RemoveSlashAtEnd(folderName);//rmdir fails if a slash is at the end!!!   
   CURL url(folderName);
   folderName = "";
@@ -337,12 +336,12 @@ bool CNFSDirectory::Remove(const char* strPath)
   return true;
 }
 
-bool CNFSDirectory::Exists(const char* strPath)
+bool CNFSDirectory::Exists(const CURL& url2)
 {
   int ret = 0;
 
   CSingleLock lock(gNfsConnection); 
-  CStdString folderName(strPath);  
+  CStdString folderName(url2.Get());
   URIUtils::RemoveSlashAtEnd(folderName);//remove slash at end or URIUtils::GetFileName won't return what we want...
   CURL url(folderName);
   folderName = "";

@@ -873,7 +873,8 @@ void CGUIWindowFileManager::GetDirectoryHistoryString(const CFileItem* pItem, CS
 
 bool CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirectory, CFileItemList &items)
 {
-  return m_rootDir.GetDirectory(strDirectory,items,false);
+  const CURL pathToUrl(strDirectory);
+  return m_rootDir.GetDirectory(pathToUrl, items, false);
 }
 
 bool CGUIWindowFileManager::CanRename(int iList)
@@ -1114,6 +1115,7 @@ bool CGUIWindowFileManager::SelectItem(int list, int &item)
 // recursively calculates the selected folder size
 int64_t CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirectory, CGUIDialogProgress *pProgress)
 {
+  const CURL pathToUrl(strDirectory);
   if (pProgress)
   { // update our progress control
     pProgress->Progress();
@@ -1126,7 +1128,7 @@ int64_t CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirector
   CFileItemList items;
   CVirtualDirectory rootDir;
   rootDir.SetSources(*CMediaSourceSettings::Get().GetSources("files"));
-  rootDir.GetDirectory(strDirectory, items, false);
+  rootDir.GetDirectory(pathToUrl, items, false);
   for (int i=0; i < items.Size(); i++)
   {
     if (items[i]->m_bIsFolder && !items[i]->IsParentFolder()) // folder

@@ -43,9 +43,9 @@ CMusicDatabaseDirectory::~CMusicDatabaseDirectory(void)
 {
 }
 
-bool CMusicDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CMusicDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  CStdString path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
+  CStdString path = CLegacyPathTranslation::TranslateMusicDbPath(url);
   items.SetPath(path);
   auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
@@ -247,9 +247,9 @@ bool CMusicDatabaseDirectory::ContainsSongs(const CStdString &path)
   return false;
 }
 
-bool CMusicDatabaseDirectory::Exists(const char* strPath)
+bool CMusicDatabaseDirectory::Exists(const CURL& url)
 {
-  CStdString path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
+  CStdString path = CLegacyPathTranslation::TranslateMusicDbPath(url);
   auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
   if (!pNode.get())

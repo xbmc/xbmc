@@ -3699,7 +3699,7 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
   {
     CStackDirectory dir;
     CFileItemList movieList;
-    dir.GetDirectory(item.GetPath(), movieList);
+    dir.GetDirectory(item.GetURL(), movieList);
 
     // first assume values passed to the stack
     int selectedFile = item.m_lStartPartNumber;
@@ -3765,7 +3765,7 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
 
     // calculate the total time of the stack
     CStackDirectory dir;
-    dir.GetDirectory(item.GetPath(), *m_currentStack);
+    dir.GetDirectory(item.GetURL(), *m_currentStack);
     long totalTime = 0;
     for (int i = 0; i < m_currentStack->Size(); i++)
     {

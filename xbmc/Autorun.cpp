@@ -132,7 +132,8 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   bool bPlaying(false);
   CFileItemList vecItems;
 
-  if ( !pDir->GetDirectory( strDrive, vecItems ) )
+  const CURL pathToUrl(strDrive);
+  if ( !pDir->GetDirectory( pathToUrl, vecItems ) )
   {
     return false;
   }
@@ -376,7 +377,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           // TODO: remove this once the app/player is capable of handling stacks immediately
           CStackDirectory dir;
           CFileItemList items;
-          dir.GetDirectory(pItem->GetPath(), items);
+          dir.GetDirectory(pItem->GetURL(), items);
           itemlist.Append(items);
         }
         else

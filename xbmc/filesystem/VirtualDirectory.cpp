@@ -21,6 +21,7 @@
 #include "system.h"
 #include "VirtualDirectory.h"
 #include "DirectoryFactory.h"
+#include "URL.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
@@ -68,12 +69,13 @@ void CVirtualDirectory::SetSources(const VECSOURCES& vecSources)
     and icons have to be set manually.
  */
 
-bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CVirtualDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  return GetDirectory(strPath,items,true);
+  return GetDirectory(url,items,true);
 }
-bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, bool bUseFileDirectories)
+bool CVirtualDirectory::GetDirectory(const CURL& url, CFileItemList &items, bool bUseFileDirectories)
 {
+  CStdString strPath = url.Get();
   int flags = m_flags;
   if (!bUseFileDirectories)
     flags |= DIR_FLAG_NO_FILE_DIRS;

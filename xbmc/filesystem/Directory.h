@@ -20,6 +20,7 @@
  */
 
 #include "IDirectory.h"
+#include "utils/StdString.h"
 
 namespace XFILE
 {

@@ -145,10 +145,10 @@ void CBlurayDirectory::GetRoot(CFileItemList &items)
     items.Add(item);
 }
 
-bool CBlurayDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
+bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   Dispose();
-  m_url.Parse(path);
+  m_url = url;
   CStdString root = m_url.GetHostName();
   CStdString file = m_url.GetFileName();
   URIUtils::RemoveSlashAtEnd(file);

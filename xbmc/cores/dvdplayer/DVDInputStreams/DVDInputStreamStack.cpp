@@ -55,7 +55,8 @@ bool CDVDInputStreamStack::Open(const char* path, const std::string& content)
   CStackDirectory dir;
   CFileItemList   items;
 
-  if(!dir.GetDirectory(path, items))
+  const CURL pathToUrl(path);
+  if(!dir.GetDirectory(pathToUrl, items))
   {
     CLog::Log(LOGERROR, "CDVDInputStreamStack::Open - failed to get list of stacked items");
     return false;

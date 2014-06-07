@@ -44,9 +44,9 @@ CVideoDatabaseDirectory::~CVideoDatabaseDirectory(void)
 {
 }
 
-bool CVideoDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CVideoDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  CStdString path = CLegacyPathTranslation::TranslateVideoDbPath(strPath);
+  CStdString path = CLegacyPathTranslation::TranslateVideoDbPath(url);
   items.SetPath(path);
   auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
@@ -303,9 +303,9 @@ bool CVideoDatabaseDirectory::ContainsMovies(const CStdString &path)
   return false;
 }
 
-bool CVideoDatabaseDirectory::Exists(const char* strPath)
+bool CVideoDatabaseDirectory::Exists(const CURL& url)
 {
-  CStdString path = CLegacyPathTranslation::TranslateVideoDbPath(strPath);
+  CStdString path = CLegacyPathTranslation::TranslateVideoDbPath(url);
   auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
   if (!pNode.get())

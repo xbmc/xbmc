@@ -40,7 +40,7 @@ public:
   CDAAPDirectory(void);
   virtual ~CDAAPDirectory(void);
   virtual bool AllowAll() const { return true; }
-  virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+  virtual bool GetDirectory(const CURL& url, CFileItemList &items);
   //virtual void CloseDAAP(void);
   int GetCurrLevel(const std::string &strPath);
 

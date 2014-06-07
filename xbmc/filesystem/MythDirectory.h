@@ -40,10 +40,10 @@ public:
   CMythDirectory();
   virtual ~CMythDirectory();
 
-  virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-  virtual bool Exists(const char* strPath);
+  virtual bool GetDirectory(const CURL& url, CFileItemList &items);
+  virtual bool Exists(const CURL& url);
   virtual bool AllowAll() const { return true; }
-  virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const;
+  virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const;
 
   static bool SupportsWriteFileOperations(const CStdString& strPath);
   static bool IsLiveTV(const CStdString& strPath);

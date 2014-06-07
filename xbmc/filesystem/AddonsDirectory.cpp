@@ -47,8 +47,9 @@ CAddonsDirectory::CAddonsDirectory(void)
 CAddonsDirectory::~CAddonsDirectory(void)
 {}
 
-bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
+  const CStdString strPath(url.Get());
   CStdString path1(strPath);
   URIUtils::RemoveSlashAtEnd(path1);
   CURL path(path1);

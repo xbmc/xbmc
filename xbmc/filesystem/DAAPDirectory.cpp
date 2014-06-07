@@ -59,11 +59,9 @@ CDAAPDirectory::~CDAAPDirectory(void)
   m_currentSongItems = NULL;
 }
 
-bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CDAAPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  CURL url(strPath);
-
-  CStdString strRoot = strPath;
+  CStdString strRoot = url.Get();
   URIUtils::AddSlashAtEnd(strRoot);
 
   CStdString host = url.GetHostName();

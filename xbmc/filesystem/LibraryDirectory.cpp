@@ -45,9 +45,9 @@ CLibraryDirectory::~CLibraryDirectory(void)
 {
 }
 
-bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CLibraryDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  std::string libNode = GetNode(strPath);
+  std::string libNode = GetNode(url);
   if (libNode.empty())
     return false;
 
@@ -99,6 +99,7 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     return false;
 
   // iterate over our nodes
+  std::string basePath = url.Get();
   for (int i = 0; i < nodes.Size(); i++)
   {
     const TiXmlElement *node = NULL;
@@ -129,7 +130,7 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       // create item
       URIUtils::RemoveSlashAtEnd(xml);
       CStdString folder = URIUtils::GetFileName(xml);
-      CFileItemPtr item(new CFileItem(URIUtils::AddFileToFolder(strPath, folder), true));
+      CFileItemPtr item(new CFileItem(URIUtils::AddFileToFolder(basePath, folder), true));
 
       item->SetLabel(label);
       if (!icon.empty() && g_TextureManager.HasTexture(icon))
@@ -163,16 +164,13 @@ TiXmlElement *CLibraryDirectory::LoadXML(const std::string &xmlFile)
   return NULL;
 }
 
-bool CLibraryDirectory::Exists(const char* strPath)
+bool CLibraryDirectory::Exists(const CURL& url)
 {
-  if (strPath)
-    return !GetNode(std::string(strPath)).empty();
-  return false;
+  return !GetNode(url).empty();
 }
 
-std::string CLibraryDirectory::GetNode(const std::string &path)
+std::string CLibraryDirectory::GetNode(const CURL& url)
 {
-  CURL url(path);
   CStdString libDir = URIUtils::AddFileToFolder(CProfilesManager::Get().GetLibraryFolder(), url.GetHostName() + "/");
   if (!CDirectory::Exists(libDir))
     libDir = URIUtils::AddFileToFolder("special://xbmc/system/library/", url.GetHostName() + "/");

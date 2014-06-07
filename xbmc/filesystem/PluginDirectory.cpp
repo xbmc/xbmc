@@ -405,11 +405,10 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const C
   }
 }
 
-bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
+bool CPluginDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 {
-  CURL url(strPath);
-
-  bool success = StartScript(strPath, true);
+  const CStdString pathToUrl(url.Get());
+  bool success = StartScript(pathToUrl, true);
 
   // append the items to the list
   items.Assign(*m_listItems, true); // true to keep the current items

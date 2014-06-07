@@ -77,10 +77,10 @@ CRSSDirectory::~CRSSDirectory()
 {
 }
 
-bool CRSSDirectory::ContainsFiles(const CStdString& strPath)
+bool CRSSDirectory::ContainsFiles(const CURL& url)
 {
   CFileItemList items;
-  if(!GetDirectory(strPath, items))
+  if(!GetDirectory(url, items))
     return false;
 
   return items.Size() > 0;
@@ -557,9 +557,10 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& pat
   }
 }
 
-bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
+bool CRSSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  CStdString strPath(path);
+  const CStdString pathToUrl(url.Get());
+  CStdString strPath(pathToUrl);
   URIUtils::RemoveSlashAtEnd(strPath);
   std::map<CStdString,CDateTime>::iterator it;
   items.SetPath(strPath);
@@ -593,7 +594,7 @@ bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
   TiXmlHandle docHandle( &xmlDoc );
   TiXmlElement* channelXmlNode = docHandle.FirstChild( "rss" ).FirstChild( "channel" ).Element();
   if (channelXmlNode)
-    ParseItem(&items, channelXmlNode, path);
+    ParseItem(&items, channelXmlNode, pathToUrl);
   else
     return false;
 
@@ -602,7 +603,7 @@ bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
   {
     // Create new item,
     CFileItemPtr item(new CFileItem());
-    ParseItem(item.get(), child, path);
+    ParseItem(item.get(), child, pathToUrl);
 
     item->SetProperty("isrss", "1");
     // Use channel image if item doesn't have one
@@ -632,9 +633,8 @@ bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
   return true;
 }
 
-bool CRSSDirectory::Exists(const char* strPath)
+bool CRSSDirectory::Exists(const CURL& url)
 {
   CCurlFile rss;
-  CURL url(strPath);
   return rss.Exists(url);
 }

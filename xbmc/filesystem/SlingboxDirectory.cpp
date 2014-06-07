@@ -20,6 +20,7 @@
 
 #include "SlingboxDirectory.h"
 #include "FileItem.h"
+#include "URL.h"
 
 using namespace XFILE;
 using namespace std;
@@ -32,10 +33,11 @@ CSlingboxDirectory::~CSlingboxDirectory()
 {
 }
 
-bool CSlingboxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CSlingboxDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   // Create generic Watch Slingbox item
-  CFileItemPtr item(new CFileItem(strPath, false));
+  const CStdString pathToUrl(url.Get());
+  CFileItemPtr item(new CFileItem(pathToUrl, false));
   item->SetLabel("Watch Slingbox");
   item->SetLabelPreformated(true);
   items.Add(item);

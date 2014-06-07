@@ -410,7 +410,8 @@ void CGUIViewState::AddAndroidSource(const CStdString &content, const CStdString
 {
   CFileItemList items;
   XFILE::CAndroidAppDirectory apps;
-  if (apps.GetDirectory(content, items))
+  const CURL pathToUrl(content);
+  if (apps.GetDirectory(pathToUrl, items))
   {
     CMediaSource source;
     source.strPath = "androidapp://sources/" + content + "/";

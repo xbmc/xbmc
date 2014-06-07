@@ -537,10 +537,8 @@ std::string CURL::GetWithoutUserDetails(bool redact) const
   if (m_strProtocol.Equals("stack"))
   {
     CFileItemList items;
-    std::string strURL2;
-    strURL2 = Get();
     XFILE::CStackDirectory dir;
-    dir.GetDirectory(strURL2,items);
+    dir.GetDirectory(*this,items);
     vector<std::string> newItems;
     for (int i=0;i<items.Size();++i)
     {
