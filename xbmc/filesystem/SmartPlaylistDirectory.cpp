@@ -340,7 +340,7 @@ namespace XFILE
 
   bool CSmartPlaylistDirectory::Remove(const CURL& url)
   {
-    return XFILE::CFile::Delete(url.Get());
+    return XFILE::CFile::Delete(url);
   }
 }
 
