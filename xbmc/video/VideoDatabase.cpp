@@ -661,9 +661,9 @@ int CVideoDatabase::AddPath(const CStdString& strPath, const CStdString &strDate
 
     // only set dateadded if we got one
     if (!strDateAdded.empty())
-      strSQL=PrepareSQL("insert into path (idPath, strPath, strContent, strScraper, dateAdded) values (NULL,'%s','','', '%s')", strPath1.c_str(), strDateAdded.c_str());
+      strSQL=PrepareSQL("insert into path (idPath, strPath, dateAdded) values (NULL,'%s', '%s')", strPath1.c_str(), strDateAdded.c_str());
     else
-      strSQL=PrepareSQL("insert into path (idPath, strPath, strContent, strScraper) values (NULL,'%s','','')", strPath1.c_str());
+      strSQL=PrepareSQL("insert into path (idPath, strPath) values (NULL,'%s')", strPath1.c_str());
     m_pDS->exec(strSQL.c_str());
     idPath = (int)m_pDS->lastinsertid();
     return idPath;
