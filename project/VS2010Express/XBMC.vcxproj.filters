@@ -360,9 +360,6 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDMessageQueue.cpp">
       <Filter>cores\dvdplayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDMessageTracker.cpp">
-      <Filter>cores\dvdplayer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDOverlayContainer.cpp">
       <Filter>cores\dvdplayer</Filter>
     </ClCompile>
@@ -3094,9 +3091,6 @@
     <ClInclude Include="..\..\xbmc\cores\IPlayer.h">
       <Filter>cores</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\dvd_config.h">
-      <Filter>cores\dvdplayer</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDAudio.h">
       <Filter>cores\dvdplayer</Filter>
     </ClInclude>
@@ -3119,9 +3113,6 @@
       <Filter>cores\dvdplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDMessageQueue.h">
-      <Filter>cores\dvdplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDMessageTracker.h">
       <Filter>cores\dvdplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDOverlayContainer.h">
