@@ -5,10 +5,10 @@
 
 <strings>
     <string id="30000">Aktiviere Fanart</string>
-    <string id="30001">Aktiviere Trailer von HD-Trailers.net</string>
+    <string id="30001">Bevorzuge Trailer von HD-Trailers.net</string>
     <string id="30002">Bevorzugte Sprache</string>
-    <string id="30003">Bewertung von IMDb nutzen</string>
+    <string id="30003">Lade die Bewertung von</string>
     <string id="30004">Aktiviere Trailer (YouTube)</string>
-    <string id="30005">Original</string>
-    <string id="30006">Bevorzugte nationale Alterseinstufung</string>
+    <string id="30005">Verwende Original-Titel</string>
+    <string id="30006">Bevorzugtes Land für die Altersbewertung</string>
 </strings>

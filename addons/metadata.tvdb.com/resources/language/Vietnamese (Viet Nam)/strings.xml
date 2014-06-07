@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Vietnamese (Viet Nam) language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/vi_VN/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Sử dụng đặt hàng DVD</string>
+    <string id="30001">Sử dụng đặt hàng tuyệt đối (Một mùa)</string>
+    <string id="30002">Kích hoạt Fanart</string>
+    <string id="30003">Những áp phích hay hơn</string>
+    <string id="30004">Ngôn ngữ</string>
+</strings>

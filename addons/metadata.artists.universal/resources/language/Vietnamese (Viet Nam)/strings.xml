@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Vietnamese (Viet Nam) language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/vi_VN/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30004">Lấy hình nền Nghệ sĩ từ fanart.tv</string>
+    <string id="30005">Lấy hình đại diện Nghệ sĩ từ fanart.tv</string>
+    <string id="30007">Ảnh bìa</string>
+    <string id="30015">Ngôn ngữ được ưu tiên</string>
+</strings>

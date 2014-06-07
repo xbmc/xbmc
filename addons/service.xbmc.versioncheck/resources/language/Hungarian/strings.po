@@ -24,10 +24,6 @@ msgctxt "#32002"
 msgid "Visit XBMC.org for more information."
 msgstr "További információkért keresse fel az xbmc.org oldalt!"
 
-msgctxt "#32003"
-msgid "You are still using an older stable version of XBMC."
-msgstr "Ön még az XBMC egy régebbi, stabil változatát használja."
-
 msgctxt "#32004"
 msgid "You are still using an older RC version of XBMC."
 msgstr "Ön még az XBMC egy régebbi, kiadás előtti (RC) változatát használja."
@@ -72,6 +68,10 @@ msgctxt "#32014"
 msgid "Do you want to restart Xbmc to finish the upgrade?"
 msgstr "Kívánja újraindítani az XBMC-t a frissítés befejezéséhez?"
 
+msgctxt "#32015"
+msgid "Do you want to check the repository for a new version?"
+msgstr "Kívánja, hogy új változatot keressünk a frissítési csatornában?"
+
 msgctxt "#32020"
 msgid "General"
 msgstr "Általános"
@@ -83,3 +83,11 @@ msgstr "Engedélyezi az XBMC verzió ellenőrzését?"
 msgctxt "#32022"
 msgid "Please enter your password"
 msgstr "Kérjük, adja meg jelszavát"
+
+msgctxt "#32023"
+msgid "Linux: Upgrade complete system"
+msgstr "Linux: Teljes rendszer frissítése"
+
+msgctxt "#32024"
+msgid "Linux: Upgrade using apt"
+msgstr "Linux: Frissítés apt segítségével"

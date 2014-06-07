@@ -24,10 +24,6 @@ msgctxt "#32002"
 msgid "Visit XBMC.org for more information."
 msgstr "Visite XBMC.org para mais informações."
 
-msgctxt "#32003"
-msgid "You are still using an older stable version of XBMC."
-msgstr "Você ainda está usando uma versão estável antiga do XBMC."
-
 msgctxt "#32004"
 msgid "You are still using an older RC version of XBMC."
 msgstr "Você ainda está usando uma versão RC antiga do XBMC."
@@ -91,3 +87,7 @@ msgstr "Por favor entre sua senha"
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
 msgstr "Linux: Atualizar o sistema completamente"
+
+msgctxt "#32024"
+msgid "Linux: Upgrade using apt"
+msgstr "Linux: Atualizar usando apt"

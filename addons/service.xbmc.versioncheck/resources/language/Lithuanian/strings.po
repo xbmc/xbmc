@@ -16,6 +16,78 @@ msgstr ""
 "Language: lt\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+msgctxt "#32001"
+msgid "We would like to recommend you to upgrade."
+msgstr "Norėtume pasiūlyti jums atsinaujinti."
+
+msgctxt "#32002"
+msgid "Visit XBMC.org for more information."
+msgstr "Apsilankykite XBMC.org, norėdami gauti daugiau informacijos."
+
+msgctxt "#32004"
+msgid "You are still using an older RC version of XBMC."
+msgstr "Jūs vis dar naudojate senesnę XBMC RC versiją."
+
+msgctxt "#32005"
+msgid "You are still using an older beta version of XBMC."
+msgstr "Jūs vis dar naudojate senesnę XBMC beta versiją."
+
+msgctxt "#32006"
+msgid "You are still using an older alpha version of XBMC."
+msgstr "Jūs vis dar naudojate senesnę XBMC alpha versiją."
+
+msgctxt "#32007"
+msgid "You are still using an older monthly version of XBMC."
+msgstr "Jūs vis dar naudojate senesnę mėnesinę XBMC versiją."
+
+msgctxt "#32008"
+msgid "You are still using an older non stable version of XBMC."
+msgstr "Jūs vis dar naudojate senesnę nestabilią XBMC versiją."
+
+msgctxt "#32009"
+msgid "Would you like to remove this reminder?"
+msgstr "Ar norite paašalinti šį priminimą?"
+
+msgctxt "#32010"
+msgid "You can enable/disable it through addon settings."
+msgstr "Jūs galite jį įjungti/išjungti priedo nustatymuose."
+
+msgctxt "#32011"
+msgid "Use your package manager(apt) to upgrade."
+msgstr "Naudokite paketo tvarkyklę (apt), norėdami atnaujinti."
+
+msgctxt "#32012"
+msgid "A new version is available, do you want to upgrade now?"
+msgstr "Pasiekiama nauja versija, ar norite atnaujinti dabar?"
+
+msgctxt "#32013"
+msgid "Upgrade successful"
+msgstr "Atnaujinimas sėkmingas"
+
+msgctxt "#32014"
+msgid "Do you want to restart Xbmc to finish the upgrade?"
+msgstr "Ar norite iš naujo paleisti XBMC, kad užbaigti atnaujinimą?"
+
+msgctxt "#32015"
+msgid "Do you want to check the repository for a new version?"
+msgstr "Ar norite patikrinti saugykloje, ar yra nauja versija?"
+
 msgctxt "#32020"
 msgid "General"
 msgstr "Pagrindinis"
+
+msgctxt "#32021"
+msgid "Enable XBMC version check?"
+msgstr "Įjungti XBMC versijos tikrinimą?"
+
+msgctxt "#32022"
+msgid "Please enter your password"
+msgstr "Įveskite slaptažodį"
+
+msgctxt "#32023"
+msgid "Linux: Upgrade complete system"
+msgstr "Linux: atnaujinti visą sistemą"
+
+msgctxt "#32024"
+msgid "Linux: Upgrade using apt"
+msgstr "Linux: Atnaujinti naudojant apt"

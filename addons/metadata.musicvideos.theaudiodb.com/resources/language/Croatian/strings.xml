@@ -4,5 +4,6 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
-    <string id="30000">Zahvati sličice za Albume  sa fanart.tv</string>
+    <string id="30000">Nabavi minijature albuma s fanart.tv</string>
+    <string id="30001">Nabavi minijature albuma s theaudiodb.com</string>
 </strings>

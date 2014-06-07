@@ -16,6 +16,74 @@ msgstr ""
 "Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#32001"
+msgid "We would like to recommend you to upgrade."
+msgstr "En agradaria recomanar-te actualitzar."
+
+msgctxt "#32002"
+msgid "Visit XBMC.org for more information."
+msgstr "Visita XBMC.org per més informació."
+
+msgctxt "#32004"
+msgid "You are still using an older RC version of XBMC."
+msgstr "Encara estàs fent servir una versió RC de XBMC vella."
+
+msgctxt "#32005"
+msgid "You are still using an older beta version of XBMC."
+msgstr "Encara estàs fent servir una versió beta de XBMC vella."
+
+msgctxt "#32006"
+msgid "You are still using an older alpha version of XBMC."
+msgstr "Encara estàs fent servir una versió alpha de XBMC vella."
+
+msgctxt "#32007"
+msgid "You are still using an older monthly version of XBMC."
+msgstr "Encara estàs fent servir una versió mensual de XBMC vella."
+
+msgctxt "#32008"
+msgid "You are still using an older non stable version of XBMC."
+msgstr "Encara estàs fent servir una versió no estable de XBMC vella."
+
+msgctxt "#32009"
+msgid "Would you like to remove this reminder?"
+msgstr "Vols eliminar aquest recordatori?"
+
+msgctxt "#32010"
+msgid "You can enable/disable it through addon settings."
+msgstr "Pots habilitar/inhabilitar mitjançant les propietats del complement."
+
+msgctxt "#32011"
+msgid "Use your package manager(apt) to upgrade."
+msgstr "Utilitza el gestor de paquets (apt) per actualitzar."
+
+msgctxt "#32012"
+msgid "A new version is available, do you want to upgrade now?"
+msgstr "Una nova versió esta disponible, vol actualitzar ara?"
+
+msgctxt "#32013"
+msgid "Upgrade successful"
+msgstr "Actualització realitzada correctament."
+
+msgctxt "#32014"
+msgid "Do you want to restart Xbmc to finish the upgrade?"
+msgstr "Vols reiniciar XBMC per finalitzar la actualització?"
+
+msgctxt "#32015"
+msgid "Do you want to check the repository for a new version?"
+msgstr "Vols comprovar el repositori per buscar una versió nova?"
+
 msgctxt "#32020"
 msgid "General"
 msgstr "General"
+
+msgctxt "#32021"
+msgid "Enable XBMC version check?"
+msgstr "Habilitar comprovació de versió XBMC?"
+
+msgctxt "#32022"
+msgid "Please enter your password"
+msgstr "Si us plau indtroduïu la contrasenya"
+
+msgctxt "#32023"
+msgid "Linux: Upgrade complete system"
+msgstr "Linux: Actualitzar tot el sistema"

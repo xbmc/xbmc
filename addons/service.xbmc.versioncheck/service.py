@@ -17,7 +17,6 @@
 #    along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-
 import platform
 import xbmc
 import lib.common
@@ -29,25 +28,24 @@ __addonversion__ = lib.common.__addonversion__
 __addonname__    = lib.common.__addonname__
 __addonpath__    = lib.common.__addonpath__
 __icon__         = lib.common.__icon__
-__localize__     = lib.common.__localize__
-
+oldversion = False
 
 class Main:
     def __init__(self):
         linux = False
         packages = []
-        if __addon__.getSetting("versioncheck_enable") == 'true' and not xbmc.getCondVisibility('System.HasAddon(os.openelec.tv)'):
+        if not xbmc.getCondVisibility('System.HasAddon(os.openelec.tv)'):
             if not sys.argv[0]:
                 xbmc.executebuiltin('XBMC.AlarmClock(CheckAtBoot,XBMC.RunScript(service.xbmc.versioncheck, started),00:00:30,silent)')
                 xbmc.executebuiltin('XBMC.AlarmClock(CheckWhileRunning,XBMC.RunScript(service.xbmc.versioncheck, started),24:00:00,silent,loop)')
             elif sys.argv[0] and sys.argv[1] == 'started':
-                if xbmc.getCondVisibility('System.Platform.Linux'):
+                if xbmc.getCondVisibility('System.Platform.Linux') and __addon__.getSetting("upgrade_apt") == 'true':
                     packages = ['xbmc']
                     _versionchecklinux(packages)
                 else:
                     oldversion, msg = _versioncheck()
                     if oldversion:
-                        _upgrademessage(msg, False)
+                        _upgrademessage(msg, oldversion, False)
             else:
                 pass
                 
@@ -87,7 +85,7 @@ def _versionchecklinux(packages):
 
         if handler:
             if handler.check_upgrade_available(packages[0]):
-                if _upgrademessage(32012, True):
+                if _upgrademessage(32012, oldversion, True):
                     if __addon__.getSetting("upgrade_system") == "false":
                         result = handler.upgrade_package(packages[0])
                     else:

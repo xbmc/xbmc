@@ -4,5 +4,15 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
-    <string id="30000">Dohvati </string>
+    <string id="30000">Nabavi minijature albuma s fanart.tv</string>
+    <string id="30001">Nabavi minijature albuma s  Last.fm</string>
+    <string id="30002">Nabavi recenzije albuma s </string>
+    <string id="30003">Željeni jezik</string>
+    <string id="30004">Nabavi ocjene albuma s</string>
+    <string id="30005">Nabavi izgled albuma s</string>
+    <string id="30006">Nabavi ugođaje albuma s</string>
+    <string id="30007">Nabavi teme albuma s</string>
+    <string id="30008">Preuzmi minijature albuma s allmusic.com</string>
+    <string id="30009">Slika omota</string>
+    <string id="30010">Preuzmi minijature albuma s theaudiodb.com</string>
 </strings>
