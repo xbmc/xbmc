@@ -136,12 +136,12 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   if (pDir)
     return pDir;
 
-  CStdString strProtocol = url.GetProtocol();
+  const CStdString &strProtocol = url.GetProtocol();
 
 #ifdef TARGET_POSIX
-  if (strProtocol.size() == 0 || strProtocol == "file") return new CPosixDirectory();
+  if (strProtocol.empty() || strProtocol == "file") return new CPosixDirectory();
 #elif defined(TARGET_WINDOWS)
-  if (strProtocol.size() == 0 || strProtocol == "file") return new CWin32Directory();
+  if (strProtocol.empty() || strProtocol == "file") return new CWin32Directory();
 #else
 #error Local directory access is not implemented for this platform
 #endif
