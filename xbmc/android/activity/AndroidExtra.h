@@ -21,6 +21,7 @@
  
  /*** Extra's not found in the Android NDK ***/
 
+#if NDK_VER < 0x9b
 // missing in early NDKs, is present in r9b+
 extern float AMotionEvent_getAxisValue(const AInputEvent* motion_event, int32_t axis, size_t pointer_index);
 extern typeof(AMotionEvent_getAxisValue) *p_AMotionEvent_getAxisValue;
@@ -74,3 +75,5 @@ extern typeof(AMotionEvent_getButtonState) *p_AMotionEvent_getButtonState;
 #define AMOTION_EVENT_AXIS_RTRIGGER 18
 // mouse vertical wheel
 #define AMOTION_EVENT_AXIS_VSCROLL 0x09
+
+#endif
