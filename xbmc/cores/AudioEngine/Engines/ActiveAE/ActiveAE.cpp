@@ -1635,7 +1635,7 @@ bool CActiveAE::RunStages()
     {
       float buftime = (float)(*it)->m_inputBuffers->m_format.m_frames / (*it)->m_inputBuffers->m_format.m_sampleRate;
       time += buftime * (*it)->m_processingSamples.size();
-      while (time < MAX_CACHE_LEVEL && !(*it)->m_inputBuffers->m_freeSamples.empty())
+      while ((time < MAX_CACHE_LEVEL || (*it)->m_streamIsBuffering) && !(*it)->m_inputBuffers->m_freeSamples.empty())
       {
         buffer = (*it)->m_inputBuffers->GetFreeBuffer();
         (*it)->m_processingSamples.push_back(buffer);
