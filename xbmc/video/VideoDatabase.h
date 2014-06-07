@@ -653,11 +653,12 @@ public:
   /*! \brief Add a path to the database, if necessary
    If the path is already in the database, we simply return its id.
    \param strPath the path to add
+   \param parentPath the parent path of the path to add. If empty, URIUtils::GetParentPath() will determine the path.
    \param strDateAdded datetime when the path was added to the filesystem/database
    \return id of the file, -1 if it could not be added.
    */
-  int AddPath(const CStdString& strPath, const CStdString &strDateAdded = "");
-  
+  int AddPath(const CStdString& strPath, const CStdString &parentPath = "", const CStdString &strDateAdded = "");
+
   /*! \brief Updates the dateAdded field in the files table for the file
    with the given idFile and the given path based on the files modification date
    \param idFile id of the file in the files table

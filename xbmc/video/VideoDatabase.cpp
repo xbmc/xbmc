@@ -132,7 +132,7 @@ void CVideoDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE actors ( idActor integer primary key, strActor text, strThumb text )\n");
 
   CLog::Log(LOGINFO, "create path table");
-  m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strContent text, strScraper text, strHash text, scanRecursive integer, useFolderNames bool, strSettings text, noUpdate bool, exclude bool, dateAdded text)");
+  m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strContent text, strScraper text, strHash text, scanRecursive integer, useFolderNames bool, strSettings text, noUpdate bool, exclude bool, dateAdded text, idParentPath integer)");
 
   CLog::Log(LOGINFO, "create files table");
   m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, playCount integer, lastPlayed text, dateAdded text)");
@@ -253,6 +253,7 @@ void CVideoDatabase::CreateAnalytics()
   m_pDS->exec("CREATE UNIQUE INDEX ix_settings ON settings ( idFile )\n");
   m_pDS->exec("CREATE UNIQUE INDEX ix_stacktimes ON stacktimes ( idFile )\n");
   m_pDS->exec("CREATE INDEX ix_path ON path ( strPath(255) )");
+  m_pDS->exec("CREATE INDEX ix_path2 ON path ( idParentPath )");
   m_pDS->exec("CREATE INDEX ix_files ON files ( idPath, strFilename(255) )");
 
   m_pDS->exec("CREATE UNIQUE INDEX ix_genrelinkmovie_1 ON genrelinkmovie ( idGenre, idMovie)\n");
@@ -637,7 +638,7 @@ bool CVideoDatabase::GetSubPaths(const CStdString &basepath, vector< pair<int,st
   return false;
 }
 
-int CVideoDatabase::AddPath(const CStdString& strPath, const CStdString &strDateAdded /*= "" */)
+int CVideoDatabase::AddPath(const CStdString& strPath, const CStdString &parentPath /*= "" */, const CStdString &strDateAdded /*= "" */)
 {
   CStdString strSQL;
   try
@@ -655,11 +656,23 @@ int CVideoDatabase::AddPath(const CStdString& strPath, const CStdString &strDate
 
     URIUtils::AddSlashAtEnd(strPath1);
 
-    // only set dateadded if we got one
-    if (!strDateAdded.empty())
-      strSQL=PrepareSQL("insert into path (idPath, strPath, dateAdded) values (NULL,'%s', '%s')", strPath1.c_str(), strDateAdded.c_str());
+    int idParentPath = GetPathId(parentPath.empty() ? URIUtils::GetParentPath(strPath1) : parentPath);
+
+    // add the path
+    if (idParentPath < 0)
+    {
+      if (!strDateAdded.empty())
+        strSQL=PrepareSQL("insert into path (idPath, strPath, dateAdded) values (NULL, '%s', '%s')", strPath1.c_str(), strDateAdded.c_str());
+      else
+        strSQL=PrepareSQL("insert into path (idPath, strPath) values (NULL, '%s')", strPath1.c_str());
+    }
     else
-      strSQL=PrepareSQL("insert into path (idPath, strPath) values (NULL,'%s')", strPath1.c_str());
+    {
+      if (!strDateAdded.empty())
+        strSQL=PrepareSQL("insert into path (idPath, strPath, dateAdded, idParentPath) values (NULL, '%s', '%s', %i)", strPath1.c_str(), strDateAdded.c_str(), idParentPath);
+      else
+        strSQL=PrepareSQL("insert into path (idPath, strPath, idParentPath) values (NULL, '%s', %i)", strPath1.c_str(), idParentPath);
+    }
     m_pDS->exec(strSQL.c_str());
     idPath = (int)m_pDS->lastinsertid();
     return idPath;
@@ -1279,7 +1292,7 @@ int CVideoDatabase::AddTvShow(const CStdString& strPath)
     if (!dateAdded.IsValid())
       dateAdded = CDateTime::GetCurrentDateTime();
 
-    int idPath = AddPath(strPath, dateAdded.GetAsDBDateTime());
+    int idPath = AddPath(strPath, URIUtils::GetParentPath(strPath), dateAdded.GetAsDBDateTime());
     strSQL=PrepareSQL("insert into tvshowlinkpath values (%i,%i)",idTvShow,idPath);
     m_pDS->exec(strSQL.c_str());
 
@@ -4466,11 +4479,32 @@ void CVideoDatabase::UpdateTables(int iVersion)
   }
   if (iVersion < 77)
     m_pDS->exec("ALTER TABLE streamdetails ADD strStereoMode text");
+
+  if (iVersion < 81)
+  { // add idParentPath to path table
+    m_pDS->exec("ALTER TABLE path ADD idParentPath integer");
+    map<string, int> paths;
+    m_pDS->query("select idPath,strPath from path");
+    while (!m_pDS->eof())
+    {
+      paths.insert(make_pair(m_pDS->fv(1).get_asString(), m_pDS->fv(0).get_asInt()));
+      m_pDS->next();
+    }
+    m_pDS->close();
+    // run through these paths figuring out the parent path, and add to the table if found
+    for (map<string, int>::const_iterator i = paths.begin(); i != paths.end(); ++i)
+    {
+      std::string parent = URIUtils::GetParentPath(i->first);
+      map<string, int>::const_iterator j = paths.find(parent);
+      if (j != paths.end())
+        m_pDS->exec(PrepareSQL("UPDATE path SET idParentPath=%i WHERE idPath=%i", j->second, i->second));
+    }
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 80;
+  return 81;
 }
 
 bool CVideoDatabase::LookupByFolders(const CStdString &path, bool shows)
@@ -8119,6 +8153,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
                                   "AND (strSettings IS NULL OR strSettings = '') "
                                   "AND (strHash IS NULL OR strHash = '') "
                                   "AND (exclude IS NULL OR exclude != 1) "
+                                  "AND (idParentPath IS NULL OR NOT EXISTS (SELECT 1 FROM path AS parentPath WHERE parentPath.idPath = path.idParentPath)) "
                                   "AND NOT EXISTS (SELECT 1 FROM files WHERE files.idPath = path.idPath) "
                                   "AND NOT EXISTS (SELECT 1 FROM tvshowlinkpath WHERE tvshowlinkpath.idPath = path.idPath) "
                                   "AND NOT EXISTS (SELECT 1 FROM movie WHERE movie.c%02d = path.idPath) "
