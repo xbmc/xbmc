@@ -128,7 +128,7 @@ void CGUIDialogVisualisationPresetList::Update()
   CStdString strHeading;
   if (m_viz)
   {
-    strHeading = StringUtils::Format(g_localizeStrings.Get(13407).c_str(), m_viz->Name().c_str());
+    strHeading = StringUtils::Format(g_localizeStrings.Get(13407), m_viz->Name().c_str());
 
     //clear filelist
     CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
