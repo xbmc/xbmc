@@ -132,6 +132,12 @@ bool CPlayListFactory::IsPlaylist(const CFileItem& item)
   return IsPlaylist(item.GetPath());
 }
 
+bool CPlayListFactory::IsPlaylist(const CURL& url)
+{
+  return URIUtils::HasExtension(url,
+                                ".m3u|.b4s|.pls|.strm|.wpl|.asx|.ram|.url|.pxml");
+}
+
 bool CPlayListFactory::IsPlaylist(const CStdString& filename)
 {
   return URIUtils::HasExtension(filename,

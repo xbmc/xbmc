@@ -46,6 +46,11 @@ bool URIUtils::IsInPath(const CStdString &uri, const CStdString &baseURI)
 }
 
 /* returns filename extension including period of filename */
+CStdString URIUtils::GetExtension(const CURL& url)
+{
+  return URIUtils::GetExtension(url.GetFileName());
+}
+
 CStdString URIUtils::GetExtension(const CStdString& strFileName)
 {
   if (IsURL(strFileName))
@@ -71,6 +76,11 @@ bool URIUtils::HasExtension(const CStdString& strFileName)
 
   size_t iPeriod = strFileName.find_last_of("./\\");
   return iPeriod != string::npos && strFileName[iPeriod] == '.';
+}
+
+bool URIUtils::HasExtension(const CURL& url, const CStdString& strExtensions)
+{
+  return HasExtension(url.GetFileName(), strExtensions);
 }
 
 bool URIUtils::HasExtension(const CStdString& strFileName, const CStdString& strExtensions)
@@ -165,6 +175,11 @@ CStdString URIUtils::ReplaceExtension(const CStdString& strFile,
     strChangedFile += strNewExtension;
   }
   return strChangedFile;
+}
+
+const CStdString URIUtils::GetFileName(const CURL& url)
+{
+  return GetFileName(url.GetFileName());
 }
 
 /* returns a filename given an url */
@@ -438,6 +453,12 @@ std::string URIUtils::ChangeBasePath(const std::string &fromPath, const std::str
     StringUtils::Replace(toFile, "/", "\\");
 
   return AddFileToFolder(toPath, toFile);
+}
+
+CURL URIUtils::SubstitutePath(const CURL& url, bool reverse /* = false */)
+{
+  const CStdString pathToUrl = url.Get();
+  return CURL(SubstitutePath(pathToUrl, reverse));
 }
 
 CStdString URIUtils::SubstitutePath(const CStdString& strPath, bool reverse /* = false */)

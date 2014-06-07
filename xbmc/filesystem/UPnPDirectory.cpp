@@ -111,9 +111,9 @@ static bool FindDeviceWait(CUPnP* upnp, const char* uuid, PLT_DeviceDataReferenc
 |   CUPnPDirectory::GetFriendlyName
 +---------------------------------------------------------------------*/
 const char*
-CUPnPDirectory::GetFriendlyName(const char* url)
+CUPnPDirectory::GetFriendlyName(const CURL& url)
 {
-    NPT_String path = url;
+    NPT_String path = url.Get().c_str();
     if (!path.EndsWith("/")) path += "/";
 
     if (path.Left(7).Compare("upnp://", true) != 0) {

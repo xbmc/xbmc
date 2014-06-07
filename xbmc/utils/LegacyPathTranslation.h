@@ -23,6 +23,8 @@
 
 typedef struct Translator Translator;
 
+class CURL;
+
 /*!
  \brief Translates old internal paths into new ones
 
@@ -39,6 +41,7 @@ public:
    \param legacyPath Path in the old videodb:// format using numbers
    \return Path in the new videodb:// format using descriptive strings
    */
+  static std::string TranslateVideoDbPath(const CURL &legacyPath);
   static std::string TranslateVideoDbPath(const std::string &legacyPath);
 
   /*!
@@ -47,6 +50,7 @@ public:
    \param legacyPath Path in the old musicdb:// format using numbers
    \return Path in the new musicdb:// format using descriptive strings
    */
+  static std::string TranslateMusicDbPath(const CURL &legacyPath);
   static std::string TranslateMusicDbPath(const std::string &legacyPath);
 
 private:

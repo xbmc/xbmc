@@ -154,6 +154,12 @@ CStdString CMultiPathDirectory::GetFirstPath(const CStdString &strPath)
   return "";
 }
 
+bool CMultiPathDirectory::GetPaths(const CURL& url, vector<CStdString>& vecPaths)
+{
+  const CStdString pathToUrl(url.Get());
+  return GetPaths(pathToUrl, vecPaths);
+}
+
 bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths)
 {
   vecPaths.clear();

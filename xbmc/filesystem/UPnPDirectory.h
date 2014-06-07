@@ -42,7 +42,7 @@ public:
     virtual bool IsAllowed(const CStdString& strFile) const { return true; };
 
     // class methods
-    static const char* GetFriendlyName(const char* url);
+    static const char* GetFriendlyName(const CURL& url);
     static bool        GetResource(const CURL &path, CFileItem& item);
 };
 }

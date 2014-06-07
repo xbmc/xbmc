@@ -22,6 +22,7 @@
 #include "utils/StdString.h"
 
 class CFileItem;
+class CURL;
 
 namespace PLAYLIST
 {
@@ -32,6 +33,7 @@ namespace PLAYLIST
   public:
     static CPlayList* Create(const CStdString& filename);
     static CPlayList* Create(const CFileItem& item);
+    static bool IsPlaylist(const CURL& url);
     static bool IsPlaylist(const CStdString& filename);
     static bool IsPlaylist(const CFileItem& item);
   };
