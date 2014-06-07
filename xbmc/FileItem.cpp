@@ -83,6 +83,22 @@ CFileItem::CFileItem(const CSong& song)
   SetFromSong(song);
 }
 
+CFileItem::CFileItem(const CURL &url, const CAlbum& album)
+{
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
+  m_epgInfoTag = NULL;
+  m_pvrChannelInfoTag = NULL;
+  m_pvrRecordingInfoTag = NULL;
+  m_pvrTimerInfoTag = NULL;
+  m_pictureInfoTag = NULL;
+  Reset();
+
+  m_strPath = url.Get();
+  URIUtils::AddSlashAtEnd(m_strPath);
+  SetFromAlbum(album);
+}
+
 CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
 {
   m_musicInfoTag = NULL;
@@ -344,6 +360,24 @@ CFileItem::CFileItem(const CStdString& strLabel)
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(strLabel);
+}
+
+CFileItem::CFileItem(const CURL& path, bool bIsFolder)
+{
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
+  m_epgInfoTag = NULL;
+  m_pvrChannelInfoTag = NULL;
+  m_pvrRecordingInfoTag = NULL;
+  m_pvrTimerInfoTag = NULL;
+  m_pictureInfoTag = NULL;
+  Reset();
+  m_strPath = path.Get();
+  m_bIsFolder = bIsFolder;
+  // tuxbox urls cannot have a / at end
+  if (m_bIsFolder && !m_strPath.empty() && !IsFileFolder() && !URIUtils::IsTuxBox(m_strPath))
+    URIUtils::AddSlashAtEnd(m_strPath);
+  FillInMimeType(false);
 }
 
 CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
@@ -1590,6 +1624,24 @@ std::string CFileItem::GetOpticalMediaPath() const
   }
 #endif
   return dvdPath;
+}
+
+/*
+ TODO: Ideally this (and SetPath) would not be available outside of construction
+ for CFileItem objects, or at least restricted to essentially be equivalent
+ to construction. This would require re-formulating a bunch of CFileItem
+ construction, and also allowing CFileItemList to have it's own (public)
+ SetURL() function, so for now we give direct access.
+ */
+void CFileItem::SetURL(const CURL& url)
+{
+  m_strPath = url.Get();
+}
+
+const CURL CFileItem::GetURL() const
+{
+  CURL url(m_strPath);
+  return url;
 }
 
 /////////////////////////////////////////////////////////////////////////////////

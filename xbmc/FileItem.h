@@ -91,8 +91,10 @@ public:
   CFileItem(const CFileItem& item);
   CFileItem(const CGUIListItem& item);
   CFileItem(const CStdString& strLabel);
+  CFileItem(const CURL& path, bool bIsFolder);
   CFileItem(const CStdString& strPath, bool bIsFolder);
   CFileItem(const CSong& song);
+  CFileItem(const CURL &path, const CAlbum& album);
   CFileItem(const CStdString &path, const CAlbum& album);
   CFileItem(const CArtist& artist);
   CFileItem(const CGenre& genre);
@@ -106,6 +108,8 @@ public:
   virtual ~CFileItem(void);
   virtual CGUIListItem *Clone() const { return new CFileItem(*this); };
 
+  const CURL GetURL() const;
+  void SetURL(const CURL& url);
   const CStdString &GetPath() const { return m_strPath; };
   void SetPath(const CStdString &path) { m_strPath = path; };
 
