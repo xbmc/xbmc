@@ -226,6 +226,18 @@ set WORKSPACE=%CD%\..\..
   IF EXIST error.log del error.log > NUL
   SET build_path=%CD%
   ECHO ------------------------------------------------------------
+  ECHO Building addons...
+  cd ..\..\tools\buildsteps\win32
+  call make-addons.bat
+  IF %errorlevel%==1 (
+    set DIETEXT="failed to build addons"
+    cd %build_path%
+    goto DIE
+  )
+
+  cd %build_path%
+  IF EXIST error.log del error.log > NUL
+  ECHO ------------------------------------------------------------
   ECHO Building Confluence Skin...
   cd ..\..\addons\skin.confluence
   call build.bat > NUL
