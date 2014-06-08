@@ -208,13 +208,23 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
     for (int i = 0; i < items.Size(); ++i)
     {
       CFileItemPtr item = items[i];
-      // TODO: we shouldn't be checking the gui setting here;
-      // callers should use getHidden instead
-      if ((!item->m_bIsFolder && !pDirectory->IsAllowed(item->GetPath())) ||
-          (item->GetProperty("file:hidden").asBoolean() && !(hints.flags & DIR_FLAG_GET_HIDDEN) && !CSettings::Get().GetBool("filelists.showhidden")))
+      if (!item->m_bIsFolder && !pDirectory->IsAllowed(item->GetPath()))
       {
         items.Remove(i);
         i--; // don't confuse loop
+      }
+    }
+    // filter hidden files
+    // TODO: we shouldn't be checking the gui setting here, callers should use getHidden instead
+    if (!CSettings::Get().GetBool("filelists.showhidden") && !(hints.flags & DIR_FLAG_GET_HIDDEN))
+    {
+      for (int i = 0; i < items.Size(); ++i)
+      {
+        if (items[i]->GetProperty("file:hidden").asBoolean())
+        {
+          items.Remove(i);
+          i--; // don't confuse loop
+        }
       }
     }
 
