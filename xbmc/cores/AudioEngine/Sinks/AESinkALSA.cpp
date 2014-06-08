@@ -292,9 +292,14 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
   snd_pcm_hw_params_set_access(m_pcm, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED);
 
   unsigned int sampleRate   = inconfig.sampleRate;
-  unsigned int channelCount = inconfig.channels;
   snd_pcm_hw_params_set_rate_near    (m_pcm, hw_params, &sampleRate, NULL);
-  snd_pcm_hw_params_set_channels_near(m_pcm, hw_params, &channelCount);
+
+  unsigned int channelCount = inconfig.channels;
+  /* select a channel count >=wanted, or otherwise the highest available */
+  if (snd_pcm_hw_params_set_channels_min(m_pcm, hw_params, &channelCount) == 0)
+    snd_pcm_hw_params_set_channels_first(m_pcm, hw_params, &channelCount);
+  else
+    snd_pcm_hw_params_set_channels_last(m_pcm, hw_params, &channelCount);
 
   /* ensure we opened X channels or more */
   if (inconfig.channels > channelCount)
