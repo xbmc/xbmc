@@ -67,12 +67,11 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
   if (url.GetProtocol() == "stack") // disqualify stack as we need to work with each of the parts instead
     return NULL;
 
-  const CStdString strPath = url.Get();
-  CStdString strExtension=URIUtils::GetExtension(strPath);
+  CStdString strExtension=URIUtils::GetExtension(url);
   StringUtils::ToLower(strExtension);
 
 #ifdef HAS_FILESYSTEM
-  if ((strExtension.Equals(".ogg") || strExtension.Equals(".oga")) && CFile::Exists(strPath))
+  if ((strExtension.Equals(".ogg") || strExtension.Equals(".oga")) && CFile::Exists(url))
   {
     IFileDirectory* pDir=new COGGFileDirectory;
     //  Has the ogg file more than one bitstream?
@@ -127,11 +126,10 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
 #if defined(TARGET_ANDROID)
   if (strExtension.Equals(".apk"))
   {
-    CStdString strUrl;
-    URIUtils::CreateArchivePath(strUrl, "apk", strPath, "");
+    CURL zipURL = URIUtils::CreateArchivePath("apk", url);
 
     CFileItemList items;
-    CDirectory::GetDirectory(strUrl, items, strMask);
+    CDirectory::GetDirectory(zipURL, items, strMask);
     if (items.Size() == 0) // no files
       pItem->m_bIsFolder = true;
     else if (items.Size() == 1 && items[0]->m_idepth == 0 && !items[0]->m_bIsFolder)
@@ -141,7 +139,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     }
     else
     { // compressed or more than one file -> create a apk dir
-      pItem->SetPath(strUrl);
+      pItem->SetURL(zipURL);
       return new CAPKDirectory;
     }
     return NULL;
@@ -149,11 +147,10 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
 #endif
   if (strExtension.Equals(".zip"))
   {
-    CStdString strUrl;
-    URIUtils::CreateArchivePath(strUrl, "zip", strPath, "");
+    CURL zipURL = URIUtils::CreateArchivePath("zip", url);
 
     CFileItemList items;
-    CDirectory::GetDirectory(strUrl, items, strMask);
+    CDirectory::GetDirectory(zipURL, items, strMask);
     if (items.Size() == 0) // no files
       pItem->m_bIsFolder = true;
     else if (items.Size() == 1 && items[0]->m_idepth == 0 && !items[0]->m_bIsFolder)
@@ -163,17 +160,15 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     }
     else
     { // compressed or more than one file -> create a zip dir
-      pItem->SetPath(strUrl);
+      pItem->SetURL(zipURL);
       return new CZipDirectory;
     }
     return NULL;
   }
   if (strExtension.Equals(".rar") || strExtension.Equals(".001"))
   {
-    CStdString strUrl;
-    URIUtils::CreateArchivePath(strUrl, "rar", strPath, "");
-
     vector<std::string> tokens;
+    const CStdString strPath = url.Get();
     StringUtils::Tokenize(strPath,tokens,".");
     if (tokens.size() > 2)
     {
@@ -200,8 +195,10 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
       }
     }
 
+    CURL rarURL = URIUtils::CreateArchivePath("rar", url);
+
     CFileItemList items;
-    CDirectory::GetDirectory(strUrl, items, strMask);
+    CDirectory::GetDirectory(rarURL, items, strMask);
     if (items.Size() == 0) // no files - hide this
       pItem->m_bIsFolder = true;
     else if (items.Size() == 1 && items[0]->m_idepth == 0x30 && !items[0]->m_bIsFolder)
@@ -213,7 +210,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     {
 #ifdef HAS_FILESYSTEM_RAR
       // compressed or more than one file -> create a rar dir
-      pItem->SetPath(strUrl);
+      pItem->SetURL(rarURL);
       return new CRarDirectory;
 #else
       return NULL;
@@ -233,7 +230,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     IFileDirectory* pDir=new CSmartPlaylistDirectory;
     return pDir; // treat as directory
   }
-  if (CPlayListFactory::IsPlaylist(strPath))
+  if (CPlayListFactory::IsPlaylist(url))
   { // Playlist file
     // currently we only return the directory if it contains
     // more than one file.  Reason is that .pls and .m3u may be used
