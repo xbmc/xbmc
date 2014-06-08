@@ -225,7 +225,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
   { // XBMC Smart playlist - just XML renamed to XSP
     // read the name of the playlist in
     CSmartPlaylist playlist;
-    if (playlist.OpenAndReadName(strPath))
+    if (playlist.OpenAndReadName(url))
     {
       pItem->SetLabel(playlist.GetName());
       pItem->SetLabelPreformated(true);

@@ -53,7 +53,7 @@ namespace XFILE
   {
     // Load in the SmartPlaylist and get the WHERE query
     CSmartPlaylist playlist;
-    if (!playlist.Load(url.Get()))
+    if (!playlist.Load(url))
       return false;
     bool result = GetDirectory(playlist, items);
     if (result)
@@ -320,7 +320,7 @@ namespace XFILE
       {
         CFileItemPtr item = list[i];
         CSmartPlaylist playlist;
-        if (playlist.OpenAndReadName(item->GetPath()))
+        if (playlist.OpenAndReadName(item->GetURL()))
         {
           if (StringUtils::EqualsNoCase(playlist.GetName(), name))
             return item->GetPath();
