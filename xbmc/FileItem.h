@@ -113,6 +113,10 @@ public:
   const CStdString &GetPath() const { return m_strPath; };
   void SetPath(const CStdString &path) { m_strPath = path; };
 
+  /*! \brief reset class to it's default values as per construction.
+   Free's all allocated memory.
+   \sa Initialize
+   */
   void Reset();
   const CFileItem& operator=(const CFileItem& item);
   virtual void Archive(CArchive& ar);
@@ -458,6 +462,12 @@ public:
   int m_iBadPwdCount;
 
 private:
+  /*! \brief initialize all members of this class (not CGUIListItem members) to default values.
+   Called from constructors, and from Reset()
+   \sa Reset, CGUIListItem
+   */
+  void Initialize();
+
   CStdString m_strPath;            ///< complete path to item
 
   SortSpecial m_specialSort;
