@@ -262,23 +262,6 @@ bool CZipManager::ExtractArchive(const CURL& archive, const CStdString& strPath)
   return true;
 }
 
-void CZipManager::CleanUp(const CStdString& strArchive, const CStdString& strPath)
-{
-  vector<SZipEntry> entry;
-  CStdString strZipPath;
-  URIUtils::CreateArchivePath(strZipPath, "zip", strArchive, "");
-
-  GetZipList(strZipPath,entry);
-  for (vector<SZipEntry>::iterator it=entry.begin();it != entry.end();++it)
-  {
-    if (it->name[strlen(it->name)-1] == '/') // skip dirs
-      continue;
-    CStdString strFilePath(it->name);
-    CLog::Log(LOGDEBUG,"delete file: %s",(strPath+strFilePath).c_str());
-    CFile::Delete((strPath+strFilePath).c_str());
-  }
-}
-
 // Read local file header
 void CZipManager::readHeader(const char* buffer, SZipEntry& info)
 {

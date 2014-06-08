@@ -106,7 +106,6 @@ public:
   bool GetZipEntry(const CURL& url, SZipEntry& item);
   bool ExtractArchive(const CStdString& strArchive, const CStdString& strPath);
   bool ExtractArchive(const CURL& archive, const CStdString& strPath);
-  void CleanUp(const CStdString& strArchive, const CStdString& strPath); // deletes extracted archive. use with care!
   void release(const CStdString& strPath); // release resources used by list zip
   static void readHeader(const char* buffer, SZipEntry& info);
   static void readCHeader(const char* buffer, SZipEntry& info);
