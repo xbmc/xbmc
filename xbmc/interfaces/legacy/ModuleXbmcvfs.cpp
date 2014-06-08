@@ -34,7 +34,7 @@ namespace XBMCAddon
     bool copy(const String& strSource, const String& strDestnation)
     {
       DelayedCallGuard dg;
-      return XFILE::CFile::Cache(strSource, strDestnation);
+      return XFILE::CFile::Copy(strSource, strDestnation);
     }
 
     // delete a file

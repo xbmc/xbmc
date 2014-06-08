@@ -69,7 +69,8 @@ bool CZipFile::Open(const CURL&url)
     if (!CFile::Exists("special://temp/" + URIUtils::GetFileName(url2)))
     {
       url2.SetOptions("?cache=no");
-      if (!CFile::Cache(url2, "special://temp/" + URIUtils::GetFileName(url2)))
+      const CURL pathToUrl("special://temp/" + URIUtils::GetFileName(url2));
+      if (!CFile::Copy(url2, pathToUrl))
         return false;
     }
     m_bCached = true;

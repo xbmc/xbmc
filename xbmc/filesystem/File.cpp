@@ -128,16 +128,14 @@ void* auto_buffer::detach(void)
   return returnPtr;
 }
 
-
-// This *looks* like a copy function, therefor the name "Cache" is misleading
-bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFILE::IFileCallback* pCallback, void* pContext)
+bool CFile::Copy(const CStdString& strFileName, const CStdString& strDest, XFILE::IFileCallback* pCallback, void* pContext)
 {
   const CURL pathToUrl(strFileName);
   const CURL pathToUrlDest(strDest);
-  return Cache(pathToUrl, pathToUrlDest, pCallback, pContext);
+  return Copy(pathToUrl, pathToUrlDest, pCallback, pContext);
 }
 
-bool CFile::Cache(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCallback, void* pContext)
+bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCallback, void* pContext)
 {
   CFile file;
 

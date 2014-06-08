@@ -33,7 +33,7 @@ public:
   /// \return true if successful, and false if it failed or was cancelled.
   bool Copy(const CStdString &from, const CStdString &to, const CStdString &heading);
 
-  /// \brief callback from CFile::Cache()
+  /// \brief callback from CFile::Copy()
   virtual bool OnFileCallback(void *pContext, int ipercent, float avgSpeed);
 
 protected:

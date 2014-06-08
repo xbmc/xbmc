@@ -120,7 +120,7 @@ bool CCDDARipJob::DoWork()
   if (file.IsRemote() && !cancelled && result == 2)
   {
     // copy the ripped track to the share
-    if (!CFile::Cache(m_output, file.GetPath()))
+    if (!CFile::Copy(m_output, file.GetPath()))
     {
       CLog::Log(LOGERROR, "CDDARipper: Error copying file from %s to %s", 
                 m_output.c_str(), file.GetPath().c_str());

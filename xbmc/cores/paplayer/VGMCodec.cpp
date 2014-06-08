@@ -43,7 +43,7 @@ bool VGMCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_dll.Init();
 
   //CStdString strFileToLoad = "filereader://"+strFile;
-  XFILE::CFile::Cache(strFile,"special://temp/"+URIUtils::GetFileName(strFile));
+  XFILE::CFile::Copy(strFile,"special://temp/"+URIUtils::GetFileName(strFile));
 
   //m_vgm = m_dll.LoadVGM(strFileToLoad.c_str(),&m_SampleRate,&m_BitsPerSample,&m_Channels);
   m_vgm = m_dll.LoadVGM("special://temp/"+URIUtils::GetFileName(strFile),&m_SampleRate,&m_BitsPerSample,&m_Channels);

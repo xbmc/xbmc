@@ -62,12 +62,12 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
   {
 #ifdef TARGET_POSIX
     m_loader_name = CUtil::GetNextFilename("special://temp/libtimidity-%03d.so", 999);
-    XFILE::CFile::Cache(DLL_PATH_MID_CODEC, m_loader_name);
+    XFILE::CFile::Copy(DLL_PATH_MID_CODEC, m_loader_name);
 
     m_loader = new SoLoader(m_loader_name.c_str());
 #else
     m_loader_name = CUtil::GetNextFilename("special://temp/libtimidity-%03d.dll", 999);
-    XFILE::CFile::Cache(DLL_PATH_MID_CODEC, m_loader_name);
+    XFILE::CFile::Copy(DLL_PATH_MID_CODEC, m_loader_name);
 
     m_loader = new Win32DllLoader(m_loader_name);
 #endif
@@ -111,7 +111,7 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
   if (!url.IsLocal())
   {
     CStdString file = CUtil::GetNextFilename("special://temp/midi%03d.mid",999);
-    XFILE::CFile::Cache(strFile,file);
+    XFILE::CFile::Copy(strFile,file);
     url.Parse(file);
   }
 

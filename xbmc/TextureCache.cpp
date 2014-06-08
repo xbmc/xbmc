@@ -323,7 +323,7 @@ bool CTextureCache::Export(const CStdString &image, const CStdString &destinatio
     CStdString dest = destination + URIUtils::GetExtension(cachedImage);
     if (overwrite || !CFile::Exists(dest))
     {
-      if (CFile::Cache(cachedImage, dest))
+      if (CFile::Copy(cachedImage, dest))
         return true;
       CLog::Log(LOGERROR, "%s failed exporting '%s' to '%s'", __FUNCTION__, cachedImage.c_str(), dest.c_str());
     }
@@ -337,7 +337,7 @@ bool CTextureCache::Export(const CStdString &image, const CStdString &destinatio
   CStdString cachedImage(GetCachedImage(image, details));
   if (!cachedImage.empty())
   {
-    if (CFile::Cache(cachedImage, destination))
+    if (CFile::Copy(cachedImage, destination))
       return true;
     CLog::Log(LOGERROR, "%s failed exporting '%s' to '%s'", __FUNCTION__, cachedImage.c_str(), destination.c_str());
   }

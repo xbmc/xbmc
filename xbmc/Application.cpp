@@ -608,7 +608,7 @@ static void CopyUserDataIfNeeded(const CStdString &strPath, const CStdString &fi
   {
     // need to copy it across
     CStdString srcPath = URIUtils::AddFileToFolder("special://xbmc/userdata/", file);
-    CFile::Cache(srcPath, destPath);
+    CFile::Copy(srcPath, destPath);
   }
 }
 

@@ -256,7 +256,7 @@ bool CZipManager::ExtractArchive(const CURL& archive, const CStdString& strPath)
 
     CURL zipPath = URIUtils::CreateArchivePath("zip", archive, strFilePath);
     const CURL pathToUrl(strPath + strFilePath);
-    if (!CFile::Cache(zipPath, pathToUrl))
+    if (!CFile::Copy(zipPath, pathToUrl))
       return false;
   }
   return true;
