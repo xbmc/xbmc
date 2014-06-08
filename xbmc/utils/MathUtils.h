@@ -38,12 +38,6 @@
   #define DISABLE_MATHUTILS_ASM_ROUND_INT
 #endif
 
-#if defined(__ppc__) || \
-    defined(__powerpc__) || \
-    defined(__arm__)
-  #define DISABLE_MATHUTILS_ASM_TRUNCATE_INT
-#endif
-
 /*! \brief Math utility class.
  Note that the test() routine should return true for all implementations
 
@@ -164,39 +158,7 @@ namespace MathUtils
   {
     assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
     assert(x < static_cast<double>(INT_MAX / 2) + 1.0);
-
-#if defined(DISABLE_MATHUTILS_ASM_TRUNCATE_INT)
     return x;
-
-#else
-    int i;
-#if defined(TARGET_WINDOWS)
-    const float round_towards_m_i = -0.5f;
-    __asm
-    {
-      fld x
-      fadd st, st (0)
-      fabs
-      fadd round_towards_m_i
-      fistp i
-      sar i, 1
-    }
-
-#else
-    const float round_towards_m_i = -0.5f;
-    __asm__ __volatile__ (
-      "fadd %%st\n\t"
-      "fabs\n\t"
-      "fadd %%st(1)\n\t"
-      "fistpl %0\n\t"
-      "sarl $1, %0\n"
-      : "=m"(i) : "u"(round_towards_m_i), "t"(x) : "st"
-    );
-#endif
-    if (x < 0)
-      i = -i;
-    return (i);
-#endif
   }
 
   inline int64_t abs(int64_t a)
