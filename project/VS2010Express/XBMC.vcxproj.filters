@@ -2951,7 +2951,6 @@
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\ProfilesOperations.cpp">
       <Filter>interfaces\json-rpc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\GitRevision.cpp" />
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAE.cpp">
       <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
     </ClCompile>
@@ -3071,6 +3070,7 @@
     <ClCompile Include="..\..\xbmc\filesystem\win32\Win32Directory.cpp">
       <Filter>filesystem\win32</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\CompileInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6021,6 +6021,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32Directory.h">
       <Filter>filesystem\win32</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\CompileInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
@@ -6059,6 +6060,7 @@
     <CustomBuild Include="..\..\xbmc\interfaces\json-rpc\schema\license.txt">
       <Filter>interfaces\json-rpc\schema</Filter>
     </CustomBuild>
+    <CustomBuild Include="..\..\version.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\interfaces\swig\ControlListAddItemMethods.i">
