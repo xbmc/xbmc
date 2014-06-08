@@ -152,6 +152,11 @@ public:
    */
   static std::string CanonicalizePath(const std::string& path, const char slashCharacter = '\\');
 
+  static CURL CreateArchivePath(const std::string& type,
+                                const CURL& archiveUrl,
+                                const std::string& pathInArchive = "",
+                                const std::string& password = "");
+
   static void CreateArchivePath(CStdString& strUrlPath,
                                 const CStdString& strType,
                                 const CStdString& strArchivePath,

@@ -1175,40 +1175,38 @@ CStdString URIUtils::GetDirectory(const CStdString &strFilePath)
   return strFilePath.substr(0, iPosSlash + 1) + strFilePath.substr(iPosBar); // Path + options
 }
 
+CURL URIUtils::CreateArchivePath(const std::string& type,
+                                 const CURL& archiveUrl,
+                                 const std::string& pathInArchive,
+                                 const std::string& password)
+{
+  CURL url;
+  url.SetProtocol(type);
+  if (!password.empty())
+    url.SetUserName(password);
+  url.SetHostName(archiveUrl.Get());
+
+  /* NOTE: on posix systems, the replacement of \ with / is incorrect.
+     Ideally this would not be done. We need to check that the ZipManager
+     and RarManager code (and elsewhere) doesn't pass in non-posix paths.
+   */
+  std::string strBuffer(pathInArchive);
+  StringUtils::Replace(strBuffer, '\\', '/');
+  StringUtils::TrimLeft(strBuffer, "/");
+  url.SetFileName(strBuffer);
+
+  return url;
+}
+
 void URIUtils::CreateArchivePath(CStdString& strUrlPath,
                                  const CStdString& strType,
                                  const CStdString& strArchivePath,
                                  const CStdString& strFilePathInArchive,
                                  const CStdString& strPwd)
 {
-  strUrlPath = strType+"://";
-
-  if( !strPwd.empty() )
-  {
-    strUrlPath += CURL::Encode(strPwd);
-    strUrlPath += "@";
-  }
-
-  strUrlPath += CURL::Encode(strArchivePath);
-
-  CStdString strBuffer(strFilePathInArchive);
-  StringUtils::Replace(strBuffer, '\\', '/');
-  StringUtils::TrimLeft(strBuffer, "/");
-
-  strUrlPath += "/";
-  strUrlPath += strBuffer;
-
-#if 0 // options are not used
-  strBuffer = strCachePath;
-  strBuffer = CURL::Encode(strBuffer);
-
-  strUrlPath += "?cache=";
-  strUrlPath += strBuffer;
-
-  strBuffer = StringUtils::Format("%i", wOptions);
-  strUrlPath += "&flags=";
-  strUrlPath += strBuffer;
-#endif
+  const CURL pathToUrl(strArchivePath);
+  CURL url(CreateArchivePath(strType, pathToUrl, strFilePathInArchive, strPwd));
+  strUrlPath = url.Get();
 }
 
 string URIUtils::GetRealPath(const string &path)
