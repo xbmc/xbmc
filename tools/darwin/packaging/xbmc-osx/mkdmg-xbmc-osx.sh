@@ -24,7 +24,7 @@ ARCHITECTURE=`file $XBMC/Contents/MacOS/XBMC | awk '{print $NF}'`
 
 PACKAGE=org.xbmc.xbmc-osx
 
-VERSION=13.0
+VERSION=13.1
 REVISION=0
 ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_macosx-intel-${ARCHITECTURE}
 

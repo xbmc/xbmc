@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([xbmc], [13.0.0], [http://issues.xbmc.org])
+AC_INIT([xbmc], [13.1.0], [http://issues.xbmc.org])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
 m4_include([m4/ax_prog_cc_for_build.m4])
@@ -1540,9 +1540,10 @@ fi
 if test "$use_librtmp" != "no"; then
   PKG_CHECK_MODULES([LIBRTMP], [librtmp],
     [INCLUDES="$INCLUDES $LIBRTMP_CFLAGS"; LIBS="$LIBS $LIBRTMP_LIBS";
+      XB_FIND_SONAME([RTMP], [rtmp], [use_librtmp])
       AC_DEFINE([HAS_LIBRTMP], [1], [Whether to use libRTMP library.])
       RTMP_ALL_LIBS=$(${PKG_CONFIG} --static --libs-only-l --silence-errors librtmp)
-      test "$use_static_ffmpeg" = "yes" && LIBS="$LIBS $RTMP_ALL_LIBS"],
+      test "$use_static_ffmpeg" = "yes" && LIBS="$LIBS $RTMP_ALL_LIBS"; LIBS="`echo $LIBS | sed 's/-lrtmp//g'`"],
     [AC_CHECK_HEADERS([librtmp/log.h librtmp/amf.h librtmp/rtmp.h],,
       [if test "$use_librtmp" = "yes"; then
         AC_MSG_ERROR($librtmp_not_found)

@@ -931,9 +931,9 @@ void CLinuxInputDevice::GetInfo(int fd)
   //printf("pref: %d\n", m_devicePreferredId);
 }
 
-char* CLinuxInputDevice::GetDeviceName()
+const std::string& CLinuxInputDevice::GetFileName()
 {
-  return m_deviceName;
+  return m_fileName;
 }
 
 bool CLinuxInputDevice::IsUnplugged()
@@ -944,6 +944,11 @@ bool CLinuxInputDevice::IsUnplugged()
 bool CLinuxInputDevices::CheckDevice(const char *device)
 {
   int fd;
+
+  // Does the device exists?
+  struct stat buffer;
+  if (stat(device, &buffer) != 0)
+    return false;
 
   /* Check if we are able to open the device */
   fd = open(device, O_RDWR);
@@ -1016,7 +1021,7 @@ void CLinuxInputDevices::CheckHotplugged()
 
     for (size_t j = 0; j < m_devices.size(); j++)
     {
-      if (strcmp(m_devices[j]->GetDeviceName(),buf) == 0)
+      if (m_devices[j]->GetFileName().compare(buf) == 0)
       {
         ispresent = true;
         break;

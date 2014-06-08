@@ -9145,6 +9145,10 @@ msgctxt "#21877"
 msgid "Date created"
 msgstr "Дата створення"
 
+msgctxt "#21878"
+msgid "Urgency"
+msgstr "Терміновість"
+
 msgctxt "#21879"
 msgid "Country code"
 msgstr "Код країни"
@@ -9241,6 +9245,10 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Приховувати стан оновлення медіатеки"
 
+msgctxt "#22002"
+msgid "DNS suffix"
+msgstr "Суфікс DNS"
+
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3f с."
@@ -9336,6 +9344,10 @@ msgstr "Розмір"
 msgctxt "#22032"
 msgid "Colours"
 msgstr "Кольори"
+
+msgctxt "#22033"
+msgid "Charset"
+msgstr "Кодування символів"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -10065,6 +10077,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "Увімкніть кнопку вибраного скрипта"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "Автоматичний вхід"
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "Не вдалося запустити"
@@ -10177,9 +10193,25 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Не вдається знайти попередній файл"
 
+msgctxt "#34300"
+msgid "Failed to start Zeroconf"
+msgstr "Не вдалося запустити Zeroconf"
+
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Перевірте, чи встановлено службу Apple Bonjour. Див. журнал."
+
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr "AirPlay потребує ввімкнення Zeroconf."
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr "Не вдалося зупинити Zeroconf"
+
+msgctxt "#34304"
+msgid "AirPlay and AirTunes depend on Zeroconf running."
+msgstr "AirPlay та AirTunes залежать від роботи Zeroconf."
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -10253,6 +10285,10 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Увімкнути джойстик і геймпад"
 
+msgctxt "#35102"
+msgid "Disable joystick when this device is present"
+msgstr "Вимкнути джойстик, коли підключено цей пристрій."
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Розташування"
@@ -10304,6 +10340,10 @@ msgstr "Вимикати наступні пристрої при виході �
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
 msgstr "Переводити аудіопристрої в режим сну при активній заставці"
+
+msgctxt "#36010"
+msgid "Wake devices when deactivating screensaver"
+msgstr "Прокидати пристрої при вимкненні заставки"
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
@@ -10401,6 +10441,10 @@ msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Папка об'єкту"
 
+msgctxt "#36104"
+msgid "Change specific skin settings. The available options are dependent on the skin used."
+msgstr "Налаштування обкладинки. Наявні параметри залежать від поточної обкладинки."
+
 msgctxt "#36105"
 msgid "Change the theme associated with your selected skin."
 msgstr "Змінити тему, що асоційована з вибраною шкіркою."
@@ -10409,13 +10453,65 @@ msgctxt "#36106"
 msgid "Change the colours of your selected skin."
 msgstr "Зміна кольорів вибраної шкірки."
 
+msgctxt "#36109"
+msgid "Select the media window that XBMC displays on startup."
+msgstr "Вибір вікна, яке відкривається при запуску XBMC."
+
+msgctxt "#36111"
+msgid "Turn this off to remove the scrolling RSS news ticker."
+msgstr "Вимкнення показу RSS-новин."
+
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Редагування потоків RSS."
 
+msgctxt "#36115"
+msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
+msgstr "Вибір форматів температури, часу і дати. Доступні параметри залежать від обраної мови."
+
 msgctxt "#36117"
 msgid "Select country location."
 msgstr "Вказати розміщення країни."
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "Вибір часового поясу."
+
+msgctxt "#36119"
+msgid "Select the default audio track when different language tracks are available."
+msgstr "Вибір звукової доріжки за промовчанням при наявності доріжок кількома мовами."
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "Вибір субтитрів за промовчанням при наявності субтитрів кількома мовами."
+
+msgctxt "#36122"
+msgid "Display the (..) item in lists for visiting the parent folder."
+msgstr "Показувати в списках пункт (..) для переходу на рівень вище."
+
+msgctxt "#36123"
+msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
+msgstr "Показувати розширення медіафайлів. Наприклад, \"You Enjoy Myself.mp3\" буде показано просто як \"You Enjoy Myself\"."
+
+msgctxt "#36125"
+msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
+msgstr "Дозволити видалення і перейменування файлів через контекстне меню (кнопка \"С\" або права кнопка миші)."
+
+msgctxt "#36129"
+msgid "Set the amount of idle time required before displaying the screensaver."
+msgstr "Проміжок часу перед увімкненням заставки."
+
+msgctxt "#36131"
+msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
+msgstr "Налаштування заставки. Доступні параметри залежать від поточної заставки."
+
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr "Попередній перегляд вибраної заставки."
+
+msgctxt "#36134"
+msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
+msgstr "Затемнювати екран на паузі. Не діє, якщо вибрано заставку \"Dim\"."
 
 msgctxt "#36135"
 msgid "No info available yet."
@@ -10429,9 +10525,97 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Ще немає доступної інформації."
 
+msgctxt "#36141"
+msgid "Show plot information for unwatched media in the Video Library."
+msgstr "Показувати сюжет непереглянутих фільмів/серій у медіатеці."
+
+msgctxt "#36143"
+msgid "Get thumbnails for actors when scanning media."
+msgstr "Завантажувати портрети акторів при скануванні медіафайлів."
+
+msgctxt "#36144"
+msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
+msgstr "Приховувати меню вибору сезонів серіалів. Доступні варіанти: \"Якщо один сезон\" (за промовчанням), \"Завжди\" і \"Ніколи\"."
+
+msgctxt "#36145"
+msgid "Group movies into 'Movie sets' when browsing the movie library."
+msgstr "Об'єднувати фільми у кіноцикли при перегляді фільмотеки."
+
+msgctxt "#36146"
+msgid "Check for new media files on XBMC startup."
+msgstr "Шукати нові медіафайли при запуску XBMC."
+
+msgctxt "#36147"
+msgid "Hide the library scanning progress bar during scans."
+msgstr "Приховувати вікно перебігу процесу сканування."
+
+msgctxt "#36148"
+msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
+msgstr "Видаляти з медіатеки елементи, що неможливо знайти (наприклад, перейменовані чи видалені файли або файли на відсутніх дисках)."
+
+msgctxt "#36149"
+msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Експорт бази даних медіатеки у вигляді файлів XML. При потребі можна перезаписати наявні файли XML."
+
+msgctxt "#36150"
+msgid "Import a XML file into the Video Library database."
+msgstr "Імпорт файлу XML до медіатеки відео."
+
+msgctxt "#36153"
+msgid "Adjust the method used to process and display video."
+msgstr "Вибір методу обробки і показу відео."
+
+msgctxt "#36167"
+msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
+msgstr "Синхронізація аудіо та відео шляхом ресемпілнгу частоти, пропуску/дублювання пакетів або налаштування синхронізації при значній розбіжності."
+
+msgctxt "#36170"
+msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
+msgstr "Дозволити відеоплеєру ігнорувати спотворення пропорцій до деякої міри, щоб заповнити екран."
+
+msgctxt "#36171"
+msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
+msgstr "Вибір налаштування пропорцій показу відео 4:3 на широкоформатних дисплеях."
+
+msgctxt "#36174"
+msgid "Enable Teletext when watching a live TV stream."
+msgstr "Увімкнути телетекст при перегляді ТБ."
+
+msgctxt "#36175"
+msgid "Scale Teletext to 4:3 ratio."
+msgstr "Масштабувати телетекст до пропорцій 4:3."
+
+msgctxt "#36179"
+msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
+msgstr "Якщо файл додано до медіатеки, замість імені файлу буде показуватися назва фільму/серії."
+
+msgctxt "#36180"
+msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
+msgstr "Отримувати з файлу ескізи та іншу інформацію, наприклад кодеки і пропорції відео, для відображення в медіатеції."
+
 msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Ще немає доступної інформації."
+
+msgctxt "#36191"
+msgid "Set a custom directory for your subtitles. This can be a file share."
+msgstr "Вибрати папку для субтитрів. Папка може бути на мережному диску."
+
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "Розташування субтитрів на екрані."
+
+msgctxt "#36194"
+msgid "Autorun DVD video when inserted in drive."
+msgstr "Автоматично програвати DVD-диск при вставленні."
+
+msgctxt "#36195"
+msgid "Force a region for DVD playback."
+msgstr "Примусовий вибір регіону при програванні DVD-диску."
+
+msgctxt "#36196"
+msgid "Attempt to skip 'unskippable' introductions before DVD menu."
+msgstr "Намагатися пропустити примусовий вступ перед меню DVD."
 
 msgctxt "#36197"
 msgid "No info available yet."

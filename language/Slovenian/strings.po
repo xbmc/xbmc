@@ -1227,7 +1227,7 @@ msgstr "Leto"
 
 msgctxt "#346"
 msgid "Normalize levels on downmix"
-msgstr "Normaliziraj glasnost pri združevanju kanalov"
+msgstr "Normiraj glasnost pri združevanju kanalov"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -1559,7 +1559,7 @@ msgstr "Razvrsti po: DVD#"
 
 msgctxt "#431"
 msgid "No cache"
-msgstr "Brez predpomnilnika"
+msgstr "Brez predpomnjenja"
 
 msgctxt "#432"
 msgid "Remove movie from library"
@@ -1591,7 +1591,7 @@ msgstr "Odpiram datoteko"
 
 msgctxt "#439"
 msgid "Cache"
-msgstr "Predpomnilnik"
+msgstr "Predpomnjenje"
 
 msgctxt "#440"
 msgid "Hard disk"
@@ -4963,7 +4963,7 @@ msgstr "Predvajaj le to"
 
 msgctxt "#13435"
 msgid "Enable HQ Scalers for scalings above"
-msgstr "Omogoči HQ Scalerje za umerjanje nad"
+msgstr "Omogoči HQ orodja za zviševanje ločljivosti nad"
 
 msgctxt "#13436"
 msgid "Allow hardware acceleration (libstagefright)"
@@ -4989,25 +4989,49 @@ msgctxt "#13441"
 msgid "Use Mpeg-2 VDPAU"
 msgstr "Uporabi Mpeg-2 VDPAU"
 
+msgctxt "#13442"
+msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "Omogočite to možnost za uporabo strojnega pospeševanja kodekov Mpeg-(1/2). CPU bo uporabljen, če je možnost onemogočena. Starejše kartice Radeon lahko povzročijo nestabilnost s to možnostjo."
+
 msgctxt "#13443"
 msgid "Use Mpeg-4 VDPAU"
 msgstr "Uporabi Mpeg-4 VDPAU"
+
+msgctxt "#13444"
+msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "Omogočite to možnost za uporabo strojnega pospeševanja kodeka Mpeg-4. CPU bo uporabljen, če je možnost onemogočena. Nekatera oprema ION lahko povzroči nestabilnost s to možnostjo."
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
 msgstr "Uporabi VC-1 VDPAU"
 
+msgctxt "#13446"
+msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
+msgstr "Omogočite to možnost za uporabo strojnega pospeševanja kodekov VC-1. CPU bo uporabljen, če je možnost onemogočena. Oprema AMD z VDPAU ne more dekodirati VC-1 Simple."
+
 msgctxt "#13447"
 msgid "Use Mpeg-2 VAAPI"
 msgstr "Uporabi Mpeg-2 VAAPI"
+
+msgctxt "#13448"
+msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
+msgstr "Omogočite to možnost za uporabo strojnega pospeševanja kodekov Mpeg-(1/2). CPU bo uporabljen, če je možnost onemogočena. Nekateri posnetki Mpeg-2 lahko prikažejo zelene artefakte."
 
 msgctxt "#13449"
 msgid "Use Mpeg-4 VAAPI"
 msgstr "Uporabi Mpeg-4 VAAPI"
 
+msgctxt "#13450"
+msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
+msgstr "Omogočite to možnost za uporabo strojnega pospeševanja kodeka Mpeg-4. CPU bo uporabljen, če je možnost onemogočena."
+
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
 msgstr "Uporabi VC-1 VAAPI"
+
+msgctxt "#13452"
+msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 Interlaced fails hard on Intel hardware."
+msgstr "Omogočite to možnost za uporabo strojnega pospeševanja kodekov VC-1. CPU bo uporabljen, če je možnost onemogočena. Na Intelovi opremi se lahko pojavijo težave z VC-1 Interlaced."
 
 msgctxt "#13454"
 msgid "Decoding method"
@@ -5019,7 +5043,7 @@ msgstr "Programska oprema"
 
 msgctxt "#13456"
 msgid "Hardware accelerated"
-msgstr "Strojno pospeševano"
+msgstr "Strojno pospešeno"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5243,35 +5267,35 @@ msgstr "Vnesite najbližje večje mesto"
 
 msgctxt "#14025"
 msgid "Video/Audio/DVD cache - Hard disk"
-msgstr "Predpomnilnik videa/zvoka/DVD - Trdi disk"
+msgstr "Predpomnjenje videa/glasbe/DVD - Trdi disk"
 
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
-msgstr "Predpomnilnik slike - DVD-ROM"
+msgstr "Predpomnjenje videa - DVD-ROM"
 
 msgctxt "#14027"
 msgid "Video cache - Local Network"
-msgstr "Prepomnenje Videa - Lokalno omrežje"
+msgstr "Prepomnjenje videa - Krajevno omrežje"
 
 msgctxt "#14028"
 msgid "Video cache - Internet"
-msgstr "Prepomnenje Videa - Internet"
+msgstr "Prepomnjenje videa - Internet"
 
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
-msgstr "Predpomnilnik zvoka - DVD-ROM"
+msgstr "Predpomnjenje glasbe - DVD-ROM"
 
 msgctxt "#14031"
 msgid "Audio cache - Local Network"
-msgstr "Prepomnenje Avdia - Lokalno omrežje"
+msgstr "Prepomnjenje glasbe - Krajevno omrežje"
 
 msgctxt "#14032"
 msgid "Audio cache - Internet"
-msgstr "Prepomnenje Avdia - Internet"
+msgstr "Prepomnjenje glasbe - Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
-msgstr "Predpomnilnik DVD - DVD-ROM"
+msgstr "Predpomnjenje DVD - DVD-ROM"
 
 msgctxt "#14035"
 msgid "Local Network"
@@ -5283,7 +5307,7 @@ msgstr "Storitve"
 
 msgctxt "#14037"
 msgid "DVD cache - Local Network"
-msgstr "Prepomnenje DVD - Lokalno omrežje"
+msgstr "Prepomnjenje DVD - Krajevno omrežje"
 
 msgctxt "#14038"
 msgid "Network settings changed"
@@ -6833,6 +6857,10 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
+msgctxt "#19223"
+msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
+msgstr "Nobenega dodatka PVR ni bilo mogoče omogočiti. Preverite vaše nastavitve ali zapisnik za več informacij."
+
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Preklicano snemanje"
@@ -6872,6 +6900,10 @@ msgstr "Počisti rezultate iskanja"
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Prikaži obvestilo ob posodobitvah časovnikov"
+
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
+msgstr "Uporabi številke programov iz hrbtenice (deluje le z 1 omogočenim dodatkom PVR)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -7027,7 +7059,7 @@ msgstr "Za PVR potrebujete sprejemnik, program za hrbtenico"
 
 msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
-msgstr "Dodatek za hrbtenico ki bo omogočal uporabo PVR."
+msgstr "Dodatek za hrbtenico, ki bo omogočal uporabo PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -9271,7 +9303,7 @@ msgstr "Jezik podnapisov"
 
 msgctxt "#21449"
 msgid "Remote control sends keyboard presses"
-msgstr "Oddaljeno upravljanje pošilja ukaze tipkovnice"
+msgstr "Daljinski upravljalnik pošilja ukaze tipkovnice"
 
 msgctxt "#21450"
 msgid "Edit"
@@ -9491,7 +9523,7 @@ msgstr "Podvrsta"
 
 msgctxt "#21858"
 msgid "Image type"
-msgstr "Vrsta zapisa"
+msgstr "Tip slike"
 
 msgctxt "#21859"
 msgid "Time created"
@@ -10039,7 +10071,7 @@ msgstr "Na voljo so posodobitve"
 
 msgctxt "#24044"
 msgid "Dependencies not met. Please contact Add-on author."
-msgstr "Odvisnost ni ipolnjena. Obrnite se na avtorja dodatka."
+msgstr "Odvisnosti niso izpolnjene. Obrnite se na avtorja dodatka."
 
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
@@ -10051,7 +10083,7 @@ msgstr "%s uporabljajo sledeči dodatki"
 
 msgctxt "#24047"
 msgid "This Add-on cannot be uninstalled"
-msgstr "Tega dodatka ne morete odstraniti"
+msgstr "Tega dodatka ni mogoče odstraniti"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -11049,6 +11081,10 @@ msgctxt "#36101"
 msgid "Change the look and feel of the user interface."
 msgstr "Spremenite izgled in obnašanje uporabniškega vmesnika."
 
+msgctxt "#36102"
+msgid "Category containing all Skin related settings."
+msgstr "Kategorija nastavitev preoblek."
+
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
 msgstr "Spremenite nastavitve specifične za preobleko. Možnosti, ki so na voljo, so odvisne od uporabljene preobleke."
@@ -11069,6 +11105,10 @@ msgctxt "#36109"
 msgid "Select the media window that XBMC displays on startup."
 msgstr "Izberite privzeto okno, ki se bo prikazalo ob zagonu XBMC-ja."
 
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the user interface."
+msgstr "Izberite ali onemogočite zvočno temo, uporabljeno v uporabniškem vmesniku."
+
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
 msgstr "Izključite drsenje novic RSS."
@@ -11077,6 +11117,10 @@ msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Uredite vire RSS."
 
+msgctxt "#36113"
+msgid "Category containing all locale/regional settings."
+msgstr "Kategorija jezikovnih in regijskih nastavitev."
+
 msgctxt "#36114"
 msgid "Chooses the language of the user interface."
 msgstr "Izberite jezik uporabniškega vmesnika."
@@ -11084,6 +11128,10 @@ msgstr "Izberite jezik uporabniškega vmesnika."
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
 msgstr "Izberite vrsto zapisa temperature, časa in datuma. Razpoložljive možnosti so odvisne od izbranega jezika."
+
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the user interface."
+msgstr "Izberite nabor znakov za prikaz besedil v uporabniškem vmesniku."
 
 msgctxt "#36117"
 msgid "Select country location."
@@ -11101,6 +11149,10 @@ msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
 msgstr "Izberite privzet jezik podnapisov kadar so na voljo v več jezikih."
 
+msgctxt "#36121"
+msgid "Category containing settings related to how file lists are displayed."
+msgstr "Kategorija nastavitev prikaza seznamov datotek."
+
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
 msgstr "Prikažite (..) v seznamih za ogled mape en nivo višje."
@@ -11116,6 +11168,10 @@ msgstr "Dovolite brisanje in preimenovanje datotek s pomočjo uporabniškega vme
 msgctxt "#36127"
 msgid "Show hidden files and directories when listing files."
 msgstr "Prikaži skrite datoteke in mape na seznamu datotek."
+
+msgctxt "#36128"
+msgid "Category containing all screensaver settings."
+msgstr "Kategorija nastavitev ohranjevalnika zaslona."
 
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
@@ -11152,6 +11208,14 @@ msgstr "Informacije še niso na voljo."
 msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Informacije še niso na voljo."
+
+msgctxt "#36138"
+msgid "Section that contains settings related to videos and how they are handled."
+msgstr "Razdelek nastavitev videoposnetkov in ravnanja z njimi."
+
+msgctxt "#36139"
+msgid "Category containing the settings for how the video library is handled."
+msgstr "Kategorija nastavitev delovanja knjižnice videa."
 
 msgctxt "#36140"
 msgid "Enable the video library."
@@ -11193,9 +11257,45 @@ msgctxt "#36150"
 msgid "Import a XML file into the Video Library database."
 msgstr "Uvozi datoteko XML v podatkovno bazo knjižnice za Video."
 
+msgctxt "#36151"
+msgid "Category containing settings for how video playback is handled."
+msgstr "Kategorija nastavitev predvajanja videa."
+
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list."
+msgstr "Omogočite samodejno predvajanje naslednje datoteke v seznamu."
+
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Prilagodi metodo uporabljeno za procesiranje in prikaz videa."
+
+msgctxt "#36154"
+msgid "Use high quality scalers when upscaling a video by at least this percentage."
+msgstr "Omogočite orodja visoke ločljivosti za zviševanje ločljivosti videa nad temi odstotki."
+
+msgctxt "#36156"
+msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
+msgstr "Omogočite strojno pospeševanje videa VAAPI, pogosto uporabljeno pri Intelu in nekaterih AMD-jevih grafičnih karticah."
+
+msgctxt "#36158"
+msgid "Enable DXVA2 hardware decoding of video files."
+msgstr "Omogočite strojno pospeševanje videa DXVA2."
+
+msgctxt "#36159"
+msgid "Enable CrystalHD decoding of video files."
+msgstr "Omogočite strojno pospeševanje videa CrystalHD."
+
+msgctxt "#36160"
+msgid "Enable VDA hardware decoding of video files."
+msgstr "Omogočite strojno pospeševanje videa VDA."
+
+msgctxt "#36161"
+msgid "Enable OpenMax hardware decoding of video files."
+msgstr "Omogočite strojno pospeševanje videa OpenMax."
+
+msgctxt "#36162"
+msgid "Enable VideoToolbox hardware decoding of video files."
+msgstr "Omogočite strojno pospeševanje videa VideoToolbox."
 
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
@@ -11221,6 +11321,10 @@ msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "Izberite način prikaza vsebin v razmerju 4:3 na širokih zaslonih."
 
+msgctxt "#36173"
+msgid "Enable upscaling using VDPAU."
+msgstr "Omogočite zviševanje ločljivosti z VDPAU."
+
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
 msgstr "Omogočite teletekst ob gledanju televizije v živo."
@@ -11229,17 +11333,53 @@ msgctxt "#36175"
 msgid "Scale Teletext to 4:3 ratio."
 msgstr "Prikažite teletekst v razmerju slike 4:3."
 
+msgctxt "#36176"
+msgid "Category containing settings for how video file lists are handled."
+msgstr "Kategorija nastavitev ravnanja s seznami videoposnetkov."
+
 msgctxt "#36177"
 msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
 msgstr "Preklapljajte med Izberi, Predvajaj (privzeto), Nadaljuj in Prikaži informacije. Izberi bo izbralo predmet, npr. odprlo mapo v načinu datotek. Nadaljuj bo samodejno nadaljevalo predvajanje posnetka z zadnjega položaja, tudi če se ponovno zagnali sistem."
+
+msgctxt "#36178"
+msgid "Extract thumbnails and metadata information such as codec and aspect ratio from videos."
+msgstr "Ustvarite sličice in preberite informacije iz videoposnetkov, kot so kodeki in razmerje slike."
 
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
 msgstr "Kadar je datoteka skenirana v knjižnico bo prikazan naziv iz meta podatkov namesto imena datoteke."
 
+msgctxt "#36180"
+msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
+msgstr "Ustvarite sličice in preberite informacije, kot so kodeki in razmerje slike, ki bodo prikazani v načinu knjižnice."
+
 msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Informacije še niso na voljo."
+
+msgctxt "#36184"
+msgid "Category containing settings for how subtitles are handled."
+msgstr "Kategorija nastavitev podnapisov."
+
+msgctxt "#36185"
+msgid "Set the font type to be used for subtitles."
+msgstr "Nastavite tip pisave za uporabo v podnapisih."
+
+msgctxt "#36186"
+msgid "Set the font size to be used for subtitles."
+msgstr "Nastavite velikost pisave za uporabo v podnapisih."
+
+msgctxt "#36187"
+msgid "Set the font style to be used for subtitles."
+msgstr "Nastavite stil pisave za uporabo v podnapisih."
+
+msgctxt "#36188"
+msgid "Set the font colour to be used for subtitles."
+msgstr "Nastavite barvo pisave za uporabo v podnapisih."
+
+msgctxt "#36189"
+msgid "Set the font character set to be used for subtitles."
+msgstr "Nastavite nabor znakov pisave za uporabo v podnapisih."
 
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
@@ -11248,6 +11388,10 @@ msgstr "Določite mapo za podnapise. Lahko je mapa v skupni rabi."
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr "Položaj podnapisov na zaslonu."
+
+msgctxt "#36193"
+msgid "Category containing settings for how DVDs are handled."
+msgstr "Kategorija nastavitev ravnanja z DVD-ji."
 
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
@@ -11277,6 +11421,18 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Privzeto strgalo za dodajanje videospotov v knjižnico."
 
+msgctxt "#36201"
+msgid "Settings for PVR/Live TV features."
+msgstr "Nastavitve za PVR/televizijo v živo."
+
+msgctxt "#36202"
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Kategorija splošnih nastavitev PVR/televizije v živo."
+
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
+msgstr "Omogočite storitve osebnega snemalnika (PVR) v XBMC-ju. To zahteva nameščen vsaj en dodatek PVR."
+
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Uvozite skupine programov iz hrbtenic PVR (če je podprto). To bo izbrisalo uporabniško ustvarjene skupine, če se ne nahajajo v hrbtenici."
@@ -11297,6 +11453,10 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Izbrišite bazo programov/EPG in ponovno uvozite podatke iz hrbtenic."
 
+msgctxt "#36211"
+msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
+msgstr "Kategorija nastavitev menijev PVR, prikaza informacij med predvajanjem in informacij o programih."
+
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
 msgstr "Mapa kjer so shranjene ikone kanalov."
@@ -11304,6 +11464,18 @@ msgstr "Mapa kjer so shranjene ikone kanalov."
 msgctxt "#36217"
 msgid "Scan for missing channel icons."
 msgstr "Išči manjkajoče ikone za kanale."
+
+msgctxt "#36218"
+msgid "Category for electronic programming guide settings."
+msgstr "Kategorija nastavitev elektronskega programskega vodiča."
+
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends."
+msgstr "Število dni podatkov EPG, ki se bodo uvozili iz hrbtenic."
+
+msgctxt "#36221"
+msgid "Time between EPG data imports from backends."
+msgstr "Čas med posameznimi uvozi podatkov EPG."
 
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
@@ -11317,21 +11489,69 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Skrijte oznako \"Informacije niso na voljo\", ko programskega vodiča za izbran program ni na voljo."
 
+msgctxt "#36226"
+msgid "Category for PVR playback and channel switching settings."
+msgstr "Kategorija nastavitev predvajanja PVR in preklapljanja med programi. "
+
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Prikažite video izbranega programa v manjšem okvirju namesto v celozaslonskem načinu."
+
+msgctxt "#36228"
+msgid "Continue with the last viewed channel on startup."
+msgstr "Ob zagonu nadaljujte s predvajanjem zadnjega gledanega programa."
+
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
+msgstr "Prikažite informacije o kvaliteti signala v oknu z informacijami o kodekih (če to podpirata dodatek in hrbtenica)."
 
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Pritisk na številčne gumbe v celozaslonskem načinu bo samodejno preklopil na program s to številko po 1 sekundi."
 
+msgctxt "#36233"
+msgid "Category for default recording duration settings."
+msgstr "Kategorija nastavitev privzetega trajanja snemanja."
+
+msgctxt "#36234"
+msgid "Duration of instant recordings when pressing the record button."
+msgstr "Trajanje takojšnjega snemanja ob pritisku gumba za snemanje."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Not supported by all Add-ons and backends."
+msgstr "Prioriteta snemanja. Večje število pomeni višjo prioriteto. Ni podprto v vseh dodatkih in hrbtenicah."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Not supported by all Add-ons and backends."
+msgstr "Izbrišite posnetek po tem času. Ni podprto v vseh dodatkih in hrbtenicah."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Not supported by all Add-ons and backends."
+msgstr "Začnite snemanje pred dejanskim časom. Ni podprto v vseh dodatkih in hrbtenicah."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Not supported by all Add-ons and backends."
+msgstr "Zaključite snemanje po dejanskem času. Ni podprto v vseh dodatkih in hrbtenicah."
+
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Prikažite obvestilo, ko so časovniki dodani, končani ali zaključeni s strani hrbtenice."
 
+msgctxt "#36240"
+msgid "Category for PVR power management settings, such as when to wake the PVR backend server."
+msgstr "Kategorija nastavitev upravljanja z energijo in PVR, kot naprimer bujenje strežnika hrbtenice PVR."
+
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
 msgstr "Zaženite \"ukaz bujenja\" spodaj, ko se XBMC zapre ali gre v mirovanje. Kot parameter je podan časovni žig naslednjega snemanja."
+
+msgctxt "#36242"
+msgid "The command will not be executed when a recording will be started within this timeout."
+msgstr "Ukaz ne bo zagnan, če se bo snemanje začelo med tem časom."
+
+msgctxt "#36243"
+msgid "The command to execute."
+msgstr "Ukaz, ki naj se zažene."
 
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
@@ -11341,9 +11561,37 @@ msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "Določite, kdaj zagnati dnevni ukaz bujenja."
 
+msgctxt "#36247"
+msgid "Category for parental control settings if the PVR backend server supports parental controls."
+msgstr "Kategorija za starševski nadzor, če hrbtenica PVR to podpira."
+
+msgctxt "#36248"
+msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
+msgstr "Vprašaj za pin pri dostopu do starševsko zaklenjenih programov. Programi se lahko zaklenijo v urejevalniku programov v zavihku splošno. Starševsko zaklenjeni programi se ne morejo predvajati ali snemati brez vnosa kode pin. Informacije EPG so skrite za te programe."
+
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
-msgstr "Vnesite novo PIN kodo za odklep kanalov s starševkim nadzorom."
+msgstr "Vnesite novo kodo pin za odklep zaklenjenih programov."
+
+msgctxt "#36250"
+msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration."
+msgstr "Ponovno vprašaj za kodo pin ob dostopu starševsko zaklenjenih programov, če za kodo ni bilo vprašano med tem časom."
+
+msgctxt "#36251"
+msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
+msgstr "Kategorija specifičnih nastavitev za vašo hrbtenico PVR, če sama to podpira znotraj XBMC-ja."
+
+msgctxt "#36252"
+msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
+msgstr "Ta možnost bo omogočila vse specifične nastavitve za vašo hrbtenico PVR, če sama to podpira znotraj XBMC-ja."
+
+msgctxt "#36253"
+msgid "Section that contains settings related to music files and how they are handled."
+msgstr "Razdelek nastavitev glasbenih datotek in ravnanja z njimi."
+
+msgctxt "#36254"
+msgid "Enable the music library."
+msgstr "Omogočite knjižnico glasbe."
 
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information via scrapers during scan."
@@ -11368,6 +11616,10 @@ msgstr "Izvozite bazo knjižnice za Glasbo v XML datoteke. To bo po izbiri prepi
 msgctxt "#36263"
 msgid "Import a XML file into the Music Library database."
 msgstr "Uvozi datoteko XML v podatkovno bazo knjižnice Glasba."
+
+msgctxt "#36264"
+msgid "Category containing settings for how music playback is handled."
+msgstr "Kategorija nastavitev predvajanja glasbe."
 
 msgctxt "#36265"
 msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
@@ -11397,6 +11649,10 @@ msgctxt "#36281"
 msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
 msgstr "XBMC bo poiskal sličice na mapah v skupni rabi in optičnih medijih. To lahko upočasni brskanje omrežnih map."
 
+msgctxt "#36282"
+msgid "Category containing settings for how CDs are handled."
+msgstr "Kategorija nastavitev ravnanja z CD-ji."
+
 msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
 msgstr "Samodejno predvajajte CD-je, ko jih vstavite v pogon."
@@ -11425,6 +11681,10 @@ msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr "Samodejno izvrzite ploščo po končanem zajemanju."
 
+msgctxt "#36292"
+msgid "Category containing the settings for how karaoke is handled."
+msgstr "Kategorija nastavitev delovanja karaok."
+
 msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
 msgstr "Ob predvajanju katerikoli glasbene datoteke bo XBMC preveril za pripadajočo .cdg datoteko in prikazal pripadajočo grafiko."
@@ -11443,7 +11703,7 @@ msgstr "Izberite barvo pisave za prikazovanje med karaokami."
 
 msgctxt "#36298"
 msgid "Select the character set used during karaoke."
-msgstr "Izberite nabor znakov za prikazovanje med karaokami."
+msgstr "Izberite nabor znakov za uporabo med karaokami."
 
 msgctxt "#36301"
 msgid "No info available yet."
@@ -11456,6 +11716,14 @@ msgstr "Informacije še niso na voljo."
 msgctxt "#36303"
 msgid "No info available yet."
 msgstr "Informacije še niso na voljo."
+
+msgctxt "#36304"
+msgid "Section that contains settings related to pictures and how they are handled."
+msgstr "Razdelek nastavitev slik in ravnanja z njimi."
+
+msgctxt "#36305"
+msgid "Category containing settings for how picture file lists are handled."
+msgstr "Kategorija nastavitev ravnanja s seznami slik."
 
 msgctxt "#36306"
 msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
@@ -11473,6 +11741,10 @@ msgctxt "#36310"
 msgid "No info available yet."
 msgstr "Informacije še niso na voljo."
 
+msgctxt "#36311"
+msgid "Category containing settings for how picture slideshows are handled."
+msgstr "Kategorija nastavitev projekcij slik."
+
 msgctxt "#36312"
 msgid "Select the amount of time that each image is displayed in a slideshow."
 msgstr "Izberite čas prikaza vsake slike v projekciji slik."
@@ -11485,6 +11757,14 @@ msgctxt "#36314"
 msgid "View slideshow images in a random order."
 msgstr "Oglejte si projekcijo slik v naključnem vrstnem redu."
 
+msgctxt "#36315"
+msgid "Section that contains weather related settings."
+msgstr "Razdelek nastavitev vremena."
+
+msgctxt "#36316"
+msgid "Category containing settings for how weather addons are handled."
+msgstr "Kategorija nastavitev delovanja dodatkov za vreme."
+
 msgctxt "#36317"
 msgid "Select up to three locations for which the weather can be displayed."
 msgstr "Izberite do tri lokacije za prikaz vremena."
@@ -11493,17 +11773,45 @@ msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
 msgstr "Določite privzeti vir informacij o vremenu. Več možnosti najdete v upravljalniku dodatkov."
 
+msgctxt "#36319"
+msgid "Section containing settings for how network services are handled."
+msgstr "Razdelek nastavitev omrežnih storitev."
+
+msgctxt "#36320"
+msgid "Category containing settings used for all services."
+msgstr "Kategorija nastavitev vseh storitev."
+
 msgctxt "#36321"
 msgid "Display name of the XBMC installation when using various network services."
 msgstr "Prikaži ime instalacije XBMC ob uporabi različnih omrežnih storitev."
+
+msgctxt "#36322"
+msgid "Category containing settings for how the UPnP service is handled."
+msgstr "Kategorija nastavitev storitve UPnP."
+
+msgctxt "#36323"
+msgid "Enable the UPnP server. This allows you to stream media to a UPnP client."
+msgstr "Omogočite strežnik UPnP. To omogoča pretakanje vsebin na odjemalce UPnP."
 
 msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
 msgstr "Obvestite odjemalce UPnP ob vsaki posodobitvi knjižnice, tako ročni kot samodejni."
 
+msgctxt "#36325"
+msgid "Enable the UPnP client. This allows you to stream media from any UPnP server with a control point and control playback from that server."
+msgstr "Omogočite odjemalec UPnP. To omogoča pretakanje vsebin s kateregakoli strežnika UPnP s kotrolno točko in upravljanje s predvanjanjem na tem strežniku."
+
+msgctxt "#36326"
+msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from XBMC."
+msgstr "Omogočite kontrolno točko UPnP. To omogoča pretakanje vsebin na katerikoli odjemalec UPnP in upravljanje s predvajanjem z XBMC."
+
+msgctxt "#36327"
+msgid "Category containing settings for how the webserver service is handled."
+msgstr "Kategorija nastavitev storitve spletnega strežnika."
+
 msgctxt "#36328"
 msgid "Enable remote users to control XBMC through the built-in webserver."
-msgstr "Omogočite oddaljene uporabnike za nadzor XBMC prek vgrajenega spletnega strežnika."
+msgstr "Omogočite nadzor XBMC-ja oddaljenim uporabnikom prek vgrajenega spletnega strežnika."
 
 msgctxt "#36329"
 msgid "Define the webserver port."
@@ -11513,17 +11821,53 @@ msgctxt "#36330"
 msgid "Define the webserver username."
 msgstr "Določite uporabniško ime spletnega strežnika."
 
+msgctxt "#36331"
+msgid "Define the webserver password."
+msgstr "Določite geslo spletnega strežnika."
+
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Izberite enega izmed spletnih vmesnikov, nameščenih preko upravljalnika dodatkov."
+
+msgctxt "#36333"
+msgid "Category containing settings for how the remote control service is handled."
+msgstr "Kategorija nastavitev oddaljenega upravljanja."
 
 msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
 msgstr "Dovolite programom na tem računalniku, da upravljajo z XBMC-jem preko spletnega vmesnika ali protokola JSON-RPC."
 
+msgctxt "#36335"
+msgid "Define the remote control port."
+msgstr "Določite vrata oddaljenega upravljanja."
+
+msgctxt "#36336"
+msgid "Define the remote control port range."
+msgstr "Določite območje vrat oddaljenega upravljanja."
+
 msgctxt "#36338"
 msgid "Allow programs on the network to control XBMC."
 msgstr "Dovolite programom v omrežju, da upravljajo z XBMC-jem."
+
+msgctxt "#36341"
+msgid "Category containing settings for how the zeroconf network discovery service is handled, required for AirPlay."
+msgstr "Kategorija nastavitev storitve omrežnega odkrivanja zeroconf, ki je potrebna za AirPlay."
+
+msgctxt "#36344"
+msgid "Enable AirPlay password protection."
+msgstr "Omogočite zaščito z geslom za AirPlay."
+
+msgctxt "#36345"
+msgid "Sets the AirPlay password."
+msgstr "Nastavite geslo za AirPlay."
+
+msgctxt "#36346"
+msgid "Category containing settings for how the SMB Client (samba) service is handled."
+msgstr "Kategorija nastavitev storitve SMB (samba)."
+
+msgctxt "#36349"
+msgid "Section that contains the System related settings for the device XBMC is installed on."
+msgstr "Razdelek sistemskih nastavitev za napravo, na katero je nameščen XBMC."
 
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
@@ -11541,9 +11885,13 @@ msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
 msgstr "Testni vzorec za umerjanje strojne opreme."
 
+msgctxt "#36360"
+msgid "Category containing settings for how audio output is handled."
+msgstr "Kategorija nastavitev zvočnega izhoda."
+
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
-msgstr "Ojačaj AC3 tokove ki so bili mešani na 2 kanala."
+msgstr "Ojačaj pretoke AC3, ki so bili združeni v 2 kanala."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -11569,6 +11917,10 @@ msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
 msgstr "Prilagodi zvoke uporabniškega vmesnika, kot so zvoki pomembnih obvestil in navigacije v menijih."
 
+msgctxt "#36374"
+msgid "Category containing settings for how input devices are handled."
+msgstr "Kategorija nastavitev vhodnih naprav."
+
 msgctxt "#36377"
 msgid "Use a mouse or touch screen device to control XBMC. Note: disabling will cause you to lose control over XBMC when no keyboard or remote is present."
 msgstr "Za upravljanje z XBMC-jem uporabite miško ali zaslon na dotik. Opomba: onemogočenje te nastavitve lahko povzroči, da izgubite nadzor nad XBMC-jem, ko ne boste imeli na voljo tipkovnice ali daljinskega upravljalnika."
@@ -11576,6 +11928,10 @@ msgstr "Za upravljanje z XBMC-jem uporabite miško ali zaslon na dotik. Opomba: 
 msgctxt "#36378"
 msgid "Use a joystick to control XBMC."
 msgstr "Uporabite igralno palico za nadzor XBMC-ja."
+
+msgctxt "#36379"
+msgid "Category containing settings for internet access."
+msgstr "Kategorija nastavitev spletnega dostopa."
 
 msgctxt "#36380"
 msgid "If your internet connection uses a proxy, configure it here."
@@ -11605,6 +11961,10 @@ msgctxt "#36386"
 msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
 msgstr "V primeru, da imate omejeno pasovno širino internetneta, bo XBMC poskušal ostati znotraj teh meja."
 
+msgctxt "#36387"
+msgid "Category containing settings for power saving."
+msgstr "Kategorija nastavitev varčevanja z energijo."
+
 msgctxt "#36389"
 msgid "Define how long XBMC should idle before shutting down."
 msgstr "Določite kako dolgo je lahko XBMC nedejaven preden se izklopi."
@@ -11612,6 +11972,10 @@ msgstr "Določite kako dolgo je lahko XBMC nedejaven preden se izklopi."
 msgctxt "#36390"
 msgid "Define what action XBMC should do when it has been idle for a long period of time."
 msgstr "Določite dejanje ko je XBMC nedejaven dalj časa."
+
+msgctxt "#36391"
+msgid "Category containing settings for debugging functions."
+msgstr "Kategorija nastavitev razhroščevanja."
 
 msgctxt "#36392"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
@@ -11625,6 +11989,10 @@ msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
 msgstr "Določite dodatne knjižnice ki bodo vključene  v razhroščevalni zapisnik."
 
+msgctxt "#36395"
+msgid "Category containing settings for the master lock function."
+msgstr "Kategorija nastavitev zaklepanja"
+
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
 msgstr "Določite PIN kodo, ki se uporablja za glavni zaklep."
@@ -11632,6 +12000,50 @@ msgstr "Določite PIN kodo, ki se uporablja za glavni zaklep."
 msgctxt "#36398"
 msgid "Define the maximum number of retries before XBMC is closed down."
 msgstr "Določite največje število poskusov, preden se XBMC izključi."
+
+msgctxt "#36399"
+msgid "Category containing settings for the cache function."
+msgstr "Kategorija nastavitev za upravljanje predpomnjenja."
+
+msgctxt "#36400"
+msgid "Enable cache for playback of Video, Audio or DVDs from hard disk."
+msgstr "Omogočite predpomnjenje predvajanja videa, glasbe ali DVD-jev s trdega diska."
+
+msgctxt "#36401"
+msgid "Enable cache for playback of Video from DVD-ROM."
+msgstr "Omogočite predpomnjenje predvajanja videa z DVD-ROM-a."
+
+msgctxt "#36402"
+msgid "Enable cache for Video playback from Local Network."
+msgstr "Omogočite predpomnjenje predvajanja videa iz krajevnega omrežja."
+
+msgctxt "#36403"
+msgid "Enable cache for Video playback from Internet."
+msgstr "Omogočite predpomnjenje predvajanja videa z interneta."
+
+msgctxt "#36404"
+msgid "Enable cache for playback of Audio from DVD-ROM."
+msgstr "Omogočite predpomnjenje predvajanja glasbe z DVD-ROM-a."
+
+msgctxt "#36405"
+msgid "Enable cache for Audio playback from Local Network."
+msgstr "Omogočite predpomnjenje predvajanja glasbe iz krajevnega omrežja."
+
+msgctxt "#36406"
+msgid "Enable cache for Audio playback from Internet."
+msgstr "Omogočite predpomnjenje predvajanja glasbe z interneta."
+
+msgctxt "#36407"
+msgid "Enable cache for playback of DVD from DVD-ROM."
+msgstr "Omogočite predpomnjenje predvajanja DVD-ja z DVD-ROM-a."
+
+msgctxt "#36408"
+msgid "Enable cache for DVD playback from Local Network."
+msgstr "Omogočite predpomnjenje predvajanja DVD-ja iz krajevnega omrežja."
+
+msgctxt "#36409"
+msgid "Enable cache of unknown types from Internet."
+msgstr "Omogočite predpomnjenje neznanih tipov z interneta."
 
 msgctxt "#36410"
 msgid "No info available yet."
@@ -11660,6 +12072,10 @@ msgstr "Informacije še niso na voljo."
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Določite lokacijo, ki se uporablja za pridobivanje informacij o vremenu."
+
+msgctxt "#36422"
+msgid "Enable hardware video decode using AMLogic decoder."
+msgstr "Omogočite strojno pospeševanje videa AMLogic."
 
 msgctxt "#36425"
 msgid "Show context menu"
@@ -11761,6 +12177,10 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Isto kot film"
 
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
+msgstr "Izberite, kako se združujejo zvočni kanali, na primer s 5.1 na 2.0: [Omogočeno] ohrani dinamični razpon izvirnega zvočnega vira po združevanju, vendar bo glasnost nižja; [Onemogočeno] ohrani glasnost izvirnega zvočnega vira, a zmanjša dinamični razpon. Opomba - Dinamični razpon je razlika med najtišjim in najglasnejšim zvokom iz vira."
+
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
 msgstr "Stereoskopski način videa"
@@ -11785,6 +12205,10 @@ msgctxt "#36542"
 msgid "Output to both analogue (headphones) and HDMI"
 msgstr "Izhod tako analogno (slušalke) kot preko HDMI"
 
+msgctxt "#36543"
+msgid "Enable this to make dialogue louder compared to background sounds when downmixing multichannel audio"
+msgstr "Omogočite to možnost, da bodo dialogi glasnejši glede na ozadje pri združevanju večkanalnega zvoka."
+
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Omogočite strojno dekodiranje video datotek."
@@ -11800,6 +12224,22 @@ msgstr "Uporabi višjo kakovost teksture za ovitke in grafike (uporablja več po
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
 msgstr "Omeji ločljivost grafičnega uporabniškega vmesnika za prihranitev pomnilnika. Ne vpliva na predvajanje videa. Uporabite 1080 za neomejeno. Zahteva ponovni zagon."
+
+msgctxt "#36600"
+msgid "Category containing the settings for how the music library is handled."
+msgstr "Kategorija nastavitev delovanja knjižnice glasbe."
+
+msgctxt "#36601"
+msgid "Category containing settings for how music file lists are handled."
+msgstr "Kategorija nastavitev ravnanja s seznami glasbe."
+
+msgctxt "#36602"
+msgid "Category containing settings for how the AirPlay service is handled."
+msgstr "Kategorija nastavitev storitve AirPlay."
+
+msgctxt "#36603"
+msgid "Category containing settings for how video output is handled."
+msgstr "Kategorija nastavitev izhoda slike."
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -11839,7 +12279,7 @@ msgstr "Izberite to možnost, če vaš sprejemnik podpira dekodiranje sledi E-AC
 
 msgctxt "#37017"
 msgid "Dual audio output"
-msgstr "Dvojni avdio izhod"
+msgstr "Dvojni zvočni izhod"
 
 msgctxt "#37018"
 msgid "Boost centre channel when downmixing"

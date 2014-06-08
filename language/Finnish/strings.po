@@ -1003,7 +1003,7 @@ msgstr "Tekstitys"
 
 msgctxt "#288"
 msgid "Font"
-msgstr "Kirjasin"
+msgstr "Fontti"
 
 msgctxt "#289"
 msgid "Size"
@@ -4837,6 +4837,30 @@ msgctxt "#13435"
 msgid "Enable HQ Scalers for scalings above"
 msgstr "Käytä HQ-skaalaimia yllä oleville"
 
+msgctxt "#13441"
+msgid "Use Mpeg-2 VDPAU"
+msgstr "Käytä Mpeg-2 VDPAU:ta"
+
+msgctxt "#13443"
+msgid "Use Mpeg-4 VDPAU"
+msgstr "Käytä Mpeg-4 VDPAU:ta"
+
+msgctxt "#13445"
+msgid "Use VC-1 VDPAU"
+msgstr "Käytä VC-1 VDPAU:ta"
+
+msgctxt "#13447"
+msgid "Use Mpeg-2 VAAPI"
+msgstr "Käytä Mpeg-2 VAAPI:a"
+
+msgctxt "#13449"
+msgid "Use Mpeg-4 VAAPI"
+msgstr "Käytä Mpeg-4 VAAPI:a"
+
+msgctxt "#13451"
+msgid "Use VC-1 VAAPI"
+msgstr "Käytä VC-1 VAAPI:a"
+
 msgctxt "#13455"
 msgid "Software"
 msgstr "Ohjelmallinen"
@@ -5259,7 +5283,7 @@ msgstr "Toista DVD-levyt automaattisesti"
 
 msgctxt "#14089"
 msgid "Font to use for text subtitles"
-msgstr "Tekstityksissä käytettävä kirjasin"
+msgstr "Tekstityksissä käytettävä fontti"
 
 msgctxt "#14090"
 msgid "International"
@@ -6116,6 +6140,10 @@ msgstr "Anna nauhoitukselle nimi"
 msgctxt "#19098"
 msgid "Warning"
 msgstr "Varoitus"
+
+msgctxt "#19099"
+msgid "Service"
+msgstr "Palvelu"
 
 msgctxt "#19102"
 msgid "Please switch to another channel."
@@ -8595,7 +8623,7 @@ msgstr "Elokuvien ja vaihtoehtoisten tekstitysten hakemisto"
 
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
-msgstr "Älä käytä ASS/SSA -tekstitysten kirjasinta"
+msgstr "Älä käytä ASS/SSA -tekstitysten fonttia"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -8984,6 +9012,10 @@ msgstr "%d -> %d"
 msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s -> %s"
+
+msgctxt "#21602"
+msgid "(External)"
+msgstr "(Ulkoinen)"
 
 msgctxt "#21800"
 msgid "File name"
@@ -9387,7 +9419,7 @@ msgstr "Direct3D-versio:"
 
 msgctxt "#22030"
 msgid "Font"
-msgstr "Kirjasin"
+msgstr "Fontti"
 
 msgctxt "#22031"
 msgid "Size"
@@ -9868,6 +9900,10 @@ msgstr "Valitse toistettavat tiedostot"
 msgctxt "#25008"
 msgid "Playback of Blu-ray failed"
 msgstr "Blu-rayn toisto ei onnistu"
+
+msgctxt "#25009"
+msgid "The menu of this Blu-ray is not supported"
+msgstr "Tämän Blu-rayn valikko ei ole tuettu"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -10641,6 +10677,10 @@ msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "Näytä signaalin voimakkuustiedot codecin infoikkunassa (mikäli lisäosa ja backend tukee tätä ominaisuutta)."
 
+msgctxt "#36243"
+msgid "The command to execute."
+msgstr "Suoritettava komento."
+
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
 msgstr "Suorita herätyskomento joka päivä ilmoitettuun aikaan."
@@ -10820,3 +10860,7 @@ msgstr "(Ohjaajan kommentit)"
 msgctxt "#37014"
 msgid "Last used profile"
 msgstr "Viimeksi käytetty profiili"
+
+msgctxt "#37022"
+msgid "UPnP Player"
+msgstr "UPnP-soitin"

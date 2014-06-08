@@ -18,19 +18,19 @@ msgstr ""
 
 msgctxt "#30001"
 msgid "Low"
-msgstr "Мин."
+msgstr "ниско"
 
 msgctxt "#30002"
 msgid "Normal"
-msgstr "Нормален"
+msgstr "нормално"
 
 msgctxt "#30003"
 msgid "High"
-msgstr "висок"
+msgstr "високо"
 
 msgctxt "#30004"
 msgid "Extreme"
-msgstr "Екстремно"
+msgstr "екстремно"
 
 msgctxt "#30008"
 msgid "Low"

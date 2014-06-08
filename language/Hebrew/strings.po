@@ -2471,7 +2471,7 @@ msgstr "שרת FTP"
 
 msgctxt "#730"
 msgid "Port"
-msgstr "פתחה"
+msgstr "פורט"
 
 msgctxt "#732"
 msgid "Save & apply"
@@ -11020,6 +11020,10 @@ msgstr "בחר את כתוביות ברירת המחדל כאשר קיימות �
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
 msgstr "הצג את הסימן (..) ברשימות כדי לעבור לספריית האב"
+
+msgctxt "#36123"
+msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
+msgstr "מציג סיומות קבצים של קבצי מדיה. למשל, \"You enjoy Myself.mp3\" פשוט יוצג כ-\"You enjoy Myself\""
 
 msgctxt "#36127"
 msgid "Show hidden files and directories when listing files."

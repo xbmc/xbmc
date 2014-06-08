@@ -39,3 +39,11 @@ msgstr "Registre detallat per la llibreria RTMP"
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
 msgstr "Registre detallat per les crides del DBUS"
+
+msgctxt "#30006"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Registre detallat per a les peticions JSON-RPC"
+
+msgctxt "#30007"
+msgid "Verbose logging for AUDIO component"
+msgstr "Registre detallat del component AUDIO"

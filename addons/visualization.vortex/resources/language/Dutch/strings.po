@@ -26,11 +26,11 @@ msgstr "Tijd tussen presets"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
-msgstr "Bijkomende willekeurige tijd"
+msgstr "Toegevoegde willekeurige tijd"
 
 msgctxt "#30003"
 msgid "Lock Preset"
-msgstr "Vastzetten Preset"
+msgstr "Preset vastzetten"
 
 msgctxt "#30004"
 msgid "Enable Transitions"
@@ -46,11 +46,11 @@ msgstr "Toon FPS"
 
 msgctxt "#30007"
 msgid "Show debug console"
-msgstr "Toon debug console"
+msgstr "Toon debugconsole"
 
 msgctxt "#30008"
 msgid "Show audio analysis"
-msgstr "Toon audio analyses"
+msgstr "Toon audioanalyses"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Change Your"
-msgstr "Konfiguracja ustawień"
+msgstr "Konfiguracja -"
 
 msgctxt "#31003"
 msgid "Power Options"

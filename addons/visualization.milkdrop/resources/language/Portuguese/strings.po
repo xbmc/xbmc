@@ -30,7 +30,7 @@ msgstr "Tempo Aleatório Adicional"
 
 msgctxt "#30003"
 msgid "Enable Anisotropic Filtering"
-msgstr "Ligar filtro Anisotrópico"
+msgstr "Activar Filtro Anisotrópico"
 
 msgctxt "#30004"
 msgid "Enable Hard Cuts"
@@ -50,7 +50,7 @@ msgstr "Taxa máxima de actualização"
 
 msgctxt "#30008"
 msgid "Enable Stereo 3D"
-msgstr "Ligar Estéreo 3D"
+msgstr "Activar Estéreo 3D"
 
 msgctxt "#30009"
 msgid "Preset Pack"
@@ -58,7 +58,7 @@ msgstr "Conjunto de Pré-Selecções"
 
 msgctxt "#30010"
 msgid "User Preset Folder        "
-msgstr "Pasta de Pré-Selecções do utilizador"
+msgstr "Pasta de Pré-Selecções do Utilizador"
 
 msgctxt "#30011"
 msgid "Preset Shuffle Mode"

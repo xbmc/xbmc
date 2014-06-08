@@ -5013,6 +5013,10 @@ msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "Oprire copiere CD"
 
+msgctxt "#15014"
+msgid "Keep"
+msgstr "Păstrează"
+
 msgctxt "#15015"
 msgid "Remove"
 msgstr "Elimină"

@@ -206,11 +206,11 @@ msgstr "Настройки"
 
 msgctxt "#31116"
 msgid "Show Recently added Albums"
-msgstr "Показвай наскоро добавените албуми"
+msgstr "Показвай последно добавените албуми"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
-msgstr "Показвай наскоро добавените видео файлове"
+msgstr "Показвай последно добавените видео файлове"
 
 msgctxt "#31118"
 msgid "Home Page Programs Sub-menu"
@@ -374,7 +374,7 @@ msgstr "Резолюция"
 
 msgctxt "#31328"
 msgid "Recently Added"
-msgstr "Наскоро добавени"
+msgstr "Последно добавени"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
@@ -482,7 +482,7 @@ msgstr "Табът отляво обозначава наличието на м�
 
 msgctxt "#31413"
 msgid "Local subtitle available"
-msgstr "Налични са локални субтитри"
+msgstr "Локално са налични субтитри"
 
 msgctxt "#31420"
 msgid "Login"

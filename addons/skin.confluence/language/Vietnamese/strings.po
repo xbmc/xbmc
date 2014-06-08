@@ -88,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "Thông tin"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Hành động"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "Đang phát"
@@ -207,6 +211,10 @@ msgstr "Ẩn hình nền Fanart"
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Hiển thị hình nền \"Đang phát\" dạng video"
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "Bật hiệu ứng nền \"Đang Chạy\""
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -376,6 +384,10 @@ msgctxt "#31360"
 msgid "Watch as 2D"
 msgstr "Xem 2D"
 
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Thay đổi chế độ"
+
 msgctxt "#31362"
 msgid "Enabled"
 msgstr "Đã bật"
@@ -428,9 +440,21 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Trợ giúp lần đầu tiên...."
 
+msgctxt "#31420"
+msgid "Login"
+msgstr "Đăng nhập"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Chọn profile XBMC[CR]để tiếp tục đăng nhập"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Hiện hoặc ẩn cửa màn hình nhập khi khởi động"
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Chọn tài khoản sẽ được sử dụng trong trường hợp tắt màn hình đăng nhập"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
