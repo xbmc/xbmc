@@ -446,7 +446,7 @@ bool CLangCodeExpander::CompareFullLangNames(const CStdString& lang1, const CStd
   return expandedLang1.Equals(expandedLang2);
 }
 
-std::vector<std::string> CLangCodeExpander::GetLanguageNames(LANGFORMATS format /* = CLangCodeExpander::ISO_639_1 */) const
+std::vector<std::string> CLangCodeExpander::GetLanguageNames(LANGFORMATS format /* = CLangCodeExpander::ISO_639_1 */)
 {
   std::vector<std::string> languages;
   const LCENTRY *lang = g_iso639_1;

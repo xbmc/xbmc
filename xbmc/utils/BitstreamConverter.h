@@ -136,12 +136,12 @@ public:
   CBitstreamParser();
   ~CBitstreamParser();
 
-  bool              Open();
-  void              Close();
-  bool              FindIdrSlice(const uint8_t *buf, int buf_size);
+  static bool Open();
+  static void Close();
+  static bool FindIdrSlice(const uint8_t *buf, int buf_size);
 
 protected:
-  const uint8_t*    find_start_code(const uint8_t *p, const uint8_t *end, uint32_t *state);
+  static const uint8_t* find_start_code(const uint8_t *p, const uint8_t *end, uint32_t *state);
 };
 
 class CBitstreamConverter
@@ -173,13 +173,13 @@ public:
   static bool       mpeg2_sequence_header(const uint8_t *data, const uint32_t size, mpeg2_sequence *sequence);
 
 protected:
-  const int         avc_parse_nal_units(AVIOContext *pb, const uint8_t *buf_in, int size);
-  const int         avc_parse_nal_units_buf(const uint8_t *buf_in, uint8_t **buf, int *size);
+  static const int  avc_parse_nal_units(AVIOContext *pb, const uint8_t *buf_in, int size);
+  static const int  avc_parse_nal_units_buf(const uint8_t *buf_in, uint8_t **buf, int *size);
   const int         isom_write_avcc(AVIOContext *pb, const uint8_t *data, int len);
   // bitstream to bytestream (Annex B) conversion support.
   bool              BitstreamConvertInit(void *in_extradata, int in_extrasize);
   bool              BitstreamConvert(uint8_t* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size);
-  void              BitstreamAllocAndCopy(uint8_t **poutbuf, int *poutbuf_size,
+  static void       BitstreamAllocAndCopy(uint8_t **poutbuf, int *poutbuf_size,
                       const uint8_t *sps_pps, uint32_t sps_pps_size, const uint8_t *in, uint32_t in_size);
 
   typedef struct omx_bitstream_ctx {

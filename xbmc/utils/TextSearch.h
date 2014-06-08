@@ -39,7 +39,7 @@ public:
   bool IsValid(void) const;
 
 private:
-  void GetAndCutNextTerm(CStdString &strSearchTerm, CStdString &strNextTerm);
+  static void GetAndCutNextTerm(CStdString &strSearchTerm, CStdString &strNextTerm);
   void ExtractSearchTerms(const CStdString &strSearchTerm, TextSearchDefault defaultSearchMode);
 
   bool                     m_bCaseSensitive;

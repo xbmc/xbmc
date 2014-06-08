@@ -425,7 +425,7 @@ void CJobManager::RemoveWorker(const CJobWorker *worker)
     m_workers.erase(i); // workers auto-delete
 }
 
-unsigned int CJobManager::GetMaxWorkers(CJob::PRIORITY priority) const
+unsigned int CJobManager::GetMaxWorkers(CJob::PRIORITY priority)
 {
   static const unsigned int max_workers = 5;
   return max_workers - (CJob::PRIORITY_HIGH - priority);

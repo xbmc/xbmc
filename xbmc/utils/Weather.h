@@ -103,7 +103,7 @@ private:
   void LocalizeOverview(CStdString &str);
   void LocalizeOverviewToken(CStdString &str);
   void LoadLocalizedToken();
-  int ConvertSpeed(int speed);
+  static int ConvertSpeed(int speed);
 
   void SetFromProperties();
 
@@ -111,7 +111,7 @@ private:
    \param text the string to format
    \param temp the temperature (in degrees celcius).
    */
-  void FormatTemperature(CStdString &text, int temp);
+  static void FormatTemperature(CStdString &text, int temp);
 
   struct ci_less : std::binary_function<std::string, std::string, bool>
   {

@@ -66,13 +66,13 @@ public:
 
   static CSysData::INTERNET_STATE GetInternetState();
 private:
-  bool SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays);
-  double GetCPUFrequency();
-  CStdString GetSystemUpTime(bool bTotalUptime);
-  CStdString GetCPUFreqInfo();
-  CStdString GetMACAddress();
-  CStdString GetVideoEncoder();
-  CStdString GetBatteryLevel();
+  static bool SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays);
+  static double GetCPUFrequency();
+  static CStdString GetSystemUpTime(bool bTotalUptime);
+  static CStdString GetCPUFreqInfo();
+  static CStdString GetMACAddress();
+  static CStdString GetVideoEncoder();
+  static CStdString GetBatteryLevel();
 
   CSysData m_info;
 };

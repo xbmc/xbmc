@@ -37,7 +37,7 @@ public:
   CWindowsShortcut();
   virtual ~CWindowsShortcut();
   static bool IsShortcut(const string& strFileName);
-  bool GetShortcut(const string& strFileName, string& strFileOrDir);
+  static bool GetShortcut(const string& strFileName, string& strFileOrDir);
 };
 
 #endif // !defined(AFX_WINDOWSSHORTCUT_H__A905CF83_3C3D_44FF_B3EF_778D70676D2C__INCLUDED_)

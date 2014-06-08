@@ -102,7 +102,7 @@ private:
   /// \param colorsIn: CStdString containing a string of colors in some format to be converted
   /// \param colorsOut: XBMC ARGB Hexadecimal string comma seperated "FFFFFFFF,DDDDDDDD,AAAAAAAA"
   /// \return boolean indicating success or failure.
-  bool ParseColors(const CStdString &colorsIn, CStdString &colorsOut);
+  static bool ParseColors(const CStdString &colorsIn, CStdString &colorsOut);
 
   struct SFanartData
   {

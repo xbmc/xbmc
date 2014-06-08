@@ -31,7 +31,7 @@ CHTMLUtil::CHTMLUtil(void)
 CHTMLUtil::~CHTMLUtil(void)
 {}
 
-int CHTMLUtil::FindTag(const CStdString& strHTML, const CStdString& strTag, CStdString& strtagFound, int iPos) const
+int CHTMLUtil::FindTag(const CStdString& strHTML, const CStdString& strTag, CStdString& strtagFound, int iPos)
 {
   CStdString strHTMLLow = strHTML;
   CStdString strTagLow = strTag;
@@ -51,7 +51,7 @@ int CHTMLUtil::FindTag(const CStdString& strHTML, const CStdString& strTag, CStd
   return iStart;
 }
 
-int CHTMLUtil::FindClosingTag(const CStdString& strHTML, const CStdString& strTag, CStdString& strtagFound, int iPos) const
+int CHTMLUtil::FindClosingTag(const CStdString& strHTML, const CStdString& strTag, CStdString& strtagFound, int iPos)
 {
   CStdString strHTMLLow = strHTML;
   CStdString strTagLow = strTag;

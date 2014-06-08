@@ -32,9 +32,9 @@ class CRecentlyAddedJob : public CJob
 {
 public:
   CRecentlyAddedJob(int flag);
-  bool UpdateVideo();
-  bool UpdateMusic();
-  bool UpdateTotal();
+  static bool UpdateVideo();
+  static bool UpdateMusic();
+  static bool UpdateTotal();
   virtual bool DoWork();
 private:
   int m_flag;

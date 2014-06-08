@@ -314,7 +314,7 @@ private:
 
   void StartWorkers(CJob::PRIORITY priority);
   void RemoveWorker(const CJobWorker *worker);
-  unsigned int GetMaxWorkers(CJob::PRIORITY priority) const;
+  static unsigned int GetMaxWorkers(CJob::PRIORITY priority);
 
   unsigned int m_jobCounter;
 
