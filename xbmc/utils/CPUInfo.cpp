@@ -413,8 +413,8 @@ CCPUInfo::CCPUInfo(void)
 #endif
   StringUtils::Replace(m_cpuModel, '\r', ' ');
   StringUtils::Replace(m_cpuModel, '\n', ' ');
-  StringUtils::Trim(m_cpuModel);
   StringUtils::RemoveDuplicatedSpacesAndTabs(m_cpuModel);
+  StringUtils::Trim(m_cpuModel);
 
   /* Set some default for empty string variables */
   if (m_cpuBogoMips.empty())
