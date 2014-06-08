@@ -161,7 +161,7 @@ class CTuxBoxUtil
     bool ServiceEPG(TiXmlElement *pRootElement);
     bool GetHttpXML(CURL url,CStdString strRequestType);
     bool GetGUIRequestedAudioChannel(AUDIOCHANNEL& sRequestedAC);
-    bool GetRequestedAudioChannel(AUDIOCHANNEL& sRequestedAC);
+    bool GetRequestedAudioChannel(AUDIOCHANNEL& sRequestedAC) const;
     bool GetVideoSubChannels(CStdString& strVideoSubChannelName, CStdString& strVideoSubChannelPid);
     bool GetVideoChannels(TiXmlElement *pRootElement);
     bool CreateNewItem(const CFileItem& item, CFileItem& item_new);

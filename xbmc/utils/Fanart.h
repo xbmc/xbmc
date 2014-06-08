@@ -81,7 +81,7 @@ public:
   ///
   /// Returns how many fanarts are stored
   /// \return An integer indicating how many fanarts are stored in the class.  Fanart indices are 0 to (GetNumFanarts() - 1)
-  unsigned int GetNumFanarts();
+  unsigned int GetNumFanarts() const;
   ///
   /// m_xml contains an XML formatted string which is all fanart packed into one string.
   ///

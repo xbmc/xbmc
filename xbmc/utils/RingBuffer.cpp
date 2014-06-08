@@ -233,7 +233,7 @@ unsigned int CRingBuffer::getSize()
   return m_size;
 }
 
-unsigned int CRingBuffer::getReadPtr()
+unsigned int CRingBuffer::getReadPtr() const
 {
   return m_readPtr;
 }

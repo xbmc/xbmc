@@ -152,12 +152,12 @@ public:
 
   bool              Open(enum AVCodecID codec, uint8_t *in_extradata, int in_extrasize, bool to_annexb);
   void              Close(void);
-  bool              NeedConvert(void) { return m_convert_bitstream; };
+  bool              NeedConvert(void) const { return m_convert_bitstream; };
   bool              Convert(uint8_t *pData, int iSize);
-  uint8_t*          GetConvertBuffer(void);
-  int               GetConvertSize();
-  uint8_t*          GetExtraData(void);
-  int               GetExtraSize();
+  uint8_t*          GetConvertBuffer(void) const;
+  int               GetConvertSize() const;
+  uint8_t*          GetExtraData(void) const;
+  int               GetExtraSize() const;
 
   static void       bits_reader_set( bits_reader_t *br, uint8_t *buf, int len );
   static uint32_t   read_bits( bits_reader_t *br, int nbits );

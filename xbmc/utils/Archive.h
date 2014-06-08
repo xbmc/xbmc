@@ -139,8 +139,8 @@ public:
   CArchive& operator>>(std::vector<std::string>& strArray);
   CArchive& operator>>(std::vector<int>& iArray);
 
-  bool IsLoading();
-  bool IsStoring();
+  bool IsLoading() const;
+  bool IsStoring() const;
 
   void Close();
 

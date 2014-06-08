@@ -65,13 +65,13 @@ public:
 
     status_t addBytes( const char* bytes, unsigned len );
 
-    const char* getMethod();
-    const char* getUri();
-    const char* getQueryString();
-    const char* getBody();
+    const char* getMethod() const;
+    const char* getUri() const;
+    const char* getQueryString() const;
+    const char* getBody() const;
     // key should be in lower case when looking up.
-    const char* getValue( const char* key );
-    unsigned getContentLength();
+    const char* getValue( const char* key ) const;
+    unsigned getContentLength() const;
 
 private:
     void parseHeader();

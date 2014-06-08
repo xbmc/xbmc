@@ -1463,7 +1463,7 @@ bool CTuxBoxUtil::GetGUIRequestedAudioChannel(AUDIOCHANNEL& sRequestedAC)
   }
   return false;
 }
-bool CTuxBoxUtil::GetRequestedAudioChannel(AUDIOCHANNEL& sRequestedAC)
+bool CTuxBoxUtil::GetRequestedAudioChannel(AUDIOCHANNEL& sRequestedAC) const
 {
   sRequestedAC = sCurSrvData.audio_channels[sCurSrvData.requested_audio_channel];
 

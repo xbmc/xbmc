@@ -44,7 +44,7 @@ public:
   bool Copy(CRingBuffer &rBuf);
   char *getBuffer();
   unsigned int getSize();
-  unsigned int getReadPtr();
+  unsigned int getReadPtr() const;
   unsigned int getWritePtr();
   unsigned int getMaxReadSize();
   unsigned int getMaxWriteSize();

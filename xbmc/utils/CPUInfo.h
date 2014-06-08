@@ -74,7 +74,7 @@ struct CoreInfo
 #elif defined(TARGET_WINDOWS)
   CoreInfo() : m_id(0), m_fSpeed(.0), m_fPct(.0), m_total(0LL), m_idle(0LL), m_coreCounter(NULL) {}
 #endif
-  bool operator<(const CoreInfo& other) { return m_id < other.m_id; }
+  bool operator<(const CoreInfo& other) const { return m_id < other.m_id; }
 };
 
 class CCPUInfo
@@ -84,7 +84,7 @@ public:
   ~CCPUInfo();
 
   int getUsedPercentage();
-  int getCPUCount() { return m_cpuCount; }
+  int getCPUCount() const { return m_cpuCount; }
   float getCPUFrequency();
   bool getTemperature(CTemperature& temperature);
   std::string& getCPUModel() { return m_cpuModel; }
@@ -98,7 +98,7 @@ public:
 
   std::string GetCoresUsageString() const;
 
-  unsigned int GetCPUFeatures() { return m_cpuFeatures; }
+  unsigned int GetCPUFeatures() const { return m_cpuFeatures; }
 
 private:
   bool readProcStat(unsigned long long& user, unsigned long long& nice, unsigned long long& system,

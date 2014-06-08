@@ -45,10 +45,10 @@ public:
   ~CScraperParser();
   CScraperParser& operator= (const CScraperParser& parser);
   bool Load(const CStdString& strXMLFile);
-  bool IsNoop() { return m_isNoop; };
+  bool IsNoop() const { return m_isNoop; };
 
   void Clear();
-  const CStdString GetFilename() { return m_strFile; }
+  const CStdString& GetFilename() const { return m_strFile; }
   CStdString GetSearchStringEncoding() const
     { return m_SearchStringEncoding; }
   const CStdString Parse(const CStdString& strTag,

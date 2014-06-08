@@ -519,7 +519,7 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
 }
 
 
-uint8_t *CBitstreamConverter::GetConvertBuffer()
+uint8_t *CBitstreamConverter::GetConvertBuffer() const
 {
   if((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize) && m_convertBuffer != NULL)
     return m_convertBuffer;
@@ -527,7 +527,7 @@ uint8_t *CBitstreamConverter::GetConvertBuffer()
     return m_inputBuffer;
 }
 
-int CBitstreamConverter::GetConvertSize()
+int CBitstreamConverter::GetConvertSize() const
 {
   if((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize) && m_convertBuffer != NULL)
     return m_convertSize;
@@ -535,14 +535,14 @@ int CBitstreamConverter::GetConvertSize()
     return m_inputSize;
 }
 
-uint8_t *CBitstreamConverter::GetExtraData()
+uint8_t *CBitstreamConverter::GetExtraData() const
 {
   if(m_convert_bitstream)
     return m_sps_pps_context.sps_pps_data;
   else
     return m_extradata;
 }
-int CBitstreamConverter::GetExtraSize()
+int CBitstreamConverter::GetExtraSize() const
 {
   if(m_convert_bitstream)
     return m_sps_pps_context.size;
