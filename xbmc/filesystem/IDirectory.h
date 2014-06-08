@@ -107,6 +107,11 @@ public:
   */
   virtual bool IsAllowed(const CStdString& strFile) const;
 
+  /*! \brief Whether to allow all files/folders to be listed.
+   \return Returns \e true if all files/folder should be listed.
+   */
+  virtual bool AllowAll() const { return false; }
+
   /*!
   \brief How this directory should be cached
   \param strPath Directory at hand.

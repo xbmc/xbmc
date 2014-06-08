@@ -204,14 +204,17 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
     }
 
     // now filter for allowed files
-    pDirectory->SetMask(hints.mask);
-    for (int i = 0; i < items.Size(); ++i)
+    if (!pDirectory->AllowAll())
     {
-      CFileItemPtr item = items[i];
-      if (!item->m_bIsFolder && !pDirectory->IsAllowed(item->GetPath()))
+      pDirectory->SetMask(hints.mask);
+      for (int i = 0; i < items.Size(); ++i)
       {
-        items.Remove(i);
-        i--; // don't confuse loop
+        CFileItemPtr item = items[i];
+        if (!item->m_bIsFolder && !pDirectory->IsAllowed(item->GetPath()))
+        {
+          items.Remove(i);
+          i--; // don't confuse loop
+        }
       }
     }
     // filter hidden files

@@ -39,7 +39,7 @@ public:
 
     // IDirectory methods
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-    virtual bool IsAllowed(const CStdString& strFile) const { return true; };
+    virtual bool AllowAll() const { return true; }
 
     // class methods
     static const char* GetFriendlyName(const CURL& url);

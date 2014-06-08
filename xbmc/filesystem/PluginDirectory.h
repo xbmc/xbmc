@@ -45,7 +45,7 @@ public:
   CPluginDirectory();
   ~CPluginDirectory(void);
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
-  virtual bool IsAllowed(const CStdString &strFile) const { return true; };
+  virtual bool AllowAll() const { return true; }
   virtual bool Exists(const char* strPath) { return true; }
   virtual float GetProgress() const;
   virtual void CancelDirectory();

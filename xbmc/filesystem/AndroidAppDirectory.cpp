@@ -76,10 +76,4 @@ bool CAndroidAppDirectory::GetDirectory(const CStdString& strPath, CFileItemList
   return false;
 }
 
-bool CAndroidAppDirectory::IsAllowed(const CStdString& strFile) const
-{
-  // Entries are virtual, so we want them all.
-  return true;
-}
-
 #endif

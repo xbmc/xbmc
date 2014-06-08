@@ -34,6 +34,6 @@ namespace XFILE
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
     bool GetDirectory(const VECSOURCES &sources, CFileItemList &items);
     virtual bool Exists(const char* strPath);
-    virtual bool IsAllowed(const CStdString &strFile) const { return true; };
+    virtual bool AllowAll() const { return true; }
   };
 }

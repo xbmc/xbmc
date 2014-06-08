@@ -32,7 +32,7 @@ namespace XFILE
     virtual ~CVideoDatabaseDirectory(void);
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
     virtual bool Exists(const char* strPath);
-    virtual bool IsAllowed(const CStdString& strFile) const { return true; };
+    virtual bool AllowAll() const { return true; }
     static VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryChildType(const CStdString& strPath);
     static VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryType(const CStdString& strPath);
     static VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryParentType(const CStdString& strPath);

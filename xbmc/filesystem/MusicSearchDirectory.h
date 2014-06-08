@@ -30,6 +30,6 @@ namespace XFILE
     virtual ~CMusicSearchDirectory(void);
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
     virtual bool Exists(const char* strPath);
-    virtual bool IsAllowed(const CStdString &strFile) const { return true; };
+    virtual bool AllowAll() const { return true; }
   };
 }
