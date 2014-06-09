@@ -437,8 +437,10 @@ bool CSysInfo::GetDiskSpace(const CStdString& drive,int& iTotal, int& iTotalFree
 #ifdef TARGET_WINDOWS
     UINT uidriveType = GetDriveType(( drive + ":\\" ));
     if(uidriveType != DRIVE_UNKNOWN && uidriveType != DRIVE_NO_ROOT_DIR)
-#endif
       bRet= ( 0 != GetDiskFreeSpaceEx( ( drive + ":\\" ), NULL, &ULTotal, &ULTotalFree) );
+#elif defined(TARGET_POSIX)
+    bRet = (0 != GetDiskFreeSpaceEx(drive.c_str(), NULL, &ULTotal, &ULTotalFree));
+#endif
   }
   else
   {
