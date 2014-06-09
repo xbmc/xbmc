@@ -94,6 +94,10 @@ void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *m
      OnScanFinished("video");
    else if (strcmp(message, "OnScanStarted") == 0)
      OnScanStarted("video");
+   else if (strcmp(message, "OnCleanStarted") == 0)
+     OnCleanStarted("video");
+   else if (strcmp(message, "OnCleanFinished") == 0)
+     OnCleanFinished("video");
   }
   else if (flag & AudioLibrary)
   {
@@ -101,6 +105,10 @@ void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *m
      OnScanFinished("music");
    else if (strcmp(message, "OnScanStarted") == 0)
      OnScanStarted("music");
+   else if (strcmp(message, "OnCleanStarted") == 0)
+     OnCleanStarted("music");
+   else if (strcmp(message, "OnCleanFinished") == 0)
+     OnCleanFinished("music");
   }
   else if (flag & GUI)
   {
@@ -347,6 +355,28 @@ void XBPython::OnScanFinished(const std::string &library)
   {
     if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
       (*it)->OnScanFinished(library);
+  }
+}
+
+void XBPython::OnCleanStarted(const std::string &library)
+{
+  XBMC_TRACE;
+  LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
+  for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
+  {
+    if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
+      (*it)->OnCleanStarted(library);
+  }
+}
+
+void XBPython::OnCleanFinished(const std::string &library)
+{
+  XBMC_TRACE;
+  LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
+  for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
+  {
+    if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
+      (*it)->OnCleanFinished(library);
   }
 }
 
