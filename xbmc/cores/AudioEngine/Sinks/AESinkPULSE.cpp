@@ -457,6 +457,7 @@ CAESinkPULSE::CAESinkPULSE()
   m_Channels = 0;
   m_Stream = NULL;
   m_Context = NULL;
+  m_IsStreamPaused = false;
 }
 
 CAESinkPULSE::~CAESinkPULSE()
@@ -547,19 +548,12 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   pa_format_info_set_channels(info[0], m_Channels);
 
   // PA requires m_encodedRate in order to do EAC3
-  unsigned int samplerate;
-  if (m_passthrough)
+  unsigned int samplerate = format.m_sampleRate;
+  if (m_passthrough && (AEFormatToPulseEncoding(format.m_dataFormat) == PA_ENCODING_EAC3_IEC61937))
   {
-    if (format.m_encodedRate == 0 || format.m_encodedRate > format.m_sampleRate)
-    {
-      CLog::Log(LOGNOTICE, "PulseAudio: Passthrough in use but m_encodedRate is not set or too large: %u - fallback to m_sampleRate", format.m_encodedRate);
-      samplerate = format.m_sampleRate;
-    }
-    else
-      samplerate = format.m_encodedRate;
+    // this is only used internally for PA to use EAC3
+    samplerate = format.m_encodedRate;
   }
-  else
-    samplerate = format.m_sampleRate;
 
   pa_format_info_set_rate(info[0], samplerate);
 
@@ -694,7 +688,12 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   m_format = format;
   format.m_dataFormat = m_passthrough ? AE_FMT_S16NE : format.m_dataFormat;
 
-  Pause(false);
+  CLog::Log(LOGNOTICE, "PulseAudio: Opened device %s in %s mode with Buffersize %u ms",
+                      device.c_str(), m_passthrough ? "passthrough" : "pcm",
+                      (unsigned int) ((m_BufferSize / (float) m_BytesPerSecond) * 1000));
+
+  // Cork stream will resume when adding first package
+  Pause(true);
   {
     CSingleLock lock(m_sec);
     m_IsAllocated = true;
@@ -720,6 +719,7 @@ void CAESinkPULSE::Deinitialize()
     pa_stream_disconnect(m_Stream);
     pa_stream_unref(m_Stream);
     m_Stream = NULL;
+    m_IsStreamPaused = false;
   }
 
   if (m_Context)
@@ -771,6 +771,11 @@ unsigned int CAESinkPULSE::AddPackets(uint8_t *data, unsigned int frames, bool h
 {
   if (!m_IsAllocated)
     return frames;
+
+  if (m_IsStreamPaused)
+  {
+    Pause(false);
+  }
 
   pa_threaded_mainloop_lock(m_MainLoop);
 
@@ -907,16 +912,15 @@ bool CAESinkPULSE::IsInitialized()
  return m_IsAllocated; 
 }
 
-bool CAESinkPULSE::Pause(bool pause)
+void CAESinkPULSE::Pause(bool pause)
 {
   pa_threaded_mainloop_lock(m_MainLoop);
 
   if (!WaitForOperation(pa_stream_cork(m_Stream, pause ? 1 : 0, NULL, NULL), m_MainLoop, pause ? "Pause" : "Resume"))
     pause = !pause;
 
+  m_IsStreamPaused = pause;
   pa_threaded_mainloop_unlock(m_MainLoop);
-
-  return pause;
 }
 
 inline bool CAESinkPULSE::WaitForOperation(pa_operation *op, pa_threaded_mainloop *mainloop, const char *LogEntry = "")

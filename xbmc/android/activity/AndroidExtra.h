@@ -43,6 +43,9 @@ extern typeof(AMotionEvent_getButtonState) *p_AMotionEvent_getButtonState;
 #define AKEYCODE_MEDIA_PLAY 126
 #define AKEYCODE_MEDIA_EJECT 129
 
+#define AMETA_CTRL_LEFT_ON 0x2000
+#define AMETA_CTRL_RIGHT_ON 0x4000
+
 //Additional defines from android.view.MotionEvent (http://developer.android.com/reference/android/view/MotionEvent.html)
 #define AMOTION_EVENT_ACTION_SCROLL 0x08
 

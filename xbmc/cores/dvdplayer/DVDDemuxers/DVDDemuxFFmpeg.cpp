@@ -1082,6 +1082,8 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         st->iBlockAlign = pStream->codec->block_align;
         st->iBitRate = pStream->codec->bit_rate;
         st->iBitsPerSample = pStream->codec->bits_per_raw_sample;
+        if (st->iBitsPerSample == 0)
+          st->iBitsPerSample = pStream->codec->bits_per_coded_sample;
 	
         if(m_dllAvUtil.av_dict_get(pStream->metadata, "title", NULL, 0))
           st->m_description = m_dllAvUtil.av_dict_get(pStream->metadata, "title", NULL, 0)->value;

@@ -2050,26 +2050,27 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
 
     SetArtForItem(idMovie, "movie", artwork);
 
-    // query DB for any movies matching imdbid and year
-    CStdString strSQL = PrepareSQL("select files.playCount, files.lastPlayed from movie,files where files.idFile=movie.idFile and movie.c%02d='%s' and movie.c%02d=%i and movie.idMovie!=%i and files.playCount > 0", VIDEODB_ID_IDENT, details.m_strIMDBNumber.c_str(), VIDEODB_ID_YEAR, details.m_iYear, idMovie);
-    m_pDS->query(strSQL.c_str());
+    if (!details.m_strIMDBNumber.empty() && details.m_iYear)
+    { // query DB for any movies matching imdbid and year
+      CStdString strSQL = PrepareSQL("select files.playCount, files.lastPlayed from movie,files where files.idFile=movie.idFile and movie.c%02d='%s' and movie.c%02d=%i and movie.idMovie!=%i and files.playCount > 0", VIDEODB_ID_IDENT, details.m_strIMDBNumber.c_str(), VIDEODB_ID_YEAR, details.m_iYear, idMovie);
+      m_pDS->query(strSQL.c_str());
 
-    if (!m_pDS->eof())
-    {
-      int playCount = m_pDS->fv("files.playCount").get_asInt();
+      if (!m_pDS->eof())
+      {
+        int playCount = m_pDS->fv("files.playCount").get_asInt();
 
-      CDateTime lastPlayed;
-      lastPlayed.SetFromDBDateTime(m_pDS->fv("files.lastPlayed").get_asString());
+        CDateTime lastPlayed;
+        lastPlayed.SetFromDBDateTime(m_pDS->fv("files.lastPlayed").get_asString());
 
-      int idFile = GetFileId(strFilenameAndPath);
+        int idFile = GetFileId(strFilenameAndPath);
 
-      // update with playCount and lastPlayed
-      strSQL = PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", playCount, lastPlayed.GetAsDBDateTime().c_str(), idFile);
-      m_pDS->exec(strSQL.c_str());
+        // update with playCount and lastPlayed
+        strSQL = PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", playCount, lastPlayed.GetAsDBDateTime().c_str(), idFile);
+        m_pDS->exec(strSQL.c_str());
+      }
+
+      m_pDS->close();
     }
-
-    m_pDS->close();
-
     // update our movie table (we know it was added already above)
     // and insert the new row
     CStdString sql = "update movie set " + GetValueString(details, VIDEODB_ID_MIN, VIDEODB_ID_MAX, DbMovieOffsets);
@@ -2292,26 +2293,27 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
 
     SetArtForItem(idEpisode, "episode", artwork);
 
-    // query DB for any episodes matching idShow, Season and Episode
-    CStdString strSQL = PrepareSQL("select files.playCount, files.lastPlayed from episode, files where files.idFile=episode.idFile and episode.c%02d=%i and episode.c%02d=%i AND episode.idShow=%i and episode.idEpisode!=%i and files.playCount > 0",VIDEODB_ID_EPISODE_SEASON, details.m_iSeason, VIDEODB_ID_EPISODE_EPISODE, details.m_iEpisode, idShow, idEpisode);
-    m_pDS->query(strSQL.c_str());
+    if (details.m_iEpisode != -1 && details.m_iSeason != -1)
+    { // query DB for any episodes matching idShow, Season and Episode
+      CStdString strSQL = PrepareSQL("select files.playCount, files.lastPlayed from episode, files where files.idFile=episode.idFile and episode.c%02d=%i and episode.c%02d=%i AND episode.idShow=%i and episode.idEpisode!=%i and files.playCount > 0",VIDEODB_ID_EPISODE_SEASON, details.m_iSeason, VIDEODB_ID_EPISODE_EPISODE, details.m_iEpisode, idShow, idEpisode);
+      m_pDS->query(strSQL.c_str());
 
-    if (!m_pDS->eof())
-    {
-      int playCount = m_pDS->fv("files.playCount").get_asInt();
+      if (!m_pDS->eof())
+      {
+        int playCount = m_pDS->fv("files.playCount").get_asInt();
 
-      CDateTime lastPlayed;
-      lastPlayed.SetFromDBDateTime(m_pDS->fv("files.lastPlayed").get_asString());
+        CDateTime lastPlayed;
+        lastPlayed.SetFromDBDateTime(m_pDS->fv("files.lastPlayed").get_asString());
 
-      int idFile = GetFileId(strFilenameAndPath);
+        int idFile = GetFileId(strFilenameAndPath);
 
-      // update with playCount and lastPlayed
-      strSQL = PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", playCount, lastPlayed.GetAsDBDateTime().c_str(), idFile);
-      m_pDS->exec(strSQL.c_str());
+        // update with playCount and lastPlayed
+        strSQL = PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", playCount, lastPlayed.GetAsDBDateTime().c_str(), idFile);
+        m_pDS->exec(strSQL.c_str());
+      }
+
+      m_pDS->close();
     }
-
-    m_pDS->close();
-
     // and insert the new row
     CStdString sql = "update episode set " + GetValueString(details, VIDEODB_ID_EPISODE_MIN, VIDEODB_ID_EPISODE_MAX, DbEpisodeOffsets);
     sql += PrepareSQL(" where idEpisode=%i", idEpisode);
@@ -8205,6 +8207,7 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
       }
 
       parentPathsDeleteDecisions.insert(make_pair(parentPathID, make_pair(parentPathNotExists, del)));
+      pathsDeleteDecisions.insert(make_pair(parentPathID, parentPathNotExists && del));
     }
     // the only reason not to delete the file is if the parent path doesn't
     // exist and the user decided to delete all the items it contained

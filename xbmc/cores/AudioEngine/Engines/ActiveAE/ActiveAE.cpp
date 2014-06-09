@@ -1421,6 +1421,7 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
   {
     format.m_dataFormat = AE_FMT_AC3;
     format.m_sampleRate = 48000;
+    format.m_encodedRate = 48000;
     format.m_channelLayout = AE_CH_LAYOUT_2_0;
     if (mode)
       *mode = MODE_TRANSCODE;
@@ -1645,13 +1646,15 @@ bool CActiveAE::RunStages()
     CSampleBuffer *buffer;
     if (!(*it)->m_drain)
     {
-      while (time < MAX_CACHE_LEVEL && !(*it)->m_inputBuffers->m_freeSamples.empty())
+      float buftime = (float)(*it)->m_inputBuffers->m_format.m_frames / (*it)->m_inputBuffers->m_format.m_sampleRate;
+      time += buftime * (*it)->m_processingSamples.size();
+      while ((time < MAX_CACHE_LEVEL || (*it)->m_streamIsBuffering) && !(*it)->m_inputBuffers->m_freeSamples.empty())
       {
         buffer = (*it)->m_inputBuffers->GetFreeBuffer();
         (*it)->m_processingSamples.push_back(buffer);
         (*it)->m_streamPort->SendInMessage(CActiveAEDataProtocol::STREAMBUFFER, &buffer, sizeof(CSampleBuffer*));
         (*it)->IncFreeBuffers();
-        time += (float)buffer->pkt->max_nb_samples / buffer->pkt->config.sample_rate;
+        time += buftime;
       }
     }
     else
@@ -1974,7 +1977,7 @@ bool CActiveAE::RunStages()
       CSampleBuffer *buffer;
       for (it = m_streams.begin(); it != m_streams.end(); ++it)
       {
-        if (!(*it)->m_resampleBuffers->m_outputSamples.empty())
+        if (!(*it)->m_resampleBuffers->m_outputSamples.empty() && !(*it)->m_paused)
         {
           buffer =  (*it)->m_resampleBuffers->m_outputSamples.front();
           (*it)->m_resampleBuffers->m_outputSamples.pop_front();

@@ -24,6 +24,7 @@
 #include "cores/AudioEngine/Utils/AERingBuffer.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioHelpers.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioHardware.h"
+#include "cores/AudioEngine/Sinks/osx/CoreAudioChannelLayout.h"
 #include "osx/DarwinUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -32,11 +33,209 @@
 
 #include <sstream>
 
-#define CA_MAX_CHANNELS 8
+#define CA_MAX_CHANNELS 16
+// default channel map - in case it can't be fetched from the device
 static enum AEChannel CAChannelMap[CA_MAX_CHANNELS + 1] = {
   AE_CH_FL , AE_CH_FR , AE_CH_BL , AE_CH_BR , AE_CH_FC , AE_CH_LFE , AE_CH_SL , AE_CH_SR ,
+  AE_CH_UNKNOWN1 ,
+  AE_CH_UNKNOWN2 ,
+  AE_CH_UNKNOWN3 ,
+  AE_CH_UNKNOWN4 ,
+  AE_CH_UNKNOWN5 ,
+  AE_CH_UNKNOWN6 ,
+  AE_CH_UNKNOWN7 ,
+  AE_CH_UNKNOWN8 ,
   AE_CH_NULL
 };
+
+// map coraudio channel labels to activeae channel labels
+static enum AEChannel CAChannelToAEChannel(AudioChannelLabel CAChannelLabel)
+{
+  enum AEChannel ret = AE_CH_NULL;
+  static unsigned int unknownChannel = AE_CH_UNKNOWN1;
+  switch(CAChannelLabel)
+  {
+    case kAudioChannelLabel_Left:
+      ret = AE_CH_FL;
+      break;
+    case kAudioChannelLabel_Right:
+      ret = AE_CH_FR;
+      break;
+    case kAudioChannelLabel_Center:
+      ret = AE_CH_FC;
+      break;
+    case kAudioChannelLabel_LFEScreen:
+      ret = AE_CH_LFE;
+      break;
+    case kAudioChannelLabel_LeftSurroundDirect:
+      ret = AE_CH_SL;
+      break;
+    case kAudioChannelLabel_RightSurroundDirect:
+      ret = AE_CH_SR;
+      break;
+    case kAudioChannelLabel_LeftCenter:
+      ret = AE_CH_FLOC;
+      break;
+    case kAudioChannelLabel_RightCenter:
+      ret = AE_CH_FROC;
+      break;
+    case kAudioChannelLabel_CenterSurround:
+      ret = AE_CH_TC;
+      break;
+    case kAudioChannelLabel_LeftSurround:
+      ret = AE_CH_SL;
+      break;
+    case kAudioChannelLabel_RightSurround:
+      ret = AE_CH_SR;
+      break;
+    case kAudioChannelLabel_VerticalHeightLeft:
+      ret = AE_CH_TFL;
+      break;
+    case kAudioChannelLabel_VerticalHeightRight:
+      ret = AE_CH_TFR;
+      break;
+    case kAudioChannelLabel_VerticalHeightCenter:
+      ret = AE_CH_TFC;
+      break;
+    case kAudioChannelLabel_TopCenterSurround:
+      ret = AE_CH_TC;
+      break;
+    case kAudioChannelLabel_TopBackLeft:
+      ret = AE_CH_TBL;
+      break;
+    case kAudioChannelLabel_TopBackRight:
+      ret = AE_CH_TBR;
+      break;
+    case kAudioChannelLabel_TopBackCenter:
+      ret = AE_CH_TBC;
+      break;
+    case kAudioChannelLabel_RearSurroundLeft:
+      ret = AE_CH_BL;
+      break;
+    case kAudioChannelLabel_RearSurroundRight:
+      ret = AE_CH_BR;
+      break;
+    case kAudioChannelLabel_LeftWide:
+      ret = AE_CH_BLOC;
+      break;
+    case kAudioChannelLabel_RightWide:
+      ret = AE_CH_BROC;
+      break;
+    case kAudioChannelLabel_LFE2:
+      ret = AE_CH_LFE;
+      break;
+    case kAudioChannelLabel_LeftTotal:
+      ret = AE_CH_FL;
+      break;
+    case kAudioChannelLabel_RightTotal:
+      ret = AE_CH_FR;
+      break;
+    case kAudioChannelLabel_HearingImpaired:
+      ret = AE_CH_FC;
+      break;
+    case kAudioChannelLabel_Narration:
+      ret = AE_CH_FC;
+      break;
+    case kAudioChannelLabel_Mono:
+      ret = AE_CH_FC;
+      break;
+    case kAudioChannelLabel_DialogCentricMix:
+      ret = AE_CH_FC;
+      break;
+    case kAudioChannelLabel_CenterSurroundDirect:
+      ret = AE_CH_TC;
+      break;
+    case kAudioChannelLabel_Haptic:
+      ret = AE_CH_FC;
+      break;
+    default:
+      ret = (enum AEChannel)unknownChannel++;
+  }
+  if (unknownChannel > AE_CH_UNKNOWN8)
+    unknownChannel = AE_CH_UNKNOWN1;
+    
+  return ret;
+}
+
+//Note: in multichannel mode CA will either pull 2 channels of data (stereo) or 6/8 channels of data
+//(every speaker setup with more then 2 speakers). The difference between the number of real speakers
+//and 6/8 channels needs to be padded with unknown channels so that the sample size fits 6/8 channels
+//
+//device [in] - the device whose channel layout should be used
+//channelMap [in/out] - if filled it will it indicates that we are called from initialize and we log the requested map, out returns the channelMap for device
+//channelsPerFrame [in] - the number of channels this device is configured to (e.x. 2 or 6/8)
+static void GetAEChannelMap(CCoreAudioDevice &device, CAEChannelInfo &channelMap, unsigned int channelsPerFrame)
+{
+  CCoreAudioChannelLayout calayout;
+  bool logMapping = channelMap.Count() > 0; // only log if the engine requests a layout during init
+  bool mapAvailable = false;
+  unsigned int numberChannelsInDeviceLayout = CA_MAX_CHANNELS; // default 8 channels from CAChannelMap
+  AudioChannelLayout *layout = NULL;
+
+  // try to fetch either the multichannel or the stereo channel layout from the device
+  if (channelsPerFrame == 2 || channelMap.Count() == 2)
+    mapAvailable = device.GetPreferredChannelLayoutForStereo(calayout);
+  else
+    mapAvailable = device.GetPreferredChannelLayout(calayout);
+
+  // if a map was fetched - check if it is usable
+  if (mapAvailable)
+  {
+    layout = calayout;
+    if (layout == NULL || layout->mChannelLayoutTag != kAudioChannelLayoutTag_UseChannelDescriptions)
+      mapAvailable = false;// wrong map format
+    else
+      numberChannelsInDeviceLayout = layout->mNumberChannelDescriptions;
+  }
+
+  // start the mapping action
+  // the number of channels to be added to the outgoing channelmap
+  // this is CA_MAX_CHANNELS at max and might be lower for some output devices (channelsPerFrame)
+  unsigned int numChannelsToMap = std::min((unsigned int)CA_MAX_CHANNELS, (unsigned int)channelsPerFrame);
+
+  // if there was a map fetched we force the number of
+  // channels to map to channelsPerFrame (this allows mapping
+  // of more then CA_MAX_CHANNELS if needed)
+  if (mapAvailable)
+    numChannelsToMap = channelsPerFrame;
+
+  std::string layoutStr;
+
+  if (logMapping)
+  {
+    CLog::Log(LOGDEBUG, "%s Engine requests layout %s", __FUNCTION__, ((std::string)channelMap).c_str());
+
+    if (mapAvailable)
+      CLog::Log(LOGDEBUG, "%s trying to map to %s layout: %s", __FUNCTION__, channelsPerFrame == 2 ? "stereo" : "multichannel", calayout.ChannelLayoutToString(*layout, layoutStr));
+    else
+      CLog::Log(LOGDEBUG, "%s no map available - using static multichannel map layout", __FUNCTION__);
+  }
+    
+  channelMap.Reset();// start with an empty map
+
+  for (unsigned int channel = 0; channel < numChannelsToMap; channel++)
+  {
+    // we only try to map channels which are defined in the device layout
+    enum AEChannel currentChannel;
+    if (channel < numberChannelsInDeviceLayout)
+    {
+      // get the channel from the fetched map
+      if (mapAvailable)
+        currentChannel = CAChannelToAEChannel(layout->mChannelDescriptions[channel].mChannelLabel);
+      else// get the channel from the default map
+        currentChannel = CAChannelMap[channel];
+
+    }
+    else// fill with unknown channels
+      currentChannel = CAChannelToAEChannel(kAudioChannelLabel_Unknown);
+
+    if(!channelMap.HasChannel(currentChannel))// only add if not already added
+      channelMap += currentChannel;
+  }
+
+  if (logMapping)
+    CLog::Log(LOGDEBUG, "%s mapped channels to layout %s", __FUNCTION__, ((std::string)channelMap).c_str());
+}
 
 static bool HasSampleRate(const AESampleRateList &list, const unsigned int samplerate)
 {
@@ -99,10 +298,10 @@ static void EnumerateDevices(CADeviceList &list)
     {
       for (AudioStreamIdList::iterator j = streams.begin(); j != streams.end(); ++j)
       {
-        StreamFormatList streams;
-        if (CCoreAudioStream::GetAvailablePhysicalFormats(*j, &streams))
+        StreamFormatList streamFormats;
+        if (CCoreAudioStream::GetAvailablePhysicalFormats(*j, &streamFormats))
         {
-          for (StreamFormatList::iterator i = streams.begin(); i != streams.end(); ++i)
+          for (StreamFormatList::iterator i = streamFormats.begin(); i != streamFormats.end(); ++i)
           {
             AudioStreamBasicDescription desc = i->mFormat;
             std::string formatString;
@@ -189,22 +388,13 @@ static void EnumerateDevices(CADeviceList &list)
                 break;
             }
 
-            // add channel info
-            CAEChannelInfo channel_info;
-            for (UInt32 chan = 0; chan < CA_MAX_CHANNELS && chan < desc.mChannelsPerFrame; ++chan)
-            {
-              if (!device.m_channels.HasChannel(CAChannelMap[chan]))
-                device.m_channels += CAChannelMap[chan];
-              channel_info += CAChannelMap[chan];
-            }
-
             // add sample rate info
-            // quirk devices which don't report a valid samplerate
-            // add 44.1khz and 48khz in that case - user can use
+            // for devices which return kAudioStreamAnyRatee
+            // we add 44.1khz and 48khz - user can use
             // the "fixed" audio config to force one of them
-            if (desc.mSampleRate == 0)
+            if (desc.mSampleRate == kAudioStreamAnyRate)
             {
-              CLog::Log(LOGWARNING, "%s no valid samplerate - adding 44.1khz and 48khz quirk", __FUNCTION__);
+              CLog::Log(LOGINFO, "%s reported samplerate is kAudioStreamAnyRate adding 44.1khz and 48khz", __FUNCTION__);
               desc.mSampleRate = 44100;
               if (!HasSampleRate(device.m_sampleRates, desc.mSampleRate))
                 device.m_sampleRates.push_back(desc.mSampleRate);
@@ -256,7 +446,9 @@ static void EnumerateDevices(CADeviceList &list)
       device.m_deviceType = AE_DEVTYPE_HDMI;
     if (hasDisplayPortName)
       device.m_deviceType = AE_DEVTYPE_DP;
-    
+      
+    //get channel map to match the devices channel layout as set in audio-midi-setup
+    GetAEChannelMap(caDevice, device.m_channels, caDevice.GetTotalOutputChannels());
     
     list.push_back(std::make_pair(deviceID, device));
     //in the first place of the list add the default device
@@ -304,16 +496,45 @@ OSStatus deviceChangedCB(AudioObjectID                       inObjectID,
                          const AudioObjectPropertyAddress    inAddresses[],
                          void*                               inClientData)
 {
-  CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - reenumerating");
-  CAEFactory::DeviceChange();
-  CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - done");
+  bool deviceChanged = false;
+  static AudioDeviceID oldDefaultDevice = 0;
+  AudioDeviceID currentDefaultOutputDevice = 0;
+
+  for (unsigned int i = 0; i < inNumberAddresses; i++)
+  {
+    switch (inAddresses[i].mSelector)
+    {
+      case kAudioHardwarePropertyDefaultOutputDevice:
+        currentDefaultOutputDevice = CCoreAudioHardware::GetDefaultOutputDevice();
+        // This listener is called on every change of the hardware
+        // device. So check if the default device has really changed.
+        if (oldDefaultDevice != currentDefaultOutputDevice)
+        {
+          deviceChanged = true;
+          oldDefaultDevice = currentDefaultOutputDevice;
+        }
+        break;
+      default:
+        deviceChanged = true;
+        break;
+    }
+    if (deviceChanged)
+      break;
+  }
+
+  if  (deviceChanged)
+  {
+    CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - reenumerating");
+    CAEFactory::DeviceChange();
+    CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - done");
+  }
   return noErr;
 }
 
 void RegisterDeviceChangedCB(bool bRegister, void *ref)
 {
   OSStatus ret = noErr;
-  const AudioObjectPropertyAddress inAdr =
+  AudioObjectPropertyAddress inAdr =
   {
     kAudioHardwarePropertyDevices,
     kAudioObjectPropertyScopeGlobal,
@@ -321,9 +542,17 @@ void RegisterDeviceChangedCB(bool bRegister, void *ref)
   };
 
   if (bRegister)
+  {
     ret = AudioObjectAddPropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
+    inAdr.mSelector = kAudioHardwarePropertyDefaultOutputDevice;
+    ret = AudioObjectAddPropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
+  }
   else
+  {
     ret = AudioObjectRemovePropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
+    inAdr.mSelector = kAudioHardwarePropertyDefaultOutputDevice;
+    ret = AudioObjectRemovePropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
+  }
 
   if (ret != noErr)
     CLog::Log(LOGERROR, "CCoreAudioAE::Deinitialize - error %s a listener callback for device changes!", bRegister?"attaching":"removing");
@@ -332,7 +561,7 @@ void RegisterDeviceChangedCB(bool bRegister, void *ref)
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAESinkDARWINOSX::CAESinkDARWINOSX()
-: m_latentFrames(0), m_outputBitstream(false), m_outputBuffer(NULL), m_buffer(NULL)
+: m_latentFrames(0), m_outputBitstream(false), m_outputBuffer(NULL), m_planar(false), m_planarBuffer(NULL), m_buffer(NULL)
 {
   // By default, kAudioHardwarePropertyRunLoop points at the process's main thread on SnowLeopard,
   // If your process lacks such a run loop, you can set kAudioHardwarePropertyRunLoop to NULL which
@@ -352,6 +581,7 @@ CAESinkDARWINOSX::CAESinkDARWINOSX()
   }
   RegisterDeviceChangedCB(true, this);
   m_started = false;
+  m_planar = false;
 }
 
 CAESinkDARWINOSX::~CAESinkDARWINOSX()
@@ -477,11 +707,11 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
     {
       AudioStreamBasicDescription desc = j->mFormat;
 
-      // quirk devices with invalid sample rate
+      // for devices with kAudioStreamAnyRate
       // assume that the user uses a fixed config
       // and knows what he is doing - so we use
       // the requested samplerate here
-      if (desc.mSampleRate == 0)
+      if (desc.mSampleRate == kAudioStreamAnyRate)
         desc.mSampleRate = format.m_sampleRate;
 
       float score = ScoreStream(desc, format);
@@ -501,6 +731,14 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
     index++;
   }
 
+  m_planar = false;
+  if (streams.size() > 1 && outputFormat.mChannelsPerFrame == 1)
+  {
+    CLog::Log(LOGDEBUG, "%s Found planar audio with %u channels?", __FUNCTION__, streams.size());
+    outputFormat.mChannelsPerFrame = std::min((size_t)format.m_channelLayout.Count(), streams.size());
+    m_planar = true;
+  }
+
   if (!outputFormat.mFormatID)
   {
     CLog::Log(LOGERROR, "%s, Unable to find suitable stream", __FUNCTION__);
@@ -509,18 +747,11 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
 
   /* Update our AE format */
   format.m_sampleRate    = outputFormat.mSampleRate;
-  if (outputFormat.mChannelsPerFrame != format.m_channelLayout.Count())
-  { /* update the channel count.  We assume that they're layed out as given in CAChannelMap.
-       if they're not, this is plain wrong */
-    format.m_channelLayout.Reset();
-    for (unsigned int i = 0; i < outputFormat.mChannelsPerFrame && i < CA_MAX_CHANNELS; i++)
-      format.m_channelLayout += CAChannelMap[i];
-  }
-
+  
   m_outputBitstream   = passthrough && outputFormat.mFormatID == kAudioFormatLinearPCM;
 
   std::string formatString;
-  CLog::Log(LOGDEBUG, "%s: Selected stream[%u] - id: 0x%04X, Physical Format: %s %s", __FUNCTION__, outputIndex, outputStream, StreamDescriptionToString(outputFormat, formatString), m_outputBitstream ? "bitstreamed passthrough" : "");
+  CLog::Log(LOGDEBUG, "%s: Selected stream[%u] - id: 0x%04X, Physical Format: %s %s", __FUNCTION__, (unsigned int)outputIndex, (unsigned int)outputStream, StreamDescriptionToString(outputFormat, formatString), m_outputBitstream ? "bitstreamed passthrough" : "");
 
   SetHogMode(passthrough);
 
@@ -538,6 +769,10 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   CLog::Log(LOGDEBUG, "%s: New Virtual Format: %s", __FUNCTION__, StreamDescriptionToString(virtualFormat, formatString));
   CLog::Log(LOGDEBUG, "%s: New Physical Format: %s", __FUNCTION__, StreamDescriptionToString(outputFormat, formatString));
 
+  // update the channel map based on the new stream format
+  GetAEChannelMap(m_device, format.m_channelLayout, outputFormat.mChannelsPerFrame);
+
+
   m_latentFrames = m_device.GetNumLatencyFrames();
   m_latentFrames += m_outputStream.GetNumLatencyFrames();
 
@@ -552,6 +787,9 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
     /* TODO: Do we need this? */
     m_device.SetNominalSampleRate(format.m_sampleRate);
   }
+
+  if (m_planar)
+    m_planarBuffer = new float[format.m_frameSamples];
 
   unsigned int num_buffers = 4;
   m_buffer = new AERingBuffer(num_buffers * format.m_frames * format.m_frameSize);
@@ -610,6 +848,10 @@ void CAESinkDARWINOSX::Deinitialize()
 
   delete[] m_outputBuffer;
   m_outputBuffer = NULL;
+
+  m_planar = false;
+  delete[] m_planarBuffer;
+  m_planarBuffer = NULL;
 
   m_started = false;
 }
@@ -718,35 +960,63 @@ OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTim
   CAESinkDARWINOSX *sink = (CAESinkDARWINOSX*)inClientData;
 
   sink->m_started = true;
-  for (unsigned int i = 0; i < outOutputData->mNumberBuffers; i++)
+  if (sink->m_planar)
   {
-    if (sink->m_outputBitstream)
+    unsigned int channels = std::min((unsigned int)outOutputData->mNumberBuffers, sink->m_format.m_channelLayout.Count());
+    unsigned int wanted = outOutputData->mBuffers[0].mDataByteSize;
+    unsigned int bytes = std::min(sink->m_buffer->GetReadSize() / channels, wanted);
+    sink->m_buffer->Read((unsigned char *)sink->m_planarBuffer, bytes * channels);
+    // transform from interleaved to planar
+    const float *src = sink->m_planarBuffer;
+    for (unsigned int i = 0; i < bytes / sizeof(float); i++)
     {
-      /* HACK for bitstreaming AC3/DTS via PCM.
-       We reverse the float->S16LE conversion done in the stream or device */
-      static const float mul = 1.0f / (INT16_MAX + 1);
-
-      unsigned int wanted = std::min(outOutputData->mBuffers[i].mDataByteSize / sizeof(float), (size_t)sink->m_format.m_frameSamples)  * sizeof(int16_t);
-      if (wanted <= sink->m_buffer->GetReadSize())
+      for (unsigned int j = 0; j < channels; j++)
       {
-        sink->m_buffer->Read((unsigned char *)sink->m_outputBuffer, wanted);
-        int16_t *src = sink->m_outputBuffer;
-        float  *dest = (float*)outOutputData->mBuffers[i].mData;
-        for (unsigned int i = 0; i < wanted / 2; i++)
-          *dest++ = *src++ * mul;
+        float *dst = (float *)outOutputData->mBuffers[j].mData;
+        dst[i] = *src++;
       }
     }
-    else
-    {
-      /* buffers appear to come from CA already zero'd, so just copy what is wanted */
-      unsigned int wanted = outOutputData->mBuffers[i].mDataByteSize;
-      unsigned int bytes = std::min(sink->m_buffer->GetReadSize(), wanted);
-      sink->m_buffer->Read((unsigned char*)outOutputData->mBuffers[i].mData, bytes);
-      LogLevel(bytes, wanted);
-    }
-
+    LogLevel(bytes, wanted);
     // tell the sink we're good for more data
     condVar.notifyAll();
+  }
+  else
+  {
+    for (unsigned int i = 0; i < outOutputData->mNumberBuffers; i++)
+    {
+      // NULL indicates a disabled stream
+      // skip it...
+      if (outOutputData->mBuffers[i].mData == NULL)
+        continue;
+
+      if (sink->m_outputBitstream)
+      {
+        /* HACK for bitstreaming AC3/DTS via PCM.
+         We reverse the float->S16LE conversion done in the stream or device */
+        static const float mul = 1.0f / (INT16_MAX + 1);
+
+        unsigned int wanted = std::min(outOutputData->mBuffers[i].mDataByteSize / sizeof(float), (size_t)sink->m_format.m_frameSamples)  * sizeof(int16_t);
+        if (wanted <= sink->m_buffer->GetReadSize())
+        {
+          sink->m_buffer->Read((unsigned char *)sink->m_outputBuffer, wanted);
+          int16_t *src = sink->m_outputBuffer;
+          float  *dest = (float*)outOutputData->mBuffers[i].mData;
+          for (unsigned int i = 0; i < wanted / 2; i++)
+            *dest++ = *src++ * mul;
+        }
+      }
+      else
+      {
+        /* buffers appear to come from CA already zero'd, so just copy what is wanted */
+        unsigned int wanted = outOutputData->mBuffers[i].mDataByteSize;
+        unsigned int bytes = std::min(sink->m_buffer->GetReadSize(), wanted);
+        sink->m_buffer->Read((unsigned char*)outOutputData->mBuffers[i].mData, bytes);
+        LogLevel(bytes, wanted);
+      }
+
+      // tell the sink we're good for more data
+      condVar.notifyAll();
+    }
   }
   return noErr;
 }

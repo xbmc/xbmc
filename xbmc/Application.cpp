@@ -410,8 +410,6 @@ CApplication::CApplication(void)
   XInitThreads();
 #endif
 
-  // we start in frontend
-  m_bInBackground = false;
 
   /* for now always keep this around */
 #ifdef HAS_KARAOKE
@@ -1604,13 +1602,6 @@ void CApplication::StartServices()
   CLog::Log(LOGNOTICE, "start dvd mediatype detection");
   m_DetectDVDType.Create(false, THREAD_MINSTACKSIZE);
 #endif
-
-  CLog::Log(LOGNOTICE, "initializing playlistplayer");
-  g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, CMediaSettings::Get().DoesMusicPlaylistRepeat() ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
-  g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, CMediaSettings::Get().IsMusicPlaylistShuffled());
-  g_playlistPlayer.SetRepeat(PLAYLIST_VIDEO, CMediaSettings::Get().DoesVideoPlaylistRepeat() ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
-  g_playlistPlayer.SetShuffle(PLAYLIST_VIDEO, CMediaSettings::Get().IsVideoPlaylistShuffled());
-  CLog::Log(LOGNOTICE, "DONE initializing playlistplayer");
 }
 
 void CApplication::StopServices()
@@ -2198,7 +2189,7 @@ float CApplication::GetDimScreenSaverLevel() const
 void CApplication::Render()
 {
   // do not render if we are stopped or in background
-  if (m_bStop || m_bInBackground)
+  if (m_bStop)
     return;
 
   MEASURE_FUNCTION;
@@ -4621,8 +4612,6 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
 
 void CApplication::CheckScreenSaverAndDPMS()
 {
-  if (m_bInBackground)
-    return;
   if (!m_dpmsIsActive)
     g_Windowing.ResetOSScreensaver();
 
@@ -4712,15 +4701,6 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     return;
   else if (!m_screenSaver->ID().empty())
     g_windowManager.ActivateWindow(WINDOW_SCREENSAVER);
-}
-
-void CApplication::SetInBackground(bool background)
-{
-  if (!background)
-  {
-    ResetScreenSaverTimer();
-  }
-  m_bInBackground = background;
 }
 
 void CApplication::CheckShutdown()

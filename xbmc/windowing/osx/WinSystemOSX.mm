@@ -1349,6 +1349,9 @@ bool CWinSystemOSX::FlushBuffer(void)
 
 bool CWinSystemOSX::IsObscured(void)
 {
+  if (m_bFullScreen && !CSettings::Get().GetBool("videoscreen.fakefullscreen"))
+    return false;// in true fullscreen mode - we can't be obscured by anyone...
+
   // check once a second if we are obscured.
   unsigned int now_time = XbmcThreads::SystemClockMillis();
   if (m_obscured_timecheck > now_time)

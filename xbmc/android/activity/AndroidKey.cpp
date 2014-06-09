@@ -194,6 +194,10 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
     modifiers |= XBMCKMOD_LSHIFT;
   if (state & AMETA_SHIFT_RIGHT_ON)
     modifiers |= XBMCKMOD_RSHIFT;
+  if (state & AMETA_CTRL_LEFT_ON)
+    modifiers |= XBMCKMOD_LCTRL;
+  if (state & AMETA_CTRL_RIGHT_ON)
+    modifiers |= XBMCKMOD_RCTRL;
   /* TODO:
   if (state & AMETA_SYM_ON)
     modifiers |= 0x000?;*/
