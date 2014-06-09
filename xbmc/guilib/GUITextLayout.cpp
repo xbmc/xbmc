@@ -630,6 +630,17 @@ float CGUITextLayout::GetTextWidth(const CStdStringW &text) const
   return m_font->GetTextWidth(utf32);
 }
 
+std::string CGUITextLayout::GetText() const
+{
+  if (m_lastUpdateW)
+  {
+    std::string utf8;
+    g_charsetConverter.wToUTF8(m_lastText, utf8);
+    return utf8;
+  }
+  return m_lastUtf8Text;
+}
+
 void CGUITextLayout::DrawText(CGUIFont *font, float x, float y, color_t color, color_t shadowColor, const CStdString &text, uint32_t align)
 {
   if (!font) return;

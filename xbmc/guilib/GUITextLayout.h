@@ -117,7 +117,12 @@ protected:
   static CStdStringW BidiFlip(const CStdStringW &text, bool forceLTRReadingOrder);
   void CalcTextExtent();
   void UpdateCommon(const CStdStringW &text, float maxWidth, bool forceLTRReadingOrder);
-
+  
+  /*! \brief Returns the text, utf8 encoded
+   \return utf8 text
+   */
+  std::string GetText() const;
+  
   // our text to render
   vecColors m_colors;
   std::vector<CGUIString> m_lines;
