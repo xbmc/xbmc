@@ -43,10 +43,12 @@ class CDVDCodecOptions;
 
 typedef struct stDVDAudioFrame
 {
-  uint8_t*          data;
+  uint8_t*          data[16];
   double            pts;
   double            duration;
-  unsigned int      size;
+  unsigned int      nb_frames;
+  unsigned int      framesize;
+  unsigned int      planes;
 
   int               channel_count;
   int               encoded_channel_count;
@@ -92,22 +94,25 @@ public:
    */
   virtual void GetData(DVDAudioFrame &frame)
   {
-    frame.size                  = GetData(&frame.data);
-    if(frame.size == 0u)
+    frame.nb_frames = 0;
+    frame.data_format           = GetDataFormat();
+    frame.channel_count         = GetChannels();
+    frame.framesize             = (CAEUtil::DataFormatToBits(frame.data_format) >> 3) * frame.channel_count;
+    if(frame.framesize == 0)
       return;
+    frame.nb_frames             = GetData(frame.data)/frame.framesize;
     frame.channel_layout        = GetChannelMap();
     frame.channel_count         = GetChannels();
+    frame.planes                = AE_IS_PLANAR(frame.data_format) ? frame.channel_count : 1;
     frame.encoded_channel_count = GetEncodedChannels();
-    frame.data_format           = GetDataFormat();
     frame.bits_per_sample       = CAEUtil::DataFormatToBits(frame.data_format);
     frame.sample_rate           = GetSampleRate();
     frame.encoded_sample_rate   = GetEncodedSampleRate();
     frame.passthrough           = NeedPassthrough();
     frame.pts                   = DVD_NOPTS_VALUE;
     // compute duration.
-    int n = (frame.channel_count * frame.bits_per_sample * frame.sample_rate)>>3;
-    if (n)
-      frame.duration = ((double)frame.size * DVD_TIME_BASE) / n;
+    if (frame.sample_rate)
+      frame.duration = ((double)frame.nb_frames * DVD_TIME_BASE) / frame.sample_rate;
     else
       frame.duration = 0.0;
   }

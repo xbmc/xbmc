@@ -484,6 +484,14 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   struct pa_channel_map map;
   pa_channel_map_init(&map);
 
+   // PULSE cannot cope with e.g. planar formats so we fallback to FLOAT
+   // when we receive an invalid pulse format
+   if (AEFormatToPulseFormat(format.m_dataFormat) == PA_SAMPLE_INVALID)
+   {
+     CLog::Log(LOGDEBUG, "PULSE does not support format: %s - will fallback to AE_FMT_FLOAT", CAEUtil::DataFormatToStr(format.m_dataFormat));
+     format.m_dataFormat = AE_FMT_FLOAT;
+   }
+
   m_passthrough = AE_IS_RAW(format.m_dataFormat);
 
   if(m_passthrough)

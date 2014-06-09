@@ -49,15 +49,11 @@ public:
 
 protected:
   AVCodecContext*     m_pCodecContext;
-  SwrContext*         m_pConvert;
   enum AVSampleFormat m_iSampleFormat;  
   CAEChannelInfo      m_channelLayout;
 
   AVFrame* m_pFrame1;
-  int      m_iBufferSize1;
-  uint8_t*    m_pBuffer2;
-  int      m_iBufferSize2;
-  int      m_iBufferTotalSize2;
+  int m_gotFrame;
 
   bool m_bOpenedCodec;
   int m_iBuffered;

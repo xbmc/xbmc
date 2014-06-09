@@ -25,6 +25,7 @@
 #include "Video/DVDVideoCodec.h"
 #include "Audio/DVDAudioCodec.h"
 #include "Overlay/DVDOverlayCodec.h"
+#include "cores/dvdplayer/DVDCodecs/DVDCodecs.h"
 
 #if defined(TARGET_DARWIN_OSX)
 #include "Video/DVDVideoCodecVDA.h"
@@ -48,8 +49,6 @@
 #include "android/activity/AndroidFeatures.h"
 #endif
 #include "Audio/DVDAudioCodecFFmpeg.h"
-#include "Audio/DVDAudioCodecPcm.h"
-#include "Audio/DVDAudioCodecLPcm.h"
 #include "Audio/DVDAudioCodecPassthrough.h"
 #include "Overlay/DVDOverlayCodecSSA.h"
 #include "Overlay/DVDOverlayCodecText.h"
@@ -325,54 +324,6 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint)
   // try passthrough first
   pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
   if( pCodec ) return pCodec;
-
-  switch (hint.codec)
-  {
-  case AV_CODEC_ID_MP2:
-  case AV_CODEC_ID_MP3:
-    {
-      pCodec = OpenCodec( new CDVDAudioCodecFFmpeg(), hint, options );
-      if( pCodec ) return pCodec;
-      break;
-    }
-  case AV_CODEC_ID_PCM_S32LE:
-  case AV_CODEC_ID_PCM_S32BE:
-  case AV_CODEC_ID_PCM_U32LE:
-  case AV_CODEC_ID_PCM_U32BE:
-  case AV_CODEC_ID_PCM_S24LE:
-  case AV_CODEC_ID_PCM_S24BE:
-  case AV_CODEC_ID_PCM_U24LE:
-  case AV_CODEC_ID_PCM_U24BE:
-  case AV_CODEC_ID_PCM_S24DAUD:
-  case AV_CODEC_ID_PCM_S16LE:
-  case AV_CODEC_ID_PCM_S16BE:
-  case AV_CODEC_ID_PCM_U16LE:
-  case AV_CODEC_ID_PCM_U16BE:
-  case AV_CODEC_ID_PCM_S8:
-  case AV_CODEC_ID_PCM_U8:
-  case AV_CODEC_ID_PCM_ALAW:
-  case AV_CODEC_ID_PCM_MULAW:
-    {
-      pCodec = OpenCodec( new CDVDAudioCodecPcm(), hint, options );
-      if( pCodec ) return pCodec;
-      break;
-    }
-#if 0
-  //case AV_CODEC_ID_LPCM_S16BE:
-  //case AV_CODEC_ID_LPCM_S20BE:
-  case AV_CODEC_ID_LPCM_S24BE:
-    {
-      pCodec = OpenCodec( new CDVDAudioCodecLPcm(), hint, options );
-      if( pCodec ) return pCodec;
-      break;
-    }
-#endif
-  default:
-    {
-      pCodec = NULL;
-      break;
-    }
-  }
 
   pCodec = OpenCodec( new CDVDAudioCodecFFmpeg(), hint, options );
   if( pCodec ) return pCodec;

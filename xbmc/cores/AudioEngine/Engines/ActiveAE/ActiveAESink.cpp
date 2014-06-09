@@ -190,6 +190,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
             reply.hasVolume = m_sink->HasVolume();
             m_state = S_TOP_CONFIGURED_IDLE;
             m_extTimeout = 10000;
+            m_sinkLatency = (int64_t)(reply.latency * 1000);
             msg->Reply(CSinkControlProtocol::ACC, &reply, sizeof(SinkReply));
           }
           else
@@ -823,7 +824,7 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
         m_extError = true;
         CLog::Log(LOGERROR, "CActiveAESink::OutputSamples - failed");
         status.SetDelay(0);
-        m_stats->UpdateSinkDelay(status, frames);
+        m_stats->UpdateSinkDelay(status, frames, 0);
         return 0;
       }
       else
@@ -834,13 +835,23 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
       m_extError = true;
       CLog::Log(LOGERROR, "CActiveAESink::OutputSamples - sink returned error");
       status.SetDelay(0);
-      m_stats->UpdateSinkDelay(status, samples->pool ? maxFrames : 0);
+      m_stats->UpdateSinkDelay(status, samples->pool ? maxFrames : 0, 0);
       return 0;
     }
     frames -= written;
 
     m_sink->GetDelay(status);
-    m_stats->UpdateSinkDelay(status, samples->pool ? written : 0);
+
+    int64_t pts = 0;
+    if (samples->timestamp)
+    {
+      int pastSamples = samples->pkt->nb_samples - samples->pkt_start_offset;
+      pts = samples->timestamp + pastSamples/m_sinkFormat.m_sampleRate*1000;
+      pts -= m_sinkLatency;
+      if (pts < 0)
+        pts = 0;
+    }
+    m_stats->UpdateSinkDelay(status, samples->pool ? written : 0, pts, samples->clockId);
   }
   return status.delay;
 }

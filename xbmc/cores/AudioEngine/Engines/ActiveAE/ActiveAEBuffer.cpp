@@ -44,6 +44,8 @@ CSoundPacket::~CSoundPacket()
 CSampleBuffer::CSampleBuffer() : pkt(NULL), pool(NULL)
 {
   refCount = 0;
+  timestamp = 0;
+  clockId = -1;
 }
 
 CSampleBuffer::~CSampleBuffer()
@@ -218,7 +220,7 @@ void CActiveAEBufferPoolResample::ChangeResampler()
   m_changeResampler = false;
 }
 
-bool CActiveAEBufferPoolResample::ResampleBuffers(unsigned int timestamp)
+bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
 {
   bool busy = false;
   CSampleBuffer *in;
@@ -234,7 +236,11 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(unsigned int timestamp)
     {
       in = m_inputSamples.front();
       m_inputSamples.pop_front();
-      in->timestamp = timestamp;
+      if (timestamp)
+      {
+        in->timestamp = timestamp;
+        in->clockId = -1;
+      }
       m_outputSamples.push_back(in);
       busy = true;
     }
@@ -290,6 +296,29 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(unsigned int timestamp)
       busy = true;
       m_empty = (out_samples == 0);
 
+      if (in)
+      {
+        if (!timestamp)
+        {
+          m_lastSamplePts = in->timestamp;
+          m_procSample->clockId = in->clockId;
+        }
+        else
+        {
+          m_lastSamplePts = timestamp;
+          in->pkt_start_offset = 0;
+          m_procSample->clockId = -1;
+        }
+
+        // pts of last sample we added to the buffer
+        m_lastSamplePts += (in->pkt->nb_samples-in->pkt_start_offset)/m_format.m_sampleRate * 1000;
+      }
+
+      // calculate pts for last sample in m_procSample
+      int bufferedSamples = m_resampler->GetBufferedSamples();
+      m_procSample->pkt_start_offset = m_procSample->pkt->nb_samples;
+      m_procSample->timestamp = m_lastSamplePts - bufferedSamples/m_format.m_sampleRate*1000;
+
       if ((m_drain || m_changeResampler) && m_empty)
       {
         if (m_fillPackets && m_procSample->pkt->nb_samples != 0)
@@ -304,7 +333,6 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(unsigned int timestamp)
             memset(m_procSample->pkt->data[i]+start, 0, m_procSample->pkt->linesize-start);
           }
         }
-        m_procSample->timestamp = timestamp;
 
         // check if draining is finished
         if (m_drain && m_procSample->pkt->nb_samples == 0)
@@ -322,7 +350,6 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(unsigned int timestamp)
       // some methods like encode require completely filled packets
       else if (!m_fillPackets || (m_procSample->pkt->nb_samples == m_procSample->pkt->max_nb_samples))
       {
-        m_procSample->timestamp = timestamp;
         m_outputSamples.push_back(m_procSample);
         m_procSample = NULL;
       }
