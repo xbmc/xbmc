@@ -35,8 +35,8 @@
 #endif
 
 
-typedef std::list<AudioStreamID> AudioStreamIdList;
-typedef std::list<AudioStreamRangedDescription> StreamFormatList;
+typedef std::vector<AudioStreamID> AudioStreamIdList;
+typedef std::vector<AudioStreamRangedDescription> StreamFormatList;
 
 class CCoreAudioStream
 {

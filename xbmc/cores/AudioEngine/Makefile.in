@@ -39,6 +39,7 @@ else ifeq ($(findstring ios,@ARCH@),ios)
 SRCS += Sinks/AESinkDARWINIOS.cpp
 else ifeq ($(findstring osx,@ARCH@),osx)
 SRCS += Sinks/AESinkDARWINOSX.cpp
+SRCS += Sinks/osx/AEDeviceEnumerationOSX.cpp
 SRCS += Sinks/osx/CoreAudioChannelLayout.cpp
 SRCS += Sinks/osx/CoreAudioDevice.cpp
 SRCS += Sinks/osx/CoreAudioHardware.cpp
