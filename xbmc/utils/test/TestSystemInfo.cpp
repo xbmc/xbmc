@@ -40,12 +40,6 @@ TEST_F(TestSystemInfo, GetUserAgent)
   std::cout << "GetUserAgent(): " << g_sysinfo.GetUserAgent() << std::endl;
 }
 
-TEST_F(TestSystemInfo, HasInternet)
-{
-  std::cout << "HasInternet(): " <<
-    testing::PrintToString(g_sysinfo.HasInternet()) << std::endl;
-}
-
 TEST_F(TestSystemInfo, IsAppleTV2)
 {
   std::cout << "IsAppleTV2(): " <<
