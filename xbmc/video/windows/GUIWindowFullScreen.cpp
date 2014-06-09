@@ -141,6 +141,10 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     ToggleOSD();
     return true;
 
+  case ACTION_TRIGGER_OSD:
+    TriggerOSD();
+    return true;
+
   case ACTION_SHOW_GUI:
     {
       // switch back to the menu
@@ -537,17 +541,6 @@ EVENT_RESULT CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMous
   }
   if (event.m_id >= ACTION_GESTURE_NOTIFY && event.m_id <= ACTION_GESTURE_END) // gestures
     return EVENT_RESULT_UNHANDLED;
-  if (event.m_id != ACTION_MOUSE_MOVE || event.m_offsetX || event.m_offsetY)
-  { // some other mouse action has occurred - bring up the OSD
-    // if it is not already running
-    CGUIDialogVideoOSD *pOSD = (CGUIDialogVideoOSD *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
-    if (pOSD && !pOSD->IsDialogRunning())
-    {
-      pOSD->SetAutoClose(3000);
-      pOSD->DoModal();
-    }
-    return EVENT_RESULT_HANDLED;
-  }
   return EVENT_RESULT_UNHANDLED;
 }
 
@@ -859,5 +852,15 @@ void CGUIWindowFullScreen::ToggleOSD()
       pOSD->Close();
     else
       pOSD->DoModal();
+  }
+}
+
+void CGUIWindowFullScreen::TriggerOSD()
+{
+  CGUIDialogVideoOSD *pOSD = (CGUIDialogVideoOSD *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
+  if (pOSD && !pOSD->IsDialogRunning())
+  {
+    pOSD->SetAutoClose(3000);
+    pOSD->DoModal();
   }
 }
