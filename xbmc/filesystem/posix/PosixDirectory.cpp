@@ -21,9 +21,11 @@
 #if defined(TARGET_POSIX)
 
 #include "PosixDirectory.h"
+#include "utils/AliasShortcutUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "FileItem.h"
+#include "linux/XTimeUtils.h"
 
 #include <dirent.h>
 #include <sys/stat.h>
@@ -37,8 +39,13 @@ CPosixDirectory::CPosixDirectory(void)
 CPosixDirectory::~CPosixDirectory(void)
 {}
 
-bool CPosixDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CPosixDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items)
 {
+  CStdString strPath = strPath1;
+
+  if (IsAliasShortcut(strPath))
+    TranslateAliasShortcut(strPath);
+
   const char* root = strPath;
   struct dirent* entry;
   DIR *dir = opendir(root);
@@ -106,7 +113,14 @@ bool CPosixDirectory::Create(const char* strPath)
   if (!strPath || !*strPath)
     return false;
 
-  return (mkdir(strPath, 0755) == 0 || errno == EEXIST);
+  if (mkdir(strPath, 0755) != 0)
+  {
+    if (errno == EEXIST)
+      return Exists(strPath);
+    else
+      return false;
+  }
+  return true;
 }
 
 bool CPosixDirectory::Remove(const char* strPath)
@@ -114,7 +128,10 @@ bool CPosixDirectory::Remove(const char* strPath)
   if (!strPath || !*strPath)
     return false;
 
-  return (rmdir(strPath) == 0);
+  if (rmdir(strPath) == 0)
+    return true;
+
+  return !Exists(strPath);
 }
 
 bool CPosixDirectory::Exists(const char* strPath)
