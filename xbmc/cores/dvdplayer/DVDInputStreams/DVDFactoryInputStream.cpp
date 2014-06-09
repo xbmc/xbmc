@@ -88,8 +88,7 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
        || file.substr(0, 6) == "tcp://"
        || file.substr(0, 6) == "mms://"
        || file.substr(0, 7) == "mmst://"
-       || file.substr(0, 7) == "mmsh://"
-       || (item.IsInternetStream() && item.IsType(".m3u8")))
+       || file.substr(0, 7) == "mmsh://")
     return new CDVDInputStreamFFmpeg();
   else if(file.substr(0, 8) == "sling://"
        || file.substr(0, 7) == "myth://"
@@ -113,6 +112,14 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   else if(file.substr(0, 7) == "htsp://")
     return new CDVDInputStreamHTSP();
 #endif
+  else if (item.IsInternetStream())
+  {
+    if (item.IsType(".m3u8"))
+      return new CDVDInputStreamFFmpeg();
+    item.FillInMimeType();
+    if (item.GetMimeType() == "application/vnd.apple.mpegurl")
+      return new CDVDInputStreamFFmpeg();
+  }
 
   // our file interface handles all these types of streams
   return (new CDVDInputStreamFile());

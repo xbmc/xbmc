@@ -52,7 +52,7 @@ bool CDVDInputStreamFFmpeg::Open(const char* strFile, const std::string& content
 {
   CFileItem item(strFile, false);
   std::string selected;
-  if (item.IsInternetStream() && item.IsType(".m3u8"))
+  if (item.IsInternetStream() && (item.IsType(".m3u8") || content == "application/vnd.apple.mpegurl"))
   {
     // get the available bandwidth and  determine the most appropriate stream
     int bandwidth = CSettings::Get().GetInt("network.bandwidth");
