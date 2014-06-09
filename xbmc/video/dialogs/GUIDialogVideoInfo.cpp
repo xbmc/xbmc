@@ -1741,11 +1741,29 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
   {
     CVideoInfoTag tag;
     if (type == MediaTypeSeason)
+    {
       videodb.GetTvShowInfo("", tag, item->GetVideoInfoTag()->m_iIdShow);
+      tag.m_strPictureURL.GetThumbURLs(thumbs, artType, item->GetVideoInfoTag()->m_iSeason);
+    }
+    else if (type == MediaTypeVideoCollection)
+    {
+      CFileItemList items;
+      CStdString baseDir = StringUtils::Format("videodb://movies/sets/%d", item->GetVideoInfoTag()->m_iDbId);
+      if (videodb.GetMoviesNav(baseDir, items))
+      {
+        for (int i=0; i < items.Size(); i++)
+        {
+          CVideoInfoTag* pTag = items[i]->GetVideoInfoTag();
+          pTag->m_strPictureURL.Parse();
+          pTag->m_strPictureURL.GetThumbURLs(thumbs, artType);
+        }
+      }
+    }
     else
+    {
       tag = *item->GetVideoInfoTag();
-
-    tag.m_strPictureURL.GetThumbURLs(thumbs, artType, type == MediaTypeSeason ? item->GetVideoInfoTag()->m_iSeason : -1);
+      tag.m_strPictureURL.GetThumbURLs(thumbs, artType);
+    }
 
     for (size_t i = 0; i < thumbs.size(); i++)
     {
@@ -1968,6 +1986,35 @@ bool CGUIDialogVideoInfo::OnGetFanart(const CFileItemPtr &videoItem)
     items.Add(itemCurrent);
   }
 
+  vector<CStdString> thumbs;
+  if (videoItem->GetVideoInfoTag()->m_type == MediaTypeVideoCollection)
+  {
+    CFileItemList movies;
+    CStdString baseDir = StringUtils::Format("videodb://movies/sets/%d", videoItem->GetVideoInfoTag()->m_iDbId);
+    if (videodb.GetMoviesNav(baseDir, movies))
+    {
+      for (int i=0; i < movies.Size(); i++)
+      {
+        // ensure the fanart is unpacked
+        movies[i]->GetVideoInfoTag()->m_fanart.Unpack();
+
+        // Grab the thumbnails from the web
+        for (unsigned int j = 0; j < movies[i]->GetVideoInfoTag()->m_fanart.GetNumFanarts(); j++)
+        {
+          CStdString strItemPath = StringUtils::Format("fanart://Remote%i",j);
+          CFileItemPtr item(new CFileItem(strItemPath, false));
+          CStdString thumb = movies[i]->GetVideoInfoTag()->m_fanart.GetPreviewURL(j);
+          item->SetArt("thumb", CTextureUtils::GetWrappedThumbURL(thumb));
+          item->SetIconImage("DefaultPicture.png");
+          item->SetLabel(g_localizeStrings.Get(20441));
+          thumbs.push_back(movies[i]->GetVideoInfoTag()->m_fanart.GetImageURL(j));
+
+          items.Add(item);
+        }
+      }
+    }
+  }
+
   // add the none option
   {
     CFileItemPtr itemNone(new CFileItem("fanart://None", false));
@@ -1985,7 +2032,12 @@ bool CGUIDialogVideoInfo::OnGetFanart(const CFileItemPtr &videoItem)
       StringUtils::EqualsNoCase(result, "fanart://Current"))
     return false;
 
-  if (StringUtils::EqualsNoCase(result, "fanart://None") || !CFile::Exists(result))
+  if (StringUtils::StartsWith(result, "fanart://Remote"))
+  {
+    int iFanart = atoi(result.substr(15).c_str());
+    result = thumbs[iFanart];
+  }
+  else if (result.Equals("fanart://None") || !CFile::Exists(result))
     result.clear();
   if (!result.empty() && flip)
     result = CTextureUtils::GetWrappedImageURL(result, "", "flipped");
