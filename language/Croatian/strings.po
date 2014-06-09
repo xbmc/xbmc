@@ -1663,7 +1663,7 @@ msgstr "Način"
 
 msgctxt "#457"
 msgid "Switch view"
-msgstr "Promjeni prikaz"
+msgstr "Promijeni prikaz"
 
 msgctxt "#458"
 msgid "Limit sampling rate (kHz)"
@@ -5211,7 +5211,7 @@ msgstr "Automatski promijeni na minijature"
 
 msgctxt "#14011"
 msgid "Enable auto switching to thumbs view"
-msgstr "Omogući automatsku promijenu na prikaz minijatura"
+msgstr "Omogući automatsku promjenu na prikaz minijatura"
 
 msgctxt "#14012"
 msgid "- Use large icons"
@@ -6639,7 +6639,7 @@ msgstr "Ne mogu pokrenuti snimanje. Provjerite zapis za pojedinosti."
 
 msgctxt "#19165"
 msgid "Switch"
-msgstr "Zamjeni"
+msgstr "Promijeni program"
 
 msgctxt "#19166"
 msgid "PVR information"
@@ -11603,7 +11603,7 @@ msgstr "Po zadanom, EPG podaci su spremljeni u lokalnoj bazi podataka zbog ubrza
 
 msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
-msgstr "Sakrij oznaku \"Informacije nisu dostupne\" kada se EPG podaci ne mogu preuzeti za program."
+msgstr "Sakrij oznaku \"Informacija nije dostupna\" kada se EPG podaci ne mogu preuzeti za program."
 
 msgctxt "#36225"
 msgid "Delete the EPG database in XBMC and reimport the data afterwards from the backend."

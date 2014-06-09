@@ -16,17 +16,45 @@ msgstr ""
 "Language: lt\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+msgctxt "#30000"
+msgid "Random Presets"
+msgstr "Atsitiktinė išankstinė parinktis"
+
 msgctxt "#30001"
 msgid "Time Between Presets"
-msgstr "Laikas Tarp Nustatymu"
+msgstr "Laikas tarp išankstinių parinkčių"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
-msgstr "Papildomas Atsitiktinis Laikas"
+msgstr "Papildomas atsitiktinis laikas"
+
+msgctxt "#30003"
+msgid "Lock Preset"
+msgstr "Užrakinti išankstinę parinktį"
+
+msgctxt "#30004"
+msgid "Enable Transitions"
+msgstr "Įjungti perėjimus"
+
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "Stabdyti pirmą išankstinę parinktį"
+
+msgctxt "#30006"
+msgid "Show FPS"
+msgstr "Rodyti FPS"
+
+msgctxt "#30007"
+msgid "Show debug console"
+msgstr "Rodyti derinimo konsolę"
+
+msgctxt "#30008"
+msgid "Show audio analysis"
+msgstr "Rodyti garso analizę"
 
 msgctxt "#30050"
 msgid "%2.0f secs"
-msgstr "%2.0f secs"
+msgstr "%2.0f sek."
 
 msgctxt "#30051"
 msgid "%2.0f fps"

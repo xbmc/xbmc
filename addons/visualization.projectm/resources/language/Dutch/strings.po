@@ -62,11 +62,11 @@ msgstr "Standaard pakket"
 
 msgctxt "#30011"
 msgid "User Defined Preset Folder"
-msgstr "Gebruiker Gedefineerde Preset Folder"
+msgstr "Gebruikergedefineerde Presetmap"
 
 msgctxt "#30012"
 msgid "User Preset Folder"
-msgstr "Gebruiker  Preset Folder"
+msgstr "Gebruiker Presetmap"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

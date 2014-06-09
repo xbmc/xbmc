@@ -16,6 +16,10 @@ msgstr ""
 "Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgctxt "#30000"
+msgid "Random Presets"
+msgstr "ランダムプリセット"
+
 msgctxt "#30001"
 msgid "Time Between Presets"
 msgstr "各プリセットの間隔"
@@ -23,6 +27,18 @@ msgstr "各プリセットの間隔"
 msgctxt "#30002"
 msgid "Additional Random Time"
 msgstr "追加ランダム時間"
+
+msgctxt "#30003"
+msgid "Lock Preset"
+msgstr "プリセットをロック"
+
+msgctxt "#30006"
+msgid "Show FPS"
+msgstr "FPS を表示"
+
+msgctxt "#30007"
+msgid "Show debug console"
+msgstr "デバッグコンソールを表示"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

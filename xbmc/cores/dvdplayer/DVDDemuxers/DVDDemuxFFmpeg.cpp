@@ -274,6 +274,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       iformat = m_dllAvFormat.av_find_input_format("mpegts");
     else if( content.compare("multipart/x-mixed-replace") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("mjpeg");
+    else if( content.compare("audio/flac") == 0 )
+      iformat = m_dllAvFormat.av_find_input_format("flac");
   }
 
   // open the demuxer

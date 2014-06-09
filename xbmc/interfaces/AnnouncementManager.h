@@ -38,6 +38,8 @@ namespace ANNOUNCEMENT
        std::vector<IAnnouncer *> m_announcers;
      };
 
+    static void Deinitialize();
+
     static void AddAnnouncer(IAnnouncer *listener);
     static void RemoveAnnouncer(IAnnouncer *listener);
     static void Announce(AnnouncementFlag flag, const char *sender, const char *message);

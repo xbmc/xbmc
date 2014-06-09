@@ -42,7 +42,7 @@ msgstr "Vollbild"
 
 msgctxt "#31009"
 msgid "Total Duration"
-msgstr "Insgesamte Laufzeit"
+msgstr "Gesamte Dauer"
 
 msgctxt "#31022"
 msgid "Music - Files"
@@ -66,7 +66,7 @@ msgstr "Allgemeine Optionen"
 
 msgctxt "#31027"
 msgid "Location"
-msgstr "Ort"
+msgstr "Standort"
 
 msgctxt "#31028"
 msgid "Poster Wrap"
@@ -106,7 +106,7 @@ msgstr "PAUSE"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
-msgstr "VORSPULEN"
+msgstr "SCHNELLES VORSPULEN"
 
 msgctxt "#31045"
 msgid "REWIND"

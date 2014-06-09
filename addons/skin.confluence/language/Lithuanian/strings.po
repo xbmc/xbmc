@@ -50,7 +50,7 @@ msgstr "Muzika - Failai"
 
 msgctxt "#31023"
 msgid "Playing"
-msgstr "Atkūrimas"
+msgstr "Atkuriama"
 
 msgctxt "#31024"
 msgid "Page"
@@ -62,7 +62,7 @@ msgstr "Elementai"
 
 msgctxt "#31026"
 msgid "Misc Options"
-msgstr "Kitos opcijos"
+msgstr "Įvairios parinktys"
 
 msgctxt "#31027"
 msgid "Location"
@@ -70,11 +70,11 @@ msgstr "Vieta"
 
 msgctxt "#31028"
 msgid "Poster Wrap"
-msgstr "Posterių karuselė"
+msgstr "Plakatų karuselė"
 
 msgctxt "#31029"
 msgid "Fanart"
-msgstr "Fanart"
+msgstr "FanArt"
 
 msgctxt "#31031"
 msgid "Pic Thumbs"
@@ -98,7 +98,7 @@ msgstr "Dabar atkuriama"
 
 msgctxt "#31042"
 msgid "PLAYING"
-msgstr "ATKŪRIMAS"
+msgstr "ATKURIMAS"
 
 msgctxt "#31043"
 msgid "PAUSED"
@@ -126,11 +126,11 @@ msgstr "Pabaigos laikas"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Rodyti: Didėjimo tvarka"
+msgstr "Rūšiuoti: didėjančiai"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Rodyti: Mažėjimo tvarka"
+msgstr "Rūšiuoti: mažėjančiai"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -154,7 +154,7 @@ msgstr "Aktualus grojaraštis"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
-msgstr "Šie failai yra sugrupuoti, pasirinkite dalį katrą norite atkūrti."
+msgstr "Šis failais yra sugrupuotas, pasirinkite dalį kurią norite atkurti."
 
 msgctxt "#31061"
 msgid "Current Selected"
@@ -170,7 +170,7 @@ msgstr "Fonas"
 
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
-msgstr "Rodyti \"Pauzė\" prezentacijos metu"
+msgstr "Rodyti \"Pauzė\" paveikslėlių skaidrių peržiūroje"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
@@ -178,39 +178,39 @@ msgstr "Filmų anonsą rodyti lange [COLOR=grey3](Informacija tik apie video)[/C
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
-msgstr "Įvairios opcijos"
+msgstr "Įvairios parinktys"
 
 msgctxt "#31107"
 msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
-msgstr "Nerodyti nuorodos iš skaitomo failo [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Slpti žymos vaizdo failų varduose [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
-msgstr "Slėpti pagrindinio meniu nuorodas"
+msgstr "Slėpti pagrindinio meniu mygtukus"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr "Įgalinti priskirtą foną"
+msgstr "Įjungti individualų foną"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr "Fono maršrutas:"
+msgstr "Kelias iki fono:"
 
 msgctxt "#31111"
 msgid "Hide"
-msgstr "Nerodyti"
+msgstr "Slėpti"
 
 msgctxt "#31112"
 msgid "Options"
-msgstr "Nustatymai"
+msgstr "Parinktys"
 
 msgctxt "#31116"
 msgid "Show Recently added Albums"
-msgstr "Rodyti neseniai patalpintus albumus"
+msgstr "Rodyti neseniai pridtus albumus"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
-msgstr "Rodyti neseniai patalpintus video"
+msgstr "Rodyti neseniai pridėtus vaizdo įrašus"
 
 msgctxt "#31118"
 msgid "Home Page Programs Sub-menu"
@@ -218,11 +218,11 @@ msgstr "Pagrindinis programos submeniu puslapis"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
-msgstr "Slėpti Fanart informaciją"
+msgstr "Slėpti Fanart foną"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
-msgstr "Rodyti foninį \"Dabar atkuriama\" video"
+msgstr "Rodyti fone \"Dabar atkuriama\" vaizdo įrašą"
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualisation"
@@ -230,7 +230,7 @@ msgstr "Rodyti fono \"Dabar atkuriama\" vizualizaciją"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Atkūri televizijos temų dainas vaizdo bibliotekoje (TvTunes priedas)"
+msgstr "Atkurti televizijos temų dainas vaizdo bibliotekoje (TvTunes priedas)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -274,11 +274,11 @@ msgstr "Parametrų lygis"
 
 msgctxt "#31200"
 msgid "Shortcuts"
-msgstr "Etiketės"
+msgstr "Nuorodos"
 
 msgctxt "#31203"
 msgid "Choose Your Song"
-msgstr "Pasirinkti savo dainą"
+msgstr "Pasirinkite savo dainą"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
@@ -310,11 +310,11 @@ msgstr "Duomenų tiekėjas"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
-msgstr "Nerodyti Fanart"
+msgstr "Nerodyti FanArt"
 
 msgctxt "#31308"
 msgid "Movie Details"
-msgstr "Filmo aprašymas"
+msgstr "Filmo duomenys"
 
 msgctxt "#31309"
 msgid "Memory Used:"
@@ -326,23 +326,23 @@ msgstr "Takelio numeris"
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
-msgstr "Fanart paveikslėlis[CR][CR]Nepasiekiamas[CR][CR] norėdami nustatyti, spauskite mygtuką"
+msgstr "FanArt paveikslėlis[CR][CR]Nepasiekiamas[CR][CR] Spauskite mygtuką norėdami nustatyti"
 
 msgctxt "#31312"
 msgid "Current Scraper"
-msgstr "Aktualus Scraper"
+msgstr "Dabartinis skreperis"
 
 msgctxt "#31313"
 msgid "Choose a Scraper"
-msgstr "Pasirinkti Scraper"
+msgstr "Pasirinkite skreperį"
 
 msgctxt "#31314"
 msgid "Content Scanning Options"
-msgstr "Nuskaitomo turinio parinktys"
+msgstr "Turinio nuskaitymo parinktys"
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
-msgstr "Nustatyti FanArt maršrutą"
+msgstr "Nustatyti FanArt kelią"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -350,7 +350,7 @@ msgstr "Pasirinktas profilis"
 
 msgctxt "#31320"
 msgid "Last Logged In"
-msgstr "Paskutinis įėjimas"
+msgstr "Paskutinis prisijungimas"
 
 msgctxt "#31321"
 msgid "Karaoke Song Selector"
@@ -370,19 +370,19 @@ msgstr "Sukurtas"
 
 msgctxt "#31327"
 msgid "Resolution"
-msgstr "Rezoliucija"
+msgstr "Raiška"
 
 msgctxt "#31328"
 msgid "Recently Added"
-msgstr "Nesenai patalpinti"
+msgstr "Nesenai pridėti"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
-msgstr "[B]Nustatytas laikrodis![/B] [COLOR=grey2] - Sistemos automatinis išjungimas po...[/COLOR]"
+msgstr "[B]Laikmatis nustatytas![/B] [COLOR=grey2] - Sistemos automatinis išjungimas po[/COLOR]"
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
-msgstr "Spauskite norėdami atkūrti[CR][CR]filmo anonsą"
+msgstr "Spauskite mygtuką, norėdami atkurti[CR][CR]filmo anonsą"
 
 msgctxt "#31331"
 msgid "Album Details"
@@ -394,7 +394,7 @@ msgstr "Pauzė"
 
 msgctxt "#31352"
 msgid "Stop"
-msgstr "Stop"
+msgstr "Stabdyti"
 
 msgctxt "#31353"
 msgid "Fast Forward"
@@ -430,7 +430,7 @@ msgstr "Dabartinė teminė išvaizda"
 
 msgctxt "#31391"
 msgid "Skin default with no Caps"
-msgstr "Dabartinė teminė išvaizda be 'Caps'"
+msgstr "Dabartinė teminė išvaizda be didžiųjų raidžių"
 
 msgctxt "#31392"
 msgid "Arial based"

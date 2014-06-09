@@ -869,6 +869,10 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "選擇目的目錄"
 
+msgctxt "#252"
+msgid "Stereo upmix"
+msgstr "立體聲 upmix"
+
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "通道數"
@@ -1228,6 +1232,10 @@ msgstr "下降混合的正規化程度"
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "DTS-HD 相容接收機"
+
+msgctxt "#348"
+msgid "Enable passthrough"
+msgstr "開啟直通輸出"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1963,7 +1971,7 @@ msgstr "音效輸出裝置"
 
 msgctxt "#546"
 msgid "Passthrough output device"
-msgstr "通過輸出裝置"
+msgstr "直通輸出裝置"
 
 msgctxt "#547"
 msgid "No biography for this artist"
@@ -3159,7 +3167,7 @@ msgstr "自訂音效裝置"
 
 msgctxt "#1301"
 msgid "Custom passthrough device"
-msgstr "自訂直通輸出設備"
+msgstr "自訂直通輸出裝置"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -3544,6 +3552,10 @@ msgstr "說明"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "無說明內容"
+
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr "重設所有畫面上的設定為預設值。"
 
 msgctxt "#10047"
 msgid "Try changing the setting level to see additional categories and settings."
@@ -4531,7 +4543,7 @@ msgstr "重覆縮略圖"
 
 msgctxt "#13317"
 msgid "View slideshow"
-msgstr "觀看圖片"
+msgstr "觀看幻燈片"
 
 msgctxt "#13318"
 msgid "Recursive slideshow"
@@ -8257,6 +8269,10 @@ msgctxt "#20321"
 msgid "Scanning albums using %s"
 msgstr "正在使用 %s 掃描專輯"
 
+msgctxt "#20323"
+msgid "Movie plot"
+msgstr "電影情節"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "播放部分的…"
@@ -10487,7 +10503,7 @@ msgstr "聆聽你的"
 
 msgctxt "#33058"
 msgid "View your"
-msgstr "流覽你的"
+msgstr "瀏覽你的"
 
 msgctxt "#33059"
 msgid "Configure the"
@@ -10539,11 +10555,11 @@ msgstr "自訂桌面背景集"
 
 msgctxt "#33072"
 msgid "View Readme"
-msgstr "流覽說明檔"
+msgstr "瀏覽說明檔"
 
 msgctxt "#33073"
 msgid "View Changelog"
-msgstr "流覽更新記錄"
+msgstr "瀏覽更新記錄"
 
 msgctxt "#33074"
 msgid "This version of %s requires an"
@@ -11103,7 +11119,7 @@ msgstr "排序時忽略某些單字。如 'The Simpsons' 會被當作 'Simpsons'
 
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
-msgstr "允許在使用者介面中透過內容選單 (例如鍵盤上的 C 可以開啟這個選單) 刪除或重新命名檔案。"
+msgstr "允許在使用者介面中透過內容選單 (例如鍵盤上的 C 鍵可以開啟這個選單) 刪除或重新命名檔案。"
 
 msgctxt "#36127"
 msgid "Show hidden files and directories when listing files."
@@ -11413,6 +11429,10 @@ msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "在全螢幕模式按下數字鍵時跳到 1 秒之內所輸入的頻道號碼。"
 
+msgctxt "#36232"
+msgid "When pressing channel up or down, the actual channel switch is delayed, allowing the user to flip to a channel number without waiting for each channel switch."
+msgstr "當升或降頻道被按下時，延遲實際頻道的切換，讓使用者可以快速翻轉頻道而不用每次都等待頻道切換。"
+
 msgctxt "#36243"
 msgid "The command to execute."
 msgstr "要執行的命令。"
@@ -11468,6 +11488,10 @@ msgstr "匯入一個 XML 檔到你的音樂資料庫。"
 msgctxt "#36264"
 msgid "Category containing settings for how music playback is handled."
 msgstr "此分類包含如何處理音樂播放的設定。"
+
+msgctxt "#36265"
+msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
+msgstr "XBMC 自動播放現行目錄中的下一個項目。例如，在檔案顯示下：當一個曲目播放完後，XBMC 將自動播放同目錄中的下一個曲目。"
 
 msgctxt "#36267"
 msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
@@ -11725,6 +11749,10 @@ msgctxt "#36352"
 msgid "Changes the resolution that the user interface is displayed in."
 msgstr "修改顯示使用者介面的解析度。"
 
+msgctxt "#36353"
+msgid "Changes the refresh rate that the user interface is displayed in."
+msgstr "變更目前顯示使用者介面的畫面更新頻率。"
+
 msgctxt "#36354"
 msgid "Display XBMC in a fullscreen window. The main benefit is for multi-screen configurations, so that XBMC can be used without minimising other applications. This uses more resources so playback may be less smooth."
 msgstr "將 XBMC 顯示在一個全螢幕的視窗中。主要好處是在有多螢幕的情況下，不用將其他應用程式最小化就可以使用 XBMC。這會使用稍微多一點資源，且播放時可能會稍微不那麼流暢。"
@@ -11745,6 +11773,10 @@ msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "加強被下降混合成雙聲道的 AC3 串流"
 
+msgctxt "#36364"
+msgid "Select to enable upmixing of 2 channel audio to the number of audio channels specified by the channel configuration."
+msgstr "勾選以開啟將雙聲道 upmix 至聲道組態中指定的聲道數."
+
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
 msgstr "如果你的接收器有能力解碼 AC3 串流則選擇這個選項。"
@@ -11756,6 +11788,10 @@ msgstr "如果你的接收器有能力解碼 DTS 串流則選擇這個選項。"
 msgctxt "#36367"
 msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
 msgstr "選擇可使用的音頻/揚聲器的最大數目。如果輸出裝置為光纖或同軸電纜的話，這個項目務必設成 2.0。"
+
+msgctxt "#36368"
+msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital."
+msgstr "勾選以開啟透過直通音效選項來播放編碼過的音訊, 例如Dolby Digital。"
 
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."

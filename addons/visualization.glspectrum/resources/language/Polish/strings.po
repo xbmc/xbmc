@@ -54,24 +54,24 @@ msgstr "Bardzo duże"
 
 msgctxt "#30009"
 msgid "Speed"
-msgstr "Szybkość"
+msgstr "Prędkość"
 
 msgctxt "#30010"
 msgid "Very Slow"
-msgstr "Bardzo wolne"
+msgstr "Bardzo wolna"
 
 msgctxt "#30011"
 msgid "Slow"
-msgstr "Wolne"
+msgstr "Wolna"
 
 msgctxt "#30012"
 msgid "Default"
-msgstr "Domyślne"
+msgstr "Domyślna"
 
 msgctxt "#30013"
 msgid "Fast"
-msgstr "Szybkie"
+msgstr "Szybka"
 
 msgctxt "#30014"
 msgid "Very Fast"
-msgstr "Bardzo szybkie"
+msgstr "Bardzo szybka"

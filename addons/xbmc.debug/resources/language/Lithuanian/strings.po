@@ -18,28 +18,32 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Verbose logging for SMB library"
-msgstr "Išsami registracija SMB bibliotekoje"
+msgstr "Išsamus SMB bibliotekos žurnalo rašymas"
 
 msgctxt "#30001"
 msgid "Verbose logging for CURL library (http, dav)"
-msgstr "Išsami registracija CURL bibliotekoje (http, dav)"
+msgstr "Išsamus CURL bibliotekos (http, dav) žurnalo rašymas"
 
 msgctxt "#30002"
 msgid "Verbose logging for CMYTH library"
-msgstr "Išsami registracija CMYTH bibliotekoje"
+msgstr "Išsamus CMYTH bibliotekos žurnalo rašymas"
 
 msgctxt "#30003"
 msgid "Verbose logging for FFMPEG libraries"
-msgstr "Išsami registracija FFMPEG bibliotekose"
+msgstr "Išsamus FFMPEG bibliotekų žurnalo rašymas"
 
 msgctxt "#30004"
 msgid "Verbose logging for RTMP library"
-msgstr "Išsami registracija RTMP bibliotekoje"
+msgstr "Išsamus RTMP bibliotekos žurnalo rašymas"
 
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
-msgstr "Išsami registracija DBUS skambučiuose"
+msgstr "Išsamus DBUS krepinių žurnalo rašymas"
 
 msgctxt "#30006"
 msgid "Verbose logging for JSON-RPC requests"
-msgstr "Išsami registracija naudojant JSON-RPC registrą"
+msgstr "Išsamus JSON-RPC užklausų žurnalo rašymas"
+
+msgctxt "#30007"
+msgid "Verbose logging for AUDIO component"
+msgstr "Išsamus AUDIO komponento žurnalo rašymas"

@@ -55,155 +55,155 @@ msgstr "Xbmc média center"
 
 msgctxt "#11"
 msgid "Monday"
-msgstr "Lundi"
+msgstr "lundi"
 
 msgctxt "#12"
 msgid "Tuesday"
-msgstr "Mardi"
+msgstr "mardi"
 
 msgctxt "#13"
 msgid "Wednesday"
-msgstr "Mercredi"
+msgstr "mercredi"
 
 msgctxt "#14"
 msgid "Thursday"
-msgstr "Jeudi"
+msgstr "jeudi"
 
 msgctxt "#15"
 msgid "Friday"
-msgstr "Vendredi"
+msgstr "vendredi"
 
 msgctxt "#16"
 msgid "Saturday"
-msgstr "Samedi"
+msgstr "samedi"
 
 msgctxt "#17"
 msgid "Sunday"
-msgstr "Dimanche"
+msgstr "dimanche"
 
 msgctxt "#21"
 msgid "January"
-msgstr "Janvier"
+msgstr "janvier"
 
 msgctxt "#22"
 msgid "February"
-msgstr "Février"
+msgstr "février"
 
 msgctxt "#23"
 msgid "March"
-msgstr "Mars"
+msgstr "mars"
 
 msgctxt "#24"
 msgid "April"
-msgstr "Avril"
+msgstr "avril"
 
 msgctxt "#25"
 msgid "May"
-msgstr "Mai"
+msgstr "mai"
 
 msgctxt "#26"
 msgid "June"
-msgstr "Juin"
+msgstr "juin"
 
 msgctxt "#27"
 msgid "July"
-msgstr "Juillet"
+msgstr "juillet"
 
 msgctxt "#28"
 msgid "August"
-msgstr "Août"
+msgstr "août"
 
 msgctxt "#29"
 msgid "September"
-msgstr "Septembre"
+msgstr "septembre"
 
 msgctxt "#30"
 msgid "October"
-msgstr "Octobre"
+msgstr "octobre"
 
 msgctxt "#31"
 msgid "November"
-msgstr "Novembre"
+msgstr "novembre"
 
 msgctxt "#32"
 msgid "December"
-msgstr "Décembre"
+msgstr "décembre"
 
 msgctxt "#41"
 msgid "Mon"
-msgstr "Lun"
+msgstr "lun"
 
 msgctxt "#42"
 msgid "Tue"
-msgstr "Mar"
+msgstr "mar"
 
 msgctxt "#43"
 msgid "Wed"
-msgstr "Mer"
+msgstr "mer"
 
 msgctxt "#44"
 msgid "Thu"
-msgstr "Jeu"
+msgstr "jeu"
 
 msgctxt "#45"
 msgid "Fri"
-msgstr "Ven"
+msgstr "ven"
 
 msgctxt "#46"
 msgid "Sat"
-msgstr "Sam"
+msgstr "sam"
 
 msgctxt "#47"
 msgid "Sun"
-msgstr "Dim"
+msgstr "dim"
 
 msgctxt "#51"
 msgid "Jan"
-msgstr "Jan"
+msgstr "jan"
 
 msgctxt "#52"
 msgid "Feb"
-msgstr "Fév"
+msgstr "fév"
 
 msgctxt "#53"
 msgid "Mar"
-msgstr "Mar"
+msgstr "mar"
 
 msgctxt "#54"
 msgid "Apr"
-msgstr "Avr"
+msgstr "avr"
 
 msgctxt "#55"
 msgid "May"
-msgstr "Mai"
+msgstr "mai"
 
 msgctxt "#56"
 msgid "Jun"
-msgstr "Juin"
+msgstr "juin"
 
 msgctxt "#57"
 msgid "Jul"
-msgstr "Juil"
+msgstr "juil"
 
 msgctxt "#58"
 msgid "Aug"
-msgstr "Août"
+msgstr "août"
 
 msgctxt "#59"
 msgid "Sep"
-msgstr "Sep"
+msgstr "sep"
 
 msgctxt "#60"
 msgid "Oct"
-msgstr "Oct"
+msgstr "oct"
 
 msgctxt "#61"
 msgid "Nov"
-msgstr "Nov"
+msgstr "nov"
 
 msgctxt "#62"
 msgid "Dec"
-msgstr "Déc"
+msgstr "déc"
 
 msgctxt "#71"
 msgid "N"
@@ -455,7 +455,7 @@ msgstr "Rechercher"
 
 msgctxt "#138"
 msgid "System Information"
-msgstr "Informations Système"
+msgstr "Informations système"
 
 msgctxt "#139"
 msgid "Temperatures:"
@@ -1551,7 +1551,7 @@ msgstr "Insérez le CD/DVD approprié"
 
 msgctxt "#429"
 msgid "Please insert the following disc:"
-msgstr "Veuillez insérer ce disque:"
+msgstr "Veuillez insérer ce disque :"
 
 msgctxt "#430"
 msgid "Sort by: DVD#"
@@ -2635,7 +2635,7 @@ msgstr "Gris"
 
 msgctxt "#770"
 msgid "Error %i: share not available"
-msgstr "Erreur %i : Partage non disponible"
+msgstr "Erreur %i : partage non disponible"
 
 msgctxt "#772"
 msgid "Audio output"
@@ -3443,7 +3443,7 @@ msgstr "Vidéos"
 
 msgctxt "#10007"
 msgid "System information"
-msgstr "Informations Système"
+msgstr "Informations système"
 
 msgctxt "#10008"
 msgid "Settings - General"
@@ -3695,7 +3695,7 @@ msgstr "Extensions"
 
 msgctxt "#10511"
 msgid "System info"
-msgstr "Informations Système"
+msgstr "Informations système"
 
 msgctxt "#10516"
 msgid "Music - Library"
@@ -7047,7 +7047,7 @@ msgstr "Ne pas afficher les messages 'pas d'information disponible'"
 
 msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
-msgstr "Ne pas afficher les messages 'connection perdue'"
+msgstr "Ne pas afficher les messages 'connexion perdue'"
 
 msgctxt "#19270"
 msgid "* All recordings"
@@ -9351,7 +9351,7 @@ msgstr "Nombre d'épisodes vus"
 
 msgctxt "#21458"
 msgid "Group by"
-msgstr "Trier par "
+msgstr "Grouper par"
 
 msgctxt "#21459"
 msgid "mixed"
@@ -11071,7 +11071,7 @@ msgstr "Quand la TV est éteinte"
 
 msgctxt "#36030"
 msgid "Connection lost"
-msgstr "Connection perdue"
+msgstr "Connexion perdue"
 
 msgctxt "#36031"
 msgid "This user does not have permissions to open the CEC adaptor"
@@ -11547,7 +11547,7 @@ msgstr "Supprimer les base de données chaînes/GEP et réimporter les données 
 
 msgctxt "#36210"
 msgid "Prevent the 'connection lost' notification window from displaying when XBMC is unable to talk to the PVR backend server."
-msgstr "Empêche la fenêtre de notification \"connection perdue\" de s'afficher quand XBMC ne peut communiquer avec le serveur de traitement de l'Enregistreur Vidéo."
+msgstr "Empêche la fenêtre de notification \"connexion perdue\" de s'afficher quand XBMC ne peut communiquer avec le serveur de traitement de l'Enregistreur Vidéo."
 
 msgctxt "#36211"
 msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."

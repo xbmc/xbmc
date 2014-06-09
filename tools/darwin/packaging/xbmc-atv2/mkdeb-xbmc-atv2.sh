@@ -44,7 +44,7 @@ fi
 
 PACKAGE=org.xbmc.xbmc-atv2
 
-VERSION=13.0
+VERSION=13.1
 REVISION=0
 ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_iphoneos-arm.deb
 

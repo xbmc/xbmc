@@ -12031,7 +12031,7 @@ msgstr "Defina la contraseña del servidor web."
 
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
-msgstr "Selecciona entre las diferentes interfaces web disponibles en el gestor de add-ons."
+msgstr "Selecciona entre las diferentes interfaces web instaladas a través del gestor de add-ons."
 
 msgctxt "#36333"
 msgid "Category containing settings for how the remote control service is handled."

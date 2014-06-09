@@ -112,6 +112,7 @@ private:
   CStdString m_password;
   int m_origVolume;
 
+  static CCriticalSection ServerInstanceLock;
   static CAirPlayServer *ServerInstance;
 };
 

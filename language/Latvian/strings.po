@@ -311,7 +311,7 @@ msgstr "Skats: Saraksts"
 
 msgctxt "#102"
 msgid "Scan"
-msgstr "Skanēt"
+msgstr "Skenēt"
 
 msgctxt "#103"
 msgid "Sort by: Name"
@@ -663,7 +663,7 @@ msgstr "Skaidrs"
 
 msgctxt "#193"
 msgid "Scan"
-msgstr "Skanēt"
+msgstr "Skenēt"
 
 msgctxt "#194"
 msgid "Searching..."
@@ -11325,6 +11325,10 @@ msgctxt "#36154"
 msgid "Use high quality scalers when upscaling a video by at least this percentage."
 msgstr "Izmantot augstas kvalitātes mērogotājus, palielinot video par vismaz šādu procentu daudzumu."
 
+msgctxt "#36155"
+msgid "Enable VDPAU hardware decoding of video files, mainly used for NVIDIA graphics and in some circumstances AMD graphics."
+msgstr "Ieslēgt VDPAU aparatūras video failu atkodēšanu, galvenokārt izmanto NVIDIA grafikai un dažos apstākļos arī AMD grafikai."
+
 msgctxt "#36156"
 msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
 msgstr "Ieslēgt VAAPI aparatūras video failu atkodēšanu, galvenokārt izmanto Intel grafikai un dažos apstākļos arī AMD grafikai."
@@ -11529,6 +11533,10 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Dzēst kanālu/EPG datubāzi un pārimportēt datus pēc tam no aizmugursistēmas."
 
+msgctxt "#36211"
+msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
+msgstr "Kategorija PVR izvēlnēm un uz ekrāna attēlojamiem iestatījumiem, kā arī kanāla info logiem."
+
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
 msgstr "Mape, kur glabājas kanālu ikonas."
@@ -11556,6 +11564,10 @@ msgstr "Pēc noklusējuma EPG dati glabājas lokālā datubāzē, lai paātrinā
 msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Slēpt \"informācija nav pieejama\" etiķetes, kad kanālam nevar izgūt EPG datus."
+
+msgctxt "#36225"
+msgid "Delete the EPG database in XBMC and reimport the data afterwards from the backend."
+msgstr "Dzēst EPG datubāzi no XBMC un pārimportēt datus pēc tam no aizmugursistēmas."
 
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
@@ -11608,6 +11620,10 @@ msgstr "Komanda netiks izpildīta, ja ierakstīšanu sāks šajā noilgumā."
 msgctxt "#36243"
 msgid "The command to execute."
 msgstr "Izpildāmā komanda."
+
+msgctxt "#36244"
+msgid "Time to subtract from the start time of the next scheduled recording."
+msgstr "Laiks, ko atņemt no nākamā plānotā ieraksta sākuma laika."
 
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
@@ -11701,6 +11717,10 @@ msgctxt "#36271"
 msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
 msgstr "Gludi izgaist no viena audio celiņa uz nākamo. Var iestatīt pārklāšanās apjomu no 1-15 sekundēm."
 
+msgctxt "#36272"
+msgid "Allow crossfading to occur when both tracks are from the same album."
+msgstr "Atļaut pārklāšanos, ja abi celiņi ir no viena tā paša albuma."
+
 msgctxt "#36273"
 msgid "Select the visualisation that will be displayed while listening to music."
 msgstr "Atlasīt vizualizāciju, kuru attēlot, kamēr klausās mūziku."
@@ -11716,6 +11736,10 @@ msgstr "Kontrolēt, kā dziesmu nosaukumi tiek attēloti lietotāja saskarnē. L
 msgctxt "#36276"
 msgid "Used for formatting the second column in file lists."
 msgstr "Lieto, lai formatētu otro aili failu sarakstos."
+
+msgctxt "#36280"
+msgid "Used for formatting the second column in library lists."
+msgstr "Lieto, lai formatētu otro aili bibliotēkas sarakstos."
 
 msgctxt "#36281"
 msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
@@ -11765,6 +11789,26 @@ msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
 msgstr "Kad atskaņo jebkuru mūzikas failu, XBMC meklēs atbilstošu .cdg failu un attēlos tā grafikas."
 
+msgctxt "#36294"
+msgid "Show song selection dialog once the last song in the queue has been played."
+msgstr "Rādīt dziesmas atlasīšanas dialogu, kad pēdējā dziesma rindā ir nospēlēta."
+
+msgctxt "#36295"
+msgid "Select the font type used during karaoke."
+msgstr "Atlasiet fonta veidu, ko lieto karaokes laikā."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karaoke."
+msgstr "Atlasiet fonta izmēru, ko lieto karaokes laikā."
+
+msgctxt "#36297"
+msgid "Select the font colour used during karaoke."
+msgstr "Atlasiet fonta krāsu, ko lieto karaokes laikā."
+
+msgctxt "#36298"
+msgid "Select the character set used during karaoke."
+msgstr "Atlasiet rakstzīmju kopu, ko lieto karaokes laikā."
+
 msgctxt "#36299"
 msgid "Export the karaoke numbered songs to HTML or CSV files."
 msgstr "Eksportēt karaoke numurētas dziesmas uz HTML vai CSV failiem."
@@ -11784,6 +11828,10 @@ msgstr "Info vēl nav pieejama."
 msgctxt "#36303"
 msgid "No info available yet."
 msgstr "Info vēl nav pieejama."
+
+msgctxt "#36304"
+msgid "Section that contains settings related to pictures and how they are handled."
+msgstr "Sekcija, kas satur ar attēliem un to apstrādi saistītus iestatījumus."
 
 msgctxt "#36305"
 msgid "Category containing settings for how picture file lists are handled."
@@ -11840,6 +11888,10 @@ msgstr "Atlasīt līdz trim atrašanās vietām, par kurām var attēlot laikaps
 msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
 msgstr "Norādīt noklusēto laikapstākļu informācijas avotu. Opcijām skatīt pielikumu pārvaldnieku."
+
+msgctxt "#36319"
+msgid "Section containing settings for how network services are handled."
+msgstr "Sekcija, kas satur iestatījumus tīkla servisu darbībai."
 
 msgctxt "#36320"
 msgid "Category containing settings used for all services."
@@ -11917,6 +11969,10 @@ msgctxt "#36341"
 msgid "Category containing settings for how the zeroconf network discovery service is handled, required for AirPlay."
 msgstr "Kategorija, kas satur iestatījumus zeroconf tīkla atklāšanas servisa darbībai, nepieciešams pie AirPlay."
 
+msgctxt "#36342"
+msgid "Allows applications on the network to discover XBMC's running services."
+msgstr "Ļauj lietotnēm tīklā atklāt XBMC darbinātos pakalpojumus."
+
 msgctxt "#36344"
 msgid "Enable AirPlay password protection."
 msgstr "Ieslēgt AirPlay paroles aizsardzību"
@@ -11937,9 +11993,21 @@ msgctxt "#36348"
 msgid "If a WINS server is running on the network, enter its workgroup name here. Otherwise, leave blank."
 msgstr "Ja tīklā darbojas WINS serveris, ievadiet tā darbagrupas nosaukumu šeit. Citos gadījumos atstājiet tukšu."
 
+msgctxt "#36349"
+msgid "Section that contains the System related settings for the device XBMC is installed on."
+msgstr "Sekcija, kas satur ar sistēmu saistītus iestatījumus ierīcei, kur uzstādīts XBMC."
+
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
 msgstr "Automātiski sūtīt 'Wake-On-Lan' uz serveri(em) tieši pims mēģinājuma piekļūt koplietotiem failem vai pakalpojumiem."
+
+msgctxt "#36351"
+msgid "Display XBMC in a window, or fullscreen on the selected screen."
+msgstr "Attēlot XBMC logā vai pilnekrānā izvēlētajā ekrānā."
+
+msgctxt "#36354"
+msgid "Display XBMC in a fullscreen window. The main benefit is for multi-screen configurations, so that XBMC can be used without minimising other applications. This uses more resources so playback may be less smooth."
+msgstr "Attēlo XBMC pilnekrāna logā. Galvenais ieguvums no daudzekrānu konfigurācijām ir, ka XBMC var izmantot bez citu lietotņu minimizēšanas. Tas izmanto mazliet vairāk resursus, tāpēc atskaņošana var būt mazāk gluda."
 
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
@@ -11948,6 +12016,10 @@ msgstr "Daudzekrānu konfigurācijā, ekrāni, kuros XBMC nav redzams, paliek me
 msgctxt "#36356"
 msgid "Eliminate vertical tearing."
 msgstr "Novērst vertikālo pārraušanu."
+
+msgctxt "#36357"
+msgid "Calibrate the user interface by adjusting the overscan. Use this tool if the image being displayed is too large or small for your display."
+msgstr "Kalibrēt lietotāja saskarni, pielāgojot pārskenēšanu. Lieto šo rīku, ja attēlojums ir pārāk liels vai pārāk mazs tavam ekrānam."
 
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
@@ -11968,6 +12040,10 @@ msgstr "Atlasiet, cik kanālus atbalsta audio savienojums vai cik skaļruņu ir 
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Palielināt AC3 plūsmas, kas samiksētas līdz 2 kanāliem."
+
+msgctxt "#36364"
+msgid "Select to enable upmixing of 2 channel audio to the number of audio channels specified by the channel configuration."
+msgstr "Atlasīt, lai palielinātu 2 audio kanālus līdz skaitam, kas norādīts kanālu konfigurācijā. "
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -11992,6 +12068,10 @@ msgstr "Atlasiet šo opciju, ja Jūsu atskaņotājs spēj atkodēt TrueHD straum
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "Atlasiet šo opciju, ja Jūsu atskaņotājs spēj atkodēt DTS-HD straumes."
+
+msgctxt "#36371"
+msgid "Select the device to be used for playback of audio that has been decoded such as mp3."
+msgstr "Atlasīt ierīci, kuru izmantot atkodēta audio, piemēram, mp3, atskaņošanai."
 
 msgctxt "#36372"
 msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
@@ -12193,6 +12273,10 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "Ierakstīt"
 
+msgctxt "#36429"
+msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, such as an SPDIF connection.  If your system supports LPCM multichannel sound via HDMI, leave this disabled."
+msgstr "Atlasiet šo, ja audio izejas savienojums atbalsta daudzkanālu audio tikai ar Dolby Digital 5.1, piemēram, SPDIF savienojumā. Ja šī sistēma atbalsta LPCM daudzkanālu skaņu HDMI, atstājiet šo izslēgtu."
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "Stereoskopiskais režīms (pašreizējais)"
@@ -12324,6 +12408,10 @@ msgstr "Ieslēgt video failu atkodēšanu ar aparatūru."
 msgctxt "#36545"
 msgid "Subtitle stereoscopic depth"
 msgstr "Subtitru stereoskopiskais dziļums"
+
+msgctxt "#36546"
+msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
+msgstr "Iestata subtitru vizuālo dziļumu stereoskopiskajos 3D video. Jo lielāka vērtība, jo subtitri izskatīsies tuvāki skatītājam."
 
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"

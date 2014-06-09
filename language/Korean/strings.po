@@ -907,7 +907,7 @@ msgstr "샤우트캐스트"
 
 msgctxt "#261"
 msgid "Waiting for start..."
-msgstr "시작 대기중...."
+msgstr "시작 대기 중...."
 
 msgctxt "#262"
 msgid "Scripts output"
@@ -1087,7 +1087,7 @@ msgstr "원본 언어"
 
 msgctxt "#309"
 msgid "User interface language"
-msgstr "사용자 인터페이스 영어"
+msgstr "사용자 인터페이스 언어"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1099,7 +1099,7 @@ msgstr "데이터베이스 정리"
 
 msgctxt "#314"
 msgid "Preparing..."
-msgstr "준비중..."
+msgstr "준비 중..."
 
 msgctxt "#315"
 msgid "Database error"
@@ -1263,11 +1263,11 @@ msgstr "매트릭스 트레일"
 
 msgctxt "#355"
 msgid "Screensaver time"
-msgstr "화면보호기 시간"
+msgstr "화면 보호기 시간"
 
 msgctxt "#356"
 msgid "Screensaver mode"
-msgstr "화면보호기 모드"
+msgstr "화면 보호기 모드"
 
 msgctxt "#357"
 msgid "Shutdown function timer"
@@ -1279,11 +1279,11 @@ msgstr "모든 앨범"
 
 msgctxt "#359"
 msgid "Recently added albums"
-msgstr "최근 추가한 앨범"
+msgstr "최근 추가 앨범"
 
 msgctxt "#360"
 msgid "Screensaver"
-msgstr "화면보호기"
+msgstr "화면 보호기"
 
 msgctxt "#361"
 msgid "R. Slideshow"
@@ -1291,7 +1291,7 @@ msgstr "역 슬라이드쇼"
 
 msgctxt "#362"
 msgid "Screensaver dim level"
-msgstr "화면보호기 흐림 정도"
+msgstr "화면 보호기 흐림 정도"
 
 msgctxt "#363"
 msgid "Sort by: File"
@@ -1507,7 +1507,7 @@ msgstr "보기: 큰 아이콘"
 
 msgctxt "#418"
 msgid "Low"
-msgstr "최저"
+msgstr "낮음"
 
 msgctxt "#419"
 msgid "High"
@@ -3591,7 +3591,7 @@ msgstr "잠금 설정"
 
 msgctxt "#10132"
 msgid "Content settings"
-msgstr "컨텐츠 설정"
+msgstr "콘텐츠 설정"
 
 msgctxt "#10134"
 msgid "Favourites"
@@ -4023,7 +4023,7 @@ msgstr "날씨"
 
 msgctxt "#12900"
 msgid "Screensaver"
-msgstr "화면보호기"
+msgstr "화면 보호기"
 
 msgctxt "#12901"
 msgid "Fullscreen OSD"
@@ -4215,7 +4215,7 @@ msgstr "사용 안 함"
 
 msgctxt "#13114"
 msgid "Enabled for SD content"
-msgstr "SD 컨텐츠 사용함"
+msgstr "SD 콘텐츠 사용함"
 
 msgctxt "#13115"
 msgid "Always enabled"
@@ -4663,7 +4663,7 @@ msgstr "IMDb 찾기..."
 
 msgctxt "#13349"
 msgid "Scan for new content"
-msgstr "새 컨텐츠 검색"
+msgstr "새 콘텐츠 검색"
 
 msgctxt "#13350"
 msgid "Current playlist"
@@ -7947,7 +7947,7 @@ msgstr "%i 포트, %i 슬롯"
 
 msgctxt "#20140"
 msgid "Lock screensaver"
-msgstr "화면보호기 잠금"
+msgstr "화면 보호기 잠금"
 
 msgctxt "#20141"
 msgid "Set"
@@ -8367,7 +8367,7 @@ msgstr "검색에 파일이나 폴더 이름을 사용 하시겠습니까?"
 
 msgctxt "#20333"
 msgid "Set content"
-msgstr "컨텐츠 설정"
+msgstr "콘텐츠 설정"
 
 msgctxt "#20334"
 msgid "Folder"
@@ -8375,7 +8375,7 @@ msgstr "폴더"
 
 msgctxt "#20335"
 msgid "Look for content recursively?"
-msgstr "컨텐츠를 순환 찾기 하시겠습니까?"
+msgstr "콘텐츠를 순환 찾기 하시겠습니까?"
 
 msgctxt "#20336"
 msgid "Unlock sources"
@@ -8535,7 +8535,7 @@ msgstr "영화 정보 다운로드"
 
 msgctxt "#20375"
 msgid "Unassign content"
-msgstr "컨텐츠 할당해제"
+msgstr "콘텐츠 할당해제"
 
 msgctxt "#20376"
 msgid "Original title"
@@ -8575,11 +8575,11 @@ msgstr "TV 쇼 연결 제거"
 
 msgctxt "#20386"
 msgid "Recently added movies"
-msgstr "최근 추가한 영화"
+msgstr "최근 추가 영화"
 
 msgctxt "#20387"
 msgid "Recently added episodes"
-msgstr "최근 추가한 에피소드"
+msgstr "최근 추가 에피소드"
 
 msgctxt "#20388"
 msgid "Studios"
@@ -8591,7 +8591,7 @@ msgstr "뮤직비디오"
 
 msgctxt "#20390"
 msgid "Recently added music videos"
-msgstr "최근 추가한 뮤직비디오"
+msgstr "최근 추가 뮤직비디오"
 
 msgctxt "#20391"
 msgid "Music video"
@@ -8691,7 +8691,7 @@ msgstr "비디오 및 음악 라이브러리에 팬아트 보기"
 
 msgctxt "#20415"
 msgid "Scanning for new content"
-msgstr "새 컨텐츠 검색"
+msgstr "새 콘텐츠 검색"
 
 msgctxt "#20416"
 msgid "First aired"
@@ -8799,7 +8799,7 @@ msgstr "원격 팬아트"
 
 msgctxt "#20442"
 msgid "Change content"
-msgstr "컨텐츠 변경"
+msgstr "콘텐츠 변경"
 
 msgctxt "#20443"
 msgid "Do you want to refresh info for all"
@@ -9931,7 +9931,7 @@ msgstr "영화 정보"
 
 msgctxt "#24008"
 msgid "Screensaver"
-msgstr "화면보호기"
+msgstr "화면 보호기"
 
 msgctxt "#24009"
 msgid "Script"
@@ -10979,11 +10979,11 @@ msgstr "XBMC 종료시 장치 전원 끄기"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
-msgstr "화면보호기 작동시 장치를 대기모드로 설정"
+msgstr "화면 보호기 작동시 장치를 대기모드로 설정"
 
 msgctxt "#36010"
 msgid "Wake devices when deactivating screensaver"
-msgstr "화면보호기가 작동하지 않을 때 장치 깨우기"
+msgstr "화면 보호기가 작동하지 않을 때 장치 깨우기"
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
@@ -11211,27 +11211,27 @@ msgstr "파일 목록을 표시할 때 숨김 파일과 폴더 보기."
 
 msgctxt "#36128"
 msgid "Category containing all screensaver settings."
-msgstr "모든 화면보호기 설정을 포함합니다."
+msgstr "모든 화면 보호기 설정을 포함합니다."
 
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
-msgstr "화면보호기가 표시되는데 필요한 유휴 시간을 설정하세요."
+msgstr "화면 보호기가 표시되는데 필요한 유휴 시간을 설정하세요."
 
 msgctxt "#36130"
 msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
-msgstr "화면보호기를 선택합니다. 전체화면 비디오 재생이 일시정지되거나 대화상자가 활성화된 상태에서는 'Dim' 화면보호기가 강제 실행됩니다."
+msgstr "화면 보호기를 선택합니다. 전체화면 비디오 재생이 일시정지되거나 대화상자가 활성화된 상태에서는 'Dim' 화면 보호기가 강제 실행됩니다."
 
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
-msgstr "화면보호기별 설정을 바꾸세요. 사용 가능한 옵션은 화면보호기에 따라 다릅니다."
+msgstr "화면 보호기별 설정을 바꾸세요. 사용 가능한 옵션은 화면 보호기에 따라 다릅니다."
 
 msgctxt "#36132"
 msgid "Preview the selected screensaver."
-msgstr "선택한 화면보호기 미리보기."
+msgstr "선택한 화면 보호기 미리보기."
 
 msgctxt "#36133"
 msgid "If music is being played, XBMC will start the selected visualisation instead of displaying the screensaver."
-msgstr "음악이 재생중인 경우 XBMC는 화면보호기 대신, 선택한 시각화를 실행합니다."
+msgstr "음악이 재생중인 경우 XBMC는 화면 보호기 대신, 선택한 시각화를 실행합니다."
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
@@ -11541,6 +11541,10 @@ msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
 msgstr "채널 변경 후 화면에 표시되는 채널 컨트롤을 닫습니다."
 
+msgctxt "#36215"
+msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
+msgstr "'자동 숨김' 설정이 켜져 있을 때 프로그램 정보가 표시되는 시간입니다."
+
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
 msgstr "채널 아이콘이 저장되는 폴더입니다."
@@ -11640,6 +11644,10 @@ msgstr "PVR 백엔드 서버가 깨어나는 시간 등의 PVR 전원 관리 설
 msgctxt "#36243"
 msgid "The command to execute."
 msgstr "실행할 명령어입니다."
+
+msgctxt "#36244"
+msgid "Time to subtract from the start time of the next scheduled recording."
+msgstr "다음 예약된 녹화전 미리 깨울 시간입니다."
 
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
@@ -11852,6 +11860,14 @@ msgstr "노래방 화면에서 사용할 글꼴의 색상을 선택합니다."
 msgctxt "#36298"
 msgid "Select the character set used during karaoke."
 msgstr "노래방 화면에서 사용할 문자집합을 선택합니다."
+
+msgctxt "#36299"
+msgid "Export the karaoke numbered songs to HTML or CSV files."
+msgstr "노래방 노래를 HTML 또는 CSV 파일로 내 보냅니다."
+
+msgctxt "#36300"
+msgid "Import the karaoke numbered songs from HTML or CSV files."
+msgstr "HTML 또는 CSV 파일에서 노래방 노래를 불러옵니다."
 
 msgctxt "#36301"
 msgid "No info available yet."
@@ -12476,6 +12492,10 @@ msgstr "3D 모드 반전"
 msgctxt "#36537"
 msgid "Set playback mode of stereoscopic 3D videos."
 msgstr "3D 비디오 재생 모드를 설정합니다."
+
+msgctxt "#36538"
+msgid "Prevents XBMC exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
+msgstr "재생을 종료(일시정지가 아님)하였을 때 XBMC를 3D 상태로 유지합니다. 3D에서 2D로 돌아갔을 때 모든 TV가 자동 감지하여 2D 상태로 전환되지 않기 때문입니다."
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
