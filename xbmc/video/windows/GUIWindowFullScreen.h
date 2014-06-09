@@ -44,6 +44,7 @@ private:
   void SeekChapter(int iChapter);
   void FillInTVGroups();
   void ToggleOSD();
+  void TriggerOSD();
 
   enum SEEK_TYPE { SEEK_ABSOLUTE, SEEK_RELATIVE };
   enum SEEK_DIRECTION { SEEK_FORWARD, SEEK_BACKWARD };

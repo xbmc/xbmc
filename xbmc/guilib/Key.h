@@ -332,6 +332,8 @@
 #define ACTION_SETTINGS_RESET         241
 #define ACTION_SETTINGS_LEVEL_CHANGE  242
 
+#define ACTION_TRIGGER_OSD            243 // show autoclosing OSD. Can b used in videoFullScreen.xml window id=2005
+
 // touch actions
 #define ACTION_TOUCH_TAP              401
 #define ACTION_TOUCH_TAP_TEN          410
