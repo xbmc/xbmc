@@ -1,6 +1,5 @@
 #include "rar.hpp"
 #include "URL.h"
-#include "dialogs/GUIDialogProgress.h"
 
 ComprDataIO::ComprDataIO()
 {
@@ -35,7 +34,8 @@ void ComprDataIO::Init()
   CurrentCommand=0;
   ProcessedArcSize=TotalArcSize=0;
   bQuit = false;
-  m_pDlgProgress = NULL;
+  m_progress = NULL;
+  m_context  = NULL;
  }
 
 int ComprDataIO::UnpRead(byte *Addr,uint Count)
@@ -143,12 +143,8 @@ int ComprDataIO::UnpRead(byte *Addr,uint Count)
         return(-1);
       }
       CurUnpStart = CurUnpRead;
-      if (m_pDlgProgress)
-      {
-        CURL url(SrcArc->FileName);
-        m_pDlgProgress->SetLine(0,url.GetWithoutUserDetails()); // update currently extracted rar file
-        m_pDlgProgress->Progress();
-      }
+      if (m_progress)
+        m_progress(m_context, -1, SrcArc->FileName);
     }
     else
       break;
@@ -241,12 +237,9 @@ void ComprDataIO::UnpWrite(byte *Addr,uint Count)
   }
   ShowUnpWrite();
   Wait();
-  if (m_pDlgProgress)
+  if (m_progress)
   {
-    m_pDlgProgress->ShowProgressBar(true);
-    m_pDlgProgress->SetPercentage(int(float(CurUnpWrite)/float(((Archive*)SrcFile)->NewLhd.FullUnpSize)*100));
-    m_pDlgProgress->Progress();
-    if (m_pDlgProgress->IsCanceled()) 
+    if (!m_progress(m_context, int(float(CurUnpWrite)/float(((Archive*)SrcFile)->NewLhd.FullUnpSize)*100), NULL))
       bQuit = true;
   }
 }

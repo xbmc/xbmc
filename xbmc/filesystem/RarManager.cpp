@@ -30,8 +30,10 @@
 #include "FileItem.h"
 #include "utils/log.h"
 #include "filesystem/File.h"
+#include "URL.h"
 
 #include "dialogs/GUIDialogYesNo.h"
+#include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/StringUtils.h"
 
@@ -62,6 +64,71 @@ CRarManager::CRarManager()
 CRarManager::~CRarManager()
 {
   ClearCache(true);
+}
+
+class progress_info
+{
+public:
+  progress_info(const std::string &file) : heading(file), shown(false), showTime(200) // 200ms to show...
+  {
+  }
+  ~progress_info()
+  {
+    if (shown)
+    {
+      // close progress dialog
+      CGUIDialogProgress* dlg = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      if (dlg)
+        dlg->Close();
+    }
+  }
+  /*! \brief Progress callback from rar manager.
+   \return true to continue processing, false to cancel.
+   */
+  bool progress(int progress, const char *text)
+  {
+    bool cont(true);
+    if (shown || showTime.IsTimePast())
+    {
+      // grab the busy and show it
+      CGUIDialogProgress* dlg = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      if (dlg)
+      {
+        if (!shown)
+        {
+          dlg->SetHeading(heading);
+          dlg->StartModal();
+        }
+        if (progress >= 0)
+        {
+          dlg->ShowProgressBar(true);
+          dlg->SetPercentage(progress);
+        }
+        if (text)
+          dlg->SetLine(1, text);
+        cont = !dlg->IsCanceled();
+        shown = true;
+        // tell render loop to spin
+        dlg->Progress();
+      }
+    }
+    return cont;
+  };
+private:
+  std::string          heading;
+  bool                 shown;
+  XbmcThreads::EndTime showTime;
+};
+
+/*! \brief Rar progress callback.
+  \return false to halt progress, true to continue
+ */
+bool ProgressCallback(void *context, int progress, const char *text)
+{
+  progress_info* info = (progress_info*)context;
+  if (info)
+    return info->progress(progress, text);
+  return true;
 }
 
 bool CRarManager::CacheRarredFile(std::string& strPathInCache, const std::string& strRarPath, const std::string& strPathInRar, BYTE  bOptions, const std::string& strDir, const int64_t iSize)
@@ -182,8 +249,9 @@ bool CRarManager::CacheRarredFile(std::string& strPathInCache, const std::string
     URIUtils::RemoveSlashAtEnd(strDir2);
     if (!CDirectory::Exists(strDir2))
       CDirectory::Create(strDir2);
+    progress_info info(CURL(strPath).GetWithoutUserDetails());
     iRes = urarlib_get(const_cast<char*>(strRarPath.c_str()), const_cast<char*>(strDir2.c_str()),
-                       const_cast<char*>(strPath.c_str()),NULL,&iOffset,bShowProgress);
+                       const_cast<char*>(strPath.c_str()),NULL,&iOffset,bShowProgress ? ProgressCallback : NULL, &info);
   }
   if (iRes == 0)
   {

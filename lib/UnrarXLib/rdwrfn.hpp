@@ -7,7 +7,7 @@ class Unpack;
 #include "system.h"
 #include "threads/Event.h"
 
-class CGUIDialogProgress;
+typedef bool (*progress_callback)(void*, int, const char*);
 
 class ComprDataIO
 {
@@ -90,7 +90,8 @@ class ComprDataIO
     CEvent* hSeek;
     CEvent* hSeekDone;
     CEvent* hQuit;
-    CGUIDialogProgress* m_pDlgProgress;
+    progress_callback m_progress;
+    void*             m_context;
     bool bQuit;
     Int64 m_iSeekTo;
     Int64 m_iStartOfBuffer;
