@@ -340,6 +340,7 @@ lib/cpluff/stamp-h1
 
 # /project/cmake
 /project/cmake/xbmc-config.cmake
+/project/cmake/addons/build
 
 # /project/Win32BuildSetup/
 /project/Win32BuildSetup/XBMC.log
