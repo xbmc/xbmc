@@ -25,7 +25,6 @@ SRCS += FileFactory.cpp
 SRCS += FileReaderFile.cpp
 SRCS += FTPDirectory.cpp
 SRCS += FTPParse.cpp
-SRCS += HDDirectory.cpp
 SRCS += HDFile.cpp
 SRCS += HDHomeRunDirectory.cpp
 SRCS += HDHomeRunFile.cpp

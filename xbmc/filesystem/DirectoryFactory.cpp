@@ -24,7 +24,6 @@
 #include "network/Network.h"
 #include "system.h"
 #include "DirectoryFactory.h"
-#include "HDDirectory.h"
 #include "SpecialProtocolDirectory.h"
 #include "MultiPathDirectory.h"
 #include "StackDirectory.h"
@@ -48,6 +47,8 @@
 
 #ifdef TARGET_POSIX
 #include "posix/PosixDirectory.h"
+#elif defined(TARGET_WINDOWS)
+#include "win32/Win32Directory.h"
 #endif
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
@@ -140,8 +141,10 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
 
 #ifdef TARGET_POSIX
   if (strProtocol.size() == 0 || strProtocol == "file") return new CPosixDirectory();
+#elif defined(TARGET_WINDOWS)
+  if (strProtocol.size() == 0 || strProtocol == "file") return new CWin32Directory();
 #else
-  if (strProtocol.size() == 0 || strProtocol == "file") return new CHDDirectory();
+#error Local directory access is not implemented for this platform
 #endif
   if (strProtocol == "special") return new CSpecialProtocolDirectory();
   if (strProtocol == "sources") return new CSourcesDirectory();
