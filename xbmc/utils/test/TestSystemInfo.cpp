@@ -35,20 +35,6 @@ protected:
   }
 };
 
-#if defined(TARGET_LINUX)
-TEST_F(TestSystemInfo, GetLinuxDistro)
-{
-  std::cout << "GetLinuxDistro(): " << g_sysinfo.GetLinuxDistro() << std::endl;
-}
-#endif
-
-#ifdef TARGET_POSIX
-TEST_F(TestSystemInfo, GetUnameVersion)
-{
-  std::cout << "GetUnameVersion(): " << g_sysinfo.GetUnameVersion() << std::endl;
-}
-#endif
-
 TEST_F(TestSystemInfo, GetUserAgent)
 {
   std::cout << "GetUserAgent(): " << g_sysinfo.GetUserAgent() << std::endl;
@@ -83,11 +69,6 @@ TEST_F(TestSystemInfo, IsWindowsVersionAtLeast_Vista)
   std::cout << "IsWindowsVersionAtLeast(WindowsVersionVista): " <<
     testing::PrintToString(g_sysinfo.IsWindowsVersionAtLeast(
                                   CSysInfo::WindowsVersionVista)) << std::endl;
-}
-
-TEST_F(TestSystemInfo, GetOsNameWithVersionInfo)
-{
-  std::cout << "GetOsNameWithVersionInfo(): " << CSysInfo::GetOsNameWithVersionInfo() << std::endl;
 }
 
 TEST_F(TestSystemInfo, GetCPUModel)
