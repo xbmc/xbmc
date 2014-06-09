@@ -465,14 +465,10 @@ bool CSysInfo::GetDiskSpace(const CStdString& drive,int& iTotal, int& iTotalFree
     }
     delete[] pcBuffer;
 #else // for linux and osx
-    static const char *drv_letter[] = { "C:\\", "E:\\", "F:\\", "G:\\", "X:\\", "Y:\\", "Z:\\", NULL };
-    for( int i = 0; drv_letter[i]; i++)
+    if( GetDiskFreeSpaceEx( "/", NULL, &ULTotal, &ULTotalFree ) )
     {
-      if( GetDiskFreeSpaceEx( drv_letter[i], NULL, &ULTotal, &ULTotalFree ) )
-      {
-        ULTotalTmp.QuadPart+= ULTotal.QuadPart;
-        ULTotalFreeTmp.QuadPart+= ULTotalFree.QuadPart;
-      }
+      ULTotalTmp.QuadPart+= ULTotal.QuadPart;
+      ULTotalFreeTmp.QuadPart+= ULTotalFree.QuadPart;
     }
 #endif
     if( ULTotalTmp.QuadPart || ULTotalFreeTmp.QuadPart )
