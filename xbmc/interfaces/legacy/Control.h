@@ -891,6 +891,15 @@ namespace XBMCAddon
        */
       virtual void setText(const String& text) throw(UnimplementedException);
 
+      // getText() Method
+      /**
+       * getText() -- Returns the text value for this textbox.
+       *
+       * example:
+       *   - text = self.text.getText()
+       */
+      virtual String getText() throw(UnimplementedException);
+
       // reset() Method
       /**
        * reset() -- Clear's this textbox.
