@@ -333,6 +333,7 @@
 #define ACTION_SETTINGS_LEVEL_CHANGE  242
 
 #define ACTION_TRIGGER_OSD            243 // show autoclosing OSD. Can b used in videoFullScreen.xml window id=2005
+#define ACTION_TOGGLE_KEYBOARD        244 // Toggle virtual keyboard between "real keyboard" mode and "remote" mode
 
 // touch actions
 #define ACTION_TOUCH_TAP              401

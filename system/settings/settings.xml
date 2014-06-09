@@ -2618,11 +2618,6 @@
         </setting>
       </group>
       <group id="2">
-        <setting id="input.remoteaskeyboard" type="boolean" label="21449" help="36376">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
         <setting id="input.enablemouse" type="boolean" label="21369" help="36377">
           <level>0</level>
           <control type="toggle" />

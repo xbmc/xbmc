@@ -169,6 +169,7 @@
   </Home>
   <VirtualKeyboard>
     <keyboard>
+      <tab>ToggleKeyboard</tab>
       <backspace>Backspace</backspace>
     </keyboard>
   </VirtualKeyboard>

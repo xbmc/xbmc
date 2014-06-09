@@ -424,6 +424,8 @@ protected:
   bool m_bTestMode;
   bool m_bSystemScreenSaverEnable;
 
+  bool m_bKeyboardMode;
+
   VIDEO::CVideoInfoScanner *m_videoInfoScanner;
   MUSIC_INFO::CMusicInfoScanner *m_musicInfoScanner;
 
