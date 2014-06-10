@@ -568,10 +568,6 @@ void CGUIWindowHome::OnSectionLoaded(const CGUIMessage& message)
       CFileItemList list;
       if (GetContentListFromSection(url, CONTENT_LIST_FANART, list))
       {
-        SET_CONTROL_VISIBLE(SLIDESHOW_MULTIIMAGE);
-
-        CLog::Log(LOGDEBUG, "GUIWindowHome:OnMessage activating global fanart with %d photos",
-                  list.Size());
         CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), SLIDESHOW_MULTIIMAGE, 0, 0, &list);
         OnMessage(msg);
         m_currentFanArt = url;
