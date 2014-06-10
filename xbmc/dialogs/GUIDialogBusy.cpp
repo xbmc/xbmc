@@ -95,11 +95,15 @@ void CGUIDialogBusy::Show_Internal()
 {
   m_bCanceled = false;
   m_active = true;
-  m_bModal = true;
+  m_bModal = g_windowManager.HasModalDialog() ? false : true;
   m_bLastVisible = true;
   m_closing = false;
   m_progress = 0;
-  g_windowManager.RouteToWindow(this);
+
+  if (m_bModal)
+    g_windowManager.RouteToWindow(this);
+  else
+    g_windowManager.AddModeless(this);
 
   // active this window...
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0);
