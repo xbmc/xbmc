@@ -111,12 +111,6 @@ void CPlexSectionFanout::Refresh()
       trueUrl.GetHostName() == "playqueue")
   {
     ShowPlayQueue();
-    LoadSection(GetBestServerUrl("library/arts"), CONTENT_LIST_FANART);
-  }
-  else if (trueUrl.GetProtocol() == "global")
-  {
-    if (g_guiSettings.GetBool("lookandfeel.enableglobalslideshow"))
-      LoadSection(GetBestServerUrl("library/arts"), CONTENT_LIST_FANART);
   }
   else if (m_sectionType == SECTION_TYPE_QUEUE)
   {
@@ -134,10 +128,6 @@ void CPlexSectionFanout::Refresh()
     if (!g_advancedSettings.m_bHideFanouts)
       m_outstandingJobs.push_back(
       LoadSection(GetBestServerUrl("channels/recentlyViewed"), CONTENT_LIST_RECENTLY_ACCESSED));
-
-    /* We always show this as fanart */
-    m_outstandingJobs.push_back(
-    LoadSection(GetBestServerUrl("channels/arts"), CONTENT_LIST_FANART));
   }
 
   else
@@ -173,20 +163,54 @@ void CPlexSectionFanout::Refresh()
         m_outstandingJobs.push_back(LoadSection(trueUrl.Get(), CONTENT_LIST_ON_DECK));
       }
     }
+  }
 
-    /* We don't want to wait on the fanart, so don't add it to the outstandingjobs map */
-    if (g_guiSettings.GetBool("lookandfeel.enableglobalslideshow"))
+  LoadArts();
+}
+//////////////////////////////////////////////////////////////////////////////
+void CPlexSectionFanout::LoadArts()
+{
+  CURL artsUrl;
+
+  // compute the Arts Url
+  if (m_useGlobalSlideshow)
+  {
+    artsUrl = GetBestServerUrl("library/arts");
+  }
+  else
+  {
+    switch (m_sectionType)
     {
-      CURL artsUrl(m_url);
+      case SECTION_TYPE_CHANNELS:
+        artsUrl = CURL(GetBestServerUrl("channels/arts"));
+        break;
 
-      if (m_useGlobalSlideshow)
-        artsUrl = GetBestServerUrl("library/arts");
-      else
+      case SECTION_TYPE_MOVIE:
+      case SECTION_TYPE_HOME_MOVIE:
+      case SECTION_TYPE_SHOW:
+      case SECTION_TYPE_ALBUM:
+      case SECTION_TYPE_PHOTOS:
+      case SECTION_TYPE_QUEUE:
+        artsUrl = CURL(m_url);
         PlexUtils::AppendPathToURL(artsUrl, "arts");
+        break;
 
-      LoadSection(artsUrl, CONTENT_LIST_FANART);
+      default:
+        artsUrl = GetBestServerUrl("library/arts");
+        break;
     }
   }
+
+  // append some paging Option
+  CUrlOptions options;
+  options.AddOption("X-Plex-Container-Start", "0");
+  options.AddOption("X-Plex-Container-Size", "50");
+  options.AddOption("sort", "random");
+  artsUrl.AddOptions(options);
+
+  // load it
+  CLog::Log(LOGDEBUG,"CPlexSectionFanout::LoadArts : loading %s", artsUrl.Get().c_str());
+  LoadSection(artsUrl, CONTENT_LIST_FANART);
 }
 
 //////////////////////////////////////////////////////////////////////////////
