@@ -11,6 +11,7 @@
 
 #include "PlexApplication.h"
 #include "GUIInfoManager.h"
+#include "langinfo.h"
 
 using namespace XFILE;
 using namespace std;
@@ -57,6 +58,8 @@ vector<stringPair> CPlexFile::GetHeaderList()
   
   if (g_plexApplication.myPlexManager && g_plexApplication.myPlexManager->IsSignedIn())
     hdrs.push_back(stringPair("X-Plex-Username", g_plexApplication.myPlexManager->GetCurrentUserInfo().username));
+
+  hdrs.push_back(stringPair("X-Plex-Language", g_langInfo.GetLanguageLocale()));
 
   return hdrs;
 }
