@@ -1393,7 +1393,7 @@ void CApplicationMessenger::PictureSlideShow(string pathname, bool addTBN, const
 void CApplicationMessenger::PlexSaveServerCache()
 {
   ThreadMessage tMsg = {TMSG_PLEX_SAVE_SERVER_CACHE};
-  SendMessage(tMsg, true);
+  SendMessage(tMsg, false);
 }
 
 /* END PLEX */
