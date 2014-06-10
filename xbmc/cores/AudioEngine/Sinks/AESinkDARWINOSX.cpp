@@ -639,7 +639,10 @@ float ScoreStream(const AudioStreamBasicDescription &desc, const AEAudioFormat &
         score += 5;
       else if (desc.mChannelsPerFrame > format.m_channelLayout.Count())
         score += 1;
-      if (format.m_dataFormat == AE_FMT_FLOAT)
+
+      //if we get float, regardless of planar or not, prefer the highest bitdepth.
+      //For streams that are non-planar we let AE know in Initialize()
+      if (format.m_dataFormat == AE_FMT_FLOAT || format.m_dataFormat == AE_FMT_FLOATP)
       { // for float, prefer the highest bitdepth we have
         if (desc.mBitsPerChannel >= 16)
           score += (desc.mBitsPerChannel / 8);
