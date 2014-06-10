@@ -141,6 +141,8 @@ void aml_permissions()
   else
   {
     // certain aml devices have 664 permission, we need 666.
+    system("su -c chmod 666 /dev/amvideo");
+    system("su -c chmod 666 /dev/amstream*");
     system("su -c chmod 666 /sys/class/video/axis");
     system("su -c chmod 666 /sys/class/video/screen_mode");
     system("su -c chmod 666 /sys/class/video/disable_video");
