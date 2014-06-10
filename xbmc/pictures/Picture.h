@@ -65,6 +65,7 @@ class CThumbnailWriter : public CJob
   public:
     //WARNING: buffer is deleted from DoWork()
     CThumbnailWriter(unsigned char* buffer, int width, int height, int stride, const CStdString& thumbFile);
+    ~CThumbnailWriter();
     bool DoWork();
 
   private:

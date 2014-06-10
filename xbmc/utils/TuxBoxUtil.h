@@ -149,10 +149,10 @@ class CTuxBoxUtil
     virtual ~CTuxBoxUtil(void);
 
     bool GetZapUrl(const CStdString& strPath, CFileItem &items);
-    bool ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString strFilter, CStdString strChild);
-    bool ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString& strFilter, CStdString& strChild);
-    bool ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString strFilter, CStdString strChild);
-    bool ParseChannelsEnigma2(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString& strFilter, CStdString& strChild);
+    static bool ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString strFilter, CStdString strChild);
+    static bool ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString& strFilter, CStdString& strChild);
+    static bool ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString strFilter, CStdString strChild);
+    static bool ParseChannelsEnigma2(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString& strFilter, CStdString& strChild);
     bool ZapToUrl(CURL url, const CStdString &pathOption);
     bool StreamInformations(TiXmlElement *pRootElement);
     bool CurrentServiceData(TiXmlElement *pRootElement);
@@ -161,16 +161,16 @@ class CTuxBoxUtil
     bool ServiceEPG(TiXmlElement *pRootElement);
     bool GetHttpXML(CURL url,CStdString strRequestType);
     bool GetGUIRequestedAudioChannel(AUDIOCHANNEL& sRequestedAC);
-    bool GetRequestedAudioChannel(AUDIOCHANNEL& sRequestedAC);
+    bool GetRequestedAudioChannel(AUDIOCHANNEL& sRequestedAC) const;
     bool GetVideoSubChannels(CStdString& strVideoSubChannelName, CStdString& strVideoSubChannelPid);
     bool GetVideoChannels(TiXmlElement *pRootElement);
     bool CreateNewItem(const CFileItem& item, CFileItem& item_new);
-    bool InitZapstream(const CStdString& strPath);
-    bool SetAudioChannel(const CStdString& strPath, const AUDIOCHANNEL& sAC);
+    static bool InitZapstream(const CStdString& strPath);
+    static bool SetAudioChannel(const CStdString& strPath, const AUDIOCHANNEL& sAC);
 
-    CStdString GetPicon(CStdString strServiceName);
-    CStdString GetSubMode(int iMode, CStdString& strXMLRootString, CStdString& strXMLChildString);
-    CStdString DetectSubMode(CStdString strSubMode, CStdString& strXMLRootString, CStdString& strXMLChildString);
+    static CStdString GetPicon(CStdString strServiceName);
+    static CStdString GetSubMode(int iMode, CStdString& strXMLRootString, CStdString& strXMLChildString);
+    static CStdString DetectSubMode(CStdString strSubMode, CStdString& strXMLRootString, CStdString& strXMLChildString);
 };
 extern CTuxBoxUtil g_tuxbox;
 

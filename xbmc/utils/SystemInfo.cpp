@@ -109,7 +109,10 @@ static std::string getValueFromOs_release(std::string key)
   size_t len = fread(buf, 1, 10 * 1024, os_rel);
   fclose(os_rel);
   if (len == 0)
+  {
+    delete[] buf;
     return "";
+  }
 
   std::string content(buf, len);
   delete[] buf;
@@ -300,7 +303,7 @@ double CSysInfoJob::GetCPUFrequency()
 
 bool CSysInfoJob::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays)
 {
-  iMinutes=0;iHours=0;iDays=0;
+  iHours = 0; iDays = 0;
   iMinutes = iInputMinutes;
   if (iMinutes >= 60) // Hour's
   {

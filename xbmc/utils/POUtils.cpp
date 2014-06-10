@@ -312,7 +312,7 @@ void CPODocument::ConvertLineEnds(const std::string &filename)
 
   std::string strTemp;
   strTemp.reserve(m_strBuffer.size());
-  for (std::string::const_iterator it = m_strBuffer.begin(); it < m_strBuffer.end(); it++)
+  for (std::string::const_iterator it = m_strBuffer.begin(); it < m_strBuffer.end(); ++it)
   {
     if (*it == '\r')
     {

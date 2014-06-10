@@ -32,13 +32,12 @@ class CFileItem;  // forward
 
 struct LABEL_MASKS
 {
-  LABEL_MASKS(const CStdString& strLabelFile="", const CStdString& strLabel2File="", const CStdString& strLabelFolder="", const CStdString& strLabel2Folder="")
-  {
-    m_strLabelFile=strLabelFile;
-    m_strLabel2File=strLabel2File;
-    m_strLabelFolder=strLabelFolder;
-    m_strLabel2Folder=strLabel2Folder;
-  }
+  LABEL_MASKS(const CStdString& strLabelFile="", const CStdString& strLabel2File="", const CStdString& strLabelFolder="", const CStdString& strLabel2Folder="") :
+    m_strLabelFile(strLabelFile),
+    m_strLabel2File(strLabel2File),
+    m_strLabelFolder(strLabelFolder),
+    m_strLabel2Folder(strLabel2Folder)
+  {}
   CStdString m_strLabelFile;
   CStdString m_strLabel2File;
   CStdString m_strLabelFolder;
@@ -64,10 +63,11 @@ private:
   class CMaskString
   {
   public:
-    CMaskString(const CStdString &prefix, char content, const CStdString &postfix)
-    {
-      m_prefix = prefix; m_content = content; m_postfix = postfix;
-    };
+    CMaskString(const CStdString &prefix, char content, const CStdString &postfix) :
+      m_prefix(prefix),
+      m_postfix(postfix),
+      m_content(content)      
+    {};
     CStdString m_prefix;
     CStdString m_postfix;
     char m_content;

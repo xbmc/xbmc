@@ -180,7 +180,7 @@ CStreamDetails& CStreamDetails::operator=(const CStreamDetails &that)
   {
     Reset();
     std::vector<CStreamDetail *>::const_iterator iter;
-    for (iter = that.m_vecItems.begin(); iter != that.m_vecItems.end(); iter++)
+    for (iter = that.m_vecItems.begin(); iter != that.m_vecItems.end(); ++iter)
     {
       switch ((*iter)->m_eType)
       {
@@ -271,7 +271,7 @@ int CStreamDetails::GetStreamCount(CStreamDetail::StreamType type) const
 {
   int retVal = 0;
   std::vector<CStreamDetail *>::const_iterator iter;
-  for (iter = m_vecItems.begin(); iter != m_vecItems.end(); iter++)
+  for (iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
     if ((*iter)->m_eType == type)
       retVal++;
   return retVal;
@@ -310,7 +310,7 @@ void CStreamDetails::Reset(void)
   m_pBestSubtitle = NULL;
 
   std::vector<CStreamDetail *>::iterator iter;
-  for (iter = m_vecItems.begin(); iter != m_vecItems.end(); iter++)
+  for (iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
     delete *iter;
   m_vecItems.clear();
 }
@@ -337,7 +337,7 @@ const CStreamDetail* CStreamDetails::GetNthStream(CStreamDetail::StreamType type
   }
 
   std::vector<CStreamDetail *>::const_iterator iter;
-  for (iter = m_vecItems.begin(); iter != m_vecItems.end(); iter++)
+  for (iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
     if ((*iter)->m_eType == type)
     {
       idx--;
@@ -452,7 +452,7 @@ void CStreamDetails::Archive(CArchive& ar)
     ar << (int)m_vecItems.size();
 
     std::vector<CStreamDetail *>::const_iterator iter;
-    for (iter = m_vecItems.begin(); iter != m_vecItems.end(); iter++)
+    for (iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
     {
       // the type goes before the actual item.  When loading we need
       // to know the type before we can construct an instance to serialize
@@ -489,7 +489,7 @@ void CStreamDetails::Serialize(CVariant& value) const
 
   std::vector<CStreamDetail *>::const_iterator iter;
   CVariant v;
-  for (iter = m_vecItems.begin(); iter != m_vecItems.end(); iter++)
+  for (iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
   {
     v.clear();
     (*iter)->Serialize(v);
@@ -515,7 +515,7 @@ void CStreamDetails::DetermineBestStreams(void)
   m_pBestSubtitle = NULL;
 
   std::vector<CStreamDetail *>::const_iterator iter;
-  for (iter = m_vecItems.begin(); iter != m_vecItems.end(); iter++)
+  for (iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
   {
     CStreamDetail **champion;
     switch ((*iter)->m_eType)

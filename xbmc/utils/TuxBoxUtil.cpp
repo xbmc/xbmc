@@ -57,6 +57,7 @@ CTuxBoxService::~CTuxBoxService()
 CTuxBoxUtil::CTuxBoxUtil(void)
 {
   sCurSrvData.requested_audio_channel = 0;
+  vVideoSubChannel.mode = false;
   sZapstream.initialized = false;
   sZapstream.available = false;
 }
@@ -767,7 +768,6 @@ bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
   if(http.Open(url))
   {
     int size_read = 0;
-    int data_size = 0;
     int size_total = (int)http.GetLength();
 
     if(size_total > 0)
@@ -780,7 +780,6 @@ bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
       {
         buffer[size_read] = 0;
         strTmp += buffer;
-        data_size += size_read;
       }
 
       // parse returned xml
@@ -1464,7 +1463,7 @@ bool CTuxBoxUtil::GetGUIRequestedAudioChannel(AUDIOCHANNEL& sRequestedAC)
   }
   return false;
 }
-bool CTuxBoxUtil::GetRequestedAudioChannel(AUDIOCHANNEL& sRequestedAC)
+bool CTuxBoxUtil::GetRequestedAudioChannel(AUDIOCHANNEL& sRequestedAC) const
 {
   sRequestedAC = sCurSrvData.audio_channels[sCurSrvData.requested_audio_channel];
 

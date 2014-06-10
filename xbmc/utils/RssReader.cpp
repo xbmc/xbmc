@@ -269,7 +269,7 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
     {
       CStdString strName = childNode->Value();
 
-      for (i = m_tagSet.begin(); i != m_tagSet.end(); i++)
+      for (i = m_tagSet.begin(); i != m_tagSet.end(); ++i)
       {
         if (!childNode->NoChildren() && i->Equals(strName))
         {
@@ -295,7 +295,7 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
     }
 
     int rsscolour = RSS_COLOR_HEADLINE;
-    for (i = m_tagSet.begin(); i != m_tagSet.end(); i++)
+    for (i = m_tagSet.begin(); i != m_tagSet.end(); ++i)
     {
       map <CStdString, CStdStringW>::iterator j = mTagElements.find(*i);
 

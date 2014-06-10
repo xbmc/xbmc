@@ -257,7 +257,7 @@ CVariant::CVariant(const std::map<std::string, std::string> &strMap)
 {
   m_type = VariantTypeObject;
   m_data.map = new VariantMap;
-  for (std::map<std::string, std::string>::const_iterator it = strMap.begin(); it != strMap.end(); it++)
+  for (std::map<std::string, std::string>::const_iterator it = strMap.begin(); it != strMap.end(); ++it)
     m_data.map->insert(make_pair(it->first, CVariant(it->second)));
 }
 
@@ -500,7 +500,6 @@ std::wstring CVariant::asWideString(const std::wstring &fallback /* = L"" */) co
       else
         strStream << m_data.dvalue;
       return strStream.str();
-      break;
     }
     default:
       return fallback;
@@ -550,7 +549,7 @@ const CVariant &CVariant::operator[](unsigned int position) const
 
 CVariant &CVariant::operator=(const CVariant &rhs)
 {
-  if (m_type == VariantTypeConstNull)
+  if (m_type == VariantTypeConstNull || this == &rhs)
     return *this;
 
   cleanup();

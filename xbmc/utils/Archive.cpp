@@ -61,12 +61,12 @@ void CArchive::Close()
   FlushBuffer();
 }
 
-bool CArchive::IsLoading()
+bool CArchive::IsLoading() const
 {
   return (m_iMode == load);
 }
 
-bool CArchive::IsStoring()
+bool CArchive::IsStoring() const
 {
   return (m_iMode == store);
 }
@@ -187,7 +187,7 @@ CArchive& CArchive::operator<<(const CVariant& variant)
     break;
   case CVariant::VariantTypeObject:
     *this << variant.size();
-    for (CVariant::const_iterator_map itr = variant.begin_map(); itr != variant.end_map(); itr++)
+    for (CVariant::const_iterator_map itr = variant.begin_map(); itr != variant.end_map(); ++itr)
     {
       *this << itr->first;
       *this << itr->second;

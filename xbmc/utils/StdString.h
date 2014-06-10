@@ -862,16 +862,11 @@ inline const Type& SSMAX(const Type& arg1, const Type& arg2)
     {
       PCSTR pNextSrcA      = pSrcA;
       PWSTR pNextDstW      = pDstW;
-      SSCodeCvt::result res  = SSCodeCvt::ok;
       const SSCodeCvt& conv  = SS_USE_FACET(loc, SSCodeCvt);
-#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
-      SSCodeCvt::state_type st= { { 0 } };
-#else
-      SSCodeCvt::state_type st= { 0 };
-#endif
-      res            = conv.in(st,
-                    pSrcA, pSrcA + nSrc, pNextSrcA,
-                    pDstW, pDstW + nDst, pNextDstW);
+      SSCodeCvt::state_type st= {};
+      SSCodeCvt::result res = conv.in(st,
+                              pSrcA, pSrcA + nSrc, pNextSrcA,
+                              pDstW, pDstW + nDst, pNextDstW);
 #ifdef TARGET_POSIX
 #define ASSERT2(a) if (!(a)) {fprintf(stderr, "StdString: Assertion Failed on line %d\n", __LINE__);}
 #else
@@ -909,16 +904,11 @@ inline const Type& SSMAX(const Type& arg1, const Type& arg2)
     {
       PSTR pNextDstA      = pDstA;
       PCWSTR pNextSrcW    = pSrcW;
-      SSCodeCvt::result res  = SSCodeCvt::ok;
       const SSCodeCvt& conv  = SS_USE_FACET(loc, SSCodeCvt);
-#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
-      SSCodeCvt::state_type st= { { 0 } };
-#else
-      SSCodeCvt::state_type st= { 0 };
-#endif
-      res            = conv.out(st,
-                    pSrcW, pSrcW + nSrc, pNextSrcW,
-                    pDstA, pDstA + nDst, pNextDstA);
+      SSCodeCvt::state_type st= {};
+      SSCodeCvt::result res = conv.out(st,
+                              pSrcW, pSrcW + nSrc, pNextSrcW,
+                              pDstA, pDstA + nDst, pNextDstA);
 #ifdef TARGET_POSIX
 #define ASSERT2(a) if (!(a)) {fprintf(stderr, "StdString: Assertion Failed on line %d\n", __LINE__);}
 #else

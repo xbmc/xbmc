@@ -321,7 +321,7 @@ static CStdString ConstructPath(std::string in) // copy intended
 void CWeatherJob::SetFromProperties()
 {
   // Load in our tokens if necessary
-  if (!m_localizedTokens.size())
+  if (m_localizedTokens.empty())
     LoadLocalizedToken();
 
   CGUIWindow* window = g_windowManager.GetWindow(WINDOW_WEATHER);

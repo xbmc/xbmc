@@ -123,7 +123,7 @@ protected:
    \param threshold the threshold to determine whether a data point is close to a given bin as a proportion of bin mean
    \param minbinsize the minimum bin size of each bin
    */
-  void BinData(const boost::circular_buffer<double> &data, std::vector<double> &bins, const double threshold, const unsigned int minbinsize);
+  static void BinData(const boost::circular_buffer<double> &data, std::vector<double> &bins, const double threshold, const unsigned int minbinsize);
 
   /*! \brief Given a real value, find a rational convergent
    Uses a continued fraction expansion of value to determine the numerator and denominator of a rational convergent
@@ -133,7 +133,7 @@ protected:
    \param denom [out] the denominator
    \param maxnumden the maximal value of min(num, denom)
    */
-  void GetConvergent(double value, unsigned int &num, unsigned int &denom, const unsigned int maxnumden);
+  static void GetConvergent(double value, unsigned int &num, unsigned int &denom, const unsigned int maxnumden);
 
   /*! \brief Given a set of data, find integer multipliers such that data[i] \sim quotient[i] * gcd(data)
    Uses rational convergents to data[i]/min(data) to find integer multipliers to the (approximate) greatest common divisor
@@ -143,7 +143,7 @@ protected:
    \param maxminmult the maximal value of multiplier[min(data)]
    \sa GetConvergent
    */
-  void GetGCDMultipliers(const std::vector<double> &data, std::vector<unsigned int> &multipliers, const unsigned int maxminmult);
+  static void GetGCDMultipliers(const std::vector<double> &data, std::vector<unsigned int> &multipliers, const unsigned int maxminmult);
 
   /*! \brief Given a set of bins and integer values associated with each bin, find the integer representation of some data
    This allows noisy data to be approximated by a set of clean data, and to compute the integer representation of that data.
@@ -152,7 +152,7 @@ protected:
    \param bins the bins to use for approximating the data
    \param intBins the integer representation of the bins
    */
-  void GetIntRepresentation(const boost::circular_buffer<double> &data, std::vector<unsigned int> &intData, const std::vector<double> &bins, const std::vector<unsigned int> &intBins);
+  static void GetIntRepresentation(const boost::circular_buffer<double> &data, std::vector<unsigned int> &intData, const std::vector<double> &bins, const std::vector<unsigned int> &intBins);
 
   /*! \brief Given a set of data, and an integer representation of that data, estimate the period of the data
    Essentially we solve a linear regression d_i = \theta*z_i, where d_i is the original data, and z_i is the integer
@@ -163,7 +163,7 @@ protected:
    \param intData an integral representation of the data
    \return the period of the data
    */
-  double EstimatePeriod(const boost::circular_buffer<double> &data, const std::vector<unsigned int> &intData);
+  static double EstimatePeriod(const boost::circular_buffer<double> &data, const std::vector<unsigned int> &intData);
 
   /*! \brief Compute the next frame time
    \param currentTime the current time

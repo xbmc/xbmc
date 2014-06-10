@@ -74,18 +74,18 @@ public:
   *   \return The 3-Char ISO 639-2/T code of lang if that code exists, lang otherwise.
   */
   CStdString ConvertToISO6392T(const CStdString& lang);
-  bool ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode, bool checkWin32Locales = false);
-  bool ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode, bool checkXbmcLocales = true, bool checkWin32Locales = false);
+  static bool ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode, bool checkWin32Locales = false);
+  static bool ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode, bool checkXbmcLocales = true, bool checkWin32Locales = false);
 
 #ifdef TARGET_WINDOWS
-  bool ConvertLinuxToWindowsRegionCodes(const CStdString& strTwoCharCode, CStdString& strThreeCharCode);
-  bool ConvertWindowsToGeneralCharCode(const CStdString& strWindowsCharCode, CStdString& strThreeCharCode);
+  static bool ConvertLinuxToWindowsRegionCodes(const CStdString& strTwoCharCode, CStdString& strThreeCharCode);
+  static bool ConvertWindowsToGeneralCharCode(const CStdString& strWindowsCharCode, CStdString& strThreeCharCode);
 #endif
 
   void LoadUserCodes(const TiXmlElement* pRootElement);
   void Clear();
 
-  std::vector<std::string> GetLanguageNames(LANGFORMATS format = ISO_639_1) const;
+  static std::vector<std::string> GetLanguageNames(LANGFORMATS format = ISO_639_1);
 protected:
 
   /** \brief Converts a language code given as a long, see #MAKECODE(a, b, c, d)
@@ -93,12 +93,12 @@ protected:
   *   \param[in] code The language code given as a long, see #MAKECODE(a, b, c, d).
   *   \param[out] ret The string representation of the given language code code.
   */ 
-  void CodeToString(long code, CStdString& ret);
+  static void CodeToString(long code, CStdString& ret);
 
   typedef std::map<CStdString, CStdString> STRINGLOOKUPTABLE;
   STRINGLOOKUPTABLE m_mapUser;
 
-  bool LookupInDb(CStdString& desc, const CStdString& code);
+  static bool LookupInDb(CStdString& desc, const CStdString& code);
   bool LookupInMap(CStdString& desc, const CStdString& code);
 
   /** \brief Looks up the ISO 639-1, ISO 639-2/T, or ISO 639-2/B, whichever it finds first,

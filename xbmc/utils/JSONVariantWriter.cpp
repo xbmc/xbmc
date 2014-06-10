@@ -102,7 +102,7 @@ bool CJSONVariantWriter::InternalWrite(yajl_gen g, const CVariant &value)
   case CVariant::VariantTypeArray:
     success = yajl_gen_status_ok == yajl_gen_array_open(g);
 
-    for (CVariant::const_iterator_array itr = value.begin_array(); itr != value.end_array() && success; itr++)
+    for (CVariant::const_iterator_array itr = value.begin_array(); itr != value.end_array() && success; ++itr)
       success &= InternalWrite(g, *itr);
 
     if (success)
@@ -112,7 +112,7 @@ bool CJSONVariantWriter::InternalWrite(yajl_gen g, const CVariant &value)
   case CVariant::VariantTypeObject:
     success = yajl_gen_status_ok == yajl_gen_map_open(g);
 
-    for (CVariant::const_iterator_map itr = value.begin_map(); itr != value.end_map() && success; itr++)
+    for (CVariant::const_iterator_map itr = value.begin_map(); itr != value.end_map() && success; ++itr)
     {
 #if YAJL_MAJOR == 2
       success &= yajl_gen_status_ok == yajl_gen_string(g, (const unsigned char*)itr->first.c_str(), (size_t)itr->first.length());

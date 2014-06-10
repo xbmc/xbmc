@@ -337,7 +337,7 @@ TEST_F(TestCharsetConverter, getCharsetLabels)
   ASSERT_EQ(reflabels.size(), varlabels.size());
 
   std::vector<std::string>::iterator it;
-  for (it = varlabels.begin(); it < varlabels.end(); it++)
+  for (it = varlabels.begin(); it < varlabels.end(); ++it)
   {
     EXPECT_STREQ((reflabels.at(it - varlabels.begin())).c_str(), (*it).c_str());
   }

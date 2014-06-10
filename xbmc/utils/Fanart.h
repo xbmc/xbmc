@@ -81,7 +81,7 @@ public:
   ///
   /// Returns how many fanarts are stored
   /// \return An integer indicating how many fanarts are stored in the class.  Fanart indices are 0 to (GetNumFanarts() - 1)
-  unsigned int GetNumFanarts();
+  unsigned int GetNumFanarts() const;
   ///
   /// m_xml contains an XML formatted string which is all fanart packed into one string.
   ///
@@ -102,7 +102,7 @@ private:
   /// \param colorsIn: CStdString containing a string of colors in some format to be converted
   /// \param colorsOut: XBMC ARGB Hexadecimal string comma seperated "FFFFFFFF,DDDDDDDD,AAAAAAAA"
   /// \return boolean indicating success or failure.
-  bool ParseColors(const CStdString &colorsIn, CStdString &colorsOut);
+  static bool ParseColors(const CStdString &colorsIn, CStdString &colorsOut);
 
   struct SFanartData
   {

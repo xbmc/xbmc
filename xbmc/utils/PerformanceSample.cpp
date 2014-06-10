@@ -33,9 +33,8 @@ using namespace std;
 
 int64_t CPerformanceSample::m_tmFreq;
 
-CPerformanceSample::CPerformanceSample(const string &statName, bool bCheckWhenDone)
+CPerformanceSample::CPerformanceSample(const string &statName, bool bCheckWhenDone) : m_statName(statName)
 {
-  m_statName = statName;
   m_bCheckWhenDone = bCheckWhenDone;
   if (m_tmFreq == 0LL)
     m_tmFreq = CurrentHostFrequency();

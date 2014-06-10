@@ -219,7 +219,6 @@ void aml_set_audio_passthrough(bool passthrough)
 
 void aml_probe_hdmi_audio()
 {
-  std::vector<CStdString> audio_formats;
   // Audio {format, channel, freq, cce}
   // {1, 7, 7f, 7}
   // {7, 5, 1e, 0}
