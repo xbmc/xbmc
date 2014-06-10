@@ -14687,13 +14687,13 @@ msgstr ""
 #. Description of setting "Services -> Webserver -> Username" with label #1048
 #: system/settings/settings.xml
 msgctxt "#36330"
-msgid "Define the webserver username."
+msgid "Define the webserver username. This only takes effect when both the username and the password are set."
 msgstr ""
 
 #. Description of setting "Services -> Webserver -> Password" with label #1048
 #: system/settings/settings.xml
 msgctxt "#36331"
-msgid "Define the webserver password."
+msgid "Define the webserver password. This only takes effect when both the username and the password are set."
 msgstr ""
 
 #. Description of setting "Services -> Webserver -> Web interface" with label #199
