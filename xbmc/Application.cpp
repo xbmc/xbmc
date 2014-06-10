@@ -3631,7 +3631,7 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
   if (item.IsSmartPlayList())
   {
     CFileItemList items;
-    CUtil::GetRecursiveListing(item.GetPath(), items, "");
+    CUtil::GetRecursiveListing(item.GetPath(), items, "", DIR_FLAG_NO_FILE_DIRS);
     if (items.Size())
     {
       CSmartPlaylist smartpl;
