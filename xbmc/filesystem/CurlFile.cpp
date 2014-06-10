@@ -388,6 +388,7 @@ CCurlFile::CCurlFile()
 
   /* PLEX */
   m_clearCookies = false;
+  m_userAgent = PLEX_HOME_THEATER_USER_AGENT;
   /* END PLEX */
 }
 

@@ -240,7 +240,7 @@ CFileItemPtr CPlexMediaDecisionJob::ResolveIndirect(CFileItemPtr item)
 
   if (part->HasProperty("postURL"))
   {
-    m_http.SetUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.52 Safari/537.17");
+    m_http.SetUserAgent(PLEX_HOME_THEATER_USER_AGENT);
     m_http.ClearCookies();
 
     CLog::Log(LOGDEBUG, "CPlexMediaDecisionEngine::ResolveIndirect fetching PostURL");

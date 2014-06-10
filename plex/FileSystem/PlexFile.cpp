@@ -68,6 +68,8 @@ CPlexFile::CPlexFile(void) : CCurlFile()
 {
   BOOST_FOREACH(stringPair sp, GetHeaderList())
     SetRequestHeader(sp.first, sp.second);
+
+  SetUserAgent(PLEX_HOME_THEATER_USER_AGENT);
 }
 
 bool
