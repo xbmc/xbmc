@@ -70,9 +70,9 @@ struct CoreInfo
   std::string m_strRevision;
   std::string m_strSerial;
 #ifdef TARGET_POSIX
-  CoreInfo() : m_id(0), m_fSpeed(.0), m_fPct(.0), m_user(0LL), m_nice(0LL), m_system(0LL), m_idle(0LL), m_io(0LL) {}
+  CoreInfo() : m_id(0), m_fSpeed(.0), m_fPct(.0), m_user(0LL), m_nice(0LL), m_system(0LL), m_io(0LL), m_idle(0LL) {}
 #elif defined(TARGET_WINDOWS)
-  CoreInfo() : m_id(0), m_fSpeed(.0), m_fPct(.0), m_total(0LL), m_idle(0LL), m_coreCounter(NULL) {}
+  CoreInfo() : m_id(0), m_fSpeed(.0), m_fPct(.0), m_coreCounter(NULL), m_total(0LL), m_idle(0LL) {}
 #endif
   bool operator<(const CoreInfo& other) { return m_id < other.m_id; }
 };
