@@ -300,7 +300,7 @@ double CSysInfoJob::GetCPUFrequency()
 
 bool CSysInfoJob::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays)
 {
-  iMinutes=0;iHours=0;iDays=0;
+  iHours = 0; iDays = 0;
   iMinutes = iInputMinutes;
   if (iMinutes >= 60) // Hour's
   {

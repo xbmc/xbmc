@@ -196,7 +196,6 @@ CCPUInfo::CCPUInfo(void)
       }
       subKeyNameLen = sizeof(subKeyName) / sizeof(wchar_t); // restore length value
     }
-    DWORD err = GetLastError();
     RegCloseKey(hKeyCpuRoot);
     std::sort(cpuCores.begin(), cpuCores.end()); // sort cores by id
     for (size_t i = 0; i < cpuCores.size(); i++)
@@ -512,7 +511,6 @@ float CCPUInfo::getCPUFrequency()
     return 0.f;
   return hz / 1000000.0;
 #elif defined TARGET_WINDOWS
-  float retVal = 0;
   if (m_cpuFreqCounter && PdhCollectQueryData(m_cpuQueryFreq) == ERROR_SUCCESS)
   {
     PDH_RAW_COUNTER cnt;
