@@ -663,6 +663,15 @@ namespace VIDEO
 
     if (item->m_bIsFolder)
     {
+      /*
+       * Note: DoScan() will not remove this path as it's not recursing for tvshows.
+       * Remove this path from the list we're processing in order to avoid hitting
+       * it twice in the main loop.
+       */
+      set<CStdString>::iterator it = m_pathsToScan.find(item->GetPath());
+      if (it != m_pathsToScan.end())
+        m_pathsToScan.erase(it);
+
       CStdString hash, dbHash;
       hash = GetRecursiveFastHash(item->GetPath(), regexps);
       if (m_database.GetPathHash(item->GetPath(), dbHash) && !hash.empty() && dbHash == hash)
