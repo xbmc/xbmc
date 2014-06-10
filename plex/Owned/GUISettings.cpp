@@ -1003,7 +1003,9 @@ void CGUISettings::Initialize()
   AddInt(adva, "lookandfeel.skinzoom",20109, 0, -20, 2, 20, SPIN_CONTROL_INT, MASK_PERCENT);
   AddInt(NULL, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
   AddString(adva, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
+#ifndef __PLEX__
   AddBool(adva, "lookandfeel.enableglobalslideshow", 15150, true);
+#endif
   AddString(adva, "locale.charset", 14091, "DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
 
 //  AddCategory(SETTINGS_APPEARANCE, "window", 0);
