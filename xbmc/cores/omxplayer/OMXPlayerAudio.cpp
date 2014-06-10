@@ -567,13 +567,13 @@ bool OMXPlayerAudio::OpenDecoder()
   /* GetDataFormat is setting up evrything */
   m_format.m_dataFormat = GetDataFormat(m_hints);
 
-  uint64_t channelMap = 0;
+  CAEChannelInfo channelMap;
   if (m_pAudioCodec && !m_passthrough)
     channelMap = m_pAudioCodec->GetChannelMap();
   else if (m_passthrough)
     // we just want to get the channel count right to stop OMXAudio.cpp rejecting stream
     // the actual layout is not used
-    channelMap = (1<<m_nChannels)-1;
+    channelMap = AE_CH_LAYOUT_5_1;
   bool bAudioRenderOpen = m_omxAudio.Initialize(m_format, m_av_clock, m_hints, channelMap, m_passthrough, m_hw_decode);
 
   m_codec_name = "";
