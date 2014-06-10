@@ -276,7 +276,7 @@ bool CRepositoryUpdateJob::DoWork()
         !database.IsAddonBlacklisted(newAddon->ID(),newAddon->Version().asString()) &&
         deps_met)
     {
-      if (CSettings::Get().GetBool("general.addonautoupdate") || addon->Type() >= ADDON_VIZ_LIBRARY)
+      if (CSettings::Get().GetInt("general.addonupdates") == AUTO_UPDATES_ON)
       {
         string referer;
         if (URIUtils::IsInternetStream(newAddon->Path()))

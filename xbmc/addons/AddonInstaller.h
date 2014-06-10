@@ -26,6 +26,13 @@
 
 class CAddonDatabase;
 
+enum {
+  AUTO_UPDATES_ON = 0,
+  AUTO_UPDATES_NOTIFY,
+  AUTO_UPDATES_NEVER,
+  AUTO_UPDATES_MAX
+};
+
 class CAddonInstaller : public IJobCallback
 {
 public:
@@ -89,6 +96,10 @@ public:
    */
   bool HasJob(const CStdString& ID) const;
 
+  /*! \brief Fetch the last repository update time.
+   \return the last time a repository was updated.
+   */
+  CDateTime LastRepoUpdate() const;
   void UpdateRepos(bool force = false, bool wait = false);
 
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);

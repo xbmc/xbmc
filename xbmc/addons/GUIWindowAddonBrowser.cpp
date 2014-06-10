@@ -89,7 +89,12 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_AUTOUPDATE)
       {
-        CSettings::Get().ToggleBool("general.addonautoupdate");
+        const CGUIControl *control = GetControl(CONTROL_AUTOUPDATE);
+        if (control && control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
+          CSettings::Get().SetInt("general.addonupdates", (CSettings::Get().GetInt("general.addonupdates")+1) % AUTO_UPDATES_MAX);
+        else
+          CSettings::Get().SetInt("general.addonupdates", (CSettings::Get().GetInt("general.addonupdates") == 0) ? 1 : 0);
+        UpdateButtons();
         return true;
       }
       else if (iControl == CONTROL_SHUTUP)
@@ -271,7 +276,27 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
 
 void CGUIWindowAddonBrowser::UpdateButtons()
 {
-  SET_CONTROL_SELECTED(GetID(),CONTROL_AUTOUPDATE, CSettings::Get().GetBool("general.addonautoupdate"));
+  const CGUIControl *control = GetControl(CONTROL_AUTOUPDATE);
+  if (control && control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
+  { // set label
+    CSettingInt *setting = (CSettingInt *)CSettings::Get().GetSetting("general.addonupdates");
+    if (setting)
+    {
+      const StaticIntegerSettingOptions& options = setting->GetOptions();
+      for (StaticIntegerSettingOptions::const_iterator it = options.begin(); it != options.end(); ++it)
+      {
+        if (it->second == setting->GetValue())
+        {
+          SET_CONTROL_LABEL(CONTROL_AUTOUPDATE, it->first);
+          break;
+        }
+      }
+    }
+  }
+  else
+  { // old skin with toggle button - set on if auto updates are on
+    SET_CONTROL_SELECTED(GetID(),CONTROL_AUTOUPDATE, CSettings::Get().GetInt("general.addonupdates") == AUTO_UPDATES_ON);
+  }
   SET_CONTROL_SELECTED(GetID(),CONTROL_SHUTUP, CSettings::Get().GetBool("general.addonnotifications"));
   SET_CONTROL_SELECTED(GetID(),CONTROL_FOREIGNFILTER, CSettings::Get().GetBool("general.addonforeignfilter"));
   CGUIMediaWindow::UpdateButtons();

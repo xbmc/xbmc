@@ -54,10 +54,11 @@ namespace ADDON
     ADDON_AUDIO,
     ADDON_IMAGE,
     ADDON_EXECUTABLE,
-    ADDON_VIZ_LIBRARY, // add noninstallable after this and installable before
+    ADDON_VIZ_LIBRARY,
     ADDON_SCRAPER_LIBRARY,
     ADDON_SCRIPT_LIBRARY,
-    ADDON_SCRIPT_MODULE
+    ADDON_SCRIPT_MODULE,
+    ADDON_MAX
   } TYPE;
 
   class IAddon;

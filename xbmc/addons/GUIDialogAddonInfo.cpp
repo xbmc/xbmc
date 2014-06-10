@@ -372,7 +372,7 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
     else if (m_localAddon) // sanity
       database.GetRepository(m_localAddon->ID(), addons);
     int tot=0;
-    for (int i = ADDON_UNKNOWN+1;i<ADDON_VIZ_LIBRARY;++i)
+    for (int i = ADDON_UNKNOWN+1;i<ADDON_MAX;++i)
     {
       int num=0;
       for (unsigned int j=0;j<addons.size();++j)

@@ -357,6 +357,22 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
   return true;
 }
 
+CDateTime CAddonInstaller::LastRepoUpdate() const
+{
+  CDateTime update;
+  VECADDONS addons;
+  CAddonMgr::Get().GetAddons(ADDON_REPOSITORY,addons);
+  for (unsigned int i=0;i<addons.size();++i)
+  {
+    CAddonDatabase database;
+    database.Open();
+    CDateTime lastUpdate = database.GetRepoTimestamp(addons[i]->ID());
+    if (lastUpdate.IsValid() && lastUpdate > update)
+      update = lastUpdate;
+  }
+  return update;
+}
+
 void CAddonInstaller::UpdateRepos(bool force, bool wait)
 {
   CSingleLock lock(m_critSection);
@@ -715,7 +731,7 @@ bool CAddonInstallJob::Install(const CStdString &installFrom, const AddonPtr& re
 
 void CAddonInstallJob::OnPostInstall(bool reloadAddon)
 {
-  if (m_addon->Type() < ADDON_VIZ_LIBRARY && CSettings::Get().GetBool("general.addonnotifications"))
+  if (CSettings::Get().GetBool("general.addonnotifications"))
   {
     CGUIDialogKaiToast::QueueNotification(m_addon->Icon(),
                                           m_addon->Name(),

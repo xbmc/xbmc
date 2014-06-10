@@ -5170,7 +5170,8 @@ void CApplication::ProcessSlow()
     g_RemoteControl.Initialize();
 #endif
 
-  if (!m_pPlayer->IsPlayingVideo())
+  if (!m_pPlayer->IsPlayingVideo() &&
+      CSettings::Get().GetInt("general.addonupdates") != AUTO_UPDATES_NEVER)
     CAddonInstaller::Get().UpdateRepos();
 
   CAEFactory::GarbageCollect();
