@@ -449,7 +449,7 @@ bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
     }
     else if (FD_ISSET(fd, &set))
     {
-      ReturnV = read(fd, Buff + buffpos, (int)sizeof(Buff) - buffpos);
+      ReturnV = read(fd, Buff + buffpos, (int)sizeof(Buff) - buffpos - 1);
       if (ReturnV == -1)
       {
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: read failed on %s: %s", NVSETTINGSCMD, strerror(errno));
@@ -477,11 +477,7 @@ bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
     //then kill the process if it hangs
     return false;
   }
-  else if (buffpos > (int)sizeof(Buff) - 1)
-  {
-    buffpos = sizeof(Buff) - 1;
-    pclose(NvSettings);
-  }
+  pclose(NvSettings);
   Buff[buffpos] = 0;
 
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: output of %s: %s", NVSETTINGSCMD, Buff);
