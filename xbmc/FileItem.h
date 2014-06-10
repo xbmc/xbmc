@@ -91,8 +91,10 @@ public:
   CFileItem(const CFileItem& item);
   CFileItem(const CGUIListItem& item);
   CFileItem(const CStdString& strLabel);
+  CFileItem(const CURL& path, bool bIsFolder);
   CFileItem(const CStdString& strPath, bool bIsFolder);
   CFileItem(const CSong& song);
+  CFileItem(const CURL &path, const CAlbum& album);
   CFileItem(const CStdString &path, const CAlbum& album);
   CFileItem(const CArtist& artist);
   CFileItem(const CGenre& genre);
@@ -106,9 +108,15 @@ public:
   virtual ~CFileItem(void);
   virtual CGUIListItem *Clone() const { return new CFileItem(*this); };
 
+  const CURL GetURL() const;
+  void SetURL(const CURL& url);
   const CStdString &GetPath() const { return m_strPath; };
   void SetPath(const CStdString &path) { m_strPath = path; };
 
+  /*! \brief reset class to it's default values as per construction.
+   Free's all allocated memory.
+   \sa Initialize
+   */
   void Reset();
   const CFileItem& operator=(const CFileItem& item);
   virtual void Archive(CArchive& ar);
@@ -454,6 +462,12 @@ public:
   int m_iBadPwdCount;
 
 private:
+  /*! \brief initialize all members of this class (not CGUIListItem members) to default values.
+   Called from constructors, and from Reset()
+   \sa Reset, CGUIListItem
+   */
+  void Initialize();
+
   CStdString m_strPath;            ///< complete path to item
 
   SortSpecial m_specialSort;

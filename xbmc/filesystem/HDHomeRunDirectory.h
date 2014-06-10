@@ -30,8 +30,8 @@ namespace XFILE
     public:
       CHomeRunDirectory(void);
       virtual ~CHomeRunDirectory(void);
-      virtual bool IsAllowed(const CStdString &strFile) const { return true; };
-      virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+      virtual bool AllowAll() const { return true; }
+      virtual bool GetDirectory(const CURL& url, CFileItemList &items);
     private:
       DllHdHomeRun* m_pdll;
   };

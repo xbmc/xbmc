@@ -59,11 +59,9 @@ CDAAPDirectory::~CDAAPDirectory(void)
   m_currentSongItems = NULL;
 }
 
-bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CDAAPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  CURL url(strPath);
-
-  CStdString strRoot = strPath;
+  CStdString strRoot = url.Get();
   URIUtils::AddSlashAtEnd(strRoot);
 
   CStdString host = url.GetHostName();
@@ -400,7 +398,7 @@ void CDAAPDirectory::AddToArtistAlbum(char *artist_s, char *album_s)
   }
 }
 
-int CDAAPDirectory::GetCurrLevel(CStdString strPath)
+int CDAAPDirectory::GetCurrLevel(const std::string &strPath)
 {
   size_t intSPos;
   size_t intEPos;

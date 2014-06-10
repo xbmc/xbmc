@@ -41,9 +41,10 @@ CCDDADirectory::~CCDDADirectory(void)
 }
 
 
-bool CCDDADirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CCDDADirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   // Reads the tracks from an audio cd
+  CStdString strPath = url.Get();
 
   if (!g_mediaManager.IsDiscInDrive(strPath))
     return false;

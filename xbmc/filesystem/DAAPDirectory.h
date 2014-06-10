@@ -39,10 +39,10 @@ class CDAAPDirectory :
 public:
   CDAAPDirectory(void);
   virtual ~CDAAPDirectory(void);
-  virtual bool IsAllowed(const CStdString &strFile) const { return true; };
-  virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+  virtual bool AllowAll() const { return true; }
+  virtual bool GetDirectory(const CURL& url, CFileItemList &items);
   //virtual void CloseDAAP(void);
-  int GetCurrLevel(CStdString strPath);
+  int GetCurrLevel(const std::string &strPath);
 
 private:
   void free_albums(albumPTR *alb);
@@ -56,8 +56,8 @@ private:
   int m_currLevel;
 
   artistPTR *m_artisthead;
-  CStdString m_selectedPlaylist;
-  CStdString m_selectedArtist;
-  CStdString m_selectedAlbum;
+  std::string m_selectedPlaylist;
+  std::string m_selectedArtist;
+  std::string m_selectedAlbum;
 };
 }

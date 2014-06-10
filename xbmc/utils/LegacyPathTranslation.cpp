@@ -20,6 +20,7 @@
 
 #include "LegacyPathTranslation.h"
 #include "utils/StringUtils.h"
+#include "URL.h"
 
 typedef struct Translator {
   const char *legacyPath;
@@ -79,6 +80,15 @@ static Translator s_musicDbTranslator[] = {
 
 #define MusicDbTranslatorSize sizeof(s_musicDbTranslator) / sizeof(Translator)
 
+std::string CLegacyPathTranslation::TranslateVideoDbPath(const CURL &legacyPath)
+{
+  return TranslatePath(legacyPath.Get(), s_videoDbTranslator, VideoDbTranslatorSize);
+}
+
+std::string CLegacyPathTranslation::TranslateMusicDbPath(const CURL &legacyPath)
+{
+  return TranslatePath(legacyPath.Get(), s_musicDbTranslator, MusicDbTranslatorSize);
+}
 
 std::string CLegacyPathTranslation::TranslateVideoDbPath(const std::string &legacyPath)
 {

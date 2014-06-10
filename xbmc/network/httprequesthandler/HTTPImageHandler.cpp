@@ -37,7 +37,8 @@ int CHTTPImageHandler::HandleHTTPRequest(const HTTPRequest &request)
     m_path = request.url.substr(7);
 
     XFILE::CImageFile imageFile;
-    if (imageFile.Exists(m_path))
+    const CURL pathToUrl(m_path);
+    if (imageFile.Exists(pathToUrl))
     {
       m_responseCode = MHD_HTTP_OK;
       m_responseType = HTTPFileDownload;

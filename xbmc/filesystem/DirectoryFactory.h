@@ -45,6 +45,6 @@ namespace XFILE
 class CDirectoryFactory
 {
 public:
-  static IDirectory* Create(const CStdString& strPath);
+  static IDirectory* Create(const CURL& url);
 };
 }

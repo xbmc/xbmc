@@ -19,8 +19,9 @@
  *
  */
 
-#include "IDirectory.h"
 #include <set>
+#include "IDirectory.h"
+#include "utils/StdString.h"
 
 namespace XFILE
 {
@@ -30,12 +31,13 @@ class CMultiPathDirectory :
 public:
   CMultiPathDirectory(void);
   virtual ~CMultiPathDirectory(void);
-  virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-  virtual bool Exists(const char* strPath);
-  virtual bool Remove(const char* strPath);
+  virtual bool GetDirectory(const CURL& url, CFileItemList &items);
+  virtual bool Exists(const CURL& url);
+  virtual bool Remove(const CURL& url);
 
   static CStdString GetFirstPath(const CStdString &strPath);
   static bool SupportsWriteFileOperations(const CStdString &strPath);
+  static bool GetPaths(const CURL& url, std::vector<CStdString>& vecPaths);
   static bool GetPaths(const CStdString& strPath, std::vector<CStdString>& vecPaths);
   static bool HasPath(const CStdString& strPath, const CStdString& strPathToFind);
   static CStdString ConstructMultiPath(const std::vector<CStdString> &vecPaths);

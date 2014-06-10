@@ -36,17 +36,14 @@ namespace XFILE
   {
   }
 
-  bool CRarDirectory::GetDirectory(const CStdString& strPathOrig, CFileItemList& items)
+  bool CRarDirectory::GetDirectory(const CURL& urlOrig, CFileItemList& items)
   {
-    CStdString strPath;
+    CURL url(urlOrig);
 
     /* if this isn't a proper archive path, assume it's the path to a archive file */
-    if( !StringUtils::StartsWithNoCase(strPathOrig, "rar://") )
-      URIUtils::CreateArchivePath(strPath, "rar", strPathOrig, "");
-    else
-      strPath = strPathOrig;
+    if (urlOrig.GetProtocol() != "rar")
+      url = URIUtils::CreateArchivePath("rar", urlOrig);
 
-    CURL url(strPath);
     CStdString strArchive = url.GetHostName();
     CStdString strOptions = url.GetOptions();
     CStdString strPathInArchive = url.GetFileName();
@@ -77,19 +74,20 @@ namespace XFILE
     }
   }
 
-  bool CRarDirectory::Exists(const char* strPath)
+  bool CRarDirectory::Exists(const CURL& url)
   {
     CFileItemList items;
-    if (GetDirectory(strPath,items))
+    if (GetDirectory(url,items))
       return true;
 
     return false;
   }
 
-  bool CRarDirectory::ContainsFiles(const CStdString& strPath)
+  bool CRarDirectory::ContainsFiles(const CURL& url)
   {
     CFileItemList items;
-    if (g_RarManager.GetFilesInRar(items,strPath))
+    const CStdString pathToUrl(url.Get());
+    if (g_RarManager.GetFilesInRar(items, pathToUrl))
     {
       if (items.Size() > 1)
         return true;

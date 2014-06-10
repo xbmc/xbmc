@@ -36,7 +36,7 @@ class CBlurayDirectory: public XFILE::IDirectory
 public:
   CBlurayDirectory();
   virtual ~CBlurayDirectory();
-  virtual bool GetDirectory(const CStdString& path, CFileItemList &items);
+  virtual bool GetDirectory(const CURL& url, CFileItemList &items);
 
 private:
 

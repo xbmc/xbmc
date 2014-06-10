@@ -65,12 +65,12 @@ bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
   // This forces the shared lib loader to load a per-instance copy of SNESAPU.
 #ifdef TARGET_POSIX
   m_loader_name = CUtil::GetNextFilename("special://temp/SNESAPU-%03d.so", 999);
-  XFILE::CFile::Cache(DLL_PATH_SPC_CODEC, m_loader_name);
+  XFILE::CFile::Copy(DLL_PATH_SPC_CODEC, m_loader_name);
 
   m_loader = new SoLoader(m_loader_name);
 #else
   m_loader_name = CUtil::GetNextFilename("special://temp/SNESAPU-%03d.dll", 999);
-  XFILE::CFile::Cache(DLL_PATH_SPC_CODEC, m_loader_name);
+  XFILE::CFile::Copy(DLL_PATH_SPC_CODEC, m_loader_name);
 
   m_loader = new Win32DllLoader(m_loader_name);
 #endif

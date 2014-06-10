@@ -37,30 +37,29 @@ CMusicSearchDirectory::~CMusicSearchDirectory(void)
 {
 }
 
-bool CMusicSearchDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CMusicSearchDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   // break up our path
   // format is:  musicsearch://<url encoded search string>
-  CURL url(strPath);
   CStdString search(url.GetHostName());
 
   if (search.empty())
     return false;
 
   // and retrieve the search details
-  items.SetPath(strPath);
+  items.SetURL(url);
   unsigned int time = XbmcThreads::SystemClockMillis();
   CMusicDatabase db;
   db.Open();
   db.Search(search, items);
   db.Close();
   CLog::Log(LOGDEBUG, "%s (%s) took %u ms",
-            __FUNCTION__, strPath.c_str(), XbmcThreads::SystemClockMillis() - time);
+            __FUNCTION__, url.GetRedacted().c_str(), XbmcThreads::SystemClockMillis() - time);
   items.SetLabel(g_localizeStrings.Get(137)); // Search
   return true;
 }
 
-bool CMusicSearchDirectory::Exists(const char* strPath)
+bool CMusicSearchDirectory::Exists(const CURL& url)
 {
   return true;
 }

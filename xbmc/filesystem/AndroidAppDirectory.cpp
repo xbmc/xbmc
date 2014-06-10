@@ -42,9 +42,8 @@ CAndroidAppDirectory::~CAndroidAppDirectory(void)
 {
 }
 
-bool CAndroidAppDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CAndroidAppDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  CURL url(strPath);
   CStdString dirname = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(dirname);
   CLog::Log(LOGDEBUG, "CAndroidAppDirectory::GetDirectory: %s",dirname.c_str()); 
@@ -72,14 +71,8 @@ bool CAndroidAppDirectory::GetDirectory(const CStdString& strPath, CFileItemList
     return true;
   }
 
-  CLog::Log(LOGERROR, "CAndroidAppDirectory::GetDirectory Failed to open %s",strPath.c_str());
+  CLog::Log(LOGERROR, "CAndroidAppDirectory::GetDirectory Failed to open %s", url.Get().c_str());
   return false;
-}
-
-bool CAndroidAppDirectory::IsAllowed(const CStdString& strFile) const
-{
-  // Entries are virtual, so we want them all.
-  return true;
 }
 
 #endif

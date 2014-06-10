@@ -47,12 +47,12 @@ CMultiPathDirectory::CMultiPathDirectory()
 CMultiPathDirectory::~CMultiPathDirectory()
 {}
 
-bool CMultiPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CMultiPathDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  CLog::Log(LOGDEBUG,"CMultiPathDirectory::GetDirectory(%s)", strPath.c_str());
+  CLog::Log(LOGDEBUG,"CMultiPathDirectory::GetDirectory(%s)", url.GetRedacted().c_str());
 
   vector<CStdString> vecPaths;
-  if (!GetPaths(strPath, vecPaths))
+  if (!GetPaths(url, vecPaths))
     return false;
 
   XbmcThreads::EndTime progressTime(3000); // 3 seconds before showing progress bar
@@ -114,12 +114,12 @@ bool CMultiPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   return true;
 }
 
-bool CMultiPathDirectory::Exists(const char* strPath)
+bool CMultiPathDirectory::Exists(const CURL& url)
 {
-  CLog::Log(LOGDEBUG,"Testing Existence (%s)", strPath);
+  CLog::Log(LOGDEBUG,"Testing Existence (%s)", url.GetRedacted().c_str());
 
   vector<CStdString> vecPaths;
-  if (!GetPaths(strPath, vecPaths))
+  if (!GetPaths(url, vecPaths))
     return false;
 
   for (unsigned int i = 0; i < vecPaths.size(); ++i)
@@ -131,10 +131,10 @@ bool CMultiPathDirectory::Exists(const char* strPath)
   return false;
 }
 
-bool CMultiPathDirectory::Remove(const char* strPath)
+bool CMultiPathDirectory::Remove(const CURL& url)
 {
   vector<CStdString> vecPaths;
-  if (!GetPaths(strPath, vecPaths))
+  if (!GetPaths(url, vecPaths))
     return false;
 
   bool success = false;
@@ -152,6 +152,12 @@ CStdString CMultiPathDirectory::GetFirstPath(const CStdString &strPath)
   if (pos != std::string::npos)
     return CURL::Decode(strPath.substr(12, pos - 12));
   return "";
+}
+
+bool CMultiPathDirectory::GetPaths(const CURL& url, vector<CStdString>& vecPaths)
+{
+  const CStdString pathToUrl(url.Get());
+  return GetPaths(pathToUrl, vecPaths);
 }
 
 bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths)

@@ -485,9 +485,9 @@ namespace XFILE
   {
   }
 
-  bool CSAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+  bool CSAPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   {
-    if(strPath != "sap://")
+    if(url.GetProtocol() != "sap")
       return false;
 
     CSingleLock lock(g_sapsessions.m_section);

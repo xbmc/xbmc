@@ -122,7 +122,7 @@ bool CFileOperationJob::DoProcessFolder(FileAction action, const CStdString& str
 {
   // check whether this folder is a filedirectory - if so, we don't process it's contents
   CFileItem item(strPath, false);
-  IFileDirectory *file = CFileDirectoryFactory::Create(strPath, &item);
+  IFileDirectory *file = CFileDirectoryFactory::Create(item.GetURL(), &item);
   if (file)
   {
     delete file;
@@ -266,7 +266,7 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
     {
       CLog::Log(LOGDEBUG,"FileManager: copy %s -> %s\n", m_strFileA.c_str(), m_strFileB.c_str());
 
-      bResult = CFile::Cache(m_strFileA, m_strFileB, this, &data);
+      bResult = CFile::Copy(m_strFileA, m_strFileB, this, &data);
     }
     break;
     case ActionMove:
@@ -275,7 +275,7 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
 
       if (CanBeRenamed(m_strFileA, m_strFileB))
         bResult = CFile::Rename(m_strFileA, m_strFileB);
-      else if (CFile::Cache(m_strFileA, m_strFileB, this, &data))
+      else if (CFile::Copy(m_strFileA, m_strFileB, this, &data))
         bResult = CFile::Delete(m_strFileA);
       else
         bResult = false;

@@ -172,7 +172,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
     strFileName += "-" + ID() + extension;
 
     if (!CFile::Exists(strFileName))
-      CFile::Cache(LibPath(), strFileName);
+      CFile::Copy(LibPath(), strFileName);
 
     CLog::Log(LOGNOTICE, "ADDON: Loaded virtual child addon %s", strFileName.c_str());
   }

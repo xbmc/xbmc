@@ -31,10 +31,10 @@ namespace XFILE
   public:
     CSmartPlaylistDirectory();
     ~CSmartPlaylistDirectory();
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
-    virtual bool IsAllowed(const CStdString &strFile) const { return true; };
-    virtual bool ContainsFiles(const CStdString& strPath);
-    virtual bool Remove(const char *strPath);
+    virtual bool GetDirectory(const CURL& url, CFileItemList& items);
+    virtual bool AllowAll() const { return true; }
+    virtual bool ContainsFiles(const CURL& url);
+    virtual bool Remove(const CURL& url);
 
     static bool GetDirectory(const CSmartPlaylist &playlist, CFileItemList& items, const CStdString &strBaseDir = "", bool filter = false);
 

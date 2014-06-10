@@ -32,8 +32,8 @@ namespace XFILE
   class CFavouritesDirectory : public IDirectory
   {
   public:
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-    virtual bool Exists(const char* strPath);
+    virtual bool GetDirectory(const CURL& url, CFileItemList &items);
+    virtual bool Exists(const CURL& url);
     static bool Load(CFileItemList &items);
     static bool LoadFavourites(const CStdString& strPath, CFileItemList& items);
 

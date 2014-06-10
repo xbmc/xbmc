@@ -131,31 +131,37 @@ CUtil::~CUtil(void)
 
 CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder /* = false */)
 {
+  CURL pathToUrl(strFileNameAndPath);
+  return GetTitleFromPath(pathToUrl, bIsFolder);
+}
+
+CStdString CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false */)
+{
   // use above to get the filename
-  CStdString path(strFileNameAndPath);
+  CStdString path(url.Get());
   URIUtils::RemoveSlashAtEnd(path);
   CStdString strFilename = URIUtils::GetFileName(path);
 
-  CURL url(strFileNameAndPath);
   CStdString strHostname = url.GetHostName();
 
 #ifdef HAS_UPNP
   // UPNP
   if (url.GetProtocol() == "upnp")
-    strFilename = CUPnPDirectory::GetFriendlyName(strFileNameAndPath.c_str());
+    strFilename = CUPnPDirectory::GetFriendlyName(url);
 #endif
 
   if (url.GetProtocol() == "rss")
   {
     CRSSDirectory dir;
     CFileItemList items;
-    if(dir.GetDirectory(strFileNameAndPath, items) && !items.m_strTitle.empty())
+    if(dir.GetDirectory(url, items) && !items.m_strTitle.empty())
       return items.m_strTitle;
   }
 
   // Shoutcast
   else if (url.GetProtocol() == "shout")
   {
+    const CStdString strFileNameAndPath = url.Get();
     const int genre = strFileNameAndPath.find_first_of('=');
     if(genre <0)
       strFilename = g_localizeStrings.Get(260);
@@ -2033,7 +2039,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
           for (unsigned int k = 0; k < TagConv.m_Langclass.size(); k++)
           {
             strDest = StringUtils::Format("special://temp/subtitle.%s.%d.smi", TagConv.m_Langclass[k].Name.c_str(), i);
-            if (CFile::Cache(vecSubtitles[i], strDest))
+            if (CFile::Copy(vecSubtitles[i], strDest))
             {
               CLog::Log(LOGINFO, " cached subtitle %s->%s\n", vecSubtitles[i].c_str(), strDest.c_str());
               vecSubtitles.push_back(strDest);

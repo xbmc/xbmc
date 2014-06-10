@@ -339,6 +339,8 @@ void CGUIDialogFileBrowser::OnSort()
 
 void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
 {
+  const CURL pathToUrl(strDirectory);
+
   if (m_browsingForImages && m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
   // get selected item
@@ -360,9 +362,9 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
     CFileItemList items;
     CStdString strParentPath;
 
-    if (!m_rootDir.GetDirectory(strDirectory, items,m_useFileDirectories))
+    if (!m_rootDir.GetDirectory(pathToUrl, items, m_useFileDirectories))
     {
-      CLog::Log(LOGERROR,"CGUIDialogFileBrowser::GetDirectory(%s) failed", CURL::GetRedacted(strDirectory).c_str());
+      CLog::Log(LOGERROR,"CGUIDialogFileBrowser::GetDirectory(%s) failed", pathToUrl.GetRedacted().c_str());
 
       // We assume, we can get the parent
       // directory again

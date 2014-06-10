@@ -152,7 +152,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
         // guisettings.xml will be created on first profile use.
         if (CGUIDialogYesNo::ShowAndGetInput(20058,20048,20102,20022,20044,20064))
         {
-          XFILE::CFile::Cache(URIUtils::AddFileToFolder("special://masterprofile/", "guisettings.xml"),
+          XFILE::CFile::Copy(URIUtils::AddFileToFolder("special://masterprofile/", "guisettings.xml"),
                               URIUtils::AddFileToFolder("special://masterprofile/", dialog->m_directory + "/guisettings.xml"));
         }
       }
@@ -168,7 +168,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
           // If 'start fresh' (no) is selected, do nothing.
           if (CGUIDialogYesNo::ShowAndGetInput(20058, 20071, 20102, 20022, 20044, 20064))
           {
-            XFILE::CFile::Cache(URIUtils::AddFileToFolder("special://masterprofile/", "sources.xml"),
+            XFILE::CFile::Copy(URIUtils::AddFileToFolder("special://masterprofile/", "sources.xml"),
                                 URIUtils::AddFileToFolder("special://masterprofile/", dialog->m_directory + "/sources.xml"));
           }
       }

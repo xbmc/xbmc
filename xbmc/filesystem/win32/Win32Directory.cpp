@@ -24,6 +24,7 @@
 #include "win32/WIN32Util.h"
 #include "utils/SystemInfo.h"
 #include "utils/CharsetConverter.h"
+#include "URL.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1
@@ -45,28 +46,17 @@ inline static std::wstring prepareWin32DirectoryName(const std::string& strPath)
   return nameW;
 }
 
-// check for NULL and empty string, remove trailing slash if any, convert to win32 form
-inline static std::wstring prepareWin32DirectoryName(const char* strPath)
-{
-  if (strPath == NULL)
-    return std::wstring(); // empty string
-
-  return prepareWin32DirectoryName(std::string(strPath));
-}
-
 CWin32Directory::CWin32Directory(void)
 {}
 
 CWin32Directory::~CWin32Directory(void)
 {}
 
-bool CWin32Directory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   items.Clear();
-  if (strPath.empty())
-    return false;
 
-  std::string pathWithSlash(strPath);
+  std::string pathWithSlash(url.Get());
   if (pathWithSlash.back() != '\\')
     pathWithSlash.push_back('\\');
 
@@ -86,7 +76,7 @@ bool CWin32Directory::GetDirectory(const CStdString& strPath, CFileItemList &ite
     hSearch = FindFirstFileExW(searchMask.c_str(), FindExInfoStandard, &findData, FindExSearchNameMatch, NULL, 0);
 
   if (hSearch == INVALID_HANDLE_VALUE)
-    return Exists(strPath); // return true if directory exist and empty
+    return Exists(url); // return true if directory exist and empty
 
   do
   {
@@ -130,16 +120,16 @@ bool CWin32Directory::GetDirectory(const CStdString& strPath, CFileItemList &ite
   return true;
 }
 
-bool CWin32Directory::Create(const char* strPath)
+bool CWin32Directory::Create(const CURL& url)
 {
-  std::wstring nameW(prepareWin32DirectoryName(strPath));
+  std::wstring nameW(prepareWin32DirectoryName(url.Get()));
   if (nameW.empty())
     return false;
 
   if (!CreateDirectoryW(nameW.c_str(), NULL))
   {
     if (GetLastError() == ERROR_ALREADY_EXISTS)
-      return Exists(strPath); // is it file or directory?
+      return Exists(url); // is it file or directory?
     else
       return false;
   }
@@ -156,9 +146,9 @@ bool CWin32Directory::Create(const char* strPath)
   return true;
 }
 
-bool CWin32Directory::Exists(const char* strPath)
+bool CWin32Directory::Exists(const CURL& url)
 {
-  std::wstring nameW(prepareWin32DirectoryName(strPath));
+  std::wstring nameW(prepareWin32DirectoryName(url.Get()));
   if (nameW.empty())
     return false;
 
@@ -169,16 +159,16 @@ bool CWin32Directory::Exists(const char* strPath)
   return true;
 }
 
-bool CWin32Directory::Remove(const char* strPath)
+bool CWin32Directory::Remove(const CURL& url)
 {
-  std::wstring nameW(prepareWin32DirectoryName(strPath));
+  std::wstring nameW(prepareWin32DirectoryName(url.Get()));
   if (nameW.empty())
     return false;
 
   if (RemoveDirectoryW(nameW.c_str()))
     return true;
 
-  return !Exists(strPath);
+  return !Exists(url);
 }
 
 #endif // TARGET_WINDOWS

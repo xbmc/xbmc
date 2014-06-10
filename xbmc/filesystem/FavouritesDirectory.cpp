@@ -36,28 +36,24 @@ namespace XFILE
 {
 
 
-bool CFavouritesDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CFavouritesDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   items.Clear();
-  CURL url(strPath);
-
   if (url.GetProtocol() == "favourites")
   {
     return Load(items); //load the default favourite files
   }
-  return LoadFavourites(strPath, items); //directly load the given file
+  return LoadFavourites(url.Get(), items); //directly load the given file
 }
 
-bool CFavouritesDirectory::Exists(const char* strPath)
+bool CFavouritesDirectory::Exists(const CURL& url)
 {
-  CURL url(strPath);
-
   if (url.GetProtocol() == "favourites")
   {
     return XFILE::CFile::Exists("special://xbmc/system/favourites.xml") 
         || XFILE::CFile::Exists(URIUtils::AddFileToFolder(CProfilesManager::Get().GetProfileUserDataFolder(), "favourites.xml"));
   }
-  return XFILE::CFile::Exists(strPath); //directly load the given file
+  return XFILE::CFile::Exists(url); //directly load the given file
 }
 
 bool CFavouritesDirectory::Load(CFileItemList &items)

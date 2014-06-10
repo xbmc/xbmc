@@ -34,16 +34,14 @@ CISO9660Directory::CISO9660Directory(void)
 CISO9660Directory::~CISO9660Directory(void)
 {}
 
-bool CISO9660Directory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CISO9660Directory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  CStdString strRoot = strPath;
+  CStdString strRoot = url.Get();
   URIUtils::AddSlashAtEnd(strRoot);
 
   // Scan active disc if not done before
   if (!m_isoReader.IsScanned())
     m_isoReader.Scan();
-
-  CURL url(strPath);
 
   WIN32_FIND_DATA wfd;
   HANDLE hFind;
@@ -108,10 +106,10 @@ bool CISO9660Directory::GetDirectory(const CStdString& strPath, CFileItemList &i
   return true;
 }
 
-bool CISO9660Directory::Exists(const char* strPath)
+bool CISO9660Directory::Exists(const CURL& url)
 {
   CFileItemList items;
-  if (GetDirectory(strPath,items))
+  if (GetDirectory(url,items))
     return true;
 
   return false;

@@ -30,11 +30,11 @@ class CSMBDirectory : public IDirectory
 public:
   CSMBDirectory(void);
   virtual ~CSMBDirectory(void);
-  virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-  virtual DIR_CACHE_TYPE GetCacheType(const CStdString &strPath) const { return DIR_CACHE_ONCE; };
-  virtual bool Create(const char* strPath);
-  virtual bool Exists(const char* strPath);
-  virtual bool Remove(const char* strPath);
+  virtual bool GetDirectory(const CURL& url, CFileItemList &items);
+  virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const { return DIR_CACHE_ONCE; };
+  virtual bool Create(const CURL& url);
+  virtual bool Exists(const CURL& url);
+  virtual bool Remove(const CURL& url);
 
   int Open(const CURL &url);
 

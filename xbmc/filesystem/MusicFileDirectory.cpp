@@ -23,6 +23,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "URL.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -35,15 +36,15 @@ CMusicFileDirectory::~CMusicFileDirectory(void)
 {
 }
 
-bool CMusicFileDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items)
+bool CMusicFileDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  CStdString strPath=strPath1;
+  CStdString strPath=url.Get();
 
   CStdString strFileName;
   strFileName = URIUtils::GetFileName(strPath);
   URIUtils::RemoveExtension(strFileName);
 
-  int iStreams = GetTrackCount(strPath1);
+  int iStreams = GetTrackCount(strPath);
 
   URIUtils::AddSlashAtEnd(strPath);
 
@@ -64,14 +65,15 @@ bool CMusicFileDirectory::GetDirectory(const CStdString& strPath1, CFileItemList
   return true;
 }
 
-bool CMusicFileDirectory::Exists(const char* strPath)
+bool CMusicFileDirectory::Exists(const CURL& url)
 {
   return true;
 }
 
-bool CMusicFileDirectory::ContainsFiles(const CStdString& strPath)
+bool CMusicFileDirectory::ContainsFiles(const CURL &url)
 {
-  if (GetTrackCount(strPath) > 1)
+  const CStdString pathToUrl(url.Get());
+  if (GetTrackCount(pathToUrl) > 1)
     return true;
 
   return false;

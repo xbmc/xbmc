@@ -128,27 +128,33 @@ void* auto_buffer::detach(void)
   return returnPtr;
 }
 
+bool CFile::Copy(const CStdString& strFileName, const CStdString& strDest, XFILE::IFileCallback* pCallback, void* pContext)
+{
+  const CURL pathToUrl(strFileName);
+  const CURL pathToUrlDest(strDest);
+  return Copy(pathToUrl, pathToUrlDest, pCallback, pContext);
+}
 
-// This *looks* like a copy function, therefor the name "Cache" is misleading
-bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFILE::IFileCallback* pCallback, void* pContext)
+bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCallback, void* pContext)
 {
   CFile file;
 
-  if (strFileName.empty() || strDest.empty())
+  const CStdString pathToUrl(dest.Get());
+  if (pathToUrl.empty())
     return false;
 
   // special case for zips - ignore caching
-  CURL url(strFileName);
-  if (URIUtils::IsInZIP(strFileName) || URIUtils::IsInAPK(strFileName))
+  CURL url(url2);
+  if (URIUtils::IsInZIP(url.Get()) || URIUtils::IsInAPK(url.Get()))
     url.SetOptions("?cache=no");
   if (file.Open(url.Get(), READ_TRUNCATED))
   {
 
     CFile newFile;
-    if (URIUtils::IsHD(strDest)) // create possible missing dirs
+    if (URIUtils::IsHD(pathToUrl)) // create possible missing dirs
     {
       vector<std::string> tokens;
-      CStdString strDirectory = URIUtils::GetDirectory(strDest);
+      CStdString strDirectory = URIUtils::GetDirectory(pathToUrl);
       URIUtils::RemoveSlashAtEnd(strDirectory);  // for the test below
       if (!(strDirectory.size() == 2 && strDirectory[1] == ':'))
       {
@@ -175,9 +181,9 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
         }
       }
     }
-    if (CFile::Exists(strDest))
-      CFile::Delete(strDest);
-    if (!newFile.OpenForWrite(strDest, true))  // overwrite always
+    if (CFile::Exists(dest))
+      CFile::Delete(dest);
+    if (!newFile.OpenForWrite(dest, true))  // overwrite always
     {
       file.Close();
       return false;
@@ -202,7 +208,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
       if (iRead == 0) break;
       else if (iRead < 0)
       {
-        CLog::Log(LOGERROR, "%s - Failed read from file %s", __FUNCTION__, strFileName.c_str());
+        CLog::Log(LOGERROR, "%s - Failed read from file %s", __FUNCTION__, url.GetRedacted().c_str());
         llFileSize = (uint64_t)-1;
         break;
       }
@@ -219,7 +225,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
 
       if (iWrite != iRead)
       {
-        CLog::Log(LOGERROR, "%s - Failed write to file %s", __FUNCTION__, strDest.c_str());
+        CLog::Log(LOGERROR, "%s - Failed write to file %s", __FUNCTION__, dest.GetRedacted().c_str());
         llFileSize = (uint64_t)-1;
         break;
       }
@@ -254,7 +260,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     /* verify that we managed to completed the file */
     if (llFileSize && llPos != llFileSize)
     {
-      CFile::Delete(strDest);
+      CFile::Delete(dest);
       return false;
     }
     return true;
@@ -265,11 +271,17 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
 //*********************************************************************************************
 bool CFile::Open(const CStdString& strFileName, const unsigned int flags)
 {
+  const CURL pathToUrl(strFileName);
+  return Open(pathToUrl, flags);
+}
+
+bool CFile::Open(const CURL& file, const unsigned int flags)
+{
   m_flags = flags;
   try
   {
     bool bPathInCache;
-    CURL url2(URIUtils::SubstitutePath(strFileName));
+    CURL url2(URIUtils::SubstitutePath(file));
     if (url2.GetProtocol() == "apk")
       url2.SetOptions("");
     if (url2.GetProtocol() == "zip")
@@ -280,11 +292,12 @@ bool CFile::Open(const CStdString& strFileName, const unsigned int flags)
         return false;
     }
 
-    CURL url(URIUtils::SubstitutePath(strFileName));
+    CURL url(URIUtils::SubstitutePath(file));
 
     if (!(m_flags & READ_NO_CACHE))
     {
-      if (URIUtils::IsInternetStream(url, true) && !CUtil::IsPicture(strFileName) )
+      const CStdString pathToUrl(url.Get());
+      if (URIUtils::IsInternetStream(url, true) && !CUtil::IsPicture(pathToUrl) )
         m_flags |= READ_CACHED;
 
       if (m_flags & READ_CACHED)
@@ -311,7 +324,7 @@ bool CFile::Open(const CStdString& strFileName, const unsigned int flags)
     {
       // the file implementation decided this item should use a different implementation.
       // the exception will contain the new implementation.
-      CLog::Log(LOGDEBUG,"File::Open - redirecting implementation for %s", strFileName.c_str());
+      CLog::Log(LOGDEBUG,"File::Open - redirecting implementation for %s", file.GetRedacted().c_str());
       SAFE_DELETE(m_pFile);
       if (pRedirectEx && pRedirectEx->m_pNewFileImp)
       {
@@ -339,7 +352,7 @@ bool CFile::Open(const CStdString& strFileName, const unsigned int flags)
     }
     catch (...)
     {
-      CLog::Log(LOGERROR, "File::Open - unknown exception when opening %s", strFileName.c_str());
+      CLog::Log(LOGERROR, "File::Open - unknown exception when opening %s", file.GetRedacted().c_str());
       SAFE_DELETE(m_pFile);
       return false;
     }
@@ -363,22 +376,27 @@ bool CFile::Open(const CStdString& strFileName, const unsigned int flags)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-  CLog::Log(LOGERROR, "%s - Error opening %s", __FUNCTION__, strFileName.c_str());
+  CLog::Log(LOGERROR, "%s - Error opening %s", __FUNCTION__, file.GetRedacted().c_str());
   return false;
 }
 
 bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
 {
+  const CURL pathToUrl(strFileName);
+  return OpenForWrite(pathToUrl, bOverWrite);
+}
+
+bool CFile::OpenForWrite(const CURL& file, bool bOverWrite)
+{
   try
   {
-    CStdString storedFileName = URIUtils::SubstitutePath(strFileName);
-    CURL url(storedFileName);
+    CURL url = URIUtils::SubstitutePath(file);
 
     m_pFile = CFileFactory::CreateLoader(url);
     if (m_pFile && m_pFile->OpenForWrite(url, bOverWrite))
     {
       // add this file to our directory cache (if it's stored)
-      g_directoryCache.AddFile(storedFileName);
+      g_directoryCache.AddFile(url.Get());
       return true;
     }
     return false;
@@ -386,21 +404,24 @@ bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
   XBMCCOMMONS_HANDLE_UNCHECKED
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Unhandled exception opening %s", __FUNCTION__, strFileName.c_str());
+    CLog::Log(LOGERROR, "%s - Unhandled exception opening %s", __FUNCTION__, file.GetRedacted().c_str());
   }
-  CLog::Log(LOGERROR, "%s - Error opening %s", __FUNCTION__, strFileName.c_str());
+  CLog::Log(LOGERROR, "%s - Error opening %s", __FUNCTION__, file.GetRedacted().c_str());
   return false;
 }
 
 bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
 {
-  CURL url = URIUtils::SubstitutePath(strFileName);
-  
+  const CURL pathToUrl(strFileName);
+  return Exists(pathToUrl, bUseCache);
+}
+
+bool CFile::Exists(const CURL& file, bool bUseCache /* = true */)
+{
+  CURL url(URIUtils::SubstitutePath(file));
+
   try
   {
-    if (strFileName.empty())
-      return false;
-
     if (bUseCache)
     {
       bool bPathInCache;
@@ -421,7 +442,7 @@ bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
   {
     // the file implementation decided this item should use a different implementation.
     // the exception will contain the new implementation and optional a redirected URL.
-    CLog::Log(LOGDEBUG,"File::Exists - redirecting implementation for %s", strFileName.c_str());
+    CLog::Log(LOGDEBUG,"File::Exists - redirecting implementation for %s", file.GetRedacted().c_str());
     if (pRedirectEx && pRedirectEx->m_pNewFileImp)
     {
       auto_ptr<IFile> pImp(pRedirectEx->m_pNewFileImp);
@@ -451,7 +472,7 @@ bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-  CLog::Log(LOGERROR, "%s - Error checking for %s", __FUNCTION__, strFileName.c_str());
+  CLog::Log(LOGERROR, "%s - Error checking for %s", __FUNCTION__, file.GetRedacted().c_str());
   return false;
 }
 
@@ -479,15 +500,19 @@ bool CFile::SkipNext()
 
 int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
 {
+  const CURL pathToUrl(strFileName);
+  return Stat(pathToUrl, buffer);
+}
+
+int CFile::Stat(const CURL& file, struct __stat64* buffer)
+{
   if (!buffer)
     return -1;
 
-  CURL url;
-  
+  CURL url(URIUtils::SubstitutePath(file));
+
   try
   {
-    url = URIUtils::SubstitutePath(strFileName);
-    
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
       return -1;
@@ -498,7 +523,7 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
   {
     // the file implementation decided this item should use a different implementation.
     // the exception will contain the new implementation and optional a redirected URL.
-    CLog::Log(LOGDEBUG,"File::Stat - redirecting implementation for %s", strFileName.c_str());
+    CLog::Log(LOGDEBUG,"File::Stat - redirecting implementation for %s", file.GetRedacted().c_str());
     if (pRedirectEx && pRedirectEx->m_pNewFileImp)
     {
       auto_ptr<IFile> pImp(pRedirectEx->m_pNewFileImp);
@@ -525,7 +550,7 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-  CLog::Log(LOGERROR, "%s - Error statting %s", __FUNCTION__, strFileName.c_str());
+  CLog::Log(LOGERROR, "%s - Error statting %s", __FUNCTION__, file.GetRedacted().c_str());
   return -1;
 }
 
@@ -786,9 +811,15 @@ int CFile::Write(const void* lpBuf, int64_t uiBufSize)
 
 bool CFile::Delete(const CStdString& strFileName)
 {
+  const CURL pathToUrl(strFileName);
+  return Delete(pathToUrl);
+}
+
+bool CFile::Delete(const CURL& file)
+{
   try
   {
-    CURL url(URIUtils::SubstitutePath(strFileName));
+    CURL url(URIUtils::SubstitutePath(file));
 
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
@@ -805,17 +836,24 @@ bool CFile::Delete(const CStdString& strFileName)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-  if (Exists(strFileName))
-    CLog::Log(LOGERROR, "%s - Error deleting file %s", __FUNCTION__, strFileName.c_str());
+  if (Exists(file))
+    CLog::Log(LOGERROR, "%s - Error deleting file %s", __FUNCTION__, file.GetRedacted().c_str());
   return false;
 }
 
 bool CFile::Rename(const CStdString& strFileName, const CStdString& strNewFileName)
 {
+  const CURL pathToUrl(strFileName);
+  const CURL pathToUrlNew(strNewFileName);
+  return Rename(pathToUrl, pathToUrlNew);
+}
+
+bool CFile::Rename(const CURL& file, const CURL& newFile)
+{
   try
   {
-    CURL url(URIUtils::SubstitutePath(strFileName));
-    CURL urlnew(URIUtils::SubstitutePath(strNewFileName));
+    CURL url(URIUtils::SubstitutePath(file));
+    CURL urlnew(URIUtils::SubstitutePath(newFile));
 
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
@@ -833,15 +871,21 @@ bool CFile::Rename(const CStdString& strFileName, const CStdString& strNewFileNa
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception ", __FUNCTION__);
   }
-  CLog::Log(LOGERROR, "%s - Error renaming file %s", __FUNCTION__, strFileName.c_str());
+  CLog::Log(LOGERROR, "%s - Error renaming file %s", __FUNCTION__, file.GetRedacted().c_str());
   return false;
 }
 
 bool CFile::SetHidden(const CStdString& fileName, bool hidden)
 {
+  const CURL pathToUrl(fileName);
+  return SetHidden(pathToUrl, hidden);
+}
+
+bool CFile::SetHidden(const CURL& file, bool hidden)
+{
   try
   {
-    CURL url(URIUtils::SubstitutePath(fileName));
+    CURL url(URIUtils::SubstitutePath(file));
 
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
@@ -851,7 +895,7 @@ bool CFile::SetHidden(const CStdString& fileName, bool hidden)
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s(%s) - Unhandled exception", __FUNCTION__, fileName.c_str());
+    CLog::Log(LOGERROR, "%s(%s) - Unhandled exception", __FUNCTION__, file.GetRedacted().c_str());
   }
   return false;
 }
@@ -895,18 +939,21 @@ std::string CFile::GetContentCharset(void)
   return m_pFile->GetContentCharset();
 }
 
-
 unsigned int CFile::LoadFile(const std::string &filename, auto_buffer& outputBuffer)
+{
+  const CURL pathToUrl(filename);
+  return LoadFile(pathToUrl, outputBuffer);
+}
+
+unsigned int CFile::LoadFile(const CURL& file, auto_buffer& outputBuffer)
 {
   static const unsigned int max_file_size = 0x7FFFFFFF;
   static const unsigned int min_chunk_size = 64 * 1024U;
   static const unsigned int max_chunk_size = 2048 * 1024U;
 
   outputBuffer.clear();
-  if (filename.empty())
-    return 0;
 
-  if (!Open(filename, READ_TRUNCATED))
+  if (!Open(file, READ_TRUNCATED))
     return 0;
 
   /*
@@ -1095,11 +1142,9 @@ bool CFileStream::Open(const CURL& filename)
 {
   Close();
 
-  // NOTE: This is currently not translated - reason is that all entry points into CFileStream::Open currently
-  //       go from the CStdString version below.  We may have to change this in future, but I prefer not decoding
-  //       the URL and re-encoding, or applying the translation twice.
-  m_file = CFileFactory::CreateLoader(filename);
-  if(m_file && m_file->Open(filename))
+  CURL url(URIUtils::SubstitutePath(filename));
+  m_file = CFileFactory::CreateLoader(url);
+  if(m_file && m_file->Open(url))
   {
     m_buffer.Attach(m_file);
     return true;
@@ -1125,5 +1170,6 @@ void CFileStream::Close()
 
 bool CFileStream::Open(const CStdString& filename)
 {
-  return Open(CURL(URIUtils::SubstitutePath(filename)));
+  const CURL pathToUrl(filename);
+  return Open(pathToUrl);
 }

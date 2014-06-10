@@ -275,7 +275,7 @@ void CScreenShot::TakeScreenshot()
           for (unsigned int i = 0; i < screenShots.size(); i++)
           {
             CStdString file = CUtil::GetNextFilename(URIUtils::AddFileToFolder(newDir, "screenshot%03d.png"), 999);
-            CFile::Cache(screenShots[i], file);
+            CFile::Copy(screenShots[i], file);
           }
           screenShots.clear();
         }

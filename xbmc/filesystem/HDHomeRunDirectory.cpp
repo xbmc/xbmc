@@ -44,12 +44,10 @@ CHomeRunDirectory::~CHomeRunDirectory()
   delete m_pdll;
 }
 
-bool CHomeRunDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CHomeRunDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   if(!m_pdll->IsLoaded())
     return false;
-
-  CURL url(strPath);
 
   if(url.GetHostName().empty())
   {

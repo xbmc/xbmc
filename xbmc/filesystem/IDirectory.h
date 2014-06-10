@@ -19,10 +19,11 @@
  *
  */
 
-#include "utils/StdString.h"
+#include <string>
 #include "utils/Variant.h"
 
 class CFileItemList;
+class CURL;
 
 namespace XFILE
 {
@@ -62,12 +63,12 @@ public:
   virtual ~IDirectory(void);
   /*!
    \brief Get the \e items of the directory \e strPath.
-   \param strPath Directory to read.
+   \param url Directory to read.
    \param items Retrieves the directory entries.
    \return Returns \e true, if successfull.
    \sa CDirectoryFactory
    */
-  virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items) = 0;
+  virtual bool GetDirectory(const CURL& url, CFileItemList &items) = 0;
   /*!
    \brief Retrieve the progress of the current directory fetch (if possible).
    \return the progress as a float in the range 0..100.
@@ -81,40 +82,45 @@ public:
   virtual void CancelDirectory() { };
   /*!
   \brief Create the directory
-  \param strPath Directory to create.
+  \param url Directory to create.
   \return Returns \e true, if directory is created or if it already exists
   \sa CDirectoryFactory
   */
-  virtual bool Create(const char* strPath) { return false; }
+  virtual bool Create(const CURL& url) { return false; }
   /*!
   \brief Check for directory existence
-  \param strPath Directory to check.
+  \param url Directory to check.
   \return Returns \e true, if directory exists
   \sa CDirectoryFactory
   */
-  virtual bool Exists(const char* strPath) { return false; }
+  virtual bool Exists(const CURL& url) { return false; }
   /*!
   \brief Removes the directory
-  \param strPath Directory to remove.
+  \param url Directory to remove.
   \return Returns \e false if not succesfull
   */
-  virtual bool Remove(const char* strPath) { return false; }
+  virtual bool Remove(const CURL& url) { return false; }
 
   /*!
   \brief Whether this file should be listed
-  \param strFile File to test.
+  \param url File to test.
   \return Returns \e true if the file should be listed
   */
-  virtual bool IsAllowed(const CStdString& strFile) const;
+  virtual bool IsAllowed(const CURL& url) const;
+
+  /*! \brief Whether to allow all files/folders to be listed.
+   \return Returns \e true if all files/folder should be listed.
+   */
+  virtual bool AllowAll() const { return false; }
 
   /*!
   \brief How this directory should be cached
-  \param strPath Directory at hand.
+  \param url Directory at hand.
   \return Returns the cache type.
   */
-  virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ONCE; };
+  virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const { return DIR_CACHE_ONCE; };
 
-  void SetMask(const CStdString& strMask);
+  void SetMask(const std::string& strMask);
   void SetFlags(int flags);
 
   /*! \brief Process additional requirements before the directory fetch is performed.
@@ -136,7 +142,7 @@ protected:
    \return true if keyboard input has been received. False if it hasn't.
    \sa ProcessRequirements
    */
-  bool GetKeyboardInput(const CVariant &heading, CStdString &input);
+  bool GetKeyboardInput(const CVariant &heading, std::string &input);
 
   /*! \brief Show an error dialog on failure of GetDirectory call
    Call this method from the GetDirectory method to set an error message to be shown to the user
@@ -155,9 +161,9 @@ protected:
    \param url the URL to authenticate.
    \sa ProcessRequirements
    */
-  void RequireAuthentication(const CStdString &url);
+  void RequireAuthentication(const CURL& url);
 
-  CStdString m_strFileMask;  ///< Holds the file mask specified by SetMask()
+  std::string m_strFileMask;  ///< Holds the file mask specified by SetMask()
 
   int m_flags; ///< Directory flags - see DIR_FLAG
 

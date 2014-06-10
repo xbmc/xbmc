@@ -503,7 +503,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
     CStdString strDownloadFile = URIUtils::ChangeBasePath(strCurrentFilePath, strSubName, strDownloadPath);
     CStdString strDestFile = strDownloadFile;
 
-    if (!CFile::Cache(strUrl, strDownloadFile))
+    if (!CFile::Copy(strUrl, strDownloadFile))
     {
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, strSubName, g_localizeStrings.Get(24113));
       CLog::Log(LOGERROR, "%s - Saving of subtitle %s to %s failed", __FUNCTION__, strUrl.c_str(), strDownloadFile.c_str());
@@ -521,7 +521,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
          * items end up in the same folder
          */
         CLog::Log(LOGDEBUG, "%s - Saving subtitle %s to %s", __FUNCTION__, strDownloadFile.c_str(), strTryDestFile.c_str());
-        if (CFile::Cache(strDownloadFile, strTryDestFile))
+        if (CFile::Copy(strDownloadFile, strTryDestFile))
         {
           CFile::Delete(strDownloadFile);
           strDestFile = strTryDestFile;
@@ -547,7 +547,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
           CStdString strSubNameIdx = StringUtils::Format("%s.%s.idx", strFileName.c_str(), strSubLang.c_str());
           // Handle URL encoding:
           strDestFile = URIUtils::ChangeBasePath(strCurrentFilePath, strSubNameIdx, strDestPath);
-          CFile::Cache(strUrl, strDestFile);
+          CFile::Copy(strUrl, strDestFile);
         }
       }
 

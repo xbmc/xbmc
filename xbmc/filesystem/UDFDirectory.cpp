@@ -37,23 +37,18 @@ CUDFDirectory::~CUDFDirectory(void)
 {
 }
 
-bool CUDFDirectory::GetDirectory(const CStdString& strPath,
+bool CUDFDirectory::GetDirectory(const CURL& url,
                                  CFileItemList &items)
 {
   CStdString strRoot, strSub;
-  CURL url;
-  if(StringUtils::StartsWith(strPath, "udf://"))
-  {
-    url.Parse(strPath);
-    CURL url(strPath);
+  CURL url2(url);
+  if (url2.GetProtocol() != "udf")
+  { // path to an image
+    url2.SetProtocol("udf");
+    url2.SetHostName(url.Get());
   }
-  else
-  {
-    url.SetProtocol("udf");
-    url.SetHostName(strPath);
-  }
-  strRoot  = url.Get();
-  strSub   = url.GetFileName();
+  strRoot  = url2.Get();
+  strSub   = url2.GetFileName();
 
   URIUtils::AddSlashAtEnd(strRoot);
   URIUtils::AddSlashAtEnd(strSub);
@@ -100,10 +95,10 @@ bool CUDFDirectory::GetDirectory(const CStdString& strPath,
   return true;
 }
 
-bool CUDFDirectory::Exists(const char* strPath)
+bool CUDFDirectory::Exists(const CURL& url)
 {
   CFileItemList items;
-  if (GetDirectory(strPath,items))
+  if (GetDirectory(url, items))
     return true;
 
   return false;

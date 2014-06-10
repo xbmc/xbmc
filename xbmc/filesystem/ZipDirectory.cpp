@@ -41,18 +41,15 @@ namespace XFILE
   {
   }
 
-  bool CZipDirectory::GetDirectory(const CStdString& strPathOrig, CFileItemList& items)
+  bool CZipDirectory::GetDirectory(const CURL& urlOrig, CFileItemList& items)
   {
-    CStdString strPath;
+    CURL urlZip(urlOrig);
 
     /* if this isn't a proper archive path, assume it's the path to a archive file */
-    if( !StringUtils::StartsWithNoCase(strPathOrig, "zip://") )
-      URIUtils::CreateArchivePath(strPath, "zip", strPathOrig, "");
-    else
-      strPath = strPathOrig;
+    if (urlOrig.GetProtocol() != "zip")
+      urlZip = URIUtils::CreateArchivePath("zip", urlOrig);
 
-    CURL url(strPath);
-
+    CURL url(urlZip);
     CStdString strArchive = url.GetHostName();
     CStdString strOptions = url.GetOptions();
     CStdString strPathInZip = url.GetFileName();
@@ -71,7 +68,7 @@ namespace XFILE
     // turn on fast lookups
     bool bWasFast(items.GetFastLookup());
     items.SetFastLookup(true);
-    if (!g_ZipManager.GetZipList(strPath,entries))
+    if (!g_ZipManager.GetZipList(urlZip,entries))
       return false;
 
     vector<std::string> baseTokens;
@@ -142,10 +139,10 @@ namespace XFILE
     return true;
   }
 
-  bool CZipDirectory::ContainsFiles(const CStdString& strPath)
+  bool CZipDirectory::ContainsFiles(const CURL& url)
   {
     vector<SZipEntry> items;
-    g_ZipManager.GetZipList(strPath,items);
+    g_ZipManager.GetZipList(url, items);
     if (items.size())
     {
       if (items.size() > 1)

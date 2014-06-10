@@ -44,21 +44,16 @@ CPVRDirectory::~CPVRDirectory()
 {
 }
 
-bool CPVRDirectory::Exists(const char* strPath)
+bool CPVRDirectory::Exists(const CURL& url)
 {
-  CStdString directory(strPath);
-  if (directory.substr(0,17) == "pvr://recordings/")
-    return true;
-  else
-    return false;
+  return (url.GetProtocol() == "pvr" && url.GetHostName() == "recordings");
 }
 
-bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CPVRDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  CStdString base(strPath);
+  CStdString base(url.Get());
   URIUtils::RemoveSlashAtEnd(base);
 
-  CURL url(strPath);
   CStdString fileName = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(fileName);
   CLog::Log(LOGDEBUG, "CPVRDirectory::GetDirectory(%s)", base.c_str());
@@ -98,15 +93,18 @@ bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   }
   else if (StringUtils::StartsWith(fileName, "recordings"))
   {
-    return g_PVRRecordings->GetDirectory(strPath, items);
+    const CStdString pathToUrl(url.Get());
+    return g_PVRRecordings->GetDirectory(pathToUrl, items);
   }
   else if (StringUtils::StartsWith(fileName, "channels"))
   {
-    return g_PVRChannelGroups->GetDirectory(strPath, items);
+    const CStdString pathToUrl(url.Get());
+    return g_PVRChannelGroups->GetDirectory(pathToUrl, items);
   }
   else if (StringUtils::StartsWith(fileName, "timers"))
   {
-    return g_PVRTimers->GetDirectory(strPath, items);
+    const CStdString pathToUrl(url.Get());
+    return g_PVRTimers->GetDirectory(pathToUrl, items);
   }
 
   return false;

@@ -31,8 +31,11 @@ public:
   static bool IsInPath(const CStdString &uri, const CStdString &baseURI);
 
   static CStdString GetDirectory(const CStdString &strFilePath);
+
+  static const CStdString GetFileName(const CURL& url);
   static const CStdString GetFileName(const CStdString& strFileNameAndPath);
 
+  static CStdString GetExtension(const CURL& url);
   static CStdString GetExtension(const CStdString& strFileName);
 
   /*!
@@ -55,6 +58,7 @@ public:
    \sa GetExtension
    */
   static bool HasExtension(const CStdString& strFileName, const CStdString& strExtensions);
+  static bool HasExtension(const CURL& url, const CStdString& strExtensions);
 
   static void RemoveExtension(CStdString& strFileName);
   static CStdString ReplaceExtension(const CStdString& strFile,
@@ -78,6 +82,7 @@ public:
    */
   static std::string ChangeBasePath(const std::string &fromPath, const std::string &fromFile, const std::string &toPath);
 
+  static CURL SubstitutePath(const CURL& url, bool reverse = false);
   static CStdString SubstitutePath(const CStdString& strPath, bool reverse = false);
 
   static bool IsAddonsPath(const CStdString& strFile);
@@ -94,6 +99,7 @@ public:
   static bool IsHTSP(const CStdString& strFile);
   static bool IsInArchive(const CStdString& strFile);
   static bool IsInRAR(const CStdString& strFile);
+  static bool IsInternetStream(const std::string& path, bool bStrictCheck = false);
   static bool IsInternetStream(const CURL& url, bool bStrictCheck = false);
   static bool IsInAPK(const CStdString& strFile);
   static bool IsInZIP(const CStdString& strFile);
@@ -145,6 +151,11 @@ public:
    * @return transformed path
    */
   static std::string CanonicalizePath(const std::string& path, const char slashCharacter = '\\');
+
+  static CURL CreateArchivePath(const std::string& type,
+                                const CURL& archiveUrl,
+                                const std::string& pathInArchive = "",
+                                const std::string& password = "");
 
   static void CreateArchivePath(CStdString& strUrlPath,
                                 const CStdString& strType,

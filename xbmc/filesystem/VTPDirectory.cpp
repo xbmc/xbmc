@@ -39,7 +39,7 @@ CVTPDirectory::~CVTPDirectory()
   delete m_session;
 }
 
-bool CVTPDirectory::GetChannels(const CStdString& base, CFileItemList &items)
+bool CVTPDirectory::GetChannels(const std::string& base, CFileItemList &items)
 {
   vector<CVTPSession::Channel> channels;
   if(!m_session->GetChannels(channels))
@@ -61,9 +61,9 @@ bool CVTPDirectory::GetChannels(const CStdString& base, CFileItemList &items)
   return true;
 }
 
-bool CVTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CVTPDirectory::GetDirectory(const CURL& url2, CFileItemList &items)
 {
-  CURL url(strPath);
+  CURL url(url2);
 
   if(url.GetHostName() == "")
     url.SetHostName("localhost");

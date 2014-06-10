@@ -32,9 +32,9 @@ class CUDFDirectory :
 public:
   CUDFDirectory(void);
   virtual ~CUDFDirectory(void);
-  virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-  virtual bool Exists(const char* strPath);
-  virtual bool ContainsFiles(const CStdString& strPath) { return true; }
+  virtual bool GetDirectory(const CURL& url, CFileItemList &items);
+  virtual bool Exists(const CURL& url);
+  virtual bool ContainsFiles(const CURL& url) { return true; }
 };
 }
 

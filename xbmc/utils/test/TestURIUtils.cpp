@@ -493,8 +493,8 @@ TEST_F(TestURIUtils, CreateArchivePath)
 {
   CStdString ref, var;
 
-  ref = "file://%2fpath%2fto%2f/file";
-  URIUtils::CreateArchivePath(var, "file", "/path/to/", "file");
+  ref = "zip://%2fpath%2fto%2f/file";
+  URIUtils::CreateArchivePath(var, "zip", "/path/to/", "file");
   EXPECT_STREQ(ref.c_str(), var.c_str());
 }
 

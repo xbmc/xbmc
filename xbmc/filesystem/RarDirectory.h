@@ -29,9 +29,9 @@ namespace XFILE
   public:
     CRarDirectory();
     ~CRarDirectory();
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
-    virtual bool ContainsFiles(const CStdString& strPath);
-    virtual bool Exists(const char* strPath);
-    virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ALWAYS; };
+    virtual bool GetDirectory(const CURL& url, CFileItemList& items);
+    virtual bool ContainsFiles(const CURL& url);
+    virtual bool Exists(const CURL& url);
+    virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const { return DIR_CACHE_ALWAYS; };
   };
 }

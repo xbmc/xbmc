@@ -111,9 +111,9 @@ static bool FindDeviceWait(CUPnP* upnp, const char* uuid, PLT_DeviceDataReferenc
 |   CUPnPDirectory::GetFriendlyName
 +---------------------------------------------------------------------*/
 const char*
-CUPnPDirectory::GetFriendlyName(const char* url)
+CUPnPDirectory::GetFriendlyName(const CURL& url)
 {
-    NPT_String path = url;
+    NPT_String path = url.Get().c_str();
     if (!path.EndsWith("/")) path += "/";
 
     if (path.Left(7).Compare("upnp://", true) != 0) {
@@ -184,7 +184,7 @@ bool CUPnPDirectory::GetResource(const CURL& path, CFileItem &item)
 |   CUPnPDirectory::GetDirectory
 +---------------------------------------------------------------------*/
 bool
-CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+CUPnPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
     CUPnP* upnp = CUPnP::GetInstance();
 
@@ -192,7 +192,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
     items.SetCacheToDisc(CFileItemList::CACHE_NEVER);
 
     // We accept upnp://devuuid/[item_id/]
-    NPT_String path = strPath.c_str();
+    NPT_String path = url.Get().c_str();
     if (!path.StartsWith("upnp://", true)) {
         return false;
     }

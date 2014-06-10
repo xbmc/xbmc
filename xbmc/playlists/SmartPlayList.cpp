@@ -950,9 +950,9 @@ CSmartPlaylist::CSmartPlaylist()
   Reset();
 }
 
-bool CSmartPlaylist::OpenAndReadName(const CStdString &path)
+bool CSmartPlaylist::OpenAndReadName(const CURL &url)
 {
-  if (readNameFromPath(path) == NULL)
+  if (readNameFromPath(url) == NULL)
     return false;
 
   return !m_playlistName.empty();
@@ -989,12 +989,12 @@ const TiXmlNode* CSmartPlaylist::readName(const TiXmlNode *root)
   return root;
 }
 
-const TiXmlNode* CSmartPlaylist::readNameFromPath(const CStdString &path)
+const TiXmlNode* CSmartPlaylist::readNameFromPath(const CURL &url)
 {
   CFileStream file;
-  if (!file.Open(path))
+  if (!file.Open(url))
   {
-    CLog::Log(LOGERROR, "Error loading Smart playlist %s (failed to read file)", path.c_str());
+    CLog::Log(LOGERROR, "Error loading Smart playlist %s (failed to read file)", url.GetRedacted().c_str());
     return NULL;
   }
 
@@ -1004,7 +1004,7 @@ const TiXmlNode* CSmartPlaylist::readNameFromPath(const CStdString &path)
   const TiXmlNode *root = readName(m_xmlDoc.RootElement());
   if (m_playlistName.empty())
   {
-    m_playlistName = CUtil::GetTitleFromPath(path);
+    m_playlistName = CUtil::GetTitleFromPath(url.Get());
     if (URIUtils::HasExtension(m_playlistName, ".xsp"))
       URIUtils::RemoveExtension(m_playlistName);
   }
@@ -1040,9 +1040,15 @@ bool CSmartPlaylist::load(const TiXmlNode *root)
   return LoadFromXML(root);
 }
 
+bool CSmartPlaylist::Load(const CURL &url)
+{
+  return load(readNameFromPath(url));
+}
+
 bool CSmartPlaylist::Load(const CStdString &path)
 {
-  return load(readNameFromPath(path));
+  const CURL pathToUrl(path);
+  return load(readNameFromPath(pathToUrl));
 }
 
 bool CSmartPlaylist::Load(const CVariant &obj)

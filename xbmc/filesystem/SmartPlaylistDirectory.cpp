@@ -49,11 +49,11 @@ namespace XFILE
   {
   }
 
-  bool CSmartPlaylistDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
+  bool CSmartPlaylistDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   {
     // Load in the SmartPlaylist and get the WHERE query
     CSmartPlaylist playlist;
-    if (!playlist.Load(strPath))
+    if (!playlist.Load(url))
       return false;
     bool result = GetDirectory(playlist, items);
     if (result)
@@ -85,7 +85,7 @@ namespace XFILE
     for (std::vector<CStdString>::const_iterator virtualFolder = virtualFolders.begin(); virtualFolder != virtualFolders.end(); virtualFolder++)
     {
       CFileItemPtr pItem = CFileItemPtr(new CFileItem(*virtualFolder, true));
-      IFileDirectory *dir = CFileDirectoryFactory::Create(*virtualFolder, pItem.get());
+      IFileDirectory *dir = CFileDirectoryFactory::Create(pItem->GetURL(), pItem.get());
 
       if (dir != NULL)
       {
@@ -300,7 +300,7 @@ namespace XFILE
       return success;
   }
 
-  bool CSmartPlaylistDirectory::ContainsFiles(const CStdString& strPath)
+  bool CSmartPlaylistDirectory::ContainsFiles(const CURL& url)
   {
     // smart playlists always have files??
     return true;
@@ -320,7 +320,7 @@ namespace XFILE
       {
         CFileItemPtr item = list[i];
         CSmartPlaylist playlist;
-        if (playlist.OpenAndReadName(item->GetPath()))
+        if (playlist.OpenAndReadName(item->GetURL()))
         {
           if (StringUtils::EqualsNoCase(playlist.GetName(), name))
             return item->GetPath();
@@ -338,9 +338,9 @@ namespace XFILE
     return "";
   }
 
-  bool CSmartPlaylistDirectory::Remove(const char *strPath)
+  bool CSmartPlaylistDirectory::Remove(const CURL& url)
   {
-    return XFILE::CFile::Delete(strPath);
+    return XFILE::CFile::Delete(url);
   }
 }
 

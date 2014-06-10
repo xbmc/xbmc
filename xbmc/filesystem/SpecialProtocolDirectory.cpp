@@ -24,6 +24,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "FileItem.h"
+#include "URL.h"
 
 using namespace XFILE;
 
@@ -35,38 +36,38 @@ CSpecialProtocolDirectory::~CSpecialProtocolDirectory(void)
 {
 }
 
-bool CSpecialProtocolDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CSpecialProtocolDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  CStdString untranslatedPath = strPath;  // Why do I need a copy??? - the GetDirectory() call below will override strPath???
-  CStdString translatedPath = CSpecialProtocol::TranslatePath(strPath);
+  const CStdString pathToUrl(url.Get());
+  CStdString translatedPath = CSpecialProtocol::TranslatePath(url);
   if (CDirectory::GetDirectory(translatedPath, items, m_strFileMask, m_flags | DIR_FLAG_GET_HIDDEN))
   { // replace our paths as necessary
-    items.SetPath(untranslatedPath);
+    items.SetURL(url);
     for (int i = 0; i < items.Size(); i++)
     {
       CFileItemPtr item = items[i];
       if (StringUtils::StartsWith(item->GetPath(), translatedPath))
-        item->SetPath(URIUtils::AddFileToFolder(untranslatedPath, item->GetPath().substr(translatedPath.size())));
+        item->SetPath(URIUtils::AddFileToFolder(pathToUrl, item->GetPath().substr(translatedPath.size())));
     }
     return true;
   }
   return false;
 }
 
-bool CSpecialProtocolDirectory::Create(const char* strPath)
+bool CSpecialProtocolDirectory::Create(const CURL& url)
 {
-  CStdString translatedPath = CSpecialProtocol::TranslatePath(strPath);
+  CStdString translatedPath = CSpecialProtocol::TranslatePath(url);
   return CDirectory::Create(translatedPath.c_str());
 }
 
-bool CSpecialProtocolDirectory::Remove(const char* strPath)
+bool CSpecialProtocolDirectory::Remove(const CURL& url)
 {
-  CStdString translatedPath = CSpecialProtocol::TranslatePath(strPath);
+  CStdString translatedPath = CSpecialProtocol::TranslatePath(url);
   return CDirectory::Remove(translatedPath.c_str());
 }
 
-bool CSpecialProtocolDirectory::Exists(const char* strPath)
+bool CSpecialProtocolDirectory::Exists(const CURL& url)
 {
-  CStdString translatedPath = CSpecialProtocol::TranslatePath(strPath);
+  CStdString translatedPath = CSpecialProtocol::TranslatePath(url);
   return CDirectory::Exists(translatedPath.c_str());
 }

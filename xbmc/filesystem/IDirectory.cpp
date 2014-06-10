@@ -30,7 +30,6 @@ using namespace XFILE;
 
 IDirectory::IDirectory(void)
 {
-  m_strFileMask = "";
   m_flags = DIR_FLAG_DEFAULTS;
 }
 
@@ -45,19 +44,19 @@ IDirectory::~IDirectory(void)
        "vts_##_0.ifo". If extension is ".dat", filename format must be
        "AVSEQ##(#).DAT", "ITEM###(#).DAT" or "MUSIC##(#).DAT".
  */
-bool IDirectory::IsAllowed(const CStdString& strFile) const
+bool IDirectory::IsAllowed(const CURL& url) const
 {
-  if (m_strFileMask.empty() || strFile.empty())
+  if (m_strFileMask.empty())
     return true;
 
   // Check if strFile have an allowed extension
-  if (!URIUtils::HasExtension(strFile, m_strFileMask))
+  if (!URIUtils::HasExtension(url, m_strFileMask))
     return false;
 
   // We should ignore all non dvd/vcd related ifo and dat files.
-  if (URIUtils::HasExtension(strFile, ".ifo"))
+  if (URIUtils::HasExtension(url, ".ifo"))
   {
-    CStdString fileName = URIUtils::GetFileName(strFile);
+    CStdString fileName = URIUtils::GetFileName(url);
 
     // Allow filenames of the form video_ts.ifo or vts_##_0.ifo
     
@@ -67,9 +66,9 @@ bool IDirectory::IsAllowed(const CStdString& strFile) const
            StringUtils::EndsWithNoCase(fileName, "_0.ifo"));
   }
   
-  if (URIUtils::HasExtension(strFile, ".dat"))
+  if (URIUtils::HasExtension(url, ".dat"))
   {
-    CStdString fileName = URIUtils::GetFileName(strFile);
+    CStdString fileName = URIUtils::GetFileName(url);
 
     // Allow filenames of the form AVSEQ##(#).DAT, ITEM###(#).DAT
     // and MUSIC##(#).DAT
@@ -92,7 +91,7 @@ bool IDirectory::IsAllowed(const CStdString& strFile) const
  \endverbatim
  So only *.m4a, *.flac, *.aac files will be retrieved with GetDirectory().
  */
-void IDirectory::SetMask(const CStdString& strMask)
+void IDirectory::SetMask(const std::string& strMask)
 {
   m_strFileMask = strMask;
   // ensure it's completed with a | so that filtering is easy.
@@ -139,7 +138,7 @@ bool IDirectory::ProcessRequirements()
   return false;
 }
 
-bool IDirectory::GetKeyboardInput(const CVariant &heading, CStdString &input)
+bool IDirectory::GetKeyboardInput(const CVariant &heading, std::string &input)
 {
   if (!m_requirements["input"].asString().empty())
   {
@@ -162,9 +161,9 @@ void IDirectory::SetErrorDialog(const CVariant &heading, const CVariant &line1, 
   m_requirements["line3"] = line3;
 }
 
-void IDirectory::RequireAuthentication(const CStdString &url)
+void IDirectory::RequireAuthentication(const CURL &url)
 {
   m_requirements.clear();
   m_requirements["type"] = "authenticate";
-  m_requirements["url"] = url;
+  m_requirements["url"] = url.Get();
 }

@@ -20,6 +20,7 @@
  */
 
 #include "IDirectory.h"
+#include "utils/StdString.h"
 
 class CPVRSession;
 
@@ -32,14 +33,14 @@ public:
   CPVRDirectory();
   virtual ~CPVRDirectory();
 
-  virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-  virtual bool IsAllowed(const CStdString &strFile) const { return true; };
+  virtual bool GetDirectory(const CURL& url, CFileItemList &items);
+  virtual bool AllowAll() const { return true; }
 
   static bool SupportsWriteFileOperations(const CStdString& strPath);
   static bool IsLiveTV(const CStdString& strPath);
   static bool HasRecordings();
 
-  virtual bool Exists(const char* strPath);
+  virtual bool Exists(const CURL& url);
 
 private:
 };

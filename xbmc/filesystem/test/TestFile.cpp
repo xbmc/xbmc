@@ -181,7 +181,7 @@ TEST(TestFile, Rename)
   EXPECT_TRUE(XFILE::CFile::Delete(path1));
 }
 
-TEST(TestFile, Cache)
+TEST(TestFile, Copy)
 {
   XFILE::CFile *file;
   CStdString path1, path2;
@@ -195,7 +195,7 @@ TEST(TestFile, Cache)
   EXPECT_TRUE(XFILE::CFile::Delete(path1));
   EXPECT_FALSE(XFILE::CFile::Exists(path1));
   EXPECT_TRUE(XFILE::CFile::Exists(path2));
-  EXPECT_TRUE(XFILE::CFile::Cache(path2, path1));
+  EXPECT_TRUE(XFILE::CFile::Copy(path2, path1));
   EXPECT_TRUE(XFILE::CFile::Exists(path1));
   EXPECT_TRUE(XFILE::CFile::Exists(path2));
   EXPECT_TRUE(XFILE::CFile::Delete(path1));

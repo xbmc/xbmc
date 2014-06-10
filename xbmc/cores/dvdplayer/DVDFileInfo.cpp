@@ -377,6 +377,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
   bool retVal = false;
   details.Reset();
 
+  const CURL pathToUrl(path);
   for (int iStream=0; iStream<pDemux->GetNrOfStreams(); iStream++)
   {
     CDemuxStream *stream = pDemux->GetStream(iStream);
@@ -397,7 +398,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
       {
         CFileItemList files;
         XFILE::CStackDirectory stack;
-        stack.GetDirectory(path, files);
+        stack.GetDirectory(pathToUrl, files);
 
         // skip first path as we already know the duration
         for (int i = 1; i < files.Size(); i++)

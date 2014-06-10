@@ -55,9 +55,8 @@ CMythDirectory::~CMythDirectory()
   Release();
 }
 
-DIR_CACHE_TYPE CMythDirectory::GetCacheType(const CStdString& strPath) const
+DIR_CACHE_TYPE CMythDirectory::GetCacheType(const CURL& url) const
 {
-  CURL url(strPath);
   CStdString fileName = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(fileName);
 
@@ -467,9 +466,9 @@ bool CMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
   return true;
 }
 
-bool CMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CMythDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  m_session = CMythSession::AquireSession(strPath);
+  m_session = CMythSession::AquireSession(url);
   if (!m_session)
     return false;
 
@@ -477,10 +476,9 @@ bool CMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   if (!m_dll)
     return false;
 
-  CStdString base(strPath);
+  CStdString base(url.Get());
   URIUtils::RemoveSlashAtEnd(base);
 
-  CURL url(strPath);
   CStdString fileName = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(fileName);
 
@@ -544,14 +542,13 @@ bool CMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   return false;
 }
 
-bool CMythDirectory::Exists(const char* strPath)
+bool CMythDirectory::Exists(const CURL& url)
 {
   /*
    * Return true for any virtual folders that are known to exist. Don't check for explicit
    * existence using GetDirectory() as most methods will return true with empty content due to the
    * way they are implemented - by iterating over all programs and filtering out content.
    */
-  CURL url(strPath);
   CStdString fileName = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(fileName);
 

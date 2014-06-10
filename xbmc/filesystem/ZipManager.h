@@ -35,6 +35,8 @@
 #include <vector>
 #include <map>
 
+class CURL;
+
 struct SZipEntry {
   unsigned int header;
   unsigned short version;
@@ -100,10 +102,10 @@ public:
   CZipManager();
   ~CZipManager();
 
-  bool GetZipList(const CStdString& strPath, std::vector<SZipEntry>& items);
-  bool GetZipEntry(const CStdString& strPath, SZipEntry& item);
+  bool GetZipList(const CURL& url, std::vector<SZipEntry>& items);
+  bool GetZipEntry(const CURL& url, SZipEntry& item);
   bool ExtractArchive(const CStdString& strArchive, const CStdString& strPath);
-  void CleanUp(const CStdString& strArchive, const CStdString& strPath); // deletes extracted archive. use with care!
+  bool ExtractArchive(const CURL& archive, const CStdString& strPath);
   void release(const CStdString& strPath); // release resources used by list zip
   static void readHeader(const char* buffer, SZipEntry& info);
   static void readCHeader(const char* buffer, SZipEntry& info);

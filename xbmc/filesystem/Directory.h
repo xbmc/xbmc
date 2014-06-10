@@ -20,6 +20,7 @@
  */
 
 #include "IDirectory.h"
+#include "utils/StdString.h"
 
 namespace XFILE
 {
@@ -42,6 +43,21 @@ public:
     CStdString mask;
     int flags;
   };
+
+  static bool GetDirectory(const CURL& url
+                           , CFileItemList &items
+                           , const CStdString &strMask=""
+                           , int flags=DIR_FLAG_DEFAULTS
+                           , bool allowThreads=false);
+
+  static bool GetDirectory(const CURL& url
+                           , CFileItemList &items
+                           , const CHints &hints
+                           , bool allowThreads=false);
+
+  static bool Create(const CURL& url);
+  static bool Exists(const CURL& url, bool bUseCache = true);
+  static bool Remove(const CURL& url);
 
   static bool GetDirectory(const CStdString& strPath
                            , CFileItemList &items
