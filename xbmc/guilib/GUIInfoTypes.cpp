@@ -139,18 +139,17 @@ void CGUIInfoLabel::SetLabel(const CStdString &label, const CStdString &fallback
 CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, CStdString *fallback /*= NULL*/) const
 {
   CStdString label;
-  for (unsigned int i = 0; i < m_info.size(); i++)
+  for (vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
   {
     CStdString infoLabel;
-    const CInfoPortion &portion = m_info[i];
-    if (portion.m_info)
+    if (portion->m_info)
     {
       if (preferImage)
-        infoLabel = g_infoManager.GetImage(portion.m_info, contextWindow, fallback);
+        infoLabel = g_infoManager.GetImage(portion->m_info, contextWindow, fallback);
       if (infoLabel.empty())
-        infoLabel = g_infoManager.GetLabel(portion.m_info, contextWindow, fallback);
+        infoLabel = g_infoManager.GetLabel(portion->m_info, contextWindow, fallback);
     }
-    label += portion.GetLabel(infoLabel);
+    label += portion->GetLabel(infoLabel);
   }
   if (label.empty())  // empty label, use the fallback
     return m_fallback;
@@ -161,18 +160,17 @@ CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImag
 {
   if (!item->IsFileItem()) return "";
   CStdString label;
-  for (unsigned int i = 0; i < m_info.size(); i++)
+  for (vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
   {
     CStdString infoLabel;
-    const CInfoPortion &portion = m_info[i];
-    if (portion.m_info)
+    if (portion->m_info)
     {
       if (preferImages)
-        infoLabel = g_infoManager.GetItemImage((const CFileItem *)item, portion.m_info, fallback);
+        infoLabel = g_infoManager.GetItemImage((const CFileItem *)item, portion->m_info, fallback);
       else
-        infoLabel = g_infoManager.GetItemLabel((const CFileItem *)item, portion.m_info, fallback);
+        infoLabel = g_infoManager.GetItemLabel((const CFileItem *)item, portion->m_info, fallback);
     }
-    label += portion.GetLabel(infoLabel);
+    label += portion->GetLabel(infoLabel);
   }
   if (label.empty())
     return m_fallback;
