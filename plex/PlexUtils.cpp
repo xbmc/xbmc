@@ -971,3 +971,15 @@ void PlexUtils::SetItemResumeOffset(const CFileItemPtr& item, int64_t offint)
 
   item->SetProperty("forceStartOffset", true);
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CFileItemPtr PlexUtils::GetItemWithKey(const CFileItemList& list, const std::string& key)
+{
+  for (int i = 0; i < list.Size(); i ++)
+  {
+    if (list[i]->GetProperty("key").asString() == key)
+      return list[i];
+  }
+
+  return CFileItemPtr();
+}

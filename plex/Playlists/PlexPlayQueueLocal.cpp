@@ -122,7 +122,7 @@ void CPlexPlayQueueLocal::OnJobComplete(unsigned int jobID, bool success, CJob* 
 
     if (!fj->m_options.startItemKey.empty())
     {
-      CFileItemPtr item = m_list->Get(fj->m_options.startItemKey);
+      CFileItemPtr item = PlexUtils::GetItemWithKey(*m_list, fj->m_options.startItemKey);
       if (item && item->HasMusicInfoTag())
         m_list->SetProperty("playQueueSelectedItemID", item->GetMusicInfoTag()->GetDatabaseId());
     }

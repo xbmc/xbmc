@@ -65,6 +65,7 @@ namespace PlexUtils
   std::string GetPlexContent(const CFileItem& item);
   ePlexMediaFilterTypes GetFilterType(const CFileItem& item);
   void SetItemResumeOffset(const CFileItemPtr& item, int64_t offint);
+  CFileItemPtr GetItemWithKey(const CFileItemList& list, const std::string& key);
 }
 
 #if defined(HAVE_EXECINFO_H)
