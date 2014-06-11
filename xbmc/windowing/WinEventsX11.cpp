@@ -215,7 +215,6 @@ bool CWinEventsX11Imp::Init(Display *dpy, Window win)
   char *old_locale = NULL, *old_modifiers = NULL;
   char res_name[8];
   const char *p;
-  size_t n;
 
   // set resource name to xbmc, not used
   strcpy(res_name, "xbmc");
