@@ -250,6 +250,9 @@ void CSettingConditions::Initialize()
   if (g_sysinfo.HasVideoToolBoxDecoder())
     m_simpleConditions.insert("hasvideotoolboxdecoder");
 #endif
+#ifdef TARGET_DARWIN_OSX
+  m_simpleConditions.insert("HasVDA");
+#endif
 #ifdef HAS_LIBAMCODEC
   if (aml_present())
     m_simpleConditions.insert("have_amcodec");
