@@ -298,10 +298,7 @@ namespace XBMCAddon
       //doesn't seem to be a single InfoTag?
       //try full blown GuiInfoLabel then
       if (ret == 0)
-      {
-        CGUIInfoLabel label(cLine);
-        return label.GetLabel(0);
-      }
+        return CGUIInfoLabel::GetLabel(cLine);
       else
         return g_infoManager.GetLabel(ret);
     }
