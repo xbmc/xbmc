@@ -122,10 +122,12 @@ private:
   {
   public:
     CInfoPortion(int info, const CStdString &prefix, const CStdString &postfix, bool escaped = false);
-    CStdString GetLabel(const CStdString &info) const;
+    bool NeedsUpdate(const CStdString &label) const;
+    CStdString Get() const;
     int m_info;
   private:
     bool m_escaped;
+    mutable CStdString m_label;
     CStdString m_prefix;
     CStdString m_postfix;
   };

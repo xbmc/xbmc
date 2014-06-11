@@ -141,15 +141,16 @@ CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, CStdStri
   CStdString label;
   for (vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
   {
-    CStdString infoLabel;
     if (portion->m_info)
     {
+      CStdString infoLabel;
       if (preferImage)
         infoLabel = g_infoManager.GetImage(portion->m_info, contextWindow, fallback);
       if (infoLabel.empty())
         infoLabel = g_infoManager.GetLabel(portion->m_info, contextWindow, fallback);
+      portion->NeedsUpdate(infoLabel);
     }
-    label += portion->GetLabel(infoLabel);
+    label += portion->Get();
   }
   if (label.empty())  // empty label, use the fallback
     return m_fallback;
@@ -162,15 +163,16 @@ CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImag
   CStdString label;
   for (vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
   {
-    CStdString infoLabel;
     if (portion->m_info)
     {
+      CStdString infoLabel;
       if (preferImages)
         infoLabel = g_infoManager.GetItemImage((const CFileItem *)item, portion->m_info, fallback);
       else
         infoLabel = g_infoManager.GetItemLabel((const CFileItem *)item, portion->m_info, fallback);
+      portion->NeedsUpdate(infoLabel);
     }
-    label += portion->GetLabel(infoLabel);
+    label += portion->Get();
   }
   if (label.empty())
     return m_fallback;
@@ -348,13 +350,23 @@ CGUIInfoLabel::CInfoPortion::CInfoPortion(int info, const CStdString &prefix, co
   StringUtils::Replace(m_postfix, "$LBRACKET", "["); StringUtils::Replace(m_postfix, "$RBRACKET", "]");
 }
 
-CStdString CGUIInfoLabel::CInfoPortion::GetLabel(const CStdString &info) const
+bool CGUIInfoLabel::CInfoPortion::NeedsUpdate(const CStdString &label) const
+{
+  if (m_label != label)
+  {
+    m_label = label;
+    return true;
+  }
+  return false;
+}
+
+CStdString CGUIInfoLabel::CInfoPortion::Get() const
 {
   if (!m_info)
     return m_prefix;
-  else if (info.empty())
+  else if (m_label.empty())
     return "";
-  CStdString label = m_prefix + info + m_postfix;
+  CStdString label = m_prefix + m_label + m_postfix;
   if (m_escaped) // escape all quotes and backslashes, then quote
   {
     StringUtils::Replace(label, "\\", "\\\\");
