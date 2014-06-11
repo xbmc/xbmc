@@ -43,6 +43,14 @@
 #import "AutoPool.h"
 #import "DarwinUtils.h"
 
+#ifndef NSAppKitVersionNumber10_5
+#define NSAppKitVersionNumber10_5 949
+#endif
+
+#ifndef NSAppKitVersionNumber10_6
+#define NSAppKitVersionNumber10_6 1038
+#endif
+
 enum iosPlatform
 {
   iDeviceUnknown = -1,
@@ -168,6 +176,19 @@ bool DarwinIsMavericks(void)
   }
 #endif
   return isMavericks == 1;
+}
+
+bool DarwinIsSnowLeopard(void)
+{
+  static int isSnowLeopard = -1;
+#if defined(TARGET_DARWIN_OSX)
+  if (isSnowLeopard == -1)
+  {
+    double appKitVersion = floor(NSAppKitVersionNumber);
+    isSnowLeopard = (appKitVersion <= NSAppKitVersionNumber10_6 && appKitVersion > NSAppKitVersionNumber10_5) ? 1 : 0;
+  }
+#endif
+  return isSnowLeopard == 1;
 }
 
 bool DarwinHasRetina(void)
