@@ -815,10 +815,12 @@ bool CxImage::Decode(CxFile *hFile, DWORD imagetype)
             if (newima.Decode( &hMemFile ))
             {
               Transfer(newima);
+              free(buffer);
               return true;
             }
             else
               hFile->Seek(pos, SEEK_SET);
+            free(buffer);
           }
           else
           {
@@ -1063,11 +1065,13 @@ bool CxImage::Decode(CxFile *hFile, DWORD imagetype)
         if (newima.Decode( &hMemFile ))
         {
           Transfer(newima);
+          free(buffer);
           return true;
         }
         else
         {
           strcpy(info.szLastError,newima.GetLastError());
+          free(buffer);
           return false;
         }
        }
