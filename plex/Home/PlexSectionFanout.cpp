@@ -302,7 +302,7 @@ bool CPlexSectionFanout::NeedsRefresh()
     refreshTime = 20;
 
   if (m_sectionType == SECTION_TYPE_GLOBAL_FANART)
-    refreshTime = 5 * ARTS_PAGE_SIZE;
+    refreshTime = ARTS_DISPLAY_TIME_SEC * ARTS_PAGE_SIZE;
 
   return m_age.elapsed() > refreshTime;
 }

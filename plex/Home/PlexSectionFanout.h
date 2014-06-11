@@ -22,6 +22,7 @@ typedef std::pair<int, CFileItemList*> contentListPair;
 #define CONTENT_LIST_FANART            12000
 
 #define ARTS_PAGE_SIZE  50
+#define ARTS_DISPLAY_TIME_SEC  5
 
 class CPlexSectionFanout : public IJobCallback
 {
