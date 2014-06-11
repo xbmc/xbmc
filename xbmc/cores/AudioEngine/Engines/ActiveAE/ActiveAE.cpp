@@ -1754,7 +1754,14 @@ bool CActiveAE::RunStages()
             if ((*it)->m_fadingSamples == -1)
             {
               (*it)->m_fadingSamples = m_internalFormat.m_sampleRate * (float)(*it)->m_fadingTime / 1000.0f;
-              (*it)->m_volume = (*it)->m_fadingBase;
+              if ((*it)->m_fadingSamples > 0)
+                (*it)->m_volume = (*it)->m_fadingBase;
+              else
+              {
+                (*it)->m_volume = (*it)->m_fadingTarget;
+                CSingleLock lock((*it)->m_streamLock);
+                (*it)->m_streamFading = false;
+              }
             }
             if ((*it)->m_fadingSamples > 0)
             {
