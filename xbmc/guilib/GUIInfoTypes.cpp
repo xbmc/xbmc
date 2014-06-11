@@ -141,18 +141,18 @@ CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, CStdStri
   bool needsUpdate = m_dirty;
   if (!m_info.empty())
   {
-  for (vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
-  {
-    if (portion->m_info)
+    for (vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
     {
-      CStdString infoLabel;
-      if (preferImage)
-        infoLabel = g_infoManager.GetImage(portion->m_info, contextWindow, fallback);
-      if (infoLabel.empty())
-        infoLabel = g_infoManager.GetLabel(portion->m_info, contextWindow, fallback);
-      needsUpdate |= portion->NeedsUpdate(infoLabel);
+      if (portion->m_info)
+      {
+        CStdString infoLabel;
+        if (preferImage)
+          infoLabel = g_infoManager.GetImage(portion->m_info, contextWindow, fallback);
+        if (infoLabel.empty())
+          infoLabel = g_infoManager.GetLabel(portion->m_info, contextWindow, fallback);
+        needsUpdate |= portion->NeedsUpdate(infoLabel);
+      }
     }
-  }
   }
   else
     needsUpdate = !m_label.empty();
@@ -165,18 +165,18 @@ CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImag
   bool needsUpdate = m_dirty;
   if (item->IsFileItem() && !m_info.empty())
   {
-  for (vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
-  {
-    if (portion->m_info)
+    for (vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
     {
-      CStdString infoLabel;
-      if (preferImages)
-        infoLabel = g_infoManager.GetItemImage((const CFileItem *)item, portion->m_info, fallback);
-      else
-        infoLabel = g_infoManager.GetItemLabel((const CFileItem *)item, portion->m_info, fallback);
-      needsUpdate |= portion->NeedsUpdate(infoLabel);
+      if (portion->m_info)
+      {
+        CStdString infoLabel;
+        if (preferImages)
+          infoLabel = g_infoManager.GetItemImage((const CFileItem *)item, portion->m_info, fallback);
+        else
+          infoLabel = g_infoManager.GetItemLabel((const CFileItem *)item, portion->m_info, fallback);
+        needsUpdate |= portion->NeedsUpdate(infoLabel);
+      }
     }
-  }
   }
   else
     needsUpdate = !m_label.empty();
