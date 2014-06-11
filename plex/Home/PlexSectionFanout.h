@@ -63,6 +63,8 @@ public:
   std::map<int, CFileItemList*> m_fileLists;
   CURL m_url;
   CPlexTimer m_age;
+  CPlexTimer m_artsAge;
+
   CCriticalSection m_critical;
   std::vector<int> m_outstandingJobs;
   bool m_useGlobalSlideshow;

@@ -172,6 +172,14 @@ void CPlexSectionFanout::LoadArts()
 {
   CURL artsUrl;
 
+  if ((m_artsAge.elapsed() < (ARTS_DISPLAY_TIME_SEC * ARTS_PAGE_SIZE)) && (m_fileLists.find(CONTENT_LIST_FANART) != m_fileLists.end()))
+  {
+    CGUIMessage msg(GUI_MSG_PLEX_SECTION_LOADED, WINDOW_HOME, 300, CONTENT_LIST_FANART);
+    msg.SetStringParam(m_url.Get());
+    g_windowManager.SendThreadMessage(msg);
+    return;
+  }
+
   // compute the Arts Url
   if (m_useGlobalSlideshow)
   {
@@ -209,7 +217,6 @@ void CPlexSectionFanout::LoadArts()
   artsUrl.AddOptions(options);
 
   // load it
-  CLog::Log(LOGDEBUG,"CPlexSectionFanout::LoadArts : loading %s", artsUrl.Get().c_str());
   LoadSection(artsUrl, CONTENT_LIST_FANART);
 }
 
@@ -263,6 +270,7 @@ void CPlexSectionFanout::OnJobComplete(unsigned int jobID, bool success, CJob* j
   }
   else if (load->m_contentType == CONTENT_LIST_FANART)
   {
+    m_artsAge.restart();
     CGUIMessage msg(GUI_MSG_PLEX_SECTION_LOADED, WINDOW_HOME, 300, CONTENT_LIST_FANART);
     msg.SetStringParam(m_url.Get());
     g_windowManager.SendThreadMessage(msg);
