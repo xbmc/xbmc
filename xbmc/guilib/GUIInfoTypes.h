@@ -118,6 +118,12 @@ public:
 private:
   void Parse(const CStdString &label, int context);
 
+  /*! \brief return (and cache) built label from info portions.
+   \param rebuild whether we need to rebuild the label
+   \sa GetLabel, GetItemLabel
+   */
+  const CStdString &CacheLabel(bool rebuild) const;
+
   class CInfoPortion
   {
   public:
@@ -132,6 +138,8 @@ private:
     CStdString m_postfix;
   };
 
+  mutable bool       m_dirty;
+  mutable CStdString m_label;
   CStdString m_fallback;
   std::vector<CInfoPortion> m_info;
 };

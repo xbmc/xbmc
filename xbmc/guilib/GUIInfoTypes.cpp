@@ -121,11 +121,11 @@ void CGUIInfoColor::Parse(const CStdString &label, int context)
     m_color = g_colorManager.GetColor(label);
 }
 
-CGUIInfoLabel::CGUIInfoLabel()
+CGUIInfoLabel::CGUIInfoLabel() : m_dirty(false)
 {
 }
 
-CGUIInfoLabel::CGUIInfoLabel(const CStdString &label, const CStdString &fallback /*= ""*/, int context /*= 0*/)
+CGUIInfoLabel::CGUIInfoLabel(const CStdString &label, const CStdString &fallback /*= ""*/, int context /*= 0*/) : m_dirty(false)
 {
   SetLabel(label, fallback, context);
 }
@@ -138,7 +138,9 @@ void CGUIInfoLabel::SetLabel(const CStdString &label, const CStdString &fallback
 
 CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, CStdString *fallback /*= NULL*/) const
 {
-  CStdString label;
+  bool needsUpdate = m_dirty;
+  if (!m_info.empty())
+  {
   for (vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
   {
     if (portion->m_info)
@@ -148,19 +150,21 @@ CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, CStdStri
         infoLabel = g_infoManager.GetImage(portion->m_info, contextWindow, fallback);
       if (infoLabel.empty())
         infoLabel = g_infoManager.GetLabel(portion->m_info, contextWindow, fallback);
-      portion->NeedsUpdate(infoLabel);
+      needsUpdate |= portion->NeedsUpdate(infoLabel);
     }
-    label += portion->Get();
   }
-  if (label.empty())  // empty label, use the fallback
-    return m_fallback;
-  return label;
+  }
+  else
+    needsUpdate = !m_label.empty();
+
+  return CacheLabel(needsUpdate);
 }
 
 CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImages, CStdString *fallback /*= NULL*/) const
 {
-  if (!item->IsFileItem()) return "";
-  CStdString label;
+  bool needsUpdate = m_dirty;
+  if (item->IsFileItem() && !m_info.empty())
+  {
   for (vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
   {
     if (portion->m_info)
@@ -170,13 +174,28 @@ CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImag
         infoLabel = g_infoManager.GetItemImage((const CFileItem *)item, portion->m_info, fallback);
       else
         infoLabel = g_infoManager.GetItemLabel((const CFileItem *)item, portion->m_info, fallback);
-      portion->NeedsUpdate(infoLabel);
+      needsUpdate |= portion->NeedsUpdate(infoLabel);
     }
-    label += portion->Get();
   }
-  if (label.empty())
+  }
+  else
+    needsUpdate = !m_label.empty();
+
+  return CacheLabel(needsUpdate);
+}
+
+const CStdString &CGUIInfoLabel::CacheLabel(bool rebuild) const
+{
+  if (rebuild)
+  {
+    m_label.clear();
+    for (vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
+      m_label += portion->Get();
+    m_dirty = false;
+  }
+  if (m_label.empty())  // empty label, use the fallback
     return m_fallback;
-  return label;
+  return m_label;
 }
 
 bool CGUIInfoLabel::IsEmpty() const
@@ -267,6 +286,7 @@ const static infoformat infoformatmap[] = {{ "$INFO[",    FORMATINFO },
 void CGUIInfoLabel::Parse(const CStdString &label, int context)
 {
   m_info.clear();
+  m_dirty = true;
   // Step 1: Replace all $LOCALIZE[number] with the real string
   CStdString work = ReplaceLocalize(label);
   // Step 2: Replace all $ADDON[id number] with the real string
