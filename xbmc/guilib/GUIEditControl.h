@@ -85,6 +85,7 @@ public:
   virtual void SetInputValidation(StringValidation::Validator inputValidator, void *data = NULL);
 
 protected:
+  virtual void SetFocus(bool focus);
   virtual void ProcessText(unsigned int currentTime);
   virtual void RenderText();
   virtual CGUILabel::COLOR GetTextColor() const;
@@ -129,6 +130,10 @@ protected:
   unsigned int m_smsKeyIndex;
   unsigned int m_smsLastKey;
   CStopWatch   m_smsTimer;
+
+  std::wstring m_edit;
+  int          m_editOffset;
+  int          m_editLength;
 
   static const char*        smsLetters[10];
   static const unsigned int smsDelay;

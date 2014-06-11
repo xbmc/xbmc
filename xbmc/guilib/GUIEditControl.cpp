@@ -29,6 +29,7 @@
 #include "XBDateTime.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/md5.h"
+#include "GUIUserMessages.h"
 
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaInterface.h"
@@ -69,6 +70,8 @@ void CGUIEditControl::DefaultConstructor()
   m_invalidInput = false;
   m_inputValidator = NULL;
   m_inputValidatorData = NULL;
+  m_editLength = 0;
+  m_editOffset = 0;
 }
 
 CGUIEditControl::CGUIEditControl(const CGUIButtonControl &button)
@@ -93,16 +96,30 @@ bool CGUIEditControl::OnMessage(CGUIMessage &message)
     message.SetLabel(GetLabel2());
     return true;
   }
-  else if (message.GetMessage() == GUI_MSG_SETFOCUS ||
-           message.GetMessage() == GUI_MSG_LOSTFOCUS)
-  {
-    m_smsTimer.Stop();
-  }
   else if (message.GetMessage() == GUI_MSG_SET_TEXT &&
           ((message.GetControlId() <= 0 && HasFocus()) || (message.GetControlId() == GetID())))
   {
     SetLabel2(message.GetLabel());
     UpdateText();
+  }
+  else if (message.GetMessage() == GUI_MSG_INPUT_TEXT && !message.GetLabel().empty()
+        && (HasFocus() || message.GetControlId() == GetID()))
+  {
+    m_edit.clear();
+    std::wstring str;
+    g_charsetConverter.utf8ToW(message.GetLabel(), str);
+    m_text2.insert(m_cursorPos, str);
+    m_cursorPos += str.size();
+    UpdateText();
+    return true;
+  }
+  else if (message.GetMessage() == GUI_MSG_INPUT_TEXT_EDIT && HasFocus())
+  {
+    g_charsetConverter.utf8ToW(message.GetLabel(), m_edit);
+    m_editOffset = message.GetParam1();
+    m_editLength = message.GetParam2();
+    UpdateText(false);
+    return true;
   }
   return CGUIButtonControl::OnMessage(message);
 }
@@ -227,8 +244,12 @@ bool CGUIEditControl::OnAction(const CAction &action)
         }
       default:
         {
-          ClearMD5();
-          m_text2.insert(m_text2.begin() + m_cursorPos++, (WCHAR)action.GetUnicode());
+          if (!g_Windowing.IsTextInputEnabled())
+          {
+            ClearMD5();
+            m_edit.clear();
+            m_text2.insert(m_text2.begin() + m_cursorPos++, (WCHAR)action.GetUnicode());
+          }
           break;
         }
       }
@@ -238,6 +259,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
     else if (action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9)
     { // input from the remote
       ClearMD5();
+      m_edit.clear();
       if (m_inputType == INPUT_TYPE_FILTER)
       { // filtering - use single number presses
         m_text2.insert(m_text2.begin() + m_cursorPos++, L'0' + (action.GetID() - REMOTE_0));
@@ -326,6 +348,7 @@ void CGUIEditControl::OnClick()
   if (textChanged)
   {
     ClearMD5();
+    m_edit.clear();
     g_charsetConverter.utf8ToW(utf8, m_text2);
     m_cursorPos = m_text2.size();
     UpdateText();
@@ -492,13 +515,15 @@ void CGUIEditControl::SetHint(const CGUIInfoLabel& hint)
 
 CStdStringW CGUIEditControl::GetDisplayedText() const
 {
-  if (m_inputType == INPUT_TYPE_PASSWORD || m_inputType == INPUT_TYPE_PASSWORD_MD5 || m_inputType == INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW)
+  CStdStringW text(m_text2);
+  if (!m_edit.empty())
   {
-    CStdStringW text;
-    text.append(m_text2.size(), L'*');
-    return text;
+    text.insert(m_editOffset, m_edit);
+    // TODO: highlighting
   }
-  return m_text2;
+  if (m_inputType == INPUT_TYPE_PASSWORD || m_inputType == INPUT_TYPE_PASSWORD_MD5 || m_inputType == INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW)
+    text = CStdStringW(text.size(), L'*');
+  return text;
 }
 
 void CGUIEditControl::ValidateCursor()
@@ -515,6 +540,7 @@ void CGUIEditControl::SetLabel(const std::string &text)
 
 void CGUIEditControl::SetLabel2(const std::string &text)
 {
+  m_edit.clear();
   CStdStringW newText;
   g_charsetConverter.utf8ToW(text, newText);
   if (newText != m_text2)
@@ -649,4 +675,11 @@ void CGUIEditControl::ValidateInput()
 
     SetInvalid();
   }
+}
+
+void CGUIEditControl::SetFocus(bool focus)
+{
+  m_smsTimer.Stop();
+  g_Windowing.EnableTextInput(focus);
+  CGUIControl::SetFocus(focus);
 }
