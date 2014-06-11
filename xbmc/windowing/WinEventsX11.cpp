@@ -410,7 +410,7 @@ bool CWinEventsX11Imp::MessagePump()
 
       case ClientMessage:
       {
-        if (xevent.xclient.data.l[0] == WinEvents->m_wmDeleteMessage)
+        if ((unsigned int)xevent.xclient.data.l[0] == WinEvents->m_wmDeleteMessage)
           if (!g_application.m_bStop) CApplicationMessenger::Get().Quit();
         break;
       }

@@ -310,7 +310,7 @@ void CWinSystemX11::UpdateResolutions()
 
       // switch off other outputs
       std::vector<XOutput> outputs = g_xrandr.GetModes();
-      for (int i=0; i<outputs.size(); i++)
+      for (size_t i=0; i<outputs.size(); i++)
       {
         if (outputs[i].name.Equals(m_userOutput.c_str()))
           continue;
@@ -1017,7 +1017,7 @@ bool CWinSystemX11::CreateIconPixmap()
   double gRatio;
   double bRatio;
   int outIndex = 0;
-  int i,j;
+  unsigned int i,j;
   unsigned char *buf;
   uint32_t *newBuf = 0;
   size_t numNewBufBytes;
