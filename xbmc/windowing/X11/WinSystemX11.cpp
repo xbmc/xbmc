@@ -310,7 +310,7 @@ void CWinSystemX11::UpdateResolutions()
 
       // switch off other outputs
       std::vector<XOutput> outputs = g_xrandr.GetModes();
-      for (int i=0; i<outputs.size(); i++)
+      for (size_t i=0; i<outputs.size(); i++)
       {
         if (outputs[i].name.Equals(m_userOutput.c_str()))
           continue;
@@ -601,10 +601,10 @@ void CWinSystemX11::EnableSystemScreenSaver(bool bEnable)
     int root_x_return, root_y_return;
     int win_x_return, win_y_return;
     unsigned int mask_return;
-    bool isInWin = XQueryPointer(m_dpy, RootWindow(m_dpy, m_nScreen), &root_return, &child_return,
-                                 &root_x_return, &root_y_return,
-                                 &win_x_return, &win_y_return,
-                                 &mask_return);
+    XQueryPointer(m_dpy, RootWindow(m_dpy, m_nScreen), &root_return, &child_return,
+                  &root_x_return, &root_y_return,
+                  &win_x_return, &win_y_return,
+                  &mask_return);
 
     XWarpPointer(m_dpy, None, RootWindow(m_dpy, m_nScreen), 0, 0, 0, 0, root_x_return+300, root_y_return+300);
     XSync(m_dpy, FALSE);
@@ -813,7 +813,8 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
   bool changeWindow = false;
   bool changeSize = false;
   bool mouseActive = false;
-  float mouseX, mouseY;
+  float mouseX = 0;
+  float mouseY = 0;
 
   if (m_mainWindow && ((m_bFullScreen != fullscreen) || m_currentOutput.compare(output) != 0 || m_windowDirty))
   {
@@ -1017,8 +1018,7 @@ bool CWinSystemX11::CreateIconPixmap()
   double gRatio;
   double bRatio;
   int outIndex = 0;
-  int i,j;
-  int numBufBytes;
+  unsigned int i,j;
   unsigned char *buf;
   uint32_t *newBuf = 0;
   size_t numNewBufBytes;
@@ -1055,10 +1055,6 @@ bool CWinSystemX11::CreateIconPixmap()
     return false;
 
   buf = iconTexture->GetPixels();
-
-  numBufBytes = iconTexture->GetWidth() * iconTexture->GetHeight() * 4;
-  int wid = iconTexture->GetWidth();
-  int hi = iconTexture->GetHeight();
 
   if (depth>=24)
     numNewBufBytes = (4 * (iconTexture->GetWidth() * iconTexture->GetHeight()));
@@ -1138,8 +1134,7 @@ bool CWinSystemX11::HasWindowManager()
   unsigned char *data;
   int status, real_format;
   Atom real_type, prop;
-  unsigned long items_read, items_left, i;
-  char req = 0;
+  unsigned long items_read, items_left;
 
   prop = XInternAtom(m_dpy, "_NET_SUPPORTING_WM_CHECK", True);
   if (prop == None)

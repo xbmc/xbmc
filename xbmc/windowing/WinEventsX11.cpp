@@ -215,7 +215,6 @@ bool CWinEventsX11Imp::Init(Display *dpy, Window win)
   char *old_locale = NULL, *old_modifiers = NULL;
   char res_name[8];
   const char *p;
-  size_t n;
 
   // set resource name to xbmc, not used
   strcpy(res_name, "xbmc");
@@ -411,7 +410,7 @@ bool CWinEventsX11Imp::MessagePump()
 
       case ClientMessage:
       {
-        if (xevent.xclient.data.l[0] == WinEvents->m_wmDeleteMessage)
+        if ((unsigned int)xevent.xclient.data.l[0] == WinEvents->m_wmDeleteMessage)
           if (!g_application.m_bStop) CApplicationMessenger::Get().Quit();
         break;
       }
