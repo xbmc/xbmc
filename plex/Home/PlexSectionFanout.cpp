@@ -171,6 +171,7 @@ void CPlexSectionFanout::Refresh()
 void CPlexSectionFanout::LoadArts()
 {
   CURL artsUrl;
+  CURL sectionURL(m_url);
 
   if ((m_artsAge.elapsed() < (ARTS_DISPLAY_TIME_SEC * ARTS_PAGE_SIZE)) && (m_fileLists.find(CONTENT_LIST_FANART) != m_fileLists.end()))
   {
@@ -198,8 +199,18 @@ void CPlexSectionFanout::LoadArts()
       case SECTION_TYPE_SHOW:
       case SECTION_TYPE_ALBUM:
       case SECTION_TYPE_PHOTOS:
-        artsUrl = CURL(m_url);
-        PlexUtils::AppendPathToURL(artsUrl, "arts");
+
+        // Sync content has no endpoint, use global art
+        if (boost::starts_with(sectionURL.GetFileName(),"sync/"))
+        {
+          artsUrl = GetBestServerUrl("library/arts");
+        }
+        else
+        {
+          artsUrl = CURL(m_url);
+          PlexUtils::AppendPathToURL(artsUrl, "arts");
+        }
+
         break;
 
       default:
