@@ -384,6 +384,9 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, b
     CThread::Sleep(1);
   }
 
+  // set m_upcomingCrossfadeMS depending on type of file and user settings
+  UpdateCrossfadeTime(file);
+
   /* init the streaminfo struct */
   si->m_decoder.GetDataFormat(&si->m_channelInfo, &si->m_sampleRate, &si->m_encodedSampleRate, &si->m_dataFormat);
   si->m_startOffset        = file.m_lStartOffset * 1000 / 75;
@@ -421,8 +424,6 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, b
     delete si;
     return false;
   }
-
-  UpdateCrossfadeTime(file);
 
   si->m_prepareTriggered = false;
   si->m_playNextAtFrame = 0;
