@@ -503,7 +503,6 @@
 			<control type="group" id="200">
 				<posx>270</posx>
 				<posy>5</posy>
-				<defaultcontrol always="true">19101</defaultcontrol>
 				<visible allowhiddenfocus="true">ControlGroup(200).HasFocus</visible>
 				<!-- play/pause -->
 				<control type="image">
