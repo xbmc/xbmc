@@ -61,6 +61,9 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   CRegExp reDateTimeNginx(true);
   reDateTimeNginx.RegComp("</a> +([0-9]{2})-([A-Z]{3})-([0-9]{4}) ([0-9]{2}):([0-9]{2}) ");
 
+  CRegExp reDateTimeApacheNewFormat(true);
+  reDateTimeApacheNewFormat.RegComp("<td align=\"right\">([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2}) +</td>");
+
   CRegExp reSize(true);
   reSize.RegComp("> *([0-9.]+)(B|K|M|G| )</td>");
 
@@ -138,6 +141,7 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           pItem->m_bIsFolder = true;
 
         CStdString day, month, year, hour, minute;
+        int monthNum = 0;
 
         if (reDateTime.RegFind(strBuffer.c_str()) >= 0)
         {
@@ -163,10 +167,21 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           hour = reDateTimeLighttp.GetMatch(4);
           minute = reDateTimeLighttp.GetMatch(5);
         }
-
-        if (day.length() > 0 && month.length() > 0 && year.length() > 0)
+        else if (reDateTimeApacheNewFormat.RegFind(strBuffer.c_str()) >= 0)
         {
-          pItem->m_dateTime = CDateTime(atoi(year.c_str()), CDateTime::MonthStringToMonthNum(month), atoi(day.c_str()), atoi(hour.c_str()), atoi(minute.c_str()), 0);
+          day = reDateTimeApacheNewFormat.GetMatch(3);
+          monthNum = atoi(reDateTimeApacheNewFormat.GetMatch(2).c_str());
+          year = reDateTimeApacheNewFormat.GetMatch(1);
+          hour = reDateTimeApacheNewFormat.GetMatch(4);
+          minute = reDateTimeApacheNewFormat.GetMatch(5);
+        }
+
+        if (month.length() > 0)
+          monthNum = CDateTime::MonthStringToMonthNum(month);
+
+        if (day.length() > 0 && monthNum > 0 && year.length() > 0)
+        {
+          pItem->m_dateTime = CDateTime(atoi(year.c_str()), monthNum, atoi(day.c_str()), atoi(hour.c_str()), atoi(minute.c_str()), 0);
         }
 
         if (!pItem->m_bIsFolder)
