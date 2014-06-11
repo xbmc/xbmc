@@ -21,6 +21,8 @@ typedef std::pair<int, CFileItemList*> contentListPair;
 #define CONTENT_LIST_PLAYQUEUE_PHOTO   11007
 #define CONTENT_LIST_FANART            12000
 
+#define ARTS_PAGE_SIZE  50
+
 class CPlexSectionFanout : public IJobCallback
 {
 public:

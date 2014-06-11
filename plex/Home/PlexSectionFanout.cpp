@@ -204,7 +204,7 @@ void CPlexSectionFanout::LoadArts()
   // append some paging Option
   CUrlOptions options;
   options.AddOption("X-Plex-Container-Start", "0");
-  options.AddOption("X-Plex-Container-Size", "50");
+  options.AddOption("X-Plex-Container-Size", ARTS_PAGE_SIZE);
   options.AddOption("sort", "random");
   artsUrl.AddOptions(options);
 
@@ -302,7 +302,7 @@ bool CPlexSectionFanout::NeedsRefresh()
     refreshTime = 20;
 
   if (m_sectionType == SECTION_TYPE_GLOBAL_FANART)
-    refreshTime = 3600;
+    refreshTime = 5 * ARTS_PAGE_SIZE;
 
   return m_age.elapsed() > refreshTime;
 }
