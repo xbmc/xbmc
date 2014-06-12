@@ -445,7 +445,10 @@ bool CGUIWindowHome::OnPopupMenu()
     {
       CFileItemPtr item = GetCurrentFanoutItem();
       if (item)
+      {
         g_plexApplication.playQueueManager->QueueItem(item, choice == CONTEXT_BUTTON_PLAY_ONLY_THIS);
+        UpdateSections();
+      }
       break;
     }
 

@@ -44,6 +44,7 @@ bool CPlexPlayQueueManager::create(const CFileItem& container, const CStdString&
   if (impl)
   {
     m_currentImpl = impl;
+    m_playQueueType = PlexUtils::GetMediaTypeFromItem(container);
     return m_currentImpl->create(container, uri, options);
   }
 
