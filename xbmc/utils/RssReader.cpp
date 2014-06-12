@@ -147,7 +147,10 @@ void CRssReader::Process()
     // we wait for the network to come up
     if ((url.GetProtocol() == "http" || url.GetProtocol() == "https") &&
         !g_application.getNetwork().IsAvailable(true))
+    {
+      CLog::Log(LOGWARNING, "RSS: No network connection");
       strXML = "<rss><item><title>"+g_localizeStrings.Get(15301)+"</title></item></rss>";
+    }
     else
     {
       XbmcThreads::EndTime timeout(15000);

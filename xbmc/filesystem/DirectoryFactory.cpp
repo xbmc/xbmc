@@ -186,7 +186,8 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   if (strProtocol == "androidapp") return new CAndroidAppDirectory();
 #endif
 
-  if( g_application.getNetwork().IsAvailable(true) )  // true to wait for the network (if possible)
+  bool networkAvailable = g_application.getNetwork().IsAvailable(true); // true to wait for the network (if possible)
+  if (networkAvailable)
   {
     if (strProtocol == "tuxbox") return new CTuxBoxDirectory();
     if (strProtocol == "ftp" || strProtocol == "ftps") return new CFTPDirectory();
@@ -244,7 +245,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #endif
   }
 
-  CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );
+  CLog::Log(LOGWARNING, "%s - %sunsupported protocol(%s) in %s", __FUNCTION__, networkAvailable ? "" : "Network down or ", strProtocol.c_str(), url.GetRedacted().c_str() );
   return NULL;
 }
 
