@@ -8,6 +8,13 @@
         </setting>
       </group>
     </category>
+    <category id="videoscreen" label="21373" help="36603">
+      <group id="1">
+        <setting id="videoscreen.fakefullscreen" type="boolean" parent="videoscreen.screen" label="14083" help="36354">
+          <requirement>OsxIsSnowLeopard</requirement>
+        </setting>
+      </group>
+    </category>
   </section>
 </settings>
 
