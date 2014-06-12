@@ -61,8 +61,8 @@ static const struct StereoModeMap VideoModeToGuiModeMap[] =
   { "right_left",               RENDER_STEREO_MODE_SPLIT_VERTICAL },
   { "top_bottom",               RENDER_STEREO_MODE_SPLIT_HORIZONTAL },
   { "bottom_top",               RENDER_STEREO_MODE_SPLIT_HORIZONTAL },
-  { "checkerboard_rl",          RENDER_STEREO_MODE_OFF }, // unsupported
-  { "checkerboard_lr",          RENDER_STEREO_MODE_OFF }, // unsupported
+  { "checkerboard_rl",          RENDER_STEREO_MODE_CHECKERBOARD },
+  { "checkerboard_lr",          RENDER_STEREO_MODE_CHECKERBOARD },
   { "row_interleaved_rl",       RENDER_STEREO_MODE_INTERLACED },
   { "row_interleaved_lr",       RENDER_STEREO_MODE_INTERLACED },
   { "col_interleaved_rl",       RENDER_STEREO_MODE_OFF }, // unsupported
@@ -83,6 +83,7 @@ static const struct StereoModeMap StringToGuiModeMap[] =
   { "split_horizontal",         RENDER_STEREO_MODE_SPLIT_HORIZONTAL },
   { "over_under",               RENDER_STEREO_MODE_SPLIT_HORIZONTAL }, // alias
   { "tab",                      RENDER_STEREO_MODE_SPLIT_HORIZONTAL }, // alias
+  { "checkerboard",             RENDER_STEREO_MODE_CHECKERBOARD },
   { "row_interleaved",          RENDER_STEREO_MODE_INTERLACED },
   { "interlaced",               RENDER_STEREO_MODE_INTERLACED }, // alias
   { "anaglyph_cyan_red",        RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN },
