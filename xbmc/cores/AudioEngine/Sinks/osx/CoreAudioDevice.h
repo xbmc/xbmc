@@ -51,7 +51,8 @@ public:
   
   AudioDeviceID GetId() {return m_DeviceId;}
   std::string   GetName();
-  bool          IsDigital(UInt32 &transportType);
+  bool          IsDigital();
+  UInt32        GetTransportType();
   UInt32        GetTotalOutputChannels();
   UInt32        GetNumChannelsOfStream(UInt32 streamIdx);
   bool          GetStreams(AudioStreamIdList *pList);

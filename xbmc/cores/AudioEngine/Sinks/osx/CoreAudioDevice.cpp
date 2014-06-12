@@ -240,22 +240,17 @@ std::string CCoreAudioDevice::GetName()
   return name;
 }
 
-bool CCoreAudioDevice::IsDigital(UInt32 &transportType)
+bool CCoreAudioDevice::IsDigital()
 {
   bool isDigital = false;
+  UInt32 transportType = 0;
   if (!m_DeviceId)
     return false;
-
-  AudioObjectPropertyAddress  propertyAddress;
-  propertyAddress.mScope    = kAudioDevicePropertyScopeOutput;
-  propertyAddress.mElement  = 0;
-  propertyAddress.mSelector = kAudioDevicePropertyTransportType;
-
-  UInt32 propertySize = sizeof(transportType);
-  OSStatus ret = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &propertySize, &transportType);
-  if (ret != noErr)
-      return false;
     
+  transportType = GetTransportType();
+  if (transportType == INT_MAX)
+    return false;
+
   if (transportType == kIOAudioDeviceTransportTypeFireWire)
     isDigital = true;
   if (transportType == kIOAudioDeviceTransportTypeUSB)
@@ -270,6 +265,24 @@ bool CCoreAudioDevice::IsDigital(UInt32 &transportType)
     isDigital = true;
     
   return isDigital;
+}
+
+UInt32 CCoreAudioDevice::GetTransportType()
+{
+  UInt32 transportType = 0;
+  if (!m_DeviceId)
+    return INT_MAX;
+
+  AudioObjectPropertyAddress  propertyAddress;
+  propertyAddress.mScope    = kAudioDevicePropertyScopeOutput;
+  propertyAddress.mElement  = 0;
+  propertyAddress.mSelector = kAudioDevicePropertyTransportType;
+
+  UInt32 propertySize = sizeof(transportType);
+  OSStatus ret = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &propertySize, &transportType);
+  if (ret != noErr)
+      return INT_MAX;
+  return transportType;
 }
 
 UInt32 CCoreAudioDevice::GetTotalOutputChannels()
