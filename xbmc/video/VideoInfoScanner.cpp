@@ -288,7 +288,8 @@ namespace VIDEO
           if (hash.empty() && !dbHash.empty())
           {
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' as it's empty or doesn't exist - adding to clean list", CURL::GetRedacted(strDirectory).c_str());
-            m_pathsToClean.insert(m_database.GetPathId(strDirectory));
+            if (m_bClean)
+              m_pathsToClean.insert(m_database.GetPathId(strDirectory));
           }
           else
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change", CURL::GetRedacted(strDirectory).c_str());
@@ -337,13 +338,15 @@ namespace VIDEO
         if (!m_bStop && (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS))
         {
           m_database.SetPathHash(strDirectory, hash);
-          m_pathsToClean.insert(m_database.GetPathId(strDirectory));
+          if (m_bClean)
+            m_pathsToClean.insert(m_database.GetPathId(strDirectory));
           CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding information from dir %s", CURL::GetRedacted(strDirectory).c_str());
         }
       }
       else
       {
-        m_pathsToClean.insert(m_database.GetPathId(strDirectory));
+        if (m_bClean)
+          m_pathsToClean.insert(m_database.GetPathId(strDirectory));
         CLog::Log(LOGDEBUG, "VideoInfoScanner: No (new) information was found in dir %s", CURL::GetRedacted(strDirectory).c_str());
       }
     }
@@ -446,7 +449,7 @@ namespace VIDEO
       pURL = NULL;
 
       // Keep track of directories we've seen
-      if (pItem->m_bIsFolder)
+      if (m_bClean && pItem->m_bIsFolder)
         seenPaths.push_back(m_database.GetPathId(pItem->GetPath()));
     }
 
@@ -715,8 +718,11 @@ namespace VIDEO
       else
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '%s' due to change (%s != %s)", CURL::GetRedacted(item->GetPath()).c_str(), dbHash.c_str(), hash.c_str());
 
-      m_pathsToClean.insert(m_database.GetPathId(item->GetPath()));
-      m_database.GetPathsForTvShow(m_database.GetTvShowId(item->GetPath()), m_pathsToClean);
+      if (m_bClean)
+      {
+        m_pathsToClean.insert(m_database.GetPathId(item->GetPath()));
+        m_database.GetPathsForTvShow(m_database.GetTvShowId(item->GetPath()), m_pathsToClean);
+      }
       item->SetProperty("hash", hash);
     }
     else
