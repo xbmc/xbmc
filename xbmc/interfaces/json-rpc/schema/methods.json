@@ -1681,7 +1681,7 @@
     "transport": "Response",
     "permission": "ControlGUI",
     "params": [
-      { "name": "mode", "type": "string", "enum": [ "toggle", "tomono", "next", "previous", "select", "off", "split_vertical", "split_horizontal", "row_interleaved", "hardware_based", "anaglyph_cyan_red", "anaglyph_green_magenta", "monoscopic" ], "required": true }
+      { "name": "mode", "type": "string", "enum": [ "toggle", "tomono", "next", "previous", "select", "off", "split_vertical", "split_horizontal", "checkerboard", "row_interleaved", "hardware_based", "anaglyph_cyan_red", "anaglyph_green_magenta", "monoscopic" ], "required": true }
     ],
     "returns": "string"
   },
