@@ -211,7 +211,13 @@ bool CPlexServer::UpdateReachability()
   sort(sortedConnections.begin(), sortedConnections.end(), ConnectionSortFunction);
 
   CSingleLock lk(m_connTestThreadLock);
-  m_connTestThreads.clear();
+
+  if (m_connTestThreads.size() > 0)
+  {
+    CancelReachabilityTests();
+    m_connTestThreads.clear();
+  }
+
   BOOST_FOREACH(CPlexConnectionPtr conn, sortedConnections)
   {
     CLog::Log(LOGDEBUG, "CPlexServer::UpdateReachability testing connection %s", conn->toString().c_str());
