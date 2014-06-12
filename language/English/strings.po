@@ -1102,3 +1102,31 @@ msgstr ""
 msgctxt "#32112"
 msgid "Actors"
 msgstr ""
+
+msgctxt "#32113"
+msgid "Show Big Posters View in Sections"
+msgstr ""
+
+msgctxt "#32114"
+msgid "Hide plot for Unwatched/In Progress Episodes"
+msgstr ""
+
+msgctxt "#32115"
+msgid "Hide Unwatched indicators for Movies in Library"
+msgstr ""
+
+msgctxt "#32116"
+msgid "Hide Unwatched indicators for TV Shows and Seasons in Library"
+msgstr ""
+
+msgctxt "#32117"
+msgid "Show all media flags in details view"
+msgstr ""
+
+msgctxt "#32118"
+msgid "Hide Quit and Shutdown from Home menu"
+msgstr ""
+
+msgctxt "#32119"
+msgid "Disable all Slideshows"
+msgstr ""
