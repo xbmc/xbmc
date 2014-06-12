@@ -44,7 +44,6 @@ public:
   virtual int GetSampleRate();
   virtual enum AEDataFormat GetDataFormat();
   virtual const char* GetName() { return "FFmpeg"; }
-  virtual int GetBufferSize() { return m_iBuffered; }
   virtual int GetBitRate();
 
 protected:
@@ -56,8 +55,6 @@ protected:
   int m_gotFrame;
 
   bool m_bOpenedCodec;
-  int m_iBuffered;
-
   int      m_channels;
   uint64_t m_layout;
 
