@@ -11,7 +11,7 @@
 
 #include "PlexApplication.h"
 #include "GUIInfoManager.h"
-#include "langinfo.h"
+#include "langInfo.h"
 
 using namespace XFILE;
 using namespace std;
