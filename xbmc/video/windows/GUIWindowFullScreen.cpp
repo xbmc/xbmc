@@ -727,20 +727,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       else
         m_subsLayout = NULL;
 
-      /* PLEX */
-      CLog::Log(LOGDEBUG, "GUIWindowFullScreen::OnMessage(INIT_WINDOW): paused: %s, buffering: %s, seeking: %s",
-                g_application.IsPaused() ? "yes" : "no", g_application.IsBuffering() ? "yes" : "no", g_infoManager.GetSeeking() ? "yes" : "no");
-      CLog::Log(LOGDEBUG, "CGUIWindowFullScreen::OnMessage(INIT_WINDOW): isCaching: %s, playerState: %s",
-                g_application.m_pPlayer->IsCaching() ? "yes" : "no", g_application.m_pPlayer->GetPlayerState().c_str());
-      if (g_application.IsPaused() && !g_application.IsBuffering() && !g_infoManager.GetSeeking())
-      {
-        ThreadMessage tmsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_VIDEO_OSD, WINDOW_FULLSCREEN_VIDEO, "pauseOpen"};
-        CGUIDialogVideoOSD* osd = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
-        if (osd && !osd->IsDialogRunning())
-          CApplicationMessenger::Get().SendMessage(tmsg, false);
-      }
-      /* END PLEX */
-
       return true;
     }
   case GUI_MSG_WINDOW_DEINIT:

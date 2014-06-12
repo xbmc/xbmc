@@ -5738,6 +5738,25 @@ void CApplication::ProcessSlow()
     CAddonInstaller::Get().UpdateRepos();
 
   CAEFactory::GarbageCollect();
+
+  /* PLEX */
+  if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO && IsPlayingVideo())
+  {
+    CGUIDialogVideoOSD *osd = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
+    if (IsPaused() && !IsBuffering())
+    {
+      if (osd && !osd->IsDialogRunning())
+      {
+        ThreadMessage tmsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_VIDEO_OSD, WINDOW_FULLSCREEN_VIDEO, "pauseOpen"};
+        CApplicationMessenger::Get().SendMessage(tmsg, false);
+      }
+    }
+    else if (IsPlaying() && osd && osd->IsDialogRunning() && osd->IsOpenedFromPause())
+    {
+      CApplicationMessenger::Get().Close(osd, false, false);
+    }
+  }
+  /* END PLEX */
 }
 
 // Global Idle Time in Seconds
