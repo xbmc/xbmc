@@ -697,6 +697,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
 
   bool                        passthrough  = false;
   UInt32                      outputIndex  = 0;
+  UInt32                      numOutputChannels = 0;
   float                       outputScore  = 0;
   AudioStreamBasicDescription outputFormat = {0};
   AudioStreamID               outputStream = 0;
@@ -742,11 +743,12 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   }
 
   m_planes = 1;
+  numOutputChannels = outputFormat.mChannelsPerFrame;
   if (streams.size() > 1 && outputFormat.mChannelsPerFrame == 1)
   {
-    CLog::Log(LOGDEBUG, "%s Found planar audio with %u channels?", __FUNCTION__, (unsigned int)streams.size());
-    outputFormat.mChannelsPerFrame = std::min((size_t)format.m_channelLayout.Count(), streams.size());
-    m_planes = outputFormat.mChannelsPerFrame;
+    numOutputChannels = std::min((size_t)format.m_channelLayout.Count(), streams.size());
+    m_planes = numOutputChannels;
+    CLog::Log(LOGDEBUG, "%s Found planar audio with %u channels using %u of them.", __FUNCTION__, (unsigned int)streams.size(), (unsigned int)numOutputChannels);
   }
 
   if (!outputFormat.mFormatID)
@@ -780,7 +782,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   CLog::Log(LOGDEBUG, "%s: New Physical Format: %s", __FUNCTION__, StreamDescriptionToString(outputFormat, formatString));
 
   // update the channel map based on the new stream format
-  GetAEChannelMap(m_device, format.m_channelLayout, outputFormat.mChannelsPerFrame);
+  GetAEChannelMap(m_device, format.m_channelLayout, numOutputChannels);
 
 
   m_latentFrames = m_device.GetNumLatencyFrames();
