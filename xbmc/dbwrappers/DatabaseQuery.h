@@ -75,13 +75,13 @@ public:
 
   CStdString                  GetParameter() const;
   void                        SetParameter(const CStdString &value);
-  void                        SetParameter(const std::vector<CStdString> &values);
+  void                        SetParameter(const std::vector<std::string> &values);
 
   virtual CStdString          GetWhereClause(const CDatabase &db, const CStdString& strType) const;
 
   int                         m_field;
   SEARCH_OPERATOR             m_operator;
-  std::vector<CStdString>     m_parameter;
+  std::vector<std::string>    m_parameter;
 
 protected:
   virtual CStdString          GetField(int field, const CStdString& type) const=0;

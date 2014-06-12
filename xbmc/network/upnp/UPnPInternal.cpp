@@ -263,9 +263,6 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
                       PLT_MediaItemResource* resource,  /* = NULL */
                       EClientQuirks          quirks)
 {
-    // some usefull buffers
-    CStdStringArray strings;
-
     if (!tag.m_strFileNameAndPath.empty() && file_path)
       *file_path = tag.m_strFileNameAndPath;
 
@@ -450,8 +447,6 @@ BuildObject(CFileItem&                    item,
         container->m_ObjectID = item.GetPath();
         container->m_ObjectClass.type = "object.container";
         container->m_ChildrenCount = -1;
-
-        CStdStringArray strings;
 
         /* this might be overkill, but hey */
         if (item.IsMusicDb()) {

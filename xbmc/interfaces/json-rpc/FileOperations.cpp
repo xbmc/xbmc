@@ -83,7 +83,7 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
   if (!CFileUtils::RemoteAccessAllowed(strPath))
     return InvalidParams;
 
-  CStdStringArray regexps;
+  std::vector<std::string> regexps;
   CStdString extensions = "";
   if (media.Equals("video"))
   {
@@ -292,7 +292,7 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
     {
       CFileItemList items;
       CStdString extensions = "";
-      CStdStringArray regexps;
+      std::vector<std::string> regexps;
 
       if (media.Equals("video"))
       {

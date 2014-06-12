@@ -2112,7 +2112,7 @@ void CFileItemList::FilterCueItems()
   CSingleLock lock(m_lock);
   // Handle .CUE sheet files...
   VECSONGS itemstoadd;
-  CStdStringArray itemstodelete;
+  vector<string> itemstodelete;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
     CFileItemPtr pItem = m_items[i];
@@ -2156,11 +2156,10 @@ void CFileItemList::FilterCueItems()
                 }
                 else
                 { // try replacing the extension with one of our allowed ones.
-                  CStdStringArray extensions;
-                  StringUtils::SplitString(g_advancedSettings.m_musicExtensions, "|", extensions);
-                  for (unsigned int i = 0; i < extensions.size(); i++)
+                  vector<string> extensions = StringUtils::Split(g_advancedSettings.m_musicExtensions, "|");
+                  for (vector<string>::const_iterator i = extensions.begin(); i != extensions.end(); ++i)
                   {
-                    strMediaFile = URIUtils::ReplaceExtension(pItem->GetPath(), extensions[i]);
+                    strMediaFile = URIUtils::ReplaceExtension(pItem->GetPath(), *i);
                     CFileItem item(strMediaFile, false);
                     if (!item.IsCUESheet() && !item.IsPlayList() && Contains(strMediaFile))
                     {
@@ -2281,9 +2280,9 @@ void CFileItemList::StackFolders()
   // Precompile our REs
   VECCREGEXP folderRegExps;
   CRegExp folderRegExp(true, CRegExp::autoUtf8);
-  const CStdStringArray& strFolderRegExps = g_advancedSettings.m_folderStackRegExps;
+  const vector<string>& strFolderRegExps = g_advancedSettings.m_folderStackRegExps;
 
-  CStdStringArray::const_iterator strExpression = strFolderRegExps.begin();
+  vector<string>::const_iterator strExpression = strFolderRegExps.begin();
   while (strExpression != strFolderRegExps.end())
   {
     if (!folderRegExp.RegComp(*strExpression))
@@ -2373,8 +2372,8 @@ void CFileItemList::StackFiles()
   // Precompile our REs
   VECCREGEXP stackRegExps;
   CRegExp tmpRegExp(true, CRegExp::autoUtf8);
-  const CStdStringArray& strStackRegExps = g_advancedSettings.m_videoStackRegExps;
-  CStdStringArray::const_iterator strRegExp = strStackRegExps.begin();
+  const vector<string>& strStackRegExps = g_advancedSettings.m_videoStackRegExps;
+  vector<string>::const_iterator strRegExp = strStackRegExps.begin();
   while (strRegExp != strStackRegExps.end())
   {
     if (tmpRegExp.RegComp(*strRegExp))
@@ -2661,11 +2660,10 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, bo
   // if a folder, check for folder.jpg
   if (m_bIsFolder && !IsFileFolder() && (!IsRemote() || alwaysCheckRemote || CSettings::Get().GetBool("musicfiles.findremotethumbs")))
   {
-    CStdStringArray thumbs;
-    StringUtils::SplitString(g_advancedSettings.m_musicThumbs, "|", thumbs);
-    for (unsigned int i = 0; i < thumbs.size(); ++i)
+    vector<string> thumbs = StringUtils::Split(g_advancedSettings.m_musicThumbs, "|");
+    for (vector<string>::const_iterator i = thumbs.begin(); i != thumbs.end(); ++i)
     {
-      CStdString folderThumb(GetFolderThumb(thumbs[i]));
+      CStdString folderThumb(GetFolderThumb(*i));
       if (CFile::Exists(folderThumb))
       {
         return folderThumb;
@@ -2939,8 +2937,7 @@ CStdString CFileItem::GetLocalFanart() const
     items.Append(moreItems);
   }
 
-  CStdStringArray fanarts;
-  StringUtils::SplitString(g_advancedSettings.m_fanartImages, "|", fanarts);
+  vector<string> fanarts = StringUtils::Split(g_advancedSettings.m_fanartImages, "|");
 
   strFile = URIUtils::ReplaceExtension(strFile, "-fanart");
   fanarts.insert(m_bIsFolder ? fanarts.end() : fanarts.begin(), URIUtils::GetFileName(strFile));
@@ -2948,13 +2945,13 @@ CStdString CFileItem::GetLocalFanart() const
   if (!strFile2.empty())
     fanarts.insert(m_bIsFolder ? fanarts.end() : fanarts.begin(), URIUtils::GetFileName(strFile2));
 
-  for (unsigned int i = 0; i < fanarts.size(); ++i)
+  for (vector<string>::const_iterator i = fanarts.begin(); i != fanarts.end(); ++i)
   {
     for (int j = 0; j < items.Size(); j++)
     {
       CStdString strCandidate = URIUtils::GetFileName(items[j]->m_strPath);
       URIUtils::RemoveExtension(strCandidate);
-      CStdString strFanart = fanarts[i];
+      CStdString strFanart = *i;
       URIUtils::RemoveExtension(strFanart);
       if (StringUtils::EqualsNoCase(strCandidate, strFanart))
         return items[j]->m_strPath;
@@ -3201,9 +3198,9 @@ CStdString CFileItem::FindTrailer() const
   // Precompile our REs
   VECCREGEXP matchRegExps;
   CRegExp tmpRegExp(true, CRegExp::autoUtf8);
-  const CStdStringArray& strMatchRegExps = g_advancedSettings.m_trailerMatchRegExps;
+  const vector<string>& strMatchRegExps = g_advancedSettings.m_trailerMatchRegExps;
 
-  CStdStringArray::const_iterator strRegExp = strMatchRegExps.begin();
+  vector<string>::const_iterator strRegExp = strMatchRegExps.begin();
   while (strRegExp != strMatchRegExps.end())
   {
     if (tmpRegExp.RegComp(*strRegExp))

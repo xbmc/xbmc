@@ -124,7 +124,7 @@ public:
   const CStdString& GetSpeedUnitString() const;
   CLangInfo::SPEED_UNIT GetSpeedUnit() const;
 
-  void GetRegionNames(CStdStringArray& array);
+  void GetRegionNames(std::vector<std::string>& array);
   void SetCurrentRegion(const CStdString& strName);
   const CStdString& GetCurrentRegion() const;
 

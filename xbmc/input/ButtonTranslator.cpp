@@ -1398,11 +1398,10 @@ uint32_t CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
   {
     StringUtils::ToLower(strMod);
 
-    CStdStringArray modArray;
-    StringUtils::SplitString(strMod, ",", modArray);
-    for (unsigned int i = 0; i < modArray.size(); i++)
+    vector<string> modArray = StringUtils::Split(strMod, ",");
+    for (vector<string>::const_iterator i = modArray.begin(); i != modArray.end(); ++i)
     {
-      CStdString& substr = modArray[i];
+      string substr = *i;
       StringUtils::Trim(substr);
 
       if (substr == "ctrl" || substr == "control")

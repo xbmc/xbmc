@@ -199,36 +199,6 @@ TEST(TestStringUtils, EndsWith)
   EXPECT_TRUE(StringUtils::EndsWithNoCase(refstr, "TesT"));
 }
 
-TEST(TestStringUtils, JoinString)
-{
-  CStdString refstr, varstr;
-  CStdStringArray strarray;
-
-  strarray.push_back("a");
-  strarray.push_back("b");
-  strarray.push_back("c");
-  strarray.push_back("de");
-  strarray.push_back(",");
-  strarray.push_back("fg");
-  strarray.push_back(",");
-  refstr = "a,b,c,de,,,fg,,";
-  StringUtils::JoinString(strarray, ",", varstr);
-  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
-
-  strarray.clear();
-  varstr.clear();
-  strarray.push_back("g");
-  strarray.push_back("h");
-  strarray.push_back("i");
-  strarray.push_back("jk,");
-  strarray.push_back(",");
-  strarray.push_back("lmn,,");
-  strarray.push_back(",");
-  refstr = "g,h,i,jk,,,,lmn,,,,";
-  varstr = StringUtils::JoinString(strarray, ",");
-  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
-}
-
 TEST(TestStringUtils, Join)
 {
   CStdString refstr, varstr;
@@ -246,32 +216,6 @@ TEST(TestStringUtils, Join)
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
-TEST(TestStringUtils, SplitString)
-{
-  CStdStringArray varresults;
-
-  EXPECT_EQ(9, StringUtils::SplitString("a,b,c,de,,,fg,,", ",", varresults));
-  EXPECT_STREQ("a", varresults.at(0).c_str());
-  EXPECT_STREQ("b", varresults.at(1).c_str());
-  EXPECT_STREQ("c", varresults.at(2).c_str());
-  EXPECT_STREQ("de", varresults.at(3).c_str());
-  EXPECT_STREQ("", varresults.at(4).c_str());
-  EXPECT_STREQ("", varresults.at(5).c_str());
-  EXPECT_STREQ("fg", varresults.at(6).c_str());
-  EXPECT_STREQ("", varresults.at(7).c_str());
-  EXPECT_STREQ("", varresults.at(8).c_str());
-
-  varresults.clear();
-  varresults = StringUtils::SplitString("g,h,ij,k,lm,,n", ",");
-  EXPECT_STREQ("g", varresults.at(0).c_str());
-  EXPECT_STREQ("h", varresults.at(1).c_str());
-  EXPECT_STREQ("ij", varresults.at(2).c_str());
-  EXPECT_STREQ("k", varresults.at(3).c_str());
-  EXPECT_STREQ("lm", varresults.at(4).c_str());
-  EXPECT_STREQ("", varresults.at(5).c_str());
-  EXPECT_STREQ("n", varresults.at(6).c_str());
-}
-
 TEST(TestStringUtils, Split)
 {
   std::vector<std::string> varresults;
@@ -284,6 +228,8 @@ TEST(TestStringUtils, Split)
   EXPECT_STREQ("lm", varresults.at(4).c_str());
   EXPECT_STREQ("", varresults.at(5).c_str());
   EXPECT_STREQ("n", varresults.at(6).c_str());
+
+  EXPECT_TRUE(StringUtils::Split("", "|").empty());
 }
 
 TEST(TestStringUtils, FindNumber)
@@ -478,7 +424,7 @@ TEST(TestStringUtils, FindBestMatch)
 {
   double refdouble, vardouble;
   int refint, varint;
-  CStdStringArray strarray;
+  std::vector<std::string> strarray;
 
   refint = 3;
   refdouble = 0.5625f;

@@ -238,42 +238,41 @@ void aml_probe_hdmi_audio()
     valstr[strlen(valstr)] = '\0';
     close(fd);
 
-    std::vector<CStdString> probe_str;
-    StringUtils::SplitString(valstr, "\n", probe_str);
+    std::vector<std::string> probe_str = StringUtils::Split(valstr, "\n");
 
-    for (size_t i = 0; i < probe_str.size(); i++)
+    for (std::vector<std::string>::const_iterator i = probe_str.begin(); i != probe_str.end(); ++i)
     {
-      if (probe_str[i].find("Audio") == std::string::npos)
+      if (i->find("Audio") == std::string::npos)
       {
-        for (size_t j = i+1; j < probe_str.size(); j++)
+        for (std::vector<std::string>::const_iterator j = i + 1; j != probe_str.end(); ++j)
         {
-          if      (probe_str[i].find("{1,")  != std::string::npos)
+          if      (j->find("{1,")  != std::string::npos)
             printf(" PCM found {1,\n");
-          else if (probe_str[i].find("{2,")  != std::string::npos)
+          else if (j->find("{2,")  != std::string::npos)
             printf(" AC3 found {2,\n");
-          else if (probe_str[i].find("{3,")  != std::string::npos)
+          else if (j->find("{3,")  != std::string::npos)
             printf(" MPEG1 found {3,\n");
-          else if (probe_str[i].find("{4,")  != std::string::npos)
+          else if (j->find("{4,")  != std::string::npos)
             printf(" MP3 found {4,\n");
-          else if (probe_str[i].find("{5,")  != std::string::npos)
+          else if (j->find("{5,")  != std::string::npos)
             printf(" MPEG2 found {5,\n");
-          else if (probe_str[i].find("{6,")  != std::string::npos)
+          else if (j->find("{6,")  != std::string::npos)
             printf(" AAC found {6,\n");
-          else if (probe_str[i].find("{7,")  != std::string::npos)
+          else if (j->find("{7,")  != std::string::npos)
             printf(" DTS found {7,\n");
-          else if (probe_str[i].find("{8,")  != std::string::npos)
+          else if (j->find("{8,")  != std::string::npos)
             printf(" ATRAC found {8,\n");
-          else if (probe_str[i].find("{9,")  != std::string::npos)
+          else if (j->find("{9,")  != std::string::npos)
             printf(" One_Bit_Audio found {9,\n");
-          else if (probe_str[i].find("{10,") != std::string::npos)
+          else if (j->find("{10,") != std::string::npos)
             printf(" Dolby found {10,\n");
-          else if (probe_str[i].find("{11,") != std::string::npos)
+          else if (j->find("{11,") != std::string::npos)
             printf(" DTS_HD found {11,\n");
-          else if (probe_str[i].find("{12,") != std::string::npos)
+          else if (j->find("{12,") != std::string::npos)
             printf(" MAT found {12,\n");
-          else if (probe_str[i].find("{13,") != std::string::npos)
+          else if (j->find("{13,") != std::string::npos)
             printf(" ATRAC found {13,\n");
-          else if (probe_str[i].find("{14,") != std::string::npos)
+          else if (j->find("{14,") != std::string::npos)
             printf(" WMA found {14,\n");
           else
             break;

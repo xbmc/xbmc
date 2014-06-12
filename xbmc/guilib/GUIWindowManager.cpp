@@ -327,7 +327,7 @@ void CGUIWindowManager::PreviousWindow()
 
 void CGUIWindowManager::ChangeActiveWindow(int newWindow, const CStdString& strPath)
 {
-  vector<CStdString> params;
+  vector<string> params;
   if (!strPath.empty())
     params.push_back(strPath);
   ActivateWindow(newWindow, params, true);
@@ -335,13 +335,13 @@ void CGUIWindowManager::ChangeActiveWindow(int newWindow, const CStdString& strP
 
 void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
 {
-  vector<CStdString> params;
+  vector<string> params;
   if (!strPath.empty())
     params.push_back(strPath);
   ActivateWindow(iWindowID, params, false);
 }
 
-void CGUIWindowManager::ActivateWindow(int iWindowID, const vector<CStdString>& params, bool swappingWindows)
+void CGUIWindowManager::ActivateWindow(int iWindowID, const vector<string>& params, bool swappingWindows)
 {
   if (!g_application.IsCurrentThread())
   {
@@ -356,7 +356,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const vector<CStdString>& 
   }
 }
 
-void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStdString>& params, bool swappingWindows)
+void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<string>& params, bool swappingWindows)
 {
   // translate virtual windows
   // virtual music window which returns the last open music window (aka the music start window)

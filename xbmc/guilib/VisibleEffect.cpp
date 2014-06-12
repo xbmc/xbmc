@@ -186,20 +186,20 @@ CSlideEffect::CSlideEffect(const TiXmlElement *node) : CAnimEffect(node, EFFECT_
   const char *startPos = node->Attribute("start");
   if (startPos)
   {
-    vector<CStdString> commaSeparated;
-    StringUtils::SplitString(startPos, ",", commaSeparated);
+    vector<string> commaSeparated = StringUtils::Split(startPos, ",");
     if (commaSeparated.size() > 1)
       m_startY = (float)atof(commaSeparated[1].c_str());
-    m_startX = (float)atof(commaSeparated[0].c_str());
+    if (!commaSeparated.empty())
+      m_startX = (float)atof(commaSeparated[0].c_str());
   }
   const char *endPos = node->Attribute("end");
   if (endPos)
   {
-    vector<CStdString> commaSeparated;
-    StringUtils::SplitString(endPos, ",", commaSeparated);
+    vector<string> commaSeparated = StringUtils::Split(endPos, ",");
     if (commaSeparated.size() > 1)
       m_endY = (float)atof(commaSeparated[1].c_str());
-    m_endX = (float)atof(commaSeparated[0].c_str());
+    if (!commaSeparated.empty())
+      m_endX = (float)atof(commaSeparated[0].c_str());
   }
 }
 
@@ -226,11 +226,11 @@ CRotateEffect::CRotateEffect(const TiXmlElement *node, EFFECT_TYPE effect) : CAn
       m_autoCenter = true;
     else
     {
-      vector<CStdString> commaSeparated;
-      StringUtils::SplitString(centerPos, ",", commaSeparated);
+      vector<string> commaSeparated = StringUtils::Split(centerPos, ",");
       if (commaSeparated.size() > 1)
         m_center.y = (float)atof(commaSeparated[1].c_str());
-      m_center.x = (float)atof(commaSeparated[0].c_str());
+      if (!commaSeparated.empty())
+        m_center.x = (float)atof(commaSeparated[0].c_str());
     }
   }
 }
@@ -266,8 +266,7 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEff
   const char *start = node->Attribute("start");
   if (start)
   {
-    CStdStringArray params;
-    StringUtils::SplitString(start, ",", params);
+    vector<string> params = StringUtils::Split(start, ",");
     if (params.size() == 1)
     {
       m_startX = (float)atof(params[0].c_str());
@@ -292,8 +291,7 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEff
   const char *end = node->Attribute("end");
   if (end)
   {
-    CStdStringArray params;
-    StringUtils::SplitString(end, ",", params);
+    vector<string> params = StringUtils::Split(end, ",");
     if (params.size() == 1)
     {
       m_endX = (float)atof(params[0].c_str());
@@ -322,11 +320,11 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEff
       m_autoCenter = true;
     else
     {
-      vector<CStdString> commaSeparated;
-      StringUtils::SplitString(centerPos, ",", commaSeparated);
+      vector<string> commaSeparated = StringUtils::Split(centerPos, ",");
       if (commaSeparated.size() > 1)
         m_center.y = (float)atof(commaSeparated[1].c_str());
-      m_center.x = (float)atof(commaSeparated[0].c_str());
+      if (!commaSeparated.empty())
+        m_center.x = (float)atof(commaSeparated[0].c_str());
     }
   }
   else

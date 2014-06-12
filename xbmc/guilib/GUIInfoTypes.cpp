@@ -310,25 +310,27 @@ void CGUIInfoLabel::Parse(const CStdString &label, int context)
       {
         // decipher the block
         CStdString block = work.substr(pos1 + len, pos2 - pos1 - len);
-        CStdStringArray params;
-        StringUtils::SplitString(block, ",", params);
-        int info;
-        if (format == FORMATVAR)
+        vector<string> params = StringUtils::Split(block, ",");
+        if (!params.empty())
         {
-          info = g_infoManager.TranslateSkinVariableString(params[0], context);
-          if (info == 0)
-            info = g_infoManager.RegisterSkinVariableString(g_SkinInfo->CreateSkinVariable(params[0], context));
-          if (info == 0) // skinner didn't define this conditional label!
-            CLog::Log(LOGWARNING, "Label Formating: $VAR[%s] is not defined", params[0].c_str());
+          int info;
+          if (format == FORMATVAR)
+          {
+            info = g_infoManager.TranslateSkinVariableString(params[0], context);
+            if (info == 0)
+              info = g_infoManager.RegisterSkinVariableString(g_SkinInfo->CreateSkinVariable(params[0], context));
+            if (info == 0) // skinner didn't define this conditional label!
+              CLog::Log(LOGWARNING, "Label Formating: $VAR[%s] is not defined", params[0].c_str());
+          }
+          else
+            info = g_infoManager.TranslateString(params[0]);
+          CStdString prefix, postfix;
+          if (params.size() > 1)
+            prefix = params[1];
+          if (params.size() > 2)
+            postfix = params[2];
+          m_info.push_back(CInfoPortion(info, prefix, postfix, format == FORMATESCINFO));
         }
-        else
-          info = g_infoManager.TranslateString(params[0]);
-        CStdString prefix, postfix;
-        if (params.size() > 1)
-          prefix = params[1];
-        if (params.size() > 2)
-          postfix = params[2];
-        m_info.push_back(CInfoPortion(info, prefix, postfix, format == FORMATESCINFO));
         // and delete it from our work string
         work = work.substr(pos2 + 1);
       }

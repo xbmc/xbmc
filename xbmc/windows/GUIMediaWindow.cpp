@@ -118,11 +118,10 @@ void CGUIMediaWindow::LoadAdditionalTags(TiXmlElement *root)
   if (element && element->FirstChild())
   { // format is <views>50,29,51,95</views>
     CStdString allViews = element->FirstChild()->Value();
-    CStdStringArray views;
-    StringUtils::SplitString(allViews, ",", views);
-    for (unsigned int i = 0; i < views.size(); i++)
+    vector<string> views = StringUtils::Split(allViews, ",");
+    for (vector<string>::const_iterator i = views.begin(); i != views.end(); ++i)
     {
-      int controlID = atol(views[i].c_str());
+      int controlID = atol(i->c_str());
       CGUIControl *control = GetControl(controlID);
       if (control && control->IsContainer())
         m_viewControl.AddView(control);
@@ -486,7 +485,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       if (m_vecItems->GetPath() == "?")
         m_vecItems->SetPath("");
       CStdString dir = message.GetStringParam(0);
-      const CStdString &ret = message.GetStringParam(1);
+      const std::string &ret = message.GetStringParam(1);
       bool returning = StringUtils::EqualsNoCase(ret, "return");
       if (!dir.empty())
       {
@@ -688,7 +687,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   }
 
   int iWindow = GetID();
-  CStdStringArray regexps;
+  vector<string> regexps;
 
   // TODO: Do we want to limit the directories we apply the video ones to?
   if (iWindow == WINDOW_VIDEO_NAV)

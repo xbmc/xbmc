@@ -231,7 +231,7 @@ void URIUtils::Split(const std::string& strFileNameAndPath,
   strFileName = strFileNameAndPath.substr(i+1);
 }
 
-CStdStringArray URIUtils::SplitPath(const CStdString& strPath)
+std::vector<std::string> URIUtils::SplitPath(const CStdString& strPath)
 {
   CURL url(strPath);
 
@@ -239,8 +239,7 @@ CStdStringArray URIUtils::SplitPath(const CStdString& strPath)
   CStdString sep(1, url.GetDirectorySeparator());
 
   // split the filename portion of the URL up into separate dirs
-  CStdStringArray dirs;
-  StringUtils::SplitString(url.GetFileName(), sep, dirs);
+  vector<string> dirs = StringUtils::Split(url.GetFileName(), sep);
   
   // we start with the root path
   CStdString dir = url.GetWithoutFilename();
@@ -1275,16 +1274,12 @@ bool URIUtils::UpdateUrlEncoding(std::string &strFilename)
   // if this is a stack:// URL we need to work with its filename
   if (URIUtils::IsStack(strFilename))
   {
-    vector<CStdString> files;
+    vector<string> files;
     if (!CStackDirectory::GetPaths(strFilename, files))
       return false;
 
-    for (vector<CStdString>::iterator file = files.begin(); file != files.end(); ++file)
-    {
-      std::string filePath = *file;
-      UpdateUrlEncoding(filePath);
-      *file = filePath;
-    }
+    for (vector<string>::iterator file = files.begin(); file != files.end(); file++)
+      UpdateUrlEncoding(*file);
 
     CStdString stackPath;
     if (!CStackDirectory::ConstructStackPath(files, stackPath))

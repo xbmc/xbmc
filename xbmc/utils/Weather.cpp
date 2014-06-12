@@ -127,7 +127,7 @@ const CWeatherInfo &CWeatherJob::GetInfo() const
   return m_info;
 }
 
-void CWeatherJob::LocalizeOverviewToken(CStdString &token)
+void CWeatherJob::LocalizeOverviewToken(std::string &token)
 {
   // This routine is case-insensitive. 
   CStdString strLocStr = "";
@@ -147,15 +147,10 @@ void CWeatherJob::LocalizeOverviewToken(CStdString &token)
 
 void CWeatherJob::LocalizeOverview(CStdString &str)
 {
-  CStdStringArray words;
-  StringUtils::SplitString(str, " ", words);
-  str.clear();
-  for (unsigned int i = 0; i < words.size(); i++)
-  {
-    LocalizeOverviewToken(words[i]);
-    str += words[i] + " ";
-  }
-  StringUtils::TrimRight(str);
+  vector<string> words = StringUtils::Split(str, " ");
+  for (vector<string>::iterator i = words.begin(); i != words.end(); ++i)
+    LocalizeOverviewToken(*i);
+  str = StringUtils::Join(words, " ");
 }
 
 // input param must be kmh

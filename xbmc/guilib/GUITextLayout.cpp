@@ -27,8 +27,6 @@
 
 using namespace std;
 
-#define WORK_AROUND_NEEDED_FOR_LINE_BREAKS
-
 CGUIString::CGUIString(iString start, iString end, bool carriageReturn)
 {
   m_text.assign(start, end);
@@ -224,7 +222,7 @@ bool CGUITextLayout::Update(const CStdString &text, float maxWidth, bool forceUp
   m_lastUtf8Text = text;
   m_lastUpdateW = false;
   CStdStringW utf16;
-  utf8ToW(text, utf16);
+  g_charsetConverter.utf8ToW(text, utf16, false);
   UpdateCommon(utf16, maxWidth, forceLTRReadingOrder);
   return true;
 }
@@ -331,7 +329,7 @@ CStdStringW CGUITextLayout::BidiFlip(const CStdStringW &text, bool forceLTRReadi
 void CGUITextLayout::Filter(CStdString &text)
 {
   CStdStringW utf16;
-  utf8ToW(text, utf16);
+  g_charsetConverter.utf8ToW(text, utf16, false);
   vecColors colors;
   vecText parsedText;
   ParseText(utf16, 0, 0xffffffff, colors, parsedText);
@@ -657,33 +655,11 @@ void CGUITextLayout::AppendToUTF32(const CStdStringW &utf16, character_t colStyl
     utf32.push_back(utf16[i] | colStyle);
 }
 
-void CGUITextLayout::utf8ToW(const CStdString &utf8, CStdStringW &utf16)
-{
-#ifdef WORK_AROUND_NEEDED_FOR_LINE_BREAKS
-  // NOTE: This appears to strip \n characters from text.  This may be a consequence of incorrect
-  //       expression of the \n in utf8 (we just use character code 10) or it might be something
-  //       more sinister.  For now, we use the workaround below.
-  CStdStringArray multiLines;
-  StringUtils::SplitString(utf8, "\n", multiLines);
-  for (unsigned int i = 0; i < multiLines.size(); i++)
-  {
-    CStdStringW line;
-    // no need to bidiflip here - it's done in BidiTransform above
-    g_charsetConverter.utf8ToW(multiLines[i], line, false);
-    utf16 += line;
-    if (i < multiLines.size() - 1)
-      utf16.push_back(L'\n');
-  }
-#else
-  // no need to bidiflip here - it's done in BidiTransform above
-  g_charsetConverter.utf8ToW(utf8, utf16, false);
-#endif
-}
-
 void CGUITextLayout::AppendToUTF32(const CStdString &utf8, character_t colStyle, vecText &utf32)
 {
   CStdStringW utf16;
-  utf8ToW(utf8, utf16);
+  // no need to bidiflip here - it's done in BidiTransform above
+  g_charsetConverter.utf8ToW(utf8, utf16, false);
   AppendToUTF32(utf16, colStyle, utf32);
 }
 

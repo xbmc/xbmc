@@ -296,17 +296,14 @@ void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node, std::map<INFO::Inf
 
 CStdString CGUIIncludes::ResolveConstant(const CStdString &constant) const
 {
-  CStdStringArray values;
-  StringUtils::SplitString(constant, ",", values);
-  for (unsigned int i = 0; i < values.size(); ++i)
+  vector<string> values = StringUtils::Split(constant, ",");
+  for (vector<string>::iterator i = values.begin(); i != values.end(); ++i)
   {
-    map<CStdString, CStdString>::const_iterator it = m_constants.find(values[i]);
+    map<CStdString, CStdString>::const_iterator it = m_constants.find(*i);
     if (it != m_constants.end())
-      values[i] = it->second;
+      *i = it->second;
   }
-  CStdString value;
-  StringUtils::JoinString(values, ",", value);
-  return value;
+  return StringUtils::Join(values, ",");
 }
 
 const INFO::CSkinVariableString* CGUIIncludes::CreateSkinVariable(const CStdString& name, int context)

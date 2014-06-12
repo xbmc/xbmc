@@ -40,16 +40,15 @@ namespace XFILE
   bool CStackDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   {
     items.Clear();
-    CStdStringArray files;
+    vector<std::string> files;
     const CStdString pathToUrl(url.Get());
     if (!GetPaths(pathToUrl, files))
       return false;   // error in path
 
-    for (unsigned int i = 0; i < files.size(); i++)
+    for (vector<std::string>::const_iterator i = files.begin(); i != files.end(); ++i)
     {
-      CStdString file = files[i];
-      CFileItemPtr item(new CFileItem(file));
-      item->SetPath(file);
+      CFileItemPtr item(new CFileItem(*i));
+      item->SetPath(*i);
       item->m_bIsFolder = false;
       items.Add(item);
     }
@@ -61,8 +60,8 @@ namespace XFILE
     // Load up our REs
     VECCREGEXP  RegExps;
     CRegExp     tempRE(true, CRegExp::autoUtf8);
-    const CStdStringArray& strRegExps = g_advancedSettings.m_videoStackRegExps;
-    CStdStringArray::const_iterator itRegExp = strRegExps.begin();
+    const vector<std::string>& strRegExps = g_advancedSettings.m_videoStackRegExps;
+    vector<std::string>::const_iterator itRegExp = strRegExps.begin();
     vector<pair<int, CStdString> > badStacks;
     while (itRegExp != strRegExps.end())
     {
@@ -174,7 +173,7 @@ namespace XFILE
     return URIUtils::AddFileToFolder(folder, file);
   }
 
-  bool CStackDirectory::GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths)
+  bool CStackDirectory::GetPaths(const CStdString& strPath, vector<std::string>& vecPaths)
   {
     // format is:
     // stack://file1 , file2 , file3 , file4
@@ -182,14 +181,13 @@ namespace XFILE
     CStdString path = strPath;
     // remove stack:// from the beginning
     path = path.substr(8);
-    
-    vecPaths.clear();
-    StringUtils::SplitString(path, " , ", vecPaths);
+
+    vecPaths = StringUtils::Split(path, " , ");
     if (vecPaths.empty())
       return false;
 
     // because " , " is used as a seperator any "," in the real paths are double escaped
-    for (vector<CStdString>::iterator itPath = vecPaths.begin(); itPath != vecPaths.end(); itPath++)
+    for (vector<std::string>::iterator itPath = vecPaths.begin(); itPath != vecPaths.end(); itPath++)
       StringUtils::Replace(*itPath, ",,", ",");
 
     return true;

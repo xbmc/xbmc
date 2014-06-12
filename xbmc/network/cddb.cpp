@@ -397,9 +397,7 @@ void Xcddb::addTitle(const char *buffer)
   }
 
   // track artist" / "track title
-  CStdString strValue = value;
-  CStdStringArray values;
-  StringUtils::SplitString(value, " / ", values);
+  vector<string> values = StringUtils::Split(value, " / ");
   if (values.size() > 1)
   {
     g_charsetConverter.unknownToUTF8(values[0]);
@@ -407,7 +405,7 @@ void Xcddb::addTitle(const char *buffer)
     g_charsetConverter.unknownToUTF8(values[1]);
     m_mapTitles[trk_nr] += values[1];
   }
-  else
+  else if (!values.empty())
   {
     g_charsetConverter.unknownToUTF8(values[0]);
     m_mapTitles[trk_nr] += values[0];

@@ -60,7 +60,7 @@ public:
   void Delete(int id);
   void ActivateWindow(int iWindowID, const CStdString &strPath = "");
   void ChangeActiveWindow(int iNewID, const CStdString &strPath = "");
-  void ActivateWindow(int iWindowID, const std::vector<CStdString>& params, bool swappingWindows = false);
+  void ActivateWindow(int iWindowID, const std::vector<std::string>& params, bool swappingWindows = false);
   void PreviousWindow();
 
   void CloseDialogs(bool forceClose = false) const;
@@ -154,7 +154,7 @@ private:
   CGUIWindow *GetTopMostDialog() const;
 
   friend class CApplicationMessenger;
-  void ActivateWindow_Internal(int windowID, const std::vector<CStdString> &params, bool swappingWindows);
+  void ActivateWindow_Internal(int windowID, const std::vector<std::string> &params, bool swappingWindows);
 
   typedef std::map<int, CGUIWindow *> WindowMap;
   WindowMap m_mapWindows;

@@ -4108,14 +4108,13 @@ bool CVideoDatabase::GetStackTimes(const CStdString &filePath, vector<int> &time
     m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() > 0)
     { // get the video settings info
-      CStdStringArray timeString;
       int timeTotal = 0;
-      StringUtils::SplitString(m_pDS->fv("times").get_asString(), ",", timeString);
+      vector<string> timeString = StringUtils::Split(m_pDS->fv("times").get_asString(), ",");
       times.clear();
-      for (unsigned int i = 0; i < timeString.size(); i++)
+      for (vector<string>::const_iterator i = timeString.begin(); i != timeString.end(); ++i)
       {
-        times.push_back(atoi(timeString[i].c_str()));
-        timeTotal += atoi(timeString[i].c_str());
+        times.push_back(atoi(i->c_str()));
+        timeTotal += atoi(i->c_str());
       }
       m_pDS->close();
       return (timeTotal > 0);

@@ -88,7 +88,7 @@ public:
 #endif
 
 private:
-  void GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings);
+  void GetCustomRegexpReplacers(TiXmlElement *pRootElement, std::vector<std::string>& settings);
   virtual void Process();
 
   bool m_bAbortRequest;
@@ -115,5 +115,5 @@ private:
   bool m_playOneStackItem;
   WARP_CURSOR m_warpcursor;
   int m_playCountMinTime;
-  CStdStringArray m_filenameReplacers;
+  std::vector<std::string> m_filenameReplacers;
 };

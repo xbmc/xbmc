@@ -456,43 +456,27 @@ bool StringUtils::EndsWithNoCase(const std::string &str1, const char *s2)
   return true;
 }
 
-void StringUtils::JoinString(const CStdStringArray &strings, const CStdString& delimiter, CStdString& result)
-{
-  result = "";
-  for(CStdStringArray::const_iterator it = strings.begin(); it != strings.end(); ++it )
-    result += (*it) + delimiter;
-
-  if(result != "")
-    result.erase(result.size()-delimiter.size(), delimiter.size());
-}
-
-CStdString StringUtils::JoinString(const CStdStringArray &strings, const CStdString& delimiter)
+CStdString StringUtils::Join(const vector<string> &strings, const CStdString& delimiter)
 {
   CStdString result;
-  JoinString(strings, delimiter, result);
+  for(vector<string>::const_iterator it = strings.begin(); it != strings.end(); it++ )
+    result += (*it) + delimiter.c_str();
+  
+  if (!result.empty())
+    result.erase(result.size() - delimiter.size());
   return result;
 }
 
-CStdString StringUtils::Join(const vector<string> &strings, const CStdString& delimiter)
+vector<string> StringUtils::Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings /* = 0 */)
 {
-  CStdStringArray strArray;
-  for (unsigned int index = 0; index < strings.size(); index++)
-    strArray.push_back(strings.at(index));
+  vector<string> results;
+  if (input.empty())
+    return results;
 
-  return JoinString(strArray, delimiter);
-}
-
-// Splits the string input into pieces delimited by delimiter.
-// if 2 delimiters are in a row, it will include the empty string between them.
-// added MaxStrings parameter to restrict the number of returned substrings (like perl and python)
-int StringUtils::SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results, unsigned int iMaxStrings /* = 0 */)
-{
   size_t iPos = std::string::npos;
   size_t newPos = std::string::npos;
   size_t sizeS2 = delimiter.size();
   size_t isize = input.size();
-
-  results.clear();
 
   vector<unsigned int> positions;
 
@@ -501,7 +485,7 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
   if (newPos == std::string::npos)
   {
     results.push_back(input);
-    return 1;
+    return results;
   }
 
   while (newPos != std::string::npos)
@@ -519,7 +503,7 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
 
   for ( unsigned int i = 0; i <= numFound; i++ )
   {
-    CStdString s;
+    string s;
     if ( i == 0 )
     {
       if ( i == numFound )
@@ -541,30 +525,7 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
     }
     results.push_back(s);
   }
-  // return the number of substrings
-  return results.size();
-}
-
-CStdStringArray StringUtils::SplitString(const CStdString& input, const CStdString& delimiter, unsigned int iMaxStrings /* = 0 */)
-{
-  CStdStringArray result;
-  SplitString(input, delimiter, result, iMaxStrings);
-  return result;
-}
-
-vector<string> StringUtils::Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings /* = 0 */)
-{
-  vector<string> strArray;
-  if (input.empty())
-    return strArray;
-
-  CStdStringArray result;
-  SplitString(input, delimiter, result, iMaxStrings);
-
-  for (unsigned int index = 0; index < result.size(); index++)
-    strArray.push_back(result.at(index));
-
-  return strArray;
+  return results;
 }
 
 // returns the number of occurrences of strFind in strInput.
@@ -648,13 +609,12 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t *left, const wchar_t *rig
 
 int StringUtils::DateStringToYYYYMMDD(const CStdString &dateString)
 {
-  CStdStringArray days;
-  int splitCount = StringUtils::SplitString(dateString, "-", days);
-  if (splitCount == 1)
+  vector<string> days = StringUtils::Split(dateString, "-");
+  if (days.size() == 1)
     return atoi(days[0].c_str());
-  else if (splitCount == 2)
+  else if (days.size() == 2)
     return atoi(days[0].c_str())*100+atoi(days[1].c_str());
-  else if (splitCount == 3)
+  else if (days.size() == 3)
     return atoi(days[0].c_str())*10000+atoi(days[1].c_str())*100+atoi(days[2].c_str());
   else
     return -1;
@@ -671,13 +631,12 @@ long StringUtils::TimeStringToSeconds(const CStdString &timeString)
   }
   else
   {
-    CStdStringArray secs;
-    StringUtils::SplitString(strCopy, ":", secs);
+    vector<string> secs = StringUtils::Split(strCopy, ":");
     int timeInSecs = 0;
     for (unsigned int i = 0; i < 3 && i < secs.size(); i++)
     {
       timeInSecs *= 60;
-      timeInSecs += atoi(secs[i]);
+      timeInSecs += atoi(secs[i].c_str());
     }
     return timeInSecs;
   }
@@ -955,13 +914,13 @@ double StringUtils::CompareFuzzy(const CStdString &left, const CStdString &right
   return (0.5 + fstrcmp(left.c_str(), right.c_str(), 0.0) * (left.length() + right.length())) / 2.0;
 }
 
-int StringUtils::FindBestMatch(const CStdString &str, const CStdStringArray &strings, double &matchscore)
+int StringUtils::FindBestMatch(const CStdString &str, const vector<string> &strings, double &matchscore)
 {
   int best = -1;
   matchscore = 0;
 
   int i = 0;
-  for (CStdStringArray::const_iterator it = strings.begin(); it != strings.end(); ++it, i++)
+  for (vector<string>::const_iterator it = strings.begin(); it != strings.end(); ++it, i++)
   {
     int maxlength = max(str.length(), it->length());
     double score = StringUtils::CompareFuzzy(str, *it) / maxlength;
@@ -974,9 +933,9 @@ int StringUtils::FindBestMatch(const CStdString &str, const CStdStringArray &str
   return best;
 }
 
-bool StringUtils::ContainsKeyword(const CStdString &str, const CStdStringArray &keywords)
+bool StringUtils::ContainsKeyword(const CStdString &str, const vector<string> &keywords)
 {
-  for (CStdStringArray::const_iterator it = keywords.begin(); it != keywords.end(); ++it)
+  for (vector<string>::const_iterator it = keywords.begin(); it != keywords.end(); ++it)
   {
     if (str.find(*it) != str.npos)
       return true;

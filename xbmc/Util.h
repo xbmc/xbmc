@@ -77,7 +77,7 @@ public:
   static bool IsHTSP(const CStdString& strFile);
   static bool IsLiveTV(const CStdString& strFile);
   static bool IsTVRecording(const CStdString& strFile);
-  static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
+  static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const std::vector<std::string>& regexps);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static int GetDVDIfoTitle(const CStdString& strPathFile);
 
@@ -137,8 +137,8 @@ public:
    \param paramString the string to break up
    \param parameters the returned parameters
    */
-  static void SplitParams(const CStdString &paramString, std::vector<CStdString> &parameters);
-  static void SplitExecFunction(const CStdString &execString, CStdString &function, std::vector<CStdString> &parameters);
+  static void SplitParams(const CStdString &paramString, std::vector<std::string> &parameters);
+  static void SplitExecFunction(const CStdString &execString, CStdString &function, std::vector<std::string> &parameters);
   static int GetMatchingSource(const CStdString& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);
   static CStdString TranslateSpecialSource(const CStdString &strSpecial);
   static void DeleteDirectoryCache(const CStdString &prefix = "");
@@ -196,7 +196,7 @@ public:
   //
   // Forks to execute a shell command.
   //
-  static bool Command(const CStdStringArray& arrArgs, bool waitExit = false);
+  static bool Command(const std::vector<std::string>& arrArgs, bool waitExit = false);
 
   //
   // Forks to execute an unparsed shell command line.

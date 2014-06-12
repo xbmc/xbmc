@@ -434,7 +434,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
 
   CStdString strDownloadPath = "special://temp";
   CStdString strDestPath;
-  std::vector<CStdString> vecFiles;
+  std::vector<std::string> vecFiles;
 
   CStdString strCurrentFilePath;
   if (StringUtils::StartsWith(strCurrentFilePath, "http://"))

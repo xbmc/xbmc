@@ -861,12 +861,12 @@ protected:
   public:
     Property(const CStdString &property, const CStdString &parameters);
 
-    const CStdString &param(unsigned int n = 0) const;
+    const std::string &param(unsigned int n = 0) const;
     unsigned int num_params() const;
 
     CStdString name;
   private:
-    std::vector<CStdString> params;
+    std::vector<std::string> params;
   };
 
   bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
@@ -903,7 +903,7 @@ protected:
   bool GetEpgInfoTag(EPG::CEpgInfoTag& tag) const;
 
   // Conditional string parameters are stored here
-  CStdStringArray m_stringParameters;
+  std::vector<std::string> m_stringParameters;
 
   // Array of multiple information mapped to a single integer lookup
   std::vector<GUIInfo> m_multiInfo;

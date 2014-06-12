@@ -170,9 +170,8 @@ bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>
   URIUtils::RemoveSlashAtEnd(strPath1);
 
   // split on "/"
-  vector<CStdString> vecTemp;
-  StringUtils::SplitString(strPath1, "/", vecTemp);
-  if (vecTemp.size() == 0)
+  vector<string> vecTemp = StringUtils::Split(strPath1, "/");
+  if (vecTemp.empty())
     return false;
 
   // check each item
@@ -190,9 +189,8 @@ bool CMultiPathDirectory::HasPath(const CStdString& strPath, const CStdString& s
   URIUtils::RemoveSlashAtEnd(strPath1);
 
   // split on "/"
-  vector<CStdString> vecTemp;
-  StringUtils::SplitString(strPath1, "/", vecTemp);
-  if (vecTemp.size() == 0)
+  vector<string> vecTemp = StringUtils::Split(strPath1, "/");
+  if (vecTemp.empty())
     return false;
 
   // check each item
@@ -226,23 +224,23 @@ void CMultiPathDirectory::AddToMultiPath(CStdString& strMultiPath, const CStdStr
   strMultiPath += "/";
 }
 
-CStdString CMultiPathDirectory::ConstructMultiPath(const vector<CStdString> &vecPaths)
+CStdString CMultiPathDirectory::ConstructMultiPath(const vector<string> &vecPaths)
 {
   // we replace all instances of comma's with double comma's, then separate
   // the paths using " , "
   //CLog::Log(LOGDEBUG, "Building multipath");
   CStdString newPath = "multipath://";
   //CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
-  for (unsigned int i = 0; i < vecPaths.size(); ++i)
-    AddToMultiPath(newPath, vecPaths[i]);
+  for (vector<string>::const_iterator path = vecPaths.begin(); path != vecPaths.end(); ++path)
+    AddToMultiPath(newPath, *path);
   //CLog::Log(LOGDEBUG, "Final path: %s", newPath.c_str());
   return newPath;
 }
 
-CStdString CMultiPathDirectory::ConstructMultiPath(const std::set<CStdString> &setPaths)
+CStdString CMultiPathDirectory::ConstructMultiPath(const set<string> &setPaths)
 {
   CStdString newPath = "multipath://";
-  for (std::set<CStdString>::const_iterator path = setPaths.begin(); path != setPaths.end(); ++path)
+  for (set<string>::const_iterator path = setPaths.begin(); path != setPaths.end(); ++path)
     AddToMultiPath(newPath, *path);
 
   return newPath;

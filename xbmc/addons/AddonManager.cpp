@@ -683,31 +683,31 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
   if (!metadata)
     return false;
 
-  vector<CStdString> platforms;
+  vector<std::string> platforms;
   if (CAddonMgr::Get().GetExtList(metadata->configuration, "platform", platforms))
   {
-    for (unsigned int i = 0; i < platforms.size(); ++i)
+    for (vector<std::string>::const_iterator platform = platforms.begin(); platform != platforms.end(); ++platform)
     {
-      if (platforms[i] == "all")
+      if (*platform == "all")
         return true;
 #if defined(TARGET_ANDROID)
-      if (platforms[i] == "android")
+      if (*platform == "android")
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
-      if (platforms[i] == "linux")
+      if (*platform == "linux")
 #elif defined(TARGET_WINDOWS) && defined(HAS_SDL_OPENGL)
-      if (platforms[i] == "wingl")
+      if (*platform == "wingl")
 #elif defined(TARGET_WINDOWS) && defined(HAS_DX)
-      if (platforms[i] == "windx")
+      if (*platform == "windx")
 #elif defined(TARGET_DARWIN_OSX)
 // Remove this after Frodo and add an architecture filter
 // in addition to platform.
 #if defined(__x86_64__)
-      if (platforms[i] == "osx64" || platforms[i] == "osx")
+      if (*platform == "osx64" || *platform == "osx")
 #else
-      if (platforms[i] == "osx32" || platforms[i] == "osx")
+      if (*platform == "osx32" || *platform == "osx")
 #endif
 #elif defined(TARGET_DARWIN_IOS)
-      if (platforms[i] == "ios")
+      if (*platform == "ios")
 #endif
         return true;
     }
@@ -759,14 +759,15 @@ CStdString CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path)
   else return CStdString();
 }
 
-bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, vector<CStdString> &result) const
+bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, vector<std::string> &result) const
 {
+  result.clear();
   if (!base || !path)
     return false;
   CStdString all = m_cpluff->lookup_cfg_value(base, path);
   if (all.empty())
     return false;
-  StringUtils::SplitString(all, " ", result);
+  StringUtils::Tokenize(all, result, " ");
   return true;
 }
 

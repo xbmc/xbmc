@@ -570,7 +570,7 @@ const CStdString& CLangInfo::GetMeridiemSymbol(MERIDIEM_SYMBOL symbol) const
 }
 
 // Fills the array with the region names available for this language
-void CLangInfo::GetRegionNames(CStdStringArray& array)
+void CLangInfo::GetRegionNames(vector<string>& array)
 {
   for (ITMAPREGIONS it=m_regions.begin(); it!=m_regions.end(); ++it)
   {
@@ -665,7 +665,7 @@ void CLangInfo::SettingOptionsStreamLanguagesFiller(const CSetting *setting, std
 
 void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
-  CStdStringArray regions;
+  vector<string> regions;
   g_langInfo.GetRegionNames(regions);
   sort(regions.begin(), regions.end(), sortstringbyname());
 

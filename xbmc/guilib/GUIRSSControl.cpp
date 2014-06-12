@@ -124,12 +124,9 @@ void CGUIRSSControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
       {
         if (m_strRSSTags != "")
         {
-          CStdStringArray vecSplitTags;
-
-          StringUtils::SplitString(m_strRSSTags, ",", vecSplitTags);
-
-          for (unsigned int i = 0;i < vecSplitTags.size();i++)
-            m_pReader->AddTag(vecSplitTags[i]);
+          vector<string> tags = StringUtils::Split(m_strRSSTags, ",");
+          for (vector<string>::const_iterator i = tags.begin(); i != tags.end(); ++i)
+            m_pReader->AddTag(*i);
         }
         // use half the width of the control as spacing between feeds, and double this between feed sets
         float spaceWidth = (m_label.font) ? m_label.font->GetCharWidth(L' ') : 15;

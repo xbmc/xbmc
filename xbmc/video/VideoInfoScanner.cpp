@@ -244,7 +244,7 @@ namespace VIDEO
     CONTENT_TYPE content = info ? info->Content() : CONTENT_NONE;
 
     // exclude folders that match our exclude regexps
-    CStdStringArray regexps = content == CONTENT_TVSHOWS ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
+    const vector<string> &regexps = content == CONTENT_TVSHOWS ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
                                                          : g_advancedSettings.m_moviesExcludeFromScanRegExps;
 
     if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
@@ -660,7 +660,7 @@ namespace VIDEO
   bool CVideoInfoScanner::EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList)
   {
     CFileItemList items;
-    CStdStringArray regexps = g_advancedSettings.m_tvshowExcludeFromScanRegExps;
+    const vector<string> &regexps = g_advancedSettings.m_tvshowExcludeFromScanRegExps;
 
     bool bSkip = false;
 
@@ -1488,7 +1488,7 @@ namespace VIDEO
           else // Multiple matches found. Use fuzzy match on the title with already matched episodes to pick the best.
             candidates = &matches;
 
-          CStdStringArray titles;
+          vector<string> titles;
           for (guide = candidates->begin(); guide != candidates->end(); ++guide)
           {
             StringUtils::ToLower(guide->cScraperUrl.strTitle);
@@ -1707,7 +1707,7 @@ namespace VIDEO
     return count;
   }
 
-  bool CVideoInfoScanner::CanFastHash(const CFileItemList &items, const CStdStringArray &excludes) const
+  bool CVideoInfoScanner::CanFastHash(const CFileItemList &items, const vector<string> &excludes) const
   {
     for (int i = 0; i < items.Size(); ++i)
     {
@@ -1717,12 +1717,12 @@ namespace VIDEO
     return true;
   }
 
-  CStdString CVideoInfoScanner::GetFastHash(const CStdString &directory, const CStdStringArray &excludes) const
+  CStdString CVideoInfoScanner::GetFastHash(const CStdString &directory, const vector<string> &excludes) const
   {
     XBMC::XBMC_MD5 md5state;
 
     if (excludes.size())
-      md5state.append(StringUtils::JoinString(excludes, "|"));
+      md5state.append(StringUtils::Join(excludes, "|"));
 
     struct __stat64 buffer;
     if (XFILE::CFile::Stat(directory, &buffer) == 0)
@@ -1741,7 +1741,7 @@ namespace VIDEO
     return "";
   }
 
-  CStdString CVideoInfoScanner::GetRecursiveFastHash(const CStdString &directory, const CStdStringArray &excludes) const
+  CStdString CVideoInfoScanner::GetRecursiveFastHash(const CStdString &directory, const vector<string> &excludes) const
   {
     CFileItemList items;
     items.Add(CFileItemPtr(new CFileItem(directory, true)));
@@ -1750,7 +1750,7 @@ namespace VIDEO
     XBMC::XBMC_MD5 md5state;
 
     if (excludes.size())
-      md5state.append(StringUtils::JoinString(excludes, "|"));
+      md5state.append(StringUtils::Join(excludes, "|"));
 
     int64_t time = 0;
     for (int i=0; i < items.Size(); ++i)

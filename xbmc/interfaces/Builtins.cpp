@@ -233,7 +233,7 @@ const BUILT_IN commands[] = {
 bool CBuiltins::HasCommand(const CStdString& execString)
 {
   CStdString function;
-  vector<CStdString> parameters;
+  vector<string> parameters;
   CUtil::SplitExecFunction(execString, function, parameters);
   for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
@@ -259,7 +259,7 @@ int CBuiltins::Execute(const CStdString& execString)
 {
   // Get the text after the "XBMC."
   CStdString execute;
-  vector<CStdString> params;
+  vector<string> params;
   CUtil::SplitExecFunction(execString, execute, params);
   StringUtils::ToLower(execute);
   CStdString parameter = params.size() ? params[0] : "";
@@ -295,7 +295,7 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("inhibitidleshutdown"))
   {
-    bool inhibit = (params.size() == 1 && params[0].Equals("true"));
+    bool inhibit = (params.size() == 1 && StringUtils::EqualsNoCase(params[0], "true"));
     CApplicationMessenger::Get().InhibitIdleShutdown(inhibit);
   }
   else if (execute.Equals("activatescreensaver"))
@@ -309,7 +309,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("loadprofile"))
   {
     int index = CProfilesManager::Get().GetProfileIndex(parameter);
-    bool prompt = (params.size() == 2 && params[1].Equals("prompt"));
+    bool prompt = (params.size() == 2 && StringUtils::EqualsNoCase(params[1], "prompt"));
     bool bCanceled;
     if (index >= 0
         && (CProfilesManager::Get().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE
@@ -352,7 +352,7 @@ int CBuiltins::Execute(const CStdString& execString)
       CStdString strSaveToPath = params[0];
       bool sync = false;
       if (params.size() >= 2)
-        sync = params[1].Equals("sync");
+        sync = StringUtils::EqualsNoCase(params[1], "sync");
 
       if (!strSaveToPath.empty())
       {
@@ -417,7 +417,7 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       // disable the screensaver
       g_application.WakeUpScreenSaverAndDPMS();
-      vector<CStdString> dummy;
+      vector<string> dummy;
       g_windowManager.ActivateWindow(iWindow, dummy, !execute.Equals("activatewindowandfocus"));
 
       unsigned int iPtr = 1;
@@ -447,20 +447,16 @@ int CBuiltins::Execute(const CStdString& execString)
     else
 #endif
     {
-      vector<string> argv;
-      for (vector<CStdString>::const_iterator param = params.begin(); param != params.end(); ++param)
-        argv.push_back(*param);
-
-      vector<CStdString> path;
-      //split the path up to find the filename
-      StringUtils::SplitString(params[0],"\\",path);
-      if (path.size())
-        argv[0] = path[path.size() - 1];
-
       AddonPtr script;
       CStdString scriptpath(params[0]);
       if (CAddonMgr::Get().GetAddon(params[0], script))
         scriptpath = script->LibPath();
+
+      // split the path up to find the filename
+      vector<string> argv = params;
+      std::string filename = URIUtils::GetFileName(scriptpath);
+      if (!filename.empty())
+        argv[0] = filename;
 
       CScriptInvocationManager::Get().Execute(scriptpath, script, argv);
     }
@@ -558,14 +554,14 @@ int CBuiltins::Execute(const CStdString& execString)
         PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addon);
         CStdString addonid = params[0];
         CStdString urlParameters;
-        CStdStringArray parameters;
+        vector<string> parameters;
         if (params.size() == 2 &&
            (StringUtils::StartsWith(params[1], "/") || StringUtils::StartsWith(params[1], "?")))
           urlParameters = params[1];
         else if (params.size() > 1)
         {
           parameters.insert(parameters.begin(), params.begin() + 1, params.end());
-          urlParameters = "?" + StringUtils::JoinString(parameters, "&");
+          urlParameters = "?" + StringUtils::Join(parameters, "&");
         }
         else
         {
@@ -585,14 +581,14 @@ int CBuiltins::Execute(const CStdString& execString)
         else
           // Pass the script name (params[0]) and all the parameters
           // (params[1] ... params[x]) separated by a comma to RunPlugin
-          cmd = StringUtils::Format("RunPlugin(%s)", StringUtils::JoinString(params, ",").c_str());
+          cmd = StringUtils::Format("RunPlugin(%s)", StringUtils::Join(params, ",").c_str());
       }
       else if (CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT) ||
                CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_WEATHER) ||
                CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS))
         // Pass the script name (params[0]) and all the parameters
         // (params[1] ... params[x]) separated by a comma to RunScript
-        cmd = StringUtils::Format("RunScript(%s)", StringUtils::JoinString(params, ",").c_str());
+        cmd = StringUtils::Format("RunScript(%s)", StringUtils::Join(params, ",").c_str());
 
       return Execute(cmd);
     }
@@ -609,7 +605,7 @@ int CBuiltins::Execute(const CStdString& execString)
       if (params.size() > 2)
         data = CJSONVariantParser::Parse((const unsigned char *)params[2].c_str(), params[2].size());
 
-      ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Other, params[0], params[1], data);
+      ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Other, params[0].c_str(), params[1].c_str(), data);
     }
     else
       CLog::Log(LOGERROR, "XBMC.NotifyAll needs two parameters");
@@ -641,17 +637,17 @@ int CBuiltins::Execute(const CStdString& execString)
     int playOffset = 0;
     for (unsigned int i = 1 ; i < params.size() ; i++)
     {
-      if (params[i].Equals("isdir"))
+      if (StringUtils::EqualsNoCase(params[i], "isdir"))
         item.m_bIsFolder = true;
-      else if (params[i].Equals("1")) // set fullscreen or windowed
+      else if (params[i] == "1") // set fullscreen or windowed
         CMediaSettings::Get().SetVideoStartWindowed(true);
-      else if (params[i].Equals("resume"))
+      else if (StringUtils::EqualsNoCase(params[i], "resume"))
       {
         // force the item to resume (if applicable) (see CApplication::PlayMedia)
         item.m_lStartOffset = STARTOFFSET_RESUME;
         askToResume = false;
       }
-      else if (params[i].Equals("noresume"))
+      else if (StringUtils::EqualsNoCase(params[i], "noresume"))
       {
         // force the item to start at the beginning (m_lStartOffset is initialized to 0)
         askToResume = false;
@@ -754,13 +750,13 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       for (unsigned int i = 1 ; i < params.size() ; i++)
       {
-        if (params[i].Equals("recursive"))
+        if (StringUtils::EqualsNoCase(params[i], "recursive"))
           flags |= 1;
-        else if (params[i].Equals("random")) // set fullscreen or windowed
+        else if (StringUtils::EqualsNoCase(params[i], "random")) // set fullscreen or windowed
           flags |= 2;
-        else if (params[i].Equals("notrandom"))
+        else if (StringUtils::EqualsNoCase(params[i], "notrandom"))
           flags |= 4;
-        else if (params[i].Equals("pause"))
+        else if (StringUtils::EqualsNoCase(params[i], "pause"))
           flags |= 8;
         else if (StringUtils::StartsWithNoCase(params[i], "beginslide="))
           beginSlidePath = params[i].substr(11);
@@ -768,7 +764,7 @@ int CBuiltins::Execute(const CStdString& execString)
     }
 
     CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, flags);
-    vector<CStdString> strParams;
+    vector<string> strParams;
     strParams.push_back(params[0]);
     strParams.push_back(beginSlidePath);
     msg.SetStringParams(strParams);
@@ -926,7 +922,7 @@ int CBuiltins::Execute(const CStdString& execString)
         return 0;
 
       // check to see if we should notify the user
-      bool notify = (params.size() == 2 && params[1].Equals("notify"));
+      bool notify = (params.size() == 2 && StringUtils::EqualsNoCase(params[1], "notify"));
       g_playlistPlayer.SetShuffle(iPlaylist, !shuffled, notify);
 
       // save settings for now playing windows
@@ -970,7 +966,7 @@ int CBuiltins::Execute(const CStdString& execString)
         return 0;
 
       // check to see if we should notify the user
-      bool notify = (params.size() == 2 && params[1].Equals("notify"));
+      bool notify = (params.size() == 2 && StringUtils::EqualsNoCase(params[1], "notify"));
       g_playlistPlayer.SetRepeat(iPlaylist, state, notify);
 
       // save settings for now playing windows
@@ -1007,7 +1003,7 @@ int CBuiltins::Execute(const CStdString& execString)
     g_application.SetVolume(volume);
     if(oldVolume != volume)
     {
-      if(params.size() > 1 && params[1].Equals("showVolumeBar"))    
+      if(params.size() > 1 && StringUtils::EqualsNoCase(params[1], "showVolumeBar"))
       {
         CApplicationMessenger::Get().ShowVolumeBar(oldVolume < volume);  
       }
@@ -1398,14 +1394,14 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("updatelibrary") && params.size())
   {
-    if (params[0].Equals("music"))
+    if (StringUtils::EqualsNoCase(params[0], "music"))
     {
       if (g_application.IsMusicScanning())
         g_application.StopMusicScan();
       else
         g_application.StartMusicScan(params.size() > 1 ? params[1] : "");
     }
-    if (params[0].Equals("video"))
+    if (StringUtils::EqualsNoCase(params[0], "video"))
     {
       if (g_application.IsVideoScanning())
         g_application.StopVideoScan();
@@ -1415,14 +1411,14 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("cleanlibrary"))
   {
-    if (!params.size() || params[0].Equals("video"))
+    if (!params.size() || StringUtils::EqualsNoCase(params[0], "video"))
     {
       if (!g_application.IsVideoScanning())
          g_application.StartVideoCleanup();
       else
         CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning or cleaning");
     }
-    else if (params[0].Equals("music"))
+    else if (StringUtils::EqualsNoCase(params[0], "music"))
     {
       if (!g_application.IsMusicScanning())
       {
@@ -1436,10 +1432,10 @@ int CBuiltins::Execute(const CStdString& execString)
         CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning for media info");
     }
   }
-  else if (execute.Equals("exportlibrary"))
+  else if (execute.Equals("exportlibrary") && !params.empty())
   {
     int iHeading = 647;
-    if (params[0].Equals("music"))
+    if (StringUtils::EqualsNoCase(params[0], "music"))
       iHeading = 20196;
     CStdString path;
     VECSOURCES shares;
@@ -1453,7 +1449,7 @@ int CBuiltins::Execute(const CStdString& execString)
     bool cancelled=false;
 
     if (params.size() > 1)
-      singleFile = params[1].Equals("true");
+      singleFile = StringUtils::EqualsNoCase(params[1], "true");
     else
       singleFile = CGUIDialogYesNo::ShowAndGetInput(iHeading,20426,20427,-1,20428,20429,cancelled);
 
@@ -1463,7 +1459,7 @@ int CBuiltins::Execute(const CStdString& execString)
     if (singleFile)
     {
       if (params.size() > 2)
-        thumbs = params[2].Equals("true");
+        thumbs = StringUtils::EqualsNoCase(params[2], "true");
       else
         thumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20430,-1,-1,cancelled);
     }
@@ -1471,10 +1467,10 @@ int CBuiltins::Execute(const CStdString& execString)
     if (cancelled)
       return -1;
 
-    if (thumbs && params[0].Equals("video"))
+    if (thumbs && StringUtils::EqualsNoCase(params[0], "video"))
     {
       if (params.size() > 4)
-        actorThumbs = params[4].Equals("true");
+        actorThumbs = StringUtils::EqualsNoCase(params[4], "true");
       else
         actorThumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20436,-1,-1,cancelled);
     }
@@ -1485,7 +1481,7 @@ int CBuiltins::Execute(const CStdString& execString)
     if (singleFile)
     {
       if (params.size() > 3)
-        overwrite = params[3].Equals("true");
+        overwrite = StringUtils::EqualsNoCase(params[3], "true");
       else
         overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
     }
@@ -1499,7 +1495,7 @@ int CBuiltins::Execute(const CStdString& execString)
         CGUIDialogFileBrowser::ShowAndGetDirectory(shares,
 				  g_localizeStrings.Get(661), path, true))
     {
-      if (params[0].Equals("video"))
+      if (StringUtils::EqualsNoCase(params[0], "video"))
       {
         CVideoDatabase videodatabase;
         videodatabase.Open();
@@ -1708,9 +1704,9 @@ int CBuiltins::Execute(const CStdString& execString)
     g_RemoteControl.AddSendCommand(command);
   }
 #endif
-  else if (execute.Equals("weather.locationset"))
+  else if (execute.Equals("weather.locationset") && !params.empty())
   {
-    int loc = atoi(params[0]);
+    int loc = atoi(params[0].c_str());
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, 0, 0, loc);
     g_windowManager.SendMessage(msg, WINDOW_WEATHER);
   }

@@ -122,9 +122,8 @@ bool CWebSocketV13::Handshake(const char* data, size_t length, std::string &resp
   value = header.getValue(WS_HEADER_PROTOCOL_LC);
   if (value && strlen(value) > 0)
   {
-    CStdStringArray protocols;
-    StringUtils::SplitString(value, ",", protocols);
-    for (CStdStringArray::iterator protocol = protocols.begin(); protocol != protocols.end(); ++protocol)
+    vector<string> protocols = StringUtils::Split(value, ",");
+    for (vector<string>::iterator protocol = protocols.begin(); protocol != protocols.end(); ++protocol)
     {
       StringUtils::Trim(*protocol);
       if (*protocol == WS_PROTOCOL_JSONRPC)

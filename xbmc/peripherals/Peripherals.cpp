@@ -427,7 +427,6 @@ bool CPeripherals::LoadMappings(void)
 
   for (TiXmlElement *currentNode = pRootElement->FirstChildElement("peripheral"); currentNode; currentNode = currentNode->NextSiblingElement("peripheral"))
   {
-    CStdStringArray vpArray, idArray;
     PeripheralID id;
     PeripheralDeviceMapping mapping;
 
@@ -437,18 +436,18 @@ bool CPeripherals::LoadMappings(void)
     if (currentNode->Attribute("vendor_product"))
     {
       // The vendor_product attribute is a list of comma separated vendor:product pairs
-      StringUtils::SplitString(currentNode->Attribute("vendor_product"), ",", vpArray);
-      for (unsigned int i = 0; i < vpArray.size(); i++)
+      vector<string> vpArray = StringUtils::Split(currentNode->Attribute("vendor_product"), ",");
+      for (vector<string>::const_iterator i = vpArray.begin(); i != vpArray.end(); ++i)
       {
-        StringUtils::SplitString(vpArray[i], ":", idArray);
+        vector<string> idArray = StringUtils::Split(*i, ":");
         if (idArray.size() != 2)
         {
           CLog::Log(LOGERROR, "%s - ignoring node \"%s\" with invalid vendor_product attribute", __FUNCTION__, mapping.m_strDeviceName.c_str());
           continue;
         }
 
-        id.m_iVendorId = PeripheralTypeTranslator::HexStringToInt(idArray[0]);
-        id.m_iProductId = PeripheralTypeTranslator::HexStringToInt(idArray[1]);
+        id.m_iVendorId = PeripheralTypeTranslator::HexStringToInt(idArray[0].c_str());
+        id.m_iProductId = PeripheralTypeTranslator::HexStringToInt(idArray[1].c_str());
         mapping.m_PeripheralID.push_back(id);
       }
     }

@@ -191,7 +191,7 @@ namespace VIDEO
      \param excludes string array of exclude expressions
      \return the md5 hash of the folder"
      */
-    CStdString GetFastHash(const CStdString &directory, const CStdStringArray &excludes) const;
+    CStdString GetFastHash(const CStdString &directory, const std::vector<std::string> &excludes) const;
 
     /*! \brief Retrieve a "fast" hash of the given directory recursively (if available)
      Performs a stat() on the directory, and uses modified time to create a "fast"
@@ -203,7 +203,7 @@ namespace VIDEO
      \param excludes string array of exclude expressions
      \return the md5 hash of the folder
      */
-    CStdString GetRecursiveFastHash(const CStdString &directory, const CStdStringArray &excludes) const;
+    CStdString GetRecursiveFastHash(const CStdString &directory, const std::vector<std::string> &excludes) const;
 
     /*! \brief Decide whether a folder listing could use the "fast" hash
      Fast hashing can be done whenever the folder contains no scannable subfolders, as the
@@ -213,7 +213,7 @@ namespace VIDEO
      \param excludes string array of exclude expressions
      \return true if this directory listing can be fast hashed, false otherwise
      */
-    bool CanFastHash(const CFileItemList &items, const CStdStringArray &excludes) const;
+    bool CanFastHash(const CFileItemList &items, const std::vector<std::string> &excludes) const;
 
     /*! \brief Process a series folder, filling in episode details and adding them to the database.
      TODO: Ideally we would return INFO_HAVE_ALREADY if we don't have to update any episodes

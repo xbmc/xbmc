@@ -175,8 +175,7 @@ void CExternalPlayer::Process()
   {
     for (unsigned int i = 0; i < m_filenameReplacers.size(); i++)
     {
-      std::vector<CStdString> vecSplit;
-      StringUtils::SplitString(m_filenameReplacers[i], " , ", vecSplit);
+      std::vector<std::string> vecSplit = StringUtils::Split(m_filenameReplacers[i], " , ");
 
       // something is wrong, go to next substitution
       if (vecSplit.size() != 4)
@@ -702,7 +701,7 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
 }
 
 void CExternalPlayer::GetCustomRegexpReplacers(TiXmlElement *pRootElement,
-                                               CStdStringArray& settings)
+                                               std::vector<std::string>& settings)
 {
   int iAction = 0; // overwrite
   // for backward compatibility

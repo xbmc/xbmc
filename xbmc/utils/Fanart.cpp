@@ -149,12 +149,10 @@ bool CFanart::ParseColors(const CStdString &colorsIn, CStdString &colorsOut)
   if (colorsIn[0] == '|')
   { // need conversion
     colorsOut.clear();
-    CStdStringArray strColors;
-    StringUtils::SplitString(colorsIn, "|", strColors);
+    std::vector<std::string> strColors = StringUtils::Split(colorsIn, "|");
     for (int i = 0; i < std::min((int)strColors.size()-1, (int)max_fanart_colors); i++)
     { // split up each color
-      CStdStringArray strTriplets;
-      StringUtils::SplitString(strColors[i+1], ",", strTriplets);
+      std::vector<std::string> strTriplets = StringUtils::Split(strColors[i+1], ",");
       if (strTriplets.size() == 3)
       { // convert
         if (colorsOut.size())

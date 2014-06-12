@@ -203,22 +203,24 @@ bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
 
     iLine++;
 
-    CStdStringArray strFields(2);
+    char buffer1[513];
+    char buffer2[513];
     int iAction;
-    int iFieldsRead = sscanf(strBuffer, "%512s %512s %i", strFields[0].GetBuffer(512),
-                             strFields[1].GetBuffer(512), &iAction);
-    strFields[0].ReleaseBuffer();
-    strFields[1].ReleaseBuffer();
-
+    int iFieldsRead = sscanf(strBuffer, "%512s %512s %i", buffer1,
+                             buffer2, &iAction);
     if (iFieldsRead != 2 && iFieldsRead != 3) // Make sure we read the right number of fields
     {
       bError = true;
       continue;
     }
 
+    vector<string> strFields(2);
+    strFields[0] = buffer1;
+    strFields[1] = buffer2;
+
     if (iFieldsRead == 2) // If only 2 fields read, then assume it's a scene marker.
     {
-      iAction = atoi(strFields[1]);
+      iAction = atoi(strFields[1].c_str());
       strFields[1] = strFields[0];
     }
 
@@ -231,8 +233,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
     {
       if (strFields[i].find(":") != std::string::npos) // HH:MM:SS.sss format
       {
-        CStdStringArray fieldParts;
-        StringUtils::SplitString(strFields[i], ".", fieldParts);
+        vector<string> fieldParts = StringUtils::Split(strFields[i], ".");
         if (fieldParts.size() == 1) // No ms
         {
           iCutStartEnd[i] = StringUtils::TimeStringToSeconds(fieldParts[0]) * (int64_t)1000; // seconds to ms
@@ -254,7 +255,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
           {
             fieldParts[1] = fieldParts[1].substr(0, 3);
           }
-          iCutStartEnd[i] = (int64_t)StringUtils::TimeStringToSeconds(fieldParts[0]) * 1000 + atoi(fieldParts[1]); // seconds to ms
+          iCutStartEnd[i] = (int64_t)StringUtils::TimeStringToSeconds(fieldParts[0]) * 1000 + atoi(fieldParts[1].c_str()); // seconds to ms
         }
         else
         {
@@ -268,7 +269,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
       }
       else // Plain old seconds in float format, e.g. 123.45
       {
-        iCutStartEnd[i] = (int64_t)(atof(strFields[i]) * 1000); // seconds to ms
+        iCutStartEnd[i] = (int64_t)(atof(strFields[i].c_str()) * 1000); // seconds to ms
       }
     }
 

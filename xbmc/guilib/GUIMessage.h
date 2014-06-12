@@ -287,9 +287,9 @@ do { \
  SendWindowMessage(msg); \
 } while(0)
 
+#include <string>
 #include <vector>
 #include <boost/shared_ptr.hpp>
-#include "utils/StdString.h"
 
 // forwards
 class CGUIListItem; typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
@@ -322,14 +322,14 @@ public:
   void SetLabel(const std::string& strLabel);
   void SetLabel(int iString);               // for convience - looks up in strings.xml
   const std::string& GetLabel() const;
-  void SetStringParam(const CStdString &strParam);
-  void SetStringParams(const std::vector<CStdString> &params);
-  const CStdString& GetStringParam(size_t param = 0) const;
+  void SetStringParam(const std::string &strParam);
+  void SetStringParams(const std::vector<std::string> &params);
+  const std::string& GetStringParam(size_t param = 0) const;
   size_t GetNumStringParams() const;
 
 private:
   std::string m_strLabel;
-  std::vector<CStdString> m_params;
+  std::vector<std::string> m_params;
   int m_senderID;
   int m_controlID;
   int m_message;
@@ -338,6 +338,6 @@ private:
   int m_param2;
   CGUIListItemPtr m_item;
 
-  static CStdString empty_string;
+  static std::string empty_string;
 };
 #endif

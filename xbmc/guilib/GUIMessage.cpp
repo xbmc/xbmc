@@ -23,7 +23,7 @@
 
 using namespace std;
 
-CStdString CGUIMessage::empty_string;
+std::string CGUIMessage::empty_string;
 
 CGUIMessage::CGUIMessage(int msg, int senderID, int controlID, int param1, int param2)
 {
@@ -148,19 +148,19 @@ void CGUIMessage::SetLabel(int iString)
   m_strLabel = g_localizeStrings.Get(iString);
 }
 
-void CGUIMessage::SetStringParam(const CStdString& strParam)
+void CGUIMessage::SetStringParam(const string& strParam)
 {
   m_params.clear();
   if (strParam.size())
     m_params.push_back(strParam);
 }
 
-void CGUIMessage::SetStringParams(const vector<CStdString> &params)
+void CGUIMessage::SetStringParams(const vector<string> &params)
 {
   m_params = params;
 }
 
-const CStdString& CGUIMessage::GetStringParam(size_t param) const
+const std::string& CGUIMessage::GetStringParam(size_t param) const
 {
   if (param >= m_params.size())
     return empty_string;
