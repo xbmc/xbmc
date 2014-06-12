@@ -184,7 +184,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
 void CDVDVideoCodecAmlogic::Dispose(void)
 {
   if (m_Codec)
-    m_Codec->CloseDecoder(), m_Codec = NULL;
+    m_Codec->CloseDecoder(), delete m_Codec, m_Codec = NULL;
   if (m_videobuffer.iFlags)
     m_videobuffer.iFlags = 0;
   if (m_mpeg2_sequence)
