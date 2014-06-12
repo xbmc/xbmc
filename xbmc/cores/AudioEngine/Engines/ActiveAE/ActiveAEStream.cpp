@@ -50,7 +50,7 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat *format)
   m_streamDrained = false;
   m_streamFading = false;
   m_streamFreeBuffers = 0;
-  m_streamIsBuffering = true;
+  m_streamIsBuffering = false;
   m_streamSlave = NULL;
   m_leftoverBuffer = new uint8_t[m_format.m_frameSize];
   m_leftoverBytes = 0;
