@@ -853,7 +853,7 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
     }
     m_stats->UpdateSinkDelay(status, samples->pool ? written : 0, pts, samples->clockId);
   }
-  return status.delay;
+  return status.delay * 1000;
 }
 
 void CActiveAESink::SwapInit(CSampleBuffer* samples)
