@@ -76,7 +76,7 @@ bool AEDeviceEnumerationOSX::Enumerate()
       hasPassthroughOrDigitalFormats(info.formatList, info.hasPassthroughFormats, info.isDigital);
 
       info.isDigital |= isDigital;
-      info.deviceType = getDeviceType(hasPassthroughFormats, info.isDigital, info.numChannels, transportType);
+      info.deviceType = getDeviceType(info.hasPassthroughFormats, info.isDigital, info.numChannels, transportType);
       m_caStreamInfos.push_back(info);
     }
     ret = true;

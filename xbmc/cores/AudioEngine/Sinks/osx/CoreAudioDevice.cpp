@@ -240,7 +240,7 @@ std::string CCoreAudioDevice::GetName()
   return name;
 }
 
-bool CCoreAudioDevice::IsDigital()
+bool CCoreAudioDevice::IsDigital() const
 {
   bool isDigital = false;
   UInt32 transportType = 0;
@@ -267,7 +267,7 @@ bool CCoreAudioDevice::IsDigital()
   return isDigital;
 }
 
-UInt32 CCoreAudioDevice::GetTransportType()
+UInt32 CCoreAudioDevice::GetTransportType() const
 {
   UInt32 transportType = 0;
   if (!m_DeviceId)
@@ -285,7 +285,7 @@ UInt32 CCoreAudioDevice::GetTransportType()
   return transportType;
 }
 
-UInt32 CCoreAudioDevice::GetTotalOutputChannels()
+UInt32 CCoreAudioDevice::GetTotalOutputChannels() const
 {
   UInt32 channels = 0;
 
@@ -568,7 +568,7 @@ bool CCoreAudioDevice::SetCurrentVolume(Float32 vol)
   return true;
 }
 
-bool CCoreAudioDevice::GetPreferredChannelLayout(CCoreAudioChannelLayout& layout)
+bool CCoreAudioDevice::GetPreferredChannelLayout(CCoreAudioChannelLayout& layout) const
 {
   if (!m_DeviceId)
     return false;
@@ -597,7 +597,7 @@ bool CCoreAudioDevice::GetPreferredChannelLayout(CCoreAudioChannelLayout& layout
   return (ret == noErr);
 }
 
-bool CCoreAudioDevice::GetPreferredChannelLayoutForStereo(CCoreAudioChannelLayout &layout)
+bool CCoreAudioDevice::GetPreferredChannelLayoutForStereo(CCoreAudioChannelLayout &layout) const
 {
   if (!m_DeviceId)
     return false;
