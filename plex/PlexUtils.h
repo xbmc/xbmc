@@ -4,6 +4,7 @@
 #include <StdString.h>
 #include "FileItem.h"
 #include "utils/XBMCTinyXML.h"
+#include "dialogs/GUIDialogBusy.h"
 
 #if defined(HAVE_EXECINFO_H)
 #include <execinfo.h>
@@ -65,7 +66,9 @@ namespace PlexUtils
   std::string GetPlexContent(const CFileItem& item);
   ePlexMediaFilterTypes GetFilterType(const CFileItem& item);
   void SetItemResumeOffset(const CFileItemPtr& item, int64_t offint);
+
   CFileItemPtr GetItemWithKey(const CFileItemList& list, const std::string& key);
+  void PauseRendering(bool bPause, bool bUseWaitDialog);
 }
 
 #if defined(HAVE_EXECINFO_H)

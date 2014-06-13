@@ -983,3 +983,45 @@ CFileItemPtr PlexUtils::GetItemWithKey(const CFileItemList& list, const std::str
 
   return CFileItemPtr();
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void PlexUtils::PauseRendering(bool bPause, bool bUseWaitDialog)
+{
+  static int pauseRequestCount = 0;
+
+  // now handle the wait dialog stuff
+  if (bUseWaitDialog)
+  {
+    // we remove Wait Dialog animations as we want it to show immediately before rendering is paused
+    CGUIDialogBusy* busy = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+    std::vector<CAnimation> emptyAnims;
+    busy->SetAnimations(emptyAnims);
+
+    if (bPause)
+    {
+      if (busy)
+        busy->Show();
+
+      // render one last time to show busy dialog
+      g_windowManager.ProcessRenderLoop();
+    }
+    else
+    {
+      if (busy && busy->IsActive())
+        busy->Close();
+    }
+  }
+
+  // we handle wether we should stop or resume depending on pause counts
+  // this allows several jobs to ask for pause and only resume when last
+  // job is finished
+  if (bPause)
+    pauseRequestCount++;
+  else
+  {
+    if (pauseRequestCount > 0)
+      pauseRequestCount--;
+  }
+
+  g_application.SetRenderGUI(pauseRequestCount == 0);
+}
