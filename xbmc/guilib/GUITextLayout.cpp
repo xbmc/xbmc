@@ -24,6 +24,8 @@
 #include "GUIColorManager.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
+#include "settings/AdvancedSettings.h"
+
 
 using namespace std;
 
@@ -163,7 +165,7 @@ void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outl
     y -= m_font->GetTextHeight(m_lines.size()) * 0.5f;;
     alignment &= ~XBFONT_CENTER_Y;
   }
-  if (m_borderFont)
+  if (m_borderFont && !g_advancedSettings.m_pseudoBorder)
   {
     // adjust so the baselines of the fonts align
     float by = y + m_font->GetTextBaseLine() - m_borderFont->GetTextBaseLine();
@@ -207,8 +209,22 @@ void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outl
     if (align & XBFONT_JUSTIFIED && string.m_carriageReturn)
       align &= ~XBFONT_JUSTIFIED;
 
+    if (m_borderFont && g_advancedSettings.m_pseudoBorder)
+    {
+      float diff = m_borderFont->GetLineHeight() / 12;
+      m_font->DrawText(x-diff, y-diff, outlineColors, 0, string.m_text, align, 0);
+      m_font->DrawText(x-diff, y+diff, outlineColors, 0, string.m_text, align, 0);
+      m_font->DrawText(x-diff, y,      outlineColors, 0, string.m_text, align, 0);
+      m_font->DrawText(x,      y-diff, outlineColors, 0, string.m_text, align, 0);
+      m_font->DrawText(x,      y+diff, outlineColors, 0, string.m_text, align, 0);
+      m_font->DrawText(x+diff, y-diff, outlineColors, 0, string.m_text, align, 0);
+      m_font->DrawText(x+diff, y+diff, outlineColors, 0, string.m_text, align, 0);
+      m_font->DrawText(x+diff, y,      outlineColors, 0, string.m_text, align, 0);
+    }
+
     // don't pass maxWidth through to the renderer for the reason above.
     m_font->DrawText(x, y, m_colors, 0, string.m_text, align, 0);
+    
     y += m_font->GetLineHeight();
   }
   m_font->End();
