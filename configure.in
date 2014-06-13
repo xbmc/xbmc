@@ -1826,21 +1826,15 @@ if test "x$use_vaapi" != "xno"; then
     USE_VAAPI=0
   else
     initial_val=$use_vaapi
-    AC_CHECK_LIB([va], main, :, use_vaapi=no)
     if test "x$use_vaapi" != "xno"; then
-      AC_CHECK_LIB([va-glx], main, LIBS="-lva -lva-glx $LIBS", use_vaapi=no, -lva)
-    fi
-
-    if test "x$use_vaapi" = "xno"; then
+      PKG_CHECK_MODULES([LIBVA], [libva libva-x11],
+        [INCLUDES="$INCLUDES $LIBVA_CFLAGS"; LIBS="$LIBS $LIBVA_LIBS"; USE_VAAPI=1;
+         AC_DEFINE([HAVE_LIBVA], [1], [Define to 1 if you have the 'vaapi' libraries])],
+        [use_vaapi="no"; USE_VAAPI=0; AC_MSG_RESULT($vaapi_not_found)])
+    else
       if test "x$initial_val" = "xyes"; then
         AC_MSG_ERROR($vaapi_not_found)
-      else
-        AC_MSG_RESULT($vaapi_not_found)
       fi
-      USE_VAAPI=0
-    else
-      AC_DEFINE([HAVE_LIBVA], [1], [Define to 1 if you have the 'vaapi' libraries (-lva AND -lva-glx)])
-      USE_VAAPI=1
     fi
   fi
 else

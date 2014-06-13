@@ -728,6 +728,21 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.prefervaapirender" type="boolean" parent="videoplayer.usevaapi" label="13457" help="36433">
+          <requirement>HAVE_LIBVA</requirement>
+          <dependencies>
+            <dependency type="enable">
+              <and>
+                <condition setting="videoplayer.usevaapi" operator="is">true</condition>
+                <condition setting="videoplayer.decodingmethod" operator="is">1</condition>
+              </and>
+            </dependency>
+            <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevaapivc1" operator="is">true</dependency>
+          </dependencies>
+          <level>3</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.usedxva2" type="boolean" label="13427" help="36158">
           <requirement>HasDXVA2</requirement>
           <dependencies>

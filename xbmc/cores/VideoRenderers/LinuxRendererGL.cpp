@@ -62,13 +62,6 @@ extern "C" {
 #include <va/va_glx.h>
 #include "cores/dvdplayer/DVDCodecs/Video/VAAPI.h"
 
-#define USE_VAAPI_GLX_BIND                                \
-    (VA_MAJOR_VERSION == 0 &&                             \
-     ((VA_MINOR_VERSION == 30 &&                          \
-       VA_MICRO_VERSION == 4 && VA_SDS_VERSION >= 5) ||   \
-      (VA_MINOR_VERSION == 31 &&                          \
-       VA_MICRO_VERSION == 0 && VA_SDS_VERSION < 5)))
-
 #endif
 
 #ifdef TARGET_DARWIN
@@ -128,9 +121,6 @@ static const GLubyte stipple_weave[] = {
 };
 
 CLinuxRendererGL::YUVBUFFER::YUVBUFFER()
-#ifdef HAVE_LIBVA
- : vaapi(*(new VAAPI::CHolder()))
-#endif
 {
   memset(&fields, 0, sizeof(fields));
   memset(&image , 0, sizeof(image));
@@ -139,6 +129,9 @@ CLinuxRendererGL::YUVBUFFER::YUVBUFFER()
 #ifdef HAVE_LIBVDPAU
   vdpau = NULL;
 #endif
+#ifdef HAVE_LIBVA
+  vaapi = NULL;
+#endif
 #ifdef TARGET_DARWIN_OSX
   cvBufferRef = NULL;
 #endif
@@ -146,9 +139,6 @@ CLinuxRendererGL::YUVBUFFER::YUVBUFFER()
 
 CLinuxRendererGL::YUVBUFFER::~YUVBUFFER()
 {
-#ifdef HAVE_LIBVA
-  delete &vaapi;
-#endif
 #ifdef TARGET_DARWIN_OSX
   if (cvBufferRef)
     CVBufferRelease(cvBufferRef);
@@ -573,7 +563,7 @@ void CLinuxRendererGL::ReleaseBuffer(int idx)
   SAFE_RELEASE(buf.vdpau);
 #endif
 #ifdef HAVE_LIBVA
-  buf.vaapi.surface.reset();
+  SAFE_RELEASE(buf.vaapi);
 #endif
 #ifdef TARGET_DARWIN
   if (buf.cvBufferRef)
@@ -1056,7 +1046,8 @@ void CLinuxRendererGL::LoadShaders(int field)
     m_pboUsed = false;
 
   // Now that we now the render method, setup texture function handlers
-  if (m_format == RENDER_FMT_NV12)
+  if (m_format == RENDER_FMT_NV12 ||
+      m_format == RENDER_FMT_VAAPINV12)
   {
     m_textureUpload = &CLinuxRendererGL::UploadNV12Texture;
     m_textureCreate = &CLinuxRendererGL::CreateNV12Texture;
@@ -1134,7 +1125,10 @@ void CLinuxRendererGL::UnInit()
 
   // YV12 textures
   for (int i = 0; i < NUM_BUFFERS; ++i)
+  {
     (this->*m_textureDelete)(i);
+    DeleteVAAPITexture(i);
+  }
 
   // cleanup framebuffer object if it was in use
   m_fbo.fbo.Cleanup();
@@ -1193,14 +1187,14 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
   else if (m_renderMethod & RENDER_VDPAU)
   {
     UpdateVideoFilter();
-    RenderVDPAU(renderBuffer, m_currentField);
+    RenderRGB(renderBuffer, m_currentField);
   }
 #endif
 #ifdef HAVE_LIBVA
   else if (m_renderMethod & RENDER_VAAPI)
   {
     UpdateVideoFilter();
-    RenderVAAPI(renderBuffer, m_currentField);
+    RenderRGB(renderBuffer, m_currentField);
   }
 #endif
   else
@@ -1217,6 +1211,16 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     if (buf.vdpau)
     {
       buf.vdpau->Sync();
+    }
+  }
+#endif
+#ifdef HAVE_LIBVA
+  if (m_format == RENDER_FMT_VAAPI)
+  {
+    YUVBUFFER &buf = m_buffers[renderBuffer];
+    if (buf.vaapi)
+    {
+      buf.vaapi->Sync();
     }
   }
 #endif
@@ -1562,9 +1566,9 @@ void CLinuxRendererGL::RenderProgressiveWeave(int index, int field)
   }
 }
 
-void CLinuxRendererGL::RenderVDPAU(int index, int field)
+void CLinuxRendererGL::RenderRGB(int index, int field)
 {
-#ifdef HAVE_LIBVDPAU
+#if defined(HAVE_LIBVDPAU) || defined(HAVE_LIBVA)
   YUVPLANE &plane = m_buffers[index].fields[FIELD_FULL][0];
 
   glEnable(m_textureTarget);
@@ -1630,99 +1634,6 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
 
   if (m_pVideoFilterShader)
     m_pVideoFilterShader->Disable();
-
-  glBindTexture (m_textureTarget, 0);
-  glDisable(m_textureTarget);
-#endif
-}
-
-void CLinuxRendererGL::RenderVAAPI(int index, int field)
-{
-#ifdef HAVE_LIBVA
-  YUVPLANE       &plane = m_buffers[index].fields[0][0];
-  VAAPI::CHolder &va    = m_buffers[index].vaapi;
-
-  if(!va.surface)
-  {
-    CLog::Log(LOGINFO, "CLinuxRendererGL::RenderVAAPI - no vaapi object");
-    return;
-  }
-  VAAPI::CDisplayPtr& display(va.surface->m_display);
-  CSingleLock lock(*display);
-
-  glEnable(m_textureTarget);
-  glActiveTextureARB(GL_TEXTURE0);
-  glBindTexture(m_textureTarget, plane.id);
-
-#if USE_VAAPI_GLX_BIND
-  VAStatus status;
-  status = vaBeginRenderSurfaceGLX(display->get(), va.surfglx->m_id);
-  if(status != VA_STATUS_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "CLinuxRendererGL::RenderVAAPI - vaBeginRenderSurfaceGLX failed (%d)", status);
-    return;
-  }
-#endif
-
-  // make sure we know the correct texture size
-  GetPlaneTextureSize(plane);
-  CalculateTextureSourceRects(index, 1);
-
-  // Try some clamping or wrapping
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-  if (m_pVideoFilterShader)
-  {
-    GLint filter;
-    if (!m_pVideoFilterShader->GetTextureFilter(filter))
-      filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
-
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
-    m_pVideoFilterShader->SetSourceTexture(0);
-    m_pVideoFilterShader->SetWidth(m_sourceWidth);
-    m_pVideoFilterShader->SetHeight(m_sourceHeight);
-
-    //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
-    //having non-linear stretch on breaks the alignment
-    if (g_application.m_pPlayer->IsInMenu())
-      m_pVideoFilterShader->SetNonLinStretch(1.0);
-    else
-      m_pVideoFilterShader->SetNonLinStretch(pow(CDisplaySettings::Get().GetPixelRatio(), g_advancedSettings.m_videoNonLinStretchRatio));
-
-    m_pVideoFilterShader->Enable();
-  }
-  else
-  {
-    GLint filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
-  }
-
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-  VerifyGLState();
-
-  glBegin(GL_QUADS);
-  glTexCoord2f(plane.rect.x1, plane.rect.y1);  glVertex2f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[0].y);
-  glTexCoord2f(plane.rect.x2, plane.rect.y1);  glVertex2f(m_rotatedDestCoords[1].x, m_rotatedDestCoords[1].y);
-  glTexCoord2f(plane.rect.x2, plane.rect.y2);  glVertex2f(m_rotatedDestCoords[2].x, m_rotatedDestCoords[2].y);
-  glTexCoord2f(plane.rect.x1, plane.rect.y2);  glVertex2f(m_rotatedDestCoords[3].x, m_rotatedDestCoords[3].y);
-  glEnd();
-
-  VerifyGLState();
-
-  if (m_pVideoFilterShader)
-    m_pVideoFilterShader->Disable();
-
-#if USE_VAAPI_GLX_BIND
-  status = vaEndRenderSurfaceGLX(display->get(), va.surfglx->m_id);
-  if(status != VA_STATUS_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "CLinuxRendererGL::RenderVAAPI - vaEndRenderSurfaceGLX failed (%d)", status);
-    return;
-  }
-#endif
 
   glBindTexture (m_textureTarget, 0);
   glDisable(m_textureTarget);
@@ -2593,17 +2504,9 @@ bool CLinuxRendererGL::UploadVDPAUTexture420(int index)
 void CLinuxRendererGL::DeleteVAAPITexture(int index)
 {
 #ifdef HAVE_LIBVA
-  YUVPLANE       &plane = m_buffers[index].fields[0][0];
-  VAAPI::CHolder &va    = m_buffers[index].vaapi;
-
-  va.display.reset();
-  va.surface.reset();
-  va.surfglx.reset();
-
-  if(plane.id && glIsTexture(plane.id))
-    glDeleteTextures(1, &plane.id);
+  YUVPLANE &plane = m_buffers[index].fields[FIELD_FULL][0];
+  SAFE_RELEASE(m_buffers[index].vaapi);
   plane.id = 0;
-
 #endif
 }
 
@@ -2653,82 +2556,43 @@ bool CLinuxRendererGL::CreateVAAPITexture(int index)
 bool CLinuxRendererGL::UploadVAAPITexture(int index)
 {
 #ifdef HAVE_LIBVA
-  YUVPLANE       &plane = m_buffers[index].fields[0][0];
-  VAAPI::CHolder &va    = m_buffers[index].vaapi;
-  VAStatus status;
+  VAAPI::CVaapiRenderPicture *vaapi = m_buffers[index].vaapi;
 
-  if(!va.surface)
+  YV12Image &im     = m_buffers[index].image;
+  YUVFIELDS &fields = m_buffers[index].fields;
+  YUVPLANE &plane = fields[FIELD_FULL][0];
+
+  if (!vaapi || !vaapi->valid)
+  {
     return false;
-
-  if(va.display && va.surface->m_display != va.display)
-  {
-    CLog::Log(LOGDEBUG, "CLinuxRendererGL::UploadVAAPITexture - context changed %d", index);
-    va.surfglx.reset();
-  }
-  va.display = va.surface->m_display;
-
-  CSingleLock lock(*va.display);
-
-  if(va.display->lost())
-    return false;
-
-  if(!va.surfglx)
-  {
-    CLog::Log(LOGDEBUG, "CLinuxRendererGL::UploadVAAPITexture - creating vaapi surface for texture %d", index);
-    void* surface;
-    status = vaCreateSurfaceGLX(va.display->get()
-                              , m_textureTarget
-                              , plane.id
-                              , &surface);
-    if(status != VA_STATUS_SUCCESS)
-    {
-      CLog::Log(LOGERROR, "CLinuxRendererGL::UploadVAAPITexture - failed to create vaapi glx surface (%d)", status);
-      return false;
-    }
-    va.surfglx = VAAPI::CSurfaceGLPtr(new VAAPI::CSurfaceGL(surface, va.display));
-  }
-  int colorspace;
-  if(CONF_FLAGS_YUVCOEF_MASK(m_iFlags) == CONF_FLAGS_YUVCOEF_BT709)
-    colorspace = VA_SRC_BT709;
-  else
-    colorspace = VA_SRC_BT601;
-
-  int field;
-  if      (m_currentField == FIELD_TOP)
-    field = VA_TOP_FIELD;
-  else if (m_currentField == FIELD_BOT)
-    field = VA_BOTTOM_FIELD;
-  else
-    field = VA_FRAME_PICTURE;
-
-#if USE_VAAPI_GLX_BIND
-  status = vaAssociateSurfaceGLX(va.display->get()
-                               , va.surfglx->m_id
-                               , va.surface->m_id
-                               , field | colorspace);
-#else
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-  status = vaCopySurfaceGLX(va.display->get()
-                          , va.surfglx->m_id
-                          , va.surface->m_id
-                          , field | colorspace);
-#endif
-
-  // when a vaapi backend is lost (vdpau), we start getting these errors
-  if(status == VA_STATUS_ERROR_INVALID_SURFACE
-  || status == VA_STATUS_ERROR_INVALID_DISPLAY)
-  {
-    va.display->lost(true);
-    for(int i = 0; i < m_NumYV12Buffers; i++)
-    {
-      m_buffers[i].vaapi.display.reset();
-      m_buffers[i].vaapi.surface.reset();
-      m_buffers[i].vaapi.surfglx.reset();
-    }
   }
 
-  if(status != VA_STATUS_SUCCESS)
-    CLog::Log(LOGERROR, "CLinuxRendererGL::UploadVAAPITexture - failed to copy surface to glx %d - %s", status, vaErrorStr(status));
+  plane.id = vaapi->texture;
+
+  // in stereoscopic mode sourceRect may only
+  // be a part of the source video surface
+  plane.rect = m_sourceRect;
+
+  // clip rect
+  if (vaapi->crop.x1 > plane.rect.x1)
+    plane.rect.x1 = vaapi->crop.x1;
+  if (vaapi->crop.x2 < plane.rect.x2)
+    plane.rect.x2 = vaapi->crop.x2;
+  if (vaapi->crop.y1 > plane.rect.y1)
+    plane.rect.y1 = vaapi->crop.y1;
+  if (vaapi->crop.y2 < plane.rect.y2)
+    plane.rect.y2 = vaapi->crop.y2;
+
+  plane.texheight = vaapi->texHeight;
+  plane.texwidth  = vaapi->texWidth;
+
+  if (m_textureTarget == GL_TEXTURE_2D)
+  {
+    plane.rect.y1 /= plane.texheight;
+    plane.rect.y2 /= plane.texheight;
+    plane.rect.x1 /= plane.texwidth;
+    plane.rect.x2 /= plane.texwidth;
+  }
 
 #endif
   return true;
@@ -3527,21 +3391,13 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
     return false;
   }
 
-  if(m_renderMethod & RENDER_VAAPI)
+  if(m_format == RENDER_FMT_VAAPI ||
+      m_format == RENDER_FMT_VAAPINV12)
   {
 #ifdef HAVE_LIBVA
-    VAAPI::CDisplayPtr disp = m_buffers[m_iYV12RenderBuffer].vaapi.display;
-    if(disp)
-    {
-      CSingleLock lock(*disp);
-
-      if(disp->support_deinterlace())
-      {
-        if( method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED
-        ||  method == VS_INTERLACEMETHOD_RENDER_BOB )
-          return true;
-      }
-    }
+    VAAPI::CVaapiRenderPicture *vaapiPic = m_buffers[m_iYV12RenderBuffer].vaapi;
+    if(vaapiPic && vaapiPic->vaapi)
+      return vaapiPic->vaapi->Supports(method);
 #endif
     return false;
   }
@@ -3662,6 +3518,7 @@ unsigned int CLinuxRendererGL::GetProcessorSize()
   if(m_format == RENDER_FMT_VDPAU
   || m_format == RENDER_FMT_VDPAU_420
   || m_format == RENDER_FMT_VAAPI
+  || m_format == RENDER_FMT_VAAPINV12
   || m_format == RENDER_FMT_CVBREF)
     return 1;
   else
@@ -3679,10 +3536,12 @@ void CLinuxRendererGL::AddProcessor(VDPAU::CVdpauRenderPicture *vdpau, int index
 #endif
 
 #ifdef HAVE_LIBVA
-void CLinuxRendererGL::AddProcessor(VAAPI::CHolder& holder, int index)
+void CLinuxRendererGL::AddProcessor(VAAPI::CVaapiRenderPicture *vaapi, int index)
 {
   YUVBUFFER &buf = m_buffers[index];
-  buf.vaapi.surface = holder.surface;
+  VAAPI::CVaapiRenderPicture *pic = vaapi->Acquire();
+  SAFE_RELEASE(buf.vaapi);
+  buf.vaapi = pic;
 }
 #endif
 
