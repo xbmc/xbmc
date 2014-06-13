@@ -1102,3 +1102,63 @@ msgstr ""
 msgctxt "#32112"
 msgid "Actors"
 msgstr ""
+
+msgctxt "#32113"
+msgid "Show Big Posters View in Sections"
+msgstr ""
+
+msgctxt "#32114"
+msgid "Hide plot for Unwatched/In Progress Episodes"
+msgstr ""
+
+msgctxt "#32115"
+msgid "Hide Unwatched indicators for Movies in Library"
+msgstr ""
+
+msgctxt "#32116"
+msgid "Hide Unwatched indicators for TV Shows and Seasons in Library"
+msgstr ""
+
+msgctxt "#32117"
+msgid "Show all media flags in details view"
+msgstr ""
+
+msgctxt "#32118"
+msgid "Hide Quit and Shutdown from Home menu"
+msgstr ""
+
+msgctxt "#32119"
+msgid "Disable all Slideshows"
+msgstr ""
+
+msgctxt "#41000"
+msgid "System Settings"
+msgstr ""
+
+msgctxt "#41001"
+msgid "Control Precaching"
+msgstr ""
+
+msgctxt "#41002"
+msgid "Select Servers to cache"
+msgstr ""
+
+msgctxt "#41003"
+msgid "Precaching Section"
+msgstr ""
+
+msgctxt "#41004"
+msgid "Precaching"
+msgstr ""
+
+msgctxt "#41005"
+msgid "Action : Retrieving content from"
+msgstr ""
+
+msgctxt "#41006"
+msgid "Action : Precaching item"
+msgstr ""
+
+msgctxt "#41007"
+msgid "Progress"
+msgstr ""

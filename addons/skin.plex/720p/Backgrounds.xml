@@ -9,6 +9,7 @@
 		</control>
 	</include>
 	<include name="BGFanart">
+		<control type="group">
 		<!-- generic global fanart for when the container is empty -->
 		<control type="multiimage">
 			<include>FullScreenScaled</include>
@@ -36,6 +37,7 @@
 			<animation effect="fade" start="0" end="100" time="600">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="600">WindowClose</animation>
 			<visible>!IsEmpty(Container.Property(primaryFilterActivated))</visible>
+		</control>
 		</control>
 		<!-- Clip backgrounds use item thumb, not as pretty so we'll hide them a bit more -->
 		<control type="group">
@@ -126,6 +128,7 @@
 		<control type="group">
 			<!-- generic autopopulated fanart slideshow -->
 			<control type="multiimage" id="10101">
+				<visible>!Skin.HasSetting(HideFanart)</visible>
 				<include>FullScreenScaled</include>
 				<timeperimage>8000</timeperimage>
 				<fadetime>1000</fadetime>
@@ -202,6 +205,7 @@
 	</include>
 	<include name="SlideshowDimmed">
 		<control type="multiimage">
+			<visible>!Skin.HasSetting(HideFanart)</visible>
 			<include>FullScreenScaled</include>
 			<timeperimage>8000</timeperimage>
 			<fadetime>1000</fadetime>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <window id="2901">
-	<defaultcontrol>200</defaultcontrol>
+	<defaultcontrol always="true">711</defaultcontrol>
 	<controls>
 		<!-- ViewsOSD.xml -->
 		<include>VideoOSD</include>

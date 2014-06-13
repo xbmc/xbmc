@@ -135,28 +135,28 @@
 				<control type="radiobutton" id="211">
 					<description>Show Big Posters View in Sections</description>
 					<width>625</width>
-					<label>Show Big Posters View in Sections</label>
+					<label>$LOCALIZE[32113]</label>
 					<onclick>Skin.ToggleSetting(ShowBigPostersLibraryView)</onclick>
 					<selected>Skin.HasSetting(ShowBigPostersLibraryView)</selected>
 				</control>
 				<control type="radiobutton" id="212">
 					<description>Hide plot for Unwatched/In Progress</description>
 					<width>625</width>
-					<label>Hide plot for Unwatched/In Progress Episodes</label>
+					<label>$LOCALIZE[32114]</label>
 					<onclick>Skin.ToggleSetting(HidePlotForUnwatched)</onclick>
 					<selected>Skin.HasSetting(HidePlotForUnwatched)</selected>
 				</control>
 				<control type="radiobutton" id="213">
 					<description>Hide Unwatched indicators for Movies</description>
 					<width>625</width>
-					<label>Hide Unwatched indicators for Movies in Library</label>
+					<label>$LOCALIZE[32115]</label>
 					<onclick>Skin.ToggleSetting(HideUnwatchedIconsMovies)</onclick>
 					<selected>Skin.HasSetting(HideUnwatchedIconsMovies)</selected>
 				</control>
 				<control type="radiobutton" id="214">
 					<description>Hide Unwatched indicators for TV</description>
 					<width>625</width>
-					<label>Hide Unwatched indicators for TV Shows and Seasons in Library</label>
+					<label>$LOCALIZE[32116]</label>
 					<onclick>Skin.ToggleSetting(HideUnwatchedIconsTVShows)</onclick>
 					<selected>Skin.HasSetting(HideUnwatchedIconsTVShows)</selected>
 				</control>
@@ -170,16 +170,23 @@
 				<control type="radiobutton" id="216">
 					<description>Show Extended Media flags in preplays</description>
 					<width>625</width>
-					<label>Show all media flags in details view</label>
+					<label>$LOCALIZE[32117]</label>
 					<onclick>Skin.ToggleSetting(ShowAllMediaFlags)</onclick>
 					<selected>Skin.HasSetting(ShowAllMediaFlags)</selected>
 				</control>
 				<control type="radiobutton" id="217">
 					<description>Hide Quit and Shutdown from Home menu</description>
 					<width>625</width>
-					<label>Hide Quit and Shutdown from Home menu</label>
+					<label>$LOCALIZE[32118]</label>
 					<onclick>Skin.ToggleSetting(HideQuitShutdown)</onclick>
 					<selected>Skin.HasSetting(HideQuitShutdown)</selected>
+				</control>
+				<control type="radiobutton" id="218">
+					<description>Hide Slideshows</description>
+					<width>625</width>
+					<label>$LOCALIZE[32119]</label>
+					<onclick>Skin.ToggleSetting(HideFanart)</onclick>
+					<selected>Skin.HasSetting(HideFanart)</selected>
 				</control>
 			</control>
 			<!-- Scrollbar -->

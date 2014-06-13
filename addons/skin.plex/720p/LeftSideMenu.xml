@@ -368,7 +368,7 @@
 						<description>Control Global Caching</description>
 						<label> $LOCALIZE[41001] </label>
 						<onclick>Dialog.Close(4998)</onclick>
-                        <onclick>XBMC.ActivateWindow(10208)</onclick>
+            <onclick>XBMC.ActivateWindow(10208)</onclick>
 						<visible>System.isSystem(rasplex)</visible>
 					</item>
 					<item id="111">
