@@ -1,0 +1,13 @@
+- Fixes
+  * Fixed widly reporting stuttering problem on older hardware - Thanks a lot to BrianAZ for tracking that one down.
+  * Increase buffer size of DVDPlayerAudio/Video - should improve playback on certain systems.
+  * Show error toast when playback fails.
+  * Fix toast notifications from the API
+  * Changed aspect ratio scaling in the fanart screensaver.
+  * Fixed "disable background images" in a more general way (now under skin settings)
+  * Fixed broken Apple Movie Trailer channel
+  * Fixed sticky VideoOSD (hopefully)
+  * Fixed numeric keyboard
+  * Pixel hunting in Now Playing screen (was misaligned)
+  * Always focus play/pause button in the OSD when opened.
+  * A few crashes fixed
