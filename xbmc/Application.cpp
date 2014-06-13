@@ -365,6 +365,7 @@
 #include "plex/GUI/GUIWindowPlexPlayQueue.h"
 #include "plex/Playlists/GUIDialogPlexPlayQueue.h"
 #include "plex/GUI/GUIDialogPlexError.h"
+#include "plex/GUI/GUIDialogPlexGlobalCacher.h"
 /* END PLEX */
 
 #if defined(TARGET_ANDROID)
@@ -1523,6 +1524,7 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIPlexScreenSaverPhoto);
     g_windowManager.Add(new CGUIWindowPlexPlayQueue);
     g_windowManager.Add(new CGUIDialogPlexPlayQueue);
+    g_windowManager.Add(new CGUIDialogPlexGlobalCacher);
     /* END PLEX */
 
     /* window id's 3000 - 3100 are reserved for python */

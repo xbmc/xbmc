@@ -857,6 +857,30 @@ msgctxt "#44300"
 msgid "Allow control of Plex/HT from Plex Clients"
 msgstr "Allow control of Plex/HT from Plex Clients"
 
+msgctxt "#44400"
+msgid "Pre-Caching - Select Servers"
+msgstr "Pre-Caching - Select Servers"
+
+msgctxt "#44401"
+msgid "Processing"
+msgstr "Processing"
+
+msgctxt "#44402"
+msgid "Retrieving Section"
+msgstr "Retrieving Section"
+
+msgctxt "#44403"
+msgid "Precaching Section"
+msgstr "Precaching Section"
+
+msgctxt "#44404"
+msgid "Precaching item"
+msgstr "Precaching item"
+
+msgctxt "#44405"
+msgid "Progress"
+msgstr "Progress"
+
 msgctxt "#44406"
 msgid "Use FFMPEG AVIO for Network transport"
 msgstr "Use FFMPEG AVIO for Network transport"
