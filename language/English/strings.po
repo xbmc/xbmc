@@ -1132,7 +1132,7 @@ msgid "Disable all Slideshows"
 msgstr ""
 
 msgctxt "#41000"
-msgid "OE Settings"
+msgid "System Settings"
 msgstr ""
 
 msgctxt "#41001"
