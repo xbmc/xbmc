@@ -418,6 +418,8 @@ void CAdvancedSettings::Initialize()
   #endif
 
   m_userAgent = g_sysinfo.GetUserAgent();
+  
+  m_pseudoBorder = false;
 
   m_initialized = true;
 }
@@ -1181,6 +1183,12 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetBoolean(pElement, "visualizedirtyregions", m_guiVisualizeDirtyRegions);
     XMLUtils::GetInt(pElement, "algorithmdirtyregions",     m_guiAlgorithmDirtyRegions);
     XMLUtils::GetInt(pElement, "nofliptimeout",             m_guiDirtyRegionNoFlipTimeout);
+  }
+  
+  pElement = pRootElement->FirstChildElement("pseudoborder");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pRootElement, "pseudoborder", m_pseudoBorder);
   }
 
   // load in the settings overrides
