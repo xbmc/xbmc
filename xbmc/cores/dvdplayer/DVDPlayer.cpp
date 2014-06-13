@@ -1706,9 +1706,11 @@ bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current)
     {
       if(     current.player == DVDPLAYER_AUDIO)
         setclock = m_clock.GetMaster() == MASTER_CLOCK_AUDIO
-                || m_clock.GetMaster() == MASTER_CLOCK_AUDIO_VIDEOREF;
+                || m_clock.GetMaster() == MASTER_CLOCK_AUDIO_VIDEOREF
+                || !m_CurrentVideo.inited;
       else if(current.player == DVDPLAYER_VIDEO)
-        setclock = m_clock.GetMaster() == MASTER_CLOCK_VIDEO;
+        setclock = m_clock.GetMaster() == MASTER_CLOCK_VIDEO
+                || !m_CurrentAudio.inited;
     }
     else
     {
