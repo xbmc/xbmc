@@ -22,6 +22,11 @@ endif(ENABLE_TESTING)
 
 OPTION(ENABLE_AUTOUPDATE "Enable the cool autoupdate system" ON)
 
+OPTION(USE_PAGING "Enable media section paging" OFF)
+if(USE_PAGING)
+add_definitions(USE_PAGING=1)
+endif(USE_PAGING)
+
 if(NOT TARGET_RPI)
   OPTION(COMPRESS_TEXTURES "If we should compress the textures or not" ON)
 endif()
