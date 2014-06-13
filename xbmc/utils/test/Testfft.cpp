@@ -258,7 +258,7 @@ TEST(Testfft, fft)
   CStdString refstr, varstr;
 
   memcpy(vardata, refdata, sizeof(refdata));
-  fft(vardata, REFDATA_NUMELEMENTS/2, 1);
+  fft(vardata - 1, REFDATA_NUMELEMENTS/2, 1);
   for (i = 0; i < REFDATA_NUMELEMENTS; i++)
   {
     /* To more consistently test the resulting floating point numbers, they
@@ -277,7 +277,7 @@ TEST(Testfft, fft_inverse)
   CStdString refstr, varstr;
 
   memcpy(vardata, refdata, sizeof(refdata));
-  fft(vardata, REFDATA_NUMELEMENTS/2, -1);
+  fft(vardata -1, REFDATA_NUMELEMENTS/2, -1);
   for (i = 0; i < REFDATA_NUMELEMENTS; i++)
   {
     refstr = StringUtils::Format("%.6f", reffftinversedata[i]);
