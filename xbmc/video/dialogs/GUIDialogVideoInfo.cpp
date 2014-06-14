@@ -1033,14 +1033,6 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
         result = UpdateVideoItemSortTitle(item);
         break;
 
-      case CONTEXT_BUTTON_MARK_WATCHED:
-        result = MarkWatched(item, true);
-        break;
-
-      case CONTEXT_BUTTON_MARK_UNWATCHED:
-        result = MarkWatched(item, false);
-        break;
-
       case CONTEXT_BUTTON_LINK_MOVIE:
         result = LinkMovieToTvShow(item, false, database);
         break;
@@ -1132,62 +1124,6 @@ bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const CFileItemPtr &pItem)
     return false;
 
   database.UpdateMovieTitle(iDbId, detail.m_strTitle, iType);
-  return true;
-}
-
-bool CGUIDialogVideoInfo::MarkWatched(const CFileItemPtr &item, bool bMark)
-{
-  if (item == NULL || !CProfilesManager::Get().GetCurrentProfile().canWriteDatabases())
-    return false;
-
-  // dont allow update while scanning
-  if (g_application.IsVideoScanning())
-  {
-    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
-    return false;
-  }
-
-  CVideoDatabase database;
-  if (!database.Open())
-    return false;
-
-  CFileItemList items;
-  if (item->m_bIsFolder)
-  {
-    CStdString strPath = item->GetPath();
-    CDirectory::GetDirectory(strPath, items);
-  }
-  else
-    items.Add(item);
-
-  for (int i = 0; i < items.Size(); ++i)
-  {
-    CFileItemPtr pTmpItem = items[i];
-    if (pTmpItem->m_bIsFolder)
-    {
-      MarkWatched(pTmpItem, bMark);
-      continue;
-    }
-
-    if (pTmpItem->HasVideoInfoTag() &&
-       ((bMark && pTmpItem->GetVideoInfoTag()->m_playCount) ||
-        (!bMark && !pTmpItem->GetVideoInfoTag()->m_playCount)))
-      continue;
-
-#ifdef HAS_UPNP
-    if (!URIUtils::IsUPnP(item->GetPath()) || !UPNP::CUPnP::MarkWatched(*pTmpItem, bMark))
-#endif
-    {
-      // Clear resume bookmark
-      if (bMark)
-        database.ClearBookMarksOfFile(pTmpItem->GetPath(), CBookmark::RESUME);
-
-      database.SetPlayCount(*pTmpItem, bMark ? 1 : 0);
-    }
-  }
-
-  database.Close();
-
   return true;
 }
 
