@@ -737,7 +737,7 @@ bool CDVDPlayer::OpenDemuxStream()
   int64_t len = m_pInputStream->GetLength();
   int64_t tim = m_pDemuxer->GetStreamLength();
   if(len > 0 && tim > 0)
-    m_pInputStream->SetReadRate(g_advancedSettings.m_readBufferFactor * len * 1000 / tim);
+    m_pInputStream->SetReadRate((unsigned int) (g_advancedSettings.m_readBufferFactor * len * 1000 / tim));
 
   return true;
 }
@@ -1036,7 +1036,7 @@ void CDVDPlayer::Process()
    * auto-resume) feature or if there is an EDL cut or commercial break that starts at time 0.
    */
   CEdl::Cut cut;
-  int starttime = 0;
+  int64_t starttime = 0;
   if(m_PlayerOptions.starttime > 0 || m_PlayerOptions.startpercent > 0)
   {
     if (m_PlayerOptions.startpercent > 0 && m_pDemuxer)
@@ -1061,8 +1061,8 @@ void CDVDPlayer::Process()
        * Setup auto skip markers as if the commercial break had been skipped using standard
        * detection.
        */
-      m_EdlAutoSkipMarkers.commbreak_start = cut.start;
-      m_EdlAutoSkipMarkers.commbreak_end   = cut.end;
+      m_EdlAutoSkipMarkers.commbreak_start = (int) cut.start;
+      m_EdlAutoSkipMarkers.commbreak_end   = (int) cut.end;
       m_EdlAutoSkipMarkers.seek_to_start   = true;
     }
   }
@@ -1071,7 +1071,7 @@ void CDVDPlayer::Process()
     double startpts = DVD_NOPTS_VALUE;
     if(m_pDemuxer)
     {
-      if (m_pDemuxer->SeekTime(starttime, false, &startpts))
+      if (m_pDemuxer->SeekTime((int) starttime, false, &startpts))
         CLog::Log(LOGDEBUG, "%s - starting demuxer from: %d", __FUNCTION__, starttime);
       else
         CLog::Log(LOGDEBUG, "%s - failed to start demuxing from: %d", __FUNCTION__, starttime);
@@ -1079,7 +1079,7 @@ void CDVDPlayer::Process()
 
     if(m_pSubtitleDemuxer)
     {
-      if(m_pSubtitleDemuxer->SeekTime(starttime, false, &startpts))
+      if(m_pSubtitleDemuxer->SeekTime((int) starttime, false, &startpts))
         CLog::Log(LOGDEBUG, "%s - starting subtitle demuxer from: %d", __FUNCTION__, starttime);
       else
         CLog::Log(LOGDEBUG, "%s - failed to start subtitle demuxing from: %d", __FUNCTION__, starttime);
@@ -1600,7 +1600,7 @@ void CDVDPlayer::HandlePlaySpeed()
           &&  m_SpeedState.lasttime != GetTime())
     {
       m_SpeedState.lastpts  = m_dvdPlayerVideo.GetCurrentPts();
-      m_SpeedState.lasttime = GetTime();
+      m_SpeedState.lasttime = (double) GetTime();
       // check how much off clock video is when ff/rw:ing
       // a problem here is that seeking isn't very accurate
       // and since the clock will be resynced after seek
@@ -1619,7 +1619,7 @@ void CDVDPlayer::HandlePlaySpeed()
       {
         CLog::Log(LOGDEBUG, "CDVDPlayer::Process - Seeking to catch up");
         int64_t iTime = (int64_t)DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset + 500000.0 * m_playSpeed / DVD_PLAYSPEED_NORMAL);
-        m_messenger.Put(new CDVDMsgPlayerSeek(iTime, (GetPlaySpeed() < 0), true, false, false, true));
+        m_messenger.Put(new CDVDMsgPlayerSeek((int) iTime, (GetPlaySpeed() < 0), true, false, false, true));
       }
     }
   }
@@ -1904,7 +1904,7 @@ void CDVDPlayer::CheckAutoSceneSkip()
      * if there was an error with seeking and it landed somewhere unexpected, perhaps back in the
      * cut. The cut automatic skip marker is reset every 500ms allowing another attempt at the seek.
      */
-    m_EdlAutoSkipMarkers.cut = GetPlaySpeed() >= 0 ? cut.end : cut.start;
+    m_EdlAutoSkipMarkers.cut = (int) (GetPlaySpeed() >= 0 ? cut.end : cut.start);
   }
   else if(cut.action == CEdl::COMM_BREAK
   &&      GetPlaySpeed() >= 0
@@ -1916,14 +1916,14 @@ void CDVDPlayer::CheckAutoSceneSkip()
     /*
      * Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
      */
-    m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, true, false, true, false, true));
+    m_messenger.Put(new CDVDMsgPlayerSeek((int) cut.end + 1, true, false, true, false, true));
     /*
      * Each commercial break is only skipped once so poorly detected commercial breaks can be
      * manually re-entered. Start and end are recorded to prevent looping and to allow seeking back
      * to the start of the commercial break if incorrectly flagged.
      */
-    m_EdlAutoSkipMarkers.commbreak_start = cut.start;
-    m_EdlAutoSkipMarkers.commbreak_end   = cut.end;
+    m_EdlAutoSkipMarkers.commbreak_start = (int) cut.start;
+    m_EdlAutoSkipMarkers.commbreak_end   = (int) cut.end;
     m_EdlAutoSkipMarkers.seek_to_start   = true; // Allow backwards Seek() to go directly to the start
   }
 }
@@ -2125,7 +2125,7 @@ void CDVDPlayer::HandleMessages()
             {
               m_dvd.iSelectedAudioStream = -1;
               CloseStream(m_CurrentAudio, false);
-              m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true, true, true));
+              m_messenger.Put(new CDVDMsgPlayerSeek((int) GetTime(), true, true, true, true, true));
             }
           }
           else
@@ -2133,7 +2133,7 @@ void CDVDPlayer::HandleMessages()
             CloseStream(m_CurrentAudio, false);
             OpenStream(m_CurrentAudio, st.id, st.source);
             AdaptForcedSubtitles();
-            m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true, true, true));
+            m_messenger.Put(new CDVDMsgPlayerSeek((int) GetTime(), true, true, true, true, true));
           }
         }
       }
@@ -2490,9 +2490,9 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
   {
     float percent;
     if (bLargeStep)
-      percent = bPlus ? g_advancedSettings.m_videoPercentSeekForwardBig : g_advancedSettings.m_videoPercentSeekBackwardBig;
+      percent = (float) (bPlus ? g_advancedSettings.m_videoPercentSeekForwardBig : g_advancedSettings.m_videoPercentSeekBackwardBig);
     else
-      percent = bPlus ? g_advancedSettings.m_videoPercentSeekForward : g_advancedSettings.m_videoPercentSeekBackward;
+      percent = (float) (bPlus ? g_advancedSettings.m_videoPercentSeekForward : g_advancedSettings.m_videoPercentSeekBackward);
     seek = (int64_t)(GetTotalTimeInMsec()*(GetPercentage()+percent)/100);
   }
 
@@ -2664,7 +2664,7 @@ float CDVDPlayer::GetPercentage()
 float CDVDPlayer::GetCachePercentage()
 {
   CSingleLock lock(m_StateSection);
-  return m_StateInput.cache_offset * 100; // NOTE: Percentage returned is relative
+  return (float) (m_StateInput.cache_offset * 100); // NOTE: Percentage returned is relative
 }
 
 void CDVDPlayer::SetAVDelay(float fValue)
@@ -2674,7 +2674,7 @@ void CDVDPlayer::SetAVDelay(float fValue)
 
 float CDVDPlayer::GetAVDelay()
 {
-  return m_dvdPlayerVideo.GetDelay() / (float)DVD_TIME_BASE;
+  return (float) m_dvdPlayerVideo.GetDelay() / (float)DVD_TIME_BASE;
 }
 
 void CDVDPlayer::SetSubTitleDelay(float fValue)
@@ -2684,7 +2684,7 @@ void CDVDPlayer::SetSubTitleDelay(float fValue)
 
 float CDVDPlayer::GetSubTitleDelay()
 {
-  return -m_dvdPlayerVideo.GetSubtitleDelay() / DVD_TIME_BASE;
+  return (float) -m_dvdPlayerVideo.GetSubtitleDelay() / DVD_TIME_BASE;
 }
 
 // priority: 1: libdvdnav, 2: external subtitles, 3: muxed subtitles
@@ -3629,7 +3629,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
       case ACTION_CHANNEL_SWITCH:
       {
         // Offset from key codes back to button number
-        int channel = action.GetAmount();
+        int channel = (int) action.GetAmount();
         m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER, channel));
         g_infoManager.SetDisplayAfterSeek();
         ShowPVRChannelInfo();
@@ -3948,8 +3948,8 @@ void CDVDPlayer::UpdatePlayState(double timeout)
 
   if (m_Edl.HasCut())
   {
-    state.time        = m_Edl.RemoveCutTime(llrint(state.time));
-    state.time_total  = m_Edl.RemoveCutTime(llrint(state.time_total));
+    state.time        = (double) m_Edl.RemoveCutTime(llrint(state.time));
+    state.time_total  = (double) m_Edl.RemoveCutTime(llrint(state.time_total));
   }
 
   if(state.time_total <= 0)
@@ -3997,7 +3997,7 @@ void CDVDPlayer::UpdatePlayState(double timeout)
   {
     state.cache_bytes = status.forward;
     if(state.time_total)
-      state.cache_bytes += m_pInputStream->GetLength() * GetQueueTime() / state.time_total;
+      state.cache_bytes += m_pInputStream->GetLength() * (int64_t) (GetQueueTime() / state.time_total);
   }
   else
     state.cache_bytes = 0;
@@ -4080,7 +4080,7 @@ bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
 
       int64_t duration = GetTotalTime() / 1000;
       if (duration > 0)
-        ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_iDuration = duration;
+        ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_iDuration = (int) duration;
     }
     return result;
   }

@@ -24,11 +24,7 @@
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
 #endif
-#ifdef TARGET_POSIX
 #include "stdint.h"
-#else
-#define INT64_C __int64
-#endif
 
 #include "EncoderFFmpeg.h"
 #include "filesystem/File.h"
