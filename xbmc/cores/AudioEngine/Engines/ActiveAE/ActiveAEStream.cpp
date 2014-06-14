@@ -195,7 +195,7 @@ unsigned int CActiveAEStream::GetSpace()
 unsigned int CActiveAEStream::AddData(uint8_t* const *data, unsigned int offset, unsigned int frames, double pts)
 {
   Message *msg;
-  int copied = 0;
+  unsigned int copied = 0;
   int sourceFrames = frames;
   uint8_t* const *buf = data;
 

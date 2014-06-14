@@ -558,7 +558,7 @@ void CDVDPlayerAudio::Process()
     if (m_silence)
     {
       int size = audioframe.nb_frames * audioframe.framesize * audioframe.channel_count / audioframe.planes;
-      for (int i=0; i<audioframe.planes; i++)
+      for (unsigned int i=0; i<audioframe.planes; i++)
         memset(audioframe.data[i], 0, size);
     }
 
