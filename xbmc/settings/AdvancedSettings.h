@@ -176,7 +176,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_videoBlackBarColour;
     int m_videoIgnoreSecondsAtStart;
     float m_videoIgnorePercentAtEnd;
-    CStdString m_audioHost;
     bool m_audioApplyDrc;
 
     int   m_videoVDPAUScaling;
