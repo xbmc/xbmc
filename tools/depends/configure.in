@@ -381,7 +381,7 @@ if test "$platform_os" == "android"; then
   if ! test -f "$use_ndk/RELEASE.TXT" ; then
     AC_MSG_ERROR("$use_ndk is not an NDK directory")
   fi
-  use_ndk_ver=0x`cat $use_ndk/RELEASE.TXT | sed 's/^r\([0-9]\+\)\b/r\10/' | sed 's/^r\(.*\)\b.*/\1/'`
+  use_ndk_ver=0x`cat $use_ndk/RELEASE.TXT | sed 's/^r\([[0-9a-z]]\+\)\b.*/\1/'`
 
   if test -z $use_sdk_path; then
     AC_MSG_ERROR("SDK path is required for android")
