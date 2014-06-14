@@ -1362,6 +1362,7 @@ void CActiveAE::DiscardSound(CActiveAESound *sound)
     if ((*it) == sound)
     {
       m_sounds.erase(it);
+      delete sound;
       return;
     }
   }
