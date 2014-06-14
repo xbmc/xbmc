@@ -755,7 +755,7 @@ bool CEdl::AddCut(Cut& cut)
   return true;
 }
 
-bool CEdl::AddSceneMarker(const int64_t iSceneMarker)
+bool CEdl::AddSceneMarker(const int iSceneMarker)
 {
   Cut cut;
 
@@ -815,12 +815,12 @@ bool CEdl::HasCut()
   return !m_vecCuts.empty();
 }
 
-int64_t CEdl::GetTotalCutTime()
+int CEdl::GetTotalCutTime()
 {
   return m_iTotalCutTime; // ms
 }
 
-int64_t CEdl::RemoveCutTime(int64_t iSeek)
+int CEdl::RemoveCutTime(int iSeek)
 {
   if (!HasCut())
     return iSeek;
@@ -830,7 +830,7 @@ int64_t CEdl::RemoveCutTime(int64_t iSeek)
    * requested is later than the end of the last recorded cut. For example, when calculating the
    * total duration for display.
    */
-  int64_t iCutTime = 0;
+  int iCutTime = 0;
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
     if (m_vecCuts[i].action == CUT)
@@ -844,12 +844,12 @@ int64_t CEdl::RemoveCutTime(int64_t iSeek)
   return iSeek - iCutTime;
 }
 
-int64_t CEdl::RestoreCutTime(int64_t iClock)
+int CEdl::RestoreCutTime(int iClock)
 {
   if (!HasCut())
     return iClock;
 
-  int64_t iSeek = iClock;
+  int iSeek = iClock;
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
     if (m_vecCuts[i].action == CUT && iSeek >= m_vecCuts[i].start)
@@ -898,7 +898,7 @@ std::string CEdl::GetInfo()
   return strInfo.empty() ? "-" : strInfo;
 }
 
-bool CEdl::InCut(const int64_t iSeek, Cut *pCut)
+bool CEdl::InCut(const int iSeek, Cut *pCut)
 {
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
@@ -916,14 +916,14 @@ bool CEdl::InCut(const int64_t iSeek, Cut *pCut)
   return false;
 }
 
-bool CEdl::GetNextSceneMarker(bool bPlus, const int64_t iClock, int64_t *iSceneMarker)
+bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker)
 {
   if (!HasSceneMarker())
     return false;
 
-  int64_t iSeek = RestoreCutTime(iClock);
+  int iSeek = RestoreCutTime(iClock);
 
-  int64_t iDiff = 10 * 60 * 60 * 1000; // 10 hours to ms.
+  int iDiff = 10 * 60 * 60 * 1000; // 10 hours to ms.
   bool bFound = false;
 
   if (bPlus) // Find closest scene forwards
@@ -962,7 +962,7 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const int64_t iClock, int64_t *iSceneM
   return bFound;
 }
 
-std::string CEdl::MillisecondsToTimeString(const int64_t iMilliseconds)
+std::string CEdl::MillisecondsToTimeString(const int iMilliseconds)
 {
   std::string strTimeString = StringUtils::SecondsToTimeString((long)(iMilliseconds / 1000), TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
   strTimeString += StringUtils::Format(".%03i", iMilliseconds % 1000);
