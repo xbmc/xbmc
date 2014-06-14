@@ -400,18 +400,6 @@ bool CVideoReferenceClock::SetupGLX()
   return true;
 }
 
-int CVideoReferenceClock::GetRandRRate()
-{
-  int RefreshRate;
-  XRRScreenConfiguration *CurrInfo;
-
-  CurrInfo = XRRGetScreenInfo(m_Dpy, g_Windowing.GetWindow());
-  RefreshRate = XRRConfigCurrentRate(CurrInfo);
-  XRRFreeScreenConfigInfo(CurrInfo);
-
-  return RefreshRate;
-}
-
 void CVideoReferenceClock::CleanupGLX()
 {
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Cleaning up GLX");

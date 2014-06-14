@@ -119,7 +119,6 @@ class CVideoReferenceClock : public CThread
     bool SetupGLX();
     void RunGLX();
     void CleanupGLX();
-    int  GetRandRRate();
 
     int  (*m_glXWaitVideoSyncSGI) (int, int, unsigned int*);
     int  (*m_glXGetVideoSyncSGI)  (unsigned int*);
