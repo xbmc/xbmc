@@ -48,6 +48,7 @@ protected:
   virtual CBaseTexture* ReallocTexture(unsigned int& newHeight);
   virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2);
   virtual void DeleteHardwareTexture();
+  virtual void ClearTexture();
   CD3DTexture *m_speedupTexture;  // extra texture to speed up reallocations when the main texture is in d3dpool_default.
                                   // that's the typical situation of Windows Vista and above.
   uint16_t* m_index;

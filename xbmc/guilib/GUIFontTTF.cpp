@@ -179,11 +179,7 @@ void CGUIFontTTFBase::RemoveReference()
 
 void CGUIFontTTFBase::ClearCharacterCache()
 {
-  delete(m_texture);
-
-  DeleteHardwareTexture();
-
-  m_texture = NULL;
+  ClearTexture();
   delete[] m_char;
   m_char = new Character[CHAR_CHUNK];
   memset(m_charquick, 0, sizeof(m_charquick));
@@ -192,7 +188,6 @@ void CGUIFontTTFBase::ClearCharacterCache()
   // set the posX and posY so that our texture will be created on first character write.
   m_posX = m_textureWidth;
   m_posY = -(int)GetTextureLineHeight();
-  m_textureHeight = 0;
 }
 
 void CGUIFontTTFBase::Clear()

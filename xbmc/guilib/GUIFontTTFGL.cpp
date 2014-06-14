@@ -314,4 +314,10 @@ void CGUIFontTTFGL::DeleteHardwareTexture()
   }
 }
 
+void CGUIFontTTFGL::ClearTexture()
+{
+  if (m_texture)
+    memset(m_texture->GetPixels(), 0, m_textureHeight * m_texture->GetPitch());
+}
+
 #endif
