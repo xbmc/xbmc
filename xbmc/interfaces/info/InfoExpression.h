@@ -94,12 +94,12 @@ private:
   class InfoAssociativeGroup : public InfoSubexpression
   {
   public:
-    InfoAssociativeGroup(bool and_not_or, const InfoSubexpressionPtr &left, const InfoSubexpressionPtr &right);
+    InfoAssociativeGroup(node_type_t type, const InfoSubexpressionPtr &left, const InfoSubexpressionPtr &right);
     void AddChild(const InfoSubexpressionPtr &child);
     void Merge(boost::shared_ptr<InfoAssociativeGroup> other);
     virtual bool Evaluate(const CGUIListItem *item);
   private:
-    bool m_and_not_or;
+    node_type_t m_type;
     std::list<InfoSubexpressionPtr> m_children;
   };
 

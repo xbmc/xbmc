@@ -80,10 +80,10 @@ bool InfoExpression::InfoLeaf::Evaluate(const CGUIListItem *item)
 }
 
 InfoExpression::InfoAssociativeGroup::InfoAssociativeGroup(
-    bool and_not_or,
+    node_type_t type,
     const InfoSubexpressionPtr &left,
     const InfoSubexpressionPtr &right)
-    : m_and_not_or(and_not_or)
+    : m_type(type)
 {
   AddChild(right);
   AddChild(left);
@@ -107,10 +107,11 @@ bool InfoExpression::InfoAssociativeGroup::Evaluate(const CGUIListItem *item)
    */
   std::list<InfoSubexpressionPtr>::iterator last = m_children.end();
   std::list<InfoSubexpressionPtr>::iterator it = m_children.begin();
-  bool result = m_and_not_or ^ (*it)->Evaluate(item);
+  bool use_and = (m_type == NODE_AND);
+  bool result = use_and ^ (*it)->Evaluate(item);
   while (!result && ++it != last)
   {
-    result = m_and_not_or ^ (*it)->Evaluate(item);
+    result = use_and ^ (*it)->Evaluate(item);
     if (result)
     {
       /* Move this child to the head of the list so we evaluate faster next time */
@@ -118,7 +119,7 @@ bool InfoExpression::InfoAssociativeGroup::Evaluate(const CGUIListItem *item)
       m_children.erase(it);
     }
   }
-  return m_and_not_or ^ result;
+  return use_and ^ result;
 }
 
 /* Expressions are parsed using the shunting-yard algorithm. Binary operators
@@ -206,7 +207,7 @@ void InfoExpression::OperatorPop(std::stack<operator_t> &operator_stack, bool &i
          *               /   \     /   \        as children
          *             leaf leaf leaf leaf
          */
-        nodes.push(boost::make_shared<InfoAssociativeGroup>(new_type == NODE_AND, left, right));
+        nodes.push(boost::make_shared<InfoAssociativeGroup>(new_type, left, right));
       node_types.push(new_type);
     }
   }
