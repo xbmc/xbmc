@@ -69,10 +69,10 @@ class CVideoReferenceClock : public CThread
     int64_t GetFrequency();
     void    SetSpeed(double Speed);
     double  GetSpeed();
-    int     GetRefreshRate(double* interval = NULL);
+    double  GetRefreshRate(double* interval = NULL);
     int64_t Wait(int64_t Target);
     bool    WaitStarted(int MSecs);
-    bool    GetClockInfo(int& MissedVblanks, double& ClockSpeed, int& RefreshRate);
+    bool    GetClockInfo(int& MissedVblanks, double& ClockSpeed, double& RefreshRate);
     void    SetFineAdjust(double fineadjust);
     void    RefreshChanged() { m_RefreshChanged = 1; }
 
@@ -103,7 +103,7 @@ class CVideoReferenceClock : public CThread
     double  m_fineadjust;
 
     bool    m_UseVblank;         //set to true when vblank is used as clock source
-    int64_t m_RefreshRate;       //current refreshrate
+    double  m_RefreshRate;       //current refreshrate
     int     m_PrevRefreshRate;   //previous refreshrate, used for log printing and getting refreshrate from nvidia-settings
     int     m_MissedVblanks;     //number of clock updates missed by the vblank clock
     int     m_RefreshChanged;    //1 = we changed the refreshrate, 2 = we should check the refreshrate forced

@@ -159,7 +159,7 @@ static double wrap(double x, double minimum, double maximum)
 void CXBMCRenderManager::WaitPresentTime(double presenttime)
 {
   double frametime;
-  int fps = g_VideoReferenceClock.GetRefreshRate(&frametime);
+  double fps = g_VideoReferenceClock.GetRefreshRate(&frametime);
   if(fps <= 0)
   {
     /* smooth video not enabled */

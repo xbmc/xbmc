@@ -590,12 +590,12 @@ void CGUIWindowFullScreen::FrameMove()
       CStdString strCores = g_cpuInfo.GetCoresUsageString();
 #endif
       int    missedvblanks;
-      int    refreshrate;
+      double refreshrate;
       double clockspeed;
       CStdString strClock;
 
       if (g_VideoReferenceClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
-        strClock = StringUtils::Format("S( refresh:%i missed:%i speed:%+.3f%% %s )"
+        strClock = StringUtils::Format("S( refresh:%.3f missed:%i speed:%+.3f%% %s )"
                                        , refreshrate
                                        , missedvblanks
                                        , clockspeed - 100.0
