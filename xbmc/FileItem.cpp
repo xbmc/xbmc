@@ -707,7 +707,7 @@ bool CFileItem::Exists(bool bUseCache /* = true */) const
     strPath = CStackDirectory::GetFirstStackedFile(strPath);
 
   if (m_bIsFolder)
-    return CDirectory::Exists(strPath);
+    return CDirectory::Exists(strPath, bUseCache);
   else
     return CFile::Exists(strPath, bUseCache);
 
