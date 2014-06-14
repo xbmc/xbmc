@@ -107,7 +107,7 @@ SelectionStream& CSelectionStreams::Get(StreamType type, int index)
 {
   CSingleLock lock(m_section);
   int count = -1;
-  for(int i=0;i<(int)m_Streams.size();i++)
+  for(size_t i=0;i<m_Streams.size();i++)
   {
     if(m_Streams[i].type != type)
       continue;
@@ -292,7 +292,7 @@ static bool PredicateVideoPriority(const SelectionStream& lh, const SelectionStr
 bool CSelectionStreams::Get(StreamType type, CDemuxStream::EFlags flag, SelectionStream& out)
 {
   CSingleLock lock(m_section);
-  for(int i=0;i<(int)m_Streams.size();i++)
+  for(size_t i=0;i<m_Streams.size();i++)
   {
     if(m_Streams[i].type != type)
       continue;
@@ -308,7 +308,7 @@ int CSelectionStreams::IndexOf(StreamType type, int source, int id) const
 {
   CSingleLock lock(m_section);
   int count = -1;
-  for(int i=0;i<(int)m_Streams.size();i++)
+  for(size_t i=0;i<m_Streams.size();i++)
   {
     if(type && m_Streams[i].type != type)
       continue;
@@ -357,7 +357,7 @@ int CSelectionStreams::Source(StreamSource source, std::string filename)
 {
   CSingleLock lock(m_section);
   int index = source - 1;
-  for(int i=0;i<(int)m_Streams.size();i++)
+  for(size_t i=0;i<m_Streams.size();i++)
   {
     SelectionStream &s = m_Streams[i];
     if(STREAM_SOURCE_MASK(s.source) != source)
