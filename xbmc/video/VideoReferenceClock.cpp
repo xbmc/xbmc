@@ -1192,13 +1192,12 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
   {
     while (m_CurrTime < Target)
     {
-      int64_t NextVblank = TimeOfNextVblank();
-
-      if (Target < NextVblank)
+      if (Target < (m_CurrTime + UpdateInterval()))
         break;
 
       //calculate how long to sleep before we should have gotten a signal that a vblank happened
       Now = CurrentHostCounter();
+      int64_t NextVblank = TimeOfNextVblank();
       SleepTime = (int)((NextVblank - Now) * 1000 / m_SystemFrequency);
 
       int64_t CurrTime = m_CurrTime; //save current value of the clock
