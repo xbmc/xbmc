@@ -48,16 +48,16 @@ public:
   bool ReadEditDecisionLists(const std::string& strMovie, const float fFramesPerSecond, const int iHeight);
   void Clear();
 
-  bool HasCut();
-  bool HasSceneMarker();
-  std::string GetInfo();
-  int GetTotalCutTime();
-  int RemoveCutTime(int iSeek);
-  int RestoreCutTime(int iClock);
+  bool HasCut() const;
+  bool HasSceneMarker() const;
+  std::string GetInfo() const;
+  int GetTotalCutTime() const;
+  int RemoveCutTime(int iSeek) const;
+  int RestoreCutTime(int iClock) const;
 
-  bool InCut(int iSeek, Cut *pCut = NULL);
+  bool InCut(int iSeek, Cut *pCut = NULL) const;
 
-  bool GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker);
+  bool GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker) const;
 
   static std::string GetMPlayerEdl();
 

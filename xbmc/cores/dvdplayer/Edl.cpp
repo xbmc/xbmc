@@ -810,17 +810,17 @@ std::string CEdl::GetMPlayerEdl()
   return MPLAYER_EDL_FILENAME;
 }
 
-bool CEdl::HasCut()
+bool CEdl::HasCut() const
 {
   return !m_vecCuts.empty();
 }
 
-int CEdl::GetTotalCutTime()
+int CEdl::GetTotalCutTime() const
 {
   return m_iTotalCutTime; // ms
 }
 
-int CEdl::RemoveCutTime(int iSeek)
+int CEdl::RemoveCutTime(int iSeek) const
 {
   if (!HasCut())
     return iSeek;
@@ -844,7 +844,7 @@ int CEdl::RemoveCutTime(int iSeek)
   return iSeek - iCutTime;
 }
 
-int CEdl::RestoreCutTime(int iClock)
+int CEdl::RestoreCutTime(int iClock) const
 {
   if (!HasCut())
     return iClock;
@@ -859,12 +859,12 @@ int CEdl::RestoreCutTime(int iClock)
   return iSeek;
 }
 
-bool CEdl::HasSceneMarker()
+bool CEdl::HasSceneMarker() const
 {
   return !m_vecSceneMarkers.empty();
 }
 
-std::string CEdl::GetInfo()
+std::string CEdl::GetInfo() const
 {
   std::string strInfo;
   if (HasCut())
@@ -898,7 +898,7 @@ std::string CEdl::GetInfo()
   return strInfo.empty() ? "-" : strInfo;
 }
 
-bool CEdl::InCut(const int iSeek, Cut *pCut)
+bool CEdl::InCut(const int iSeek, Cut *pCut) const
 {
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
@@ -916,7 +916,7 @@ bool CEdl::InCut(const int iSeek, Cut *pCut)
   return false;
 }
 
-bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker)
+bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker) const
 {
   if (!HasSceneMarker())
     return false;
