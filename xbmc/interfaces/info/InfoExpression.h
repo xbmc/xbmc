@@ -75,6 +75,7 @@ private:
   public:
     virtual ~InfoSubexpression(void) {}; // so we can destruct derived classes using a pointer to their base class
     virtual bool Evaluate(const CGUIListItem *item) = 0;
+    virtual node_type_t Type() const=0;
   };
 
   typedef boost::shared_ptr<InfoSubexpression> InfoSubexpressionPtr;
@@ -85,6 +86,7 @@ private:
   public:
     InfoLeaf(InfoPtr info, bool invert) : m_info(info), m_invert(invert) {};
     virtual bool Evaluate(const CGUIListItem *item);
+    virtual node_type_t Type() const { return NODE_LEAF; };
   private:
     InfoPtr m_info;
     bool m_invert;
@@ -94,17 +96,18 @@ private:
   class InfoAssociativeGroup : public InfoSubexpression
   {
   public:
-    InfoAssociativeGroup(bool and_not_or, const InfoSubexpressionPtr &left, const InfoSubexpressionPtr &right);
+    InfoAssociativeGroup(node_type_t type, const InfoSubexpressionPtr &left, const InfoSubexpressionPtr &right);
     void AddChild(const InfoSubexpressionPtr &child);
     void Merge(boost::shared_ptr<InfoAssociativeGroup> other);
     virtual bool Evaluate(const CGUIListItem *item);
+    virtual node_type_t Type() const { return m_type; };
   private:
-    bool m_and_not_or;
+    node_type_t m_type;
     std::list<InfoSubexpressionPtr> m_children;
   };
 
   static operator_t GetOperator(char ch);
-  static void OperatorPop(std::stack<operator_t> &operator_stack, bool &invert, std::stack<node_type_t> &node_types, std::stack<InfoSubexpressionPtr> &nodes);
+  static void OperatorPop(std::stack<operator_t> &operator_stack, bool &invert, std::stack<InfoSubexpressionPtr> &nodes);
   bool Parse(const std::string &expression);
   InfoSubexpressionPtr m_expression_tree;
 };

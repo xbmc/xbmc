@@ -80,10 +80,10 @@ bool InfoExpression::InfoLeaf::Evaluate(const CGUIListItem *item)
 }
 
 InfoExpression::InfoAssociativeGroup::InfoAssociativeGroup(
-    bool and_not_or,
+    node_type_t type,
     const InfoSubexpressionPtr &left,
     const InfoSubexpressionPtr &right)
-    : m_and_not_or(and_not_or)
+    : m_type(type)
 {
   AddChild(right);
   AddChild(left);
@@ -107,10 +107,11 @@ bool InfoExpression::InfoAssociativeGroup::Evaluate(const CGUIListItem *item)
    */
   std::list<InfoSubexpressionPtr>::iterator last = m_children.end();
   std::list<InfoSubexpressionPtr>::iterator it = m_children.begin();
-  bool result = m_and_not_or ^ (*it)->Evaluate(item);
+  bool use_and = (m_type == NODE_AND);
+  bool result = use_and ^ (*it)->Evaluate(item);
   while (!result && ++it != last)
   {
-    result = m_and_not_or ^ (*it)->Evaluate(item);
+    result = use_and ^ (*it)->Evaluate(item);
     if (result)
     {
       /* Move this child to the head of the list so we evaluate faster next time */
@@ -118,7 +119,7 @@ bool InfoExpression::InfoAssociativeGroup::Evaluate(const CGUIListItem *item)
       m_children.erase(it);
     }
   }
-  return m_and_not_or ^ result;
+  return use_and ^ result;
 }
 
 /* Expressions are parsed using the shunting-yard algorithm. Binary operators
@@ -144,7 +145,7 @@ InfoExpression::operator_t InfoExpression::GetOperator(char ch)
     return OPERATOR_NONE;
 }
 
-void InfoExpression::OperatorPop(std::stack<operator_t> &operator_stack, bool &invert, std::stack<node_type_t> &node_types, std::stack<InfoSubexpressionPtr> &nodes)
+void InfoExpression::OperatorPop(std::stack<operator_t> &operator_stack, bool &invert, std::stack<InfoSubexpressionPtr> &nodes)
 {
   operator_t op2 = operator_stack.top();
   operator_stack.pop();
@@ -163,9 +164,8 @@ void InfoExpression::OperatorPop(std::stack<operator_t> &operator_stack, bool &i
     nodes.pop();
     InfoSubexpressionPtr left = nodes.top();
 
-    node_type_t right_type = node_types.top();
-    node_types.pop();
-    node_type_t left_type = node_types.top();
+    node_type_t right_type = right->Type();
+    node_type_t left_type = left->Type();
 
     // Combine associative operations into the same node where possible
     if (left_type == new_type && right_type == new_type)
@@ -187,7 +187,6 @@ void InfoExpression::OperatorPop(std::stack<operator_t> &operator_stack, bool &i
     else
     {
       nodes.pop();
-      node_types.pop();
       if (right_type == new_type)
       {
         /* For example:        AND                       AND
@@ -206,8 +205,7 @@ void InfoExpression::OperatorPop(std::stack<operator_t> &operator_stack, bool &i
          *               /   \     /   \        as children
          *             leaf leaf leaf leaf
          */
-        nodes.push(boost::make_shared<InfoAssociativeGroup>(new_type == NODE_AND, left, right));
-      node_types.push(new_type);
+        nodes.push(boost::make_shared<InfoAssociativeGroup>(new_type, left, right));
     }
   }
 }
@@ -218,7 +216,6 @@ bool InfoExpression::Parse(const std::string &expression)
   std::string operand;
   std::stack<operator_t> operator_stack;
   bool invert = false;
-  std::stack<node_type_t> node_types;
   std::stack<InfoSubexpressionPtr> nodes;
   // The next two are for syntax-checking purposes
   bool after_binaryoperator = true;
@@ -257,7 +254,6 @@ bool InfoExpression::Parse(const std::string &expression)
         /* Propagate any listItem dependency from the operand to the expression */
         m_listItemDependent |= info->ListItemDependent();
         nodes.push(boost::make_shared<InfoLeaf>(info, invert));
-        node_types.push(NODE_LEAF);
         /* Reuse operand string for next operand */
         operand.clear();
       }
@@ -267,7 +263,7 @@ bool InfoExpression::Parse(const std::string &expression)
       if (op != OPERATOR_LB)
       {
         while (!operator_stack.empty() && operator_stack.top() > op)
-          OperatorPop(operator_stack, invert, node_types, nodes);
+          OperatorPop(operator_stack, invert, nodes);
       }
       if (op == OPERATOR_RB)
         operator_stack.pop(); // remove the matching left-bracket
@@ -309,10 +305,9 @@ bool InfoExpression::Parse(const std::string &expression)
     /* Propagate any listItem dependency from the operand to the expression */
     m_listItemDependent |= info->ListItemDependent();
     nodes.push(boost::make_shared<InfoLeaf>(info, invert));
-    node_types.push(NODE_LEAF);
   }
   while (!operator_stack.empty())
-    OperatorPop(operator_stack, invert, node_types, nodes);
+    OperatorPop(operator_stack, invert, nodes);
 
   m_expression_tree = nodes.top();
   return true;
