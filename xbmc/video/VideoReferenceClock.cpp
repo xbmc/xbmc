@@ -134,9 +134,6 @@ CVideoReferenceClock::CVideoReferenceClock() : CThread("VideoReferenceClock")
   m_vInfo = NULL;
   m_Window = 0;
   m_Context = NULL;
-  m_pixmap = None;
-  m_glPixmap = None;
-  m_bIsATI = false;
 #endif
 }
 
@@ -294,8 +291,6 @@ bool CVideoReferenceClock::SetupGLX()
   m_vInfo = NULL;
   m_Context = NULL;
   m_Window = 0;
-  m_pixmap = None;
-  m_glPixmap = None;
 
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up GLX");
 
@@ -335,13 +330,6 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
 
-  CStdString Vendor = g_Windowing.GetRenderVendor();
-  if (StringUtils::StartsWithNoCase(Vendor, "ati"))
-  {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GL_VENDOR: %s, using ati workaround", Vendor.c_str());
-    m_bIsATI = true;
-  }
-
   m_vInfo = glXChooseVisual(m_Dpy, g_Windowing.GetCurrentScreen(), singleBufferAttributes);
   if (!m_vInfo)
   {
@@ -349,27 +337,13 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
 
-  if (!m_bIsATI)
-  {
-    Swa.border_pixel = 0;
-    Swa.event_mask = StructureNotifyMask;
-    Swa.colormap = XCreateColormap(m_Dpy, g_Windowing.GetWindow(), m_vInfo->visual, AllocNone );
-    SwaMask = CWBorderPixel | CWColormap | CWEventMask;
+  Swa.border_pixel = 0;
+  Swa.event_mask = StructureNotifyMask;
+  Swa.colormap = XCreateColormap(m_Dpy, g_Windowing.GetWindow(), m_vInfo->visual, AllocNone );
+  SwaMask = CWBorderPixel | CWColormap | CWEventMask;
 
-    m_Window = XCreateWindow(m_Dpy, g_Windowing.GetWindow(), 0, 0, 256, 256, 0,
+  m_Window = XCreateWindow(m_Dpy, g_Windowing.GetWindow(), 0, 0, 256, 256, 0,
                            m_vInfo->depth, InputOutput, m_vInfo->visual, SwaMask, &Swa);
-  }
-  else
-  {
-    Window window = g_Windowing.GetWindow();
-    m_pixmap = XCreatePixmap(m_Dpy, window, 256, 256, m_vInfo->depth);
-    if (!m_pixmap)
-    {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: unable to create pixmap");
-      return false;
-    }
-    m_glPixmap = glXCreateGLXPixmap(m_Dpy, m_vInfo, m_pixmap);
-  }
 
   m_Context = glXCreateContext(m_Dpy, m_vInfo, NULL, True);
   if (!m_Context)
@@ -378,32 +352,25 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
 
-  if (!m_bIsATI)
-    ReturnV = glXMakeCurrent(m_Dpy, m_Window, m_Context);
-  else
-    ReturnV = glXMakeCurrent(m_Dpy, m_glPixmap, m_Context);
-
+  ReturnV = glXMakeCurrent(m_Dpy, m_Window, m_Context);
   if (ReturnV != True)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned %i", ReturnV);
     return false;
   }
 
-  if (!m_bIsATI)
+  m_glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
+  if (!m_glXWaitVideoSyncSGI)
   {
-    m_glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
-    if (!m_glXWaitVideoSyncSGI)
-    {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI not found");
-      return false;
-    }
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI not found");
+    return false;
+  }
 
-    ReturnV = m_glXWaitVideoSyncSGI(2, 0, &GlxTest);
-    if (ReturnV)
-    {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i", ReturnV);
-      return false;
-    }
+  ReturnV = m_glXWaitVideoSyncSGI(2, 0, &GlxTest);
+  if (ReturnV)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i", ReturnV);
+    return false;
   }
 
   m_glXGetVideoSyncSGI = (int (*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetVideoSyncSGI");
@@ -465,19 +432,9 @@ void CVideoReferenceClock::CleanupGLX()
     XDestroyWindow(m_Dpy, m_Window);
     m_Window = 0;
   }
-  if (m_glPixmap)
-  {
-    glXDestroyPixmap(m_Dpy, m_glPixmap);
-    m_glPixmap = None;
-  }
-  if (m_pixmap)
-  {
-    XFreePixmap(m_Dpy, m_pixmap);
-    m_pixmap = None;
-  }
 
   //ati saves the Display* in their libGL, if we close it here, we crash
-  if (m_Dpy && !m_bIsATI)
+  if (m_Dpy)
   {
     XCloseDisplay(m_Dpy);
     m_Dpy = NULL;
@@ -499,62 +456,14 @@ void CVideoReferenceClock::RunGLX()
   m_glXGetVideoSyncSGI(&VblankCount);
   PrevVblankCount = VblankCount;
 
-  uint64_t lastVblankTime = CurrentHostCounter();
-  int sleepTime, correction;
-  int integral = 0;
-
   while(!m_bStop)
   {
     if (m_xrrEvent)
       return;
 
     //wait for the next vblank
-    if (!m_bIsATI)
-    {
-      ReturnV = m_glXWaitVideoSyncSGI(2, (VblankCount + 1) % 2, &VblankCount);
-      m_glXGetVideoSyncSGI(&VblankCount); //the vblank count returned by glXWaitVideoSyncSGI is not always correct
-    }
-    else
-    {
-      // calculate sleep time in micro secs
-      // we start with 50% of interval
-      sleepTime = 500000LL / m_RefreshRate;
-
-      // correct sleepTime by time used for processing since last vblank
-      correction = (CurrentHostCounter() - lastVblankTime) * 1000000LL / m_SystemFrequency;
-      sleepTime -= correction;
-
-      // correct sleep time by integral term
-      // consider 10 cycles as desired
-      sleepTime += integral;
-
-      // clamp sleepTime to a min value of 30% of interval
-      // integral is already clamped to a max value
-      sleepTime = std::max(int(300000LL/m_RefreshRate), sleepTime);
-
-      unsigned int iterations = 0;
-      while (VblankCount == PrevVblankCount && !m_bStop)
-      {
-        usleep(sleepTime);
-        m_glXGetVideoSyncSGI(&VblankCount);
-        sleepTime = sleepTime > 200 ? sleepTime/2 : 100;
-        iterations++;
-      }
-      if (iterations > 10)
-        integral += 100;
-      else if (iterations < 10)
-        integral -= 100;
-
-      // clamp integral to an absolute value of 20% of interval
-      if (integral > 200000LL/m_RefreshRate)
-        integral = 200000LL/m_RefreshRate;
-      else if (integral < -200000LL/m_RefreshRate)
-        integral = -200000LL/m_RefreshRate;
-
-      lastVblankTime = CurrentHostCounter();
-      ReturnV = 0;
-    }
-
+    ReturnV = m_glXWaitVideoSyncSGI(2, (VblankCount + 1) % 2, &VblankCount);
+    m_glXGetVideoSyncSGI(&VblankCount); //the vblank count returned by glXWaitVideoSyncSGI is not always correct
     Now = CurrentHostCounter();         //get the timestamp of this vblank
 
     if(ReturnV)
@@ -573,11 +482,9 @@ void CVideoReferenceClock::RunGLX()
       SendVblankSignal();
       IsReset = false;
     }
-    else if (!m_bStop)
+    else
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Vblank counter has reset");
-
-      integral = 0;
 
       //only try reattaching once
       if (IsReset)
@@ -596,11 +503,7 @@ void CVideoReferenceClock::RunGLX()
       Sleep(1000);
 
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Attaching glX context");
-      if (!m_bIsATI)
-        ReturnV = glXMakeCurrent(m_Dpy, m_Window, m_Context);
-      else
-        ReturnV = glXMakeCurrent(m_Dpy, m_glPixmap, m_Context);
-
+      ReturnV = glXMakeCurrent(m_Dpy, m_Window, m_Context);
       if (ReturnV != True)
       {
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned %i", ReturnV);

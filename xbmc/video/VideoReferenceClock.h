@@ -128,12 +128,8 @@ class CVideoReferenceClock : public CThread
     XVisualInfo *m_vInfo;
     Window       m_Window;
     GLXContext   m_Context;
-    Pixmap       m_pixmap;
-    GLXPixmap    m_glPixmap;
     bool         m_xrrEvent;
     CEvent       m_releaseEvent, m_resetEvent;
-
-    bool         m_bIsATI;
 
 #elif defined(TARGET_WINDOWS) && defined(HAS_DX)
     bool   SetupD3D();
