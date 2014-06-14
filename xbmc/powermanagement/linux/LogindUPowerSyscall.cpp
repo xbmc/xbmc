@@ -225,10 +225,10 @@ bool CLogindUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
     {
       if (dbus_message_is_signal(msg, "org.freedesktop.login1.Manager", "PrepareForSleep"))
       {
-        bool arg;
+        dbus_bool_t arg;
         // the boolean argument defines whether we are going to sleep (true) or just woke up (false)
         dbus_message_get_args(msg, NULL, DBUS_TYPE_BOOLEAN, &arg, DBUS_TYPE_INVALID);
-        CLog::Log(LOGDEBUG, "LogindUPowerSyscall: Received PrepareForSleep with arg %i", arg);
+        CLog::Log(LOGDEBUG, "LogindUPowerSyscall: Received PrepareForSleep with arg %i", (int)arg);
         if (arg)
         {
           callback->OnSleep();
