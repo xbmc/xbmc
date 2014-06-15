@@ -88,7 +88,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
       if (iControl == CONTROL_CONTENT_TYPE)
       {
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_CONTENT_TYPE);
-        g_windowManager.SendMessage(msg);
+        OnMessage(msg);
         m_content = static_cast<CONTENT_TYPE>(msg.GetParam1());
         SetupView();
       }
@@ -100,7 +100,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
           break;
 
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_SCRAPER_LIST);
-        g_windowManager.SendMessage(msg);
+        OnMessage(msg);
         int iSelected = msg.GetParam1();
         if (iSelected == m_vecItems->Size() - 1)
         { // Get More... item, path 'addons://more/<content>'

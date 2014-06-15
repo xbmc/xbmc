@@ -23,7 +23,6 @@
 #include "dialogs/GUIDialogOK.h"
 #include "GUIWindowWeather.h"
 #include "utils/Weather.h"
-#include "guilib/GUIWindowManager.h"
 #include "utils/URIUtils.h"
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
@@ -85,7 +84,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_SELECTLOCATION)
       {
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_SELECTLOCATION);
-        g_windowManager.SendMessage(msg);
+        OnMessage(msg);
 
         SetLocation(msg.GetParam1());
       }
