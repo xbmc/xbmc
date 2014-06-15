@@ -151,7 +151,8 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (strProtocol == "androidapp") return new CFileAndroidApp();
 #endif
 
-  if( g_application.getNetwork().IsAvailable() )
+  bool networkAvailable = g_application.getNetwork().IsAvailable();
+  if (networkAvailable)
   {
     if (strProtocol == "ftp"
     ||  strProtocol == "ftps"
@@ -203,6 +204,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
   }
 
-  CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );
+  CLog::Log(LOGWARNING, "%s - %sunsupported protocol(%s) in %s", __FUNCTION__, networkAvailable ? "" : "Network down or ", strProtocol.c_str(), url.GetRedacted().c_str());
   return NULL;
 }
