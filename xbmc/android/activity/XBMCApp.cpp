@@ -589,21 +589,32 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
 void CXBMCApp::SetupEnv()
 {
   setenv("XBMC_ANDROID_SYSTEM_LIBS", CJNISystem::getProperty("java.library.path").c_str(), 0);
-  setenv("XBMC_ANDROID_DATA", getApplicationInfo().dataDir.c_str(), 0);
   setenv("XBMC_ANDROID_LIBS", getApplicationInfo().nativeLibraryDir.c_str(), 0);
   setenv("XBMC_ANDROID_APK", getPackageResourcePath().c_str(), 0);
 
-  std::string cacheDir = getCacheDir().getAbsolutePath();
-  setenv("XBMC_BIN_HOME", (cacheDir + "/apk/assets").c_str(), 0);
-  setenv("XBMC_HOME", (cacheDir + "/apk/assets").c_str(), 0);
+  std::string xbmcHome = CJNISystem::getProperty("xbmc.home", "");
+  if (xbmcHome.empty())
+  {
+    std::string cacheDir = getCacheDir().getAbsolutePath();
+    setenv("XBMC_BIN_HOME", (cacheDir + "/apk/assets").c_str(), 0);
+    setenv("XBMC_HOME", (cacheDir + "/apk/assets").c_str(), 0);
+  }
+  else
+  {
+    setenv("XBMC_BIN_HOME", (xbmcHome + "/assets").c_str(), 0);
+    setenv("XBMC_HOME", (xbmcHome + "/assets").c_str(), 0);
+  }
 
-  std::string externalDir;
-  CJNIFile androidPath = getExternalFilesDir("");
-  if (!androidPath)
-    androidPath = getDir("org.xbmc.xbmc", 1);
+  std::string externalDir = CJNISystem::getProperty("xbmc.data", "");
+  if (externalDir.empty())
+  {
+    CJNIFile androidPath = getExternalFilesDir("");
+    if (!androidPath)
+      androidPath = getDir("org.xbmc.xbmc", 1);
 
-  if (androidPath)
-    externalDir = androidPath.getAbsolutePath();
+    if (androidPath)
+      externalDir = androidPath.getAbsolutePath();
+  }
 
   if (!externalDir.empty())
     setenv("HOME", externalDir.c_str(), 0);
