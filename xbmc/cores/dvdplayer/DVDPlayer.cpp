@@ -2715,7 +2715,6 @@ void CDVDPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &inf
 
 void CDVDPlayer::SetSubtitle(int iStream)
 {
-  CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = iStream;
   m_messenger.Put(new CDVDMsgPlayerSetSubtitleStream(iStream));
 }
 
@@ -2922,6 +2921,8 @@ bool CDVDPlayer::OpenStream(CCurrentStream& current, int iStream, int source, bo
 
     if (current.type == STREAM_AUDIO)
       CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream = GetAudioStream();
+    else if (current.type == STREAM_SUBTITLE)
+      CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = GetSubtitle();
 
     UpdateClockMaster();
   }
@@ -3026,7 +3027,6 @@ bool CDVDPlayer::OpenSubtitleStream(CDVDStreamInfo& hint)
   if(!OpenStreamPlayer(m_CurrentSubtitle, hint, true))
     return false;
 
-  CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = GetSubtitle();
   return true;
 }
 
