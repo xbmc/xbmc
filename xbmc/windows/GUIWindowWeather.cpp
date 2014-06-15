@@ -144,9 +144,8 @@ void CGUIWindowWeather::UpdateLocations()
   if (!IsActive()) return;
   m_maxLocation = strtol(GetProperty("Locations").asString().c_str(),0,10);
   if (m_maxLocation < 1) return;
-  CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_SELECTLOCATION);
-  g_windowManager.SendMessage(msg);
-  CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_SELECTLOCATION);
+
+  std::vector< std::pair<std::string, int> > labels;
 
   unsigned int iCurWeather = g_weatherManager.GetArea();
 
@@ -157,35 +156,31 @@ void CGUIWindowWeather::UpdateLocations()
     ClearProperties();
     g_weatherManager.Refresh();
   }
-  
+
   for (unsigned int i = 1; i <= m_maxLocation; i++)
   {
-    CStdString strLabel = g_weatherManager.GetLocation(i);
+    std::string strLabel = g_weatherManager.GetLocation(i);
     if (strLabel.size() > 1) //got the location string yet?
     {
       size_t iPos = strLabel.rfind(", ");
       if (iPos != std::string::npos)
       {
-        CStdString strLabel2(strLabel);
+        std::string strLabel2(strLabel);
         strLabel = strLabel2.substr(0,iPos);
       }
-      msg2.SetParam1(i);
-      msg2.SetLabel(strLabel);
-      g_windowManager.SendMessage(msg2);
+      labels.push_back(make_pair(strLabel, i));
     }
     else
     {
       strLabel = StringUtils::Format("AreaCode %i", i);
-
-      msg2.SetLabel(strLabel);
-      msg2.SetParam1(i);
-      g_windowManager.SendMessage(msg2);
+      labels.push_back(make_pair(strLabel, i));
     }
+    // in case it's a button, set the label
     if (i == iCurWeather)
       SET_CONTROL_LABEL(CONTROL_SELECTLOCATION,strLabel);
   }
 
-  CONTROL_SELECT_ITEM(CONTROL_SELECTLOCATION, iCurWeather);
+  SET_CONTROL_LABELS(CONTROL_SELECTLOCATION, iCurWeather, &labels);
 }
 
 void CGUIWindowWeather::UpdateButtons()

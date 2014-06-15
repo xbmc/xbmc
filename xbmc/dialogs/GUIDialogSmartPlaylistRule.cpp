@@ -374,6 +374,11 @@ void CGUIDialogSmartPlaylistRule::OnOperator()
   UpdateButtons();
 }
 
+std::pair<std::string, int> OperatorLabel(CDatabaseQueryRule::SEARCH_OPERATOR op)
+{
+  return make_pair(CSmartPlaylistRule::GetLocalizedOperator(op), op);
+}
+
 void CGUIDialogSmartPlaylistRule::UpdateButtons()
 {
   // update the field control
@@ -391,55 +396,57 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
   else
     CONTROL_DISABLE(CONTROL_BROWSE);
 
+  std::vector< std::pair<std::string, int> > labels;
   switch (m_rule.GetFieldType(m_rule.m_field))
   {
   case CDatabaseQueryRule::TEXT_FIELD:
     // text fields - add the usual comparisons
-    AddOperatorLabel(CDatabaseQueryRule::OPERATOR_EQUALS);
-    AddOperatorLabel(CDatabaseQueryRule::OPERATOR_DOES_NOT_EQUAL);
-    AddOperatorLabel(CDatabaseQueryRule::OPERATOR_CONTAINS);
-    AddOperatorLabel(CDatabaseQueryRule::OPERATOR_DOES_NOT_CONTAIN);
-    AddOperatorLabel(CDatabaseQueryRule::OPERATOR_STARTS_WITH);
-    AddOperatorLabel(CDatabaseQueryRule::OPERATOR_ENDS_WITH);
+    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_EQUALS));
+    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_DOES_NOT_EQUAL));
+    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_CONTAINS));
+    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_DOES_NOT_CONTAIN));
+    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_STARTS_WITH));
+    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_ENDS_WITH));
     break;
 
   case CDatabaseQueryRule::NUMERIC_FIELD:
   case CDatabaseQueryRule::SECONDS_FIELD:
     // numerical fields - less than greater than
-    AddOperatorLabel(CDatabaseQueryRule::OPERATOR_EQUALS);
-    AddOperatorLabel(CDatabaseQueryRule::OPERATOR_DOES_NOT_EQUAL);
-    AddOperatorLabel(CDatabaseQueryRule::OPERATOR_GREATER_THAN);
-    AddOperatorLabel(CDatabaseQueryRule::OPERATOR_LESS_THAN);
+    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_EQUALS));
+    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_DOES_NOT_EQUAL));
+    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_GREATER_THAN));
+    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_LESS_THAN));
     break;
 
   case CDatabaseQueryRule::DATE_FIELD:
     // date field
-    AddOperatorLabel(CDatabaseQueryRule::OPERATOR_AFTER);
-    AddOperatorLabel(CDatabaseQueryRule::OPERATOR_BEFORE);
-    AddOperatorLabel(CDatabaseQueryRule::OPERATOR_IN_THE_LAST);
-    AddOperatorLabel(CDatabaseQueryRule::OPERATOR_NOT_IN_THE_LAST);
+    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_AFTER));
+    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_BEFORE));
+    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_IN_THE_LAST));
+    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_NOT_IN_THE_LAST));
     break;
 
   case CDatabaseQueryRule::PLAYLIST_FIELD:
     CONTROL_ENABLE(CONTROL_BROWSE);
-    AddOperatorLabel(CDatabaseQueryRule::OPERATOR_EQUALS);
-    AddOperatorLabel(CDatabaseQueryRule::OPERATOR_DOES_NOT_EQUAL);
+    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_EQUALS));
+    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_DOES_NOT_EQUAL));
     break;
 
   case CDatabaseQueryRule::BOOLEAN_FIELD:
     CONTROL_DISABLE(CONTROL_VALUE);
-    AddOperatorLabel(CDatabaseQueryRule::OPERATOR_TRUE);
-    AddOperatorLabel(CDatabaseQueryRule::OPERATOR_FALSE);
+    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_TRUE));
+    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_FALSE));
     break;
 
   case CDatabaseQueryRule::TEXTIN_FIELD:
-    AddOperatorLabel(CDatabaseQueryRule::OPERATOR_EQUALS);
-    AddOperatorLabel(CDatabaseQueryRule::OPERATOR_DOES_NOT_EQUAL);
+    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_EQUALS));
+    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_DOES_NOT_EQUAL));
     break;
   }
 
+  SET_CONTROL_LABELS(CONTROL_OPERATOR, m_rule.m_operator, &labels);
+
   // check our operator is valid, and update if not
-  SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_OPERATOR, m_rule.m_operator);
   CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_OPERATOR);
   OnMessage(selected);
   m_rule.m_operator = (CDatabaseQueryRule::SEARCH_OPERATOR)selected.GetParam1();
@@ -473,26 +480,18 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_VALUE, type, 21420);
 }
 
-void CGUIDialogSmartPlaylistRule::AddOperatorLabel(CDatabaseQueryRule::SEARCH_OPERATOR op)
-{
-  CGUIMessage select(GUI_MSG_LABEL_ADD, GetID(), CONTROL_OPERATOR, op);
-  select.SetLabel(CSmartPlaylistRule::GetLocalizedOperator(op));
-  OnMessage(select);
-}
-
 void CGUIDialogSmartPlaylistRule::OnInitWindow()
 {
   CGUIDialog::OnInitWindow();
 
-  SendMessage(GUI_MSG_LABEL_RESET, CONTROL_FIELD);
   // add the fields to the field spincontrol
+  std::vector< std::pair<std::string, int> > labels;
   vector<Field> fields = CSmartPlaylistRule::GetFields(m_type);
   for (unsigned int i = 0; i < fields.size(); i++)
-  {
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_FIELD, fields[i]);
-    msg.SetLabel(CSmartPlaylistRule::GetLocalizedField(fields[i]));
-    OnMessage(msg);
-  }
+    labels.push_back(make_pair(CSmartPlaylistRule::GetLocalizedField(fields[i]), fields[i]));
+
+  SET_CONTROL_LABELS(CONTROL_FIELD, 0, &labels);
+
   UpdateButtons();
 
   CGUIEditControl *editControl = dynamic_cast<CGUIEditControl*>(GetControl(CONTROL_VALUE));

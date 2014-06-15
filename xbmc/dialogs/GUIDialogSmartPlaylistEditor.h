@@ -61,7 +61,7 @@ protected:
   void HighlightItem(int item);
   PLAYLIST_TYPE ConvertType(const CStdString &type);
   CStdString ConvertType(PLAYLIST_TYPE type);
-  int GetLocalizedType(PLAYLIST_TYPE type);
+  std::string GetLocalizedType(PLAYLIST_TYPE type);
 
   CSmartPlaylist m_playlist;
 
