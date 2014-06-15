@@ -2760,7 +2760,6 @@ int CDVDPlayer::GetAudioStream()
 
 void CDVDPlayer::SetAudioStream(int iStream)
 {
-  CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream = iStream;
   m_messenger.Put(new CDVDMsgPlayerSetAudioStream(iStream));
   SynchronizeDemuxer(100);
 }
@@ -2921,6 +2920,9 @@ bool CDVDPlayer::OpenStream(CCurrentStream& current, int iStream, int source, bo
     if(stream)
       current.changes = stream->changes;
 
+    if (current.type == STREAM_AUDIO)
+      CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream = GetAudioStream();
+
     UpdateClockMaster();
   }
   else
@@ -2966,7 +2968,6 @@ bool CDVDPlayer::OpenAudioStream(CDVDStreamInfo& hint, bool reset)
 
   /* audio normally won't consume full cpu, so let it have prio */
   m_dvdPlayerAudio.SetPriority(GetPriority()+1);
-  CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream = GetAudioStream();
   return true;
 }
 
