@@ -198,9 +198,16 @@ CStdString CPlexPlayQueueManager::getURIFromItem(const CFileItem& item, const CS
     return "";
   }
 
-  CStdString realURI =
-  uri.empty() ? (CStdString)item.GetProperty("unprocessed_key").asString() : uri;
-  CURL::Encode(realURI);
+  CStdString realURI;
+  if (uri.empty())
+  {
+    realURI = (CStdString)item.GetProperty("unprocessed_key").asString();
+    CURL::Encode(realURI);
+  }
+  else
+  {
+    realURI = uri;
+  }
 
   CStdString ret;
   ret.Format("library://%s/%s/%s", item.GetProperty("librarySectionUUID").asString(), itemDirStr,
