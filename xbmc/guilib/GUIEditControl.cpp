@@ -165,7 +165,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
       OnPasteClipboard();
       return true;
     }
-    else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
+    else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII && !m_edit.empty())
     {
       // input from the keyboard (vkey, not ascii)
       BYTE b = action.GetID() & 0xFF;
@@ -213,13 +213,29 @@ bool CGUIEditControl::OnAction(const CAction &action)
         }
         return true;
       }
+      else if (b == XBMCVK_RETURN || b == XBMCVK_NUMPADENTER)
+      {
+        // enter - send click message, but otherwise ignore
+        SEND_CLICK_MESSAGE(GetID(), GetParentID(), 1);
+        return true;
+      }
+      else if (b == XBMCVK_ESCAPE)
+      { // escape - fallthrough to default action
+        return CGUIButtonControl::OnAction(action);
+      }
     }
     else if (action.GetID() >= KEY_ASCII)
     {
       // input from the keyboard
-      switch (action.GetUnicode())
+      int ch = action.GetUnicode();
+      // ignore non-printing characters
+      if ( !((0 <= ch && ch < 0x8) || (0xE <= ch && ch < 0x1B) || (0x1C <= ch && ch < 0x20)) )
       {
-      case '\t':
+      switch (ch)
+      {
+      case 9:  // tab, ignore
+      case 11: // Non-printing character, ignore
+      case 12: // Non-printing character, ignore
         break;
       case 10:
       case 13:
@@ -242,6 +258,15 @@ bool CGUIEditControl::OnAction(const CAction &action)
           }
           break;
         }
+      case 127:
+        { // delete
+          if (m_cursorPos < m_text2.length())
+          {
+            if (!ClearMD5())
+              m_text2.erase(m_cursorPos, 1);
+          }
+        break;
+        }
       default:
         {
           if (!g_Windowing.IsTextInputEnabled())
@@ -255,6 +280,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
       }
       UpdateText();
       return true;
+      }
     }
     else if (action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9)
     { // input from the remote
