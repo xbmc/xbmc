@@ -199,7 +199,7 @@ void CPlexGlobalCacherWorker::Process()
   art.push_back("banner");
 
   CFileItemPtr pItem;
-  while (pItem = m_pCacher->PickItem())
+  while ((pItem = m_pCacher->PickItem()))
   {
     BOOST_FOREACH (CStdString artKey, art)
     {
