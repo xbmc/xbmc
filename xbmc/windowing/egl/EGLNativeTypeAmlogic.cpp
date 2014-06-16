@@ -129,7 +129,7 @@ bool CEGLNativeTypeAmlogic::GetNativeResolution(RESOLUTION_INFO *res) const
 {
   char mode[256] = {0};
   aml_get_sysfs_str("/sys/class/display/mode", mode, 255);
-  return ModeToResolution(mode, res);
+  return aml_mode_to_resolution(mode, res);
 }
 
 bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
@@ -188,7 +188,7 @@ bool CEGLNativeTypeAmlogic::ProbeResolutions(std::vector<RESOLUTION_INFO> &resol
   RESOLUTION_INFO res;
   for (std::vector<std::string>::const_iterator i = probe_str.begin(); i != probe_str.end(); ++i)
   {
-    if(ModeToResolution(i->c_str(), &res))
+    if(aml_mode_to_resolution(i->c_str(), &res))
       resolutions.push_back(res);
   }
   return resolutions.size() > 0;
@@ -201,7 +201,7 @@ bool CEGLNativeTypeAmlogic::GetPreferredResolution(RESOLUTION_INFO *res) const
   if (!GetNativeResolution(res))
   {
     // punt to 720p if we get nothing
-    ModeToResolution("720p", res);
+    aml_mode_to_resolution("720p", res);
   }
 
   return true;
@@ -228,112 +228,6 @@ bool CEGLNativeTypeAmlogic::SetDisplayResolution(const char *resolution)
   }
 
   return true;
-}
-
-bool CEGLNativeTypeAmlogic::ModeToResolution(const char *mode, RESOLUTION_INFO *res) const
-{
-  if (!res)
-    return false;
-
-  res->iWidth = 0;
-  res->iHeight= 0;
-
-  if(!mode)
-    return false;
-
-  CStdString fromMode = mode;
-  StringUtils::Trim(fromMode);
-  // strips, for example, 720p* to 720p
-  // the * indicate the 'native' mode of the display
-  if (StringUtils::EndsWith(fromMode, "*"))
-    fromMode.erase(fromMode.size() - 1);
-
-  if (fromMode.Equals("720p"))
-  {
-    res->iWidth = 1280;
-    res->iHeight= 720;
-    res->iScreenWidth = 1280;
-    res->iScreenHeight= 720;
-    res->fRefreshRate = 60;
-    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
-  }
-  else if (fromMode.Equals("720p50hz"))
-  {
-    res->iWidth = 1280;
-    res->iHeight= 720;
-    res->iScreenWidth = 1280;
-    res->iScreenHeight= 720;
-    res->fRefreshRate = 50;
-    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
-  }
-  else if (fromMode.Equals("1080p"))
-  {
-    res->iWidth = 1280;
-    res->iHeight= 720;
-    res->iScreenWidth = 1920;
-    res->iScreenHeight= 1080;
-    res->fRefreshRate = 60;
-    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
-  }
-  else if (fromMode.Equals("1080p24hz"))
-  {
-    res->iWidth = 1280;
-    res->iHeight= 720;
-    res->iScreenWidth = 1920;
-    res->iScreenHeight= 1080;
-    res->fRefreshRate = 24;
-    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
-  }
-  else if (fromMode.Equals("1080p30hz"))
-  {
-    res->iWidth = 1280;
-    res->iHeight= 720;
-    res->iScreenWidth = 1920;
-    res->iScreenHeight= 1080;
-    res->fRefreshRate = 30;
-    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
-  }
-  else if (fromMode.Equals("1080p50hz"))
-  {
-    res->iWidth = 1280;
-    res->iHeight= 720;
-    res->iScreenWidth = 1920;
-    res->iScreenHeight= 1080;
-    res->fRefreshRate = 50;
-    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
-  }
-  else if (fromMode.Equals("1080i"))
-  {
-    res->iWidth = 1280;
-    res->iHeight= 720;
-    res->iScreenWidth = 1920;
-    res->iScreenHeight= 1080;
-    res->fRefreshRate = 60;
-    res->dwFlags = D3DPRESENTFLAG_INTERLACED;
-  }
-  else if (fromMode.Equals("1080i50hz"))
-  {
-    res->iWidth = 1280;
-    res->iHeight= 720;
-    res->iScreenWidth = 1920;
-    res->iScreenHeight= 1080;
-    res->fRefreshRate = 50;
-    res->dwFlags = D3DPRESENTFLAG_INTERLACED;
-  }
-  else
-  {
-    return false;
-  }
-
-
-  res->iScreen       = 0;
-  res->bFullScreen   = true;
-  res->iSubtitles    = (int)(0.965 * res->iHeight);
-  res->fPixelRatio   = 1.0f;
-  res->strMode       = StringUtils::Format("%dx%d @ %.2f%s - Full Screen", res->iScreenWidth, res->iScreenHeight, res->fRefreshRate,
-    res->dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
-
-  return res->iWidth > 0 && res->iHeight> 0;
 }
 
 void CEGLNativeTypeAmlogic::EnableFreeScale()
