@@ -411,6 +411,10 @@
 #define WINDOW_DIALOG_EXT_PROGRESS        10151
 #define WINDOW_DIALOG_MEDIA_FILTER        10152
 
+/* PLEX */
+#define WINDOW_DIALOG_SETTINGS_MENU       14997
+/* END PLEX */
+
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501
 #define WINDOW_MUSIC_NAV                  10502
