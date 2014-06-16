@@ -1281,7 +1281,7 @@ std::string CSysInfo::GetUsedCompilerNameAndVer(void)
 {
 #if defined(__clang__)
 #ifdef __clang_version__
-  return "Clang " XSTR_MACRO(__clang_version__);
+  return "Clang " __clang_version__;
 #else // ! __clang_version__
   return "Clang " XSTR_MACRO(__clang_major__) "." XSTR_MACRO(__clang_minor__) "." XSTR_MACRO(__clang_patchlevel__);
 #endif //! __clang_version__
