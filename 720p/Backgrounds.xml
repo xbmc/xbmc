@@ -205,6 +205,7 @@
 	</include>
 	<include name="SlideshowSettings">
 		<control type="multiimage">
+			<visible>!Skin.HasSetting(HideFanart)</visible>
 			<include>FullScreenScaled</include>
 			<timeperimage>8000</timeperimage>
 			<fadetime>1000</fadetime>
