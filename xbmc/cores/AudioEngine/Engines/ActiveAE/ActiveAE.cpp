@@ -2684,7 +2684,7 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
   dst_config.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_internalFormat.m_dataFormat);
   dst_config.dither_bits = CAEUtil::DataFormatToDitherBits(m_internalFormat.m_dataFormat);
 
-  IAEResample *resampler = CAEResampleFactory::Create();
+  IAEResample *resampler = CAEResampleFactory::Create(AERESAMPLEFACTORY_QUICK_RESAMPLE);
   resampler->Init(dst_config.channel_layout,
                   dst_config.channels,
                   dst_config.sample_rate,
