@@ -24,7 +24,7 @@ if(NOT XCODE_SELECT MATCHES "-NOTFOUND")
     message(FATAL_ERROR "No xcodebuild found in ${XCODE_PATH}/usr/bin")
   endif()
   
-  if(NOT USE_OSX_SDK)
+  if(NOT OSX_SDK_VERSION)
     execute_process(
       COMMAND ${XCODE_BUILD} -showsdks
       COMMAND grep macosx
@@ -41,24 +41,24 @@ if(NOT XCODE_SELECT MATCHES "-NOTFOUND")
     if(NOT _OSX_SDK_VERSION MATCHES "1[01].[0-9]+")
       message(FATAL_ERROR "Version ${_OSX_SDK_VERSION} is not parsable")
     endif()
-  else(NOT USE_OSX_SDK)
+  else(NOT OSX_SDK_VERSION)
     execute_process(
       COMMAND ${XCODE_BUILD} -showsdks
       COMMAND grep macosx
       COMMAND sort
-      COMMAND grep ${USE_OSX_SDK}
+      COMMAND grep ${OSX_SDK_VERSION}
       COMMAND grep -oE "macosx[0-9.0-9]+"
       COMMAND cut -c 7-
       OUTPUT_VARIABLE _OSX_SDK_VERSION
       OUTPUT_STRIP_TRAILING_WHITESPACE
     )
     
-    if(USE_OSX_SDK STREQUAL _OSX_SDK_VERSION)
+    if(OSX_SDK_VERSION STREQUAL _OSX_SDK_VERSION)
       message(STATUS "Selected OSX SDK '${_OSX_SDK_VERSION}'")
     else()
-      message(FATAL_ERROR "Could not find OSX SDK ${USE_OSX_SDK}")
+      message(FATAL_ERROR "Could not find OSX SDK ${OSX_SDK_VERSION}")
     endif()
-  endif(NOT USE_OSX_SDK)
+  endif(NOT OSX_SDK_VERSION)
 
   set(HAVE_OSX_SDK 1 CACHE BOOL "Have OSX SDK")
   set(OSX_SDK_VERSION ${_OSX_SDK_VERSION} CACHE STRING "Version of OSX SDK")
