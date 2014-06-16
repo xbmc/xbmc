@@ -41,8 +41,10 @@ TEST_F(TestSystemInfo, GetKernelName)
   EXPECT_FALSE(g_sysinfo.GetKernelName(false).empty()) << "'GetKernelName(false)' must not return empty kernel name";
   EXPECT_STRCASENE("Unknown kernel", g_sysinfo.GetKernelName(true).c_str()) << "'GetKernelName(true)' must not return 'Unknown kernel'";
   EXPECT_STRCASENE("Unknown kernel", g_sysinfo.GetKernelName(false).c_str()) << "'GetKernelName(false)' must not return 'Unknown kernel'";
+#ifndef TARGET_DARWIN
   EXPECT_EQ(g_sysinfo.GetBuildTargetPlatformName(), g_sysinfo.GetKernelName(true)) << "'GetKernelName(true)' must match GetBuildTargetPlatformName()";
   EXPECT_EQ(g_sysinfo.GetBuildTargetPlatformName(), g_sysinfo.GetKernelName(false)) << "'GetKernelName(false)' must match GetBuildTargetPlatformName()";
+#endif // !TARGET_DARWIN
 #if defined(TARGET_WINDOWS)
   EXPECT_NE(std::string::npos, g_sysinfo.GetKernelName(true).find("Windows")) << "'GetKernelName(true)' must contain 'Windows'";
   EXPECT_NE(std::string::npos, g_sysinfo.GetKernelName(false).find("Windows")) << "'GetKernelName(false)' must contain 'Windows'";
@@ -97,6 +99,10 @@ TEST_F(TestSystemInfo, GetOsName)
   EXPECT_STREQ("Android", g_sysinfo.GetOsName(true).c_str()) << "'GetOsName(true)' must return 'Android'";
   EXPECT_STREQ("Android", g_sysinfo.GetOsName(false).c_str()) << "'GetOsName(false)' must return 'Android'";
 #endif
+#ifdef TARGET_DARWIN
+  EXPECT_EQ(g_sysinfo.GetBuildTargetPlatformName(), g_sysinfo.GetOsName(true)) << "'GetOsName(true)' must match GetBuildTargetPlatformName()";
+  EXPECT_EQ(g_sysinfo.GetBuildTargetPlatformName(), g_sysinfo.GetOsName(false)) << "'GetOsName(false)' must match GetBuildTargetPlatformName()";
+#endif // TARGET_DARWIN
 }
 
 TEST_F(TestSystemInfo, GetOsVersion)
