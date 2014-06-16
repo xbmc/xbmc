@@ -138,7 +138,6 @@ CGUIFontTTFBase::CGUIFontTTFBase(const CStdString& strFileName)
   m_maxChars = 0;
   m_nestedBeginCount = 0;
 
-  m_bTextureLoaded = false;
   m_vertex_size   = 4*1024;
   m_vertex        = (SVertex*)malloc(m_vertex_size * sizeof(SVertex));
 

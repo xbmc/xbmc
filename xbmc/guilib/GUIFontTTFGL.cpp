@@ -61,11 +61,10 @@ void CGUIFontTTFGL::Begin()
     {
       if (glIsTexture(m_nTexture))
         g_TextureManager.ReleaseHwTexture(m_nTexture);
-      m_bTextureLoaded = false;
       m_textureStatus = TEXTURE_VOID;
     }
     
-    if (!m_bTextureLoaded)
+    if (m_textureStatus == TEXTURE_VOID)
     {
       // Have OpenGL generate a texture object handle for us
       glGenTextures(1, (GLuint*) &m_nTexture);
@@ -85,7 +84,6 @@ void CGUIFontTTFGL::Begin()
       
       VerifyGLState();
       m_textureStatus = TEXTURE_UPDATED;
-      m_bTextureLoaded = true;
     }
 
     if (m_textureStatus == TEXTURE_UPDATED)
@@ -306,15 +304,14 @@ bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, 
 
 void CGUIFontTTFGL::DeleteHardwareTexture()
 {
-  if (m_bTextureLoaded)
+  if (m_textureStatus != TEXTURE_VOID)
   {
     if (glIsTexture(m_nTexture))
       g_TextureManager.ReleaseHwTexture(m_nTexture);
-    m_bTextureLoaded = false;
-  }
 
-  m_textureStatus = TEXTURE_VOID;
-  m_updateY1 = m_updateY2 = 0;
+    m_textureStatus = TEXTURE_VOID;
+    m_updateY1 = m_updateY2 = 0;
+  }
 }
 
 #endif
