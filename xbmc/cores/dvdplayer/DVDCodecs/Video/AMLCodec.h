@@ -81,6 +81,8 @@ private:
   CEvent           m_ready_event;
 
   CRect            m_dst_rect;
+  CRect            m_display_rect;
+
   int              m_view_mode;
   RENDER_STEREO_MODE m_stereo_mode;
   RENDER_STEREO_VIEW m_stereo_view;
