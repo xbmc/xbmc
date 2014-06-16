@@ -26,13 +26,14 @@
 #include "utils/log.h"
 
 #include "FileSystem/PlexFile.h"
+#include "FileSystem/PlexDirectoryCache.h"
 
 namespace XFILE
 {
   class CPlexDirectory : public IDirectory
   {
   public:
-    CPlexDirectory() : m_verb("GET"), m_xmlData(new char[1024]), m_showErrors(false)
+    CPlexDirectory() : m_verb("GET"), m_xmlData(new char[1024]), m_showErrors(false), m_cacheStrategy(CPlexDirectoryCache::CACHE_STRATEGY_ITEM_COUNT)
     {
     }
 
@@ -105,6 +106,8 @@ namespace XFILE
 
     static bool CachePath(const CStdString& path);
 
+    inline void SetCacheStrategy(CPlexDirectoryCache::CacheStrategies Strategy) { m_cacheStrategy = Strategy; }
+
     bool ReadMediaContainer(XML_ELEMENT* root, CFileItemList& mediaContainer);
     void ReadChildren(XML_ELEMENT* element, CFileItemList& container);
 
@@ -116,6 +119,7 @@ namespace XFILE
     CStdString m_data;
     boost::scoped_array<char> m_xmlData;
     CURL m_url;
+    CPlexDirectoryCache::CacheStrategies m_cacheStrategy;
 
     CPlexFile m_file;
 

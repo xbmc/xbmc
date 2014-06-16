@@ -135,7 +135,12 @@ void CPlexSectionFanout::Refresh()
     if (!g_advancedSettings.m_bHideFanouts)
     {
 /* On slow/limited systems we don't want to have the full list */
-#if defined(TARGET_RPI) || defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_RASPBERRY_PI)
+      trueUrl.SetOption("X-Plex-Container-Start", "0");
+      trueUrl.SetOption("X-Plex-Container-Size", "10");
+#endif
+
+#if defined(TARGET_DARWIN_IOS)
       trueUrl.SetOption("X-Plex-Container-Start", "0");
       trueUrl.SetOption("X-Plex-Container-Size", "20");
 #endif
@@ -238,32 +243,29 @@ void CPlexSectionFanout::OnJobComplete(unsigned int jobID, bool success, CJob* j
   {
     CSingleLock lk(m_critical);
 
-    // check if the section content has changed
-    if (load->DirectoryChanged())
+    int type = load->m_contentType;
+    if (m_fileLists.find(type) != m_fileLists.end() && m_fileLists[type] != NULL)
+      delete m_fileLists[type];
+
+    CFileItemList* newList = new CFileItemList;
+    newList->Assign(load->m_items, false);
+
+    /* HACK HACK HACK */
+    if (m_sectionType == SECTION_TYPE_HOME_MOVIE)
     {
-      int type = load->m_contentType;
-      if (m_fileLists.find(type) != m_fileLists.end() && m_fileLists[type] != NULL)
-        delete m_fileLists[type];
-
-      CFileItemList* newList = new CFileItemList;
-      newList->Assign(load->m_items, false);
-
-      /* HACK HACK HACK */
-      if (m_sectionType == SECTION_TYPE_HOME_MOVIE)
+      for (int i = 0; i < newList->Size(); i++)
       {
-        for (int i = 0; i < newList->Size(); i++)
-        {
-          newList->Get(i)->SetProperty("type", "clip");
-          newList->Get(i)->SetPlexDirectoryType(PLEX_DIR_TYPE_CLIP);
-        }
+        newList->Get(i)->SetProperty("type", "clip");
+        newList->Get(i)->SetPlexDirectoryType(PLEX_DIR_TYPE_CLIP);
       }
-
-      m_fileLists[type] = newList;
-
-      /* Pre-cache stuff */
-      if (type != CONTENT_LIST_FANART)
-        g_plexApplication.thumbCacher->Load(*newList);
     }
+
+    m_fileLists[type] = newList;
+
+    /* Pre-cache stuff */
+    if (type != CONTENT_LIST_FANART)
+      g_plexApplication.thumbCacher->Load(*newList);
+
   }
 
   m_age.restart();

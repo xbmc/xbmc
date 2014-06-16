@@ -43,7 +43,7 @@ class CPlexHTTPFetchJob : public CJob
 class CPlexDirectoryFetchJob : public CJob
 {
 public:
-  CPlexDirectoryFetchJob(const CURL &url) : CJob(), m_url(url) {}
+  CPlexDirectoryFetchJob(const CURL &url, CPlexDirectoryCache::CacheStrategies Startegy = CPlexDirectoryCache::CACHE_STRATEGY_ITEM_COUNT) : CJob(), m_url(url) { m_dir.SetCacheStrategy(Startegy);}
   
   virtual bool operator==(const CJob* job) const
   {
@@ -98,34 +98,10 @@ public:
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////
-class CPlexCachedDirectoryFetchJob : public CPlexDirectoryFetchJob
-{
-private:
-  unsigned long m_newHash, m_oldHash;
-  static boost::unordered_map<std::string,unsigned long> m_urlHash;
-  static CCriticalSection m_hashMaplock;
-  XFILE::CPlexFile m_file;
-
-public:
-  CPlexCachedDirectoryFetchJob(const CURL& url) : CPlexDirectoryFetchJob(url),m_newHash(0), m_oldHash(0) {}
-  inline bool DirectoryChanged() { return (m_oldHash != m_newHash); }
-  virtual bool DoWork();
-  unsigned long GetHashFromCache(const CURL& url);
-  void SetCacheHash(const CURL& url, unsigned long hash);
-
-  virtual void Cancel()
-  {
-    m_file.Cancel();
-    m_dir.CancelDirectory();
-  }
-
-};
-
-////////////////////////////////////////////////////////////////////////////////////////
-class CPlexSectionFetchJob : public CPlexCachedDirectoryFetchJob
+class CPlexSectionFetchJob : public CPlexDirectoryFetchJob
 {
 public:
-  CPlexSectionFetchJob(const CURL& url, int contentType) : CPlexCachedDirectoryFetchJob(url), m_contentType(contentType) {}
+  CPlexSectionFetchJob(const CURL& url, int contentType) : CPlexDirectoryFetchJob(url,CPlexDirectoryCache::CACHE_STRATEGY_ALWAYS), m_contentType(contentType) { }
   int m_contentType;
 };
 

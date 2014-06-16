@@ -34,6 +34,7 @@
 #include "Utility/PlexProfiler.h"
 #include "Client/PlexTranscoderClient.h"
 #include "music/tags/MusicInfoTag.h"
+#include "FileSystem/PlexDirectoryCache.h"
 
 #include "network/UdpClient.h"
 #include "DNSNameCache.h"
@@ -67,6 +68,7 @@ void PlexApplication::Start()
   profiler = CPlexProfilerPtr(new CPlexProfiler);
   extraInfo = new CPlexExtraInfoLoader;
   playQueueManager = CPlexPlayQueueManagerPtr(new CPlexPlayQueueManager);
+  directoryCache = CPlexDirectoryCachePtr(new CPlexDirectoryCache);
 
   serverManager->load();
 
@@ -293,6 +295,8 @@ void PlexApplication::Shutdown()
   filterManager.reset();
 
   CPlexTranscoderClient::DeleteInstance();
+
+  directoryCache.reset();
 
   OnTimeout();
 

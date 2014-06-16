@@ -46,6 +46,7 @@
 
 #include "XMLChoice.h"
 #include "AdvancedSettings.h"
+#include "PlexDirectoryCache.h"
 
 
 using namespace XFILE;
@@ -143,6 +144,26 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     return false;
 
   {
+
+    // now handle the cache if required
+    unsigned long newHash = 0;
+    std::string cacheURL = m_url.Get();
+
+    if (m_cacheStrategy != CPlexDirectoryCache::CACHE_STARTEGY_NONE)
+    {
+      // first compute the hash on retrieved xml
+      newHash = PlexUtils::GetFastHash(m_data);
+
+      if (g_plexApplication.directoryCache->GetCacheHit(cacheURL, newHash, fileItems))
+      {
+        float elapsed = timer.GetElapsedSeconds();
+        CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory::Timing returning a directory after total %f seconds with %d items with content %s", elapsed, fileItems.Size(), fileItems.GetContent().c_str());
+
+        // we found a hit, return it
+        return true;
+      }
+    }
+
 #ifdef USE_RAPIDXML
 
     xml_document<> doc;    // character type defaults to char
@@ -188,6 +209,9 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
       return false;
     }
 #endif
+
+    // add evetually to the cache
+    g_plexApplication.directoryCache->AddToCache(cacheURL, newHash, fileItems, m_cacheStrategy);
   }
 
   float elapsed = timer.GetElapsedSeconds();
