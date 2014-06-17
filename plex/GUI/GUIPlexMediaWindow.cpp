@@ -193,10 +193,10 @@ void CGUIPlexMediaWindow::InsertPage(CFileItemList* items, int Where)
 
   int itemsToRemove = items->Size();
   for (int i = 0; i < itemsToRemove; i ++)
-    m_vecItems->Remove(iWhere);
+    m_vecItems->Remove(Where);
 
   for (int i = 0; i < items->Size(); i ++)
-    m_vecItems->Insert(iWhere + i, items->Get(i));
+    m_vecItems->Insert(Where + i, items->Get(i));
 
   m_viewControl.SetItems(*m_vecItems);
   m_viewControl.SetSelectedItem(strSelected);
@@ -661,7 +661,7 @@ void CGUIPlexMediaWindow::OnJobComplete(unsigned int jobID, bool success, CJob* 
     list->Copy(fjob->m_items);
 
     // we update the fetched items list
-    m_FetchedPages.insert(pageNum);
+    m_fetchedPages.insert(pageNum);
 
     if (list)
     {
@@ -674,7 +674,7 @@ void CGUIPlexMediaWindow::OnJobComplete(unsigned int jobID, bool success, CJob* 
   PlexUtils::PauseRendering(false, true);
 #endif
   // remove FetchJob from List
-  m_FetchJobs.erase(pageNum);
+  m_fetchJobs.erase(pageNum);
 #endif
 }
 
