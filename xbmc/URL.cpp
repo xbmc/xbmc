@@ -741,18 +741,17 @@ std::string CURL::Encode(const std::string& strURLData)
   std::string strResult;
 
   /* wonder what a good value is here is, depends on how often it occurs */
-  strResult.reserve( strURLData.length() * 2 );
+  strResult.reserve(strURLData.length() * 2);
 
-  for (size_t i = 0; i < strURLData.size(); ++i)
+  for (std::string::const_iterator it = strURLData.begin(); it != strURLData.end(); ++it)
   {
-    const char kar = strURLData[i];
+    const char kar = *it;
     
-    // Don't URL encode "-_.!()" according to RFC1738
-    // TODO: Update it to "-_.~" after Gotham according to RFC3986
-    if (StringUtils::isasciialphanum(kar) || kar == '-' || kar == '.' || kar == '_' || kar == '!' || kar == '(' || kar == ')')
+    // Don't %-encode "-_.~" according to RFC3986
+    if (StringUtils::isasciialphanum(kar) || kar == '-' || kar == '_' || kar == '.' || kar == '~')
       strResult.push_back(kar);
     else
-      strResult += StringUtils::Format("%%%02.2x", (unsigned int)((unsigned char)kar)); // TODO: Change to "%%%02.2X" after Gotham
+      strResult += StringUtils::Format("%%%02.2X", (unsigned int)((unsigned char)kar));
   }
 
   return strResult;
