@@ -32,7 +32,6 @@
 
 CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
 {
-  m_iBuffered = 0;
   m_pCodecContext = NULL;
   m_bOpenedCodec = false;
 
@@ -115,8 +114,6 @@ void CDVDAudioCodecFFmpeg::Dispose()
     av_free(m_pCodecContext);
     m_pCodecContext = NULL;
   }
-
-  m_iBuffered = 0;
 }
 
 int CDVDAudioCodecFFmpeg::Decode(uint8_t* pData, int iSize)
@@ -144,11 +141,6 @@ int CDVDAudioCodecFFmpeg::Decode(uint8_t* pData, int iSize)
     iBytesUsed = iSize;
   }
 
-  if(iBytesUsed >= 0)
-    m_iBuffered += iBytesUsed;
-  else
-    m_iBuffered = 0;
-  
   return iBytesUsed;
 }
 
@@ -169,7 +161,6 @@ int CDVDAudioCodecFFmpeg::GetData(uint8_t** dst)
 void CDVDAudioCodecFFmpeg::Reset()
 {
   if (m_pCodecContext) avcodec_flush_buffers(m_pCodecContext);
-  m_iBuffered = 0;
   m_gotFrame = 0;
 }
 
