@@ -22,6 +22,7 @@
 
 #include <boost/shared_ptr.hpp>
 #include "threads/SingleLock.h"
+#include "threads/SystemClock.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 
 typedef enum
@@ -53,6 +54,12 @@ class CApplicationPlayer
   PLAYERCOREID m_eCurrentPlayer;
 
   CCriticalSection  m_player_lock;
+
+  // cache player state
+  XbmcThreads::EndTime m_audioStreamUpdate;
+  int m_iAudioStream;
+  XbmcThreads::EndTime m_subtitleStreamUpdate;
+  int m_iSubtitleStream;
   
 public:
   CApplicationPlayer();

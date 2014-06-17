@@ -318,18 +318,32 @@ int CApplicationPlayer::GetSubtitleCount()
 
 int CApplicationPlayer::GetAudioStream()
 {
+  if (!m_audioStreamUpdate.IsTimePast())
+    return m_iAudioStream;
+
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    return player->GetAudioStream();
+  {
+    m_iAudioStream = player->GetAudioStream();
+    m_audioStreamUpdate.Set(1000);
+    return m_iAudioStream;
+  }
   else
     return 0;
 }
 
 int CApplicationPlayer::GetSubtitle()
 {
+  if (!m_subtitleStreamUpdate.IsTimePast())
+    return m_iSubtitleStream;
+
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    return player->GetSubtitle();
+  {
+    m_iSubtitleStream = player->GetSubtitle();
+    m_subtitleStreamUpdate.Set(1000);
+    return m_iSubtitleStream;
+  }
   else
     return 0;
 }
@@ -481,7 +495,11 @@ void CApplicationPlayer::SetAudioStream(int iStream)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)
+  {
     player->SetAudioStream(iStream);
+    m_iAudioStream = iStream;
+    m_audioStreamUpdate.Set(1000);
+  }
 }
 
 void CApplicationPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info)
@@ -495,7 +513,11 @@ void CApplicationPlayer::SetSubtitle(int iStream)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)
+  {
     player->SetSubtitle(iStream);
+    m_iSubtitleStream = iStream;
+    m_subtitleStreamUpdate.Set(1000);
+  }
 }
 
 void CApplicationPlayer::SetSubtitleVisible(bool bVisible)
