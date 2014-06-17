@@ -980,14 +980,16 @@ bool URIUtils::IsLibraryContent(const std::string &strFile)
           StringUtils::EndsWith(strFile, ".xsp"));
 }
 
-bool URIUtils::IsDOSPath(const CStdString &path)
+bool URIUtils::IsDOSPath(const std::string& path)
 {
-  if (path.size() > 1 && path[1] == ':' && isalpha(path[0]))
-    return true;
+  if (path.length() < 2)
+    return false;
 
-  // windows network drives
-  if (path.size() > 1 && path[0] == '\\' && path[1] == '\\')
-    return true;
+  if (path[1] == ':' && StringUtils::isasciialpha(path[0]))
+    return true; // win32 'D:' form
+
+  if (path[0] == '\\' && path[1] == '\\')
+    return true; // UNC path or long win32 path in form '\\?\path'
 
   return false;
 }
