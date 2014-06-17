@@ -32,6 +32,7 @@
 /* PLEX */
 #include "PlexUtils.h"
 #include "PlexJobs.h"
+#include "PlexTextureCache.h"
 /* END PLEX */
 
 using namespace XFILE;

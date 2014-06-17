@@ -42,6 +42,11 @@ class CBaseTexture;
 class CTextureCache : public CJobQueue
 {
 public:
+  /* PLEX */
+#ifdef __PLEX__
+  friend class CPlexTextureCache;
+#endif
+  /* END PLEX */
   /*!
    \brief The only way through which the global instance of the CTextureCache should be accessed.
    \return the global instance.
@@ -50,11 +55,11 @@ public:
 
   /*! \brief Initalize the texture cache
    */
-  void Initialize();
+  virtual void Initialize();
 
   /*! \brief Deinitialize the texture cache
    */
-  void Deinitialize();
+  virtual void Deinitialize();
 
   /*! \brief Check whether we already have this image cached
 
@@ -68,7 +73,7 @@ public:
    \return cached url of this image
    \sa GetCachedImage
    */ 
-  CStdString CheckCachedImage(const CStdString &image, bool returnDDS, bool &needsRecaching);
+  virtual CStdString CheckCachedImage(const CStdString &image, bool returnDDS, bool &needsRecaching);
 
   /*! \brief Cache image (if required) using a background job
 
@@ -79,7 +84,7 @@ public:
    \param image url of the image to cache
    \sa CacheImage
    */
-  void BackgroundCacheImage(const CStdString &image);
+  virtual void BackgroundCacheImage(const CStdString &image);
 
   /*! \brief Cache an image to image cache, optionally return the texture
 
@@ -107,13 +112,13 @@ public:
    \return true if the image is cached, false otherwise
    \sa ClearCachedImage
    */
-  bool HasCachedImage(const CStdString &image);
+  virtual bool HasCachedImage(const CStdString &image);
 
   /*! \brief clear the cached version of the given image
    \param image url of the image
    \sa GetCachedImage
    */
-  void ClearCachedImage(const CStdString &image, bool deleteSource = false);
+  virtual void ClearCachedImage(const CStdString &image, bool deleteSource = false);
 
   /*! \brief retrieve a cache file (relative to the cache path) to associate with the given image, excluding extension
    Use GetCachedPath(GetCacheFile(url)+extension) for the full path to the file.
@@ -156,7 +161,7 @@ public:
    \param details the texture details to add
    \return true if we successfully added to the database, false otherwise.
    */
-  bool AddCachedTexture(const CStdString &image, const CTextureDetails &details);
+  virtual bool AddCachedTexture(const CStdString &image, const CTextureDetails &details);
 
   /*! \brief Export a (possibly) cached image to a file
    \param image url of the original image
@@ -186,7 +191,7 @@ private:
    \return cached url of this image, empty if none exists
    \sa ClearCachedImage, CTextureDetails
    */
-  CStdString GetCachedImage(const CStdString &image, CTextureDetails &details, bool trackUsage = false);
+  virtual CStdString GetCachedImage(const CStdString &image, CTextureDetails &details, bool trackUsage = false);
 
   /*! \brief Get an image from the database
    Thread-safe wrapper of CTextureDatabase::GetCachedTexture
@@ -194,7 +199,7 @@ private:
    \param details [out] texture details from the database (if available)
    \return true if we have a cached version of this image, false otherwise.
    */
-  bool GetCachedTexture(const CStdString &url, CTextureDetails &details);
+  virtual bool GetCachedTexture(const CStdString &url, CTextureDetails &details);
 
   /*! \brief Clear an image from the database
    Thread-safe wrapper of CTextureDatabase::ClearCachedTexture
@@ -202,13 +207,13 @@ private:
    \param cacheFile [out] url of the cached original (if available)
    \return true if we had a cached version of this image, false otherwise.
    */
-  bool ClearCachedTexture(const CStdString &url, CStdString &cacheFile);
+  virtual bool ClearCachedTexture(const CStdString &url, CStdString &cacheFile);
 
   /*! \brief Increment the use count of a texture
    Stores locally before calling CTextureDatabase::IncrementUseCount via a CUseCountJob
    \sa CUseCountJob, CTextureDatabase::IncrementUseCount
    */
-  void IncrementUseCount(const CTextureDetails &details);
+  virtual void IncrementUseCount(const CTextureDetails &details);
 
   /*! \brief Set a previously cached texture as valid in the database
    Thread-safe wrapper of CTextureDatabase::SetCachedTextureValid
@@ -216,7 +221,7 @@ private:
    \param updateable whether this image should be checked for updates
    \return true if successful, false otherwise.
    */
-  bool SetCachedTextureValid(const CStdString &url, bool updateable);
+  virtual bool SetCachedTextureValid(const CStdString &url, bool updateable);
 
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
   virtual void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
@@ -227,7 +232,7 @@ private:
    \param success whether the job was successful.
    \param job the caching job.
    */
-  void OnCachingComplete(bool success, CTextureCacheJob *job);
+  virtual void OnCachingComplete(bool success, CTextureCacheJob *job);
 
   CCriticalSection m_databaseSection;
   CTextureDatabase m_database;
