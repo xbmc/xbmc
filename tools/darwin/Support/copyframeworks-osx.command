@@ -54,15 +54,15 @@ TARGET_NAME=$PRODUCT_NAME
 TARGET_CONTENTS=$TARGET_BUILD_DIR/$TARGET_NAME/Contents
 
 TARGET_BINARY=$TARGET_CONTENTS/MacOS/XBMC
-TARGET_FRAMEWORKS=$TARGET_CONTENTS/Frameworks
-DYLIB_NAMEPATH=@executable_path/../Frameworks
+TARGET_FRAMEWORKS=$TARGET_CONTENTS/Libraries
+DYLIB_NAMEPATH=@executable_path/../Libraries
 XBMC_HOME=$TARGET_CONTENTS/Resources/XBMC
 
 mkdir -p "$TARGET_CONTENTS/MacOS"
 mkdir -p "$TARGET_CONTENTS/Resources"
 # start clean so we don't keep old dylibs
-rm -rf "$TARGET_CONTENTS/Frameworks"
-mkdir -p "$TARGET_CONTENTS/Frameworks"
+rm -rf "$TARGET_CONTENTS/Libraries"
+mkdir -p "$TARGET_CONTENTS/Libraries"
 
 echo "Package $TARGET_BUILD_DIR/XBMC"
 cp -f "$TARGET_BUILD_DIR/XBMC" "$TARGET_BINARY"
@@ -82,7 +82,7 @@ for a in $(otool -L "$TARGET_BINARY"  | grep "$EXTERNAL_LIBS" | awk ' { print $1
 done
 
 echo "Package $EXTERNAL_LIBS/lib/python2.6"
-mkdir -p "$TARGET_CONTENTS/Frameworks/lib"
+mkdir -p "$TARGET_CONTENTS/Libraries/lib"
 PYTHONSYNC="rsync -aq --exclude .DS_Store --exclude *.a --exclude *.exe --exclude test --exclude tests"
 ${PYTHONSYNC} "$EXTERNAL_LIBS/lib/python2.6" "$TARGET_FRAMEWORKS/lib/"
 rm -rf "$TARGET_FRAMEWORKS/lib/python2.6/config"
