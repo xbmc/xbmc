@@ -381,7 +381,7 @@ void CURL::SetOptions(const CStdString& strOptions)
 {
   m_strOptions.clear();
   m_options.Clear();
-  if( strOptions.length() > 0)
+  if(!strOptions.empty())
   {
     if(strOptions[0] == '?' ||
        strOptions[0] == '#' ||
