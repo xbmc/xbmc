@@ -72,6 +72,9 @@ bool CRBP::Initialize()
   if (vc_gencmd(response, sizeof response, "codec_enabled WVC1") == 0)
     m_codec_wvc1_enabled = strcmp("WVC1=enabled", response) == 0;
 
+  if (m_gpu_mem < 128)
+    setenv("V3D_DOUBLE_BUFFER", "1", 1);
+
   g_OMXImage.Initialize();
   m_omx_image_init = true;
   return true;
