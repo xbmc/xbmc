@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.plexphotos"
-       name="Library Fanart"
+       name="Library Art"
        version="1.0.0"
        provider-name="Plex inc">
   <extension point="xbmc.ui.screensaver" library=""/>
