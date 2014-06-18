@@ -776,17 +776,20 @@ std::string CURL::Encode(const std::string& strURLData)
 
 std::string CURL::BaseProtocol(const std::string& prot)
 {
-  if (prot == "shout"
-   || prot == "daap"
-   || prot == "dav"
-   || prot == "tuxbox"
-   || prot == "rss")
+  std::string lower(prot);
+  StringUtils::ToLower(lower);
+
+  if (lower == "shout"
+      || lower == "daap"
+      || lower == "dav"
+      || lower == "tuxbox"
+      || lower == "rss")
    return "http";
 
-  if (prot == "davs")
+  if (lower == "davs")
     return "https";
 
-  return prot;
+  return lower;
 }
 
 void CURL::GetOptions(std::map<CStdString, CStdString> &options) const
