@@ -59,7 +59,7 @@ public:
   const CStdString& GetPassWord() const;
   const CStdString& GetFileName() const;
   const CStdString& GetProtocol() const;
-  const CStdString GetTranslatedProtocol() const;
+  const std::string GetBaseProtocol(void) const;
   const CStdString& GetFileType() const;
   const CStdString& GetShareName() const;
   const CStdString& GetOptions() const;
@@ -95,7 +95,7 @@ public:
   static bool IsFullPath(const std::string& url); ///< return true if the url includes the full path
   static std::string Decode(const std::string& strURLData);
   static std::string Encode(const std::string& strURLData);
-  static CStdString TranslateProtocol(const CStdString& prot);
+  static std::string BaseProtocol(const std::string& prot);
 
   void GetOptions(std::map<CStdString, CStdString> &options) const;
   bool HasOption(const CStdString &key) const;

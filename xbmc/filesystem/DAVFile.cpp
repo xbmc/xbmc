@@ -135,7 +135,7 @@ bool CDAVFile::Rename(const CURL& url, const CURL& urlnew)
   CDAVFile dav;
 
   CURL url2(urlnew);
-  CStdString strProtocol = url2.GetTranslatedProtocol();
+  CStdString strProtocol = url2.GetBaseProtocol();
   url2.SetProtocol(strProtocol);
 
   CStdString strRequest = "MOVE";

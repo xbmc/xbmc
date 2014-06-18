@@ -288,7 +288,7 @@ bool URIUtils::ProtocolHasEncodedHostname(const CStdString& prot)
 
 bool URIUtils::ProtocolHasEncodedFilename(const CStdString& prot)
 {
-  CStdString prot2 = CURL::TranslateProtocol(prot);
+  CStdString prot2 = CURL::BaseProtocol(prot);
 
   // For now assume only (quasi) http internet streams use URL encoding
   return prot2 == "http"  ||
@@ -837,7 +837,7 @@ bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */
   if (strProtocol == "stack")
     return IsInternetStream(CStackDirectory::GetFirstStackedFile(url.Get()));
 
-  CStdString strProtocol2 = url.GetTranslatedProtocol();
+  CStdString strProtocol2 = url.GetBaseProtocol();
 
   // Special case these
   if (strProtocol  == "ftp"   || strProtocol  == "ftps"   ||

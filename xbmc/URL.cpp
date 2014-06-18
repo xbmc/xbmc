@@ -169,7 +169,7 @@ void CURL::Parse(const CStdString& strURL1)
   const char* sep = NULL;
 
   //TODO fix all Addon paths
-  CStdString strProtocol2 = GetTranslatedProtocol();
+  CStdString strProtocol2 = GetBaseProtocol();
   if(m_strProtocol.Equals("rss") ||
      m_strProtocol.Equals("rar") ||
      m_strProtocol.Equals("addons") ||
@@ -461,9 +461,9 @@ const CStdString& CURL::GetProtocol() const
   return m_strProtocol;
 }
 
-const CStdString CURL::GetTranslatedProtocol() const
+const std::string CURL::GetBaseProtocol(void) const
 {
-  return TranslateProtocol(m_strProtocol);
+  return BaseProtocol(m_strProtocol);
 }
 
 const CStdString& CURL::GetFileType() const
@@ -774,7 +774,7 @@ std::string CURL::Encode(const std::string& strURLData)
   return strResult;
 }
 
-CStdString CURL::TranslateProtocol(const CStdString& prot)
+std::string CURL::BaseProtocol(const std::string& prot)
 {
   if (prot == "shout"
    || prot == "daap"
