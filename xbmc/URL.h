@@ -24,6 +24,9 @@
 
 #ifdef TARGET_WINDOWS
 #undef SetPort // WIN32INCLUDES this is defined as SetPortA in WinSpool.h which is being included _somewhere_
+#ifdef GetUserName
+#undef GetUserName
+#endif // GetUserName
 #endif
 
 class CURL
