@@ -679,9 +679,13 @@ bool CURL::IsLocalHost() const
   return (m_strHostName.Equals("localhost") || m_strHostName.Equals("127.0.0.1"));
 }
 
-bool CURL::IsFileOnly(const CStdString &url)
+bool CURL::IsFileOnly(const std::string& url)
 {
-  return url.find_first_of("/\\") == CStdString::npos;
+#ifdef TARGET_WINDOWS
+  return url.find_first_of("/\\") == std::string::npos;
+#else  // !TARGET_WINDOWS
+  return url.find('/') == std::string::npos;
+#endif // !TARGET_WINDOWS
 }
 
 bool CURL::IsFullPath(const CStdString &url)
