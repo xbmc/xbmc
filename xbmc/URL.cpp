@@ -699,39 +699,47 @@ bool CURL::IsFullPath(const CStdString &url)
 }
 
 std::string CURL::Decode(const std::string& strURLData)
-//modified to be more accomodating - if a non hex value follows a % take the characters directly and don't raise an error.
-// However % characters should really be escaped like any other non safe character (www.rfc-editor.org/rfc/rfc1738.txt)
 {
   std::string strResult;
 
-  /* result will always be less than source */
-  strResult.reserve( strURLData.length() );
+  const size_t strLen = strURLData.length();
+  const char* const strC = strURLData.c_str();
+  bool badInputFlag = false;
 
-  for (unsigned int i = 0; i < strURLData.size(); ++i)
+  /* result will always be less than source */
+  strResult.reserve(strLen);
+  
+  for (size_t i = 0; i < strLen; ++i)
   {
-    int kar = (unsigned char)strURLData[i];
-    if (kar == '+') strResult += ' ';
+    const char kar = strC[i];
+    if (kar == '+') 
+      strResult.push_back(' '); // for backward compatibility, not specified in RFC3986
     else if (kar == '%')
     {
-      if (i < strURLData.size() - 2)
+      const int xdigitOne = StringUtils::asciixdigitvalue(strC[i + 1]); // '+1' is safe as strC is zero-terminated
+      const int xdigitTwo = (xdigitOne >= 0) ? StringUtils::asciixdigitvalue(strC[i + 2]) : -1;
+      if (xdigitOne >= 0 && xdigitTwo >= 0)
       {
-        std::string strTmp;
-        strTmp.assign(strURLData.substr(i + 1, 2));
-        int dec_num=-1;
-        sscanf(strTmp.c_str(), "%x", (unsigned int *)&dec_num);
-        if (dec_num<0 || dec_num>255)
-          strResult += kar;
+        if (!xdigitOne && !xdigitTwo)
+          badInputFlag = true;
         else
-        {
-          strResult += (char)dec_num;
-          i += 2;
-        }
+          strResult.push_back((char)((unsigned char)(xdigitOne * 16 + xdigitTwo)));
+        i += 2; // skip next two hex-digits
       }
       else
-        strResult += kar;
+      {
+        strResult.push_back(kar);
+        badInputFlag = true;
+      }
     }
-    else strResult += kar;
+    else if (kar == 0)
+      badInputFlag = true;
+    else
+      strResult.push_back(kar);
   }
+
+  if (badInputFlag)
+    CLog::Log(LOGDEBUG, "%s: invalid %%-encoded input sequence: \"%s\"; decoded output: \"%s\"", __FUNCTION__, strURLData.c_str(), strResult.c_str());
   
   return strResult;
 }
