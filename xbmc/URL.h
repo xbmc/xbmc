@@ -92,7 +92,7 @@ public:
   bool IsLocal() const;
   bool IsLocalHost() const;
   static bool IsFileOnly(const std::string& url); ///< return true if there are no directories in the url.
-  static bool IsFullPath(const CStdString &url); ///< return true if the url includes the full path
+  static bool IsFullPath(const std::string& url); ///< return true if the url includes the full path
   static std::string Decode(const std::string& strURLData);
   static std::string Encode(const std::string& strURLData);
   static CStdString TranslateProtocol(const CStdString& prot);

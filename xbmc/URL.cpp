@@ -688,12 +688,22 @@ bool CURL::IsFileOnly(const std::string& url)
 #endif // !TARGET_WINDOWS
 }
 
-bool CURL::IsFullPath(const CStdString &url)
+bool CURL::IsFullPath(const std::string& url)
 {
-  if (url.size() && url[0] == '/') return true;     //   /foo/bar.ext
-  if (url.find("://") != std::string::npos) return true;                 //   foo://bar.ext
-  if (url.size() > 1 && url[1] == ':') return true; //   c:\\foo\\bar\\bar.ext
-  if (StringUtils::StartsWith(url, "\\\\")) return true;    //   \\UNC\path\to\file
+  if (url.empty())
+    return false;
+#ifdef TARGET_POSIX
+  if (url[0] == '/')
+    return true;     //   /foo/bar.ext
+#endif // TARGET_POSIX
+#ifdef TARGET_WINDOWS
+  if (url.length() > 2 && url[1] == ':' && (url[2] == '\\' || url[2] == '/'))
+    return true;     //   c:\\foo\\bar\\bar.ext
+  if (url.compare(0, 2, "\\\\", 2) == 0)
+    return true;     //   \\UNC\path\to\file or \\?\path\file
+#endif // TARGET_WINDOWS
+  if (url.find("://") != std::string::npos) 
+    return true;     //   foo://bar.ext
   return false;
 }
 
