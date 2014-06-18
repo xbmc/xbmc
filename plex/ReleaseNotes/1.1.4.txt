@@ -1,0 +1,4 @@
+* Fixes
+  - Fixed playback of media when unwatched filter was applied
+  - Fixed refresh rate switching regression on OSX
+  
