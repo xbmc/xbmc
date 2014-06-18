@@ -340,15 +340,20 @@ void CURL::SetFileName(const CStdString& strFileName)
 {
   m_strFileName = strFileName;
 
-  int slash = m_strFileName.find_last_of(GetDirectorySeparator());
-  int period = m_strFileName.find_last_of('.');
-  if(period != -1 && (slash == -1 || period > slash))
-    m_strFileType = m_strFileName.substr(period+1);
-  else
-    m_strFileType = "";
+  const size_t slash1 = m_strFileName.rfind(GetDirectorySeparatorPrimary());
+  const size_t slash2 = GetDirectorySeparatorAdditional() ?
+    m_strFileName.rfind(GetDirectorySeparatorAdditional()) : std::string::npos;
+  const size_t period = m_strFileName.rfind('.');
 
-  StringUtils::Trim(m_strFileType);
-  StringUtils::ToLower(m_strFileType);
+  if (period != std::string::npos && (slash1 == std::string::npos || period > slash1)
+      && (slash2 == std::string::npos || period > slash2))
+  {
+    m_strFileType = m_strFileName.substr(period + 1);
+    StringUtils::Trim(m_strFileType);
+    StringUtils::ToLower(m_strFileType);
+  }
+  else
+    m_strFileType.clear();
 }
 
 void CURL::SetHostName(const CStdString& strHostName)
@@ -489,16 +494,6 @@ const CStdString CURL::GetFileNameWithoutPath() const
   CStdString file(m_strFileName);
   URIUtils::RemoveSlashAtEnd(file);
   return URIUtils::GetFileName(file);
-}
-
-char CURL::GetDirectorySeparator() const
-{
-#ifndef TARGET_POSIX
-  if ( IsLocal() )
-    return '\\';
-  else
-#endif
-    return '/';
 }
 
 CStdString CURL::Get() const

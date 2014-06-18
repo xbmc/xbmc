@@ -63,7 +63,23 @@ public:
   const CStdString& GetProtocolOptions() const;
   const CStdString GetFileNameWithoutPath() const; /* return the filename excluding path */
 
-  char GetDirectorySeparator() const;
+  inline char GetDirectorySeparatorPrimary(void) const
+  {
+#ifdef TARGET_WINDOWS
+    if (m_strProtocol.empty())
+      return '\\'; // win32 local filesystem
+#endif
+    return '/';
+  }
+  inline char GetDirectorySeparatorAdditional(void) const
+  {
+#ifdef TARGET_WINDOWS
+    if (m_strProtocol.empty())
+      return '/';
+#endif
+    return 0; // no additional separator
+  }
+
 
   CStdString Get() const;
   std::string GetWithoutUserDetails(bool redact = false) const;
