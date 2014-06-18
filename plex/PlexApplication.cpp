@@ -311,30 +311,30 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char* 
                                const char* message, const CVariant& data)
 {
   CLog::Log(LOGDEBUG, "PlexApplication::Announce got message %s:%s", sender, message);
-  {
-    CGUIDialogVideoOSD* osd
-        = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
-    if (osd)
-      CLog::Log(LOGDEBUG, "PlexApplication::Announce osd status, running: %s, openedfrompause: %s", osd->IsDialogRunning() ? "yes" : "no", osd->IsOpenedFromPause() ? "yes" : "no");
-  }
 
-  if (flag == ANNOUNCEMENT::Player && stricmp(sender, "xbmc") == 0 &&
-      stricmp(message, "OnStop") == 0)
+  if (flag == ANNOUNCEMENT::Player && stricmp(sender, "xbmc") == 0)
   {
-    if (g_plexApplication.playQueueManager->getCurrentPlayQueueType() == PLEX_MEDIA_TYPE_VIDEO)
+    if (stricmp(message, "OnPlay") == 0)
     {
-      CFileItemList list;
-      CFileItemPtr lastItem;
-
-      if (g_plexApplication.playQueueManager->getCurrentPlayQueue(list) && list.Get(list.Size() - 1))
-        lastItem = list.Get(list.Size() - 1);
-
-      if (lastItem && lastItem->HasMusicInfoTag() && g_application.CurrentFileItemPtr() &&
-          lastItem->GetProperty("playQueueItemID").asInteger() ==
-            g_application.CurrentFileItemPtr()->GetProperty("playQueueItemID").asInteger(-1))
+      m_triedToRestart = false;
+    }
+    else if (stricmp(message, "OnStop") == 0)
+    {
+      if (g_plexApplication.playQueueManager->getCurrentPlayQueueType() == PLEX_MEDIA_TYPE_VIDEO)
       {
-        CLog::Log(LOGDEBUG, "PlexApplication::Announce clearing video playQueue");
-        g_plexApplication.playQueueManager->clear();
+        CFileItemList list;
+        CFileItemPtr lastItem;
+
+        if (g_plexApplication.playQueueManager->getCurrentPlayQueue(list) && list.Get(list.Size() - 1))
+          lastItem = list.Get(list.Size() - 1);
+
+        if (lastItem && lastItem->HasMusicInfoTag() && g_application.CurrentFileItemPtr() &&
+            lastItem->GetProperty("playQueueItemID").asInteger() ==
+            g_application.CurrentFileItemPtr()->GetProperty("playQueueItemID").asInteger(-1))
+        {
+          CLog::Log(LOGDEBUG, "PlexApplication::Announce clearing video playQueue");
+          g_plexApplication.playQueueManager->clear();
+        }
       }
     }
   }
