@@ -98,18 +98,18 @@ public:
   static std::string BaseProtocol(const std::string& prot);
 
   void GetOptions(std::map<CStdString, CStdString> &options) const;
-  bool HasOption(const CStdString &key) const;
-  bool GetOption(const CStdString &key, CStdString &value) const;
-  CStdString GetOption(const CStdString &key) const;
-  void SetOption(const CStdString &key, const CStdString &value);
-  void RemoveOption(const CStdString &key);
+  bool HasOption(const std::string& key) const;
+  bool GetOption(const std::string& key, std::string& value) const;
+  std::string GetOption(const std::string& key) const;
+  void SetOption(const std::string& key, const std::string& value);
+  void RemoveOption(const std::string& key);
 
   void GetProtocolOptions(std::map<CStdString, CStdString> &options) const;
-  bool HasProtocolOption(const CStdString &key) const;
-  bool GetProtocolOption(const CStdString &key, CStdString &value) const;
-  CStdString GetProtocolOption(const CStdString &key) const;
-  void SetProtocolOption(const CStdString &key, const CStdString &value);
-  void RemoveProtocolOption(const CStdString &key);
+  bool HasProtocolOption(const std::string& key) const;
+  bool GetProtocolOption(const std::string& key, std::string& value) const;
+  std::string GetProtocolOption(const std::string& key) const;
+  void SetProtocolOption(const std::string& key, const std::string& value);
+  void RemoveProtocolOption(const std::string& key);
 
 protected:
   int m_iPort;

@@ -799,13 +799,14 @@ void CURL::GetOptions(std::map<CStdString, CStdString> &options) const
     options[option->first] = option->second.asString();
 }
 
-bool CURL::HasOption(const CStdString &key) const
+bool CURL::HasOption(const std::string& key) const
 {
   return m_options.HasOption(key);
 }
 
-bool CURL::GetOption(const CStdString &key, CStdString &value) const
+bool CURL::GetOption(const std::string& key, std::string& value) const
 {
+  value.clear();
   CVariant valueObj;
   if (!m_options.GetOption(key, valueObj))
     return false;
@@ -814,22 +815,22 @@ bool CURL::GetOption(const CStdString &key, CStdString &value) const
   return true;
 }
 
-CStdString CURL::GetOption(const CStdString &key) const
+std::string CURL::GetOption(const std::string& key) const
 {
-  CStdString value;
+  std::string value;
   if (!GetOption(key, value))
     return "";
 
   return value;
 }
 
-void CURL::SetOption(const CStdString &key, const CStdString &value)
+void CURL::SetOption(const std::string& key, const std::string& value)
 {
   m_options.AddOption(key, value);
   SetOptions(m_options.GetOptionsString(true));
 }
 
-void CURL::RemoveOption(const CStdString &key)
+void CURL::RemoveOption(const std::string& key)
 {
   m_options.RemoveOption(key);
   SetOptions(m_options.GetOptionsString(true));
@@ -842,13 +843,14 @@ void CURL::GetProtocolOptions(std::map<CStdString, CStdString> &options) const
     options[option->first] = option->second.asString();
 }
 
-bool CURL::HasProtocolOption(const CStdString &key) const
+bool CURL::HasProtocolOption(const std::string& key) const
 {
   return m_protocolOptions.HasOption(key);
 }
 
-bool CURL::GetProtocolOption(const CStdString &key, CStdString &value) const
+bool CURL::GetProtocolOption(const std::string& key, std::string& value) const
 {
+  value.clear();
   CVariant valueObj;
   if (!m_protocolOptions.GetOption(key, valueObj))
     return false;
@@ -857,22 +859,22 @@ bool CURL::GetProtocolOption(const CStdString &key, CStdString &value) const
   return true;
 }
 
-CStdString CURL::GetProtocolOption(const CStdString &key) const
+std::string CURL::GetProtocolOption(const std::string& key) const
 {
-  CStdString value;
+  std::string value;
   if (!GetProtocolOption(key, value))
     return "";
   
   return value;
 }
 
-void CURL::SetProtocolOption(const CStdString &key, const CStdString &value)
+void CURL::SetProtocolOption(const std::string& key, const std::string& value)
 {
   m_protocolOptions.AddOption(key, value);
   m_strProtocolOptions = m_protocolOptions.GetOptionsString(false);
 }
 
-void CURL::RemoveProtocolOption(const CStdString &key)
+void CURL::RemoveProtocolOption(const std::string& key)
 {
   m_protocolOptions.RemoveOption(key);
   m_strProtocolOptions = m_protocolOptions.GetOptionsString(false);
