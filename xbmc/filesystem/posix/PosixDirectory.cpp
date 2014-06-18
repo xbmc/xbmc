@@ -121,7 +121,7 @@ bool CPosixDirectory::Create(const CURL& url)
 
 bool CPosixDirectory::Remove(const CURL& url)
 {
-  if (rmdir(url.Get().c_str()) == 0);
+  if (rmdir(url.Get().c_str()) == 0)
     return true;
 
   return !Exists(url);
