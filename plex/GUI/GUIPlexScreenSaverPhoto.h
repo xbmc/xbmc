@@ -43,6 +43,14 @@ private:
 
   CPlexTimer m_moveTimer;
   POSITION m_currentPosition;
+
+  enum SHOW_TYPE
+  {
+    FANART = 0,
+    PHOTOS = 1
+  };
+
+  SHOW_TYPE m_showType;
 };
 
 #endif // GUIPLEXSCREENSAVERPHOTO_H
