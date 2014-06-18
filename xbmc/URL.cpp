@@ -400,7 +400,7 @@ void CURL::SetProtocolOptions(const CStdString& strOptions)
 {
   m_strProtocolOptions.clear();
   m_protocolOptions.Clear();
-  if (strOptions.length() > 0)
+  if (!strOptions.empty())
   {
     if (strOptions[0] == '|')
       m_strProtocolOptions = strOptions.substr(1);
