@@ -596,9 +596,9 @@ std::string CURL::GetWithoutUserDetails(bool redact) const
   }
   strURL += m_strFileName;
 
-  if( m_strOptions.length() > 0 )
+  if(!m_strOptions.empty())
     strURL += m_strOptions;
-  if( m_strProtocolOptions.length() > 0 )
+  if(!m_strProtocolOptions.empty())
     strURL += "|"+m_strProtocolOptions;
 
   return strURL;
