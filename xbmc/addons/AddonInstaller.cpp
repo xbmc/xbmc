@@ -163,6 +163,9 @@ bool CAddonInstaller::Cancel(const CStdString &addonID)
 
 bool CAddonInstaller::PromptForInstall(const CStdString &addonID, AddonPtr &addon)
 {
+  if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
+    return false;
+
   // we assume that addons that are enabled don't get to this routine (i.e. that GetAddon() has been called)
   if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_UNKNOWN, false))
     return false; // addon is installed but disabled, and the user has specifically activated something that needs
@@ -210,6 +213,9 @@ bool CAddonInstaller::PromptForInstall(const CStdString &addonID, AddonPtr &addo
 
 bool CAddonInstaller::Install(const CStdString &addonID, bool force, const CStdString &referer, bool background)
 {
+  if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
+    return false;
+
   AddonPtr addon;
   bool addonInstalled = CAddonMgr::Get().GetAddon(addonID, addon, ADDON_UNKNOWN, false);
   if (addonInstalled && !force)
@@ -270,6 +276,9 @@ bool CAddonInstaller::DoInstall(const AddonPtr &addon, const CStdString &hash, b
 
 bool CAddonInstaller::InstallFromZip(const CStdString &path)
 {
+  if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
+    return false;
+
   // grab the descriptive XML document from the zip, and read it in
   CFileItemList items;
   // BUG: some zip files return a single item (root folder) that we think is stored, so we don't use the zip:// protocol

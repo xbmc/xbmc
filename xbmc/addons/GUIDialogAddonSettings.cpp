@@ -193,6 +193,9 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon, bool saveTo
   if (!addon)
     return false;
 
+  if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
+    return false;
+
   bool ret(false);
   if (addon->HasSettings())
   { 
