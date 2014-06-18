@@ -27,3 +27,15 @@ msgstr ""
 msgctxt "#30002"
 msgid "Use grainy effect"
 msgstr ""
+
+msgctxt "#30003"
+msgid "Show Type"
+msgstr ""
+
+msgctxt "#30004"
+msgid "FanArts"
+msgstr ""
+
+msgctxt "#30005"
+msgid "Photos"
+msgstr ""

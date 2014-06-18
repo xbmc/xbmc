@@ -3,4 +3,5 @@
   <setting label="30000" type="bool" id="showclock" default="true" />
   <setting label="30001" type="bool" id="showinfo" default="true" />
   <setting label="30002" type="bool" id="overlay" default="true" />
+  <setting label="30003" type="labelenum" id="showtype" lvalues="30004|30005" default=0 />
 </settings>
