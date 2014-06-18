@@ -12439,7 +12439,18 @@ msgctxt "#24127"
 msgid "Automatically download first subtitle from the search result list"
 msgstr ""
 
-#empty strings from id 24128 to 24999
+#: system/settings/settings.xml
+msgctxt "#24128"
+msgid "Search subtitles on play"
+msgstr ""
+
+#. Description of setting "Videos -> Subtitles -> Download subtitles on play" with label #24128
+#: system/settings/settings.xml
+msgctxt "#24129"
+msgid "If the video has no local subtitles, automatically search subtitles."
+msgstr ""
+
+#empty strings from id 24130 to 24999
 
 msgctxt "#25000"
 msgid "Notifications"

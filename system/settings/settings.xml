@@ -963,6 +963,11 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="subtitles.autosearch" type="boolean" label="24128" help="24129">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="subtitles.tv" type="addon" label="24116" help="24117">
           <level>1</level>
           <default>-</default>
