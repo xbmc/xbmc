@@ -328,13 +328,17 @@ int  GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize)
   if (pathname && strstr([pathname UTF8String], "Contents"))
   {
     strcpy(path, [pathname UTF8String]);
-    // Move backwards to last "/" - removes the executable
-    for (int n=strlen(path)-1; path[n] != '/'; n--)
-      path[n] = '\0';
-    // Move backwards to next "/" - removes "MacOS" dir
-    for (int n=strlen(path)-2; path[n] != '/'; n--)
-      path[n] = '\0';
-    strcat(path, "Libraries");
+    // ExectuablePath is <product>.app/Contents/MacOS/<executable>
+    char *lastSlash = strrchr(path, '/');
+    if (lastSlash)
+    {
+      *lastSlash = '\0';//remove /<executable>  
+      lastSlash = strrchr(path, '/');
+      if (lastSlash)
+        *lastSlash = '\0';//remove /MacOS
+    }
+    strcat(path, "/Libraries");//add /Libraries
+    //we should have <product>.app/Contents/Libraries now
     *pathsize = strlen(path);
     //CLog::Log(LOGDEBUG, "DarwinFrameworkPath(d) -> %s", path);
     return 0;
