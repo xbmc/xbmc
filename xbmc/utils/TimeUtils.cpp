@@ -68,6 +68,12 @@ int64_t CurrentHostFrequency(void)
 CTimeSmoother *CTimeUtils::frameTimer = NULL;
 unsigned int CTimeUtils::frameTime = 0;
 
+void CTimeUtils::Close()
+{
+  delete frameTimer;
+  frameTimer = NULL;
+};
+
 void CTimeUtils::UpdateFrameTime(bool flip)
 {
   if (!frameTimer)
