@@ -110,6 +110,7 @@ bool CGUIPlexScreenSaverPhoto::OnMessage(CGUIMessage &message)
           m_showType = FANART;
 
         CURL art = server->BuildPlexURL("/library/arts");
+        art.SetOption("sort", "random");
 
         if (m_showType == PHOTOS)
         {
