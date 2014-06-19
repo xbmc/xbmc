@@ -56,7 +56,7 @@ bool CJNISurface::isValid()
 
 void CJNISurface::release()
 {
-  call_method<jboolean>(m_object,
+  call_method<void>(m_object,
     "release", "()V");
 }
 
