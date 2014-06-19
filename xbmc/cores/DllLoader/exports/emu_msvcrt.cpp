@@ -225,6 +225,15 @@ extern "C" void __stdcall update_emu_environ()
   }
 }
 
+extern "C" void __stdcall cleanup_emu_environ()
+{
+  for (int i = 0; i < EMU_MAX_ENVIRONMENT_ITEMS; i++)
+  {
+    free(dll__environ[i]);
+    dll__environ[i] = NULL;
+  }
+}
+
 static int convert_fmode(const char* mode)
 {
   int iMode = O_BINARY;
