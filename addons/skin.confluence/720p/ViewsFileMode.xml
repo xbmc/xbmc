@@ -344,7 +344,7 @@
 						<info>ListItem.Label</info>
 					</control>
 					<control type="image">
-						<left>180</left>
+						<left>170</left>
 						<top>130</top>
 						<width>30</width>
 						<height>30</height>
