@@ -29,11 +29,6 @@
 #define XBMC_FILE_SEP '\\'
 #endif
 
-HANDLE FindFirstFile(LPCSTR,LPWIN32_FIND_DATA);
-
-BOOL   FindNextFile(HANDLE,LPWIN32_FIND_DATA);
-BOOL   FindClose(HANDLE hFindFile);
-
 #define CreateFileA CreateFile
 HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode,
             LPSECURITY_ATTRIBUTES lpSecurityAttributes,  DWORD dwCreationDisposition,
