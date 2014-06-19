@@ -54,6 +54,8 @@ public:
   static std::string GetDefaultDevice(bool passthrough);
   static bool SupportsRaw(AEDataFormat format, int samplerate);
   static bool SupportsSilenceTimeout();
+  static bool HasStereoAudioChannelCount();
+  static bool HasHDAudioChannelCount();
 
   /**
    * Returns true if current AudioEngine supports at lest two basic quality levels
