@@ -640,23 +640,6 @@ DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation )
   return TIME_ZONE_ID_UNKNOWN;
 }
 
-BOOL SetEndOfFile(HANDLE hFile)
-{
-  if (hFile == NULL)
-    return false;
-
-  // get the current offset
-#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
-  off64_t currOff = lseek(hFile->fd, 0, SEEK_CUR);
-#else
-  off64_t currOff = lseek64(hFile->fd, 0, SEEK_CUR);
-#endif
-  if (currOff >= 0)
-    return (ftruncate(hFile->fd, currOff) == 0);
-
-  return false;
-}
-
 DWORD SleepEx( DWORD dwMilliseconds,  BOOL bAlertable)
 {
   usleep(dwMilliseconds * 1000);
