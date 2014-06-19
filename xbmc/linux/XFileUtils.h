@@ -55,7 +55,6 @@ DWORD  SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
                       int32_t *lpDistanceToMoveHigh, DWORD dwMoveMethod);
 BOOL   SetFilePointerEx(HANDLE hFile, LARGE_INTEGER liDistanceToMove,PLARGE_INTEGER lpNewFilePointer, DWORD dwMoveMethod);
 
-DWORD SleepEx( DWORD dwMilliseconds,  BOOL bAlertable);
 DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation );
 DWORD  GetFileSize(HANDLE hFile, LPDWORD lpFileSizeHigh);
 BOOL   GetFileSizeEx(HANDLE hFile, PLARGE_INTEGER lpFileSize);

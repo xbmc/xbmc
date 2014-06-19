@@ -640,12 +640,6 @@ DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation )
   return TIME_ZONE_ID_UNKNOWN;
 }
 
-DWORD SleepEx( DWORD dwMilliseconds,  BOOL bAlertable)
-{
-  usleep(dwMilliseconds * 1000);
-  return 0;
-}
-
 BOOL SetFilePointerEx(  HANDLE hFile,
             LARGE_INTEGER liDistanceToMove,
             PLARGE_INTEGER lpNewFilePointer,
