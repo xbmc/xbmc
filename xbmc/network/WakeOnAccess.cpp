@@ -67,6 +67,138 @@ static unsigned long HostToIP(const CStdString& host)
   return inet_addr(ip.c_str());
 }
 
+#ifdef HAS_UPNP
+
+#include "network/upnp/UPnP.h"
+#include <Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h>
+
+struct UPnpServer
+{
+  UPnpServer() {}
+  UPnpServer(const CStdString& _uuid) : uuid(_uuid) { LookupHost(); }
+  UPnpServer(const CStdString& _uuid, const CStdString& _host) : uuid(_uuid), host(_host) {}
+
+  CStdString uuid;
+  CStdString host;
+
+private:
+  void LookupHost ()
+  {
+    PLT_SyncMediaBrowser* browser = UPNP::CUPnP::GetInstance()->m_MediaBrowser;
+
+    PLT_DeviceDataReference device;
+
+    if (browser && NPT_SUCCEEDED(browser->FindServer(this->uuid.c_str(), device)) && !device.IsNull())
+      this->host = device->GetURLBase().GetHost();
+  }
+};
+
+typedef std::vector<UPnpServer> upnp_server_list_t;
+
+static CStdString LookupHost (const upnp_server_list_t& list, const CStdString& uuid)
+{
+  for (upnp_server_list_t::const_iterator i = list.begin(); i != list.end(); ++i)
+    if (i->uuid == uuid)
+      return i->host;
+
+  return "";
+}
+
+class UPnPServerList : public upnp_server_list_t
+{
+public:
+  bool m_is_dirty;
+
+  CCriticalSection m_crit_section;
+
+  void Clear ()
+  {
+    CSingleLock lock (m_crit_section);
+
+    clear();
+  }
+  CStdString LookupHost (const CStdString& uuid) const
+  {
+    CSingleLock lock (m_crit_section);
+
+    return ::LookupHost (*this, uuid);
+  }
+
+  void StoreServer (const UPnpServer& server)
+  {
+    CSingleLock lock (m_crit_section);
+
+    for (iterator i = begin(); i != end(); ++i)
+    {
+      if (i->uuid == server.uuid)
+      {
+        if (!server.host.empty()) 
+        {
+          if (i->host != server.host)
+            m_is_dirty = true;
+
+          *i = server;
+        }
+        return;
+      }
+    }
+
+    push_back(server);
+    m_is_dirty = true;
+  }
+  void MoveTo (upnp_server_list_t& list)
+  {
+    CSingleLock lock (m_crit_section);
+
+    list = * this;
+
+    if (size() > 0)
+      m_is_dirty = true;
+
+    clear();
+  }
+  void LearnFrom (const upnp_server_list_t& list)
+  {
+    CSingleLock lock (m_crit_section);
+
+    for (iterator i = begin(); i != end(); ++i)
+      if (i->host.empty())
+        i->host = ::LookupHost(list, i->uuid);
+  }
+};
+
+static UPnPServerList upnp_servers;
+
+#endif // HAS_UPNP
+
+static CStdString GetAndStoreUrlHost (const CURL& url)
+{
+#ifdef HAS_UPNP
+  if (url.GetProtocol() == "upnp") 
+  {
+    UPnpServer server (url.GetHostName()); // url.hostname is server.uuid
+
+    upnp_servers.StoreServer (server);
+
+    return server.host;
+  }
+#endif
+
+  return url.GetHostName();
+}
+
+static CStdString GetStoredUrlHost (const CURL& url)
+{
+#ifdef HAS_UPNP
+  if (url.GetProtocol() == "upnp") 
+    return upnp_servers.LookupHost(url.GetHostName());
+#endif
+
+  return url.GetHostName();
+}
+
+//
+
 CWakeOnAccess::WakeUpEntry::WakeUpEntry (bool isAwake)
   : timeout (0, 0, 0, DEFAULT_TIMEOUT_SEC)
   , wait_online1_sec(DEFAULT_WAIT_FOR_ONLINE_SEC_1)
@@ -331,7 +463,7 @@ CWakeOnAccess &CWakeOnAccess::Get()
 
 bool CWakeOnAccess::WakeUpHost(const CURL& url)
 {
-  CStdString hostName = url.GetHostName();
+  CStdString hostName = GetStoredUrlHost (url);
 
   if (!hostName.empty())
     return WakeUpHost (hostName, url.Get());
@@ -511,7 +643,7 @@ static void AddHostsFromMediaSource(const CMediaSource& source, std::vector<std:
   {
     CURL url(*it);
 
-    AddHost (url.GetHostName(), hosts);
+    AddHost (GetAndStoreUrlHost(url), hosts);
   }
 }
 
@@ -531,6 +663,11 @@ void CWakeOnAccess::QueueMACDiscoveryForAllRemotes()
 {
   vector<string> hosts;
 
+#ifdef HAS_UPNP
+  upnp_server_list_t old_list;
+  upnp_servers.MoveTo(old_list);
+#endif
+
   // add media sources
   CMediaSourceSettings& ms = CMediaSourceSettings::Get();
 
@@ -539,6 +676,10 @@ void CWakeOnAccess::QueueMACDiscoveryForAllRemotes()
   AddHostsFromVecSource(ms.GetSources("files"), hosts);
   AddHostsFromVecSource(ms.GetSources("pictures"), hosts);
   AddHostsFromVecSource(ms.GetSources("programs"), hosts);
+
+#ifdef HAS_UPNP
+  upnp_servers.LearnFrom(old_list);
+#endif
 
   // add mysql servers
   AddHostFromDatabase(g_advancedSettings.m_databaseVideo, hosts);
@@ -580,6 +721,12 @@ void CWakeOnAccess::SaveMACDiscoveryResult(const CStdString& host, const CStdStr
         i->mac = mac;
         SaveToXML();
       }
+#ifdef HAS_UPNP
+      else if (upnp_servers.m_is_dirty)
+      {
+        SaveToXML();
+      }
+#endif
 
       return;
     }
@@ -744,6 +891,34 @@ void CWakeOnAccess::LoadFromXML()
 
     pWakeUp = pWakeUp->NextSiblingElement("wakeup"); // get next one
   }
+
+#ifdef HAS_UPNP
+  {
+    upnp_servers.Clear();
+
+    const TiXmlNode* pUPnPNode = pRootElement->FirstChildElement("upnp_map");
+    while (pUPnPNode)
+    {
+      UPnpServer server;
+
+      XMLUtils::GetString(pUPnPNode, "uuid", server.uuid);
+      XMLUtils::GetString(pUPnPNode, "host", server.host);
+
+      if (server.host.empty() || server.uuid.empty())
+      {
+        CLog::Log(LOGERROR, "%s - Missing or empty <upnp_map> entry", __FUNCTION__);
+      }
+      else
+      {
+        CLog::Log(LOGNOTICE,"  Registering upnp_map entry [%s] -> [%s]", server.uuid.c_str(), server.host.c_str());
+
+        upnp_servers.StoreServer(server);
+      }
+
+      pUPnPNode = pUPnPNode->NextSiblingElement("upnp_map"); // get next one
+    }
+  }
+#endif
 }
 
 void CWakeOnAccess::SaveToXML()
@@ -772,6 +947,25 @@ void CWakeOnAccess::SaveToXML()
       XMLUtils::SetInt(pWakeUpNode, "waitservices", i->wait_services_sec);
     }
   }
+
+#ifdef HAS_UPNP
+  {
+    CSingleLock lock (upnp_servers.m_crit_section);
+
+    for (UPnPServerList::const_iterator i = upnp_servers.begin(); i != upnp_servers.end(); ++i)
+    {
+      TiXmlElement xmlSetting("upnp_map");
+      TiXmlNode* pUPnPNode = pRoot->InsertEndChild(xmlSetting);
+      if (pUPnPNode)
+      {
+        XMLUtils::SetString(pUPnPNode, "uuid", i->uuid);
+        XMLUtils::SetString(pUPnPNode, "host", i->host);
+      }
+    }
+
+    upnp_servers.m_is_dirty = false;
+  }
+#endif
 
   xmlDoc.SaveFile(GetSettingFile());
 }
