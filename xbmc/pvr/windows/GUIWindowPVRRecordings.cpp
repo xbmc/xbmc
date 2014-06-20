@@ -177,20 +177,6 @@ bool CGUIWindowPVRRecordings::Update(const std::string &strDirectory, bool updat
   return bReturn;
 }
 
-void CGUIWindowPVRRecordings::Notify(const Observable &obs, const ObservableMessage msg)
-{
-  if (msg == ObservableMessageTimers || msg == ObservableMessageCurrentItem)
-  {
-    if (IsActive())
-      SetInvalid();
-  }
-  else if (msg == ObservableMessageRecordings || msg == ObservableMessageTimersReset)
-  {
-    if (IsActive())
-      Update();
-  }
-}
-
 bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
 {
   bool bReturn = false;

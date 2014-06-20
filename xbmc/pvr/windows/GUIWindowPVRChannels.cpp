@@ -129,23 +129,6 @@ bool CGUIWindowPVRChannels::OnContextButton(int itemNumber, CONTEXT_BUTTON butto
       CGUIWindowPVRBase::OnContextButton(itemNumber, button);
 }
 
-void CGUIWindowPVRChannels::Notify(const Observable &obs, const ObservableMessage msg)
-{
-  if (msg == ObservableMessageChannelGroup ||
-      msg == ObservableMessageTimers ||
-      msg == ObservableMessageEpgActiveItem ||
-      msg == ObservableMessageCurrentItem)
-  {
-    if (IsActive())
-      SetInvalid();
-  }
-  else if (msg == ObservableMessageChannelGroupReset)
-  {
-    if (IsActive())
-      Update();
-  }
-}
-
 bool CGUIWindowPVRChannels::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
 {
   CSingleLock lock(m_critSection);
@@ -195,41 +178,65 @@ bool CGUIWindowPVRChannels::OnAction(const CAction &action)
 
 bool CGUIWindowPVRChannels::OnMessage(CGUIMessage& message)
 {
-  if (message.GetMessage() == GUI_MSG_CLICKED)
+  bool bReturn = false;
+  switch (message.GetMessage())
   {
-    if (message.GetSenderId() == m_viewControl.GetCurrentControl())
-    {
-      int iItem = m_viewControl.GetSelectedItem();
-      if (iItem > 0 || iItem < (int) m_vecItems->Size())
+    case GUI_MSG_CLICKED:
+      if (message.GetSenderId() == m_viewControl.GetCurrentControl())
       {
-        CFileItemPtr pItem = m_vecItems->Get(iItem);
-        /* process actions */
-        switch (message.GetParam1())
+        int iItem = m_viewControl.GetSelectedItem();
+        if (iItem > 0 || iItem < (int) m_vecItems->Size())
         {
-         case ACTION_SELECT_ITEM:
-         case ACTION_MOUSE_LEFT_CLICK:
-         case ACTION_PLAY:
-           ActionPlayChannel(pItem.get());
-           return true;
-
-         case ACTION_SHOW_INFO:
-           ShowEPGInfo(pItem.get());
-           return true;
-
-         case ACTION_DELETE_ITEM:
-           ActionDeleteChannel(pItem.get());
-           return true;
-
-         case ACTION_CONTEXT_MENU:
-         case ACTION_MOUSE_RIGHT_CLICK:
-           OnPopupMenu(iItem);
-           return true;
+          bReturn = true;
+          switch (message.GetParam1())
+          {
+           case ACTION_SELECT_ITEM:
+           case ACTION_MOUSE_LEFT_CLICK:
+           case ACTION_PLAY:
+             ActionPlayChannel(m_vecItems->Get(iItem).get());
+             break;
+           case ACTION_SHOW_INFO:
+             ShowEPGInfo(m_vecItems->Get(iItem).get());
+             break;
+           case ACTION_DELETE_ITEM:
+             ActionDeleteChannel(m_vecItems->Get(iItem).get());
+             break;
+           case ACTION_CONTEXT_MENU:
+           case ACTION_MOUSE_RIGHT_CLICK:
+             OnPopupMenu(iItem);
+             break;
+           default:
+             bReturn = false;
+             break;
+          }
         }
       }
-    }
+      break;
+    case GUI_MSG_REFRESH_LIST:
+      switch(message.GetParam1())
+      {
+        case ObservableMessageChannelGroup:
+        case ObservableMessageTimers:
+        case ObservableMessageEpgActiveItem:
+        case ObservableMessageCurrentItem:
+        {
+          if (IsActive())
+            SetInvalid();
+          bReturn = true;
+          break;
+        }
+        case ObservableMessageChannelGroupReset:
+        {
+          if (IsActive())
+            Update();
+          bReturn = true;
+          break;
+        }
+      }
+      break;
   }
 
-  return CGUIWindowPVRBase::OnMessage(message);
+  return bReturn || CGUIWindowPVRBase::OnMessage(message);
 }
 
 bool CGUIWindowPVRChannels::OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON button)

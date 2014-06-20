@@ -64,27 +64,6 @@ void CGUIWindowPVRGuide::UnregisterObservers(void)
   g_EpgContainer.UnregisterObserver(this);
 }
 
-void CGUIWindowPVRGuide::Notify(const Observable &obs, const ObservableMessage msg)
-{
-  if (msg == ObservableMessageChannelGroup ||
-      msg == ObservableMessageEpg ||
-      msg == ObservableMessageEpgContainer)
-  {
-    m_bUpdateRequired = true;
-
-    /* update the current window if the EPG timeline view is visible */
-    if (IsActive() && m_viewControl.GetCurrentControl() == GUIDE_VIEW_TIMELINE)
-      Update();
-  }
-  else if (msg == ObservableMessageEpgActiveItem)
-  {
-    if (IsActive() && m_viewControl.GetCurrentControl() != GUIDE_VIEW_TIMELINE)
-      SetInvalid();
-    else
-      m_bUpdateRequired = true;
-  }
-}
-
 void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
@@ -213,7 +192,30 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
       }
       break;
     }
-    default:
+    case GUI_MSG_REFRESH_LIST:
+      switch(message.GetParam1())
+      {
+        case ObservableMessageChannelGroup:
+        case ObservableMessageEpg:
+        case ObservableMessageEpgContainer:
+        {
+          m_bUpdateRequired = true;
+          /* update the current window if the EPG timeline view is visible */
+          if (IsActive() && m_viewControl.GetCurrentControl() == GUIDE_VIEW_TIMELINE)
+            Update();
+          bReturn = true;
+          break;
+        }
+        case ObservableMessageEpgActiveItem:
+        {
+          if (IsActive() && m_viewControl.GetCurrentControl() != GUIDE_VIEW_TIMELINE)
+            SetInvalid();
+          else
+            m_bUpdateRequired = true;
+          bReturn = true;
+          break;
+        }
+      }
       break;
   }
 

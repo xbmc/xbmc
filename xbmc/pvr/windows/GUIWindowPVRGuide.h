@@ -40,7 +40,6 @@ namespace PVR
     void GetContextButtons(int itemNumber, CContextButtons &buttons);
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
     bool Update(const std::string &strDirectory = "", bool updateFilterPath = true);
-    void Notify(const Observable &obs, const ObservableMessage msg);
     void ResetObservers(void);
     void UnregisterObservers(void);
 

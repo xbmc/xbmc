@@ -99,38 +99,58 @@ bool CGUIWindowPVRTimers::Update(const std::string &strDirectory, bool updateFil
 
 bool CGUIWindowPVRTimers::OnMessage(CGUIMessage &message)
 {
-  if (message.GetMessage() == GUI_MSG_CLICKED)
+  bool bReturn = false;
+  switch (message.GetMessage())
   {
-    if (message.GetSenderId() == m_viewControl.GetCurrentControl())
-    {
-      int iItem = m_viewControl.GetSelectedItem();
-      if (iItem > 0 || iItem < m_vecItems->Size())
+    case GUI_MSG_CLICKED:
+      if (message.GetSenderId() == m_viewControl.GetCurrentControl())
       {
-        CFileItemPtr pItem = m_vecItems->Get(iItem);
-
-        /* process actions */
-        switch (message.GetParam1())
+        int iItem = m_viewControl.GetSelectedItem();
+        if (iItem > 0 || iItem < m_vecItems->Size())
         {
-          case ACTION_SHOW_INFO:
-          case ACTION_SELECT_ITEM:
-          case ACTION_MOUSE_LEFT_CLICK:
-            ActionShowTimer(pItem.get());
-            return true;
-
-          case ACTION_CONTEXT_MENU:
-          case ACTION_MOUSE_RIGHT_CLICK:
-            OnPopupMenu(iItem);
-            return true;
-
-          case ACTION_DELETE_ITEM:
-            ActionDeleteTimer(pItem.get());
-            return true;
+          bReturn = true;
+          switch (message.GetParam1())
+          {
+            case ACTION_SHOW_INFO:
+            case ACTION_SELECT_ITEM:
+            case ACTION_MOUSE_LEFT_CLICK:
+              ActionShowTimer(m_vecItems->Get(iItem).get());
+              break;
+            case ACTION_CONTEXT_MENU:
+            case ACTION_MOUSE_RIGHT_CLICK:
+              OnPopupMenu(iItem);
+              break;
+            case ACTION_DELETE_ITEM:
+              ActionDeleteTimer(m_vecItems->Get(iItem).get());
+              break;
+            default:
+              bReturn = false;
+              break;
+          }
         }
       }
-    }
+      break;
+    case GUI_MSG_REFRESH_LIST:
+      switch(message.GetParam1())
+      {
+        case ObservableMessageTimers:
+        {
+          if (IsActive())
+            SetInvalid();
+          bReturn = true;
+          break;
+        }
+        case ObservableMessageTimersReset:
+        {
+          if (IsActive())
+            Update();
+          bReturn = true;
+          break;
+        }
+      }
   }
 
-  return CGUIWindowPVRBase::OnMessage(message);
+  return bReturn || CGUIWindowPVRBase::OnMessage(message);
 }
 
 bool CGUIWindowPVRTimers::OnContextButtonActivate(CFileItem *item, CONTEXT_BUTTON button)
@@ -329,18 +349,4 @@ bool CGUIWindowPVRTimers::ShowTimerSettings(CFileItem *item)
 
   /* Get modify flag from window and return it to caller */
   return pDlgInfo->IsConfirmed();
-}
-
-void CGUIWindowPVRTimers::Notify(const Observable &obs, const ObservableMessage msg)
-{
-  if (msg == ObservableMessageTimers)
-  {
-    if (IsActive())
-      SetInvalid();
-  }
-  else if (msg == ObservableMessageTimersReset)
-  {
-    if (IsActive())
-      Update();
-  }
 }
