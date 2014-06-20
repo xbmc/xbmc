@@ -35,6 +35,7 @@
 #include <va/va_drmcommon.h>
 #include <drm_fourcc.h>
 #include "linux/XTimeUtils.h"
+#include "linux/XMemUtils.h"
 
 extern "C" {
 #include "libavutil/avutil.h"

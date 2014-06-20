@@ -35,6 +35,9 @@
 #include "URL.h"
 #include "filesystem/AndroidAppFile.h"
 #endif
+#ifdef TARGET_POSIX
+#include "linux/XMemUtils.h"
+#endif
 
 /************************************************************************/
 /*                                                                      */

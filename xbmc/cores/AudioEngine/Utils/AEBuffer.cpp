@@ -20,6 +20,9 @@
 
 #include "AEBuffer.h"
 #include <algorithm>
+#ifdef TARGET_POSIX
+#include "linux/XMemUtils.h"
+#endif
 
 CAEBuffer::CAEBuffer() :
   m_buffer    (NULL),
