@@ -37,6 +37,7 @@
 #include "linux/PlatformInclude.h"
 #include "linux/XFileUtils.h"
 #include "linux/XTimeUtils.h"
+#include "linux/ConvUtils.h"
 #define __except catch
 #endif
 
