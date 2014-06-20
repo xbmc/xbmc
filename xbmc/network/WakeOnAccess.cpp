@@ -41,6 +41,9 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#ifdef TARGET_POSIX
+#include "linux/XTimeUtils.h"
+#endif
 
 #include "WakeOnAccess.h"
 

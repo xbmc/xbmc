@@ -28,6 +28,9 @@
 #define MEASURE_FUNCTION
 #endif
 #include "commons/Exception.h"
+#ifdef TARGET_POSIX
+#include "linux/XTimeUtils.h"
+#endif
 
 // Put this here for easy enable and disable
 #ifndef _DEBUG

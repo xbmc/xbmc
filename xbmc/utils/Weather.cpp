@@ -47,6 +47,9 @@
 #include "utils/Temperature.h"
 #include "XBDateTime.h"
 #include "XMLUtils.h"
+#ifdef TARGET_POSIX
+#include "linux/XTimeUtils.h"
+#endif
 
 using namespace ADDON;
 using namespace XFILE;

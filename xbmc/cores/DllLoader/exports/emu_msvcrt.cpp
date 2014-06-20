@@ -54,6 +54,7 @@
 #ifdef TARGET_POSIX
 #include "PlatformDefs.h" // for __stat64
 #include "XFileUtils.h"
+#include "XTimeUtils.h"
 #endif
 #include "Util.h"
 #include "filesystem/SpecialProtocol.h"

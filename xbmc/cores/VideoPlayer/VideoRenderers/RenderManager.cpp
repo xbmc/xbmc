@@ -69,6 +69,10 @@
 #include "HwDecRender/RendererMediaCodecSurface.h"
 #endif
 
+#if defined(TARGET_POSIX)
+#include "linux/XTimeUtils.h"
+#endif
+
 #include "RenderCapture.h"
 
 /* to use the same as player */

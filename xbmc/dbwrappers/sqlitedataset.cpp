@@ -38,6 +38,10 @@
 #pragma comment(lib, "sqlite3.lib")
 #endif
 
+#ifdef TARGET_POSIX
+#include "linux/XTimeUtils.h"
+#endif
+
 namespace dbiplus {
 //************* Callback function ***************************
 

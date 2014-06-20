@@ -52,7 +52,7 @@ void CVideoSyncIos::Run(volatile bool& stop)
   //because cocoa has a vblank callback, we just keep sleeping until we're asked to stop the thread
   while(!stop && !m_abort)
   {
-    Sleep(100);
+    usleep(100000);
   }
 }
 

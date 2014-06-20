@@ -32,6 +32,10 @@
 #include "utils/TimeUtils.h"
 #include <string>
 
+#ifdef TARGET_POSIX
+#include "linux/XTimeUtils.h"
+#endif
+
 Display* CVideoSyncGLX::m_Dpy = NULL;
 
 void CVideoSyncGLX::OnLostDisplay()

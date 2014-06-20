@@ -35,6 +35,9 @@
 #include "WindowException.h"
 #include "messaging/ApplicationMessenger.h"
 #include "Dialog.h"
+#ifdef TARGET_POSIX
+#include "linux/XTimeUtils.h"
+#endif
 
 using namespace KODI::MESSAGING;
 
