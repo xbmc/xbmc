@@ -23,12 +23,6 @@
 #include "PlatformDefs.h"
 #include "XHandlePublic.h"
 
-#ifdef TARGET_POSIX
-#define XBMC_FILE_SEP '/'
-#else
-#define XBMC_FILE_SEP '\\'
-#endif
-
 #define CreateFileA CreateFile
 HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode,
             LPSECURITY_ATTRIBUTES lpSecurityAttributes,  DWORD dwCreationDisposition,
@@ -36,26 +30,14 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode,
 
 BOOL   WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,  LPDWORD lpNumberOfBytesWritten, LPVOID lpOverlapped);
 BOOL   ReadFile( HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, void* unsupportedlpOverlapped);
-BOOL   FlushFileBuffers(HANDLE hFile);
-
-BOOL   CreateDirectory(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes);
-BOOL   RemoveDirectory(LPCTSTR lpPathName);
-DWORD  GetCurrentDirectory(DWORD nBufferLength, LPSTR lpBuffer);
 
 DWORD  SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
                       int32_t *lpDistanceToMoveHigh, DWORD dwMoveMethod);
 BOOL   SetFilePointerEx(HANDLE hFile, LARGE_INTEGER liDistanceToMove,PLARGE_INTEGER lpNewFilePointer, DWORD dwMoveMethod);
 
 DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation );
-DWORD  GetFileSize(HANDLE hFile, LPDWORD lpFileSizeHigh);
-BOOL   GetFileSizeEx(HANDLE hFile, PLARGE_INTEGER lpFileSize);
 int    _stat64(const char *path, struct __stat64 *buffer);
-int    _stati64(const char *path,struct _stati64 *buffer);
 int _fstat64(int fd, struct __stat64 *buffer);
-
-DWORD  GetFileAttributes(LPCTSTR lpFileName);
-
-#define ERROR_ALREADY_EXISTS EEXIST
 
 // uses statfs
 BOOL GetDiskFreeSpaceEx(

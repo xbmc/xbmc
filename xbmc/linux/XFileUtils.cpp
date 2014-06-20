@@ -21,7 +21,6 @@
 #include "system.h"
 #include "PlatformInclude.h"
 #include "XFileUtils.h"
-#include "XTimeUtils.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
 
@@ -50,8 +49,6 @@
 #include "storage/cdioSupport.h"
 
 #include "utils/log.h"
-#include "utils/RegExp.h"
-#include "utils/AliasShortcutUtils.h"
 
 HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition,
@@ -205,41 +202,6 @@ BOOL WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,
   return 1;
 }
 
-BOOL   CreateDirectory(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes)
-{
-  if (mkdir(lpPathName, 0755) == 0)
-    return 1;
-
-  if (errno == ENOENT)
-  {
-    CLog::Log(LOGWARNING,"%s, cant create dir <%s>. trying lower case.", __FUNCTION__, lpPathName);
-    std::string strLower(lpPathName);
-    StringUtils::ToLower(strLower);
-
-    if (mkdir(strLower.c_str(), 0755) == 0)
-      return 1;
-  }
-
-  return 0;
-}
-
-BOOL   RemoveDirectory(LPCTSTR lpPathName)
-{
-  if (rmdir(lpPathName) == 0)
-    return 1;
-
-  if (errno == ENOENT)
-  {
-    CLog::Log(LOGWARNING,"%s, cant remove dir <%s>. trying lower case.", __FUNCTION__, lpPathName);
-    std::string strLower(lpPathName);
-    StringUtils::ToLower(strLower);
-
-    if (rmdir(strLower.c_str()) == 0 || errno == ENOENT)
-      return 1;
-  }
-  return 0;
-}
-
 DWORD  SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
                       int32_t *lpDistanceToMoveHigh, DWORD dwMoveMethod)
 {
@@ -352,31 +314,6 @@ BOOL SetFilePointerEx(  HANDLE hFile,
   return true;
 }
 
-BOOL GetFileSizeEx( HANDLE hFile, PLARGE_INTEGER lpFileSize)
-{
-  if (hFile == NULL || lpFileSize == NULL) {
-    return false;
-  }
-
-
-  struct stat64 fileStat;
-  if (fstat64(hFile->fd, &fileStat) != 0)
-    return false;
-
-  lpFileSize->QuadPart = fileStat.st_size;
-  return true;
-}
-
-BOOL FlushFileBuffers( HANDLE hFile )
-{
-  if (hFile == NULL)
-  {
-    return 0;
-  }
-
-  return (fsync(hFile->fd) == 0);
-}
-
 int _fstat64(int fd, struct __stat64 *buffer)
 {
   if (buffer == NULL)
@@ -392,61 +329,6 @@ int _stat64(   const char *path,   struct __stat64 *buffer )
     return -1;
 
   return stat64(path, buffer);
-}
-
-DWORD  GetFileSize(HANDLE hFile, LPDWORD lpFileSizeHigh)
-{
-  if (hFile == NULL)
-  {
-    return 0;
-  }
-
-
-  struct stat64 fileStat;
-  if (fstat64(hFile->fd, &fileStat) != 0)
-    return 0;
-
-  if (lpFileSizeHigh)
-  {
-    *lpFileSizeHigh = (DWORD)(fileStat.st_size >> 32);
-  }
-
-  return (DWORD)fileStat.st_size;
-}
-
-DWORD  GetFileAttributes(LPCTSTR lpFileName)
-{
-  if (lpFileName == NULL)
-  {
-    return 0;
-  }
-
-  DWORD dwAttr = FILE_ATTRIBUTE_NORMAL;
-  DIR *tmpDir = opendir(lpFileName);
-  if (tmpDir)
-  {
-    dwAttr |= FILE_ATTRIBUTE_DIRECTORY;
-    closedir(tmpDir);
-  }
-
-  if (lpFileName[0] == '.')
-    dwAttr |= FILE_ATTRIBUTE_HIDDEN;
-
-  if (access(lpFileName, R_OK) == 0 && access(lpFileName, W_OK) != 0)
-    dwAttr |= FILE_ATTRIBUTE_READONLY;
-
-  return dwAttr;
-}
-
-DWORD  GetCurrentDirectory(DWORD nBufferLength, LPSTR lpBuffer)
-{
-  if (lpBuffer == NULL)
-    return 0;
-
-  if (getcwd(lpBuffer,nBufferLength) == NULL)
-    return 0;
-
-    return strlen(lpBuffer);
 }
 #endif
 
