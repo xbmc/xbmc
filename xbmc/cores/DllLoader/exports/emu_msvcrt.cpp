@@ -53,6 +53,7 @@
 #include <signal.h>
 #ifdef TARGET_POSIX
 #include "PlatformDefs.h" // for __stat64
+#include "XFileUtils.h"
 #endif
 #include "Util.h"
 #include "filesystem/SpecialProtocol.h"

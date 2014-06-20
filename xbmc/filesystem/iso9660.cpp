@@ -52,6 +52,7 @@ ISO9660
 
 #ifndef TARGET_WINDOWS
 #include "storage/DetectDVDType.h"  // for MODE2_DATA_SIZE etc.
+#include "linux/XFileUtils.h"
 #endif
 #include <cdio/bytesex.h>
 //#define _DEBUG_OUTPUT 1

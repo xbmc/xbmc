@@ -56,6 +56,9 @@
 #include "utils/Variant.h"
 #include "Autorun.h"
 #include "URL.h"
+#ifdef TARGET_POSIX
+#include "linux/XFileUtils.h"
+#endif
 
 using namespace XFILE;
 using namespace PLAYLIST;

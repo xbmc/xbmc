@@ -34,7 +34,8 @@
 #include "filesystem/SpecialProtocol.h"
 
 #ifdef TARGET_POSIX
-#include "../../../linux/PlatformInclude.h"
+#include "linux/PlatformInclude.h"
+#include "linux/XFileUtils.h"
 #define __except catch
 #endif
 
