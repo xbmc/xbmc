@@ -174,7 +174,7 @@
 				<top>0</top>
 				<width>55</width>
 				<height>55</height>
-				<label>31354</label>
+				<label>209</label>
 				<font>-</font>
 				<texturefocus>OSDChannelDownFO.png</texturefocus>
 				<texturenofocus>OSDChannelDownNF.png</texturenofocus>
@@ -227,7 +227,7 @@
 				<top>0</top>
 				<width>55</width>
 				<height>55</height>
-				<label>31351</label>
+				<label>31352</label>
 				<font>-</font>
 				<texturefocus>OSDStopFO.png</texturefocus>
 				<texturenofocus>OSDStopNF.png</texturenofocus>
@@ -359,7 +359,7 @@
 				<top>0</top>
 				<width>55</width>
 				<height>55</height>
-				<label>31355</label>
+				<label>298</label>
 				<font>-</font>
 				<texturefocus>OSDBookmarksFO.png</texturefocus>
 				<texturenofocus>OSDBookmarksNF.png</texturenofocus>
@@ -460,8 +460,8 @@
 				<top>0</top>
 				<width>55</width>
 				<height>55</height>
-				<label>31351</label>
-				<altlabel>208</altlabel>
+				<label>264</label>
+				<altlabel>265</altlabel>
 				<font>-</font>
 				<texturefocus>OSDRecordOffFO.png</texturefocus>
 				<texturenofocus>OSDRecordOffNF.png</texturenofocus>
