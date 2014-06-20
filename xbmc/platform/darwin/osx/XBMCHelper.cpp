@@ -36,6 +36,9 @@
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "utils/SystemInfo.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "url.h"
 
 #include "threads/Atomics.h"
 
@@ -278,7 +281,8 @@ void XBMCHelper::Install()
   // Make sure directory exists.
   std::string strDir = getenv("HOME");
   strDir += "/Library/LaunchAgents";
-  CreateDirectory(strDir.c_str(), NULL);
+  CURL url = CURL(strDir);
+  XFILE::CDirectory::Create(url);
 
   // Load template.
   std::string plistData = ReadFile(m_launchAgentLocalFile.c_str());
@@ -324,7 +328,8 @@ void XBMCHelper::Uninstall()
     Start();
 
   // Remove the plist file.
-  DeleteFile(m_launchAgentInstallFile.c_str());
+  CURL url = CURL(m_launchAgentInstallFile);
+  XFILE::CFile::Delete(url);
 }
 
 /////////////////////////////////////////////////////////////////////////////

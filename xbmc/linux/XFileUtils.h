@@ -34,10 +34,6 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode,
             LPSECURITY_ATTRIBUTES lpSecurityAttributes,  DWORD dwCreationDisposition,
             DWORD dwFlagsAndAttributes, HANDLE hTemplateFile);
 
-BOOL   CopyFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, BOOL bFailIfExists);
-BOOL   DeleteFile(LPCSTR);
-BOOL   MoveFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName);
-
 BOOL   WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,  LPDWORD lpNumberOfBytesWritten, LPVOID lpOverlapped);
 BOOL   ReadFile( HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, void* unsupportedlpOverlapped);
 BOOL   FlushFileBuffers(HANDLE hFile);
