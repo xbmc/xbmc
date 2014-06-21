@@ -107,8 +107,6 @@ char **dll__environ = dll__environ_imp;
 
 CCriticalSection dll_cs_environ;
 
-#define dll_environ    (*dll___p__environ())   /* pointer to environment table */
-
 extern "C" void __stdcall init_emu_environ()
 {
   memset(dll__environ, 0, EMU_MAX_ENVIRONMENT_ITEMS + 1);
