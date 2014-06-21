@@ -83,7 +83,7 @@ public:
    \param fallback if non-NULL, is set to an alternate value to use should the actual value be not appropriate. Defaults to NULL.
    \return label (or image).
    */  
-  CStdString GetLabel(int contextWindow, bool preferImage = false, CStdString *fallback = NULL) const;
+  CStdString GetLabel(int contextWindow, bool preferImage = false, std::string *fallback = NULL) const;
 
   /*!
    \brief Gets a label (or image) for a given listitem from the info manager.
@@ -92,12 +92,12 @@ public:
    \param fallback if non-NULL, is set to an alternate value to use should the actual value be not appropriate. Defaults to NULL.
    \return label (or image).
    */
-  CStdString GetItemLabel(const CGUIListItem *item, bool preferImage = false, CStdString *fallback = NULL) const;
+  CStdString GetItemLabel(const CGUIListItem *item, bool preferImage = false, std::string *fallback = NULL) const;
 
   bool IsConstant() const;
   bool IsEmpty() const;
 
-  const CStdString GetFallback() const { return m_fallback; };
+  const std::string &GetFallback() const { return m_fallback; };
 
   static CStdString GetLabel(const CStdString &label, int contextWindow = 0, bool preferImage = false);
 
@@ -122,7 +122,7 @@ private:
    \param rebuild whether we need to rebuild the label
    \sa GetLabel, GetItemLabel
    */
-  const CStdString &CacheLabel(bool rebuild) const;
+  const std::string &CacheLabel(bool rebuild) const;
 
   class CInfoPortion
   {
@@ -140,7 +140,7 @@ private:
 
   mutable bool       m_dirty;
   mutable CStdString m_label;
-  CStdString m_fallback;
+  std::string m_fallback;
   std::vector<CInfoPortion> m_info;
 };
 

@@ -136,7 +136,7 @@ void CGUIInfoLabel::SetLabel(const CStdString &label, const CStdString &fallback
   Parse(label, context);
 }
 
-CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, CStdString *fallback /*= NULL*/) const
+CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, std::string *fallback /*= NULL*/) const
 {
   bool needsUpdate = m_dirty;
   if (!m_info.empty())
@@ -160,7 +160,7 @@ CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, CStdStri
   return CacheLabel(needsUpdate);
 }
 
-CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImages, CStdString *fallback /*= NULL*/) const
+CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImages, std::string *fallback /*= NULL*/) const
 {
   bool needsUpdate = m_dirty;
   if (item->IsFileItem() && !m_info.empty())
@@ -184,7 +184,7 @@ CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImag
   return CacheLabel(needsUpdate);
 }
 
-const CStdString &CGUIInfoLabel::CacheLabel(bool rebuild) const
+const std::string &CGUIInfoLabel::CacheLabel(bool rebuild) const
 {
   if (rebuild)
   {
