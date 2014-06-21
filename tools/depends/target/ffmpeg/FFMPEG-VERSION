@@ -1,5 +1,5 @@
 LIBNAME=ffmpeg
 BASE_URL=https://github.com/xbmc/FFmpeg/archive
-VERSION=2.2-Helix-alpha1.1
+VERSION=2.2-Helix-alpha2
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 
