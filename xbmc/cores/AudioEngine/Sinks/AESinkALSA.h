@@ -43,7 +43,7 @@ public:
   virtual void Deinitialize();
 
   virtual void         Stop            ();
-  virtual double       GetDelay        ();
+  virtual void         GetDelay        (AEDelayStatus& status);
   virtual double       GetCacheTotal   ();
   virtual unsigned int AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset);
   virtual void         Drain           ();

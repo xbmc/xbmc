@@ -75,10 +75,10 @@ void CAESinkNULL::Deinitialize()
   StopThread();
 }
 
-double CAESinkNULL::GetDelay()
+void CAESinkNULL::GetDelay(AEDelayStatus& status)
 {
   double sinkbuffer_seconds_to_empty = m_sinkbuffer_sec_per_byte * (double)m_sinkbuffer_level;
-  return sinkbuffer_seconds_to_empty;
+  status.SetDelay(sinkbuffer_seconds_to_empty);
 }
 
 double CAESinkNULL::GetCacheTotal()

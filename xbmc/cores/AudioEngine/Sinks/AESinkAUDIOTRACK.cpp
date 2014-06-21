@@ -142,10 +142,13 @@ void CAESinkAUDIOTRACK::Deinitialize()
   m_at_jni = NULL;
 }
 
-double CAESinkAUDIOTRACK::GetDelay()
+void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 {
   if (!m_at_jni)
-    return 0.0;
+  {
+    status.SetDelay(0);
+    return;
+  }
 
   // In their infinite wisdom, Google decided to make getPlaybackHeadPosition
   // return a 32bit "int" that you should "interpret as unsigned."  As such,
@@ -154,7 +157,7 @@ double CAESinkAUDIOTRACK::GetDelay()
 
   double delay = (double)(m_frames_written - head_pos) / m_format.m_sampleRate;
 
-  return delay;
+  status.SetDelay(delay);
 }
 
 double CAESinkAUDIOTRACK::GetLatency()

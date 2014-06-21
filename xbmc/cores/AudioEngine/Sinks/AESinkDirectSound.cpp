@@ -424,18 +424,20 @@ void CAESinkDirectSound::Drain()
   UpdateCacheStatus();
 }
 
-double CAESinkDirectSound::GetDelay()
+void CAESinkDirectSound::GetDelay(AEDelayStatus& status)
 {
   if (!m_initialized)
-    return 0.0;
+  {
+    status.SetDelay(0);
+    return;
+  }
 
   /* Make sure we know how much data is in the cache */
   if (!UpdateCacheStatus())
     m_isDirtyDS = true;
 
   /** returns current cached data duration in seconds */
-  double delay = (double)m_CacheLen / (double)m_AvgBytesPerSec;
-  return delay;
+  status.SetDelay((double)m_CacheLen / (double)m_AvgBytesPerSec);
 }
 
 double CAESinkDirectSound::GetCacheTotal()
