@@ -253,7 +253,7 @@ bool CMouseStat::MovedPastThreshold() const
   return (m_mouseState.dx * m_mouseState.dx + m_mouseState.dy * m_mouseState.dy >= MOUSE_MINIMUM_MOVEMENT * MOUSE_MINIMUM_MOVEMENT);
 }
 
-+uint32_t CMouseStat::GetRawAction() const
+uint32_t CMouseStat::GetRawAction() const
 {
   return m_RawAction;
 }
