@@ -55,9 +55,9 @@ void CAESinkProfiler::Deinitialize()
 {
 }
 
-double CAESinkProfiler::GetDelay()
+void CAESinkProfiler::GetDelay(AEDelayStatus& status)
 {
-  return 0.0f;
+  status.SetDelay(0);
 }
 
 unsigned int CAESinkProfiler::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)

@@ -497,10 +497,13 @@ void CAESinkALSA::Stop()
   snd_pcm_drop(m_pcm);
 }
 
-double CAESinkALSA::GetDelay()
+void CAESinkALSA::GetDelay(AEDelayStatus& status)
 {
   if (!m_pcm)
-    return 0;
+  {
+    status.SetDelay(0);
+    return;
+  }
   snd_pcm_sframes_t frames = 0;
   snd_pcm_delay(m_pcm, &frames);
 
@@ -512,7 +515,7 @@ double CAESinkALSA::GetDelay()
     frames = 0;
   }
 
-  return (double)frames * m_formatSampleRateMul;
+  status.SetDelay((double)frames * m_formatSampleRateMul);
 }
 
 double CAESinkALSA::GetCacheTotal()

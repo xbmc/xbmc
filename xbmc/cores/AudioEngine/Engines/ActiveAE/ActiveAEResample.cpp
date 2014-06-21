@@ -218,7 +218,8 @@ int CActiveAEResample::Resample(uint8_t **dst_buffer, int dst_samples, uint8_t *
         uint32_t* buf = (uint32_t*)dst_buffer[i];
         for (int j=0; j<samples; j++)
         {
-          *buf = *buf >> m_dst_dither_bits;
+          *buf = *buf >> (32 - m_dst_bits - m_dst_dither_bits);
+          buf++;
         }
       }
     }

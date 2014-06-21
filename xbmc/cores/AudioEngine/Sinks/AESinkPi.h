@@ -40,8 +40,7 @@ public:
   virtual void Deinitialize();
   virtual bool IsCompatible(const AEAudioFormat &format, const std::string &device);
 
-  virtual double       GetDelay        ();
-  virtual double       GetCacheTime    ();
+  virtual void         GetDelay        (AEDelayStatus& status);
   virtual double       GetCacheTotal   ();
   virtual unsigned int AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset);
   virtual void         Drain           ();
