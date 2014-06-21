@@ -41,7 +41,6 @@ public:
   virtual bool IsCompatible(const AEAudioFormat &format, const std::string &device);
 
   virtual void         GetDelay        (AEDelayStatus& status);
-  virtual double       GetCacheTime    ();
   virtual double       GetCacheTotal   ();
   virtual unsigned int AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset);
   virtual void         Drain           ();

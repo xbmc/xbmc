@@ -299,11 +299,6 @@ void CAESinkPi::GetDelay(AEDelayStatus& status)
   status.SetDelay(sinkbuffer_seconds_to_empty);
 }
 
-double CAESinkPi::GetCacheTime()
-{
-  return GetDelay();
-}
-
 double CAESinkPi::GetCacheTotal()
 {
   return AUDIO_PLAYBUFFER;
