@@ -1336,7 +1336,10 @@ void CAESinkWASAPI::Drain()
   if(!m_pAudioClient)
     return;
 
-  Sleep( (DWORD)(GetDelay()*500) );
+  AEDelayStatus status;
+  GetDelay(status);
+
+  Sleep((DWORD)(status.GetDelay() * 500));
 
   if (m_running)
   {
