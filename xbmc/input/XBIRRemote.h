@@ -93,6 +93,8 @@
 #define XINPUT_IR_REMOTE_LIVE_RADIO     248
 #define XINPUT_IR_REMOTE_EPG_SEARCH     246
 
+#define XINPUT_IR_REMOTE_EJECT          235
+
 // Reserved 256 -> ...
 // Key.h
 // KEY_BUTTON_*
