@@ -15,7 +15,9 @@
 CPlexRemoteResponse CPlexRemotePlaybackHandler::handle(const CStdString &url, const ArgMap &arguments)
 {
   if (url.Equals("/player/playback/stepForward") ||
-           url.Equals("/player/playback/stepBack"))
+           url.Equals("/player/playback/stepBack") ||
+           url.Equals("/player/playback/bigStepForward") ||
+           url.Equals("/player/playback/bigStepBack"))
     return stepFunction(url, arguments);
   else if (url.Equals("/player/playback/skipNext"))
     return skipNext(arguments);
