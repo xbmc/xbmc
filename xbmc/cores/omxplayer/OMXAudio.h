@@ -74,7 +74,7 @@ public:
   void SetVolume(float nVolume);
   void SetMute(bool bOnOff);
   void SetDynamicRangeCompression(long drc);
-  float GetDynamicRangeAmplification() { return 20.0f * log10f(m_amplification * m_attenuation); }
+  float GetDynamicRangeAmplification() const { return 20.0f * log10f(m_amplification * m_attenuation); }
   bool ApplyVolume();
   int SetPlaySpeed(int iSpeed);
   void SubmitEOS();
@@ -96,8 +96,8 @@ public:
   unsigned int SyncAC3(BYTE* pData, unsigned int iSize);
   void UpdateAttenuation();
 
-  bool BadState() { return !m_Initialized; };
-  unsigned int GetAudioRenderingLatency();
+  bool BadState() const { return !m_Initialized; };
+  unsigned int GetAudioRenderingLatency() const;
   float GetMaxLevel(double &pts);
 
 private:

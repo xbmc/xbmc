@@ -56,7 +56,7 @@ public:
   void WaitForBuffers()                             { m_messageQueue.WaitUntilEmpty(); }
   bool AcceptsData() const                          { return !m_messageQueue.IsFull(); }
   bool HasData() const                              { return m_messageQueue.GetDataSize() > 0; }
-  int  GetLevel();
+  int  GetLevel() const;
   bool IsInited() const                             { return m_messageQueue.IsInited(); }
   void SendMessage(CDVDMsg* pMsg, int priority = 0) { m_messageQueue.Put(pMsg, priority); }
 
@@ -66,7 +66,7 @@ public:
   void EnableFullscreen(bool bEnable)               { m_bAllowFullscreen = bEnable; }
 
 #ifdef HAS_VIDEO_PLAYBACK
-  void GetVideoRect(CRect& SrcRect, CRect& DestRect)  { g_renderManager.GetVideoRect(SrcRect, DestRect); }
+  void GetVideoRect(CRect& SrcRect, CRect& DestRect) const { g_renderManager.GetVideoRect(SrcRect, DestRect); }
   float GetAspectRatio()                            { return g_renderManager.GetAspectRatio(); }
 #endif
 

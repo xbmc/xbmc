@@ -847,7 +847,7 @@ void CDVDPlayerVideo::Flush()
   m_messageQueue.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH), 1);
 }
 
-int CDVDPlayerVideo::GetLevel()
+int CDVDPlayerVideo::GetLevel() const
 {
   int level = m_messageQueue.GetLevel();
 

@@ -1411,7 +1411,7 @@ void COMXAudio::UnRegisterAudioCallback()
   m_pCallback = NULL;
 }
 
-unsigned int COMXAudio::GetAudioRenderingLatency()
+unsigned int COMXAudio::GetAudioRenderingLatency() const
 {
   CSingleLock lock (m_critSection);
 
