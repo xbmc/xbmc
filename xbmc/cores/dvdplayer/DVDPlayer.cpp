@@ -2440,15 +2440,11 @@ bool CDVDPlayer::CanSeek()
 
 void CDVDPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 {
-#if 0
-  // sadly this doesn't work for now, audio player must
-  // drop packets at the same rate as we play frames
   if( m_playSpeed == DVD_PLAYSPEED_PAUSE && bPlus && !bLargeStep)
   {
-    m_dvdPlayerVideo.StepFrame();
-    return;
+    if (m_dvdPlayerVideo.StepFrame())
+      return;
   }
-#endif
   if (!m_State.canseek)
     return;
 

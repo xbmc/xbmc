@@ -835,9 +835,16 @@ void CDVDPlayerVideo::SetSpeed(int speed)
     m_speed = speed;
 }
 
-void CDVDPlayerVideo::StepFrame()
+bool CDVDPlayerVideo::StepFrame()
 {
+#if 0
+  // sadly this doesn't work for now, audio player must
+  // drop packets at the same rate as we play frames
   m_iNrOfPicturesNotToSkip++;
+  return true;
+#else
+  return false;
+#endif
 }
 
 void CDVDPlayerVideo::Flush()

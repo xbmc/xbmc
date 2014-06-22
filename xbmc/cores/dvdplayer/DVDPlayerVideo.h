@@ -49,7 +49,7 @@ public:
   void OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec);
   void CloseStream(bool bWaitForBuffers);
 
-  void StepFrame();
+  bool StepFrame();
   void Flush();
 
   // waits until all available data has been rendered

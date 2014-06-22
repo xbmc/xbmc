@@ -99,6 +99,7 @@ public:
   bool IsEOS();
   void CloseStream(bool bWaitForBuffers);
   void Output(double pts, bool bDropPacket);
+  bool StepFrame();
   void Flush();
   bool OpenDecoder();
   int  GetDecoderBufferSize();

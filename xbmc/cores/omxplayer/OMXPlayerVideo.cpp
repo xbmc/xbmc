@@ -519,6 +519,14 @@ void OMXPlayerVideo::Process()
   }
 }
 
+bool OMXPlayerVideo::StepFrame()
+{
+  if (!m_av_clock)
+    return false;
+  m_av_clock->OMXStep();
+  return true;
+}
+
 void OMXPlayerVideo::Flush()
 {
   m_flush = true;
