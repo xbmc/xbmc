@@ -411,7 +411,7 @@ namespace XBMCAddon
       if (g_application.m_pPlayer->HasPlayer())
       {
         SPlayerSubtitleStreamInfo info;
-        g_application.m_pPlayer->GetSubtitleStreamInfo(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream, info);
+        g_application.m_pPlayer->GetSubtitleStreamInfo(g_application.m_pPlayer->GetSubtitle(), info);
 
         if (info.language.length() > 0)
           return info.language;
