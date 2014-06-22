@@ -2898,12 +2898,22 @@ bool CDVDPlayer::OpenStream(CCurrentStream& current, int iStream, int source, bo
   {
     case STREAM_AUDIO:
       res = OpenAudioStream(hint, reset);
+      if (res)
+      {
+        current.id = iStream;
+        CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream = GetAudioStream();
+      }
       break;
     case STREAM_VIDEO:
       res = OpenVideoStream(hint, reset);
       break;
     case STREAM_SUBTITLE:
       res = OpenSubtitleStream(hint);
+      if (res)
+      {
+        current.id = iStream;
+        CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = GetSubtitle();
+      }
       break;
     case STREAM_TELETEXT:
       res = OpenTeletextStream(hint);
