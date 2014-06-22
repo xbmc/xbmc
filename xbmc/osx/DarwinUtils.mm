@@ -273,11 +273,21 @@ int  GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize)
   }
 
   // d) XBMC application running under OSX
-  pathname = [[NSBundle mainBundle] privateFrameworksPath];
+  pathname = [[NSBundle mainBundle] executablePath];
   if (pathname && strstr([pathname UTF8String], "Contents"))
   {
-    // check for 'Contents' if we are running as real xbmc.app
     strcpy(path, [pathname UTF8String]);
+    // ExectuablePath is <product>.app/Contents/MacOS/<executable>
+    char *lastSlash = strrchr(path, '/');
+    if (lastSlash)
+    {
+      *lastSlash = '\0';//remove /<executable>  
+      lastSlash = strrchr(path, '/');
+      if (lastSlash)
+        *lastSlash = '\0';//remove /MacOS
+    }
+    strcat(path, "/Libraries");//add /Libraries
+    //we should have <product>.app/Contents/Libraries now
     *pathsize = strlen(path);
     //CLog::Log(LOGDEBUG, "DarwinFrameworkPath(d) -> %s", path);
     return 0;
