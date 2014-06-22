@@ -1343,7 +1343,7 @@ namespace VIDEO
     pItem->SetArt(art);
 
     // parent folder to apply the thumb to and to search for local actor thumbs
-    std::string parentDir = GetParentDir(*pItem);
+    std::string parentDir = URIUtils::GetBasePath(pItem->GetPath());
     if (CSettings::Get().GetBool("videolibrary.actorthumbs"))
       FetchActorThumbs(movieDetails.m_cast, actorArtPath.empty() ? parentDir : actorArtPath);
     if (bApplyToDir)
@@ -2058,27 +2058,4 @@ namespace VIDEO
     }
     return 0;    // didn't find anything
   }
-
-  std::string CVideoInfoScanner::GetParentDir(const CFileItem &item) const
-  {
-    std::string strCheck = item.GetPath();
-    if (item.IsStack())
-      strCheck = CStackDirectory::GetFirstStackedFile(item.GetPath());
-
-    std::string strDirectory = URIUtils::GetDirectory(strCheck);
-    if (URIUtils::IsInRAR(strCheck))
-    {
-      std::string strPath=strDirectory;
-      URIUtils::GetParentPath(strPath, strDirectory);
-    }
-    if (item.IsStack())
-    {
-      strCheck = strDirectory;
-      URIUtils::RemoveSlashAtEnd(strCheck);
-      if (URIUtils::GetFileName(strCheck).size() == 3 && StringUtils::StartsWithNoCase(URIUtils::GetFileName(strCheck), "cd"))
-        strDirectory = URIUtils::GetDirectory(strCheck);
-    }
-    return strDirectory;
-  }
-
 }

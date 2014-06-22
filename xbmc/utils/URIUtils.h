@@ -72,6 +72,12 @@ public:
   static std::string GetParentPath(const std::string& strPath);
   static bool GetParentPath(const std::string& strPath, std::string& strParent);
 
+  /*! \brief Retrieve the base path, accounting for stacks and files in rars.
+   \param strPath path.
+   \return the folder that contains the item.
+   */
+  static std::string GetBasePath(const std::string& strPath);
+
   /* \brief Change the base path of a URL: fromPath/fromFile -> toPath/toFile
     Handles changes in path separator and filename URL encoding if necessary to derive toFile.
     \param fromPath the base path of the original URL

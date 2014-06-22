@@ -402,6 +402,28 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
   return true;
 }
 
+std::string URIUtils::GetBasePath(const std::string& strPath)
+{
+  std::string strCheck(strPath);
+  if (IsStack(strPath))
+    strCheck = CStackDirectory::GetFirstStackedFile(strPath);
+
+  std::string strDirectory = GetDirectory(strCheck);
+  if (IsInRAR(strCheck))
+  {
+    std::string strPath=strDirectory;
+    GetParentPath(strPath, strDirectory);
+  }
+  if (IsStack(strPath))
+  {
+    strCheck = strDirectory;
+    RemoveSlashAtEnd(strCheck);
+    if (GetFileName(strCheck).size() == 3 && StringUtils::StartsWithNoCase(GetFileName(strCheck), "cd"))
+      strDirectory = GetDirectory(strCheck);
+  }
+  return strDirectory;
+}
+
 std::string URLEncodePath(const std::string& strPath)
 {
   vector<string> segments = StringUtils::Split(strPath, "/");
