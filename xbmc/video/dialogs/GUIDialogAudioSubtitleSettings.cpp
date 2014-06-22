@@ -454,7 +454,7 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(CSettingGroup *group, c
   if (group == NULL || settingId.empty())
     return;
 
-  m_subtitleStream = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream;
+  m_subtitleStream = g_application.m_pPlayer->GetSubtitle();
   if (m_subtitleStream < 0)
     m_subtitleStream = 0;
 
