@@ -592,11 +592,6 @@ void OMXPlayerVideo::SubmitEOS()
   m_omxVideo.SubmitEOS();
 }
 
-bool OMXPlayerVideo::SubmittedEOS()
-{
-  return m_omxVideo.SubmittedEOS();
-}
-
 bool OMXPlayerVideo::IsEOS()
 {
   return m_omxVideo.IsEOS();

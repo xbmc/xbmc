@@ -37,7 +37,7 @@ class CDVDOverlayCodecCC;
 
 #define VIDEO_PICTURE_QUEUE_SIZE 1
 
-class CDVDPlayerVideo : public CThread, public IDVDStreamPlayer
+class CDVDPlayerVideo : public CThread, public IDVDStreamPlayerVideo
 {
 public:
   CDVDPlayerVideo( CDVDClock* pClock
@@ -78,10 +78,12 @@ public:
 
   bool IsStalled() const                            { return m_stalled; }
   bool IsEOS()                                      { return false; }
+  bool SubmittedEOS() const                         { return false; }
 
   double GetCurrentPts()                           { return m_iCurrentPts; }
 
   double GetOutputDelay(); /* returns the expected delay, from that a packet is put in queue */
+  int GetDecoderFreeSpace() { return 0; }
   std::string GetPlayerInfo();
   int GetVideoBitrate();
   std::string GetStereoMode();

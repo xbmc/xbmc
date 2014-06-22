@@ -370,8 +370,8 @@ protected:
 
   CDVDMessageQueue m_messenger;     // thread messenger
 
-  CDVDPlayerVideo *m_dvdPlayerVideo; // video part
-  CDVDPlayerAudio *m_dvdPlayerAudio; // audio part
+  IDVDStreamPlayerVideo *m_dvdPlayerVideo; // video part
+  IDVDStreamPlayerAudio *m_dvdPlayerAudio; // audio part
   CDVDPlayerSubtitle *m_dvdPlayerSubtitle; // subtitle part
   CDVDTeletextData *m_dvdPlayerTeletext; // teletext part
 

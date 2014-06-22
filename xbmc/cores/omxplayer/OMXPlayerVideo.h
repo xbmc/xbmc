@@ -107,7 +107,7 @@ public:
   double GetCurrentPts() { return m_iCurrentPts; };
   double GetFPS() { return m_fFrameRate; };
   void  SubmitEOS();
-  bool SubmittedEOS();
+  bool SubmittedEOS() const { return m_omxVideo.SubmittedEOS(); }
   void SetDelay(double delay) { m_iVideoDelay = delay; }
   double GetDelay() { return m_iVideoDelay; }
   void SetSpeed(int iSpeed);
