@@ -818,15 +818,6 @@ void CDVDPlayerVideo::ProcessVideoUserData(DVDVideoUserData* pVideoUserData, dou
   }
 }
 
-bool CDVDPlayerVideo::InitializedOutputDevice()
-{
-#ifdef HAS_VIDEO_PLAYBACK
-  return g_renderManager.IsStarted();
-#else
-  return false;
-#endif
-}
-
 void CDVDPlayerVideo::SetSpeed(int speed)
 {
   if(m_messageQueue.IsInited())

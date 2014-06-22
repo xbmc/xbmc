@@ -98,7 +98,6 @@ public:
   double GetCacheTime();
   double GetCacheTotal();
   double GetCurrentPts() { return m_audioClock; };
-  void WaitCompletion();
   void SubmitEOS();
 
   void  RegisterAudioCallback(IAudioCallback* pCallback) { m_omxAudio.RegisterAudioCallback(pCallback); }

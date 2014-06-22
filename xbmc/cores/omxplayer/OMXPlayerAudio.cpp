@@ -627,27 +627,6 @@ bool OMXPlayerAudio::IsEOS()
   return m_bad_state || m_omxAudio.IsEOS();
 }
 
-void OMXPlayerAudio::WaitCompletion()
-{
-  unsigned int nTimeOut = AUDIO_BUFFER_SECONDS * 1000;
-  while(nTimeOut)
-  {
-    if(IsEOS())
-    {
-      CLog::Log(LOGDEBUG, "%s::%s - got eos\n", CLASSNAME, __func__);
-      break;
-    }
-
-    if(nTimeOut == 0)
-    {
-      CLog::Log(LOGERROR, "%s::%s - wait for eos timed out\n", CLASSNAME, __func__);
-      break;
-    }
-    Sleep(50);
-    nTimeOut -= 50;
-  }
-}
-
 void OMXPlayerAudio::SetSpeed(int speed)
 {
   if(m_messageQueue.IsInited())

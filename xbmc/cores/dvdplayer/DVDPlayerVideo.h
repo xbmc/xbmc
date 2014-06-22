@@ -77,12 +77,8 @@ public:
   void SetSubtitleDelay(double delay)                      { m_iSubtitleDelay = delay; }
 
   bool IsStalled() const                            { return m_stalled; }
-  int GetNrOfDroppedFrames()                        { return m_iDroppedFrames; }
-
-  bool InitializedOutputDevice();
 
   double GetCurrentPts()                           { return m_iCurrentPts; }
-  int    GetPullupCorrection()                     { return m_pullupCorrection.GetPatternLength(); }
 
   double GetOutputDelay(); /* returns the expected delay, from that a packet is put in queue */
   std::string GetPlayerInfo();
