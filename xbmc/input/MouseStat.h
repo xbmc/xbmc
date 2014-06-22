@@ -78,7 +78,8 @@ public:
   void SetEnabled(bool enabled = true);
   MOUSE_STATE GetState() const { return m_pointerState; };
   uint32_t GetAction() const;
-
+  uint32_t GetRawAction() const;
+  
   int GetHold(int ButtonID) const;
   inline int GetX(void) const { return m_mouseState.x; }
   inline int GetY(void) const { return m_mouseState.y; }
