@@ -71,12 +71,12 @@ protected:
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
+  void OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec);
 private:
 public:
   OMXPlayerAudio(OMXClock *av_clock, CDVDMessageQueue& parent);
   ~OMXPlayerAudio();
   bool OpenStream(CDVDStreamInfo &hints);
-  void OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec);
   void SendMessage(CDVDMsg* pMsg, int priority = 0) { m_messageQueue.Put(pMsg, priority); }
   bool AcceptsData() const                          { return !m_messageQueue.IsFull(); }
   bool HasData() const                              { return m_messageQueue.GetDataSize() > 0; }

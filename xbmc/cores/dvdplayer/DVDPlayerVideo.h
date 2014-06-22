@@ -46,7 +46,6 @@ public:
   virtual ~CDVDPlayerVideo();
 
   bool OpenStream(CDVDStreamInfo &hint);
-  void OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec);
   void CloseStream(bool bWaitForBuffers);
 
   bool StepFrame();
@@ -115,6 +114,7 @@ protected:
   void ProcessOverlays(DVDVideoPicture* pSource, double pts);
 #endif
   void ProcessVideoUserData(DVDVideoUserData* pVideoUserData, double pts);
+  void OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec);
 
   CDVDMessageQueue m_messageQueue;
   CDVDMessageQueue& m_messageParent;

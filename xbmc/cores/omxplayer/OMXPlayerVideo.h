@@ -79,6 +79,7 @@ protected:
 
   void ProcessOverlays(double pts);
   double NextOverlay(double pts);
+  bool OpenStream(CDVDStreamInfo &hints, COMXVideo *codec);
 
   virtual void OnStartup();
   virtual void OnExit();
@@ -88,7 +89,6 @@ public:
   OMXPlayerVideo(OMXClock *av_clock, CDVDOverlayContainer* pOverlayContainer, CDVDMessageQueue& parent);
   ~OMXPlayerVideo();
   bool OpenStream(CDVDStreamInfo &hints);
-  bool OpenStream(CDVDStreamInfo &hints, COMXVideo *codec);
   void SendMessage(CDVDMsg* pMsg, int priority = 0) { m_messageQueue.Put(pMsg, priority); }
   bool AcceptsData() const                          { return !m_messageQueue.IsFull(); }
   bool HasData() const                              { return m_messageQueue.GetDataSize() > 0; }
