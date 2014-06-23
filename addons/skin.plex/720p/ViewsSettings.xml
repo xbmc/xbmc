@@ -78,12 +78,13 @@
 	<!-- settings menu (left) -->
 	<include name="SettingsMenu">
 		<control type="group" id="302">
+			<animation effect="fade" start="100" end="50" time="300" condition="Window.IsActive(4997)">Conditional</animation>
 			<include>FadeDialog</include>
 			<control type="grouplist" id="3">
 				<posy>135</posy>
 				<posx>120</posx>
 				<width>350</width>
-				<onleft>997</onleft>
+				<onleft>Plex.ActivateWindow(4997)</onleft>
 				<onright>301</onright>
 				<onup>-</onup>
 				<ondown>3</ondown>
@@ -101,6 +102,7 @@
 	<!-- setting options (right) -->
 	<include name="SettingOptions">
 		<control type="group" id="301">
+			<animation effect="fade" start="100" end="50" time="300" condition="Window.IsActive(4997)">Conditional</animation>
 			<include>FadeDialog</include>
 			<posx>400</posx>
 			<posy>70</posy>

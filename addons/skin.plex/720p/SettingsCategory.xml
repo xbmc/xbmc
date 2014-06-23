@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 <window id="12">
-	<defaultcontrol>3</defaultcontrol>
+	<defaultcontrol>997</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
-	<backgroundcolor>black</backgroundcolor>
+	<onload>SkinSetString(SettingsCategory,appearance)</onload>
+	<onunload>Skin.Reset(SettingsCategory)</onunload>
 	<controls>
 		<!-- bg's -->
-		<include>SlideshowDimmed</include>
+		<include>SlideshowSettings</include>
 		<control type="group">
 			<posx>45</posx>
 			<include>SettingsBG</include>
@@ -19,7 +20,6 @@
 		<!--<include>TopBar</include>-->
 		<include>debugInfos</include>
 		<include>Grid</include>
-		<include>WindowFade</include>
 		<include>Non16x9Cache</include>
 	</controls>
 </window>

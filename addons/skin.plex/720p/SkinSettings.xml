@@ -4,7 +4,7 @@
 	<allowoverlay>no</allowoverlay>
 	<controls>
 		<!-- bg's -->
-		<include>SlideshowDimmed</include>
+		<include>SlideshowSettings</include>
 		<include>SettingsBG</include>
 		<!-- categories menu (top) -->
 		<include>SettingsCategoryMenu</include>
@@ -16,7 +16,7 @@
 				<width>350</width>
 				<onup>1000</onup>
 				<ondown>101</ondown>
-				<onleft>997</onleft>
+				<onleft>Plex.ActivateWindow(4997)</onleft>
 				<onright>5</onright>
 				<height>500</height>
 				<scrolltime>200</scrolltime>

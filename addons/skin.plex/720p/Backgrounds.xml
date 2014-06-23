@@ -10,34 +10,34 @@
 	</include>
 	<include name="BGFanart">
 		<control type="group">
-		<!-- generic global fanart for when the container is empty -->
-		<control type="multiimage">
-			<include>FullScreenScaled</include>
-			<timeperimage>8000</timeperimage>
-			<fadetime>1000</fadetime>
-			<randomize>true</randomize>
-			<loop>yes</loop>
-			<imagepath background="true">plexserver://best:32400/library/arts</imagepath>
-			<animation effect="fade" end="50" time="400" condition="true">Conditional</animation>
-			<animation type="WindowClose">
-				<effect type="fade" start="100" end="0" time="800"/>
-			</animation>
-			<visible>Container.Content(empty)</visible>
-		</control>
-		<control type="largeimage">
-			<include>FullScreenScaled</include>
-			<fadetime>400</fadetime>
-			<animation effect="fade" end="100" time="300" delay="0">Visible</animation>
-			<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
-			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
-		</control>
-		<control type="image">
-			<include>FullScreenScaled</include>
-			<texture>bg-overlay-grainy.png</texture>
-			<animation effect="fade" start="0" end="100" time="600">WindowOpen</animation>
-			<animation effect="fade" start="100" end="0" time="600">WindowClose</animation>
-			<visible>!IsEmpty(Container.Property(primaryFilterActivated))</visible>
-		</control>
+			<!-- generic global fanart for when the container is empty -->
+			<control type="multiimage">
+				<include>FullScreenScaled</include>
+				<timeperimage>8000</timeperimage>
+				<fadetime>1000</fadetime>
+				<randomize>true</randomize>
+				<loop>yes</loop>
+				<imagepath background="true">plexserver://best:32400/library/arts</imagepath>
+				<animation effect="fade" end="50" time="400" condition="true">Conditional</animation>
+				<animation type="WindowClose">
+					<effect type="fade" start="100" end="0" time="800"/>
+				</animation>
+				<visible>Container.Content(empty)</visible>
+			</control>
+			<control type="largeimage">
+				<include>FullScreenScaled</include>
+				<fadetime>400</fadetime>
+				<animation effect="fade" end="100" time="300" delay="0">Visible</animation>
+				<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
+				<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+			</control>
+			<control type="image">
+				<include>FullScreenScaled</include>
+				<texture>bg-overlay-grainy.png</texture>
+				<animation effect="fade" start="0" end="100" time="600">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="600">WindowClose</animation>
+				<visible>!IsEmpty(Container.Property(primaryFilterActivated))</visible>
+			</control>
 		</control>
 		<!-- Clip backgrounds use item thumb, not as pretty so we'll hide them a bit more -->
 		<control type="group">
@@ -201,6 +201,26 @@
 				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
 				<visible>true</visible>
 			</control>
+		</control>
+	</include>
+	<include name="SlideshowSettings">
+		<control type="multiimage">
+			<visible>!Skin.HasSetting(HideFanart)</visible>
+			<include>FullScreenScaled</include>
+			<timeperimage>8000</timeperimage>
+			<fadetime>1000</fadetime>
+			<randomize>true</randomize>
+			<loop>yes</loop>
+			<imagepath background="true">plexserver://best:32400/library/arts</imagepath>
+			<animation effect="fade" end="15" time="400" condition="true">Conditional</animation>
+		</control>
+		<control type="image">
+			<width>1280</width>
+			<height>720</height>
+			<texture>bg-overlay-grainy.png</texture>
+			<aspectratio>stretch</aspectratio>
+			<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+			<visible>true</visible>
 		</control>
 	</include>
 	<include name="SlideshowDimmed">
