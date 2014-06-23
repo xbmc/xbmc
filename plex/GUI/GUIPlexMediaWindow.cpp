@@ -149,6 +149,7 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
     case GUI_MSG_PLEX_PAGE_LOADED:
     {
       InsertPage((CFileItemList*)message.GetPointer(), message.GetParam2());
+      break;
     }
 
     case GUI_MSG_CHANGE_VIEW_MODE:
