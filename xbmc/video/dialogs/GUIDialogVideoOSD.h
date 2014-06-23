@@ -33,15 +33,6 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
 
-  /* PLEX */
-  bool IsOpenedFromPause() const { return m_openedFromPause; }
-  void SetOpenedFromPause(bool onOff) { m_openedFromPause = onOff; }
-  /* END PLEX */
-
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-
-  /* PLEX */
-  bool m_openedFromPause;
-  /* END PLEX */
 };

@@ -370,6 +370,7 @@
 #include "plex/Playlists/GUIDialogPlexPlayQueue.h"
 #include "plex/GUI/GUIDialogPlexError.h"
 #include "plex/GUI/GUIDialogPlexGlobalCacher.h"
+#include "plex/GUI/GUIDialogPlexVideoOSD.h"
 /* END PLEX */
 
 #if defined(TARGET_ANDROID)
@@ -1503,7 +1504,9 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIWindowKaraokeLyrics);
 #endif
 
+#ifndef __PLEX__
     g_windowManager.Add(new CGUIDialogVideoOSD);
+#endif
     g_windowManager.Add(new CGUIDialogMusicOverlay);
     g_windowManager.Add(new CGUIDialogVideoOverlay);
     g_windowManager.Add(new CGUIWindowScreensaver);
@@ -1531,6 +1534,7 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIWindowPlexPlayQueue);
     g_windowManager.Add(new CGUIDialogPlexPlayQueue);
     g_windowManager.Add(new CGUIDialogPlexGlobalCacher);
+    g_windowManager.Add(new CGUIDialogPlexVideoOSD);
     /* END PLEX */
 
     /* window id's 3000 - 3100 are reserved for python */
@@ -5750,7 +5754,7 @@ void CApplication::ProcessSlow()
   /* PLEX */
   if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO && IsPlayingVideo())
   {
-    CGUIDialogVideoOSD *osd = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
+    CGUIDialogPlexVideoOSD *osd = (CGUIDialogPlexVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
     if (IsPaused() && !IsBuffering())
     {
       if (osd && !osd->IsDialogRunning())
