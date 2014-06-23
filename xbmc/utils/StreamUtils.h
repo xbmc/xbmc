@@ -19,8 +19,6 @@
  *
  */
 
-#include "StreamUtils.h"
-
 #include "StdString.h"
 
 class StreamUtils
