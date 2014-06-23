@@ -1489,6 +1489,9 @@
     <ClCompile Include="..\..\xbmc\utils\RssReader.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\SaveFileStateJob.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\ScraperParser.cpp">
       <Filter>utils</Filter>
     </ClCompile>

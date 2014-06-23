@@ -49,6 +49,7 @@ SRCS += RegExp.cpp
 SRCS += RingBuffer.cpp
 SRCS += RssManager.cpp
 SRCS += RssReader.cpp
+SRCS += SaveFileStateJob.cpp
 SRCS += ScraperParser.cpp
 SRCS += ScraperUrl.cpp
 SRCS += Screenshot.cpp
