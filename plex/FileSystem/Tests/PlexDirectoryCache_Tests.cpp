@@ -2,7 +2,20 @@
 #include "FileSystem/PlexDirectoryCache.h"
 #include "gtest/gtest.h"
 
-TEST(PlexCacheDirectoryAddToCache, CACHE_STARTEGY_NONE)
+class PlexCacheDirectoryTests : public ::testing::Test
+{
+  void SetUp()
+  {
+    g_plexApplication.directoryCache = CPlexDirectoryCachePtr(new CPlexDirectoryCache);
+  }
+
+  void TearDown()
+  {
+    g_plexApplication.directoryCache.reset();
+  }
+};
+
+TEST_F(PlexCacheDirectoryTests, Add_CACHE_STARTEGY_NONE)
 {
   CFileItemList List;
   List.Add(CFileItemPtr(new CFileItem));
@@ -12,7 +25,7 @@ TEST(PlexCacheDirectoryAddToCache, CACHE_STARTEGY_NONE)
   EXPECT_FALSE(g_plexApplication.directoryCache->GetCacheHit("Test",1234567890,List));
 }
 
-TEST(PlexCacheDirectoryAddToCache, CACHE_STRATEGY_ITEM_COUNT_Low)
+TEST_F(PlexCacheDirectoryTests, Add_CACHE_STRATEGY_ITEM_COUNT_Low)
 {
   CFileItemList List;
   List.Add(CFileItemPtr(new CFileItem));
@@ -23,7 +36,7 @@ TEST(PlexCacheDirectoryAddToCache, CACHE_STRATEGY_ITEM_COUNT_Low)
 }
 
 
-TEST(PlexCacheDirectoryAddToCache, CACHE_STRATEGY_ITEM_COUNT_High)
+TEST_F(PlexCacheDirectoryTests, Add_CACHE_STRATEGY_ITEM_COUNT_High)
 {
   CFileItemList List;
 
@@ -38,7 +51,7 @@ TEST(PlexCacheDirectoryAddToCache, CACHE_STRATEGY_ITEM_COUNT_High)
   g_plexApplication.directoryCache->Clear();
 }
 
-TEST(PlexCacheDirectoryAddToCache, CACHE_STRATEGY_ALWAYS)
+TEST_F(PlexCacheDirectoryTests, Add_CACHE_STRATEGY_ALWAYS)
 {
   CFileItemList List;
   List.Add(CFileItemPtr(new CFileItem));
@@ -49,7 +62,7 @@ TEST(PlexCacheDirectoryAddToCache, CACHE_STRATEGY_ALWAYS)
   g_plexApplication.directoryCache->Clear();
 }
 
-TEST(PlexCacheDirectoryAddToCache, Clear)
+TEST_F(PlexCacheDirectoryTests, Clear)
 {
   CFileItemList List;
 
@@ -64,7 +77,7 @@ TEST(PlexCacheDirectoryAddToCache, Clear)
   EXPECT_FALSE(g_plexApplication.directoryCache->GetCacheHit("Test",1234567890,List));
 }
 
-TEST(PlexCacheDirectoryAddToCache, Enable)
+TEST_F(PlexCacheDirectoryTests, Enable)
 {
   CFileItemList List;
   List.Add(CFileItemPtr(new CFileItem));
