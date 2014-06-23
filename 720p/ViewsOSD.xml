@@ -405,7 +405,7 @@
 	</include>
 	<!-- VideoOSD.xml -->
 	<include name="VideoOSD">
-		<control type="group">
+		<control type="group" id="1111">
 			<animation effect="slide" end="0,30" time="0" condition="Skin.String(AspectRatio,16:10)">Conditional</animation>
 			<visible>![Window.IsActive(OSDVideoSettings) | Window.IsActive(OSDAudioSettings)]</visible>
 			<animation effect="fade" start="0" end="100" time="100" condition="Visible">Conditional</animation>
