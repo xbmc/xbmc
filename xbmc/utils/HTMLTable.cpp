@@ -35,15 +35,15 @@ int CHTMLRow::GetColumns() const
   return (int)m_vecColums.size();
 }
 
-const CStdString& CHTMLRow::GetColumValue(int iColumn) const
+const std::string& CHTMLRow::GetColumValue(int iColumn) const
 {
   return m_vecColums[iColumn];
 }
 
-void CHTMLRow::Parse(const CStdString& strTable)
+void CHTMLRow::Parse(const std::string& strTable)
 {
   CHTMLUtil util;
-  CStdString strTag;
+  std::string strTag;
   int iTableRowStart = 0;
   do
   {
@@ -55,7 +55,7 @@ void CHTMLRow::Parse(const CStdString& strTable)
       if (iTableRowEnd < -1)
         break;
 
-      CStdString strRow = strTable.substr(iTableRowStart, 1 + iTableRowEnd - iTableRowStart);
+      std::string strRow = strTable.substr(iTableRowStart, 1 + iTableRowEnd - iTableRowStart);
       m_vecColums.push_back(strRow);
 
       iTableRowStart = iTableRowEnd + 1;
@@ -81,11 +81,11 @@ const CHTMLRow& CHTMLTable::GetRow(int iRow) const
   return m_vecRows[iRow];
 }
 
-void CHTMLTable::Parse(const CStdString& strHTML)
+void CHTMLTable::Parse(const std::string& strHTML)
 {
   m_vecRows.erase(m_vecRows.begin(), m_vecRows.end());
   CHTMLUtil util;
-  CStdString strTag;
+  std::string strTag;
   int iPosStart = util.FindTag(strHTML, "<table", strTag);
   if (iPosStart >= 0)
   {
@@ -96,7 +96,7 @@ void CHTMLTable::Parse(const CStdString& strHTML)
       iPosEnd = (int)strHTML.size();
     }
 
-    CStdString strTable = strHTML.substr(iPosStart, 1 + iPosEnd - iPosStart);
+    std::string strTable = strHTML.substr(iPosStart, 1 + iPosEnd - iPosStart);
     int iTableRowStart = 0;
     do
     {
@@ -108,7 +108,7 @@ void CHTMLTable::Parse(const CStdString& strHTML)
         if (iTableRowEnd < 0)
           break;
 
-        CStdString strRow = strTable.substr(iTableRowStart, 1 + iTableRowEnd - iTableRowStart);
+        std::string strRow = strTable.substr(iTableRowStart, 1 + iTableRowEnd - iTableRowStart);
         CHTMLRow row;
         row.Parse(strRow);
         m_vecRows.push_back(row);

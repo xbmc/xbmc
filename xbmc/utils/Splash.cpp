@@ -30,7 +30,7 @@
 
 using namespace XFILE;
 
-CSplash::CSplash(const CStdString& imageName) : CThread("Splash"), m_ImageName(imageName)
+CSplash::CSplash(const std::string& imageName) : CThread("Splash"), m_ImageName(imageName)
 {
   fade = 0.5;
   m_messageLayout = NULL;
@@ -57,7 +57,7 @@ void CSplash::Show()
   Show("");
 }
 
-void CSplash::Show(const CStdString& message)
+void CSplash::Show(const std::string& message)
 {
   g_graphicsContext.Lock();
   g_graphicsContext.Clear();
@@ -66,7 +66,7 @@ void CSplash::Show(const CStdString& message)
   g_graphicsContext.SetRenderingResolution(res, true);  
   if (!m_image)
   {
-    m_image = new CGUIImage(0, 0, 0, 0, 1280, 720, m_ImageName);
+    m_image = new CGUIImage(0, 0, 0, 0, 1280, 720, CTextureInfo(m_ImageName));
     m_image->SetAspectRatio(CAspectRatio::AR_CENTER);
   }
 

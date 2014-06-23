@@ -25,6 +25,7 @@
 
 #include "utils/ScraperUrl.h"
 #include "utils/Fanart.h"
+#include "utils/StdString.h"
 
 class TiXmlNode;
 class CAlbum;

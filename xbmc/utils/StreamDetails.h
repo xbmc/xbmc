@@ -19,9 +19,9 @@
  *
  */
 
-#include "utils/StdString.h"
 #include "utils/IArchivable.h"
 #include "ISerializable.h"
+#include <string>
 #include <vector>
 
 class CStreamDetails;
@@ -59,7 +59,7 @@ public:
   int m_iHeight;
   float m_fAspect;
   int m_iDuration;
-  CStdString m_strCodec;
+  std::string m_strCodec;
   std::string m_strStereoMode;
 };
 
@@ -72,8 +72,8 @@ public:
   virtual bool IsWorseThan(CStreamDetail *that);
 
   int m_iChannels;
-  CStdString m_strCodec;
-  CStdString m_strLanguage;
+  std::string m_strCodec;
+  std::string m_strLanguage;
 };
 
 class CStreamDetailSubtitle : public CStreamDetail
@@ -85,7 +85,7 @@ public:
   virtual void Serialize(CVariant& value) const;
   virtual bool IsWorseThan(CStreamDetail *that);
 
-  CStdString m_strLanguage;
+  std::string m_strLanguage;
 };
 
 class CStreamDetails : public IArchivable, public ISerializable
@@ -98,8 +98,8 @@ public:
   bool operator ==(const CStreamDetails &that) const;
   bool operator !=(const CStreamDetails &that) const;
 
-  static CStdString VideoDimsToResolutionDescription(int iWidth, int iHeight);
-  static CStdString VideoAspectToAspectDescription(float fAspect);
+  static std::string VideoDimsToResolutionDescription(int iWidth, int iHeight);
+  static std::string VideoAspectToAspectDescription(float fAspect);
 
   bool HasItems(void) const { return m_vecItems.size() > 0; };
   int GetStreamCount(CStreamDetail::StreamType type) const;
@@ -108,7 +108,7 @@ public:
   int GetSubtitleStreamCount(void) const;
   const CStreamDetail* GetNthStream(CStreamDetail::StreamType type, int idx) const;
 
-  CStdString GetVideoCodec(int idx = 0) const;
+  std::string GetVideoCodec(int idx = 0) const;
   float GetVideoAspect(int idx = 0) const;
   int GetVideoWidth(int idx = 0) const;
   int GetVideoHeight(int idx = 0) const;
@@ -116,11 +116,11 @@ public:
   void SetVideoDuration(int idx, const int duration);
   std::string GetStereoMode(int idx = 0) const;
 
-  CStdString GetAudioCodec(int idx = 0) const;
-  CStdString GetAudioLanguage(int idx = 0) const;
+  std::string GetAudioCodec(int idx = 0) const;
+  std::string GetAudioLanguage(int idx = 0) const;
   int GetAudioChannels(int idx = 0) const;
 
-  CStdString GetSubtitleLanguage(int idx = 0) const;
+  std::string GetSubtitleLanguage(int idx = 0) const;
 
   void AddStream(CStreamDetail *item);
   void Reset(void);

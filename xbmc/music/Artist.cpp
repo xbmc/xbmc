@@ -119,7 +119,7 @@ bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
     // we prefix to handle mixed-mode nfo's with fanart set
     if (prioritise)
     {
-      CStdString temp;
+      std::string temp;
       temp << *fanart2;
       fanart.m_xml = temp+fanart.m_xml;
     }

@@ -21,11 +21,11 @@
  */
 
 #include "InfoLoader.h"
-#include "StdString.h"
 #include "settings/lib/ISettingCallback.h"
 #include "utils/GlobalsHandling.h"
 
 #include <map>
+#include <string>
 
 class TiXmlElement;
 
@@ -41,11 +41,11 @@ class TiXmlElement;
 
 struct day_forecast
 {
-  CStdString m_icon;
-  CStdString m_overview;
-  CStdString m_day;
-  CStdString m_high;
-  CStdString m_low;
+  std::string m_icon;
+  std::string m_overview;
+  std::string m_day;
+  std::string m_high;
+  std::string m_low;
 };
 
 #define NUM_DAYS 7
@@ -77,18 +77,18 @@ public:
     }
   };
 
-  CStdString lastUpdateTime;
-  CStdString location;
-  CStdString currentIcon;
-  CStdString currentConditions;
-  CStdString currentTemperature;
-  CStdString currentFeelsLike;
-  CStdString currentUVIndex;
-  CStdString currentWind;
-  CStdString currentDewPoint;
-  CStdString currentHumidity;
-  CStdString busyString;
-  CStdString naIcon;
+  std::string lastUpdateTime;
+  std::string location;
+  std::string currentIcon;
+  std::string currentConditions;
+  std::string currentTemperature;
+  std::string currentFeelsLike;
+  std::string currentUVIndex;
+  std::string currentWind;
+  std::string currentDewPoint;
+  std::string currentHumidity;
+  std::string busyString;
+  std::string naIcon;
 };
 
 class CWeatherJob : public CJob
@@ -100,7 +100,7 @@ public:
 
   const CWeatherInfo &GetInfo() const;
 private:
-  void LocalizeOverview(CStdString &str);
+  void LocalizeOverview(std::string &str);
   void LocalizeOverviewToken(std::string &str);
   void LoadLocalizedToken();
   static int ConvertSpeed(int speed);
@@ -111,7 +111,7 @@ private:
    \param text the string to format
    \param temp the temperature (in degrees celcius).
    */
-  static void FormatTemperature(CStdString &text, int temp);
+  static void FormatTemperature(std::string &text, int temp);
 
   struct ci_less : std::binary_function<std::string, std::string, bool>
   {
@@ -130,8 +130,8 @@ private:
     }
   };
 
-  std::map<CStdString, int, ci_less> m_localizedTokens;
-  typedef std::map<CStdString, int, ci_less>::const_iterator ilocalizedTokens;
+  std::map<std::string, int, ci_less> m_localizedTokens;
+  typedef std::map<std::string, int, ci_less>::const_iterator ilocalizedTokens;
 
   CWeatherInfo m_info;
   int m_location;
@@ -145,10 +145,10 @@ class CWeather : public CInfoLoader,
 public:
   CWeather(void);
   virtual ~CWeather(void);
-  static bool GetSearchResults(const CStdString &strSearch, CStdString &strResult);
+  static bool GetSearchResults(const std::string &strSearch, std::string &strResult);
 
-  CStdString GetLocation(int iLocation);
-  const CStdString &GetLastUpdateTime() const { return m_info.lastUpdateTime; };
+  std::string GetLocation(int iLocation);
+  const std::string &GetLastUpdateTime() const { return m_info.lastUpdateTime; };
   const day_forecast &GetForecast(int day) const;
   bool IsFetched();
   void Reset();
@@ -157,8 +157,8 @@ public:
   int GetArea() const;
 protected:
   virtual CJob *GetJob() const;
-  virtual CStdString TranslateInfo(int info) const;
-  virtual CStdString BusyInfo(int info) const;
+  virtual std::string TranslateInfo(int info) const;
+  virtual std::string BusyInfo(int info) const;
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
   virtual void OnSettingChanged(const CSetting *setting);

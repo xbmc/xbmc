@@ -24,7 +24,7 @@
  *
  */
 
-#include "StdString.h"
+#include <string>
 #include <vector>
 
 #pragma once
@@ -35,7 +35,7 @@
 /// CFanart stores all data related to all available fanarts for a given TV show and provides
 /// functions required to manipulate and access that data.
 /// In order to provide an interface between the fanart data and the XBMC database, all data
-/// is stored internally it its own form, as well as packed into an XML formatted CStdString
+/// is stored internally it its own form, as well as packed into an XML formatted string
 /// stored in the member variable m_xml.
 /// Information on multiple fanarts for a given show is stored, but XBMC only cares about the
 /// very first fanart stored.  These interfaces provide a means to access the data in that first
@@ -60,17 +60,17 @@ public:
   ///
   /// Retrieves the fanart full res image URL
   /// \param index - index of image to retrieve (defaults to 0)
-  /// \return A CStdString containing the full URL to the full resolution fanart image
-  CStdString GetImageURL(unsigned int index = 0) const;
+  /// \return A string containing the full URL to the full resolution fanart image
+  std::string GetImageURL(unsigned int index = 0) const;
   ///
   /// Retrieves the fanart preview image URL, or full res image URL if that doesn't exist
   /// \param index - index of image to retrieve (defaults to 0)
-  /// \return A CStdString containing the full URL to the full resolution fanart image
-  CStdString GetPreviewURL(unsigned int index = 0) const;
+  /// \return A string containing the full URL to the full resolution fanart image
+  std::string GetPreviewURL(unsigned int index = 0) const;
   ///
   /// Used to return a specified fanart theme color value
   /// \param index: 0 based index of the color to retrieve.  A fanart theme contains 3 colors, indices 0-2, arranged from darkest to lightest.
-  const CStdString GetColor(unsigned int index) const;
+  const std::string GetColor(unsigned int index) const;
   ///
   /// Sets a particular fanart to be the "primary" fanart, or in other words, sets which fanart is actually used by XBMC
   ///
@@ -88,7 +88,7 @@ public:
   /// This string is the "interface" as it were to the XBMC database, and MUST be kept in sync with the rest of the class.  Therefore
   /// anytime this string is changed, the change should be followed up by a call to CFanart::UnPack().  This XML formaytted string is
   /// also the interface used to pass the fanart data from the scraper to CFanart.
-  CStdString m_xml;
+  std::string m_xml;
 private:
   static const unsigned int max_fanart_colors;
   ///
@@ -99,17 +99,17 @@ private:
   /// * The TVDB RGB Int Triplets, pipe seperate with leading/trailing pipes "|68,69,59|69,70,58|78,78,68|"
   /// * XBMC ARGB Hexadecimal string comma seperated "FFFFFFFF,DDDDDDDD,AAAAAAAA"
   ///
-  /// \param colorsIn: CStdString containing a string of colors in some format to be converted
+  /// \param colorsIn: string containing colors in some format to be converted
   /// \param colorsOut: XBMC ARGB Hexadecimal string comma seperated "FFFFFFFF,DDDDDDDD,AAAAAAAA"
   /// \return boolean indicating success or failure.
-  static bool ParseColors(const CStdString &colorsIn, CStdString &colorsOut);
+  static bool ParseColors(const std::string&colorsIn, std::string&colorsOut);
 
   struct SFanartData
   {
-    CStdString strImage;
-    CStdString strResolution;
-    CStdString strColors;
-    CStdString strPreview;
+    std::string strImage;
+    std::string strResolution;
+    std::string strColors;
+    std::string strPreview;
   };
 
   ///

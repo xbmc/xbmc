@@ -5250,8 +5250,8 @@ void CGUIInfoManager::UpdateFromTuxBox()
   // Set m_currentMovieDuration
   if(!g_tuxbox.sCurSrvData.current_event_duration.empty() &&
     !g_tuxbox.sCurSrvData.next_event_description.empty() &&
-    !g_tuxbox.sCurSrvData.current_event_duration.Equals("-") &&
-    !g_tuxbox.sCurSrvData.next_event_description.Equals("-"))
+    g_tuxbox.sCurSrvData.current_event_duration != "-" &&
+    g_tuxbox.sCurSrvData.next_event_description != "-")
   {
     StringUtils::Replace(g_tuxbox.sCurSrvData.current_event_duration, "(","");
     StringUtils::Replace(g_tuxbox.sCurSrvData.current_event_duration, ")","");
@@ -5267,8 +5267,8 @@ void CGUIInfoManager::UpdateFromTuxBox()
   //Set strVideoGenre
   if (!g_tuxbox.sCurSrvData.current_event_description.empty() &&
     !g_tuxbox.sCurSrvData.next_event_description.empty() &&
-    !g_tuxbox.sCurSrvData.current_event_description.Equals("-") &&
-    !g_tuxbox.sCurSrvData.next_event_description.Equals("-"))
+    g_tuxbox.sCurSrvData.current_event_description != "-" &&
+    g_tuxbox.sCurSrvData.next_event_description != "-")
   {
     CStdString genre = StringUtils::Format("%s %s  -  (%s: %s)",
                                            g_localizeStrings.Get(143).c_str(),
@@ -5279,7 +5279,7 @@ void CGUIInfoManager::UpdateFromTuxBox()
   }
 
   //Set m_currentMovie.m_director
-  if (!g_tuxbox.sCurSrvData.current_event_details.Equals("-") &&
+  if (g_tuxbox.sCurSrvData.current_event_details != "-" &&
     !g_tuxbox.sCurSrvData.current_event_details.empty())
   {
     m_currentFile->GetVideoInfoTag()->m_director = StringUtils::Split(g_tuxbox.sCurSrvData.current_event_details, g_advancedSettings.m_videoItemSeparator);

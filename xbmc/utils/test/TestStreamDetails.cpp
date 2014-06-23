@@ -78,10 +78,10 @@ TEST(TestStreamDetails, General)
 TEST(TestStreamDetails, VideoDimsToResolutionDescription)
 {
   EXPECT_STREQ("1080",
-               CStreamDetails::VideoDimsToResolutionDescription(1920, 1080));
+               CStreamDetails::VideoDimsToResolutionDescription(1920, 1080).c_str());
 }
 
 TEST(TestStreamDetails, VideoAspectToAspectDescription)
 {
-  EXPECT_STREQ("2.40", CStreamDetails::VideoAspectToAspectDescription(2.39f));
+  EXPECT_STREQ("2.40", CStreamDetails::VideoAspectToAspectDescription(2.39f).c_str());
 }

@@ -23,6 +23,7 @@
 #include "md5.h"
 #include "InfoLoader.h"
 #include "settings/lib/ISubSettings.h"
+#include <string>
 
 #define KB  (1024)          // 1 KiloByte (1KB)   1024 Byte (2^10 Byte)
 #define MB  (1024*KB)       // 1 MegaByte (1MB)   1024 KB (2^10 KB)
@@ -46,14 +47,14 @@ public:
     internetState = UNKNOWN;
   };
 
-  CStdString systemUptime;
-  CStdString systemTotalUptime;
+  std::string systemUptime;
+  std::string systemTotalUptime;
   INTERNET_STATE internetState;
-  CStdString videoEncoder;
-  CStdString cpuFrequency;
-  CStdString osVersionInfo;
-  CStdString macAddress;
-  CStdString batteryLevel;
+  std::string videoEncoder;
+  std::string cpuFrequency;
+  std::string osVersionInfo;
+  std::string macAddress;
+  std::string batteryLevel;
 };
 
 class CSysInfoJob : public CJob
@@ -68,11 +69,11 @@ public:
 private:
   static bool SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays);
   static double GetCPUFrequency();
-  static CStdString GetSystemUpTime(bool bTotalUptime);
-  static CStdString GetCPUFreqInfo();
-  static CStdString GetMACAddress();
-  static CStdString GetVideoEncoder();
-  static CStdString GetBatteryLevel();
+  static std::string GetSystemUpTime(bool bTotalUptime);
+  static std::string GetCPUFreqInfo();
+  static std::string GetMACAddress();
+  static std::string GetVideoEncoder();
+  static std::string GetBatteryLevel();
 
   CSysData m_info;
 };
@@ -117,16 +118,16 @@ public:
   static int GetKernelBitness(void);
   static int GetXbmcBitness(void);
   static std::string GetKernelCpuFamily(void);
-  CStdString GetCPUModel();
-  CStdString GetCPUBogoMips();
-  CStdString GetCPUHardware();
-  CStdString GetCPURevision();
-  CStdString GetCPUSerial();
+  std::string GetCPUModel();
+  std::string GetCPUBogoMips();
+  std::string GetCPUHardware();
+  std::string GetCPURevision();
+  std::string GetCPUSerial();
   static std::string GetManufacturerName(void);
   static std::string GetModelName(void);
-  bool GetDiskSpace(const CStdString& drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
-  CStdString GetHddSpaceInfo(int& percent, int drive, bool shortText=false);
-  CStdString GetHddSpaceInfo(int drive, bool shortText=false);
+  bool GetDiskSpace(const std::string& drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
+  std::string GetHddSpaceInfo(int& percent, int drive, bool shortText=false);
+  std::string GetHddSpaceInfo(int drive, bool shortText=false);
 
   int GetTotalUptime() const { return m_iSystemTimeTotalUp; }
   void SetTotalUptime(int uptime) { m_iSystemTimeTotalUp = uptime; }
@@ -140,7 +141,7 @@ public:
 
 protected:
   virtual CJob *GetJob() const;
-  virtual CStdString TranslateInfo(int info) const;
+  virtual std::string TranslateInfo(int info) const;
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
 private:

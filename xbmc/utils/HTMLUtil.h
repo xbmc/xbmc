@@ -20,7 +20,7 @@
  *
  */
 
-#include "StdString.h"
+#include <string>
 
 namespace HTML
 {
@@ -29,11 +29,11 @@ class CHTMLUtil
 public:
   CHTMLUtil(void);
   virtual ~CHTMLUtil(void);
-  static int FindTag(const CStdString& strHTML, const CStdString& strTag, CStdString& strtagFound, int iPos = 0);
-  static int FindClosingTag(const CStdString& strHTML, const CStdString& strTag, CStdString& strtagFound, int iPos);
-  static void getValueOfTag(const CStdString& strTagAndValue, CStdString& strValue);
-  static void getAttributeOfTag(const CStdString& strTagAndValue, const CStdString& strTag, CStdString& strValue);
-  static void RemoveTags(CStdString& strHTML);
-  static void ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStripped);
+  static int FindTag(const std::string& strHTML, const std::string& strTag, std::string& strtagFound, int iPos = 0);
+  static int FindClosingTag(const std::string& strHTML, const std::string& strTag, std::string& strtagFound, int iPos);
+  static void getValueOfTag(const std::string& strTagAndValue, std::string& strValue);
+  static void getAttributeOfTag(const std::string& strTagAndValue, const std::string& strTag, std::string& strValue);
+  static void RemoveTags(std::string& strHTML);
+  static void ConvertHTMLToW(const std::wstring& strHTML, std::wstring& strStripped);
 };
 }

@@ -21,6 +21,7 @@
 
 #include "IFileDirectory.h"
 #include "utils/SortUtils.h"
+#include "utils/StdString.h"
 
 class CSmartPlaylist;
 

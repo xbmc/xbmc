@@ -28,11 +28,11 @@
 //   CHTMLRow(void);
 //   virtual ~CHTMLRow(void);
 //   int GetColumns() const;
-//   const CStdString& GetColumValue(int iColumn) const;
-//   void Parse(const CStdString& strTableRow);
+//   const std::string& GetColumValue(int iColumn) const;
+//   void Parse(const std::string& strTableRow);
 // 
 // protected:
-//   std::vector<CStdString> m_vecColums;
+//   std::vector<std::string> m_vecColums;
 // };
 // 
 // class CHTMLTable
@@ -40,7 +40,7 @@
 // public:
 //   CHTMLTable(void);
 //   virtual ~CHTMLTable(void);
-//   void Parse(const CStdString& strHTML);
+//   void Parse(const std::string& strHTML);
 //   int GetRows() const;
 //   const CHTMLRow& GetRow(int iRow) const;
 // protected:
@@ -51,7 +51,7 @@ TEST(TestHTMLTable, General)
 {
   HTML::CHTMLTable table;
   HTML::CHTMLRow row1, row2;
-  CStdString str;
+  std::string str;
   str = "<table>\n"
         "  <tr>\n"
         "    <td>r1c1</td>\n"
@@ -71,7 +71,7 @@ TEST(TestHTMLTable, General)
 
   row1 = table.GetRow(0);
   EXPECT_EQ(2, row1.GetColumns());
-  EXPECT_STREQ("r1c1", row1.GetColumValue(0));
+  EXPECT_STREQ("r1c1", row1.GetColumValue(0).c_str());
 
   str = "<tr>\n"
         "  <td>new row1 column1</td>\n"
@@ -80,5 +80,5 @@ TEST(TestHTMLTable, General)
         "</tr>\n";
   row2.Parse(str);
   EXPECT_EQ(3, row2.GetColumns());
-  EXPECT_STREQ("new row1 column2", row2.GetColumValue(1));
+  EXPECT_STREQ("new row1 column2", row2.GetColumValue(1).c_str());
 }

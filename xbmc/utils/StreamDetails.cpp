@@ -348,7 +348,7 @@ const CStreamDetail* CStreamDetails::GetNthStream(CStreamDetail::StreamType type
   return NULL;
 }
 
-CStdString CStreamDetails::GetVideoCodec(int idx) const
+std::string CStreamDetails::GetVideoCodec(int idx) const
 {
   CStreamDetailVideo *item = (CStreamDetailVideo *)GetNthStream(CStreamDetail::VIDEO, idx);
   if (item)
@@ -409,7 +409,7 @@ std::string CStreamDetails::GetStereoMode(int idx) const
     return "";
 }
 
-CStdString CStreamDetails::GetAudioCodec(int idx) const
+std::string CStreamDetails::GetAudioCodec(int idx) const
 {
   CStreamDetailAudio *item = (CStreamDetailAudio *)GetNthStream(CStreamDetail::AUDIO, idx);
   if (item)
@@ -418,7 +418,7 @@ CStdString CStreamDetails::GetAudioCodec(int idx) const
     return "";
 }
 
-CStdString CStreamDetails::GetAudioLanguage(int idx) const
+std::string CStreamDetails::GetAudioLanguage(int idx) const
 {
   CStreamDetailAudio *item = (CStreamDetailAudio *)GetNthStream(CStreamDetail::AUDIO, idx);
   if (item)
@@ -436,7 +436,7 @@ int CStreamDetails::GetAudioChannels(int idx) const
     return -1;
 }
 
-CStdString CStreamDetails::GetSubtitleLanguage(int idx) const
+std::string CStreamDetails::GetSubtitleLanguage(int idx) const
 {
   CStreamDetailSubtitle *item = (CStreamDetailSubtitle *)GetNthStream(CStreamDetail::SUBTITLE, idx);
   if (item)
@@ -541,7 +541,7 @@ void CStreamDetails::DetermineBestStreams(void)
   }  /* for each */
 }
 
-CStdString CStreamDetails::VideoDimsToResolutionDescription(int iWidth, int iHeight)
+std::string CStreamDetails::VideoDimsToResolutionDescription(int iWidth, int iHeight)
 {
   if (iWidth == 0 || iHeight == 0)
     return "";
@@ -567,7 +567,7 @@ CStdString CStreamDetails::VideoDimsToResolutionDescription(int iWidth, int iHei
     return "";
 }
 
-CStdString CStreamDetails::VideoAspectToAspectDescription(float fAspect)
+std::string CStreamDetails::VideoAspectToAspectDescription(float fAspect)
 {
   if (fAspect == 0.0f)
     return "";

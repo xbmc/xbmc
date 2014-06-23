@@ -25,7 +25,7 @@
 TEST(TestScraperUrl, General)
 {
   CScraperUrl a;
-  CStdString xmlstring;
+  std::string xmlstring;
 
   xmlstring = "<data spoof=\"blah\" gzip=\"yes\">\n"
               "  <someurl>\n"

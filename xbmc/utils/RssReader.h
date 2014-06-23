@@ -20,12 +20,12 @@
  */
 
 #include <list>
+#include <string>
 #include <vector>
 
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/IRssObserver.h"
-#include "utils/StdString.h"
 #include "utils/XBMCTinyXML.h"
 
 class CRssReader : public CThread
@@ -37,7 +37,7 @@ public:
   void Create(IRssObserver* aObserver, const std::vector<std::string>& aUrl, const std::vector<int>& times, int spacesBetweenFeeds, bool rtl);
   bool Parse(const std::string& data, int iFeed, const std::string& charset);
   void getFeed(vecText &text);
-  void AddTag(const CStdString &addTag);
+  void AddTag(const std::string &addTag);
   void AddToQueue(int iAdd);
   void UpdateObserver();
   void SetObserver(IRssObserver* observer);
@@ -49,20 +49,20 @@ private:
   void Process();
   bool Parse(int iFeed);
   void GetNewsItems(TiXmlElement* channelXmlNode, int iFeed);
-  void AddString(CStdStringW aString, int aColour, int iFeed);
+  void AddString(std::wstring aString, int aColour, int iFeed);
   void UpdateFeed();
   virtual void OnExit();
   int GetQueueSize();
 
   IRssObserver* m_pObserver;
 
-  std::vector<CStdStringW> m_strFeed;
-  std::vector<CStdStringW> m_strColors;
+  std::vector<std::wstring> m_strFeed;
+  std::vector<std::wstring> m_strColors;
   std::vector<SYSTEMTIME *> m_vecTimeStamps;
   std::vector<int> m_vecUpdateTimes;
   int m_spacesBetweenFeeds;
   CXBMCTinyXML m_xml;
-  std::list<CStdString> m_tagSet;
+  std::list<std::string> m_tagSet;
   std::vector<std::string> m_vecUrls;
   std::vector<int> m_vecQueue;
   bool m_bIsRunning;
