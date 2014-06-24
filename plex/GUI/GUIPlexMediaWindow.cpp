@@ -1045,12 +1045,14 @@ void CGUIPlexMediaWindow::CheckPlexFilters(CFileItemList &list)
   CURL newPath(list.GetPath());
   if (m_startDirectory != newPath.GetUrlWithoutOptions())
   {
-    EPlexDirectoryType type = list.GetPlexDirectoryType();
-    if (type == PLEX_DIR_TYPE_SEASON ||
-        type == PLEX_DIR_TYPE_EPISODE ||
-        type == PLEX_DIR_TYPE_ALBUM ||
-        type == PLEX_DIR_TYPE_TRACK ||
-        type == PLEX_DIR_TYPE_VIDEO)
+    if (list.Size())
+      m_directoryType = list.GetPlexDirectoryType();
+
+    if (m_directoryType == PLEX_DIR_TYPE_SEASON ||
+        m_directoryType == PLEX_DIR_TYPE_EPISODE ||
+        m_directoryType == PLEX_DIR_TYPE_ALBUM ||
+        m_directoryType == PLEX_DIR_TYPE_TRACK ||
+        m_directoryType == PLEX_DIR_TYPE_VIDEO)
     {
       CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::CheckPlexFilters setting preplay flag");
       list.SetProperty("PlexPreplay", "yes");

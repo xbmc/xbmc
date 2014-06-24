@@ -134,6 +134,7 @@ private:
     CPlexThumbCacher m_thumbCache;
     CPlexSectionFilterPtr m_sectionFilter;
     std::map<std::string, bool> m_contentMatch;
+    EPlexDirectoryType m_directoryType;
 
     FetchPages m_fetchedPages;
     FetchJobMap m_fetchJobs;
