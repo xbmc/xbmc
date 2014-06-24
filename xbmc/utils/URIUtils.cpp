@@ -514,7 +514,7 @@ bool URIUtils::IsRemote(const CStdString& strFile)
 
   if(IsMultiPath(strFile))
   { // virtual paths need to be checked separately
-    vector<CStdString> paths;
+    vector<std::string> paths;
     if (CMultiPathDirectory::GetPaths(strFile, paths))
     {
       for (unsigned int i = 0; i < paths.size(); i++)

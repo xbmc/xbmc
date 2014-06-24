@@ -4188,7 +4188,7 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
 {
   if(URIUtils::IsMultiPath(strPath))
   {
-    vector<CStdString> paths;
+    vector<std::string> paths;
     CMultiPathDirectory::GetPaths(strPath, paths);
 
     for(unsigned i=0;i<paths.size();i++)
@@ -4269,7 +4269,7 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const Scraper
   // if we have a multipath, set scraper for all contained paths
   if(URIUtils::IsMultiPath(filePath))
   {
-    vector<CStdString> paths;
+    vector<std::string> paths;
     CMultiPathDirectory::GetPaths(filePath, paths);
 
     for(unsigned i=0;i<paths.size();i++)
@@ -4654,7 +4654,7 @@ bool CVideoDatabase::GetPlayCounts(const CStdString &strPath, CFileItemList &ite
 {
   if(URIUtils::IsMultiPath(strPath))
   {
-    vector<CStdString> paths;
+    vector<std::string> paths;
     CMultiPathDirectory::GetPaths(strPath, paths);
 
     bool ret = false;
@@ -9219,7 +9219,7 @@ bool CVideoDatabase::GetItemsForPath(const CStdString &content, const CStdString
   
   if(URIUtils::IsMultiPath(path))
   {
-    vector<CStdString> paths;
+    vector<std::string> paths;
     CMultiPathDirectory::GetPaths(path, paths);
 
     for(unsigned i=0;i<paths.size();i++)
