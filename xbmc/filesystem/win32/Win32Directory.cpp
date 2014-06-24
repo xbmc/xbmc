@@ -77,7 +77,7 @@ bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
     hSearch = FindFirstFileExW(searchMask.c_str(), FindExInfoStandard, &findData, FindExSearchNameMatch, NULL, 0);
 
   if (hSearch == INVALID_HANDLE_VALUE)
-    return Exists(url); // return true if directory exist and empty
+    return GetLastError() == ERROR_FILE_NOT_FOUND ? Exists(url) : false; // return true if directory exist and empty
 
   do
   {
