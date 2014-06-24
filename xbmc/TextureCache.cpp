@@ -320,7 +320,7 @@ bool CTextureCache::Export(const CStdString &image, const CStdString &destinatio
   CStdString cachedImage(GetCachedImage(image, details));
   if (!cachedImage.empty())
   {
-    CStdString dest = destination + URIUtils::GetExtension(cachedImage);
+    CStdString dest = destination + CStdString(URIUtils::GetExtension(cachedImage));
     if (overwrite || !CFile::Exists(dest))
     {
       if (CFile::Copy(cachedImage, dest))

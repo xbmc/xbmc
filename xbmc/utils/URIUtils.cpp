@@ -46,12 +46,12 @@ bool URIUtils::IsInPath(const CStdString &uri, const CStdString &baseURI)
 }
 
 /* returns filename extension including period of filename */
-CStdString URIUtils::GetExtension(const CURL& url)
+std::string URIUtils::GetExtension(const CURL& url)
 {
   return URIUtils::GetExtension(url.GetFileName());
 }
 
-CStdString URIUtils::GetExtension(const CStdString& strFileName)
+std::string URIUtils::GetExtension(const std::string& strFileName)
 {
   if (IsURL(strFileName))
   {
@@ -116,7 +116,7 @@ bool URIUtils::HasExtension(const CStdString& strFileName, const CStdString& str
   return false;
 }
 
-void URIUtils::RemoveExtension(CStdString& strFileName)
+void URIUtils::RemoveExtension(std::string& strFileName)
 {
   if(IsURL(strFileName))
   {
@@ -197,15 +197,6 @@ const CStdString URIUtils::GetFileName(const CStdString& strFileNameAndPath)
   return strFileNameAndPath.substr(slash+1);
 }
 
-void URIUtils::Split(const CStdString& strFileNameAndPath,
-                     CStdString& strPath, CStdString& strFileName)
-{
-  std::string strPathT, strFileNameT;
-  Split(strFileNameAndPath, strPathT, strFileNameT);
-  strPath = strPathT;
-  strFileName = strFileNameT;
-}
-
 void URIUtils::Split(const std::string& strFileNameAndPath,
                      std::string& strPath, std::string& strFileName)
 {
@@ -254,7 +245,7 @@ std::vector<std::string> URIUtils::SplitPath(const CStdString& strPath)
   return dirs;
 }
 
-void URIUtils::GetCommonPath(CStdString& strParent, const CStdString& strPath)
+void URIUtils::GetCommonPath(std::string& strParent, const std::string& strPath)
 {
   // find the common path of parent and path
   unsigned int j = 1;
@@ -294,19 +285,19 @@ bool URIUtils::HasEncodedFilename(const CURL& url)
          CURL::IsProtocolEqual(prot2, "https");
 }
 
-CStdString URIUtils::GetParentPath(const CStdString& strPath)
+std::string URIUtils::GetParentPath(const std::string& strPath)
 {
-  CStdString strReturn;
+  std::string strReturn;
   GetParentPath(strPath, strReturn);
   return strReturn;
 }
 
-bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
+bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
 {
-  strParent = "";
+  strParent.clear();
 
   CURL url(strPath);
-  CStdString strFile = url.GetFileName();
+  std::string strFile = url.GetFileName();
   if ( URIUtils::HasParentInHostname(url) && strFile.empty())
   {
     strFile = url.GetHostName();
