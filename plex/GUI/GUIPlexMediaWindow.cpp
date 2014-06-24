@@ -80,7 +80,7 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
   {
     case GUI_MSG_UPDATE:
     {
-      Update(m_sectionRoot.Get(), false, false);
+      Update(m_vecItems->GetPath(), false, false);
       break;
     }
     case GUI_MSG_LOAD_SKIN:
