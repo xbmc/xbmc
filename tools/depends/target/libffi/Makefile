@@ -8,7 +8,11 @@ SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
-CONFIGURE= ./configure --prefix=$(PREFIX) --disable-shared --disable-builddir
+CONFIGURE= ./configure --prefix=$(PREFIX) --disable-shared --disable-builddir 
+ifeq ($(OS), ios)
+CONFIGURE+=CFLAGS=-no-integrated-as
+endif
+
 
 LIBDYLIB=$(PLATFORM)/.libs/$(LIBNAME).a
 
