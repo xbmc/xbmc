@@ -52,7 +52,7 @@
 #endif
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
-#include "windows/WINSMBDirectory.h"
+#include "win32/Win32SMBDirectory.h"
 #else
 #include "SMBDirectory.h"
 #endif
@@ -198,7 +198,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #endif
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
-    if (strProtocol == "smb") return new CWINSMBDirectory();
+    if (strProtocol == "smb") return new CWin32SMBDirectory();
 #else
     if (strProtocol == "smb") return new CSMBDirectory();
 #endif
