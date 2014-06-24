@@ -3071,6 +3071,9 @@
     <ClCompile Include="..\..\xbmc\utils\win32\Win32Log.cpp">
       <Filter>utils\win32</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\win32\Win32File.cpp">
+      <Filter>filesystem\win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6000,6 +6003,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\win32\Win32Log.h">
       <Filter>utils\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\win32\Win32File.h">
+      <Filter>filesystem\win32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
