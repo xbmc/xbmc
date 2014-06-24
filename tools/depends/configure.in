@@ -183,7 +183,7 @@ case $host in
       *)
         platform_cc=clang
         platform_cxx=clang++
-        platform_cflags="-fheinous-gnu-extensions -no-cpp-precomp -no-integrated-as"
+        platform_cflags="-fheinous-gnu-extensions -no-cpp-precomp"
         platform_ldflags="-Wl,-search_paths_first"
         platform_cxxflags="-no-cpp-precomp"
         ;;
