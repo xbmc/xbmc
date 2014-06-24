@@ -87,14 +87,14 @@ CCueDocument::~CCueDocument(void)
 // Function: Parse()
 // Opens the .cue file for reading, and constructs the track database information
 ////////////////////////////////////////////////////////////////////////////////////
-bool CCueDocument::Parse(const CStdString &strFile)
+bool CCueDocument::Parse(const std::string &strFile)
 {
   if (!m_file.Open(strFile))
     return false;
 
-  CStdString strLine;
+  std::string strLine;
   m_iTotalTracks = -1;
-  CStdString strCurrentFile = "";
+  std::string strCurrentFile = "";
   bool bCurrentFileChanged = false;
   int time;
 
@@ -243,17 +243,17 @@ void CCueDocument::GetSongs(VECSONGS &songs)
   }
 }
 
-void CCueDocument::GetMediaFiles(vector<CStdString>& mediaFiles)
+void CCueDocument::GetMediaFiles(vector<std::string>& mediaFiles)
 {
-  set<CStdString> uniqueFiles;
+  set<std::string> uniqueFiles;
   for (int i = 0; i < m_iTotalTracks; i++)
     uniqueFiles.insert(m_Track[i].strFile);
 
-  for (set<CStdString>::iterator it = uniqueFiles.begin(); it != uniqueFiles.end(); it++)
+  for (set<std::string>::iterator it = uniqueFiles.begin(); it != uniqueFiles.end(); it++)
     mediaFiles.push_back(*it);
 }
 
-CStdString CCueDocument::GetMediaTitle()
+std::string CCueDocument::GetMediaTitle()
 {
   return m_strAlbum;
 }
@@ -265,7 +265,7 @@ CStdString CCueDocument::GetMediaTitle()
 // Returns the next non-blank line of the textfile, stripping any whitespace from
 // the left.
 ////////////////////////////////////////////////////////////////////////////////////
-bool CCueDocument::ReadNextLine(CStdString &szLine)
+bool CCueDocument::ReadNextLine(std::string &szLine)
 {
   // Read the next line.
   while (m_file.ReadString(m_szBuffer, 1023)) // Bigger than MAX_PATH_SIZE, for usage with relax!
@@ -284,7 +284,7 @@ bool CCueDocument::ReadNextLine(CStdString &szLine)
 // Function: ExtractInfo()
 // Extracts the information in quotes from the string line, returning it in quote
 ////////////////////////////////////////////////////////////////////////////////////
-CStdString CCueDocument::ExtractInfo(const CStdString &line)
+std::string CCueDocument::ExtractInfo(const std::string &line)
 {
   size_t left = line.find('\"');
   if (left != std::string::npos)
@@ -292,12 +292,12 @@ CStdString CCueDocument::ExtractInfo(const CStdString &line)
     size_t right = line.find('\"', left + 1);
     if (right != std::string::npos)
     {
-      CStdString text = line.substr(left + 1, right - left - 1);
+      std::string text = line.substr(left + 1, right - left - 1);
       g_charsetConverter.unknownToUTF8(text);
       return text;
     }
   }
-  CStdString text = line;
+  std::string text = line;
   StringUtils::Trim(text);
   g_charsetConverter.unknownToUTF8(text);
   return text;
@@ -310,10 +310,10 @@ CStdString CCueDocument::ExtractInfo(const CStdString &line)
 // Assumed format is:
 // MM:SS:FF where MM is minutes, SS seconds, and FF frames (75 frames in a second)
 ////////////////////////////////////////////////////////////////////////////////////
-int CCueDocument::ExtractTimeFromIndex(const CStdString &index)
+int CCueDocument::ExtractTimeFromIndex(const std::string &index)
 {
   // Get rid of the index number and any whitespace
-  CStdString numberTime = index.substr(5);
+  std::string numberTime = index.substr(5);
   StringUtils::TrimLeft(numberTime);
   while (!numberTime.empty())
   {
@@ -338,9 +338,9 @@ int CCueDocument::ExtractTimeFromIndex(const CStdString &index)
 // Function: ExtractNumericInfo()
 // Extracts the numeric info from the string info, returning it as an integer value
 ////////////////////////////////////////////////////////////////////////////////////
-int CCueDocument::ExtractNumericInfo(const CStdString &info)
+int CCueDocument::ExtractNumericInfo(const std::string &info)
 {
-  CStdString number(info);
+  std::string number(info);
   StringUtils::TrimLeft(number);
   if (number.empty() || !StringUtils::isasciidigit(number[0]))
     return -1;
@@ -352,10 +352,10 @@ int CCueDocument::ExtractNumericInfo(const CStdString &info)
 // Determines whether strPath is a relative path or not, and if so, converts it to an
 // absolute path using the path information in strBase
 ////////////////////////////////////////////////////////////////////////////////////
-bool CCueDocument::ResolvePath(CStdString &strPath, const CStdString &strBase)
+bool CCueDocument::ResolvePath(std::string &strPath, const std::string &strBase)
 {
-  CStdString strDirectory = URIUtils::GetDirectory(strBase);
-  CStdString strFilename = URIUtils::GetFileName(strPath);
+  std::string strDirectory = URIUtils::GetDirectory(strBase);
+  std::string strFilename = URIUtils::GetFileName(strPath);
 
   strPath = URIUtils::AddFileToFolder(strDirectory, strFilename);
 
