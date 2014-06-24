@@ -28,9 +28,9 @@ public:
   CodecFactory() {}
   virtual ~CodecFactory() {}
 
-  static ICodec* CreateCodec(const CStdString& strFileType);
-  static ICodec* CreateCodecDemux(const CStdString& strFile, const CStdString& strContent,unsigned int filecache);
+  static ICodec* CreateCodec(const std::string& strFileType);
+  static ICodec* CreateCodecDemux(const std::string& strFile, const std::string& strContent,unsigned int filecache);
 private:
-  static ICodec* CreateOGGCodec(const CStdString& strFile, unsigned int filecache);
+  static ICodec* CreateOGGCodec(const std::string& strFile, unsigned int filecache);
 };
 

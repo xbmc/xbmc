@@ -20,11 +20,12 @@
  *
  */
 
-#include "utils/StdString.h"
 #include "filesystem/File.h"
 #include "music/tags/MusicInfoTag.h"
 
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
+
+#include <string>
 
 #define READ_EOF      -1
 #define READ_SUCCESS   0
@@ -57,7 +58,7 @@ public:
   // 2.  If it's using a filereader, initialize it with the appropriate cache size.
   // 3.  Load the file (or at least attempt to load it)
   // 4.  Fill in the m_TotalTime, m_SampleRate, m_BitsPerSample and m_Channels parameters.
-  virtual bool Init(const CStdString &strFile, unsigned int filecache)=0;
+  virtual bool Init(const std::string &strFile, unsigned int filecache)=0;
 
   // DeInit()
   // Should just cleanup anything as necessary.  No need to free buffers here if they
@@ -105,7 +106,7 @@ public:
   int m_BitsPerCodedSample;
   enum AEDataFormat m_DataFormat;
   int m_Bitrate;
-  CStdString m_CodecName;
+  std::string m_CodecName;
   MUSIC_INFO::CMusicInfoTag m_tag;
   XFILE::CFile m_file;
 

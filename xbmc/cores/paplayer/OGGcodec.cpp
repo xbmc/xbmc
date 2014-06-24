@@ -45,11 +45,11 @@ OGGCodec::~OGGCodec()
   DeInit();
 }
 
-bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
+bool OGGCodec::Init(const std::string &strFile1, unsigned int filecache)
 {
   if (m_inited)
     return true;
-  CStdString strFile=strFile1;
+  std::string strFile=strFile1;
   if (!m_dll.Load())
     return false;
 
@@ -59,7 +59,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   if (URIUtils::HasExtension(strFile, ".oggstream"))
   {
     //  Extract the bitstream to play
-    CStdString strFileName=URIUtils::GetFileName(strFile);
+    std::string strFileName=URIUtils::GetFileName(strFile);
     size_t iStart = strFileName.rfind('-') + 1;
     m_CurrentStream = atoi(strFileName.substr(iStart, strFileName.size()-iStart-10).c_str())-1;
     //  The directory we are in, is the file

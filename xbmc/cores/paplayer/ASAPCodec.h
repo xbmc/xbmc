@@ -30,13 +30,13 @@ public:
   ASAPCodec();
   virtual ~ASAPCodec();
 
-  virtual bool Init(const CStdString &strFile, unsigned int filecache);
+  virtual bool Init(const std::string &strFile, unsigned int filecache);
   virtual void DeInit();
   virtual int64_t Seek(int64_t iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool CanInit();
 
-  static bool IsSupportedFormat(const CStdString &strExt);
+  static bool IsSupportedFormat(const std::string &strExt);
 
 private:
   DllASAP m_dll;

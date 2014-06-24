@@ -34,7 +34,7 @@ YMCodec::~YMCodec()
   DeInit();
 }
 
-bool YMCodec::Init(const CStdString &strFile, unsigned int filecache)
+bool YMCodec::Init(const std::string &strFile, unsigned int filecache)
 {
   if (!m_dll.Load())
     return false; // error logged previously

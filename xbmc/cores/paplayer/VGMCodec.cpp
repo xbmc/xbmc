@@ -35,18 +35,18 @@ VGMCodec::~VGMCodec()
   DeInit();
 }
 
-bool VGMCodec::Init(const CStdString &strFile, unsigned int filecache)
+bool VGMCodec::Init(const std::string &strFile, unsigned int filecache)
 {
   if (!m_dll.Load())
     return false; // error logged previously
 
   m_dll.Init();
 
-  //CStdString strFileToLoad = "filereader://"+strFile;
-  XFILE::CFile::Copy(strFile,"special://temp/"+URIUtils::GetFileName(strFile));
+  //std::string strFileToLoad = "filereader://"+strFile;
+  std::string strFileToLoad = "special://temp/" + URIUtils::GetFileName(strFile);
+  XFILE::CFile::Copy(strFile, strFileToLoad);
 
-  //m_vgm = m_dll.LoadVGM(strFileToLoad.c_str(),&m_SampleRate,&m_BitsPerSample,&m_Channels);
-  m_vgm = m_dll.LoadVGM("special://temp/"+URIUtils::GetFileName(strFile),&m_SampleRate,&m_BitsPerSample,&m_Channels);
+  m_vgm = m_dll.LoadVGM(strFileToLoad.c_str(), &m_SampleRate, &m_BitsPerSample, &m_Channels);
   if (!m_vgm)
   {
     CLog::Log(LOGERROR,"%s: error opening file %s!",__FUNCTION__,strFile.c_str());
@@ -106,7 +106,7 @@ bool VGMCodec::CanInit()
   return m_dll.CanLoad();
 }
 
-bool VGMCodec::IsSupportedFormat(const CStdString& strExt)
+bool VGMCodec::IsSupportedFormat(const std::string& strExt)
 {
   if (strExt == "aax" ||
       strExt == "acm" ||

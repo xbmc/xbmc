@@ -31,6 +31,7 @@
 #include "utils/log.h"
 #include "settings/Settings.h"
 #include "URL.h"
+#include "utils/StringUtils.h"
 
 #include "AudioDecoder.h"
 
@@ -56,12 +57,13 @@ DVDPlayerCodec::~DVDPlayerCodec()
   DeInit();
 }
 
-void DVDPlayerCodec::SetContentType(const CStdString &strContent)
+void DVDPlayerCodec::SetContentType(const std::string &strContent)
 {
   m_strContentType = strContent;
+  StringUtils::ToLower(m_strContentType);
 }
 
-bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
+bool DVDPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
 {
   // take precaution if Init()ialized earlier
   if (m_bInited)
@@ -76,7 +78,7 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
 
   m_nDecodedLen = 0;
 
-  CStdString strFileToOpen = strFile;
+  std::string strFileToOpen = strFile;
 
   CURL urlFile(strFile);
   if (urlFile.GetProtocol() == "shout" )
@@ -161,12 +163,14 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
 
   //  Extract ReplayGain info
   // tagLoaderTagLib.Load will try to determine tag type by file extension, so set fallback by contentType
-  CStdString strFallbackFileExtension = "";
-  if (m_strContentType.Equals("audio/aacp") || m_strContentType.Equals("audio/aacp" "audio/aac"))
+  std::string strFallbackFileExtension = "";
+  if (m_strContentType == "audio/aacp" ||
+      m_strContentType == "audio/aac")
     strFallbackFileExtension = "m4a";
-  else if (m_strContentType.Equals("audio/x-ms-wma"))
+  else if (m_strContentType == "audio/x-ms-wma")
     strFallbackFileExtension = "wma";
-  else if (m_strContentType.Equals("audio/x-ape") || m_strContentType.Equals("audio/ape"))
+  else if (m_strContentType == "audio/x-ape" ||
+           m_strContentType == "audio/ape")
     strFallbackFileExtension = "ape";
   CTagLoaderTagLib tagLoaderTagLib;
   tagLoaderTagLib.Load(strFile, m_tag, strFallbackFileExtension);

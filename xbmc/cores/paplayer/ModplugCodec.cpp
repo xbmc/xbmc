@@ -39,7 +39,7 @@ ModplugCodec::~ModplugCodec()
   DeInit();
 }
 
-bool ModplugCodec::Init(const CStdString &strFile, unsigned int filecache)
+bool ModplugCodec::Init(const std::string &strFile, unsigned int filecache)
 {
   DeInit();
 
