@@ -29,7 +29,7 @@ namespace MUSIC_INFO
       CMusicInfoTagLoaderFactory(void);
       virtual ~CMusicInfoTagLoaderFactory();
 
-      static IMusicInfoTagLoader* CreateLoader(const CStdString& strFileName);
+      static IMusicInfoTagLoader* CreateLoader(const std::string& strFileName);
   };
 }
 
