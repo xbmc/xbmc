@@ -25,6 +25,7 @@
 #include "utils/SystemInfo.h"
 #include "utils/CharsetConverter.h"
 #include "URL.h"
+#include "utils/log.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1
@@ -85,9 +86,11 @@ bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
       continue;
     
     std::string itemName;
-    g_charsetConverter.wToUTF8(itemNameW, itemName);
-    if (itemName.empty())
+    if (!g_charsetConverter.wToUTF8(itemNameW, itemName, true) || itemName.empty())
+    {
+      CLog::Log(LOGERROR, "%s: Can't convert wide string name to UTF-8 encoding", __FUNCTION__);
       continue;
+    }
 
     CFileItemPtr pItem(new CFileItem(itemName));
 
