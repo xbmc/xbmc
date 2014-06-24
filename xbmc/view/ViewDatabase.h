@@ -19,6 +19,7 @@
  *
  */
 #include "dbwrappers/Database.h"
+#include "utils/StdString.h"
 
 class CViewState;
 

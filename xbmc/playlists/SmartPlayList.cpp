@@ -154,7 +154,7 @@ int CSmartPlaylistRule::TranslateField(const char *field) const
   return FieldNone;
 }
 
-CStdString CSmartPlaylistRule::TranslateField(int field) const
+std::string CSmartPlaylistRule::TranslateField(int field) const
 {
   for (unsigned int i = 0; i < NUM_FIELDS; i++)
     if (field == fields[i].field) return fields[i].string;
@@ -638,7 +638,7 @@ CStdString CSmartPlaylistRule::GetVideoResolutionQuery(const CStdString &paramet
   return retVal;
 }
 
-CStdString CSmartPlaylistRule::GetBooleanQuery(const CStdString &negate, const CStdString &strType) const
+std::string CSmartPlaylistRule::GetBooleanQuery(const std::string &negate, const std::string &strType) const
 {
   if (strType == "movies")
   {
@@ -665,7 +665,7 @@ CStdString CSmartPlaylistRule::GetBooleanQuery(const CStdString &negate, const C
   return "";
 }
 
-CDatabaseQueryRule::SEARCH_OPERATOR CSmartPlaylistRule::GetOperator(const CStdString &strType) const
+CDatabaseQueryRule::SEARCH_OPERATOR CSmartPlaylistRule::GetOperator(const std::string &strType) const
 {
   SEARCH_OPERATOR op = CDatabaseQueryRule::GetOperator(strType);
   if ((strType == "tvshows" || strType == "episodes") && m_field == FieldYear)
@@ -679,7 +679,7 @@ CDatabaseQueryRule::SEARCH_OPERATOR CSmartPlaylistRule::GetOperator(const CStdSt
   return op;
 }
 
-CStdString CSmartPlaylistRule::FormatParameter(const CStdString &operatorString, const CStdString &param, const CDatabase &db, const CStdString &strType) const
+std::string CSmartPlaylistRule::FormatParameter(const std::string &operatorString, const std::string &param, const CDatabase &db, const std::string &strType) const
 {
   // special-casing
   if (m_field == FieldTime)
@@ -690,13 +690,13 @@ CStdString CSmartPlaylistRule::FormatParameter(const CStdString &operatorString,
   return CDatabaseQueryRule::FormatParameter(operatorString, param, db, strType);
 }
 
-CStdString CSmartPlaylistRule::FormatWhereClause(const CStdString &negate, const CStdString &oper, const CStdString &param,
-                                                 const CDatabase &db, const CStdString &strType) const
+std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, const std::string &oper, const std::string &param,
+                                                 const CDatabase &db, const std::string &strType) const
 {
-  CStdString parameter = FormatParameter(oper, param, db, strType);
+  std::string parameter = FormatParameter(oper, param, db, strType);
 
-  CStdString query;
-  CStdString table;
+  std::string query;
+  std::string table;
   if (strType == "songs")
   {
     table = "songview";
@@ -807,7 +807,7 @@ CStdString CSmartPlaylistRule::FormatWhereClause(const CStdString &negate, const
       query = negate + " (" + GetField(m_field, strType) +  parameter + ")";
   }
   if (m_field == FieldVideoResolution)
-    query = table + ".idFile" + negate + GetVideoResolutionQuery(param);
+    query = (CStdString)table + ".idFile" + (CStdString)negate + GetVideoResolutionQuery(param);
   else if (m_field == FieldAudioChannels)
     query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND iAudioChannels " + parameter + ")";
   else if (m_field == FieldVideoCodec)
@@ -826,7 +826,7 @@ CStdString CSmartPlaylistRule::FormatWhereClause(const CStdString &negate, const
         (m_operator == OPERATOR_DOES_NOT_EQUAL && param != "0") ||
         (m_operator == OPERATOR_LESS_THAN))
     {
-      CStdString field = GetField(FieldPlaycount, strType);
+      std::string field = GetField(FieldPlaycount, strType);
       query = field + " IS NULL OR " + field + parameter;
     }
   }
@@ -835,7 +835,7 @@ CStdString CSmartPlaylistRule::FormatWhereClause(const CStdString &negate, const
   return query;
 }
 
-CStdString CSmartPlaylistRule::GetField(int field, const CStdString &type) const
+std::string CSmartPlaylistRule::GetField(int field, const std::string &type) const
 {
   if (field >= FieldUnknown && field < FieldMax)
     return DatabaseUtils::GetField((Field)field, MediaTypes::FromString(type), DatabaseQueryPartWhere);

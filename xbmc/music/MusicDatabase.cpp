@@ -2876,7 +2876,7 @@ bool CMusicDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
       extFilter.order.clear();
     }
 
-    CStdString strSQLExtra;
+    std::string strSQLExtra;
     if (!BuildSQL(strSQLExtra, extFilter, strSQLExtra))
       return false;
 
@@ -3177,7 +3177,7 @@ bool CMusicDatabase::GetArtistsByWhere(const CStdString& strBaseDir, const Filte
       extFilter.order.clear();
     }
 
-    CStdString strSQLExtra;
+    std::string strSQLExtra;
     if (!BuildSQL(strSQLExtra, extFilter, strSQLExtra))
       return false;
 
@@ -3336,7 +3336,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const Filter &f
       extFilter.AppendGroup("albumview.idAlbum");
     }
 
-    CStdString strSQLExtra;
+    std::string strSQLExtra;
     if (!BuildSQL(strSQLExtra, extFilter, strSQLExtra))
       return false;
 
@@ -3449,7 +3449,7 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const Filter &fi
       extFilter.AppendGroup("songview.idSong");
     }
 
-    CStdString strSQLExtra;
+    std::string strSQLExtra;
     if (!BuildSQL(strSQLExtra, extFilter, strSQLExtra))
       return false;
 
@@ -4268,7 +4268,7 @@ bool CMusicDatabase::GetCompilationSongs(const CStdString& strBaseDir, CFileItem
 
 int CMusicDatabase::GetCompilationAlbumsCount()
 {
-  return strtol(GetSingleValue("album", "count(idAlbum)", "bCompilation = 1"), NULL, 10);
+  return strtol(GetSingleValue("album", "count(idAlbum)", "bCompilation = 1").c_str(), NULL, 10);
 }
 
 bool CMusicDatabase::SetPathHash(const CStdString &path, const CStdString &hash)

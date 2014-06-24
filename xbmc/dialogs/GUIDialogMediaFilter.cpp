@@ -880,7 +880,7 @@ bool CGUIDialogMediaFilter::GetMinMax(const std::string &table, const std::strin
   }
 
   CDatabase::Filter extFilter = filter;
-  CStdString strSQLExtra;
+  std::string strSQLExtra;
   if (!db->BuildSQL(m_dbUrl->ToString(), strSQLExtra, extFilter, strSQLExtra, *dbUrl))
   {
     delete db;
@@ -888,10 +888,10 @@ bool CGUIDialogMediaFilter::GetMinMax(const std::string &table, const std::strin
     return false;
   }
 
-  CStdString strSQL = "SELECT %s FROM %s ";
+  std::string strSQL = "SELECT %s FROM %s ";
 
-  min = static_cast<int>(strtol(db->GetSingleValue(db->PrepareSQL(strSQL, CStdString("MIN(" + field + ")").c_str(), table.c_str()) + strSQLExtra).c_str(), NULL, 0));
-  max = static_cast<int>(strtol(db->GetSingleValue(db->PrepareSQL(strSQL, CStdString("MAX(" + field + ")").c_str(), table.c_str()) + strSQLExtra).c_str(), NULL, 0));
+  min = static_cast<int>(strtol(db->GetSingleValue(db->PrepareSQL(strSQL, std::string("MIN(" + field + ")").c_str(), table.c_str()) + strSQLExtra).c_str(), NULL, 0));
+  max = static_cast<int>(strtol(db->GetSingleValue(db->PrepareSQL(strSQL, std::string("MAX(" + field + ")").c_str(), table.c_str()) + strSQLExtra).c_str(), NULL, 0));
 
   db->Close();
   delete db;

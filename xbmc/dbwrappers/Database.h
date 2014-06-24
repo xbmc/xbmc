@@ -20,14 +20,14 @@
  *
  */
 
-#include "utils/StdString.h"
-
 namespace dbiplus {
   class Database;
   class Dataset;
 }
 
 #include <memory>
+#include <string>
+#include <vector>
 
 class DatabaseSettings; // forward
 class CDbUrl;
@@ -71,7 +71,7 @@ public:
   void RollbackTransaction();
   bool InTransaction();
 
-  CStdString PrepareSQL(CStdString strStmt, ...) const;
+  std::string PrepareSQL(std::string strStmt, ...) const;
 
   /*!
    * @brief Get a single value from a table.
@@ -82,8 +82,8 @@ public:
    * @param strOrderBy If set, use this ORDER BY clause.
    * @return The requested value or an empty string if it wasn't found.
    */
-  CStdString GetSingleValue(const CStdString &strTable, const CStdString &strColumn, const CStdString &strWhereClause = CStdString(), const CStdString &strOrderBy = CStdString());
-  CStdString GetSingleValue(const CStdString &query);
+  std::string GetSingleValue(const std::string &strTable, const std::string &strColumn, const std::string &strWhereClause = std::string(), const std::string &strOrderBy = std::string());
+  std::string GetSingleValue(const std::string &query);
 
   /*! \brief Get a single value from a query on a dataset.
    \param query the query in question.
@@ -98,7 +98,7 @@ public:
    * @param filter The Filter to apply to this query.
    * @return True if the query was executed successfully, false otherwise.
    */
-  bool DeleteValues(const CStdString &strTable, const Filter &filter = Filter());
+  bool DeleteValues(const std::string &strTable, const Filter &filter = Filter());
 
   /*!
    * @brief Execute a query that does not return any result.
@@ -108,7 +108,7 @@ public:
    * @return True if the query was executed successfully, false otherwise.
    * @sa BeginMultipleExecute, CommitMultipleExecute
    */
-  bool ExecuteQuery(const CStdString &strQuery);
+  bool ExecuteQuery(const std::string &strQuery);
 
   /*!
    * @brief Execute a query that returns a result.
@@ -116,7 +116,7 @@ public:
    * @param strQuery The query to execute.
    * @return True if the query was executed successfully, false otherwise.
    */
-  bool ResultQuery(const CStdString &strQuery);
+  bool ResultQuery(const std::string &strQuery);
 
   /*!
    * @brief Start a multiple execution queue. Any ExecuteQuery() function
@@ -149,7 +149,7 @@ public:
    * @param strQuery The query to queue.
    * @return True if the query was added successfully, false otherwise.
    */
-  bool QueueInsertQuery(const CStdString &strQuery);
+  bool QueueInsertQuery(const std::string &strQuery);
 
   /*!
    * @brief Commit all queries in the queue.
@@ -158,14 +158,14 @@ public:
   bool CommitInsertQueries();
 
   virtual bool GetFilter(CDbUrl &dbUrl, Filter &filter, SortDescription &sorting) { return true; }
-  virtual bool BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CDbUrl &dbUrl);
-  virtual bool BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CDbUrl &dbUrl, SortDescription &sorting);
+  virtual bool BuildSQL(const std::string &strBaseDir, const std::string &strQuery, Filter &filter, std::string &strSQL, CDbUrl &dbUrl);
+  virtual bool BuildSQL(const std::string &strBaseDir, const std::string &strQuery, Filter &filter, std::string &strSQL, CDbUrl &dbUrl, SortDescription &sorting);
 
 protected:
   friend class CDatabaseManager;
   bool Update(const DatabaseSettings &db);
 
-  void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
+  void Split(const std::string& strFileNameAndPath, std::string& strPath, std::string& strFileName);
 
   virtual bool Open();
 
@@ -200,9 +200,9 @@ protected:
   virtual const char *GetBaseDBName() const=0;
 
   int GetDBVersion();
-  bool UpdateVersion(const CStdString &dbName);
+  bool UpdateVersion(const std::string &dbName);
 
-  bool BuildSQL(const CStdString &strQuery, const Filter &filter, CStdString &strSQL);
+  bool BuildSQL(const std::string &strQuery, const Filter &filter, std::string &strSQL);
 
   bool m_sqlite; ///< \brief whether we use sqlite (defaults to true)
 
@@ -212,7 +212,7 @@ protected:
 
 private:
   void InitSettings(DatabaseSettings &dbSettings);
-  bool Connect(const CStdString &dbName, const DatabaseSettings &db, bool create);
+  bool Connect(const std::string &dbName, const DatabaseSettings &db, bool create);
   void UpdateVersionNumber();
 
   bool m_bMultiWrite; /*!< True if there are any queries in the queue, false otherwise */

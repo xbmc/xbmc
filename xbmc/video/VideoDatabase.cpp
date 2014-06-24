@@ -4466,7 +4466,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
     {
       std::string filename = i->second;
       bool update = URIUtils::UpdateUrlEncoding(filename) &&
-                    (!m_pDS->query(PrepareSQL("SELECT idFile FROM files WHERE strFilename = '%s'", filename.c_str())) || m_pDS->num_rows() <= 0);
+                    (!m_pDS->query(PrepareSQL("SELECT idFile FROM files WHERE strFilename = '%s'", filename.c_str()).c_str()) || m_pDS->num_rows() <= 0);
       m_pDS->close();
 
       if (update)
@@ -6114,8 +6114,8 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
 
     int total = -1;
 
-    CStdString strSQL = "select %s from movieview ";
-    CStdString strSQLExtra;
+    std::string strSQL = "select %s from movieview ";
+    std::string strSQLExtra;
     if (!CDatabase::BuildSQL(strSQLExtra, extFilter, strSQLExtra))
       return false;
 
@@ -6217,9 +6217,9 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const Filte
 
     int total = -1;
     
-    CStdString strSQL = "SELECT %s FROM tvshowview ";
+    std::string strSQL = "SELECT %s FROM tvshowview ";
     CVideoDbUrl videoUrl;
-    CStdString strSQLExtra;
+    std::string strSQLExtra;
     Filter extFilter = filter;
     extFilter.AppendGroup("tvshowview.idShow");
     SortDescription sorting = sortDescription;
@@ -6345,9 +6345,9 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const Filt
 
     int total = -1;
     
-    CStdString strSQL = "select %s from episodeview ";
+    std::string strSQL = "select %s from episodeview ";
     CVideoDbUrl videoUrl;
-    CStdString strSQLExtra;
+    std::string strSQLExtra;
     Filter extFilter = filter;
     SortDescription sorting = sortDescription;
     if (!BuildSQL(strBaseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl, sorting))
@@ -7197,9 +7197,9 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const Filt
 
     int total = -1;
     
-    CStdString strSQL = "select %s from musicvideoview ";
+    std::string strSQL = "select %s from musicvideoview ";
     CVideoDbUrl videoUrl;
-    CStdString strSQLExtra;
+    std::string strSQLExtra;
     Filter extFilter = filter;
     SortDescription sorting = sortDescription;
     if (!BuildSQL(baseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl, sorting))

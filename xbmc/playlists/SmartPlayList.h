@@ -58,14 +58,21 @@ public:
   static bool ValidateRating(const std::string &input, void *data);
 
 protected:
-  virtual CStdString          GetField(int field, const CStdString& type) const;
+  virtual std::string         GetField(int field, const std::string& type) const;
   virtual int                 TranslateField(const char *field) const;
-  virtual CStdString          TranslateField(int field) const;
-  virtual CStdString          FormatParameter(const CStdString &negate, const CStdString &oper, const CDatabase &db, const CStdString &type) const;
-  virtual CStdString          FormatWhereClause(const CStdString &negate, const CStdString &oper, const CStdString &param,
-                                                const CDatabase &db, const CStdString &type) const;
-  virtual SEARCH_OPERATOR     GetOperator(const CStdString &type) const;
-  virtual CStdString          GetBooleanQuery(const CStdString &negate, const CStdString &strType) const;
+  virtual std::string         TranslateField(int field) const;
+  virtual std::string         FormatParameter(const std::string &negate,
+                                              const std::string &oper,
+                                              const CDatabase &db,
+                                              const std::string &type) const;
+  virtual std::string         FormatWhereClause(const std::string &negate,
+                                                const std::string& oper,
+                                                const std::string &param,
+                                                const CDatabase &db,
+                                                const std::string &type) const;
+  virtual SEARCH_OPERATOR     GetOperator(const std::string &type) const;
+  virtual std::string         GetBooleanQuery(const std::string &negate,
+                                              const std::string &strType) const;
 
 private:
   CStdString GetVideoResolutionQuery(const CStdString &parameter) const;
