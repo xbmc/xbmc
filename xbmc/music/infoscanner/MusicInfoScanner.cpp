@@ -192,7 +192,7 @@ void CMusicInfoScanner::Process()
         if (m_handle)
         {
           float percentage = (float) std::distance(it, m_pathsToScan.end()) / m_pathsToScan.size();
-          m_handle->SetText((CStdString)StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator) + " - " + album.strAlbum);
+          m_handle->SetText(StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator) + " - " + album.strAlbum);
           m_handle->SetPercentage(percentage);
         }
 
@@ -586,7 +586,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
     {
       VECALBUMS::iterator it;
       for (it = albums.begin(); it != albums.end(); ++it)
-        if (it->strMusicBrainzAlbumID.Equals(tag.GetMusicBrainzAlbumID()))
+        if (it->strMusicBrainzAlbumID == tag.GetMusicBrainzAlbumID())
           break;
 
       if (it == albums.end())
@@ -1014,7 +1014,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
   if (m_handle)
   {
     m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20321).c_str(), info->Name().c_str()));
-    m_handle->SetText((CStdString)StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator) + " - " + album.strAlbum);
+    m_handle->SetText(StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator) + " - " + album.strAlbum);
   }
 
   // clear our scraper cache

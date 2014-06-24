@@ -2130,11 +2130,11 @@ void CFileItemList::FilterCueItems()
           VECSONGS newitems;
           cuesheet.GetSongs(newitems);
 
-          std::vector<CStdString> MediaFileVec;
+          std::vector<std::string> MediaFileVec;
           cuesheet.GetMediaFiles(MediaFileVec);
 
           // queue the cue sheet and the underlying media file for deletion
-          for(std::vector<CStdString>::iterator itMedia = MediaFileVec.begin(); itMedia != MediaFileVec.end(); itMedia++)
+          for(std::vector<std::string>::iterator itMedia = MediaFileVec.begin(); itMedia != MediaFileVec.end(); itMedia++)
           {
             std::string strMediaFile = *itMedia;
             std::string fileFromCue = strMediaFile; // save the file from the cue we're matching against,

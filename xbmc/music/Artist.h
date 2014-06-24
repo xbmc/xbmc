@@ -21,11 +21,11 @@
  */
 
 #include <map>
+#include <string>
 #include <vector>
 
 #include "utils/ScraperUrl.h"
 #include "utils/Fanart.h"
-#include "utils/StdString.h"
 
 class TiXmlNode;
 class CAlbum;
@@ -78,24 +78,24 @@ public:
    \sa CVideoInfoTag::Load
    */
   bool Load(const TiXmlElement *element, bool append = false, bool prioritise = false);
-  bool Save(TiXmlNode *node, const CStdString &tag, const CStdString& strPath);
+  bool Save(TiXmlNode *node, const std::string &tag, const std::string& strPath);
 
-  CStdString strArtist;
-  CStdString strMusicBrainzArtistID;
+  std::string strArtist;
+  std::string strMusicBrainzArtistID;
   std::vector<std::string> genre;
-  CStdString strBiography;
+  std::string strBiography;
   std::vector<std::string> styles;
   std::vector<std::string> moods;
   std::vector<std::string> instruments;
-  CStdString strBorn;
-  CStdString strFormed;
-  CStdString strDied;
-  CStdString strDisbanded;
+  std::string strBorn;
+  std::string strFormed;
+  std::string strDied;
+  std::string strDisbanded;
   std::vector<std::string> yearsActive;
-  CStdString strPath;
+  std::string strPath;
   CScraperUrl thumbURL;
   CFanart fanart;
-  std::vector<std::pair<CStdString,CStdString> > discography;
+  std::vector<std::pair<std::string,std::string> > discography;
 };
 
 class CArtistCredit

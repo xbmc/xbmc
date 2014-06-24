@@ -233,7 +233,7 @@ void CGUIDialogMusicInfo::SetDiscography()
     int idAlbum = -1;
     for (vector<int>::const_iterator album = albumsByArtist.begin(); album != albumsByArtist.end(); ++album)
     {
-      if (database.GetAlbumById(*album).Equals((CStdString)item->GetLabel()))
+      if (StringUtils::EqualsNoCase(database.GetAlbumById(*album), item->GetLabel()))
       {
         idAlbum = *album;
         item->GetMusicInfoTag()->SetDatabaseId(idAlbum, "album");
