@@ -124,7 +124,7 @@ class CGUIAddonWindow : public CGUIMediaWindow
 friend class CAddonCallbacksGUI;
 
 public:
-  CGUIAddonWindow(int id, CStdString strXML, CAddon* addon);
+  CGUIAddonWindow(int id, const std::string& strXML, CAddon* addon);
   virtual ~CGUIAddonWindow(void);
 
   virtual bool      OnMessage(CGUIMessage& message);
@@ -162,13 +162,13 @@ protected:
 private:
   CEvent           m_actionEvent;
   CAddon          *m_addon;
-  CStdString       m_mediaDir;
+  std::string      m_mediaDir;
 };
 
 class CGUIAddonWindowDialog : public CGUIAddonWindow
 {
 public:
-  CGUIAddonWindowDialog(int id, CStdString strXML, CAddon* addon);
+  CGUIAddonWindowDialog(int id, const std::string& strXML, CAddon* addon);
   virtual ~CGUIAddonWindowDialog(void);
 
   void            Show(bool show = true);

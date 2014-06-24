@@ -90,7 +90,7 @@ static const TypeMapping types[] =
    {"xbmc.audioencoder",                 ADDON_AUDIOENCODER,         200,  "DefaultAddonAudioEncoder.png" },
    {"xbmc.service",                      ADDON_SERVICE,             24018, "DefaultAddonService.png" }};
 
-const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
+const std::string TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 {
   for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
   {
@@ -106,18 +106,18 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
   return "";
 }
 
-TYPE TranslateType(const CStdString &string)
+TYPE TranslateType(const std::string &string)
 {
   for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
   {
     const TypeMapping &map = types[index];
-    if (string.Equals(map.name))
+    if (string == map.name)
       return map.type;
   }
   return ADDON_UNKNOWN;
 }
 
-const CStdString GetIcon(const ADDON::TYPE& type)
+const std::string GetIcon(const ADDON::TYPE& type)
 {
   for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
   {
@@ -130,20 +130,20 @@ const CStdString GetIcon(const ADDON::TYPE& type)
 
 #define EMPTY_IF(x,y) \
   { \
-    CStdString fan=CAddonMgr::Get().GetExtValue(metadata->configuration, x); \
-    if (fan.Equals("true")) \
+    std::string fan=CAddonMgr::Get().GetExtValue(metadata->configuration, x); \
+    if (fan == "true") \
       y.clear(); \
   }
 
 #define SS(x) (x) ? x : ""
 
 AddonProps::AddonProps(const cp_extension_t *ext)
-  : id(ext->plugin->identifier)
+  : id(SS(ext->plugin->identifier))
   , version(SS(ext->plugin->version))
   , minversion(SS(ext->plugin->abi_bw_compatibility))
-  , name(ext->plugin->name)
-  , path(ext->plugin->plugin_path)
-  , author(ext->plugin->provider_name)
+  , name(SS(ext->plugin->name))
+  , path(SS(ext->plugin->plugin_path))
+  , author(SS(ext->plugin->provider_name))
   , stars(0)
 {
   if (ext->ext_point_id)
@@ -160,7 +160,7 @@ AddonProps::AddonProps(const cp_extension_t *ext)
     description = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "description");
     disclaimer = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "disclaimer");
     license = CAddonMgr::Get().GetExtValue(metadata->configuration, "license");
-    CStdString language;
+    std::string language;
     language = CAddonMgr::Get().GetExtValue(metadata->configuration, "language");
     if (!language.empty())
       extrainfo.insert(make_pair("language",language));
@@ -173,12 +173,12 @@ AddonProps::AddonProps(const cp_extension_t *ext)
 }
 
 AddonProps::AddonProps(const cp_plugin_info_t *plugin)
-  : id(plugin->identifier)
+  : id(SS(plugin->identifier))
   , version(SS(plugin->version))
   , minversion(SS(plugin->abi_bw_compatibility))
-  , name(plugin->name)
-  , path(plugin->plugin_path)
-  , author(plugin->provider_name)
+  , name(SS(plugin->name))
+  , path(SS(plugin->plugin_path))
+  , author(SS(plugin->provider_name))
   , stars(0)
 {
   BuildDependencies(plugin);
@@ -242,7 +242,7 @@ void AddonProps::BuildDependencies(const cp_plugin_info_t *plugin)
   if (!plugin)
     return;
   for (unsigned int i = 0; i < plugin->num_imports; ++i)
-    dependencies.insert(make_pair(CStdString(plugin->imports[i].plugin_id),
+    dependencies.insert(make_pair(std::string(plugin->imports[i].plugin_id),
                                   make_pair(AddonVersion(SS(plugin->imports[i].version)), plugin->imports[i].optional != 0)));
 }
 
@@ -331,7 +331,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
   if (!extension)
   {
     m_strLibName = "default";
-    CStdString ext;
+    std::string ext;
     switch (m_props.type)
     {
     case ADDON_SCRAPER_ALBUMS:
@@ -395,7 +395,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
       case ADDON_REPOSITORY:
       case ADDON_AUDIOENCODER:
         {
-          CStdString temp = CAddonMgr::Get().GetExtValue(extension->configuration, "@library");
+          std::string temp = CAddonMgr::Get().GetExtValue(extension->configuration, "@library");
           m_strLibName = temp;
         }
         break;
@@ -412,7 +412,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
 bool CAddon::LoadStrings()
 {
   // Path where the language strings reside
-  CStdString chosenPath = URIUtils::AddFileToFolder(m_props.path, "resources/language/");
+  std::string chosenPath = URIUtils::AddFileToFolder(m_props.path, "resources/language/");
 
   m_hasStrings = m_strings.Load(chosenPath, CSettings::Get().GetString("locale.language"));
   return m_checkedStrings = true;
@@ -425,7 +425,7 @@ void CAddon::ClearStrings()
   m_hasStrings = false;
 }
 
-CStdString CAddon::GetString(uint32_t id)
+std::string CAddon::GetString(uint32_t id)
 {
   if (!m_hasStrings && ! m_checkedStrings && !LoadStrings())
      return "";
@@ -447,7 +447,7 @@ bool CAddon::LoadSettings(bool bForce /* = false*/)
     return true;
   if (!m_hasSettings)
     return false;
-  CStdString addonFileName = URIUtils::AddFileToFolder(m_props.path, "resources/settings.xml");
+  std::string addonFileName = URIUtils::AddFileToFolder(m_props.path, "resources/settings.xml");
 
   if (!m_addonXmlDoc.LoadFile(addonFileName))
   {
@@ -498,9 +498,9 @@ void CAddon::SaveSettings(void)
     return; // no settings to save
 
   // break down the path into directories
-  CStdString strAddon = URIUtils::GetDirectory(m_userSettingsPath);
+  std::string strAddon = URIUtils::GetDirectory(m_userSettingsPath);
   URIUtils::RemoveSlashAtEnd(strAddon);
-  CStdString strRoot = URIUtils::GetDirectory(strAddon);
+  std::string strRoot = URIUtils::GetDirectory(strAddon);
   URIUtils::RemoveSlashAtEnd(strRoot);
 
   // create the individual folders
@@ -521,18 +521,18 @@ void CAddon::SaveSettings(void)
 #endif
 }
 
-CStdString CAddon::GetSetting(const CStdString& key)
+std::string CAddon::GetSetting(const std::string& key)
 {
   if (!LoadSettings())
     return ""; // no settings available
 
-  map<CStdString, CStdString>::const_iterator i = m_settings.find(key);
+  map<std::string, std::string>::const_iterator i = m_settings.find(key);
   if (i != m_settings.end())
     return i->second;
   return "";
 }
 
-void CAddon::UpdateSetting(const CStdString& key, const CStdString& value)
+void CAddon::UpdateSetting(const std::string& key, const std::string& value)
 {
   LoadSettings();
   if (key.empty()) return;
@@ -575,7 +575,7 @@ void CAddon::SettingsToXML(CXBMCTinyXML &doc) const
 {
   TiXmlElement node("settings");
   doc.InsertEndChild(node);
-  for (map<CStdString, CStdString>::const_iterator i = m_settings.begin(); i != m_settings.end(); ++i)
+  for (map<std::string, std::string>::const_iterator i = m_settings.begin(); i != m_settings.end(); ++i)
   {
     TiXmlElement nodeSetting("setting");
     nodeSetting.SetAttribute("id", i->first.c_str());
@@ -595,14 +595,14 @@ void CAddon::BuildProfilePath()
   m_profile = StringUtils::Format("special://profile/addon_data/%s/", ID().c_str());
 }
 
-const CStdString CAddon::Icon() const
+const std::string CAddon::Icon() const
 {
   if (CURL::IsFullPath(m_props.icon))
     return m_props.icon;
   return URIUtils::AddFileToFolder(m_props.path, m_props.icon);
 }
 
-const CStdString CAddon::LibPath() const
+const std::string CAddon::LibPath() const
 {
   return URIUtils::AddFileToFolder(m_props.path, m_strLibName);
 }

@@ -113,7 +113,7 @@ void CAddonCallbacksAddon::AddOnLog(void *addonData, const addon_log_t addonLogL
         break;
     }
 
-    CStdString strXbmcMessage = StringUtils::Format("AddOnLog: %s: %s", addonHelper->m_addon->Name().c_str(), strMessage);
+    std::string strXbmcMessage = StringUtils::Format("AddOnLog: %s: %s", addonHelper->m_addon->Name().c_str(), strMessage);
     CLog::Log(xbmcLogLevel, "%s", strXbmcMessage.c_str());
   }
   catch (std::exception &e)
@@ -214,7 +214,7 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
           else if (type == "number" || type == "enum" ||
                    type == "labelenum")
           {
-            *(int*) settingValue = (int) atoi(addonHelper->m_addon->GetSetting(id));
+            *(int*) settingValue = (int) atoi(addonHelper->m_addon->GetSetting(id).c_str());
             return true;
           }
           else if (type == "bool")
@@ -227,12 +227,12 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
             const char *option = setting->Attribute("option");
             if (option && strcmpi(option, "int") == 0)
             {
-              *(int*) settingValue = (int) atoi(addonHelper->m_addon->GetSetting(id));
+              *(int*) settingValue = (int) atoi(addonHelper->m_addon->GetSetting(id).c_str());
               return true;
             }
             else
             {
-              *(float*) settingValue = (float) atof(addonHelper->m_addon->GetSetting(id));
+              *(float*) settingValue = (float) atof(addonHelper->m_addon->GetSetting(id).c_str());
               return true;
             }
           }
@@ -254,7 +254,7 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
 
 char* CAddonCallbacksAddon::UnknownToUTF8(const char *strSource)
 {
-  CStdString string;
+  std::string string;
   if (strSource != NULL)
     g_charsetConverter.unknownToUTF8(strSource, string);
   else
@@ -271,7 +271,7 @@ char* CAddonCallbacksAddon::GetLocalizedString(const void* addonData, long dwCod
 
   CAddonCallbacksAddon* addonHelper = helper->GetHelperAddon();
 
-  CStdString string;
+  std::string string;
   if (dwCode >= 30000 && dwCode <= 30999)
     string = addonHelper->m_addon->GetString(dwCode).c_str();
   else if (dwCode >= 32000 && dwCode <= 32999)
@@ -289,7 +289,7 @@ char* CAddonCallbacksAddon::GetDVDMenuLanguage(const void* addonData)
   if (!helper)
     return NULL;
 
-  CStdString string = g_langInfo.GetDVDMenuLanguage();
+  std::string string = g_langInfo.GetDVDMenuLanguage();
 
   char* buffer = strdup(string.c_str());
   return buffer;

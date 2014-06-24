@@ -40,8 +40,8 @@ public:
    \param showNone whether there should be a "None" item in the list (defaults to false)
    \return 1 if an addon was selected, 2 if "Get More" was chosen, or 0 if an error occurred or if the selection process was cancelled
    */
-  static int SelectAddonID(ADDON::TYPE type, CStdString &addonID, bool showNone = false);
-  static int SelectAddonID(const std::vector<ADDON::TYPE> &types, CStdString &addonID, bool showNone = false);
+  static int SelectAddonID(ADDON::TYPE type, std::string &addonID, bool showNone = false);
+  static int SelectAddonID(const std::vector<ADDON::TYPE> &types, std::string &addonID, bool showNone = false);
   /*! \brief Popup a selection dialog with a list of addons of the given type
    \param type the type of addon wanted
    \param addonIDs [out] array of selected addon IDs

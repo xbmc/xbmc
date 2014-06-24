@@ -123,8 +123,8 @@ namespace ADDON
     return out;
   }
 
-  bool AddonVersion::SplitFileName(CStdString& ID, CStdString& version,
-                                   const CStdString& filename)
+  bool AddonVersion::SplitFileName(std::string& ID, std::string& version,
+                                   const std::string& filename)
   {
     size_t dpos = filename.rfind("-");
     if (dpos == std::string::npos)

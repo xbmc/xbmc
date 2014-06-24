@@ -24,6 +24,7 @@
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
+#include "utils/StdString.h"
 
 #define XML_ELM_DEFAULT     "default"
 
