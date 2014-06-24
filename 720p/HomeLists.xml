@@ -1002,6 +1002,7 @@
 							<!-- when only this list is visible -->
 							<control type="group">
 								<posy>103</posy>
+								<posx>-10</posx>
 								<visible>ListItem.Type(clip)</visible>
 								<include>ListItemWideCard</include>
 								<include>ListItemWide</include>
@@ -1013,6 +1014,7 @@
 							<!-- when only this list is visible -->
 							<control type="group">
 								<posy>103</posy>
+								<posx>-10</posx>
 								<visible>ListItem.Type(clip)</visible>
 								<include>ListItemWideCard</include>
 								<include>ListItemWide</include>
