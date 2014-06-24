@@ -33,19 +33,19 @@ CMusicInfoTagLoaderASAP::~CMusicInfoTagLoaderASAP()
 {
 }
 
-bool CMusicInfoTagLoaderASAP::Load(const CStdString &strFile, CMusicInfoTag &tag, EmbeddedArt *art)
+bool CMusicInfoTagLoaderASAP::Load(const std::string &strFile, CMusicInfoTag &tag, EmbeddedArt *art)
 {
   tag.SetLoaded(false);
 
   if (!m_dll.Load())
     return false;
 
-  CStdString strFileToLoad = strFile;
+  std::string strFileToLoad = strFile;
   int song = -1;
-  CStdString strExtension = URIUtils::GetExtension(strFile);
+  std::string strExtension = URIUtils::GetExtension(strFile);
   if (StringUtils::EqualsNoCase(strExtension, ".asapstream"))
   {
-    CStdString strFileName = URIUtils::GetFileName(strFile);
+    std::string strFileName = URIUtils::GetFileName(strFile);
     size_t iStart = strFileName.rfind('-') + 1;
     song = atoi(strFileName.substr(iStart, strFileName.size() - iStart - 11).c_str()) - 1;
     strFileToLoad = URIUtils::GetDirectory(strFile);

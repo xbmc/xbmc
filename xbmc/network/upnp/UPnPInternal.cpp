@@ -221,13 +221,13 @@ PopulateObjectFromTag(CMusicInfoTag&         tag,
                       EClientQuirks          quirks)
 {
     if (!tag.GetURL().empty() && file_path)
-      *file_path = tag.GetURL();
+      *file_path = tag.GetURL().c_str();
 
     std::vector<std::string> genres = tag.GetGenre();
     for (unsigned int index = 0; index < genres.size(); index++)
       object.m_Affiliation.genres.Add(genres.at(index).c_str());
-    object.m_Title = tag.GetTitle();
-    object.m_Affiliation.album = tag.GetAlbum();
+    object.m_Title = tag.GetTitle().c_str();
+    object.m_Affiliation.album = tag.GetAlbum().c_str();
     for (unsigned int index = 0; index < tag.GetArtist().size(); index++)
     {
       object.m_People.artists.Add(tag.GetArtist().at(index).c_str());

@@ -30,7 +30,6 @@ class CArtist;
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
-#include "utils/StdString.h"
 #include "XBDateTime.h"
 
 #define REPLAY_GAIN_HAS_TRACK_INFO 1
@@ -79,10 +78,10 @@ public:
   const CMusicInfoTag& operator =(const CMusicInfoTag& tag);
   bool operator !=(const CMusicInfoTag& tag) const;
   bool Loaded() const;
-  const CStdString& GetTitle() const;
-  const CStdString& GetURL() const;
+  const std::string& GetTitle() const;
+  const std::string& GetURL() const;
   const std::vector<std::string>& GetArtist() const;
-  const CStdString& GetAlbum() const;
+  const std::string& GetAlbum() const;
   int GetAlbumId() const;
   const std::vector<std::string>& GetAlbumArtist() const;
   const std::vector<std::string>& GetGenre() const;
@@ -95,14 +94,14 @@ public:
   const std::string &GetType() const;
 
   void GetReleaseDate(SYSTEMTIME& dateTime) const;
-  CStdString GetYearString() const;
-  const CStdString& GetMusicBrainzTrackID() const;
+  std::string GetYearString() const;
+  const std::string& GetMusicBrainzTrackID() const;
   const std::vector<std::string>& GetMusicBrainzArtistID() const;
-  const CStdString& GetMusicBrainzAlbumID() const;
+  const std::string& GetMusicBrainzAlbumID() const;
   const std::vector<std::string>& GetMusicBrainzAlbumArtistID() const;
-  const CStdString& GetMusicBrainzTRMID() const;
-  const CStdString& GetComment() const;
-  const CStdString& GetLyrics() const;
+  const std::string& GetMusicBrainzTRMID() const;
+  const std::string& GetComment() const;
+  const std::string& GetLyrics() const;
   const CDateTime& GetLastPlayed() const;
   bool  GetCompilation() const;
   char  GetRating() const;
@@ -115,15 +114,15 @@ public:
   float GetReplayGainAlbumPeak() const;
   int   HasReplayGainInfo() const;
 
-  void SetURL(const CStdString& strURL);
-  void SetTitle(const CStdString& strTitle);
-  void SetArtist(const CStdString& strArtist);
+  void SetURL(const std::string& strURL);
+  void SetTitle(const std::string& strTitle);
+  void SetArtist(const std::string& strArtist);
   void SetArtist(const std::vector<std::string>& artists);
-  void SetAlbum(const CStdString& strAlbum);
+  void SetAlbum(const std::string& strAlbum);
   void SetAlbumId(const int iAlbumId);
-  void SetAlbumArtist(const CStdString& strAlbumArtist);
+  void SetAlbumArtist(const std::string& strAlbumArtist);
   void SetAlbumArtist(const std::vector<std::string>& albumArtists);
-  void SetGenre(const CStdString& strGenre);
+  void SetGenre(const std::string& strGenre);
   void SetGenre(const std::vector<std::string>& genres);
   void SetYear(int year);
   void SetDatabaseId(long id, const std::string &type);
@@ -136,17 +135,17 @@ public:
   void SetArtist(const CArtist& artist);
   void SetAlbum(const CAlbum& album);
   void SetSong(const CSong& song);
-  void SetMusicBrainzTrackID(const CStdString& strTrackID);
+  void SetMusicBrainzTrackID(const std::string& strTrackID);
   void SetMusicBrainzArtistID(const std::vector<std::string>& musicBrainzArtistId);
-  void SetMusicBrainzAlbumID(const CStdString& strAlbumID);
+  void SetMusicBrainzAlbumID(const std::string& strAlbumID);
   void SetMusicBrainzAlbumArtistID(const std::vector<std::string>& musicBrainzAlbumArtistId);
-  void SetMusicBrainzTRMID(const CStdString& strTRMID);
-  void SetComment(const CStdString& comment);
-  void SetLyrics(const CStdString& lyrics);
+  void SetMusicBrainzTRMID(const std::string& strTRMID);
+  void SetComment(const std::string& comment);
+  void SetLyrics(const std::string& lyrics);
   void SetRating(char rating);
   void SetListeners(int listeners);
   void SetPlayCount(int playcount);
-  void SetLastPlayed(const CStdString& strLastPlayed);
+  void SetLastPlayed(const std::string& strLastPlayed);
   void SetLastPlayed(const CDateTime& strLastPlayed);
   void SetCompilation(bool compilation);
   void SetCoverArtInfo(size_t size, const std::string &mimeType);
@@ -159,19 +158,19 @@ public:
    Checks if we have this artist already added, and if not adds it to the songs artist list.
    \param value artist to add.
    */
-  void AppendArtist(const CStdString &artist);
+  void AppendArtist(const std::string &artist);
 
   /*! \brief Append a unique album artist to the artist list
    Checks if we have this album artist already added, and if not adds it to the songs album artist list.
    \param albumArtist album artist to add.
    */
-  void AppendAlbumArtist(const CStdString &albumArtist);
+  void AppendAlbumArtist(const std::string &albumArtist);
 
   /*! \brief Append a unique genre to the genre list
    Checks if we have this genre already added, and if not adds it to the songs genre list.
    \param genre genre to add.
    */
-  void AppendGenre(const CStdString &genre);
+  void AppendGenre(const std::string &genre);
 
   virtual void Archive(CArchive& ar);
   virtual void Serialize(CVariant& ar) const;
@@ -183,21 +182,21 @@ protected:
    \param value string to trim
    \return trimmed value, with spaces removed from left and right, as well as carriage returns from the right.
    */
-  CStdString Trim(const CStdString &value) const;
+  std::string Trim(const std::string &value) const;
 
-  CStdString m_strURL;
-  CStdString m_strTitle;
+  std::string m_strURL;
+  std::string m_strTitle;
   std::vector<std::string> m_artist;
-  CStdString m_strAlbum;
+  std::string m_strAlbum;
   std::vector<std::string> m_albumArtist;
   std::vector<std::string> m_genre;
-  CStdString m_strMusicBrainzTrackID;
+  std::string m_strMusicBrainzTrackID;
   std::vector<std::string> m_musicBrainzArtistID;
-  CStdString m_strMusicBrainzAlbumID;
+  std::string m_strMusicBrainzAlbumID;
   std::vector<std::string> m_musicBrainzAlbumArtistID;
-  CStdString m_strMusicBrainzTRMID;
-  CStdString m_strComment;
-  CStdString m_strLyrics;
+  std::string m_strMusicBrainzTRMID;
+  std::string m_strComment;
+  std::string m_strLyrics;
   CDateTime m_lastPlayed;
   bool m_bCompilation;
   int m_iDuration;
