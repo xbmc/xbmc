@@ -324,7 +324,7 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
   // setup groups
   labels.clear();
   vector<Field> groups = CSmartPlaylistRule::GetGroups(m_playlist.GetType());
-  Field currentGroup = CSmartPlaylistRule::TranslateGroup(m_playlist.GetGroup());
+  Field currentGroup = CSmartPlaylistRule::TranslateGroup(m_playlist.GetGroup().c_str());
   for (unsigned int i = 0; i < groups.size(); i++)
     labels.push_back(make_pair(CSmartPlaylistRule::GetLocalizedGroup(groups[i]), groups[i]));
   SET_CONTROL_LABELS(CONTROL_GROUP_BY, currentGroup, &labels);

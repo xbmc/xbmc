@@ -20,12 +20,12 @@
  */
 
 #include <set>
+#include <string>
 #include <vector>
 #include <boost/shared_ptr.hpp>
 
 #include "dbwrappers/DatabaseQuery.h"
 #include "utils/SortUtils.h"
-#include "utils/StdString.h"
 #include "utils/XBMCTinyXML.h"
 
 class CURL;
@@ -37,20 +37,20 @@ public:
   CSmartPlaylistRule();
   virtual ~CSmartPlaylistRule() { }
 
-  CStdString                  GetLocalizedRule() const;
+  std::string                 GetLocalizedRule() const;
 
   static SortBy               TranslateOrder(const char *order);
-  static CStdString           TranslateOrder(SortBy order);
+  static std::string          TranslateOrder(SortBy order);
   static Field                TranslateGroup(const char *group);
-  static CStdString           TranslateGroup(Field group);
+  static std::string          TranslateGroup(Field group);
 
-  static CStdString           GetLocalizedField(int field);
-  static CStdString           GetLocalizedGroup(Field group);
+  static std::string          GetLocalizedField(int field);
+  static std::string          GetLocalizedGroup(Field group);
   static bool                 CanGroupMix(Field group);
 
-  static std::vector<Field>   GetFields(const CStdString &type);
-  static std::vector<SortBy>  GetOrders(const CStdString &type);
-  static std::vector<Field>   GetGroups(const CStdString &type);
+  static std::vector<Field>   GetFields(const std::string &type);
+  static std::vector<SortBy>  GetOrders(const std::string &type);
+  static std::vector<Field>   GetGroups(const std::string &type);
   virtual FIELD_TYPE          GetFieldType(int field) const;
   static bool                 IsFieldBrowseable(int field);
 
@@ -75,7 +75,7 @@ protected:
                                               const std::string &strType) const;
 
 private:
-  CStdString GetVideoResolutionQuery(const CStdString &parameter) const;
+  std::string GetVideoResolutionQuery(const std::string &parameter) const;
 };
 
 class CSmartPlaylistRuleCombination : public CDatabaseQueryRuleCombination
@@ -84,8 +84,11 @@ public:
   CSmartPlaylistRuleCombination() { }
   virtual ~CSmartPlaylistRuleCombination() { }
 
-  CStdString GetWhereClause(const CDatabase &db, const CStdString& strType, std::set<CStdString> &referencedPlaylists) const;
-  void GetVirtualFolders(const CStdString& strType, std::vector<CStdString> &virtualFolders) const;
+  std::string GetWhereClause(const CDatabase &db,
+                             const std::string& strType,
+                             std::set<std::string> &referencedPlaylists) const;
+  void GetVirtualFolders(const std::string& strType,
+                         std::vector<std::string> &virtualFolders) const;
 
   void AddRule(const CSmartPlaylistRule &rule);
 };
@@ -97,23 +100,23 @@ public:
   virtual ~CSmartPlaylist() { }
 
   bool Load(const CURL& url);
-  bool Load(const CStdString &path);
+  bool Load(const std::string &path);
   bool Load(const CVariant &obj);
-  bool LoadFromXml(const CStdString &xml);
-  bool LoadFromJson(const CStdString &json);
-  bool Save(const CStdString &path) const;
+  bool LoadFromXml(const std::string &xml);
+  bool LoadFromJson(const std::string &json);
+  bool Save(const std::string &path) const;
   bool Save(CVariant &obj, bool full = true) const;
-  bool SaveAsJson(CStdString &json, bool full = true) const;
+  bool SaveAsJson(std::string &json, bool full = true) const;
 
   bool OpenAndReadName(const CURL &url);
-  bool LoadFromXML(const TiXmlNode *root, const CStdString &encoding = "UTF-8");
+  bool LoadFromXML(const TiXmlNode *root, const std::string &encoding = "UTF-8");
 
   void Reset();
 
-  void SetName(const CStdString &name);
-  void SetType(const CStdString &type); // music, video, mixed
-  const CStdString& GetName() const { return m_playlistName; };
-  const CStdString& GetType() const { return m_playlistType; };
+  void SetName(const std::string &name);
+  void SetType(const std::string &type); // music, video, mixed
+  const std::string& GetName() const { return m_playlistName; };
+  const std::string& GetType() const { return m_playlistType; };
   bool IsVideoType() const;
   bool IsMusicType() const;
 
@@ -131,8 +134,8 @@ public:
   void SetOrderAttributes(SortAttribute attributes) { m_orderAttributes = attributes; }
   SortAttribute GetOrderAttributes() const { return m_orderAttributes; }
 
-  void SetGroup(const CStdString &group) { m_group = group; }
-  const CStdString& GetGroup() const { return m_group; }
+  void SetGroup(const std::string &group) { m_group = group; }
+  const std::string& GetGroup() const { return m_group; }
   void SetGroupMixed(bool mixed) { m_groupMixed = mixed; }
   bool IsGroupMixed() const { return m_groupMixed; }
 
@@ -144,16 +147,16 @@ public:
    \param referencedPlaylists a set of playlists to know when we reach a cycle
    \param needWhere whether we need to prepend the where clause with "WHERE "
    */
-  CStdString GetWhereClause(const CDatabase &db, std::set<CStdString> &referencedPlaylists) const;
-  void GetVirtualFolders(std::vector<CStdString> &virtualFolders) const;
+  std::string GetWhereClause(const CDatabase &db, std::set<std::string> &referencedPlaylists) const;
+  void GetVirtualFolders(std::vector<std::string> &virtualFolders) const;
 
-  CStdString GetSaveLocation() const;
+  std::string GetSaveLocation() const;
 
   static void GetAvailableFields(const std::string &type, std::vector<std::string> &fieldList);
 
-  static bool IsVideoType(const CStdString &type);
-  static bool IsMusicType(const CStdString &type);
-  static bool CheckTypeCompatibility(const CStdString &typeLeft, const CStdString &typeRight);
+  static bool IsVideoType(const std::string &type);
+  static bool IsMusicType(const std::string &type);
+  static bool CheckTypeCompatibility(const std::string &typeLeft, const std::string &typeRight);
 
   bool IsEmpty(bool ignoreSortAndLimit = true) const;
 
@@ -166,19 +169,19 @@ private:
 
   const TiXmlNode* readName(const TiXmlNode *root);
   const TiXmlNode* readNameFromPath(const CURL &url);
-  const TiXmlNode* readNameFromXml(const CStdString &xml);
+  const TiXmlNode* readNameFromXml(const std::string &xml);
   bool load(const TiXmlNode *root);
 
   CSmartPlaylistRuleCombination m_ruleCombination;
-  CStdString m_playlistName;
-  CStdString m_playlistType;
+  std::string m_playlistName;
+  std::string m_playlistType;
 
   // order information
   unsigned int m_limit;
   SortBy m_orderField;
   SortOrder m_orderDirection;
   SortAttribute m_orderAttributes;
-  CStdString m_group;
+  std::string m_group;
   bool m_groupMixed;
 
   CXBMCTinyXML m_xmlDoc;

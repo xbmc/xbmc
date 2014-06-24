@@ -633,7 +633,7 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
     if (!videodb.Open())
       return -1;
 
-    std::set<CStdString> playlists;
+    std::set<std::string> playlists;
     CDatabase::Filter dbfilter;
     dbfilter.where = tmpFilter.GetWhereClause(videodb, playlists);
 
@@ -664,7 +664,7 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
     if (!musicdb.Open())
       return -1;
 
-    std::set<CStdString> playlists;
+    std::set<std::string> playlists;
     CDatabase::Filter dbfilter;
     dbfilter.where = tmpFilter.GetWhereClause(musicdb, playlists);
     

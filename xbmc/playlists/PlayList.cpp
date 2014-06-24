@@ -294,12 +294,12 @@ void CPlayList::UnShuffle()
   m_bShuffled = false;
 }
 
-const CStdString& CPlayList::GetName() const
+const std::string& CPlayList::GetName() const
 {
   return m_strPlayListName;
 }
 
-void CPlayList::Remove(const CStdString& strFileName)
+void CPlayList::Remove(const std::string& strFileName)
 {
   int iOrder = -1;
   int position = 0;
@@ -350,7 +350,7 @@ void CPlayList::Remove(int position)
 
 int CPlayList::RemoveDVDItems()
 {
-  std::vector <CStdString> vecFilenames;
+  std::vector <std::string> vecFilenames;
 
   // Collect playlist items from DVD share
   ivecItems it;
@@ -369,11 +369,11 @@ int CPlayList::RemoveDVDItems()
   int nFileCount = vecFilenames.size();
   if ( nFileCount )
   {
-    std::vector <CStdString>::iterator it;
+    std::vector <std::string>::iterator it;
     it = vecFilenames.begin();
     while (it != vecFilenames.end() )
     {
-      CStdString& strFilename = *it;
+      std::string& strFilename = *it;
       Remove( strFilename );
       it++;
     }
@@ -423,7 +423,7 @@ void CPlayList::SetUnPlayable(int iItem)
 }
 
 
-bool CPlayList::Load(const CStdString& strFileName)
+bool CPlayList::Load(const std::string& strFileName)
 {
   Clear();
   m_strBasePath = URIUtils::GetDirectory(strFileName);
@@ -449,7 +449,7 @@ bool CPlayList::LoadData(std::istream &stream)
   return LoadData(ostr.str());
 }
 
-bool CPlayList::LoadData(const CStdString& strData)
+bool CPlayList::LoadData(const std::string& strData)
 {
   return false;
 }
@@ -492,7 +492,7 @@ void CPlayList::UpdateItem(const CFileItem *item)
     CFileItemPtr playlistItem = *it;
     if (playlistItem->IsSamePath(item))
     {
-      CStdString temp = playlistItem->GetPath(); // save path, it may have been altered
+      std::string temp = playlistItem->GetPath(); // save path, it may have been altered
       *playlistItem = *item;
       playlistItem->SetPath(temp);
       break;
@@ -500,7 +500,7 @@ void CPlayList::UpdateItem(const CFileItem *item)
   }
 }
 
-const CStdString CPlayList::ResolveURL(const CFileItemPtr &item ) const
+const std::string& CPlayList::ResolveURL(const CFileItemPtr &item ) const
 {
   if (item->IsMusicDb() && item->HasMusicInfoTag())
     return item->GetMusicInfoTag()->GetURL();

@@ -65,7 +65,7 @@ namespace XFILE
   bool CSmartPlaylistDirectory::GetDirectory(const CSmartPlaylist &playlist, CFileItemList& items, const CStdString &strBaseDir /* = "" */, bool filter /* = false */)
   {
     bool success = false, success2 = false;
-    std::vector<CStdString> virtualFolders;
+    std::vector<std::string> virtualFolders;
 
     SortDescription sorting;
     sorting.limitEnd = playlist.GetLimit();
@@ -82,7 +82,7 @@ namespace XFILE
 
     // get all virtual folders and add them to the item list
     playlist.GetVirtualFolders(virtualFolders);
-    for (std::vector<CStdString>::const_iterator virtualFolder = virtualFolders.begin(); virtualFolder != virtualFolders.end(); virtualFolder++)
+    for (std::vector<std::string>::const_iterator virtualFolder = virtualFolders.begin(); virtualFolder != virtualFolders.end(); virtualFolder++)
     {
       CFileItemPtr pItem = CFileItemPtr(new CFileItem(*virtualFolder, true));
       IFileDirectory *dir = CFileDirectoryFactory::Create(pItem->GetURL(), pItem.get());
@@ -95,9 +95,9 @@ namespace XFILE
       }
     }
 
-    if (playlist.GetType().Equals("movies") ||
-        playlist.GetType().Equals("tvshows") ||
-        playlist.GetType().Equals("episodes"))
+    if (playlist.GetType() == "movies" ||
+        playlist.GetType() == "tvshows" ||
+        playlist.GetType() == "episodes")
     {
       CVideoDatabase db;
       if (db.Open())
@@ -158,7 +158,7 @@ namespace XFILE
       if (db.Open())
       {
         CSmartPlaylist plist(playlist);
-        if (playlist.GetType().Equals("mixed") || playlist.GetType().empty())
+        if (playlist.GetType() == "mixed" || playlist.GetType().empty())
           plist.SetType("songs");
 
         MediaType mediaType = MediaTypes::FromString(plist.GetType());
@@ -209,13 +209,13 @@ namespace XFILE
       }
     }
 
-    if (playlist.GetType().Equals("musicvideos") || playlist.GetType().Equals("mixed"))
+    if (playlist.GetType() == "musicvideos" || playlist.GetType() == "mixed")
     {
       CVideoDatabase db;
       if (db.Open())
       {
         CSmartPlaylist mvidPlaylist(playlist);
-        if (playlist.GetType().Equals("mixed"))
+        if (playlist.GetType() == "mixed")
           mvidPlaylist.SetType("musicvideos");
 
         CStdString baseDir = strBaseDir;
@@ -292,9 +292,9 @@ namespace XFILE
       item->m_iprogramCount = i;  // hack for playlist order
     }
 
-    if (playlist.GetType().Equals("mixed"))
+    if (playlist.GetType() == "mixed")
       return success || success2;
-    else if (playlist.GetType().Equals("musicvideos"))
+    else if (playlist.GetType() == "musicvideos")
       return success2;
     else
       return success;

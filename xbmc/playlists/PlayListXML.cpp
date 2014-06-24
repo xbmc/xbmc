@@ -70,16 +70,16 @@ CPlayListXML::~CPlayListXML(void)
 {}
 
 
-static inline CStdString GetString( const TiXmlElement* pRootElement, const char *tagName )
+static inline std::string GetString( const TiXmlElement* pRootElement, const char *tagName )
 {
-  CStdString strValue;
+  std::string strValue;
   if ( XMLUtils::GetString(pRootElement, tagName, strValue) )
     return strValue;
 
   return "";
 }
 
-bool CPlayListXML::Load( const CStdString& strFileName )
+bool CPlayListXML::Load( const std::string& strFileName )
 {
   CXBMCTinyXML xmlDoc;
 
@@ -109,12 +109,12 @@ bool CPlayListXML::Load( const CStdString& strFileName )
   while ( pSet )
   {
     // Get parameters
-    CStdString url = GetString( pSet, "url" );
-    CStdString name = GetString( pSet, "name" );
-    CStdString category = GetString( pSet, "category" );
-    CStdString lang = GetString( pSet, "lang" );
-    CStdString channel = GetString( pSet, "channel" );
-    CStdString lockpass = GetString( pSet, "lockpassword" );
+    std::string url = GetString( pSet, "url" );
+    std::string name = GetString( pSet, "name" );
+    std::string category = GetString( pSet, "category" );
+    std::string lang = GetString( pSet, "lang" );
+    std::string channel = GetString( pSet, "channel" );
+    std::string lockpass = GetString( pSet, "lockpassword" );
 
     // If url is empty, it doesn't make any sense
     if ( !url.empty() )
@@ -127,7 +127,7 @@ bool CPlayListXML::Load( const CStdString& strFileName )
        if ( !lang.empty() )
          name += " [" + lang + "]";
 
-       CStdString info = name;
+       std::string info = name;
        CFileItemPtr newItem( new CFileItem(info) );
        newItem->SetPath(url);
 
@@ -165,17 +165,17 @@ bool CPlayListXML::Load( const CStdString& strFileName )
 }
 
 
-void CPlayListXML::Save(const CStdString& strFileName) const
+void CPlayListXML::Save(const std::string& strFileName) const
 {
   if (!m_vecItems.size()) return ;
-  CStdString strPlaylist = CUtil::MakeLegalPath(strFileName);
+  std::string strPlaylist = CUtil::MakeLegalPath(strFileName);
   CFile file;
   if (!file.OpenForWrite(strPlaylist, true))
   {
     CLog::Log(LOGERROR, "Could not save WPL playlist: [%s]", strPlaylist.c_str());
     return ;
   }
-  CStdString write;
+  std::string write;
   write += StringUtils::Format("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
   write += StringUtils::Format("<streams>\n");
   for (int i = 0; i < (int)m_vecItems.size(); ++i)

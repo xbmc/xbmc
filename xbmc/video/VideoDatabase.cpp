@@ -9701,7 +9701,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
         // of the path (season and episodeid) appended later
        (xsp.GetType() == "episodes" && itemType == "tvshows"))
     {
-      std::set<CStdString> playlists;
+      std::set<std::string> playlists;
       filter.AppendWhere(xsp.GetWhereClause(*this, playlists));
 
       if (xsp.GetLimit() > 0)
@@ -9725,7 +9725,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
     // check if the filter playlist matches the item type
     if (xspFilter.GetType() == itemType)
     {
-      std::set<CStdString> playlists;
+      std::set<std::string> playlists;
       filter.AppendWhere(xspFilter.GetWhereClause(*this, playlists));
     }
     // remove the filter if it doesn't match the item type

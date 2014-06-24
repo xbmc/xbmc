@@ -19,7 +19,7 @@
  *
  */
 
-#include "utils/StdString.h"
+#include <string>
 
 class CFileItem;
 class CURL;
@@ -31,10 +31,10 @@ namespace PLAYLIST
   class CPlayListFactory
   {
   public:
-    static CPlayList* Create(const CStdString& filename);
+    static CPlayList* Create(const std::string& filename);
     static CPlayList* Create(const CFileItem& item);
     static bool IsPlaylist(const CURL& url);
-    static bool IsPlaylist(const CStdString& filename);
+    static bool IsPlaylist(const std::string& filename);
     static bool IsPlaylist(const CFileItem& item);
   };
 }

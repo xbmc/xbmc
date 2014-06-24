@@ -113,7 +113,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     CMusicDatabase db;
     if (db.Open())
     {
-      set<CStdString> playlists;
+      set<std::string> playlists;
       if ( playlistLoaded )
         m_strCurrentFilterMusic = playlist.GetWhereClause(db, playlists);
 
@@ -142,7 +142,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     CVideoDatabase db;
     if (db.Open())
     {
-      set<CStdString> playlists;
+      set<std::string> playlists;
       if ( playlistLoaded )
         m_strCurrentFilterVideo = playlist.GetWhereClause(db, playlists);
 
