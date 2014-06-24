@@ -1175,8 +1175,8 @@ bool CPVRManager::UpdateItem(CFileItem& item)
         videotag->m_genre = epgTagNow.Genre();
       videotag->m_strPath = channelTag->Path();
       videotag->m_strFileNameAndPath = channelTag->Path();
-      videotag->m_strPlot = bHasTagNow ? epgTagNow.Plot() : StringUtils::EmptyString;
-      videotag->m_strPlotOutline = bHasTagNow ? epgTagNow.PlotOutline() : StringUtils::EmptyString;
+      videotag->m_strPlot = bHasTagNow ? epgTagNow.Plot() : "";
+      videotag->m_strPlotOutline = bHasTagNow ? epgTagNow.PlotOutline() : "";
       videotag->m_iEpisode = bHasTagNow ? epgTagNow.EpisodeNum() : 0;
     }
   }

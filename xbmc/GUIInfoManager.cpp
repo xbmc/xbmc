@@ -3777,9 +3777,9 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_GENRE:
       return tag->GetEPGNow(epgTag) ? StringUtils::Join(epgTag.Genre(), g_advancedSettings.m_videoItemSeparator) : "";
     case VIDEOPLAYER_PLOT:
-      return tag->GetEPGNow(epgTag) ? epgTag.Plot() : StringUtils::EmptyString;
+      return tag->GetEPGNow(epgTag) ? epgTag.Plot() : "";
     case VIDEOPLAYER_PLOT_OUTLINE:
-      return tag->GetEPGNow(epgTag) ? epgTag.PlotOutline() : StringUtils::EmptyString;
+      return tag->GetEPGNow(epgTag) ? epgTag.PlotOutline() : "";
     case VIDEOPLAYER_STARTTIME:
       return tag->GetEPGNow(epgTag) ? epgTag.StartAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
     case VIDEOPLAYER_ENDTIME:
@@ -3795,9 +3795,9 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_NEXT_GENRE:
       return tag->GetEPGNext(epgTag) ? StringUtils::Join(epgTag.Genre(), g_advancedSettings.m_videoItemSeparator) : "";
     case VIDEOPLAYER_NEXT_PLOT:
-      return tag->GetEPGNext(epgTag) ? epgTag.Plot() : StringUtils::EmptyString;
+      return tag->GetEPGNext(epgTag) ? epgTag.Plot() : "";
     case VIDEOPLAYER_NEXT_PLOT_OUTLINE:
-      return tag->GetEPGNext(epgTag) ? epgTag.PlotOutline() : StringUtils::EmptyString;
+      return tag->GetEPGNext(epgTag) ? epgTag.PlotOutline() : "";
     case VIDEOPLAYER_NEXT_STARTTIME:
       return tag->GetEPGNext(epgTag) ? epgTag.StartAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
     case VIDEOPLAYER_NEXT_ENDTIME:

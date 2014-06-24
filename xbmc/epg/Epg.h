@@ -50,7 +50,7 @@ namespace EPG
      * @param strScraperName The name of the scraper to use.
      * @param bLoadedFromDb True if this table was loaded from the database, false otherwise.
      */
-    CEpg(int iEpgID, const CStdString &strName = "", const CStdString &strScraperName = "", bool bLoadedFromDb = false);
+    CEpg(int iEpgID, const std::string &strName = "", const std::string &strScraperName = "", bool bLoadedFromDb = false);
 
     /*!
      * @brief Create a new EPG instance for a channel.
@@ -91,13 +91,13 @@ namespace EPG
      * @brief Get the name of the scraper to use for this table.
      * @return The name of the scraper to use for this table.
      */
-    const CStdString &ScraperName(void) const { return m_strScraperName; }
+    const std::string &ScraperName(void) const { return m_strScraperName; }
 
     /*!
      * @brief Change the name of the scraper to use.
      * @param strScraperName The new scraper.
      */
-    void SetScraperName(const CStdString &strScraperName);
+    void SetScraperName(const std::string &strScraperName);
 
     /*!
      * @brief Specify if EPG should be manually updated on the next cycle
@@ -120,13 +120,13 @@ namespace EPG
      * @brief Get the name of this table.
      * @return The name of this table.
      */
-    const CStdString &Name(void) const { return m_strName; }
+    const std::string &Name(void) const { return m_strName; }
 
     /*!
      * @brief Changed the name of this table.
      * @param strName The new name.
      */
-    void SetName(const CStdString &strName);
+    void SetName(const std::string &strName);
 
     /*!
      * @brief Get the database ID of this table.
@@ -349,8 +349,8 @@ namespace EPG
     bool                                m_bLoaded;         /*!< true when the initial entries have been loaded */
     bool                                m_bUpdatePending;  /*!< true if manual update is pending */
     int                                 m_iEpgID;          /*!< the database ID of this table */
-    CStdString                          m_strName;         /*!< the name of this table */
-    CStdString                          m_strScraperName;  /*!< the name of the scraper to use */
+    std::string                         m_strName;         /*!< the name of this table */
+    std::string                         m_strScraperName;  /*!< the name of the scraper to use */
     CDateTime                           m_nowActiveStart;  /*!< the start time of the tag that is currently active */
 
     CDateTime                           m_lastScanTime;    /*!< the last time the EPG has been updated */

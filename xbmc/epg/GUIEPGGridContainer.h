@@ -89,7 +89,7 @@ namespace EPG
     void GoToNow();
     void SetStartEnd(CDateTime start, CDateTime end);
     void SetChannel(const PVR::CPVRChannel &channel);
-    void SetChannel(const CStdString &channel);
+    void SetChannel(const std::string &channel);
 
   protected:
     bool OnClick(int actionID);
