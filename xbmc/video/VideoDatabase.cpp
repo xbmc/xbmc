@@ -684,7 +684,7 @@ int CVideoDatabase::AddPath(const CStdString& strPath, const CStdString &parentP
 
     URIUtils::AddSlashAtEnd(strPath1);
 
-    int idParentPath = GetPathId(parentPath.empty() ? URIUtils::GetParentPath(strPath1) : parentPath);
+    int idParentPath = GetPathId(parentPath.empty() ? (CStdString)URIUtils::GetParentPath(strPath1) : parentPath);
 
     // add the path
     if (idParentPath < 0)

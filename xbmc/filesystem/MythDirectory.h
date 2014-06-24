@@ -22,6 +22,7 @@
 #include "IDirectory.h"
 #include "MythSession.h"
 #include "XBDateTime.h"
+#include "utils/StdString.h"
 
 namespace XFILE
 {

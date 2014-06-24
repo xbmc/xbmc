@@ -30,6 +30,7 @@ class CArtist;
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
+#include "utils/StdString.h"
 #include "XBDateTime.h"
 
 #define REPLAY_GAIN_HAS_TRACK_INFO 1

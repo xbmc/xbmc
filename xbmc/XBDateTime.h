@@ -20,9 +20,9 @@
  *
  */
 
-#include "utils/StdString.h"
 #include "utils/IArchivable.h"
 #include "system.h"
+#include <string>
 
 /*! \brief TIME_FORMAT enum/bitmask used for formatting time strings
  Note the use of bitmasking, e.g.
@@ -67,8 +67,8 @@ public:
   const CDateTimeSpan& operator -=(const CDateTimeSpan& right);
 
   void SetDateTimeSpan(int day, int hour, int minute, int second);
-  void SetFromPeriod(const CStdString &period);
-  void SetFromTimeString(const CStdString& time);
+  void SetFromPeriod(const std::string &period);
+  void SetFromTimeString(const std::string& time);
 
   int GetDays() const;
   int GetHours() const;
@@ -99,11 +99,11 @@ public:
   CDateTime(int year, int month, int day, int hour, int minute, int second);
   virtual ~CDateTime() {}
 
-  bool SetFromDateString(const CStdString &date);
+  bool SetFromDateString(const std::string &date);
 
   static CDateTime GetCurrentDateTime();
   static CDateTime GetUTCDateTime();
-  static int MonthStringToMonthNum(const CStdString& month);
+  static int MonthStringToMonthNum(const std::string& month);
 
   const CDateTime& operator =(const SYSTEMTIME& right);
   const CDateTime& operator =(const FILETIME& right);
@@ -171,18 +171,18 @@ public:
   bool SetDateTime(int year, int month, int day, int hour, int minute, int second);
   bool SetDate(int year, int month, int day);
   bool SetTime(int hour, int minute, int second);
-  bool SetFromDBDate(const CStdString &date);
-  bool SetFromDBTime(const CStdString &time);
-  bool SetFromW3CDate(const CStdString &date);
-  bool SetFromW3CDateTime(const CStdString &date, bool ignoreTimezone = false);
+  bool SetFromDBDate(const std::string &date);
+  bool SetFromDBTime(const std::string &time);
+  bool SetFromW3CDate(const std::string &date);
+  bool SetFromW3CDateTime(const std::string &date, bool ignoreTimezone = false);
   bool SetFromUTCDateTime(const CDateTime &dateTime);
   bool SetFromUTCDateTime(const time_t &dateTime);
-  bool SetFromRFC1123DateTime(const CStdString &dateTime);
+  bool SetFromRFC1123DateTime(const std::string &dateTime);
 
   /*! \brief set from a database datetime format YYYY-MM-DD HH:MM:SS
    \sa GetAsDBDateTime()
    */
-  bool SetFromDBDateTime(const CStdString &dateTime);
+  bool SetFromDBDateTime(const std::string &dateTime);
 
   void GetAsSystemTime(SYSTEMTIME& time) const;
   void GetAsTime(time_t& time) const;
@@ -190,16 +190,16 @@ public:
   void GetAsTimeStamp(FILETIME& time) const;
 
   CDateTime GetAsUTCDateTime() const;
-  CStdString GetAsSaveString() const;
-  CStdString GetAsDBDateTime() const;
-  CStdString GetAsDBDate() const;
-  CStdString GetAsLocalizedDate(bool longDate=false, bool withShortNames=true) const;
-  CStdString GetAsLocalizedDate(const CStdString &strFormat, bool withShortNames=true) const;
-  CStdString GetAsLocalizedTime(const CStdString &format, bool withSeconds=true) const;
-  CStdString GetAsLocalizedDateTime(bool longDate=false, bool withSeconds=true) const;
-  CStdString GetAsRFC1123DateTime() const;
-  CStdString GetAsW3CDate() const;
-  CStdString GetAsW3CDateTime(bool asUtc = false) const;
+  std::string GetAsSaveString() const;
+  std::string GetAsDBDateTime() const;
+  std::string GetAsDBDate() const;
+  std::string GetAsLocalizedDate(bool longDate=false, bool withShortNames=true) const;
+  std::string GetAsLocalizedDate(const std::string &strFormat, bool withShortNames=true) const;
+  std::string GetAsLocalizedTime(const std::string &format, bool withSeconds=true) const;
+  std::string GetAsLocalizedDateTime(bool longDate=false, bool withSeconds=true) const;
+  std::string GetAsRFC1123DateTime() const;
+  std::string GetAsW3CDate() const;
+  std::string GetAsW3CDateTime(bool asUtc = false) const;
 
   void SetValid(bool yesNo);
   bool IsValid() const;
