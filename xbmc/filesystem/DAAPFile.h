@@ -34,6 +34,7 @@
 #include "CurlFile.h"
 #include "URL.h"
 #include "threads/CriticalSection.h"
+#include "utils/StdString.h"
 
 class CDaapClient : public CCriticalSection
 {

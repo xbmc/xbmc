@@ -19,6 +19,7 @@
  */
 
 #include "HTTPFile.h"
+#include "utils/StdString.h"
 
 using namespace XFILE;
 

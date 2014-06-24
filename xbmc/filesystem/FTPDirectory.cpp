@@ -49,7 +49,7 @@ bool CFTPDirectory::GetDirectory(const CURL& url2, CFileItemList &items)
   if (!reader.Open(url))
     return false;
 
-  bool serverNotUseUTF8 = url.GetProtocolOption("utf8").Equals("0");
+  bool serverNotUseUTF8 = url.GetProtocolOption("utf8") == "0";
 
   char buffer[MAX_PATH + 1024];
   while( reader.ReadString(buffer, sizeof(buffer)) )

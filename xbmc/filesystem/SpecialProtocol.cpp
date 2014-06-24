@@ -87,7 +87,7 @@ std::string CSpecialProtocol::TranslatePath(const std::string &path)
 {
   CURL url(path);
   // check for special-protocol, if not, return
-  if (!url.GetProtocol().Equals("special"))
+  if (!url.IsProtocol("special"))
   {
     return path;
   }
@@ -97,7 +97,7 @@ std::string CSpecialProtocol::TranslatePath(const std::string &path)
 std::string CSpecialProtocol::TranslatePath(const CURL &url)
 {
   // check for special-protocol, if not, return
-  if (!url.GetProtocol().Equals("special"))
+  if (!url.IsProtocol("special"))
   {
 #if defined(TARGET_POSIX) && defined(_DEBUG)
     std::string path(url.Get());

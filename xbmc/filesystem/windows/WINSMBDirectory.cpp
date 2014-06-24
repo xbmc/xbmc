@@ -52,7 +52,7 @@ CWINSMBDirectory::~CWINSMBDirectory(void)
 std::string CWINSMBDirectory::GetLocal(const CURL& url)
 {
   std::string path(url.GetFileName());
-  if (url.GetProtocol().Equals("smb", false) && !url.GetHostName().empty())
+  if (url.IsProtocol("smb") && !url.GetHostName().empty())
     path = "\\\\?\\UNC\\" + (std::string&)url.GetHostName() + "\\" + path;
 
   return path;
