@@ -381,7 +381,7 @@ void CVideoDatabase::CreateViews()
   m_pDS->exec(tvshowview.c_str());
 
   CLog::Log(LOGINFO, "create season_view");
-std::string seasonview = PrepareSQL("CREATE VIEW season_view AS SELECT "
+  std::string seasonview = PrepareSQL("CREATE VIEW season_view AS SELECT "
                                      "  seasons.*, "
                                      "  tvshow_view.strPath AS strPath,"
                                      "  tvshow_view.c%02d AS showTitle,"

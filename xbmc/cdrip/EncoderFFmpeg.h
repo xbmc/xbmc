@@ -59,7 +59,6 @@ private:
   static int64_t    avio_seek_callback(void *opaque, int64_t offset, int whence);
   void              SetTag(const std::string &tag, const std::string &value);
 
-
   unsigned int      m_NeededFrames;
   unsigned int      m_NeededBytes;
   uint8_t          *m_Buffer;
