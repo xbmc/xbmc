@@ -37,12 +37,12 @@
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
 
-CStdString CGUIViewStateWindowVideo::GetLockType()
+std::string CGUIViewStateWindowVideo::GetLockType()
 {
   return "video";
 }
 
-CStdString CGUIViewStateWindowVideo::GetExtensions()
+std::string CGUIViewStateWindowVideo::GetExtensions()
 {
   return g_advancedSettings.m_videoExtensions;
 }
@@ -306,8 +306,8 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         if (CMediaSettings::Get().GetWatchedMode(items.GetContent()) == WatchedModeAll)
           AddSortMethod(SortByPlaycount, 567, LABEL_MASKS("%T", "%V"));  // Title, Playcount | empty, empty
 
-        CStdString strTrackLeft=CSettings::Get().GetString("musicfiles.trackformat");
-        CStdString strTrackRight=CSettings::Get().GetString("musicfiles.trackformatright");
+        std::string strTrackLeft=CSettings::Get().GetString("musicfiles.trackformat");
+        std::string strTrackRight=CSettings::Get().GetString("musicfiles.trackformatright");
         AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined | empty, empty
 
         const CViewState *viewState = CViewStateSettings::Get().Get("videonavmusicvideos");
@@ -518,8 +518,8 @@ CGUIViewStateVideoMusicVideos::CGUIViewStateVideoMusicVideos(const CFileItemList
    if (CMediaSettings::Get().GetWatchedMode(items.GetContent()) == WatchedModeAll)
     AddSortMethod(SortByPlaycount, 567, LABEL_MASKS("%T", "%V"));  // Title, Playcount | empty, empty
   
-  CStdString strTrackLeft=CSettings::Get().GetString("musicfiles.trackformat");
-  CStdString strTrackRight=CSettings::Get().GetString("musicfiles.trackformatright");
+  std::string strTrackLeft=CSettings::Get().GetString("musicfiles.trackformat");
+  std::string strTrackRight=CSettings::Get().GetString("musicfiles.trackformatright");
   AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined | empty, empty
 
   const CViewState *viewState = CViewStateSettings::Get().Get("videonavmusicvideos");

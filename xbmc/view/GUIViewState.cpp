@@ -56,7 +56,7 @@ using namespace std;
 using namespace ADDON;
 using namespace PVR;
 
-CStdString CGUIViewState::m_strPlaylistDirectory;
+std::string CGUIViewState::m_strPlaylistDirectory;
 VECSOURCES CGUIViewState::m_sources;
 
 CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& items)
@@ -371,23 +371,23 @@ int CGUIViewState::GetPlaylist()
   return m_playlist;
 }
 
-const CStdString& CGUIViewState::GetPlaylistDirectory()
+const std::string& CGUIViewState::GetPlaylistDirectory()
 {
   return m_strPlaylistDirectory;
 }
 
-void CGUIViewState::SetPlaylistDirectory(const CStdString& strDirectory)
+void CGUIViewState::SetPlaylistDirectory(const std::string& strDirectory)
 {
   m_strPlaylistDirectory=strDirectory;
   URIUtils::RemoveSlashAtEnd(m_strPlaylistDirectory);
 }
 
-bool CGUIViewState::IsCurrentPlaylistDirectory(const CStdString& strDirectory)
+bool CGUIViewState::IsCurrentPlaylistDirectory(const std::string& strDirectory)
 {
   if (g_playlistPlayer.GetCurrentPlaylist()!=GetPlaylist())
     return false;
 
-  CStdString strDir=strDirectory;
+  std::string strDir=strDirectory;
   URIUtils::RemoveSlashAtEnd(strDir);
 
   return (m_strPlaylistDirectory==strDir);
@@ -398,12 +398,12 @@ bool CGUIViewState::AutoPlayNextItem()
   return false;
 }
 
-CStdString CGUIViewState::GetLockType()
+std::string CGUIViewState::GetLockType()
 {
   return "";
 }
 
-CStdString CGUIViewState::GetExtensions()
+std::string CGUIViewState::GetExtensions()
 {
   return "";
 }
@@ -413,7 +413,7 @@ VECSOURCES& CGUIViewState::GetSources()
   return m_sources;
 }
 
-void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString &label, const CStdString &thumb)
+void CGUIViewState::AddAddonsSource(const std::string &content, const std::string &label, const std::string &thumb)
 {
   if (!g_advancedSettings.m_bVirtualShares)
     return;
@@ -433,7 +433,7 @@ void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString 
 }
 
 #if defined(TARGET_ANDROID)
-void CGUIViewState::AddAndroidSource(const CStdString &content, const CStdString &label, const CStdString &thumb)
+void CGUIViewState::AddAndroidSource(const std::string &content, const std::string &label, const std::string &thumb)
 {
   CFileItemList items;
   XFILE::CAndroidAppDirectory apps;
@@ -490,7 +490,7 @@ void CGUIViewState::SetSortOrder(SortOrder sortOrder)
     m_sortOrder = sortOrder;
 }
 
-void CGUIViewState::LoadViewState(const CStdString &path, int windowID)
+void CGUIViewState::LoadViewState(const std::string &path, int windowID)
 { // get our view state from the db
   CViewDatabase db;
   if (db.Open())
@@ -507,7 +507,7 @@ void CGUIViewState::LoadViewState(const CStdString &path, int windowID)
   }
 }
 
-void CGUIViewState::SaveViewToDb(const CStdString &path, int windowID, CViewState *viewState)
+void CGUIViewState::SaveViewToDb(const std::string &path, int windowID, CViewState *viewState)
 {
   CViewDatabase db;
   if (db.Open())

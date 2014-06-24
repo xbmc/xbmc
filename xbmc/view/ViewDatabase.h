@@ -19,7 +19,7 @@
  *
  */
 #include "dbwrappers/Database.h"
-#include "utils/StdString.h"
+#include <string>
 
 class CViewState;
 
@@ -30,8 +30,8 @@ public:
   virtual ~CViewDatabase(void);
   virtual bool Open();
 
-  bool GetViewState(const CStdString &path, int windowID, CViewState &state, const CStdString &skin);
-  bool SetViewState(const CStdString &path, int windowID, const CViewState &state, const CStdString &skin);
+  bool GetViewState(const std::string &path, int windowID, CViewState &state, const std::string &skin);
+  bool SetViewState(const std::string &path, int windowID, const CViewState &state, const std::string &skin);
   bool ClearViewStates(int windowID);
 
 protected:

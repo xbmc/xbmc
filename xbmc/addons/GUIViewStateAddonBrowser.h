@@ -29,7 +29,7 @@ public:
 
 protected:
   virtual void SaveViewState();
-  virtual CStdString GetExtensions();
+  virtual std::string GetExtensions();
   virtual VECSOURCES& GetSources();
 };
 

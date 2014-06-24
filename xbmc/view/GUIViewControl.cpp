@@ -187,18 +187,18 @@ void CGUIViewControl::SetSelectedItem(int item)
   g_windowManager.SendMessage(msg, m_parentWindow);
 }
 
-void CGUIViewControl::SetSelectedItem(const CStdString &itemPath)
+void CGUIViewControl::SetSelectedItem(const std::string &itemPath)
 {
   if (!m_fileItems || itemPath.empty())
     return;
 
-  CStdString comparePath(itemPath);
+  std::string comparePath(itemPath);
   URIUtils::RemoveSlashAtEnd(comparePath);
 
   int item = -1;
   for (int i = 0; i < m_fileItems->Size(); ++i)
   {
-    CStdString strPath =(*m_fileItems)[i]->GetPath();
+    std::string strPath =(*m_fileItems)[i]->GetPath();
     URIUtils::RemoveSlashAtEnd(strPath);
     if (strPath == comparePath)
     {
@@ -293,7 +293,7 @@ int CGUIViewControl::GetView(VIEW_TYPE type, int id) const
   return -1;
 }
 
-void CGUIViewControl::UpdateViewAsControl(const CStdString &viewLabel)
+void CGUIViewControl::UpdateViewAsControl(const std::string &viewLabel)
 {
   // the view as control could be a select/spin/dropdown button
   std::vector< std::pair<std::string, int> > labels;
@@ -308,7 +308,7 @@ void CGUIViewControl::UpdateViewAsControl(const CStdString &viewLabel)
   g_windowManager.SendMessage(msg, m_parentWindow);
 
   // otherwise it's just a normal button
-  CStdString label = StringUtils::Format(g_localizeStrings.Get(534).c_str(), viewLabel.c_str()); // View: %s
+  std::string label = StringUtils::Format(g_localizeStrings.Get(534).c_str(), viewLabel.c_str()); // View: %s
   CGUIMessage msgSet(GUI_MSG_LABEL_SET, m_parentWindow, m_viewAsControl);
   msgSet.SetLabel(label);
   g_windowManager.SendMessage(msgSet, m_parentWindow);
