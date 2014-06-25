@@ -50,9 +50,9 @@ public:
   virtual void SetBrightness(bool bPlus) {}
   virtual void SetHue(bool bPlus) {}
   virtual void SetSaturation(bool bPlus) {}
-  virtual void GetAudioInfo(CStdString& strAudioInfo);
-  virtual void GetVideoInfo(CStdString& strVideoInfo);
-  virtual void GetGeneralInfo( CStdString& strVideoInfo);
+  virtual void GetAudioInfo(std::string& strAudioInfo);
+  virtual void GetVideoInfo(std::string& strVideoInfo);
+  virtual void GetGeneralInfo( std::string& strVideoInfo);
   virtual void Update(bool bPauseDrawing)                       {}
   virtual void SwitchToNextAudioLanguage();
   virtual bool CanRecord() { return false; }
@@ -72,8 +72,8 @@ public:
   virtual void ShowOSD(bool bOnoff);
   virtual void DoAudioWork()                                    {}
   
-  virtual CStdString GetPlayerState();
-  virtual bool SetPlayerState(CStdString state);
+  virtual std::string GetPlayerState();
+  virtual bool SetPlayerState(const std::string& state);
   
 private:
   virtual void Process();

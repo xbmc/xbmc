@@ -87,7 +87,7 @@ PAPlayer::~PAPlayer()
   delete m_FileItem;
 }
 
-bool PAPlayer::HandlesType(const CStdString &type)
+bool PAPlayer::HandlesType(const std::string &type)
 {
   ICodec* codec = CodecFactory::CreateCodec(type);
   if (codec && codec->CanInit())

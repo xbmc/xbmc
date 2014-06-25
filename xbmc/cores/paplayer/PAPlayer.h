@@ -58,9 +58,9 @@ public:
   virtual float GetPercentage();
   virtual void SetVolume(float volume);
   virtual void SetDynamicRangeCompression(long drc);
-  virtual void GetAudioInfo( CStdString& strAudioInfo) {}
-  virtual void GetVideoInfo( CStdString& strVideoInfo) {}
-  virtual void GetGeneralInfo( CStdString& strVideoInfo) {}
+  virtual void GetAudioInfo( std::string& strAudioInfo) {}
+  virtual void GetVideoInfo( std::string& strVideoInfo) {}
+  virtual void GetGeneralInfo( std::string& strVideoInfo) {}
   virtual void ToFFRW(int iSpeed = 0);
   virtual int GetCacheLevel() const;
   virtual int64_t GetTotalTime();
@@ -70,7 +70,7 @@ public:
   virtual bool SkipNext();
   virtual void GetAudioCapabilities(std::vector<int> &audioCaps) {}
 
-  static bool HandlesType(const CStdString &type);
+  static bool HandlesType(const std::string &type);
 
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 

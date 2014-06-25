@@ -191,9 +191,9 @@ public:
   virtual void UnRegisterAudioCallback()                        { m_dvdPlayerAudio.UnRegisterAudioCallback(); }
   virtual void SetVolume(float nVolume)                         { m_dvdPlayerAudio.SetVolume(nVolume); }
   virtual void SetDynamicRangeCompression(long drc)             { m_dvdPlayerAudio.SetDynamicRangeCompression(drc); }
-  virtual void GetAudioInfo(CStdString& strAudioInfo);
-  virtual void GetVideoInfo(CStdString& strVideoInfo);
-  virtual void GetGeneralInfo( CStdString& strVideoInfo);
+  virtual void GetAudioInfo(std::string& strAudioInfo);
+  virtual void GetVideoInfo(std::string& strVideoInfo);
+  virtual void GetGeneralInfo(std::string& strVideoInfo);
   virtual bool CanRecord();
   virtual bool IsRecording();
   virtual bool CanPause();
@@ -209,7 +209,7 @@ public:
   virtual void SetSubtitle(int iStream);
   virtual bool GetSubtitleVisible();
   virtual void SetSubtitleVisible(bool bVisible);
-  virtual int  AddSubtitle(const CStdString& strSubPath);
+  virtual int  AddSubtitle(const std::string& strSubPath);
 
   virtual int GetAudioStreamCount();
   virtual int GetAudioStream();
@@ -220,7 +220,7 @@ public:
 
   virtual int  GetChapterCount();
   virtual int  GetChapter();
-  virtual void GetChapterName(CStdString& strChapterName);
+  virtual void GetChapterName(std::string& strChapterName);
   virtual int  SeekChapter(int iChapter);
 
   virtual void SeekTime(int64_t iTime);
@@ -235,10 +235,10 @@ public:
   virtual bool GetStreamDetails(CStreamDetails &details);
   virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
 
-  virtual CStdString GetPlayerState();
-  virtual bool SetPlayerState(CStdString state);
+  virtual std::string GetPlayerState();
+  virtual bool SetPlayerState(const std::string& state);
 
-  virtual CStdString GetPlayingTitle();
+  virtual std::string GetPlayingTitle();
 
   virtual bool SwitchChannel(const PVR::CPVRChannel &channel);
   virtual bool CachePVRStream(void) const;
