@@ -24,6 +24,7 @@
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
 #include <map>
+#include <vector>
 
 extern "C" {
 #include "libavformat/avformat.h"
@@ -108,7 +109,7 @@ public:
   int GetChapterCount();
   int GetChapter();
   void GetChapterName(std::string& strChapterName);
-  virtual void GetStreamCodecName(int iStreamId, CStdString &strName);
+  virtual void GetStreamCodecName(int iStreamId, std::string &strName);
 
   bool Aborted();
 

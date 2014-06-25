@@ -1356,7 +1356,7 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
   return SeekTime(DVD_TIME_TO_MSEC(dts), true, startpts);
 }
 
-void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, CStdString &strName)
+void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, std::string &strName)
 {
   CDemuxStream *stream = GetStream(iStreamId);
   if (stream)

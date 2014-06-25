@@ -23,6 +23,7 @@
 #include "DVDDemux.h"
 
 #include <memory>
+#include <vector>
 
 class CDVDOverlayCodecFFmpeg;
 class CDVDInputStream;
