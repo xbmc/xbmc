@@ -22,7 +22,7 @@
 #define LIRC_H
 
 #include "system.h"
-#include "utils/StdString.h"
+#include <string>
 
 class CRemoteControl
 {
@@ -38,11 +38,11 @@ public:
    \return time in milliseconds the button has been down
    */
   unsigned int GetHoldTime() const;
-  void setDeviceName(const CStdString& value);
+  void setDeviceName(const std::string& value);
   void setUsed(bool value);
   bool IsInUse() const { return m_used; }
   bool IsInitialized() const { return m_bInitialized; }
-  void AddSendCommand(const CStdString& command);
+  void AddSendCommand(const std::string& command);
 
 private:
   int     m_fd;
@@ -58,9 +58,9 @@ private:
   bool    m_used;
   bool    m_bLogConnectFailure;
   uint32_t    m_firstClickTime;
-  CStdString  m_deviceName;
+  std::string  m_deviceName;
   bool        CheckDevice();
-  CStdString  m_sendData;
+  std::string  m_sendData;
   bool        m_inReply;
   int         m_nrSending;
 };

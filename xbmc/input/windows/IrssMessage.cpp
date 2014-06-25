@@ -43,7 +43,7 @@ CIrssMessage::CIrssMessage(IRSS_MessageType type, uint32_t flags, char* data, in
   SetDataAsBytes(data, size);
 }
 
-CIrssMessage::CIrssMessage(IRSS_MessageType type, uint32_t flags, const CStdString& data)
+CIrssMessage::CIrssMessage(IRSS_MessageType type, uint32_t flags, const std::string& data)
 {
   m_type = type;
   m_flags = flags;
@@ -69,9 +69,9 @@ void CIrssMessage::SetDataAsBytes(char* data, int size)
   }
 }
 
-void CIrssMessage::SetDataAsString(const CStdString& data)
+void CIrssMessage::SetDataAsString(const std::string& data)
 {
-  if (!data || data.empty())
+  if (data.empty())
   {
     FreeData();
   }

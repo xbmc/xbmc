@@ -188,9 +188,9 @@ void CKeyboardStat::ProcessKeyUp(void)
 // Used to make the debug log more intelligable
 // The KeyID includes the flags for ctrl, alt etc
 
-CStdString CKeyboardStat::GetKeyName(int KeyID)
+std::string CKeyboardStat::GetKeyName(int KeyID)
 { int keyid;
-  CStdString keyname;
+  std::string keyname;
   XBMCKEYTABLE keytable;
 
   keyname.clear();

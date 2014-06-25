@@ -46,7 +46,7 @@ void CKeyboardLayoutConfiguration::SetDefaults()
   m_deriveXbmcCharFromVkeyWithRalt.clear();
 }
 
-bool CKeyboardLayoutConfiguration::Load(const CStdString& strFileName)
+bool CKeyboardLayoutConfiguration::Load(const std::string& strFileName)
 {
   SetDefaults();
 
@@ -58,8 +58,8 @@ bool CKeyboardLayoutConfiguration::Load(const CStdString& strFileName)
   }
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
-  CStdString strValue = pRootElement->Value();
-  if (strValue != CStdString("keyboard_layout"))
+  std::string strValue = pRootElement->Value();
+  if (strValue != "keyboard_layout")
   {
     CLog::Log(LOGERROR, "%s Doesn't contain <keyboard_layout>", strFileName.c_str());
     return false;
@@ -95,13 +95,13 @@ void CKeyboardLayoutConfiguration::readCharMapFromXML(const TiXmlElement* pXMLMa
     const TiXmlElement* pEntry = pXMLMap->FirstChildElement();
     while (pEntry)
     {
-      CStdString strInChar = XMLUtils::GetAttribute(pEntry, "inchar");
-      CStdString strOutChar = XMLUtils::GetAttribute(pEntry, "outchar");
+      std::string strInChar = XMLUtils::GetAttribute(pEntry, "inchar");
+      std::string strOutChar = XMLUtils::GetAttribute(pEntry, "outchar");
       if (!strInChar.empty() && !strOutChar.empty())
       {
-        CStdStringW fromStr;
+        std::wstring fromStr;
         g_charsetConverter.utf8ToW(strInChar, fromStr);
-        CStdStringW toStr;
+        std::wstring toStr;
         g_charsetConverter.utf8ToW(strOutChar, toStr);
         if (fromStr.size()==1 && toStr.size()==1)
         {
@@ -133,12 +133,12 @@ void CKeyboardLayoutConfiguration::readByteMapFromXML(const TiXmlElement* pXMLMa
     const TiXmlElement* pEntry = pXMLMap->FirstChildElement();
     while (pEntry)
     {
-      CStdString strInHex = XMLUtils::GetAttribute(pEntry, "inhex");
-      CStdString strOutChar = XMLUtils::GetAttribute(pEntry, "outchar");
+      std::string strInHex = XMLUtils::GetAttribute(pEntry, "inhex");
+      std::string strOutChar = XMLUtils::GetAttribute(pEntry, "outchar");
       if (!strInHex.empty() && !strOutChar.empty())
       {
-        CStdString hexValue = strInHex;
-        CStdStringW toStr;
+        std::string hexValue = strInHex;
+        std::wstring toStr;
         g_charsetConverter.utf8ToW(strOutChar, toStr);
 
         int from;

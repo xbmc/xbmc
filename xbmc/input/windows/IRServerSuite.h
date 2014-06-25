@@ -20,7 +20,6 @@
  */
 
 #include <winsock2.h>
-#include "utils/StdString.h"
 #include "IrssMessage.h"
 #include "threads/Thread.h"
 
@@ -40,7 +39,7 @@ public:
   //lirc stuff, not implemented
   bool IsInUse() {return false;}
   void setUsed(bool value);
-  void AddSendCommand(const CStdString& command) {}
+  void AddSendCommand(const std::string& command) {}
 
 protected:
   virtual void Process();
@@ -51,8 +50,8 @@ private:
   SOCKET m_socket;
   bool m_isConnecting;
   int  m_iAttempt;
-  CStdString m_deviceName;
-  CStdString m_keyCode;
+  std::string m_deviceName;
+  std::string m_keyCode;
 
   bool SendPacket(CIrssMessage& message);
   bool ReadPacket(CIrssMessage& message);
