@@ -24,9 +24,9 @@
 #include <boost/noncopyable.hpp>
 
 #ifdef UNICODE
-  typedef CStdStringW        CStdString;
+  typedef std::wstring westring;
 #else
-  typedef CStdStringA        CStdString;
+  typedef std::string westring;
 #endif
 
 typedef int32_t pid_t;
@@ -40,8 +40,8 @@ class Process :
 {
 public:
 
-  Process(const CStdString &base,
-          const CStdString &socket);
+  Process(const westring &base,
+          const westring &socket);
   ~Process();
 
   void WaitForSignal(int signal, int timeout);

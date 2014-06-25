@@ -49,7 +49,7 @@ public:
   // CWinSystemBase
   virtual bool InitWindowSystem();
   virtual bool DestroyWindowSystem();
-  virtual bool CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
+  virtual bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
   virtual bool DestroyWindow();
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
@@ -84,8 +84,8 @@ public:
   EGLContext GetEGLContext() const { return m_eglContext;}
 #endif
   void NotifyXRREvent();
-  void GetConnectedOutputs(std::vector<CStdString> *outputs);
-  bool IsCurrentOutput(CStdString output);
+  void GetConnectedOutputs(std::vector<std::string> *outputs);
+  bool IsCurrentOutput(std::string output);
   void RecreateWindow();
   int GetCrtc() { return m_crtc; }
 

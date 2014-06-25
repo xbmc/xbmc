@@ -751,13 +751,13 @@ void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(const 
 void CDisplaySettings::SettingOptionsMonitorsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
 #if defined(HAS_GLX)
-  std::vector<CStdString> monitors;
+  std::vector<std::string> monitors;
   g_Windowing.GetConnectedOutputs(&monitors);
   std::string currentMonitor = CSettings::Get().GetString("videoscreen.monitor");
   for (unsigned int i=0; i<monitors.size(); ++i)
   {
     if(currentMonitor.compare("Default") != 0 &&
-       CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strOutput.Equals(monitors[i]))
+       StringUtils::EqualsNoCase(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strOutput, monitors[i]))
     {
       current = monitors[i];
     }

@@ -25,7 +25,7 @@
 
 #ifdef HAS_XRANDR
 
-#include "utils/StdString.h"
+#include <string>
 #include <vector>
 #include <map>
 
@@ -59,8 +59,8 @@ public:
         return false;
       return true;
     }
-  CStdString id;
-  CStdString name;
+  std::string id;
+  std::string name;
   float hz;
   bool isPreferred;
   bool isCurrent;
@@ -77,7 +77,7 @@ public:
       isConnected=false;
       w=h=x=y=wmm=hmm=0;
     }
-  CStdString name;
+  std::string name;
   bool isConnected;
   int screen;
   int w;
@@ -98,16 +98,16 @@ public:
   bool Query(bool force=false, bool ignoreoff=true);
   bool Query(bool force, int screennum, bool ignoreoff=true);
   std::vector<XOutput> GetModes(void);
-  XMode   GetCurrentMode(CStdString outputName);
-  XMode   GetPreferredMode(CStdString outputName);
-  XOutput *GetOutput(CStdString outputName);
+  XMode   GetCurrentMode(std::string outputName);
+  XMode   GetPreferredMode(std::string outputName);
+  XOutput *GetOutput(std::string outputName);
   bool SetMode(XOutput output, XMode mode);
   void LoadCustomModeLinesToAllOutputs(void);
   void SaveState();
   void SetNumScreens(unsigned int num);
-  bool IsOutputConnected(CStdString name);
-  bool TurnOffOutput(CStdString name);
-  bool TurnOnOutput(CStdString name);
+  bool IsOutputConnected(std::string name);
+  bool TurnOffOutput(std::string name);
+  bool TurnOnOutput(std::string name);
   int GetCrtc(int x, int y);
   //bool Has1080i();
   //bool Has1080p();
@@ -117,8 +117,8 @@ public:
 private:
   bool m_bInit;
   std::vector<XOutput> m_outputs;
-  CStdString m_currentOutput;
-  CStdString m_currentMode;
+  std::string m_currentOutput;
+  std::string m_currentMode;
   unsigned int m_numScreens;
 };
 

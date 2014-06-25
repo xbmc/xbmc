@@ -20,6 +20,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "guilib/Resolution.h"
 #include "EGLQuirks.h"
 

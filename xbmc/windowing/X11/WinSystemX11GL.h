@@ -32,7 +32,7 @@ class CWinSystemX11GL : public CWinSystemX11, public CRenderSystemGL
 public:
   CWinSystemX11GL();
   virtual ~CWinSystemX11GL();
-  virtual bool CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
+  virtual bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
 
@@ -42,7 +42,7 @@ protected:
   virtual bool PresentRenderImpl(const CDirtyRegionList& dirty);
   virtual void SetVSyncImpl(bool enable);
 
-  CStdString m_glxext;
+  std::string m_glxext;
 
   int (*m_glXGetVideoSyncSGI)(unsigned int*);
   int (*m_glXWaitVideoSyncSGI)(int, int, unsigned int*);
