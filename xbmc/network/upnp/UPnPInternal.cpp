@@ -235,9 +235,9 @@ PopulateObjectFromTag(CMusicInfoTag&         tag,
     }
     object.m_People.artists.Add(StringUtils::Join(!tag.GetAlbumArtist().empty() ? tag.GetAlbumArtist() : tag.GetArtist(), g_advancedSettings.m_musicItemSeparator).c_str(), "AlbumArtist");
     if(tag.GetAlbumArtist().empty())
-        object.m_Creator = StringUtils::Join(tag.GetArtist(), g_advancedSettings.m_musicItemSeparator);
+        object.m_Creator = StringUtils::Join(tag.GetArtist(), g_advancedSettings.m_musicItemSeparator).c_str();
     else
-        object.m_Creator = StringUtils::Join(tag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator);
+        object.m_Creator = StringUtils::Join(tag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator).c_str();
     object.m_MiscInfo.original_track_number = tag.GetTrackNumber();
     if(tag.GetDatabaseId() >= 0) {
       object.m_ReferenceID = NPT_String::Format("musicdb://songs/%i%s", tag.GetDatabaseId(), URIUtils::GetExtension(tag.GetURL()).c_str());
@@ -269,7 +269,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     if (tag.m_iDbId != -1 ) {
         if (tag.m_type == MediaTypeMusicVideo) {
           object.m_ObjectClass.type = "object.item.videoItem.musicVideoClip";
-          object.m_Creator = StringUtils::Join(tag.m_artist, g_advancedSettings.m_videoItemSeparator);
+          object.m_Creator = StringUtils::Join(tag.m_artist, g_advancedSettings.m_videoItemSeparator).c_str();
           object.m_Title = tag.m_strTitle;
           object.m_ReferenceID = NPT_String::Format("videodb://musicvideos/titles/%i", tag.m_iDbId);
         } else if (tag.m_type == MediaTypeMovie) {
@@ -502,7 +502,7 @@ BuildObject(CFileItem&                    item,
                   break;
                 case VIDEODATABASEDIRECTORY::NODE_TYPE_ACTOR:
                   container->m_ObjectClass.type += ".person.videoArtist";
-                  container->m_Creator = StringUtils::Join(tag.m_artist, g_advancedSettings.m_videoItemSeparator);
+                  container->m_Creator = StringUtils::Join(tag.m_artist, g_advancedSettings.m_videoItemSeparator).c_str();
                   container->m_Title   = tag.m_strTitle;
                   break;
                 case VIDEODATABASEDIRECTORY::NODE_TYPE_SEASONS:

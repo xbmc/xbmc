@@ -645,11 +645,11 @@ bool StringUtils::EndsWithNoCase(const std::string &str1, const char *s2)
   return true;
 }
 
-CStdString StringUtils::Join(const vector<string> &strings, const CStdString& delimiter)
+std::string StringUtils::Join(const vector<string> &strings, const std::string& delimiter)
 {
-  CStdString result;
+  std::string result;
   for(vector<string>::const_iterator it = strings.begin(); it != strings.end(); it++ )
-    result += (*it) + delimiter.c_str();
+    result += (*it) + delimiter;
   
   if (!result.empty())
     result.erase(result.size() - delimiter.size());
@@ -906,7 +906,7 @@ int StringUtils::asciixdigitvalue(char chr)
 }
 
 
-void StringUtils::RemoveCRLF(CStdString& strLine)
+void StringUtils::RemoveCRLF(std::string& strLine)
 {
   StringUtils::TrimRight(strLine, "\n\r");
 }
@@ -1026,7 +1026,7 @@ int StringUtils::FindEndBracket(const CStdString &str, char opener, char closer,
   return (int)CStdString::npos;
 }
 
-void StringUtils::WordToDigits(CStdString &word)
+void StringUtils::WordToDigits(std::string &word)
 {
   static const char word_to_letter[] = "22233344455566677778889999";
   StringUtils::ToLower(word);

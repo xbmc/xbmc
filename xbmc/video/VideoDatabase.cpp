@@ -8553,7 +8553,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
       {
         if (!singleFiles)
         {
-          CStdString strFileName(StringUtils::Join(movie.m_artist, g_advancedSettings.m_videoItemSeparator) + "." + movie.m_strTitle);
+          CStdString strFileName((CStdString)StringUtils::Join(movie.m_artist, g_advancedSettings.m_videoItemSeparator) + "." + movie.m_strTitle);
           if (movie.m_iYear > 0)
             strFileName += StringUtils::Format("_%i", movie.m_iYear);
           item.SetPath(GetSafeFile(moviesDir, strFileName) + ".avi");
@@ -8965,7 +8965,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         info.Load(movie);
         CFileItem item(info);
         bool useFolders = info.m_basePath.empty() ? LookupByFolders(item.GetPath()) : false;
-        CStdString filename = StringUtils::Join(info.m_artist, g_advancedSettings.m_videoItemSeparator) + "." + info.m_strTitle;
+        CStdString filename = (CStdString)StringUtils::Join(info.m_artist, g_advancedSettings.m_videoItemSeparator) + "." + info.m_strTitle;
         if (info.m_iYear > 0)
           filename += StringUtils::Format("_%i", info.m_iYear);
         CFileItem artItem(item);

@@ -5078,9 +5078,9 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
       CStdString songnum = StringUtils::Format("%06d", song.iKaraokeNumber);
 
       if ( asHTML )
-        outdoc = "<tr><td>" + songnum + "</td><td>" + StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator) + "</td><td>" + song.strTitle + "</td></tr>\r\n";
+        outdoc = "<tr><td>" + songnum + "</td><td>" + (CStdString)StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator) + "</td><td>" + song.strTitle + "</td></tr>\r\n";
       else
-        outdoc = songnum + "\t" + StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator) + "\t" + song.strTitle + "\t" + song.strFileName + "\r\n";
+        outdoc = songnum + '\t' + (CStdString)StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator) + '\t' + song.strTitle + '\t' + song.strFileName + "\r\n";
 
       file.Write( outdoc, outdoc.size() );
 

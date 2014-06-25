@@ -87,7 +87,7 @@ public:
   static bool EndsWithNoCase(const std::string &str1, const std::string &str2);
   static bool EndsWithNoCase(const std::string &str1, const char *s2);
 
-  static CStdString Join(const std::vector<std::string> &strings, const CStdString& delimiter);
+  static std::string Join(const std::vector<std::string> &strings, const std::string& delimiter);
   /*! \brief Splits the given input string using the given delimiter into separate strings.
 
    If the given input string is empty the result will be an empty array (not
@@ -101,7 +101,7 @@ public:
   static int FindNumber(const CStdString& strInput, const CStdString &strFind);
   static int64_t AlphaNumericCompare(const wchar_t *left, const wchar_t *right);
   static long TimeStringToSeconds(const CStdString &timeString);
-  static void RemoveCRLF(CStdString& strLine);
+  static void RemoveCRLF(std::string& strLine);
 
   /*! \brief utf8 version of strlen - skips any non-starting bytes in the count, thus returning the number of utf8 characters
    \param s c-string to find the length of.
@@ -162,7 +162,7 @@ public:
   static size_t FindWords(const char *str, const char *wordLowerCase);
   static int FindEndBracket(const CStdString &str, char opener, char closer, int startPos = 0);
   static int DateStringToYYYYMMDD(const CStdString &dateString);
-  static void WordToDigits(CStdString &word);
+  static void WordToDigits(std::string &word);
   static CStdString CreateUUID();
   static bool ValidateUUID(const CStdString &uuid); // NB only validates syntax
   static double CompareFuzzy(const CStdString &left, const CStdString &right);
