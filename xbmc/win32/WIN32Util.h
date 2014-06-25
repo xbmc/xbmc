@@ -38,6 +38,8 @@ enum Drive_Types
 #define BONJOUR_EVENT             ( WM_USER + 0x100 )	// Message sent to the Window when a Bonjour event occurs.
 #define BONJOUR_BROWSER_EVENT     ( WM_USER + 0x110 )
 
+class CURL; // forward declaration
+
 class CWIN32Util
 {
 public:
@@ -60,6 +62,7 @@ public:
   static bool AddExtraLongPathPrefix(std::wstring& path);
   static bool RemoveExtraLongPathPrefix(std::wstring& path);
   static std::wstring ConvertPathToWin32Form(const std::string& pathUtf8);
+  static std::wstring ConvertPathToWin32Form(const CURL& url);
   static void ExtendDllPath();
   static HRESULT ToggleTray(const char cDriveLetter='\0');
   static HRESULT EjectTray(const char cDriveLetter='\0');

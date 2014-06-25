@@ -506,6 +506,39 @@ std::wstring CWIN32Util::ConvertPathToWin32Form(const std::string& pathUtf8)
   return result;
 }
 
+std::wstring CWIN32Util::ConvertPathToWin32Form(const CURL& url)
+{
+  assert(url.GetProtocol().empty() || url.IsProtocol("smb"));
+
+  if (url.GetFileName().empty())
+    return std::wstring(); // empty string
+
+  if (url.GetProtocol().empty())
+  {
+    std::wstring result;
+    if (g_charsetConverter.utf8ToW("\\\\?\\" +
+          URIUtils::CanonicalizePath(URIUtils::FixSlashesAndDups(url.GetFileName(), '\\'), '\\'), result, false, false, true))
+      return result;
+  }
+  else if (url.IsProtocol("smb"))
+  {
+    if (url.GetHostName().empty())
+      return std::wstring(); // empty string
+    
+    std::wstring result;
+    if (g_charsetConverter.utf8ToW("\\\\?\\UNC\\" +
+          URIUtils::CanonicalizePath(URIUtils::FixSlashesAndDups(url.GetHostName() + '\\' + url.GetFileName(), '\\'), '\\'),
+          result, false, false, true))
+      return result;
+  }
+  else
+    return std::wstring(); // unsupported protocol, return empty string
+
+  CLog::Log(LOGERROR, "%s: Error converting path \"%s\" to Win32 form", __FUNCTION__, url.Get().c_str());
+  return std::wstring(); // empty string
+}
+
+
 void CWIN32Util::ExtendDllPath()
 {
   std::string strEnv;
