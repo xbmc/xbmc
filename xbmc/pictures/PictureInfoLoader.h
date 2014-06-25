@@ -20,7 +20,7 @@
  */
 
 #include "BackgroundInfoLoader.h"
-#include "utils/StdString.h"
+#include <string>
 
 class CPictureInfoLoader : public CBackgroundInfoLoader
 {
@@ -28,7 +28,7 @@ public:
   CPictureInfoLoader();
   virtual ~CPictureInfoLoader();
 
-  void UseCacheOnHD(const CStdString& strFileName);
+  void UseCacheOnHD(const std::string& strFileName);
   virtual bool LoadItem(CFileItem* pItem);
   virtual bool LoadItemCached(CFileItem* pItem);
   virtual bool LoadItemLookup(CFileItem* pItem);

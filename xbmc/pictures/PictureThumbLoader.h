@@ -19,7 +19,6 @@
  *
  */
 
-#include "utils/StdString.h"
 #include "utils/JobManager.h"
 #include "ThumbLoader.h"
 

@@ -98,14 +98,14 @@ public:
   virtual void Serialize(CVariant& value) const;
   virtual void ToSortable(SortItem& sortable, Field field) const;
   const CPictureInfoTag& operator=(const CPictureInfoTag& item);
-  const CStdString GetInfo(int info) const;
+  const std::string GetInfo(int info) const;
 
   bool Loaded() const { return m_isLoaded; };
-  bool Load(const CStdString &path);
+  bool Load(const std::string &path);
 
-  static int TranslateString(const CStdString &info);
+  static int TranslateString(const std::string &info);
 
-  void SetInfo(int info, const CStdString& value);
+  void SetInfo(int info, const std::string& value);
 
   /**
    * GetDateTimeTaken() -- Returns the EXIF DateTimeOriginal for current picture
