@@ -67,7 +67,7 @@ void CGUIDialogKaraokeSongSelector::OnButtonSelect()
   // We only handle "select" if a song is selected
   if ( m_songSelected )
   {
-    CStdString path = m_karaokeSong.strFileName;
+    std::string path = m_karaokeSong.strFileName;
     CFileItemPtr pItem( new CFileItem( path, false) );
     m_songSelected = false;
 
@@ -250,7 +250,7 @@ void CGUIDialogKaraokeSongSelector::OnDeinitWindow(int nextWindowID)
 }
 
 
-void CGUIDialogKaraokeSongSelectorSmall::DoModal(unsigned int startcode, int iWindowID, const CStdString & param)
+void CGUIDialogKaraokeSongSelectorSmall::DoModal(unsigned int startcode, int iWindowID, const std::string & param)
 {
   m_songSelected = false;
   m_selectedNumber = 0;
@@ -260,7 +260,7 @@ void CGUIDialogKaraokeSongSelectorSmall::DoModal(unsigned int startcode, int iWi
 }
 
 
-void CGUIDialogKaraokeSongSelectorLarge::DoModal(int iWindowID, const CStdString & param)
+void CGUIDialogKaraokeSongSelectorLarge::DoModal(int iWindowID, const std::string & param)
 {
   m_songSelected = false;
   m_selectedNumber = 0;
