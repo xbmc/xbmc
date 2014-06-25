@@ -48,20 +48,22 @@ character itself should NOT be typed as part of the command.
 -----------------------------------------------------------------------------
 See point 3.0a below for an updated list of supported Xcode/osx constellations!!!
 
-Install latest Xcode (4.3.2 or 3.2.6 as of the writing). You can download it from 
+Install latest Xcode (5.1.1 as of the writing). You can download it from 
 
-1. Apple's site after registration at http://developer.apple.com/tools/download (Xcode 3.2.6)
-2. In the MacOSX AppStore (Xcode 4.3.x). 
+1. The MacOSX AppStore (Xcode). 
 
 If you are using XCode 4.3.x you also need to install the "Command Line Tools". To do so
 after installing Xcode you have to go to "Xcode->Preferences->Downloads" and install the
-package "Command Line Tools".
+package "Command Line Tools". In later XCode versions as of 5.x those will be installed
+automatically once they are invoked from the cmdline.
 
 Xcode 3.2.6 only runs on 10.6.x (Snow Leopard). 
 Xcode 4.3.x only runs on 10.7.x (Lion).
+Xcode 5.x.x only runs on 10.8.x and later.
+
 
 The preferred iOS SDK Version is 4.3 (when using Xcode 3.2.6) or 5.1 (when using
-Xcode 4.3.x).
+Xcode 4.3.x) or 7.x (when using Xcode 5.x.x)
 
 -----------------------------------------------------------------------------
 3.0a Supported Xcode and OSX constellations
@@ -74,6 +76,7 @@ constellations of Xcode and osx versions (to be updated once we know more):
 3. XCode 4.6 against iOS SDK 4.3, 5.1 and 6.1 on 10.7.x (Lion) and 10.8.x (ML)
 3.a Building against iOS SDK 6.0 will only allow to run on targets with iOS 5.1 and below.
     There is no support for devices running iOS 6.0 for now!
+4. Xcode 5.1.1 against iOS SDK 7.0 and 7.1 on 10.9.x (Mavericks)
 
 -----------------------------------------------------------------------------
 3.1 Install Cross libs and runtime environment
@@ -125,6 +128,9 @@ If you have selected a specific iOS SDK Version in step 3.1 then you might need
 to adapt the active target to use the same iOS SDK version. Else build will fail 
 (you will see alot of errors with at least non-found boost/shared_ptr.hpp).
 
+On XCode5.x apple removed the gcc compiler. On those XCode versions you need to switch the compiler
+of the ATV2 project manually to "default/clang".
+
 -----------------------------------------------------------------------------
 4.2 Using Terminal (command-line)
 -----------------------------------------------------------------------------
@@ -158,9 +164,9 @@ distribution.
    or
    $ cd tools/darwin/packaging/xbmc-ios
 
-  3. $ ./mkdeb-xbmc-atv2.sh release
+  3. $ chmod +x ./mkdeb-xbmc-atv2.sh && ./mkdeb-xbmc-atv2.sh release
      or
-     $ ./mkdeb-xbmc-ios.sh release
+     $ chmod +x ./mkdeb-xbmc-ios.sh && ./mkdeb-xbmc-ios.sh release
      
   4. Use release or debug - you have to be sure that you build the corresponding 
      version before.
