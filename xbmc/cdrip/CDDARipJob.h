@@ -20,7 +20,6 @@
 */
 
 #include "utils/Job.h"
-#include "utils/StdString.h"
 #include "music/tags/MusicInfoTag.h"
 
 class CEncoder;
@@ -42,7 +41,7 @@ public:
   //! \param rate The sample rate of the input
   //! \param channels Number of audio channels in input
   //! \param bps The bits per sample for input
-  CCDDARipJob(const CStdString& input, const CStdString& output,
+  CCDDARipJob(const std::string& input, const std::string& output,
               const MUSIC_INFO::CMusicInfoTag& tag, int encoder,
               bool eject=false, unsigned int rate=44100,
               unsigned int channels=2, unsigned int bps=16);
@@ -52,13 +51,13 @@ public:
   virtual const char* GetType() const { return "cdrip"; };
   virtual bool operator==(const CJob *job) const;
   virtual bool DoWork();
-  CStdString GetOutput() const { return m_output; }
+  std::string GetOutput() const { return m_output; }
 protected:
   //! \brief Setup the audio encoder
   CEncoder* SetupEncoder(XFILE::CFile& reader);
 
   //! \brief Helper used if output is a remote url
-  CStdString SetupTempFile();
+  std::string SetupTempFile();
 
   //! \brief Rip a chunk of audio
   //! \param reader The input reader
@@ -74,8 +73,8 @@ protected:
   unsigned int m_channels; //< The number of channels in input file
   unsigned int m_bps; //< The bits per sample of input
   MUSIC_INFO::CMusicInfoTag m_tag; //< Music tag to attach to output file
-  CStdString m_input; //< The input url
-  CStdString m_output; //< The output url
+  std::string m_input; //< The input url
+  std::string m_output; //< The output url
   bool m_eject; //< Should we eject tray when we are finished?
   int m_encoder; //< The audio encoder
 };
