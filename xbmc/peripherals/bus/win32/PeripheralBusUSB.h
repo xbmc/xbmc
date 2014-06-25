@@ -39,6 +39,6 @@ namespace PERIPHERALS
 
   private:
     bool PerformDeviceScan(const GUID *guid, const PeripheralType defaultType, PeripheralScanResults &results);
-    bool GetProductAndVendorId(const PeripheralType type, const CStdString &strDeviceLocation, int *iVendorId, int *iProductId);
+    bool GetProductAndVendorId(const PeripheralType type, const std::string &strDeviceLocation, int *iVendorId, int *iProductId);
   };
 }
