@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.fishbmc"
-  version="4.0.12"
+  version="4.0.13"
   name="FishBMC"
   provider-name="26elf">
   <extension
@@ -34,6 +34,7 @@
     <summary lang="id">Visualisasi menunjukkan efek gelombang dan efek kabur.</summary>
     <summary lang="is">Sjónræn upplifun með bylgjum og afskerpuáhrifum</summary>
     <summary lang="it">Visualizzazione mostrando Onde e Sfumature</summary>
+    <summary lang="ja">波とぼかしエフェクトを表示するビジュアライザー</summary>
     <summary lang="ko">물결 효과와 흐림 효과를 보여주는 시각화</summary>
     <summary lang="lt">Vizualizacija atvaizduojanti bangas ir suliejimo efektus</summary>
     <summary lang="lv">Vizualizācija, rādot viļņus un izpludināšanas efektu</summary>
@@ -54,7 +55,7 @@
     <description lang="bg">fishBMC е създадена въз основа на fische - самостоятелен инструмент за визуализиране на звук. Основния принцип е изчертаване на вълнова функция и размиване по предварително определени вектори. В допълнение fische съдържа и разширена функция за засичане на ритъма, което би трябвало да гарантира великолепно визуално изживяване.</description>
     <description lang="cs">fishBMC je založeno na fische - samostatném nástorji pro vizualizaci zvuku. Základní princip: nakresli waveform a rozmaž obrázek podle předdefinováných směrů. Avšak fische také přidává pokročilou detekci rytmu a to garantuje nádherný vizuální zážitek.</description>
     <description lang="da">fishBMX er baseret på fische, et standard visualiserings værktøj. Det basale princip er: tegn waveformen og tvær tegning langs de prædefinerede vektorer. fische inkluderer også avanceret beat registrering, som garanterer en god visuel oplevelse.</description>
-    <description lang="de">fishBMC basiert auf fische, einem eigenständigen Ton-Visualisierungs-Programm. Das Grundprinzip ist: zeichne das Wellen-Spektrum und verwische die Zeichnung entlang festgelegter Vektoren. fische verfügt jedoch auch über eine fortgeschrittene Rhytmus-Erkennung, die ein großartiges visuelles Erlebnis garantiert.</description>
+    <description lang="de">fishBMC basiert auf fische, einem eigenständigen Ton-Visualisierungs-Programm. Das Grundprinzip ist: Zeichne das Wellen-Spektrum und verwische die Zeichnung entlang festgelegter Vektoren. fische verfügt jedoch auch über eine fortgeschrittene Rhytmus-Erkennung, die ein großartiges visuelles Erlebnis garantiert.</description>
     <description lang="el">Το fishBMC είναι βασισμένο στο fische, ένα ξεχωριστό εργαλείο ηχητικών οπτικοποιήσεων. Η βασική του αρχή είναι: σχεδίαση μιας κυματομορφής και χρωματισμός της εικόνας κατά μήκος προκαθορισμένων διανυσμάτων. Παρ'όλα αυτά, το fische περιλαμβάνει και ανεπτυγμένες μεθόδους εντοπισμού παλμών, γεγονός που εγγυάται μια εκπληκτική οπτική εμπειρία.</description>
     <description lang="en">fishBMC is based on fische, a standalone sound visualisation tool. The basic principle is: draw the waveform and smear the drawing along predefined vectors. However fische also incorporates advanced beat detection, which really guarantees a great visual experience.</description>
     <description lang="en_AU">fishBMC is based on fische, a standalone sound visualisation tool. The basic principle is: draw the waveform and smear the drawing along predefined vectors. However fische also incorporates advanced beat detection, which really guarantees a great visual experience.</description>
@@ -105,6 +106,7 @@
     <disclaimer lang="fr">Si cela casse quelque chose, les pièces restent les vôtres.</disclaimer>
     <disclaimer lang="fr_CA">Si ça brise, vous gardez les morceaux.</disclaimer>
     <disclaimer lang="gl">Se isto estraga algunha cousa, pode quedar cas pezas.</disclaimer>
+    <disclaimer lang="he">אם זה שובר משהו, החתיכות יישארו שלך.</disclaimer>
     <disclaimer lang="hr">Ako ovo slomi nešto, komadići ostaju vama.</disclaimer>
     <disclaimer lang="hu">Ha ez összetör valamit attól a darabok még a tieid maradnak.</disclaimer>
     <disclaimer lang="id">Kalau ini merusakkan suatu, pecahannya tetap menjadi milik anda.</disclaimer>

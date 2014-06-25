@@ -46,4 +46,4 @@ msgstr "JSON-RPC 请求详细日志"
 
 msgctxt "#30007"
 msgid "Verbose logging for AUDIO component"
-msgstr "声音组件详细日志"
+msgstr "音频组件详细日志"

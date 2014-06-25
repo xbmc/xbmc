@@ -26,7 +26,7 @@ msgstr "זמן בין קביעונים"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
-msgstr "Additional Random Time"
+msgstr "זמן אקראי נוסף"
 
 msgctxt "#30003"
 msgid "Lock Preset"

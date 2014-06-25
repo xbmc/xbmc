@@ -40,6 +40,10 @@ msgctxt "#30007"
 msgid "Show debug console"
 msgstr "デバッグコンソールを表示"
 
+msgctxt "#30008"
+msgid "Show audio analysis"
+msgstr "オーディオ解析を表示"
+
 msgctxt "#30050"
 msgid "%2.0f secs"
 msgstr "%2.0f秒"

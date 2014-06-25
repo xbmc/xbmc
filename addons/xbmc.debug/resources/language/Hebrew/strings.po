@@ -39,3 +39,11 @@ msgstr "פירוט ביומן הרישום על אירועי פרוטוקול RT
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
 msgstr "פירוט ביומן הרישום על קריאות ל-DBUS"
+
+msgctxt "#30006"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "פירוט ביומן הרישום על בקשות JSON-RPC"
+
+msgctxt "#30007"
+msgid "Verbose logging for AUDIO component"
+msgstr "פירוט ביומן הרישום על רכיב AUDIO"

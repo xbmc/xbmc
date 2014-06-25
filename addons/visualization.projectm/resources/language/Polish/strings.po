@@ -42,11 +42,11 @@ msgstr "Tryb mieszania"
 
 msgctxt "#30006"
 msgid "Smooth Preset Duration"
-msgstr "Płynna długość efektu"
+msgstr "Płynny czas trwania ustawienia"
 
 msgctxt "#30007"
 msgid "Preset Duration"
-msgstr "Długość efektu"
+msgstr "Czas trwania ustawienia"
 
 msgctxt "#30008"
 msgid "Beat Sensitivity"
@@ -54,7 +54,7 @@ msgstr "Czułość uderzeń"
 
 msgctxt "#30009"
 msgid "Preset Pack"
-msgstr "Paczka efektów"
+msgstr "Pakiet zdefiniowanych ustawień"
 
 msgctxt "#30010"
 msgid "Default Pack"

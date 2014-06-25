@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.plasma"
-  version="1.0.23"
+  version="1.0.24"
   name="Plasma"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -54,6 +54,7 @@
     <summary lang="ro">Probabil al doilea cel mai năucitor screensaver care a existat vreodată</summary>
     <summary lang="ru">Наверное, вторая из самых психоделических заставок в мире</summary>
     <summary lang="se">Förmodligen den näst psykedeliska skärmsläckaren</summary>
+    <summary lang="si">පෙනෙන විදියට සදා දෙවන මහත් අධිචිත්ත වේගී තිරමෙහෙකරු</summary>
     <summary lang="sk">Pravdepodobne druhý najviac hypnotizujúci šetrič obrazovky vôbec</summary>
     <summary lang="sl">Gotovo drugi najbolj psihadelični ohranjevalnik zaslona na svetu</summary>
     <summary lang="sv">Troligen den näst mest psykedeliska skärmsläckaren någonsin.</summary>
@@ -106,6 +107,7 @@
     <description lang="ro">Probabil al doilea cel mai năucitor screensaver care a existat vreodată. Doar încercați să vă imaginați toate acele culori mișcându-se.</description>
     <description lang="ru">Просто попробуйте представить себе все цвета в движении.</description>
     <description lang="se">Förmodligen den näst psykedeliska skärmsläckaren som finns. Försök bara att uppfatta alla färger som rör sig runt och runt.</description>
+    <description lang="si">පෙනෙන විදියට සදා පවතින දෙවන මහත් අධිචිත්ත වේගී තිරමෙහෙකරු.වටේ තිබෙන එම සියළු වර්ණ ඡායාරූප කිරීමට උත්සාහ කිරීම පමණයි. </description>
     <description lang="sk">Pravdepodobne druhý najviac hypnotizujúci šetrič obrazovky aký vôbec existuje. Iba si skúste predstaviť všetky tie farby pohybujúc sa okolo.</description>
     <description lang="sl">Gotovo drugi najbolj psihadelični ohranjevalnik zaslona na svetu. Samo predstavljajte si vse te barve, ki letijo naokrog.</description>
     <description lang="sv">Troligen den näst mest psykedeliska skärmsläckaren som existerar. Bara tänk dig alla färgerna som rör på sig.</description>

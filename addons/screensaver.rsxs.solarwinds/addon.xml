@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.solarwinds"
-  version="1.0.23"
+  version="1.0.24"
   name="Solarwinds"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -54,6 +54,7 @@
     <summary lang="ro">Un srceensaver cu efecte de particule fascinant</summary>
     <summary lang="ru">Завораживающая заставка с эффектами частиц</summary>
     <summary lang="se">En fascinerande skärmsläckare av partikeleffekter</summary>
+    <summary lang="si">මෝහනය කිරීම් තිරමෙහෙයුම් වෙත ප්‍රයෝගිකව බලපෑම </summary>
     <summary lang="sk">Fascinujúci šetrič s efektom častíc</summary>
     <summary lang="sl">Ohranjevalnik zaslona z dih jemajočimi delčki</summary>
     <summary lang="sv">En hypnotiserande partikeleffektskärmsläckare</summary>
@@ -106,6 +107,7 @@
     <description lang="ro">Acesta este un screensaver cu efecte de particule foarte fascinant. O să vedeți că veți putea obține un număr uimitor de modele diferite.</description>
     <description lang="ru">Завораживающая заставка с эффектами частиц. Для этой заставки на выбор доступно огромное количество вариаций эффектов.</description>
     <description lang="se">Detta är en mycket fascinerande partikeleffektsskärmsläckare. Du kommer att upptäcka att du kan uppnå ett otroligt antal olika mönster.</description>
+    <description lang="si">මෙම මෝහනය කිරීම් තිරමෙහෙයුම් වෙත ප්‍රයෝගිකව මහත් බලපෑම සහිතයි. පුදුම සහගත විවිධ මෝස්‌තර ප්‍රමාණයක් ඔබට ලබා ගැනීමට හැකි බව ඔබ සොයගනිවී</description>
     <description lang="sk">Toto je veľmi fascinujúci šetrič s efektom častíc. Zistíte, že môžete dosiahnuť neskutočné číslo rôznych vzorov.</description>
     <description lang="sl">To je ohranjevalnik zaslona z dih jemajočimi delčki. Odkrili boste, da lahko dosežejo neverjetno število različnih vzorcev.</description>
     <description lang="sv">Detta är en väldigt hypnotiserande partikeleffektskärmsläckare. Du kommer att upptäcka att du kan åstadkomma ett häpnadsväckande antal olika mönster.</description>

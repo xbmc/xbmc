@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Render Quality"
-msgstr "Render Quality"
+msgstr "איכות Render"
 
 msgctxt "#30001"
 msgid "Low"
@@ -42,7 +42,7 @@ msgstr "מצב מעורבב"
 
 msgctxt "#30006"
 msgid "Smooth Preset Duration"
-msgstr "Smooth Preset Duration"
+msgstr "משך קביעון Smooth"
 
 msgctxt "#30007"
 msgid "Preset Duration"

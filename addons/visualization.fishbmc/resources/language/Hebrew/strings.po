@@ -16,6 +16,10 @@ msgstr ""
 "Language: he\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "פירוט [משאבי מעבד]"
+
 msgctxt "#30001"
 msgid "Low"
 msgstr "נמוך"
@@ -32,6 +36,14 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "קיצוני"
 
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "מצב עצבני [יותר שינויי מצב]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "מהיר [מדלג על פריימים]"
+
 msgctxt "#30007"
 msgid "Very Low"
 msgstr "נמוך מאוד"
@@ -47,3 +59,7 @@ msgstr "רגיל"
 msgctxt "#30010"
 msgid "High"
 msgstr "גבוה"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "השתמש בקובץ התמדה [הפעלה מהירה]"

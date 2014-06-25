@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.black"
        name="Black"
-       version="1.0.23"
+       version="1.0.24"
        provider-name="Team XBMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -50,6 +50,7 @@
     <summary lang="ro">Screensaver care afișează un ecran negru</summary>
     <summary lang="ru">Заставка «чёрный экран»</summary>
     <summary lang="se">Skärmsläckare som gör din skärm svart</summary>
+    <summary lang="si">ඔබගේ තිරය කළුවට හරවන තිරමෙහෙකරු </summary>
     <summary lang="sk">Šetrič obrazovky, ktorú ju zmení na čiernu</summary>
     <summary lang="sl">Ohranjevalnik zaslona, ki počrni zaslon</summary>
     <summary lang="sv">En skärmsläckare som gör din skärm svart</summary>
@@ -96,7 +97,7 @@
     <description lang="ja">画面を暗く黒くするだけの、シンプルなスクリーンセーバーです</description>
     <description lang="ko">블랙 화면보호기는 화면을 검게 만들어줍니다.</description>
     <description lang="lt">'Juodas' yra paprasta ekrano užsklanda, kuri pavers jūsų ekraną juodu fonu.</description>
-    <description lang="lv">"Melns" ir vienkāršs ekrānsaudzētājs, kurš padara jūsu ekrānu melnu.</description>
+    <description lang="lv">Melns ir vienkāršs ekrānsaudzētājs, kas padara jūsu ekrānu melnu.</description>
     <description lang="mk">Црна е едноставна заштита на екран која екранот го прави црн.</description>
     <description lang="nl">Black is een eenvoudige schermbeveiliging die uw scherm op zwart zet.</description>
     <description lang="no">Black er en enkel skjermsparer som gjør skjermen din svart.</description>
@@ -106,6 +107,7 @@
     <description lang="ro">Black este un screensaver simplu care afișează negru pe ecran.</description>
     <description lang="ru">Это простая заставка, которая делает экран чёрным.</description>
     <description lang="se">Mörka är en enkel skärmsläckare som gör din skärm svart.</description>
+    <description lang="si">කළු ඔබගේ තිරය කළුවට හරවන සරල තිරමෙහෙකරුවෙකි. </description>
     <description lang="sk">Black je jednoduchý šetrič, ktorý zmení vašu obrazovku na čiernu.</description>
     <description lang="sl">Black je enostaven ohranjevalnik zaslona, ki počrni zaslon.</description>
     <description lang="sv">Detta är en enkel skärmsläckare som gör din skärm svart.</description>

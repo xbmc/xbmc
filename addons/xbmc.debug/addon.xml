@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.debug" version="0.1.20" provider-name="Team XBMC" name="Log">
+<addon id="xbmc.debug" version="0.1.21" provider-name="Team XBMC" name="Log">
   <backwards-compatibility abi="0.1"/>
   <requires>
     <c-pluff version="0.1"/>
@@ -12,7 +12,7 @@
     <summary lang="cs">Doplněk pro vylepšení přizpůsobení záznamu</summary>
     <summary lang="cy">Ychwanegyn i wella cyfaddasu cofnodi </summary>
     <summary lang="da">Tilføjelse der øger muligheden for tilpasning af logning</summary>
-    <summary lang="de">Erweiterung zur Verbesserung der Logging Anpassbarkeit.</summary>
+    <summary lang="de">Erweiterung zur Verbesserung der Logging-Anpassbarkeit.</summary>
     <summary lang="el">Πρόσθετο για τη βελτίωση της προσαρμοστικότητας των καταγραφών σφαλμάτων</summary>
     <summary lang="en">Add-on to improve logging customisability</summary>
     <summary lang="en_AU">Add-on to improve logging customisability</summary>
@@ -25,6 +25,7 @@
     <summary lang="fr">Extension pour améliorer la personnalisation de la journalisation</summary>
     <summary lang="fr_CA">Addiciel pour améliorer la personnalisation de la journalisation</summary>
     <summary lang="gl">Complemento para mellorar a personalización do rexistro</summary>
+    <summary lang="he">הרחבה המאפשרת התאמה אישית של יומן רישום האירועים</summary>
     <summary lang="hr">Dodatak za poboljšanje prilagodljivosti zapisivanja</summary>
     <summary lang="hu">Kiegészítő a naplózás testre szabásához</summary>
     <summary lang="hy">Մանրամասն գրառումների բարելավումների ավելացում</summary>
@@ -37,8 +38,8 @@
     <summary lang="lv">Pielikums, lai uzlabotu žurnāla pielāgošanu</summary>
     <summary lang="my">logging စိတ်ကြိုက်ပြုပြင် မှုကို တိုးတက်စေသော Addon</summary>
     <summary lang="nl">Addon voor het verbeteren van de aanpasbaarheid van logging</summary>
-    <summary lang="no">Tillegg for å forbedre loggmulighetene</summary>
-    <summary lang="pl">Wtyczka umożliwiająca dostosowanie funkcji diagnozowania błędów</summary>
+    <summary lang="no">Utvidelse for å forbedre loggmulighetene</summary>
+    <summary lang="pl">Dodatek umożliwiający konfigurację diagnozowania błędów</summary>
     <summary lang="pt">Um add-on para melhorar a personalização do registo de erros</summary>
     <summary lang="pt_BR">Complemento para melhorar personalização de registro</summary>
     <summary lang="ru">Дополнение расширенных настроек ведения журнала</summary>

@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Verbose logging for SMB library"
-msgstr "Ausführliches Loggen der SMB-Bibliothek."
+msgstr "Ausführliches Logging der SMB-Bibliothek."
 
 msgctxt "#30001"
 msgid "Verbose logging for CURL library (http, dav)"
@@ -26,24 +26,24 @@ msgstr "Ausführliches Logging der CURL-Bibliothek (http, dav)"
 
 msgctxt "#30002"
 msgid "Verbose logging for CMYTH library"
-msgstr "Ausführliches Logging der CMYTH Bibliothek."
+msgstr "Ausführliches Logging der CMYTH-Bibliothek."
 
 msgctxt "#30003"
 msgid "Verbose logging for FFMPEG libraries"
-msgstr "Ausführliches Logging der FFMPEG Bibliotheken."
+msgstr "Ausführliches Logging der FFMPEG-Bibliotheken."
 
 msgctxt "#30004"
 msgid "Verbose logging for RTMP library"
-msgstr "Ausführliches Logging der RTMP Bibliothek."
+msgstr "Ausführliches Logging der RTMP-Bibliothek."
 
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
-msgstr "Ausführliches Logging der DBUS Aufrufe."
+msgstr "Ausführliches Logging der DBUS-Aufrufe."
 
 msgctxt "#30006"
 msgid "Verbose logging for JSON-RPC requests"
-msgstr "Ausführliches Logging der JSON-RPC Anfragen"
+msgstr "Ausführliches Logging der JSON-RPC-Anfragen"
 
 msgctxt "#30007"
 msgid "Verbose logging for AUDIO component"
-msgstr "Ausführliches Logging der AUDIO Komponente."
+msgstr "Ausführliches Logging der AUDIO-Komponente."

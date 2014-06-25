@@ -40,6 +40,10 @@ msgctxt "#30006"
 msgid "Speed [skip some frames]"
 msgstr "速度 [フレームスキップ]"
 
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "最低"
+
 msgctxt "#30008"
 msgid "Low"
 msgstr "低"

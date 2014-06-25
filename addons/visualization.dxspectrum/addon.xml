@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.dxspectrum"
-  version="1.0.23"
+  version="1.0.24"
   name="DirectX Spectrum"
   provider-name="Team XBMC">
   <extension
@@ -37,7 +37,7 @@
     <summary lang="id">Visualisasi memperlihatkan Spektrum Analyzer 3D yang berputar</summary>
     <summary lang="is">Myndskreyting sem sýnir þrívíddar rófgreini</summary>
     <summary lang="it">Visualizzazione che mostra un analizzatore di spettro 3D ruotante</summary>
-    <summary lang="ja">回転する 3D スペクトラムアナライザーを表示する DirectX ビジュアライザー</summary>
+    <summary lang="ja">回転する 3D スペクトラムアナライザーを表示するビジュアライザー</summary>
     <summary lang="ko">회전하는 3D 스펙트럼 분석기를 보여지는 음악시각화</summary>
     <summary lang="lt">Vizualizacija rodo rotacinis 3D spektro analizatorių</summary>
     <summary lang="lv">Vizualizācija, kas attēlo rotējošu 3D spektra analizatoru</summary>
@@ -90,7 +90,7 @@
     <description lang="id">DirectX Spectrum merupakan visualisasi yang memperlihatkan Spektrum Analyzer 3D yang berputar yang dirender pada DirectX yang  bergerak mengikuti hentakan musik dan mencipkatan efek gelombang sepanjang kisi spektrum.&#10;Juga diatur untuk menyesuaikan tinggi bar, kecepatan, dan bagaimana bar dirender (solid, poin, wire frame) dan cukup ringan, rendah pemakaian cpu yang keren!!!</description>
     <description lang="is">DirectX Spectrum er myndskreyting sem sýnir þrívíddar rófgreini sem snýst sem er teiknaður í DirectX og hreyfist í takt við tónlistina sem myndar bylgjuhreyfingu yfir rófið.&#10;Það er líka hægt að stilla hæð mælingana, hraða og hvernig þær eru teiknaðar (fyllt, punktar, útlínur) myndskrytingin setur lítið álag á örgjörva og lítur vel út</description>
     <description lang="it">DirectX Spectrum è una visualizzazione che mostra un analizzatore di spettro 3D ruotante renderizzato in DirectX che si muove a tempo di musica creando un effetto onda tramite la griglia di spettro.&#10;Ha anche varie impostazioni: altezza delle barra dello spettro, la sua velocità e come le barre sono renderizzate (solidi, punti, reticolato). E' una visualizzazione leggera, che richiede poche risorse cpu e dall'aspetto fantastico</description>
-    <description lang="ja">DirectX Spectrum is a Visualisation showing a rotating 3D Spectrum Analyzer rendered in DirectX that moves to the beat of the music creating a wave effect across the spectrum grid.&#10;It also has settings to adjust the spectrum bar height, Its speed, and how the bars are rendered (solid, points, wire frame) and is a nice light weight, low cpu useage visualisation that looks great</description>
+    <description lang="ja">DirectX スペクトラムは回転する 3D スペクトラムアナライザーを表示する DirectX ビジュアライザーで、音楽のビートに合わせてスペクトラムの波形エフェクトを作成します。&#10;バーの高さ、表示時間、バーの表示モード (ソリッド、ポイント、ワイヤーフレーム)を設定でき、軽量なCPU使用率でグレイトなビジュアライザーです。 </description>
     <description lang="ko">DirectX 스펙트럼은 회전하는 3D 스펙트럼 분석기를 통해 음악시각화를 보여주며 음악의 비트가 만들어내는 웨이브 효과를 스펙트럼 그리드에 보여줍니다. 설정에서 스펙트럼 바의 높이, 속도, 바의 갯수 (채워짐, 점, 와이어 프레임)를 지정할수 있습니다. 가볍고 CPU를 많이 사용하지 않습니다.</description>
     <description lang="lt">DirectX spektro vizualizacija, kurioje besisukantį 3D spektro analizatorių, paimta iš DirectX, katras juda į muzikos ritmą, įteigiančio bangų poveikį visame spektro tinklelyje.&#10;Turi nustatymuose nureguliuoti spektro juostos aukštį, jo greitį, teikiamas kraštines (kieta, taškai, tinklelio rėmas),vizualizacijai naudoja mažai CPU</description>
     <description lang="lv">DirectX Spectrum ir vizualizācija kas attēlo rotējošu 3D spektra analizatoru, kas tiek renderēts ar DirectX un kas kustās mūzikas ritmā.&#10;Ir arī iespēja pielāgot spektra stieņa augstumu, tā ātrumu un kā šie stieņi tiek renderēti (pildīti, kā punkti vai tīkla režģi) un ir jauka un ātra vizualizācija ar mazu procesora noslodzi un kas izskatās satriecoši.</description>

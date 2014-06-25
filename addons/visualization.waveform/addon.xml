@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.waveform"
-  version="1.0.23"
+  version="1.0.24"
   name="Waveform"
   provider-name="MrC">
   <extension
@@ -39,7 +39,7 @@
     <summary lang="id">Visualisasi menampilkan dua grafik gelombang pada layar</summary>
     <summary lang="is">Sjónræn upplifun sem sýnir 2 bylgjuform á skjánum</summary>
     <summary lang="it">Visualizzatore che mostra 2 grafici di forma d'onda sullo schermo</summary>
-    <summary lang="ja">画面に2波形グラフを表示するビジュアライザー</summary>
+    <summary lang="ja">画面に2つの波形グラフを表示するビジュアライザー</summary>
     <summary lang="ko">두개의 웨이브폼을 보여주는 음악시각화</summary>
     <summary lang="lt">Vizualizacija kuri parodo dvi garso bangas</summary>
     <summary lang="lv">Vizualizācija, kas attēlo 2 viļņveida grafikus uz ekrāna</summary>
@@ -94,7 +94,7 @@
     <description lang="id">Waveform adalah visualisasi sederhana yang menunjukkan grafik dua gelombang pada layar, masing-masing untuk Satu saluran Kiri dan Kanan yang bergerak dengan ketukan musik</description>
     <description lang="is">Waweform er einföld sjónræn upplifun sem sýnir 2 bylgjuform á skjánum, eitt fyrir hægri rás og eitt fyrir vinstri, sem hreyfast í takt við tónlistina</description>
     <description lang="it">Waveform è un semplice visualizzatore che mostra 2 grafici di forma d'onda sullo schermo, uno per il canale destro e uno per quello sinistro, che si muovono a ritmo di musica</description>
-    <description lang="ja">Waveform は画面に2波形グラフを表示するシンプルなビジュアライザーです。音楽に合わせて、右チャンネル、左チャンネルの波形が表示されます。</description>
+    <description lang="ja">Waveform は画面に2つの波形グラフを表示するシンプルなビジュアライザーです。音楽に合わせて、右チャンネル、左チャンネルの波形が表示されます。</description>
     <description lang="ko">Waveform은 간단히 두개의 웨이브폼을 화면에 보여줍니다. 각각 왼쪽, 오른쪽 채널이고 음악의 비트에 따라 움직입니다.</description>
     <description lang="lt">Waveform yra paprasta vizualizacija katra rodo dvi garso bangas ekrane. Viena banga vieno kanalo garsas.</description>
     <description lang="lv">Waveform ir vienkārša vizualizācija, kas atēlo 2 viļņveida grafikus uz ekrāna, vienu - labajam, otru - kreisajam kanālam, kas kustās muzikas ritmā</description>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.2.17"
+  version="2.2.18"
   name="Default"
   provider-name="Team XBMC">
   <requires>
@@ -59,6 +59,7 @@
     <summary lang="ro">Interfață web XBMC. (interfață web implicită pentru XBMC)</summary>
     <summary lang="ru">Веб-интерфейс от разработчиков XBMC (веб-интерфейс XBMC по умолчанию).</summary>
     <summary lang="se">Team XBMC webbgränssnitt. (XBMC's standardwebbgränssnitt)</summary>
+    <summary lang="si">XBMC කණ්ඩායම වෙබ් අතුරුමුහුණත . (XBMC's නියත  වෙබ් අතුරුමුහුණත)</summary>
     <summary lang="sk">Webové rozhranie tímu XBMC. (predvolené webové rozhranie pre XBMC)</summary>
     <summary lang="sl">Spletni vmesnik ekipe XBMC. (Privzet spletni vmesnik za XBMC)</summary>
     <summary lang="sr">Веб интерфејс од програмера XBMC-а (подразумевани веб интерфејс XBMC-а)</summary>
@@ -120,6 +121,7 @@
     <description lang="ro">Interfață web implicită pentru XBMC, realizată de echipa XBMC pentru dispozitive cu orice rezoluție.</description>
     <description lang="ru">Веб-интерфейс XBMC по умолчанию. Разработан для устройств с любыми разрешениями.</description>
     <description lang="se">XBMC's standardwebbgränsnitt; Designat för alla upplösningar</description>
+    <description lang="si">XBMC' සඳහා නියත  වෙබ් අතුරුමුහුණත; සෑම විභේදනයකම උපකරණ සඳහා නිර්මාණය කර ඇත</description>
     <description lang="sk">Predvolené webové rozhranie pre XBMC; Navrhnuté pre zariadenia zobrazujúce v akomkoľvek rozlíšení</description>
     <description lang="sl">Privzet spletni vmesnik za XBMC, ustvarjen za naprave vseh ločljivosti</description>
     <description lang="sr">Подразумевани веб интерфејс XBMC-а, намењен уређајима свих резолуција</description>

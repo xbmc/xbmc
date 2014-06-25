@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.vortex"
-  version="1.0.11"
+  version="1.0.12"
   name="Vortex"
   provider-name="Team XBMC">
   <extension
@@ -34,7 +34,7 @@
     <summary lang="id">Visualisasi Vortex dari paket XBOX</summary>
     <summary lang="is">Vortex sjónræn upplifun frá XBOX pakkanum</summary>
     <summary lang="it">Visualizzazione vortice dal package XBOX</summary>
-    <summary lang="ja">XBOX パッケージ由来の Vortex Visualization</summary>
+    <summary lang="ja">XBOX パッケージ由来の渦巻きビジュアライザー</summary>
     <summary lang="ko">XBOX 패키지의 Vortex 시각화</summary>
     <summary lang="lt">Vortex vizualicija iš XBMC paketo</summary>
     <summary lang="lv">Vortex vizualizācija no XBOX pakotnes</summary>
