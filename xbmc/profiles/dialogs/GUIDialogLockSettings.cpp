@@ -161,7 +161,7 @@ void CGUIDialogLockSettings::OnSettingAction(const CSetting *setting)
     choices.Add(4, 12339);
     int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
 
-    CStdString newPassword;
+    std::string newPassword;
     LockType iLockMode = LOCK_MODE_UNKNOWN;
     bool bResult = false;
     switch(choice)
