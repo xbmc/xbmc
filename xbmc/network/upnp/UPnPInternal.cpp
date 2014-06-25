@@ -113,7 +113,7 @@ NPT_String
 GetMimeType(const CFileItem& item,
             const PLT_HttpRequestContext* context /* = NULL */)
 {
-    CStdString path = item.GetPath();
+    std::string path = item.GetPath();
     if (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->GetPath().empty()) {
         path = item.GetVideoInfoTag()->GetPath();
     } else if (item.HasMusicInfoTag() && !item.GetMusicInfoTag()->GetURL().empty()) {
@@ -567,9 +567,9 @@ BuildObject(CFileItem&                    item,
     // set a title for the object
     if (object->m_Title.IsEmpty()) {
         if (!item.GetLabel().empty()) {
-            CStdString title = item.GetLabel();
+            std::string title = item.GetLabel();
             if (item.IsPlayList() || !item.m_bIsFolder) URIUtils::RemoveExtension(title);
-            object->m_Title = title;
+            object->m_Title = title.c_str();
         }
     }
 
@@ -616,15 +616,15 @@ failure:
 /*----------------------------------------------------------------------
 |   CUPnPServer::CorrectAllItemsSortHack
 +---------------------------------------------------------------------*/
-const CStdString&
-CorrectAllItemsSortHack(const CStdString &item)
+const std::string&
+CorrectAllItemsSortHack(const std::string &item)
 {
     // This is required as in order for the "* All Albums" etc. items to sort
     // correctly, they must have fake artist/album etc. information generated.
     // This looks nasty if we attempt to render it to the GUI, thus this (further)
     // workaround
     if ((item.size() == 1 && item[0] == 0x01) || (item.size() > 1 && ((unsigned char) item[1]) == 0xff))
-        return StringUtils::EmptyString;
+        return StringUtils::Empty;
 
     return item;
 }
@@ -984,7 +984,7 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
     {
       if(info.Match(PLT_ProtocolInfo("*", "*", allowed[type], "*")))
       {
-        CStdString prop = StringUtils::Format("subtitle:%d", ++subs);
+        std::string prop = StringUtils::Format("subtitle:%d", ++subs);
         item.SetProperty(prop, (const char*)res.m_Uri);
         break;
       }

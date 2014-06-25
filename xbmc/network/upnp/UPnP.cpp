@@ -208,7 +208,7 @@ public:
     {
         NPT_String path = "upnp://"+device->GetUUID()+"/";
         if (!NPT_StringsEqual(item_id, "0")) {
-            CStdString id(CURL::Encode(item_id));
+            std::string id(CURL::Encode(item_id));
             URIUtils::AddSlashAtEnd(id);
             path += id.c_str();
         }
@@ -584,7 +584,7 @@ CUPnP::CreateServer(int port /* = 0 */)
     // trying to set optional upnp values for XP UPnP UI Icons to detect us
     // but it doesn't work anyways as it requires multicast for XP to detect us
     device->m_PresentationURL =
-        NPT_HttpUrl(m_IP,
+        NPT_HttpUrl(m_IP.c_str(),
                     CSettings::Get().GetInt("services.webserverport"),
                     "/").ToString();
 
@@ -608,7 +608,7 @@ CUPnP::StartServer()
     if (!m_ServerHolder->m_Device.IsNull()) return false;
 
     // load upnpserver.xml
-    CStdString filename = URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), "upnpserver.xml");
+    std::string filename = URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), "upnpserver.xml");
     CUPnPSettings::Get().Load(filename);
 
     // create the server with a XBox compatible friendlyname and UUID from upnpserver.xml if found
@@ -667,7 +667,7 @@ CUPnP::CreateRenderer(int port /* = 0 */)
                           port);
 
     device->m_PresentationURL =
-        NPT_HttpUrl(m_IP,
+        NPT_HttpUrl(m_IP.c_str(),
                     CSettings::Get().GetInt("services.webserverport"),
                     "/").ToString();
     device->m_ModelName        = "Kodi";
@@ -687,7 +687,7 @@ bool CUPnP::StartRenderer()
 {
     if (!m_RendererHolder->m_Device.IsNull()) return false;
 
-    CStdString filename = URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), "upnpserver.xml");
+    std::string filename = URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), "upnpserver.xml");
     CUPnPSettings::Get().Load(filename);
 
     m_RendererHolder->m_Device = CreateRenderer(CUPnPSettings::Get().GetRendererPort());
