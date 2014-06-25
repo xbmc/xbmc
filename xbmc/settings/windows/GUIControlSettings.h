@@ -19,8 +19,9 @@
  *
  */
 
-#include "utils/StdString.h"
 #include "guilib/ISliderCallback.h"
+#include <stdlib.h>
+#include <string>
 
 class CGUIControl;
 class CGUIImage;
