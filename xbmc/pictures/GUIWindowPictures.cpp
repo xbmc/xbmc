@@ -72,7 +72,7 @@ void CGUIWindowPictures::OnInitWindow()
   if (m_slideShowStarted)
   {
     CGUIWindowSlideShow* wndw = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
-    CStdString path;
+    std::string path;
     if (wndw && wndw->GetCurrentSlide())
       path = URIUtils::GetDirectory(wndw->GetCurrentSlide()->GetPath());
     if (m_vecItems->IsPath(path))
@@ -268,7 +268,7 @@ bool CGUIWindowPictures::Update(const std::string &strDirectory, bool updateFilt
     m_thumbLoader.Load(*m_vecItems);
 
   CPictureThumbLoader thumbLoader;
-  CStdString thumb = thumbLoader.GetCachedImage(*m_vecItems, "thumb");
+  std::string thumb = thumbLoader.GetCachedImage(*m_vecItems, "thumb");
   m_vecItems->SetArt("thumb", thumb);
 
   return true;
@@ -301,7 +301,7 @@ bool CGUIWindowPictures::GetDirectory(const std::string &strDirectory, CFileItem
   if (!CGUIMediaWindow::GetDirectory(strDirectory, items))
     return false;
 
-  CStdString label;
+  std::string label;
   if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::Get().GetSources("pictures"), &label)) 
     items.SetLabel(label);
 
@@ -320,7 +320,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
   CFileItemPtr pItem = m_vecItems->Get(iItem);
-  CStdString strPicture = pItem->GetPath();
+  std::string strPicture = pItem->GetPath();
 
 #ifdef HAS_DVD_DRIVE
   if (pItem->IsDVD())
@@ -370,7 +370,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   return true;
 }
 
-void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPath)
+void CGUIWindowPictures::OnShowPictureRecursive(const std::string& strPath)
 {
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
   if (pSlideShow)
@@ -390,12 +390,12 @@ void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPath)
   }
 }
 
-void CGUIWindowPictures::OnSlideShowRecursive(const CStdString &strPicture)
+void CGUIWindowPictures::OnSlideShowRecursive(const std::string &strPicture)
 {
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
   if (pSlideShow)
   {   
-    CStdString strExtensions;
+    std::string strExtensions;
     CFileItemList items;
     CGUIViewState* viewState=CGUIViewState::GetViewState(GetID(), items);
     if (viewState)
@@ -416,7 +416,7 @@ void CGUIWindowPictures::OnSlideShowRecursive(const CStdString &strPicture)
 
 void CGUIWindowPictures::OnSlideShowRecursive()
 {
-  CStdString strEmpty = "";
+  std::string strEmpty = "";
   OnSlideShowRecursive(m_vecItems->GetPath());
 }
 
@@ -425,12 +425,12 @@ void CGUIWindowPictures::OnSlideShow()
   OnSlideShow(m_vecItems->GetPath());
 }
 
-void CGUIWindowPictures::OnSlideShow(const CStdString &strPicture)
+void CGUIWindowPictures::OnSlideShow(const std::string &strPicture)
 {
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
   if (pSlideShow)
   {    
-    CStdString strExtensions;
+    std::string strExtensions;
     CFileItemList items;
     CGUIViewState* viewState=CGUIViewState::GetViewState(GetID(), items);
     if (viewState)
