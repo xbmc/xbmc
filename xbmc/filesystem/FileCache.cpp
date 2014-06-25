@@ -264,7 +264,7 @@ void CFileCache::Process()
       }
     }
 
-    int iRead = 0;
+    int64_t iRead = 0;
     if (!cacheReachEOF)
       iRead = m_source.Read(buffer.get(), m_chunkSize);
     if (iRead == 0)
@@ -348,7 +348,7 @@ int CFileCache::Stat(const CURL& url, struct __stat64* buffer)
   return CFile::Stat(url.Get(), buffer);
 }
 
-unsigned int CFileCache::Read(void* lpBuf, int64_t uiBufSize)
+int64_t CFileCache::Read(void* lpBuf, int64_t uiBufSize)
 {
   CSingleLock lock(m_sync);
   if (!m_pCache)
@@ -364,7 +364,7 @@ retry:
   if (iRc > 0)
   {
     m_readPos += iRc;
-    return (int)iRc;
+    return iRc;
   }
 
   if (iRc == CACHE_RC_WOULD_BLOCK)

@@ -92,7 +92,7 @@ bool CVTPFile::Open(const CURL& url2)
   return true;
 }
 
-unsigned int CVTPFile::Read(void* buffer, int64_t size)
+int64_t CVTPFile::Read(void* buffer, int64_t size)
 {
   if(m_socket == INVALID_SOCKET)
     return 0;

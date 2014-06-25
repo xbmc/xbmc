@@ -39,7 +39,7 @@ namespace XBMCAddon
 
       while(ret.remaining() > 0)
       {
-        int bytesRead = file->Read(ret.curPosition(), ret.remaining());
+        size_t bytesRead = (size_t)file->Read(ret.curPosition(), ret.remaining());
         if (bytesRead == 0) // we consider this a failure or a EOF, can't tell which,
         {                   //  return whatever we have already.
           ret.flip();

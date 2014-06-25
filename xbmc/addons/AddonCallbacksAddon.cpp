@@ -327,7 +327,7 @@ void* CAddonCallbacksAddon::OpenFileForWrite(const void* addonData, const char* 
   return NULL;
 }
 
-unsigned int CAddonCallbacksAddon::ReadFile(const void* addonData, void* file, void* lpBuf, int64_t uiBufSize)
+int64_t CAddonCallbacksAddon::ReadFile(const void* addonData, void* file, void* lpBuf, int64_t uiBufSize)
 {
   CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
   if (!helper)

@@ -130,7 +130,7 @@ string CRepository::FetchChecksum(const string& url)
       // Transfer-Encoding: chunked servers.
       std::stringstream str;
       char temp[1024];
-      int read;
+      int64_t read;
       while ((read=file.Read(temp, sizeof(temp))) > 0)
         str.write(temp, read);
       return str.str();

@@ -164,10 +164,13 @@ size_t CCurlFile::CReadState::ReadCallback(char *buffer, size_t size, size_t nit
   }
 
   int64_t retSize = XMIN(m_fileSize - m_filePos, int64_t(nitems * size));
-  memcpy(buffer, m_readBuffer + m_filePos, retSize);
+  if (retSize > SIZE_MAX)
+    return 0;
+
+  memcpy(buffer, m_readBuffer + m_filePos, (size_t)retSize);
   m_filePos += retSize;
 
-  return retSize;
+  return (size_t)retSize;
 }
 
 size_t CCurlFile::CReadState::WriteCallback(char *buffer, size_t size, size_t nitems)
@@ -835,7 +838,7 @@ bool CCurlFile::ReadData(CStdString& strHTML)
   int data_size = 0;
   strHTML = "";
   char buffer[16384];
-  while( (size_read = Read(buffer, sizeof(buffer)-1) ) > 0 )
+  while( (size_read = (int)Read(buffer, sizeof(buffer)-1) ) > 0 )
   {
     buffer[size_read] = 0;
     strHTML.append(buffer, size_read);
@@ -1369,7 +1372,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
   return 0;
 }
 
-unsigned int CCurlFile::CReadState::Read(void* lpBuf, int64_t uiBufSize)
+int64_t CCurlFile::CReadState::Read(void* lpBuf, int64_t uiBufSize)
 {
   /* only request 1 byte, for truncated reads (only if not eof) */
   if((m_fileSize == 0 || m_filePos < m_fileSize) && !FillBuffer(1))

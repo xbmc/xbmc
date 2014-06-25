@@ -569,14 +569,12 @@ CStdString CUtil::GetFileMD5(const CStdString& strPath)
   {
     XBMC::XBMC_MD5 md5;
     char temp[1024];
-    int pos=0;
-    int read=1;
-    while (read > 0)
+    int read;
+    do
     {
-      read = file.Read(temp,1024);
-      pos += read;
+      read = (int)file.Read(temp,1024);
       md5.append(temp,read);
-    }
+    } while (read > 0);
     md5.getDigest(result);
     file.Close();
   }

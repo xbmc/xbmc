@@ -77,7 +77,7 @@ int CPipeFile::Stat(struct __stat64* buffer)
   return 0;
 }
 
-unsigned int CPipeFile::Read(void* lpBuf, int64_t uiBufSize)
+int64_t CPipeFile::Read(void* lpBuf, int64_t uiBufSize)
 {
   if (!m_pipe)
     return -1;

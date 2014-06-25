@@ -156,10 +156,10 @@ bool CSlingboxFile::Open(const CURL& url)
   return true;
 }
 
-unsigned int CSlingboxFile::Read(void * pBuffer, int64_t iSize)
+int64_t CSlingboxFile::Read(void * pBuffer, int64_t iSize)
 {
   // Read the data and check for any errors
-  int iRead = m_pSlingbox->ReadStream(pBuffer, (unsigned int)iSize);
+  int64_t iRead = m_pSlingbox->ReadStream(pBuffer, (unsigned int)iSize);
   if (iRead < 0)
   {
     CLog::Log(LOGERROR, "%s - Error reading stream from Slingbox: %s", __FUNCTION__,

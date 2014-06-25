@@ -269,7 +269,7 @@ bool CRarFile::OpenForWrite(const CURL& url)
   return false;
 }
 
-unsigned int CRarFile::Read(void *lpBuf, int64_t uiBufSize)
+int64_t CRarFile::Read(void *lpBuf, int64_t uiBufSize)
 {
 #ifdef HAS_FILESYSTEM_RAR
   if (!m_bOpen)
@@ -351,7 +351,7 @@ unsigned int CRarFile::Read(void *lpBuf, int64_t uiBufSize)
 
   m_pExtract->GetDataIO().hBufferEmpty->Set();
 
-  return static_cast<unsigned int>(uiBufSize-uicBufSize);
+  return uiBufSize-uicBufSize;
 #else
   return 0;
 #endif

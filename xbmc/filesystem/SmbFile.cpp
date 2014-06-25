@@ -508,7 +508,7 @@ int CSmbFile::Truncate(int64_t size)
   return 0;
 }
 
-unsigned int CSmbFile::Read(void *lpBuf, int64_t uiBufSize)
+int64_t CSmbFile::Read(void *lpBuf, int64_t uiBufSize)
 {
   if (m_fd == -1) return 0;
   CSingleLock lock(smb); // Init not called since it has to be "inited" by now
@@ -537,7 +537,7 @@ unsigned int CSmbFile::Read(void *lpBuf, int64_t uiBufSize)
     return 0;
   }
 
-  return (unsigned int)bytesRead;
+  return bytesRead;
 }
 
 int64_t CSmbFile::Seek(int64_t iFilePosition, int iWhence)

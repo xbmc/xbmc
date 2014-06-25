@@ -634,9 +634,9 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
   return ret;
 }
 
-unsigned int CNFSFile::Read(void *lpBuf, int64_t uiBufSize)
+int64_t CNFSFile::Read(void *lpBuf, int64_t uiBufSize)
 {
-  int numberOfBytesRead = 0;
+  int64_t numberOfBytesRead = 0;
   CSingleLock lock(gNfsConnection);
   
   if (m_pFileHandle == NULL || m_pNfsContext == NULL ) return 0;
@@ -653,7 +653,7 @@ unsigned int CNFSFile::Read(void *lpBuf, int64_t uiBufSize)
     CLog::Log(LOGERROR, "%s - Error( %d, %s )", __FUNCTION__, numberOfBytesRead, gNfsConnection.GetImpl()->nfs_get_error(m_pNfsContext));
     return 0;
   }
-  return (unsigned int)numberOfBytesRead;
+  return numberOfBytesRead;
 }
 
 int64_t CNFSFile::Seek(int64_t iFilePosition, int iWhence)

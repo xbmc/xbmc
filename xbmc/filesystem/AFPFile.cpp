@@ -532,7 +532,7 @@ int CAFPFile::Stat(const CURL& url, struct __stat64* buffer)
   return iResult;
 }
 
-unsigned int CAFPFile::Read(void *lpBuf, int64_t uiBufSize)
+int64_t CAFPFile::Read(void *lpBuf, int64_t uiBufSize)
 {
   CSingleLock lock(gAfpConnection);
   if (m_pFp == NULL || !m_pAfpVol)
@@ -550,7 +550,7 @@ unsigned int CAFPFile::Read(void *lpBuf, int64_t uiBufSize)
 
 #endif
   int eof = 0;
-  int bytesRead = gAfpConnection.GetImpl()->afp_wrap_read(m_pAfpVol,
+  int64_t bytesRead = gAfpConnection.GetImpl()->afp_wrap_read(m_pAfpVol,
     name, (char *)lpBuf,(size_t)uiBufSize, m_fileOffset, m_pFp, &eof);
   if (bytesRead > 0)
     m_fileOffset += bytesRead;
@@ -561,7 +561,7 @@ unsigned int CAFPFile::Read(void *lpBuf, int64_t uiBufSize)
     return 0;
   }
 
-  return (unsigned int)bytesRead;
+  return bytesRead;
 }
 
 int64_t CAFPFile::Seek(int64_t iFilePosition, int iWhence)

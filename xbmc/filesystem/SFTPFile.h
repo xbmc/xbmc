@@ -61,7 +61,7 @@ public:
   bool FileExists(const char *path);
   int Stat(const char *path, struct __stat64* buffer);
   int Seek(sftp_file handle, uint64_t position);
-  int Read(sftp_file handle, void *buffer, size_t length);
+  int64_t Read(sftp_file handle, void *buffer, size_t length);
   int64_t GetPosition(sftp_file handle);
   bool IsIdle();
 private:
@@ -100,7 +100,7 @@ namespace XFILE
     virtual ~CSFTPFile();
     virtual void Close();
     virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
-    virtual unsigned int Read(void* lpBuf, int64_t uiBufSize);
+    virtual int64_t Read(void* lpBuf, int64_t uiBufSize);
     virtual bool Open(const CURL& url);
     virtual bool Exists(const CURL& url);
     virtual int Stat(const CURL& url, struct __stat64* buffer);

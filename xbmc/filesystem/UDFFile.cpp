@@ -65,12 +65,12 @@ bool CUDFFile::Open(const CURL& url)
 }
 
 //*********************************************************************************************
-unsigned int CUDFFile::Read(void *lpBuf, int64_t uiBufSize)
+int64_t CUDFFile::Read(void *lpBuf, int64_t uiBufSize)
 {
   if (!m_bOpened) return 0;
   char *pData = (char *)lpBuf;
 
-  int iResult = m_udfIsoReaderLocal.ReadFile( m_hFile, (unsigned char*)pData, (long)uiBufSize);
+  int64_t iResult = m_udfIsoReaderLocal.ReadFile( m_hFile, (unsigned char*)pData, (long)uiBufSize);
   if (iResult == -1)
     return 0;
   return iResult;

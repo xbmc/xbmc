@@ -701,7 +701,7 @@ int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
     context->file->Seek(context->writePosition);
 
   // read data from the file
-  unsigned int res = context->file->Read(buf, maximum);
+  int64_t res = context->file->Read(buf, maximum);
   if (res == 0)
     return -1;
 

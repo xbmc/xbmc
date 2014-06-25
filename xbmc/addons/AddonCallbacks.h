@@ -36,7 +36,7 @@ typedef void (*AddOnFreeString)(const void* addonData, char* str);
 
 typedef void* (*AddOnOpenFile)(const void* addonData, const char* strFileName, unsigned int flags);
 typedef void* (*AddOnOpenFileForWrite)(const void* addonData, const char* strFileName, bool bOverWrite);
-typedef unsigned int (*AddOnReadFile)(const void* addonData, void* file, void* lpBuf, int64_t uiBufSize);
+typedef int64_t (*AddOnReadFile)(const void* addonData, void* file, void* lpBuf, int64_t uiBufSize);
 typedef bool (*AddOnReadFileString)(const void* addonData, void* file, char *szLine, int iLineLength);
 typedef int (*AddOnWriteFile)(const void* addonData, void* file, const void* lpBuf, int64_t uiBufSize);
 typedef void (*AddOnFlushFile)(const void* addonData, void* file);

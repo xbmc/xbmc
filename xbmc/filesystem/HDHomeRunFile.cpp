@@ -106,7 +106,7 @@ bool CHomeRunFile::Open(const CURL &url)
   return true;
 }
 
-unsigned int CHomeRunFile::Read(void* lpBuf, int64_t uiBufSize)
+int64_t CHomeRunFile::Read(void* lpBuf, int64_t uiBufSize)
 {
   size_t datasize;
 
@@ -120,7 +120,7 @@ unsigned int CHomeRunFile::Read(void* lpBuf, int64_t uiBufSize)
   XbmcThreads::EndTime timestamp(5000);
   while(1)
   {
-    datasize = (size_t) uiBufSize;
+    datasize = (size_t)uiBufSize; // TODO: properly support large buffer
     uint8_t* ptr = m_pdll->device_stream_recv(m_device, datasize, &datasize);
     if(ptr)
     {
@@ -133,7 +133,7 @@ unsigned int CHomeRunFile::Read(void* lpBuf, int64_t uiBufSize)
 
     Sleep(64);
   }
-  return (unsigned int)datasize;
+  return datasize;
 }
 
 void CHomeRunFile::Close()

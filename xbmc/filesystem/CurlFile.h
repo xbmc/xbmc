@@ -56,7 +56,7 @@ namespace XFILE
       virtual int  Stat(const CURL& url, struct __stat64* buffer);
       virtual void Close();
       virtual bool ReadString(char *szLine, int iLineLength)     { return m_state->ReadString(szLine, iLineLength); }
-      virtual unsigned int Read(void* lpBuf, int64_t uiBufSize)  { return m_state->Read(lpBuf, uiBufSize); }
+      virtual int64_t Read(void* lpBuf, int64_t uiBufSize)       { return m_state->Read(lpBuf, uiBufSize); }
       virtual int Write(const void* lpBuf, int64_t uiBufSize);
       virtual CStdString GetMimeType()                           { return m_state->m_httpheader.GetMimeType(); }
       virtual CStdString GetContent()                            { return GetMimeType(); }
@@ -137,7 +137,7 @@ namespace XFILE
           size_t HeaderCallback(void *ptr, size_t size, size_t nmemb);
 
           bool         Seek(int64_t pos);
-          unsigned int Read(void* lpBuf, int64_t uiBufSize);
+          int64_t      Read(void* lpBuf, int64_t uiBufSize);
           bool         ReadString(char *szLine, int iLineLength);
           bool         FillBuffer(unsigned int want);
           void         SetReadBuffer(const void* lpBuf, int64_t uiBufSize);

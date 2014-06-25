@@ -302,7 +302,7 @@ int CSFTPSession::Seek(sftp_file handle, uint64_t position)
   return sftp_seek64(handle, position);
 }
 
-int CSFTPSession::Read(sftp_file handle, void *buffer, size_t length)
+int64_t CSFTPSession::Read(sftp_file handle, void *buffer, size_t length)
 {
   CSingleLock lock(m_critSect);
   m_LastActive = XbmcThreads::SystemClockMillis();
@@ -637,11 +637,11 @@ int64_t CSFTPFile::Seek(int64_t iFilePosition, int iWhence)
   }
 }
 
-unsigned int CSFTPFile::Read(void* lpBuf, int64_t uiBufSize)
+int64_t CSFTPFile::Read(void* lpBuf, int64_t uiBufSize)
 {
   if (m_session && m_sftp_handle)
   {
-    int rc = m_session->Read(m_sftp_handle, lpBuf, (size_t)uiBufSize);
+    int64_t rc = m_session->Read(m_sftp_handle, lpBuf, (size_t)uiBufSize);
 
     if (rc >= 0)
       return rc;

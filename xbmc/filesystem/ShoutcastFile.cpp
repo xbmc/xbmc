@@ -95,7 +95,7 @@ bool CShoutcastFile::Open(const CURL& url)
   return result;
 }
 
-unsigned int CShoutcastFile::Read(void* lpBuf, int64_t uiBufSize)
+int64_t CShoutcastFile::Read(void* lpBuf, int64_t uiBufSize)
 {
   if (m_currint >= m_metaint && m_metaint > 0)
   {
@@ -114,11 +114,11 @@ unsigned int CShoutcastFile::Read(void* lpBuf, int64_t uiBufSize)
     m_currint = 0;
   }
 
-  unsigned int toRead;
+  int64_t toRead;
   if (m_metaint > 0)
-    toRead = std::min((unsigned int)uiBufSize,(unsigned int)m_metaint-m_currint);
+    toRead = std::min<int64_t>(uiBufSize, m_metaint - m_currint);
   else
-    toRead = std::min((unsigned int)uiBufSize,(unsigned int)16*255);
+    toRead = std::min<int64_t>(uiBufSize, 16 * 255);
   toRead = m_file.Read(lpBuf,toRead);
   m_currint += toRead;
   return toRead;
@@ -175,7 +175,7 @@ void CShoutcastFile::ReadTruncated(char* buf2, int size)
   char* buf = buf2;
   while (size > 0)
   {
-    int read = m_file.Read(buf,size);
+    int read = (int)m_file.Read(buf,size);
     size -= read;
     buf += read;
   }

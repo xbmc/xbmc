@@ -53,7 +53,7 @@ bool CPODocument::LoadFile(const std::string &pofilename)
   m_strBuffer.resize(m_POfilelength+1);
   m_strBuffer[0] = '\n';
 
-  unsigned int readBytes = file.Read(&m_strBuffer[1], m_POfilelength);
+  int64_t readBytes = file.Read(&m_strBuffer[1], m_POfilelength);
   file.Close();
 
   if (readBytes != m_POfilelength)

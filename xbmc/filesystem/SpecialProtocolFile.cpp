@@ -83,7 +83,7 @@ int CSpecialProtocolFile::Stat(struct __stat64* buffer)
   return m_file.Stat(buffer);
 }
 
-unsigned int CSpecialProtocolFile::Read(void* lpBuf, int64_t uiBufSize)
+int64_t CSpecialProtocolFile::Read(void* lpBuf, int64_t uiBufSize)
 {
   return m_file.Read(lpBuf, uiBufSize);
 }

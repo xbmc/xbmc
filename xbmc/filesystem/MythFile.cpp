@@ -492,7 +492,7 @@ int64_t CMythFile::GetLength()
   return -1;
 }
 
-unsigned int CMythFile::Read(void* buffer, int64_t size)
+int64_t CMythFile::Read(void* buffer, int64_t size)
 {
   /* check for any events */
   HandleEvents();
@@ -501,7 +501,7 @@ unsigned int CMythFile::Read(void* buffer, int64_t size)
   if(!m_recorder && !m_file)
     return 0;
 
-  int ret;
+  int64_t ret;
   if(m_recorder)
     ret = m_dll->livetv_read(m_recorder, (char*)buffer, (unsigned long)size);
   else
