@@ -578,7 +578,7 @@ msgstr "画像"
 
 msgctxt "#31952"
 msgid "LIVE TV"
-msgstr "LIVE TV"
+msgstr "ライブTV"
 
 msgctxt "#31953"
 msgid "VIDEOS"

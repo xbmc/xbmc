@@ -214,7 +214,7 @@ msgstr "Mostra i Video Aggiunti di Recente"
 
 msgctxt "#31118"
 msgid "Home Page Programs Sub-menu"
-msgstr "Sotto-menu Programmi nella home page"
+msgstr "Sottomenù Programmi nella home page"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
@@ -250,15 +250,15 @@ msgstr "Addon Testi"
 
 msgctxt "#31134"
 msgid "Home Page Videos Sub-menu"
-msgstr "Sotto-menu Video nella home page"
+msgstr "Sottomenù Video nella home page"
 
 msgctxt "#31135"
 msgid "Home Page Music Sub-menu"
-msgstr "Sotto-menu musica nella home page"
+msgstr "Sottomenù musica nella home page"
 
 msgctxt "#31136"
 msgid "Home Page Pictures Sub-menu"
-msgstr "Sotto-menu Immagini nella home page"
+msgstr "Sottomenù Immagini nella home page"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -478,7 +478,7 @@ msgstr "Aiuto primo avvio...."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
-msgstr "Questa linguetta significa che c'è un menu off a lato di questa finestra che contiene ulteriori opzioni per questa sezione. Per accedere al menu, naviga a sinistra con il tuo telecomando o tastiera, o posiziona il mouse sulla linguetta. [CR][CR]Clicca \"Ok\" per chiudere questa informazione. Non apparirà nuovamente."
+msgstr "Questa linguetta significa che c'è un menù off a lato di questa finestra che contiene ulteriori opzioni per questa sezione. Per accedere al menù, naviga a sinistra con il tuo telecomando o tastiera, o posiziona il mouse sulla linguetta. [CR][CR]Clicca \"Ok\" per chiudere questa informazione. Non apparirà nuovamente."
 
 msgctxt "#31413"
 msgid "Local subtitle available"

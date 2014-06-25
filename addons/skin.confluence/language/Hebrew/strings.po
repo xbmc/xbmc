@@ -464,6 +464,10 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]שינוי הגדרות הרחבות[/B][CR][CR]נהל את ההרחבות המותקנות אצלך, עיין והתקן הרחבות נוספות מxbmc.org[CR]שנה הגדרות הרחבות"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]התאם הגדרות טלווזיה[/B][CR][CR]שנה מידע במסך מלא · נהל מידע לוחות שידורים"
+
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]שינוי הגדרות שירותים[/B][CR][CR]הגדר שליטה על XBMC בUPnP וHTTP, הגדר שיתוף קבצים[CR]הפעל Zeroconf, הגדר את AirPlay"

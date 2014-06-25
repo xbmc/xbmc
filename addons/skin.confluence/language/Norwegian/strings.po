@@ -94,7 +94,7 @@ msgstr "Handlinger"
 
 msgctxt "#31040"
 msgid "Now Playing"
-msgstr "Nå spilles"
+msgstr "Spilles nå"
 
 msgctxt "#31042"
 msgid "PLAYING"
@@ -182,7 +182,7 @@ msgstr "Øvrige alternativer"
 
 msgctxt "#31107"
 msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
-msgstr "Gjem 'sett'-flagg fra videofilnavn [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Gjem «sett»-flagg fra videofilnavn [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
@@ -226,7 +226,7 @@ msgstr "Vis videoer i bakgrunnen"
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualisation"
-msgstr "Vis visualisering for \"Nå spilles\" i bakgrunnen"
+msgstr "Vis «spilles nå» bakgrunnen i visualisering"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
