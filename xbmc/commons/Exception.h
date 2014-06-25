@@ -25,7 +25,6 @@
 // it wont cause a linker circular dependency since it's just
 // a header.
 #include "utils/StringUtils.h"
-#include "utils/StdString.h"
 //---------------------------------------------------------
 #include "ilog.h"
 
@@ -58,7 +57,7 @@ namespace XbmcCommons
   private:
 
     std::string classname;
-    CStdString message;
+    std::string message;
 
   protected:
     static ILogger* logger;

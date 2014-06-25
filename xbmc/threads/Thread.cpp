@@ -25,6 +25,7 @@
 #include "threads/ThreadLocal.h"
 #include "threads/SingleLock.h"
 #include "commons/Exception.h"
+#include <stdlib.h>
 
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
