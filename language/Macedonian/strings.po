@@ -83,127 +83,127 @@ msgstr "Недела"
 
 msgctxt "#21"
 msgid "January"
-msgstr "јануари"
+msgstr "Јануари"
 
 msgctxt "#22"
 msgid "February"
-msgstr "вефруари"
+msgstr "Февруари"
 
 msgctxt "#23"
 msgid "March"
-msgstr "март"
+msgstr "Март"
 
 msgctxt "#24"
 msgid "April"
-msgstr "април"
+msgstr "Април"
 
 msgctxt "#25"
 msgid "May"
-msgstr "мај"
+msgstr "Мај"
 
 msgctxt "#26"
 msgid "June"
-msgstr "јуни"
+msgstr "Јуни"
 
 msgctxt "#27"
 msgid "July"
-msgstr "јули"
+msgstr "Јули"
 
 msgctxt "#28"
 msgid "August"
-msgstr "август"
+msgstr "Август"
 
 msgctxt "#29"
 msgid "September"
-msgstr "септември"
+msgstr "Септември"
 
 msgctxt "#30"
 msgid "October"
-msgstr "октомври"
+msgstr "Октомври"
 
 msgctxt "#31"
 msgid "November"
-msgstr "ноември"
+msgstr "Ноември"
 
 msgctxt "#32"
 msgid "December"
-msgstr "декември"
+msgstr "Декември"
 
 msgctxt "#41"
 msgid "Mon"
-msgstr "пон"
+msgstr "Пон"
 
 msgctxt "#42"
 msgid "Tue"
-msgstr "вто"
+msgstr "Вто"
 
 msgctxt "#43"
 msgid "Wed"
-msgstr "сре"
+msgstr "Сре"
 
 msgctxt "#44"
 msgid "Thu"
-msgstr "чет"
+msgstr "Чет"
 
 msgctxt "#45"
 msgid "Fri"
-msgstr "пет"
+msgstr "Пет"
 
 msgctxt "#46"
 msgid "Sat"
-msgstr "саб"
+msgstr "Саб"
 
 msgctxt "#47"
 msgid "Sun"
-msgstr "нед"
+msgstr "Нед"
 
 msgctxt "#51"
 msgid "Jan"
-msgstr "јан"
+msgstr "Јан"
 
 msgctxt "#52"
 msgid "Feb"
-msgstr "феб"
+msgstr "Фев"
 
 msgctxt "#53"
 msgid "Mar"
-msgstr "мар"
+msgstr "Мар"
 
 msgctxt "#54"
 msgid "Apr"
-msgstr "апр"
+msgstr "Апр"
 
 msgctxt "#55"
 msgid "May"
-msgstr "мај"
+msgstr "Мај"
 
 msgctxt "#56"
 msgid "Jun"
-msgstr "јун"
+msgstr "Јун"
 
 msgctxt "#57"
 msgid "Jul"
-msgstr "јул"
+msgstr "Јул"
 
 msgctxt "#58"
 msgid "Aug"
-msgstr "авг"
+msgstr "Авг"
 
 msgctxt "#59"
 msgid "Sep"
-msgstr "сеп"
+msgstr "Сеп"
 
 msgctxt "#60"
 msgid "Oct"
-msgstr "окт"
+msgstr "Окт"
 
 msgctxt "#61"
 msgid "Nov"
-msgstr "ное"
+msgstr "Ное"
 
 msgctxt "#62"
 msgid "Dec"
-msgstr "дек"
+msgstr "Дек"
 
 msgctxt "#71"
 msgid "N"
@@ -291,7 +291,7 @@ msgstr "Исток"
 
 msgctxt "#92"
 msgid "Variable"
-msgstr "Променлив"
+msgstr "Променлива"
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -307,7 +307,7 @@ msgstr "Приказ: Икони"
 
 msgctxt "#101"
 msgid "View: List"
-msgstr "Приказ: Список"
+msgstr "Приказ: Листа"
 
 msgctxt "#102"
 msgid "Scan"
@@ -539,7 +539,7 @@ msgstr "Слободна меморија"
 
 msgctxt "#159"
 msgid "No link"
-msgstr "не е воспоставена"
+msgstr "Не е воспоставена врска"
 
 msgctxt "#160"
 msgid "Free"
@@ -663,7 +663,7 @@ msgstr "Пребарување..."
 
 msgctxt "#195"
 msgid "No info found!"
-msgstr "Информаци не се најдени!"
+msgstr "Информации не се најдени!"
 
 msgctxt "#196"
 msgid "Select movie:"
@@ -747,7 +747,7 @@ msgstr "Далечинско делење"
 
 msgctxt "#221"
 msgid "Network is not connected"
-msgstr "Мрежа нее поврзана"
+msgstr "Мрежа не е поврзана"
 
 msgctxt "#222"
 msgid "Cancel"
@@ -831,7 +831,7 @@ msgstr "Во прозорец"
 
 msgctxt "#243"
 msgid "Refresh Rate"
-msgstr "Освежување"
+msgstr "Стапка на освежување"
 
 msgctxt "#244"
 msgid "Full screen"
@@ -943,7 +943,7 @@ msgstr "Долна десна ивица на екран"
 
 msgctxt "#274"
 msgid "Subtitle positioning"
-msgstr "Позиционирање на титл"
+msgstr "Позиционирање на превод"
 
 msgctxt "#275"
 msgid "Pixel ratio adjustment"
@@ -951,19 +951,19 @@ msgstr "Прилагодување на однос на страни"
 
 msgctxt "#276"
 msgid "Adjust the arrow to change the amount of overscan"
-msgstr "Помрднувај ја стрелката за промена на големина на екран"
+msgstr "Прилагоди ја стрелката за промена на големина на екран"
 
 msgctxt "#277"
 msgid "Adjust the bar to change the subtitles position"
-msgstr "Помрднувај линија за промена на позиција на титлови"
+msgstr "Помрднувај ја линијата за промена на позиција на преводи"
 
 msgctxt "#278"
 msgid "Adjust the rectangle so it is perfectly square"
-msgstr "Обликувајте правоаголник тако да добиете совршени квадрат"
+msgstr "Обликувајте го правоаголникот така да добиете совршен квадрат"
 
 msgctxt "#279"
 msgid "Unable to load settings"
-msgstr "Нее можно вчитување поставки"
+msgstr "Не е можно вчитување на поставки"
 
 msgctxt "#280"
 msgid "Using default settings"
@@ -995,11 +995,11 @@ msgstr "Посакуван јазик на превод"
 
 msgctxt "#287"
 msgid "Subtitles"
-msgstr "Титлови"
+msgstr "Преводи"
 
 msgctxt "#288"
 msgid "Font"
-msgstr "Букви"
+msgstr "Фонт"
 
 msgctxt "#289"
 msgid "Size"
@@ -1019,7 +1019,7 @@ msgstr "Звук"
 
 msgctxt "#293"
 msgid "Browse for subtitles"
-msgstr "Побарај титлови"
+msgstr "Побарај преводи"
 
 msgctxt "#294"
 msgid "Create bookmark"
@@ -7555,7 +7555,7 @@ msgstr "Споделувај видео и музички библиотеки �
 
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
-msgstr "Игнорирај фонтови во ASS/SSA титлови"
+msgstr "Игнорирај фонтови во ASS/SSA преводи"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -7863,7 +7863,7 @@ msgstr "Аудио јазик"
 
 msgctxt "#21448"
 msgid "Subtitle language"
-msgstr "Јазик на титл"
+msgstr "Јазик на превод"
 
 msgctxt "#21449"
 msgid "Remote control sends keyboard presses"
@@ -8199,7 +8199,7 @@ msgstr "%2.3fs"
 
 msgctxt "#22006"
 msgid "Subtitle offset"
-msgstr "офсет на титл"
+msgstr "офсет на превод"
 
 msgctxt "#22016"
 msgid "By title"
@@ -8219,7 +8219,7 @@ msgstr "Снимки по наслов"
 
 msgctxt "#22023"
 msgid "DirectX vendor:"
-msgstr "DirectX вендор:"
+msgstr "DirectX продавач:"
 
 msgctxt "#22024"
 msgid "Direct3D version:"
@@ -8235,7 +8235,7 @@ msgstr "Голем."
 
 msgctxt "#22032"
 msgid "Colours"
-msgstr "Боји"
+msgstr "Бои"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -8339,7 +8339,7 @@ msgstr "Скрипта"
 
 msgctxt "#24012"
 msgid "Subtitles"
-msgstr "Титлови"
+msgstr "Преводи"
 
 msgctxt "#24013"
 msgid "Lyrics"
