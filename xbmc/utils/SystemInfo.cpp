@@ -943,6 +943,11 @@ std::string CSysInfo::GetKernelCpuFamily(void)
       return "x86";
     if (machine.compare(0, 3, "ppc", 3) == 0 || machine.compare(0, 5, "power", 5) == 0)
       return "PowerPC";
+// ios saves the dev id like AppleTV2,1 in the machine
+// field - all ios devices are ARM - force this here...
+#if defined(TARGET_DARWIN_IOS)
+    return "ARM";
+#endif
   }
 #endif
   return "unknown CPU family";
