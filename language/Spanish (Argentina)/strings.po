@@ -771,7 +771,7 @@ msgstr "Desplazamiento vertical"
 
 msgctxt "#226"
 msgid "Test patterns..."
-msgstr "Probar patrones..."
+msgstr "Patrones de prueba..."
 
 msgctxt "#227"
 msgid "Lookup audio CD track names from freedb.org"
@@ -1187,7 +1187,7 @@ msgstr "Inicio"
 
 msgctxt "#336"
 msgid "Framerate conversion"
-msgstr "Conversión de imágenes por segundo"
+msgstr "Conversión de imagenes por segundo"
 
 msgctxt "#337"
 msgid "Output configuration"
@@ -1215,7 +1215,7 @@ msgstr "Películas"
 
 msgctxt "#343"
 msgid "Adjust framerate"
-msgstr "Ajustar imágenes/seg"
+msgstr "Ajustar imagenes/seg"
 
 msgctxt "#344"
 msgid "Actors"

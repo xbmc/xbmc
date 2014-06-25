@@ -8685,6 +8685,10 @@ msgctxt "#20411"
 msgid "Flatten"
 msgstr "Zravnaj"
 
+msgctxt "#20412"
+msgid "Flatten TV show seasons"
+msgstr "Prikaži skupaj vse sezone TV serije"
+
 msgctxt "#20413"
 msgid "Get fanart"
 msgstr "Prenesi ozadje"
@@ -10293,9 +10297,17 @@ msgctxt "#24116"
 msgid "Default TV Service"
 msgstr "Privzeta storitev za TV"
 
+msgctxt "#24117"
+msgid "Select service that will be used as default to search for TV Show subtitles."
+msgstr "Izberite storitev, ki se bo uporabljala kot privzeta za iskanje podnapisov za TV serije"
+
 msgctxt "#24118"
 msgid "Default Movie Service"
 msgstr "Privzeta storitev za filme"
+
+msgctxt "#24119"
+msgid "Select service that will be used as default to search for Movie subtitles."
+msgstr "Izberite storitev, ki se bo uporabljala kot privzeta za iskanje podnapisov za filme"
 
 msgctxt "#24120"
 msgid "Manual search string"
@@ -11097,6 +11109,10 @@ msgctxt "#36106"
 msgid "Change the colours of your selected skin."
 msgstr "Spremenite barve trenutno izbrane preobleke."
 
+msgctxt "#36107"
+msgid "Choose the fonts displayed in the user interface. The font sets are configured by your skin."
+msgstr "Izberite pisavo uporabniškega vmesnika. Zbirke pisav so nastavljene preko vaše preobleke."
+
 msgctxt "#36108"
 msgid "Resize the view of the user interface."
 msgstr "Spremeni velikost uporabniškega vmesnika."
@@ -11164,6 +11180,10 @@ msgstr "Prikažite pripone predstavnih datotek. Na primer 'Party Anima.mp3' bi p
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Dovolite brisanje in preimenovanje datotek s pomočjo uporabniškega vmesnika, preko vsebinskega menija (na primer na tipkovnici pritisnite tipko C za prikaz vsebinskega menija)."
+
+msgctxt "#36126"
+msgid "Show the add source button in root sections of the user interface."
+msgstr "Pokaži gumb Dodaj vir iz koreninskih odsekov uporabniškega vmesnika."
 
 msgctxt "#36127"
 msgid "Show hidden files and directories when listing files."
@@ -11380,6 +11400,10 @@ msgstr "Nastavite barvo pisave za uporabo v podnapisih."
 msgctxt "#36189"
 msgid "Set the font character set to be used for subtitles."
 msgstr "Nastavite nabor znakov pisave za uporabo v podnapisih."
+
+msgctxt "#36190"
+msgid "Override ASS/SSA subtitles fonts."
+msgstr "Ponastavi pisave podnapisov ASS/SSA"
 
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."

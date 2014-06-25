@@ -1181,9 +1181,17 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Перетворення частоти кадрів"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "Конфігурація виходу"
+
 msgctxt "#338"
 msgid "Fixed"
 msgstr "Фіксоване"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "Оптимізовано"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -1209,9 +1217,17 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Рік"
 
+msgctxt "#346"
+msgid "Normalize levels on downmix"
+msgstr "Нормалізувати рівні при мікшуванні"
+
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "Виводити звук у форматі DTS-HD"
+
+msgctxt "#348"
+msgid "Enable passthrough"
+msgstr "Увімкнути пряме виведення"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1489,6 +1505,14 @@ msgctxt "#419"
 msgid "High"
 msgstr "Макс."
 
+msgctxt "#420"
+msgid "Best Match"
+msgstr "Найкращий збіг"
+
+msgctxt "#421"
+msgid "Keep audio device alive"
+msgstr "Підтримувати роботу аудіопристрою"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Видалити відомості про альбом"
@@ -1632,6 +1656,10 @@ msgstr "Режим"
 msgctxt "#457"
 msgid "Switch view"
 msgstr "Змінити вигляд"
+
+msgctxt "#458"
+msgid "Limit sampling rate (kHz)"
+msgstr "Обмежити частоту семплування (кГц)"
 
 msgctxt "#459"
 msgid "Subs"
@@ -2913,6 +2941,10 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Програмні надбудови"
 
+msgctxt "#1044"
+msgid "Set plug-in thumb"
+msgstr "Встановити ескіз для надбудови"
+
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Налаштування надбудови"
@@ -3477,6 +3509,10 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Скинути"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Базовий"
+
 msgctxt "#10037"
 msgid "Standard"
 msgstr "Стандартний"
@@ -3485,9 +3521,17 @@ msgctxt "#10038"
 msgid "Advanced"
 msgstr "Більше"
 
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Експертний"
+
 msgctxt "#10040"
 msgid "Add-on browser"
 msgstr "Браузер надбудов"
+
+msgctxt "#10041"
+msgid "Reset above settings to default"
+msgstr "Скинути налаштування до значень за промовчанням"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -3500,6 +3544,18 @@ msgstr "Допомога"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "Довідка відсутня"
+
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr "Скинути всі досупні нашаштування до значень за промовчанням."
+
+msgctxt "#10046"
+msgid "No categories available"
+msgstr "Категорії відсутні"
+
+msgctxt "#10047"
+msgid "Try changing the setting level to see additional categories and settings."
+msgstr "Змініть рівень налаштувань, щоб відкрити додадкові категорії та налаштування."
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
@@ -3837,6 +3893,10 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Кількість спроб уведення паролю вичерпано."
 
+msgctxt "#12347"
+msgid "The system will now power down."
+msgstr "Систему буде вимкнено."
+
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Заблоковано"
@@ -4137,6 +4197,10 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Зберегти роздільну здатність?"
 
+msgctxt "#13111"
+msgid "Would you like to keep this change?"
+msgstr "Зберегти зміни?"
+
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "Високоякісне масштабування"
@@ -4180,6 +4244,10 @@ msgstr "Високоякісне масштабування VDPAU"
 msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
 msgstr "Колір рівня перетворення VDPAU студії"
+
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr "Зберегти обкладинку?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4989,6 +5057,14 @@ msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f с."
 
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d хв."
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d хв."
+
 msgctxt "#13600"
 msgid "Apple remote"
 msgstr "ДК Apple"
@@ -5653,6 +5729,10 @@ msgctxt "#16105"
 msgid "Edit title"
 msgstr "Змінити назву"
 
+msgctxt "#16106"
+msgid "Manage..."
+msgstr "Налаштування"
+
 msgctxt "#16107"
 msgid "Edit sort title"
 msgstr "Змінити сортування назв"
@@ -6192,6 +6272,18 @@ msgstr "Уведіть ім'я запису"
 msgctxt "#19098"
 msgid "Warning"
 msgstr "Увага"
+
+msgctxt "#19099"
+msgid "Service"
+msgstr "Служба"
+
+msgctxt "#19100"
+msgid "Mux"
+msgstr "Мікшування"
+
+msgctxt "#19101"
+msgid "Provider"
+msgstr "Джерело"
 
 msgctxt "#19102"
 msgid "Please switch to another channel."
@@ -9109,6 +9201,10 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s — %s"
 
+msgctxt "#21602"
+msgid "(External)"
+msgstr "(Зовнішній)"
+
 msgctxt "#21800"
 msgid "File name"
 msgstr "Ім'я файлу"
@@ -9793,13 +9889,29 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Доступні надбудови"
 
+msgctxt "#24044"
+msgid "Dependencies not met. Please contact Add-on author."
+msgstr "Відсутні залежності. Зв'яжіться з автором надбудови."
+
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Неправильна структура надбудови"
 
+msgctxt "#24046"
+msgid "%s is used by the following installed Add-on(s)"
+msgstr "%s використовується встановленими надбудовами"
+
+msgctxt "#24047"
+msgid "This Add-on cannot be uninstalled"
+msgstr "Неможливо видалити надбудову"
+
 msgctxt "#24048"
 msgid "Rollback"
 msgstr "Повернути"
+
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr "Несумісно"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
@@ -9905,6 +10017,10 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "Заблокувати менеджер надбудов"
 
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr "Неможливо вимкнути надбудову"
+
 msgctxt "#24094"
 msgid "(current)"
 msgstr "(поточн.)"
@@ -9912,6 +10028,10 @@ msgstr "(поточн.)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(заблокован.)"
+
+msgctxt "#24096"
+msgid "Add-on is incompatible or has been marked broken in repository."
+msgstr "Надбудова несумісна або відмічена в репозиторії як зіпсована."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9940,6 +10060,46 @@ msgstr "Не вдалося завантажити обкладинку"
 msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "У обкладинці бракує файлів"
+
+msgctxt "#24104"
+msgid "Add-on is incompatible due to unmet dependencies."
+msgstr "Надбудова несумісна через відсутні залежності."
+
+msgctxt "#24105"
+msgid "Pause when searching for subtitles"
+msgstr "Пауза при пошуку субтитрів"
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Пошук субтитрів…"
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "Знайдено субтитрів: %d"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "Субтитри не знайдено"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "Завантаження субтитрів…"
+
+msgctxt "#24111"
+msgid "Languages to download subtitles for"
+msgstr "Мови завантажуваних субтитрів"
+
+msgctxt "#24112"
+msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
+msgstr "Вибрати мови для пошуку субтитрів. Окремі служби можуть не підтримувати вибрані мови."
+
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "Не вдалося завантажити субтитри"
+
+msgctxt "#24114"
+msgid "No subtitle services installed"
+msgstr "Служби субтитрів не встановлено"
 
 msgctxt "#24121"
 msgid "Enter search string"
@@ -10044,6 +10204,10 @@ msgstr "Пропонувати завантаження відео перед в
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Кліпи"
+
+msgctxt "#33017"
+msgid "Restart plug-in to enable"
+msgstr "Перезапустіть надбудову, щоб увімкнути її"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10365,6 +10529,10 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34111"
+msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
+msgstr "Вибрати поведінку при відсутності програвання і звуків інтерфейсу. \"Завжди\" — безперервне передавання на вихід нечутного сигналу для запобігання вимкненню аудіопристрою. Проте це може заблокувати звуки від інших програм. \"1—10 хв.\" — те саме, що й \"Завжди\", але через вказаний проміжок часу звук вимикається. \"Вимкн.\" — вимкнення звуку. У цьому випадку можливий пропуск звуку."
+
 msgctxt "#34120"
 msgid "Play GUI sounds"
 msgstr "Звуки інтерфейсу"
@@ -10380,6 +10548,26 @@ msgstr "Завжди"
 msgctxt "#34123"
 msgid "Never"
 msgstr "Ніколи"
+
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44,1"
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48,0"
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88,2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96,0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192,0"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"
@@ -10492,6 +10680,10 @@ msgstr "Увімкнути джойстик і геймпад"
 msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Вимкнути джойстик, коли підключено цей пристрій."
+
+msgctxt "#35103"
+msgid "Enable system keys in fullscreen"
+msgstr "Системні сполучення клавіш в повноекранному режимі"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10817,6 +11009,10 @@ msgctxt "#36168"
 msgid "Maximum video speed adjust to match actual screen refresh rate."
 msgstr "Максимальна швидкість відео коригується відповідно до фактичної частоти оновлення екрану."
 
+msgctxt "#36169"
+msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
+msgstr "Вибрати якість ресемплінґу для випадків, коли частота на виході має відрізнятися від частоти джерела. \"Низька\" — велика швидкість й низьке навантаження на процесор. \"Середня\" та \"Висока\" — пропорційно більше навантаження на процесор."
+
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
 msgstr "Дозволити відеоплеєру ігнорувати спотворення пропорцій до деякої міри, щоб заповнити екран."
@@ -10840,6 +11036,10 @@ msgstr "Масштабувати телетекст до пропорцій 4:3.
 msgctxt "#36177"
 msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
 msgstr "Перемикач між Вибором, Гра (за умовчанням), Продовжити і Показати інформацію. Виберіть пункт, наприклад відкрити каталог в режимі файлів. Продовжити - автоматично відновить відео з останньої позиції, яку ви переглядали, навіть після перезапуску системи."
+
+msgctxt "#36178"
+msgid "Extract thumbnails and metadata information such as codec and aspect ratio from videos."
+msgstr "Отримувати з файлу ескізи та іншу інформацію, наприклад кодеки і пропорції відео."
 
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
@@ -10893,6 +11093,10 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Інфоресурс за промовчанням для музичних відео."
 
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
+msgstr "Увімкнути функції перегляду та запису ТБ в XBMC (PVR). Для цього потрібна щонайменше одна надбудова PVR."
+
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Імпорт груп каналів із ТБ-серверу (якщо підтримується). Користувацькі групи, що відсутні на ТБ-сервері, будуть видалені."
@@ -10928,6 +11132,10 @@ msgstr "Приховати текст \"немає відомостей\", як�
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Показувати обраний ТБ-канал у вікні замість повного екрану."
+
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
+msgstr "Показувати відомості про якість сигналу у вікні з відомостями про кодек (якщо підтримується надбудовою і ТБ-сервером)."
 
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
@@ -10989,6 +11197,10 @@ msgctxt "#36265"
 msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
 msgstr "Автоматично відтворювати наступний файл у поточній папці. Наприклад, у представленні файлів після відтворення доріжки XBMC автоматично відкриє наступну доріжку в цій же папці."
 
+msgctxt "#36267"
+msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
+msgstr "XBMC читатиме відомості ReplayGain, закодовані в аудіофайлах, наприклад програмою MP3Gain, і відповідно нормалізуватиме рівні звуку."
+
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "За стандартом — 89 дБ. Змінювати обережно."
@@ -11000,6 +11212,10 @@ msgstr "За стандартом — 89 дБ. Змінювати обережн
 msgctxt "#36271"
 msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
 msgstr "Плавний перехід між аудіотреками. Тривалість переходу можна налаштувати в діапазоні 1—15 с."
+
+msgctxt "#36273"
+msgid "Select the visualisation that will be displayed while listening to music."
+msgstr "Виберіть візуалізацію, яка буде показуватися під час відтворення музики."
 
 msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
@@ -11137,6 +11353,10 @@ msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
 msgstr "Тестові зразки для калібрування дисплея устаткування."
 
+msgctxt "#36361"
+msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
+msgstr "Вибрати спосіб налаштування аудіовиходу. \"Фіксований\" — налаштування виходу постійно змінюються згідно із вказаною частотою семплування і конфігурацією колонок. \"Найкращий збіг\" — налаштування виходу якомога точніше відповідають параметрам джерела. \"Оптимізовано\" — налаштування виходу встановлюються на початку відтворення та не змінюються при зміні параметрів джерела."
+
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Посилити AC3 потоки, які були зведені в 2 канали."
@@ -11148,6 +11368,14 @@ msgstr "Виберіть цей варіант, якщо ваш ресівер �
 msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
 msgstr "Виберіть цей варіант, якщо ваш ресівер здатний декодувати потоки DTS ."
+
+msgctxt "#36367"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
+msgstr "Виберіть максимальну кількість аудіоканалів/колонок при декодуванні звуку. При використанні оптичного/коаксіального виходу цей параметр має бути 2.0."
+
+msgctxt "#36368"
+msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital."
+msgstr "Увімкнути пряме передавання (бітстрім) кодованого звуку, наприклад Dolby Digital, на зовнішній аудіопристрій (А/В-ресівер)."
 
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
@@ -11357,6 +11585,18 @@ msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
 msgstr "Дозволяє регулятор гучності від AirPlay клієнтів."
 
+msgctxt "#36542"
+msgid "Output to both analogue (headphones) and HDMI"
+msgstr "Вивід звуку через аналоговий вихід (на навушники) та HDMI."
+
+msgctxt "#36543"
+msgid "Enable this to make dialogue louder compared to background sounds when downmixing multichannel audio"
+msgstr "Підвищувати гучність діалогів порівняно з фоновими звуками при мікшуванні багатоканального звуку."
+
+msgctxt "#36544"
+msgid "Enable hardware decoding of video files."
+msgstr "Увімкнути апаратне декодування відеофайлів."
+
 msgctxt "#37000"
 msgid "(Visually Impaired)"
 msgstr "(Слабозорих)"
@@ -11388,3 +11628,15 @@ msgstr "Востаннє зайнятий профіль"
 msgctxt "#37015"
 msgid "Browse Into"
 msgstr "Перегляд в"
+
+msgctxt "#37016"
+msgid "Select this option if your receiver is capable of decoding E-AC3 streams."
+msgstr "Виберіть цей параметр, якщо ваш ресівер здатний декодувати потоки E-AC3."
+
+msgctxt "#37017"
+msgid "Dual audio output"
+msgstr "Виведення звуку на два виходи"
+
+msgctxt "#37018"
+msgid "Boost centre channel when downmixing"
+msgstr "Підвищувати гучність центрального каналу при мікшуванні"

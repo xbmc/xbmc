@@ -2571,7 +2571,7 @@ msgstr "Editar localização"
 
 msgctxt "#749"
 msgid "Mirror image"
-msgstr "Imagem espelhada"
+msgstr "Espelhada"
 
 msgctxt "#750"
 msgid "Are you sure?"
@@ -4683,7 +4683,7 @@ msgstr "Informação do álbum"
 
 msgctxt "#13352"
 msgid "Scan item to library"
-msgstr "Analisar item para a Biblioteca"
+msgstr "Inserir item na Biblioteca"
 
 msgctxt "#13353"
 msgid "Stop scanning"
@@ -4879,7 +4879,7 @@ msgstr "Transferindo"
 
 msgctxt "#13414"
 msgid "Include artists who appear only on compilations"
-msgstr "Incluir artistas que apenas aparecem em compilações"
+msgstr "Incluir artistas que aparecem apenas em compilações"
 
 msgctxt "#13415"
 msgid "Render method"
@@ -9327,7 +9327,7 @@ msgstr "É necessária uma ligação à Internet."
 
 msgctxt "#21452"
 msgid "Get More..."
-msgstr "Procurar mais..."
+msgstr "Obter mais..."
 
 msgctxt "#21453"
 msgid "Root filesystem"
@@ -10035,7 +10035,7 @@ msgstr "Erro ao carregar definições"
 
 msgctxt "#24032"
 msgid "All Add-ons"
-msgstr "Todos os Add-ons"
+msgstr "- Todos os Add-ons"
 
 msgctxt "#24033"
 msgid "Get Add-ons"
@@ -10123,7 +10123,7 @@ msgstr "Licença:"
 
 msgctxt "#24054"
 msgid "Changelog"
-msgstr "Registo de Alterações"
+msgstr "Alterações"
 
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
@@ -11831,7 +11831,7 @@ msgstr "O XBMC irá procurar por miniaturas em partilhas remotas e média de for
 
 msgctxt "#36282"
 msgid "Category containing settings for how CDs are handled."
-msgstr "Categoria que contém definições sobre a utilização de CDs.."
+msgstr "Categoria que contém definições sobre a utilização de CDs."
 
 msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
@@ -11935,7 +11935,7 @@ msgstr "Gerar automaticamente miniaturas das imagens ao entrar numa pasta de ima
 
 msgctxt "#36308"
 msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
-msgstr "As imagens irão rodar automaticamente de acordo com a informação da etiqueta EXIF, se for encontrada."
+msgstr "As imagens irão rodar automaticamente de acordo com a informação da etiqueta EXIF, se esta for encontrada."
 
 msgctxt "#36309"
 msgid "Show videos in picture file lists."
@@ -12147,7 +12147,7 @@ msgstr "Categoria que contém definições sobre a utilização da saída áudio
 
 msgctxt "#36361"
 msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
-msgstr "Definir as propriedades da saída de áudio: [Corrigido] - sempre para a mesma taxa de amostragem e configuração de colunas; [Melhor Correspondência] - sempre uma correspondência o mais aproximada possível às propriedades da fonte; [Optimizado] - definidas no início da reprodução: não serão alteradas se as propriedades da fonte mudarem."
+msgstr "Definir as propriedades da saída de áudio: [Corrigido] - sempre com a mesma taxa de amostragem e configuração de colunas; [Melhor Correspondência] - sempre uma correspondência o mais aproximada possível às propriedades da fonte; [Optimizado] - definidas no início da reprodução: não serão alteradas se as propriedades da fonte mudarem."
 
 msgctxt "#36362"
 msgid "Select the number of channels supported by the audio connection, or the number of speakers if connected by analog connections. This setting does not apply to passthrough audio. Note - SPDIF supports 2.0 channels only but can still output multichannel audio using a format supported by passthrough."

@@ -6699,7 +6699,7 @@ msgstr "TV"
 
 msgctxt "#19181"
 msgid "Menu/OSD"
-msgstr "Menu/OSD"
+msgstr "Menù/OSD"
 
 msgctxt "#19182"
 msgid "Days to display in the EPG"
@@ -7735,7 +7735,7 @@ msgstr "Attiva i pulsanti scorciatoie"
 
 msgctxt "#20082"
 msgid "Show programs in main menu"
-msgstr "Mostra il pulsante programmi nel menu principale"
+msgstr "Mostra il pulsante programmi nel menù principale"
 
 msgctxt "#20083"
 msgid "Show music info"
@@ -9631,7 +9631,7 @@ msgstr "Permetti il controllo di XBMC via UPnP"
 
 msgctxt "#21882"
 msgid "Attempt to skip introduction before DVD menu"
-msgstr "Prova a saltare l'introduzione prima del menu DVD"
+msgstr "Prova a saltare l'introduzione prima del menù DVD"
 
 msgctxt "#21883"
 msgid "Saved music"
@@ -10355,7 +10355,7 @@ msgstr "Seleziona da tutti i titoli ..."
 
 msgctxt "#25003"
 msgid "Show Blu-ray menus"
-msgstr "Mostra i menu Blu-ray"
+msgstr "Mostra i menù Blu-ray"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10379,7 +10379,7 @@ msgstr "Riproduzione del Blu-ray fallita"
 
 msgctxt "#25009"
 msgid "The menu of this Blu-ray is not supported"
-msgstr "Il menu di questo Blu-ray non è supportato"
+msgstr "Il menù di questo Blu-ray non è supportato"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -10595,7 +10595,7 @@ msgstr "Power"
 
 msgctxt "#33061"
 msgid "Menu"
-msgstr "Menu"
+msgstr "Menù"
 
 msgctxt "#33062"
 msgid "Play the"
@@ -10883,7 +10883,7 @@ msgstr "Tocco unico con un dito per selezionare"
 
 msgctxt "#34408"
 msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr "Tocco unico con due dita e un tocco prolungato con un dito per il menu contestuale"
+msgstr "Tocco unico con due dita e un tocco prolungato con un dito per il menù contestuale"
 
 msgctxt "#35000"
 msgid "Peripherals"
@@ -11215,7 +11215,7 @@ msgstr "Ignora alcuni simboli durante le operazioni di ordinamento. Per esempio,
 
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
-msgstr "Permetti di cancellare e rinominare i file tramite l'interfaccia utente, attraverso il menu contestuale (premi C sulla tastiera, per esempio, per far apparire questo menu)."
+msgstr "Permetti di cancellare e rinominare i file tramite l'interfaccia utente, attraverso il menù contestuale (premi C sulla tastiera, per esempio, per far apparire questo menù)."
 
 msgctxt "#36126"
 msgid "Show the add source button in root sections of the user interface."
@@ -11491,7 +11491,7 @@ msgstr "Forza una regione per la riproduzione dei DVD."
 
 msgctxt "#36196"
 msgid "Attempt to skip 'unskippable' introductions before DVD menu."
-msgstr "Prova a saltare l'introduzione prima del menu DVD."
+msgstr "Prova a saltare l'introduzione prima del menù DVD."
 
 msgctxt "#36197"
 msgid "No info available yet."
@@ -11551,7 +11551,7 @@ msgstr "Evita di mostrare finestra di notifica 'connessione persa' quando XBMC n
 
 msgctxt "#36211"
 msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
-msgstr "Categoria per i menu PVR e le impostazioni delle info on-screen, oltre alla finestra informazioni canale."
+msgstr "Categoria per i menù PVR e le impostazioni delle info on-screen, oltre alla finestra informazioni canale."
 
 msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
@@ -12195,7 +12195,7 @@ msgstr "Seleziona il dispositivo da usare per la riproduzione dei formati codifi
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
-msgstr "Configura come i suoni di interfaccia sono gestiti, come navigazione del menu e notifiche importanti."
+msgstr "Configura come i suoni di interfaccia sono gestiti, come navigazione del menù e notifiche importanti."
 
 msgctxt "#36374"
 msgid "Category containing settings for how input devices are handled."
@@ -12395,11 +12395,11 @@ msgstr "Abilita la decodifica multithread software di ffmpeg (meno affidabile ri
 
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
-msgstr "Seleziona cosa succederà quando un elemento nella guida TV viene selezionato: [ Mostra menu contestuale ] aprirà il menu contestuale da dove potrai scegliere più azioni; [ Passa a canale ] Passerà immediatamente al canale correlato; [ Mostra informazioni ] Visualizzerà dettagliate informazioni con trama e ulteriori opzioni; [ Registra ] Creerà una registrazione per l'elemento selezionato"
+msgstr "Seleziona cosa succederà quando un elemento nella guida TV viene selezionato: [ Mostra menù contestuale ] aprirà il menù contestuale da dove potrai scegliere più azioni; [ Passa a canale ] Passerà immediatamente al canale correlato; [ Mostra informazioni ] Visualizzerà dettagliate informazioni con trama e ulteriori opzioni; [ Registra ] Creerà una registrazione per l'elemento selezionato"
 
 msgctxt "#36425"
 msgid "Show context menu"
-msgstr "Mostra menu contestuale"
+msgstr "Mostra menù contestuale"
 
 msgctxt "#36426"
 msgid "Switch to channel"

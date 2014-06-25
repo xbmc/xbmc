@@ -559,11 +559,11 @@ msgstr "Leser"
 
 msgctxt "#164"
 msgid "No disc"
-msgstr "Ingen disk"
+msgstr "Ingen plate"
 
 msgctxt "#165"
 msgid "Disc present"
-msgstr "Disk tilstede"
+msgstr "Plate tilstede"
 
 msgctxt "#166"
 msgid "Skin"
@@ -631,7 +631,7 @@ msgstr "Oppdater"
 
 msgctxt "#185"
 msgid "Searching album"
-msgstr "Søker i album"
+msgstr "Søker i album..."
 
 msgctxt "#186"
 msgid "OK"
@@ -735,7 +735,7 @@ msgstr "Gjør mykere"
 
 msgctxt "#216"
 msgid "Zoom amount"
-msgstr "Zoom"
+msgstr "Zoom-mengde"
 
 msgctxt "#217"
 msgid "Pixel ratio"
@@ -783,7 +783,7 @@ msgstr "Bland spillelisten ved henting"
 
 msgctxt "#229"
 msgid "HDD spindown time"
-msgstr "Tid før harddisk spinner ned (min)"
+msgstr "Tid før harddisk spinnes ned (min)"
 
 msgctxt "#230"
 msgid "Video filters"
@@ -1271,7 +1271,7 @@ msgstr "Skjermsparermodus"
 
 msgctxt "#357"
 msgid "Shutdown function timer"
-msgstr "Skru automatisk av etter"
+msgstr "Slå automatisk av etter"
 
 msgctxt "#358"
 msgid "All albums"
@@ -1535,15 +1535,15 @@ msgstr "Velg"
 
 msgctxt "#425"
 msgid "No album information found"
-msgstr "Ingen albuminformasjon funnet."
+msgstr "Ingen albuminformasjon funnet"
 
 msgctxt "#426"
 msgid "No CD information found"
-msgstr "Ingen CD-informasjon funnet."
+msgstr "Ingen CD-informasjon funnet"
 
 msgctxt "#427"
 msgid "Disc"
-msgstr "Disk"
+msgstr "Plate"
 
 msgctxt "#428"
 msgid "Insert correct CD/DVD"
@@ -1611,7 +1611,7 @@ msgstr "Internett"
 
 msgctxt "#444"
 msgid "Video"
-msgstr "Film"
+msgstr "Video"
 
 msgctxt "#445"
 msgid "Audio"
@@ -1723,7 +1723,7 @@ msgstr "Av"
 
 msgctxt "#475"
 msgid "Music only"
-msgstr "Bare musikk"
+msgstr "Kun musikk"
 
 msgctxt "#476"
 msgid "Music & video"
@@ -1771,7 +1771,7 @@ msgstr "Gjenta mappe"
 
 msgctxt "#489"
 msgid "Play the next song automatically"
-msgstr "Spill av neste låt automatisk"
+msgstr "Spill neste låt automatisk"
 
 msgctxt "#491"
 msgid "- Use big icons"
@@ -2475,7 +2475,7 @@ msgstr "DNS-tjener"
 
 msgctxt "#723"
 msgid "Save & restart"
-msgstr "Lagre og starte på nytt"
+msgstr "Lagre og start på nytt"
 
 msgctxt "#724"
 msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
@@ -2691,7 +2691,7 @@ msgstr "Lagrer innstillingene for nettverksgrensesnittet. Vennligst vent."
 
 msgctxt "#785"
 msgid "Network interface restarted successfully."
-msgstr "Nettverksenheten startet uten feil."
+msgstr "Nettverksenheten startet på nytt uten feil."
 
 msgctxt "#786"
 msgid "Network interface did not start successfully."
@@ -3135,7 +3135,7 @@ msgstr "Zeroconf"
 
 msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
-msgstr "Annonser disse tjenestene med Zeroconf"
+msgstr "Annonser disse tjenestene til andre systemer med Zeroconf"
 
 msgctxt "#1269"
 msgid "Allow volume control"
@@ -3703,11 +3703,11 @@ msgstr "Musikk - bibliotek"
 
 msgctxt "#10517"
 msgid "Now Playing - Music"
-msgstr "Avspilles nå - Musikk"
+msgstr "Spilles nå - Musikk"
 
 msgctxt "#10522"
 msgid "Now Playing - Videos"
-msgstr "Avspilles nå - Videoer"
+msgstr "Spilles nå - Videoer"
 
 msgctxt "#10523"
 msgid "Album info"
@@ -3907,7 +3907,7 @@ msgstr "Grense for antall forsøk er nådd."
 
 msgctxt "#12347"
 msgid "The system will now power down."
-msgstr "Systemet skrur seg av."
+msgstr "Systemet slår seg av."
 
 msgctxt "#12348"
 msgid "Item locked"
@@ -3955,7 +3955,7 @@ msgstr "Systemlås"
 
 msgctxt "#12362"
 msgid "Shutdown system if Master Lock retries exceeded"
-msgstr "Skru av maskinen hvis antall forsøk på å åpne systemlåsen overskrides"
+msgstr "Slå av maskinen hvis antall forsøk på å åpne systemlåsen overskrides"
 
 msgctxt "#12367"
 msgid "Master code is not valid"
@@ -4103,7 +4103,7 @@ msgstr "Ikke tillat avslutning ved inaktivitet"
 
 msgctxt "#13018"
 msgid "Allow idle shutdown"
-msgstr "Tillat avlutning ved inaktivitet"
+msgstr "Tillat avslutning ved inaktivitet"
 
 msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
@@ -4335,7 +4335,7 @@ msgstr "Harddisk installert dato:"
 
 msgctxt "#13174"
 msgid "HDD power cycle count:"
-msgstr "Harddisk antall oppstarter:"
+msgstr "Antall harddiskoppstarter:"
 
 msgctxt "#13200"
 msgid "Profiles"
@@ -4879,7 +4879,7 @@ msgstr "Laster ned"
 
 msgctxt "#13414"
 msgid "Include artists who appear only on compilations"
-msgstr "Inkluder artister som bare opptrer i samlinger"
+msgstr "Inkluder artister som kun opptrer i samlinger"
 
 msgctxt "#13415"
 msgid "Render method"
@@ -5327,7 +5327,7 @@ msgstr "Båndbreddebegrensning"
 
 msgctxt "#14043"
 msgid "- Shutdown while playing"
-msgstr "- Skru av maskin under avspilling"
+msgstr "- Slå av maskin under avspilling"
 
 msgctxt "#14044"
 msgid "%i min"
@@ -5539,7 +5539,7 @@ msgstr "Løs ut CD når rippingen er fullført"
 
 msgctxt "#14100"
 msgid "Stop ripping CD"
-msgstr "Stop CD-ripping"
+msgstr "Stopp CD-ripping"
 
 msgctxt "#14101"
 msgid "Acceleration"
@@ -6011,7 +6011,7 @@ msgstr "Bytt til kanal"
 
 msgctxt "#19001"
 msgid "Separate the search words by using AND, OR and/or NOT."
-msgstr "Sepparer søkeordene med AND, OR og/eller NOT."
+msgstr "Oppdel søkeordene med AND, OR og/eller NOT."
 
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
@@ -6519,7 +6519,7 @@ msgstr "Inkluder ukjente sjangre"
 
 msgctxt "#19133"
 msgid "Search string"
-msgstr "Søkestreng"
+msgstr "Søketekst"
 
 msgctxt "#19134"
 msgid "Include description"
@@ -6839,7 +6839,7 @@ msgstr "Alle radio-kanaler"
 
 msgctxt "#19217"
 msgid "All TV channels"
-msgstr "Alle tv-kanaler"
+msgstr "Alle TV-kanaler"
 
 msgctxt "#19218"
 msgid "Visible"
@@ -7431,7 +7431,7 @@ msgstr "Upublisert"
 
 msgctxt "#19664"
 msgid "Live Broadcast"
-msgstr "Live-sendinger"
+msgstr "Direktesendinger"
 
 msgctxt "#19676"
 msgid "Drama"
@@ -7979,35 +7979,35 @@ msgstr "Skriv inn passord for"
 
 msgctxt "#20144"
 msgid "Shutdown timer"
-msgstr "Slå-av-tidsur"
+msgstr "Avslutningstidsur"
 
 msgctxt "#20145"
 msgid "Shutdown interval (in minutes)"
-msgstr "Slå-av intervall (i minutter)"
+msgstr "Avslutningsintervall (i minutter)"
 
 msgctxt "#20146"
 msgid "Started, shutdown in %im"
-msgstr "Startet, slår av om %im"
+msgstr "Startet, avslutter om %im"
 
 msgctxt "#20147"
 msgid "Shutdown in 30 minutes"
-msgstr "Slår av om 30 minutter"
+msgstr "Avslutter om 30 minutter"
 
 msgctxt "#20148"
 msgid "Shutdown in 60 minutes"
-msgstr "Slår av om 60 minutter"
+msgstr "Avslutter om 60 minutter"
 
 msgctxt "#20149"
 msgid "Shutdown in 120 minutes"
-msgstr "Slår av om 120 minutter"
+msgstr "Avslutter om 120 minutter"
 
 msgctxt "#20150"
 msgid "Custom shutdown timer"
-msgstr "Egendefinert avsluttingstidsur"
+msgstr "Egendefinert avslutningstidsur"
 
 msgctxt "#20151"
 msgid "Cancel shutdown timer"
-msgstr "Avbryt slå-av-tidsur"
+msgstr "Avbryt avslutningstidsur"
 
 msgctxt "#20152"
 msgid "Lock preferences for %s"
@@ -8203,7 +8203,7 @@ msgstr "Nedlasting av artistinformasjon mislyktes"
 
 msgctxt "#20220"
 msgid "Override song tags with online information"
-msgstr "Tilsidesett sangtagg med nettinfomasjon"
+msgstr "Tilsidesett låttagg med nettinfomasjon"
 
 msgctxt "#20221"
 msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
@@ -8331,7 +8331,7 @@ msgstr "Skanner musikkvideoer ved hjelp av %s"
 
 msgctxt "#20319"
 msgid "Scanning tvshows using %s"
-msgstr "Skanner tvserier ved hjelp av %s"
+msgstr "Skanner TV-serier ved hjelp av %s"
 
 msgctxt "#20320"
 msgid "Scanning artists using %s"
@@ -8703,7 +8703,7 @@ msgstr "Hent fankunst"
 
 msgctxt "#20414"
 msgid "Show fanart in video and music libraries"
-msgstr "Vis Fankunst i video- og musikkbibliotek"
+msgstr "Vis fankunst i video- og musikkbibliotekene"
 
 msgctxt "#20415"
 msgid "Scanning for new content"
@@ -9659,7 +9659,7 @@ msgstr "Diskografi"
 
 msgctxt "#21889"
 msgid "Searching artist"
-msgstr "Søker etter artist"
+msgstr "Søker etter artist..."
 
 msgctxt "#21890"
 msgid "Select artist"
@@ -9915,11 +9915,11 @@ msgstr "Ekstern avspiller aktiv"
 
 msgctxt "#23101"
 msgid "Click OK to terminate the player"
-msgstr "Trykk OK for å avslutte avspilleren"
+msgstr "Trykk «OK» for å avslutte avspilleren"
 
 msgctxt "#23104"
 msgid "Click OK when playback has ended"
-msgstr "Trykk OK når avspilling er ferdig"
+msgstr "Trykk «OK» når avspilling er ferdig"
 
 msgctxt "#24000"
 msgid "Add-on"
@@ -10223,7 +10223,7 @@ msgstr "(svartelistet)"
 
 msgctxt "#24096"
 msgid "Add-on is incompatible or has been marked broken in repository."
-msgstr "Utvidelsen er ikke kompatibel eller har blitt markert ødelagt i pakkebrønnen."
+msgstr "Utvidelsen er ikke kompatibelt eller har blitt markert «ødelagt» i pakkebrønnen."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -10267,7 +10267,7 @@ msgstr "Angi hvor nedlastede undertekster skal lagres: sammen med videofilen ell
 
 msgctxt "#24107"
 msgid "Searching for subtitles ..."
-msgstr "Søker etter undertekster …"
+msgstr "Søker etter undertekster..."
 
 msgctxt "#24108"
 msgid "%d subtitles found"
@@ -10287,7 +10287,7 @@ msgstr "Språk å laste ned undertekster i"
 
 msgctxt "#24112"
 msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
-msgstr "Oppgi språkene som skal brukes ved undertekstsøk. Ikke alle underteksttjenestene har alle språk."
+msgstr "Oppgi språkene som skal brukes ved undertekstssøk. Ikke alle undertekststjenestene har alle språk."
 
 msgctxt "#24113"
 msgid "Failed to download subtitle"
@@ -10319,7 +10319,7 @@ msgstr "Velg tjenesten som vil bli brukt som standard for å søke etter underte
 
 msgctxt "#24120"
 msgid "Manual search string"
-msgstr "Manuell søkestreng"
+msgstr "Manuell søketekst"
 
 msgctxt "#24121"
 msgid "Enter search string"
@@ -10515,7 +10515,7 @@ msgstr "Outlook"
 
 msgctxt "#33031"
 msgid "Coverflow"
-msgstr "Coverflow"
+msgstr "Omslagsstrøm"
 
 msgctxt "#33032"
 msgid "Translate text"
@@ -10783,7 +10783,7 @@ msgstr "7.1"
 
 msgctxt "#34111"
 msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
-msgstr "Velg oppførselen når lyd ikke trengs for avspilling eller for grensesnittlyder. [Alltid] - et lydløst signal sendes kontinuerlig, dette holder den mottagene lydenheten i live for mottak av alle nye lyder, dessverre kan dette blokkere lyd fra andre applikasjoner. [1-10 minutter] - samme som 'Alltid' bortsett fra at etter det valgte tidsintervallet går lyden i en hviletilstand. [Av] - lydutgangen går i en hviletilstand. Obs - lyder kan forsvinne hvis lydutgang går i hviletilstand."
+msgstr "Velg oppførselen når lyd ikke trengs for avspilling eller for grensesnittlyder. [Alltid] - et lydløst signal sendes kontinuerlig, dette holder den mottagene lydenheten i live for mottak av alle nye lyder, dessverre kan dette blokkere lyd fra andre applikasjoner. [1-10 minutter] - samme som 'Alltid' bortsett fra at etter det valgte tidsintervallet går lyden i en hviletilstand. [Av] - lydutgangen går i en hviletilstand. Bemerk - Lyder kan forsvinne hvis lydutgang går i hviletilstand."
 
 msgctxt "#34120"
 msgid "Play GUI sounds"
@@ -10843,7 +10843,7 @@ msgstr "Airplay krever at Zeroconf er aktivert."
 
 msgctxt "#34303"
 msgid "Unable to stop Zeroconf"
-msgstr "Kunne ikke stanse Zeroconf"
+msgstr "Kunne ikke stoppe Zeroconf"
 
 msgctxt "#34304"
 msgid "AirPlay and AirTunes depend on Zeroconf running."
@@ -10991,7 +10991,7 @@ msgstr "Enheter å slå på når XBMC starter"
 
 msgctxt "#36008"
 msgid "Devices to power off when stopping XBMC"
-msgstr "Enheter å slå av når XBMS slutter"
+msgstr "Enheter å slå av når XBMS avsluttes"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
@@ -11235,7 +11235,7 @@ msgstr "Oppgi tiden det tar før skjermspareren vises ved inaktivitet."
 
 msgctxt "#36130"
 msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
-msgstr "Velg skjermsparer. XBMC vil benytte 'dempet' skjermsparer når en video i fullskjerm blir satt i pause eller når en dialogboks er aktiv."
+msgstr "Velg skjermsparer. XBMC vil benytte «Dim» skjermspareren når en video i fullskjerm blir satt i pause eller når en dialogboks er aktiv."
 
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
@@ -11415,7 +11415,7 @@ msgstr "Kategori som inneholder innstillinger for hvordan videofillister håndte
 
 msgctxt "#36177"
 msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
-msgstr "Skift mellom Velg, Spill (forvalgt), Fortsett og Vis Informasjon. Velg vil velge et element, med andre ord åpne en mappe i filmodus. Fortsett vil automatisk spille av videoer fra den siste posisjonen du så dem, selv etter at systemet er blitt startet på nytt. "
+msgstr "Skift mellom «Velg», «Spill» (forvalgt), «Fortsett» og «Vis Informasjon». «Velg» vil velge et element, med andre ord åpne en mappe i filmodus. «Fortsett» vil automatisk spille av videoer fra den siste posisjonen du så dem, selv etter at systemet er blitt startet på nytt."
 
 msgctxt "#36178"
 msgid "Extract thumbnails and metadata information such as codec and aspect ratio from videos."
@@ -11439,7 +11439,7 @@ msgstr "Slå sammen flerdels-videofiler, DVD-mapper, og filmmapper til et elemen
 
 msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
-msgstr "Fjerner tittel, sjanger o.l. fra Bibliotekvisningen. Valg av Kategori tar deg rett til Tittel-visning"
+msgstr "Fjerner knutepunkt for tittel, sjanger og lignende fra bibliotekvisningen. Velges en kategori så blir du tatt direkte til tittelvisning."
 
 msgctxt "#36184"
 msgid "Category containing settings for how subtitles are handled."
@@ -11499,11 +11499,11 @@ msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36198"
 msgid "Select the default movie information source. See the Add-ons Manager for options."
-msgstr "Velg standardkilden for filminformasjon. Se tilleggsbehandleren for alternativer."
+msgstr "Velg standardkilden for filminformasjon. Se utvidelsesbehandleren for alternativer."
 
 msgctxt "#36199"
 msgid "Select the default TV show information source. See the Add-ons Manager for options."
-msgstr "Velg standardkilden for TV-serieinformasjon. Se tilleggsbehandleren for alternativer."
+msgstr "Velg standardkilden for TV-serieinformasjon. Se utvidelsesbehandleren for alternativer."
 
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
@@ -11739,7 +11739,7 @@ msgstr "Velg standardkilde for albuminformasjon."
 
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
-msgstr "Velg standardkilden for artistinformasjon. Se tilleggsbehandleren for alternativer."
+msgstr "Velg standardkilden for artistinformasjon. Se utvidelsesbehandleren for alternativer."
 
 msgctxt "#36259"
 msgid "Check for new and removed media files on XBMC startup."
@@ -11811,11 +11811,11 @@ msgstr "Benyttes for å formatere den andre kolonnen i fillister."
 
 msgctxt "#36277"
 msgid "Control the way that the names of songs are displayed in the now playing list."
-msgstr "Reguler måten låtnavnblir vist i avspilles-nå-listen."
+msgstr "Reguler måten låtnavn blir vist i spilles-nå-listen."
 
 msgctxt "#36278"
 msgid "Used for formatting the second column in the now playing list."
-msgstr "Benyttes for å formatere den andre kolonnen i avspilles-nå-listen."
+msgstr "Benyttes for å formatere den andre kolonnen i spilles-nå-listen."
 
 msgctxt "#36279"
 msgid "Control the way that the names of songs are displayed in library lists."
@@ -12031,7 +12031,7 @@ msgstr "Spesifiser passordet for nettjeneren."
 
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
-msgstr "Velg mellom nettgrensesnitt-tilleggene installert ved hjelp av tilleggsbehandleren."
+msgstr "Velg mellom nettgrensesnittene installert ved hjelp av utvidelsesbehandleren."
 
 msgctxt "#36333"
 msgid "Category containing settings for how the remote control service is handled."
@@ -12067,7 +12067,7 @@ msgstr "Forsinkelse for kontinuerlig repetisjon (ms)"
 
 msgctxt "#36341"
 msgid "Category containing settings for how the zeroconf network discovery service is handled, required for AirPlay."
-msgstr "Kategori som inneholder innstillinger for hvordan zeroconf nettverkstjenesten håndteres, nødvendig for AirPlay."
+msgstr "Kategori som inneholder innstillinger for hvordan Zeroconf nettverkstjenesten håndteres, nødvendig for AirPlay."
 
 msgctxt "#36342"
 msgid "Allows applications on the network to discover XBMC's running services."
@@ -12191,7 +12191,7 @@ msgstr "Velg enheten som skal brukes for lyd som har blitt avkoded slik som mp3.
 
 msgctxt "#36372"
 msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
-msgstr "Velg enhet som brukes for avspilling av kodede formater, i.e. ethvert av formatene listet under i valg av 'anvendbar mottager'."
+msgstr "Velg enhet som brukes for avspilling av kodede formater, i.e. ethvert av formatene listet under i valg av ‘anvendbar mottager’."
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
@@ -12211,7 +12211,7 @@ msgstr "Når aktivert, så vil tastaturpilene flytte det valgte området på det
 
 msgctxt "#36377"
 msgid "Use a mouse or touch screen device to control XBMC. Note: disabling will cause you to lose control over XBMC when no keyboard or remote is present."
-msgstr "Bruk en mus eller enhet med berøringsskjerm for å kontrollere XBMC. NB! Hvis denne er deaktivert kan ikke XBMC kontrolleres uten et tastatur eller en fjernkontroll tilgjengelig."
+msgstr "Bruk en mus eller enhet med berøringsskjerm for å kontrollere XBMC. Bemærk - Hvis denne er deaktivert kan ikke XBMC kontrolleres uten et tastatur eller en fjernkontroll tilgjengelig."
 
 msgctxt "#36378"
 msgid "Use a joystick to control XBMC."
@@ -12303,31 +12303,31 @@ msgstr "Kategori som inneholder innstillinger for mellomlagerfuksjoner."
 
 msgctxt "#36400"
 msgid "Enable cache for playback of Video, Audio or DVDs from hard disk."
-msgstr "Aktiver mellomlager for avspilling av Video, Lyd eller DVD-er fra harddisk."
+msgstr "Aktiver mellomlager for avspilling av video, lyd eller DVD-er fra harddisk."
 
 msgctxt "#36401"
 msgid "Enable cache for playback of Video from DVD-ROM."
-msgstr "Aktiver mellomlager for avspilling av Video fra DVD-ROM."
+msgstr "Aktiver mellomlager for avspilling av video fra DVD-ROM."
 
 msgctxt "#36402"
 msgid "Enable cache for Video playback from Local Network."
-msgstr "Aktiver mellomlager for Videoavspilling fra lokalnettverk."
+msgstr "Aktiver mellomlager for videoavspilling fra lokalnettverk."
 
 msgctxt "#36403"
 msgid "Enable cache for Video playback from Internet."
-msgstr "Aktiver mellomlager for Videoavspilling fra Internett."
+msgstr "Aktiver mellomlager for videoavspilling fra Internett."
 
 msgctxt "#36404"
 msgid "Enable cache for playback of Audio from DVD-ROM."
-msgstr "Aktiver mellomlager for avspilling av Lyd fra DVD-ROM."
+msgstr "Aktiver mellomlager for avspilling av lyd fra DVD-ROM."
 
 msgctxt "#36405"
 msgid "Enable cache for Audio playback from Local Network."
-msgstr "Aktiver mellomlager for Lydavspilling fra lokalnettverk."
+msgstr "Aktiver mellomlager for lydavspilling fra lokalnettverk."
 
 msgctxt "#36406"
 msgid "Enable cache for Audio playback from Internet."
-msgstr "Aktiver mellomlager for Lydavspilling fra Internett."
+msgstr "Aktiver mellomlager for lydavspilling fra Internett."
 
 msgctxt "#36407"
 msgid "Enable cache for playback of DVD from DVD-ROM."
@@ -12535,7 +12535,7 @@ msgstr "Fastsett avspillingsmodus for stereoskopiske 3D-videoer."
 
 msgctxt "#36538"
 msgid "Prevents XBMC exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Hindrer at XBMC avslutter stereoskopisk modus når avspillingen stoppes. Ikke alle TVer vill oppfatte byttet fra 3D til 2D uten at visningsmoduset skiftes på TV-en."
+msgstr "Hindrer at XBMC avslutter stereoskopisk modus når avspillingen stoppes. Ikke alle TV-er vill oppfatte byttet fra 3D til 2D uten at visningsmoduset skiftes på TV-en."
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
@@ -12639,7 +12639,7 @@ msgstr "Forsterk midtkanalen ved nedmiksing"
 
 msgctxt "#37019"
 msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen."
-msgstr "Aktiverer systemtaster som «printscreen», alt-tab og volumtaster i fullskjerm."
+msgstr "Aktiverer systemtaster som «Printscreen», «Alt-Tab» og volumtaster i fullskjerm."
 
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"
@@ -12659,4 +12659,4 @@ msgstr "Ønsker du å stoppe avspillingen på den eksterne enheten?"
 
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
-msgstr "Velg denne hvis lyd-ut tilkoblingen bare støtter multikanal lyd som Dolby Digital 5.1, dette tillater multikanal lyd som AAC5.1 eller FLAC5.1 å bli lyttet på som 5.1 surround-lyd. Obs - Ikke anbefalt på Pi da dette krever mye CPU-ressurser."
+msgstr "Velg denne hvis lyd-ut tilkoblingen bare støtter multikanal lyd som Dolby Digital 5.1, dette tillater multikanal lyd som AAC5.1 eller FLAC5.1 å bli lyttet på som 5.1 surround-lyd. Bemerk - Ikke anbefalt på Pi da dette krever mye CPU-ressurser."

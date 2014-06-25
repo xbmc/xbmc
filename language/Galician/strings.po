@@ -835,7 +835,7 @@ msgstr "Pantalla completa #%d"
 
 msgctxt "#242"
 msgid "Windowed"
-msgstr "En ventás"
+msgstr "En xanelas"
 
 msgctxt "#243"
 msgid "Refresh Rate"
@@ -4495,7 +4495,7 @@ msgstr "Control automático de temperatura"
 
 msgctxt "#13302"
 msgid "Fan speed override"
-msgstr "Substituír a velocidade do ventilador"
+msgstr "Control da velocidade do ventilador"
 
 msgctxt "#13303"
 msgid "Fonts"
@@ -5203,7 +5203,7 @@ msgstr "Fallou a descarga do ficheiro da listaxe de reprodución"
 
 msgctxt "#14009"
 msgid "Games directory"
-msgstr "Diretorio de xogos"
+msgstr "Cartafol de xogos"
 
 msgctxt "#14010"
 msgid "Auto switch to thumbs based on"
@@ -5479,7 +5479,7 @@ msgstr "Empregar unha xanela a pantalla completa no canto dunha pantalla complet
 
 msgctxt "#14084"
 msgid "Queue songs on selection"
-msgstr "Encolar cancións seleccionadas"
+msgstr "Poñer na cola as cancións seleccionadas"
 
 msgctxt "#14086"
 msgid "Playback"
@@ -5507,7 +5507,7 @@ msgstr "Conxunto de caracteres"
 
 msgctxt "#14092"
 msgid "Debugging"
-msgstr "Depurado"
+msgstr "Depuración"
 
 msgctxt "#14093"
 msgid "Security"
@@ -6143,7 +6143,7 @@ msgstr "Información"
 
 msgctxt "#19034"
 msgid "Already started recording on this channel"
-msgstr "Xa comezou a gravación nesta canle"
+msgstr "Xa comezou a gravación desta canle"
 
 msgctxt "#19035"
 msgid "%s could not be played. Check the log for details."
@@ -6299,7 +6299,7 @@ msgstr "Non gardar a Guía na base de datos"
 
 msgctxt "#19073"
 msgid "Delay channel switch"
-msgstr "Atrasar o troco de canle"
+msgstr "Atrasar o troco á canle"
 
 msgctxt "#19074"
 msgid "Active:"
@@ -6415,7 +6415,7 @@ msgstr "Provedor"
 
 msgctxt "#19102"
 msgid "Please switch to another channel."
-msgstr "Por favor troca de canle."
+msgstr "Por favor troca a outra canle."
 
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
@@ -6775,19 +6775,19 @@ msgstr "Fonte da Guía:"
 
 msgctxt "#19201"
 msgid "Channel name:"
-msgstr "Nome do canle:"
+msgstr "Nome da canle:"
 
 msgctxt "#19202"
 msgid "Channel icon:"
-msgstr "Icona do canle:"
+msgstr "Icona da canle:"
 
 msgctxt "#19203"
 msgid "Edit channel"
-msgstr "Editar o canle"
+msgstr "Editar a canle"
 
 msgctxt "#19204"
 msgid "New channel"
-msgstr "Novo canle"
+msgstr "Nova canle"
 
 msgctxt "#19205"
 msgid "Group management"
@@ -6803,7 +6803,7 @@ msgstr "Grupo:"
 
 msgctxt "#19208"
 msgid "Enter the name of the new channel"
-msgstr "Introducir o nome do novo canle"
+msgstr "Introducir o nome da nova canle"
 
 msgctxt "#19209"
 msgid "XBMC virtual backend"
@@ -6815,7 +6815,7 @@ msgstr "Cliente"
 
 msgctxt "#19211"
 msgid "Delete channel"
-msgstr "Eliminar o canle"
+msgstr "Eliminar a canle"
 
 msgctxt "#19212"
 msgid "This list contains changes"
@@ -6839,7 +6839,7 @@ msgstr "Todas as canles de radio"
 
 msgctxt "#19217"
 msgid "All TV channels"
-msgstr "Todos os canles de TV"
+msgstr "Todas as canles de TV"
 
 msgctxt "#19218"
 msgid "Visible"
@@ -6847,7 +6847,7 @@ msgstr "Visible"
 
 msgctxt "#19219"
 msgid "Ungrouped channels"
-msgstr "Canles non agrupados"
+msgstr "Canles sen agrupar"
 
 msgctxt "#19220"
 msgid "Channels in"
@@ -7687,7 +7687,7 @@ msgstr "Non se puido crear o cartafol"
 
 msgctxt "#20070"
 msgid "Profile directory"
-msgstr "Diretorio do perfíl"
+msgstr "Cartafol do perfíl"
 
 msgctxt "#20071"
 msgid "Start with fresh media sources"
@@ -8167,7 +8167,7 @@ msgstr "Personalizado"
 
 msgctxt "#20191"
 msgid "Enable debug logging"
-msgstr "Activar rexistro de depurado"
+msgstr "Activar rexistro de depuración"
 
 msgctxt "#20192"
 msgid "Download additional information during updates"
@@ -8203,11 +8203,11 @@ msgstr "Fallo descargando información do artista"
 
 msgctxt "#20220"
 msgid "Override song tags with online information"
-msgstr "Sobrescribir as etiquetas das cancións coa información en liña"
+msgstr "Substituír as etiquetas das cancións coa información en liña"
 
 msgctxt "#20221"
 msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
-msgstr "Con isto habilitado, calquera información que se descargue para os álbumes e artistas sobrescribirá calquera onformación que teña definida nas etiquetas das cancións, tales como xéneros, ano, artistas da canción, etc. É útil se ten identificadores MusicBrainz nas etiquetas das súas cancións"
+msgstr "Con isto habilitado, calquera información que se descargue para os álbumes e artistas substituirá calquera información que teña definida nas etiquetas das cancións, tales como xéneros, ano, artistas da canción, etc. É útil se ten identificadores MusicBrainz nas etiquetas das súas cancións"
 
 msgctxt "#20240"
 msgid "Android music"
@@ -8279,11 +8279,11 @@ msgstr "Apple Filing Protocol (AFP)"
 
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
-msgstr "Diretorio de servidor web (HTTP)"
+msgstr "Cartafol do servidor web (HTTP)"
 
 msgctxt "#20301"
 msgid "Web server directory (HTTPS)"
-msgstr "Diretorio de servidor web (HTTPS)"
+msgstr "Cartafol do servidor web (HTTPS)"
 
 msgctxt "#20302"
 msgid "Unable to write to folder:"
@@ -8407,7 +8407,7 @@ msgstr "Filme"
 
 msgctxt "#20339"
 msgid "Director"
-msgstr "Diretor"
+msgstr "Director"
 
 msgctxt "#20340"
 msgid "Do you want to remove all items within"
@@ -8427,7 +8427,7 @@ msgstr "Series de TV"
 
 msgctxt "#20344"
 msgid "This directory contains"
-msgstr "Este diretorio contén"
+msgstr "Este cartafol contén"
 
 msgctxt "#20345"
 msgid "Run automated scan"
@@ -8443,7 +8443,7 @@ msgstr "coma"
 
 msgctxt "#20348"
 msgid "Directors"
-msgstr "Diretores"
+msgstr "Directores"
 
 msgctxt "#20349"
 msgid "No video files found in this path!"
@@ -8471,7 +8471,7 @@ msgstr "Recoletando guía do episodio"
 
 msgctxt "#20355"
 msgid "Loading info for episodes in directory"
-msgstr "Cargando información dos episodios no diretorio"
+msgstr "Cargando información dos episodios no cartafol"
 
 msgctxt "#20356"
 msgid "Select TV show:"
@@ -8691,11 +8691,11 @@ msgstr "Trailer"
 
 msgctxt "#20411"
 msgid "Flatten"
-msgstr "Aplanar"
+msgstr "Agrupar"
 
 msgctxt "#20412"
 msgid "Flatten TV show seasons"
-msgstr "Asentar temporadas de programas de TV"
+msgstr "Agrupar as tempadas das Series de TV"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -8715,11 +8715,11 @@ msgstr "Primeira emitsión"
 
 msgctxt "#20417"
 msgid "Writer"
-msgstr "Escritor"
+msgstr "Guionista"
 
 msgctxt "#20418"
 msgid "Writers"
-msgstr "Escritores"
+msgstr "Guionistas"
 
 msgctxt "#20419"
 msgid "Replace file names with library titles"
@@ -8879,7 +8879,7 @@ msgstr "Conxunto de filmes"
 
 msgctxt "#20458"
 msgid "Group movies in sets"
-msgstr "Agrupar filmes en conxuntos"
+msgstr "Agrupar filmes en sagas"
 
 msgctxt "#20459"
 msgid "Tags"
@@ -8995,11 +8995,11 @@ msgstr "Cartafol de filme e subtítulos alternativos"
 
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
-msgstr "Substituir as fontes dos subtítulos ASS/SSA"
+msgstr "Substituír as fontes dos subtítulos ASS/SSA"
 
 msgctxt "#21369"
 msgid "Enable mouse and touch screen support"
-msgstr "Activar o soporta para rato e pantalla táctil"
+msgstr "Activar o soporte para rato e pantalla táctil"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -9779,7 +9779,7 @@ msgstr "Por grupo"
 
 msgctxt "#22018"
 msgid "Live channels"
-msgstr "Canles en vivo"
+msgstr "Canles en directo"
 
 msgctxt "#22019"
 msgid "Recordings by title"
@@ -10431,7 +10431,7 @@ msgstr "Copiando"
 
 msgctxt "#33010"
 msgid "Set download directory"
-msgstr "Estabrecer o diretorio de descarga"
+msgstr "Estabrecer o cartafol de descarga"
 
 msgctxt "#33011"
 msgid "Search duration"
@@ -11123,7 +11123,7 @@ msgstr "Mudar a aprencia da Interfade de usuario."
 
 msgctxt "#36102"
 msgid "Category containing all Skin related settings."
-msgstr "Categoría que conté todos os axustes relacionados cos Temas."
+msgstr "Esta categoría contén os axustes relacionados cos Temas."
 
 msgctxt "#36103"
 msgid "Select the skin for the user interface. This will define the look and feel of XBMC."
@@ -11167,7 +11167,7 @@ msgstr "Editar as canles RSS."
 
 msgctxt "#36113"
 msgid "Category containing all locale/regional settings."
-msgstr "Categoría que contén todos os axustes locais/rexionais."
+msgstr "Esta categoría contén os axustes locais/rexionais."
 
 msgctxt "#36114"
 msgid "Chooses the language of the user interface."
@@ -11192,6 +11192,10 @@ msgstr "Escoller a pista de son predefinida cando hai dispoñíbeis diferentes p
 msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
 msgstr "Escoller os subtítulos predefinidos cando hai dispoñíbeis diferentes idiomas."
+
+msgctxt "#36121"
+msgid "Category containing settings related to how file lists are displayed."
+msgstr "Esta categoría contén os axustes de como se amosan as listaxes de ficheiros."
 
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
@@ -11271,7 +11275,7 @@ msgstr "Eliminar a división en tempadas das series de TV, trocar entre 'So unha
 
 msgctxt "#36145"
 msgid "Group movies into 'Movie sets' when browsing the movie library."
-msgstr "Agrupar os filmes en 'Conxunto de Filmes' cando navegue pola biblioteca."
+msgstr "Agrupar os filmes en 'Sagas de Filmes' cando navegue pola biblioteca."
 
 msgctxt "#36146"
 msgid "Check for new media files on XBMC startup."
@@ -11351,7 +11355,7 @@ msgstr "Activar o escalado usando VDPAU."
 
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
-msgstr "Activar o Teletexto cando se está a ver a TV."
+msgstr "Permitir o Teletexto cando se está a ver a TV."
 
 msgctxt "#36175"
 msgid "Scale Teletext to 4:3 ratio."
@@ -11407,7 +11411,7 @@ msgstr "Estabelecer o conxuto de carácteres para os subtítulos."
 
 msgctxt "#36190"
 msgid "Override ASS/SSA subtitles fonts."
-msgstr "Substituir as fontes dos subtítulos ASS/SSA."
+msgstr "Substituír as fontes dos subtítulos ASS/SSA."
 
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
@@ -11451,7 +11455,11 @@ msgstr "Scraper predefinido para engadir vídeos musicais á súa biblioteca."
 
 msgctxt "#36201"
 msgid "Settings for PVR/Live TV features."
-msgstr "Configuración das características do PVR/TV en Directo."
+msgstr "Configuración das características do PVR/TV en directo."
+
+msgctxt "#36202"
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Esta categoría contén os ajustes das características do PVR/TV en directo."
 
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
@@ -11471,7 +11479,7 @@ msgstr "Usar a numeración do motor no canto de configurala manualmente no XBMC.
 
 msgctxt "#36207"
 msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
-msgstr "Abrir o xestor de canles que permite modificar a súa orde, o nome, a icona, etc."
+msgstr "Abrir o xestor de canles que permite modificar a súa orde, nome, icona, etc."
 
 msgctxt "#36208"
 msgid "Instruct the backend to search for channels (if supported)."
@@ -11479,11 +11487,15 @@ msgstr "Enviar ao motor a instrución de busca por canles (se está soportado)."
 
 msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
-msgstr "Eliminar a base de datos da Guía e volver importar os datos dende o motor."
+msgstr "Eliminar a base de datos da Guía e importar de novo os datos dende o motor."
 
 msgctxt "#36210"
 msgid "Prevent the 'connection lost' notification window from displaying when XBMC is unable to talk to the PVR backend server."
 msgstr "Evitar a xanela de notificación 'conexión perdida' cando o XBMC non poida comunicarse co motor do servidor PVR."
+
+msgctxt "#36212"
+msgid "Display programming information when changing channels, such as the current TV show."
+msgstr "Amosar información da programación ao trocar de canle, como na Serie de TV actual."
 
 msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
@@ -11523,7 +11535,7 @@ msgstr "Por defecto, os datos da Guía gárdanse nunha base de datos local para 
 
 msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
-msgstr "Agochar as etiquetas \"sen información dispoñíbel\" caneo no se poda obter datos da canle."
+msgstr "Agochar as etiquetas \"sen información dispoñíbel\" cando no se poda obter datos da canle."
 
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
@@ -11535,11 +11547,15 @@ msgstr "Continuar na última canle ao iniciar."
 
 msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
-msgstr "Mostrar a información de calidade do sinal na ventana de información do códec (se está soportado polo complemento e o motor)."
+msgstr "Mostrar a información da calidade do sinal na xanela de información do códec (se está soportado polo complemento e o motor)."
 
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Premendo un número de botón no modo pantalla completa trocará automaticamente á canle escollida despois 1 segundo."
+
+msgctxt "#36233"
+msgid "Category for default recording duration settings."
+msgstr "Esta categoría contén os axustes da duración predefinida na gravación."
 
 msgctxt "#36234"
 msgid "Duration of instant recordings when pressing the record button."
@@ -11576,6 +11592,10 @@ msgstr "Pide un código PIN para acceder ás canles bloqueadas con control paren
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Inserir un novo código pin para desbloquear as canles con control parental."
+
+msgctxt "#36250"
+msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration."
+msgstr "Pedir de novo o código pin ao tentar acceder a unha canle con bloqueo parental despois dun tempo sen pedilo."
 
 msgctxt "#36254"
 msgid "Enable the music library."
@@ -11915,7 +11935,7 @@ msgstr "Amosar o XBMC nunha xanela ou a pantalla completa na pantalla selecciona
 
 msgctxt "#36354"
 msgid "Display XBMC in a fullscreen window. The main benefit is for multi-screen configurations, so that XBMC can be used without minimising other applications. This uses more resources so playback may be less smooth."
-msgstr "Amosar o XBMC nunha xanela a pantalla completa. O principial beneficio é nas configuracións de multiples monitores, polo que se pode usar sen minimizar outras aplicacións. Esta opción fai uso de máis recursos e pode penalizar a reprodución."
+msgstr "Amosar o XBMC nunha xanela a pantalla completa. O principial beneficio é nas configuracións con multiples monitores, polo que se pode usar sen minimizar outras aplicacións. Esta opción fai uso de máis recursos e pode penalizar a reprodución."
 
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
@@ -12145,6 +12165,10 @@ msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Definir as localización das que obter a súa info. meteorolóxica."
 
+msgctxt "#36422"
+msgid "Enable hardware video decode using AMLogic decoder."
+msgstr "Activar a decodificación de vídeo por hardware empregando AMLogic."
+
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "Seleccione qué facer cando se seleccione un elemento EPG: [Mostrar menú contextual] mostrará o menú contextual dende o que poderá elexir máis accións: {Cambiar a canle] sintonizará instantáneamente a canle relacionada; [Mostrar información] mostrará información detallada co argumento e outras opcións; [Gravar] creará un temporizador de gravación para o elemento seleccionado."
@@ -12164,6 +12188,10 @@ msgstr "Amosar información"
 msgctxt "#36428"
 msgid "Record"
 msgstr "Gravar"
+
+msgctxt "#36429"
+msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, such as an SPDIF connection.  If your system supports LPCM multichannel sound via HDMI, leave this disabled."
+msgstr "Seleccionar se a conexión de saída de audio só soporta audio multicanle como o Dolby Digital 5.1 así como a conexión SPDIF. Se o seu sistema soporta audio multicanle LPCM vía HDMI, deixe isto desactivado."
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
@@ -12315,7 +12343,7 @@ msgstr "Esta categoría contén a configuración da xestión do servizo de AirPl
 
 msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
-msgstr "Esta categoría contén a configuración da xestión da saída de vídeo."
+msgstr "Categoría que contén os axustes da xestión da saída de vídeo."
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12383,4 +12411,4 @@ msgstr "Ten a certeza de querer deter a reprodución no dispositivo remoto?"
 
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
-msgstr "Seleccionar se a conexión de saída de audio só soporta audio multicanle como o Dolby Digital 5.1"
+msgstr "Seleccionar se a conexión de saída de audio só soporta audio multicanle como Dolby Digital 5.1. Isto permite que sistemas como AAC5.1 ou FLAC5.1 poidan escoitarse en surround 5.1. Nota - Non se recomenda o seu uso no Raspberry Pi polo seu uso intenso de CPU."

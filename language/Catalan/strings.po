@@ -1221,6 +1221,10 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Any"
 
+msgctxt "#346"
+msgid "Normalize levels on downmix"
+msgstr "Normailtzar els nivells al fer un downmix"
+
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "Receptor compatible DTS-HD"
@@ -10248,6 +10252,10 @@ msgstr "Baixant subtítols ..."
 msgctxt "#24111"
 msgid "Languages to download subtitles for"
 msgstr "Baixar els subtítols per als idiomes"
+
+msgctxt "#24112"
+msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
+msgstr "Establir els idiomes a fer servir al cercar subtítols. No tots els serveis de subtítols poden emprar tots els idiomes."
 
 msgctxt "#24113"
 msgid "Failed to download subtitle"

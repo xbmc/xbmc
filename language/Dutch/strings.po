@@ -927,23 +927,23 @@ msgstr "Stop opname"
 
 msgctxt "#266"
 msgid "Sort by: Track"
-msgstr "Sorteer: Naam"
+msgstr "Sorteer op: Nummer"
 
 msgctxt "#267"
 msgid "Sort by: Time"
-msgstr "Sorteer: Tijd"
+msgstr "Sorteer op: Tijd"
 
 msgctxt "#268"
 msgid "Sort by: Title"
-msgstr "Sorteer: Titel"
+msgstr "Sorteer op: Titel"
 
 msgctxt "#269"
 msgid "Sort by: Artist"
-msgstr "Sorteer: Artiest"
+msgstr "Sorteer op: Artiest"
 
 msgctxt "#270"
 msgid "Sort by: Album"
-msgstr "Sorteer: Album"
+msgstr "Sorteer op: Album"
 
 msgctxt "#271"
 msgid "Top 100"
@@ -1295,7 +1295,7 @@ msgstr "Doorzichtigheid schermbeveiliging"
 
 msgctxt "#363"
 msgid "Sort by: File"
-msgstr "Sorteer: Bestand"
+msgstr "Sorteer op: Bestand"
 
 msgctxt "#364"
 msgid "Dolby Digital (AC3) capable receiver"
@@ -1303,15 +1303,15 @@ msgstr "Dolby Digital (AC3) geschikte ontvanger"
 
 msgctxt "#365"
 msgid "Sort by: Name"
-msgstr "Sorteer: Naam"
+msgstr "Sorteer op: Naam"
 
 msgctxt "#366"
 msgid "Sort by: Year"
-msgstr "Sorteer: Jaar"
+msgstr "Sorteer op: Jaar"
 
 msgctxt "#367"
 msgid "Sort by: Rating"
-msgstr "Sorteer: Waardering"
+msgstr "Sorteer op: Beoordeling"
 
 msgctxt "#368"
 msgid "IMDb"
@@ -1555,7 +1555,7 @@ msgstr "Voer de volgende CD/DVD in:"
 
 msgctxt "#430"
 msgid "Sort by: DVD#"
-msgstr "Sorteer: DVD#"
+msgstr "Sorteer op: DVD#"
 
 msgctxt "#431"
 msgid "No cache"
@@ -1803,7 +1803,7 @@ msgstr "Extensies mediabestanden tonen"
 
 msgctxt "#498"
 msgid "Sort by: Type"
-msgstr "Sorteer: Type"
+msgstr "Sorteer op: Type"
 
 msgctxt "#499"
 msgid "Unable to connect to online lookup service"
@@ -1835,7 +1835,7 @@ msgstr "Media-info van bestanden inlezen..."
 
 msgctxt "#507"
 msgid "Sort by: Usage"
-msgstr "Sorteer: Gebruik"
+msgstr "Sorteer op: Gebruik"
 
 msgctxt "#510"
 msgid "Enable visualisations"
@@ -6835,11 +6835,11 @@ msgstr "De PVR server ondersteunt geen timers."
 
 msgctxt "#19216"
 msgid "All radio channels"
-msgstr "Alle radio kanalen"
+msgstr "Alle radio-zenders"
 
 msgctxt "#19217"
 msgid "All TV channels"
-msgstr "Alle TV kanalen"
+msgstr "Alle TV-zenders"
 
 msgctxt "#19218"
 msgid "Visible"
@@ -6859,7 +6859,7 @@ msgstr "Synchroniseer kanaalgroepen met backend(s)"
 
 msgctxt "#19222"
 msgid "EPG"
-msgstr "TV gids"
+msgstr "TV-gids"
 
 msgctxt "#19223"
 msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
@@ -7015,7 +7015,7 @@ msgstr "Duur ontgrendeling"
 
 msgctxt "#19261"
 msgid "Change PIN"
-msgstr "Verander de PIN code"
+msgstr "Verander de PIN-code"
 
 msgctxt "#19262"
 msgid "Parental control. Enter PIN:"
@@ -7027,7 +7027,7 @@ msgstr "Vergrendeld kanaal. Voer de PIN code in:"
 
 msgctxt "#19264"
 msgid "Incorrect PIN"
-msgstr "Incorrecte PIN code"
+msgstr "Onjuiste PIN-code"
 
 msgctxt "#19265"
 msgid "The entered PIN number was incorrect."
@@ -11011,7 +11011,7 @@ msgstr "Kon de CEC adapter niet initialiseren. Controleer uw instellingen."
 
 msgctxt "#36015"
 msgid "HDMI port number"
-msgstr "HDMI poort nummer"
+msgstr "HDMI-poortnummer"
 
 msgctxt "#36016"
 msgid "Connected"
@@ -11035,7 +11035,7 @@ msgstr "Maak XBMC de actieve bron bij het opstarten"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
-msgstr "Physiek adres (overschrijft HDMI poort)"
+msgstr "Fysiek adres (overschrijft HDMI poort)"
 
 msgctxt "#36022"
 msgid "COM port (leave empty unless needed)"
@@ -11951,15 +11951,15 @@ msgstr "Categorie met instellingen voor de manier waarop diavoorstellingen worde
 
 msgctxt "#36312"
 msgid "Select the amount of time that each image is displayed in a slideshow."
-msgstr "Selecteer de duurtijd per afbeelding tijdens een slideshow."
+msgstr "Selecteer de duurtijd per afbeelding tijdens een diavoorstelling."
 
 msgctxt "#36313"
 msgid "Images in a slideshow will pan and zoom while displayed."
-msgstr "Afbeeldingen in een slideshow worden met 'pan en zoom' afgebeeld."
+msgstr "Afbeeldingen in een diavoorstelling worden met 'pan en zoom' afgebeeld."
 
 msgctxt "#36314"
 msgid "View slideshow images in a random order."
-msgstr "Bekijk afbeeldingen in een slideshow in willekeurige volgorde."
+msgstr "Bekijk afbeeldingen in een diavoorstelling in willekeurige volgorde."
 
 msgctxt "#36315"
 msgid "Section that contains weather related settings."
@@ -12651,7 +12651,7 @@ msgstr "Stel GUI resolutielimiet in"
 
 msgctxt "#37022"
 msgid "UPnP Player"
-msgstr "UPnP speler"
+msgstr "UPnP-speler"
 
 msgctxt "#37023"
 msgid "Do you wish to stop playback on the remote device?"

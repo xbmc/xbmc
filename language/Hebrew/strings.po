@@ -11293,6 +11293,10 @@ msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
 msgstr "נגן דיסקים באופן אוטומטי בעת הכנסתם למחשב"
 
+msgctxt "#36284"
+msgid "Read the information belonging to an audio CD from an internet database."
+msgstr "קרא את המידע השייך לתקליטור שמע ממסד נתונים באינטרנט."
+
 msgctxt "#36285"
 msgid "Select the location on your hard drive where ripped tracks will be saved to."
 msgstr "בחר את המיקום בדיסק הקשיח שלך שבו הרצועות המועתקות ישמרו."

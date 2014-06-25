@@ -1851,7 +1851,7 @@ msgstr "実行"
 
 msgctxt "#519"
 msgid "Launch in..."
-msgstr "Launch in..."
+msgstr "実行..."
 
 msgctxt "#521"
 msgid "Compilations"
@@ -2719,7 +2719,7 @@ msgstr "Continuous Repeat Delay (ms)"
 
 msgctxt "#797"
 msgid "Maximum number of clients"
-msgstr "Maximum Number of Clients"
+msgstr "最大クライアント数"
 
 msgctxt "#798"
 msgid "Internet access"
@@ -4076,6 +4076,10 @@ msgstr "ジョイスティックが接続されました"
 msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "ジョイスティックが外されました"
+
+msgctxt "#13026"
+msgid "Try to wake remote servers on access"
+msgstr "アクセスするリモートサーバの起動を試みる"
 
 msgctxt "#13027"
 msgid "Wake on Lan (%s)"
@@ -6935,7 +6939,7 @@ msgstr "コメディ"
 
 msgctxt "#19505"
 msgid "Soap/Melodrama/Folkloric"
-msgstr "昼ドラ/メロドラマ/フォルクローレ"
+msgstr "昼ドラ/メロドラマ/民族的"
 
 msgctxt "#19506"
 msgid "Romance"
@@ -6943,11 +6947,11 @@ msgstr "恋愛もの"
 
 msgctxt "#19507"
 msgid "Serious/Classical/Religious/Historical Movie/Drama"
-msgstr "シリアス/クラシック\\宗教的/歴史映画/ドラマ"
+msgstr "シリアス/クラシック/宗教的/歴史映画/ドラマ"
 
 msgctxt "#19508"
 msgid "Adult Movie/Drama"
-msgstr "アダルト映画・ドラマ"
+msgstr "アダルト映画/ドラマ"
 
 msgctxt "#19516"
 msgid "News/Current Affairs"

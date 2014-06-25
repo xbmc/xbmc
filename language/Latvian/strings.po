@@ -12151,7 +12151,7 @@ msgstr "Atlasīt, kā iestatīti audio izvades rekvizīti: [Fiksēts] - izvades 
 
 msgctxt "#36362"
 msgid "Select the number of channels supported by the audio connection, or the number of speakers if connected by analog connections. This setting does not apply to passthrough audio. Note - SPDIF supports 2.0 channels only but can still output multichannel audio using a format supported by passthrough."
-msgstr "Atlasiet, cik kanālus atbalsta audio savienojums vai cik skaļruņu ir pieslēgti ar analogajiem savienojumiem. Šo iestatījumu nepiemēro tranzīta audio. Piezīme - SPDIF atbalsta tikai 2.0 kanālus, taču tik un tā spēj izvadīt daudzkanālu audio, izmantojot formātu, kurš atbalsta tranzītu."
+msgstr "Atlasiet, cik kanālus atbalsta audio savienojums vai cik skaļruņu ir pieslēgti ar analogajiem savienojumiem. Šo iestatījumu nepiemēro tranzītaudio. Piezīme - SPDIF atbalsta tikai 2.0 kanālus, taču tik un tā spēj izvadīt daudzkanālu audio, izmantojot formātu, kurš atbalsta tranzītaudio."
 
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
@@ -12175,7 +12175,7 @@ msgstr "Atlasīt maksimālo audio kanālu/skaļruņu skaitu, kas pieejams atkod�
 
 msgctxt "#36368"
 msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital."
-msgstr "Atlasīt, lai ieslēgtu audio tranzīta opcijas kodēta audio atskaņošanai, piemēram, Dolby Digital."
+msgstr "Atlasīt, lai ieslēgtu tranzītaudio opcijas kodēta audio atskaņošanai, piemēram, Dolby Digital."
 
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."

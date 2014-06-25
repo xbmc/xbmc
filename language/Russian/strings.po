@@ -8779,7 +8779,7 @@ msgstr "Исключить путь из обновлений медиатеки
 
 msgctxt "#20433"
 msgid "Extract thumbnails and video information"
-msgstr "Извлекать метаданные из медиафайлов"
+msgstr "Извлекать эскизы и сведения о видео"
 
 msgctxt "#20434"
 msgid "Sets"
@@ -11419,7 +11419,7 @@ msgstr "Возможные действия: воспроизвести файл
 
 msgctxt "#36178"
 msgid "Extract thumbnails and metadata information such as codec and aspect ratio from videos."
-msgstr "Извлечение эскизов и метаданных, таких как кодек и пропорции, из видеофайлов."
+msgstr "Извлекать эскизы и метаданные, например кодек и пропорции, из видеофайлов."
 
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
