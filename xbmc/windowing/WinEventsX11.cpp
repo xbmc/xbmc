@@ -461,8 +461,8 @@ bool CWinEventsX11Imp::MessagePump()
           case XLookupChars:
           case XLookupBoth:
           {
-            CStdString   data(WinEvents->m_keybuf, len);
-            CStdStringW keys;
+            std::string data(WinEvents->m_keybuf, len);
+            std::wstring keys;
             g_charsetConverter.utf8ToW(data, keys, false);
 
             if (keys.length() == 0)

@@ -40,17 +40,17 @@ class TempFileWrapper :
 {
 public:
 
-  TempFileWrapper(const CStdString &suffix);
+  TempFileWrapper(const westring &suffix);
   ~TempFileWrapper();
   
-  void FetchDirectory(CStdString &directory);
-  void FetchFilename(CStdString &name);
+  void FetchDirectory(westring &directory);
+  void FetchFilename(westring &name);
 private:
 
   XFILE::CFile *m_file;
 };
 
-TempFileWrapper::TempFileWrapper(const CStdString &suffix) :
+TempFileWrapper::TempFileWrapper(const westring &suffix) :
   m_file(CXBMCTestUtils::Instance().CreateTempFile(suffix))
 {
 }
@@ -60,17 +60,17 @@ TempFileWrapper::~TempFileWrapper()
   CXBMCTestUtils::Instance().DeleteTempFile(m_file);
 }
 
-void TempFileWrapper::FetchDirectory(CStdString &directory)
+void TempFileWrapper::FetchDirectory(westring &directory)
 {
   directory = CXBMCTestUtils::Instance().TempFileDirectory(m_file);
   /* Strip trailing "/" */
   directory.resize(directory.size() - 1);
 }
 
-void TempFileWrapper::FetchFilename(CStdString &name)
+void TempFileWrapper::FetchFilename(westring &name)
 {
-  CStdString path(CXBMCTestUtils::Instance().TempFilePath(m_file));
-  CStdString directory(CXBMCTestUtils::Instance().TempFileDirectory(m_file));
+  westring path(CXBMCTestUtils::Instance().TempFilePath(m_file));
+  westring directory(CXBMCTestUtils::Instance().TempFileDirectory(m_file));
   
   name = path.substr(directory.size());
 }
@@ -82,13 +82,13 @@ public:
 
   SavedTempSocket();
 
-  const CStdString & FetchFilename();
-  const CStdString & FetchDirectory();
+  const westring & FetchFilename();
+  const westring & FetchDirectory();
 
 private:
 
-  CStdString m_filename;
-  CStdString m_directory;
+  westring m_filename;
+  westring m_directory;
 };
 
 SavedTempSocket::SavedTempSocket()
@@ -98,13 +98,13 @@ SavedTempSocket::SavedTempSocket()
   wrapper.FetchFilename(m_filename);
 }
 
-const CStdString &
+const westring &
 SavedTempSocket::FetchFilename()
 {
   return m_filename;
 }
 
-const CStdString &
+const westring &
 SavedTempSocket::FetchDirectory()
 {
   return m_directory;
@@ -167,7 +167,7 @@ public:
   Private();
   ~Private();
   
-  CStdString m_xbmcTestBase;
+  westring m_xbmcTestBase;
   SavedTempSocket m_tempSocketName;
   TmpEnv m_xdgRuntimeDir;
 
@@ -211,7 +211,7 @@ WestonTest::Pid()
   return priv->m_process.Pid();
 }
 
-const CStdString &
+const westring &
 WestonTest::TempSocketName()
 {
   return priv->m_tempSocketName.FetchFilename();

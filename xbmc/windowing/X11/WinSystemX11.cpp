@@ -142,7 +142,7 @@ bool CWinSystemX11::DestroyWindowSystem()
   return true;
 }
 
-bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemX11::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
   if(!SetFullScreen(fullScreen, res, false))
     return false;
@@ -364,7 +364,7 @@ void CWinSystemX11::UpdateResolutions()
       std::vector<XOutput> outputs = g_xrandr.GetModes();
       for (size_t i=0; i<outputs.size(); i++)
       {
-        if (outputs[i].name.Equals(m_userOutput.c_str()))
+        if (StringUtils::EqualsNoCase(outputs[i].name, m_userOutput))
           continue;
         g_xrandr.TurnOffOutput(outputs[i].name);
       }
@@ -457,7 +457,7 @@ bool CWinSystemX11::HasCalibration(const RESOLUTION_INFO &resInfo)
   XOutput *out = g_xrandr.GetOutput(m_currentOutput);
 
   // keep calibrations done on a not connected output
-  if (!out->name.Equals(resInfo.strOutput))
+  if (!StringUtils::EqualsNoCase(out->name, resInfo.strOutput))
     return true;
 
   // keep calibrations not updated with resolution data
@@ -486,7 +486,7 @@ bool CWinSystemX11::HasCalibration(const RESOLUTION_INFO &resInfo)
   return false;
 }
 
-void CWinSystemX11::GetConnectedOutputs(std::vector<CStdString> *outputs)
+void CWinSystemX11::GetConnectedOutputs(std::vector<std::string> *outputs)
 {
   vector<XOutput> outs;
   g_xrandr.Query(true);
@@ -498,9 +498,9 @@ void CWinSystemX11::GetConnectedOutputs(std::vector<CStdString> *outputs)
   }
 }
 
-bool CWinSystemX11::IsCurrentOutput(CStdString output)
+bool CWinSystemX11::IsCurrentOutput(std::string output)
 {
-  return (output.Equals("Default")) || (m_currentOutput.compare(output) == 0);
+  return (StringUtils::EqualsNoCase(output, "Default")) || (m_currentOutput.compare(output.c_str()) == 0);
 }
 
 #if defined(HAS_EGL)
@@ -899,7 +899,7 @@ void CWinSystemX11::RecreateWindow()
   for (i = RES_DESKTOP; i < CDisplaySettings::Get().ResolutionInfoSize(); ++i)
   {
     res = CDisplaySettings::Get().GetResolutionInfo(i);
-    if (CDisplaySettings::Get().GetResolutionInfo(i).strId.Equals(mode.id))
+    if (StringUtils::EqualsNoCase(CDisplaySettings::Get().GetResolutionInfo(i).strId, mode.id))
     {
       found = true;
       break;
