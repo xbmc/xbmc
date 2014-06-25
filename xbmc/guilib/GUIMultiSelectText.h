@@ -46,7 +46,7 @@ public:
   virtual bool OnMouseOver(const CPoint &point);
   virtual void UpdateInfo(const CGUIListItem *item = NULL);
 
-  virtual CStdString GetDescription() const;
+  virtual std::string GetDescription() const;
   virtual bool CanFocus() const;
 
   void UpdateText(const CStdString &text);

@@ -59,7 +59,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   void SetValue(int value);
   int GetValue() const;
-  virtual CStdString GetDescription() const;
+  virtual std::string GetDescription() const;
   virtual bool IsVisible() const;
 protected:
   virtual bool HitTest(const CPoint &point) const;

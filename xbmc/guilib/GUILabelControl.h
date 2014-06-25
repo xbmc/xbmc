@@ -48,7 +48,7 @@ public:
   virtual void UpdateInfo(const CGUIListItem *item = NULL);
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
-  virtual CStdString GetDescription() const;
+  virtual std::string GetDescription() const;
   virtual float GetWidth() const;
   virtual void SetWidth(float width);
   virtual CRect CalcRenderRegion() const;

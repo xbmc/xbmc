@@ -62,7 +62,7 @@ public:
 
   void SetPageControl(int id);
 
-  virtual CStdString GetDescription() const;
+  virtual std::string GetDescription() const;
   virtual void SaveStates(std::vector<CControlState> &states);
   virtual int GetSelectedItem() const;
 
@@ -75,7 +75,7 @@ public:
   virtual CGUIListItemPtr GetListItem(int offset, unsigned int flag = 0) const;
 
   virtual bool GetCondition(int condition, int data) const;
-  virtual CStdString GetLabel(int info) const;
+  virtual std::string GetLabel(int info) const;
 
   /*! \brief Set the list provider for this container (for python).
    \param provider the list provider to use for this container.

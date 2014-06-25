@@ -66,7 +66,7 @@ public:
   virtual CStdString GetLabel() const { return GetDescription(); };
   virtual CStdString GetLabel2() const;
   void SetSelected(bool bSelected);
-  virtual CStdString GetDescription() const;
+  virtual std::string GetDescription() const;
   void SetAlpha(unsigned char alpha);
 
   void PythonSetLabel(const CStdString &strFont, const std::string &strText, color_t textColor, color_t shadowColor, color_t focusedColor);

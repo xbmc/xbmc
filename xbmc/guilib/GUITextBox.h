@@ -62,7 +62,7 @@ public:
   void SetAutoScrolling(const TiXmlNode *node);
   void ResetAutoScrolling();
   CStdString GetLabel(int info) const;
-  CStdString GetDescription() const;
+  std::string GetDescription() const;
 
   void Scroll(unsigned int offset);
 

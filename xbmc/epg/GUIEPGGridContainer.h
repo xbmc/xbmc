@@ -61,7 +61,7 @@ namespace EPG
     virtual bool OnMessage(CGUIMessage& message);
     virtual void SetFocus(bool focus);
 
-    virtual CStdString GetDescription() const;
+    virtual std::string GetDescription() const;
     const int GetNumChannels()   { return m_channels; };
     virtual int GetSelectedItem() const;
     const int GetSelectedChannel() { return m_channelCursor + m_channelOffset; }
@@ -75,7 +75,7 @@ namespace EPG
     void LoadContent(TiXmlElement *content);
 
     virtual CGUIListItemPtr GetListItem(int offset, unsigned int flag = 0) const;
-    virtual CStdString GetLabel(int info) const;
+    virtual std::string GetLabel(int info) const;
 
     /*! \brief Set the offset of the first item in the container from the container's position
      Useful for lists/panels where the focused item may be larger than the non-focused items and thus
