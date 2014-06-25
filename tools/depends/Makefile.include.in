@@ -20,6 +20,7 @@ OS=@platform_os@
 CROSS_COMPILING=@cross_compiling@
 ARCH_DEFINES=@ARCH_DEFINES@
 TARGET_PLATFORM=@use_platform@
+XCODE_VERSION=@use_xcode@
 
 HAS_ZLIB=@has_zlib@
 NEED_LIBICONV=@need_libiconv@
