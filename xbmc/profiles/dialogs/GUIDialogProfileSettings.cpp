@@ -85,7 +85,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     dialog->m_thumb.clear();
 
     // prompt for a name
-    CStdString profileName;
+    std::string profileName;
     if (!CGUIKeyboardFactory::ShowAndGetInput(profileName, g_localizeStrings.Get(20093),false) || profileName.empty())
       return false;
     dialog->m_name = profileName;
@@ -128,7 +128,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
       if (dialog->m_name.empty() || dialog->m_directory.empty())
         return false;
 
-      /*CStdString strLabel;
+      /*std::string strLabel;
       strLabel.Format(g_localizeStrings.Get(20047),dialog->m_strName);
       if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(20058),strLabel,dialog->m_strDirectory,""))
       {
@@ -252,12 +252,12 @@ void CGUIDialogProfileSettings::OnSettingAction(const CSetting *setting)
     item->SetLabel(g_localizeStrings.Get(20018));
     items.Add(item);
 
-    CStdString thumb;
+    std::string thumb;
     if (CGUIDialogFileBrowser::ShowAndGetImage(items, shares, g_localizeStrings.Get(1030), thumb) &&
-        !thumb.Equals("thumb://Current"))
+        !StringUtils::EqualsNoCase(thumb, "thumb://Current"))
     {
       m_needsSaving = true;
-      m_thumb = thumb.Equals("thumb://None") ? "" : thumb;
+      m_thumb = StringUtils::EqualsNoCase(thumb, "thumb://None") ? "" : thumb;
 
       SET_CONTROL_FILENAME(CONTROL_PROFILE_IMAGE, !m_thumb.empty() ? m_thumb : m_defaultImage);
     }
@@ -372,7 +372,7 @@ bool CGUIDialogProfileSettings::GetProfilePath(std::string &directory, bool isDe
   share.strPath = "special://masterprofile/profiles/";
   shares.push_back(share);
 
-  CStdString strDirectory;
+  std::string strDirectory;
   if (directory.empty())
     strDirectory = share.strPath;
   else
