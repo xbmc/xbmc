@@ -154,7 +154,7 @@ BOOL WINAPI DuplicateHandle(
 )
 {
   /* only a simple version of this is supported */
-  ASSERT(hSourceProcessHandle == GetCurrentProcess()
+  assert(hSourceProcessHandle == GetCurrentProcess()
       && hTargetProcessHandle == GetCurrentProcess()
       && dwOptions            == DUPLICATE_SAME_ACCESS);
 

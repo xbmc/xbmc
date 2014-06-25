@@ -39,8 +39,8 @@
 class CHALDevice
 {
 public:
-  CStdString UDI;
-  CStdString FriendlyName;
+  std::string UDI;
+  std::string FriendlyName;
   CHALDevice(const char *udi) { UDI = udi; }
 };
 
@@ -53,16 +53,16 @@ public:
   bool Approved;
   bool HotPlugged;
   bool HalIgnore;
-  CStdString MountPoint;
-  CStdString Label;
-  CStdString UUID;
-  CStdString DevID;
+  std::string MountPoint;
+  std::string Label;
+  std::string UUID;
+  std::string DevID;
   int  Type;
-  CStdString FileSystem;
+  std::string FileSystem;
 
-  CStdString toString()
+  std::string toString()
   { // Not the prettiest but it's better than having to reproduce it elsewere in the code...
-    CStdString rtn, tmp1, tmp2, tmp3, tmp4;
+    std::string rtn, tmp1, tmp2, tmp3, tmp4;
     if (UUID.size() > 0)
       tmp1 = StringUtils::Format("UUID %s | ", UUID.c_str());
     if (FileSystem.size() > 0)
@@ -116,7 +116,7 @@ public:
   CHALManager();
   void Stop();
   std::vector<CStorageDevice> GetVolumeDevices();
-  bool Eject(CStdString path);
+  bool Eject(const std::string &path);
 protected:
   DBusConnection *m_DBusSystemConnection;
   LibHalContext  *m_Context;
@@ -135,7 +135,7 @@ private:
   void GenerateGDL();
 
   bool UnMount(CStorageDevice volume);
-  bool Mount(CStorageDevice *volume, CStdString mountpath);
+  bool Mount(CStorageDevice *volume, const std::string& mountpath);
   void HandleNewVolume(CStorageDevice *dev);
   static bool ApproveDevice(CStorageDevice *device);
 
