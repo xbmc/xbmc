@@ -20,7 +20,7 @@
  */
 
 #include <map>
-#include "utils/StdString.h"
+#include <string>
 
 // static class for path translation from our special:// URLs.
 
@@ -52,27 +52,27 @@ class CURL;
 class CSpecialProtocol
 {
 public:
-  static void SetProfilePath(const CStdString &path);
-  static void SetXBMCPath(const CStdString &path);
-  static void SetXBMCBinPath(const CStdString &path);
-  static void SetXBMCFrameworksPath(const CStdString &path);
-  static void SetHomePath(const CStdString &path);
-  static void SetUserHomePath(const CStdString &path);
-  static void SetMasterProfilePath(const CStdString &path);
-  static void SetTempPath(const CStdString &path);
+  static void SetProfilePath(const std::string &path);
+  static void SetXBMCPath(const std::string &path);
+  static void SetXBMCBinPath(const std::string &path);
+  static void SetXBMCFrameworksPath(const std::string &path);
+  static void SetHomePath(const std::string &path);
+  static void SetUserHomePath(const std::string &path);
+  static void SetMasterProfilePath(const std::string &path);
+  static void SetTempPath(const std::string &path);
 
-  static bool ComparePath(const CStdString &path1, const CStdString &path2);
+  static bool ComparePath(const std::string &path1, const std::string &path2);
   static void LogPaths();
 
-  static CStdString TranslatePath(const CStdString &path);
-  static CStdString TranslatePath(const CURL &url);
-  static CStdString TranslatePathConvertCase(const CStdString& path);
+  static std::string TranslatePath(const std::string &path);
+  static std::string TranslatePath(const CURL &url);
+  static std::string TranslatePathConvertCase(const std::string& path);
 
 private:
-  static void SetPath(const CStdString &key, const CStdString &path);
-  static CStdString GetPath(const CStdString &key);
+  static void SetPath(const std::string &key, const std::string &path);
+  static std::string GetPath(const std::string &key);
 
-  static std::map<CStdString, CStdString> m_pathMap;
+  static std::map<std::string, std::string> m_pathMap;
 };
 
 #ifdef TARGET_WINDOWS

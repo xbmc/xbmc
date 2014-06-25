@@ -52,7 +52,7 @@ TEST(TestXBMCTinyXML, ParseFromFileHandle)
   bool retval = false;
   // scraper results with unescaped &
   CXBMCTinyXML doc;
-  FILE *f = fopen(XBMC_REF_FILE_PATH("/xbmc/utils/test/CXBMCTinyXML-test.xml"), "r");
+  FILE *f = fopen(XBMC_REF_FILE_PATH("/xbmc/utils/test/CXBMCTinyXML-test.xml").c_str(), "r");
   ASSERT_TRUE(f);
   doc.LoadFile(f);
   fclose(f);

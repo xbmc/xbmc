@@ -238,7 +238,7 @@ CStdString CCDDARipJob::SetupTempFile()
 {
   char tmp[MAX_PATH];
 #ifndef TARGET_POSIX
-  GetTempFileName(CSpecialProtocol::TranslatePath("special://temp/"), "riptrack", 0, tmp);
+  GetTempFileName(CSpecialProtocol::TranslatePath("special://temp/").c_str(), "riptrack", 0, tmp);
 #else
   int fd;
   strncpy(tmp, CSpecialProtocol::TranslatePath("special://temp/riptrackXXXXXX").c_str(), MAX_PATH);
