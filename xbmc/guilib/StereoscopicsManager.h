@@ -29,6 +29,7 @@
 #include "settings/lib/ISettingCallback.h"
 #include "guilib/IMsgTargetCallback.h"
 #include "rendering/RenderSystem.h"
+#include "utils/StdString.h"
 
 class CAction;
 
