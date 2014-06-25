@@ -128,7 +128,7 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
 
 // \brief Show CGUIDialogMediaSource dialog and prompt for a new media source.
 // \return True if the media source is added, false otherwise.
-bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
+bool CGUIDialogMediaSource::ShowAndAddMediaSource(const std::string &type)
 {
   CGUIDialogMediaSource *dialog = (CGUIDialogMediaSource *)g_windowManager.GetWindow(WINDOW_DIALOG_MEDIA_SOURCE);
   if (!dialog) return false;
@@ -143,12 +143,12 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
     unsigned int i,j=2;
     bool bConfirmed=false;
     VECSOURCES* pShares = CMediaSourceSettings::Get().GetSources(type);
-    CStdString strName = dialog->m_name;
+    std::string strName = dialog->m_name;
     while (!bConfirmed)
     {
       for (i=0;i<pShares->size();++i)
       {
-        if ((*pShares)[i].strName.Equals(strName))
+        if (StringUtils::EqualsNoCase((*pShares)[i].strName, strName))
           break;
       }
       if (i < pShares->size()) // found a match -  try next
@@ -166,23 +166,23 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
   return confirmed;
 }
 
-bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const CStdString&share)
+bool CGUIDialogMediaSource::ShowAndEditMediaSource(const std::string &type, const std::string&share)
 {
   VECSOURCES* pShares = CMediaSourceSettings::Get().GetSources(type);
   if (pShares)
   {
     for (unsigned int i=0;i<pShares->size();++i)
     {
-      if ((*pShares)[i].strName.Equals(share))
+      if (StringUtils::EqualsNoCase((*pShares)[i].strName, share))
         return ShowAndEditMediaSource(type,(*pShares)[i]);
     }
   }
   return false;
 }
 
-bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const CMediaSource &share)
+bool CGUIDialogMediaSource::ShowAndEditMediaSource(const std::string &type, const CMediaSource &share)
 {
-  CStdString strOldName = share.strName;
+  std::string strOldName = share.strName;
   CGUIDialogMediaSource *dialog = (CGUIDialogMediaSource *)g_windowManager.GetWindow(WINDOW_DIALOG_MEDIA_SOURCE);
   if (!dialog) return false;
   dialog->Initialize();
@@ -195,12 +195,12 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
     unsigned int i,j=2;
     bool bConfirmed=false;
     VECSOURCES* pShares = CMediaSourceSettings::Get().GetSources(type);
-    CStdString strName = dialog->m_name;
+    std::string strName = dialog->m_name;
     while (!bConfirmed)
     {
       for (i=0;i<pShares->size();++i)
       {
-        if ((*pShares)[i].strName.Equals(strName))
+        if (StringUtils::EqualsNoCase((*pShares)[i].strName, strName))
           break;
       }
       if (i < pShares->size() && (*pShares)[i].strName != strOldName) // found a match -  try next
@@ -222,7 +222,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   if (item < 0 || item > m_paths->Size()) return;
   // Browse is called.  Open the filebrowser dialog.
   // Ignore current path is best at this stage??
-  CStdString path;
+  std::string path;
   bool allowNetworkShares(m_type != "programs");
   VECSOURCES extraShares;
 
@@ -360,7 +360,7 @@ void CGUIDialogMediaSource::OnPath(int item)
   if (m_name != CUtil::GetTitleFromPath(m_paths->Get(item)->GetPath()))
     m_bNameChanged=true;
 
-  CStdString path(m_paths->Get(item)->GetPath());
+  std::string path(m_paths->Get(item)->GetPath());
   CGUIKeyboardFactory::ShowAndGetInput(path, g_localizeStrings.Get(1021), false);
   m_paths->Get(item)->SetPath(path);
 
@@ -425,7 +425,7 @@ void CGUIDialogMediaSource::UpdateButtons()
   for (int i = 0; i < m_paths->Size(); i++)
   {
     CFileItemPtr item = m_paths->Get(i);
-    CStdString path;
+    std::string path;
     CURL url(item->GetPath());
     path = url.GetWithoutUserDetails();
     if (path.empty()) path = "<"+g_localizeStrings.Get(231)+">"; // <None>
@@ -455,7 +455,7 @@ void CGUIDialogMediaSource::SetShare(const CMediaSource &share)
   UpdateButtons();
 }
 
-void CGUIDialogMediaSource::SetTypeOfMedia(const CStdString &type, bool editNotAdd)
+void CGUIDialogMediaSource::SetTypeOfMedia(const std::string &type, bool editNotAdd)
 {
   m_type = type;
   int typeStringID = -1;
@@ -469,7 +469,7 @@ void CGUIDialogMediaSource::SetTypeOfMedia(const CStdString &type, bool editNotA
     typeStringID = 1213;  // "Pictures"
   else // if (type == "files");
     typeStringID = 744;  // "Files"
-  CStdString format;
+  std::string format;
   format = StringUtils::Format(g_localizeStrings.Get(editNotAdd ? 1028 : 1020).c_str(), g_localizeStrings.Get(typeStringID).c_str());
   SET_CONTROL_LABEL(CONTROL_HEADING, format);
 }

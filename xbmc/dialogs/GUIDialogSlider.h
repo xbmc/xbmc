@@ -43,7 +43,7 @@ public:
    \param callbackData pointer to callback-specific data (defaults to NULL)
    \sa ISliderCallback, Display
    */
-  static void ShowAndGetInput(const CStdString &label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData = NULL);
+  static void ShowAndGetInput(const std::string &label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData = NULL);
 
   /*! \brief Show the slider dialog as a response to user input
    Shows the slider with the given values for a short period of time, used for UI feedback of a set user action.
@@ -58,7 +58,7 @@ public:
    */
   static void Display(int label, float value, float min, float delta, float max, ISliderCallback *callback);
 protected:
-  void SetSlider(const CStdString &label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData);
+  void SetSlider(const std::string &label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData);
   virtual void OnWindowLoaded();
 
   ISliderCallback *m_callback;

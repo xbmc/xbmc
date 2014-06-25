@@ -95,7 +95,7 @@ bool CGUIDialogNetworkSetup::OnMessage(CGUIMessage& message)
 
 // \brief Show CGUIDialogNetworkSetup dialog and prompt for a new network address.
 // \return True if the network address is valid, false otherwise.
-bool CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(CStdString &path)
+bool CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(std::string &path)
 {
   CGUIDialogNetworkSetup *dialog = (CGUIDialogNetworkSetup *)g_windowManager.GetWindow(WINDOW_DIALOG_NETWORK_SETUP);
   if (!dialog) return false;
@@ -159,11 +159,11 @@ void CGUIDialogNetworkSetup::OnServerBrowse()
 {
   // open a filebrowser dialog with the current address
   VECSOURCES shares;
-  CStdString path = ConstructPath();
+  std::string path = ConstructPath();
   // get the share as the base path
   CMediaSource share;
-  CStdString basePath = path;
-  CStdString tempPath;
+  std::string basePath = path;
+  std::string tempPath;
   while (URIUtils::GetParentPath(basePath, tempPath))
     basePath = tempPath;
   share.strPath = basePath;
@@ -315,7 +315,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
                                                                               m_protocol == NET_PROTOCOL_AFP));
 }
 
-CStdString CGUIDialogNetworkSetup::ConstructPath() const
+std::string CGUIDialogNetworkSetup::ConstructPath() const
 {
   CURL url;
   if (m_protocol == NET_PROTOCOL_SMB)
@@ -374,48 +374,47 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
        (m_protocol == NET_PROTOCOL_NFS))
       && !m_port.empty() && atoi(m_port.c_str()) > 0)
   {
-    url.SetPort(atoi(m_port));
+    url.SetPort(atoi(m_port.c_str()));
   }
   if (!m_path.empty())
     url.SetFileName(m_path);
   return url.Get();
 }
 
-void CGUIDialogNetworkSetup::SetPath(const CStdString &path)
+void CGUIDialogNetworkSetup::SetPath(const std::string &path)
 {
   CURL url(path);
-  const CStdString &protocol = url.GetProtocol();
-  if (protocol == "smb")
+  if (url.IsProtocol("smb"))
     m_protocol = NET_PROTOCOL_SMB;
-  else if (protocol == "ftp")
+  else if (url.IsProtocol("ftp"))
     m_protocol = NET_PROTOCOL_FTP;
-  else if (protocol == "http")
+  else if (url.IsProtocol("http"))
     m_protocol = NET_PROTOCOL_HTTP;
-  else if (protocol == "https")
+  else if (url.IsProtocol("https"))
     m_protocol = NET_PROTOCOL_HTTPS;
-  else if (protocol == "dav")
+  else if (url.IsProtocol("dav"))
     m_protocol = NET_PROTOCOL_DAV;
-  else if (protocol == "davs")
+  else if (url.IsProtocol("davs"))
     m_protocol = NET_PROTOCOL_DAVS;
-  else if (protocol == "daap")
+  else if (url.IsProtocol("daap"))
     m_protocol = NET_PROTOCOL_DAAP;
-  else if (protocol == "upnp")
+  else if (url.IsProtocol("upnp"))
     m_protocol = NET_PROTOCOL_UPNP;
-  else if (protocol == "tuxbox")
+  else if (url.IsProtocol("tuxbox"))
     m_protocol = NET_PROTOCOL_TUXBOX;
-  else if (protocol == "htsp")
+  else if (url.IsProtocol("htsp"))
     m_protocol = NET_PROTOCOL_HTSP;
-  else if (protocol == "vtp")
+  else if (url.IsProtocol("vtp"))
     m_protocol = NET_PROTOCOL_VTP;
-  else if (protocol == "myth")
+  else if (url.IsProtocol("myth"))
     m_protocol = NET_PROTOCOL_MYTH;
-  else if (protocol == "rss")
+  else if (url.IsProtocol("rss"))
     m_protocol = NET_PROTOCOL_RSS;
-  else if (protocol == "nfs")
+  else if (url.IsProtocol("nfs"))
     m_protocol = NET_PROTOCOL_NFS;
-  else if (protocol == "sftp" || protocol == "ssh")
+  else if (url.IsProtocol("sftp") || url.IsProtocol("ssh"))
     m_protocol = NET_PROTOCOL_SFTP;
-  else if (protocol == "afp")
+  else if (url.IsProtocol("afp"))
     m_protocol = NET_PROTOCOL_AFP;
   else
     m_protocol = NET_PROTOCOL_SMB;  // default to smb

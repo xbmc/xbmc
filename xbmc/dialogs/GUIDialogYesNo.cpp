@@ -108,7 +108,7 @@ bool CGUIDialogYesNo::ShowAndGetInput(int heading, int line0, int line1, int lin
   return (dialog->IsConfirmed()) ? true : false;
 }
 
-bool CGUIDialogYesNo::ShowAndGetInput(const CStdString& heading, const CStdString& line0, const CStdString& line1, const CStdString& line2, const CStdString& noLabel, const CStdString& yesLabel)
+bool CGUIDialogYesNo::ShowAndGetInput(const std::string& heading, const std::string& line0, const std::string& line1, const std::string& line2, const std::string& noLabel, const std::string& yesLabel)
 {
   bool bDummy;
   return ShowAndGetInput(heading,line0,line1,line2,bDummy,noLabel,yesLabel);
@@ -134,7 +134,7 @@ bool CGUIDialogYesNo::ShowAndGetInput(const std::string& heading, const std::str
   return (dialog->IsConfirmed()) ? true : false;
 }
 
-bool CGUIDialogYesNo::ShowAndGetInput(const CStdString& heading, const CStdString& line0, const CStdString& line1, const CStdString& line2, bool& bCanceled, const CStdString& noLabel, const CStdString& yesLabel)
+bool CGUIDialogYesNo::ShowAndGetInput(const std::string& heading, const std::string& line0, const std::string& line1, const std::string& line2, bool& bCanceled, const std::string& noLabel, const std::string& yesLabel)
 {
   std::string text = line0 + "\n" + line1 + "\n" + line2;
   return ShowAndGetInput(heading, text, bCanceled, noLabel, yesLabel);

@@ -50,10 +50,10 @@ public:
   virtual void OnInitWindow();
   virtual void OnDeinitWindow(int nextWindowID);
 
-  static bool ShowAndGetNetworkAddress(CStdString &path);
+  static bool ShowAndGetNetworkAddress(std::string &path);
 
-  CStdString ConstructPath() const;
-  void SetPath(const CStdString &path);
+  std::string ConstructPath() const;
+  void SetPath(const std::string &path);
   bool IsConfirmed() const { return m_confirmed; };
 
 protected:
@@ -64,11 +64,11 @@ protected:
   void UpdateButtons();
 
   NET_PROTOCOL m_protocol;
-  CStdString m_server;
-  CStdString m_path;
-  CStdString m_username;
-  CStdString m_password;
-  CStdString m_port;
+  std::string m_server;
+  std::string m_path;
+  std::string m_username;
+  std::string m_password;
+  std::string m_port;
 
   bool m_confirmed;
 };

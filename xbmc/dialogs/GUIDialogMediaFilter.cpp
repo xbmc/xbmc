@@ -758,8 +758,8 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
 
     if (m_mediaType == "movies" || m_mediaType == "tvshows" || m_mediaType == "musicvideos")
     {
-      CStdString table;
-      CStdString year;
+      std::string table;
+      std::string year;
       if (m_mediaType == "movies")
       {
         table = "movieview";
@@ -782,7 +782,7 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
     }
     else if (m_mediaType == "albums" || m_mediaType == "songs")
     {
-      CStdString table;
+      std::string table;
       if (m_mediaType == "albums")
         table = "albumview";
       else if (m_mediaType == "songs")
@@ -803,7 +803,7 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
 
     if (m_mediaType == "episodes")
     {
-      CStdString field = StringUtils::Format("CAST(strftime(\"%%s\", c%02d) AS INTEGER)", VIDEODB_ID_EPISODE_AIRED);
+      std::string field = StringUtils::Format("CAST(strftime(\"%%s\", c%02d) AS INTEGER)", VIDEODB_ID_EPISODE_AIRED);
       
       GetMinMax("episodeview", field, min, max);
       interval = 60 * 60 * 24 * 7; // 1 week

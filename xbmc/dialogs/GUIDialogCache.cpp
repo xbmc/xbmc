@@ -28,7 +28,7 @@
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 
-CGUIDialogCache::CGUIDialogCache(DWORD dwDelay, const CStdString& strHeader, const CStdString& strMsg) : CThread("GUIDialogCache")
+CGUIDialogCache::CGUIDialogCache(DWORD dwDelay, const std::string& strHeader, const std::string& strMsg) : CThread("GUIDialogCache")
 {
   m_strHeader = strHeader;
   m_strLinePrev = strMsg;
@@ -85,7 +85,7 @@ void CGUIDialogCache::OpenDialog()
   bSentCancel = false;
 }
 
-void CGUIDialogCache::SetHeader(const CStdString& strHeader)
+void CGUIDialogCache::SetHeader(const std::string& strHeader)
 {
   m_strHeader = strHeader;
 }
@@ -95,7 +95,7 @@ void CGUIDialogCache::SetHeader(int nHeader)
   SetHeader(g_localizeStrings.Get(nHeader));
 }
 
-void CGUIDialogCache::SetMessage(const CStdString& strMessage)
+void CGUIDialogCache::SetMessage(const std::string& strMessage)
 {
   if (m_pDlg)
   {

@@ -170,7 +170,7 @@ void CGUIDialogSelect::Reset()
   m_selectedItems->Clear();
 }
 
-int CGUIDialogSelect::Add(const CStdString& strLabel)
+int CGUIDialogSelect::Add(const std::string& strLabel)
 {
   CFileItemPtr pItem(new CFileItem(strLabel));
   m_vecList->Add(pItem);
@@ -256,7 +256,7 @@ void CGUIDialogSelect::SetSelected(int iSelected)
   m_selectedItems->Add(m_vecList->Get(iSelected));
 }
 
-void CGUIDialogSelect::SetSelected(const CStdString &strSelectedLabel)
+void CGUIDialogSelect::SetSelected(const std::string &strSelectedLabel)
 {
   if (strSelectedLabel.empty())
     return;
@@ -332,7 +332,7 @@ void CGUIDialogSelect::OnInitWindow()
   }
   m_viewControl.SetCurrentView(m_useDetails ? CONTROL_DETAILS : CONTROL_LIST);
 
-  CStdString items = StringUtils::Format("%i %s", m_vecList->Size(), g_localizeStrings.Get(127).c_str());
+  std::string items = StringUtils::Format("%i %s", m_vecList->Size(), g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_NUMBEROFFILES, items);
   
   if (m_multiSelection)
