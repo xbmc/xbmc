@@ -535,7 +535,7 @@ bool CGUIControlButtonSetting::OnClick()
     {
       // prompt for the addon
       CSettingAddon *setting = (CSettingAddon *)m_pSetting;
-      CStdString addonID = setting->GetValue();
+      std::string addonID = setting->GetValue();
       if (CGUIWindowAddonBrowser::SelectAddonID(setting->GetAddonType(), addonID, setting->AllowEmpty()) != 1)
         return false;
 
@@ -610,7 +610,7 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
       }
       else if (controlFormat == "path")
       {
-        CStdString shortPath;
+        std::string shortPath;
         if (CUtil::MakeShortenPath(strValue, shortPath, 30))
           strText = shortPath;
       }
@@ -649,7 +649,7 @@ bool CGUIControlButtonSetting::GetPath(CSettingPath *pathSetting)
   if (pathSetting == NULL)
     return false;
 
-  CStdString path = pathSetting->GetValue();
+  std::string path = pathSetting->GetValue();
 
   VECSOURCES shares;
   const std::vector<std::string>& sources = pathSetting->GetSources();

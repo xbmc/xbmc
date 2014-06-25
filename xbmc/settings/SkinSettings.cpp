@@ -78,7 +78,7 @@ const string& CSkinSettings::GetString(int setting) const
   if (it != m_strings.end())
     return it->second.value;
 
-  return StringUtils::EmptyString;
+  return StringUtils::Empty;
 }
 
 void CSkinSettings::SetString(int setting, const string &label)
