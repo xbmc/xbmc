@@ -164,7 +164,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           SetProperty("search", selected.GetLabel());
           return true;
         }
-        CStdString search(GetProperty("search").asString());
+        std::string search(GetProperty("search").asString());
         CGUIKeyboardFactory::ShowAndGetFilter(search, true);
         SetProperty("search", search);
         return true;
@@ -217,34 +217,35 @@ bool CGUIWindowMusicNav::OnAction(const CAction& action)
   return CGUIWindowMusicBase::OnAction(action);
 }
 
-CStdString CGUIWindowMusicNav::GetQuickpathName(const CStdString& strPath) const
+std::string CGUIWindowMusicNav::GetQuickpathName(const std::string& strPath) const
 {
-  CStdString path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
-  if (path.Equals("musicdb://genres/"))
+  std::string path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
+  StringUtils::ToLower(path);
+  if (path == "musicdb://genres/")
     return "Genres";
-  else if (path.Equals("musicdb://artists/"))
+  else if (path == "musicdb://artists/")
     return "Artists";
-  else if (path.Equals("musicdb://albums/"))
+  else if (path == "musicdb://albums/")
     return "Albums";
-  else if (path.Equals("musicdb://songs/"))
+  else if (path == "musicdb://songs/")
     return "Songs";
-  else if (path.Equals("musicdb://top100/"))
+  else if (path == "musicdb://top100/")
     return "Top100";
-  else if (path.Equals("musicdb://top100/songs/"))
+  else if (path == "musicdb://top100/songs/")
     return "Top100Songs";
-  else if (path.Equals("musicdb://top100/albums/"))
+  else if (path == "musicdb://top100/albums/")
     return "Top100Albums";
-  else if (path.Equals("musicdb://recentlyaddedalbums/"))
+  else if (path == "musicdb://recentlyaddedalbums/")
     return "RecentlyAddedAlbums";
-  else if (path.Equals("musicdb://recentlyplayedalbums/"))
+  else if (path == "musicdb://recentlyplayedalbums/")
     return "RecentlyPlayedAlbums";
-  else if (path.Equals("musicdb://compilations/"))
+  else if (path == "musicdb://compilations/")
     return "Compilations";
-  else if (path.Equals("musicdb://years/"))
+  else if (path == "musicdb://years/")
     return "Years";
-  else if (path.Equals("musicdb://singles/"))
+  else if (path == "musicdb://singles/")
     return "Singles";
-  else if (path.Equals("special://musicplaylists/"))
+  else if (path == "special://musicplaylists/")
     return "Playlists";
   else
   {
@@ -264,7 +265,7 @@ bool CGUIWindowMusicNav::OnClick(int iItem)
       OnSearchUpdate();
     else
     {
-      CStdString search(GetProperty("search").asString());
+      std::string search(GetProperty("search").asString());
       CGUIKeyboardFactory::ShowAndGetFilter(search, true);
       SetProperty("search", search);
     }
@@ -388,11 +389,11 @@ void CGUIWindowMusicNav::UpdateButtons()
       StringUtils::StartsWith(m_vecItems->Get(m_vecItems->Size()-1)->GetPath(), "/-1/"))
       iItems--;
   }
-  CStdString items = StringUtils::Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
+  std::string items = StringUtils::Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 
   // set the filter label
-  CStdString strLabel;
+  std::string strLabel;
 
   // "Playlists"
   if (m_vecItems->IsPath("special://musicplaylists/"))
@@ -401,7 +402,7 @@ void CGUIWindowMusicNav::UpdateButtons()
   else if (m_vecItems->IsPlayList())
   {
     // get playlist name from path
-    CStdString strDummy;
+    std::string strDummy;
     URIUtils::Split(m_vecItems->GetPath(), strDummy, strLabel);
   }
   // everything else is from a musicdb:// path
@@ -561,7 +562,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         buttons.Add(CONTEXT_BUTTON_DELETE, 646);
       }
     }
-    if (inPlaylists && !URIUtils::GetFileName(item->GetPath()).Equals("PartyMode.xsp")
+    if (inPlaylists && URIUtils::GetFileName(item->GetPath()) != "PartyMode.xsp"
                     && (item->IsPlayList() || item->IsSmartPlayList()))
       buttons.Add(CONTEXT_BUTTON_DELETE, 117);
 
@@ -592,7 +593,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         long idArtist = m_musicdatabase.GetArtistByName(item->GetLabel());
         if (idArtist == -1)
           return false;
-        CStdString path = StringUtils::Format("musicdb://artists/%ld/", idArtist);
+        std::string path = StringUtils::Format("musicdb://artists/%ld/", idArtist);
         CArtist artist;
         m_musicdatabase.GetArtist(idArtist, artist, false);
         *item = CFileItem(artist);
@@ -609,7 +610,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         long idAlbum = m_musicdatabase.GetAlbumByName(item->GetLabel());
         if (idAlbum == -1)
           return false;
-        CStdString path = StringUtils::Format("musicdb://albums/%ld/", idAlbum);
+        std::string path = StringUtils::Format("musicdb://albums/%ld/", idAlbum);
         CAlbum album;
         m_musicdatabase.GetAlbum(idAlbum, album, false);
         *item = CFileItem(path,album);
@@ -649,7 +650,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_GO_TO_ARTIST:
     {
-      CStdString strPath;
+      std::string strPath;
       CVideoDatabase database;
       database.Open();
       strPath = StringUtils::Format("videodb://musicvideos/artists/%i/",
@@ -691,7 +692,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_SET_CONTENT:
     {
       ADDON::ScraperPtr scraper;
-      CStdString path(item->GetPath());
+      std::string path(item->GetPath());
       CQueryParams params;
       CDirectoryNode::GetDatabaseInfo(item->GetPath(), params);
       CONTENT_TYPE content = CONTENT_ALBUMS;
@@ -738,7 +739,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 bool CGUIWindowMusicNav::GetSongsFromPlayList(const std::string& strPlayList, CFileItemList &items)
 {
-  CStdString strParentPath=m_history.GetParentPath();
+  std::string strParentPath=m_history.GetParentPath();
 
   if (m_guiState.get() && !m_guiState->HideParentDirItems())
   {
@@ -777,10 +778,10 @@ void CGUIWindowMusicNav::DisplayEmptyDatabaseMessage(bool bDisplay)
 
 void CGUIWindowMusicNav::OnSearchUpdate()
 {
-  CStdString search(CURL::Encode(GetProperty("search").asString()));
+  std::string search(CURL::Encode(GetProperty("search").asString()));
   if (!search.empty())
   {
-    CStdString path = "musicsearch://" + search + "/";
+    std::string path = "musicsearch://" + search + "/";
     m_history.ClearSearchHistory();
     Update(path);
   }
