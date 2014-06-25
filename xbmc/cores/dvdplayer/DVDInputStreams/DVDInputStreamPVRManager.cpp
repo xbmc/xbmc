@@ -362,11 +362,11 @@ void CDVDInputStreamPVRManager::Pause(bool bPaused)
   g_PVRClients->PauseStream(bPaused);
 }
 
-CStdString CDVDInputStreamPVRManager::GetInputFormat()
+std::string CDVDInputStreamPVRManager::GetInputFormat()
 {
   if (!m_pOtherStream && g_PVRManager.IsStarted())
     return g_PVRClients->GetCurrentInputFormat();
-  return StringUtils::EmptyString;
+  return "";
 }
 
 bool CDVDInputStreamPVRManager::CloseAndOpen(const char* strFile)

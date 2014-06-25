@@ -20,9 +20,8 @@
  *
  */
 
+#include <string>
 #include <vector>
-
-#include "utils/StdString.h"
 
 #define DIFFRINGSIZE 120
 
@@ -66,5 +65,5 @@ class CPullupCorrection
     double m_frameduration;        //frameduration exposed to dvdplayer, used for calculating the fps
     bool   m_haspattern;           //for the log
     int    m_patternlength;        //for the codec info
-    CStdString GetPatternStr();    //also for the log
+    std::string GetPatternStr();    //also for the log
 };

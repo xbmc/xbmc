@@ -24,8 +24,6 @@
 #include <deque>
 #include <sys/types.h>
 
-#include "utils/StdString.h"
-
 #include "OMXClock.h"
 #include "DVDStreamInfo.h"
 #include "OMXVideo.h"

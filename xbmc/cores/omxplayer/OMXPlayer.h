@@ -390,7 +390,7 @@ protected:
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
   CDVDDemux*            m_pSubtitleDemuxer;
 
-  CStdString m_lastSub;
+  std::string m_lastSub;
 
   struct SDVDInfo
   {

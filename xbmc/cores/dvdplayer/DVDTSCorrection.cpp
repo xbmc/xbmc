@@ -316,9 +316,9 @@ double CPullupCorrection::CalcFrameDuration()
 }
 
 //looks pretty in the log
-CStdString CPullupCorrection::GetPatternStr()
+std::string CPullupCorrection::GetPatternStr()
 {
-  CStdString patternstr;
+  std::string patternstr;
 
   for (unsigned int i = 0; i < m_pattern.size(); i++)
     patternstr += StringUtils::Format("%.2f ", m_pattern[i]);

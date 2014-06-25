@@ -22,7 +22,7 @@
 #include "utils/log.h"
 #include "cores/FFmpeg.h"
 
-CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg(const CStdString& mType)
+CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg(const std::string& mType)
 {
   m_sType = mType;
   m_pMode = m_pContext = NULL;
@@ -90,7 +90,7 @@ bool CDVDVideoPPFFmpeg::CheckInit(int iWidth, int iHeight)
     return false;
 }
 
-void CDVDVideoPPFFmpeg::SetType(const CStdString& mType, bool deinterlace)
+void CDVDVideoPPFFmpeg::SetType(const std::string& mType, bool deinterlace)
 {
   m_deinterlace = deinterlace;
 

@@ -180,7 +180,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
 
   // Copy text to out and add HTML markup for the style records
   int charIndex = 0;
-  CStdStringA strUTF8;
+  std::string strUTF8;
   // index over textLength chars to include broken encoders,
   // so we pickup closing styles on broken encoders
   for (pos = text, end = text + textLength; pos <= end; pos++)

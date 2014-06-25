@@ -23,7 +23,6 @@
 #include "DVDClock.h"
 #include "utils/RegExp.h"
 #include "DVDStreamInfo.h"
-#include "utils/StdString.h"
 #include "DVDSubtitleTagMicroDVD.h"
 
 using namespace std;

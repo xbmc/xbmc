@@ -309,7 +309,7 @@ void CDVDPlayerVideo::Process()
   DVDVideoPicture picture;
   CPulldownCorrection pulldown;
   CDVDVideoPPFFmpeg mPostProcess("");
-  CStdString sPostProcessType;
+  std::string sPostProcessType;
   bool bPostProcessDeint = false;
 
   memset(&picture, 0, sizeof(DVDVideoPicture));
@@ -1064,7 +1064,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
           |  GetFlagsColorPrimaries(pPicture->color_primaries)
           |  GetFlagsColorTransfer(pPicture->color_transfer);
 
-    CStdString formatstr = GetRenderFormatName(pPicture->format);
+    std::string formatstr = GetRenderFormatName(pPicture->format);
 
     if(m_bAllowFullscreen)
     {

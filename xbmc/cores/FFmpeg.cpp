@@ -21,7 +21,6 @@
 #include "cores/FFmpeg.h"
 #include "utils/log.h"
 #include "threads/SharedSection.h"
-#include "utils/StdString.h"
 #include "utils/StringUtils.h"
 #include "threads/Thread.h"
 #include "settings/AdvancedSettings.h"
@@ -64,7 +63,7 @@ int ffmpeg_lockmgr_cb(void **mutex, enum AVLockOp operation)
 }
 
 static CCriticalSection m_logSection;
-std::map<uintptr_t, CStdString> g_logbuffer;
+std::map<uintptr_t, std::string> g_logbuffer;
 
 void ff_flush_avutil_log_buffers(void)
 {
@@ -72,7 +71,7 @@ void ff_flush_avutil_log_buffers(void)
   /* Loop through the logbuffer list and remove any blank buffers
      If the thread using the buffer is still active, it will just
      add a new buffer next time it writes to the log */
-  std::map<uintptr_t, CStdString>::iterator it;
+  std::map<uintptr_t, std::string>::iterator it;
   for (it = g_logbuffer.begin(); it != g_logbuffer.end(); )
     if ((*it).second.empty())
       g_logbuffer.erase(it++);
@@ -84,7 +83,7 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 {
   CSingleLock lock(m_logSection);
   uintptr_t threadId = (uintptr_t)CThread::GetCurrentThreadId();
-  CStdString &buffer = g_logbuffer[threadId];
+  std::string &buffer = g_logbuffer[threadId];
 
   AVClass* avc= ptr ? *(AVClass**)ptr : NULL;
 
@@ -103,14 +102,14 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
     default            : type = LOGDEBUG;   break;
   }
 
-  CStdString message = StringUtils::FormatV(format, va);
-  CStdString prefix = StringUtils::Format("ffmpeg[%X]: ", threadId);
+  std::string message = StringUtils::FormatV(format, va);
+  std::string prefix = StringUtils::Format("ffmpeg[%X]: ", threadId);
   if(avc)
   {
     if(avc->item_name)
-      prefix += CStdString("[") + avc->item_name(ptr) + "] ";
+      prefix += std::string("[") + avc->item_name(ptr) + "] ";
     else if(avc->class_name)
-      prefix += CStdString("[") + avc->class_name + "] ";
+      prefix += std::string("[") + avc->class_name + "] ";
   }
 
   buffer += message;

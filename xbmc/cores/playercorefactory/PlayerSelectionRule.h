@@ -32,17 +32,17 @@ public:
   virtual ~CPlayerSelectionRule();
 
   //bool Matches(const CFileItem& item) const;
-  //CStdString GetPlayerName() const;
+  //std::string GetPlayerName() const;
   void GetPlayers(const CFileItem& item, VECPLAYERCORES &vecCores);
 
 private:
   static int GetTristate(const char* szValue);
-  static bool CompileRegExp(const CStdString& str, CRegExp& regExp);
-  static bool MatchesRegExp(const CStdString& str, CRegExp& regExp);
+  static bool CompileRegExp(const std::string& str, CRegExp& regExp);
+  static bool MatchesRegExp(const std::string& str, CRegExp& regExp);
   void Initialize(TiXmlElement* pRule);
   PLAYERCOREID GetPlayerCore();
 
-  CStdString m_name;
+  std::string m_name;
 
   int m_tAudio;
   int m_tVideo;
@@ -54,19 +54,19 @@ private:
   int m_tDVDFile;
   int m_tDVDImage;
 
-  CStdString m_protocols;
-  CStdString m_fileTypes;
-  CStdString m_mimeTypes;
-  CStdString m_fileName;
+  std::string m_protocols;
+  std::string m_fileTypes;
+  std::string m_mimeTypes;
+  std::string m_fileName;
 
   bool m_bStreamDetails;
-  CStdString m_audioCodec;
-  CStdString m_audioChannels;
-  CStdString m_videoCodec;
-  CStdString m_videoResolution;
-  CStdString m_videoAspect;
+  std::string m_audioCodec;
+  std::string m_audioChannels;
+  std::string m_videoCodec;
+  std::string m_videoResolution;
+  std::string m_videoAspect;
 
-  CStdString m_playerName;
+  std::string m_playerName;
   PLAYERCOREID m_playerCoreId;
 
   std::vector<CPlayerSelectionRule *> vecSubRules;

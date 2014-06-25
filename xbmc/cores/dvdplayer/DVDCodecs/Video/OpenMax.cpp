@@ -213,7 +213,7 @@ OMX_ERRORTYPE COpenMax::SetStateForComponent(OMX_STATETYPE state)
   return omx_err;
 }
 
-bool COpenMax::Initialize( const CStdString &decoder_name)
+bool COpenMax::Initialize( const std::string &decoder_name)
 {
   OMX_ERRORTYPE omx_err = m_dll->OMX_Init();
   if (omx_err)

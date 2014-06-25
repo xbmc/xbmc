@@ -86,7 +86,7 @@ void COMXImage::Deinitialize()
 }
 
 bool COMXImage::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height,
-      unsigned int format, unsigned int pitch, const CStdString& destFile)
+      unsigned int format, unsigned int pitch, const std::string& destFile)
 {
   COMXImageEnc omxImageEnc;
   bool ret = omxImageEnc.CreateThumbnailFromSurface(buffer, width, height, format, pitch, destFile);
@@ -95,7 +95,7 @@ bool COMXImage::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int w
   return ret;
 }
 
-COMXImageFile *COMXImage::LoadJpeg(const CStdString& texturePath)
+COMXImageFile *COMXImage::LoadJpeg(const std::string& texturePath)
 {
   COMXImageFile *file = new COMXImageFile();
   if (!file->ReadFile(texturePath))
@@ -177,7 +177,7 @@ bool COMXImage::ClampLimits(unsigned int &width, unsigned int &height, unsigned 
   return clamped;
 }
 
-bool COMXImage::CreateThumb(const CStdString& srcFile, unsigned int maxHeight, unsigned int maxWidth, std::string &additional_info, const CStdString& destFile)
+bool COMXImage::CreateThumb(const std::string& srcFile, unsigned int maxHeight, unsigned int maxWidth, std::string &additional_info, const std::string& destFile)
 {
   bool okay = false;
   COMXImageFile file;
@@ -854,7 +854,7 @@ OMX_IMAGE_CODINGTYPE COMXImageFile::GetCodingType(unsigned int &width, unsigned 
 }
 
 
-bool COMXImageFile::ReadFile(const CStdString& inputFile)
+bool COMXImageFile::ReadFile(const std::string& inputFile)
 {
   XFILE::CFile      m_pFile;
   m_filename = inputFile.c_str();
@@ -1387,7 +1387,7 @@ bool COMXImageEnc::Encode(unsigned char *buffer, int size, unsigned width, unsig
 }
 
 bool COMXImageEnc::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height,
-    unsigned int format, unsigned int pitch, const CStdString& destFile)
+    unsigned int format, unsigned int pitch, const std::string& destFile)
 {
   if(format != XB_FMT_A8R8G8B8 || !buffer)
   {

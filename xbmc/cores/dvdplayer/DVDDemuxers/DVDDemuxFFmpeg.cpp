@@ -216,12 +216,11 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     // special stream type that makes avformat handle file opening
     // allows internal ffmpeg protocols to be used
     CURL url = m_pInput->GetURL();
-    CStdString protocol = url.GetProtocol();
 
     AVDictionary *options = GetFFMpegOptionsFromURL(url);
 
     int result=-1;
-    if (protocol.Equals("mms"))
+    if (url.IsProtocol("mms"))
     {
       // try mmsh, then mmst
       url.SetProtocol("mmsh");
@@ -522,11 +521,10 @@ void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
 
 AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromURL(const CURL &url)
 {
-  CStdString protocol = url.GetProtocol();
 
   AVDictionary *options = NULL;
 
-  if (protocol.Equals("http") || protocol.Equals("https"))
+  if (url.IsProtocol("http") || url.IsProtocol("https"))
   {
     std::map<std::string, std::string> protocolOptions;
     url.GetProtocolOptions(protocolOptions);
@@ -534,19 +532,19 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromURL(const CURL &url)
     bool hasUserAgent = false;
     for(std::map<std::string, std::string>::const_iterator it = protocolOptions.begin(); it != protocolOptions.end(); ++it)
     {
-      const CStdString &name = it->first;
-      const CStdString &value = it->second;
+      std::string name = it->first; StringUtils::ToLower(name);
+      const std::string &value = it->second;
 
-      if (name.Equals("seekable"))
+      if (name == "seekable")
         av_dict_set(&options, "seekable", value.c_str(), 0);
-      else if (name.Equals("User-Agent"))
+      else if (name == "user-agent")
       {
         av_dict_set(&options, "user-agent", value.c_str(), 0);
         hasUserAgent = true;
       }
-      else if (!name.Equals("auth") && !name.Equals("Encoding"))
+      else if (name != "auth" && name != "encoding")
         // all other protocol options can be added as http header.
-        headers.append(name).append(": ").append(value).append("\r\n");
+        headers.append(it->first).append(": ").append(value).append("\r\n");
     }
     if (!hasUserAgent)
       // set default xbmc user-agent.
