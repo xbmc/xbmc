@@ -37,8 +37,8 @@ public:
   virtual ~CGUIDialogMusicInfo(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  void SetAlbum(const CAlbum& album, const CStdString &path);
-  void SetArtist(const CArtist& artist, const CStdString &path);
+  void SetAlbum(const CAlbum& album, const std::string &path);
+  void SetArtist(const CArtist& artist, const std::string &path);
   bool NeedRefresh() const;
   bool HasUpdatedThumb() const { return m_hasUpdatedThumb; };
 
@@ -49,7 +49,7 @@ public:
 protected:
   virtual void OnInitWindow();
   void Update();
-  void SetLabel(int iControl, const CStdString& strLabel);
+  void SetLabel(int iControl, const std::string& strLabel);
   void OnGetThumb();
   void OnGetFanart();
   void SetSongs(const VECSONGS &songs);
