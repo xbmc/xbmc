@@ -154,7 +154,7 @@ bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
   return m_outputs.size() > 0;
 }
 
-bool CXRandR::TurnOffOutput(std::string name)
+bool CXRandR::TurnOffOutput(const std::string& name)
 {
   XOutput *output = GetOutput(name);
   if (!output)
@@ -181,7 +181,7 @@ bool CXRandR::TurnOffOutput(std::string name)
   return true;
 }
 
-bool CXRandR::TurnOnOutput(std::string name)
+bool CXRandR::TurnOnOutput(const std::string& name)
 {
   XOutput *output = GetOutput(name);
   if (!output)
@@ -346,7 +346,7 @@ bool CXRandR::SetMode(XOutput output, XMode mode)
   return true;
 }
 
-XMode CXRandR::GetCurrentMode(std::string outputName)
+XMode CXRandR::GetCurrentMode(const std::string& outputName)
 {
   Query();
   XMode result;
@@ -369,7 +369,7 @@ XMode CXRandR::GetCurrentMode(std::string outputName)
   return result;
 }
 
-XMode CXRandR::GetPreferredMode(std::string outputName)
+XMode CXRandR::GetPreferredMode(const std::string& outputName)
 {
   Query();
   XMode result;
@@ -449,7 +449,7 @@ void CXRandR::SetNumScreens(unsigned int num)
   m_bInit = false;
 }
 
-bool CXRandR::IsOutputConnected(std::string name)
+bool CXRandR::IsOutputConnected(const std::string& name)
 {
   bool result = false;
   Query();
@@ -465,7 +465,7 @@ bool CXRandR::IsOutputConnected(std::string name)
   return result;
 }
 
-XOutput* CXRandR::GetOutput(std::string outputName)
+XOutput* CXRandR::GetOutput(const std::string& outputName)
 {
   XOutput *result = 0;
   Query();
