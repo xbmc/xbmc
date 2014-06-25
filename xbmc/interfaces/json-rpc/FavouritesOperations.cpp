@@ -32,7 +32,7 @@ using namespace std;
 using namespace JSONRPC;
 using namespace XFILE;
 
-JSONRPC_STATUS CFavouritesOperations::GetFavourites(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CFavouritesOperations::GetFavourites(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CFileItemList favourites;
   CFavouritesDirectory::Load(favourites);
@@ -51,7 +51,7 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const CStdString &method, IT
     CVariant object;
     CFileItemPtr item = favourites.Get(i);
 
-    CStdString function;
+    std::string function;
     vector<string> parameters;
     CUtil::SplitExecFunction(item->GetPath(), function, parameters);
     if (parameters.size() == 0)
@@ -104,7 +104,7 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const CStdString &method, IT
   return OK;
 }
 
-JSONRPC_STATUS CFavouritesOperations::AddFavourite(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CFavouritesOperations::AddFavourite(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   string type = parameterObject["type"].asString();
 

@@ -27,7 +27,6 @@
 #include "JSONRPCUtils.h"
 #include "JSONServiceDescription.h"
 #include "interfaces/IAnnouncer.h"
-#include "utils/StdString.h"
 
 namespace JSONRPC
 {
@@ -62,15 +61,15 @@ namespace JSONRPC
      in the request are checked for validity and completeness. If the request
      is valid and the requested method exists it is called and executed.
      */
-    static CStdString MethodCall(const CStdString &inputString, ITransportLayer *transport, IClient *client);
+    static std::string MethodCall(const std::string &inputString, ITransportLayer *transport, IClient *client);
 
-    static JSONRPC_STATUS Introspect(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
-    static JSONRPC_STATUS Version(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
-    static JSONRPC_STATUS Permission(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
-    static JSONRPC_STATUS Ping(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
-    static JSONRPC_STATUS GetConfiguration(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
-    static JSONRPC_STATUS SetConfiguration(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
-    static JSONRPC_STATUS NotifyAll(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
+    static JSONRPC_STATUS Introspect(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
+    static JSONRPC_STATUS Version(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
+    static JSONRPC_STATUS Permission(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
+    static JSONRPC_STATUS Ping(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
+    static JSONRPC_STATUS GetConfiguration(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
+    static JSONRPC_STATUS SetConfiguration(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
+    static JSONRPC_STATUS NotifyAll(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
   
   private:
     static void setup();
