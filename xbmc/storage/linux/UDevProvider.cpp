@@ -153,8 +153,11 @@ void CUDevProvider::GetDisks(VECSOURCES& disks, bool removable)
        (cdrom      && strstr(cdrom,"1"))  ||
        (mountpoint && strstr(mountpoint, "/media/"))))
     {
-      const char *label = udev_device_get_property_value(device, "ID_FS_LABEL");
-      if (!label)
+      const char *udev_label = udev_device_get_property_value(device, "ID_FS_LABEL");
+      std::string label;
+      if (udev_label)
+        label = udev_label;
+      else
         label = URIUtils::GetFileName(mountpoint);
 
       CMediaSource share;
@@ -179,7 +182,7 @@ void CUDevProvider::GetRemovableDrives(VECSOURCES &removableDrives)
   GetDisks(removableDrives, true);
 }
 
-bool CUDevProvider::Eject(CStdString mountpath)
+bool CUDevProvider::Eject(const std::string& mountpath)
 {
   // just go ahead and try to umount the disk
   // if it does umount, life is good, if not, no loss.
@@ -192,7 +195,7 @@ bool CUDevProvider::Eject(CStdString mountpath)
   return false;
 }
 
-std::vector<CStdString> CUDevProvider::GetDiskUsage()
+std::vector<std::string> CUDevProvider::GetDiskUsage()
 {
   CPosixMountProvider legacy;
   return legacy.GetDiskUsage();
@@ -222,9 +225,12 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
     const char *devtype = udev_device_get_devtype(dev);
     if (action)
     {
-      const char *label = udev_device_get_property_value(dev, "ID_FS_LABEL");
+      std::string label;
+      const char *udev_label = udev_device_get_property_value(dev, "ID_FS_LABEL");
       const char *mountpoint = get_mountpoint(udev_device_get_devnode(dev));
-      if (!label)
+      if (udev_label)
+        label = udev_label;
+      else if (mountpoint)
         label = URIUtils::GetFileName(mountpoint);
 
       if (!strcmp(action, "add") && !strcmp(devtype, "partition"))

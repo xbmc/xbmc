@@ -332,9 +332,9 @@ bool CWIN32Util::XBMCShellExecute(const std::string &strPath, bool bWaitForScrip
   return ret;
 }
 
-std::vector<CStdString> CWIN32Util::GetDiskUsage()
+std::vector<std::string> CWIN32Util::GetDiskUsage()
 {
-  vector<CStdString> result;
+  vector<std::string> result;
   ULARGE_INTEGER ULTotal= { { 0 } };
   ULARGE_INTEGER ULTotalFree= { { 0 } };
 
@@ -342,7 +342,7 @@ std::vector<CStdString> CWIN32Util::GetDiskUsage()
   DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
   if( dwStrLength != 0 )
   {
-    CStdString strRet;
+    std::string strRet;
 
     dwStrLength+= 1;
     pcBuffer= new char [dwStrLength];

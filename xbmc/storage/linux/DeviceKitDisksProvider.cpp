@@ -30,7 +30,7 @@ void CDeviceKitDiskDeviceOldAPI::Update()
 {
   CVariant properties = CDBusUtil::GetAll("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device");
 
-  m_isFileSystem = CStdString(properties["id-usage"].asString()) == "filesystem";
+  m_isFileSystem = properties["id-usage"].asString() == "filesystem";
   if (m_isFileSystem)
   {
     m_UDI         = properties["id-uuid"].asString();
@@ -63,7 +63,7 @@ void CDeviceKitDiskDeviceNewAPI::Update()
 {
   CVariant properties = CDBusUtil::GetAll("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device");
 
-  m_isFileSystem = CStdString(properties["IdUsage"].asString()) == "filesystem";
+  m_isFileSystem = properties["IdUsage"].asString() == "filesystem";
   if (m_isFileSystem)
   {
     m_UDI         = properties["IdUuid"].asString();
@@ -180,12 +180,12 @@ CMediaSource CDeviceKitDiskDevice::ToMediaShare()
 
 bool CDeviceKitDiskDevice::IsApproved()
 {
-  return (m_isFileSystem && m_isMounted && m_UDI.length() > 0 && (m_FileSystem.length() > 0 && !m_FileSystem.Equals("swap")) && !m_MountPath.Equals("/")) || m_isOptical;
+  return (m_isFileSystem && m_isMounted && m_UDI.length() > 0 && (m_FileSystem.length() > 0 && m_FileSystem != "swap") && m_MountPath != "/") || m_isOptical;
 }
 
 #define BOOL2SZ(b) ((b) ? "true" : "false")
 
-CStdString CDeviceKitDiskDevice::toString()
+std::string CDeviceKitDiskDevice::toString()
 {
   return StringUtils::Format("DeviceUDI %s: IsFileSystem %s HasFileSystem %s "
       "IsSystemInternal %s IsMounted %s IsRemovable %s IsPartition %s "
@@ -240,28 +240,28 @@ void CDeviceKitDisksProvider::Initialize()
   CLog::Log(LOGDEBUG, "DeviceKit.Disks: DaemonVersion %i", m_DaemonVersion);
 
   CLog::Log(LOGDEBUG, "DeviceKit.Disks: Querying available devices");
-  std::vector<CStdString> devices = EnumerateDisks();
+  std::vector<std::string> devices = EnumerateDisks();
   for (unsigned int i = 0; i < devices.size(); i++)
     DeviceAdded(devices[i].c_str(), NULL);
 }
 
-bool CDeviceKitDisksProvider::Eject(CStdString mountpath)
+bool CDeviceKitDisksProvider::Eject(const std::string& mountpath)
 {
   DeviceMap::iterator itr;
-  CStdString path(mountpath);
+  std::string path(mountpath);
   URIUtils::RemoveSlashAtEnd(path);
 
   for (itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
   {
     CDeviceKitDiskDevice *device = itr->second;
-    if (device->m_MountPath.Equals(path))
+    if (device->m_MountPath == path)
       return device->UnMount();
   }
 
   return false;
 }
 
-std::vector<CStdString> CDeviceKitDisksProvider::GetDiskUsage()
+std::vector<std::string> CDeviceKitDisksProvider::GetDiskUsage()
 {
   CPosixMountProvider legacy;
   return legacy.GetDiskUsage();
@@ -385,9 +385,9 @@ void CDeviceKitDisksProvider::DeviceChanged(const char *object, IStorageEventsCa
   }
 }
 
-std::vector<CStdString> CDeviceKitDisksProvider::EnumerateDisks()
+std::vector<std::string> CDeviceKitDisksProvider::EnumerateDisks()
 {
-  std::vector<CStdString> devices;
+  std::vector<std::string> devices;
   CDBusMessage message("org.freedesktop.DeviceKit.Disks", "/org/freedesktop/DeviceKit/Disks", "org.freedesktop.DeviceKit.Disks", "EnumerateDevices");
   DBusMessage *reply = message.SendSystem();
   if (reply)

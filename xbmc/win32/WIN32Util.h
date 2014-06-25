@@ -49,7 +49,7 @@ public:
   static bool PowerManagement(PowerState State);
   static int BatteryLevel();
   static bool XBMCShellExecute(const std::string &strPath, bool bWaitForScriptExit=false);
-  static std::vector<CStdString> GetDiskUsage();
+  static std::vector<std::string> GetDiskUsage();
   static std::string GetResInfoString();
   static int GetDesktopColorDepth();
   static std::string GetSpecialFolder(int csidl);

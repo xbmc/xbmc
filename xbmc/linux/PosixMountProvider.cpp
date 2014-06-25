@@ -90,9 +90,9 @@ void CPosixMountProvider::GetDrives(VECSOURCES &drives)
   }
 }
 
-std::vector<CStdString> CPosixMountProvider::GetDiskUsage()
+std::vector<std::string> CPosixMountProvider::GetDiskUsage()
 {
-  std::vector<CStdString> result;
+  std::vector<std::string> result;
   char line[1024];
 
 #if defined(TARGET_DARWIN)
