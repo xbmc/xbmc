@@ -144,7 +144,7 @@ int DllLoader::Parse()
 {
   int iResult = 0;
 
-  CStdString strFileName= GetFileName();
+  std::string strFileName= GetFileName();
   FILE* fp = fopen_utf8(CSpecialProtocol::TranslatePath(strFileName).c_str(), "rb");
 
   if (fp)
@@ -817,7 +817,7 @@ void DllLoader::UnloadSymbols()
 
       try
       {
-        CStdStringW strNameW;
+        std::wstring strNameW;
         g_charsetConverter.utf8ToW(GetName(), strNameW);
 
         // Get the address of the global struct g_dmi
@@ -830,8 +830,8 @@ void DllLoader::UnloadSymbols()
         //  Search for the dll we are unloading...
         while (entry)
         {
-          CStdStringW baseName=(wchar_t*)((LDR_DATA_TABLE_ENTRY*)entry)->BaseDllName.Buffer;
-          if (baseName.Equals(strNameW))
+          std::wstring baseName=(wchar_t*)((LDR_DATA_TABLE_ENTRY*)entry)->BaseDllName.Buffer;
+          if (baseName == strNameW)
           {
             // ...and remove it from the LoadedModuleList and free its memory.
             LIST_ENTRY* back=entry->Blink;

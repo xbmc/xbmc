@@ -20,7 +20,6 @@
 
 #include <dlfcn.h>
 #include "SoLoader.h"
-#include "utils/StdString.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/log.h"
 #if defined(TARGET_ANDROID)
@@ -45,7 +44,7 @@ bool SoLoader::Load()
   if (m_soHandle != NULL)
     return true;
 
-  CStdString strFileName= CSpecialProtocol::TranslatePath(GetFileName());
+  std::string strFileName= CSpecialProtocol::TranslatePath(GetFileName());
   int flags = RTLD_LAZY;
   if (strFileName == "xbmc.so")
   {
