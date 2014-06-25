@@ -277,12 +277,12 @@ char* Cocoa_MountPoint2DeviceName(char *path)
   return path;
 }
 
-bool Cocoa_GetVolumeNameFromMountPoint(const char *mountPoint, CStdString &volumeName)
+bool Cocoa_GetVolumeNameFromMountPoint(const std::string &mountPoint, std::string &volumeName)
 {
   CCocoaAutoPool pool;
   unsigned i, count = 0;
   struct statfs *buf = NULL;
-  CStdString mountpoint, devicepath;
+  std::string mountpoint, devicepath;
 
   count = getmntinfo(&buf, 0);
   for (i=0; i<count; i++)
