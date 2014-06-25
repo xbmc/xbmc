@@ -79,6 +79,7 @@ extras: libs
 	cd xbmc/assets/addons; rm -rf $(EXCLUDED_ADDONS)
 	cp -rfp $(PREFIX)/lib/python2.6 xbmc/assets/python2.6/lib/
 	cp -fp $(XBMCROOT)/media/Splash.png xbmc/res/drawable/splash.png
+	cp -fp $(XBMCROOT)/media/Splash.png xbmc/res/drawable-xhdpi/ouya_icon.png
 	cp -fp media/drawable-hdpi/ic_launcher.png xbmc/res/drawable-hdpi/ic_launcher.png
 	cp -fp media/drawable-ldpi/ic_launcher.png xbmc/res/drawable-ldpi/ic_launcher.png
 	cp -fp media/drawable-mdpi/ic_launcher.png xbmc/res/drawable-mdpi/ic_launcher.png
