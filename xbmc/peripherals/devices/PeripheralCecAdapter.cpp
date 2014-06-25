@@ -269,7 +269,7 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
       CLog::Log(LOGERROR, g_localizeStrings.Get(36040).c_str(), m_cecAdapter ? m_configuration.serverVersion : -1, CEC_LIB_SUPPORTED_VERSION);
 
       // display warning: incompatible libCEC
-      CStdString strMessage = StringUtils::Format(g_localizeStrings.Get(36040).c_str(), m_cecAdapter ? m_configuration.serverVersion : -1, CEC_LIB_SUPPORTED_VERSION);
+      std::string strMessage = StringUtils::Format(g_localizeStrings.Get(36040).c_str(), m_cecAdapter ? m_configuration.serverVersion : -1, CEC_LIB_SUPPORTED_VERSION);
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(36000), strMessage);
       m_bError = true;
       if (m_cecAdapter)
@@ -319,7 +319,7 @@ bool CPeripheralCecAdapter::OpenConnection(void)
   CLog::Log(LOGDEBUG, "%s - opening a connection to the CEC adapter: %s", __FUNCTION__, m_strComPort.c_str());
 
   // scanning the CEC bus takes about 5 seconds, so display a notification to inform users that we're busy
-  CStdString strMessage = StringUtils::Format(g_localizeStrings.Get(21336).c_str(), g_localizeStrings.Get(36000).c_str());
+  std::string strMessage = StringUtils::Format(g_localizeStrings.Get(21336).c_str(), g_localizeStrings.Get(36000).c_str());
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000), strMessage);
 
   bool bConnectionFailedDisplayed(false);
@@ -551,10 +551,10 @@ bool CPeripheralCecAdapter::IsMuted(void)
 
 void CPeripheralCecAdapter::SetMenuLanguage(const char *strLanguage)
 {
-  if (m_strMenuLanguage.Equals(strLanguage))
+  if (StringUtils::EqualsNoCase(m_strMenuLanguage, strLanguage))
     return;
 
-  CStdString strGuiLanguage;
+  std::string strGuiLanguage;
 
   if (!strcmp(strLanguage, "bul"))
     strGuiLanguage = "Bulgarian";
@@ -726,7 +726,7 @@ int CPeripheralCecAdapter::CecAlert(void *cbParam, const libcec_alert alert, con
   // display the alert
   if (iAlertString)
   {
-    CStdString strLog(g_localizeStrings.Get(iAlertString));
+    std::string strLog(g_localizeStrings.Get(iAlertString));
     if (data.paramType == CEC_PARAMETER_TYPE_STRING && data.paramData)
       strLog += StringUtils::Format(" - %s", (const char *)data.paramData);
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000), strLog);
@@ -1109,9 +1109,9 @@ void CPeripheralCecAdapter::ResetButton(void)
   }
 }
 
-void CPeripheralCecAdapter::OnSettingChanged(const CStdString &strChangedSetting)
+void CPeripheralCecAdapter::OnSettingChanged(const std::string &strChangedSetting)
 {
-  if (strChangedSetting.Equals("enabled"))
+  if (StringUtils::EqualsNoCase(strChangedSetting, "enabled"))
   {
     bool bEnabled(GetSettingBool("enabled"));
     if (!bEnabled && IsRunning())
@@ -1233,7 +1233,7 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
   bChanged |= SetSetting("cec_hdmi_port", config.iHDMIPort);
 
   // set the physical address, when baseDevice or iHDMIPort are not set
-  CStdString strPhysicalAddress("0");
+  std::string strPhysicalAddress("0");
   if (!bPAAutoDetected && (m_configuration.baseDevice == CECDEVICE_UNKNOWN ||
       m_configuration.iHDMIPort < CEC_MIN_HDMI_PORTNUMBER ||
       m_configuration.iHDMIPort > CEC_MAX_HDMI_PORTNUMBER))
@@ -1308,7 +1308,7 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 
   // set the physical address
   // when set, it will override the connected device and hdmi port settings
-  CStdString strPhysicalAddress = GetSettingString("physical_address");
+  std::string strPhysicalAddress = GetSettingString("physical_address");
   int iPhysicalAddress;
   if (sscanf(strPhysicalAddress.c_str(), "%x", &iPhysicalAddress) &&
       iPhysicalAddress >= CEC_PHYSICAL_ADDRESS_TV &&
@@ -1337,7 +1337,7 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
     m_configuration.tvVendor = iVendor;
 
   // read the devices to wake when starting
-  CStdString strWakeDevices = GetSettingString("wake_devices_advanced");
+  std::string strWakeDevices = GetSettingString("wake_devices_advanced");
   StringUtils::Trim(strWakeDevices);
   m_configuration.wakeDevices.Clear();
   if (!strWakeDevices.empty())
@@ -1346,7 +1346,7 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
     ReadLogicalAddresses(GetSettingInt("wake_devices"), m_configuration.wakeDevices);
 
   // read the devices to power off when stopping
-  CStdString strStandbyDevices = GetSettingString("standby_devices_advanced");
+  std::string strStandbyDevices = GetSettingString("standby_devices_advanced");
   StringUtils::Trim(strStandbyDevices);
   m_configuration.powerOffDevices.Clear();
   if (!strStandbyDevices.empty())
@@ -1375,11 +1375,11 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 #endif
 }
 
-void CPeripheralCecAdapter::ReadLogicalAddresses(const CStdString &strString, cec_logical_addresses &addresses)
+void CPeripheralCecAdapter::ReadLogicalAddresses(const std::string &strString, cec_logical_addresses &addresses)
 {
   for (size_t iPtr = 0; iPtr < strString.size(); iPtr++)
   {
-    CStdString strDevice = strString.substr(iPtr, 1);
+    std::string strDevice = strString.substr(iPtr, 1);
     StringUtils::Trim(strDevice);
     if (!strDevice.empty())
     {
@@ -1418,7 +1418,7 @@ bool CPeripheralCecAdapter::WriteLogicalAddresses(const cec_logical_addresses& a
   // only update the advanced setting if it was set by the user
   if (!GetSettingString(strAdvancedSettingName).empty())
   {
-    CStdString strPowerOffDevices;
+    std::string strPowerOffDevices;
     for (unsigned int iPtr = CECDEVICE_TV; iPtr <= CECDEVICE_BROADCAST; iPtr++)
       if (addresses[iPtr])
         strPowerOffDevices += StringUtils::Format(" %X", iPtr);
@@ -1520,9 +1520,9 @@ void CPeripheralCecAdapterUpdateThread::UpdateMenuLanguage(void)
   }
 }
 
-CStdString CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
+std::string CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
 {
-  CStdString strAmpName;
+  std::string strAmpName;
 
   /* disable the mute setting when an amp is found, because the amp handles the mute setting and
        set PCM output to 100% */
@@ -1567,11 +1567,11 @@ bool CPeripheralCecAdapterUpdateThread::SetInitialConfiguration(void)
   UpdateMenuLanguage();
 
   // request the OSD name of the TV
-  CStdString strNotification;
+  std::string strNotification;
   cec_osd_name tvName = m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_TV);
   strNotification = StringUtils::Format("%s: %s", g_localizeStrings.Get(36016).c_str(), tvName.name);
 
-  CStdString strAmpName = UpdateAudioSystemStatus();
+  std::string strAmpName = UpdateAudioSystemStatus();
   if (!strAmpName.empty())
     strNotification += StringUtils::Format("- %s", strAmpName.c_str());
 

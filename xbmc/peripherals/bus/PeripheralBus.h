@@ -20,7 +20,6 @@
  */
 
 #include <vector>
-#include "utils/StdString.h"
 #include "threads/Thread.h"
 #include "peripherals/PeripheralTypes.h"
 #include "peripherals/devices/Peripheral.h"
@@ -42,7 +41,7 @@ namespace PERIPHERALS
   class CPeripheralBus : protected CThread
   {
   public:
-    CPeripheralBus(const CStdString &threadname, CPeripherals *manager, PeripheralBusType type);
+    CPeripheralBus(const std::string &threadname, CPeripherals *manager, PeripheralBusType type);
     virtual ~CPeripheralBus(void) { Clear(); }
 
     /*!
@@ -60,14 +59,14 @@ namespace PERIPHERALS
      * @param strLocation The location.
      * @return The peripheral or NULL if it wasn't found.
      */
-    virtual CPeripheral *GetPeripheral(const CStdString &strLocation) const;
+    virtual CPeripheral *GetPeripheral(const std::string &strLocation) const;
 
     /*!
      * @brief Check whether a peripheral is present at the given location.
      * @param strLocation The location.
      * @return True when a peripheral was found, false otherwise.
      */
-    virtual bool HasPeripheral(const CStdString &strLocation) const;
+    virtual bool HasPeripheral(const std::string &strLocation) const;
 
     /*!
      * @brief Get all peripheral instances that have the given feature.
@@ -97,19 +96,19 @@ namespace PERIPHERALS
      * @brief Callback method for when a device has been added. Will perform a device scan.
      * @param strLocation The location of the device that has been added.
      */
-    virtual void OnDeviceAdded(const CStdString &strLocation);
+    virtual void OnDeviceAdded(const std::string &strLocation);
 
     /*!
      * @brief Callback method for when a device has been changed. Will perform a device scan.
      * @param strLocation The location of the device that has been changed.
      */
-    virtual void OnDeviceChanged(const CStdString &strLocation);
+    virtual void OnDeviceChanged(const std::string &strLocation);
 
     /*!
      * @brief Callback method for when a device has been removed. Will perform a device scan.
      * @param strLocation The location of the device that has been removed.
      */
-    virtual void OnDeviceRemoved(const CStdString &strLocation);
+    virtual void OnDeviceRemoved(const std::string &strLocation);
 
     /*!
      * @brief Initialise this bus and start a polling thread if this bus needs polling.
@@ -131,14 +130,14 @@ namespace PERIPHERALS
      * @param strPath The path to the directory to get the items from.
      * @param items The item list.
      */
-    virtual void GetDirectory(const CStdString &strPath, CFileItemList &items) const;
+    virtual void GetDirectory(const std::string &strPath, CFileItemList &items) const;
 
     /*!
      * @brief Get the instance of a peripheral given it's path.
      * @param strPath The path to the peripheral.
      * @return The peripheral or NULL if it wasn't found.
      */
-    virtual CPeripheral *GetByPath(const CStdString &strPath) const;
+    virtual CPeripheral *GetByPath(const std::string &strPath) const;
 
     /*!
      * @brief Register a new peripheral on this bus.
@@ -146,7 +145,7 @@ namespace PERIPHERALS
      */
     virtual void Register(CPeripheral *peripheral);
 
-    virtual bool FindComPort(CStdString &strLocation) { return false; }
+    virtual bool FindComPort(std::string &strLocation) { return false; }
 
     virtual bool IsInitialised(void) const { return m_bInitialised; }
 

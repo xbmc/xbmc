@@ -35,7 +35,7 @@ CPeripheralNyxboard::CPeripheralNyxboard(const PeripheralScanResult& scanResult)
 
 bool CPeripheralNyxboard::LookupSymAndUnicode(XBMC_keysym &keysym, uint8_t *key, char *unicode)
 {
-  CStdString strCommand;
+  std::string strCommand;
   if (keysym.sym == XBMCK_F7 && keysym.mod == XBMCKMOD_NONE && GetSettingBool("enable_flip_commands"))
   {
     /* switched to keyboard side */
