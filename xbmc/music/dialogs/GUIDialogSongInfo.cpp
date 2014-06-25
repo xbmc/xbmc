@@ -110,7 +110,7 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
         if (window)
         {
           CFileItem item(*m_song);
-          CStdString path = StringUtils::Format("musicdb://albums/%li",m_albumId);
+          std::string path = StringUtils::Format("musicdb://albums/%li",m_albumId);
           item.SetPath(path);
           item.m_bIsFolder = true;
           window->OnInfo(&item, true);
@@ -166,7 +166,7 @@ void CGUIDialogSongInfo::OnInitWindow()
   // no known db info - check if parent dir is an album
   if (m_song->GetMusicInfoTag()->GetDatabaseId() == -1)
   {
-    CStdString path = URIUtils::GetDirectory(m_song->GetPath());
+    std::string path = URIUtils::GetDirectory(m_song->GetPath());
     m_albumId = db.GetAlbumIdByPath(path);
   }
   else
@@ -234,10 +234,10 @@ CFileItemPtr CGUIDialogSongInfo::GetCurrentListItem(int offset)
   return m_song;
 }
 
-bool CGUIDialogSongInfo::DownloadThumbnail(const CStdString &thumbFile)
+bool CGUIDialogSongInfo::DownloadThumbnail(const std::string &thumbFile)
 {
   // TODO: Obtain the source...
-  CStdString source;
+  std::string source;
   CCurlFile http;
   http.Download(source, thumbFile);
   return true;
@@ -259,7 +259,7 @@ void CGUIDialogSongInfo::OnGetThumb()
 
   // Grab the thumbnail from the web
   /*
-  CStdString thumbFromWeb;
+  std::string thumbFromWeb;
   thumbFromWeb = URIUtils::AddFileToFolder(g_advancedSettings.m_cachePath, "allmusicThumb.jpg");
   if (DownloadThumbnail(thumbFromWeb))
   {
@@ -279,8 +279,8 @@ void CGUIDialogSongInfo::OnGetThumb()
   }
 
   // local thumb
-  CStdString cachedLocalThumb;
-  CStdString localThumb(m_song->GetUserMusicThumb(true));
+  std::string cachedLocalThumb;
+  std::string localThumb(m_song->GetUserMusicThumb(true));
   if (m_song->IsMusicDb())
   {
     CFileItem item(m_song->GetMusicInfoTag()->GetURL(), false);
@@ -303,7 +303,7 @@ void CGUIDialogSongInfo::OnGetThumb()
     items.Add(item);
   }
 
-  CStdString result;
+  std::string result;
   VECSOURCES sources(*CMediaSourceSettings::Get().GetSources("music"));
   CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(sources, *m_song);
   g_mediaManager.GetLocalDrives(sources);
@@ -316,7 +316,7 @@ void CGUIDialogSongInfo::OnGetThumb()
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
 
-  CStdString newThumb;
+  std::string newThumb;
   if (result == "thumb://None")
     newThumb = "-";
   else if (result == "thumb://allmusic.com")
