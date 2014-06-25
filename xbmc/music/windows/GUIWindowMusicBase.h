@@ -41,7 +41,7 @@
 class CGUIWindowMusicBase : public CGUIMediaWindow
 {
 public:
-  CGUIWindowMusicBase(int id, const CStdString &xmlFile);
+  CGUIWindowMusicBase(int id, const std::string &xmlFile);
   virtual ~CGUIWindowMusicBase(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
@@ -88,7 +88,7 @@ protected:
   bool ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo = true);
   void ShowArtistInfo(const CFileItem *pItem, bool bShowInfo = true);
   void ShowSongInfo(CFileItem* pItem);
-  void UpdateThumb(const CAlbum &album, const CStdString &path);
+  void UpdateThumb(const CAlbum &album, const std::string &path);
 
   void OnRipTrack(int iItem);
   void OnSearch();

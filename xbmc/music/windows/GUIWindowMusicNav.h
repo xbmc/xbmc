@@ -51,7 +51,7 @@ protected:
 
   bool GetSongsFromPlayList(const std::string& strPlayList, CFileItemList &items);
   void DisplayEmptyDatabaseMessage(bool bDisplay);
-  CStdString GetQuickpathName(const CStdString& strPath) const;
+  std::string GetQuickpathName(const std::string& strPath) const;
 
   VECSOURCES m_shares;
 
