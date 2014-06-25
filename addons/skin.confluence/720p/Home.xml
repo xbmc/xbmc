@@ -890,13 +890,6 @@
 					</control>
 				</focusedlayout>
 				<content>
-					<item id="7">
-						<label>31950</label>
-						<onclick>ActivateWindow(Weather)</onclick>
-						<icon>-</icon>
-						<thumb>-</thumb>
-						<visible>!Skin.HasSetting(HomeMenuNoWeatherButton) + !IsEmpty(Weather.Plugin)</visible>
-					</item>
 					<item id="4">
 						<label>31951</label>
 						<onclick>ActivateWindow(Pictures)</onclick>
@@ -939,6 +932,13 @@
 						<icon>-</icon>
 						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoMusicButton)</visible>
+					</item>
+					<item id="7">
+						<label>31950</label>
+						<onclick>ActivateWindow(Weather)</onclick>
+						<icon>-</icon>
+						<thumb>-</thumb>
+						<visible>!Skin.HasSetting(HomeMenuNoWeatherButton) + !IsEmpty(Weather.Plugin)</visible>
 					</item>
 					<item id="1">
 						<label>31957</label>
