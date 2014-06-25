@@ -20,10 +20,7 @@
  */
 
 #include "system.h"
-
-#ifdef _DEBUG
-#include "utils/StdString.h" /* needed for ASSERT */
-#endif
+#include <assert.h>
 
 /**
  * This class wraps a block of 16 byte aligned memory for simple buffer
@@ -56,8 +53,8 @@ public:
   inline void Write(const void *src, const size_t size)
   {
   #ifdef _DEBUG
-    ASSERT(src);
-    ASSERT(size <= m_bufferSize);
+    assert(src);
+    assert(size <= m_bufferSize);
   #endif
     memcpy(m_buffer, src, size);
     m_bufferPos = 0;
@@ -66,8 +63,8 @@ public:
   inline void Push(const void *src, const size_t size)
   {
   #ifdef _DEBUG
-    ASSERT(src);
-    ASSERT(size <= m_bufferSize - m_bufferPos);
+    assert(src);
+    assert(size <= m_bufferSize - m_bufferPos);
   #endif
     memcpy(m_buffer + m_bufferPos, src, size);
     m_bufferPos += size;
@@ -76,8 +73,8 @@ public:
   inline void UnShift(const void *src, const size_t size)
   {
   #ifdef _DEBUG
-    ASSERT(src);
-    ASSERT(size < m_bufferSize - m_bufferPos);
+    assert(src);
+    assert(size < m_bufferSize - m_bufferPos);
   #endif
     memmove(m_buffer + size, m_buffer, m_bufferSize - size);
     memcpy (m_buffer, src, size);
@@ -87,7 +84,7 @@ public:
   inline void* Take(const size_t size)
   {
   #ifdef _DEBUG
-    ASSERT(size <= m_bufferSize - m_bufferPos);
+    assert(size <= m_bufferSize - m_bufferPos);
   #endif
 
     void* ret = m_buffer + m_bufferPos;
@@ -99,7 +96,7 @@ public:
   inline void* Raw(const size_t size)
   {
   #ifdef _DEBUG
-    ASSERT(size <= m_bufferSize);
+    assert(size <= m_bufferSize);
   #endif
     return m_buffer;
   }
@@ -108,8 +105,8 @@ public:
   inline void Read(void *dst, const size_t size)
   {
   #ifdef _DEBUG
-    ASSERT(size <= m_bufferSize);
-    ASSERT(dst);
+    assert(size <= m_bufferSize);
+    assert(dst);
   #endif
     memcpy(dst, m_buffer, size);
   }
@@ -117,7 +114,7 @@ public:
   inline void Pop(void *dst, const size_t size)
   {
   #ifdef _DEBUG
-    ASSERT(size <= m_bufferPos);
+    assert(size <= m_bufferPos);
   #endif
     m_bufferPos -= size;
     if (dst)
@@ -127,7 +124,7 @@ public:
   inline void Shift(void *dst, const size_t size)
   {
   #ifdef _DEBUG
-    ASSERT(size <= m_bufferPos);
+    assert(size <= m_bufferPos);
   #endif
     if (dst)
       memcpy(dst, m_buffer, size);
@@ -158,7 +155,7 @@ public:
   inline void CursorSeek (const size_t pos )
   {
   #ifdef _DEBUG
-    ASSERT(pos <= m_bufferSize);
+    assert(pos <= m_bufferSize);
   #endif
     m_cursorPos = pos;
   }
@@ -166,7 +163,7 @@ public:
   inline void* CursorRead(const size_t size)
   {
   #ifdef _DEBUG
-    ASSERT(m_cursorPos + size <= m_bufferPos);
+    assert(m_cursorPos + size <= m_bufferPos);
   #endif
     uint8_t* out = m_buffer + m_cursorPos;
     m_cursorPos += size;

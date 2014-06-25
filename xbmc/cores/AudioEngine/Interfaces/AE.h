@@ -21,6 +21,7 @@
 
 #include <list>
 #include <map>
+#include <vector>
 
 #include "system.h"
 #include "threads/CriticalSection.h"

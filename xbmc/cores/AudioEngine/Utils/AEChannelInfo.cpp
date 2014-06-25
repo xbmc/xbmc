@@ -21,6 +21,7 @@
 #include "AEChannelInfo.h"
 #include <limits>
 #include <string.h>
+#include <assert.h>
 
 CAEChannelInfo::CAEChannelInfo()
 {
@@ -162,14 +163,14 @@ CAEChannelInfo& CAEChannelInfo::operator=(const enum AEChannel* rhs)
   }
 
   /* the last entry should be NULL, if not we were passed a non null terminated list */
-  ASSERT(rhs[m_channelCount] == AE_CH_NULL);
+  assert(rhs[m_channelCount] == AE_CH_NULL);
 
   return *this;
 }
 
 CAEChannelInfo& CAEChannelInfo::operator=(const enum AEStdChLayout rhs)
 {
-  ASSERT(rhs > AE_CH_LAYOUT_INVALID && rhs < AE_CH_LAYOUT_MAX);
+  assert(rhs > AE_CH_LAYOUT_INVALID && rhs < AE_CH_LAYOUT_MAX);
 
   static enum AEChannel layouts[AE_CH_LAYOUT_MAX][9] = {
     {AE_CH_FC, AE_CH_NULL},
@@ -210,8 +211,8 @@ bool CAEChannelInfo::operator!=(const CAEChannelInfo& rhs)
 
 CAEChannelInfo& CAEChannelInfo::operator+=(const enum AEChannel& rhs)
 {
-  ASSERT(m_channelCount < AE_CH_MAX);
-  ASSERT(rhs > AE_CH_NULL && rhs < AE_CH_MAX);
+  assert(m_channelCount < AE_CH_MAX);
+  assert(rhs > AE_CH_NULL && rhs < AE_CH_MAX);
 
   m_channels[m_channelCount++] = rhs;
   return *this;
@@ -219,7 +220,7 @@ CAEChannelInfo& CAEChannelInfo::operator+=(const enum AEChannel& rhs)
 
 CAEChannelInfo& CAEChannelInfo::operator-=(const enum AEChannel& rhs)
 {
-  ASSERT(rhs > AE_CH_NULL && rhs < AE_CH_MAX);
+  assert(rhs > AE_CH_NULL && rhs < AE_CH_MAX);
 
   unsigned int i = 0;
   while(i < m_channelCount && m_channels[i] != rhs)
@@ -237,7 +238,7 @@ CAEChannelInfo& CAEChannelInfo::operator-=(const enum AEChannel& rhs)
 
 const enum AEChannel CAEChannelInfo::operator[](unsigned int i) const
 {
-  ASSERT(i < m_channelCount);
+  assert(i < m_channelCount);
   return m_channels[i];
 }
 
@@ -259,7 +260,7 @@ CAEChannelInfo::operator std::string() const
 
 const char* CAEChannelInfo::GetChName(const enum AEChannel ch)
 {
-  ASSERT(ch >= 0 && ch < AE_CH_MAX);
+  assert(ch >= 0 && ch < AE_CH_MAX);
 
   static const char* channels[AE_CH_MAX] =
   {
