@@ -1648,7 +1648,7 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
     CFileUtils::DeleteItem(item);
 }
 
-void CGUIWindowVideoBase::LoadPlayList(const CStdString& strPlayList, int iPlayList /* = PLAYLIST_VIDEO */)
+void CGUIWindowVideoBase::LoadPlayList(const std::string& strPlayList, int iPlayList /* = PLAYLIST_VIDEO */)
 {
   // if partymode is active, we disable it
   if (g_partyModeManager.IsEnabled())
@@ -1718,7 +1718,7 @@ void CGUIWindowVideoBase::PlayItem(int iItem)
   }
 }
 
-bool CGUIWindowVideoBase::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
+bool CGUIWindowVideoBase::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
@@ -1733,7 +1733,7 @@ bool CGUIWindowVideoBase::Update(const CStdString &strDirectory, bool updateFilt
   return true;
 }
 
-bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+bool CGUIWindowVideoBase::GetDirectory(const std::string &strDirectory, CFileItemList &items)
 {
   bool bResult = CGUIMediaWindow::GetDirectory(strDirectory, items);
 
@@ -1828,9 +1828,9 @@ bool CGUIWindowVideoBase::CheckFilterAdvanced(CFileItemList &items) const
   return false;
 }
 
-bool CGUIWindowVideoBase::CanContainFilter(const CStdString &strDirectory) const
+bool CGUIWindowVideoBase::CanContainFilter(const std::string &strDirectory) const
 {
-  return StringUtils::StartsWithNoCase(strDirectory, "videodb://");
+  return URIUtils::IsProtocol(strDirectory, "videodb://");
 }
 
 void CGUIWindowVideoBase::AddToDatabase(int iItem)
@@ -2035,11 +2035,12 @@ void CGUIWindowVideoBase::OnScan(const CStdString& strPath, bool scanAll)
     g_application.StartVideoScan(strPath, scanAll);
 }
 
-CStdString CGUIWindowVideoBase::GetStartFolder(const CStdString &dir)
+std::string CGUIWindowVideoBase::GetStartFolder(const std::string &dir)
 {
-  if (dir.Equals("$PLAYLISTS") || dir.Equals("Playlists"))
+  std::string lower(dir); StringUtils::ToLower(lower);
+  if (lower == "$playlists" || lower == "playlists")
     return "special://videoplaylists/";
-  else if (dir.Equals("Plugins") || dir.Equals("Addons"))
+  else if (lower == "plugins" || lower == "addons")
     return "addons://sources/video/";
   return CGUIMediaWindow::GetStartFolder(dir);
 }

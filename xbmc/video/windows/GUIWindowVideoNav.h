@@ -52,11 +52,11 @@ protected:
   void LoadVideoInfo(CFileItemList &items);
 
   bool ApplyWatchedFilter(CFileItemList &items);
-  virtual bool GetFilteredItems(const CStdString &filter, CFileItemList &items);
+  virtual bool GetFilteredItems(const std::string &filter, CFileItemList &items);
 
   virtual void OnItemLoaded(CFileItem* pItem) {};
   // override base class methods
-  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
+  virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
   virtual void UpdateButtons();
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
   virtual void PlayItem(int iItem);
@@ -64,7 +64,7 @@ protected:
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual bool OnClick(int iItem);
-  virtual CStdString GetStartFolder(const CStdString &dir);
+  virtual std::string GetStartFolder(const std::string &dir);
 
   virtual CStdString GetQuickpathName(const CStdString& strPath) const;
 

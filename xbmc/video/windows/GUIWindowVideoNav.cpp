@@ -268,7 +268,7 @@ CStdString CGUIWindowVideoNav::GetQuickpathName(const CStdString& strPath) const
   }
 }
 
-bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItemList &items)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
@@ -588,7 +588,7 @@ void CGUIWindowVideoNav::UpdateButtons()
   CONTROL_ENABLE_ON_CONDITION(CONTROL_UPDATE_LIBRARY, !m_vecItems->IsAddonsPath() && !m_vecItems->IsPlugin() && !m_vecItems->IsScript());
 }
 
-bool CGUIWindowVideoNav::GetFilteredItems(const CStdString &filter, CFileItemList &items)
+bool CGUIWindowVideoNav::GetFilteredItems(const std::string &filter, CFileItemList &items)
 {
   bool listchanged = CGUIMediaWindow::GetFilteredItems(filter, items);
   listchanged |= ApplyWatchedFilter(items);
@@ -1087,67 +1087,68 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
   return CGUIWindowVideoBase::OnClick(iItem);
 }
 
-CStdString CGUIWindowVideoNav::GetStartFolder(const CStdString &dir)
+std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
 {
-  if (dir.Equals("MovieGenres"))
+  std::string lower(dir); StringUtils::ToLower(lower);
+  if (lower == "moviegenres")
     return "videodb://movies/genres/";
-  else if (dir.Equals("MovieTitles"))
+  else if (lower == "movietitles")
     return "videodb://movies/titles/";
-  else if (dir.Equals("MovieYears"))
+  else if (lower == "movieyears")
     return "videodb://movies/years/";
-  else if (dir.Equals("MovieActors"))
+  else if (lower == "movieactors")
     return "videodb://movies/actors/";
-  else if (dir.Equals("MovieDirectors"))
+  else if (lower == "moviedirectors")
     return "videodb://movies/directors/";
-  else if (dir.Equals("MovieStudios"))
+  else if (lower == "moviestudios")
     return "videodb://movies/studios/";
-  else if (dir.Equals("MovieSets"))
+  else if (lower == "moviesets")
     return "videodb://movies/sets/";
-  else if (dir.Equals("MovieCountries"))
+  else if (lower == "moviecountries")
     return "videodb://movies/countries/";
-  else if (dir.Equals("MovieTags"))
+  else if (lower == "movietags")
     return "videodb://movies/tags/";
-  else if (dir.Equals("Movies"))
+  else if (lower == "movies")
     return "videodb://movies/";
-  else if (dir.Equals("TvShowGenres"))
+  else if (lower == "tvshowgenres")
     return "videodb://tvshows/genres/";
-  else if (dir.Equals("TvShowTitles"))
+  else if (lower == "tvshowtitles")
     return "videodb://tvshows/titles/";
-  else if (dir.Equals("TvShowYears"))
+  else if (lower == "tvshowyears")
     return "videodb://tvshows/years/";
-  else if (dir.Equals("TvShowActors"))
+  else if (lower == "tvshowactors")
     return "videodb://tvshows/actors/";
-  else if (dir.Equals("TvShowStudios"))
+  else if (lower == "tvshowstudios")
     return "videodb://tvshows/studios/";
-  else if (dir.Equals("TvShowTags"))
+  else if (lower == "tvshowtags")
     return "videodb://tvshows/tags/";
-  else if (dir.Equals("TvShows"))
+  else if (lower == "tvshows")
     return "videodb://tvshows/";
-  else if (dir.Equals("MusicVideoGenres"))
+  else if (lower == "musicvideogenres")
     return "videodb://musicvideos/genres/";
-  else if (dir.Equals("MusicVideoTitles"))
+  else if (lower == "musicvideotitles")
     return "videodb://musicvideos/titles/";
-  else if (dir.Equals("MusicVideoYears"))
+  else if (lower == "musicvideoyears")
     return "videodb://musicvideos/years/";
-  else if (dir.Equals("MusicVideoArtists"))
+  else if (lower == "musicvideoartists")
     return "videodb://musicvideos/artists/";
-  else if (dir.Equals("MusicVideoAlbums"))
+  else if (lower == "musicvideoalbums")
     return "videodb://musicvideos/albums/";
-  else if (dir.Equals("MusicVideoDirectors"))
+  else if (lower == "musicvideodirectors")
     return "videodb://musicvideos/directors/";
-  else if (dir.Equals("MusicVideoStudios"))
+  else if (lower == "musicvideostudios")
     return "videodb://musicvideos/studios/";
-  else if (dir.Equals("MusicVideoTags"))
+  else if (lower == "musicvideotags")
     return "videodb://musicvideos/tags/";
-  else if (dir.Equals("MusicVideos"))
+  else if (lower == "musicvideos")
     return "videodb://musicvideos/";
-  else if (dir.Equals("RecentlyAddedMovies"))
+  else if (lower == "recentlyaddedmovies")
     return "videodb://recentlyaddedmovies/";
-  else if (dir.Equals("RecentlyAddedEpisodes"))
+  else if (lower == "recentlyaddedepisodes")
     return "videodb://recentlyaddedepisodes/";
-  else if (dir.Equals("RecentlyAddedMusicVideos"))
+  else if (lower == "recentlyaddedmusicvideos")
     return "videodb://recentlyaddedmusicvideos/";
-  else if (dir.Equals("Files"))
+  else if (lower == "files")
     return "sources://video/";
   return CGUIWindowVideoBase::GetStartFolder(dir);
 }

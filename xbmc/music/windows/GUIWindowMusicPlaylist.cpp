@@ -478,7 +478,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   }
 }
 
-bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory, bool updateFilterPath /* = true */)
+bool CGUIWindowMusicPlayList::Update(const std::string& strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_musicInfoLoader.IsLoading())
     m_musicInfoLoader.StopThread();

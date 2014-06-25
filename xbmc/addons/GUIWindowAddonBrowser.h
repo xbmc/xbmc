@@ -62,9 +62,9 @@ protected:
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual bool OnClick(int iItem);
   virtual void UpdateButtons();
-  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
-  virtual bool Update(const CStdString &strDirectory, bool updateFilterPath = true);
-  virtual CStdString GetStartFolder(const CStdString &dir);
+  virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
+  virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true);
+  virtual std::string GetStartFolder(const std::string &dir);
 private:
   CProgramThumbLoader m_thumbLoader;
 };

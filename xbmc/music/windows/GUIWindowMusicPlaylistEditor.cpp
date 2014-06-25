@@ -138,7 +138,7 @@ bool CGUIWindowMusicPlaylistEditor::OnMessage(CGUIMessage& message)
   return CGUIWindowMusicBase::OnMessage(message);
 }
 
-bool CGUIWindowMusicPlaylistEditor::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+bool CGUIWindowMusicPlaylistEditor::GetDirectory(const std::string &strDirectory, CFileItemList &items)
 {
   items.Clear();
   if (strDirectory.empty())
@@ -218,7 +218,7 @@ void CGUIWindowMusicPlaylistEditor::OnQueueItem(int iItem)
   AppendToPlaylist(newItems);
 }
 
-bool CGUIWindowMusicPlaylistEditor::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
+bool CGUIWindowMusicPlaylistEditor::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
@@ -368,7 +368,7 @@ void CGUIWindowMusicPlaylistEditor::OnLoadPlaylist()
     LoadPlaylist(playlist);
 }
 
-void CGUIWindowMusicPlaylistEditor::LoadPlaylist(const CStdString &playlist)
+void CGUIWindowMusicPlaylistEditor::LoadPlaylist(const std::string &playlist)
 {
   const CURL pathToUrl(playlist);
   if (pathToUrl.GetProtocol() == "newplaylist")

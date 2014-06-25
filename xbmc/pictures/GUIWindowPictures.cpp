@@ -255,7 +255,7 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
     m_dlgProgress->Close();
 }
 
-bool CGUIWindowPictures::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
+bool CGUIWindowPictures::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
@@ -296,7 +296,7 @@ bool CGUIWindowPictures::OnClick(int iItem)
   return false;
 }
 
-bool CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, CFileItemList& items)
+bool CGUIWindowPictures::GetDirectory(const std::string &strDirectory, CFileItemList& items)
 {
   if (!CGUIMediaWindow::GetDirectory(strDirectory, items))
     return false;
@@ -556,7 +556,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
   CPictureThumbLoader::ProcessFoldersAndArchives(pItem);
 }
 
-void CGUIWindowPictures::LoadPlayList(const CStdString& strPlayList)
+void CGUIWindowPictures::LoadPlayList(const std::string& strPlayList)
 {
   CLog::Log(LOGDEBUG,"CGUIWindowPictures::LoadPlayList()... converting playlist into slideshow: %s", strPlayList.c_str());
   auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
@@ -616,9 +616,10 @@ void CGUIWindowPictures::OnInfo(int itemNumber)
   }
 }
 
-CStdString CGUIWindowPictures::GetStartFolder(const CStdString &dir)
+std::string CGUIWindowPictures::GetStartFolder(const std::string &dir)
 {
-  if (dir.Equals("Plugins") || dir.Equals("Addons"))
+  std::string lower(dir); StringUtils::ToLower(lower);
+  if (lower == "plugins" || lower == "addons")
     return "addons://sources/image/";
 
   SetupShares();

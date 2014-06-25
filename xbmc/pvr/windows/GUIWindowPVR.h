@@ -67,7 +67,7 @@ namespace PVR
     virtual void SetLabel(int iControl, const CStdString &strLabel);
     virtual void SetLabel(int iControl, int iLabel);
     virtual void UpdateButtons(void);
-    virtual bool Update(const CStdString &strDirectory, bool updateFilterPath = true);
+    virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true);
     virtual bool OnBack(int actionID);
 
   private:

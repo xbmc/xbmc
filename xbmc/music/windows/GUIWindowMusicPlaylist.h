@@ -40,7 +40,7 @@ protected:
   virtual void GoParentFolder() {};
   virtual void UpdateButtons();
   virtual void OnItemLoaded(CFileItem* pItem);
-  virtual bool Update(const CStdString& strDirectory, bool updateFilterPath = true);
+  virtual bool Update(const std::string& strDirectory, bool updateFilterPath = true);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   void OnMove(int iItem, int iAction);

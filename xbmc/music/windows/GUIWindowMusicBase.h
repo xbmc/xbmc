@@ -63,15 +63,15 @@ protected:
   */
   virtual void UpdateButtons();
 
-  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
+  virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
   virtual void OnRetrieveMusicInfo(CFileItemList& items);
   void AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems);
   virtual void OnScan(int iItem) {};
   void OnRipCD();
-  virtual CStdString GetStartFolder(const CStdString &dir);
+  virtual std::string GetStartFolder(const std::string &dir);
 
   virtual bool CheckFilterAdvanced(CFileItemList &items) const;
-  virtual bool CanContainFilter(const CStdString &strDirectory) const;
+  virtual bool CanContainFilter(const std::string &strDirectory) const;
 
   // new methods
   virtual void PlayItem(int iItem);
@@ -92,7 +92,7 @@ protected:
 
   void OnRipTrack(int iItem);
   void OnSearch();
-  virtual void LoadPlayList(const CStdString& strPlayList);
+  virtual void LoadPlayList(const std::string& strPlayList);
 
   typedef std::vector <CFileItem*>::iterator ivecItems; ///< CFileItem* vector Iterator
   CGUIDialogProgress* m_dlgProgress; ///< Progress dialog

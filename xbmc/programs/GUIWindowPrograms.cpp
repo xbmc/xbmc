@@ -145,7 +145,7 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
-bool CGUIWindowPrograms::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
+bool CGUIWindowPrograms::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
@@ -172,7 +172,7 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
   return false;
 }
 
-bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+bool CGUIWindowPrograms::GetDirectory(const std::string &strDirectory, CFileItemList &items)
 {
   if (!CGUIMediaWindow::GetDirectory(strDirectory, items))
     return false;
@@ -190,9 +190,10 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
   return true;
 }
 
-CStdString CGUIWindowPrograms::GetStartFolder(const CStdString &dir)
+std::string CGUIWindowPrograms::GetStartFolder(const std::string &dir)
 {
-  if (dir.Equals("Plugins") || dir.Equals("Addons"))
+  std::string lower(dir); StringUtils::ToLower(lower);
+  if (lower == "plugins" || lower == "addons")
     return "addons://sources/executable/";
     
   SetupShares();

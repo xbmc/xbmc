@@ -93,13 +93,13 @@ protected:
   void OnScan(const CStdString& strPath, bool scanAll = false);
   virtual void OnInitWindow();
   virtual void UpdateButtons();
-  virtual bool Update(const CStdString &strDirectory, bool updateFilterPath = true);
-  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
+  virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true);
+  virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
   virtual void OnItemLoaded(CFileItem* pItem) {};
   virtual void GetGroupedItems(CFileItemList &items);
 
   virtual bool CheckFilterAdvanced(CFileItemList &items) const;
-  virtual bool CanContainFilter(const CStdString &strDirectory) const;
+  virtual bool CanContainFilter(const std::string &strDirectory) const;
 
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
@@ -107,7 +107,7 @@ protected:
   virtual void OnDeleteItem(CFileItemPtr pItem);
   virtual void OnDeleteItem(int iItem);
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items) {};
-  virtual CStdString GetStartFolder(const CStdString &dir);
+  virtual std::string GetStartFolder(const std::string &dir);
 
   bool OnClick(int iItem);
   bool OnSelect(int iItem);
@@ -128,7 +128,7 @@ protected:
   void PlayItem(int iItem);
   virtual bool OnPlayMedia(int iItem);
   virtual bool OnPlayAndQueueMedia(const CFileItemPtr &item);
-  void LoadPlayList(const CStdString& strPlayList, int iPlayList = PLAYLIST_VIDEO);
+  void LoadPlayList(const std::string& strPlayList, int iPlayList = PLAYLIST_VIDEO);
 
   bool ShowIMDB(CFileItem *item, const ADDON::ScraperPtr& content, bool fromDB);
 

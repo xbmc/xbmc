@@ -194,7 +194,7 @@ void CGUIWindowMusicSongs::DoScan(const CStdString &strPath)
   return;
 }
 
-bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+bool CGUIWindowMusicSongs::GetDirectory(const std::string &strDirectory, CFileItemList &items)
 {
   if (!CGUIWindowMusicBase::GetDirectory(strDirectory, items))
     return false;
@@ -461,7 +461,7 @@ void CGUIWindowMusicSongs::PlayItem(int iItem)
     CGUIWindowMusicBase::PlayItem(iItem);
 }
 
-bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
+bool CGUIWindowMusicSongs::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
@@ -490,7 +490,7 @@ void CGUIWindowMusicSongs::OnRemoveSource(int iItem)
   }
 }
 
-CStdString CGUIWindowMusicSongs::GetStartFolder(const CStdString &dir)
+std::string CGUIWindowMusicSongs::GetStartFolder(const std::string &dir)
 {
   SetupShares();
   VECSOURCES shares;

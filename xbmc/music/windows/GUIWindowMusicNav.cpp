@@ -276,7 +276,7 @@ bool CGUIWindowMusicNav::OnClick(int iItem)
   return CGUIWindowMusicBase::OnClick(iItem);
 }
 
-bool CGUIWindowMusicNav::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
+bool CGUIWindowMusicNav::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
@@ -290,7 +290,7 @@ bool CGUIWindowMusicNav::Update(const CStdString &strDirectory, bool updateFilte
   return false;
 }
 
-bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItemList &items)
 {
   if (m_bDisplayEmptyDatabaseMessage)
     return true;
@@ -357,9 +357,9 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     else if (node == NODE_TYPE_YEAR)
       items.SetContent("years");
   }
-  else if (strDirectory.Equals("special://musicplaylists/"))
+  else if (URIUtils::PathEquals(strDirectory, "special://musicplaylists/"))
     items.SetContent("playlists");
-  else if (strDirectory.Equals("plugin://music/"))
+  else if (URIUtils::PathEquals(strDirectory, "plugin://music/"))
     items.SetContent("plugins");
   else if (items.IsPlayList())
     items.SetContent("songs");
@@ -748,7 +748,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
 }
 
-bool CGUIWindowMusicNav::GetSongsFromPlayList(const CStdString& strPlayList, CFileItemList &items)
+bool CGUIWindowMusicNav::GetSongsFromPlayList(const std::string& strPlayList, CFileItemList &items)
 {
   CStdString strParentPath=m_history.GetParentPath();
 
@@ -858,31 +858,32 @@ void CGUIWindowMusicNav::AddSearchFolder()
   }
 }
 
-CStdString CGUIWindowMusicNav::GetStartFolder(const CStdString &dir)
+std::string CGUIWindowMusicNav::GetStartFolder(const std::string &dir)
 {
-  if (dir.Equals("Genres"))
+  std::string lower(dir); StringUtils::ToLower(lower);
+  if (lower == "genres")
     return "musicdb://genres/";
-  else if (dir.Equals("Artists"))
+  else if (lower == "artists")
     return "musicdb://artists/";
-  else if (dir.Equals("Albums"))
+  else if (lower == "albums")
     return "musicdb://albums/";
-  else if (dir.Equals("Singles"))
+  else if (lower == "singles")
     return "musicdb://singles/";
-  else if (dir.Equals("Songs"))
+  else if (lower == "songs")
     return "musicdb://songs/";
-  else if (dir.Equals("Top100"))
+  else if (lower == "top100")
     return "musicdb://top100/";
-  else if (dir.Equals("Top100Songs"))
+  else if (lower == "top100songs")
     return "musicdb://top100/songs/";
-  else if (dir.Equals("Top100Albums"))
+  else if (lower == "top100albums")
     return "musicdb://top100/albums/";
-  else if (dir.Equals("RecentlyAddedAlbums"))
+  else if (lower == "recentlyaddedalbums")
     return "musicdb://recentlyaddedalbums/";
-  else if (dir.Equals("RecentlyPlayedAlbums"))
+  else if (lower == "recentlyplayedalbums")
    return "musicdb://recentlyplayedalbums/";
-  else if (dir.Equals("Compilations"))
+  else if (lower == "compilations")
     return "musicdb://compilations/";
-  else if (dir.Equals("Years"))
+  else if (lower == "years")
     return "musicdb://years/";
   return CGUIWindowMusicBase::GetStartFolder(dir);
 }

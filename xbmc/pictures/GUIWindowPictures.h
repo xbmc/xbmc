@@ -36,15 +36,15 @@ public:
   virtual void OnInitWindow();
 
 protected:
-  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList& items);
+  virtual bool GetDirectory(const std::string &strDirectory, CFileItemList& items);
   virtual void OnInfo(int item);
   virtual bool OnClick(int iItem);
   virtual void UpdateButtons();
   virtual void OnPrepareFileItems(CFileItemList& items);
-  virtual bool Update(const CStdString &strDirectory, bool updateFilterPath = true);
+  virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-  virtual CStdString GetStartFolder(const CStdString &dir);
+  virtual std::string GetStartFolder(const std::string &dir);
 
   void OnRegenerateThumbs();
   virtual bool OnPlayMedia(int iItem);
@@ -55,7 +55,7 @@ protected:
   void OnSlideShowRecursive(const CStdString& strPicture);
   void OnSlideShowRecursive();
   virtual void OnItemLoaded(CFileItem* pItem);
-  virtual void LoadPlayList(const CStdString& strPlayList);
+  virtual void LoadPlayList(const std::string& strPlayList);
 
   CGUIDialogProgress* m_dlgProgress;
   DllImageLib m_ImageLib;
