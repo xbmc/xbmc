@@ -517,6 +517,7 @@ void CApplicationPlayer::SetSubtitle(int iStream)
     player->SetSubtitle(iStream);
     m_iSubtitleStream = iStream;
     m_subtitleStreamUpdate.Set(1000);
+    CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = iStream;
   }
 }
 
