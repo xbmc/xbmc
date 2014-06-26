@@ -23,6 +23,7 @@
 #include "FileItem.h"
 #include "Job.h"
 #include "filesystem/File.h"
+#include "StdString.h"
 
 class CGUIDialogProgressBarHandle;
 

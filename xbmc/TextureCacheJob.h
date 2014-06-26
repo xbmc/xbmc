@@ -20,7 +20,8 @@
 
 #pragma once
 
-#include "utils/StdString.h"
+#include <string>
+#include <vector>
 #include "utils/Job.h"
 
 class CBaseTexture;
@@ -61,7 +62,7 @@ public:
 class CTextureCacheJob : public CJob
 {
 public:
-  CTextureCacheJob(const CStdString &url, const CStdString &oldHash = "");
+  CTextureCacheJob(const std::string &url, const std::string &oldHash = "");
   virtual ~CTextureCacheJob();
 
   virtual const char* GetType() const { return kJobTypeCacheImage; };
@@ -75,8 +76,8 @@ public:
    */
   bool CacheTexture(CBaseTexture **texture = NULL);
 
-  CStdString m_url;
-  CStdString m_oldHash;
+  std::string m_url;
+  std::string m_oldHash;
   CTextureDetails m_details;
 private:
   friend class CEdenVideoArtUpdater;
@@ -86,7 +87,7 @@ private:
    \param url location of the image
    \return a hash string for this image
    */
-  static CStdString GetImageHash(const CStdString &url);
+  static std::string GetImageHash(const std::string &url);
 
   /*! \brief Check whether a given URL represents an image that can be updated
    We currently don't check http:// and https:// URLs for updates, under the assumption that
@@ -95,7 +96,7 @@ private:
    \param url the url to check
    \return true if the image given by the URL should be checked for updates, false otehrwise
    */
-  bool UpdateableURL(const CStdString &url) const;
+  bool UpdateableURL(const std::string &url) const;
 
   /*! \brief Decode an image URL to the underlying image, width, height and orientation
    \param url wrapped URL of the image
@@ -104,7 +105,7 @@ private:
    \param additional_info additional information, such as "flipped" to flip horizontally
    \return URL of the underlying image file.
    */
-  static CStdString DecodeImageURL(const CStdString &url, unsigned int &width, unsigned int &height, std::string &additional_info);
+  static std::string DecodeImageURL(const std::string &url, unsigned int &width, unsigned int &height, std::string &additional_info);
 
   /*! \brief Load an image at a given target size and orientation.
 
@@ -117,9 +118,9 @@ private:
    \param additional_info extra info for loading, such as whether to flip horizontally.
    \return a pointer to a CBaseTexture object, NULL if failed.
    */
-  static CBaseTexture *LoadImage(const CStdString &image, unsigned int width, unsigned int height, const std::string &additional_info, bool requirePixels = false);
+  static CBaseTexture *LoadImage(const std::string &image, unsigned int width, unsigned int height, const std::string &additional_info, bool requirePixels = false);
 
-  CStdString    m_cachePath;
+  std::string    m_cachePath;
 };
 
 /* \brief Job class for creating .dds versions of textures
@@ -127,13 +128,13 @@ private:
 class CTextureDDSJob : public CJob
 {
 public:
-  CTextureDDSJob(const CStdString &original);
+  CTextureDDSJob(const std::string &original);
 
   virtual const char* GetType() const { return kJobTypeDDSCompress; };
   virtual bool operator==(const CJob *job) const;
   virtual bool DoWork();
 
-  CStdString m_original;
+  std::string m_original;
 };
 
 /* \brief Job class for storing the use count of textures
