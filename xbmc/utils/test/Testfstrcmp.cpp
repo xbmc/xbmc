@@ -19,14 +19,13 @@
  */
 
 #include "utils/fstrcmp.h"
-#include "utils/StdString.h"
 #include "utils/StringUtils.h"
 
 #include "gtest/gtest.h"
 
 TEST(Testfstrcmp, General)
 {
-  CStdString refstr, varstr, refresult, varresult;
+  std::string refstr, varstr, refresult, varresult;
   refstr = "Testfstrcmp test string";
   varstr = refstr;
 
