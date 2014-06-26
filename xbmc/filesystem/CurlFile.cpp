@@ -1015,7 +1015,7 @@ bool CCurlFile::OpenForWrite(const CURL& url, bool bOverWrite)
   return true;
 }
 
-int CCurlFile::Write(const void* lpBuf, int64_t uiBufSize)
+int64_t CCurlFile::Write(const void* lpBuf, int64_t uiBufSize)
 {
   if (!(m_opened && m_forWrite) || m_inError)
     return -1;

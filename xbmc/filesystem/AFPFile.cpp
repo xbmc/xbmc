@@ -612,13 +612,13 @@ void CAFPFile::Close()
   }
 }
 
-int CAFPFile::Write(const void* lpBuf, int64_t uiBufSize)
+int64_t CAFPFile::Write(const void* lpBuf, int64_t uiBufSize)
 {
   CSingleLock lock(gAfpConnection);
   if (m_pFp == NULL || !m_pAfpVol)
    return -1;
 
-  int numberOfBytesWritten = 0;
+  int64_t numberOfBytesWritten = 0;
   uid_t uid;
   gid_t gid;
 

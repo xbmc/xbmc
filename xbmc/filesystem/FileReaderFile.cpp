@@ -73,7 +73,7 @@ int64_t CFileReaderFile::Read(void *lpBuf, int64_t uiBufSize)
 }
 
 //*********************************************************************************************
-int CFileReaderFile::Write(const void *lpBuf, int64_t uiBufSize)
+int64_t CFileReaderFile::Write(const void *lpBuf, int64_t uiBufSize)
 {
   return 0;
 }

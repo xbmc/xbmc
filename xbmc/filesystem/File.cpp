@@ -792,7 +792,7 @@ bool CFile::ReadString(char *szLine, int iLineLength)
   return false;
 }
 
-int CFile::Write(const void* lpBuf, int64_t uiBufSize)
+int64_t CFile::Write(const void* lpBuf, int64_t uiBufSize)
 {
   if (!m_pFile || !lpBuf)
     return -1;

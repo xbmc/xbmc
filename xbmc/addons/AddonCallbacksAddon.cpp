@@ -353,7 +353,7 @@ bool CAddonCallbacksAddon::ReadFileString(const void* addonData, void* file, cha
   return cfile->ReadString(szLine, iLineLength);
 }
 
-int CAddonCallbacksAddon::WriteFile(const void* addonData, void* file, const void* lpBuf, int64_t uiBufSize)
+int64_t CAddonCallbacksAddon::WriteFile(const void* addonData, void* file, const void* lpBuf, int64_t uiBufSize)
 {
   CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
   if (!helper)

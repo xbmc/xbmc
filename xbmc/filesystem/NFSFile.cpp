@@ -718,10 +718,10 @@ void CNFSFile::Close()
 //this was a bitch!
 //for nfs write to work we have to write chunked
 //otherwise this could crash on big files
-int CNFSFile::Write(const void* lpBuf, int64_t uiBufSize)
+int64_t CNFSFile::Write(const void* lpBuf, int64_t uiBufSize)
 {
-  int numberOfBytesWritten = 0;
-  int writtenBytes = 0;
+  int64_t numberOfBytesWritten = 0;
+  int64_t writtenBytes = 0;
   int64_t leftBytes = uiBufSize;
   //clamp max write chunksize to 32kb - fixme - this might be superfluious with future libnfs versions
   int64_t chunkSize = gNfsConnection.GetMaxWriteChunkSize() > 32768 ? 32768 : gNfsConnection.GetMaxWriteChunkSize();

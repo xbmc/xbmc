@@ -142,7 +142,7 @@ namespace XFILE
     virtual int Stat(struct __stat64* buffer);
     virtual int64_t GetLength();
     virtual int64_t GetPosition();
-    virtual int Write(const void* lpBuf, int64_t uiBufSize);
+    virtual int64_t Write(const void* lpBuf, int64_t uiBufSize);
     virtual int Truncate(int64_t iSize);
 
     //implement iocontrol for seek_possible for preventing the stat in File class for

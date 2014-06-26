@@ -85,7 +85,7 @@ int64_t CPipeFile::Read(void* lpBuf, int64_t uiBufSize)
   return m_pipe->Read((char *)lpBuf,(int)uiBufSize);
 }
 
-int CPipeFile::Write(const void* lpBuf, int64_t uiBufSize)
+int64_t CPipeFile::Write(const void* lpBuf, int64_t uiBufSize)
 {
   if (!m_pipe)
     return -1;

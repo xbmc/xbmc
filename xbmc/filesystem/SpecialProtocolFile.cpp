@@ -88,7 +88,7 @@ int64_t CSpecialProtocolFile::Read(void* lpBuf, int64_t uiBufSize)
   return m_file.Read(lpBuf, uiBufSize);
 }
   
-int CSpecialProtocolFile::Write(const void* lpBuf, int64_t uiBufSize)
+int64_t CSpecialProtocolFile::Write(const void* lpBuf, int64_t uiBufSize)
 {
   return m_file.Write(lpBuf,uiBufSize);
 }

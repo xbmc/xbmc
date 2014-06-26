@@ -38,7 +38,7 @@ public:
   virtual bool Rename(const CURL& url, const CURL& urlnew);
 
   virtual int64_t Read(void* lpBuf, int64_t uiBufSize);
-  virtual int Write(const void* lpBuf, int64_t uiBufSize);
+  virtual int64_t Write(const void* lpBuf, int64_t uiBufSize);
   virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
   virtual void Close();
   virtual int64_t GetPosition();

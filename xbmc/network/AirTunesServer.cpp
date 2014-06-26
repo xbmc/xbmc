@@ -155,7 +155,7 @@ void CAirTunesServer::SetCoverArtFromBuffer(const char *buffer, unsigned int siz
   
   if (tmpFile.OpenForWrite(TMP_COVERART_PATH, true))
   {
-    int writtenBytes=0;
+    int64_t writtenBytes = 0;
     writtenBytes = tmpFile.Write(buffer, size);
     tmpFile.Close();
 

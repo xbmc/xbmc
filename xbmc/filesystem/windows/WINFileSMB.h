@@ -44,7 +44,7 @@ public:
   virtual int Stat(const CURL& url, struct __stat64* buffer);
   virtual int Stat(struct __stat64* buffer);
   virtual int64_t Read(void* lpBuf, int64_t uiBufSize);
-  virtual int Write(const void* lpBuf, int64_t uiBufSize);
+  virtual int64_t Write(const void* lpBuf, int64_t uiBufSize);
   virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
   virtual int Truncate(int64_t size);
   virtual void Close();

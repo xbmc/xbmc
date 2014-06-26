@@ -284,11 +284,11 @@ void CFileCache::Process()
     else if (iRead < 0)
       m_bStop = true;
 
-    int iTotalWrite=0;
+    int64_t iTotalWrite = 0;
     while (!m_bStop && (iTotalWrite < iRead))
     {
-      int iWrite = 0;
-      iWrite = m_pCache->WriteToCache(buffer.get()+iTotalWrite, iRead - iTotalWrite);
+      int64_t iWrite = 0;
+      iWrite = m_pCache->WriteToCache(buffer.get()+iTotalWrite, iRead - iTotalWrite); // TODO: properly support large buffer
 
       // write should always work. all handling of buffering and errors should be
       // done inside the cache strategy. only if unrecoverable error happened, WriteToCache would return error and we break.
