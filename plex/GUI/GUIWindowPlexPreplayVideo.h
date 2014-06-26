@@ -4,6 +4,7 @@
 #include "JobManager.h"
 #include "threads/Event.h"
 #include "PlexNavigationHelper.h"
+#include "FileSystem/PlexExtraDataLoader.h"
 
 class CGUIWindowPlexPreplayVideo : public CGUIPlexMediaWindow
 {
@@ -30,6 +31,7 @@ public:
 
   CCriticalSection m_navigationLock;
   bool m_navigating;
+  CPlexExtraDataLoader m_extraDataLoader;
 
   CPlexNavigationHelper m_navHelper;
 };

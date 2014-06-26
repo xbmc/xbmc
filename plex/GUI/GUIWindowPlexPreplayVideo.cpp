@@ -21,6 +21,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "LocalizeStrings.h"
 #include "PlexPlayQueueManager.h"
+#include "GUISettings.h"
 
 #include "DirectoryCache.h"
 
@@ -66,6 +67,10 @@ bool CGUIWindowPlexPreplayVideo::OnMessage(CGUIMessage &message)
       Recommend();
     else if (message.GetSenderId() == 107)
       Share();
+  }
+  else if (message.GetMessage() == GUI_MSG_PLEX_EXTRA_DATA_LOADED)
+  {
+    CLog::Log(LOGDEBUG,"CGUIWindowPlexPreplayVideo::OnMessage GUI_MSG_PLEX_EXTRA_DATA_LOADED (%d)", m_extraDataLoader.getItems()->Size());
   }
 
   return ret;
@@ -270,6 +275,8 @@ void CGUIWindowPlexPreplayVideo::UpdateItem()
   {
     g_plexApplication.m_preplayItem = m_vecItems->Get(0);
     g_plexApplication.themeMusicPlayer->playForItem(*m_vecItems->Get(0));
+
+    m_extraDataLoader.loadDataForItem(m_vecItems->Get(0),CPlexExtraDataLoader::TRAILER);
   }
 }
 

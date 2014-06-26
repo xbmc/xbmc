@@ -126,7 +126,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     return GetPlayQueueDirectory(fileItems);
   }
 
-  if (boost::starts_with(m_url.GetFileName(), "library/metadata") && !boost::ends_with(m_url.GetFileName(), "children"))
+  if (boost::starts_with(m_url.GetFileName(), "library/metadata") && !boost::ends_with(m_url.GetFileName(), "children") && !boost::ends_with(m_url.GetFileName(), "extras"))
     m_url.SetOption("checkFiles", "1");
 
   if (m_url.HasProtocolOption("containerSize"))

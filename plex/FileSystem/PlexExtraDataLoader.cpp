@@ -1,0 +1,54 @@
+#include "PlexExtraDataLoader.h"
+#include "PlexDirectory.h"
+#include "URL.h"
+#include "PlexJobs.h"
+#include <stdlib.h>
+#include "boost/lexical_cast.hpp"
+#include "GUIWindowManager.h"
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CPlexExtraDataLoader::CPlexExtraDataLoader()
+{
+  m_items = CFileItemListPtr(new CFileItemList());
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexExtraDataLoader::loadDataForItem(CFileItemPtr pItem, ExtraDataType type)
+{
+  CURL url(pItem->GetPath());
+
+  PlexUtils::AppendPathToURL(url, "extras");
+
+  url.SetOptions("");
+  url.SetOption("extratype", boost::lexical_cast<std::string>((int)type));
+
+  m_path = url.Get();
+
+  CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(url), this);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexExtraDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob* job)
+{
+  // grab the job
+  CPlexDirectoryFetchJob* fjob = static_cast<CPlexDirectoryFetchJob*>(job);
+  if (!fjob)
+    return;
+
+  if (success)
+  {
+    // store the job list
+    m_items->Clear();
+    m_items->Copy(fjob->m_items);
+
+    // send the dataloaded event to listeners
+    CLog::Log(LOGDEBUG, "CPlexExtraInfoLoader : job %d succeeded for %s, (%d extra found)", jobID,
+              m_path.c_str(), fjob->m_items.Size());
+    CGUIMessage msg(GUI_MSG_PLEX_EXTRA_DATA_LOADED, PLEX_EXTRADATA_LOADER, 0, 0, 0);
+    g_windowManager.SendThreadMessage(msg);
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "CPlexExtraInfoLoader : job %d failed for %s", jobID, m_path.c_str());
+  }
+}
