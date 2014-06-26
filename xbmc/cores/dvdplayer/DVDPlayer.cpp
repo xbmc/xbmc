@@ -3289,6 +3289,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         bool visible = !(iStream & 0x80);
 
         SetSubtitleVisibleInternal(visible);
+        CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = visible;
 
         if (iStream >= 0)
           m_dvd.iSelectedSPUStream = (iStream & ~0x80);
