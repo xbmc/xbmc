@@ -22,6 +22,7 @@
 #include <string>
 #include "threads/Thread.h"
 #include "TextureDatabase.h"
+#include "StdString.h"
 
 class CFileItem;
 

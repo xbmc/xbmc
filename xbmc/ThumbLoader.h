@@ -20,7 +20,7 @@
  */
 
 #include "BackgroundInfoLoader.h"
-#include "utils/StdString.h"
+#include <string>
 
 class CTextureDatabase;
 
@@ -44,14 +44,14 @@ public:
    \param type the type of image to retrieve
    \return the image associated with this item
    */
-  virtual CStdString GetCachedImage(const CFileItem &item, const CStdString &type);
+  virtual std::string GetCachedImage(const CFileItem &item, const std::string &type);
 
   /*! \brief Associate an image with the given item in the texture database
    \param item CFileItem to associate the image with
    \param type the type of image
    \param image the URL of the image
    */
-  virtual void SetCachedImage(const CFileItem &item, const CStdString &type, const CStdString &image);
+  virtual void SetCachedImage(const CFileItem &item, const std::string &type, const std::string &image);
 
 protected:
   CTextureDatabase *m_textureDatabase;
@@ -81,5 +81,5 @@ public:
    \return the local thumb (if it exists)
    \sa FillThumb
    */
-  static CStdString GetLocalThumb(const CFileItem &item);
+  static std::string GetLocalThumb(const CFileItem &item);
 };

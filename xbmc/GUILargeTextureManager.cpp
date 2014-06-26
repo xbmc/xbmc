@@ -32,7 +32,7 @@
 using namespace std;
 
 
-CImageLoader::CImageLoader(const CStdString &path, const bool useCache)
+CImageLoader::CImageLoader(const std::string &path, const bool useCache)
 {
   m_path = path;
   m_texture = NULL;
@@ -47,9 +47,9 @@ CImageLoader::~CImageLoader()
 bool CImageLoader::DoWork()
 {
   bool needsChecking = false;
-  CStdString loadPath;
+  std::string loadPath;
 
-  CStdString texturePath = g_TextureManager.GetTexturePath(m_path);
+  std::string texturePath = g_TextureManager.GetTexturePath(m_path);
   if (m_use_cache)
     loadPath = CTextureCache::Get().CheckCachedImage(texturePath, true, needsChecking);
   else
@@ -78,7 +78,7 @@ bool CImageLoader::DoWork()
   return true;
 }
 
-CGUILargeTextureManager::CLargeTexture::CLargeTexture(const CStdString &path)
+CGUILargeTextureManager::CLargeTexture::CLargeTexture(const std::string &path)
 {
   m_path = path;
   m_refCount = 1;
@@ -153,7 +153,7 @@ void CGUILargeTextureManager::CleanupUnusedImages(bool immediately)
 
 // if available, increment reference count, and return the image.
 // else, add to the queue list if appropriate.
-bool CGUILargeTextureManager::GetImage(const CStdString &path, CTextureArray &texture, bool firstRequest, const bool useCache)
+bool CGUILargeTextureManager::GetImage(const std::string &path, CTextureArray &texture, bool firstRequest, const bool useCache)
 {
   CSingleLock lock(m_listSection);
   for (listIterator it = m_allocated.begin(); it != m_allocated.end(); ++it)
@@ -174,7 +174,7 @@ bool CGUILargeTextureManager::GetImage(const CStdString &path, CTextureArray &te
   return true;
 }
 
-void CGUILargeTextureManager::ReleaseImage(const CStdString &path, bool immediately)
+void CGUILargeTextureManager::ReleaseImage(const std::string &path, bool immediately)
 {
   CSingleLock lock(m_listSection);
   for (listIterator it = m_allocated.begin(); it != m_allocated.end(); ++it)
@@ -202,7 +202,7 @@ void CGUILargeTextureManager::ReleaseImage(const CStdString &path, bool immediat
 }
 
 // queue the image, and start the background loader if necessary
-void CGUILargeTextureManager::QueueImage(const CStdString &path, bool useCache)
+void CGUILargeTextureManager::QueueImage(const std::string &path, bool useCache)
 {
   CSingleLock lock(m_listSection);
   for (queueIterator it = m_queued.begin(); it != m_queued.end(); ++it)

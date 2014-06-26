@@ -577,7 +577,7 @@ CUPnPServer*
 CUPnP::CreateServer(int port /* = 0 */)
 {
     CUPnPServer* device =
-        new CUPnPServer(g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME),
+        new CUPnPServer(g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME).c_str(),
                         CUPnPSettings::Get().GetServerUUID().length() ? CUPnPSettings::Get().GetServerUUID().c_str() : NULL,
                         port);
 
@@ -661,7 +661,7 @@ CUPnPRenderer*
 CUPnP::CreateRenderer(int port /* = 0 */)
 {
     CUPnPRenderer* device =
-        new CUPnPRenderer(g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME),
+        new CUPnPRenderer(g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME).c_str(),
                           false,
                           (CUPnPSettings::Get().GetRendererUUID().length() ? CUPnPSettings::Get().GetRendererUUID().c_str() : NULL),
                           port);
