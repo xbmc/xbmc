@@ -885,9 +885,10 @@ msgctxt "#44406"
 msgid "Use FFMPEG AVIO for Network transport"
 msgstr "Use FFMPEG AVIO for Network transport"
 
-msgctxt "#44407"
-msgid "Trailers to play before playback"
-msgstr "Trailers to play before playback"
+#### Extra / trailers related strings
+msgctxt "#44500"
+msgid "Available trailers"
+msgstr "Available trailers"
 
 #### These are error strings shown from channels
 #### errorcode + 50000
