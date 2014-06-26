@@ -228,6 +228,9 @@ void CGUIDialogAddonInfo::OnUninstall()
   if (!m_localAddon.get())
     return;
 
+  if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
+    return;
+
   // ensure the addon is not a dependency of other installed addons
   if (PromptIfDependency(24037, 24047))
     return;
@@ -248,6 +251,9 @@ void CGUIDialogAddonInfo::OnUninstall()
 void CGUIDialogAddonInfo::OnEnable(bool enable)
 {
   if (!m_localAddon.get())
+    return;
+
+  if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
     return;
 
   if (!enable && PromptIfDependency(24075, 24091))
@@ -299,6 +305,9 @@ void CGUIDialogAddonInfo::OnChangeLog()
 
 void CGUIDialogAddonInfo::OnRollback()
 {
+  if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
+    return;
+
   CGUIDialogContextMenu* dlg = (CGUIDialogContextMenu*)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   CAddonDatabase database;
   database.Open();
