@@ -45,18 +45,18 @@ TEST_F(TestURIUtils, IsInPath)
 
 TEST_F(TestURIUtils, GetDirectory)
 {
-  EXPECT_STREQ("/path/to/", URIUtils::GetDirectory("/path/to/movie.avi"));
-  EXPECT_STREQ("/path/to/", URIUtils::GetDirectory("/path/to/"));
-  EXPECT_STREQ("/path/to/|option=foo", URIUtils::GetDirectory("/path/to/movie.avi|option=foo"));
-  EXPECT_STREQ("/path/to/|option=foo", URIUtils::GetDirectory("/path/to/|option=foo"));
-  EXPECT_STREQ("", URIUtils::GetDirectory("movie.avi"));
-  EXPECT_STREQ("", URIUtils::GetDirectory("movie.avi|option=foo"));
-  EXPECT_STREQ("", URIUtils::GetDirectory(""));
+  EXPECT_STREQ("/path/to/", URIUtils::GetDirectory("/path/to/movie.avi").c_str());
+  EXPECT_STREQ("/path/to/", URIUtils::GetDirectory("/path/to/").c_str());
+  EXPECT_STREQ("/path/to/|option=foo", URIUtils::GetDirectory("/path/to/movie.avi|option=foo").c_str());
+  EXPECT_STREQ("/path/to/|option=foo", URIUtils::GetDirectory("/path/to/|option=foo").c_str());
+  EXPECT_STREQ("", URIUtils::GetDirectory("movie.avi").c_str());
+  EXPECT_STREQ("", URIUtils::GetDirectory("movie.avi|option=foo").c_str());
+  EXPECT_STREQ("", URIUtils::GetDirectory("").c_str());
 
   // Make sure it works when assigning to the same str as the reference parameter
-  CStdString var = "/path/to/movie.avi|option=foo";
+  std::string var = "/path/to/movie.avi|option=foo";
   var = URIUtils::GetDirectory(var);
-  EXPECT_STREQ("/path/to/|option=foo", var);
+  EXPECT_STREQ("/path/to/|option=foo", var.c_str());
 }
 
 TEST_F(TestURIUtils, GetExtension)
@@ -92,7 +92,7 @@ TEST_F(TestURIUtils, GetFileName)
 
 TEST_F(TestURIUtils, RemoveExtension)
 {
-  CStdString ref, var;
+  std::string ref, var;
 
   /* NOTE: CSettings need to be set to find other extensions. */
   ref = "/path/to/file";
@@ -103,7 +103,7 @@ TEST_F(TestURIUtils, RemoveExtension)
 
 TEST_F(TestURIUtils, ReplaceExtension)
 {
-  CStdString ref, var;
+  std::string ref, var;
 
   ref = "/path/to/file.xsd";
   var = URIUtils::ReplaceExtension("/path/to/file.xml", ".xsd");
@@ -112,7 +112,7 @@ TEST_F(TestURIUtils, ReplaceExtension)
 
 TEST_F(TestURIUtils, Split)
 {
-  CStdString refpath, reffile, varpath, varfile;
+  std::string refpath, reffile, varpath, varfile;
 
   refpath = "/path/to/";
   reffile = "movie.avi";
@@ -156,7 +156,7 @@ TEST_F(TestURIUtils, SplitPathLocal)
 
 TEST_F(TestURIUtils, GetCommonPath)
 {
-  CStdString ref, var;
+  std::string ref, var;
 
   ref = "/path/";
   var = "/path/2/movie.avi";
@@ -166,7 +166,7 @@ TEST_F(TestURIUtils, GetCommonPath)
 
 TEST_F(TestURIUtils, GetParentPath)
 {
-  CStdString ref, var;
+  std::string ref, var;
 
   ref = "/path/to/";
   var = URIUtils::GetParentPath("/path/to/movie.avi");
@@ -179,7 +179,7 @@ TEST_F(TestURIUtils, GetParentPath)
 
 TEST_F(TestURIUtils, SubstitutePath)
 {
-  CStdString from, to, ref, var;
+  std::string from, to, ref, var;
 
   from = "C:\\My Videos";
   to = "https://myserver/some%20other%20path";
@@ -470,7 +470,7 @@ TEST_F(TestURIUtils, IsBluray)
 
 TEST_F(TestURIUtils, AddSlashAtEnd)
 {
-  CStdString ref, var;
+  std::string ref, var;
 
   ref = "bluray://path/to/file/";
   var = "bluray://path/to/file/";
@@ -486,7 +486,7 @@ TEST_F(TestURIUtils, HasSlashAtEnd)
 
 TEST_F(TestURIUtils, RemoveSlashAtEnd)
 {
-  CStdString ref, var;
+  std::string ref, var;
 
   ref = "bluray://path/to/file";
   var = "bluray://path/to/file/";
@@ -496,7 +496,7 @@ TEST_F(TestURIUtils, RemoveSlashAtEnd)
 
 TEST_F(TestURIUtils, CreateArchivePath)
 {
-  CStdString ref, var;
+  std::string ref, var;
 
   ref = "zip://%2fpath%2fto%2f/file";
   var = URIUtils::CreateArchivePath("zip", CURL("/path/to/"), "file").Get();
@@ -505,8 +505,8 @@ TEST_F(TestURIUtils, CreateArchivePath)
 
 TEST_F(TestURIUtils, AddFileToFolder)
 {
-  CStdString ref = "/path/to/file";
-  CStdString var = URIUtils::AddFileToFolder("/path/to", "file");
+  std::string ref = "/path/to/file";
+  std::string var = URIUtils::AddFileToFolder("/path/to", "file");
   EXPECT_STREQ(ref.c_str(), var.c_str());
 }
 
