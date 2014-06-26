@@ -1388,7 +1388,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
   return 0;
 }
 
-unsigned int CCurlFile::CReadState::Read(void* lpBuf, int64_t uiBufSize)
+unsigned int CCurlFile::CReadState::Read(void* lpBuf, size_t uiBufSize)
 {
   /* only request 1 byte, for truncated reads (only if not eof) */
   if((m_fileSize == 0 || m_filePos < m_fileSize) && !FillBuffer(1))
@@ -1408,7 +1408,7 @@ unsigned int CCurlFile::CReadState::Read(void* lpBuf, int64_t uiBufSize)
   if (!m_stillRunning && (m_fileSize == 0 || m_filePos != m_fileSize))
   {
     CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retrieved pos %" PRId64", size %" PRId64, __FUNCTION__, m_filePos, m_fileSize);
-    return 0;
+    return -1;
   }
 
   return 0;

@@ -203,7 +203,7 @@ bool CDAAPFile::Open(const CURL& url)
 
 
 //*********************************************************************************************
-unsigned int CDAAPFile::Read(void *lpBuf, int64_t uiBufSize)
+ssize_t CDAAPFile::Read(void *lpBuf, size_t uiBufSize)
 {
   return m_curl.Read(lpBuf, uiBufSize);
 }

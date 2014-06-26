@@ -130,10 +130,10 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
       return false;
     }
 
-    int iBufferSize = 128 * 1024;
+    static const int iBufferSize = 128 * 1024;
 
     auto_buffer buffer(iBufferSize);
-    int iRead, iWrite;
+    ssize_t iRead, iWrite;
 
     UINT64 llFileSize = file.GetLength();
     UINT64 llPos = 0;
@@ -499,6 +499,9 @@ unsigned int CFile::Read(void *lpBuf, int64_t uiBufSize)
 {
   if (!m_pFile || !lpBuf)
     return 0;
+
+  if (uiBufSize > SSIZE_MAX)
+    uiBufSize = SSIZE_MAX;
 
   if(m_pBuffer)
   {

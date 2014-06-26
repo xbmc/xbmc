@@ -157,16 +157,16 @@ bool CSlingboxFile::Open(const CURL& url)
   return true;
 }
 
-unsigned int CSlingboxFile::Read(void * pBuffer, int64_t iSize)
+ssize_t CSlingboxFile::Read(void * pBuffer, size_t iSize)
 {
+  if (iSize > SSIZE_MAX)
+    iSize = SSIZE_MAX;
+
   // Read the data and check for any errors
-  int iRead = m_pSlingbox->ReadStream(pBuffer, (unsigned int)iSize);
+  ssize_t iRead = m_pSlingbox->ReadStream(pBuffer, (unsigned int)iSize);
   if (iRead < 0)
-  {
     CLog::Log(LOGERROR, "%s - Error reading stream from Slingbox: %s", __FUNCTION__,
       m_sSlingboxSettings.strHostname.c_str());
-    return 0;
-  }
 
   return iRead;
 }

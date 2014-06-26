@@ -77,11 +77,14 @@ int CPipeFile::Stat(struct __stat64* buffer)
   return 0;
 }
 
-unsigned int CPipeFile::Read(void* lpBuf, int64_t uiBufSize)
+ssize_t CPipeFile::Read(void* lpBuf, size_t uiBufSize)
 {
   if (!m_pipe)
     return -1;
   
+  if (uiBufSize > SSIZE_MAX)
+    uiBufSize = SSIZE_MAX;
+
   return m_pipe->Read((char *)lpBuf,(int)uiBufSize);
 }
 

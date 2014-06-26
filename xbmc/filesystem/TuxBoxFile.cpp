@@ -47,9 +47,9 @@ bool CTuxBoxFile::Open(const CURL& url)
   return true;
 }
 
-unsigned int CTuxBoxFile::Read(void* lpBuf, int64_t uiBufSize)
+ssize_t CTuxBoxFile::Read(void* lpBuf, size_t uiBufSize)
 {
-  return 0;
+  return -1;
 }
 
 int64_t CTuxBoxFile::Seek(int64_t iFilePosition, int iWhence)
