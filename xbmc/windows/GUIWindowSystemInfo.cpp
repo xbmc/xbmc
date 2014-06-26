@@ -198,6 +198,6 @@ void CGUIWindowSystemInfo::ResetLabels()
 
 void CGUIWindowSystemInfo::SetControlLabel(int id, const char *format, int label, int info)
 {
-  CStdString tmpStr = StringUtils::Format(format, g_localizeStrings.Get(label).c_str(), g_infoManager.GetLabel(info).c_str());
+  std::string tmpStr = StringUtils::Format(format, g_localizeStrings.Get(label).c_str(), g_infoManager.GetLabel(info).c_str());
   SET_CONTROL_LABEL(id, tmpStr);
 }
