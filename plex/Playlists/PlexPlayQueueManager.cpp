@@ -16,6 +16,7 @@
 #include "LocalizeStrings.h"
 #include "Application.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "URIUtils.h"
 
 using namespace PLAYLIST;
 
@@ -349,11 +350,13 @@ IPlexPlayQueueBasePtr CPlexPlayQueueManager::getImpl(const CFileItem& container)
   CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(container);
   if (server)
   {
-    CLog::Log(LOGDEBUG, "CPlexPlayQueueManager::getImpl identifier: %s server: %s",
+    CLog::Log(LOGDEBUG, "CPlexPlayQueueManager::getImpl identifier: %s server: %s, filename: %s",
               container.GetProperty("identifier").asString().c_str(),
-              server->toString().c_str());
+              server->toString().c_str(),
+              URIUtils::GetFileName(container.GetPath()).c_str());
 
     if (container.GetProperty("identifier").asString() == "com.plexapp.plugins.library" &&
+        URIUtils::GetFileName(container.GetPath()) != "folder" &&
         CPlexPlayQueueServer::isSupported(server))
     {
       CLog::Log(LOGDEBUG, "CPlexPlayQueueManager::getImpl selecting PlexPlayQueueServer");
