@@ -80,11 +80,11 @@ public:
   enum WINDOW_TYPE { WINDOW = 0, MODAL_DIALOG, MODELESS_DIALOG, BUTTON_MENU, SUB_MENU };
   enum LOAD_TYPE { LOAD_EVERY_TIME, LOAD_ON_GUI_INIT, KEEP_IN_MEMORY };
 
-  CGUIWindow(int id, const CStdString &xmlFile);
+  CGUIWindow(int id, const std::string &xmlFile);
   virtual ~CGUIWindow(void);
 
   bool Initialize();  // loads the window
-  bool Load(const CStdString& strFileName, bool bContainsPath = false);
+  bool Load(const std::string& strFileName, bool bContainsPath = false);
 
   void CenterWindow();
 
@@ -175,13 +175,13 @@ public:
    \param value value to set, may be a string, integer, boolean or double.
    \sa GetProperty
    */
-  void SetProperty(const CStdString &key, const CVariant &value);
+  void SetProperty(const std::string &key, const CVariant &value);
 
   /*! \brief Retreive a property
    \param key name of the property to retrieve
    \return value of the property, empty if it doesn't exist
    */
-  CVariant GetProperty(const CStdString &key) const;
+  CVariant GetProperty(const std::string &key) const;
 
   /*! \brief Clear a all the window's properties
    \sa SetProperty, HasProperty, GetProperty
@@ -195,7 +195,7 @@ public:
   virtual void OnDeinitWindow(int nextWindowID);
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  virtual bool LoadXML(const CStdString& strPath, const CStdString &strLowerPath);  ///< Loads from the given file
+  virtual bool LoadXML(const std::string& strPath, const std::string &strLowerPath);  ///< Loads from the given file
   bool Load(TiXmlElement *pRootElement);                 ///< Loads from the given XML root element
   /*! \brief Check if XML file needs (re)loading
    XML file has to be (re)loaded when window is not loaded or include conditions values were changed
@@ -262,7 +262,7 @@ protected:
   bool m_animationsEnabled;
   struct icompare
   {
-    bool operator()(const CStdString &s1, const CStdString &s2) const;
+    bool operator()(const std::string &s1, const std::string &s2) const;
   };
 
   CGUIAction m_loadActions;
@@ -275,7 +275,7 @@ protected:
   int m_exclusiveMouseControl; ///< \brief id of child control that wishes to receive all mouse events \sa GUI_MSG_EXCLUSIVE_MOUSE
 
 private:
-  std::map<CStdString, CVariant, icompare> m_mapProperties;
+  std::map<std::string, CVariant, icompare> m_mapProperties;
   std::map<INFO::InfoPtr, bool> m_xmlIncludeConditions; ///< \brief used to store conditions used to resolve includes for this window
 };
 

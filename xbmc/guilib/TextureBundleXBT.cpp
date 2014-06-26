@@ -54,16 +54,16 @@ bool CTextureBundleXBT::OpenBundle()
   Cleanup();
 
   // Find the correct texture file (skin or theme)
-  CStdString strPath;
+  std::string strPath;
 
   if (m_themeBundle)
   {
     // if we are the theme bundle, we only load if the user has chosen
     // a valid theme (or the skin has a default one)
-    CStdString theme = CSettings::Get().GetString("lookandfeel.skintheme");
+    std::string theme = CSettings::Get().GetString("lookandfeel.skintheme");
     if (!theme.empty() && !StringUtils::EqualsNoCase(theme, "SKINDEFAULT"))
     {
-      CStdString themeXBT(URIUtils::ReplaceExtension(theme, ".xbt"));
+      std::string themeXBT(URIUtils::ReplaceExtension(theme, ".xbt"));
       strPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
       strPath = URIUtils::AddFileToFolder(strPath, themeXBT);
     }
@@ -97,7 +97,7 @@ bool CTextureBundleXBT::OpenBundle()
   return true;
 }
 
-bool CTextureBundleXBT::HasFile(const CStdString& Filename)
+bool CTextureBundleXBT::HasFile(const std::string& Filename)
 {
   if (!m_XBTFReader.IsOpen() && !OpenBundle())
     return false;
@@ -109,11 +109,11 @@ bool CTextureBundleXBT::HasFile(const CStdString& Filename)
       return false;
   }
 
-  CStdString name = Normalize(Filename);
+  std::string name = Normalize(Filename);
   return m_XBTFReader.Exists(name);
 }
 
-void CTextureBundleXBT::GetTexturesFromPath(const CStdString &path, std::vector<CStdString> &textures)
+void CTextureBundleXBT::GetTexturesFromPath(const std::string &path, std::vector<std::string> &textures)
 {
   if (path.size() > 1 && path[1] == ':')
     return;
@@ -121,22 +121,22 @@ void CTextureBundleXBT::GetTexturesFromPath(const CStdString &path, std::vector<
   if (!m_XBTFReader.IsOpen() && !OpenBundle())
     return;
 
-  CStdString testPath = Normalize(path);
+  std::string testPath = Normalize(path);
   URIUtils::AddSlashAtEnd(testPath);
 
   std::vector<CXBTFFile>& files = m_XBTFReader.GetFiles();
   for (size_t i = 0; i < files.size(); i++)
   {
-    CStdString path = files[i].GetPath();
+    std::string path = files[i].GetPath();
     if (StringUtils::StartsWithNoCase(path, testPath))
       textures.push_back(path);
   }
 }
 
-bool CTextureBundleXBT::LoadTexture(const CStdString& Filename, CBaseTexture** ppTexture,
+bool CTextureBundleXBT::LoadTexture(const std::string& Filename, CBaseTexture** ppTexture,
                                      int &width, int &height)
 {
-  CStdString name = Normalize(Filename);
+  std::string name = Normalize(Filename);
 
   CXBTFFile* file = m_XBTFReader.Find(name);
   if (!file)
@@ -157,10 +157,10 @@ bool CTextureBundleXBT::LoadTexture(const CStdString& Filename, CBaseTexture** p
   return true;
 }
 
-int CTextureBundleXBT::LoadAnim(const CStdString& Filename, CBaseTexture*** ppTextures,
+int CTextureBundleXBT::LoadAnim(const std::string& Filename, CBaseTexture*** ppTextures,
                               int &width, int &height, int& nLoops, int** ppDelays)
 {
-  CStdString name = Normalize(Filename);
+  std::string name = Normalize(Filename);
 
   CXBTFFile* file = m_XBTFReader.Find(name);
   if (!file)
@@ -192,7 +192,7 @@ int CTextureBundleXBT::LoadAnim(const CStdString& Filename, CBaseTexture*** ppTe
   return nTextures;
 }
 
-bool CTextureBundleXBT::ConvertFrameToTexture(const CStdString& name, CXBTFFrame& frame, CBaseTexture** ppTexture)
+bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name, CXBTFFrame& frame, CBaseTexture** ppTexture)
 {
   // found texture - allocate the necessary buffers
   squish::u8 *buffer = new squish::u8[(size_t)frame.GetPackedSize()];
@@ -258,9 +258,9 @@ void CTextureBundleXBT::SetThemeBundle(bool themeBundle)
 
 // normalize to how it's stored within the bundle
 // lower case + using forward slash rather than back slash
-CStdString CTextureBundleXBT::Normalize(const CStdString &name)
+std::string CTextureBundleXBT::Normalize(const std::string &name)
 {
-  CStdString newName(name);
+  std::string newName(name);
   
   StringUtils::Trim(newName);
   StringUtils::ToLower(newName);

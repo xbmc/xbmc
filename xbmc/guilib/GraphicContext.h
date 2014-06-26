@@ -36,6 +36,7 @@
 #endif
 
 
+#include <string>
 #include <vector>
 #include <stack>
 #include <map>
@@ -43,7 +44,6 @@
 #include "TransformMatrix.h"        // for the members m_guiTransform etc.
 #include "Geometry.h"               // for CRect/CPoint
 #include "gui3d.h"
-#include "utils/StdString.h"
 #include "Resolution.h"
 #include "utils/GlobalsHandling.h"
 #include "DirtyRegion.h"
@@ -88,8 +88,8 @@ public:
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
   float GetFPS() const;
-  const CStdString& GetMediaDir() const { return m_strMediaDir; }
-  void SetMediaDir(const CStdString& strMediaDir);
+  const std::string& GetMediaDir() const { return m_strMediaDir; }
+  void SetMediaDir(const std::string& strMediaDir);
   bool SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious = false);
   void RestoreViewPort();
 
@@ -242,7 +242,7 @@ protected:
   int m_iScreenHeight;
   int m_iScreenWidth;
   int m_iScreenId;
-  CStdString m_strMediaDir;
+  std::string m_strMediaDir;
   CRect m_videoRect;
   bool m_bFullScreenRoot;
   bool m_bFullScreenVideo;

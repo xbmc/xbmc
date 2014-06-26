@@ -26,7 +26,7 @@
 
 using namespace std;
 
-CGUIMultiSelectTextControl::CSelectableString::CSelectableString(CGUIFont *font, const CStdString &text, bool selectable, const CStdString &clickAction)
+CGUIMultiSelectTextControl::CSelectableString::CSelectableString(CGUIFont *font, const std::string &text, bool selectable, const std::string &clickAction)
  : m_text(font, false)
 {
   m_selectable = selectable;
@@ -170,7 +170,7 @@ bool CGUIMultiSelectTextControl::OnAction(const CAction &action)
   if (action.GetID() == ACTION_SELECT_ITEM)
   {
     // item is clicked - see if we have a clickaction
-    CStdString clickAction;
+    std::string clickAction;
     unsigned int selected = 0;
     for (unsigned int i = 0; i < m_items.size(); i++)
     {
@@ -290,7 +290,7 @@ int CGUIMultiSelectTextControl::GetItemFromPoint(const CPoint &point) const
   return -1;
 }
 
-void CGUIMultiSelectTextControl::UpdateText(const CStdString &text)
+void CGUIMultiSelectTextControl::UpdateText(const std::string &text)
 {
   if (text == m_oldText)
     return;
@@ -303,11 +303,11 @@ void CGUIMultiSelectTextControl::UpdateText(const CStdString &text)
   size_t startUnclickable = 0;
 
   // add the first unclickable block
-  if (startClickable != CStdString::npos)
+  if (startClickable != std::string::npos)
     AddString(text.substr(startUnclickable, startClickable - startUnclickable), false);
   else
     AddString(text.substr(startUnclickable), false);
-  while (startClickable != CStdString::npos)
+  while (startClickable != std::string::npos)
   {
     // grep out the action and the end of the string
     size_t endAction = text.find(']', startClickable + 8);
@@ -324,7 +324,7 @@ void CGUIMultiSelectTextControl::UpdateText(const CStdString &text)
     }
     startClickable = text.find("[ONCLICK", startUnclickable);
     // add the unclickable portion
-    if (startClickable != CStdString::npos)
+    if (startClickable != std::string::npos)
       AddString(text.substr(startUnclickable, startClickable - startUnclickable), false);
     else
       AddString(text.substr(startUnclickable), false);
@@ -336,7 +336,7 @@ void CGUIMultiSelectTextControl::UpdateText(const CStdString &text)
   PositionButtons();
 }
 
-void CGUIMultiSelectTextControl::AddString(const CStdString &text, bool selectable, const CStdString &clickAction)
+void CGUIMultiSelectTextControl::AddString(const std::string &text, bool selectable, const std::string &clickAction)
 {
   if (!text.empty())
     m_items.push_back(CSelectableString(m_label.font, text, selectable, clickAction));

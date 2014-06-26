@@ -28,7 +28,7 @@
 #include "ApplicationMessenger.h"
 #include "Key.h"
 
-CGUIDialog::CGUIDialog(int id, const CStdString &xmlFile)
+CGUIDialog::CGUIDialog(int id, const std::string &xmlFile)
     : CGUIWindow(id, xmlFile)
 {
   m_bModal = true;
@@ -160,7 +160,7 @@ void CGUIDialog::UpdateVisibility()
   }
 }
 
-void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const CStdString &param /* = "" */)
+void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const std::string &param /* = "" */)
 {
   //Lock graphic context here as it is sometimes called from non rendering threads
   //maybe we should have a critical section per window instead??
@@ -220,7 +220,7 @@ void CGUIDialog::Show_Internal()
   OnMessage(msg);
 }
 
-void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */, const CStdString &param)
+void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */, const std::string &param)
 {
   if (!g_application.IsCurrentThread())
   {

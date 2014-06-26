@@ -135,7 +135,7 @@ void CGUIControlGroup::Render()
 
 bool CGUIControlGroup::OnAction(const CAction &action)
 {
-  ASSERT(false);  // unimplemented
+  assert(false);  // unimplemented
   return false;
 }
 

@@ -174,7 +174,7 @@ void CBaseTexture::ClampToEdge()
   }
 }
 
-CBaseTexture *CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int idealWidth, unsigned int idealHeight, bool autoRotate, bool requirePixels, const std::string& strMimeType)
+CBaseTexture *CBaseTexture::LoadFromFile(const std::string& texturePath, unsigned int idealWidth, unsigned int idealHeight, bool autoRotate, bool requirePixels, const std::string& strMimeType)
 {
 #if defined(TARGET_ANDROID)
   CURL url(texturePath);
@@ -217,7 +217,7 @@ CBaseTexture *CBaseTexture::LoadFromFileInMemory(unsigned char *buffer, size_t b
   return NULL;
 }
 
-bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool autoRotate, bool requirePixels, const std::string& strMimeType)
+bool CBaseTexture::LoadFromFileInternal(const std::string& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool autoRotate, bool requirePixels, const std::string& strMimeType)
 {
   if (URIUtils::HasExtension(texturePath, ".dds"))
   { // special case for DDS images

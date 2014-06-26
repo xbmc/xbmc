@@ -37,7 +37,7 @@
 
 using namespace std;
 
-CGUIFontTTFDX::CGUIFontTTFDX(const CStdString& strFileName)
+CGUIFontTTFDX::CGUIFontTTFDX(const std::string& strFileName)
 : CGUIFontTTFBase(strFileName)
 {
   m_speedupTexture = NULL;

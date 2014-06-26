@@ -20,8 +20,9 @@
  *
  */
 
-#include "utils/StdString.h"
 
+#include <string>
+#include <stdint.h>
 #include <vector>
 
 #ifdef __GNUC__
@@ -55,7 +56,7 @@ public:
 
   CGUIString(iString start, iString end, bool carriageReturn);
 
-  CStdString GetAsString() const;
+  std::string GetAsString() const;
 
   vecText m_text;
   bool m_carriageReturn; // true if we have a carriage return here
@@ -86,9 +87,9 @@ public:
    */
   float GetTextWidth() const { return m_textWidth; };
   
-  float GetTextWidth(const CStdStringW &text) const;
-  bool Update(const CStdString &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
-  bool UpdateW(const CStdStringW &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
+  float GetTextWidth(const std::wstring &text) const;
+  bool Update(const std::string &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
+  bool UpdateW(const std::wstring &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
 
   /*! \brief Update text from a pre-styled vecText/vecColors combination
    Allows styled text to be passed directly to the text layout.
@@ -107,16 +108,16 @@ public:
   void SetMaxHeight(float fHeight);
 
 
-  static void DrawText(CGUIFont *font, float x, float y, color_t color, color_t shadowColor, const CStdString &text, uint32_t align);
-  static void Filter(CStdString &text);
+  static void DrawText(CGUIFont *font, float x, float y, color_t color, color_t shadowColor, const std::string &text, uint32_t align);
+  static void Filter(std::string &text);
 
 protected:
   void LineBreakText(const vecText &text, std::vector<CGUIString> &lines);
   void WrapText(const vecText &text, float maxWidth);
   static void BidiTransform(std::vector<CGUIString> &lines, bool forceLTRReadingOrder);
-  static CStdStringW BidiFlip(const CStdStringW &text, bool forceLTRReadingOrder);
+  static std::wstring BidiFlip(const std::wstring &text, bool forceLTRReadingOrder);
   void CalcTextExtent();
-  void UpdateCommon(const CStdStringW &text, float maxWidth, bool forceLTRReadingOrder);
+  void UpdateCommon(const std::wstring &text, float maxWidth, bool forceLTRReadingOrder);
   
   /*! \brief Returns the text, utf8 encoded
    \return utf8 text
@@ -138,7 +139,7 @@ protected:
   color_t m_textColor;
 
   std::string m_lastUtf8Text;
-  CStdStringW m_lastText;
+  std::wstring m_lastText;
   bool        m_lastUpdateW; ///< true if the last string we updated was the wstring version
   float m_textWidth;
   float m_textHeight;
@@ -152,8 +153,8 @@ private:
     character_t ch = letter & 0xffff;
     return ch == L' ' || (ch >=0x4e00 && ch <= 0x9fff);
   };
-  static void AppendToUTF32(const CStdString &utf8, character_t colStyle, vecText &utf32);
-  static void AppendToUTF32(const CStdStringW &utf16, character_t colStyle, vecText &utf32);
-  static void ParseText(const CStdStringW &text, uint32_t defaultStyle, color_t defaultColor, vecColors &colors, vecText &parsedText);
+  static void AppendToUTF32(const std::string &utf8, character_t colStyle, vecText &utf32);
+  static void AppendToUTF32(const std::wstring &utf16, character_t colStyle, vecText &utf32);
+  static void ParseText(const std::wstring &text, uint32_t defaultStyle, color_t defaultColor, vecColors &colors, vecText &parsedText);
 };
 

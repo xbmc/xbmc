@@ -31,9 +31,11 @@ class CGUIListItem;
 
 #include "TransformMatrix.h"  // needed for the TransformMatrix member
 #include "Geometry.h"         // for CPoint, CRect
-#include "utils/StdString.h"
 #include "boost/shared_ptr.hpp"
 #include "interfaces/info/InfoBool.h"
+
+#include <string>
+#include <vector>
 
 enum ANIMATION_TYPE
 {
@@ -177,7 +179,7 @@ public:
 
 private:
   void Calculate(const CPoint &point);
-  void AddEffect(const CStdString &type, const TiXmlElement *node, const CRect &rect);
+  void AddEffect(const std::string &type, const TiXmlElement *node, const CRect &rect);
 
   enum ANIM_REPEAT { ANIM_REPEAT_NONE = 0, ANIM_REPEAT_PULSE, ANIM_REPEAT_LOOP };
 
