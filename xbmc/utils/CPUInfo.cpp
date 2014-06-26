@@ -577,7 +577,7 @@ bool CCPUInfo::getTemperature(CTemperature& temperature)
 #else
   int         ret   = 0;
   FILE        *p    = NULL;
-  CStdString  cmd   = g_advancedSettings.m_cpuTempCmd;
+  std::string  cmd   = g_advancedSettings.m_cpuTempCmd;
 
   temperature.SetState(CTemperature::invalid);
 

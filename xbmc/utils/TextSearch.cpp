@@ -19,10 +19,11 @@
  */
 
 #include "TextSearch.h"
+#include "StringUtils.h"
 
 using namespace std;
 
-CTextSearch::CTextSearch(const CStdString &strSearchTerms, bool bCaseSensitive /* = false */, TextSearchDefault defaultSearchMode /* = SEARCH_DEFAULT_OR */)
+CTextSearch::CTextSearch(const std::string &strSearchTerms, bool bCaseSensitive /* = false */, TextSearchDefault defaultSearchMode /* = SEARCH_DEFAULT_OR */)
 {
   m_bCaseSensitive = bCaseSensitive;
   ExtractSearchTerms(strSearchTerms, defaultSearchMode);
@@ -40,12 +41,12 @@ bool CTextSearch::IsValid(void) const
   return m_AND.size() > 0 || m_OR.size() > 0 || m_NOT.size() > 0;
 }
 
-bool CTextSearch::Search(const CStdString &strHaystack) const
+bool CTextSearch::Search(const std::string &strHaystack) const
 {
   if (strHaystack.empty() || !IsValid())
     return false;
 
-  CStdString strSearch(strHaystack);
+  std::string strSearch(strHaystack);
   if (!m_bCaseSensitive)
     StringUtils::ToLower(strSearch);
 
@@ -80,9 +81,9 @@ bool CTextSearch::Search(const CStdString &strHaystack) const
   return true;
 }
 
-void CTextSearch::GetAndCutNextTerm(CStdString &strSearchTerm, CStdString &strNextTerm)
+void CTextSearch::GetAndCutNextTerm(std::string &strSearchTerm, std::string &strNextTerm)
 {
-  CStdString strFindNext(" ");
+  std::string strFindNext(" ");
 
   if (StringUtils::EndsWith(strSearchTerm, "\""))
   {
@@ -103,9 +104,9 @@ void CTextSearch::GetAndCutNextTerm(CStdString &strSearchTerm, CStdString &strNe
   }
 }
 
-void CTextSearch::ExtractSearchTerms(const CStdString &strSearchTerm, TextSearchDefault defaultSearchMode)
+void CTextSearch::ExtractSearchTerms(const std::string &strSearchTerm, TextSearchDefault defaultSearchMode)
 {
-  CStdString strParsedSearchTerm(strSearchTerm);
+  std::string strParsedSearchTerm(strSearchTerm);
   StringUtils::Trim(strParsedSearchTerm);
 
   if (!m_bCaseSensitive)
@@ -121,25 +122,25 @@ void CTextSearch::ExtractSearchTerms(const CStdString &strSearchTerm, TextSearch
 
     if (StringUtils::StartsWith(strParsedSearchTerm, "!") || StringUtils::StartsWithNoCase(strParsedSearchTerm, "not"))
     {
-      CStdString strDummy;
+      std::string strDummy;
       GetAndCutNextTerm(strParsedSearchTerm, strDummy);
       bNextNOT = true;
     }
     else if (StringUtils::StartsWith(strParsedSearchTerm, "+") || StringUtils::StartsWithNoCase(strParsedSearchTerm, "and"))
     {
-      CStdString strDummy;
+      std::string strDummy;
       GetAndCutNextTerm(strParsedSearchTerm, strDummy);
       bNextAND = true;
     }
     else if (StringUtils::StartsWith(strParsedSearchTerm, "|") || StringUtils::StartsWithNoCase(strParsedSearchTerm, "or"))
     {
-      CStdString strDummy;
+      std::string strDummy;
       GetAndCutNextTerm(strParsedSearchTerm, strDummy);
       bNextOR = true;
     }
     else
     {
-      CStdString strTerm;
+      std::string strTerm;
       GetAndCutNextTerm(strParsedSearchTerm, strTerm);
       if (strTerm.length() > 0)
       {

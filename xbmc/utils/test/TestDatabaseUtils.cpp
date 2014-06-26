@@ -308,7 +308,7 @@ TEST(TestDatabaseUtils, GetField_MediaTypeSong)
 
 TEST(TestDatabaseUtils, GetField_MediaTypeMusicVideo)
 {
-  CStdString refstr, varstr;
+  std::string refstr, varstr;
 
   refstr = "musicvideo_view.idMVideo";
   varstr = DatabaseUtils::GetField(FieldId, MediaTypeMusicVideo,
@@ -408,7 +408,7 @@ TEST(TestDatabaseUtils, GetField_MediaTypeMusicVideo)
 
 TEST(TestDatabaseUtils, GetField_MediaTypeMovie)
 {
-  CStdString refstr, varstr;
+  std::string refstr, varstr;
 
   refstr = "movie_view.idMovie";
   varstr = DatabaseUtils::GetField(FieldId, MediaTypeMovie,
@@ -545,7 +545,7 @@ TEST(TestDatabaseUtils, GetField_MediaTypeMovie)
 
 TEST(TestDatabaseUtils, GetField_MediaTypeTvShow)
 {
-  CStdString refstr, varstr;
+  std::string refstr, varstr;
 
   refstr = "tvshow_view.idShow";
   varstr = DatabaseUtils::GetField(FieldId, MediaTypeTvShow,
@@ -642,7 +642,7 @@ TEST(TestDatabaseUtils, GetField_MediaTypeTvShow)
 
 TEST(TestDatabaseUtils, GetField_MediaTypeEpisode)
 {
-  CStdString refstr, varstr;
+  std::string refstr, varstr;
 
   refstr = "episode_view.idEpisode";
   varstr = DatabaseUtils::GetField(FieldId, MediaTypeEpisode,

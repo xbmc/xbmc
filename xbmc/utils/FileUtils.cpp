@@ -37,7 +37,7 @@
 using namespace XFILE;
 using namespace std;
 
-bool CFileUtils::DeleteItem(const CStdString &strPath, bool force)
+bool CFileUtils::DeleteItem(const std::string &strPath, bool force)
 {
   CFileItemPtr item(new CFileItem(strPath));
   item->SetPath(strPath);
@@ -75,12 +75,12 @@ bool CFileUtils::DeleteItem(const CFileItemPtr &item, bool force)
   return op.DoWork();
 }
 
-bool CFileUtils::RenameFile(const CStdString &strFile)
+bool CFileUtils::RenameFile(const std::string &strFile)
 {
-  CStdString strFileAndPath(strFile);
+  std::string strFileAndPath(strFile);
   URIUtils::RemoveSlashAtEnd(strFileAndPath);
-  CStdString strFileName = URIUtils::GetFileName(strFileAndPath);
-  CStdString strPath = URIUtils::GetDirectory(strFileAndPath);
+  std::string strFileName = URIUtils::GetFileName(strFileAndPath);
+  std::string strPath = URIUtils::GetDirectory(strFileAndPath);
   if (CGUIKeyboardFactory::ShowAndGetInput(strFileName, g_localizeStrings.Get(16013), false))
   {
     strPath = URIUtils::AddFileToFolder(strPath, strFileName);
@@ -92,7 +92,7 @@ bool CFileUtils::RenameFile(const CStdString &strFile)
       bool success = false;
       for (unsigned int i = 0; i < paths.size(); ++i)
       {
-        CStdString filePath(paths[i]);
+        std::string filePath(paths[i]);
         URIUtils::RemoveSlashAtEnd(filePath);
         filePath = URIUtils::GetDirectory(filePath);
         filePath = URIUtils::AddFileToFolder(filePath, strFileName);
@@ -106,10 +106,10 @@ bool CFileUtils::RenameFile(const CStdString &strFile)
   return false;
 }
 
-bool CFileUtils::RemoteAccessAllowed(const CStdString &strPath)
+bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
 {
   const unsigned int SourcesSize = 5;
-  CStdString SourceNames[] = { "programs", "files", "video", "music", "pictures" };
+  std::string SourceNames[] = { "programs", "files", "video", "music", "pictures" };
 
   string realPath = URIUtils::GetRealPath(strPath);
   // for rar:// and zip:// paths we need to extract the path to the archive
