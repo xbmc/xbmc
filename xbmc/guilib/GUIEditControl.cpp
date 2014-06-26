@@ -563,18 +563,32 @@ bool CGUIEditControl::SetStyledText(const CStdStringW &text)
 
   vecColors colors;
   colors.push_back(m_label.GetLabelInfo().textColor);
+  colors.push_back(m_label.GetLabelInfo().disabledColor);
+  color_t select = m_label.GetLabelInfo().selectedColor;
+  if (!select)
+    select = 0xFFFF0000;
+  colors.push_back(select);
   colors.push_back(0x00FFFFFF);
+
+  unsigned int startHighlight = m_cursorPos;
+  unsigned int endHighlight   = m_cursorPos + m_edit.size();
+  unsigned int startSelection = m_cursorPos + m_editOffset;
+  unsigned int endSelection   = m_cursorPos + m_editOffset + m_editLength;
 
   for (unsigned int i = 0; i < text.size(); i++)
   {
     unsigned int ch = text[i];
+    if (m_editLength > 0 && startSelection <= i && i < endSelection)
+      ch |= (2 << 16); // highlight the letters we're playing with
+    else if (!m_edit.empty() && (i < startHighlight || i >= endHighlight))
+      ch |= (1 << 16); // dim the bits we're not editing
     styled.push_back(ch);
   }
 
   // show the cursor
   unsigned int ch = L'|';
   if ((++m_cursorBlink % 64) > 32)
-    ch |= (1 << 16);
+    ch |= (3 << 16);
   styled.insert(styled.begin() + m_cursorPos, ch);
 
   return m_label2.SetStyledText(styled, colors);
