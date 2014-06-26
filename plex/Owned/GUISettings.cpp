@@ -904,6 +904,7 @@ void CGUISettings::Initialize()
   AddBool(adv, "videoplayer.useffmpegavio", 44406, false);
 #endif
 
+  AddInt(adv, "videoplayer.playtrailercount", 44407, 0, 0, 1, 5, SPIN_CONTROL_INT);
 
   // Plex "Network" Settings
   AddGroup(SETTINGS_SERVICE, 14036);
