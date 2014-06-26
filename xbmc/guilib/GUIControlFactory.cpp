@@ -419,11 +419,11 @@ bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode, const char* s
   return true;
 }
 
-bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, CStdString &condition, CStdString &allowHiddenFocus)
+bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, std::string &condition, std::string &allowHiddenFocus)
 {
   const TiXmlElement* node = control->FirstChildElement("visible");
   if (!node) return false;
-  vector<CStdString> conditions;
+  vector<std::string> conditions;
   while (node)
   {
     const char *hidden = node->Attribute("allowhiddenfocus");
@@ -448,7 +448,7 @@ bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, CStd
   return true;
 }
 
-bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode *control, CStdString &condition)
+bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode *control, std::string &condition)
 {
   CStdString allowHiddenFocus;
   return GetConditionalVisibility(control, condition, allowHiddenFocus);

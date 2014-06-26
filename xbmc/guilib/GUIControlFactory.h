@@ -82,14 +82,14 @@ public:
   static bool GetColor(const TiXmlNode* pRootNode, const char* strTag, color_t &value);
   static bool GetInfoColor(const TiXmlNode* pRootNode, const char* strTag, CGUIInfoColor &value, int parentID);
   static CStdString FilterLabel(const CStdString &label);
-  static bool GetConditionalVisibility(const TiXmlNode* control, CStdString &condition);
+  static bool GetConditionalVisibility(const TiXmlNode* control, std::string &condition);
   static bool GetActions(const TiXmlNode* pRootNode, const char* strTag, CGUIAction& actions);
   static void GetRectFromString(const CStdString &string, CRect &rect);
   static bool GetHitRect(const TiXmlNode* pRootNode, CRect &rect);
   static bool GetScroller(const TiXmlNode *pControlNode, const CStdString &scrollerTag, CScroller& scroller);
 private:
   static CStdString GetType(const TiXmlElement *pControlNode);
-  static bool GetConditionalVisibility(const TiXmlNode* control, CStdString &condition, CStdString &allowHiddenFocus);
+  static bool GetConditionalVisibility(const TiXmlNode* control, std::string &condition, std::string &allowHiddenFocus);
   bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strString);
   static bool GetFloatRange(const TiXmlNode* pRootNode, const char* strTag, float& iMinValue, float& iMaxValue, float& iIntervalValue);
   static bool GetIntRange(const TiXmlNode* pRootNode, const char* strTag, int& iMinValue, int& iMaxValue, int& iIntervalValue);
