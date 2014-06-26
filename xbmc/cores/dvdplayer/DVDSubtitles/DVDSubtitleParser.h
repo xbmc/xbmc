@@ -25,6 +25,7 @@
 #include "DVDSubtitleLineCollection.h"
 
 #include <string>
+#include <stdio.h>
 
 class CDVDStreamInfo;
 

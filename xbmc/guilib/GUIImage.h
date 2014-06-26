@@ -84,7 +84,7 @@ public:
   virtual void UpdateInfo(const CGUIListItem *item = NULL);
 
   virtual void SetInfo(const CGUIInfoLabel &info);
-  virtual void SetFileName(const CStdString& strFileName, bool setConstant = false, const bool useCache = true);
+  virtual void SetFileName(const std::string& strFileName, bool setConstant = false, const bool useCache = true);
   virtual void SetAspectRatio(const CAspectRatio &aspect);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
@@ -92,7 +92,7 @@ public:
   virtual std::string GetDescription() const;
   void SetCrossFade(unsigned int time);
 
-  const CStdString& GetFileName() const;
+  const std::string& GetFileName() const;
   float GetTextureWidth() const;
   float GetTextureHeight() const;
 
@@ -116,7 +116,7 @@ protected:
 
   CGUITexture m_texture;
   std::vector<CFadingTexture *> m_fadingTextures;
-  CStdString m_currentTexture;
+  std::string m_currentTexture;
   std::string m_currentFallback;
 
   unsigned int m_crossFadeTime;

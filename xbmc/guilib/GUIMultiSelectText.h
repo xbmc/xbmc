@@ -49,7 +49,7 @@ public:
   virtual std::string GetDescription() const;
   virtual bool CanFocus() const;
 
-  void UpdateText(const CStdString &text);
+  void UpdateText(const std::string &text);
   bool MoveLeft();
   bool MoveRight();
   void SelectItemFromPoint(const CPoint &point);
@@ -62,7 +62,7 @@ public:
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual bool UpdateColors();
-  void AddString(const CStdString &text, bool selectable, const CStdString &clickAction = "");
+  void AddString(const std::string &text, bool selectable, const std::string &clickAction = "");
   void PositionButtons();
   unsigned int GetNumSelectable() const;
   int GetItemFromPoint(const CPoint &point) const;
@@ -72,17 +72,17 @@ protected:
   class CSelectableString
   {
   public:
-    CSelectableString(CGUIFont *font, const CStdString &text, bool selectable, const CStdString &clickAction);
+    CSelectableString(CGUIFont *font, const std::string &text, bool selectable, const std::string &clickAction);
     CGUITextLayout m_text;
     float m_length;
     bool m_selectable;
-    CStdString m_clickAction;
+    std::string m_clickAction;
   };
   std::vector<CSelectableString> m_items;
 
   CLabelInfo m_label;
   CGUIInfoLabel  m_info;
-  CStdString m_oldText;
+  std::string m_oldText;
   unsigned int m_renderTime;
 
   // scrolling

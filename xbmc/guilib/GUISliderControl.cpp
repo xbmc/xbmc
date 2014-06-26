@@ -253,7 +253,7 @@ void CGUISliderControl::SendClick()
   SEND_CLICK_MESSAGE(GetID(), GetParentID(), MathUtils::round_int(percent));
   if (m_action && (!m_dragging || m_action->fireOnDrag))
   {
-    CStdString action = StringUtils::Format(m_action->formatString, percent);
+    std::string action = StringUtils::Format(m_action->formatString, percent);
     CGUIMessage message(GUI_MSG_EXECUTE, m_controlID, m_parentID);
     message.SetStringParam(action);
     g_windowManager.SendMessage(message);    
@@ -595,7 +595,7 @@ std::string CGUISliderControl::GetDescription() const
 {
   if (!m_textValue.empty())
     return m_textValue;
-  CStdString description;
+  std::string description;
   if (m_iType == SLIDER_CONTROL_TYPE_FLOAT)
   {
     if (m_rangeSelection)
@@ -641,7 +641,7 @@ float CGUISliderControl::GetProportion(RangeSelector selector /* = RangeSelector
   return 0.01f * GetPercentage(selector);
 }
 
-void CGUISliderControl::SetAction(const CStdString &action)
+void CGUISliderControl::SetAction(const std::string &action)
 {
   for (size_t i = 0; i < sizeof(actions)/sizeof(SliderAction); i++)
   {

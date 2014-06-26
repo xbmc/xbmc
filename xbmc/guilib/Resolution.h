@@ -21,7 +21,7 @@
 #pragma once
 
 #include <stdint.h>
-#include "utils/StdString.h"
+#include <string>
 
 typedef int DisplayMode;
 #define DM_WINDOWED     -1
@@ -95,11 +95,11 @@ struct RESOLUTION_INFO
   uint32_t dwFlags;
   float fPixelRatio;
   float fRefreshRate;
-  CStdString strMode;
-  CStdString strOutput;
-  CStdString strId;
+  std::string strMode;
+  std::string strOutput;
+  std::string strId;
 public:
-  RESOLUTION_INFO(int width = 1280, int height = 720, float aspect = 0, const CStdString &mode = "")
+  RESOLUTION_INFO(int width = 1280, int height = 720, float aspect = 0, const std::string &mode = "")
   {
     iWidth = width;
     iHeight = height;

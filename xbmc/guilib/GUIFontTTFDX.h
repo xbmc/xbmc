@@ -38,7 +38,7 @@
 class CGUIFontTTFDX : public CGUIFontTTFBase
 {
 public:
-  CGUIFontTTFDX(const CStdString& strFileName);
+  CGUIFontTTFDX(const std::string& strFileName);
   virtual ~CGUIFontTTFDX(void);
 
   virtual void Begin();

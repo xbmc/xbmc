@@ -25,6 +25,7 @@
 #include "filesystem/DirectoryHistory.h"
 #include "threads/CriticalSection.h"
 #include "utils/JobManager.h"
+#include "utils/StdString.h"
 
 class CFileItem;
 class CFileItemList;
