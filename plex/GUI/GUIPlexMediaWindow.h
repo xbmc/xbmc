@@ -20,7 +20,9 @@
 #include "PlexNavigationHelper.h"
 #include "gtest/gtest_prod.h"
 #include <set>
-#include <math.h>
+
+// for trunc.
+#include <boost/math/special_functions/trunc.hpp>
 
 #define FILTER_PRIMARY_CONTAINER     19000
 #define FILTER_SECONDARY_CONTAINER   19001
@@ -90,7 +92,7 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback
     bool CanFilterAdvanced();
 
     void FetchItemPage(int itemIndex);
-    inline int GetPageFromItemIndex(int index)  { return trunc(index / PLEX_DEFAULT_PAGE_SIZE); }
+    inline int GetPageFromItemIndex(int index)  { return boost::math::trunc(index / PLEX_DEFAULT_PAGE_SIZE); }
 private:
     void AddFilters();
 
