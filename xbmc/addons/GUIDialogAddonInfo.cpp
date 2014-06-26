@@ -413,15 +413,13 @@ void CGUIDialogAddonInfo::OnJobComplete(unsigned int jobID, bool success,
   else
   {
     CFile file;
-    if (file.Open("special://temp/"+
-      URIUtils::GetFileName(((CFileOperationJob*)job)->GetItems()[0]->GetPath())))
+    XFILE::auto_buffer buf;
+    if (file.LoadFile("special://temp/" +
+      URIUtils::GetFileName(((CFileOperationJob*)job)->GetItems()[0]->GetPath()), buf) > 0)
     {
-      char* temp = new char[(size_t)file.GetLength()+1];
-      file.Read(temp,file.GetLength());
-      temp[file.GetLength()] = '\0';
-      m_item->SetProperty("Addon.Changelog",temp);
-      pDlgInfo->SetText(temp);
-      delete[] temp;
+      std::string str(buf.get(), buf.length());
+      m_item->SetProperty("Addon.Changelog", str);
+      pDlgInfo->SetText(str);
     }
   }
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, WINDOW_DIALOG_TEXT_VIEWER, 0, GUI_MSG_UPDATE);
