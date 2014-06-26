@@ -57,7 +57,7 @@ public:
   static bool GetSetForMovie(const CFileItem *movieItem, CFileItemPtr &selectedSet);
   static bool SetMovieSet(const CFileItem *movieItem, const CFileItem *selectedSet);
 
-  static bool GetItemsForTag(const CStdString &strHeading, const std::string &type, CFileItemList &items, int idTag = -1, bool showAll = true);
+  static bool GetItemsForTag(const std::string &strHeading, const std::string &type, CFileItemList &items, int idTag = -1, bool showAll = true);
   static bool AddItemsToTag(const CFileItemPtr &tagItem);
   static bool RemoveItemsFromTag(const CFileItemPtr &tagItem);
 
@@ -67,12 +67,12 @@ public:
 protected:
   virtual void OnInitWindow();
   void Update();
-  void SetLabel(int iControl, const CStdString& strLabel);
+  void SetLabel(int iControl, const std::string& strLabel);
 
   // link cast to movies
   void ClearCastList();
-  void OnSearch(CStdString& strSearch);
-  void DoSearch(CStdString& strSearch, CFileItemList& items);
+  void OnSearch(std::string& strSearch);
+  void DoSearch(std::string& strSearch, CFileItemList& items);
   void OnSearchItemFound(const CFileItem* pItem);
   void Play(bool resume = false);
   void OnGetArt();
