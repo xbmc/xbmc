@@ -539,13 +539,20 @@ void CGUIEditControl::SetHint(const CGUIInfoLabel& hint)
 CStdStringW CGUIEditControl::GetDisplayedText() const
 {
   CStdStringW text(m_text2);
-  if (!m_edit.empty())
-  {
-    text.insert(m_editOffset, m_edit);
-    // TODO: highlighting
-  }
   if (m_inputType == INPUT_TYPE_PASSWORD || m_inputType == INPUT_TYPE_PASSWORD_MD5 || m_inputType == INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW)
-    text = CStdStringW(text.size(), L'*');
+  {
+    text.clear();
+    if (m_smsTimer.IsRunning())
+    { // using the remove to input, so display the last key input
+      text.append(m_cursorPos - 1, L'*');
+      text.append(1, m_text2[m_cursorPos - 1]);
+      text.append(m_text2.size() - m_cursorPos, L'*');
+    }
+    else
+      text.append(m_text2.size(), L'*');;
+  }
+  else if (!m_edit.empty())
+    text.insert(m_editOffset, m_edit);
   return text;
 }
 
