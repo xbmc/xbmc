@@ -487,23 +487,20 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
         align |= (m_label2.GetLabelInfo().align & 3);
       }
     }
+    changed |= m_label2.SetMaxRect(m_clipRect.x1 + m_textOffset, m_posY, m_clipRect.Width() - m_textOffset, m_height);
+
     CStdStringW text = GetDisplayedText();
-    // add the cursor if we're focused
+    // add the cursor and highlighting if we're focused
     if (HasFocus() && m_inputType != INPUT_TYPE_READONLY)
+      changed |= SetStyledText(text);
+    else
     {
-      CStdStringW col;
-      if ((m_focusCounter % 64) > 32)
-        col = L"|";
+      if (text.empty())
+        changed |= m_label2.SetText(m_hintInfo.GetLabel(GetParentID()));
       else
-        col = L"[COLOR 00FFFFFF]|[/COLOR]";
-      text.insert(m_cursorPos, col);
+        changed |= m_label2.SetTextW(text);
     }
 
-    changed |= m_label2.SetMaxRect(m_clipRect.x1 + m_textOffset, m_posY, m_clipRect.Width() - m_textOffset, m_height);
-    if (text.empty())
-      changed |= m_label2.SetText(m_hintInfo.GetLabel(GetParentID()));
-    else
-      changed |= m_label2.SetTextW(text);
     changed |= m_label2.SetAlign(align);
     changed |= m_label2.SetColor(GetTextColor());
     changed |= m_label2.SetOverflow(CGUILabel::OVER_FLOW_CLIP);
@@ -550,6 +547,30 @@ CStdStringW CGUIEditControl::GetDisplayedText() const
   if (m_inputType == INPUT_TYPE_PASSWORD || m_inputType == INPUT_TYPE_PASSWORD_MD5 || m_inputType == INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW)
     text = CStdStringW(text.size(), L'*');
   return text;
+}
+
+bool CGUIEditControl::SetStyledText(const CStdStringW &text)
+{
+  vecText styled;
+  styled.reserve(text.size() + 1);
+
+  vecColors colors;
+  colors.push_back(m_label.GetLabelInfo().textColor);
+  colors.push_back(0x00FFFFFF);
+
+  for (unsigned int i = 0; i < text.size(); i++)
+  {
+    unsigned int ch = text[i];
+    styled.push_back(ch);
+  }
+
+  // show the cursor
+  unsigned int ch = L'|';
+  if ((++m_cursorBlink % 64) > 32)
+    ch |= (1 << 16);
+  styled.insert(styled.begin() + m_cursorPos, ch);
+
+  return m_label2.SetStyledText(styled, colors);
 }
 
 void CGUIEditControl::ValidateCursor()
