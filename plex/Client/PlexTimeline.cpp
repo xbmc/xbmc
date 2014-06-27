@@ -54,6 +54,18 @@ CUrlOptions CPlexTimeline::getTimeline(bool forServer)
       options.AddOption("duration", durationStr);
     }
 
+    if (PlexUtils::IsPlayingPlaylist() && m_item && m_item->HasMusicInfoTag())
+    {
+      try
+      {
+        std::string pqid = boost::lexical_cast<std::string>(m_item->GetMusicInfoTag()->GetDatabaseId());
+        options.AddOption("playQueueItemID", pqid);
+      }
+      catch (...)
+      {
+      }
+    }
+
   }
   else
   {
@@ -168,18 +180,6 @@ CUrlOptions CPlexTimeline::getTimeline(bool forServer)
       {
         if (m_item->HasProperty("playQueueID"))
           options.AddOption("playQueueID", m_item->GetProperty("playQueueID").asString());
-
-        if (m_item && m_item->HasMusicInfoTag())
-        {
-          try
-          {
-            std::string pqid = boost::lexical_cast<std::string>(m_item->GetMusicInfoTag()->GetDatabaseId());
-            options.AddOption("playQueueItemID", pqid);
-          }
-          catch (...)
-          {
-          }
-        }
 
         if (m_item->HasProperty("playQueueVersion"))
           options.AddOption("playQueueVersion", m_item->GetProperty("playQueueVersion").asString());

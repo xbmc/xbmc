@@ -194,8 +194,8 @@ void CPlexPlayQueueServer::OnJobComplete(unsigned int jobID, bool success, CJob*
       return;
     }
 
-    CLog::Log(LOGDEBUG, "CPlexPlayQueueServer::OnJobComplete got playQueue of size %d and type %d",
-              fj->m_items.Size(), playlist);
+    CLog::Log(LOGDEBUG, "CPlexPlayQueueServer::OnJobComplete got playQueue (%lld) of size %d and type %d",
+              fj->m_items.GetProperty("playQueueID").asInteger(), fj->m_items.Size(), type);
 
     CFileItemListPtr pqCopy = CFileItemListPtr(new CFileItemList);
     pqCopy->Assign(fj->m_items);
