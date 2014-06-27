@@ -39,7 +39,8 @@ void CPlexExtraDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob*
   {
     // store the job list
     m_items->Clear();
-    m_items->Copy(fjob->m_items);
+    if (fjob->m_items.Size())
+      m_items->Copy(fjob->m_items);
 
     // send the dataloaded event to listeners
     CLog::Log(LOGDEBUG, "CPlexExtraInfoLoader : job %d succeeded for %s, (%d extra found)", jobID,
