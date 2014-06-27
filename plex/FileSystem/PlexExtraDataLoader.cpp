@@ -15,16 +15,18 @@ CPlexExtraDataLoader::CPlexExtraDataLoader()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexExtraDataLoader::loadDataForItem(CFileItemPtr pItem, ExtraDataType type)
 {
-  CURL url(pItem->GetPath());
+  if (pItem->GetPath() != m_path)
+  {
+    m_path = pItem->GetPath();
+    CURL url(m_path);
 
-  PlexUtils::AppendPathToURL(url, "extras");
+    PlexUtils::AppendPathToURL(url, "extras");
 
-  url.SetOptions("");
-  url.SetOption("extratype", boost::lexical_cast<std::string>((int)type));
+    url.SetOptions("");
+    url.SetOption("extratype", boost::lexical_cast<std::string>((int)type));
 
-  m_path = url.Get();
-
-  CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(url), this);
+    CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(url), this);
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
