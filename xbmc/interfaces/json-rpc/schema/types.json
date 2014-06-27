@@ -108,7 +108,7 @@
                   "album", "albumtype", "genre", "country", "year", "rating", "votes", "top250", "programcount",
                   "playlist", "episode", "season", "totalepisodes", "watchedepisodes", "tvshowstatus", "tvshowtitle",
                   "sorttitle", "productioncode", "mpaa", "studio", "dateadded", "lastplayed", "playcount", "listeners",
-                  "bitrate", "random" ]
+                  "bitrate", "dateupdated", "random" ]
       },
       "order": { "type": "string", "default": "ascending", "enum": [ "ascending", "descending" ] },
       "ignorearticle": { "type": "boolean", "default": false }
@@ -521,7 +521,7 @@
                 "imdbnumber", "premiered", "votes", "lastplayed",
                 "fanart", "thumbnail", "file", "originaltitle",
                 "sorttitle", "episodeguide", "season", "watchedepisodes",
-                "dateadded", "tag", "lastplayed", "art" ]
+                "dateadded", "dateupdated", "tag", "lastplayed", "art" ]
     }
   },
   "Video.Fields.Season": {

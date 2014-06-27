@@ -71,6 +71,7 @@ static const translateField fields[] = {
   { "time",              FieldTime,                    SortByTime,                     CDatabaseQueryRule::SECONDS_FIELD,  StringValidation::IsTime,             false, 180 },
   { "playcount",         FieldPlaycount,               SortByPlaycount,                CDatabaseQueryRule::NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 567 },
   { "lastplayed",        FieldLastPlayed,              SortByLastPlayed,               CDatabaseQueryRule::DATE_FIELD,     NULL,                                 false, 568 },
+  { "dateupdated",       FieldDateUpdated,             SortByDateUpdated,              CDatabaseQueryRule::DATE_FIELD,     NULL,                                 false, 174 },
   { "inprogress",        FieldInProgress,              SortByNone,                     CDatabaseQueryRule::BOOLEAN_FIELD,  NULL,                                 false, 575 },
   { "rating",            FieldRating,                  SortByRating,                   CDatabaseQueryRule::NUMERIC_FIELD,  CSmartPlaylistRule::ValidateRating,   false, 563 },
   { "votes",             FieldVotes,                   SortByVotes,                    CDatabaseQueryRule::TEXT_FIELD,     StringValidation::IsPositiveInteger,  false, 205 },
@@ -330,6 +331,7 @@ vector<Field> CSmartPlaylistRule::GetFields(const CStdString &type)
     fields.push_back(FieldMPAA);
     fields.push_back(FieldDateAdded);
     fields.push_back(FieldLastPlayed);
+    fields.push_back(FieldDateUpdated);
     fields.push_back(FieldInProgress);
     fields.push_back(FieldTag);
   }
@@ -476,6 +478,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const CStdString &type)
     orders.push_back(SortByMPAA);
     orders.push_back(SortByDateAdded);
     orders.push_back(SortByLastPlayed);
+    orders.push_back(SortByDateUpdated);
   }
   else if (type == "episodes")
   {

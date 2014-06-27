@@ -100,7 +100,7 @@ using namespace MUSIC_INFO;
  *  *t - Date Taken (suitable for Pictures)
  */
 
-#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXWapt"
+#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXWaptu"
 
 CLabelFormatter::CLabelFormatter(const CStdString &mask, const CStdString &mask2)
 {
@@ -322,6 +322,10 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
   case 't': // Date Taken
     if (pic && pic->GetDateTimeTaken().IsValid())
       value = pic->GetDateTimeTaken().GetAsLocalizedDate();
+    break;
+  case 'u': // Last updated
+    if (movie && movie->m_dateUpdated.IsValid())
+      value = movie->m_dateUpdated.GetAsLocalizedDate();
     break;
   }
   if (!value.empty())

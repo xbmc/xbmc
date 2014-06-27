@@ -603,6 +603,7 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == FieldPath) return VIDEODB_DETAILS_TVSHOW_PATH;
     else if (field == FieldDateAdded) return VIDEODB_DETAILS_TVSHOW_DATEADDED;
     else if (field == FieldLastPlayed) return VIDEODB_DETAILS_TVSHOW_LASTPLAYED;
+    else if (field == FieldDateUpdated) return VIDEODB_DETAILS_TVSHOW_DATEUPDATED;
     else if (field == FieldNumberOfEpisodes) return VIDEODB_DETAILS_TVSHOW_NUM_EPISODES;
     else if (field == FieldNumberOfWatchedEpisodes) return VIDEODB_DETAILS_TVSHOW_NUM_WATCHED;
     else if (field == FieldSeason) return VIDEODB_DETAILS_TVSHOW_NUM_SEASONS;

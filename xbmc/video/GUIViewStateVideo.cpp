@@ -173,6 +173,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         // NOTE: This uses SortByEpisodeNumber to mean "sort shows by the number of episodes" and uses the label "Episodes"
         AddSortMethod(SortByEpisodeNumber, 20360, LABEL_MASKS("%L", "%M", "%L", "%M"));  // Label, #Episodes | Label, #Episodes
         AddSortMethod(SortByLastPlayed, 568, LABEL_MASKS("%T", "%p", "%T", "%p"));  // Title, #Last played | Title, #Last played
+        AddSortMethod(SortByDateUpdated, 174, LABEL_MASKS("%T", "%u", "%T", "%u"));  // Title, Last updated | Title, Last updated
         AddSortMethod(SortByYear, 562, LABEL_MASKS("%L","%Y","%L","%Y")); // Label, Year | Label, Year
         SetSortMethod(SortByLabel);
 

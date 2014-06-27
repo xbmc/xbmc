@@ -393,7 +393,7 @@ void CVideoDatabase::CreateViews()
                                      "  path.idParentPath AS idParentPath,"
                                      "  path.strPath AS strPath,"
                                      "  path.dateAdded AS dateAdded,"
-                                     "  lastPlayed, totalCount, watchedcount, totalSeasons "
+                                     "  lastPlayed, totalCount, watchedcount, totalSeasons, dateUpdated "
                                      "FROM tvshow"
                                      "  LEFT JOIN tvshowlinkpath ON"
                                      "    tvshowlinkpath.idShow=tvshow.idShow"
@@ -404,7 +404,8 @@ void CVideoDatabase::CreateViews()
                                      "      MAX(files.lastPlayed) AS lastPlayed,"
                                      "      NULLIF(COUNT(episode.c12), 0) AS totalCount,"
                                      "      COUNT(files.playCount) AS watchedcount,"
-                                     "      NULLIF(COUNT(DISTINCT(episode.c12)), 0) AS totalSeasons "
+                                     "      NULLIF(COUNT(DISTINCT(episode.c12)), 0) AS totalSeasons, "
+                                     "      MAX(files.dateAdded) as dateUpdated "
                                      "    FROM tvshow"
                                      "      LEFT JOIN episode ON"
                                      "        episode.idShow=tvshow.idShow"
@@ -3659,6 +3660,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   details.m_parentPathID = record->at(VIDEODB_DETAILS_TVSHOW_PARENTPATHID).get_asInt();
   details.m_dateAdded.SetFromDBDateTime(record->at(VIDEODB_DETAILS_TVSHOW_DATEADDED).get_asString());
   details.m_lastPlayed.SetFromDBDateTime(record->at(VIDEODB_DETAILS_TVSHOW_LASTPLAYED).get_asString());
+  details.m_dateUpdated.SetFromDBDateTime(record->at(VIDEODB_DETAILS_TVSHOW_DATEUPDATED).get_asString());
   details.m_iEpisode = record->at(VIDEODB_DETAILS_TVSHOW_NUM_EPISODES).get_asInt();
   details.m_playCount = record->at(VIDEODB_DETAILS_TVSHOW_NUM_WATCHED).get_asInt();
   details.m_strShowTitle = details.m_strTitle;
@@ -4637,7 +4639,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 85;
+  return 86;
 }
 
 bool CVideoDatabase::LookupByFolders(const CStdString &path, bool shows)

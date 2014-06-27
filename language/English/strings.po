@@ -712,7 +712,10 @@ msgctxt "#173"
 msgid "Display 4:3 videos as"
 msgstr ""
 
-#empty string with id 174
+#: xbmc/utils/SortUtils.cpp
+msgctxt "#174"
+msgid "Recently updated"
+msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#175"
