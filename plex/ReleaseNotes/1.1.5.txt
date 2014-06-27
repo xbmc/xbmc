@@ -1,0 +1,5 @@
+* Fixes
+  - Fix Unwatched filter list refresh throws navigation back to main level
+  - Fix casting a "By Folder" queue
+  - PHT could mark a video as watched multiple times
+  - Fix advancing video playQueues beyond 20 items
