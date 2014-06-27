@@ -258,23 +258,6 @@ void CPlexTimelineManager::ReportProgress(const CPlexTimelinePtr &timeline, bool
 
     m_serverTimer.restart();
   }
-
-  if (currentItem)
-  {
-    /* Mark progress for the item */
-    float percentage = 0.0;
-    if (GetItemDuration(currentItem) > 0)
-      percentage = (float)(((float)realPosition/(float)GetItemDuration(currentItem)) * 100.0);
-
-    if (currentItem->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_UNWATCHED &&
-        realPosition >= 5)
-      currentItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
-
-    if ((currentItem->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_IN_PROGRESS ||
-         currentItem->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_UNWATCHED) &&
-        percentage > g_advancedSettings.m_videoPlayCountMinimumPercent)
-      currentItem->MarkAsWatched();
-  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
