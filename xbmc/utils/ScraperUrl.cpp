@@ -210,7 +210,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
     {
       XFILE::CFile file;
       XFILE::auto_buffer buffer;
-      if (file.LoadFile(strCachePath, buffer))
+      if (file.LoadFile(strCachePath, buffer) > 0)
       {
         strHTML.assign(buffer.get(), buffer.length());
         return true;

@@ -168,7 +168,7 @@ void CRssReader::Process()
         {
           CFile file;
           auto_buffer buffer;
-          if (file.LoadFile(strUrl, buffer))
+          if (file.LoadFile(strUrl, buffer) > 0)
           {
             strXML.assign(buffer.get(), buffer.length());
             break;
