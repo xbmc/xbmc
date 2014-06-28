@@ -175,7 +175,7 @@ bool File::Create(const char *Name,const wchar *NameW)
     WideToUtf(NameW, _name, sizeof(_name));
   else
     strcpy(_name, Name);
-  CStdString strPath = URIUtils::GetDirectory(_name);
+  std::string strPath = URIUtils::GetDirectory(_name);
   CUtil::CreateDirectoryEx(strPath);
   m_File.OpenForWrite(_name,true);
   NewFile=true;
