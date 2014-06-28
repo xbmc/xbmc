@@ -211,7 +211,7 @@ ssize_t CWin32File::Read(void* lpBuf, size_t uiBufSize)
   return read;
 }
 
-int CWin32File::Write(const void* lpBuf, int64_t uiBufSize)
+ssize_t CWin32File::Write(const void* lpBuf, size_t uiBufSize)
 {
   assert(lpBuf != NULL);
   if (m_hFile == INVALID_HANDLE_VALUE || !lpBuf)
@@ -223,8 +223,10 @@ int CWin32File::Write(const void* lpBuf, int64_t uiBufSize)
     return -1;
   }
 
-  // TODO: fail on oversized uiBufSize
-  int written = 0;
+  if (uiBufSize > SSIZE_MAX)
+    uiBufSize = SSIZE_MAX;
+
+  ssize_t written = 0;
   while (uiBufSize > 0)
   {
     DWORD lastWritten = 0;

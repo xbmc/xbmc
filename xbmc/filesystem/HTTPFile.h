@@ -30,7 +30,7 @@ namespace XFILE
     CHTTPFile(void);
     virtual ~CHTTPFile(void);
     virtual bool OpenForWrite(const CURL& url, bool bOverWrite = false);
-    virtual int Write(const void* lpBuf, int64_t uiBufSize);
+    virtual ssize_t Write(const void* lpBuf, size_t uiBufSize);
   private:
     bool            m_openedforwrite;
     CURL            m_urlforwrite;

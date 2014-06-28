@@ -96,7 +96,15 @@ public:
    *         or undetectable error occur, -1 in case of any explicit error
    */
   virtual ssize_t Read(void* bufPtr, size_t bufSize) = 0;
-  virtual int Write(const void* lpBuf, int64_t uiBufSize) { return -1;};
+  /**
+   * Attempt to write bufSize bytes from buffer bufPtr into currently opened file.
+   * @param bufPtr  pointer to buffer
+   * @param bufSize size of the buffer
+   * @return number of successfully written bytes if any bytes were written,
+   *         zero if no bytes were written and no detectable error occur,
+   *         -1 in case of any explicit error
+   */
+  virtual ssize_t Write(const void* bufPtr, size_t bufSize) { return -1;}
   virtual bool ReadString(char *szLine, int iLineLength);
   virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET) = 0;
   virtual void Close() = 0;

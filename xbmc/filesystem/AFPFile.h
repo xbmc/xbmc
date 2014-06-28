@@ -107,7 +107,7 @@ public:
   virtual int           Stat(struct __stat64* buffer);
   virtual int64_t       GetLength();
   virtual int64_t       GetPosition();
-  virtual int           Write(const void* lpBuf, int64_t uiBufSize);
+  virtual ssize_t       Write(const void* lpBuf, size_t uiBufSize);
 
   virtual bool          OpenForWrite(const CURL& url, bool bOverWrite = false);
   virtual bool          Delete(const CURL& url);

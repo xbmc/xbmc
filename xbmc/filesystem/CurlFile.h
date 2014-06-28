@@ -58,7 +58,7 @@ namespace XFILE
       virtual void Close();
       virtual bool ReadString(char *szLine, int iLineLength)     { return m_state->ReadString(szLine, iLineLength); }
       virtual ssize_t Read(void* lpBuf, size_t uiBufSize)        { return m_state->Read(lpBuf, uiBufSize); }
-      virtual int Write(const void* lpBuf, int64_t uiBufSize);
+      virtual ssize_t Write(const void* lpBuf, size_t uiBufSize);
       virtual std::string GetMimeType()                           { return m_state->m_httpheader.GetMimeType(); }
       virtual std::string GetContent()                           { return GetMimeType(); }
       virtual int IoControl(EIoControl request, void* param);

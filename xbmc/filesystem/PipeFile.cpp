@@ -88,13 +88,13 @@ ssize_t CPipeFile::Read(void* lpBuf, size_t uiBufSize)
   return m_pipe->Read((char *)lpBuf,(int)uiBufSize);
 }
 
-int CPipeFile::Write(const void* lpBuf, int64_t uiBufSize)
+ssize_t CPipeFile::Write(const void* lpBuf, size_t uiBufSize)
 {
   if (!m_pipe)
     return -1;
   
   // m_pipe->Write return bool. either all was written or not.
-  return m_pipe->Write((const char *)lpBuf,(int)uiBufSize) ? (int)uiBufSize : 0;
+  return m_pipe->Write((const char *)lpBuf,uiBufSize) ? uiBufSize : 0;
 }
 
 void CPipeFile::SetEof()

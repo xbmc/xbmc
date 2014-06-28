@@ -360,11 +360,6 @@ ssize_t CRarFile::Read(void *lpBuf, size_t uiBufSize)
 #endif
 }
 
-unsigned int CRarFile::Write(void *lpBuf, int64_t uiBufSize)
-{
-  return 0;
-}
-
 void CRarFile::Close()
 {
 #ifdef HAS_FILESYSTEM_RAR
@@ -530,7 +525,7 @@ int64_t CRarFile::GetPosition()
   return m_iFilePosition;
 }
 
-int CRarFile::Write(const void* lpBuf, int64_t uiBufSize)
+ssize_t CRarFile::Write(const void* lpBuf, size_t uiBufSize)
 {
   return -1;
 }

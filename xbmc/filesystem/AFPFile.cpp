@@ -610,13 +610,13 @@ void CAFPFile::Close()
   }
 }
 
-int CAFPFile::Write(const void* lpBuf, int64_t uiBufSize)
+ssize_t CAFPFile::Write(const void* lpBuf, size_t uiBufSize)
 {
   CSingleLock lock(gAfpConnection);
   if (m_pFp == NULL || !m_pAfpVol)
    return -1;
 
-  int numberOfBytesWritten = 0;
+  ssize_t numberOfBytesWritten = 0;
   uid_t uid;
   gid_t gid;
 
@@ -631,7 +631,7 @@ int CAFPFile::Write(const void* lpBuf, int64_t uiBufSize)
     name = m_pFp->basename;
 #endif
   numberOfBytesWritten = gAfpConnection.GetImpl()->afp_wrap_write(m_pAfpVol,
-    name, (const char *)lpBuf, (size_t)uiBufSize, m_fileOffset, m_pFp, uid, gid);
+    name, (const char *)lpBuf, uiBufSize, m_fileOffset, m_pFp, uid, gid);
 
   if (numberOfBytesWritten > 0)
     m_fileOffset += numberOfBytesWritten;

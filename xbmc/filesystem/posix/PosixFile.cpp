@@ -150,7 +150,7 @@ ssize_t CPosixFile::Read(void* lpBuf, size_t uiBufSize)
   return res;
 }
 
-int CPosixFile::Write(const void* lpBuf, int64_t uiBufSize)
+ssize_t CPosixFile::Write(const void* lpBuf, size_t uiBufSize)
 {
   assert(lpBuf != NULL);
   if (m_fd < 0 || !m_allowWrite || !lpBuf)
