@@ -5127,32 +5127,19 @@ void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
     if (NULL == m_pDB.get()) return;
 
     XFILE::CFile file;
+    XFILE::auto_buffer buf;
 
-    if ( !file.Open( inputFile ) )
+    if (file.LoadFile(inputFile, buf) <= 0)
     {
-      CLog::Log( LOGERROR, "Cannot open karaoke import file %s", inputFile.c_str() );
+      CLog::Log(LOGERROR, "%s: Cannot read karaoke import file \"%s\"", __FUNCTION__, inputFile.c_str());
       return;
     }
 
-    unsigned int size = (unsigned int) file.GetLength();
-
-    if ( !size )
-      return;
-
-    // Read the file into memory array
-    std::vector<char> data( size + 1 );
-
-    file.Seek( 0, SEEK_SET );
-
-    // Read the whole file
-    if ( file.Read( &data[0], size) != size )
-    {
-      CLog::Log( LOGERROR, "Cannot read karaoke import file %s", inputFile.c_str() );
-      return;
-    }
+    // Null-terminate content
+    buf.resize(buf.size() + 1);
+    buf.get()[buf.size() - 1] = 0;
 
     file.Close();
-    data[ size ] = '\0';
 
     if (progress)
     {
@@ -5171,10 +5158,10 @@ void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
     //
     // A simple state machine to parse the file
     //
-    char * linestart = &data[0];
+    char * linestart = buf.get();
     unsigned int offset = 0, lastpercentage = 0;
 
-    for ( char * p = &data[0]; *p; p++, offset++ )
+    for (char * p = buf.get(); *p; p++, offset++)
     {
       // Skip \r
       if ( *p == 0x0D )
@@ -5246,9 +5233,9 @@ void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
         strSQL = PrepareSQL("UPDATE karaokedata SET iKaraNumber=%i WHERE idSong=%i", num, lResult );
         m_pDS->exec(strSQL.c_str());
 
-        if ( progress && (offset * 100 / size) != lastpercentage )
+        if ( progress && (offset * 100 / buf.size()) != lastpercentage )
         {
-          lastpercentage = offset * 100 / size;
+          lastpercentage = offset * 100 / buf.size();
           progress->SetPercentage( lastpercentage);
           progress->Progress();
           if ( progress->IsCanceled() )
