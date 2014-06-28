@@ -47,7 +47,7 @@ public:
   // file operations
   static void* OpenFile(const void* addonData, const char* strFileName, unsigned int flags);
   static void* OpenFileForWrite(const void* addonData, const char* strFileName, bool bOverwrite);
-  static unsigned int ReadFile(const void* addonData, void* file, void* lpBuf, int64_t uiBufSize);
+  static ssize_t ReadFile(const void* addonData, void* file, void* lpBuf, size_t uiBufSize);
   static bool ReadFileString(const void* addonData, void* file, char *szLine, int iLineLength);
   static int WriteFile(const void* addonData, void* file, const void* lpBuf, int64_t uiBufSize);
   static void FlushFile(const void* addonData, void* file);
