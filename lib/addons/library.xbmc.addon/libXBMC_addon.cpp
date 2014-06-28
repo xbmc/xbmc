@@ -156,10 +156,10 @@ DLLEXPORT bool XBMC_read_file_string(void *hdl, void* cb, void* file, char *szLi
   return ((CB_AddOnLib*)cb)->ReadFileString(((AddonCB*)hdl)->addonData, file, szLine, iLineLength);
 }
 
-DLLEXPORT int XBMC_write_file(void *hdl, void* cb, void* file, const void* lpBuf, int64_t uiBufSize)
+DLLEXPORT ssize_t XBMC_write_file(void *hdl, void* cb, void* file, const void* lpBuf, size_t uiBufSize)
 {
   if (cb == NULL)
-    return false;
+    return -1;
 
   return ((CB_AddOnLib*)cb)->WriteFile(((AddonCB*)hdl)->addonData, file, lpBuf, uiBufSize);
 }

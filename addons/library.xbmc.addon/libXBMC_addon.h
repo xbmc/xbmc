@@ -198,7 +198,7 @@ namespace ADDON
         dlsym(m_libXBMC_addon, "XBMC_read_file_string");
       if (XBMC_read_file_string == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-      XBMC_write_file = (int (*)(void* HANDLE, void* CB, void* file, const void* lpBuf, int64_t uiBufSize))
+      XBMC_write_file = (ssize_t (*)(void* HANDLE, void* CB, void* file, const void* lpBuf, size_t uiBufSize))
         dlsym(m_libXBMC_addon, "XBMC_write_file");
       if (XBMC_write_file == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
@@ -405,9 +405,11 @@ namespace ADDON
      * @param file The file handle to write to.
      * @param lpBuf The data to write.
      * @param uiBufSize Size of the data to write.
-     * @return The number of bytes read.
+     * @return number of successfully written bytes if any bytes were written,
+     *         zero if no bytes were written and no detectable error occur,
+     *         -1 in case of any explicit error
      */
-    int WriteFile(void* file, const void* lpBuf, int64_t uiBufSize)
+    ssize_t WriteFile(void* file, const void* lpBuf, size_t uiBufSize)
     {
       return XBMC_write_file(m_Handle, m_Callbacks, file, lpBuf, uiBufSize);
     }
@@ -570,7 +572,7 @@ namespace ADDON
     void* (*XBMC_open_file_for_write)(void *HANDLE, void* CB, const char* strFileName, bool bOverWrite);
     ssize_t (*XBMC_read_file)(void *HANDLE, void* CB, void* file, void* lpBuf, size_t uiBufSize);
     bool (*XBMC_read_file_string)(void *HANDLE, void* CB, void* file, char *szLine, int iLineLength);
-    int (*XBMC_write_file)(void *HANDLE, void* CB, void* file, const void* lpBuf, int64_t uiBufSize);
+    ssize_t(*XBMC_write_file)(void *HANDLE, void* CB, void* file, const void* lpBuf, size_t uiBufSize);
     void (*XBMC_flush_file)(void *HANDLE, void* CB, void* file);
     int64_t (*XBMC_seek_file)(void *HANDLE, void* CB, void* file, int64_t iFilePosition, int iWhence);
     int (*XBMC_truncate_file)(void *HANDLE, void* CB, void* file, int64_t iSize);
