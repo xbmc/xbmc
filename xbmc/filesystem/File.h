@@ -79,7 +79,7 @@ public:
 
   bool Open(const CURL& file, const unsigned int flags = 0);
   bool OpenForWrite(const CURL& file, bool bOverWrite = false);
-  unsigned int LoadFile(const CURL &file, auto_buffer& outputBuffer);
+  ssize_t LoadFile(const CURL &file, auto_buffer& outputBuffer);
 
   bool Open(const CStdString& strFileName, const unsigned int flags = 0);
   bool OpenForWrite(const CStdString& strFileName, bool bOverWrite = false);
@@ -95,7 +95,7 @@ public:
   int GetChunkSize();
   std::string GetContentMimeType(void);
   std::string GetContentCharset(void);
-  unsigned int LoadFile(const std::string &filename, auto_buffer& outputBuffer);
+  ssize_t LoadFile(const std::string &filename, auto_buffer& outputBuffer);
 
 
   // will return a size, that is aligned to chunk size
