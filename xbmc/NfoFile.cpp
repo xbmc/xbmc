@@ -70,11 +70,11 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
     if (episode > -1 && bNfo && m_type == ADDON_SCRAPER_TVSHOWS)
     {
       int infos=0;
-      m_headofdoc = strstr(m_headofdoc,"<episodedetails");
+      m_headPos = m_doc.find("<episodedetails", m_headPos);
       bNfo = GetDetails(details);
-      while (m_headofdoc && details.m_iEpisode != episode)
+      while (m_headPos!=std::string::npos && details.m_iEpisode != episode)
       {
-        m_headofdoc = strstr(m_headofdoc+1,"<episodedetails");
+        m_headPos = m_doc.find("<episodedetails", m_headPos + 1);
         bNfo  = GetDetails(details);
         infos++;
       }
@@ -82,7 +82,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
       {
         bNfo = false;
         details.Reset();
-        m_headofdoc = m_doc;
+        m_headPos = 0;
         if (infos == 1) // still allow differing nfo/file numbers for single ep nfo's
           bNfo = GetDetails(details);
       }
@@ -161,35 +161,20 @@ int CNfoFile::Load(const CStdString& strFile)
 {
   Close();
   XFILE::CFile file;
-  if (file.Open(strFile))
+  XFILE::auto_buffer buf;
+  if (file.LoadFile(strFile, buf) > 0)
   {
-    int size = (int)file.GetLength();
-    try
-    {
-      m_doc = new char[size+1];
-      m_headofdoc = m_doc;
-    }
-    catch (...)
-    {
-      CLog::Log(LOGERROR, "%s: Exception while creating file buffer",__FUNCTION__);
-      return 1;
-    }
-    if (!m_doc)
-    {
-      file.Close();
-      return 1;
-    }
-    file.Read(m_doc, size);
-    m_doc[size] = 0;
-    file.Close();
+    m_doc.assign(buf.get(), buf.size());
+    m_headPos = 0;
     return 0;
   }
+  m_doc.clear();
   return 1;
 }
 
 void CNfoFile::Close()
 {
-  delete[] m_doc;
-  m_doc = NULL;
+  m_doc.clear();
+  m_headPos = 0;
   m_scurl.Clear();
 }

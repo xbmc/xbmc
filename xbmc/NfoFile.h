@@ -34,7 +34,7 @@
 class CNfoFile
 {
 public:
-  CNfoFile() : m_doc(NULL), m_headofdoc(NULL), m_type(ADDON::ADDON_UNKNOWN) {}
+  CNfoFile() : m_headPos(0), m_type(ADDON::ADDON_UNKNOWN) {}
   virtual ~CNfoFile() { Close(); }
 
   enum NFOResult
@@ -51,13 +51,11 @@ public:
     bool GetDetails(T& details,const char* document=NULL, bool prioritise=false)
   {
     CXBMCTinyXML doc;
-    CStdString strDoc;
     if (document)
-      strDoc = document;
+      doc.Parse(document, TIXML_ENCODING_UNKNOWN);
     else
-      strDoc = m_headofdoc;
+      doc.Parse(m_doc.substr(m_headPos), TIXML_ENCODING_UNKNOWN);
 
-    doc.Parse(strDoc, TIXML_ENCODING_UNKNOWN);
     return details.Load(doc.RootElement(), true, prioritise);
   }
 
@@ -67,8 +65,8 @@ public:
   const CScraperUrl &ScraperUrl() const { return m_scurl; }
 
 private:
-  char* m_doc;
-  char* m_headofdoc;
+  std::string m_doc;
+  size_t m_headPos;
   ADDON::ScraperPtr m_info;
   ADDON::TYPE m_type;
   CScraperUrl m_scurl;
