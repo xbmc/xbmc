@@ -26,7 +26,14 @@
 #include "threads/CriticalSection.h"
 
 #include <libssh/libssh.h>
+#ifdef TARGET_WINDOWS
+#define ssize_t SSIZE_T
 #include <libssh/sftp.h>
+#undef ssize_t
+#include "PlatformDefs.h"
+#else  // !TARGET_WINDOWS
+#include <libssh/sftp.h>
+#endif // !TARGET_WINDOWS
 #include <string>
 #include <map>
 #include <boost/shared_ptr.hpp>
