@@ -334,15 +334,12 @@ void File::Write(const void *Data,int Size)
     if (HandleType!=FILE_HANDLENORMAL)
     {
       const int MaxSize=0x4000;
-      for (int I=0;I<Size;I+=MaxSize)
-        //if (!(success=WriteFile(hFile,(byte *)Data+I,Min(Size-I,MaxSize),&Written,NULL) != FALSE))
-        m_File.Write((byte*)Data+I,Min(Size-I,MaxSize));
-        //  break;
+      for (int I = 0; I < Size && success; I += MaxSize)
+        success = m_File.Write((byte*)Data + I, Min(Size - I, MaxSize)) == Min(Size - I, MaxSize);
     }
     else
     {
-      //success=WriteFile(hFile,Data,Size,&Written,NULL) != FALSE;
-      m_File.Write(Data,Size);
+      success = m_File.Write(Data, Size) == Size;
     }
 #else
     success=fwrite(Data,1,Size,hFile)==Size && !ferror(hFile);

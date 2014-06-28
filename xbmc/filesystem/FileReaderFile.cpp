@@ -75,7 +75,7 @@ ssize_t CFileReaderFile::Read(void *lpBuf, size_t uiBufSize)
 //*********************************************************************************************
 ssize_t CFileReaderFile::Write(const void *lpBuf, size_t uiBufSize)
 {
-  return 0;
+  return -1;
 }
 
 //*********************************************************************************************

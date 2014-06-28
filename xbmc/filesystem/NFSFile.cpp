@@ -753,7 +753,10 @@ ssize_t CNFSFile::Write(const void* lpBuf, size_t uiBufSize)
     //danger - something went wrong
     if (writtenBytes < 0) 
     {
-      CLog::Log(LOGERROR, "Failed to pwrite(%s) %s\n", m_url.GetFileName().c_str(), gNfsConnection.GetImpl()->nfs_get_error(m_pNfsContext));        
+      CLog::Log(LOGERROR, "Failed to pwrite(%s) %s\n", m_url.GetFileName().c_str(), gNfsConnection.GetImpl()->nfs_get_error(m_pNfsContext));
+      if (numberOfBytesWritten == 0)
+        return -1;
+
       break;
     }     
   }

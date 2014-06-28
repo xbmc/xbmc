@@ -863,16 +863,14 @@ bool CCurlFile::Download(const std::string& strURL, const std::string& strFileNa
     strFileName.c_str(), GetLastError());
     return false;
   }
-  if (strData.size())
-    file.Write(strData.c_str(), strData.size());
-  file.Close();
+  ssize_t written = 0;
+  if (strData.size() > 0)
+    written = file.Write(strData.c_str(), strData.size());
 
   if (pdwSize != NULL)
-  {
-    *pdwSize = strData.size();
-  }
+    *pdwSize = written > 0 ? written : 0;
 
-  return true;
+  return written == strData.size();
 }
 
 // Detect whether we are "online" or not! Very simple and dirty!

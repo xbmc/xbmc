@@ -180,7 +180,8 @@ void TagLibVFSStream::insert(const ByteVector &data, TagLib::ulong start, TagLib
     // Seek to the write position and write our buffer.  Increment the
     // writePosition.
     seek(writePosition);
-    m_file.Write(buffer.data(), buffer.size());
+    if (m_file.Write(buffer.data(), buffer.size()) < buffer.size())
+      return; // error
     writePosition += buffer.size();
 
     buffer = aboutToOverwrite;
@@ -218,7 +219,8 @@ void TagLibVFSStream::removeBlock(TagLib::ulong start, TagLib::ulong length)
       clear();
 
     seek(writePosition);
-    m_file.Write(buffer.data(), bytesRead);
+    if (m_file.Write(buffer.data(), bytesRead) != bytesRead)
+      return; // error
     writePosition += bytesRead;
   }
   truncate(writePosition);

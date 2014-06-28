@@ -200,14 +200,17 @@ void CPlayListM3U::Save(const std::string& strFileName) const
     return;
   }
   std::string strLine = StringUtils::Format("%s\n",M3U_START_MARKER);
-  file.Write(strLine.c_str(),strLine.size());
+  if (file.Write(strLine.c_str(), strLine.size()) != strLine.size())
+    return; // error
+
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
     CFileItemPtr item = m_vecItems[i];
     std::string strDescription=item->GetLabel();
     g_charsetConverter.utf8ToStringCharset(strDescription);
     strLine = StringUtils::Format( "%s:%i,%s\n", M3U_INFO_MARKER, item->GetMusicInfoTag()->GetDuration() / 1000, strDescription.c_str() );
-    file.Write(strLine.c_str(),strLine.size());
+    if (file.Write(strLine.c_str(), strLine.size()) != strLine.size())
+      return; // error
     if (item->m_lStartOffset != 0 || item->m_lEndOffset != 0)
     {
       strLine = StringUtils::Format("%s:%i,%i\n", M3U_OFFSET_MARKER, item->m_lStartOffset, item->m_lEndOffset);
@@ -216,7 +219,8 @@ void CPlayListM3U::Save(const std::string& strFileName) const
     std::string strFileName = ResolveURL(item);
     g_charsetConverter.utf8ToStringCharset(strFileName);
     strLine = StringUtils::Format("%s\n",strFileName.c_str());
-    file.Write(strLine.c_str(),strLine.size());
+    if (file.Write(strLine.c_str(), strLine.size()) != strLine.size())
+      return; // error
   }
   file.Close();
 }

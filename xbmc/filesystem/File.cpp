@@ -158,7 +158,7 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
       iWrite = 0;
       while(iWrite < iRead)
       {
-        int iWrite2 = newFile.Write(buffer.get()+iWrite, iRead-iWrite);
+        ssize_t iWrite2 = newFile.Write(buffer.get() + iWrite, iRead - iWrite);
         if(iWrite2 <=0)
           break;
         iWrite+=iWrite2;
@@ -741,7 +741,7 @@ bool CFile::ReadString(char *szLine, int iLineLength)
   return false;
 }
 
-int CFile::Write(const void* lpBuf, int64_t uiBufSize)
+ssize_t CFile::Write(const void* lpBuf, size_t uiBufSize)
 {
   if (!m_pFile || !lpBuf)
     return -1;

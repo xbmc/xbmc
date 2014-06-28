@@ -377,9 +377,13 @@ void CArchive::FlushBuffer()
 {
   if (m_iMode == store && m_BufferPos != m_pBuffer)
   {
-    m_pFile->Write(m_pBuffer, m_BufferPos - m_pBuffer);
-    m_BufferPos = m_pBuffer;
-    m_BufferRemain = CARCHIVE_BUFFER_MAX;
+    if (m_pFile->Write(m_pBuffer, m_BufferPos - m_pBuffer) != m_BufferPos - m_pBuffer)
+      CLog::Log(LOGERROR, "%s: Error flushing buffer", __FUNCTION__);
+    else
+    {
+      m_BufferPos = m_pBuffer;
+      m_BufferRemain = CARCHIVE_BUFFER_MAX;
+    }
   }
 }
 
