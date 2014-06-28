@@ -37,31 +37,16 @@ CPODocument::~CPODocument() {}
 bool CPODocument::LoadFile(const std::string &pofilename)
 {
   XFILE::CFile file;
-  if (!file.Open(pofilename))
-    return false;
-
-  int64_t fileLength = file.GetLength();
-  if (fileLength < 18) // at least a size of a minimalistic header
+  XFILE::auto_buffer buf;
+  if (file.LoadFile(pofilename, buf) < 18) // at least a size of a minimalistic header
   {
-    file.Close();
-    CLog::Log(LOGERROR, "POParser: non valid length found for string file: %s", pofilename.c_str());
+    CLog::Log(LOGERROR, "%s: can't load file \"%s\" or file is too small", __FUNCTION__,  pofilename.c_str());
     return false;
   }
-
-  m_POfilelength = static_cast<size_t> (fileLength);
-
-  m_strBuffer.resize(m_POfilelength+1);
-  m_strBuffer[0] = '\n';
-
-  unsigned int readBytes = file.Read(&m_strBuffer[1], m_POfilelength);
-  file.Close();
-
-  if (readBytes != m_POfilelength)
-  {
-    CLog::Log(LOGERROR, "POParser: actual read data differs from file size, for string file: %s",
-              pofilename.c_str());
-    return false;
-  }
+  
+  m_strBuffer = '\n';
+  m_strBuffer.append(buf.get(), buf.size());
+  buf.clear();
 
   ConvertLineEnds(pofilename);
 
