@@ -31,7 +31,7 @@
 class SoLoader : public LibraryLoader
 {
 public:
-  SoLoader(const char *so, bool bGlobal = false);
+  SoLoader(const std::string &so, bool bGlobal = false);
   ~SoLoader();
 
   virtual bool Load();
