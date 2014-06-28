@@ -5,12 +5,14 @@ SRCS=Application.cpp \
      Autorun.cpp \
      AutoSwitch.cpp \
      BackgroundInfoLoader.cpp \
+     CompileInfo.cpp \
      CueDocument.cpp \
      DatabaseManager.cpp \
      DbUrl.cpp \
      DynamicDll.cpp \
      FileItem.cpp \
      FileItemListModification.cpp \
+     GitRevision \
      GUIInfoManager.cpp \
      GUILargeTextureManager.cpp \
      GUIPassword.cpp \
@@ -34,17 +36,20 @@ SRCS=Application.cpp \
      XBDateTime.cpp \
      xbmc.cpp \
      XbmcContext.cpp \
-     CompileInfo.cpp \
 
 LIB=xbmc.a
 
 DISTCLEAN_FILES=DllPaths_generated.h CompileInfo.cpp
 
+.PHONY: .GitRevision
+
 all: $(SRCS) $(LIB)
 
-include gen-compileinfo.mk
-CompileInfo.cpp: ../version.txt CompileInfo.cpp.in
+CompileInfo.cpp: ../version.txt CompileInfo.cpp.in GitRevision
 	make -f gen-compileinfo.mk
+
+GitRevision:
+	make -f gen-compileinfo.mk GitRevision
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
