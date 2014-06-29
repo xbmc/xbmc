@@ -571,15 +571,13 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
   }
   else if (pItem->IsZIP() || pItem->IsCBZ()) // mount zip archive
   {
-    CStdString strArcivedPath;
-    URIUtils::CreateArchivePath(strArcivedPath, "zip", pItem->GetPath(), "");
-    Update(iList, strArcivedPath);
+    CURL pathToUrl = URIUtils::CreateArchivePath("zip", pItem->GetURL(), "");
+    Update(iList, pathToUrl.Get());
   }
   else if (pItem->IsRAR() || pItem->IsCBR())
   {
-    CStdString strArcivedPath;
-    URIUtils::CreateArchivePath(strArcivedPath, "rar", pItem->GetPath(), "");
-    Update(iList, strArcivedPath);
+    CURL pathToUrl = URIUtils::CreateArchivePath("rar", pItem->GetURL(), "");
+    Update(iList, pathToUrl.Get());
   }
   else
   {

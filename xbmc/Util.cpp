@@ -2061,9 +2061,9 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
   // zip only gets the root dir
   if (URIUtils::HasExtension(strArchivePath, ".zip"))
   {
-   CStdString strZipPath;
-   URIUtils::CreateArchivePath(strZipPath,"zip",strArchivePath,"");
-   if (!CDirectory::GetDirectory(strZipPath,ItemList,"",DIR_FLAG_NO_FILE_DIRS))
+   CURL pathToUrl(strArchivePath);
+   CURL zipURL = URIUtils::CreateArchivePath("zip", pathToUrl, "");
+   if (!CDirectory::GetDirectory(zipURL, ItemList, "", DIR_FLAG_NO_FILE_DIRS))
     return false;
   }
   else
@@ -2087,12 +2087,13 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
    // checking for embedded rars, I moved this outside the sub_ext[] loop. We only need to check this once for each file.
    if (URIUtils::IsRAR(strPathInRar) || URIUtils::IsZIP(strPathInRar))
    {
-    CStdString strRarInRar;
+    CURL urlRar;
+    CURL pathToUrl(strArchivePath);
     if (strExt == ".rar")
-      URIUtils::CreateArchivePath(strRarInRar, "rar", strArchivePath, strPathInRar);
+      urlRar = URIUtils::CreateArchivePath("rar", pathToUrl, strPathInRar);
     else
-      URIUtils::CreateArchivePath(strRarInRar, "zip", strArchivePath, strPathInRar);
-    ScanArchiveForSubtitles(strRarInRar,strMovieFileNameNoExt,vecSubtitles);
+      urlRar = URIUtils::CreateArchivePath("zip", pathToUrl, strPathInRar);
+    ScanArchiveForSubtitles(urlRar.Get(), strMovieFileNameNoExt, vecSubtitles);
    }
    // done checking if this is a rar-in-rar
 
@@ -2106,9 +2107,10 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
     {
      if (StringUtils::EqualsNoCase(strExt, sub_exts[iPos]))
      {
+       CURL pathToURL(strArchivePath);
       CStdString strSourceUrl;
       if (URIUtils::HasExtension(strArchivePath, ".rar"))
-       URIUtils::CreateArchivePath(strSourceUrl, "rar", strArchivePath, strPathInRar);
+       strSourceUrl = URIUtils::CreateArchivePath("rar", pathToURL, strPathInRar).Get();
       else
        strSourceUrl = strPathInRar;
       

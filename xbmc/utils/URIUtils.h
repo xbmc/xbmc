@@ -183,12 +183,6 @@ public:
                                 const std::string& pathInArchive = "",
                                 const std::string& password = "");
 
-  static void CreateArchivePath(CStdString& strUrlPath,
-                                const CStdString& strType,
-                                const CStdString& strArchivePath,
-                                const CStdString& strFilePathInArchive,
-                                const CStdString& strPwd="");
-
   static CStdString AddFileToFolder(const CStdString &strFolder, const CStdString &strFile);
 
   static bool HasParentInHostname(const CURL& url);

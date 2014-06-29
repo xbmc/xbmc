@@ -1200,17 +1200,6 @@ CURL URIUtils::CreateArchivePath(const std::string& type,
   return url;
 }
 
-void URIUtils::CreateArchivePath(CStdString& strUrlPath,
-                                 const CStdString& strType,
-                                 const CStdString& strArchivePath,
-                                 const CStdString& strFilePathInArchive,
-                                 const CStdString& strPwd)
-{
-  const CURL pathToUrl(strArchivePath);
-  CURL url(CreateArchivePath(strType, pathToUrl, strFilePathInArchive, strPwd));
-  strUrlPath = url.Get();
-}
-
 string URIUtils::GetRealPath(const string &path)
 {
   if (path.empty())

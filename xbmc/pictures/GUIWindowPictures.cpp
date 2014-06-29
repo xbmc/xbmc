@@ -281,13 +281,13 @@ bool CGUIWindowPictures::OnClick(int iItem)
 
   if (pItem->IsCBZ() || pItem->IsCBR())
   {
-    CStdString strComicPath;
+    CURL pathToUrl;
     if (pItem->IsCBZ())
-      URIUtils::CreateArchivePath(strComicPath, "zip", pItem->GetPath(), "");
+      pathToUrl = URIUtils::CreateArchivePath("zip", pItem->GetURL(), "");
     else
-      URIUtils::CreateArchivePath(strComicPath, "rar", pItem->GetPath(), "");
+      pathToUrl = URIUtils::CreateArchivePath("rar", pItem->GetURL(), "");
 
-    OnShowPictureRecursive(strComicPath);
+    OnShowPictureRecursive(pathToUrl.Get());
     return true;
   }
   else if (CGUIMediaWindow::OnClick(iItem))
