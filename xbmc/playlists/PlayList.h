@@ -68,7 +68,7 @@ public:
 
   void UpdateItem(const CFileItem *item);
 
-  const CStdString& ResolveURL(const CFileItemPtr &item) const;
+  const CStdString ResolveURL(const CFileItemPtr &item) const;
 
 protected:
   int m_id;

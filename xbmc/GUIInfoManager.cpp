@@ -5127,7 +5127,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       if (!g_application.m_strPlayListFile.empty())
       {
         //playlist file that is currently playing or the playlistitem that is currently playing.
-        return g_application.m_strPlayListFile.Equals(((const CFileItem *)item)->GetPath()) || m_currentFile->IsSamePath((const CFileItem *)item);
+        return ((const CFileItem *)item)->IsPath(g_application.m_strPlayListFile) || m_currentFile->IsSamePath((const CFileItem *)item);
       }
       return m_currentFile->IsSamePath((const CFileItem *)item);
     }

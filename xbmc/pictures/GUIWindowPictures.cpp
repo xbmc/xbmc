@@ -75,7 +75,7 @@ void CGUIWindowPictures::OnInitWindow()
     CStdString path;
     if (wndw && wndw->GetCurrentSlide())
       path = URIUtils::GetDirectory(wndw->GetCurrentSlide()->GetPath());
-    if (path.Equals(m_vecItems->GetPath()))
+    if (m_vecItems->IsPath(path))
     {
       if (wndw && wndw->GetCurrentSlide())
         m_viewControl.SetSelectedItem(wndw->GetCurrentSlide()->GetPath());
@@ -208,7 +208,7 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
   CGUIMediaWindow::OnPrepareFileItems(items);
 
   for (int i=0;i<items.Size();++i )
-    if (items[i]->GetLabel().Equals("folder.jpg"))
+    if (StringUtils::EqualsNoCase(items[i]->GetLabel(), "folder.jpg"))
       items.Remove(i);
 
   if (items.GetFolderCount()==items.Size() || !CSettings::Get().GetBool("pictures.usetags"))

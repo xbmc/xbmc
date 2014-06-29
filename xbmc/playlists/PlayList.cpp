@@ -27,6 +27,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/StringUtils.h"
 #include "interfaces/AnnouncementManager.h"
 
 //using namespace std;
@@ -467,7 +468,7 @@ bool CPlayList::Expand(int position)
   // remove any item that points back to itself
   for(int i = 0;i<playlist->size();i++)
   {
-    if( (*playlist)[i]->GetPath().Equals( item->GetPath() ) )
+    if(StringUtils::EqualsNoCase((*playlist)[i]->GetPath(), item->GetPath()))
     {
       playlist->Remove(i);
       i--;
@@ -499,7 +500,7 @@ void CPlayList::UpdateItem(const CFileItem *item)
   }
 }
 
-const CStdString& CPlayList::ResolveURL(const CFileItemPtr &item ) const
+const CStdString CPlayList::ResolveURL(const CFileItemPtr &item ) const
 {
   if (item->IsMusicDb() && item->HasMusicInfoTag())
     return item->GetMusicInfoTag()->GetURL();

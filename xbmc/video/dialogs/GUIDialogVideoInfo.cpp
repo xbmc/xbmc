@@ -192,7 +192,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
       if (IsActive() && message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetItem())
       {
         CFileItemPtr item = boost::static_pointer_cast<CFileItem>(message.GetItem());
-        if (item && m_movieItem->GetPath().Equals(item->GetPath()))
+        if (item && m_movieItem->IsPath(item->GetPath()))
         { // Just copy over the stream details and the thumb if we don't already have one
           if (!m_movieItem->HasArt("thumb"))
             m_movieItem->SetArt("thumb", item->GetArt("thumb"));
@@ -973,7 +973,7 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
   }
   else
   {
-    if (item->GetOverlayImage().Equals("OverlayWatched.png"))
+    if (item->GetOverlayImage() == "OverlayWatched.png")
       buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
     else
       buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched

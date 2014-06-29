@@ -787,14 +787,14 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
     else if (iWindow == WINDOW_FILES || iWindow == WINDOW_PROGRAMS)
       showLabel = 1026;
   }
-  if (m_vecItems->GetPath().Equals("sources://video/"))
+  if (m_vecItems->IsPath("sources://video/"))
     showLabel = 999;
-  else if (m_vecItems->GetPath().Equals("sources://music/"))
+  else if (m_vecItems->IsPath("sources://music/"))
     showLabel = 998;
-  else if (m_vecItems->GetPath().Equals("sources://pictures/"))
+  else if (m_vecItems->IsPath("sources://pictures/"))
     showLabel = 997;
-  else if (m_vecItems->GetPath().Equals("sources://programs/") ||
-           m_vecItems->GetPath().Equals("sources://files/"))
+  else if (m_vecItems->IsPath("sources://programs/") ||
+           m_vecItems->IsPath("sources://files/"))
     showLabel = 1026;
   if (showLabel && (m_vecItems->Size() == 0 || !m_guiState->DisableAddSourceButtons())) // add 'add source button'
   {
@@ -1211,7 +1211,7 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, CStdStri
     else
     {
       // Other items in virual directory
-      CStdString strPath = pItem->GetPath();
+      std::string strPath = pItem->GetPath();
       URIUtils::RemoveSlashAtEnd(strPath);
 
       strHistoryString = pItem->GetLabel() + strPath;
@@ -1553,9 +1553,9 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
     return;
 
   // TODO: FAVOURITES Conditions on masterlock and localisation
-  if (!item->IsParentFolder() && !item->GetPath().Equals("add") && !item->GetPath().Equals("newplaylist://") &&
-      !StringUtils::StartsWithNoCase(item->GetPath(), "newsmartplaylist://") && !StringUtils::StartsWithNoCase(item->GetPath(), "newtag://") &&
-      !StringUtils::StartsWithNoCase(item->GetPath(), "addons://more/") && !StringUtils::StartsWithNoCase(item->GetPath(), "musicsearch://"))
+  if (!item->IsParentFolder() && !item->IsPath("add") && !item->IsPath("newplaylist://") &&
+      !URIUtils::IsProtocol(item->GetPath(), "newsmartplaylist") && !URIUtils::IsProtocol(item->GetPath(), "newtag") &&
+      !URIUtils::PathStarts(item->GetPath(), "addons://more/") && !URIUtils::IsProtocol(item->GetPath(), "musicsearch"))
   {
     if (XFILE::CFavouritesDirectory::IsFavourite(item.get(), GetID()))
       buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite

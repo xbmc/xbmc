@@ -152,7 +152,7 @@ void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber,
                                                CContextButtons& buttons)
 {
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
-  if (pItem->GetPath().Equals("addons://enabled/"))
+  if (!pItem->IsPath("addons://enabled/"))
     buttons.Add(CONTEXT_BUTTON_SCAN,24034);
   
   AddonPtr addon;
@@ -175,7 +175,7 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
                                              CONTEXT_BUTTON button)
 {
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
-  if (pItem->GetPath().Equals("addons://enabled/"))
+  if (pItem->IsPath("addons://enabled/"))
   {
     if (button == CONTEXT_BUTTON_SCAN)
     {
@@ -268,7 +268,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
     CGUIDialogAddonInfo::ShowForItem(item);
     return true;
   }
-  if (item->GetPath().Equals("addons://search/"))
+  if (item->IsPath("addons://search/"))
     return Update(item->GetPath());
 
   return CGUIMediaWindow::OnClick(iItem);

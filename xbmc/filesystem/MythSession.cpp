@@ -199,7 +199,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
      * Prepend the channel number onto the FileItem title for the listing so it's clear what is
      * playing on each channel without using up as much room as the channel name.
      */
-    CStdString number = GetValue(m_dll->proginfo_chanstr(program));
+    std::string number = GetValue(m_dll->proginfo_chanstr(program));
     item.m_strTitle = number + " - " + item.m_strTitle;
 
     /*

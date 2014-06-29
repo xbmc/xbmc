@@ -201,7 +201,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         {
           // is delete allowed?
           // must be at the playlists directory
-          if (m_vecItems->GetPath().Equals("special://musicplaylists/"))
+          if (m_vecItems->IsPath("special://musicplaylists/"))
             OnDeleteItem(iItem);
 
           // or be at the files window and have file deletion enabled

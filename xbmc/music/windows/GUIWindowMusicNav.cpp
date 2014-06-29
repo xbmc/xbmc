@@ -395,7 +395,7 @@ void CGUIWindowMusicNav::UpdateButtons()
   CStdString strLabel;
 
   // "Playlists"
-  if (m_vecItems->GetPath().Equals("special://musicplaylists/"))
+  if (m_vecItems->IsPath("special://musicplaylists/"))
     strLabel = g_localizeStrings.Get(136);
   // "{Playlist Name}"
   else if (m_vecItems->IsPlayList())
@@ -455,8 +455,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
   if (item && !StringUtils::StartsWithNoCase(item->GetPath(), "addons://more/"))
   {
     // are we in the playlists location?
-    bool inPlaylists = m_vecItems->GetPath().Equals(CUtil::MusicPlaylistsLocation()) ||
-                       m_vecItems->GetPath().Equals("special://musicplaylists/");
+    bool inPlaylists = m_vecItems->IsPath(CUtil::MusicPlaylistsLocation()) ||
+                       m_vecItems->IsPath("special://musicplaylists/");
 
     CMusicDatabaseDirectory dir;
     // enable music info button on an album or on a song.
@@ -513,9 +513,9 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
          nodetype == NODE_TYPE_OVERVIEW ||
          nodetype == NODE_TYPE_TOP100))
     {
-      if (!item->GetPath().Equals(CSettings::Get().GetString("mymusic.defaultlibview").c_str()))
+      if (!item->IsPath(CSettings::Get().GetString("mymusic.defaultlibview")))
         buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // set default
-      if (strcmp(CSettings::Get().GetString("mymusic.defaultlibview").c_str(), ""))
+      if (!CSettings::Get().GetString("mymusic.defaultlibview").empty())
         buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
     }
     NODE_TYPE childtype = dir.GetDirectoryChildType(item->GetPath());
@@ -715,7 +715,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         content = CONTENT_ARTISTS;
       }
 
-      if (m_vecItems->GetPath().Equals("musicdb://genres/") || item->GetPath().Equals("musicdb://artists/"))
+      if (m_vecItems->IsPath("musicdb://genres/") || item->IsPath("musicdb://artists/"))
       {
         content = CONTENT_ARTISTS;
       }

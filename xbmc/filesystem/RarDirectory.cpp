@@ -61,7 +61,7 @@ namespace XFILE
       {
         if (items[iEntry]->IsParentFolder())
           continue;
-        items[iEntry]->SetPath(URIUtils::AddFileToFolder(strSlashPath,items[iEntry]->GetPath()+strOptions));
+        items[iEntry]->SetPath(URIUtils::AddFileToFolder(strSlashPath,(CStdString)items[iEntry]->GetPath()+strOptions));
         items[iEntry]->m_iDriveType = 0;
         //CLog::Log(LOGDEBUG, "RarXFILE::GetDirectory() retrieved file: %s", items[iEntry]->m_strPath.c_str());
       }

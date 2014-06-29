@@ -225,7 +225,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
               OnDeleteItem(iItem);
 
             // or be at the video playlists location
-            else if (m_vecItems->GetPath().Equals("special://videoplaylists/"))
+            else if (m_vecItems->IsPath("special://videoplaylists/"))
               OnDeleteItem(iItem);
             else
               return false;
@@ -271,7 +271,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
   if (!pItem)
     return;
 
-  if (pItem->IsParentFolder() || pItem->m_bIsShareOrDrive || pItem->GetPath().Equals("add") ||
+  if (pItem->IsParentFolder() || pItem->m_bIsShareOrDrive || pItem->IsPath("add") ||
      (pItem->IsPlayList() && !URIUtils::HasExtension(pItem->GetPath(), ".strm")))
     return;
 
@@ -996,7 +996,7 @@ bool CGUIWindowVideoBase::OnInfo(int iItem)
 
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (item->GetPath().Equals("add") || item->IsParentFolder() ||
+  if (item->IsPath("add") || item->IsParentFolder() ||
      (item->IsPlayList() && !URIUtils::HasExtension(item->GetPath(), ".strm")))
     return false;
 
@@ -1215,7 +1215,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       if (item->IsVideoDb() && item->HasVideoInfoTag())
         path = item->GetVideoInfoTag()->m_strFileNameAndPath;
 
-      if (!item->GetPath().Equals("add") && !item->IsPlugin() &&
+      if (!item->IsPath("add") && !item->IsPlugin() &&
           !item->IsScript() && !item->IsAddonsPath() && !item->IsLiveTV())
       {
         if (URIUtils::IsStack(path))
@@ -1643,7 +1643,7 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
   }
 
   if ((CSettings::Get().GetBool("filelists.allowfiledeletion") ||
-       m_vecItems->GetPath().Equals("special://videoplaylists/")) &&
+       m_vecItems->IsPath("special://videoplaylists/")) &&
       CUtil::SupportsWriteFileOperations(item->GetPath()))
     CFileUtils::DeleteItem(item);
 }
@@ -1798,7 +1798,7 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
     CVideoDatabaseDirectory dir;
     dir.GetQueryParams(items.GetPath(), params);
     VIDEODATABASEDIRECTORY::NODE_TYPE nodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_strFilterPath);
-    if (items.GetContent().Equals("movies") && params.GetSetId() <= 0 &&
+    if (items.GetContent() == "movies" && params.GetSetId() <= 0 &&
         nodeType == NODE_TYPE_TITLE_MOVIES &&
        (CSettings::Get().GetBool("videolibrary.groupmoviesets") || (StringUtils::EqualsNoCase(group, "sets") && mixed)))
     {
@@ -2051,7 +2051,7 @@ void CGUIWindowVideoBase::AppendAndClearSearchItems(CFileItemList &searchItems, 
 
   searchItems.Sort(SortByLabel, SortOrderAscending, CSettings::Get().GetBool("filelists.ignorethewhensorting") ? SortAttributeIgnoreArticle : SortAttributeNone);
   for (int i = 0; i < searchItems.Size(); i++)
-    searchItems[i]->SetLabel(prependLabel + searchItems[i]->GetLabel());
+    searchItems[i]->SetLabel(prependLabel + (CStdString)searchItems[i]->GetLabel());
   results.Append(searchItems);
 
   searchItems.Clear();

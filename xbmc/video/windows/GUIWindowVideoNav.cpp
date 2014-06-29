@@ -556,7 +556,7 @@ void CGUIWindowVideoNav::UpdateButtons()
   CStdString strLabel;
 
   // "Playlists"
-  if (m_vecItems->GetPath().Equals("special://videoplaylists/"))
+  if (m_vecItems->IsPath("special://videoplaylists/"))
     strLabel = g_localizeStrings.Get(136);
   // "{Playlist Name}"
   else if (m_vecItems->IsPlayList())
@@ -565,7 +565,7 @@ void CGUIWindowVideoNav::UpdateButtons()
     CStdString strDummy;
     URIUtils::Split(m_vecItems->GetPath(), strDummy, strLabel);
   }
-  else if (m_vecItems->GetPath().Equals("sources://video/"))
+  else if (m_vecItems->IsPath("sources://video/"))
     strLabel = g_localizeStrings.Get(744);
   // everything else is from a videodb:// path
   else if (m_vecItems->IsVideoDb())
@@ -696,10 +696,10 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
 
   if (!m_vecItems->IsVideoDb() && !pItem->IsVideoDb())
   {
-    if (!pItem->GetPath().Equals("newsmartplaylist://video") &&
-        !pItem->GetPath().Equals("special://videoplaylists/") &&
-        !pItem->GetPath().Equals("sources://video/") &&
-        !StringUtils::StartsWithNoCase(pItem->GetPath(), "newtag://"))
+    if (!pItem->IsPath("newsmartplaylist://video") &&
+        !pItem->IsPath("special://videoplaylists/") &&
+        !pItem->IsPath("sources://video/") &&
+        !URIUtils::IsProtocol(pItem->GetPath(), "newtag"))
       CGUIWindowVideoBase::OnDeleteItem(pItem);
   }
   else if (StringUtils::StartsWithNoCase(pItem->GetPath(), "videodb://movies/sets/") &&
@@ -740,8 +740,8 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
       m_database.DeleteTag(params.GetTagId(), (VIDEODB_CONTENT_TYPE)params.GetContentType());
     }
   }
-  else if (m_vecItems->GetPath().Equals(CUtil::VideoPlaylistsLocation()) ||
-           m_vecItems->GetPath().Equals("special://videoplaylists/"))
+  else if (m_vecItems->IsPath(CUtil::VideoPlaylistsLocation()) ||
+           m_vecItems->IsPath("special://videoplaylists/"))
   {
     pItem->m_bIsFolder = false;
     CFileUtils::DeleteItem(pItem);
@@ -773,7 +773,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
   {
     // nothing to do here
   }
-  else if (m_vecItems->GetPath().Equals("sources://video/"))
+  else if (m_vecItems->IsPath("sources://video/"))
   {
     // get the usual shares
     CGUIDialogContextMenu::GetContextButtons("video", item, buttons);
@@ -805,8 +805,8 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
   else
   {
     // are we in the playlists location?
-    bool inPlaylists = m_vecItems->GetPath().Equals(CUtil::VideoPlaylistsLocation()) ||
-                       m_vecItems->GetPath().Equals("special://videoplaylists/");
+    bool inPlaylists = m_vecItems->IsPath(CUtil::VideoPlaylistsLocation()) ||
+                       m_vecItems->IsPath("special://videoplaylists/");
 
     if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_artist.empty())
     {
@@ -866,7 +866,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           }
           else
           {
-            if (item->GetOverlayImage().Equals("OverlayWatched.png"))
+            if (item->GetOverlayImage() == "OverlayWatched.png")
               buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
             else
               buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched

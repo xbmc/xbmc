@@ -145,7 +145,7 @@ bool CTuxBoxUtil::CreateNewItem(const CFileItem& item, CFileItem& item_new)
   if(g_tuxbox.GetZapUrl(item.GetPath(), item_new))
   {
     if(vVideoSubChannel.mode)
-      vVideoSubChannel.current_name = item_new.GetLabel()+" ("+vVideoSubChannel.current_name+")";
+      vVideoSubChannel.current_name = (CStdString)item_new.GetLabel()+" ("+vVideoSubChannel.current_name+")";
     return true;
   }
   else

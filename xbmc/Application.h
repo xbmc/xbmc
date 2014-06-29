@@ -154,7 +154,7 @@ public:
   void UnloadSkin(bool forReload = false);
   bool LoadUserWindows();
   void ReloadSkin(bool confirm = false);
-  const CStdString& CurrentFile();
+  const std::string& CurrentFile();
   CFileItem& CurrentFileItem();
   CFileItem& CurrentUnstackedItem();
   virtual bool OnMessage(CGUIMessage& message);

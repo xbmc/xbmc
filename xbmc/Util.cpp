@@ -1397,7 +1397,7 @@ void CUtil::GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& it
   CDirectory::GetDirectory(strPath,myItems,"",flags);
   for (int i=0;i<myItems.Size();++i)
   {
-    if (myItems[i]->m_bIsFolder && !myItems[i]->GetPath().Equals(".."))
+    if (myItems[i]->m_bIsFolder && !myItems[i]->IsPath(".."))
     {
       item.Add(myItems[i]);
       CUtil::GetRecursiveDirsListing(myItems[i]->GetPath(),item,flags);

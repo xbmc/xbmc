@@ -42,8 +42,8 @@ public:
   void Add(const CFileItemList& items);
   void SetItems(CFileItemList* items);
   int GetSelectedLabel() const;
-  const CStdString& GetSelectedLabelText();
-  const CFileItemPtr GetSelectedItem();
+  const std::string& GetSelectedLabelText() const;
+  const CFileItemPtr GetSelectedItem() const;
   const CFileItemList& GetSelectedItems() const;
   void EnableButton(bool enable, int string);
   bool IsButtonPressed();
