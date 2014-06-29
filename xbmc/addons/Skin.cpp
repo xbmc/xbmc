@@ -417,7 +417,7 @@ void CSkinInfo::SettingOptionsSkinThemesFiller(const CSetting *setting, std::vec
   list.push_back(make_pair(g_localizeStrings.Get(15109), "SKINDEFAULT")); // the standard Textures.xpr/xbt will be used
 
   // search for themes in the current skin!
-  vector<CStdString> vecTheme;
+  vector<std::string> vecTheme;
   CUtil::GetSkinThemes(vecTheme);
 
   // sort the themes for GUI and list them

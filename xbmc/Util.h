@@ -67,12 +67,17 @@ class CUtil
 public:
   CUtil(void);
   virtual ~CUtil(void);
-  static void CleanString(const CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bRemoveExtension = false, bool bCleanChars = true);
+  static void CleanString(const std::string& strFileName,
+                          std::string& strTitle,
+                          std::string& strTitleAndYear,
+                          std::string& strYear,
+                          bool bRemoveExtension = false,
+                          bool bCleanChars = true);
   static CStdString GetTitleFromPath(const CURL& url, bool bIsFolder = false);
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder = false);
-  static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
+  static void GetQualifiedFilename(const std::string &strBasePath, std::string &strFilename);
   static void RunShortcut(const char* szPath);
-  static void GetHomePath(CStdString& strPath, const CStdString& strTarget = "XBMC_HOME");
+  static void GetHomePath(std::string& strPath, const std::string& strTarget = "XBMC_HOME");
   static bool IsPVR(const CStdString& strFile);
   static bool IsHTSP(const CStdString& strFile);
   static bool IsLiveTV(const CStdString& strFile);
@@ -89,16 +94,16 @@ public:
    */
   static CStdString GetFileMD5(const CStdString& strPath);
   static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
-  static void GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon );
+  static void GetDVDDriveIcon(const std::string& strPath, std::string& strIcon);
   static void RemoveTempFiles();
   static void ClearTempFonts();
 
   static void ClearSubtitles();
-  static void ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CStdString>& vecSubtitles );
-  static int ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStdString& strMovieFileNameNoExt, std::vector<CStdString>& vecSubtitles );
+  static void ScanForExternalSubtitles(const std::string& strMovie, std::vector<std::string>& vecSubtitles );
+  static int ScanArchiveForSubtitles( const std::string& strArchivePath, const std::string& strMovieFileNameNoExt, std::vector<std::string>& vecSubtitles );
   static void GetExternalStreamDetailsFromFilename(const CStdString& strMovie, const CStdString& strSubtitles, ExternalStreamInfo& info); 
-  static bool FindVobSubPair( const std::vector<CStdString>& vecSubtitles, const CStdString& strIdxPath, CStdString& strSubPath );
-  static bool IsVobSub( const std::vector<CStdString>& vecSubtitles, const CStdString& strSubPath );
+  static bool FindVobSubPair( const std::vector<std::string>& vecSubtitles, const std::string& strIdxPath, std::string& strSubPath );
+  static bool IsVobSub(const std::vector<std::string>& vecSubtitles, const std::string& strSubPath);
   static std::string GetVobSubSubFromIdx(const std::string& vobSubIdx);
   static std::string GetVobSubIdxFromSub(const std::string& vobSub);
   static int64_t ToInt64(uint32_t high, uint32_t low);
@@ -140,7 +145,7 @@ public:
    \param parameters the returned parameters
    */
   static void SplitParams(const CStdString &paramString, std::vector<std::string> &parameters);
-  static void SplitExecFunction(const CStdString &execString, CStdString &function, std::vector<std::string> &parameters);
+  static void SplitExecFunction(const std::string &execString, std::string &function, std::vector<std::string> &parameters);
   static int GetMatchingSource(const CStdString& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);
   static CStdString TranslateSpecialSource(const CStdString &strSpecial);
   static void DeleteDirectoryCache(const CStdString &prefix = "");
@@ -149,13 +154,13 @@ public:
   static CStdString MusicPlaylistsLocation();
   static CStdString VideoPlaylistsLocation();
 
-  static void GetSkinThemes(std::vector<CStdString>& vecTheme);
+  static void GetSkinThemes(std::vector<std::string>& vecTheme);
   static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, unsigned int flags = 0 /* DIR_FLAG_DEFAULTS */);
   static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items, unsigned int flags = 0 /* DIR_FLAG_DEFAULTS */);
   static void ForceForwardSlashes(CStdString& strPath);
 
   static double AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& strAlbum1, const CStdString& strArtistTemp1, const CStdString& strArtist1);
-  static bool MakeShortenPath(CStdString StrInput, CStdString& StrOutput, size_t iTextMaxLength);
+  static bool MakeShortenPath(std::string StrInput, std::string& StrOutput, size_t iTextMaxLength);
   /*! \brief Checks wether the supplied path supports Write file operations (e.g. Rename, Delete, ...)
 
    \param strPath the path to be checked

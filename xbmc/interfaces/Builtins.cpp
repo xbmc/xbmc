@@ -1168,7 +1168,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("skin.theme"))
   {
     // enumerate themes
-    vector<CStdString> vecTheme;
+    vector<std::string> vecTheme;
     CUtil::GetSkinThemes(vecTheme);
 
     int iTheme = -1;
@@ -1180,7 +1180,7 @@ int CBuiltins::Execute(const CStdString& execString)
       {
         CStdString strTmpTheme(CSettings::Get().GetString("lookandfeel.skintheme"));
         URIUtils::RemoveExtension(strTmpTheme);
-        if (vecTheme[i].Equals(strTmpTheme))
+        if (StringUtils::EqualsNoCase(vecTheme[i], strTmpTheme))
         {
           iTheme=i;
           break;

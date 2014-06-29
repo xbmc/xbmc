@@ -718,7 +718,7 @@ bool COMXPlayer::OpenInputStream()
   &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP))
   {
     // find any available external subtitles
-    std::vector<CStdString> filenames;
+    std::vector<std::string> filenames;
     CUtil::ScanForExternalSubtitles( m_filename, filenames );
 
     // find any upnp subtitles
