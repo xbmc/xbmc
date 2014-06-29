@@ -62,6 +62,7 @@ public:
   virtual const CFileItemList* getCurrent() = 0;
   virtual void removeItem(const CFileItemPtr& item) = 0;
   virtual bool addItem(const CFileItemPtr& item, bool next) = 0;
+  virtual bool moveItem(const CFileItemPtr& item, const CFileItemPtr& afteritem) = 0;
   virtual int getCurrentID() = 0;
   virtual void get(const CStdString& playQueueID,
                    const CPlexPlayQueueOptions& = CPlexPlayQueueOptions()) = 0;
@@ -119,6 +120,8 @@ public:
 
   /* proxy current implementation */
   bool addItem(const CFileItemPtr& item, bool next);
+  bool moveItem(const CFileItemPtr &item, const CFileItemPtr& afteritem);
+  bool moveItem(const CFileItemPtr& item, int offset);
   void removeItem(const CFileItemPtr& item);
   int getCurrentID();
   bool refreshCurrent();

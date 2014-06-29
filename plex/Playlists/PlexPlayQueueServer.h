@@ -38,6 +38,7 @@ public:
   virtual const CFileItemList* getCurrent() { return m_list.get(); }
   virtual void removeItem(const CFileItemPtr& item);
   virtual bool addItem(const CFileItemPtr& item, bool next);
+  virtual bool moveItem(const CFileItemPtr& item, const CFileItemPtr& afteritem);
   virtual int getCurrentID();
   virtual void get(const CStdString& playQueueID,
                    const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions());

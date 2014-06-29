@@ -446,3 +446,35 @@ void CPlexPlayQueueManager::QueueItem(const CFileItemPtr& item, bool next)
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexPlayQueueManager::moveItem(const CFileItemPtr &item, const CFileItemPtr& afteritem)
+{
+  if (m_currentImpl)
+  {
+    return m_currentImpl->moveItem(item, afteritem);
+  }
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexPlayQueueManager::moveItem(const CFileItemPtr &item, int offset)
+{
+
+  if ((m_currentImpl) && (item))
+  {
+     CFileItemListPtr list = CFileItemListPtr(new CFileItemList);
+
+     if (m_currentImpl->getCurrent(*list))
+     {
+       int itemIndex = list->IndexOfItem(item->GetPath());
+       int targetpos = ((((itemIndex + offset) % list->Size()) + list->Size()) % list->Size());
+
+       if (targetpos < itemIndex)
+         targetpos--;
+
+       return m_currentImpl->moveItem(item, list->Get(targetpos));
+
+     }
+  }
+  return false;
+}

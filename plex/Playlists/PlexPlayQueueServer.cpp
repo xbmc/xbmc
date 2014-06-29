@@ -234,3 +234,37 @@ void CPlexPlayQueueServer::OnJobComplete(unsigned int jobID, bool success, CJob*
                                   "The server was unable to create the Play Queue", "", "");
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexPlayQueueServer::moveItem(const CFileItemPtr& item, const CFileItemPtr& afteritem)
+{
+
+  if (!item || !item->HasProperty("playQueueItemID") ||
+      (item->GetProperty("playQueueID").asInteger() != getCurrentID()))
+    return false;
+
+  // define insert pos
+  CStdString insertID = "";
+  if (afteritem)
+  {
+    if (!afteritem->HasProperty("playQueueItemID") ||
+        (afteritem->GetProperty("playQueueID").asInteger() != getCurrentID()))
+      return false;
+    else
+      insertID = afteritem->GetProperty("playQueueItemID").asString();
+  }
+
+  // move the item in PMS
+  CStdString path;
+  path.Format("/playQueues/%d/items/%d/move", (int)item->GetProperty("playQueueID").asInteger(),
+              (int)item->GetProperty("playQueueItemID").asInteger());
+  CURL u = m_server->BuildPlexURL(path);
+
+  if (!insertID.IsEmpty())
+    u.SetOption("after", insertID);
+
+  sendRequest(u, "PUT", CPlexPlayQueueOptions(false, false));
+
+  return true;
+}
+

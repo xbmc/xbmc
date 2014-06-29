@@ -151,3 +151,34 @@ void CPlexPlayQueueLocal::OnPlayQueueUpdated(ePlexMediaType type, bool startPlay
   m_list->SetProperty("size", m_list->Size());
   CApplicationMessenger::Get().PlexUpdatePlayQueue(type, startPlaying);
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexPlayQueueLocal::moveItem(const CFileItemPtr& item, const CFileItemPtr& afteritem)
+{
+  if (!item || !item->HasProperty("playQueueItemID") ||
+      (item->GetProperty("playQueueID").asInteger() != getCurrentID()))
+    return false;
+
+  // define insert Pos
+  int insertPos = 0;
+  if (afteritem)
+  {
+    if (!afteritem->HasProperty("playQueueItemID") ||
+        (afteritem->GetProperty("playQueueID").asInteger() != getCurrentID()))
+      return false;
+    else
+      insertPos = m_list->IndexOfItem(afteritem->GetPath());
+  }
+
+  // Move the item
+  if (m_list)
+  {
+    m_list->Remove(item.get());
+    m_list->Insert(insertPos, item);
+  }
+
+  // refresh PQ
+  ePlexMediaType type = PlexUtils::GetMediaTypeFromItem(item);
+  CApplicationMessenger::Get().PlexUpdatePlayQueue(type, false);
+  return false;
+}
