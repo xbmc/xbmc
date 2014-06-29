@@ -29,9 +29,8 @@
 #define CHDR_SIZE 46
 #define ECDREC_SIZE 22
 
-#include  "utils/StdString.h"
-
 #include <memory.h>
+#include <string>
 #include <vector>
 #include <map>
 
@@ -104,14 +103,14 @@ public:
 
   bool GetZipList(const CURL& url, std::vector<SZipEntry>& items);
   bool GetZipEntry(const CURL& url, SZipEntry& item);
-  bool ExtractArchive(const CStdString& strArchive, const CStdString& strPath);
-  bool ExtractArchive(const CURL& archive, const CStdString& strPath);
-  void release(const CStdString& strPath); // release resources used by list zip
+  bool ExtractArchive(const std::string& strArchive, const std::string& strPath);
+  bool ExtractArchive(const CURL& archive, const std::string& strPath);
+  void release(const std::string& strPath); // release resources used by list zip
   static void readHeader(const char* buffer, SZipEntry& info);
   static void readCHeader(const char* buffer, SZipEntry& info);
 private:
-  std::map<CStdString,std::vector<SZipEntry> > mZipMap;
-  std::map<CStdString,int64_t> mZipDate;
+  std::map<std::string,std::vector<SZipEntry> > mZipMap;
+  std::map<std::string,int64_t> mZipDate;
 };
 
 extern CZipManager g_ZipManager;

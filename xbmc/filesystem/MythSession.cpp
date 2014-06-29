@@ -140,8 +140,8 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
   /*
    * Set the FileItem meta-data.
    */
-  CStdString title        = GetValue(m_dll->proginfo_title(program)); // e.g. Mythbusters
-  CStdString subtitle     = GetValue(m_dll->proginfo_subtitle(program)); // e.g. The Pirate Special
+  std::string title        = GetValue(m_dll->proginfo_title(program)); // e.g. Mythbusters
+  std::string subtitle     = GetValue(m_dll->proginfo_subtitle(program)); // e.g. The Pirate Special
   item.m_strTitle         = title;
   if (!subtitle.empty())
     item.m_strTitle      += " - \"" + subtitle + "\""; // e.g. Mythbusters - "The Pirate Special"
@@ -175,7 +175,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
    * Original air date is used by the VideoInfoScanner to scrape the TV Show information into the
    * Video Library. If the original air date is empty the date returned will be the epoch.
    */
-  CStdString originalairdate = GetValue(m_dll->proginfo_originalairdate(program)).GetAsDBDate();
+  std::string originalairdate = GetValue(m_dll->proginfo_originalairdate(program)).GetAsDBDate();
   if (originalairdate != "1970-01-01"
   &&  originalairdate != "1969-12-31")
   tag->m_firstAired.SetFromDateString(originalairdate);
@@ -187,7 +187,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
    * would cause it to be shown in a different position if it was indeed strictly sorting by
    * what is displayed in the list).
    */
-  tag->m_strSortTitle = title + " " + (CStdString)item.m_dateTime.GetAsDBDateTime(); // e.g. Mythbusters 2009-12-13 12:23:14
+  tag->m_strSortTitle = title + " " + item.m_dateTime.GetAsDBDateTime(); // e.g. Mythbusters 2009-12-13 12:23:14
 
   /*
    * Set further FileItem and VideoInfoTag meta-data based on whether it is LiveTV or not.
@@ -208,7 +208,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
      * to the end so sorting by title will work, and it's not really as important as the title
      * within the OSD.
      */
-    CStdString name = GetValue(m_dll->proginfo_chansign(program));
+    std::string name = GetValue(m_dll->proginfo_chansign(program));
     if (!name.empty())
       tag->m_strTitle += " - " + name;
 
@@ -231,7 +231,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
       url.SetFileName("channels/" + number + ".ts"); // e.g. channels/3.ts
       item.SetPath(url.Get());
     }
-    CStdString chanicon = GetValue(m_dll->proginfo_chanicon(program));
+    std::string chanicon = GetValue(m_dll->proginfo_chanicon(program));
     if (!chanicon.empty())
     {
       url.SetFileName("files/channels/" + URIUtils::GetFileName(chanicon)); // e.g. files/channels/tv3.jpg
@@ -266,8 +266,8 @@ void CMythSession::SetSeasonAndEpisode(const cmyth_proginfo_t &program, int *sea
    * original air date though, so if we identify a SchedulesDirect programid, leave the season and
    * episode as 0. 
    */
-  CStdString programid = GetValue(m_dll->proginfo_programid(program));
-  CStdString seriesid = GetValue(m_dll->proginfo_seriesid(program));
+  std::string programid = GetValue(m_dll->proginfo_programid(program));
+  std::string seriesid = GetValue(m_dll->proginfo_seriesid(program));
 
   /*
    * Default the season and episode to 0 so XBMC treats the content as an episode and displays tag
@@ -281,7 +281,7 @@ void CMythSession::SetSeasonAndEpisode(const cmyth_proginfo_t &program, int *sea
   ||  seriesid.empty()) // Can't figure out the end parsing if the series ID is empty  {
     return;
   
-  CStdString category = programid.substr(0, 2); // Valid for both XMLTV and SchedulesDirect sources
+  std::string category = programid.substr(0, 2); // Valid for both XMLTV and SchedulesDirect sources
   if (category != "MV"  // Movie
   &&  category != "EP"  // Series
   &&  category != "SH"  // TV Show
@@ -291,7 +291,7 @@ void CMythSession::SetSeasonAndEpisode(const cmyth_proginfo_t &program, int *sea
   if (programid.substr(category.length(), seriesid.length()) != seriesid) // Series ID does not follow the category
     return;
   
-  CStdString remainder = programid.substr(category.length() + seriesid.length()); // Whatever is after series ID
+  std::string remainder = programid.substr(category.length() + seriesid.length()); // Whatever is after series ID
   
   /*
    * All SchedulesDirect remainders appear to be 4 characters and start with a 0. If the assumption

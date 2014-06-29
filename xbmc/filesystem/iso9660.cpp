@@ -152,7 +152,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 
 
 #ifdef _DEBUG_OUTPUT
-  CStdString strTmp;
+  std::string strTmp;
   strTmp = StringUtils::Format("******************   Adding dir : %s\r", path);
   OutputDebugString( strTmp.c_str() );
 #endif
@@ -322,7 +322,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 
           strcpy( pFile_Pointer->name , temp_text.c_str());
 #ifdef _DEBUG_OUTPUT
-          //CStdString strTmp;
+          //std::string strTmp;
           //strTmp = StringUtils::Format("adding sector : %X, File : %s     size = %u     pos = %x\r",sector,temp_text.c_str(), isodir.dwFileLengthLE, isodir.dwFileLocationLE );
           //OutputDebugString( strTmp.c_str());
 #endif
@@ -416,7 +416,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 
           DWORD dwFileLocation = from_733(isodir.extent);
 #ifdef _DEBUG_OUTPUT
-          CStdString strTmp;
+          std::string strTmp;
           strTmp = StringUtils::Format("adding directory sector : %X, File : %s     size = %u     pos = %x\r", sector, temp_text.c_str(), from_733(isodir.size), dwFileLocation );
           OutputDebugString( strTmp.c_str());
 #endif
@@ -702,7 +702,7 @@ string iso9660::GetThinText(BYTE* strTxt, int iLen )
 {
   // convert from "fat" text (UTF-16BE) to "thin" text (UTF-8)
   std::u16string strTxtUnicode((char16_t*)strTxt, iLen / 2);
-  CStdString utf8String;
+  std::string utf8String;
 
   g_charsetConverter.utf16BEtoUTF8(strTxtUnicode, utf8String);
 

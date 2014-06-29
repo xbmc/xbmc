@@ -51,7 +51,7 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
 
   struct __stat64 m_StatData = {};
 
-  CStdString strFile = url.GetHostName();
+  std::string strFile = url.GetHostName();
 
   if (CFile::Stat(strFile,&m_StatData))
   {
@@ -59,10 +59,10 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
     return false;
   }
 
-  map<CStdString,vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
+  map<std::string,vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
   if (it != mZipMap.end()) // already listed, just return it if not changed, else release and reread
   {
-    map<CStdString,int64_t>::iterator it2=mZipDate.find(strFile);
+    map<std::string,int64_t>::iterator it2=mZipDate.find(strFile);
     CLog::Log(LOGDEBUG,"statdata: %" PRId64" new: %" PRIu64, it2->second, (uint64_t)m_StatData.st_mtime);
 
       if (m_StatData.st_mtime == it2->second)
@@ -177,9 +177,9 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
     }
 
     // Get the filename just after the central file header
-    CStdString strName;
-    mFile.Read(strName.GetBuffer(ze.flength), ze.flength);
-    strName.ReleaseBuffer();
+    std::string strName;
+    strName.resize(ze.flength);
+    mFile.Read(&strName[0], ze.flength);
     g_charsetConverter.unknownToUTF8(strName);
     ZeroMemory(ze.name, 255);
     strncpy(ze.name, strName.c_str(), strName.size()>254 ? 254 : strName.size());
@@ -212,9 +212,9 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
 
 bool CZipManager::GetZipEntry(const CURL& url, SZipEntry& item)
 {
-  CStdString strFile = url.GetHostName();
+  std::string strFile = url.GetHostName();
 
-  map<CStdString,vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
+  map<std::string,vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
   vector<SZipEntry> items;
   if (it == mZipMap.end()) // we need to list the zip
   {
@@ -225,10 +225,10 @@ bool CZipManager::GetZipEntry(const CURL& url, SZipEntry& item)
     items = it->second;
   }
 
-  CStdString strFileName = url.GetFileName();
+  std::string strFileName = url.GetFileName();
   for (vector<SZipEntry>::iterator it2=items.begin();it2 != items.end();++it2)
   {
-    if (CStdString(it2->name) == strFileName)
+    if (std::string(it2->name) == strFileName)
     {
       memcpy(&item,&(*it2),sizeof(SZipEntry));
       return true;
@@ -237,13 +237,13 @@ bool CZipManager::GetZipEntry(const CURL& url, SZipEntry& item)
   return false;
 }
 
-bool CZipManager::ExtractArchive(const CStdString& strArchive, const CStdString& strPath)
+bool CZipManager::ExtractArchive(const std::string& strArchive, const std::string& strPath)
 {
   const CURL pathToUrl(strArchive);
   return ExtractArchive(pathToUrl, strPath);
 }
 
-bool CZipManager::ExtractArchive(const CURL& archive, const CStdString& strPath)
+bool CZipManager::ExtractArchive(const CURL& archive, const std::string& strPath)
 {
   vector<SZipEntry> entry;
   CURL url = URIUtils::CreateArchivePath("zip", archive);
@@ -252,7 +252,7 @@ bool CZipManager::ExtractArchive(const CURL& archive, const CStdString& strPath)
   {
     if (it->name[strlen(it->name)-1] == '/') // skip dirs
       continue;
-    CStdString strFilePath(it->name);
+    std::string strFilePath(it->name);
 
     CURL zipPath = URIUtils::CreateArchivePath("zip", archive, strFilePath);
     const CURL pathToUrl(strPath + strFilePath);
@@ -299,13 +299,13 @@ void CZipManager::readCHeader(const char* buffer, SZipEntry& info)
 
 }
 
-void CZipManager::release(const CStdString& strPath)
+void CZipManager::release(const std::string& strPath)
 {
   CURL url(strPath);
-  map<CStdString,vector<SZipEntry> >::iterator it= mZipMap.find(url.GetHostName());
+  map<std::string,vector<SZipEntry> >::iterator it= mZipMap.find(url.GetHostName());
   if (it != mZipMap.end())
   {
-    map<CStdString,int64_t>::iterator it2=mZipDate.find(url.GetHostName());
+    map<std::string,int64_t>::iterator it2=mZipDate.find(url.GetHostName());
     mZipMap.erase(it);
     mZipDate.erase(it2);
   }
