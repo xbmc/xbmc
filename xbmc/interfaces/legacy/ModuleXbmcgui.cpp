@@ -22,6 +22,7 @@
 #include "LanguageHook.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
+#include "input/MouseStat.h"
 #include "utils/log.h"
 
 #define NOTIFICATION_INFO     "info"
