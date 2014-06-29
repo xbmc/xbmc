@@ -45,6 +45,7 @@ public:
   COverlayText(CDVDOverlayText* src);
   virtual ~COverlayText();
   virtual void Render(SRenderState& state);
+  virtual void PrepareRender();
 
   CGUITextLayout* m_layout;
   std::string     m_text;

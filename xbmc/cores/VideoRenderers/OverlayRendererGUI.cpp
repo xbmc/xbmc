@@ -147,6 +147,14 @@ COverlayText::~COverlayText()
   delete m_layout;
 }
 
+void COverlayText::PrepareRender()
+{
+  RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
+  float width_max = (float)res.Overscan.right - res.Overscan.left;
+  m_layout->Update(m_text, width_max * 0.9f, false, true); // true to force LTR reading order (most Hebrew subs are this format)
+  m_layout->GetTextExtent(m_width, m_height);
+}
+
 void COverlayText::Render(OVERLAY::SRenderState &state)
 {
   if(m_layout == NULL)
@@ -172,18 +180,15 @@ void COverlayText::Render(OVERLAY::SRenderState &state)
   g_graphicsContext.SetTransform(mat, 1.0f, 1.0f);
 
   float width_max = (float) res.Overscan.right - res.Overscan.left;
-  float width, height;
-  m_layout->Update(m_text, width_max * 0.9f, false, true); // true to force LTR reading order (most Hebrew subs are this format)
-  m_layout->GetTextExtent(width, height);
 
   if (m_subalign == SUBTITLE_ALIGN_MANUAL
   ||  m_subalign == SUBTITLE_ALIGN_TOP_OUTSIDE
   ||  m_subalign == SUBTITLE_ALIGN_BOTTOM_INSIDE)
-    y -= height;
+    y -= m_height;
 
   // clamp inside screen
   y = std::max(y, (float) res.Overscan.top);
-  y = std::min(y, res.Overscan.bottom - height);
+  y = std::min(y, res.Overscan.bottom - m_height);
 
   m_layout->RenderOutline(x, y, 0, 0xFF000000, XBFONT_CENTER_X, width_max);
   g_graphicsContext.RemoveTransform();
