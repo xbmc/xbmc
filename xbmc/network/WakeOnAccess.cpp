@@ -60,9 +60,9 @@ static int GetTotalSeconds(const CDateTimeSpan& ts)
   return ts.GetSeconds() + minutes * 60;
 }
 
-static unsigned long HostToIP(const CStdString& host)
+static unsigned long HostToIP(const std::string& host)
 {
-  CStdString ip;
+  std::string ip;
   CDNSNameCache::Lookup(host, ip);
   return inet_addr(ip.c_str());
 }
@@ -85,16 +85,16 @@ CWakeOnAccess::WakeUpEntry::WakeUpEntry (bool isAwake)
 class CMACDiscoveryJob : public CJob
 {
 public:
-  CMACDiscoveryJob(const CStdString& host) : m_host(host) {}
+  CMACDiscoveryJob(const std::string& host) : m_host(host) {}
 
   virtual bool DoWork();
 
-  const CStdString& GetMAC() const { return m_macAddres; }
-  const CStdString& GetHost() const { return m_host; }
+  const std::string& GetMAC() const { return m_macAddres; }
+  const std::string& GetHost() const { return m_host; }
 
 private:
-  CStdString m_macAddres;
-  CStdString m_host;
+  std::string m_macAddres;
+  std::string m_host;
 };
 
 bool CMACDiscoveryJob::DoWork()
@@ -160,7 +160,7 @@ int NestDetect::m_nest = 0;
 class ProgressDialogHelper
 {
 public:
-  ProgressDialogHelper (const CStdString& heading) : m_dialog(0)
+  ProgressDialogHelper (const std::string& heading) : m_dialog(0)
   {
     if (g_application.IsCurrentThread())
       m_dialog = (CGUIDialogProgress*) g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
@@ -175,7 +175,7 @@ public:
       int nest_level = NestDetect::Level();
       if (nest_level > 1)
       {
-        CStdString nest = StringUtils::Format("Nesting:%d", nest_level);
+        std::string nest = StringUtils::Format("Nesting:%d", nest_level);
         m_dialog->SetLine(2, nest);
       }
     }
@@ -190,7 +190,7 @@ public:
 
   enum wait_result { TimedOut, Canceled, Success };
 
-  wait_result ShowAndWait (const WaitCondition& waitObj, unsigned timeOutSec, const CStdString& line1)
+  wait_result ShowAndWait (const WaitCondition& waitObj, unsigned timeOutSec, const std::string& line1)
   {
     unsigned timeOutMs = timeOutSec * 1000;
 
@@ -237,7 +237,7 @@ private:
 class NetworkStartWaiter : public WaitCondition
 {
 public:
-  NetworkStartWaiter (unsigned settle_time_ms, const CStdString& host) : m_settle_time_ms (settle_time_ms), m_host(host)
+  NetworkStartWaiter (unsigned settle_time_ms, const std::string& host) : m_settle_time_ms (settle_time_ms), m_host(host)
   {
   }
   virtual bool SuccessWaiting () const
@@ -253,7 +253,7 @@ public:
 private:
   mutable XbmcThreads::EndTime m_end;
   unsigned m_settle_time_ms;
-  const CStdString m_host;
+  const std::string m_host;
 };
 
 class PingResponseWaiter : public WaitCondition, private IJobCallback
@@ -331,14 +331,14 @@ CWakeOnAccess &CWakeOnAccess::Get()
 
 bool CWakeOnAccess::WakeUpHost(const CURL& url)
 {
-  CStdString hostName = url.GetHostName();
+  std::string hostName = url.GetHostName();
 
   if (!hostName.empty())
     return WakeUpHost (hostName, url.Get());
   return true;
 }
 
-bool CWakeOnAccess::WakeUpHost (const CStdString& hostName, const string& customMessage)
+bool CWakeOnAccess::WakeUpHost (const std::string& hostName, const string& customMessage)
 {
   if (!IsEnabled())
     return true; // bail if feature is turned off
@@ -370,7 +370,7 @@ bool CWakeOnAccess::WakeUpHost (const CStdString& hostName, const string& custom
 
 bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
 {
-  CStdString heading = StringUtils::Format(LOCALIZED(13027).c_str(), server.host.c_str());
+  std::string heading = StringUtils::Format(LOCALIZED(13027).c_str(), server.host.c_str());
 
   ProgressDialogHelper dlg (heading);
 
@@ -431,7 +431,7 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
   return true;
 }
 
-bool CWakeOnAccess::FindOrTouchHostEntry (const CStdString& hostName, WakeUpEntry& result)
+bool CWakeOnAccess::FindOrTouchHostEntry (const std::string& hostName, WakeUpEntry& result)
 {
   CSingleLock lock (m_entrylist_protect);
 
@@ -441,7 +441,7 @@ bool CWakeOnAccess::FindOrTouchHostEntry (const CStdString& hostName, WakeUpEntr
   {
     WakeUpEntry& server = *i;
 
-    if (hostName.Equals(server.host.c_str()))
+    if (StringUtils::EqualsNoCase(hostName, server.host))
     {
       CDateTime now = CDateTime::GetCurrentDateTime();
 
@@ -462,7 +462,7 @@ bool CWakeOnAccess::FindOrTouchHostEntry (const CStdString& hostName, WakeUpEntr
   return need_wakeup;
 }
 
-void CWakeOnAccess::TouchHostEntry (const CStdString& hostName)
+void CWakeOnAccess::TouchHostEntry (const std::string& hostName)
 {
   CSingleLock lock (m_entrylist_protect);
 
@@ -470,7 +470,7 @@ void CWakeOnAccess::TouchHostEntry (const CStdString& hostName)
   {
     WakeUpEntry& server = *i;
 
-    if (hostName.Equals(server.host.c_str()))
+    if (StringUtils::EqualsNoCase(hostName, server.host))
     {
       server.nextWake = CDateTime::GetCurrentDateTime() + server.timeout;
       return;
@@ -478,10 +478,10 @@ void CWakeOnAccess::TouchHostEntry (const CStdString& hostName)
   }
 }
 
-static void AddHost (const CStdString& host, vector<string>& hosts)
+static void AddHost (const std::string& host, vector<string>& hosts)
 {
   for (vector<string>::const_iterator it = hosts.begin(); it != hosts.end(); ++it)
-    if (host.Equals((*it).c_str()))
+    if (StringUtils::EqualsNoCase(host, *it))
       return; // allready there ..
 
   if (!host.empty())
@@ -494,7 +494,7 @@ static void AddHostFromDatabase(const DatabaseSettings& setting, vector<string>&
     AddHost(setting.host, hosts);
 }
 
-void CWakeOnAccess::QueueMACDiscoveryForHost(const CStdString& host)
+void CWakeOnAccess::QueueMACDiscoveryForHost(const std::string& host)
 {
   if (IsEnabled())
   {
@@ -558,22 +558,22 @@ void CWakeOnAccess::QueueMACDiscoveryForAllRemotes()
     QueueMACDiscoveryForHost(*it);
 }
 
-void CWakeOnAccess::SaveMACDiscoveryResult(const CStdString& host, const CStdString& mac)
+void CWakeOnAccess::SaveMACDiscoveryResult(const std::string& host, const std::string& mac)
 {
   CLog::Log(LOGNOTICE, "%s - Mac discovered for host '%s' -> '%s'", __FUNCTION__, host.c_str(), mac.c_str());
 
-  CStdString heading = LOCALIZED(13033);
+  std::string heading = LOCALIZED(13033);
 
   for (EntriesVector::iterator i = m_entries.begin(); i != m_entries.end(); ++i)
   {
-    if (host.Equals(i->host.c_str()))
+    if (StringUtils::EqualsNoCase(host, i->host))
     {
       CLog::Log(LOGDEBUG, "%s - Update existing entry for host '%s'", __FUNCTION__, host.c_str());
-      if (!mac.Equals(i->mac.c_str()))
+      if (!StringUtils::EqualsNoCase(mac, i->mac))
       {
         if (IsEnabled()) // show notification only if we have general feature enabled
         {
-          CStdString message = StringUtils::Format(LOCALIZED(13034).c_str(), host.c_str());
+          std::string message = StringUtils::Format(LOCALIZED(13034).c_str(), host.c_str());
           CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, heading, message, 4000, true, 3000);
         }
 
@@ -594,7 +594,7 @@ void CWakeOnAccess::SaveMACDiscoveryResult(const CStdString& host, const CStdStr
   CLog::Log(LOGDEBUG, "%s - Create new entry for host '%s'", __FUNCTION__, host.c_str());
   if (IsEnabled()) // show notification only if we have general feature enabled
   {
-    CStdString message = StringUtils::Format(LOCALIZED(13035).c_str(), host.c_str());
+    std::string message = StringUtils::Format(LOCALIZED(13035).c_str(), host.c_str());
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, heading, message, 4000, true, 3000);
   }
 
@@ -605,8 +605,8 @@ void CWakeOnAccess::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   CMACDiscoveryJob* discoverJob = (CMACDiscoveryJob*)job;
 
-  const CStdString& host = discoverJob->GetHost();
-  const CStdString& mac = discoverJob->GetMAC();
+  const std::string& host = discoverJob->GetHost();
+  const std::string& mac = discoverJob->GetMAC();
 
   if (success)
   {
@@ -620,14 +620,14 @@ void CWakeOnAccess::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 
     if (IsEnabled())
     {
-      CStdString heading = LOCALIZED(13033);
-      CStdString message = StringUtils::Format(LOCALIZED(13036).c_str(), host.c_str());
+      std::string heading = LOCALIZED(13033);
+      std::string message = StringUtils::Format(LOCALIZED(13036).c_str(), host.c_str());
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, heading, message, 4000, true, 3000);
     }
   }
 }
 
-CStdString CWakeOnAccess::GetSettingFile()
+std::string CWakeOnAccess::GetSettingFile()
 {
   return CSpecialProtocol::TranslatePath("special://masterprofile/wakeonlan.xml");
 }
@@ -698,7 +698,7 @@ void CWakeOnAccess::LoadFromXML()
   {
     WakeUpEntry entry;
 
-    CStdString strtmp;
+    std::string strtmp;
     if (XMLUtils::GetString(pWakeUp, "host", strtmp))
       entry.host = strtmp;
 

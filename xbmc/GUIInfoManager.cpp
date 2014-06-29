@@ -1965,14 +1965,14 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *f
     break;
   case NETWORK_DNS1_ADDRESS:
     {
-      vector<CStdString> nss = g_application.getNetwork().GetNameServers();
+      vector<std::string> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 1)
         return nss[0];
     }
     break;
   case NETWORK_DNS2_ADDRESS:
     {
-      vector<CStdString> nss = g_application.getNetwork().GetNameServers();
+      vector<std::string> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 2)
         return nss[1];
     }

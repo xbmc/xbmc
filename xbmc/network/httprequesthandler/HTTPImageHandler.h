@@ -20,8 +20,7 @@
  */
 
 #include "IHTTPRequestHandler.h"
-
-#include "utils/StdString.h"
+#include <string>
 
 class CHTTPImageHandler : public IHTTPRequestHandler
 {
@@ -37,5 +36,5 @@ public:
   virtual int GetPriority() const { return 2; }
 
 private:
-  CStdString m_path;
+  std::string m_path;
 };

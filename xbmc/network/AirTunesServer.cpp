@@ -35,7 +35,6 @@
 #ifdef HAS_AIRTUNES
 
 #include "utils/log.h"
-#include "utils/StdString.h"
 #include "network/Zeroconf.h"
 #include "ApplicationMessenger.h"
 #include "filesystem/PipeFile.h"
@@ -64,7 +63,7 @@ using namespace ANNOUNCEMENT;
 
 DllLibShairplay *CAirTunesServer::m_pLibShairplay = NULL;
 CAirTunesServer *CAirTunesServer::ServerInstance = NULL;
-CStdString CAirTunesServer::m_macAddress;
+std::string CAirTunesServer::m_macAddress;
 std::string CAirTunesServer::m_metadata[3];
 CCriticalSection CAirTunesServer::m_metadataLock;
 bool CAirTunesServer::m_streamStarted = false;
@@ -330,10 +329,10 @@ void shairplay_log(void *cls, int level, const char *msg)
     CLog::Log(xbmcLevel, "AIRTUNES: %s", msg);
 }
 
-bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, const CStdString &password/*=""*/)
+bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, const std::string &password/*=""*/)
 {
   bool success = false;
-  CStdString pw = password;
+  std::string pw = password;
   CNetworkInterface *net = g_application.getNetwork().GetFirstConnectedInterface();
   StopServer(true);
 
@@ -343,7 +342,7 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
     StringUtils::Replace(m_macAddress, ":","");
     while (m_macAddress.size() < 12)
     {
-      m_macAddress = CStdString("0") + m_macAddress;
+      m_macAddress = '0' + m_macAddress;
     }
   }
   else
@@ -360,7 +359,7 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
   if (ServerInstance->Initialize(pw))
   {
     success = true;
-    CStdString appName = StringUtils::Format("%s@%s",
+    std::string appName = StringUtils::Format("%s@%s",
                                              m_macAddress.c_str(),
                                              g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME).c_str());
 
@@ -430,7 +429,7 @@ CAirTunesServer::~CAirTunesServer()
   CAnnouncementManager::Get().RemoveAnnouncer(this);
 }
 
-bool CAirTunesServer::Initialize(const CStdString &password)
+bool CAirTunesServer::Initialize(const std::string &password)
 {
   bool ret = false;
 

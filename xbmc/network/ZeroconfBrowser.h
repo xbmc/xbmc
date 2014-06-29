@@ -25,8 +25,6 @@
 #include <vector>
 #include <map>
 
-#include "utils/StdString.h"
-
 #ifdef TARGET_WINDOWS
 #undef SetPort // WIN32INCLUDES this is defined as SetPortA in WinSpool.h which is being included _somewhere_
 #endif
@@ -44,33 +42,33 @@ public:
       typedef std::map<std::string, std::string> tTxtRecordMap;
 
       ZeroconfService();
-      ZeroconfService(const CStdString& fcr_name, const CStdString& fcr_type, const CStdString& fcr_domain);
+      ZeroconfService(const std::string& fcr_name, const std::string& fcr_type, const std::string& fcr_domain);
 
       /// easy conversion to string and back (used in czeronfdiretory to store this service)
       ///@{
-      static CStdString toPath(const ZeroconfService& fcr_service);
-      static ZeroconfService fromPath(const CStdString& fcr_path); //throws std::runtime_error on failure
+      static std::string toPath(const ZeroconfService& fcr_service);
+      static ZeroconfService fromPath(const std::string& fcr_path); //throws std::runtime_error on failure
       ///@}
 
       /// general access methods
       ///@{
-      void SetName(const CStdString& fcr_name);
-      const CStdString& GetName() const {return m_name;}
+      void SetName(const std::string& fcr_name);
+      const std::string& GetName() const {return m_name;}
 
-      void SetType(const CStdString& fcr_type);
-      const CStdString& GetType() const {return m_type;}
+      void SetType(const std::string& fcr_type);
+      const std::string& GetType() const {return m_type;}
 
-      void SetDomain(const CStdString& fcr_domain);
-      const CStdString& GetDomain() const {return m_domain;}
+      void SetDomain(const std::string& fcr_domain);
+      const std::string& GetDomain() const {return m_domain;}
       ///@}
 
       /// access methods needed during resolve
       ///@{
-      void SetIP(const CStdString& fcr_ip);
-      const CStdString& GetIP() const {return m_ip;}
+      void SetIP(const std::string& fcr_ip);
+      const std::string& GetIP() const {return m_ip;}
 
-      void SetHostname(const CStdString& fcr_hostname);
-      const CStdString& GetHostname() const {return m_hostname;}
+      void SetHostname(const std::string& fcr_hostname);
+      const std::string& GetHostname() const {return m_hostname;}
 
       void SetPort(int f_port);
       int GetPort() const {return m_port;}
@@ -80,17 +78,17 @@ public:
       ///@}
     private:
       //3 entries below identify a service
-      CStdString m_name;
-      CStdString m_type;
-      CStdString m_domain;
+      std::string m_name;
+      std::string m_type;
+      std::string m_domain;
 
       //2 entries below store 1 ip:port pair for this service
-      CStdString m_ip;
+      std::string m_ip;
       int        m_port;
 
       //used for mdns in case dns resolution fails
       //we store the hostname and resolve with mdns functions again
-      CStdString m_hostname;
+      std::string m_hostname;
       
       //1 entry below stores the txt-record as a key value map for this service
       tTxtRecordMap m_txtrecords_map;    
@@ -131,8 +129,8 @@ public:
 
 protected:
   // pure virtual methods to implement for OS specific implementations
-  virtual bool doAddServiceType(const CStdString& fcr_service_type) = 0;
-  virtual bool doRemoveServiceType(const CStdString& fcr_service_type) = 0;
+  virtual bool doAddServiceType(const std::string& fcr_service_type) = 0;
+  virtual bool doRemoveServiceType(const std::string& fcr_service_type) = 0;
   virtual std::vector<ZeroconfService> doGetFoundServices() = 0;
   virtual bool doResolveService(ZeroconfService& fr_service, double f_timeout) = 0;
 
@@ -148,21 +146,21 @@ private:
   /// adds a service type for browsing
   /// @param fcr_service_type the service type as string, e.g. _smb._tcp.
   /// @return false if it was already there
-  bool AddServiceType(const CStdString& fcr_service_type);
+  bool AddServiceType(const std::string& fcr_service_type);
 
   /// remove the specified service from discovery
   /// @param fcr_service_type the service type as string, e.g. _smb._tcp.
   /// @return if it was not found
-  bool RemoveServiceType(const CStdString& fcr_service_type);
+  bool RemoveServiceType(const std::string& fcr_service_type);
 
   struct ServiceInfo
   {
-    CStdString type;
+    std::string type;
   };
 
   //protects data
   CCriticalSection* mp_crit_sec;
-  typedef std::set<CStdString> tServices;
+  typedef std::set<std::string> tServices;
   tServices m_services;
   bool m_started;
 

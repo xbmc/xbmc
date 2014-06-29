@@ -31,6 +31,7 @@
 #include "win32/WIN32Util.h"
 #include "utils/CharsetConverter.h"
 #endif
+#include "utils/StringUtils.h"
 
 /* slightly modified in_ether taken from the etherboot project (http://sourceforge.net/projects/etherboot) */
 bool in_ether (const char *bufp, unsigned char *addr)
@@ -158,11 +159,11 @@ int CNetwork::ParseHex(char *str, unsigned char *addr)
    return len;
 }
 
-CStdString CNetwork::GetHostName(void)
+std::string CNetwork::GetHostName(void)
 {
   char hostName[128];
   if (gethostname(hostName, sizeof(hostName)))
-    return CStdString("unknown");
+    return "unknown";
 
   std::string hostStr;
 #ifdef TARGET_WINDOWS
@@ -199,8 +200,8 @@ bool CNetwork::HasInterfaceForIP(unsigned long address)
       CNetworkInterface* iface = *iter;
       if (iface && iface->IsConnected())
       {
-         subnet = ntohl(inet_addr(iface->GetCurrentNetmask()));
-         local = ntohl(inet_addr(iface->GetCurrentIPAddress()));
+         subnet = ntohl(inet_addr(iface->GetCurrentNetmask().c_str()));
+         local = ntohl(inet_addr(iface->GetCurrentIPAddress().c_str()));
          if( (address & subnet) == (local & subnet) )
             return true;
       }
@@ -228,14 +229,14 @@ bool CNetwork::IsConnected()
    return GetFirstConnectedInterface() != NULL;
 }
 
-CNetworkInterface* CNetwork::GetInterfaceByName(CStdString& name)
+CNetworkInterface* CNetwork::GetInterfaceByName(const std::string& name)
 {
    std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
    std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
    while (iter != ifaces.end())
    {
       CNetworkInterface* iface = *iter;
-      if (iface && iface->GetName().Equals(name))
+      if (iface && iface->GetName() == name)
          return iface;
       ++iter;
    }
@@ -424,9 +425,9 @@ bool CNetwork::PingHost(unsigned long ipaddr, unsigned short port, unsigned int 
   if (err_msg && *err_msg)
   {
 #ifdef TARGET_WINDOWS
-    CStdString sock_err = CWIN32Util::WUSysMsg(WSAGetLastError());
+    std::string sock_err = CWIN32Util::WUSysMsg(WSAGetLastError());
 #else
-    CStdString sock_err = strerror(errno);
+    std::string sock_err = strerror(errno);
 #endif
 
     CLog::Log(LOGERROR, "%s(%s:%d) - %s (%s)", __FUNCTION__, inet_ntoa(addr.sin_addr), port, err_msg, sock_err.c_str());
@@ -458,9 +459,9 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
     if (setsockopt(sock, IPPROTO_IPV6, IPV6_V6ONLY, (const char*)&no, sizeof(no)) < 0)
     {
 #ifdef _MSC_VER
-      CStdString sock_err = CWIN32Util::WUSysMsg(WSAGetLastError());
+      std::string sock_err = CWIN32Util::WUSysMsg(WSAGetLastError());
 #else
-      CStdString sock_err = strerror(errno);
+      std::string sock_err = strerror(errno);
 #endif
       CLog::Log(LOGWARNING, "%s Server: Only IPv6 supported (%s)", callerName, sock_err.c_str());
     }

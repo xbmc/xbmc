@@ -192,7 +192,7 @@ bool CZeroconfDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         item->SetPath(url.Get());
 
         //now do the formatting
-        CStdString protocol = GetHumanReadableProtocol(it->GetType());
+        std::string protocol = GetHumanReadableProtocol(it->GetType());
         item->SetLabel(it->GetName() + " (" + protocol  + ")");
         item->SetLabelPreformated(true);
         //just set the default folder icon
