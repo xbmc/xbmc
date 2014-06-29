@@ -268,6 +268,17 @@ bool XMLUtils::GetDateTime(const TiXmlNode* pRootNode, const char* strTag, CDate
   return false;
 }
 
+std::string XMLUtils::GetAttribute(const TiXmlElement *element, const char *tag)
+{
+  if (element)
+  {
+    const char *attribute = element->Attribute(tag);
+    if (attribute)
+      return attribute;
+  }
+  return "";
+}
+
 void XMLUtils::SetAdditiveString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strSeparator, const CStdString& strValue)
 {
   std::vector<std::string> list = StringUtils::Split(strValue, strSeparator);
