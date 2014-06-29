@@ -36,7 +36,7 @@ namespace XFILE
       long GetYear() { return m_year; }
 
     protected:
-      void SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeName);
+      void SetQueryParam(NODE_TYPE NodeType, const std::string& strNodeName);
 
       friend class CDirectoryNode;
     private:

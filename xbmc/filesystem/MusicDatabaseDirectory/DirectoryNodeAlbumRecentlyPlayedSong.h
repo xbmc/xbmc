@@ -28,7 +28,7 @@ namespace XFILE
     class CDirectoryNodeAlbumRecentlyPlayedSong : public CDirectoryNode
     {
     public:
-      CDirectoryNodeAlbumRecentlyPlayedSong(const CStdString& strName, CDirectoryNode* pParent);
+      CDirectoryNodeAlbumRecentlyPlayedSong(const std::string& strName, CDirectoryNode* pParent);
     protected:
       virtual bool GetContent(CFileItemList& items) const;
     };

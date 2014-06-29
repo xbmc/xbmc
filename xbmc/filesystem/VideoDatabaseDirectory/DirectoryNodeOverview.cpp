@@ -24,6 +24,7 @@
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "video/VideoDbUrl.h"
+#include "utils/StringUtils.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 using namespace std;
@@ -38,7 +39,7 @@ Node OverviewChildren[] = {
                             { NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS, "recentlyaddedmusicvideos", 20390 },
                           };
 
-CDirectoryNodeOverview::CDirectoryNodeOverview(const CStdString& strName, CDirectoryNode* pParent)
+CDirectoryNodeOverview::CDirectoryNodeOverview(const std::string& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_OVERVIEW, strName, pParent)
 {
 
@@ -47,16 +48,16 @@ CDirectoryNodeOverview::CDirectoryNodeOverview(const CStdString& strName, CDirec
 NODE_TYPE CDirectoryNodeOverview::GetChildType() const
 {
   for (unsigned int i = 0; i < sizeof(OverviewChildren) / sizeof(Node); ++i)
-    if (GetName().Equals(OverviewChildren[i].id.c_str()))
+    if (GetName() == OverviewChildren[i].id)
       return OverviewChildren[i].node;
 
   return NODE_TYPE_NONE;
 }
 
-CStdString CDirectoryNodeOverview::GetLocalizedName() const
+std::string CDirectoryNodeOverview::GetLocalizedName() const
 {
   for (unsigned int i = 0; i < sizeof(OverviewChildren) / sizeof(Node); ++i)
-    if (GetName().Equals(OverviewChildren[i].id.c_str()))
+    if (GetName() == OverviewChildren[i].id)
       return g_localizeStrings.Get(OverviewChildren[i].label);
   return "";
 }
@@ -98,7 +99,7 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items) const
     if (hasMusicVideos)
       vec.push_back(make_pair("recentlyaddedmusicvideos", 20390)); // Recently Added Music Videos
   }
-  CStdString path = BuildPath();
+  std::string path = BuildPath();
   for (unsigned int i = 0; i < vec.size(); ++i)
   {
     CFileItemPtr pItem(new CFileItem(path + vec[i].first + "/", true));

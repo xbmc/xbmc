@@ -20,6 +20,7 @@
 
 #include "QueryParams.h"
 #include "video/VideoDatabase.h"
+#include "utils/StringUtils.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
@@ -42,16 +43,16 @@ CQueryParams::CQueryParams()
   m_idTag = -1;
 }
 
-void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeName)
+void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const std::string& strNodeName)
 {
   long idDb=atol(strNodeName.c_str());
 
   switch (NodeType)
   {
   case NODE_TYPE_OVERVIEW:
-    if (strNodeName.Equals("tvshows"))
+    if (strNodeName == "tvshows")
       m_idContent = VIDEODB_CONTENT_TVSHOWS;
-    else if (strNodeName.Equals("musicvideos"))
+    else if (strNodeName == "musicvideos")
       m_idContent = VIDEODB_CONTENT_MUSICVIDEOS;
     else
       m_idContent = VIDEODB_CONTENT_MOVIES;

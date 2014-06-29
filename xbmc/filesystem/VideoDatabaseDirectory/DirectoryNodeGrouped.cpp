@@ -25,7 +25,7 @@
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
-CDirectoryNodeGrouped::CDirectoryNodeGrouped(NODE_TYPE type, const CStdString& strName, CDirectoryNode* pParent)
+CDirectoryNodeGrouped::CDirectoryNodeGrouped(NODE_TYPE type, const std::string& strName, CDirectoryNode* pParent)
   : CDirectoryNode(type, strName, pParent)
 { }
 
@@ -47,7 +47,7 @@ NODE_TYPE CDirectoryNodeGrouped::GetChildType() const
   return NODE_TYPE_TITLE_TVSHOWS;
 }
 
-CStdString CDirectoryNodeGrouped::GetLocalizedName() const
+std::string CDirectoryNodeGrouped::GetLocalizedName() const
 {
   CVideoDatabase db;
   if (db.Open())
