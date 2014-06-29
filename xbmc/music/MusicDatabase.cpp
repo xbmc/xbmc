@@ -3992,7 +3992,7 @@ int CMusicDatabase::GetSongsCount(const Filter &filter)
   return 0;
 }
 
-bool CMusicDatabase::GetAlbumPath(int idAlbum, CStdString& path)
+bool CMusicDatabase::GetAlbumPath(int idAlbum, std::string& path)
 {
   try
   {
@@ -4001,7 +4001,7 @@ bool CMusicDatabase::GetAlbumPath(int idAlbum, CStdString& path)
 
     path.clear();
 
-    CStdString strSQL=PrepareSQL("select strPath from song join path on song.idPath = path.idPath where song.idAlbum=%ld", idAlbum);
+    std::string strSQL=PrepareSQL("select strPath from song join path on song.idPath = path.idPath where song.idAlbum=%ld", idAlbum);
     if (!m_pDS2->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS2->num_rows();
     if (iRowsFound == 0)
@@ -4039,7 +4039,7 @@ bool CMusicDatabase::SaveAlbumThumb(int idAlbum, const CStdString& strThumb)
   return true;
 }
 
-bool CMusicDatabase::GetArtistPath(int idArtist, CStdString &basePath)
+bool CMusicDatabase::GetArtistPath(int idArtist, std::string &basePath)
 {
   try
   {
@@ -4047,7 +4047,7 @@ bool CMusicDatabase::GetArtistPath(int idArtist, CStdString &basePath)
     if (NULL == m_pDS2.get()) return false;
 
     // find all albums from this artist, and all the paths to the songs from those albums
-    CStdString strSQL=PrepareSQL("SELECT strPath"
+    std::string strSQL=PrepareSQL("SELECT strPath"
                                  "  FROM album_artist"
                                  "  JOIN song "
                                  "    ON album_artist.idAlbum = song.idAlbum"
@@ -4077,7 +4077,7 @@ bool CMusicDatabase::GetArtistPath(int idArtist, CStdString &basePath)
     basePath.clear();
     while (!m_pDS2->eof())
     {
-      CStdString path = m_pDS2->fv("strPath").get_asString();
+      std::string path = m_pDS2->fv("strPath").get_asString();
       if (basePath.empty())
         basePath = path;
       else

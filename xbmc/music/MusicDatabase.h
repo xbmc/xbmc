@@ -272,8 +272,8 @@ public:
   bool GetPaths(std::set<std::string> &paths);
   bool SetPathHash(const CStdString &path, const CStdString &hash);
   bool GetPathHash(const CStdString &path, CStdString &hash);
-  bool GetAlbumPath(int idAlbum, CStdString &path);
-  bool GetArtistPath(int idArtist, CStdString &path);
+  bool GetAlbumPath(int idAlbum, std::string &path);
+  bool GetArtistPath(int idArtist, std::string &path);
 
   /////////////////////////////////////////////////
   // Genres
