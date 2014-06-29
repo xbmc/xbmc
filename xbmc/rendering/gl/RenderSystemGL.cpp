@@ -182,8 +182,8 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height, bool fullScreen, 
 
   CalculateMaxTexturesize();
 
-  glViewport(0, 0, width, height);
-  glScissor(0, 0, width, height);
+  CRect rect( 0, 0, width, height );
+  SetViewPort( rect );
 
   glEnable(GL_TEXTURE_2D);
   glEnable(GL_SCISSOR_TEST);
@@ -393,8 +393,6 @@ void CRenderSystemGL::CaptureStateBlock()
   if (!m_bRenderCreated)
     return;
   
-  glGetIntegerv(GL_VIEWPORT, m_viewPort);
-
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
   glMatrixMode(GL_TEXTURE);
@@ -438,11 +436,9 @@ void CRenderSystemGL::SetCameraPosition(const CPoint &camera, int screenWidth, i
 
   CPoint offset = camera - CPoint(screenWidth*0.5f, screenHeight*0.5f);
 
-  GLint viewport[4];
-  glGetIntegerv(GL_VIEWPORT, viewport);
 
-  float w = (float)viewport[2]*0.5f;
-  float h = (float)viewport[3]*0.5f;
+  float w = (float)m_viewPort[2]*0.5f;
+  float h = (float)m_viewPort[3]*0.5f;
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
@@ -453,7 +449,6 @@ void CRenderSystemGL::SetCameraPosition(const CPoint &camera, int screenWidth, i
   glFrustum( (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
   glMatrixMode(GL_MODELVIEW);
 
-  glGetIntegerv(GL_VIEWPORT, m_viewPort);
   glGetDoublev(GL_MODELVIEW_MATRIX, m_view);
   glGetDoublev(GL_PROJECTION_MATRIX, m_projection);
 
@@ -570,13 +565,10 @@ void CRenderSystemGL::GetViewPort(CRect& viewPort)
   if (!m_bRenderCreated)
     return;
 
-  GLint glvp[4];
-  glGetIntegerv(GL_VIEWPORT, glvp);
-
-  viewPort.x1 = glvp[0];
-  viewPort.y1 = m_height - glvp[1] - glvp[3];
-  viewPort.x2 = glvp[0] + glvp[2];
-  viewPort.y2 = viewPort.y1 + glvp[3];
+  viewPort.x1 = m_viewPort[0];
+  viewPort.y1 = m_height - m_viewPort[1] - m_viewPort[3];
+  viewPort.x2 = m_viewPort[0] + m_viewPort[2];
+  viewPort.y2 = viewPort.y1 + m_viewPort[3];
 }
 
 void CRenderSystemGL::SetViewPort(CRect& viewPort)
@@ -586,6 +578,10 @@ void CRenderSystemGL::SetViewPort(CRect& viewPort)
 
   glScissor((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
   glViewport((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
+  m_viewPort[0] = viewPort.x1;
+  m_viewPort[1] = m_height - viewPort.y1 - viewPort.Height();
+  m_viewPort[2] = viewPort.Width();
+  m_viewPort[3] = viewPort.Height();
 }
 
 void CRenderSystemGL::SetScissors(const CRect &rect)
