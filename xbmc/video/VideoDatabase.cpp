@@ -5861,7 +5861,7 @@ bool CVideoDatabase::GetSeasonsByWhere(const CStdString& strBaseDir, const Filte
         if (iSeason == 0)
           strLabel = g_localizeStrings.Get(20381);
         else
-          strLabel = StringUtils::Format(g_localizeStrings.Get(20358), iSeason);
+          strLabel = StringUtils::Format(g_localizeStrings.Get(20358).c_str(), iSeason);
         CFileItemPtr pItem(new CFileItem(strLabel));
 
         CVideoDbUrl itemUrl = videoUrl;
@@ -8220,7 +8220,7 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
           {
             CURL sourceUrl(sourcePath);
             pDialog->SetHeading(15012);
-            pDialog->SetText(StringUtils::Format(g_localizeStrings.Get(15013), sourceUrl.GetWithoutUserDetails().c_str()));
+            pDialog->SetText(StringUtils::Format(g_localizeStrings.Get(15013).c_str(), sourceUrl.GetWithoutUserDetails().c_str()));
             pDialog->SetChoice(0, 15015);
             pDialog->SetChoice(1, 15014);
 

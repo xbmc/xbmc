@@ -256,9 +256,9 @@ void CAddonCallbacksPVR::PVRRecording(void *addonData, const char *strName, cons
 
   CStdString strLine1;
   if (bOnOff)
-    strLine1 = StringUtils::Format(g_localizeStrings.Get(19197), client->Name().c_str());
+    strLine1 = StringUtils::Format(g_localizeStrings.Get(19197).c_str(), client->Name().c_str());
   else
-    strLine1 = StringUtils::Format(g_localizeStrings.Get(19198), client->Name().c_str());
+    strLine1 = StringUtils::Format(g_localizeStrings.Get(19198).c_str(), client->Name().c_str());
 
   CStdString strLine2;
   if (strName)

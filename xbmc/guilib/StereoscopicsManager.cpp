@@ -469,7 +469,7 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
         
 
       // add choices
-      int idx_preferred = pDlgSelect->Add( g_localizeStrings.Get(36530)
+      int idx_preferred = pDlgSelect->Add((CStdString)g_localizeStrings.Get(36530)
                                      + " ("
                                      + GetLabelForStereoMode(preferred)
                                      + ")");
@@ -479,7 +479,7 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
 
 
       if(playing != RENDER_STEREO_MODE_OFF && g_Windowing.SupportsStereo(playing))
-        idx_playing = pDlgSelect->Add( g_localizeStrings.Get(36532)
+        idx_playing = pDlgSelect->Add((CStdString)g_localizeStrings.Get(36532)
                                     + " ("
                                     + GetLabelForStereoMode(playing)
                                     + ")");

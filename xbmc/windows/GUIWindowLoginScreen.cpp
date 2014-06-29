@@ -159,7 +159,7 @@ void CGUIWindowLoginScreen::FrameMove()
   if (GetFocusedControlID() == CONTROL_BIG_LIST && g_windowManager.GetTopMostModalDialogID() == WINDOW_INVALID)
     if (m_viewControl.HasControl(CONTROL_BIG_LIST))
       m_iSelectedItem = m_viewControl.GetSelectedItem();
-  CStdString strLabel = StringUtils::Format(g_localizeStrings.Get(20114), m_iSelectedItem+1, CProfilesManager::Get().GetNumberOfProfiles());
+  CStdString strLabel = StringUtils::Format(g_localizeStrings.Get(20114).c_str(), m_iSelectedItem+1, CProfilesManager::Get().GetNumberOfProfiles());
   SET_CONTROL_LABEL(CONTROL_LABEL_SELECTED_PROFILE,strLabel);
   CGUIWindow::FrameMove();
 }

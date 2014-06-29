@@ -168,7 +168,7 @@ void CGUIDialogKaraokeSongSelector::UpdateData()
   if ( m_updateData )
   {
     // Update on-screen labels
-    CStdString message = StringUtils::Format("%06d", m_selectedNumber);
+    std::string message = StringUtils::Format("%06d", m_selectedNumber);
     message = g_localizeStrings.Get(179) + ": " + message; // Translated "Song"
 
     SET_CONTROL_LABEL(CONTROL_LABEL_SONGNUMBER, message);

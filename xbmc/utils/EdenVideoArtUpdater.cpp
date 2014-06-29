@@ -341,7 +341,7 @@ CStdString CEdenVideoArtUpdater::GetCachedSeasonThumb(int season, const CStdStri
   else if (season == 0)
     label = g_localizeStrings.Get(20381);
   else
-    label = StringUtils::Format(g_localizeStrings.Get(20358), season);
+    label = StringUtils::Format(g_localizeStrings.Get(20358).c_str(), season);
   return GetThumb("season" + path + label, CProfilesManager::Get().GetVideoThumbFolder(), true);
 }
 

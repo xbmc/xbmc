@@ -71,7 +71,7 @@ CFileItemPtr CBlurayDirectory::GetTitle(const BLURAY_TITLE_INFO* title, const CS
   buf = StringUtils::Format(label.c_str(), title->playlist);
   item->m_strTitle = buf;
   item->SetLabel(buf);
-  chap = StringUtils::Format(g_localizeStrings.Get(25007), title->chapter_count, StringUtils::SecondsToTimeString(duration).c_str());
+  chap = StringUtils::Format(g_localizeStrings.Get(25007).c_str(), title->chapter_count, StringUtils::SecondsToTimeString(duration).c_str());
   item->SetProperty("Addon.Summary", chap);
   item->m_dwSize = 0;
   item->SetIconImage("DefaultVideo.png");

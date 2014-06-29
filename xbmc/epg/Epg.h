@@ -270,7 +270,7 @@ namespace EPG
      * @param iSubID The genre sub ID.
      * @return A human readable name.
      */
-    static const CStdString &ConvertGenreIdToString(int iID, int iSubID);
+    static const std::string &ConvertGenreIdToString(int iID, int iSubID);
 
     /*!
      * @brief Update an entry in this EPG.

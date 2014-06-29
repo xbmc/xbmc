@@ -525,7 +525,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
     if (!hasDetails && (scrUrl.m_url.size() == 0 || needsRefresh))
     {
       // 4a. show dialog that we're busy querying www.imdb.com
-      CStdString strHeading = StringUtils::Format(g_localizeStrings.Get(197),info->Name().c_str());
+      CStdString strHeading = StringUtils::Format(g_localizeStrings.Get(197).c_str(),info->Name().c_str());
       pDlgProgress->SetHeading(strHeading);
       pDlgProgress->SetLine(0, movieName);
       pDlgProgress->SetLine(1, "");

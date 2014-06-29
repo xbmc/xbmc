@@ -261,7 +261,7 @@ namespace VIDEO
       if (m_handle)
       {
         int str = content == CONTENT_MOVIES ? 20317:20318;
-        m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(str), info->Name().c_str()));
+        m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(str).c_str(), info->Name().c_str()));
       }
 
       CStdString fastHash = GetFastHash(strDirectory, regexps);
@@ -306,7 +306,7 @@ namespace VIDEO
     else if (content == CONTENT_TVSHOWS)
     {
       if (m_handle)
-        m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20319), info->Name().c_str()));
+        m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20319).c_str(), info->Name().c_str()));
 
       if (foundDirectly && !settings.parent_name_root)
       {

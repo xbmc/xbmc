@@ -693,7 +693,7 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
 
 //@}
 
-const CStdString &CEpg::ConvertGenreIdToString(int iID, int iSubID)
+const std::string &CEpg::ConvertGenreIdToString(int iID, int iSubID)
 {
   unsigned int iLabelId = 19499;
   switch (iID)

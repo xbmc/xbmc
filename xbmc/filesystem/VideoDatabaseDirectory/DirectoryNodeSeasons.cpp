@@ -57,7 +57,7 @@ CStdString CDirectoryNodeSeasons::GetLocalizedName() const
     return "";
   }
   default:
-    CStdString season = StringUtils::Format(g_localizeStrings.Get(20358), GetID()); // Season <season>
+    CStdString season = StringUtils::Format(g_localizeStrings.Get(20358).c_str(), GetID()); // Season <season>
     return season;
   }
 }

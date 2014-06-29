@@ -586,7 +586,7 @@ void CGUIDialogMediaFilter::UpdateControls()
     else
     {
       CONTROL_ENABLE(control->GetID());
-      label = StringUtils::Format(g_localizeStrings.Get(21470), label.c_str(), size);
+      label = StringUtils::Format(g_localizeStrings.Get(21470).c_str(), label.c_str(), size);
     }
     SET_CONTROL_LABEL(control->GetID(), label);
   }
