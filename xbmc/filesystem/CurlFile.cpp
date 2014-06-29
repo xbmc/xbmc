@@ -799,21 +799,21 @@ void CCurlFile::SetStreamProxy(const CStdString &proxy, ProxyType type)
   CLog::Log(LOGDEBUG, "Overriding proxy from URL parameter: %s, type %d", m_proxy.c_str(), proxyType2CUrlProxyType[m_proxytype]);
 }
 
-bool CCurlFile::Post(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML)
+bool CCurlFile::Post(const std::string& strURL, const std::string& strPostData, std::string& strHTML)
 {
   m_postdata = strPostData;
   m_postdataset = true;
   return Service(strURL, strHTML);
 }
 
-bool CCurlFile::Get(const CStdString& strURL, CStdString& strHTML)
+bool CCurlFile::Get(const std::string& strURL, std::string& strHTML)
 {
   m_postdata = "";
   m_postdataset = false;
   return Service(strURL, strHTML);
 }
 
-bool CCurlFile::Service(const CStdString& strURL, CStdString& strHTML)
+bool CCurlFile::Service(const std::string& strURL, std::string& strHTML)
 {
   const CURL pathToUrl(strURL);
   if (Open(pathToUrl))
@@ -828,7 +828,7 @@ bool CCurlFile::Service(const CStdString& strURL, CStdString& strHTML)
   return false;
 }
 
-bool CCurlFile::ReadData(CStdString& strHTML)
+bool CCurlFile::ReadData(std::string& strHTML)
 {
   int size_read = 0;
   int data_size = 0;
@@ -1625,7 +1625,7 @@ bool CCurlFile::GetHttpHeader(const CURL &url, CHttpHeader &headers)
   }
 }
 
-bool CCurlFile::GetMimeType(const CURL &url, CStdString &content, CStdString useragent)
+bool CCurlFile::GetMimeType(const CURL &url, std::string &content, const std::string &useragent)
 {
   CCurlFile file;
   if (!useragent.empty())
@@ -1643,7 +1643,7 @@ bool CCurlFile::GetMimeType(const CURL &url, CStdString &content, CStdString use
     return true;
   }
   CLog::Log(LOGDEBUG, "CCurlFile::GetMimeType - %s -> failed", redactUrl.c_str());
-  content = "";
+  content.clear();
   return false;
 }
 

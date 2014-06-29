@@ -63,9 +63,9 @@ namespace XFILE
       virtual int IoControl(EIoControl request, void* param);
       virtual std::string GetContentCharset(void)                { return GetServerReportedCharset(); }
 
-      bool Post(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML);
-      bool Get(const CStdString& strURL, CStdString& strHTML);
-      bool ReadData(CStdString& strHTML);
+      bool Post(const std::string& strURL, const std::string& strPostData, std::string& strHTML);
+      bool Get(const std::string& strURL, std::string& strHTML);
+      bool ReadData(std::string& strHTML);
       bool Download(const CStdString& strURL, const CStdString& strFileName, LPDWORD pdwSize = NULL);
       bool IsInternet();
       void Cancel();
@@ -96,7 +96,7 @@ namespace XFILE
 
       /* static function that will get content type of a file */
       static bool GetHttpHeader(const CURL &url, CHttpHeader &headers);
-      static bool GetMimeType(const CURL &url, CStdString &content, CStdString useragent="");
+      static bool GetMimeType(const CURL &url, std::string &content, const std::string &useragent="");
 
       /* static function that will get cookies stored by CURL in RFC 2109 format */
       static bool GetCookies(const CURL &url, std::string &cookies);
@@ -152,7 +152,7 @@ namespace XFILE
       void SetCommonOptions(CReadState* state);
       void SetRequestHeaders(CReadState* state);
       void SetCorrectHeaders(CReadState* state);
-      bool Service(const CStdString& strURL, CStdString& strHTML);
+      bool Service(const std::string& strURL, std::string& strHTML);
 
     protected:
       CReadState*     m_state;
