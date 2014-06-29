@@ -438,6 +438,10 @@ static void EnumerateDevices(CADeviceList &list)
       }
       else// treat all other digital passthrough devices as optical
         device.m_deviceType = AE_DEVTYPE_IEC958;
+
+      //treat all other digital devices as HDMI to let options open to the user
+      if (device.m_deviceType == AE_DEVTYPE_PCM)
+        device.m_deviceType = AE_DEVTYPE_HDMI;
     }
 
     // devicename based overwrites from former code - maybe FIXME at some point when we
