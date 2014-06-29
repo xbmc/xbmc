@@ -294,6 +294,7 @@ CHECK_DIRS = xbmc/addons/test \
              xbmc/utils/test \
              xbmc/threads/test \
              xbmc/interfaces/python/test \
+             xbmc/cores/AudioEngine/Sinks/test \
              xbmc/test
 CHECK_LIBS = xbmc/addons/test/addonsTest.a \
              xbmc/filesystem/test/filesystemTest.a \
