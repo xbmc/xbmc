@@ -267,40 +267,39 @@ namespace VIDEO
       CStdString fastHash = GetFastHash(strDirectory, regexps);
       if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.empty() && fastHash == dbHash)
       { // fast hashes match - no need to process anything
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change (fasthash)", CURL::GetRedacted(strDirectory).c_str());
         hash = fastHash;
-        bSkip = true;
       }
-      if (!bSkip)
+      else
       { // need to fetch the folder
         CDirectory::GetDirectory(strDirectory, items, g_advancedSettings.m_videoExtensions);
         items.Stack();
-        // compute hash
-        GetPathHash(items, hash);
-        if (hash != dbHash && !hash.empty())
-        {
-          if (dbHash.empty())
-            CLog::Log(LOGDEBUG, "VideoInfoScanner: Scanning dir '%s' as not in the database", CURL::GetRedacted(strDirectory).c_str());
-          else
-            CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '%s' due to change (%s != %s)", CURL::GetRedacted(strDirectory).c_str(), dbHash.c_str(), hash.c_str());
-        }
+
+        // check whether to re-use previously computed fast hash
+        if (!CanFastHash(items, regexps) || fastHash.empty())
+          GetPathHash(items, hash);
         else
-        { // they're the same or the hash is empty (dir empty/dir not retrievable)
-          if (hash.empty() && !dbHash.empty())
-          {
-            CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' as it's empty or doesn't exist - adding to clean list", CURL::GetRedacted(strDirectory).c_str());
-            if (m_bClean)
-              m_pathsToClean.insert(m_database.GetPathId(strDirectory));
-          }
-          else
-            CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change", CURL::GetRedacted(strDirectory).c_str());
-          bSkip = true;
-          if (m_handle)
-            OnDirectoryScanned(strDirectory);
-        }
-        // update the hash to a fast hash if needed
-        if (CanFastHash(items, regexps) && !fastHash.empty())
           hash = fastHash;
+      }
+
+      if (hash == dbHash)
+      { // hash matches - skipping
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change%s", CURL::GetRedacted(strDirectory).c_str(), !fastHash.empty() ? " (fasthash)" : "");
+        bSkip = true;
+      }
+      else if (hash.empty())
+      { // directory empty or non-existent - add to clean list and skip
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' as it's empty or doesn't exist - adding to clean list", CURL::GetRedacted(strDirectory).c_str());
+        if (m_bClean)
+          m_pathsToClean.insert(m_database.GetPathId(strDirectory));
+        bSkip = true;
+      }
+      else if (dbHash.empty())
+      { // new folder - scan
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Scanning dir '%s' as not in the database", CURL::GetRedacted(strDirectory).c_str());
+      }
+      else
+      { // hash changed - rescan
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '%s' due to change (%s != %s)", CURL::GetRedacted(strDirectory).c_str(), dbHash.c_str(), hash.c_str());
       }
     }
     else if (content == CONTENT_TVSHOWS)
