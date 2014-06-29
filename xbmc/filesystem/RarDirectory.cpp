@@ -44,12 +44,12 @@ namespace XFILE
     if (urlOrig.GetProtocol() != "rar")
       url = URIUtils::CreateArchivePath("rar", urlOrig);
 
-    CStdString strArchive = url.GetHostName();
-    CStdString strOptions = url.GetOptions();
-    CStdString strPathInArchive = url.GetFileName();
+    std::string strArchive = url.GetHostName();
+    std::string strOptions = url.GetOptions();
+    std::string strPathInArchive = url.GetFileName();
     url.SetOptions("");
 
-    CStdString strSlashPath = url.Get();
+    std::string strSlashPath = url.Get();
 
     // the RAR code depends on things having a "\" at the end of the path
     URIUtils::AddSlashAtEnd(strSlashPath);
@@ -61,7 +61,7 @@ namespace XFILE
       {
         if (items[iEntry]->IsParentFolder())
           continue;
-        items[iEntry]->SetPath(URIUtils::AddFileToFolder(strSlashPath,(CStdString)items[iEntry]->GetPath()+strOptions));
+        items[iEntry]->SetPath(URIUtils::AddFileToFolder(strSlashPath, items[iEntry]->GetPath() + strOptions));
         items[iEntry]->m_iDriveType = 0;
         //CLog::Log(LOGDEBUG, "RarXFILE::GetDirectory() retrieved file: %s", items[iEntry]->m_strPath.c_str());
       }
@@ -86,7 +86,7 @@ namespace XFILE
   bool CRarDirectory::ContainsFiles(const CURL& url)
   {
     CFileItemList items;
-    const CStdString pathToUrl(url.Get());
+    const std::string pathToUrl(url.Get());
     if (g_RarManager.GetFilesInRar(items, pathToUrl))
     {
       if (items.Size() > 1)

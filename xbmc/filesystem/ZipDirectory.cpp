@@ -50,16 +50,16 @@ namespace XFILE
       urlZip = URIUtils::CreateArchivePath("zip", urlOrig);
 
     CURL url(urlZip);
-    CStdString strArchive = url.GetHostName();
-    CStdString strOptions = url.GetOptions();
-    CStdString strPathInZip = url.GetFileName();
+    std::string strArchive = url.GetHostName();
+    std::string strOptions = url.GetOptions();
+    std::string strPathInZip = url.GetFileName();
 
     url.SetOptions(""); // delete options to have a clean path to add stuff too
     url.SetFileName(""); // delete filename too as our names later will contain it
 
-    CStdString strSlashPath = url.Get();
+    std::string strSlashPath = url.Get();
 
-    CStdString strBuffer;
+    std::string strBuffer;
 
     // the RAR code depends on things having a "/" at the end of the path
     URIUtils::AddSlashAtEnd(strSlashPath);
@@ -77,7 +77,7 @@ namespace XFILE
 
     for (vector<SZipEntry>::iterator ze=entries.begin();ze!=entries.end();++ze)
     {
-      CStdString strEntryName(ze->name);
+      std::string strEntryName(ze->name);
       StringUtils::Replace(strEntryName, '\\','/');
       if (strEntryName == strPathInZip) // skip the listed dir
         continue;

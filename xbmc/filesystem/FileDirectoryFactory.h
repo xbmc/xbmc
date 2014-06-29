@@ -20,6 +20,7 @@
  */
 
 #include "IFileDirectory.h"
+#include <string>
 
 class CFileItem;
 
@@ -30,6 +31,6 @@ class CFileDirectoryFactory
 public:
   CFileDirectoryFactory(void);
   virtual ~CFileDirectoryFactory(void);
-  static IFileDirectory* Create(const CURL& url, CFileItem* pItem, const CStdString& strMask="");
+  static IFileDirectory* Create(const CURL& url, CFileItem* pItem, const std::string& strMask="");
 };
 }

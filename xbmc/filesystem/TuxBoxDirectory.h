@@ -20,7 +20,7 @@
  */
 
 #include "IDirectory.h"
-#include "utils/StdString.h"
+#include <string>
 
 class CURL;
 class TiXmlElement;
@@ -36,8 +36,8 @@ namespace XFILE
       virtual bool AllowAll() const { return true; }
       virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const { return DIR_CACHE_ALWAYS; };
     private:
-      bool GetRootAndChildString(const CStdString strPath, CStdString& strBQRequest, CStdString& strXMLRootString, CStdString& strXMLChildString );
-      void GetRootAndChildStringEnigma2(CStdString& strBQRequest, CStdString& strXMLRootString, CStdString& strXMLChildString );
+      bool GetRootAndChildString(const std::string strPath, std::string& strBQRequest, std::string& strXMLRootString, std::string& strXMLChildString );
+      void GetRootAndChildStringEnigma2(std::string& strBQRequest, std::string& strXMLRootString, std::string& strXMLChildString );
   };
 }
 

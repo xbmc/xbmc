@@ -61,10 +61,10 @@ CDAAPDirectory::~CDAAPDirectory(void)
 
 bool CDAAPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  CStdString strRoot = url.Get();
+  std::string strRoot = url.Get();
   URIUtils::AddSlashAtEnd(strRoot);
 
-  CStdString host = url.GetHostName();
+  std::string host = url.GetHostName();
   if (url.HasPort())
     host = StringUtils::Format("%s:%i", url.GetHostName().c_str(), url.GetPort());
   m_thisHost = g_DaapClient.GetHost(host);
@@ -101,7 +101,7 @@ bool CDAAPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     {
       for (int c = 0; c < m_thisHost->dbplaylists->nPlaylists; c++)
       {
-        CStdString strFile;
+        std::string strFile;
         //size_t strLen;
 
         // we use UTF-8 internally, so no need to convert
@@ -136,7 +136,7 @@ bool CDAAPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         // if selected playlist name == d/b name then show in artist/album/song formation
         if (strcmp(m_thisHost->databases[0].name, m_thisHost->dbplaylists->playlists[c].itemname) == 0)
         {
-          CStdString strBuffer;
+          std::string strBuffer;
           artistPTR *cur = m_artisthead;
           while (cur)
           {
@@ -175,7 +175,7 @@ bool CDAAPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
               CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", m_currentSongItems[idx].itemname);
               CFileItemPtr pItem(new CFileItem(m_currentSongItems[idx].itemname));
 
-              CStdString path;
+              std::string path;
               if( m_thisHost->version_major != 3 )
               {
                 path = StringUtils::Format(REQUEST42,
@@ -263,7 +263,7 @@ bool CDAAPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", m_currentSongItems[c].itemname);
             CFileItemPtr pItem(new CFileItem(m_currentSongItems[c].itemname));
 
-            CStdString path;
+            std::string path;
             if( m_thisHost->version_major != 3 )
             {
               path = StringUtils::Format(REQUEST42,
@@ -404,7 +404,7 @@ int CDAAPDirectory::GetCurrLevel(const std::string &strPath)
   size_t intEPos;
   int intLevel;
   int intCnt;
-  CStdString strJustPath;
+  std::string strJustPath;
 
   intSPos = strPath.find("://");
   if (intSPos != std::string::npos)

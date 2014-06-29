@@ -139,7 +139,7 @@ void CHTSPDirectorySession::Release(CHTSPDirectorySession* &session)
     }
   }
   CLog::Log(LOGERROR, "CHTSPDirectorySession::Release - release of invalid session");
-  ASSERT(0);
+  assert(0);
 }
 
 void CHTSPDirectorySession::CheckIdle(DWORD idle)
@@ -438,7 +438,7 @@ bool CHTSPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     items.Add(item);
 
     STags tags = m_session->GetTags();
-    CStdString filename, label;
+    std::string filename, label;
     for(STags::iterator it = tags.begin(); it != tags.end(); it++)
     {
       filename = StringUtils::Format("tags/%d/", it->second.id);

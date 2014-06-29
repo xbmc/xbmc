@@ -34,7 +34,7 @@ COGGFileDirectory::~COGGFileDirectory(void)
 {
 }
 
-int COGGFileDirectory::GetTrackCount(const CStdString& strPath)
+int COGGFileDirectory::GetTrackCount(const std::string& strPath)
 {
   if (!m_dll.Load())
     return 0;

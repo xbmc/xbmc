@@ -34,7 +34,7 @@ CNSFFileDirectory::~CNSFFileDirectory(void)
 {
 }
 
-int CNSFFileDirectory::GetTrackCount(const CStdString& strPath)
+int CNSFFileDirectory::GetTrackCount(const std::string& strPath)
 {
   CMusicInfoTagLoaderNSF nsf;
   nsf.Load(strPath,m_tag);

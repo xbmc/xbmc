@@ -113,7 +113,7 @@ bool CWINSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       return Exists(url);
   }
 
-  CStdString strPath = url.Get();
+  std::string strPath = url.Get();
   if (hFind.isValid())
   {
     do
@@ -257,9 +257,9 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
            ((dwDisplayType == RESOURCEDISPLAYTYPE_SHARE) && m_bHost)) &&
            (dwType != RESOURCETYPE_PRINT))
         {
-          CStdString strurl = "smb:";
-          CStdStringW strRemoteNameW = lpnrLocal[i].lpRemoteName;
-          CStdString  strName,strRemoteName;
+          std::string strurl = "smb:";
+          std::wstring strRemoteNameW = lpnrLocal[i].lpRemoteName;
+          std::string  strName,strRemoteName;
 
           g_charsetConverter.wToUTF8(strRemoteNameW,strRemoteName, true);
           CLog::Log(LOGDEBUG,"Found Server/Share: %s", strRemoteName.c_str());
@@ -327,11 +327,11 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
   NETRESOURCE nr;
   CURL urlIn(url);
   DWORD dwRet=-1;
-  CStdString strUNC("\\\\"+url.GetHostName());
+  std::string strUNC("\\\\"+url.GetHostName());
   if(!url.GetShareName().empty())
     strUNC.append("\\"+url.GetShareName());
 
-  CStdString strPath;
+  std::string strPath;
   memset(&nr,0,sizeof(nr));
   nr.dwType = RESOURCETYPE_ANY;
   nr.lpRemoteName = (char*)strUNC.c_str();
@@ -339,7 +339,7 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
   // in general we shouldn't need the password manager as we won't disconnect from shares yet
   CPasswordManager::GetInstance().AuthenticateURL(urlIn);
 
-  CStdString strAuth = URLEncode(urlIn);
+  std::string strAuth = URLEncode(urlIn);
 
   while(dwRet != NO_ERROR)
   {
@@ -362,13 +362,13 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
     else if(dwRet == ERROR_SESSION_CREDENTIAL_CONFLICT)
     {
       DWORD dwRet2=-1;
-      CStdString strRN = nr.lpRemoteName;
+      std::string strRN = nr.lpRemoteName;
       do
       {
         dwRet2 = WNetCancelConnection2((LPCSTR)strRN.c_str(), 0, false);
-        strRN.erase(strRN.find_last_of("\\"),CStdString::npos);
+        strRN.erase(strRN.find_last_of("\\"),std::string::npos);
       }
-      while(dwRet2 == ERROR_NOT_CONNECTED && !strRN.Equals("\\\\"));
+      while(dwRet2 == ERROR_NOT_CONNECTED && strRN != "\\\\");
     }
     else if(dwRet != NO_ERROR)
     {

@@ -20,8 +20,8 @@
  */
 
 #include <map>
-
-#include "utils/StdString.h"
+#include <string>
+#include <vector>
 
 class CDirectoryHistory
 {
@@ -31,8 +31,8 @@ public:
   public:
     CHistoryItem(){};
     virtual ~CHistoryItem(){};
-    CStdString m_strItem;
-    CStdString m_strDirectory;
+    std::string m_strItem;
+    std::string m_strDirectory;
   };
 
   class CPathHistoryItem
@@ -41,23 +41,23 @@ public:
     CPathHistoryItem() { }
     virtual ~CPathHistoryItem() { }
 
-    const CStdString& GetPath(bool filter = false) const;
+    const std::string& GetPath(bool filter = false) const;
 
-    CStdString m_strPath;
-    CStdString m_strFilterPath;
+    std::string m_strPath;
+    std::string m_strFilterPath;
   };
   
   CDirectoryHistory() { }
   virtual ~CDirectoryHistory();
 
-  void SetSelectedItem(const CStdString& strSelectedItem, const CStdString& strDirectory);
-  const CStdString& GetSelectedItem(const CStdString& strDirectory) const;
-  void RemoveSelectedItem(const CStdString& strDirectory);
+  void SetSelectedItem(const std::string& strSelectedItem, const std::string& strDirectory);
+  const std::string& GetSelectedItem(const std::string& strDirectory) const;
+  void RemoveSelectedItem(const std::string& strDirectory);
 
-  void AddPath(const CStdString& strPath, const CStdString &m_strFilterPath = "");
-  void AddPathFront(const CStdString& strPath, const CStdString &m_strFilterPath = "");
-  CStdString GetParentPath(bool filter = false);
-  CStdString RemoveParentPath(bool filter = false);
+  void AddPath(const std::string& strPath, const std::string &m_strFilterPath = "");
+  void AddPathFront(const std::string& strPath, const std::string &m_strFilterPath = "");
+  std::string GetParentPath(bool filter = false);
+  std::string RemoveParentPath(bool filter = false);
   void ClearPathHistory();
   void ClearSearchHistory();
   void DumpPathHistory();
@@ -69,9 +69,9 @@ public:
   bool IsInHistory(const std::string &path) const;
 
 private:
-  static CStdString preparePath(const CStdString &strDirectory, bool tolower = true);
+  static std::string preparePath(const std::string &strDirectory, bool tolower = true);
   
-  typedef std::map<CStdString, CHistoryItem> HistoryMap;
+  typedef std::map<std::string, CHistoryItem> HistoryMap;
   HistoryMap m_vecHistory;
   std::vector<CPathHistoryItem> m_vecPathHistory; ///< History of traversed directories
   static bool IsMusicSearchUrl(CPathHistoryItem &i);

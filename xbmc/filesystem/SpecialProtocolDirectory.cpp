@@ -38,8 +38,8 @@ CSpecialProtocolDirectory::~CSpecialProtocolDirectory(void)
 
 bool CSpecialProtocolDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  const CStdString pathToUrl(url.Get());
-  CStdString translatedPath = CSpecialProtocol::TranslatePath(url);
+  const std::string pathToUrl(url.Get());
+  std::string translatedPath = CSpecialProtocol::TranslatePath(url);
   if (CDirectory::GetDirectory(translatedPath, items, m_strFileMask, m_flags | DIR_FLAG_GET_HIDDEN))
   { // replace our paths as necessary
     items.SetURL(url);
@@ -56,18 +56,18 @@ bool CSpecialProtocolDirectory::GetDirectory(const CURL& url, CFileItemList &ite
 
 bool CSpecialProtocolDirectory::Create(const CURL& url)
 {
-  CStdString translatedPath = CSpecialProtocol::TranslatePath(url);
+  std::string translatedPath = CSpecialProtocol::TranslatePath(url);
   return CDirectory::Create(translatedPath.c_str());
 }
 
 bool CSpecialProtocolDirectory::Remove(const CURL& url)
 {
-  CStdString translatedPath = CSpecialProtocol::TranslatePath(url);
+  std::string translatedPath = CSpecialProtocol::TranslatePath(url);
   return CDirectory::Remove(translatedPath.c_str());
 }
 
 bool CSpecialProtocolDirectory::Exists(const CURL& url)
 {
-  CStdString translatedPath = CSpecialProtocol::TranslatePath(url);
+  std::string translatedPath = CSpecialProtocol::TranslatePath(url);
   return CDirectory::Exists(translatedPath.c_str());
 }

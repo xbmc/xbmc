@@ -42,8 +42,8 @@ namespace XFILE
       return m_vecSources.size();
     }
 
-    bool IsSource(const CStdString& strPath, VECSOURCES *sources = NULL, CStdString *name = NULL) const;
-    bool IsInSource(const CStdString& strPath) const;
+    bool IsSource(const std::string& strPath, VECSOURCES *sources = NULL, std::string *name = NULL) const;
+    bool IsInSource(const std::string& strPath) const;
 
     inline const CMediaSource& operator [](const int index) const
     {

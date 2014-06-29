@@ -28,7 +28,7 @@
 
 TEST(TestDirectory, General)
 {
-  CStdString tmppath1, tmppath2, tmppath3;
+  std::string tmppath1, tmppath2, tmppath3;
   CFileItemList items;
   CFileItemPtr itemptr;
   tmppath1 = CSpecialProtocol::TranslatePath("special://temp/");

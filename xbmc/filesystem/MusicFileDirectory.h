@@ -35,8 +35,8 @@ namespace XFILE
       virtual bool ContainsFiles(const CURL& url);
       virtual bool AllowAll() const { return true; }
     protected:
-      virtual int GetTrackCount(const CStdString& strPath) = 0;
-      CStdString m_strExt;
+      virtual int GetTrackCount(const std::string& strPath) = 0;
+      std::string m_strExt;
       MUSIC_INFO::CMusicInfoTag m_tag;
   };
 }

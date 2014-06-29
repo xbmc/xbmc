@@ -49,8 +49,8 @@ CAddonsDirectory::~CAddonsDirectory(void)
 
 bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  const CStdString strPath(url.Get());
-  CStdString path1(strPath);
+  const std::string strPath(url.Get());
+  std::string path1(strPath);
   URIUtils::RemoveSlashAtEnd(path1);
   CURL path(path1);
   items.ClearProperties();
@@ -116,7 +116,7 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   }
   else if (path.GetHostName() == "search")
   {
-    CStdString search(path.GetFileName());
+    std::string search(path.GetFileName());
     if (search.empty() && !GetKeyboardInput(16017, search))
       return false;
 
@@ -162,7 +162,7 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             CFileItemPtr item(new CFileItem(TranslateType((TYPE)i,true)));
             item->SetPath(URIUtils::AddFileToFolder(strPath,TranslateType((TYPE)i,false)));
             item->m_bIsFolder = true;
-            CStdString thumb = GetIcon((TYPE)i);
+            std::string thumb = GetIcon((TYPE)i);
             if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
               item->SetArt("thumb", thumb);
             items.Add(item);
@@ -228,7 +228,7 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
 void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemList &items, bool reposAsFolders)
 {
-  CStdString xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
+  std::string xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
   items.ClearItems();
   for (unsigned i=0; i < addons.size(); i++)
   {
@@ -258,7 +258,7 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
   }
 }
 
-CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon, const CStdString &basePath, bool folder)
+CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon, const std::string &basePath, bool folder)
 {
   if (!addon)
     return CFileItemPtr();
@@ -266,19 +266,19 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon, const CS
   // TODO: This can probably be done more efficiently
   CURL url(basePath);
   url.SetFileName(addon->ID());
-  CStdString path(url.Get());
+  std::string path(url.Get());
   if (folder)
     URIUtils::AddSlashAtEnd(path);
 
   CFileItemPtr item(new CFileItem(path, folder));
 
-  CStdString strLabel(addon->Name());
+  std::string strLabel(addon->Name());
   if (url.GetHostName() == "search")
     strLabel = StringUtils::Format("%s - %s", TranslateType(addon->Type(), true).c_str(), addon->Name().c_str());
 
   item->SetLabel(strLabel);
 
-  if (!(basePath.Equals("addons://") && addon->Type() == ADDON_REPOSITORY))
+  if (!URIUtils::PathEquals(basePath, "addons://") && addon->Type() == ADDON_REPOSITORY)
     item->SetLabel2(addon->Version().asString());
   item->SetArt("thumb", addon->Icon());
   item->SetLabelPreformated(true);
@@ -289,7 +289,7 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon, const CS
   return item;
 }
 
-bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, VECADDONS &addons)
+bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, VECADDONS &addons)
 {
   CPluginSource::Content type = CPluginSource::Translate(content);
   if (type == CPluginSource::UNKNOWN)
@@ -314,7 +314,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, VECADDONS
   return true;
 }
 
-bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItemList &items)
+bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, CFileItemList &items)
 {
   items.Clear();
 
@@ -331,7 +331,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItem
     if (plugin->ProvidesSeveral())
     {
       CURL url = item->GetAsUrl();
-      CStdString opt = StringUtils::Format("?content_type=%s",content.c_str());
+      std::string opt = StringUtils::Format("?content_type=%s",content.c_str());
       url.SetOptions(opt);
       item->SetPath(url.Get());
     }
@@ -346,7 +346,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItem
   return items.Size() > 0;
 }
 
-CFileItemPtr CAddonsDirectory::GetMoreItem(const CStdString &content)
+CFileItemPtr CAddonsDirectory::GetMoreItem(const std::string &content)
 {
   CFileItemPtr item(new CFileItem("addons://more/"+content,false));
   item->SetLabelPreformated(true);

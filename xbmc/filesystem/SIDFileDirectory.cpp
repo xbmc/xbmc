@@ -32,7 +32,7 @@ CSIDFileDirectory::~CSIDFileDirectory(void)
 {
 }
 
-int CSIDFileDirectory::GetTrackCount(const CStdString& strPath)
+int CSIDFileDirectory::GetTrackCount(const std::string& strPath)
 {
   DllSidplay2 m_dll;
   if (!m_dll.Load())

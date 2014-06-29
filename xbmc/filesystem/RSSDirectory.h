@@ -38,7 +38,7 @@ namespace XFILE
     virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const { return DIR_CACHE_ONCE; };
   protected:
     // key is path, value is cache invalidation date
-    static std::map<CStdString,CDateTime> m_cache;
+    static std::map<std::string,CDateTime> m_cache;
     static CCriticalSection m_section;
   };
 }
