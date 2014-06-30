@@ -1,0 +1,72 @@
+//
+// Footer
+// --------------------------------------------------
+
+footer {
+  background-color: mix(@base, @inverse, 9%);
+  color: mix(@base, @inverse, 34%);
+  font-size: 15px;
+  padding: 0;
+
+  a {
+    color: mix(@base, @inverse, 50%);
+    font-weight: 700;
+  }
+  p {
+    font-size: 15px;
+    line-height: 20px;
+  }  
+}
+
+.footer-title {
+  margin: 0 0 22px;
+  padding-top: 21px;
+}
+
+.footer-brand {
+  display: block;
+  margin-bottom: 26px;
+  width: 220px;
+
+  img {
+    width: 216px;
+  }  
+}
+
+// FOOTER BANNER
+// ----------------------
+.footer-banner {
+  background-color: @firm;
+  color: mix(@firm, @inverse, 20%);
+  margin-left: 42px;
+  min-height: 286px;
+  padding: 0 30px 30px;
+
+  .footer-title {
+    color: @inverse;
+  }
+  a {
+    color: lighten(@firm, 42%);
+    text-decoration: underline;
+    
+    &:hover {
+      text-decoration: none;
+    }  
+  }
+  ul {
+    list-style-type: none;
+    margin: 0 0 26px;
+
+    li {
+      border-top: 1px solid lighten(@firm, 2%);
+      line-height: 19px;
+      padding: 6px 0;
+      
+      &:first-child {
+        border-top: none;
+        padding-top: 1px;
+      }  
+    }    
+  }      
+}
+

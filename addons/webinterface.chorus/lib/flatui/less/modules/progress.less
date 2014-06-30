@@ -1,0 +1,36 @@
+//
+// Progress bar
+// --------------------------------------------------
+
+.progress {
+  background: mix(@base, white, 10%);
+  border-radius: 32px;
+  height: @progress-height;
+  .box-shadow(none);
+  .drop-ie-gradient();
+  
+  // Alternate Colors
+  // --------------------------------------------------
+  
+  .bar {
+    background: @firm;
+    .box-shadow(~"none !important");
+    .drop-ie-gradient();
+  }
+  .bar-success {
+    background-color: @success;
+    .drop-ie-gradient();
+  }
+  .bar-warning {
+    background-color: @warning;
+    .drop-ie-gradient();
+  }
+  .bar-danger {
+    background-color: @danger;
+    .drop-ie-gradient();
+  }
+  .bar-info {
+    background-color: @info;
+    .drop-ie-gradient();
+  }
+}

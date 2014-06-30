@@ -1,0 +1,23 @@
+<div class="card tvshow-row tvshow-row-<%= tvshowid %> clearfix watched-<%=watched.status%>" data-id="<%= tvshowid %>">
+    <a class="image-wrapper" href="#tvshow/<%= tvshowid %>" title="<%= label %>">
+        <img class="image content-lazy" src="<%= app.image.url('', 'space') %>" data-original="<%= app.image.url(thumbnail) %>" />
+    </a>
+    <div class="actions-wrapper tvshow-actions-wrapper">
+        <div class="actions tvshow-actions<%= (thumbsup ? ' thumbs-up' : '') %>" data-id="<%= tvshowid %>">
+            <button class="tvshow-thumbsup btn" title="Thumbs Up"><i class="fa fa-thumbs-up"></i></button>
+            <button class="tvshow-play btn video-play" title="Replace the playlist with this tvshow and start playing"><i class="fa fa-play"></i></button>
+            <button class="tvshow-add btn" title="Add this tvshow to the playlist"><i class="fa fa-plus"></i></button>
+            <!--<button class="tvshow-menu btn" title="More tvshow options"><i class="fa fa-ellipsis-v"></i></button>-->
+        </div>
+    </div>
+    <div class="video-progress"><span style="width: <%=watched.progress%>%"></span></div>
+    <div class="details">
+        <p class="item-title" title="<%= label %>">
+            <a class="image-wrapper" href="#tvshow/<%= tvshowid %>"><span><%= label %></span></a>
+        </p>
+        <p class="item-sub-title">
+            <span><%= genre[0] %></span>
+        </p>
+        <i class="fa fa-check is-watched" title="Watched"></i>
+    </div>
+</div>

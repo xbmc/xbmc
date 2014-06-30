@@ -1,0 +1,71 @@
+== SoundManager 2: JavaScript Sound for the Web
+
+By wrapping and extending HTML5 and Flash Audio APIs, SoundManager 2 brings reliable cross-platform audio to JavaScript. 
+
+== HTML5 Audio() Support
+
+    * 100% Flash-free MP3 + MP4/AAC where supported
+    * Compatible with Apple iPad 3.2, iPhone/iOS 4 and newer
+    * Fallback to Flash for MP3/MP4 support, as needed
+    * SM2 API is transparent; HTML5/flash switching handled internally
+    * HTML5 API support approximates Flash 8 API features
+    * Some other formats (WAV/OGG) supported via HTML5, depending on browser
+    * See "useHTML5Audio" property for implementation details
+
+== Basic API Features (Flash 8)
+
+    * Load, stop, play, pause, mute, seek, pan and volume control of sounds from Javascript
+    * Events: onload, whileloading, whileplaying, onfinish and more
+    * ID3V1 and ID3V2 tag support for MP3s (title, artist, genre etc.)
+
+== Shiny Flash 9 Features
+
+    * RTMP / Flash Media Server streaming support (new, experimental)
+    * MPEG-4 (AAC, HE-AAC, H.264) audio support
+    * "MultiShot" play (layered/chorusing effects)
+    * Waveform/frequency spectrum data
+    * Peak (L/R channel volume) data
+    * Audio buffering state/event handling
+
+== General Tech Stuff
+
+    * Full API Documentation with examples and notes
+    * console.log()-style debug output and troubleshooting tools
+    * Community-based discussion/support
+
+== As Heard On The Internets
+
+A few nifty sites that have implemented SM2 for driving audio:
+
+    * SoundCloud / The Cloud Player
+    * last.fm
+    * Opera (media player component)
+    * 8tracks
+    * Discogs
+    * The Hype Machine
+    * nyan.cat
+    * turntable.fm
+    * AudioGalaxy
+
+== Project home, documentation, live demos etc.:
+
+http://www.schillmania.com/projects/soundmanager2/
+
+== Compiling JS builds (-nodebug, -jsmin) and Flash components, AS2/AS3 to SWF
+
+An Ant build file defines the tasks for compiling JS and SWF components, useful if you make changes to the SM2 source and want to recompile.
+Google's Closure Compiler is used for the JS. AS2 compilation is done by MTASC, and AS3 is handled by Adobe's Open Source Flex SDK (mxmlc) compiler.
+Refer to the build.xml file for compiler downloads and path definitions.
+
+== Versioning / Development Notes
+
+Releases are versioned by date, e.g., V2.97a.20110424 and are tagged as such.*
+The latest official release is always on trunk/master.
+Post-release development builds may be available on the appropriate +DEV branch, eg., V2.97a.20110801+DEV
+
+== Forks and Pull Requests
+
+Firstly, thank you for wanting to contribute! Bug fixes and tweaks are welcomed, particularly if they follow the general coding style of the project.
+If making a pull request, use the project's current +DEV development branch as the merge target instead of "master", if possible (please and thank-you.)
+
+* SoundManager 2 has been at "version" 2.97 for a long time, because 2.97 was arguably the best llama-ass-whipping version of WinAmp. (WinAmp 3 was not as good, and WinAmp 5 was "the best of 2 and 3 combined.") This MP3 player was my favourite Windows app during the 90's, and is missed as there's nothing quite like it on OS X where I spend most of my time these days.

@@ -1,0 +1,416 @@
+//
+// Navbar
+// --------------------------------------------------
+
+.navbar {
+  font-size: @base-font-size * 1.142; /* 16px */
+
+  .brand {
+    border-radius: 6px 0 0 6px;
+    color: mix(@base, white, 85%);
+    font-size: @base-font-size * 1.714; /* 24px */
+    font-weight: 700;
+    margin-left: 0;
+    padding: 23px 28px 24px 32px;
+    text-shadow: none;
+    &:hover, &:focus {
+      color: @firm;
+    }
+    &[class*="fui-"] {
+      font-weight: normal;
+    }
+  }
+
+  .nav {
+    margin-right: 0;
+
+    // First level nav
+    > li {
+      position: relative;
+
+      &:hover {
+        > ul {
+          opacity: 1;
+          top: 100%;
+          visibility: visible;
+          z-index: 100;
+          -webkit-transform: scale(1, 1);
+          // Show on hover
+          display: block\9;
+        }
+      }
+      &.active {
+        > a,
+        > a:hover,
+        > a:focus {
+          background: none;
+          color: @firm;
+          .box-shadow(none);
+        }
+      }
+
+      // Second level nav
+      > ul {
+        padding-top: 13px;
+        top: 80%;
+        .dropdown-arrow(@base);
+
+        // Third level nav
+        li {
+          &:hover {
+            ul {
+              opacity: 1;
+              -webkit-transform: scale(1, 1);
+              visibility: visible;
+              display: block\9;
+            }
+          }
+          ul {
+            left: 100%;
+          }
+        }
+      }     
+
+      // First level link
+      > a {
+        color: mix(@base, white, 85%);
+        font-weight: 700;
+        font-size: @base-font-size * 1.071; /* 15px */
+        padding: 29px @navbar-link-space 27px;
+        text-shadow: none;
+        .transition(~"background-color .25s, color .25s, border-bottom-color .25s");
+
+        &:hover, &:focus {
+          color: @firm;
+        }
+        &[class*="fui-"] {
+          font-size: 24px;
+          font-weight: normal;
+        }
+        
+        > [class*="fui-"] {
+          font-size: 24px;
+          margin: -4px 0 0;
+          position: relative;
+          top: 4px;
+        }
+        
+        > [class*="fui-"] + * {
+          margin-left: 12px;
+        }
+      }
+    }
+    
+    > li:first-child {        
+      > a {
+        .border-radius(0 0 0 6px);
+      }
+    }
+
+    // Sub menu
+    ul {
+      border-radius: 4px;
+      left: 0;
+      list-style-type: none;
+      margin-left: 0;
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      width: 234px;
+      z-index: -100;
+      // Trigger transform to hide nav completely without 'ghost' bug (when switching from :hover to initial)
+      -webkit-transform: scale(1, 0.99);
+      -webkit-transform-origin: 0 0;
+      // Don't show it at all by default since IE doesn't get modern transitions
+      visibility: hidden;
+      .transition(0.3s ease-out);
+
+      // Deep level sub menu
+      ul {
+        left: 95%;
+        padding-left: 5px;
+      }
+
+      // Sub menu item
+      li {
+        background-color: @base;
+        padding: 0 3px 3px;
+        position: relative;
+
+        &:first-child {
+          border-radius: 6px 6px 0 0;
+          padding-top: 3px;
+        }
+        &:last-child {
+          border-radius: 0 0 6px 6px;
+        }
+        &.active {
+          > a,
+          > a:hover,
+          > a:focus {
+            background-color: @firm;
+            color: @inverse;
+            padding-left: @navbar-sublink-space;
+            padding-right: @navbar-sublink-space;
+          }
+          & + li {
+            > a {
+              padding-left: @navbar-sublink-space;
+              padding-right: @navbar-sublink-space;
+            }
+          }
+        }
+      }
+
+      // Sub menu link
+      a {
+        border-radius: 2px;
+        color: @inverse;
+        display: block;
+        font-size: @base-font-size;
+        padding: 6px @navbar-sublink-space;
+        text-decoration: none;
+
+        &:hover {
+          background-color: @firm;
+        }
+      }
+    }
+  }
+
+  // Expand/collapse button
+  .btn-navbar {
+    background: none;
+    border: none;
+    color: @base;
+    margin: 21px 15px 17px;
+    text-shadow: none;
+    .box-shadow(none);
+
+    &:hover, &:focus {
+      background: none;
+      color: @firm;
+    }
+    &:before {
+      content: "\e00c";
+      font-family: "Flat-UI-Icons";
+      font-size: @base-font-size * 1.571;
+      font-style: normal;
+      font-weight: normal;
+      -webkit-font-smoothing: antialiased;
+    }
+    .icon-bar {
+      display: none;
+    }
+  }
+}
+
+.navbar-inner {
+  background: mix(@base, white, 9.5%);
+  border: none;
+  padding-left: 0;
+  padding-right: 0;
+  .border-radius(6px);
+  .drop-ie-gradient();
+  .box-shadow(none);
+}
+
+// Alternate Color
+// --------------------------------------------------
+.navbar-inverse {
+  font-size: @base-font-size * 1.214; /* 17px */
+
+  .navbar-inner {
+    background: @base;
+    .drop-ie-gradient();
+  }
+  .brand {
+    border-bottom: 2px solid mix(@base, black, 85%);
+    border-right: 2px solid mix(@base, black, 85%);
+    color: @inverse;
+    padding: 10px 28px 11px 32px;
+  }
+  .btn-navbar {
+    color: @inverse;
+    margin: 7px 10px;
+  }
+  .nav {
+    > li {
+      &:first-child {
+        &.active {
+          > a {
+            padding-left: @navbar-link-space;
+          }
+        }
+        > a {
+          border-left: none;
+        }
+      }
+
+      // Active item
+      &.active {
+        > a {
+          &, &:hover, &:focus {
+            background-color: @firm;
+            border-bottom-color: mix(@firm, black, 85%);
+            border-left: none;
+            color: @inverse;
+            padding-left: @navbar-link-space + 2;
+            .box-shadow(none);
+          }
+        }
+        & + li {
+          > a {
+            border-left: none;
+            padding-left: @navbar-link-space + 2;
+          }
+        }
+      }
+
+      // Link styling
+      > a {
+        font-size: @base-font-size * 1.143; /* 16px */
+        border-bottom: 2px solid mix(@base, black, 85%);
+        border-left: 2px solid mix(@base, black, 85%);
+        color: @inverse;        
+        padding: 16px @navbar-link-space 15px;
+      }
+    }
+  }
+
+  // Round corders of the pull-right dropdown
+  .nav.pull-right > li {
+    > a {
+      border-radius: 0 6px 6px 0;
+    }
+  }
+}
+
+// Unread icon
+.navbar-unread,
+.navbar-new {
+  font-family: @base-font-family;
+  background-color: @firm;
+  border-radius: 50%;
+  color: @inverse;
+  font-size: 0;
+  font-weight: 700;
+  height: 6px;
+  line-height: @base-font-size;
+  position: absolute;
+  right: 12px;
+  text-align: center;
+  top: 28px;
+  width: 6px;
+  z-index: 10;
+
+  .active & {
+    background-color: @inverse;
+    display: none;
+  }
+  .navbar-inverse & {
+    top: 15px;
+  }
+}
+
+.navbar-new {
+  background-color: @danger;
+  font-size: 12px;
+  line-height: 17px;
+  height: 18px;
+  margin: -9px -1px;
+  min-width: 16px;
+  padding: 0 1px;
+  width: auto;
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+// DROPDOWN LIST
+// -----------
+.navbar {
+  // Inverse navbar dropdown styling
+  &.navbar-inverse {
+    .nav li.dropdown {
+      &.open {
+        > .dropdown-toggle {
+          background-color: @firm;
+          border-bottom-color: mix(@firm, black, 85%);
+          color: @inverse;
+
+          .caret {
+            border-bottom-color: @inverse !important;
+            border-top-color: @inverse !important;
+          }
+        }
+      }
+    }
+  }
+
+  // Default navbar dropdown styling
+  .nav li.dropdown {
+    &.open {
+      > .dropdown-toggle {
+        background: none;
+        color: @firm;
+
+        .caret {
+          border-bottom-color: @firm !important;
+          border-top-color: @firm !important;
+        }
+      }
+      .dropdown-menu {
+        opacity: 1;
+        top: 100%;
+        visibility: visible;
+        z-index: 1000;
+        -webkit-transform: none;
+      }
+    }
+    > .dropdown-toggle {
+      outline: none;
+
+      &:hover, &:focus {
+        .caret {
+          border-bottom-color: @firm;
+          border-top-color: @firm;
+        }
+      }
+      .caret {
+        border-left-width: 6px;
+        border-right-width: 6px;
+        border-top-width: 8px;
+        border-bottom-color: lighten(@base, 13%);
+        border-top-color: lighten(@base, 13%);
+        margin-left: 10px;
+        margin-top: 7px;
+      }
+    }
+    .dropdown-menu {
+      background-color: @base;
+      opacity: 0;
+      padding: 0;
+      visibility: hidden;
+
+      &:before {
+        display: none;
+      }
+      &:after {
+        border-bottom-color: @base;
+      }
+      > li {
+        > a {
+          border-radius: 3px;
+          color: @inverse;
+          padding: 6px 8px 8px;
+        }
+      }
+      .divider {
+        background-color: mix(@base, black, 85%);
+        border-bottom: none;
+        margin: 2px 0 5px;
+        padding: 0;
+        height: 2px;
+      }
+    }
+  }
+}

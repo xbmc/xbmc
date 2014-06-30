@@ -1,0 +1,20 @@
+<div class="track song playlist-item" data-type="song" data-pos="<%= position %>" data-id="<%= songid %>" data-songid="<%= songid %>" data-path="<%= (typeof file != 'undefined' ? file : '') %>">
+    <span class="track-col song-tracknum song-thumb"><a href="#album/<%= albumid %>"><img src="<%= app.image.url( thumbnail ) %>" class="thumb" /></a></span>
+    <span class="track-col song-title"><%= label %></span>
+    <span class="track-col song-artist"><a href="#artist/<%= artistid %> " class=""><%= artist %></a></span>
+    <span class="track-col song-duration"><%= (duration !== undefined ? app.helpers.formatTime(app.helpers.secToTime(duration)) : '') %></span>
+
+    <div class="song-actions-wrapper">
+        <div class="song-actions dropdown" data-id="<%= songid %>" data-album="<%= albumid %>">
+            <button class="song-play btn" title="Insert into playlist as the next song, then start playing"><i class="fa fa-play"></i></button>
+            <button class="song-remove btn" title="Remove this song from the playlist"><i class="fa fa-times-circle"></i></button>
+            <button class="song-add btn" title="Add this song to the playlist"><i class="fa fa-plus"></i></button>
+            <button class="song-thumbsup btn" title="Thumbs Up"><i class="fa fa-thumbs-up"></i></button>
+            <button class="song-menu btn" title="More Options"><i class="fa fa-ellipsis-v"></i></button>
+        </div>
+    </div>
+    <div class="visible-song-actions-wrapper">
+        <i class="fa fa-thumbs-up"></i>
+    </div>
+
+</div>

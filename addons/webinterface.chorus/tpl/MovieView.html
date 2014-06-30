@@ -1,0 +1,166 @@
+<div id="fanart-background"></div>
+<div id="details" class="tabbable <%= ( fanart != '' ? 'has-fanart' : '') %>">
+    <div class="video-side watched-<%=watched.status%>">
+        <div class="video-thumb">
+            <img src="<%= app.image.url(fanart) %>" class="widethumb" />
+            <img src="<%= app.image.url(thumbnail) %>" class="thumb" />
+            <div class="actions-wrapper movie-actions-wrapper">
+                <div class="actions movie-actions<%= (thumbsup ? ' thumbs-up' : '') %>" data-id="<%= movieid %>">
+                    <button class="movie-thumbsup btn" title="Thumbs Up"><i class="fa fa-thumbs-up"></i></button>
+                    <button class="movie-play btn" title="Replace the playlist with this movie and start playing"><i class="fa fa-play"></i></button>
+                    <button class="movie-add btn" title="Add this movie to the playlist"><i class="fa fa-plus"></i></button>
+                    <button class="movie-menu btn" title="More movie options"><i class="fa fa-ellipsis-v"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="video-large-progress"><span style="width: <%=watched.progress%>%" class="progress-movie-<%= movieid %>"></span></div>
+    </div>
+    <div class="video-tab-wrapper">
+
+        <div class="tab-wrapper">
+            <div id="movie-tabs" class="content-tabs">
+                <div class="library-pager">
+                    <a href="#" class="library-back"><i class="fa fa-chevron-left"></i></a>
+                    <a href="#" class="library-next"><i class="fa fa-chevron-right"></i></a>
+                </div>
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#movie-detail" data-toggle="tab">Overview</a></li>
+                    <% if(cast.length > 0){ %>
+                        <li data-id="about"><a href="#movie-cast" title="<%=cast.length%> cast members found" data-toggle="tab">Cast</a></li>
+                    <% } %>
+                    <% if(file.indexOf('stack://') == -1){ %>
+                        <li><a href="#movie-watch" data-toggle="tab">Stream</a></li>
+                    <% } %>
+                </ul>
+            </div>
+
+            <div class="tab-content">
+                <div id="movie-detail" class="tab-pane active">
+                    <div class="col-1">
+                        <h1 class="video-title"><%=label%></h1>
+
+                        <h2><%=tagline%></h2>
+
+                        <h3><%=plotoutline%></h3>
+                        <p><%=plot%></p>
+                        <% if(genre.length > 0){ %>
+                        <div class="genres"><% for(i in genre){ %>
+                            <% if(genre[i] != ''){ %><a class="genre" href="#movie-genre/<%=genre[i]%>"><%=genre[i]%></a><% } %>
+                            <% } %></div>
+                        <% } %>
+                        <div class="buttons">
+                            <a href="#movie/<%= movieid %>" class="movie-play btn cta"><i class="fa fa-play"></i>Play movie</a>
+                            <a href="#movie/<%= movieid %>" class="movie-add btn"><i class="fa fa-plus"></i> Queue</a>
+                            <a href="http://www.imdb.com/title/<%=imdbnumber%>/" target="_blank" class="imdb btn"><i class="fa fa-film"></i> IMDB</a>
+                            <a href="#movie/<%= movieid %>" class="library-next btn"><i class="fa fa-chevron-right"></i> Next</a>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="rating" title="<%=votes%> votes">
+                            <div class="value"><%=app.helpers.rating(rating)%></div>
+                            <i class="fa fa-star"></i>
+                         </div>
+
+                        <div class="quality sub-block">
+                            <h4>Quality</h4>
+                            <ul>
+                                <% for(i in streamdetails.video){
+                                    var s = streamdetails.video[i];
+                                    %>
+                                    <li><%=s.width%> x <%=s.height%> <strong><%=s.codec%></strong></li>
+                                <% } %>
+                            </ul>
+                            <ul>
+                                <% for(i in streamdetails.audio){
+                                var s = streamdetails.audio[i];
+                                %>
+                                <li><%=s.channels%> channels <% if(s.language != ''){ %><small>(<%=s.language%>)</small><% } %> <strong><%=s.codec%></strong></li>
+                                <% } %>
+                            </ul>
+                        </div>
+
+                        <% if(mpaa != ''){ %><div class="mpaa sub-block">
+                            <h4>MPAA</h4>
+                            <ul>
+                                <li><%=mpaa%></li>
+                            </ul>
+                        </div><% } %>
+
+                    </div>
+
+                </div>
+                <div id="movie-cast" class="tab-pane">
+                    <%
+                    i = 0;
+                    if(cast.length > 0){
+                      for(k in cast){
+                        var c = cast[k];
+                        if(i <= 40){ %>
+                            <a class="cast-member" href="http://www.imdb.com/find?s=nm&q=<%=encodeURIComponent(c.name)%>" target="_blank">
+                                <span class="image" style="background-image: url('<%= app.image.url(c.thumbnail) %>')" ></span>
+                                <strong><%=c.name%></strong>
+                                <span><%=c.role%></span>
+                            </a>
+                        <% }
+                      }
+                    } %>
+                </div>
+
+                <div id="movie-watch" class="tab-pane">
+
+                    <div class="col-1">
+                        <h2>HTML5 player</h2>
+                        <p>Codec support is very <a href="https://developer.mozilla.org/en-US/docs/HTML/Supported_media_formats" target="_blank">limited in the browser</a>.
+                            H.264 video generally works but only with 2 channel audio. Works best in Chrome, may crash browser and/or XBMC!</p>
+                        <div class="buttons">
+                            <a href="#" class="movie-stream btn" data-player="html5">Launch HTML5 player</a>
+                        </div>
+                        <br />
+                        <h2>VLC player</h2>
+                        <p><a href="http://www.videolan.org/vlc/index.html" target="_blank">VLC Player</a> provides an
+                            embeddable video player, it will play most videos, but does require you to
+                            <a href="http://www.videolan.org/vlc/index.html" target="_blank">download and install</a> extra software.
+                            Works well in Chrome and Firefox.</p>
+                        <div class="buttons">
+                            <a href="#" data-player="vlc" class="movie-stream btn">Launch VLC player</a>
+                        </div>
+                    </div>
+
+                    <div class="col-2">
+
+                        <div class="quality sub-block">
+                            <h4>Streams</h4>
+                            <ul>
+                                <% for(i in streamdetails.video){
+                                var s = streamdetails.video[i];
+                                %>
+                                <li><%=s.width%> x <%=s.height%> <strong><%=s.codec%></strong></li>
+                                <% } %>
+                            </ul>
+                            <ul>
+                                <% for(i in streamdetails.audio){
+                                var s = streamdetails.audio[i];
+                                %>
+                                <li><%=s.channels%> channels <% if(s.language != ''){ %><small>(<%=s.language%>)</small><% } %> <strong><%=s.codec%></strong></li>
+                                <% } %>
+                            </ul>
+                        </div>
+
+                        <div class="sub-block">
+                            <h4>Note</h4>
+                            <ul>
+                                <li>For best results, use Chrome</li>
+                                <li>Playback might not work at all</li>
+                                <li>Seeking doesn't work</li>
+                                <li>Stacked videos don't work</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

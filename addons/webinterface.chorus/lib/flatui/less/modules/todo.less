@@ -1,0 +1,108 @@
+//
+// Todo list
+// --------------------------------------------------
+
+.todo {
+  background-color: mix(@base, black, 85%);  
+  color: mix(@base, @inverse, 66%);
+  margin-bottom: 20px;
+  .border-radius(8px 8px 6px 6px);
+
+  ul {
+    margin: 0;
+    list-style-type: none;
+  }
+  li {
+    background: @base url(../images/todo/todo.png) 92% center no-repeat;
+    background-size: 20px 20px;
+    cursor: pointer;
+    margin-top: 2px;
+    padding: 18px 42px 17px 25px;
+    position: relative;
+    .transition(.25s);
+    
+    &:first-child {
+      margin-top: 0;
+    }  
+    &:last-child {
+      .border-radius(0 0 6px 6px);
+      padding-bottom: 18px;
+    }
+    &.todo-done {
+      background: transparent url(../images/todo/done.png) 92% center no-repeat;
+      background-size: 20px 20px;
+      color: @firm;
+
+      .todo-name {
+        color: @firm;
+      }  
+    }  
+  }      
+}
+
+.todo-search {
+  position: relative;
+  background: @firm;
+  background-size: 16px 16px;
+  border-radius: 6px 6px 0 0;
+  color: @base;
+  padding: 19px 25px 20px;
+  
+  &:before {
+    position: absolute;
+    font-family: 'Flat-UI-Icons';
+    content: "\e01c";
+    font-size: 16px;
+    display: inline-block;
+    top: 50%;
+    left: 92%;
+    margin: -0.5em 0 0 -1em;
+  }
+}
+
+input.todo-search-field {
+  background: none;
+  border: none;
+  color: @base;
+  font-size: 19px;
+  font-weight: 700;
+  margin: 0;
+  line-height: 23px;
+  padding: 5px 0;
+  text-indent: 0;
+  .box-shadow(none);
+  .placeholder-color(@base);
+}
+
+.todo-icon {
+  float: left;
+  font-size: 24px;
+  padding: 11px 22px 0 0;
+}
+
+.todo-content {
+  padding-top: 1px;
+  overflow: hidden;
+}
+
+.todo-name {
+  color: @inverse;
+  font-size: 17px;
+  margin: 1px 0 3px;
+}  
+
+// Retina Support
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (-moz-min-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 3/2), only screen and (-o-min-device-pixel-ratio: 2/1), only screen and (-moz-min-device-pixel-ratio: 1.5), only screen and (min-device-pixel-ratio: 1.5), only screen and (min-device-pixel-ratio: 2) {
+  .todo {
+    li {
+      background-image: url(../images/todo/todo-2x.png);
+      
+      &.todo-done {
+        background-image: url(../images/todo/done-2x.png);
+      }  
+    }    
+  }
+  .todo-search {
+    background-image: url(../images/todo/search-2x.png);
+  }  
+}

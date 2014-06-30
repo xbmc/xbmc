@@ -1,0 +1,54 @@
+//
+// Pager
+// --------------------------------------------------
+
+.pager {
+  background-color: @base;
+  border-radius: 6px;
+  color: @inverse;
+  font-size: 16px;
+  font-weight: 700;
+  .inline-block();
+  
+  li {
+    &:first-child {
+      > a,
+      > span {
+        border-left: none;
+        .border-radius(6px 0 0 6px);
+      }
+    }
+    &.pager-center {
+      padding: @pager-padding;
+      padding-left: 0;
+      padding-right: 0;
+      .inline-block();
+    }
+    > a,
+    > span {
+      background: none;
+      border: none;
+      border-left: 2px solid mix(@base, black, 85%);
+      color: @inverse;
+      padding: @pager-padding;
+      text-decoration: none;
+      white-space: nowrap;
+      .border-radius(0 6px 6px 0);
+      
+      &:hover, &:focus {
+        background-color: mix(@base, black, 85%);
+      }
+      &:active {
+        background-color: mix(@base, black, 85%);
+      }
+
+      // Add some spacing between the icon and text
+      [class*="fui-"] + span {
+        margin-left: 8px;
+      }
+      span + [class*="fui-"] {
+        margin-left: 8px;
+      }
+    }
+  }
+}

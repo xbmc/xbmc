@@ -1,0 +1,98 @@
+//
+// Checkbox & Radio
+// --------------------------------------------------
+
+.checkbox,
+.radio {
+  margin-bottom: 12px;
+  padding-left: 32px;
+  position: relative;
+  .transition(color .25s linear);
+  
+  input {
+    outline: none !important;
+    display: none;
+  }
+
+  // Replace icons
+  // --------------------------------------------------
+  .icons {
+    color: @lightgray;
+    display: block;
+    height: 20px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 20px;
+    text-align: center;
+    line-height: 20px;
+    font-size: 20px;
+    .transition(color .25s linear);
+
+    .first-icon-icon,
+    .second-icon {
+      position: absolute;
+      left: 0;
+      top: 0;
+      .opacity(100);
+    }
+    .second-icon {
+      .opacity(0);
+    }
+  }
+
+  // Alternate States
+  // --------------------------------------------------
+
+  // Hover State
+  &:hover {
+    .first-icon {
+      .opacity(0);
+    }
+    .second-icon {
+      .opacity(100);
+    }
+  }
+
+  // Checked State
+  &.checked {
+    color: @link-color;
+
+    .icons {
+      color: @firm;
+    }
+    .first-icon {
+      .opacity(0);
+    }
+    .second-icon {
+      .opacity(100);
+    }
+  }
+
+  // Disabled state
+  &.disabled {
+    cursor: default;
+    color: mix(@lightgray, white, 38%);
+
+    .icons {
+      color: mix(@lightgray, white, 38%);
+    }
+    .first-icon {
+      .opacity(100);
+    }
+    .second-icon {
+      .opacity(0);
+    }
+    &.checked {
+      .icons {
+        color: mix(@lightgray, white, 38%);
+      }
+      .first-icon {
+        .opacity(0);
+      }
+      .second-icon {
+        .opacity(100);
+      }
+    }
+  }
+}

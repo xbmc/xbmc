@@ -1,0 +1,238 @@
+// For demo purposes only
+.demo-headline {
+  padding: 73px 0 110px;
+  text-align: center;
+}
+.demo-logo {
+  font-size: 90px;
+  font-weight: 900;
+  letter-spacing: -2px;
+  line-height: 100px;
+
+  .logo {
+    background: url(../images/demo/logo-mask.png) center 0 no-repeat;
+    background-size: 256px 186px;
+    height: 186px;
+    margin: 0 auto 26px;
+    overflow: hidden;
+    text-indent: -9999em;
+    width: 256px;
+  }
+  small {
+    color: fadeout(@base, 70%);
+    display: block;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    padding-top: 5px;
+  }  
+}
+// Panels delimiter
+.demo-row {
+  margin-bottom: 20px
+}
+.demo-panel-title {
+  margin-bottom: 20px;
+  padding-top: 20px;
+
+  small {
+    color: mix(@base, @inverse, 66%);
+    font-size: inherit;
+    font-weight: 400;
+  }  
+}
+// Shift blocks to fit design
+.demo-navigation {
+  margin-bottom: -4px;
+  margin-top: -10px;
+}
+.demo-pager {
+  margin-top: -10px;
+}
+.demo-tooltips {
+  height: 126px;
+
+  // Needed just for the demo. Don't use it in producion ;)
+  .tooltip {
+    left: -8px !important;
+    position: relative !important;
+    top: -8px !important;
+  }  
+}
+.demo-headings {
+  margin-bottom: 12px;
+}
+.demo-tiles {
+  margin-bottom: 46px
+}
+
+.demo-icons {
+  font-size: 32px;
+  margin-left: -15px;
+
+  .demo-content {
+    margin: 0 0 0 -36px;
+    
+    > span {
+      display: inline-block;
+      margin: 0 0 32px 36px;
+      width: 24px;
+      font-size: 24px;
+    }  
+  }
+}
+
+.demo-icons-tooltip {
+  bottom: 0;
+  color: mix(@base, @inverse, 30%);
+  font-size: 12px;
+  left: 100%;
+  margin-left: 0 !important;
+  position: absolute;
+  width: 80px;
+}
+
+// Illustration Icons
+// --------------------------------------------------
+.demo-illustrations {
+  margin-top: 40px;
+  .clearfix();
+
+  .demo-content {
+    margin: 0 0 0 -40px;
+    padding-top: 20px;
+
+    > div {
+      float: left;
+      width: 100px;
+      height: 100px;
+      margin: 0 0 80px 40px;
+      text-align: center;
+    }
+  }
+  img {
+    display: inline-block;
+    max-height: 100px;
+    max-width: 100px;
+    vertical-align: baseline;
+  }
+}
+
+.demo-samples {
+  margin-bottom: 46px;
+}
+.demo-video {  
+  padding-top: 95px;
+  .border-radius(6px);
+}
+.demo-download-section {
+  float: none;
+  margin: 0 auto;
+  padding: 60px 0 90px 20px;
+  text-align: center;
+
+  [class*='fui-'] {
+    margin: 3px 0 -3px;
+  }  
+}
+.demo-download {
+  background-color: mix(@base, @inverse, 10%);  
+  height: 120px;
+  margin: 0 auto 32px;
+  padding: 40px 28px 30px 32px;
+  text-align: center;
+  width: 130px;
+  .border-radius(50%);
+
+  img {
+    height: 104px;
+    width: 82px;
+  }  
+}
+.demo-download-text {
+  font-size: 15px;
+  padding: 20px 0;
+  text-align: center;
+}
+.demo-text-box {
+  a:hover {
+    color: @firm;
+  }  
+}
+.demo-browser {
+  background: mix(@base, black, 85%) url(../images/demo/browser.png) 0 0 no-repeat;
+  background-size: 659px 42px;  
+  color: @inverse;
+  margin: 0 41px 140px 0;
+  padding-top: 42px;
+  .border-radius(0 0 6px 6px);
+}
+.demo-browser-side {
+  float: left;
+  padding: 22px 20px;
+  width: 111px;
+
+  > h5 {
+    margin-bottom: 3px;
+    text-transform: none;
+  }
+  > h6 {
+    font-size: 11px;
+    font-weight: 300;
+    line-height: 18px;
+    margin-top: 3px;
+    text-transform: none;
+  }  
+}
+.demo-browser-author {
+  background: url(../images/demo/browser-author.jpg) center center no-repeat;
+  border: 3px solid @inverse;
+  display: block;
+  height: 84px;
+  margin: 0 auto;
+  width: 84px;
+  .border-radius(50%);
+}
+.demo-browser-action {
+  padding: 30px 0 12px;
+
+  > .btn {
+    padding: 9px 0 10px 11px !important;
+    text-align: left;
+    .border-radius(3px);
+
+    &:before {
+      color: @inverse;
+      content: '\e009';
+      font-size: 16px;
+      font-family: 'Flat-UI-Icons';
+      font-weight: 300;
+      margin-right: 12px;
+      position: relative;
+      top: 1px;
+      -webkit-font-smoothing: antialiased;
+    }  
+  }    
+}
+.demo-browser-content {
+  background-color: @base;  
+  overflow: hidden;
+  padding: 21px 0 0 20px;
+  .border-radius(0 0 6px);
+
+  > img {
+    border: 6px solid @inverse;
+    float: left;
+    margin: 0 15px 20px 0;
+    width: 134px;
+  }  
+}
+// Serving 2x images
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (-moz-min-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 3/2), only screen and (-o-min-device-pixel-ratio: 2/1), only screen and (min--moz-device-pixel-ratio: 1.5), only screen and (min-device-pixel-ratio: 1.5), only screen and (min-device-pixel-ratio: 2) {
+  .logo {
+    background-image: url(../images/demo/logo-mask-2x.png)
+  }
+  .demo-browser {
+    background-image: url(../images/demo/browser-2x.png)
+  }  
+}

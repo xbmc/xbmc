@@ -1,0 +1,148 @@
+/* ============================================================
+ * bootstrapSwitch v1.3 by Larentis Mattia @spiritualGuru
+ * http://www.larentis.eu/switch/
+ * ============================================================
+ * Licensed under the Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * ============================================================ */
+
+.has-switch {
+  border-radius: @switch-border-radius;
+  display: inline-block;
+  cursor: pointer;
+  line-height: @base-line-height;
+  overflow: hidden;
+  position: relative;
+  text-align: left;
+  width: @switch-width;
+  .mask(~"url('../images/switch/mask.png') 0 0 no-repeat");
+  .user-select(none);
+
+  &.deactivate {
+    .opacity(50);
+    cursor: default !important;
+    label, span {
+      cursor: default !important;
+    }
+  }
+
+  > div {
+    width: 162%;
+    position: relative;
+    top: 0;
+
+    &.switch-animate {
+      .transition(left 0.25s ease-out);
+    }
+
+    &.switch-off {
+      left: -63%;
+
+      label {
+        background-color: mix(@base, white, 63%);
+        border-color: @lightgray;
+        .box-shadow(-1px 0 0 fade(@inverse, 50%));
+      }
+    }
+
+    &.switch-on {
+      left: 0%;
+
+      label {
+        background-color: @firm;
+      }
+    }
+  }
+
+  input[type=checkbox] {
+    display: none;
+  }
+
+  span {
+    cursor: pointer;
+    font-size: @base-font-size * 1.071;
+    font-weight: 700;
+    float: left;
+    height: 29px;
+    line-height: 19px;
+    margin: 0;
+    padding-bottom: 6px;
+    padding-top: 5px;
+    position: relative;
+    text-align: center;
+    width: 50%;
+    z-index: 1;
+    .box-sizing();
+    .transition(.25s ease-out);
+
+    &.switch-left {
+      border-radius: @switch-border-radius 0 0 @switch-border-radius;
+      background-color: @base;
+      color: @firm;
+      border-left: 1px solid transparent;
+    }
+
+    &.switch-right {
+      border-radius: 0 @switch-border-radius @switch-border-radius 0;
+      background-color: @lightgray;
+      color: @inverse;
+      text-indent: 7px;
+
+      [class*="fui-"] {
+        text-indent: 0;
+      }
+    }
+  }
+
+  label {
+    border: 4px solid @base;
+    border-radius: 50%;
+    float: left;
+    height: 21px;
+    margin: 0 -15px 0 -14px;
+    padding: 0;
+    position: relative;
+    vertical-align: middle;
+    width: 21px;
+    z-index: 100;
+    .transition(.25s ease-out);
+  }
+}
+
+// Square Switch
+// -------------------------------
+.switch-square {
+  border-radius: 6px;
+  .mask(~"url('../images/switch/mask.png') 0 0 no-repeat");
+
+  > div {
+    &.switch-off {
+      label {
+        border-color: mix(@base, white, 63%);
+        border-radius: 6px 0 0 6px;
+      }
+    }
+  }
+
+  span {
+    &.switch-left {
+      border-radius: 6px 0 0 6px;
+      [class*="fui-"] {
+        text-indent: -10px;
+      }
+    }
+
+    &.switch-right {
+      border-radius: 0 6px 6px 0;
+      [class*="fui-"] {
+        text-indent: 5px;
+      }
+    }
+  }
+
+  label {
+    border-radius: 0 6px 6px 0;
+    border-color: @firm;
+  }
+}
+

@@ -1,0 +1,182 @@
+<div id="fanart-background"></div>
+<div id="details" class="tabbable <%= ( fanart != '' ? 'has-fanart' : '') %> tvtype-<%= type %>">
+    <div class="video-side watched-<%=watched.status%>">
+        <div class="video-thumb">
+            <% if(widethumb != ''){ %>
+              <img src="<%= app.image.url(widethumb) %>" class="widethumb" />
+            <% } %>
+            <img src="<%= app.image.url(thumbnail) %>" class="thumb" />
+            <div class="actions-wrapper tvshow-actions-wrapper">
+                <div class="actions tvshow-actions<%= (thumbsup ? ' thumbs-up' : '') %>" data-id="<%= tvshowid %>">
+                    <button class="tvshow-thumbsup btn" title="Thumbs Up"><i class="fa fa-thumbs-up"></i></button>
+                    <button class="tvshow-play btn" title="Replace the playlist with this tvshow and start playing"><i class="fa fa-play"></i></button>
+                    <button class="tvshow-add btn" title="Add this tvshow to the playlist"><i class="fa fa-plus"></i></button>
+                    <!--<button class="tvshow-menu btn" title="More tvshow options"><i class="fa fa-ellipsis-v"></i></button>-->
+                </div>
+            </div>
+        </div>
+        <% if(type == 'episode'){ %>
+            <div class="video-large-progress"><span style="width: <%=watched.progress%>%" class="progress-episode-<%= episodeid %>"></span></div>
+        <% } %>
+    </div>
+    <div class="video-tab-wrapper">
+
+        <div class="tab-wrapper">
+            <div id="tvshow-tabs" class="content-tabs">
+                <div class="library-pager">
+                    <a href="#" class="library-back"><i class="fa fa-chevron-left"></i></a>
+                    <a href="#" class="library-next"><i class="fa fa-chevron-right"></i></a>
+                </div>
+                <ul class="nav nav-tabs">
+                    <li class="active" data-id="tv-season"><a href="#tv-season" title="Tv items" data-toggle="tab">Season<%=(type == 'tvshow' ? 's' : ' ' + season)%></a></li>
+                    <li><a href="#tvshow-detail" data-toggle="tab"><%=(type == 'episode' ? 'Plot' : 'Overview') %></a></li>
+                    <% if(cast.length > 0){ %>
+                        <li data-id="about"><a href="#tvshow-cast" title="<%=cast.length%> cast members found" data-toggle="tab">Cast</a></li>
+                    <% } %>
+                    <% if(type == 'episode'){ %>
+                        <li data-id="watch"><a href="#tv-watch" title="Stream this video" data-toggle="tab">Stream</a></li>
+                    <% } %>
+                </ul>
+            </div>
+
+            <div class="tab-content">
+                <h1 class="video-title tv-title"><%=label%></h1>
+
+                <div id="tv-season" class="tab-pane active">
+                    <div class="buttons">
+                        <a href="#tvshow/<%= tvshowid %>" class="tvshow-play btn cta"><i class="fa fa-play"></i>Play <%=(type == 'episode' ? 'Episode' : 'All')%></a>
+                        <a href="#tvshow/<%= tvshowid %>" class="tvshow-add btn"><i class="fa fa-plus"></i> Queue <%=(type == 'episode' ? 'Episode' : 'All')%></a>
+                        <% if(type == 'tvshow'){ %>
+                            <a href="#tvshow/<%= tvshowid %>" class="library-next btn"><i class="fa fa-chevron-right"></i> Next</a>
+                        <% } %>
+                        <% if(type == 'episode' || type == 'season'){ %>
+                            <a href="#tvshow/<%= tvshowid %>" class="btn"><i class="fa fa-arrow-up"></i>All Seasons</a>
+                        <% } %>
+                    </div>
+                    <div id="seasons"></div>
+                </div>
+
+                <div id="tvshow-detail" class="tab-pane">
+                    <div class="col-1">
+                        <br />
+                        <p><%=plot%></p>
+
+                        <% if(genre.length > 0){ %>
+                        <div class="genres"><% for(i in genre){ %>
+                            <% if(genre[i] != ''){ %><a class="genre" href="#tv/genre/<%=genre[i]%>"><%=genre[i]%></a><% } %>
+                            <% } %></div>
+                        <% } %>
+
+                        <div class="buttons">
+                            <% if(imdbnumber != ''){ %>
+                                <a href="http://www.imdb.com/title/<%=imdbnumber%>/" target="_blank" class="imdb btn"><i class="fa fa-film"></i> IMDB</a>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="rating" title="<%=votes%> votes">
+                            <div class="value"><%=app.helpers.rating(rating)%></div>
+                            <i class="fa fa-star"></i>
+                         </div>
+
+                        <div class="quality sub-block">
+                            <h4>In the library</h4>
+                            <ul>
+                                <li><%=episode%> episodes</li>
+
+                            </ul>
+                        </div>
+
+                        <% if(mpaa != ''){ %><div class="mpaa sub-block">
+                            <h4>MPAA</h4>
+                            <ul>
+                                <li><%=mpaa%></li>
+                            </ul>
+                        </div><% } %>
+
+                    </div>
+
+
+
+                </div>
+                <div id="tvshow-cast" class="tab-pane">
+                    <%
+                    i = 0;
+                    if(cast.length > 0){
+                      for(k in cast){
+                        var c = cast[k];
+                        if(i <= 40){ %>
+                            <a class="cast-member" href="http://www.imdb.com/find?s=nm&q=<%=encodeURIComponent(c.name)%>" target="_blank">
+                                <span class="image" style="background-image: url('<%= app.image.url(c.thumbnail) %>')" ></span>
+                                <strong><%=c.name%></strong>
+                                <span><%=c.role%></span>
+                            </a>
+                        <% }
+                      }
+                    } %>
+                </div>
+
+                <% if(type == 'episode'){ %>
+                <div id="tv-watch" class="tab-pane">
+
+                    <div class="col-1">
+                        <h2>HTML5 player</h2>
+                        <p>Codec support is very <a href="https://developer.mozilla.org/en-US/docs/HTML/Supported_media_formats" target="_blank">limited in the browser</a>.
+                            H.264 video generally works but only with 2 channel audio. Works best in Chrome, may crash browser and/or XBMC!</p>
+                        <div class="buttons">
+                            <a href="#" class="tv-stream btn" data-player="html5">Launch HTML5 player</a>
+                        </div>
+                        <br />
+                        <h2>VLC player</h2>
+                        <p><a href="http://www.videolan.org/vlc/index.html" target="_blank">VLC Player</a> provides an
+                            embeddable video player, it will play most videos, but does require you to
+                            <a href="http://www.videolan.org/vlc/index.html" target="_blank">download and install</a> extra software.
+                            Works well in Chrome and Firefox.</p>
+                        <div class="buttons">
+                            <a href="#" data-player="vlc" class="tv-stream btn">Launch VLC player</a>
+                        </div>
+                    </div>
+
+                    <div class="col-2">
+
+                        <div class="quality sub-block">
+                            <h4>Streams</h4>
+                            <ul>
+                                <% for(i in streamdetails.video){
+                                var s = streamdetails.video[i];
+                                %>
+                                <li><%=s.width%> x <%=s.height%> <strong><%=s.codec%></strong></li>
+                                <% } %>
+                            </ul>
+                            <ul>
+                                <% for(i in streamdetails.audio){
+                                var s = streamdetails.audio[i];
+                                %>
+                                <li><%=s.channels%> channels <% if(s.language != ''){ %><small>(<%=s.language%>)</small><% } %> <strong><%=s.codec%></strong></li>
+                                <% } %>
+                            </ul>
+                        </div>
+
+                        <div class="sub-block">
+                            <h4>Note</h4>
+                            <ul>
+                                <li>For best results, use Chrome</li>
+                                <li>Playback might not work at all</li>
+                                <li>Seeking doesn't work</li>
+                                <li>Stacked videos don't work</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+                <% } %>
+
+            </div>
+
+        </div>
+
+
+
+    </div>
+
+</div>

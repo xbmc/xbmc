@@ -1,0 +1,17 @@
+<div id="artist-teaser-<%= artistid %>" class="artist-teaser">
+
+
+    <a href="#artist/<%= artistid %>" class="artist-header">
+        <% if( fanart != '' ){ thumbnail = fanart; }
+           var img = app.image.url(thumbnail, 'fanart');
+        %>
+        <div class="mini-artist-fanart" style="background-image: url('<%= img %>')">
+        </div>
+    </a>
+
+
+    <div class="other-albums">
+        <div class="loading-box">Loading Albums</div>
+    </div>
+
+</div>

@@ -1,0 +1,117 @@
+//
+// Tags Input
+// --------------------------------------------------
+
+.tagsinput {
+  background: white;
+  border: 2px solid @firm;
+  border-radius: 6px;
+  height: 100px;
+  margin-bottom: 18px;
+  padding: 6px 1px 1px 6px;
+  overflow-y: auto;
+  text-align: left;
+
+  .tag {
+    border-radius: 4px;
+    background-color: @firm;
+    color: @inverse;
+    cursor: pointer;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    overflow: hidden;
+    line-height: 15px;
+    padding: 6px 13px 8px 19px;
+    position: relative;
+    vertical-align: middle;
+    .inline-block();
+    .transition(0.14s linear);
+
+    &:hover {
+      background-color: mix(@firm, black, 85%);
+      color: @inverse;
+      padding-left: 12px;
+      padding-right: 20px;
+      
+      .tagsinput-remove-link {
+        color: @inverse;
+        opacity: 1;
+        // Opacity fallback for IE
+        display: block\9;
+      }
+    }
+  }
+
+  input {
+    background: transparent;
+    border: none;
+    color: @base;
+    font-family: @base-font-family;
+    font-size: @base-font-size;
+    margin: 0px;
+    padding: 0 0 0 5px;
+    outline: 0;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    width: 12px;
+  }
+}
+
+.tagsinput-remove-link {
+  bottom: 0;
+  color: @inverse;
+  cursor: pointer;
+  font-size: 12px;
+  opacity: 0;
+  padding: 7px 7px 5px 0;
+  position: absolute;
+  right: 0;
+  text-align: right;
+  text-decoration: none;
+  top: 0;
+  width: 100%;
+  z-index: 2;
+  // Opacity fallback for IE
+  display: none\9;
+  
+  &:before {
+    color: @inverse;
+    content: "\e00b";
+    font-family: "Flat-UI-Icons";
+  }
+}
+
+.tagsinput-add-container {
+  vertical-align: middle;
+  .inline-block();
+}
+
+.tagsinput-add {
+  background-color: mix(@inverse, @base, 80%);
+  border-radius: 3px;
+  color: @inverse;
+  cursor: pointer;
+  margin-bottom: 5px;
+  padding: 6px 9px;
+  .inline-block();
+  .transition(0.25s);
+  
+  &:hover {
+    background-color: @firm;
+  }
+  &:before {
+    content: "\e009";
+    font-family: "Flat-UI-Icons";
+  }
+}
+
+.tags_clear {
+  clear: both;
+  width: 100%;
+  height: 0px;
+}
+.not_valid {
+  background: #fbd8db !important;
+  color: #90111a !important;
+}
+

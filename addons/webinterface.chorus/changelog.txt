@@ -1,0 +1,208 @@
+Version 0.3.8
+- Fixed ability to delete a custom playlist song
+- Refactored player state and added some improvements to stream playback
+- Refined fields used in listing calls
+- Movies now resume from last played position
+- Added more keymaps: spacebar, x, t, +, -, <, >
+- Added progress to full view of movie or episode
+- Progress on movie/episode full view updates while playing
+- Added "Ignore articles when sorting" to video lists for Martijn
+- Updated to jQuery v1.11.1
+
+
+Version 0.3.7
+- Added support for the Radio AddOn
+- Improvements to AddOn framework
+- Moved Lists to music and fixed ui
+- Progress now updates every 1 second using an internal timer
+- Greatly improved SoundCloud search speed and reliability
+- Party mode start if nothing playing
+- Added fallback dialog if input dialog has been left open on xbmc for 60 seconds
+- Recent TV order fix
+- Music recently added and played get a view toggle option
+- Bug fixes: tv menu on mobile, tv recent not listing episodes + more
+- Style Updates: tv and movie mobile view + lots more
+- Testing now based on Gotham
+
+
+Version 0.3.6
+- Bug fix: Background changing while pvr playing
+- Feature: pvr channels (unfinished due to tuner breaking during dev)
+- Feature: Support for basic keyboard commands (directional, backspace, enter, c)
+- Refactor: Cleaned up a lot of code
+- Improved loading indicator
+- Some performance tweaks
+
+
+Version 0.3.5
+- Bug fix: Song duration in listings displaying as [object]
+- Bug fix: Mobile playlist tabs
+- Ui fix: Mobile top icons, made click area much larger
+
+
+Version 0.3.4
+- Browse by genre: albums, tv and movies
+- Browse by year: albums and movies
+- Toggle party mode
+- Lots of UI updates
+- Albums page is now music and has had an overhaul
+- Minor bug fixes
+
+
+Version 0.3.3
+- Audio streaming buffer indicator
+- Movie/TV Sorting abilities
+- Movie/TV Toggle watched status
+- Movie/TV Toggle visibility of watched
+- minor UI updates
+- Remember watched visibility and last player
+- SoundCloud streaming now shows current time
+- Added leading 0 to time formatter when required
+- Added video library scan
+
+
+Version 0.3.2
+- Bug fix: search issue with repeated addons
+- Bug fix: soundcloud search (broken in last release)
+- Bug fix: Movies only showing first page of results on small screen
+- Bug fix: Saved lists not playing on correct player
+- Changed to using minified js (~450K lighter on load)
+
+
+Version 0.3.1
+- Added a remote control
+- Watched status on videos
+- Search and ThumbsUp responsive redesign
+- TV and Movies added to Search and ThumbsUp
+- In progress videos resume from correct spot
+- Video sources in files
+- Playlist clear now applies to visible playlist
+- Loads of refactoring, bugfixes and responsive updates
+
+
+Version 0.3.0
+- Updated icon, added fanart and screenshots
+- Minor style fixes and removed some debugging
+- Updated license.txt and add addon.xml ready for official add-on repo
+
+
+Version 0.2.8:
+- Bug fix: playlist sorting works again
+- Bug fix: video playlist sort switching episodes with movies
+- Bug fix: Custom playlist play and menu buttons work again
+- Bug fix: removed errors when not using websockets and nothing is playing
+- Style fix: when changing songs in a playlist, no more flash of background sprite
+
+
+Version 0.2.7:
+- Commenced mobile responsive styling (still a BIG work in progress)
+- App will now use websockets when available
+- A few bug fixes affecting performance
+
+
+Version 0.2.6:
+- TV functionality
+
+
+Version 0.2.5:
+- Added local video streaming to movies.  Very experimental!
+- Added movies to search
+- Refactored most of the search view to be more generic
+- Bug fixes to movie listings with infinite scroll and caching
+
+
+Version 0.2.4:
+- Bugfixes
+
+
+Version 0.2.3:
+- Project folder restructure, see "src" for development source and "dist" for compiled
+- webinterface.chorus.zip is the "dist" folder renamed to "webinterface.chorus" and archived during build
+- Enable jsLint checking on build and fixed 100+ warnings
+- more random bugfixes
+- Added movie screenshots to readme
+
+
+Version 0.2.2:
+- Framework for xbmc video integration
+- Integrated XBMC video playback and video playlists into the UI
+- Created full page view of a movie with navigation, vital statistics, cast and more.
+- Ability to browse all movies with infinite scroll, url pagination, back button support and lazy loaded images
+- Browse movies with a genre filter
+- Upgraded to latest font-awesome and updated a few icons
+- Lots of playlist fixes including empty lists if the items are not in the library
+- Added the awesome breakpoint and singularitygs gems as a requirement for build
+- Used breakpoint and singularity to start making things much more responsive (work in progress)
+- many more general fixes (and maybe a few new bugs)
+
+
+Version 0.2.1:
+- Significant refactor of js and css
+- Lots of playlist updates and refinements
+- Improved song search
+- Contextual menus now available on songs, artists, albums and files adding playlist tasks and a place for future functionality
+- Better indications that something is playing (title, logo, tab icon)
+
+
+Version 0.2.0:
+- Implemented browser audio streaming from XBMC library
+- Updated template to suit streaming
+- Loads of style refinements, added some colour. Orange = XBMC, Blue = Local
+- Added throttling of requests to XBMC if a lost connection is detected
+
+
+Version 0.1.8:
+- Increased max album count to 15000
+- Increased max artist count to 10000
+
+
+Version 0.1.7:
+- Major update
+- Integrated browser streaming, you can now play songs directly in your browser
+- Many ui updates to accommodate the new functionality
+- Logo gets some colour when playing via xbmc / browser
+- lots more
+
+
+Version 0.1.7:
+- Heaps of fixes/updates to v0.1.6 landing pages
+- Minor ui style updates
+- logo gets angry when not connected
+- throttle requests when not connected (every 20sec rather than every 5sec)
+- loading box style
+
+
+Version 0.1.6:
+- Recreated landing pages for artist and albums, implemented freewall
+- Context options added for new views
+- Lots of styles, optimisations and bug fixes.
+
+
+Version 0.1.5:
+- fixed play button style bug on album
+- fixed jsonRPC path so it now works via /addons/webinterface.chorus
+- added changelog to Lab
+
+
+Version 0.1.4:
+- Code cleanup / refactor
+- About dialog
+- template loading on the fly
+
+
+Version 0.1.3:
+- Fixed song search
+- Added ability to thumbs up, download or custom playlist the currently playing song
+
+
+Version 0.1.2:
+- Changed context options for album to be over artwork
+- Clear playlist before adding a song if nothing is playing
+- Local dump dev page
+- removed context menus not in use
+- fixed bug with thumbs up songs not showing
+
+
+Version 0.1.0:
+Initial release Jan 2014
+- First release of Chorus

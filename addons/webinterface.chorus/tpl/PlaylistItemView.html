@@ -1,0 +1,24 @@
+<%
+var plid = (typeof playlistId != 'undefined' ? playlistId : 0);
+%>
+<div class="playlist-item song playlist-pos-<%= pos %>" data-id="<%= pos %>" data-songid="<%= id %>" data-path="<%= file %>" data-playlistId="<%= plid %>" data-type="<%=type%>">
+    <i class="repeating icon-repeat" title="this song is on an endless repeat, click to stop repeating"></i>
+    <div class="actions">
+        <span class="fa fa-play playbtn"></span>
+        <span class="fa fa-times removebtn"></span>
+    </div>
+    <a href="#album/<%= albumid %>" class="thumb" style="background-image: url('<%= app.image.url( thumbnail ) %>')"></a>
+
+    <% if(id > 0){ %>
+    <div class="playlist-song-actions-wrapper">
+        <div class="playlist-song-actions dropdown" data-id="<%= id %>" data-album="<%= albumid %>">
+            <button class="playlist-song-thumbsup btn" title="Thumbs Up"><i class="fa fa-thumbs-up"></i></button>
+            <button class="playlist-song-menu btn" title="More options"><i class="fa fa-ellipsis-v"></i></button>
+        </div>
+    </div>
+    <% } %>
+
+    <a class="playlist-play" href="<%= url %>"><%= label %></a>
+    <div class="info"><%=subLink%></div>
+    <span class="playlist-meta"></span>
+</div>

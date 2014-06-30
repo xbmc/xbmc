@@ -1,0 +1,167 @@
+<header id="header">
+    <a id="logo" href="#"><span>Chorus.</span></a>
+    <nav class="mainnav">
+        <ul>
+            <li class="nav-artists"><a href="#artists" title="Artists"><i class="fa fa-microphone"></i></a></li>
+            <li class="nav-music"><a href="#mymusic" title="Music"><i class="fa fa-music"></i></a></li>
+            <li class="nav-movies"><a href="#mymovies" title="Movies"><i class="fa fa-film"></i></a></li>
+            <li class="nav-tvshows"><a href="#mytv" title="TVShows"><i class="fa fa-desktop"></i></a></li>
+            <li class="nav-thumbsup"><a href="#thumbsup" title="Thumbed Up"><i class="fa fa-thumbs-up"></i></a></li>
+            <li class="nav-files"><a href="#files" title="Files"><i class="fa fa-align-justify"></i></a></li>
+
+        </ul>
+    </nav>
+</header>
+
+<div id="main">
+    <header id="page-header">
+        <div class="header-inner">
+            <h1 id="title"><a>Loading Library</a></h1>
+        </div>
+        <div class="mobile-menu">
+            <ul class="mobile-nav">
+                <li class="search"><a href="#search"><i class="fa fa-search"></i></a></li>
+                <li class="remote"><a href="#remote"><i class="fa fa-mobile"></i></a></li>
+                <li class="toggle-ss"><a href="#playlists"><i class="fa fa-file"></i></a></li>
+            </ul>
+        </div>
+        <div id="search-box">
+            <i id="search-this" class="fa fa-search"></i>
+            <input id="search" />
+        </div>
+    </header>
+    <div id="content-wrapper">
+        <div id="content">
+            <p class="loading-box">Welcome to Chorus.</p>
+        </div>
+    </div>
+</div>
+
+<div id="sidebar-first">
+    <div class="sidebar-content">
+
+    </div>
+</div>
+
+<div id="sidebar-second">
+
+    <div class="sidebar-inner">
+
+        <div class="sidebar-header">
+            <ul class="playlist-primary-tabs">
+                <li class="playlist-primary-tab xbmc-tab active" data-pane="xbmc" title="Switch to XBMC (shared) player"><i class="fa fa-rss"></i><i class="fa fa-play"></i> XBMC</li>
+                <li class="playlist-primary-tab local-tab" data-pane="local" title="Switch to playback in your browser"><i class="fa fa-headphones"></i><i class="fa fa-play"></i> Local</li>
+            </ul>
+            <div class="playlist-actions-wrapper"></div>
+        </div>
+
+        <div class="sidebar-second-content">
+            <div class="sidebar-pane" id="playlist-xbmc"></div>
+            <div class="sidebar-pane" id="playlist-local"></div>
+            <div class="sidebar-pane" id="playlist-lists"></div>
+        </div>
+
+        <div id="notify-wrapper">
+            <div id="notify"><div class="content">Still loading...</div></div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<footer id="footer">
+    <div class="footer-inner">
+        <div class="footer-left actions-primary">
+            <span class="player-prev player-button"><i class="fa fa-backward"></i></span>
+            <span class="player-play player-button"><i class="fa fa-play"></i><i class="fa fa-pause"></i></span>
+            <span class="player-next player-button"><i class="fa fa-forward"></i></span>
+        </div>
+        <div class="footer-right">
+            <div class="volume-wrapper">
+                <div id="volume"></div>
+            </div>
+            <div class="actions-wrapper actions-secondary dropup">
+                <span class="player-mute player-button"><i class="fa fa-volume-down"></i><i class="fa fa-volume-up"></i></span>
+                <span class="player-repeat player-button"><i class="fa fa-repeat"></i></span>
+                <span class="player-random player-button"><i class="fa fa-random"></i></span>
+                <span class="player-menu player-button dropdown-toggle" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></span>
+                <ul class="dropdown-menu">
+                    <li><a href="#" class="about-dialog">About Chorus</a></li>
+                    <li><a href="#xbmc/home">The Lab</a></li>
+                    <li><a href="#scan/audio">Audio Library Scan</a></li>
+                    <li><a href="#scan/video">Video Library Scan</a></li>
+                    <li><a href="#home" class="browser-view-local">Local Browser Player</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-center">
+            <div id="now-playing">
+                <a href="#remote" class="song-image" style="background-image: url('theme/images/default.png');" id="playing-thumb">
+                    <div class="fa fa-chevron-up"></div>
+                    <div class="fa fa-chevron-down"></div>
+                </a>
+                <a href="#" class="playing-song-title">Nothing Playing</a>
+                <span class="playing-song-meta">No Artist</span>
+            </div>
+            <div class="progress-wrapper">
+                <div id="progress-bar"></div>
+            </div>
+            <div id="time">
+                <div class="time-cur">0</div>
+                <div class="time-total">0:00</div>
+            </div>
+        </div>
+    </div>
+
+</footer>
+
+
+<footer id="browser-player-footer">
+    <div class="footer-inner">
+        <div class="footer-left actions-primary">
+            <span class="browser-player-prev player-button"><i class="fa fa-backward"></i></span>
+            <span class="browser-player-play player-button"><i class="fa fa-play"></i><i class="fa fa-pause"></i></span>
+            <span class="browser-player-next player-button"><i class="fa fa-forward"></i></span>
+        </div>
+        <div class="footer-right">
+            <div class="volume-wrapper">
+                <div id="browser-volume"></div>
+            </div>
+            <div class="actions-wrapper actions-secondary dropup">
+                <span class="browser-player-mute player-button"><i class="fa fa-volume-down"></i><i class="fa fa-volume-up"></i></span>
+                <span class="browser-player-repeat player-button"><i class="fa fa-repeat"></i></span>
+                <span class="browser-player-random player-button"><i class="fa fa-random"></i></span>
+                <span class="browser-player-menu player-button dropdown-toggle" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></span>
+                <ul class="dropdown-menu">
+                    <li><a href="#" class="about-dialog">About Chorus</a></li>
+                    <li><a href="#home" class="browser-view-xbmc">XBMC Player</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-center">
+            <div id="browser-now-playing">
+                <a href="#" class="song-image">
+                    <img src="theme/images/default.png" id="browser-playing-thumb" />
+                </a>
+                <a href="#" class="browser-playing-song-title">Nothing Playing</a>
+                <span class="browser-playing-song-meta">No Artist</span>
+            </div>
+            <div class="progress-wrapper">
+                <div id="browser-progress-bar"></div>
+                <div id="browser-progress-buffer"></div>
+            </div>
+            <div id="browser-time">
+                <div class="time-cur">0</div>
+                <div class="time-total">0:00</div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<div id="offscreen" style="display:none">
+    <div id="dialog"></div>
+</div>
+
+

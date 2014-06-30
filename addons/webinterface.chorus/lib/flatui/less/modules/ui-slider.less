@@ -1,0 +1,62 @@
+// Slider
+// --------------------------------------------------
+
+.ui-slider {
+  .progress();
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.ui-slider-handle {
+  background-color: mix(@firm, black, 85%);
+  border-radius: 50%;
+  cursor: pointer;
+  height: 18px;
+  margin-left: -9px;
+  position: absolute;
+  top: -3px;
+  width: 18px;
+  z-index: 2;
+  .transition(background 0.25s);
+  
+  &[style*='100'] {
+    margin-left: -15px;
+  }
+  &:hover,
+  &:focus {
+    background-color: mix(@firm, white, 80%);
+    outline: none;
+  }
+  &:active {
+    background-color: mix(@firm, black, 85%);
+  }
+}
+
+.ui-slider-range {
+  background-color: @firm;
+  border-radius: 30px 0 0 30px;
+  display: block;
+  height: 100%;
+  position: absolute;
+  z-index: 1;
+}
+
+.ui-slider-segment {
+  background-color: mix(desaturate(@base, 15%), white, 20%);
+  border-radius: 50%;
+  float: left;
+  height: 6px;
+  margin: 3px -6px 0 0;
+  width: 6px;
+}
+
+.ui-slider-value {
+  float: right;
+  font-weight: 500;
+  margin-top: @progress-height;
+  
+  &.first {
+    clear: left;
+    float: left;
+  }
+}
