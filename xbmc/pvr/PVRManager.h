@@ -70,11 +70,11 @@ namespace PVR
     PlaybackTypeRadio
   };
 
-  enum ChannelStartLast
+  enum ContinueLastChannelOnStartup
   {
-    START_LAST_CHANNEL_OFF  = 0,
-    START_LAST_CHANNEL_IN_BACKGROUND,
-    START_LAST_CHANNEL_IN_FOREGROUND
+    CONTINUE_LAST_CHANNEL_OFF  = 0,
+    CONTINUE_LAST_CHANNEL_IN_BACKGROUND,
+    CONTINUE_LAST_CHANNEL_IN_FOREGROUND
   };
 
   #define g_PVRManager       CPVRManager::Get()
