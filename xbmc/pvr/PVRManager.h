@@ -552,8 +552,6 @@ namespace PVR
      */
     bool OnAction(const CAction &action);
 
-    static void SettingOptionsPvrStartLastChannelFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
-
     /*!
      * @brief Create EPG tags for all channels in internal channel groups
      * @return True if EPG tags where created successfully, false otherwise

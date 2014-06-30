@@ -8166,6 +8166,7 @@ msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr ""
 
+#: system/settings/settings.xml
 msgctxt "#19190"
 msgid "Background"
 msgstr ""
@@ -8595,7 +8596,7 @@ msgctxt "#19286"
 msgid "Searching for channel icons"
 msgstr ""
 
-#: xbmc/pvr/PVRManager.cpp
+#: system/settings/settings.xml
 msgctxt "#19288"
 msgid "Foreground"
 msgstr ""
