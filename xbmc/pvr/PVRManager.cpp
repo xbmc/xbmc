@@ -669,7 +669,7 @@ bool CPVRManager::ContinueLastChannel(void)
   {
     CLog::Log(LOGNOTICE, "PVRManager - %s - continue playback on channel '%s'", __FUNCTION__, channel->GetPVRChannelInfoTag()->ChannelName().c_str());
     SetPlayingGroup(m_channelGroups->GetLastPlayedGroup());
-    StartPlayback(channel->GetPVRChannelInfoTag(), (CSettings::Get().GetInt("pvrplayback.startlast") == START_LAST_CHANNEL_MIN));
+    StartPlayback(channel->GetPVRChannelInfoTag(), (CSettings::Get().GetInt("pvrplayback.startlast") == START_LAST_CHANNEL_IN_BACKGROUND));
     return true;
   }
 
@@ -1546,9 +1546,9 @@ bool CPVRManager::OnAction(const CAction &action)
 
 void CPVRManager::SettingOptionsPvrStartLastChannelFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
-  list.push_back(make_pair(g_localizeStrings.Get(106),   PVR::START_LAST_CHANNEL_OFF));
-  list.push_back(make_pair(g_localizeStrings.Get(19190), PVR::START_LAST_CHANNEL_MIN));
-  list.push_back(make_pair(g_localizeStrings.Get(107),   PVR::START_LAST_CHANNEL_ON));
+  list.push_back(make_pair(g_localizeStrings.Get(106), PVR::START_LAST_CHANNEL_OFF));
+  list.push_back(make_pair(g_localizeStrings.Get(19190), PVR::START_LAST_CHANNEL_IN_BACKGROUND));
+  list.push_back(make_pair(g_localizeStrings.Get(19288), PVR::START_LAST_CHANNEL_IN_FOREGROUND));
 }
 
 bool CPVRChannelSwitchJob::DoWork(void)

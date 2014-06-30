@@ -73,8 +73,8 @@ namespace PVR
   enum ChannelStartLast
   {
     START_LAST_CHANNEL_OFF  = 0,
-    START_LAST_CHANNEL_MIN,
-    START_LAST_CHANNEL_ON
+    START_LAST_CHANNEL_IN_BACKGROUND,
+    START_LAST_CHANNEL_IN_FOREGROUND
   };
 
   #define g_PVRManager       CPVRManager::Get()
