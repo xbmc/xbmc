@@ -448,10 +448,10 @@ namespace PVR
     /*!
      * @brief Start playback on a channel.
      * @param channel The channel to start to play.
-     * @param bPreview If true, open minimised.
+     * @param bMinimised If true, playback starts minimised, otherwise in fullscreen.
      * @return True if playback was started, false otherwise.
      */
-    bool StartPlayback(const CPVRChannel *channel, bool bPreview = false);
+    bool StartPlayback(const CPVRChannel *channel, bool bMinimised = false);
 
     /*!
      * @brief Start playback of the last used channel, and if it fails use first channel in the current channelgroup.

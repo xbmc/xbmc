@@ -1143,9 +1143,9 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   return false;
 }
 
-bool CPVRManager::StartPlayback(const CPVRChannel *channel, bool bPreview /* = false */)
+bool CPVRManager::StartPlayback(const CPVRChannel *channel, bool bMinimised /* = false */)
 {
-  CMediaSettings::Get().SetVideoStartWindowed(bPreview);
+  CMediaSettings::Get().SetVideoStartWindowed(bMinimised);
   CApplicationMessenger::Get().MediaPlay(CFileItem(*channel));
   CLog::Log(LOGNOTICE, "PVRManager - %s - started playback on channel '%s'",
       __FUNCTION__, channel->ChannelName().c_str());
