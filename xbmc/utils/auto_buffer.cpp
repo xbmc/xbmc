@@ -24,12 +24,12 @@
 
 using namespace XUTILS;
 
-auto_buffer::auto_buffer(size_t size) : p(NULL), s(0)
+auto_buffer::auto_buffer(size_t size) : p(0), s(0)
 {
   if (!size)
     return;
 
-  p = malloc(size);
+  p = malloc(size); // "malloc()" instead of "new" allow to use "realloc()"
   if (!p)
     throw std::bad_alloc();
   s = size;
@@ -37,19 +37,29 @@ auto_buffer::auto_buffer(size_t size) : p(NULL), s(0)
 
 auto_buffer::~auto_buffer()
 {
-  clear();
+  free(p);
 }
 
 auto_buffer& auto_buffer::allocate(size_t size)
 {
   clear();
-  return resize(size);
+  if (size)
+  {
+    p = malloc(size);
+    if (!p)
+      throw std::bad_alloc();
+    s = size;
+  }
+  return *this;
 }
 
 auto_buffer& auto_buffer::resize(size_t newSize)
 {
+  if (!newSize)
+    return clear();
+
   void* newPtr = realloc(p, newSize);
-  if (!newPtr && newSize)
+  if (!newPtr)
     throw std::bad_alloc();
   p = newPtr;
   s = newSize;
@@ -59,7 +69,7 @@ auto_buffer& auto_buffer::resize(size_t newSize)
 auto_buffer& auto_buffer::clear(void)
 {
   free(p);
-  p = NULL;
+  p = 0;
   s = 0;
   return *this;
 }
@@ -78,7 +88,7 @@ auto_buffer& auto_buffer::attach(void* pointer, size_t size)
 void* auto_buffer::detach(void)
 {
   void* returnPtr = p;
-  p = NULL;
+  p = 0;
   s = 0;
   return returnPtr;
 }
