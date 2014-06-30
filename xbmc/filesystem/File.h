@@ -30,6 +30,7 @@
 #pragma once
 
 #include <iostream>
+#include "utils/auto_buffer.h"
 #include "utils/StdString.h"
 #include "IFileTypes.h"
 #include "PlatformDefs.h"
@@ -40,6 +41,7 @@ class CURL;
 namespace XFILE
 {
 
+using ::XUTILS::auto_buffer;
 class IFile;
 
 class IFileCallback
@@ -68,33 +70,6 @@ public:
 #define READ_MULTI_STREAM 0x20
 
 class CFileStreamBuffer;
-
-class auto_buffer
-{
-public:
-  auto_buffer(void) : p(NULL), s(0)
-  { }
-  explicit auto_buffer(size_t size);
-  ~auto_buffer();
-
-  auto_buffer& allocate(size_t size);
-  auto_buffer& resize(size_t newSize);
-  auto_buffer& clear(void);
-
-  inline char* get(void) const { return static_cast<char*>(p); }
-  inline size_t size(void) const { return s; }
-  inline size_t length(void) const { return s; }
-
-  auto_buffer& attach(void* pointer, size_t size);
-  void* detach(void);
-
-private:
-  auto_buffer(const auto_buffer& other); // disallow copy constructor
-  auto_buffer& operator=(const auto_buffer& other); // disallow assignment
-
-  void* p;
-  size_t s;
-};
 
 class CFile
 {

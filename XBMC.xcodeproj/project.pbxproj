@@ -284,6 +284,9 @@
 		7C8FC6EE1829A4580045153D /* DirectoryProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8FC6EC1829A4580045153D /* DirectoryProvider.cpp */; };
 		7C8FC6EF1829A4580045153D /* DirectoryProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8FC6EC1829A4580045153D /* DirectoryProvider.cpp */; };
 		7C8FC6F01829A4580045153D /* DirectoryProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8FC6EC1829A4580045153D /* DirectoryProvider.cpp */; };
+		7C908894196358A8003D0619 /* auto_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C908892196358A8003D0619 /* auto_buffer.cpp */; };
+		7C908895196358A8003D0619 /* auto_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C908892196358A8003D0619 /* auto_buffer.cpp */; };
+		7C908896196358A8003D0619 /* auto_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C908892196358A8003D0619 /* auto_buffer.cpp */; };
 		7C920CF9181669FF00DA1477 /* TextureOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C920CF7181669FF00DA1477 /* TextureOperations.cpp */; };
 		7C920CFA181669FF00DA1477 /* TextureOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C920CF7181669FF00DA1477 /* TextureOperations.cpp */; };
 		7C920CFB181669FF00DA1477 /* TextureOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C920CF7181669FF00DA1477 /* TextureOperations.cpp */; };
@@ -4206,6 +4209,8 @@
 		7C8AE853189DE47700C33786 /* CoreAudioHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioHelpers.h; path = Sinks/osx/CoreAudioHelpers.h; sourceTree = "<group>"; };
 		7C8FC6EC1829A4580045153D /* DirectoryProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DirectoryProvider.cpp; path = xbmc/listproviders/DirectoryProvider.cpp; sourceTree = SOURCE_ROOT; };
 		7C8FC6ED1829A4580045153D /* DirectoryProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectoryProvider.h; path = xbmc/listproviders/DirectoryProvider.h; sourceTree = SOURCE_ROOT; };
+		7C908892196358A8003D0619 /* auto_buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = auto_buffer.cpp; sourceTree = "<group>"; };
+		7C908893196358A8003D0619 /* auto_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = auto_buffer.h; sourceTree = "<group>"; };
 		7C920CF7181669FF00DA1477 /* TextureOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureOperations.cpp; sourceTree = "<group>"; };
 		7C920CF8181669FF00DA1477 /* TextureOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureOperations.h; sourceTree = "<group>"; };
 		7C99B6A2133D342100FC2B16 /* CircularCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CircularCache.cpp; sourceTree = "<group>"; };
@@ -9697,6 +9702,8 @@
 				E38E1E260D25F9FD00618676 /* Archive.h */,
 				F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */,
 				F5FDF51B0E7218950005B0A6 /* AsyncFileCopy.h */,
+				7C908892196358A8003D0619 /* auto_buffer.cpp */,
+				7C908893196358A8003D0619 /* auto_buffer.h */,
 				F5BDB81F120203C200F0B710 /* AutoPtrHandle.cpp */,
 				F5BDB81E120203C200F0B710 /* AutoPtrHandle.h */,
 				DF52769A151BAEDA00B5B63B /* Base64.cpp */,
@@ -11850,6 +11857,7 @@
 				7CAA469019427AED00008885 /* PosixDirectory.cpp in Sources */,
 				DF033D381946612400BFC82E /* AEDeviceEnumerationOSX.cpp in Sources */,
 				7C525DF5195E2D8100BE3482 /* SaveFileStateJob.cpp in Sources */,
+				7C908894196358A8003D0619 /* auto_buffer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13043,6 +13051,7 @@
 				7CCDACCC19275D790074CF51 /* NptAppleLogConfig.mm in Sources */,
 				7CAA469219427AED00008885 /* PosixDirectory.cpp in Sources */,
 				7C525DF7195E2D8100BE3482 /* SaveFileStateJob.cpp in Sources */,
+				7C908896196358A8003D0619 /* auto_buffer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14238,6 +14247,7 @@
 				7CCDACCB19275D790074CF51 /* NptAppleLogConfig.mm in Sources */,
 				7CAA469119427AED00008885 /* PosixDirectory.cpp in Sources */,
 				7C525DF6195E2D8100BE3482 /* SaveFileStateJob.cpp in Sources */,
+				7C908895196358A8003D0619 /* auto_buffer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

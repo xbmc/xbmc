@@ -3071,6 +3071,9 @@
       <Filter>filesystem\win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\CompileInfo.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\auto_buffer.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6016,6 +6019,9 @@
       <Filter>filesystem\win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\CompileInfo.h" />
+    <ClInclude Include="..\..\xbmc\utils\auto_buffer.h">
+      <Filter>utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">

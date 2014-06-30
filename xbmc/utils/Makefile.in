@@ -3,6 +3,7 @@ SRCS += AliasShortcutUtils.cpp
 SRCS += Archive.cpp
 SRCS += AsyncFileCopy.cpp
 SRCS += AutoPtrHandle.cpp
+SRCS += auto_buffer.cpp
 SRCS += Base64.cpp
 SRCS += BitstreamConverter.cpp
 SRCS += BitstreamStats.cpp
