@@ -306,7 +306,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             }
             else if (source)
             {
-              valuesVec = GetFileEnumValues(source, setting->Attribute("mask"), setting->Attribute("option"));
+              valuesVec = GetFileEnumValues(source, XMLUtils::GetAttribute(setting, "mask"), XMLUtils::GetAttribute(setting, "option"));
             }
 
             for (unsigned int i = 0; i < valuesVec.size(); i++)
@@ -503,7 +503,7 @@ void CGUIDialogAddonSettings::UpdateFromControls()
   const TiXmlElement *setting = GetFirstSetting();
   while (setting)
   {
-    CStdString id = setting->Attribute("id");
+    const std::string id   = XMLUtils::GetAttribute(setting, "id");
     const char *type = setting->Attribute("type");
     const CGUIControl* control = GetControl(controlID++);
 
@@ -526,7 +526,7 @@ void CGUIDialogAddonSettings::UpdateFromControls()
           break;
         case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
           {
-            CStdString option = setting->Attribute("option");
+            CStdString option = XMLUtils::GetAttribute(setting, "option");
             if (option.size() == 0 || StringUtils::EqualsNoCase(option, "float"))
               value = StringUtils::Format("%f", ((CGUISettingsSliderControl *)control)->GetFloatValue());
             else
@@ -801,7 +801,7 @@ void CGUIDialogAddonSettings::CreateControls()
         ((CGUISpinControlEx *)pControl)->SetText(label);
         ((CGUISpinControlEx *)pControl)->SetFloatValue(1.0f);
 
-        vector<std::string> items = GetFileEnumValues(values, setting->Attribute("mask"), setting->Attribute("option"));
+        vector<std::string> items = GetFileEnumValues(values, XMLUtils::GetAttribute(setting, "mask"), XMLUtils::GetAttribute(setting, "option"));
         for (unsigned int i = 0; i < items.size(); ++i)
         {
           ((CGUISpinControlEx *)pControl)->AddLabel(items[i], i);
@@ -854,7 +854,7 @@ void CGUIDialogAddonSettings::CreateControls()
         float fMin = 0.0f;
         float fMax = 100.0f;
         float fInc = 1.0f;
-        vector<std::string> range = StringUtils::Split(setting->Attribute("range"), ",");
+        vector<std::string> range = StringUtils::Split(XMLUtils::GetAttribute(setting, "range"), ",");
         if (range.size() > 1)
         {
           fMin = (float)atof(range[0].c_str());

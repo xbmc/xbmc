@@ -35,6 +35,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Weather.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
 
 using namespace std;
 using namespace PVR;
@@ -279,10 +280,10 @@ bool CLangInfo::Load(const std::string& strFileName, bool onlyCheckLanguage /*= 
   const TiXmlNode *pCharSets = pRootElement->FirstChild("charsets");
   if (pCharSets && !pCharSets->NoChildren())
   {
-    const TiXmlNode *pGui = pCharSets->FirstChild("gui");
+    const TiXmlElement *pGui = pCharSets->FirstChildElement("gui");
     if (pGui && !pGui->NoChildren())
     {
-      CStdString strForceUnicodeFont = ((TiXmlElement*) pGui)->Attribute("unicodefont");
+      CStdString strForceUnicodeFont = XMLUtils::GetAttribute(pGui, "unicodefont");
 
       if (strForceUnicodeFont.Equals("true"))
         m_defaultRegion.m_forceUnicodeFont=true;
@@ -318,7 +319,7 @@ bool CLangInfo::Load(const std::string& strFileName, bool onlyCheckLanguage /*= 
     while (pRegion)
     {
       CRegion region(m_defaultRegion);
-      region.m_strName=pRegion->Attribute("name");
+      region.m_strName = XMLUtils::GetAttribute(pRegion, "name");
       if (region.m_strName.empty())
         region.m_strName="N/A";
 
@@ -346,8 +347,8 @@ bool CLangInfo::Load(const std::string& strFileName, bool onlyCheckLanguage /*= 
       if (pTime && !pTime->NoChildren())
       {
         region.m_strTimeFormat=pTime->FirstChild()->Value();
-        region.m_strMeridiemSymbols[MERIDIEM_SYMBOL_AM]=pTime->Attribute("symbolAM");
-        region.m_strMeridiemSymbols[MERIDIEM_SYMBOL_PM]=pTime->Attribute("symbolPM");
+        region.m_strMeridiemSymbols[MERIDIEM_SYMBOL_AM] = XMLUtils::GetAttribute(pTime, "symbolAM");
+        region.m_strMeridiemSymbols[MERIDIEM_SYMBOL_PM] = XMLUtils::GetAttribute(pTime, "symbolPM");
       }
 
       const TiXmlNode *pTempUnit=pRegion->FirstChild("tempunit");

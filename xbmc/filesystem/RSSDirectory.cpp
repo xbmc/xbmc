@@ -26,6 +26,7 @@
 #include "settings/Settings.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
 #include "utils/HTMLUtil.h"
 #include "utils/StringUtils.h"
 #include "video/VideoInfoTag.h"
@@ -121,8 +122,8 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
   {
     SResource res;
     res.tag = "media:content";
-    res.mime    = item_child->Attribute("type");
-    res.path    = item_child->Attribute("url");
+    res.mime    = XMLUtils::GetAttribute(item_child, "type");
+    res.path    = XMLUtils::GetAttribute(item_child, "url");
     if(item_child->Attribute("width"))
       res.width    = atoi(item_child->Attribute("width"));
     if(item_child->Attribute("height"))
@@ -166,7 +167,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
       return;
 
     CStdString description = text;
-    if(CStdString(item_child->Attribute("type")) == "html")
+    if(XMLUtils::GetAttribute(item_child, "type") == "html")
       HTML::CHTMLUtil::RemoveTags(description);
     item->SetProperty("description", description);
   }
@@ -175,7 +176,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
     if(text.empty())
       return;
 
-    CStdString scheme = item_child->Attribute("scheme");
+    CStdString scheme = XMLUtils::GetAttribute(item_child, "scheme");
 
     /* okey this is silly, boxee what did you think?? */
     if     (scheme == "urn:boxee:genre")
@@ -202,7 +203,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
   }
   else if(name == "rating")
   {
-    CStdString scheme = item_child->Attribute("scheme");
+    CStdString scheme = XMLUtils::GetAttribute(item_child, "scheme");
     if(scheme == "urn:user")
       vtag->m_fRating = (float)atof(text.c_str());
     else
@@ -210,7 +211,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
   }
   else if(name == "credit")
   {
-    CStdString role = item_child->Attribute("role");
+    CStdString role = XMLUtils::GetAttribute(item_child, "role");
     if     (role == "director")
       vtag->m_director.push_back(text);
     else if(role == "author"
@@ -321,7 +322,7 @@ static void ParseItemVoddler(CFileItem* item, SResources& resources, TiXmlElemen
 
     SResource res;
     res.tag  = "voddler:trailer";
-    res.mime = element->Attribute("type");
+    res.mime = XMLUtils::GetAttribute(element, "type");
     res.path = text;
     resources.push_back(res);
   }

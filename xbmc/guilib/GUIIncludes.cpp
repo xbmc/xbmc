@@ -23,6 +23,7 @@
 #include "GUIInfoManager.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
 #include "utils/StringUtils.h"
 #include "interfaces/info/SkinVariable.h"
 
@@ -207,7 +208,7 @@ void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node, std::map<INFO::Inf
   CStdString type;
   if (node->ValueStr() == "control")
   {
-    type = node->Attribute("type");
+    type = XMLUtils::GetAttribute(node, "type");
     map<CStdString, TiXmlElement>::const_iterator it = m_defaults.find(type);
     if (it != m_defaults.end())
     {

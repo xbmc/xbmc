@@ -24,6 +24,7 @@
 #include "utils/StringUtils.h"
 #include "settings/lib/Setting.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
 #include "utils/URIUtils.h"
 #include "guilib/LocalizeStrings.h"
 
@@ -491,8 +492,8 @@ void CPeripheral::LoadPersistedSettings(void)
     const TiXmlElement *setting = doc.RootElement()->FirstChildElement("setting");
     while (setting)
     {
-      CStdString strId(setting->Attribute("id"));
-      CStdString strValue(setting->Attribute("value"));
+      CStdString    strId = XMLUtils::GetAttribute(setting, "id");
+      CStdString strValue = XMLUtils::GetAttribute(setting, "value");
       SetSetting(strId, strValue);
 
       setting = setting->NextSiblingElement("setting");
