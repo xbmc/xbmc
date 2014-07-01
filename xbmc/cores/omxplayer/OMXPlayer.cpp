@@ -566,19 +566,11 @@ COMXPlayer::COMXPlayer(IPlayerCallback &callback)
   m_stamp             = 0.0;
 
   memset(&m_SpeedState, 0, sizeof(m_SpeedState));
-
-#ifdef DVDDEBUG_MESSAGE_TRACKER
-  g_dvdMessageTracker.Init();
-#endif
 }
 
 COMXPlayer::~COMXPlayer()
 {
   CloseFile();
-
-#ifdef DVDDEBUG_MESSAGE_TRACKER
-  g_dvdMessageTracker.DeInit();
-#endif
 }
 
 bool COMXPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)

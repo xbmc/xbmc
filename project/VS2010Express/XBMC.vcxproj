@@ -1446,7 +1446,6 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamTV.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDMessage.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDMessageQueue.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDMessageTracker.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDOverlayContainer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDOverlayRenderer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayer.cpp" />
@@ -2133,7 +2132,6 @@
     <ClInclude Include="..\..\xbmc\win32\WindowHelper.h" />
     <ClInclude Include="..\..\xbmc\cores\DummyVideoPlayer.h" />
     <ClInclude Include="..\..\xbmc\cores\IPlayer.h" />
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\dvd_config.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDAudio.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDClock.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxSPU.h" />
@@ -2142,7 +2140,6 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamTV.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDMessage.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDMessageQueue.h" />
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDMessageTracker.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDOverlayContainer.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDOverlayRenderer.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayer.h" />
