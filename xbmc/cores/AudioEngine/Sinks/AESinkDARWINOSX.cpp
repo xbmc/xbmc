@@ -128,34 +128,6 @@ OSStatus deviceChangedCB(AudioObjectID                       inObjectID,
   return noErr;
 }
 
-void RegisterDeviceChangedCB(bool bRegister, void *ref)
-{
-  OSStatus ret = noErr;
-  AudioObjectPropertyAddress inAdr =
-  {
-    kAudioHardwarePropertyDevices,
-    kAudioObjectPropertyScopeGlobal,
-    kAudioObjectPropertyElementMaster
-  };
-
-  if (bRegister)
-  {
-    ret = AudioObjectAddPropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
-    inAdr.mSelector = kAudioHardwarePropertyDefaultOutputDevice;
-    ret = AudioObjectAddPropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
-  }
-  else
-  {
-    ret = AudioObjectRemovePropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
-    inAdr.mSelector = kAudioHardwarePropertyDefaultOutputDevice;
-    ret = AudioObjectRemovePropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
-  }
-
-  if (ret != noErr)
-    CLog::Log(LOGERROR, "CCoreAudioAE::Deinitialize - error %s a listener callback for device changes!", bRegister?"attaching":"removing");
-}
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAESinkDARWINOSX::CAESinkDARWINOSX()
 : m_latentFrames(0),
@@ -184,12 +156,14 @@ CAESinkDARWINOSX::CAESinkDARWINOSX()
   {
     CLog::Log(LOGERROR, "CCoreAudioAE::constructor: kAudioHardwarePropertyRunLoop error.");
   }
-  RegisterDeviceChangedCB(true, this);
+  CCoreAudioDevice::RegisterDeviceChangedCB(true, deviceChangedCB, this);
+  CCoreAudioDevice::RegisterDefaultOutputDeviceChangedCB(true, deviceChangedCB, this);
 }
 
 CAESinkDARWINOSX::~CAESinkDARWINOSX()
 {
-  RegisterDeviceChangedCB(false, this);
+  CCoreAudioDevice::RegisterDeviceChangedCB(false, deviceChangedCB, this);
+  CCoreAudioDevice::RegisterDefaultOutputDeviceChangedCB(false, deviceChangedCB, this);
 }
 
 bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
