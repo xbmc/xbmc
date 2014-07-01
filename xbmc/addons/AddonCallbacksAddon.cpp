@@ -31,6 +31,7 @@
 #include "network/Network.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
+#include "utils/XMLUtils.h"
 #include "cores/dvdplayer/DVDCodecs/DVDCodecs.h"
 
 using namespace XFILE;
@@ -197,31 +198,31 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
       while (setting)
       {
         const char *id = setting->Attribute("id");
-        const char *type = setting->Attribute("type");
+        const std::string type = XMLUtils::GetAttribute(setting, "type");
 
-        if (id && strcmpi(id, strSettingName) == 0 && type)
+        if (id && strcmpi(id, strSettingName) == 0 && !type.empty())
         {
-          if (strcmpi(type, "text")   == 0 || strcmpi(type, "ipaddress") == 0 ||
-              strcmpi(type, "folder") == 0 || strcmpi(type, "action")    == 0 ||
-              strcmpi(type, "music")  == 0 || strcmpi(type, "pictures")  == 0 ||
-              strcmpi(type, "folder") == 0 || strcmpi(type, "programs")  == 0 ||
-              strcmpi(type, "file")  == 0 || strcmpi(type, "fileenum")  == 0)
+          if (type == "text"   || type == "ipaddress" ||
+              type == "folder" || type == "action"    ||
+              type == "music"  || type == "pictures"  ||
+              type == "folder" || type == "programs"  ||
+              type == "file"   || type == "fileenum")
           {
             strcpy((char*) settingValue, addonHelper->m_addon->GetSetting(id).c_str());
             return true;
           }
-          else if (strcmpi(type, "number") == 0 || strcmpi(type, "enum") == 0 ||
-                   strcmpi(type, "labelenum") == 0)
+          else if (type == "number" || type == "enum" ||
+                   type == "labelenum")
           {
             *(int*) settingValue = (int) atoi(addonHelper->m_addon->GetSetting(id));
             return true;
           }
-          else if (strcmpi(type, "bool") == 0)
+          else if (type == "bool")
           {
             *(bool*) settingValue = (bool) (addonHelper->m_addon->GetSetting(id) == "true" ? true : false);
             return true;
           }
-          else if (strcmpi(type, "slider") == 0)
+          else if (type == "slider")
           {
             const char *option = setting->Attribute("option");
             if (option && strcmpi(option, "int") == 0)
