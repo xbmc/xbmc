@@ -672,8 +672,8 @@ void CGUIDialogAddonSettings::CreateControls()
     const std::string lvalues = XMLUtils::GetAttribute(setting, "lvalues");
     const std::string entries = XMLUtils::GetAttribute(setting, "entries");
     const std::string defaultValue = XMLUtils::GetAttribute(setting, "default");
-    const char *subsetting = setting->Attribute("subsetting");
-    CStdString label = GetString(setting->Attribute("label"), subsetting && 0 == strcmpi(subsetting, "true"));
+    const std::string subsetting = XMLUtils::GetAttribute(setting, "subsetting");
+    const std::string label = GetString(setting->Attribute("label"), subsetting == "true");
 
     bool bSort = XMLUtils::GetAttribute(setting, "sort") == "yes";
     if (!id.empty() && !type.empty())
@@ -745,7 +745,7 @@ void CGUIDialogAddonSettings::CreateControls()
 
        if (!lvalues.empty())
           StringUtils::Tokenize(lvalues, valuesVec, "|");
-        else if (StringUtils::EqualsNoCase(values, "$HOURS"))
+        else if (values == "$HOURS")
         {
           for (unsigned int i = 0; i < 24; i++)
           {
