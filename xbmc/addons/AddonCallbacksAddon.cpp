@@ -199,7 +199,7 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
         const char *id = setting->Attribute("id");
         const char *type = setting->Attribute("type");
 
-        if (strcmpi(id, strSettingName) == 0 && type)
+        if (id && strcmpi(id, strSettingName) == 0 && type)
         {
           if (strcmpi(type, "text")   == 0 || strcmpi(type, "ipaddress") == 0 ||
               strcmpi(type, "folder") == 0 || strcmpi(type, "action")    == 0 ||

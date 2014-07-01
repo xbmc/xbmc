@@ -479,7 +479,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
       const char *type = setting->Attribute("type");
       const char *option = setting->Attribute("option");
 
-      if (type)
+      if (id && type)
       {
         if (strcmpi(type,"sep") == 0 || strcmpi(type,"lsep") == 0)
         {

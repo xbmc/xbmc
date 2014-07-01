@@ -164,7 +164,8 @@ bool CGUIDialogAddonSettings::OnAction(const CAction& action)
         {
           const char* id = setting->Attribute("id");
           const char* value = setting->Attribute("default");
-          m_settings[id] = value;
+          if (id && value)
+            m_settings[id] = value;
           CreateControls();
           CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(),iControl);
           OnMessage(msg);
@@ -234,10 +235,11 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
     if (controlId == iControl)
     {
       const CGUIControl* control = GetControl(controlId);
-      if (control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
+      const char *id = setting->Attribute("id");
+      const char *type = setting->Attribute("type");
+      if (control && control->GetControlType() == CGUIControl::GUICONTROL_BUTTON &&
+          id && type)
       {
-        const char *id = setting->Attribute("id");
-        const char *type = setting->Attribute("type");
         const char *option = setting->Attribute("option");
         const char *source = setting->Attribute("source");
         CStdString value = m_buttonValues[id];
@@ -412,7 +414,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         }
         else if (strcmpi(type, "action") == 0)
         {
-          CStdString action = setting->Attribute("action");
+          CStdString action = XMLUtils::GetAttribute(setting, "action");
           if (!action.empty())
           {
             // replace $CWD with the url of plugin/script
@@ -686,7 +688,7 @@ void CGUIDialogAddonSettings::CreateControls()
     if (sort && (strcmp(sort, "yes") == 0))
       bSort=true;
 
-    if (type)
+    if (id && type)
     {
       bool isAddonSetting = false;
       if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
@@ -867,10 +869,10 @@ void CGUIDialogAddonSettings::CreateControls()
             fMax = (float)atof(range[1].c_str());
         }
 
-        CStdString option = setting->Attribute("option");
+        std::string option = XMLUtils::GetAttribute(setting, "option");
         int iType=0;
 
-        if (option.size() == 0 || StringUtils::EqualsNoCase(option, "float"))
+        if (option.empty() || StringUtils::EqualsNoCase(option, "float"))
           iType = SLIDER_CONTROL_TYPE_FLOAT;
         else if (StringUtils::EqualsNoCase(option, "int"))
           iType = SLIDER_CONTROL_TYPE_INT;
