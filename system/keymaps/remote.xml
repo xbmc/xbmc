@@ -555,4 +555,12 @@
       <clear>Delete</clear>
     </remote>
   </AddonSettings>
+  <Addon>
+    <remote>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
+    </remote>
+  </Addon>
 </keymap>

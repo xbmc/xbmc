@@ -552,4 +552,12 @@
       <delete>Delete</delete>
     </keyboard>
   </AddonSettings>
+  <Addon>
+    <keyboard>
+      <f1>Red</f1>
+      <f2>Green</f2>
+      <f3>Yellow</f3>
+      <f4>Blue</f4>
+    </keyboard>
+  </Addon>
 </keymap>
