@@ -1155,7 +1155,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         m_discardBufferPools.push_back(m_vizBuffersInput);
         m_vizBuffersInput = NULL;
       }
-      if (!m_vizBuffers)
+      if (!m_vizBuffers && m_audioCallback)
       {
         AEAudioFormat vizFormat = m_internalFormat;
         vizFormat.m_channelLayout = AE_CH_LAYOUT_2_0;
@@ -1919,10 +1919,11 @@ bool CActiveAE::RunStages()
         // viz
         {
           CSingleLock lock(m_vizLock);
-          if (m_audioCallback && m_vizBuffers && !m_streams.empty())
+          if (m_audioCallback && !m_streams.empty())
           {
-            if (!m_vizInitialized)
+            if (!m_vizInitialized || !m_vizBuffers)
             {
+              Configure();
               m_audioCallback->OnInitialize(2, m_vizBuffers->m_format.m_sampleRate, 32);
               m_vizInitialized = true;
             }
