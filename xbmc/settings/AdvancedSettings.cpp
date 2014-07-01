@@ -1234,7 +1234,7 @@ void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_
         if (pRegExp->ToElement())
         {
           CStdString byDate = XMLUtils::GetAttribute(pRegExp->ToElement(), "bydate");
-          if (stricmp(byDate, "true") == 0)
+          if (byDate == "true")
           {
             bByDate = true;
           }
