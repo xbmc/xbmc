@@ -60,6 +60,7 @@
       <display>FullScreen</display>
       <start>PreviousMenu</start>
       <record>Record</record>
+      <eject>XBMC.EjectTray()</eject>
       <volumeplus>VolumeUp</volumeplus>
       <volumeminus>VolumeDown</volumeminus>
       <mute>Mute</mute>
