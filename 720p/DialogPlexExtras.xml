@@ -72,6 +72,7 @@
 				<include>leftMenuBarButton</include>
 			</control>
 		</control>
+			<include>NowPlayingSideBar</include>
 			<include>Grid</include>
 			<include>Non16x9Cache</include>
 	</controls>
