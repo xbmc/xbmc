@@ -29,7 +29,8 @@
 
 #include "xbmc/linux/LinuxV4l2.h"
 
-#define STREAM_BUFFER_SIZE              1572864 // compressed frame size. 1080p mpeg4 10Mb/s can be up to 786k in size, so this is to make sure frame fits into buffer
+#define STREAM_BUFFER_SIZE              1048576 // compressed frame size. 1080p mpeg4 10Mb/s can be up to 786k in size, so this is to make sure frame fits into buffer
+						// for unknown reason, possibly firmware bug, if set to other values, it corrupts adjacent value in the setup data structure for h264 streams
 #define MFC_OUTPUT_BUFFERS_CNT          2       // 1 doesn't work at all
 #define MFC_CAPTURE_EXTRA_BUFFER_CNT    3       // these are extra buffers, better keep their count as big as going to be simultaneous dequeued buffers number
 

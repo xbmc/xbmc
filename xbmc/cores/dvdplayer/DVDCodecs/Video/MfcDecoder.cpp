@@ -191,7 +191,7 @@ bool MfcDecoder::SetupOutputFormat(CDVDStreamInfo &hints)
 
   fmt.type = V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE;
   fmt.fmt.pix_mp.plane_fmt[0].sizeimage = STREAM_BUFFER_SIZE;
-  fmt.fmt.pix_mp.num_planes = V4L2_NUM_MAX_PLANES;
+  fmt.fmt.pix_mp.num_planes = 1; // should be V4L2_NUM_MAX_PLANES, set to 1 to fix weird MFC5 firmware bug
 
   if (ioctl(m_iDecoderHandle, VIDIOC_S_FMT, &fmt) != 0)
   {
@@ -241,6 +241,11 @@ bool MfcDecoder::SetupOutputBuffers()
   }
 
   CLog::Log(LOGDEBUG, "%s::%s - MFC OUTPUT Succesfully mmapped %d buffers", CLASSNAME, __func__, m_MFCOutputBuffersCount);
+
+  for (int n = 0; n < m_MFCOutputBuffersCount; n++) {
+    m_v4l2MFCOutputBuffers[n].iNumPlanes = 1; // set to 1 to fix weird MFC5 firmware bug
+  }
+
   return true;
 }
 
