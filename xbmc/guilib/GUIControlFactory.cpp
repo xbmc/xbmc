@@ -658,11 +658,8 @@ bool CGUIControlFactory::GetString(const TiXmlNode* pRootNode, const char *strTa
 
 CStdString CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
 {
-  CStdString type;
-  const char *szType = pControlNode->Attribute("type");
-  if (szType)
-    type = szType;
-  else  // backward compatibility - not desired
+  CStdString type = XMLUtils::GetAttribute(pControlNode, "type");
+  if (type.empty())  // backward compatibility - not desired
     XMLUtils::GetString(pControlNode, "type", type);
   return type;
 }

@@ -278,16 +278,12 @@ static void ParseItemRSS(CFileItem* item, SResources& resources, TiXmlElement* i
   }
   else if(name == "enclosure")
   {
-    const char * url  = item_child->Attribute("url");
-    const char * type = item_child->Attribute("type");
     const char * len  = item_child->Attribute("length");
 
     SResource res;
     res.tag = "rss:enclosure";
-    if(url)
-      res.path = url;
-    if(type)
-      res.mime = type;
+    res.path = XMLUtils::GetAttribute(item_child, "url");
+    res.mime = XMLUtils::GetAttribute(item_child, "type");
     if(len)
       res.size = _atoi64(len);
 

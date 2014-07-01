@@ -40,6 +40,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "StringUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
 #include "log.h"
 
 using namespace XFILE;
@@ -1516,7 +1517,6 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
   else
   {
     CStdString piconXML, piconPath, defaultPng;
-    CStdString strName, strPng;
     piconPath = "special://xbmc/userdata/PictureIcon/Picon/";
     defaultPng = piconPath+"tuxbox.png";
     piconXML = "special://xbmc/userdata/PictureIcon/picon.xml";
@@ -1543,15 +1543,12 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
     pService = pServices->FirstChildElement("service");
     while(pService)
     {
-      if(pService->Attribute("name"))
-        strName = StringUtils::Format("%s", pService->Attribute("name"));
-
-      if(pService->Attribute("png"))
-        strPng = StringUtils::Format("%s", pService->Attribute("png"));
+      CStdString strName = XMLUtils::GetAttribute(pService, "name");
+      CStdString  strPng = XMLUtils::GetAttribute(pService, "png");
 
       if(strName.Equals(strServiceName))
       {
-        strPng = StringUtils::Format("%s%s", piconPath.c_str(), strPng.c_str());
+        strPng = piconPath + strPng;
         StringUtils::ToLower(strPng);
         CLog::Log(LOGDEBUG, "%s %s: Path is: %s", __FUNCTION__,strServiceName.c_str(), strPng.c_str());
         return strPng;

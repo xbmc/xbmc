@@ -71,8 +71,7 @@ bool CFanart::Unpack()
       if (url.empty())
       {
         data.strImage = fanartThumb->GetText();
-        if (fanartThumb->Attribute("preview"))
-          data.strPreview = fanartThumb->Attribute("preview");
+        data.strPreview = XMLUtils::GetAttribute(fanartThumb, "preview");
       }
       else
       {

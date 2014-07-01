@@ -667,28 +667,16 @@ void CGUIDialogAddonSettings::CreateControls()
   while (setting)
   {
     const std::string type = XMLUtils::GetAttribute(setting, "type");
-    const char *id = setting->Attribute("id");
-    CStdString values;
-    if (setting->Attribute("values"))
-      values = setting->Attribute("values");
-    CStdString lvalues;
-    if (setting->Attribute("lvalues"))
-      lvalues = setting->Attribute("lvalues");
-    CStdString entries;
-    if (setting->Attribute("entries"))
-      entries = setting->Attribute("entries");
-    CStdString defaultValue;
-    if (setting->Attribute("default"))
-      defaultValue= setting->Attribute("default");
+    const std::string   id = XMLUtils::GetAttribute(setting, "id");
+    const std::string values = XMLUtils::GetAttribute(setting, "values");
+    const std::string lvalues = XMLUtils::GetAttribute(setting, "lvalues");
+    const std::string entries = XMLUtils::GetAttribute(setting, "entries");
+    const std::string defaultValue = XMLUtils::GetAttribute(setting, "default");
     const char *subsetting = setting->Attribute("subsetting");
     CStdString label = GetString(setting->Attribute("label"), subsetting && 0 == strcmpi(subsetting, "true"));
 
-    bool bSort=false;
-    const char *sort = setting->Attribute("sort");
-    if (sort && (strcmp(sort, "yes") == 0))
-      bSort=true;
-
-    if (id && !type.empty())
+    bool bSort = XMLUtils::GetAttribute(setting, "sort") == "yes";
+    if (!id.empty() && !type.empty())
     {
       bool isAddonSetting = false;
       if (type == "text"   || type == "ipaddress"
@@ -702,15 +690,15 @@ void CGUIDialogAddonSettings::CreateControls()
         pControl = new CGUIButtonControl(*pOriginalButton);
         if (!pControl) return;
         ((CGUIButtonControl *)pControl)->SetLabel(label);
-        if (id)
+        if (!id.empty())
         {
           CStdString value = m_settings[id];
           m_buttonValues[id] = value;
           // get any option to test for hidden
-          const char *option = setting->Attribute("option");
-          if (option && (strstr(option, "urlencoded")))
+          const std::string option = XMLUtils::GetAttribute(setting, "option");
+          if (option == "urlencoded")
             value = CURL::Decode(value);
-          if (option && (strstr(option, "hidden")))
+          else if (option == "hidden")
           {
             CStdString hiddenText;
             hiddenText.append(value.size(), L'*');
@@ -757,7 +745,7 @@ void CGUIDialogAddonSettings::CreateControls()
 
        if (!lvalues.empty())
           StringUtils::Tokenize(lvalues, valuesVec, "|");
-        else if (values.Equals("$HOURS"))
+        else if (StringUtils::EqualsNoCase(values, "$HOURS"))
         {
           for (unsigned int i = 0; i < 24; i++)
           {
@@ -1122,10 +1110,10 @@ void CGUIDialogAddonSettings::SetDefaultSettings()
     const TiXmlElement *setting = category->FirstChildElement("setting");
     while (setting)
     {
-      const char *id = setting->Attribute("id");
+      const std::string   id = XMLUtils::GetAttribute(setting, "id");
       const std::string type = XMLUtils::GetAttribute(setting, "type");
       const char *value = setting->Attribute("default");
-      if (id)
+      if (!id.empty())
       {
         if (value)
           m_settings[id] = value;

@@ -430,7 +430,7 @@ bool CPeripherals::LoadMappings(void)
     PeripheralID id;
     PeripheralDeviceMapping mapping;
 
-    mapping.m_strDeviceName = currentNode->Attribute("name") ? CStdString(currentNode->Attribute("name")) : StringUtils::EmptyString;
+    mapping.m_strDeviceName = XMLUtils::GetAttribute(currentNode, "name");
 
     // If there is no vendor_product attribute ignore this entry
     if (currentNode->Attribute("vendor_product"))
@@ -478,16 +478,12 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
 
     CStdString strSettingsType = XMLUtils::GetAttribute(currentNode, "type");
     int iLabelId = currentNode->Attribute("label") ? atoi(currentNode->Attribute("label")) : -1;
-    bool bConfigurable = (!currentNode->Attribute("configurable") ||
-                          strcmp(currentNode->Attribute("configurable"), "") == 0 ||
-                           (strcmp(currentNode->Attribute("configurable"), "no") != 0 &&
-                            strcmp(currentNode->Attribute("configurable"), "false") != 0 &&
-                            strcmp(currentNode->Attribute("configurable"), "0") != 0));
+    const std::string config = XMLUtils::GetAttribute(currentNode, "configurable");
+    bool bConfigurable = (config.empty() || (config != "no" && config != "false" && config != "0"));
     if (strSettingsType.Equals("bool"))
     {
-      bool bValue = (strcmp(currentNode->Attribute("value"), "no") != 0 &&
-                     strcmp(currentNode->Attribute("value"), "false") != 0 &&
-                     strcmp(currentNode->Attribute("value"), "0") != 0);
+      const std::string value = XMLUtils::GetAttribute(currentNode, "value");
+      bool bValue = (value != "no" && value != "false" && value != "0");
       setting = new CSettingBool(strKey, iLabelId, bValue);
     }
     else if (strSettingsType.Equals("int"))

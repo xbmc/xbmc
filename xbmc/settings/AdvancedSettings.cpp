@@ -527,13 +527,8 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     TiXmlElement* pKaraokeBackground = pElement->FirstChildElement("defaultbackground");
     if (pKaraokeBackground)
     {
-      const char* attr = pKaraokeBackground->Attribute("type");
-      if ( attr )
-        m_karaokeDefaultBackgroundType = attr;
-
-      attr = pKaraokeBackground->Attribute("path");
-      if ( attr )
-        m_karaokeDefaultBackgroundFilePath = attr;
+      pKaraokeBackground->QueryStringAttribute("type", &m_karaokeDefaultBackgroundType);
+      pKaraokeBackground->QueryStringAttribute("path", &m_karaokeDefaultBackgroundFilePath);
     }
   }
 
