@@ -225,7 +225,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   AudioStreamID outputStream = 0;
   UInt32 streamIdx = 0;
   UInt32 numOutputChannels = 0;
-  bool passthrough = false;
+  EPassthroughMode passthrough = PassthroughModeNone;
   m_planes = 1;
   if (devEnum.FindSuitableFormatForStream(streamIdx, format, outputFormat, passthrough, outputStream))
   {
@@ -248,12 +248,12 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   /* Update our AE format */
   format.m_sampleRate    = outputFormat.mSampleRate;
   
-  m_outputBitstream   = passthrough && outputFormat.mFormatID == kAudioFormatLinearPCM;
+  m_outputBitstream   = passthrough == PassthroughModeBitstream;
 
   std::string formatString;
   CLog::Log(LOGDEBUG, "%s: Selected stream[%u] - id: 0x%04X, Physical Format: %s %s", __FUNCTION__, (unsigned int)0, (unsigned int)outputStream, StreamDescriptionToString(outputFormat, formatString), m_outputBitstream ? "bitstreamed passthrough" : "");
 
-  SetHogMode(passthrough);
+  SetHogMode(passthrough != PassthroughModeNone);
 
   // Configure the output stream object
   m_outputStream.Open(outputStream);
@@ -293,7 +293,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   m_buffer = new AERingBuffer(num_buffers * format.m_frames * m_frameSizePerPlane, m_planes);
   CLog::Log(LOGDEBUG, "%s: using buffer size: %u (%f ms)", __FUNCTION__, m_buffer->GetMaxSize(), (float)m_buffer->GetMaxSize() / (m_framesPerSecond * m_frameSizePerPlane));
 
-  if (passthrough)
+  if (passthrough != PassthroughModeNone)
     format.m_dataFormat = AE_FMT_S16NE;
   else
     format.m_dataFormat = (m_planes > 1) ? AE_FMT_FLOATP : AE_FMT_FLOAT;

@@ -23,6 +23,14 @@
 #include "cores/AudioEngine/Sinks/osx/CoreAudioDevice.h"
 
 typedef std::vector< std::pair<AudioDeviceID, CAEDeviceInfo> > CADeviceList;
+
+typedef enum PassthroughMode
+{
+  PassthroughModeNone = 0,
+  PassthroughModeNative,
+  PassthroughModeBitstream
+} EPassthroughMode;
+  
 //Hirarchy:
 // Device
 //       - 1..n streams
@@ -78,12 +86,12 @@ public:
   *
   * @param format    [in]     - the requested AE format which should be matched to the stream formats of CA
   * @param outputFormat [out] - the found CA format which matches best to the requested AE format
-  * @param passthrough [out]  - flag indicating that the found CA format is a passthrough format
+  * @param passthrough [out]  - flag indicating that the found CA format is a native passthrough format, bitstreamed passthroughformat or no passthroughformat
   * @param outputStream [out] - the coreaudio streamid which contains the coreaudio format returned in outputFormat
   * @return true if a matching corea audio format was found - else false
   */
   bool          FindSuitableFormatForStream(UInt32 &streamIdx, const AEAudioFormat &format, 
-                                            AudioStreamBasicDescription &outputFormat, bool &passthrough, 
+                                            AudioStreamBasicDescription &outputFormat, EPassthroughMode &passthrough,
                                             AudioStreamID &outputStream) const;
 
   /*!
