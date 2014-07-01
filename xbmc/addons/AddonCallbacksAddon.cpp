@@ -202,11 +202,11 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
 
         if (id == strSettingName && !type.empty())
         {
-          if (type == "text"   || type == "ipaddress" ||
-              type == "folder" || type == "action"    ||
-              type == "music"  || type == "pictures"  ||
-              type == "folder" || type == "programs"  ||
-              type == "file"   || type == "fileenum")
+          if (type == "text"     || type == "ipaddress" ||
+              type == "folder"   || type == "action"    ||
+              type == "music"    || type == "pictures"  ||
+              type == "programs" || type == "fileenum"  ||
+              type == "file")
           {
             strcpy((char*) settingValue, addonHelper->m_addon->GetSetting(id).c_str());
             return true;
