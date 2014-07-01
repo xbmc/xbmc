@@ -666,14 +666,14 @@ void CGUIDialogAddonSettings::CreateControls()
   const TiXmlElement *setting = GetFirstSetting();
   while (setting)
   {
-    const std::string type = XMLUtils::GetAttribute(setting, "type");
-    const std::string   id = XMLUtils::GetAttribute(setting, "id");
-    const std::string values = XMLUtils::GetAttribute(setting, "values");
-    const std::string lvalues = XMLUtils::GetAttribute(setting, "lvalues");
-    const std::string entries = XMLUtils::GetAttribute(setting, "entries");
-    const std::string defaultValue = XMLUtils::GetAttribute(setting, "default");
+    const std::string       type = XMLUtils::GetAttribute(setting, "type");
+    const std::string         id = XMLUtils::GetAttribute(setting, "id");
+    const std::string     values = XMLUtils::GetAttribute(setting, "values");
+    const std::string    lvalues = XMLUtils::GetAttribute(setting, "lvalues");
+    const std::string    entries = XMLUtils::GetAttribute(setting, "entries");
+    const std::string defaultVal = XMLUtils::GetAttribute(setting, "default");
     const std::string subsetting = XMLUtils::GetAttribute(setting, "subsetting");
-    const std::string label = GetString(setting->Attribute("label"), subsetting == "true");
+    const std::string      label = GetString(setting->Attribute("label"), subsetting == "true");
 
     bool bSort = XMLUtils::GetAttribute(setting, "sort") == "yes";
     if (!id.empty() && !type.empty())
@@ -725,7 +725,7 @@ void CGUIDialogAddonSettings::CreateControls()
           }
         }
         else
-          ((CGUIButtonControl *)pControl)->SetLabel2(defaultValue);
+          ((CGUIButtonControl *)pControl)->SetLabel2(defaultVal);
       }
       else if (type == "bool")
       {
