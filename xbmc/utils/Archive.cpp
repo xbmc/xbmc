@@ -402,7 +402,7 @@ void CArchive::FillBuffer()
 {
   if (m_iMode == load && m_BufferRemain == 0)
   {
-    m_BufferRemain = m_pFile->Read(m_pBuffer, CARCHIVE_BUFFER_MAX);
+    m_BufferRemain = (size_t)m_pFile->Read(m_pBuffer, CARCHIVE_BUFFER_MAX);
     m_BufferPos = m_pBuffer;
   }
 }

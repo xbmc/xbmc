@@ -154,7 +154,7 @@ NPT_XbmcFileInputStream::Read(void*     buffer,
                               NPT_Size  bytes_to_read, 
                               NPT_Size* bytes_read)
 {
-    unsigned int nb_read;
+    int64_t nb_read;
 
     // check the parameters
     if (buffer == NULL) {

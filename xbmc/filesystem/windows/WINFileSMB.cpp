@@ -189,7 +189,7 @@ bool CWINFileSMB::OpenForWrite(const CURL& url, bool bOverWrite)
 }
 
 //*********************************************************************************************
-unsigned int CWINFileSMB::Read(void *lpBuf, int64_t uiBufSize)
+int64_t CWINFileSMB::Read(void *lpBuf, int64_t uiBufSize)
 {
   if (!m_hFile.isValid()) return 0;
   DWORD nBytesRead;
@@ -202,7 +202,7 @@ unsigned int CWINFileSMB::Read(void *lpBuf, int64_t uiBufSize)
 }
 
 //*********************************************************************************************
-int CWINFileSMB::Write(const void *lpBuf, int64_t uiBufSize)
+int64_t CWINFileSMB::Write(const void *lpBuf, int64_t uiBufSize)
 {
   if (!m_hFile.isValid())
     return 0;

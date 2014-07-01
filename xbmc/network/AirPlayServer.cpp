@@ -990,7 +990,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
 
       if (tmpFile.OpenForWrite(tmpFileName, true))
       {
-        int writtenBytes=0;
+        int64_t writtenBytes = 0;
         writtenBytes = tmpFile.Write(m_httpParser->getBody(), m_httpParser->getContentLength());
         tmpFile.Close();
 

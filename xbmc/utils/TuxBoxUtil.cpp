@@ -767,8 +767,8 @@ bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
   http.SetTimeout(20);
   if(http.Open(url))
   {
-    int size_read = 0;
-    int size_total = (int)http.GetLength();
+    size_t size_read = 0;
+    size_t size_total = (size_t)http.GetLength();
 
     if(size_total > 0)
     {
@@ -776,7 +776,7 @@ bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
       CStdString strTmp;
       strTmp.reserve(size_total);
       char buffer[16384];
-      while( (size_read = http.Read( buffer, sizeof(buffer)-1) ) > 0 )
+      while ((size_read = (size_t)http.Read(buffer, sizeof(buffer) - 1)) > 0)
       {
         buffer[size_read] = 0;
         strTmp += buffer;

@@ -113,7 +113,7 @@ int CDVDInputStreamFile::Read(uint8_t* buf, int buf_size)
 {
   if(!m_pFile) return -1;
 
-  unsigned int ret = m_pFile->Read(buf, buf_size);
+  int ret = (int)m_pFile->Read(buf, buf_size);
 
   /* we currently don't support non completing reads */
   if( ret == 0 ) m_eof = true;

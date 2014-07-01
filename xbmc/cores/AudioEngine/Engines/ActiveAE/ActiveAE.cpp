@@ -2463,7 +2463,7 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
     delete sound;
     return NULL;
   }
-  int fileSize = sound->GetFileSize();
+  int64_t fileSize = sound->GetFileSize();
 
   fmt_ctx = avformat_alloc_context();
   unsigned char* buffer = (unsigned char*)av_malloc(SOUNDBUFFER_SIZE+FF_INPUT_BUFFER_PADDING_SIZE);
@@ -2541,7 +2541,7 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
       {
         if (!init)
         {
-          int samples = fileSize / av_get_bytes_per_sample(dec_ctx->sample_fmt) / config.channels;
+          int samples = (int)(fileSize / av_get_bytes_per_sample(dec_ctx->sample_fmt) / config.channels);
           config.fmt = dec_ctx->sample_fmt;
           config.bits_per_sample = dec_ctx->bits_per_coded_sample;
           sound->InitSound(true, config, samples);

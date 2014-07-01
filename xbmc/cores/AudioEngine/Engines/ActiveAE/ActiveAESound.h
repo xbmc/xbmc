@@ -52,7 +52,7 @@ public:
   bool Prepare();
   void Finish();
   int GetChunkSize();
-  int GetFileSize() { return m_fileSize; }
+  int64_t GetFileSize() { return m_fileSize; }
   bool IsSeekPosible() { return m_isSeekPosible; }
 
   static int Read(void *h, uint8_t* buf, int size);
@@ -62,7 +62,7 @@ protected:
   std::string m_filename;
   XFILE::CFile *m_pFile;
   bool m_isSeekPosible;
-  int m_fileSize;
+  int64_t m_fileSize;
   float m_volume;
 
   CSoundPacket *m_orig_sound;

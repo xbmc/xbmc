@@ -56,8 +56,8 @@ public:
   virtual bool Exists(const CURL& url) = 0;
   virtual int Stat(const CURL& url, struct __stat64* buffer) = 0;
   virtual int Stat(struct __stat64* buffer);
-  virtual unsigned int Read(void* lpBuf, int64_t uiBufSize) = 0;
-  virtual int Write(const void* lpBuf, int64_t uiBufSize) { return -1;};
+  virtual int64_t Read(void* lpBuf, int64_t uiBufSize) = 0;
+  virtual int64_t Write(const void* lpBuf, int64_t uiBufSize) { return -1;};
   virtual bool ReadString(char *szLine, int iLineLength);
   virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET) = 0;
   virtual void Close() = 0;

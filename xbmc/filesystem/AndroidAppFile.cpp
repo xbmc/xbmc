@@ -58,7 +58,7 @@ bool CFileAndroidApp::Exists(const CURL& url)
   return true;
 }
 
-unsigned int CFileAndroidApp::Read(void* lpBuf, int64_t uiBufSize)
+int64_t CFileAndroidApp::Read(void* lpBuf, int64_t uiBufSize)
 {
   CXBMCApp::GetIcon(m_appname, lpBuf, uiBufSize);
   return uiBufSize;

@@ -47,7 +47,7 @@ bool CTuxBoxFile::Open(const CURL& url)
   return true;
 }
 
-unsigned int CTuxBoxFile::Read(void* lpBuf, int64_t uiBufSize)
+int64_t CTuxBoxFile::Read(void* lpBuf, int64_t uiBufSize)
 {
   return 0;
 }

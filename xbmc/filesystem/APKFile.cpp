@@ -175,7 +175,7 @@ int64_t CAPKFile::Seek(int64_t iFilePosition, int iWhence)
   return m_file_pos;
 }
 
-unsigned int CAPKFile::Read(void *lpBuf, int64_t uiBufSize)
+int64_t CAPKFile::Read(void *lpBuf, int64_t uiBufSize)
 {
   int bytes_read = uiBufSize;
   if (m_zip_archive && m_zip_file)
@@ -191,7 +191,7 @@ unsigned int CAPKFile::Read(void *lpBuf, int64_t uiBufSize)
       bytes_read = 0;
   }
 
-  return (unsigned int)bytes_read;
+  return bytes_read;
 }
 
 int CAPKFile::Stat(struct __stat64* buffer)

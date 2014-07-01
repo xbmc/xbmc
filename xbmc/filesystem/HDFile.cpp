@@ -199,7 +199,7 @@ bool CHDFile::OpenForWrite(const CURL& url, bool bOverWrite)
 }
 
 //*********************************************************************************************
-unsigned int CHDFile::Read(void *lpBuf, int64_t uiBufSize)
+int64_t CHDFile::Read(void *lpBuf, int64_t uiBufSize)
 {
   if (!m_hFile.isValid()) return 0;
   DWORD nBytesRead;
@@ -226,7 +226,7 @@ unsigned int CHDFile::Read(void *lpBuf, int64_t uiBufSize)
 }
 
 //*********************************************************************************************
-int CHDFile::Write(const void *lpBuf, int64_t uiBufSize)
+int64_t CHDFile::Write(const void *lpBuf, int64_t uiBufSize)
 {
   if (!m_hFile.isValid())
     return 0;

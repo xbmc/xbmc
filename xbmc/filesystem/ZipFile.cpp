@@ -190,7 +190,7 @@ int64_t CZipFile::Seek(int64_t iFilePosition, int iWhence)
         m_ZStream.total_out = 0;
         while (m_iFilePos < iFilePosition)
         {
-          unsigned int iToRead = (iFilePosition-m_iFilePos)>131072?131072:(int)(iFilePosition-m_iFilePos);
+          int64_t iToRead = (iFilePosition - m_iFilePos)>131072 ? 131072 : (int)(iFilePosition - m_iFilePos);
           if (Read(temp,iToRead) != iToRead)
             return -1;
         }
@@ -209,7 +209,7 @@ int64_t CZipFile::Seek(int64_t iFilePosition, int iWhence)
       iFilePosition += m_iFilePos;
       while (m_iFilePos < iFilePosition)
       {
-        unsigned int iToRead = (iFilePosition-m_iFilePos)>131072?131072:(int)(iFilePosition-m_iFilePos);
+        int64_t iToRead = (iFilePosition - m_iFilePos)>131072 ? 131072 : (int)(iFilePosition - m_iFilePos);
         if (Read(temp,iToRead) != iToRead)
           return -1;
       }
@@ -222,7 +222,7 @@ int64_t CZipFile::Seek(int64_t iFilePosition, int iWhence)
 
       while( (int)m_ZStream.total_out < mZipItem.usize+iFilePosition)
       {
-        unsigned int iToRead = (mZipItem.usize+iFilePosition-m_ZStream.total_out > 131072)?131072:(int)(mZipItem.usize+iFilePosition-m_ZStream.total_out);
+        int64_t iToRead = (mZipItem.usize + iFilePosition - m_ZStream.total_out > 131072) ? 131072 : (int)(mZipItem.usize + iFilePosition - m_ZStream.total_out);
         if (Read(temp,iToRead) != iToRead)
           return -1;
       }
@@ -283,7 +283,7 @@ int CZipFile::Stat(const CURL& url, struct __stat64* buffer)
   return 0;
 }
 
-unsigned int CZipFile::Read(void* lpBuf, int64_t uiBufSize)
+int64_t CZipFile::Read(void* lpBuf, int64_t uiBufSize)
 {
   if (m_bCached)
     return mFile.Read(lpBuf,uiBufSize);
@@ -346,7 +346,7 @@ unsigned int CZipFile::Read(void* lpBuf, int64_t uiBufSize)
     {
       return 0; // we are past eof, this shouldn't happen but test anyway
     }
-    unsigned int iResult = mFile.Read(lpBuf,uiBufSize);
+    int64_t iResult = mFile.Read(lpBuf,uiBufSize);
     m_iZipFilePos += iResult;
     m_iFilePos += iResult;
     return iResult;
@@ -503,7 +503,7 @@ int CZipFile::UnpackFromMemory(string& strDest, const string& strInput, bool isG
       toRead = mZipItem.usize;
     }
     int iCurrResult;
-    while( (iCurrResult=Read(temp,toRead)) > 0)
+    while( (iCurrResult=(int)Read(temp,toRead)) > 0)
     {
       strDest.append(temp,temp+iCurrResult);
       iResult += iCurrResult;

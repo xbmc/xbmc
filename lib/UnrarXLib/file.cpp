@@ -419,7 +419,7 @@ int File::DirectRead(void *Data,int Size)
   int Read = 0;
   while (Size)
   {
-    int nRead = m_File.Read(Data,Size);
+    int nRead = (int)m_File.Read(Data,Size);
     if (nRead == 0)
       break;
     Read += nRead;

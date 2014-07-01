@@ -111,15 +111,15 @@ bool CTuxBoxDirectory::GetDirectory(const CURL& url2, CFileItemList &items)
       // restore protocol
       url.SetProtocol(protocol);
 
-      int size_read = 0;
-      int size_total = (int)http.GetLength();
-      int data_size = 0;
+      size_t size_read = 0;
+      size_t size_total = (size_t)http.GetLength();
+      size_t data_size = 0;
       CStdString data;
       data.reserve(size_total);
 
       // read response from server into string buffer
       char buffer[16384];
-      while ((size_read = http.Read(buffer, sizeof(buffer)-1)) > 0)
+      while ((size_read = (size_t)http.Read(buffer, sizeof(buffer)-1)) > 0)
       {
         buffer[size_read] = 0;
         data += buffer;

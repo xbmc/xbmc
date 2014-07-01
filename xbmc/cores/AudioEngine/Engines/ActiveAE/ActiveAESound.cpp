@@ -151,7 +151,7 @@ int CActiveAESound::GetChunkSize()
 int CActiveAESound::Read(void *h, uint8_t* buf, int size)
 {
   CFile *pFile = static_cast<CActiveAESound*>(h)->m_pFile;
-  return pFile->Read(buf, size);
+  return (int)pFile->Read(buf, size);
 }
 
 int64_t CActiveAESound::Seek(void *h, int64_t pos, int whence)

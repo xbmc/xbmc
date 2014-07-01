@@ -508,7 +508,7 @@ int CSmbFile::Truncate(int64_t size)
   return 0;
 }
 
-unsigned int CSmbFile::Read(void *lpBuf, int64_t uiBufSize)
+int64_t CSmbFile::Read(void *lpBuf, int64_t uiBufSize)
 {
   if (m_fd == -1) return 0;
   CSingleLock lock(smb); // Init not called since it has to be "inited" by now
@@ -537,7 +537,7 @@ unsigned int CSmbFile::Read(void *lpBuf, int64_t uiBufSize)
     return 0;
   }
 
-  return (unsigned int)bytesRead;
+  return bytesRead;
 }
 
 int64_t CSmbFile::Seek(int64_t iFilePosition, int iWhence)
@@ -568,7 +568,7 @@ void CSmbFile::Close()
   m_fd = -1;
 }
 
-int CSmbFile::Write(const void* lpBuf, int64_t uiBufSize)
+int64_t CSmbFile::Write(const void* lpBuf, int64_t uiBufSize)
 {
   if (m_fd == -1) return -1;
   DWORD dwNumberOfBytesWritten = 0;
@@ -578,7 +578,7 @@ int CSmbFile::Write(const void* lpBuf, int64_t uiBufSize)
   CSingleLock lock(smb);
   dwNumberOfBytesWritten = smbc_write(m_fd, (void*)lpBuf, (DWORD)uiBufSize);
 
-  return (int)dwNumberOfBytesWritten;
+  return (int64_t)dwNumberOfBytesWritten;
 }
 
 bool CSmbFile::Delete(const CURL& url)

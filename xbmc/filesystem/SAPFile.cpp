@@ -111,9 +111,9 @@ int CSAPFile::Stat(const CURL& url, struct __stat64* buffer)
 }
 
 
-unsigned int CSAPFile::Read(void *lpBuf, int64_t uiBufSize)
+int64_t CSAPFile::Read(void *lpBuf, int64_t uiBufSize)
 {
-  return (unsigned int)m_stream.readsome((char*)lpBuf, (streamsize)uiBufSize);
+  return m_stream.readsome((char*)lpBuf, (streamsize)uiBufSize);
 }
 
 void CSAPFile::Close()

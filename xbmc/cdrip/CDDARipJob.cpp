@@ -162,7 +162,7 @@ int CCDDARipJob::RipChunk(CFile& reader, CEncoder* encoder, int& percent)
   uint8_t stream[1024];
 
   // get data
-  int result = reader.Read(stream, 1024);
+  int result = (int)reader.Read(stream, 1024);
 
   // return if rip is done or on some kind of error
   if (!result)

@@ -114,7 +114,7 @@ int CFileCDDA::Stat(const CURL& url, struct __stat64* buffer)
   return -1;
 }
 
-unsigned int CFileCDDA::Read(void* lpBuf, int64_t uiBufSize)
+int64_t CFileCDDA::Read(void* lpBuf, int64_t uiBufSize)
 {
   if (!m_pCdIo || !g_mediaManager.IsDiscInDrive())
     return 0;

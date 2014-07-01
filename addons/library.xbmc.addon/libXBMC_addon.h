@@ -186,7 +186,7 @@ namespace ADDON
         dlsym(m_libXBMC_addon, "XBMC_open_file_for_write");
       if (XBMC_open_file_for_write == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-      XBMC_read_file = (unsigned int (*)(void* HANDLE, void* CB, void* file, void* lpBuf, int64_t uiBufSize))
+      XBMC_read_file = (int64_t (*)(void* HANDLE, void* CB, void* file, void* lpBuf, int64_t uiBufSize))
         dlsym(m_libXBMC_addon, "XBMC_read_file");
       if (XBMC_read_file == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
@@ -377,7 +377,7 @@ namespace ADDON
      * @param uiBufSize The size of the buffer.
      * @return Number of bytes read.
      */
-    unsigned int ReadFile(void* file, void* lpBuf, int64_t uiBufSize)
+    int64_t ReadFile(void* file, void* lpBuf, int64_t uiBufSize)
     {
       return XBMC_read_file(m_Handle, m_Callbacks, file, lpBuf, uiBufSize);
     }
@@ -562,7 +562,7 @@ namespace ADDON
     void (*XBMC_free_string)(void *HANDLE, void* CB, char* str);
     void* (*XBMC_open_file)(void *HANDLE, void* CB, const char* strFileName, unsigned int flags);
     void* (*XBMC_open_file_for_write)(void *HANDLE, void* CB, const char* strFileName, bool bOverWrite);
-    unsigned int (*XBMC_read_file)(void *HANDLE, void* CB, void* file, void* lpBuf, int64_t uiBufSize);
+    int64_t (*XBMC_read_file)(void *HANDLE, void* CB, void* file, void* lpBuf, int64_t uiBufSize);
     bool (*XBMC_read_file_string)(void *HANDLE, void* CB, void* file, char *szLine, int iLineLength);
     int (*XBMC_write_file)(void *HANDLE, void* CB, void* file, const void* lpBuf, int64_t uiBufSize);
     void (*XBMC_flush_file)(void *HANDLE, void* CB, void* file);

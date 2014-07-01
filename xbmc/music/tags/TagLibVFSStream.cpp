@@ -76,7 +76,7 @@ FileName TagLibVFSStream::name() const
 ByteVector TagLibVFSStream::readBlock(TagLib::ulong length)
 {
   ByteVector byteVector(static_cast<TagLib::uint>(length));
-  byteVector.resize(m_file.Read(byteVector.data(), length));
+  byteVector.resize((TagLib::ulong)m_file.Read(byteVector.data(), length));
   return byteVector;
 }
 
@@ -142,7 +142,7 @@ void TagLibVFSStream::insert(const ByteVector &data, TagLib::ulong start, TagLib
   // special case.  We're also using File::writeBlock() just for the tag.
   // That's a bit slower than using char *'s so, we're only doing it here.
   seek(readPosition);
-  int bytesRead = m_file.Read(aboutToOverwrite.data(), bufferLength);
+  TagLib::ulong bytesRead = (TagLib::ulong)m_file.Read(aboutToOverwrite.data(), bufferLength);
   readPosition += bufferLength;
 
   seek(writePosition);
@@ -159,7 +159,7 @@ void TagLibVFSStream::insert(const ByteVector &data, TagLib::ulong start, TagLib
     // Seek to the current read position and read the data that we're about
     // to overwrite.  Appropriately increment the readPosition.
     seek(readPosition);
-    bytesRead = m_file.Read(aboutToOverwrite.data(), bufferLength);
+    bytesRead = (TagLib::ulong)m_file.Read(aboutToOverwrite.data(), bufferLength);
     aboutToOverwrite.resize(bytesRead);
     readPosition += bufferLength;
 
@@ -200,7 +200,7 @@ void TagLibVFSStream::removeBlock(TagLib::ulong start, TagLib::ulong length)
   while(bytesRead != 0)
   {
     seek(readPosition);
-    bytesRead = m_file.Read(buffer.data(), bufferLength);
+    bytesRead = (TagLib::ulong)m_file.Read(buffer.data(), bufferLength);
     readPosition += bytesRead;
 
     // Check to see if we just read the last block.  We need to call clear()
