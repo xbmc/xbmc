@@ -210,7 +210,8 @@ bool CSkinSettings::Load(const TiXmlNode *settings)
   while (pChild)
   {
     std::string settingName = XMLUtils::GetAttribute(pChild, XML_ATTR_NAME);
-    if (pChild->Attribute("type") && StringUtils::EqualsNoCase(pChild->Attribute(XML_ATTR_TYPE), "string"))
+    std::string settingType = XMLUtils::GetAttribute(pChild, XML_ATTR_TYPE);
+    if (settingType == "string")
     { // string setting
       CSkinString string;
       string.name = settingName;
