@@ -61,6 +61,12 @@ public:
   static bool GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue, const int min, const int max);
   static bool GetDate(const TiXmlNode* pRootNode, const char* strTag, CDateTime& date);
   static bool GetDateTime(const TiXmlNode* pRootNode, const char* strTag, CDateTime& dateTime);
+  /*! \brief Fetch a std::string copy of an attribute, if it exists.  Cannot distinguish between empty and non-existent attributes.
+   \param element the element to query.
+   \param tag the name of the attribute.
+   \return the attribute, if it exists, else an empty string
+   */
+  static std::string GetAttribute(const TiXmlElement *element, const char *tag);
 
   static void SetString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue);
   static void SetAdditiveString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strSeparator, const CStdString& strValue);

@@ -29,6 +29,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -358,8 +359,8 @@ bool CPlayListASX::LoadData(istream& stream)
         while (pRef)
         { // multiple references may apear for one entry
           // duration may exist on this level too
-          value = pRef->Attribute("href");
-          if (value != "")
+          value = XMLUtils::GetAttribute(pRef, "href");
+          if (!value.empty())
           {
             if(title.empty())
               title = value;
@@ -374,8 +375,8 @@ bool CPlayListASX::LoadData(istream& stream)
       }
       else if (value == "entryref")
       {
-        value = pElement->Attribute("href");
-        if (value != "")
+        value = XMLUtils::GetAttribute(pElement, "href");
+        if (!value.empty())
         { // found an entryref, let's try loading that url
           auto_ptr<CPlayList> playlist(CPlayListFactory::Create(value));
           if (NULL != playlist.get())

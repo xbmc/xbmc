@@ -27,6 +27,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
 
 #define XML_SKINSETTINGS  "skinsettings"
 #define XML_SETTING       "setting"
@@ -208,8 +209,9 @@ bool CSkinSettings::Load(const TiXmlNode *settings)
   const TiXmlElement *pChild = pElement->FirstChildElement(XML_SETTING);
   while (pChild)
   {
-    CStdString settingName = pChild->Attribute(XML_ATTR_NAME);
-    if (pChild->Attribute("type") && StringUtils::EqualsNoCase(pChild->Attribute(XML_ATTR_TYPE), "string"))
+    std::string settingName = XMLUtils::GetAttribute(pChild, XML_ATTR_NAME);
+    std::string settingType = XMLUtils::GetAttribute(pChild, XML_ATTR_TYPE);
+    if (settingType == "string")
     { // string setting
       CSkinString string;
       string.name = settingName;

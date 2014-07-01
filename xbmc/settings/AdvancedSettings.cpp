@@ -527,13 +527,8 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     TiXmlElement* pKaraokeBackground = pElement->FirstChildElement("defaultbackground");
     if (pKaraokeBackground)
     {
-      const char* attr = pKaraokeBackground->Attribute("type");
-      if ( attr )
-        m_karaokeDefaultBackgroundType = attr;
-
-      attr = pKaraokeBackground->Attribute("path");
-      if ( attr )
-        m_karaokeDefaultBackgroundFilePath = attr;
+      pKaraokeBackground->QueryStringAttribute("type", &m_karaokeDefaultBackgroundType);
+      pKaraokeBackground->QueryStringAttribute("path", &m_karaokeDefaultBackgroundFilePath);
     }
   }
 
@@ -1071,7 +1066,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     TiXmlElement* element = pHostEntries->FirstChildElement("entry");
     while(element)
     {
-      CStdString name  = element->Attribute("name");
+      CStdString name  = XMLUtils::GetAttribute(element, "name");
       CStdString value;
       if(element->GetText())
         value = element->GetText();
@@ -1238,12 +1233,12 @@ void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_
         int iDefaultSeason = 1;
         if (pRegExp->ToElement())
         {
-          CStdString byDate = pRegExp->ToElement()->Attribute("bydate");
-          if(byDate && stricmp(byDate, "true") == 0)
+          CStdString byDate = XMLUtils::GetAttribute(pRegExp->ToElement(), "bydate");
+          if (byDate == "true")
           {
             bByDate = true;
           }
-          CStdString defaultSeason = pRegExp->ToElement()->Attribute("defaultseason");
+          CStdString defaultSeason = XMLUtils::GetAttribute(pRegExp->ToElement(), "defaultseason");
           if(!defaultSeason.empty())
           {
             iDefaultSeason = atoi(defaultSeason.c_str());

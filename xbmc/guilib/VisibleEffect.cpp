@@ -25,6 +25,7 @@
 #include "utils/StringUtils.h"
 #include "Tween.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
 
 using namespace std;
 
@@ -627,7 +628,7 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
   CStdString type = node->FirstChild()->Value();
   m_type = ANIM_TYPE_CONDITIONAL;
   if (effect) // new layout
-    type = node->Attribute("type");
+    type = XMLUtils::GetAttribute(node, "type");
 
   if (StringUtils::StartsWithNoCase(type, "visible")) m_type = ANIM_TYPE_VISIBLE;
   else if (type.Equals("hidden")) m_type = ANIM_TYPE_HIDDEN;
@@ -656,7 +657,7 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
   if (!effect)
   { // old layout:
     // <animation effect="fade" start="0" end="100" delay="10" time="2000" condition="blahdiblah" reversible="false">focus</animation>
-    CStdString type = node->Attribute("effect");
+    CStdString type = XMLUtils::GetAttribute(node, "effect");
     AddEffect(type, node, rect);
   }
   while (effect)
@@ -665,7 +666,7 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
     //   <effect type="fade" start="0" end="100" delay="10" time="2000" />
     //   ...
     // </animation>
-    CStdString type = effect->Attribute("type");
+    CStdString type = XMLUtils::GetAttribute(effect, "type");
     AddEffect(type, effect, rect);
     effect = effect->NextSiblingElement("effect");
   }

@@ -59,7 +59,7 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     const TiXmlElement *property = item->FirstChildElement("property");
     while (property)
     {
-      CStdString name = property->Attribute("name");
+      CStdString name = XMLUtils::GetAttribute(property, "name");
       CGUIInfoLabel prop;
       if (!name.empty() && CGUIControlFactory::GetInfoLabelFromElement(property, prop, parentID))
       {
@@ -73,10 +73,10 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
   else
   {
     CStdString label, label2, thumb, icon;
-    label  = item->Attribute("label");  label  = CGUIControlFactory::FilterLabel(label);
-    label2 = item->Attribute("label2"); label2 = CGUIControlFactory::FilterLabel(label2);
-    thumb  = item->Attribute("thumb");  thumb  = CGUIControlFactory::FilterLabel(thumb);
-    icon   = item->Attribute("icon");   icon   = CGUIControlFactory::FilterLabel(icon);
+    label  = XMLUtils::GetAttribute(item, "label");  label  = CGUIControlFactory::FilterLabel(label);
+    label2 = XMLUtils::GetAttribute(item, "label2"); label2 = CGUIControlFactory::FilterLabel(label2);
+    thumb  = XMLUtils::GetAttribute(item, "thumb");  thumb  = CGUIControlFactory::FilterLabel(thumb);
+    icon   = XMLUtils::GetAttribute(item, "icon");   icon   = CGUIControlFactory::FilterLabel(icon);
     const char *id = item->Attribute("id");
     SetLabel(CGUIInfoLabel::GetLabel(label, parentID));
     SetPath(item->FirstChild()->Value());

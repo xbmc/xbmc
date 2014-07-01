@@ -20,6 +20,7 @@
 
 #include "Fanart.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
 #include "URIUtils.h"
 #include "StringUtils.h"
 
@@ -62,7 +63,7 @@ bool CFanart::Unpack()
   TiXmlElement *fanart = doc.FirstChildElement("fanart");
   while (fanart)
   {
-    CStdString url = fanart->Attribute("url");
+    CStdString url = XMLUtils::GetAttribute(fanart, "url");
     TiXmlElement *fanartThumb = fanart->FirstChildElement("thumb");
     while (fanartThumb)
     {
@@ -70,8 +71,7 @@ bool CFanart::Unpack()
       if (url.empty())
       {
         data.strImage = fanartThumb->GetText();
-        if (fanartThumb->Attribute("preview"))
-          data.strPreview = fanartThumb->Attribute("preview");
+        data.strPreview = XMLUtils::GetAttribute(fanartThumb, "preview");
       }
       else
       {
@@ -79,8 +79,8 @@ bool CFanart::Unpack()
         if (fanartThumb->Attribute("preview"))
           data.strPreview = URIUtils::AddFileToFolder(url, fanartThumb->Attribute("preview"));
       }
-      data.strResolution = fanartThumb->Attribute("dim");
-      ParseColors(fanartThumb->Attribute("colors"), data.strColors);
+      data.strResolution = XMLUtils::GetAttribute(fanartThumb, "dim");
+      ParseColors(XMLUtils::GetAttribute(fanartThumb, "colors"), data.strColors);
       m_fanart.push_back(data);
       fanartThumb = fanartThumb->NextSiblingElement("thumb");
     }

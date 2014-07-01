@@ -682,8 +682,8 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
       if (szRemote)
       {
         TiXmlAttribute* pAttr = pRemote->ToElement()->FirstAttribute();
-        const char* szDeviceName = pAttr->Value();
-        MapRemote(pRemote, szDeviceName);
+        if (pAttr)
+          MapRemote(pRemote, pAttr->Value());
       }
     }
     pRemote = pRemote->NextSibling();
