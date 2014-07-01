@@ -13,7 +13,7 @@ ARCHIVE=$(SOURCE).tar.bz2
 CONFIGURE=OPT="$(CFLAGS)" \
   LIBS=-lm \
   ./configure --prefix=$(PREFIX) \
-  --disable-toolbox-glue --disable-framework --with-system-ffi \
+  --disable-toolbox-glue --disable-framework --with-system-ffi --without-pymalloc \
 
 LIBDYLIB=$(PLATFORM)/libpython2.6.a
 

@@ -5,7 +5,7 @@ LIST_BINARY_EXTENSIONS="dylib so 0 vis"
 
 export CODESIGN_ALLOCATE=`xcodebuild -find codesign_allocate`
 
-GEN_ENTITLEMENTS="/Developer/iphoneentitlements401/gen_entitlements.py"
+GEN_ENTITLEMENTS="$XBMC_DEPENDS_ROOT/buildtools-native/bin/gen_entitlements.py"
 
 if [ ! -f ${GEN_ENTITLEMENTS} ]; then
   echo "error: $GEN_ENTITLEMENTS not found. Codesign won't work."
