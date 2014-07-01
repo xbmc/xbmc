@@ -29,7 +29,7 @@
 
 #include <CoreAudio/CoreAudio.h>
 
-typedef std::list<UInt32> CoreAudioDataSourceList;
+typedef std::vector<UInt32> CoreAudioDataSourceList;
 typedef std::list<AudioDeviceID> CoreAudioDeviceList;
 
 class CCoreAudioChannelLayout;
@@ -54,7 +54,7 @@ public:
   bool          IsDigital() const;
   UInt32        GetTransportType() const;
   UInt32        GetTotalOutputChannels() const;
-  UInt32        GetNumChannelsOfStream(UInt32 streamIdx);
+  UInt32        GetNumChannelsOfStream(UInt32 streamIdx) const;
   bool          GetStreams(AudioStreamIdList *pList);
   bool          IsRunning();
   bool          SetHogStatus(bool hog);
@@ -64,7 +64,11 @@ public:
   bool          SetCurrentVolume(Float32 vol);
   bool          GetPreferredChannelLayout(CCoreAudioChannelLayout &layout) const;
   bool          GetPreferredChannelLayoutForStereo(CCoreAudioChannelLayout &layout) const;
-  bool          GetDataSources(CoreAudioDataSourceList *pList);
+  bool          GetDataSources(CoreAudioDataSourceList *pList) const;
+  bool          GetDataSource(UInt32 &dataSourceId) const;
+  bool          SetDataSource(UInt32 &dataSourceId);
+  std::string   GetDataSourceName(UInt32 dataSourceId) const;
+  std::string   GetCurrentDataSourceName() const;
   Float64       GetNominalSampleRate();
   bool          SetNominalSampleRate(Float64 sampleRate);
   UInt32        GetNumLatencyFrames();
