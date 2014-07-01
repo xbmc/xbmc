@@ -120,6 +120,10 @@ static const dxva2_mode_t dxva2_modes[] = {
     { "Intel VC-1 VLD",                                               &DXVADDI_Intel_ModeVC1_E,  0 },
 #endif
 
+    // HEVC
+    { "HEVC VLD Main",          &DXVA_ModeHEVC_VLD_Main,    0 },
+    { "HEVC VLD Main 10",       &DXVA_ModeHEVC_VLD_Main10,  0 },
+
     { NULL, NULL, 0 }
 };
 
