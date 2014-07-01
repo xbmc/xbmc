@@ -75,6 +75,10 @@
 		</control>
 	</include>
 	<!-- animations open/close -->
+	<include name="extrasSlide">
+		<animation effect="slide" start="0" end="297" time="500" condition="Window.IsActive(10209)">Conditional</animation>
+		<animation effect="fade" start="100" end="50" time="300" condition="Window.IsActive(10209)">Conditional</animation>
+	</include>
 	<include name="DialogFadeInOut">
 		<animation effect="fade" time="300">WindowOpen</animation>
 		<animation effect="fade" time="100">WindowClose</animation>
@@ -312,6 +316,157 @@
 						<width>20</width>
 						<height>220</height>
 						<showonepage>true</showonepage>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+	<!-- DialogPlexExtras.xml -->
+	<include name="ExtraThumb">
+		<!--><control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>274</width>
+			<height>165</height>
+			<include>Shadow</include>
+		</control>-->
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>220</width>
+			<height>124</height>
+			<texture background="true">default-thumb-small.png</texture>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>220</width>
+			<height>124</height>
+			<texture background="true" diffuse="mask-wide-big.png">$INFO[ListItem.Art(thumb)]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+	</include>
+	<include name="ExtraThumbCard">
+		<control type="image">
+			<posx>13</posx>
+			<posy>137</posy>
+			<width>220</width>
+			<height>40</height>
+			<include>Card</include>
+			<animation effect="fade" start="0" end="100" time="400" condition="true">Conditional</animation>
+		</control>
+	</include>
+	<include name="ExtraIconPlay">
+		<control type="image">
+			<posx>92</posx>
+			<posy>44</posy>
+			<width>64</width>
+			<height>64</height>
+			<texture>b-play-extra-s.png</texture>
+			<animation effect="fade" start="0" end="100" time="400" condition="true">Conditional</animation>
+		</control>
+	</include>
+	<include name="ExtraThumbSelectedBorder">
+		<control type="image">
+			<width>226</width>
+			<height>170</height>
+			<include>Border</include>
+		</control>
+	</include>
+	<include name="ExtraTitle">
+		<posy>148</posy>
+		<posx>24</posx>
+		<width>190</width>
+		<height>20</height>
+		<align>left</align>
+		<aligny>center</aligny>
+		<label>$INFO[ListItem.Label]</label>
+		<font>Regular-17</font>
+		<shadowcolor>FF222222</shadowcolor>
+	</include>
+	<include name="ExtraSecondTitle">
+		<control type="label">
+			<posy>180</posy>
+			<posx>64</posx>
+			<width>190</width>
+			<height>20</height>
+			<align>left</align>
+			<aligny>center</aligny>
+			<font>Regular-14</font>
+			<textcolor>FF999999</textcolor>
+			<label>$INFO[ListItem.DurationStr]$INFO[ListItem.Property(Recommender), [COLOR=orange]&#xB7;[/COLOR] ]</label>
+			<shadowcolor>FF222222</shadowcolor>
+			<visible>[!IsEmpty(ListItem.DurationStr) + !IsEmpty(ListItem.Property(Recommender))]</visible>
+		</control>
+		<control type="label">
+			<posy>180</posy>
+			<posx>64</posx>
+			<width>190</width>
+			<height>20</height>
+			<align>left</align>
+			<aligny>center</aligny>
+			<font>Regular-14</font>
+			<textcolor>FF999999</textcolor>
+			<label>$INFO[ListItem.DurationStr]$INFO[ListItem.Property(Recommender)]</label>
+			<shadowcolor>FF222222</shadowcolor>
+			<visible>[IsEmpty(ListItem.DurationStr) | IsEmpty(ListItem.Property(Recommender))]</visible>
+		</control>
+	</include>
+	<include name="DialogPlexExtras">
+		<control type="group">
+			<posx>-223</posx>
+			<animation effect="slide" start="0" end="297" time="500">WindowOpen</animation>
+			<animation effect="slide" start="297" end="0" time="500">WindowClose</animation>
+			<control type="group">
+				<posx>0</posx>
+				<posy>20</posy>
+				<control type="label" id="1">
+					<label>[UPPERCASE]$LOCALIZE[33063][/UPPERCASE]</label>
+					<width>297</width>
+					<height>40</height>
+					<align>center</align>
+					<font>Regular-24</font>
+					<textcolor>Focused</textcolor>
+				</control>
+				<control type="group">
+					<posy>85</posy>
+					<posx>26</posx>
+					<control type="list" id="3">
+						<width>260</width>
+						<height>600</height>
+						<onleft>Dialog.Close(10209)</onleft>
+						<onright>Dialog.Close(10209)</onright>
+						<onup>3</onup>
+						<ondown>3</ondown>
+						<pagecontrol>61</pagecontrol>
+						<scrolltime>200</scrolltime>
+						<itemlayout height="200">
+							<include>ExtraThumbCard</include>
+							<include>ExtraThumb</include>
+							<control type="label">
+								<include>ExtraTitle</include>
+							</control>
+							<include>ExtraSecondTitle</include>
+						</itemlayout>
+						<focusedlayout height="200">
+							<include>ExtraThumbCard</include>
+							<include>ExtraThumb</include>
+							<!--><include>ExtraIconPlay</include>-->
+							<control type="label">
+								<include>ExtraTitle</include>
+								<textcolor>orangeLight</textcolor>
+							</control>
+							<include>ExtraSecondTitle</include>
+							<include>ExtraThumbSelectedBorder</include>
+						</focusedlayout>
+					</control>
+					<control type="scrollbar" id="61">
+						<description>Scroll Bar</description>
+						<posy>3</posy>
+						<posx>250</posx>
+						<width>20</width>
+						<height>584</height>
+						<animation effect="fade" start="0" end="100" time="500" condition="true" delay="500">WindowOpen</animation>
 					</control>
 				</control>
 			</control>

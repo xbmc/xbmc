@@ -588,16 +588,14 @@
 					<onfocus>Skin.SetString(DialogPos,subtitlestreampicker)</onfocus>
 					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
 				</control>
-				<!-- Trailers -->
+				<!-- Extras -->
 				<control type="button" id="110">
-					<texturefocus>b-pp-subtitles-s.png</texturefocus>
-					<texturenofocus>b-pp-subtitles.png</texturenofocus>
+					<texturefocus>b-pp-extras-s.png</texturefocus>
+					<texturenofocus>b-pp-extras.png</texturenofocus>
 					<onright>XBMC.NextItem</onright>
 					<onleft>XBMC.PrevItem</onleft>
 					<onclick>ActivateWindow(10209)</onclick>
 					<include>leftMenuBarButton</include>
-					<onfocus>Skin.SetString(DialogPos,plexextras)</onfocus>
-					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
 				</control>
 				<!-- Rate -->
 				<control type="button" id="105">

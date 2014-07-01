@@ -945,19 +945,45 @@
 	</include>
 	<!-- Pre-play Movie -->
 	<include name="PreplayMovie">
+		<!-- extras bg's -->
+		<control type="group">
+			<posy>O</posy>
+			<posx>-223</posx>
+			<animation effect="slide" start="0" end="148.5" time="500" condition="Window.IsActive(10209)">Conditional</animation>
+			<animation effect="slide" start="148.5" end="0" time="500" condition="!Window.IsActive(10209)">Conditional</animation>
+			<control type="image">
+				<posy>80</posy>
+				<width>297</width>
+				<height>640</height>
+				<texture border="10">black.png</texture>
+				<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
+			</control>
+			<!-- title bg -->
+			<control type="image">
+				<width>297</width>
+				<height>80</height>
+				<texture border="10">black.png</texture>
+			</control>
+			<control type="image">
+				<posy>30</posy>
+				<width>297</width>
+				<height>50</height>
+				<texture>border-bottom-grey.png</texture>
+			</control>
+		</control>
 		<control type="group">
 			<posy>-28</posy>
 			<visible>Container.PlexContent(Movie) | [Container.PlexContent(Channel) + ListItem.Type(movie)]</visible>
 			<include>FadeDialog</include>
-			<include>rightSideSlide</include>
+			<include>extrasSlide</include>
 			<!-- backgrounds -->
 			<control type="group">
 				<control type="largeimage">
 					<posy>28</posy>
-					<posx>0</posx>
+					<posx>74</posx>
 					<width>1280</width>
 					<height>720</height>
-					<texture>preplay-movie-episode-bg.png</texture>
+					<texture>preplay-movie-episode-bg2.png</texture>
 					<aspectratio>scale</aspectratio>
 				</control>
 			</control>
