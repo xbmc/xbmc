@@ -142,6 +142,32 @@ bool CCoreAudioStream::IsDigitalOuptut(AudioStreamID id)
           type == kIOAudioDeviceTransportTypeUSB);
 }
 
+bool CCoreAudioStream::GetStartingChannelInDevice(AudioStreamID id, UInt32 &startingChannel)
+{
+  if (!id)
+    return 0;
+  
+  UInt32 i_param_size = sizeof(UInt32);
+  UInt32 i_param;
+  startingChannel = 0;
+  bool ret = false;
+  
+  AudioObjectPropertyAddress propertyAddress; 
+  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal; 
+  propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
+  propertyAddress.mSelector = kAudioStreamPropertyStartingChannel; 
+  
+  // number of frames of latency in the AudioStream
+  OSStatus status = AudioObjectGetPropertyData(id, &propertyAddress, 0, NULL, &i_param_size, &i_param); 
+  if (status == noErr)
+  {
+    startingChannel = i_param;
+    ret = true;
+  }
+  
+  return ret;
+}
+
 UInt32 CCoreAudioStream::GetTerminalType(AudioStreamID id)
 {
   if (!id)
