@@ -1,0 +1,64 @@
+diff --git a/libmpeg2/Makefile.am b/libmpeg2/Makefile.am
+index a4dd944..c113bf9 100644
+--- a/libmpeg2/Makefile.am
++++ b/libmpeg2/Makefile.am
+@@ -14,7 +14,7 @@
+ 			  motion_comp_vis.c motion_comp_arm.c \
+ 			  cpu_accel.c cpu_state.c
+ if ARCH_ARM
+-libmpeg2arch_la_SOURCES += motion_comp_arm_s.S motion_comp_neon.c
++libmpeg2arch_la_SOURCES += motion_comp_neon.c
+ endif
+ libmpeg2arch_la_CFLAGS = $(OPT_CFLAGS) $(ARCH_OPT_CFLAGS) $(LIBMPEG2_CFLAGS)
+
+--- a/libmpeg2/motion_comp_arm.c
++++ b/libmpeg2/motion_comp_arm.c
+@@ -93,14 +93,21 @@ MC_FUNC (put,y)
+ MC_FUNC (avg,y)
+ MC_FUNC (put,xy)
+ MC_FUNC (avg,xy)
++MC_FUNC (put,o)
++MC_FUNC (put,x)
+ 
+ 
+-extern void MC_put_o_16_arm (uint8_t * dest, const uint8_t * ref,
+-			     int stride, int height);
+-
+-extern void MC_put_x_16_arm (uint8_t * dest, const uint8_t * ref,
+-			     int stride, int height);
++static void MC_put_o_16_arm (uint8_t * dest, const uint8_t * ref,
++			     int stride, int height)
++{
++    MC_put_o_16_c(dest, ref, stride, height);
++}
+ 
++static void MC_put_x_16_arm (uint8_t * dest, const uint8_t * ref,
++			     int stride, int height)
++{
++    MC_put_x_16_c(dest, ref, stride, height);
++}
+ 
+ static void MC_put_y_16_arm (uint8_t * dest, const uint8_t * ref,
+ 			      int stride, int height)
+@@ -114,11 +121,17 @@ static void MC_put_xy_16_arm (uint8_t * dest, const uint8_t * ref,
+     MC_put_xy_16_c(dest, ref, stride, height);
+ }
+ 
+-extern void MC_put_o_8_arm (uint8_t * dest, const uint8_t * ref,
+-			     int stride, int height);
++static void MC_put_o_8_arm (uint8_t * dest, const uint8_t * ref,
++			     int stride, int height)
++{
++    MC_put_o_8_c(dest, ref, stride, height);
++}
+ 
+-extern void MC_put_x_8_arm (uint8_t * dest, const uint8_t * ref,
+-			    int stride, int height);
++static void MC_put_x_8_arm (uint8_t * dest, const uint8_t * ref,
++			    int stride, int height)
++{
++    MC_put_x_8_c(dest, ref, stride, height);
++}
+ 
+ static void MC_put_y_8_arm (uint8_t * dest, const uint8_t * ref,
+ 			     int stride, int height)
