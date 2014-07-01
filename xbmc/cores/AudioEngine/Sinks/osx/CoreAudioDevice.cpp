@@ -23,6 +23,7 @@
 #include "CoreAudioChannelLayout.h"
 #include "CoreAudioHardware.h"
 #include "utils/log.h"
+#include "osx/DarwinUtils.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CCoreAudioDevice
@@ -239,22 +240,17 @@ std::string CCoreAudioDevice::GetName()
   return name;
 }
 
-bool CCoreAudioDevice::IsDigital(UInt32 &transportType)
+bool CCoreAudioDevice::IsDigital() const
 {
   bool isDigital = false;
+  UInt32 transportType = 0;
   if (!m_DeviceId)
     return false;
-
-  AudioObjectPropertyAddress  propertyAddress;
-  propertyAddress.mScope    = kAudioDevicePropertyScopeOutput;
-  propertyAddress.mElement  = 0;
-  propertyAddress.mSelector = kAudioDevicePropertyTransportType;
-
-  UInt32 propertySize = sizeof(transportType);
-  OSStatus ret = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &propertySize, &transportType);
-  if (ret != noErr)
-      return false;
     
+  transportType = GetTransportType();
+  if (transportType == INT_MAX)
+    return false;
+
   if (transportType == kIOAudioDeviceTransportTypeFireWire)
     isDigital = true;
   if (transportType == kIOAudioDeviceTransportTypeUSB)
@@ -271,7 +267,25 @@ bool CCoreAudioDevice::IsDigital(UInt32 &transportType)
   return isDigital;
 }
 
-UInt32 CCoreAudioDevice::GetTotalOutputChannels()
+UInt32 CCoreAudioDevice::GetTransportType() const
+{
+  UInt32 transportType = 0;
+  if (!m_DeviceId)
+    return INT_MAX;
+
+  AudioObjectPropertyAddress  propertyAddress;
+  propertyAddress.mScope    = kAudioDevicePropertyScopeOutput;
+  propertyAddress.mElement  = 0;
+  propertyAddress.mSelector = kAudioDevicePropertyTransportType;
+
+  UInt32 propertySize = sizeof(transportType);
+  OSStatus ret = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &propertySize, &transportType);
+  if (ret != noErr)
+      return INT_MAX;
+  return transportType;
+}
+
+UInt32 CCoreAudioDevice::GetTotalOutputChannels() const
 {
   UInt32 channels = 0;
 
@@ -304,6 +318,42 @@ UInt32 CCoreAudioDevice::GetTotalOutputChannels()
 
   free(pList);
 
+  return channels;
+}
+
+UInt32 CCoreAudioDevice::GetNumChannelsOfStream(UInt32 streamIdx)
+{
+  UInt32 channels = 0;
+  
+  if (!m_DeviceId)
+    return channels;
+  
+  AudioObjectPropertyAddress  propertyAddress;
+  propertyAddress.mScope    = kAudioDevicePropertyScopeOutput;
+  propertyAddress.mElement  = 0;
+  propertyAddress.mSelector = kAudioDevicePropertyStreamConfiguration;
+  
+  UInt32 size = 0;
+  OSStatus ret = AudioObjectGetPropertyDataSize(m_DeviceId, &propertyAddress, 0, NULL, &size);
+  if (ret != noErr)
+    return channels;
+  
+  AudioBufferList* pList = (AudioBufferList*)malloc(size);
+  ret = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &size, pList);
+  if (ret == noErr)
+  {
+    if (streamIdx < pList->mNumberBuffers)
+      channels = pList->mBuffers[streamIdx].mNumberChannels;
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "CCoreAudioDevice::GetNumChannelsOfStream: "
+              "Unable to get number of stream output channels - id: 0x%04x. Error = %s",
+              (uint)m_DeviceId, GetError(ret).c_str());
+  }
+  
+  free(pList);
+  
   return channels;
 }
 
@@ -518,7 +568,7 @@ bool CCoreAudioDevice::SetCurrentVolume(Float32 vol)
   return true;
 }
 
-bool CCoreAudioDevice::GetPreferredChannelLayout(CCoreAudioChannelLayout& layout)
+bool CCoreAudioDevice::GetPreferredChannelLayout(CCoreAudioChannelLayout& layout) const
 {
   if (!m_DeviceId)
     return false;
@@ -547,7 +597,7 @@ bool CCoreAudioDevice::GetPreferredChannelLayout(CCoreAudioChannelLayout& layout
   return (ret == noErr);
 }
 
-bool CCoreAudioDevice::GetPreferredChannelLayoutForStereo(CCoreAudioChannelLayout &layout)
+bool CCoreAudioDevice::GetPreferredChannelLayoutForStereo(CCoreAudioChannelLayout &layout) const
 {
   if (!m_DeviceId)
     return false;

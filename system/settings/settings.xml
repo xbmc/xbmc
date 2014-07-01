@@ -2402,6 +2402,9 @@
             <options>audiodevices</options>
           </constraints>
           <control type="list" format="string" />
+          <updates>
+            <update type="change" />
+          </updates>
         </setting>
         <setting id="audiooutput.channels" type="integer" label="34100" help="36362">
           <level>0</level>

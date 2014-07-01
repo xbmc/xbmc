@@ -24,9 +24,8 @@
 #include "cores/AudioEngine/Sinks/osx/CoreAudioHardware.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioHelpers.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/AudioEngine/Sinks/osx/AEDeviceEnumerationOSX.h"
 #include <vector>
-
-extern float ScoreStream(const AudioStreamBasicDescription &desc, const AEAudioFormat &format);
 
 std::vector<AudioStreamBasicDescription> stereoFormatsWithPassthrough;
 std::vector<AudioStreamBasicDescription> stereoFormatsWithoutPassthrough;
@@ -191,13 +190,14 @@ unsigned int findMatchingFormat(const std::vector<AudioStreamBasicDescription> &
   unsigned int formatIdx = 0;
   float highestScore = 0;
   float currentScore = 0;
+  AEDeviceEnumerationOSX devEnum((AudioDeviceID)0);
 
 //  fprintf(stderr, "%s: Matching streamFormat for source: %s with samplerate: %d\n", __FUNCTION__, CAEUtil::DataFormatToStr(srcFormat.m_dataFormat), srcFormat.m_sampleRate);
   for (unsigned int i = 0; i < formatList.size(); i++)
   {
     AudioStreamBasicDescription desc = formatList[i];
     std::string formatString;
-    currentScore = ScoreStream(desc, srcFormat);
+    currentScore = devEnum.ScoreFormat(desc, srcFormat);
 //    fprintf(stderr, "%s: Physical Format: %s idx: %d rated %f\n", __FUNCTION__, StreamDescriptionToString(desc, formatString), i, currentScore);
 
     if (currentScore > highestScore)

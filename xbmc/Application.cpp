@@ -1793,6 +1793,21 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
     usestagefright->SetValue(false);
   }
 #endif
+#if defined(TARGET_DARWIN_OSX)
+  else if (settingId == "audiooutput.audiodevice")
+  {
+    CSettingString *audioDevice = (CSettingString*)setting;
+    // Gotham and older didn't enumerate audio devices per stream on osx
+    // add stream0 per default which should be ok for all old settings.
+    if (!StringUtils::EqualsNoCase(audioDevice->GetValue(), "DARWINOSX:default") && 
+        StringUtils::FindWords(audioDevice->GetValue().c_str(), ":stream") == std::string::npos)
+    {
+      std::string newSetting = audioDevice->GetValue();
+      newSetting += ":stream0";
+      return audioDevice->SetValue(newSetting);
+    }
+  }
+#endif
 
   return false;
 }

@@ -1156,6 +1156,7 @@
 		C8D0B2AF1265A9A800F0C0AC /* SystemGlobals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */; };
 		C8EC5D0E1369519D00CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */; };
 		DF00492D162DAEA200A971AD /* PVROperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF00492B162DAEA200A971AD /* PVROperations.cpp */; };
+		DF033D381946612400BFC82E /* AEDeviceEnumerationOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF033D361946612400BFC82E /* AEDeviceEnumerationOSX.cpp */; };
 		DF07252E168734D7008DCAAD /* karaokevideobackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF07252C168734D7008DCAAD /* karaokevideobackground.cpp */; };
 		DF072534168734ED008DCAAD /* FFmpegVideoDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF072532168734ED008DCAAD /* FFmpegVideoDecoder.cpp */; };
 		DF0ABB73183A94A30018445D /* Utf8Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0ABB71183A94A30018445D /* Utf8Utils.cpp */; };
@@ -4758,6 +4759,8 @@
 		C8EC5D0D1369519D00CCC10D /* XBMC_keytable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keytable.h; sourceTree = "<group>"; };
 		DF00492B162DAEA200A971AD /* PVROperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVROperations.cpp; sourceTree = "<group>"; };
 		DF00492C162DAEA200A971AD /* PVROperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVROperations.h; sourceTree = "<group>"; };
+		DF033D361946612400BFC82E /* AEDeviceEnumerationOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AEDeviceEnumerationOSX.cpp; path = Sinks/osx/AEDeviceEnumerationOSX.cpp; sourceTree = "<group>"; };
+		DF033D371946612400BFC82E /* AEDeviceEnumerationOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AEDeviceEnumerationOSX.h; path = Sinks/osx/AEDeviceEnumerationOSX.h; sourceTree = "<group>"; };
 		DF07252C168734D7008DCAAD /* karaokevideobackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokevideobackground.cpp; sourceTree = "<group>"; };
 		DF07252D168734D7008DCAAD /* karaokevideobackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokevideobackground.h; sourceTree = "<group>"; };
 		DF072532168734ED008DCAAD /* FFmpegVideoDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FFmpegVideoDecoder.cpp; sourceTree = "<group>"; };
@@ -7422,6 +7425,8 @@
 		7C8AE7FE189DE3A700C33786 /* osx */ = {
 			isa = PBXGroup;
 			children = (
+				DF033D361946612400BFC82E /* AEDeviceEnumerationOSX.cpp */,
+				DF033D371946612400BFC82E /* AEDeviceEnumerationOSX.h */,
 				7C8AE849189DE3CD00C33786 /* CoreAudioChannelLayout.cpp */,
 				7C8AE844189DE3CD00C33786 /* CoreAudioChannelLayout.h */,
 				7C8AE84A189DE3CD00C33786 /* CoreAudioDevice.cpp */,
@@ -11846,6 +11851,7 @@
 				7CCDACC119275D790074CF51 /* NptAppleAutoreleasePool.mm in Sources */,
 				7CCDACCA19275D790074CF51 /* NptAppleLogConfig.mm in Sources */,
 				7CAA469019427AED00008885 /* PosixDirectory.cpp in Sources */,
+				DF033D381946612400BFC82E /* AEDeviceEnumerationOSX.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

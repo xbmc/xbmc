@@ -51,8 +51,10 @@ public:
   
   AudioDeviceID GetId() {return m_DeviceId;}
   std::string   GetName();
-  bool          IsDigital(UInt32 &transportType);
-  UInt32        GetTotalOutputChannels();
+  bool          IsDigital() const;
+  UInt32        GetTransportType() const;
+  UInt32        GetTotalOutputChannels() const;
+  UInt32        GetNumChannelsOfStream(UInt32 streamIdx);
   bool          GetStreams(AudioStreamIdList *pList);
   bool          IsRunning();
   bool          SetHogStatus(bool hog);
@@ -60,8 +62,8 @@ public:
   bool          SetMixingSupport(UInt32 mix);
   bool          GetMixingSupport();
   bool          SetCurrentVolume(Float32 vol);
-  bool          GetPreferredChannelLayout(CCoreAudioChannelLayout &layout);
-  bool          GetPreferredChannelLayoutForStereo(CCoreAudioChannelLayout &layout);
+  bool          GetPreferredChannelLayout(CCoreAudioChannelLayout &layout) const;
+  bool          GetPreferredChannelLayoutForStereo(CCoreAudioChannelLayout &layout) const;
   bool          GetDataSources(CoreAudioDataSourceList *pList);
   Float64       GetNominalSampleRate();
   bool          SetNominalSampleRate(Float64 sampleRate);
