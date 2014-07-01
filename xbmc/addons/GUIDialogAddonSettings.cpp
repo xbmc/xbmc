@@ -961,13 +961,15 @@ void CGUIDialogAddonSettings::EnableControls()
     if (control)
     {
       // set enable status
-      if (setting->Attribute("enable"))
-        ((CGUIControl*) control)->SetEnabled(GetCondition(setting->Attribute("enable"), controlId));
+      const char *enable = setting->Attribute("enable");
+      if (enable)
+        ((CGUIControl*) control)->SetEnabled(GetCondition(enable, controlId));
       else
         ((CGUIControl*) control)->SetEnabled(true);
       // set visible status
-      if (setting->Attribute("visible"))
-        ((CGUIControl*) control)->SetVisible(GetCondition(setting->Attribute("visible"), controlId));
+      const char *visible = setting->Attribute("visible");
+      if (visible)
+        ((CGUIControl*) control)->SetVisible(GetCondition(visible, controlId));
       else
         ((CGUIControl*) control)->SetVisible(true);
     }
