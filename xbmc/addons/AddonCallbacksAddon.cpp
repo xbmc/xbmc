@@ -197,10 +197,10 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
       const TiXmlElement *setting = category->FirstChildElement("setting");
       while (setting)
       {
-        const char *id = setting->Attribute("id");
+        const std::string   id = XMLUtils::GetAttribute(setting, "id");
         const std::string type = XMLUtils::GetAttribute(setting, "type");
 
-        if (id && strcmpi(id, strSettingName) == 0 && !type.empty())
+        if (id == strSettingName && !type.empty())
         {
           if (type == "text"   || type == "ipaddress" ||
               type == "folder" || type == "action"    ||

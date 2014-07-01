@@ -235,10 +235,10 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
     if (controlId == iControl)
     {
       const CGUIControl* control = GetControl(controlId);
-      const char *id = setting->Attribute("id");
+      const std::string   id = XMLUtils::GetAttribute(setting, "id");
       const std::string type = XMLUtils::GetAttribute(setting, "type");
       if (control && control->GetControlType() == CGUIControl::GUICONTROL_BUTTON &&
-          id && !type.empty())
+          !id.empty() && !type.empty())
       {
         const char *option = setting->Attribute("option");
         const char *source = setting->Attribute("source");
@@ -622,8 +622,8 @@ void CGUIDialogAddonSettings::CreateSections()
     const TiXmlElement *setting = category->FirstChildElement("setting");
     while (setting)
     {
-      const char *id = setting->Attribute("id");
-      if (id)
+      const std::string id = XMLUtils::GetAttribute(setting, "id");
+      if (!id.empty())
         m_settings[id] = m_addon->GetSetting(id);
       setting = setting->NextSiblingElement("setting");
     }
