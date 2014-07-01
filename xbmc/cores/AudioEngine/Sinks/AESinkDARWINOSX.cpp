@@ -266,7 +266,8 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   m_latentFrames += m_outputStream.GetNumLatencyFrames();
 
   // update the channel map based on the new stream format
-  devEnum.GetAEChannelMap(format.m_channelLayout, numOutputChannels);
+  if (passthrough == PassthroughModeNone)
+    devEnum.GetAEChannelMap(format.m_channelLayout, numOutputChannels);
    
   /* TODO: Should we use the virtual format to determine our data format? */
   format.m_frameSize     = format.m_channelLayout.Count() * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3);
@@ -285,9 +286,9 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   m_buffer = new AERingBuffer(num_buffers * format.m_frames * m_frameSizePerPlane, m_planes);
   CLog::Log(LOGDEBUG, "%s: using buffer size: %u (%f ms)", __FUNCTION__, m_buffer->GetMaxSize(), (float)m_buffer->GetMaxSize() / (m_framesPerSecond * m_frameSizePerPlane));
 
-  if (passthrough != PassthroughModeNone)
+  if (m_outputBitstream)
     format.m_dataFormat = AE_FMT_S16NE;
-  else
+  else if (passthrough == PassthroughModeNone)
     format.m_dataFormat = (m_planes > 1) ? AE_FMT_FLOATP : AE_FMT_FLOAT;
 
   // Register for data request callbacks from the driver and start
