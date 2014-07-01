@@ -981,7 +981,7 @@
 				<control type="largeimage">
 					<posy>28</posy>
 					<posx>74</posx>
-					<width>1280</width>
+					<width>1206</width>
 					<height>720</height>
 					<texture>preplay-movie-episode-bg2.png</texture>
 					<aspectratio>scale</aspectratio>
