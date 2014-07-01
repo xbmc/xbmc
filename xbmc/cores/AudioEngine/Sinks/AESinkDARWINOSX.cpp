@@ -56,8 +56,8 @@ static void EnumerateDevices(CADeviceList &list)
       CAEDeviceInfo firstDevice = listForDevice.front().second;
       firstDevice.m_deviceName = "default";
       firstDevice.m_displayName = "Default";
-      firstDevice.m_displayNameExtra = "";
       list.insert(list.begin(), std::make_pair(deviceID, firstDevice));
+      firstDevice.m_displayNameExtra = defaultDeviceName;
     }
 
     deviceIDList.pop_front();
