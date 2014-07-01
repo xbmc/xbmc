@@ -810,15 +810,13 @@ void CGUIDialogAddonSettings::CreateControls()
         ((CGUISpinControlEx *)pControl)->SetText(label);
         ((CGUISpinControlEx *)pControl)->SetFloatValue(1.0f);
 
-        double rangestart = 0;
-        if (setting->Attribute("rangestart"))
-          rangestart = atof(setting->Attribute("rangestart"));
-        double rangeend = 1;
-        if (setting->Attribute("rangeend"))
-          rangeend = atof(setting->Attribute("rangeend"));
+        double rangestart = 0, rangeend = 1;
+        setting->Attribute("rangestart", &rangestart);
+        setting->Attribute("rangeend", &rangeend);
+
         int elements = 2;
-        if (setting->Attribute("elements"))
-          elements = atoi(setting->Attribute("elements"));
+        setting->Attribute("elements", &elements);
+
         CStdString valueformat;
         if (setting->Attribute("valueformat"))
           valueformat = m_addon->GetString(atoi(setting->Attribute("valueformat")));

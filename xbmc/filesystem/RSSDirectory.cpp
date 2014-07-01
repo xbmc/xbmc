@@ -124,14 +124,10 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
     res.tag = "media:content";
     res.mime    = XMLUtils::GetAttribute(item_child, "type");
     res.path    = XMLUtils::GetAttribute(item_child, "url");
-    if(item_child->Attribute("width"))
-      res.width    = atoi(item_child->Attribute("width"));
-    if(item_child->Attribute("height"))
-      res.height   = atoi(item_child->Attribute("height"));
-    if(item_child->Attribute("bitrate"))
-      res.bitrate  = atoi(item_child->Attribute("bitrate"));
-    if(item_child->Attribute("duration"))
-      res.duration = atoi(item_child->Attribute("duration"));
+    item_child->Attribute("width", &res.width);
+    item_child->Attribute("height", &res.height);
+    item_child->Attribute("bitrate", &res.bitrate);
+    item_child->Attribute("duration", &res.duration);
     if(item_child->Attribute("fileSize"))
       res.size     = _atoi64(item_child->Attribute("fileSize"));
 
