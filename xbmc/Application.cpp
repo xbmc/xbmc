@@ -4806,6 +4806,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
       param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
       CAnnouncementManager::Get().Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
 
+      if (m_pPlayer->IsPlayingVideo() && CSettings::Get().GetBool("subtitles.autosearch") && m_pPlayer->GetSubtitleCount() == 0)
+      {
+        g_windowManager.ActivateWindow(WINDOW_DIALOG_SUBTITLES);
+      }
+
       if (m_pPlayer->IsPlayingAudio())
       {
         // Start our cdg parser as appropriate
