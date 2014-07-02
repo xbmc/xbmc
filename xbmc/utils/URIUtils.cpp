@@ -290,8 +290,8 @@ bool URIUtils::ProtocolHasEncodedFilename(const CStdString& prot)
   CStdString prot2 = CURL::TranslateProtocol(prot);
 
   // For now assume only (quasi) http internet streams use URL encoding
-  return prot2 == "http"  ||
-         prot2 == "https";
+  return CURL::IsProtocolEqual(prot2, "http")  ||
+         CURL::IsProtocolEqual(prot2, "https");
 }
 
 CStdString URIUtils::GetParentPath(const CStdString& strPath)
@@ -312,7 +312,7 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
     strFile = url.GetHostName();
     return GetParentPath(strFile, strParent);
   }
-  else if (url.GetProtocol() == "stack")
+  else if (url.IsProtocol("stack"))
   {
     CStackDirectory dir;
     CFileItemList items;
@@ -334,12 +334,12 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
     }
     return true;
   }
-  else if (url.GetProtocol() == "multipath")
+  else if (url.IsProtocol("multipath"))
   {
     // get the parent path of the first item
     return GetParentPath(CMultiPathDirectory::GetFirstPath(strPath), strParent);
   }
-  else if (url.GetProtocol() == "plugin")
+  else if (url.IsProtocol("plugin"))
   {
     if (!url.GetOptions().empty())
     {
@@ -361,7 +361,7 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
     }
     return true;  // already at root
   }
-  else if (url.GetProtocol() == "special")
+  else if (url.IsProtocol("special"))
   {
     if (HasSlashAtEnd(strFile))
       strFile.erase(strFile.size() - 1);
@@ -654,7 +654,7 @@ bool URIUtils::IsHD(const CStdString& strFileName)
   if (ProtocolHasParentInHostname(url.GetProtocol()))
     return IsHD(url.GetHostName());
 
-  return url.GetProtocol().empty() || url.GetProtocol() == "file";
+  return url.GetProtocol().empty() || url.IsProtocol("file");
 }
 
 bool URIUtils::IsDVD(const CStdString& strFile)
@@ -711,21 +711,21 @@ bool URIUtils::IsInAPK(const CStdString& strFile)
 {
   CURL url(strFile);
 
-  return url.GetProtocol() == "apk" && url.GetFileName() != "";
+  return url.IsProtocol("apk") && !url.GetFileName().empty();
 }
 
 bool URIUtils::IsInZIP(const CStdString& strFile)
 {
   CURL url(strFile);
 
-  return url.GetProtocol() == "zip" && url.GetFileName() != "";
+  return url.IsProtocol("zip") && !url.GetFileName().empty();
 }
 
 bool URIUtils::IsInRAR(const CStdString& strFile)
 {
   CURL url(strFile);
 
-  return url.GetProtocol() == "rar" && url.GetFileName() != "";
+  return url.IsProtocol("rar") && !url.GetFileName().empty();
 }
 
 bool URIUtils::IsAPK(const CStdString& strFile)
@@ -756,25 +756,25 @@ bool URIUtils::IsSpecial(const CStdString& strFile)
 bool URIUtils::IsPlugin(const CStdString& strFile)
 {
   CURL url(strFile);
-  return url.GetProtocol().Equals("plugin");
+  return url.IsProtocol("plugin");
 }
 
 bool URIUtils::IsScript(const CStdString& strFile)
 {
   CURL url(strFile);
-  return url.GetProtocol().Equals("script");
+  return url.IsProtocol("script");
 }
 
 bool URIUtils::IsAddonsPath(const CStdString& strFile)
 {
   CURL url(strFile);
-  return url.GetProtocol().Equals("addons");
+  return url.IsProtocol("addons");
 }
 
 bool URIUtils::IsSourcesPath(const CStdString& strPath)
 {
   CURL url(strPath);
-  return url.GetProtocol().Equals("sources");
+  return url.IsProtocol("sources");
 }
 
 bool URIUtils::IsCDDA(const CStdString& strFile)
@@ -832,30 +832,27 @@ bool URIUtils::IsInternetStream(const std::string &path, bool bStrictCheck /* = 
 
 bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */)
 {
-  CStdString strProtocol = url.GetProtocol();
-  
-  if (strProtocol.empty())
+  if (url.GetProtocol().empty())
     return false;
 
   // there's nothing to stop internet streams from being stacked
-  if (strProtocol == "stack")
+  if (url.IsProtocol("stack"))
     return IsInternetStream(CStackDirectory::GetFirstStackedFile(url.Get()));
 
-  CStdString strProtocol2 = url.GetTranslatedProtocol();
-
   // Special case these
-  if (strProtocol  == "ftp"   || strProtocol  == "ftps"   ||
-      strProtocol  == "dav"   || strProtocol  == "davs")
+  if (url.IsProtocol("ftp") || url.IsProtocol("ftps")  ||
+      url.IsProtocol("dav") || url.IsProtocol("davs"))
     return bStrictCheck;
 
-  if (strProtocol2 == "http"  || strProtocol2 == "https"  ||
-      strProtocol2 == "tcp"   || strProtocol2 == "udp"    ||
-      strProtocol2 == "rtp"   || strProtocol2 == "sdp"    ||
-      strProtocol2 == "mms"   || strProtocol2 == "mmst"   ||
-      strProtocol2 == "mmsh"  || strProtocol2 == "rtsp"   ||
-      strProtocol2 == "rtmp"  || strProtocol2 == "rtmpt"  ||
-      strProtocol2 == "rtmpe" || strProtocol2 == "rtmpte" ||
-      strProtocol2 == "rtmps")
+  std::string protocol = url.GetTranslatedProtocol();
+  if (CURL::IsProtocolEqual(protocol, "http")  || CURL::IsProtocolEqual(protocol, "https")  ||
+      CURL::IsProtocolEqual(protocol, "tcp")   || CURL::IsProtocolEqual(protocol, "udp")    ||
+      CURL::IsProtocolEqual(protocol, "rtp")   || CURL::IsProtocolEqual(protocol, "sdp")    ||
+      CURL::IsProtocolEqual(protocol, "mms")   || CURL::IsProtocolEqual(protocol, "mmst")   ||
+      CURL::IsProtocolEqual(protocol, "mmsh")  || CURL::IsProtocolEqual(protocol, "rtsp")   ||
+      CURL::IsProtocolEqual(protocol, "rtmp")  || CURL::IsProtocolEqual(protocol, "rtmpt")  ||
+      CURL::IsProtocolEqual(protocol, "rtmpe") || CURL::IsProtocolEqual(protocol, "rtmpte") ||
+      CURL::IsProtocolEqual(protocol, "rtmps"))
     return true;
 
   return false;
@@ -974,7 +971,7 @@ bool URIUtils::IsAndroidApp(const CStdString &path)
 bool URIUtils::IsLibraryFolder(const CStdString& strFile)
 {
   CURL url(strFile);
-  return url.GetProtocol().Equals("library");
+  return url.IsProtocol("library");
 }
 
 bool URIUtils::IsLibraryContent(const std::string &strFile)
