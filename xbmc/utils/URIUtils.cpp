@@ -318,14 +318,14 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
     CFileItemList items;
     dir.GetDirectory(url, items);
     items[0]->m_strDVDLabel = GetDirectory(items[0]->GetPath());
-    if (StringUtils::StartsWithNoCase(items[0]->m_strDVDLabel, "rar://") || StringUtils::StartsWithNoCase(items[0]->m_strDVDLabel, "zip://"))
+    if (IsProtocol(items[0]->m_strDVDLabel, "rar") || IsProtocol(items[0]->m_strDVDLabel, "zip"))
       GetParentPath(items[0]->m_strDVDLabel, strParent);
     else
       strParent = items[0]->m_strDVDLabel;
     for( int i=1;i<items.Size();++i)
     {
       items[i]->m_strDVDLabel = GetDirectory(items[i]->GetPath());
-      if (StringUtils::StartsWithNoCase(items[0]->m_strDVDLabel, "rar://") || StringUtils::StartsWithNoCase(items[0]->m_strDVDLabel, "zip://"))
+      if (IsProtocol(items[0]->m_strDVDLabel, "rar") || IsProtocol(items[0]->m_strDVDLabel, "zip"))
         items[i]->SetPath(GetParentPath(items[i]->m_strDVDLabel));
       else
         items[i]->SetPath(items[i]->m_strDVDLabel);
@@ -495,6 +495,11 @@ CStdString URIUtils::SubstitutePath(const CStdString& strPath, bool reverse /* =
   return strPath;
 }
 
+bool URIUtils::IsProtocol(const std::string& url, const std::string &type)
+{
+  return StringUtils::StartsWithNoCase(url, type + "://");
+}
+
 bool URIUtils::IsRemote(const CStdString& strFile)
 {
   if (IsCDDA(strFile) || IsISO9660(strFile))
@@ -534,16 +539,16 @@ bool URIUtils::IsOnDVD(const CStdString& strFile)
     return (GetDriveType(strFile.substr(0, 3).c_str()) == DRIVE_CDROM);
 #endif
 
-  if (StringUtils::StartsWith(strFile, "dvd:"))
+  if (IsProtocol(strFile, "dvd"))
     return true;
 
-  if (StringUtils::StartsWith(strFile, "udf:"))
+  if (IsProtocol(strFile, "udf"))
     return true;
 
-  if (StringUtils::StartsWith(strFile, "iso9660:"))
+  if (IsProtocol(strFile, "iso9660"))
     return true;
 
-  if (StringUtils::StartsWith(strFile, "cdda:"))
+  if (IsProtocol(strFile, "cdda"))
     return true;
 
   return false;
@@ -633,7 +638,7 @@ bool URIUtils::IsHostOnLAN(const CStdString& host, bool offLineCheck)
 
 bool URIUtils::IsMultiPath(const CStdString& strPath)
 {
-  return StringUtils::StartsWithNoCase(strPath, "multipath:");
+  return IsProtocol(strPath, "multipath");
 }
 
 bool URIUtils::IsHD(const CStdString& strFileName)
@@ -660,7 +665,7 @@ bool URIUtils::IsDVD(const CStdString& strFile)
     return true;
 
 #if defined(TARGET_WINDOWS)
-  if (StringUtils::StartsWithNoCase(strFile, "dvd://"))
+  if (IsProtocol(strFile, "dvd"))
     return true;
 
   if(strFile.size() < 2 || (strFile.substr(1) != ":\\" && strFile.substr(1) != ":"))
@@ -678,7 +683,7 @@ bool URIUtils::IsDVD(const CStdString& strFile)
 
 bool URIUtils::IsStack(const CStdString& strFile)
 {
-  return StringUtils::StartsWithNoCase(strFile, "stack:");
+  return IsProtocol(strFile, "stack");
 }
 
 bool URIUtils::IsRAR(const CStdString& strFile)
@@ -745,7 +750,7 @@ bool URIUtils::IsSpecial(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
 
-  return StringUtils::StartsWithNoCase(strFile2, "special:");
+  return IsProtocol(strFile2, "special");
 }
 
 bool URIUtils::IsPlugin(const CStdString& strFile)
@@ -774,12 +779,12 @@ bool URIUtils::IsSourcesPath(const CStdString& strPath)
 
 bool URIUtils::IsCDDA(const CStdString& strFile)
 {
-  return StringUtils::StartsWithNoCase(strFile, "cdda:");
+  return IsProtocol(strFile, "cdda");
 }
 
 bool URIUtils::IsISO9660(const CStdString& strFile)
 {
-  return StringUtils::StartsWithNoCase(strFile, "iso9660:");
+  return IsProtocol(strFile, "iso9660");
 }
 
 bool URIUtils::IsSmb(const CStdString& strFile)
@@ -789,7 +794,7 @@ bool URIUtils::IsSmb(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
 
-  return StringUtils::StartsWithNoCase(strFile2, "smb:");
+  return IsProtocol(strFile2, "smb");
 }
 
 bool URIUtils::IsURL(const CStdString& strFile)
@@ -804,8 +809,8 @@ bool URIUtils::IsFTP(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
 
-  return StringUtils::StartsWithNoCase(strFile2, "ftp:")  ||
-         StringUtils::StartsWithNoCase(strFile2, "ftps:");
+  return IsProtocol(strFile2, "ftp")  ||
+         IsProtocol(strFile2, "ftps");
 }
 
 bool URIUtils::IsDAV(const CStdString& strFile)
@@ -815,8 +820,8 @@ bool URIUtils::IsDAV(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
 
-  return StringUtils::StartsWithNoCase(strFile2, "dav:")  ||
-         StringUtils::StartsWithNoCase(strFile2, "davs:");
+  return IsProtocol(strFile2, "dav")  ||
+         IsProtocol(strFile2, "davs");
 }
 
 bool URIUtils::IsInternetStream(const std::string &path, bool bStrictCheck /* = false */)
@@ -858,42 +863,42 @@ bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */
 
 bool URIUtils::IsDAAP(const CStdString& strFile)
 {
-  return StringUtils::StartsWithNoCase(strFile, "daap:");
+  return IsProtocol(strFile, "daap");
 }
 
 bool URIUtils::IsUPnP(const CStdString& strFile)
 {
-  return StringUtils::StartsWithNoCase(strFile, "upnp:");
+  return IsProtocol(strFile, "upnp");
 }
 
 bool URIUtils::IsTuxBox(const CStdString& strFile)
 {
-  return StringUtils::StartsWithNoCase(strFile, "tuxbox:");
+  return IsProtocol(strFile, "tuxbox");
 }
 
 bool URIUtils::IsMythTV(const CStdString& strFile)
 {
-  return StringUtils::StartsWithNoCase(strFile, "myth:");
+  return IsProtocol(strFile, "myth");
 }
 
 bool URIUtils::IsHDHomeRun(const CStdString& strFile)
 {
-  return StringUtils::StartsWithNoCase(strFile, "hdhomerun:");
+  return IsProtocol(strFile, "hdhomerun");
 }
 
 bool URIUtils::IsSlingbox(const CStdString& strFile)
 {
-  return StringUtils::StartsWithNoCase(strFile, "sling:");
+  return IsProtocol(strFile, "sling");
 }
 
 bool URIUtils::IsVTP(const CStdString& strFile)
 {
-  return StringUtils::StartsWithNoCase(strFile, "vtp:");
+  return IsProtocol(strFile, "vtp");
 }
 
 bool URIUtils::IsHTSP(const CStdString& strFile)
 {
-  return StringUtils::StartsWithNoCase(strFile, "htsp:");
+  return IsProtocol(strFile, "htsp");
 }
 
 bool URIUtils::IsLiveTV(const CStdString& strFile)
@@ -906,7 +911,7 @@ bool URIUtils::IsLiveTV(const CStdString& strFile)
   || IsHDHomeRun(strFile)
   || IsSlingbox(strFile)
   || IsHTSP(strFile)
-  || StringUtils::StartsWithNoCase(strFile, "sap:")
+  || IsProtocol(strFile, "sap")
   ||(StringUtils::EndsWithNoCase(strFileWithoutSlash, ".pvr") && !StringUtils::StartsWithNoCase(strFileWithoutSlash, "pvr://recordings")))
     return true;
 
@@ -927,7 +932,7 @@ bool URIUtils::IsPVRRecording(const CStdString& strFile)
 
 bool URIUtils::IsMusicDb(const CStdString& strFile)
 {
-  return StringUtils::StartsWithNoCase(strFile, "musicdb:");
+  return IsProtocol(strFile, "musicdb");
 }
 
 bool URIUtils::IsNfs(const CStdString& strFile)
@@ -937,7 +942,7 @@ bool URIUtils::IsNfs(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
   
-  return StringUtils::StartsWithNoCase(strFile2, "nfs:");
+  return IsProtocol(strFile2, "nfs");
 }
 
 bool URIUtils::IsAfp(const CStdString& strFile)
@@ -947,23 +952,23 @@ bool URIUtils::IsAfp(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
   
-  return StringUtils::StartsWithNoCase(strFile2, "afp:");
+  return IsProtocol(strFile2, "afp");
 }
 
 
 bool URIUtils::IsVideoDb(const CStdString& strFile)
 {
-  return StringUtils::StartsWithNoCase(strFile, "videodb:");
+  return IsProtocol(strFile, "videodb");
 }
 
 bool URIUtils::IsBluray(const CStdString& strFile)
 {
-  return StringUtils::StartsWithNoCase(strFile, "bluray:");
+  return IsProtocol(strFile, "bluray");
 }
 
 bool URIUtils::IsAndroidApp(const CStdString &path)
 {
-  return StringUtils::StartsWithNoCase(path, "androidapp:");
+  return IsProtocol(path, "androidapp");
 }
 
 bool URIUtils::IsLibraryFolder(const CStdString& strFile)
@@ -974,9 +979,9 @@ bool URIUtils::IsLibraryFolder(const CStdString& strFile)
 
 bool URIUtils::IsLibraryContent(const std::string &strFile)
 {
-  return (StringUtils::StartsWith(strFile, "library://") ||
-          StringUtils::StartsWith(strFile, "videodb://") ||
-          StringUtils::StartsWith(strFile, "musicdb://") ||
+  return (IsProtocol(strFile, "library") ||
+          IsProtocol(strFile, "videodb") ||
+          IsProtocol(strFile, "musicdb") ||
           StringUtils::EndsWith(strFile, ".xsp"));
 }
 

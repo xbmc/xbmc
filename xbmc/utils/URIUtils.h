@@ -85,6 +85,14 @@ public:
   static CURL SubstitutePath(const CURL& url, bool reverse = false);
   static CStdString SubstitutePath(const CStdString& strPath, bool reverse = false);
 
+  /*! \brief Check whether a URL is a given URL scheme.
+   Comparison is case-insensitve as per RFC1738
+   \param url a std::string path.
+   \param type a lower-case scheme name, e.g. "smb".
+   \return true if the url is of the given scheme, false otherwise.
+   */
+  static bool IsProtocol(const std::string& url, const std::string& type);
+
   static bool IsAddonsPath(const CStdString& strFile);
   static bool IsSourcesPath(const CStdString& strFile);
   static bool IsCDDA(const CStdString& strFile);
