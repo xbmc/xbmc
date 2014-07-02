@@ -129,8 +129,13 @@ bool CPosixDirectory::Remove(const CURL& url)
 
 bool CPosixDirectory::Exists(const CURL& url)
 {
+  std::string path = url.Get();
+
+  if (IsAliasShortcut(path))
+    TranslateAliasShortcut(path);
+
   struct stat buffer;
-  if (stat(url.Get().c_str(), &buffer) != 0)
+  if (stat(path.c_str(), &buffer) != 0)
     return false;
   return S_ISDIR(buffer.st_mode) ? true : false;
 }
