@@ -278,13 +278,16 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
   // ShowIMDB can kill the item as this window can be closed while we do it,
   // so take a copy of the item now
   CFileItem item(*pItem);
+  bool fromDB = false;
   if (item.IsVideoDb() && item.HasVideoInfoTag())
   {
     if (item.GetVideoInfoTag()->m_type == MediaTypeSeason)
     { // clear out the art - we're really grabbing the info on the show here
       item.ClearArt();
+      item.GetVideoInfoTag()->m_iDbId = item.GetVideoInfoTag()->m_iIdShow;
     }
     item.SetPath(item.GetVideoInfoTag()->GetPath());
+    fromDB = true;
   }
   else
   {
@@ -323,7 +326,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
   if (pItem->m_bIsFolder)
     item.SetProperty("set_folder_thumb", pItem->GetPath());
 
-  bool modified = ShowIMDB(&item, scraper);
+  bool modified = ShowIMDB(&item, scraper, fromDB);
   if (modified &&
      (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_FILES ||
       g_windowManager.GetActiveWindow() == WINDOW_VIDEO_NAV)) // since we can be called from the music library we need this check
@@ -355,7 +358,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
 //     and show the information.
 // 6.  Check for a refresh, and if so, go to 3.
 
-bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
+bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, bool fromDB)
 {
   /*
   CLog::Log(LOGDEBUG,"CGUIWindowVideoBase::ShowIMDB");
@@ -384,23 +387,21 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
   {
     m_database.Open(); // since we can be called from the music library
 
+    int dbId = item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_iDbId : -1;
     if (info->Content() == CONTENT_MOVIES)
     {
-      bHasInfo = m_database.GetMovieInfo(item->GetPath(), movieDetails);
+      bHasInfo = m_database.GetMovieInfo(item->GetPath(), movieDetails, dbId);
     }
     if (info->Content() == CONTENT_TVSHOWS)
     {
       if (item->m_bIsFolder)
       {
-        bHasInfo = m_database.GetTvShowInfo(item->GetPath(), movieDetails);
+        bHasInfo = m_database.GetTvShowInfo(item->GetPath(), movieDetails, dbId);
       }
       else
       {
-        int EpisodeHint=-1;
-        if (item->HasVideoInfoTag())
-          EpisodeHint = item->GetVideoInfoTag()->m_iEpisode;
         int idEpisode=-1;
-        if ((idEpisode = m_database.GetEpisodeId(item->GetPath(),EpisodeHint)) > -1)
+        if ((idEpisode = m_database.GetEpisodeId(item->GetPath(),dbId)) > -1)
         {
           bHasInfo = true;
           m_database.GetEpisodeInfo(item->GetPath(), movieDetails, idEpisode);
@@ -613,10 +614,24 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
 
       CFileItemList list;
       CStdString strPath=item->GetPath();
-      if (item->IsVideoDb())
+      if (item->IsVideoDb() || fromDB)
       {
-        CFileItemPtr newItem(new CFileItem(*item->GetVideoInfoTag()));
-        list.Add(newItem);
+        vector<string> paths;
+        if (item->GetVideoInfoTag()->m_type == "tvshow" && pDlgInfo->RefreshAll() &&
+            m_database.GetPathsLinkedToTvShow(item->GetVideoInfoTag()->m_iDbId, paths))
+        {
+          for (vector<string>::const_iterator i = paths.begin(); i != paths.end(); ++i)
+          {
+            CFileItemPtr newItem(new CFileItem(*item->GetVideoInfoTag()));
+            newItem->SetPath(*i);
+            list.Add(newItem);
+          }
+        }
+        else
+        {
+          CFileItemPtr newItem(new CFileItem(*item->GetVideoInfoTag()));
+          list.Add(newItem);
+        }
         strPath = item->GetVideoInfoTag()->m_strPath;
       }
       else
@@ -646,20 +661,20 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
       pDlgProgress->SetLine(2, "");
       pDlgProgress->StartModal();
       pDlgProgress->Progress();
-      if (bHasInfo)
+      if (bHasInfo && movieDetails.m_iDbId != -1)
       {
         if (info->Content() == CONTENT_MOVIES)
-          m_database.DeleteMovie(item->GetPath());
+          m_database.DeleteMovie(movieDetails.m_iDbId);
         if (info->Content() == CONTENT_TVSHOWS && !item->m_bIsFolder)
-          m_database.DeleteEpisode(item->GetPath(),movieDetails.m_iDbId);
+          m_database.DeleteEpisode(movieDetails.m_iDbId);
         if (info->Content() == CONTENT_MUSICVIDEOS)
-          m_database.DeleteMusicVideo(item->GetPath());
+          m_database.DeleteMusicVideo(movieDetails.m_iDbId);
         if (info->Content() == CONTENT_TVSHOWS && item->m_bIsFolder)
         {
           if (pDlgInfo->RefreshAll())
-            m_database.DeleteTvShow(item->GetPath());
+            m_database.DeleteTvShow(movieDetails.m_iDbId);
           else
-            m_database.DeleteDetailsForTvShow(item->GetPath());
+            m_database.DeleteDetailsForTvShow(movieDetails.m_iDbId);
         }
       }
       if (scanner.RetrieveVideoInfo(list,settings.parent_name_root,info->Content(),!ignoreNfo,&scrUrl,pDlgInfo->RefreshAll(),pDlgProgress))

@@ -130,7 +130,7 @@ protected:
   virtual bool OnPlayAndQueueMedia(const CFileItemPtr &item);
   void LoadPlayList(const CStdString& strPlayList, int iPlayList = PLAYLIST_VIDEO);
 
-  bool ShowIMDB(CFileItem *item, const ADDON::ScraperPtr& content);
+  bool ShowIMDB(CFileItem *item, const ADDON::ScraperPtr& content, bool fromDB);
 
   void AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems);
 

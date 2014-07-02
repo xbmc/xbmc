@@ -577,7 +577,7 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const CStdString &method, ITransp
   // due to scrapers not supporting them
   videodatabase.RemoveTagsFromItem(id, MediaTypeTvShow);
 
-  if (videodatabase.SetDetailsForTvShow(infos.m_strFileNameAndPath, infos, artwork, seasonArt, id) <= 0)
+  if (!videodatabase.UpdateDetailsForTvShow(id, infos, artwork, seasonArt))
     return InternalError;
 
   if (!videodatabase.RemoveArtForItem(infos.m_iDbId, MediaTypeTvShow, removedArtwork))
