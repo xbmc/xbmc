@@ -35,6 +35,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "filesystem/DirectoryCache.h"
 
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaPowerSyscall.h"
@@ -280,6 +281,7 @@ void CPowerManager::OnWake()
 #endif
 
   CAEFactory::Resume();
+  g_directoryCache.Clear();
   g_application.UpdateLibraries();
   g_weatherManager.Refresh();
 
