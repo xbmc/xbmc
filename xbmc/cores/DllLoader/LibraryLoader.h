@@ -21,6 +21,8 @@
 #ifndef LIBRARY_LOADER
 #define LIBRARY_LOADER
 
+#include <string>
+
 #include "system.h"
 #ifdef TARGET_POSIX
 #include "PlatformDefs.h"
@@ -29,7 +31,7 @@
 class LibraryLoader
 {
 public:
-  LibraryLoader(const char* libraryFile);
+  LibraryLoader(const std::string& libraryFile);
   virtual ~LibraryLoader();
 
   virtual bool Load() = 0;
@@ -41,9 +43,9 @@ public:
   virtual HMODULE GetHModule() = 0;
   virtual bool HasSymbols() = 0;
 
-  char* GetName(); // eg "mplayer.dll"
-  char* GetFileName(); // "special://xbmcbin/system/mplayer/players/mplayer.dll"
-  char* GetPath(); // "special://xbmcbin/system/mplayer/players/"
+  const char *GetName() const; // eg "mplayer.dll"
+  const char *GetFileName() const; // "special://xbmcbin/system/mplayer/players/mplayer.dll"
+  const char *GetPath() const; // "special://xbmcbin/system/mplayer/players/"
 
   int IncrRef();
   int DecrRef();
@@ -52,8 +54,8 @@ public:
 private:
   LibraryLoader(const LibraryLoader&);
   LibraryLoader& operator=(const LibraryLoader&);
-  char* m_sFileName;
-  char* m_sPath;
+  std::string m_fileName;
+  std::string m_path;
   int   m_iRefCount;
 };
 

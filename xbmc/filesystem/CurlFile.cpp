@@ -388,7 +388,6 @@ CCurlFile::CCurlFile()
   m_ftpport = "";
   m_ftppasvip = false;
   m_bufferSize = 32768;
-  m_binary = true;
   m_postdata = "";
   m_postdataset = false;
   m_username = "";

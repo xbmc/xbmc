@@ -245,7 +245,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     break;
   case 'R': // rating
     if (music && music->GetRating() != '0')
-      value = music->GetRating();
+      value.assign(1, music->GetRating());
     else if (movie && movie->m_fRating != 0.f)
       value = StringUtils::Format("%.1f", movie->m_fRating);
     break;

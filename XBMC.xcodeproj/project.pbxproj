@@ -248,6 +248,9 @@
 		7C4E6F721829AA9700F1068F /* GUIDialogSubtitles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E6F701829AA9700F1068F /* GUIDialogSubtitles.cpp */; };
 		7C4E6F731829AA9700F1068F /* GUIDialogSubtitles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E6F701829AA9700F1068F /* GUIDialogSubtitles.cpp */; };
 		7C4E6F741829AA9700F1068F /* GUIDialogSubtitles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E6F701829AA9700F1068F /* GUIDialogSubtitles.cpp */; };
+		7C525DF5195E2D8100BE3482 /* SaveFileStateJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C525DF4195E2D8100BE3482 /* SaveFileStateJob.cpp */; };
+		7C525DF6195E2D8100BE3482 /* SaveFileStateJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C525DF4195E2D8100BE3482 /* SaveFileStateJob.cpp */; };
+		7C525DF7195E2D8100BE3482 /* SaveFileStateJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C525DF4195E2D8100BE3482 /* SaveFileStateJob.cpp */; };
 		7C5608C70F1754930056433A /* ExternalPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C5608C40F1754930056433A /* ExternalPlayer.cpp */; };
 		7C62F24210505BC7002AD2C1 /* Bookmark.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F24010505BC7002AD2C1 /* Bookmark.cpp */; };
 		7C62F45E1057A62D002AD2C1 /* DirectoryNodeSingles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F45C1057A62D002AD2C1 /* DirectoryNodeSingles.cpp */; };
@@ -4142,6 +4145,7 @@
 		7C4705AD12EF584C00369E51 /* AddonInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonInstaller.h; sourceTree = "<group>"; };
 		7C4E6F701829AA9700F1068F /* GUIDialogSubtitles.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSubtitles.cpp; sourceTree = "<group>"; };
 		7C4E6F711829AA9700F1068F /* GUIDialogSubtitles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSubtitles.h; sourceTree = "<group>"; };
+		7C525DF4195E2D8100BE3482 /* SaveFileStateJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SaveFileStateJob.cpp; sourceTree = "<group>"; };
 		7C5608C40F1754930056433A /* ExternalPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ExternalPlayer.cpp; sourceTree = "<group>"; };
 		7C5608C50F1754930056433A /* ExternalPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExternalPlayer.h; sourceTree = "<group>"; };
 		7C62F24010505BC7002AD2C1 /* Bookmark.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Bookmark.cpp; sourceTree = "<group>"; };
@@ -9790,6 +9794,7 @@
 				DFAF6A4E16EBAE3800D6AE12 /* RssManager.h */,
 				E38E1E750D25F9FD00618676 /* RssReader.cpp */,
 				E38E1E760D25F9FD00618676 /* RssReader.h */,
+				7C525DF4195E2D8100BE3482 /* SaveFileStateJob.cpp */,
 				7C1A495B15A96918004AF4A4 /* SaveFileStateJob.h */,
 				E38E1E770D25F9FD00618676 /* ScraperParser.cpp */,
 				E38E1E780D25F9FD00618676 /* ScraperParser.h */,
@@ -11844,6 +11849,7 @@
 				7CCDACCA19275D790074CF51 /* NptAppleLogConfig.mm in Sources */,
 				7CAA469019427AED00008885 /* PosixDirectory.cpp in Sources */,
 				DF033D381946612400BFC82E /* AEDeviceEnumerationOSX.cpp in Sources */,
+				7C525DF5195E2D8100BE3482 /* SaveFileStateJob.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13036,6 +13042,7 @@
 				7CCDACC319275D790074CF51 /* NptAppleAutoreleasePool.mm in Sources */,
 				7CCDACCC19275D790074CF51 /* NptAppleLogConfig.mm in Sources */,
 				7CAA469219427AED00008885 /* PosixDirectory.cpp in Sources */,
+				7C525DF7195E2D8100BE3482 /* SaveFileStateJob.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14230,6 +14237,7 @@
 				7CCDACC219275D790074CF51 /* NptAppleAutoreleasePool.mm in Sources */,
 				7CCDACCB19275D790074CF51 /* NptAppleLogConfig.mm in Sources */,
 				7CAA469119427AED00008885 /* PosixDirectory.cpp in Sources */,
+				7C525DF6195E2D8100BE3482 /* SaveFileStateJob.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

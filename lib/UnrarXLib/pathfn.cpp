@@ -1,7 +1,6 @@
 // THIS FILE IS MODIFIED TO WORK WITH XBMC
 
 #include "rar.hpp"
-#include "utils/URIUtils.h"
 
 char* PointToName(const char *Path)
 {
@@ -194,14 +193,16 @@ void SetSFXExt(wchar *SFXName)
 
 char *GetExt(const char *Name)
 {
-  CStdString strExtension = URIUtils::GetExtension(Name);
-  return((char *)strstr((char *)Name,strExtension.c_str()));
+  if (Name)
+    return (char*)strrchr(Name, '.');
+  return NULL;
 }
 
 wchar *GetExt(const wchar *Name)
 {
-  CStdString strExtension = URIUtils::GetExtension(Name);
-  return((wchar *)wcsstr((wchar_t *)Name,CStdStringW(strExtension).c_str()));
+  if (Name)
+    return strrchrw(Name, L'.');
+  return NULL;
 }
 
 

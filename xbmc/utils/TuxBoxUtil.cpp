@@ -1621,28 +1621,27 @@ CStdString CTuxBoxUtil::DetectSubMode(CStdString strSubMode, CStdString& strXMLR
   size_t ipointMode = strSubMode.find("?mode=");
   size_t ipointSubMode = strSubMode.find("&submode=");
   if (ipointMode != std::string::npos)
-    strFilter = strSubMode.at(ipointMode + 6);
+    strFilter.assign(1, strSubMode.at(ipointMode + 6));
 
   if (ipointSubMode != std::string::npos)
   {
-    CStdString strTemp;
-    strTemp = strSubMode.at(ipointSubMode + 9);
-    if(strTemp.Equals("1"))
+    char v = strSubMode.at(ipointSubMode + 9);
+    if(v == '1')
     {
       strXMLRootString = StringUtils::Format("unknowns");
       strXMLChildString = StringUtils::Format("unknown");
     }
-    else if(strTemp.Equals("2"))
+    else if(v == '2')
     {
       strXMLRootString = StringUtils::Format("satellites");
       strXMLChildString = StringUtils::Format("satellite");
     }
-    else if(strTemp.Equals("3"))
+    else if(v == '3')
     {
       strXMLRootString = StringUtils::Format("providers");
       strXMLChildString = StringUtils::Format("provider");
     }
-    else if(strTemp.Equals("4"))
+    else if(v == '4')
     {
       strXMLRootString = StringUtils::Format("bouquets");
       strXMLChildString = StringUtils::Format("bouquet");

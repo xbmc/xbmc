@@ -27,7 +27,7 @@
 #include "android/loader/AndroidDyload.h"
 #endif
 
-SoLoader::SoLoader(const char *so, bool bGlobal) : LibraryLoader(so)
+SoLoader::SoLoader(const std::string &so, bool bGlobal) : LibraryLoader(so)
 {
   m_soHandle = NULL;
   m_bGlobal = bGlobal;

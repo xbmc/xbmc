@@ -4602,7 +4602,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
         rating = StringUtils::Format("%.1f", item->GetVideoInfoTag()->m_fRating);
       else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > '0')
       { // song rating.  Images will probably be better than numbers for this in the long run
-        rating = item->GetMusicInfoTag()->GetRating();
+        rating.assign(1, item->GetMusicInfoTag()->GetRating());
       }
       return rating;
     }

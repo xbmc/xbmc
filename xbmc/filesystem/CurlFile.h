@@ -170,7 +170,6 @@ namespace XFILE
       std::string     m_acceptCharset;
       CStdString      m_ftpauth;
       CStdString      m_ftpport;
-      CStdString      m_binary;
       CStdString      m_postdata;
       CStdString      m_referer;
       CStdString      m_cookie;
