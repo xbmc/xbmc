@@ -749,35 +749,35 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
       // set xbmc headers
       for (std::map<std::string,std::string>::const_iterator it = options.begin(); it != options.end(); ++it)
       {
-        const CStdString name = it->first;
-        const CStdString value = it->second;
+        std::string name = it->first; StringUtils::ToLower(name);
+        const std::string &value = it->second;
 
-        if(name.Equals("auth"))
+        if (name == "auth")
         {
           m_httpauth = value;
           if(m_httpauth.empty())
             m_httpauth = "any";
         }
-        else if (name.Equals("Referer"))
+        else if (name == "referer")
           SetReferer(value);
-        else if (name.Equals("User-Agent"))
+        else if (name == "user-agent")
           SetUserAgent(value);
-        else if (name.Equals("Cookie"))
+        else if (name == "cookie")
           SetCookie(value);
-        else if (name.Equals("Encoding"))
+        else if (name == "encoding")
           SetContentEncoding(value);
-        else if (name.Equals("noshout") && value.Equals("true"))
+        else if (name == "noshout" && value == "true")
           m_skipshout = true;
-        else if (name.Equals("seekable") && value.Equals("0"))
+        else if (name == "seekable" && value == "0")
           m_seekable = false;
-        else if (name.Equals("Accept-Charset"))
+        else if (name == "accept-charset")
           SetAcceptCharset(value);
-        else if (name.Equals("HttpProxy"))
+        else if (name == "httpproxy")
           SetStreamProxy(value, PROXY_HTTP);
-        else if (name.Equals("SSLCipherList"))
+        else if (name == "sslcipherlist")
           m_cipherlist = value;
         else
-          SetRequestHeader(name, value);
+          SetRequestHeader(it->first, value);
       }
     }
   }
