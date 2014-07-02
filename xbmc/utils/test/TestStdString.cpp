@@ -48,33 +48,3 @@ TEST(TestStdString, CStdStringW)
   var = ref;
   EXPECT_STREQ(ref.c_str(), var.c_str());
 }
-
-TEST(TestStdString, CStdString16)
-{
-  CStdString16 ref, var;
-
-  ref = (uint16_t*)"CStdString16 test";
-  var = ref;
-  EXPECT_TRUE(!memcmp(ref.c_str(), var.c_str(),
-                      ref.length() * sizeof(uint16_t)));
-}
-
-TEST(TestStdString, CStdString32)
-{
-  CStdString32 ref, var;
-
-  ref = (uint32_t*)"CStdString32 test";
-  var = ref;
-  EXPECT_TRUE(!memcmp(ref.c_str(), var.c_str(),
-                      ref.length() * sizeof(uint32_t)));
-}
-
-TEST(TestStdString, CStdStringO)
-{
-  CStdStringO ref, var;
-
-  ref = "CStdString32 test";
-  var = ref;
-  EXPECT_TRUE(!memcmp(ref.c_str(), var.c_str(),
-                      ref.length() * sizeof(OLECHAR)));
-}
