@@ -119,8 +119,8 @@ namespace MUSIC_INFO
 typedef struct
 {
   unsigned int dwMessage;
-  unsigned int dwParam1;
-  unsigned int dwParam2;
+  int param1;
+  int param2;
   CStdString strParam;
   std::vector<std::string> params;
   boost::shared_ptr<CEvent> waitEvent;
