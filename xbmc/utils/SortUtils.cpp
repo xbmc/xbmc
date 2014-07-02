@@ -198,7 +198,17 @@ string ByYear(SortAttribute attributes, const SortItem &values)
   if (!airDate.isNull() && !airDate.asString().empty())
     label = airDate.asString() + " ";
 
-  label += StringUtils::Format("%i %s", (int)values.at(FieldYear).asInteger(), ByLabel(attributes, values).c_str());
+  label += StringUtils::Format("%i", (int)values.at(FieldYear).asInteger());
+
+  const CVariant &album = values.at(FieldAlbum);
+  if (!album.isNull())
+    label += " " + SortUtils::RemoveArticles(album.asString());
+
+  const CVariant &track = values.at(FieldTrackNumber);
+  if (!track.isNull())
+    label += StringUtils::Format(" %i", (int)track.asInteger());
+
+  label += " " + ByLabel(attributes, values);
  
   return label;
 }
@@ -572,6 +582,8 @@ map<SortBy, Fields> fillSortingFields()
   sortingFields[SortByCountry].insert(FieldCountry);
   sortingFields[SortByYear].insert(FieldYear);
   sortingFields[SortByYear].insert(FieldAirDate);
+  sortingFields[SortByYear].insert(FieldAlbum);
+  sortingFields[SortByYear].insert(FieldTrackNumber);
   sortingFields[SortByRating].insert(FieldRating);
   sortingFields[SortByVotes].insert(FieldVotes);
   sortingFields[SortByTop250].insert(FieldTop250);
