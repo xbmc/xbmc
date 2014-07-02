@@ -25,7 +25,6 @@
 #include "DDSImage.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/File.h"
-#include "utils/FileUtils.h"
 #if defined(TARGET_DARWIN_IOS)
 #include <ImageIO/ImageIO.h>
 #include "filesystem/File.h"
@@ -235,10 +234,10 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
   unsigned int height = maxHeight ? std::min(maxHeight, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
 
   // Read image into memory to use our vfs
-  void *inputBuff = NULL;
-  unsigned int inputBuffSize = CFileUtils::LoadFile(texturePath, inputBuff);
+  XFILE::CFile file;
+  XFILE::auto_buffer buf;
 
-  if (inputBuffSize == 0)
+  if (file.LoadFile(texturePath, buf) <= 0)
     return false;
 
   IImage* pImage;
@@ -248,20 +247,18 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
   else
     pImage = ImageFactory::CreateLoaderFromMimeType(strMimeType);
 
-  if(!LoadIImage(pImage, (unsigned char *) inputBuff, inputBuffSize, width, height, autoRotate))
+  if (!LoadIImage(pImage, (unsigned char *)buf.get(), buf.size(), width, height, autoRotate))
   {
     delete pImage;
     pImage = ImageFactory::CreateFallbackLoader(texturePath);
-    if(!LoadIImage(pImage, (unsigned char *) inputBuff, inputBuffSize, width, height))
+    if (!LoadIImage(pImage, (unsigned char *)buf.get(), buf.size(), width, height))
     {
       CLog::Log(LOGDEBUG, "%s - Load of %s failed.", __FUNCTION__, texturePath.c_str());
       delete pImage;
-      free(inputBuff);
       return false;
     }
   }
   delete pImage;
-  free(inputBuff);
 
   return true;
 }

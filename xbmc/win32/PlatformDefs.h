@@ -33,7 +33,13 @@ typedef __int64       fpos64_t;
 typedef __int64       __off64_t;
 typedef long          __off_t;
 
-#define ssize_t int
+#if !defined(_SSIZE_T_DEFINED) && !defined(HAVE_SSIZE_T)
+typedef intptr_t      ssize_t;
+#define _SSIZE_T_DEFINED
+#endif // !_SSIZE_T_DEFINED
+#ifndef SSIZE_MAX
+#define SSIZE_MAX INTPTR_MAX
+#endif // !SSIZE_MAX
 
 #define snprintf _snprintf
 #define ftello64 _ftelli64

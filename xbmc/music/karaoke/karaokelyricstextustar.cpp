@@ -46,46 +46,31 @@ std::vector< CStdString > CKaraokeLyricsTextUStar::readFile(const CStdString & l
   std::vector< CStdString > lines;
 
   XFILE::CFile file;
+  XFILE::auto_buffer buf;
 
-  if ( !file.Open( lyricsFile ) )
-    return std::vector< CStdString >();
-
-  unsigned int lyricSize = (unsigned int) file.GetLength();
-
-  if ( !lyricSize )
+  if (file.LoadFile(lyricsFile, buf) <= 0)
   {
-    if ( report_errors )
-      CLog::Log( LOGERROR, "UStar lyric loader: lyric file %s has zero length", lyricsFile.c_str() );
+    if (report_errors)
+      CLog::Log(LOGERROR, "%s: can't load \"%s\" file", __FUNCTION__, lyricsFile.c_str());
 
     return std::vector< CStdString >();
   }
-
-  // Read the file into memory array
-  std::vector<char> lyricData( lyricSize );
-
-  file.Seek( 0, SEEK_SET );
-
-  // Read the whole file
-  if ( file.Read( &lyricData[0], lyricSize) != lyricSize )
-    return std::vector< CStdString >(); // disk error?
-
   file.Close();
 
+  const size_t lyricSize = buf.size();
+
   // Parse into the string array
-  unsigned int offset = 0;
-  unsigned int lineoffset = 0;
+  size_t offset = 0;
+  size_t lineoffset = 0;
 
   while ( offset < lyricSize )
   {
     // End of line?
-    if ( lyricData[offset] == 0x0D || lyricData[offset] == 0x0A )
+    if (buf.get()[offset] == 0x0D || buf.get()[offset] == 0x0A)
     {
       // An empty line?
       if ( lineoffset != offset )
-      {
-        lyricData[offset] = '\0';
-        lines.push_back( &lyricData[lineoffset] );
-      }
+        lines.push_back(std::string(buf.get() + lineoffset, offset - lineoffset));
 
       // Point to the next symbol
       lineoffset = offset + 1;
@@ -96,10 +81,7 @@ std::vector< CStdString > CKaraokeLyricsTextUStar::readFile(const CStdString & l
 
   // Last line, if any
   if ( lineoffset < lyricSize )
-  {
-    lyricData[lyricSize-1] = '\0';
-    lines.push_back( &lyricData[lineoffset] );
-  }
+    lines.push_back(std::string(buf.get() + lineoffset, buf.size() - lineoffset));
 
   return lines;
 }

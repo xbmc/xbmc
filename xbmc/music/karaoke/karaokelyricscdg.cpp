@@ -542,34 +542,21 @@ bool CKaraokeLyricsCDG::Load()
 
   m_cdgStream.clear();
 
-  if ( !file.Open( m_cdgFile ) )
-    return false;
-
-  unsigned int cdgSize = (unsigned int) file.GetLength();
-
-  if ( !cdgSize )
+  XFILE::auto_buffer buf;
+  if (file.LoadFile(m_cdgFile, buf) <= 0)
   {
-	CLog::Log( LOGERROR, "CDG loader: CDG file %s has zero length", m_cdgFile.c_str() );
+    CLog::Log(LOGERROR, "CDG loader: can't load CDG file \"%s\"", m_cdgFile.c_str());
     return false;
   }
-
-  // Read the file into memory array
-  std::vector<BYTE> cdgdata( cdgSize );
-
-  file.Seek( 0, SEEK_SET );
-
-  // Read the whole file
-  if ( file.Read( &cdgdata[0], cdgSize) != cdgSize )
-    return false; // disk error?
 
   file.Close();
 
   // Parse the CD+G stream
   int buggy_commands = 0;
   
-  for ( unsigned int offset = 0; offset < cdgdata.size(); offset += sizeof( SubCode ) )
+  for (unsigned int offset = 0; offset < buf.size(); offset += sizeof(SubCode))
   {
-	  SubCode * sc = (SubCode *) (&cdgdata[0] + offset);
+    SubCode * sc = (SubCode *)(buf.get() + offset);
 
 	  if ( ( sc->command & CDG_MASK) == CDG_COMMAND )
 	  {

@@ -152,15 +152,3 @@ bool CFileUtils::RemoteAccessAllowed(const CStdString &strPath)
   }
   return false;
 }
-
-
-unsigned int CFileUtils::LoadFile(const std::string &filename, void* &outputBuffer)
-{
-  XFILE::auto_buffer buffer;
-  XFILE::CFile file;
-
-  const unsigned int total_read = file.LoadFile(filename, buffer);
-  outputBuffer = buffer.detach();
-
-  return total_read;
-}

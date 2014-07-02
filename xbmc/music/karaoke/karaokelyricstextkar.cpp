@@ -136,14 +136,12 @@ class MidiTimestamp
 CKaraokeLyricsTextKAR::CKaraokeLyricsTextKAR( const CStdString & midiFile )
   : CKaraokeLyricsText()
 {
-  m_midiData = 0;
   m_midiFile = midiFile;
 }
 
 
 CKaraokeLyricsTextKAR::~CKaraokeLyricsTextKAR()
 {
-  delete[] m_midiData;
 }
 
 
@@ -156,20 +154,7 @@ bool CKaraokeLyricsTextKAR::Load()
   // Clear the lyrics array
   clearLyrics();
 
-  if ( !file.Open( m_midiFile ) )
-    return false;
-
-  m_midiSize = (unsigned int) file.GetLength();
-
-  if ( !m_midiSize )
-    return false;  // shouldn't happen, but
-
-  file.Seek( 0, SEEK_SET );
-
-  m_midiData = new unsigned char [ m_midiSize ];
-
-  // Read the whole file
-  if ( !m_midiData || file.Read( m_midiData, m_midiSize) != m_midiSize )
+  if (file.LoadFile(m_midiFile, m_midiData) <= 0)
     return false;
 
   file.Close();
@@ -185,8 +170,7 @@ bool CKaraokeLyricsTextKAR::Load()
     succeed = false;
   }
 
-  delete [] m_midiData;
-  m_midiData = 0;
+  m_midiData.clear();
   return succeed;
 }
 
@@ -509,33 +493,31 @@ void CKaraokeLyricsTextKAR::parseMIDI()
 
 unsigned char CKaraokeLyricsTextKAR::readByte()
 {
-  if ( m_midiOffset >= m_midiSize )
+  if (m_midiOffset >= m_midiData.size())
     throw( "Cannot read byte: premature end of file" );
 
-  const unsigned char * p = m_midiData + m_midiOffset;
-  m_midiOffset += 1;
-  return p[0];
+  return (unsigned char) m_midiData.get()[m_midiOffset++];
 }
 
 unsigned short CKaraokeLyricsTextKAR::readWord()
 {
-  if ( m_midiOffset + 1 >= m_midiSize )
+  if (m_midiOffset + 1 >= m_midiData.size())
     throw( "Cannot read word: premature end of file" );
 
-  const unsigned char * p = m_midiData + m_midiOffset;
-  m_midiOffset += 2;
-  return p[0] << 8 | p[1];
+  return ((unsigned int)((unsigned char)m_midiData.get()[m_midiOffset++])) << 8 |
+         ((unsigned int)((unsigned char)m_midiData.get()[m_midiOffset++]));
 }
 
 
 unsigned int CKaraokeLyricsTextKAR::readDword()
 {
-  if ( m_midiOffset + 3 >= m_midiSize )
+  if (m_midiOffset + 3 >= m_midiData.size())
     throw( "Cannot read dword: premature end of file" );
 
-  const unsigned char * p = m_midiData + m_midiOffset;
-  m_midiOffset += 4;
-  return p[0] << 24 | p[1] << 16 | p[2] << 8 | p[3];
+  return ((unsigned int)((unsigned char)m_midiData.get()[m_midiOffset++])) << 24 |
+         ((unsigned int)((unsigned char)m_midiData.get()[m_midiOffset++])) << 16 |
+         ((unsigned int)((unsigned char)m_midiData.get()[m_midiOffset++])) << 8 |
+         ((unsigned int)((unsigned char)m_midiData.get()[m_midiOffset++]));
 }
 
 int CKaraokeLyricsTextKAR::readVarLen()

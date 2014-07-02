@@ -53,17 +53,14 @@ bool ModplugCodec::Init(const CStdString &strFile, unsigned int filecache)
 
   // Read our file to memory so it can be passed to ModPlug_Load()
   CFile file;
-  if (!file.Open(strFile))
+  XFILE::auto_buffer buf;
+  if (file.LoadFile(strFile, buf) <= 0)
   {
     CLog::Log(LOGERROR,"ModplugCodec: error opening file %s!",strFile.c_str());
     return false;
   }
-  char *data = new char[(unsigned int)file.GetLength()];
-  file.Read(data,file.GetLength());
-
   // Now load the module
-  m_module = m_dll.ModPlug_Load(data,(int)file.GetLength());
-  delete[] data;
+  m_module = m_dll.ModPlug_Load(buf.get(),buf.size());
   if (!m_module)
   {
     CLog::Log(LOGERROR,"ModplugCodec: error loading module file %s!",strFile.c_str());

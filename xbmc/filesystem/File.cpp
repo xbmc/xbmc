@@ -69,65 +69,6 @@ CFile::~CFile()
 
 //*********************************************************************************************
 
-auto_buffer::auto_buffer(size_t size) : p(NULL), s(0)
-{
-  if (!size)
-    return;
-
-  p = malloc(size);
-  if (!p)
-    throw std::bad_alloc();
-  s = size;
-}
-
-auto_buffer::~auto_buffer()
-{
-  clear();
-}
-
-auto_buffer& auto_buffer::allocate(size_t size)
-{
-  clear();
-  return resize(size);
-}
-
-auto_buffer& auto_buffer::resize(size_t newSize)
-{
-  void* newPtr = realloc(p, newSize);
-  if (!newPtr && newSize)
-    throw std::bad_alloc();
-  p = newPtr;
-  s = newSize;
-  return *this;
-}
-
-auto_buffer& auto_buffer::clear(void)
-{
-  free(p);
-  p = NULL;
-  s = 0;
-  return *this;
-}
-
-auto_buffer& auto_buffer::attach(void* pointer, size_t size)
-{
-  clear();
-  if ((pointer && size) || (!pointer && !size))
-  {
-    p = pointer;
-    s = size;
-  }
-  return *this;
-}
-
-void* auto_buffer::detach(void)
-{
-  void* returnPtr = p;
-  p = NULL;
-  s = 0;
-  return returnPtr;
-}
-
 bool CFile::Copy(const CStdString& strFileName, const CStdString& strDest, XFILE::IFileCallback* pCallback, void* pContext)
 {
   const CURL pathToUrl(strFileName);
@@ -939,17 +880,17 @@ std::string CFile::GetContentCharset(void)
   return m_pFile->GetContentCharset();
 }
 
-unsigned int CFile::LoadFile(const std::string &filename, auto_buffer& outputBuffer)
+ssize_t CFile::LoadFile(const std::string &filename, auto_buffer& outputBuffer)
 {
   const CURL pathToUrl(filename);
   return LoadFile(pathToUrl, outputBuffer);
 }
 
-unsigned int CFile::LoadFile(const CURL& file, auto_buffer& outputBuffer)
+ssize_t CFile::LoadFile(const CURL& file, auto_buffer& outputBuffer)
 {
-  static const unsigned int max_file_size = 0x7FFFFFFF;
-  static const unsigned int min_chunk_size = 64 * 1024U;
-  static const unsigned int max_chunk_size = 2048 * 1024U;
+  static const size_t max_file_size = 0x7FFFFFFF;
+  static const size_t min_chunk_size = 64 * 1024U;
+  static const size_t max_chunk_size = 2048 * 1024U;
 
   outputBuffer.clear();
 
@@ -975,25 +916,30 @@ unsigned int CFile::LoadFile(const CURL& file, auto_buffer& outputBuffer)
   than max_chunk_size.
   */
   int64_t filesize = GetLength();
-  if (filesize > max_file_size)
+  if (filesize > (int64_t)max_file_size)
     return 0; /* file is too large for this function */
 
-  unsigned int chunksize = (filesize > 0) ? (unsigned int)(filesize + 1) : GetChunkSize(GetChunkSize(), min_chunk_size);
-  unsigned int total_read = 0;
+  size_t chunksize = (filesize > 0) ? (size_t)(filesize + 1) : (size_t) GetChunkSize(GetChunkSize(), min_chunk_size);
+  size_t total_read = 0;
   while (true)
   {
     if (total_read == outputBuffer.size())
     { // (re)alloc
-      if (outputBuffer.size() >= max_file_size)
+      if (outputBuffer.size() + chunksize > max_file_size)
       {
         outputBuffer.clear();
-        return 0;
+        return -1;
       }
       outputBuffer.resize(outputBuffer.size() + chunksize);
       if (chunksize < max_chunk_size)
         chunksize *= 2;
     }
-    unsigned int read = Read(outputBuffer.get() + total_read, outputBuffer.size() - total_read);
+    ssize_t read = Read(outputBuffer.get() + total_read, outputBuffer.size() - total_read);
+    if (read < 0)
+    {
+      outputBuffer.clear();
+      return -1;
+    }
     total_read += read;
     if (!read)
       break;
