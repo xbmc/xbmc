@@ -734,6 +734,8 @@ public:
   void ClearMovieSet(int idMovie);
   void SetMovieSet(int idMovie, int idSet);
 
+  virtual CStdString GetSingleValue(const CStdString &strTable, const CStdString &strColumn, const CStdString &strWhereClause = CStdString(), const CStdString &strOrderBy = CStdString());
+
 protected:
   friend class CEdenVideoArtUpdater;
   int GetMovieId(const CStdString& strFilenameAndPath);
@@ -854,4 +856,7 @@ private:
 
   static void AnnounceRemove(std::string content, int id, bool scanning = false);
   static void AnnounceUpdate(std::string content, int id);
+
+  int CVideoDatabase::AddHistory(const int idFile, const int idOwner);
+  int CVideoDatabase::GetHistoryId(const int idFile, const int idOwner);
 };
