@@ -8,4 +8,5 @@ fi
 
 if [ "$ACTION" = build ] ; then
   make -f ${SRCROOT}/codegenerator.mk
+  make -f ${SRCROOT}/xbmc/gen-compileinfo.mk
 fi

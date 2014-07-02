@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2011-2013 Team XBMC
+ *      Copyright (C) 2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,5 +20,11 @@
  *
  */
 
-// Returns the current Git revision, or NULL if unavailable.
-const char *GetXbmcGitRevision();
+class CCompileInfo
+{
+public:
+  static int GetMajor();
+  static int GetMinor();
+  static const char *GetSuffix();  // Git "Tag", e.g. alpha1
+  static const char* GetSCMID();   // Git Revision
+};
