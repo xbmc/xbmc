@@ -559,7 +559,7 @@ bool CGUIControlFactory::GetInfoColor(const TiXmlNode *control, const char *strT
   const TiXmlElement* node = control->FirstChildElement(strTag);
   if (node && node->FirstChild())
   {
-    value.Parse(node->FirstChild()->Value(), parentID);
+    value.Parse(node->FirstChild()->ValueStr(), parentID);
     return true;
   }
   return false;

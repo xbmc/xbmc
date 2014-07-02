@@ -19,6 +19,7 @@
  *
  */
 
+#include "utils/StdString.h"
 #include "guilib/GUIInfoTypes.h"
 #include "interfaces/info/InfoBool.h"
 

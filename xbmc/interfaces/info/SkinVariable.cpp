@@ -43,7 +43,7 @@ const CSkinVariableString* CSkinVariable::CreateFromXML(const TiXmlElement& node
         if (condition)
           pair.m_condition = g_infoManager.Register(condition, context);
 
-        pair.m_label = CGUIInfoLabel(valuenode->FirstChild()->Value());
+        pair.m_label = CGUIInfoLabel(valuenode->FirstChild()->ValueStr());
         tmp->m_conditionLabelPairs.push_back(pair);
         if (!pair.m_condition)
           break; // once we reach default value (without condition) break iterating

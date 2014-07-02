@@ -100,9 +100,9 @@ void CGUIImage::AllocateOnDemand()
 void CGUIImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   // check whether our image failed to allocate, and if so drop back to the fallback image
-  if (m_texture.FailedToAlloc() && !m_texture.GetFileName().Equals(m_info.GetFallback()))
+  if (m_texture.FailedToAlloc() && m_texture.GetFileName() != m_info.GetFallback())
   {
-    if (!m_currentFallback.empty() && !m_texture.GetFileName().Equals(m_currentFallback))
+    if (!m_currentFallback.empty() && m_texture.GetFileName() != m_currentFallback)
       m_texture.SetFileName(m_currentFallback);
     else
       m_texture.SetFileName(m_info.GetFallback());
