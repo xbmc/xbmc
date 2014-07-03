@@ -140,12 +140,12 @@ THREADFUNC CThread::staticThread(void* data)
 
   if (autodelete)
   {
-    LOG(LOGDEBUG,"Thread %s %"PRIu64" terminating (autodelete)", name.c_str(), (uint64_t)id);
+    LOG(LOGDEBUG,"Thread %s %" PRIu64" terminating (autodelete)", name.c_str(), (uint64_t)id);
     delete pThread;
     pThread = NULL;
   }
   else
-    LOG(LOGDEBUG,"Thread %s %"PRIu64" terminating", name.c_str(), (uint64_t)id);
+    LOG(LOGDEBUG,"Thread %s %" PRIu64" terminating", name.c_str(), (uint64_t)id);
 
   return 0;
 }

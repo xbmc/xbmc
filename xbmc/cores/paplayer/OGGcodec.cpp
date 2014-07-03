@@ -121,7 +121,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
 
   if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0)
   {
-    CLog::Log(LOGERROR, "OGGCodec: incomplete stream info from %s, SampleRate=%i, Channels=%i, BitsPerSample=%i, TotalTime=%"PRIu64, strFile1.c_str(), m_SampleRate, m_Channels, m_BitsPerSample, m_TotalTime);
+    CLog::Log(LOGERROR, "OGGCodec: incomplete stream info from %s, SampleRate=%i, Channels=%i, BitsPerSample=%i, TotalTime=%" PRIu64, strFile1.c_str(), m_SampleRate, m_Channels, m_BitsPerSample, m_TotalTime);
     return false;
   }
 

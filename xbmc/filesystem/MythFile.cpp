@@ -309,7 +309,7 @@ bool CMythFile::Open(const CURL& url)
     if(!SetupRecording(url))
       return false;
 
-    CLog::Log(LOGDEBUG, "%s - file: size %"PRIu64", start %"PRIu64", ", __FUNCTION__,  (int64_t)m_dll->file_length(m_file), (int64_t)m_dll->file_start(m_file));
+    CLog::Log(LOGDEBUG, "%s - file: size %" PRIu64", start %" PRIu64", ", __FUNCTION__,  (int64_t)m_dll->file_length(m_file), (int64_t)m_dll->file_start(m_file));
   }
   else if (StringUtils::StartsWith(path, "channels/"))
   {
@@ -324,7 +324,7 @@ bool CMythFile::Open(const CURL& url)
     if(!SetupFile(url))
       return false;
 
-    CLog::Log(LOGDEBUG, "%s - file: size %"PRId64", start %"PRId64", ", __FUNCTION__,  (int64_t)m_dll->file_length(m_file), (int64_t)m_dll->file_start(m_file));
+    CLog::Log(LOGDEBUG, "%s - file: size %" PRId64", start %" PRId64", ", __FUNCTION__,  (int64_t)m_dll->file_length(m_file), (int64_t)m_dll->file_start(m_file));
   }
   else
   {
@@ -461,7 +461,7 @@ bool CMythFile::Delete(const CURL& url)
 
 int64_t CMythFile::Seek(int64_t pos, int whence)
 {
-  CLog::Log(LOGDEBUG, "%s - seek to pos %"PRId64", whence %d", __FUNCTION__, pos, whence);
+  CLog::Log(LOGDEBUG, "%s - seek to pos %" PRId64", whence %d", __FUNCTION__, pos, whence);
 
   if(m_recorder) // Live TV
     return -1; // Seeking not possible. Eventually will use m_dll->livetv_seek(m_recorder, pos, whence);

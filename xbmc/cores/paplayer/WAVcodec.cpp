@@ -189,7 +189,7 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
       // sanity check on the data length
       if (m_iDataLen > length - m_iDataStart)
       {
-        CLog::Log(LOGWARNING, "WAVCodec::Init - Wave has corrupt data length of %i when it can't be longer then %"PRId64"", m_iDataLen, length - m_iDataStart);
+        CLog::Log(LOGWARNING, "WAVCodec::Init - Wave has corrupt data length of %i when it can't be longer then %" PRId64"", m_iDataLen, length - m_iDataStart);
         m_iDataLen = (long)(length - m_iDataStart);
       }
 

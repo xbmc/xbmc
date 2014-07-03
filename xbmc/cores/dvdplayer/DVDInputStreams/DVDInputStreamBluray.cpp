@@ -945,12 +945,12 @@ int64_t CDVDInputStreamBluray::Seek(int64_t offset, int whence)
   int64_t pos = m_dll->bd_seek(m_bd, offset);
   if(pos < 0)
   {
-    CLog::Log(LOGERROR, "CDVDInputStreamBluray::Seek - seek to %"PRId64", failed with %"PRId64, offset, pos);
+    CLog::Log(LOGERROR, "CDVDInputStreamBluray::Seek - seek to %" PRId64", failed with %" PRId64, offset, pos);
     return -1;
   }
 
   if(pos != offset)
-    CLog::Log(LOGWARNING, "CDVDInputStreamBluray::Seek - seek to %"PRId64", ended at %"PRId64, offset, pos);
+    CLog::Log(LOGWARNING, "CDVDInputStreamBluray::Seek - seek to %" PRId64", ended at %" PRId64, offset, pos);
 
   return offset;
 #else

@@ -352,7 +352,7 @@ void CWinSystemX11::UpdateResolutions()
   if (out != NULL)
   {
     vector<XMode>::iterator modeiter;
-    CLog::Log(LOGINFO, "Output '%s' has %"PRIdS" modes", out->name.c_str(), out->modes.size());
+    CLog::Log(LOGINFO, "Output '%s' has %" PRIdS" modes", out->name.c_str(), out->modes.size());
 
     for (modeiter = out->modes.begin() ; modeiter!=out->modes.end() ; modeiter++)
     {

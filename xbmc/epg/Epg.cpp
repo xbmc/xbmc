@@ -843,7 +843,7 @@ void CEpg::SetChannel(PVR::CPVRChannelPtr channel)
 bool CEpg::HasPVRChannel(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_pvrChannel;
+  return m_pvrChannel != NULL;
 }
 
 bool CEpg::UpdatePending(void) const

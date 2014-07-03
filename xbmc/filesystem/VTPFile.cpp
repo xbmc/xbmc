@@ -137,7 +137,7 @@ unsigned int CVTPFile::Read(void* buffer, int64_t size)
 
 int64_t CVTPFile::Seek(int64_t pos, int whence)
 {
-  CLog::Log(LOGDEBUG, "CVTPFile::Seek - seek to pos %"PRId64", whence %d", pos, whence);
+  CLog::Log(LOGDEBUG, "CVTPFile::Seek - seek to pos %" PRId64", whence %d", pos, whence);
   return -1;
 }
 
