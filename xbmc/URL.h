@@ -24,6 +24,9 @@
 
 #ifdef TARGET_WINDOWS
 #undef SetPort // WIN32INCLUDES this is defined as SetPortA in WinSpool.h which is being included _somewhere_
+#ifdef GetUserName
+#undef GetUserName
+#endif // GetUserName
 #endif
 
 class CURL
@@ -56,14 +59,30 @@ public:
   const CStdString& GetPassWord() const;
   const CStdString& GetFileName() const;
   const CStdString& GetProtocol() const;
-  const CStdString GetTranslatedProtocol() const;
+  const std::string GetBaseProtocol(void) const;
   const CStdString& GetFileType() const;
   const CStdString& GetShareName() const;
   const CStdString& GetOptions() const;
   const CStdString& GetProtocolOptions() const;
   const CStdString GetFileNameWithoutPath() const; /* return the filename excluding path */
 
-  char GetDirectorySeparator() const;
+  inline char GetDirectorySeparatorPrimary(void) const
+  {
+#ifdef TARGET_WINDOWS
+    if (m_strProtocol.empty())
+      return '\\'; // win32 local filesystem
+#endif
+    return '/';
+  }
+  inline char GetDirectorySeparatorAdditional(void) const
+  {
+#ifdef TARGET_WINDOWS
+    if (m_strProtocol.empty())
+      return '/';
+#endif
+    return 0; // no additional separator
+  }
+
 
   CStdString Get() const;
   std::string GetWithoutUserDetails(bool redact = false) const;
@@ -72,25 +91,25 @@ public:
   static std::string GetRedacted(const std::string& path);
   bool IsLocal() const;
   bool IsLocalHost() const;
-  static bool IsFileOnly(const CStdString &url); ///< return true if there are no directories in the url.
-  static bool IsFullPath(const CStdString &url); ///< return true if the url includes the full path
+  static bool IsFileOnly(const std::string& url); ///< return true if there are no directories in the url.
+  static bool IsFullPath(const std::string& url); ///< return true if the url includes the full path
   static std::string Decode(const std::string& strURLData);
   static std::string Encode(const std::string& strURLData);
-  static CStdString TranslateProtocol(const CStdString& prot);
+  static std::string BaseProtocol(const std::string& prot);
 
   void GetOptions(std::map<CStdString, CStdString> &options) const;
-  bool HasOption(const CStdString &key) const;
-  bool GetOption(const CStdString &key, CStdString &value) const;
-  CStdString GetOption(const CStdString &key) const;
-  void SetOption(const CStdString &key, const CStdString &value);
-  void RemoveOption(const CStdString &key);
+  bool HasOption(const std::string& key) const;
+  bool GetOption(const std::string& key, std::string& value) const;
+  std::string GetOption(const std::string& key) const;
+  void SetOption(const std::string& key, const std::string& value);
+  void RemoveOption(const std::string& key);
 
   void GetProtocolOptions(std::map<CStdString, CStdString> &options) const;
-  bool HasProtocolOption(const CStdString &key) const;
-  bool GetProtocolOption(const CStdString &key, CStdString &value) const;
-  CStdString GetProtocolOption(const CStdString &key) const;
-  void SetProtocolOption(const CStdString &key, const CStdString &value);
-  void RemoveProtocolOption(const CStdString &key);
+  bool HasProtocolOption(const std::string& key) const;
+  bool GetProtocolOption(const std::string& key, std::string& value) const;
+  std::string GetProtocolOption(const std::string& key) const;
+  void SetProtocolOption(const std::string& key, const std::string& value);
+  void RemoveProtocolOption(const std::string& key);
 
 protected:
   int m_iPort;

@@ -152,6 +152,10 @@ public:
   {
     return (chr >= 'a' && chr <= 'z'); 
   }
+  inline static bool isasciialpha(const char chr) // locale independent
+  {
+    return isasciiuppercaseletter(chr) || isasciilowercaseletter(chr);
+  }
   inline static bool isasciialphanum(char chr) // locale independent
   {
     return isasciiuppercaseletter(chr) || isasciilowercaseletter(chr) || isasciidigit(chr); 

@@ -169,7 +169,7 @@ void CURL::Parse(const CStdString& strURL1)
   const char* sep = NULL;
 
   //TODO fix all Addon paths
-  CStdString strProtocol2 = GetTranslatedProtocol();
+  CStdString strProtocol2 = GetBaseProtocol();
   if(m_strProtocol.Equals("rss") ||
      m_strProtocol.Equals("rar") ||
      m_strProtocol.Equals("addons") ||
@@ -340,15 +340,20 @@ void CURL::SetFileName(const CStdString& strFileName)
 {
   m_strFileName = strFileName;
 
-  int slash = m_strFileName.find_last_of(GetDirectorySeparator());
-  int period = m_strFileName.find_last_of('.');
-  if(period != -1 && (slash == -1 || period > slash))
-    m_strFileType = m_strFileName.substr(period+1);
-  else
-    m_strFileType = "";
+  const size_t slash1 = m_strFileName.rfind(GetDirectorySeparatorPrimary());
+  const size_t slash2 = GetDirectorySeparatorAdditional() ?
+    m_strFileName.rfind(GetDirectorySeparatorAdditional()) : std::string::npos;
+  const size_t period = m_strFileName.rfind('.');
 
-  StringUtils::Trim(m_strFileType);
-  StringUtils::ToLower(m_strFileType);
+  if (period != std::string::npos && (slash1 == std::string::npos || period > slash1)
+      && (slash2 == std::string::npos || period > slash2))
+  {
+    m_strFileType = m_strFileName.substr(period + 1);
+    StringUtils::Trim(m_strFileType);
+    StringUtils::ToLower(m_strFileType);
+  }
+  else
+    m_strFileType.clear();
 }
 
 void CURL::SetHostName(const CStdString& strHostName)
@@ -376,7 +381,7 @@ void CURL::SetOptions(const CStdString& strOptions)
 {
   m_strOptions.clear();
   m_options.Clear();
-  if( strOptions.length() > 0)
+  if(!strOptions.empty())
   {
     if(strOptions[0] == '?' ||
        strOptions[0] == '#' ||
@@ -395,7 +400,7 @@ void CURL::SetProtocolOptions(const CStdString& strOptions)
 {
   m_strProtocolOptions.clear();
   m_protocolOptions.Clear();
-  if (strOptions.length() > 0)
+  if (!strOptions.empty())
   {
     if (strOptions[0] == '|')
       m_strProtocolOptions = strOptions.substr(1);
@@ -456,9 +461,9 @@ const CStdString& CURL::GetProtocol() const
   return m_strProtocol;
 }
 
-const CStdString CURL::GetTranslatedProtocol() const
+const std::string CURL::GetBaseProtocol(void) const
 {
-  return TranslateProtocol(m_strProtocol);
+  return BaseProtocol(m_strProtocol);
 }
 
 const CStdString& CURL::GetFileType() const
@@ -489,16 +494,6 @@ const CStdString CURL::GetFileNameWithoutPath() const
   CStdString file(m_strFileName);
   URIUtils::RemoveSlashAtEnd(file);
   return URIUtils::GetFileName(file);
-}
-
-char CURL::GetDirectorySeparator() const
-{
-#ifndef TARGET_POSIX
-  if ( IsLocal() )
-    return '\\';
-  else
-#endif
-    return '/';
 }
 
 CStdString CURL::Get() const
@@ -601,9 +596,9 @@ std::string CURL::GetWithoutUserDetails(bool redact) const
   }
   strURL += m_strFileName;
 
-  if( m_strOptions.length() > 0 )
+  if(!m_strOptions.empty())
     strURL += m_strOptions;
-  if( m_strProtocolOptions.length() > 0 )
+  if(!m_strProtocolOptions.empty())
     strURL += "|"+m_strProtocolOptions;
 
   return strURL;
@@ -684,54 +679,76 @@ bool CURL::IsLocalHost() const
   return (m_strHostName.Equals("localhost") || m_strHostName.Equals("127.0.0.1"));
 }
 
-bool CURL::IsFileOnly(const CStdString &url)
+bool CURL::IsFileOnly(const std::string& url)
 {
-  return url.find_first_of("/\\") == CStdString::npos;
+#ifdef TARGET_WINDOWS
+  return url.find_first_of("/\\") == std::string::npos;
+#else  // !TARGET_WINDOWS
+  return url.find('/') == std::string::npos;
+#endif // !TARGET_WINDOWS
 }
 
-bool CURL::IsFullPath(const CStdString &url)
+bool CURL::IsFullPath(const std::string& url)
 {
-  if (url.size() && url[0] == '/') return true;     //   /foo/bar.ext
-  if (url.find("://") != std::string::npos) return true;                 //   foo://bar.ext
-  if (url.size() > 1 && url[1] == ':') return true; //   c:\\foo\\bar\\bar.ext
-  if (StringUtils::StartsWith(url, "\\\\")) return true;    //   \\UNC\path\to\file
+  if (url.empty())
+    return false;
+#ifdef TARGET_POSIX
+  if (url[0] == '/')
+    return true;     //   /foo/bar.ext
+#endif // TARGET_POSIX
+#ifdef TARGET_WINDOWS
+  if (url.length() > 2 && url[1] == ':' && (url[2] == '\\' || url[2] == '/'))
+    return true;     //   c:\\foo\\bar\\bar.ext
+  if (url.compare(0, 2, "\\\\", 2) == 0)
+    return true;     //   \\UNC\path\to\file or \\?\path\file
+#endif // TARGET_WINDOWS
+  if (url.find("://") != std::string::npos) 
+    return true;     //   foo://bar.ext
   return false;
 }
 
 std::string CURL::Decode(const std::string& strURLData)
-//modified to be more accomodating - if a non hex value follows a % take the characters directly and don't raise an error.
-// However % characters should really be escaped like any other non safe character (www.rfc-editor.org/rfc/rfc1738.txt)
 {
   std::string strResult;
 
-  /* result will always be less than source */
-  strResult.reserve( strURLData.length() );
+  const size_t strLen = strURLData.length();
+  const char* const strC = strURLData.c_str();
+  bool badInputFlag = false;
 
-  for (unsigned int i = 0; i < strURLData.size(); ++i)
+  /* result will always be less than source */
+  strResult.reserve(strLen);
+  
+  for (size_t i = 0; i < strLen; ++i)
   {
-    int kar = (unsigned char)strURLData[i];
-    if (kar == '+') strResult += ' ';
+    const char kar = strC[i];
+    if (kar == '+') 
+      strResult.push_back(' '); // for backward compatibility, not specified in RFC3986
     else if (kar == '%')
     {
-      if (i < strURLData.size() - 2)
+      const int xdigitOne = StringUtils::asciixdigitvalue(strC[i + 1]); // '+1' is safe as strC is zero-terminated
+      const int xdigitTwo = (xdigitOne >= 0) ? StringUtils::asciixdigitvalue(strC[i + 2]) : -1;
+      if (xdigitOne >= 0 && xdigitTwo >= 0)
       {
-        std::string strTmp;
-        strTmp.assign(strURLData.substr(i + 1, 2));
-        int dec_num=-1;
-        sscanf(strTmp.c_str(), "%x", (unsigned int *)&dec_num);
-        if (dec_num<0 || dec_num>255)
-          strResult += kar;
+        if (!xdigitOne && !xdigitTwo)
+          badInputFlag = true;
         else
-        {
-          strResult += (char)dec_num;
-          i += 2;
-        }
+          strResult.push_back((char)((unsigned char)(xdigitOne * 16 + xdigitTwo)));
+        i += 2; // skip next two hex-digits
       }
       else
-        strResult += kar;
+      {
+        strResult.push_back(kar);
+        badInputFlag = true;
+      }
     }
-    else strResult += kar;
+    else if (kar == 0)
+      badInputFlag = true;
+    else
+      strResult.push_back(kar);
   }
+
+  if (badInputFlag)
+    CLog::Log(LOGDEBUG, "%s: invalid %%-encoded input sequence: \"%s\"; decoded output: \"%s\"", __FUNCTION__, strURLData.c_str(), strResult.c_str());
   
   return strResult;
 }
@@ -741,36 +758,38 @@ std::string CURL::Encode(const std::string& strURLData)
   std::string strResult;
 
   /* wonder what a good value is here is, depends on how often it occurs */
-  strResult.reserve( strURLData.length() * 2 );
+  strResult.reserve(strURLData.length() * 2);
 
-  for (size_t i = 0; i < strURLData.size(); ++i)
+  for (std::string::const_iterator it = strURLData.begin(); it != strURLData.end(); ++it)
   {
-    const char kar = strURLData[i];
+    const char kar = *it;
     
-    // Don't URL encode "-_.!()" according to RFC1738
-    // TODO: Update it to "-_.~" after Gotham according to RFC3986
-    if (StringUtils::isasciialphanum(kar) || kar == '-' || kar == '.' || kar == '_' || kar == '!' || kar == '(' || kar == ')')
+    // Don't %-encode "-_.~" according to RFC3986
+    if (StringUtils::isasciialphanum(kar) || kar == '-' || kar == '_' || kar == '.' || kar == '~')
       strResult.push_back(kar);
     else
-      strResult += StringUtils::Format("%%%02.2x", (unsigned int)((unsigned char)kar)); // TODO: Change to "%%%02.2X" after Gotham
+      strResult += StringUtils::Format("%%%02.2X", (unsigned int)((unsigned char)kar));
   }
 
   return strResult;
 }
 
-CStdString CURL::TranslateProtocol(const CStdString& prot)
+std::string CURL::BaseProtocol(const std::string& prot)
 {
-  if (prot == "shout"
-   || prot == "daap"
-   || prot == "dav"
-   || prot == "tuxbox"
-   || prot == "rss")
+  std::string lower(prot);
+  StringUtils::ToLower(lower);
+
+  if (lower == "shout"
+      || lower == "daap"
+      || lower == "dav"
+      || lower == "tuxbox"
+      || lower == "rss")
    return "http";
 
-  if (prot == "davs")
+  if (lower == "davs")
     return "https";
 
-  return prot;
+  return lower;
 }
 
 void CURL::GetOptions(std::map<CStdString, CStdString> &options) const
@@ -780,13 +799,14 @@ void CURL::GetOptions(std::map<CStdString, CStdString> &options) const
     options[option->first] = option->second.asString();
 }
 
-bool CURL::HasOption(const CStdString &key) const
+bool CURL::HasOption(const std::string& key) const
 {
   return m_options.HasOption(key);
 }
 
-bool CURL::GetOption(const CStdString &key, CStdString &value) const
+bool CURL::GetOption(const std::string& key, std::string& value) const
 {
+  value.clear();
   CVariant valueObj;
   if (!m_options.GetOption(key, valueObj))
     return false;
@@ -795,22 +815,22 @@ bool CURL::GetOption(const CStdString &key, CStdString &value) const
   return true;
 }
 
-CStdString CURL::GetOption(const CStdString &key) const
+std::string CURL::GetOption(const std::string& key) const
 {
-  CStdString value;
+  std::string value;
   if (!GetOption(key, value))
     return "";
 
   return value;
 }
 
-void CURL::SetOption(const CStdString &key, const CStdString &value)
+void CURL::SetOption(const std::string& key, const std::string& value)
 {
   m_options.AddOption(key, value);
   SetOptions(m_options.GetOptionsString(true));
 }
 
-void CURL::RemoveOption(const CStdString &key)
+void CURL::RemoveOption(const std::string& key)
 {
   m_options.RemoveOption(key);
   SetOptions(m_options.GetOptionsString(true));
@@ -823,13 +843,14 @@ void CURL::GetProtocolOptions(std::map<CStdString, CStdString> &options) const
     options[option->first] = option->second.asString();
 }
 
-bool CURL::HasProtocolOption(const CStdString &key) const
+bool CURL::HasProtocolOption(const std::string& key) const
 {
   return m_protocolOptions.HasOption(key);
 }
 
-bool CURL::GetProtocolOption(const CStdString &key, CStdString &value) const
+bool CURL::GetProtocolOption(const std::string& key, std::string& value) const
 {
+  value.clear();
   CVariant valueObj;
   if (!m_protocolOptions.GetOption(key, valueObj))
     return false;
@@ -838,22 +859,22 @@ bool CURL::GetProtocolOption(const CStdString &key, CStdString &value) const
   return true;
 }
 
-CStdString CURL::GetProtocolOption(const CStdString &key) const
+std::string CURL::GetProtocolOption(const std::string& key) const
 {
-  CStdString value;
+  std::string value;
   if (!GetProtocolOption(key, value))
     return "";
   
   return value;
 }
 
-void CURL::SetProtocolOption(const CStdString &key, const CStdString &value)
+void CURL::SetProtocolOption(const std::string& key, const std::string& value)
 {
   m_protocolOptions.AddOption(key, value);
   m_strProtocolOptions = m_protocolOptions.GetOptionsString(false);
 }
 
-void CURL::RemoveProtocolOption(const CStdString &key)
+void CURL::RemoveProtocolOption(const std::string& key)
 {
   m_protocolOptions.RemoveOption(key);
   m_strProtocolOptions = m_protocolOptions.GetOptionsString(false);

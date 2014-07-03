@@ -948,7 +948,6 @@ CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile, int LegalType)
 
 CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /* = false */)
 {
-  CStdString result = path;
 
   // Don't do any stuff on URLs containing %-characters or protocols that embed
   // filenames. NOTE: Don't use IsInZip or IsInRar here since it will infinitely
@@ -961,26 +960,21 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
       StringUtils::StartsWithNoCase(path, "stack:") ||
       StringUtils::StartsWithNoCase(path, "bluray:") ||
       StringUtils::StartsWithNoCase(path, "multipath:") ))
-    return result;
+    return path;
 
+  std::string result = path;
   // check the path for incorrect slashes
 #ifdef TARGET_WINDOWS
   if (URIUtils::IsDOSPath(path))
   {
-    StringUtils::Replace(result, '/', '\\');
     /* The double slash correction should only be used when *absolutely*
        necessary! This applies to certain DLLs or use from Python DLLs/scripts
        that incorrectly generate double (back) slashes.
     */
-    if (bFixDoubleSlashes && !result.empty())
-    {
-      // Fixup for double back slashes (but ignore the \\ of unc-paths)
-      for (size_t x = 1; x < result.size() - 1; x++)
-      {
-        if (result[x] == '\\' && result[x+1] == '\\')
-          result.erase(x);
-      }
-    }
+    if (bFixDoubleSlashes)
+      result = URIUtils::FixSlashesAndDups(path, '\\', 1); // skip initial double slash if any
+    else
+      StringUtils::Replace(result, '/', '\\');
   }
   else if (path.find("://") != std::string::npos || path.find(":\\\\") != std::string::npos)
 #endif

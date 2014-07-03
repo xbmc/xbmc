@@ -67,7 +67,7 @@ public:
                     CStdString& strPath, CStdString& strFileName);
   static void Split(const std::string& strFileNameAndPath, 
                     std::string& strPath, std::string& strFileName);
-  static std::vector<std::string> SplitPath(const CStdString& strPath);
+  static std::vector<std::string> SplitPath(const std::string& strPath);
 
   static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);
   static CStdString GetParentPath(const CStdString& strPath);
@@ -90,7 +90,7 @@ public:
   static bool IsCDDA(const CStdString& strFile);
   static bool IsDAAP(const CStdString& strFile);
   static bool IsDAV(const CStdString& strFile);
-  static bool IsDOSPath(const CStdString &path);
+  static bool IsDOSPath(const std::string &path);
   static bool IsDVD(const CStdString& strFile);
   static bool IsFTP(const CStdString& strFile);
   static bool IsHD(const CStdString& strFileName);

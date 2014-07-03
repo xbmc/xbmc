@@ -231,18 +231,19 @@ void URIUtils::Split(const std::string& strFileNameAndPath,
   strFileName = strFileNameAndPath.substr(i+1);
 }
 
-std::vector<std::string> URIUtils::SplitPath(const CStdString& strPath)
+std::vector<std::string> URIUtils::SplitPath(const std::string& strPath)
 {
   CURL url(strPath);
 
-  // silly CStdString can't take a char in the constructor
-  CStdString sep(1, url.GetDirectorySeparator());
+  std::string seps(1, url.GetDirectorySeparatorPrimary());
+  if (url.GetDirectorySeparatorAdditional())
+    seps.push_back(url.GetDirectorySeparatorAdditional());
 
   // split the filename portion of the URL up into separate dirs
-  vector<string> dirs = StringUtils::Split(url.GetFileName(), sep);
+  vector<string> dirs = StringUtils::Split(url.GetFileName(), seps);
   
   // we start with the root path
-  CStdString dir = url.GetWithoutFilename();
+  std::string dir = url.GetWithoutFilename();
   
   if (!dir.empty())
     dirs.insert(dirs.begin(), dir);
@@ -287,7 +288,7 @@ bool URIUtils::ProtocolHasEncodedHostname(const CStdString& prot)
 
 bool URIUtils::ProtocolHasEncodedFilename(const CStdString& prot)
 {
-  CStdString prot2 = CURL::TranslateProtocol(prot);
+  CStdString prot2 = CURL::BaseProtocol(prot);
 
   // For now assume only (quasi) http internet streams use URL encoding
   return prot2 == "http"  ||
@@ -836,7 +837,7 @@ bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */
   if (strProtocol == "stack")
     return IsInternetStream(CStackDirectory::GetFirstStackedFile(url.Get()));
 
-  CStdString strProtocol2 = url.GetTranslatedProtocol();
+  CStdString strProtocol2 = url.GetBaseProtocol();
 
   // Special case these
   if (strProtocol  == "ftp"   || strProtocol  == "ftps"   ||
@@ -980,14 +981,16 @@ bool URIUtils::IsLibraryContent(const std::string &strFile)
           StringUtils::EndsWith(strFile, ".xsp"));
 }
 
-bool URIUtils::IsDOSPath(const CStdString &path)
+bool URIUtils::IsDOSPath(const std::string& path)
 {
-  if (path.size() > 1 && path[1] == ':' && isalpha(path[0]))
-    return true;
+  if (path.length() < 2)
+    return false;
 
-  // windows network drives
-  if (path.size() > 1 && path[0] == '\\' && path[1] == '\\')
-    return true;
+  if (path[1] == ':' && StringUtils::isasciialpha(path[0]))
+    return true; // win32 'D:' form
+
+  if (path[0] == '\\' && path[1] == '\\')
+    return true; // UNC path or long win32 path in form '\\?\path'
 
   return false;
 }

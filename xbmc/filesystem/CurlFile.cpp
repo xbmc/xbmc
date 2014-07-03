@@ -656,7 +656,7 @@ void CCurlFile::SetCorrectHeaders(CReadState* state)
 
 void CCurlFile::ParseAndCorrectUrl(CURL &url2)
 {
-  CStdString strProtocol = url2.GetTranslatedProtocol();
+  CStdString strProtocol = url2.GetBaseProtocol();
   url2.SetProtocol(strProtocol);
 
   if( strProtocol.Equals("ftp")
