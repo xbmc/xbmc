@@ -85,6 +85,34 @@ public:
   static CURL SubstitutePath(const CURL& url, bool reverse = false);
   static CStdString SubstitutePath(const CStdString& strPath, bool reverse = false);
 
+  /*! \brief Check whether a URL is a given URL scheme.
+   Comparison is case-insensitve as per RFC1738
+   \param url a std::string path.
+   \param type a lower-case scheme name, e.g. "smb".
+   \return true if the url is of the given scheme, false otherwise.
+   \sa PathStarts, PathEquals
+   */
+  static bool IsProtocol(const std::string& url, const std::string& type);
+
+  /*! \brief Check whether a path starts with a given start.
+   Comparison is case-sensitive.
+   Use IsProtocol() to compare the protocol portion only.
+   \param path a std::string path.
+   \param start the string the start of the path should be compared against.
+   \return true if the path starts with the given string, false otherwise.
+   \sa IsProtocol, PathEquals
+   */
+  static bool PathStarts(const std::string& path, const char *start);
+
+  /*! \brief Check whether a path equals another path.
+   Comparison is case-sensitive.
+   \param path1 a std::string path.
+   \param path2 the second path the path should be compared against.
+   \return true if the paths are equal, false otherwise.
+   \sa IsProtocol, PathStarts
+   */
+  static bool PathEquals(const std::string& path1, const std::string &path2);
+
   static bool IsAddonsPath(const CStdString& strFile);
   static bool IsSourcesPath(const CStdString& strFile);
   static bool IsCDDA(const CStdString& strFile);
@@ -165,9 +193,9 @@ public:
 
   static CStdString AddFileToFolder(const CStdString &strFolder, const CStdString &strFile);
 
-  static bool ProtocolHasParentInHostname(const CStdString& prot);
-  static bool ProtocolHasEncodedHostname(const CStdString& prot);
-  static bool ProtocolHasEncodedFilename(const CStdString& prot);
+  static bool HasParentInHostname(const CURL& url);
+  static bool HasEncodedHostname(const CURL& url);
+  static bool HasEncodedFilename(const CURL& url);
 
   /*!
    \brief Cleans up the given path by resolving "." and ".."

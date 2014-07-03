@@ -76,7 +76,36 @@ public:
   static bool IsFullPath(const CStdString &url); ///< return true if the url includes the full path
   static std::string Decode(const std::string& strURLData);
   static std::string Encode(const std::string& strURLData);
-  static CStdString TranslateProtocol(const CStdString& prot);
+
+  /*! \brief Check whether a URL is a given URL scheme.
+   Comparison is case-insensitive as per RFC1738
+   \param type a lower-case scheme name, e.g. "smb".
+   \return true if the url is of the given scheme, false otherwise.
+   */
+  bool IsProtocol(const char *type) const
+  {
+    return IsProtocolEqual(m_strProtocol, type);
+  }
+
+  /*! \brief Check whether a URL protocol is a given URL scheme.
+   Both parameters MUST be lower-case.  Typically this would be called using
+   the result of TranslateProtocol() which enforces this for protocol.
+   \param protocol a lower-case scheme name, e.g. "ftp"
+   \param type a lower-case scheme name, e.g. "smb".
+   \return true if the url is of the given scheme, false otherwise.
+   */
+  static bool IsProtocolEqual(const std::string& protocol, const char *type);
+
+  /*! \brief Check whether a URL is a given filetype.
+   Comparison is effectively case-insensitive as both the parameter
+   and m_strFileType are lower-case.
+   \param type a lower-case filetype, e.g. "mp3".
+   \return true if the url is of the given filetype, false otherwise.
+   */
+  bool IsFileType(const char *type) const
+  {
+    return m_strFileType == type;
+  }
 
   void GetOptions(std::map<CStdString, CStdString> &options) const;
   bool HasOption(const CStdString &key) const;

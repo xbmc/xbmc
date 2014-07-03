@@ -225,7 +225,7 @@ CStdString CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false */
   else if (StringUtils::StartsWithNoCase(path, "special://videoplaylists"))
     strFilename = g_localizeStrings.Get(136);
 
-  else if (URIUtils::ProtocolHasParentInHostname(url.GetProtocol()) && strFilename.empty())
+  else if (URIUtils::HasParentInHostname(url) && strFilename.empty())
     strFilename = URIUtils::GetFileName(url.GetHostName());
 
   // now remove the extension if needed

@@ -92,7 +92,7 @@ namespace XFILE
       CStdString File1 = URIUtils::GetFileName(files[0]->GetPath());
       CStdString File2 = URIUtils::GetFileName(files[1]->GetPath());
       // Check if source path uses URL encoding
-      if (URIUtils::ProtocolHasEncodedFilename(CURL(strCommonDir).GetProtocol()))
+      if (URIUtils::HasEncodedFilename(CURL(strCommonDir)))
       {
         File1 = CURL::Decode(File1);
         File2 = CURL::Decode(File2);
@@ -128,7 +128,7 @@ namespace XFILE
                   // got it
                   strStackTitle = Title1 + Ignore1 + Extension1;
                   // Check if source path uses URL encoding
-                  if (URIUtils::ProtocolHasEncodedFilename(CURL(strCommonDir).GetProtocol()))
+                  if (URIUtils::HasEncodedFilename(CURL(strCommonDir)))
                     strStackTitle = CURL::Encode(strStackTitle);
 
                   itRegExp = RegExps.end();
