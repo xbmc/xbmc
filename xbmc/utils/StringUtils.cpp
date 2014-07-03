@@ -1164,19 +1164,16 @@ std::vector<std::string> StringUtils::Tokenize(const std::string &input, const s
 
 void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& tokens, const std::string& delimiters)
 {
-  // Tokenize ripped from http://www.linuxselfhelp.com/HOWTO/C++Programming-HOWTO-7.html
+  tokens.clear();
   // Skip delimiters at beginning.
-  string::size_type lastPos = input.find_first_not_of(delimiters, 0);
-  // Find first "non-delimiter".
-  string::size_type pos = input.find_first_of(delimiters, lastPos);
-
-  while (string::npos != pos || string::npos != lastPos)
+  std::string::size_type dataPos = input.find_first_not_of(delimiters);
+  while (dataPos != std::string::npos)
   {
+    // Find next delimiter
+    const std::string::size_type nextDelimPos = input.find_first_of(delimiters, dataPos);
     // Found a token, add it to the vector.
-    tokens.push_back(input.substr(lastPos, pos - lastPos));
+    tokens.push_back(input.substr(dataPos, nextDelimPos - dataPos));
     // Skip delimiters.  Note the "not_of"
-    lastPos = input.find_first_not_of(delimiters, pos);
-    // Find next "non-delimiter"
-    pos = input.find_first_of(delimiters, lastPos);
+    dataPos = input.find_first_not_of(delimiters, nextDelimPos);
   }
 }
