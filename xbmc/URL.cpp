@@ -458,7 +458,17 @@ const CStdString& CURL::GetProtocol() const
 
 const CStdString CURL::GetTranslatedProtocol() const
 {
-  return TranslateProtocol(m_strProtocol);
+  if (IsProtocol("shout")
+   || IsProtocol("daap")
+   || IsProtocol("dav")
+   || IsProtocol("tuxbox")
+   || IsProtocol("rss"))
+    return "http";
+
+  if (IsProtocol("davs"))
+    return "https";
+
+  return GetProtocol();
 }
 
 const CStdString& CURL::GetFileType() const
@@ -769,21 +779,6 @@ bool CURL::IsProtocolEqual(const std::string &protocol, const char *type)
   if (type)
     return protocol == type;
   return false;
-}
-
-CStdString CURL::TranslateProtocol(const CStdString& prot)
-{
-  if (prot == "shout"
-   || prot == "daap"
-   || prot == "dav"
-   || prot == "tuxbox"
-   || prot == "rss")
-   return "http";
-
-  if (prot == "davs")
-    return "https";
-
-  return prot;
 }
 
 void CURL::GetOptions(std::map<CStdString, CStdString> &options) const

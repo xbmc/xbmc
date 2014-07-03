@@ -107,8 +107,6 @@ public:
     return m_strFileType == type;
   }
 
-  static CStdString TranslateProtocol(const CStdString& prot);
-
   void GetOptions(std::map<CStdString, CStdString> &options) const;
   bool HasOption(const CStdString &key) const;
   bool GetOption(const CStdString &key, CStdString &value) const;
