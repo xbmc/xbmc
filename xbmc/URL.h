@@ -96,6 +96,17 @@ public:
    */
   static bool IsProtocolEqual(const std::string& protocol, const char *type);
 
+  /*! \brief Check whether a URL is a given filetype.
+   Comparison is effectively case-insensitive as both the parameter
+   and m_strFileType are lower-case.
+   \param type a lower-case filetype, e.g. "mp3".
+   \return true if the url is of the given filetype, false otherwise.
+   */
+  bool IsFileType(const char *type) const
+  {
+    return m_strFileType == type;
+  }
+
   static CStdString TranslateProtocol(const CStdString& prot);
 
   void GetOptions(std::map<CStdString, CStdString> &options) const;
