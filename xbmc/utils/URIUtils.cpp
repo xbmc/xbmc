@@ -500,6 +500,16 @@ bool URIUtils::IsProtocol(const std::string& url, const std::string &type)
   return StringUtils::StartsWithNoCase(url, type + "://");
 }
 
+bool URIUtils::PathStarts(const std::string& url, const char *start)
+{
+  return StringUtils::StartsWith(url, start);
+}
+
+bool URIUtils::PathEquals(const std::string& url, const std::string &start)
+{
+  return url == start;
+}
+
 bool URIUtils::IsRemote(const CStdString& strFile)
 {
   if (IsCDDA(strFile) || IsISO9660(strFile))
@@ -909,7 +919,7 @@ bool URIUtils::IsLiveTV(const CStdString& strFile)
   || IsSlingbox(strFile)
   || IsHTSP(strFile)
   || IsProtocol(strFile, "sap")
-  ||(StringUtils::EndsWithNoCase(strFileWithoutSlash, ".pvr") && !StringUtils::StartsWithNoCase(strFileWithoutSlash, "pvr://recordings")))
+  ||(StringUtils::EndsWithNoCase(strFileWithoutSlash, ".pvr") && !PathStarts(strFileWithoutSlash, "pvr://recordings")))
     return true;
 
   if (IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile))
@@ -924,7 +934,7 @@ bool URIUtils::IsPVRRecording(const CStdString& strFile)
   RemoveSlashAtEnd(strFileWithoutSlash);
 
   return StringUtils::EndsWithNoCase(strFileWithoutSlash, ".pvr") &&
-         StringUtils::StartsWithNoCase(strFile, "pvr://recordings");
+         PathStarts(strFile, "pvr://recordings");
 }
 
 bool URIUtils::IsMusicDb(const CStdString& strFile)
