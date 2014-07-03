@@ -302,8 +302,7 @@ void CURL::Parse(const CStdString& strURL1)
    || IsProtocol("musicdb")
    || IsProtocol("videodb")
    || IsProtocol("sources")
-   || IsProtocol("pvr")
-   || StringUtils::StartsWith(m_strProtocol, "mem"))
+   || IsProtocol("pvr"))
   {
     if (m_strHostName != "" && m_strFileName != "")
     {
