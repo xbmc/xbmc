@@ -326,7 +326,7 @@ void CURL::Parse(const CStdString& strURL1)
   SetFileName(m_strFileName);
 
   /* decode urlencoding on this stuff */
-  if(URIUtils::ProtocolHasEncodedHostname(m_strProtocol))
+  if(URIUtils::HasEncodedHostname(*this))
   {
     m_strHostName = Decode(m_strHostName);
     SetHostName(m_strHostName);
@@ -583,12 +583,12 @@ std::string CURL::GetWithoutUserDetails(bool redact) const
   {
     std::string strHostName;
 
-    if (URIUtils::ProtocolHasParentInHostname(m_strProtocol))
+    if (URIUtils::HasParentInHostname(*this))
       strHostName = CURL(m_strHostName).GetWithoutUserDetails();
     else
       strHostName = m_strHostName;
 
-    if (URIUtils::ProtocolHasEncodedHostname(m_strProtocol))
+    if (URIUtils::HasEncodedHostname(*this))
       strURL += Encode(strHostName);
     else
       strURL += strHostName;
@@ -648,7 +648,7 @@ CStdString CURL::GetWithoutFilename() const
 
   if (m_strHostName != "")
   {
-    if( URIUtils::ProtocolHasEncodedHostname(m_strProtocol) )
+    if( URIUtils::HasEncodedHostname(*this) )
       strURL += Encode(m_strHostName);
     else
       strURL += m_strHostName;

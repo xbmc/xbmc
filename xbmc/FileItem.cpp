@@ -2413,7 +2413,7 @@ void CFileItemList::StackFiles()
     VECCREGEXP::iterator  expr        = stackRegExps.begin();
 
     URIUtils::Split(item1->GetPath(), filePath, file1);
-    if (URIUtils::ProtocolHasEncodedFilename(CURL(filePath).GetProtocol() ) )
+    if (URIUtils::HasEncodedFilename(CURL(filePath)))
       file1 = CURL::Decode(file1);
 
     int j;
@@ -2446,7 +2446,7 @@ void CFileItemList::StackFiles()
 
           CStdString file2, filePath2;
           URIUtils::Split(item2->GetPath(), filePath2, file2);
-          if (URIUtils::ProtocolHasEncodedFilename(CURL(filePath2).GetProtocol() ) )
+          if (URIUtils::HasEncodedFilename(CURL(filePath2)) )
             file2 = CURL::Decode(file2);
 
           if (expr->RegFind(file2, offset) != -1)

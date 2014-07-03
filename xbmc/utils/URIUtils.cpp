@@ -269,25 +269,25 @@ void URIUtils::GetCommonPath(CStdString& strParent, const CStdString& strPath)
   }
 }
 
-bool URIUtils::ProtocolHasParentInHostname(const CStdString& prot)
+bool URIUtils::HasParentInHostname(const CURL& url)
 {
-  return prot.Equals("zip")
-      || prot.Equals("rar")
-      || prot.Equals("apk")
-      || prot.Equals("bluray")
-      || prot.Equals("udf");
+  return url.IsProtocol("zip")
+      || url.IsProtocol("rar")
+      || url.IsProtocol("apk")
+      || url.IsProtocol("bluray")
+      || url.IsProtocol("udf");
 }
 
-bool URIUtils::ProtocolHasEncodedHostname(const CStdString& prot)
+bool URIUtils::HasEncodedHostname(const CURL& url)
 {
-  return ProtocolHasParentInHostname(prot)
-      || prot.Equals("musicsearch")
-      || prot.Equals("image");
+  return HasParentInHostname(url)
+      || url.IsProtocol("musicsearch")
+      || url.IsProtocol( "image");
 }
 
-bool URIUtils::ProtocolHasEncodedFilename(const CStdString& prot)
+bool URIUtils::HasEncodedFilename(const CURL& url)
 {
-  CStdString prot2 = CURL::TranslateProtocol(prot);
+  const std::string prot2 = url.GetTranslatedProtocol();
 
   // For now assume only (quasi) http internet streams use URL encoding
   return CURL::IsProtocolEqual(prot2, "http")  ||
@@ -307,7 +307,7 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
 
   CURL url(strPath);
   CStdString strFile = url.GetFileName();
-  if ( URIUtils::ProtocolHasParentInHostname(url.GetProtocol()) && strFile.empty())
+  if ( URIUtils::HasParentInHostname(url) && strFile.empty())
   {
     strFile = url.GetHostName();
     return GetParentPath(strFile, strParent);
@@ -436,13 +436,13 @@ std::string URIUtils::ChangeBasePath(const std::string &fromPath, const std::str
     StringUtils::Replace(toFile, "\\", "/");
 
   // Handle difference in URL encoded vs. not encoded
-  if ( ProtocolHasEncodedFilename(CURL(fromPath).GetProtocol() )
-   && !ProtocolHasEncodedFilename(CURL(toPath).GetProtocol() ) )
+  if ( HasEncodedFilename(CURL(fromPath))
+   && !HasEncodedFilename(CURL(toPath)) )
   {
     toFile = URLDecodePath(toFile); // Decode path
   }
-  else if (!ProtocolHasEncodedFilename(CURL(fromPath).GetProtocol() )
-         && ProtocolHasEncodedFilename(CURL(toPath).GetProtocol() ) )
+  else if (!HasEncodedFilename(CURL(fromPath))
+         && HasEncodedFilename(CURL(toPath)) )
   {
     toFile = URLEncodePath(toFile); // Encode path
   }
@@ -523,7 +523,7 @@ bool URIUtils::IsRemote(const CStdString& strFile)
   }
 
   CURL url(strFile);
-  if(ProtocolHasParentInHostname(url.GetProtocol()))
+  if(HasParentInHostname(url))
     return IsRemote(url.GetHostName());
 
   if (!url.IsLocal())
@@ -578,7 +578,7 @@ bool URIUtils::IsOnLAN(const CStdString& strPath)
     return true;
 
   CURL url(strPath);
-  if (ProtocolHasParentInHostname(url.GetProtocol()))
+  if (HasParentInHostname(url))
     return IsOnLAN(url.GetHostName());
 
   if(!IsRemote(strPath))
@@ -651,7 +651,7 @@ bool URIUtils::IsHD(const CStdString& strFileName)
   if (IsSpecial(strFileName))
     return IsHD(CSpecialProtocol::TranslatePath(strFileName));
 
-  if (ProtocolHasParentInHostname(url.GetProtocol()))
+  if (HasParentInHostname(url))
     return IsHD(url.GetHostName());
 
   return url.GetProtocol().empty() || url.IsProtocol("file");
@@ -1290,7 +1290,7 @@ bool URIUtils::UpdateUrlEncoding(std::string &strFilename)
     url.Parse(stackPath);
   }
   // if the protocol has an encoded hostname we need to work with its hostname
-  else if (URIUtils::ProtocolHasEncodedHostname(url.GetProtocol()))
+  else if (URIUtils::HasEncodedHostname(url))
   {
     std::string hostname = url.GetHostName();
     UpdateUrlEncoding(hostname);

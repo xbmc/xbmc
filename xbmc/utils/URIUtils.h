@@ -173,9 +173,9 @@ public:
 
   static CStdString AddFileToFolder(const CStdString &strFolder, const CStdString &strFile);
 
-  static bool ProtocolHasParentInHostname(const CStdString& prot);
-  static bool ProtocolHasEncodedHostname(const CStdString& prot);
-  static bool ProtocolHasEncodedFilename(const CStdString& prot);
+  static bool HasParentInHostname(const CURL& url);
+  static bool HasEncodedHostname(const CURL& url);
+  static bool HasEncodedFilename(const CURL& url);
 
   /*!
    \brief Cleans up the given path by resolving "." and ".."
