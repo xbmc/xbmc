@@ -1535,6 +1535,16 @@ const CURL CFileItem::GetURL() const
   return url;
 }
 
+bool CFileItem::IsURL(const CURL& url) const
+{
+  return IsPath(url.Get());
+}
+
+bool CFileItem::IsPath(const std::string& path) const
+{
+  return URIUtils::PathEquals(m_strPath, path);
+}
+
 /////////////////////////////////////////////////////////////////////////////////
 /////
 ///// CFileItemList
