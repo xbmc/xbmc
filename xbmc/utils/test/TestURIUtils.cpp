@@ -20,9 +20,12 @@
 
 #include "utils/URIUtils.h"
 #include "settings/AdvancedSettings.h"
+#include "filesystem/MultiPathDirectory.h"
 #include "URL.h"
 
 #include "gtest/gtest.h"
+
+using namespace XFILE;
 
 class TestURIUtils : public testing::Test
 {
@@ -375,7 +378,9 @@ TEST_F(TestURIUtils, IsOnDVD)
 
 TEST_F(TestURIUtils, IsOnLAN)
 {
-  EXPECT_TRUE(URIUtils::IsOnLAN("multipath://daap://path/to/file"));
+  std::vector<std::string> multiVec;
+  multiVec.push_back("daap://path/to/file");
+  EXPECT_TRUE(URIUtils::IsOnLAN(CMultiPathDirectory::ConstructMultiPath(multiVec)));
   EXPECT_TRUE(URIUtils::IsOnLAN("stack://daap://path/to/file"));
   EXPECT_TRUE(URIUtils::IsOnLAN("daap://path/to/file"));
   EXPECT_FALSE(URIUtils::IsOnLAN("plugin://path/to/file"));
@@ -505,29 +510,29 @@ TEST_F(TestURIUtils, AddFileToFolder)
   EXPECT_STREQ(ref.c_str(), var.c_str());
 }
 
-TEST_F(TestURIUtils, ProtocolHasParentInHostname)
+TEST_F(TestURIUtils, HasParentInHostname)
 {
-  EXPECT_TRUE(URIUtils::ProtocolHasParentInHostname("zip"));
-  EXPECT_TRUE(URIUtils::ProtocolHasParentInHostname("rar"));
-  EXPECT_TRUE(URIUtils::ProtocolHasParentInHostname("bluray"));
+  EXPECT_TRUE(URIUtils::HasParentInHostname(CURL("zip://")));
+  EXPECT_TRUE(URIUtils::HasParentInHostname(CURL("rar://")));
+  EXPECT_TRUE(URIUtils::HasParentInHostname(CURL("bluray://")));
 }
 
-TEST_F(TestURIUtils, ProtocolHasEncodedHostname)
+TEST_F(TestURIUtils, HasEncodedHostname)
 {
-  EXPECT_TRUE(URIUtils::ProtocolHasEncodedHostname("zip"));
-  EXPECT_TRUE(URIUtils::ProtocolHasEncodedHostname("rar"));
-  EXPECT_TRUE(URIUtils::ProtocolHasEncodedHostname("bluray"));
-  EXPECT_TRUE(URIUtils::ProtocolHasEncodedHostname("musicsearch"));
+  EXPECT_TRUE(URIUtils::HasEncodedHostname(CURL("zip://")));
+  EXPECT_TRUE(URIUtils::HasEncodedHostname(CURL("rar://")));
+  EXPECT_TRUE(URIUtils::HasEncodedHostname(CURL("bluray://")));
+  EXPECT_TRUE(URIUtils::HasEncodedHostname(CURL("musicsearch://")));
 }
 
-TEST_F(TestURIUtils, ProtocolHasEncodedFilename)
+TEST_F(TestURIUtils, HasEncodedFilename)
 {
-  EXPECT_TRUE(URIUtils::ProtocolHasEncodedFilename("shout"));
-  EXPECT_TRUE(URIUtils::ProtocolHasEncodedFilename("daap"));
-  EXPECT_TRUE(URIUtils::ProtocolHasEncodedFilename("dav"));
-  EXPECT_TRUE(URIUtils::ProtocolHasEncodedFilename("tuxbox"));
-  EXPECT_TRUE(URIUtils::ProtocolHasEncodedFilename("rss"));
-  EXPECT_TRUE(URIUtils::ProtocolHasEncodedFilename("davs"));
+  EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("shout://")));
+  EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("daap://")));
+  EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("dav://")));
+  EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("tuxbox://")));
+  EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("rss://")));
+  EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("davs://")));
 }
 
 TEST_F(TestURIUtils, GetRealPath)
