@@ -24,7 +24,11 @@
 #include "network/Network.h"
 #include "system.h"
 #include "FileFactory.h"
+#ifdef TARGET_WINDOWS
+#include "win32/Win32File.h"
+#else  // ! TARGET_WINDOWS
 #include "HDFile.h"
+#endif // ! TARGET_WINDOWS
 #include "CurlFile.h"
 #include "HTTPFile.h"
 #include "DAVFile.h"
@@ -135,7 +139,11 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (url.IsProtocol("special")) return new CSpecialProtocolFile();
   else if (url.IsProtocol("multipath")) return new CMultiPathFile();
   else if (url.IsProtocol("image")) return new CImageFile();
+#ifdef TARGET_WINDOWS
+  else if (url.IsProtocol("file") || url.GetProtocol().empty()) return new CWin32File();
+#else  // ! TARGET_WINDOWS
   else if (url.IsProtocol("file") || url.GetProtocol().empty()) return new CHDFile();
+#endif // ! TARGET_WINDOWS 
   else if (url.IsProtocol("filereader")) return new CFileReaderFile();
 #if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)
   else if (url.IsProtocol("cdda")) return new CFileCDDA();
