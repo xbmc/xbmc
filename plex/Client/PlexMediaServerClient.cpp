@@ -75,7 +75,7 @@ void CPlexMediaServerClient::OnJobComplete(unsigned int jobID, bool success, CJo
   else if (stricmp(job->GetType(), "mediaServerClientTimelineJob") == 0)
   {
     CPlexMediaServerClientTimelineJob* tljob = static_cast<CPlexMediaServerClientTimelineJob*>(job);
-    if (tljob && success)
+    if (tljob && success && (!g_application.IsPlaying()))
     {
       CFileItemPtr item = tljob->m_item;
       if (item->HasProperty("playQueueID"))
