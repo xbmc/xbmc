@@ -420,13 +420,12 @@
 			<control type="group">
 				<posx>0</posx>
 				<posy>20</posy>
-				<control type="label" id="1">
-					<label>[UPPERCASE]$LOCALIZE[33063][/UPPERCASE]</label>
-					<width>297</width>
-					<height>40</height>
-					<align>center</align>
-					<font>Regular-24</font>
-					<textcolor>Focused</textcolor>
+				<control type="label">
+					<posx>36</posx>
+					<posy>40</posy>
+					<label>$LOCALIZE[41008]</label>
+					<font>Bold-36</font>
+					<include>WhiteShadow</include>
 				</control>
 				<control type="group">
 					<posy>85</posy>
