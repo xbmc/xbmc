@@ -109,8 +109,6 @@ bool CRecentlyAddedJob::UpdateVideo()
       CStdString   value = StringUtils::Format("%i", i + 1);
       CStdString   strRating = StringUtils::Format("%.1f", item->GetVideoInfoTag()->m_fRating);
 
-      CFileItem show(item->GetVideoInfoTag()->m_strShowPath, true);
-
       home->SetProperty("LatestEpisode." + value + ".ShowTitle"     , item->GetVideoInfoTag()->m_strShowTitle);
       home->SetProperty("LatestEpisode." + value + ".EpisodeTitle"  , item->GetVideoInfoTag()->m_strTitle);
       home->SetProperty("LatestEpisode." + value + ".Rating"        , strRating);      

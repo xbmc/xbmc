@@ -39,6 +39,7 @@ public:
   static bool SupportsWriteFileOperations(const CStdString &strPath);
   static bool GetPaths(const CURL& url, std::vector<CStdString>& vecPaths);
   static bool GetPaths(const CStdString& strPath, std::vector<CStdString>& vecPaths);
+  static bool GetPaths(const std::string& path, std::vector<std::string>& paths);
   static bool HasPath(const CStdString& strPath, const CStdString& strPathToFind);
   static CStdString ConstructMultiPath(const std::vector<std::string> &vecPaths);
   static CStdString ConstructMultiPath(const std::set<std::string> &setPaths);

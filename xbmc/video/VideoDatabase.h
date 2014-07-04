@@ -90,17 +90,17 @@ namespace VIDEO
 #define VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO   VIDEODB_MAX_COLUMNS + 9
 #define VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED    VIDEODB_MAX_COLUMNS + 10
 #define VIDEODB_DETAILS_EPISODE_TVSHOW_MPAA     VIDEODB_MAX_COLUMNS + 11
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_PATH     VIDEODB_MAX_COLUMNS + 12
-#define VIDEODB_DETAILS_EPISODE_RESUME_TIME     VIDEODB_MAX_COLUMNS + 13
-#define VIDEODB_DETAILS_EPISODE_TOTAL_TIME      VIDEODB_MAX_COLUMNS + 14
-#define VIDEODB_DETAILS_EPISODE_SEASON_ID       VIDEODB_MAX_COLUMNS + 15
+#define VIDEODB_DETAILS_EPISODE_RESUME_TIME     VIDEODB_MAX_COLUMNS + 12
+#define VIDEODB_DETAILS_EPISODE_TOTAL_TIME      VIDEODB_MAX_COLUMNS + 13
+#define VIDEODB_DETAILS_EPISODE_SEASON_ID       VIDEODB_MAX_COLUMNS + 14
 
-#define VIDEODB_DETAILS_TVSHOW_PATH             VIDEODB_MAX_COLUMNS + 1
-#define VIDEODB_DETAILS_TVSHOW_DATEADDED        VIDEODB_MAX_COLUMNS + 2
-#define VIDEODB_DETAILS_TVSHOW_LASTPLAYED       VIDEODB_MAX_COLUMNS + 3
-#define VIDEODB_DETAILS_TVSHOW_NUM_EPISODES     VIDEODB_MAX_COLUMNS + 4
-#define VIDEODB_DETAILS_TVSHOW_NUM_WATCHED      VIDEODB_MAX_COLUMNS + 5
-#define VIDEODB_DETAILS_TVSHOW_NUM_SEASONS      VIDEODB_MAX_COLUMNS + 6
+#define VIDEODB_DETAILS_TVSHOW_PARENTPATHID     VIDEODB_MAX_COLUMNS + 1
+#define VIDEODB_DETAILS_TVSHOW_PATH             VIDEODB_MAX_COLUMNS + 2
+#define VIDEODB_DETAILS_TVSHOW_DATEADDED        VIDEODB_MAX_COLUMNS + 3
+#define VIDEODB_DETAILS_TVSHOW_LASTPLAYED       VIDEODB_MAX_COLUMNS + 4
+#define VIDEODB_DETAILS_TVSHOW_NUM_EPISODES     VIDEODB_MAX_COLUMNS + 5
+#define VIDEODB_DETAILS_TVSHOW_NUM_WATCHED      VIDEODB_MAX_COLUMNS + 6
+#define VIDEODB_DETAILS_TVSHOW_NUM_SEASONS      VIDEODB_MAX_COLUMNS + 7
 
 #define VIDEODB_DETAILS_MUSICVIDEO_FILE         VIDEODB_MAX_COLUMNS + 2
 #define VIDEODB_DETAILS_MUSICVIDEO_PATH         VIDEODB_MAX_COLUMNS + 3
@@ -209,8 +209,6 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_TV_MPAA = 13,
   VIDEODB_ID_TV_STUDIOS = 14,
   VIDEODB_ID_TV_SORTTITLE = 15,
-  VIDEODB_ID_TV_BASEPATH = 16,
-  VIDEODB_ID_TV_PARENTPATHID = 17,
   VIDEODB_ID_TV_MAX
 } VIDEODB_TV_IDS;
 
@@ -232,8 +230,6 @@ const struct SDbTableOffsets DbTvShowOffsets[] =
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strMPAARating)},
   { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_studio)},
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strSortTitle)},
-  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_basePath) },
-  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_parentPathID) }
 };
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
@@ -465,7 +461,19 @@ public:
 
   int SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idMovie = -1);
   int SetDetailsForMovieSet(const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idSet = -1);
-  int SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, const std::map<int, std::map<std::string, std::string> > &seasonArt, int idTvShow = -1);
+
+  /*! \brief add a tvshow to the library, setting metdata detail
+   First checks for whether this TV Show is already in the database (based on idTvShow, or via GetMatchingTvShow)
+   and if present adds the paths to the show.  If not present, we add a new show and set the show metadata.
+   \param paths a vector<string,string> list of the path(s) and parent path(s) for the show.
+   \param details a CVideoInfoTag filled with the metadata for the show.
+   \param artwork the artwork map for the show.
+   \param seasonArt the artwork map for seasons.
+   \param idTvShow the database id of the tvshow if known (defaults to -1)
+   \return the id of the tvshow.
+   */
+  int SetDetailsForTvShow(const std::vector< std::pair<std::string, std::string> > &paths, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, const std::map<int, std::map<std::string, std::string> > &seasonArt, int idTvShow = -1);
+  bool UpdateDetailsForTvShow(int idTvShow, const CVideoInfoTag &details, const std::map<std::string, std::string> &artwork, const std::map<int, std::map<std::string, std::string> > &seasonArt);
   int SetDetailsForSeason(const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idShow, int idSeason = -1);
   int SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idShow, int idEpisode=-1);
   int SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idMVideo = -1);
@@ -478,15 +486,16 @@ public:
                       const std::string &conditionName = "", int conditionValue = -1);
 
   void DeleteMovie(int idMovie, bool bKeepId = false);
-  void DeleteMovie(const CStdString& strFilenameAndPath, bool bKeepId = false, int idMovie = -1);
+  void DeleteMovie(const CStdString& strFilenameAndPath, bool bKeepId = false);
   void DeleteTvShow(int idTvShow, bool bKeepId = false);
-  void DeleteTvShow(const CStdString& strPath, bool bKeepId = false, int idTvShow = -1);
+  void DeleteTvShow(const CStdString& strPath);
   void DeleteSeason(int idSeason, bool bKeepId = false);
   void DeleteEpisode(int idEpisode, bool bKeepId = false);
-  void DeleteEpisode(const CStdString& strFilenameAndPath, int idEpisode = -1, bool bKeepId = false);
+  void DeleteEpisode(const CStdString& strFilenameAndPath, bool bKeepId = false);
   void DeleteMusicVideo(int idMusicVideo, bool bKeepId = false);
-  void DeleteMusicVideo(const CStdString& strFilenameAndPath, bool bKeepId = false, int idMVideo = -1);
-  void DeleteDetailsForTvShow(const CStdString& strPath, int idTvShow = -1);
+  void DeleteMusicVideo(const CStdString& strFilenameAndPath, bool bKeepId = false);
+  void DeleteDetailsForTvShow(int idTvShow);
+  void DeleteDetailsForTvShow(const CStdString& strPath);
   void RemoveContentForPath(const CStdString& strPath,CGUIDialogProgress *progress = NULL);
   void UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE type);
   void DeleteSet(int idSet);
@@ -506,6 +515,7 @@ public:
   void DeleteResumeBookMark(const CStdString &strFilenameAndPath);
   void ClearBookMarkOfFile(const CStdString& strFilenameAndPath, CBookmark& bookmark, CBookmark::EType type = CBookmark::STANDARD);
   void ClearBookMarksOfFile(const CStdString& strFilenameAndPath, CBookmark::EType type = CBookmark::STANDARD);
+  void ClearBookMarksOfFile(int idFile, CBookmark::EType type = CBookmark::STANDARD);
   bool GetBookMarkForEpisode(const CVideoInfoTag& tag, CBookmark& bookmark);
   void AddBookMarkForEpisode(const CVideoInfoTag& tag, const CBookmark& bookmark);
   void DeleteBookMarkForEpisode(const CVideoInfoTag& tag);
@@ -557,6 +567,13 @@ public:
   bool GetPathHash(const CStdString &path, CStdString &hash);
   bool GetPaths(std::set<CStdString> &paths);
   bool GetPathsForTvShow(int idShow, std::set<int>& paths);
+
+  /*! \brief return the paths linked to a tvshow.
+   \param idShow the id of the tvshow.
+   \param paths [out] the list of paths associated with the show.
+   \return true on success, false on failure.
+   */
+  bool GetPathsLinkedToTvShow(int idShow, std::vector<std::string> &paths);
 
   /*! \brief retrieve subpaths of a given path.  Assumes a heirarchical folder structure
    \param basepath the root path to retrieve subpaths for
@@ -652,11 +669,12 @@ public:
   /*! \brief Add a path to the database, if necessary
    If the path is already in the database, we simply return its id.
    \param strPath the path to add
+   \param parentPath the parent path of the path to add. If empty, URIUtils::GetParentPath() will determine the path.
    \param strDateAdded datetime when the path was added to the filesystem/database
    \return id of the file, -1 if it could not be added.
    */
-  int AddPath(const CStdString& strPath, const CStdString &strDateAdded = "");
-  
+  int AddPath(const CStdString& strPath, const CStdString &parentPath = "", const CStdString &strDateAdded = "");
+
   /*! \brief Updates the dateAdded field in the files table for the file
    with the given idFile and the given path based on the files modification date
    \param idFile id of the file in the files table
@@ -758,9 +776,24 @@ protected:
   int AddCountry(const CStdString& strCountry);
   int AddStudio(const CStdString& strStudio1);
 
-  int AddTvShow(const CStdString& strPath);
+  int AddTvShow();
   int AddMusicVideo(const CStdString& strFilenameAndPath);
   int AddSeason(int showID, int season);
+
+  /*! \brief Adds a path to the tvshow link table.
+   \param idShow the id of the show.
+   \param path the path to add.
+   \param parentPath the parent path of the path to add.
+   \return true if successfully added, false otherwise.
+   */
+  bool AddPathToTvShow(int idShow, const std::string &path, const std::string &parentPath);
+
+  /*! \brief Check whether a show is already in the library.
+   Matches on unique identifier or matching title and premiered date.
+   \param show the details of the show to check for.
+   \return the show id if found, else -1.
+   */
+  int GetMatchingTvShow(const CVideoInfoTag &show);
 
   // link functions - these two do all the work
   void AddLinkToActor(const char *table, int actorID, const char *secondField, int secondID, const CStdString &role, int order);
@@ -817,6 +850,13 @@ private:
    */
   virtual void CreateViews();
 
+  /*! \brief Helper to get a database id given a query.
+   Returns an integer, -1 if not found, and greater than 0 if found.
+   \param query the SQL that will retrieve a database id.
+   \return -1 if not found, else a valid database id (i.e. > 0)
+   */
+  int GetDbId(const std::string &query);
+
   /*! \brief Run a query on the main dataset and return the number of rows
    If no rows are found we close the dataset and return 0.
    \param sql the sql query to run
@@ -838,9 +878,6 @@ private:
   void ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName);
   void SplitPath(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   void InvalidatePathHash(const CStdString& strPath);
-
-  bool GetStackedTvShowList(int idShow, CStdString& strIn) const;
-  void Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool maintainSortOrder = false);
 
   /*! \brief Get a safe filename from a given string
    \param dir directory to use for the file
