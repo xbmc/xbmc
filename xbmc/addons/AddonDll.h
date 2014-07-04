@@ -66,7 +66,6 @@ namespace ADDON
   protected:
     void HandleException(std::exception &e, const char* context);
     bool Initialized() { return m_initialized; }
-    virtual void BuildLibName(const cp_extension_t *ext = NULL) {}
     virtual bool LoadSettings();
     TheStruct* m_pStruct;
     TheProps*     m_pInfo;
@@ -95,10 +94,6 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
   : CAddon(ext),
     m_bIsChild(false)
 {
-  // if library attribute isn't present, look for a system-dependent one
-  if (ext && m_strLibName.empty())
-    m_strLibName = CAddonMgr::GetInstance().GetPlatformLibraryName(ext->configuration);
-
   m_pStruct     = NULL;
   m_initialized = false;
   m_pDll        = NULL;
