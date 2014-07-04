@@ -28,8 +28,6 @@
  *
  */
 
-#include "utils/StdString.h"
-
 #include <map>
 #include <string>
 
@@ -59,23 +57,23 @@ public:
 
   CGUIListItem(void);
   CGUIListItem(const CGUIListItem& item);
-  CGUIListItem(const CStdString& strLabel);
+  CGUIListItem(const std::string& strLabel);
   virtual ~CGUIListItem(void);
   virtual CGUIListItem *Clone() const { return new CGUIListItem(*this); };
 
   CGUIListItem& operator =(const CGUIListItem& item);
 
-  virtual void SetLabel(const CStdString& strLabel);
-  const CStdString& GetLabel() const;
+  virtual void SetLabel(const std::string& strLabel);
+  const std::string& GetLabel() const;
 
-  void SetLabel2(const CStdString& strLabel);
-  const CStdString& GetLabel2() const;
+  void SetLabel2(const std::string& strLabel);
+  const std::string& GetLabel2() const;
 
-  void SetIconImage(const CStdString& strIcon);
-  const CStdString& GetIconImage() const;
+  void SetIconImage(const std::string& strIcon);
+  const std::string& GetIconImage() const;
 
   void SetOverlayImage(GUIIconOverlay icon, bool bOnOff=false);
-  CStdString GetOverlayImage() const;
+  std::string GetOverlayImage() const;
 
   /*! \brief Set a particular art type for an item
    \param type type of art to set.
@@ -128,9 +126,9 @@ public:
    */
   bool HasArt(const std::string &type) const;
 
-  void SetSortLabel(const CStdString &label);
-  void SetSortLabel(const CStdStringW &label);
-  const CStdStringW &GetSortLabel() const;
+  void SetSortLabel(const std::string &label);
+  void SetSortLabel(const std::wstring &label);
+  const std::wstring &GetSortLabel() const;
 
   void Select(bool bOnOff);
   bool IsSelected() const;
@@ -151,10 +149,10 @@ public:
 
   bool m_bIsFolder;     ///< is item a folder or a file
 
-  void SetProperty(const CStdString &strKey, const CVariant &value);
+  void SetProperty(const std::string &strKey, const CVariant &value);
 
-  void IncrementProperty(const CStdString &strKey, int nVal);
-  void IncrementProperty(const CStdString &strKey, double dVal);
+  void IncrementProperty(const std::string &strKey, int nVal);
+  void IncrementProperty(const std::string &strKey, double dVal);
 
   void ClearProperties();
 
@@ -168,15 +166,15 @@ public:
   void Archive(CArchive& ar);
   void Serialize(CVariant& value);
 
-  bool       HasProperty(const CStdString &strKey) const;
+  bool       HasProperty(const std::string &strKey) const;
   bool       HasProperties() const { return !m_mapProperties.empty(); };
-  void       ClearProperty(const CStdString &strKey);
+  void       ClearProperty(const std::string &strKey);
 
-  CVariant   GetProperty(const CStdString &strKey) const;
+  CVariant   GetProperty(const std::string &strKey) const;
 
 protected:
-  CStdString m_strLabel2;     // text of column2
-  CStdString m_strIcon;      // filename of icon
+  std::string m_strLabel2;     // text of column2
+  std::string m_strIcon;      // filename of icon
   GUIIconOverlay m_overlayIcon; // type of overlay icon
 
   CGUIListItemLayout *m_layout;
@@ -185,14 +183,14 @@ protected:
 
   struct icompare
   {
-    bool operator()(const CStdString &s1, const CStdString &s2) const;
+    bool operator()(const std::string &s1, const std::string &s2) const;
   };
 
-  typedef std::map<CStdString, CVariant, icompare> PropertyMap;
+  typedef std::map<std::string, CVariant, icompare> PropertyMap;
   PropertyMap m_mapProperties;
 private:
-  CStdStringW m_sortLabel;    // text for sorting. Need to be UTF16 for proper sorting
-  CStdString m_strLabel;      // text of column1
+  std::wstring m_sortLabel;    // text for sorting. Need to be UTF16 for proper sorting
+  std::string m_strLabel;      // text of column1
 
   ArtMap m_art;
   ArtMap m_artFallbacks;

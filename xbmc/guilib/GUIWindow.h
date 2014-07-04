@@ -219,7 +219,7 @@ protected:
   virtual void RestoreControlStates();
 
   // methods for updating controls and sending messages
-  void OnEditChanged(int id, CStdString &text);
+  void OnEditChanged(int id, std::string &text);
   bool SendMessage(int message, int id, int param1 = 0, int param2 = 0);
 
   typedef GUIEvent<CGUIMessage&> CLICK_EVENT;

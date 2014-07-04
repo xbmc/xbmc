@@ -980,7 +980,7 @@ CRect CGUIWindow::GetScaledBounds() const
   return rect;
 }
 
-void CGUIWindow::OnEditChanged(int id, CStdString &text)
+void CGUIWindow::OnEditChanged(int id, std::string &text)
 {
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), id);
   OnMessage(msg);

@@ -30,6 +30,7 @@
 #ifdef TARGET_WINDOWS
 #include "PlatformDefs.h" //for PRIdS
 #endif
+#include "utils/StdString.h"
 extern "C"
 {
 #include "lib/libRTV/interface.h"
@@ -107,7 +108,7 @@ bool CRTVFile::Open(const char* strHostName, const char* strFileName, int iport)
 
 bool CRTVFile::Open(const CURL& url)
 {
-  return Open(url.GetHostName(), url.GetFileName(), url.GetPort());
+  return Open((CStdString)url.GetHostName(), (CStdString)url.GetFileName(), url.GetPort());
 }
 
 bool CRTVFile::Exists(const CURL& url)

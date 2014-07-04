@@ -366,7 +366,7 @@ bool CCueDocument::ResolvePath(CStdString &strPath, const CStdString &strBase)
     CDirectory::GetDirectory(strDirectory,items);
     for (int i=0;i<items.Size();++i)
     {
-      if (items[i]->GetPath().Equals(strPath))
+      if (items[i]->IsPath(strPath))
       {
         strPath = items[i]->GetPath();
         return true;

@@ -276,7 +276,7 @@ bool CGUIWindowMusicNav::OnClick(int iItem)
   return CGUIWindowMusicBase::OnClick(iItem);
 }
 
-bool CGUIWindowMusicNav::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
+bool CGUIWindowMusicNav::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
@@ -290,7 +290,7 @@ bool CGUIWindowMusicNav::Update(const CStdString &strDirectory, bool updateFilte
   return false;
 }
 
-bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItemList &items)
 {
   if (m_bDisplayEmptyDatabaseMessage)
     return true;
@@ -357,9 +357,9 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     else if (node == NODE_TYPE_YEAR)
       items.SetContent("years");
   }
-  else if (strDirectory.Equals("special://musicplaylists/"))
+  else if (URIUtils::PathEquals(strDirectory, "special://musicplaylists/"))
     items.SetContent("playlists");
-  else if (strDirectory.Equals("plugin://music/"))
+  else if (URIUtils::PathEquals(strDirectory, "plugin://music/"))
     items.SetContent("plugins");
   else if (items.IsPlayList())
     items.SetContent("songs");
@@ -395,7 +395,7 @@ void CGUIWindowMusicNav::UpdateButtons()
   CStdString strLabel;
 
   // "Playlists"
-  if (m_vecItems->GetPath().Equals("special://musicplaylists/"))
+  if (m_vecItems->IsPath("special://musicplaylists/"))
     strLabel = g_localizeStrings.Get(136);
   // "{Playlist Name}"
   else if (m_vecItems->IsPlayList())
@@ -455,8 +455,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
   if (item && !StringUtils::StartsWithNoCase(item->GetPath(), "addons://more/"))
   {
     // are we in the playlists location?
-    bool inPlaylists = m_vecItems->GetPath().Equals(CUtil::MusicPlaylistsLocation()) ||
-                       m_vecItems->GetPath().Equals("special://musicplaylists/");
+    bool inPlaylists = m_vecItems->IsPath(CUtil::MusicPlaylistsLocation()) ||
+                       m_vecItems->IsPath("special://musicplaylists/");
 
     CMusicDatabaseDirectory dir;
     // enable music info button on an album or on a song.
@@ -513,9 +513,9 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
          nodetype == NODE_TYPE_OVERVIEW ||
          nodetype == NODE_TYPE_TOP100))
     {
-      if (!item->GetPath().Equals(CSettings::Get().GetString("mymusic.defaultlibview").c_str()))
+      if (!item->IsPath(CSettings::Get().GetString("mymusic.defaultlibview")))
         buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // set default
-      if (strcmp(CSettings::Get().GetString("mymusic.defaultlibview").c_str(), ""))
+      if (!CSettings::Get().GetString("mymusic.defaultlibview").empty())
         buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
     }
     NODE_TYPE childtype = dir.GetDirectoryChildType(item->GetPath());
@@ -715,7 +715,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         content = CONTENT_ARTISTS;
       }
 
-      if (m_vecItems->GetPath().Equals("musicdb://genres/") || item->GetPath().Equals("musicdb://artists/"))
+      if (m_vecItems->IsPath("musicdb://genres/") || item->IsPath("musicdb://artists/"))
       {
         content = CONTENT_ARTISTS;
       }
@@ -748,7 +748,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
 }
 
-bool CGUIWindowMusicNav::GetSongsFromPlayList(const CStdString& strPlayList, CFileItemList &items)
+bool CGUIWindowMusicNav::GetSongsFromPlayList(const std::string& strPlayList, CFileItemList &items)
 {
   CStdString strParentPath=m_history.GetParentPath();
 
@@ -858,31 +858,32 @@ void CGUIWindowMusicNav::AddSearchFolder()
   }
 }
 
-CStdString CGUIWindowMusicNav::GetStartFolder(const CStdString &dir)
+std::string CGUIWindowMusicNav::GetStartFolder(const std::string &dir)
 {
-  if (dir.Equals("Genres"))
+  std::string lower(dir); StringUtils::ToLower(lower);
+  if (lower == "genres")
     return "musicdb://genres/";
-  else if (dir.Equals("Artists"))
+  else if (lower == "artists")
     return "musicdb://artists/";
-  else if (dir.Equals("Albums"))
+  else if (lower == "albums")
     return "musicdb://albums/";
-  else if (dir.Equals("Singles"))
+  else if (lower == "singles")
     return "musicdb://singles/";
-  else if (dir.Equals("Songs"))
+  else if (lower == "songs")
     return "musicdb://songs/";
-  else if (dir.Equals("Top100"))
+  else if (lower == "top100")
     return "musicdb://top100/";
-  else if (dir.Equals("Top100Songs"))
+  else if (lower == "top100songs")
     return "musicdb://top100/songs/";
-  else if (dir.Equals("Top100Albums"))
+  else if (lower == "top100albums")
     return "musicdb://top100/albums/";
-  else if (dir.Equals("RecentlyAddedAlbums"))
+  else if (lower == "recentlyaddedalbums")
     return "musicdb://recentlyaddedalbums/";
-  else if (dir.Equals("RecentlyPlayedAlbums"))
+  else if (lower == "recentlyplayedalbums")
    return "musicdb://recentlyplayedalbums/";
-  else if (dir.Equals("Compilations"))
+  else if (lower == "compilations")
     return "musicdb://compilations/";
-  else if (dir.Equals("Years"))
+  else if (lower == "years")
     return "musicdb://years/";
   return CGUIWindowMusicBase::GetStartFolder(dir);
 }

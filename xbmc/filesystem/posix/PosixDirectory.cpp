@@ -90,7 +90,7 @@ bool CPosixDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
     if (!(m_flags & DIR_FLAG_NO_FILE_INFO))
     {
-      if (bStat || stat(pItem->GetPath(), &buffer) == 0)
+      if (bStat || stat(pItem->GetPath().c_str(), &buffer) == 0)
       {
         FILETIME fileTime, localTime;
         TimeTToFileTime(buffer.st_mtime, &fileTime);

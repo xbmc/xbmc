@@ -337,7 +337,7 @@ void CGUILabelControl::SetSelection(unsigned int start, unsigned int end)
   m_endSelection = end;
 }
 
-CStdString CGUILabelControl::GetDescription() const
+std::string CGUILabelControl::GetDescription() const
 {
   return m_infoLabel.GetLabel(m_parentID);
 }

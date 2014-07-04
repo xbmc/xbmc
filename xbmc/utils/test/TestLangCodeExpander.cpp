@@ -24,7 +24,7 @@
 
 TEST(TestLangCodeExpander, ConvertTwoToThreeCharCode)
 {
-  CStdString refstr, varstr;
+  std::string refstr, varstr;
 
   refstr = "eng";
   g_LangCodeExpander.ConvertTwoToThreeCharCode(varstr, "en");
@@ -33,7 +33,7 @@ TEST(TestLangCodeExpander, ConvertTwoToThreeCharCode)
 
 TEST(TestLangCodeExpander, ConvertToThreeCharCode)
 {
-  CStdString refstr, varstr;
+  std::string refstr, varstr;
 
   refstr = "eng";
   g_LangCodeExpander.ConvertToThreeCharCode(varstr, "en");

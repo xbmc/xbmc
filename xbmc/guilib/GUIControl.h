@@ -215,7 +215,7 @@ public:
   virtual void SetEnabled(bool bEnable);
   virtual void SetInvalid() { m_bInvalidated = true; };
   virtual void SetPulseOnSelect(bool pulse) { m_pulseOnSelect = pulse; };
-  virtual CStdString GetDescription() const { return ""; };
+  virtual std::string GetDescription() const { return ""; };
 
   void SetAnimations(const std::vector<CAnimation> &animations);
   const std::vector<CAnimation> &GetAnimations() const { return m_animations; };

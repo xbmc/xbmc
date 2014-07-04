@@ -35,8 +35,8 @@ public:
   static const CStdString GetFileName(const CURL& url);
   static const CStdString GetFileName(const CStdString& strFileNameAndPath);
 
-  static CStdString GetExtension(const CURL& url);
-  static CStdString GetExtension(const CStdString& strFileName);
+  static std::string GetExtension(const CURL& url);
+  static std::string GetExtension(const std::string& strFileName);
 
   /*!
    \brief Check if there is a file extension
@@ -60,18 +60,16 @@ public:
   static bool HasExtension(const CStdString& strFileName, const CStdString& strExtensions);
   static bool HasExtension(const CURL& url, const CStdString& strExtensions);
 
-  static void RemoveExtension(CStdString& strFileName);
+  static void RemoveExtension(std::string& strFileName);
   static CStdString ReplaceExtension(const CStdString& strFile,
                                      const CStdString& strNewExtension);
-  static void Split(const CStdString& strFileNameAndPath, 
-                    CStdString& strPath, CStdString& strFileName);
   static void Split(const std::string& strFileNameAndPath, 
                     std::string& strPath, std::string& strFileName);
   static std::vector<std::string> SplitPath(const CStdString& strPath);
 
-  static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);
-  static CStdString GetParentPath(const CStdString& strPath);
-  static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
+  static void GetCommonPath(std::string& strPath, const std::string& strPath2);
+  static std::string GetParentPath(const std::string& strPath);
+  static bool GetParentPath(const std::string& strPath, std::string& strParent);
 
   /* \brief Change the base path of a URL: fromPath/fromFile -> toPath/toFile
     Handles changes in path separator and filename URL encoding if necessary to derive toFile.
@@ -184,12 +182,6 @@ public:
                                 const CURL& archiveUrl,
                                 const std::string& pathInArchive = "",
                                 const std::string& password = "");
-
-  static void CreateArchivePath(CStdString& strUrlPath,
-                                const CStdString& strType,
-                                const CStdString& strArchivePath,
-                                const CStdString& strFilePathInArchive,
-                                const CStdString& strPwd="");
 
   static CStdString AddFileToFolder(const CStdString &strFolder, const CStdString &strFile);
 

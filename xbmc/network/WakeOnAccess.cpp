@@ -370,7 +370,7 @@ bool CWakeOnAccess::WakeUpHost (const CStdString& hostName, const string& custom
 
 bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
 {
-  CStdString heading = StringUtils::Format(LOCALIZED(13027), server.host.c_str());
+  CStdString heading = StringUtils::Format(LOCALIZED(13027).c_str(), server.host.c_str());
 
   ProgressDialogHelper dlg (heading);
 
@@ -573,7 +573,7 @@ void CWakeOnAccess::SaveMACDiscoveryResult(const CStdString& host, const CStdStr
       {
         if (IsEnabled()) // show notification only if we have general feature enabled
         {
-          CStdString message = StringUtils::Format(LOCALIZED(13034), host.c_str());
+          CStdString message = StringUtils::Format(LOCALIZED(13034).c_str(), host.c_str());
           CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, heading, message, 4000, true, 3000);
         }
 
@@ -594,7 +594,7 @@ void CWakeOnAccess::SaveMACDiscoveryResult(const CStdString& host, const CStdStr
   CLog::Log(LOGDEBUG, "%s - Create new entry for host '%s'", __FUNCTION__, host.c_str());
   if (IsEnabled()) // show notification only if we have general feature enabled
   {
-    CStdString message = StringUtils::Format(LOCALIZED(13035), host.c_str());
+    CStdString message = StringUtils::Format(LOCALIZED(13035).c_str(), host.c_str());
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, heading, message, 4000, true, 3000);
   }
 
@@ -621,7 +621,7 @@ void CWakeOnAccess::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     if (IsEnabled())
     {
       CStdString heading = LOCALIZED(13033);
-      CStdString message = StringUtils::Format(LOCALIZED(13036), host.c_str());
+      CStdString message = StringUtils::Format(LOCALIZED(13036).c_str(), host.c_str());
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, heading, message, 4000, true, 3000);
     }
   }

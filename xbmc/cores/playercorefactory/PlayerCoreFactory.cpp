@@ -177,7 +177,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   {
     // We no longer force PAPlayer as our default audio player (used to be true):
     bool bAdd = false;
-    if (url.GetProtocol().Equals("mms"))
+    if (url.IsProtocol("mms"))
     {
        bAdd = false;
     }
@@ -192,8 +192,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
     if (bAdd)
     {
-      if ((url.GetFileType().Equals("ac3"))
-            || (url.GetFileType().Equals("dts")))
+      if (url.IsFileType("ac3") || url.IsFileType("dts"))
       {
         CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding DVDPlayer (%d)", EPC_DVDPLAYER);
         vecCores.push_back(EPC_DVDPLAYER);

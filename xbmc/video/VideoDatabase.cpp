@@ -684,7 +684,7 @@ int CVideoDatabase::AddPath(const CStdString& strPath, const CStdString &parentP
 
     URIUtils::AddSlashAtEnd(strPath1);
 
-    int idParentPath = GetPathId(parentPath.empty() ? URIUtils::GetParentPath(strPath1) : parentPath);
+    int idParentPath = GetPathId(parentPath.empty() ? (CStdString)URIUtils::GetParentPath(strPath1) : parentPath);
 
     // add the path
     if (idParentPath < 0)
@@ -4188,7 +4188,7 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
 {
   if(URIUtils::IsMultiPath(strPath))
   {
-    vector<CStdString> paths;
+    vector<std::string> paths;
     CMultiPathDirectory::GetPaths(strPath, paths);
 
     for(unsigned i=0;i<paths.size();i++)
@@ -4269,7 +4269,7 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const Scraper
   // if we have a multipath, set scraper for all contained paths
   if(URIUtils::IsMultiPath(filePath))
   {
-    vector<CStdString> paths;
+    vector<std::string> paths;
     CMultiPathDirectory::GetPaths(filePath, paths);
 
     for(unsigned i=0;i<paths.size();i++)
@@ -4654,7 +4654,7 @@ bool CVideoDatabase::GetPlayCounts(const CStdString &strPath, CFileItemList &ite
 {
   if(URIUtils::IsMultiPath(strPath))
   {
-    vector<CStdString> paths;
+    vector<std::string> paths;
     CMultiPathDirectory::GetPaths(strPath, paths);
 
     bool ret = false;
@@ -5861,7 +5861,7 @@ bool CVideoDatabase::GetSeasonsByWhere(const CStdString& strBaseDir, const Filte
         if (iSeason == 0)
           strLabel = g_localizeStrings.Get(20381);
         else
-          strLabel = StringUtils::Format(g_localizeStrings.Get(20358), iSeason);
+          strLabel = StringUtils::Format(g_localizeStrings.Get(20358).c_str(), iSeason);
         CFileItemPtr pItem(new CFileItem(strLabel));
 
         CVideoDbUrl itemUrl = videoUrl;
@@ -8220,7 +8220,7 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
           {
             CURL sourceUrl(sourcePath);
             pDialog->SetHeading(15012);
-            pDialog->SetText(StringUtils::Format(g_localizeStrings.Get(15013), sourceUrl.GetWithoutUserDetails().c_str()));
+            pDialog->SetText(StringUtils::Format(g_localizeStrings.Get(15013).c_str(), sourceUrl.GetWithoutUserDetails().c_str()));
             pDialog->SetChoice(0, 15015);
             pDialog->SetChoice(1, 15014);
 
@@ -8553,7 +8553,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
       {
         if (!singleFiles)
         {
-          CStdString strFileName(StringUtils::Join(movie.m_artist, g_advancedSettings.m_videoItemSeparator) + "." + movie.m_strTitle);
+          CStdString strFileName((CStdString)StringUtils::Join(movie.m_artist, g_advancedSettings.m_videoItemSeparator) + "." + movie.m_strTitle);
           if (movie.m_iYear > 0)
             strFileName += StringUtils::Format("_%i", movie.m_iYear);
           item.SetPath(GetSafeFile(moviesDir, strFileName) + ".avi");
@@ -8965,7 +8965,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         info.Load(movie);
         CFileItem item(info);
         bool useFolders = info.m_basePath.empty() ? LookupByFolders(item.GetPath()) : false;
-        CStdString filename = StringUtils::Join(info.m_artist, g_advancedSettings.m_videoItemSeparator) + "." + info.m_strTitle;
+        CStdString filename = (CStdString)StringUtils::Join(info.m_artist, g_advancedSettings.m_videoItemSeparator) + "." + info.m_strTitle;
         if (info.m_iYear > 0)
           filename += StringUtils::Format("_%i", info.m_iYear);
         CFileItem artItem(item);
@@ -9219,7 +9219,7 @@ bool CVideoDatabase::GetItemsForPath(const CStdString &content, const CStdString
   
   if(URIUtils::IsMultiPath(path))
   {
-    vector<CStdString> paths;
+    vector<std::string> paths;
     CMultiPathDirectory::GetPaths(path, paths);
 
     for(unsigned i=0;i<paths.size();i++)

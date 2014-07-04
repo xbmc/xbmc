@@ -204,7 +204,7 @@ bool CGUIProgressControl::UpdateColors()
   return changed;
 }
 
-CStdString CGUIProgressControl::GetDescription() const
+std::string CGUIProgressControl::GetDescription() const
 {
   return StringUtils::Format("%2.f", m_fPercent);
 }

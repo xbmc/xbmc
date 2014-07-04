@@ -160,7 +160,7 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     return dvdcodec; // if we got this far with internet radio - content-type was wrong. gamble on mp3.
   }
 
-  if (urlFile.GetFileType().Equals("wav") || strContent.Equals("audio/wav") || strContent.Equals("audio/x-wav"))
+  if (urlFile.IsFileType("wav") || strContent.Equals("audio/wav") || strContent.Equals("audio/x-wav"))
   {
     //lets see what it contains...
     //this kinda sucks 'cause if it's a plain wav file the file
@@ -178,7 +178,7 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     return dvdcodec;
 
   }
-  else if (urlFile.GetFileType().Equals("ogg") || urlFile.GetFileType().Equals("oggstream") || urlFile.GetFileType().Equals("oga"))
+  else if (urlFile.IsFileType("ogg") || urlFile.IsFileType("oggstream") || urlFile.IsFileType("oga"))
     return CreateOGGCodec(strFile,filecache);
 
   //default

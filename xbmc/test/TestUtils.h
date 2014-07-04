@@ -19,6 +19,7 @@
  */
 #pragma once
 
+#include <string>
 #include "utils/StdString.h"
 
 namespace XFILE
@@ -35,7 +36,7 @@ public:
    * xbmc-test binary. It's assumed the test suite program will only be run
    * with xbmc-test residing in the source tree.
    */
-  CStdString ReferenceFilePath(CStdString const& path);
+  std::string ReferenceFilePath(const std::string& path);
 
   /* Function to set the reference file base path. */
   bool SetReferenceFileBasePath();

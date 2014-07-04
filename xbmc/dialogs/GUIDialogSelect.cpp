@@ -206,12 +206,12 @@ int CGUIDialogSelect::GetSelectedLabel() const
   return m_iSelected;
 }
 
-const CFileItemPtr CGUIDialogSelect::GetSelectedItem()
+const CFileItemPtr CGUIDialogSelect::GetSelectedItem() const
 {
   return m_selectedItems->Size() > 0 ? m_selectedItems->Get(0) : CFileItemPtr(new CFileItem);
 }
 
-const CStdString& CGUIDialogSelect::GetSelectedLabelText()
+const std::string& CGUIDialogSelect::GetSelectedLabelText() const
 {
   return GetSelectedItem()->GetLabel();
 }
@@ -263,7 +263,7 @@ void CGUIDialogSelect::SetSelected(const CStdString &strSelectedLabel)
 
   for (int index = 0; index < m_vecList->Size(); index++)
   {
-    if (strSelectedLabel.Equals(m_vecList->Get(index)->GetLabel()))
+    if (strSelectedLabel == m_vecList->Get(index)->GetLabel())
     {
       SetSelected(index);
       return;

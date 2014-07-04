@@ -740,44 +740,44 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     m_password = url2.GetPassWord();
 
     // handle any protocol options
-    std::map<CStdString, CStdString> options;
+    std::map<std::string, std::string> options;
     url2.GetProtocolOptions(options);
     if (options.size() > 0)
     {
       // clear protocol options
       url2.SetProtocolOptions("");
       // set xbmc headers
-      for(std::map<CStdString, CStdString>::const_iterator it = options.begin(); it != options.end(); ++it)
+      for (std::map<std::string,std::string>::const_iterator it = options.begin(); it != options.end(); ++it)
       {
-        const CStdString &name = it->first;
-        const CStdString &value = it->second;
+        std::string name = it->first; StringUtils::ToLower(name);
+        const std::string &value = it->second;
 
-        if(name.Equals("auth"))
+        if (name == "auth")
         {
           m_httpauth = value;
           if(m_httpauth.empty())
             m_httpauth = "any";
         }
-        else if (name.Equals("Referer"))
+        else if (name == "referer")
           SetReferer(value);
-        else if (name.Equals("User-Agent"))
+        else if (name == "user-agent")
           SetUserAgent(value);
-        else if (name.Equals("Cookie"))
+        else if (name == "cookie")
           SetCookie(value);
-        else if (name.Equals("Encoding"))
+        else if (name == "encoding")
           SetContentEncoding(value);
-        else if (name.Equals("noshout") && value.Equals("true"))
+        else if (name == "noshout" && value == "true")
           m_skipshout = true;
-        else if (name.Equals("seekable") && value.Equals("0"))
+        else if (name == "seekable" && value == "0")
           m_seekable = false;
-        else if (name.Equals("Accept-Charset"))
+        else if (name == "accept-charset")
           SetAcceptCharset(value);
-        else if (name.Equals("HttpProxy"))
+        else if (name == "httpproxy")
           SetStreamProxy(value, PROXY_HTTP);
-        else if (name.Equals("SSLCipherList"))
+        else if (name == "sslcipherlist")
           m_cipherlist = value;
         else
-          SetRequestHeader(name, value);
+          SetRequestHeader(it->first, value);
       }
     }
   }
@@ -799,21 +799,21 @@ void CCurlFile::SetStreamProxy(const CStdString &proxy, ProxyType type)
   CLog::Log(LOGDEBUG, "Overriding proxy from URL parameter: %s, type %d", m_proxy.c_str(), proxyType2CUrlProxyType[m_proxytype]);
 }
 
-bool CCurlFile::Post(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML)
+bool CCurlFile::Post(const std::string& strURL, const std::string& strPostData, std::string& strHTML)
 {
   m_postdata = strPostData;
   m_postdataset = true;
   return Service(strURL, strHTML);
 }
 
-bool CCurlFile::Get(const CStdString& strURL, CStdString& strHTML)
+bool CCurlFile::Get(const std::string& strURL, std::string& strHTML)
 {
   m_postdata = "";
   m_postdataset = false;
   return Service(strURL, strHTML);
 }
 
-bool CCurlFile::Service(const CStdString& strURL, CStdString& strHTML)
+bool CCurlFile::Service(const std::string& strURL, std::string& strHTML)
 {
   const CURL pathToUrl(strURL);
   if (Open(pathToUrl))
@@ -828,7 +828,7 @@ bool CCurlFile::Service(const CStdString& strURL, CStdString& strHTML)
   return false;
 }
 
-bool CCurlFile::ReadData(CStdString& strHTML)
+bool CCurlFile::ReadData(std::string& strHTML)
 {
   int size_read = 0;
   int data_size = 0;
@@ -907,7 +907,10 @@ bool CCurlFile::Open(const CURL& url)
 
   ASSERT(!(!m_state->m_easyHandle ^ !m_state->m_multiHandle));
   if( m_state->m_easyHandle == NULL )
-    g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_state->m_easyHandle, &m_state->m_multiHandle );
+    g_curlInterface.easy_aquire(url2.GetProtocol().c_str(),
+                                url2.GetHostName().c_str(),
+                                &m_state->m_easyHandle,
+                                &m_state->m_multiHandle);
 
   // setup common curl options
   SetCommonOptions(m_state);
@@ -937,7 +940,7 @@ bool CCurlFile::Open(const CURL& url)
   }
 
   m_multisession = false;
-  if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
+  if(url2.IsProtocol("http") || url2.IsProtocol("https"))
   {
     m_multisession = true;
     if(m_state->m_httpheader.GetValue("Server").find("Portable SDK for UPnP devices") != std::string::npos)
@@ -954,8 +957,8 @@ bool CCurlFile::Open(const CURL& url)
     m_seekable = false;
   if (m_seekable)
   {
-    if(url2.GetProtocol().Equals("http")
-    || url2.GetProtocol().Equals("https"))
+    if(url2.IsProtocol("http")
+    || url2.IsProtocol("https"))
     {
       // if server says explicitly it can't seek, respect that
       if(StringUtils::EqualsNoCase(m_state->m_httpheader.GetValue("Accept-Ranges"),"none"))
@@ -984,7 +987,10 @@ bool CCurlFile::OpenForWrite(const CURL& url, bool bOverWrite)
   CLog::Log(LOGDEBUG, "CCurlFile::OpenForWrite(%p) %s", (void*)this, CURL::GetRedacted(m_url).c_str());
 
   ASSERT(m_state->m_easyHandle == NULL);
-  g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_state->m_easyHandle, &m_state->m_multiHandle);
+  g_curlInterface.easy_aquire(url2.GetProtocol().c_str(),
+                              url2.GetHostName().c_str(),
+                              &m_state->m_easyHandle,
+                              &m_state->m_multiHandle);
 
     // setup common curl options
   SetCommonOptions(m_state);
@@ -1091,7 +1097,9 @@ bool CCurlFile::Exists(const CURL& url)
   ParseAndCorrectUrl(url2);
 
   ASSERT(m_state->m_easyHandle == NULL);
-  g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_state->m_easyHandle, NULL);
+  g_curlInterface.easy_aquire(url2.GetProtocol().c_str(),
+                              url2.GetHostName().c_str(),
+                              &m_state->m_easyHandle, NULL);
 
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
@@ -1169,8 +1177,8 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
       m_oldState          = m_state;
       m_state             = new CReadState();
       m_state->m_fileSize = m_oldState->m_fileSize;
-      g_curlInterface.easy_aquire(url.GetProtocol(),
-                                  url.GetHostName(),
+      g_curlInterface.easy_aquire(url.GetProtocol().c_str(),
+                                  url.GetHostName().c_str(),
                                   &m_state->m_easyHandle,
                                   &m_state->m_multiHandle );
     }
@@ -1257,7 +1265,9 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
   ParseAndCorrectUrl(url2);
 
   ASSERT(m_state->m_easyHandle == NULL);
-  g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_state->m_easyHandle, NULL);
+  g_curlInterface.easy_aquire(url2.GetProtocol().c_str(),
+                              url2.GetHostName().c_str(),
+                              &m_state->m_easyHandle, NULL);
 
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
@@ -1625,7 +1635,7 @@ bool CCurlFile::GetHttpHeader(const CURL &url, CHttpHeader &headers)
   }
 }
 
-bool CCurlFile::GetMimeType(const CURL &url, CStdString &content, CStdString useragent)
+bool CCurlFile::GetMimeType(const CURL &url, std::string &content, const std::string &useragent)
 {
   CCurlFile file;
   if (!useragent.empty())
@@ -1643,7 +1653,7 @@ bool CCurlFile::GetMimeType(const CURL &url, CStdString &content, CStdString use
     return true;
   }
   CLog::Log(LOGDEBUG, "CCurlFile::GetMimeType - %s -> failed", redactUrl.c_str());
-  content = "";
+  content.clear();
   return false;
 }
 
@@ -1655,7 +1665,9 @@ bool CCurlFile::GetCookies(const CURL &url, std::string &cookies)
   XCURL::CURLM*          multiHandle;
 
   // get the cookies list
-  g_curlInterface.easy_aquire(url.GetProtocol(), url.GetHostName(), &easyHandle, &multiHandle);
+  g_curlInterface.easy_aquire(url.GetProtocol().c_str(),
+                              url.GetHostName().c_str(),
+                              &easyHandle, &multiHandle);
   if (CURLE_OK == g_curlInterface.easy_getinfo(easyHandle, CURLINFO_COOKIELIST, &curlCookies))
   {
     // iterate over each cookie and format it into an RFC 2109 formatted Set-Cookie string

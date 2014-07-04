@@ -152,7 +152,7 @@ void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber,
                                                CContextButtons& buttons)
 {
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
-  if (pItem->GetPath().Equals("addons://enabled/"))
+  if (!pItem->IsPath("addons://enabled/"))
     buttons.Add(CONTEXT_BUTTON_SCAN,24034);
   
   AddonPtr addon;
@@ -175,7 +175,7 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
                                              CONTEXT_BUTTON button)
 {
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
-  if (pItem->GetPath().Equals("addons://enabled/"))
+  if (pItem->IsPath("addons://enabled/"))
   {
     if (button == CONTEXT_BUTTON_SCAN)
     {
@@ -268,7 +268,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
     CGUIDialogAddonInfo::ShowForItem(item);
     return true;
   }
-  if (item->GetPath().Equals("addons://search/"))
+  if (item->IsPath("addons://search/"))
     return Update(item->GetPath());
 
   return CGUIMediaWindow::OnClick(iItem);
@@ -315,11 +315,11 @@ static bool FilterVar(bool valid, const CVariant& variant,
   return regions.find(check) == std::string::npos;
 }
 
-bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
+bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory,
                                           CFileItemList& items)
 {
   bool result;
-  if (strDirectory.Equals("addons://downloading/"))
+  if (URIUtils::PathEquals(strDirectory, "addons://downloading/"))
   {
     VECADDONS addons;
     CAddonInstaller::Get().GetInstallList(addons);
@@ -396,7 +396,7 @@ void CGUIWindowAddonBrowser::SetItemLabel2(CFileItemPtr item)
   item->SetLabelPreformated(true);
 }
 
-bool CGUIWindowAddonBrowser::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
+bool CGUIWindowAddonBrowser::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
@@ -525,9 +525,9 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, vect
   return 1;
 }
 
-CStdString CGUIWindowAddonBrowser::GetStartFolder(const CStdString &dir)
+std::string CGUIWindowAddonBrowser::GetStartFolder(const std::string &dir)
 {
-  if (StringUtils::StartsWithNoCase(dir, "addons://"))
+  if (URIUtils::PathStarts(dir, "addons://"))
     return dir;
   return CGUIMediaWindow::GetStartFolder(dir);
 }

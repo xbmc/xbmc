@@ -31,6 +31,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "video/VideoThumbLoader.h"
+#include "URL.h"
 
 using namespace XFILE;
 using namespace std;
@@ -150,24 +151,24 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     }
   }
   if ((pItem->m_bIsFolder || pItem->IsCBR() || pItem->IsCBZ()) && !pItem->m_bIsShareOrDrive
-      && !pItem->IsParentFolder() && !pItem->GetPath().Equals("add"))
+      && !pItem->IsParentFolder() && !pItem->IsPath("add"))
   {
     // first check for a folder.jpg
     CStdString thumb = "folder.jpg";
-    CStdString strPath = pItem->GetPath();
+    CURL pathToUrl = pItem->GetURL();
     if (pItem->IsCBR())
     {
-      URIUtils::CreateArchivePath(strPath,"rar",pItem->GetPath(),"");
+      pathToUrl = URIUtils::CreateArchivePath("rar",pItem->GetURL(),"");
       thumb = "cover.jpg";
     }
     if (pItem->IsCBZ())
     {
-      URIUtils::CreateArchivePath(strPath,"zip",pItem->GetPath(),"");
+      pathToUrl = URIUtils::CreateArchivePath("zip",pItem->GetURL(),"");
       thumb = "cover.jpg";
     }
     if (pItem->IsMultiPath())
-      strPath = CMultiPathDirectory::GetFirstPath(pItem->GetPath());
-    thumb = URIUtils::AddFileToFolder(strPath, thumb);
+      pathToUrl = CURL(CMultiPathDirectory::GetFirstPath(pItem->GetPath()));
+    thumb = URIUtils::AddFileToFolder(pathToUrl.Get(), thumb);
     if (CFile::Exists(thumb))
     {
       db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
@@ -182,7 +183,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
 
       CFileItemList items;
 
-      CDirectory::GetDirectory(strPath, items, g_advancedSettings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS);
+      CDirectory::GetDirectory(pathToUrl, items, g_advancedSettings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS);
       
       // create the folder thumb by choosing 4 random thumbs within the folder and putting
       // them into one thumb.
@@ -201,7 +202,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       {
         if (pItem->IsCBZ() || pItem->IsCBR())
         {
-          CDirectory::GetDirectory(strPath, items, g_advancedSettings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS);
+          CDirectory::GetDirectory(pathToUrl, items, g_advancedSettings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS);
           for (int i=0;i<items.Size();++i)
           {
             CFileItemPtr item = items[i];

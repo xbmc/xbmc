@@ -299,10 +299,10 @@ bool CNfsConnection::Connect(const CURL& url, CStdString &relativePath)
   ret = splitUrlIntoExportAndPath(url, exportPath, relativePath);
   
   if( (ret && (!exportPath.Equals(m_exportPath,true)  || 
-      !url.GetHostName().Equals(m_hostName,false)))    ||
+       url.GetHostName() != m_hostName))    ||
       (XbmcThreads::SystemClockMillis() - m_lastAccessedTime) > CONTEXT_TIMEOUT )
   {
-    int contextRet = getContextForExport(url.GetHostName() + exportPath);
+    int contextRet = getContextForExport((CStdString)url.GetHostName() + exportPath);
     
     if(contextRet == CONTEXT_INVALID)//we need a new context because sharename or hostname has changed
     {
@@ -318,7 +318,7 @@ bool CNfsConnection::Connect(const CURL& url, CStdString &relativePath)
       if(nfsRet != 0) 
       {
         CLog::Log(LOGERROR,"NFS: Failed to mount nfs share: %s (%s)\n", exportPath.c_str(), m_pLibNfs->nfs_get_error(m_pNfsContext));
-        destroyContext(url.GetHostName() + exportPath);
+        destroyContext((CStdString)url.GetHostName() + exportPath);
         return false;
       }
       CLog::Log(LOGDEBUG,"NFS: Connected to server %s and export %s\n", url.GetHostName().c_str(), exportPath.c_str());

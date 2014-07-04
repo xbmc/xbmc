@@ -753,9 +753,9 @@ bool CGUIBaseContainer::OnClick(int actionID)
   return SendWindowMessage(msg);
 }
 
-CStdString CGUIBaseContainer::GetDescription() const
+std::string CGUIBaseContainer::GetDescription() const
 {
-  CStdString strLabel;
+  std::string strLabel;
   int item = GetSelectedItem();
   if (item >= 0 && item < (int)m_items.size())
   {
@@ -1207,9 +1207,9 @@ bool CGUIBaseContainer::HasPreviousPage() const
   return false;
 }
 
-CStdString CGUIBaseContainer::GetLabel(int info) const
+std::string CGUIBaseContainer::GetLabel(int info) const
 {
-  CStdString label;
+  std::string label;
   switch (info)
   {
   case CONTAINER_NUM_PAGES:

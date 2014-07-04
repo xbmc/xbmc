@@ -177,7 +177,7 @@ bool CDAVDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         itemPath += "|" + url2.GetProtocolOptions();
       item.SetPath(itemPath);
 
-      if (!item.GetPath().Equals(url.Get()))
+      if (!item.IsURL(url))
       {
         CFileItemPtr pItem(new CFileItem(item));
         items.Add(pItem);

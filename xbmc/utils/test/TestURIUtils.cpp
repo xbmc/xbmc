@@ -494,7 +494,7 @@ TEST_F(TestURIUtils, CreateArchivePath)
   CStdString ref, var;
 
   ref = "zip://%2fpath%2fto%2f/file";
-  URIUtils::CreateArchivePath(var, "zip", "/path/to/", "file");
+  var = URIUtils::CreateArchivePath("zip", CURL("/path/to/"), "file").Get();
   EXPECT_STREQ(ref.c_str(), var.c_str());
 }
 

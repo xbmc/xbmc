@@ -215,7 +215,7 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
 
   if (!deps.empty())
   {
-    string line0 = StringUtils::Format(g_localizeStrings.Get(24046), m_localAddon->Name().c_str());
+    string line0 = StringUtils::Format(g_localizeStrings.Get(24046).c_str(), m_localAddon->Name().c_str());
     string line1 = StringUtils::Join(deps, ", ");
     CGUIDialogOK::ShowAndGetInput(heading, line0, line1, line2);
     return true;
@@ -273,7 +273,7 @@ void CGUIDialogAddonInfo::OnSettings()
 void CGUIDialogAddonInfo::OnChangeLog()
 {
   CGUIDialogTextViewer* pDlgInfo = (CGUIDialogTextViewer*)g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
-  CStdString name;
+  std::string name;
   if (m_addon)
     name = m_addon->Name();
   else if (m_localAddon)

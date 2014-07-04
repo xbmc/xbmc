@@ -282,8 +282,8 @@ bool CAddonInstaller::InstallFromZip(const CStdString &path)
   // grab the descriptive XML document from the zip, and read it in
   CFileItemList items;
   // BUG: some zip files return a single item (root folder) that we think is stored, so we don't use the zip:// protocol
-  CStdString zipDir;
-  URIUtils::CreateArchivePath(zipDir, "zip", path, "");
+  CURL pathToUrl(path);
+  CURL zipDir = URIUtils::CreateArchivePath("zip", pathToUrl, "");
   if (!CDirectory::GetDirectory(zipDir, items) || items.Size() != 1 || !items[0]->m_bIsFolder)
   {
     CGUIDialogKaiToast::QueueNotification("", path, g_localizeStrings.Get(24045), TOAST_DISPLAY_TIME, false);
@@ -586,8 +586,7 @@ bool CAddonInstallJob::DoWork()
       }
 
       // check the archive as well - should have just a single folder in the root
-      CStdString archive;
-      URIUtils::CreateArchivePath(archive,"zip",package,"");
+      CURL archive = URIUtils::CreateArchivePath("zip",CURL(package),"");
 
       CFileItemList archivedFiles;
       CDirectory::GetDirectory(archive, archivedFiles);

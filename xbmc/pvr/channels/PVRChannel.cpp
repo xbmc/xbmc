@@ -158,7 +158,7 @@ void CPVRChannel::Serialize(CVariant& value) const
   value["icon"] = m_strIconPath;
   value["channel"]  = m_strChannelName;
   CDateTime lastPlayed(m_iLastWatched);
-  value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDate() : StringUtils::EmptyString;
+  value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDate() : StringUtils::Empty;
   value["channelnumber"] = m_iCachedChannelNumber;
   
   CEpgInfoTag epg;

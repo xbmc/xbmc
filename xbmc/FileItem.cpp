@@ -84,7 +84,7 @@ CFileItem::CFileItem(const CURL &url, const CAlbum& album)
   SetFromAlbum(album);
 }
 
-CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
+CFileItem::CFileItem(const std::string &path, const CAlbum& album)
 {
   Initialize();
 
@@ -142,8 +142,7 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   SetLabel(channel.ChannelName());
   m_strLabel2 = bHasEpgNow ? epgNow.Title() :
       CSettings::Get().GetBool("epg.hidenoinfoavailable") ?
-        StringUtils::EmptyString :
-        g_localizeStrings.Get(19055); // no information available
+                            "" : g_localizeStrings.Get(19055); // no information available
 
   if (channel.IsRadio())
   {
@@ -252,7 +251,7 @@ CFileItem::CFileItem(void)
   Initialize();
 }
 
-CFileItem::CFileItem(const CStdString& strLabel)
+CFileItem::CFileItem(const std::string& strLabel)
     : CGUIListItem()
 {
   Initialize();
@@ -270,7 +269,7 @@ CFileItem::CFileItem(const CURL& path, bool bIsFolder)
   FillInMimeType(false);
 }
 
-CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
+CFileItem::CFileItem(const std::string& strPath, bool bIsFolder)
 {
   Initialize();
   m_strPath = strPath;
@@ -289,7 +288,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   m_strPath = share.strPath;
   if (!IsRSS()) // no slash at end for rss feeds
     URIUtils::AddSlashAtEnd(m_strPath);
-  CStdString label = share.strName;
+  std::string label = share.strName;
   if (!share.strStatus.empty())
     label = StringUtils::Format("%s (%s)", share.strName.c_str(), share.strStatus.c_str());
   SetLabel(label);
@@ -685,7 +684,7 @@ void CFileItem::ToSortable(SortItem &sortable, const Fields &fields) const
 bool CFileItem::Exists(bool bUseCache /* = true */) const
 {
   if (m_strPath.empty()
-   || m_strPath.Equals("add")
+   || IsPath("add")
    || IsInternetStream()
    || IsParentFolder()
    || IsVirtualDirectoryRoot()
@@ -698,7 +697,7 @@ bool CFileItem::Exists(bool bUseCache /* = true */) const
     return dbItem.Exists();
   }
 
-  CStdString strPath = m_strPath;
+  std::string strPath = m_strPath;
 
   if (URIUtils::IsMultiPath(strPath))
     strPath = CMultiPathDirectory::GetFirstPath(strPath);
@@ -728,13 +727,13 @@ bool CFileItem::IsVideo() const
   if (IsHDHomeRun() || IsTuxBox() || URIUtils::IsDVD(m_strPath) || IsSlingbox())
     return true;
 
-  CStdString extension;
+  std::string extension;
   if( StringUtils::StartsWithNoCase(m_mimetype, "application/") )
   { /* check for some standard types */
     extension = m_mimetype.substr(12);
-    if( extension.Equals("ogg")
-     || extension.Equals("mp4")
-     || extension.Equals("mxf") )
+    if( StringUtils::EqualsNoCase(extension, "ogg")
+     || StringUtils::EqualsNoCase(extension, "mp4")
+     || StringUtils::EqualsNoCase(extension, "mxf") )
      return true;
   }
 
@@ -789,10 +788,10 @@ bool CFileItem::IsAudio() const
 
   if( StringUtils::StartsWithNoCase(m_mimetype, "application/") )
   { /* check for some standard types */
-    CStdString extension = m_mimetype.substr(12);
-    if( extension.Equals("ogg")
-     || extension.Equals("mp4")
-     || extension.Equals("mxf") )
+    std::string extension = m_mimetype.substr(12);
+    if( StringUtils::EqualsNoCase(extension, "ogg")
+     || StringUtils::EqualsNoCase(extension, "mp4")
+     || StringUtils::EqualsNoCase(extension, "mxf") )
      return true;
   }
 
@@ -927,15 +926,15 @@ bool CFileItem::IsOpticalMediaFile() const
 
 bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
 {
-  CStdString strFileName = URIUtils::GetFileName(m_strPath);
+  std::string strFileName = URIUtils::GetFileName(m_strPath);
   if (bIfos)
   {
-    if (strFileName.Equals("video_ts.ifo")) return true;
+    if (StringUtils::EqualsNoCase(strFileName, "video_ts.ifo")) return true;
     if (StringUtils::StartsWithNoCase(strFileName, "vts_") && StringUtils::EndsWithNoCase(strFileName, "_0.ifo") && strFileName.length() == 12) return true;
   }
   if (bVobs)
   {
-    if (strFileName.Equals("video_ts.vob")) return true;
+    if (StringUtils::EqualsNoCase(strFileName, "video_ts.vob")) return true;
     if (StringUtils::StartsWithNoCase(strFileName, "vts_") && StringUtils::EndsWithNoCase(strFileName, ".vob")) return true;
   }
 
@@ -944,8 +943,8 @@ bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
 
 bool CFileItem::IsBDFile() const
 {
-  CStdString strFileName = URIUtils::GetFileName(m_strPath);
-  return (strFileName.Equals("index.bdmv"));
+  std::string strFileName = URIUtils::GetFileName(m_strPath);
+  return (StringUtils::EqualsNoCase(strFileName, "index.bdmv"));
 }
 
 bool CFileItem::IsRAR() const
@@ -1244,7 +1243,7 @@ void CFileItem::RemoveExtension()
 {
   if (m_bIsFolder)
     return;
-  CStdString strLabel = GetLabel();
+  std::string strLabel = GetLabel();
   URIUtils::RemoveExtension(strLabel);
   SetLabel(strLabel);
 }
@@ -1254,13 +1253,13 @@ void CFileItem::CleanString()
   if (IsLiveTV())
     return;
 
-  CStdString strLabel = GetLabel();
-  CStdString strTitle, strTitleAndYear, strYear;
+  std::string strLabel = GetLabel();
+  std::string strTitle, strTitleAndYear, strYear;
   CUtil::CleanString(strLabel, strTitle, strTitleAndYear, strYear, true );
   SetLabel(strTitleAndYear);
 }
 
-void CFileItem::SetLabel(const CStdString &strLabel)
+void CFileItem::SetLabel(const std::string &strLabel)
 {
   if (strLabel=="..")
   {
@@ -1560,7 +1559,7 @@ CFileItemList::CFileItemList()
   m_replaceListing = false;
 }
 
-CFileItemList::CFileItemList(const CStdString& strPath) : CFileItem(strPath, true)
+CFileItemList::CFileItemList(const std::string& strPath) : CFileItem(strPath, true)
 {
   m_fastLookup = false;
   m_cacheToDisc = CACHE_IF_SLOW;
@@ -1583,12 +1582,12 @@ const CFileItemPtr CFileItemList::operator[] (int iItem) const
   return Get(iItem);
 }
 
-CFileItemPtr CFileItemList::operator[] (const CStdString& strPath)
+CFileItemPtr CFileItemList::operator[] (const std::string& strPath)
 {
   return Get(strPath);
 }
 
-const CFileItemPtr CFileItemList::operator[] (const CStdString& strPath) const
+const CFileItemPtr CFileItemList::operator[] (const std::string& strPath) const
 {
   return Get(strPath);
 }
@@ -1611,7 +1610,7 @@ void CFileItemList::SetFastLookup(bool fastLookup)
   m_fastLookup = fastLookup;
 }
 
-bool CFileItemList::Contains(const CStdString& fileName) const
+bool CFileItemList::Contains(const std::string& fileName) const
 {
   CSingleLock lock(m_lock);
 
@@ -1622,7 +1621,7 @@ bool CFileItemList::Contains(const CStdString& fileName) const
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     const CFileItemPtr pItem = m_items[i];
-    if (pItem->GetPath().Equals(fileName))
+    if (pItem->IsPath(fileName))
       return true;
   }
   return false;
@@ -1790,7 +1789,7 @@ const CFileItemPtr CFileItemList::Get(int iItem) const
   return CFileItemPtr();
 }
 
-CFileItemPtr CFileItemList::Get(const CStdString& strPath)
+CFileItemPtr CFileItemList::Get(const std::string& strPath)
 {
   CSingleLock lock(m_lock);
 
@@ -1806,20 +1805,20 @@ CFileItemPtr CFileItemList::Get(const CStdString& strPath)
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CFileItemPtr pItem = m_items[i];
-    if (pItem->GetPath().Equals(strPath))
+    if (pItem->IsPath(strPath))
       return pItem;
   }
 
   return CFileItemPtr();
 }
 
-const CFileItemPtr CFileItemList::Get(const CStdString& strPath) const
+const CFileItemPtr CFileItemList::Get(const std::string& strPath) const
 {
   CSingleLock lock(m_lock);
 
   if (m_fastLookup)
   {
-    map<CStdString, CFileItemPtr>::const_iterator it=m_map.find(strPath);
+    map<std::string, CFileItemPtr>::const_iterator it=m_map.find(strPath);
     if (it != m_map.end())
       return it->second;
 
@@ -1829,7 +1828,7 @@ const CFileItemPtr CFileItemList::Get(const CStdString& strPath) const
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CFileItemPtr pItem = m_items[i];
-    if (pItem->GetPath().Equals(strPath))
+    if (pItem->IsPath(strPath))
       return pItem;
   }
 
@@ -1921,7 +1920,7 @@ void CFileItemList::Sort(SortDescription sortDescription)
   {
     CFileItemPtr item = m_items[(int)(*it)->at(FieldId).asInteger()];
     // Set the sort label in the CFileItem
-    item->SetSortLabel(CStdStringW((*it)->at(FieldSort).asWideString()));
+    item->SetSortLabel((*it)->at(FieldSort).asWideString());
 
     sortedFileItems.push_back(item);
   }
@@ -2142,8 +2141,8 @@ void CFileItemList::FilterCueItems()
           // queue the cue sheet and the underlying media file for deletion
           for(std::vector<CStdString>::iterator itMedia = MediaFileVec.begin(); itMedia != MediaFileVec.end(); itMedia++)
           {
-            CStdString strMediaFile = *itMedia;
-            CStdString fileFromCue = strMediaFile; // save the file from the cue we're matching against,
+            std::string strMediaFile = *itMedia;
+            std::string fileFromCue = strMediaFile; // save the file from the cue we're matching against,
                                                    // as we're going to search for others here...
             bool bFoundMediaFile = CFile::Exists(strMediaFile);
             // queue the cue sheet and the underlying media file for deletion
@@ -2416,9 +2415,9 @@ void CFileItemList::StackFiles()
 
     int64_t               size        = 0;
     size_t                offset      = 0;
-    CStdString            stackName;
-    CStdString            file1;
-    CStdString            filePath;
+    std::string           stackName;
+    std::string           file1;
+    std::string           filePath;
     vector<int>           stack;
     VECCREGEXP::iterator  expr        = stackRegExps.begin();
 
@@ -2431,7 +2430,7 @@ void CFileItemList::StackFiles()
     {
       if (expr->RegFind(file1, offset) != -1)
       {
-        CStdString  Title1      = expr->GetMatch(1),
+        std::string Title1      = expr->GetMatch(1),
                     Volume1     = expr->GetMatch(2),
                     Ignore1     = expr->GetMatch(3),
                     Extension1  = expr->GetMatch(4);
@@ -2454,24 +2453,25 @@ void CFileItemList::StackFiles()
             continue;
           }
 
-          CStdString file2, filePath2;
+          std::string file2, filePath2;
           URIUtils::Split(item2->GetPath(), filePath2, file2);
           if (URIUtils::HasEncodedFilename(CURL(filePath2)) )
             file2 = CURL::Decode(file2);
 
           if (expr->RegFind(file2, offset) != -1)
           {
-            CStdString  Title2      = expr->GetMatch(1),
+            std::string  Title2      = expr->GetMatch(1),
                         Volume2     = expr->GetMatch(2),
                         Ignore2     = expr->GetMatch(3),
                         Extension2  = expr->GetMatch(4);
             if (offset)
               Title2 = file2.substr(0, expr->GetSubStart(2));
-            if (Title1.Equals(Title2))
+            if (StringUtils::EqualsNoCase(Title1, Title2))
             {
-              if (!Volume1.Equals(Volume2))
+              if (!StringUtils::EqualsNoCase(Volume1, Volume2))
               {
-                if (Ignore1.Equals(Ignore2) && Extension1.Equals(Extension2))
+                if (StringUtils::EqualsNoCase(Ignore1, Ignore2) &&
+                    StringUtils::EqualsNoCase(Extension1, Extension2))
                 {
                   if (stack.size() == 0)
                   {
@@ -2489,7 +2489,7 @@ void CFileItemList::StackFiles()
                   break;
                 }
               }
-              else if (!Ignore1.Equals(Ignore2)) // False positive, try again with offset
+              else if (!StringUtils::EqualsNoCase(Ignore1, Ignore2)) // False positive, try again with offset
               {
                 offset = expr->GetSubStart(3);
                 break;
@@ -2528,7 +2528,7 @@ void CFileItemList::StackFiles()
       {
         // have a stack, remove the items and add the stacked item
         // dont actually stack a multipart rar set, just remove all items but the first
-        CStdString stackPath;
+        std::string stackPath;
         if (Get(stack[0])->IsRAR())
           stackPath = Get(stack[0])->GetPath();
         else
@@ -2596,7 +2596,7 @@ bool CFileItemList::Save(int windowID)
 
 void CFileItemList::RemoveDiscCache(int windowID) const
 {
-  CStdString cacheFile(GetDiscFileCache(windowID));
+  std::string cacheFile(GetDiscFileCache(windowID));
   if (CFile::Exists(cacheFile))
   {
     CLog::Log(LOGDEBUG,"Clearing cached fileitems [%s]",GetPath().c_str());
@@ -2604,15 +2604,15 @@ void CFileItemList::RemoveDiscCache(int windowID) const
   }
 }
 
-CStdString CFileItemList::GetDiscFileCache(int windowID) const
+std::string CFileItemList::GetDiscFileCache(int windowID) const
 {
-  CStdString strPath(GetPath());
+  std::string strPath(GetPath());
   URIUtils::RemoveSlashAtEnd(strPath);
 
   Crc32 crc;
   crc.ComputeFromLowerCase(strPath);
 
-  CStdString cacheFile;
+  std::string cacheFile;
   if (IsCDDA() || IsOnDVD())
     cacheFile = StringUtils::Format("special://temp/r-%08x.fi", (unsigned __int32)crc);
   else if (IsMusicDb())
@@ -2640,7 +2640,7 @@ bool CFileItemList::AlwaysCache() const
   return false;
 }
 
-CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, bool fallbackToFolder /* = false */) const
+std::string CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, bool fallbackToFolder /* = false */) const
 {
   if (m_strPath.empty()
    || StringUtils::StartsWithNoCase(m_strPath, "newsmartplaylist://")
@@ -2656,7 +2656,7 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, bo
     return "";
 
   // we first check for <filename>.tbn or <foldername>.tbn
-  CStdString fileThumb(GetTBNFile());
+  std::string fileThumb(GetTBNFile());
   if (CFile::Exists(fileThumb))
     return fileThumb;
 
@@ -2673,7 +2673,7 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, bo
     vector<string> thumbs = StringUtils::Split(g_advancedSettings.m_musicThumbs, "|");
     for (vector<string>::const_iterator i = thumbs.begin(); i != thumbs.end(); ++i)
     {
-      CStdString folderThumb(GetFolderThumb(*i));
+      std::string folderThumb(GetFolderThumb(*i));
       if (CFile::Exists(folderThumb))
       {
         return folderThumb;
@@ -2687,17 +2687,17 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, bo
 // Gets the .tbn filename from a file or folder name.
 // <filename>.ext -> <filename>.tbn
 // <foldername>/ -> <foldername>.tbn
-CStdString CFileItem::GetTBNFile() const
+std::string CFileItem::GetTBNFile() const
 {
-  CStdString thumbFile;
-  CStdString strFile = m_strPath;
+  std::string thumbFile;
+  std::string strFile = m_strPath;
 
   if (IsStack())
   {
-    CStdString strPath, strReturn;
+    std::string strPath, strReturn;
     URIUtils::GetParentPath(m_strPath,strPath);
     CFileItem item(CStackDirectory::GetFirstStackedFile(strFile),false);
-    CStdString strTBNFile = item.GetTBNFile();
+    std::string strTBNFile = item.GetTBNFile();
     strReturn = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strTBNFile));
     if (CFile::Exists(strReturn))
       return strReturn;
@@ -2707,8 +2707,8 @@ CStdString CFileItem::GetTBNFile() const
 
   if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
   {
-    CStdString strPath = URIUtils::GetDirectory(strFile);
-    CStdString strParent;
+    std::string strPath = URIUtils::GetDirectory(strFile);
+    std::string strParent;
     URIUtils::GetParentPath(strPath,strParent);
     strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(m_strPath));
   }
@@ -2747,12 +2747,12 @@ bool CFileItem::SkipLocalArt() const
        || IsDVD());
 }
 
-CStdString CFileItem::FindLocalArt(const std::string &artFile, bool useFolder) const
+std::string CFileItem::FindLocalArt(const std::string &artFile, bool useFolder) const
 {
   if (SkipLocalArt())
     return "";
 
-  CStdString thumb;
+  std::string thumb;
   if (!m_bIsFolder)
   {
     thumb = GetLocalArt(artFile, false);
@@ -2761,35 +2761,35 @@ CStdString CFileItem::FindLocalArt(const std::string &artFile, bool useFolder) c
   }
   if ((useFolder || (m_bIsFolder && !IsFileFolder())) && !artFile.empty())
   {
-    CStdString thumb2 = GetLocalArt(artFile, true);
+    std::string thumb2 = GetLocalArt(artFile, true);
     if (!thumb2.empty() && thumb2 != thumb && CFile::Exists(thumb2))
       return thumb2;
   }
   return "";
 }
 
-CStdString CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) const
+std::string CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) const
 {
   // no retrieving of empty art files from folders
   if (useFolder && artFile.empty())
     return "";
 
-  CStdString strFile = m_strPath;
+  std::string strFile = m_strPath;
   if (IsStack())
   {
 /*    CFileItem item(CStackDirectory::GetFirstStackedFile(strFile),false);
-    CStdString localArt = item.GetLocalArt(artFile);
+    std::string localArt = item.GetLocalArt(artFile);
     return localArt;
     */
-    CStdString strPath;
+    std::string strPath;
     URIUtils::GetParentPath(m_strPath,strPath);
     strFile = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)));
   }
 
   if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
   {
-    CStdString strPath = URIUtils::GetDirectory(strFile);
-    CStdString strParent;
+    std::string strPath = URIUtils::GetDirectory(strFile);
+    std::string strParent;
     URIUtils::GetParentPath(strPath,strParent);
     strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(strFile));
   }
@@ -2823,9 +2823,9 @@ CStdString CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) co
   return "";
 }
 
-CStdString CFileItem::GetFolderThumb(const CStdString &folderJPG /* = "folder.jpg" */) const
+std::string CFileItem::GetFolderThumb(const std::string &folderJPG /* = "folder.jpg" */) const
 {
-  CStdString strFolder = m_strPath;
+  std::string strFolder = m_strPath;
 
   if (IsStack() ||
       URIUtils::IsInRAR(strFolder) ||
@@ -2840,7 +2840,7 @@ CStdString CFileItem::GetFolderThumb(const CStdString &folderJPG /* = "folder.jp
   return URIUtils::AddFileToFolder(strFolder, folderJPG);
 }
 
-CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
+std::string CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
 {
   if (IsLabelPreformated())
     return GetLabel();
@@ -2849,12 +2849,12 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
     return m_pvrRecordingInfoTag->m_strTitle;
   else if (CUtil::IsTVRecording(m_strPath))
   {
-    CStdString title = CPVRRecording::GetTitleFromURL(m_strPath);
+    std::string title = CPVRRecording::GetTitleFromURL(m_strPath);
     if (!title.empty())
       return title;
   }
 
-  CStdString strMovieName = GetBaseMoviePath(bUseFolderNames);
+  std::string strMovieName = GetBaseMoviePath(bUseFolderNames);
 
   if (URIUtils::IsStack(strMovieName))
     strMovieName = CStackDirectory::GetStackedTitlePath(strMovieName);
@@ -2864,9 +2864,9 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
   return CURL::Decode(URIUtils::GetFileName(strMovieName));
 }
 
-CStdString CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
+std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
 {
-  CStdString strMovieName = m_strPath;
+  std::string strMovieName = m_strPath;
 
   if (IsMultiPath())
     strMovieName = CMultiPathDirectory::GetFirstPath(m_strPath);
@@ -2876,11 +2876,11 @@ CStdString CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
 
   if ((!m_bIsFolder || URIUtils::IsInArchive(m_strPath)) && bUseFolderNames)
   {
-    CStdString name2(strMovieName);
+    std::string name2(strMovieName);
     URIUtils::GetParentPath(name2,strMovieName);
     if (URIUtils::IsInArchive(m_strPath))
     {
-      CStdString strArchivePath;
+      std::string strArchivePath;
       URIUtils::GetParentPath(strMovieName, strArchivePath);
       strMovieName = strArchivePath;
     }
@@ -2889,7 +2889,7 @@ CStdString CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
   return strMovieName;
 }
 
-CStdString CFileItem::GetLocalFanart() const
+std::string CFileItem::GetLocalFanart() const
 {
   if (IsVideoDb())
   {
@@ -2899,24 +2899,24 @@ CStdString CFileItem::GetLocalFanart() const
     return dbItem.GetLocalFanart();
   }
 
-  CStdString strFile2;
-  CStdString strFile = m_strPath;
+  std::string strFile2;
+  std::string strFile = m_strPath;
   if (IsStack())
   {
-    CStdString strPath;
+    std::string strPath;
     URIUtils::GetParentPath(m_strPath,strPath);
     CStackDirectory dir;
-    CStdString strPath2;
+    std::string strPath2;
     strPath2 = dir.GetStackedTitlePath(strFile);
     strFile = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strPath2));
     CFileItem item(dir.GetFirstStackedFile(m_strPath),false);
-    CStdString strTBNFile(URIUtils::ReplaceExtension(item.GetTBNFile(), "-fanart"));
+    std::string strTBNFile(URIUtils::ReplaceExtension(item.GetTBNFile(), "-fanart"));
     strFile2 = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strTBNFile));
   }
   if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
   {
-    CStdString strPath = URIUtils::GetDirectory(strFile);
-    CStdString strParent;
+    std::string strPath = URIUtils::GetDirectory(strFile);
+    std::string strParent;
     URIUtils::GetParentPath(strPath,strParent);
     strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(m_strPath));
   }
@@ -2933,7 +2933,7 @@ CStdString CFileItem::GetLocalFanart() const
    || m_strPath.empty())
     return "";
 
-  CStdString strDir = URIUtils::GetDirectory(strFile);
+  std::string strDir = URIUtils::GetDirectory(strFile);
 
   if (strDir.empty())
     return "";
@@ -2959,9 +2959,9 @@ CStdString CFileItem::GetLocalFanart() const
   {
     for (int j = 0; j < items.Size(); j++)
     {
-      CStdString strCandidate = URIUtils::GetFileName(items[j]->m_strPath);
+      std::string strCandidate = URIUtils::GetFileName(items[j]->m_strPath);
       URIUtils::RemoveExtension(strCandidate);
-      CStdString strFanart = *i;
+      std::string strFanart = *i;
       URIUtils::RemoveExtension(strFanart);
       if (StringUtils::EqualsNoCase(strCandidate, strFanart))
         return items[j]->m_strPath;
@@ -2971,13 +2971,13 @@ CStdString CFileItem::GetLocalFanart() const
   return "";
 }
 
-CStdString CFileItem::GetLocalMetadataPath() const
+std::string CFileItem::GetLocalMetadataPath() const
 {
   if (m_bIsFolder && !IsFileFolder())
     return m_strPath;
 
-  CStdString parent(URIUtils::GetParentPath(m_strPath));
-  CStdString parentFolder(parent);
+  std::string parent(URIUtils::GetParentPath(m_strPath));
+  std::string parentFolder(parent);
   URIUtils::RemoveSlashAtEnd(parentFolder);
   parentFolder = URIUtils::GetFileName(parentFolder);
   if (StringUtils::EqualsNoCase(parentFolder, "VIDEO_TS") || StringUtils::EqualsNoCase(parentFolder, "BDMV"))
@@ -3024,10 +3024,10 @@ bool CFileItem::LoadMusicTag()
     int iTrack = GetMusicInfoTag()->GetTrackNumber();
     if (iTrack >= 1)
     {
-      CStdString strText = g_localizeStrings.Get(554); // "Track"
+      std::string strText = g_localizeStrings.Get(554); // "Track"
       if (!strText.empty() && strText[strText.size() - 1] != ' ')
         strText += " ";
-      CStdString strTrack = StringUtils::Format(strText + "%i", iTrack);
+      std::string strTrack = StringUtils::Format((strText + "%i").c_str(), iTrack);
       GetMusicInfoTag()->SetTitle(strTrack);
       GetMusicInfoTag()->SetLoaded(true);
       return true;
@@ -3035,7 +3035,7 @@ bool CFileItem::LoadMusicTag()
   }
   else
   {
-    CStdString fileName = URIUtils::GetFileName(m_strPath);
+    std::string fileName = URIUtils::GetFileName(m_strPath);
     URIUtils::RemoveExtension(fileName);
     for (unsigned int i = 0; i < g_advancedSettings.m_musicTagsFromFileFilters.size(); i++)
     {
@@ -3165,26 +3165,26 @@ MUSIC_INFO::CMusicInfoTag* CFileItem::GetMusicInfoTag()
   return m_musicInfoTag;
 }
 
-CStdString CFileItem::FindTrailer() const
+std::string CFileItem::FindTrailer() const
 {
-  CStdString strFile2;
-  CStdString strFile = m_strPath;
+  std::string strFile2;
+  std::string strFile = m_strPath;
   if (IsStack())
   {
-    CStdString strPath;
+    std::string strPath;
     URIUtils::GetParentPath(m_strPath,strPath);
     CStackDirectory dir;
-    CStdString strPath2;
+    std::string strPath2;
     strPath2 = dir.GetStackedTitlePath(strFile);
     strFile = URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strPath2));
     CFileItem item(dir.GetFirstStackedFile(m_strPath),false);
-    CStdString strTBNFile(URIUtils::ReplaceExtension(item.GetTBNFile(), "-trailer"));
+    std::string strTBNFile(URIUtils::ReplaceExtension(item.GetTBNFile(), "-trailer"));
     strFile2 = URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strTBNFile));
   }
   if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
   {
-    CStdString strPath = URIUtils::GetDirectory(strFile);
-    CStdString strParent;
+    std::string strPath = URIUtils::GetDirectory(strFile);
+    std::string strParent;
     URIUtils::GetParentPath(strPath,strParent);
     strFile = URIUtils::AddFileToFolder(strParent,URIUtils::GetFileName(m_strPath));
   }
@@ -3198,12 +3198,12 @@ CStdString CFileItem::FindTrailer() const
    || IsDVD())
     return "";
 
-  CStdString strDir = URIUtils::GetDirectory(strFile);
+  std::string strDir = URIUtils::GetDirectory(strFile);
   CFileItemList items;
   CDirectory::GetDirectory(strDir, items, g_advancedSettings.m_videoExtensions, DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO | DIR_FLAG_NO_FILE_DIRS);
   URIUtils::RemoveExtension(strFile);
   strFile += "-trailer";
-  CStdString strFile3 = URIUtils::AddFileToFolder(strDir, "movie-trailer");
+  std::string strFile3 = URIUtils::AddFileToFolder(strDir, "movie-trailer");
 
   // Precompile our REs
   VECCREGEXP matchRegExps;
@@ -3220,10 +3220,10 @@ CStdString CFileItem::FindTrailer() const
     strRegExp++;
   }
 
-  CStdString strTrailer;
+  std::string strTrailer;
   for (int i = 0; i < items.Size(); i++)
   {
-    CStdString strCandidate = items[i]->m_strPath;
+    std::string strCandidate = items[i]->m_strPath;
     URIUtils::RemoveExtension(strCandidate);
     if (StringUtils::EqualsNoCase(strCandidate, strFile) ||
         StringUtils::EqualsNoCase(strCandidate, strFile2) ||

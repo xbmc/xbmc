@@ -92,7 +92,7 @@ void CGUIWindowPVR::SetActiveView(CGUIWindowPVRCommon *window)
   m_currentSubwindow = window;
 }
 
-bool CGUIWindowPVR::Update(const CStdString &strDirectory, bool updateFilterPath)
+bool CGUIWindowPVR::Update(const std::string &strDirectory, bool updateFilterPath)
 {
   CGUIWindowPVRCommon *view = GetActiveView();
 

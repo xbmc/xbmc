@@ -60,6 +60,7 @@
 #include "storage/MediaManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
+#include "URL.h"
 
 #include "playlists/PlayList.h"
 
@@ -406,13 +407,13 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         if (URIUtils::IsZIP(pMsg->strParam) || URIUtils::IsRAR(pMsg->strParam)) // actually a cbz/cbr
         {
           CFileItemList items;
-          CStdString strPath;
+          CURL pathToUrl;
           if (URIUtils::IsZIP(pMsg->strParam))
-            URIUtils::CreateArchivePath(strPath, "zip", pMsg->strParam.c_str(), "");
+            pathToUrl = URIUtils::CreateArchivePath("zip", CURL(pMsg->strParam), "");
           else
-            URIUtils::CreateArchivePath(strPath, "rar", pMsg->strParam.c_str(), "");
+            pathToUrl = URIUtils::CreateArchivePath("rar", CURL(pMsg->strParam), "");
 
-          CUtil::GetRecursiveListing(strPath, items, g_advancedSettings.m_pictureExtensions, XFILE::DIR_FLAG_NO_FILE_DIRS);
+          CUtil::GetRecursiveListing(pathToUrl.Get(), items, g_advancedSettings.m_pictureExtensions, XFILE::DIR_FLAG_NO_FILE_DIRS);
           if (items.Size() > 0)
           {
             pSlideShow->Reset();

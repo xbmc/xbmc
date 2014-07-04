@@ -393,7 +393,7 @@ TEST(TestStringUtils, DateStringToYYYYMMDD)
 
 TEST(TestStringUtils, WordToDigits)
 {
-  CStdString ref, var;
+  std::string ref, var;
 
   ref = "8378 787464";
   var = "test string";

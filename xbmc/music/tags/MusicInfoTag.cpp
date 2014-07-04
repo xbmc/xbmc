@@ -598,7 +598,7 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["comment"] = m_strComment;
   value["rating"] = (int)(m_rating - '0');
   value["playcount"] = m_iTimesPlayed;
-  value["lastplayed"] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::EmptyString;
+  value["lastplayed"] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::Empty;
   value["lyrics"] = m_strLyrics;
   value["albumid"] = m_iAlbumId;
   value["compilationartist"] = m_bCompilation;
@@ -626,7 +626,7 @@ void CMusicInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldComment:     sortable[FieldComment] = m_strComment; break;
   case FieldRating:      sortable[FieldRating] = (float)(m_rating - '0'); break;
   case FieldPlaycount:   sortable[FieldPlaycount] = m_iTimesPlayed; break;
-  case FieldLastPlayed:  sortable[FieldLastPlayed] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::EmptyString; break;
+  case FieldLastPlayed:  sortable[FieldLastPlayed] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::Empty; break;
   case FieldListeners:   sortable[FieldListeners] = m_listeners; break;
   case FieldId:          sortable[FieldId] = (int64_t)m_iDbId; break;
   default: break;

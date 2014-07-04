@@ -25,6 +25,7 @@
 
 #include "utils/RegExp.h"
 #include "utils/log.h"
+#include "utils/StdString.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 
@@ -155,7 +156,7 @@ TEST_F(TestRegExpLog, DumpOvector)
   XFILE::CFile file;
 
   logfile = CSpecialProtocol::TranslatePath("special://temp/") + "xbmc.log";
-  EXPECT_TRUE(CLog::Init(CSpecialProtocol::TranslatePath("special://temp/")));
+  EXPECT_TRUE(CLog::Init(CSpecialProtocol::TranslatePath("special://temp/").c_str()));
   EXPECT_TRUE(XFILE::CFile::Exists(logfile));
 
   EXPECT_TRUE(regex.RegComp("^(?<first>Test)\\s*(?<second>.*)\\."));

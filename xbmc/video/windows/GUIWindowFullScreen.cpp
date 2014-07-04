@@ -639,7 +639,7 @@ void CGUIWindowFullScreen::FrameMove()
       float xscale = (float)res.iScreenWidth  / (float)res.iWidth;
       float yscale = (float)res.iScreenHeight / (float)res.iHeight;
 
-      CStdString strSizing = StringUtils::Format(g_localizeStrings.Get(245),
+      CStdString strSizing = StringUtils::Format(g_localizeStrings.Get(245).c_str(),
                                                  (int)info.SrcRect.Width(),
                                                  (int)info.SrcRect.Height(),
                                                  (int)(info.DestRect.Width() * xscale),

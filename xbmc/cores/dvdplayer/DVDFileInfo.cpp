@@ -145,7 +145,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, CTextureDetails &deta
     DemuxerToStreamDetails(pInputStream, pDemuxer, *pStreamDetails, strPath);
 
     //extern subtitles
-    std::vector<CStdString> filenames;
+    std::vector<std::string> filenames;
     CStdString video_path;
     if (strPath.empty())
       video_path = pInputStream->GetFileName();

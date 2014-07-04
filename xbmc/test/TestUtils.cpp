@@ -105,7 +105,7 @@ CXBMCTestUtils &CXBMCTestUtils::Instance()
   return instance;
 }
 
-CStdString CXBMCTestUtils::ReferenceFilePath(CStdString const& path)
+std::string CXBMCTestUtils::ReferenceFilePath(const std::string& path)
 {
   return CSpecialProtocol::TranslatePath("special://xbmc") + path;
 }

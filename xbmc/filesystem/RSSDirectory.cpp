@@ -381,7 +381,7 @@ static void ParseItemZink(CFileItem* item, SResources& resources, TiXmlElement* 
 
 static void ParseItemSVT(CFileItem* item, SResources& resources, TiXmlElement* element, const CStdString& name, const CStdString& xmlns, const CStdString& path)
 {
-  CStdString text = element->GetText();
+  std::string text = element->GetText();
   if     (name == "xmllink")
   {
     SResource res;
