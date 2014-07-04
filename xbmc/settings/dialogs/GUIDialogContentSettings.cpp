@@ -88,7 +88,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
       if (iControl == CONTROL_CONTENT_TYPE)
       {
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_CONTENT_TYPE);
-        g_windowManager.SendMessage(msg);
+        OnMessage(msg);
         m_content = static_cast<CONTENT_TYPE>(msg.GetParam1());
         SetupView();
       }
@@ -100,7 +100,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
           break;
 
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_SCRAPER_LIST);
-        g_windowManager.SendMessage(msg);
+        OnMessage(msg);
         int iSelected = msg.GetParam1();
         if (iSelected == m_vecItems->Size() - 1)
         { // Get More... item, path 'addons://more/<content>'
@@ -421,25 +421,26 @@ void CGUIDialogContentSettings::InitializeSettings()
 
 void CGUIDialogContentSettings::FillContentTypes()
 {
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_CONTENT_TYPE);
-  g_windowManager.SendMessage(msg);
+  std::vector< std::pair<std::string, int> > labels;
 
   if (m_content == CONTENT_ALBUMS || m_content == CONTENT_ARTISTS)
+  {
     FillContentTypes(m_content);
+    labels.push_back(make_pair(ADDON::TranslateContent(m_content, true), m_content));
+  }
   else
   {
     FillContentTypes(CONTENT_MOVIES);
     FillContentTypes(CONTENT_TVSHOWS);
     FillContentTypes(CONTENT_MUSICVIDEOS);
 
-    // add 'None' to spinner
-    CGUIMessage msg2(GUI_MSG_LABEL_ADD, GetID(), CONTROL_CONTENT_TYPE);
-    msg2.SetLabel(ADDON::TranslateContent(CONTENT_NONE, true));
-    msg2.SetParam1(static_cast<int>(CONTENT_NONE));
-    g_windowManager.SendMessage(msg2);
+    labels.push_back(make_pair(ADDON::TranslateContent(CONTENT_MOVIES, true), CONTENT_MOVIES));
+    labels.push_back(make_pair(ADDON::TranslateContent(CONTENT_TVSHOWS, true), CONTENT_TVSHOWS));
+    labels.push_back(make_pair(ADDON::TranslateContent(CONTENT_MUSICVIDEOS, true), CONTENT_MUSICVIDEOS));
+    labels.push_back(make_pair(ADDON::TranslateContent(CONTENT_NONE, true), CONTENT_NONE));
   }
 
-  CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, static_cast<int>(m_content));
+  SET_CONTROL_LABELS(CONTROL_CONTENT_TYPE, m_content, &labels);
 }
 
 void CGUIDialogContentSettings::FillContentTypes(CONTENT_TYPE content)
@@ -481,12 +482,6 @@ void CGUIDialogContentSettings::FillContentTypes(CONTENT_TYPE content)
       m_scrapers.insert(make_pair(content,vec));
     }
   }
-
-  // add CONTENT type to spinner
-  CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_CONTENT_TYPE);
-  msg.SetLabel(ADDON::TranslateContent(content, true));
-  msg.SetParam1(static_cast<int>(content));
-  g_windowManager.SendMessage(msg);
 }
 
 void CGUIDialogContentSettings::FillScraperList()

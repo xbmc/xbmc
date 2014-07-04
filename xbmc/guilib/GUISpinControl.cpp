@@ -254,6 +254,17 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
         m_bShowRange = false;
       break;
 
+    case GUI_MSG_SET_LABELS:
+      if (message.GetPointer())
+      {
+        const vector< pair<string, int> > *labels = (const vector< pair<string, int> > *)message.GetPointer();
+        Clear();
+        for (vector< pair<string, int> >::const_iterator i = labels->begin(); i != labels->end(); ++i)
+          AddLabel(i->first, i->second);
+        SetValue( message.GetParam1());
+      }
+      break;
+
     case GUI_MSG_LABEL_ADD:
       {
         AddLabel(message.GetLabel(), message.GetParam1());

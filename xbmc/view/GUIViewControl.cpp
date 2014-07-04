@@ -298,18 +298,16 @@ int CGUIViewControl::GetView(VIEW_TYPE type, int id) const
 void CGUIViewControl::UpdateViewAsControl(const CStdString &viewLabel)
 {
   // the view as control could be a select/spin/dropdown button
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, m_parentWindow, m_viewAsControl);
-  g_windowManager.SendMessage(msg, m_parentWindow);
+  std::vector< std::pair<std::string, int> > labels;
   for (unsigned int i = 0; i < m_visibleViews.size(); i++)
   {
     IGUIContainer *view = (IGUIContainer *)m_visibleViews[i];
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, m_parentWindow, m_viewAsControl, i);
-    CStdString label = StringUtils::Format(g_localizeStrings.Get(534).c_str(), view->GetLabel().c_str()); // View: %s
-    msg.SetLabel(label);
-    g_windowManager.SendMessage(msg, m_parentWindow);
+    std::string label = StringUtils::Format(g_localizeStrings.Get(534).c_str(), view->GetLabel().c_str()); // View: %s
+    labels.push_back(make_pair(label, i));
   }
-  CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, m_parentWindow, m_viewAsControl, m_currentView);
-  g_windowManager.SendMessage(msgSelect, m_parentWindow);
+  CGUIMessage msg(GUI_MSG_SET_LABELS, m_parentWindow, m_viewAsControl, m_currentView);
+  msg.SetPointer(&labels);
+  g_windowManager.SendMessage(msg, m_parentWindow);
 
   // otherwise it's just a normal button
   CStdString label = StringUtils::Format(g_localizeStrings.Get(534).c_str(), viewLabel.c_str()); // View: %s

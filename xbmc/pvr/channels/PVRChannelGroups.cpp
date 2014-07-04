@@ -507,7 +507,7 @@ void CPVRChannelGroups::FillGroupsGUI(int iWindowId, int iControlId) const
   int iListGroupPtr(0);
   int iSelectedGroupPtr(0);
   CPVRChannelGroupPtr selectedGroup = g_PVRManager.GetPlayingGroup(false);
-  std::vector<CGUIMessage> messages;
+  std::vector< std::pair<std::string, int> > labels;
 
   // fetch all groups
   {
@@ -521,18 +521,13 @@ void CPVRChannelGroups::FillGroupsGUI(int iWindowId, int iControlId) const
       if ((*it)->GroupID() == selectedGroup->GroupID())
         iSelectedGroupPtr = iListGroupPtr;
 
-      CGUIMessage msg(GUI_MSG_LABEL_ADD, iWindowId, iControlId, iListGroupPtr++);
-      msg.SetLabel((*it)->GroupName());
-      messages.push_back(msg);
+      labels.push_back(make_pair((*it)->GroupName(), iListGroupPtr++));
     }
   }
 
-  // send updates
-  for (std::vector<CGUIMessage>::iterator it = messages.begin(); it != messages.end(); it++)
-    g_windowManager.SendMessage(*it);
-
   // selected group
-  CGUIMessage msgSel(GUI_MSG_ITEM_SELECT, iWindowId, iControlId, iSelectedGroupPtr);
+  CGUIMessage msgSel(GUI_MSG_SET_LABELS, iWindowId, iControlId, iSelectedGroupPtr);
+  msgSel.SetPointer(&labels);
   g_windowManager.SendMessage(msgSel);
 }
 

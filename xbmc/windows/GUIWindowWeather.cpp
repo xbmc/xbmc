@@ -22,9 +22,7 @@
 #include "GUIUserMessages.h"
 #include "dialogs/GUIDialogOK.h"
 #include "GUIWindowWeather.h"
-#include "guilib/GUIImage.h"
 #include "utils/Weather.h"
-#include "guilib/GUIWindowManager.h"
 #include "utils/URIUtils.h"
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
@@ -86,7 +84,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_SELECTLOCATION)
       {
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_SELECTLOCATION);
-        g_windowManager.SendMessage(msg);
+        OnMessage(msg);
 
         SetLocation(msg.GetParam1());
       }
@@ -145,9 +143,8 @@ void CGUIWindowWeather::UpdateLocations()
   if (!IsActive()) return;
   m_maxLocation = strtol(GetProperty("Locations").asString().c_str(),0,10);
   if (m_maxLocation < 1) return;
-  CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_SELECTLOCATION);
-  g_windowManager.SendMessage(msg);
-  CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_SELECTLOCATION);
+
+  std::vector< std::pair<std::string, int> > labels;
 
   unsigned int iCurWeather = g_weatherManager.GetArea();
 
@@ -158,35 +155,31 @@ void CGUIWindowWeather::UpdateLocations()
     ClearProperties();
     g_weatherManager.Refresh();
   }
-  
+
   for (unsigned int i = 1; i <= m_maxLocation; i++)
   {
-    CStdString strLabel = g_weatherManager.GetLocation(i);
+    std::string strLabel = g_weatherManager.GetLocation(i);
     if (strLabel.size() > 1) //got the location string yet?
     {
       size_t iPos = strLabel.rfind(", ");
       if (iPos != std::string::npos)
       {
-        CStdString strLabel2(strLabel);
+        std::string strLabel2(strLabel);
         strLabel = strLabel2.substr(0,iPos);
       }
-      msg2.SetParam1(i);
-      msg2.SetLabel(strLabel);
-      g_windowManager.SendMessage(msg2);
+      labels.push_back(make_pair(strLabel, i));
     }
     else
     {
       strLabel = StringUtils::Format("AreaCode %i", i);
-
-      msg2.SetLabel(strLabel);
-      msg2.SetParam1(i);
-      g_windowManager.SendMessage(msg2);
+      labels.push_back(make_pair(strLabel, i));
     }
+    // in case it's a button, set the label
     if (i == iCurWeather)
       SET_CONTROL_LABEL(CONTROL_SELECTLOCATION,strLabel);
   }
 
-  CONTROL_SELECT_ITEM(CONTROL_SELECTLOCATION, iCurWeather);
+  SET_CONTROL_LABELS(CONTROL_SELECTLOCATION, iCurWeather, &labels);
 }
 
 void CGUIWindowWeather::UpdateButtons()
@@ -205,9 +198,7 @@ void CGUIWindowWeather::UpdateButtons()
   SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_WIND, g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_WIND));
   SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_DEWP, g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_DEWP) + (CStdString)g_langInfo.GetTempUnitString());
   SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_HUMI, g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_HUMI));
-
-  CGUIImage *pImage = (CGUIImage *)GetControl(WEATHER_IMAGE_CURRENT_ICON);
-  if (pImage) pImage->SetFileName(g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
+  SET_CONTROL_FILENAME(WEATHER_IMAGE_CURRENT_ICON, g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
 
   //static labels
   SET_CONTROL_LABEL(CONTROL_STATICTEMP, 401);  //Temperature
@@ -223,8 +214,7 @@ void CGUIWindowWeather::UpdateButtons()
     SET_CONTROL_LABEL(CONTROL_LABELD0HI + (i*10), g_weatherManager.GetForecast(i).m_high + (CStdString)g_langInfo.GetTempUnitString());
     SET_CONTROL_LABEL(CONTROL_LABELD0LOW + (i*10), g_weatherManager.GetForecast(i).m_low + (CStdString)g_langInfo.GetTempUnitString());
     SET_CONTROL_LABEL(CONTROL_LABELD0GEN + (i*10), g_weatherManager.GetForecast(i).m_overview);
-    pImage = (CGUIImage *)GetControl(CONTROL_IMAGED0IMG + (i * 10));
-    if (pImage) pImage->SetFileName(g_weatherManager.GetForecast(i).m_icon);
+    SET_CONTROL_FILENAME(CONTROL_IMAGED0IMG + (i*10), g_weatherManager.GetForecast(i).m_icon);
   }
 }
 

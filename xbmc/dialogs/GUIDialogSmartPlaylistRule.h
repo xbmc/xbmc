@@ -42,7 +42,6 @@ protected:
   void OnOK();
   void OnCancel();
   void UpdateButtons();
-  void AddOperatorLabel(CDatabaseQueryRule::SEARCH_OPERATOR op);
   void OnBrowse();
 
   CSmartPlaylistRule m_rule;

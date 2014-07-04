@@ -29,8 +29,6 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIEditControl.h"
-#include "guilib/GUIRadioButtonControl.h"
-#include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
@@ -242,14 +240,15 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioTV(CGUIMessage &message)
 
 bool CGUIDialogPVRChannelManager::OnClickButtonRadioActive(CGUIMessage &message)
 {
-  CGUIRadioButtonControl *pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_ACTIVE);
-  if (pRadioButton)
+  CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), RADIOBUTTON_ACTIVE);
+  if (OnMessage(msg))
   {
+    bool selected(msg.GetParam1() == 1);
     CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
     if (pItem)
     {
       pItem->SetProperty("Changed", true);
-      pItem->SetProperty("ActiveChannel", pRadioButton->IsSelected());
+      pItem->SetProperty("ActiveChannel", selected);
       m_bContainsChanges = true;
       Renumber();
       return true;
@@ -261,26 +260,27 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioActive(CGUIMessage &message)
 
 bool CGUIDialogPVRChannelManager::OnClickButtonRadioParentalLocked(CGUIMessage &message)
 {
-  CGUIRadioButtonControl *pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_PARENTAL_LOCK);
+  CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), RADIOBUTTON_PARENTAL_LOCK);
+  if (!OnMessage(msg))
+    return false;
+
+  bool selected(msg.GetParam1() == 1);
 
   // ask for PIN first
   if (!g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262).c_str()))
-  {
-    pRadioButton->SetSelected(!pRadioButton->IsSelected());
+  { // failed - reset to previou
+    SET_CONTROL_SELECTED(GetID(), RADIOBUTTON_PARENTAL_LOCK, !selected);
     return false;
   }
 
-  if (pRadioButton)
+  CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
+  if (pItem)
   {
-    CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
-    if (pItem)
-    {
-      pItem->SetProperty("Changed", true);
-      pItem->SetProperty("ParentalLocked", pRadioButton->IsSelected());
-      m_bContainsChanges = true;
-      Renumber();
-      return true;
-    }
+    pItem->SetProperty("Changed", true);
+    pItem->SetProperty("ParentalLocked", selected);
+    m_bContainsChanges = true;
+    Renumber();
+    return true;
   }
 
   return false;
@@ -288,14 +288,14 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioParentalLocked(CGUIMessage &
 
 bool CGUIDialogPVRChannelManager::OnClickButtonEditName(CGUIMessage &message)
 {
-  CGUIEditControl *pEdit = (CGUIEditControl *)GetControl(EDIT_NAME);
-  if (pEdit)
+  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), EDIT_NAME);
+  if (OnMessage(msg))
   {
     CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
     if (pItem)
     {
       pItem->SetProperty("Changed", true);
-      pItem->SetProperty("Name", pEdit->GetLabel2());
+      pItem->SetProperty("Name", msg.GetLabel());
       m_bContainsChanges = true;
 
       return true;
@@ -366,14 +366,15 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage &message)
 
 bool CGUIDialogPVRChannelManager::OnClickButtonUseEPG(CGUIMessage &message)
 {
-  CGUIRadioButtonControl *pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_USEEPG);
-  if (pRadioButton)
+  CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), RADIOBUTTON_USEEPG);
+  if (OnMessage(msg))
   {
+    bool selected(msg.GetParam1() == 1);
     CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
     if (pItem)
     {
       pItem->SetProperty("Changed", true);
-      pItem->SetProperty("UseEPG", pRadioButton->IsSelected());
+      pItem->SetProperty("UseEPG", selected);
       m_bContainsChanges = true;
 
       return true;
@@ -666,8 +667,6 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
 
 void CGUIDialogPVRChannelManager::SetData(int iItem)
 {
-  CGUIEditControl        *pEdit;
-
   /* Check file item is in list range and get his pointer */
   if (iItem < 0 || iItem >= (int)m_channelItems->Size()) return;
 
@@ -675,12 +674,9 @@ void CGUIDialogPVRChannelManager::SetData(int iItem)
   if (!pItem)
     return;
 
-  pEdit = (CGUIEditControl *)GetControl(EDIT_NAME);
-  if (pEdit)
-  {
-    pEdit->SetLabel2(pItem->GetProperty("Name").asString());
-    pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_TEXT, 19208);
-  }
+  SET_CONTROL_LABEL2(EDIT_NAME, pItem->GetProperty("Name").asString());
+  CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), EDIT_NAME, CGUIEditControl::INPUT_TYPE_TEXT, 19208);
+  OnMessage(msg);
 
   SET_CONTROL_SELECTED(GetID(), RADIOBUTTON_ACTIVE, pItem->GetProperty("ActiveChannel").asBoolean());
   SET_CONTROL_SELECTED(GetID(), RADIOBUTTON_USEEPG, pItem->GetProperty("UseEPG").asBoolean());
@@ -733,12 +729,11 @@ void CGUIDialogPVRChannelManager::Update()
     m_channelItems->Add(channelFile);
   }
 
-  CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(SPIN_EPGSOURCE_SELECTION);
-  if (pSpin)
   {
-    pSpin->Clear();
-    pSpin->AddLabel(g_localizeStrings.Get(19210), 0);
+    vector< pair<string, int> > labels;
+    labels.push_back(make_pair(g_localizeStrings.Get(19210), 0));
     /// TODO: Add Labels for EPG scrapers here
+    SET_CONTROL_LABELS(SPIN_EPGSOURCE_SELECTION, 0, &labels);
   }
 
   Renumber();

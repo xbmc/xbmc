@@ -43,8 +43,8 @@
 #define GUI_MSG_ENABLED         8   // enable control
 #define GUI_MSG_DISABLED        9   // disable control
 
-#define GUI_MSG_SELECTED       10   // control = selected
-#define GUI_MSG_DESELECTED     11   // control = not selected
+#define GUI_MSG_SET_SELECTED   10   // control = selected
+#define GUI_MSG_SET_DESELECTED 11   // control = not selected
 
 #define GUI_MSG_LABEL_ADD      12   // add label control (for controls supporting more then 1 label)
 
@@ -135,6 +135,27 @@
 
 #define GUI_MSG_VALIDITY_CHANGED  44
 
+/*!
+ \brief Check whether a button is selected
+ */
+#define GUI_MSG_IS_SELECTED    45
+
+/*!
+ \brief Bind a set of labels to a spin (or similar) control
+ */
+#define GUI_MSG_SET_LABELS     46
+
+/*!
+ \brief Set the filename for an image control
+ */
+#define GUI_MSG_SET_FILENAME   47
+
+/*!
+ \brief Get the filename of an image control
+ */
+
+#define GUI_MSG_GET_FILENAME   48
+
 #define GUI_MSG_USER         1000
 
 /*!
@@ -143,7 +164,7 @@
  */
 #define CONTROL_SELECT(controlID) \
 do { \
- CGUIMessage msg(GUI_MSG_SELECTED, GetID(), controlID); \
+ CGUIMessage msg(GUI_MSG_SET_SELECTED, GetID(), controlID); \
  OnMessage(msg); \
 } while(0)
 
@@ -153,7 +174,7 @@ do { \
  */
 #define CONTROL_DESELECT(controlID) \
 do { \
- CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), controlID); \
+ CGUIMessage msg(GUI_MSG_SET_DESELECTED, GetID(), controlID); \
  OnMessage(msg); \
 } while(0)
 
@@ -238,6 +259,28 @@ do { \
 
 /*!
  \ingroup winmsg
+ \brief Set a bunch of labels on the given control
+ */
+#define SET_CONTROL_LABELS(controlID, defaultValue, labels) \
+do { \
+CGUIMessage msg(GUI_MSG_SET_LABELS, GetID(), controlID, defaultValue); \
+msg.SetPointer(labels); \
+OnMessage(msg); \
+} while(0)
+
+/*!
+ \ingroup winmsg
+ \brief Set the label of the current control
+ */
+#define SET_CONTROL_FILENAME(controlID,label) \
+do { \
+CGUIMessage msg(GUI_MSG_SET_FILENAME, GetID(), controlID); \
+msg.SetLabel(label); \
+OnMessage(msg); \
+} while(0)
+
+/*!
+ \ingroup winmsg
  \brief
  */
 #define SET_CONTROL_HIDDEN(controlID) \
@@ -268,13 +311,8 @@ do { \
 
 #define SET_CONTROL_SELECTED(dwSenderId, controlID, bSelect) \
 do { \
- CGUIMessage msg(bSelect?GUI_MSG_SELECTED:GUI_MSG_DESELECTED, dwSenderId, controlID); \
+ CGUIMessage msg(bSelect?GUI_MSG_SET_SELECTED:GUI_MSG_SET_DESELECTED, dwSenderId, controlID); \
  OnMessage(msg); \
-} while(0)
-
-#define BIND_CONTROL(i,c,pv) \
-do { \
- pv = ((c*)GetControl(i));\
 } while(0)
 
 /*!
