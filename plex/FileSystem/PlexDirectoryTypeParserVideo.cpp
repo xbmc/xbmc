@@ -114,9 +114,17 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
   item.SetFromVideoInfoTag(videoTag);
   
   if (item.HasProperty("viewOffset") && item.GetProperty("viewOffset").asInteger() > 0)
+  {
     item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
+
+    int progress = (item.GetProperty("viewOffset").asInteger() * 100 / item.GetProperty("duration").asInteger());
+    item.SetProperty("progress",progress);
+  }
   else
+  {
     item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, videoTag.m_playCount > 0);
+    item.SetProperty("progress",0);
+  }
   
   /* for directories with leafCount and viewLeafCount */
   if ((item.GetPlexDirectoryType() == PLEX_DIR_TYPE_SHOW ||

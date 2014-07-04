@@ -466,6 +466,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "durationstr",      VIDEOPLAYER_DURATION_STRING },
                                   { "plexcontentstr",   VIDEOPLAYER_PLEXCONTENT_STRING },
                                   { "hasnext",          VIDEOPLAYER_HASNEXT },
+
                                   /* END PLEX */
                                   { "parentalrating",   VIDEOPLAYER_PARENTAL_RATING }};
 
@@ -527,6 +528,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "grandparentthumb", LISTITEM_GRANDPARENT_THUMB },
                                   { "durationstr",      LISTITEM_DURATION_STRING },
                                   { "compositeimage",   LISTITEM_COMPOSITE_IMAGE },
+                                  { "plexprogress",     LISTITEM_PLEXPROGRESS },
                                   /* END PLEX */
                                   { "icon",             LISTITEM_ICON },
                                   { "actualicon",       LISTITEM_ACTUAL_ICON },
@@ -4660,6 +4662,19 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
     else
       value = 0;
     return true;
+
+    /* PLEX */
+    case LISTITEM_PLEXPROGRESS:
+    {
+      if (item->IsFileItem())
+      {
+        value = item->GetProperty("progress").asInteger();
+      }
+      return true;
+    }
+      break;
+    /* END PLEX */
+
   }
 
   value = 0;
