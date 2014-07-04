@@ -26,6 +26,8 @@
 
 /* PLEX */
 #include "FileItem.h"
+#include "log.h"
+#include "URL.h"
 /* END PLEX */
 
 using namespace std;
@@ -50,7 +52,10 @@ CTextureInfo& CTextureInfo::operator=(const CTextureInfo &right)
   diffuse = right.diffuse;
   filename = right.filename;
   useLarge = right.useLarge;
-
+  /* PLEX */
+  blur = right.blur;
+  saturation = right.saturation;
+  /* END PLEX */
   return *this;
 }
 
@@ -302,6 +307,10 @@ bool CGUITextureBase::AllocResources()
 
   if (m_texture.size())
     return false; // already have our texture
+
+#ifdef __PLEX__
+  m_info.filename = GetPlexTexturePath();
+#endif
 
   // reset our animstate
   m_frameCounter = 0;
@@ -733,5 +742,22 @@ float CGUITextureBase::GetWidth() const
   }
 
   return ret;
+}
+
+CStdString CGUITextureBase::GetPlexTexturePath()
+{
+  CURL url(m_info.filename);
+  if (url.GetProtocol() == "plexserver")
+  {
+    if (!m_info.blur.IsEmpty())
+      url.SetOption("blur", m_info.blur);
+
+    if (!m_info.saturation.IsEmpty())
+      url.SetOption("saturation", m_info.saturation);
+
+    return url.Get();
+  }
+  else
+    return m_info.filename;
 }
 /* END PLEX */

@@ -76,6 +76,11 @@ public:
   bool       useLarge;
   CRect      border;      // scaled  - unneeded if we get rid of scale on load
   int        orientation; // orientation of the texture (0 - 7 == EXIForientation - 1)
+  /* PLEX */
+  CStdString blur;
+  CStdString saturation;
+  /* END PLEX */
+
   CStdString diffuse;     // diffuse overlay texture
   CStdString filename;    // main texture file
 };
@@ -130,6 +135,7 @@ public:
   void SetLazyLoaded() { m_info.useLarge = true; }
 #ifdef __PLEX__
   float GetWidth() const;
+  CStdString GetPlexTexturePath();
 #endif
   /* END PLEX */
 protected:
