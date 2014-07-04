@@ -482,7 +482,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
     CFileItemPtr match;
     if (!content.empty()) /* optical media will be stacked down, so it's path won't match the base path */
     {
-      std:string pathToMatch = pItem->IsOpticalMediaFile() ? pItem->GetLocalMetadataPath() : pItem->GetPath();
+      std::string pathToMatch = pItem->IsOpticalMediaFile() ? pItem->GetLocalMetadataPath() : pItem->GetPath();
       if (URIUtils::IsMultiPath(pathToMatch))
         pathToMatch = CMultiPathDirectory::GetFirstPath(pathToMatch);
       match = dbItems.Get(pathToMatch);
