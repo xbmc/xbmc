@@ -399,7 +399,7 @@ int CDVDVideoCodecMfc::Decode(BYTE* pData, int iSize, double dts, double pts)
     }
   }
 
-  return VC_PICTURE; // Picture is finally ready to be processed further
+  return VC_PICTURE | VC_BUFFER; // Picture is finally ready to be processed further
 }
 
 void CDVDVideoCodecMfc::Reset()

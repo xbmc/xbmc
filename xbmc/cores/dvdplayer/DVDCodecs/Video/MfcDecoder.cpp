@@ -447,7 +447,7 @@ void MfcDecoder::Dispose()
 
 bool MfcDecoder::DequeueOutputBuffer(int *result)
 {
-  int ret = CLinuxV4l2::PollOutput(m_iDecoderHandle, 1000); // POLLIN - Capture, POLLOUT - Output
+  int ret = CLinuxV4l2::PollOutput(m_iDecoderHandle, 1000/20); // POLLIN - Capture, POLLOUT - Output
   if (ret == V4L2_ERROR)
   {
     CLog::Log(LOGERROR, "%s::%s - MFC OUTPUT PollOutput Error", CLASSNAME, __func__);
@@ -471,8 +471,9 @@ bool MfcDecoder::DequeueOutputBuffer(int *result)
   if (ret == V4L2_BUSY)
   { // buffer is still busy
     CLog::Log(LOGERROR, "%s::%s - MFC OUTPUT All buffers are queued and busy, no space for new frame to decode. Very broken situation.", CLASSNAME, __func__);
-    // FIXME This should be handled as abnormal situation that should be addressed, otherwise decoding could stuck here forever
-    *result = VC_FLUSHED;
+    // FIXME VC_FLUSHED should be handled as abnormal situation that should be addressed, otherwise decoding could stuck here forever
+    // FIXME VC_PICTURE causes the current encoded frame to be lost in void; this has to be fully reworked to queues storing all frames coming in
+    *result = VC_PICTURE;
     return false;
   }
   else
