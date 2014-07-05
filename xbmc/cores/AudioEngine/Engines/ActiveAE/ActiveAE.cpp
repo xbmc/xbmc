@@ -1470,7 +1470,19 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
       else if (m_extKeepConfig && (settings.config == AE_CONFIG_AUTO) && (oldMode != MODE_RAW))
         format.m_channelLayout = m_internalFormat.m_channelLayout;
       else
+      {
+        if (stdLayout == AE_CH_LAYOUT_5_0 || stdLayout == AE_CH_LAYOUT_5_1)
+        {
+          std::vector<CAEChannelInfo> alts;
+          alts.push_back(stdLayout);
+          stdLayout.ReplaceChannel(AE_CH_BL, AE_CH_SL);
+          stdLayout.ReplaceChannel(AE_CH_BR, AE_CH_SR);
+          alts.push_back(stdLayout);
+          int bestMatch = format.m_channelLayout.BestMatch(alts);
+          stdLayout = alts[bestMatch];
+        }
         format.m_channelLayout.ResolveChannels(stdLayout);
+      }
     }
     // don't change from multi to stereo in AUTO mode
     else if ((settings.config == AE_CONFIG_AUTO) &&
