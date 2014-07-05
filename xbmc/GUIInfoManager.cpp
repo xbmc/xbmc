@@ -5541,7 +5541,7 @@ int CGUIInfoManager::TranslateSkinVariableString(const CStdString& name, int con
   for (vector<CSkinVariableString>::const_iterator it = m_skinVariableStrings.begin();
        it != m_skinVariableStrings.end(); ++it)
   {
-    if (it->GetName().Equals(name) && it->GetContext() == context)
+    if (StringUtils::EqualsNoCase(it->GetName(), name) && it->GetContext() == context)
       return it - m_skinVariableStrings.begin() + CONDITIONAL_LABEL_START;
   }
   return 0;
