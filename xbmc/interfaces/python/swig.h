@@ -24,7 +24,6 @@
 #include <string>
 #include <stdint.h>
 
-#include "utils/StdString.h"
 #include "interfaces/legacy/Exception.h"
 #include "interfaces/legacy/AddonClass.h"
 #include "interfaces/legacy/Window.h"

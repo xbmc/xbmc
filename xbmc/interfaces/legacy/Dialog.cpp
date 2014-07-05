@@ -154,7 +154,7 @@ namespace XBMCAddon
                                 const String& defaultt ) throw (WindowException)
     {
       DelayedCallGuard dcguard(languageHook);
-      CStdString value;
+      std::string value;
       std::string mask = maskparam;
       VECSOURCES *shares = CMediaSourceSettings::Get().GetSources(s_shares);
       if (!shares) 
@@ -200,7 +200,7 @@ namespace XBMCAddon
     String Dialog::numeric(int inputtype, const String& heading, const String& defaultt)
     {
       DelayedCallGuard dcguard(languageHook);
-      CStdString value;
+      std::string value;
       SYSTEMTIME timedate;
       GetLocalTime(&timedate);
 
@@ -210,7 +210,7 @@ namespace XBMCAddon
         {
           if (!defaultt.empty() && defaultt.size() == 10)
           {
-            CStdString sDefault = defaultt;
+            std::string sDefault = defaultt;
             timedate.wDay = atoi(sDefault.substr(0, 2).c_str());
             timedate.wMonth = atoi(sDefault.substr(3, 4).c_str());
             timedate.wYear = atoi(sDefault.substr(sDefault.size() - 4).c_str());
@@ -224,7 +224,7 @@ namespace XBMCAddon
         {
           if (!defaultt.empty() && defaultt.size() == 5)
           {
-            CStdString sDefault = defaultt;
+            std::string sDefault = defaultt;
             timedate.wHour = atoi(sDefault.substr(0, 2).c_str());
             timedate.wMinute = atoi(sDefault.substr(3, 2).c_str());
           }
@@ -253,7 +253,7 @@ namespace XBMCAddon
     {
       DelayedCallGuard dcguard(languageHook);
 
-      CStdString strIcon = getNOTIFICATION_INFO();
+      std::string strIcon = getNOTIFICATION_INFO();
       int iTime = TOAST_DISPLAY_TIME;
 
       if (time > 0)
@@ -261,11 +261,11 @@ namespace XBMCAddon
       if (!icon.empty())
         strIcon = icon;
       
-      if (strIcon.Equals(getNOTIFICATION_INFO()))
+      if (strIcon == getNOTIFICATION_INFO())
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, heading, message, iTime, sound);
-      else if (strIcon.Equals(getNOTIFICATION_WARNING()))
+      else if (strIcon == getNOTIFICATION_WARNING())
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, heading, message, iTime, sound);
-      else if (strIcon.Equals(getNOTIFICATION_ERROR()))
+      else if (strIcon == getNOTIFICATION_ERROR())
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, heading, message, iTime, sound);
       else
         CGUIDialogKaiToast::QueueNotification(strIcon, heading, message, iTime, sound);
@@ -274,7 +274,7 @@ namespace XBMCAddon
     String Dialog::input(const String& heading, const String& defaultt, int type, int option, int autoclose) throw (WindowException)
     {
       DelayedCallGuard dcguard(languageHook);
-      CStdString value(defaultt);
+      std::string value(defaultt);
       SYSTEMTIME timedate;
       GetLocalTime(&timedate);
 
@@ -297,7 +297,7 @@ namespace XBMCAddon
           {
             if (!defaultt.empty() && defaultt.size() == 10)
             {
-              CStdString sDefault = defaultt;
+              std::string sDefault = defaultt;
               timedate.wDay = atoi(sDefault.substr(0, 2).c_str());
               timedate.wMonth = atoi(sDefault.substr(3, 4).c_str());
               timedate.wYear = atoi(sDefault.substr(sDefault.size() - 4).c_str());
@@ -312,7 +312,7 @@ namespace XBMCAddon
           {
             if (!defaultt.empty() && defaultt.size() == 5)
             {
-              CStdString sDefault = defaultt;
+              std::string sDefault = defaultt;
               timedate.wHour = atoi(sDefault.substr(0, 2).c_str());
               timedate.wMinute = atoi(sDefault.substr(3, 2).c_str());
             }
