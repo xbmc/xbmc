@@ -564,7 +564,8 @@
 		<display>KEY_ZOOM</display>
 		<mute>KEY_MUTE</mute>
 		<power>KEY_POWER</power>
-		<eject>KEY_EJECT</eject>
+		<eject>KEY_EJECTCD</eject>
+		<eject>KEY_EJECTCLOSECD</eject>
 		<menu>KEY_DVD</menu>
 		<menu>KEY_MENU</menu>
 		<myvideo>KEY_VIDEO</myvideo>
