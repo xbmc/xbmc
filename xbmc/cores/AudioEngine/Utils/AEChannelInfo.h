@@ -20,6 +20,7 @@
  */
 
 #include <stdint.h>
+#include <vector>
 #include "utils/StdString.h"
 
 /**
@@ -91,7 +92,11 @@ public:
   inline unsigned int Count() const { return m_channelCount; }
   static const char* GetChName(const enum AEChannel ch);
   bool HasChannel(const enum AEChannel ch) const;
-  bool ContainsChannels(CAEChannelInfo& rhs) const;
+  bool ContainsChannels(const CAEChannelInfo& rhs) const;
+  void ReplaceChannel(const enum AEChannel from, const enum AEChannel to);
+  int BestMatch(const std::vector<CAEChannelInfo>& dsts, int* score = NULL) const;
+  void AddMissingChannels(const CAEChannelInfo& rhs);
+
 private:
   unsigned int   m_channelCount;
   enum AEChannel m_channels[AE_CH_MAX];

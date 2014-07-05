@@ -19,6 +19,7 @@
  */
 
 #include "AEChannelInfo.h"
+#include <limits>
 #include <string.h>
 
 CAEChannelInfo::CAEChannelInfo()
@@ -289,7 +290,7 @@ bool CAEChannelInfo::HasChannel(const enum AEChannel ch) const
   return false;
 }
 
-bool CAEChannelInfo::ContainsChannels(CAEChannelInfo& rhs) const
+bool CAEChannelInfo::ContainsChannels(const CAEChannelInfo& rhs) const
 {
   for (unsigned int i = 0; i < rhs.m_channelCount; ++i)
   {
@@ -297,4 +298,69 @@ bool CAEChannelInfo::ContainsChannels(CAEChannelInfo& rhs) const
       return false;
   }
   return true;
+}
+
+void CAEChannelInfo::ReplaceChannel(const enum AEChannel from, const enum AEChannel to)
+{
+  for (unsigned int i = 0; i < m_channelCount; ++i)
+  {
+    if (m_channels[i] == from)
+    {
+      m_channels[i] = to;
+      break;
+    }
+  }
+}
+
+int CAEChannelInfo::BestMatch(const std::vector<CAEChannelInfo>& dsts, int* score) const
+{
+  CAEChannelInfo availableDstChannels;
+  for (unsigned int i = 0; i < dsts.size(); i++)
+    availableDstChannels.AddMissingChannels(dsts[i]);
+
+  /* if we have channels not existing in any destination layout but that
+   * are remappable (e.g. RC => RL+RR), do those remaps */
+  CAEChannelInfo src(*this);
+  src.ResolveChannels(availableDstChannels);
+
+  bool remapped = (src != *this);
+  /* good enough approximation (does not account for added channels) */
+  int dropped = std::max((int)src.Count() - (int)Count(), 0);
+
+  int bestScore = std::numeric_limits<int>::min();
+  int bestMatch = -1;
+
+  for (unsigned int i = 0; i < dsts.size(); i++)
+  {
+    const CAEChannelInfo& dst = dsts[i];
+    int okChannels = 0;
+
+    for (unsigned int j = 0; j < src.Count(); j++)
+      okChannels += dst.HasChannel(src[j]);
+
+    int missingChannels = src.Count() - okChannels;
+    int extraChannels = dst.Count() - okChannels;
+
+    int curScore = 0 - (missingChannels + dropped) * 1000 - extraChannels * 10 - remapped;
+
+    if (curScore > bestScore)
+    {
+      bestScore = curScore;
+      bestMatch = i;
+      if (curScore == 0)
+        break;
+    }
+  }
+
+  if (score)
+    *score = bestScore;
+
+  return bestMatch;
+}
+
+void CAEChannelInfo::AddMissingChannels(const CAEChannelInfo& rhs)
+{
+  for (unsigned int i = 0; i < rhs.Count(); i++)
+    if (!HasChannel(rhs[i]))
+      *this += rhs[i];
 }
