@@ -159,11 +159,8 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 
   pDir = (struct iso_dirtree *)malloc(sizeof(struct iso_dirtree));
   if (!pDir)
-  {
-    OutputDebugString("out of memory");
-
     return NULL;
-  }
+
   pDir->next = NULL;
   pDir->path = NULL;
   pDir->name = NULL;
@@ -177,15 +174,12 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 
   pCurr_dir_cache = (char*)malloc( 16*wSectorSize );
   if (!pCurr_dir_cache )
-  {
-    OutputDebugString("out of memory\n");
     return NULL;
-  }
 
   BOOL bResult = ::ReadFile( m_info.ISO_HANDLE, pCurr_dir_cache, wSectorSize, &lpNumberOfBytesRead, NULL );
   if (!bResult || lpNumberOfBytesRead != wSectorSize)
   {
-    OutputDebugString("unable to read\n");
+    CLog::Log(LOGERROR, "%s: unable to read", __FUNCTION__);
     free(pCurr_dir_cache);
     return NULL;
   }
@@ -198,15 +192,13 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
     free( pCurr_dir_cache );
     pCurr_dir_cache = (char*)malloc( 16 * from_733(isodir.size) );
     if (!pCurr_dir_cache )
-    {
-      OutputDebugString("out of memory\n");
       return NULL;
-    }
+
     ::SetFilePointer( m_info.ISO_HANDLE, wSectorSize * sector, 0, FILE_BEGIN );
     bResult = ::ReadFile( m_info.ISO_HANDLE, pCurr_dir_cache , curr_dirSize, &lpNumberOfBytesRead, NULL );
     if (!bResult || lpNumberOfBytesRead != curr_dirSize)
     {
-      OutputDebugString("unable to read\n");
+      CLog::Log(LOGERROR, "%s: unable to read", __FUNCTION__);
       free(pCurr_dir_cache);
       return NULL;
     }
@@ -220,10 +212,8 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
     {
       m_paths = (struct iso_directories *)malloc(sizeof(struct iso_directories));
       if (!m_paths )
-      {
-        OutputDebugString("out of memory\n");
         return NULL;
-      }
+
       m_paths->path = NULL;
       m_paths->dir = NULL;
       m_paths->next = NULL;
@@ -237,20 +227,15 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
   }
   m_lastpath->next = ( struct iso_directories *)malloc( sizeof( struct iso_directories ) );
   if (!m_lastpath->next )
-  {
-    OutputDebugString("out of memory\n");
     return NULL;
-  }
 
   m_lastpath = m_lastpath->next;
   m_lastpath->next = NULL;
   m_lastpath->dir = pDir;
   m_lastpath->path = (char *)malloc(strlen(path) + 1);
   if (!m_lastpath->path )
-  {
-    OutputDebugString("out of memory\n");
     return NULL;
-  }
+
   strcpy( m_lastpath->path, path );
 
   while ( 1 )
@@ -298,27 +283,20 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 
           pFile_Pointer->next = (struct iso_dirtree *)malloc(sizeof(struct iso_dirtree));
           if (!pFile_Pointer->next)
-          {
-            OutputDebugString("out of memory\n");
             break;
-          }
+
           m_vecDirsAndFiles.push_back(pFile_Pointer->next);
           pFile_Pointer = pFile_Pointer->next;
           pFile_Pointer->next = 0;
           pFile_Pointer->dirpointer = NULL;
           pFile_Pointer->path = (char *)malloc(strlen(path) + 1);
           if (!pFile_Pointer->path)
-          {
-            OutputDebugString("out of memory");
             return NULL;
-          }
+
           strcpy( pFile_Pointer->path, path );
           pFile_Pointer->name = (char *)malloc( temp_text.length() + 1);
           if (!pFile_Pointer->name)
-          {
-            OutputDebugString("out of memory");
             return NULL;
-          }
 
           strcpy( pFile_Pointer->name , temp_text.c_str());
 #ifdef _DEBUG_OUTPUT
@@ -387,10 +365,8 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 
           pFile_Pointer->next = (struct iso_dirtree *)malloc(sizeof(struct iso_dirtree));
           if (!pFile_Pointer->next)
-          {
-            OutputDebugString("out of memory");
             return NULL;
-          }
+
           m_vecDirsAndFiles.push_back(pFile_Pointer->next);
           pFile_Pointer = pFile_Pointer->next;
           pFile_Pointer->next = 0;
@@ -398,19 +374,13 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
           pFile_Pointer->path = (char *)malloc(strlen(path) + 1);
 
           if (!pFile_Pointer->path)
-          {
-            OutputDebugString("out of memory");
             return NULL;
-          }
 
           strcpy( pFile_Pointer->path, path );
           pFile_Pointer->name = (char *)malloc( temp_text.length() + 1);
 
           if (!pFile_Pointer->name)
-          {
-            OutputDebugString("out of memory");
             return NULL;
-          }
 
           strcpy( pFile_Pointer->name , temp_text.c_str());
 

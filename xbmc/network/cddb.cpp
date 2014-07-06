@@ -758,7 +758,6 @@ bool Xcddb::queryCache( uint32_t discid )
   {
     // Got a cachehit
     char buffer[4096];
-    OutputDebugString ( "cddb local cache hit.\n" );
     file.Read(buffer, 4096);
     file.Close();
     parseData( buffer );
@@ -777,10 +776,9 @@ bool Xcddb::writeCacheFile( const char* pBuffer, uint32_t discid )
   XFILE::CFile file;
   if (file.OpenForWrite(GetCacheFile(discid), true))
   {
-    OutputDebugString ( "Current cd saved to local cddb.\n" );
-    file.Write( (void*) pBuffer, strlen( pBuffer ) + 1 );
+    const bool ret = (file.Write((void*)pBuffer, strlen(pBuffer) + 1) == strlen(pBuffer) + 1);
     file.Close();
-    return true;
+    return ret;
   }
 
   return false;

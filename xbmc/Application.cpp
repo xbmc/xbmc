@@ -3894,7 +3894,6 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     SaveFileState(true);
 
-    OutputDebugString("new file set audiostream:0\n");
     // Switch to default options
     CMediaSettings::Get().GetCurrentVideoSettings() = CMediaSettings::Get().GetDefaultVideoSettings();
     // see if we have saved options in the database

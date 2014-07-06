@@ -182,7 +182,7 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
     }
   }
 
-  OutputDebugString("CD Read error\n");
+  CLog::Log(LOGERROR, "%s: CD Read error", __FUNCTION__);
   return -1;
 }
 
