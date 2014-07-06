@@ -227,7 +227,7 @@ public:
   int SetResponse(CStdString response);
   void ExecBuiltIn(const CStdString &command, bool wait = false);
 
-  void NetworkMessage(unsigned int dwMessage, unsigned int dwParam = 0);
+  void NetworkMessage(int dwMessage, int dwParam = 0);
 
   void DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param = "");
   void Show(CGUIDialog *pDialog);

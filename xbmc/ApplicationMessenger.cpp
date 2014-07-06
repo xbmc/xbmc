@@ -983,20 +983,20 @@ void CApplicationMessenger::MediaRestart(bool bWait)
 
 void CApplicationMessenger::PlayListPlayerPlay()
 {
-  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, (unsigned int) -1};
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, -1};
   SendMessage(tMsg, true);
 }
 
 void CApplicationMessenger::PlayListPlayerPlay(int iSong)
 {
-  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, (unsigned int)iSong};
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, iSong};
   SendMessage(tMsg, true);
 }
 
 bool CApplicationMessenger::PlayListPlayerPlaySongId(int songId)
 {
   bool returnState;
-  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY_SONG_ID, (unsigned int)songId};
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY_SONG_ID, songId};
   tMsg.lpVoid = (void *)&returnState;
   SendMessage(tMsg, true);
   return returnState;
@@ -1052,7 +1052,7 @@ void CApplicationMessenger::PlayListPlayerInsert(int playlist, const CFileItemLi
 
 void CApplicationMessenger::PlayListPlayerRemove(int playlist, int position)
 {
-  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_REMOVE, (unsigned int)playlist, (unsigned int)position};
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_REMOVE, playlist, position};
   SendMessage(tMsg, true);
 }
 
@@ -1171,7 +1171,7 @@ void CApplicationMessenger::RestartApp()
 
 void CApplicationMessenger::InhibitIdleShutdown(bool inhibit)
 {
-  ThreadMessage tMsg = {TMSG_INHIBITIDLESHUTDOWN, (unsigned int)inhibit};
+  ThreadMessage tMsg = {TMSG_INHIBITIDLESHUTDOWN, inhibit};
   SendMessage(tMsg);
 }
 
@@ -1181,7 +1181,7 @@ void CApplicationMessenger::ActivateScreensaver()
   SendMessage(tMsg);
 }
 
-void CApplicationMessenger::NetworkMessage(unsigned int dwMessage, unsigned int dwParam)
+void CApplicationMessenger::NetworkMessage(int dwMessage, int dwParam)
 {
   ThreadMessage tMsg = {TMSG_NETWORKMESSAGE, dwMessage, dwParam};
   SendMessage(tMsg);
@@ -1234,7 +1234,7 @@ void CApplicationMessenger::Show(CGUIDialog *pDialog)
 
 void CApplicationMessenger::Close(CGUIWindow *window, bool forceClose, bool waitResult /*= true*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/)
 {
-  ThreadMessage tMsg = {TMSG_GUI_WINDOW_CLOSE, (unsigned int)nextWindowID};
+  ThreadMessage tMsg = {TMSG_GUI_WINDOW_CLOSE, nextWindowID};
   tMsg.param2 = (forceClose ? 0x01 : 0) | (enableSound ? 0x02 : 0);
   tMsg.lpVoid = window;
   SendMessage(tMsg, waitResult);
@@ -1242,7 +1242,7 @@ void CApplicationMessenger::Close(CGUIWindow *window, bool forceClose, bool wait
 
 void CApplicationMessenger::ActivateWindow(int windowID, const vector<string> &params, bool swappingWindows)
 {
-  ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, (unsigned int)windowID, swappingWindows ? 1u : 0u};
+  ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, windowID, swappingWindows ? 1 : 0};
   tMsg.params = params;
   SendMessage(tMsg, true);
 }
