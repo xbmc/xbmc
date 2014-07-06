@@ -395,6 +395,9 @@ MediaLibrary.prototype = {
             'rating',
             'playcount'
           ],
+          'sort': {
+            'method': 'track'
+          },
           'filter': {
             'albumid' : event.data.album.albumid
           }
