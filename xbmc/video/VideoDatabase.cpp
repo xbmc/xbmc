@@ -387,6 +387,21 @@ void CVideoDatabase::CreateViews()
 
   /* NOTE: The tvshowview needs to have "GROUP BY tvshow.idShow" added to any usage if you wish to
            avoid duplicates due to multiple paths per tvshow (from the join on tvshowlinkpath) */
+  CLog::Log(LOGINFO, "create tvshowcounts");
+  CStdString tvshowcounts = PrepareSQL("CREATE VIEW tvshowcounts AS SELECT "
+                                       "      tvshow.idShow AS idShow,"
+                                       "      MAX(files.lastPlayed) AS lastPlayed,"
+                                       "      NULLIF(COUNT(episode.c12), 0) AS totalCount,"
+                                       "      COUNT(files.playCount) AS watchedcount,"
+                                       "      NULLIF(COUNT(DISTINCT(episode.c12)), 0) AS totalSeasons "
+                                       "    FROM tvshow"
+                                       "      LEFT JOIN episode ON"
+                                       "        episode.idShow=tvshow.idShow"
+                                       "      LEFT JOIN files ON"
+                                       "        files.idFile=episode.idFile "
+                                       "    GROUP BY tvshow.idShow");
+  m_pDS->exec(tvshowcounts.c_str());
+
   CLog::Log(LOGINFO, "create tvshowview");
   CStdString tvshowview = PrepareSQL("CREATE VIEW tvshowview AS SELECT "
                                      "  tvshow.*,"
@@ -399,19 +414,8 @@ void CVideoDatabase::CreateViews()
                                      "    tvshowlinkpath.idShow=tvshow.idShow"
                                      "  LEFT JOIN path ON"
                                      "    path.idPath=tvshowlinkpath.idPath"
-                                     "  INNER JOIN ("
-                                     "    SELECT tvshow.idShow AS idShow,"
-                                     "      MAX(files.lastPlayed) AS lastPlayed,"
-                                     "      NULLIF(COUNT(episode.c12), 0) AS totalCount,"
-                                     "      COUNT(files.playCount) AS watchedcount,"
-                                     "      NULLIF(COUNT(DISTINCT(episode.c12)), 0) AS totalSeasons "
-                                     "    FROM tvshow"
-                                     "      LEFT JOIN episode ON"
-                                     "        episode.idShow=tvshow.idShow"
-                                     "      LEFT JOIN files ON"
-                                     "        files.idFile=episode.idFile "
-                                     "    GROUP BY tvshow.idShow) AS counts ON"
-                                     "  tvshow.idShow = counts.idShow");
+                                     "  INNER JOIN tvshowcounts ON"
+                                     "  tvshow.idShow = tvshowcounts.idShow");
   m_pDS->exec(tvshowview.c_str());
 
   CLog::Log(LOGINFO, "create seasonview");
@@ -4637,7 +4641,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 85;
+  return 86;
 }
 
 bool CVideoDatabase::LookupByFolders(const CStdString &path, bool shows)
