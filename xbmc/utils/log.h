@@ -27,11 +27,26 @@
 #include "threads/CriticalSection.h"
 #include "utils/GlobalsHandling.h"
 
+#ifndef PARAM2_PRINTF_FORMAT
 #ifdef __GNUC__
-#define ATTRIB_LOG_FORMAT __attribute__((format(printf,2,3)))
+#define PARAM2_PRINTF_FORMAT __attribute__((format(printf,2,3)))
 #else
-#define ATTRIB_LOG_FORMAT
+#define PARAM2_PRINTF_FORMAT
 #endif
+#endif // PARAM2_PRINTF_FORMAT
+
+#ifndef PRINTF_FORMAT_STRING
+#ifdef _MSC_VER
+#include <sal.h>
+#define PRINTF_FORMAT_STRING _In_z_ _Printf_format_string_
+#define IN_STRING _In_z_
+#define IN_OPT_STRING _In_opt_z_
+#else  // ! _MSC_VER
+#define PRINTF_FORMAT_STRING
+#define IN_STRING
+#define IN_OPT_STRING
+#endif // ! _MSC_VER
+#endif // PRINTF_FORMAT_STRING
 
 class CLog
 {
@@ -53,7 +68,7 @@ public:
   CLog();
   virtual ~CLog(void);
   static void Close();
-  static void Log(int loglevel, const char *format, ... ) ATTRIB_LOG_FORMAT;
+  static void Log(int loglevel, PRINTF_FORMAT_STRING const char *format, ...) PARAM2_PRINTF_FORMAT;
   static void MemDump(char *pData, int length);
   static bool Init(const char* path);
   static void SetLogLevel(int level);
@@ -63,7 +78,6 @@ private:
   static void PrintDebugString(const std::string& line);
 };
 
-#undef ATTRIB_LOG_FORMAT
 
 namespace XbmcUtils
 {
@@ -71,7 +85,7 @@ namespace XbmcUtils
   {
   public:
     virtual ~LogImplementation() {}
-    inline virtual void log(int logLevel, const char* message) { CLog::Log(logLevel,"%s",message); }
+    inline virtual void log(int logLevel, IN_STRING const char* message) { CLog::Log(logLevel, "%s", message); }
   };
 }
 
