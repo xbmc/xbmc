@@ -34,16 +34,11 @@
 #include "win32/WIN32Util.h"
 #endif
 
-#define critSec XBMC_GLOBAL_USE(CLog::CLogGlobals).critSec
-#define m_file XBMC_GLOBAL_USE(CLog::CLogGlobals).m_file
-#define m_repeatCount XBMC_GLOBAL_USE(CLog::CLogGlobals).m_repeatCount
-#define m_repeatLogLevel XBMC_GLOBAL_USE(CLog::CLogGlobals).m_repeatLogLevel
-#define m_repeatLine XBMC_GLOBAL_USE(CLog::CLogGlobals).m_repeatLine
-#define m_logLevel XBMC_GLOBAL_USE(CLog::CLogGlobals).m_logLevel
-#define m_extraLogLevels XBMC_GLOBAL_USE(CLog::CLogGlobals).m_extraLogLevels
-
 static const char* const levelNames[] =
 {"DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"};
+
+// s_globals is used as static global with CLog global variables
+#define s_globals XBMC_GLOBAL_USE(CLog).m_globalInstance
 
 CLog::CLog()
 {}
@@ -54,30 +49,30 @@ CLog::~CLog()
 void CLog::Close()
 {
   
-  CSingleLock waitLock(critSec);
-  if (m_file)
+  CSingleLock waitLock(s_globals.critSec);
+  if (s_globals.m_file)
   {
-    fclose(m_file);
-    m_file = NULL;
+    fclose(s_globals.m_file);
+    s_globals.m_file = NULL;
   }
-  m_repeatLine.clear();
+  s_globals.m_repeatLine.clear();
 }
 
 void CLog::Log(int loglevel, const char *format, ... )
 {
   static const char* prefixFormat = "%02.2d:%02.2d:%02.2d T:%" PRIu64" %7s: ";
-  CSingleLock waitLock(critSec);
+  CSingleLock waitLock(s_globals.critSec);
   int extras = (loglevel >> LOGMASKBIT) << LOGMASKBIT;
   loglevel = loglevel & LOGMASK;
 #if !(defined(_DEBUG) || defined(PROFILE))
-  if (m_logLevel > LOG_LEVEL_NORMAL ||
-     (m_logLevel > LOG_LEVEL_NONE && loglevel >= LOGNOTICE))
+  if (s_globals.m_logLevel > LOG_LEVEL_NORMAL ||
+     (s_globals.m_logLevel > LOG_LEVEL_NONE && loglevel >= LOGNOTICE))
 #endif
   {
-    if (!m_file)
+    if (!s_globals.m_file)
       return;
 
-    if (extras != 0 && (m_extraLogLevels & extras) == 0)
+    if (extras != 0 && (s_globals.m_extraLogLevels & extras) == 0)
       return;
 
     SYSTEMTIME time;
@@ -91,31 +86,31 @@ void CLog::Log(int loglevel, const char *format, ... )
     strData = StringUtils::FormatV(format,va);
     va_end(va);
 
-    if (m_repeatLogLevel == loglevel && m_repeatLine == strData)
+    if (s_globals.m_repeatLogLevel == loglevel && s_globals.m_repeatLine == strData)
     {
-      m_repeatCount++;
+      s_globals.m_repeatCount++;
       return;
     }
-    else if (m_repeatCount)
+    else if (s_globals.m_repeatCount)
     {
       strPrefix = StringUtils::Format(prefixFormat,
                                       time.wHour,
                                       time.wMinute,
                                       time.wSecond,
                                       (uint64_t)CThread::GetCurrentThreadId(),
-                                      levelNames[m_repeatLogLevel]);
+                                      levelNames[s_globals.m_repeatLogLevel]);
 
       CStdString strData2 = StringUtils::Format("Previous line repeats %d times."
                                                 LINE_ENDING,
-                                                m_repeatCount);
-      fputs(strPrefix.c_str(), m_file);
-      fputs(strData2.c_str(), m_file);
+                                                s_globals.m_repeatCount);
+      fputs(strPrefix.c_str(), s_globals.m_file);
+      fputs(strData2.c_str(), s_globals.m_file);
       PrintDebugString(strData2);
-      m_repeatCount = 0;
+      s_globals.m_repeatCount = 0;
     }
     
-    m_repeatLine      = strData;
-    m_repeatLogLevel  = loglevel;
+    s_globals.m_repeatLine = strData;
+    s_globals.m_repeatLogLevel = loglevel;
 
     StringUtils::TrimRight(strData);
     if (strData.empty())
@@ -139,16 +134,16 @@ void CLog::Log(int loglevel, const char *format, ... )
   CXBMCApp::android_printf("%s%s",strPrefix.c_str(), strData.c_str());
 #endif
 
-    fputs(strPrefix.c_str(), m_file);
-    fputs(strData.c_str(), m_file);
-    fflush(m_file);
+    fputs(strPrefix.c_str(), s_globals.m_file);
+    fputs(strData.c_str(), s_globals.m_file);
+    fflush(s_globals.m_file);
   }
 }
 
 bool CLog::Init(const char* path)
 {
-  CSingleLock waitLock(critSec);
-  if (!m_file)
+  CSingleLock waitLock(s_globals.critSec);
+  if (!s_globals.m_file)
   {
     // the log folder location is initialized in the CAdvancedSettings
     // constructor and changed in CApplication::Create()
@@ -170,16 +165,16 @@ bool CLog::Init(const char* path)
         rename_utf8(strLogFile.c_str(),strLogFileOld.c_str()) != 0)
       return false;
 
-    m_file = fopen64_utf8(strLogFile.c_str(),"wb");
+    s_globals.m_file = fopen64_utf8(strLogFile.c_str(), "wb");
   }
 
-  if (m_file)
+  if (s_globals.m_file)
   {
     unsigned char BOM[3] = {0xEF, 0xBB, 0xBF};
-    fwrite(BOM, sizeof(BOM), 1, m_file);
+    fwrite(BOM, sizeof(BOM), 1, s_globals.m_file);
   }
 
-  return m_file != NULL;
+  return s_globals.m_file != NULL;
 }
 
 void CLog::MemDump(char *pData, int length)
@@ -215,20 +210,20 @@ void CLog::MemDump(char *pData, int length)
 
 void CLog::SetLogLevel(int level)
 {
-  CSingleLock waitLock(critSec);
-  m_logLevel = level;
-  CLog::Log(LOGNOTICE, "Log level changed to %d", m_logLevel);
+  CSingleLock waitLock(s_globals.critSec);
+  s_globals.m_logLevel = level;
+  CLog::Log(LOGNOTICE, "Log level changed to %d", s_globals.m_logLevel);
 }
 
 int CLog::GetLogLevel()
 {
-  return m_logLevel;
+  return s_globals.m_logLevel;
 }
 
 void CLog::SetExtraLogLevels(int level)
 {
-  CSingleLock waitLock(critSec);
-  m_extraLogLevels = level;
+  CSingleLock waitLock(s_globals.critSec);
+  s_globals.m_extraLogLevels = level;
 }
 
 void CLog::PrintDebugString(const std::string& line)
