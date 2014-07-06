@@ -148,9 +148,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   case ACTION_SHOW_GUI:
     {
       // switch back to the menu
-      OutputDebugString("Switching to GUI\n");
       g_windowManager.PreviousWindow();
-      OutputDebugString("Now in GUI\n");
       return true;
     }
     break;
