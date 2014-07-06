@@ -97,11 +97,42 @@
       <hash>XBMC.ActivateWindow(Settings)</hash>
     </remote>
   </Home>
-  <MyTV>
+  <MyTVRecordings>
     <remote>
       <clear>Delete</clear>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
     </remote>
-  </MyTV>
+  </MyTVRecordings>
+  <MyTVTimers>
+    <remote>
+      <clear>Delete</clear>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
+    </remote>
+  </MyTVTimers>
+  <MyRadioRecordings>
+    <remote>
+      <clear>Delete</clear>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
+    </remote>
+  </MyRadioRecordings>
+  <MyRadioTimers>
+    <remote>
+      <clear>Delete</clear>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
+    </remote>
+  </MyRadioTimers>
   <MyFiles>
     <remote>
       <clear>Delete</clear>
@@ -364,14 +395,6 @@
       <back>PreviousMenu</back>
     </remote>
   </Weather>
-  <TV>
-    <remote>
-      <red>Red</red>
-      <green>Green</green>
-      <yellow>Yellow</yellow>
-      <blue>Blue</blue>
-    </remote>
-  </TV>
   <Settings>
     <remote>
       <back>PreviousMenu</back>

@@ -172,13 +172,40 @@
       <backspace>Backspace</backspace>
     </keyboard>
   </VirtualKeyboard>
-  <MyTV>
+  <MyTVChannels>
+    <keyboard>
+      <m>Move</m>
+    </keyboard>
+  </MyTVChannels>
+  <MyTVRecordings>
     <keyboard>
       <delete>Delete</delete>
-      <m>Move</m>
       <r>Rename</r>
     </keyboard>
-  </MyTV>
+  </MyTVRecordings>
+  <MyTVTimers>
+    <keyboard>
+      <delete>Delete</delete>
+      <r>Rename</r>
+    </keyboard>
+  </MyTVTimers>
+  <MyRadioChannels>
+    <keyboard>
+      <m>Move</m>
+    </keyboard>
+  </MyRadioChannels>
+  <MyRadioRecordings>
+    <keyboard>
+      <delete>Delete</delete>
+      <r>Rename</r>
+    </keyboard>
+  </MyRadioRecordings>
+  <MyRadioTimers>
+    <keyboard>
+      <delete>Delete</delete>
+      <r>Rename</r>
+    </keyboard>
+  </MyRadioTimers>
   <MyFiles>
     <keyboard>
       <space>Highlight</space>
