@@ -292,7 +292,7 @@ CAEChannelInfo AEDeviceEnumerationOSX::getChannelInfoForStream(UInt32 streamIdx)
   else
   {
     //get channel map to match the devices channel layout as set in audio-midi-setup
-    GetAEChannelMap(channelInfo, m_caDevice.GetTotalOutputChannels());
+    GetAEChannelMap(channelInfo, m_caDevice.GetNumChannelsOfStream(streamIdx));
   }
   return channelInfo;
 }
