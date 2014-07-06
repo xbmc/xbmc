@@ -397,10 +397,24 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
 
   HANDLE netEnum;
   DWORD result;
-  result = WNetOpenEnumW(RESOURCE_GLOBALNET, RESOURCETYPE_DISK, 0, basePathToScanPtr, &netEnum);
+  result = WNetOpenEnumW(RESOURCE_GLOBALNET, getShares ? RESOURCETYPE_DISK : RESOURCETYPE_ANY, 0, basePathToScanPtr, &netEnum);
   if (result != NO_ERROR)
   {
-    CLog::Log(LOGERROR, "%s: Can't open network enumeration. Error: %lu", __FUNCTION__, (unsigned long)result);
+    if (basePathToScanPtr)
+    {
+      std::string containerName;
+      g_charsetConverter.wToUTF8(basePathToScanPtr->lpRemoteName, containerName);
+      std::string providerName;
+      if (basePathToScanPtr->lpProvider && basePathToScanPtr->lpProvider[0] != 0)
+      {
+        g_charsetConverter.wToUTF8(basePathToScanPtr->lpProvider, providerName);
+        providerName = " (provider \"" + providerName + "\")";
+      }
+      CLog::Log(LOGNOTICE, "%s: Can't open network enumeration for \"%s\"%s. Error: %lu", __FUNCTION__, containerName.c_str(), providerName.c_str(), (unsigned long)result);
+    }
+    else
+      CLog::Log(LOGERROR, "%s: Can't open network enumeration for network root. Error: %lu", __FUNCTION__, (unsigned long)result);
+
     return false;
   }
 
@@ -489,13 +503,18 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
             CLog::Log(LOGERROR, "%s: Skipping share with empty remote name", __FUNCTION__);
         }
 
+        /* recursively collect servers from container */
         if (!getShares && (curResource.dwUsage & RESOURCEUSAGE_CONTAINER) &&
             curResource.dwDisplayType != RESOURCEDISPLAYTYPE_SERVER) // don't scan servers for other servers
         {
-          if (curResource.lpRemoteName != NULL)
+          if (curResource.lpRemoteName != NULL && curResource.lpRemoteName[0] != 0)
           {
             if (!localGetNetworkResources(&curResource, urlPrefixForItems, items, false))
-              errorFlag = true;
+            {
+              std::string remoteName;
+              g_charsetConverter.wToUTF8(curResource.lpRemoteName, remoteName);
+              CLog::Log(LOGNOTICE, "%s: Can't get servers from \"%s\", skipping", __FUNCTION__, remoteName.c_str());
+            }
           }
           else
             CLog::Log(LOGERROR, "%s: Skipping container with empty remote name", __FUNCTION__);
