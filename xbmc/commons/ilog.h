@@ -54,11 +54,7 @@
 #define LOGUPNP     (1 << (LOGMASKBIT + 9))
 #define LOGCEC      (1 << (LOGMASKBIT + 10))
 
-#ifdef __GNUC__
-#define ATTRIB_LOG_FORMAT __attribute__((format(printf,3,4)))
-#else
-#define ATTRIB_LOG_FORMAT
-#endif
+#include "utils/params_check_macros.h"
 
 namespace XbmcCommons
 {
@@ -66,10 +62,9 @@ namespace XbmcCommons
   {
   public:
     virtual ~ILogger() {}
-    void Log(int loglevel, const char *format, ... ) ATTRIB_LOG_FORMAT;
+    void Log(int loglevel, PRINTF_FORMAT_STRING const char *format, ...) PARAM3_PRINTF_FORMAT;
 
-    virtual void log(int loglevel, const char* message) = 0;
+    virtual void log(int loglevel, IN_STRING const char* message) = 0;
   };
 }
 
-#undef ATTRIB_LOG_FORMAT

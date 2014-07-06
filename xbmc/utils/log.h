@@ -27,11 +27,7 @@
 #include "threads/CriticalSection.h"
 #include "utils/GlobalsHandling.h"
 
-#ifdef __GNUC__
-#define ATTRIB_LOG_FORMAT __attribute__((format(printf,2,3)))
-#else
-#define ATTRIB_LOG_FORMAT
-#endif
+#include "utils/params_check_macros.h"
 
 class CLog
 {
@@ -53,7 +49,7 @@ public:
   CLog();
   virtual ~CLog(void);
   static void Close();
-  static void Log(int loglevel, const char *format, ... ) ATTRIB_LOG_FORMAT;
+  static void Log(int loglevel, PRINTF_FORMAT_STRING const char *format, ...) PARAM2_PRINTF_FORMAT;
   static void MemDump(char *pData, int length);
   static bool Init(const char* path);
   static void SetLogLevel(int level);
@@ -63,7 +59,6 @@ private:
   static void PrintDebugString(const std::string& line);
 };
 
-#undef ATTRIB_LOG_FORMAT
 
 namespace XbmcUtils
 {
@@ -71,7 +66,7 @@ namespace XbmcUtils
   {
   public:
     virtual ~LogImplementation() {}
-    inline virtual void log(int logLevel, const char* message) { CLog::Log(logLevel,"%s",message); }
+    inline virtual void log(int logLevel, IN_STRING const char* message) { CLog::Log(logLevel, "%s", message); }
   };
 }
 
