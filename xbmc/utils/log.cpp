@@ -30,6 +30,7 @@
 #if defined(TARGET_ANDROID)
 #include "android/activity/XBMCApp.h"
 #elif defined(TARGET_WINDOWS)
+#include "utils/auto_buffer.h"
 #include "win32/WIN32Util.h"
 #endif
 
@@ -235,16 +236,16 @@ void CLog::OutputDebugString(const std::string& line)
 #if defined(_DEBUG) || defined(PROFILE)
 #if defined(TARGET_WINDOWS)
   // we can't use charsetconverter here as it's initialized later than CLog and deinitialized early
-  int bufSize = MultiByteToWideChar(CP_UTF8, 0, line.c_str(), -1, NULL, 0);
-  CStdStringW wstr (L"", bufSize);
-  if ( MultiByteToWideChar(CP_UTF8, 0, line.c_str(), -1, wstr.GetBuf(bufSize), bufSize) == bufSize )
-  {
-    wstr.RelBuf();
-    ::OutputDebugStringW(wstr.c_str());
-  }
+  int bufSize = MultiByteToWideChar(CP_UTF8, 0, line.c_str(), line.length(), NULL, 0);
+  XUTILS::auto_buffer buf(sizeof(wchar_t) * (bufSize + 1)); // '+1' for extra safety
+  if (MultiByteToWideChar(CP_UTF8, 0, line.c_str(), line.length(), (wchar_t*)buf.get(), buf.size() / sizeof(wchar_t)) == bufSize)
+    ::OutputDebugStringW(std::wstring((wchar_t*)buf.get(), bufSize).c_str());
   else
-#endif // TARGET_WINDOWS
-    ::OutputDebugString(line.c_str());
+    ::OutputDebugStringA(line.c_str());
+  ::OutputDebugStringW(L"\n");
+#else  // !TARGET_WINDOWS
+  ::OutputDebugString(line.c_str());
   ::OutputDebugString("\n");
-#endif
+#endif // !TARGET_WINDOWS
+#endif // defined(_DEBUG) || defined(PROFILE)
 }
