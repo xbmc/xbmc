@@ -60,7 +60,7 @@ public:
   static int  GetLogLevel();
   static void SetExtraLogLevels(int level);
 private:
-  static void OutputDebugString(const std::string& line);
+  static void PrintDebugString(const std::string& line);
 };
 
 #undef ATTRIB_LOG_FORMAT
