@@ -47,7 +47,7 @@ public:
   };
 
   CLog();
-  virtual ~CLog(void);
+  ~CLog(void);
   static void Close();
   static void Log(int loglevel, PRINTF_FORMAT_STRING const char *format, ...) PARAM2_PRINTF_FORMAT;
   static void MemDump(char *pData, int length);
