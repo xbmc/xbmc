@@ -110,7 +110,7 @@ void CLog::Log(int loglevel, const char *format, ... )
                                                 m_repeatCount);
       fputs(strPrefix.c_str(), m_file);
       fputs(strData2.c_str(), m_file);
-      OutputDebugString(strData2);
+      PrintDebugString(strData2);
       m_repeatCount = 0;
     }
     
@@ -121,7 +121,7 @@ void CLog::Log(int loglevel, const char *format, ... )
     if (strData.empty())
       return;
     
-    OutputDebugString(strData);
+    PrintDebugString(strData);
 
     /* fixup newline alignment, number of spaces should equal prefix length */
     StringUtils::Replace(strData, "\n", LINE_ENDING"                                            ");
@@ -231,7 +231,7 @@ void CLog::SetExtraLogLevels(int level)
   m_extraLogLevels = level;
 }
 
-void CLog::OutputDebugString(const std::string& line)
+void CLog::PrintDebugString(const std::string& line)
 {
 #if defined(_DEBUG) || defined(PROFILE)
 #if defined(TARGET_WINDOWS)
