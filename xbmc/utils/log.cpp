@@ -42,7 +42,7 @@
 #define m_logLevel XBMC_GLOBAL_USE(CLog::CLogGlobals).m_logLevel
 #define m_extraLogLevels XBMC_GLOBAL_USE(CLog::CLogGlobals).m_extraLogLevels
 
-static char levelNames[][8] =
+static const char* const levelNames[] =
 {"DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"};
 
 CLog::CLog()
