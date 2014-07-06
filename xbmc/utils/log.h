@@ -51,11 +51,22 @@
 class CLog
 {
 public:
+  CLog();
+  ~CLog(void);
+  static void Close();
+  static void Log(int loglevel, PRINTF_FORMAT_STRING const char *format, ...) PARAM2_PRINTF_FORMAT;
+  static void MemDump(char *pData, int length);
+  static bool Init(IN_STRING const char* path);
+  static void SetLogLevel(int level);
+  static int  GetLogLevel();
+  static void SetExtraLogLevels(int level);
 
+private:
   class CLogGlobals
   {
   public:
-    CLogGlobals() : m_file(NULL), m_repeatCount(0), m_repeatLogLevel(-1), m_logLevel(LOG_LEVEL_DEBUG), m_extraLogLevels(0) {}
+    CLogGlobals(void) : m_file(NULL), m_repeatCount(0), m_repeatLogLevel(-1), m_logLevel(LOG_LEVEL_DEBUG), m_extraLogLevels(0) {}
+    ~CLogGlobals() {}
     FILE*       m_file;
     int         m_repeatCount;
     int         m_repeatLogLevel;
@@ -64,17 +75,7 @@ public:
     int         m_extraLogLevels;
     CCriticalSection critSec;
   };
-
-  CLog();
-  ~CLog(void);
-  static void Close();
-  static void Log(int loglevel, PRINTF_FORMAT_STRING const char *format, ...) PARAM2_PRINTF_FORMAT;
-  static void MemDump(char *pData, int length);
-  static bool Init(const char* path);
-  static void SetLogLevel(int level);
-  static int  GetLogLevel();
-  static void SetExtraLogLevels(int level);
-private:
+  class CLogGlobals m_globalInstance; // used as static global variable
   static void PrintDebugString(const std::string& line);
 };
 
@@ -89,4 +90,4 @@ namespace XbmcUtils
   };
 }
 
-XBMC_GLOBAL_REF(CLog::CLogGlobals,g_log_globals);
+XBMC_GLOBAL_REF(CLog, g_log);
