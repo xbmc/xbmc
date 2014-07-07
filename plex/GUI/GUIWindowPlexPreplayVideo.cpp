@@ -71,6 +71,20 @@ bool CGUIWindowPlexPreplayVideo::OnMessage(CGUIMessage &message)
   else if (message.GetMessage() == GUI_MSG_PLEX_EXTRA_DATA_LOADED)
   {
     CLog::Log(LOGDEBUG,"CGUIWindowPlexPreplayVideo::OnMessage GUI_MSG_PLEX_EXTRA_DATA_LOADED (%d)", m_extraDataLoader.getItems()->Size());
+    if (m_extraDataLoader.getItems()->Size())
+    {
+      m_vecItems->Get(0)->SetProperty("PlexExtras", "1");
+
+      if (m_extraDataLoader.getItems()->Size() > 1)
+        m_vecItems->SetProperty("PlexExtras", "extras");
+      else
+        m_vecItems->SetProperty("PlexExtras", "extra");
+    }
+    else
+    {
+      m_vecItems->Get(0)->SetProperty("PlexExtras", "");
+      m_vecItems->SetProperty("PlexExtras", "");
+    }
   }
 
   return ret;
