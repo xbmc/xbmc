@@ -231,7 +231,6 @@ NPT_String CUPnPServer::BuildSafeResourceUri(const NPT_HttpUrl &rooturi,
 {
     CURL url(file_path);
     CStdString md5;
-    XBMC::XBMC_MD5 md5state;
 
     // determine the filename to provide context to md5'd urls
     CStdString filename;
@@ -241,8 +240,7 @@ NPT_String CUPnPServer::BuildSafeResourceUri(const NPT_HttpUrl &rooturi,
       filename = URIUtils::GetFileName(file_path);
 
     filename = CURL::Encode(filename);
-    md5state.append(file_path);
-    md5state.getDigest(md5);
+    md5 = XBMC::XBMC_MD5::GetMD5(file_path);
     md5 += "/" + filename;
     { NPT_AutoLock lock(m_FileMutex);
       NPT_CHECK(m_FileMap.Put(md5.c_str(), file_path));

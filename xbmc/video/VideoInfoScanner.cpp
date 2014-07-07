@@ -1716,7 +1716,7 @@ namespace VIDEO
       if (pItem->IsVideo() && !pItem->IsPlayList() && !pItem->IsNFO())
         count++;
     }
-    md5state.getDigest(hash);
+    hash = md5state.getDigest();
     return count;
   }
 
@@ -1746,9 +1746,7 @@ namespace VIDEO
       if (time)
       {
         md5state.append((unsigned char *)&time, sizeof(time));
-        CStdString pathHash;
-        md5state.getDigest(pathHash);
-        return pathHash;
+        return md5state.getDigest();
       }
     }
     return "";
@@ -1785,9 +1783,7 @@ namespace VIDEO
     if (time)
     {
       md5state.append((unsigned char *)&time, sizeof(time));
-      CStdString pathHash;
-      md5state.getDigest(pathHash);
-      return pathHash;
+      return md5state.getDigest();
     }
     return "";
   }

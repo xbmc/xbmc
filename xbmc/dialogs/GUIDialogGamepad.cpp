@@ -102,10 +102,7 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
     m_bConfirmed = false;
     m_bCanceled = false;
 
-    CStdString md5pword2;
-    XBMC::XBMC_MD5 md5state;
-    md5state.append(m_strUserInput);
-    md5state.getDigest(md5pword2);
+    CStdString md5pword2 = XBMC::XBMC_MD5::GetMD5(m_strUserInput);
 
     if (!m_strPassword.Equals(md5pword2))
     {
@@ -297,9 +294,7 @@ bool CGUIDialogGamepad::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
 
   if (bGetUserInput && !pDialog->IsCanceled())
   {
-    XBMC::XBMC_MD5 md5state;
-    md5state.append(pDialog->m_strUserInput);
-    md5state.getDigest(strToVerify);
+    strToVerify = XBMC::XBMC_MD5::GetMD5(pDialog->m_strUserInput);
     StringUtils::ToLower(strToVerify);
     pDialog->m_strUserInput = "";
   }

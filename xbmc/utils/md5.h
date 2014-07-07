@@ -40,8 +40,8 @@ namespace XBMC
     void append(const void *inBuf, size_t inLen);
     void append(const std::string& str);
     void getDigest(unsigned char digest[16]);
-    void getDigest(std::string& digest);
-    
+    std::string getDigest();
+
     /*! \brief Get the MD5 digest of the given text
      \param text text to compute the MD5 for
      \return MD5 digest
