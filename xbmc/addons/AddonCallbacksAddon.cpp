@@ -210,13 +210,12 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
               type == "folder"   || type == "action"    ||
               type == "music"    || type == "pictures"  ||
               type == "programs" || type == "fileenum"  ||
-              type == "file")
+              type == "file"     || type == "labelenum")
           {
             strcpy((char*) settingValue, addonHelper->m_addon->GetSetting(id).c_str());
             return true;
           }
-          else if (type == "number" || type == "enum" ||
-                   type == "labelenum")
+          else if (type == "number" || type == "enum")
           {
             *(int*) settingValue = (int) atoi(addonHelper->m_addon->GetSetting(id).c_str());
             return true;
