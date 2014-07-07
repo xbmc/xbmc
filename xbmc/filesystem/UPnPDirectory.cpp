@@ -143,7 +143,7 @@ CUPnPDirectory::GetFriendlyName(const CURL& url)
 +---------------------------------------------------------------------*/
 bool CUPnPDirectory::GetResource(const CURL& path, CFileItem &item)
 {
-    if(path.GetProtocol() != "upnp")
+    if(!path.IsProtocol("upnp"))
       return false;
 
     CUPnP* upnp = CUPnP::GetInstance();

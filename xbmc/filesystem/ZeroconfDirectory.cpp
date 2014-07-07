@@ -171,7 +171,7 @@ bool GetDirectoryFromTxtRecords(CZeroconfBrowser::ZeroconfService zeroconf_servi
 
 bool CZeroconfDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  assert(url.GetProtocol() == "zeroconf");
+  assert(url.IsProtocol("zeroconf"));
   std::string strPath = url.Get();
   std::string path = strPath.substr(11, strPath.length());
   URIUtils::RemoveSlashAtEnd(path);

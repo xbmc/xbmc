@@ -4893,7 +4893,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       CFileItem file(*playlist[iNext]);
       // handle plugin://
       CURL url(file.GetPath());
-      if (url.GetProtocol() == "plugin")
+      if (url.IsProtocol("plugin"))
         XFILE::CPluginDirectory::GetPluginResult(url.Get(), file);
 
 #ifdef HAS_UPNP

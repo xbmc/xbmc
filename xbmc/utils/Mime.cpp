@@ -544,7 +544,7 @@ string CMime::GetMimeType(const CURL &url, bool lookup)
   
   std::string strMimeType;
 
-  if( url.GetProtocol() == "shout" || url.GetProtocol() == "http" || url.GetProtocol() == "https")
+  if( url.IsProtocol("shout") || url.IsProtocol("http") || url.IsProtocol("https"))
   {
     // If lookup is false, bail out early to leave mime type empty
     if (!lookup)

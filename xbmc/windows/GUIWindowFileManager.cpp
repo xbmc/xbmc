@@ -814,11 +814,11 @@ int CGUIWindowFileManager::GetSelectedItem(int iControl)
 void CGUIWindowFileManager::GoParentFolder(int iList)
 {
   CURL url(m_Directory[iList]->GetPath());
-  if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip"))
+  if (url.IsProtocol("rar") || url.IsProtocol("zip"))
   {
     // check for step-below, if, unmount rar
     if (url.GetFileName().empty())
-      if (url.GetProtocol() == "zip")
+      if (url.IsProtocol("zip"))
         g_ZipManager.release(m_Directory[iList]->GetPath()); // release resources
   }
 
@@ -1164,9 +1164,8 @@ void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)
 {
   int idMessageText = 0;
   CURL url(pItem->GetPath());
-  const CStdString& strHostName = url.GetHostName();
 
-  if (url.GetProtocol() == "smb" && strHostName.empty()) //  smb workgroup
+  if (url.IsProtocol("smb") && url.GetHostName().empty()) //  smb workgroup
     idMessageText = 15303; // Workgroup not found
   else if (pItem->m_iDriveType == CMediaSource::SOURCE_TYPE_REMOTE || URIUtils::IsRemote(pItem->GetPath()))
     idMessageText = 15301; // Could not connect to network server

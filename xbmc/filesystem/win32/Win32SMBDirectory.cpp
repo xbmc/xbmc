@@ -57,7 +57,7 @@ static bool localGetShares(const std::wstring& serverNameToScan, const std::stri
 // check for empty string, remove trailing slash if any, convert to win32 form
 inline static std::wstring prepareWin32SMBDirectoryName(const CURL& url)
 {
-  assert(url.GetProtocol() == "smb");
+  assert(url.IsProtocol("smb"));
 
   if (url.GetHostName().empty() || url.GetShareName().empty())
     return std::wstring(); // can't use win32 standard file API, return empty string
@@ -77,7 +77,7 @@ CWin32SMBDirectory::~CWin32SMBDirectory(void)
 
 bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  assert(url.GetProtocol() == "smb");
+  assert(url.IsProtocol("smb"));
   items.Clear();
 
   if (url.GetShareName().empty())
@@ -198,7 +198,7 @@ bool CWin32SMBDirectory::Create(const CURL& url)
 
 bool CWin32SMBDirectory::RealCreate(const CURL& url, bool tryToConnect)
 {
-  assert(url.GetProtocol() == "smb");
+  assert(url.IsProtocol("smb"));
   if (url.GetHostName().empty() || url.GetShareName().empty() || url.GetFileName() == url.GetShareName())
     return false; // can't create new hosts or shares
 
@@ -245,7 +245,7 @@ bool CWin32SMBDirectory::Exists(const CURL& url)
 // * presence of smb server in network (smb://server)
 bool CWin32SMBDirectory::RealExists(const CURL& url, bool tryToConnect)
 {
-  assert(url.GetProtocol() == "smb");
+  assert(url.IsProtocol("smb"));
 
   if (url.GetHostName().empty())
     return true; // 'root' of network is always exist
@@ -321,7 +321,7 @@ bool CWin32SMBDirectory::RealExists(const CURL& url, bool tryToConnect)
 
 bool CWin32SMBDirectory::Remove(const CURL& url)
 {
-  assert(url.GetProtocol() == "smb");
+  assert(url.IsProtocol("smb"));
   std::wstring nameW(prepareWin32SMBDirectoryName(url));
   if (nameW.empty())
     return false;
@@ -605,7 +605,7 @@ static bool localGetShares(const std::wstring& serverNameToScan, const std::stri
 
 bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCredential /*= false*/)
 {
-  assert(url.GetProtocol() == "smb");
+  assert(url.IsProtocol("smb"));
   if (url.GetHostName().empty())
     return false; // can't connect to empty host name
   

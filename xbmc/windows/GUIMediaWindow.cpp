@@ -1111,9 +1111,8 @@ void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem)
 
   int idMessageText = 0;
   CURL url(pItem->GetPath());
-  const std::string& strHostName = url.GetHostName();
 
-  if (url.GetProtocol() == "smb" && strHostName.empty()) //  smb workgroup
+  if (url.IsProtocol("smb") && url.GetHostName().empty()) //  smb workgroup
     idMessageText = 15303; // Workgroup not found
   else if (pItem->m_iDriveType == CMediaSource::SOURCE_TYPE_REMOTE || URIUtils::IsRemote(pItem->GetPath()))
     idMessageText = 15301; // Could not connect to network server

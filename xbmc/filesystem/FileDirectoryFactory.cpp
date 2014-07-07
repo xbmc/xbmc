@@ -64,7 +64,7 @@ CFileDirectoryFactory::~CFileDirectoryFactory(void)
 // return NULL + set pItem->m_bIsFolder to remove it completely from list.
 IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem, const std::string& strMask)
 {
-  if (url.GetProtocol() == "stack") // disqualify stack as we need to work with each of the parts instead
+  if (url.IsProtocol("stack")) // disqualify stack as we need to work with each of the parts instead
     return NULL;
 
 #ifdef HAS_FILESYSTEM

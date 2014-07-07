@@ -65,7 +65,7 @@ std::string CHDFile::GetLocal(const CURL &url)
 {
   std::string path(url.GetFileName());
 
-  if(url.GetProtocol() == "file")
+  if(url.IsProtocol("file"))
   {
     // file://drive[:]/path
     // file:///drive:/path
