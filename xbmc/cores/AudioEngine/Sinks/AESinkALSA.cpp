@@ -230,8 +230,9 @@ bool CAESinkALSA::AllowALSAMaps()
   static bool checked = false;
   static bool allowed;
 
-  if (!checked++)
+  if (!checked)
     allowed = strverscmp(g_sysinfo.GetKernelVersionFull().c_str(), "3.12.15") >= 0;
+  checked = true;
 
   return allowed;
 #else
