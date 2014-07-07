@@ -9,20 +9,25 @@ using namespace std;
 
 class CPlexExtraDataLoader : public IJobCallback
 {
-private:
-  string m_path;
-  CFileItemListPtr m_items;
-
 public:
   enum ExtraDataType
-  { TRAILER = 1 };
+  {
+    NONE = 0,
+    TRAILER = 1
+  };
 
   CPlexExtraDataLoader();
   inline CFileItemListPtr getItems() { return m_items; }
+  inline ExtraDataType getDataType() { return m_type; }
 
   void loadDataForItem(CFileItemPtr pItem, ExtraDataType type);
 
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob* job);
+
+private:
+  string m_path;
+  ExtraDataType m_type;
+  CFileItemListPtr m_items;
 };
 
 #endif // PLEXEXTRAINFOLOADER_H
