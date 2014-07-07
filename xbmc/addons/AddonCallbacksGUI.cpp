@@ -507,9 +507,9 @@ void CAddonCallbacksGUI::Window_SetProperty(void *addonData, GUIHANDLE handle, c
 
   CAddonCallbacksGUI* guiHelper = helper->GetHelperGUI();
 
-  if (!handle)
+  if (!handle || !key || !value)
   {
-    CLog::Log(LOGERROR, "Window_SetProperty: %s/%s - No Window", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_SetProperty: %s/%s - No Window or NULL key or value", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return;
   }
 
@@ -534,9 +534,9 @@ void CAddonCallbacksGUI::Window_SetPropertyInt(void *addonData, GUIHANDLE handle
 
   CAddonCallbacksGUI* guiHelper = helper->GetHelperGUI();
 
-  if (!handle)
+  if (!handle || !key)
   {
-    CLog::Log(LOGERROR, "Window_SetPropertyInt: %s/%s - No Window", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_SetPropertyInt: %s/%s - No Window or NULL key", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return;
   }
 
@@ -561,9 +561,9 @@ void CAddonCallbacksGUI::Window_SetPropertyBool(void *addonData, GUIHANDLE handl
 
   CAddonCallbacksGUI* guiHelper = helper->GetHelperGUI();
 
-  if (!handle)
+  if (!handle || !key)
   {
-    CLog::Log(LOGERROR, "Window_SetPropertyBool: %s/%s - No Window", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_SetPropertyBool: %s/%s - No Window or NULL key", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return;
   }
 
@@ -588,9 +588,9 @@ void CAddonCallbacksGUI::Window_SetPropertyDouble(void *addonData, GUIHANDLE han
 
   CAddonCallbacksGUI* guiHelper = helper->GetHelperGUI();
 
-  if (!handle)
+  if (!handle || !key)
   {
-    CLog::Log(LOGERROR, "Window_SetPropertyDouble: %s/%s - No Window", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_SetPropertyDouble: %s/%s - No Window or NULL key", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return;
   }
 
@@ -615,9 +615,9 @@ const char* CAddonCallbacksGUI::Window_GetProperty(void *addonData, GUIHANDLE ha
 
   CAddonCallbacksGUI* guiHelper = helper->GetHelperGUI();
 
-  if (!handle)
+  if (!handle || !key)
   {
-    CLog::Log(LOGERROR, "Window_GetProperty: %s/%s - No Window", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_GetProperty: %s/%s - No Window or NULL key", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return NULL;
   }
 
@@ -644,9 +644,9 @@ int CAddonCallbacksGUI::Window_GetPropertyInt(void *addonData, GUIHANDLE handle,
 
   CAddonCallbacksGUI* guiHelper = helper->GetHelperGUI();
 
-  if (!handle)
+  if (!handle || !key)
   {
-    CLog::Log(LOGERROR, "Window_GetPropertyInt: %s/%s - No Window", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_GetPropertyInt: %s/%s - No Window or NULL key", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return -1;
   }
 
@@ -673,9 +673,9 @@ bool CAddonCallbacksGUI::Window_GetPropertyBool(void *addonData, GUIHANDLE handl
 
   CAddonCallbacksGUI* guiHelper = helper->GetHelperGUI();
 
-  if (!handle)
+  if (!handle || !key)
   {
-    CLog::Log(LOGERROR, "Window_GetPropertyBool: %s/%s - No Window", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_GetPropertyBool: %s/%s - No Window or NULL key", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return false;
   }
 
@@ -702,9 +702,9 @@ double CAddonCallbacksGUI::Window_GetPropertyDouble(void *addonData, GUIHANDLE h
 
   CAddonCallbacksGUI* guiHelper = helper->GetHelperGUI();
 
-  if (!handle)
+  if (!handle || !key)
   {
-    CLog::Log(LOGERROR, "Window_GetPropertyDouble: %s/%s - No Window", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_GetPropertyDouble: %s/%s - No Window or NULL key", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return 0.0;
   }
 
