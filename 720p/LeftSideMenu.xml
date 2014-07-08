@@ -596,6 +596,7 @@
 					<onleft>XBMC.PrevItem</onleft>
 					<onclick>ActivateWindow(10209)</onclick>
 					<include>leftMenuBarButton</include>
+					<visible>!IsEmpty(ListItem.Property(PlexExtras))</visible>
 				</control>
 				<!-- Rate -->
 				<control type="button" id="105">
