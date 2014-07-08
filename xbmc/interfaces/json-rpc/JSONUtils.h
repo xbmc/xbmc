@@ -174,6 +174,8 @@ namespace JSONRPC
         sortBy = SortByDateAdded;
       else if (method.Equals("lastplayed"))
         sortBy = SortByLastPlayed;
+      else if (method.Equals("dateupdated"))
+        sortBy = SortByDateUpdated;
       else if (method.Equals("playcount"))
         sortBy = SortByPlaycount;
       else if (method.Equals("listeners"))

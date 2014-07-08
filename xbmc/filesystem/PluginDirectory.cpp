@@ -389,6 +389,11 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const C
         dir->m_listItems->AddSortMethod(SortByLastPlayed, 568, LABEL_MASKS("%T", "%G"));
         break;
       }
+    case SORT_METHOD_DATEUPDATED:
+      {
+        dir->m_listItems->AddSortMethod(SortByDateUpdated, 174, LABEL_MASKS("%T", "%u"));
+        break;
+      }
     case SORT_METHOD_PLAYCOUNT:
       {
         dir->m_listItems->AddSortMethod(SortByPlaycount, 567, LABEL_MASKS("%T", "%V"));

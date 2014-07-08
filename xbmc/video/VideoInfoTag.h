@@ -148,6 +148,7 @@ public:
   CStreamDetails m_streamDetails;
   CBookmark m_resumePoint;
   CDateTime m_dateAdded;
+  CDateTime m_dateUpdated;
   MediaType m_type;
   int m_duration; ///< duration in seconds
 

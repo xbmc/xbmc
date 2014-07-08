@@ -91,6 +91,7 @@ void CVideoInfoTag::Reset()
   m_iIdShow = -1;
   m_iIdSeason = -1;
   m_dateAdded.Reset();
+  m_dateUpdated.Reset();
   m_type.clear();
 }
 
@@ -325,6 +326,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_resumePoint.totalTimeInSeconds;
     ar << m_iIdShow;
     ar << m_dateAdded.GetAsDBDateTime();
+    ar << m_dateUpdated.GetAsDBDateTime();
     ar << m_type;
     ar << m_iIdSeason;
   }
@@ -405,6 +407,9 @@ void CVideoInfoTag::Archive(CArchive& ar)
     CStdString dateAdded;
     ar >> dateAdded;
     m_dateAdded.SetFromDBDateTime(dateAdded);
+    CStdString dateUpdated;
+    ar >> dateUpdated;
+    m_dateUpdated.SetFromDBDateTime(dateUpdated);
     ar >> m_type;
     ar >> m_iIdSeason;
   }
@@ -472,6 +477,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["resume"] = resume;
   value["tvshowid"] = m_iIdShow;
   value["dateadded"] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::Empty;
+  value["dateupdated"] = m_dateUpdated.IsValid() ? m_dateUpdated.GetAsDBDateTime() : StringUtils::Empty;
   value["type"] = m_type;
   value["seasonid"] = m_iIdSeason;
   value["specialsortseason"] = m_iSpecialSortSeason;
@@ -545,6 +551,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
 
   case FieldInProgress:               sortable[FieldInProgress] = m_resumePoint.IsPartWay(); break;
   case FieldDateAdded:                sortable[FieldDateAdded] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::Empty; break;
+  case FieldDateUpdated:              sortable[FieldDateUpdated] = m_dateUpdated.IsValid() ? m_dateUpdated.GetAsDBDateTime() : StringUtils::Empty; break;
   case FieldMediaType:                sortable[FieldMediaType] = m_type; break;
   default: break;
   }

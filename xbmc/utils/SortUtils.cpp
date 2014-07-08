@@ -81,6 +81,11 @@ string ByLastPlayed(SortAttribute attributes, const SortItem &values)
   return StringUtils::Format("%s %s", values.at(FieldLastPlayed).asString().c_str(), ByLabel(attributes, values).c_str());
 }
 
+string ByDateUpdated(SortAttribute attributes, const SortItem &values)
+{
+  return StringUtils::Format("%s %s", values.at(FieldDateUpdated).asString().c_str(), ByLabel(attributes, values).c_str());
+}
+
 string ByPlaycount(SortAttribute attributes, const SortItem &values)
 {
   return StringUtils::Format("%i %s", (int)values.at(FieldPlaycount).asInteger(), ByLabel(attributes, values).c_str());
@@ -543,6 +548,7 @@ map<SortBy, SortUtils::SortPreparator> fillPreparators()
   preparators[SortByStudio]                   = ByStudio;
   preparators[SortByDateAdded]                = ByDateAdded;
   preparators[SortByLastPlayed]               = ByLastPlayed;
+  preparators[SortByDateUpdated]              = ByDateUpdated;
   preparators[SortByPlaycount]                = ByPlaycount;
   preparators[SortByListeners]                = ByListeners;
   preparators[SortByBitrate]                  = ByBitrate;
@@ -616,6 +622,7 @@ map<SortBy, Fields> fillSortingFields()
   sortingFields[SortByDateAdded].insert(FieldDateAdded);
   sortingFields[SortByDateAdded].insert(FieldId);
   sortingFields[SortByLastPlayed].insert(FieldLastPlayed);
+  sortingFields[SortByDateUpdated].insert(FieldDateUpdated);
   sortingFields[SortByPlaycount].insert(FieldPlaycount);
   sortingFields[SortByListeners].insert(FieldListeners);
   sortingFields[SortByBitrate].insert(FieldBitrate);
@@ -828,6 +835,7 @@ const sort_map table[] = {
   { SortByStudio,                   SORT_METHOD_STUDIO_IGNORE_THE,            SortAttributeIgnoreArticle, 572 },
   { SortByPath,                     SORT_METHOD_FULLPATH,                     SortAttributeNone,          573 },
   { SortByLastPlayed,               SORT_METHOD_LASTPLAYED,                   SortAttributeIgnoreFolders, 568 },
+  { SortByDateUpdated,              SORT_METHOD_DATEUPDATED,                  SortAttributeIgnoreFolders, 174 },
   { SortByPlaycount,                SORT_METHOD_PLAYCOUNT,                    SortAttributeIgnoreFolders, 567 },
   { SortByListeners,                SORT_METHOD_LISTENERS,                    SortAttributeNone,          20455 },
   { SortByChannel,                  SORT_METHOD_CHANNEL,                      SortAttributeNone,          19029 },

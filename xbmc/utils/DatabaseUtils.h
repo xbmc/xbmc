@@ -75,6 +75,7 @@ typedef enum {
   FieldPath,
   FieldPlaycount,
   FieldLastPlayed,
+  FieldDateUpdated,
   FieldInProgress,
   FieldRating,
   FieldComment,

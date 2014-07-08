@@ -86,6 +86,7 @@ typedef enum {
   SortByStudio,
   SortByDateAdded,
   SortByLastPlayed,
+  SortByDateUpdated,
   SortByPlaycount,
   SortByListeners,
   SortByBitrate,
