@@ -423,7 +423,7 @@
 				<control type="label">
 					<posx>36</posx>
 					<posy>40</posy>
-					<label>$LOCALIZE[41008]</label>
+					<label>$LOCALIZE[41008] ($INFO[Container(3).NumItems])</label>
 					<font>Bold-36</font>
 					<include>WhiteShadow</include>
 				</control>
