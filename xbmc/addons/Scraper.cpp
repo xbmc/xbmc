@@ -559,7 +559,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const CStd
 {
   // prepare parameters for URL creation
   CStdString sTitle, sTitleYear, sYear;
-  CUtil::CleanString(sMovie, sTitle, sTitleYear, sYear, true/*fRemoveExt*/, fFirst);
+  CUtil::CleanString(sMovie, sTitle, sTitleYear, sYear, true/*fRemoveExt*/, !fFirst);
 
   CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper "
     "(path: '%s', content: '%s', version: '%s')", __FUNCTION__, sTitle.c_str(),
