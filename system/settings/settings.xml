@@ -1240,12 +1240,13 @@
         </setting>
         <setting id="pvrplayback.startlast" type="integer" label="19189" help="36228">
           <level>1</level>
-          <default>0</default> <!-- START_LAST_CHANNEL_OFF -->
+          <default>0</default> <!-- CONTINUE_LAST_CHANNEL_OFF -->
           <constraints>
-            <minimum>0</minimum>
-            <step>1</step>
-            <maximum>2</maximum>
-            <options>pvrstartlastchannel</options>
+            <options>
+              <option label="106">0</option>   <!-- CONTINUE_LAST_CHANNEL_OFF -->
+              <option label="19190">1</option> <!-- CONTINUE_LAST_CHANNEL_IN_BACKGROUND -->
+              <option label="19288">2</option> <!-- CONTINUE_LAST_CHANNEL_IN_FOREGROUND -->
+            </options>
           </constraints>
           <control type="spinner" format="string" />
         </setting>

@@ -8166,8 +8166,9 @@ msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr ""
 
+#: system/settings/settings.xml
 msgctxt "#19190"
-msgid "Minimised"
+msgid "Background"
 msgstr ""
 
 msgctxt "#19191"
@@ -8595,7 +8596,12 @@ msgctxt "#19286"
 msgid "Searching for channel icons"
 msgstr ""
 
-#empty strings from id 19287 to 19498
+#: system/settings/settings.xml
+msgctxt "#19288"
+msgid "Foreground"
+msgstr ""
+
+#empty strings from id 19289 to 19498
 
 #: xbmc/epg/Epg.cpp
 msgctxt "#19499"

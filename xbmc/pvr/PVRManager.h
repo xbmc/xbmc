@@ -70,11 +70,11 @@ namespace PVR
     PlaybackTypeRadio
   };
 
-  enum ChannelStartLast
+  enum ContinueLastChannelOnStartup
   {
-    START_LAST_CHANNEL_OFF  = 0,
-    START_LAST_CHANNEL_MIN,
-    START_LAST_CHANNEL_ON
+    CONTINUE_LAST_CHANNEL_OFF  = 0,
+    CONTINUE_LAST_CHANNEL_IN_BACKGROUND,
+    CONTINUE_LAST_CHANNEL_IN_FOREGROUND
   };
 
   #define g_PVRManager       CPVRManager::Get()
@@ -448,10 +448,10 @@ namespace PVR
     /*!
      * @brief Start playback on a channel.
      * @param channel The channel to start to play.
-     * @param bPreview If true, open minimised.
+     * @param bMinimised If true, playback starts minimised, otherwise in fullscreen.
      * @return True if playback was started, false otherwise.
      */
-    bool StartPlayback(const CPVRChannel *channel, bool bPreview = false);
+    bool StartPlayback(const CPVRChannel *channel, bool bMinimised = false);
 
     /*!
      * @brief Start playback of the last used channel, and if it fails use first channel in the current channelgroup.
@@ -551,8 +551,6 @@ namespace PVR
      * @return True if action could be handled, false otherwise.
      */
     bool OnAction(const CAction &action);
-
-    static void SettingOptionsPvrStartLastChannelFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
     /*!
      * @brief Create EPG tags for all channels in internal channel groups
