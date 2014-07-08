@@ -86,7 +86,8 @@ void CGUIDialogAudioSubtitleSettings::FrameMove()
     m_settingsManager->SetBool(SETTING_AUDIO_OUTPUT_TO_ALL_SPEAKERS, videoSettings.m_OutputToAllSpeakers);
     m_settingsManager->SetBool(SETTING_AUDIO_PASSTHROUGH, CSettings::Get().GetBool("audiooutput.passthrough"));
 
-    m_settingsManager->SetBool(SETTING_SUBTITLE_ENABLE, videoSettings.m_SubtitleOn);
+    // TODO: m_settingsManager->SetBool(SETTING_SUBTITLE_ENABLE, g_application.m_pPlayer->GetSubtitleVisible());
+    //   \-> Unless subtitle visibility can change on the fly, while Dialog is up, this code should be removed.
     m_settingsManager->SetNumber(SETTING_SUBTITLE_DELAY, videoSettings.m_SubtitleDelay);
     // TODO (needs special handling): m_settingsManager->SetInt(SETTING_SUBTITLE_STREAM, g_application.m_pPlayer->GetSubtitle());
   }
