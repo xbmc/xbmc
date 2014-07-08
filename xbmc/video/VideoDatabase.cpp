@@ -8225,7 +8225,7 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
             pDialog->SetChoice(1, 15014);
 
             //send message and wait for user input
-            ThreadMessage tMsg = { TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, (unsigned int)g_windowManager.GetActiveWindow() };
+            ThreadMessage tMsg = { TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow() };
             CApplicationMessenger::Get().SendMessage(tMsg, true);
 
             del = !pDialog->IsConfirmed();

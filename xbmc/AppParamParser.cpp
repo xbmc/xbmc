@@ -155,6 +155,6 @@ void CAppParamParser::PlayPlaylist()
     g_playlistPlayer.SetCurrentPlaylist(0);
   }
 
-  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, (DWORD) -1};
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, -1};
   CApplicationMessenger::Get().SendMessage(tMsg, false);
 }
