@@ -313,6 +313,14 @@
 					<include>debugFont</include>
 					<label>Container.Property(PlexFilter) : [COLOR=orangeLight]$INFO[Container.Property(PlexFilter)][/COLOR]</label>
 				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.Property(PlexExtras) : [COLOR=orangeLight]$INFO[ListItem.Property(PlexExtras)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.Property(PlexExtras) : [COLOR=orangeLight]$INFO[Container.Property(PlexExtras)][/COLOR]</label>
+				</control>
 				<!--><control type="label">
 					<include>debugFont</include>
 					<label>ListItem.FileNameAndPath : [COLOR=orangeLight]$INFO[ListItem.FileNameAndPath][/COLOR]</label>

@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<window id="10209">
+	<defaultcontrol>3</defaultcontrol>
+	<controls>
+		<!-- ViewsDialog.xml -->
+		<include>DialogPlexExtras</include>
+		<include>leftMenuBg</include>
+		<!-- sidebar preplay -->
+		<control type="grouplist">
+			<posy>40</posy>
+			<posx>0</posx>
+			<width>74</width>
+			<aligny>top</aligny>
+			<onup>998</onup>
+			<ondown>998</ondown>
+			<orientation>vertical</orientation>
+			<itemgap>20</itemgap>
+			<!-- Play -->
+			<control type="button" id="102">
+				<texturefocus>b-pp-play-s.png</texturefocus>
+				<texturenofocus>b-pp-play.png</texturenofocus>
+				<include>leftMenuBarButton</include>
+			</control>
+			<!-- Audio -->
+			<control type="button" id="103">
+				<texturefocus>b-pp-audio-s2.png</texturefocus>
+				<texturenofocus>b-pp-audio2.png</texturenofocus>
+				<include>leftMenuBarButton</include>
+			</control>
+			<!-- Subtitles -->
+			<control type="button" id="104">
+				<texturefocus>b-pp-subtitles-s.png</texturefocus>
+				<texturenofocus>b-pp-subtitles.png</texturenofocus>
+				<include>leftMenuBarButton</include>
+			</control>
+			<!-- Extras -->
+			<control type="button" id="110">
+				<texturefocus>b-pp-extras-s.png</texturefocus>
+				<texturenofocus>b-pp-extras-s.png</texturenofocus>
+				<include>leftMenuBarButton</include>
+			</control>
+			<!-- Rate -->
+			<control type="button" id="105">
+				<texturefocus>b-pp-rate-s.png</texturefocus>
+				<texturenofocus>b-pp-rate.png</texturenofocus>
+				<include>leftMenuBarButton</include>
+			</control>
+			<!-- Recommend -->
+			<!--><control type="button" id="106">
+				<texturefocus>b-pp-recommend-s.png</texturefocus>
+				<texturenofocus>b-pp-recommend.png</texturenofocus>
+				<include>leftMenuBarButton</include>
+				<visible>!IsEmpty(ListItem(0).Property(canRecommend))</visible>
+			</control>-->
+			<!-- Share -->
+			<control type="button" id="107">
+				<texturefocus>b-pp-share-s.png</texturefocus>
+				<texturenofocus>b-pp-share.png</texturenofocus>
+				<include>leftMenuBarButton</include>
+				<visible>!IsEmpty(ListItem(0).Property(canShare))</visible>
+			</control>
+			<!-- Watched -->
+			<control type="button" id="108">
+				<texturefocus>b-pp-watched-s.png</texturefocus>
+				<texturenofocus>b-pp-watched.png</texturenofocus>
+				<include>leftMenuBarButton</include>
+			</control>
+			<!-- Unwatched -->
+			<control type="button" id="109">
+				<texturefocus>b-pp-unwatched-s.png</texturefocus>
+				<texturenofocus>b-pp-unwatched.png</texturenofocus>
+				<include>leftMenuBarButton</include>
+			</control>
+		</control>
+			<include>NowPlayingSideBar</include>
+			<include>debugInfos</include>
+			<include>Grid</include>
+			<include>Non16x9Cache</include>
+	</controls>
+</window>
