@@ -927,7 +927,7 @@ void CApplicationMessenger::MediaPlay(const CFileItemList &list, int song)
   listcopy->Copy(list);
   tMsg.lpVoid = (void*)listcopy;
   tMsg.param1 = song;
-  tMsg.param1 = 2;
+  tMsg.param2 = 1;
   SendMessage(tMsg, true);
 }
 
