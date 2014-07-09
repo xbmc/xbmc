@@ -937,6 +937,22 @@ std::string CSysInfo::GetKernelCpuFamily(void)
 
   if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM)
     return "ARM";
+#elif defined(TARGET_DARWIN)
+  const NXArchInfo* archInfo = NXGetLocalArchInfo();
+  if (archInfo)
+  {
+    const cpu_type_t cpuType = (archInfo->cputype & ~CPU_ARCH_ABI64); // get CPU family without 64-bit ABI flag
+    if (cpuType == CPU_TYPE_I386)
+      return "x86";
+    if (cpuType == CPU_TYPE_ARM)
+      return "ARM";
+    if (cpuType == CPU_TYPE_POWERPC)
+      return "PowerPC";
+#ifdef CPU_TYPE_MIPS
+    if (cpuType == CPU_TYPE_MIPS)
+      return "MIPS";
+#endif // CPU_TYPE_MIPS
+  }
 #elif defined(TARGET_POSIX)
   struct utsname un;
   if (uname(&un) == 0)
@@ -950,11 +966,6 @@ std::string CSysInfo::GetKernelCpuFamily(void)
       return "x86";
     if (machine.compare(0, 3, "ppc", 3) == 0 || machine.compare(0, 5, "power", 5) == 0)
       return "PowerPC";
-// ios saves the dev id like AppleTV2,1 in the machine
-// field - all ios devices are ARM - force this here...
-#if defined(TARGET_DARWIN_IOS)
-    return "ARM";
-#endif
   }
 #endif
   return "unknown CPU family";
