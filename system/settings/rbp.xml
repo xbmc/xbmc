@@ -39,12 +39,17 @@
         </setting>
         <setting id="videoscreen.limitgui" type="integer" label="37021" help="36548">
           <level>2</level>
-          <default>1080</default>
+          <default>0</default>
           <constraints>
-            <minimum>540</minimum>
-            <step>16</step>
-            <maximum>1080</maximum>
+            <options>
+              <option label="37026">0</option>    <!-- auto -->
+              <option label="37027">540</option>  <!-- 540 -->
+              <option label="37028">720</option>  <!-- 720 -->
+              <option label="37029">900</option>  <!-- 900 -->
+              <option label="37030">1080</option> <!-- unlimited -->
+            </options>
           </constraints>
+          <control type="spinner" format="string" />
           <control type="edit" format="integer" />
         </setting>
       </group>
