@@ -299,6 +299,7 @@ bool CAddonInstaller::InstallFromZip(const CStdString &path)
   {
     // set the correct path
     addon->Props().path = items[0]->GetPath();
+    addon->Props().icon = URIUtils::AddFileToFolder(items[0]->GetPath(), "icon.png");
 
     // install the addon
     return DoInstall(addon);
