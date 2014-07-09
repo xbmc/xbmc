@@ -2031,6 +2031,20 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
 // tries to get a integer value for use in progressbars/sliders and such
 bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUIListItem *item /* = NULL */) const
 {
+  /* PLEX */
+  // if we dont come with a valid item here, we try to grab the current window one, like we do for labels
+  if (!item)
+  {
+    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS); // true for has list items
+    if (window)
+    {
+      CFileItemPtr fileitem = window->GetCurrentListItem();
+      if (fileitem)
+        item = fileitem.get();
+    }
+  }
+  /* END PLEX */
+
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
     return GetMultiInfoInt(value, m_multiInfo[info - MULTI_INFO_START], contextWindow);
 
