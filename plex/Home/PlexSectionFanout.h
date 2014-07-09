@@ -54,10 +54,11 @@ public:
   SectionTypes m_sectionType;
   bool m_needsRefresh;
   void ShowPlayQueue();
+  void LoadArts();
 
   private:
   int LoadSection(const CURL& url, int contentType);
-  void LoadArts();
+
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
 
   std::map<int, CFileItemList*> m_fileLists;

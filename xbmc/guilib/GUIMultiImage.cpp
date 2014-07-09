@@ -134,6 +134,13 @@ void CGUIMultiImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
         m_image.SetFileName(m_files[m_currentImage]);
         MarkDirtyRegion();
 
+#ifdef __PLEX__
+        if ((m_currentImage == (m_files.size() - 1)) && m_files.size())
+        {
+          CGUIMessage msg(GUI_MSG_PLEX_MULTIIMAGE_ROLLOVER, GetID(), 0, nextImage, m_files.size());
+          SendWindowMessage(msg);
+        }
+#endif
         m_imageTimer.StartZero();
       }
     }

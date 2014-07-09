@@ -546,6 +546,15 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       if (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_PLAYER_PLAY)
         return OnClick(message);
       break;
+
+    case GUI_MSG_PLEX_MULTIIMAGE_ROLLOVER:
+      if (m_sections.find(m_currentFanArt) != m_sections.end())
+      {
+        CPlexSectionFanout *fan = m_sections[m_currentFanArt];
+        fan->LoadArts();
+      }
+
+      break;
   }
 
   return ret;
@@ -566,7 +575,7 @@ void CGUIWindowHome::OnSectionLoaded(const CGUIMessage& message)
 
   if (type == CONTENT_LIST_FANART)
   {
-    if (url != m_currentFanArt && (url == sectionToLoad || url == "global://art/"))
+    if ((url == sectionToLoad) || (url == "global://art/"))
     {
       CFileItemList list;
       if (GetContentListFromSection(url, CONTENT_LIST_FANART, list))
