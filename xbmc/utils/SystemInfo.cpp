@@ -60,6 +60,7 @@
 /* Platform identification */
 #if defined(TARGET_DARWIN)
 #include <Availability.h>
+#include <mach-o/arch.h>
 #elif defined(TARGET_ANDROID)
 #include <android/api-level.h>
 #include <sys/system_properties.h>
@@ -903,6 +904,12 @@ int CSysInfo::GetKernelBitness(void)
     return 64;
 
   return 0; // Can't detect OS
+#elif defined(TARGET_DARWIN_IOS)
+  // Note: OS X return x86 CPU type without CPU_ARCH_ABI64 flag
+  const NXArchInfo* archInfo = NXGetLocalArchInfo();
+  if (archInfo)
+    return ((archInfo->cputype & CPU_ARCH_ABI64) != 0) ? 64 : 32;
+  return 0; // system information is not available
 #elif defined(TARGET_POSIX)
   struct utsname un;
   if (uname(&un) == 0)
