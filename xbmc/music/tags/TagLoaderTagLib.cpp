@@ -449,6 +449,7 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
         else if (tag.GetRating() == '0')
         {
           if (popFrame->email() != "Windows Media Player 9 Series" &&
+              popFrame->email() != "Banshee" &&
               popFrame->email() != "no@email" &&
               popFrame->email() != "quodlibet@lists.sacredchao.net" &&
               popFrame->email() != "rating@winamp.com")
