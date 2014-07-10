@@ -4637,11 +4637,16 @@ void CVideoDatabase::UpdateTables(int iVersion)
     // drop multipaths from the path table - they're not needed for anything at all
     m_pDS->exec("DELETE FROM path WHERE strPath LIKE 'multipath://%'");
   }
+  if (iVersion < 87)
+  { // due to the tvshow merging above, there could be orphaned season or show art
+    m_pDS->exec("DELETE from art WHERE media_type='tvshow' AND NOT EXISTS (SELECT 1 FROM tvshow WHERE tvshow.idShow = art.media_id)");
+    m_pDS->exec("DELETE from art WHERE media_type='season' AND NOT EXISTS (SELECT 1 FROM seasons WHERE seasons.idSeason = art.media_id)");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 86;
+  return 87;
 }
 
 bool CVideoDatabase::LookupByFolders(const CStdString &path, bool shows)
