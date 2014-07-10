@@ -1,0 +1,4 @@
+* Fixes
+  - Fix stuttering issues that came up with 1.1.5
+  - Fix randomness of fanart slideshow on homescreen
+
