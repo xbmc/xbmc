@@ -39,6 +39,7 @@
 CLogindUPowerSyscall::CLogindUPowerSyscall()
 {
   m_delayLockFd = -1;
+  m_lowBattery = false;
 
   CLog::Log(LOGINFO, "Selected Logind/UPower as PowerSyscall");
 
@@ -206,9 +207,10 @@ void CLogindUPowerSyscall::UpdateBatteryLevel()
   dbus_free_string_array(source);
 
   if (batteryCount > 0)
+  {
     m_batteryLevel = (int)(batteryLevelSum / (double)batteryCount);
-
-  m_lowBattery = CDBusUtil::GetVariant("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "OnLowBattery").asBoolean();
+    m_lowBattery = CDBusUtil::GetVariant("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "OnLowBattery").asBoolean();
+  }
 }
 
 bool CLogindUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
