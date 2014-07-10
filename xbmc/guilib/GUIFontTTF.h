@@ -154,7 +154,6 @@ protected:
   float m_originX;
   float m_originY;
 
-  bool m_bTextureLoaded;
   unsigned int m_nTexture;
 
   SVertex* m_vertex;
