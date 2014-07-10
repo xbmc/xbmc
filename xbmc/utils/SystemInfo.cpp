@@ -929,49 +929,54 @@ int CSysInfo::GetKernelBitness(void)
   return kernelBitness;
 }
 
-std::string CSysInfo::GetKernelCpuFamily(void)
+const std::string& CSysInfo::GetKernelCpuFamily(void)
 {
+  static std::string kernelCpuFamily;
+  if (kernelCpuFamily.empty())
+  {
 #ifdef TARGET_WINDOWS
-  SYSTEM_INFO si;
-  GetNativeSystemInfo(&si);
-  if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL ||
-      si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
-    return "x86";
-
-  if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM)
-    return "ARM";
+    SYSTEM_INFO si;
+    GetNativeSystemInfo(&si);
+    if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL ||
+        si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
+        kernelCpuFamily = "x86";
+    else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM)
+      kernelCpuFamily = "ARM";
 #elif defined(TARGET_DARWIN)
-  const NXArchInfo* archInfo = NXGetLocalArchInfo();
-  if (archInfo)
-  {
-    const cpu_type_t cpuType = (archInfo->cputype & ~CPU_ARCH_ABI64); // get CPU family without 64-bit ABI flag
-    if (cpuType == CPU_TYPE_I386)
-      return "x86";
-    if (cpuType == CPU_TYPE_ARM)
-      return "ARM";
-    if (cpuType == CPU_TYPE_POWERPC)
-      return "PowerPC";
+    const NXArchInfo* archInfo = NXGetLocalArchInfo();
+    if (archInfo)
+    {
+      const cpu_type_t cpuType = (archInfo->cputype & ~CPU_ARCH_ABI64); // get CPU family without 64-bit ABI flag
+      if (cpuType == CPU_TYPE_I386)
+        kernelCpuFamily = "x86";
+      else if (cpuType == CPU_TYPE_ARM)
+        kernelCpuFamily = "ARM";
+      else if (cpuType == CPU_TYPE_POWERPC)
+        kernelCpuFamily = "PowerPC";
 #ifdef CPU_TYPE_MIPS
-    if (cpuType == CPU_TYPE_MIPS)
-      return "MIPS";
+      else if (cpuType == CPU_TYPE_MIPS)
+        kernelCpuFamily = "MIPS";
 #endif // CPU_TYPE_MIPS
-  }
+    }
 #elif defined(TARGET_POSIX)
-  struct utsname un;
-  if (uname(&un) == 0)
-  {
-    std::string machine(un.machine);
-    if (machine.compare(0, 3, "arm", 3) == 0)
-      return "ARM";
-    if (machine.compare(0, 4, "mips", 4) == 0)
-      return "MIPS";
-    if (machine.compare(0, 4, "i686", 4) == 0 || machine == "i386" || machine == "amd64" ||  machine.compare(0, 3, "x86", 3) == 0)
-      return "x86";
-    if (machine.compare(0, 3, "ppc", 3) == 0 || machine.compare(0, 5, "power", 5) == 0)
-      return "PowerPC";
-  }
+    struct utsname un;
+    if (uname(&un) == 0)
+    {
+      std::string machine(un.machine);
+      if (machine.compare(0, 3, "arm", 3) == 0)
+        kernelCpuFamily = "ARM";
+      else if (machine.compare(0, 4, "mips", 4) == 0)
+        kernelCpuFamily = "MIPS";
+      else if (machine.compare(0, 4, "i686", 4) == 0 || machine == "i386" || machine == "amd64" ||  machine.compare(0, 3, "x86", 3) == 0)
+        kernelCpuFamily = "x86";
+      else if (machine.compare(0, 3, "ppc", 3) == 0 || machine.compare(0, 5, "power", 5) == 0)
+        kernelCpuFamily = "PowerPC";
+    }
 #endif
-  return "unknown CPU family";
+    if (kernelCpuFamily.empty())
+      kernelCpuFamily = "unknown CPU family";
+  }
+  return kernelCpuFamily;
 }
 
 int CSysInfo::GetXbmcBitness(void)
