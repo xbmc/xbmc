@@ -229,6 +229,8 @@ public:
   virtual std::string GetDefaultDevice(bool passthrough);
   virtual bool SupportsRaw(AEDataFormat format, int samplerate);
   virtual bool SupportsSilenceTimeout();
+  virtual bool HasStereoAudioChannelCount();
+  virtual bool HasHDAudioChannelCount();
   virtual bool SupportsQualityLevel(enum AEQuality level);
   virtual bool IsSettingVisible(const std::string &settingId);
   virtual void KeepConfiguration(unsigned int millis);
