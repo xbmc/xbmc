@@ -33,13 +33,6 @@ $(LIBDYLIB): $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM) install
-ifeq ($(OS),android)
-	rm -f $(PREFIX)/lib/libFLAC.la $(PREFIX)/lib/libFLAC.so $(PREFIX)/lib/libFLAC.so.8
-	mv -f $(PREFIX)/lib/libFLAC.so.8.2.0 $(PREFIX)/lib/libxbFLAC.so
-	ln -sf $(PREFIX)/lib/libxbFLAC.so $(PREFIX)/lib/libFLAC.so
-	$(RPL) -e "libFLAC.so.8" "libxbFLAC.so" $(PREFIX)/lib/libxbFLAC.so
-	-$(READELF) --dynamic $(PREFIX)/lib/libxbFLAC.so | grep ibrary
-endif
 	touch $@
 
 clean:

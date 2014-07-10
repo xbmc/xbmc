@@ -1,5 +1,0 @@
-SET(XBMC_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include)
-LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
-
-include(xbmc-addon-helpers)
-include(AddOptions)

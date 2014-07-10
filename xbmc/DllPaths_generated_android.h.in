@@ -74,9 +74,7 @@
 #define DLL_PATH_LIBSTAGEFRIGHTICS    "libXBMCvcodec_stagefrightICS-@ARCH@.so"
 
 /* cdrip */
-#define DLL_PATH_LAME_ENC      "@LAMEENC_SONAME@"
 #define DLL_PATH_OGG           "@OGG_SONAME@"
-#define DLL_PATH_VORBIS_ENC    "@VORBISENC_SONAME@"
 #define DLL_PATH_VORBIS        "@VORBIS_SONAME@"
 
 /* libbluray */

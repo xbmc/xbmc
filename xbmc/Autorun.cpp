@@ -516,18 +516,4 @@ void CAutorun::SettingOptionAudioCdActionsFiller(const CSetting *setting, std::v
 #endif
 }
 
-void CAutorun::SettingOptionAudioCdEncodersFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
-{
-#ifdef HAVE_LIBMP3LAME
-  list.push_back(make_pair(g_localizeStrings.Get(34000), CDDARIP_ENCODER_LAME));
-#endif
-#ifdef HAVE_LIBVORBISENC
-  list.push_back(make_pair(g_localizeStrings.Get(34001), CDDARIP_ENCODER_VORBIS));
-#endif
-  list.push_back(make_pair(g_localizeStrings.Get(34002), CDDARIP_ENCODER_WAV));
-  list.push_back(make_pair(g_localizeStrings.Get(34005), CDDARIP_ENCODER_FLAC));
-  list.push_back(make_pair(g_localizeStrings.Get(34006), CDDARIP_ENCODER_FFMPEG_M4A));
-  list.push_back(make_pair(g_localizeStrings.Get(34007), CDDARIP_ENCODER_FFMPEG_WMA));
-}
-
 #endif

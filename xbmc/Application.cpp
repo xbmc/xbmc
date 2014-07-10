@@ -1715,6 +1715,12 @@ void CApplication::OnSettingAction(const CSetting *setting)
     if (CAddonMgr::Get().GetAddon(CSettings::Get().GetString("screensaver.mode"), addon, ADDON_SCREENSAVER))
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
+  else if (settingId == "audiocds.settings")
+  {
+    AddonPtr addon;
+    if (CAddonMgr::Get().GetAddon(CSettings::Get().GetString("audiocds.encoder"), addon, ADDON_AUDIOENCODER))
+      CGUIDialogAddonSettings::ShowAndGetInput(addon);
+  }
   else if (settingId == "videoscreen.guicalibration")
     g_windowManager.ActivateWindow(WINDOW_SCREEN_CALIBRATION);
   else if (settingId == "videoscreen.testpattern")

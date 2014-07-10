@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="audioencoder.xbmc.builtin.wma"
+  version="1.0.0"
+  name="WMA encoder"
+  provider-name="spiff">
+  <requires>
+    <import addon="xbmc.audioencoder" version="1.0.0"/>
+  </requires>
+  <extension
+    point="xbmc.audioencoder"
+    extension=".wma"
+    library_linux="dummy.so"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">WMA Audio Encoder</summary>
+    <description lang="en">WMA Audio Encoder</description>
+    <platform>all</platform>
+  </extension>
+</addon>

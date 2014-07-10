@@ -1,0 +1,2 @@
+include/ogg/* include/ogg
+lib/* lib

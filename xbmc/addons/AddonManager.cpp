@@ -19,6 +19,7 @@
  */
 #include "AddonManager.h"
 #include "Addon.h"
+#include "AudioEncoder.h"
 #include "DllLibCPluff.h"
 #include "utils/StringUtils.h"
 #include "utils/JobManager.h"
@@ -114,6 +115,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
     case ADDON_VIZ:
     case ADDON_SCREENSAVER:
     case ADDON_PVRDLL:
+    case ADDON_AUDIOENCODER:
       { // begin temporary platform handling for Dlls
         // ideally platforms issues will be handled by C-Pluff
         // this is not an attempt at a solution
@@ -128,7 +130,12 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
           if (URIUtils::HasExtension(library, ".py"))
             return AddonPtr(new CScreenSaver(props));
         }
-#if defined(TARGET_ANDROID)                                                                                                                                                      
+        if (type == ADDON_AUDIOENCODER && 0 == strncmp(props->plugin->identifier,
+                                                       "audioencoder.xbmc.builtin.", 26))
+        { // built in audio encoder
+          return AddonPtr(new CAudioEncoder(props));
+        }
+#if defined(TARGET_ANDROID)
           if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_android")) && value.empty())                                                                
             break;                                                                                                                                                                 
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
@@ -156,6 +163,8 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
           return AddonPtr(new CPVRClient(props));
 #endif
         }
+        else if (type == ADDON_AUDIOENCODER)
+          return AddonPtr(new CAudioEncoder(props));
         else
           return AddonPtr(new CScreenSaver(props));
       }
@@ -663,6 +672,8 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CAddonLibrary(addonProps));
     case ADDON_PVRDLL:
       return AddonPtr(new CPVRClient(addonProps));
+    case ADDON_AUDIOENCODER:
+      return AddonPtr(new CAudioEncoder(addonProps));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(addonProps));
     default:

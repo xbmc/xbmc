@@ -568,7 +568,6 @@ void CSettings::InitializeOptionFillers()
   // register setting option fillers
 #ifdef HAS_DVD_DRIVE
   m_settingsManager->RegisterSettingOptionsFiller("audiocdactions", MEDIA_DETECT::CAutorun::SettingOptionAudioCdActionsFiller);
-  m_settingsManager->RegisterSettingOptionsFiller("audiocdencoders", MEDIA_DETECT::CAutorun::SettingOptionAudioCdEncodersFiller);
 #endif
   m_settingsManager->RegisterSettingOptionsFiller("aequalitylevels", CAEFactory::SettingOptionsAudioQualityLevelsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("audiodevices", CAEFactory::SettingOptionsAudioDevicesFiller);
@@ -717,6 +716,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("screensaver.mode");
   settingSet.insert("screensaver.preview");
   settingSet.insert("screensaver.settings");
+  settingSet.insert("audiocds.settings");
   settingSet.insert("videoscreen.guicalibration");
   settingSet.insert("videoscreen.testpattern");
   settingSet.insert("videoplayer.useamcodec");

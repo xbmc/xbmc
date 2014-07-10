@@ -1604,6 +1604,7 @@
     <ClCompile Include="..\..\xbmc\addons\Addon.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonManager.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonStatusHandler.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\AudioEncoder.cpp" />
     <ClCompile Include="..\..\xbmc\addons\Scraper.cpp" />
     <ClCompile Include="..\..\xbmc\addons\ScreenSaver.cpp" />
     <ClCompile Include="..\..\xbmc\addons\Visualisation.cpp" />
@@ -1611,10 +1612,6 @@
     <ClCompile Include="..\..\xbmc\cdrip\CDDARipper.cpp" />
     <ClCompile Include="..\..\xbmc\cdrip\Encoder.cpp" />
     <ClCompile Include="..\..\xbmc\cdrip\EncoderFFmpeg.cpp" />
-    <ClCompile Include="..\..\xbmc\cdrip\EncoderFlac.cpp" />
-    <ClCompile Include="..\..\xbmc\cdrip\EncoderLame.cpp" />
-    <ClCompile Include="..\..\xbmc\cdrip\EncoderVorbis.cpp" />
-    <ClCompile Include="..\..\xbmc\cdrip\EncoderWav.cpp" />
     <ClCompile Include="..\..\xbmc\windowing\windows\WinEventsWin32.cpp" />
     <ClCompile Include="..\..\xbmc\windowing\windows\WinSystemWin32.cpp" />
     <ClCompile Include="..\..\xbmc\windowing\windows\WinSystemWin32DX.cpp" />
@@ -2320,6 +2317,7 @@
     <ClInclude Include="..\..\xbmc\addons\AddonDll.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonManager.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonStatusHandler.h" />
+    <ClInclude Include="..\..\xbmc\addons\AudioEncoder.h" />
     <ClInclude Include="..\..\xbmc\addons\DllAddon.h" />
     <ClInclude Include="..\..\xbmc\addons\IAddon.h" />
     <ClInclude Include="..\..\xbmc\addons\Scraper.h" />
@@ -2327,17 +2325,8 @@
     <ClInclude Include="..\..\xbmc\addons\Visualisation.h" />
     <ClInclude Include="..\..\xbmc\cdrip\CDDARipJob.h" />
     <ClInclude Include="..\..\xbmc\cdrip\CDDARipper.h" />
-    <ClInclude Include="..\..\xbmc\cdrip\DllLameenc.h" />
-    <ClInclude Include="..\..\xbmc\cdrip\DllFlacEnc.h" />
-    <ClInclude Include="..\..\xbmc\cdrip\DllOgg.h" />
-    <ClInclude Include="..\..\xbmc\cdrip\DllVorbis.h" />
-    <ClInclude Include="..\..\xbmc\cdrip\DllVorbisEnc.h" />
     <ClInclude Include="..\..\xbmc\cdrip\Encoder.h" />
     <ClInclude Include="..\..\xbmc\cdrip\EncoderFFmpeg.h" />
-    <ClInclude Include="..\..\xbmc\cdrip\EncoderFlac.h" />
-    <ClInclude Include="..\..\xbmc\cdrip\EncoderLame.h" />
-    <ClInclude Include="..\..\xbmc\cdrip\EncoderVorbis.h" />
-    <ClInclude Include="..\..\xbmc\cdrip\EncoderWav.h" />
     <ClInclude Include="..\..\xbmc\windowing\WindowingFactory.h" />
     <ClInclude Include="..\..\xbmc\windowing\windows\WinEventsWin32.h" />
     <ClInclude Include="..\..\xbmc\windowing\windows\WinSystemWin32.h" />

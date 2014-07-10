@@ -340,12 +340,16 @@ lib/cpluff/stamp-h1
 
 # /project/cmake
 /project/cmake/xbmc-config.cmake
+/project/cmake/addons/build
+/project/cmake/addons/depends/win32/build
+/project/cmake/addons/output
 
 # /project/Win32BuildSetup/
 /project/Win32BuildSetup/XBMC.log
 /project/Win32BuildSetup/XBMCSetup*.exe
 /project/Win32BuildSetup/languages.nsi
 /project/Win32BuildSetup/skins.nsi
+/project/Win32BuildSetup/xbmc-audioencoder-addons.nsi
 /project/Win32BuildSetup/xbmc-pvr-addons.nsi
 /project/Win32BuildSetup/bgprocess
 /project/Win32BuildSetup/makeclean

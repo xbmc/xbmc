@@ -21,7 +21,7 @@
  *
  */
 
-#include "Encoder.h"
+#include "IEncoder.h"
 
 extern "C" {
 #include "libavformat/avformat.h"
@@ -30,16 +30,15 @@ extern "C" {
 #include "libswresample/swresample.h"
 }
 
-class CEncoderFFmpeg : public CEncoder
+class CEncoderFFmpeg : public IEncoder
 {
 public:
   CEncoderFFmpeg();
   virtual ~CEncoderFFmpeg() {}
-  bool Init(const char* strFile, int iInChannels, int iInRate, int iInBits);
-  int Encode(int nNumBytesRead, uint8_t* pbtStream);
-  bool Close();
-  void AddTag(int key, const char* value);
 
+  bool Init(audioenc_callbacks &callbacks);
+  int Encode(int nNumBytesRead, uint8_t *pbtStream);
+  bool Close();
 private:
 
   AVFormatContext  *m_Format;
@@ -58,7 +57,7 @@ private:
   unsigned char     m_BCBuffer[4096];
   static int        avio_write_callback(void *opaque, uint8_t *buf, int buf_size);
   static int64_t    avio_seek_callback(void *opaque, int64_t offset, int whence);
-  void              SetTag(const CStdString tag, const CStdString value);
+  void              SetTag(const std::string &tag, const std::string &value);
 
 
   unsigned int      m_NeededFrames;
@@ -70,6 +69,8 @@ private:
   unsigned int      m_ResampledBufferSize;
   AVFrame          *m_ResampledFrame;
   bool              m_NeedConversion;
+
+  audioenc_callbacks m_callbacks;
 
   bool WriteFrame();
 };

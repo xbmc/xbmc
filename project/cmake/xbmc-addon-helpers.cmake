@@ -81,6 +81,7 @@ include(AddOptions)
 include(TestCXXAcceptsFlag)
 OPTION(PACKAGE_ZIP "Package Zip file?" OFF)
 OPTION(PACKAGE_TGZ "Package TGZ file?" OFF)
+OPTION(BUILD_SHARED_LIBS "Build shared libs?" ON)
 
 # LTO support?
 CHECK_CXX_ACCEPTS_FLAG("-flto" HAVE_LTO)
@@ -90,4 +91,9 @@ IF(HAVE_LTO)
     add_options(ALL_LANGUAGES ALL_BUILDS "-flto")
   ENDIF(USE_LTO)
 ENDIF(HAVE_LTO) 
+
+# set this to try linking dependencies as static as possible
+IF(ADDONS_PREFER_STATIC_LIBS)
+  SET(CMAKE_FIND_LIBRARY_SUFFIXES .lib .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
+ENDIF(ADDONS_PREFER_STATIC_LIBS)
 

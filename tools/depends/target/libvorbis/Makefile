@@ -46,13 +46,6 @@ ifeq ($(OS),android)
 	$(RPL) -e "libvorbis.so.0" "libxbvorbis.so" $(PREFIX)/lib/libxbvorbisfile.so
 	-$(READELF) --dynamic $(PREFIX)/lib/libxbvorbisfile.so | grep ibrary
 	#
-	rm -f $(PREFIX)/lib/libvorbisenc.la $(PREFIX)/lib/libvorbisenc.so $(PREFIX)/lib/libvorbisenc.so.2
-	mv -f $(PREFIX)/lib/libvorbisenc.so.2.0.8 $(PREFIX)/lib/libxbvorbisenc.so
-	ln -sf $(PREFIX)/lib/libxbvorbisenc.so $(PREFIX)/lib/libvorbisenc.so
-	$(RPL) -e "libvorbisenc.so.2" "libxbvorbisenc.so" $(PREFIX)/lib/libxbvorbisenc.so
-	$(RPL) -e "libvorbis.so.0" "libxbvorbis.so" $(PREFIX)/lib/libxbvorbisenc.so
-	-$(READELF) --dynamic $(PREFIX)/lib/libxbvorbisenc.so | grep ibrary
-	#
 endif
 	touch $@
 

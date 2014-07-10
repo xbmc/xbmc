@@ -70,9 +70,7 @@
 #define DLL_PATH_LIBMPEG2      "@MPEG2_SONAME@"
 
 /* cdrip */
-#define DLL_PATH_LAME_ENC      "@LAMEENC_SONAME@"
 #define DLL_PATH_OGG           "@OGG_SONAME@"
-#define DLL_PATH_VORBIS_ENC    "@VORBISENC_SONAME@"
 #define DLL_PATH_VORBIS        "@VORBIS_SONAME@"
 
 /* broadcom crystalhd */

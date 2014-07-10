@@ -1,0 +1,1 @@
+lame http://mirrors.xbmc.org/build-deps/win32/libmp3lame-3.99.5-static-win32-2.zip

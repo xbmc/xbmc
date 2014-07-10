@@ -1,0 +1,2 @@
+include/FLAC/* include/FLAC
+lib/libFLAC_static.lib lib
