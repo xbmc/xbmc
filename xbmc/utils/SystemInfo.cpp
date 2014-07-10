@@ -890,40 +890,43 @@ CSysInfo::WindowsVersion CSysInfo::GetWindowsVersion()
 
 int CSysInfo::GetKernelBitness(void)
 {
-#ifdef TARGET_WINDOWS
-  SYSTEM_INFO si;
-  GetNativeSystemInfo(&si);
-  if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL || si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM)
-    return 32;
-
-  if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
-    return 64;
-  
-  BOOL isWow64 = FALSE;
-  if (IsWow64Process(GetCurrentProcess(), &isWow64) && isWow64) // fallback
-    return 64;
-
-  return 0; // Can't detect OS
-#elif defined(TARGET_DARWIN_IOS)
-  // Note: OS X return x86 CPU type without CPU_ARCH_ABI64 flag
-  const NXArchInfo* archInfo = NXGetLocalArchInfo();
-  if (archInfo)
-    return ((archInfo->cputype & CPU_ARCH_ABI64) != 0) ? 64 : 32;
-  return 0; // system information is not available
-#elif defined(TARGET_POSIX)
-  struct utsname un;
-  if (uname(&un) == 0)
+  static int kernelBitness = -1;
+  if (kernelBitness == -1)
   {
-    std::string machine(un.machine);
-    if (machine == "x86_64" || machine == "amd64" || machine == "arm64" || machine == "aarch64" || machine == "ppc64" ||
-        machine == "ia64" || machine == "mips64")
-      return 64;
-    return 32;
-  }
-  return 0; // can't detect
-#else
-  return 0; // unknown
+#ifdef TARGET_WINDOWS
+    SYSTEM_INFO si;
+    GetNativeSystemInfo(&si);
+    if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL || si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM)
+      kernelBitness = 32;
+    else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
+      kernelBitness = 64;
+    else
+    {
+      BOOL isWow64 = FALSE;
+      if (IsWow64Process(GetCurrentProcess(), &isWow64) && isWow64) // fallback
+        kernelBitness = 64;
+    }
+#elif defined(TARGET_DARWIN_IOS)
+    // Note: OS X return x86 CPU type without CPU_ARCH_ABI64 flag
+    const NXArchInfo* archInfo = NXGetLocalArchInfo();
+    if (archInfo)
+      kernelBitness = ((archInfo->cputype & CPU_ARCH_ABI64) != 0) ? 64 : 32;
+#elif defined(TARGET_POSIX)
+    struct utsname un;
+    if (uname(&un) == 0)
+    {
+      std::string machine(un.machine);
+      if (machine == "x86_64" || machine == "amd64" || machine == "arm64" || machine == "aarch64" || machine == "ppc64" ||
+          machine == "ia64" || machine == "mips64")
+          kernelBitness = 64;
+      kernelBitness = 32;
+    }
 #endif
+    if (kernelBitness == -1)
+      kernelBitness = 0; // can't detect
+  }
+
+  return kernelBitness;
 }
 
 std::string CSysInfo::GetKernelCpuFamily(void)
