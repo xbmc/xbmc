@@ -33,6 +33,48 @@
 using namespace PVR;
 using namespace EPG;
 
+CPVRRecordingUid::CPVRRecordingUid() :
+    m_iClientId(PVR_VIRTUAL_CLIENT_ID)
+{
+}
+
+CPVRRecordingUid::CPVRRecordingUid(const CPVRRecordingUid &recordingId)
+{
+  m_iClientId = recordingId.m_iClientId;
+  m_strRecordingId = recordingId.m_strRecordingId;
+}
+
+CPVRRecordingUid::CPVRRecordingUid(int iClientId, const std::string& strRecordingId)
+{
+  m_iClientId = iClientId;
+  m_strRecordingId = strRecordingId;
+}
+
+bool CPVRRecordingUid::operator >(const CPVRRecordingUid& right) const
+{
+  return (m_iClientId == right.m_iClientId) ?
+            m_strRecordingId > right.m_strRecordingId :
+            m_iClientId > right.m_iClientId;
+}
+
+bool CPVRRecordingUid::operator <(const CPVRRecordingUid& right) const
+{
+  return (m_iClientId == right.m_iClientId) ?
+            m_strRecordingId < right.m_strRecordingId :
+            m_iClientId < right.m_iClientId;
+}
+
+bool CPVRRecordingUid::operator ==(const CPVRRecordingUid& right) const
+{
+  return m_iClientId == right.m_iClientId && m_strRecordingId == right.m_strRecordingId;
+}
+
+bool CPVRRecordingUid::operator !=(const CPVRRecordingUid& right) const
+{
+  return m_iClientId != right.m_iClientId || m_strRecordingId != right.m_strRecordingId;
+}
+
+
 CPVRRecording::CPVRRecording()
 {
   Reset();
@@ -114,7 +156,7 @@ void CPVRRecording::Serialize(CVariant& value) const
 
 void CPVRRecording::Reset(void)
 {
-  m_strRecordingId     = StringUtils::EmptyString;
+  m_strRecordingId     = StringUtils::Empty;
   m_iClientId          = 0;
   m_strChannelName     = StringUtils::EmptyString;
   m_strDirectory       = StringUtils::EmptyString;

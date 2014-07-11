@@ -1017,6 +1017,14 @@
 						<texture>PVR-HasTimer.png</texture>
 						<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
 					</control>
+					<control type="image">
+						<left>6</left>
+						<top>28</top>
+						<width>16</width>
+						<height>16</height>
+						<texture>PVR-HasRecording.png</texture>
+						<visible>ListItem.HasRecording + !ListItem.IsRecording + !ListItem.HasTimer</visible>
+					</control>
 				</itemlayout>
 				<focusedlayout height="48" width="40">
 					<control type="image" id="14">
@@ -1060,6 +1068,14 @@
 						<height>16</height>
 						<texture>PVR-HasTimer.png</texture>
 						<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
+					</control>
+					<control type="image">
+						<left>6</left>
+						<top>28</top>
+						<width>16</width>
+						<height>16</height>
+						<texture>PVR-HasRecording.png</texture>
+						<visible>ListItem.HasRecording + !ListItem.IsRecording + !ListItem.HasTimer</visible>
 					</control>
 				</focusedlayout>
 			</control>
@@ -1579,6 +1595,14 @@
 								<label>31510</label>
 								<visible>ListItem.HasTimer</visible>
 							</control>
+							<control type="image">
+								<left>980</left>
+								<top>10</top>
+								<width>20</width>
+								<height>20</height>
+								<texture>PVR-HasRecording.png</texture>
+								<visible>ListItem.HasRecording + !ListItem.IsRecording + !ListItem.HasTimer</visible>
+							</control>
 						</control>
 					</itemlayout>
 					<focusedlayout height="40">
@@ -1693,6 +1717,14 @@
 								<selectedcolor>selected</selectedcolor>
 								<label>31510</label>
 								<visible>ListItem.HasTimer</visible>
+							</control>
+							<control type="image">
+								<left>980</left>
+								<top>10</top>
+								<width>20</width>
+								<height>20</height>
+								<texture>PVR-HasRecording.png</texture>
+								<visible>ListItem.HasRecording + !ListItem.IsRecording + !ListItem.HasTimer</visible>
 							</control>
 						</control>
 					</focusedlayout>

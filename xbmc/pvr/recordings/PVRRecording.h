@@ -41,11 +41,34 @@
 
 namespace PVR
 {
+  class CPVRRecording;
+
+  typedef boost::shared_ptr<PVR::CPVRRecording> CPVRRecordingPtr;
+
+  /*!
+   * @brief Representation of a CPVRRecording unique ID.
+   */
+  class CPVRRecordingUid
+  {
+  public:
+    int           m_iClientId;        /*!< ID of the backend */
+    std::string   m_strRecordingId;   /*!< unique ID of the recording on the client */
+
+    CPVRRecordingUid();
+    CPVRRecordingUid(const CPVRRecordingUid& recordingId);
+    CPVRRecordingUid(int iClientId, const std::string &strRecordingId);
+
+    bool operator >(const CPVRRecordingUid& right) const;
+    bool operator <(const CPVRRecordingUid& right) const;
+    bool operator ==(const CPVRRecordingUid& right) const;
+    bool operator !=(const CPVRRecordingUid& right) const;
+  };
+
   class CPVRRecording : public CVideoInfoTag
   {
   public:
     int           m_iClientId;        /*!< ID of the backend */
-    CStdString    m_strRecordingId;   /*!< unique id of the recording on the client */
+    std::string   m_strRecordingId;   /*!< unique ID of the recording on the client */
     CStdString    m_strChannelName;   /*!< name of the channel this was recorded from */
     CDateTimeSpan m_duration;         /*!< duration of this recording */
     int           m_iPriority;        /*!< priority of this recording */

@@ -32,9 +32,12 @@ namespace PVR
   class CPVRRecordings : public Observable
   {
   private:
+    typedef std::map<CPVRRecordingUid, CPVRRecordingPtr> PVR_RECORDINGMAP;
+    typedef PVR_RECORDINGMAP::const_iterator             PVR_RECORDINGMAP_CITR;
+
     CCriticalSection             m_critSection;
     bool                         m_bIsUpdating;
-    std::vector<CPVRRecording *> m_recordings;
+    PVR_RECORDINGMAP             m_recordings;
     unsigned int                 m_iLastId;
 
     virtual void UpdateFromClients(void);
@@ -85,6 +88,7 @@ namespace PVR
     bool IsAllRecordingsDirectory(const CFileItem &item) const;
     bool GetDirectory(const CStdString& strPath, CFileItemList &items);
     CFileItemPtr GetByPath(const CStdString &path);
+    CPVRRecordingPtr GetById(int iClientId, const std::string &strRecordingId) const;
     void SetPlayCount(const CFileItem &item, int iPlayCount);
     void GetAll(CFileItemList &items);
     CFileItemPtr GetById(unsigned int iId) const;

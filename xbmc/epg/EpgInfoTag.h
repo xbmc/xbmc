@@ -26,6 +26,7 @@
 #include "utils/StringUtils.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
+#include "pvr/recordings/PVRRecording.h"
 
 #include <boost/shared_ptr.hpp>
 
@@ -369,6 +370,24 @@ namespace EPG
     CStdString Path(void) const;
 
     /*!
+     * @brief Change the recording ID to this event.
+     * @param strRecordingId The new recording ID.
+     */
+    void SetRecordingId(const std::string &strRecordingId);
+
+    /*!
+     * @brief The recording ID to this event.
+     * @return The recording ID.
+     */
+    const std::string& RecordingId(void) const;
+
+    /*!
+     * @brief Check whether this event has a recording ID.
+     * @return True if it has a recording ID, false if not.
+     */
+    bool HasRecordingId(void) const;
+
+    /*!
      * @brief Set a timer for this event or NULL to clear it.
      * @param newTimer The new timer value.
      */
@@ -386,6 +405,29 @@ namespace EPG
      * @return A pointer to the timer for event or NULL if there is none.
      */
     PVR::CPVRTimerInfoTagPtr Timer(void) const;
+
+    /*!
+     * @brief Set a recording for this event or NULL to clear it.
+     * @param recording The recording value.
+     */
+    void SetRecording(PVR::CPVRRecordingPtr recording);
+
+    /*!
+     * @brief Clear a recording for this event.
+     */
+    void ClearRecording(void);
+
+    /*!
+     * @brief Check whether this event has a recording tag.
+     * @return True if it has a recording tag, false if not.
+     */
+    bool HasRecording(void) const;
+
+    /*!
+     * @brief Get a pointer to the recording for event or NULL if there is none.
+     * @return A pointer to the recording for event or NULL if there is none.
+     */
+    PVR::CPVRRecordingPtr Recording(void) const;
 
     /*!
      * @brief Change the channel tag of this epg tag
@@ -449,15 +491,18 @@ namespace EPG
     CStdString               m_strTitle;           /*!< title */
     CStdString               m_strPlotOutline;     /*!< plot outline */
     CStdString               m_strPlot;            /*!< plot */
-    std::vector<std::string> m_genre;            /*!< genre */
+    std::vector<std::string> m_genre;              /*!< genre */
     CStdString               m_strEpisodeName;     /*!< episode name */
     CStdString               m_strIconPath;        /*!< the path to the icon */
     CStdString               m_strFileNameAndPath; /*!< the filename and path */
     CDateTime                m_startTime;          /*!< event start time */
     CDateTime                m_endTime;            /*!< event end time */
     CDateTime                m_firstAired;         /*!< first airdate */
+    std::string              m_strRecordingId;     /*!< linked recording ID */
 
     PVR::CPVRTimerInfoTagPtr m_timer;
+    PVR::CPVRRecordingPtr    m_recording;
+
     CEpg *                   m_epg;                /*!< the schedule that this event belongs to */
 
     PVR::CPVRChannelPtr    m_pvrChannel;

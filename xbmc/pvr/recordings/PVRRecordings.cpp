@@ -100,9 +100,9 @@ bool CPVRRecordings::IsDirectoryMember(const CStdString &strDirectory, const CSt
 
 void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *results)
 {
-  for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
+  for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
   {
-    CPVRRecording *current = m_recordings.at(iRecordingPtr);
+    CPVRRecordingPtr current = it->second;
     bool directMember = !HasAllRecordingsPathExtension(strDirectory);
     if (!IsDirectoryMember(RemoveAllRecordingsPathExtension(strDirectory), current->m_strDirectory, directMember))
       continue;
@@ -141,9 +141,9 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
 
   std::set<CStdString> unwatchedFolders;
 
-  for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
+  for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
   {
-    CPVRRecording *current = m_recordings.at(iRecordingPtr);
+    CPVRRecordingPtr current = it->second;
     const CStdString strCurrent = GetDirectoryFromPath(current->m_strDirectory, strUseBase);
     if (strCurrent.empty())
       continue;
@@ -308,9 +308,9 @@ int CPVRRecordings::GetRecordings(CFileItemList* results)
 {
   CSingleLock lock(m_critSection);
 
-  for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
+  for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
   {
-    CFileItemPtr pFileItem(new CFileItem(*m_recordings.at(iRecordingPtr)));
+    CFileItemPtr pFileItem(new CFileItem(*it->second));
     results->Add(pFileItem);
   }
 
@@ -450,24 +450,20 @@ void CPVRRecordings::SetPlayCount(const CFileItem &item, int iPlayCount)
     return;
 
   const CPVRRecording *recording = item.GetPVRRecordingInfoTag();
-  CSingleLock lock(m_critSection);
-  for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
+  CPVRRecordingPtr foundRecording = GetById(recording->m_iClientId, recording->m_strRecordingId);
+  if (foundRecording)
   {
-    CPVRRecording *current = m_recordings.at(iRecordingPtr);
-    if (current->m_iClientId == recording->m_iClientId && current->m_strRecordingId.Equals(recording->m_strRecordingId))
-    {
-      current->SetPlayCount(iPlayCount);
-      break;
-    }
+    CSingleLock lock(m_critSection);
+    foundRecording->SetPlayCount(iPlayCount);
   }
 }
 
 void CPVRRecordings::GetAll(CFileItemList &items)
 {
   CSingleLock lock(m_critSection);
-  for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
+  for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
   {
-    CPVRRecording *current = m_recordings.at(iRecordingPtr);
+    CPVRRecordingPtr current = it->second;
     current->UpdateMetadata();
 
     CFileItemPtr pFileItem(new CFileItem(*current));
@@ -484,10 +480,10 @@ CFileItemPtr CPVRRecordings::GetById(unsigned int iId) const
 {
   CFileItemPtr item;
   CSingleLock lock(m_critSection);
-  for (std::vector<CPVRRecording *>::const_iterator it = m_recordings.begin(); !item && it != m_recordings.end(); ++it)
+  for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
   {
-    if (iId == (*it)->m_iRecordingId)
-      item = CFileItemPtr(new CFileItem(**it));
+    if (iId == it->second->m_iRecordingId)
+      item = CFileItemPtr(new CFileItem(*(it->second)));
   }
 
   return item;
@@ -503,11 +499,12 @@ CFileItemPtr CPVRRecordings::GetByPath(const CStdString &path)
 
   if (StringUtils::StartsWith(fileName, "recordings/"))
   {
-    for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
+    for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
     {
-      if(path.Equals(m_recordings.at(iRecordingPtr)->m_strFileNameAndPath))
+      CPVRRecordingPtr current = it->second;
+      if (path.Equals(current->m_strFileNameAndPath))
       {
-        CFileItemPtr fileItem(new CFileItem(*m_recordings.at(iRecordingPtr)));
+        CFileItemPtr fileItem(new CFileItem(*current));
         return fileItem;
       }
     }
@@ -517,37 +514,37 @@ CFileItemPtr CPVRRecordings::GetByPath(const CStdString &path)
   return fileItem;
 }
 
+CPVRRecordingPtr CPVRRecordings::GetById(int iClientId, const std::string &strRecordingId) const
+{
+  CPVRRecordingPtr retVal;
+  CSingleLock lock(m_critSection);
+  PVR_RECORDINGMAP_CITR it = m_recordings.find(CPVRRecordingUid(iClientId, strRecordingId));
+  if (it != m_recordings.end())
+    retVal = it->second;
+
+  return retVal;
+}
+
 void CPVRRecordings::Clear()
 {
   CSingleLock lock(m_critSection);
-
-  for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
-    delete m_recordings.at(iRecordingPtr);
-  m_recordings.erase(m_recordings.begin(), m_recordings.end());
+  m_recordings.clear();
 }
 
 void CPVRRecordings::UpdateEntry(const CPVRRecording &tag)
 {
-  bool bFound = false;
   CSingleLock lock(m_critSection);
 
-  for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
+  CPVRRecordingPtr newTag = GetById(tag.m_iClientId, tag.m_strRecordingId);
+  if (newTag)
   {
-    CPVRRecording *currentTag = m_recordings.at(iRecordingPtr);
-    if (currentTag->m_iClientId == tag.m_iClientId &&
-        currentTag->m_strRecordingId.Equals(tag.m_strRecordingId))
-    {
-      currentTag->Update(tag);
-      bFound = true;
-      break;
-    }
+    newTag->Update(tag);
   }
-
-  if (!bFound)
+  else
   {
-    CPVRRecording *newTag = new CPVRRecording();
+    newTag = CPVRRecordingPtr(new CPVRRecording);
     newTag->Update(tag);
     newTag->m_iRecordingId = ++m_iLastId;
-    m_recordings.push_back(newTag);
+    m_recordings.insert(std::make_pair(CPVRRecordingUid(newTag->m_iClientId, newTag->m_strRecordingId), newTag));
   }
 }
