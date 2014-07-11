@@ -4627,7 +4627,9 @@ void CVideoDatabase::UpdateTables(int iVersion)
       for (vector<string>::const_iterator j = paths.begin(); j != paths.end(); ++j)
       {
         int idPath = AddPath(*j, URIUtils::GetParentPath(*j));
-        m_pDS->exec(PrepareSQL("REPLACE INTO tvshowlinkpath(idShow, idPath) VALUES(%i,%i)", i->show, idPath));
+        /* we can't rely on REPLACE INTO here as analytics (indices) aren't online yet */
+        if (GetSingleValue(PrepareSQL("SELECT 1 FROM tvshowlinkpath WHERE idShow=%i AND idPath=%i", i->show, idPath)).empty())
+          m_pDS->exec(PrepareSQL("INSERT INTO tvshowlinkpath(idShow, idPath) VALUES(%i,%i)", i->show, idPath));
       }
       m_pDS->exec(PrepareSQL("DELETE FROM tvshowlinkpath WHERE idShow=%i AND idPath=%i", i->show, i->pathId));
     }
