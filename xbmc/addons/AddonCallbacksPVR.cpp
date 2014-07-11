@@ -150,7 +150,8 @@ void CAddonCallbacksPVR::PVRTransferEpgEntry(void *addonData, const ADDON_HANDLE
   }
 
   /* transfer this entry to the epg */
-  xbmcEpg->UpdateEntry(epgentry, handle->dataIdentifier == 1 /* update db */);
+  CEpgInfoTag tag(*epgentry);
+  xbmcEpg->UpdateEntry(tag);
 }
 
 void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL *channel)

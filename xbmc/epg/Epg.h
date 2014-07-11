@@ -268,14 +268,6 @@ namespace EPG
     static const std::string &ConvertGenreIdToString(int iID, int iSubID);
 
     /*!
-     * @brief Update an entry in this EPG.
-     * @param data The tag to update.
-     * @param bUpdateDatabase If set to true, this event will be persisted in the database.
-     * @return True if it was updated successfully, false otherwise.
-     */
-    bool UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase = false);
-
-    /*!
      * @return True if this is an EPG table for a radio channel, false otherwise.
      */
     bool IsRadio(void) const;

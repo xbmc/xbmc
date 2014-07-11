@@ -736,15 +736,6 @@ const std::string &CEpg::ConvertGenreIdToString(int iID, int iSubID)
   return g_localizeStrings.Get(iLabelId);
 }
 
-bool CEpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false */)
-{
-  if (!data)
-    return false;
-
-  CEpgInfoTag tag(*data);
-  return UpdateEntry(tag, bUpdateDatabase);
-}
-
 bool CEpg::IsRadio(void) const
 {
   CPVRChannelPtr channel = Channel();
