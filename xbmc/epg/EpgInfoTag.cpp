@@ -293,18 +293,13 @@ CEpgInfoTagPtr CEpgInfoTag::GetPreviousEvent(void) const
 
 void CEpgInfoTag::SetUniqueBroadcastID(int iUniqueBroadcastID)
 {
-  bool bUpdate(false);
+  CSingleLock lock(m_critSection);
+  if (m_iUniqueBroadcastID != iUniqueBroadcastID)
   {
-    CSingleLock lock(m_critSection);
-    if (m_iUniqueBroadcastID != iUniqueBroadcastID)
-    {
-      m_iUniqueBroadcastID = iUniqueBroadcastID;
-      m_bChanged = true;
-      bUpdate = true;
-    }
-  }
-  if (bUpdate)
+    m_iUniqueBroadcastID = iUniqueBroadcastID;
+    m_bChanged = true;
     UpdatePath();
+  }
 }
 
 int CEpgInfoTag::UniqueBroadcastID(void) const
@@ -315,18 +310,13 @@ int CEpgInfoTag::UniqueBroadcastID(void) const
 
 void CEpgInfoTag::SetBroadcastId(int iId)
 {
-  bool bUpdate(false);
+  CSingleLock lock(m_critSection);
+  if (m_iBroadcastId != iId)
   {
-    CSingleLock lock(m_critSection);
-    if (m_iBroadcastId != iId)
-    {
-      m_iBroadcastId = iId;
-      m_bChanged = true;
-      bUpdate = true;
-    }
-  }
-  if (bUpdate)
+    m_iBroadcastId = iId;
+    m_bChanged = true;
     UpdatePath();
+  }
 }
 
 int CEpgInfoTag::BroadcastId(void) const
@@ -351,18 +341,13 @@ CDateTime CEpgInfoTag::StartAsLocalTime(void) const
 
 void CEpgInfoTag::SetStartFromUTC(const CDateTime &start)
 {
-  bool bUpdate(false);
+  CSingleLock lock(m_critSection);
+  if (m_startTime != start)
   {
-    CSingleLock lock(m_critSection);
-    if (m_startTime != start)
-    {
-      m_startTime = start;
-      m_bChanged = true;
-      bUpdate = true;
-    }
-  }
-  if (bUpdate)
+    m_startTime = start;
+    m_bChanged = true;
     UpdatePath();
+  }
 }
 
 void CEpgInfoTag::SetStartFromLocalTime(const CDateTime &start)
@@ -389,18 +374,13 @@ CDateTime CEpgInfoTag::EndAsLocalTime(void) const
 
 void CEpgInfoTag::SetEndFromUTC(const CDateTime &end)
 {
-  bool bUpdate(false);
+  CSingleLock lock(m_critSection);
+  if (m_endTime != end)
   {
-    CSingleLock lock(m_critSection);
-    if (m_endTime != end)
-    {
-      m_endTime = end;
-      m_bChanged = true;
-      bUpdate = true;
-    }
-  }
-  if (bUpdate)
+    m_endTime = end;
+    m_bChanged = true;
     UpdatePath();
+  }
 }
 
 void CEpgInfoTag::SetEndFromLocalTime(const CDateTime &end)
@@ -420,18 +400,13 @@ int CEpgInfoTag::GetDuration(void) const
 
 void CEpgInfoTag::SetTitle(const CStdString &strTitle)
 {
-  bool bUpdate(false);
+  CSingleLock lock(m_critSection);
+  if (m_strTitle != strTitle)
   {
-    CSingleLock lock(m_critSection);
-    if (m_strTitle != strTitle)
-    {
-      m_strTitle = strTitle;
-      m_bChanged = true;
-      bUpdate = true;
-    }
-  }
-  if (bUpdate)
+    m_strTitle = strTitle;
+    m_bChanged = true;
     UpdatePath();
+  }
 }
 
 CStdString CEpgInfoTag::Title(bool bOverrideParental /* = false */) const
@@ -456,18 +431,13 @@ CStdString CEpgInfoTag::Title(bool bOverrideParental /* = false */) const
 
 void CEpgInfoTag::SetPlotOutline(const CStdString &strPlotOutline)
 {
-  bool bUpdate(false);
+  CSingleLock lock(m_critSection);
+  if (m_strPlotOutline != strPlotOutline)
   {
-    CSingleLock lock(m_critSection);
-    if (m_strPlotOutline != strPlotOutline)
-    {
-      m_strPlotOutline = strPlotOutline;
-      m_bChanged = true;
-      bUpdate = true;
-    }
-  }
-  if (bUpdate)
+    m_strPlotOutline = strPlotOutline;
+    m_bChanged = true;
     UpdatePath();
+  }
 }
 
 CStdString CEpgInfoTag::PlotOutline(bool bOverrideParental /* = false */) const
@@ -482,15 +452,13 @@ CStdString CEpgInfoTag::PlotOutline(bool bOverrideParental /* = false */) const
 
 void CEpgInfoTag::SetPlot(const CStdString &strPlot)
 {
-  bool bUpdate(false);
+  CSingleLock lock(m_critSection);
+  if(!m_strPlot.Equals(strPlot))
   {
-    CSingleLock lock(m_critSection);
-    bUpdate = !m_strPlot.Equals(strPlot);
-    m_bChanged |= bUpdate;
+    m_bChanged = true;
     m_strPlot = strPlot;
-  }
-  if (bUpdate)
     UpdatePath();
+  }
 }
 
 CStdString CEpgInfoTag::Plot(bool bOverrideParental /* = false */) const
@@ -505,30 +473,25 @@ CStdString CEpgInfoTag::Plot(bool bOverrideParental /* = false */) const
 
 void CEpgInfoTag::SetGenre(int iID, int iSubID, const char* strGenre)
 {
-  bool bUpdate(false);
+  CSingleLock lock(m_critSection);
+  if (m_iGenreType != iID || m_iGenreSubType != iSubID)
   {
-    CSingleLock lock(m_critSection);
-    if (m_iGenreType != iID || m_iGenreSubType != iSubID)
+    m_iGenreType    = iID;
+    m_iGenreSubType = iSubID;
+    if ((iID == EPG_GENRE_USE_STRING) && (strGenre != NULL) && (strlen(strGenre) > 0))
     {
-      m_iGenreType    = iID;
-      m_iGenreSubType = iSubID;
-      if ((iID == EPG_GENRE_USE_STRING) && (strGenre != NULL) && (strlen(strGenre) > 0))
-      {
-        /* Type and sub type are not given. No EPG color coding possible
-         * Use the provided genre description as backup. */
-        m_genre = StringUtils::Split(strGenre, g_advancedSettings.m_videoItemSeparator);
-      }
-      else
-      {
-        /* Determine the genre description from the type and subtype IDs */
-        m_genre = StringUtils::Split(CEpg::ConvertGenreIdToString(iID, iSubID), g_advancedSettings.m_videoItemSeparator);
-      }
-      m_bChanged = true;
-      bUpdate = true;
+      /* Type and sub type are not given. No EPG color coding possible
+       * Use the provided genre description as backup. */
+      m_genre = StringUtils::Split(strGenre, g_advancedSettings.m_videoItemSeparator);
     }
-  }
-  if (bUpdate)
+    else
+    {
+      /* Determine the genre description from the type and subtype IDs */
+      m_genre = StringUtils::Split(CEpg::ConvertGenreIdToString(iID, iSubID), g_advancedSettings.m_videoItemSeparator);
+    }
+    m_bChanged = true;
     UpdatePath();
+  }
 }
 
 int CEpgInfoTag::GenreType(void) const
@@ -569,18 +532,13 @@ CDateTime CEpgInfoTag::FirstAiredAsLocalTime(void) const
 
 void CEpgInfoTag::SetFirstAiredFromUTC(const CDateTime &firstAired)
 {
-  bool bUpdate(false);
+  CSingleLock lock(m_critSection);
+  if (m_firstAired != firstAired)
   {
-    CSingleLock lock(m_critSection);
-    if (m_firstAired != firstAired)
-    {
-      m_firstAired = firstAired;
-      m_bChanged = true;
-      bUpdate = true;
-    }
-  }
-  if (bUpdate)
+    m_firstAired = firstAired;
+    m_bChanged = true;
     UpdatePath();
+  }
 }
 
 void CEpgInfoTag::SetFirstAiredFromLocalTime(const CDateTime &firstAired)
@@ -591,18 +549,13 @@ void CEpgInfoTag::SetFirstAiredFromLocalTime(const CDateTime &firstAired)
 
 void CEpgInfoTag::SetParentalRating(int iParentalRating)
 {
-  bool bUpdate(false);
+  CSingleLock lock(m_critSection);
+  if (m_iParentalRating != iParentalRating)
   {
-    CSingleLock lock(m_critSection);
-    if (m_iParentalRating != iParentalRating)
-    {
-      m_iParentalRating = iParentalRating;
-      m_bChanged = true;
-      bUpdate = true;
-    }
-  }
-  if (bUpdate)
+    m_iParentalRating = iParentalRating;
+    m_bChanged = true;
     UpdatePath();
+  }
 }
 
 int CEpgInfoTag::ParentalRating(void) const
@@ -613,18 +566,13 @@ int CEpgInfoTag::ParentalRating(void) const
 
 void CEpgInfoTag::SetStarRating(int iStarRating)
 {
-  bool bUpdate(false);
+  CSingleLock lock(m_critSection);
+  if (m_iStarRating != iStarRating)
   {
-    CSingleLock lock(m_critSection);
-    if (m_iStarRating != iStarRating)
-    {
-      m_iStarRating = iStarRating;
-      m_bChanged = true;
-      bUpdate = true;
-    }
-  }
-  if (bUpdate)
+    m_iStarRating = iStarRating;
+    m_bChanged = true;
     UpdatePath();
+  }
 }
 
 int CEpgInfoTag::StarRating(void) const
@@ -635,18 +583,13 @@ int CEpgInfoTag::StarRating(void) const
 
 void CEpgInfoTag::SetNotify(bool bNotify)
 {
-  bool bUpdate(false);
+  CSingleLock lock(m_critSection);
+  if (m_bNotify != bNotify)
   {
-    CSingleLock lock(m_critSection);
-    if (m_bNotify != bNotify)
-    {
-      m_bNotify = bNotify;
-      m_bChanged = true;
-      bUpdate = true;
-    }
-  }
-  if (bUpdate)
+    m_bNotify = bNotify;
+    m_bChanged = true;
     UpdatePath();
+  }
 }
 
 bool CEpgInfoTag::Notify(void) const
@@ -657,18 +600,13 @@ bool CEpgInfoTag::Notify(void) const
 
 void CEpgInfoTag::SetSeriesNum(int iSeriesNum)
 {
-  bool bUpdate(false);
+  CSingleLock lock(m_critSection);
+  if (m_iSeriesNumber != iSeriesNum)
   {
-    CSingleLock lock(m_critSection);
-    if (m_iSeriesNumber != iSeriesNum)
-    {
-      m_iSeriesNumber = iSeriesNum;
-      m_bChanged = true;
-      bUpdate = true;
-    }
-  }
-  if (bUpdate)
+    m_iSeriesNumber = iSeriesNum;
+    m_bChanged = true;
     UpdatePath();
+  }
 }
 
 int CEpgInfoTag::SeriesNum(void) const
@@ -679,18 +617,13 @@ int CEpgInfoTag::SeriesNum(void) const
 
 void CEpgInfoTag::SetEpisodeNum(int iEpisodeNum)
 {
-  bool bUpdate(false);
+  CSingleLock lock(m_critSection);
+  if (m_iEpisodeNumber != iEpisodeNum)
   {
-    CSingleLock lock(m_critSection);
-    if (m_iEpisodeNumber != iEpisodeNum)
-    {
-      m_iEpisodeNumber = iEpisodeNum;
-      m_bChanged = true;
-      bUpdate = true;
-    }
-  }
-  if (bUpdate)
+    m_iEpisodeNumber = iEpisodeNum;
+    m_bChanged = true;
     UpdatePath();
+  }
 }
 
 int CEpgInfoTag::EpisodeNum(void) const
@@ -701,18 +634,13 @@ int CEpgInfoTag::EpisodeNum(void) const
 
 void CEpgInfoTag::SetEpisodePart(int iEpisodePart)
 {
-  bool bUpdate(false);
+  CSingleLock lock(m_critSection);
+  if (m_iEpisodePart != iEpisodePart)
   {
-    CSingleLock lock(m_critSection);
-    if (m_iEpisodePart != iEpisodePart)
-    {
-      m_iEpisodePart = iEpisodePart;
-      m_bChanged = true;
-      bUpdate = true;
-    }
-  }
-  if (bUpdate)
+    m_iEpisodePart = iEpisodePart;
+    m_bChanged = true;
     UpdatePath();
+  }
 }
 
 int CEpgInfoTag::EpisodePart(void) const
@@ -723,18 +651,13 @@ int CEpgInfoTag::EpisodePart(void) const
 
 void CEpgInfoTag::SetEpisodeName(const CStdString &strEpisodeName)
 {
-  bool bUpdate(false);
+  CSingleLock lock(m_critSection);
+  if (m_strEpisodeName != strEpisodeName)
   {
-    CSingleLock lock(m_critSection);
-    if (m_strEpisodeName != strEpisodeName)
-    {
-      m_strEpisodeName = strEpisodeName;
-      m_bChanged = true;
-      bUpdate = true;
-    }
-  }
-  if (bUpdate)
+    m_strEpisodeName = strEpisodeName;
+    m_bChanged = true;
     UpdatePath();
+  }
 }
 
 CStdString CEpgInfoTag::EpisodeName(void) const
@@ -747,18 +670,13 @@ CStdString CEpgInfoTag::EpisodeName(void) const
 
 void CEpgInfoTag::SetIcon(const CStdString &strIconPath)
 {
-  bool bUpdate(false);
+  CSingleLock lock(m_critSection);
+  if (m_strIconPath != strIconPath)
   {
-    CSingleLock lock(m_critSection);
-    if (m_strIconPath != strIconPath)
-    {
-      m_strIconPath = strIconPath;
-      m_bChanged = true;
-      bUpdate = true;
-    }
-  }
-  if (bUpdate)
+    m_strIconPath = strIconPath;
+    m_bChanged = true;
     UpdatePath();
+  }
 }
 
 CStdString CEpgInfoTag::Icon(void) const
