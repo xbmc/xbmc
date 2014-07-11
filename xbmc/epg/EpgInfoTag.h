@@ -73,12 +73,6 @@ namespace EPG
     virtual void Serialize(CVariant &value) const;
 
     /*!
-     * @brief Check whether this tag has changed and unsaved values.
-     * @return True if it has unsaved values, false otherwise.
-     */
-    bool Changed(void) const;
-
-    /*!
      * @brief Check if this event is currently active.
      * @return True if it's active, false otherwise.
      */
@@ -386,12 +380,6 @@ namespace EPG
      * @return A pointer to the timer for event or NULL if there is none.
      */
     PVR::CPVRTimerInfoTagPtr Timer(void) const;
-
-    /*!
-     * @brief Change the channel tag of this epg tag
-     * @param channel The new channel
-     */
-    void SetPVRChannel(PVR::CPVRChannelPtr channel);
 
     /*!
      * @return True if this tag has a PVR channel set.

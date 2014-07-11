@@ -225,12 +225,6 @@ void CEpgInfoTag::Serialize(CVariant &value) const
   value["wasactive"] = WasActive();
 }
 
-bool CEpgInfoTag::Changed(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_bChanged;
-}
-
 bool CEpgInfoTag::IsActive(void) const
 {
   CDateTime now = CDateTime::GetUTCDateTime();
@@ -816,12 +810,6 @@ CPVRTimerInfoTagPtr CEpgInfoTag::Timer(void) const
 {
   CSingleLock lock(m_critSection);
   return m_timer;
-}
-
-void CEpgInfoTag::SetPVRChannel(PVR::CPVRChannelPtr channel)
-{
-  CSingleLock lock(m_critSection);
-  m_pvrChannel = channel;
 }
 
 bool CEpgInfoTag::HasPVRChannel(void) const

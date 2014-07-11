@@ -136,11 +136,6 @@ namespace EPG
     bool HasValidEntries(void) const;
 
     /*!
-     * @return True if this EPG has a PVR channel set, false otherwise.
-     */
-    bool HasPVRChannel(void) const;
-
-    /*!
      * @brief Remove all entries from this EPG that finished before the given time
      *        and that have no timers set.
      * @param Time Delete entries with an end time before this time in UTC.
@@ -267,11 +262,6 @@ namespace EPG
      */
     static const std::string &ConvertGenreIdToString(int iID, int iSubID);
 
-    /*!
-     * @return True if this is an EPG table for a radio channel, false otherwise.
-     */
-    bool IsRadio(void) const;
-
     CEpgInfoTagPtr GetNextEvent(const CEpgInfoTag& tag) const;
     CEpgInfoTagPtr GetPreviousEvent(const CEpgInfoTag& tag) const;
 
@@ -323,8 +313,6 @@ namespace EPG
      * @return True if the update was successful, false otherwise.
      */
     bool UpdateEntries(const CEpg &epg, bool bStoreInDb = true);
-
-    bool IsRemovableTag(const EPG::CEpgInfoTag &tag) const;
 
     std::map<CDateTime, CEpgInfoTagPtr> m_tags;
     std::map<int, CEpgInfoTagPtr>       m_changedTags;

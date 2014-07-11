@@ -65,18 +65,6 @@ CEpg::CEpg(CPVRChannelPtr channel, bool bLoadedFromDb /* = false */) :
 {
 }
 
-CEpg::CEpg(void) :
-    m_bChanged(false),
-    m_bTagsChanged(false),
-    m_bLoaded(false),
-    m_bUpdatePending(false),
-    m_iEpgID(0),
-    m_bUpdateLastScanTime(false)
-{
-  CPVRChannelPtr empty;
-  m_pvrChannel = empty;
-}
-
 CEpg::~CEpg(void)
 {
   Clear();
@@ -736,17 +724,6 @@ const std::string &CEpg::ConvertGenreIdToString(int iID, int iSubID)
   return g_localizeStrings.Get(iLabelId);
 }
 
-bool CEpg::IsRadio(void) const
-{
-  CPVRChannelPtr channel = Channel();
-  return channel ? channel->IsRadio() : false;
-}
-
-bool CEpg::IsRemovableTag(const CEpgInfoTag &tag) const
-{
-  return !tag.HasTimer();
-}
-
 bool CEpg::LoadFromClients(time_t start, time_t end)
 {
   bool bReturn(false);
@@ -824,12 +801,6 @@ void CEpg::SetChannel(PVR::CPVRChannelPtr channel)
     for (map<CDateTime, CEpgInfoTagPtr>::iterator it = m_tags.begin(); it != m_tags.end(); it++)
       it->second->SetPVRChannel(m_pvrChannel);
   }
-}
-
-bool CEpg::HasPVRChannel(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_pvrChannel != NULL;
 }
 
 bool CEpg::UpdatePending(void) const
