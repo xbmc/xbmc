@@ -88,6 +88,10 @@ extern "C" {
     int           iEpisodeNumber;      /*!< @brief (optional) episode number */
     int           iEpisodePartNumber;  /*!< @brief (optional) episode part number */
     const char *  strEpisodeName;      /*!< @brief (optional) episode name */
+    const char *  strActor;            /*!< @brief (optional) actor */
+    const char *  strDirector;         /*!< @brief (optional) director */
+    const char *  strOrigName;         /*!< @brief (optional) OrigName */
+    const char *  strWriter;           /*!< @brief (optional) writer */	
   } ATTRIBUTE_PACKED EPG_TAG;
 
 #ifdef __cplusplus

@@ -286,6 +286,10 @@ extern "C" {
     char   strIconPath[PVR_ADDON_URL_STRING_LENGTH];      /*!< @brief (optional) icon path */
     char   strThumbnailPath[PVR_ADDON_URL_STRING_LENGTH]; /*!< @brief (optional) thumbnail path */
     char   strFanartPath[PVR_ADDON_URL_STRING_LENGTH];    /*!< @brief (optional) fanart path */
+    char   strActor[PVR_ADDON_DESC_STRING_LENGTH];        /*!< @brief (optional) actor */
+    char   strDirector[PVR_ADDON_DESC_STRING_LENGTH];     /*!< @brief (optional) director */
+    char   strOrigName[PVR_ADDON_DESC_STRING_LENGTH];     /*!< @brief (optional) origname */
+    char   strWriter[PVR_ADDON_DESC_STRING_LENGTH];       /*!< @brief (optional) writer */	
     time_t recordingTime;                                 /*!< @brief (optional) start time of the recording */
     int    iDuration;                                     /*!< @brief (optional) duration of the recording in seconds */
     int    iPriority;                                     /*!< @brief (optional) priority of this recording (from 0 - 100) */

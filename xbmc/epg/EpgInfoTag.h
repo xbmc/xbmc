@@ -345,6 +345,50 @@ namespace EPG
     CStdString EpisodeName(void) const;
 
     /*!
+     * @brief Change the actor of this event.
+     */
+    void SetActor(const CStdString &strActor);
+
+    /*!
+     * @brief Get the actor of this event.
+     * @return The actor.
+     */
+    CStdString Actor(void) const;
+
+    /*!
+     * @brief Change the director of this event.
+     */
+    void SetDirector(const CStdString &strDirector);
+
+    /*!
+     * @brief Get the director of this event.
+     * @return The director.
+     */
+    CStdString Director(void) const;	
+
+    /*!
+     * @brief Change the origname of this event.
+     */
+    void SetOrigName(const CStdString &strOrigName);
+
+    /*!
+     * @brief Get the origname of this event.
+     * @return The origname.
+     */
+    CStdString OrigName(void) const;
+
+    /*!
+     * @brief Change the writer of this event.
+     */
+    void SetWriter(const CStdString &strWriter);
+
+    /*!
+     * @brief Get the writer of this event.
+     * @return The writer.
+     */
+    CStdString Writer(void) const;
+    
+    /*!
      * @brief Change the path to the icon for this event.
      * @param strIconPath The new path.
      */
@@ -449,8 +493,12 @@ namespace EPG
     CStdString               m_strTitle;           /*!< title */
     CStdString               m_strPlotOutline;     /*!< plot outline */
     CStdString               m_strPlot;            /*!< plot */
-    std::vector<std::string> m_genre;            /*!< genre */
+    std::vector<std::string> m_genre;              /*!< genre */
     CStdString               m_strEpisodeName;     /*!< episode name */
+    CStdString               m_strActor;           /*!< actor */
+    CStdString               m_strDirector;        /*!< director */
+    CStdString               m_strOrigName;        /*!< original name */
+    CStdString               m_strWriter;          /*!< writer */
     CStdString               m_strIconPath;        /*!< the path to the icon */
     CStdString               m_strFileNameAndPath; /*!< the filename and path */
     CDateTime                m_startTime;          /*!< event start time */
