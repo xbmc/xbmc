@@ -2243,25 +2243,14 @@ void COMXPlayer::OnExit()
     // close each stream
     if (!m_bAbortRequest) CLog::Log(LOGNOTICE, "OMXPlayer: eof, waiting for queues to empty");
     if (m_CurrentAudio.id >= 0)
-    {
-      CLog::Log(LOGNOTICE, "OMXPlayer: closing audio stream");
       CloseAudioStream(!m_bAbortRequest);
-    }
     if (m_CurrentVideo.id >= 0)
-    {
-      CLog::Log(LOGNOTICE, "OMXPlayer: closing video stream");
       CloseVideoStream(!m_bAbortRequest);
-    }
     if (m_CurrentSubtitle.id >= 0)
-    {
-      CLog::Log(LOGNOTICE, "OMXPlayer: closing subtitle stream");
       CloseSubtitleStream(!m_bAbortRequest);
-    }
     if (m_CurrentTeletext.id >= 0)
-    {
-      CLog::Log(LOGNOTICE, "OMXPlayer: closing teletext stream");
       CloseTeletextStream(!m_bAbortRequest);
-    }
+    
     // destroy the demuxer
     if (m_pDemuxer)
     {
