@@ -604,7 +604,7 @@ bool CGUIWindowPVRCommon::UpdateEpgForChannel(CFileItem *item)
   if (!epg)
     return false;
 
-  epg->ForceUpdate();
+  epg->SetUpdatePending();
   return true;
 }
 

@@ -112,11 +112,6 @@ namespace EPG
     bool UpdatePending(void) const;
 
     /*!
-     * @brief Clear the current tag and schedule manual update
-     */
-    void ForceUpdate(void);
-
-    /*!
      * @brief Get the name of this table.
      * @return The name of this table.
      */

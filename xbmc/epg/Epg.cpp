@@ -140,11 +140,6 @@ void CEpg::SetUpdatePending(bool bUpdatePending /* = true */)
     g_EpgContainer.SetHasPendingUpdates(true);
 }
 
-void CEpg::ForceUpdate(void)
-{
-  SetUpdatePending();
-}
-
 bool CEpg::HasValidEntries(void) const
 {
   CSingleLock lock(m_critSection);

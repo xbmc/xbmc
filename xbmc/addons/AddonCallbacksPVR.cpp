@@ -318,7 +318,7 @@ void CAddonCallbacksPVR::PVRTriggerEpgUpdate(void *addonData, unsigned int iChan
   }
 
   // force an update
-  epg->ForceUpdate();
+  epg->SetUpdatePending();
 }
 
 void CAddonCallbacksPVR::PVRFreeDemuxPacket(void *addonData, DemuxPacket* pPacket)
