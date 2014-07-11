@@ -50,9 +50,6 @@ CEpgInfoTag::CEpgInfoTag(void) :
     m_iUniqueBroadcastID(-1),
     m_epg(NULL)
 {
-  CPVRChannelPtr emptyChannel;
-  m_pvrChannel = emptyChannel;
-
   CPVRTimerInfoTagPtr emptyTimer;
   m_timer = emptyTimer;
 }
@@ -70,8 +67,7 @@ CEpgInfoTag::CEpgInfoTag(CEpg *epg, PVR::CPVRChannelPtr pvrChannel, const CStdSt
     m_iEpisodePart(0),
     m_iUniqueBroadcastID(-1),
     m_strIconPath(strIconPath),
-    m_epg(epg),
-    m_pvrChannel(pvrChannel)
+    m_epg(epg)
 {
   CPVRTimerInfoTagPtr emptyTimer;
   m_timer = emptyTimer;
@@ -91,9 +87,6 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
     m_iUniqueBroadcastID(-1),
     m_epg(NULL)
 {
-  CPVRChannelPtr emptyChannel;
-  m_pvrChannel = emptyChannel;
-
   CPVRTimerInfoTagPtr emptyTimer;
   m_timer = emptyTimer;
 
@@ -123,8 +116,7 @@ CEpgInfoTag::CEpgInfoTag(const CEpgInfoTag &tag) :
     m_endTime(tag.m_endTime),
     m_firstAired(tag.m_firstAired),
     m_timer(tag.m_timer),
-    m_epg(tag.m_epg),
-    m_pvrChannel(tag.m_pvrChannel)
+    m_epg(tag.m_epg)
 {
 }
 
@@ -158,8 +150,7 @@ bool CEpgInfoTag::operator ==(const CEpgInfoTag& right) const
           m_strIconPath        == right.m_strIconPath &&
           m_strFileNameAndPath == right.m_strFileNameAndPath &&
           m_startTime          == right.m_startTime &&
-          m_endTime            == right.m_endTime &&
-          m_pvrChannel         == right.m_pvrChannel);
+          m_endTime            == right.m_endTime);
 }
 
 bool CEpgInfoTag::operator !=(const CEpgInfoTag& right) const
@@ -196,7 +187,6 @@ CEpgInfoTag &CEpgInfoTag::operator =(const CEpgInfoTag &other)
   m_firstAired         = other.m_firstAired;
   m_timer              = other.m_timer;
   m_epg                = other.m_epg;
-  m_pvrChannel         = other.m_pvrChannel;
 
   return *this;
 }
@@ -412,16 +402,13 @@ void CEpgInfoTag::SetTitle(const CStdString &strTitle)
 CStdString CEpgInfoTag::Title(bool bOverrideParental /* = false */) const
 {
   CStdString strTitle;
-  bool bParentalLocked(false);
 
   {
     CSingleLock lock(m_critSection);
     strTitle = m_strTitle;
-    if (m_pvrChannel)
-      bParentalLocked = g_PVRManager.IsParentalLocked(*m_pvrChannel);
   }
 
-  if (!bOverrideParental && bParentalLocked)
+  if (!bOverrideParental && m_epg->IsParentalLocked())
     strTitle = g_localizeStrings.Get(19266); // parental locked
   else if (strTitle.empty() && !CSettings::Get().GetBool("epg.hidenoinfoavailable"))
     strTitle = g_localizeStrings.Get(19055); // no information available
@@ -444,7 +431,7 @@ CStdString CEpgInfoTag::PlotOutline(bool bOverrideParental /* = false */) const
 {
   CStdString retVal;
   CSingleLock lock(m_critSection);
-  if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(*m_pvrChannel))
+  if (bOverrideParental || !m_epg->IsParentalLocked())
     retVal = m_strPlotOutline;
 
   return retVal;
@@ -465,7 +452,7 @@ CStdString CEpgInfoTag::Plot(bool bOverrideParental /* = false */) const
 {
   CStdString retVal;
   CSingleLock lock(m_critSection);
-  if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(*m_pvrChannel))
+  if (bOverrideParental || !m_epg->IsParentalLocked())
     retVal = m_strPlot;
 
   return retVal;
@@ -733,28 +720,28 @@ CPVRTimerInfoTagPtr CEpgInfoTag::Timer(void) const
 bool CEpgInfoTag::HasPVRChannel(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_pvrChannel != NULL;
+  return m_epg->Channel() != NULL;
 }
 
 int CEpgInfoTag::PVRChannelNumber(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_pvrChannel ? m_pvrChannel->ChannelNumber() : -1;
+  return m_epg->Channel() ? m_epg->Channel()->ChannelNumber() : -1;
 }
 
 CStdString CEpgInfoTag::PVRChannelName(void) const
 {
   CStdString strReturn;
   CSingleLock lock(m_critSection);
-  if (m_pvrChannel)
-    strReturn = m_pvrChannel->ChannelName();
+  if (m_epg->Channel())
+    strReturn = m_epg->Channel()->ChannelName();
   return strReturn;
 }
 
 const PVR::CPVRChannelPtr CEpgInfoTag::ChannelTag(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_pvrChannel;
+  return m_epg->Channel();
 }
 
 void CEpgInfoTag::Update(const EPG_TAG &tag)
@@ -800,7 +787,6 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
         m_strEpisodeName     != tag.m_strEpisodeName ||
         m_iUniqueBroadcastID != tag.m_iUniqueBroadcastID ||
         EpgID()              != tag.EpgID() ||
-        m_pvrChannel         != tag.m_pvrChannel ||
         m_genre              != tag.m_genre
     );
     if (bUpdateBroadcastId)
@@ -819,7 +805,6 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
       m_iGenreType         = tag.m_iGenreType;
       m_iGenreSubType      = tag.m_iGenreSubType;
       m_epg                = tag.m_epg;
-      m_pvrChannel         = tag.m_pvrChannel;
       if (m_iGenreType == EPG_GENRE_USE_STRING)
       {
         /* No type/subtype. Use the provided description */

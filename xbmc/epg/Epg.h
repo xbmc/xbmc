@@ -227,6 +227,11 @@ namespace EPG
      * @return True if the table was persisted, false otherwise.
      */
     bool Persist(void);
+    
+    /*!
+     * @return whether the channel this EPG belongs to is parental locked 
+     */
+    bool IsParentalLocked() const;
 
     /*!
      * @brief Get the start time of the first entry in this table.

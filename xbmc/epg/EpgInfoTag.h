@@ -448,7 +448,6 @@ namespace EPG
     PVR::CPVRTimerInfoTagPtr m_timer;
     CEpg *                   m_epg;                /*!< the schedule that this event belongs to */
 
-    PVR::CPVRChannelPtr    m_pvrChannel;
     CCriticalSection       m_critSection;
   };
 }

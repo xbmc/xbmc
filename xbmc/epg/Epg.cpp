@@ -294,7 +294,6 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
   if (newTag)
   {
     newTag->Update(tag);
-    newTag->SetPVRChannel(m_pvrChannel);
     newTag->m_epg          = this;
     newTag->m_bChanged     = false;
   }
@@ -321,7 +320,6 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag)
 
   infoTag->Update(tag, bNewTag);
   infoTag->m_epg          = this;
-  infoTag->m_pvrChannel   = m_pvrChannel;
 
   m_changedTags.insert(make_pair(infoTag->UniqueBroadcastID(), infoTag));
 
@@ -537,6 +535,12 @@ bool CEpg::Persist(void)
   }
 
   return database->CommitInsertQueries();
+}
+
+bool CEpg::IsParentalLocked() const
+{
+  CPVRChannelPtr channel = Channel();
+  return channel ? g_PVRManager.IsParentalLocked(*channel) : false;
 }
 
 CDateTime CEpg::GetFirstDate(void) const
@@ -777,8 +781,6 @@ void CEpg::SetChannel(PVR::CPVRChannelPtr channel)
       channel->SetEpgID(m_iEpgID);
     }
     m_pvrChannel = channel;
-    for (map<CDateTime, CEpgInfoTagPtr>::iterator it = m_tags.begin(); it != m_tags.end(); it++)
-      it->second->SetPVRChannel(m_pvrChannel);
   }
 }
 
