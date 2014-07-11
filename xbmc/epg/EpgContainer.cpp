@@ -342,7 +342,7 @@ void CEpgContainer::InsertFromDatabase(int iEpgID, const CStdString &strName, co
   else
   {
     // create a new epg table
-    epg = new CEpg(iEpgID, strName, strScraperName, true);
+    epg = new CEpg(iEpgID, strName, strScraperName);
     if (epg)
     {
       m_epgs.insert(make_pair(iEpgID, epg));
@@ -367,7 +367,7 @@ CEpg *CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
   if (!epg)
   {
     channel->SetEpgID(NextEpgId());
-    epg = new CEpg(channel, false);
+    epg = new CEpg(channel);
 
     CSingleLock lock(m_critSection);
     m_epgs.insert(make_pair((unsigned int)epg->EpgID(), epg));

@@ -48,16 +48,14 @@ namespace EPG
      * @param iEpgID The ID of this table or <= 0 to create a new ID.
      * @param strName The name of this table.
      * @param strScraperName The name of the scraper to use.
-     * @param bLoadedFromDb True if this table was loaded from the database, false otherwise.
      */
-    CEpg(int iEpgID, const CStdString &strName = "", const CStdString &strScraperName = "", bool bLoadedFromDb = false);
+    CEpg(int iEpgID, const CStdString &strName = "", const CStdString &strScraperName = "");
 
     /*!
      * @brief Create a new EPG instance for a channel.
      * @param channel The channel to create the EPG for.
-     * @param bLoadedFromDb True if this table was loaded from the database, false otherwise.
      */
-    CEpg(PVR::CPVRChannelPtr channel, bool bLoadedFromDb = false);
+    CEpg(PVR::CPVRChannelPtr channel);
 
     /*!
      * @brief Destroy this EPG instance.
@@ -112,11 +110,6 @@ namespace EPG
     bool UpdatePending(void) const;
 
     /*!
-     * @brief Clear the current tag and schedule manual update
-     */
-    void ForceUpdate(void);
-
-    /*!
      * @brief Get the name of this table.
      * @return The name of this table.
      */
@@ -139,11 +132,6 @@ namespace EPG
      * @return True if it has valid entries, false if not.
      */
     bool HasValidEntries(void) const;
-
-    /*!
-     * @return True if this EPG has a PVR channel set, false otherwise.
-     */
-    bool HasPVRChannel(void) const;
 
     /*!
      * @brief Remove all entries from this EPG that finished before the given time
@@ -205,11 +193,9 @@ namespace EPG
     /*!
      * @brief Update an entry in this EPG.
      * @param tag The tag to update.
-     * @param bUpdateDatabase If set to true, this event will be persisted in the database.
-     * @param bSort If set to false, epg entries will not be sorted after updating; used for mass updates
      * @return True if it was updated successfully, false otherwise.
      */
-    bool UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase = false, bool bSort = true);
+    bool UpdateEntry(const CEpgInfoTag &tag);
 
     /*!
      * @brief Update the EPG from 'start' till 'end'.
@@ -241,6 +227,11 @@ namespace EPG
      * @return True if the table was persisted, false otherwise.
      */
     bool Persist(void);
+    
+    /*!
+     * @return whether the channel this EPG belongs to is parental locked 
+     */
+    bool IsParentalLocked() const;
 
     /*!
      * @brief Get the start time of the first entry in this table.
@@ -272,19 +263,6 @@ namespace EPG
      */
     static const std::string &ConvertGenreIdToString(int iID, int iSubID);
 
-    /*!
-     * @brief Update an entry in this EPG.
-     * @param data The tag to update.
-     * @param bUpdateDatabase If set to true, this event will be persisted in the database.
-     * @return True if it was updated successfully, false otherwise.
-     */
-    bool UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase = false);
-
-    /*!
-     * @return True if this is an EPG table for a radio channel, false otherwise.
-     */
-    bool IsRadio(void) const;
-
     CEpgInfoTagPtr GetNextEvent(const CEpgInfoTag& tag) const;
     CEpgInfoTagPtr GetPreviousEvent(const CEpgInfoTag& tag) const;
 
@@ -310,10 +288,9 @@ namespace EPG
 
     /*!
      * @brief Fix overlapping events from the tables.
-     * @param bUpdateDb If set to yes, any changes to tags during fixing will be persisted to database
      * @return True if anything changed, false otherwise.
      */
-    bool FixOverlappingEvents(bool bUpdateDb = false);
+    bool FixOverlappingEvents();
 
     /*!
      * @brief Add an infotag to this container.
@@ -332,18 +309,13 @@ namespace EPG
     /*!
      * @brief Update the contents of this table with the contents provided in "epg"
      * @param epg The updated contents.
-     * @param bStoreInDb True to store the updated contents in the db, false otherwise.
      * @return True if the update was successful, false otherwise.
      */
-    bool UpdateEntries(const CEpg &epg, bool bStoreInDb = true);
-
-    bool IsRemovableTag(const EPG::CEpgInfoTag &tag) const;
+    bool UpdateEntries(const CEpg &epg);
 
     std::map<CDateTime, CEpgInfoTagPtr> m_tags;
     std::map<int, CEpgInfoTagPtr>       m_changedTags;
     std::map<int, CEpgInfoTagPtr>       m_deletedTags;
-    bool                                m_bChanged;        /*!< true if anything changed that needs to be persisted, false otherwise */
-    bool                                m_bTagsChanged;    /*!< true when any tags are changed and not persisted, false otherwise */
     bool                                m_bLoaded;         /*!< true when the initial entries have been loaded */
     bool                                m_bUpdatePending;  /*!< true if manual update is pending */
     int                                 m_iEpgID;          /*!< the database ID of this table */

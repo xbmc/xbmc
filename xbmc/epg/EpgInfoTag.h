@@ -73,12 +73,6 @@ namespace EPG
     virtual void Serialize(CVariant &value) const;
 
     /*!
-     * @brief Check whether this tag has changed and unsaved values.
-     * @return True if it has unsaved values, false otherwise.
-     */
-    bool Changed(void) const;
-
-    /*!
      * @brief Check if this event is currently active.
      * @return True if it's active, false otherwise.
      */
@@ -388,12 +382,6 @@ namespace EPG
     PVR::CPVRTimerInfoTagPtr Timer(void) const;
 
     /*!
-     * @brief Change the channel tag of this epg tag
-     * @param channel The new channel
-     */
-    void SetPVRChannel(PVR::CPVRChannelPtr channel);
-
-    /*!
      * @return True if this tag has a PVR channel set.
      */
     bool HasPVRChannel(void) const;
@@ -410,10 +398,9 @@ namespace EPG
 
     /*!
      * @brief Persist this tag in the database.
-     * @param bSingleUpdate True if this is a single update, false if more updates will follow.
      * @return True if the tag was persisted correctly, false otherwise.
      */
-    bool Persist(bool bSingleUpdate = true);
+    bool Persist();
 
     /*!
      * @brief Update the information in this tag with the info in the given tag.
@@ -435,8 +422,6 @@ namespace EPG
     void UpdatePath(void);
 
     bool                     m_bNotify;            /*!< notify on start */
-    bool                     m_bChanged;           /*!< keep track of changes to this entry */
-
     int                      m_iBroadcastId;       /*!< database ID */
     int                      m_iGenreType;         /*!< genre type */
     int                      m_iGenreSubType;      /*!< genre subtype */
@@ -460,7 +445,6 @@ namespace EPG
     PVR::CPVRTimerInfoTagPtr m_timer;
     CEpg *                   m_epg;                /*!< the schedule that this event belongs to */
 
-    PVR::CPVRChannelPtr    m_pvrChannel;
     CCriticalSection       m_critSection;
   };
 }
