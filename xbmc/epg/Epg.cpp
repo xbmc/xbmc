@@ -137,7 +137,7 @@ void CEpg::Cleanup(void)
 void CEpg::Cleanup(const CDateTime &Time)
 {
   CSingleLock lock(m_critSection);
-  for (map<CDateTime, CEpgInfoTagPtr>::iterator it = m_tags.begin(); it != m_tags.end(); it != m_tags.end() ? it++ : it)
+  for (map<CDateTime, CEpgInfoTagPtr>::iterator it = m_tags.begin(); it != m_tags.end(); ++it)
   {
     if (it->second->EndAsUTC() < Time)
     {
