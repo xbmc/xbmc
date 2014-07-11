@@ -400,7 +400,6 @@ namespace XBMCAddon
       XBMC_TRACE;
       if (g_application.m_pPlayer->HasPlayer())
       {
-        CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = bVisible != 0;
         g_application.m_pPlayer->SetSubtitleVisible(bVisible != 0);
       }
     }
@@ -411,7 +410,7 @@ namespace XBMCAddon
       if (g_application.m_pPlayer->HasPlayer())
       {
         SPlayerSubtitleStreamInfo info;
-        g_application.m_pPlayer->GetSubtitleStreamInfo(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream, info);
+        g_application.m_pPlayer->GetSubtitleStreamInfo(g_application.m_pPlayer->GetSubtitle(), info);
 
         if (info.language.length() > 0)
           return info.language;
@@ -428,7 +427,6 @@ namespace XBMCAddon
       CLog::Log(LOGWARNING,"'xbmc.Player().disableSubtitles()' is deprecated and will be removed in future releases, please use 'xbmc.Player().showSubtitles(false)' instead");
       if (g_application.m_pPlayer->HasPlayer())
       {
-        CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = false;
         g_application.m_pPlayer->SetSubtitleVisible(false);
       }
     }

@@ -86,7 +86,7 @@ void CGUIDialogAudioSubtitleSettings::FrameMove()
     m_settingsManager->SetBool(SETTING_AUDIO_OUTPUT_TO_ALL_SPEAKERS, videoSettings.m_OutputToAllSpeakers);
     m_settingsManager->SetBool(SETTING_AUDIO_PASSTHROUGH, CSettings::Get().GetBool("audiooutput.passthrough"));
 
-    m_settingsManager->SetBool(SETTING_SUBTITLE_ENABLE, videoSettings.m_SubtitleOn);
+    m_settingsManager->SetBool(SETTING_SUBTITLE_ENABLE, g_application.m_pPlayer->GetSubtitleVisible());
     m_settingsManager->SetNumber(SETTING_SUBTITLE_DELAY, videoSettings.m_SubtitleDelay);
     // TODO (needs special handling): m_settingsManager->SetInt(SETTING_SUBTITLE_STREAM, g_application.m_pPlayer->GetSubtitle());
   }
@@ -454,7 +454,7 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(CSettingGroup *group, c
   if (group == NULL || settingId.empty())
     return;
 
-  m_subtitleStream = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream;
+  m_subtitleStream = g_application.m_pPlayer->GetSubtitle();
   if (m_subtitleStream < 0)
     m_subtitleStream = 0;
 

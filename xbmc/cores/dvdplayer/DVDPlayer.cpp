@@ -2709,7 +2709,6 @@ void CDVDPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &inf
 
 void CDVDPlayer::SetSubtitle(int iStream)
 {
-  CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = iStream;
   m_messenger.Put(new CDVDMsgPlayerSetSubtitleStream(iStream));
 }
 
@@ -2718,10 +2717,7 @@ bool CDVDPlayer::GetSubtitleVisible()
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
-    if(pStream->IsInMenu())
-      return CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn;
-    else
-      return pStream->IsSubtitleStreamEnabled();
+    return pStream->IsSubtitleStreamEnabled();
   }
 
   return m_dvdPlayerVideo.IsSubtitleEnabled();
@@ -2729,13 +2725,11 @@ bool CDVDPlayer::GetSubtitleVisible()
 
 void CDVDPlayer::SetSubtitleVisible(bool bVisible)
 {
-  CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = bVisible;
   m_messenger.Put(new CDVDMsgBool(CDVDMsg::PLAYER_SET_SUBTITLESTREAM_VISIBLE, bVisible));
 }
 
 void CDVDPlayer::SetSubtitleVisibleInternal(bool bVisible)
 {
-  CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = bVisible;
   m_dvdPlayerVideo.EnableSubtitle(bVisible);
 
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
@@ -3287,6 +3281,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         bool visible = !(iStream & 0x80);
 
         SetSubtitleVisibleInternal(visible);
+        CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = visible;
 
         if (iStream >= 0)
           m_dvd.iSelectedSPUStream = (iStream & ~0x80);

@@ -63,13 +63,13 @@ bool CPlayerController::OnAction(const CAction &action)
         if (g_application.m_pPlayer->GetSubtitleCount() == 0)
           return true;
 
-        CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = !CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn;
-        g_application.m_pPlayer->SetSubtitleVisible(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
+        bool subsOn = !g_application.m_pPlayer->GetSubtitleVisible();
+        g_application.m_pPlayer->SetSubtitleVisible(subsOn);
         CStdString sub, lang;
-        if (CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn)
+        if (subsOn)
         {
           SPlayerSubtitleStreamInfo info;
-          g_application.m_pPlayer->GetSubtitleStreamInfo(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream, info);
+          g_application.m_pPlayer->GetSubtitleStreamInfo(g_application.m_pPlayer->GetSubtitle(), info);
           if (!g_LangCodeExpander.Lookup(lang, info.language))
             lang = g_localizeStrings.Get(13205); // Unknown
 
@@ -90,31 +90,29 @@ bool CPlayerController::OnAction(const CAction &action)
         if (g_application.m_pPlayer->GetSubtitleCount() == 0)
           return true;
 
-        if(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream < 0)
-          CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = g_application.m_pPlayer->GetSubtitle();
+        int currentSub = g_application.m_pPlayer->GetSubtitle();
+        bool currentSubVisible = true;
 
-        if (CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn)
+        if (g_application.m_pPlayer->GetSubtitleVisible())
         {
-          CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream++;
-          if (CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream >= g_application.m_pPlayer->GetSubtitleCount())
+          if (++currentSub >= g_application.m_pPlayer->GetSubtitleCount())
           {
-            CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = 0;
-            CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = false;
+            currentSub = 0;
             g_application.m_pPlayer->SetSubtitleVisible(false);
+            currentSubVisible = false;
           }
-          g_application.m_pPlayer->SetSubtitle(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream);
+          g_application.m_pPlayer->SetSubtitle(currentSub);
         }
         else
         {
-          CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = true;
           g_application.m_pPlayer->SetSubtitleVisible(true);
         }
 
         CStdString sub, lang;
-        if (CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn)
+        if (currentSubVisible)
         {
           SPlayerSubtitleStreamInfo info;
-          g_application.m_pPlayer->GetSubtitleStreamInfo(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream, info);
+          g_application.m_pPlayer->GetSubtitleStreamInfo(currentSub, info);
           if (!g_LangCodeExpander.Lookup(lang, info.language))
             lang = g_localizeStrings.Get(13205); // Unknown
 
