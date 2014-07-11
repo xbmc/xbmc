@@ -38,9 +38,7 @@ using namespace PVR;
 using namespace EPG;
 using namespace std;
 
-CEpg::CEpg(int iEpgID, const CStdString &strName /* = "" */, const CStdString &strScraperName /* = "" */, bool bLoadedFromDb /* = false */) :
-    m_bChanged(!bLoadedFromDb),
-    m_bTagsChanged(false),
+CEpg::CEpg(int iEpgID, const CStdString &strName /* = "" */, const CStdString &strScraperName /* = "" */) :
     m_bLoaded(false),
     m_bUpdatePending(false),
     m_iEpgID(iEpgID),
@@ -52,9 +50,7 @@ CEpg::CEpg(int iEpgID, const CStdString &strName /* = "" */, const CStdString &s
   m_pvrChannel = empty;
 }
 
-CEpg::CEpg(CPVRChannelPtr channel, bool bLoadedFromDb /* = false */) :
-    m_bChanged(!bLoadedFromDb),
-    m_bTagsChanged(false),
+CEpg::CEpg(CPVRChannelPtr channel) :
     m_bLoaded(false),
     m_bUpdatePending(false),
     m_iEpgID(channel->EpgID()),
@@ -72,8 +68,6 @@ CEpg::~CEpg(void)
 
 CEpg &CEpg::operator =(const CEpg &right)
 {
-  m_bChanged          = right.m_bChanged;
-  m_bTagsChanged      = right.m_bTagsChanged;
   m_bLoaded           = right.m_bLoaded;
   m_bUpdatePending    = right.m_bUpdatePending;
   m_iEpgID            = right.m_iEpgID;
@@ -98,23 +92,13 @@ CEpg &CEpg::operator =(const CEpg &right)
 void CEpg::SetName(const CStdString &strName)
 {
   CSingleLock lock(m_critSection);
-
-  if (!m_strName.Equals(strName))
-  {
-    m_bChanged = true;
-    m_strName = strName;
-  }
+  m_strName = strName;
 }
 
 void CEpg::SetScraperName(const CStdString &strScraperName)
 {
   CSingleLock lock(m_critSection);
-
-  if (!m_strScraperName.Equals(strScraperName))
-  {
-    m_bChanged = true;
-    m_strScraperName = strScraperName;
-  }
+  m_strScraperName = strScraperName;
 }
 
 void CEpg::SetUpdatePending(bool bUpdatePending /* = true */)
@@ -316,7 +300,7 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
   }
 }
 
-bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false */, bool bSort /* = true */)
+bool CEpg::UpdateEntry(const CEpgInfoTag &tag)
 {
   CEpgInfoTagPtr infoTag;
   CSingleLock lock(m_critSection);
@@ -339,8 +323,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
   infoTag->m_epg          = this;
   infoTag->m_pvrChannel   = m_pvrChannel;
 
-  if (bUpdateDatabase)
-    m_changedTags.insert(make_pair(infoTag->UniqueBroadcastID(), infoTag));
+  m_changedTags.insert(make_pair(infoTag->UniqueBroadcastID(), infoTag));
 
   return true;
 }
@@ -376,7 +359,7 @@ bool CEpg::Load(void)
   return bReturn;
 }
 
-bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
+bool CEpg::UpdateEntries(const CEpg &epg)
 {
   CSingleLock lock(m_critSection);
 #if EPG_DEBUGGING
@@ -384,12 +367,12 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
 #endif
   /* copy over tags */
   for (map<CDateTime, CEpgInfoTagPtr>::const_iterator it = epg.m_tags.begin(); it != epg.m_tags.end(); it++)
-    UpdateEntry(*it->second, bStoreInDb, false);
+    UpdateEntry(*it->second);
 
 #if EPG_DEBUGGING
   CLog::Log(LOGDEBUG, "EPG - %s - %zu entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
 #endif
-  FixOverlappingEvents(bStoreInDb);
+  FixOverlappingEvents();
 
 #if EPG_DEBUGGING
   CLog::Log(LOGDEBUG, "EPG - %s - %zu entries in memory after fixing", __FUNCTION__, m_tags.size());
@@ -532,7 +515,7 @@ bool CEpg::Persist(void)
 
   {
     CSingleLock lock(m_critSection);
-    if (m_iEpgID <= 0 || m_bChanged)
+    if (m_iEpgID <= 0)
     {
       int iId = database->Persist(*this, m_iEpgID > 0);
       if (iId > 0)
@@ -550,8 +533,6 @@ bool CEpg::Persist(void)
 
     m_deletedTags.clear();
     m_changedTags.clear();
-    m_bChanged            = false;
-    m_bTagsChanged        = false;
     m_bUpdateLastScanTime = false;
   }
 
@@ -585,7 +566,7 @@ CDateTime CEpg::GetLastDate(void) const
 /** @name Private methods */
 //@{
 
-bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
+bool CEpg::FixOverlappingEvents()
 {
   bool bReturn(true);
   CEpgInfoTagPtr previousTag, currentTag;
@@ -602,8 +583,7 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
     if (previousTag->EndAsUTC() >= currentTag->EndAsUTC())
     {
       // delete the current tag. it's completely overlapped
-      if (bUpdateDb)
-        m_deletedTags.insert(make_pair(currentTag->UniqueBroadcastID(), currentTag));
+      m_deletedTags.insert(make_pair(currentTag->UniqueBroadcastID(), currentTag));
 
       if (m_nowActiveStart == it->first)
         m_nowActiveStart.SetValid(false);
@@ -614,8 +594,7 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
     else if (previousTag->EndAsUTC() > currentTag->StartAsUTC())
     {
       previousTag->SetEndFromUTC(currentTag->StartAsUTC());
-      if (bUpdateDb)
-        m_changedTags.insert(make_pair(previousTag->UniqueBroadcastID(), previousTag));
+      m_changedTags.insert(make_pair(previousTag->UniqueBroadcastID(), previousTag));
 
       previousTag = it->second;
     }
@@ -732,13 +711,13 @@ bool CEpg::LoadFromClients(time_t start, time_t end)
   {
     CEpg tmpEpg(channel);
     if (tmpEpg.UpdateFromScraper(start, end))
-      bReturn = UpdateEntries(tmpEpg, !CSettings::Get().GetBool("epg.ignoredbforclient"));
+      bReturn = UpdateEntries(tmpEpg);
   }
   else
   {
     CEpg tmpEpg(m_iEpgID, m_strName, m_strScraperName);
     if (tmpEpg.UpdateFromScraper(start, end))
-      bReturn = UpdateEntries(tmpEpg, !CSettings::Get().GetBool("epg.ignoredbforclient"));
+      bReturn = UpdateEntries(tmpEpg);
   }
 
   return bReturn;
@@ -818,7 +797,7 @@ size_t CEpg::Size(void) const
 bool CEpg::NeedsSave(void) const
 {
   CSingleLock lock(m_critSection);
-  return !m_changedTags.empty() || !m_deletedTags.empty() || m_bChanged;
+  return !m_changedTags.empty() || !m_deletedTags.empty();
 }
 
 bool CEpg::IsValid(void) const
