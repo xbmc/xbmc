@@ -423,8 +423,6 @@ namespace EPG
     void UpdatePath(void);
 
     bool                     m_bNotify;            /*!< notify on start */
-    bool                     m_bChanged;           /*!< keep track of changes to this entry */
-
     int                      m_iBroadcastId;       /*!< database ID */
     int                      m_iGenreType;         /*!< genre type */
     int                      m_iGenreSubType;      /*!< genre subtype */

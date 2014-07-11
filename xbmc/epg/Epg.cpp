@@ -295,7 +295,6 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
   {
     newTag->Update(tag);
     newTag->m_epg          = this;
-    newTag->m_bChanged     = false;
   }
 }
 
