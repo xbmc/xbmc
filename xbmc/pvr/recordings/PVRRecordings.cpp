@@ -233,7 +233,7 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
   }
 }
 
-bool CPVRRecordings::HasAllRecordingsPathExtension(const CStdString &strDirectory)
+bool CPVRRecordings::HasAllRecordingsPathExtension(const CStdString &strDirectory) const
 {
   CStdString strUseDir = TrimSlashes(strDirectory);
   CStdString strAllRecordingsPathExtension(PVR_ALL_RECORDINGS_PATH_EXTENSION);
@@ -315,6 +315,32 @@ int CPVRRecordings::GetRecordings(CFileItemList* results)
   }
 
   return m_recordings.size();
+}
+
+bool CPVRRecordings::IsAllRecordingsDirectory(const CFileItem& item) const
+{
+  return HasAllRecordingsPathExtension(item.GetPath());
+}
+
+bool CPVRRecordings::Delete(const CFileItem& item)
+{
+  return item.m_bIsFolder ? DeleteDirectory(item) : DeleteRecording(item);
+}
+
+bool CPVRRecordings::DeleteDirectory(const CFileItem& directory)
+{
+  CFileItemList items;
+  CDirectory::GetDirectory(directory.GetPath(), items);
+
+  bool allDeleted = true;
+
+  VECFILEITEMS itemList = items.GetList();
+  CFileItem item;
+  
+  for (VECFILEITEMS::const_iterator it = itemList.begin(); it != itemList.end(); ++it)
+    allDeleted &= Delete(*(it->get()));
+
+  return allDeleted;
 }
 
 bool CPVRRecordings::DeleteRecording(const CFileItem &item)

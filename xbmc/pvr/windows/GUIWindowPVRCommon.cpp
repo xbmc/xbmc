@@ -478,18 +478,20 @@ bool CGUIWindowPVRCommon::ActionDeleteRecording(CFileItem *item)
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (!pDialog)
     return bReturn;
-  pDialog->SetHeading(122);
-  pDialog->SetLine(0, 19043);
+  
+  pDialog->SetHeading(122); // Confirm delete
+  pDialog->SetLine(0, item->m_bIsFolder ? 19113 : 19112); // Are you sure?
   pDialog->SetLine(1, "");
-  pDialog->SetLine(2, recTag->m_strTitle);
-  pDialog->DoModal();
+  pDialog->SetLine(2, item->GetLabel());
+  pDialog->SetChoice(1, 117); // Delete
 
   /* prompt for the user's confirmation */
+  pDialog->DoModal();
   if (!pDialog->IsConfirmed())
     return bReturn;
 
   /* delete the recording */
-  if (g_PVRRecordings->DeleteRecording(*item))
+  if (g_PVRRecordings->Delete(*item))
   {
     g_PVRManager.TriggerRecordingsUpdate();
     bReturn = true;

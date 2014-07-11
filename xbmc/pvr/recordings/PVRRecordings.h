@@ -46,6 +46,14 @@ namespace PVR
 
     CStdString AddAllRecordingsPathExtension(const CStdString &strDirectory);
     CStdString RemoveAllRecordingsPathExtension(const CStdString &strDirectory);
+    
+    /**
+     * @brief recursively deletes all recordings in the specified directory
+     * @param item the directory
+     * @return true if all recordings were deleted
+     */
+    bool DeleteDirectory(const CFileItem &item);
+    bool DeleteRecording(const CFileItem &item);
 
   public:
     CPVRRecordings(void);
@@ -64,16 +72,23 @@ namespace PVR
 
     int GetNumRecordings();
     int GetRecordings(CFileItemList* results);
-    bool DeleteRecording(const CFileItem &item);
+    
+    /**
+     * Deletes the item in question, be it a directory or a file
+     * @param item the item to delete
+     * @return whether the item was deleted successfully
+     */
+    bool Delete(const CFileItem &item);
     bool RenameRecording(CFileItem &item, CStdString &strNewName);
     bool SetRecordingsPlayCount(const CFileItemPtr &item, int count);
 
+    bool IsAllRecordingsDirectory(const CFileItem &item) const;
     bool GetDirectory(const CStdString& strPath, CFileItemList &items);
     CFileItemPtr GetByPath(const CStdString &path);
     void SetPlayCount(const CFileItem &item, int iPlayCount);
     void GetAll(CFileItemList &items);
     CFileItemPtr GetById(unsigned int iId) const;
 
-    bool HasAllRecordingsPathExtension(const CStdString &strDirectory);
+    bool HasAllRecordingsPathExtension(const CStdString &strDirectory) const;
   };
 }

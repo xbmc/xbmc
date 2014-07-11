@@ -122,8 +122,12 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
       buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   /* Mark as Watched */
 
     buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename this recording */
-    buttons.Add(CONTEXT_BUTTON_DELETE, 117);      /* Delete this recording */
   }
+  
+  // Add delete button for all items except the All recordings directory
+  if (!g_PVRRecordings->IsAllRecordingsDirectory(*pItem.get()))
+    buttons.Add(CONTEXT_BUTTON_DELETE, 117);
+  
   buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);       /* sort by name */
   buttons.Add(CONTEXT_BUTTON_SORTBY_DATE, 104);       /* sort by date */
 
@@ -289,28 +293,7 @@ bool CGUIWindowPVRRecordings::OnClickList(CGUIMessage &message)
 
 bool CGUIWindowPVRRecordings::OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button)
 {
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_DELETE)
-  {
-    bReturn = false;
-
-    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-    if (!pDialog)
-      return bReturn;
-    pDialog->SetHeading(122);
-    pDialog->SetLine(0, 19043);
-    pDialog->SetLine(1, "");
-    pDialog->SetLine(2, item->GetPVRRecordingInfoTag()->m_strTitle);
-    pDialog->DoModal();
-
-    if (!pDialog->IsConfirmed())
-      return bReturn;
-
-    bReturn = g_PVRRecordings->DeleteRecording(*item);
-  }
-
-  return bReturn;
+  return button == CONTEXT_BUTTON_DELETE ? ActionDeleteRecording(item) : false;
 }
 
 bool CGUIWindowPVRRecordings::OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button)
