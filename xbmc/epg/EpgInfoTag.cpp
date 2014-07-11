@@ -744,7 +744,7 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
   return bChanged;
 }
 
-bool CEpgInfoTag::Persist(bool bSingleUpdate /* = true */)
+bool CEpgInfoTag::Persist()
 {
   bool bReturn = false;
   CSingleLock lock(m_critSection);
@@ -754,13 +754,13 @@ bool CEpgInfoTag::Persist(bool bSingleUpdate /* = true */)
 #endif
 
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
-  if (!database || (bSingleUpdate && !database->IsOpen()))
+  if (!database || !database->Open())
   {
     CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
     return bReturn;
   }
 
-  int iId = database->Persist(*this, bSingleUpdate);
+  int iId = database->Persist(*this, true);
   if (iId >= 0)
   {
     bReturn = true;

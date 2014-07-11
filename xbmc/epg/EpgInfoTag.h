@@ -398,10 +398,9 @@ namespace EPG
 
     /*!
      * @brief Persist this tag in the database.
-     * @param bSingleUpdate True if this is a single update, false if more updates will follow.
      * @return True if the tag was persisted correctly, false otherwise.
      */
-    bool Persist(bool bSingleUpdate = true);
+    bool Persist();
 
     /*!
      * @brief Update the information in this tag with the info in the given tag.

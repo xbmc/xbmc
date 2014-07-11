@@ -523,7 +523,7 @@ bool CEpg::Persist(void)
       database->Delete(*it->second);
 
     for (std::map<int, CEpgInfoTagPtr>::iterator it = m_changedTags.begin(); it != m_changedTags.end(); it++)
-      it->second->Persist(false);
+      it->second->Persist();
 
     if (m_bUpdateLastScanTime)
       database->PersistLastEpgScanTime(m_iEpgID, true);
