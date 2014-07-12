@@ -216,11 +216,7 @@ void CLog::PrintDebugString(const std::string& line)
   else
     ::OutputDebugStringA(line.c_str());
   ::OutputDebugStringW(L"\n");
-#else  // !TARGET_WINDOWS
-  ::OutputDebugString(line.c_str());
-  ::OutputDebugString("\n");
-#endif // !TARGET_WINDOWS
-#if defined(TARGET_ANDROID)
+#elif defined(TARGET_ANDROID)
   //print to adb
   CXBMCApp::android_printf("%s",line.c_str());
 #endif
