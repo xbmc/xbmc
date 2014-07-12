@@ -120,6 +120,7 @@ config.log
 /addons/visualization.fishbmc/fishbmc.vis
 /addons/script.module.pil/
 /addons/pvr.*
+/addons/xbmc.addon/addon.xml
 /addons/xbmc.json/addon.xml
 
 # /lib/
@@ -560,6 +561,7 @@ lib/cpluff/stamp-h1
 /xbmc/config.h
 /xbmc/config.h.in
 /xbmc/config.h.in~
+/xbmc/CompileInfo.cpp
 /xbmc/DllPaths_generated.h
 /xbmc/DllPaths_generated_android.h
 /xbmc/Makefile
