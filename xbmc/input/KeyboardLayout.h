@@ -35,6 +35,7 @@
  */
 
 class TiXmlElement;
+class CSetting;
 
 class CKeyboardLayout
 {
@@ -62,6 +63,8 @@ public:
    \return a vector of CKeyboardLayouts with the layout names.
    */
   static std::vector<CKeyboardLayout> LoadLayouts();
+
+  static void SettingOptionsKeyboardLayoutsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void* data);
 
 private:
   static std::vector<std::string> BreakCharacters(const std::string &chars);

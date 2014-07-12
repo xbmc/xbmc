@@ -19,6 +19,7 @@
  */
 
 #include "KeyboardLayout.h"
+#include "settings/lib/Setting.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
@@ -153,4 +154,14 @@ std::vector<CKeyboardLayout> CKeyboardLayout::LoadLayouts()
     }
   }
   return result;
+}
+
+void CKeyboardLayout::SettingOptionsKeyboardLayoutsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+{
+  std::vector<CKeyboardLayout> layouts = LoadLayouts();
+  for (std::vector<CKeyboardLayout>::const_iterator it = layouts.begin(); it != layouts.end(); it++)
+  {
+    std::string name = it->GetName();
+    list.push_back(make_pair(name, name));
+  }
 }
