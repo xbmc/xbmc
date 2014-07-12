@@ -47,7 +47,9 @@ rem go into the build directory
 CD "%ADDON_DEPENDS_BUILD_PATH%"
 
 rem execute cmake to generate makefiles processable by nmake
-cmake "%ADDON_DEPENDS_PATH%" -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX=%ADDONS_OUTPUT_PATH%
+cmake "%ADDON_DEPENDS_PATH%" -G "NMake Makefiles" ^
+      -DCMAKE_BUILD_TYPE=Release ^
+      -DCMAKE_INSTALL_PREFIX=%ADDONS_OUTPUT_PATH%
 IF ERRORLEVEL 1 (
 	ECHO cmake error level: %ERRORLEVEL% > %ERRORFILE%
 	GOTO ERROR

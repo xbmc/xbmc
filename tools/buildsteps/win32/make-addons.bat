@@ -64,6 +64,7 @@ CD "%ADDONS_BUILD_PATH%"
 
 rem execute cmake to generate makefiles processable by nmake
 cmake "%ADDONS_PATH%" -G "NMake Makefiles" ^
+      -DCMAKE_BUILD_TYPE=Release ^
       -DXBMCROOT=%WORKDIR% ^
       -DDEPENDS_PATH=%ADDON_DEPENDS_PATH% ^
       -DCMAKE_INSTALL_PREFIX=%WORKDIR%\project\Win32BuildSetup\BUILD_WIN32\Xbmc\xbmc-addons ^
