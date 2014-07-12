@@ -5,8 +5,10 @@ SETLOCAL
 SET EXITCODE=0
 
 SET getdepends=true
+SET install=false
 FOR %%b in (%1) DO (
 	IF %%b==nodepends SET getdepends=false
+	IF %%b==install SET install=true
 )
 
 rem set Visual C++ build environment
@@ -62,14 +64,21 @@ MKDIR "%ADDONS_BUILD_PATH%"
 rem go into the build directory
 CD "%ADDONS_BUILD_PATH%"
 
+rem determine the proper install path for the built addons
+IF %install%==true (
+  SET ADDONS_INSTALL_PATH=%WORKDIR%\addons
+) ELSE (
+  SET ADDONS_INSTALL_PATH=%WORKDIR%\project\Win32BuildSetup\BUILD_WIN32\Xbmc\xbmc-addons
+)
+
 rem execute cmake to generate makefiles processable by nmake
 cmake "%ADDONS_PATH%" -G "NMake Makefiles" ^
       -DCMAKE_BUILD_TYPE=Release ^
       -DCMAKE_USER_MAKE_RULES_OVERRIDE="%BASE_PATH%/xbmc-c-flag-overrides.cmake" ^
       -DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX="%BASE_PATH%/xbmc-cxx-flag-overrides.cmake" ^
+      -DCMAKE_INSTALL_PREFIX=%ADDONS_INSTALL_PATH% ^
       -DXBMCROOT=%WORKDIR% ^
       -DDEPENDS_PATH=%ADDON_DEPENDS_PATH% ^
-      -DCMAKE_INSTALL_PREFIX=%WORKDIR%\project\Win32BuildSetup\BUILD_WIN32\Xbmc\xbmc-addons ^
       -DPACKAGE_ZIP=1 ^
       -DARCH_DEFINES="-DTARGET_WINDOWS -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS -D_USE_32BIT_TIME_T -D_WINSOCKAPI_"
 IF ERRORLEVEL 1 (
