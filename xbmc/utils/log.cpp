@@ -25,7 +25,6 @@
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
 #include "threads/Thread.h"
-#include "utils/StdString.h"
 #include "utils/StringUtils.h"
 #if defined(TARGET_ANDROID)
 #include "android/activity/XBMCApp.h"
@@ -63,7 +62,7 @@ void CLog::Log(int loglevel, const char *format, ... )
   CSingleLock waitLock(s_globals.critSec);
   if (IsLogLevelLogged(loglevel))
   {
-    CStdString strData;
+    std::string strData;
 
     strData.reserve(16384);
     va_list va;
@@ -78,7 +77,7 @@ void CLog::Log(int loglevel, const char *format, ... )
     }
     else if (s_globals.m_repeatCount)
     {
-      CStdString strData2 = StringUtils::Format("Previous line repeats %d times.",
+      std::string strData2 = StringUtils::Format("Previous line repeats %d times.",
                                                 s_globals.m_repeatCount);
       PrintDebugString(strData2);
       WriteLogString(s_globals.m_repeatLogLevel, strData2);
@@ -105,8 +104,8 @@ bool CLog::Init(const char* path)
   {
     // the log folder location is initialized in the CAdvancedSettings
     // constructor and changed in CApplication::Create()
-    CStdString strLogFile = StringUtils::Format("%sxbmc.log", path);
-    CStdString strLogFileOld = StringUtils::Format("%sxbmc.old.log", path);
+    std::string strLogFile = StringUtils::Format("%sxbmc.log", path);
+    std::string strLogFileOld = StringUtils::Format("%sxbmc.old.log", path);
 
 #if defined(TARGET_WINDOWS)
     // the appdata folder might be redirected to an unc share
@@ -140,13 +139,13 @@ void CLog::MemDump(char *pData, int length)
   Log(LOGDEBUG, "MEM_DUMP: Dumping from %p", pData);
   for (int i = 0; i < length; i+=16)
   {
-    CStdString strLine = StringUtils::Format("MEM_DUMP: %04x ", i);
+    std::string strLine = StringUtils::Format("MEM_DUMP: %04x ", i);
     char *alpha = pData;
     for (int k=0; k < 4 && i + 4*k < length; k++)
     {
       for (int j=0; j < 4 && i + 4*k + j < length; j++)
       {
-        CStdString strFormat = StringUtils::Format(" %02x", (unsigned char)*pData++);
+        std::string strFormat = StringUtils::Format(" %02x", (unsigned char)*pData++);
         strLine += strFormat;
       }
       strLine += " ";
