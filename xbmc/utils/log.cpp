@@ -60,17 +60,10 @@ void CLog::Close()
 
 void CLog::Log(int loglevel, const char *format, ... )
 {
-  static const char* prefixFormat = "%02.2d:%02.2d:%02.2d T:%" PRIu64" %7s: ";
   CSingleLock waitLock(s_globals.critSec);
   if (IsLogLevelLogged(loglevel))
   {
-    if (!s_globals.m_file)
-      return;
-
-    SYSTEMTIME time;
-    GetLocalTime(&time);
-
-    CStdString strPrefix, strData;
+    CStdString strData;
 
     strData.reserve(16384);
     va_list va;
@@ -85,19 +78,10 @@ void CLog::Log(int loglevel, const char *format, ... )
     }
     else if (s_globals.m_repeatCount)
     {
-      strPrefix = StringUtils::Format(prefixFormat,
-                                      time.wHour,
-                                      time.wMinute,
-                                      time.wSecond,
-                                      (uint64_t)CThread::GetCurrentThreadId(),
-                                      levelNames[s_globals.m_repeatLogLevel]);
-
-      CStdString strData2 = StringUtils::Format("Previous line repeats %d times."
-                                                LINE_ENDING,
+      CStdString strData2 = StringUtils::Format("Previous line repeats %d times.",
                                                 s_globals.m_repeatCount);
-      fputs(strPrefix.c_str(), s_globals.m_file);
-      fputs(strData2.c_str(), s_globals.m_file);
       PrintDebugString(strData2);
+      WriteLogString(s_globals.m_repeatLogLevel, strData2);
       s_globals.m_repeatCount = 0;
     }
     
@@ -110,25 +94,12 @@ void CLog::Log(int loglevel, const char *format, ... )
     
     PrintDebugString(strData);
 
-    /* fixup newline alignment, number of spaces should equal prefix length */
-    StringUtils::Replace(strData, "\n", LINE_ENDING"                                            ");
-    strData += LINE_ENDING;
-
-    strPrefix = StringUtils::Format(prefixFormat,
-                                    time.wHour,
-                                    time.wMinute,
-                                    time.wSecond,
-                                    (uint64_t)CThread::GetCurrentThreadId(),
-                                    levelNames[loglevel]);
 
 //print to adb
 #if defined(TARGET_ANDROID) && defined(_DEBUG)
   CXBMCApp::android_printf("%s%s",strPrefix.c_str(), strData.c_str());
 #endif
-
-    fputs(strPrefix.c_str(), s_globals.m_file);
-    fputs(strData.c_str(), s_globals.m_file);
-    fflush(s_globals.m_file);
+    WriteLogString(loglevel, strData);
   }
 }
 
@@ -255,4 +226,32 @@ void CLog::PrintDebugString(const std::string& line)
   ::OutputDebugString("\n");
 #endif // !TARGET_WINDOWS
 #endif // defined(_DEBUG) || defined(PROFILE)
+}
+
+bool CLog::WriteLogString(int logLevel, const std::string& logString)
+{
+  static const char* prefixFormat = "%02.2d:%02.2d:%02.2d T:%" PRIu64" %7s: ";
+
+  if (!s_globals.m_file)
+    return false;
+
+  std::string strData(logString);
+  /* fixup newline alignment, number of spaces should equal prefix length */
+  StringUtils::Replace(strData, "\n", LINE_ENDING"                                            ");
+  strData += LINE_ENDING;
+
+  SYSTEMTIME time;
+  GetLocalTime(&time);
+
+  std::string strPrefix = StringUtils::Format(prefixFormat,
+                                  time.wHour,
+                                  time.wMinute,
+                                  time.wSecond,
+                                  (uint64_t)CThread::GetCurrentThreadId(),
+                                  levelNames[logLevel]);
+
+  fputs(strPrefix.c_str(), s_globals.m_file);
+  fputs(strData.c_str(), s_globals.m_file);
+  fflush(s_globals.m_file);
+  return true;
 }
