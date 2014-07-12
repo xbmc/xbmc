@@ -94,11 +94,6 @@ void CLog::Log(int loglevel, const char *format, ... )
     
     PrintDebugString(strData);
 
-
-//print to adb
-#if defined(TARGET_ANDROID) && defined(_DEBUG)
-  CXBMCApp::android_printf("%s%s",strPrefix.c_str(), strData.c_str());
-#endif
     WriteLogString(loglevel, strData);
   }
 }
@@ -225,6 +220,10 @@ void CLog::PrintDebugString(const std::string& line)
   ::OutputDebugString(line.c_str());
   ::OutputDebugString("\n");
 #endif // !TARGET_WINDOWS
+#if defined(TARGET_ANDROID)
+  //print to adb
+  CXBMCApp::android_printf("%s",line.c_str());
+#endif
 #endif // defined(_DEBUG) || defined(PROFILE)
 }
 
