@@ -9,7 +9,7 @@ call "%VS120COMNTOOLS%..\..\VC\bin\vcvars32.bat"
 
 SET WORKDIR=%WORKSPACE%
 
-IF "%WORKDIR%"=="" (
+IF "%WORKDIR%" == "" (
   SET WORKDIR=%CD%\..\..\..
 )
 
@@ -26,7 +26,7 @@ SET ERRORFILE=%BASE_PATH%\make-addon-depends.error
 
 rem remove the output directory if it exists
 IF EXIST "%ADDONS_OUTPUT_PATH%" (
-	RMDIR "%ADDONS_OUTPUT_PATH%" /S /Q > NUL
+  RMDIR "%ADDONS_OUTPUT_PATH%" /S /Q > NUL
 )
 
 rem create the output directory
@@ -37,7 +37,7 @@ CD %ADDON_DEPENDS_PATH%
 
 rem remove the build directory if it exists
 IF EXIST "%ADDON_DEPENDS_BUILD_PATH%" (
-	RMDIR "%ADDON_DEPENDS_BUILD_PATH%" /S /Q > NUL
+  RMDIR "%ADDON_DEPENDS_BUILD_PATH%" /S /Q > NUL
 )
 
 rem create the build directory
@@ -51,15 +51,15 @@ cmake "%ADDON_DEPENDS_PATH%" -G "NMake Makefiles" ^
       -DCMAKE_BUILD_TYPE=Release ^
       -DCMAKE_INSTALL_PREFIX=%ADDONS_OUTPUT_PATH%
 IF ERRORLEVEL 1 (
-	ECHO cmake error level: %ERRORLEVEL% > %ERRORFILE%
-	GOTO ERROR
+  ECHO cmake error level: %ERRORLEVEL% > %ERRORFILE%
+  GOTO ERROR
 )
 
 rem execute nmake to build the addon depends
 nmake
 IF ERRORLEVEL 1 (
-	ECHO nmake error level: %ERRORLEVEL% > %ERRORFILE%
-	GOTO ERROR
+  ECHO nmake error level: %ERRORLEVEL% > %ERRORFILE%
+  GOTO ERROR
 )
 
 rem everything was fine

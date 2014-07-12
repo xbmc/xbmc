@@ -7,8 +7,8 @@ SET EXITCODE=0
 SET getdepends=true
 SET install=false
 FOR %%b in (%1) DO (
-	IF %%b==nodepends SET getdepends=false
-	IF %%b==install SET install=true
+  IF %%b == nodepends SET getdepends=false
+  IF %%b == install SET install=true
 )
 
 rem set Visual C++ build environment
@@ -16,7 +16,7 @@ call "%VS120COMNTOOLS%..\..\VC\bin\vcvars32.bat"
 
 SET WORKDIR=%WORKSPACE%
 
-IF "%WORKDIR%"=="" (
+IF "%WORKDIR%" == "" (
   SET WORKDIR=%CD%\..\..\..
 )
 
@@ -32,7 +32,7 @@ SET ERRORFILE=%BASE_PATH%\make-addons.error
 SET XBMC_INCLUDE_PATH=%ADDON_DEPENDS_PATH%\include\xbmc
 SET XBMC_LIB_PATH=%ADDON_DEPENDS_PATH%\lib\xbmc
 
-IF %getdepends%==true (
+IF %getdepends% == true (
   CALL make-addon-depends.bat
   IF ERRORLEVEL 1 (
     ECHO make-addon-depends error level: %ERRORLEVEL% > %ERRORFILE%
@@ -65,7 +65,7 @@ rem go into the build directory
 CD "%ADDONS_BUILD_PATH%"
 
 rem determine the proper install path for the built addons
-IF %install%==true (
+IF %install% == true (
   SET ADDONS_INSTALL_PATH=%WORKDIR%\addons
 ) ELSE (
   SET ADDONS_INSTALL_PATH=%WORKDIR%\project\Win32BuildSetup\BUILD_WIN32\Xbmc\xbmc-addons
