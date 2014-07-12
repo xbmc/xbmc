@@ -292,6 +292,7 @@ GTEST_LIBS = $(GTEST_DIR)/lib/.libs/libgtest.a
 CHECK_DIRS = xbmc/addons/test \
              xbmc/filesystem/test \
              xbmc/utils/test \
+             xbmc/video/test \
              xbmc/threads/test \
              xbmc/interfaces/python/test \
              xbmc/cores/AudioEngine/Sinks/test \
@@ -299,6 +300,7 @@ CHECK_DIRS = xbmc/addons/test \
 CHECK_LIBS = xbmc/addons/test/addonsTest.a \
              xbmc/filesystem/test/filesystemTest.a \
              xbmc/utils/test/utilsTest.a \
+             xbmc/video/test/videoTest.a \
              xbmc/threads/test/threadTest.a \
              xbmc/interfaces/python/test/pythonSwigTest.a \
              xbmc/cores/AudioEngine/Sinks/test/AESinkTest.a \

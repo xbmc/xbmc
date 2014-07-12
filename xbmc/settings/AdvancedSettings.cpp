@@ -226,8 +226,8 @@ void CAdvancedSettings::Initialize()
   m_tvshowEnumRegExps.clear();
   // foo.s01.e01, foo.s01_e01, S01E02 foo, S01 - E02
   m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"s([0-9]+)[ ._-]*e([0-9]+(?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([^\\\\/]*)$"));
-  // foo.ep01, foo.EP_01
-  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\._ -]()ep_?([0-9]+(?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([^\\\\/]*)$"));
+  // foo.ep01, foo.EP_01, foo.E01
+  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\._ -]()e(?:p[ ._-]?)?([0-9]+(?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([^\\\\/]*)$"));
   // foo.yyyy.mm.dd.* (byDate=true)
   m_tvshowEnumRegExps.push_back(TVShowRegexp(true,"([0-9]{4})[\\.-]([0-9]{2})[\\.-]([0-9]{2})"));
   // foo.mm.dd.yyyy.* (byDate=true)
@@ -236,8 +236,8 @@ void CAdvancedSettings::Initialize()
   m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[\\(-]([0-9]+)x([0-9]+(?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([^\\\\/]*)$"));
   // foo.103*, 103 foo
   m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9](?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([\\._ -][^\\\\/]*)$"));
-  // Part I, Pt.VI
-  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\/._ -]p(?:ar)?t[_. -]()([ivx]+)([._ -][^\\/]*)$"));
+  // Part I, Pt.VI, Part 1
+  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\/._ -]p(?:ar)?t[_. -]()([ivx]+|[0-9]+)([._ -][^\\/]*)$"));
 
   m_tvshowMultiPartEnumRegExp = "^[-_ex]+([0-9]+(?:(?:[a-i]|\\.[1-9])(?![0-9]))?)";
 
