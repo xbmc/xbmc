@@ -40,6 +40,7 @@
 
 #include "TagLibVFSStream.h"
 #include "MusicInfoTag.h"
+#include "utils/RegExp.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -283,10 +284,10 @@ bool CTagLoaderTagLib::ParseASF(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
     else if (it->first == "WM/ArtistSortOrder")          {} // Known unsupported, supress warnings
     else if (it->first == "WM/Script")                   {} // Known unsupported, supress warnings
     else if (it->first == "WM/Year")                     tag.SetYear(atoi(it->second.front().toString().toCString(true)));
-    else if (it->first == "MusicBrainz/Artist Id")       tag.SetMusicBrainzArtistID(GetASFStringList(it->second));
+    else if (it->first == "MusicBrainz/Artist Id")       tag.SetMusicBrainzArtistID(SplitMBID(GetASFStringList(it->second)));
     else if (it->first == "MusicBrainz/Album Id")        tag.SetMusicBrainzAlbumID(it->second.front().toString().to8Bit(true));
     else if (it->first == "MusicBrainz/Album Artist")    SetAlbumArtist(tag, GetASFStringList(it->second));
-    else if (it->first == "MusicBrainz/Album Artist Id") tag.SetMusicBrainzAlbumArtistID(GetASFStringList(it->second));
+    else if (it->first == "MusicBrainz/Album Artist Id") tag.SetMusicBrainzAlbumArtistID(SplitMBID(GetASFStringList(it->second)));
     else if (it->first == "MusicBrainz/Track Id")        tag.SetMusicBrainzTrackID(it->second.front().toString().to8Bit(true));
     else if (it->first == "MusicBrainz/Album Status")    {}
     else if (it->first == "MusicBrainz/Album Type")      {}
@@ -397,9 +398,9 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
         StringList stringList = frame->fieldList(); 
         stringList.erase(stringList.begin());
         String desc = frame->description().upper();
-        if      (desc == "MUSICBRAINZ ARTIST ID")       tag.SetMusicBrainzArtistID(StringListToVectorString(stringList));
+        if      (desc == "MUSICBRAINZ ARTIST ID")       tag.SetMusicBrainzArtistID(SplitMBID(StringListToVectorString(stringList)));
         else if (desc == "MUSICBRAINZ ALBUM ID")        tag.SetMusicBrainzAlbumID(stringList.front().to8Bit(true));
-        else if (desc == "MUSICBRAINZ ALBUM ARTIST ID") tag.SetMusicBrainzAlbumArtistID(StringListToVectorString(stringList));
+        else if (desc == "MUSICBRAINZ ALBUM ARTIST ID") tag.SetMusicBrainzAlbumArtistID(SplitMBID(StringListToVectorString(stringList)));
         else if (desc == "MUSICBRAINZ ALBUM ARTIST")    SetAlbumArtist(tag, StringListToVectorString(stringList));
         else if (desc == "REPLAYGAIN_TRACK_GAIN")       tag.SetReplayGainTrackGain((int)(atof(stringList.front().toCString(true)) * 100 + 0.5));
         else if (desc == "REPLAYGAIN_ALBUM_GAIN")       tag.SetReplayGainAlbumGain((int)(atof(stringList.front().toCString(true)) * 100 + 0.5));
@@ -501,8 +502,8 @@ bool CTagLoaderTagLib::ParseAPETag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTa
     else if (it->first == "REPLAYGAIN_ALBUM_GAIN")     tag.SetReplayGainAlbumGain((int)(atof(it->second.toString().toCString(true)) * 100 + 0.5));
     else if (it->first == "REPLAYGAIN_TRACK_PEAK")     tag.SetReplayGainTrackPeak((float)atof(it->second.toString().toCString(true)));
     else if (it->first == "REPLAYGAIN_ALBUM_PEAK")     tag.SetReplayGainAlbumPeak((float)atof(it->second.toString().toCString(true)));
-    else if (it->first == "MUSICBRAINZ_ARTISTID")      tag.SetMusicBrainzArtistID(StringListToVectorString(it->second.toStringList()));
-    else if (it->first == "MUSICBRAINZ_ALBUMARTISTID") tag.SetMusicBrainzAlbumArtistID(StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "MUSICBRAINZ_ARTISTID")      tag.SetMusicBrainzArtistID(SplitMBID(StringListToVectorString(it->second.toStringList())));
+    else if (it->first == "MUSICBRAINZ_ALBUMARTISTID") tag.SetMusicBrainzAlbumArtistID(SplitMBID(StringListToVectorString(it->second.toStringList())));
     else if (it->first == "MUSICBRAINZ_ALBUMARTIST")   SetAlbumArtist(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "MUSICBRAINZ_ALBUMID")       tag.SetMusicBrainzAlbumID(it->second.toString().to8Bit(true));
     else if (it->first == "MUSICBRAINZ_TRACKID")       tag.SetMusicBrainzTrackID(it->second.toString().to8Bit(true));
@@ -542,8 +543,8 @@ bool CTagLoaderTagLib::ParseXiphComment(Ogg::XiphComment *xiph, EmbeddedArt *art
     else if (it->first == "REPLAYGAIN_ALBUM_GAIN")     tag.SetReplayGainAlbumGain((int)(atof(it->second.front().toCString(true)) * 100 + 0.5));
     else if (it->first == "REPLAYGAIN_TRACK_PEAK")     tag.SetReplayGainTrackPeak((float)atof(it->second.front().toCString(true)));
     else if (it->first == "REPLAYGAIN_ALBUM_PEAK")     tag.SetReplayGainAlbumPeak((float)atof(it->second.front().toCString(true)));
-    else if (it->first == "MUSICBRAINZ_ARTISTID")      tag.SetMusicBrainzArtistID(StringListToVectorString(it->second));
-    else if (it->first == "MUSICBRAINZ_ALBUMARTISTID") tag.SetMusicBrainzAlbumArtistID(StringListToVectorString(it->second));
+    else if (it->first == "MUSICBRAINZ_ARTISTID")      tag.SetMusicBrainzArtistID(SplitMBID(StringListToVectorString(it->second)));
+    else if (it->first == "MUSICBRAINZ_ALBUMARTISTID") tag.SetMusicBrainzAlbumArtistID(SplitMBID(StringListToVectorString(it->second)));
     else if (it->first == "MUSICBRAINZ_ALBUMARTIST")   SetAlbumArtist(tag, StringListToVectorString(it->second));
     else if (it->first == "MUSICBRAINZ_ALBUMID")       tag.SetMusicBrainzAlbumID(it->second.front().to8Bit(true));
     else if (it->first == "MUSICBRAINZ_TRACKID")       tag.SetMusicBrainzTrackID(it->second.front().to8Bit(true));
@@ -633,9 +634,9 @@ bool CTagLoaderTagLib::ParseMP4Tag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTa
     else if (it->first == "----:com.apple.iTunes:replaygain_album_peak")
       tag.SetReplayGainAlbumPeak((float)(atof(it->second.toStringList().front().toCString())));
     else if (it->first == "----:com.apple.iTunes:MusicBrainz Artist Id")
-      tag.SetMusicBrainzArtistID(StringListToVectorString(it->second.toStringList()));
+      tag.SetMusicBrainzArtistID(SplitMBID(StringListToVectorString(it->second.toStringList())));
     else if (it->first == "----:com.apple.iTunes:MusicBrainz Album Artist Id")
-      tag.SetMusicBrainzAlbumArtistID(StringListToVectorString(it->second.toStringList()));
+      tag.SetMusicBrainzAlbumArtistID(SplitMBID(StringListToVectorString(it->second.toStringList())));
     else if (it->first == "----:com.apple.iTunes:MusicBrainz Album Artist")
       SetAlbumArtist(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "----:com.apple.iTunes:MusicBrainz Album Id")
@@ -738,6 +739,26 @@ void CTagLoaderTagLib::SetArtist(CMusicInfoTag &tag, const vector<string> &value
     tag.SetArtist(values[0]);
   else
     tag.SetArtist(values);
+}
+
+const std::vector<std::string> CTagLoaderTagLib::SplitMBID(const std::vector<std::string> &values)
+{
+  if (values.empty() || values.size() > 1)
+    return values;
+
+  // Picard, and other taggers use a heap of different separators.  We use a regexp to detect
+  // MBIDs to make sure we hit them all...
+  std::vector<std::string> ret;
+  std::string value = values[0];
+  StringUtils::ToLower(value);
+  CRegExp reg;
+  if (reg.RegComp("([[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12})"))
+  {
+    int pos = -1;
+    while ((pos = reg.RegFind(value, pos+1)) > -1)
+      ret.push_back(reg.GetMatch(1));
+  }
+  return ret;
 }
 
 void CTagLoaderTagLib::SetAlbumArtist(CMusicInfoTag &tag, const vector<string> &values)
