@@ -66,6 +66,7 @@ private:
     CCriticalSection critSec;
   };
   class CLogGlobals m_globalInstance; // used as static global variable
+  static void LogString(int logLevel, const std::string& logString);
   static bool WriteLogString(int logLevel, const std::string& logString);
 };
 

@@ -47,19 +47,25 @@ void CLog::Close()
   s_globals.m_repeatLine.clear();
 }
 
-void CLog::Log(int loglevel, const char *format, ... )
+void CLog::Log(int loglevel, const char *format, ...)
 {
-  CSingleLock waitLock(s_globals.critSec);
   if (IsLogLevelLogged(loglevel))
   {
-    std::string strData;
-
     va_list va;
     va_start(va, format);
-    strData = StringUtils::FormatV(format,va);
+    LogString(loglevel, StringUtils::FormatV(format, va));
     va_end(va);
+  }
+}
 
-    if (s_globals.m_repeatLogLevel == loglevel && s_globals.m_repeatLine == strData)
+void CLog::LogString(int logLevel, const std::string& logString)
+{
+  CSingleLock waitLock(s_globals.critSec);
+  std::string strData(logString);
+  StringUtils::TrimRight(strData);
+  if (!strData.empty())
+  {
+    if (s_globals.m_repeatLogLevel == logLevel && s_globals.m_repeatLine == strData)
     {
       s_globals.m_repeatCount++;
       return;
@@ -74,15 +80,11 @@ void CLog::Log(int loglevel, const char *format, ... )
     }
     
     s_globals.m_repeatLine = strData;
-    s_globals.m_repeatLogLevel = loglevel;
+    s_globals.m_repeatLogLevel = logLevel;
 
-    StringUtils::TrimRight(strData);
-    if (strData.empty())
-      return;
-    
     PrintDebugString(strData);
 
-    WriteLogString(loglevel, strData);
+    WriteLogString(logLevel, strData);
   }
 }
 
