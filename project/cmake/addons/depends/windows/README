@@ -9,7 +9,7 @@ To trigger the cmake-based buildsystem the following command must be executed
 with <path> being the path to this directory (absolute or relative, allowing for
 in-source and out-of-source builds).
 
-  cmake <path> -G <generator>
+  cmake <path> [-G <generator>]
 
 cmake supports multiple generators, see
 http://www.cmake.org/cmake/help/v2.8.8/cmake.html#section_Generators for a list.

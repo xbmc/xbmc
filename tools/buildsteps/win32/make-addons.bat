@@ -40,9 +40,6 @@ SET ADDONS_BUILD_PATH=%ADDONS_PATH%\build
 
 SET ERRORFILE=%BASE_PATH%\make-addons.error
 
-SET XBMC_INCLUDE_PATH=%ADDON_DEPENDS_PATH%\include\xbmc
-SET XBMC_LIB_PATH=%ADDON_DEPENDS_PATH%\lib\xbmc
-
 rem determine whether make-addon-depends.bat should be called with noclean or not
 SET addon_depends_mode=clean
 IF %noclean% == true (
@@ -68,14 +65,6 @@ IF %noclean% == false (
   IF EXIST "%ADDONS_BUILD_PATH%" (
     RMDIR "%ADDONS_BUILD_PATH%" /S /Q > NUL
   )
-)
-
-rem make sure the xbmc include and library paths exist
-IF NOT EXIST "%XBMC_INCLUDE_PATH%" (
-  MKDIR "%XBMC_INCLUDE_PATH%"
-)
-IF NOT EXIST "%XBMC_LIB_PATH%" (
-  MKDIR "%XBMC_LIB_PATH%"
 )
 
 rem create the build directory
