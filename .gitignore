@@ -344,7 +344,7 @@ lib/cpluff/stamp-h1
 /project/cmake/xbmc-config.cmake
 /project/cmake/*.error
 /project/cmake/addons/build
-/project/cmake/addons/depends/win32/build
+/project/cmake/addons/depends/build
 /project/cmake/addons/output
 
 # /project/Win32BuildSetup/
