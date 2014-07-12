@@ -60,6 +60,7 @@ void CGUIEditControl::DefaultConstructor()
   m_textWidth = GetWidth();
   m_cursorPos = 0;
   m_cursorBlink = 0;
+  m_cursorShowAlways = false;
   m_inputHeading = 0;
   m_inputType = INPUT_TYPE_TEXT;
   m_smsLastKey = 0;
@@ -493,7 +494,7 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
 
     CStdStringW text = GetDisplayedText();
     // add the cursor and highlighting if we're focused
-    if (HasFocus() && m_inputType != INPUT_TYPE_READONLY)
+    if ((HasFocus() || m_cursorShowAlways) && m_inputType != INPUT_TYPE_READONLY)
       changed |= SetStyledText(text);
     else
     {
