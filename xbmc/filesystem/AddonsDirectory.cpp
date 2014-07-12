@@ -62,8 +62,9 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   bool groupAddons = true;
   bool reposAsFolders = true;
   if (path.GetHostName() == "enabled")
-  {
-    CAddonMgr::Get().GetAllAddons(addons, true);
+  { // grab all enabled addons, including enabled repositories
+    reposAsFolders = false;
+    CAddonMgr::Get().GetAllAddons(addons, true, true);
     items.SetProperty("reponame",g_localizeStrings.Get(24062));
     items.SetLabel(g_localizeStrings.Get(24062));
   }
