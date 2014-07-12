@@ -62,6 +62,9 @@ public:
   ~CLog(void);
   static void Close();
   static void Log(int loglevel, PRINTF_FORMAT_STRING const char *format, ...) PARAM2_PRINTF_FORMAT;
+  // wide character Log function
+  // note: use "%ls" to specify wide string parameter, "%ls" is compatible with both POSIX and win32
+  static void LogW(int loglevel, PRINTF_FORMAT_STRING const wchar_t *format, ...);
   static void MemDump(char *pData, int length);
   static bool Init(IN_STRING const char* path);
   static void PrintDebugString(const std::string& line);
@@ -85,6 +88,7 @@ private:
     CCriticalSection critSec;
   };
   class CLogGlobals m_globalInstance; // used as static global variable
+  static void LogString(int logLevel, const std::string& logString);
   static bool WriteLogString(int logLevel, const std::string& logString);
 };
 

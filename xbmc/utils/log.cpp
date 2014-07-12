@@ -23,6 +23,8 @@
 #include "threads/SingleLock.h"
 #include "threads/Thread.h"
 #include "utils/StringUtils.h"
+#define NO_GLOBAL_CHARSETCONVERTER 1
+#include "utils/CharsetConverter.h"
 
 static const char* const levelNames[] =
 {"DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"};
@@ -48,19 +50,46 @@ void CLog::Close()
   s_globals.m_repeatLine.clear();
 }
 
-void CLog::Log(int loglevel, const char *format, ... )
+void CLog::Log(int loglevel, const char *format, ...)
 {
   CSingleLock waitLock(s_globals.critSec);
   if (IsLogLevelLogged(loglevel))
   {
-    std::string strData;
-
     va_list va;
     va_start(va, format);
-    strData = StringUtils::FormatV(format,va);
+    LogString(loglevel, StringUtils::FormatV(format, va));
     va_end(va);
+  }
+}
 
-    if (s_globals.m_repeatLogLevel == loglevel && s_globals.m_repeatLine == strData)
+void CLog::LogW(int loglevel, const wchar_t *format, ...)
+{
+  CSingleLock waitLock(s_globals.critSec);
+  if (IsLogLevelLogged(loglevel))
+  {
+    va_list va;
+    va_start(va, format);
+    std::wstring strDataW(StringUtils::FormatV(format, va));
+    va_end(va);
+    if (!strDataW.empty())
+    {
+      std::string strDataUtf8(CCharsetConverter::simpleWToUtf8(strDataW, false));
+      if (strDataUtf8.empty())
+        PrintDebugString("CLog::LogW: Can't convert log wide string to UTF-8");
+      else
+        LogString(loglevel, strDataUtf8);
+    }
+  }
+}
+
+
+void CLog::LogString(int logLevel, const std::string& logString)
+{
+  std::string strData(logString);
+  StringUtils::TrimRight(strData);
+  if (!strData.empty())
+  {
+    if (s_globals.m_repeatLogLevel == logLevel && s_globals.m_repeatLine == strData)
     {
       s_globals.m_repeatCount++;
       return;
@@ -75,15 +104,11 @@ void CLog::Log(int loglevel, const char *format, ... )
     }
     
     s_globals.m_repeatLine = strData;
-    s_globals.m_repeatLogLevel = loglevel;
+    s_globals.m_repeatLogLevel = logLevel;
 
-    StringUtils::TrimRight(strData);
-    if (strData.empty())
-      return;
-    
     PrintDebugString(strData);
 
-    WriteLogString(loglevel, strData);
+    WriteLogString(logLevel, strData);
   }
 }
 
