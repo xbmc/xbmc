@@ -62,17 +62,9 @@ void CLog::Log(int loglevel, const char *format, ... )
 {
   static const char* prefixFormat = "%02.2d:%02.2d:%02.2d T:%" PRIu64" %7s: ";
   CSingleLock waitLock(s_globals.critSec);
-  int extras = (loglevel >> LOGMASKBIT) << LOGMASKBIT;
-  loglevel = loglevel & LOGMASK;
-#if !(defined(_DEBUG) || defined(PROFILE))
-  if (s_globals.m_logLevel > LOG_LEVEL_NORMAL ||
-     (s_globals.m_logLevel > LOG_LEVEL_NONE && loglevel >= LOGNOTICE))
-#endif
+  if (IsLogLevelLogged(loglevel))
   {
     if (!s_globals.m_file)
-      return;
-
-    if (extras != 0 && (s_globals.m_extraLogLevels & extras) == 0)
       return;
 
     SYSTEMTIME time;
@@ -225,6 +217,26 @@ void CLog::SetExtraLogLevels(int level)
   CSingleLock waitLock(s_globals.critSec);
   s_globals.m_extraLogLevels = level;
 }
+
+bool CLog::IsLogLevelLogged(int loglevel)
+{
+  const int extras = (loglevel & ~LOGMASK);
+  if (extras != 0 && (s_globals.m_extraLogLevels & extras) == 0)
+    return false;
+
+#if defined(_DEBUG) || defined(PROFILE)
+  return true;
+#else
+  if (s_globals.m_logLevel >= LOG_LEVEL_DEBUG)
+    return true;
+  if (s_globals.m_logLevel <= LOG_LEVEL_NONE)
+    return false;
+
+  // "m_logLevel" is "LOG_LEVEL_NORMAL"
+  return (loglevel & LOGMASK) >= LOGNOTICE;
+#endif
+}
+
 
 void CLog::PrintDebugString(const std::string& line)
 {
