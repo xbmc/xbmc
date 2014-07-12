@@ -64,7 +64,6 @@ void CLog::Log(int loglevel, const char *format, ... )
   {
     std::string strData;
 
-    strData.reserve(16384);
     va_list va;
     va_start(va, format);
     strData = StringUtils::FormatV(format,va);
