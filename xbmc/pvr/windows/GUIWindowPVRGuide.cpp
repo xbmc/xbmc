@@ -34,6 +34,7 @@
 #include "utils/log.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/timers/PVRTimers.h"
+#include "ApplicationMessenger.h"
 
 using namespace PVR;
 using namespace EPG;
@@ -52,6 +53,45 @@ CGUIWindowPVRGuide::~CGUIWindowPVRGuide(void)
   delete m_cachedTimeline;
 }
 
+bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
+{
+  bool retval = false;
+  switch (message.GetMessage())
+  {
+    case GUI_MSG_REFRESH_LIST:
+      switch(message.GetParam1())
+      {
+        case ObservableMessageEpg:
+        case ObservableMessageEpgContainer:
+        {
+          m_bUpdateRequired = true;
+          /* update the current window if the EPG timeline view is visible */
+          if (IsFocused() && m_iGuideView == GUIDE_VIEW_TIMELINE)
+            UpdateData(false);
+          retval = true;
+          break;
+        }
+        case ObservableMessageEpgActiveItem:
+        {
+          if (IsVisible() && m_iGuideView != GUIDE_VIEW_TIMELINE)
+            SetInvalid();
+          else
+            m_bUpdateRequired = true;
+
+          retval = true;
+          break;
+        }
+        default:
+          break;
+      }
+      break;
+    default:
+      break;
+  }
+
+  return retval || CGUIWindowPVRCommon::OnMessage(message);
+}
+
 void CGUIWindowPVRGuide::UnregisterObservers(void)
 {
   g_EpgContainer.UnregisterObserver(this);
@@ -64,20 +104,18 @@ void CGUIWindowPVRGuide::ResetObservers(void)
 
 void CGUIWindowPVRGuide::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  if (msg == ObservableMessageEpg || msg == ObservableMessageEpgContainer)
+  switch (msg)
   {
-    m_bUpdateRequired = true;
-
-    /* update the current window if the EPG timeline view is visible */
-    if (IsFocused() && m_iGuideView == GUIDE_VIEW_TIMELINE)
-      UpdateData(false);
-  }
-  else if (msg == ObservableMessageEpgActiveItem)
-  {
-    if (IsVisible() && m_iGuideView != GUIDE_VIEW_TIMELINE)
-      SetInvalid();
-    else
-      m_bUpdateRequired = true;
+    case ObservableMessageEpg:
+    case ObservableMessageEpgContainer:
+    case ObservableMessageEpgActiveItem:
+    {
+      CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), msg);
+      CApplicationMessenger::Get().SendGUIMessage(m);
+      break;
+    }
+    default:
+      break;
   }
 }
 

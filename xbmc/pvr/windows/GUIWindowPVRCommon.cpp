@@ -105,6 +105,11 @@ const char *CGUIWindowPVRCommon::GetName(void) const
   }
 }
 
+int  CGUIWindowPVRCommon::GetID(void) const
+{
+  return m_parent ? m_parent->GetID() : 0;
+}
+
 bool CGUIWindowPVRCommon::IsFocused(void) const
 {
   return !g_application.IsPlayingFullScreenVideo() &&

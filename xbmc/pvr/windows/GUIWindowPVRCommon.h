@@ -85,6 +85,7 @@ namespace PVR
 
     virtual const char *GetName(void) const;
     virtual PVRWindow GetWindowId(void) const { return m_window; }
+    virtual int  GetID(void) const; // GUIWindowPVR's control ID
     virtual bool IsFocused(void) const;
     virtual bool IsVisible(void) const;
     virtual bool IsActive(void) const;
@@ -94,6 +95,7 @@ namespace PVR
     virtual bool IsSelectedList(CGUIMessage &message) const;
 
     virtual bool OnAction(const CAction &action);
+    virtual bool OnMessage(CGUIMessage& message) { return false; }
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const = 0;
