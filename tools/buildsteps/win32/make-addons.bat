@@ -6,9 +6,20 @@ SET EXITCODE=0
 
 SET getdepends=true
 SET install=false
-FOR %%b in (%1) DO (
-  IF %%b == nodepends SET getdepends=false
-  IF %%b == install SET install=true
+SET noclean=false
+SET addon=
+FOR %%b in (%1, %2, %3, %4) DO (
+  IF %%b == nodepends (
+    SET getdepends=false
+  ) ELSE ( IF %%b == install (
+    SET install=true
+  ) ELSE ( IF %%b == noclean (
+    SET noclean=true
+  ) ELSE ( IF %%b == clean (
+    SET noclean=false
+  ) ELSE (
+    SET addon=%%b
+  ))))
 )
 
 rem set Visual C++ build environment
@@ -32,34 +43,43 @@ SET ERRORFILE=%BASE_PATH%\make-addons.error
 SET XBMC_INCLUDE_PATH=%ADDON_DEPENDS_PATH%\include\xbmc
 SET XBMC_LIB_PATH=%ADDON_DEPENDS_PATH%\lib\xbmc
 
+rem determine whether make-addon-depends.bat should be called with noclean or not
+SET addon_depends_mode=clean
+IF %noclean% == true (
+  SET addon_depends_mode=noclean
+)
+
 IF %getdepends% == true (
-  CALL make-addon-depends.bat
+  ECHO --------------------------------------------------
+  ECHO Building addon dependencies
+  ECHO --------------------------------------------------
+
+  CALL make-addon-depends.bat %addon_depends_mode%
   IF ERRORLEVEL 1 (
     ECHO make-addon-depends error level: %ERRORLEVEL% > %ERRORFILE%
     GOTO ERROR
   )
+
+  ECHO.
+)
+
+IF %noclean% == false (
+  rem remove the build directory if it exists
+  IF EXIST "%ADDONS_BUILD_PATH%" (
+    RMDIR "%ADDONS_BUILD_PATH%" /S /Q > NUL
+  )
 )
 
 rem make sure the xbmc include and library paths exist
-IF EXIST "%XBMC_INCLUDE_PATH%" (
-  RMDIR "%XBMC_INCLUDE_PATH%" /S /Q > NUL
+IF NOT EXIST "%XBMC_INCLUDE_PATH%" (
+  MKDIR "%XBMC_INCLUDE_PATH%"
 )
-IF EXIST "%XBMC_LIB_PATH%" (
-  RMDIR "%XBMC_LIB_PATH%" /S /Q > NUL
-)
-MKDIR "%XBMC_INCLUDE_PATH%"
-MKDIR "%XBMC_LIB_PATH%"
-
-rem go into the addons directory
-CD %ADDONS_PATH%
-
-rem remove the build directory if it exists
-IF EXIST "%ADDONS_BUILD_PATH%" (
-  RMDIR "%ADDONS_BUILD_PATH%" /S /Q > NUL
+IF NOT EXIST "%XBMC_LIB_PATH%" (
+  MKDIR "%XBMC_LIB_PATH%"
 )
 
 rem create the build directory
-MKDIR "%ADDONS_BUILD_PATH%"
+IF NOT EXIST "%ADDONS_BUILD_PATH%" MKDIR "%ADDONS_BUILD_PATH%"
 
 rem go into the build directory
 CD "%ADDONS_BUILD_PATH%"
@@ -70,6 +90,10 @@ IF %install% == true (
 ) ELSE (
   SET ADDONS_INSTALL_PATH=%WORKDIR%\project\Win32BuildSetup\BUILD_WIN32\Xbmc\xbmc-addons
 )
+
+ECHO --------------------------------------------------
+ECHO Building addons
+ECHO --------------------------------------------------
 
 rem execute cmake to generate makefiles processable by nmake
 cmake "%ADDONS_PATH%" -G "NMake Makefiles" ^
@@ -87,7 +111,7 @@ IF ERRORLEVEL 1 (
 )
 
 rem execute nmake to build the addons
-nmake
+nmake %addon%
 IF ERRORLEVEL 1 (
   ECHO nmake error level: %ERRORLEVEL% > %ERRORFILE%
   GOTO ERROR
