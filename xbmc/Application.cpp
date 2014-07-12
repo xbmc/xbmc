@@ -439,6 +439,8 @@ CApplication::CApplication(void)
 
   m_muted = false;
   m_volumeLevel = 1.0f;
+
+  m_bKeyboardMode = false;
 }
 
 CApplication::~CApplication(void)
@@ -2449,12 +2451,12 @@ bool CApplication::OnKey(const CKey& key)
     }
     if (useKeyboard)
     {
-      action = CAction(0); // reset our action
-      if (CSettings::Get().GetBool("input.remoteaskeyboard"))
+      action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key);
+
+      if (action.GetID() == ACTION_TOGGLE_KEYBOARD)
+        m_bKeyboardMode = !m_bKeyboardMode;
+      else if (!m_bKeyboardMode)
       {
-        // users remote is executing keyboard commands, so use the virtualkeyboard section of keymap.xml
-        // and send those rather than actual keyboard presses.  Only for navigation-type commands though
-        action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key);
         if (!(action.GetID() == ACTION_MOVE_LEFT ||
               action.GetID() == ACTION_MOVE_RIGHT ||
               action.GetID() == ACTION_MOVE_UP ||
@@ -2467,14 +2469,17 @@ bool CApplication::OnKey(const CKey& key)
           // the action isn't plain navigation - check for a keyboard-specific keymap
           action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, false);
           if (!(action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9) ||
-                action.GetID() == ACTION_BACKSPACE ||
-                action.GetID() == ACTION_SHIFT ||
-                action.GetID() == ACTION_SYMBOLS ||
-                action.GetID() == ACTION_CURSOR_LEFT ||
-                action.GetID() == ACTION_CURSOR_RIGHT)
+              action.GetID() == ACTION_BACKSPACE ||
+              action.GetID() == ACTION_SHIFT ||
+              action.GetID() == ACTION_SYMBOLS ||
+              action.GetID() == ACTION_CURSOR_LEFT ||
+              action.GetID() == ACTION_CURSOR_RIGHT)
             action = CAction(0); // don't bother with this action
         }
       }
+      else
+        action = CAction(0); // reset our action
+
       if (!action.GetID())
       {
         // keyboard entry - pass the keys through directly

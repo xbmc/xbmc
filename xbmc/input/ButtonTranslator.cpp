@@ -265,6 +265,9 @@ static const ActionMapping actions[] =
         {"swipeup"           , ACTION_GESTURE_SWIPE_UP},
         {"swipedown"         , ACTION_GESTURE_SWIPE_DOWN},
 
+        // Keyboard
+        {"togglekeyboard"    , ACTION_TOGGLE_KEYBOARD},
+
         // Do nothing action
         { "noop"             , ACTION_NOOP}
 };
