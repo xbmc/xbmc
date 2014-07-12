@@ -141,7 +141,8 @@ bool CGUIEditControl::OnAction(const CAction &action)
       }
       return true;
     }
-    else if (action.GetID() == ACTION_MOVE_LEFT)
+    else if (action.GetID() == ACTION_MOVE_LEFT ||
+             action.GetID() == ACTION_CURSOR_LEFT)
     {
       if (m_cursorPos > 0)
       {
@@ -150,7 +151,8 @@ bool CGUIEditControl::OnAction(const CAction &action)
         return true;
       }
     }
-    else if (action.GetID() == ACTION_MOVE_RIGHT)
+    else if (action.GetID() == ACTION_MOVE_RIGHT ||
+             action.GetID() == ACTION_CURSOR_RIGHT)
     {
       if ((unsigned int) m_cursorPos < m_text2.size())
       {
