@@ -18,7 +18,7 @@ else()
 endif()
 get_filename_component(XBMCROOT "${XBMCROOT}" ABSOLUTE)
 
-if (NOT DEPENDS_PATH)
+if(NOT DEPENDS_PATH)
   set(DEPENDS_PATH "${CMAKE_BINARY_DIR}/addons")
 else()
   file(TO_CMAKE_PATH "${DEPENDS_PATH}" DEPENDS_PATH)
@@ -27,7 +27,7 @@ endif()
 get_filename_component(prefix "${DEPENDS_PATH}" ABSOLUTE)
 
 #make sure CMAKE_PREFIX_PATH is set
-if (NOT CMAKE_PREFIX_PATH)
+if(NOT CMAKE_PREFIX_PATH)
   set(CMAKE_PREFIX_PATH "${DEPENDS_PATH}")
 else()
   file(TO_CMAKE_PATH "${CMAKE_PREFIX_PATH}" CMAKE_PREFIX_PATH)
