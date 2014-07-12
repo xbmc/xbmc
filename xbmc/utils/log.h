@@ -59,6 +59,7 @@ private:
   };
   class CLogGlobals m_globalInstance; // used as static global variable
   static void PrintDebugString(const std::string& line);
+  static bool WriteLogString(int logLevel, const std::string& logString);
 };
 
 
