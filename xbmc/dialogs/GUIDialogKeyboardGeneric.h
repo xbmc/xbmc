@@ -22,9 +22,10 @@
 
 #include "guilib/GUIKeyboard.h"
 #include "guilib/GUIDialog.h"
+#include "input/KeyboardLayout.h"
 #include "utils/Variant.h"
 
-enum KEYBOARD {CAPS, LOWER, SYMBOLS };
+enum KEYBOARD {CAPS, LOWER, SYMBOLS};
 
 class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
 {
@@ -51,6 +52,7 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     void SetControlLabel(int id, const std::string &label);
     void OnShift();
     void MoveCursor(int iAmount);
+    void OnLayout();
     void OnSymbols();
     void OnIPAddress();
     void OnOK();
@@ -59,20 +61,21 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     void OnClickButton(int iButtonControl);
     void UpdateButtons();
     char GetCharacter(int iButton);
-    void Character(char ch);
+    void Character(const std::string &ch);
     void Backspace();
     void SetEditText(const std::string& text);
     void SendSearchMessage();
 
     bool m_bIsConfirmed;
     KEYBOARD m_keyType;
-    int m_iMode;
     bool m_bShift;
     bool m_hiddenInput;
 
+    std::vector<CKeyboardLayout> m_layouts;
+    unsigned int                 m_currentLayout;
+
     std::string m_strHeading;
     std::string m_text;       ///< current text
-
 
     char_callback_t m_pCharCallback;
 };
