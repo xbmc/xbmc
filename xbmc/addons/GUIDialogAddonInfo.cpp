@@ -150,7 +150,7 @@ void CGUIDialogAddonInfo::OnInitWindow()
 
 void CGUIDialogAddonInfo::UpdateControls()
 {
-  CStdString xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
+  std::string xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
   bool isInstalled = NULL != m_localAddon.get();
   bool isSystem = isInstalled && StringUtils::StartsWith(m_localAddon->Path(), xbmcPath);
   bool isEnabled = isInstalled && m_item->GetProperty("Addon.Enabled").asBoolean();
@@ -180,7 +180,7 @@ void CGUIDialogAddonInfo::UpdateControls()
 
 void CGUIDialogAddonInfo::OnUpdate()
 {
-  CStdString referer = StringUtils::Format("Referer=%s-%s.zip",m_localAddon->ID().c_str(),m_localAddon->Version().asString().c_str());
+  std::string referer = StringUtils::Format("Referer=%s-%s.zip",m_localAddon->ID().c_str(),m_localAddon->Version().asString().c_str());
   CAddonInstaller::Get().Install(m_addon->ID(), true, referer); // force install
   Close();
 }
@@ -318,7 +318,7 @@ void CGUIDialogAddonInfo::OnRollback()
   CContextButtons buttons;
   for (unsigned int i=0;i<m_rollbackVersions.size();++i)
   {
-    CStdString label(m_rollbackVersions[i]);
+    std::string label(m_rollbackVersions[i]);
     if (m_rollbackVersions[i] == m_localAddon->Version().asString())
      label += " "+g_localizeStrings.Get(24094);
    if (database.IsAddonBlacklisted(m_localAddon->ID(),label))
@@ -332,7 +332,7 @@ void CGUIDialogAddonInfo::OnRollback()
     // blacklist everything newer
     for (unsigned int j=choice+1;j<m_rollbackVersions.size();++j)
       database.BlacklistAddon(m_localAddon->ID(),m_rollbackVersions[j]);
-    CStdString path = "special://home/addons/packages/";
+    std::string path = "special://home/addons/packages/";
     path += m_localAddon->ID()+"-"+m_rollbackVersions[choice]+".zip";
     // needed as cpluff won't downgrade
     if (!m_localAddon->IsType(ADDON_SERVICE))
@@ -392,7 +392,7 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
         if (addons[j]->Type() == (TYPE)i)
           ++num;
       }
-      m_item->SetProperty(CStdString("Repo.") + TranslateType((TYPE)i), num);
+      m_item->SetProperty("Repo." + TranslateType((TYPE)i), num);
       tot += num;
     }
     m_item->SetProperty("Repo.Addons", tot);
@@ -440,14 +440,14 @@ void CGUIDialogAddonInfo::GrabRollbackVersions()
   {
     if (items[i]->m_bIsFolder)
       continue;
-    CStdString ID, version;
+    std::string ID, version;
     AddonVersion::SplitFileName(ID,version,items[i]->GetLabel());
-    if (ID.Equals(m_localAddon->ID()))
+    if (ID == m_localAddon->ID())
     {
-      CStdString hash, path(items[i]->GetPath());
+      std::string hash, path(items[i]->GetPath());
       if (db.GetPackageHash(m_localAddon->ID(), path, hash))
       {
-        CStdString md5 = CUtil::GetFileMD5(path);
+        std::string md5 = CUtil::GetFileMD5(path);
         if (md5 == hash)
           m_rollbackVersions.push_back(version);
         else /* The package has been corrupted */

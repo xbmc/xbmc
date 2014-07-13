@@ -44,7 +44,7 @@ CAndroidAppDirectory::~CAndroidAppDirectory(void)
 
 bool CAndroidAppDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  CStdString dirname = url.GetFileName();
+  std::string dirname = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(dirname);
   CLog::Log(LOGDEBUG, "CAndroidAppDirectory::GetDirectory: %s",dirname.c_str()); 
   if (dirname == "apps")
@@ -62,7 +62,7 @@ bool CAndroidAppDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         continue;
       CFileItemPtr pItem(new CFileItem(applications[i].packageName));
       pItem->m_bIsFolder = false;
-      CStdString path = StringUtils::Format("androidapp://%s/%s/%s", url.GetHostName().c_str(), dirname.c_str(),  applications[i].packageName.c_str());
+      std::string path = StringUtils::Format("androidapp://%s/%s/%s", url.GetHostName().c_str(), dirname.c_str(),  applications[i].packageName.c_str());
       pItem->SetPath(path);
       pItem->SetLabel(applications[i].packageLabel);
       pItem->SetArt("thumb", path+".png");

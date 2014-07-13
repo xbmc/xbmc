@@ -30,7 +30,6 @@
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
 #include "utils/HttpParser.h"
-#include "utils/StdString.h"
 #include "interfaces/IAnnouncer.h"
 
 class DllLibPlist;
@@ -47,7 +46,7 @@ public:
   static bool StartServer(int port, bool nonlocal);
   static void StopServer(bool bWait);
   static bool IsRunning();
-  static bool SetCredentials(bool usePassword, const CStdString& password);
+  static bool SetCredentials(bool usePassword, const std::string& password);
   static bool IsPlaying(){ return m_isPlaying > 0;}
   static void backupVolume();
   static void restoreVolume();
@@ -59,7 +58,7 @@ protected:
 private:
   CAirPlayServer(int port, bool nonlocal);
   ~CAirPlayServer();
-  bool SetInternalCredentials(bool usePassword, const CStdString& password);
+  bool SetInternalCredentials(bool usePassword, const std::string& password);
   bool Initialize();
   void Deinitialize();
   void AnnounceToClients(int state);
@@ -74,9 +73,9 @@ private:
     CTCPClient(const CTCPClient& client);
     CTCPClient& operator=(const CTCPClient& client);
     void PushBuffer(CAirPlayServer *host, const char *buffer,
-                    int length, CStdString &sessionId,
-                    std::map<CStdString, int> &reverseSockets);
-    void ComposeReverseEvent(CStdString& reverseHeader, CStdString& reverseBody, int state);
+                    int length, std::string &sessionId,
+                    std::map<std::string, int> &reverseSockets);
+    void ComposeReverseEvent(std::string& reverseHeader, std::string& reverseBody, int state);
 
     void Disconnect();
 
@@ -85,31 +84,31 @@ private:
     socklen_t m_addrlen;
     CCriticalSection m_critSection;
     int  m_sessionCounter;
-    CStdString m_sessionId;
+    std::string m_sessionId;
 
   private:
-    int ProcessRequest( CStdString& responseHeader,
-                        CStdString& response);
+    int ProcessRequest( std::string& responseHeader,
+                        std::string& response);
 
-    void ComposeAuthRequestAnswer(CStdString& responseHeader, CStdString& responseBody);
-    bool checkAuthorization(const CStdString& authStr, const CStdString& method, const CStdString& uri);
+    void ComposeAuthRequestAnswer(std::string& responseHeader, std::string& responseBody);
+    bool checkAuthorization(const std::string& authStr, const std::string& method, const std::string& uri);
     void Copy(const CTCPClient& client);
 
     HttpParser* m_httpParser;
     DllLibPlist *m_pLibPlist;//the lib
     bool m_bAuthenticated;
     int  m_lastEvent;
-    CStdString m_authNonce;
+    std::string m_authNonce;
   };
 
   CCriticalSection m_connectionLock;
   std::vector<CTCPClient> m_connections;
-  std::map<CStdString, int> m_reverseSockets;
+  std::map<std::string, int> m_reverseSockets;
   int m_ServerSocket;
   int m_port;
   bool m_nonlocal;
   bool m_usePassword;
-  CStdString m_password;
+  std::string m_password;
   int m_origVolume;
 
   static CCriticalSection ServerInstanceLock;

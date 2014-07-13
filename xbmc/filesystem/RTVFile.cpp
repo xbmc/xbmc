@@ -30,7 +30,6 @@
 #ifdef TARGET_WINDOWS
 #include "PlatformDefs.h" //for PRIdS
 #endif
-#include "utils/StdString.h"
 extern "C"
 {
 #include "lib/libRTV/interface.h"
@@ -57,7 +56,7 @@ CRTVFile::~CRTVFile()
 }
 
 //*********************************************************************************************
-bool CRTVFile::Open(const char* strHostName, const char* strFileName, int iport)
+bool CRTVFile::Open(const std::string& strHostName, const std::string& strFileName, int iport)
 {
   // Close any existing connection
   if (m_bOpened) Close();
@@ -67,13 +66,12 @@ bool CRTVFile::Open(const char* strHostName, const char* strFileName, int iport)
   // Set up global variables.  Don't set m_filePos to 0 because we use it to SEEK!
   m_fileSize = 0;
   m_rtvd = NULL;
-  strcpy(m_hostName, strHostName);
-  strcpy(m_fileName, strFileName);
+  m_hostName = strHostName;
+  m_fileName = strFileName;
   m_iport = iport;
 
   // Allow for ReplayTVs on ports other than 80
-  CStdString strHostAndPort;
-  strHostAndPort = strHostName;
+  std::string strHostAndPort = strHostName;
   if (iport)
   {
     char buffer[10];
@@ -84,31 +82,31 @@ bool CRTVFile::Open(const char* strHostName, const char* strFileName, int iport)
 
   // Get the file size of strFileName.  If size is 0 or negative, file doesn't exist so exit.
   u64 size;
-  size = rtv_get_filesize(strHostAndPort.c_str(), strFileName);
+  size = rtv_get_filesize(strHostAndPort.c_str(), strFileName.c_str());
   if (!size)
   {
-    CLog::Log(LOGERROR, "%s - Failed to get filesize of %s on %s", __FUNCTION__, strHostName, strFileName);
+    CLog::Log(LOGERROR, "%s - Failed to get filesize of %s on %s", __FUNCTION__, strHostName.c_str(), strFileName.c_str());
     return false;
   }
   m_fileSize = size;
 
   // Open a connection to strFileName stating at position m_filePos
   // Store the handle to the connection in m_rtvd.  Exit if handle invalid.
-  m_rtvd = rtv_open_file(strHostAndPort.c_str(), strFileName, m_filePos);
+  m_rtvd = rtv_open_file(strHostAndPort.c_str(), strFileName.c_str(), m_filePos);
   if (!m_rtvd)
   {
-    CLog::Log(LOGERROR, "%s - Failed to open %s on %s", __FUNCTION__, strHostName, strFileName);
+    CLog::Log(LOGERROR, "%s - Failed to open %s on %s", __FUNCTION__, strHostName.c_str(), strFileName.c_str());
     return false;
   }
   m_bOpened = true;
 
-  CLog::Log(LOGDEBUG, "%s - Opened %s on %s, Size %" PRIu64", Position %" PRIu64"", __FUNCTION__, strHostName, strFileName, m_fileSize, m_filePos);
+  CLog::Log(LOGDEBUG, "%s - Opened %s on %s, Size %" PRIu64", Position %" PRIu64"", __FUNCTION__, strHostName.c_str(), strFileName.c_str(), m_fileSize, m_filePos);
   return true;
 }
 
 bool CRTVFile::Open(const CURL& url)
 {
-  return Open((CStdString)url.GetHostName(), (CStdString)url.GetFileName(), url.GetPort());
+  return Open(url.GetHostName(), url.GetFileName(), url.GetPort());
 }
 
 bool CRTVFile::Exists(const CURL& url)

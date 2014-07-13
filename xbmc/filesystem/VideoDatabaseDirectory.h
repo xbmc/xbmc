@@ -33,15 +33,15 @@ namespace XFILE
     virtual bool GetDirectory(const CURL& url, CFileItemList &items);
     virtual bool Exists(const CURL& url);
     virtual bool AllowAll() const { return true; }
-    static VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryChildType(const CStdString& strPath);
-    static VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryType(const CStdString& strPath);
-    static VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryParentType(const CStdString& strPath);
-    static bool GetQueryParams(const CStdString& strPath, VIDEODATABASEDIRECTORY::CQueryParams& params);
-    void ClearDirectoryCache(const CStdString& strDirectory);
-    static bool IsAllItem(const CStdString& strDirectory);
-    static bool GetLabel(const CStdString& strDirectory, CStdString& strLabel);
-    static CStdString GetIcon(const CStdString& strDirectory);
-    bool ContainsMovies(const CStdString &path);
-    static bool CanCache(const CStdString &path);
+    static VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryChildType(const std::string& strPath);
+    static VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryType(const std::string& strPath);
+    static VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryParentType(const std::string& strPath);
+    static bool GetQueryParams(const std::string& strPath, VIDEODATABASEDIRECTORY::CQueryParams& params);
+    void ClearDirectoryCache(const std::string& strDirectory);
+    static bool IsAllItem(const std::string& strDirectory);
+    static bool GetLabel(const std::string& strDirectory, std::string& strLabel);
+    static std::string GetIcon(const std::string& strDirectory);
+    bool ContainsMovies(const std::string &path);
+    static bool CanCache(const std::string &path);
   };
 }

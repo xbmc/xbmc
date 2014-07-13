@@ -20,9 +20,8 @@
  *
  */
 
-#include "utils/StdString.h"
-
 #include <vector>
+#include <string>
 
 class CCriticalSection;
 
@@ -32,16 +31,16 @@ public:
   class CDNSName
   {
   public:
-    CStdString m_strHostName;
-    CStdString m_strIpAddress;
+    std::string m_strHostName;
+    std::string m_strIpAddress;
   };
   CDNSNameCache(void);
   virtual ~CDNSNameCache(void);
-  static bool Lookup(const CStdString& strHostName, CStdString& strIpAddress);
-  static void Add(const CStdString& strHostName, const CStdString& strIpAddress);
+  static bool Lookup(const std::string& strHostName, std::string& strIpAddress);
+  static void Add(const std::string& strHostName, const std::string& strIpAddress);
 
 protected:
-  static bool GetCached(const CStdString& strHostName, CStdString& strIpAddress);
+  static bool GetCached(const std::string& strHostName, std::string& strIpAddress);
   static CCriticalSection m_critical;
   std::vector<CDNSName> m_vecDNSNames;
 };

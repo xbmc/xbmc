@@ -19,8 +19,8 @@
  *
  */
 
-#include "utils/StdString.h"
 #include "utils/UrlOptions.h"
+#include <string>
 
 class CFileItemList;
 
@@ -66,40 +66,40 @@ namespace XFILE
     class CDirectoryNode
     {
     public:
-      static CDirectoryNode* ParseURL(const CStdString& strPath);
-      static void GetDatabaseInfo(const CStdString& strPath, CQueryParams& params);
+      static CDirectoryNode* ParseURL(const std::string& strPath);
+      static void GetDatabaseInfo(const std::string& strPath, CQueryParams& params);
       virtual ~CDirectoryNode();
 
       NODE_TYPE GetType() const;
 
       bool GetChilds(CFileItemList& items);
       virtual NODE_TYPE GetChildType() const;
-      virtual CStdString GetLocalizedName() const;
+      virtual std::string GetLocalizedName() const;
 
       CDirectoryNode* GetParent() const;
 
       bool CanCache() const;
     protected:
-      CDirectoryNode(NODE_TYPE Type, const CStdString& strName, CDirectoryNode* pParent);
-      static CDirectoryNode* CreateNode(NODE_TYPE Type, const CStdString& strName, CDirectoryNode* pParent);
+      CDirectoryNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent);
+      static CDirectoryNode* CreateNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent);
 
-      void AddOptions(const CStdString &options);
+      void AddOptions(const std::string &options);
       void CollectQueryParams(CQueryParams& params) const;
 
-      const CStdString& GetName() const;
+      const std::string& GetName() const;
       int GetID() const;
       void RemoveParent();
 
       virtual bool GetContent(CFileItemList& items) const;
 
-      CStdString BuildPath() const;
+      std::string BuildPath() const;
 
     private:
       void AddQueuingFolder(CFileItemList& items) const;
 
     private:
       NODE_TYPE m_Type;
-      CStdString m_strName;
+      std::string m_strName;
       CDirectoryNode* m_pParent;
       CUrlOptions m_options;
     };

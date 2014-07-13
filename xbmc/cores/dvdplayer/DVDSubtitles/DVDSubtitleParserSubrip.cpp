@@ -21,7 +21,6 @@
 #include "DVDSubtitleParserSubrip.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDClock.h"
-#include "utils/StdString.h"
 #include "utils/StringUtils.h"
 #include "DVDSubtitleTagSami.h"
 
@@ -47,7 +46,7 @@ bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo &hints)
     return false;
 
   char line[1024];
-  CStdString strLine;
+  std::string strLine;
 
   while (m_pStream->ReadLine(line, sizeof(line)))
   {

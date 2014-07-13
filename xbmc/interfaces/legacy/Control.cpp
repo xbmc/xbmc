@@ -284,8 +284,8 @@ namespace XBMCAddon
         (float)dwPosY,
         (float)dwWidth,
         (float)dwHeight,
-        (CStdString)strTextureFocus,
-        (CStdString)strTextureNoFocus,
+        CTextureInfo(strTextureFocus),
+        CTextureInfo(strTextureNoFocus),
         label);
 
       CGUIButtonControl* pGuiButtonControl =
@@ -449,7 +449,7 @@ namespace XBMCAddon
     {
       pGUIControl = new CGUIImage(iParentId, iControlId,
             (float)dwPosX, (float)dwPosY, (float)dwWidth, (float)dwHeight,
-            (CStdString)strFileName);
+            CTextureInfo(strFileName));
 
       if (pGUIControl && aspectRatio <= CAspectRatio::AR_KEEP)
         ((CGUIImage *)pGUIControl)->SetAspectRatio((CAspectRatio::ASPECT_RATIO)aspectRatio);
@@ -505,9 +505,9 @@ namespace XBMCAddon
       pGUIControl = new CGUIProgressControl(iParentId, iControlId,
          (float)dwPosX, (float)dwPosY,
          (float)dwWidth,(float)dwHeight,
-         (CStdString)strTextureBg,(CStdString)strTextureLeft,
-         (CStdString)strTextureMid,(CStdString)strTextureRight,
-         (CStdString)strTextureOverlay);
+         CTextureInfo(strTextureBg), CTextureInfo(strTextureLeft),
+         CTextureInfo(strTextureMid), CTextureInfo(strTextureRight),
+         CTextureInfo(strTextureOverlay));
 
       if (pGUIControl && colorDiffuse)
         ((CGUIProgressControl *)pGUIControl)->SetColorDiffuse(colorDiffuse);
@@ -553,8 +553,8 @@ namespace XBMCAddon
     {
       pGUIControl = new CGUISliderControl(iParentId, iControlId,(float)dwPosX, (float)dwPosY,
                                           (float)dwWidth,(float)dwHeight,
-                                          (CStdString)strTextureBack,(CStdString)strTexture,
-                                          (CStdString)strTextureFoc,0);   
+                                          CTextureInfo(strTextureBack),CTextureInfo(strTexture),
+                                          CTextureInfo(strTextureFoc),0);
     
       return pGUIControl;
     }  
@@ -717,13 +717,13 @@ namespace XBMCAddon
         (float)dwPosY,
         (float)dwWidth,
         (float)dwHeight,
-        (CStdString)strTextureFocus,
-        (CStdString)strTextureNoFocus,
+        CTextureInfo(strTextureFocus),
+        CTextureInfo(strTextureNoFocus),
         label,
-        (CStdString)strTextureRadioOnFocus,
-        (CStdString)strTextureRadioOnNoFocus,
-        (CStdString)strTextureRadioOffFocus,
-        (CStdString)strTextureRadioOffNoFocus);
+        CTextureInfo(strTextureRadioOnFocus),
+        CTextureInfo(strTextureRadioOnNoFocus),
+        CTextureInfo(strTextureRadioOffFocus),
+        CTextureInfo(strTextureRadioOffNoFocus));
 
       CGUIRadioButtonControl* pGuiButtonControl =
         (CGUIRadioButtonControl*)pGUIControl;
@@ -1072,8 +1072,8 @@ namespace XBMCAddon
         (float)dwPosY,
         (float)dwWidth,
         (float)dwHeight,
-        (CStdString)strTextureFocus,
-        (CStdString)strTextureNoFocus,
+        CTextureInfo(strTextureFocus),
+        CTextureInfo(strTextureNoFocus),
         label,
         strText);
 
@@ -1189,8 +1189,8 @@ namespace XBMCAddon
         (float)dwWidth,
         (float)dwHeight - pControlSpin->dwHeight - 5,
         label, label2,
-        (CStdString)strTextureButton,
-        (CStdString)strTextureButtonFocus,
+        CTextureInfo(strTextureButton),
+        CTextureInfo(strTextureButtonFocus),
         (float)itemHeight,
         (float)imageWidth, (float)imageHeight,
         (float)space);

@@ -28,11 +28,11 @@ namespace XFILE
     class CDirectoryNodeMoviesOverview : public CDirectoryNode
     {
     public:
-      CDirectoryNodeMoviesOverview(const CStdString& strName, CDirectoryNode* pParent);
+      CDirectoryNodeMoviesOverview(const std::string& strName, CDirectoryNode* pParent);
     protected:
       virtual NODE_TYPE GetChildType() const;
       virtual bool GetContent(CFileItemList& items) const;
-      virtual CStdString GetLocalizedName() const;
+      virtual std::string GetLocalizedName() const;
     };
   }
 }

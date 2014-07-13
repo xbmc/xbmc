@@ -94,12 +94,12 @@ int CPlayerSelectionRule::GetTristate(const char* szValue)
   return -1;
 }
 
-bool CPlayerSelectionRule::CompileRegExp(const CStdString& str, CRegExp& regExp)
+bool CPlayerSelectionRule::CompileRegExp(const std::string& str, CRegExp& regExp)
 {
-  return str.length() > 0 && regExp.RegComp(str.c_str());
+  return !str.empty() > 0 && regExp.RegComp(str.c_str());
 }
 
-bool CPlayerSelectionRule::MatchesRegExp(const CStdString& str, CRegExp& regExp)
+bool CPlayerSelectionRule::MatchesRegExp(const std::string& str, CRegExp& regExp)
 {
   return regExp.RegFind(str, 0) == 0;
 }
@@ -135,7 +135,7 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, VECPLAYERCORES &vec
     
     std::stringstream itoa;
     itoa << streamDetails.GetAudioChannels();
-    CStdString audioChannelsstr = itoa.str();
+    std::string audioChannelsstr = itoa.str();
 
     if (CompileRegExp(m_audioChannels, regExp) && !MatchesRegExp(audioChannelsstr, regExp)) return;
 

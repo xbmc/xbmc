@@ -36,7 +36,7 @@ CSlingboxDirectory::~CSlingboxDirectory()
 bool CSlingboxDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   // Create generic Watch Slingbox item
-  const CStdString pathToUrl(url.Get());
+  const std::string pathToUrl(url.Get());
   CFileItemPtr item(new CFileItem(pathToUrl, false));
   item->SetLabel("Watch Slingbox");
   item->SetLabelPreformated(true);

@@ -53,7 +53,7 @@ CNetworkInterfaceWin32::~CNetworkInterfaceWin32(void)
 {
 }
 
-CStdString& CNetworkInterfaceWin32::GetName(void)
+std::string& CNetworkInterfaceWin32::GetName(void)
 {
   g_charsetConverter.unknownToUTF8(m_adaptername);
   return m_adaptername;
@@ -71,13 +71,13 @@ bool CNetworkInterfaceWin32::IsEnabled()
 
 bool CNetworkInterfaceWin32::IsConnected()
 {
-  CStdString strIP = m_adapter.IpAddressList.IpAddress.String;
+  std::string strIP = m_adapter.IpAddressList.IpAddress.String;
   return (strIP != "0.0.0.0");
 }
 
-CStdString CNetworkInterfaceWin32::GetMacAddress()
+std::string CNetworkInterfaceWin32::GetMacAddress()
 {
-  CStdString result;
+  std::string result;
   unsigned char* mAddr = m_adapter.Address;
   result = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X", mAddr[0], mAddr[1], mAddr[2], mAddr[3], mAddr[4], mAddr[5]);
   return result;
@@ -88,19 +88,19 @@ void CNetworkInterfaceWin32::GetMacAddressRaw(char rawMac[6])
   memcpy(rawMac, m_adapter.Address, 6);
 }
 
-CStdString CNetworkInterfaceWin32::GetCurrentIPAddress(void)
+std::string CNetworkInterfaceWin32::GetCurrentIPAddress(void)
 {
   return m_adapter.IpAddressList.IpAddress.String;
 }
 
-CStdString CNetworkInterfaceWin32::GetCurrentNetmask(void)
+std::string CNetworkInterfaceWin32::GetCurrentNetmask(void)
 {
   return m_adapter.IpAddressList.IpMask.String;
 }
 
-CStdString CNetworkInterfaceWin32::GetCurrentWirelessEssId(void)
+std::string CNetworkInterfaceWin32::GetCurrentWirelessEssId(void)
 {
-  CStdString result = "";
+  std::string result = "";
 
 #ifdef HAS_WIN32_WLAN_API
   if(IsWireless())
@@ -121,8 +121,9 @@ CStdString CNetworkInterfaceWin32::GetCurrentWirelessEssId(void)
           GUID guid = ppInterfaceList->InterfaceInfo[i].InterfaceGuid;
           WCHAR wcguid[64];
           StringFromGUID2(guid, (LPOLESTR)&wcguid, 64);
-          CStdStringW strGuid = wcguid;
-          CStdStringW strAdaptername = m_adapter.AdapterName;
+          std::wstring strGuid = wcguid;
+          std::wstring strAdaptername;
+          g_charsetConverter.utf8ToW(m_adapter.AdapterName, strAdaptername);
           if( strGuid == strAdaptername)
           {
             if(WlanQueryInterface(hClientHdl,&ppInterfaceList->InterfaceInfo[i].InterfaceGuid,wlan_intf_opcode_current_connection, NULL, &dwSize, (PVOID*)&pAttributes, NULL ) == ERROR_SUCCESS)
@@ -144,7 +145,7 @@ CStdString CNetworkInterfaceWin32::GetCurrentWirelessEssId(void)
   return result;
 }
 
-CStdString CNetworkInterfaceWin32::GetCurrentDefaultGateway(void)
+std::string CNetworkInterfaceWin32::GetCurrentDefaultGateway(void)
 {
   return m_adapter.GatewayList.IpAddress.String;
 }
@@ -217,9 +218,9 @@ void CNetworkWin32::queryInterfaceList()
   free(adapterInfo);
 }
 
-std::vector<CStdString> CNetworkWin32::GetNameServers(void)
+std::vector<std::string> CNetworkWin32::GetNameServers(void)
 {
-  std::vector<CStdString> result;
+  std::vector<std::string> result;
 
   FIXED_INFO *pFixedInfo;
   ULONG ulOutBufLen;
@@ -259,7 +260,7 @@ std::vector<CStdString> CNetworkWin32::GetNameServers(void)
   return result;
 }
 
-void CNetworkWin32::SetNameServers(std::vector<CStdString> nameServers)
+void CNetworkWin32::SetNameServers(const std::vector<std::string>& nameServers)
 {
   return;
 }
@@ -289,7 +290,7 @@ bool CNetworkWin32::PingHost(unsigned long host, unsigned int timeout_ms /* = 20
   return false;
 }
 
-bool CNetworkInterfaceWin32::GetHostMacAddress(unsigned long host, CStdString& mac)
+bool CNetworkInterfaceWin32::GetHostMacAddress(unsigned long host, std::string& mac)
 {
   IPAddr src_ip = inet_addr(GetCurrentIPAddress().c_str());
   BYTE bPhysAddr[6];      // for 6-byte hardware addresses
@@ -355,8 +356,9 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceWin32::GetAccessPoints(void)
     GUID guid = interface_list->InterfaceInfo[i].InterfaceGuid;
     WCHAR wcguid[64];
     StringFromGUID2(guid, (LPOLESTR)&wcguid, 64);
-    CStdStringW strGuid = wcguid;
-    CStdStringW strAdaptername = m_adapter.AdapterName;
+    std::wstring strGuid = wcguid;
+    std::wstring strAdaptername;
+    g_charsetConverter.utf8ToW(m_adapter.AdapterName, strAdaptername);
     if (strGuid == strAdaptername)
     {
       WLAN_BSS_LIST *bss_list;
@@ -373,8 +375,8 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceWin32::GetAccessPoints(void)
       {
         const WLAN_BSS_ENTRY bss_entry = bss_list->wlanBssEntries[j];
         // Add the access point info to the list of results
-        CStdString essId((char*)bss_entry.dot11Ssid.ucSSID, (unsigned int)bss_entry.dot11Ssid.uSSIDLength);
-        CStdString macAddress;
+        std::string essId((char*)bss_entry.dot11Ssid.ucSSID, (unsigned int)bss_entry.dot11Ssid.uSSIDLength);
+        std::string macAddress;
         // macAddress is big-endian, write in byte chunks
         macAddress = StringUtils::Format("%02x-%02x-%02x-%02x-%02x-%02x",
           bss_entry.dot11Bssid[0], bss_entry.dot11Bssid[1], bss_entry.dot11Bssid[2],
@@ -400,7 +402,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceWin32::GetAccessPoints(void)
   return result;
 }
 
-void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
+void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode)
 {
   ipAddress = "0.0.0.0";
   networkMask = "0.0.0.0";
@@ -471,8 +473,9 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, CStdStri
           GUID guid = ppInterfaceList->InterfaceInfo[i].InterfaceGuid;
           WCHAR wcguid[64];
           StringFromGUID2(guid, (LPOLESTR)&wcguid, 64);
-          CStdStringW strGuid = wcguid;
-          CStdStringW strAdaptername = m_adapter.AdapterName;
+          std::wstring strGuid = wcguid;
+          std::wstring strAdaptername;
+          g_charsetConverter.utf8ToW(m_adapter.AdapterName, strAdaptername);
           if( strGuid == strAdaptername)
           {
             if(WlanQueryInterface(hClientHdl,&ppInterfaceList->InterfaceInfo[i].InterfaceGuid,wlan_intf_opcode_current_connection, NULL, &dwSize, (PVOID*)&pAttributes, NULL ) == ERROR_SUCCESS)
@@ -510,12 +513,12 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, CStdStri
 #endif
 }
 
-void CNetworkInterfaceWin32::SetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
+void CNetworkInterfaceWin32::SetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode)
 {
   return;
 }
 
-void CNetworkInterfaceWin32::WriteSettings(FILE* fw, NetworkAssignment assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
+void CNetworkInterfaceWin32::WriteSettings(FILE* fw, NetworkAssignment assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode)
 {
   return;
 }

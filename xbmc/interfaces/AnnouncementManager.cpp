@@ -111,7 +111,7 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
 
   // Extract db id of item
   CVariant object = data.isNull() || data.isObject() ? data : CVariant::VariantTypeObject;
-  CStdString type;
+  std::string type;
   int id = 0;
   
   if(item->HasPVRChannelInfoTag())
@@ -137,8 +137,8 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
       CVideoDatabase videodatabase;
       if (videodatabase.Open())
       {
-        CStdString path = item->GetPath();
-        CStdString videoInfoTagPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
+        std::string path = item->GetPath();
+        std::string videoInfoTagPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
         if (StringUtils::StartsWith(videoInfoTagPath, "removable://"))
           path = videoInfoTagPath;
         if (videodatabase.LoadVideoInfo(path, *item->GetVideoInfoTag()))
@@ -158,7 +158,7 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
       // TODO: Can be removed once this is properly handled when starting playback of a file
       item->SetProperty(LOOKUP_PROPERTY, false);
 
-      CStdString title = item->GetVideoInfoTag()->m_strTitle;
+      std::string title = item->GetVideoInfoTag()->m_strTitle;
       if (title.empty())
         title = item->GetLabel();
       object["item"]["title"] = title;
@@ -214,7 +214,7 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
       // TODO: Can be removed once this is properly handled when starting playback of a file
       item->SetProperty(LOOKUP_PROPERTY, false);
 
-      CStdString title = item->GetMusicInfoTag()->GetTitle();
+      std::string title = item->GetMusicInfoTag()->GetTitle();
       if (title.empty())
         title = item->GetLabel();
       object["item"]["title"] = title;

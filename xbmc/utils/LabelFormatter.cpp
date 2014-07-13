@@ -102,7 +102,7 @@ using namespace MUSIC_INFO;
 
 #define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXWapt"
 
-CLabelFormatter::CLabelFormatter(const CStdString &mask, const CStdString &mask2)
+CLabelFormatter::CLabelFormatter(const std::string &mask, const std::string &mask2)
 {
   // assemble our label masks
   AssembleMask(0, mask);
@@ -111,14 +111,14 @@ CLabelFormatter::CLabelFormatter(const CStdString &mask, const CStdString &mask2
   m_hideFileExtensions = !CSettings::Get().GetBool("filelists.showextensions");
 }
 
-CStdString CLabelFormatter::GetContent(unsigned int label, const CFileItem *item) const
+std::string CLabelFormatter::GetContent(unsigned int label, const CFileItem *item) const
 {
   assert(label < 2);
   assert(m_staticContent[label].size() == m_dynamicContent[label].size() + 1);
 
   if (!item) return "";
 
-  CStdString strLabel, dynamicLeft, dynamicRight;
+  std::string strLabel, dynamicLeft, dynamicRight;
   for (unsigned int i = 0; i < m_dynamicContent[label].size(); i++)
   {
     dynamicRight = GetMaskContent(m_dynamicContent[label][i], item);
@@ -135,7 +135,7 @@ CStdString CLabelFormatter::GetContent(unsigned int label, const CFileItem *item
 
 void CLabelFormatter::FormatLabel(CFileItem *item) const
 {
-  CStdString maskedLabel = GetContent(0, item);
+  std::string maskedLabel = GetContent(0, item);
   if (!maskedLabel.empty())
     item->SetLabel(maskedLabel);
   else if (!item->m_bIsFolder && m_hideFileExtensions)
@@ -147,13 +147,13 @@ void CLabelFormatter::FormatLabel2(CFileItem *item) const
   item->SetLabel2(GetContent(1, item));
 }
 
-CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileItem *item) const
+std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileItem *item) const
 {
   if (!item) return "";
   const CMusicInfoTag *music = item->GetMusicInfoTag();
   const CVideoInfoTag *movie = item->GetVideoInfoTag();
   const CPictureInfoTag *pic = item->GetPictureInfoTag();
-  CStdString value;
+  std::string value;
   switch (mask.m_content)
   {
   case 'N':
@@ -329,12 +329,12 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
   return "";
 }
 
-void CLabelFormatter::SplitMask(unsigned int label, const CStdString &mask)
+void CLabelFormatter::SplitMask(unsigned int label, const std::string &mask)
 {
   assert(label < 2);
   CRegExp reg;
   reg.RegComp("%([" MASK_CHARS "])");
-  CStdString work(mask);
+  std::string work(mask);
   int findStart = -1;
   while ((findStart = reg.RegFind(work.c_str())) >= 0)
   { // we've found a match
@@ -346,7 +346,7 @@ void CLabelFormatter::SplitMask(unsigned int label, const CStdString &mask)
   m_staticContent[label].push_back(work);
 }
 
-void CLabelFormatter::AssembleMask(unsigned int label, const CStdString& mask)
+void CLabelFormatter::AssembleMask(unsigned int label, const std::string& mask)
 {
   assert(label < 2);
   m_staticContent[label].clear();
@@ -357,7 +357,7 @@ void CLabelFormatter::AssembleMask(unsigned int label, const CStdString& mask)
   // could be a mask that's not surrounded with [], so pass to SplitMask.
   CRegExp reg;
   reg.RegComp("(^|[^%])\\[(([^%]|%%|%\\]|%\\[)*)%([" MASK_CHARS "])(([^%]|%%|%\\]|%\\[)*)\\]");
-  CStdString work(mask);
+  std::string work(mask);
   int findStart = -1;
   while ((findStart = reg.RegFind(work.c_str())) >= 0)
   { // we've found a match for a pre/postfixed string
@@ -373,7 +373,7 @@ void CLabelFormatter::AssembleMask(unsigned int label, const CStdString& mask)
   assert(m_staticContent[label].size() == m_dynamicContent[label].size() + 1);
 }
 
-bool CLabelFormatter::FillMusicTag(const CStdString &fileName, CMusicInfoTag *tag) const
+bool CLabelFormatter::FillMusicTag(const std::string &fileName, CMusicInfoTag *tag) const
 {
   // run through and find static content to split the string up
   size_t pos1 = fileName.find(m_staticContent[0][0], 0);
@@ -391,7 +391,7 @@ bool CLabelFormatter::FillMusicTag(const CStdString &fileName, CMusicInfoTag *ta
   return true;
 }
 
-void CLabelFormatter::FillMusicMaskContent(const char mask, const CStdString &value, CMusicInfoTag *tag) const
+void CLabelFormatter::FillMusicMaskContent(const char mask, const std::string &value, CMusicInfoTag *tag) const
 {
   if (!tag) return;
   switch (mask)

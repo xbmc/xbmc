@@ -37,8 +37,8 @@ public:
 private:
   ///implementation if CZeroconfBrowser interface
   ///@{
-  virtual bool doAddServiceType(const CStdString& fcr_service_type);
-  virtual bool doRemoveServiceType(const CStdString& fcr_service_type);
+  virtual bool doAddServiceType(const std::string& fcr_service_type);
+  virtual bool doRemoveServiceType(const std::string& fcr_service_type);
 
   virtual std::vector<CZeroconfBrowser::ZeroconfService> doGetFoundServices();
   virtual bool doResolveService(CZeroconfBrowser::ZeroconfService& fr_service, double f_timeout);

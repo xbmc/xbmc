@@ -81,7 +81,7 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
     int    sh, sm, ss, sc, eh, em, es, ec;
     double beg, end;
     size_t pos;
-    CStdString      line, line2;
+    std::string      line, line2;
     std::vector<std::string> lines;
     StringUtils::Tokenize((const char*)data, lines, "\r\n");
     for(size_t i=0; i<lines.size(); i++)
@@ -100,7 +100,7 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
       pos = line.find_first_of(",", 0);
       pos = line.find_first_of(",", pos+1);
       pos = line.find_first_of(",", pos+1);
-      if(pos == CStdString::npos)
+      if(pos == std::string::npos)
         continue;
 
       line2 = StringUtils::Format("%d,%s,%s", m_order++, layer.get(), line.substr(pos+1).c_str());

@@ -30,8 +30,8 @@ protected:
   virtual VECSOURCES& GetSources();
   virtual int GetPlaylist();
   virtual bool AutoPlayNextItem();
-  virtual CStdString GetLockType();
-  virtual CStdString GetExtensions();
+  virtual std::string GetLockType();
+  virtual std::string GetExtensions();
 };
 
 class CGUIViewStateMusicSearch : public CGUIViewStateWindowMusic

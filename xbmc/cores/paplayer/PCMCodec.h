@@ -26,11 +26,11 @@ class PCMCodec : public CachingCodec
 public:
   PCMCodec(void);
   virtual ~PCMCodec(void);
-  virtual bool Init(const CStdString &strFile, unsigned int filecache);
+  virtual bool Init(const std::string &strFile, unsigned int filecache);
   virtual void DeInit();
   virtual int64_t Seek(int64_t iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool CanInit();
-  virtual void SetMimeParams(const CStdString& strMimeParams);
+  virtual void SetMimeParams(const std::string& strMimeParams);
 };
 

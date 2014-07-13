@@ -19,7 +19,7 @@
  *
  */
 
-#include "utils/StdString.h"
+#include <string>
 
 class CScreenshotSurface
 {
@@ -40,5 +40,5 @@ class CScreenShot
 
 public:
   static void TakeScreenshot();
-  static void TakeScreenshot(const CStdString &filename, bool sync);
+  static void TakeScreenshot(const std::string &filename, bool sync);
 };

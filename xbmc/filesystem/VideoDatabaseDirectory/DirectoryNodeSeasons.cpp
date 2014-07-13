@@ -30,7 +30,7 @@
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
-CDirectoryNodeSeasons::CDirectoryNodeSeasons(const CStdString& strName, CDirectoryNode* pParent)
+CDirectoryNodeSeasons::CDirectoryNodeSeasons(const std::string& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_SEASONS, strName, pParent)
 {
 
@@ -41,7 +41,7 @@ NODE_TYPE CDirectoryNodeSeasons::GetChildType() const
   return NODE_TYPE_EPISODES;
 }
 
-CStdString CDirectoryNodeSeasons::GetLocalizedName() const
+std::string CDirectoryNodeSeasons::GetLocalizedName() const
 {
   switch (GetID())
   {
@@ -57,7 +57,7 @@ CStdString CDirectoryNodeSeasons::GetLocalizedName() const
     return "";
   }
   default:
-    CStdString season = StringUtils::Format(g_localizeStrings.Get(20358).c_str(), GetID()); // Season <season>
+    std::string season = StringUtils::Format(g_localizeStrings.Get(20358).c_str(), GetID()); // Season <season>
     return season;
   }
 }

@@ -134,7 +134,7 @@ bool CWinShader::UnlockVertexBuffer()
   return true;
 }
 
-bool CWinShader::LoadEffect(CStdString filename, DefinesMap* defines)
+bool CWinShader::LoadEffect(const std::string& filename, DefinesMap* defines)
 {
   CLog::Log(LOGDEBUG, __FUNCTION__" - loading shader %s", filename.c_str());
 
@@ -145,7 +145,7 @@ bool CWinShader::LoadEffect(CStdString filename, DefinesMap* defines)
     return false;
   }
 
-  CStdString pStrEffect;
+  std::string pStrEffect;
   getline(file, pStrEffect, '\0');
 
   if (!m_effect.Create(pStrEffect, defines))
@@ -303,7 +303,7 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
   m_texSteps[0] = 1.0f/(float)texWidth;
   m_texSteps[1] = 1.0f/(float)sourceHeight;
 
-  CStdString effectString = "special://xbmc/system/shaders/yuv2rgb_d3d.fx";
+  std::string effectString = "special://xbmc/system/shaders/yuv2rgb_d3d.fx";
 
   if(!LoadEffect(effectString, &defines))
   {
@@ -515,7 +515,7 @@ bool CConvolutionShader::CreateHQKernel(ESCALINGMETHOD method)
 //==================================================================================
 bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method)
 {
-  CStdString effectString;
+  std::string effectString;
   switch(method)
   {
     case VS_SCALINGMETHOD_CUBIC:
@@ -640,7 +640,7 @@ CConvolutionShaderSeparable::CConvolutionShaderSeparable()
 
 bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method)
 {
-  CStdString effectString;
+  std::string effectString;
   switch(method)
   {
     case VS_SCALINGMETHOD_CUBIC:
@@ -889,7 +889,7 @@ void CConvolutionShaderSeparable::SetShaderParameters(CD3DTexture &sourceTexture
 
 bool CTestShader::Create()
 {
-  CStdString effectString = "special://xbmc/system/shaders/testshader.fx";
+  std::string effectString = "special://xbmc/system/shaders/testshader.fx";
 
   if(!LoadEffect(effectString, NULL))
   {

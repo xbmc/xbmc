@@ -23,7 +23,6 @@
 #include "DVDClock.h"
 #include "utils/RegExp.h"
 #include "DVDStreamInfo.h"
-#include "utils/StdString.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "DVDSubtitleTagSami.h"
@@ -52,8 +51,8 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
   if (!reg.RegComp("<SYNC START=([0-9]+)>"))
     return false;
 
-  CStdString strFileName;
-  CStdString strClassID;
+  std::string strFileName;
+  std::string strClassID;
   strFileName = URIUtils::GetFileName(m_filename);
 
   CDVDSubtitleTagSami TagConv;
@@ -86,7 +85,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
     const char* text = line;
     if (pos > -1)
     {
-      CStdString start = reg.GetMatch(1);
+      std::string start = reg.GetMatch(1);
       if(pOverlay)
       {
         TagConv.ConvertLine(pOverlay, text, pos, lang);

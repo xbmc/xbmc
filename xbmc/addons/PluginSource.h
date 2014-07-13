@@ -45,13 +45,13 @@ public:
     return m_providedContent.size() > 1;
   }
 
-  static Content Translate(const CStdString &content);
+  static Content Translate(const std::string &content);
 private:
   /*! \brief Set the provided content for this plugin
    If no valid content types are passed in, we set the EXECUTABLE type
    \param content a space-separated list of content types
    */
-  void SetProvides(const CStdString &content);
+  void SetProvides(const std::string &content);
   std::set<Content> m_providedContent;
 };
 

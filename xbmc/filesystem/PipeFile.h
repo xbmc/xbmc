@@ -30,8 +30,6 @@
 #pragma once
 
 #include "IFile.h"
-#include "utils/AutoPtrHandle.h"
-#include "utils/StdString.h"
 #include "threads/Event.h"
 #include "threads/CriticalSection.h"
 #include "utils/RingBuffer.h"
@@ -65,7 +63,7 @@ public:
   virtual bool Rename(const CURL& url, const CURL& urlnew);
   virtual int IoControl(int request, void* param);
   
-  CStdString GetName() const;
+  std::string GetName() const;
   
   virtual void OnPipeOverFlow();
   virtual void OnPipeUnderFlow();

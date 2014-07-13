@@ -77,7 +77,7 @@ TEST(TestXMLUtils, GetDouble)
 {
   CXBMCTinyXML a;
   double val;
-  CStdString refstr, valstr;
+  std::string refstr, valstr;
 
   a.Parse("<root><node>1000.1f</node></root>");
   EXPECT_TRUE(XMLUtils::GetDouble(a.RootElement(), "node", val));
@@ -115,7 +115,7 @@ TEST(TestXMLUtils, GetBoolean)
 TEST(TestXMLUtils, GetString)
 {
   CXBMCTinyXML a;
-  CStdString ref, val;
+  std::string ref, val;
 
   a.Parse("<root><node>some string</node></root>");
   EXPECT_TRUE(XMLUtils::GetString(a.RootElement(), "node", val));
@@ -127,7 +127,7 @@ TEST(TestXMLUtils, GetString)
 TEST(TestXMLUtils, GetAdditiveString)
 {
   CXBMCTinyXML a, b;
-  CStdString ref, val;
+  std::string ref, val;
 
   a.Parse("<root>\n"
           "  <node>some string1</node>\n"
@@ -179,7 +179,7 @@ TEST(TestXMLUtils, GetStringArray)
 TEST(TestXMLUtils, GetPath)
 {
   CXBMCTinyXML a, b;
-  CStdString ref, val;
+  std::string ref, val;
 
   a.Parse("<root><node urlencoded=\"yes\">special://xbmc/</node></root>");
   EXPECT_TRUE(XMLUtils::GetPath(a.RootElement(), "node", val));
@@ -220,7 +220,7 @@ TEST(TestXMLUtils, GetDateTime)
 TEST(TestXMLUtils, SetString)
 {
   CXBMCTinyXML a;
-  CStdString ref, val;
+  std::string ref, val;
 
   a.Parse("<root></root>");
   XMLUtils::SetString(a.RootElement(), "node", "some string");
@@ -233,7 +233,7 @@ TEST(TestXMLUtils, SetString)
 TEST(TestXMLUtils, SetAdditiveString)
 {
   CXBMCTinyXML a;
-  CStdString ref, val;
+  std::string ref, val;
 
   a.Parse("<root></root>");
   XMLUtils::SetAdditiveString(a.RootElement(), "node", ",",
@@ -320,7 +320,7 @@ TEST(TestXMLUtils, SetHex)
 TEST(TestXMLUtils, SetPath)
 {
   CXBMCTinyXML a;
-  CStdString ref, val;
+  std::string ref, val;
 
   a.Parse("<root></root>");
   XMLUtils::SetPath(a.RootElement(), "node", "special://xbmc/");

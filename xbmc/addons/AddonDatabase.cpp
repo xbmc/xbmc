@@ -109,7 +109,7 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    CStdString sql = PrepareSQL("insert into addon (id, type, name, summary,"
+    std::string sql = PrepareSQL("insert into addon (id, type, name, summary,"
                                "description, stars, path, icon, changelog, "
                                "fanart, addonID, version, author, disclaimer, minversion)"
                                " values(NULL, '%s', '%s', '%s', '%s', %i,"
@@ -160,7 +160,7 @@ AddonVersion CAddonDatabase::GetAddonVersion(const std::string &id)
     // there may be multiple addons with this id (eg from different repositories) in the database,
     // so we want to retrieve the latest version.  Order by version won't work as the database
     // won't know that 1.10 > 1.2, so grab them all and order outside
-    CStdString sql = PrepareSQL("select version from addon where addonID='%s'",id.c_str());
+    std::string sql = PrepareSQL("select version from addon where addonID='%s'",id.c_str());
     m_pDS2->query(sql.c_str());
 
     if (m_pDS2->eof())
@@ -182,7 +182,7 @@ AddonVersion CAddonDatabase::GetAddonVersion(const std::string &id)
   return maxversion;
 }
 
-bool CAddonDatabase::GetAddon(const CStdString& id, AddonPtr& addon)
+bool CAddonDatabase::GetAddon(const std::string& id, AddonPtr& addon)
 {
   try
   {
@@ -192,7 +192,7 @@ bool CAddonDatabase::GetAddon(const CStdString& id, AddonPtr& addon)
     // there may be multiple addons with this id (eg from different repositories) in the database,
     // so we want to retrieve the latest version.  Order by version won't work as the database
     // won't know that 1.10 > 1.2, so grab them all and order outside
-    CStdString sql = PrepareSQL("select id,version from addon where addonID='%s'",id.c_str());
+    std::string sql = PrepareSQL("select id,version from addon where addonID='%s'",id.c_str());
     m_pDS2->query(sql.c_str());
 
     if (m_pDS2->eof())
@@ -220,14 +220,14 @@ bool CAddonDatabase::GetAddon(const CStdString& id, AddonPtr& addon)
   return false;
 }
 
-bool CAddonDatabase::GetRepoForAddon(const CStdString& addonID, CStdString& repo)
+bool CAddonDatabase::GetRepoForAddon(const std::string& addonID, std::string& repo)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS2.get()) return false;
 
-    CStdString sql = PrepareSQL("select repo.addonID from repo join addonlinkrepo on repo.id=addonlinkrepo.idRepo join addon on addonlinkrepo.idAddon=addon.id where addon.addonID like '%s'", addonID.c_str()); 
+    std::string sql = PrepareSQL("select repo.addonID from repo join addonlinkrepo on repo.id=addonlinkrepo.idRepo join addon on addonlinkrepo.idAddon=addon.id where addon.addonID like '%s'", addonID.c_str()); 
     m_pDS2->query(sql.c_str());
     if (!m_pDS2->eof())
     {
@@ -314,7 +314,7 @@ bool CAddonDatabase::GetAddons(VECADDONS& addons)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS2.get()) return false;
 
-    CStdString sql = PrepareSQL("select distinct addonID from addon");
+    std::string sql = PrepareSQL("select distinct addonID from addon");
     m_pDS->query(sql.c_str());
     while (!m_pDS->eof())
     {
@@ -333,14 +333,14 @@ bool CAddonDatabase::GetAddons(VECADDONS& addons)
   return false;
 }
 
-void CAddonDatabase::DeleteRepository(const CStdString& id)
+void CAddonDatabase::DeleteRepository(const std::string& id)
 {
   try
   {
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
-    CStdString sql = PrepareSQL("select id from repo where addonID='%s'",id.c_str());
+    std::string sql = PrepareSQL("select id from repo where addonID='%s'",id.c_str());
     m_pDS->query(sql.c_str());
     if (!m_pDS->eof())
       DeleteRepository(m_pDS->fv(0).get_asInt());
@@ -358,7 +358,7 @@ void CAddonDatabase::DeleteRepository(int idRepo)
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
-    CStdString sql = PrepareSQL("delete from repo where id=%i",idRepo);
+    std::string sql = PrepareSQL("delete from repo where id=%i",idRepo);
     m_pDS->exec(sql.c_str());
     sql = PrepareSQL("delete from addon where id in (select idAddon from addonlinkrepo where idRepo=%i)",idRepo);
     m_pDS->exec(sql.c_str());
@@ -376,14 +376,14 @@ void CAddonDatabase::DeleteRepository(int idRepo)
   }
 }
 
-int CAddonDatabase::AddRepository(const CStdString& id, const VECADDONS& addons, const CStdString& checksum)
+int CAddonDatabase::AddRepository(const std::string& id, const VECADDONS& addons, const std::string& checksum)
 {
   try
   {
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    CStdString sql;
+    std::string sql;
     int idRepo = GetRepoChecksum(id,sql);
     if (idRepo > -1)
       DeleteRepository(idRepo);
@@ -431,7 +431,7 @@ int CAddonDatabase::GetRepoChecksum(const std::string& id, std::string& checksum
   return -1;
 }
 
-CDateTime CAddonDatabase::GetRepoTimestamp(const CStdString& id)
+CDateTime CAddonDatabase::GetRepoTimestamp(const std::string& id)
 {
   CDateTime date;
   try
@@ -439,7 +439,7 @@ CDateTime CAddonDatabase::GetRepoTimestamp(const CStdString& id)
     if (NULL == m_pDB.get()) return date;
     if (NULL == m_pDS.get()) return date;
 
-    CStdString strSQL = PrepareSQL("select * from repo where addonID='%s'",id.c_str());
+    std::string strSQL = PrepareSQL("select * from repo where addonID='%s'",id.c_str());
     m_pDS->query(strSQL.c_str());
     if (!m_pDS->eof())
     {
@@ -454,14 +454,14 @@ CDateTime CAddonDatabase::GetRepoTimestamp(const CStdString& id)
   return date;
 }
 
-bool CAddonDatabase::SetRepoTimestamp(const CStdString& id, const CStdString& time)
+bool CAddonDatabase::SetRepoTimestamp(const std::string& id, const std::string& time)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString sql = PrepareSQL("update repo set lastcheck='%s' where addonID='%s'",time.c_str(),id.c_str());
+    std::string sql = PrepareSQL("update repo set lastcheck='%s' where addonID='%s'",time.c_str(),id.c_str());
     m_pDS->exec(sql.c_str());
 
     return true;
@@ -480,7 +480,7 @@ bool CAddonDatabase::GetRepository(int id, VECADDONS& addons)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = PrepareSQL("select * from addonlinkrepo where idRepo=%i",id);
+    std::string strSQL = PrepareSQL("select * from addonlinkrepo where idRepo=%i",id);
     m_pDS->query(strSQL.c_str());
     while (!m_pDS->eof())
     {
@@ -498,14 +498,14 @@ bool CAddonDatabase::GetRepository(int id, VECADDONS& addons)
   return false;
 }
 
-bool CAddonDatabase::GetRepository(const CStdString& id, VECADDONS& addons)
+bool CAddonDatabase::GetRepository(const std::string& id, VECADDONS& addons)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = PrepareSQL("select id from repo where addonID='%s'",id.c_str());
+    std::string strSQL = PrepareSQL("select id from repo where addonID='%s'",id.c_str());
     m_pDS->query(strSQL.c_str());
     if (!m_pDS->eof())
       return GetRepository(m_pDS->fv(0).get_asInt(),addons);
@@ -517,14 +517,14 @@ bool CAddonDatabase::GetRepository(const CStdString& id, VECADDONS& addons)
   return false;
 }
 
-bool CAddonDatabase::Search(const CStdString& search, VECADDONS& addons)
+bool CAddonDatabase::Search(const std::string& search, VECADDONS& addons)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL;
+    std::string strSQL;
     strSQL=PrepareSQL("SELECT addonID FROM addon WHERE name LIKE '%%%s%%' OR summary LIKE '%%%s%%' OR description LIKE '%%%s%%'", search.c_str(), search.c_str(), search.c_str());
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
 
@@ -562,20 +562,20 @@ void CAddonDatabase::SetPropertiesFromAddon(const AddonPtr& addon,
   pItem->SetProperty("Addon.Creator", addon->Author());
   pItem->SetProperty("Addon.Disclaimer", addon->Disclaimer());
   pItem->SetProperty("Addon.Rating", addon->Stars());
-  CStdString starrating = StringUtils::Format("rating%d.png", addon->Stars());
+  std::string starrating = StringUtils::Format("rating%d.png", addon->Stars());
   pItem->SetProperty("Addon.StarRating",starrating);
   pItem->SetProperty("Addon.Path", addon->Path());
   if (addon->Props().broken == "DEPSNOTMET")
     pItem->SetProperty("Addon.Broken", g_localizeStrings.Get(24044));
   else
     pItem->SetProperty("Addon.Broken", addon->Props().broken);
-  std::map<CStdString,CStdString>::iterator it = 
+  std::map<std::string,std::string>::iterator it = 
                     addon->Props().extrainfo.find("language");
   if (it != addon->Props().extrainfo.end())
     pItem->SetProperty("Addon.Language", it->second);
 }
 
-bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = true */)
+bool CAddonDatabase::DisableAddon(const std::string &addonID, bool disable /* = true */)
 {
   try
   {
@@ -586,7 +586,7 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
     {
       if (!IsAddonDisabled(addonID)) // Enabled
       {
-        CStdString sql = PrepareSQL("insert into disabled(id, addonID) values(NULL, '%s')", addonID.c_str());
+        std::string sql = PrepareSQL("insert into disabled(id, addonID) values(NULL, '%s')", addonID.c_str());
         m_pDS->exec(sql);
 
         AddonPtr addon;
@@ -609,7 +609,7 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
     else
     {
       bool disabled = IsAddonDisabled(addonID); //we need to know if service addon is running
-      CStdString sql = PrepareSQL("delete from disabled where addonID='%s'", addonID.c_str());
+      std::string sql = PrepareSQL("delete from disabled where addonID='%s'", addonID.c_str());
       m_pDS->exec(sql);
 
       AddonPtr addon;
@@ -633,7 +633,7 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
   return false;
 }
 
-bool CAddonDatabase::BreakAddon(const CStdString &addonID, const CStdString& reason)
+bool CAddonDatabase::BreakAddon(const std::string &addonID, const std::string& reason)
 {
   if (reason.empty())
     return ExecuteQuery(PrepareSQL("DELETE FROM broken WHERE addonID='%s'", addonID.c_str()));
@@ -642,22 +642,22 @@ bool CAddonDatabase::BreakAddon(const CStdString &addonID, const CStdString& rea
                                    addonID.c_str(), reason.c_str()));
 }
 
-bool CAddonDatabase::HasAddon(const CStdString &addonID)
+bool CAddonDatabase::HasAddon(const std::string &addonID)
 {
-  CStdString strWhereClause = PrepareSQL("addonID = '%s'", addonID.c_str());
-  CStdString strHasAddon = GetSingleValue("addon", "id", strWhereClause);
+  std::string strWhereClause = PrepareSQL("addonID = '%s'", addonID.c_str());
+  std::string strHasAddon = GetSingleValue("addon", "id", strWhereClause);
   
   return !strHasAddon.empty();
 }
 
-bool CAddonDatabase::IsAddonDisabled(const CStdString &addonID)
+bool CAddonDatabase::IsAddonDisabled(const std::string &addonID)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString sql = PrepareSQL("select id from disabled where addonID='%s'", addonID.c_str());
+    std::string sql = PrepareSQL("select id from disabled where addonID='%s'", addonID.c_str());
     m_pDS->query(sql.c_str());
     bool ret = !m_pDS->eof(); // in the disabled table -> disabled
     m_pDS->close();
@@ -670,15 +670,15 @@ bool CAddonDatabase::IsAddonDisabled(const CStdString &addonID)
   return false;
 }
 
-bool CAddonDatabase::IsSystemPVRAddonEnabled(const CStdString &addonID)
+bool CAddonDatabase::IsSystemPVRAddonEnabled(const std::string &addonID)
 {
-  CStdString strWhereClause = PrepareSQL("addonID = '%s'", addonID.c_str());
-  CStdString strEnabled = GetSingleValue("pvrenabled", "id", strWhereClause);
+  std::string strWhereClause = PrepareSQL("addonID = '%s'", addonID.c_str());
+  std::string strEnabled = GetSingleValue("pvrenabled", "id", strWhereClause);
 
   return !strEnabled.empty();
 }
 
-CStdString CAddonDatabase::IsAddonBroken(const CStdString &addonID)
+std::string CAddonDatabase::IsAddonBroken(const std::string &addonID)
 {
   return GetSingleValue(PrepareSQL("SELECT reason FROM broken WHERE addonID='%s'", addonID.c_str()));
 }
@@ -702,15 +702,15 @@ bool CAddonDatabase::HasDisabledAddons()
   return false;
 }
 
-bool CAddonDatabase::BlacklistAddon(const CStdString& addonID,
-                                    const CStdString& version)
+bool CAddonDatabase::BlacklistAddon(const std::string& addonID,
+                                    const std::string& version)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString sql = PrepareSQL("insert into blacklist(id, addonID, version) values(NULL, '%s', '%s')", addonID.c_str(),version.c_str());
+    std::string sql = PrepareSQL("insert into blacklist(id, addonID, version) values(NULL, '%s', '%s')", addonID.c_str(),version.c_str());
     m_pDS->exec(sql);
 
     return true;
@@ -722,22 +722,22 @@ bool CAddonDatabase::BlacklistAddon(const CStdString& addonID,
   return false;
 }
 
-bool CAddonDatabase::IsAddonBlacklisted(const CStdString& addonID,
-                                        const CStdString& version)
+bool CAddonDatabase::IsAddonBlacklisted(const std::string& addonID,
+                                        const std::string& version)
 {
-  CStdString where = PrepareSQL("addonID='%s' and version='%s'",addonID.c_str(),version.c_str());
+  std::string where = PrepareSQL("addonID='%s' and version='%s'",addonID.c_str(),version.c_str());
   return !GetSingleValue("blacklist","addonID",where).empty();
 }
 
-bool CAddonDatabase::RemoveAddonFromBlacklist(const CStdString& addonID,
-                                              const CStdString& version)
+bool CAddonDatabase::RemoveAddonFromBlacklist(const std::string& addonID,
+                                              const std::string& version)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString sql = PrepareSQL("delete from blacklist where addonID='%s' and version='%s'",addonID.c_str(),version.c_str());
+    std::string sql = PrepareSQL("delete from blacklist where addonID='%s' and version='%s'",addonID.c_str(),version.c_str());
     m_pDS->exec(sql);
     return true;
   }
@@ -748,29 +748,29 @@ bool CAddonDatabase::RemoveAddonFromBlacklist(const CStdString& addonID,
   return false;
 }
 
-bool CAddonDatabase::AddPackage(const CStdString& addonID,
-                                const CStdString& packageFileName,
-                                const CStdString& hash)
+bool CAddonDatabase::AddPackage(const std::string& addonID,
+                                const std::string& packageFileName,
+                                const std::string& hash)
 {
-  CStdString sql = PrepareSQL("insert into package(id, addonID, filename, hash)"
+  std::string sql = PrepareSQL("insert into package(id, addonID, filename, hash)"
                               "values(NULL, '%s', '%s', '%s')",
                               addonID.c_str(), packageFileName.c_str(), hash.c_str());
   return ExecuteQuery(sql);
 }
 
-bool CAddonDatabase::GetPackageHash(const CStdString& addonID,
-                                    const CStdString& packageFileName,
-                                    CStdString&       hash)
+bool CAddonDatabase::GetPackageHash(const std::string& addonID,
+                                    const std::string& packageFileName,
+                                    std::string&       hash)
 {
-  CStdString where = PrepareSQL("addonID='%s' and filename='%s'",
+  std::string where = PrepareSQL("addonID='%s' and filename='%s'",
                                 addonID.c_str(), packageFileName.c_str());
   hash = GetSingleValue("package", "hash", where);
   return !hash.empty();
 }
 
-bool CAddonDatabase::RemovePackage(const CStdString& packageFileName)
+bool CAddonDatabase::RemovePackage(const std::string& packageFileName)
 {
-  CStdString sql = PrepareSQL("delete from package where filename='%s'", packageFileName.c_str());
+  std::string sql = PrepareSQL("delete from package where filename='%s'", packageFileName.c_str());
   return ExecuteQuery(sql);
 }
 

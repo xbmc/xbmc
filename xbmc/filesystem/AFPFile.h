@@ -57,7 +57,7 @@ public:
   struct afp_server     *GetServer()    {return m_pAfpServer;}
   struct afp_volume     *GetVolume()    {return m_pAfpVol;};
   struct afp_url        *GetUrl()       {return m_pAfpUrl;};
-  CStdString            GetPath(const CURL &url);
+  std::string           GetPath(const CURL &url);
   DllLibAfp             *GetImpl()      {return m_pLibAfp;}
   
   const char            *GetConnectedIp() const { if(m_pAfpUrl) return m_pAfpUrl->servername;else return "";}
@@ -77,7 +77,7 @@ private:
   bool                  initLib(void);
   bool                  connectVolume(const char *volumename, struct afp_volume *&pVolume);
   void                  disconnectVolume(void);
-  CStdString            getAuthenticatedPath(const CURL &url);
+  CURL                  getAuthenticatedPath(const CURL &url);
 
   int                   m_OpenConnections;
   int                   m_IdleTimeout;
@@ -121,7 +121,7 @@ public:
                         };
 
 protected:
-  bool                  IsValidFile(const CStdString& strFileName);
+  bool                  IsValidFile(const std::string& strFileName);
 
   CURL                  m_url;
   int64_t               m_fileSize;

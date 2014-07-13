@@ -44,8 +44,8 @@ class CZeroconfBrowserAvahi : public CZeroconfBrowser
   private:
     ///implementation if CZeroconfBrowser interface
     ///@{
-    virtual bool doAddServiceType(const CStdString& fcr_service_type);
-    virtual bool doRemoveServiceType(const CStdString& fcr_service_type);
+    virtual bool doAddServiceType(const std::string& fcr_service_type);
+    virtual bool doRemoveServiceType(const std::string& fcr_service_type);
 
     virtual std::vector<CZeroconfBrowser::ZeroconfService> doGetFoundServices();
     virtual bool doResolveService(CZeroconfBrowser::ZeroconfService& fr_service, double f_timeout);
@@ -82,13 +82,13 @@ class CZeroconfBrowserAvahi : public CZeroconfBrowser
     static void shutdownCallback(AvahiTimeout *fp_e, void *fp_data);
     //helpers
     bool createClient();
-    static AvahiServiceBrowser* createServiceBrowser(const CStdString& fcr_service_type, AvahiClient* fp_client, void* fp_userdata);
+    static AvahiServiceBrowser* createServiceBrowser(const std::string& fcr_service_type, AvahiClient* fp_client, void* fp_userdata);
 
     //shared variables between avahi thread and interface
     AvahiClient* mp_client;
     AvahiThreadedPoll* mp_poll;
     // tBrowserMap maps service types the corresponding browser
-    typedef std::map<CStdString, AvahiServiceBrowser*> tBrowserMap;
+    typedef std::map<std::string, AvahiServiceBrowser*> tBrowserMap;
     tBrowserMap m_browsers;
 
     // if a browser is in this set, it already sent an ALL_FOR_NOW message

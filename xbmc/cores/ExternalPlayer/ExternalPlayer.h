@@ -22,6 +22,8 @@
 
 #include "cores/IPlayer.h"
 #include "threads/Thread.h"
+#include <string>
+#include <vector>
 
 class CGUIDialogOK;
 
@@ -55,9 +57,9 @@ public:
   virtual void SetBrightness(bool bPlus) {}
   virtual void SetHue(bool bPlus) {}
   virtual void SetSaturation(bool bPlus) {}
-  virtual void GetAudioInfo(CStdString& strAudioInfo);
-  virtual void GetVideoInfo(CStdString& strVideoInfo);
-  virtual void GetGeneralInfo( CStdString& strVideoInfo);
+  virtual void GetAudioInfo(std::string& strAudioInfo);
+  virtual void GetVideoInfo(std::string& strVideoInfo);
+  virtual void GetGeneralInfo(std::string& strVideoInfo);
   virtual void SwitchToNextAudioLanguage();
   virtual bool CanRecord() { return false; }
   virtual bool IsRecording() { return false; }
@@ -75,8 +77,8 @@ public:
   virtual void ShowOSD(bool bOnoff);
   virtual void DoAudioWork()                                    {}
   
-  virtual CStdString GetPlayerState();
-  virtual bool SetPlayerState(CStdString state);
+  virtual std::string GetPlayerState();
+  virtual bool SetPlayerState(const std::string& state);
   
 #if defined(TARGET_WINDOWS)
   virtual BOOL ExecuteAppW32(const char* strPath, const char* strSwitches);
@@ -98,7 +100,7 @@ private:
   int m_speed;
   int m_totalTime;
   int m_time;
-  CStdString m_launchFilename;
+  std::string m_launchFilename;
   HWND m_hwndXbmc; 
 #if defined(TARGET_WINDOWS)
   POINT m_ptCursorpos;
@@ -107,8 +109,8 @@ private:
   CGUIDialogOK* m_dialog;
   int m_xPos;
   int m_yPos;
-  CStdString m_filename;
-  CStdString m_args;
+  std::string m_filename;
+  std::string m_args;
   bool m_hideconsole;
   bool m_hidexbmc;
   bool m_islauncher;

@@ -25,7 +25,7 @@
 TEST(TestHTMLUtil, FindTag)
 {
   HTML::CHTMLUtil util;
-  CStdString str, found;
+  std::string str, found;
   str = "<!DOCTYPE html>\n"
         "<html>\n"
         "  <head class=\"someclass\">\n"
@@ -45,7 +45,7 @@ TEST(TestHTMLUtil, FindTag)
 TEST(TestHTMLUtil, FindClosingTag)
 {
   HTML::CHTMLUtil util;
-  CStdString str, found;
+  std::string str, found;
   str = "<!DOCTYPE html>\n"
         "<html>\n"
         "  <head class=\"someclass\">\n"
@@ -62,7 +62,7 @@ TEST(TestHTMLUtil, FindClosingTag)
 TEST(TestHTMLUtil, getValueOfTag)
 {
   HTML::CHTMLUtil util;
-  CStdString str, value;
+  std::string str, value;
   str = "<p>blah blah blah</p>";
   util.getValueOfTag(str, value);
   EXPECT_STREQ("blah blah blah", value.c_str());
@@ -71,7 +71,7 @@ TEST(TestHTMLUtil, getValueOfTag)
 TEST(TestHTMLUtil, getAttributeOfTag)
 {
   HTML::CHTMLUtil util;
-  CStdString str, tag, value;
+  std::string str, tag, value;
   str = "<head class=\"someclass\"></head>\n";
   util.getAttributeOfTag(str, "class", value);
   EXPECT_STREQ("\"someclass", value.c_str());
@@ -79,7 +79,7 @@ TEST(TestHTMLUtil, getAttributeOfTag)
 
 TEST(TestHTMLUtil, RemoveTags)
 {
-  CStdString str;
+  std::string str;
   str = "<!DOCTYPE html>\n"
         "<html>\n"
         "  <head class=\"someclass\">\n"
@@ -95,17 +95,9 @@ TEST(TestHTMLUtil, RemoveTags)
 
 TEST(TestHTMLUtil, ConvertHTMLToW)
 {
-  CStdString str;
-  CStdStringW refstrw, varstrw;
-  str = "<!DOCTYPE html>\n"
-        "<html>\n"
-        "  <head class=\"someclass\">\n"
-        "    <body>\n"
-        "      <p>blah blah blah</p>\n"
-        "    </body>\n"
-        "  </head>\n"
-        "</html>\n";
-  refstrw = str;
-  HTML::CHTMLUtil::ConvertHTMLToW(str, varstrw);
+  std::wstring inw, refstrw, varstrw;
+  inw =     L"&aring;&amp;&euro;";
+  refstrw = L"å&€";
+  HTML::CHTMLUtil::ConvertHTMLToW(inw, varstrw);
   EXPECT_STREQ(refstrw.c_str(), varstrw.c_str());
 }

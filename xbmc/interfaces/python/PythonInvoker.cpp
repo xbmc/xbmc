@@ -78,9 +78,9 @@ extern "C"
 
 CCriticalSection CPythonInvoker::s_critical;
 
-static const CStdString getListOfAddonClassesAsString(XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook>& languageHook)
+static const std::string getListOfAddonClassesAsString(XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook>& languageHook)
 {
-  CStdString message;
+  std::string message;
   CSingleLock l(*(languageHook.get()));
   std::set<XBMCAddon::AddonClass*>& acs = languageHook->GetRegisteredAddonClasses();
   bool firstTime = true;
@@ -184,7 +184,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
 
   // get path from script file name and add python path's
   // this is used for python so it will search modules from script path first
-  CStdString scriptDir = URIUtils::GetDirectory(realFilename);
+  std::string scriptDir = URIUtils::GetDirectory(realFilename);
   URIUtils::RemoveSlashAtEnd(scriptDir);
   addPath(scriptDir);
 
@@ -559,17 +559,17 @@ void CPythonInvoker::onError()
   CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
   if (pDlgToast != NULL)
   {
-    CStdString desc;
-    CStdString script;
+    std::string desc;
+    std::string script;
     if (m_addon.get() != NULL)
       script = m_addon->Name();
     else
     {
-      CStdString path;
+      std::string path;
       URIUtils::Split(m_sourceFile.c_str(), path, script);
-      if (script.Equals("default.py"))
+      if (script == "default.py")
       {
-        CStdString path2;
+        std::string path2;
         URIUtils::RemoveSlashAtEnd(path);
         URIUtils::Split(path, path2, script);
       }

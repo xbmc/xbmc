@@ -37,8 +37,8 @@ using namespace XFILE;
 bool CAPKDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   // uses a <fully qualified path>/filename.apk/...
-  CStdString path = url.GetFileName();
-  CStdString host = url.GetHostName();
+  std::string path = url.GetFileName();
+  std::string host = url.GetHostName();
   URIUtils::AddSlashAtEnd(path);
 
   int zip_flags = 0, zip_error = 0;
@@ -51,7 +51,7 @@ bool CAPKDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     return false;
   }
 
-  CStdString test_name;
+  std::string test_name;
   int numFiles = zip_get_num_files(zip_archive);
   for (int zip_index = 0; zip_index < numFiles; zip_index++)
   {

@@ -35,11 +35,11 @@ public:
 
   bool IsApproved();
 
-  CStdString toString();
+  std::string toString();
 
   CMediaSource ToMediaShare();
 
-  CStdString m_UDI, m_DeviceKitUDI, m_MountPath, m_FileSystem, m_Label;
+  std::string m_UDI, m_DeviceKitUDI, m_MountPath, m_FileSystem, m_Label;
   bool m_isMounted, m_isMountedByUs, m_isRemovable, m_isPartition, m_isFileSystem, m_isSystemInternal, m_isOptical;
   float m_PartitionSizeGiB;
 };
@@ -74,22 +74,22 @@ public:
   virtual void GetLocalDrives(VECSOURCES &localDrives) { GetDisks(localDrives, false); }
   virtual void GetRemovableDrives(VECSOURCES &removableDrives) { GetDisks(removableDrives, true); }
 
-  virtual bool Eject(CStdString mountpath);
+  virtual bool Eject(const std::string& mountpath);
 
-  virtual std::vector<CStdString> GetDiskUsage();
+  virtual std::vector<std::string> GetDiskUsage();
 
   virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback);
 
   static bool HasDeviceKitDisks();
 private:
-  typedef std::map<CStdString, CDeviceKitDiskDevice *> DeviceMap;
-  typedef std::pair<CStdString, CDeviceKitDiskDevice *> DevicePair;
+  typedef std::map<std::string, CDeviceKitDiskDevice *> DeviceMap;
+  typedef std::pair<std::string, CDeviceKitDiskDevice *> DevicePair;
 
   void DeviceAdded(const char *object, IStorageEventsCallback *callback);
   void DeviceRemoved(const char *object, IStorageEventsCallback *callback);
   void DeviceChanged(const char *object, IStorageEventsCallback *callback);
 
-  std::vector<CStdString> EnumerateDisks();
+  std::vector<std::string> EnumerateDisks();
 
   void GetDisks(VECSOURCES& devices, bool EnumerateRemovable);
 

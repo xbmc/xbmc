@@ -32,9 +32,9 @@ public:
   virtual void GetLocalDrives(VECSOURCES &localDrives) { GetDrives(localDrives); }
   virtual void GetRemovableDrives(VECSOURCES &removableDrives) { /*GetDrives(removableDrives);*/ }
 
-  virtual std::vector<CStdString> GetDiskUsage();
+  virtual std::vector<std::string> GetDiskUsage();
 
-  virtual bool Eject(CStdString mountpath);
+  virtual bool Eject(const std::string& mountpath);
 
   virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback);
 private:

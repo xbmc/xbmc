@@ -23,17 +23,18 @@
 #include "filesystem/File.h"
 #include "threads/Thread.h"
 #include "threads/SystemClock.h"
+#include <string>
 
 class CGUIDialogProgress;
 
 class CGUIDialogCache : public CThread, public XFILE::IFileCallback
 {
 public:
-  CGUIDialogCache(DWORD dwDelay = 0, const CStdString& strHeader="", const CStdString& strMsg="");
+  CGUIDialogCache(DWORD dwDelay = 0, const std::string& strHeader="", const std::string& strMsg="");
   virtual ~CGUIDialogCache();
-  void SetHeader(const CStdString& strHeader);
+  void SetHeader(const std::string& strHeader);
   void SetHeader(int nHeader);
-  void SetMessage(const CStdString& strMessage);
+  void SetMessage(const std::string& strMessage);
   bool IsCanceled() const;
   void ShowProgressBar(bool bOnOff);
   void SetPercentage(int iPercentage);
@@ -49,9 +50,9 @@ protected:
 
   XbmcThreads::EndTime m_endtime;
   CGUIDialogProgress* m_pDlg;
-  CStdString m_strLinePrev;
-  CStdString m_strLinePrev2;
-  CStdString m_strHeader;
+  std::string m_strLinePrev;
+  std::string m_strLinePrev2;
+  std::string m_strHeader;
   bool bSentCancel;
   bool m_bOpenTried;
 };

@@ -24,7 +24,7 @@
 
 TEST(TestAliasShortcutUtils, IsAliasShortcut)
 {
-  CStdString a = "";
+  std::string a;
 #if defined(TARGET_DARWIN_OSX)
   /* TODO: Write test case for OSX */
 #else
@@ -34,7 +34,7 @@ TEST(TestAliasShortcutUtils, IsAliasShortcut)
 
 TEST(TestAliasShortcutUtils, TranslateAliasShortcut)
 {
-  CStdString a = "";
+  std::string a;
   TranslateAliasShortcut(a);
 #if defined(TARGET_DARWIN_OSX)
   /* TODO: Write test case for OSX */

@@ -765,7 +765,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     // we prioritise mixed-mode nfo's with fanart set
     if (prioritise)
     {
-      CStdString temp;
+      std::string temp;
       temp << *fanart;
       m_fanart.m_xml = temp+m_fanart.m_xml;
     }

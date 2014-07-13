@@ -90,12 +90,12 @@ bool CPlayListWPL::LoadData(istream& stream)
   if (!pMediaElement) return false;
   while (pMediaElement)
   {
-    CStdString strFileName = XMLUtils::GetAttribute(pMediaElement, "src");
+    std::string strFileName = XMLUtils::GetAttribute(pMediaElement, "src");
     if (!strFileName.empty())
     {
-      strFileName = URIUtils::SubstitutePath(strFileName);
+      std::string strFileName = URIUtils::SubstitutePath(strFileName);
       CUtil::GetQualifiedFilename(m_strBasePath, strFileName);
-      CStdString strDescription = URIUtils::GetFileName(strFileName);
+      std::string strDescription = URIUtils::GetFileName(strFileName);
       CFileItemPtr newItem(new CFileItem(strDescription));
       newItem->SetPath(strFileName);
       Add(newItem);
@@ -105,17 +105,17 @@ bool CPlayListWPL::LoadData(istream& stream)
   return true;
 }
 
-void CPlayListWPL::Save(const CStdString& strFileName) const
+void CPlayListWPL::Save(const std::string& strFileName) const
 {
   if (!m_vecItems.size()) return ;
-  CStdString strPlaylist = CUtil::MakeLegalPath(strFileName);
+  std::string strPlaylist = CUtil::MakeLegalPath(strFileName);
   CFile file;
   if (!file.OpenForWrite(strPlaylist, true))
   {
     CLog::Log(LOGERROR, "Could not save WPL playlist: [%s]", strPlaylist.c_str());
     return ;
   }
-  CStdString write;
+  std::string write;
   write += StringUtils::Format("<?wpl version=%c1.0%c>\n", 34, 34);
   write += StringUtils::Format("<smil>\n");
   write += StringUtils::Format("    <head>\n");

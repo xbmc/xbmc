@@ -50,16 +50,16 @@ CFileCDDA::~CFileCDDA(void)
 
 bool CFileCDDA::Open(const CURL& url)
 {
-  CStdString strURL = url.GetWithoutFilename();
+  std::string strURL = url.GetWithoutFilename();
 
   if (!g_mediaManager.IsDiscInDrive(strURL) || !IsValidFile(url))
     return false;
 
   // Open the dvd drive
 #ifdef TARGET_POSIX
-  m_pCdIo = m_cdio->cdio_open(g_mediaManager.TranslateDevicePath(strURL), DRIVER_UNKNOWN);
+  m_pCdIo = m_cdio->cdio_open(g_mediaManager.TranslateDevicePath(strURL).c_str(), DRIVER_UNKNOWN);
 #elif defined(TARGET_WINDOWS)
-  m_pCdIo = m_cdio->cdio_open_win32(g_mediaManager.TranslateDevicePath(strURL, true));
+  m_pCdIo = m_cdio->cdio_open_win32(g_mediaManager.TranslateDevicePath(strURL, true).c_str());
 #endif
   if (!m_pCdIo)
   {
@@ -221,7 +221,7 @@ bool CFileCDDA::IsValidFile(const CURL& url)
 
 int CFileCDDA::GetTrackNum(const CURL& url)
 {
-  CStdString strFileName = url.Get();
+  std::string strFileName = url.Get();
 
   // get track number from "cdda://local/01.cdda"
   return atoi(strFileName.substr(13, strFileName.size() - 13 - 5).c_str());

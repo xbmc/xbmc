@@ -43,24 +43,24 @@ CTuxBoxDirectory::~CTuxBoxDirectory(void)
 
 bool CTuxBoxDirectory::GetDirectory(const CURL& url2, CFileItemList &items)
 {
-  const CStdString strPath = url2.Get();
+  const std::string strPath = url2.Get();
   // so we know that we have enigma2
   static bool enigma2 = false;
   // Detect and delete slash at end
-  CStdString strRoot = strPath;
+  std::string strRoot = strPath;
   URIUtils::RemoveSlashAtEnd(strRoot);
 
   //Get the request strings
-  CStdString strBQRequest;
-  CStdString strXMLRootString;
-  CStdString strXMLChildString;
+  std::string strBQRequest;
+  std::string strXMLRootString;
+  std::string strXMLChildString;
   if(!GetRootAndChildString(strRoot, strBQRequest, strXMLRootString, strXMLChildString))
     return false;
 
   //Set url Protocol
   CURL url(strRoot);
-  CStdString strFilter;
-  CStdString protocol = url.GetProtocol();
+  std::string strFilter;
+  std::string protocol = url.GetProtocol();
   url.SetProtocol("http");
   bool bIsBouquet=false;
 
@@ -78,7 +78,7 @@ bool CTuxBoxDirectory::GetDirectory(const CURL& url2, CFileItemList &items)
       bIsBouquet = false; //On Empty is Bouquet
       if (enigma2)
       {
-        CStdString strPort = StringUtils::Format(":%i",url.GetPort());
+        std::string strPort = StringUtils::Format(":%i",url.GetPort());
         if (!StringUtils::EndsWith(strRoot, strPort)) // If not root dir, enable Channels
           strFilter = "e2"; // Disable Bouquets for Enigma2
 
@@ -114,7 +114,7 @@ bool CTuxBoxDirectory::GetDirectory(const CURL& url2, CFileItemList &items)
       int size_read = 0;
       int size_total = (int)http.GetLength();
       int data_size = 0;
-      CStdString data;
+      std::string data;
       data.reserve(size_total);
 
       // read response from server into string buffer
@@ -138,7 +138,7 @@ bool CTuxBoxDirectory::GetDirectory(const CURL& url2, CFileItemList &items)
         CLog::Log(LOGERROR, "%s - Sample follows...\n%s", __FUNCTION__, data.c_str());
         return false;
       }
-      if( strXMLRootString.Equals(root->Value()) && bIsBouquet)
+      if(strXMLRootString == root->Value() && bIsBouquet)
       {
         data.clear();
         if (enigma2)
@@ -146,7 +146,7 @@ bool CTuxBoxDirectory::GetDirectory(const CURL& url2, CFileItemList &items)
         else
           result = g_tuxbox.ParseBouquets(root, items, url, strFilter, strXMLChildString);
       }
-      else if( strXMLRootString.Equals(root->Value()) && !strFilter.empty() )
+      else if( strXMLRootString == root->Value() && !strFilter.empty() )
       {
         data.clear();
         if (enigma2)
@@ -186,7 +186,7 @@ bool CTuxBoxDirectory::GetDirectory(const CURL& url2, CFileItemList &items)
   return result;
 }
 
-void CTuxBoxDirectory::GetRootAndChildStringEnigma2(CStdString& strBQRequest, CStdString& strXMLRootString, CStdString& strXMLChildString )
+void CTuxBoxDirectory::GetRootAndChildStringEnigma2(std::string& strBQRequest, std::string& strXMLRootString, std::string& strXMLChildString )
 {
   // Allways take getallservices for Enigma2
   strBQRequest = "web/getallservices"; //Bouquets and Channels
@@ -194,7 +194,7 @@ void CTuxBoxDirectory::GetRootAndChildStringEnigma2(CStdString& strBQRequest, CS
   strXMLChildString = StringUtils::Format("e2bouquet");
 }
 
-bool CTuxBoxDirectory::GetRootAndChildString(const CStdString strPath, CStdString& strBQRequest, CStdString& strXMLRootString, CStdString& strXMLChildString )
+bool CTuxBoxDirectory::GetRootAndChildString(const std::string strPath, std::string& strBQRequest, std::string& strXMLRootString, std::string& strXMLChildString )
 {
   //Advanced Settings: RootMode! Movies:
   if(g_advancedSettings.m_iTuxBoxDefaultRootMenu == 3) //Movies! Fixed-> mode=3&submode=4
@@ -222,7 +222,7 @@ bool CTuxBoxDirectory::GetRootAndChildString(const CStdString strPath, CStdStrin
       // Detect the RootMode !
       if (strPath.find("?mode=") != std::string::npos)
       {
-        CStdString strMode;
+        std::string strMode;
         bReqMoRe=false;
         strMode = g_tuxbox.DetectSubMode(strPath, strXMLRootString, strXMLChildString);
       }

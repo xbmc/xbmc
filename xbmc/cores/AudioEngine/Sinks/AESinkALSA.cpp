@@ -30,7 +30,6 @@
 #include "AESinkALSA.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Utils/AEELDParser.h"
-#include "utils/StdString.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "utils/SystemInfo.h"

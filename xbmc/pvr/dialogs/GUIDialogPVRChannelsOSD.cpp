@@ -32,6 +32,7 @@
 #include "settings/Settings.h"
 #include "GUIInfoManager.h"
 #include "cores/IPlayer.h"
+#include "utils/StringUtils.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"

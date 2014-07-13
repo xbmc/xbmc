@@ -21,9 +21,8 @@
  *
  */
 
+#include <string>
 #include <vector>
-#include "StdString.h"
-#include "addons/IAddon.h"
 
 #define MAX_SCRAPER_BUFFERS 20
 
@@ -44,24 +43,24 @@ public:
   CScraperParser(const CScraperParser& parser);
   ~CScraperParser();
   CScraperParser& operator= (const CScraperParser& parser);
-  bool Load(const CStdString& strXMLFile);
+  bool Load(const std::string& strXMLFile);
   bool IsNoop() const { return m_isNoop; };
 
   void Clear();
-  const CStdString& GetFilename() const { return m_strFile; }
-  CStdString GetSearchStringEncoding() const
+  const std::string& GetFilename() const { return m_strFile; }
+  std::string GetSearchStringEncoding() const
     { return m_SearchStringEncoding; }
-  const CStdString Parse(const CStdString& strTag,
+  const std::string Parse(const std::string& strTag,
                          ADDON::CScraper* scraper);
 
   void AddDocument(const CXBMCTinyXML* doc);
 
-  CStdString m_param[MAX_SCRAPER_BUFFERS];
+  std::string m_param[MAX_SCRAPER_BUFFERS];
 
 private:
   bool LoadFromXML();
-  void ReplaceBuffers(CStdString& strDest);
-  void ParseExpression(const CStdString& input, CStdString& dest, TiXmlElement* element, bool bAppend);
+  void ReplaceBuffers(std::string& strDest);
+  void ParseExpression(const std::string& input, std::string& dest, TiXmlElement* element, bool bAppend);
 
   /*! \brief Parse an 'XSLT' declaration from the scraper
    This allow us to transform an inbound XML document using XSLT
@@ -72,13 +71,13 @@ private:
    \param element the current XML element
    \param bAppend append or clear the buffer
    */
-  void ParseXSLT(const CStdString& input, CStdString& dest, TiXmlElement* element, bool bAppend);
+  void ParseXSLT(const std::string& input, std::string& dest, TiXmlElement* element, bool bAppend);
   void ParseNext(TiXmlElement* element);
-  void Clean(CStdString& strDirty);
-  void ConvertJSON(CStdString &string);
+  void Clean(std::string& strDirty);
+  void ConvertJSON(std::string &string);
   void ClearBuffers();
   void GetBufferParams(bool* result, const char* attribute, bool defvalue);
-  void InsertToken(CStdString& strOutput, int buf, const char* token);
+  void InsertToken(std::string& strOutput, int buf, const char* token);
 
   CXBMCTinyXML* m_document;
   TiXmlElement* m_pRootElement;
@@ -86,7 +85,7 @@ private:
   const char* m_SearchStringEncoding;
   bool m_isNoop;
 
-  CStdString m_strFile;
+  std::string m_strFile;
   ADDON::CScraper* m_scraper;
 };
 

@@ -26,7 +26,6 @@
 
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "settings/AdvancedSettings.h"
-#include "utils/StdString.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "threads/SingleLock.h"
@@ -165,15 +164,15 @@ DWORD ChLayoutToChMask(const enum AEChannel * layout, unsigned int * numberOfCha
   return mask;
 }
 
-CStdStringA localWideToUtf(LPCWSTR wstr)
+std::string localWideToUtf(LPCWSTR wstr)
 {
   if (wstr == NULL)
     return "";
   int bufSize = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
-  CStdStringA strA ("", bufSize);
-  if ( bufSize == 0 || WideCharToMultiByte(CP_UTF8, 0, wstr, -1, strA.GetBuf(bufSize), bufSize, NULL, NULL) != bufSize )
+  std::string strA ("", bufSize);
+  strA.resize(bufSize);
+  if ( bufSize == 0 || WideCharToMultiByte(CP_UTF8, 0, wstr, -1, &strA[0], bufSize, NULL, NULL) != bufSize )
     strA.clear();
-  strA.RelBuf();
   return strA;
 }
 

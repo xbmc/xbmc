@@ -51,13 +51,12 @@ public:
   {}
   void GetStreamInfo(std::string& strInfo)
   {
-    CStdString info = StringUtils::Format("%s, delay: %u, drops: %ub %up %ui"
+    strInfo = StringUtils::Format("%s, delay: %u, drops: %ub %up %ui"
                                           , m_codec.c_str()
                                           , m_parent->m_QueueStatus.delay
                                           , m_parent->m_QueueStatus.bdrops
                                           , m_parent->m_QueueStatus.pdrops
                                           , m_parent->m_QueueStatus.idrops);
-    strInfo = info;
   }
 };
 
@@ -74,8 +73,7 @@ public:
   {}
   void GetStreamInfo(string& strInfo)
   {
-    CStdString info = StringUtils::Format("%s", m_codec.c_str());
-    strInfo = info;
+    strInfo = StringUtils::Format("%s", m_codec.c_str());
   }
 };
 

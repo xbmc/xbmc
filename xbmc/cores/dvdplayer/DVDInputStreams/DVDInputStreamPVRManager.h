@@ -82,7 +82,7 @@ public:
    list of the input formats.
    \return The name of the input format
    */
-  CStdString      GetInputFormat();
+  std::string      GetInputFormat();
 
   /* returns m_pOtherStream */
   CDVDInputStream* GetOtherStream();

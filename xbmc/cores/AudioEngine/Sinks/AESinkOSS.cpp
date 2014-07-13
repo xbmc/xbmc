@@ -23,7 +23,6 @@
 #include <limits.h>
 
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "utils/StdString.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include <sstream>

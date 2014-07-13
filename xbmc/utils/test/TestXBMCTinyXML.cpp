@@ -29,7 +29,7 @@ TEST(TestXBMCTinyXML, ParseFromString)
   bool retval = false;
   // scraper results with unescaped &
   CXBMCTinyXML doc;
-  CStdString data("<details><url function=\"ParseTMDBRating\" "
+  std::string data("<details><url function=\"ParseTMDBRating\" "
                   "cache=\"tmdb-en-12244.json\">"
                   "http://api.themoviedb.org/3/movie/12244"
                   "?api_key=57983e31fb435df4df77afb854740ea9"
@@ -62,7 +62,7 @@ TEST(TestXBMCTinyXML, ParseFromFileHandle)
     TiXmlElement *url = root->FirstChildElement("url");
     if (url && url->FirstChild())
     {
-      CStdString str = url->FirstChild()->ValueStr();
+      std::string str = url->FirstChild()->ValueStr();
       retval = (StringUtils::Trim(str) == "http://api.themoviedb.org/3/movie/12244?api_key=57983e31fb435df4df77afb854740ea9&language=en???");
     }
   }

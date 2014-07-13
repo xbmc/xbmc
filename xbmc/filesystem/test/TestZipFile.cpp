@@ -62,7 +62,7 @@ TEST_F(TestZipFile, Read)
   XFILE::CFile file;
   char buf[20];
   memset(&buf, 0, sizeof(buf));
-  CStdString reffile, strpathinzip;
+  std::string reffile, strpathinzip;
   CFileItemList itemlist;
 
   reffile = XBMC_REF_FILE_PATH("xbmc/filesystem/test/reffile.txt.zip");
@@ -112,7 +112,7 @@ TEST_F(TestZipFile, Read)
 
 TEST_F(TestZipFile, Exists)
 {
-  CStdString reffile, strpathinzip;
+  std::string reffile, strpathinzip;
   CFileItemList itemlist;
 
   reffile = XBMC_REF_FILE_PATH("xbmc/filesystem/test/reffile.txt.zip");
@@ -127,7 +127,7 @@ TEST_F(TestZipFile, Exists)
 TEST_F(TestZipFile, Stat)
 {
   struct __stat64 buffer;
-  CStdString reffile, strpathinzip;
+  std::string reffile, strpathinzip;
   CFileItemList itemlist;
 
   reffile = XBMC_REF_FILE_PATH("xbmc/filesystem/test/reffile.txt.zip");
@@ -149,7 +149,7 @@ TEST_F(TestZipFile, CorruptedFile)
   XFILE::CFile *file;
   char buf[16];
   memset(&buf, 0, sizeof(buf));
-  CStdString reffilepath, strpathinzip, str;
+  std::string reffilepath, strpathinzip, str;
   CFileItemList itemlist;
   unsigned int size, i;
   int64_t count = 0;

@@ -19,7 +19,7 @@
  *
  */
 
-#include "utils/StdString.h"
+#include <string>
 
   /// <summary>
   /// Type of message.
@@ -183,11 +183,11 @@ public:
   CIrssMessage();
   CIrssMessage(IRSS_MessageType type, uint32_t flags);
   CIrssMessage(IRSS_MessageType type, uint32_t flags, char* data, int size);
-  CIrssMessage(IRSS_MessageType type, uint32_t flags, const CStdString& data);
+  CIrssMessage(IRSS_MessageType type, uint32_t flags, const std::string& data);
   ~CIrssMessage();
 
   void SetDataAsBytes(char* data, int size);
-  void SetDataAsString(const CStdString& data);
+  void SetDataAsString(const std::string& data);
   char* ToBytes(int& size);
   void SetType(IRSS_MessageType type);
   void SetFlags(uint32_t flags);

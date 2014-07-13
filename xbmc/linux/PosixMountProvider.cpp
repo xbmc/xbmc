@@ -19,7 +19,6 @@
  */
 #include "PosixMountProvider.h"
 #include "utils/RegExp.h"
-#include "utils/StdString.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -36,7 +35,7 @@ void CPosixMountProvider::Initialize()
 
 void CPosixMountProvider::GetDrives(VECSOURCES &drives)
 {
-  std::vector<CStdString> result;
+  std::vector<std::string> result;
 
   CRegExp reMount;
 #if defined(TARGET_DARWIN)
@@ -90,9 +89,9 @@ void CPosixMountProvider::GetDrives(VECSOURCES &drives)
   }
 }
 
-std::vector<CStdString> CPosixMountProvider::GetDiskUsage()
+std::vector<std::string> CPosixMountProvider::GetDiskUsage()
 {
-  std::vector<CStdString> result;
+  std::vector<std::string> result;
   char line[1024];
 
 #if defined(TARGET_DARWIN)
@@ -127,7 +126,7 @@ std::vector<CStdString> CPosixMountProvider::GetDiskUsage()
   return result;
 }
 
-bool CPosixMountProvider::Eject(CStdString mountpath)
+bool CPosixMountProvider::Eject(const std::string& mountpath)
 {
   // just go ahead and try to umount the disk
   // if it does umount, life is good, if not, no loss.

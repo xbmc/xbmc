@@ -21,8 +21,8 @@
  *
  */
 
+#include <string>
 #include <vector>
-#include "utils/StdString.h"
 #include "network/Network.h"
 
 class CNetworkLinux;
@@ -30,35 +30,35 @@ class CNetworkLinux;
 class CNetworkInterfaceLinux : public CNetworkInterface
 {
 public:
-   CNetworkInterfaceLinux(CNetworkLinux* network, CStdString interfaceName, char interfaceMacAddrRaw[6]);
+   CNetworkInterfaceLinux(CNetworkLinux* network, std::string interfaceName, char interfaceMacAddrRaw[6]);
    ~CNetworkInterfaceLinux(void);
 
-   virtual CStdString& GetName(void);
+   virtual std::string& GetName(void);
 
    virtual bool IsEnabled(void);
    virtual bool IsConnected(void);
    virtual bool IsWireless(void);
 
-   virtual CStdString GetMacAddress(void);
+   virtual std::string GetMacAddress(void);
    virtual void GetMacAddressRaw(char rawMac[6]);
 
-   virtual bool GetHostMacAddress(unsigned long host, CStdString& mac);
+   virtual bool GetHostMacAddress(unsigned long host, std::string& mac);
 
-   virtual CStdString GetCurrentIPAddress();
-   virtual CStdString GetCurrentNetmask();
-   virtual CStdString GetCurrentDefaultGateway(void);
-   virtual CStdString GetCurrentWirelessEssId(void);
+   virtual std::string GetCurrentIPAddress();
+   virtual std::string GetCurrentNetmask();
+   virtual std::string GetCurrentDefaultGateway(void);
+   virtual std::string GetCurrentWirelessEssId(void);
 
-   virtual void GetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode);
-   virtual void SetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode);
+   virtual void GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);
+   virtual void SetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);
 
    // Returns the list of access points in the area
    virtual std::vector<NetworkAccessPoint> GetAccessPoints(void);
     
 private:
-   void WriteSettings(FILE* fw, NetworkAssignment assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode);
-   CStdString     m_interfaceName;
-   CStdString     m_interfaceMacAdr;
+   void WriteSettings(FILE* fw, NetworkAssignment assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);
+   std::string     m_interfaceName;
+   std::string     m_interfaceMacAdr;
    char           m_interfaceMacAddrRaw[6];
    CNetworkLinux* m_network;
 };
@@ -77,14 +77,14 @@ public:
    virtual bool PingHost(unsigned long host, unsigned int timeout_ms = 2000);
 
    // Get/set the nameserver(s)
-   virtual std::vector<CStdString> GetNameServers(void);
-   virtual void SetNameServers(std::vector<CStdString> nameServers);
+   virtual std::vector<std::string> GetNameServers(void);
+   virtual void SetNameServers(const std::vector<std::string>& nameServers);
 
    friend class CNetworkInterfaceLinux;
 
 private:
    int GetSocket() { return m_sock; }
-   void GetMacAddress(CStdString interfaceName, char macAddrRaw[6]);
+   void GetMacAddress(const std::string& interfaceName, char macAddrRaw[6]);
    void queryInterfaceList();
    std::vector<CNetworkInterface*> m_interfaces;
    int m_sock;

@@ -72,14 +72,14 @@ int CTextureRule::TranslateField(const char *field) const
   return FieldNone;
 }
 
-CStdString CTextureRule::TranslateField(int field) const
+std::string CTextureRule::TranslateField(int field) const
 {
   for (unsigned int i = 0; i < NUM_FIELDS; i++)
     if (field == fields[i].field) return fields[i].string;
   return "none";
 }
 
-CStdString CTextureRule::GetField(int field, const CStdString &type) const
+std::string CTextureRule::GetField(int field, const std::string &type) const
 {
   if (field == TF_Id) return "texture.id";
   else if (field == TF_Url) return "texture.url";
@@ -100,9 +100,12 @@ CDatabaseQueryRule::FIELD_TYPE CTextureRule::GetFieldType(int field) const
   return TEXT_FIELD;
 }
 
-CStdString CTextureRule::FormatParameter(const CStdString &operatorString, const CStdString &param, const CDatabase &db, const CStdString &strType) const
+std::string CTextureRule::FormatParameter(const std::string &operatorString,
+                                          const std::string &param,
+                                          const CDatabase &db,
+                                          const std::string &strType) const
 {
-  CStdString parameter(param);
+  std::string parameter(param);
   if (m_field == TF_Url)
     parameter = CTextureUtils::UnwrapImageURL(param);
   return CDatabaseQueryRule::FormatParameter(operatorString, parameter, db, strType);
@@ -285,8 +288,8 @@ bool CTextureDatabase::GetTextures(CVariant &items, const Filter &filter)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString sql = "SELECT %s FROM texture JOIN sizes ON (texture.id=sizes.idtexture AND sizes.size=1)";
-    CStdString sqlFilter;
+    std::string sql = "SELECT %s FROM texture JOIN sizes ON (texture.id=sizes.idtexture AND sizes.size=1)";
+    std::string sqlFilter;
     if (!CDatabase::BuildSQL("", filter, sqlFilter))
       return false;
 

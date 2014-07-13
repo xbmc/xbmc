@@ -28,13 +28,13 @@ class CPlayListM3U :
 public:
   CPlayListM3U(void);
   virtual ~CPlayListM3U(void);
-  virtual bool Load(const CStdString& strFileName);
-  virtual void Save(const CStdString& strFileName) const;
+  virtual bool Load(const std::string& strFileName);
+  virtual void Save(const std::string& strFileName) const;
 
-  static CStdString GetBestBandwidthStream(const CStdString &strFileName, size_t bandwidth);
+  static std::string GetBestBandwidthStream(const std::string &strFileName, size_t bandwidth);
 
 protected:
 
-  static std::map< CStdString, CStdString > ParseStreamLine(const CStdString &streamLine);
+  static std::map<std::string,std::string> ParseStreamLine(const std::string &streamLine);
 };
 }

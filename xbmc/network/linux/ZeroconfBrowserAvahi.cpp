@@ -103,7 +103,7 @@ CZeroconfBrowserAvahi::~CZeroconfBrowserAvahi()
     avahi_threaded_poll_free ( mp_poll );
 }
 
-bool CZeroconfBrowserAvahi::doAddServiceType ( const CStdString& fcr_service_type )
+bool CZeroconfBrowserAvahi::doAddServiceType ( const std::string& fcr_service_type )
 {
   ScopedEventLoopBlock lock ( mp_poll );
   tBrowserMap::iterator it = m_browsers.find ( fcr_service_type );
@@ -134,7 +134,7 @@ bool CZeroconfBrowserAvahi::doAddServiceType ( const CStdString& fcr_service_typ
   }
 }
 
-bool CZeroconfBrowserAvahi::doRemoveServiceType ( const CStdString& fcr_service_type )
+bool CZeroconfBrowserAvahi::doRemoveServiceType ( const std::string& fcr_service_type )
 {
   ScopedEventLoopBlock lock ( mp_poll );
   tBrowserMap::iterator it = m_browsers.find ( fcr_service_type );
@@ -327,8 +327,8 @@ CZeroconfBrowser::ZeroconfService::tTxtRecordMap GetTxtRecords(AvahiStringList *
 
     recordMap.insert(
       std::make_pair(
-        CStdString(key),
-        CStdString(value)
+        std::string(key),
+        std::string(value)
       )
     );
     
@@ -387,7 +387,7 @@ bool CZeroconfBrowserAvahi::createClient()
   return true;
 }
 
-AvahiServiceBrowser* CZeroconfBrowserAvahi::createServiceBrowser ( const CStdString& fcr_service_type, AvahiClient* fp_client, void* fp_userdata)
+AvahiServiceBrowser* CZeroconfBrowserAvahi::createServiceBrowser ( const std::string& fcr_service_type, AvahiClient* fp_client, void* fp_userdata)
 {
   assert(fp_client);
   AvahiServiceBrowser* ret = avahi_service_browser_new ( fp_client, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, fcr_service_type.c_str(),

@@ -100,7 +100,7 @@ bool CGUIDialogPlayEject::ShowAndGetInput(const CFileItem & item,
     return false;
 
   // Figure out Lines 1 and 2 of the dialog
-  CStdString strLine1, strLine2;
+  std::string strLine1, strLine2;
   CXBMCTinyXML discStubXML;
   if (discStubXML.LoadFile(item.GetPath()))
   {

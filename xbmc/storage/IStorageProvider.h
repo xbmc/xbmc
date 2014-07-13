@@ -29,9 +29,9 @@ class IStorageEventsCallback
 public:
   virtual ~IStorageEventsCallback() { }
 
-  virtual void OnStorageAdded(const CStdString &label, const CStdString &path) = 0;
-  virtual void OnStorageSafelyRemoved(const CStdString &label) = 0;
-  virtual void OnStorageUnsafelyRemoved(const CStdString &label) = 0;
+  virtual void OnStorageAdded(const std::string &label, const std::string &path) = 0;
+  virtual void OnStorageSafelyRemoved(const std::string &label) = 0;
+  virtual void OnStorageUnsafelyRemoved(const std::string &label) = 0;
 };
 
 class IStorageProvider
@@ -53,9 +53,9 @@ public:
 #endif
   }
 
-  virtual bool Eject(CStdString mountpath) = 0;
+  virtual bool Eject(const std::string& mountpath) = 0;
 
-  virtual std::vector<CStdString> GetDiskUsage() = 0;
+  virtual std::vector<std::string> GetDiskUsage() = 0;
 
   virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback) = 0;
 };

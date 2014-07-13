@@ -169,7 +169,7 @@ public:
 };
 
 void PrintFormat(BCM::BC_PIC_INFO_BLOCK &pib);
-void BcmDebugLog( BCM::BC_STATUS lResult, CStdString strFuncName="");
+void BcmDebugLog( BCM::BC_STATUS lResult, std::string strFuncName="");
 
 const char* g_DtsStatusText[] = {
 	"BC_STS_SUCCESS",
@@ -1115,7 +1115,7 @@ CCrystalHD::CCrystalHD() :
 
   m_dll = new DllLibCrystalHD;
 #ifdef TARGET_WINDOWS
-  CStdString  strDll;
+  std::string  strDll;
   if(CWIN32Util::GetCrystalHDLibraryPath(strDll) && m_dll->SetFile(strDll) && m_dll->Load() && m_dll->IsLoaded() )
 #else
   if (m_dll->Load() && m_dll->IsLoaded() )

@@ -23,7 +23,6 @@
 #include "filesystem/FavouritesDirectory.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/JobManager.h"
-#include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/StringUtils.h"
@@ -302,7 +301,7 @@ void CDirectoryProvider::RegisterListProvider(bool hasLibraryContent)
 
 bool CDirectoryProvider::UpdateURL()
 {
-  CStdString value(m_url.GetLabel(m_parentID, false));
+  std::string value(m_url.GetLabel(m_parentID, false));
   if (value == m_currentUrl)
     return false;
 

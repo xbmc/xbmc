@@ -20,9 +20,9 @@
  *
  */
 
+#include <string>
 #include <vector>
 #include <stdint.h>
-#include "utils/StdString.h"
 
 class CEdl
 {
@@ -45,12 +45,12 @@ public:
     Action action;
   };
 
-  bool ReadEditDecisionLists(const CStdString& strMovie, const float fFramesPerSecond, const int iHeight);
+  bool ReadEditDecisionLists(const std::string& strMovie, const float fFramesPerSecond, const int iHeight);
   void Clear();
 
   bool HasCut();
   bool HasSceneMarker();
-  CStdString GetInfo();
+  std::string GetInfo();
   int64_t GetTotalCutTime();
   int64_t RemoveCutTime(int64_t iSeek);
   int64_t RestoreCutTime(int64_t iClock);
@@ -59,9 +59,9 @@ public:
 
   bool GetNextSceneMarker(bool bPlus, const int64_t iClock, int64_t *iSceneMarker);
 
-  static CStdString GetMPlayerEdl();
+  static std::string GetMPlayerEdl();
 
-  static CStdString MillisecondsToTimeString(const int64_t iMilliseconds);
+  static std::string MillisecondsToTimeString(const int64_t iMilliseconds);
 
 protected:
 private:
@@ -69,13 +69,13 @@ private:
   std::vector<Cut> m_vecCuts;
   std::vector<int64_t> m_vecSceneMarkers;
 
-  bool ReadEdl(const CStdString& strMovie, const float fFramesPerSecond);
-  bool ReadComskip(const CStdString& strMovie, const float fFramesPerSecond);
-  bool ReadVideoReDo(const CStdString& strMovie);
-  bool ReadBeyondTV(const CStdString& strMovie);
-  bool ReadPvr(const CStdString& strMovie);
-  bool ReadMythCommBreakList(const CStdString& strMovie, const float fFramesPerSecond);
-  bool ReadMythCutList(const CStdString& strMovie, const float fFramesPerSecond);
+  bool ReadEdl(const std::string& strMovie, const float fFramesPerSecond);
+  bool ReadComskip(const std::string& strMovie, const float fFramesPerSecond);
+  bool ReadVideoReDo(const std::string& strMovie);
+  bool ReadBeyondTV(const std::string& strMovie);
+  bool ReadPvr(const std::string& strMovie);
+  bool ReadMythCommBreakList(const std::string& strMovie, const float fFramesPerSecond);
+  bool ReadMythCutList(const std::string& strMovie, const float fFramesPerSecond);
 
   bool AddCut(Cut& NewCut);
   bool AddSceneMarker(const int64_t sceneMarker);

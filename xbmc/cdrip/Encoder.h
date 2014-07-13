@@ -21,9 +21,11 @@
  *
  */
 
-#include <string>
 #include <boost/shared_ptr.hpp>
 #include "IEncoder.h"
+#include <string>
+#include <stdint.h>
+#include <stdio.h>
 
 #define WRITEBUFFER_SIZE 131072 // 128k buffer
 

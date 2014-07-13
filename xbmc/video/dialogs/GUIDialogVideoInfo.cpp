@@ -703,7 +703,7 @@ void CGUIDialogVideoInfo::OnGetArt()
     }
 
     // Grab the thumbnails from the web
-    vector<CStdString> thumbs;
+    vector<std::string> thumbs;
     int season = (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeSeason) ? m_movieItem->GetVideoInfoTag()->m_iSeason : -1;
     m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetThumbURLs(thumbs, type, season);
 
@@ -1735,7 +1735,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
   noneitem->SetLabel(g_localizeStrings.Get(13515));
 
   bool local = false;
-  vector<CStdString> thumbs;
+  vector<std::string> thumbs;
   if (type != MediaTypeArtist)
   {
     CVideoInfoTag tag;

@@ -257,7 +257,7 @@ const CSysData &CSysInfoJob::GetData() const
   return m_info;
 }
 
-CStdString CSysInfoJob::GetCPUFreqInfo()
+std::string CSysInfoJob::GetCPUFreqInfo()
 {
   double CPUFreq = GetCPUFrequency();
   return StringUtils::Format("%4.2fMHz", CPUFreq);;
@@ -272,7 +272,7 @@ CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()
   return CSysData::DISCONNECTED;
 }
 
-CStdString CSysInfoJob::GetMACAddress()
+std::string CSysInfoJob::GetMACAddress()
 {
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
   CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
@@ -282,12 +282,12 @@ CStdString CSysInfoJob::GetMACAddress()
   return "";
 }
 
-CStdString CSysInfoJob::GetVideoEncoder()
+std::string CSysInfoJob::GetVideoEncoder()
 {
   return "GPU: " + g_Windowing.GetRenderRenderer();
 }
 
-CStdString CSysInfoJob::GetBatteryLevel()
+std::string CSysInfoJob::GetBatteryLevel()
 {
   return StringUtils::Format("%d%%", g_powerManager.BatteryLevel());
 }
@@ -318,9 +318,9 @@ bool CSysInfoJob::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, in
   return true;
 }
 
-CStdString CSysInfoJob::GetSystemUpTime(bool bTotalUptime)
+std::string CSysInfoJob::GetSystemUpTime(bool bTotalUptime)
 {
-  CStdString strSystemUptime;
+  std::string strSystemUptime;
   int iInputMinutes, iMinutes,iHours,iDays;
 
   if(bTotalUptime)
@@ -356,7 +356,7 @@ CStdString CSysInfoJob::GetSystemUpTime(bool bTotalUptime)
   return strSystemUptime;
 }
 
-CStdString CSysInfo::TranslateInfo(int info) const
+std::string CSysInfo::TranslateInfo(int info) const
 {
   switch(info)
   {
@@ -429,18 +429,18 @@ bool CSysInfo::Save(TiXmlNode *settings) const
   return true;
 }
 
-bool CSysInfo::GetDiskSpace(const CStdString& drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed)
+bool CSysInfo::GetDiskSpace(const std::string& drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed)
 {
   bool bRet= false;
   ULARGE_INTEGER ULTotal= { { 0 } };
   ULARGE_INTEGER ULTotalFree= { { 0 } };
 
-  if( !drive.empty() && !drive.Equals("*") )
+  if( !drive.empty() && drive != "*" )
   {
 #ifdef TARGET_WINDOWS
-    UINT uidriveType = GetDriveType(( drive + ":\\" ));
+    UINT uidriveType = GetDriveType(( drive + ":\\" ).c_str());
     if(uidriveType != DRIVE_UNKNOWN && uidriveType != DRIVE_NO_ROOT_DIR)
-      bRet= ( 0 != GetDiskFreeSpaceEx( ( drive + ":\\" ), NULL, &ULTotal, &ULTotalFree) );
+      bRet= ( 0 != GetDiskFreeSpaceEx( ( drive + ":\\" ).c_str(), NULL, &ULTotal, &ULTotalFree) );
 #elif defined(TARGET_POSIX)
     bRet = (0 != GetDiskFreeSpaceEx(drive.c_str(), NULL, &ULTotal, &ULTotalFree));
 #endif
@@ -503,27 +503,27 @@ bool CSysInfo::GetDiskSpace(const CStdString& drive,int& iTotal, int& iTotalFree
   return bRet;
 }
 
-CStdString CSysInfo::GetCPUModel()
+std::string CSysInfo::GetCPUModel()
 {
   return "CPU: " + g_cpuInfo.getCPUModel();
 }
 
-CStdString CSysInfo::GetCPUBogoMips()
+std::string CSysInfo::GetCPUBogoMips()
 {
   return "BogoMips: " + g_cpuInfo.getCPUBogoMips();
 }
 
-CStdString CSysInfo::GetCPUHardware()
+std::string CSysInfo::GetCPUHardware()
 {
   return "Hardware: " + g_cpuInfo.getCPUHardware();
 }
 
-CStdString CSysInfo::GetCPURevision()
+std::string CSysInfo::GetCPURevision()
 {
   return "Revision: " + g_cpuInfo.getCPURevision();
 }
 
-CStdString CSysInfo::GetCPUSerial()
+std::string CSysInfo::GetCPUSerial()
 {
   return "Serial: " + g_cpuInfo.getCPUSerial();
 }
@@ -974,16 +974,16 @@ bool CSysInfo::HasInternet()
   return (m_info.internetState = CSysInfoJob::GetInternetState()) == CSysData::CONNECTED;
 }
 
-CStdString CSysInfo::GetHddSpaceInfo(int drive, bool shortText)
+std::string CSysInfo::GetHddSpaceInfo(int drive, bool shortText)
 {
  int percent;
  return GetHddSpaceInfo( percent, drive, shortText);
 }
 
-CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
+std::string CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
 {
   int total, totalFree, totalUsed, percentFree, percentused;
-  CStdString strRet;
+  std::string strRet;
   percent = 0;
   if (g_sysinfo.GetDiskSpace("", total, totalFree, totalUsed, percentFree, percentused))
   {

@@ -21,6 +21,7 @@
 #include "utils/Archive.h"
 #include "utils/Variant.h"
 #include "filesystem/File.h"
+#include "utils/StdString.h"
 
 #include "test/TestUtils.h"
 

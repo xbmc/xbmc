@@ -75,7 +75,7 @@ bool CVirtualDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 }
 bool CVirtualDirectory::GetDirectory(const CURL& url, CFileItemList &items, bool bUseFileDirectories)
 {
-  CStdString strPath = url.Get();
+  std::string strPath = url.Get();
   int flags = m_flags;
   if (!bUseFileDirectories)
     flags |= DIR_FLAG_NO_FILE_DIRS;
@@ -103,9 +103,9 @@ bool CVirtualDirectory::GetDirectory(const CURL& url, CFileItemList &items, bool
  \note The parameter \e strPath can not be a share with directory. Eg. "iso9660://dir" will return \e false.
     It must be "iso9660://".
  */
-bool CVirtualDirectory::IsSource(const CStdString& strPath, VECSOURCES *sources, CStdString *name) const
+bool CVirtualDirectory::IsSource(const std::string& strPath, VECSOURCES *sources, std::string *name) const
 {
-  CStdString strPathCpy = strPath;
+  std::string strPathCpy = strPath;
   StringUtils::TrimRight(strPathCpy, "/\\");
 
   // just to make sure there's no mixed slashing in share/default defines
@@ -122,7 +122,7 @@ bool CVirtualDirectory::IsSource(const CStdString& strPath, VECSOURCES *sources,
   for (int i = 0; i < (int)shares.size(); ++i)
   {
     const CMediaSource& share = shares.at(i);
-    CStdString strShare = share.strPath;
+    std::string strShare = share.strPath;
     StringUtils::TrimRight(strShare, "/\\");
     if(URIUtils::IsDOSPath(strShare))
       StringUtils::Replace(strShare, '/', '\\');
@@ -143,7 +143,7 @@ bool CVirtualDirectory::IsSource(const CStdString& strPath, VECSOURCES *sources,
  \note The parameter \e path CAN be a share with directory. Eg. "iso9660://dir" will
        return the same as "iso9660://".
  */
-bool CVirtualDirectory::IsInSource(const CStdString &path) const
+bool CVirtualDirectory::IsInSource(const std::string &path) const
 {
   bool isSourceName;
   VECSOURCES shares;

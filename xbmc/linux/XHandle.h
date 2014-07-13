@@ -24,12 +24,13 @@
 #ifndef TARGET_WINDOWS
 
 #include <list>
+#include <string>
+#include <vector>
 
 #include "PlatformDefs.h"
 #include "XHandlePublic.h"
 #include "threads/Condition.h"
 #include "threads/CriticalSection.h"
-#include "utils/StdString.h"
 
 struct CXHandle {
 
@@ -56,7 +57,7 @@ public:
   time_t    m_tmCreation;
   std::vector<std::string> m_FindFileResults;
   int              m_nFindFileIterator;
-  CStdString       m_FindFileDir;
+  std::string      m_FindFileDir;
   off64_t          m_iOffset;
   bool             m_bCDROM;
   bool             m_bEventSet;

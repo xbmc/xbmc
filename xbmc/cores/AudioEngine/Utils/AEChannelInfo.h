@@ -21,7 +21,7 @@
 
 #include <stdint.h>
 #include <vector>
-#include "utils/StdString.h"
+#include <string>
 
 /**
  * The possible channels

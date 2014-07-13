@@ -67,7 +67,7 @@ bool CEncoderFFmpeg::Init(audioenc_callbacks &callbacks)
 
   m_callbacks = callbacks;
 
-  CStdString filename = URIUtils::GetFileName(m_strFile);
+  std::string filename = URIUtils::GetFileName(m_strFile);
   if(avformat_alloc_output_context2(&m_Format,NULL,NULL,filename.c_str()))
   {
     CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Unable to guess the output format for the file %s", filename.c_str());

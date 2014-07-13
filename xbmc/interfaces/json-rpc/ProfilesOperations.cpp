@@ -26,7 +26,7 @@
 
 using namespace JSONRPC;
 
-JSONRPC_STATUS CProfilesOperations::GetProfiles(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CProfilesOperations::GetProfiles(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CFileItemList listItems;
 
@@ -47,7 +47,7 @@ JSONRPC_STATUS CProfilesOperations::GetProfiles(const CStdString &method, ITrans
     {
       for (CVariant::iterator_array profileiter = result["profiles"].begin_array(); profileiter != result["profiles"].end_array(); ++profileiter)
       {
-        CStdString profilename = (*profileiter)["label"].asString();
+        std::string profilename = (*profileiter)["label"].asString();
         int index = CProfilesManager::Get().GetProfileIndex(profilename);
         const CProfile *profile = CProfilesManager::Get().GetProfile(index);
         LockType locktype = LOCK_MODE_UNKNOWN;
@@ -63,7 +63,7 @@ JSONRPC_STATUS CProfilesOperations::GetProfiles(const CStdString &method, ITrans
   return OK;
 }
 
-JSONRPC_STATUS CProfilesOperations::GetCurrentProfile(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CProfilesOperations::GetCurrentProfile(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   const CProfile& currentProfile = CProfilesManager::Get().GetCurrentProfile();
   CVariant profileVariant = CVariant(CVariant::VariantTypeObject);
@@ -84,9 +84,9 @@ JSONRPC_STATUS CProfilesOperations::GetCurrentProfile(const CStdString &method, 
   return OK;
 }
 
-JSONRPC_STATUS CProfilesOperations::LoadProfile(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CProfilesOperations::LoadProfile(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  CStdString profilename = parameterObject["profile"].asString();
+  std::string profilename = parameterObject["profile"].asString();
   int index = CProfilesManager::Get().GetProfileIndex(profilename);
   
   if (index < 0)
@@ -105,7 +105,7 @@ JSONRPC_STATUS CProfilesOperations::LoadProfile(const CStdString &method, ITrans
 	else if (!bCanceled && parameterObject.isMember("password"))  // Password needed and user provided it
 	{
     const CVariant &passwordObject = parameterObject["password"];
-	  CStdString strToVerify;  // Holds user saved password hash
+	  std::string strToVerify;  // Holds user saved password hash
 		if (index == 0)
 		  strToVerify = CProfilesManager::Get().GetMasterProfile().getLockCode();
 		else
@@ -114,18 +114,18 @@ JSONRPC_STATUS CProfilesOperations::LoadProfile(const CStdString &method, ITrans
 		  strToVerify = profile->getLockCode();
 		}
 
-		CStdString password = passwordObject["value"].asString();
+		std::string password = passwordObject["value"].asString();
 		
 		// Create password hash from the provided password if md5 is not used
-    CStdString md5pword2;
-    CStdString encryption = passwordObject["encryption"].asString();
-    if (encryption.Equals("none"))
+    std::string md5pword2;
+    std::string encryption = passwordObject["encryption"].asString();
+    if (encryption == "none")
       md5pword2 = XBMC::XBMC_MD5::GetMD5(password);
-		else if (encryption.Equals("md5"))
+		else if (encryption == "md5")
 			md5pword2 = password;
 
 		// Verify profided password
-    if (strToVerify.Equals(md5pword2))
+    if (strToVerify == md5pword2)
 		  bLoadProfile = true;
 	}
 

@@ -20,7 +20,6 @@
 
 #include <string>
 #include <boost/operators.hpp>
-#include "utils/StdString.h"
 
 namespace ADDON
 {
@@ -52,8 +51,8 @@ namespace ADDON
     std::string asString() const;
     bool empty() const;
 
-    static bool SplitFileName(CStdString& ID, CStdString& version,
-                              const CStdString& filename);
+    static bool SplitFileName(std::string& ID, std::string& version,
+                              const std::string& filename);
 
   protected:
     int mEpoch;

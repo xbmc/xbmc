@@ -222,7 +222,7 @@ class UpdateAddons : public IRunnable
     CAddonMgr::Get().GetAllOutdatedAddons(addons, true); // get local
     for (VECADDONS::iterator i = addons.begin(); i != addons.end(); ++i)
     {
-      CStdString referer = StringUtils::Format("Referer=%s-%s.zip",(*i)->ID().c_str(),(*i)->Version().asString().c_str());
+      std::string referer = StringUtils::Format("Referer=%s-%s.zip",(*i)->ID().c_str(),(*i)->Version().asString().c_str());
       CAddonInstaller::Get().Install((*i)->ID(), true, referer); // force install
     }
   }
@@ -237,7 +237,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
     VECSOURCES shares = *CMediaSourceSettings::Get().GetSources("files");
     g_mediaManager.GetLocalDrives(shares);
     g_mediaManager.GetNetworkLocations(shares);
-    CStdString path;
+    std::string path;
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "*.zip", g_localizeStrings.Get(24041), path))
       CAddonInstaller::Get().InstallFromZip(path);
     return true;
@@ -385,7 +385,7 @@ void CGUIWindowAddonBrowser::SetItemLabel2(CFileItemPtr item)
   unsigned int percent;
   if (CAddonInstaller::Get().GetProgress(item->GetProperty("Addon.ID").asString(), percent))
   {
-    CStdString progress = StringUtils::Format(g_localizeStrings.Get(24042).c_str(), percent);
+    std::string progress = StringUtils::Format(g_localizeStrings.Get(24042).c_str(), percent);
     item->SetProperty("Addon.Status", progress);
     item->SetProperty("Addon.Downloading", true);
   }
@@ -409,7 +409,7 @@ bool CGUIWindowAddonBrowser::Update(const std::string &strDirectory, bool update
   return true;
 }
 
-int CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool showNone /*= false*/)
+int CGUIWindowAddonBrowser::SelectAddonID(TYPE type, std::string &addonID, bool showNone /*= false*/)
 {
   vector<ADDON::TYPE> types;
   types.push_back(type);
@@ -423,7 +423,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(ADDON::TYPE type, vector<string> &addo
   return SelectAddonID(types, addonIDs, showNone, multipleSelection);
 }
 
-int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, CStdString &addonID, bool showNone /*= false*/)
+int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, std::string &addonID, bool showNone /*= false*/)
 {
   vector<string> addonIDs;
   if (!addonID.empty())
@@ -443,7 +443,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, vect
     return 0;
 
   CFileItemList items;
-  CStdString heading;
+  std::string heading;
   int iTypes = 0;
   for (vector<ADDON::TYPE>::const_iterator it = types.begin(); it != types.end(); ++it)
   {

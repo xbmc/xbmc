@@ -36,9 +36,9 @@
 
 #include <cdio/cdio.h>
 #include "threads/CriticalSection.h"
-#include "utils/StdString.h"
 #include "boost/shared_ptr.hpp"
 #include <map>
+#include <string>
 
 namespace MEDIA_DETECT
 {
@@ -98,7 +98,7 @@ typedef struct signature
 }
 signature_t;
 
-typedef std::map<cdtext_field_t, CStdString> xbmc_cdtext_t;
+typedef std::map<cdtext_field_t, std::string> xbmc_cdtext_t;
 
 typedef struct TRACKINFO
 {
@@ -136,7 +136,7 @@ public:
   int GetAudioTrackCount() { return m_nNumAudio; }
   uint32_t GetCddbDiscId() { return m_ulCddbDiscId; }
   int GetDiscLength() { return m_nLength; }
-  CStdString GetDiscLabel(){ return m_strDiscLabel; }
+  std::string GetDiscLabel(){ return m_strDiscLabel; }
 
   // CD-ROM with ISO 9660 filesystem
   bool IsIso9660( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_ISO_9660); }
@@ -234,7 +234,7 @@ public:
   bool HasCDDBInfo() { return m_bHasCDDBInfo; }
   void SetNoCDDBInfo() { m_bHasCDDBInfo = false; }
 
-  void SetDiscLabel(const CStdString& strDiscLabel){ m_strDiscLabel = strDiscLabel; }
+  void SetDiscLabel(const std::string& strDiscLabel){ m_strDiscLabel = strDiscLabel; }
 
 private:
   int m_nFirstData;        /* # of first data track */
@@ -247,7 +247,7 @@ private:
   uint32_t m_ulCddbDiscId;
   int m_nLength;   // Disclength can be used for cddb query, also see trackinfo.nFrames
   bool m_bHasCDDBInfo;
-  CStdString m_strDiscLabel;
+  std::string m_strDiscLabel;
   xbmc_cdtext_t m_cdtext;  //  CD-Text for this disc
 };
 
@@ -291,7 +291,7 @@ public:
   HRESULT CloseTray();
 
   HANDLE OpenCDROM();
-  HANDLE OpenIMAGE( CStdString& strFilename );
+  HANDLE OpenIMAGE( std::string& strFilename );
   INT ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
   INT ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
   INT ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
@@ -334,7 +334,7 @@ private:
   track_t m_nNumTracks;
   track_t m_nFirstTrackNum;
 
-  CStdString m_strDiscLabel;
+  std::string m_strDiscLabel;
 
   int m_nFirstData;        /* # of first data track */
   int m_nNumData;                /* # of data tracks */

@@ -37,7 +37,7 @@ TEST(TestRarFile, Read)
   XFILE::CFile file;
   char buf[20];
   memset(&buf, 0, sizeof(buf));
-  CStdString reffile, strpathinrar;
+  std::string reffile, strpathinrar;
   CFileItemList itemlist;
 
   reffile = XBMC_REF_FILE_PATH("xbmc/filesystem/test/reffile.txt.rar");
@@ -87,7 +87,7 @@ TEST(TestRarFile, Read)
 
 TEST(TestRarFile, Exists)
 {
-  CStdString reffile, strpathinrar;
+  std::string reffile, strpathinrar;
   CFileItemList itemlist;
 
   reffile = XBMC_REF_FILE_PATH("xbmc/filesystem/test/reffile.txt.rar");
@@ -102,7 +102,7 @@ TEST(TestRarFile, Exists)
 TEST(TestRarFile, Stat)
 {
   struct __stat64 buffer;
-  CStdString reffile, strpathinrar;
+  std::string reffile, strpathinrar;
   CFileItemList itemlist;
 
   reffile = XBMC_REF_FILE_PATH("xbmc/filesystem/test/reffile.txt.rar");
@@ -124,7 +124,7 @@ TEST(TestRarFile, CorruptedFile)
   XFILE::CFile *file;
   char buf[16];
   memset(&buf, 0, sizeof(buf));
-  CStdString reffilepath, strpathinrar, str;
+  std::string reffilepath, strpathinrar, str;
   CFileItemList itemlist;
   unsigned int size, i;
   int64_t count = 0;
@@ -195,7 +195,7 @@ TEST(TestRarFile, StoredRAR)
   XFILE::CFile file;
   char buf[20];
   memset(&buf, 0, sizeof(buf));
-  CStdString reffile, strpathinrar;
+  std::string reffile, strpathinrar;
   CFileItemList itemlist, itemlistemptydir;
   struct __stat64 stat_buffer;
 
@@ -417,7 +417,7 @@ TEST(TestRarFile, NormalRAR)
   XFILE::CFile file;
   char buf[20];
   memset(&buf, 0, sizeof(buf));
-  CStdString reffile, strpathinrar;
+  std::string reffile, strpathinrar;
   CFileItemList itemlist, itemlistemptydir;
   struct __stat64 stat_buffer;
 

@@ -189,7 +189,7 @@ namespace EPG
      * @param iMax The maximum position.
      * @param strText The text to display.
      */
-    virtual void UpdateProgressDialog(int iCurrent, int iMax, const CStdString &strText);
+    virtual void UpdateProgressDialog(int iCurrent, int iMax, const std::string &strText);
 
     /*!
      * @return True to not to store EPG entries in the database.
@@ -262,7 +262,7 @@ namespace EPG
      */
     void LoadFromDB(void);
 
-    void InsertFromDatabase(int iEpgID, const CStdString &strName, const CStdString &strScraperName);
+    void InsertFromDatabase(int iEpgID, const std::string &strName, const std::string &strScraperName);
 
     typedef std::map<unsigned int, CEpg*> EPGMAP;
     typedef EPGMAP::iterator              EPGMAP_ITR;

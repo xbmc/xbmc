@@ -24,7 +24,6 @@
 
 #include "utils/LangCodeExpander.h"
 #include "utils/log.h"
-#include "utils/StdString.h"
 
 #include "swighelper.h"
 #include <vector>

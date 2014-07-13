@@ -427,8 +427,8 @@ void CHALManager::HandleNewVolume(CStorageDevice *dev)
       if (Mountable)
       {
         CLog::Log(LOGNOTICE, "HAL: Trying to mount %s", dev->FriendlyName.c_str());
-        CStdString MountPoint;
-        CStdString TestPath;
+        std::string MountPoint;
+        std::string TestPath;
         if (dev->Label.size() > 0)
         {
           MountPoint = dev->Label.c_str();
@@ -608,7 +608,7 @@ bool CHALManager::ApproveDevice(CStorageDevice *device)
   return approve;
 }
 
-bool CHALManager::Eject(CStdString path)
+bool CHALManager::Eject(const std::string& path)
 {
   for (unsigned int i = 0; i < m_Volumes.size(); i++)
   {
@@ -669,7 +669,7 @@ bool CHALManager::UnMount(CStorageDevice volume)
   }
 }
 
-bool CHALManager::Mount(CStorageDevice *volume, CStdString mountpath)
+bool CHALManager::Mount(CStorageDevice *volume, const std::string &mountpath)
 {
   CLog::Log(LOGNOTICE, "HAL: Mounting %s (%s) at %s with umask=%u", volume->UDI.c_str(), volume->toString().c_str(), mountpath.c_str(), umask (0));
   DBusMessage* msg;
@@ -691,7 +691,7 @@ bool CHALManager::Mount(CStorageDevice *volume, CStdString mountpath)
     DBusMessageIter sub;
     dbus_message_iter_open_container(&args, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &sub);
 
-    CStdString temporaryString;
+    std::string temporaryString;
 
     if (volume->FileSystem.Equals("vfat"))
     {

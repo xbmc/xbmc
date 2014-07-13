@@ -67,7 +67,7 @@ std::string CWin32StorageProvider::GetFirstOpticalDeviceFileName()
   return CWIN32Util::GetFirstOpticalDrive();
 }
 
-bool CWin32StorageProvider::Eject(CStdString mountpath)
+bool CWin32StorageProvider::Eject(const std::string& mountpath)
 {
   if (!mountpath.empty())
   {
@@ -76,7 +76,7 @@ bool CWin32StorageProvider::Eject(CStdString mountpath)
   return false;
 }
 
-std::vector<CStdString> CWin32StorageProvider::GetDiskUsage()
+std::vector<std::string > CWin32StorageProvider::GetDiskUsage()
 {
   return CWIN32Util::GetDiskUsage();
 }
@@ -88,7 +88,7 @@ bool CWin32StorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callba
   return b;
 }
 
-CDetectDisc::CDetectDisc(const CStdString &strPath, const bool bautorun)
+CDetectDisc::CDetectDisc(const std::string &strPath, const bool bautorun)
   : m_strPath(strPath), m_bautorun(bautorun)
 {
 }

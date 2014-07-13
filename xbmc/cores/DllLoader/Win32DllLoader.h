@@ -23,7 +23,6 @@
  */
 
 #include "LibraryLoader.h"
-#include "utils/StdString.h"
 
 class Win32DllLoader : public LibraryLoader
 {
@@ -35,7 +34,7 @@ public:
     DWORD function;
   };
 
-  Win32DllLoader(const char *dll);
+  Win32DllLoader(const std::string& dll);
   ~Win32DllLoader();
 
   virtual bool Load();
@@ -47,7 +46,7 @@ public:
   virtual bool HasSymbols();
 
 private:
-  void OverrideImports(const CStdString &dll);
+  void OverrideImports(const std::string &dll);
   void RestoreImports();
   static bool ResolveImport(const char *dllName, const char *functionName, void **fixup);
   static bool ResolveOrdinal(const char *dllName, unsigned long ordinal, void **fixup);

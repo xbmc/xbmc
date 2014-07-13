@@ -31,7 +31,7 @@ public:
   SPCCodec();
   virtual ~SPCCodec();
 
-  virtual bool Init(const CStdString &strFile, unsigned int filecache);
+  virtual bool Init(const std::string &strFile, unsigned int filecache);
   virtual void DeInit();
   virtual int64_t Seek(int64_t iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
@@ -60,7 +60,7 @@ private:
   } m_dll;
 
   LibraryLoader* m_loader;
-  CStdString m_loader_name;
+  std::string m_loader_name;
 
   char* m_szBuffer;
   u8* m_pApuRAM;

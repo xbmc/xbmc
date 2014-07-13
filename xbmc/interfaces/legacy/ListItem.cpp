@@ -136,9 +136,9 @@ namespace XBMCAddon
         LOCKGUI;
         for (Properties::const_iterator it = dictionary.begin(); it != dictionary.end(); ++it)
         {
-          CStdString artName = it->first;
+          std::string artName = it->first;
           StringUtils::ToLower(artName);
-          const CStdString artFilename(it->second.c_str());
+          const std::string artFilename(it->second.c_str());
           item->SetArt(artName, artFilename);
         }
       }
@@ -203,7 +203,7 @@ namespace XBMCAddon
       LOCKGUI;
       String lowerKey = key;
       StringUtils::ToLower(lowerKey);
-      CStdString value;
+      std::string value;
       if (lowerKey == "startoffset")
       { // special case for start offset - don't actually store in a property,
         // we store it in item.m_lStartOffset instead

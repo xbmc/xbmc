@@ -26,7 +26,7 @@
 #include "cores/IPlayerCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "threads/CriticalSection.h"
-#include "utils/StdString.h"
+#include <string>
 
 /*----------------------------------------------------------------------
 |   forward references
@@ -68,12 +68,12 @@ public:
 
   virtual void OnSettingsLoaded();
 
-  PLAYERCOREID GetPlayerCore(const CStdString& strCoreName) const;
-  CPlayerCoreConfig* GetPlayerConfig(const CStdString& strCoreName) const;
-  CStdString GetPlayerName(const PLAYERCOREID eCore) const;
+  PLAYERCOREID GetPlayerCore(const std::string& strCoreName) const;
+  CPlayerCoreConfig* GetPlayerConfig(const std::string& strCoreName) const;
+  std::string GetPlayerName(const PLAYERCOREID eCore) const;
 
   IPlayer* CreatePlayer(const PLAYERCOREID eCore, IPlayerCallback& callback) const;
-  IPlayer* CreatePlayer(const CStdString& strCore, IPlayerCallback& callback) const;
+  IPlayer* CreatePlayer(const std::string& strCore, IPlayerCallback& callback) const;
   void GetPlayers( const CFileItem& item, VECPLAYERCORES &vecCores) const;   //Players supporting the specified file
   void GetPlayers( VECPLAYERCORES &vecCores, bool audio, bool video ) const; //All audio players and/or video players
   void GetPlayers( VECPLAYERCORES &vecCores ) const;                         //All players
@@ -85,8 +85,8 @@ public:
   PLAYERCOREID SelectPlayerDialog(VECPLAYERCORES &vecCores, float posX = 0, float posY = 0) const;
   PLAYERCOREID SelectPlayerDialog(float posX, float posY) const;
 
-  void OnPlayerDiscovered(const CStdString& id, const CStdString& name, EPLAYERCORES core);
-  void OnPlayerRemoved(const CStdString& id);
+  void OnPlayerDiscovered(const std::string& id, const std::string& name, EPLAYERCORES core);
+  void OnPlayerRemoved(const std::string& id);
 
 protected:
   CPlayerCoreFactory();

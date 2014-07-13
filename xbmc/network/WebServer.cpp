@@ -408,7 +408,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
       lastModified.Reset();
 
     // get the MIME type for the Content-Type header
-    CStdString ext = URIUtils::GetExtension(strURL);
+    std::string ext = URIUtils::GetExtension(strURL);
     StringUtils::ToLower(ext);
     string mimeType = CreateMimeTypeFromExtension(ext.c_str());
 
@@ -543,7 +543,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
     {
       getData = false;
 
-      CStdString contentLength = StringUtils::Format("%" PRId64, fileLength);
+      std::string contentLength = StringUtils::Format("%" PRId64, fileLength);
 
       response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
       if (response == NULL)
@@ -815,7 +815,7 @@ bool CWebServer::IsStarted()
 void CWebServer::SetCredentials(const string &username, const string &password)
 {
   CSingleLock lock (m_critSection);
-  CStdString str = username + ":" + password;
+  std::string str = username + ':' + password;
 
   Base64::Encode(str.c_str(), m_Credentials64Encoded);
   m_needcredentials = !password.empty();
@@ -827,7 +827,7 @@ bool CWebServer::PrepareDownload(const char *path, CVariant &details, std::strin
   {
     protocol = "http";
     string url;
-    CStdString strPath = path;
+    std::string strPath = path;
     if (StringUtils::StartsWith(strPath, "image://") ||
        (StringUtils::StartsWith(strPath, "special://") && StringUtils::EndsWith(strPath, ".tbn")))
       url = "image/";

@@ -25,7 +25,7 @@ COggCallback::COggCallback(XFILE::CFile& file) : m_file(file)
 {
 }
 
-ov_callbacks COggCallback::Get(const CStdString& strFile)
+ov_callbacks COggCallback::Get(const std::string& strFile)
 {
   // libvorbis requires that a non-seekable stream would always return -1 from seek actions.
   // so for network streams - tweak the seek method to a static one that always return -1.

@@ -88,7 +88,7 @@ std::list<std::string> CNfsConnection::GetExportList(const CURL &url)
     if(HandleDyLoad())
     {
       struct exportnode *exportlist, *tmp;
-      exportlist = m_pLibNfs->mount_getexports(m_resolvedHostName);
+      exportlist = m_pLibNfs->mount_getexports(m_resolvedHostName.c_str());
       tmp = exportlist;
 
       for(tmp = exportlist; tmp!=NULL; tmp=tmp->ex_next)
@@ -144,7 +144,7 @@ void CNfsConnection::destroyOpenContexts()
   m_openContextMap.clear();
 }
 
-void CNfsConnection::destroyContext(const CStdString &exportName)
+void CNfsConnection::destroyContext(const std::string &exportName)
 {
   CSingleLock lock(openContextLock);
   tOpenContextMap::iterator it = m_openContextMap.find(exportName.c_str());
@@ -155,7 +155,7 @@ void CNfsConnection::destroyContext(const CStdString &exportName)
   }
 }
 
-struct nfs_context *CNfsConnection::getContextFromMap(const CStdString &exportname, bool forceCacheHit/* = false*/)
+struct nfs_context *CNfsConnection::getContextFromMap(const std::string &exportname, bool forceCacheHit/* = false*/)
 {
   struct nfs_context *pRet = NULL;
   CSingleLock lock(openContextLock);
@@ -187,7 +187,7 @@ struct nfs_context *CNfsConnection::getContextFromMap(const CStdString &exportna
   return pRet;
 }
 
-int CNfsConnection::getContextForExport(const CStdString &exportname)
+int CNfsConnection::getContextForExport(const std::string &exportname)
 {
   int ret = CONTEXT_INVALID; 
     
@@ -226,7 +226,7 @@ int CNfsConnection::getContextForExport(const CStdString &exportname)
   return ret;
 }
 
-bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, CStdString &exportPath, CStdString &relativePath)
+bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, std::string &exportPath, std::string &relativePath)
 {
   //refresh exportlist if empty or hostname change
   if(m_exportList.empty() || !StringUtils::EqualsNoCase(url.GetHostName(), m_hostName))
@@ -237,7 +237,7 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, CStdString &expo
   return splitUrlIntoExportAndPath(url, exportPath, relativePath, m_exportList);
 }
 
-bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url,CStdString &exportPath, CStdString &relativePath, std::list<std::string> &exportList)
+bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url,std::string &exportPath, std::string &relativePath, std::list<std::string> &exportList)
 {
     bool ret = false;
   
@@ -246,7 +246,7 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url,CStdString &expor
       relativePath = "";
       exportPath = "";
       
-      CStdString path = url.GetFileName();
+      std::string path = url.GetFileName();
       
       //GetFileName returns path without leading "/"
       //but we need it because the export paths start with "/"
@@ -288,21 +288,21 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url,CStdString &expor
     return ret;
 }
 
-bool CNfsConnection::Connect(const CURL& url, CStdString &relativePath)
+bool CNfsConnection::Connect(const CURL& url, std::string &relativePath)
 {
   CSingleLock lock(*this);
   bool ret = false;
   int nfsRet = 0;
-  CStdString exportPath = "";
+  std::string exportPath;
 
   resolveHost(url);
   ret = splitUrlIntoExportAndPath(url, exportPath, relativePath);
   
-  if( (ret && (!exportPath.Equals(m_exportPath,true)  || 
+  if( (ret && (exportPath != m_exportPath  ||
        url.GetHostName() != m_hostName))    ||
       (XbmcThreads::SystemClockMillis() - m_lastAccessedTime) > CONTEXT_TIMEOUT )
   {
-    int contextRet = getContextForExport((CStdString)url.GetHostName() + exportPath);
+    int contextRet = getContextForExport(url.GetHostName() + exportPath);
     
     if(contextRet == CONTEXT_INVALID)//we need a new context because sharename or hostname has changed
     {
@@ -318,7 +318,7 @@ bool CNfsConnection::Connect(const CURL& url, CStdString &relativePath)
       if(nfsRet != 0) 
       {
         CLog::Log(LOGERROR,"NFS: Failed to mount nfs share: %s (%s)\n", exportPath.c_str(), m_pLibNfs->nfs_get_error(m_pNfsContext));
-        destroyContext((CStdString)url.GetHostName() + exportPath);
+        destroyContext(url.GetHostName() + exportPath);
         return false;
       }
       CLog::Log(LOGDEBUG,"NFS: Connected to server %s and export %s\n", url.GetHostName().c_str(), exportPath.c_str());
@@ -435,8 +435,8 @@ int CNfsConnection::stat(const CURL &url, NFSSTAT *statbuff)
 {
   CSingleLock lock(*this);
   int nfsRet = 0;
-  CStdString exportPath;
-  CStdString relativePath;
+  std::string exportPath;
+  std::string relativePath;
   struct nfs_context *pTmpContext = NULL;
   
   if(!HandleDyLoad())
@@ -540,7 +540,7 @@ bool CNFSFile::Open(const CURL& url)
     return false;
   }
   
-  CStdString filename = "";
+  std::string filename;
    
   CSingleLock lock(gNfsConnection);
   
@@ -593,7 +593,7 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
 {
   int ret = 0;
   CSingleLock lock(gNfsConnection);
-  CStdString filename = "";
+  std::string filename;
   
   if(!gNfsConnection.Connect(url,filename))
     return -1;
@@ -763,7 +763,7 @@ bool CNFSFile::Delete(const CURL& url)
 {
   int ret = 0;
   CSingleLock lock(gNfsConnection);
-  CStdString filename = "";
+  std::string filename;
   
   if(!gNfsConnection.Connect(url, filename))
     return false;
@@ -782,13 +782,13 @@ bool CNFSFile::Rename(const CURL& url, const CURL& urlnew)
 {
   int ret = 0;
   CSingleLock lock(gNfsConnection);
-  CStdString strFile = "";
+  std::string strFile;
   
   if(!gNfsConnection.Connect(url,strFile))
     return false;
   
-  CStdString strFileNew;
-  CStdString strDummy;
+  std::string strFileNew;
+  std::string strDummy;
   gNfsConnection.splitUrlIntoExportAndPath(urlnew, strDummy, strFileNew);
   
   ret = gNfsConnection.GetImpl()->nfs_rename(gNfsConnection.GetNfsContext() , strFile.c_str(), strFileNew.c_str());
@@ -809,7 +809,7 @@ bool CNFSFile::OpenForWrite(const CURL& url, bool bOverWrite)
   
   Close();
   CSingleLock lock(gNfsConnection);
-  CStdString filename = "";
+  std::string filename;
   
   if(!gNfsConnection.Connect(url,filename))
     return false;
@@ -864,7 +864,7 @@ bool CNFSFile::OpenForWrite(const CURL& url, bool bOverWrite)
   return true;
 }
 
-bool CNFSFile::IsValidFile(const CStdString& strFileName)
+bool CNFSFile::IsValidFile(const std::string& strFileName)
 {
   if (strFileName.find('/') == std::string::npos || /* doesn't have sharename */
       StringUtils::EndsWith(strFileName, "/.") || /* not current folder */

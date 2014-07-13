@@ -19,7 +19,7 @@
  *
  */
 
-#include "StdString.h"
+#include <string>
 
 bool IsAliasShortcut(const std::string& path);
 void TranslateAliasShortcut(std::string &path);

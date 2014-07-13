@@ -24,7 +24,7 @@
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
-CDirectoryNodeTitleTvShows::CDirectoryNodeTitleTvShows(const CStdString& strName, CDirectoryNode* pParent)
+CDirectoryNodeTitleTvShows::CDirectoryNodeTitleTvShows(const std::string& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_TITLE_TVSHOWS, strName, pParent)
 {
 
@@ -35,7 +35,7 @@ NODE_TYPE CDirectoryNodeTitleTvShows::GetChildType() const
   return NODE_TYPE_SEASONS;
 }
 
-CStdString CDirectoryNodeTitleTvShows::GetLocalizedName() const
+std::string CDirectoryNodeTitleTvShows::GetLocalizedName() const
 {
   CVideoDatabase db;
   if (db.Open())

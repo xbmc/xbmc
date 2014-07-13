@@ -26,7 +26,6 @@
 #include "utils/log.h"
 #include "utils/HttpParser.h"
 #include "utils/Base64.h"
-#include "utils/StdString.h"
 #include "utils/StringUtils.h"
 #include "utils/HttpResponse.h"
 

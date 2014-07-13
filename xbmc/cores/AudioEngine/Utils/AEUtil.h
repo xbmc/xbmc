@@ -20,7 +20,6 @@
  */
 
 #include "AEAudioFormat.h"
-#include "utils/StdString.h"
 #include "PlatformDefs.h"
 #include <math.h>
 

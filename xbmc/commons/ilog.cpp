@@ -19,14 +19,13 @@
  */
 
 #include "commons/ilog.h"
-#include "utils/StdString.h"
 #include "utils/StringUtils.h"
 
 namespace XbmcCommons
 {
   void ILogger::Log(int loglevel, const char *format, ... )
   {
-    CStdString strData;
+    std::string strData;
 
     strData.reserve(16384);
     va_list va;
@@ -34,6 +33,6 @@ namespace XbmcCommons
     strData = StringUtils::FormatV(format,va);
     va_end(va);
 
-    log(loglevel, strData);
+    log(loglevel, strData.c_str());
   }
 }

@@ -20,10 +20,9 @@
  */
 
 #include <set>
+#include <string>
 #include <vector>
 #include <boost/shared_ptr.hpp>
-
-#include "utils/StdString.h"
 
 #define DATABASEQUERY_RULE_VALUE_SEPARATOR  " / "
 
@@ -70,34 +69,34 @@ public:
   virtual bool Save(TiXmlNode *parent) const;
   virtual bool Save(CVariant &obj) const;
 
-  static CStdString           GetLocalizedOperator(SEARCH_OPERATOR oper);
+  static std::string          GetLocalizedOperator(SEARCH_OPERATOR oper);
   static void                 GetAvailableOperators(std::vector<std::string> &operatorList);
 
-  CStdString                  GetParameter() const;
-  void                        SetParameter(const CStdString &value);
+  std::string                 GetParameter() const;
+  void                        SetParameter(const std::string &value);
   void                        SetParameter(const std::vector<std::string> &values);
 
-  virtual CStdString          GetWhereClause(const CDatabase &db, const CStdString& strType) const;
+  virtual std::string         GetWhereClause(const CDatabase &db, const std::string& strType) const;
 
   int                         m_field;
   SEARCH_OPERATOR             m_operator;
   std::vector<std::string>    m_parameter;
 
 protected:
-  virtual CStdString          GetField(int field, const CStdString& type) const=0;
+  virtual std::string         GetField(int field, const std::string& type) const=0;
   virtual FIELD_TYPE          GetFieldType(int field) const=0;
   virtual int                 TranslateField(const char *field) const=0;
-  virtual CStdString          TranslateField(int field) const=0;
-  CStdString                  ValidateParameter(const CStdString &parameter) const;
-  virtual CStdString          FormatParameter(const CStdString &negate, const CStdString &oper, const CDatabase &db, const CStdString &type) const;
-  virtual CStdString          FormatWhereClause(const CStdString &negate, const CStdString &oper, const CStdString &param,
-                                                const CDatabase &db, const CStdString &type) const;
-  virtual SEARCH_OPERATOR     GetOperator(const CStdString &type) const { return m_operator; };
-  virtual CStdString          GetOperatorString(SEARCH_OPERATOR op) const;
-  virtual CStdString          GetBooleanQuery(const CStdString &negate, const CStdString &strType) const { return ""; }
+  virtual std::string         TranslateField(int field) const=0;
+  std::string                 ValidateParameter(const std::string &parameter) const;
+  virtual std::string         FormatParameter(const std::string &negate, const std::string &oper, const CDatabase &db, const std::string &type) const;
+  virtual std::string         FormatWhereClause(const std::string &negate, const std::string &oper, const std::string &param,
+                                                const CDatabase &db, const std::string &type) const;
+  virtual SEARCH_OPERATOR     GetOperator(const std::string &type) const { return m_operator; };
+  virtual std::string         GetOperatorString(SEARCH_OPERATOR op) const;
+  virtual std::string         GetBooleanQuery(const std::string &negate, const std::string &strType) const { return ""; }
 
   static SEARCH_OPERATOR      TranslateOperator(const char *oper);
-  static CStdString           TranslateOperator(SEARCH_OPERATOR oper);
+  static std::string          TranslateOperator(SEARCH_OPERATOR oper);
 };
 
 class CDatabaseQueryRuleCombination;
@@ -129,7 +128,7 @@ public:
   virtual bool Save(TiXmlNode *parent) const;
   virtual bool Save(CVariant &obj) const;
 
-  CStdString GetWhereClause(const CDatabase &db, const CStdString& strType) const;
+  std::string GetWhereClause(const CDatabase &db, const std::string& strType) const;
   std::string TranslateCombinationType() const;
 
   Combination GetType() const { return m_type; }

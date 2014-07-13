@@ -358,7 +358,7 @@ void CGUIDialogMusicInfo::OnGetThumb()
   }
 
   // Grab the thumbnail(s) from the web
-  vector<CStdString> thumbs;
+  vector<std::string> thumbs;
   if (m_bArtistInfo)
     m_artist.thumbURL.GetThumbURLs(thumbs);
   else

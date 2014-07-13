@@ -51,8 +51,8 @@ bool CAPKFile::Open(const CURL& url)
   Close();
 
   m_url = url;
-  CStdString path = url.GetFileName();
-  CStdString host = url.GetHostName();
+  std::string path = url.GetFileName();
+  std::string host = url.GetHostName();
 
   int zip_flags = 0, zip_error = 0;
   m_zip_archive = zip_open(host.c_str(), zip_flags, &zip_error);
@@ -205,8 +205,8 @@ int CAPKFile::Stat(const CURL& url, struct __stat64* buffer)
 
   // do not use interal member vars here,
   //  we might be called without opening
-  CStdString path = url.GetFileName();
-  CStdString host = url.GetHostName();
+  std::string path = url.GetFileName();
+  std::string host = url.GetHostName();
 
   struct zip *zip_archive;
   int zip_flags = 0, zip_error = 0;
@@ -247,7 +247,7 @@ int CAPKFile::Stat(const CURL& url, struct __stat64* buffer)
     int numFiles = zip_get_num_files(zip_archive);
     for (int i = 0; i < numFiles; i++)
     {
-      CStdString name = zip_get_name(zip_archive, i, zip_flags);
+      std::string name = zip_get_name(zip_archive, i, zip_flags);
       if (!name.empty() && StringUtils::StartsWith(name, path))
       {
         buffer->st_gid  = 0;

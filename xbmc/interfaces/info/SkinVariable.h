@@ -38,13 +38,13 @@ public:
 class CSkinVariableString
 {
 public:
-  const CStdString& GetName() const;
+  const std::string& GetName() const;
   int GetContext() const;
-  CStdString GetValue(bool preferImage = false, const CGUIListItem *item = NULL );
+  std::string GetValue(bool preferImage = false, const CGUIListItem *item = NULL );
 private:
   CSkinVariableString();
 
-  CStdString m_name;
+  std::string m_name;
   int m_context;
 
   struct ConditionLabelPair

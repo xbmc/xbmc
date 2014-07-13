@@ -28,7 +28,7 @@
 #pragma once
 
 #include "IFile.h"
-#include "utils/StdString.h"
+#include <string>
 
 namespace XFILE
 {
@@ -37,7 +37,7 @@ class CFileFactory
 public:
   CFileFactory();
   virtual ~CFileFactory();
-  static IFile* CreateLoader(const CStdString& strFileName);
+  static IFile* CreateLoader(const std::string& strFileName);
   static IFile* CreateLoader(const CURL& url);
 };
 }

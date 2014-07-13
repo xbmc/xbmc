@@ -154,7 +154,7 @@ int CSmartPlaylistRule::TranslateField(const char *field) const
   return FieldNone;
 }
 
-CStdString CSmartPlaylistRule::TranslateField(int field) const
+std::string CSmartPlaylistRule::TranslateField(int field) const
 {
   for (unsigned int i = 0; i < NUM_FIELDS; i++)
     if (field == fields[i].field) return fields[i].string;
@@ -168,7 +168,7 @@ SortBy CSmartPlaylistRule::TranslateOrder(const char *order)
   return SortByNone;
 }
 
-CStdString CSmartPlaylistRule::TranslateOrder(SortBy order)
+std::string CSmartPlaylistRule::TranslateOrder(SortBy order)
 {
   for (unsigned int i = 0; i < NUM_FIELDS; i++)
     if (order == fields[i].sort) return fields[i].string;
@@ -186,7 +186,7 @@ Field CSmartPlaylistRule::TranslateGroup(const char *group)
   return FieldUnknown;
 }
 
-CStdString CSmartPlaylistRule::TranslateGroup(Field group)
+std::string CSmartPlaylistRule::TranslateGroup(Field group)
 {
   for (unsigned int i = 0; i < NUM_GROUPS; i++)
   {
@@ -197,7 +197,7 @@ CStdString CSmartPlaylistRule::TranslateGroup(Field group)
   return "";
 }
 
-CStdString CSmartPlaylistRule::GetLocalizedField(int field)
+std::string CSmartPlaylistRule::GetLocalizedField(int field)
 {
   for (unsigned int i = 0; i < NUM_FIELDS; i++)
     if (field == fields[i].field) return g_localizeStrings.Get(fields[i].localizedString);
@@ -261,7 +261,7 @@ bool CSmartPlaylistRule::ValidateRating(const std::string &input, void *data)
          rating >= 0.0 && rating <= 10.0;
 }
 
-vector<Field> CSmartPlaylistRule::GetFields(const CStdString &type)
+vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
 {
   vector<Field> fields;
   bool isVideo = false;
@@ -423,7 +423,7 @@ vector<Field> CSmartPlaylistRule::GetFields(const CStdString &type)
   return fields;
 }
 
-std::vector<SortBy> CSmartPlaylistRule::GetOrders(const CStdString &type)
+std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string &type)
 {
   vector<SortBy> orders;
   orders.push_back(SortByNone);
@@ -533,7 +533,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const CStdString &type)
   return orders;
 }
 
-std::vector<Field> CSmartPlaylistRule::GetGroups(const CStdString &type)
+std::vector<Field> CSmartPlaylistRule::GetGroups(const std::string &type)
 {
   vector<Field> groups;
   groups.push_back(FieldUnknown);
@@ -578,7 +578,7 @@ std::vector<Field> CSmartPlaylistRule::GetGroups(const CStdString &type)
   return groups;
 }
 
-CStdString CSmartPlaylistRule::GetLocalizedGroup(Field group)
+std::string CSmartPlaylistRule::GetLocalizedGroup(Field group)
 {
   for (unsigned int i = 0; i < NUM_GROUPS; i++)
   {
@@ -600,14 +600,14 @@ bool CSmartPlaylistRule::CanGroupMix(Field group)
   return false;
 }
 
-CStdString CSmartPlaylistRule::GetLocalizedRule() const
+std::string CSmartPlaylistRule::GetLocalizedRule() const
 {
   return StringUtils::Format("%s %s %s", GetLocalizedField(m_field).c_str(), GetLocalizedOperator(m_operator).c_str(), GetParameter().c_str());
 }
 
-CStdString CSmartPlaylistRule::GetVideoResolutionQuery(const CStdString &parameter) const
+std::string CSmartPlaylistRule::GetVideoResolutionQuery(const std::string &parameter) const
 {
-  CStdString retVal(" IN (SELECT DISTINCT idFile FROM streamdetails WHERE iVideoWidth ");
+  std::string retVal(" IN (SELECT DISTINCT idFile FROM streamdetails WHERE iVideoWidth ");
   int iRes = (int)strtol(parameter.c_str(), NULL, 10);
 
   int min, max;
@@ -638,7 +638,7 @@ CStdString CSmartPlaylistRule::GetVideoResolutionQuery(const CStdString &paramet
   return retVal;
 }
 
-CStdString CSmartPlaylistRule::GetBooleanQuery(const CStdString &negate, const CStdString &strType) const
+std::string CSmartPlaylistRule::GetBooleanQuery(const std::string &negate, const std::string &strType) const
 {
   if (strType == "movies")
   {
@@ -665,7 +665,7 @@ CStdString CSmartPlaylistRule::GetBooleanQuery(const CStdString &negate, const C
   return "";
 }
 
-CDatabaseQueryRule::SEARCH_OPERATOR CSmartPlaylistRule::GetOperator(const CStdString &strType) const
+CDatabaseQueryRule::SEARCH_OPERATOR CSmartPlaylistRule::GetOperator(const std::string &strType) const
 {
   SEARCH_OPERATOR op = CDatabaseQueryRule::GetOperator(strType);
   if ((strType == "tvshows" || strType == "episodes") && m_field == FieldYear)
@@ -679,24 +679,24 @@ CDatabaseQueryRule::SEARCH_OPERATOR CSmartPlaylistRule::GetOperator(const CStdSt
   return op;
 }
 
-CStdString CSmartPlaylistRule::FormatParameter(const CStdString &operatorString, const CStdString &param, const CDatabase &db, const CStdString &strType) const
+std::string CSmartPlaylistRule::FormatParameter(const std::string &operatorString, const std::string &param, const CDatabase &db, const std::string &strType) const
 {
   // special-casing
   if (m_field == FieldTime)
   { // translate time to seconds
-    CStdString seconds = StringUtils::Format("%i", StringUtils::TimeStringToSeconds(param));
+    std::string seconds = StringUtils::Format("%i", StringUtils::TimeStringToSeconds(param));
     return db.PrepareSQL(operatorString.c_str(), seconds.c_str());
   }
   return CDatabaseQueryRule::FormatParameter(operatorString, param, db, strType);
 }
 
-CStdString CSmartPlaylistRule::FormatWhereClause(const CStdString &negate, const CStdString &oper, const CStdString &param,
-                                                 const CDatabase &db, const CStdString &strType) const
+std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, const std::string &oper, const std::string &param,
+                                                 const CDatabase &db, const std::string &strType) const
 {
-  CStdString parameter = FormatParameter(oper, param, db, strType);
+  std::string parameter = FormatParameter(oper, param, db, strType);
 
-  CStdString query;
-  CStdString table;
+  std::string query;
+  std::string table;
   if (strType == "songs")
   {
     table = "songview";
@@ -826,7 +826,7 @@ CStdString CSmartPlaylistRule::FormatWhereClause(const CStdString &negate, const
         (m_operator == OPERATOR_DOES_NOT_EQUAL && param != "0") ||
         (m_operator == OPERATOR_LESS_THAN))
     {
-      CStdString field = GetField(FieldPlaycount, strType);
+      std::string field = GetField(FieldPlaycount, strType);
       query = field + " IS NULL OR " + field + parameter;
     }
   }
@@ -835,16 +835,16 @@ CStdString CSmartPlaylistRule::FormatWhereClause(const CStdString &negate, const
   return query;
 }
 
-CStdString CSmartPlaylistRule::GetField(int field, const CStdString &type) const
+std::string CSmartPlaylistRule::GetField(int field, const std::string &type) const
 {
   if (field >= FieldUnknown && field < FieldMax)
     return DatabaseUtils::GetField((Field)field, MediaTypes::FromString(type), DatabaseQueryPartWhere);
   return "";
 }
 
-CStdString CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, const CStdString& strType, std::set<CStdString> &referencedPlaylists) const
+std::string CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, const std::string& strType, std::set<std::string> &referencedPlaylists) const
 {
-  CStdString rule, currentRule;
+  std::string rule, currentRule;
   
   // translate the combinations into SQL
   for (CDatabaseQueryRuleCombinations::const_iterator it = m_combinations.begin(); it != m_combinations.end(); ++it)
@@ -867,24 +867,24 @@ CStdString CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, co
     if (!rule.empty())
       rule += m_type == CombinationAnd ? " AND " : " OR ";
     rule += "(";
-    CStdString currentRule;
+    std::string currentRule;
     if ((*it)->m_field == FieldPlaylist)
     {
-      CStdString playlistFile = CSmartPlaylistDirectory::GetPlaylistByName((*it)->m_parameter.at(0), strType);
+      std::string playlistFile = CSmartPlaylistDirectory::GetPlaylistByName((*it)->m_parameter.at(0), strType);
       if (!playlistFile.empty() && referencedPlaylists.find(playlistFile) == referencedPlaylists.end())
       {
         referencedPlaylists.insert(playlistFile);
         CSmartPlaylist playlist;
         if (playlist.Load(playlistFile))
         {
-          CStdString playlistQuery;
+          std::string playlistQuery;
           // only playlists of same type will be part of the query
-          if (playlist.GetType().Equals(strType) || (playlist.GetType().Equals("mixed") && (strType == "songs" || strType == "musicvideos")) || playlist.GetType().empty())
+          if (playlist.GetType() == strType || (playlist.GetType() == "mixed" && (strType == "songs" || strType == "musicvideos")) || playlist.GetType().empty())
           {
             playlist.SetType(strType);
             playlistQuery = playlist.GetWhereClause(db, referencedPlaylists);
           }
-          if (playlist.GetType().Equals(strType))
+          if (playlist.GetType() == strType)
           {
             if ((*it)->m_operator == CDatabaseQueryRule::OPERATOR_DOES_NOT_EQUAL)
               currentRule = StringUtils::Format("NOT (%s)", playlistQuery.c_str());
@@ -906,7 +906,7 @@ CStdString CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, co
   return rule;
 }
 
-void CSmartPlaylistRuleCombination::GetVirtualFolders(const CStdString& strType, std::vector<CStdString> &virtualFolders) const
+void CSmartPlaylistRuleCombination::GetVirtualFolders(const std::string& strType, std::vector<std::string> &virtualFolders) const
 {
   for (CDatabaseQueryRuleCombinations::const_iterator it = m_combinations.begin(); it != m_combinations.end(); ++it)
   {
@@ -920,7 +920,7 @@ void CSmartPlaylistRuleCombination::GetVirtualFolders(const CStdString& strType,
     if (((*it)->m_field != FieldVirtualFolder && (*it)->m_field != FieldPlaylist) || (*it)->m_operator != CDatabaseQueryRule::OPERATOR_EQUALS)
       continue;
 
-    CStdString playlistFile = CSmartPlaylistDirectory::GetPlaylistByName((*it)->m_parameter.at(0), strType);
+    std::string playlistFile = CSmartPlaylistDirectory::GetPlaylistByName((*it)->m_parameter.at(0), strType);
     if (playlistFile.empty())
       continue;
 
@@ -1012,7 +1012,7 @@ const TiXmlNode* CSmartPlaylist::readNameFromPath(const CURL &url)
   return root;
 }
 
-const TiXmlNode* CSmartPlaylist::readNameFromXml(const CStdString &xml)
+const TiXmlNode* CSmartPlaylist::readNameFromXml(const std::string &xml)
 {
   if (xml.empty())
   {
@@ -1045,7 +1045,7 @@ bool CSmartPlaylist::Load(const CURL &url)
   return load(readNameFromPath(url));
 }
 
-bool CSmartPlaylist::Load(const CStdString &path)
+bool CSmartPlaylist::Load(const std::string &path)
 {
   const CURL pathToUrl(path);
   return load(readNameFromPath(pathToUrl));
@@ -1100,17 +1100,17 @@ bool CSmartPlaylist::Load(const CVariant &obj)
   return true;
 }
 
-bool CSmartPlaylist::LoadFromXml(const CStdString &xml)
+bool CSmartPlaylist::LoadFromXml(const std::string &xml)
 {
   return load(readNameFromXml(xml));
 }
 
-bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const CStdString &encoding)
+bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const std::string &encoding)
 {
   if (!root)
     return false;
 
-  CStdString tmp;
+  std::string tmp;
   if (XMLUtils::GetString(root, "match", tmp))
     m_ruleCombination.SetType(StringUtils::EqualsNoCase(tmp, "all") ? CSmartPlaylistRuleCombination::CombinationAnd : CSmartPlaylistRuleCombination::CombinationOr);
 
@@ -1155,7 +1155,7 @@ bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const CStdString &encodi
   return true;
 }
 
-bool CSmartPlaylist::LoadFromJson(const CStdString &json)
+bool CSmartPlaylist::LoadFromJson(const std::string &json)
 {
   if (json.empty())
     return false;
@@ -1164,7 +1164,7 @@ bool CSmartPlaylist::LoadFromJson(const CStdString &json)
   return Load(obj);
 }
 
-bool CSmartPlaylist::Save(const CStdString &path) const
+bool CSmartPlaylist::Save(const std::string &path) const
 {
   CXBMCTinyXML doc;
   TiXmlDeclaration decl("1.0", "UTF-8", "yes");
@@ -1251,7 +1251,7 @@ bool CSmartPlaylist::Save(CVariant &obj, bool full /* = true */) const
   return true;
 }
 
-bool CSmartPlaylist::SaveAsJson(CStdString &json, bool full /* = true */) const
+bool CSmartPlaylist::SaveAsJson(std::string &json, bool full /* = true */) const
 {
   CVariant xsp(CVariant::VariantTypeObject);
   if (!Save(xsp, full))
@@ -1273,12 +1273,12 @@ void CSmartPlaylist::Reset()
   m_groupMixed = false;
 }
 
-void CSmartPlaylist::SetName(const CStdString &name)
+void CSmartPlaylist::SetName(const std::string &name)
 {
   m_playlistName = name;
 }
 
-void CSmartPlaylist::SetType(const CStdString &type)
+void CSmartPlaylist::SetType(const std::string &type)
 {
   m_playlistType = type;
 }
@@ -1293,29 +1293,29 @@ bool CSmartPlaylist::IsMusicType() const
   return IsMusicType(m_playlistType);
 }
 
-bool CSmartPlaylist::IsVideoType(const CStdString &type)
+bool CSmartPlaylist::IsVideoType(const std::string &type)
 {
   return type == "movies" || type == "tvshows" || type == "episodes" ||
          type == "musicvideos" || type == "mixed";
 }
 
-bool CSmartPlaylist::IsMusicType(const CStdString &type)
+bool CSmartPlaylist::IsMusicType(const std::string &type)
 {
   return type == "artists" || type == "albums" ||
          type == "songs" || type == "mixed";
 }
 
-CStdString CSmartPlaylist::GetWhereClause(const CDatabase &db, set<CStdString> &referencedPlaylists) const
+std::string CSmartPlaylist::GetWhereClause(const CDatabase &db, set<std::string> &referencedPlaylists) const
 {
   return m_ruleCombination.GetWhereClause(db, GetType(), referencedPlaylists);
 }
 
-void CSmartPlaylist::GetVirtualFolders(std::vector<CStdString> &virtualFolders) const
+void CSmartPlaylist::GetVirtualFolders(std::vector<std::string> &virtualFolders) const
 {
   m_ruleCombination.GetVirtualFolders(GetType(), virtualFolders);
 }
 
-CStdString CSmartPlaylist::GetSaveLocation() const
+std::string CSmartPlaylist::GetSaveLocation() const
 {
   if (m_playlistType == "mixed")
     return "mixed";
@@ -1347,17 +1347,17 @@ bool CSmartPlaylist::IsEmpty(bool ignoreSortAndLimit /* = true */) const
   return empty;
 }
 
-bool CSmartPlaylist::CheckTypeCompatibility(const CStdString &typeLeft, const CStdString &typeRight)
+bool CSmartPlaylist::CheckTypeCompatibility(const std::string &typeLeft, const std::string &typeRight)
 {
-  if (typeLeft.Equals(typeRight))
+  if (typeLeft == typeRight)
     return true;
 
-  if (typeLeft.Equals("mixed") &&
-     (typeRight.Equals("songs") || typeRight.Equals("musicvideos")))
+  if (typeLeft == "mixed" &&
+     (typeRight == "songs" || typeRight == "musicvideos"))
     return true;
 
-  if (typeRight.Equals("mixed") &&
-     (typeLeft.Equals("songs") || typeLeft.Equals("musicvideos")))
+  if (typeRight == "mixed" &&
+     (typeLeft == "songs" || typeLeft == "musicvideos"))
     return true;
 
   return false;

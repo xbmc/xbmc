@@ -58,12 +58,12 @@ class CURL;
 class CSFTPSession
 {
 public:
-  CSFTPSession(const CStdString &host, unsigned int port, const CStdString &username, const CStdString &password);
+  CSFTPSession(const std::string &host, unsigned int port, const std::string &username, const std::string &password);
   virtual ~CSFTPSession();
 
-  sftp_file CreateFileHande(const CStdString &file);
+  sftp_file CreateFileHande(const std::string &file);
   void CloseFileHandle(sftp_file handle);
-  bool GetDirectory(const CStdString &base, const CStdString &folder, CFileItemList &items);
+  bool GetDirectory(const std::string &base, const std::string &folder, CFileItemList &items);
   bool DirectoryExists(const char *path);
   bool FileExists(const char *path);
   int Stat(const char *path, struct __stat64* buffer);
@@ -73,7 +73,7 @@ public:
   bool IsIdle();
 private:
   bool VerifyKnownHost(ssh_session session);
-  bool Connect(const CStdString &host, unsigned int port, const CStdString &username, const CStdString &password);
+  bool Connect(const std::string &host, unsigned int port, const std::string &username, const std::string &password);
   void Disconnect();
   bool GetItemPermissions(const char *path, uint32_t &permissions);
   CCriticalSection m_critSect;
@@ -90,12 +90,12 @@ class CSFTPSessionManager
 {
 public:
   static CSFTPSessionPtr CreateSession(const CURL &url);
-  static CSFTPSessionPtr CreateSession(const CStdString &host, unsigned int port, const CStdString &username, const CStdString &password);
+  static CSFTPSessionPtr CreateSession(const std::string &host, unsigned int port, const std::string &username, const std::string &password);
   static void ClearOutIdleSessions();
   static void DisconnectAllSessions();
 private:
   static CCriticalSection m_critSect;
-  static std::map<CStdString, CSFTPSessionPtr> sessions;
+  static std::map<std::string, CSFTPSessionPtr> sessions;
 };
 
 namespace XFILE
@@ -117,7 +117,7 @@ namespace XFILE
     virtual int     GetChunkSize() {return 1;};
     virtual int     IoControl(EIoControl request, void* param);
   private:
-    CStdString m_file;
+    std::string m_file;
     CSFTPSessionPtr m_session;
     sftp_file m_sftp_handle;
   };

@@ -47,7 +47,7 @@ TimidityCodec::~TimidityCodec()
   DeInit();
 }
 
-bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
+bool TimidityCodec::Init(const std::string &strFile, unsigned int filecache)
 {
   // We do not need to init/load Timidity more than once
   //
@@ -106,11 +106,10 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
   if ( m_mid )
     m_dll.FreeMID( m_mid );
 
-  CStdString file = strFile;
   CURL url(strFile);
   if (!url.IsLocal())
   {
-    CStdString file = CUtil::GetNextFilename("special://temp/midi%03d.mid",999);
+    std::string file = CUtil::GetNextFilename("special://temp/midi%03d.mid",999);
     XFILE::CFile::Copy(strFile,file);
     url.Parse(file);
   }
@@ -180,7 +179,7 @@ bool TimidityCodec::CanInit()
       || XFILE::CFile::Exists( DEFAULT_SOUNDFONT_FILE );
 }
 
-bool TimidityCodec::IsSupportedFormat(const CStdString& strExt)
+bool TimidityCodec::IsSupportedFormat(const std::string& strExt)
 {
   if (strExt == "mid" || strExt == "kar")
     return true;

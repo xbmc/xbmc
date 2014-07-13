@@ -38,9 +38,9 @@ CMusicFileDirectory::~CMusicFileDirectory(void)
 
 bool CMusicFileDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  CStdString strPath=url.Get();
+  std::string strPath=url.Get();
 
-  CStdString strFileName;
+  std::string strFileName;
   strFileName = URIUtils::GetFileName(strPath);
   URIUtils::RemoveExtension(strFileName);
 
@@ -50,7 +50,7 @@ bool CMusicFileDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
   for (int i=0; i<iStreams; ++i)
   {
-    CStdString strLabel = StringUtils::Format("%s - %s %02.2i", strFileName.c_str(), g_localizeStrings.Get(554).c_str(), i+1);
+    std::string strLabel = StringUtils::Format("%s - %s %02.2i", strFileName.c_str(), g_localizeStrings.Get(554).c_str(), i+1);
     CFileItemPtr pItem(new CFileItem(strLabel));
     strLabel = StringUtils::Format("%s%s-%i.%s", strPath.c_str(), strFileName.c_str(), i+1, m_strExt.c_str());
     pItem->SetPath(strLabel);
@@ -72,7 +72,7 @@ bool CMusicFileDirectory::Exists(const CURL& url)
 
 bool CMusicFileDirectory::ContainsFiles(const CURL &url)
 {
-  const CStdString pathToUrl(url.Get());
+  const std::string pathToUrl(url.Get());
   if (GetTrackCount(pathToUrl) > 1)
     return true;
 

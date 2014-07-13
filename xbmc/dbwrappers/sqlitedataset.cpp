@@ -211,7 +211,7 @@ int SqliteDatabase::connect(bool create) {
 
   //CLog::Log(LOGDEBUG, "Connecting to sqlite:%s:%s", host.c_str(), db.c_str());
 
-  CStdString db_fullpath = URIUtils::AddFileToFolder(host, db);
+  std::string db_fullpath = URIUtils::AddFileToFolder(host, db);
 
   try
   {

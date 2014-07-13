@@ -48,12 +48,12 @@ void CGUIViewStateWindowPrograms::SaveViewState()
   SaveViewToDb(m_items.GetPath(), WINDOW_PROGRAMS, CViewStateSettings::Get().Get("programs"));
 }
 
-CStdString CGUIViewStateWindowPrograms::GetLockType()
+std::string CGUIViewStateWindowPrograms::GetLockType()
 {
   return "programs";
 }
 
-CStdString CGUIViewStateWindowPrograms::GetExtensions()
+std::string CGUIViewStateWindowPrograms::GetExtensions()
 {
   return ".xbe|.cut";
 }

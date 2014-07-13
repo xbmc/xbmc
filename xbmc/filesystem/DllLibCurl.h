@@ -131,8 +131,8 @@ namespace XCURL
     typedef struct SSession
     {
       unsigned int  m_idletimestamp;  // timestamp of when this object when idle
-      CStdString    m_protocol;
-      CStdString    m_hostname;
+      std::string   m_protocol;
+      std::string   m_hostname;
       bool          m_busy;
       CURL_HANDLE*  m_easy;
       CURLM*        m_multi;

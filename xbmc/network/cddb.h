@@ -32,6 +32,7 @@
 #include "storage/cdioSupport.h"
 
 #include "utils/AutoPtrHandle.h"
+#include "utils/StdString.h"
 
 namespace CDDB
 {

@@ -1965,14 +1965,14 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *f
     break;
   case NETWORK_DNS1_ADDRESS:
     {
-      vector<CStdString> nss = g_application.getNetwork().GetNameServers();
+      vector<std::string> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 1)
         return nss[0];
     }
     break;
   case NETWORK_DNS2_ADDRESS:
     {
-      vector<CStdString> nss = g_application.getNetwork().GetNameServers();
+      vector<std::string> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 2)
         return nss[1];
     }
@@ -3777,9 +3777,9 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_GENRE:
       return tag->GetEPGNow(epgTag) ? StringUtils::Join(epgTag.Genre(), g_advancedSettings.m_videoItemSeparator) : "";
     case VIDEOPLAYER_PLOT:
-      return tag->GetEPGNow(epgTag) ? epgTag.Plot() : StringUtils::EmptyString;
+      return tag->GetEPGNow(epgTag) ? epgTag.Plot() : "";
     case VIDEOPLAYER_PLOT_OUTLINE:
-      return tag->GetEPGNow(epgTag) ? epgTag.PlotOutline() : StringUtils::EmptyString;
+      return tag->GetEPGNow(epgTag) ? epgTag.PlotOutline() : "";
     case VIDEOPLAYER_STARTTIME:
       return tag->GetEPGNow(epgTag) ? epgTag.StartAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
     case VIDEOPLAYER_ENDTIME:
@@ -3795,9 +3795,9 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_NEXT_GENRE:
       return tag->GetEPGNext(epgTag) ? StringUtils::Join(epgTag.Genre(), g_advancedSettings.m_videoItemSeparator) : "";
     case VIDEOPLAYER_NEXT_PLOT:
-      return tag->GetEPGNext(epgTag) ? epgTag.Plot() : StringUtils::EmptyString;
+      return tag->GetEPGNext(epgTag) ? epgTag.Plot() : "";
     case VIDEOPLAYER_NEXT_PLOT_OUTLINE:
-      return tag->GetEPGNext(epgTag) ? epgTag.PlotOutline() : StringUtils::EmptyString;
+      return tag->GetEPGNext(epgTag) ? epgTag.PlotOutline() : "";
     case VIDEOPLAYER_NEXT_STARTTIME:
       return tag->GetEPGNext(epgTag) ? epgTag.StartAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
     case VIDEOPLAYER_NEXT_ENDTIME:
@@ -5250,8 +5250,8 @@ void CGUIInfoManager::UpdateFromTuxBox()
   // Set m_currentMovieDuration
   if(!g_tuxbox.sCurSrvData.current_event_duration.empty() &&
     !g_tuxbox.sCurSrvData.next_event_description.empty() &&
-    !g_tuxbox.sCurSrvData.current_event_duration.Equals("-") &&
-    !g_tuxbox.sCurSrvData.next_event_description.Equals("-"))
+    g_tuxbox.sCurSrvData.current_event_duration != "-" &&
+    g_tuxbox.sCurSrvData.next_event_description != "-")
   {
     StringUtils::Replace(g_tuxbox.sCurSrvData.current_event_duration, "(","");
     StringUtils::Replace(g_tuxbox.sCurSrvData.current_event_duration, ")","");
@@ -5267,8 +5267,8 @@ void CGUIInfoManager::UpdateFromTuxBox()
   //Set strVideoGenre
   if (!g_tuxbox.sCurSrvData.current_event_description.empty() &&
     !g_tuxbox.sCurSrvData.next_event_description.empty() &&
-    !g_tuxbox.sCurSrvData.current_event_description.Equals("-") &&
-    !g_tuxbox.sCurSrvData.next_event_description.Equals("-"))
+    g_tuxbox.sCurSrvData.current_event_description != "-" &&
+    g_tuxbox.sCurSrvData.next_event_description != "-")
   {
     CStdString genre = StringUtils::Format("%s %s  -  (%s: %s)",
                                            g_localizeStrings.Get(143).c_str(),
@@ -5279,7 +5279,7 @@ void CGUIInfoManager::UpdateFromTuxBox()
   }
 
   //Set m_currentMovie.m_director
-  if (!g_tuxbox.sCurSrvData.current_event_details.Equals("-") &&
+  if (g_tuxbox.sCurSrvData.current_event_details != "-" &&
     !g_tuxbox.sCurSrvData.current_event_details.empty())
   {
     m_currentFile->GetVideoInfoTag()->m_director = StringUtils::Split(g_tuxbox.sCurSrvData.current_event_details, g_advancedSettings.m_videoItemSeparator);
@@ -5541,7 +5541,7 @@ int CGUIInfoManager::TranslateSkinVariableString(const CStdString& name, int con
   for (vector<CSkinVariableString>::const_iterator it = m_skinVariableStrings.begin();
        it != m_skinVariableStrings.end(); ++it)
   {
-    if (it->GetName().Equals(name) && it->GetContext() == context)
+    if (StringUtils::EqualsNoCase(it->GetName(), name) && it->GetContext() == context)
       return it - m_skinVariableStrings.begin() + CONDITIONAL_LABEL_START;
   }
   return 0;

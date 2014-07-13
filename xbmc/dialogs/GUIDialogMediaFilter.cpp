@@ -633,7 +633,7 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
     if (!videodb.Open())
       return -1;
 
-    std::set<CStdString> playlists;
+    std::set<std::string> playlists;
     CDatabase::Filter dbfilter;
     dbfilter.where = tmpFilter.GetWhereClause(videodb, playlists);
 
@@ -664,7 +664,7 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
     if (!musicdb.Open())
       return -1;
 
-    std::set<CStdString> playlists;
+    std::set<std::string> playlists;
     CDatabase::Filter dbfilter;
     dbfilter.where = tmpFilter.GetWhereClause(musicdb, playlists);
     
@@ -758,8 +758,8 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
 
     if (m_mediaType == "movies" || m_mediaType == "tvshows" || m_mediaType == "musicvideos")
     {
-      CStdString table;
-      CStdString year;
+      std::string table;
+      std::string year;
       if (m_mediaType == "movies")
       {
         table = "movieview";
@@ -782,7 +782,7 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
     }
     else if (m_mediaType == "albums" || m_mediaType == "songs")
     {
-      CStdString table;
+      std::string table;
       if (m_mediaType == "albums")
         table = "albumview";
       else if (m_mediaType == "songs")
@@ -803,7 +803,7 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
 
     if (m_mediaType == "episodes")
     {
-      CStdString field = StringUtils::Format("CAST(strftime(\"%%s\", c%02d) AS INTEGER)", VIDEODB_ID_EPISODE_AIRED);
+      std::string field = StringUtils::Format("CAST(strftime(\"%%s\", c%02d) AS INTEGER)", VIDEODB_ID_EPISODE_AIRED);
       
       GetMinMax("episodeview", field, min, max);
       interval = 60 * 60 * 24 * 7; // 1 week
@@ -880,7 +880,7 @@ bool CGUIDialogMediaFilter::GetMinMax(const std::string &table, const std::strin
   }
 
   CDatabase::Filter extFilter = filter;
-  CStdString strSQLExtra;
+  std::string strSQLExtra;
   if (!db->BuildSQL(m_dbUrl->ToString(), strSQLExtra, extFilter, strSQLExtra, *dbUrl))
   {
     delete db;
@@ -888,10 +888,10 @@ bool CGUIDialogMediaFilter::GetMinMax(const std::string &table, const std::strin
     return false;
   }
 
-  CStdString strSQL = "SELECT %s FROM %s ";
+  std::string strSQL = "SELECT %s FROM %s ";
 
-  min = static_cast<int>(strtol(db->GetSingleValue(db->PrepareSQL(strSQL, CStdString("MIN(" + field + ")").c_str(), table.c_str()) + strSQLExtra).c_str(), NULL, 0));
-  max = static_cast<int>(strtol(db->GetSingleValue(db->PrepareSQL(strSQL, CStdString("MAX(" + field + ")").c_str(), table.c_str()) + strSQLExtra).c_str(), NULL, 0));
+  min = static_cast<int>(strtol(db->GetSingleValue(db->PrepareSQL(strSQL, std::string("MIN(" + field + ")").c_str(), table.c_str()) + strSQLExtra).c_str(), NULL, 0));
+  max = static_cast<int>(strtol(db->GetSingleValue(db->PrepareSQL(strSQL, std::string("MAX(" + field + ")").c_str(), table.c_str()) + strSQLExtra).c_str(), NULL, 0));
 
   db->Close();
   delete db;

@@ -63,8 +63,8 @@ bool CHomeRunDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       CFileItemPtr item;
       unsigned int ip_addr = result_list[i].ip_addr;
 
-      CStdString device = StringUtils::Format("%x", result_list[i].device_id);
-      CStdString ip = StringUtils::Format("%u.%u.%u.%u",
+      std::string device = StringUtils::Format("%x", result_list[i].device_id);
+      std::string ip = StringUtils::Format("%u.%u.%u.%u",
             (unsigned int)(ip_addr >> 24) & 0xFF, (unsigned int)(ip_addr >> 16) & 0xFF,
             (unsigned int)(ip_addr >> 8) & 0xFF, (unsigned int)(ip_addr >> 0) & 0xFF);
 
@@ -95,13 +95,13 @@ bool CHomeRunDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       return true;
     }
 
-    CStdString label;
+    std::string label;
     if(status.signal_present)
       label = StringUtils::Format("Current Stream: N/A");
     else
       label = StringUtils::Format("Current Stream: Channel %s, SNR %d", status.channel, status.signal_to_noise_quality);
 
-    CStdString path = "hdhomerun://" + url.GetHostName() + "/" + url.GetFileName();
+    std::string path = "hdhomerun://" + url.GetHostName() + "/" + url.GetFileName();
     URIUtils::RemoveSlashAtEnd(path);
     CFileItemPtr item(new CFileItem(path, false));
     item->SetLabel(label);

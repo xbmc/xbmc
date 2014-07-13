@@ -19,7 +19,6 @@
  */
 
 #include "system.h"
-#include "utils/StdString.h"
 #include "utils/StringUtils.h"
 #include "input/XBMC_keysym.h"
 #include "input/XBMC_vkeys.h"
@@ -245,7 +244,7 @@ bool KeyTableLookupName(const char* keyname, XBMCKEYTABLE* keytable)
     return false;
 
   // We need the button name to be in lowercase
-  CStdString lkeyname = keyname;
+  std::string lkeyname = keyname;
   StringUtils::ToLower(lkeyname);
 
   // Look up the key name in XBMCKeyTable

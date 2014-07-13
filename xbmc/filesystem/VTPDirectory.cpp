@@ -50,7 +50,7 @@ bool CVTPDirectory::GetChannels(const std::string& base, CFileItemList &items)
   {
     CFileItemPtr item(new CFileItem("", false));
 
-    CStdString buffer = StringUtils::Format("%s/%d.ts", base.c_str(), it->index);
+    std::string buffer = StringUtils::Format("%s/%d.ts", base.c_str(), it->index);
     item->SetPath(buffer);
     item->m_strTitle = it->name;
     buffer = StringUtils::Format("%d - %s", it->index, it->name.c_str());
@@ -68,7 +68,7 @@ bool CVTPDirectory::GetDirectory(const CURL& url2, CFileItemList &items)
   if(url.GetHostName() == "")
     url.SetHostName("localhost");
 
-  CStdString base = url.Get();
+  std::string base = url.Get();
   URIUtils::RemoveSlashAtEnd(base);
 
   // add port after, it changes the structure

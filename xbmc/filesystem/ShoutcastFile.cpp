@@ -139,7 +139,7 @@ void CShoutcastFile::Close()
 
 bool CShoutcastFile::ExtractTagInfo(const char* buf)
 {
-  CStdString strBuffer = buf;
+  std::string strBuffer = buf;
 
   if (!m_fileCharset.empty())
   {
@@ -152,7 +152,7 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
   
   bool result=false;
 
-  CStdStringW wBuffer, wConverted;
+  std::wstring wBuffer, wConverted;
   g_charsetConverter.utf8ToW(strBuffer, wBuffer, false);
   HTML::CHTMLUtil::ConvertHTMLToW(wBuffer, wConverted);
   g_charsetConverter.wToUTF8(wConverted, strBuffer);

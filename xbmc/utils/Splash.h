@@ -20,7 +20,7 @@
  *
  */
 
-#include "StdString.h"
+#include <string>
 #include "threads/Thread.h"
 
 class CGUITextLayout;
@@ -29,7 +29,7 @@ class CGUIImage;
 class CSplash : public CThread
 {
 public:
-  CSplash(const CStdString& imageName);
+  CSplash(const std::string& imageName);
   virtual ~CSplash();
 
   bool Start();
@@ -37,7 +37,7 @@ public:
 
   // In case you don't want to use another thread
   void Show();
-  void Show(const CStdString& message);
+  void Show(const std::string& message);
   void Hide();
 
 private:
@@ -46,7 +46,7 @@ private:
   virtual void OnExit();
 
   float fade;
-  CStdString m_ImageName;
+  std::string m_ImageName;
 
   CGUITextLayout* m_messageLayout;
   CGUIImage* m_image;

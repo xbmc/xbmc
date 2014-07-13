@@ -21,8 +21,8 @@
  *
  */
 
-#include "utils/StdString.h"
 #include "system.h"
+#include <stdarg.h>
 
 #define MAX_LEADBYTES             12
 #define MAX_DEFAULTCHAR           2
@@ -100,7 +100,7 @@ typedef struct _OSVERSIONINFO
   DWORD dwMinorVersion;
   DWORD dwBuildNumber;
   DWORD dwPlatformId;
-  TCHAR szCSDVersion[128];
+  char szCSDVersion[128];
 }
 OSVERSIONINFO, *LPOSVERSIONINFO;
 

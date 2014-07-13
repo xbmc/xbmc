@@ -21,7 +21,6 @@
   #define __STDC_LIMIT_MACROS
 #endif
 
-#include "utils/StdString.h"
 #include "AEUtil.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -500,7 +499,7 @@ void CAEUtil::FloatRand4(const float min, const float max, float result[4], __m1
     const float factor = delta / (float)INT32_MAX;
 
     /* cant return sseresult if we are not using SSE intrinsics */
-    ASSERT(result && !sseresult);
+    assert(result && !sseresult);
 
     result[0] = ((float)(m_seed = (214013 * m_seed + 2531011)) * factor) - delta;
     result[1] = ((float)(m_seed = (214013 * m_seed + 2531011)) * factor) - delta;

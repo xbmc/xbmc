@@ -115,7 +115,7 @@ void DNSSD_API CZeroconfBrowserMDNS::GetAddrInfoCallback(DNSServiceRef          
     return;
   }
 
-  CStdString strIP;
+  std::string strIP;
   CZeroconfBrowserMDNS* p_instance = static_cast<CZeroconfBrowserMDNS*> ( context );
 
   if (address->sa_family == AF_INET)
@@ -146,7 +146,7 @@ void DNSSD_API CZeroconfBrowserMDNS::ResolveCallback(DNSServiceRef              
 
   DNSServiceErrorType err;
   CZeroconfBrowser::ZeroconfService::tTxtRecordMap recordMap; 
-  CStdString strIP;
+  std::string strIP;
   CZeroconfBrowserMDNS* p_instance = static_cast<CZeroconfBrowserMDNS*> ( context );
 
   p_instance->m_resolving_service.SetHostname(hosttarget);
@@ -221,7 +221,7 @@ void CZeroconfBrowserMDNS::removeDiscoveredService(DNSServiceRef browser, CZeroc
 }
 
 
-bool CZeroconfBrowserMDNS::doAddServiceType(const CStdString& fcr_service_type)
+bool CZeroconfBrowserMDNS::doAddServiceType(const std::string& fcr_service_type)
 {
   DNSServiceErrorType err;
   DNSServiceRef browser = NULL;
@@ -267,7 +267,7 @@ bool CZeroconfBrowserMDNS::doAddServiceType(const CStdString& fcr_service_type)
   return true;
 }
 
-bool CZeroconfBrowserMDNS::doRemoveServiceType(const CStdString& fcr_service_type)
+bool CZeroconfBrowserMDNS::doRemoveServiceType(const std::string& fcr_service_type)
 {
   //search for this browser and remove it from the map
   DNSServiceRef browser = 0;
@@ -321,7 +321,7 @@ bool CZeroconfBrowserMDNS::doResolveService(CZeroconfBrowser::ZeroconfService& f
   m_resolving_service = fr_service;
   m_resolved_event.Reset();
 
-  err = DNSServiceResolve(&sdRef, 0, kDNSServiceInterfaceIndexAny, fr_service.GetName(), fr_service.GetType(), fr_service.GetDomain(), ResolveCallback, this);
+  err = DNSServiceResolve(&sdRef, 0, kDNSServiceInterfaceIndexAny, fr_service.GetName().c_str(), fr_service.GetType().c_str(), fr_service.GetDomain().c_str(), ResolveCallback, this);
 
   if( err != kDNSServiceErr_NoError )
   {
@@ -351,13 +351,13 @@ bool CZeroconfBrowserMDNS::doResolveService(CZeroconfBrowser::ZeroconfService& f
   // resolve the hostname
   if (!fr_service.GetHostname().empty())
   {
-    CStdString strIP;
+    std::string strIP;
 
     // use mdns resolving
     m_addrinfo_event.Reset();
     sdRef = NULL;
 
-    err = DNSServiceGetAddrInfo(&sdRef, 0, kDNSServiceInterfaceIndexAny, kDNSServiceProtocol_IPv4, fr_service.GetHostname(), GetAddrInfoCallback, this);
+    err = DNSServiceGetAddrInfo(&sdRef, 0, kDNSServiceInterfaceIndexAny, kDNSServiceProtocol_IPv4, fr_service.GetHostname().c_str(), GetAddrInfoCallback, this);
 
     if (err != kDNSServiceErr_NoError)
       CLog::Log(LOGERROR, "ZeroconfBrowserMDNS: DNSServiceGetAddrInfo returned (error = %ld)", (int) err);

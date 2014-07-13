@@ -151,7 +151,7 @@ TEST(TestFile, Stat)
 TEST(TestFile, Delete)
 {
   XFILE::CFile *file;
-  CStdString path;
+  std::string path;
 
   ASSERT_TRUE((file = XBMC_CREATETEMPFILE("")) != NULL);
   file->Close();
@@ -164,7 +164,7 @@ TEST(TestFile, Delete)
 TEST(TestFile, Rename)
 {
   XFILE::CFile *file;
-  CStdString path1, path2;
+  std::string path1, path2;
 
   ASSERT_TRUE((file = XBMC_CREATETEMPFILE("")) != NULL);
   file->Close();
@@ -184,7 +184,7 @@ TEST(TestFile, Rename)
 TEST(TestFile, Copy)
 {
   XFILE::CFile *file;
-  CStdString path1, path2;
+  std::string path1, path2;
 
   ASSERT_TRUE((file = XBMC_CREATETEMPFILE("")) != NULL);
   file->Close();

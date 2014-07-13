@@ -132,7 +132,7 @@ void CGUIDialogVisualisationPresetList::Update()
     //clear filelist
     CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
     OnMessage(msg);
-    std::vector<CStdString> presets;
+    std::vector<std::string> presets;
     if (m_viz->GetPresetList(presets))
     {
       m_currentPreset = m_viz->GetPreset();

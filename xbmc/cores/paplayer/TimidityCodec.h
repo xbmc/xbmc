@@ -30,16 +30,16 @@ public:
   TimidityCodec();
   virtual ~TimidityCodec();
 
-  virtual bool Init(const CStdString &strFile, unsigned int filecache);
+  virtual bool Init(const std::string &strFile, unsigned int filecache);
   virtual void DeInit();
   virtual int64_t Seek(int64_t iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool CanInit();
-  static bool IsSupportedFormat(const CStdString& strExt);
+  static bool IsSupportedFormat(const std::string& strExt);
 
 private:
   LibraryLoader* m_loader;
-  CStdString m_loader_name;
+  std::string m_loader_name;
 
   typedef int (__cdecl *InitMethod) ( const char * soundfont );
   typedef void* (__cdecl *LoadMethod) ( const char* p1);

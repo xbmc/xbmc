@@ -23,6 +23,7 @@
 #include "IAddon.h"
 #include "include/xbmc_addon_types.h"
 #include "threads/CriticalSection.h"
+#include <string>
 
 namespace ADDON
 {
@@ -36,7 +37,7 @@ namespace ADDON
   class CAddonStatusHandler : private CThread
   {
     public:
-      CAddonStatusHandler(const CStdString &addonID, ADDON_STATUS status, CStdString message, bool sameThread = true);
+      CAddonStatusHandler(const std::string &addonID, ADDON_STATUS status, std::string message, bool sameThread = true);
       ~CAddonStatusHandler();
 
       /* Thread handling */
@@ -48,7 +49,7 @@ namespace ADDON
       static CCriticalSection   m_critSection;
       AddonPtr                  m_addon;
       ADDON_STATUS              m_status;
-      CStdString                m_message;
+      std::string               m_message;
   };
 
 

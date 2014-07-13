@@ -26,6 +26,7 @@
 #include <tinyxml.h>
 #include "utils/log.h"
 #include "utils/MathUtils.h"
+#include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "threads/SystemClock.h"
 #include "GUIInfoManager.h"
@@ -1065,12 +1066,12 @@ void CGUIEPGGridContainer::OnRight()
   CGUIControl::OnRight();
 }
 
-void CGUIEPGGridContainer::SetChannel(const CStdString &channel)
+void CGUIEPGGridContainer::SetChannel(const std::string &channel)
 {
   int iChannelIndex(-1);
   for (unsigned int iIndex = 0; iIndex < m_channelItems.size(); iIndex++)
   {
-    CStdString strPath = m_channelItems[iIndex]->GetProperty("path").asString(StringUtils::EmptyString);
+    std::string strPath = m_channelItems[iIndex]->GetProperty("path").asString();
     if (strPath == channel)
     {
       iChannelIndex = iIndex;

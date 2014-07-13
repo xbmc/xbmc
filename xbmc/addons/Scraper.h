@@ -56,8 +56,8 @@ namespace ADDON
 class CScraper;
 typedef boost::shared_ptr<CScraper> ScraperPtr;
 
-CStdString TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
-CONTENT_TYPE TranslateContent(const CStdString &string);
+std::string TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
+CONTENT_TYPE TranslateContent(const std::string &string);
 TYPE ScraperTypeFromContent(const CONTENT_TYPE &content);
 
 // thrown as exception to signal abort or show error dialog
@@ -65,17 +65,17 @@ class CScraperError
 {
 public:
   CScraperError() : m_fAborted(true) {}
-  CScraperError(const CStdString &sTitle, const CStdString &sMessage) :
+  CScraperError(const std::string &sTitle, const std::string &sMessage) :
     m_fAborted(false), m_sTitle(sTitle), m_sMessage(sMessage) {}
 
   bool FAborted() const { return m_fAborted; }
-  const CStdString &Title() const { return m_sTitle; }
-  const CStdString &Message() const { return m_sMessage; }
+  const std::string &Title() const { return m_sTitle; }
+  const std::string &Message() const { return m_sMessage; }
 
 private:
   bool m_fAborted;
-  CStdString m_sTitle;
-  CStdString m_sMessage;
+  std::string m_sTitle;
+  std::string m_sMessage;
 };
 
 class CScraper : public CAddon
@@ -94,7 +94,7 @@ public:
    \return true if settings are available, false otherwise
    \sa GetPathSettings
    */
-  bool SetPathSettings(CONTENT_TYPE content, const CStdString& xml);
+  bool SetPathSettings(CONTENT_TYPE content, const std::string& xml);
 
   /*! \brief Get the scraper settings for a particular path in the form of an XML string
    Loads the default and user settings (if not already loaded) and returns the user settings in the
@@ -102,7 +102,7 @@ public:
    \return a string containing the XML settings
    \sa SetPathSettings
    */
-  CStdString GetPathSettings();
+  std::string GetPathSettings();
 
   /*! \brief Clear any previously cached results for this scraper
    Any previously cached files are cleared if they have been cached for longer than the specified
@@ -111,7 +111,7 @@ public:
   void ClearCache();
 
   CONTENT_TYPE Content() const { return m_pathContent; }
-  const CStdString& Language() const { return m_language; }
+  const std::string& Language() const { return m_language; }
   bool RequiresSettings() const { return m_requiressettings; }
   bool Supports(const CONTENT_TYPE &content) const;
 
@@ -119,7 +119,7 @@ public:
   bool IsNoop();
 
   // scraper media functions
-  CScraperUrl NfoUrl(const CStdString &sNfoContent);
+  CScraperUrl NfoUrl(const std::string &sNfoContent);
 
   /*! \brief Resolve an external ID (e.g. MusicBrainz IDs) to a URL using scrapers
    If we have an ID in hand, e.g. MusicBrainz IDs or TheTVDB Season IDs
@@ -130,14 +130,14 @@ public:
    \return a populated URL pointing to the details page for the given ID or
            an empty URL if we couldn't resolve the ID.
    */
-  CScraperUrl ResolveIDToUrl(const CStdString &externalID);
+  CScraperUrl ResolveIDToUrl(const std::string &externalID);
 
   std::vector<CScraperUrl> FindMovie(XFILE::CCurlFile &fcurl,
-    const CStdString &sMovie, bool fFirst);
+    const std::string &sMovie, bool fFirst);
   std::vector<MUSIC_GRABBER::CMusicAlbumInfo> FindAlbum(XFILE::CCurlFile &fcurl,
-    const CStdString &sAlbum, const CStdString &sArtist = "");
+    const std::string &sAlbum, const std::string &sArtist = "");
   std::vector<MUSIC_GRABBER::CMusicArtistInfo> FindArtist(
-    XFILE::CCurlFile &fcurl, const CStdString &sArtist);
+    XFILE::CCurlFile &fcurl, const std::string &sArtist);
   VIDEO::EPISODELIST GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl);
 
   bool GetVideoDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl,
@@ -145,29 +145,29 @@ public:
   bool GetAlbumDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl,
     CAlbum &album);
   bool GetArtistDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl,
-    const CStdString &sSearch, CArtist &artist);
+    const std::string &sSearch, CArtist &artist);
 
 private:
   CScraper(const CScraper &rhs);
-  CStdString SearchStringEncoding() const
+  std::string SearchStringEncoding() const
     { return m_parser.GetSearchStringEncoding(); }
 
   bool Load();
-  std::vector<std::string> Run(const CStdString& function,
+  std::vector<std::string> Run(const std::string& function,
                               const CScraperUrl& url,
                               XFILE::CCurlFile& http,
                               const std::vector<std::string>* extras = NULL);
-  std::vector<std::string> RunNoThrow(const CStdString& function,
+  std::vector<std::string> RunNoThrow(const std::string& function,
                               const CScraperUrl& url,
                               XFILE::CCurlFile& http,
                               const std::vector<std::string>* extras = NULL);
-  CStdString InternalRun(const CStdString& function,
+  std::string InternalRun(const std::string& function,
                          const CScraperUrl& url,
                          XFILE::CCurlFile& http,
                          const std::vector<std::string>* extras);
 
   bool m_fLoaded;
-  CStdString m_language;
+  std::string m_language;
   bool m_requiressettings;
   CDateTimeSpan m_persistence;
   CONTENT_TYPE m_pathContent;

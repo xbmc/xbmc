@@ -75,7 +75,7 @@ protected:
   };
 
   // initialize OpenMax and get decoder component
-  bool Initialize( const CStdString &decoder_name);
+  bool Initialize( const std::string &decoder_name);
   void Deinitialize();
 
   // OpenMax Decoder delegate callback routines.

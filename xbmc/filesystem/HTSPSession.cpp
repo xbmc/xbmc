@@ -622,7 +622,7 @@ bool CHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& e
   CVideoInfoTag* tag = item.GetVideoInfoTag();
 
   CURL url(item.GetPath());
-  CStdString temp = StringUtils::Format("tags/%d/%d.ts", tagid, channel.id);
+  std::string temp = StringUtils::Format("tags/%d/%d.ts", tagid, channel.id);
   url.SetFileName(temp);
 
   tag->m_iSeason  = 0;

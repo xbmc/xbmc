@@ -194,9 +194,9 @@ void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
   }
 }
 
-std::vector<CStdString> CAndroidStorageProvider::GetDiskUsage()
+std::vector<std::string> CAndroidStorageProvider::GetDiskUsage()
 {
-  std::vector<CStdString> result;
+  std::vector<std::string> result;
 
   std::string usage;
   // add header
@@ -228,7 +228,7 @@ std::vector<CStdString> CAndroidStorageProvider::GetDiskUsage()
   return result;
 }
 
-bool CAndroidStorageProvider::Eject(CStdString mountpath)
+bool CAndroidStorageProvider::Eject(const std::string& mountpath)
 {
   return false;
 }

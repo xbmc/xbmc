@@ -20,7 +20,7 @@
  *
  */
 
-#include "StdString.h"
+#include <string>
 #include "threads/Thread.h"
 
 class CURL;
@@ -30,104 +30,104 @@ class CFileItemList;
 
 struct STREAMINFO
 {
-  CStdString frontend;
-  CStdString service_name;
-  CStdString service_reference;
-  CStdString provider;
-  CStdString vpid;
-  CStdString apid;
-  CStdString pcrpid;
-  CStdString tpid;
-  CStdString tsid;
-  CStdString onid;
-  CStdString sid;
-  CStdString pmt;
-  CStdString video_format;
-  CStdString supported_crypt_systems;
-  CStdString used_crypt_systems;
-  CStdString satellite;
-  CStdString frequency;
-  CStdString symbol_rate;
-  CStdString polarisation;
-  CStdString inversion;
-  CStdString fec;
-  CStdString snr;
-  CStdString agc;
-  CStdString ber;
-  CStdString lock;
-  CStdString sync;
+  std::string frontend;
+  std::string service_name;
+  std::string service_reference;
+  std::string provider;
+  std::string vpid;
+  std::string apid;
+  std::string pcrpid;
+  std::string tpid;
+  std::string tsid;
+  std::string onid;
+  std::string sid;
+  std::string pmt;
+  std::string video_format;
+  std::string supported_crypt_systems;
+  std::string used_crypt_systems;
+  std::string satellite;
+  std::string frequency;
+  std::string symbol_rate;
+  std::string polarisation;
+  std::string inversion;
+  std::string fec;
+  std::string snr;
+  std::string agc;
+  std::string ber;
+  std::string lock;
+  std::string sync;
 };
 struct VIDEOSUBCHANNEL
 {
-  std::vector<CStdString> reference;
-  std::vector<CStdString> name;
-  std::vector<CStdString> selected;
-  CStdString current_name;
+  std::vector<std::string> reference;
+  std::vector<std::string> name;
+  std::vector<std::string> selected;
+  std::string current_name;
   bool mode;
 };
 typedef struct AUDIOCHANNEL
 {
-  CStdString pid;
-  CStdString selected;
-  CStdString name;
+  std::string pid;
+  std::string selected;
+  std::string name;
 } sAudioChannel;
 struct CURRENTSERVICEDATA
 {
-  CStdString service_name;
-  CStdString service_reference;
+  std::string service_name;
+  std::string service_reference;
   std::vector<AUDIOCHANNEL> audio_channels;
   int requested_audio_channel;
-  CStdString audio_track;
-  CStdString current_event_date;
-  CStdString current_event_time;
-  CStdString current_event_start;
-  CStdString current_event_duration;
-  CStdString current_event_description;
-  CStdString current_event_details;
-  CStdString next_event_date;
-  CStdString next_event_time;
-  CStdString next_event_start;
-  CStdString next_event_duration;
-  CStdString next_event_description;
-  CStdString next_event_details;
+  std::string audio_track;
+  std::string current_event_date;
+  std::string current_event_time;
+  std::string current_event_start;
+  std::string current_event_duration;
+  std::string current_event_description;
+  std::string current_event_details;
+  std::string next_event_date;
+  std::string next_event_time;
+  std::string next_event_start;
+  std::string next_event_duration;
+  std::string next_event_description;
+  std::string next_event_details;
 };
 struct BOXSTATUS
 {
-  CStdString current_time;
-  CStdString standby;
-  CStdString recording;
-  CStdString mode;
-  CStdString ip;
+  std::string current_time;
+  std::string standby;
+  std::string recording;
+  std::string mode;
+  std::string ip;
 };
 struct BOXSINFO
 {
-  CStdString image_version;
-  CStdString image_url;
-  CStdString image_comment;
-  CStdString image_catalog;
-  CStdString firmware;
-  CStdString fpfirmware;
-  CStdString webinterface;
-  CStdString model;
-  CStdString manufacturer;
-  CStdString processor;
-  CStdString usbstick;
-  CStdString disk;
+  std::string image_version;
+  std::string image_url;
+  std::string image_comment;
+  std::string image_catalog;
+  std::string firmware;
+  std::string fpfirmware;
+  std::string webinterface;
+  std::string model;
+  std::string manufacturer;
+  std::string processor;
+  std::string usbstick;
+  std::string disk;
 };
 struct SERVICE_EPG
 {
-  CStdString service_reference;
-  CStdString service_name;
-  CStdString image_comment;
-  CStdString event;
-  CStdString date;
-  CStdString time;
-  CStdString duration;
-  CStdString descritption;
-  CStdString genre;
-  CStdString genrecategory;
-  CStdString start;
-  CStdString details;
+  std::string service_reference;
+  std::string service_name;
+  std::string image_comment;
+  std::string event;
+  std::string date;
+  std::string time;
+  std::string duration;
+  std::string descritption;
+  std::string genre;
+  std::string genrecategory;
+  std::string start;
+  std::string details;
 };
 struct ZAPSTREAM
 {
@@ -148,29 +148,29 @@ class CTuxBoxUtil
     CTuxBoxUtil(void);
     virtual ~CTuxBoxUtil(void);
 
-    bool GetZapUrl(const CStdString& strPath, CFileItem &items);
-    static bool ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString strFilter, CStdString strChild);
-    static bool ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString& strFilter, CStdString& strChild);
-    static bool ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString strFilter, CStdString strChild);
-    static bool ParseChannelsEnigma2(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString& strFilter, CStdString& strChild);
-    bool ZapToUrl(CURL url, const CStdString &pathOption);
+    bool GetZapUrl(const std::string& strPath, CFileItem &items);
+    static bool ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &url, std::string strFilter, std::string strChild);
+    static bool ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items, CURL &url, std::string& strFilter, std::string& strChild);
+    static bool ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &url, std::string strFilter, std::string strChild);
+    static bool ParseChannelsEnigma2(TiXmlElement *root, CFileItemList &items, CURL &url, std::string& strFilter, std::string& strChild);
+    bool ZapToUrl(CURL url, const std::string &pathOption);
     bool StreamInformations(TiXmlElement *pRootElement);
     bool CurrentServiceData(TiXmlElement *pRootElement);
     bool BoxStatus(TiXmlElement *pRootElement);
     bool BoxInfo(TiXmlElement *pRootElement);
     bool ServiceEPG(TiXmlElement *pRootElement);
-    bool GetHttpXML(CURL url,CStdString strRequestType);
+    bool GetHttpXML(CURL url,std::string strRequestType);
     bool GetGUIRequestedAudioChannel(AUDIOCHANNEL& sRequestedAC);
     bool GetRequestedAudioChannel(AUDIOCHANNEL& sRequestedAC) const;
-    bool GetVideoSubChannels(CStdString& strVideoSubChannelName, CStdString& strVideoSubChannelPid);
+    bool GetVideoSubChannels(std::string& strVideoSubChannelName, std::string& strVideoSubChannelPid);
     bool GetVideoChannels(TiXmlElement *pRootElement);
     bool CreateNewItem(const CFileItem& item, CFileItem& item_new);
-    static bool InitZapstream(const CStdString& strPath);
-    static bool SetAudioChannel(const CStdString& strPath, const AUDIOCHANNEL& sAC);
+    static bool InitZapstream(const std::string& strPath);
+    static bool SetAudioChannel(const std::string& strPath, const AUDIOCHANNEL& sAC);
 
-    static CStdString GetPicon(CStdString strServiceName);
-    static CStdString GetSubMode(int iMode, CStdString& strXMLRootString, CStdString& strXMLChildString);
-    static CStdString DetectSubMode(CStdString strSubMode, CStdString& strXMLRootString, CStdString& strXMLChildString);
+    static std::string GetPicon(std::string strServiceName);
+    static std::string GetSubMode(int iMode, std::string& strXMLRootString, std::string& strXMLChildString);
+    static std::string DetectSubMode(std::string strSubMode, std::string& strXMLRootString, std::string& strXMLChildString);
 };
 extern CTuxBoxUtil g_tuxbox;
 

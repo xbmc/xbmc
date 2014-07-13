@@ -38,7 +38,7 @@ public:
   DVDPlayerCodec();
   virtual ~DVDPlayerCodec();
 
-  virtual bool Init(const CStdString &strFile, unsigned int filecache);
+  virtual bool Init(const std::string &strFile, unsigned int filecache);
   virtual void DeInit();
   virtual int64_t Seek(int64_t iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
@@ -46,7 +46,7 @@ public:
   virtual bool CanSeek();
   virtual CAEChannelInfo GetChannelInfo() {return m_ChannelInfo;}
 
-  void SetContentType(const CStdString &strContent);
+  void SetContentType(const std::string &strContent);
 
   bool NeedConvert(AEDataFormat fmt);
 
@@ -55,7 +55,7 @@ private:
   CDVDInputStream* m_pInputStream;
   CDVDAudioCodec* m_pAudioCodec;
 
-  CStdString m_strContentType;
+  std::string m_strContentType;
 
   std::string m_strFileName;
 

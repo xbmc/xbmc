@@ -36,7 +36,7 @@ CISO9660Directory::~CISO9660Directory(void)
 
 bool CISO9660Directory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  CStdString strRoot = url.Get();
+  std::string strRoot = url.Get();
   URIUtils::AddSlashAtEnd(strRoot);
 
   // Scan active disc if not done before
@@ -48,8 +48,8 @@ bool CISO9660Directory::GetDirectory(const CURL& url, CFileItemList &items)
 
   memset(&wfd, 0, sizeof(wfd));
 
-  CStdString strSearchMask;
-  CStdString strDirectory = url.GetFileName();
+  std::string strSearchMask;
+  std::string strDirectory = url.GetFileName();
   if (strDirectory != "")
   {
     strSearchMask = StringUtils::Format("\\%s", strDirectory.c_str());
@@ -73,11 +73,11 @@ bool CISO9660Directory::GetDirectory(const CURL& url, CFileItemList &items)
     {
       if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
       {
-        CStdString strDir = wfd.cFileName;
+        std::string strDir = wfd.cFileName;
         if (strDir != "." && strDir != "..")
         {
           CFileItemPtr pItem(new CFileItem(wfd.cFileName));
-          CStdString path = strRoot + wfd.cFileName;
+          std::string path = strRoot + wfd.cFileName;
           URIUtils::AddSlashAtEnd(path);
           pItem->SetPath(path);
           pItem->m_bIsFolder = true;

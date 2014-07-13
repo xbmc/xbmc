@@ -198,17 +198,17 @@ void CSMB::Purge()
 void CSMB::PurgeEx(const CURL& url)
 {
   CSingleLock lock(*this);
-  CStdString strShare = url.GetFileName().substr(0, url.GetFileName().find('/'));
+  std::string strShare = url.GetFileName().substr(0, url.GetFileName().find('/'));
 
   m_strLastShare = strShare;
   m_strLastHost = url.GetHostName();
 }
 
-CStdString CSMB::URLEncode(const CURL &url)
+std::string CSMB::URLEncode(const CURL &url)
 {
   /* due to smb wanting encoded urls we have to build it manually */
 
-  CStdString flat = "smb://";
+  std::string flat = "smb://";
 
   if(url.GetDomain().length() > 0)
   {
@@ -242,7 +242,7 @@ CStdString CSMB::URLEncode(const CURL &url)
   return flat;
 }
 
-CStdString CSMB::URLEncode(const CStdString &value)
+std::string CSMB::URLEncode(const std::string &value)
 {
   return CURL::Encode(value);
 }
@@ -342,7 +342,7 @@ bool CSmbFile::Open(const CURL& url)
   // when opening smb://server xbms will try to find folder.jpg in all shares
   // listed, which will create lot's of open sessions.
 
-  CStdString strFileName;
+  std::string strFileName;
   m_fd = OpenFile(url, strFileName);
 
   CLog::Log(LOGDEBUG,"CSmbFile::Open - opened %s, fd=%d",url.GetFileName().c_str(), m_fd);
@@ -355,7 +355,7 @@ bool CSmbFile::Open(const CURL& url)
 
   CSingleLock lock(smb);
   struct stat tmpBuffer;
-  if (smbc_stat(strFileName, &tmpBuffer) < 0)
+  if (smbc_stat(strFileName.c_str(), &tmpBuffer) < 0)
   {
     smbc_close(m_fd);
     m_fd = -1;
@@ -380,11 +380,11 @@ bool CSmbFile::Open(const CURL& url)
 /// \param strAuth The SMB style path
 /// \return SMB file descriptor
 /*
-int CSmbFile::OpenFile(CStdString& strAuth)
+int CSmbFile::OpenFile(std::string& strAuth)
 {
   int fd = -1;
 
-  CStdString strPath = g_passwordManager.GetSMBAuthFilename(strAuth);
+  std::string strPath = g_passwordManager.GetSMBAuthFilename(strAuth);
 
   fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
   // TODO: Run a loop here that prompts for our username/password as appropriate?
@@ -401,13 +401,13 @@ int CSmbFile::OpenFile(CStdString& strAuth)
 }
 */
 
-int CSmbFile::OpenFile(const CURL &url, CStdString& strAuth)
+int CSmbFile::OpenFile(const CURL &url, std::string& strAuth)
 {
   int fd = -1;
   smb.Init();
 
   strAuth = GetAuthenticatedPath(url);
-  CStdString strPath = strAuth;
+  std::string strPath = strAuth;
 
   {
     CSingleLock lock(smb);
@@ -427,12 +427,12 @@ bool CSmbFile::Exists(const CURL& url)
   if (!IsValidFile(url.GetFileName())) return false;
 
   smb.Init();
-  CStdString strFileName = GetAuthenticatedPath(url);
+  std::string strFileName = GetAuthenticatedPath(url);
 
   struct stat info;
 
   CSingleLock lock(smb);
-  int iResult = smbc_stat(strFileName, &info);
+  int iResult = smbc_stat(strFileName.c_str(), &info);
 
   if (iResult < 0) return false;
   return true;
@@ -467,11 +467,11 @@ int CSmbFile::Stat(struct __stat64* buffer)
 int CSmbFile::Stat(const CURL& url, struct __stat64* buffer)
 {
   smb.Init();
-  CStdString strFileName = GetAuthenticatedPath(url);
+  std::string strFileName = GetAuthenticatedPath(url);
   CSingleLock lock(smb);
 
   struct stat tmpBuffer = {0};
-  int iResult = smbc_stat(strFileName, &tmpBuffer);
+  int iResult = smbc_stat(strFileName.c_str(), &tmpBuffer);
 
   memset(buffer, 0, sizeof(struct __stat64));
   buffer->st_dev = tmpBuffer.st_dev;
@@ -584,7 +584,7 @@ int CSmbFile::Write(const void* lpBuf, int64_t uiBufSize)
 bool CSmbFile::Delete(const CURL& url)
 {
   smb.Init();
-  CStdString strFile = GetAuthenticatedPath(url);
+  std::string strFile = GetAuthenticatedPath(url);
 
   CSingleLock lock(smb);
 
@@ -599,8 +599,8 @@ bool CSmbFile::Delete(const CURL& url)
 bool CSmbFile::Rename(const CURL& url, const CURL& urlnew)
 {
   smb.Init();
-  CStdString strFile = GetAuthenticatedPath(url);
-  CStdString strFileNew = GetAuthenticatedPath(urlnew);
+  std::string strFile = GetAuthenticatedPath(url);
+  std::string strFileNew = GetAuthenticatedPath(urlnew);
   CSingleLock lock(smb);
 
   int result = smbc_rename(strFile.c_str(), strFileNew.c_str());
@@ -621,7 +621,7 @@ bool CSmbFile::OpenForWrite(const CURL& url, bool bOverWrite)
   // if a file matches the if below return false, it can't exist on a samba share.
   if (!IsValidFile(url.GetFileName())) return false;
 
-  CStdString strFileName = GetAuthenticatedPath(url);
+  std::string strFileName = GetAuthenticatedPath(url);
   CSingleLock lock(smb);
 
   if (bOverWrite)
@@ -645,7 +645,7 @@ bool CSmbFile::OpenForWrite(const CURL& url, bool bOverWrite)
   return true;
 }
 
-bool CSmbFile::IsValidFile(const CStdString& strFileName)
+bool CSmbFile::IsValidFile(const std::string& strFileName)
 {
   if (strFileName.find('/') == std::string::npos || /* doesn't have sharename */
       StringUtils::EndsWith(strFileName, "/.") || /* not current folder */
@@ -654,7 +654,7 @@ bool CSmbFile::IsValidFile(const CStdString& strFileName)
   return true;
 }
 
-CStdString CSmbFile::GetAuthenticatedPath(const CURL &url)
+std::string CSmbFile::GetAuthenticatedPath(const CURL &url)
 {
   CURL authURL(url);
   CPasswordManager::GetInstance().AuthenticateURL(authURL);

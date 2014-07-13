@@ -77,7 +77,7 @@ int CSimpleFileCache::Open()
 
   m_hDataAvailEvent = new CEvent;
 
-  CStdString fileName = CSpecialProtocol::TranslatePath(CUtil::GetNextFilename("special://temp/filecache%03d.cache", 999));
+  std::string fileName = CSpecialProtocol::TranslatePath(CUtil::GetNextFilename("special://temp/filecache%03d.cache", 999));
   if(fileName.empty())
   {
     CLog::Log(LOGERROR, "%s - Unable to generate a new filename", __FUNCTION__);
