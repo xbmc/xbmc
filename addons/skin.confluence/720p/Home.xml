@@ -783,7 +783,7 @@
 					<onleft>9014</onleft>
 					<onright>9014</onright>
 					<visible>Container(9000).HasFocus(12)</visible>
-					<include>HomeSubMenuLiveTV</include> <!-- Buttons for the grouplist -->
+					<include>HomeSubMenuTV</include> <!-- Buttons for the grouplist -->
 				</control>
 				<control type="grouplist" id="9015">
 					<include>HomeSubMenuCommonValues</include>
@@ -791,6 +791,13 @@
 					<onright>9013</onright>
 					<visible>Container(9000).HasFocus(4)</visible>
 					<include>HomeSubMenuPictures</include> <!-- Buttons for the grouplist -->
+				</control>
+				<control type="grouplist" id="9016">
+					<include>HomeSubMenuCommonValues</include>
+					<onleft>9014</onleft>
+					<onright>9014</onright>
+					<visible>Container(9000).HasFocus(13)</visible>
+					<include>HomeSubMenuRadio</include> <!-- Buttons for the grouplist -->
 				</control>
 			</control>
 			<control type="image">
@@ -904,12 +911,19 @@
 						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoPicturesButton)</visible>
 					</item>
-					<item id="12">
-						<label>31952</label>
-						<onclick>ActivateWindow(PVR)</onclick>
+					<item id="13">
+						<label>31960</label>
+						<onclick>ActivateWindow(RadioChannels)</onclick>
 						<icon>-</icon>
 						<thumb>-</thumb>
-						<visible>System.GetBool(pvrmanager.enabled)</visible>
+						<visible>PVR.HasRadioChannels</visible>
+					</item>
+					<item id="12">
+						<label>31952</label>
+						<onclick>ActivateWindow(TVChannels)</onclick>
+						<icon>-</icon>
+						<thumb>-</thumb>
+						<visible>PVR.HasTVChannels</visible>
 					</item>
 					<item id="2">
 						<label>31953</label>

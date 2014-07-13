@@ -20,31 +20,28 @@
  *
  */
 
-#include "GUIWindowPVRCommon.h"
-#include "utils/Observer.h"
+#include "GUIWindowPVRBase.h"
 
 namespace PVR
 {
-  class CGUIWindowPVR;
-
-  class CGUIWindowPVRTimers : public CGUIWindowPVRCommon, private Observer
+  class CGUIWindowPVRTimers : public CGUIWindowPVRBase
   {
-    friend class CGUIWindowPVR;
-
   public:
-    CGUIWindowPVRTimers(CGUIWindowPVR *parent);
+    CGUIWindowPVRTimers(bool bRadio);
     virtual ~CGUIWindowPVRTimers(void) {};
 
-    void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
+    bool OnMessage(CGUIMessage& message);
+    void GetContextButtons(int itemNumber, CContextButtons &buttons);
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-    void UpdateData(bool bUpdateSelectedFile = true);
-    void Notify(const Observable &obs, const ObservableMessage msg);
+    bool Update(const std::string &strDirectory = "", bool updateFilterPath = true);
     void UnregisterObservers(void);
     void ResetObservers(void);
 
   private:
-    bool OnClickButton(CGUIMessage &message);
-    bool OnClickList(CGUIMessage &message);
+    bool ActionDeleteTimer(CFileItem *item);
+    bool ActionShowTimer(CFileItem *item);
+    bool ShowTimerSettings(CFileItem *item);
+    bool ShowNewTimerDialog(void);
 
     bool OnContextButtonActivate(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON button);

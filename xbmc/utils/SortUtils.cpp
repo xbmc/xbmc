@@ -368,6 +368,11 @@ string ByChannel(SortAttribute attributes, const SortItem &values)
   return values.at(FieldChannelName).asString();
 }
 
+string ByChannelNumber(SortAttribute attributes, const SortItem &values)
+{
+  return StringUtils::Format("%i", (int)values.at(FieldChannelNumber).asInteger());
+}
+
 string ByDateTaken(SortAttribute attributes, const SortItem &values)
 {
   return values.at(FieldDateTaken).asString();
@@ -548,6 +553,7 @@ map<SortBy, SortUtils::SortPreparator> fillPreparators()
   preparators[SortByBitrate]                  = ByBitrate;
   preparators[SortByRandom]                   = ByRandom;
   preparators[SortByChannel]                  = ByChannel;
+  preparators[SortByChannelNumber]            = ByChannelNumber;
   preparators[SortByDateTaken]                = ByDateTaken;
 
   return preparators;
@@ -620,6 +626,7 @@ map<SortBy, Fields> fillSortingFields()
   sortingFields[SortByListeners].insert(FieldListeners);
   sortingFields[SortByBitrate].insert(FieldBitrate);
   sortingFields[SortByChannel].insert(FieldChannelName);
+  sortingFields[SortByChannelNumber].insert(FieldChannelNumber);
   sortingFields[SortByDateTaken].insert(FieldDateTaken);
   sortingFields.insert(pair<SortBy, Fields>(SortByRandom, Fields()));
 
@@ -831,6 +838,7 @@ const sort_map table[] = {
   { SortByPlaycount,                SORT_METHOD_PLAYCOUNT,                    SortAttributeIgnoreFolders, 567 },
   { SortByListeners,                SORT_METHOD_LISTENERS,                    SortAttributeNone,          20455 },
   { SortByChannel,                  SORT_METHOD_CHANNEL,                      SortAttributeNone,          19029 },
+  { SortByChannel,                  SORT_METHOD_CHANNEL_NUMBER,               SortAttributeNone,          549 },
   { SortByDateTaken,                SORT_METHOD_DATE_TAKEN,                   SortAttributeIgnoreFolders, 577 },
   { SortByNone,                     SORT_METHOD_NONE,                         SortAttributeNone,          16018 },
   // the following have no corresponding SORT_METHOD_*

@@ -1160,17 +1160,6 @@
     </category>
     <category id="epg" label="19069" help="36218">
       <group id="1">
-        <setting id="epg.defaultguideview" type="integer" label="19065" help="36219">
-          <level>1</level>
-          <default>3</default> <!-- GUIDE_VIEW_TIMELINE -->
-          <constraints>
-            <minimum>0</minimum>
-            <step>1</step>
-            <maximum>3</maximum>
-            <options>epgguideviews</options>
-          </constraints>
-          <control type="spinner" format="string" />
-        </setting>
         <setting id="epg.daystodisplay" type="integer" label="19182" help="36220">
           <level>2</level>
           <default>3</default>

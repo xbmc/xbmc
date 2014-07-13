@@ -214,7 +214,8 @@ bool CSkinInfo::LoadStartupWindows(const cp_extension_t *ext)
 {
   m_startupWindows.clear();
   m_startupWindows.push_back(CStartupWindow(WINDOW_HOME, "513"));
-  m_startupWindows.push_back(CStartupWindow(WINDOW_PVR, "19180"));
+  m_startupWindows.push_back(CStartupWindow(WINDOW_TV_CHANNELS, "19180"));
+  m_startupWindows.push_back(CStartupWindow(WINDOW_RADIO_CHANNELS, "19183"));
   m_startupWindows.push_back(CStartupWindow(WINDOW_PROGRAMS, "0"));
   m_startupWindows.push_back(CStartupWindow(WINDOW_PICTURES, "1"));
   m_startupWindows.push_back(CStartupWindow(WINDOW_MUSIC, "2"));

@@ -1136,9 +1136,8 @@
 		C84828DB156CFCD8005A996F /* PVRTimerInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828A9156CFCD8005A996F /* PVRTimerInfoTag.cpp */; };
 		C84828DC156CFCD8005A996F /* PVRTimers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828AB156CFCD8005A996F /* PVRTimers.cpp */; };
 		C84828DD156CFCD8005A996F /* GUIViewStatePVR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828AE156CFCD8005A996F /* GUIViewStatePVR.cpp */; };
-		C84828DE156CFCD8005A996F /* GUIWindowPVR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828B0156CFCD8005A996F /* GUIWindowPVR.cpp */; };
+		C84828DE156CFCD8005A996F /* GUIWindowPVRBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828B0156CFCD8005A996F /* GUIWindowPVRBase.cpp */; };
 		C84828DF156CFCD8005A996F /* GUIWindowPVRChannels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828B2156CFCD8005A996F /* GUIWindowPVRChannels.cpp */; };
-		C84828E0156CFCD8005A996F /* GUIWindowPVRCommon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828B4156CFCD8005A996F /* GUIWindowPVRCommon.cpp */; };
 		C84828E1156CFCD8005A996F /* GUIWindowPVRGuide.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828B6156CFCD8005A996F /* GUIWindowPVRGuide.cpp */; };
 		C84828E2156CFCD8005A996F /* GUIWindowPVRRecordings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828B8156CFCD8005A996F /* GUIWindowPVRRecordings.cpp */; };
 		C84828E3156CFCD8005A996F /* GUIWindowPVRSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828BA156CFCD8005A996F /* GUIWindowPVRSearch.cpp */; };
@@ -2000,9 +1999,8 @@
 		DFF0F38417528350002DA3A4 /* PVRTimerInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828A9156CFCD8005A996F /* PVRTimerInfoTag.cpp */; };
 		DFF0F38517528350002DA3A4 /* PVRTimers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828AB156CFCD8005A996F /* PVRTimers.cpp */; };
 		DFF0F38617528350002DA3A4 /* GUIViewStatePVR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828AE156CFCD8005A996F /* GUIViewStatePVR.cpp */; };
-		DFF0F38717528350002DA3A4 /* GUIWindowPVR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828B0156CFCD8005A996F /* GUIWindowPVR.cpp */; };
+		DFF0F38717528350002DA3A4 /* GUIWindowPVRBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828B0156CFCD8005A996F /* GUIWindowPVRBase.cpp */; };
 		DFF0F38817528350002DA3A4 /* GUIWindowPVRChannels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828B2156CFCD8005A996F /* GUIWindowPVRChannels.cpp */; };
-		DFF0F38917528350002DA3A4 /* GUIWindowPVRCommon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828B4156CFCD8005A996F /* GUIWindowPVRCommon.cpp */; };
 		DFF0F38A17528350002DA3A4 /* GUIWindowPVRGuide.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828B6156CFCD8005A996F /* GUIWindowPVRGuide.cpp */; };
 		DFF0F38B17528350002DA3A4 /* GUIWindowPVRRecordings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828B8156CFCD8005A996F /* GUIWindowPVRRecordings.cpp */; };
 		DFF0F38C17528350002DA3A4 /* GUIWindowPVRSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828BA156CFCD8005A996F /* GUIWindowPVRSearch.cpp */; };
@@ -3266,9 +3264,8 @@
 		E4991405174E5FB900741B6D /* PVRTimerInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828A9156CFCD8005A996F /* PVRTimerInfoTag.cpp */; };
 		E4991406174E5FB900741B6D /* PVRTimers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828AB156CFCD8005A996F /* PVRTimers.cpp */; };
 		E4991407174E5FB900741B6D /* GUIViewStatePVR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828AE156CFCD8005A996F /* GUIViewStatePVR.cpp */; };
-		E4991408174E5FB900741B6D /* GUIWindowPVR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828B0156CFCD8005A996F /* GUIWindowPVR.cpp */; };
+		E4991408174E5FB900741B6D /* GUIWindowPVRBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828B0156CFCD8005A996F /* GUIWindowPVRBase.cpp */; };
 		E4991409174E5FB900741B6D /* GUIWindowPVRChannels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828B2156CFCD8005A996F /* GUIWindowPVRChannels.cpp */; };
-		E499140A174E5FB900741B6D /* GUIWindowPVRCommon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828B4156CFCD8005A996F /* GUIWindowPVRCommon.cpp */; };
 		E499140B174E5FB900741B6D /* GUIWindowPVRGuide.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828B6156CFCD8005A996F /* GUIWindowPVRGuide.cpp */; };
 		E499140C174E5FB900741B6D /* GUIWindowPVRRecordings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828B8156CFCD8005A996F /* GUIWindowPVRRecordings.cpp */; };
 		E499140D174E5FB900741B6D /* GUIWindowPVRSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828BA156CFCD8005A996F /* GUIWindowPVRSearch.cpp */; };
@@ -4701,12 +4698,10 @@
 		C84828AC156CFCD8005A996F /* PVRTimers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRTimers.h; sourceTree = "<group>"; };
 		C84828AE156CFCD8005A996F /* GUIViewStatePVR.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStatePVR.cpp; sourceTree = "<group>"; };
 		C84828AF156CFCD8005A996F /* GUIViewStatePVR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStatePVR.h; sourceTree = "<group>"; };
-		C84828B0156CFCD8005A996F /* GUIWindowPVR.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowPVR.cpp; sourceTree = "<group>"; };
-		C84828B1156CFCD8005A996F /* GUIWindowPVR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowPVR.h; sourceTree = "<group>"; };
+		C84828B0156CFCD8005A996F /* GUIWindowPVRBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowPVRBase.cpp; sourceTree = "<group>"; };
+		C84828B1156CFCD8005A996F /* GUIWindowPVRBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowPVRBase.h; sourceTree = "<group>"; };
 		C84828B2156CFCD8005A996F /* GUIWindowPVRChannels.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowPVRChannels.cpp; sourceTree = "<group>"; };
 		C84828B3156CFCD8005A996F /* GUIWindowPVRChannels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowPVRChannels.h; sourceTree = "<group>"; };
-		C84828B4156CFCD8005A996F /* GUIWindowPVRCommon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowPVRCommon.cpp; sourceTree = "<group>"; };
-		C84828B5156CFCD8005A996F /* GUIWindowPVRCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowPVRCommon.h; sourceTree = "<group>"; };
 		C84828B6156CFCD8005A996F /* GUIWindowPVRGuide.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowPVRGuide.cpp; sourceTree = "<group>"; };
 		C84828B7156CFCD8005A996F /* GUIWindowPVRGuide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowPVRGuide.h; sourceTree = "<group>"; };
 		C84828B8156CFCD8005A996F /* GUIWindowPVRRecordings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowPVRRecordings.cpp; sourceTree = "<group>"; };
@@ -8045,12 +8040,10 @@
 			children = (
 				C84828AE156CFCD8005A996F /* GUIViewStatePVR.cpp */,
 				C84828AF156CFCD8005A996F /* GUIViewStatePVR.h */,
-				C84828B0156CFCD8005A996F /* GUIWindowPVR.cpp */,
-				C84828B1156CFCD8005A996F /* GUIWindowPVR.h */,
+				C84828B0156CFCD8005A996F /* GUIWindowPVRBase.cpp */,
+				C84828B1156CFCD8005A996F /* GUIWindowPVRBase.h */,
 				C84828B2156CFCD8005A996F /* GUIWindowPVRChannels.cpp */,
 				C84828B3156CFCD8005A996F /* GUIWindowPVRChannels.h */,
-				C84828B4156CFCD8005A996F /* GUIWindowPVRCommon.cpp */,
-				C84828B5156CFCD8005A996F /* GUIWindowPVRCommon.h */,
 				C84828B6156CFCD8005A996F /* GUIWindowPVRGuide.cpp */,
 				C84828B7156CFCD8005A996F /* GUIWindowPVRGuide.h */,
 				C84828B8156CFCD8005A996F /* GUIWindowPVRRecordings.cpp */,
@@ -11378,9 +11371,8 @@
 				C84828DB156CFCD8005A996F /* PVRTimerInfoTag.cpp in Sources */,
 				C84828DC156CFCD8005A996F /* PVRTimers.cpp in Sources */,
 				C84828DD156CFCD8005A996F /* GUIViewStatePVR.cpp in Sources */,
-				C84828DE156CFCD8005A996F /* GUIWindowPVR.cpp in Sources */,
+				C84828DE156CFCD8005A996F /* GUIWindowPVRBase.cpp in Sources */,
 				C84828DF156CFCD8005A996F /* GUIWindowPVRChannels.cpp in Sources */,
-				C84828E0156CFCD8005A996F /* GUIWindowPVRCommon.cpp in Sources */,
 				C84828E1156CFCD8005A996F /* GUIWindowPVRGuide.cpp in Sources */,
 				C84828E2156CFCD8005A996F /* GUIWindowPVRRecordings.cpp in Sources */,
 				C84828E3156CFCD8005A996F /* GUIWindowPVRSearch.cpp in Sources */,
@@ -12472,9 +12464,8 @@
 				DFF0F38417528350002DA3A4 /* PVRTimerInfoTag.cpp in Sources */,
 				DFF0F38517528350002DA3A4 /* PVRTimers.cpp in Sources */,
 				DFF0F38617528350002DA3A4 /* GUIViewStatePVR.cpp in Sources */,
-				DFF0F38717528350002DA3A4 /* GUIWindowPVR.cpp in Sources */,
+				DFF0F38717528350002DA3A4 /* GUIWindowPVRBase.cpp in Sources */,
 				DFF0F38817528350002DA3A4 /* GUIWindowPVRChannels.cpp in Sources */,
-				DFF0F38917528350002DA3A4 /* GUIWindowPVRCommon.cpp in Sources */,
 				DFF0F38A17528350002DA3A4 /* GUIWindowPVRGuide.cpp in Sources */,
 				DFF0F38B17528350002DA3A4 /* GUIWindowPVRRecordings.cpp in Sources */,
 				DFF0F38C17528350002DA3A4 /* GUIWindowPVRSearch.cpp in Sources */,
@@ -13670,9 +13661,8 @@
 				E4991405174E5FB900741B6D /* PVRTimerInfoTag.cpp in Sources */,
 				E4991406174E5FB900741B6D /* PVRTimers.cpp in Sources */,
 				E4991407174E5FB900741B6D /* GUIViewStatePVR.cpp in Sources */,
-				E4991408174E5FB900741B6D /* GUIWindowPVR.cpp in Sources */,
+				E4991408174E5FB900741B6D /* GUIWindowPVRBase.cpp in Sources */,
 				E4991409174E5FB900741B6D /* GUIWindowPVRChannels.cpp in Sources */,
-				E499140A174E5FB900741B6D /* GUIWindowPVRCommon.cpp in Sources */,
 				E499140B174E5FB900741B6D /* GUIWindowPVRGuide.cpp in Sources */,
 				E499140C174E5FB900741B6D /* GUIWindowPVRRecordings.cpp in Sources */,
 				E499140D174E5FB900741B6D /* GUIWindowPVRSearch.cpp in Sources */,

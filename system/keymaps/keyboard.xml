@@ -99,11 +99,11 @@
       <power>ActivateWindow(shutdownmenu)</power>
       <sleep>ActivateWindow(shutdownmenu)</sleep>
       <!-- PVR windows -->
-      <e>XBMC.ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</e>
-      <h>XBMC.ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</h>
-      <j>XBMC.ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</j>
-      <k>XBMC.ActivateWindowAndFocus(MyPVR, 34,0, 13,0)</k>
-      <b>XBMC.ActivateWindowAndFocus(MyPVR, 35,0, 14,0)</b>
+      <e>XBMC.ActivateWindow(TVGuide)</e>
+      <h>XBMC.ActivateWindow(TVChannels)</h>
+      <j>XBMC.ActivateWindow(RadioChannels)</j>
+      <k>XBMC.ActivateWindow(TVRecordings)</k>
+      <b>XBMC.ActivateWindow(TVTimers)</b>
       <!-- Multimedia keyboard keys -->
       <browser_back>Back</browser_back>
       <browser_forward/>
@@ -142,15 +142,15 @@
       <f10>VolumeUp</f10>                 <!-- MCE Vol up -->
       <f9>VolumeDown</f9>                 <!-- MCE Vol down -->
       <f8>Mute</f8>                       <!-- MCE mute -->
-      <g mod="ctrl">ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</g>  <!-- MCE Guide -->
+      <g mod="ctrl">ActivateWindow(TVGuide)</g>  <!-- MCE Guide -->
       <m mod="ctrl">ActivateWindow(music)</m>    <!-- MCE My music -->
       <i mod="ctrl">ActivateWindow(pictures)</i> <!-- MCE My pictures -->
       <e mod="ctrl">ActivateWindow(video)</e>    <!-- MCE videos -->
       <m mod="ctrl,shift">PlayerControl(ShowVideoMenu)</m>         <!-- MCE DVD menu -->
-      <o mod="ctrl">ActivateWindowAndFocus(MyPVR, 34,0, 13,0)</o>  <!-- MCE Recorded TV -->
-      <t mod="ctrl">ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</t>  <!-- MCE Live TV  -->
-      <t mod="ctrl,shift">ActivateWindow(MyPVR)</t>                <!-- MCE My TV -->
-      <a mod="ctrl">ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</a>  <!-- MCE My Radio -->
+      <o mod="ctrl">ActivateWindow(TVRecordings)</o>  <!-- MCE Recorded TV -->
+      <t mod="ctrl">ActivateWindow(TVChannels)</t>  <!-- MCE Live TV  -->
+      <t mod="ctrl,shift">ActivateWindow(TVChannels)</t>  <!-- MCE My TV -->
+      <a mod="ctrl">ActivateWindow(RadioChannels)</a>  <!-- MCE My Radio -->
       <!-- MCE keypresses without an obvious use in XBMC -->
       <u mod="ctrl">Notification(MCEKeypress, DVD subtitle, 3)</u>
       <a mod="ctrl,shift">Notification(MCEKeypress, DVD audio, 3)</a>
@@ -172,13 +172,40 @@
       <backspace>Backspace</backspace>
     </keyboard>
   </VirtualKeyboard>
-  <MyTV>
+  <MyTVChannels>
+    <keyboard>
+      <m>Move</m>
+    </keyboard>
+  </MyTVChannels>
+  <MyTVRecordings>
     <keyboard>
       <delete>Delete</delete>
-      <m>Move</m>
       <r>Rename</r>
     </keyboard>
-  </MyTV>
+  </MyTVRecordings>
+  <MyTVTimers>
+    <keyboard>
+      <delete>Delete</delete>
+      <r>Rename</r>
+    </keyboard>
+  </MyTVTimers>
+  <MyRadioChannels>
+    <keyboard>
+      <m>Move</m>
+    </keyboard>
+  </MyRadioChannels>
+  <MyRadioRecordings>
+    <keyboard>
+      <delete>Delete</delete>
+      <r>Rename</r>
+    </keyboard>
+  </MyRadioRecordings>
+  <MyRadioTimers>
+    <keyboard>
+      <delete>Delete</delete>
+      <r>Rename</r>
+    </keyboard>
+  </MyRadioTimers>
   <MyFiles>
     <keyboard>
       <space>Highlight</space>

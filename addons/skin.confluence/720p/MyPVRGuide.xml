@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">10</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<views>10,11,12,13</views>
+	<controls>
+		<include>CommonBackground</include>
+		<control type="image">
+			<left>0</left>
+			<top>100r</top>
+			<width>1280</width>
+			<height>100</height>
+			<texture>floor.png</texture>
+			<animation effect="fade" time="250" condition="Window.Previous(Home)">WindowOpen</animation>
+			<animation effect="fade" time="250" condition="Window.Next(Home)">WindowClose</animation>
+		</control>
+		<control type="group">
+			<include>Window_OpenClose_Animation</include>		
+			<control type="image">
+				<left>0</left>
+				<top>100r</top>
+				<width>1280</width>
+				<height>100</height>
+				<texture>floor.png</texture>
+				<animation effect="fade" time="250" condition="Window.Previous(Home)">WindowOpen</animation>
+				<animation effect="fade" time="250" condition="Window.Next(Home)">WindowClose</animation>
+			</control>
+			<control type="group">
+				<include>Window_OpenClose_Animation</include>		
+				<control type="group">
+					<include>VisibleFadeEffect</include>
+					<control type="image">
+						<left>55</left>
+						<top>60</top>
+						<width>1170</width>
+						<height>600</height>
+						<texture border="15">ContentPanel.png</texture>
+					</control>
+					<control type="image">
+						<left>55</left>
+						<top>652</top>
+						<width>1170</width>
+						<height>64</height>
+						<texture border="15">ContentPanelMirror.png</texture>
+					</control>
+				</control>
+			</control>
+		</control>
+		<include>MainWindowMouseButtons</include>
+		<include>PVRHeader</include>
+		
+		<control type="group" id="50">
+			<include>Window_OpenClose_Animation</include>
+			<include>PVRGuideViewTimeline</include>
+			<include>PVRGuideViewNow</include>
+			<include>PVRGuideViewNext</include>
+			<include>PVRGuideViewChannel</include>
+		</control>
+		<include>CommonNowPlaying</include>
+		<include>BehindDialogFadeOut</include>
+		<include>ScrollOffsetLabel</include>
+
+		<control type="image">
+			<left>0</left>
+			<top>0</top>
+			<width>1280</width>
+			<height>720</height>
+			<texture>black-back.png</texture>
+			<animation effect="fade" time="400">Visible</animation>
+			<animation effect="fade" time="200">Hidden</animation>
+			<visible>Window.IsActive(FileBrowser) | Window.IsActive(PVRGuideInfo) | Window.IsActive(PVRRecordingInfo) | Window.IsActive(PVRTimerSetting) | Window.IsActive(PVRGroupManager) | Window.IsActive(PVRGuideSearch)</visible>
+		</control>
+
+		<include>PVRSideBlade</include>
+		<include>Clock</include>
+	</controls>
+</window>

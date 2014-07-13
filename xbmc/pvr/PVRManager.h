@@ -139,9 +139,9 @@ namespace PVR
     /*!
      * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
      * @param bAsync True to (re)start the manager from another thread
-     * @param bOpenPVRWindow True to open the PVR window after starting, false otherwise
+     * @param openWindowId Window id to open after starting
      */
-    void Start(bool bAsync = false, bool bOpenPVRWindow = false);
+    void Start(bool bAsync = false, int openWindowId = 0);
 
     /*!
      * @brief Stop the PVRManager and destroy all objects it created.
@@ -157,6 +157,11 @@ namespace PVR
      * @return True when a PVR window is active, false otherwise.
      */
     bool IsPVRWindowActive(void) const;
+
+    /*!
+     * @return True when the given window id is an PVR window, false otherwise.
+     */
+    static bool IsPVRWindow(int windowId);
 
     /*!
      * @brief Check whether an add-on can be upgraded or installed without restarting the pvr manager, when the add-on is in use or the pvr window is active
@@ -657,8 +662,9 @@ namespace PVR
     CCriticalSection                m_managerStateMutex;
     ManagerState                    m_managerState;
     CStopWatch                     *m_parentalTimer;
-    bool                            m_bOpenPVRWindow;
+    int                             m_openWindowId;
     std::map<std::string, std::string> m_outdatedAddons;
+    static int                      m_pvrWindowIds[10];
   };
 
   class CPVREpgsCreateJob : public CJob

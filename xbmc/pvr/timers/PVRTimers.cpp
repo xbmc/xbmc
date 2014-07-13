@@ -399,18 +399,16 @@ bool CPVRTimers::HasActiveTimers(void) const
 
 bool CPVRTimers::GetDirectory(const CStdString& strPath, CFileItemList &items) const
 {
-  CStdString base(strPath);
-  URIUtils::RemoveSlashAtEnd(base);
-
   CURL url(strPath);
   CStdString fileName = url.GetFileName();
-  URIUtils::RemoveSlashAtEnd(fileName);
-
-  if (fileName == "timers")
+  
+  vector<string> dirs = URIUtils::SplitPath(URIUtils::GetDirectory(fileName));
+  if(dirs.size() == 2 && dirs.at(0) == "timers")
   {
+    bool bRadio = (dirs.at(1) == "radio");
     CFileItemPtr item;
 
-    item.reset(new CFileItem(base + "/add.timer", false));
+    item.reset(new CFileItem("pvr://timers/add.timer", false));
     item->SetLabel(g_localizeStrings.Get(19026));
     item->SetLabelPreformated(true);
     items.Add(item);
@@ -421,8 +419,11 @@ bool CPVRTimers::GetDirectory(const CStdString& strPath, CFileItemList &items) c
       for (vector<CPVRTimerInfoTagPtr>::const_iterator timerIt = it->second->begin(); timerIt != it->second->end(); timerIt++)
       {
         CPVRTimerInfoTagPtr current = *timerIt;
-        item.reset(new CFileItem(*current));
-        items.Add(item);
+        if (bRadio == current->m_bIsRadio)
+        {
+          item.reset(new CFileItem(*current));
+          items.Add(item);
+        }
       }
     }
 

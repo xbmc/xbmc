@@ -21,6 +21,7 @@
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "GUIInfoManager.h"
+#include "Util.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -35,12 +36,11 @@
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
-#include "windows/GUIWindowPVR.h"
+#include "windows/GUIWindowPVRBase.h"
 #include "utils/log.h"
 #include "utils/Stopwatch.h"
 #include "utils/StringUtils.h"
 #include "threads/Atomics.h"
-#include "windows/GUIWindowPVRCommon.h"
 #include "utils/JobManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "video/VideoDatabase.h"
@@ -70,6 +70,19 @@ using namespace PVR;
 using namespace EPG;
 using namespace ANNOUNCEMENT;
 
+int CPVRManager::m_pvrWindowIds[10] = {
+    WINDOW_TV_CHANNELS,
+    WINDOW_TV_GUIDE,
+    WINDOW_TV_RECORDINGS,
+    WINDOW_TV_SEARCH,
+    WINDOW_TV_TIMERS,
+    WINDOW_RADIO_CHANNELS,
+    WINDOW_RADIO_GUIDE,
+    WINDOW_RADIO_RECORDINGS,
+    WINDOW_RADIO_SEARCH,
+    WINDOW_RADIO_TIMERS
+};
+
 CPVRManager::CPVRManager(void) :
     CThread("PVRManager"),
     m_channelGroups(NULL),
@@ -84,7 +97,7 @@ CPVRManager::CPVRManager(void) :
     m_bEpgsCreated(false),
     m_progressHandle(NULL),
     m_managerState(ManagerStateStopped),
-    m_bOpenPVRWindow(false)
+    m_openWindowId(0)
 {
   CAnnouncementManager::Get().AddAnnouncer(this);
   ResetProperties();
@@ -191,7 +204,16 @@ void CPVRManager::OnSettingAction(const CSetting *setting)
 
 bool CPVRManager::IsPVRWindowActive(void) const
 {
-  return g_windowManager.IsWindowActive(WINDOW_PVR) ||
+  return g_windowManager.IsWindowActive(WINDOW_TV_CHANNELS) ||
+      g_windowManager.IsWindowActive(WINDOW_TV_GUIDE) ||
+      g_windowManager.IsWindowActive(WINDOW_TV_RECORDINGS) ||
+      g_windowManager.IsWindowActive(WINDOW_TV_TIMERS) ||
+      g_windowManager.IsWindowActive(WINDOW_TV_SEARCH) ||
+      g_windowManager.IsWindowActive(WINDOW_RADIO_CHANNELS) ||
+      g_windowManager.IsWindowActive(WINDOW_RADIO_GUIDE) ||
+      g_windowManager.IsWindowActive(WINDOW_RADIO_RECORDINGS) ||
+      g_windowManager.IsWindowActive(WINDOW_RADIO_TIMERS) ||
+      g_windowManager.IsWindowActive(WINDOW_RADIO_SEARCH) ||
       g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_CHANNEL_MANAGER) ||
       g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_CHANNELS) ||
       g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_GROUP_MANAGER) ||
@@ -202,6 +224,20 @@ bool CPVRManager::IsPVRWindowActive(void) const
       g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_GUIDE_SEARCH) ||
       g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_RECORDING_INFO) ||
       g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_TIMER_SETTING);
+}
+
+bool CPVRManager::IsPVRWindow(int windowId)
+{
+  return (windowId == WINDOW_TV_CHANNELS ||
+          windowId == WINDOW_TV_GUIDE ||
+          windowId == WINDOW_TV_RECORDINGS ||
+          windowId == WINDOW_TV_SEARCH ||
+          windowId == WINDOW_TV_TIMERS ||
+          windowId == WINDOW_RADIO_CHANNELS ||
+          windowId == WINDOW_RADIO_GUIDE ||
+          windowId == WINDOW_RADIO_RECORDINGS ||
+          windowId == WINDOW_RADIO_SEARCH ||
+          windowId == WINDOW_RADIO_TIMERS);
 }
 
 bool CPVRManager::InstallAddonAllowed(const std::string& strAddonId) const
@@ -296,7 +332,7 @@ void CPVRManager::Cleanup(void)
   m_currentFile           = NULL;
   m_bIsSwitchingChannels  = false;
   m_outdatedAddons.clear();
-  m_bOpenPVRWindow = false;
+  m_openWindowId = 0;
   m_bEpgsCreated = false;
 
   for (unsigned int iJobPtr = 0; iJobPtr < m_pendingUpdates.size(); iJobPtr++)
@@ -327,24 +363,24 @@ void CPVRManager::ResetProperties(void)
 class CPVRManagerStartJob : public CJob
 {
 public:
-  CPVRManagerStartJob(bool bOpenPVRWindow = false) :
-    m_bOpenPVRWindow(bOpenPVRWindow) {}
+  CPVRManagerStartJob(int openWindowId = 0) :
+    m_openWindowId(openWindowId) {}
   ~CPVRManagerStartJob(void) {}
 
   bool DoWork(void)
   {
-    g_PVRManager.Start(false, m_bOpenPVRWindow);
+    g_PVRManager.Start(false, m_openWindowId);
     return true;
   }
 private:
-  bool m_bOpenPVRWindow;
+  int m_openWindowId;
 };
 
-void CPVRManager::Start(bool bAsync /* = false */, bool bOpenPVRWindow /* = false */)
+void CPVRManager::Start(bool bAsync /* = false */, int openWindowId /* = 0 */)
 {
   if (bAsync)
   {
-    CPVRManagerStartJob *job = new CPVRManagerStartJob(bOpenPVRWindow);
+    CPVRManagerStartJob *job = new CPVRManagerStartJob(openWindowId);
     CJobManager::GetInstance().AddJob(job, NULL);
     return;
   }
@@ -360,7 +396,7 @@ void CPVRManager::Start(bool bAsync /* = false */, bool bOpenPVRWindow /* = fals
 
   ResetProperties();
   SetState(ManagerStateStarting);
-  m_bOpenPVRWindow = bOpenPVRWindow;
+  m_openWindowId = openWindowId;
 
   /* create and open database */
   if (!m_database)
@@ -436,19 +472,20 @@ void CPVRManager::Process(void)
     Sleep(1000);
   }
 
-  if (IsInitialising())
-    SetState(ManagerStateStarted);
-  else
+  if (!IsInitialising())
     return;
+
+  SetState(ManagerStateStarted);
 
   /* main loop */
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
   g_EpgContainer.Start();
 
-  if (m_bOpenPVRWindow)
+  /* activate startup window */
+  if (m_openWindowId > 0)
   {
-    m_bOpenPVRWindow = false;
-    CApplicationMessenger::Get().ExecBuiltIn("XBMC.ActivateWindowAndFocus(MyPVR, 32,0, 11,0)");
+    g_windowManager.ActivateWindow(m_openWindowId);
+    m_openWindowId = 0;
   }
 
   bool bRestart(false);
@@ -495,7 +532,7 @@ void CPVRManager::Process(void)
   }
   else
   {
-    if (g_windowManager.GetActiveWindow() == WINDOW_PVR)
+    if (IsPVRWindow(g_windowManager.GetActiveWindow()))
       g_windowManager.ActivateWindow(WINDOW_HOME);
   }
 }
@@ -566,9 +603,13 @@ bool CPVRManager::Load(void)
 
   CLog::Log(LOGDEBUG, "PVRManager - %s - active clients found. continue to start", __FUNCTION__);
 
-  CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
-  if (pWindow)
-    pWindow->Reset();
+  /* reset observer for pvr windows */
+  for (std::size_t i = 0; i != ARRAY_SIZE(m_pvrWindowIds); i++)
+  {
+    CGUIWindowPVRBase *pWindow = (CGUIWindowPVRBase *) g_windowManager.GetWindow(m_pvrWindowIds[i]);
+    if (pWindow)
+      pWindow->ResetObservers();
+  }
 
   /* load all channels and groups */
   ShowProgressDialog(g_localizeStrings.Get(19236), 0); // Loading channels from clients

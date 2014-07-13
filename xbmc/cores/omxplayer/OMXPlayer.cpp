@@ -105,7 +105,6 @@
 #include "utils/StreamDetails.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
-#include "pvr/windows/GUIWindowPVR.h"
 #include "pvr/addons/PVRClients.h"
 #include "filesystem/PVRFile.h"
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
@@ -4534,11 +4533,6 @@ bool COMXPlayer::SwitchChannel(const CPVRChannel &channel)
 
   UpdateApplication(0);
   UpdatePlayState(0);
-
-  /* make sure the pvr window is updated */
-  CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
-  if (pWindow)
-    pWindow->SetInvalid();
 
   /* select the new channel */
   m_messenger.Put(new CDVDMsgType<CPVRChannel>(CDVDMsg::PLAYER_CHANNEL_SELECT, channel));

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="PVRHeader">
+		<control type="image">
+			<description>Section header image</description>
+			<left>20</left>
+			<top>3</top>
+			<width>35</width>
+			<height>35</height>
+			<aspectratio>keep</aspectratio>
+			<texture>icon_video.png</texture>
+		</control>
+		<control type="grouplist">
+			<left>65</left>
+			<top>5</top>
+			<width>1000</width>
+			<height>30</height>
+			<orientation>horizontal</orientation>
+			<align>left</align>
+			<itemgap>5</itemgap>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<label>$LOCALIZE[19020]</label>
+				<visible>IsEmpty(Window.Property(IsRadio))</visible>
+			</control>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<label>$LOCALIZE[19021]</label>
+				<visible>!IsEmpty(Window.Property(IsRadio))</visible>
+			</control>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<label>[COLOR=blue] - [/COLOR]$LOCALIZE[19019]</label>
+				<visible>Window.IsActive(TVChannels) | Window.IsActive(RadioChannels)</visible>
+			</control>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<label>[COLOR=blue] - [/COLOR]$LOCALIZE[22020]</label>
+				<visible>Window.IsActive(TVGuide) | Window.IsActive(RadioGuide)</visible>
+			</control>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<label>[COLOR=blue] - [/COLOR]$LOCALIZE[19017]</label>
+				<visible>Window.IsActive(TVRecordings) | Window.IsActive(RadioRecordings)</visible>
+			</control>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<label>[COLOR=blue] - [/COLOR]$LOCALIZE[19040]</label>
+				<visible>Window.IsActive(TVTimers) | Window.IsActive(RadioTimers)</visible>
+			</control>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<label>[COLOR=blue] - [/COLOR]$LOCALIZE[137]</label>
+				<visible>Window.IsActive(TVSearch) | Window.IsActive(RadioSearch)</visible>
+			</control>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<label>$INFO[Control.GetLabel(29),[COLOR=blue] - [/COLOR]]</label>
+			</control>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<label>$INFO[Control.GetLabel(30),[COLOR=blue] - [/COLOR]]</label>
+			</control>
+		</control>
+		<control type="label" id="29">
+			<description>Empty so we can pass the values up one level</description>
+			<visible>False</visible>
+		</control>
+		<control type="label" id="30">
+			<description>Empty so we can pass the values up one level</description>
+			<visible>False</visible>
+		</control>
+	</include>
+	<include name="PVRSideBlade">
+		<control type="group">
+			<left>-250</left>
+			<include>SideBladeLeft</include>
+			<control type="grouplist" id="9000">
+				<left>0</left>
+				<top>60</top>
+				<width>250</width>
+				<height>600</height>
+				<onleft>9000</onleft>
+				<onright>50</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<itemgap>0</itemgap>
+				<control type="label" id="200">
+					<width>250</width>
+					<height>35</height>
+					<font>font12caps</font>
+					<label>33063</label>
+					<textcolor>blue</textcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+				</control>
+				<control type="button" id="100">
+					<description>Channels</description>
+					<left>0</left>
+					<top>0</top>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>19019</label>
+					<onclick condition="IsEmpty(Window.Property(IsRadio))">ActivateWindow(TVChannels)</onclick>
+					<onclick condition="!IsEmpty(Window.Property(IsRadio))">ActivateWindow(RadioChannels)</onclick>
+				</control>
+				<control type="button" id="101">
+					<description>TV Guide</description>
+					<left>0</left>
+					<top>80</top>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>22020</label>
+					<onclick condition="IsEmpty(Window.Property(IsRadio))">ActivateWindow(TVGuide)</onclick>
+					<onclick condition="!IsEmpty(Window.Property(IsRadio))">ActivateWindow(RadioGuide)</onclick>
+				</control>
+				<control type="button" id="102">
+					<description>Recordings</description>
+					<left>0</left>
+					<top>120</top>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>19163</label>
+					<onclick condition="IsEmpty(Window.Property(IsRadio))">ActivateWindow(TVRecordings)</onclick>
+					<onclick condition="!IsEmpty(Window.Property(IsRadio))">ActivateWindow(RadioRecordings)</onclick>
+				</control>
+				<control type="button" id="103">
+					<description>Timers</description>
+					<left>0</left>
+					<top>160</top>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>19040</label>
+					<onclick condition="IsEmpty(Window.Property(IsRadio))">ActivateWindow(TVTimers)</onclick>
+					<onclick condition="!IsEmpty(Window.Property(IsRadio))">ActivateWindow(RadioTimers)</onclick>
+				</control>
+				<control type="button" id="104">
+					<description>Search</description>
+					<left>0</left>
+					<top>200</top>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>137</label>
+					<onclick condition="IsEmpty(Window.Property(IsRadio))">ActivateWindow(TVSearch)</onclick>
+					<onclick condition="!IsEmpty(Window.Property(IsRadio))">ActivateWindow(RadioSearch)</onclick>
+				</control>
+				<control type="label" id="201">
+					<width>250</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>31006</label>
+					<textcolor>blue</textcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+				</control>
+				<control type="button" id="28">
+					<description>Channel Groups</description>
+					<left>0</left>
+					<right>40</right>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>-</label>
+				</control>
+				<control type="button" id="2">
+					<description>View As button</description>
+					<left>0</left>
+					<right>40</right>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>-</label>
+					<!-- <visible>Window.IsActive(TVGuide) | Window.IsActive(RadioGuide)</visible> -->
+				</control>
+				<control type="button" id="3">
+					<description>Sort by button</description>
+					<include>ButtonCommonValues</include>
+					<label>103</label>
+				</control>
+				<control type="togglebutton" id="4">
+					<description>Sort asc</description>
+					<include>ButtonCommonValues</include>
+					<alttexturefocus border="5">button-focus.png</alttexturefocus>
+					<alttexturenofocus>-</alttexturenofocus>
+					<label>31051</label>
+					<altlabel>31050</altlabel>
+					<usealttexture>Container.SortDirection(Ascending)</usealttexture>
+				</control>
+				<include>CommonNowPlaying_Controls</include>
+			</control>
+		</control>
+	</include>
+</includes>

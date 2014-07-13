@@ -91,6 +91,7 @@ typedef enum {
   SortByBitrate,
   SortByRandom,
   SortByChannel,
+  SortByChannelNumber,
   SortByDateTaken
 } SortBy;
 

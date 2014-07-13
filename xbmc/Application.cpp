@@ -252,7 +252,11 @@
 /* PVR related include Files */
 #include "pvr/PVRManager.h"
 #include "pvr/timers/PVRTimers.h"
-#include "pvr/windows/GUIWindowPVR.h"
+#include "pvr/windows/GUIWindowPVRChannels.h"
+#include "pvr/windows/GUIWindowPVRRecordings.h"
+#include "pvr/windows/GUIWindowPVRGuide.h"
+#include "pvr/windows/GUIWindowPVRTimers.h"
+#include "pvr/windows/GUIWindowPVRSearch.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "pvr/dialogs/GUIDialogPVRChannelsOSD.h"
 #include "pvr/dialogs/GUIDialogPVRCutterOSD.h"
@@ -1422,7 +1426,16 @@ bool CApplication::Initialize()
 
     /* Load PVR related Windows and Dialogs */
     g_windowManager.Add(new CGUIDialogTeletext);
-    g_windowManager.Add(new CGUIWindowPVR);
+    g_windowManager.Add(new CGUIWindowPVRChannels(false));
+    g_windowManager.Add(new CGUIWindowPVRRecordings(false));
+    g_windowManager.Add(new CGUIWindowPVRGuide(false));
+    g_windowManager.Add(new CGUIWindowPVRTimers(false));
+    g_windowManager.Add(new CGUIWindowPVRSearch(false));
+    g_windowManager.Add(new CGUIWindowPVRChannels(true));
+    g_windowManager.Add(new CGUIWindowPVRRecordings(true));
+    g_windowManager.Add(new CGUIWindowPVRGuide(true));
+    g_windowManager.Add(new CGUIWindowPVRTimers(true));
+    g_windowManager.Add(new CGUIWindowPVRSearch(true));
     g_windowManager.Add(new CGUIDialogPVRGuideInfo);
     g_windowManager.Add(new CGUIDialogPVRRecordingInfo);
     g_windowManager.Add(new CGUIDialogPVRTimerSettings);
@@ -1483,16 +1496,10 @@ bool CApplication::Initialize()
       CJSONRPC::Initialize();
 #endif
       ADDON::CAddonMgr::Get().StartServices(false);
-      if (g_SkinInfo->GetFirstWindow() == WINDOW_PVR)
-      {
-        g_windowManager.ActivateWindow(WINDOW_HOME);
-        StartPVRManager(true);
-      }
-      else
-      {
-        StartPVRManager(false);
+
+      // let's start the PVR manager and decide if the PVR manager handle the startup window activation
+      if (!StartPVRManager())
         g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
-      }
 
       CStereoscopicsManager::Get().Initialize();
     }
@@ -1589,10 +1596,18 @@ bool CApplication::StartServer(enum ESERVERS eServer, bool bStart, bool bWait/* 
   return ret;
 }
 
-void CApplication::StartPVRManager(bool bOpenPVRWindow /* = false */)
+bool CApplication::StartPVRManager()
 {
-  if (CSettings::Get().GetBool("pvrmanager.enabled"))
-    g_PVRManager.Start(true, bOpenPVRWindow);
+  if (!CSettings::Get().GetBool("pvrmanager.enabled"))
+    return false;
+
+  int firstWindowId = 0;
+  if (g_PVRManager.IsPVRWindow(g_SkinInfo->GetStartWindow()))
+    firstWindowId = g_SkinInfo->GetFirstWindow();
+
+  g_PVRManager.Start(true, firstWindowId);
+
+  return (firstWindowId > 0);
 }
 
 void CApplication::StopPVRManager()
@@ -3397,7 +3412,16 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_SUBTITLES);
 
     /* Delete PVR related windows and dialogs */
-    g_windowManager.Delete(WINDOW_PVR);
+    g_windowManager.Delete(WINDOW_TV_CHANNELS);
+    g_windowManager.Delete(WINDOW_TV_RECORDINGS);
+    g_windowManager.Delete(WINDOW_TV_GUIDE);
+    g_windowManager.Delete(WINDOW_TV_TIMERS);
+    g_windowManager.Delete(WINDOW_TV_SEARCH);
+    g_windowManager.Delete(WINDOW_RADIO_CHANNELS);
+    g_windowManager.Delete(WINDOW_RADIO_RECORDINGS);
+    g_windowManager.Delete(WINDOW_RADIO_GUIDE);
+    g_windowManager.Delete(WINDOW_RADIO_TIMERS);
+    g_windowManager.Delete(WINDOW_RADIO_SEARCH);
     g_windowManager.Delete(WINDOW_DIALOG_PVR_GUIDE_INFO);
     g_windowManager.Delete(WINDOW_DIALOG_PVR_RECORDING_INFO);
     g_windowManager.Delete(WINDOW_DIALOG_PVR_TIMER_SETTING);

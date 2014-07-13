@@ -68,13 +68,13 @@
       <myvideo>XBMC.ActivateWindow(MyVideos)</myvideo>
       <mymusic>XBMC.ActivateWindow(MyMusic)</mymusic>
       <mypictures>XBMC.ActivateWindow(MyPictures)</mypictures>
-      <mytv>XBMC.ActivateWindow(MyPVR)</mytv>
-      <guide>XBMC.ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</guide>
-      <livetv>XBMC.ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</livetv>
-      <liveradio>XBMC.ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</liveradio>
-      <recordedtv>XBMC.ActivateWindowAndFocus(MyPVR, 34,0, 13,0)</recordedtv>
-      <epgsearch>XBMC.ActivateWindowAndFocus(MyPVR, 35,0, 14,0)</epgsearch>
-      <red>XBMC.ActivateWindow(MyPVR)</red>
+      <mytv>XBMC.ActivateWindow(TVChannels)</mytv>
+      <guide>XBMC.ActivateWindow(TVGuide)</guide>
+      <livetv>XBMC.ActivateWindow(TVChannels)</livetv>
+      <liveradio>XBMC.ActivateWindow(RadioChannels)</liveradio>
+      <recordedtv>XBMC.ActivateWindow(TVRecordings)</recordedtv>
+      <epgsearch>XBMC.ActivateWindow(TVSearch)</epgsearch>
+      <red>XBMC.ActivateWindow(TVChannels)</red>
       <green>XBMC.ActivateWindow(MyVideos)</green>
       <yellow>XBMC.ActivateWindow(MyMusic)</yellow>
       <blue>XBMC.ActivateWindow(MyPictures)</blue>
@@ -97,11 +97,42 @@
       <hash>XBMC.ActivateWindow(Settings)</hash>
     </remote>
   </Home>
-  <MyTV>
+  <MyTVRecordings>
     <remote>
       <clear>Delete</clear>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
     </remote>
-  </MyTV>
+  </MyTVRecordings>
+  <MyTVTimers>
+    <remote>
+      <clear>Delete</clear>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
+    </remote>
+  </MyTVTimers>
+  <MyRadioRecordings>
+    <remote>
+      <clear>Delete</clear>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
+    </remote>
+  </MyRadioRecordings>
+  <MyRadioTimers>
+    <remote>
+      <clear>Delete</clear>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
+    </remote>
+  </MyRadioTimers>
   <MyFiles>
     <remote>
       <clear>Delete</clear>
@@ -364,14 +395,6 @@
       <back>PreviousMenu</back>
     </remote>
   </Weather>
-  <TV>
-    <remote>
-      <red>Red</red>
-      <green>Green</green>
-      <yellow>Yellow</yellow>
-      <blue>Blue</blue>
-    </remote>
-  </TV>
   <Settings>
     <remote>
       <back>PreviousMenu</back>

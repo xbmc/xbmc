@@ -20,30 +20,24 @@
  *
  */
 
-#include "GUIWindowPVRCommon.h"
+#include "GUIWindowPVRBase.h"
 #include "epg/EpgSearchFilter.h"
 
 namespace PVR
 {
-  class CGUIWindowPVR;
-
-  class CGUIWindowPVRSearch : public CGUIWindowPVRCommon
+  class CGUIWindowPVRSearch : public CGUIWindowPVRBase
   {
-    friend class CGUIWindowPVR;
-    friend class CGUIWindowPVRCommon;
-
   public:
-    CGUIWindowPVRSearch(CGUIWindowPVR *parent);
+    CGUIWindowPVRSearch(bool bRadio);
     virtual ~CGUIWindowPVRSearch(void) {};
 
-    void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
+    bool OnMessage(CGUIMessage& message);
+    void GetContextButtons(int itemNumber, CContextButtons &buttons);
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-    void UpdateData(bool bUpdateSelectedFile = true);
+    bool Update(const std::string &strDirectory = "", bool updateFilterPath = true);
 
   private:
-
-    bool OnClickButton(CGUIMessage &message);
-    bool OnClickList(CGUIMessage &message);
+    void Search(void);
 
     bool OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);

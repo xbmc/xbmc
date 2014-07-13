@@ -727,9 +727,8 @@
     <ClCompile Include="..\..\xbmc\pvr\timers\PVRTimerInfoTag.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\timers\PVRTimers.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\windows\GUIViewStatePVR.cpp" />
-    <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVR.cpp" />
+    <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVRBase.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVRChannels.cpp" />
-    <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVRCommon.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVRGuide.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVRRecordings.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVRSearch.cpp" />
@@ -1978,9 +1977,8 @@
     <ClInclude Include="..\..\xbmc\pvr\timers\PVRTimerInfoTag.h" />
     <ClInclude Include="..\..\xbmc\pvr\timers\PVRTimers.h" />
     <ClInclude Include="..\..\xbmc\pvr\windows\GUIViewStatePVR.h" />
-    <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVR.h" />
+    <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRBase.h" />
     <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRChannels.h" />
-    <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRCommon.h" />
     <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRGuide.h" />
     <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRRecordings.h" />
     <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRSearch.h" />

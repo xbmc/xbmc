@@ -2302,7 +2302,11 @@ msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr ""
 
-#empty string with id 549
+#: /xbmc/xbmc/pvr/windows/GUIViewStatePVR.cpp
+#: /xbmc/xbmc/utils/SortUtils.cpp
+msgctxt "#549"
+msgid "Number"
+msgstr ""
 
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#550"
@@ -7452,7 +7456,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
 msgctxt "#19017"
-msgid "TV recordings"
+msgid "Recordings"
 msgstr ""
 
 #. Name of a setting, asking to enter the path to a folder that contains icons for TV channels
@@ -7462,6 +7466,7 @@ msgid "Folder with channel icons"
 msgstr ""
 
 #: xbmc/windows/GUIWindowSystemInfo.cpp
+#: skin.confluence
 msgctxt "#19019"
 msgid "Channels"
 msgstr ""
@@ -7651,10 +7656,7 @@ msgctxt "#19064"
 msgid "Go to end"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr ""
+#empty string with id 19065
 
 #. Name of a shortcut to a custom folder for channel icons
 #: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
@@ -7823,7 +7825,8 @@ msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr ""
 
-#empty string with id 19105
+msgctxt "#19105"
+msgid "Please select a channel"
 
 msgctxt "#19106"
 msgid "Next timer on"
@@ -8146,7 +8149,12 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr ""
 
-#empty string with id 19183
+#: system/settings/settings.xml
+msgctxt "#19183"
+msgid "Radio"
+msgstr ""
+
+#empty string with id 19184
 
 #: system/settings/settings.xml
 msgctxt "#19184"
@@ -8604,6 +8612,11 @@ msgstr ""
 #: xbmc/pvr/PVRManager.cpp
 msgctxt "#19286"
 msgid "Searching for channel icons"
+
+#. Label for the default pvr channel group
+#: xbmc/pvr/windows/GUIWindowPVRCommon.cpp
+msgctxt "#19287"
+msgid "All channels"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -12759,6 +12772,7 @@ msgid "Play the"
 msgstr ""
 
 #: addons/skin/touched/
+#: addons/skin/confluence
 msgctxt "#33063"
 msgid "Options"
 msgstr ""
@@ -14130,10 +14144,7 @@ msgctxt "#36218"
 msgid "Category for electronic programming guide settings."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36219"
-msgid "Default electronic programming guide window to show."
-msgstr ""
+#empty string with id 36219
 
 #: system/settings/settings.xml
 msgctxt "#36220"

@@ -20,37 +20,26 @@
  *
  */
 
-#include "GUIWindowPVRCommon.h"
-#include "utils/Observer.h"
-#include "../channels/PVRChannelGroup.h"
+#include "GUIWindowPVRBase.h"
 
 namespace PVR
 {
-  class CGUIWindowPVR;
-
-  class CGUIWindowPVRChannels : public CGUIWindowPVRCommon, private Observer
+  class CGUIWindowPVRChannels : public CGUIWindowPVRBase
   {
-    friend class CGUIWindowPVR;
-
   public:
-    CGUIWindowPVRChannels(CGUIWindowPVR *parent, bool bRadio);
-    virtual ~CGUIWindowPVRChannels(void);
+    CGUIWindowPVRChannels(bool bRadio);
+    virtual ~CGUIWindowPVRChannels(void) {};
 
-    void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
+    bool OnMessage(CGUIMessage& message);
+    void GetContextButtons(int itemNumber, CContextButtons &buttons);
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-    CPVRChannelGroupPtr SelectedGroup(void);
-    void SetSelectedGroup(CPVRChannelGroupPtr group);
-    CPVRChannelGroupPtr SelectNextGroup(void);
-    void UpdateData(bool bUpdateSelectedFile = true);
-    void Notify(const Observable &obs, const ObservableMessage msg);
+    bool Update(const std::string &strDirectory = "", bool updateFilterPath = true);
+    void UpdateButtons(void);
     void ResetObservers(void);
     void UnregisterObservers(void);
     bool OnAction(const CAction &action);
 
   private:
-    bool OnClickButton(CGUIMessage &message);
-    bool OnClickList(CGUIMessage &message);
-
     bool OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonGroupManager(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonHide(CFileItem *item, CONTEXT_BUTTON button);
@@ -66,8 +55,6 @@ namespace PVR
 
     void ShowGroupManager(void);
 
-    CPVRChannelGroupPtr m_selectedGroup;
-    bool              m_bShowHiddenChannels;
-    bool              m_bRadio;
+    bool m_bShowHiddenChannels;
   };
 }
