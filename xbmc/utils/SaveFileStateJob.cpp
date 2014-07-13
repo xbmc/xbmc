@@ -124,9 +124,9 @@ bool CSaveFileStateJob::DoWork()
           }
         }
 
-        if (CMediaSettings::Get().GetCurrentVideoSettings() != CMediaSettings::Get().GetDefaultVideoSettings())
+        if (m_videoSettings != CMediaSettings::Get().GetDefaultVideoSettings())
         {
-          videodatabase.SetVideoSettings(progressTrackingFile, CMediaSettings::Get().GetCurrentVideoSettings());
+          videodatabase.SetVideoSettings(progressTrackingFile, m_videoSettings);
         }
 
         if (m_item.HasVideoInfoTag() && m_item.GetVideoInfoTag()->HasStreamDetails())

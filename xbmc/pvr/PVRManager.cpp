@@ -43,6 +43,7 @@
 #include "windows/GUIWindowPVRCommon.h"
 #include "utils/JobManager.h"
 #include "interfaces/AnnouncementManager.h"
+#include "video/VideoDatabase.h"
 
 #include "PVRManager.h"
 #include "PVRDatabase.h"
@@ -58,6 +59,10 @@
 #include "addons/AddonInstaller.h"
 #include "guilib/Key.h"
 #include "dialogs/GUIDialogPVRChannelManager.h"
+
+#ifdef HAS_VIDEO_PLAYBACK
+#include "cores/VideoRenderers/RenderManager.h"
+#endif
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -729,8 +734,16 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
       pDlgProgress->SetPercentage(70);
       pDlgProgress->Progress();
 
-      /* delete all channel settings */
-      m_database->DeleteChannelSettings();
+      /* delete all channel and recording settings */
+      CVideoDatabase videoDatabase;
+
+      if (videoDatabase.Open())
+      {
+        videoDatabase.EraseVideoSettings("pvr://channels/");
+        videoDatabase.EraseVideoSettings("pvr://recordings/");
+        videoDatabase.Close();
+      }
+      
       pDlgProgress->SetPercentage(80);
       pDlgProgress->Progress();
 
@@ -910,16 +923,6 @@ bool CPVRManager::CheckParentalPIN(const char *strTitle /* = NULL */)
   return bValidPIN;
 }
 
-void CPVRManager::SaveCurrentChannelSettings(void)
-{
-  m_addons->SaveCurrentChannelSettings();
-}
-
-void CPVRManager::LoadCurrentChannelSettings()
-{
-  m_addons->LoadCurrentChannelSettings();
-}
-
 void CPVRManager::SetPlayingGroup(CPVRChannelGroupPtr group)
 {
   if (m_channelGroups && group)
@@ -958,12 +961,6 @@ bool CPVRChannelsUpdateJob::DoWork(void)
 bool CPVRChannelGroupsUpdateJob::DoWork(void)
 {
   return g_PVRChannelGroups->Update(false);
-}
-
-bool CPVRChannelSettingsSaveJob::DoWork(void)
-{
-  g_PVRManager.SaveCurrentChannelSettings();
-  return true;
 }
 
 bool CPVRManager::OpenLiveStream(const CFileItem &channel)
@@ -1056,6 +1053,9 @@ void CPVRManager::CloseStream(void)
       m_channelGroups->SetLastPlayedGroup(group);
 
       bPersistChanges = true;
+      
+      // store channel settings
+      g_application.SaveFileState();
     }
 
     m_addons->CloseStream();
@@ -1265,9 +1265,6 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
     m_channelGroups->SetLastPlayedGroup(GetPlayingGroup(currentChannel->IsRadio()));
   }
 
-  // store channel settings
-  SaveCurrentChannelSettings();
-
   // will be deleted by CPVRChannelSwitchJob::DoWork()
   CFileItem* previousFile = m_currentFile;
   m_currentFile = NULL;
@@ -1293,6 +1290,13 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
     // switch successful
     bSwitched = true;
 
+    // save previous and load new channel's settings
+    g_application.SaveFileState();
+    g_application.LoadVideoSettings(channel.Path());
+    
+    // reload the render manager so view mode gets changed
+    g_renderManager.PreInit();
+    
     CSingleLock lock(m_critSection);
     m_currentFile = new CFileItem(channel);
     m_bIsSwitchingChannels = false;
@@ -1477,11 +1481,6 @@ void CPVRManager::TriggerChannelsUpdate(void)
 void CPVRManager::TriggerChannelGroupsUpdate(void)
 {
   QueueJob(new CPVRChannelGroupsUpdateJob());
-}
-
-void CPVRManager::TriggerSaveChannelSettings(void)
-{
-  QueueJob(new CPVRChannelSettingsSaveJob());
 }
 
 void CPVRManager::TriggerSearchMissingChannelIcons(void)

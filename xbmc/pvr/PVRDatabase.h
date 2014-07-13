@@ -59,7 +59,7 @@ namespace PVR
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    virtual int GetSchemaVersion() const { return 24; };
+    virtual int GetSchemaVersion() const { return 25; };
 
     /*!
      * @brief Get the default sqlite database filename.
@@ -104,39 +104,6 @@ namespace PVR
      * @return The amount of channels that were added.
      */
     int Get(CPVRChannelGroupInternal &results);
-
-    //@}
-
-    /*! @name Channel settings methods */
-    //@{
-
-    /*!
-     * @brief Remove all channel settings from the database.
-     * @return True if all channels were removed successfully, false if not.
-     */
-    bool DeleteChannelSettings();
-
-    /*!
-     * @brief Remove channel settings from the database.
-     * @return True if channel were removed successfully, false if not.
-     */
-    bool DeleteChannelSettings(const CPVRChannel &channel);
-
-    /*!
-     * @brief Get the channel settings from the database.
-     * @param channel The channel to get the settings for.
-     * @param settings Store the settings in here.
-     * @return True if the settings were fetched successfully, false if not.
-     */
-    bool GetChannelSettings(const CPVRChannel &channel, CVideoSettings &settings);
-
-    /*!
-     * @brief Store channel settings in the database.
-     * @param channel The channel to store the settings for.
-     * @param settings The settings to store.
-     * @return True if the settings were stored successfully, false if not.
-     */
-    bool PersistChannelSettings(const CPVRChannel &channel, const CVideoSettings &settings);
 
     //@}
 
