@@ -50,7 +50,6 @@
 #include "Util.h"
 
 using namespace std;
-using namespace PVR;
 using namespace XFILE;
 
 namespace ADDON
@@ -158,7 +157,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         else if (type == ADDON_PVRDLL)
         {
 #ifdef HAS_PVRCLIENTS
-          return AddonPtr(new CPVRClient(props));
+          return AddonPtr(new PVR::CPVRClient(props));
 #endif
         }
         else if (type == ADDON_AUDIOENCODER)
@@ -663,7 +662,7 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
     case ADDON_VIZ_LIBRARY:
       return AddonPtr(new CAddonLibrary(addonProps));
     case ADDON_PVRDLL:
-      return AddonPtr(new CPVRClient(addonProps));
+      return AddonPtr(new PVR::CPVRClient(addonProps));
     case ADDON_AUDIOENCODER:
       return AddonPtr(new CAudioEncoder(addonProps));
     case ADDON_REPOSITORY:
