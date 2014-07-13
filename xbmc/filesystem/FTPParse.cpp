@@ -30,6 +30,8 @@
 #include <cmath>
 #include "FTPParse.h"
 
+using namespace std;
+
 CFTPParse::CFTPParse()
 {
   m_name = "";

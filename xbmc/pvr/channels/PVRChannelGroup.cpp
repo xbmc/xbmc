@@ -247,7 +247,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 
   /* fetch files in icon path for fast lookup */
   CFileItemList fileItemList;
-  CDirectory::GetDirectory(iconPath, fileItemList, ".jpg|.png|.tbn");
+  XFILE::CDirectory::GetDirectory(iconPath, fileItemList, ".jpg|.png|.tbn");
 
   if (fileItemList.IsEmpty())
     return;

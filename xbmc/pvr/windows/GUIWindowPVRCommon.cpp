@@ -671,7 +671,7 @@ bool CGUIWindowPVRCommon::PlayRecording(CFileItem *item, bool bPlayMinimized /* 
       CStdString dir = stream.substr(0, found).c_str();
 
       CFileItemList items;
-      CDirectory::GetDirectory(dir, items);
+      XFILE::CDirectory::GetDirectory(dir, items);
       items.Sort(SortByFile, SortOrderAscending);
 
       vector<int> stack;
@@ -684,7 +684,7 @@ bool CGUIWindowPVRCommon::PlayRecording(CFileItem *item, bool bPlayMinimized /* 
       if (stack.size() > 0)
       {
         /* If we have a stack change the path of the item to it */
-        CStackDirectory dir;
+        XFILE::CStackDirectory dir;
         CStdString stackPath = dir.ConstructStackPath(items, stack);
         item->SetPath(stackPath);
       }

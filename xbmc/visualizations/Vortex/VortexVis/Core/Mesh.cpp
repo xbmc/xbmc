@@ -21,6 +21,8 @@
 #include <new>
 #include <stdio.h>
 
+using namespace std;
+
 Mesh::Mesh()
 {
 	m_iRefCount = 1;

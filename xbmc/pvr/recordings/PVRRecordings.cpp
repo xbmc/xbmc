@@ -383,7 +383,7 @@ bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)
     if (item->m_bIsFolder)
     {
       CStdString strPath = item->GetPath();
-      CDirectory::GetDirectory(strPath, items);
+      XFILE::CDirectory::GetDirectory(strPath, items);
     }
     else
       items.Add(item);

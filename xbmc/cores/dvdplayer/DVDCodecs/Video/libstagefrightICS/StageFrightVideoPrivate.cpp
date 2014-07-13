@@ -59,6 +59,8 @@ int NP2( unsigned x ) {
   return ++x;
 }
 
+using namespace android;
+
 CStageFrightVideoPrivate::CStageFrightVideoPrivate()
     : decode_thread(NULL), source(NULL)
     , eglDisplay(EGL_NO_DISPLAY), eglSurface(EGL_NO_SURFACE), eglContext(EGL_NO_CONTEXT)

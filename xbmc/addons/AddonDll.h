@@ -34,8 +34,6 @@
 #include "interfaces/AnnouncementManager.h"
 #include "utils/XMLUtils.h"
 
-using namespace XFILE;
-
 namespace ADDON
 {
   template<class TheDll, typename TheStruct, typename TheProps>
@@ -172,8 +170,8 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
     URIUtils::RemoveExtension(strFileName);
     strFileName += "-" + ID() + extension;
 
-    if (!CFile::Exists(strFileName))
-      CFile::Copy(LibPath(), strFileName);
+    if (!XFILE::CFile::Exists(strFileName))
+      XFILE::CFile::Copy(LibPath(), strFileName);
 
     CLog::Log(LOGNOTICE, "ADDON: Loaded virtual child addon %s", strFileName.c_str());
   }
@@ -182,19 +180,19 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
 #if defined(TARGET_ANDROID)
   // Android libs MUST live in this path, else multi-arch will break.
   // The usual soname requirements apply. no subdirs, and filename is ^lib.*\.so$
-  if (!CFile::Exists(strFileName))
+  if (!XFILE::CFile::Exists(strFileName))
   {
     CStdString tempbin = getenv("XBMC_ANDROID_LIBS");
     strFileName = tempbin + "/" + m_strLibName;
   }
 #endif
-  if (!CFile::Exists(strFileName))
+  if (!XFILE::CFile::Exists(strFileName))
   {
     CStdString temp = CSpecialProtocol::TranslatePath("special://xbmc/");
     CStdString tempbin = CSpecialProtocol::TranslatePath("special://xbmcbin/");
     strFileName.erase(0, temp.size());
     strFileName = tempbin + strFileName;
-    if (!CFile::Exists(strFileName))
+    if (!XFILE::CFile::Exists(strFileName))
     {
       CLog::Log(LOGERROR, "ADDON: Could not locate %s", m_strLibName.c_str());
       return false;

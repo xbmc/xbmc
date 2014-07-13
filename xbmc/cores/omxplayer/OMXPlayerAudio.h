@@ -37,8 +37,6 @@
 #include "utils/BitstreamStats.h"
 #include "xbmc/linux/DllBCM.h"
 
-using namespace std;
-
 class OMXPlayerAudio : public CThread
 {
 protected:

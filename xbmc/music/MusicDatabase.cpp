@@ -78,6 +78,7 @@ using ADDON::AddonPtr;
 
 #ifdef HAS_DVD_DRIVE
 using namespace CDDB;
+using namespace MEDIA_DETECT;
 #endif
 
 static void AnnounceRemove(const std::string& content, int id)

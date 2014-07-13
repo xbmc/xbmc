@@ -27,6 +27,8 @@
 #include "MatrixGLES.h"
 #include "utils/log.h"
 
+using namespace Shaders;
+
 CGUIShader::CGUIShader( const char *shader ) : CGLSLShaderProgram("guishader_vert.glsl", shader)
 {
   // Initialise values

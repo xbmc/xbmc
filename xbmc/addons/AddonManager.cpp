@@ -53,6 +53,7 @@
 
 using namespace std;
 using namespace PVR;
+using namespace XFILE;
 
 namespace ADDON
 {

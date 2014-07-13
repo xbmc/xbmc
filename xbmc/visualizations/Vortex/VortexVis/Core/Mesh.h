@@ -23,13 +23,11 @@
 #include "Renderer.h"
 #include <string>
 
-using namespace std;
-
 class Mesh
 {
 public:
 		Mesh();
-		void CreateTextMesh( string& InString, bool bCentered = true );
+		void CreateTextMesh( std::string& InString, bool bCentered = true );
 
 		void AddRef();
 		void Release();

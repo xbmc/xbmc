@@ -766,7 +766,7 @@ bool CPVRChannel::IsUserSetIcon(void) const
 
 bool CPVRChannel::IsIconExists() const
 {
-  return  CFile::Exists(IconPath());
+  return XFILE::CFile::Exists(IconPath());
 }
 
 bool CPVRChannel::IsUserSetName() const
