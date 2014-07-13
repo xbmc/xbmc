@@ -59,6 +59,9 @@ namespace ADDON
 
     static VECADDONS Parse(const DirInfo& dir);
     static std::string FetchChecksum(const std::string& url);
+
+    virtual void OnPostInstall(bool restart, bool update);
+
   private:
     CRepository(const CRepository &rhs);
   };

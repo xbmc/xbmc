@@ -118,6 +118,8 @@ namespace ADDON
     virtual void OnDisabled() =0;
     virtual void OnEnabled() =0;
     virtual AddonPtr GetRunningInstance() const=0;
+    virtual bool OnPreInstall() =0;
+    virtual void OnPostInstall(bool restart, bool update) =0;
     virtual bool CanInstall(const std::string& referer) =0;
 
   protected:

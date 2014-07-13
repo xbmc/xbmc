@@ -81,6 +81,19 @@ AddonPtr CPVRClient::GetRunningInstance() const
   return CAddon::GetRunningInstance();
 }
 
+bool CPVRClient::OnPreInstall()
+{
+  // stop the pvr manager, so running pvr add-ons are stopped and closed
+  PVR::CPVRManager::Get().Stop();
+  return false;
+}
+
+void CPVRClient::OnPostInstall(bool restart, bool update)
+{
+  // (re)start the pvr manager
+  PVR::CPVRManager::Get().Start(true);
+}
+
 bool CPVRClient::CanInstall(const std::string &referer)
 {
   if (!PVR::CPVRManager::Get().InstallAddonAllowed(ID()))

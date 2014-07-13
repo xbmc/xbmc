@@ -49,6 +49,8 @@ namespace ADDON
     START_OPTION GetStartOption() { return m_startOption; }
     virtual void OnDisabled();
     virtual void OnEnabled();
+    virtual bool OnPreInstall();
+    virtual void OnPostInstall(bool restart, bool update);
 
   protected:
     void BuildServiceType();

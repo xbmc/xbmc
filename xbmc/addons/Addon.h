@@ -192,6 +192,9 @@ public:
    */
   virtual AddonPtr GetRunningInstance() const { return AddonPtr(); }
 
+  /*! \brief callbacks for special install/uninstall behaviour */
+  virtual bool OnPreInstall() { return false; };
+  virtual void OnPostInstall(bool restart, bool update) {};
   virtual bool CanInstall(const std::string& referer) { return true; }
 protected:
   friend class CAddonCallbacksAddon;

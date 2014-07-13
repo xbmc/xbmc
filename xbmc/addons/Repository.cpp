@@ -28,6 +28,7 @@
 #include "filesystem/PluginDirectory.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
+#include "utils/JobManager.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
@@ -207,6 +208,14 @@ VECADDONS CRepository::Parse(const DirInfo& dir)
   }
 
   return result;
+}
+
+void CRepository::OnPostInstall(bool restart, bool update)
+{
+  VECADDONS addons;
+  AddonPtr repo(new CRepository(*this));
+  addons.push_back(repo);
+  CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(addons), &CAddonInstaller::Get());
 }
 
 CRepositoryUpdateJob::CRepositoryUpdateJob(const VECADDONS &repos)
