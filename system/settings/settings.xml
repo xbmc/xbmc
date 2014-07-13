@@ -2746,7 +2746,7 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
-        <setting id="debug.setextraloglevel" type="list[integer]" parent="debug.extralogging" label="668" help="36510">
+        <setting id="debug.setextraloglevel" type="list[integer]" parent="debug.extralogging" label="668" help="36534">
           <level>1</level>
           <default></default>
           <constraints>
