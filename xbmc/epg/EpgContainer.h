@@ -47,11 +47,6 @@ namespace EPG
 
   public:
     /*!
-     * @brief Create a new EPG table container.
-     */
-    CEpgContainer(void);
-
-    /*!
      * @brief Destroy this instance.
      */
     virtual ~CEpgContainer(void);
@@ -291,5 +286,11 @@ namespace EPG
     CGUIDialogProgressBarHandle *  m_progressHandle; /*!< the progress dialog that is visible when updating the first time */
     CCriticalSection               m_critSection;    /*!< a critical section for changes to this container */
     CEvent                         m_updateEvent;    /*!< trigger when an update finishes */
+    
+  private:
+    /*!
+     * @brief Create a new EPG table container.
+     */
+    CEpgContainer(void);
   };
 }
