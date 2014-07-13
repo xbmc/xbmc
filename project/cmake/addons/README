@@ -54,7 +54,7 @@ http://www.cmake.org/cmake/help/v2.8.8/cmake.html#section_Generators for a list.
 
 In case of additional options the call might look like this
 
-  cmake <path> -G <generator> \
+  cmake <path> [-G <generator>] \
         -DCMAKE_BUILD_TYPE=Release \
         -DXBMCROOT="<path-to-xbmc-root>" \
         -DARCH_DEFINES="-DTARGET_LINUX" \
