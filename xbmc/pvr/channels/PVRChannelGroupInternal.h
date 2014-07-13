@@ -92,7 +92,7 @@ namespace PVR
     /*!
      * @see CPVRChannelGroup::MoveChannel
      */
-    bool MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb = true);
+    bool MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber);
 
     /*!
      * @see CPVRChannelGroup::GetMembers

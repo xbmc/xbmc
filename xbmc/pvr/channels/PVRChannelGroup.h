@@ -120,10 +120,9 @@ namespace PVR
      * @brief Move a channel from position iOldIndex to iNewIndex.
      * @param iOldChannelNumber The channel number of the channel to move.
      * @param iNewChannelNumber The new channel number.
-     * @param bSaveInDb If true, save this change in the database.
      * @return True if the channel was moved successfully, false otherwise.
      */
-    virtual bool MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb = true);
+    virtual bool MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber);
 
     /*!
      * @brief Search missing channel icons for all known channels.

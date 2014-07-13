@@ -192,7 +192,7 @@ bool CPVRChannelGroup::SetChannelNumber(const CPVRChannel &channel, unsigned int
   return bReturn;
 }
 
-bool CPVRChannelGroup::MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb /* = true */)
+bool CPVRChannelGroup::MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber)
 {
   if (iOldChannelNumber == iNewChannelNumber)
     return true;
@@ -223,11 +223,7 @@ bool CPVRChannelGroup::MoveChannel(unsigned int iOldChannelNumber, unsigned int 
   Renumber();
 
   m_bChanged = true;
-
-  if (bSaveInDb)
-    bReturn = Persist();
-  else
-    bReturn = true;
+  bReturn = Persist();
 
   CLog::Log(LOGNOTICE, "CPVRChannelGroup - %s - %s channel '%s' moved to channel number '%d'",
       __FUNCTION__, (m_bRadio ? "radio" : "tv"), entry.channel->ChannelName().c_str(), iNewChannelNumber);
