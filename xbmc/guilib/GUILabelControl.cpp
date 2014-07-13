@@ -74,59 +74,6 @@ bool CGUILabelControl::UpdateColors()
   return changed;
 }
 
-typedef struct InsertPointInfo
-{
-  typedef enum Type
-  {
-    HEAD = 0,
-    HEAD_AND_TAIL,
-    TAIL,
-  } Type;
-
-  bool operator < (const InsertPointInfo& info) const
-  {
-    if (pos < info.pos)
-      return true;
-    if (pos > info.pos)
-      return false;
-    // TAIL always ahead HEAD at same pos.
-    if (type > info.type)
-      return true;
-    if (type < info.type)
-      return false;
-    if (type == HEAD)
-    {
-      // HEADs in same pos, larger block's HEAD ahead
-      if (blockLength > info.blockLength)
-        return true;
-      if (blockLength < info.blockLength)
-        return false;
-      // same pos, type, blocklength, then lower priority HEAD ahead.
-      // then the higher priority block will nested in the lower priority one.
-      return priority < info.priority;
-    }
-    else if (type == TAIL)
-    {
-      // TAILs in same pos, smaill block's TAIL ahead
-      if (blockLength < info.blockLength)
-        return true;
-      if (blockLength > info.blockLength)
-        return false;
-      // same pos, type, blocklength, then higher priority TAIL ahead.
-      return priority > info.priority;
-    }
-    else
-      // order type HEAD_AND_TAIL by priority, higher ahead.
-      return priority > info.priority;
-  }
-
-  int pos;
-  Type type;
-  int blockLength;
-  int priority; // only used when same pos, same type, same blocklength
-  CStdStringW text;
-} InsertPointInfo;
-
 void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
 {
   CStdString label(m_infoLabel.GetLabel(m_parentID));
