@@ -364,11 +364,11 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
   // grab the local addon, if it's available
   m_localAddon.reset();
   m_addon.reset();
-  if (CAddonMgr::Get().GetAddon(item->GetProperty("Addon.ID").asString(), m_localAddon)) // sets m_addon if installed regardless of enabled state
+  if (CAddonMgr::Get().GetAddon(item->GetProperty("Addon.ID").asString(), m_localAddon)) // sets m_localAddon if installed regardless of enabled state
     m_item->SetProperty("Addon.Enabled", "true");
   else
     m_item->SetProperty("Addon.Enabled", "false");
-  m_item->SetProperty("Addon.Installed", m_addon ? "true" : "false");
+  m_item->SetProperty("Addon.Installed", m_localAddon ? "true" : "false");
 
   CAddonDatabase database;
   database.Open();
