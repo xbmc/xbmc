@@ -616,15 +616,6 @@ void CUtil::GetDVDDriveIcon(const std::string& strPath, std::string& strIcon)
 
   if ( URIUtils::IsDVD(strPath) )
   {
-#ifdef HAS_DVD_DRIVE
-    CCdInfo* pInfo = g_mediaManager.GetCdInfo();
-    //  xbox DVD
-    if ( pInfo != NULL && pInfo->IsUDFX( 1 ) )
-    {
-      strIcon = "DefaultXboxDVD.png";
-      return ;
-    }
-#endif
     strIcon = "DefaultDVDRom.png";
     return ;
   }

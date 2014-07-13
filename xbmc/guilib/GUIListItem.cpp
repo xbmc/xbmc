@@ -203,10 +203,6 @@ std::string CGUIListItem::GetOverlayImage() const
     return "OverlayRAR.png";
   case ICON_OVERLAY_ZIP:
     return "OverlayZIP.png";
-  case ICON_OVERLAY_TRAINED:
-    return "OverlayTrained.png";
-  case ICON_OVERLAY_HAS_TRAINER:
-    return "OverlayHasTrainer.png";
   case ICON_OVERLAY_LOCKED:
     return "OverlayLocked.png";
   case ICON_OVERLAY_UNWATCHED:
