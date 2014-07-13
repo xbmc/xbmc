@@ -178,6 +178,15 @@ public:
 
   void MarkAsDisabled() { m_enabled = false; }
 
+  /*! \brief callback for when this add-on is disabled.
+   Use to perform any needed actions (e.g. stop a service)
+   */
+  virtual void OnDisabled() {};
+
+  /*! \brief callback for when this add-on is enabled.
+   Use to perform any needed actions (e.g. start a service)
+   */
+  virtual void OnEnabled() {};
 protected:
   friend class CAddonCallbacksAddon;
 

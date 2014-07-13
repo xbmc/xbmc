@@ -58,6 +58,9 @@ namespace PVR
     CPVRClient(const cp_extension_t *ext);
     ~CPVRClient(void);
 
+    virtual void OnDisabled();
+    virtual void OnEnabled();
+
     /** @name PVR add-on methods */
     //@{
 

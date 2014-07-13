@@ -113,4 +113,14 @@ void CService::BuildServiceType()
   }
 }
 
+void CService::OnDisabled()
+{
+  Stop();
+}
+
+void CService::OnEnabled()
+{
+  Start();
+}
+
 }

@@ -56,6 +56,19 @@ CPVRClient::~CPVRClient(void)
   SAFE_DELETE(m_pInfo);
 }
 
+void CPVRClient::OnDisabled()
+{
+  // restart the PVR manager if we're disabling a client
+  if (CPVRManager::Get().IsStarted())
+    CPVRManager::Get().Start(true);
+}
+
+void CPVRClient::OnEnabled()
+{
+  // restart the PVR manager if we're enabling a client
+  CPVRManager::Get().Start(true);
+}
+
 void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
 {
   /* initialise members */

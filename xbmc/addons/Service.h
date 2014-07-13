@@ -47,6 +47,8 @@ namespace ADDON
     bool Stop();
     TYPE GetServiceType() { return m_type; }
     START_OPTION GetStartOption() { return m_startOption; }
+    virtual void OnDisabled();
+    virtual void OnEnabled();
 
   protected:
     void BuildServiceType();
