@@ -348,13 +348,13 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channe
   return bReturn;
 }
 
-void CPVRChannelGroupInternal::CreateChannelEpg(CPVRChannelPtr channel, bool bForce /* = false */)
+void CPVRChannelGroupInternal::CreateChannelEpg(CPVRChannelPtr channel)
 {
   if (!channel)
     return;
 
   CSingleLock lock(channel->m_critSection);
-  if (!channel->m_bEPGCreated || bForce)
+  if (!channel->m_bEPGCreated)
   {
     CEpg *epg = g_EpgContainer.CreateChannelEpg(channel);
     if (epg)
@@ -369,7 +369,7 @@ void CPVRChannelGroupInternal::CreateChannelEpg(CPVRChannelPtr channel, bool bFo
   }
 }
 
-bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
+bool CPVRChannelGroupInternal::CreateChannelEpgs()
 {
   if (!g_EpgContainer.IsStarted())
     return false;

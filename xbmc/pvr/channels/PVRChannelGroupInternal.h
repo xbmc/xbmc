@@ -106,10 +106,9 @@ namespace PVR
 
     /*!
      * @brief Create an EPG table for each channel.
-     * @brief bForce Create the tables, even if they already have been created before.
      * @return True if all tables were created successfully, false otherwise.
      */
-    bool CreateChannelEpgs(bool bForce = false);
+    bool CreateChannelEpgs();
 
     bool AddNewChannel(const CPVRChannel &channel, unsigned int iChannelNumber = 0) { UpdateFromClient(channel, iChannelNumber); return true; }
 
@@ -171,7 +170,7 @@ namespace PVR
      */
     void UpdateChannelPaths(void);
 
-    void CreateChannelEpg(CPVRChannelPtr channel, bool bForce = false);
+    void CreateChannelEpg(CPVRChannelPtr channel);
 
     int m_iHiddenChannels; /*!< the amount of hidden channels in this container */
   };

@@ -1317,7 +1317,7 @@ bool CPVRChannelGroup::IsSelectedGroup(void) const
   return m_bSelectedGroup;
 }
 
-bool CPVRChannelGroup::CreateChannelEpgs(bool bForce /* = false */)
+bool CPVRChannelGroup::CreateChannelEpgs()
 {
   /* used only by internal channel groups */
   return true;
