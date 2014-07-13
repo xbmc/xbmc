@@ -600,6 +600,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
 
 extern "C" void __stdcall init_emu_environ();
 extern "C" void __stdcall update_emu_environ();
+extern "C" void __stdcall cleanup_emu_environ();
 
 //
 // Utility function used to copy files from the application bundle
@@ -3658,6 +3659,8 @@ void CApplication::Stop(int exitCode)
   // we may not get to finish the run cycle but exit immediately after a call to g_application.Stop()
   // so we may never get to Destroy() in CXBApplicationEx::Run(), we call it here.
   Destroy();
+  cleanup_emu_environ();
+  CTimeUtils::Close();
 
   //
   Sleep(200);

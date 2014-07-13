@@ -107,8 +107,6 @@ char **dll__environ = dll__environ_imp;
 
 CCriticalSection dll_cs_environ;
 
-#define dll_environ    (*dll___p__environ())   /* pointer to environment table */
-
 extern "C" void __stdcall init_emu_environ()
 {
   memset(dll__environ, 0, EMU_MAX_ENVIRONMENT_ITEMS + 1);
@@ -222,6 +220,15 @@ extern "C" void __stdcall update_emu_environ()
     // this works but leaves the variable
     dll_putenv( "HTTP_PROXY=" );
     dll_putenv( "HTTPS_PROXY=" );
+  }
+}
+
+extern "C" void __stdcall cleanup_emu_environ()
+{
+  for (int i = 0; i < EMU_MAX_ENVIRONMENT_ITEMS; i++)
+  {
+    free(dll__environ[i]);
+    dll__environ[i] = NULL;
   }
 }
 
