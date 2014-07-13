@@ -61,6 +61,7 @@ namespace PVR
     virtual void OnDisabled();
     virtual void OnEnabled();
     virtual ADDON::AddonPtr GetRunningInstance() const;
+    virtual bool CanInstall(const std::string &referer);
 
     /** @name PVR add-on methods */
     //@{

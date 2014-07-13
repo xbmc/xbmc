@@ -191,6 +191,8 @@ public:
   /*! \brief retrieve the running instance of an add-on if it persists while running.
    */
   virtual AddonPtr GetRunningInstance() const { return AddonPtr(); }
+
+  virtual bool CanInstall(const std::string& referer) { return true; }
 protected:
   friend class CAddonCallbacksAddon;
 

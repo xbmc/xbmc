@@ -26,7 +26,6 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/File.h"
 #include "filesystem/PluginDirectory.h"
-#include "pvr/PVRManager.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -282,10 +281,7 @@ bool CRepositoryUpdateJob::DoWork()
         if (URIUtils::IsInternetStream(newAddon->Path()))
           referer = StringUtils::Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().asString().c_str());
 
-        if (newAddon->Type() == ADDON_PVRDLL &&
-            !PVR::CPVRManager::Get().InstallAddonAllowed(newAddon->ID()))
-          PVR::CPVRManager::Get().MarkAsOutdated(addon->ID(), referer);
-        else
+        if (!newAddon->CanInstall(referer))
           CAddonInstaller::Get().Install(addon->ID(), true, referer);
       }
       else
