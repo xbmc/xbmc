@@ -417,7 +417,7 @@ bool CEpgContainer::RemoveOldEntries(void)
   return true;
 }
 
-bool CEpgContainer::DeleteEpg(const CEpg &epg, bool bDeleteFromDatabase /* = false */)
+bool CEpgContainer::DeleteEpg(const CEpg &epg)
 {
   if (epg.EpgID() < 0)
     return false;
@@ -429,7 +429,7 @@ bool CEpgContainer::DeleteEpg(const CEpg &epg, bool bDeleteFromDatabase /* = fal
     return false;
 
   CLog::Log(LOGDEBUG, "deleting EPG table %s (%d)", epg.Name().c_str(), epg.EpgID());
-  if (bDeleteFromDatabase && !m_bIgnoreDbForClient && m_database.IsOpen())
+  if (!m_bIgnoreDbForClient && m_database.IsOpen())
     m_database.Delete(*it->second);
 
   it->second->UnregisterObserver(this);
@@ -576,7 +576,7 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   }
 
   for (vector<CEpg*>::iterator it = invalidTables.begin(); it != invalidTables.end(); it++)
-    DeleteEpg(**it, true);
+    DeleteEpg(**it);
 
   if (bInterrupted)
   {

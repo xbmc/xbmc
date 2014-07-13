@@ -98,10 +98,9 @@ namespace EPG
     /*!
      * @brief Delete an EPG table from this container.
      * @param epg The table to delete.
-     * @param bDeleteFromDatabase Delete this table from the database too if true.
      * @return
      */
-    virtual bool DeleteEpg(const CEpg &epg, bool bDeleteFromDatabase = false);
+    virtual bool DeleteEpg(const CEpg &epg);
 
     /*!
      * @brief Process a notification from an observable.
