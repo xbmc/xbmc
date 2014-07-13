@@ -39,7 +39,6 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "URL.h"
-#include "pvr/PVRManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -762,17 +761,7 @@ CAddonUnInstallJob::CAddonUnInstallJob(const AddonPtr &addon)
 
 bool CAddonUnInstallJob::DoWork()
 {
-  if (m_addon->Type() == ADDON_PVRDLL)
-  {
-    // stop the pvr manager, so running pvr add-ons are stopped and closed
-    PVR::CPVRManager::Get().Stop();
-  }
-  if (m_addon->Type() == ADDON_SERVICE)
-  {
-    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(m_addon);
-    if (service)
-      service->Stop();
-  }
+  m_addon->OnPreUnInstall();
 
   AddonPtr repoPtr = CAddonInstallJob::GetRepoForAddon(m_addon);
   RepositoryPtr therepo = boost::dynamic_pointer_cast<CRepository>(repoPtr);
@@ -797,13 +786,6 @@ bool CAddonUnInstallJob::DoWork()
 
 void CAddonUnInstallJob::OnPostUnInstall()
 {
-  if (m_addon->Type() == ADDON_REPOSITORY)
-  {
-    CAddonDatabase database;
-    database.Open();
-    database.DeleteRepository(m_addon->ID());
-  }
-
   bool bSave(false);
   CFileItemList items;
   XFILE::CFavouritesDirectory::Load(items);
@@ -819,9 +801,5 @@ void CAddonUnInstallJob::OnPostUnInstall()
   if (bSave)
     CFavouritesDirectory::Save(items);
 
-  if (m_addon->Type() == ADDON_PVRDLL)
-  {
-    if (CSettings::Get().GetBool("pvrmanager.enabled"))
-      PVR::CPVRManager::Get().Start(true);
-  }
+  m_addon->OnPostUnInstall();
 }

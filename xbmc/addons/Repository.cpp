@@ -218,6 +218,13 @@ void CRepository::OnPostInstall(bool restart, bool update)
   CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(addons), &CAddonInstaller::Get());
 }
 
+void CRepository::OnPostUnInstall()
+{
+  CAddonDatabase database;
+  database.Open();
+  database.DeleteRepository(ID());
+}
+
 CRepositoryUpdateJob::CRepositoryUpdateJob(const VECADDONS &repos)
   : m_repos(repos)
 {

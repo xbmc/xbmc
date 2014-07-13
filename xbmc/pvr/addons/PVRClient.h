@@ -63,6 +63,8 @@ namespace PVR
     virtual ADDON::AddonPtr GetRunningInstance() const;
     virtual bool OnPreInstall();
     virtual void OnPostInstall(bool restart, bool update);
+    virtual void OnPreUnInstall();
+    virtual void OnPostUnInstall();
     virtual bool CanInstall(const std::string &referer);
 
     /** @name PVR add-on methods */

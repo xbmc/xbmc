@@ -94,6 +94,18 @@ void CPVRClient::OnPostInstall(bool restart, bool update)
   PVR::CPVRManager::Get().Start(true);
 }
 
+void CPVRClient::OnPreUnInstall()
+{
+  // stop the pvr manager, so running pvr add-ons are stopped and closed
+  PVR::CPVRManager::Get().Stop();
+}
+
+void CPVRClient::OnPostUnInstall()
+{
+  if (CSettings::Get().GetBool("pvrmanager.enabled"))
+    PVR::CPVRManager::Get().Start(true);
+}
+
 bool CPVRClient::CanInstall(const std::string &referer)
 {
   if (!PVR::CPVRManager::Get().InstallAddonAllowed(ID()))

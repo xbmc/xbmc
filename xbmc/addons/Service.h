@@ -51,6 +51,7 @@ namespace ADDON
     virtual void OnEnabled();
     virtual bool OnPreInstall();
     virtual void OnPostInstall(bool restart, bool update);
+    virtual void OnPreUnInstall();
 
   protected:
     void BuildServiceType();

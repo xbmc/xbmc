@@ -150,4 +150,9 @@ void CService::OnPostInstall(bool restart, bool update)
   }
 }
 
+void CService::OnPreUnInstall()
+{
+  Stop();
+}
+
 }
