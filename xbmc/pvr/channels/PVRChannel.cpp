@@ -179,8 +179,6 @@ bool CPVRChannel::Delete(void)
   CEpg *epg = GetEPG();
   if (epg)
   {
-    CPVRChannelPtr empty;
-    epg->SetChannel(empty);
     g_EpgContainer.DeleteEpg(*epg);
     CSingleLock lock(m_critSection);
     m_bEPGCreated = false;
