@@ -330,7 +330,7 @@ bool CPVRRecordings::Delete(const CFileItem& item)
 bool CPVRRecordings::DeleteDirectory(const CFileItem& directory)
 {
   CFileItemList items;
-  CDirectory::GetDirectory(directory.GetPath(), items);
+  XFILE::CDirectory::GetDirectory(directory.GetPath(), items);
 
   bool allDeleted = true;
 
