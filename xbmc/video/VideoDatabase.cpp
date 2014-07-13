@@ -393,7 +393,8 @@ void CVideoDatabase::CreateViews()
                                        "      MAX(files.lastPlayed) AS lastPlayed,"
                                        "      NULLIF(COUNT(episode.c12), 0) AS totalCount,"
                                        "      COUNT(files.playCount) AS watchedcount,"
-                                       "      NULLIF(COUNT(DISTINCT(episode.c12)), 0) AS totalSeasons "
+                                       "      NULLIF(COUNT(DISTINCT(episode.c12)), 0) AS totalSeasons, "
+                                       "      MAX(files.dateAdded) as dateAdded "
                                        "    FROM tvshow"
                                        "      LEFT JOIN episode ON"
                                        "        episode.idShow=tvshow.idShow"
@@ -407,7 +408,7 @@ void CVideoDatabase::CreateViews()
                                      "  tvshow.*,"
                                      "  path.idParentPath AS idParentPath,"
                                      "  path.strPath AS strPath,"
-                                     "  path.dateAdded AS dateAdded,"
+                                     "  tvshowcounts.dateAdded AS dateAdded,"
                                      "  lastPlayed, totalCount, watchedcount, totalSeasons "
                                      "FROM tvshow"
                                      "  LEFT JOIN tvshowlinkpath ON"
@@ -4648,7 +4649,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 87;
+  return 88;
 }
 
 bool CVideoDatabase::LookupByFolders(const CStdString &path, bool shows)
