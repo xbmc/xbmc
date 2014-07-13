@@ -60,6 +60,7 @@ namespace PVR
 
     virtual void OnDisabled();
     virtual void OnEnabled();
+    virtual ADDON::AddonPtr GetRunningInstance() const;
 
     /** @name PVR add-on methods */
     //@{

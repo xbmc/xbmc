@@ -47,8 +47,6 @@
 #include "Repository.h"
 #include "Skin.h"
 #include "Service.h"
-#include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
 #include "Util.h"
 
 using namespace std;
@@ -438,22 +436,18 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
     const cp_extension_t *props = exts[i];
     if (IsAddonDisabled(props->plugin->identifier) != enabled)
     {
-      // get a pointer to a running pvrclient if it's already started, or we won't be able to change settings
-      if (TranslateType(props->ext_point_id) == ADDON_PVRDLL &&
-          enabled &&
-          g_PVRManager.IsStarted())
-      {
-        AddonPtr pvrAddon;
-        if (g_PVRClients->GetClient(props->plugin->identifier, pvrAddon))
-        {
-          addons.push_back(pvrAddon);
-          continue;
-        }
-      }
-
       AddonPtr addon(Factory(props));
       if (addon)
+      {
+        if (enabled)
+        {
+          // if the addon has a running instance, grab that
+          AddonPtr runningAddon = addon->GetRunningInstance();
+          if (runningAddon)
+            addon = runningAddon;
+        }
         addons.push_back(addon);
+      }
     }
   }
   m_cpluff->release_info(m_cp_context, exts);
@@ -471,17 +465,15 @@ bool CAddonMgr::GetAddon(const std::string &str, AddonPtr &addon, const TYPE &ty
     addon = GetAddonFromDescriptor(cpaddon, type==ADDON_UNKNOWN?"":TranslateType(type));
     m_cpluff->release_info(m_cp_context, cpaddon);
 
-    if (addon && addon.get())
+    if (addon)
     {
       if (enabledOnly && IsAddonDisabled(addon->ID()))
         return false;
 
-      if (addon->Type() == ADDON_PVRDLL && g_PVRManager.IsStarted())
-      {
-        AddonPtr pvrAddon;
-        if (g_PVRClients->GetClient(addon->ID(), pvrAddon))
-          addon = pvrAddon;
-      }
+      // if the addon has a running instance, grab that
+      AddonPtr runningAddon = addon->GetRunningInstance();
+      if (runningAddon)
+        addon = runningAddon;
     }
     return NULL != addon.get();
   }

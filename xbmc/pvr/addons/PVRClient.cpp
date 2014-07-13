@@ -21,6 +21,7 @@
 #include "Application.h"
 #include "PVRClient.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #include "epg/Epg.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/timers/PVRTimers.h"
@@ -67,6 +68,17 @@ void CPVRClient::OnEnabled()
 {
   // restart the PVR manager if we're enabling a client
   CPVRManager::Get().Start(true);
+}
+
+AddonPtr CPVRClient::GetRunningInstance() const
+{
+  if (g_PVRManager.IsStarted())
+  {
+    AddonPtr pvrAddon;
+    if (g_PVRClients->GetClient(ID(), pvrAddon))
+      return pvrAddon;
+  }
+  return CAddon::GetRunningInstance();
 }
 
 void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)

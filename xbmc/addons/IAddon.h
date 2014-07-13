@@ -117,6 +117,7 @@ namespace ADDON
     virtual bool ReloadSettings() =0;
     virtual void OnDisabled() =0;
     virtual void OnEnabled() =0;
+    virtual AddonPtr GetRunningInstance() const=0;
 
   protected:
     virtual bool LoadSettings(bool bForce = false) =0;
