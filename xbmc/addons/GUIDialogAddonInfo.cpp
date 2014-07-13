@@ -193,7 +193,10 @@ void CGUIDialogAddonInfo::OnInstall()
 
 void CGUIDialogAddonInfo::OnLaunch()
 {
-  CBuiltins::Execute("RunAddon(" + m_addon->ID() + ")");
+  if (!m_localAddon)
+    return;
+
+  CBuiltins::Execute("RunAddon(" + m_localAddon->ID() + ")");
   Close();
 }
 
