@@ -99,9 +99,8 @@ namespace EPG
 
     /*!
      * @brief Specify if EPG should be manually updated on the next cycle
-     * @param bUpdatePending True if EPG should be manually updated
      */
-    void SetUpdatePending(bool bUpdatePending = true);
+    void SetUpdatePending();
 
     /*!
      * @brief Returns if there is a manual update pending for this EPG

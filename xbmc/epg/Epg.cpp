@@ -101,15 +101,11 @@ void CEpg::SetScraperName(const CStdString &strScraperName)
   m_strScraperName = strScraperName;
 }
 
-void CEpg::SetUpdatePending(bool bUpdatePending /* = true */)
+void CEpg::SetUpdatePending()
 {
-  {
-    CSingleLock lock(m_critSection);
-    m_bUpdatePending = bUpdatePending;
-  }
-
-  if (bUpdatePending)
-    g_EpgContainer.SetHasPendingUpdates(true);
+  CSingleLock lock(m_critSection);
+  m_bUpdatePending = true;
+  g_EpgContainer.SetHasPendingUpdates(true);
 }
 
 bool CEpg::HasValidEntries(void) const
