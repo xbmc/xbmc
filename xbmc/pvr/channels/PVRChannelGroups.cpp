@@ -533,11 +533,11 @@ void CPVRChannelGroups::FillGroupsGUI(int iWindowId, int iControlId) const
 
 bool CPVRChannelGroups::CreateChannelEpgs(void)
 {
-  bool bReturn(false);
+  bool bReturn(true);
   CSingleLock lock(m_critSection);
   
   for (std::vector<CPVRChannelGroupPtr>::iterator it = m_groups.begin(); it != m_groups.end(); it++)
-    bReturn = (*it)->CreateChannelEpgs();
+    bReturn &= (*it)->CreateChannelEpgs();
   
   return bReturn;
 }
