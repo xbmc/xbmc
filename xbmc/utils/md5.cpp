@@ -52,16 +52,16 @@ void XBMC::XBMC_MD5::getDigest(unsigned char digest[16])
   MD5Final(digest, &m_ctx);
 }
 
-void XBMC::XBMC_MD5::getDigest(std::string& digest)
+std::string XBMC::XBMC_MD5::getDigest()
 {
   unsigned char szBuf[16] = {'\0'};
   getDigest(szBuf);
-  digest = StringUtils::Format("%02X%02X%02X%02X%02X%02X%02X%02X"\
-                               "%02X%02X%02X%02X%02X%02X%02X%02X",
-                               szBuf[0], szBuf[1], szBuf[2],
-                               szBuf[3], szBuf[4], szBuf[5], szBuf[6], szBuf[7], szBuf[8],
-                               szBuf[9], szBuf[10], szBuf[11], szBuf[12], szBuf[13], szBuf[14],
-                               szBuf[15]);
+  return StringUtils::Format("%02X%02X%02X%02X%02X%02X%02X%02X"\
+                             "%02X%02X%02X%02X%02X%02X%02X%02X",
+                             szBuf[0], szBuf[1], szBuf[2],
+                             szBuf[3], szBuf[4], szBuf[5], szBuf[6], szBuf[7], szBuf[8],
+                             szBuf[9], szBuf[10], szBuf[11], szBuf[12], szBuf[13], szBuf[14],
+                             szBuf[15]);
 }
 
 std::string XBMC::XBMC_MD5::GetMD5(const std::string &text)
@@ -69,10 +69,8 @@ std::string XBMC::XBMC_MD5::GetMD5(const std::string &text)
   if (text.empty())
     return "";
   XBMC_MD5 state;
-  std::string digest;
   state.append(text);
-  state.getDigest(digest);
-  return digest;
+  return state.getDigest();
 }
 
 /*

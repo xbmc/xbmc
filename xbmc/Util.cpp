@@ -582,7 +582,7 @@ CStdString CUtil::GetFileMD5(const CStdString& strPath)
       pos += read;
       md5.append(temp,read);
     }
-    md5.getDigest(result);
+    result = md5.getDigest();
     file.Close();
   }
 

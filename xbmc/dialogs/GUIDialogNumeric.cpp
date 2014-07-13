@@ -800,10 +800,7 @@ bool CGUIDialogNumeric::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
     return false;
   }
 
-  CStdString md5pword2;
-  XBMC::XBMC_MD5 md5state;
-  md5state.append(strInput);
-  md5state.getDigest(md5pword2);
+  CStdString md5pword2 = XBMC::XBMC_MD5::GetMD5(strInput);
 
   if (!bVerifyInput)
   {

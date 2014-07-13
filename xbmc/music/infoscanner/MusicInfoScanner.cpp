@@ -889,7 +889,7 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, CStdString &hash)
     if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
       count++;
   }
-  md5state.getDigest(hash);
+  hash = md5state.getDigest();
   return count;
 }
 

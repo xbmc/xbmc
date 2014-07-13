@@ -120,11 +120,7 @@ JSONRPC_STATUS CProfilesOperations::LoadProfile(const CStdString &method, ITrans
     CStdString md5pword2;
     CStdString encryption = passwordObject["encryption"].asString();
     if (encryption.Equals("none"))
-		{
-			XBMC::XBMC_MD5 md5state;
-			md5state.append(password);
-			md5state.getDigest(md5pword2);
-		}
+      md5pword2 = XBMC::XBMC_MD5::GetMD5(password);
 		else if (encryption.Equals("md5"))
 			md5pword2 = password;
 
