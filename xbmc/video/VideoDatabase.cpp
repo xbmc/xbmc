@@ -864,7 +864,12 @@ int CVideoDatabase::AddFile(const CStdString& strFileNameAndPath)
 int CVideoDatabase::AddFile(const CFileItem& item)
 {
   if (item.IsVideoDb() && item.HasVideoInfoTag())
-    return AddFile(item.GetVideoInfoTag()->m_strFileNameAndPath);
+  {
+    if (item.GetVideoInfoTag()->m_iFileId != -1)
+      return item.GetVideoInfoTag()->m_iFileId;
+    else
+      return AddFile(item.GetVideoInfoTag()->m_strFileNameAndPath);
+  }
   return AddFile(item.GetPath());
 }
 
@@ -1072,7 +1077,12 @@ int CVideoDatabase::GetFileId(const CStdString& strFilenameAndPath)
 int CVideoDatabase::GetFileId(const CFileItem &item)
 {
   if (item.IsVideoDb() && item.HasVideoInfoTag())
-    return GetFileId(item.GetVideoInfoTag()->m_strFileNameAndPath);
+  {
+    if (item.GetVideoInfoTag()->m_iFileId != -1)
+      return item.GetVideoInfoTag()->m_iFileId;
+    else
+      return GetFileId(item.GetVideoInfoTag()->m_strFileNameAndPath);
+  }
   return GetFileId(item.GetPath());
 }
 
