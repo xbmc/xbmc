@@ -93,11 +93,11 @@ bool CPlayListWPL::LoadData(istream& stream)
     std::string strFileName = XMLUtils::GetAttribute(pMediaElement, "src");
     if (!strFileName.empty())
     {
-      std::string strFileName = URIUtils::SubstitutePath(strFileName);
-      CUtil::GetQualifiedFilename(m_strBasePath, strFileName);
-      std::string strDescription = URIUtils::GetFileName(strFileName);
+      std::string strFileNameClean = URIUtils::SubstitutePath(strFileName);
+      CUtil::GetQualifiedFilename(m_strBasePath, strFileNameClean);
+      std::string strDescription = URIUtils::GetFileName(strFileNameClean);
       CFileItemPtr newItem(new CFileItem(strDescription));
-      newItem->SetPath(strFileName);
+      newItem->SetPath(strFileNameClean);
       Add(newItem);
     }
     pMediaElement = pMediaElement->NextSiblingElement();
