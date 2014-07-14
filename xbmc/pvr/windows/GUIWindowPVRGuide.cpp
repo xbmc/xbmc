@@ -337,9 +337,6 @@ void CGUIWindowPVRGuide::UpdateViewTimeline()
 
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, g_localizeStrings.Get(19032));
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, GetGroup()->GroupName());
-// FIXPVR
-//  if (bUpdateSelectedFile)
-//    SelectPlayingFile();
   
   m_viewControl.SetItems(*m_vecItems);
 }
