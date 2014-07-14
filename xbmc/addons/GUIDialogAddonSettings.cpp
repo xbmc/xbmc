@@ -676,7 +676,7 @@ void CGUIDialogAddonSettings::CreateControls()
     const std::string      label = GetString(setting->Attribute("label"), subsetting == "true");
 
     bool bSort = XMLUtils::GetAttribute(setting, "sort") == "yes";
-    if (!id.empty() && !type.empty())
+    if (!type.empty())
     {
       bool isAddonSetting = false;
       if (type == "text"   || type == "ipaddress"
@@ -727,14 +727,14 @@ void CGUIDialogAddonSettings::CreateControls()
         else
           ((CGUIButtonControl *)pControl)->SetLabel2(defaultVal);
       }
-      else if (type == "bool")
+      else if (type == "bool" && !id.empty())
       {
         pControl = new CGUIRadioButtonControl(*pOriginalRadioButton);
         if (!pControl) return;
         ((CGUIRadioButtonControl *)pControl)->SetLabel(label);
         ((CGUIRadioButtonControl *)pControl)->SetSelected(m_settings[id] == "true");
       }
-      else if (type == "enum" || type == "labelenum")
+      else if ((type == "enum" || type == "labelenum") && !id.empty())
       {
         vector<std::string> valuesVec;
         vector<std::string> entryVec;
@@ -784,7 +784,7 @@ void CGUIDialogAddonSettings::CreateControls()
           ((CGUISpinControlEx*) pControl)->SetValue(atoi(m_settings[id].c_str()));
 
       }
-      else if (type == "fileenum")
+      else if (type == "fileenum" && !id.empty())
       {
         pControl = new CGUISpinControlEx(*pOriginalSpin);
         if (!pControl) return;
@@ -802,7 +802,7 @@ void CGUIDialogAddonSettings::CreateControls()
       // Sample: <setting id="mysettingname" type="rangeofnum" label="30000" rangestart="0" rangeend="100" elements="11" valueformat="30001" default="0" />
       // in strings.xml: <string id="30001">%2.0f mp</string>
       // creates 11 piece, text formated number labels from 0 to 100
-      else if (type == "rangeofnum")
+      else if (type == "rangeofnum" && !id.empty())
       {
         pControl = new CGUISpinControlEx(*pOriginalSpin);
         if (!pControl)
@@ -833,7 +833,7 @@ void CGUIDialogAddonSettings::CreateControls()
       }
       // Sample: <setting id="mysettingname" type="slider" label="30000" range="5,5,60" option="int" default="5"/>
       // to make ints from 5-60 with 5 steps
-      else if (type == "slider")
+      else if (type == "slider" && !id.empty())
       {
         pControl = new CGUISettingsSliderControl(*pOriginalSlider);
         if (!pControl) return;
