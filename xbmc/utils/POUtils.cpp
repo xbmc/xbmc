@@ -19,6 +19,7 @@
  */
 
 #include "utils/POUtils.h"
+#include "URL.h"
 #include "filesystem/File.h"
 #include "utils/log.h"
 #include <stdlib.h>
@@ -36,9 +37,13 @@ CPODocument::~CPODocument() {}
 
 bool CPODocument::LoadFile(const std::string &pofilename)
 {
+  CURL poFileUrl(pofilename);
+  if (!XFILE::CFile::Exists(poFileUrl))
+    return false;
+
   XFILE::CFile file;
   XFILE::auto_buffer buf;
-  if (file.LoadFile(pofilename, buf) < 18) // at least a size of a minimalistic header
+  if (file.LoadFile(poFileUrl, buf) < 18) // at least a size of a minimalistic header
   {
     CLog::Log(LOGERROR, "%s: can't load file \"%s\" or file is too small", __FUNCTION__,  pofilename.c_str());
     return false;
