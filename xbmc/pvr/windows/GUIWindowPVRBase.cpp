@@ -179,7 +179,7 @@ void CGUIWindowPVRBase::SetGroup(CPVRChannelGroupPtr group)
     // we need to register the window to receive changes from the new group
     m_group->RegisterObserver(this);
     g_PVRManager.SetPlayingGroup(m_group);
-    Update();
+    Refresh();
   }
 }
 
@@ -519,7 +519,7 @@ bool CGUIWindowPVRBase::ActionDeleteChannel(CFileItem *item)
     return false;
 
   g_PVRChannelGroups->GetGroupAll(channel->IsRadio())->RemoveFromGroup(*channel);
-  Update();
+  Refresh(true);
 
   return true;
 }

@@ -143,7 +143,7 @@ bool CGUIWindowPVRTimers::OnMessage(CGUIMessage &message)
         case ObservableMessageTimersReset:
         {
           if (IsActive())
-            Update();
+            Refresh(true);
           bReturn = true;
           break;
         }

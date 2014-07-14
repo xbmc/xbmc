@@ -39,7 +39,7 @@ namespace PVR
     bool OnAction(const CAction &action);
     void GetContextButtons(int itemNumber, CContextButtons &buttons);
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-    bool Update(const std::string &strDirectory = "", bool updateFilterPath = true);
+    bool Update(const std::string &strDirectory, bool updateFilterPath = true);
     void ResetObservers(void);
     void UnregisterObservers(void);
 

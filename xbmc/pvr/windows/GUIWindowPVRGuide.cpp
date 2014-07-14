@@ -187,7 +187,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
       {
         // let's set the view mode first before update
         CGUIWindowPVRBase::OnMessage(message);
-        Update();
+        Refresh(true);
         bReturn = true;
       }
       break;
@@ -202,7 +202,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
           m_bUpdateRequired = true;
           /* update the current window if the EPG timeline view is visible */
           if (IsActive() && m_viewControl.GetCurrentControl() == GUIDE_VIEW_TIMELINE)
-            Update();
+            Refresh(true);
           bReturn = true;
           break;
         }
