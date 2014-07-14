@@ -50,6 +50,7 @@ public:
 
 protected:
   virtual int GetDefaultLabelID(int controlId) const;
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
   bool m_bCanCancel;
   bool m_bCanceled;
@@ -57,4 +58,5 @@ protected:
   int  m_iCurrent;
   int  m_iMax;
   int m_percentage;
+  bool m_showProgress;
 };

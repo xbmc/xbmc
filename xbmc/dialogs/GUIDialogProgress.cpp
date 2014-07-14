@@ -39,6 +39,7 @@ CGUIDialogProgress::CGUIDialogProgress(void)
   m_iCurrent=0;
   m_iMax=0;
   m_percentage = 0;
+  m_showProgress = false;
   m_bCanCancel = true;
 }
 
@@ -49,13 +50,9 @@ CGUIDialogProgress::~CGUIDialogProgress(void)
 
 void CGUIDialogProgress::SetCanCancel(bool bCanCancel)
 {
+  CSingleLock lock(m_section);
   m_bCanCancel = bCanCancel;
-  CGUIMessage msg(bCanCancel ? GUI_MSG_VISIBLE : GUI_MSG_HIDDEN, GetID(), CONTROL_CANCEL_BUTTON);
-  CSingleTryLock tryLock(g_graphicsContext);
-  if(tryLock.IsOwner())
-    OnMessage(msg);
-  else
-    g_windowManager.SendThreadMessage(msg, GetID());
+  SetInvalid();
 }
 
 void CGUIDialogProgress::StartModal()
@@ -75,9 +72,9 @@ void CGUIDialogProgress::StartModal()
   g_windowManager.RouteToWindow(this);
 
   // active this window...
+  ShowProgressBar(false);
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0);
   OnMessage(msg);
-  ShowProgressBar(false);
 
   lock.Leave();
 
@@ -190,12 +187,31 @@ bool CGUIDialogProgress::Abort()
 
 void CGUIDialogProgress::ShowProgressBar(bool bOnOff)
 {
-  CGUIMessage msg(bOnOff ? GUI_MSG_VISIBLE : GUI_MSG_HIDDEN, GetID(), CONTROL_PROGRESS_BAR);
-  CSingleTryLock tryLock(g_graphicsContext);
-  if(tryLock.IsOwner())
-    OnMessage(msg);
-  else
-    g_windowManager.SendThreadMessage(msg, GetID());
+  CSingleLock lock(m_section);
+  m_showProgress = bOnOff;
+  SetInvalid();
+}
+
+void CGUIDialogProgress::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  if (m_bInvalidated)
+  { // take a copy to save holding the lock for too long
+    bool showProgress, showCancel;
+    {
+      CSingleLock lock(m_section);
+      showProgress = m_showProgress;
+      showCancel   = m_bCanCancel;
+    }
+    if (showProgress)
+      SET_CONTROL_VISIBLE(CONTROL_PROGRESS_BAR);
+    else
+      SET_CONTROL_HIDDEN(CONTROL_PROGRESS_BAR);
+    if (showCancel)
+      SET_CONTROL_VISIBLE(CONTROL_CANCEL_BUTTON);
+    else
+      SET_CONTROL_HIDDEN(CONTROL_CANCEL_BUTTON);
+  }
+  CGUIDialogBoxBase::Process(currentTime, dirtyregions);
 }
 
 int CGUIDialogProgress::GetDefaultLabelID(int controlId) const
