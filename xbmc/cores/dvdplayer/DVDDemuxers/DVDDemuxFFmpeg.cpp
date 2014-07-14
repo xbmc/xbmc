@@ -52,6 +52,25 @@
 #include "URL.h"
 #include "cores/FFmpeg.h"
 
+
+struct StereoModeConversionMap
+{
+  const char*          name;
+  const char*          mode;
+};
+
+// we internally use the matroska string representation of stereoscopic modes.
+// This struct is a conversion map to convert stereoscopic mode values
+// from asf/wmv to the internally used matroska ones
+static const struct StereoModeConversionMap WmvToInternalStereoModeMap[] =
+{
+  { "SideBySideRF",             "right_left" },
+  { "SideBySideLF",             "left_right" },
+  { "OverUnderRT",              "bottom_top" },
+  { "OverUnderLT",              "top_bottom" },
+  {}
+};
+
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {
   if(!m_stream) return;
@@ -1087,9 +1106,13 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         if (rtag) 
           st->iOrientation = atoi(rtag->value);
 
-        rtag = av_dict_get(pStream->metadata, "stereo_mode", NULL, 0);
-        if (rtag && rtag->value)
-          st->stereo_mode = rtag->value;
+        // detect stereoscopic mode
+        std::string stereoMode = GetStereoModeFromMetadata(pStream->metadata);
+          // check for metadata in file if detection in stream failed
+        if (stereoMode.empty())
+          stereoMode = GetStereoModeFromMetadata(m_pFormatContext->metadata);
+        if (!stereoMode.empty())
+          st->stereo_mode = stereoMode;
 
         
         if ( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
@@ -1425,4 +1448,41 @@ bool CDVDDemuxFFmpeg::IsProgramChange()
       return true;
   }
   return false;
+}
+
+std::string CDVDDemuxFFmpeg::GetStereoModeFromMetadata(AVDictionary *pMetadata)
+{
+  std::string stereoMode;
+  AVDictionaryEntry *tag = NULL;
+
+  // matroska
+  tag = av_dict_get(pMetadata, "stereo_mode", NULL, 0);
+  if (tag && tag->value)
+    stereoMode = tag->value;
+
+  // asf / wmv
+  if (stereoMode.empty())
+  {
+    tag = av_dict_get(pMetadata, "Stereoscopic", NULL, 0);
+    if (tag && tag->value)
+    {
+      tag = av_dict_get(pMetadata, "StereoscopicLayout", NULL, 0);
+      if (tag && tag->value)
+        stereoMode = ConvertCodecToInternalStereoMode(tag->value, WmvToInternalStereoModeMap);
+    }
+  }
+
+  return stereoMode;
+}
+
+std::string CDVDDemuxFFmpeg::ConvertCodecToInternalStereoMode(const std::string &mode, const StereoModeConversionMap *conversionMap)
+{
+  size_t i = 0;
+  while (conversionMap[i].name)
+  {
+    if (mode == conversionMap[i].name)
+      return conversionMap[i].mode;
+    i++;
+  }
+  return "";
 }
