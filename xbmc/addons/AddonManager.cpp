@@ -634,7 +634,7 @@ std::string CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const c
         eng = &child;
     }
   }
-  return (eng) ? eng->value : "";
+  return (eng && eng->value) ? eng->value : "";
 }
 
 AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
