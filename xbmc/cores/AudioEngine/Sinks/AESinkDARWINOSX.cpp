@@ -128,34 +128,6 @@ OSStatus deviceChangedCB(AudioObjectID                       inObjectID,
   return noErr;
 }
 
-void RegisterDeviceChangedCB(bool bRegister, void *ref)
-{
-  OSStatus ret = noErr;
-  AudioObjectPropertyAddress inAdr =
-  {
-    kAudioHardwarePropertyDevices,
-    kAudioObjectPropertyScopeGlobal,
-    kAudioObjectPropertyElementMaster
-  };
-
-  if (bRegister)
-  {
-    ret = AudioObjectAddPropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
-    inAdr.mSelector = kAudioHardwarePropertyDefaultOutputDevice;
-    ret = AudioObjectAddPropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
-  }
-  else
-  {
-    ret = AudioObjectRemovePropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
-    inAdr.mSelector = kAudioHardwarePropertyDefaultOutputDevice;
-    ret = AudioObjectRemovePropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
-  }
-
-  if (ret != noErr)
-    CLog::Log(LOGERROR, "CCoreAudioAE::Deinitialize - error %s a listener callback for device changes!", bRegister?"attaching":"removing");
-}
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAESinkDARWINOSX::CAESinkDARWINOSX()
 : m_latentFrames(0),
@@ -184,12 +156,14 @@ CAESinkDARWINOSX::CAESinkDARWINOSX()
   {
     CLog::Log(LOGERROR, "CCoreAudioAE::constructor: kAudioHardwarePropertyRunLoop error.");
   }
-  RegisterDeviceChangedCB(true, this);
+  CCoreAudioDevice::RegisterDeviceChangedCB(true, deviceChangedCB, this);
+  CCoreAudioDevice::RegisterDefaultOutputDeviceChangedCB(true, deviceChangedCB, this);
 }
 
 CAESinkDARWINOSX::~CAESinkDARWINOSX()
 {
-  RegisterDeviceChangedCB(false, this);
+  CCoreAudioDevice::RegisterDeviceChangedCB(false, deviceChangedCB, this);
+  CCoreAudioDevice::RegisterDefaultOutputDeviceChangedCB(false, deviceChangedCB, this);
 }
 
 bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
@@ -225,7 +199,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   AudioStreamID outputStream = 0;
   UInt32 streamIdx = 0;
   UInt32 numOutputChannels = 0;
-  bool passthrough = false;
+  EPassthroughMode passthrough = PassthroughModeNone;
   m_planes = 1;
   if (devEnum.FindSuitableFormatForStream(streamIdx, format, outputFormat, passthrough, outputStream))
   {
@@ -248,12 +222,13 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   /* Update our AE format */
   format.m_sampleRate    = outputFormat.mSampleRate;
   
-  m_outputBitstream   = passthrough && outputFormat.mFormatID == kAudioFormatLinearPCM;
+  m_outputBitstream   = passthrough == PassthroughModeBitstream;
 
   std::string formatString;
   CLog::Log(LOGDEBUG, "%s: Selected stream[%u] - id: 0x%04X, Physical Format: %s %s", __FUNCTION__, (unsigned int)0, (unsigned int)outputStream, StreamDescriptionToString(outputFormat, formatString), m_outputBitstream ? "bitstreamed passthrough" : "");
 
-  SetHogMode(passthrough);
+  m_device.Open(deviceID);
+  SetHogMode(passthrough != PassthroughModeNone);
 
   // Configure the output stream object
   m_outputStream.Open(outputStream);
@@ -269,7 +244,6 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   CLog::Log(LOGDEBUG, "%s: New Virtual Format: %s", __FUNCTION__, StreamDescriptionToString(virtualFormat, formatString));
   CLog::Log(LOGDEBUG, "%s: New Physical Format: %s", __FUNCTION__, StreamDescriptionToString(outputFormat, formatString));
 
-  m_device.Open(deviceID);
   m_latentFrames = m_device.GetNumLatencyFrames();
   m_latentFrames += m_outputStream.GetNumLatencyFrames();
 
@@ -293,7 +267,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   m_buffer = new AERingBuffer(num_buffers * format.m_frames * m_frameSizePerPlane, m_planes);
   CLog::Log(LOGDEBUG, "%s: using buffer size: %u (%f ms)", __FUNCTION__, m_buffer->GetMaxSize(), (float)m_buffer->GetMaxSize() / (m_framesPerSecond * m_frameSizePerPlane));
 
-  if (passthrough)
+  if (passthrough != PassthroughModeNone)
     format.m_dataFormat = AE_FMT_S16NE;
   else
     format.m_dataFormat = (m_planes > 1) ? AE_FMT_FLOATP : AE_FMT_FLOAT;

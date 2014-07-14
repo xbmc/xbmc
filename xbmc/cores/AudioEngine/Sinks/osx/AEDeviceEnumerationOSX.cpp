@@ -468,7 +468,7 @@ float AEDeviceEnumerationOSX::ScoreFormat(const AudioStreamBasicDescription &for
   return score;
 }
 
-bool AEDeviceEnumerationOSX::FindSuitableFormatForStream(UInt32 &streamIdx, const AEAudioFormat &format, AudioStreamBasicDescription &outputFormat, bool &passthrough, AudioStreamID &outputStream) const
+bool AEDeviceEnumerationOSX::FindSuitableFormatForStream(UInt32 &streamIdx, const AEAudioFormat &format, AudioStreamBasicDescription &outputFormat, EPassthroughMode &passthrough, AudioStreamID &outputStream) const
 {
   CLog::Log(LOGDEBUG, "%s: Finding stream for format %s", __FUNCTION__, CAEUtil::DataFormatToStr(format.m_dataFormat));
   
@@ -477,6 +477,7 @@ bool AEDeviceEnumerationOSX::FindSuitableFormatForStream(UInt32 &streamIdx, cons
   UInt32                      streamIdxStart = streamIdx;
   UInt32                      streamIdxEnd   = streamIdx + 1;
   UInt32                      streamIdxCurrent = streamIdx;
+  passthrough                                  = PassthroughModeNone;
   
   if (streamIdx == INT_MAX)
   {
@@ -512,7 +513,13 @@ bool AEDeviceEnumerationOSX::FindSuitableFormatForStream(UInt32 &streamIdx, cons
 
       if (score > outputScore)
       {
-        passthrough  = score > 10000;
+        if (score > 10000)
+        {
+            if (score > FLT_MAX/2)
+              passthrough  = PassthroughModeNative;
+            else
+              passthrough  = PassthroughModeBitstream;
+        }
         outputScore  = score;
         outputFormat = formatDesc;
         outputStream = m_caStreamInfos[streamIdxCurrent].streamID;
