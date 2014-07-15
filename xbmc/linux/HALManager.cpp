@@ -598,7 +598,7 @@ bool CHALManager::ApproveDevice(CStorageDevice *device)
     approve = false;
 
   // Ignore some mountpoints, unless a weird setup these should never contain anything usefull for an enduser.
-  if (strcmp(device->MountPoint, "/") == 0 || strcmp(device->MountPoint, "/boot/") == 0 || strcmp(device->MountPoint, "/mnt/") == 0 || strcmp(device->MountPoint, "/home/") == 0)
+  if (strcmp(device->MountPoint.c_str(), "/") == 0 || strcmp(device->MountPoint.c_str(), "/boot/") == 0 || strcmp(device->MountPoint.c_str(), "/mnt/") == 0 || strcmp(device->MountPoint.c_str(), "/home/") == 0)
     approve = false;
 
   if (device->HalIgnore)
@@ -612,7 +612,7 @@ bool CHALManager::Eject(const std::string& path)
 {
   for (unsigned int i = 0; i < m_Volumes.size(); i++)
   {
-    if (m_Volumes[i].MountPoint.Equals(path))
+    if (m_Volumes[i].MountPoint == path)
       return m_Volumes[i].HotPlugged ? UnMount(m_Volumes[i]) : false;
   }
 
@@ -693,7 +693,7 @@ bool CHALManager::Mount(CStorageDevice *volume, const std::string &mountpath)
 
     std::string temporaryString;
 
-    if (volume->FileSystem.Equals("vfat"))
+    if (volume->FileSystem == "vfat")
     {
       int mask = umask (0);
       temporaryString = StringUtils::Format("umask=%#o", mask);
