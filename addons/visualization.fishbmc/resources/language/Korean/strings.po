@@ -55,3 +55,7 @@ msgstr "보통"
 msgctxt "#30010"
 msgid "High"
 msgstr "높음"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "저장된 파일 사용[빠른 시작]"

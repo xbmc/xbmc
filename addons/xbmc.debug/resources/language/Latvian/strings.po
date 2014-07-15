@@ -38,7 +38,7 @@ msgstr "Izvērstie ierakstījumi žurnalā RTMP bibliotēkai"
 
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
-msgstr "Izvērstie ierakstījumi žurnalā DBUS bibliotēkai"
+msgstr "Izvērstie ierakstījumi žurnalā DBUS izsaukumiem"
 
 msgctxt "#30006"
 msgid "Verbose logging for JSON-RPC requests"

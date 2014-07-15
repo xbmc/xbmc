@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.debug" version="0.1.21" provider-name="Team XBMC" name="Log">
+<addon id="xbmc.debug" version="0.1.22" provider-name="Team XBMC" name="Log">
   <backwards-compatibility abi="0.1"/>
   <requires>
     <c-pluff version="0.1"/>

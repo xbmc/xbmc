@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.euphoria"
-  version="1.0.24"
+  version="1.0.25"
   name="Euphoria"
   provider-name="mogumbo, Team XBMC">
   <requires>

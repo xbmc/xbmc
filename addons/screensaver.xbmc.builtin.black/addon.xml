@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.black"
        name="Black"
-       version="1.0.24"
+       version="1.0.25"
        provider-name="Team XBMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -94,7 +94,7 @@
     <description lang="id">Hitam adalah sebuah screensaver sederhana yang mengubah layar menjadi hitam.</description>
     <description lang="is">Black er einföld skjáhvíla sem sendir svart út á skjáinn.</description>
     <description lang="it">Black è un semplice salvaschermo che trasforma il tuo schermo in nero.</description>
-    <description lang="ja">画面を暗く黒くするだけの、シンプルなスクリーンセーバーです</description>
+    <description lang="ja">Black はシンプルなスクリーンセーバーで、画面を黒くします。</description>
     <description lang="ko">블랙 화면보호기는 화면을 검게 만들어줍니다.</description>
     <description lang="lt">'Juodas' yra paprasta ekrano užsklanda, kuri pavers jūsų ekraną juodu fonu.</description>
     <description lang="lv">Melns ir vienkāršs ekrānsaudzētājs, kas padara jūsu ekrānu melnu.</description>

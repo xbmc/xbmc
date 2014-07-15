@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.solarwinds"
-  version="1.0.24"
+  version="1.0.25"
   name="Solarwinds"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -41,7 +41,7 @@
     <summary lang="id">Penyelamat layar dengan efek partikel yang mencuri perhatian</summary>
     <summary lang="is">Dáleiðandi skjáhvíla með brellum með agnir</summary>
     <summary lang="it">Un salvaschermo con effetti particellari ipnotizzanti</summary>
-    <summary lang="ja">パーティクルによる幻想的なスクリーンセーバー</summary>
+    <summary lang="ja">幻想的な粒子エフェクトのスクリーンセーバー</summary>
     <summary lang="ko">매혹적인 파티클 이펙트 화면보호기</summary>
     <summary lang="lt">Įtaigaus dalelių poveikio ekrano užsklanda</summary>
     <summary lang="lv">Hipnotizējošs daļiņu efekta ekrānsaudzētājs</summary>
@@ -94,7 +94,7 @@
     <description lang="id">Ini adalah penyelamat layar dengan efek partikel yang sangat mencuri perhatian. Anda akan lihat bahwa Anda bisa mendapat sejumlah yang mengagumkan dari pola yang berbeda.</description>
     <description lang="is">Þetta er mjög dáleiðandi skjáhvíla með brellum með ögnum. Þú munt komast að því að þú getur fengið ótrúlegan fjölda af mismunandi mynstri.</description>
     <description lang="it">Questo è un salvaschermo con effetti particellari è veramente ipnotizzante. E' inoltre possibile ottenere un incredibile numero di differenti schemi.</description>
-    <description lang="ja">This is a very mesmerizing particle effects screensaver. You'll find that you can achieve an amazing number of different patterns.</description>
+    <description lang="ja">非常に幻想的な粒子エフェクトのスクリーンセーバーです。驚くほどの様々なパターンを知ることになるでしょう。</description>
     <description lang="ko">매혹적인 파티클 이펙트 화면보호기입니다. 아주 다양한 패턴의 보여줍니다.</description>
     <description lang="lt">Tai labai įtaigaus dalelių poveikio ekrano užsklanda. Atrasite, kad galite sukurti neįtikėtina skaičių skirtingų šablonų. </description>
     <description lang="lv">Šis ir ļoti valdzinošs daļiņu efekta ekrānsaudzētājs. Jūs redzēsit, ka tas spēj izveidot neticamu skaitu dažādu musturu.</description>
