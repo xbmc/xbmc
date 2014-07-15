@@ -186,7 +186,8 @@ void aml_cpufreq_min(bool limit)
 // do not touch scaling_min_freq on android
 #if !defined(TARGET_ANDROID)
   // only needed for m1/m3 SoCs
-  if (aml_get_cputype() <= AML_DEVICE_TYPE_M3)
+  if (  aml_get_cputype() != AML_DEVICE_TYPE_UNKNOWN
+    &&  aml_get_cputype() <= AML_DEVICE_TYPE_M3)
   {
     int cpufreq = 300000;
     if (limit)
@@ -214,7 +215,9 @@ void aml_cpufreq_max(bool limit)
 
 void aml_set_audio_passthrough(bool passthrough)
 {
-  if (aml_present())
+  if (  aml_present()
+    &&  aml_get_cputype() != AML_CPU_TYPE_UNKNOWN
+    &&  aml_get_cputype() <= AML_CPU_TYPE_M8)
   {
     // m1 uses 1, m3 and above uses 2
     int raw = aml_get_cputype() == AML_DEVICE_TYPE_M1 ? 1:2;
