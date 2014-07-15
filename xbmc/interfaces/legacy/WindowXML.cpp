@@ -438,7 +438,7 @@ namespace XBMCAddon
 
       std::string strPathLower = strPath;
       StringUtils::ToLower(strPathLower);
-      if (xmlDoc.LoadFile(strPath) <= 0 && xmlDoc.LoadFile(strPathLower) <= 0 && xmlDoc.LoadFile(strLowerPath) <= 0)
+      if (!xmlDoc.LoadFile(strPath) && !xmlDoc.LoadFile(strPathLower) && !xmlDoc.LoadFile(strLowerPath))
       {
         // fail - can't load the file
         CLog::Log(LOGERROR, "%s: Unable to load skin file %s", __FUNCTION__, strPath.c_str());
