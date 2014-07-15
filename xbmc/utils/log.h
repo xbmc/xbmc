@@ -45,6 +45,7 @@ public:
   static void Log(int loglevel, PRINTF_FORMAT_STRING const char *format, ...) PARAM2_PRINTF_FORMAT;
   static void MemDump(char *pData, int length);
   static bool Init(const std::string& path);
+  static void PrintDebugString(const std::string& line); // universal interface for printing debug strings
   static void SetLogLevel(int level);
   static int  GetLogLevel();
   static void SetExtraLogLevels(int level);
@@ -65,7 +66,6 @@ private:
     CCriticalSection critSec;
   };
   class CLogGlobals m_globalInstance; // used as static global variable
-  static void PrintDebugString(const std::string& line);
   static bool WriteLogString(int logLevel, const std::string& logString);
 };
 
