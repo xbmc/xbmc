@@ -67,21 +67,24 @@ bool CFanart::Unpack()
     TiXmlElement *fanartThumb = fanart->FirstChildElement("thumb");
     while (fanartThumb)
     {
-      SFanartData data;
-      if (url.empty())
+      if (!fanartThumb->NoChildren())
       {
-        data.strImage = fanartThumb->GetText();
-        data.strPreview = XMLUtils::GetAttribute(fanartThumb, "preview");
+        SFanartData data;
+        if (url.empty())
+        {
+          data.strImage = fanartThumb->FirstChild()->ValueStr();
+          data.strPreview = XMLUtils::GetAttribute(fanartThumb, "preview");
+        }
+        else
+        {
+          data.strImage = URIUtils::AddFileToFolder(url, fanartThumb->FirstChild()->ValueStr());
+          if (fanartThumb->Attribute("preview"))
+            data.strPreview = URIUtils::AddFileToFolder(url, fanartThumb->Attribute("preview"));
+        }
+        data.strResolution = XMLUtils::GetAttribute(fanartThumb, "dim");
+        ParseColors(XMLUtils::GetAttribute(fanartThumb, "colors"), data.strColors);
+        m_fanart.push_back(data);
       }
-      else
-      {
-        data.strImage = URIUtils::AddFileToFolder(url, fanartThumb->GetText());
-        if (fanartThumb->Attribute("preview"))
-          data.strPreview = URIUtils::AddFileToFolder(url, fanartThumb->Attribute("preview"));
-      }
-      data.strResolution = XMLUtils::GetAttribute(fanartThumb, "dim");
-      ParseColors(XMLUtils::GetAttribute(fanartThumb, "colors"), data.strColors);
-      m_fanart.push_back(data);
       fanartThumb = fanartThumb->NextSiblingElement("thumb");
     }
     fanart = fanart->NextSiblingElement("fanart");
