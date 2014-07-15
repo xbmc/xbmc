@@ -119,7 +119,6 @@ bool CDVDDemuxPVRClient::Open(CDVDInputStream* pInput)
   if (!g_PVRClients->GetPlayingClient(m_pvrClient))
     return false;
 
-  RequestStreams();
   return true;
 }
 
