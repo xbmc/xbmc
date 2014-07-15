@@ -199,7 +199,7 @@ void aml_cpufreq_min(bool limit)
 
 void aml_cpufreq_max(bool limit)
 {
-  if (!aml_wired_present() && aml_get_cputype() > AML_DEVICE_TYPE_M3)
+  if (!aml_wired_present() && aml_get_cputype() == AML_DEVICE_TYPE_M6)
   {
     // this is a MX Stick, they cannot substain 1GHz
     // operation without overheating so limit them to 800MHz.
