@@ -159,13 +159,11 @@ void aml_permissions()
 
 enum AML_DEVICE_TYPE aml_get_cputype()
 {
-  static enum AML_DEVICE_TYPE aml_cputype = AML_DEVICE_TYPE_UNKNOWN;
-  if (aml_cputype == AML_DEVICE_TYPE_UNKNOWN)
+  static enum AML_DEVICE_TYPE aml_cputype = AML_DEVICE_TYPE_UNINIT;
+  if (aml_cputype == AML_DEVICE_TYPE_UNINIT)
   {
     std::string cpu_hardware = g_cpuInfo.getCPUHardware();
 
-    // default to AMLogic M1
-    aml_cputype = AML_DEVICE_TYPE_M1;
     if (cpu_hardware.find("MESON-M3") != std::string::npos)
       aml_cputype = AML_DEVICE_TYPE_M3;
     else if (cpu_hardware.find("MESON3") != std::string::npos)
@@ -174,6 +172,10 @@ enum AML_DEVICE_TYPE aml_get_cputype()
       aml_cputype = AML_DEVICE_TYPE_M6;
     else if (cpu_hardware.find("Meson8") != std::string::npos)
       aml_cputype = AML_DEVICE_TYPE_M8;
+    else if (cpu_hardware.find("MESON-M1") != std::string::npos)
+      aml_cputype = AML_DEVICE_TYPE_M1;
+    else
+      aml_cputype = AML_DEVICE_TYPE_UNKNOWN;
   }
 
   return aml_cputype;
