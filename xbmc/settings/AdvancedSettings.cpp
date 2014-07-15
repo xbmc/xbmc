@@ -1066,13 +1066,13 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     TiXmlElement* element = pHostEntries->FirstChildElement("entry");
     while(element)
     {
-      CStdString name  = XMLUtils::GetAttribute(element, "name");
-      CStdString value;
-      if(element->GetText())
-        value = element->GetText();
-
-      if(name.length() > 0 && value.length() > 0)
-        CDNSNameCache::Add(name, value);
+      if(!element->NoChildren())
+      {
+        std::string name  = XMLUtils::GetAttribute(element, "name");
+        std::string value = element->FirstChild()->ValueStr();
+        if (!name.empty())
+          CDNSNameCache::Add(name, value);
+      }
       element = element->NextSiblingElement("entry");
     }
   }
