@@ -888,9 +888,6 @@ void CEpgInfoTag::Update(const EPG_TAG &tag)
   CSingleLock lock(m_critSection);
   SetStartFromUTC(tag.startTime + g_advancedSettings.m_iPVRTimeCorrection);
   SetEndFromUTC(tag.endTime + g_advancedSettings.m_iPVRTimeCorrection);
-  SetTitle(tag.strTitle);
-  SetPlotOutline(tag.strPlotOutline);
-  SetPlot(tag.strPlot);
   SetGenre(tag.iGenreType, tag.iGenreSubType, tag.strGenreDescription);
   SetParentalRating(tag.iParentalRating);
   SetUniqueBroadcastID(tag.iUniqueBroadcastId);
@@ -898,10 +895,21 @@ void CEpgInfoTag::Update(const EPG_TAG &tag)
   SetFirstAiredFromUTC(tag.firstAired + g_advancedSettings.m_iPVRTimeCorrection);
   SetEpisodeNum(tag.iEpisodeNumber);
   SetEpisodePart(tag.iEpisodePartNumber);
-  SetEpisodeName(tag.strEpisodeName);
   SetStarRating(tag.iStarRating);
-  SetIcon(tag.strIconPath);
-  SetRecordingId(tag.strRecordingId);
+
+  // explicit NULL check, because there is no implicit NULL constructor for std::string
+  if (tag.strTitle)
+    SetTitle(tag.strTitle);
+  if (tag.strPlotOutline)
+    SetPlotOutline(tag.strPlotOutline);
+  if (tag.strPlot)
+    SetPlot(tag.strPlot);
+  if (tag.strEpisodeName)
+    SetEpisodeName(tag.strEpisodeName);
+  if (tag.strIconPath)
+    SetIcon(tag.strIconPath);
+  if (tag.strRecordingId)
+    SetRecordingId(tag.strRecordingId);
 }
 
 bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = true */)
