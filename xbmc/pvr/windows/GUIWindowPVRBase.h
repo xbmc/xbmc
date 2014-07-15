@@ -59,6 +59,7 @@ namespace PVR
     virtual bool OpenGroupSelectionDialog(void);
     virtual void ResetObservers(void) {};
     virtual void Notify(const Observable &obs, const ObservableMessage msg);
+    virtual void SetInvalid();
 
   protected:
     CGUIWindowPVRBase(bool bRadio, int id, const std::string &xmlFile);

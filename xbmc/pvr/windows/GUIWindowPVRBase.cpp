@@ -131,6 +131,14 @@ bool CGUIWindowPVRBase::OnMessage(CGUIMessage& message)
   return CGUIMediaWindow::OnMessage(message);
 }
 
+void CGUIWindowPVRBase::SetInvalid()
+{
+  VECFILEITEMS items = m_vecItems->GetList();
+  for (VECFILEITEMS::iterator it = items.begin(); it != items.end(); ++it)
+    (*it)->SetInvalid();
+  CGUIMediaWindow::SetInvalid();
+}
+
 bool CGUIWindowPVRBase::OpenGroupSelectionDialog(void)
 {
   CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
