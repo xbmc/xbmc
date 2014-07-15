@@ -36,6 +36,10 @@
 static const char* const levelNames[] =
 {"DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"};
 
+// add 1 to level number to get index of name
+static const char* const logLevelNames[] =
+{ "LOG_LEVEL_NONE" /*-1*/, "LOG_LEVEL_NORMAL" /*0*/, "LOG_LEVEL_DEBUG" /*1*/, "LOG_LEVEL_DEBUG_FREEMEM" /*2*/ };
+
 // s_globals is used as static global with CLog global variables
 #define s_globals XBMC_GLOBAL_USE(CLog).m_globalInstance
 
@@ -167,8 +171,13 @@ void CLog::MemDump(char *pData, int length)
 void CLog::SetLogLevel(int level)
 {
   CSingleLock waitLock(s_globals.critSec);
-  s_globals.m_logLevel = level;
-  CLog::Log(LOGNOTICE, "Log level changed to %d", s_globals.m_logLevel);
+  if (level >= LOG_LEVEL_NONE && level <= LOG_LEVEL_MAX)
+  {
+    s_globals.m_logLevel = level;
+    CLog::Log(LOGNOTICE, "Log level changed to \"%s\"", logLevelNames[s_globals.m_logLevel + 1]);
+  }
+  else
+    CLog::Log(LOGERROR, "%s: Invalid log level requested: %d", __FUNCTION__, level);
 }
 
 int CLog::GetLogLevel()
