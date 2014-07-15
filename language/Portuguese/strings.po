@@ -3539,7 +3539,7 @@ msgstr "Experiente"
 
 msgctxt "#10040"
 msgid "Add-on browser"
-msgstr "Navegador de Add-ons"
+msgstr "Explorador de Add-ons"
 
 msgctxt "#10041"
 msgid "Reset above settings to default"
@@ -3579,7 +3579,7 @@ msgstr "Janela de Progresso"
 
 msgctxt "#10126"
 msgid "File browser"
-msgstr "Navegador de ficheiros"
+msgstr "Explorador de ficheiros"
 
 msgctxt "#10128"
 msgid "Network setup"
@@ -12623,7 +12623,7 @@ msgstr "Último perfil utilizado"
 
 msgctxt "#37015"
 msgid "Browse Into"
-msgstr "Navegar Para"
+msgstr "Ir Para"
 
 msgctxt "#37016"
 msgid "Select this option if your receiver is capable of decoding E-AC3 streams."

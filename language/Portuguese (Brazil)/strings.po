@@ -407,7 +407,7 @@ msgstr "Excluir estes arquivos? - A exclusão não pode ser desfeita!"
 
 msgctxt "#126"
 msgid "Status"
-msgstr "Status"
+msgstr "Estatus"
 
 msgctxt "#127"
 msgid "Objects"
@@ -599,7 +599,7 @@ msgstr "Exibir vídeos 4:3 como"
 
 msgctxt "#175"
 msgid "Moods"
-msgstr "Moods"
+msgstr "Climas"
 
 msgctxt "#176"
 msgid "Styles"
@@ -747,7 +747,7 @@ msgstr "Drive de DVD/BD"
 
 msgctxt "#219"
 msgid "Please insert disc"
-msgstr "Por favor inserir disco"
+msgstr "Por favor insira um disco"
 
 msgctxt "#220"
 msgid "Remote share"
@@ -775,7 +775,7 @@ msgstr "Padrões de teste...."
 
 msgctxt "#227"
 msgid "Lookup audio CD track names from freedb.org"
-msgstr "Procurar nome das faixas do CDs de áudio na Internet"
+msgstr "Procurar nome das faixas do CDs de áudio em freedb.org"
 
 msgctxt "#228"
 msgid "Shuffle playlist on load"
@@ -3087,7 +3087,7 @@ msgstr "Todos"
 
 msgctxt "#1223"
 msgid "Disabled"
-msgstr "Desativado"
+msgstr "Desabilitado"
 
 msgctxt "#1226"
 msgid "Files & music & video"
@@ -6239,7 +6239,7 @@ msgstr "Editar agendamento"
 
 msgctxt "#19058"
 msgid "Timer enabled"
-msgstr "Agendamento ativado"
+msgstr "Agendamento habilitado"
 
 msgctxt "#19059"
 msgid "Stop recording"
@@ -6931,15 +6931,15 @@ msgstr "Iniciar tópicos em segundo plano"
 
 msgctxt "#19240"
 msgid "No PVR Add-on enabled"
-msgstr "Nenhum Add-on de PVR ativado"
+msgstr "Nenhum Add-on de PVR habilitado"
 
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
-msgstr "O administrador de PVR foi ativado sem qualquer"
+msgstr "O administrador de PVR foi habilitado sem qualquer"
 
 msgctxt "#19242"
 msgid "enabled PVR Add-on. Enable at least one Add-on"
-msgstr "addon de PVR ativado. Ative ao menos um addon de PVR"
+msgstr "addon de PVR habilitado. Habilite ao menos um addon de PVR"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -9707,11 +9707,11 @@ msgstr "Nascido/formado"
 
 msgctxt "#22000"
 msgid "Update library on startup"
-msgstr "Atualizar coleção ao iniciar"
+msgstr "Atualizar coleção ao inicializar"
 
 msgctxt "#22001"
 msgid "Hide progress of library updates"
-msgstr "Ocultar progresso de atualizações de coleção"
+msgstr "Ocultar progresso nas atualizações das coleções"
 
 msgctxt "#22002"
 msgid "DNS suffix"
@@ -10011,7 +10011,7 @@ msgstr "Desativado"
 
 msgctxt "#24024"
 msgid "Add-on disabled"
-msgstr "Add-on desativado"
+msgstr "Add-on inativo"
 
 msgctxt "#24027"
 msgid "Weather"
@@ -10063,7 +10063,7 @@ msgstr "Instalar"
 
 msgctxt "#24039"
 msgid "Disabled Add-ons"
-msgstr "Add-ons Desativados"
+msgstr "Add-ons Desabilitados"
 
 msgctxt "#24040"
 msgid "(Clear the current setting)"
@@ -10139,7 +10139,7 @@ msgstr "Atualização do Add-on Disponível!"
 
 msgctxt "#24062"
 msgid "Enabled Add-ons"
-msgstr "Add-ons Ativados"
+msgstr "Add-ons Habilitados"
 
 msgctxt "#24063"
 msgid "Auto update"
@@ -10147,7 +10147,7 @@ msgstr "Atualização Automática"
 
 msgctxt "#24064"
 msgid "Add-on enabled"
-msgstr "Add-on ativado"
+msgstr "Add-on habilitado"
 
 msgctxt "#24065"
 msgid "Add-on updated"
@@ -10303,7 +10303,7 @@ msgstr "Local para armazenar as legendas"
 
 msgctxt "#24116"
 msgid "Default TV Service"
-msgstr "Serviço padrão para TV"
+msgstr "Serviço padrão para Séries de TV"
 
 msgctxt "#24117"
 msgid "Select service that will be used as default to search for TV Show subtitles."
@@ -10839,7 +10839,7 @@ msgstr "O serviço Bonjour da Apple está instalado? Veja o registro para maiore
 
 msgctxt "#34302"
 msgid "AirPlay requires Zeroconf to be enabled."
-msgstr "Airplay requer Zeroconf para poder ser ativado."
+msgstr "Airplay requer Zeroconf para poder ser habilitado."
 
 msgctxt "#34303"
 msgid "Unable to stop Zeroconf"
@@ -10919,7 +10919,7 @@ msgstr "Keymap para uso com este dispositivo"
 
 msgctxt "#35008"
 msgid "Keymap enabled"
-msgstr "Keymap ativado"
+msgstr "Keymap habilitado"
 
 msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"

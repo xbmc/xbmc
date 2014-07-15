@@ -1041,6 +1041,18 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Sổ bookmark"
 
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "Đầu thu hỗ trợ MP1"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "Đầu thu hỗ trợ MP2"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "Đầu thu hỗ trợ MP3"
+
 msgctxt "#303"
 msgid "Delay"
 msgstr "Độ trễ"

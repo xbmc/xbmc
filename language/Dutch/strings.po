@@ -9215,7 +9215,7 @@ msgstr "Nieuwe regel..."
 
 msgctxt "#21424"
 msgid "Items must match"
-msgstr "Muziek moet gelijk aan"
+msgstr "Items gelijk aan"
 
 msgctxt "#21425"
 msgid "all of the rules"
@@ -9255,7 +9255,7 @@ msgstr "Naam van de afspeellijst"
 
 msgctxt "#21434"
 msgid "Find items where"
-msgstr "Zoek muziek gelijk aan"
+msgstr "Zoek items gelijk aan"
 
 msgctxt "#21435"
 msgid "Edit"

@@ -11053,9 +11053,17 @@ msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr "XBMC のパーソナルビデオレコーダー (PVR) 機能を有効にします。これを有効にするには、少なくとも1つ以上の PVR アドオンがインストールされている必要があります。"
 
+msgctxt "#36216"
+msgid "Folder where channel icons are stored."
+msgstr "チャンネルのアイコンが保存されているフォルダ。"
+
+msgctxt "#36217"
+msgid "Scan for missing channel icons."
+msgstr "アイコンがないチャンネルをスキャンします。"
+
 msgctxt "#36218"
 msgid "Category for electronic programming guide settings."
-msgstr "EPG 設定用のカテゴリーです。"
+msgstr "EPG 設定のカテゴリーです。"
 
 msgctxt "#36219"
 msgid "Default electronic programming guide window to show."
@@ -11064,6 +11072,26 @@ msgstr "デフォルトで表示する EPG ウィンドウ。"
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "TV 視聴時に EPG インポートを無効にして CPU 負荷を軽減する"
+
+msgctxt "#36226"
+msgid "Category for PVR playback and channel switching settings."
+msgstr "PVR 再生とチャンネル切り替えの設定のカテゴリーです。"
+
+msgctxt "#36233"
+msgid "Category for default recording duration settings."
+msgstr "既定の録画時間の設定のカテゴリーです。"
+
+msgctxt "#36240"
+msgid "Category for PVR power management settings, such as when to wake the PVR backend server."
+msgstr "PVR バックエンドサーバーなどを目覚めさせる電源管理の設定のカテゴリーです。"
+
+msgctxt "#36247"
+msgid "Category for parental control settings if the PVR backend server supports parental controls."
+msgstr "PVR バックエンドがペアレンタルコントロールをサポートしている場合の設定のカテゴリーです。"
+
+msgctxt "#36251"
+msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
+msgstr "PVR バックエンドが XBMC からの設定変更をサポートしている場合の設定のカテゴリーです。"
 
 msgctxt "#36254"
 msgid "Enable the music library."

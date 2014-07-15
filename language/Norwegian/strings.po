@@ -10295,7 +10295,7 @@ msgstr "Kunne ikke laste ned undertekst"
 
 msgctxt "#24114"
 msgid "No subtitle services installed"
-msgstr "Ingen teksttjenester er installert"
+msgstr "Ingen undertekststjenester er installert"
 
 msgctxt "#24115"
 msgid "Subtitle storage location"
@@ -11443,7 +11443,7 @@ msgstr "Fjerner knutepunkt for tittel, sjanger og lignende fra bibliotekvisninge
 
 msgctxt "#36184"
 msgid "Category containing settings for how subtitles are handled."
-msgstr "Kategori som inneholder innstillinger for hvordan teksting håndteres."
+msgstr "Kategori som inneholder innstillinger for hvordan undertekster håndteres."
 
 msgctxt "#36185"
 msgid "Set the font type to be used for subtitles."

@@ -6631,7 +6631,7 @@ msgstr "電視"
 
 msgctxt "#19181"
 msgid "Menu/OSD"
-msgstr "選單/OSD"
+msgstr "選單/播放工具列"
 
 msgctxt "#19182"
 msgid "Days to display in the EPG"
@@ -6815,7 +6815,7 @@ msgstr "錄影已刪除"
 
 msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
-msgstr "切換頻道後關閉頻道 OSD"
+msgstr "切換頻道後關閉頻道播放工具列"
 
 msgctxt "#19230"
 msgid "Prevent EPG updates during playback"
@@ -11245,6 +11245,10 @@ msgctxt "#36163"
 msgid "Enable decoding of video files using pixel buffer objects."
 msgstr "啟用影片檔案使用像素緩衝對象 (PBO) 解碼。"
 
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change."
+msgstr "當更新頻率改變時暫停播放一小段時間。"
+
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr "同步影片和螢幕的更新頻率。"
@@ -11276,6 +11280,10 @@ msgstr "將電傳文訊比例調為 4:3。"
 msgctxt "#36176"
 msgid "Category containing settings for how video file lists are handled."
 msgstr "此分類包含如何處理影片檔案列表的設定。"
+
+msgctxt "#36178"
+msgid "Extract thumbnails and metadata information such as codec and aspect ratio from videos."
+msgstr "從影片中擷取縮圖和如編碼和影片比例等詳細資訊。"
 
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
@@ -11353,6 +11361,14 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "新增音樂錄影帶時要使用的預設站台。"
 
+msgctxt "#36201"
+msgid "Settings for PVR/Live TV features."
+msgstr "PVR/電視直播的設定。"
+
+msgctxt "#36202"
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "此分類包含 PVR/電視直播 的通用設定。"
+
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr "啟用 XBMC 中的個人影片錄影機 (Personal Video Recorder, PVR)功能。需要至少安裝一個 PVR 附加元件。"
@@ -11377,6 +11393,10 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "刪除頻道/電子節目表資料庫，然後從後段重新匯入。"
 
+msgctxt "#36211"
+msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
+msgstr "此分類包含 PVR 選單、播放控制列和頻道資訊視窗的設定，"
+
 msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
 msgstr "當切換頻道時顯示節目資訊，如正在播放的節目。"
@@ -11385,6 +11405,14 @@ msgctxt "#36213"
 msgid "Hide the programming information automatically after a few seconds, defined below."
 msgstr "在下面定義的秒數之後自動隱藏節目資訊。"
 
+msgctxt "#36214"
+msgid "Close the on screen display controls after switching channels."
+msgstr "切換頻道後關閉播放控制列。"
+
+msgctxt "#36215"
+msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
+msgstr "當'自動隱藏'設定被開啟時，節目資訊應該要顯示多久。"
+
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
 msgstr "要用來儲存頻道圖示的資料夾。"
@@ -11392,6 +11420,10 @@ msgstr "要用來儲存頻道圖示的資料夾。"
 msgctxt "#36217"
 msgid "Scan for missing channel icons."
 msgstr "掃描缺少的頻道圖示"
+
+msgctxt "#36218"
+msgid "Category for electronic programming guide settings."
+msgstr "此分類包含電子節目表的設定。"
 
 msgctxt "#36219"
 msgid "Default electronic programming guide window to show."
@@ -11417,6 +11449,14 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "當找不到頻道的電子節目表時隱藏 \"找不到資訊\" 的標籤。"
 
+msgctxt "#36225"
+msgid "Delete the EPG database in XBMC and reimport the data afterwards from the backend."
+msgstr "刪除 XBMC 中的電子節目表資料庫並從後端重新匯入資料。"
+
+msgctxt "#36226"
+msgid "Category for PVR playback and channel switching settings."
+msgstr "此分類包含 PVR 播放和頻道切換的設定。"
+
 msgctxt "#36228"
 msgid "Continue with the last viewed channel on startup."
 msgstr "啟動時切換到上次收看的頻道。"
@@ -11433,6 +11473,14 @@ msgctxt "#36232"
 msgid "When pressing channel up or down, the actual channel switch is delayed, allowing the user to flip to a channel number without waiting for each channel switch."
 msgstr "當升或降頻道被按下時，延遲實際頻道的切換，讓使用者可以快速翻轉頻道而不用每次都等待頻道切換。"
 
+msgctxt "#36233"
+msgid "Category for default recording duration settings."
+msgstr "此分類包和預設錄影長度的設定。"
+
+msgctxt "#36240"
+msgid "Category for PVR power management settings, such as when to wake the PVR backend server."
+msgstr "此分類包含 PVR 電源管理的設定，如何時要喚醒 PVR 後端伺服器。"
+
 msgctxt "#36243"
 msgid "The command to execute."
 msgstr "要執行的命令。"
@@ -11444,6 +11492,10 @@ msgstr "在每天指定的時間執行喚醒命令。"
 msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "每天執行喚醒命令的時間。"
+
+msgctxt "#36247"
+msgid "Category for parental control settings if the PVR backend server supports parental controls."
+msgstr "如果 PVR 後端伺服器支援家長控制的話，此分類包含家長控制的設定。"
 
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
@@ -11592,6 +11644,10 @@ msgstr "當進入圖片資料夾時，自動產生圖片縮圖。"
 msgctxt "#36308"
 msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
 msgstr "如果 EXIF 標籤中帶有相關自訓的話圖片將會自動旋轉。"
+
+msgctxt "#36309"
+msgid "Show videos in picture file lists."
+msgstr "在圖片檔案清單中顯示影片。"
 
 msgctxt "#36310"
 msgid "No info available yet."

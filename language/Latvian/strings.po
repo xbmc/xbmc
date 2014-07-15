@@ -475,7 +475,7 @@ msgstr "Laiks:"
 
 msgctxt "#143"
 msgid "Current:"
-msgstr "Pašlaik:"
+msgstr "Pašreiz:"
 
 msgctxt "#144"
 msgid "Build:"
@@ -923,7 +923,7 @@ msgstr "Ierakstīt"
 
 msgctxt "#265"
 msgid "Stop Rec."
-msgstr "Apturēt ierakst."
+msgstr "Apturēt ierakstu"
 
 msgctxt "#266"
 msgid "Sort by: Track"
@@ -3703,11 +3703,11 @@ msgstr "Mūzika - Bibliotēka"
 
 msgctxt "#10517"
 msgid "Now Playing - Music"
-msgstr "Pašlaik atskaņo - Mūzika"
+msgstr "Pašreiz atskaņo - Mūzika"
 
 msgctxt "#10522"
 msgid "Now Playing - Videos"
-msgstr "Pašlaik atskaņo - Video"
+msgstr "Pašreiz atskaņo - Video"
 
 msgctxt "#10523"
 msgid "Album info"
@@ -4675,7 +4675,7 @@ msgstr "Meklē jaunu saturu"
 
 msgctxt "#13350"
 msgid "Current playlist"
-msgstr "Pašreizējais atskaņošanas saraksts"
+msgstr "Pašreizējais spēļsaraksts"
 
 msgctxt "#13351"
 msgid "Album information"
@@ -6127,7 +6127,7 @@ msgstr "Kanāls"
 
 msgctxt "#19030"
 msgid "Now"
-msgstr "Pašlaik"
+msgstr "Pašreiz"
 
 msgctxt "#19031"
 msgid "Next"
@@ -6275,7 +6275,7 @@ msgstr "Kanālu ikonas"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
-msgstr "Šis pasākumu jau ieraksta."
+msgstr "Šo pasākumu jau ieraksta."
 
 msgctxt "#19068"
 msgid "This recording could not be deleted. Check the log for details."
@@ -10159,7 +10159,7 @@ msgstr "Vai atcelt pielikuma lejupielādi?"
 
 msgctxt "#24067"
 msgid "Currently downloading Add-ons"
-msgstr "Pašlaik lejupielādējas pielikumi"
+msgstr "Pašreiz lejupielādējas pielikumi"
 
 msgctxt "#24068"
 msgid "Update available"
