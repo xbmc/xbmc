@@ -343,9 +343,9 @@ bool CPlayListASX::LoadData(istream& stream)
     while (pElement)
     {
       value = pElement->Value();
-      if (value == "title")
+      if (value == "title" && !pElement->NoChildren())
       {
-        roottitle = pElement->GetText();
+        roottitle = pElement->FirstChild()->ValueStr();
       }
       else if (value == "entry")
       {
@@ -354,8 +354,8 @@ bool CPlayListASX::LoadData(istream& stream)
         TiXmlElement *pRef = pElement->FirstChildElement("ref");
         TiXmlElement *pTitle = pElement->FirstChildElement("title");
 
-        if(pTitle)
-          title = pTitle->GetText();
+        if(pTitle && !pTitle->NoChildren())
+          title = pTitle->FirstChild()->ValueStr();
 
         while (pRef)
         { // multiple references may apear for one entry
