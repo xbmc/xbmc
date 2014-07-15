@@ -58,6 +58,20 @@ void CLog::Log(int loglevel, const char *format, ...)
   }
 }
 
+void CLog::LogFunction(int loglevel, const char* functionName, const char* format, ...)
+{
+  if (IsLogLevelLogged(loglevel))
+  {
+    std::string fNameStr;
+    if (functionName && functionName[0])
+      fNameStr.assign(functionName).append(": ");
+    va_list va;
+    va_start(va, format);
+    LogString(loglevel, fNameStr + StringUtils::FormatV(format, va));
+    va_end(va);
+  }
+}
+
 void CLog::LogString(int logLevel, const std::string& logString)
 {
   CSingleLock waitLock(s_globals.critSec);
