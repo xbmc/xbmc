@@ -777,61 +777,61 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
     if (!pButton->NoChildren())
       action = pButton->FirstChild()->ValueStr();
 
-      if ((pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS) && id>=0 && id<=256)
+    if ((pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS) && id>=0 && id<=256)
+    {
+      if (type == "button")
       {
-        if (type == "button")
+        buttonMap[id] = action;
+      }
+      else if (type == "axis")
+      {
+        int limit = 0;
+        if (pButton->QueryIntAttribute("limit", &limit) == TIXML_SUCCESS)
         {
-          buttonMap[id] = action;
-        }
-        else if (type == "axis")
-        {
-          int limit = 0;
-          if (pButton->QueryIntAttribute("limit", &limit) == TIXML_SUCCESS)
-          {
-            if (limit==-1)
-              axisMap[-id] = action;
-            else if (limit==1)
-              axisMap[id] = action;
-            else if (limit==0)
-              axisMap[id|0xFFFF0000] = action;
-            else
-            {
-              axisMap[id] = action;
-              axisMap[-id] = action;
-              CLog::Log(LOGERROR, "Error in joystick map, invalid limit specified %d for axis %d", limit, id);
-            }
-          }
+          if (limit==-1)
+            axisMap[-id] = action;
+          else if (limit==1)
+            axisMap[id] = action;
+          else if (limit==0)
+            axisMap[id|0xFFFF0000] = action;
           else
           {
             axisMap[id] = action;
             axisMap[-id] = action;
-          }
-        }
-        else if (type == "hat")
-        {
-          string position;
-          if (pButton->QueryValueAttribute("position", &position) == TIXML_SUCCESS)
-          {
-            uint32_t hatID = id|0xFFF00000;
-            if (position.compare("up") == 0)
-              hatMap[(JACTIVE_HAT_UP<<16)|hatID] = action;
-            else if (position.compare("down") == 0)
-              hatMap[(JACTIVE_HAT_DOWN<<16)|hatID] = action;
-            else if (position.compare("right") == 0)
-              hatMap[(JACTIVE_HAT_RIGHT<<16)|hatID] = action;
-            else if (position.compare("left") == 0)
-              hatMap[(JACTIVE_HAT_LEFT<<16)|hatID] = action;
-            else
-              CLog::Log(LOGERROR, "Error in joystick map, invalid position specified %s for axis %d", position.c_str(), id);
+            CLog::Log(LOGERROR, "Error in joystick map, invalid limit specified %d for axis %d", limit, id);
           }
         }
         else
-          CLog::Log(LOGERROR, "Error reading joystick map element, unknown button type: %s", type.c_str());
+        {
+          axisMap[id] = action;
+          axisMap[-id] = action;
+        }
       }
-      else if (type == "altname")
-        joynames.push_back(action);
+      else if (type == "hat")
+      {
+        string position;
+        if (pButton->QueryValueAttribute("position", &position) == TIXML_SUCCESS)
+        {
+          uint32_t hatID = id|0xFFF00000;
+          if (position.compare("up") == 0)
+            hatMap[(JACTIVE_HAT_UP<<16)|hatID] = action;
+          else if (position.compare("down") == 0)
+            hatMap[(JACTIVE_HAT_DOWN<<16)|hatID] = action;
+          else if (position.compare("right") == 0)
+            hatMap[(JACTIVE_HAT_RIGHT<<16)|hatID] = action;
+          else if (position.compare("left") == 0)
+            hatMap[(JACTIVE_HAT_LEFT<<16)|hatID] = action;
+          else
+            CLog::Log(LOGERROR, "Error in joystick map, invalid position specified %s for axis %d", position.c_str(), id);
+        }
+      }
       else
-        CLog::Log(LOGERROR, "Error reading joystick map element, Invalid id: %d", id);
+        CLog::Log(LOGERROR, "Error reading joystick map element, unknown button type: %s", type.c_str());
+    }
+    else if (type == "altname")
+      joynames.push_back(action);
+    else
+      CLog::Log(LOGERROR, "Error reading joystick map element, Invalid id: %d", id);
 
     pButton = pButton->NextSiblingElement();
   }
