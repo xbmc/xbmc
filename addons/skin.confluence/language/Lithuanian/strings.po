@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Change Your"
-msgstr "Keičiami"
+msgstr "Pakeiskite savo"
 
 msgctxt "#31003"
 msgid "Power Options"
@@ -98,7 +98,7 @@ msgstr "Dabar atkuriama"
 
 msgctxt "#31042"
 msgid "PLAYING"
-msgstr "ATKURIMAS"
+msgstr "ATKŪRIMAS"
 
 msgctxt "#31043"
 msgid "PAUSED"
@@ -138,7 +138,7 @@ msgstr "Atidaryti grojaraštį"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "Įšsaugoti grojaraštį"
+msgstr "Išsaugoti grojaraštį"
 
 msgctxt "#31057"
 msgid "Close playlist"
@@ -146,11 +146,11 @@ msgstr "Uždaryti grojaraštį"
 
 msgctxt "#31058"
 msgid "System music files"
-msgstr "Sistemos garso failai"
+msgstr "Sistemos muzikos failai"
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "Aktualus grojaraštis"
+msgstr "Dabartinis grojaraštis"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
@@ -162,7 +162,7 @@ msgstr "Dabartinis pasirinkimas"
 
 msgctxt "#31101"
 msgid "Home screen options"
-msgstr "Pagrindinio ekrano nustatymai"
+msgstr "Pradinio ekrano parinktys"
 
 msgctxt "#31102"
 msgid "Background"
@@ -170,7 +170,7 @@ msgstr "Fonas"
 
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
-msgstr "Rodyti \"Pauzė\" paveikslėlių skaidrių peržiūroje"
+msgstr "Rodyti \"Pauzė\" nuotraukų skaidrių peržiūroje"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
@@ -182,7 +182,7 @@ msgstr "Įvairios parinktys"
 
 msgctxt "#31107"
 msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
-msgstr "Slėpti žymas vaizdo failų varduose [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Slėpti žymes vaizdo failų varduose [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
@@ -194,7 +194,7 @@ msgstr "Įjungti individualų foną"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr "Kelias iki fono:"
+msgstr "Fono kelias:"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -218,11 +218,11 @@ msgstr "Pradinio puslapio programų submeniu"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
-msgstr "Slėpti Fanart foną"
+msgstr "Slėpti fono Fanart"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
-msgstr "Rodyti fone \"Dabar atkuriama\" vaizdo įrašą"
+msgstr "Rodyti fone \"Dabar atkuriamą\" vaizdo įrašą"
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualisation"
@@ -242,7 +242,7 @@ msgstr "Dainų žodžiai"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualisation"
-msgstr "Slėpti FanArt viso ekrano vizualizacijoje"
+msgstr "Slėpti Fanart viso ekrano vizualizacijoje"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -286,7 +286,7 @@ msgstr "Dainų žodžių šaltinis"
 
 msgctxt "#31206"
 msgid "Found"
-msgstr "Surasta"
+msgstr "Rasta"
 
 msgctxt "#31207"
 msgid "Find More Items"
@@ -310,7 +310,7 @@ msgstr "Duomenų tiekėjas"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
-msgstr "Nerodyti FanArt"
+msgstr "Slėpti Fanart"
 
 msgctxt "#31308"
 msgid "Movie Details"
@@ -326,7 +326,7 @@ msgstr "Takelio numeris"
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
-msgstr "FanArt paveikslėlis[CR][CR]Nepasiekiamas[CR][CR] Spauskite mygtuką norėdami nustatyti"
+msgstr "Fanart atvaizdas[CR][CR]nepasiekiamas[CR][CR] Spauskite mygtuką, norėdami nustatyti"
 
 msgctxt "#31312"
 msgid "Current Scraper"
@@ -342,7 +342,7 @@ msgstr "Turinio nuskaitymo parinktys"
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
-msgstr "Nustatyti FanArt kelią"
+msgstr "Nustatyti Fanart kelią"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -358,7 +358,7 @@ msgstr "Karaoke dainos pasirinkimas"
 
 msgctxt "#31322"
 msgid "Aired"
-msgstr "Eteryje"
+msgstr "Transliuotas"
 
 msgctxt "#31325"
 msgid "Playlist Options"
@@ -442,7 +442,7 @@ msgstr "[B]KONFIGŪRUOTI IŠVAIZDOS NUSTATYMAS[/B][CR][CR]Pakeisti teminę išva
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]KONFIGŪRUOTI VAIZDO ĮRAŠŲ NUSTATYMUS[/B][CR][CR]Tvarkyti vaizdo biblioteką · Nustatyti vaizdo atkūrimo parinktis[CR]Keiti vaizdo įrašų sąrašo atvaizdavimo parinktis · Nustatyti subtitrų šriftus"
+msgstr "[B]KONFIGŪRUOTI VAIZDO ĮRAŠŲ NUSTATYMUS[/B][CR][CR]Tvarkyti vaizdo biblioteką · Nustatyti vaizdo atkūrimo parinktis[CR]Keisti vaizdo įrašų sąrašo atvaizdavimo parinktis · Nustatyti subtitrų šriftus"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
@@ -478,7 +478,7 @@ msgstr "Pirmo paleidimo pagalba..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
-msgstr "Šis skirtukas reiškia, kad šio lango krašte yra meniu, kuriame yra papildomų parinkčių šiam skyriui. Norėdami atidaryti meniu, pereikite į kairę, naudojant nuotolinio valdymo pultą arba klaviatūrą arba užeikite pelės žymekliu virš skirtuko.[CR][CR] Spauskite \"OK\", norėdami uždaryti šį langą ir jis daugiau nebus rodomas."
+msgstr "Šis skirtukas reiškia, kad šio lango krašte yra meniu, kuriame yra papildomų parinkčių šiam skyriui. Norėdami atidaryti meniu, pereikite į kairę, naudojant nuotolinio valdymo pultą arba klaviatūrą arba užeikite pelės žymekliu virš skirtuko.[CR][CR]Paspauskite \"OK\", norėdami uždaryti šį langą ir jis daugiau nebus rodomas."
 
 msgctxt "#31413"
 msgid "Local subtitle available"

@@ -606,4 +606,4 @@ msgstr "SPEEL OPTIESE SKYF"
 
 msgctxt "#31959"
 msgid "SYSTEM"
-msgstr "SISTEEM"
+msgstr "STELSEL"

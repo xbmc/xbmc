@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="skin.confluence"
-  version="2.2.18"
+  version="2.2.19"
   name="Confluence"
   provider-name="Jezz_X, Team XBMC">
   <requires>
@@ -50,7 +50,7 @@
     <summary lang="ja">Confluence スキン by Jezz_X. (XBMC デフォルトスキン)</summary>
     <summary lang="km">Confluence skin by Jezz_X. (XBMC's default skin)</summary>
     <summary lang="ko">Confluence 스킨 Jezz_X 만듦 (XBMC 기본 스킨)</summary>
-    <summary lang="lt">Teminę išvaizdą Confluence sukūrė Jezz_X.(XBMC numatytoji teminė išvaizda)</summary>
+    <summary lang="lt">Confluence teminė išvaizda, kurią sukūrė Jezz_X. (XBMC numatytoji teminė išvaizda)</summary>
     <summary lang="lv">Confluence apvalks no Jeez_X. (XBMC noklusētais apvalks)</summary>
     <summary lang="mk">Confluence skin by Jezz_X. (XBMC's default skin)</summary>
     <summary lang="ms">Penyatuan, kulit daripada Jezz_X. (Kulit lalai XBMC)</summary>
@@ -164,7 +164,7 @@
     <disclaimer lang="it">Confluence è la skin predefinita di XBMC, l'eliminazione potrebbe comportare dei problemi.</disclaimer>
     <disclaimer lang="ja">Confluence は XBMC のデフォルトスキンですので、これを削除するとうまく動かなくなる可能性があります</disclaimer>
     <disclaimer lang="ko">Confluence는 XBMC의 기본스킨으로 제거시 문제가 생길 수 있습니다.</disclaimer>
-    <disclaimer lang="lt">Confluence yra numatytoji XBMC teminė išvaizda, ją panaikinus ar pakeitus gali kilti problemų</disclaimer>
+    <disclaimer lang="lt">Confluence yra numatytoji XBMC teminė išvaizda, jos pašalinimas gali sukelti problemų</disclaimer>
     <disclaimer lang="lv">Confluence ir XMBC noklusētais apvalks, dzēšot to, var rasties problēmas</disclaimer>
     <disclaimer lang="mk">Confluence е подразбирачка маска, бришењето може да предизвика пречки</disclaimer>
     <disclaimer lang="ms">Penyatuan ialah kulit lalai XBMC, mengubahnya boleh menimbulkan isu.</disclaimer>

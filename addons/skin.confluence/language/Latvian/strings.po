@@ -94,7 +94,7 @@ msgstr "Darbības"
 
 msgctxt "#31040"
 msgid "Now Playing"
-msgstr "Pašlaik atskaņo"
+msgstr "Pašreiz atskaņo"
 
 msgctxt "#31042"
 msgid "PLAYING"
@@ -158,7 +158,7 @@ msgstr "Fails ir ielādēts, atlasiet daļu, no kuras atskaņot."
 
 msgctxt "#31061"
 msgid "Current Selected"
-msgstr "Pašlaik atlasīts"
+msgstr "Pašreiz atlasīts"
 
 msgctxt "#31101"
 msgid "Home screen options"
@@ -222,11 +222,11 @@ msgstr "Slēpt fona fanumākslu"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
-msgstr "Rādīt fonā \"Pašlaik atskaņo\" video"
+msgstr "Rādīt fonā \"Pašreiz atskaņo\" video"
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualisation"
-msgstr "Rādīt fonā \"Pašlaik atskaņo\" vizualizāciju"
+msgstr "Rādīt fonā \"Pašreiz atskaņo\" vizualizāciju"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -290,7 +290,7 @@ msgstr "Atrada"
 
 msgctxt "#31207"
 msgid "Find More Items"
-msgstr "Atrast vairāk ierakstus"
+msgstr "Atrast vairāk ierakstu"
 
 msgctxt "#31208"
 msgid "Upcoming Episodes"
