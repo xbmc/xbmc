@@ -62,9 +62,13 @@ public:
   ~CLog(void);
   static void Close();
   static void Log(int loglevel, PRINTF_FORMAT_STRING const char *format, ...) PARAM2_PRINTF_FORMAT;
+  static void LogFunction(int loglevel, IN_OPT_STRING const char* functionName, PRINTF_FORMAT_STRING const char* format, ...) PARAM3_PRINTF_FORMAT;
+#define LogF(loglevel,format,...) LogFunction((loglevel),__FUNCTION__,(format),##__VA_ARGS__)
   // wide character Log function
   // note: use "%ls" to specify wide string parameter, "%ls" is compatible with both POSIX and win32
   static void LogW(int loglevel, PRINTF_FORMAT_STRING const wchar_t *format, ...);
+  static void LogFunctionW(int loglevel, IN_OPT_STRING const char* functionName, PRINTF_FORMAT_STRING const wchar_t *format, ...);
+#define LogFW(loglevel,format,...) LogFunctionW((loglevel),__FUNCTION__,(format),##__VA_ARGS__)
   static void MemDump(char *pData, int length);
   static bool Init(IN_STRING const char* path);
   static void PrintDebugString(const std::string& line);

@@ -62,6 +62,21 @@ void CLog::Log(int loglevel, const char *format, ...)
   }
 }
 
+void CLog::LogFunction(int loglevel, const char* functionName, const char* format, ...)
+{
+  CSingleLock waitLock(s_globals.critSec);
+  if (IsLogLevelLogged(loglevel))
+  {
+    std::string fNameStr;
+    if (functionName && functionName[0])
+      fNameStr.assign(functionName).append(": ");
+    va_list va;
+    va_start(va, format);
+    LogString(loglevel, fNameStr + StringUtils::FormatV(format, va));
+    va_end(va);
+  }
+}
+
 void CLog::LogW(int loglevel, const wchar_t *format, ...)
 {
   CSingleLock waitLock(s_globals.critSec);
@@ -78,6 +93,29 @@ void CLog::LogW(int loglevel, const wchar_t *format, ...)
         PrintDebugString("CLog::LogW: Can't convert log wide string to UTF-8");
       else
         LogString(loglevel, strDataUtf8);
+    }
+  }
+}
+
+void CLog::LogFunctionW(int loglevel, const char* functionName, const wchar_t *format, ...)
+{
+  CSingleLock waitLock(s_globals.critSec);
+  if (IsLogLevelLogged(loglevel))
+  {
+    std::string fNameStr;
+    if (functionName && functionName[0])
+      fNameStr.assign(functionName).append(": ");
+    va_list va;
+    va_start(va, format);
+    std::wstring strDataW(StringUtils::FormatV(format, va));
+    va_end(va);
+    if (!strDataW.empty())
+    {
+      std::string strDataUtf8(CCharsetConverter::simpleWToUtf8(strDataW, false));
+      if (strDataUtf8.empty())
+        PrintDebugString("CLog::LogW: Can't convert log wide string to UTF-8");
+      else
+        LogString(loglevel, fNameStr + strDataUtf8);
     }
   }
 }
