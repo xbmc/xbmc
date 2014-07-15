@@ -217,7 +217,7 @@ void aml_set_audio_passthrough(bool passthrough)
   if (aml_present())
   {
     // m1 uses 1, m3 and above uses 2
-    int raw = aml_get_cputype() < AML_DEVICE_TYPE_M3 ? 1:2;
+    int raw = aml_get_cputype() == AML_DEVICE_TYPE_M1 ? 1:2;
     aml_set_sysfs_int("/sys/class/audiodsp/digital_raw", passthrough ? raw:0);
   }
 }
