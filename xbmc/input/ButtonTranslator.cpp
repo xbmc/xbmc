@@ -713,14 +713,13 @@ void CButtonTranslator::MapRemote(TiXmlNode *pRemote, const char* szDevice)
   TiXmlElement *pButton = pRemote->FirstChildElement();
   while (pButton)
   {
-    if (strcmpi(pButton->Value(), "altname")==0)
-      RemoteNames.push_back(string(pButton->GetText()));
-    else
+    if (!pButton->NoChildren())
     {
-      if (pButton->FirstChild() && pButton->FirstChild()->Value())
-        buttons[pButton->FirstChild()->Value()] = pButton->Value();
+      if (pButton->ValueStr() == "altname")
+        RemoteNames.push_back(pButton->FirstChild()->ValueStr());
+      else
+        buttons[pButton->FirstChild()->ValueStr()] = pButton->ValueStr();
     }
-
     pButton = pButton->NextSiblingElement();
   }
   for (vector<string>::iterator it  = RemoteNames.begin();
@@ -771,75 +770,68 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
   // parse map
   TiXmlElement *pButton = pJoystick->FirstChildElement();
   int id = 0;
-  //char* szId;
-  const char* szType;
-  const char *szAction;
   while (pButton)
   {
-    szType = pButton->Value();
-    szAction = pButton->GetText();
-    if (szAction == NULL)
-      szAction = "";
-    if (szType)
-    {
+    const std::string &type = pButton->ValueStr();
+    std::string action;
+    if (!pButton->NoChildren())
+      action = pButton->FirstChild()->ValueStr();
+
       if ((pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS) && id>=0 && id<=256)
       {
-        if (strcmpi(szType, "button")==0)
+        if (type == "button")
         {
-          buttonMap[id] = string(szAction);
+          buttonMap[id] = action;
         }
-        else if (strcmpi(szType, "axis")==0)
+        else if (type == "axis")
         {
           int limit = 0;
           if (pButton->QueryIntAttribute("limit", &limit) == TIXML_SUCCESS)
           {
             if (limit==-1)
-              axisMap[-id] = string(szAction);
+              axisMap[-id] = action;
             else if (limit==1)
-              axisMap[id] = string(szAction);
+              axisMap[id] = action;
             else if (limit==0)
-              axisMap[id|0xFFFF0000] = string(szAction);
+              axisMap[id|0xFFFF0000] = action;
             else
             {
-              axisMap[id] = string(szAction);
-              axisMap[-id] = string(szAction);
+              axisMap[id] = action;
+              axisMap[-id] = action;
               CLog::Log(LOGERROR, "Error in joystick map, invalid limit specified %d for axis %d", limit, id);
             }
           }
           else
           {
-            axisMap[id] = string(szAction);
-            axisMap[-id] = string(szAction);
+            axisMap[id] = action;
+            axisMap[-id] = action;
           }
         }
-        else if (strcmpi(szType, "hat")==0)
+        else if (type == "hat")
         {
           string position;
           if (pButton->QueryValueAttribute("position", &position) == TIXML_SUCCESS)
           {
             uint32_t hatID = id|0xFFF00000;
             if (position.compare("up") == 0)
-              hatMap[(JACTIVE_HAT_UP<<16)|hatID] = string(szAction);
+              hatMap[(JACTIVE_HAT_UP<<16)|hatID] = action;
             else if (position.compare("down") == 0)
-              hatMap[(JACTIVE_HAT_DOWN<<16)|hatID] = string(szAction);
+              hatMap[(JACTIVE_HAT_DOWN<<16)|hatID] = action;
             else if (position.compare("right") == 0)
-              hatMap[(JACTIVE_HAT_RIGHT<<16)|hatID] = string(szAction);
+              hatMap[(JACTIVE_HAT_RIGHT<<16)|hatID] = action;
             else if (position.compare("left") == 0)
-              hatMap[(JACTIVE_HAT_LEFT<<16)|hatID] = string(szAction);
+              hatMap[(JACTIVE_HAT_LEFT<<16)|hatID] = action;
             else
               CLog::Log(LOGERROR, "Error in joystick map, invalid position specified %s for axis %d", position.c_str(), id);
           }
         }
         else
-          CLog::Log(LOGERROR, "Error reading joystick map element, unknown button type: %s", szType);
+          CLog::Log(LOGERROR, "Error reading joystick map element, unknown button type: %s", type.c_str());
       }
-      else if (strcmpi(szType, "altname")==0)
-        joynames.push_back(string(szAction));
+      else if (type == "altname")
+        joynames.push_back(action);
       else
         CLog::Log(LOGERROR, "Error reading joystick map element, Invalid id: %d", id);
-    }
-    else
-      CLog::Log(LOGERROR, "Error reading joystick map element, skipping");
 
     pButton = pButton->NextSiblingElement();
   }
