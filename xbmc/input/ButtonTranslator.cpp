@@ -654,7 +654,6 @@ bool CButtonTranslator::LoadKeymap(const std::string &keymapPath)
   return true;
 }
 
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
 bool CButtonTranslator::LoadLircMap(const std::string &lircmapPath)
 {
 #ifdef TARGET_POSIX
@@ -748,7 +747,6 @@ int CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const cha
 
   return TranslateRemoteString((*it2).second.c_str());
 }
-#endif
 
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
 void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
