@@ -44,20 +44,20 @@ CDAVDirectory::~CDAVDirectory(void) {}
  */
 void CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
 {
-  const TiXmlNode *pResponseChild;
+  const TiXmlElement *pResponseChild;
   const TiXmlNode *pPropstatChild;
-  const TiXmlNode *pPropChild;
+  const TiXmlElement *pPropChild;
 
   /* Iterate response children elements */
-  for (pResponseChild = pElement->FirstChild(); pResponseChild != 0; pResponseChild = pResponseChild->NextSibling())
+  for (pResponseChild = pElement->FirstChildElement(); pResponseChild != 0; pResponseChild = pResponseChild->NextSiblingElement())
   {
-    if (CDAVCommon::ValueWithoutNamespace(pResponseChild, "href"))
+    if (CDAVCommon::ValueWithoutNamespace(pResponseChild, "href") && !pResponseChild->NoChildren())
     {
-      std::string path(pResponseChild->ToElement()->GetText());
+      std::string path(pResponseChild->FirstChild()->ValueStr());
       URIUtils::RemoveSlashAtEnd(path);
       item.SetPath(path);
     }
-    else 
+    else
     if (CDAVCommon::ValueWithoutNamespace(pResponseChild, "propstat"))
     {
       if (CDAVCommon::GetStatusTag(pResponseChild->ToElement()) == "HTTP/1.1 200 OK")
@@ -68,29 +68,29 @@ void CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
           if (CDAVCommon::ValueWithoutNamespace(pPropstatChild, "prop"))
           {
             /* Iterate all properties available */
-            for (pPropChild = pPropstatChild->FirstChild(); pPropChild != 0; pPropChild = pPropChild->NextSibling())
+            for (pPropChild = pPropstatChild->FirstChildElement(); pPropChild != 0; pPropChild = pPropChild->FirstChildElement())
             {
-              if (CDAVCommon::ValueWithoutNamespace(pPropChild, "getcontentlength"))
+              if (CDAVCommon::ValueWithoutNamespace(pPropChild, "getcontentlength") && !pPropChild->NoChildren())
               {
-                item.m_dwSize = strtoll(pPropChild->ToElement()->GetText(), NULL, 10);
+                item.m_dwSize = strtoll(pPropChild->FirstChild()->Value(), NULL, 10);
               }
               else
-              if (CDAVCommon::ValueWithoutNamespace(pPropChild, "getlastmodified"))
+              if (CDAVCommon::ValueWithoutNamespace(pPropChild, "getlastmodified") && !pPropChild->NoChildren())
               {
                 struct tm timeDate = {0};
-                strptime(pPropChild->ToElement()->GetText(), "%a, %d %b %Y %T", &timeDate);
+                strptime(pPropChild->FirstChild()->Value(), "%a, %d %b %Y %T", &timeDate);
                 item.m_dateTime = mktime(&timeDate);
               }
               else
-              if (CDAVCommon::ValueWithoutNamespace(pPropChild, "displayname"))
+              if (CDAVCommon::ValueWithoutNamespace(pPropChild, "displayname") && !pPropChild->NoChildren())
               {
-                item.SetLabel(pPropChild->ToElement()->GetText());
+                item.SetLabel(pPropChild->FirstChild()->ValueStr());
               }
               else
-              if (!item.m_dateTime.IsValid() && CDAVCommon::ValueWithoutNamespace(pPropChild, "creationdate"))
+              if (!item.m_dateTime.IsValid() && CDAVCommon::ValueWithoutNamespace(pPropChild, "creationdate") && !pPropChild->NoChildren())
               {
                 struct tm timeDate = {0};
-                strptime(pPropChild->ToElement()->GetText(), "%Y-%m-%dT%T", &timeDate);
+                strptime(pPropChild->FirstChild()->Value(), "%Y-%m-%dT%T", &timeDate);
                 item.m_dateTime = mktime(&timeDate);
               }
               else 
