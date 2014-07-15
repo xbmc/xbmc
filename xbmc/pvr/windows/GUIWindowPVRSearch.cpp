@@ -187,7 +187,7 @@ bool CGUIWindowPVRSearch::OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON b
     m_bSearchConfirmed = false;
     m_searchfilter.Reset();
 
-    Update();
+    Refresh(true);
   }
 
   return bReturn;
@@ -270,6 +270,6 @@ void CGUIWindowPVRSearch::ShowSearchResults()
   if (pDlgInfo->IsConfirmed())
   {
     m_bSearchConfirmed = true;
-    Update();
+    Refresh(true);
   }
 }

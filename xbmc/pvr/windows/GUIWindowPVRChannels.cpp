@@ -144,7 +144,7 @@ bool CGUIWindowPVRChannels::Update(const std::string &strDirectory, bool updateF
       /* show the visible channels instead */
       m_bShowHiddenChannels = false;
       lock.Leave();
-      Update();
+      Refresh(true);
   }
 
   return bReturn;
@@ -228,7 +228,7 @@ bool CGUIWindowPVRChannels::OnMessage(CGUIMessage& message)
         case ObservableMessageChannelGroupReset:
         {
           if (IsActive())
-            Update();
+            Refresh(true);
           bReturn = true;
           break;
         }
@@ -289,7 +289,7 @@ bool CGUIWindowPVRChannels::OnContextButtonHide(CFileItem *item, CONTEXT_BUTTON 
       return bReturn;
 
     g_PVRManager.GetPlayingGroup(m_bRadio)->RemoveFromGroup(*channel);
-    Update();
+    Refresh(true);
 
     bReturn = true;
   }
@@ -312,7 +312,7 @@ bool CGUIWindowPVRChannels::OnContextButtonLock(CFileItem *item, CONTEXT_BUTTON 
       return bReturn;
 
     group->ToggleChannelLocked(*item);
-    Update();
+    Refresh(true);
 
     bReturn = true;
   }
@@ -351,7 +351,7 @@ bool CGUIWindowPVRChannels::OnContextButtonMove(CFileItem *item, CONTEXT_BUTTON 
     if (newIndex != channel->ChannelNumber())
     {
       g_PVRManager.GetPlayingGroup()->MoveChannel(channel->ChannelNumber(), newIndex);
-      Update();
+      Refresh(true);
     }
 
     bReturn = true;
@@ -434,7 +434,7 @@ bool CGUIWindowPVRChannels::OnContextButtonSetThumb(CFileItem *item, CONTEXT_BUT
 
       channelPtr->SetIconPath(strThumb, true);
       channelPtr->Persist();
-      Update();
+      Refresh(true);
     }
 
     bReturn = true;
@@ -450,7 +450,7 @@ bool CGUIWindowPVRChannels::OnContextButtonShowHidden(CFileItem *item, CONTEXT_B
   if (button == CONTEXT_BUTTON_SHOW_HIDDEN)
   {
     m_bShowHiddenChannels = !m_bShowHiddenChannels;
-    Update();
+    Refresh(true);
     bReturn = true;
   }
 

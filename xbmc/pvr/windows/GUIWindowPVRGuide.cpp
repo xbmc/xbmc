@@ -187,7 +187,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
       {
         // let's set the view mode first before update
         CGUIWindowPVRBase::OnMessage(message);
-        Update();
+        Refresh(true);
         bReturn = true;
       }
       break;
@@ -202,7 +202,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
           m_bUpdateRequired = true;
           /* update the current window if the EPG timeline view is visible */
           if (IsActive() && m_viewControl.GetCurrentControl() == GUIDE_VIEW_TIMELINE)
-            Update();
+            Refresh(true);
           bReturn = true;
           break;
         }
@@ -337,9 +337,6 @@ void CGUIWindowPVRGuide::UpdateViewTimeline()
 
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, g_localizeStrings.Get(19032));
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, GetGroup()->GroupName());
-// FIXPVR
-//  if (bUpdateSelectedFile)
-//    SelectPlayingFile();
   
   m_viewControl.SetItems(*m_vecItems);
 }

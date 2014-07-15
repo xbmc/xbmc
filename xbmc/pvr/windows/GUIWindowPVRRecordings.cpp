@@ -243,7 +243,7 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
         case ObservableMessageTimersReset:
         {
           if (IsActive())
-            Update();
+            Refresh(true);
           bReturn = true;
           break;
         }
@@ -299,7 +299,7 @@ bool CGUIWindowPVRRecordings::OnContextButtonRename(CFileItem *item, CONTEXT_BUT
     if (CGUIKeyboardFactory::ShowAndGetInput(strNewName, g_localizeStrings.Get(19041), false))
     {
       if (g_PVRRecordings->RenameRecording(*item, strNewName))
-        Update();
+        Refresh(true);
     }
   }
 
@@ -318,7 +318,7 @@ bool CGUIWindowPVRRecordings::OnContextButtonMarkWatched(const CFileItemPtr &ite
     g_PVRRecordings->SetRecordingsPlayCount(item, 1);
     m_viewControl.SetSelectedItem(newSelection);
 
-    Update();
+    Refresh(true);
   }
 
   if (button == CONTEXT_BUTTON_MARK_UNWATCHED)
@@ -327,7 +327,7 @@ bool CGUIWindowPVRRecordings::OnContextButtonMarkWatched(const CFileItemPtr &ite
 
     g_PVRRecordings->SetRecordingsPlayCount(item, 0);
 
-    Update();
+    Refresh(true);
   }
 
   return bReturn;

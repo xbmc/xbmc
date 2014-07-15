@@ -52,7 +52,7 @@ namespace PVR
   public:
     virtual void OnInitWindow(void);
     virtual bool OnMessage(CGUIMessage& message);
-    virtual bool Update(const std::string &strDirectory = "", bool updateFilterPath = true);
+    virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true);
     virtual void UpdateButtons(void);
     virtual bool OnAction(const CAction &action);
     virtual bool OnBack(int actionID);
