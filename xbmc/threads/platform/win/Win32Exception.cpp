@@ -198,6 +198,9 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
   bool returncode = false;
   STACKFRAME64 frame = { 0 };
   HANDLE hCurProc = GetCurrentProcess();
+  IMAGEHLP_SYMBOL64* pSym = NULL;
+  HANDLE hDumpFile = INVALID_HANDLE_VALUE;
+  tSC pSC = NULL;
 
   HMODULE hDbgHelpDll = ::LoadLibrary("DBGHELP.DLL");
   if (!hDbgHelpDll)
@@ -209,7 +212,7 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
   tSI pSI       = (tSI) GetProcAddress(hDbgHelpDll, "SymInitialize" );
   tSGO pSGO     = (tSGO) GetProcAddress(hDbgHelpDll, "SymGetOptions" );
   tSSO pSSO     = (tSSO) GetProcAddress(hDbgHelpDll, "SymSetOptions" );
-  tSC pSC       = (tSC) GetProcAddress(hDbgHelpDll, "SymCleanup" );
+  pSC           = (tSC) GetProcAddress(hDbgHelpDll, "SymCleanup" );
   tSW pSW       = (tSW) GetProcAddress(hDbgHelpDll, "StackWalk64" );
   tSGSFA pSGSFA = (tSGSFA) GetProcAddress(hDbgHelpDll, "SymGetSymFromAddr64" );
   tUDSN pUDSN   = (tUDSN) GetProcAddress(hDbgHelpDll, "UnDecorateSymbolName" );
@@ -229,7 +232,7 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
   dumpFileName = CWIN32Util::SmbToUnc(URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(), CUtil::MakeLegalFileName(dumpFileName)));
 
   g_charsetConverter.utf8ToW(dumpFileName, dumpFileNameW, false);
-  HANDLE hDumpFile = CreateFileW(dumpFileNameW.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
+  hDumpFile = CreateFileW(dumpFileNameW.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
 
   if (hDumpFile == INVALID_HANDLE_VALUE)
   {
@@ -254,7 +257,9 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
   symOptions &= ~SYMOPT_DEFERRED_LOADS;
   symOptions = pSSO(symOptions);
 
-  IMAGEHLP_SYMBOL64 *pSym = (IMAGEHLP_SYMBOL64 *) malloc(sizeof(IMAGEHLP_SYMBOL64) + STACKWALK_MAX_NAMELEN);
+  pSym = (IMAGEHLP_SYMBOL64 *) malloc(sizeof(IMAGEHLP_SYMBOL64) + STACKWALK_MAX_NAMELEN);
+  if (!pSym)
+    goto cleanup;
   memset(pSym, 0, sizeof(IMAGEHLP_SYMBOL64) + STACKWALK_MAX_NAMELEN);
   pSym->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL64);
   pSym->MaxNameLength = STACKWALK_MAX_NAMELEN;
