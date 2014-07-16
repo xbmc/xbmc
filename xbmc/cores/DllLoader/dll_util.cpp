@@ -71,6 +71,8 @@ uintptr_t create_dummy_function(const char* strDllName, const char* strFunctionN
 
   // allocate memory for function + strings + 3 x 4 bytes for three datapointers
   char* pData = (char*)malloc(iFunctionSize + 12 + iDllNameSize + iFunctionNameSize);
+  if (!pData)
+    return NULL;
 
   char* offDataPointer1 = pData + iFunctionSize;
   char* offDataPointer2 = pData + iFunctionSize + 4;
