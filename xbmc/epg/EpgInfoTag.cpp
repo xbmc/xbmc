@@ -98,7 +98,30 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
   CPVRTimerInfoTagPtr emptyTimer;
   m_timer = emptyTimer;
 
-  Update(data);
+  SetStartFromUTC(data.startTime + g_advancedSettings.m_iPVRTimeCorrection);
+  SetEndFromUTC(data.endTime + g_advancedSettings.m_iPVRTimeCorrection);
+  SetGenre(data.iGenreType, data.iGenreSubType, data.strGenreDescription);
+  SetParentalRating(data.iParentalRating);
+  SetUniqueBroadcastID(data.iUniqueBroadcastId);
+  SetNotify(data.bNotify);
+  SetFirstAiredFromUTC(data.firstAired + g_advancedSettings.m_iPVRTimeCorrection);
+  SetEpisodeNum(data.iEpisodeNumber);
+  SetEpisodePart(data.iEpisodePartNumber);
+  SetStarRating(data.iStarRating);
+
+  // explicit NULL check, because there is no implicit NULL constructor for std::string
+  if (data.strTitle)
+    SetTitle(data.strTitle);
+  if (data.strPlotOutline)
+    SetPlotOutline(data.strPlotOutline);
+  if (data.strPlot)
+    SetPlot(data.strPlot);
+  if (data.strEpisodeName)
+    SetEpisodeName(data.strEpisodeName);
+  if (data.strIconPath)
+    SetIcon(data.strIconPath);
+  if (data.strRecordingId)
+    SetRecordingId(data.strRecordingId);
 }
 
 CEpgInfoTag::CEpgInfoTag(const CEpgInfoTag &tag) :
@@ -881,27 +904,6 @@ const PVR::CPVRChannelPtr CEpgInfoTag::ChannelTag(void) const
 {
   CSingleLock lock(m_critSection);
   return m_pvrChannel;
-}
-
-void CEpgInfoTag::Update(const EPG_TAG &tag)
-{
-  CSingleLock lock(m_critSection);
-  SetStartFromUTC(tag.startTime + g_advancedSettings.m_iPVRTimeCorrection);
-  SetEndFromUTC(tag.endTime + g_advancedSettings.m_iPVRTimeCorrection);
-  SetTitle(tag.strTitle);
-  SetPlotOutline(tag.strPlotOutline);
-  SetPlot(tag.strPlot);
-  SetGenre(tag.iGenreType, tag.iGenreSubType, tag.strGenreDescription);
-  SetParentalRating(tag.iParentalRating);
-  SetUniqueBroadcastID(tag.iUniqueBroadcastId);
-  SetNotify(tag.bNotify);
-  SetFirstAiredFromUTC(tag.firstAired + g_advancedSettings.m_iPVRTimeCorrection);
-  SetEpisodeNum(tag.iEpisodeNumber);
-  SetEpisodePart(tag.iEpisodePartNumber);
-  SetEpisodeName(tag.strEpisodeName);
-  SetStarRating(tag.iStarRating);
-  SetIcon(tag.strIconPath);
-  SetRecordingId(tag.strRecordingId);
 }
 
 bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = true */)
