@@ -39,7 +39,7 @@ extern "C" {
 
 #include "cc_decoder.h"
 
-#define LOG_DEBUG 3
+//#undef LOG_DEBUG
 
 /* number of text colors specified by EIA-608 standard */
 #define NUM_FG_COL 7
