@@ -10,24 +10,28 @@ TOC
 1. Introduction
 -----------------------------------------------------------------------------
 
-A gfx-adapter with OpenGL acceleration is highly recommended and 24/32 bitdepth
-is required with OpenGL.
+A graphics-adapter with OpenGL acceleration is highly recommended.
+24/32 bitdepth is required along with OpenGL.
 
-NOTE TO NEW LINUX USERS: All lines that are prefixed with the '$'
-character are commands that need to be typed into a terminal window /
-console (similar to the command prompt for Windows). Note that the '$'
-character itself should NOT be typed as part of the command.
-
+Note to new Linux users.
+All lines that are prefixed with the '$' character are commands,
+that need to be typed into a terminal window / console. The '$' equals the prompt.
+Note: The '$' character itself should NOT be typed as part of the command.
 
 -----------------------------------------------------------------------------
 2. Getting the source code
 -----------------------------------------------------------------------------
 
-You will have to grab the source code of course. First install the git
-package provided by your distribution. Then from a terminal, type:
+You will have to grab the source code of course, here we use git as example.
+First install the git package provided by your distribution.
+Then from a terminal, type:
 
-   $ cd $HOME
-   $ git clone git://github.com/xbmc/xbmc.git xbmc
+.0  $ cd $HOME
+.1  $ git clone git://github.com/xbmc/xbmc.git xbmc
+
+Note: You can clone any specific branch.
+
+.1  $ git clone -b <branch> git://github.com/xbmc/xbmc.git xbmc
 
 -----------------------------------------------------------------------------
 3. Installing the required libraries and headers
@@ -42,36 +46,40 @@ Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
   libass-dev (>= 0.9.8), libavahi-client-dev, libavahi-common-dev, libavcodec-dev,
   libavfilter-dev, libavformat-dev, libavutil-dev, libbluetooth-dev, libbluray-dev,
   libboost-dev, libboost-thread-dev, libbz2-dev, libcap-dev, libcdio-dev, libcec-dev,
-  libcrystalhd-dev, libcurl4-gnutls-dev | libcurl-dev, libcwiid-dev, libdbus-1-dev,
-  libenca-dev, libflac-dev, libfontconfig-dev, libfreetype6-dev, libfribidi-dev,
-  libgl1-mesa-dev | libgl-dev, libglew-dev, libglu1-mesa-dev | libglu-dev, libhal-dev,
-  libhal-storage-dev, libiso9660-dev, libjasper-dev, libjpeg-dev, libltdl-dev, liblzo2-dev,
-  libmad0-dev, libmicrohttpd-dev, libmodplug-dev, libmpcdec-dev, libmpeg2-4-dev, libmysqlclient-dev,
-  libnfs-dev, libogg-dev, libpcre3-dev, libplist-dev, libpng12-dev | libpng-dev, libpostproc-dev,
+  libcrystalhd-dev, libcurl4-gnutls-dev | libcurl4-openssl-dev | libcurl-dev,
+  libcwiid-dev, libdbus-1-dev, libenca-dev, libflac-dev, libfontconfig-dev,
+  libfreetype6-dev, libfribidi-dev, libgl1-mesa-dev | libgl-dev, libglew-dev, 
+  libglu1-mesa-dev | libglu-dev, libhal-dev, libhal-storage-dev, libiso9660-dev,
+  libjasper-dev, libjpeg-dev, libltdl-dev, liblzo2-dev, libmad0-dev, libmicrohttpd-dev,
+  libmodplug-dev, libmpcdec-dev, libmpeg2-4-dev, libmysqlclient-dev, libnfs-dev,
+  libogg-dev, libpcre3-dev, libplist-dev, libpng12-dev | libpng-dev, libpostproc-dev,
   libpulse-dev, librtmp-dev, libsdl-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev,
-  libshairplay-dev, libsmbclient-dev, libsqlite3-dev, libssh-dev, libssl-dev, libswscale-dev,
-  libtag1-dev (>= 1.8), libtiff-dev, libtinyxml-dev, libtool, libudev-dev, libusb-dev, libva-dev,
-  libvdpau-dev, libvorbis-dev, libxinerama-dev, libxml2-dev, libxmu-dev, libxrandr-dev, libxslt1-dev,
-  libxt-dev, libyajl-dev, lsb-release, nasm [!amd64], python-dev, python-imaging, python-support, swig,
+  libshairplay-dev, libsmbclient-dev, libsqlite3-dev, libssh-dev, libssl-dev, 
+  libswscale-dev, libtag1-dev (>= 1.8), libtiff-dev, libtinyxml-dev, libtool,
+  libudev-dev, libusb-dev, libva-dev, libvdpau-dev, libvorbis-dev, libxinerama-dev,
+  libxml2-dev, libxmu-dev, libxrandr-dev, libxslt1-dev, libxt-dev, libyajl-dev,
+  lsb-release, nasm [!amd64], python-dev, python-imaging, python-support, swig,
   unzip, yasm, zip, zlib1g-dev
 
-*** For developers and anyone else who compiles frequently it is recommended to
-use ccache
+Note: For developers and anyone else who compiles frequently it is recommended to use ccache.
 
---------------------------------------------------------------
+   $ sudo apt-get install ccache
+
+-----------------------------------------------------------------------------
 3.1. Using the XBMC PPA to get all build dependencies (Debian/Ubuntu only)
---------------------------------------------------------------
+-----------------------------------------------------------------------------
 
-For this, you need to specify the PPA in your apt sources. Please find them on
-the forum.
+For this, you need to specify the PPA in your apt sources.
+Please find them on the following wiki link:
+Note: See README.ubuntu as well
 
-http://forum.xbmc.org/showthread.php?t=33327
+http://wiki.xbmc.org/index.php?title=Team_XBMC_PPA
 
 Update apt:
    $ sudo apt-get update
 
-Here is the magic command to get the build dependencies (used to compile the
-version on the PPA).
+The command to get the build dependencies, used to compile the version on the PPA.
+
    $ sudo apt-get build-dep xbmc
 
 -----------------------------------------------------------------------------
@@ -83,24 +91,25 @@ To create the XBMC executable manually perform these steps:
 .0  $ ./bootstrap
 
 .1  $ ./configure <option1> <option2> ... (See --help for available options)
-
-A full listing of supported options can be viewed by typing
-'./configure --help'.
+       A full listing of supported options can be viewed by typing './configure --help'.
 
 .2  $ make
 
-Tip: by adding -j<number> to the make command, you describe how many
-     concurrent jobs will be used. So for dualcore the command is: 
+Tip: By adding -j<number> to the make command, you describe how many
+     concurrent jobs will be used. So for dualcore the command is:
 
     $ make -j2
+
+Note: From v14 with commit 4090a5f a new API for binary audio encoder addons is available, if you need to compile them do:
+    
+	$ make -C tools/depends/target/xbmc-audioencoder-addons PREFIX=/<system prefix you added on step 4.1
 
 .3  $ make install
 
 This will install XBMC in the prefix provided in 4.1 as well as a launcher script.
 
-NOTE: You may need to run this with sudo (sudo make install) if your user
-doesn't have write permissions to the prefix you have provided (as in the
-default case, /usr/local).
+Note: You may need to run this with sudo (sudo make install) if your user doesn't have write permissions
+to the prefix you have provided (as in the default case, /usr/local).
 
 Tip: To override the location that XBMC is installed, use PREFIX=<path>.
 For example.
@@ -110,14 +119,15 @@ For example.
 -----------------------------------------------------------------------------
 4.1. Test Suite
 -----------------------------------------------------------------------------
-XBMC has a test suite which uses the Google C++ Testing Framework. The
-framework is provided directly in XBMC's source tree and has very little
-requirements in order to build and run. See the README file for the framework
-at 'lib/gtest/README' for specific requirements.
 
-To compile and run XBMC's test suite, the configure option '--enable-gtest'
-has to be explicitely set during the configure stage. Once configured, to
-build the testsuite, type the following.
+XBMC has a test suite which uses the Google C++ Testing Framework.
+This framework is provided directly in XBMC's source tree.
+It has very little requirements, in order to build and run.
+See the README file for the framework at 'lib/gtest/README' for specific requirements.
+
+To compile and run XBMC's test suite:
+The configure option '--enable-gtest' is enabled by default during the configure stage.
+Once configured, to build the testsuite, type the following:
 
     $ make check
 
@@ -125,43 +135,53 @@ To compile the test suite without running it, type the following.
 
     $ make testsuite
 
-The test suite program can be run manually as well. The name of the test suite
-program is 'xbmc-test' and will build in the XBMC source tree. To bring up the
-'help' notes for the program, type the following.
+The test suite program can be run manually as well.
+The name of the test suite program is 'xbmc-test' and will build in the XBMC source tree.
+To bring up the 'help' notes for the program, type the following:
 
     $ ./xbmc-test --gtest_help
 
 The most useful options are,
 
-  --gtest_list_tests
-      List the names of all tests instead of running them. The name of
-      TEST(Foo, Bar) is "Foo.Bar".
-  --gtest_filter=POSTIVE_PATTERNS[-NEGATIVE_PATTERNS]
+    --gtest_list_tests
+      List the names of all tests instead of running them.
+	  The name of TEST(Foo, Bar) is "Foo.Bar".
+      
+    --gtest_filter=POSTIVE_PATTERNS[-NEGATIVE_PATTERNS]
       Run only the tests whose name matches one of the positive patterns but
       none of the negative patterns. '?' matches any single character; '*'
       matches any substring; ':' separates two patterns.
 
-NOTE: If the '--enable-gtest' option is not set during the configure
-stage, the make targets 'check,' 'testsuite,' and 'testframework' will
-simply show a message saying the framework has not been configured, and then
-silently succeed (i.e. it will not return an error).
+Note: If the '--enable-gtest' option is not set during the configure stage,
+the make targets 'check,' 'testsuite,' and 'testframework' will simply show a message saying
+the framework has not been configured, and then silently succeed (i.e. it will not return an error).
 
 -----------------------------------------------------------------------------
 5. How to run
 -----------------------------------------------------------------------------
-How to run xbmc depends on the type of installation you have done. It is
-possible to run XBMC without the requirement to install xbmc anywhere else. In
-this case, type the following from the top source directory.
+
+How to run XBMC depends on the type of installation you have done.
+It is possible to run XBMC without the requirement to install XBMC anywhere else.
+In this case, type the following from the top source directory.
 
     $ ./xbmc.bin
 
-If you chose to install XBMC using '/usr' or '/usr/local' as the PREFIX, you
-can just issue 'xbmc' in a terminal session.
+Or run in 'portable' mode
+
+    $ ./xbmc.bin -p
+
+If you chose to install XBMC using '/usr' or '/usr/local' as the PREFIX,
+you can just issue 'xbmc' in a terminal session.
 
 If you have overridden PREFIX to install XBMC into some non-standard location,
-you will have to run xbmc by directly running 'xbmc.bin'. For example.
+you will have to run XBMC by directly running 'xbmc.bin'.
 
-    $ $HOME/xbmc/usr/share/xbmc.bin
+For example:
+
+    $ $HOME/xbmc/usr/lib/xbmc.bin
+
+You should still run the wrapper via
+    $ $PREFIX/bin/xbmc
 
 If you wish to use VDPAU decoding you will now have to change the Render Method
 in Settings->Videos->Player from "Auto Detect" to "VDPAU".
@@ -169,13 +189,19 @@ in Settings->Videos->Player from "Auto Detect" to "VDPAU".
 -----------------------------------------------------------------------------
 6. Uninstalling
 -----------------------------------------------------------------------------
-Issue "make uninstall" from your source tree (or "sudo make uninstall" if your
-user doesn't have write permission to the install directory). If you would like
-to also remove any settings and 3rd party addons (skins, scripts, etc) you
-should also run "rm -rf ~/.xbmc".
 
-NOTE: If you have rerun configure with a different prefix, you will either need
-to rerun configure with the correct prefix for this step to work correctly.
+Issue the commands prepending "sudo", if your user doesn't have write permission,
+to the install directory.
+
+Note: If you have rerun configure with a different prefix,
+you will either need to rerun configure with the correct prefix for this step to work correctly.
+
+    $ make uninstall
+.0  $ sudo make uninstall
+
+If you would like to also remove any settings and 3rd party addons (skins, scripts, etc)
+you should also run:
+
+.1  $ rm -rf ~/.xbmc
 
 EOF
-
