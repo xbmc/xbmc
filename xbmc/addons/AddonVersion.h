@@ -39,7 +39,7 @@ namespace ADDON
   public:
     AddonVersion(const AddonVersion& other) { *this = other; }
     explicit AddonVersion(const std::string& version);
-    ~AddonVersion() {};
+    virtual ~AddonVersion() {};
 
     int Epoch() const { return mEpoch; }
     const std::string &Upstream() const { return mUpstream; }

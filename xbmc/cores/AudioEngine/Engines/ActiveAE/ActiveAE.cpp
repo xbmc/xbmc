@@ -44,6 +44,7 @@ void CEngineStats::Reset(unsigned int sampleRate)
   m_bufferedSamples = 0;
   m_suspended = false;
   m_playingPTS = 0;
+  m_clockId = 0;
 }
 
 void CEngineStats::UpdateSinkDelay(const AEDelayStatus& status, int samples, int64_t pts, int clockId)

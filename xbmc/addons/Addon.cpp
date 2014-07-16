@@ -180,6 +180,7 @@ AddonProps::AddonProps(const cp_plugin_info_t *plugin)
   , path(SS(plugin->plugin_path))
   , author(SS(plugin->provider_name))
   , stars(0)
+  , type(ADDON_UNKNOWN)
 {
   BuildDependencies(plugin);
 }
