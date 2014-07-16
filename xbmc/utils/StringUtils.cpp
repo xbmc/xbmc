@@ -39,7 +39,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-#define FORMAT_BLOCK_SIZE 2048 // # of bytes to increment per try
+#define FORMAT_BLOCK_SIZE 512 // # of bytes for initial allocation for printf
 
 using namespace std;
 
@@ -223,46 +223,36 @@ string StringUtils::Format(const char *fmt, ...)
 
 string StringUtils::FormatV(const char *fmt, va_list args)
 {
-  if (fmt == NULL)
+  if (!fmt || !fmt[0])
     return "";
 
   int size = FORMAT_BLOCK_SIZE;
   va_list argCopy;
 
-  char *cstr = reinterpret_cast<char*>(malloc(sizeof(char) * size));
-  if (cstr == NULL)
-    return "";
-
   while (1) 
   {
-    va_copy(argCopy, args);
+    char *cstr = reinterpret_cast<char*>(malloc(sizeof(char) * size));
+    if (!cstr)
+      return "";
 
+    va_copy(argCopy, args);
     int nActual = vsnprintf(cstr, size, fmt, argCopy);
     va_end(argCopy);
 
     if (nActual > -1 && nActual < size) // We got a valid result
     {
-      string str(cstr, nActual);
+      std::string str(cstr, nActual);
       free(cstr);
       return str;
     }
+    free(cstr);
     if (nActual > -1)                   // Exactly what we will need (glibc 2.1)
       size = nActual + 1;
     else                                // Let's try to double the size (glibc 2.0)
       size *= 2;
-
-    char *new_cstr = reinterpret_cast<char*>(realloc(cstr, sizeof(char) * size));
-    if (new_cstr == NULL)
-    {
-      free(cstr);
-      return "";
-    }
-
-    cstr = new_cstr;
   }
 
-  free(cstr);
-  return "";
+  return ""; // unreachable
 }
 
 wstring StringUtils::Format(const wchar_t *fmt, ...)
@@ -277,42 +267,34 @@ wstring StringUtils::Format(const wchar_t *fmt, ...)
 
 wstring StringUtils::FormatV(const wchar_t *fmt, va_list args)
 {
-  if (fmt == NULL)
+  if (!fmt || !fmt[0])
     return L"";
-  
+
   int size = FORMAT_BLOCK_SIZE;
   va_list argCopy;
   
-  wchar_t *cstr = reinterpret_cast<wchar_t*>(malloc(sizeof(wchar_t) * size));
-  if (cstr == NULL)
-    return L"";
-  
   while (1)
   {
+    wchar_t *cstr = reinterpret_cast<wchar_t*>(malloc(sizeof(wchar_t) * size));
+    if (!cstr)
+      return L"";
+
     va_copy(argCopy, args);
-    
     int nActual = vswprintf(cstr, size, fmt, argCopy);
     va_end(argCopy);
     
     if (nActual > -1 && nActual < size) // We got a valid result
     {
-      wstring str(cstr, nActual);
+      std::wstring str(cstr, nActual);
       free(cstr);
       return str;
     }
+    free(cstr);
+
     if (nActual > -1)                   // Exactly what we will need (glibc 2.1)
       size = nActual + 1;
     else                                // Let's try to double the size (glibc 2.0)
       size *= 2;
-    
-    wchar_t *new_cstr = reinterpret_cast<wchar_t*>(realloc(cstr, sizeof(wchar_t) * size));
-    if (new_cstr == NULL)
-    {
-      free(cstr);
-      return L"";
-    }
-    
-    cstr = new_cstr;
   }
   
   return L"";
