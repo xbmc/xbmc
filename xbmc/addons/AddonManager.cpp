@@ -629,7 +629,7 @@ std::string CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const c
     { // see if we have a "lang" attribute
       const char *lang = m_cpluff->lookup_cfg_value((cp_cfg_element_t*)&child, "@lang");
       if (lang && 0 == strcmp(lang,g_langInfo.GetLanguageLocale(true).c_str()))
-        return child.value;
+        return child.value ? child.value : "";
       if (!lang || 0 == strcmp(lang, "en"))
         eng = &child;
     }
