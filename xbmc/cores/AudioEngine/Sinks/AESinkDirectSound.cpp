@@ -347,7 +347,11 @@ unsigned int CAESinkDirectSound::AddPackets(uint8_t **data, unsigned int frames,
   unsigned char* pBuffer = (unsigned char*)data[0]+offset*m_format.m_frameSize;
 
   DWORD bufferStatus = 0;
-  m_pBuffer->GetStatus(&bufferStatus);
+  if (m_pBuffer->GetStatus(&bufferStatus) != DS_OK)
+  {
+    CLog::Log(LOGERROR, "%s: GetStatus() failed", __FUNCTION__);
+    return 0;
+  }
   if (bufferStatus & DSBSTATUS_BUFFERLOST)
   {
     CLog::Log(LOGDEBUG, __FUNCTION__ ": Buffer allocation was lost. Restoring buffer.");
@@ -601,7 +605,11 @@ failed:
 void CAESinkDirectSound::CheckPlayStatus()
 {
   DWORD status = 0;
-  m_pBuffer->GetStatus(&status);
+  if (m_pBuffer->GetStatus(&status) != DS_OK)
+  {
+    CLog::Log(LOGERROR, "%s: GetStatus() failed", __FUNCTION__);
+    return;
+  }
 
   if (!(status & DSBSTATUS_PLAYING) && m_CacheLen != 0) // If we have some data, see if we can start playback
   {
