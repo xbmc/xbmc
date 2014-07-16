@@ -61,7 +61,7 @@ CGUIWindowPVRBase::~CGUIWindowPVRBase(void)
 
 void CGUIWindowPVRBase::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), msg);
+  CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
   CApplicationMessenger::Get().SendGUIMessage(m);
 }
 
