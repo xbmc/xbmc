@@ -89,6 +89,8 @@ void CGUIWindowTestPatternDX::DrawHorizontalLines(int top, int left, int bottom,
 void CGUIWindowTestPatternDX::DrawCheckers(int top, int left, int bottom, int right)
 {
   int c = (bottom-top+1)*(1+(right-left)/2);
+  if (c < 1)
+    return;
   CUSTOMVERTEX* vert = new CUSTOMVERTEX[c];
   int i=0;
   for (int y = top; y <= bottom; y++)
