@@ -162,13 +162,13 @@
 					<control type="label">
 						<description>current temp Value Units</description>
 						<left>200</left>
-						<top>195</top>
+						<top>206</top>
 						<width>100</width>
 						<height>40</height>
 						<font>font16</font>
 						<align>left</align>
 						<aligny>top</aligny>
-						<label>$INFO[System.TemperatureUnits]</label>
+						<label>[B]$INFO[System.TemperatureUnits][/B]</label>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 					</control>
