@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
-<!-- Polish language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/pl/ -->
-<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+<!-- Polish language-Team URL: http://www.transifex.com/projects/p/xbmc-addons/language/pl/ -->
+<!-- Report language file syntax bugs at: alanwww1@xbmc.org -->
 
 <strings>
-    <string id="30000">Włącz fanart</string>
+    <string id="30000">Używaj tapet</string>
     <string id="30001">Włącz zwiastuny z HD-Trailers.net</string>
     <string id="30002">Preferowany język</string>
     <string id="30003">Pobierz ocenę z</string>

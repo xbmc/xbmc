@@ -1,3 +1,10 @@
+[B]2.2.5[/B]
+Fixed: allow multiple secondary-type's (thanks and credits to elrodro83)
+Fixed: won't get details for an album when a release of another type (single or compilation) with the same name exists (thanks and credits to elrodro83)
+
+[B]2.2.4[/B]
+Fix album releases with the "Packaging" field populated on MB (thanks and credits to elrodro83)
+
 [B]2.2.3[/B]
 Updated language files from Transifex
 
