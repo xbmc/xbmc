@@ -61,7 +61,7 @@ CGUIWindowPVRBase::~CGUIWindowPVRBase(void)
 
 void CGUIWindowPVRBase::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), msg);
+  CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
   CApplicationMessenger::Get().SendGUIMessage(m);
 }
 
@@ -129,6 +129,14 @@ bool CGUIWindowPVRBase::OnMessage(CGUIMessage& message)
   }
 
   return CGUIMediaWindow::OnMessage(message);
+}
+
+void CGUIWindowPVRBase::SetInvalid()
+{
+  VECFILEITEMS items = m_vecItems->GetList();
+  for (VECFILEITEMS::iterator it = items.begin(); it != items.end(); ++it)
+    (*it)->SetInvalid();
+  CGUIMediaWindow::SetInvalid();
 }
 
 bool CGUIWindowPVRBase::OpenGroupSelectionDialog(void)
