@@ -58,6 +58,13 @@ if(CMAKE_TOOLCHAIN_FILE)
   MESSAGE(${BUILD_ARGS})
 endif()
 
+if(NOT ADDONS_TO_BUILD)
+  set(ADDONS_TO_BUILD "all")
+else()
+  message(STATUS "Building following addons: ${ADDONS_TO_BUILD}")
+  separate_arguments(ADDONS_TO_BUILD)
+endif()
+
 if(NOT WIN32)
   # copy the xbmc-prepare-env.cmake script to the depends path so that we can include it
   file(COPY ${XBMCROOT}/project/cmake/scripts/common/xbmc-prepare-env.cmake DESTINATION ${DEPENDS_PATH}/lib/xbmc)
@@ -79,16 +86,19 @@ foreach(addon ${addons})
   list(GET def 1 url)
   list(GET def 2 revision)
 
-  # make sure the output directory is clean
-  if(EXISTS "${CMAKE_INSTALL_PREFIX}/${id}")
-    file(REMOVE_RECURSE "${CMAKE_INSTALL_PREFIX}/${id}/")
-  endif()
+  list(FIND ADDONS_TO_BUILD ${id} idx)
+  if(idx GREATER -1 OR ADDONS_TO_BUILD STREQUAL "all")
+    # make sure the output directory is clean
+    if(EXISTS "${CMAKE_INSTALL_PREFIX}/${id}")
+      file(REMOVE_RECURSE "${CMAKE_INSTALL_PREFIX}/${id}/")
+    endif()
 
-  # add the addon as an external project for automatic building
-  externalproject_add(${id}
+    # add the addon as an external project for automatic building
+    externalproject_add(${id}
                       GIT_REPOSITORY ${url}/${id}
                       GIT_TAG ${revision}
                       INSTALL_DIR "${CMAKE_INSTALL_PREFIX}"
                       CMAKE_ARGS ${BUILD_ARGS}
                      )
+  endif()
 endforeach()

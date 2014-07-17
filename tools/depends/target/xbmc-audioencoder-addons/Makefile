@@ -1,7 +1,6 @@
 -include ../../Makefile.include
 
-LIBNAME = xbmc-audioencoder-addons
-
+ADDONS = "audioencoder.flac audioencoder.lame audioencoder.vorbis audioencoder.wav"
 ifeq ($(PLATFORM),)
   PLATFORM = native
 endif
@@ -36,6 +35,6 @@ endif
 	mkdir -p $(PLATFORM); \
          cd $(PLATFORM); \
          $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(INSTALL_PREFIX) -DCMAKE_PREFIX_PATH=$(PREFIX) $(CMAKE_EXTRA) \
-         ../../../../../project/cmake/addons/ ;\
+         -DADDONS_TO_BUILD=$(ADDONS) ../../../../../project/cmake/addons/ ;\
          $(MAKE);
 	touch $@
