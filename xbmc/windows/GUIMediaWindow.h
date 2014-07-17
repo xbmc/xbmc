@@ -142,7 +142,6 @@ protected:
   virtual void OnDeleteItem(int iItem);
   void OnRenameItem(int iItem);
 
-protected:
   bool WaitForNetwork() const;
 
   /*! \brief Translate the folder to start in from the given quick path
