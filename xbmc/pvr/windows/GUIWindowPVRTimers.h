@@ -37,6 +37,9 @@ namespace PVR
     void UnregisterObservers(void);
     void ResetObservers(void);
 
+  protected:
+    std::string GetDirectoryPath(void);
+
   private:
     bool ActionDeleteTimer(CFileItem *item);
     bool ActionShowTimer(CFileItem *item);
