@@ -11725,6 +11725,9 @@ msgctxt "#22019"
 msgid "Recordings by title"
 msgstr ""
 
+#. Electronic program guide, used as label in the menu of the PVR section and the MythDirectory
+#: addons/skin/confluence
+#: xbmc/filesystem/MythDirectory.cpp
 msgctxt "#22020"
 msgid "Guide"
 msgstr ""
