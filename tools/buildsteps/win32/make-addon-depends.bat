@@ -4,12 +4,24 @@ SETLOCAL
 
 SET EXITCODE=0
 
+SET noclean=false
+SET dependency=
+FOR %%b in (%1, %2) DO (
+  IF %%b == noclean (
+    SET noclean=true
+  ) ELSE ( IF %%b == clean (
+    SET noclean=false
+  ) ELSE (
+    SET dependency=%%b
+  ))
+)
+
 rem set Visual C++ build environment
 call "%VS120COMNTOOLS%..\..\VC\bin\vcvars32.bat"
 
 SET WORKDIR=%WORKSPACE%
 
-IF "%WORKDIR%"=="" (
+IF "%WORKDIR%" == "" (
   SET WORKDIR=%CD%\..\..\..
 )
 
@@ -24,24 +36,23 @@ SET ADDON_DEPENDS_BUILD_PATH=%ADDON_DEPENDS_PATH%\build
 
 SET ERRORFILE=%BASE_PATH%\make-addon-depends.error
 
-rem remove the output directory if it exists
-IF EXIST "%ADDONS_OUTPUT_PATH%" (
-	RMDIR "%ADDONS_OUTPUT_PATH%" /S /Q > NUL
+IF %noclean% == false (
+  rem remove the output directory if it exists
+  IF EXIST "%ADDONS_OUTPUT_PATH%" (
+    RMDIR "%ADDONS_OUTPUT_PATH%" /S /Q > NUL
+  )
+
+  rem remove the build directory if it exists
+  IF EXIST "%ADDON_DEPENDS_BUILD_PATH%" (
+    RMDIR "%ADDON_DEPENDS_BUILD_PATH%" /S /Q > NUL
+  )
 )
 
 rem create the output directory
-MKDIR "%ADDONS_OUTPUT_PATH%"
-
-rem go into the addon depends directory
-CD %ADDON_DEPENDS_PATH%
-
-rem remove the build directory if it exists
-IF EXIST "%ADDON_DEPENDS_BUILD_PATH%" (
-	RMDIR "%ADDON_DEPENDS_BUILD_PATH%" /S /Q > NUL
-)
+IF NOT EXIST "%ADDONS_OUTPUT_PATH%" MKDIR "%ADDONS_OUTPUT_PATH%"
 
 rem create the build directory
-MKDIR "%ADDON_DEPENDS_BUILD_PATH%"
+IF NOT EXIST "%ADDON_DEPENDS_BUILD_PATH%" MKDIR "%ADDON_DEPENDS_BUILD_PATH%"
 
 rem go into the build directory
 CD "%ADDON_DEPENDS_BUILD_PATH%"
@@ -51,15 +62,15 @@ cmake "%ADDON_DEPENDS_PATH%" -G "NMake Makefiles" ^
       -DCMAKE_BUILD_TYPE=Release ^
       -DCMAKE_INSTALL_PREFIX=%ADDONS_OUTPUT_PATH%
 IF ERRORLEVEL 1 (
-	ECHO cmake error level: %ERRORLEVEL% > %ERRORFILE%
-	GOTO ERROR
+  ECHO cmake error level: %ERRORLEVEL% > %ERRORFILE%
+  GOTO ERROR
 )
 
 rem execute nmake to build the addon depends
-nmake
+nmake %dependency%
 IF ERRORLEVEL 1 (
-	ECHO nmake error level: %ERRORLEVEL% > %ERRORFILE%
-	GOTO ERROR
+  ECHO nmake error level: %ERRORLEVEL% > %ERRORFILE%
+  GOTO ERROR
 )
 
 rem everything was fine
