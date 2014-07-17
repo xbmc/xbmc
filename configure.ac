@@ -178,8 +178,6 @@ goom_enabled="== GOOM enabled. =="
 goom_disabled="== GOOM disabled. =="
 alsa_disabled="== ALSA support disabled. =="
 dbus_disabled="== DBUS support disabled. =="
-rsxs_enabled="== RSXS enabled. =="
-rsxs_disabled="== RSXS disabled. =="
 fishbmc_enabled="== FishBMC enabled. =="
 fishbmc_disabled="== FishBMC disabled. =="
 projectm_enabled="== ProjectM enabled. =="
@@ -333,12 +331,6 @@ AC_ARG_ENABLE([goom],
   [enable GOOM visualisation (default is no)])],
   [use_goom=$enableval],
   [use_goom=no])
-
-AC_ARG_ENABLE([rsxs],
-  [AS_HELP_STRING([--enable-rsxs],
-  [enable really slick X screensavers (default is yes)])],
-  [use_rsxs=$enableval],
-  [use_rsxs=yes])
 
 AC_ARG_ENABLE([fishbmc],
   [AS_HELP_STRING([--enable-fishbmc],
@@ -1473,24 +1465,6 @@ else
   DISABLE_GOOM=1
 fi
 
-# RSXS
-if test "$use_rsxs" = "no" || test "$use_gl" = "no"; then
-  AC_MSG_NOTICE($rsxs_disabled)
-  DISABLE_RSXS=1
-else
-  AC_MSG_NOTICE($rsxs_enabled)
-  DISABLE_RSXS=0
-  # darwin osx can do rsxs but does not use x11, so do not pkg-config check for them
-  if test "$host_vendor" != "apple" ; then
-    PKG_CHECK_MODULES([XT],    [xt],
-      [INCLUDES="$INCLUDES $XT_CFLAGS"; LIBS="$LIBS $XT_LIBS"],
-      AC_MSG_ERROR($missing_library))
-    PKG_CHECK_MODULES([XMU],   [xmu],
-      [INCLUDES="$INCLUDES $XMU_CFLAGS"; LIBS="$LIBS $XMU_LIBS"],
-      AC_MSG_ERROR($missing_library))
-  fi
-fi
-
 # FISHBMC
 if test "$use_fishbmc" = "no" || test "$use_gl" = "no"; then
   AC_MSG_NOTICE($fishbmc_disabled)   
@@ -2154,12 +2128,6 @@ else
   final_message="$final_message\n  GOOM:\t\tNo"
 fi
 
-if test "$use_rsxs" = "yes"; then
-  final_message="$final_message\n  RSXS:\t\tYes"
-else
-  final_message="$final_message\n  RSXS:\t\tNo"
-fi
-
 if test "$use_fishbmc" = "yes"; then
   final_message="$final_message\n  FishBMC:\tYes"
 else
@@ -2515,7 +2483,6 @@ OUTPUT_FILES="Makefile \
     xbmc/freebsd/Makefile \
     xbmc/linux/Makefile \
     xbmc/filesystem/Makefile \
-    xbmc/screensavers/rsxs-0.9/xbmc/Makefile \
     xbmc/visualizations/XBMCProjectM/Makefile \
     xbmc/visualizations/Goom/Makefile \
     xbmc/visualizations/OpenGLSpectrum/Makefile \
@@ -2626,7 +2593,6 @@ AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(DISABLE_WAVEFORM)
 AC_SUBST(DISABLE_SPECTRUM)
 AC_SUBST(DISABLE_GOOM)
-AC_SUBST(DISABLE_RSXS)
 AC_SUBST(DISABLE_FISHBMC)
 AC_SUBST(DISABLE_PROJECTM)
 AC_SUBST(FFMPEG_LIBDIR)
@@ -2808,43 +2774,6 @@ XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
     --enable-static \
     --with-pic
 ], [$DISABLE_GOOM])
-
-XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
-  if test "$host_vendor" = "apple"; then
-    # clang treats inlines different
-    case $CC in
-      *clang*)
-        TEMPCFLAGS="$CFLAGS";;
-      *)
-        TEMPCFLAGS="${CFLAGS} -fgnu89-inline";;
-    esac
-  else
-    TEMPCFLAGS="$CFLAGS";
-  fi
-  ./configure \
-    CC="$CC" \
-    CXX="$CXX" \
-    CFLAGS="$TEMPCFLAGS" \ 
-    CXXFLAGS="$CXXFLAGS" \
-    `if test "$host_vendor" = "apple"; then echo --with-png=${prefix} --x-includes=/usr/X11/include --x-libraries=/usr/X11/lib; fi` \
-    --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
-    --host=$host_alias \
-    --build=$build_alias \
-    --target=$target_alias \      
-    --without-xscreensaver \
-    --disable-sound \
-    --disable-cyclone \
-    --disable-fieldlines \
-    --disable-flocks \
-    --disable-flux \
-    --disable-helios \
-    --disable-hyperspace \
-    --disable-lattice \
-    --disable-skyrocket
-  if echo "$ARCH" | grep -q freebsd ; then
-    sed -i.back "s;\(STDBOOL_H = \)stdbool.h;\1;" lib/Makefile
-  fi
-], [$DISABLE_RSXS])
 
 XB_CONFIG_MODULE([lib/cpluff], [
   ./configure --disable-nls \
