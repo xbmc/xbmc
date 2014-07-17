@@ -443,11 +443,11 @@ std::string& StringUtils::Trim(std::string &str, const char* const chars)
   return TrimRight(str, chars);
 }
 
-// hack to ensure that std::string::iterator will be dereferenced as _unsigned_ char
-// without this hack "TrimX" functions failed on Win32 with UTF-8 strings
+// hack to check only first byte of UTF-8 character
+// without this hack "TrimX" functions failed on Win32 and OS X with UTF-8 strings
 static int isspace_c(char c)
 {
-  return ::isspace((unsigned char)c);
+  return (c & 0x80) == 0 && ::isspace(c);
 }
 
 std::string& StringUtils::TrimLeft(std::string &str)
