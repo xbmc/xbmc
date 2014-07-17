@@ -42,8 +42,6 @@ CWinSystemX11GL::~CWinSystemX11GL()
 
 bool CWinSystemX11GL::PresentRenderImpl(const CDirtyRegionList& dirty)
 {
-  CheckDisplayEvents();
-
   if(m_iVSyncMode == 3)
   {
     glFinish();
