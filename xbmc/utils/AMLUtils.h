@@ -19,6 +19,16 @@
  *
  */
 
+enum AML_DEVICE_TYPE
+{
+  AML_DEVICE_TYPE_UNINIT   = -2,
+  AML_DEVICE_TYPE_UNKNOWN  = -1,
+  AML_DEVICE_TYPE_M1,
+  AML_DEVICE_TYPE_M3,
+  AML_DEVICE_TYPE_M6,
+  AML_DEVICE_TYPE_M8
+};
+
 int aml_set_sysfs_str(const char *path, const char *val);
 int aml_get_sysfs_str(const char *path, char *valstr, const int size);
 int aml_set_sysfs_int(const char *path, const int val);
@@ -28,7 +38,7 @@ bool aml_present();
 void aml_permissions();
 bool aml_hw3d_present();
 bool aml_wired_present();
-int  aml_get_cputype();
+enum AML_DEVICE_TYPE aml_get_device_type();
 void aml_cpufreq_min(bool limit);
 void aml_cpufreq_max(bool limit);
 void aml_set_audio_passthrough(bool passthrough);
