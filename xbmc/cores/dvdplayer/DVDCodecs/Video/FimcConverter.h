@@ -48,20 +48,14 @@ public:
   bool        SetCaptureFormat(struct v4l2_format* fmt);
   bool        SetCaptureCrop(struct v4l2_crop* crop);
   bool        SetupCaptureBuffers();
+  V4L2Buffer* GetCaptureBuffer(int index);
 
-  bool        StartConverter();
-  bool        QueueCaptureBuffer();
+  bool        QueueCaptureBuffer(int index);
+  bool        DequeueCaptureBuffer(int *status, double *timestamp);
   bool        QueueOutputBuffer(int index, V4L2Buffer* v4l2MFCCaptureBuffer, int *status);
-  bool        DequeueOutputBuffer(int *status);
-  bool        DequeueCaptureBuffer(int *status);
-  V4L2Buffer* GetCurrentCaptureBuffer() { return &m_v4l2FIMCCaptureBuffers[m_iFIMCdequeuedBufferNumber]; };
+  bool        DequeueOutputBuffer(int *status, double *timestamp);
 private:
   int         m_iConverterHandle;
   int         m_FIMCCaptureBuffersCount;
   V4L2Buffer *m_v4l2FIMCCaptureBuffers;
-  int         m_iFIMCCapturePlane1Size;
-  int         m_iFIMCCapturePlane2Size;
-  int         m_iFIMCCapturePlane3Size;
-  int         m_iFIMCdequeuedBufferNumber;
-  bool        m_bFIMCStartConverter;
 };

@@ -20,6 +20,7 @@
  *
  */
 
+#include "DVDCodecs/DVDCodecs.h"
 #include "MfcDecoder.h"
 #include "FimcConverter.h"
 
@@ -27,7 +28,6 @@
 #include "utils/log.h"
 #include "guilib/GraphicContext.h"
 #include "settings/DisplaySettings.h"
-#include <queue>
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,8 +41,9 @@ class CDVDVideoCodecMfc : public CDVDVideoCodec
 public:
   CDVDVideoCodecMfc();
   virtual ~CDVDVideoCodecMfc();
-  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();
+
+  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual int Decode(BYTE* pData, int iSize, double dts, double pts);
   virtual void Reset();
   bool GetPictureCommon(DVDVideoPicture* pDvdVideoPicture);
@@ -52,18 +53,12 @@ public:
   virtual const char* GetName() { return m_decoder != NULL ? m_decoder->GetOutputName() : ""; };
 
 private:
-  MfcDecoder                   *m_decoder;
-  FimcConverter                *m_converter;
+  MfcDecoder      *m_decoder;
+  FimcConverter   *m_converter;
 
-  unsigned int                  m_iDecodedWidth;
-  unsigned int                  m_iDecodedHeight;
-  unsigned int                  m_iConvertedWidth;
-  unsigned int                  m_iConvertedHeight;
-
-  std::priority_queue<double>   m_pts;
-  std::priority_queue<double>   m_dts;
-
-  bool                          m_NV12Support;
-  bool                          m_bDropPictures;
-  DVDVideoPicture               m_videoBuffer;
+  bool             m_NV12Support;
+  bool             m_bDropPictures;
+  int              m_iDequeuedToPresentBufferNumber;
+  CDVDStreamInfo   m_hints;
+  DVDVideoPicture  m_videoBuffer;
 };

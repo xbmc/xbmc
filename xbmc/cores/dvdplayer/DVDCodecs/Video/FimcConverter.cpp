@@ -31,18 +31,32 @@
 FimcConverter::FimcConverter()
 {
   m_iConverterHandle = -1;
-  m_bFIMCStartConverter = true;
   m_FIMCCaptureBuffersCount = 0;
   m_v4l2FIMCCaptureBuffers = NULL;
-  m_iFIMCCapturePlane1Size = -1;
-  m_iFIMCCapturePlane2Size = -1;
-  m_iFIMCCapturePlane3Size = -1;
-  m_iFIMCdequeuedBufferNumber = -1;
 }
 
 FimcConverter::~FimcConverter()
 {
   Dispose();
+}
+
+void FimcConverter::Dispose()
+{
+  CLog::Log(LOGDEBUG, "%s::%s - Freeing memory allocated for FIMC buffers", CLASSNAME, __func__);
+  if (m_v4l2FIMCCaptureBuffers)
+    m_v4l2FIMCCaptureBuffers = CLinuxV4l2::FreeBuffers(m_FIMCCaptureBuffersCount, m_v4l2FIMCCaptureBuffers);
+  CLog::Log(LOGDEBUG, "%s::%s - Closing FIMC device", CLASSNAME, __func__);
+  if (m_iConverterHandle >= 0)
+  {
+    if (CLinuxV4l2::StreamOn(m_iConverterHandle, V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE, VIDIOC_STREAMOFF))
+      CLog::Log(LOGDEBUG, "%s::%s - FIMC OUTPUT Stream OFF", CLASSNAME, __func__);
+    if (CLinuxV4l2::StreamOn(m_iConverterHandle, V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE, VIDIOC_STREAMOFF))
+      CLog::Log(LOGDEBUG, "%s::%s - FIMC CAPTURE Stream OFF", CLASSNAME, __func__);
+    close(m_iConverterHandle);
+  }
+  m_FIMCCaptureBuffersCount = 0;
+  m_v4l2FIMCCaptureBuffers = NULL;
+  m_iConverterHandle = -1;
 }
 
 bool FimcConverter::OpenDevice()
@@ -122,14 +136,24 @@ bool FimcConverter::OpenDevice()
   return false;
 }
 
+bool FimcConverter::RequestBuffers(int buffers)
+{
+  // Request FIMC OUTPUT buffers
+  int ret = CLinuxV4l2::RequestBuffer(m_iConverterHandle, V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE, V4L2_MEMORY_USERPTR, buffers);
+  if (ret == V4L2_ERROR)
+  {
+    CLog::Log(LOGERROR, "%s::%s - FIMC OUTPUT REQBUFS failed", CLASSNAME, __func__);
+    return false;
+  }
+
+  CLog::Log(LOGDEBUG, "%s::%s - FIMC OUTPUT REQBUFS Number of buffers is %d", CLASSNAME, __func__, ret);
+  return true;
+}
+
 bool FimcConverter::SetOutputFormat(struct v4l2_format* fmt)
 {
   // Setup FIMC OUTPUT fmt with data from MFC CAPTURE received on previous step
   fmt->type                        = V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE;
-  fmt->fmt.pix_mp.field            = V4L2_FIELD_ANY;
-  fmt->fmt.pix_mp.pixelformat      = V4L2_PIX_FMT_NV12MT;
-  fmt->fmt.pix_mp.num_planes       = V4L2_NUM_MAX_PLANES;
-
   if (ioctl(m_iConverterHandle, VIDIOC_S_FMT, fmt))
   {
     CLog::Log(LOGERROR, "%s::%s - FIMC OUTPUT S_FMT Failed", CLASSNAME, __func__);
@@ -154,26 +178,11 @@ bool FimcConverter::SetOutputCrop(struct v4l2_crop* crop)
   return true;
 }
 
-bool FimcConverter::RequestBuffers(int buffers)
-{
-  // Request FIMC capture buffers
-  int ret = CLinuxV4l2::RequestBuffer(m_iConverterHandle, V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE, V4L2_MEMORY_USERPTR, buffers);
-  if (ret == V4L2_ERROR)
-  {
-    CLog::Log(LOGERROR, "%s::%s - FIMC OUTPUT REQBUFS failed", CLASSNAME, __func__);
-    return false;
-  }
-
-  CLog::Log(LOGDEBUG, "%s::%s - FIMC OUTPUT REQBUFS Number of buffers is %d", CLASSNAME, __func__, ret);
-  return true;
-}
-
 bool FimcConverter::SetCaptureFormat(struct v4l2_format *fmt)
 {
   // Setup FIMC capture
-  fmt->fmt.pix_mp.pixelformat   = V4L2_PIX_FMT_YUV420M;
+  fmt->fmt.pix_mp.pixelformat   = V4L2_PIX_FMT_NV12M;
   fmt->type                     = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
-  fmt->fmt.pix_mp.num_planes    = V4L2_NUM_MAX_PLANES;
   fmt->fmt.pix_mp.field         = V4L2_FIELD_ANY;
 
   if (ioctl(m_iConverterHandle, VIDIOC_S_FMT, fmt))
@@ -213,10 +222,6 @@ bool FimcConverter::SetupCaptureBuffers()
     return false;
   }
 
-  m_iFIMCCapturePlane1Size = fmt.fmt.pix_mp.plane_fmt[0].sizeimage;
-  m_iFIMCCapturePlane2Size = fmt.fmt.pix_mp.plane_fmt[1].sizeimage;
-  m_iFIMCCapturePlane3Size = fmt.fmt.pix_mp.plane_fmt[2].sizeimage;
-
   // Request FIMC capture buffers
   m_FIMCCaptureBuffersCount = CLinuxV4l2::RequestBuffer(m_iConverterHandle, V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE, V4L2_MEMORY_MMAP, FIMC_CAPTURE_BUFFERS_CNT);
   if (m_FIMCCaptureBuffersCount == V4L2_ERROR)
@@ -225,7 +230,6 @@ bool FimcConverter::SetupCaptureBuffers()
     return false;
   }
   CLog::Log(LOGDEBUG, "%s::%s - FIMC CAPTURE REQBUFS Number of buffers is %d", CLASSNAME, __func__, m_FIMCCaptureBuffersCount);
-  CLog::Log(LOGDEBUG, "%s::%s - FIMC CAPTURE buffer parameters: plane[0]=%d plane[1]=%d plane[2]=%d", CLASSNAME, __func__, m_iFIMCCapturePlane1Size, m_iFIMCCapturePlane2Size, m_iFIMCCapturePlane3Size);
 
   // Allocate, Memory Map and queue fimc capture buffers
   m_v4l2FIMCCaptureBuffers = (V4L2Buffer *)calloc(m_FIMCCaptureBuffersCount, sizeof(V4L2Buffer));
@@ -240,76 +244,64 @@ bool FimcConverter::SetupCaptureBuffers()
     return false;
   }
 
-  for (int n = 0; n < m_FIMCCaptureBuffersCount; n++)
-  {
-    m_v4l2FIMCCaptureBuffers[n].iBytesUsed[0] = m_iFIMCCapturePlane1Size;
-    m_v4l2FIMCCaptureBuffers[n].iBytesUsed[1] = m_iFIMCCapturePlane2Size;
-    m_v4l2FIMCCaptureBuffers[n].iBytesUsed[2] = m_iFIMCCapturePlane3Size;
-    m_v4l2FIMCCaptureBuffers[n].bQueue        = true;
-  }
-
   CLog::Log(LOGDEBUG, "%s::%s - FIMC CAPTURE Succesfully allocated, mmapped and queued %d buffers", CLASSNAME, __func__, m_FIMCCaptureBuffersCount);
+
+  // STREAMON on FIMC OUTPUT and CAPTURE
+  if (!CLinuxV4l2::StreamOn(m_iConverterHandle, V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE, VIDIOC_STREAMON))
+  {
+    CLog::Log(LOGERROR, "%s::%s - FIMC OUTPUT Failed to Stream ON", CLASSNAME, __func__);
+    return false;
+  }
+  CLog::Log(LOGDEBUG, "%s::%s - FIMC OUTPUT Stream ON", CLASSNAME, __func__);
+  if (!CLinuxV4l2::StreamOn(m_iConverterHandle, V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE, VIDIOC_STREAMON))
+  {
+    CLog::Log(LOGERROR, "%s::%s - FIMC CAPTURE Failed to Stream ON", CLASSNAME, __func__);
+    return false;
+  }
+  CLog::Log(LOGDEBUG, "%s::%s - FIMC CAPTURE Stream ON", CLASSNAME, __func__);
+
   return true;
 }
 
-void FimcConverter::Dispose()
+
+V4L2Buffer* FimcConverter::GetCaptureBuffer(int index)
 {
-  CLog::Log(LOGDEBUG, "%s::%s - Freeing memory allocated for FIMC buffers", CLASSNAME, __func__);
-  if (m_v4l2FIMCCaptureBuffers)
-    m_v4l2FIMCCaptureBuffers = CLinuxV4l2::FreeBuffers(m_FIMCCaptureBuffersCount, m_v4l2FIMCCaptureBuffers);
-  CLog::Log(LOGDEBUG, "%s::%s - Closing FIMC device", CLASSNAME, __func__);
-  if (m_iConverterHandle >= 0)
-  {
-    if (CLinuxV4l2::StreamOn(m_iConverterHandle, V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE, VIDIOC_STREAMOFF))
-      CLog::Log(LOGDEBUG, "%s::%s - FIMC OUTPUT Stream OFF", CLASSNAME, __func__);
-    if (CLinuxV4l2::StreamOn(m_iConverterHandle, V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE, VIDIOC_STREAMOFF))
-      CLog::Log(LOGDEBUG, "%s::%s - FIMC CAPTURE Stream OFF", CLASSNAME, __func__);
-    close(m_iConverterHandle);
-  }
-  m_FIMCCaptureBuffersCount = 0;
-  m_v4l2FIMCCaptureBuffers = NULL;
-  m_iConverterHandle = -1;
+  return m_v4l2FIMCCaptureBuffers != NULL && index < m_FIMCCaptureBuffersCount ? &(m_v4l2FIMCCaptureBuffers[index]) : NULL;
 }
 
-bool FimcConverter::QueueCaptureBuffer()
+bool FimcConverter::QueueCaptureBuffer(int index)
 {
-  if (m_iFIMCdequeuedBufferNumber >= 0 && !m_v4l2FIMCCaptureBuffers[m_iFIMCdequeuedBufferNumber].bQueue)
+  int ret = CLinuxV4l2::QueueBuffer(m_iConverterHandle, V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE, V4L2_MEMORY_MMAP, &m_v4l2FIMCCaptureBuffers[index]);
+  if (ret == V4L2_ERROR)
   {
-    int ret = CLinuxV4l2::QueueBuffer(m_iConverterHandle, V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE, V4L2_MEMORY_MMAP, m_v4l2FIMCCaptureBuffers[m_iFIMCdequeuedBufferNumber].iNumPlanes, m_iFIMCdequeuedBufferNumber, &m_v4l2FIMCCaptureBuffers[m_iFIMCdequeuedBufferNumber]);
-    if (ret == V4L2_ERROR)
+    CLog::Log(LOGERROR, "%s::%s - FIMC CAPTURE Failed to queue buffer with index %d, errno = %d", CLASSNAME, __func__, index, errno);
+    return false;
+  }
+  return true;
+}
+
+bool FimcConverter::DequeueCaptureBuffer(int *status, double *timestamp)
+{
+  int index = CLinuxV4l2::DequeueBuffer(m_iConverterHandle, V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE, V4L2_MEMORY_MMAP, timestamp);
+  if (index < 0)
+  {
+    if (errno == EAGAIN)
     {
-      CLog::Log(LOGERROR, "%s::%s - FIMC CAPTURE Failed to queue buffer with index %d, errno = %d", CLASSNAME, __func__, m_iFIMCdequeuedBufferNumber, errno);
+      // Dequeue buffer not ready, need more data on input. EAGAIN = 11
+      *status = 1; // false with result = 1 indicates that we return VC_BUFFER
       return false;
     }
-    m_v4l2FIMCCaptureBuffers[ret].bQueue = true;
-    m_iFIMCdequeuedBufferNumber = -1;
+    CLog::Log(LOGERROR, "%s::%s - FIMC CAPTURE error dequeue output buffer, got number %d, errno %d", CLASSNAME, __func__, index, errno);
+    *status = 0;
+    return false; // false with result = 0 indicates we return VC_FLUSHED
   }
+  *status = index;
   return true;
-}
-
-bool FimcConverter::StartConverter()
-{
-  if (m_bFIMCStartConverter)
-  {
-    if (CLinuxV4l2::StreamOn(m_iConverterHandle, V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE, VIDIOC_STREAMON))
-      CLog::Log(LOGDEBUG, "%s::%s - FIMC OUTPUT Stream ON", CLASSNAME, __func__);
-    else
-      CLog::Log(LOGERROR, "%s::%s - FIMC OUTPUT Failed to Stream ON", CLASSNAME, __func__);
-
-    if (CLinuxV4l2::StreamOn(m_iConverterHandle, V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE, VIDIOC_STREAMON))
-      CLog::Log(LOGDEBUG, "%s::%s - FIMC CAPTURE Stream ON", CLASSNAME, __func__);
-    else
-      CLog::Log(LOGERROR, "%s::%s - FIMC CAPTURE Failed to Stream ON", CLASSNAME, __func__);
-
-    m_bFIMCStartConverter = false;
-    return true;
-  }
-  return false;
 }
 
 bool FimcConverter::QueueOutputBuffer(int index, V4L2Buffer* m_v4l2MFCCaptureBuffer, int *status)
 {
-  int ret = CLinuxV4l2::QueueBuffer(m_iConverterHandle, V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE, V4L2_MEMORY_USERPTR, m_v4l2MFCCaptureBuffer->iNumPlanes, index, m_v4l2MFCCaptureBuffer);
+  int ret = CLinuxV4l2::QueueBuffer(m_iConverterHandle, V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE, V4L2_MEMORY_USERPTR, m_v4l2MFCCaptureBuffer);
   if (ret == V4L2_ERROR)
   {
     CLog::Log(LOGERROR, "%s::%s - FIMC OUTPUT Failed to queue buffer with index %d, errno %d", CLASSNAME, __func__, ret, errno);
@@ -319,60 +311,20 @@ bool FimcConverter::QueueOutputBuffer(int index, V4L2Buffer* m_v4l2MFCCaptureBuf
   return true; // *status contains the queued buffer index
 }
 
-bool FimcConverter::DequeueOutputBuffer(int *status)
+bool FimcConverter::DequeueOutputBuffer(int *status, double *timestamp)
 {
-  // This is the timeout for FIMC to wait for the new frame to produce.
-  // Initially set to 1000/25 - it is a timedifference between frames at 25 fps.
-  // If no frame would be returned the function will proceed further not having a frame to show.
-  // Something like nonblocking output for FIMC.
-  // FIXME: try setting it to 1000
-  int ret = CLinuxV4l2::PollOutput(m_iConverterHandle, 1000/25);
-  if (ret == V4L2_ERROR)
-  {
-    CLog::Log(LOGERROR, "%s::%s - FIMC PollOutput Error", CLASSNAME, __func__);
-    return false;
-  }
-  else
-  if (ret == V4L2_READY)
-  {
-    // Dequeue frame from fimc output
-    int index = CLinuxV4l2::DequeueBuffer(m_iConverterHandle, V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE, V4L2_MEMORY_USERPTR, V4L2_NUM_MAX_PLANES);
-    if (index < 0)
+  // Dequeue frame from fimc output
+  int index = CLinuxV4l2::DequeueBuffer(m_iConverterHandle, V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE, V4L2_MEMORY_USERPTR, timestamp);
+  if (index < 0) {
+    if (errno == EAGAIN) // Dequeue buffer not ready, need more data on input. EAGAIN = 11
     {
-      CLog::Log(LOGERROR, "%s::%s - FIMC OUTPUT error dequeue output buffer, got number %d", CLASSNAME, __func__, index);
+      *status = 1;
       return false;
     }
-    *status = index;
-  }
-  else
-  if (ret == V4L2_BUSY)
-  { // buffer is still busy
-    CLog::Log(LOGERROR, "%s::%s - FIMC OUTPUT Buffer is still busy", CLASSNAME, __func__);
-    return false;
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "%s::%s - FIMC PollOutput error %d, errno %d", CLASSNAME, __func__, ret, errno);
-    return false;
-  }
-  return true; // *status contains the buffer index
-}
-
-bool FimcConverter::DequeueCaptureBuffer(int *status)
-{
-  m_iFIMCdequeuedBufferNumber = CLinuxV4l2::DequeueBuffer(m_iConverterHandle, V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE, V4L2_MEMORY_MMAP, V4L2_NUM_MAX_PLANES);
-  if (m_iFIMCdequeuedBufferNumber < 0)
-  {
-    if (errno == EAGAIN)
-    {
-      // Dequeue buffer not ready, need more data on input. EAGAIN = 11
-      *status = 1; // false with status = 1 indicates that we return VC_BUFFER
-      return false;
-    }
-    CLog::Log(LOGERROR, "%s::%s - FIMC CAPTURE error dequeue output buffer, got number %d, errno %d", CLASSNAME, __func__, m_iFIMCdequeuedBufferNumber, errno);
+    CLog::Log(LOGERROR, "%s::%s - FIMC OUTPUT error dequeue output buffer, got number %d", CLASSNAME, __func__, index);
     *status = 0;
-    return false; // false with status = 0 indicates we return VC_ERROR
+    return false;
   }
-  m_v4l2FIMCCaptureBuffers[m_iFIMCdequeuedBufferNumber].bQueue = false;
+  *status = index; // *status contains the buffer index;
   return true;
 }

@@ -20,7 +20,7 @@
 
 #include "system.h"
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
-#include "config.h"
+  #include "config.h"
 #endif
 #include "LinuxV4l2.h"
 
@@ -53,7 +53,7 @@ int CLinuxV4l2::RequestBuffer(int device, enum v4l2_buf_type type, enum v4l2_mem
   struct v4l2_requestbuffers reqbuf;
   int ret = 0;
 
-  if (device < 0)
+  if(device < 0)
     return false;
 
   memset(&reqbuf, 0, sizeof(struct v4l2_requestbuffers));
@@ -77,11 +77,11 @@ bool CLinuxV4l2::StreamOn(int device, enum v4l2_buf_type type, int onoff)
   int ret = 0;
   enum v4l2_buf_type setType = type;
 
-  if (device < 0)
+  if(device < 0)
     return false;
 
   ret = ioctl(device, onoff, &setType);
-  if (ret)
+  if(ret)
     return false;
 
   return true;
@@ -94,10 +94,10 @@ bool CLinuxV4l2::MmapBuffers(int device, int count, V4L2Buffer *v4l2Buffers, enu
   int ret;
   int i, j;
 
-  if (device < 0 || !v4l2Buffers || count == 0)
+  if(device < 0 || !v4l2Buffers || count == 0)
     return false;
 
-  for (i = 0; i < count; i++)
+  for(i = 0; i < count; i++)
   {
     memset(&buf, 0, sizeof(struct v4l2_buffer));
     memset(&planes, 0, sizeof(struct v4l2_plane) * V4L2_NUM_MAX_PLANES);
@@ -117,17 +117,16 @@ bool CLinuxV4l2::MmapBuffers(int device, int count, V4L2Buffer *v4l2Buffers, enu
     V4L2Buffer *buffer = &v4l2Buffers[i];
 
     buffer->iNumPlanes = 0;
-    for (j = 0; j < V4L2_NUM_MAX_PLANES; j++)
+    buffer->bQueue = false;
+    for (j = 0; j < buf.length; j++)
     {
-      //printf("%s::%s - plane %d %d size %d 0x%08x\n", CLASSNAME, __func__, i, j, buf.m.planes[j].length,
-      //    buf.m.planes[j].m.userptr);
       buffer->iSize[j]       = buf.m.planes[j].length;
       buffer->iBytesUsed[j]  = buf.m.planes[j].bytesused;
-      if (buffer->iSize[j])
+      if(buffer->iSize[j])
       {
         buffer->cPlane[j] = mmap(NULL, buf.m.planes[j].length, PROT_READ | PROT_WRITE,
                        MAP_SHARED, device, buf.m.planes[j].m.mem_offset);
-        if (buffer->cPlane[j] == MAP_FAILED)
+        if(buffer->cPlane[j] == MAP_FAILED)
         {
           CLog::Log(LOGERROR, "%s::%s - Mmapping buffer", CLASSNAME, __func__);
           return false;
@@ -138,16 +137,8 @@ bool CLinuxV4l2::MmapBuffers(int device, int count, V4L2Buffer *v4l2Buffers, enu
     }
     buffer->iIndex = i;
 
-    if (queue)
-    {
-      ret = ioctl(device, VIDIOC_QBUF, &buf);
-      if (ret)
-      {
-        CLog::Log(LOGERROR, "%s::%s - Queue buffer", CLASSNAME, __func__);
-        return false;
-      }
-      buffer->bQueue = true;
-    }
+    if(queue)
+      QueueBuffer(device, type, memory, buffer);
   }
 
   return true;
@@ -157,15 +148,15 @@ V4L2Buffer *CLinuxV4l2::FreeBuffers(int count, V4L2Buffer *v4l2Buffers)
 {
   int i, j;
 
-  if (v4l2Buffers != NULL)
+  if(v4l2Buffers != NULL)
   {
-    for (i = 0; i < count; i++)
+    for(i = 0; i < count; i++)
     {
       V4L2Buffer *buffer = &v4l2Buffers[i];
 
       for (j = 0; j < buffer->iNumPlanes; j++)
       {
-        if (buffer->cPlane[j] && buffer->cPlane[j] != MAP_FAILED)
+        if(buffer->cPlane[j] && buffer->cPlane[j] != MAP_FAILED)
         {
           munmap(buffer->cPlane[j], buffer->iSize[j]);
           CLog::Log(LOGDEBUG, "%s::%s - unmap convert buffer", CLASSNAME, __func__);
@@ -177,13 +168,13 @@ V4L2Buffer *CLinuxV4l2::FreeBuffers(int count, V4L2Buffer *v4l2Buffers)
   return NULL;
 }
 
-int CLinuxV4l2::DequeueBuffer(int device, enum v4l2_buf_type type, enum v4l2_memory memory, int planes)
+int CLinuxV4l2::DequeueBuffer(int device, enum v4l2_buf_type type, enum v4l2_memory memory, double *dequeuedTimestamp)
 {
   struct v4l2_buffer vbuf;
   struct v4l2_plane  vplanes[V4L2_NUM_MAX_PLANES];
   int ret = 0;
 
-  if (device < 0)
+  if(device < 0)
     return V4L2_ERROR;
 
   memset(&vplanes, 0, sizeof(struct v4l2_plane) * V4L2_NUM_MAX_PLANES);
@@ -191,35 +182,55 @@ int CLinuxV4l2::DequeueBuffer(int device, enum v4l2_buf_type type, enum v4l2_mem
   vbuf.type     = type;
   vbuf.memory   = memory;
   vbuf.m.planes = vplanes;
-  vbuf.length   = planes;
+  vbuf.length   = V4L2_NUM_MAX_PLANES;
 
   ret = ioctl(device, VIDIOC_DQBUF, &vbuf);
-  if (ret) {
+  if (ret)
+  {
     if (errno != EAGAIN)
       CLog::Log(LOGERROR, "%s::%s - Dequeue buffer", CLASSNAME, __func__);
     return V4L2_ERROR;
   }
 
+  if (type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
+  {
+    // Unbox two 32-bit integers from struct timeval received from MFC back into one 64-bit double expected by XBMC as pts
+    // WARNING: It will work only if double is 64-bit and long is 32.
+    // Since MFC is IP available only in Samsung Exynos ARM's and the code is for V4L2 for linux it should work.
+    long pts[2] = { vbuf.timestamp.tv_sec, vbuf.timestamp.tv_usec };
+    *dequeuedTimestamp = *((double*)&pts[0]);;
+  }
   return vbuf.index;
 }
 
-int CLinuxV4l2::QueueBuffer(int device, enum v4l2_buf_type type,
-    enum v4l2_memory memory, int planes, int index, V4L2Buffer *buffer)
+int CLinuxV4l2::QueueBuffer(int device, enum v4l2_buf_type type, enum v4l2_memory memory, V4L2Buffer *buffer)
 {
   struct v4l2_buffer vbuf;
-  struct v4l2_plane  vplanes[V4L2_NUM_MAX_PLANES];
+  struct v4l2_plane  vplanes[buffer->iNumPlanes];
   int ret = 0;
 
-  if (!buffer || device <0)
+  if(!buffer || device <0)
     return V4L2_ERROR;
 
-  memset(&vplanes, 0, sizeof(struct v4l2_plane) * V4L2_NUM_MAX_PLANES);
+  memset(&vplanes, 0, sizeof(struct v4l2_plane) * buffer->iNumPlanes);
   memset(&vbuf, 0, sizeof(struct v4l2_buffer));
   vbuf.type     = type;
   vbuf.memory   = memory;
-  vbuf.index    = index;
+  vbuf.index    = buffer->iIndex;
   vbuf.m.planes = vplanes;
   vbuf.length   = buffer->iNumPlanes;
+  if (type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
+  {
+    vbuf.flags |= V4L2_BUF_FLAG_TIMESTAMP_COPY;
+    // This will box 64-bit double given as pts from XBMC into two 32-bit integers available in struct timeval which MFC expects.
+    // WARNING: This values has nothing to do with real timestamp of the frame, it is just two 32-bit halves of 64-bit double
+    // and must be unboxed back the same way on deqeue. It will work only if double is 64-bit and long is 32.
+    // Since MFC is IP available only in Samsung Exynos ARM's, and the code is for V4L2 for linux it should work.
+    // The values will be just copied by driver from input frame to output frame and will not affect decoding in any way
+    long* pts = (long*)&buffer->timestamp;
+    vbuf.timestamp.tv_sec = pts[0];
+    vbuf.timestamp.tv_usec = pts[1];
+  }
 
   for (int i = 0; i < buffer->iNumPlanes; i++)
   {
@@ -236,7 +247,7 @@ int CLinuxV4l2::QueueBuffer(int device, enum v4l2_buf_type type,
   }
   buffer->bQueue = true;
 
-  return index;
+  return vbuf.index;
 }
 
 int CLinuxV4l2::PollInput(int device, int timeout)
@@ -291,7 +302,7 @@ int CLinuxV4l2::SetControllValue(int device, int id, int value)
 
   ret = ioctl(device, VIDIOC_S_CTRL, &control);
 
-  if (ret < 0)
+  if(ret < 0)
   {
     CLog::Log(LOGERROR, "%s::%s - Set controll if %d value %d\n", CLASSNAME, __func__, id, value);
     return V4L2_ERROR;

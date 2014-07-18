@@ -24,8 +24,6 @@
 #include "DVDStreamInfo.h"
 #include "utils/log.h"
 #include "utils/BitstreamConverter.h"
-#include <vector>
-#include <queue>
 
 #include "xbmc/linux/LinuxV4l2.h"
 
@@ -49,48 +47,35 @@ public:
   void Dispose();
 
   bool        OpenDevice();
-  bool        HasNV12MTSupport();                            // NV12MT support should be in all MFC versions
   bool        HasNV12Support() { return m_hasNV12Support; }; // NV12 support should be starting with MFC6
   bool        SetupOutputFormat(CDVDStreamInfo &hints);
   const char* GetOutputName() { return m_name.c_str(); };
   bool        RequestBuffers();
+  bool        SetupCaptureBuffers();
   int         GetCaptureBuffersCount() { return m_MFCCaptureBuffersCount; };
-  int         GetOutputBuffersCount()  { return m_MFCOutputBuffersCount;  };
-  bool        SetupOutputBuffers();
-  bool        QueueHeader(CDVDStreamInfo &hints);
+  V4L2Buffer* GetCaptureBuffer(int index);
+  bool        SetCaptureFormat();
   bool        GetCaptureFormat(struct v4l2_format* fmt);
   bool        GetCaptureCrop(struct v4l2_crop* crop);
-  bool        SetupCaptureBuffers();
-  bool        DequeueHeader();
+  bool        SetupOutputBuffers();
+  int         GetOutputBuffersCount()  { return m_MFCOutputBuffersCount;  };
   bool        IsOutputBufferEmpty(int index);
-  void        SetCaptureBufferEmpty(int index);
-  void        SetCaptureBufferBusy(int index);
-  V4L2Buffer* GetCaptureBuffer(int index);
 
-  bool        DequeueOutputBuffer(int *result);
-  bool        SendBuffer(int index, uint8_t* demuxer_content, int demuxer_bytes);
-  bool        DequeueDecodedFrame(int *result);
-  bool        QueueOutputBuffer(int index);
-
-  void        AddDecodedCaptureBuffer(int index);
-  bool        GetFirstDecodedCaptureBuffer(int *index);
-  void        RemoveFirstDecodedCaptureBuffer();
-  bool        SetCaptureFormat();
-
-  void        SetOutputBufferPlanes(int m_iDecodedWidth, int m_iDecodedHeight);
+  bool        QueueHeader(CDVDStreamInfo &hints);
+  bool        SendBuffer(int index, uint8_t* demuxer_content, int demuxer_bytes, double pts);
+  bool        DequeueOutputBuffer(int *result, double *timestamp);
+  bool        QueueCaptureBuffer(int index);
+  bool        DequeueDecodedFrame(int *result, double *timestamp);
 
 private:
   int                 m_iDecoderHandle;
+  bool                HasNV12MTSupport();
   bool                m_hasNV12Support;
   std::string         m_name;
   int                 m_MFCOutputBuffersCount;
   V4L2Buffer         *m_v4l2MFCOutputBuffers;
   int                 m_MFCCaptureBuffersCount;
   V4L2Buffer         *m_v4l2MFCCaptureBuffers;
-  int                 m_iMFCCapturePlane1Size;
-  int                 m_iMFCCapturePlane2Size;
   bool                m_bVideoConvert;
   CBitstreamConverter m_converter;
-  V4L2Buffer          m_v4l2OutputBuffer;
-  std::queue<int>     m_MFCDecodedCaptureBuffers;
 };

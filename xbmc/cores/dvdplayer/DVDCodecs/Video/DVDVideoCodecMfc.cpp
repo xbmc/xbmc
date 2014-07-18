@@ -27,15 +27,11 @@
 
 CDVDVideoCodecMfc::CDVDVideoCodecMfc() : CDVDVideoCodec()
 {
-  m_decoder = new MfcDecoder();
+  m_decoder   = new MfcDecoder();
   m_converter = NULL;
 
-  m_iDecodedWidth     = 0;
-  m_iDecodedHeight    = 0;
-  m_iConvertedWidth   = 0;
-  m_iConvertedHeight  = 0;
-
-  m_bDropPictures = false;
+  m_bDropPictures                  = false;
+  m_iDequeuedToPresentBufferNumber = -1;
   memset(&(m_videoBuffer), 0, sizeof (m_videoBuffer));
 }
 
@@ -46,9 +42,26 @@ CDVDVideoCodecMfc::~CDVDVideoCodecMfc()
   delete m_decoder;
 }
 
+void CDVDVideoCodecMfc::Dispose()
+{
+  m_iDequeuedToPresentBufferNumber = -1;
+  m_bDropPictures                  = false;
+  memset(&(m_videoBuffer), 0, sizeof (m_videoBuffer));
+
+  if (m_converter != NULL)
+    m_converter->Dispose();
+  if (m_decoder != NULL)
+    m_decoder->Dispose();
+}
+
 bool CDVDVideoCodecMfc::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  if (hints.software)
+  int iDecodedWidth;
+  int iDecodedHeight;
+
+  m_hints = hints;
+
+  if (m_hints.software)
   {
     return false;
   }
@@ -76,7 +89,7 @@ bool CDVDVideoCodecMfc::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     m_NV12Support = true;
   }
 
-  if (!m_decoder->SetupOutputFormat(hints))
+  if (!m_decoder->SetupOutputFormat(m_hints))
   {
     return false;
   }
@@ -125,21 +138,8 @@ bool CDVDVideoCodecMfc::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     return false;
   }
 
-  if (!m_NV12Support) {
-    m_iDecodedWidth = mfc_crop.c.width;
-    m_iDecodedHeight = mfc_crop.c.height;
-  }
-  else
-  {
-    m_iDecodedWidth = (mfc_crop.c.width + 15)&~15;  // Align width by 16. Required for NV12 to YUV420 converter
-    m_iDecodedHeight = mfc_crop.c.height;
-    // FIXME: maybe we can do this nicer...
-    m_decoder->SetOutputBufferPlanes(m_iDecodedWidth, m_iDecodedHeight);
-  }
-
-  // With no FIMC scaling, resulting picture will be the same size as source
-  int width       = m_iDecodedWidth;
-  int height      = m_iDecodedHeight;
+  iDecodedWidth  = mfc_crop.c.width;
+  iDecodedHeight = mfc_crop.c.height;
 
   if (!m_NV12Support)
   {
@@ -150,11 +150,11 @@ bool CDVDVideoCodecMfc::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     }
     // Calculate FIMC final picture size as scaled to fit screen
     RESOLUTION_INFO res_info = CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
-    double ratio  = std::min((double)res_info.iScreenWidth / (double)m_iDecodedWidth, (double)res_info.iScreenHeight / (double)m_iDecodedHeight);
-    width         = (int)((double)m_iDecodedWidth * ratio);
-    height        = (int)((double)m_iDecodedHeight * ratio);
-    if (width%2)  width--;
-    if (height%2) height--;
+    double ratio  = std::min((double)res_info.iScreenWidth / (double)iDecodedWidth, (double)res_info.iScreenHeight / (double)iDecodedHeight);
+    iDecodedWidth         = (int)((double)iDecodedWidth * ratio);
+    iDecodedHeight        = (int)((double)iDecodedHeight * ratio);
+    if (iDecodedWidth%2)  iDecodedWidth--;
+    if (iDecodedHeight%2) iDecodedHeight--;
   }
 
   if (!m_decoder->SetupCaptureBuffers())
@@ -162,30 +162,24 @@ bool CDVDVideoCodecMfc::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     return false;
   }
 
-  // with no FIMC we use for converted picture the decoded width and height
-  m_iConvertedWidth = width;
-  m_iConvertedHeight = height;
   if (!m_NV12Support)
   {
-    // with FIMC we override the converted picture width and height
     if (!m_converter->RequestBuffers(m_decoder->GetCaptureBuffersCount()))
     {
       return false;
     }
 
     struct v4l2_format fimc_fmt = {};
-    fimc_fmt.fmt.pix_mp.width   = width;
-    fimc_fmt.fmt.pix_mp.height  = height;
+    fimc_fmt.fmt.pix_mp.width   = iDecodedWidth;
+    fimc_fmt.fmt.pix_mp.height  = iDecodedHeight;
     if (!m_converter->SetCaptureFormat(&fimc_fmt))
     {
       return false;
     }
-    m_iConvertedWidth   = fimc_fmt.fmt.pix_mp.width;
-    m_iConvertedHeight  = fimc_fmt.fmt.pix_mp.height;
 
     struct v4l2_crop fimc_crop  = {};
-    fimc_crop.c.width           = m_iConvertedWidth;
-    fimc_crop.c.height          = m_iConvertedHeight;
+    fimc_crop.c.width           = iDecodedWidth;
+    fimc_crop.c.height          = iDecodedHeight;
     if (!m_converter->SetCaptureCrop(&fimc_crop))
     {
       return false;
@@ -195,44 +189,42 @@ bool CDVDVideoCodecMfc::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     {
       return false;
     }
-
-    // we dequeue header only on MFC5 (when FIMC is present)
-    // on MFC we just start streaming...
-    if (!m_decoder->DequeueHeader())
-    {
-      return false;
-    }
   }
 
+  m_videoBuffer.iFlags          = DVP_FLAG_ALLOCATED;
+
+  m_videoBuffer.color_range     = 0;
+  m_videoBuffer.color_matrix    = 4;
+
+  m_videoBuffer.iDisplayWidth   = iDecodedWidth;
+  m_videoBuffer.iDisplayHeight  = iDecodedHeight;
+  m_videoBuffer.iWidth          = iDecodedWidth;
+  m_videoBuffer.iHeight         = iDecodedHeight;
+
+  m_videoBuffer.data[0]         = NULL;
+  m_videoBuffer.data[1]         = NULL;
+  m_videoBuffer.data[2]         = NULL;
+  m_videoBuffer.data[3]         = NULL;
+
+  m_videoBuffer.format          = RENDER_FMT_NV12;
+  m_videoBuffer.iLineSize[0]    = iDecodedWidth;
+  m_videoBuffer.iLineSize[1]    = iDecodedWidth;
+  m_videoBuffer.iLineSize[2]    = 0;
+  m_videoBuffer.iLineSize[3]    = 0;
+  m_videoBuffer.pts             = DVD_NOPTS_VALUE;
+  m_videoBuffer.dts             = DVD_NOPTS_VALUE;
+
   return true;
-}
-
-
-void CDVDVideoCodecMfc::Dispose()
-{
-  while (!m_pts.empty())
-    m_pts.pop();
-  while (!m_dts.empty())
-    m_dts.pop();
-
-  m_bDropPictures = false;
-  memset(&(m_videoBuffer), 0, sizeof (m_videoBuffer));
-
-  if (m_converter != NULL)
-    m_converter->Dispose();
-  if (m_decoder != NULL)
-    m_decoder->Dispose();
-}
-
-void CDVDVideoCodecMfc::SetDropState(bool bDrop)
-{
-  m_bDropPictures = bDrop;
 }
 
 int CDVDVideoCodecMfc::Decode(BYTE* pData, int iSize, double dts, double pts)
 {
   int ret       = -1;
   size_t index  = 0;
+  double dequeuedTimestamp;
+
+  if (m_hints.ptsinvalid)
+    pts = DVD_NOPTS_VALUE;
 
   if (pData)
   {
@@ -246,157 +238,101 @@ int CDVDVideoCodecMfc::Decode(BYTE* pData, int iSize, double dts, double pts)
     if (index == m_decoder->GetOutputBuffersCount())
     {
       // all input buffers are busy, dequeue needed
-      if (!m_decoder->DequeueOutputBuffer(&ret))
+      if (!m_decoder->DequeueOutputBuffer(&ret, &dequeuedTimestamp))
       {
         return ret;
       }
       index = ret;
     }
 
-    if (!m_decoder->SendBuffer(index, pData, iSize))
+    if (!m_decoder->SendBuffer(index, pData, iSize, pts))
     {
-      return VC_ERROR;
+      return VC_FLUSHED;
     }
-    m_pts.push(-pts);
-    m_dts.push(-dts);
   }
 
-  if (m_NV12Support)
+  if (m_iDequeuedToPresentBufferNumber >= 0)
   {
-    int buf = 0;
-    if (m_decoder->GetFirstDecodedCaptureBuffer(&buf))
+    if (!m_NV12Support)
     {
-      if (!m_decoder->QueueOutputBuffer(buf))
+      if (!m_converter->GetCaptureBuffer(m_iDequeuedToPresentBufferNumber)->bQueue)
       {
-        m_videoBuffer.iFlags      |= DVP_FLAG_DROPPED;
-        m_videoBuffer.iFlags      &= DVP_FLAG_ALLOCATED;
-        return VC_ERROR;
+        if (!m_converter->QueueCaptureBuffer(m_iDequeuedToPresentBufferNumber))
+          return VC_FLUSHED;
+        m_iDequeuedToPresentBufferNumber = -1;
       }
-      m_decoder->RemoveFirstDecodedCaptureBuffer();
+    }
+    else
+    {
+      if (!m_decoder->GetCaptureBuffer(m_iDequeuedToPresentBufferNumber)->bQueue)
+      {
+        if (!m_decoder->QueueCaptureBuffer(m_iDequeuedToPresentBufferNumber))
+          return VC_FLUSHED;
+        m_iDequeuedToPresentBufferNumber = -1;
+      }
     }
   }
 
-  if (!m_decoder->DequeueDecodedFrame(&ret))
+  if (!m_decoder->DequeueDecodedFrame(&ret, &dequeuedTimestamp))
   {
     return ret;
   }
   index = ret;
 
-  if (m_NV12Support)
-  {
-    m_decoder->AddDecodedCaptureBuffer(index);
-  }
-
   if (m_bDropPictures)
   {
-    m_videoBuffer.iFlags |= DVP_FLAG_DROPPED;
     CLog::Log(LOGDEBUG, "%s::%s - Dropping frame with index %d", CLASSNAME, __func__, ret);
+    // Queue it back to MFC CAPTURE since the picture is dropped anyway
+    if (!m_decoder->QueueCaptureBuffer(index))
+    {
+      return VC_FLUSHED;
+    }
+    return VC_BUFFER; // Continue, we have no picture to show
   }
   else
   {
     if (!m_NV12Support)
     {
-      if (!m_converter->QueueCaptureBuffer())
-      {
-        return VC_ERROR;
-      }
-
       if (!m_converter->QueueOutputBuffer(index, m_decoder->GetCaptureBuffer(index), &ret))
-      {
-        return VC_ERROR;
-      }
+        return VC_FLUSHED;
 
-      m_decoder->SetCaptureBufferBusy(ret);
-
-      if (m_converter->StartConverter())
-      {
-        return VC_BUFFER; // Queue one more frame for double buffering on FIMC
-      }
-
-      if (!m_converter->DequeueOutputBuffer(&ret))
-      {
-        return VC_ERROR;
-      }
-      index = ret;
-
-      m_decoder->SetCaptureBufferEmpty(ret);
-
-      if (!m_converter->DequeueCaptureBuffer(&ret))
+      if (!m_converter->DequeueCaptureBuffer(&ret, &dequeuedTimestamp))
       {
         if (ret != 0)
           return VC_BUFFER;
         else
-          return VC_ERROR;
+          return VC_FLUSHED;
       }
-    }
+      index = ret;
 
-    m_videoBuffer.iFlags          = DVP_FLAG_ALLOCATED;
-    m_videoBuffer.color_range     = 0;
-    m_videoBuffer.color_matrix    = 4;
+      if (!m_converter->DequeueOutputBuffer(&ret, &dequeuedTimestamp))
+      {
+        if (ret != 0)
+          return VC_BUFFER;
+        else
+          return VC_FLUSHED;
+      }
+      // Queue it back to MFC CAPTURE
+      if (!m_decoder->QueueCaptureBuffer(ret))
+      {
+        CLog::Log(LOGERROR, "%s::%s - MFC queue CAPTURE buffer", CLASSNAME, __func__);
+        return VC_FLUSHED;
+      }
 
-    if (!m_NV12Support) {
-      m_videoBuffer.iDisplayWidth   = m_iConvertedWidth;
-      m_videoBuffer.iDisplayHeight  = m_iConvertedHeight;
-      m_videoBuffer.iWidth          = m_iConvertedWidth;
-      m_videoBuffer.iHeight         = m_iConvertedHeight;
-
-      m_videoBuffer.data[0]         = 0;
-      m_videoBuffer.data[1]         = 0;
-      m_videoBuffer.data[2]         = 0;
-      m_videoBuffer.data[3]         = 0;
-
-      m_videoBuffer.format          = RENDER_FMT_YUV420P;
-      m_videoBuffer.iLineSize[0]    = m_iConvertedWidth;
-      m_videoBuffer.iLineSize[1]    = m_iConvertedWidth >> 1;
-      m_videoBuffer.iLineSize[2]    = m_iConvertedWidth >> 1;
-      m_videoBuffer.iLineSize[3]    = 0;
-      m_videoBuffer.data[0]         = (BYTE*) m_converter->GetCurrentCaptureBuffer()->cPlane[0];
-      m_videoBuffer.data[1]         = (BYTE*) m_converter->GetCurrentCaptureBuffer()->cPlane[1];
-      m_videoBuffer.data[2]         = (BYTE*) m_converter->GetCurrentCaptureBuffer()->cPlane[2];
+      m_converter->GetCaptureBuffer(index)->bQueue = false;
+      m_converter->GetCaptureBuffer(index)->timestamp = dequeuedTimestamp;
+      m_videoBuffer.data[0] = (BYTE*) m_converter->GetCaptureBuffer(index)->cPlane[0];
+      m_videoBuffer.data[1] = (BYTE*) m_converter->GetCaptureBuffer(index)->cPlane[1];
+      m_videoBuffer.pts     = dequeuedTimestamp;
     }
     else
     {
-      m_videoBuffer.format          = RENDER_FMT_NV12;
-      m_videoBuffer.iDisplayWidth   = m_iDecodedWidth;
-      m_videoBuffer.iDisplayHeight  = m_iDecodedHeight;
-      m_videoBuffer.iWidth          = m_iDecodedWidth;
-      m_videoBuffer.iHeight         = m_iDecodedHeight;
-
-      m_videoBuffer.iLineSize[0]    = m_iDecodedWidth;
-      m_videoBuffer.iLineSize[1]    = m_iDecodedWidth;
-      m_videoBuffer.iLineSize[2]    = 0;
-      m_videoBuffer.iLineSize[3]    = 0;
-      m_videoBuffer.data[0]         = (BYTE*) m_decoder->GetCaptureBuffer(index)->cPlane[0];
-      m_videoBuffer.data[1]         = (BYTE*) m_decoder->GetCaptureBuffer(index)->cPlane[1];
+      m_videoBuffer.data[0] = (BYTE*) m_decoder->GetCaptureBuffer(index)->cPlane[0];
+      m_videoBuffer.data[1] = (BYTE*) m_decoder->GetCaptureBuffer(index)->cPlane[1];
+      m_videoBuffer.pts     = m_decoder->GetCaptureBuffer(index)->timestamp;
     }
-  }
 
-  // Pop pts/dts only when picture is finally ready to be showed up or skipped
-  if (m_pts.size())
-  {
-    m_videoBuffer.pts = -m_pts.top(); // MFC always return frames in order and assigning them their pts'es from the input
-                                      // will lead to reshuffle. This will assign least pts in the queue to the frame dequeued.
-    m_videoBuffer.dts = -m_dts.top();
-
-    m_pts.pop();
-    m_dts.pop();
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "%s::%s - no pts value", CLASSNAME, __func__);
-    m_videoBuffer.pts           = DVD_NOPTS_VALUE;
-    m_videoBuffer.dts           = DVD_NOPTS_VALUE;
-  }
-
-  if (!m_NV12Support)
-  {
-    // Queue dequeued from FIMC OUPUT frame back to MFC CAPTURE
-    if (!m_decoder->QueueOutputBuffer(index))
-    {
-      m_videoBuffer.iFlags      |= DVP_FLAG_DROPPED;
-      m_videoBuffer.iFlags      &= DVP_FLAG_ALLOCATED;
-      return VC_ERROR;
-    }
+    m_iDequeuedToPresentBufferNumber = index;
   }
 
   return VC_PICTURE | VC_BUFFER; // Picture is finally ready to be processed further
@@ -404,7 +340,8 @@ int CDVDVideoCodecMfc::Decode(BYTE* pData, int iSize, double dts, double pts)
 
 void CDVDVideoCodecMfc::Reset()
 {
-  // FIXME: implement Reset - currently skipping back in a stream results in a small stuttering
+  CDVDCodecOptions options;
+  Open(m_hints, options);
 }
 
 bool CDVDVideoCodecMfc::GetPicture(DVDVideoPicture* pDvdVideoPicture)
@@ -416,4 +353,13 @@ bool CDVDVideoCodecMfc::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 bool CDVDVideoCodecMfc::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
 {
   return CDVDVideoCodec::ClearPicture(pDvdVideoPicture);
+}
+
+void CDVDVideoCodecMfc::SetDropState(bool bDrop)
+{
+  m_bDropPictures = bDrop;
+  if (m_bDropPictures)
+    m_videoBuffer.iFlags |=  DVP_FLAG_DROPPED;
+  else
+    m_videoBuffer.iFlags &= ~DVP_FLAG_DROPPED;
 }
