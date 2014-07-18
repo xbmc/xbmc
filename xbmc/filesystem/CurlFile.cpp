@@ -745,8 +745,6 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     url2.GetProtocolOptions(options);
     if (options.size() > 0)
     {
-      // clear protocol options
-      url2.SetProtocolOptions("");
       // set xbmc headers
       for(std::map<CStdString, CStdString>::const_iterator it = options.begin(); it != options.end(); ++it)
       {
@@ -782,6 +780,9 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
       }
     }
   }
+  
+  // Unset the protocol options to have an url without protocol options
+  url2.SetProtocolOptions("");
 
   if (m_username.length() > 0 && m_password.length() > 0)
     m_url = url2.GetWithoutUserDetails();
