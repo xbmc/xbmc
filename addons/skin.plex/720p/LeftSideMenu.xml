@@ -374,7 +374,7 @@
 						<description>Control Global Caching</description>
 						<label> $LOCALIZE[41001] </label>
 						<onclick>Dialog.Close(4998)</onclick>
-            <onclick>XBMC.ActivateWindow(10208)</onclick>
+						<onclick>XBMC.ActivateWindow(10208)</onclick>
 						<visible>System.isSystem(rasplex)</visible>
 					</item>
 					<item id="111">
@@ -536,7 +536,7 @@
 					<onclick>Plex.ShuffleAll()</onclick>
 					<include>leftMenuBarButton</include>
 					<visible>![Window.IsActive(501) + Container.PlexFilter(recentlyAdded)] + !Container.PlexFilter(recentlyViewedShows)</visible>
-				</control>				
+				</control>
 				<!-- Now Playing -->
 				<control type="button" id="106">
 					<texturefocus>-</texturefocus>
@@ -587,6 +587,16 @@
 					<include>leftMenuBarButton</include>
 					<onfocus>Skin.SetString(DialogPos,subtitlestreampicker)</onfocus>
 					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
+				</control>
+				<!-- Extras -->
+				<control type="button" id="110">
+					<texturefocus>b-pp-extras-s.png</texturefocus>
+					<texturenofocus>b-pp-extras.png</texturenofocus>
+					<onright>XBMC.NextItem</onright>
+					<onleft>XBMC.PrevItem</onleft>
+					<onclick>ActivateWindow(10209)</onclick>
+					<include>leftMenuBarButton</include>
+					<visible>!IsEmpty(ListItem.Property(PlexExtras))</visible>
 				</control>
 				<!-- Rate -->
 				<control type="button" id="105">
@@ -762,7 +772,7 @@
 					<include>leftMenuFormat</include>
 					<include>leftMenuSortingButton</include>
 				</control>
-			</control>			
+			</control>
 			<include>NowPlayingSideBar</include>
 		</control>
 	</include>

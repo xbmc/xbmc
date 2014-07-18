@@ -46,7 +46,6 @@
 					<posy>262</posy>
 					<posx>270</posx>
 					<control type="group">
-            <visible>Control.IsVisible(10082)</visible>
 						<animation effect="fade" start="0" end="15" time="0" condition="true">Conditional</animation>
 						<control type="image">
 							<description>PIN # bg</description>
