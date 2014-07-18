@@ -84,8 +84,8 @@ AC_DEFUN([XB_FIND_SONAME],
       lib=[`ls -- $path/lib$2.dylib 2>/dev/null`]
       if test x$lib != x; then
         # we want the path/name that is embedded in the dylib 
-        $1_SONAME=[`otool -L $lib | grep -v lib$2.dylib | grep lib$2 | awk '{V=1; print $V}'`]
-        $1_SONAME=[`basename $$1_SONAME`]
+        $1_FILENAME=[`otool -L $lib | grep -v lib$2.dylib | grep lib$2 | awk '{V=1; print $V}'`]
+        $1_SONAME=[`basename $$1_FILENAME`]
       fi
     done
   fi
