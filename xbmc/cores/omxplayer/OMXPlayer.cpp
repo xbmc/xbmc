@@ -3821,10 +3821,9 @@ bool COMXPlayer::ShowPVRChannelInfo(void)
 {
   bool bReturn(false);
 
-  if (CSettings::Get().GetBool("pvrmenu.infoswitch"))
+  if (CSettings::Get().GetInt("pvrmenu.displaychannelinfo") > 0)
   {
-    int iTimeout = CSettings::Get().GetBool("pvrmenu.infotimeout") ? CSettings::Get().GetInt("pvrmenu.infotime") : 0;
-    g_PVRManager.ShowPlayerInfo(iTimeout);
+    g_PVRManager.ShowPlayerInfo(CSettings::Get().GetInt("pvrmenu.displaychannelinfo"));
 
     bReturn = true;
   }
