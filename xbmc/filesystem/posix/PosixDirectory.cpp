@@ -22,6 +22,7 @@
 
 #include "PosixDirectory.h"
 #include "utils/AliasShortcutUtils.h"
+#include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "FileItem.h"
@@ -57,7 +58,9 @@ bool CPosixDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
       continue;
 
-    CFileItemPtr pItem(new CFileItem(entry->d_name));
+    std::string itemLabel(entry->d_name);
+    CCharsetConverter::unknownToUTF8(itemLabel);
+    CFileItemPtr pItem(new CFileItem(itemLabel));
     std::string itemPath(URIUtils::AddFileToFolder(root, entry->d_name));
 
     bool bStat = false;
