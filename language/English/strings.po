@@ -8129,10 +8129,7 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr ""
+#empty string with id 19179
 
 #: system/settings/settings.xml
 msgctxt "#19180"
@@ -8155,11 +8152,6 @@ msgid "Radio"
 msgstr ""
 
 #empty string with id 19184
-
-#: system/settings/settings.xml
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19185"
@@ -14117,20 +14109,14 @@ msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36213"
-msgid "Hide the programming information automatically after a few seconds, defined below."
-msgstr ""
+#empty string with id 36213
 
 #: system/settings/settings.xml
 msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36215"
-msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
-msgstr ""
+#empty string with id 36215
 
 #: system/settings/settings.xml
 msgctxt "#36216"
