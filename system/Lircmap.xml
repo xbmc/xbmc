@@ -61,6 +61,7 @@
 		<teletext>Teletext</teletext>
 
 		<!-- new kernel-based lirc button names -->
+		<eject>KEY_EJECTCD</eject>
 		<left>KEY_LEFT</left>
 		<right>KEY_RIGHT</right>
 		<up>KEY_UP</up>
