@@ -16,8 +16,12 @@ CGUIDialogPlexPlayQueue::CGUIDialogPlexPlayQueue()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIDialogPlexPlayQueue::OnMessage(CGUIMessage& message)
 {
-  if (message.GetMessage() == GUI_MSG_WINDOW_INIT)
+  if ((message.GetMessage() == GUI_MSG_WINDOW_INIT) || (message.GetMessage() == GUI_MSG_PLEX_PLAYQUEUE_UPDATED))
     LoadPlayQueue();
+
+  // make sure we refresh upon exit, as we might have edited PQ
+  if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
+      g_plexApplication.playQueueManager->refreshCurrent();
 
   return CGUIDialogSelect::OnMessage(message);
 }
@@ -31,6 +35,19 @@ bool CGUIDialogPlexPlayQueue::OnAction(const CAction &action)
     return true;
   }
 
+  if (action.GetID() == ACTION_DELETE_ITEM && GetFocusedControlID() == 3)
+  {
+    // remove current selected item from PQ
+    CFileItemPtr selectedItem = m_vecList->Get(m_viewControl.GetSelectedItem());
+    if (selectedItem)
+    {
+      // dont remove currently playing item
+      if (!selectedItem->IsSelected())
+       g_plexApplication.playQueueManager->removeItem(selectedItem);
+    }
+    return true;
+  }
+
   return CGUIDialogSelect::OnAction(action);
 }
 
@@ -40,11 +57,16 @@ void CGUIDialogPlexPlayQueue::LoadPlayQueue()
   XFILE::CPlexDirectory dir;
   CFileItemList list;
   int currentItemId = -1;
+  int currentItemIndex = m_viewControl.GetSelectedItem();
   if (PlexUtils::IsPlayingPlaylist())
   {
     if (g_application.CurrentFileItemPtr() && g_application.CurrentFileItemPtr()->HasMusicInfoTag())
       currentItemId = g_application.CurrentFileItemPtr()->GetMusicInfoTag()->GetDatabaseId();
   }
+
+  // clear items & view control in case we're updating
+  m_vecList->Clear();
+  m_viewControl.Clear();
 
   if (dir.GetDirectory("plexserver://playqueue/", list))
   {
@@ -66,7 +88,15 @@ void CGUIDialogPlexPlayQueue::LoadPlayQueue()
         Add(item.get());
       }
     }
-    m_viewControl.SetSelectedItem(playingItemIdx);
+
+    // sets again viewControl items in case we're updating
+    m_viewControl.SetItems(*m_vecList);
+
+    // if we dont have any current selection, default to playing item
+    if (currentItemIndex == -1)
+      currentItemIndex = playingItemIdx;
+
+    m_viewControl.SetSelectedItem(currentItemIndex);
   }
 }
 

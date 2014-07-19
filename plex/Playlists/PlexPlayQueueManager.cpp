@@ -234,7 +234,11 @@ bool CPlexPlayQueueManager::reconcilePlayQueueChanges(int playlistType, const CF
       listItemId = playlist[playlistCursor]->GetMusicInfoTag()->GetDatabaseId();
 
     if (listCursor >= list.Size())
+    {
+      if (list.Size() != playlist.size())
+        hasChanged = true;
       break;
+    }
 
     int serverItemId = list.Get(listCursor)->GetMusicInfoTag()->GetDatabaseId();
 
