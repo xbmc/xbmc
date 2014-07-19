@@ -60,10 +60,6 @@
 #include "guilib/Key.h"
 #include "dialogs/GUIDialogPVRChannelManager.h"
 
-#ifdef HAS_VIDEO_PLAYBACK
-#include "cores/VideoRenderers/RenderManager.h"
-#endif
-
 using namespace std;
 using namespace MUSIC_INFO;
 using namespace PVR;
@@ -1334,9 +1330,6 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
     // save previous and load new channel's settings
     g_application.SaveFileState();
     g_application.LoadVideoSettings(channel.Path());
-    
-    // reload the render manager so view mode gets changed
-    g_renderManager.PreInit();
     
     CSingleLock lock(m_critSection);
     m_currentFile = new CFileItem(channel);
