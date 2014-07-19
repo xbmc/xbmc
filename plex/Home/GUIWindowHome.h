@@ -116,5 +116,9 @@ private:
   CEvent                     m_loadNavigationEvent;
   bool                       m_cacheLoadFail;
   CPlexNavigationHelper      m_navHelper;
+
+  // focus saving members
+  int                        m_lastFocusedControlID;
+  int                        m_lastFocusedControlItem;
 };
 
