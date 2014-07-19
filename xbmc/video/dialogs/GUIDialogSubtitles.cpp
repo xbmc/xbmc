@@ -405,7 +405,7 @@ void CGUIDialogSubtitles::Download(const CFileItem &subtitle)
 
   // subtitle URL should be of the form plugin://<addonid>/?param=foo&param=bar
   // we just append (if not already present) the action=download parameter.
-  CURL url(subtitle.GetAsUrl());
+  CURL url(subtitle.GetURL());
   if (url.GetOption("action").empty())
     url.SetOption("action", "download");
 

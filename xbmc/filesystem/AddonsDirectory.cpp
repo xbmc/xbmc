@@ -330,10 +330,10 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, CFileIte
     PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addons[i]);
     if (plugin->ProvidesSeveral())
     {
-      CURL url = item->GetAsUrl();
+      CURL url = item->GetURL();
       std::string opt = StringUtils::Format("?content_type=%s",content.c_str());
       url.SetOptions(opt);
-      item->SetPath(url.Get());
+      item->SetURL(url);
     }
     items.Add(item);
   }

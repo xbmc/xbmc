@@ -178,7 +178,7 @@ CBaseTexture *CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned
 {
 #if defined(TARGET_ANDROID)
   CURL url(texturePath);
-  if (url.GetProtocol() == "androidapp")
+  if (url.IsProtocol("androidapp"))
   {
     XFILE::CFileAndroidApp file;
     if (file.Open(url))

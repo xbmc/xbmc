@@ -67,7 +67,7 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId == 0)
     return GetViewState(g_windowManager.GetActiveWindow(),items);
 
-  const CURL url=items.GetAsUrl();
+  const CURL url=items.GetURL();
 
   if (items.IsAddonsPath())
     return new CGUIViewStateAddonBrowser(items);
@@ -75,13 +75,13 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (items.HasSortDetails())
     return new CGUIViewStateFromItems(items);
 
-  if (url.GetProtocol()=="musicdb")
+  if (url.IsProtocol("musicdb"))
     return new CGUIViewStateMusicDatabase(items);
 
-  if (url.GetProtocol()=="musicsearch")
+  if (url.IsProtocol("musicsearch"))
     return new CGUIViewStateMusicSearch(items);
 
-  if (items.IsSmartPlayList() || url.GetProtocol() == "upnp" ||
+  if (items.IsSmartPlayList() || url.IsProtocol("upnp") ||
       items.IsLibraryFolder())
   {
     if (items.GetContent() == "songs" ||
@@ -98,7 +98,7 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
       return new CGUIViewStateVideoMovies(items);
   }
 
-  if (url.GetProtocol() == "library")
+  if (url.IsProtocol("library"))
     return new CGUIViewStateLibrary(items);
 
   if (items.IsPlayList())
@@ -107,7 +107,7 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (items.GetPath() == "special://musicplaylists/")
     return new CGUIViewStateWindowMusicSongs(items);
 
-  if (url.GetProtocol() == "androidapp")
+  if (url.IsProtocol("androidapp"))
     return new CGUIViewStateWindowPrograms(items);
 
   if (windowId==WINDOW_MUSIC_NAV)

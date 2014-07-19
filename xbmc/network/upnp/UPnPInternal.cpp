@@ -173,7 +173,7 @@ GetProtocolInfo(const CFileItem&              item,
 
     /* fixup the protocol just in case nothing was passed */
     if (proto.IsEmpty()) {
-        proto = item.GetAsUrl().GetProtocol().c_str();
+        proto = item.GetURL().GetProtocol().c_str();
     }
 
     /*
@@ -416,7 +416,7 @@ BuildObject(CFileItem&                    item,
 
         // if the item is remote, add a direct link to the item
         if (URIUtils::IsRemote((const char*)file_path)) {
-            resource.m_ProtocolInfo = PLT_ProtocolInfo(GetProtocolInfo(item, item.GetAsUrl().GetProtocol().c_str(), context));
+            resource.m_ProtocolInfo = PLT_ProtocolInfo(GetProtocolInfo(item, item.GetURL().GetProtocol().c_str(), context));
             resource.m_Uri = file_path;
 
             // if the direct link can be served directly using http, then push it in front

@@ -146,7 +146,7 @@ void CRssReader::Process()
     std::string fileCharset;
 
     // we wait for the network to come up
-    if ((url.GetProtocol() == "http" || url.GetProtocol() == "https") &&
+    if ((url.IsProtocol("http") || url.IsProtocol("https")) &&
         !g_application.getNetwork().IsAvailable(true))
     {
       CLog::Log(LOGWARNING, "RSS: No network connection");
@@ -165,7 +165,7 @@ void CRssReader::Process()
         }
         nRetries--;
 
-        if (url.GetProtocol() != "http" && url.GetProtocol() != "https")
+        if (!url.IsProtocol("http") && !url.IsProtocol("https"))
         {
           CFile file;
           auto_buffer buffer;

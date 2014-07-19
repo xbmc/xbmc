@@ -366,14 +366,13 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
     for (vector<string>::const_iterator path = vecPaths.begin(); path != vecPaths.end(); ++path)
     {
       CURL url(*path);
-      string protocol = url.GetProtocol();
       bool bIsInvalid = false;
 
       // for my programs
       if (StringUtils::EqualsNoCase(category, "programs") || StringUtils::EqualsNoCase(category, "myprograms"))
       {
         // only allow HD and plugins
-        if (url.IsLocal() || StringUtils::EqualsNoCase(protocol, "plugin"))
+        if (url.IsLocal() || url.IsProtocol("plugin"))
           verifiedPaths.push_back(*path);
         else
           bIsInvalid = true;

@@ -149,11 +149,11 @@ CStdString CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false */
 
 #ifdef HAS_UPNP
   // UPNP
-  if (url.GetProtocol() == "upnp")
+  if (url.IsProtocol("upnp"))
     strFilename = CUPnPDirectory::GetFriendlyName(url);
 #endif
 
-  if (url.GetProtocol() == "rss")
+  if (url.IsProtocol("rss"))
   {
     CRSSDirectory dir;
     CFileItemList items;
@@ -162,7 +162,7 @@ CStdString CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false */
   }
 
   // Shoutcast
-  else if (url.GetProtocol() == "shout")
+  else if (url.IsProtocol("shout"))
   {
     const CStdString strFileNameAndPath = url.Get();
     const int genre = strFileNameAndPath.find_first_of('=');
@@ -173,7 +173,7 @@ CStdString CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false */
   }
 
   // Windows SMB Network (SMB)
-  else if (url.GetProtocol() == "smb" && strFilename.empty())
+  else if (url.IsProtocol("smb") && strFilename.empty())
   {
     if (url.GetHostName().empty())
     {
@@ -185,47 +185,47 @@ CStdString CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false */
     }
   }
   // iTunes music share (DAAP)
-  else if (url.GetProtocol() == "daap" && strFilename.empty())
+  else if (url.IsProtocol("daap") && strFilename.empty())
     strFilename = g_localizeStrings.Get(20174);
 
   // HDHomerun Devices
-  else if (url.GetProtocol() == "hdhomerun" && strFilename.empty())
+  else if (url.IsProtocol("hdhomerun") && strFilename.empty())
     strFilename = "HDHomerun Devices";
 
   // Slingbox Devices
-  else if (url.GetProtocol() == "sling")
+  else if (url.IsProtocol("sling"))
     strFilename = "Slingbox";
 
   // ReplayTV Devices
-  else if (url.GetProtocol() == "rtv")
+  else if (url.IsProtocol("rtv"))
     strFilename = "ReplayTV Devices";
 
   // HTS Tvheadend client
-  else if (url.GetProtocol() == "htsp")
+  else if (url.IsProtocol("htsp"))
     strFilename = g_localizeStrings.Get(20256);
 
   // VDR Streamdev client
-  else if (url.GetProtocol() == "vtp")
+  else if (url.IsProtocol("vtp"))
     strFilename = g_localizeStrings.Get(20257);
   
   // MythTV client
-  else if (url.GetProtocol() == "myth")
+  else if (url.IsProtocol("myth"))
     strFilename = g_localizeStrings.Get(20258);
 
   // SAP Streams
-  else if (url.GetProtocol() == "sap" && strFilename.empty())
+  else if (url.IsProtocol("sap") && strFilename.empty())
     strFilename = "SAP Streams";
 
   // Root file views
-  else if (url.GetProtocol() == "sources")
+  else if (url.IsProtocol("sources"))
     strFilename = g_localizeStrings.Get(744);
 
   // Music Playlists
-  else if (StringUtils::StartsWithNoCase(path, "special://musicplaylists"))
+  else if (URIUtils::PathStarts(path, "special://musicplaylists"))
     strFilename = g_localizeStrings.Get(136);
 
   // Video Playlists
-  else if (StringUtils::StartsWithNoCase(path, "special://videoplaylists"))
+  else if (URIUtils::PathStarts(path, "special://videoplaylists"))
     strFilename = g_localizeStrings.Get(136);
 
   else if (URIUtils::HasParentInHostname(url) && strFilename.empty())
@@ -1167,16 +1167,16 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
     return 1;
 
   // stack://
-  if (checkURL.GetProtocol() == "stack")
+  if (checkURL.IsProtocol("stack"))
     strPath.erase(0, 8); // remove the stack protocol
 
-  if (checkURL.GetProtocol() == "shout")
+  if (checkURL.IsProtocol("shout"))
     strPath = checkURL.GetHostName();
-  if (checkURL.GetProtocol() == "tuxbox")
+  if (checkURL.IsProtocol("tuxbox"))
     return 1;
-  if (checkURL.GetProtocol() == "plugin")
+  if (checkURL.IsProtocol("plugin"))
     return 1;
-  if (checkURL.GetProtocol() == "multipath")
+  if (checkURL.IsProtocol("multipath"))
     strPath = CMultiPathDirectory::GetFirstPath(strPath);
 
   bIsSourceName = false;

@@ -1701,7 +1701,7 @@ bool CMusicDatabase::GetSongByFileName(const CStdString& strFileNameAndPath, CSo
   song.Clear();
   CURL url(strFileNameAndPath);
 
-  if (url.GetProtocol()=="musicdb")
+  if (url.IsProtocol("musicdb"))
   {
     CStdString strFile = URIUtils::GetFileName(strFileNameAndPath);
     URIUtils::RemoveExtension(strFile);
@@ -4458,7 +4458,7 @@ int CMusicDatabase::GetSongIDFromPath(const CStdString &filePath)
 {
   // grab the where string to identify the song id
   CURL url(filePath);
-  if (url.GetProtocol()=="musicdb")
+  if (url.IsProtocol("musicdb"))
   {
     CStdString strFile=URIUtils::GetFileName(filePath);
     URIUtils::RemoveExtension(strFile);

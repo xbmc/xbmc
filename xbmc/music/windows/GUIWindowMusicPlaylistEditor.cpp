@@ -371,7 +371,7 @@ void CGUIWindowMusicPlaylistEditor::OnLoadPlaylist()
 void CGUIWindowMusicPlaylistEditor::LoadPlaylist(const std::string &playlist)
 {
   const CURL pathToUrl(playlist);
-  if (pathToUrl.GetProtocol() == "newplaylist")
+  if (pathToUrl.IsProtocol("newplaylist"))
   {
     ClearPlaylist();
     m_strLoadedPlaylist.clear();

@@ -526,7 +526,7 @@ vector<string> CGUIDialogMediaSource::GetPaths() const
       // and add the user/pass to the password manager - note, we haven't confirmed that it works
       // at this point, but if it doesn't, the user will get prompted anyway in SMBDirectory.
       CURL url(m_paths->Get(i)->GetPath());
-      if (url.GetProtocol() == "smb")
+      if (url.IsProtocol("smb"))
       {
         CPasswordManager::GetInstance().SaveAuthenticatedURL(url);
         url.SetPassword("");

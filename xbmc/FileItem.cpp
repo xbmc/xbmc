@@ -1279,11 +1279,6 @@ void CFileItem::SetFileSizeLabel()
     SetLabel2(StringUtils::SizeToString(m_dwSize));
 }
 
-CURL CFileItem::GetAsUrl() const
-{
-  return CURL(m_strPath);
-}
-
 bool CFileItem::CanQueue() const
 {
   return m_bCanQueue;
@@ -1316,13 +1311,13 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
       if (!lookup)
         return;
 
-      CCurlFile::GetMimeType(GetAsUrl(), m_mimetype);
+      CCurlFile::GetMimeType(GetURL(), m_mimetype);
 
       // try to get mime-type again but with an NSPlayer User-Agent
       // in order for server to provide correct mime-type.  Allows us
       // to properly detect an MMS stream
       if (StringUtils::StartsWithNoCase(m_mimetype, "video/x-ms-"))
-        CCurlFile::GetMimeType(GetAsUrl(), m_mimetype, "NSPlayer/11.00.6001.7000");
+        CCurlFile::GetMimeType(GetURL(), m_mimetype, "NSPlayer/11.00.6001.7000");
 
       // make sure there are no options set in mime-type
       // mime-type can look like "video/x-ms-asf ; charset=utf8"
