@@ -39,6 +39,9 @@ namespace PVR
     void UnregisterObservers(void);
     bool OnAction(const CAction &action);
 
+  protected:
+    std::string GetDirectoryPath(void);
+
   private:
     bool OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonGroupManager(CFileItem *item, CONTEXT_BUTTON button);

@@ -103,6 +103,8 @@ void CGUIWindowPVRBase::OnInitWindow(void)
     return;
   }
 
+  m_vecItems->SetPath(GetDirectoryPath());
+
   CGUIMediaWindow::OnInitWindow();
 }
 
@@ -187,7 +189,7 @@ void CGUIWindowPVRBase::SetGroup(CPVRChannelGroupPtr group)
     // we need to register the window to receive changes from the new group
     m_group->RegisterObserver(this);
     g_PVRManager.SetPlayingGroup(m_group);
-    Refresh();
+    Update(GetDirectoryPath());
   }
 }
 

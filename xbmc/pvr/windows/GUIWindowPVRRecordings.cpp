@@ -62,6 +62,13 @@ void CGUIWindowPVRRecordings::ResetObservers(void)
   g_infoManager.RegisterObserver(this);
 }
 
+std::string CGUIWindowPVRRecordings::GetDirectoryPath(void)
+{
+  if (StringUtils::StartsWith(m_vecItems->GetPath(), "pvr://recordings/"))
+    return m_vecItems->GetPath();
+  return "pvr://recordings/";
+}
+
 CStdString CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
 {
   CStdString resumeString;
@@ -163,14 +170,9 @@ bool CGUIWindowPVRRecordings::OnContextButton(int itemNumber, CONTEXT_BUTTON but
 
 bool CGUIWindowPVRRecordings::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
 {
-  if (!StringUtils::StartsWith(strDirectory, "pvr://recordings/"))
-    m_vecItems->SetPath("pvr://recordings/");
-  else
-    m_vecItems->SetPath(strDirectory);
-  
   m_thumbLoader.StopThread();
 
-  bool bReturn = CGUIWindowPVRBase::Update(m_vecItems->GetPath());
+  bool bReturn = CGUIWindowPVRBase::Update(strDirectory);
 
   AfterUpdate(*m_unfilteredItems);
 

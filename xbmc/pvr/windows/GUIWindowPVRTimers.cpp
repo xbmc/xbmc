@@ -53,6 +53,11 @@ void CGUIWindowPVRTimers::ResetObservers(void)
   g_PVRTimers->RegisterObserver(this);
 }
 
+std::string CGUIWindowPVRTimers::GetDirectoryPath(void)
+{
+  return StringUtils::Format("pvr://timers/%s/", m_bRadio ? "radio" : "tv");
+}
+
 void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
@@ -94,7 +99,7 @@ bool CGUIWindowPVRTimers::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 bool CGUIWindowPVRTimers::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
 {
-  return CGUIWindowPVRBase::Update(StringUtils::Format("pvr://timers/%s/", m_bRadio ? "radio" : "tv"));
+  return CGUIWindowPVRBase::Update(strDirectory);
 }
 
 bool CGUIWindowPVRTimers::OnMessage(CGUIMessage &message)

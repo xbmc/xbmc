@@ -43,6 +43,7 @@ namespace PVR
     void ResetObservers(void);
 
   protected:
+    std::string GetDirectoryPath(void);
     virtual void AfterUpdate(CFileItemList& items);
 
   private:

@@ -108,6 +108,13 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
   }
 }
 
+std::string CGUIWindowPVRChannels::GetDirectoryPath(void)
+{
+  return StringUtils::Format("pvr://channels/%s/%s/",
+      m_bRadio ? "radio" : "tv",
+      m_bShowHiddenChannels ? ".hidden" : GetGroup()->GroupName().c_str());
+}
+
 bool CGUIWindowPVRChannels::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   if (itemNumber < 0 || itemNumber >= (int) m_vecItems->Size())
@@ -132,11 +139,7 @@ bool CGUIWindowPVRChannels::OnContextButton(int itemNumber, CONTEXT_BUTTON butto
 bool CGUIWindowPVRChannels::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
 {
   CSingleLock lock(m_critSection);
-
-  string strPath = StringUtils::Format("pvr://channels/%s/%s/",
-                                       m_bRadio ? "radio" : "tv",
-                                       m_bShowHiddenChannels ? ".hidden" : GetGroup()->GroupName().c_str());
-  bool bReturn = CGUIWindowPVRBase::Update(strPath);
+  bool bReturn = CGUIWindowPVRBase::Update(strDirectory);
 
   /* empty list for hidden channels */
   if (m_vecItems->Size() == 0 && m_bShowHiddenChannels)
@@ -144,7 +147,7 @@ bool CGUIWindowPVRChannels::Update(const std::string &strDirectory, bool updateF
       /* show the visible channels instead */
       m_bShowHiddenChannels = false;
       lock.Leave();
-      Refresh(true);
+      Update(GetDirectoryPath());
   }
 
   return bReturn;
@@ -450,7 +453,7 @@ bool CGUIWindowPVRChannels::OnContextButtonShowHidden(CFileItem *item, CONTEXT_B
   if (button == CONTEXT_BUTTON_SHOW_HIDDEN)
   {
     m_bShowHiddenChannels = !m_bShowHiddenChannels;
-    Refresh(true);
+    Update(GetDirectoryPath());
     bReturn = true;
   }
 
