@@ -26,7 +26,7 @@
 #include <map>
 #include <string>
 #include <vector>
-#include "system.h" // for HAS_EVENT_SERVER, HAS_SDL_JOYSTICK, HAS_LIRC
+#include "system.h" // for HAS_EVENT_SERVER, HAS_SDL_JOYSTICK
 
 #ifdef HAS_EVENT_SERVER
 #include "network/EventClient.h"
@@ -89,9 +89,7 @@ public:
 
   static bool TranslateActionString(const char *szAction, int &action);
 
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   int TranslateLircRemoteString(const char* szDevice, const char *szButton);
-#endif
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
   bool TranslateJoystickString(int window, const char* szDevice, int id,
                                short inputType, int& action, std::string& strAction,
@@ -131,7 +129,6 @@ private:
   void MapAction(uint32_t buttonCode, const char *szAction, buttonMap &map);
 
   bool LoadKeymap(const std::string &keymapPath);
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   bool LoadLircMap(const std::string &lircmapPath);
   void ClearLircButtonMapEntries();
 
@@ -139,7 +136,6 @@ private:
 
   typedef std::map<std::string, std::string> lircButtonMap;
   std::map<std::string, lircButtonMap*> lircRemotesMap;
-#endif
 
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
   void MapJoystickActions(int windowID, TiXmlNode *pJoystick);

@@ -70,11 +70,11 @@ std::string CDAVCommon::GetStatusTag(const TiXmlElement *pElement)
 {
   const TiXmlElement *pChild;
 
-  for (pChild = pElement->FirstChild()->ToElement(); pChild != 0; pChild = pChild->NextSibling()->ToElement())
+  for (pChild = pElement->FirstChildElement(); pChild != 0; pChild = pChild->NextSiblingElement())
   {
     if (ValueWithoutNamespace(pChild, "status"))
     {
-      return pChild->GetText();
+      return pChild->NoChildren() ? "" : pChild->FirstChild()->ValueStr();
     }
   }
 

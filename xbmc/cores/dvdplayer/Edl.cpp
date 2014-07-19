@@ -562,11 +562,11 @@ bool CEdl::ReadBeyondTV(const std::string& strMovie)
        * Don't use atoll even though it is more correct as it isn't natively supported by
        * Visual Studio.
        *
-       * GetText() returns 0 if there were any problems and will subsequently be rejected in AddCut().
+       * atof() returns 0 if there were any problems and will subsequently be rejected in AddCut().
        */
       Cut cut;
-      cut.start = (int64_t)(atof(pStart->GetText()) / 10000);
-      cut.end = (int64_t)(atof(pEnd->GetText()) / 10000);
+      cut.start = (int64_t)(atof(pStart->FirstChild()->Value()) / 10000);
+      cut.end = (int64_t)(atof(pEnd->FirstChild()->Value()) / 10000);
       cut.action = COMM_BREAK;
       bValid = AddCut(cut);
     }
