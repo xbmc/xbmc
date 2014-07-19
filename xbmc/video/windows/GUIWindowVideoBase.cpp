@@ -400,13 +400,8 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
       }
       else
       {
-        int idEpisode=-1;
-        if ((idEpisode = m_database.GetEpisodeId(item->GetPath(),dbId)) > -1)
-        {
-          bHasInfo = true;
-          m_database.GetEpisodeInfo(item->GetPath(), movieDetails, idEpisode);
-        }
-        else
+        bHasInfo = m_database.GetEpisodeInfo(item->GetPath(), movieDetails, dbId);
+        if (!bHasInfo)
         {
           // !! WORKAROUND !!
           // As we cannot add an episode to a non-existing tvshow entry, we have to check the parent directory
