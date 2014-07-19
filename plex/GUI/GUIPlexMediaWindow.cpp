@@ -780,11 +780,22 @@ void CGUIPlexMediaWindow::GetContextButtons(int itemNumber, CContextButtons &but
   if (g_application.IsPlaying())
     buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
 
-  buttons.Add(CONTEXT_BUTTON_PLAY_ONLY_THIS, 52602);
+  buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208);
+
+  CFileItemList pqlist;
+  g_plexApplication.playQueueManager->getCurrentPlayQueue(pqlist);
+
+  if (pqlist.Size())
+    buttons.Add(CONTEXT_BUTTON_PLAY_ONLY_THIS, 52602);
+  else
+    buttons.Add(CONTEXT_BUTTON_PLAY_ONLY_THIS, 52607);
 
   ePlexMediaType itemType = PlexUtils::GetMediaTypeFromItem(*m_vecItems);
   if (g_plexApplication.playQueueManager->getCurrentPlayQueueType() == itemType)
     buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 52603);
+
+  if (m_vecItems->Size())
+    buttons.Add(CONTEXT_BUTTON_SHUFFLE, 52600);
 
   if (IsVideoContainer() && item->IsPlexMediaServerLibrary())
   {
@@ -838,6 +849,12 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     case CONTEXT_BUTTON_PLAY_AND_QUEUE:
     {
       PlayAll(false, item);
+      break;
+    }
+
+    case CONTEXT_BUTTON_PLAY_ITEM:
+    {
+      OnAction(ACTION_PLAYER_PLAY);
       break;
     }
 

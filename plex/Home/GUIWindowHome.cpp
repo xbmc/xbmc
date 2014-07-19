@@ -255,8 +255,13 @@ void CGUIWindowHome::GetItemContextMenu(CContextButtons& buttons, const CFileIte
       buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);
   }
 
+  CFileItemList pqlist;
+  g_plexApplication.playQueueManager->getCurrentPlayQueue(pqlist);
 
-  buttons.Add(CONTEXT_BUTTON_PLAY_ONLY_THIS, 52602);
+  if (pqlist.Size())
+    buttons.Add(CONTEXT_BUTTON_PLAY_ONLY_THIS, 52602);
+  else
+    buttons.Add(CONTEXT_BUTTON_PLAY_ONLY_THIS, 52607);
 
   ePlexMediaType itemType = PlexUtils::GetMediaTypeFromItem(item);
   if (g_plexApplication.playQueueManager->getCurrentPlayQueueType() == itemType)

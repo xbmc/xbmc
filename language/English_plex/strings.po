@@ -1040,3 +1040,7 @@ msgstr "This will clear the contents of Up Next"
 msgctxt "#52606"
 msgid "and play the selection instead"
 msgstr "and play the selection instead"
+
+msgctxt "#52607"
+msgid "Queue"
+msgstr "Queue"
