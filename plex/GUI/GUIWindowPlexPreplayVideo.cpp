@@ -97,7 +97,14 @@ bool CGUIWindowPlexPreplayVideo::OnAction(const CAction &action)
 
   if (action.GetID() == ACTION_PLAYER_PLAY)
   {
-    g_plexApplication.playQueueManager->create(*g_plexApplication.m_preplayItem);
+    CPlexPlayQueueOptions options;
+
+    // add trailers option count to creation url if required
+    int trailerCount = g_guiSettings.GetInt("videoplayer.playtrailercount");
+    if ((trailerCount) && (g_plexApplication.m_preplayItem->GetProperty("viewOffset").asInteger() == 0))
+      options.urlOptions.AddOption("extrasPrefixCount", trailerCount);
+
+    g_plexApplication.playQueueManager->create(*g_plexApplication.m_preplayItem, "", options);
     return true;
   }
   else if (action.GetID() == ACTION_TOGGLE_WATCHED)

@@ -88,6 +88,9 @@ bool CPlexPlayQueueServer::create(const CFileItem& container, const CStdString& 
   if (u.Get().empty())
     return false;
 
+  // add any creation URL option
+  u.AddOptions(options.urlOptions);
+
   return sendRequest(u, "POST", options);
 }
 

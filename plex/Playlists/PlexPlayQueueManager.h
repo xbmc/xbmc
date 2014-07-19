@@ -30,6 +30,9 @@ public:
 
   // a resume offset of the FIRST item in the PQ
   int64_t resumeOffset;
+
+  // creation Url Options
+  CUrlOptions urlOptions;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
