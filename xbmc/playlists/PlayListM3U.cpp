@@ -39,6 +39,7 @@ using namespace XFILE;
 #define M3U_ALBUM_MARKER  "#EXTALB"
 #define M3U_STREAM_MARKER  "#EXT-X-STREAM-INF"
 #define M3U_BANDWIDTH_MARKER  "BANDWIDTH"
+#define M3U_OFFSET_MARKER  "#EXT-KX-OFFSET"
 
 // example m3u file:
 //   #EXTM3U
@@ -73,6 +74,8 @@ bool CPlayListM3U::Load(const std::string& strFileName)
   std::string strLine;
   std::string strInfo;
   long lDuration = 0;
+  int iStartOffset = 0;
+  int iEndOffset = 0;
 
   Clear();
 
@@ -109,6 +112,21 @@ bool CPlayListM3U::Load(const std::string& strFileName)
         g_charsetConverter.unknownToUTF8(strInfo);
       }
     }
+    else if (StringUtils::StartsWith(strLine, M3U_OFFSET_MARKER))
+    {
+      size_t iColon = strLine.find(":");
+      size_t iComma = strLine.find(",");
+      if (iColon != std::string::npos &&
+        iComma != std::string::npos &&
+        iComma > iColon)
+      {
+        // Read the start and end offset
+        iColon++;
+        iStartOffset = atoi(strLine.substr(iColon, iComma - iColon).c_str());
+        iComma++;
+        iEndOffset = atoi(strLine.substr(iComma).c_str());
+      }
+    }
     else if (strLine != M3U_START_MARKER &&
              !StringUtils::StartsWith(strLine, M3U_ARTIST_MARKER) &&
              !StringUtils::StartsWith(strLine, M3U_ALBUM_MARKER))
@@ -140,6 +158,18 @@ bool CPlayListM3U::Load(const std::string& strFileName)
         CUtil::GetQualifiedFilename(m_strBasePath, strFileName);
         CFileItemPtr newItem(new CFileItem(strInfo));
         newItem->SetPath(strFileName);
+        if (iStartOffset != 0 || iEndOffset != 0)
+        {
+          newItem->m_lStartOffset = iStartOffset;
+          newItem->m_lStartPartNumber = 1;
+          newItem->SetProperty("item_start", iStartOffset);
+          newItem->m_lEndOffset = iEndOffset;
+          // Prevent load message from file and override offset set here
+          newItem->GetMusicInfoTag()->SetLoaded();
+          newItem->GetMusicInfoTag()->SetTitle(strInfo);
+          if (iEndOffset)
+            lDuration = (iEndOffset - iStartOffset + 37) / 75;
+        }
         if (lDuration && newItem->IsAudio())
           newItem->GetMusicInfoTag()->SetDuration(lDuration);
         Add(newItem);
@@ -148,6 +178,8 @@ bool CPlayListM3U::Load(const std::string& strFileName)
         // and part don't
         strInfo = "";
         lDuration = 0;
+        iStartOffset = 0;
+        iEndOffset = 0;
       }
     }
   }
@@ -176,6 +208,11 @@ void CPlayListM3U::Save(const std::string& strFileName) const
     g_charsetConverter.utf8ToStringCharset(strDescription);
     strLine = StringUtils::Format( "%s:%i,%s\n", M3U_INFO_MARKER, item->GetMusicInfoTag()->GetDuration() / 1000, strDescription.c_str() );
     file.Write(strLine.c_str(),strLine.size());
+    if (item->m_lStartOffset != 0 || item->m_lEndOffset != 0)
+    {
+      strLine = StringUtils::Format("%s:%i,%i\n", M3U_OFFSET_MARKER, item->m_lStartOffset, item->m_lEndOffset);
+      file.Write(strLine.c_str(),strLine.size());
+    }
     std::string strFileName = ResolveURL(item);
     g_charsetConverter.utf8ToStringCharset(strFileName);
     strLine = StringUtils::Format("%s\n",strFileName.c_str());
