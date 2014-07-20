@@ -744,7 +744,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   vector<CAnimation> animations;
 
-  bool bScrollLabel = false;
+  CGUIControl::GUISCROLLVALUE scrollValue = CGUIControl::FOCUS;
   bool bPulse = true;
   unsigned int timePerImage = 0;
   unsigned int fadeTime = 0;
@@ -996,7 +996,11 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   XMLUtils::GetFloat(pControlNode, "itemgap", buttonGap);
   XMLUtils::GetInt(pControlNode, "movement", iMovementRange);
   GetAspectRatio(pControlNode, "aspectratio", aspect);
-  XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
+
+  bool alwaysScroll;
+  if (XMLUtils::GetBoolean(pControlNode, "scroll", alwaysScroll))
+    scrollValue = alwaysScroll ? CGUIControl::ALWAYS : CGUIControl::NEVER;
+
   XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
   XMLUtils::GetInt(pControlNode, "timeblocks", timeBlocks);
   XMLUtils::GetInt(pControlNode, "rulerunit", rulerUnit);
@@ -1127,7 +1131,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     const CGUIInfoLabel &content = (infoLabels.size()) ? infoLabels[0] : CGUIInfoLabel("");
     if (insideContainer)
     { // inside lists we use CGUIListLabel
-      control = new CGUIListLabel(parentID, id, posX, posY, width, height, labelInfo, content, bScrollLabel);
+      control = new CGUIListLabel(parentID, id, posX, posY, width, height, labelInfo, content, scrollValue);
     }
     else
     {
@@ -1135,7 +1139,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
         parentID, id, posX, posY, width, height,
         labelInfo, wrapMultiLine, bHasPath);
       ((CGUILabelControl *)control)->SetInfo(content);
-      ((CGUILabelControl *)control)->SetWidthControl(minWidth, bScrollLabel);
+      ((CGUILabelControl *)control)->SetWidthControl(minWidth, (scrollValue == CGUIControl::ALWAYS) ? true : false);
     }
   }
   else if (type == CGUIControl::GUICONTROL_EDIT)
