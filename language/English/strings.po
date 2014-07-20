@@ -8516,8 +8516,10 @@ msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr ""
 
+#. Label of the option to switch between a grouped recordings list and a non-grouped recordings list.
+#: skin.confluence
 msgctxt "#19270"
-msgid "* All recordings"
+msgid "Group Items"
 msgstr ""
 
 msgctxt "#19271"

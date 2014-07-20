@@ -39,17 +39,14 @@ namespace PVR
     bool                         m_bIsUpdating;
     PVR_RECORDINGMAP             m_recordings;
     unsigned int                 m_iLastId;
+    bool                         m_bGroupItems;
 
     virtual void UpdateFromClients(void);
     virtual std::string TrimSlashes(const std::string &strOrig) const;
     virtual const std::string GetDirectoryFromPath(const std::string &strPath, const std::string &strBase) const;
-    virtual bool IsDirectoryMember(const std::string &strDirectory, const std::string &strEntryDirectory, bool bDirectMember = true) const;
-    virtual void GetContents(const std::string &strDirectory, CFileItemList *results);
+    virtual bool IsDirectoryMember(const std::string &strDirectory, const std::string &strEntryDirectory) const;
     virtual void GetSubDirectories(const std::string &strBase, CFileItemList *results);
 
-    std::string AddAllRecordingsPathExtension(const std::string &strDirectory);
-    std::string RemoveAllRecordingsPathExtension(const std::string &strDirectory);
-    
     /**
      * @brief recursively deletes all recordings in the specified directory
      * @param item the directory
@@ -85,7 +82,6 @@ namespace PVR
     bool RenameRecording(CFileItem &item, std::string &strNewName);
     bool SetRecordingsPlayCount(const CFileItemPtr &item, int count);
 
-    bool IsAllRecordingsDirectory(const CFileItem &item) const;
     bool GetDirectory(const std::string& strPath, CFileItemList &items);
     CFileItemPtr GetByPath(const std::string &path);
     CPVRRecordingPtr GetById(int iClientId, const std::string &strRecordingId) const;
@@ -93,6 +89,7 @@ namespace PVR
     void GetAll(CFileItemList &items);
     CFileItemPtr GetById(unsigned int iId) const;
 
-    bool HasAllRecordingsPathExtension(const std::string &strDirectory) const;
+    void SetGroupItems(bool value) { m_bGroupItems = value; };
+    bool IsGroupItems() const { return m_bGroupItems; };
   };
 }

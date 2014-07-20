@@ -22,6 +22,7 @@
 
 #include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
@@ -59,6 +60,11 @@ void CGUIWindowPVRRecordings::ResetObservers(void)
   g_PVRRecordings->RegisterObserver(this);
   g_PVRTimers->RegisterObserver(this);
   g_infoManager.RegisterObserver(this);
+}
+
+void CGUIWindowPVRRecordings::OnWindowLoaded()
+{
+  CONTROL_SELECT(CONTROL_BTNGROUPITEMS);
 }
 
 std::string CGUIWindowPVRRecordings::GetDirectoryPath(void)
@@ -130,9 +136,7 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
     buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename this recording */
   }
   
-  // Add delete button for all items except the All recordings directory
-  if (!g_PVRRecordings->IsAllRecordingsDirectory(*pItem.get()))
-    buttons.Add(CONTEXT_BUTTON_DELETE, 117);
+  buttons.Add(CONTEXT_BUTTON_DELETE, 117);
 
   if (pItem->HasPVRRecordingInfoTag() &&
       g_PVRClients->HasMenuHooks(pItem->GetPVRRecordingInfoTag()->m_iClientId, PVR_MENUHOOK_RECORDING))
@@ -171,11 +175,7 @@ bool CGUIWindowPVRRecordings::Update(const std::string &strDirectory, bool updat
 {
   m_thumbLoader.StopThread();
 
-  bool bReturn = CGUIWindowPVRBase::Update(strDirectory);
-
-  AfterUpdate(*m_unfilteredItems);
-
-  return bReturn;
+  return CGUIWindowPVRBase::Update(strDirectory);
 }
 
 bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
@@ -227,6 +227,12 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
               break;
           }
         }
+      }
+      else if (message.GetSenderId() == CONTROL_BTNGROUPITEMS)
+      {
+        CGUIRadioButtonControl *radioButton = (CGUIRadioButtonControl*) GetControl(CONTROL_BTNGROUPITEMS);
+        g_PVRRecordings->SetGroupItems(radioButton->IsSelected());
+        Refresh(true);
       }
       break;
     case GUI_MSG_REFRESH_LIST:
@@ -334,49 +340,26 @@ bool CGUIWindowPVRRecordings::OnContextButtonMarkWatched(const CFileItemPtr &ite
   return bReturn;
 }
 
-void CGUIWindowPVRRecordings::AfterUpdate(CFileItemList& items)
+void CGUIWindowPVRRecordings::OnPrepareFileItems(CFileItemList& items)
 {
-  if (!items.IsEmpty())
+  if (items.IsEmpty())
+    return;
+
+  CFileItemList files;
+  VECFILEITEMS vecItems = items.GetList();
+  for (VECFILEITEMS::const_iterator it = vecItems.begin(); it != vecItems.end(); ++it)
   {
-    CFileItemList files;
-    for (int i = 0; i < items.Size(); i++)
+    if (!(*it)->m_bIsFolder)
+      files.Add((*it));
+  }
+
+  if (!files.IsEmpty())
+  {
+    if (m_database.Open())
     {
-      CFileItemPtr pItem = items[i];
-      if (!pItem->m_bIsFolder)
-        files.Add(pItem);
+      CGUIWindowVideoNav::LoadVideoInfo(files, m_database, false);
+      m_database.Close();
     }
-
-    if (!files.IsEmpty())
-    {
-      files.SetPath(items.GetPath());
-      if (m_database.Open())
-      {
-        if (g_PVRRecordings->HasAllRecordingsPathExtension(files.GetPath()))
-        {
-          // Build a map of all files belonging to common subdirectories and call
-          // LoadVideoInfo for each item list
-          typedef boost::shared_ptr<CFileItemList> CFileItemListPtr;
-          typedef std::map<std::string, CFileItemListPtr> DirectoryMap;
-
-          DirectoryMap directory_map;
-          for (int i = 0; i < files.Size(); i++)
-          {
-            std::string strDirectory = URIUtils::GetDirectory(files[i]->GetPath());
-            DirectoryMap::iterator it = directory_map.find(strDirectory);
-            if (it == directory_map.end())
-              it = directory_map.insert(std::make_pair(
-                  strDirectory, CFileItemListPtr(new CFileItemList(strDirectory)))).first;
-            it->second->Add(files[i]);
-          }
-
-          for (DirectoryMap::iterator it = directory_map.begin(); it != directory_map.end(); it++)
-            CGUIWindowVideoNav::LoadVideoInfo(*it->second, m_database, false);
-        }
-        else
-          CGUIWindowVideoNav::LoadVideoInfo(files, m_database, false);
-        m_database.Close();
-      }
-      m_thumbLoader.Load(files);
-    }
+    m_thumbLoader.Load(files);
   }
 }
