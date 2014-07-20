@@ -476,6 +476,9 @@ bool CSettings::InitializeDefinitions()
 #endif
 #endif
 
+  if (CFile::Exists(SETTINGS_XML_FOLDER "server.xml") && g_application.IsHeadless() && !Initialize(SETTINGS_XML_FOLDER "server.xml"))
+    CLog::Log(LOGFATAL, "Unable to load server-specific settings definitions");
+
   // load any custom visibility and default values before loading the special
   // appliance.xml so that appliances are able to overwrite even those values
   InitializeVisibility();
