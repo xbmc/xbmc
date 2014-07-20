@@ -150,9 +150,6 @@ void aml_permissions()
     system("su -c chmod 666 /sys/class/tsync/pts_pcrscr");
     system("su -c chmod 666 /sys/class/audiodsp/digital_raw");
     system("su -c chmod 666 /sys/class/ppmgr/ppmgr_3d_mode");
-    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq");
-    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq");
-    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
     CLog::Log(LOGINFO, "aml_permissions: permissions changed");
   }
 }
@@ -207,6 +204,9 @@ void aml_cpufreq_max(bool limit)
     if (limit)
       cpufreq = 800000;
 
+    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq");
+    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq");
+    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
     aml_set_sysfs_int("/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq", cpufreq);
     aml_set_sysfs_str("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor", "ondemand");
   }
