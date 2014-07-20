@@ -68,6 +68,11 @@ public:
   UInt32        GetNumLatencyFrames();
   UInt32        GetBufferSize();
   bool          SetBufferSize(UInt32 size);
+  
+  static void   RegisterDeviceChangedCB(bool bRegister, AudioObjectPropertyListenerProc callback,  void *ref);
+  static void   RegisterDefaultOutputDeviceChangedCB(bool bRegister, AudioObjectPropertyListenerProc callback, void *ref);
+  // suppresses the default output device changed callback for given time in ms
+  static void   SuppressDefaultOutputDeviceCB(unsigned int suppressTimeMs){ m_callbackSuppressTimer.Set(suppressTimeMs); }
 
   bool          AddIOProc(AudioDeviceIOProc ioProc, void* pCallbackData);
   bool          RemoveIOProc();
@@ -84,6 +89,13 @@ protected:
   unsigned int      m_frameSize;
   unsigned int      m_OutputBufferIndex;
   unsigned int      m_BufferSizeRestore;
+  
+  static XbmcThreads::EndTime m_callbackSuppressTimer;
+  static AudioObjectPropertyListenerProc m_defaultOutputDeviceChangedCB;
+  static OSStatus defaultOutputDeviceChanged(AudioObjectID                       inObjectID,
+                                             UInt32                              inNumberAddresses,
+                                             const AudioObjectPropertyAddress    inAddresses[],
+                                             void*                               inClientData);
 };
 
 #endif
