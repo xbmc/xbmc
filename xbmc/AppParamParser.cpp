@@ -139,6 +139,8 @@ void CAppParamParser::ParseArg(const std::string &arg)
     m_testmode = true;
   else if (arg.substr(0, 11) == "--settings=")
     g_advancedSettings.AddSettingsFile(arg.substr(11));
+  else if (arg == "--headless")
+    g_application.SetHeadless(true);
   else if (arg.length() != 0 && arg[0] != '-')
   {
     if (m_testmode)

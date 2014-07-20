@@ -53,7 +53,7 @@ extern "C" int XBMC_Run(bool renderGUI)
   g_RBP.LogFirmwareVerison();
 #endif
 
-  if (renderGUI && !g_application.CreateGUI())
+  if (renderGUI && !g_application.IsHeadless() && !g_application.CreateGUI())
   {
     fprintf(stderr, "ERROR: Unable to create GUI. Exiting\n");
     return status;
