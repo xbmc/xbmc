@@ -271,6 +271,9 @@ void CSettingConditions::Initialize()
   if (g_application.IsStandAlone())
     m_simpleConditions.insert("isstandalone");
 
+  if (g_application.IsHeadless())
+    m_simpleConditions.insert("is_headless");
+
   if(CAEFactory::SupportsQualitySetting())
     m_simpleConditions.insert("has_ae_quality_levels");
 
