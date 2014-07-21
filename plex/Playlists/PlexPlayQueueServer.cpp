@@ -185,8 +185,7 @@ void CPlexPlayQueueServer::OnJobComplete(unsigned int jobID, bool success, CJob*
 
     if (playlist == PLAYLIST_NONE)
     {
-      CGUIDialogOK::ShowAndGetInput("Error creating the Play Queue",
-                                    "The reponse from the server did not make sense.", "", "");
+      CLog::Log(LOGERROR, "CPlexPlayQueueServer::OnJobComplete : The response from the server did not make sense (PlayList Type is Unknown)");
       return;
     }
 
