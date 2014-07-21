@@ -764,7 +764,15 @@ bool CGUIPlexMediaWindow::OnPlayMedia(int iItem)
   else
   {
     std::string uri = GetFilteredURI(*item);
-    g_plexApplication.playQueueManager->create(*item, uri);
+
+    CPlexPlayQueueOptions options;
+
+    // add trailers option count to creation url if required
+    int trailerCount = g_guiSettings.GetInt("videoplayer.playtrailercount");
+    if ((trailerCount) && (item->GetProperty("viewOffset").asInteger() == 0))
+      options.urlOptions.AddOption("extrasPrefixCount", trailerCount);
+
+    g_plexApplication.playQueueManager->create(*item, uri, options);
   }
 
   return true;
