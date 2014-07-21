@@ -646,6 +646,9 @@ endif
 	@for f in project/cmake/*.cmake; do \
 	  install -m 0644 $$f $(DESTDIR)$(libdir)/xbmc; \
 	done
+	@for f in project/cmake/scripts/common/*.cmake; do \
+	  install -m 0644 $$f $(DESTDIR)$(libdir)/xbmc; \
+	done
 
 uninstall:
 	@echo "Removing XBMC..."

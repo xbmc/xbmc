@@ -77,7 +77,7 @@ function (xbmc_find_path var_name filename search_path strip_file)
 endfunction()
 
 # Cmake build options
-include(AddOptions)
+include(addoptions)
 include(TestCXXAcceptsFlag)
 OPTION(PACKAGE_ZIP "Package Zip file?" OFF)
 OPTION(PACKAGE_TGZ "Package TGZ file?" OFF)
