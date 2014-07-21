@@ -128,6 +128,29 @@ bool aml_wired_present()
   return has_wired == 1;
 }
 
+enum AML_DEVICE_TYPE aml_get_device_type()
+{
+  static enum AML_DEVICE_TYPE aml_device_type = AML_DEVICE_TYPE_UNINIT;
+  if (aml_device_type == AML_DEVICE_TYPE_UNINIT)
+  {
+    std::string cpu_hardware = g_cpuInfo.getCPUHardware();
+
+    if (cpu_hardware.find("MESON-M1") != std::string::npos)
+      aml_device_type = AML_DEVICE_TYPE_M1;
+    else if (cpu_hardware.find("MESON-M3") != std::string::npos
+          || cpu_hardware.find("MESON3")   != std::string::npos)
+      aml_device_type = AML_DEVICE_TYPE_M3;
+    else if (cpu_hardware.find("Meson6") != std::string::npos)
+      aml_device_type = AML_DEVICE_TYPE_M6;
+    else if (cpu_hardware.find("Meson8") != std::string::npos)
+      aml_device_type = AML_DEVICE_TYPE_M8;
+    else
+      aml_device_type = AML_DEVICE_TYPE_UNKNOWN;
+  }
+
+  return aml_device_type;
+}
+
 void aml_permissions()
 {
   if (!aml_present())
@@ -150,31 +173,16 @@ void aml_permissions()
     system("su -c chmod 666 /sys/class/tsync/pts_pcrscr");
     system("su -c chmod 666 /sys/class/audiodsp/digital_raw");
     system("su -c chmod 666 /sys/class/ppmgr/ppmgr_3d_mode");
+    
+    if (!aml_wired_present() && aml_get_device_type() == AML_DEVICE_TYPE_M6)
+  {
+    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq");
+    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq");
+    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
+  }
+  
     CLog::Log(LOGINFO, "aml_permissions: permissions changed");
   }
-}
-
-enum AML_DEVICE_TYPE aml_get_device_type()
-{
-  static enum AML_DEVICE_TYPE aml_device_type = AML_DEVICE_TYPE_UNINIT;
-  if (aml_device_type == AML_DEVICE_TYPE_UNINIT)
-  {
-    std::string cpu_hardware = g_cpuInfo.getCPUHardware();
-
-    if (cpu_hardware.find("MESON-M1") != std::string::npos)
-      aml_device_type = AML_DEVICE_TYPE_M1;
-    else if (cpu_hardware.find("MESON-M3") != std::string::npos
-          || cpu_hardware.find("MESON3")   != std::string::npos)
-      aml_device_type = AML_DEVICE_TYPE_M3;
-    else if (cpu_hardware.find("Meson6") != std::string::npos)
-      aml_device_type = AML_DEVICE_TYPE_M6;
-    else if (cpu_hardware.find("Meson8") != std::string::npos)
-      aml_device_type = AML_DEVICE_TYPE_M8;
-    else
-      aml_device_type = AML_DEVICE_TYPE_UNKNOWN;
-  }
-
-  return aml_device_type;
 }
 
 void aml_cpufreq_min(bool limit)
@@ -204,9 +212,7 @@ void aml_cpufreq_max(bool limit)
     if (limit)
       cpufreq = 800000;
 
-    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq");
-    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq");
-    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
+
     aml_set_sysfs_int("/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq", cpufreq);
     aml_set_sysfs_str("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor", "ondemand");
   }
