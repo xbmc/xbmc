@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,8 +20,15 @@
  *
  */
 
-#include <stdio.h>
 #include <string>
+
+#if defined(TARGET_POSIX)
+#include "posix/PosixInterfaceForCLog.h"
+typedef class CPosixInterfaceForCLog PlatformInterfaceForCLog;
+#elif defined(TARGET_WINDOWS)
+#include "win32/Win32InterfaceForCLog.h"
+typedef class CWin32InterfaceForCLog PlatformInterfaceForCLog;
+#endif
 
 #include "commons/ilog.h"
 #include "threads/CriticalSection.h"
@@ -66,9 +73,9 @@ private:
   class CLogGlobals
   {
   public:
-    CLogGlobals(void) : m_file(NULL), m_repeatCount(0), m_repeatLogLevel(-1), m_logLevel(LOG_LEVEL_DEBUG), m_extraLogLevels(0) {}
+    CLogGlobals(void) : m_repeatCount(0), m_repeatLogLevel(-1), m_logLevel(LOG_LEVEL_DEBUG), m_extraLogLevels(0) {}
     ~CLogGlobals() {}
-    FILE*       m_file;
+    PlatformInterfaceForCLog m_platfIF;
     int         m_repeatCount;
     int         m_repeatLogLevel;
     std::string m_repeatLine;
