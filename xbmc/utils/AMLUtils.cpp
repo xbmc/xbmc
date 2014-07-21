@@ -30,6 +30,8 @@
 #include "utils/StringUtils.h"
 #include "utils/AMLUtils.h"
 
+static inline bool aml_wired_present();
+
 int aml_set_sysfs_str(const char *path, const char *val)
 {
   int fd = open(path, O_CREAT | O_RDWR | O_TRUNC, 0644);
