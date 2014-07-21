@@ -150,9 +150,12 @@ void aml_permissions()
     system("su -c chmod 666 /sys/class/tsync/pts_pcrscr");
     system("su -c chmod 666 /sys/class/audiodsp/digital_raw");
     system("su -c chmod 666 /sys/class/ppmgr/ppmgr_3d_mode");
+  if (!aml_wired_present() && aml_get_device_type() == AML_DEVICE_TYPE_M6)
+  {
     system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq");
     system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq");
     system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
+  }
     CLog::Log(LOGINFO, "aml_permissions: permissions changed");
   }
 }
