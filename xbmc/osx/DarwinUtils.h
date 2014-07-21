@@ -48,6 +48,7 @@ extern "C"
   bool        DarwinHasVideoToolboxDecoder(void);
   int         DarwinBatteryLevel(void);
   void        DarwinSetScheduling(int message);
+  void        DarwinPrintDebugString(std::string debugString);
   bool        DarwinCFStringRefToString(CFStringRef source, std::string& destination);
   bool        DarwinCFStringRefToUTF8String(CFStringRef source, std::string& destination);
 #ifdef __cplusplus
