@@ -886,8 +886,12 @@ msgid "Use FFMPEG AVIO for Network transport"
 msgstr "Use FFMPEG AVIO for Network transport"
 
 msgctxt "#44407"
-msgid "Trailer count before playback"
-msgstr "Trailer count before playback"
+msgid "Number of cinema trailers before movies"
+msgstr "Number of cinema trailers before movies"
+
+msgctxt "#44408"
+msgid "Extras"
+msgstr "Extras"
 
 #### Extra / trailers related strings
 msgctxt "#44500"
