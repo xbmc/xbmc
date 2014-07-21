@@ -319,6 +319,9 @@
     <Filter Include="filesystem\win32">
       <UniqueIdentifier>{901e970d-b3b4-463a-93ab-9af30c6a1139}</UniqueIdentifier>
     </Filter>
+    <Filter Include="utils\win32">
+      <UniqueIdentifier>{3adbba6a-6fbf-4192-b215-108d94bde1e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -3061,6 +3064,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\win32\Win32SMBDirectory.cpp">
       <Filter>filesystem\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\win32\Win32InterfaceForCLog.cpp">
+      <Filter>utils\win32</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5985,6 +5991,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\params_check_macros.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\win32\Win32InterfaceForCLog.h">
+      <Filter>utils\win32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
