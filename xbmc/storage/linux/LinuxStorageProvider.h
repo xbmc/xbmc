@@ -19,7 +19,6 @@
  *
  */
 #include "storage/IStorageProvider.h"
-#include "HALProvider.h"
 #include "DeviceKitDisksProvider.h"
 #include "UDevProvider.h"
 #include "UDisksProvider.h"
@@ -37,10 +36,6 @@ public:
       m_instance = new CUDisksProvider();
     else if (CDeviceKitDisksProvider::HasDeviceKitDisks())
       m_instance = new CDeviceKitDisksProvider();
-#endif
-#ifdef HAS_HAL
-    if (m_instance == NULL)
-      m_instance = new CHALProvider();
 #endif
 #ifdef HAVE_LIBUDEV
     if (m_instance == NULL)

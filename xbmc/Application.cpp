@@ -308,10 +308,6 @@
 #include <cdio/logging.h>
 #endif
 
-#ifdef HAS_HAL
-#include "linux/HALManager.h"
-#endif
-
 #include "storage/MediaManager.h"
 #include "utils/JobManager.h"
 #include "utils/SaveFileStateJob.h"
