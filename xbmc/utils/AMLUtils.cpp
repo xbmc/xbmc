@@ -170,7 +170,12 @@ enum AML_DEVICE_TYPE aml_get_device_type()
           || cpu_hardware.find("MESON3")   != std::string::npos)
       aml_device_type = AML_DEVICE_TYPE_M3;
     else if (cpu_hardware.find("Meson6") != std::string::npos)
-      aml_device_type = AML_DEVICE_TYPE_M6;
+    {
+      if (aml_wired_present())
+        aml_device_type = AML_DEVICE_TYPE_M6;
+      else /* M6 device with no ethernet aka MXS. Common in hdmi sticks. */
+        aml_device_type = AML_DEVICE_TYPE_MXS;
+    }
     else if (cpu_hardware.find("Meson8") != std::string::npos)
       aml_device_type = AML_DEVICE_TYPE_M8;
     else
@@ -199,7 +204,7 @@ void aml_cpufreq_min(bool limit)
 
 void aml_cpufreq_max(bool limit)
 {
-  if (!aml_wired_present() && aml_get_device_type() == AML_DEVICE_TYPE_M6)
+  if (aml_get_device_type() == AML_DEVICE_TYPE_MXS)
   {
     // this is a MX Stick, they cannot substain 1GHz
     // operation without overheating so limit them to 800MHz.
