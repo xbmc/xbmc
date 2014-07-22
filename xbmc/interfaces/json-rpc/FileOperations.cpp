@@ -235,6 +235,40 @@ JSONRPC_STATUS CFileOperations::Download(const std::string &method, ITransportLa
   return transport->Download(parameterObject["path"].asString().c_str(), result) ? OK : InvalidParams;
 }
 
+JSONRPC_STATUS CFileOperations::AddSource(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  std::string media = parameterObject["media"].asString();
+  std::string initalName = parameterObject["name"].asString();
+  std::string directory = parameterObject["directory"].asString();
+  StringUtils::ToLower(media);
+
+  std::vector<std::string> paths;
+  paths.push_back(directory);
+
+  CMediaSource share;
+  unsigned int i, j=2;
+  bool bConfirmed=false;
+  VECSOURCES* pShares = CMediaSourceSettings::Get().GetSources(media);
+  std::string name = initalName;
+  while (!bConfirmed)
+  {
+    for (i = 0; i < pShares->size(); ++i)
+    {
+      if (StringUtils::EqualsNoCase((*pShares)[i].strName, name))
+        break;
+    }
+    if (i < pShares->size()) // found a match -  try next
+      name = StringUtils::Format("%s (%i)", initalName.c_str(), j++);
+    else
+      bConfirmed = true;
+  }
+
+  share.FromNameAndPaths(media, name, paths);
+  CMediaSourceSettings::Get().AddShare(media, share);
+
+  return OK;
+}
+
 bool CFileOperations::FillFileItem(const CFileItemPtr &originalItem, CFileItemPtr &item, std::string media /* = "" */, const CVariant &parameterObject /* = CVariant(CVariant::VariantTypeArray) */)
 {
   if (originalItem.get() == NULL)

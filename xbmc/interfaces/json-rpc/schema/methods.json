@@ -583,6 +583,18 @@
     ],
     "returns": { "type": "any", "required": true }
   },
+  "Files.AddSource": {
+    "type": "method",
+    "description": "Add a source for the media windows",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "media", "$ref": "Files.Media", "required": true },
+      { "name": "name", "type": "string", "required": true },
+      { "name": "directory", "type": "string", "required": true }
+    ],
+    "returns": { "type": "any", "required": true }
+  },
   "Files.GetDirectory": {
     "type": "method",
     "description": "Get the directories and files in the given directory",
