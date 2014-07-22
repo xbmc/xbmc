@@ -391,9 +391,12 @@ int CBuiltins::Execute(const std::string& execString)
     int iWindow = CButtonTranslator::TranslateWindow(strWindow);
     if (iWindow != WINDOW_INVALID)
     {
-      // disable the screensaver
-      g_application.WakeUpScreenSaverAndDPMS();
-      g_windowManager.ActivateWindow(iWindow, params, execute != "activatewindow");
+      if (iWindow != g_windowManager.GetActiveWindow())
+      {
+        // disable the screensaver
+        g_application.WakeUpScreenSaverAndDPMS();
+        g_windowManager.ActivateWindow(iWindow, params, execute != "activatewindow");
+      }
     }
     else
     {
@@ -416,19 +419,22 @@ int CBuiltins::Execute(const std::string& execString)
     int iWindow = CButtonTranslator::TranslateWindow(strWindow);
     if (iWindow != WINDOW_INVALID)
     {
-      // disable the screensaver
-      g_application.WakeUpScreenSaverAndDPMS();
-      vector<string> dummy;
-      g_windowManager.ActivateWindow(iWindow, dummy, execute != "activatewindowandfocus");
-
-      unsigned int iPtr = 1;
-      while (params.size() > iPtr + 1)
+      if (iWindow != g_windowManager.GetActiveWindow())
       {
-        CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(),
-            atol(params[iPtr].c_str()),
-            (params.size() >= iPtr + 2) ? atol(params[iPtr + 1].c_str())+1 : 0);
-        g_windowManager.SendMessage(msg);
-        iPtr += 2;
+        // disable the screensaver
+        g_application.WakeUpScreenSaverAndDPMS();
+        vector<string> dummy;
+        g_windowManager.ActivateWindow(iWindow, dummy, execute != "activatewindowandfocus");
+
+        unsigned int iPtr = 1;
+        while (params.size() > iPtr + 1)
+        {
+          CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(),
+              atol(params[iPtr].c_str()),
+              (params.size() >= iPtr + 2) ? atol(params[iPtr + 1].c_str())+1 : 0);
+          g_windowManager.SendMessage(msg);
+          iPtr += 2;
+        }
       }
     }
     else
