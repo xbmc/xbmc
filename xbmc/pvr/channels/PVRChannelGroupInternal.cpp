@@ -75,8 +75,8 @@ void CPVRChannelGroupInternal::CheckGroupName(void)
   CSingleLock lock(m_critSection);
 
   /* check whether the group name is still correct, or channels will fail to load after the language setting changed */
-  CStdString strNewGroupName = g_localizeStrings.Get(19287);
-  if (!m_strGroupName.Equals(strNewGroupName))
+  std::string strNewGroupName = g_localizeStrings.Get(19287);
+  if (m_strGroupName != strNewGroupName)
   {
     SetGroupName(strNewGroupName, true);
     UpdateChannelPaths();

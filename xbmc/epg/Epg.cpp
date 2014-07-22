@@ -320,7 +320,7 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
     newTag = itr->second;
   else
   {
-    newTag = CEpgInfoTagPtr(new CEpgInfoTag(this, m_pvrChannel, m_strName, m_pvrChannel ? m_pvrChannel->IconPath() : StringUtils::EmptyString));
+    newTag = CEpgInfoTagPtr(new CEpgInfoTag(this, m_pvrChannel, m_strName, m_pvrChannel ? m_pvrChannel->IconPath() : ""));
     m_tags.insert(make_pair(tag.StartAsUTC(), newTag));
   }
 
@@ -347,7 +347,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
   else
   {
     /* create a new tag if no tag with this ID exists */
-    infoTag = CEpgInfoTagPtr(new CEpgInfoTag(this, m_pvrChannel, m_strName, m_pvrChannel ? m_pvrChannel->IconPath() : StringUtils::EmptyString));
+    infoTag = CEpgInfoTagPtr(new CEpgInfoTag(this, m_pvrChannel, m_strName, m_pvrChannel ? m_pvrChannel->IconPath() : ""));
     infoTag->SetUniqueBroadcastID(tag.UniqueBroadcastID());
     m_tags.insert(make_pair(tag.StartAsUTC(), infoTag));
     bNewTag = true;

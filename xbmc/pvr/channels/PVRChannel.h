@@ -149,7 +149,7 @@ namespace PVR
     /*!
      * @return The path to the icon for this channel.
      */
-    CStdString IconPath(void) const;
+    std::string IconPath(void) const;
 
     /*!
      * @return True if this user changed icon via GUI. False if not.
@@ -172,12 +172,12 @@ namespace PVR
      * @param bIsUserSetIcon true if user changed the icon via GUI, false otherwise.
      * @return True if the something changed, false otherwise.
      */
-    bool SetIconPath(const CStdString &strIconPath, bool bIsUserSetIcon = false);
+    bool SetIconPath(const std::string &strIconPath, bool bIsUserSetIcon = false);
 
     /*!
      * @return The name for this channel used by XBMC.
      */
-    CStdString ChannelName(void) const;
+    std::string ChannelName(void) const;
 
     /*!
      * @brief Set the name for this channel used by XBMC.
@@ -185,7 +185,7 @@ namespace PVR
      * @param bIsUserSetName whether the change was triggered by the user directly
      * @return True if the something changed, false otherwise.
      */
-    bool SetChannelName(const CStdString &strChannelName, bool bIsUserSetName = false);
+    bool SetChannelName(const std::string &strChannelName, bool bIsUserSetName = false);
 
     /*!
      * @return True if this channel is marked as virtual. False if not.
@@ -272,7 +272,7 @@ namespace PVR
     /*!
      * @return The name of this channel on the client.
      */
-    CStdString ClientChannelName(void) const;
+    std::string ClientChannelName(void) const;
 
     /*!
      * @brief Set the name of this channel on the client.
@@ -283,7 +283,7 @@ namespace PVR
      * @param strClientChannelName The new channel name
      * @return True if the something changed, false otherwise.
      */
-    bool SetClientChannelName(const CStdString &strClientChannelName);
+    bool SetClientChannelName(const std::string &strClientChannelName);
 
     /*!
      * @brief The stream input type
@@ -295,14 +295,14 @@ namespace PVR
      *
      * @return The stream input type
      */
-    CStdString InputFormat(void) const;
+    std::string InputFormat(void) const;
 
     /*!
      * @brief Set the stream input type
      * @param strInputFormat The new input format.
      * @return True if the something changed, false otherwise.
      */
-    bool SetInputFormat(const CStdString &strInputFormat);
+    bool SetInputFormat(const std::string &strInputFormat);
 
     /*!
      * @brief The stream URL to access this channel.
@@ -312,7 +312,7 @@ namespace PVR
      *
      * @return The stream URL to access this channel.
      */
-    CStdString StreamURL(void) const;
+    std::string StreamURL(void) const;
 
     /*!
      * @brief Set the stream URL to access this channel.
@@ -323,13 +323,13 @@ namespace PVR
      * @param strStreamURL The new stream URL.
      * @return True if the something changed, false otherwise.
      */
-    bool SetStreamURL(const CStdString &strStreamURL);
+    bool SetStreamURL(const std::string &strStreamURL);
 
     /*!
      * @brief The path in the XBMC VFS to be used by PVRManager to open and read the stream.
      * @return The path in the XBMC VFS to be used by PVRManager to open and read the stream.
      */
-    CStdString Path(void) const;
+    std::string Path(void) const;
 
     virtual void ToSortable(SortItem& sortable, Field field) const;
 
@@ -371,7 +371,7 @@ namespace PVR
     /*!
      * @return A friendly name for the used encryption system.
      */
-    CStdString EncryptionName(void) const;
+    std::string EncryptionName(void) const;
     //@}
 
     /*! @name EPG methods
@@ -448,7 +448,7 @@ namespace PVR
      *
      * @return The name of the scraper to be used for this channel.
      */
-    CStdString EPGScraper(void) const;
+    std::string EPGScraper(void) const;
 
     /*!
      * @brief Set the name of the scraper to be used for this channel.
@@ -459,7 +459,7 @@ namespace PVR
      * @param strScraper The new scraper name.
      * @return True if the something changed, false otherwise.
      */
-    bool SetEPGScraper(const CStdString &strScraper);
+    bool SetEPGScraper(const std::string &strScraper);
 
     void SetCachedChannelNumber(unsigned int iChannelNumber);
 
@@ -480,8 +480,8 @@ namespace PVR
     bool             m_bIsUserSetName;          /*!< true if user set the channel name via GUI, false if not */
     bool             m_bIsUserSetIcon;          /*!< true if user set the icon via GUI, false if not */
     bool             m_bIsLocked;               /*!< true if channel is locked, false if not */
-    CStdString       m_strIconPath;             /*!< the path to the icon for this channel */
-    CStdString       m_strChannelName;          /*!< the name for this channel used by XBMC */
+    std::string      m_strIconPath;             /*!< the path to the icon for this channel */
+    std::string      m_strChannelName;          /*!< the name for this channel used by XBMC */
     bool             m_bIsVirtual;              /*!< true if this channel is marked as virtual, false if not */
     time_t           m_iLastWatched;            /*!< last time channel has been watched */
     bool             m_bChanged;                /*!< true if anything in this entry was changed that needs to be persisted */
@@ -494,7 +494,7 @@ namespace PVR
     int              m_iEpgId;                  /*!< the id of the EPG for this channel */
     bool             m_bEPGCreated;             /*!< true if an EPG has been created for this channel */
     bool             m_bEPGEnabled;             /*!< don't use an EPG for this channel if set to false */
-    CStdString       m_strEPGScraper;           /*!< the name of the scraper to be used for this channel */
+    std::string      m_strEPGScraper;           /*!< the name of the scraper to be used for this channel */
     //@}
 
     /*! @name Client related channel data
@@ -503,12 +503,12 @@ namespace PVR
     int              m_iUniqueId;               /*!< the unique identifier for this channel */
     int              m_iClientId;               /*!< the identifier of the client that serves this channel */
     int              m_iClientChannelNumber;    /*!< the channel number on the client */
-    CStdString       m_strClientChannelName;    /*!< the name of this channel on the client */
-    CStdString       m_strInputFormat;          /*!< the stream input type based on ffmpeg/libavformat/allformats.c */
-    CStdString       m_strStreamURL;            /*!< URL of the stream. Use the client to read stream if this is empty */
-    CStdString       m_strFileNameAndPath;      /*!< the filename to be used by PVRManager to open and read the stream */
+    std::string      m_strClientChannelName;    /*!< the name of this channel on the client */
+    std::string      m_strInputFormat;          /*!< the stream input type based on ffmpeg/libavformat/allformats.c */
+    std::string      m_strStreamURL;            /*!< URL of the stream. Use the client to read stream if this is empty */
+    std::string      m_strFileNameAndPath;      /*!< the filename to be used by PVRManager to open and read the stream */
     int              m_iClientEncryptionSystem; /*!< the encryption system used by this channel. 0 for FreeToAir, -1 for unknown */
-    CStdString       m_strClientEncryptionName; /*!< the name of the encryption system used by this channel */
+    std::string      m_strClientEncryptionName; /*!< the name of the encryption system used by this channel */
     //@}
 
     CCriticalSection m_critSection;

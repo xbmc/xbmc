@@ -80,7 +80,7 @@ namespace PVR
      * @param iGroupId The database ID of this group.
      * @param strGroupName The name of this group.
      */
-    CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName);
+    CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const std::string &strGroupName);
 
     /*!
      * @brief Create a new channel group instance from a channel group provided by an add-on.
@@ -152,7 +152,7 @@ namespace PVR
      * @param bSaveInDb Save in the database or not.
      * @return True if the something changed, false otherwise.
      */
-    bool SetGroupName(const CStdString &strGroupName, bool bSaveInDb = false);
+    bool SetGroupName(const std::string &strGroupName, bool bSaveInDb = false);
 
     /*!
      * @brief Persist changed or new data.
@@ -237,7 +237,7 @@ namespace PVR
      * @brief The name of this group.
      * @return The name of this group.
      */
-    CStdString GroupName(void) const;
+    std::string GroupName(void) const;
 
     /*! @name Sort methods
      */
@@ -408,7 +408,7 @@ namespace PVR
      */
     CDateTime GetLastEPGDate(void) const;
 
-    bool UpdateChannel(const CFileItem &channel, bool bHidden, bool bVirtual, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const CStdString &strChannelName, const CStdString &strIconPath, const CStdString &strStreamURL, bool bUserSetIcon = false);
+    bool UpdateChannel(const CFileItem &channel, bool bHidden, bool bVirtual, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const std::string &strChannelName, const std::string &strIconPath, const std::string &strStreamURL, bool bUserSetIcon = false);
 
     bool ToggleChannelLocked(const CFileItem &channel);
 
@@ -520,7 +520,7 @@ namespace PVR
     bool             m_bRadio;                      /*!< true if this container holds radio channels, false if it holds TV channels */
     int              m_iGroupType;                  /*!< The type of this group */
     int              m_iGroupId;                    /*!< The ID of this group in the database */
-    CStdString       m_strGroupName;                /*!< The name of this group */
+    std::string      m_strGroupName;                /*!< The name of this group */
     bool             m_bLoaded;                     /*!< True if this container is loaded, false otherwise */
     bool             m_bChanged;                    /*!< true if anything changed in this group that hasn't been persisted, false otherwise */
     bool             m_bUsingBackendChannelOrder;   /*!< true to use the channel order from backends, false otherwise */

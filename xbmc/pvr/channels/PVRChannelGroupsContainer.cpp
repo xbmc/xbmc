@@ -126,7 +126,7 @@ bool CPVRChannelGroupsContainer::GetGroupsDirectory(CFileItemList *results, bool
   return false;
 }
 
-CFileItemPtr CPVRChannelGroupsContainer::GetByPath(const CStdString &strPath) const
+CFileItemPtr CPVRChannelGroupsContainer::GetByPath(const std::string &strPath) const
 {
   for (unsigned int bRadio = 0; bRadio <= 1; bRadio++)
   {
@@ -140,13 +140,13 @@ CFileItemPtr CPVRChannelGroupsContainer::GetByPath(const CStdString &strPath) co
   return retVal;
 }
 
-bool CPVRChannelGroupsContainer::GetDirectory(const CStdString& strPath, CFileItemList &results)
+bool CPVRChannelGroupsContainer::GetDirectory(const std::string& strPath, CFileItemList &results)
 {
-  CStdString strBase(strPath);
+  std::string strBase(strPath);
 
   /* get the filename from curl */
   CURL url(strPath);
-  CStdString fileName = url.GetFileName();
+  std::string fileName = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(fileName);
 
   if (fileName == "channels")
@@ -177,7 +177,7 @@ bool CPVRChannelGroupsContainer::GetDirectory(const CStdString& strPath, CFileIt
   }
   else if (StringUtils::StartsWith(fileName, "channels/tv/"))
   {
-    CStdString strGroupName(fileName.substr(12));
+    std::string strGroupName(fileName.substr(12));
     URIUtils::RemoveSlashAtEnd(strGroupName);
     CPVRChannelGroupPtr group = GetTV()->GetByName(strGroupName);
     if (!group)
@@ -188,7 +188,7 @@ bool CPVRChannelGroupsContainer::GetDirectory(const CStdString& strPath, CFileIt
   }
   else if (StringUtils::StartsWith(fileName, "channels/radio/"))
   {
-    CStdString strGroupName(fileName.substr(15));
+    std::string strGroupName(fileName.substr(15));
     URIUtils::RemoveSlashAtEnd(strGroupName);
     CPVRChannelGroupPtr group = GetRadio()->GetByName(strGroupName);
     if (!group)
