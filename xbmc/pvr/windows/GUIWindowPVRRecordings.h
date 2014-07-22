@@ -32,7 +32,7 @@ namespace PVR
     CGUIWindowPVRRecordings(bool bRadio);
     virtual ~CGUIWindowPVRRecordings(void) {};
 
-    static CStdString GetResumeString(const CFileItem& item);
+    static std::string GetResumeString(const CFileItem& item);
 
     bool OnMessage(CGUIMessage& message);
     bool OnAction(const CAction &action);
