@@ -85,6 +85,11 @@ ECHO --------------------------------------------------
 ECHO Building addons
 ECHO --------------------------------------------------
 
+SET ADDONS_TO_BUILD="all"
+IF "%addon%" NEQ "" (
+  SET ADDONS_TO_BUILD="%addon%"
+)
+
 rem execute cmake to generate makefiles processable by nmake
 cmake "%ADDONS_PATH%" -G "NMake Makefiles" ^
       -DCMAKE_BUILD_TYPE=Release ^
@@ -94,7 +99,8 @@ cmake "%ADDONS_PATH%" -G "NMake Makefiles" ^
       -DXBMCROOT=%WORKDIR% ^
       -DCMAKE_PREFIX_PATH=%ADDON_DEPENDS_PATH% ^
       -DPACKAGE_ZIP=1 ^
-      -DARCH_DEFINES="-DTARGET_WINDOWS -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS -D_USE_32BIT_TIME_T -D_WINSOCKAPI_"
+      -DARCH_DEFINES="-DTARGET_WINDOWS -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS -D_USE_32BIT_TIME_T -D_WINSOCKAPI_" ^
+      -DADDONS_TO_BUILD="%ADDONS_TO_BUILD%"
 IF ERRORLEVEL 1 (
   ECHO cmake error level: %ERRORLEVEL% > %ERRORFILE%
   GOTO ERROR
