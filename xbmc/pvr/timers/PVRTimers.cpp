@@ -102,7 +102,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
 {
   bool bChanged(false);
   bool bAddedOrDeleted(false);
-  vector<CStdString> timerNotifications;
+  vector<string> timerNotifications;
 
   CSingleLock lock(m_critSection);
 
@@ -124,7 +124,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
 
           if (bStateChanged && g_PVRManager.IsStarted())
           {
-            CStdString strMessage;
+            std::string strMessage;
             existingTimer->GetNotificationText(strMessage);
             timerNotifications.push_back(strMessage);
           }
@@ -160,7 +160,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
 
         if (g_PVRManager.IsStarted())
         {
-          CStdString strMessage;
+          std::string strMessage;
           newTimer->GetNotificationText(strMessage);
           timerNotifications.push_back(strMessage);
         }
@@ -188,7 +188,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
 
         if (g_PVRManager.IsStarted())
         {
-          CStdString strMessage;
+          std::string strMessage;
           strMessage = StringUtils::Format("%s: '%s'",
                                            (timer->EndAsUTC() <= CDateTime::GetCurrentDateTime().GetAsUTCDateTime()) ?
                                            g_localizeStrings.Get(19227).c_str() :
@@ -397,7 +397,7 @@ bool CPVRTimers::HasActiveTimers(void) const
   return false;
 }
 
-bool CPVRTimers::GetDirectory(const CStdString& strPath, CFileItemList &items) const
+bool CPVRTimers::GetDirectory(const std::string& strPath, CFileItemList &items) const
 {
   vector<string> dirs = URIUtils::SplitPath(strPath);
   if(dirs.size() == 3 && dirs.at(1) == "timers")
@@ -489,9 +489,9 @@ bool CPVRTimers::InstantTimer(const CPVRChannel &channel)
     newTimer->m_strSummary = StringUtils::Format("%s %s %s %s %s",
                                                  newTimer->StartAsLocalTime().GetAsLocalizedDate().c_str(),
                                                  g_localizeStrings.Get(19159).c_str(),
-                                                 newTimer->StartAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false).c_str(),
+                                                 newTimer->StartAsLocalTime().GetAsLocalizedTime("", false).c_str(),
                                                  g_localizeStrings.Get(19160).c_str(),
-                                                 newTimer->EndAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false).c_str());
+                                                 newTimer->EndAsLocalTime().GetAsLocalizedTime("", false).c_str());
   }
 
   CDateTime startTime(0);
@@ -553,7 +553,7 @@ bool CPVRTimers::DeleteTimer(const CFileItem &item, bool bForce /* = false */)
   return tag->DeleteFromClient(bForce);
 }
 
-bool CPVRTimers::RenameTimer(CFileItem &item, const CStdString &strNewName)
+bool CPVRTimers::RenameTimer(CFileItem &item, const std::string &strNewName)
 {
   /* Check if a CPVRTimerInfoTag is inside file item */
   if (!item.IsPVRTimer())
