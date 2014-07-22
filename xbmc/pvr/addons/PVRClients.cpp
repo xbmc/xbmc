@@ -230,7 +230,7 @@ bool CPVRClients::HasConnectedClients(void) const
   return false;
 }
 
-bool CPVRClients::GetClientName(int iClientId, CStdString &strName) const
+bool CPVRClients::GetClientName(int iClientId, std::string &strName) const
 {
   bool bReturn(false);
   PVR_CLIENT client;
@@ -266,15 +266,15 @@ int CPVRClients::GetPlayingClientID(void) const
   return -EINVAL;
 }
 
-const CStdString CPVRClients::GetPlayingClientName(void) const
+const std::string CPVRClients::GetPlayingClientName(void) const
 {
   CSingleLock lock(m_critSection);
   return m_strPlayingClientName;
 }
 
-CStdString CPVRClients::GetStreamURL(const CPVRChannel &tag)
+std::string CPVRClients::GetStreamURL(const CPVRChannel &tag)
 {
-  CStdString strReturn;
+  std::string strReturn;
   PVR_CLIENT client;
   if (GetConnectedClient(tag.ClientID(), client))
     strReturn = client->GetLiveStreamURL(tag);
@@ -425,7 +425,7 @@ PVR_ERROR CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce)
   return error;
 }
 
-PVR_ERROR CPVRClients::RenameTimer(const CPVRTimerInfoTag &timer, const CStdString &strNewName)
+PVR_ERROR CPVRClients::RenameTimer(const CPVRTimerInfoTag &timer, const std::string &strNewName)
 {
   PVR_ERROR error(PVR_ERROR_UNKNOWN);
 
@@ -1076,7 +1076,7 @@ void CPVRClients::Notify(const Observable &obs, const ObservableMessage msg)
     UpdateAddons();
 }
 
-bool CPVRClients::GetClient(const CStdString &strId, AddonPtr &addon) const
+bool CPVRClients::GetClient(const std::string &strId, AddonPtr &addon) const
 {
   CSingleLock lock(m_critSection);
   for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
@@ -1272,9 +1272,9 @@ void CPVRClients::PauseStream(bool bPaused)
     client->PauseStream(bPaused);
 }
 
-CStdString CPVRClients::GetCurrentInputFormat(void) const
+std::string CPVRClients::GetCurrentInputFormat(void) const
 {
-  CStdString strReturn;
+  std::string strReturn;
   CPVRChannelPtr currentChannel;
   if (GetPlayingChannel(currentChannel))
     strReturn = currentChannel->InputFormat();
