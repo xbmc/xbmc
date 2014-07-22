@@ -19,14 +19,14 @@ endif()
 get_filename_component(XBMCROOT "${XBMCROOT}" ABSOLUTE)
 
 if(NOT DEPENDS_PATH)
-  set(DEPENDS_PATH "${CMAKE_BINARY_DIR}/addons")
+  set(DEPENDS_PATH "${PROJECT_SOURCE_DIR}/output/depends")
 else()
   file(TO_CMAKE_PATH "${DEPENDS_PATH}" DEPENDS_PATH)
 endif()
 # xbmc-config.cmake.in (further down) expects a "prefix" variable
 get_filename_component(prefix "${DEPENDS_PATH}" ABSOLUTE)
 
-#make sure CMAKE_PREFIX_PATH is set
+# make sure CMAKE_PREFIX_PATH is set
 if(NOT CMAKE_PREFIX_PATH)
   set(CMAKE_PREFIX_PATH "${DEPENDS_PATH}")
 else()
@@ -35,7 +35,7 @@ else()
 endif()
 
 if(NOT CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX ${prefix})
+  set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/output/addons")
 endif()
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_INSTALL_PREFIX})
 
@@ -47,7 +47,7 @@ set(BUILD_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
                -DBUILD_SHARED_LIBS=1)
 
 if(PACKAGE_ZIP)
-  #needed for project installing
+  # needed for project installing
   list(APPEND BUILD_ARGS -DPACKAGE_ZIP=1)
   MESSAGE("package zip specified")
 endif()
