@@ -203,10 +203,10 @@ void CGUIDialogPVRGuideSearch::OnWindowLoaded()
   return CGUIDialog::OnWindowLoaded();
 }
 
-void CGUIDialogPVRGuideSearch::ReadDateTime(const CStdString &strDate, const CStdString &strTime, CDateTime &dateTime) const
+void CGUIDialogPVRGuideSearch::ReadDateTime(const std::string &strDate, const std::string &strTime, CDateTime &dateTime) const
 {
   int iHours, iMinutes;
-  sscanf(strTime, "%d:%d", &iHours, &iMinutes);
+  sscanf(strTime.c_str(), "%d:%d", &iHours, &iMinutes);
   dateTime.SetFromDBDate(strDate);
   dateTime.SetDateTime(dateTime.GetYear(), dateTime.GetMonth(), dateTime.GetDay(), iHours, iMinutes, 0);
 }
@@ -253,7 +253,7 @@ void CGUIDialogPVRGuideSearch::OnSearch()
   m_searchFilter->m_iChannelNumber = GetSpinValue(CONTROL_SPIN_CHANNELS);
   m_searchFilter->m_iChannelGroup = GetSpinValue(CONTROL_SPIN_GROUPS);
 
-  CStdString strTmp = GetEditValue(CONTROL_EDIT_START_TIME);
+  std::string strTmp = GetEditValue(CONTROL_EDIT_START_TIME);
   ReadDateTime(GetEditValue(CONTROL_EDIT_START_DATE), strTmp, m_searchFilter->m_startDateTime);
   strTmp = GetEditValue(CONTROL_EDIT_STOP_TIME);
   ReadDateTime(GetEditValue(CONTROL_EDIT_STOP_DATE), strTmp, m_searchFilter->m_endDateTime);
