@@ -18,18 +18,20 @@ else()
 endif()
 get_filename_component(XBMCROOT "${XBMCROOT}" ABSOLUTE)
 
-if(NOT DEPENDS_PATH)
-  set(DEPENDS_PATH "${PROJECT_SOURCE_DIR}/output/depends")
-else()
-  file(TO_CMAKE_PATH "${DEPENDS_PATH}" DEPENDS_PATH)
-endif()
+if(NOT WIN32)
+  if(NOT DEPENDS_PATH)
+    set(DEPENDS_PATH "${PROJECT_SOURCE_DIR}/output/depends")
+  else()
+    file(TO_CMAKE_PATH "${DEPENDS_PATH}" DEPENDS_PATH)
+  endif()
 
-# make sure CMAKE_PREFIX_PATH is set
-if(NOT CMAKE_PREFIX_PATH)
-  set(CMAKE_PREFIX_PATH "${DEPENDS_PATH}")
-else()
-  file(TO_CMAKE_PATH "${CMAKE_PREFIX_PATH}" CMAKE_PREFIX_PATH)
-  list(APPEND CMAKE_PREFIX_PATH "${DEPENDS_PATH}")
+  # make sure CMAKE_PREFIX_PATH is set
+  if(NOT CMAKE_PREFIX_PATH)
+    set(CMAKE_PREFIX_PATH "${DEPENDS_PATH}")
+  else()
+    file(TO_CMAKE_PATH "${CMAKE_PREFIX_PATH}" CMAKE_PREFIX_PATH)
+    list(APPEND CMAKE_PREFIX_PATH "${DEPENDS_PATH}")
+  endif()
 endif()
 
 if(NOT CMAKE_INSTALL_PREFIX)
@@ -56,14 +58,16 @@ if(CMAKE_TOOLCHAIN_FILE)
   MESSAGE(${BUILD_ARGS})
 endif()
 
-# copy the xbmc-prepare-env.cmake script to the depends path so that we can include it
-file(COPY ${XBMCROOT}/project/cmake/scripts/common/xbmc-prepare-env.cmake DESTINATION ${DEPENDS_PATH}/lib/xbmc)
+if(NOT WIN32)
+  # copy the xbmc-prepare-env.cmake script to the depends path so that we can include it
+  file(COPY ${XBMCROOT}/project/cmake/scripts/common/xbmc-prepare-env.cmake DESTINATION ${DEPENDS_PATH}/lib/xbmc)
 
-# add the location of xbmc-prepare-env.cmake to CMAKE_MODULE_PATH so that it is found
-list(APPEND CMAKE_MODULE_PATH ${DEPENDS_PATH}/lib/xbmc)
+  # add the location of xbmc-prepare-env.cmake to CMAKE_MODULE_PATH so that it is found
+  list(APPEND CMAKE_MODULE_PATH ${DEPENDS_PATH}/lib/xbmc)
 
-# include xbmc-prepare-env.cmake which contains the logic to install the addon header bindings etc
-include(xbmc-prepare-env)
+  # include xbmc-prepare-env.cmake which contains the logic to install the addon header bindings etc
+  include(xbmc-prepare-env)
+endif()
 
 ### get and build all the binary addons
 # look for all the addons to be built
