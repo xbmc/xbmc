@@ -56,7 +56,7 @@ public:
     strcpy(tmp, m_ptempFilePath.c_str());
 
 #ifdef TARGET_WINDOWS
-    if (!GetTempFileName(CSpecialProtocol::TranslatePath("special://temp/"),
+    if (!GetTempFileName(CSpecialProtocol::TranslatePath("special://temp/").c_str(),
                          "xbmctempfile", 0, tmp))
     {
       m_ptempFilePath = "";
