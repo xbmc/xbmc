@@ -176,6 +176,21 @@ public:
    * @return converted to UTF-8 string or empty string if conversion failed
    */
   static std::string simpleWToUtf8(const std::wstring wStringSrc, bool failOnInvalidChar = true);
+  /**
+   * Convert UTF-8 string to wchar_t string by simplified algorithm.
+   * Static version of converter without any use of global objects, without any locking.
+   * Can be safely used from constructors of global and static objects, during startup
+   * and shutdown.
+   * @warning Unlike #utf8ToW, will not compose chars on Darwin
+   * @warning Has stricter UTF-8 sequences checking than #utf8ToW
+   * @param utf8StringSrc          is source UTF-8 string to convert
+   * @param failOnInvalidSequence  if set to true function will return empty string if
+   *                               invalid or unconvertible UTF-8 sequence will be found
+   *                               in source string, if set to false invalid sequence
+   *                               will be skipped
+   * @return converted to wchar_t string or empty string if conversion failed
+   */
+  static std::wstring simpleUtf8ToW(const std::string utf8StringSrc, bool failOnInvalidSequence = true);
 
   static void SettingOptionsCharsetsFiller(const CSetting* setting, std::vector< std::pair<std::string, std::string> >& list, std::string& current, void *data);
 private:
