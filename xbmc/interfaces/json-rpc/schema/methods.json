@@ -593,7 +593,7 @@
       { "name": "name", "type": "string", "required": true },
       { "name": "directory", "type": "string", "required": true }
     ],
-    "returns": { "type": "any", "required": true }
+    "returns": { "type": "string", "required": true }
   },
   "Files.GetDirectory": {
     "type": "method",
