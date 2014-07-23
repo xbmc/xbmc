@@ -164,6 +164,19 @@ public:
   static bool toW(const std::string& stringSrc, std::wstring& wStringDst, const std::string& enc);
   static bool fromW(const std::wstring& wStringSrc, std::string& stringDst, const std::string& enc);
 
+  /**
+   * Convert wchar_t string to UTF-8 string by simplified algorithm.
+   * Static version of converter without any use of global objects, without any locking.
+   * Can be safely used from constructors of global and static objects, during startup
+   * and shutdown.
+   * @param wStringSrc         is source wchar_t string to convert
+   * @param failOnInvalidChar  if set to true function will return empty string if
+   *                           invalid character will be found in source string,
+   *                           if set to false invalid characters will be skipped
+   * @return converted to UTF-8 string or empty string if conversion failed
+   */
+  static std::string simpleWToUtf8(const std::wstring wStringSrc, bool failOnInvalidChar = true);
+
   static void SettingOptionsCharsetsFiller(const CSetting* setting, std::vector< std::pair<std::string, std::string> >& list, std::string& current, void *data);
 private:
   static void resetUserCharset(void);
@@ -174,6 +187,10 @@ private:
   class CInnerConverter;
 };
 
+// define NO_GLOBAL_CHARSETCONVERTER to prevent declaration and creation of g_charsetConverter
+// without g_charsetConverter static functions of CCharsetConverter can be used
+#ifndef NO_GLOBAL_CHARSETCONVERTER
 XBMC_GLOBAL(CCharsetConverter,g_charsetConverter);
+#endif // NO_GLOBAL_CHARSETCONVERTER
 
 #endif
