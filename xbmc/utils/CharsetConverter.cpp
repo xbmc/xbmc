@@ -18,6 +18,9 @@
  *
  */
 
+#ifndef __STDC_LIMIT_MACROS
+#define __STDC_LIMIT_MACROS 1
+#endif // __STDC_LIMIT_MACROS
 #include "CharsetConverter.h"
 #include "Util.h"
 #include "utils/StringUtils.h"
@@ -30,6 +33,10 @@
 #include "utils/Utf8Utils.h"
 #include "log.h"
 
+#if !defined(WCHAR_MIN) || !defined(WCHAR_MAX)
+#include <wchar.h>
+#include <stddef.h>
+#endif // !defined(WCHAR_MIN) || !defined(WCHAR_MAX)
 #include <errno.h>
 #include <iconv.h>
 
@@ -78,6 +85,38 @@
     #endif
   #endif
 #endif
+
+#if WCHAR_MIN < 0
+  // wchar_t is signed type
+  #if WCHAR_MAX == 0x7FFF
+    #define WCHAR_SIZE 2
+    typedef uint16_t uwchar; // unsigned wchar_t equivalent
+  #elif WCHAR_MAX == 0x7FFFFFFF || WCHAR_MAX == 2147483647
+    #define WCHAR_SIZE 4
+    typedef uint32_t uwchar; // unsigned wchar_t equivalent
+  #else  // WCHAR_MAX == 0x7FFFFFFF
+    #error Unknown size of wchar_t
+  #endif // WCHAR_MAX == 0x7FFFFFFF
+#elif defined(WCHAR_MIN) && WCHAR_MIN == 0
+  // wchar_t is unsigned type
+  typedef wchar_t uwchar;
+  #if WCHAR_MAX == 0xFFFF
+    #define WCHAR_SIZE 2
+  #elif WCHAR_MAX == 0xFFFFFFFF
+    #define WCHAR_SIZE 4
+  /* next several lines are fallback for "smart" platforms 
+   * that define WCHAR_MAX as ((wchar_t)-1) */
+  #elif SIZEOF_WCHAR_T == 2
+    #define WCHAR_SIZE 2
+  #elif SIZEOF_WCHAR_T == 4
+    #define WCHAR_SIZE 4
+  #else // SIZEOF_WCHAR_T == 4
+    #error Unknown size of wchar_t
+  #endif // SIZEOF_WCHAR_T == 4
+#else // WCHAR_MIN == 0
+  #error Unknown signedness of wchar_t
+#endif // WCHAR_MIN == 0
+
 
 #define NO_ICONV ((iconv_t)-1)
 
@@ -879,6 +918,84 @@ bool CCharsetConverter::utf8logicalToVisualBiDi(const std::string& utf8StringSrc
     return false;
 
   return CInnerConverter::stdConvert(Utf32ToUtf8, utf32flipped, utf8StringDst, failOnBadString);
+}
+
+std::string CCharsetConverter::simpleWToUtf8(const std::wstring wStringSrc, bool failOnInvalidChar /*= true*/)
+{
+  /* additional checking of correct detection by macro */
+#if WCHAR_SIZE == 2
+  assert(sizeof(wchar_t) == 2);
+#elif WCHAR_SIZE == 4
+  assert(sizeof(wchar_t) >= 4);
+#endif // WCHAR_SIZE == 4
+
+  std::string res;
+  const size_t len = wStringSrc.length();
+  if (!len)
+    return res; // empty string;
+
+  const wchar_t* const wStrC = wStringSrc.c_str(); // null-terminated, wStrC[len] - valid
+  res.reserve(len * 2); // rough average estimate
+  for (size_t p = 0; p < len; p++)
+  {
+    const uwchar wchr = (uwchar)wStrC[p];
+    if (wchr < 0x80)
+      res.push_back((char)wchr);  // one byte UTF-8
+    else if (wchr < 0x800)
+    { // two bytes UTF-8
+      res.push_back((char)(unsigned char)(0xC0 | (wchr >> 6)));
+      res.push_back((char)(unsigned char)(0x80 | (wchr & 0x3F)));
+    }
+    else
+#if WCHAR_SIZE == 4
+          if (wchr < 0x10000)
+#endif // WCHAR_SIZE == 4
+    { // three bytes UTF-8
+      if (wchr < 0xD800 || wchr >= 0xE000)
+      { // not surrogate / real char code
+        res.push_back((char)(unsigned char)(0xE0 | (wchr >> 12)));
+        res.push_back((char)(unsigned char)(0x80 | ((wchr >> 6) & 0x3F)));
+        res.push_back((char)(unsigned char)(0x80 | (wchr & 0x3F)));
+      }
+      else
+      { // surrogate code, wchr >= 0xD800 && wchr < 0xE000
+#if WCHAR_SIZE == 2
+        if (wchr < 0xDC00)
+        { // wchr is valid high surrogate
+          p++; // get low surrogate
+          const uwchar wchr2 = (uwchar)wStrC[p];
+          if (wchr2 < 0xE000 && wchr2 >= 0xDC00)
+          {
+            const uwchar loPrt = (wchr2 - 0xDC00) | (wchr & 0x3F) << 10;
+            const uwchar hiPrt = ((wchr - 0xD800) >> 6) + 1;
+            res.push_back((char)(unsigned char)(0xF0 | (hiPrt >> 2)));
+            res.push_back((char)(unsigned char)(0x80 | (((loPrt >> 12) | (hiPrt << 4)) & 0x3F)));
+            res.push_back((char)(unsigned char)(0x80 | ((loPrt >> 6) & 0x3F)));
+            res.push_back((char)(unsigned char)(0x80 | (loPrt & 0x3F)));
+            continue;
+          }
+          else
+            p--; // try to convert next char as real char
+        }
+#endif // WCHAR_SIZE == 2
+        if (failOnInvalidChar)
+          return std::string(); // empty string
+      }
+    }
+#if WCHAR_SIZE == 4
+    else if (wchr < 0x110000)
+    {
+      res.push_back((char)(unsigned char)(0xF0 | (wchr >> 18)));
+      res.push_back((char)(unsigned char)(0x80 | ((wchr >> 12) & 0x3F)));
+      res.push_back((char)(unsigned char)(0x80 | ((wchr >> 6) & 0x3F)));
+      res.push_back((char)(unsigned char)(0x80 | (wchr & 0x3F)));
+    }
+    else if (failOnInvalidChar)
+      return std::string(); //empty string
+#endif // WCHAR_SIZE == 4
+  }
+
+  return res;
 }
 
 void CCharsetConverter::SettingOptionsCharsetsFiller(const CSetting* setting, std::vector< std::pair<std::string, std::string> >& list, std::string& current, void *data)
