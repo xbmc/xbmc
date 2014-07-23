@@ -419,6 +419,61 @@ TEST_F(TestCharsetConverter, simpleWToUtf8)
   EXPECT_STREQ("", CCharsetConverter::simpleWToUtf8(testInvalid4W, false).c_str());
 }
 
+TEST_F(TestCharsetConverter, simpleUtf8ToW)
+{
+  /* test one byte UTF-8 sequences */
+  EXPECT_STREQ(L"Simple US-ASCII string 1234567890,?./!", CCharsetConverter::simpleUtf8ToW("Simple US-ASCII string 1234567890,?./!").c_str());
+
+  /* test two bytes UTF-8 sequences */
+  EXPECT_STREQ(testCyrW, CCharsetConverter::simpleUtf8ToW(testCyrUtf8).c_str());
+  EXPECT_STREQ(testGreekW, CCharsetConverter::simpleUtf8ToW(testGreekUtf8).c_str());
+  EXPECT_STREQ(testArmW, CCharsetConverter::simpleUtf8ToW(testArmUtf8).c_str());
+
+  /* test three bytes UTF-8 sequences */
+  EXPECT_STREQ(testDevnW, CCharsetConverter::simpleUtf8ToW(testDevnUtf8).c_str());
+  EXPECT_STREQ(testGeorgW, CCharsetConverter::simpleUtf8ToW(testGeorgUtf8).c_str());
+  EXPECT_STREQ(testCJKW, CCharsetConverter::simpleUtf8ToW(testCJKUtf8).c_str());
+  EXPECT_STREQ(testArLiW, CCharsetConverter::simpleUtf8ToW(testArLiUtf8).c_str());
+
+  /* test four bytes UTF-8 sequences */
+  /* those tests can fail on some platform with limited wchar_t range and lack of surrogates support */
+  std::string resultStringUtf8;
+  EXPECT_TRUE(g_charsetConverter.wToUTF8(CCharsetConverter::simpleUtf8ToW(testLinBIdeoUtf8), resultStringUtf8, true)) << "Can't convert result back to UTF-8 from wide string";
+  EXPECT_EQ(testLinBIdeoUtf8, resultStringUtf8);
+  resultStringUtf8.clear();
+  EXPECT_TRUE(g_charsetConverter.wToUTF8(CCharsetConverter::simpleUtf8ToW(testCJKComIdUtf8), resultStringUtf8, true)) << "Can't convert result back to UTF-8 from wide string";
+  EXPECT_EQ(testCJKComIdUtf8, resultStringUtf8);
+  resultStringUtf8.clear();
+  EXPECT_TRUE(g_charsetConverter.wToUTF8(CCharsetConverter::simpleUtf8ToW(testTagsUtf8), resultStringUtf8, true)) << "Can't convert result back to UTF-8 from wide string";
+  EXPECT_EQ(testTagsUtf8, resultStringUtf8);
+
+  /* test invalid sequences */
+  static const char testInvalid1Utf8[] =
+  { 'a', 'b', 'c', (char)0xC0, 0 }; // invalid sequences at the end
+  static const char testInvalid2Utf8[] =
+  { '1', '2', (char)0xC1, (char)0xAB, '3', '4', 0 }; // invalid sequences at the middle
+  static const char testInvalid3Utf8[] =
+  { 'F', 'J', (char)0xC2, 'Q', 'W', 0 }; // incomplete sequences at the middle, 'Q' must be decoded
+  static const char testInvalid4Utf8[] =
+  { (char)0xF7, 'x', 'y', 'z', 0 }; // invalid sequences at the beginning
+  static const char testInvalid5Utf8[] =
+  { ' ', (char)0xED, (char)0xA0, (char)0x80, (char)0xED, (char)0xB0, (char)0x82, '?', '!', '*', 0 }; // surrogates in the middle
+  static const char testInvalid6Utf8[] =
+  { (char)0xF4, (char)0x90, (char)0x80, (char)0x80, 0 }; // only invalid sequences
+  EXPECT_TRUE(CCharsetConverter::simpleUtf8ToW(testInvalid1Utf8, true).empty());
+  EXPECT_TRUE(CCharsetConverter::simpleUtf8ToW(testInvalid2Utf8, true).empty());
+  EXPECT_TRUE(CCharsetConverter::simpleUtf8ToW(testInvalid3Utf8, true).empty());
+  EXPECT_TRUE(CCharsetConverter::simpleUtf8ToW(testInvalid4Utf8, true).empty());
+  EXPECT_TRUE(CCharsetConverter::simpleUtf8ToW(testInvalid5Utf8, true).empty());
+  EXPECT_TRUE(CCharsetConverter::simpleUtf8ToW(testInvalid6Utf8, true).empty());
+  EXPECT_STREQ(L"abc", CCharsetConverter::simpleUtf8ToW(testInvalid1Utf8, false).c_str());
+  EXPECT_STREQ(L"1234", CCharsetConverter::simpleUtf8ToW(testInvalid2Utf8, false).c_str());
+  EXPECT_STREQ(L"FJQW", CCharsetConverter::simpleUtf8ToW(testInvalid3Utf8, false).c_str());
+  EXPECT_STREQ(L"xyz", CCharsetConverter::simpleUtf8ToW(testInvalid4Utf8, false).c_str());
+  EXPECT_STREQ(L" ?!*", CCharsetConverter::simpleUtf8ToW(testInvalid5Utf8, false).c_str());
+  EXPECT_STREQ(L"", CCharsetConverter::simpleUtf8ToW(testInvalid6Utf8, false).c_str());
+}
+
 /* TODO: Resolve correct input/output for this function */
 // TEST_F(TestCharsetConverter, utf32ToStringCharset)
 // {
