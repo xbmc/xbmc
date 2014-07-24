@@ -78,6 +78,10 @@
     "type": "string",
     "enum": [ "video", "music", "pictures", "files", "programs" ]
   },
+  "Files.Content": {
+    "type": "string",
+    "enum": [ "movies", "tvshows", "musicvideos", "albums", "artists" ]
+  },
   "List.Amount": {
     "type": "integer",
     "default": -1,
