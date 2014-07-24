@@ -180,14 +180,17 @@ namespace PVR
     CPVRTimerInfoTagPtr GetById(unsigned int iTimerId) const;
 
   private:
+    typedef std::map<CDateTime, std::vector<CPVRTimerInfoTagPtr>* > MapTags;
+    typedef std::vector<CPVRTimerInfoTagPtr> VecTimerInfoTag;
+
     void Unload(void);
     void UpdateEpgEvent(CPVRTimerInfoTagPtr timer);
     bool UpdateEntries(const CPVRTimers &timers);
     CPVRTimerInfoTagPtr GetByClient(int iClientId, int iClientTimerId) const;
 
-    CCriticalSection                                        m_critSection;
-    bool                                                    m_bIsUpdating;
-    std::map<CDateTime, std::vector<CPVRTimerInfoTagPtr>* > m_tags;
-    unsigned int                                            m_iLastId;
+    CCriticalSection  m_critSection;
+    bool              m_bIsUpdating;
+    MapTags           m_tags;
+    unsigned int      m_iLastId;
   };
 }
