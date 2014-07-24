@@ -37,7 +37,6 @@
 
 using namespace PVR;
 using namespace EPG;
-using namespace std;
 
 CPVRGUIInfo::CPVRGUIInfo(void) :
     CThread("PVRGUIInfo"),
@@ -798,7 +797,7 @@ void CPVRGUIInfo::UpdateTimersToggle(void)
   /* safe to fetch these unlocked, since they're updated from the same thread as this one */
   if (m_iRecordingTimerAmount > 0)
   {
-    vector<CFileItemPtr> activeTags = g_PVRTimers->GetActiveRecordings();
+    std::vector<CFileItemPtr> activeTags = g_PVRTimers->GetActiveRecordings();
     if (m_iTimerInfoToggleCurrent < activeTags.size() && activeTags.at(m_iTimerInfoToggleCurrent)->HasPVRTimerInfoTag())
     {
       CPVRTimerInfoTag *tag = activeTags.at(m_iTimerInfoToggleCurrent)->GetPVRTimerInfoTag();

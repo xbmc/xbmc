@@ -60,7 +60,6 @@
 #include "guilib/Key.h"
 #include "dialogs/GUIDialogPVRChannelManager.h"
 
-using namespace std;
 using namespace MUSIC_INFO;
 using namespace PVR;
 using namespace EPG;
@@ -259,7 +258,7 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
     return true;
 
   // there's add-ons that couldn't be updated
-  for (map<string, string>::iterator it = m_outdatedAddons.begin(); it != m_outdatedAddons.end(); it++)
+  for (std::map<std::string, std::string>::iterator it = m_outdatedAddons.begin(); it != m_outdatedAddons.end(); it++)
   {
     if (!InstallAddonAllowed(it->first))
     {
@@ -271,7 +270,7 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
   // all outdated add-ons can be upgraded now
   CLog::Log(LOGINFO, "PVR - upgrading outdated add-ons");
 
-  map<string, string> outdatedAddons = m_outdatedAddons;
+  std::map<std::string, std::string> outdatedAddons = m_outdatedAddons;
   // stop threads and unload
   SetState(ManagerStateInterrupted);
   g_EpgContainer.Stop();
@@ -280,7 +279,7 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
   Cleanup();
 
   // upgrade all add-ons
-  for (map<string, string>::iterator it = outdatedAddons.begin(); it != outdatedAddons.end(); it++)
+  for (std::map<std::string, std::string>::iterator it = outdatedAddons.begin(); it != outdatedAddons.end(); it++)
   {
     CLog::Log(LOGINFO, "PVR - updating add-on '%s'", it->first.c_str());
     CAddonInstaller::Get().Install(it->first, true, it->second, false);

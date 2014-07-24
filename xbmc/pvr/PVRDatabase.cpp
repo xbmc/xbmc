@@ -31,7 +31,6 @@
 #include "channels/PVRChannelGroupInternal.h"
 #include "addons/PVRClient.h"
 
-using namespace std;
 using namespace dbiplus;
 using namespace PVR;
 using namespace ADDON;
@@ -315,7 +314,7 @@ bool CPVRDatabase::RemoveChannelsFromGroup(const CPVRChannelGroup &group)
   return DeleteValues("map_channelgroups_channels", filter);
 }
 
-bool CPVRDatabase::GetCurrentGroupMembers(const CPVRChannelGroup &group, vector<int> &members)
+bool CPVRDatabase::GetCurrentGroupMembers(const CPVRChannelGroup &group, std::vector<int> &members)
 {
   bool bReturn(false);
   /* invalid group id */
@@ -366,7 +365,7 @@ bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group)
   return DeleteValues("map_channelgroups_channels", filter);
 }
 
-bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group, const vector<int> &channelsToDelete)
+bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group, const std::vector<int> &channelsToDelete)
 {
   bool bDelete(true);
   unsigned int iDeletedChannels(0);
@@ -433,10 +432,10 @@ bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group)
 
   if (group.m_members.size() > 0)
   {
-    vector<int> currentMembers;
+    std::vector<int> currentMembers;
     if (GetCurrentGroupMembers(group, currentMembers))
     {
-      vector<int> channelsToDelete;
+      std::vector<int> channelsToDelete;
       for (unsigned int iChannelPtr = 0; iChannelPtr < currentMembers.size(); iChannelPtr++)
       {
         if (!group.IsGroupMember(currentMembers.at(iChannelPtr)))
