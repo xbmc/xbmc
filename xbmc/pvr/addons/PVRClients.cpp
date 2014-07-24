@@ -35,7 +35,6 @@
 #include "pvr/timers/PVRTimers.h"
 #include "cores/IPlayer.h"
 
-using namespace std;
 using namespace ADDON;
 using namespace PVR;
 using namespace EPG;
@@ -749,9 +748,9 @@ bool CPVRClients::IsRunningChannelScan(void) const
   return m_bChannelScanRunning;
 }
 
-vector<PVR_CLIENT> CPVRClients::GetClientsSupportingChannelScan(void) const
+std::vector<PVR_CLIENT> CPVRClients::GetClientsSupportingChannelScan(void) const
 {
-  vector<PVR_CLIENT> possibleScanClients;
+  std::vector<PVR_CLIENT> possibleScanClients;
   CSingleLock lock(m_critSection);
 
   /* get clients that support channel scanning */
@@ -768,7 +767,7 @@ void CPVRClients::StartChannelScan(void)
 {
   PVR_CLIENT scanClient;
   CSingleLock lock(m_critSection);
-  vector<PVR_CLIENT> possibleScanClients = GetClientsSupportingChannelScan();
+  std::vector<PVR_CLIENT> possibleScanClients = GetClientsSupportingChannelScan();
   m_bChannelScanRunning = true;
 
   /* multiple clients found */
@@ -1021,7 +1020,7 @@ void CPVRClients::ShowDialogNoClientsEnabled(void)
 
   CGUIDialogOK::ShowAndGetInput(19240, 19241, 19242, 19243);
 
-  vector<string> params;
+  std::vector<std::string> params;
   params.push_back("addons://disabled/xbmc.pvrclient");
   params.push_back("return");
   g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);
