@@ -3442,7 +3442,11 @@ bool CFileItem::IsPlexMediaServerLibrary() const
       GetProperty("unprocessed_key").asString().find("/library/metadata/") != std::string::npos ||
       GetProperty("unprocessed_key").asString().find("/library/sections/") != std::string::npos)
   {
-    return true;
+    // extras are considerered not to be plex MediaServerLibrary items
+    if (!GetProperty("extraType").asString().empty())
+      return false;
+    else
+      return true;
   }
 
   return false;
