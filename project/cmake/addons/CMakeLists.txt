@@ -95,7 +95,7 @@ foreach(addon ${addons})
 
     # add the addon as an external project for automatic building
     externalproject_add(${id}
-                      GIT_REPOSITORY ${url}/${id}
+                      GIT_REPOSITORY ${url}
                       GIT_TAG ${revision}
                       INSTALL_DIR "${CMAKE_INSTALL_PREFIX}"
                       CMAKE_ARGS ${BUILD_ARGS}
