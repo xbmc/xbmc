@@ -84,8 +84,8 @@ AC_DEFUN([XB_FIND_SONAME],
       lib=[`ls -- $path/lib$2.dylib 2>/dev/null`]
       if test x$lib != x; then
         # we want the path/name that is embedded in the dylib 
-        $1_SONAME=[`otool -L $lib | grep -v lib$2.dylib | grep lib$2 | awk '{V=1; print $V}'`]
-        $1_SONAME=[`basename $$1_SONAME`]
+        $1_FILENAME=[`otool -L $lib | grep -v lib$2.dylib | grep lib$2 | awk '{V=1; print $V}'`]
+        $1_SONAME=[`basename $$1_FILENAME`]
       fi
     done
   fi
@@ -599,6 +599,8 @@ AC_PROG_MAKE_SET
 PKG_PROG_PKG_CONFIG
 MAKE="${MAKE:-make}"
 OBJDUMP="${OBJDUMP:-objdump}"
+READELF="${READELF:-readelf}"
+NM="${NM:-nm}"
 
 use_external_ffmpeg=no
 use_static_ffmpeg=no
@@ -1099,17 +1101,25 @@ AC_CHECK_HEADER([samplerate.h],,     AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([libmodplug/modplug.h],, AC_MSG_ERROR($missing_library))
-AC_CHECK_HEADER([curl/curl.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
 
-# we need to check for the header because if it exists we set the openssl
-# and gcrypt MT callback hooks. This is mostly so that libcurl operates 
-# in MT manner correctly.
-AC_MSG_CHECKING([for CRYPTO_set_locking_callback(0)])
-AC_TRY_LINK([],[CRYPTO_set_locking_callback(0);],
-                [have_curl_static=yes],
-                [have_curl_static=no])
-AC_MSG_RESULT($have_curl_static)
+AC_CHECK_HEADER([curl/curl.h],, AC_MSG_ERROR($missing_library))
+XB_FIND_SONAME([CURL], [curl])
+AC_MSG_CHECKING([for CRYPTO_set_locking_callback(0) in $CURL_SONAME])
+if test "$host_vendor" = "apple" ; then
+  libchecker="$NM"
+  searchpattern="T [_]?CRYPTO_set_locking_call"
+else
+  libchecker="$READELF -s"
+  searchpattern="CRYPTO_set_locking_call"
+fi
+if test $($libchecker $CURL_FILENAME  | grep -Eq "${searchpattern}" ; echo $?) -eq 0 ; then
+  AC_MSG_RESULT(yes)
+  AC_DEFINE([HAS_CURL_STATIC], [1], [Whether OpenSSL inside libcurl is static.])
+else
+  AC_MSG_RESULT(no)
+fi
+
 AC_CHECK_HEADER([openssl/crypto.h], AC_DEFINE([HAVE_OPENSSL],[1],[Define if we have openssl]),)
 AC_CHECK_HEADER([gcrypt.h], gcrypt_headers_available=yes,gcrypt_headers_available=no)
 if test "$gcrypt_headers_available" = "yes"; then
@@ -1258,7 +1268,6 @@ fi
 
 XB_FIND_SONAME([MAD],         [mad])
 XB_FIND_SONAME([OGG],         [ogg])
-XB_FIND_SONAME([CURL],        [curl])
 XB_FIND_SONAME([FLAC],        [FLAC])
 XB_FIND_SONAME([VORBIS],      [vorbis])
 XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
@@ -1520,11 +1529,6 @@ if test "x$use_ssh" = "xno"; then
 else
   AC_CHECK_LIB([ssh], [sftp_tell64],, AC_MSG_ERROR($ssh_not_found))
   AC_DEFINE([HAVE_LIBSSH], [1], [Whether to use libSSH library.])
-fi
-
-# libcurl
-if test "x$have_curl_static" = "xyes"; then
-  AC_DEFINE([HAS_CURL_STATIC], [1], [Whether OpenSSL inside libcurl is static.])
 fi
 
 # libRTMP
