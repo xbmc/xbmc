@@ -117,7 +117,10 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
   {
     item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
 
-    int progress = (item.GetProperty("viewOffset").asInteger() * 100 / item.GetProperty("duration").asInteger());
+    int progress = 0;
+    if (item.GetProperty("duration").asInteger() != 0)
+      progress = (item.GetProperty("viewOffset").asInteger() * 100 / item.GetProperty("duration").asInteger());
+
     item.SetProperty("progress",progress);
   }
   else
