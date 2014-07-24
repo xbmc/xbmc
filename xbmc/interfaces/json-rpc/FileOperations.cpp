@@ -31,6 +31,12 @@
 #include "URL.h"
 #include "utils/URIUtils.h"
 #include "utils/FileUtils.h"
+#include "Application.h"
+#include "addons/AddonManager.h"
+#include "addons/Scraper.h"
+#include "video/VideoDatabase.h"
+#include "video/VideoInfoScanner.h"
+#include "music/MusicDatabase.h"
 
 using namespace XFILE;
 using namespace JSONRPC;
@@ -235,11 +241,27 @@ JSONRPC_STATUS CFileOperations::Download(const std::string &method, ITransportLa
   return transport->Download(parameterObject["path"].asString().c_str(), result) ? OK : InvalidParams;
 }
 
+CONTENT_TYPE contentTypeFromString(const std::string &content) {
+  if (content == "movies")
+    return CONTENT_MOVIES;
+  else if (content == "tvshows")
+    return CONTENT_TVSHOWS;
+  else if (content == "musicvideos")
+    return CONTENT_MUSICVIDEOS;
+  else if (content == "albums")
+    return CONTENT_ALBUMS;
+  else if (content == "artists")
+    return CONTENT_ARTISTS;
+  else
+    return CONTENT_NONE;
+}
+
 JSONRPC_STATUS CFileOperations::AddSource(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::string media = parameterObject["media"].asString();
   std::string name = parameterObject["name"].asString();
   std::string directory = parameterObject["directory"].asString();
+  std::string content = parameterObject["content"].asString("none");
 
   std::vector<std::string> paths;
   paths.push_back(directory);
@@ -254,6 +276,29 @@ JSONRPC_STATUS CFileOperations::AddSource(const std::string &method, ITransportL
 
   share.FromNameAndPaths(media, name, paths);
   CMediaSourceSettings::Get().AddShare(media, share);
+
+  if (content != "none")
+  {
+    CONTENT_TYPE c = contentTypeFromString(content);
+
+    ADDON::AddonPtr scraperAddon;
+    ADDON::CAddonMgr::Get().GetDefault(ADDON::ScraperTypeFromContent(c), scraperAddon);
+    ADDON::ScraperPtr scraper = boost::dynamic_pointer_cast<ADDON::CScraper>(scraperAddon);
+
+    if (media == "video" && scraper)
+    {
+      CVideoDatabase db;
+      db.Open();
+
+      VIDEO::SScanSettings settings;
+      db.SetScraperForPath(directory, scraper, settings);
+    } else if (media == "music") {
+      CMusicDatabase db;
+      db.Open();
+
+      db.SetScraperForPath(directory, scraper);
+    }
+  }
 
   return ACK;
 }
