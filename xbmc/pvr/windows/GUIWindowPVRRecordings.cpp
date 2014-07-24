@@ -35,7 +35,6 @@
 #include "pvr/addons/PVRClients.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
-using namespace std;
 using namespace PVR;
 
 CGUIWindowPVRRecordings::CGUIWindowPVRRecordings(bool bRadio) :

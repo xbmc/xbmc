@@ -45,7 +45,6 @@
 #include "utils/StringUtils.h"
 #include "utils/Observer.h"
 
-using namespace std;
 using namespace PVR;
 using namespace EPG;
 
@@ -384,7 +383,7 @@ bool CGUIWindowPVRBase::PlayRecording(CFileItem *item, bool bPlayMinimized /* = 
       XFILE::CDirectory::GetDirectory(dir, items);
       items.Sort(SortByFile, SortOrderAscending);
 
-      vector<int> stack;
+      std::vector<int> stack;
       for (int i = 0; i < items.Size(); ++i)
       {
         if (URIUtils::HasExtension(items[i]->GetPath(), ext))
