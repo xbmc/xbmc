@@ -35,7 +35,6 @@
 
 using namespace PVR;
 using namespace EPG;
-using namespace std;
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) :
   CPVRChannelGroup(bRadio, bRadio ? XBMC_INTERNAL_GROUP_RADIO : XBMC_INTERNAL_GROUP_TV, g_localizeStrings.Get(19287))
