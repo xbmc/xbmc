@@ -32,7 +32,6 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
-using namespace std;
 using namespace PVR;
 
 #define SETTING_TMR_ACTIVE              "timer.active"

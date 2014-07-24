@@ -31,7 +31,6 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 
-using namespace std;
 using namespace PVR;
 
 #define CONTROL_LIST_CHANNELS_LEFT    11

@@ -40,7 +40,6 @@
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 
-using namespace std;
 using namespace PVR;
 using namespace EPG;
 
@@ -330,7 +329,7 @@ void CGUIDialogPVRChannelsOSD::SaveSelectedItem(int iGroupID)
 
 int CGUIDialogPVRChannelsOSD::GetLastSelectedItem(int iGroupID) const
 {
-  map<int,int>::const_iterator it = m_groupSelectedItems.find(iGroupID);
+  std::map<int,int>::const_iterator it = m_groupSelectedItems.find(iGroupID);
   if(it != m_groupSelectedItems.end())
     return it->second;
   return 0;
