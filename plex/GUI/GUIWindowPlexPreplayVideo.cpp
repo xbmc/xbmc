@@ -25,6 +25,7 @@
 
 #include "DirectoryCache.h"
 #include "Application.h"
+#include "GUIUserMessages.h"
 
 #define EXTRAS_LIST_CONTROL_ID   3  // preplay window Extras list control ID
 
@@ -92,6 +93,11 @@ bool CGUIWindowPlexPreplayVideo::OnMessage(CGUIMessage &message)
     // feed the preplay list with the items
     CGUIMessage msg(GUI_MSG_LABEL_BIND, 0, 3, 0, 0, m_extraDataLoader.getItems().get());
     CApplicationMessenger::Get().SendGUIMessage(msg, GetID());
+     m_focusSaver.RestoreFocus(true);
+  }
+  else if (message.GetMessage() == GUI_MSG_PLAYBACK_STARTED)
+  {
+    m_focusSaver.SaveFocus(this);
   }
 
   return ret;

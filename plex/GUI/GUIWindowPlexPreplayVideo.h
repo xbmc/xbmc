@@ -5,6 +5,7 @@
 #include "threads/Event.h"
 #include "PlexNavigationHelper.h"
 #include "FileSystem/PlexExtraDataLoader.h"
+#include "GUIPlexWindowFocusSaver.h"
 
 class CGUIWindowPlexPreplayVideo : public CGUIPlexMediaWindow
 {
@@ -35,4 +36,5 @@ public:
   CPlexExtraDataLoader m_extraDataLoader;
 
   CPlexNavigationHelper m_navHelper;
+  CGUIPlexWindowFocusSaver m_focusSaver;
 };
