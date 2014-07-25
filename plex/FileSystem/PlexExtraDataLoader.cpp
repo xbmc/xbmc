@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "boost/lexical_cast.hpp"
 #include "GUIWindowManager.h"
+#include "LocalizeStrings.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexExtraDataLoader::CPlexExtraDataLoader()
@@ -50,6 +51,11 @@ void CPlexExtraDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob*
     m_items->Clear();
     if (fjob->m_items.Size())
       m_items->Copy(fjob->m_items);
+
+    // add the extra types description
+    for (int i=0; i< m_items->Size(); i++)
+      m_items->Get(i)->SetProperty("extraTypeStr",
+                                   g_localizeStrings.Get(44500 + m_items->Get(i)->GetProperty("extraType").asInteger()));
 
     // send the dataloaded event to listeners
     CLog::Log(LOGDEBUG, "CPlexExtraInfoLoader : job %d succeeded for %s, (%d extra found)", jobID,

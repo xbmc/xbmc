@@ -894,9 +894,31 @@ msgid "Extras"
 msgstr "Extras"
 
 #### Extra / trailers related strings
-msgctxt "#44500"
-msgid "Available trailers"
-msgstr "Available trailers"
+
+### Extra Types
+msgctxt "#44501"
+msgid "Trailers"
+msgstr "Trailers"
+
+msgctxt "#44502"
+msgid "Deleted Scene"
+msgstr "Deleted Scene"
+
+msgctxt "#44503"
+msgid "Interview"
+msgstr "Interview"
+
+msgctxt "#44504"
+msgid "Music Video"
+msgstr "Music Video"
+
+msgctxt "#44505"
+msgid "Behind the Scenes"
+msgstr "Behind the Scenes"
+
+msgctxt "#44506"
+msgid "Scene"
+msgstr "Scene"
 
 #### These are error strings shown from channels
 #### errorcode + 50000
