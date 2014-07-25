@@ -251,7 +251,6 @@
 #include "addons/GUIDialogAddonInfo.h"
 #ifdef __PLEX__
 #include "plex/GUI/GUIDialogPlexSettingsMenu.h"
-#include "plex/GUI/GUIDialogPlexExtras.h"
 #endif
 
 #ifdef HAS_LINUX_NETWORK
@@ -372,7 +371,6 @@
 #include "plex/GUI/GUIDialogPlexError.h"
 #include "plex/GUI/GUIDialogPlexGlobalCacher.h"
 #include "plex/GUI/GUIDialogPlexVideoOSD.h"
-#include "plex/GUI/GUIDialogPlexExtras.h"
 /* END PLEX */
 
 #if defined(TARGET_ANDROID)
@@ -1537,7 +1535,6 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIDialogPlexPlayQueue);
     g_windowManager.Add(new CGUIDialogPlexGlobalCacher);
     g_windowManager.Add(new CGUIDialogPlexVideoOSD);
-    g_windowManager.Add(new CGUIDialogPlexExtras);
     /* END PLEX */
 
     /* window id's 3000 - 3100 are reserved for python */
