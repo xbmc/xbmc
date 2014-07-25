@@ -999,8 +999,8 @@
 					<control type="list" id="3">
 						<width>260</width>
 						<height>600</height>
-						<onleft>-</onleft>
-						<onright>-</onright>
+						<onleft>998</onleft>
+						<onright>998</onright>
 						<onup>3</onup>
 						<ondown>3</ondown>
 						<pagecontrol>61</pagecontrol>

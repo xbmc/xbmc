@@ -592,9 +592,10 @@
 				<control type="button" id="110">
 					<texturefocus>b-pp-extras-s.png</texturefocus>
 					<texturenofocus>b-pp-extras.png</texturenofocus>
-					<onright>XBMC.NextItem</onright>
+					<onright>SetFocus(3)</onright>
 					<onleft>XBMC.PrevItem</onleft>
 					<!--><onclick>ActivateWindow(10209)</onclick>-->
+					<onclick>ActivateWindow(10209)</onclick>
 					<onclick></onclick>
 					<include>leftMenuBarButton</include>
 					<visible>!IsEmpty(ListItem.Property(PlexExtras))</visible>
