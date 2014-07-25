@@ -14,6 +14,8 @@ public:
   CGUIPlexWindowFocusSaver();
   void SaveFocus(CGUIWindow* window);
   void RestoreFocus(bool reset);
+
+  inline int getLastFocusedControlID() { return m_lastFocusedControlID; }
 };
 
 #endif // GUIPLEXWINDOWFOCUSSAVER_H

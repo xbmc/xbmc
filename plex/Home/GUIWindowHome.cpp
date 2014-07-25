@@ -112,8 +112,6 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), m_gl
 {
   m_loadType = LOAD_ON_GUI_INIT;
   AddSection("global://art/", CPlexSectionFanout::SECTION_TYPE_GLOBAL_FANART, true);
-  m_lastFocusedControlID = 0;
-  m_lastFocusedControlItem = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -627,14 +625,8 @@ void CGUIWindowHome::OnSectionLoaded(const CGUIMessage& message)
             SET_CONTROL_VISIBLE(p);
 
             // restore last focused controls
-            if ((p == m_lastFocusedControlID) && (m_lastFocusedControlID))
-            {
-              CGUIMessage msg(GUI_MSG_SETFOCUS, 0, m_lastFocusedControlID, m_lastFocusedControlItem + 1);
-              g_windowManager.SendThreadMessage(msg);
-
-              m_lastFocusedControlID = 0;
-              m_lastFocusedControlItem = 0;
-            }
+            if (p == m_focusSaver.getLastFocusedControlID())
+             m_focusSaver.RestoreFocus(true);
           }
           else
             SET_CONTROL_HIDDEN(p);
@@ -703,16 +695,7 @@ bool CGUIWindowHome::OnClick(const CGUIMessage& message)
 void CGUIWindowHome::OpenItem(CFileItemPtr item)
 {
   // save current focused controls
-  m_lastFocusedControlID = GetFocusedControlID();
-  const CGUIControl *control = GetControl(m_lastFocusedControlID);
-  if (control->IsContainer())
-  {
-    CGUIBaseContainer *container = (CGUIBaseContainer *)control;
-    if (container)
-      m_lastFocusedControlItem = container->GetSelectedItem();
-    else
-      m_lastFocusedControlItem = 0;
-  }
+  m_focusSaver.SaveFocus(this);
 
   CStdString url = m_navHelper.navigateToItem(item, CURL(), GetID());
   if (!url.empty())

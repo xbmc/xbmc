@@ -38,6 +38,7 @@
 #include "PlexGlobalTimer.h"
 #include "PlexSectionFanout.h"
 #include "dialogs/GUIDialogContextMenu.h"
+#include "GUI/GUIPlexWindowFocusSaver.h"
 
 // List IDs.
 #define CONTEXT_BUTTON_SLEEP (CONTEXT_BUTTON_RATING + 1)
@@ -118,7 +119,6 @@ private:
   CPlexNavigationHelper      m_navHelper;
 
   // focus saving members
-  int                        m_lastFocusedControlID;
-  int                        m_lastFocusedControlItem;
+  CGUIPlexWindowFocusSaver  m_focusSaver;
 };
 
