@@ -982,7 +982,8 @@
 		<!-- extras -->
 		<include>leftMenuBg</include>
 		<control type="group">
-			<posx>74</posx>
+			<animation effect="slide" start="0" end="297" time="500" condition="Control.HasFocus(3)">Conditional</animation>
+			<posx>-224</posx>
 			<control type="group">
 				<posx>0</posx>
 				<posy>20</posy>
@@ -1041,7 +1042,7 @@
 			<posy>-28</posy>
 			<visible>Container.PlexContent(Movie) | [Container.PlexContent(Channel) + ListItem.Type(movie)]</visible>
 			<include>FadeDialog</include>
-			<animation effect="slide" start="0" end="297" time="500" condition="true">Conditional</animation>
+			<animation effect="slide" start="0" end="297" time="500" condition="Control.HasFocus(3)">Conditional</animation>
 			<!-- backgrounds -->
 			<control type="group">
 				<control type="largeimage">
