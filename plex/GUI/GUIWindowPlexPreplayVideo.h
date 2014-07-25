@@ -18,6 +18,7 @@ public:
 
   void Recommend();
   void Share();
+  CFileItemPtr getSelectedExtraItem();
 
   void OnJobComplete(unsigned int jobID, bool success, CJob *job);
   bool Update(const CStdString &strDirectory, bool updateFilterPath);
