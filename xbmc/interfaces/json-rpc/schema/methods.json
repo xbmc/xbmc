@@ -589,10 +589,9 @@
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "media", "$ref": "Files.Media", "required": true },
-      { "name": "content", "$ref": "Files.Content", "required": false },
       { "name": "name", "type": "string", "required": true },
-      { "name": "directory", "type": "string", "required": true }
+      { "name": "directory", "type": "string", "required": true },
+      { "name": "content", "$ref": "Files.Content", "required": false }
     ],
     "returns": "string"
   },

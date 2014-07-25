@@ -248,23 +248,21 @@ CONTENT_TYPE contentTypeFromString(const std::string &content) {
     return CONTENT_TVSHOWS;
   else if (content == "musicvideos")
     return CONTENT_MUSICVIDEOS;
-  else if (content == "albums")
-    return CONTENT_ALBUMS;
-  else if (content == "artists")
-    return CONTENT_ARTISTS;
   else
     return CONTENT_NONE;
 }
 
 JSONRPC_STATUS CFileOperations::AddSource(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  std::string media = parameterObject["media"].asString();
   std::string name = parameterObject["name"].asString();
   std::string directory = parameterObject["directory"].asString();
   std::string content = parameterObject["content"].asString("none");
 
+  std::vector<std::string> contents = StringUtils::Split(content, ".");
   std::vector<std::string> paths;
   paths.push_back(directory);
+
+  std::string media = contents[0] == "audio" ? "music" : contents[0];
 
   CMediaSource share;
   VECSOURCES* pShares = CMediaSourceSettings::Get().GetSources(media);
@@ -277,27 +275,17 @@ JSONRPC_STATUS CFileOperations::AddSource(const std::string &method, ITransportL
   share.FromNameAndPaths(media, name, paths);
   CMediaSourceSettings::Get().AddShare(media, share);
 
-  if (content != "none")
+  if (media == "video" && contents.size() > 1)
   {
-    CONTENT_TYPE c = contentTypeFromString(content);
-
     ADDON::AddonPtr scraperAddon;
-    ADDON::CAddonMgr::Get().GetDefault(ADDON::ScraperTypeFromContent(c), scraperAddon);
+    ADDON::CAddonMgr::Get().GetDefault(ADDON::ScraperTypeFromContent(contentTypeFromString(contents[1])), scraperAddon);
     ADDON::ScraperPtr scraper = boost::dynamic_pointer_cast<ADDON::CScraper>(scraperAddon);
 
-    if (media == "video" && scraper)
-    {
-      CVideoDatabase db;
-      db.Open();
+    CVideoDatabase db;
+    db.Open();
 
-      VIDEO::SScanSettings settings;
-      db.SetScraperForPath(directory, scraper, settings);
-    } else if (media == "music") {
-      CMusicDatabase db;
-      db.Open();
-
-      db.SetScraperForPath(directory, scraper);
-    }
+    VIDEO::SScanSettings settings;
+    db.SetScraperForPath(directory, scraper, settings);
   }
 
   return ACK;
