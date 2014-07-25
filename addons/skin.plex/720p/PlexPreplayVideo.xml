@@ -1,9 +1,11 @@
 <window id="10090">
-	<defaultcontrol always="true">102</defaultcontrol>
+	<defaultcontrol always="false">102</defaultcontrol>
 	<views>60,61,58</views>
 	<allowoverlay>no</allowoverlay>
 	<onload condition="Container.PlexContent(Clips)">Skin.SetString(SectionType,preplay)</onload>
+	<onload condition="!Window.Previous(fullscreenvideo)">Control.SetFocus(102)</onload>
 	<onunload>Skin.Reset(SectionType)</onunload>
+	<onunload condition="!Window.Next(fullscreenvideo)">Control.SetFocus(102)</onunload>
 	<controls>
 		<!-- bg's (Backgrounds.xml) -->
 		<include>BGGrainy</include>

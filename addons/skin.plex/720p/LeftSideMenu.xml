@@ -594,7 +594,7 @@
 					<texturenofocus>b-pp-extras.png</texturenofocus>
 					<onright>XBMC.NextItem</onright>
 					<onleft>XBMC.PrevItem</onleft>
-					<onclick>ActivateWindow(10209)</onclick>
+					<onclick>SetFocus(3)</onclick>
 					<include>leftMenuBarButton</include>
 					<visible>!IsEmpty(ListItem.Property(PlexExtras))</visible>
 				</control>
