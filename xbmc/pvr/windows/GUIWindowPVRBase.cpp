@@ -156,7 +156,18 @@ bool CGUIWindowPVRBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         bReturn = true;
       }
       break;
-
+    case CONTEXT_BUTTON_FIND:
+    {
+      int windowSearchId = m_bRadio ? WINDOW_RADIO_SEARCH : WINDOW_TV_SEARCH;
+      CGUIWindowPVRBase *windowSearch = (CGUIWindowPVRBase*) g_windowManager.GetWindow(windowSearchId);
+      if (windowSearch && itemNumber >= 0 && itemNumber < m_vecItems->Size())
+      {
+        CFileItemPtr item = m_vecItems->Get(itemNumber);
+        g_windowManager.ActivateWindow(windowSearchId);
+        bReturn = windowSearch->OnContextButton(*item.get(), button);
+      }
+      break;
+    }
     default:
       bReturn = false;
   }

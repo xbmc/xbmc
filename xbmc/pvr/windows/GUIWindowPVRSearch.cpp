@@ -89,6 +89,39 @@ bool CGUIWindowPVRSearch::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CGUIWindowPVRBase::OnContextButton(itemNumber, button);
 }
 
+bool CGUIWindowPVRSearch::OnContextButton(const CFileItem &item, CONTEXT_BUTTON button)
+{
+  bool bReturn = false;
+
+  switch(button)
+  {
+    case CONTEXT_BUTTON_FIND:
+    {
+      m_searchfilter.Reset();
+      CEpgInfoTag tag;
+
+      // construct the search term
+      if (item.IsEPG())
+        m_searchfilter.m_strSearchTerm = "\"" + item.GetEPGInfoTag()->Title() + "\"";
+      else if (item.IsPVRChannel() && item.GetPVRChannelInfoTag()->GetEPGNow(tag))
+        m_searchfilter.m_strSearchTerm = "\"" + tag.Title() + "\"";
+      else if (item.IsPVRRecording())
+        m_searchfilter.m_strSearchTerm = "\"" + item.GetPVRRecordingInfoTag()->m_strTitle + "\"";
+      else if (item.IsPVRTimer())
+        m_searchfilter.m_strSearchTerm = "\"" + item.GetPVRTimerInfoTag()->m_strTitle + "\"";
+
+      m_bSearchConfirmed = true;
+      Refresh(true);
+      bReturn = true;
+      break;
+    }
+    default:
+      bReturn = false;
+  }
+
+  return bReturn;
+}
+
 bool CGUIWindowPVRSearch::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
 {
   CGUIWindowPVRBase::Update(strDirectory);
