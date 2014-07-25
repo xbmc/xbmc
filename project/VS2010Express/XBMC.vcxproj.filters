@@ -1699,12 +1699,6 @@
     <ClCompile Include="..\..\xbmc\utils\TextSearch.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\stdio_utf8.cpp">
-      <Filter>win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\stat_utf8.cpp">
-      <Filter>win32</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVRBase.cpp">
       <Filter>pvr\windows</Filter>
     </ClCompile>
@@ -4676,12 +4670,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\TextSearch.h">
       <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\win32\stdio_utf8.h">
-      <Filter>win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\win32\stat_utf8.h">
-      <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\ffmpeg\include-xbmc-win32\libavutil\avconfig.h" />
     <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRBase.h">

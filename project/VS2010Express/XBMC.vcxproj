@@ -1436,8 +1436,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\stat_utf8.cpp" />
-    <ClCompile Include="..\..\xbmc\win32\stdio_utf8.cpp" />
     <ClCompile Include="..\..\xbmc\win32\strverscmp.cpp" />
     <ClCompile Include="..\..\xbmc\win32\Win32DelayedDllLoad.cpp" />
     <ClCompile Include="..\..\xbmc\win32\WIN32Util.cpp" />
@@ -2130,8 +2128,6 @@
     <ClInclude Include="..\..\xbmc\XBDateTime.h" />
     <ClInclude Include="..\..\xbmc\XbmcContext.h" />
     <ClInclude Include="..\..\xbmc\win32\PlatformInclude.h" />
-    <ClInclude Include="..\..\xbmc\win32\stat_utf8.h" />
-    <ClInclude Include="..\..\xbmc\win32\stdio_utf8.h" />
     <ClInclude Include="..\..\xbmc\win32\WIN32Util.h" />
     <ClInclude Include="..\..\xbmc\win32\WindowHelper.h" />
     <ClInclude Include="..\..\xbmc\cores\DummyVideoPlayer.h" />

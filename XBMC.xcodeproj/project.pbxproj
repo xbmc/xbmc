@@ -3712,8 +3712,6 @@
 		0E3036EB1760F68A00D93596 /* FavouritesDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavouritesDirectory.h; sourceTree = "<group>"; };
 		180F6C7F17CE9A5700127892 /* smc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = smc.h; sourceTree = "<group>"; };
 		180F6C8017CE9A5700127892 /* smc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = smc.c; sourceTree = "<group>"; };
-		18308CB41303370800AA309E /* stat_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stat_utf8.h; sourceTree = "<group>"; };
-		18308CB51303370800AA309E /* stdio_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdio_utf8.h; sourceTree = "<group>"; };
 		183FDF8811AF0B0500B81E9C /* PluginSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PluginSource.cpp; sourceTree = "<group>"; };
 		183FDF8911AF0B0500B81E9C /* PluginSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PluginSource.h; sourceTree = "<group>"; };
 		18404DA51396C31B00863BBA /* SlingboxLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = SlingboxLib.a; path = lib/SlingboxLib/SlingboxLib.a; sourceTree = "<group>"; };
@@ -9611,8 +9609,6 @@
 				E38E1D790D25F9FD00618676 /* PlatformInclude.h */,
 				F5E56BA51082A675006E788A /* PosixMountProvider.cpp */,
 				F5E56BA41082A675006E788A /* PosixMountProvider.h */,
-				18308CB41303370800AA309E /* stat_utf8.h */,
-				18308CB51303370800AA309E /* stdio_utf8.h */,
 				E38E1D7D0D25F9FD00618676 /* XFileUtils.cpp */,
 				E38E1D7E0D25F9FD00618676 /* XFileUtils.h */,
 				E38E1D7F0D25F9FD00618676 /* XHandle.cpp */,
