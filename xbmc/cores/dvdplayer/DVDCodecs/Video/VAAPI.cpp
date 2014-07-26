@@ -396,7 +396,6 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
   m_hwaccel->display     = m_display->get();
 
   avctx->hwaccel_context = m_hwaccel;
-  avctx->thread_count    = 1;
   avctx->get_buffer2     = GetBufferS;
   avctx->draw_horiz_band = NULL;
   avctx->slice_flags     = SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
