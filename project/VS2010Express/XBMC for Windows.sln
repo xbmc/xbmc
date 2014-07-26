@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Kodi", "XBMC.vcxproj", "{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -11,8 +11,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libPlatinum", "libPlatinum.vcxproj", "{B2975495-FBE4-4F94-AAC5-B21A9842BF50}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnrarXLib", "UnrarXLib.vcxproj", "{FE0A91C0-E30A-47CD-8A92-A508C9292452}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visMilkdrop", "..\..\xbmc\visualizations\Milkdrop\Plugin.vcxproj", "{5E479372-4F34-426D-AA1E-9879E94C105D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageLib_dll", "..\..\lib\cximage-6.0\ImageLib.vcxproj", "{3B424C94-2005-44CC-BFB1-4B6C89090732}"
 EndProject
@@ -34,10 +32,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageLib_zlib", "..\..\lib\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libexif_dll", "..\..\lib\libexif\libexif.vcxproj", "{AD20A3E2-09CB-42DB-9A70-27F7CDC886CE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visDirectxSpectrum", "..\..\xbmc\visualizations\DirectXSpectrum\directx_spectrum.vcxproj", "{0D91724A-E6F6-4708-AF47-9F88BBE2114C}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visWaveform", "..\..\xbmc\visualizations\WaveForm\Waveform.vcxproj", "{D450FE9A-CE56-4496-B4AB-379094E642F2}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "squish", "..\..\tools\depends\native\libsquish-native\src\vs7\squish\squish_2010.vcxproj", "{6A8518C3-D81A-4428-BD7F-C37933088AC1}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cpluff", "..\..\lib\cpluff\libcpluff\win32\cpluff.vcxproj", "{88968763-3D6B-48A8-B495-CC8C187FAC02}"
@@ -58,11 +52,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gtest", "..\..\lib\gtest\msvc\gtest.vcxproj", "{C8F6C172-56F2-4E76-B5FA-C3B423B31BE7}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libXBMC_codec", "..\..\lib\addons\library.xbmc.codec\project\VS2010Express\libXBMC_codec.vcxproj", "{F8F1290B-1188-4810-86C9-88178A31D2AF}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visVortex", "..\..\xbmc\visualizations\Vortex\Vortex\Vortex.vcxproj", "{AFF288D5-8A77-4817-8DD9-364E183CDBF8}"
-	ProjectSection(ProjectDependencies) = postProject
-		{034B1D02-CA92-455D-8866-DB95BEE49C10} = {034B1D02-CA92-455D-8866-DB95BEE49C10}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Effects11", "..\..\lib\win32\Effects11\Effects11_2013.vcxproj", "{DF460EAB-570D-4B50-9089-2E2FC801BF38}"
 EndProject
@@ -93,12 +82,6 @@ Global
 		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Debug|Win32.Build.0 = Debug|Win32
 		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release|Win32.ActiveCfg = Release|Win32
 		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release|Win32.Build.0 = Release|Win32
-		{5E479372-4F34-426D-AA1E-9879E94C105D}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
-		{5E479372-4F34-426D-AA1E-9879E94C105D}.Debug Testsuite|Win32.Build.0 = Debug|Win32
-		{5E479372-4F34-426D-AA1E-9879E94C105D}.Debug|Win32.ActiveCfg = Debug|Win32
-		{5E479372-4F34-426D-AA1E-9879E94C105D}.Debug|Win32.Build.0 = Debug|Win32
-		{5E479372-4F34-426D-AA1E-9879E94C105D}.Release|Win32.ActiveCfg = Release|Win32
-		{5E479372-4F34-426D-AA1E-9879E94C105D}.Release|Win32.Build.0 = Release|Win32
 		{3B424C94-2005-44CC-BFB1-4B6C89090732}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
 		{3B424C94-2005-44CC-BFB1-4B6C89090732}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{3B424C94-2005-44CC-BFB1-4B6C89090732}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -159,18 +142,6 @@ Global
 		{AD20A3E2-09CB-42DB-9A70-27F7CDC886CE}.Debug|Win32.Build.0 = Debug (DLL)|Win32
 		{AD20A3E2-09CB-42DB-9A70-27F7CDC886CE}.Release|Win32.ActiveCfg = Release (DLL)|Win32
 		{AD20A3E2-09CB-42DB-9A70-27F7CDC886CE}.Release|Win32.Build.0 = Release (DLL)|Win32
-		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
-		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Debug Testsuite|Win32.Build.0 = Debug|Win32
-		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Debug|Win32.ActiveCfg = Debug|Win32
-		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Debug|Win32.Build.0 = Debug|Win32
-		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Release|Win32.ActiveCfg = Release|Win32
-		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Release|Win32.Build.0 = Release|Win32
-		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
-		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Debug Testsuite|Win32.Build.0 = Debug|Win32
-		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Debug|Win32.ActiveCfg = Debug|Win32
-		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Debug|Win32.Build.0 = Debug|Win32
-		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Release|Win32.ActiveCfg = Release|Win32
-		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Release|Win32.Build.0 = Release|Win32
 		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
 		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -220,12 +191,6 @@ Global
 		{F8F1290B-1188-4810-86C9-88178A31D2AF}.Debug|Win32.Build.0 = Debug|Win32
 		{F8F1290B-1188-4810-86C9-88178A31D2AF}.Release|Win32.ActiveCfg = Release|Win32
 		{F8F1290B-1188-4810-86C9-88178A31D2AF}.Release|Win32.Build.0 = Release|Win32
-		{AFF288D5-8A77-4817-8DD9-364E183CDBF8}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
-		{AFF288D5-8A77-4817-8DD9-364E183CDBF8}.Debug Testsuite|Win32.Build.0 = Debug|Win32
-		{AFF288D5-8A77-4817-8DD9-364E183CDBF8}.Debug|Win32.ActiveCfg = Debug|Win32
-		{AFF288D5-8A77-4817-8DD9-364E183CDBF8}.Debug|Win32.Build.0 = Debug|Win32
-		{AFF288D5-8A77-4817-8DD9-364E183CDBF8}.Release|Win32.ActiveCfg = Release|Win32
-		{AFF288D5-8A77-4817-8DD9-364E183CDBF8}.Release|Win32.Build.0 = Release|Win32
 		{DF460EAB-570D-4B50-9089-2E2FC801BF38}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
 		{DF460EAB-570D-4B50-9089-2E2FC801BF38}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{DF460EAB-570D-4B50-9089-2E2FC801BF38}.Debug|Win32.ActiveCfg = Debug|Win32

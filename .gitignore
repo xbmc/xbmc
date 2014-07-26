@@ -101,25 +101,11 @@ config.log
 /*.patch
 
 # /addons/
-/addons/com.nullsoft.milkdrop.xbmc/*.vis
-/addons/org.xbmc.addons.dxspectrum/*.vis
 /addons/packages
-/addons/screensaver.rsxs.euphoria/Euphoria.xbs
-/addons/screensaver.rsxs.plasma/Plasma.xbs
-/addons/screensaver.rsxs.solarwinds/Solarwinds.xbs
 /addons/skin.confluence/media/Makefile
 /addons/skin.confluence/media/Textures.xbt
 /addons/skin.pm3-hd/media/Textures.xbt
-/addons/visualization.dxspectrum/Spectrum_win32dx.vis
-/addons/visualization.glspectrum/opengl_spectrum.vis
-/addons/visualization.milkdrop/MilkDrop_win32dx.vis
-/addons/visualization.projectm/projectM.vis
-/addons/visualization.projectm/resources/presets.zip
-/addons/visualization.vortex/Vortex_win32dx.vis
-/addons/visualization.waveform/Waveform.vis
-/addons/visualization.waveform/Waveform_win32.vis
 /addons/visualization.itunes/iTunes.mvis
-/addons/visualization.fishbmc/fishbmc.vis
 /addons/script.module.pil/
 /addons/audioencoder.*
 /addons/pvr.*
@@ -411,12 +397,6 @@ lib/cpluff/stamp-h1
 # /system
 /system/zlib1.dll
 
-
-# /screensavers/
-/screensavers/Solarwinds.xbs
-/screensavers/Euphoria.xbs
-/screensavers/Plasma.xbs
-
 # /skin/Confluence/
 /skin/Confluence/BUILD
 
@@ -494,7 +474,6 @@ lib/cpluff/stamp-h1
 
 # /xbmc/addons/
 /xbmc/addons/Makefile
-/xbmc/addons/visualization.waveform
 
 # /xbmc/android
 /xbmc/android/Makefile
@@ -586,104 +565,8 @@ lib/cpluff/stamp-h1
 # /xbmc/main/posix/
 xbmc/main/posix/Makefile
 
-#/xbmc/screensavers/
-/xbmc/screensavers/Makefile
-/xbmc/screensavers/rsxs-0.9/Makefile
-/xbmc/screensavers/rsxs-0.9/configure
-/xbmc/screensavers/rsxs-0.9/config.h
-/xbmc/screensavers/rsxs-0.9/config.log
-/xbmc/screensavers/rsxs-0.9/config/Makefile
-/xbmc/screensavers/rsxs-0.9/lib/Makefile
-/xbmc/screensavers/rsxs-0.9/libltdl/Makefile
-/xbmc/screensavers/rsxs-0.9/src/Makefile
-/xbmc/screensavers/rsxs-0.9/src/cyclone/Makefile
-/xbmc/screensavers/rsxs-0.9/src/euphoria/Makefile
-/xbmc/screensavers/rsxs-0.9/src/fieldlines/Makefile
-/xbmc/screensavers/rsxs-0.9/src/flocks/Makefile
-/xbmc/screensavers/rsxs-0.9/src/flux/Makefile
-/xbmc/screensavers/rsxs-0.9/src/helios/Makefile
-/xbmc/screensavers/rsxs-0.9/src/hyperspace/Makefile
-/xbmc/screensavers/rsxs-0.9/src/lattice/Makefile
-/xbmc/screensavers/rsxs-0.9/src/plasma/Makefile
-/xbmc/screensavers/rsxs-0.9/src/skyrocket/Makefile
-/xbmc/screensavers/rsxs-0.9/src/solarwinds/Makefile
-/xbmc/screensavers/rsxs-0.9/xbmc/Makefile
-/xbmc/screensavers/rsxs-0.9/autom4te.cache/
-/xbmc/screensavers/rsxs-0.9/lib/alloca.h
-/xbmc/screensavers/rsxs-0.9/lib/argz.h
-/xbmc/screensavers/rsxs-0.9/lib/getopt.h
-/xbmc/screensavers/rsxs-0.9/rsxs.spec
-/xbmc/screensavers/rsxs-0.9/src/.dirstamp
-/xbmc/screensavers/rsxs-0.9/src/euphoria/rs-euphoria
-/xbmc/screensavers/rsxs-0.9/src/plasma/rs-plasma
-/xbmc/screensavers/rsxs-0.9/src/solarwinds/rs-solarwinds
-/xbmc/screensavers/rsxs-0.9/stamp-h1
-/xbmc/screensavers/rsxs-0.9/aclocal.m4
-/xbmc/screensavers/rsxs-0.9/compile
-/xbmc/screensavers/rsxs-0.9/config.guess
-/xbmc/screensavers/rsxs-0.9/config.h.in
-/xbmc/screensavers/rsxs-0.9/config.h.in~
-/xbmc/screensavers/rsxs-0.9/config.sub
-/xbmc/screensavers/rsxs-0.9/config/Makefile.in
-/xbmc/screensavers/rsxs-0.9/depcomp
-/xbmc/screensavers/rsxs-0.9/INSTALL
-/xbmc/screensavers/rsxs-0.9/install-sh
-/xbmc/screensavers/rsxs-0.9/lib/Makefile.in
-/xbmc/screensavers/rsxs-0.9/libltdl/Makefile.in
-/xbmc/screensavers/rsxs-0.9/Makefile.in
-/xbmc/screensavers/rsxs-0.9/missing
-/xbmc/screensavers/rsxs-0.9/src/cyclone/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/euphoria/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/fieldlines/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/flocks/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/flux/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/helios/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/hyperspace/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/lattice/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/plasma/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/skyrocket/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/solarwinds/Makefile.in
-
 #/xbmc/utils
 /xbmc/utils/Makefile
-
-#/xbmc/visualizations/
-/xbmc/visualizations/DirectXSpectrum/Debug (DirectX)
-/xbmc/visualizations/DirectXSpectrum/Release (DirectX)
-/xbmc/visualizations/EGLHelpers/Makefile
-/xbmc/visualizations/fishBMC/Makefile
-/xbmc/visualizations/Goom/Makefile
-/xbmc/visualizations/Goom/goom2k4-0/aclocal.m4
-/xbmc/visualizations/Goom/goom2k4-0/compile
-/xbmc/visualizations/Goom/goom2k4-0/configure
-/xbmc/visualizations/Goom/goom2k4-0/INSTALL
-/xbmc/visualizations/Goom/goom2k4-0/mkinstalldirs
-/xbmc/visualizations/Goom/goom2k4-0/Makefile.in
-/xbmc/visualizations/Goom/goom2k4-0/config.guess
-/xbmc/visualizations/Goom/goom2k4-0/config.sub
-/xbmc/visualizations/Goom/goom2k4-0/depcomp
-/xbmc/visualizations/Goom/goom2k4-0/install-sh
-/xbmc/visualizations/Goom/goom2k4-0/ltmain.sh
-/xbmc/visualizations/Goom/goom2k4-0/missing
-/xbmc/visualizations/Goom/goom2k4-0/sdl-goom/Makefile.in
-/xbmc/visualizations/Goom/goom2k4-0/src/Makefile.in
-/xbmc/visualizations/Goom/goom2k4-0/xmms-goom/Makefile.in
-/xbmc/visualizations/Goom/goom2k4-0/ylwrap
-/xbmc/visualizations/Goom/goom2k4-0/gtk-gui-devel/confdefs.h
-/xbmc/visualizations/Milkdrop/Debug
-/xbmc/visualizations/Milkdrop/Release
-/xbmc/visualizations/OpenGLSpectrum/Makefile
-/xbmc/visualizations/Vortex/Vortex/Vortex.vcxproj.metaproj
-/xbmc/visualizations/WaveForm/Makefile
-/xbmc/visualizations/WaveForm/Debug (DirectX)
-/xbmc/visualizations/WaveForm/Release (DirectX)
-/xbmc/visualizations/XBMCProjectM/Makefile
-/xbmc/visualizations/XBMCProjectM/libprojectM/Makefile
-/xbmc/visualizations/XBMCProjectM/libprojectM/CMakeCache.txt
-/xbmc/visualizations/XBMCProjectM/libprojectM/CMakeFiles/
-/xbmc/visualizations/XBMCProjectM/libprojectM/cmake_install.cmake
-/xbmc/visualizations/XBMCProjectM/libprojectM/config.inp
 
 #/xbmc/win32/
 /xbmc/win32/XBMC_PC.rc

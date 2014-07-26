@@ -188,12 +188,6 @@ set WORKSPACE=%CD%\..\..
   Echo addons\repository.pvr-ios.xbmc.org\>>exclude.txt
   Echo addons\repository.pvr-osx32.xbmc.org\>>exclude.txt
   Echo addons\repository.pvr-osx64.xbmc.org\>>exclude.txt
-  Echo addons\screensaver.rsxs.euphoria\>>exclude.txt
-  Echo addons\screensaver.rsxs.plasma\>>exclude.txt
-  Echo addons\screensaver.rsxs.solarwinds\>>exclude.txt
-  Echo addons\visualization.fishbmc\>>exclude.txt
-  Echo addons\visualization.projectm\>>exclude.txt
-  Echo addons\visualization.glspectrum\>>exclude.txt
   rem Exclude skins as they're copied by their own script
   Echo addons\skin.re-touched\>>exclude.txt
   Echo addons\skin.confluence\>>exclude.txt

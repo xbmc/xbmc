@@ -1,1 +1,0 @@
-lex -i scan.l

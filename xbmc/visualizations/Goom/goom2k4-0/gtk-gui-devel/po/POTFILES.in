@@ -1,6 +1,0 @@
-# List of source files containing translatable strings.
-
-gtk-gui/main.c
-gtk-gui/interface.c
-gtk-gui/callbacks.c
-gtk-gui/support.c
