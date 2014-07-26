@@ -54,6 +54,8 @@ public:
   {
   }
 
+  virtual ~AddonProps() {}
+
   AddonProps(const cp_extension_t *ext);
   AddonProps(const cp_plugin_info_t *plugin);
 
