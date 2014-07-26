@@ -158,6 +158,14 @@ bool CGUIWindowPlexPreplayVideo::OnAction(const CAction &action)
       return true;
     }
   }
+  else if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
+  {
+    // we dont want to handle builtins functions as they should
+    // be handled by application. This will typically avoid returning to homescreen
+    // when extras list is openned.
+    return false;
+  }
+
   return CGUIMediaWindow::OnAction(action);
 }
 
