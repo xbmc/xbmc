@@ -26,7 +26,8 @@ void CPlexExtraDataLoader::loadDataForItem(CFileItemPtr pItem, ExtraDataType typ
     PlexUtils::AppendPathToURL(url, "extras");
 
     url.SetOptions("");
-    url.SetOption("extratype", boost::lexical_cast<std::string>((int)type));
+    if (type != NONE)
+      url.SetOption("extratype", boost::lexical_cast<std::string>((int)type));
 
     CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(url), this);
   }

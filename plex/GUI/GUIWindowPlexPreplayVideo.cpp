@@ -319,7 +319,7 @@ void CGUIWindowPlexPreplayVideo::UpdateItem()
     g_plexApplication.m_preplayItem = m_vecItems->Get(0);
     g_plexApplication.themeMusicPlayer->playForItem(*m_vecItems->Get(0));
 
-    m_extraDataLoader.loadDataForItem(m_vecItems->Get(0),CPlexExtraDataLoader::TRAILER);
+    m_extraDataLoader.loadDataForItem(m_vecItems->Get(0));
   }
 }
 

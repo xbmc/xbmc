@@ -20,7 +20,7 @@ public:
   inline CFileItemListPtr getItems() { return m_items; }
   inline ExtraDataType getDataType() { return m_type; }
 
-  void loadDataForItem(CFileItemPtr pItem, ExtraDataType type);
+  void loadDataForItem(CFileItemPtr pItem, ExtraDataType type = NONE);
 
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob* job);
 
