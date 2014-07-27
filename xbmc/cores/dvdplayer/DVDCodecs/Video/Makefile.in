@@ -11,10 +11,6 @@ endif
 ifeq (@USE_VAAPI@,1)
 SRCS += VAAPI.cpp
 endif
-ifeq (@USE_CRYSTALHD@,1)
-SRCS += CrystalHD.cpp
-SRCS += DVDVideoCodecCrystalHD.cpp
-endif
 ifeq ($(findstring osx,@ARCH@),osx)
 SRCS += DVDVideoCodecVDA.cpp
 SRCS += VDA.cpp

@@ -154,8 +154,6 @@ vdpau_not_found="== Could not find libvdpau. VDPAU support disabled. =="
 vdpau_disabled="== VDPAU support manually disabled. =="
 vaapi_not_found="== Could not find libva. VAAPI support disabled. =="
 vaapi_disabled="== VAAPI support manually disabled. =="
-crystalhd_not_found="== Could not find libcrystalhd. CrystalHD support disabled. =="
-crystalhd_disabled="== CrystalHD support manually disabled. =="
 vtbdecoder_enabled="== VTBDecoder support enabled. =="
 vtbdecoder_disabled="== VTBDecoder support manually disabled. =="
 openmax_disabled="== OpenMax support manually disabled. =="
@@ -250,12 +248,6 @@ AC_ARG_ENABLE([vaapi],
   [enable VAAPI decoding (default is auto)])],
   [use_vaapi=$enableval],
   [use_vaapi=auto])
-
-AC_ARG_ENABLE([crystalhd],
-  [AS_HELP_STRING([--enable-crystalhd],
-  [enable CrystalHD decoding (default is auto)])],
-  [use_crystalhd=$enableval],
-  [use_crystalhd=auto])
 
 AC_ARG_ENABLE([vtbdecoder],
   [AS_HELP_STRING([--enable-vtbdecoder],
@@ -603,7 +595,6 @@ case $host in
      use_joystick=no
      use_neon=yes
      use_libcec=no
-     use_crystalhd=no
      use_vtbdecoder=yes
      use_optical_drive=no
      use_dvdcss=no
@@ -629,7 +620,6 @@ case $host in
   powerpc-apple-darwin*)
      use_joystick=no
      use_vtbdecoder=no
-     use_crystalhd=no
      ARCH="powerpc-osx"
      use_arch="ppc"
      DEPENDS_ROOT_FOR_XCODE=$(echo ${prefix%/*})
@@ -1871,41 +1861,6 @@ else
   USE_VAAPI=0
 fi
 
-# CrystalHD
-if test "x$use_crystalhd" != "xno"; then
-  SAVE_CFLAGS="$CFLAGS"
-  CFLAGS="-D__LINUX_USER__"
-  AC_CHECK_HEADER([libcrystalhd/libcrystalhd_if.h], [],
-    [ if test "x$use_crystalhd" = "xyes"; then
-        AC_MSG_ERROR($crystalhd_not_found)
-      else
-        use_crystalhd=no
-        AC_MSG_RESULT($crystalhd_not_found)
-      fi
-      USE_CRYSTALHD=0
-    ])
-    CFLAGS="$SAVE_CFLAGS"
-    if test "$host_vendor" != "apple"; then
-      XB_FIND_SONAME([CRYSTALHD], [crystalhd], [use_crystalhd])
-    fi
-    if test "x$use_crystalhd" != "xno"; then
-      SAVE_CFLAGS="$CFLAGS"
-      CFLAGS="-D__LINUX_USER__ -lcrystalhd"
-      # check for new crystalhd lib
-      AC_COMPILE_IFELSE(
-        [AC_LANG_SOURCE([#include <libcrystalhd/bc_dts_types.h>
-          #include <libcrystalhd/bc_dts_defs.h>
-          PBC_INFO_CRYSTAL bCrystalInfo;])],
-        [ AC_DEFINE([HAVE_LIBCRYSTALHD], [2], [Define to 2 if you have the 'New Broadcom Crystal HD' library.]) ], 
-        [ AC_DEFINE([HAVE_LIBCRYSTALHD], [1], [Define to 1 if you have the 'Old Broadcom Crystal HD' library.]) ])
-      CFLAGS="$SAVE_CFLAGS"
-      USE_CRYSTALHD=1
-    fi
-else
-  AC_MSG_NOTICE($crystalhd_disabled)
-  USE_CRYSTALHD=0
-fi
-
 # VTBDecoder
 if test "x$use_vtbdecoder" != "xno"; then
   if test "$host_vendor" = "apple" ; then
@@ -2107,12 +2062,6 @@ if test "x$use_vaapi" != "xno"; then
   final_message="$final_message\n  VAAPI:\tYes"
 else
   final_message="$final_message\n  VAAPI:\tNo"
-fi
-
-if test "x$use_crystalhd" != "xno"; then
-  final_message="$final_message\n  CrystalHD:\tYes"
-else
-  final_message="$final_message\n  CrystalHD:\tNo"
 fi
 
 if test "x$use_vtbdecoder" != "xno"; then
@@ -2608,7 +2557,6 @@ AC_SUBST(USE_OPENGL)
 AC_SUBST(USE_OPENGLES)
 AC_SUBST(USE_VDPAU)
 AC_SUBST(USE_VAAPI)
-AC_SUBST(USE_CRYSTALHD)
 AC_SUBST(USE_LIBSMBCLIENT)
 AC_SUBST(USE_LIBNFS)
 AC_SUBST(USE_LIBAFPCLIENT)
