@@ -122,7 +122,7 @@ Section "XBMC" SecXBMC
   
   ;Turn off overwrite to prevent files in APPDATA\xbmc\userdata\ from being overwritten
   SetOverwrite off
-  IfFileExists $INSTDIR\userdata 0 +2
+  IfFileExists $INSTDIR\userdata\*.* 0 +2
     SetOutPath "$APPDATA\${APP_NAME}\userdata"
     File /r "${xbmc_root}\Xbmc\userdata\*.*"
   
