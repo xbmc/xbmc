@@ -751,6 +751,7 @@ lib/cpluff/stamp-h1
 /xbmc/visualizations/fishBMC/Makefile
 
 #/xbmc/win32/
+/xbmc/win32/XBMC_PC.rc
 # no longer used
 /xbmc/win32/git_rev.h
 
