@@ -111,7 +111,7 @@ bool CGUIWindowPVRTimers::OnMessage(CGUIMessage &message)
       if (message.GetSenderId() == m_viewControl.GetCurrentControl())
       {
         int iItem = m_viewControl.GetSelectedItem();
-        if (iItem > 0 || iItem < m_vecItems->Size())
+        if (iItem >= 0 && iItem < m_vecItems->Size())
         {
           bReturn = true;
           switch (message.GetParam1())

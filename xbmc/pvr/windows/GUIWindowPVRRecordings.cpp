@@ -188,7 +188,7 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
       if (message.GetSenderId() == m_viewControl.GetCurrentControl())
       {
         int iItem = m_viewControl.GetSelectedItem();
-        if (iItem > 0 || iItem < (int) m_vecItems->Size())
+        if (iItem >= 0 && iItem < (int) m_vecItems->Size())
         {
           switch (message.GetParam1())
           {
