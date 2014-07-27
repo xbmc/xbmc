@@ -121,7 +121,8 @@
 				<visible>Container.PlexContent(Clips) | Container.PlexContent(Homemovies)</visible>
 				<onup>80</onup>
 				<ondown>80</ondown>
-				<onright>80</onright>
+				<onright condition="Container.PlexContent(homemovies)">Container.NextViewMode</onright>
+				<onright condition="!Container.PlexContent(homemovies)">80</onright>
 				<onleft>998</onleft>
 				<orientation>vertical</orientation>
 				<posx>102</posx>
