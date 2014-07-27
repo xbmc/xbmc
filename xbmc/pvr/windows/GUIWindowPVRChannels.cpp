@@ -117,7 +117,7 @@ std::string CGUIWindowPVRChannels::GetDirectoryPath(void)
 
 bool CGUIWindowPVRChannels::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
-  if (itemNumber < 0 || itemNumber >= (int) m_vecItems->Size())
+  if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
     return false;
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
@@ -188,7 +188,7 @@ bool CGUIWindowPVRChannels::OnMessage(CGUIMessage& message)
       if (message.GetSenderId() == m_viewControl.GetCurrentControl())
       {
         int iItem = m_viewControl.GetSelectedItem();
-        if (iItem >= 0 && iItem < (int) m_vecItems->Size())
+        if (iItem >= 0 && iItem < m_vecItems->Size())
         {
           bReturn = true;
           switch (message.GetParam1())
