@@ -119,6 +119,7 @@ config.log
 /addons/visualization.itunes/iTunes.mvis
 /addons/visualization.fishbmc/fishbmc.vis
 /addons/script.module.pil/
+/addons/audioencoder.*
 /addons/pvr.*
 /addons/xbmc.addon/addon.xml
 /addons/xbmc.json/addon.xml
