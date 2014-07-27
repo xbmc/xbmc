@@ -897,8 +897,8 @@ msgstr "Extras"
 
 ### Extra Types
 msgctxt "#44501"
-msgid "Trailers"
-msgstr "Trailers"
+msgid "Trailer"
+msgstr "Trailer"
 
 msgctxt "#44502"
 msgid "Deleted Scene"
