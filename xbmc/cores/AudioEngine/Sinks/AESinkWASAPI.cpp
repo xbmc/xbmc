@@ -169,11 +169,14 @@ std::string localWideToUtf(LPCWSTR wstr)
   if (wstr == NULL)
     return "";
   int bufSize = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
-  std::string strA ("", bufSize);
-  strA.resize(bufSize);
-  if ( bufSize == 0 || WideCharToMultiByte(CP_UTF8, 0, wstr, -1, &strA[0], bufSize, NULL, NULL) != bufSize )
-    strA.clear();
-  return strA;
+  char *multiStr = new char[bufSize + 1];
+  if (bufSize == 0 || WideCharToMultiByte(CP_UTF8, 0, wstr, -1, multiStr, bufSize, NULL, NULL) != bufSize)
+    multiStr[0] = 0;
+  else
+    multiStr[bufSize] = 0;
+  std::string ret(multiStr);
+  delete[] multiStr;
+  return ret;
 }
 
 CAESinkWASAPI::CAESinkWASAPI() :
