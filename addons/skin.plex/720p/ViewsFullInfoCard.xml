@@ -62,6 +62,7 @@
 		<value condition="ListItem.Type(photo)">$INFO[ListItem.PictureResolution]</value>
 		<value condition="Container.PlexContent(Albums)">$INFO[ListItem.Property(LeafCount)] $LOCALIZE[32106]$INFO[ListItem.Year, [COLOR=orange]&#xB7;[/COLOR] ]</value>
 		<value condition="Container.PlexContent(Songs)">$INFO[ListItem.Album]</value>
+		<value condition="Container.PlexContent(HomeMovies) + Container.PlexFilter(Folder) + !ListItem.Type(Movie)">[UPPERCASE]$LOCALIZE[31658][/UPPERCASE]</value>
 	</variable>
 	<include name="ListItemUnwatchedCount">
 		<control type="grouplist">
@@ -256,7 +257,7 @@
 								<height>215</height>
 								<fadetime>300</fadetime>
 								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-								<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+								<texture fallback="default-thumb-big.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 								<visible>IsEmpty(ListItem.Property(Fanart_Image)) | Container.PlexContent(Homemovies) | Container.PlexContent(Photos) | Container.PlexContent(Artists) | [Container.PlexContent(Channel) + ListItem.Type(photo)] | [Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
 							</control>
 							<include>ListItemFullInfoThumbCardUnwatchedOverlay</include>

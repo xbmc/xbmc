@@ -30,7 +30,7 @@
 		</control>
 		<!-- Episode Thumb -->
 		<control type="group">
-			<visible>Container.PlexContent(Episodes) | [Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
+			<visible>Container.PlexContent(HomeMovies) | Container.PlexContent(Episodes) | [Container.PlexContent(Channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
 			<control type="image">
 				<posx>23</posx>
 				<posy>37</posy>
