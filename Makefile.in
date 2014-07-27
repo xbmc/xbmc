@@ -554,11 +554,11 @@ ifeq ($(findstring osx,@ARCH@), osx)
 else
 install: install-binaries install-arch install-datas
 
-apk: apk-clean install
-	make -C tools/android/packaging
+apk obb apk-unsigned apk-obb apk-obb-unsigned apk-noobb: install
+	make -C tools/android/packaging $@
 
-apk-clean:
-	make -C tools/android/packaging clean
+apk-clean apk-sign:
+	make -C tools/android/packaging $@
 
 install-binaries: install-scripts
 	@echo "Copying @APP_NAME_LC@ binary to $(DESTDIR)$(libdir)/@APP_NAME_LC@/"
