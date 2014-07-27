@@ -522,6 +522,9 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_PLEX_PLAYQUEUE_UPDATED:
     {
+      // Add eventually the PQ Menu if we dont have it yet
+      UpdateSections();
+
       RefreshSection("plexserver://playqueue/", CPlexSectionFanout::SECTION_TYPE_PLAYQUEUE);
       return true;
     }
