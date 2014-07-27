@@ -16,6 +16,7 @@ public:
   bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   bool Update(const CStdString &strDirectory, bool updateFilterPath);
   bool OnAction(const CAction &action);
+  bool isItemPlaying(CFileItemPtr item);
 };
 
 #endif // GUIWINDOWPLEXPLAYQUEUE_H

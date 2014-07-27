@@ -1070,3 +1070,7 @@ msgstr "and play the selection instead"
 msgctxt "#52607"
 msgid "Queue"
 msgstr "Queue"
+
+msgctxt "#52608"
+msgid "Toggle Edit Mode"
+msgstr "Toggle Edit Mode"
