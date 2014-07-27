@@ -12,8 +12,6 @@ EXCLUDED_ADDONS = screensaver.rsxs.euphoria visualization.dxspectrum visualizati
 
 XBMCROOT = $(shell cd $(CURDIR)/../../..; pwd)
 COPYDIRS = system addons language media
-AAPT = $(SDKROOT)/platform-tools/aapt
-DX = $(SDKROOT)/platform-tools/dx
 GCC_VERSION=$(shell $(CC) -dumpversion)
 
 X86OVERRIDES=XBMC_OVERRIDE_HOST=i686-android-linux XBMC_OVERRIDE_TOOLCHAIN=$(XBMC_X86_TOOLCHAIN)
@@ -52,7 +50,7 @@ multi: x86 arm
 	@cp images/xbmcapp-debug-skeleton.apk images/xbmcapp-debug-multi-unaligned.apk
 	@cd xbmc; zip -r -q ../images/xbmcapp-debug-multi-unaligned.apk lib/ assets
 	@jarsigner -sigalg MD5withRSA -digestalg SHA1 -keystore ~/.android/debug.keystore -storepass android images/xbmcapp-debug-multi-unaligned.apk androiddebugkey
-	@$(SDKROOT)/tools/zipalign -f 4 images/xbmcapp-debug-multi-unaligned.apk $(XBMCROOT)/xbmcapp-multi-debug.apk
+	@$(ZIPALIGN) -f 4 images/xbmcapp-debug-multi-unaligned.apk $(XBMCROOT)/xbmcapp-multi-debug.apk
 	@rm images/xbmcapp-debug-multi-unaligned.apk
 	@echo "$(XBMCROOT)/xbmcapp-multi-debug.apk created"
 
@@ -63,7 +61,7 @@ package: extras
 	@$(DX) --dex --output=xbmc/classes.dex xbmc/obj
 	@cd xbmc; zip -r -q ../images/xbmcapp-debug-$(CPU)-unaligned.apk lib/$(CPU) assets classes.dex
 	@jarsigner -sigalg MD5withRSA -digestalg SHA1 -keystore ~/.android/debug.keystore -storepass android images/xbmcapp-debug-$(CPU)-unaligned.apk androiddebugkey
-	@$(SDKROOT)/tools/zipalign -f 4 images/xbmcapp-debug-$(CPU)-unaligned.apk $(XBMCROOT)/xbmcapp-$(CPU)-debug.apk
+	@$(ZIPALIGN) -f 4 images/xbmcapp-debug-$(CPU)-unaligned.apk $(XBMCROOT)/xbmcapp-$(CPU)-debug.apk
 	@rm images/xbmcapp-debug-$(CPU)-unaligned.apk
 	@echo "$(XBMCROOT)/xbmcapp-$(CPU)-debug.apk created"
 
