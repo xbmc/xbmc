@@ -149,6 +149,87 @@
 			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
 		</control>
 	</include>
+	<!-- extras -->
+	<include name="ExtraThumb">
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>220</width>
+			<height>124</height>
+			<texture background="true">default-thumb-small.png</texture>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>220</width>
+			<height>124</height>
+			<texture background="true" diffuse="mask-wide-big.png">$INFO[ListItem.Art(thumb)]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+	</include>
+	<include name="ExtraThumbCard">
+		<control type="image">
+			<posx>13</posx>
+			<posy>97</posy>
+			<width>220</width>
+			<height>100</height>
+			<include>Card</include>
+			<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
+		</control>
+	</include>
+	<include name="ExtraIconPlay">
+		<control type="image">
+			<posx>92</posx>
+			<posy>44</posy>
+			<width>64</width>
+			<height>64</height>
+			<texture>b-play-extra-s.png</texture>
+			<animation effect="fade" start="0" end="100" time="400" condition="true">Conditional</animation>
+		</control>
+	</include>
+	<include name="ExtraThumbSelectedBorder">
+		<control type="image">
+			<width>226</width>
+			<height>190</height>
+			<include>Border</include>
+		</control>
+	</include>
+	<include name="ExtraTypeTitle">
+		<posy>109</posy>
+		<posx>26</posx>
+		<width>190</width>
+		<height>20</height>
+		<align>left</align>
+		<aligny>center</aligny>
+		<label>$INFO[ListItem.Property(extraTypeStr)]</label>
+		<font>Bold-22</font>
+		<shadowcolor>FF222222</shadowcolor>
+	</include>
+	<include name="ExtraTitle">
+		<posy>146</posy>
+		<posx>24</posx>
+		<width>190</width>
+		<height>20</height>
+		<align>left</align>
+		<aligny>center</aligny>
+		<label>$INFO[ListItem.Label]</label>
+		<font>Regular-14</font>
+		<shadowcolor>FF222222</shadowcolor>
+	</include>
+	<include name="ExtraSecondTitle">
+		<control type="label">
+			<posy>170</posy>
+			<posx>24</posx>
+			<width>190</width>
+			<height>20</height>
+			<align>left</align>
+			<aligny>center</aligny>
+			<font>Regular-14</font>
+			<textcolor>FF999999</textcolor>
+			<label>$INFO[ListItem.DurationStr]</label>
+			<shadowcolor>FF222222</shadowcolor>
+		</control>
+	</include>
 	<!-- all episodes are from the same season -->
 	<include name="EpisodeThumbOverlayTitle">
 		<posy>88</posy>
@@ -995,7 +1076,7 @@
 					<include>WhiteShadow</include>
 				</control>
 				<control type="group">
-					<posy>85</posy>
+					<posy>68</posy>
 					<posx>26</posx>
 					<control type="list" id="3">
 						<width>260</width>
@@ -1007,17 +1088,24 @@
 						<pagecontrol>61</pagecontrol>
 						<scrolltime>200</scrolltime>
 						<itemlayout height="200">
-							<include>ExtraThumbCard</include>
 							<include>ExtraThumb</include>
+							<include>ExtraThumbCard</include>
+							<control type="label">
+								<include>ExtraTypeTitle</include>
+							</control>
 							<control type="label">
 								<include>ExtraTitle</include>
 							</control>
 							<include>ExtraSecondTitle</include>
 						</itemlayout>
 						<focusedlayout height="200">
-							<include>ExtraThumbCard</include>
 							<include>ExtraThumb</include>
+							<include>ExtraThumbCard</include>
 							<!--><include>ExtraIconPlay</include>-->
+							<control type="label">
+								<include>ExtraTypeTitle</include>
+								<textcolor>orangeLight</textcolor>
+							</control>
 							<control type="label">
 								<include>ExtraTitle</include>
 								<textcolor>orangeLight</textcolor>
