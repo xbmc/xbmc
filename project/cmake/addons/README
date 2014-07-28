@@ -1,8 +1,9 @@
 XBMC ADDONS
 ===========
 This directory contains the cmake-based buildsystem for addons. It looks into
-the "addons" sub-directory and parses all *.txt files. Each addon must have its
-own <addon-id>.txt file which must follow the defined format:
+the "addons" sub-directory and parses all *.txt files recursively. Each addon
+must have its own <addon-id>.txt file in a separate sub-directory which must
+follow the defined format:
   <addon-id> <git-url> <git-revision>
 where
   * <addon-id> must be identical to the addon's ID as defined in the addon's
@@ -10,6 +11,10 @@ where
   * <git-url> must be the URL of the git repository containing the addon.
   * <git-revision> must be a valid git tag/branch/commit in the addon's git
     repository which will be used for the build.
+
+Reserved filenames (for additional information on how to build an addon)
+are:
+  * platforms.txt: list of platforms to build an addon for (or "all")
 
 The buildsystem uses the following variables (which can be passed into it when
 executing cmake with the -D<variable-name>=<value> option) to e.g. access
