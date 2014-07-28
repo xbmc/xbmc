@@ -321,6 +321,10 @@
 					<include>debugFont</include>
 					<label>Container.Property(PlexExtras) : [COLOR=orangeLight]$INFO[Container.Property(PlexExtras)][/COLOR]</label>
 				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.Property(PlexEditMode) : [COLOR=orangeLight]$INFO[Container.Property(PlexEditMode)][/COLOR]</label>
+				</control>
 				<!--><control type="label">
 					<include>debugFont</include>
 					<label>ListItem.FileNameAndPath : [COLOR=orangeLight]$INFO[ListItem.FileNameAndPath][/COLOR]</label>
