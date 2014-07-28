@@ -404,14 +404,6 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
     return;
   }
 
-  /* PLEX */
-  // navigation should close already all dialogs but some shortcuts
-  // like 'h' activate windows in a global scope so let's close a dialog if its openned
-  CGUIWindow *dialog = g_windowManager.GetTopMostDialog();
-  if (dialog)
-    dialog->Close();
-  /* END PLEX */
-
   g_infoManager.SetNextWindow(iWindowID);
 
   // set our overlay state
