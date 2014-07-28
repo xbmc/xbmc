@@ -4933,10 +4933,6 @@ msgctxt "#13427"
 msgid "Allow hardware acceleration (DXVA2)"
 msgstr "Allow hardware acceleration (DXVA2)"
 
-msgctxt "#13428"
-msgid "Allow hardware acceleration (CrystalHD)"
-msgstr "Allow hardware acceleration (CrystalHD)"
-
 msgctxt "#13429"
 msgid "Allow hardware acceleration (VDADecoder)"
 msgstr "Allow hardware acceleration (VDADecoder)"
@@ -11340,10 +11336,6 @@ msgstr "Enable VAAPI hardware decoding of video files, mainly used for Intel gra
 msgctxt "#36158"
 msgid "Enable DXVA2 hardware decoding of video files."
 msgstr "Enable DXVA2 hardware decoding of video files."
-
-msgctxt "#36159"
-msgid "Enable CrystalHD decoding of video files."
-msgstr "Enable CrystalHD decoding of video files."
 
 msgctxt "#36160"
 msgid "Enable VDA hardware decoding of video files."
