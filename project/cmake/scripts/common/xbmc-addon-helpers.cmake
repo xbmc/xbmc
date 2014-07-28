@@ -7,11 +7,11 @@
 # http://public.kitware.com/Bug/view.php?id=8438
 # Thus, we have to add an 'addon-package' target.
 add_custom_target(addon-package
-                  COMMAND cmake --build ${CMAKE_BINARY_DIR} --target package)
+                  COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target package)
 
 macro(add_cpack_workaround target version ext)
   add_custom_command(TARGET addon-package PRE_BUILD
-                     COMMAND cmake -E rename addon-${target}-${version}.${ext} ${target}-${version}.${ext})
+                     COMMAND ${CMAKE_COMMAND} -E rename addon-${target}-${version}.${ext} ${target}-${version}.${ext})
 endmacro()
 
 # Grab the version from a given add-on's addon.xml
