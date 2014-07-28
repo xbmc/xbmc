@@ -83,8 +83,6 @@ foreach(addon ${addons})
   file(STRINGS ${addon} def)
   string(REPLACE " " ";" def ${def})
   list(GET def 0 id)
-  list(GET def 1 url)
-  list(GET def 2 revision)
 
   list(FIND ADDONS_TO_BUILD ${id} idx)
   if(idx GREATER -1 OR ADDONS_TO_BUILD STREQUAL "all")
@@ -92,6 +90,10 @@ foreach(addon ${addons})
     if(EXISTS "${CMAKE_INSTALL_PREFIX}/${id}")
       file(REMOVE_RECURSE "${CMAKE_INSTALL_PREFIX}/${id}/")
     endif()
+
+    # get the URL and revision of the addon
+    list(GET def 1 url)
+    list(GET def 2 revision)
 
     # add the addon as an external project for automatic building
     externalproject_add(${id}
