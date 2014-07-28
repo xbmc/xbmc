@@ -56,7 +56,7 @@
 						<viewtype label="MusicPlayQueue">list</viewtype>
 						<posx>791</posx>
 						<posy>55</posy>
-						<width>520</width>
+						<width>542</width>
 						<height>650</height>
 						<scrolltime>200</scrolltime>
 						<onleft>300</onleft>
@@ -67,7 +67,7 @@
 							<control type="image">
 								<posx>20</posx>
 								<posy>0</posy>
-								<width>600</width>
+								<width>500</width>
 								<height>50</height>
 								<texture>border-bottom-grey.png</texture>
 							</control>
@@ -96,7 +96,7 @@
 							<control type="image">
 								<posx>20</posx>
 								<posy>0</posy>
-								<width>565</width>
+								<width>500</width>
 								<height>50</height>
 								<texture aspectratio="stretch">black.png</texture>
 								<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
@@ -139,7 +139,7 @@
 							<control type="image">
 								<posx>20</posx>
 								<posy>0</posy>
-								<width>565</width>
+								<width>500</width>
 								<height>50</height>
 								<texture aspectratio="stretch">black.png</texture>
 								<animation effect="slide" start="0,-42" end="0,0" time="200" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
@@ -148,11 +148,38 @@
 							<control type="image">
 								<posx>20</posx>
 								<posy>0</posy>
-								<width>565</width>
+								<width>500</width>
 								<height>50</height>
 								<texture aspectratio="stretch">black.png</texture>
 								<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
 								<visible>ListItem.IsPlaying</visible>
+							</control>
+							<control type="group">
+								<visible>!IsEmpty(Container.Property(PlexEditMode))</visible>
+								<animation effect="fade" start="0" end="100" time="200" condition="!IsEmpty(Container.Property(PlexEditMode))">Conditional</animation>
+								<control type="image">
+									<posx>0</posx>
+									<posy>0</posy>
+									<width>542</width>
+									<height>50</height>
+									<texture>bg-list-edit.png</texture>
+								</control>
+								<control type="image">
+									<posx>0</posx>
+									<posy>11</posy>
+									<height>12</height>
+									<texture>icon-arrow-vert.png</texture>
+									<aspectratio scalediffuse="false">keep</aspectratio>
+									<animation effect="fade" start="0" end="100" condition="true">Conditional</animation>
+								</control>
+								<control type="image">
+									<posx>0</posx>
+									<posy>26</posy>
+									<height>12</height>
+									<texture flipy="true">icon-arrow-vert.png</texture>
+									<aspectratio scalediffuse="false">keep</aspectratio>
+									<animation effect="fade" start="0" end="100" condition="true">Conditional</animation>
+								</control>
 							</control>
 							<control type="label">
 								<posx>35</posx>
@@ -1308,11 +1335,70 @@
 							<control type="group">
 								<visible>ListItem.Type(Episode)</visible>
 								<include>EpisodeThumbOverlay</include>
-								<control type="label">
-									<include>EpisodeThumbOverlayTitle2</include>
-									<shadowcolor>ff222222</shadowcolor>
-									<textcolor>orangeLight</textcolor>
+							</control>
+							<!-- edit mode -->
+							<control type="group">
+								<visible>!IsEmpty(Container.Property(PlexEditMode))</visible>
+								<animation effect="fade" start="0" end="100" time="200" condition="!IsEmpty(Container.Property(PlexEditMode))">Conditional</animation>
+								<control type="image">
+									<posx>13</posx>
+									<posy>13</posy>
+									<width>198</width>
+									<height>106</height>
+									<texture>mask-clip-small.png</texture>
+									<animation effect="fade" start="0" end="50" condition="true">Conditional</animation>
 								</control>
+								<control type="image">
+									<posx>69</posx>
+									<posy>23</posy>
+									<width>86</width>
+									<height>86</height>
+									<texture>round-big.png</texture>
+									<colordiffuse>FF000000</colordiffuse>
+									<animation effect="fade" start="0" end="85" condition="true">Conditional</animation>
+								</control>
+								<control type="group">
+									<posx>78</posx>
+									<posy>33</posy>
+									<control type="image">
+										<posx>19</posx>
+										<posy>0</posy>
+										<height>26</height>
+										<texture>icon-arrow-vert.png</texture>
+										<aspectratio scalediffuse="false">keep</aspectratio>
+										<animation effect="fade" start="0" end="100" condition="true">Conditional</animation>
+									</control>
+									<control type="image">
+										<posx>0</posx>
+										<posy>20</posy>
+										<width>26</width>
+										<texture flipx="true">icon-arrow-horiz.png</texture>
+										<aspectratio scalediffuse="false">keep</aspectratio>
+										<animation effect="fade" start="0" end="100" condition="true">Conditional</animation>
+									</control>
+									<control type="image">
+										<posx>42</posx>
+										<posy>20</posy>
+										<width>26</width>
+										<texture>icon-arrow-horiz.png</texture>
+										<aspectratio scalediffuse="false">keep</aspectratio>
+										<animation effect="fade" start="0" end="100" condition="true">Conditional</animation>
+									</control>
+									<control type="image">
+										<posx>19</posx>
+										<posy>40</posy>
+										<height>26</height>
+										<texture flipy="true">icon-arrow-vert.png</texture>
+										<aspectratio scalediffuse="false">keep</aspectratio>
+										<animation effect="fade" start="0" end="100" condition="true">Conditional</animation>
+									</control>
+								</control>
+							</control>
+							<control type="label">
+								<visible>ListItem.Type(Episode)</visible>
+								<include>EpisodeThumbOverlayTitle2</include>
+								<shadowcolor>ff222222</shadowcolor>
+								<textcolor>orangeLight</textcolor>
 							</control>
 							<control type="image">
 								<posy>87</posy>
@@ -1364,7 +1450,6 @@
 						</itemlayout>
 						<focusedlayout condition="Container.PlexContent(Movies)" width="233" height="335">
 							<include>TVPoster</include>
-							<include>TVPosterSelectedBorder</include>
 							<control type="image">
 								<posx>162</posx>
 								<posy>254</posy>
@@ -1373,6 +1458,65 @@
 								<info>ListItem.Overlay</info>
 								<visible>[Container.PlexContent(Movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)]</visible>
 							</control>
+							<!-- edit mode -->
+							<control type="group">
+								<visible>!IsEmpty(Container.Property(PlexEditMode))</visible>
+								<animation effect="fade" start="0" end="100" time="200" condition="!IsEmpty(Container.Property(PlexEditMode))">Conditional</animation>
+								<control type="image">
+									<posx>13</posx>
+									<posy>13</posy>
+									<width>182</width>
+									<height>274</height>
+									<texture>mask-poster-middle.png</texture>
+									<animation effect="fade" start="0" end="50" condition="true">Conditional</animation>
+								</control>
+								<control type="image">
+									<posx>34</posx>
+									<posy>80</posy>
+									<width>140</width>
+									<height>140</height>
+									<texture>round-big.png</texture>
+									<colordiffuse>FF000000</colordiffuse>
+									<animation effect="fade" start="0" end="85" condition="true">Conditional</animation>
+								</control>
+								<control type="group">
+									<posx>61</posx>
+									<posy>107</posy>
+									<control type="image">
+										<posx>29</posx>
+										<posy>0</posy>
+										<width>27</width>
+										<height>32</height>
+										<texture>icon-arrow-vert.png</texture>
+										<animation effect="fade" start="0" end="100" condition="true">Conditional</animation>
+									</control>
+									<control type="image">
+										<posx>0</posx>
+										<posy>29</posy>
+										<width>32</width>
+										<height>27</height>
+										<texture flipx="true">icon-arrow-horiz.png</texture>
+										<animation effect="fade" start="0" end="100" condition="true">Conditional</animation>
+									</control>
+									<control type="image">
+										<posx>54</posx>
+										<posy>29</posy>
+										<width>32</width>
+										<height>27</height>
+										<texture>icon-arrow-horiz.png</texture>
+										<animation effect="fade" start="0" end="100" condition="true">Conditional</animation>
+									</control>
+									<control type="image">
+										<posx>29</posx>
+										<posy>54</posy>
+										<width>27</width>
+										<height>32</height>
+										<texture flipy="true">icon-arrow-vert.png</texture>
+										<animation effect="fade" start="0" end="100" condition="true">Conditional</animation>
+									</control>
+								</control>
+							</control>
+							<include>TVPosterSelectedBorder</include>
 							<control type="label">
 								<posy>298</posy>
 								<posx>105</posx>
