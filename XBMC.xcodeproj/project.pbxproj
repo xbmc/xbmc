@@ -1466,7 +1466,6 @@
 		DFF0F16517528350002DA3A4 /* DVDVideoCodecCrystalHD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F595994410E9F322004B58B3 /* DVDVideoCodecCrystalHD.cpp */; };
 		DFF0F16617528350002DA3A4 /* DVDVideoCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E153D0D25F9F900618676 /* DVDVideoCodecFFmpeg.cpp */; };
 		DFF0F16717528350002DA3A4 /* DVDVideoCodecLibMpeg2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E153F0D25F9F900618676 /* DVDVideoCodecLibMpeg2.cpp */; };
-		DFF0F16817528350002DA3A4 /* DVDVideoCodecVDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52B06B81187CE18004B1D66 /* DVDVideoCodecVDA.cpp */; };
 		DFF0F16917528350002DA3A4 /* DVDVideoPPFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15410D25F9F900618676 /* DVDVideoPPFFmpeg.cpp */; };
 		DFF0F16A17528350002DA3A4 /* DVDDemux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15490D25F9F900618676 /* DVDDemux.cpp */; };
 		DFF0F16B17528350002DA3A4 /* DVDDemuxBXA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE89ACA41621DAB800E17DBC /* DVDDemuxBXA.cpp */; };
@@ -2731,7 +2730,6 @@
 		E49911CD174E5D2500741B6D /* DVDVideoCodecCrystalHD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F595994410E9F322004B58B3 /* DVDVideoCodecCrystalHD.cpp */; };
 		E49911CE174E5D2500741B6D /* DVDVideoCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E153D0D25F9F900618676 /* DVDVideoCodecFFmpeg.cpp */; };
 		E49911CF174E5D2500741B6D /* DVDVideoCodecLibMpeg2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E153F0D25F9F900618676 /* DVDVideoCodecLibMpeg2.cpp */; };
-		E49911D0174E5D2500741B6D /* DVDVideoCodecVDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52B06B81187CE18004B1D66 /* DVDVideoCodecVDA.cpp */; };
 		E49911D1174E5D2500741B6D /* DVDVideoPPFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15410D25F9F900618676 /* DVDVideoPPFFmpeg.cpp */; };
 		E49911D2174E5D2E00741B6D /* DVDDemux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15490D25F9F900618676 /* DVDDemux.cpp */; };
 		E49911D3174E5D2E00741B6D /* DVDDemuxBXA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE89ACA41621DAB800E17DBC /* DVDDemuxBXA.cpp */; };
@@ -3525,7 +3523,6 @@
 		F51CF2D00F6055A4004F4602 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CF2CE0F6055A4004F4602 /* sha1.c */; };
 		F52A733D1560BC34005B1A0B /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F52A733C1560BC34005B1A0B /* CoreFoundation.framework */; };
 		F52B063B11869862004B1D66 /* Skin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52B063A11869862004B1D66 /* Skin.cpp */; };
-		F52B06BA1187CE18004B1D66 /* DVDVideoCodecVDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52B06B81187CE18004B1D66 /* DVDVideoCodecVDA.cpp */; };
 		F52BFFDB115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */; };
 		F52CC5F01713AAA200113454 /* DirectoryNodeGrouped.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52CC5EE1713AAA200113454 /* DirectoryNodeGrouped.cpp */; };
 		F52CC6AA1713BD2B00113454 /* DirectoryNodeGrouped.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52CC6A81713BD2B00113454 /* DirectoryNodeGrouped.cpp */; };
@@ -6005,8 +6002,6 @@
 		F52A733C1560BC34005B1A0B /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		F52B063911869862004B1D66 /* Skin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Skin.h; sourceTree = "<group>"; };
 		F52B063A11869862004B1D66 /* Skin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Skin.cpp; sourceTree = "<group>"; };
-		F52B06B81187CE18004B1D66 /* DVDVideoCodecVDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DVDVideoCodecVDA.cpp; path = xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecVDA.cpp; sourceTree = SOURCE_ROOT; };
-		F52B06B91187CE18004B1D66 /* DVDVideoCodecVDA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDVideoCodecVDA.h; path = xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecVDA.h; sourceTree = SOURCE_ROOT; };
 		F52BFFD9115D5574004B1D66 /* AddonStatusHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonStatusHandler.h; sourceTree = "<group>"; };
 		F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonStatusHandler.cpp; sourceTree = "<group>"; };
 		F52CC5EE1713AAA200113454 /* DirectoryNodeGrouped.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeGrouped.cpp; sourceTree = "<group>"; };
@@ -8860,8 +8855,6 @@
 				E38E153E0D25F9F900618676 /* DVDVideoCodecFFmpeg.h */,
 				E38E153F0D25F9F900618676 /* DVDVideoCodecLibMpeg2.cpp */,
 				E38E15400D25F9F900618676 /* DVDVideoCodecLibMpeg2.h */,
-				F52B06B81187CE18004B1D66 /* DVDVideoCodecVDA.cpp */,
-				F52B06B91187CE18004B1D66 /* DVDVideoCodecVDA.h */,
 				E499158F174E6ABD00741B6D /* DVDVideoCodecVideoToolBox.cpp */,
 				E4991590174E6ABE00741B6D /* DVDVideoCodecVideoToolBox.h */,
 				E38E15410D25F9F900618676 /* DVDVideoPPFFmpeg.cpp */,
@@ -11088,7 +11081,6 @@
 				F52BFFDB115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */,
 				C85EB75C1174614E0008E5A5 /* Repository.cpp in Sources */,
 				F52B063B11869862004B1D66 /* Skin.cpp in Sources */,
-				F52B06BA1187CE18004B1D66 /* DVDVideoCodecVDA.cpp in Sources */,
 				F50FDC5A119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp in Sources */,
 				F50FE04E11A3411A00C8B8CD /* EncoderFFmpeg.cpp in Sources */,
 				183FDF8A11AF0B0500B81E9C /* PluginSource.cpp in Sources */,
@@ -11930,7 +11922,6 @@
 				DFF0F16517528350002DA3A4 /* DVDVideoCodecCrystalHD.cpp in Sources */,
 				DFF0F16617528350002DA3A4 /* DVDVideoCodecFFmpeg.cpp in Sources */,
 				DFF0F16717528350002DA3A4 /* DVDVideoCodecLibMpeg2.cpp in Sources */,
-				DFF0F16817528350002DA3A4 /* DVDVideoCodecVDA.cpp in Sources */,
 				DFF0F16917528350002DA3A4 /* DVDVideoPPFFmpeg.cpp in Sources */,
 				DFF0F16A17528350002DA3A4 /* DVDDemux.cpp in Sources */,
 				DFF0F16B17528350002DA3A4 /* DVDDemuxBXA.cpp in Sources */,
@@ -13127,7 +13118,6 @@
 				E49911CD174E5D2500741B6D /* DVDVideoCodecCrystalHD.cpp in Sources */,
 				E49911CE174E5D2500741B6D /* DVDVideoCodecFFmpeg.cpp in Sources */,
 				E49911CF174E5D2500741B6D /* DVDVideoCodecLibMpeg2.cpp in Sources */,
-				E49911D0174E5D2500741B6D /* DVDVideoCodecVDA.cpp in Sources */,
 				E49911D1174E5D2500741B6D /* DVDVideoPPFFmpeg.cpp in Sources */,
 				E49911D2174E5D2E00741B6D /* DVDDemux.cpp in Sources */,
 				E49911D3174E5D2E00741B6D /* DVDDemuxBXA.cpp in Sources */,
