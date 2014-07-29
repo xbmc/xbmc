@@ -29,6 +29,7 @@ CStopWatch::CStopWatch(bool useFrameTime /*=false*/)
 {
   m_timerPeriod      = 0.0f;
   m_startTick        = 0;
+  m_stopTick         = 0;
   m_isRunning        = false;
   m_useFrameTime     = useFrameTime;
 
@@ -68,7 +69,7 @@ void CStopWatch::Stop()
 {
   if( m_isRunning )
   {
-    m_startTick = 0;
+    m_stopTick = GetTicks();
     m_isRunning = false;
   }
 }
@@ -77,11 +78,13 @@ void CStopWatch::Reset()
 {
   if (m_isRunning)
     m_startTick = GetTicks();
+  else
+    m_startTick = m_stopTick;
 }
 
 float CStopWatch::GetElapsedSeconds() const
 {
-  int64_t totalTicks = m_isRunning ? (GetTicks() - m_startTick) : 0;
+  int64_t totalTicks = (m_isRunning ? GetTicks() : m_stopTick) - m_startTick;
   return (float)totalTicks * m_timerPeriod;
 }
 

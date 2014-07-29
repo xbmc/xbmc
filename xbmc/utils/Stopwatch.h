@@ -34,12 +34,19 @@ public:
   void Stop();               ///< Stops clock and sets to zero if running.
   void Reset();              ///< Resets clock to zero - does not alter running state.
 
+  /*!
+    \brief  Retrieve time elapsed between the last call to Start(), StartZero()
+            or Reset() and; if running, now; if stopped, the last call to Stop().
+
+    \return elapsed time, in seconds, as a float.
+  */
   float GetElapsedSeconds() const;
   float GetElapsedMilliseconds() const;
 private:
   int64_t GetTicks() const;
   float m_timerPeriod;        // to save division in GetElapsed...()
   int64_t m_startTick;
+  int64_t m_stopTick;
   bool m_isRunning;
   bool m_useFrameTime;
 };
