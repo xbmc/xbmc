@@ -2693,7 +2693,7 @@ bool CLinuxRendererGL::CreateCVRefTexture(int index)
     // This is necessary for non-power-of-two textures
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, NULL);
+    glTexImage2D(m_textureTarget, 0, GL_RGB, plane.texwidth, plane.texheight, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, NULL);
     glBindTexture(m_textureTarget, 0);
   }
   glDisable(m_textureTarget);
