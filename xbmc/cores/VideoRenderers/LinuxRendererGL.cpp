@@ -2675,8 +2675,8 @@ bool CLinuxRendererGL::CreateCVRefTexture(int index)
   im.cshift_x = 0;
   im.cshift_y = 0;
 
-  plane.texwidth  = NP2(im.width);
-  plane.texheight = NP2(im.height);
+  plane.texwidth  = im.width;
+  plane.texheight = im.height;
   plane.pixpertex_x = 1;
   plane.pixpertex_y = 1;
 
