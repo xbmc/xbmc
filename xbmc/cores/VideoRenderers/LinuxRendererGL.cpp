@@ -2840,6 +2840,12 @@ bool CLinuxRendererGL::CreateCVRefTexture(int index)
   plane.pixpertex_x = 1;
   plane.pixpertex_y = 1;
 
+  if(m_renderMethod & RENDER_POT)
+  {
+    plane.texwidth  = NP2(plane.texwidth);
+    plane.texheight = NP2(plane.texheight);
+  }
+
   glEnable(m_textureTarget);
   glGenTextures(1, &plane.id);
   if (Cocoa_GetOSVersion() >= 0x1074)
