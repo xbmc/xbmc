@@ -163,7 +163,7 @@ bool CDecoder::Create(AVCodecContext *avctx)
 
   if(status != kVDADecoderNoErr)
   {
-    CLog::Log(LOGERROR, "VDA::CDecoder - Failed to init VDA decoder: %d", status);
+    CLog::Log(LOGERROR, "VDA::CDecoder - Failed to init VDA decoder: %d", (int)status);
     return false;
   }
   return true;
