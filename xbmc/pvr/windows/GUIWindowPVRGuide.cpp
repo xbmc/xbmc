@@ -135,7 +135,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
       if (message.GetSenderId() == m_viewControl.GetCurrentControl())
       {
         int iItem = m_viewControl.GetSelectedItem();
-        if (iItem > 0 || iItem < (int) m_vecItems->Size())
+        if (iItem >= 0 && iItem < m_vecItems->Size())
         {
           CFileItemPtr pItem = m_vecItems->Get(iItem);
           /* process actions */
@@ -224,7 +224,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
-  if (itemNumber < 0 || itemNumber >= (int) m_vecItems->Size())
+  if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
     return false;
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
