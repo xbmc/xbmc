@@ -2615,7 +2615,7 @@ bool CLinuxRendererGL::UploadCVRefTexture(int index)
       IOSurfaceRef	surface  = CVPixelBufferGetIOSurface(cvBufferRef);
       GLsizei       texWidth = IOSurfaceGetWidth(surface);
       GLsizei       texHeight= IOSurfaceGetHeight(surface);
-      OSType        format_type = CVPixelBufferGetPixelFormatType(cvBufferRef);
+      OSType        format_type = IOSurfaceGetPixelFormat(surface);
 
       glBindTexture(m_textureTarget, plane.id);
 
