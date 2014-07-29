@@ -34,7 +34,7 @@ foreach(file ${cmake_input_files})
           file MATCHES deps.txt))
     message(STATUS "Processing ${file}")
     file(STRINGS ${file} def)
-    string(REPLACE " " ";" def ${def})
+    separate_arguments(def)
     list(LENGTH def deflength)
     get_filename_component(dir ${file} PATH)
 

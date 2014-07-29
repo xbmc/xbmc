@@ -81,7 +81,7 @@ endif()
 file(GLOB addons ${PROJECT_SOURCE_DIR}/addons/*.txt)
 foreach(addon ${addons})
   file(STRINGS ${addon} def)
-  string(REPLACE " " ";" def ${def})
+  separate_arguments(def)
   list(GET def 0 id)
 
   list(FIND ADDONS_TO_BUILD ${id} idx)
