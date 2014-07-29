@@ -78,7 +78,7 @@ bool CGUIWindowPlexPlayQueue::Update(const CStdString& strDirectory, bool update
     m_vecItems->SetProperty("PlexEditMode", plexEditMode);
 
     // restore selection if any
-    if (selectedID > 0)
+    if (selectedID >= 0)
       m_viewControl.SetSelectedItem(selectedID);
     else if (PlexUtils::IsPlayingPlaylist() && g_application.CurrentFileItemPtr())
       m_viewControl.SetSelectedItem(g_application.CurrentFileItemPtr()->GetPath());
@@ -198,7 +198,8 @@ bool CGUIWindowPlexPlayQueue::OnAction(const CAction &action)
         CFileItemPtr selectedItem = m_vecItems->Get(oldSelectedID);
         m_viewControl.SetSelectedItem(newSelectedID);
 
-        g_plexApplication.playQueueManager->moveItem(selectedItem, newSelectedID - oldSelectedID);
+        if (oldSelectedID != newSelectedID)
+          g_plexApplication.playQueueManager->moveItem(selectedItem, newSelectedID - oldSelectedID);
         break;
     }
 
