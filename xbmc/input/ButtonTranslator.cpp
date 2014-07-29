@@ -88,6 +88,7 @@ static const ActionMapping actions[] =
         {"osd"               , ACTION_SHOW_OSD},
         {"showsubtitles"     , ACTION_SHOW_SUBTITLES},
         {"nextsubtitle"      , ACTION_NEXT_SUBTITLE},
+        {"cyclesubtitle"     , ACTION_CYCLE_SUBTITLE},
         {"codecinfo"         , ACTION_SHOW_CODEC},
         {"nextpicture"       , ACTION_NEXT_PICTURE},
         {"previouspicture"   , ACTION_PREV_PICTURE},
