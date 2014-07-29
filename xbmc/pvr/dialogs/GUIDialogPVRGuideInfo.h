@@ -50,6 +50,7 @@ namespace PVR
     bool OnClickButtonOK(CGUIMessage &message);
     bool OnClickButtonRecord(CGUIMessage &message);
     bool OnClickButtonSwitch(CGUIMessage &message);
+    bool OnClickButtonFind(CGUIMessage &message);
 
     CFileItemPtr m_progItem;
   };

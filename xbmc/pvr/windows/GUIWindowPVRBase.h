@@ -53,6 +53,7 @@ namespace PVR
     virtual void OnInitWindow(void);
     virtual bool OnMessage(CGUIMessage& message);
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+    virtual bool OnContextButton(const CFileItem &item, CONTEXT_BUTTON button) { return false; };
     virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true);
     virtual void UpdateButtons(void);
     virtual bool OnAction(const CAction &action);
@@ -66,7 +67,6 @@ namespace PVR
     CGUIWindowPVRBase(bool bRadio, int id, const std::string &xmlFile);
     virtual ~CGUIWindowPVRBase(void);
 
-    virtual bool OnContextButton(const CFileItem &item, CONTEXT_BUTTON button) { return false; };
     virtual std::string GetDirectoryPath(void) { return ""; };
     virtual CPVRChannelGroupPtr GetGroup(void);
     virtual void SetGroup(CPVRChannelGroupPtr group);
