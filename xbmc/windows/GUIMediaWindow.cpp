@@ -847,7 +847,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
     ClearFileItems();
     m_vecItems->ClearProperties();
 
-    if (items.m_wasListingCancelled == false)
+    if ((items.m_wasListingCancelled == false) && (items.GetPlexDirectoryType() != PLEX_DIR_TYPE_MESSAGE))
     {
       CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", strDirectory.c_str());
       CGUIDialogPlexError::ShowError("GetDirectory Failed for :", strDirectory,"","");
