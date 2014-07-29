@@ -24,7 +24,14 @@
  */
 
 #include "system_gl.h"
+
+#if defined(HAS_GLX)
 #include <GL/glx.h>
+#endif
+
+#if defined(HAS_EGL)
+#include <EGL/egl.h>
+#endif
 
 #include "windowing/WinSystem.h"
 #include "utils/Stopwatch.h"
@@ -67,8 +74,15 @@ public:
 
   // Local to WinSystemX11 only
   Display*  GetDisplay() { return m_dpy; }
+#if defined(HAS_GLX)
   GLXWindow GetWindow() { return m_glWindow; }
   GLXContext GetGlxContext() { return m_glContext; }
+#endif
+#if defined(HAS_EGL)
+  EGLDisplay GetEGLDisplay() const { return m_eglDisplay;}
+  EGLSurface GetEGLSurface() const { return m_eglSurface;}
+  EGLContext GetEGLContext() const { return m_eglContext;}
+#endif
   void NotifyXRREvent();
   void GetConnectedOutputs(std::vector<CStdString> *outputs);
   bool IsCurrentOutput(CStdString output);
@@ -80,7 +94,15 @@ protected:
   bool SetWindow(int width, int height, bool fullscreen, const std::string &output);
 
   Window       m_glWindow, m_mainWindow;
+#if defined(HAS_GLX)
   GLXContext   m_glContext;
+#endif
+#if defined(HAS_EGL)
+  EGLDisplay            m_eglDisplay;
+  EGLSurface            m_eglSurface;
+  EGLContext            m_eglContext;
+  EGLConfig             m_eglConfig;
+#endif
   Display*     m_dpy;
   Cursor       m_invisibleCursor;
   Pixmap       m_icon;

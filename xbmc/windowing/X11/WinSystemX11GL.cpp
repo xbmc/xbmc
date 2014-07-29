@@ -19,7 +19,7 @@
  */
 #include "system.h"
 
-#ifdef HAS_GLX
+#if defined(HAS_GLX) && !defined(HAS_EGL)
 
 #include "WinSystemX11GL.h"
 #include "utils/log.h"

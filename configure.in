@@ -663,8 +663,8 @@ case $host in
      use_joystick=no
      use_neon=yes
      use_gles=yes
+     use_gl=no
      use_sdl=no
-     use_x11=no
      use_wayland=no
      USE_STATIC_FFMPEG=1
      ;;
