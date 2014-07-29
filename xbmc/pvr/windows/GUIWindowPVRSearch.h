@@ -36,6 +36,9 @@ namespace PVR
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
     bool Update(const std::string &strDirectory, bool updateFilterPath = true);
 
+  protected:
+    virtual bool OnContextButton(const CFileItem &item, CONTEXT_BUTTON button);
+
   private:
     void Search(void);
 
