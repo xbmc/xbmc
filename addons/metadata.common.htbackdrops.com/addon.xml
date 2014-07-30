@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.common.htbackdrops.com"
-       name="HTBackdrops"
+       name="HTBackdrops Scraper Library"
        version="1.3.2"
        provider-name="Team XBMC">
   <requires>
@@ -10,7 +10,6 @@
              library="htbackdrops.xml"/>
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
-    <minversion>20000</minversion>
     <summary lang="bg">Библиотека за сваляне на инф. от HTBackdrops</summary>
     <summary lang="en">HTBackdrops Scraper Library</summary>
     <summary lang="de">Scraper für Hintergründe von HTBackdrops</summary>

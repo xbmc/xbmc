@@ -5,8 +5,8 @@
        provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
-    <import addon="metadata.common.theaudiodb.com" version="1.6.0"/>
-    <import addon="metadata.common.fanart.tv" version="2.1.2"/>
+    <import addon="metadata.common.fanart.tv" version="3.1.0"/>
+    <import addon="metadata.common.theaudiodb.com" version="1.7.3"/>
   </requires>
   <extension point="xbmc.metadata.scraper.musicvideos"
              language="en"
@@ -103,7 +103,7 @@
     <website></website>
     <source></source>
     <email></email>
-    <forum></forum>
+    <forum>http://forum.xbmc.org/showthread.php?tid=136105</forum>
     <license>GPL v2.0</license>
   </extension>
 </addon>

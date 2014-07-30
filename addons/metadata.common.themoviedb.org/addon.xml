@@ -10,7 +10,6 @@
              library="tmdb.xml"/>
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
-    <minversion>20000</minversion>
     <summary lang="bg">Библиотека за сваляне на инф. от TMDb</summary>
     <summary lang="en">TMDb Scraper Library</summary>
     <summary lang="es">Scraper de peliculas de TMDb</summary>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.common.last.fm"
-       name="Last.FM"
+       name="Last.FM Scraper Library"
        version="1.6.1"
        provider-name="Team XBMC">
   <requires>
@@ -10,7 +10,6 @@
              library="lastfm.xml"/>
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
-    <minversion>20000</minversion>
     <summary lang="bg">Библиотека за сваляне на инф. от LastFM</summary>
     <summary lang="en">LastFM Scraper Library</summary>
     <summary lang="de">Musik-Scraper für LastFM</summary>
