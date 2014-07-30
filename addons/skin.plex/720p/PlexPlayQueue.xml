@@ -156,7 +156,6 @@
 							</control>
 							<control type="group">
 								<visible>!IsEmpty(Container.Property(PlexEditMode))</visible>
-								<animation effect="fade" start="0" end="100" time="200" condition="!IsEmpty(Container.Property(PlexEditMode))">Conditional</animation>
 								<control type="image">
 									<posx>0</posx>
 									<posy>0</posy>
@@ -1339,14 +1338,13 @@
 							<!-- edit mode -->
 							<control type="group">
 								<visible>!IsEmpty(Container.Property(PlexEditMode))</visible>
-								<animation effect="fade" start="0" end="100" time="200" condition="!IsEmpty(Container.Property(PlexEditMode))">Conditional</animation>
 								<control type="image">
 									<posx>13</posx>
 									<posy>13</posy>
 									<width>198</width>
 									<height>106</height>
 									<texture>mask-clip-small.png</texture>
-									<animation effect="fade" start="0" end="50" condition="true">Conditional</animation>
+									<animation effect="fade" start="0" end="30" condition="true">Conditional</animation>
 								</control>
 								<control type="image">
 									<posx>69</posx>
