@@ -3704,11 +3704,11 @@ void CLinuxRendererGL::AddProcessor(VAAPI::CHolder& holder, int index)
 void CLinuxRendererGL::AddProcessor(struct __CVBuffer *cvBufferRef, int index)
 {
   YUVBUFFER &buf = m_buffers[index];
+  // retain another reference, this way dvdplayer and renderer can issue releases.
+  CVBufferRetain(cvBufferRef);
   if (buf.cvBufferRef)
     CVBufferRelease(buf.cvBufferRef);
   buf.cvBufferRef = cvBufferRef;
-  // retain another reference, this way dvdplayer and renderer can issue releases.
-  CVBufferRetain(buf.cvBufferRef);
 }
 #endif
 
