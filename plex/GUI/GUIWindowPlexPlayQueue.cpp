@@ -64,7 +64,12 @@ bool CGUIWindowPlexPlayQueue::Update(const CStdString& strDirectory, bool update
     dirPath = "plexserver://playqueue/";
 
   CStdString plexEditMode = m_vecItems->GetProperty("PlexEditMode").asString();
-  int selectedID = m_viewControl.GetSelectedItem();
+
+  // retrieve PQ itemID from selection
+  int PQselectItemID = -1;
+  int selectedItemID = m_viewControl.GetSelectedItem();
+  if (selectedItemID >= 0)
+    PQselectItemID = m_vecItems->Get(selectedItemID)->GetProperty("playQueueItemID").asInteger();
 
   if (CGUIPlexMediaWindow::Update(dirPath, updateFilterPath))
   {
@@ -78,8 +83,19 @@ bool CGUIWindowPlexPlayQueue::Update(const CStdString& strDirectory, bool update
     m_vecItems->SetProperty("PlexEditMode", plexEditMode);
 
     // restore selection if any
-    if (selectedID >= 0)
-      m_viewControl.SetSelectedItem(selectedID);
+    if (PQselectItemID >= 0)
+    {
+      // try to restore selection based on PQ itemID
+      for (int i = 0; i < m_vecItems->Size(); i++)
+      {
+        if ((m_vecItems->Get(i)->GetProperty("playQueueItemID").asInteger() == PQselectItemID) &&
+            (i != selectedItemID))
+        {
+          m_viewControl.SetSelectedItem(i);
+          break;
+        }
+      }
+    }
     else if (PlexUtils::IsPlayingPlaylist() && g_application.CurrentFileItemPtr())
       m_viewControl.SetSelectedItem(g_application.CurrentFileItemPtr()->GetPath());
 
@@ -193,13 +209,12 @@ bool CGUIWindowPlexPlayQueue::OnAction(const CAction &action)
       case ACTION_MOVE_RIGHT:
       case ACTION_MOVE_UP:
       case ACTION_MOVE_DOWN:
-        // Move the PQ item to the new selection position
-        int newSelectedID= m_viewControl.GetSelectedItem();
-        CFileItemPtr selectedItem = m_vecItems->Get(oldSelectedID);
-        m_viewControl.SetSelectedItem(newSelectedID);
+        // Move the PQ item to the new selection position, but keep selection on old one
+        int newSelectedID = m_viewControl.GetSelectedItem();
+        m_viewControl.SetSelectedItem(oldSelectedID);
 
         if (oldSelectedID != newSelectedID)
-          g_plexApplication.playQueueManager->moveItem(selectedItem, newSelectedID - oldSelectedID);
+          g_plexApplication.playQueueManager->moveItem(m_vecItems->Get(oldSelectedID), newSelectedID - oldSelectedID);
         break;
     }
 
