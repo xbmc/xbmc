@@ -2754,15 +2754,14 @@ bool CLinuxRendererGL::UploadVAAPITexture(int index)
 bool CLinuxRendererGL::UploadCVRefTexture(int index)
 {
 #ifdef TARGET_DARWIN
+  YUVFIELDS &fields = m_buffers[index].fields;
+  YUVPLANE  &plane  = fields[0][0];
   CVBufferRef cvBufferRef = m_buffers[index].cvBufferRef;
 
   glEnable(m_textureTarget);
 
-  if (cvBufferRef)
+  if (cvBufferRef && plane.flipindex != m_buffers[index].flipindex)
   {
-    YUVFIELDS &fields = m_buffers[index].fields;
-    YUVPLANE  &plane  = fields[0][0];
-
     if (m_renderMethod & RENDER_CVREF_SLOW)
     {
       CVPixelBufferLockBaseAddress(cvBufferRef, kCVPixelBufferLock_ReadOnly);
@@ -2798,9 +2797,6 @@ bool CLinuxRendererGL::UploadCVRefTexture(int index)
 
       glBindTexture(m_textureTarget, 0);
     }
-
-    CVBufferRelease(cvBufferRef);
-    m_buffers[index].cvBufferRef = NULL;
 
     plane.flipindex = m_buffers[index].flipindex;
   }
