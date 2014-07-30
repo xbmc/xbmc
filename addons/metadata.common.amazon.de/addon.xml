@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.common.amazon.de"
-       name="Amazon.de"
+       name="Amazon.de Scraper Library"
        version="1.0.2"
        provider-name="Team XBMC">
   <requires>
@@ -10,7 +10,6 @@
              library="amazonde.xml"/>
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
-    <minversion>20000</minversion>
     <summary lang="en">amazon.de Scraper Library</summary>
     <description lang="en">Download Music information from amazon.de</description>
   </extension>

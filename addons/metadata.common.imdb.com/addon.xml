@@ -10,7 +10,6 @@
              library="imdb.xml"/>
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
-    <minversion>20000</minversion>
     <summary lang="bg">Библиотека за сваляне на инф. от IMDB</summary>
     <summary lang="en">IMDB Scraper Library</summary>
     <summary lang="fi">IMDB elokuvatietojen lataaja</summary>

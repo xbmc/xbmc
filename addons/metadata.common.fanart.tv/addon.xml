@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.common.fanart.tv"
-       name="fanart.tv"
+       name="fanart.tv Scraper Library"
        version="3.1.0"
        provider-name="Team XBMC">
   <requires>
@@ -10,7 +10,6 @@
              library="fanarttv.xml"/>
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
-    <minversion>20000</minversion>
     <summary lang="bg">Библиотека за сваляне на инф. от fanart.tv</summary>
     <summary lang="en">fanart.tv Scraper Library</summary>
     <summary lang="de">Scraper für Hintergründe von fanart.tv</summary>
