@@ -7967,7 +7967,10 @@ msgctxt "#19139"
 msgid "Name of the new group"
 msgstr ""
 
-#empty string with id 19140
+#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
+msgctxt "#19140"
+msgid "Search..."
+msgstr ""
 
 msgctxt "#19141"
 msgid "Group"
