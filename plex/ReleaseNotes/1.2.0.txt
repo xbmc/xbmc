@@ -1,0 +1,13 @@
+* New
+  - Trailers & extras are now available in Preplay Window
+  - Cinema Trailers before playback (see Playback / Extras preferences). 
+  - PlayQueue items can now be removed from PlayQueue on screen display
+
+* Fixes
+  - Fix PlayQueue contextual menus depending on already existing PlayQueue
+  - Fix Home Window fanouts positions are now restored properly
+  - Fix Sections list item selection is now restored properly 
+  - Fix ASS subtitles now show up properly when overriden with PHT fonts
+  - Fix Channels messages dialog won’t show error message any more.
+  - Fix Preferences browsing made easier.
+  - Various skin fixes.
