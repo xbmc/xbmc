@@ -942,8 +942,21 @@ void CLinuxRendererGL::LoadShaders(int field)
   }
   else if (m_format == RENDER_FMT_CVBREF)
   {
-    CLog::Log(LOGNOTICE, "GL: Using CVBREF render method");
-    m_renderMethod = RENDER_CVREF;
+    if (Cocoa_GetOSVersion() >= 0x1074 && Cocoa_GetOSVersion() < 0x1094)
+    {
+      CLog::Log(LOGNOTICE, "GL: Using CVBREF render method (slow)");
+      // 10.7.4 for Retina Macbooks on Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
+      // 10.8 Mountain Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
+      // upload the old way.
+      // works in 10.9.4
+      m_renderMethod = RENDER_CVREF | RENDER_CVREF_SLOW;
+    }
+    else
+    {
+      CLog::Log(LOGNOTICE, "GL: Using CVBREF render method");
+      m_renderMethod = RENDER_CVREF;
+    }
+
   }
   else
   {
@@ -2750,11 +2763,8 @@ bool CLinuxRendererGL::UploadCVRefTexture(int index)
     YUVFIELDS &fields = m_buffers[index].fields;
     YUVPLANE  &plane  = fields[0][0];
 
-    if (Cocoa_GetOSVersion() >= 0x1074)
+    if (m_renderMethod & RENDER_CVREF_SLOW)
     {
-      // 10.7.4 for Retina Macbooks on Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
-      // 10.8 Mountain Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
-      // upload the old way.
       CVPixelBufferLockBaseAddress(cvBufferRef, kCVPixelBufferLock_ReadOnly);
 
       GLsizei       texHeight   = CVPixelBufferGetHeight(cvBufferRef);
@@ -2848,11 +2858,8 @@ bool CLinuxRendererGL::CreateCVRefTexture(int index)
 
   glEnable(m_textureTarget);
   glGenTextures(1, &plane.id);
-  if (Cocoa_GetOSVersion() >= 0x1074)
+  if (m_renderMethod & RENDER_CVREF_SLOW)
   {
-    // 10.7.4 for Retina Macbooks on Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
-    // 10.8 Mountain Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
-    // upload the old way.
     glBindTexture(m_textureTarget, plane.id);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
