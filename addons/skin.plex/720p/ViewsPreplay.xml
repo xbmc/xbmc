@@ -196,7 +196,7 @@
 	</include>
 	<include name="ExtraTypeTitle">
 		<posy>109</posy>
-		<posx>26</posx>
+		<posx>24</posx>
 		<width>190</width>
 		<height>20</height>
 		<align>left</align>
