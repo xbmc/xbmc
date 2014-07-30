@@ -84,7 +84,7 @@ public:
     }
 
     palette_colors = src.palette_colors;
-    linesize       = sub_w;
+    linesize       = sub_w * bpp;
     x              = sub_x;
     y              = sub_y;
     width          = sub_w;
