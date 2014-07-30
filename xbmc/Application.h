@@ -474,6 +474,8 @@ protected:
 #endif
 
   ReplayGainSettings m_replayGainSettings;
+
+  bool m_bFullScreenAdvancedSetting;
 };
 
 XBMC_GLOBAL_REF(CApplication,g_application);
