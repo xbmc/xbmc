@@ -403,7 +403,7 @@
 					<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
 					<textureslidernib>ScrollBarNib.png</textureslidernib>
 					<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-					<onleft>16</onleft>
+					<onleft>50</onleft>
 					<onright>104</onright>
 					<showonepage>false</showonepage>
 					<orientation>vertical</orientation>
