@@ -7,6 +7,7 @@
 #include "Client/PlexServerManager.h"
 #include "PlexApplication.h"
 #include "ApplicationMessenger.h"
+#include "GUISettings.h"
 
 using namespace PLAYLIST;
 
@@ -90,6 +91,11 @@ bool CPlexPlayQueueServer::create(const CFileItem& container, const CStdString& 
 
   // add any creation URL option
   u.AddOptions(options.urlOptions);
+
+  // add trailers option count to creation url if required
+  int trailerCount = g_guiSettings.GetInt("videoplayer.playtrailercount");
+  if ((trailerCount) && (container.GetProperty("viewOffset").asInteger() == 0))
+    u.SetOption("extrasPrefixCount", boost::lexical_cast<std::string>(trailerCount));
 
   return sendRequest(u, "POST", options);
 }
