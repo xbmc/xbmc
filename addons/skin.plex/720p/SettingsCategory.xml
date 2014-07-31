@@ -4,6 +4,7 @@
 	<allowoverlay>no</allowoverlay>
 	<onload>SkinSetString(SettingsCategory,appearance)</onload>
 	<onunload>Skin.Reset(SettingsCategory)</onunload>
+	<onunload condition="Window.Next(0)">Dialog.Close(all,true)</onunload>
 	<controls>
 		<!-- bg's -->
 		<include>SlideshowSettings</include>
