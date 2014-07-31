@@ -70,6 +70,7 @@ public:
 
   PLAYERCOREID GetPlayerCore(const std::string& strCoreName) const;
   CPlayerCoreConfig* GetPlayerConfig(const std::string& strCoreName) const;
+  CPlayerCoreConfig* GetPlayerConfig(const PLAYERCOREID eCore) const;
   std::string GetPlayerName(const PLAYERCOREID eCore) const;
 
   IPlayer* CreatePlayer(const PLAYERCOREID eCore, IPlayerCallback& callback) const;
