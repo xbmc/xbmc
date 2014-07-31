@@ -410,7 +410,7 @@ void CGUIWindowVideoPlaylist::GetContextButtons(int itemNumber, CContextButtons 
         CFileItem item2(item->GetVideoInfoTag()->m_strFileNameAndPath, false);
         CPlayerCoreFactory::Get().GetPlayers(item2, vecCores);
       }
-      else
+      else if (!item->IsPlugin())
         CPlayerCoreFactory::Get().GetPlayers(*item, vecCores);
       if (vecCores.size() > 1)
         buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
