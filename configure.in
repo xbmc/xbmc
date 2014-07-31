@@ -1672,13 +1672,13 @@ else
 fi
 
 # FFmpeg
-FFMPEG_LIBNAMES="libavcodec >= 55.39.101
-                 libavfilter >= 3.90.100
-                 libavformat >= 55.19.104
-                 libavutil >= 52.48.101
+FFMPEG_LIBNAMES="libavcodec >= 55.69.100
+                 libavfilter >= 4.11.100
+                 libavformat >= 55.48.100
+                 libavutil >= 52.92.100
                  libpostproc >= 52.3.100
-                 libswscale >= 2.5.101
-                 libswresample >= 0.17.104"
+                 libswscale >= 2.6.100
+                 libswresample >= 0.19.100"
 
 ffmpeg_build="${abs_top_srcdir}/tools/depends/target/ffmpeg"
 FFMPEG_VER_SHA=$(grep "VERSION=" ${ffmpeg_build}/FFMPEG-VERSION | sed 's/VERSION=//g')
