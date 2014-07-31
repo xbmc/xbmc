@@ -184,6 +184,29 @@
       }
     }
   },
+  "Player.GetPlayers": {
+    "type": "method",
+    "description": "Get a list of available players",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "media", "type": "string", "enum": [ "all", "video", "audio" ], "default": "all" }
+    ],
+    "returns": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "playercoreid": { "type": "integer", "minimum": 1, "required": true },
+          "name": { "$ref": "Global.String.NotEmpty", "required": true },
+          "type": { "type": "string", "enum": [ "internal", "external", "remote" ], "required": true },
+          "playsvideo": { "type": "boolean", "required": true },
+          "playsaudio": { "type": "boolean", "required": true }
+        }
+      }
+    }
+  },
   "Player.GetProperties": {
     "type": "method",
     "description": "Retrieves the values of the given properties",
