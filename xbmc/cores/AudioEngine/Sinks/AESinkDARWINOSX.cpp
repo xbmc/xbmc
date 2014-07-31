@@ -215,6 +215,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   UInt32 numOutputChannels = 0;
   EPassthroughMode passthrough = PassthroughModeNone;
   m_planes = 1;
+  // after FindSuitableFormatForStream requestedStreamIndex will have a valid index and no INT_MAX anymore ...
   if (devEnum.FindSuitableFormatForStream(requestedStreamIndex, format, outputFormat, passthrough, outputStream))
   {
     numOutputChannels = outputFormat.mChannelsPerFrame;
