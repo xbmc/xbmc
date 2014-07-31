@@ -81,6 +81,16 @@ public:
     return m_eCore;
   }
 
+  bool PlaysAudio() const
+  {
+    return m_bPlaysAudio;
+  }
+
+  bool PlaysVideo() const
+  {
+    return m_bPlaysVideo;
+  }
+
   IPlayer* CreatePlayer(IPlayerCallback& callback) const
   {
     IPlayer* pPlayer;
