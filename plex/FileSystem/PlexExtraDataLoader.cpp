@@ -17,25 +17,17 @@ CPlexExtraDataLoader::CPlexExtraDataLoader()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexExtraDataLoader::loadDataForItem(CFileItemPtr pItem, ExtraDataType type)
 {
-  if (pItem->GetPath() != m_path)
-  {
-    m_path = pItem->GetPath();
-    m_type = type;
-    CURL url(m_path);
+  m_path = pItem->GetPath();
+  m_type = type;
+  CURL url(m_path);
 
-    PlexUtils::AppendPathToURL(url, "extras");
+  PlexUtils::AppendPathToURL(url, "extras");
 
-    url.SetOptions("");
-    if (type != NONE)
-      url.SetOption("extratype", boost::lexical_cast<std::string>((int)type));
+  url.SetOptions("");
+  if (type != NONE)
+    url.SetOption("extratype", boost::lexical_cast<std::string>((int)type));
 
-    CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(url), this);
-  }
-  else
-  {
-    CGUIMessage msg(GUI_MSG_PLEX_EXTRA_DATA_LOADED, PLEX_EXTRADATA_LOADER, 0, 0, 0);
-    g_windowManager.SendThreadMessage(msg);
-  }
+  CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(url), this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,6 +41,7 @@ void CPlexExtraDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob*
   if (success)
   {
     // store the job list
+    m_items = CFileItemListPtr(new CFileItemList());
     m_items->Clear();
     if (fjob->m_items.Size())
       m_items->Copy(fjob->m_items);
