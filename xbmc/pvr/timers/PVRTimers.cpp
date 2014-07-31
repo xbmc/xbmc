@@ -399,15 +399,12 @@ bool CPVRTimers::HasActiveTimers(void) const
 
 bool CPVRTimers::GetDirectory(const CStdString& strPath, CFileItemList &items) const
 {
-  CURL url(strPath);
-  CStdString fileName = url.GetFileName();
-  
-  vector<string> dirs = URIUtils::SplitPath(URIUtils::GetDirectory(fileName));
-  if(dirs.size() == 2 && dirs.at(0) == "timers")
+  vector<string> dirs = URIUtils::SplitPath(strPath);
+  if(dirs.size() == 3 && dirs.at(1) == "timers")
   {
-    bool bRadio = (dirs.at(1) == "radio");
-    CFileItemPtr item;
+    bool bRadio = (dirs.at(2) == "radio");
 
+    CFileItemPtr item;
     item.reset(new CFileItem("pvr://timers/add.timer", false));
     item->SetLabel(g_localizeStrings.Get(19026));
     item->SetLabelPreformated(true);
