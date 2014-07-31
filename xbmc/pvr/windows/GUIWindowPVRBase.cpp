@@ -673,6 +673,7 @@ bool CGUIWindowPVRBase::UpdateEpgForChannel(CFileItem *item)
 
 bool CGUIWindowPVRBase::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
 {
+  m_vecItems->SetPath(strDirectory);
   return CGUIMediaWindow::Update(strDirectory, updateFilterPath);
 }
 
