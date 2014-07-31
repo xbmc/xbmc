@@ -2521,7 +2521,7 @@
     <CustomBuild Include="..\..\version.txt">
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CALL ..\..\tools\windows\CompileInfo.bat</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating CompileInfo.cpp</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\xbmc\CompileInfo.cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\xbmc\CompileInfo.cpp;..\..\xbmc\win32\XBMC_PC.rc</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CALL ..\..\tools\windows\CompileInfo.bat</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generating CompileInfo.cpp</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\xbmc\CompileInfo.cpp</Outputs>
