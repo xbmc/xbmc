@@ -908,7 +908,7 @@
 		<!-- video play queue -->
 		<control type="group">
 			<control type="group" id="777">
-				<visible>Container.PlexContent(MixedContent) | Container.PlexContent(Episodes) | Container.PlexContent(clips) | [Container.PlexContent(channel) + System.PlexPlayQueue(Video)] | Container.PlexContent(Movies)</visible>
+				<visible>Container.PlexContent(MixedContent) | Container.PlexContent(Episodes) | Container.PlexContent(clips) | Container.PlexContent(clip) | [Container.PlexContent(channel) + System.PlexPlayQueue(Video)] | Container.PlexContent(Movies)</visible>
 				<include>FadeDialog</include>
 				<include>rightSideSlide</include>
 				<control type="group">
@@ -922,7 +922,7 @@
 							<include>BackgroundFade</include>
 							<animation effect="fade" end="40" time="0" condition="true">conditional</animation>
 							<fadetime>400</fadetime>
-							<visible>Player.HasAudio</visible>
+							<visible>Player.HasVideo</visible>
 						</control>
 						<control type="largeimage">
 							<include>FullScreenScaled</include>
@@ -930,7 +930,7 @@
 							<include>BackgroundFade</include>
 							<animation effect="fade" end="40" time="0" condition="true">conditional</animation>
 							<fadetime>400</fadetime>
-							<visible>!Player.HasAudio</visible>
+							<visible>!Player.HasVideo</visible>
 						</control>
 						<!-- overlay -->
 						<control type="image">
@@ -982,7 +982,7 @@
 								<texture>$INFO[Player.Art(fanart)]</texture>
 								<fadetime>400</fadetime>
 								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-								<visible>!Container.PlexContent(clips)</visible>
+								<visible>!Container.PlexContent(clip) | !Container.PlexContent(clips)</visible>
 							</control>
 							<control type="largeimage">
 								<width>570</width>
@@ -990,7 +990,7 @@
 								<texture>$INFO[Player.Art(thumb)]</texture>
 								<fadetime>400</fadetime>
 								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-								<visible>Container.PlexContent(clips)</visible>
+								<visible>Container.PlexContent(clip) | Container.PlexContent(clips)</visible>
 							</control>
 							<control type="largeimage">
 								<width>570</width>
@@ -999,7 +999,7 @@
 								<fadetime>400</fadetime>
 								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 								<visible>!Player.HasVideo</visible>
-								<visible>!Container.PlexContent(clips)</visible>
+								<visible>!Container.PlexContent(clip) | !Container.PlexContent(clips)</visible>
 							</control>
 							<control type="largeimage">
 								<width>570</width>
@@ -1008,7 +1008,7 @@
 								<fadetime>400</fadetime>
 								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 								<visible>!Player.HasVideo</visible>
-								<visible>Container.PlexContent(clips)</visible>
+								<visible>Container.PlexContent(clip) | Container.PlexContent(clips)</visible>
 							</control>
 							<control type="image">
 								<width>570</width>
@@ -1109,7 +1109,7 @@
 							<height>245</height>
 							<include>PlotFormat</include>
 							<label>$INFO[ListItem.Plot]</label>
-							<visible>[ListItem.Status(Watched) | [!Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]]] | Container.PlexContent(Clips) | Container.PlexContent(Movies) | Container.PlexContent(MixedContent)</visible>
+							<visible>[ListItem.Status(Watched) | [!Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]]] | Container.PlexContent(Clip) | Container.PlexContent(Clips) | Container.PlexContent(Movies) | Container.PlexContent(MixedContent)</visible>
 						</control>
 						<control type="textbox">
 							<posx>0</posx>
@@ -1118,7 +1118,7 @@
 							<height>245</height>
 							<include>PlotFormat</include>
 							<label>$LOCALIZE[32105]</label>
-							<visible>[Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)] + !IsEmpty(ListItem.Plot)] + !Container.PlexContent(Clips) + !Container.PlexContent(Movies) + !Container.PlexContent(MixedContent)</visible>
+							<visible>[Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)] + !IsEmpty(ListItem.Plot)] + !Container.PlexContent(Clip) + !Container.PlexContent(Clips) + !Container.PlexContent(Movies) + !Container.PlexContent(MixedContent)</visible>
 						</control>
 						<control type="textbox">
 							<posx>0</posx>
@@ -1233,7 +1233,7 @@
 				<!-- main list -->
 				<control type="group" id="555">
 					<control type="panel" id="61">
-						<visible>Container.PlexContent(MixedContent) | Container.PlexContent(Episodes) | Container.PlexContent(clips) | [Container.PlexContent(channel) + System.PlexPlayQueue(Video)] | Container.PlexContent(Movies)</visible>
+						<visible>Container.PlexContent(MixedContent) | Container.PlexContent(Episodes) | Container.PlexContent(clip) | Container.PlexContent(clips) | [Container.PlexContent(channel) + System.PlexPlayQueue(Video)] | Container.PlexContent(Movies)</visible>
 						<viewtype label="VideoPlayQueue">panel</viewtype>
 						<onup>61</onup>
 						<ondown>61</ondown>
@@ -1294,7 +1294,7 @@
 								<visible>ListItem.IsPlaying</visible>
 							</control>
 							<!-- Source Icon -->
-							<control type="image">
+							<!--><control type="image">
 								<posx>20</posx>
 								<posy>82</posy>
 								<width>30</width>
@@ -1302,7 +1302,7 @@
 								<texture>$INFO[ListItem.Art(sourceIcon)]</texture>
 								<aspectratio align="center" aligny="center">keep</aspectratio>
 								<visible>!IsEmpty(ListItem.Art(sourceIcon))</visible>
-							</control>
+							</control>-->
 						</itemlayout>
 						<focusedlayout condition="Container.PlexContent(MixedContent) | Container.PlexContent(Episodes) | Container.PlexContent(clips) | [Container.PlexContent(channel) + [ListItem.Type(episode) | ListItem.Type(clip)]]" width="226" height="165">
 							<include>EpisodeThumbCard</include>
@@ -1414,7 +1414,7 @@
 								<visible>ListItem.IsPlaying</visible>
 							</control>
 							<!-- Source Icon -->
-							<control type="image">
+							<!--><control type="image">
 								<posx>20</posx>
 								<posy>82</posy>
 								<width>30</width>
@@ -1422,7 +1422,7 @@
 								<texture>$INFO[ListItem.Art(sourceIcon)]</texture>
 								<aspectratio align="center" aligny="center">keep</aspectratio>
 								<visible>!IsEmpty(ListItem.Art(sourceIcon))</visible>
-							</control>
+							</control>-->
 						</focusedlayout>
 						<itemlayout condition="Container.PlexContent(Movies)" width="233" height="335">
 							<include>TVPoster</include>
