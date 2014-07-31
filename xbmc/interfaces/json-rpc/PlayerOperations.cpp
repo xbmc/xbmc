@@ -515,9 +515,11 @@ JSONRPC_STATUS CPlayerOperations::Rotate(const std::string &method, ITransportLa
 
 JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  CVariant optionShuffled = parameterObject["options"]["shuffled"];
-  CVariant optionRepeat = parameterObject["options"]["repeat"];
-  CVariant optionResume = parameterObject["options"]["resume"];
+  CVariant options = parameterObject["options"];
+  CVariant optionShuffled = options["shuffled"];
+  CVariant optionRepeat = options["repeat"];
+  CVariant optionResume = options["resume"];
+  CVariant optionPlayer = options["playercoreid"];
 
   if (parameterObject["item"].isObject() && parameterObject["item"].isMember("playlistid"))
   {
@@ -624,6 +626,25 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
       }
       else
       {
+        // Handle the "playerid" option
+        if (!optionPlayer.isNull())
+        {
+          PLAYERCOREID playerId = (PLAYERCOREID)optionPlayer.asInteger();
+          // check if the there's actually a player with the given player ID
+          if (CPlayerCoreFactory::Get().GetPlayerConfig(playerId) == NULL)
+            return InvalidParams;
+
+          // check if the player can handle at least the first item in the list
+          VECPLAYERCORES possiblePlayers;
+          CPlayerCoreFactory::Get().GetPlayers(*list.Get(0).get(), possiblePlayers);
+          VECPLAYERCORES::const_iterator matchingPlayer = std::find(possiblePlayers.begin(), possiblePlayers.end(), playerId);
+          if (matchingPlayer == possiblePlayers.end())
+            return InvalidParams;
+
+          // set the next player to be used
+          g_application.m_eForcedNextPlayer = playerId;
+        }
+
         // Handle "shuffled" option
         if (optionShuffled.isBoolean())
           list.SetProperty("shuffled", optionShuffled);
