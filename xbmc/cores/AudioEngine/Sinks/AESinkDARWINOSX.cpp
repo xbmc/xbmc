@@ -454,6 +454,10 @@ OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTim
   sink->m_started = true;
   if (outOutputData->mNumberBuffers)
   {
+    //planar always starts at outputbuffer/streamidx 0
+    unsigned int startIdx = sink->m_buffer->NumPlanes() == 1 ? sink->m_outputBufferIndex : 0;
+    unsigned int endIdx = startIdx + sink->m_buffer->NumPlanes();
+
     /* NOTE: We assume that the buffers are all the same size... */
     if (sink->m_outputBitstream)
     {
@@ -465,16 +469,13 @@ OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTim
       size_t bytes = std::min((size_t)sink->m_buffer->GetReadSize(), wanted);
       for (unsigned int j = 0; j < bytes / sizeof(int16_t); j++)
       {
-        for (unsigned int i = 0; i < sink->m_buffer->NumPlanes(); i++)
+        for (unsigned int i = startIdx; i < endIdx; i++)
         {
-          unsigned int outputIdx = i;
-          if (sink->m_buffer->NumPlanes() == 1)
-            outputIdx = sink->m_outputBufferIndex;
           int16_t src;
           sink->m_buffer->Read((unsigned char *)&src, sizeof(int16_t), i);
-          if (outputIdx < outOutputData->mNumberBuffers && outOutputData->mBuffers[outputIdx].mData)
+          if (i < outOutputData->mNumberBuffers && outOutputData->mBuffers[i].mData)
           {
-            float *dest = (float *)outOutputData->mBuffers[outputIdx].mData;
+            float *dest = (float *)outOutputData->mBuffers[i].mData;
             dest[j] = src * mul;
           }
         }
@@ -486,14 +487,10 @@ OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTim
       /* buffers appear to come from CA already zero'd, so just copy what is wanted */
       unsigned int wanted = outOutputData->mBuffers[0].mDataByteSize;
       unsigned int bytes = std::min(sink->m_buffer->GetReadSize(), wanted);
-      for (unsigned int i = 0; i < sink->m_buffer->NumPlanes(); i++)
+      for (unsigned int i = startIdx; i < endIdx; i++)
       {
-        unsigned int outputIdx = i;
-        if (sink->m_buffer->NumPlanes() == 1)
-          outputIdx = sink->m_outputBufferIndex;
-
-        if (outputIdx < outOutputData->mNumberBuffers && outOutputData->mBuffers[outputIdx].mData)
-          sink->m_buffer->Read((unsigned char *)outOutputData->mBuffers[outputIdx].mData, bytes, i);
+        if (i < outOutputData->mNumberBuffers && outOutputData->mBuffers[i].mData)
+          sink->m_buffer->Read((unsigned char *)outOutputData->mBuffers[i].mData, bytes, i);
         else
           sink->m_buffer->Read(NULL, bytes, i);
       }
