@@ -3,13 +3,11 @@ XBMC ADDONS
 This directory contains the cmake-based buildsystem for addons. It looks into
 the "addons" sub-directory and parses all *.txt files. Each addon must have its
 own <addon-id>.txt file which must follow the defined format:
-  <addon-id> <git-base-url> <git-revision>
+  <addon-id> <git-url> <git-revision>
 where
   * <addon-id> must be identical to the addon's ID as defined in the addon's
     addon.xml
-  * <git-base-url> must be the base URL (i.e. the URL must not contain the name
-    of the git repository itself) of the git repository containing the addon.
-    The repository name of the addon must be <addon-id>.
+  * <git-url> must be the URL of the git repository containing the addon.
   * <git-revision> must be a valid git tag/branch/commit in the addon's git
     repository which will be used for the build.
 
