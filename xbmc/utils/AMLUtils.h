@@ -26,7 +26,8 @@ enum AML_DEVICE_TYPE
   AML_DEVICE_TYPE_M1,
   AML_DEVICE_TYPE_M3,
   AML_DEVICE_TYPE_M6,
-  AML_DEVICE_TYPE_M8
+  AML_DEVICE_TYPE_M8,
+  AML_DEVICE_TYPE_M8B
 };
 
 int aml_set_sysfs_str(const char *path, const char *val);

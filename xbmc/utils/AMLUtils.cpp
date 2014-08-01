@@ -171,8 +171,10 @@ enum AML_DEVICE_TYPE aml_get_device_type()
       aml_device_type = AML_DEVICE_TYPE_M3;
     else if (cpu_hardware.find("Meson6") != std::string::npos)
       aml_device_type = AML_DEVICE_TYPE_M6;
-    else if (cpu_hardware.find("Meson8") != std::string::npos)
+    else if ((cpu_hardware.find("Meson8") != std::string::npos) && (cpu_hardware.find("Meson8B") == std::string::npos))
       aml_device_type = AML_DEVICE_TYPE_M8;
+    else if (cpu_hardware.find("Meson8B") != std::string::npos)
+      aml_device_type = AML_DEVICE_TYPE_M8B;
     else
       aml_device_type = AML_DEVICE_TYPE_UNKNOWN;
   }
@@ -216,7 +218,7 @@ void aml_set_audio_passthrough(bool passthrough)
 {
   if (  aml_present()
     &&  aml_get_device_type() != AML_DEVICE_TYPE_UNKNOWN
-    &&  aml_get_device_type() <= AML_DEVICE_TYPE_M8)
+    &&  aml_get_device_type() <= AML_DEVICE_TYPE_M8B)
   {
     // m1 uses 1, m3 and above uses 2
     int raw = aml_get_device_type() == AML_DEVICE_TYPE_M1 ? 1:2;
