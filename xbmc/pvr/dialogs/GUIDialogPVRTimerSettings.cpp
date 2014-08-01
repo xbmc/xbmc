@@ -32,7 +32,6 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
-using namespace std;
 using namespace PVR;
 
 #define SETTING_TMR_ACTIVE              "timer.active"
@@ -523,7 +522,7 @@ void CGUIDialogPVRTimerSettings::DaysOptionsFiller(const CSetting *setting, std:
   CDateTime time = CDateTime::GetCurrentDateTime();
   for (int i = 1; i < 365; ++i)
   {
-    CStdString string = time.GetAsLocalizedDate();
+    std::string string = time.GetAsLocalizedDate();
     list.push_back(std::make_pair(time.GetAsLocalizedDate(), list.size()));
     time += CDateTimeSpan(1, 0, 0, 0);
   }

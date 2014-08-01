@@ -31,7 +31,6 @@
 #include "channels/PVRChannelGroupInternal.h"
 #include "addons/PVRClient.h"
 
-using namespace std;
 using namespace dbiplus;
 using namespace PVR;
 using namespace ADDON;
@@ -183,7 +182,7 @@ int CPVRDatabase::GetLastChannelId(void)
 {
   int iReturn(0);
 
-  CStdString strQuery = PrepareSQL("SELECT MAX(idChannel) as iMaxChannel FROM channels");
+  std::string strQuery = PrepareSQL("SELECT MAX(idChannel) as iMaxChannel FROM channels");
   if (ResultQuery(strQuery))
   {
     try
@@ -241,7 +240,7 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
 {
   int iReturn(0);
 
-  CStdString strQuery = PrepareSQL("SELECT channels.idChannel, channels.iUniqueId, channels.bIsRadio, channels.bIsHidden, channels.bIsUserSetIcon, channels.bIsUserSetName, "
+  std::string strQuery = PrepareSQL("SELECT channels.idChannel, channels.iUniqueId, channels.bIsRadio, channels.bIsHidden, channels.bIsUserSetIcon, channels.bIsUserSetName, "
       "channels.sIconPath, channels.sChannelName, channels.bIsVirtual, channels.bEPGEnabled, channels.sEPGScraper, channels.iLastWatched, channels.iClientId, channels.bIsLocked, "
       "channels.iClientChannelNumber, channels.sInputFormat, channels.sInputFormat, channels.sStreamURL, channels.iEncryptionSystem, map_channelgroups_channels.iChannelNumber, channels.idEpg "
       "FROM map_channelgroups_channels "
@@ -315,7 +314,7 @@ bool CPVRDatabase::RemoveChannelsFromGroup(const CPVRChannelGroup &group)
   return DeleteValues("map_channelgroups_channels", filter);
 }
 
-bool CPVRDatabase::GetCurrentGroupMembers(const CPVRChannelGroup &group, vector<int> &members)
+bool CPVRDatabase::GetCurrentGroupMembers(const CPVRChannelGroup &group, std::vector<int> &members)
 {
   bool bReturn(false);
   /* invalid group id */
@@ -325,7 +324,7 @@ bool CPVRDatabase::GetCurrentGroupMembers(const CPVRChannelGroup &group, vector<
     return false;
   }
 
-  CStdString strCurrentMembersQuery = PrepareSQL("SELECT idChannel FROM map_channelgroups_channels WHERE idGroup = %u", group.GroupID());
+  std::string strCurrentMembersQuery = PrepareSQL("SELECT idChannel FROM map_channelgroups_channels WHERE idGroup = %u", group.GroupID());
   if (ResultQuery(strCurrentMembersQuery))
   {
     try
@@ -366,7 +365,7 @@ bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group)
   return DeleteValues("map_channelgroups_channels", filter);
 }
 
-bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group, const vector<int> &channelsToDelete)
+bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group, const std::vector<int> &channelsToDelete)
 {
   bool bDelete(true);
   unsigned int iDeletedChannels(0);
@@ -379,7 +378,7 @@ bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group, const 
 
   while (iDeletedChannels < channelsToDelete.size())
   {
-    CStdString strChannelsToDelete;
+    std::string strChannelsToDelete;
 
     for (unsigned int iChannelPtr = 0; iChannelPtr + iDeletedChannels < channelsToDelete.size() && iChannelPtr < 50; iChannelPtr++)
       strChannelsToDelete += StringUtils::Format(", %d", channelsToDelete.at(iDeletedChannels + iChannelPtr));
@@ -419,7 +418,7 @@ bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group)
     // mysql doesn't support subqueries when deleting and sqlite doesn't support joins when deleting
     if (g_advancedSettings.m_databaseTV.type.Equals("mysql"))
     {
-      CStdString strQuery = PrepareSQL("DELETE m FROM map_channelgroups_channels m LEFT JOIN channels c ON (c.idChannel = m.idChannel) WHERE c.idChannel IS NULL");
+      std::string strQuery = PrepareSQL("DELETE m FROM map_channelgroups_channels m LEFT JOIN channels c ON (c.idChannel = m.idChannel) WHERE c.idChannel IS NULL");
       bDelete = ExecuteQuery(strQuery);
     }
     else
@@ -433,10 +432,10 @@ bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group)
 
   if (group.m_members.size() > 0)
   {
-    vector<int> currentMembers;
+    std::vector<int> currentMembers;
     if (GetCurrentGroupMembers(group, currentMembers))
     {
-      vector<int> channelsToDelete;
+      std::vector<int> channelsToDelete;
       for (unsigned int iChannelPtr = 0; iChannelPtr < currentMembers.size(); iChannelPtr++)
       {
         if (!group.IsGroupMember(currentMembers.at(iChannelPtr)))
@@ -485,7 +484,7 @@ bool CPVRDatabase::Delete(const CPVRChannelGroup &group)
 bool CPVRDatabase::Get(CPVRChannelGroups &results)
 {
   bool bReturn = false;
-  CStdString strQuery = PrepareSQL("SELECT * from channelgroups WHERE bIsRadio = %u", results.IsRadio());
+  std::string strQuery = PrepareSQL("SELECT * from channelgroups WHERE bIsRadio = %u", results.IsRadio());
 
   if (ResultQuery(strQuery))
   {
@@ -524,7 +523,7 @@ int CPVRDatabase::Get(CPVRChannelGroup &group)
     return -1;
   }
 
-  CStdString strQuery = PrepareSQL("SELECT idChannel, iChannelNumber FROM map_channelgroups_channels WHERE idGroup = %u ORDER BY iChannelNumber", group.GroupID());
+  std::string strQuery = PrepareSQL("SELECT idChannel, iChannelNumber FROM map_channelgroups_channels WHERE idGroup = %u ORDER BY iChannelNumber", group.GroupID());
   if (ResultQuery(strQuery))
   {
     iReturn = 0;
@@ -601,7 +600,7 @@ bool CPVRDatabase::PersistGroupMembers(CPVRChannelGroup &group)
 {
   bool bReturn = true;
   bool bRemoveChannels = true;
-  CStdString strQuery;
+  std::string strQuery;
   CSingleLock lock(group.m_critSection);
 
   if (group.m_members.size() > 0)
@@ -610,10 +609,10 @@ bool CPVRDatabase::PersistGroupMembers(CPVRChannelGroup &group)
     {
       PVRChannelGroupMember member = group.m_members.at(iChannelPtr);
 
-      CStdString strWhereClause = PrepareSQL("idChannel = %u AND idGroup = %u AND iChannelNumber = %u",
+      std::string strWhereClause = PrepareSQL("idChannel = %u AND idGroup = %u AND iChannelNumber = %u",
           member.channel->ChannelID(), group.GroupID(), member.iChannelNumber);
 
-      CStdString strValue = GetSingleValue("map_channelgroups_channels", "idChannel", strWhereClause);
+      std::string strValue = GetSingleValue("map_channelgroups_channels", "idChannel", strWhereClause);
       if (strValue.empty())
       {
         strQuery = PrepareSQL("REPLACE INTO map_channelgroups_channels ("
@@ -657,10 +656,10 @@ bool CPVRDatabase::Delete(const CPVRClient &client)
   return DeleteValues("clients", filter);
 }
 
-int CPVRDatabase::GetClientId(const CStdString &strClientUid)
+int CPVRDatabase::GetClientId(const std::string &strClientUid)
 {
-  CStdString strWhereClause = PrepareSQL("sUid = '%s'", strClientUid.c_str());
-  CStdString strValue = GetSingleValue("clients", "idClient", strWhereClause);
+  std::string strWhereClause = PrepareSQL("sUid = '%s'", strClientUid.c_str());
+  std::string strValue = GetSingleValue("clients", "idClient", strWhereClause);
 
   if (strValue.empty())
     return -1;
@@ -670,7 +669,7 @@ int CPVRDatabase::GetClientId(const CStdString &strClientUid)
 
 bool CPVRDatabase::ResetEPG(void)
 {
-  CStdString strQuery = PrepareSQL("UPDATE channels SET idEpg = 0");
+  std::string strQuery = PrepareSQL("UPDATE channels SET idEpg = 0");
   return ExecuteQuery(strQuery);
 }
 
@@ -683,7 +682,7 @@ bool CPVRDatabase::Persist(CPVRChannelGroup &group)
     return bReturn;
   }
 
-  CStdString strQuery;
+  std::string strQuery;
   bReturn = true;
   {
     CSingleLock lock(group.m_critSection);
@@ -725,7 +724,7 @@ int CPVRDatabase::Persist(const AddonPtr client)
     return iReturn;
   }
 
-  CStdString strQuery = PrepareSQL("REPLACE INTO clients (sName, sUid) VALUES ('%s', '%s');",
+  std::string strQuery = PrepareSQL("REPLACE INTO clients (sName, sUid) VALUES ('%s', '%s');",
       client->Name().c_str(), client->ID().c_str());
 
   if (ExecuteQuery(strQuery))
@@ -745,7 +744,7 @@ bool CPVRDatabase::Persist(CPVRChannel &channel, bool bQueueWrite /* = false */)
     return bReturn;
   }
 
-  CStdString strQuery;
+  std::string strQuery;
   if (channel.ChannelID() <= 0)
   {
     /* new channel */

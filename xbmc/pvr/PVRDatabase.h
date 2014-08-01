@@ -180,7 +180,7 @@ namespace PVR
      * @param strClientUid The unique ID of the client.
      * @return The database ID of the client or -1 if it wasn't found.
      */
-    int GetClientId(const CStdString &strClientUid);
+    int GetClientId(const std::string &strClientUid);
     //@}
 
   private:

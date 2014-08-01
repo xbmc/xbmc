@@ -60,7 +60,6 @@
 #include "guilib/Key.h"
 #include "dialogs/GUIDialogPVRChannelManager.h"
 
-using namespace std;
 using namespace MUSIC_INFO;
 using namespace PVR;
 using namespace EPG;
@@ -138,7 +137,7 @@ void CPVRManager::OnSettingChanged(const CSetting *setting)
   {
     if (((CSettingBool*)setting)->GetValue() && CSettings::Get().GetString("pvrparental.pin").empty())
     {
-      CStdString newPassword = "";
+      std::string newPassword = "";
       // password set... save it
       if (CGUIDialogNumeric::ShowAndVerifyNewPassword(newPassword))
         CSettings::Get().SetString("pvrparental.pin", newPassword);
@@ -162,7 +161,7 @@ void CPVRManager::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == "pvrmanager.resetdb")
   {
-    if (CheckParentalPIN(g_localizeStrings.Get(19262).c_str()) &&
+    if (CheckParentalPIN(g_localizeStrings.Get(19262)) &&
         CGUIDialogYesNo::ShowAndGetInput(19098, 19186, 750, 0))
     {
       CDateTime::ResetTimezoneBias();
@@ -259,7 +258,7 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
     return true;
 
   // there's add-ons that couldn't be updated
-  for (map<string, string>::iterator it = m_outdatedAddons.begin(); it != m_outdatedAddons.end(); it++)
+  for (std::map<std::string, std::string>::iterator it = m_outdatedAddons.begin(); it != m_outdatedAddons.end(); it++)
   {
     if (!InstallAddonAllowed(it->first))
     {
@@ -271,7 +270,7 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
   // all outdated add-ons can be upgraded now
   CLog::Log(LOGINFO, "PVR - upgrading outdated add-ons");
 
-  map<string, string> outdatedAddons = m_outdatedAddons;
+  std::map<std::string, std::string> outdatedAddons = m_outdatedAddons;
   // stop threads and unload
   SetState(ManagerStateInterrupted);
   g_EpgContainer.Stop();
@@ -280,7 +279,7 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
   Cleanup();
 
   // upgrade all add-ons
-  for (map<string, string>::iterator it = outdatedAddons.begin(); it != outdatedAddons.end(); it++)
+  for (std::map<std::string, std::string>::iterator it = outdatedAddons.begin(); it != outdatedAddons.end(); it++)
   {
     CLog::Log(LOGINFO, "PVR - updating add-on '%s'", it->first.c_str());
     CAddonInstaller::Get().Install(it->first, true, it->second, false);
@@ -538,7 +537,7 @@ bool CPVRManager::SetWakeupCommand(void)
   if (!CSettings::Get().GetBool("pvrpowermanagement.enabled"))
     return false;
 
-  const CStdString strWakeupCommand = CSettings::Get().GetString("pvrpowermanagement.setwakeupcmd");
+  const std::string strWakeupCommand = CSettings::Get().GetString("pvrpowermanagement.setwakeupcmd");
   if (!strWakeupCommand.empty() && m_timers)
   {
     time_t iWakeupTime;
@@ -547,7 +546,7 @@ bool CPVRManager::SetWakeupCommand(void)
     {
       nextEvent.GetAsTime(iWakeupTime);
         
-      CStdString strExecCommand = StringUtils::Format("%s %d", strWakeupCommand.c_str(), iWakeupTime);
+      std::string strExecCommand = StringUtils::Format("%s %d", strWakeupCommand.c_str(), iWakeupTime);
         
       const int iReturn = system(strExecCommand.c_str());
       if (iReturn != 0)
@@ -633,7 +632,7 @@ bool CPVRManager::Load(void)
   return true;
 }
 
-void CPVRManager::ShowProgressDialog(const CStdString &strText, int iProgress)
+void CPVRManager::ShowProgressDialog(const std::string &strText, int iProgress)
 {
   if (!m_progressHandle)
   {
@@ -725,9 +724,9 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
   g_EpgContainer.Stop();
 
   CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  pDlgProgress->SetLine(0, StringUtils::EmptyString);
+  pDlgProgress->SetLine(0, "");
   pDlgProgress->SetLine(1, g_localizeStrings.Get(19186)); // All data in the PVR database is being erased
-  pDlgProgress->SetLine(2, StringUtils::EmptyString);
+  pDlgProgress->SetLine(2, "");
   pDlgProgress->StartModal();
   pDlgProgress->Progress();
 
@@ -939,15 +938,15 @@ bool CPVRManager::IsParentalLocked(const CPVRChannel &channel)
   return bReturn;
 }
 
-bool CPVRManager::CheckParentalPIN(const char *strTitle /* = NULL */)
+bool CPVRManager::CheckParentalPIN(const std::string& strTitle /* = "" */)
 {
-  CStdString pinCode = CSettings::Get().GetString("pvrparental.pin");
+  std::string pinCode = CSettings::Get().GetString("pvrparental.pin");
 
   if (!CSettings::Get().GetBool("pvrparental.enabled") || pinCode.empty())
     return true;
 
   // Locked channel. Enter PIN:
-  bool bValidPIN = CGUIDialogNumeric::ShowAndVerifyInput(pinCode, strTitle ? strTitle : g_localizeStrings.Get(19263).c_str(), true);
+  bool bValidPIN = CGUIDialogNumeric::ShowAndVerifyInput(pinCode, !strTitle.empty() ? strTitle : g_localizeStrings.Get(19263), true);
   if (!bValidPIN)
     // display message: The entered PIN number was incorrect
     CGUIDialogOK::ShowAndGetInput(19264,0,19265,0);
@@ -1144,7 +1143,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
       musictag->SetTitle(bHasTagNow ?
           epgTagNow.Title() :
           CSettings::Get().GetBool("epg.hidenoinfoavailable") ?
-              StringUtils::EmptyString :
+              "" :
               g_localizeStrings.Get(19055)); // no information available
       if (bHasTagNow)
         musictag->SetGenre(epgTagNow.Genre());
@@ -1153,8 +1152,8 @@ bool CPVRManager::UpdateItem(CFileItem& item)
       musictag->SetArtist(channelTag->ChannelName());
       musictag->SetAlbumArtist(channelTag->ChannelName());
       musictag->SetLoaded(true);
-      musictag->SetComment(StringUtils::EmptyString);
-      musictag->SetLyrics(StringUtils::EmptyString);
+      musictag->SetComment("");
+      musictag->SetLyrics("");
     }
   }
   else
@@ -1165,7 +1164,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
       videotag->m_strTitle = bHasTagNow ?
           epgTagNow.Title() :
           CSettings::Get().GetBool("epg.hidenoinfoavailable") ?
-              StringUtils::EmptyString :
+              "" :
               g_localizeStrings.Get(19055); // no information available
       if (bHasTagNow)
         videotag->m_genre = epgTagNow.Genre();
@@ -1248,7 +1247,7 @@ bool CPVRManager::StartPlayback(PlaybackType type /* = PlaybackTypeAny */)
   {
     CLog::Log(LOGNOTICE, "PVRManager - %s - could not determine %s channel to start playback with. No last played channel found, and first channel of active group could also not be determined.", __FUNCTION__, bIsRadio ? "radio": "tv");
 
-    CStdString msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), g_localizeStrings.Get(bIsRadio ? 19021 : 19020).c_str()); // RADIO/TV could not be played. Check the log for details.
+    std::string msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), g_localizeStrings.Get(bIsRadio ? 19021 : 19020).c_str()); // RADIO/TV could not be played. Check the log for details.
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
             g_localizeStrings.Get(19166), // PVR information
             msg);
@@ -1317,7 +1316,7 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
 
     CLog::Log(LOGERROR, "PVRManager - %s - failed to switch to channel '%s'", __FUNCTION__, channel.ChannelName().c_str());
 
-    CStdString msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), channel.ChannelName().c_str()); // CHANNELNAME could not be played. Check the log for details.
+    std::string msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), channel.ChannelName().c_str()); // CHANNELNAME could not be played. Check the log for details.
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
         g_localizeStrings.Get(19166), // PVR information
         msg);
@@ -1363,7 +1362,7 @@ bool CPVRManager::TranslateBoolInfo(DWORD dwInfo) const
    return IsStarted() && m_guiInfo ? m_guiInfo->TranslateBoolInfo(dwInfo) : false;
 }
 
-bool CPVRManager::TranslateCharInfo(DWORD dwInfo, CStdString &strValue) const
+bool CPVRManager::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
 {
   return IsStarted() && m_guiInfo ? m_guiInfo->TranslateCharInfo(dwInfo, strValue) : false;
 }

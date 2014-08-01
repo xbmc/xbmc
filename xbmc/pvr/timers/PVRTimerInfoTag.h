@@ -86,7 +86,7 @@ namespace PVR
 
     void DisplayError(PVR_ERROR err) const;
 
-    CStdString GetStatus() const;
+    std::string GetStatus() const;
 
     bool SetDuration(int iDuration);
 
@@ -94,8 +94,8 @@ namespace PVR
     EPG::CEpgInfoTagPtr GetEpgInfoTag(void) const;
 
     int ChannelNumber(void) const;
-    CStdString ChannelName(void) const;
-    CStdString ChannelIcon(void) const;
+    std::string ChannelName(void) const;
+    std::string ChannelIcon(void) const;
     CPVRChannelPtr ChannelTag(void) const;
 
     bool UpdateEntry(const CPVRTimerInfoTag &tag);
@@ -145,16 +145,16 @@ namespace PVR
      * @brief Get the text for the notification.
      * @param strText The notification.
      */
-    void GetNotificationText(CStdString &strText) const;
+    void GetNotificationText(std::string &strText) const;
 
-    CStdString Title(void) const;
-    CStdString Summary(void) const;
-    CStdString Path(void) const;
+    const std::string& Title(void) const;
+    const std::string& Summary(void) const;
+    const std::string& Path(void) const;
 
     /* Client control functions */
     bool AddToClient() const;
     bool DeleteFromClient(bool bForce = false) const;
-    bool RenameOnClient(const CStdString &strNewName);
+    bool RenameOnClient(const std::string &strNewName);
     bool UpdateOnClient();
 
     void SetEpgInfoTag(EPG::CEpgInfoTagPtr tag);
@@ -162,9 +162,9 @@ namespace PVR
 
     void UpdateChannel(void);
 
-    CStdString            m_strTitle;           /*!< @brief name of this timer */
-    CStdString            m_strDirectory;       /*!< @brief directory where the recording must be stored */
-    CStdString            m_strSummary;         /*!< @brief summary string with the time to show inside a GUI list */
+    std::string           m_strTitle;           /*!< @brief name of this timer */
+    std::string           m_strDirectory;       /*!< @brief directory where the recording must be stored */
+    std::string           m_strSummary;         /*!< @brief summary string with the time to show inside a GUI list */
     PVR_TIMER_STATE       m_state;              /*!< @brief the state of this timer */
     int                   m_iClientId;          /*!< @brief ID of the backend */
     int                   m_iClientIndex;       /*!< @brief index number of the tag, given by the backend, -1 for new */
@@ -173,7 +173,7 @@ namespace PVR
     int                   m_iLifetime;          /*!< @brief lifetime of the timer in days */
     bool                  m_bIsRepeating;       /*!< @brief repeating timer if true, use the m_FirstDay and repeat flags */
     int                   m_iWeekdays;          /*!< @brief bit based store of weekdays to repeat */
-    CStdString            m_strFileNameAndPath; /*!< @brief filename is only for reference */
+    std::string           m_strFileNameAndPath; /*!< @brief filename is only for reference */
     int                   m_iChannelNumber;     /*!< @brief integer value of the channel number */
     bool                  m_bIsRadio;           /*!< @brief is radio channel if set */
     unsigned int          m_iTimerId;           /*!< @brief id that won't change as long as XBMC is running */

@@ -35,7 +35,6 @@
 #include "pvr/addons/PVRClients.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
-using namespace std;
 using namespace PVR;
 
 CGUIWindowPVRRecordings::CGUIWindowPVRRecordings(bool bRadio) :
@@ -69,9 +68,9 @@ std::string CGUIWindowPVRRecordings::GetDirectoryPath(void)
   return "pvr://recordings/";
 }
 
-CStdString CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
+std::string CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
 {
-  CStdString resumeString;
+  std::string resumeString;
   if (item.IsPVRRecording())
   {
 
@@ -84,7 +83,7 @@ CStdString CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
       if (db.Open())
       {
         CBookmark bookmark;
-        CStdString itemPath(item.GetPVRRecordingInfoTag()->m_strFileNameAndPath);
+        std::string itemPath(item.GetPVRRecordingInfoTag()->m_strFileNameAndPath);
         if (db.GetResumeBookMark(itemPath, bookmark) )
           positionInSeconds = lrint(bookmark.timeInSeconds);
         db.Close();
@@ -109,7 +108,7 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
     buttons.Add(CONTEXT_BUTTON_INFO, 19053);      /* Get Information of this recording */
     buttons.Add(CONTEXT_BUTTON_FIND, 19003);      /* Find similar program */
     buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); /* Play this recording */
-    CStdString resumeString = GetResumeString(*pItem);
+    std::string resumeString = GetResumeString(*pItem);
     if (!resumeString.empty())
     {
       buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
@@ -197,7 +196,7 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
             case ACTION_PLAY:
             {
               CFileItemPtr pItem = m_vecItems->Get(iItem);
-              string resumeString = GetResumeString(*pItem);
+              std::string resumeString = GetResumeString(*pItem);
               if (!resumeString.empty())
               {
                 CContextButtons choices;
@@ -297,7 +296,7 @@ bool CGUIWindowPVRRecordings::OnContextButtonRename(CFileItem *item, CONTEXT_BUT
     bReturn = true;
 
     CPVRRecording *recording = item->GetPVRRecordingInfoTag();
-    CStdString strNewName = recording->m_strTitle;
+    std::string strNewName = recording->m_strTitle;
     if (CGUIKeyboardFactory::ShowAndGetInput(strNewName, g_localizeStrings.Get(19041), false))
     {
       if (g_PVRRecordings->RenameRecording(*item, strNewName))
@@ -357,12 +356,12 @@ void CGUIWindowPVRRecordings::AfterUpdate(CFileItemList& items)
           // Build a map of all files belonging to common subdirectories and call
           // LoadVideoInfo for each item list
           typedef boost::shared_ptr<CFileItemList> CFileItemListPtr;
-          typedef std::map<CStdString, CFileItemListPtr> DirectoryMap;
+          typedef std::map<std::string, CFileItemListPtr> DirectoryMap;
 
           DirectoryMap directory_map;
           for (int i = 0; i < files.Size(); i++)
           {
-            CStdString strDirectory = URIUtils::GetDirectory(files[i]->GetPath());
+            std::string strDirectory = URIUtils::GetDirectory(files[i]->GetPath());
             DirectoryMap::iterator it = directory_map.find(strDirectory);
             if (it == directory_map.end())
               it = directory_map.insert(std::make_pair(

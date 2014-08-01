@@ -131,7 +131,7 @@ namespace PVR
      * @param strPath The path.
      * @return The channel or NULL if it wasn't found.
      */
-    CFileItemPtr GetByPath(const CStdString &strPath) const;
+    CFileItemPtr GetByPath(const std::string &strPath) const;
 
     /*!
      * @brief Get the directory for a path.
@@ -139,7 +139,7 @@ namespace PVR
      * @param results The file list to store the results in.
      * @return True if the directory was found, false if not.
      */
-    bool GetDirectory(const CStdString& strPath, CFileItemList &results);
+    bool GetDirectory(const std::string& strPath, CFileItemList &results);
 
     /*!
      * @brief The total amount of unique channels in all containers.

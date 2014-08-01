@@ -57,7 +57,6 @@
 #define BUTTON_NEW_CHANNEL        33
 #define BUTTON_RADIO_TV           34
 
-using namespace std;
 using namespace PVR;
 
 CGUIDialogPVRChannelManager::CGUIDialogPVRChannelManager(void) :
@@ -96,7 +95,7 @@ bool CGUIDialogPVRChannelManager::OnActionMove(const CAction &action)
     }
     else
     {
-      CStdString strNumber;
+      std::string strNumber;
       CGUIDialog::OnAction(action);
 
       bool bMoveUp        = iActionId == ACTION_PAGE_UP || iActionId == ACTION_MOVE_UP;
@@ -338,7 +337,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage &message)
   nothumb->SetLabel(g_localizeStrings.Get(19283));
   items.Add(nothumb);
 
-  CStdString strThumb;
+  std::string strThumb;
   VECSOURCES shares;
   if (CSettings::Get().GetString("pvrmenu.iconpath") != "")
   {
@@ -426,7 +425,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonEditChannel(CGUIMessage &message)
 
   if (pItem->GetProperty("Virtual").asBoolean())
   {
-    CStdString strURL = pItem->GetProperty("StreamURL").asString();
+    std::string strURL = pItem->GetProperty("StreamURL").asString();
     if (CGUIKeyboardFactory::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
       pItem->SetProperty("StreamURL", strURL);
     return true;
@@ -497,7 +496,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel(CGUIMessage &message)
     int clientID = clients[selection];
     if (clientID == PVR_VIRTUAL_CLIENT_ID)
     {
-      CStdString strURL = "";
+      std::string strURL = "";
       if (CGUIKeyboardFactory::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
       {
         if (!strURL.empty())
@@ -658,7 +657,7 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
   }
   else if (button == CONTEXT_BUTTON_EDIT_SOURCE)
   {
-    CStdString strURL = pItem->GetProperty("StreamURL").asString();
+    std::string strURL = pItem->GetProperty("StreamURL").asString();
     if (CGUIKeyboardFactory::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
       pItem->SetProperty("StreamURL", strURL);
   }
@@ -719,7 +718,7 @@ void CGUIDialogPVRChannelManager::Update()
       channelFile->SetProperty("StreamURL", channel->StreamURL());
     }
 
-    CStdString clientName;
+    std::string clientName;
     if (channel->ClientID() == PVR_VIRTUAL_CLIENT_ID) /* XBMC internal */
       clientName = g_localizeStrings.Get(19209);
     else
@@ -730,8 +729,8 @@ void CGUIDialogPVRChannelManager::Update()
   }
 
   {
-    vector< pair<string, int> > labels;
-    labels.push_back(make_pair(g_localizeStrings.Get(19210), 0));
+    std::vector< std::pair<std::string, int> > labels;
+    labels.push_back(std::make_pair(g_localizeStrings.Get(19210), 0));
     /// TODO: Add Labels for EPG scrapers here
     SET_CONTROL_LABELS(SPIN_EPGSOURCE_SELECTION, 0, &labels);
   }
@@ -760,9 +759,9 @@ bool CGUIDialogPVRChannelManager::PersistChannel(CFileItemPtr pItem, CPVRChannel
   bool bEPGEnabled          = pItem->GetProperty("UseEPG").asBoolean();
   bool bParentalLocked      = pItem->GetProperty("ParentalLocked").asBoolean();
   int iEPGSource            = (int)pItem->GetProperty("EPGSource").asInteger();
-  CStdString strChannelName = pItem->GetProperty("Name").asString();
-  CStdString strIconPath    = pItem->GetProperty("Icon").asString();
-  CStdString strStreamURL   = pItem->GetProperty("StreamURL").asString();
+  std::string strChannelName= pItem->GetProperty("Name").asString();
+  std::string strIconPath   = pItem->GetProperty("Icon").asString();
+  std::string strStreamURL  = pItem->GetProperty("StreamURL").asString();
   bool bUserSetIcon         = pItem->GetProperty("UserSetIcon").asBoolean();
 
   return group->UpdateChannel(*pItem, bHidden, bVirtual, bEPGEnabled, bParentalLocked, iEPGSource, ++(*iChannelNumber), strChannelName, strIconPath, strStreamURL, bUserSetIcon);
@@ -816,7 +815,7 @@ void CGUIDialogPVRChannelManager::SetItemsUnchanged(void)
 void CGUIDialogPVRChannelManager::Renumber(void)
 {
   int iNextChannelNumber(0);
-  CStdString strNumber;
+  std::string strNumber;
   CFileItemPtr pItem;
   for (int iChannelPtr = 0; iChannelPtr < m_channelItems->Size(); iChannelPtr++)
   {

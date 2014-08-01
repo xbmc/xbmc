@@ -35,7 +35,6 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/timers/PVRTimers.h"
 
-using namespace std;
 using namespace PVR;
 using namespace EPG;
 

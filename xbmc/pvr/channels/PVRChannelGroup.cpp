@@ -58,7 +58,7 @@ CPVRChannelGroup::CPVRChannelGroup(void) :
 {
 }
 
-CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName) :
+CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const std::string &strGroupName) :
     m_bRadio(bRadio),
     m_iGroupType(PVR_GROUP_TYPE_DEFAULT),
     m_iGroupId(iGroupId),
@@ -96,7 +96,7 @@ bool CPVRChannelGroup::operator==(const CPVRChannelGroup& right) const
   return (m_bRadio == right.m_bRadio &&
       m_iGroupType == right.m_iGroupType &&
       m_iGroupId == right.m_iGroupId &&
-      m_strGroupName.Equals(right.m_strGroupName));
+      m_strGroupName == right.m_strGroupName);
 }
 
 bool CPVRChannelGroup::operator!=(const CPVRChannelGroup &right) const
@@ -262,7 +262,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
   const VECFILEITEMS &items = fileItemList.GetList();
   for(VECFILEITEMS::const_iterator it = items.begin(); it != items.end(); ++it)
   {
-    CStdString baseName = URIUtils::GetFileName((*it)->GetPath());
+    std::string baseName = URIUtils::GetFileName((*it)->GetPath());
     URIUtils::RemoveExtension(baseName);
     StringUtils::ToLower(baseName);
     fileItemMap.insert(std::make_pair(baseName, (*it)->GetPath()));
@@ -285,7 +285,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
       continue;
 
     /* reset icon before searching for a new one */
-    channel->SetIconPath(StringUtils::Empty);
+    channel->SetIconPath("");
 
     std::string strChannelUid = StringUtils::Format("%08d", channel->UniqueID());
     std::string strLegalClientChannelName = CUtil::MakeLegalFileName(channel->ClientChannelName());
@@ -859,7 +859,7 @@ bool CPVRChannelGroup::IsGroupMember(int iChannelId) const
   return bReturn;
 }
 
-bool CPVRChannelGroup::SetGroupName(const CStdString &strGroupName, bool bSaveInDb /* = false */)
+bool CPVRChannelGroup::SetGroupName(const std::string &strGroupName, bool bSaveInDb /* = false */)
 {
   bool bReturn(false);
   CSingleLock lock(m_critSection);
@@ -1084,7 +1084,7 @@ int CPVRChannelGroup::GetEPGNow(CFileItemList &results)
       continue;
 
     CFileItemPtr entry(new CFileItem(epgNow));
-    entry->SetLabel2(epgNow.StartAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false));
+    entry->SetLabel2(epgNow.StartAsLocalTime().GetAsLocalizedTime("", false));
     entry->SetPath(channel->ChannelName());
     entry->SetArt("thumb", channel->IconPath());
     results.Add(entry);
@@ -1110,7 +1110,7 @@ int CPVRChannelGroup::GetEPGNext(CFileItemList &results)
       continue;
 
     CFileItemPtr entry(new CFileItem(epgNow));
-    entry->SetLabel2(epgNow.StartAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false));
+    entry->SetLabel2(epgNow.StartAsLocalTime().GetAsLocalizedTime("", false));
     entry->SetPath(channel->ChannelName());
     entry->SetArt("thumb", channel->IconPath());
     results.Add(entry);
@@ -1211,10 +1211,10 @@ int CPVRChannelGroup::GroupType(void) const
   return m_iGroupType;
 }
 
-CStdString CPVRChannelGroup::GroupName(void) const
+std::string CPVRChannelGroup::GroupName(void) const
 {
   CSingleLock lock(m_critSection);
-  CStdString strReturn(m_strGroupName);
+  std::string strReturn(m_strGroupName);
   return strReturn;
 }
 
@@ -1253,7 +1253,7 @@ void CPVRChannelGroup::SetPreventSortAndRenumber(bool bPreventSortAndRenumber /*
   m_bPreventSortAndRenumber = bPreventSortAndRenumber;
 }
 
-bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool bVirtual, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const CStdString &strChannelName, const CStdString &strIconPath, const CStdString &strStreamURL, bool bUserSetIcon)
+bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool bVirtual, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const std::string &strChannelName, const std::string &strIconPath, const std::string &strStreamURL, bool bUserSetIcon)
 {
   if (!item.HasPVRChannelInfoTag())
     return false;
