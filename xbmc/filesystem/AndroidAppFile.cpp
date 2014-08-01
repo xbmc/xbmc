@@ -45,17 +45,33 @@ CFileAndroidApp::~CFileAndroidApp(void)
 
 bool CFileAndroidApp::Open(const CURL& url)
 {
-
   m_url = url;
   m_appname =  URIUtils::GetFileName(url.Get());
   m_appname = m_appname.substr(0, m_appname.size() - 4);
 
-  return m_appname.size() > 0;
+  std::vector<androidPackage> applications = CXBMCApp::GetApplications();
+  for(std::vector<androidPackage>::iterator i = applications.begin(); i != applications.end(); ++i)
+  {
+    if ((*i).packageName == m_appname)
+      return true;
+  }
+
+  return false;
 }
 
 bool CFileAndroidApp::Exists(const CURL& url)
 {
-  return true;
+  std::string appname =  URIUtils::GetFileName(url.Get());
+  appname = appname.substr(0, appname.size() - 4);
+
+  std::vector<androidPackage> applications = CXBMCApp::GetApplications();
+  for(std::vector<androidPackage>::iterator i = applications.begin(); i != applications.end(); ++i)
+  {
+    if ((*i).packageName == appname)
+      return true;
+  }
+
+  return false;
 }
 
 unsigned int CFileAndroidApp::Read(void* lpBuf, int64_t uiBufSize)

@@ -86,7 +86,7 @@ public:
   
   static int GetBatteryLevel();
   static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());
-  static bool ListApplications(std::vector <androidPackage> *applications);
+  static std::vector <androidPackage> GetApplications();
   static bool GetIconSize(const std::string &packageName, int *width, int *height);
   static bool GetIcon(const std::string &packageName, void* buffer, unsigned int bufSize); 
 
@@ -124,7 +124,9 @@ private:
   bool m_firstrun;
   bool m_exiting;
   pthread_t m_thread;
-  
+  static CCriticalSection m_applicationsMutex;
+  static std::vector<androidPackage> m_applications;
+
   static ANativeWindow* m_window;
   static CEvent m_windowCreated;
 
