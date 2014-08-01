@@ -78,17 +78,17 @@ void CGUIViewStateWindowPVRGuide::SaveViewState(void)
 
 CGUIViewStateWindowPVRTimers::CGUIViewStateWindowPVRTimers(const int windowId, const CFileItemList& items) : CGUIViewStatePVR(windowId, items)
 {
-  LoadViewState(items.GetPath(), m_windowId);
-}
-
-void CGUIViewStateWindowPVRTimers::SaveViewState(void)
-{
   AddSortMethod(SortByLabel, 551, LABEL_MASKS("%L", "%I", "%L", ""));   // FileName, Size | Foldername, empty
   AddSortMethod(SortByDate, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // FileName, Date | Foldername, Date
 
   // Default sorting
   SetSortMethod(SortByDate);
 
+  LoadViewState(items.GetPath(), m_windowId);
+}
+
+void CGUIViewStateWindowPVRTimers::SaveViewState(void)
+{
   SaveViewToDb(m_items.GetPath(), m_windowId, CViewStateSettings::Get().Get("pvrtimers"));
 }
 
