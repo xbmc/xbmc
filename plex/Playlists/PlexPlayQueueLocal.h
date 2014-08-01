@@ -34,6 +34,7 @@ public:
 
 private:
   void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  void OnPlayQueueUpdated(ePlexMediaType type, bool startPlaying);
   CFileItemListPtr m_list;
   CPlexServerPtr m_server;
 };

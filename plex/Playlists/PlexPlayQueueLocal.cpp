@@ -32,7 +32,7 @@ void CPlexPlayQueueLocal::removeItem(const CFileItemPtr& item)
   if (m_list)
   {
     m_list->Remove(item.get());
-    CApplicationMessenger::Get().PlexUpdatePlayQueue(type, false);
+    OnPlayQueueUpdated(type, false);
   }
 }
 
@@ -57,7 +57,7 @@ bool CPlexPlayQueueLocal::addItem(const CFileItemPtr& item, bool next)
     {
       m_list->Add(item);
     }
-    CApplicationMessenger::Get().PlexUpdatePlayQueue(type, false);
+    OnPlayQueueUpdated(type, false);
     return true;
   }
   return false;
@@ -75,8 +75,7 @@ int CPlexPlayQueueLocal::getCurrentID()
 void CPlexPlayQueueLocal::get(const CStdString& playQueueID, const CPlexPlayQueueOptions &options)
 {
   if (m_list && m_list->GetProperty("playQueueID").asString() == playQueueID)
-    CApplicationMessenger::Get().PlexUpdatePlayQueue(PlexUtils::GetMediaTypeFromItem(m_list),
-                                                     options.startPlaying);
+    OnPlayQueueUpdated(PlexUtils::GetMediaTypeFromItem(m_list), options.startPlaying);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,6 +133,13 @@ void CPlexPlayQueueLocal::OnJobComplete(unsigned int jobID, bool success, CJob* 
 
     m_list->SetProperty("playQueueIsLocal", true);
 
-    CApplicationMessenger::Get().PlexUpdatePlayQueue(type, fj->m_options.startPlaying);
+    OnPlayQueueUpdated(type, fj->m_options.startPlaying);
   }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexPlayQueueLocal::OnPlayQueueUpdated(ePlexMediaType type, bool startPlaying)
+{
+  m_list->SetProperty("size", m_list->Size());
+  CApplicationMessenger::Get().PlexUpdatePlayQueue(type, startPlaying);
 }
