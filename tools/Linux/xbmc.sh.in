@@ -39,6 +39,11 @@ do
     esac
 done
 
+command_exists()
+{
+  command -v $1 >/dev/null 2>&1
+}
+
 single_stacktrace()
 {
   # core filename is either "core.$PID" or "core"
@@ -68,7 +73,7 @@ print_crash_report()
   if [ -f /etc/os-release ]; then
 	  . /etc/os-release
 	  echo $NAME $VERSION >> $FILE
-  elif which lsb_release > /dev/null; then
+  elif command_exists lsb_release; then
     echo >> $FILE
     lsb_release -a 2> /dev/null | sed -e 's/^/    /' >> $FILE
   else
@@ -77,8 +82,8 @@ print_crash_report()
   echo "############## END SYSTEM INFO ##############" >> $FILE
   echo >> $FILE
   echo "############### STACK TRACE #################" >> $FILE
-  if which gdb >/dev/null 2>&1; then
-    if which systemd-coredumpctl &> /dev/null; then
+  if command_exists gdb; then
+    if command_exists systemd-coredumpctl; then
       systemd-coredumpctl dump -o core xbmc.bin &> /dev/null
     fi
     single_stacktrace "$PWD" 1
@@ -120,7 +125,7 @@ if [ $RET -ne 0 ]; then
   exit $RET
 fi
 
-if which gdb >/dev/null 2>&1; then
+if command_exists gdb; then
   # Output warning in case ulimit is unsupported by shell
   eval ulimit -c unlimited
   if [ ! $? = "0" ]; then
