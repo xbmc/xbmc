@@ -93,9 +93,12 @@ bool CPlexPlayQueueServer::create(const CFileItem& container, const CStdString& 
   u.AddOptions(options.urlOptions);
 
   // add trailers option count to creation url if required
-  int trailerCount = g_guiSettings.GetInt("videoplayer.playtrailercount");
-  if ((trailerCount) && (container.GetProperty("viewOffset").asInteger() == 0))
-    u.SetOption("extrasPrefixCount", boost::lexical_cast<std::string>(trailerCount));
+  if (container.GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE)
+  {
+    int trailerCount = g_guiSettings.GetInt("videoplayer.playtrailercount");
+    if ((trailerCount) && (container.GetProperty("viewOffset").asInteger() == 0))
+      u.SetOption("extrasPrefixCount", boost::lexical_cast<std::string>(trailerCount));
+  }
 
   return sendRequest(u, "POST", options);
 }
