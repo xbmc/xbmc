@@ -479,17 +479,34 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
         g_playlistPlayer.SetRepeat(playlistid, (REPEAT_STATE)ParseRepeatState(optionRepeat), false);
     }
 
+    int playlistStartPosition = (int)parameterObject["item"]["position"].asInteger();
+
     switch (playlistid)
     {
       case PLAYLIST_MUSIC:
       case PLAYLIST_VIDEO:
-        CApplicationMessenger::Get().MediaPlay(playlistid, (int)parameterObject["item"]["position"].asInteger());
+        CApplicationMessenger::Get().MediaPlay(playlistid, playlistStartPosition);
         OnPlaylistChanged();
         break;
 
       case PLAYLIST_PICTURE:
-        return StartSlideshow("", false, optionShuffled.isBoolean() && optionShuffled.asBoolean());
+      {
+        std::string firstPicturePath;
+        if (playlistStartPosition > 0)
+        {
+          CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+          if (slideshow != NULL)
+          {
+            CFileItemList list;
+            slideshow->GetSlideShowContents(list);
+            if (playlistStartPosition < list.Size())
+              firstPicturePath = list.Get(playlistStartPosition)->GetPath();
+          }
+        }
+
+        return StartSlideshow("", false, optionShuffled.isBoolean() && optionShuffled.asBoolean(), firstPicturePath);
         break;
+      }
     }
 
     return ACK;
@@ -966,7 +983,7 @@ int CPlayerOperations::GetPlaylist(PlayerType player)
   }
 }
 
-JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string& path, bool recursive, bool random)
+JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string& path, bool recursive, bool random, const std::string &firstPicturePath /* = "" */)
 {
   int flags = 0;
   if (recursive)
@@ -976,8 +993,13 @@ JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string& path, bool r
   else
     flags |= 4;
 
+  std::vector<std::string> params;
+  params.push_back(path);
+  if (!firstPicturePath.empty())
+    params.push_back(firstPicturePath);
+
   CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, flags);
-  msg.SetStringParam(path);
+  msg.SetStringParams(params);
   CApplicationMessenger::Get().SendGUIMessage(msg, WINDOW_SLIDESHOW, true);
 
   return ACK;
