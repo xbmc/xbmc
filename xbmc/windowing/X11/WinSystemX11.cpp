@@ -59,7 +59,6 @@ CWinSystemX11::CWinSystemX11() : CWinSystemBase()
   m_bWasFullScreenBeforeMinimize = false;
   m_minimized = false;
   m_bIgnoreNextFocusMessage = false;
-  m_dpyLostTime = 0;
   m_invisibleCursor = 0;
   m_bIsInternalXrr = false;
 
@@ -671,39 +670,6 @@ bool CWinSystemX11::Show(bool raise)
   return true;
 }
 
-void CWinSystemX11::CheckDisplayEvents()
-{
-#if defined(HAS_XRANDR) && defined(HAS_SDL_VIDEO_X11)
-  bool bGotEvent(false);
-  bool bTimeout(false);
-  XEvent Event;
-  while (XCheckTypedEvent(m_dpy, m_RREventBase + RRScreenChangeNotify, &Event))
-  {
-    if (Event.type == m_RREventBase + RRScreenChangeNotify)
-    {
-      CLog::Log(LOGDEBUG, "%s: Received RandR event %i", __FUNCTION__, Event.type);
-      bGotEvent = true;
-    }
-    XRRUpdateConfiguration(&Event);
-  }
-
-  // check fail safe timer
-  if (m_dpyLostTime && CurrentHostCounter() - m_dpyLostTime > (uint64_t)3 * CurrentHostFrequency())
-  {
-    CLog::Log(LOGERROR, "%s - no display event after 3 seconds", __FUNCTION__);
-    bTimeout = true;
-  }
-
-  if (bGotEvent || bTimeout)
-  {
-    NotifyXRREvent();
-
-    // reset fail safe timer
-    m_dpyLostTime = 0;
-  }
-#endif
-}
-
 void CWinSystemX11::NotifyXRREvent()
 {
   CLog::Log(LOGDEBUG, "%s - notify display reset event", __FUNCTION__);
@@ -771,12 +737,7 @@ void CWinSystemX11::OnLostDevice()
       (*i)->OnLostDevice();
   }
 
-#if defined(HAS_SDL_VIDEO_X11)
-  // fail safe timer
-  m_dpyLostTime = CurrentHostCounter();
-#else
   CWinEventsX11Imp::SetXRRFailSafeTimer(3000);
-#endif
 }
 
 void CWinSystemX11::Register(IDispResource *resource)

@@ -75,7 +75,6 @@ public:
 
 protected:
   bool RefreshGlxContext(bool force);
-  void CheckDisplayEvents();
   void OnLostDevice();
   bool SetWindow(int width, int height, bool fullscreen, const std::string &output);
 
@@ -88,10 +87,8 @@ protected:
   bool         m_bWasFullScreenBeforeMinimize;
   bool         m_minimized;
   bool         m_bIgnoreNextFocusMessage;
-  int          m_RREventBase;
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;
-  uint64_t                     m_dpyLostTime;
   std::string                  m_currentOutput;
   std::string                  m_userOutput;
   bool                         m_windowDirty;
