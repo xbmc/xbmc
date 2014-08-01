@@ -9,13 +9,15 @@ where
     addon.xml
   * <git-base-url> must be the base URL (i.e. the URL must not contain the name
     of the git repository itself) of the git repository containing the addon.
-    The name repository of the addon must be <addon-id>.
+    The repository name of the addon must be <addon-id>.
   * <git-revision> must be a valid git tag/branch/commit in the addon's git
     repository which will be used for the build.
 
 The buildsystem uses the following variables (which can be passed into it when
 executing cmake with the -D<variable-name>=<value> option) to e.g. access
 specific paths:
+  * ADDONS_TO_BUILD is a quoted, space delimited list of <addon-id>s that
+    you want to build (default is "all").
   * CMAKE_BUILD_TYPE specifies the type of the build. This can be either "Debug"
     or "Release" (default is "Release").
   * CMAKE_INSTALL_PREFIX points to the directory where the built addons and their
@@ -38,10 +40,6 @@ by whoever uses it:
   * Any dependencies of the addons must already be built and their include and
     library files must be present in the path pointed to by <CMAKE_PREFIX_PATH> (in
     "include" and "lib" sub-directories).
-  * The xbmc-config.cmake.in must be located at <XBMCROOT>/project/cmake. It can
-    use any of the variables used in CMakeLists.txt using the @variable@
-    notation. The variables will be replaced with the actual values and the
-    resulting file will be installed to <PREFIX>/lib/xbmc/xbmc-config.cmake.
 
 To trigger the cmake-based buildsystem the following command must be executed
 with <path> being the path to this directory (absolute or relative, allowing for

@@ -18,24 +18,24 @@ else()
 endif()
 get_filename_component(XBMCROOT "${XBMCROOT}" ABSOLUTE)
 
-if(NOT DEPENDS_PATH)
-  set(DEPENDS_PATH "${CMAKE_BINARY_DIR}/addons")
-else()
-  file(TO_CMAKE_PATH "${DEPENDS_PATH}" DEPENDS_PATH)
-endif()
-# xbmc-config.cmake.in (further down) expects a "prefix" variable
-get_filename_component(prefix "${DEPENDS_PATH}" ABSOLUTE)
+if(NOT WIN32)
+  if(NOT DEPENDS_PATH)
+    set(DEPENDS_PATH "${PROJECT_SOURCE_DIR}/output/depends")
+  else()
+    file(TO_CMAKE_PATH "${DEPENDS_PATH}" DEPENDS_PATH)
+  endif()
 
-#make sure CMAKE_PREFIX_PATH is set
-if(NOT CMAKE_PREFIX_PATH)
-  set(CMAKE_PREFIX_PATH "${DEPENDS_PATH}")
-else()
-  file(TO_CMAKE_PATH "${CMAKE_PREFIX_PATH}" CMAKE_PREFIX_PATH)
-  list(APPEND CMAKE_PREFIX_PATH "${DEPENDS_PATH}")
+  # make sure CMAKE_PREFIX_PATH is set
+  if(NOT CMAKE_PREFIX_PATH)
+    set(CMAKE_PREFIX_PATH "${DEPENDS_PATH}")
+  else()
+    file(TO_CMAKE_PATH "${CMAKE_PREFIX_PATH}" CMAKE_PREFIX_PATH)
+    list(APPEND CMAKE_PREFIX_PATH "${DEPENDS_PATH}")
+  endif()
 endif()
 
 if(NOT CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX ${prefix})
+  set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/output/addons")
 endif()
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_INSTALL_PREFIX})
 
@@ -47,7 +47,7 @@ set(BUILD_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
                -DBUILD_SHARED_LIBS=1)
 
 if(PACKAGE_ZIP)
-  #needed for project installing
+  # needed for project installing
   list(APPEND BUILD_ARGS -DPACKAGE_ZIP=1)
   MESSAGE("package zip specified")
 endif()
@@ -58,50 +58,23 @@ if(CMAKE_TOOLCHAIN_FILE)
   MESSAGE(${BUILD_ARGS})
 endif()
 
-# parse version.txt to get the version info
-if (EXISTS "${XBMCROOT}/version.txt")
-  file(STRINGS "${XBMCROOT}/version.txt" versions)
-  foreach (version ${versions})
-    string(REGEX MATCH "^[^ ]+" version_name ${version})
-    string(REPLACE "${version_name} " "" version_value ${version})
-    set(APP_${version_name} "${version_value}")
-  endforeach()
+if(NOT ADDONS_TO_BUILD)
+  set(ADDONS_TO_BUILD "all")
+else()
+  message(STATUS "Building following addons: ${ADDONS_TO_BUILD}")
+  separate_arguments(ADDONS_TO_BUILD)
 endif()
 
-# bail if we can't parse versions
-if (NOT DEFINED APP_VERSION_MAJOR OR NOT DEFINED APP_VERSION_MINOR)
-  message(FATAL_ERROR "Could not determine app version! make sure that ${XBMCROOT}/version.txt exists")
+if(NOT WIN32)
+  # copy the xbmc-prepare-env.cmake script to the depends path so that we can include it
+  file(COPY ${XBMCROOT}/project/cmake/scripts/common/xbmc-prepare-env.cmake DESTINATION ${DEPENDS_PATH}/lib/xbmc)
+
+  # add the location of xbmc-prepare-env.cmake to CMAKE_MODULE_PATH so that it is found
+  list(APPEND CMAKE_MODULE_PATH ${DEPENDS_PATH}/lib/xbmc)
+
+  # include xbmc-prepare-env.cmake which contains the logic to install the addon header bindings etc
+  include(xbmc-prepare-env)
 endif()
-
-### copy all the addon binding header files to include/xbmc
-# make sure include/xbmc exists and is empty
-set(XBMC_LIB_DIR ${DEPENDS_PATH}/lib/xbmc)
-if(NOT EXISTS "${XBMC_LIB_DIR}/")
-  file(MAKE_DIRECTORY ${XBMC_LIB_DIR})
-endif()
-
-set(XBMC_INCLUDE_DIR ${DEPENDS_PATH}/include/xbmc)
-if(NOT EXISTS "${XBMC_INCLUDE_DIR}/")
-  file(MAKE_DIRECTORY ${XBMC_INCLUDE_DIR})
-endif()
-
-# generate the proper xbmc-config.cmake file
-configure_file(${XBMCROOT}/project/cmake/xbmc-config.cmake.in ${XBMC_LIB_DIR}/xbmc-config.cmake @ONLY)
-# copy cmake helpers to lib/xbmc
-file(COPY ${XBMCROOT}/project/cmake/xbmc-addon-helpers.cmake ${XBMCROOT}/project/cmake/AddOptions.cmake DESTINATION ${XBMC_LIB_DIR})
-
-### copy all the addon binding header files to include/xbmc
-# parse addon-bindings.mk to get the list of header files to copy
-file(STRINGS ${XBMCROOT}/xbmc/addons/addon-bindings.mk bindings)
-string(REPLACE "\n" ";" bindings "${bindings}")
-foreach(binding ${bindings})
-  string(REPLACE " =" ";" binding "${binding}")
-  string(REPLACE "+=" ";" binding "${binding}")
-  list(GET binding 1 header)
-  # copy the header file to include/xbmc
-  file(COPY ${XBMCROOT}/${header} DESTINATION ${XBMC_INCLUDE_DIR})
-endforeach()
-
 
 ### get and build all the binary addons
 # look for all the addons to be built
@@ -113,16 +86,19 @@ foreach(addon ${addons})
   list(GET def 1 url)
   list(GET def 2 revision)
 
-  # make sure the output directory is clean
-  if(EXISTS "${CMAKE_INSTALL_PREFIX}/${id}")
-    file(REMOVE_RECURSE "${CMAKE_INSTALL_PREFIX}/${id}/")
-  endif()
+  list(FIND ADDONS_TO_BUILD ${id} idx)
+  if(idx GREATER -1 OR ADDONS_TO_BUILD STREQUAL "all")
+    # make sure the output directory is clean
+    if(EXISTS "${CMAKE_INSTALL_PREFIX}/${id}")
+      file(REMOVE_RECURSE "${CMAKE_INSTALL_PREFIX}/${id}/")
+    endif()
 
-  # add the addon as an external project for automatic building
-  externalproject_add(${id}
-                      GIT_REPOSITORY ${url}/${id}
+    # add the addon as an external project for automatic building
+    externalproject_add(${id}
+                      GIT_REPOSITORY ${url}
                       GIT_TAG ${revision}
                       INSTALL_DIR "${CMAKE_INSTALL_PREFIX}"
                       CMAKE_ARGS ${BUILD_ARGS}
                      )
+  endif()
 endforeach()

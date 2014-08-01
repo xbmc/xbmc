@@ -29,9 +29,10 @@ rem setup some paths that we need later
 SET CUR_PATH=%CD%
 
 SET BASE_PATH=%WORKDIR%\project\cmake\
+SET SCRIPTS_PATH=%BASE_PATH%\scripts\windows
 SET ADDONS_PATH=%BASE_PATH%\addons
 SET ADDONS_OUTPUT_PATH=%ADDONS_PATH%\output
-SET ADDON_DEPENDS_PATH=%ADDONS_PATH%\depends\win32
+SET ADDON_DEPENDS_PATH=%ADDONS_PATH%\depends
 SET ADDON_DEPENDS_BUILD_PATH=%ADDON_DEPENDS_PATH%\build
 
 SET ERRORFILE=%BASE_PATH%\make-addon-depends.error
@@ -60,7 +61,10 @@ CD "%ADDON_DEPENDS_BUILD_PATH%"
 rem execute cmake to generate makefiles processable by nmake
 cmake "%ADDON_DEPENDS_PATH%" -G "NMake Makefiles" ^
       -DCMAKE_BUILD_TYPE=Release ^
-      -DCMAKE_INSTALL_PREFIX=%ADDONS_OUTPUT_PATH%
+      -DCMAKE_USER_MAKE_RULES_OVERRIDE="%SCRIPTS_PATH%/xbmc-c-flag-overrides.cmake" ^
+      -DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX="%SCRIPTS_PATH%/xbmc-cxx-flag-overrides.cmake" ^ ^
+      -DCMAKE_INSTALL_PREFIX=%ADDONS_OUTPUT_PATH% ^
+      -DARCH_DEFINES="-DTARGET_WINDOWS -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS -D_USE_32BIT_TIME_T -D_WINSOCKAPI_"
 IF ERRORLEVEL 1 (
   ECHO cmake error level: %ERRORLEVEL% > %ERRORFILE%
   GOTO ERROR
