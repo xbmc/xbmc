@@ -15410,7 +15410,12 @@ msgctxt "#36510"
 msgid "Specify additional libraries whose log messages are to be included in the log."
 msgstr ""
 
-#empty strings from id 36511 to 36519
+#: system/settings/settings.xml
+msgctxt "#36511"
+msgid "Checkerboard"
+msgstr ""
+
+#empty strings from id 36512 to 36519
 #reserved strings for 3d modes 36509 - 36520
 
 #: system/settings/settings.xml
