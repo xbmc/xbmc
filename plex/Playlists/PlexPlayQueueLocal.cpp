@@ -31,8 +31,16 @@ void CPlexPlayQueueLocal::removeItem(const CFileItemPtr& item)
   ePlexMediaType type = PlexUtils::GetMediaTypeFromItem(item);
   if (m_list)
   {
-    m_list->Remove(item.get());
-    OnPlayQueueUpdated(type, false);
+    for (int i = 0; i < m_list->Size(); i++)
+    {
+      if (m_list->Get(i)->GetProperty("playQueueItemID").asString() ==
+          item->GetProperty("playQueueItemID").asString())
+      {
+        m_list->Remove(m_list->Get(i).get());
+        OnPlayQueueUpdated(type, false);
+        return;
+      }
+    }
   }
 }
 
