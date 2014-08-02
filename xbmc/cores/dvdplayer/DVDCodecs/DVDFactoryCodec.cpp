@@ -33,6 +33,9 @@
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
 #include "Video/DVDVideoCodecVideoToolBox.h"
 #endif
+#if defined(HAS_MFC)
+#include "Video/DVDVideoCodecMfc.h"
+#endif
 #include "Video/DVDVideoCodecFFmpeg.h"
 #include "Video/DVDVideoCodecOpenMax.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
@@ -189,6 +192,11 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
 #elif defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
   hwSupport += "VAAPI:no ";
 #endif
+#if defined(HAS_MFC) && defined(_LINUX)
+  hwSupport += "MFC:yes ";
+#elif defined(_LINUX)
+  hwSupport += "MFC:no ";
+#endif
 
   CLog::Log(LOGDEBUG, "CDVDFactoryCodec: compiled in hardware support: %s", hwSupport.c_str());
 
@@ -214,6 +222,10 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
       if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
     }
   }
+#endif
+
+#if defined(HAS_MFC) && defined(_LINUX)
+  if( (pCodec = OpenCodec(new CDVDVideoCodecMfc(), hint, options)) ) return pCodec;
 #endif
 
 #if defined(HAVE_VIDEOTOOLBOXDECODER)

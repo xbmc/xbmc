@@ -7,6 +7,7 @@ SRCS += DBusReserve.cpp
 SRCS += HALManager.cpp
 SRCS += LinuxResourceCounter.cpp
 SRCS += LinuxTimezone.cpp
+SRCS += LinuxV4l2.cpp
 SRCS += PosixMountProvider.cpp
 SRCS += XFileUtils.cpp
 SRCS += XHandle.cpp
