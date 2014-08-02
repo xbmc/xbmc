@@ -141,7 +141,7 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetByName(const std::string &strName) con
   CSingleLock lock(m_critSection);
   for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); it++)
   {
-    if ((*it)->GroupName() != strName)
+    if ((*it)->GroupName() == strName)
       return *it;
   }
 
