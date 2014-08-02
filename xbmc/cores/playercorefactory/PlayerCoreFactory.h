@@ -70,6 +70,7 @@ public:
 
   PLAYERCOREID GetPlayerCore(const std::string& strCoreName) const;
   CPlayerCoreConfig* GetPlayerConfig(const std::string& strCoreName) const;
+  CPlayerCoreConfig* GetPlayerConfig(const PLAYERCOREID eCore) const;
   std::string GetPlayerName(const PLAYERCOREID eCore) const;
 
   IPlayer* CreatePlayer(const PLAYERCOREID eCore, IPlayerCallback& callback) const;
@@ -82,7 +83,7 @@ public:
 
   PLAYERCOREID GetDefaultPlayer( const CFileItem& item ) const;
 
-  PLAYERCOREID SelectPlayerDialog(VECPLAYERCORES &vecCores, float posX = 0, float posY = 0) const;
+  PLAYERCOREID SelectPlayerDialog(const VECPLAYERCORES &vecCores, float posX = 0, float posY = 0) const;
   PLAYERCOREID SelectPlayerDialog(float posX, float posY) const;
 
   void OnPlayerDiscovered(const std::string& id, const std::string& name, EPLAYERCORES core);

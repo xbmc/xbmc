@@ -43,6 +43,8 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "cores/IPlayer.h"
+#include "cores/playercorefactory/PlayerCoreConfig.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "settings/MediaSettings.h"
 
 using namespace JSONRPC;
@@ -74,6 +76,58 @@ JSONRPC_STATUS CPlayerOperations::GetActivePlayers(const std::string &method, IT
     picture["playerid"] = GetPlaylist(Picture);
     picture["type"] = "picture";
     result.append(picture);
+  }
+
+  return OK;
+}
+
+JSONRPC_STATUS CPlayerOperations::GetPlayers(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  std::string media = parameterObject["media"].asString();
+  result = CVariant(CVariant::VariantTypeArray);
+  VECPLAYERCORES players;
+
+  if (media == "all")
+    CPlayerCoreFactory::Get().GetPlayers(players);
+  else
+  {
+    bool video = false;
+    if (media == "video")
+      video = true;
+
+    CPlayerCoreFactory::Get().GetPlayers(players, true, video);
+  }
+
+  for (VECPLAYERCORES::const_iterator itPlayer = players.begin(); itPlayer != players.end(); ++itPlayer)
+  {
+    PLAYERCOREID playerId = *itPlayer;
+    const CPlayerCoreConfig* playerConfig = CPlayerCoreFactory::Get().GetPlayerConfig(playerId);
+    if (playerConfig == NULL)
+      continue;
+
+    CVariant player(CVariant::VariantTypeObject);
+    player["playercoreid"] = static_cast<int>(playerId);
+    player["name"] = playerConfig->GetName();
+
+    switch (playerConfig->GetType())
+    {
+      case EPC_EXTPLAYER:
+        player["type"] = "external";
+        break;
+
+      case EPC_UPNPPLAYER:
+        player["type"] = "remote";
+        break;
+
+      default:
+        player["type"] = "internal";
+        break;
+    }
+
+    player["playsvideo"] = playerConfig->PlaysVideo();
+    player["playsaudio"] = playerConfig->PlaysAudio();
+
+    result.push_back(player);
   }
 
   return OK;
@@ -461,9 +515,11 @@ JSONRPC_STATUS CPlayerOperations::Rotate(const std::string &method, ITransportLa
 
 JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  CVariant optionShuffled = parameterObject["options"]["shuffled"];
-  CVariant optionRepeat = parameterObject["options"]["repeat"];
-  CVariant optionResume = parameterObject["options"]["resume"];
+  CVariant options = parameterObject["options"];
+  CVariant optionShuffled = options["shuffled"];
+  CVariant optionRepeat = options["repeat"];
+  CVariant optionResume = options["resume"];
+  CVariant optionPlayer = options["playercoreid"];
 
   if (parameterObject["item"].isObject() && parameterObject["item"].isMember("playlistid"))
   {
@@ -570,6 +626,25 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
       }
       else
       {
+        // Handle the "playerid" option
+        if (!optionPlayer.isNull())
+        {
+          PLAYERCOREID playerId = (PLAYERCOREID)optionPlayer.asInteger();
+          // check if the there's actually a player with the given player ID
+          if (CPlayerCoreFactory::Get().GetPlayerConfig(playerId) == NULL)
+            return InvalidParams;
+
+          // check if the player can handle at least the first item in the list
+          VECPLAYERCORES possiblePlayers;
+          CPlayerCoreFactory::Get().GetPlayers(*list.Get(0).get(), possiblePlayers);
+          VECPLAYERCORES::const_iterator matchingPlayer = std::find(possiblePlayers.begin(), possiblePlayers.end(), playerId);
+          if (matchingPlayer == possiblePlayers.end())
+            return InvalidParams;
+
+          // set the next player to be used
+          g_application.m_eForcedNextPlayer = playerId;
+        }
+
         // Handle "shuffled" option
         if (optionShuffled.isBoolean())
           list.SetProperty("shuffled", optionShuffled);

@@ -126,10 +126,16 @@ std::string CPlayerCoreFactory::GetPlayerName(const PLAYERCOREID eCore) const
 
 CPlayerCoreConfig* CPlayerCoreFactory::GetPlayerConfig(const std::string& strCoreName) const
 {
+  return GetPlayerConfig(GetPlayerCore(strCoreName));
+}
+
+CPlayerCoreConfig* CPlayerCoreFactory::GetPlayerConfig(const PLAYERCOREID eCore) const
+{
   CSingleLock lock(m_section);
-  PLAYERCOREID id = GetPlayerCore(strCoreName);
-  if (id != EPC_NONE) return m_vecCoreConfigs[id-1];
-  else return NULL;
+  if (eCore != EPC_NONE)
+    return m_vecCoreConfigs[eCore - 1];
+  else
+    return NULL;
 }
 
 void CPlayerCoreFactory::GetPlayers( VECPLAYERCORES &vecCores ) const
@@ -263,7 +269,7 @@ PLAYERCOREID CPlayerCoreFactory::GetDefaultPlayer( const CFileItem& item ) const
   return EPC_NONE;
 }
 
-PLAYERCOREID CPlayerCoreFactory::SelectPlayerDialog(VECPLAYERCORES &vecCores, float posX, float posY) const
+PLAYERCOREID CPlayerCoreFactory::SelectPlayerDialog(const VECPLAYERCORES &vecCores, float posX, float posY) const
 {
   CContextButtons choices;
   if (vecCores.size())

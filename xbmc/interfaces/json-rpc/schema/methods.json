@@ -152,6 +152,7 @@
       },
       { "name": "options", "type": "object", "additionalProperties": false,
         "properties": {
+          "playercoreid": { "type": [ "null", { "type": "integer", "minimum": 1, "required": true } ], "default": null },
           "shuffled": { "$ref": "Optional.Boolean" },
           "repeat": { "type": [ "null", { "$ref": "Player.Repeat", "required": true } ], "default": null },
           "resume": { "type": [
@@ -180,6 +181,29 @@
         "properties": {
           "playerid": { "$ref": "Player.Id", "required": true },
           "type": { "$ref": "Player.Type", "required": true }
+        }
+      }
+    }
+  },
+  "Player.GetPlayers": {
+    "type": "method",
+    "description": "Get a list of available players",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "media", "type": "string", "enum": [ "all", "video", "audio" ], "default": "all" }
+    ],
+    "returns": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "playercoreid": { "type": "integer", "minimum": 1, "required": true },
+          "name": { "$ref": "Global.String.NotEmpty", "required": true },
+          "type": { "type": "string", "enum": [ "internal", "external", "remote" ], "required": true },
+          "playsvideo": { "type": "boolean", "required": true },
+          "playsaudio": { "type": "boolean", "required": true }
         }
       }
     }
