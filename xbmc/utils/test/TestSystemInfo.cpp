@@ -35,6 +35,28 @@ protected:
   }
 };
 
+TEST_F(TestSystemInfo, Print_System_Info)
+{
+  std::cout << "'GetKernelName(false)': \"" << g_sysinfo.GetKernelName(true) << "\"\n";
+  std::cout << "'GetKernelVersion()': \"" << g_sysinfo.GetKernelVersion() << "\"\n";
+  std::cout << "'GetKernelVersionFull()': \"" << g_sysinfo.GetKernelVersionFull() << "\"\n";
+  std::cout << "'GetOsPrettyNameWithVersion()': \"" << g_sysinfo.GetOsPrettyNameWithVersion() << "\"\n";
+  std::cout << "'GetOsName(false)': \"" << g_sysinfo.GetOsName(false) << "\"\n";
+  std::cout << "'GetOsVersion()': \"" << g_sysinfo.GetOsVersion() << "\"\n";
+  std::cout << "'GetKernelCpuFamily()': \"" << g_sysinfo.GetKernelCpuFamily() << "\"\n";
+  std::cout << "'GetKernelBitness()': \"" << g_sysinfo.GetKernelBitness() << "\"\n";
+  std::cout << "'GetBuildTargetPlatformName()': \"" << g_sysinfo.GetBuildTargetPlatformName() << "\"\n";
+  std::cout << "'GetBuildTargetPlatformVersionDecoded()': \"" << g_sysinfo.GetBuildTargetPlatformVersionDecoded() << "\"\n";
+  std::cout << "'GetBuildTargetPlatformVersion()': \"" << g_sysinfo.GetBuildTargetPlatformVersion() << "\"\n";
+  std::cout << "'GetBuildTargetCpuFamily()': \"" << g_sysinfo.GetBuildTargetCpuFamily() << "\"\n";
+  std::cout << "'GetXbmcBitness()': \"" << g_sysinfo.GetXbmcBitness() << "\"\n";
+  std::cout << "'GetUsedCompilerNameAndVer()': \"" << g_sysinfo.GetUsedCompilerNameAndVer() << "\"\n";
+  std::cout << "'GetManufacturerName()': \"" << g_sysinfo.GetManufacturerName() << "\"\n";
+  std::cout << "'GetModelName()': \"" << g_sysinfo.GetModelName() << "\"\n";
+  std::cout << "'IsAppleTV2()': \"" << g_sysinfo.IsAppleTV2() << "\"\n";
+  std::cout << "'GetUserAgent()': \"" << g_sysinfo.GetUserAgent() << "\"\n";
+}
+
 TEST_F(TestSystemInfo, GetKernelName)
 {
   EXPECT_FALSE(g_sysinfo.GetKernelName(true).empty()) << "'GetKernelName(true)' must not return empty kernel name";

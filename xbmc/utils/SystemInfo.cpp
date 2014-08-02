@@ -60,6 +60,7 @@
 /* Platform identification */
 #if defined(TARGET_DARWIN)
 #include <Availability.h>
+#include <mach-o/arch.h>
 #elif defined(TARGET_ANDROID)
 #include <android/api-level.h>
 #include <sys/system_properties.h>
@@ -889,68 +890,93 @@ CSysInfo::WindowsVersion CSysInfo::GetWindowsVersion()
 
 int CSysInfo::GetKernelBitness(void)
 {
-#ifdef TARGET_WINDOWS
-  SYSTEM_INFO si;
-  GetNativeSystemInfo(&si);
-  if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL || si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM)
-    return 32;
-
-  if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
-    return 64;
-  
-  BOOL isWow64 = FALSE;
-  if (IsWow64Process(GetCurrentProcess(), &isWow64) && isWow64) // fallback
-    return 64;
-
-  return 0; // Can't detect OS
-#elif defined(TARGET_POSIX)
-  struct utsname un;
-  if (uname(&un) == 0)
+  static int kernelBitness = -1;
+  if (kernelBitness == -1)
   {
-    std::string machine(un.machine);
-    if (machine == "x86_64" || machine == "amd64" || machine == "arm64" || machine == "aarch64" || machine == "ppc64" ||
-        machine == "ia64" || machine == "mips64")
-      return 64;
-    return 32;
-  }
-  return 0; // can't detect
-#else
-  return 0; // unknown
+#ifdef TARGET_WINDOWS
+    SYSTEM_INFO si;
+    GetNativeSystemInfo(&si);
+    if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL || si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM)
+      kernelBitness = 32;
+    else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
+      kernelBitness = 64;
+    else
+    {
+      BOOL isWow64 = FALSE;
+      if (IsWow64Process(GetCurrentProcess(), &isWow64) && isWow64) // fallback
+        kernelBitness = 64;
+    }
+#elif defined(TARGET_DARWIN_IOS)
+    // Note: OS X return x86 CPU type without CPU_ARCH_ABI64 flag
+    const NXArchInfo* archInfo = NXGetLocalArchInfo();
+    if (archInfo)
+      kernelBitness = ((archInfo->cputype & CPU_ARCH_ABI64) != 0) ? 64 : 32;
+#elif defined(TARGET_POSIX)
+    struct utsname un;
+    if (uname(&un) == 0)
+    {
+      std::string machine(un.machine);
+      if (machine == "x86_64" || machine == "amd64" || machine == "arm64" || machine == "aarch64" || machine == "ppc64" ||
+          machine == "ia64" || machine == "mips64")
+          kernelBitness = 64;
+      kernelBitness = 32;
+    }
 #endif
+    if (kernelBitness == -1)
+      kernelBitness = 0; // can't detect
+  }
+
+  return kernelBitness;
 }
 
-std::string CSysInfo::GetKernelCpuFamily(void)
+const std::string& CSysInfo::GetKernelCpuFamily(void)
 {
-#ifdef TARGET_WINDOWS
-  SYSTEM_INFO si;
-  GetNativeSystemInfo(&si);
-  if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL ||
-      si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
-    return "x86";
-
-  if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM)
-    return "ARM";
-#elif defined(TARGET_POSIX)
-  struct utsname un;
-  if (uname(&un) == 0)
+  static std::string kernelCpuFamily;
+  if (kernelCpuFamily.empty())
   {
-    std::string machine(un.machine);
-    if (machine.compare(0, 3, "arm", 3) == 0)
-      return "ARM";
-    if (machine.compare(0, 4, "mips", 4) == 0)
-      return "MIPS";
-    if (machine.compare(0, 4, "i686", 4) == 0 || machine == "i386" || machine == "amd64" ||  machine.compare(0, 3, "x86", 3) == 0)
-      return "x86";
-    if (machine.compare(0, 3, "ppc", 3) == 0 || machine.compare(0, 5, "power", 5) == 0)
-      return "PowerPC";
-// ios saves the dev id like AppleTV2,1 in the machine
-// field - all ios devices are ARM - force this here...
-#if defined(TARGET_DARWIN_IOS)
-    return "ARM";
+#ifdef TARGET_WINDOWS
+    SYSTEM_INFO si;
+    GetNativeSystemInfo(&si);
+    if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL ||
+        si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
+        kernelCpuFamily = "x86";
+    else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM)
+      kernelCpuFamily = "ARM";
+#elif defined(TARGET_DARWIN)
+    const NXArchInfo* archInfo = NXGetLocalArchInfo();
+    if (archInfo)
+    {
+      const cpu_type_t cpuType = (archInfo->cputype & ~CPU_ARCH_ABI64); // get CPU family without 64-bit ABI flag
+      if (cpuType == CPU_TYPE_I386)
+        kernelCpuFamily = "x86";
+      else if (cpuType == CPU_TYPE_ARM)
+        kernelCpuFamily = "ARM";
+      else if (cpuType == CPU_TYPE_POWERPC)
+        kernelCpuFamily = "PowerPC";
+#ifdef CPU_TYPE_MIPS
+      else if (cpuType == CPU_TYPE_MIPS)
+        kernelCpuFamily = "MIPS";
+#endif // CPU_TYPE_MIPS
+    }
+#elif defined(TARGET_POSIX)
+    struct utsname un;
+    if (uname(&un) == 0)
+    {
+      std::string machine(un.machine);
+      if (machine.compare(0, 3, "arm", 3) == 0)
+        kernelCpuFamily = "ARM";
+      else if (machine.compare(0, 4, "mips", 4) == 0)
+        kernelCpuFamily = "MIPS";
+      else if (machine.compare(0, 4, "i686", 4) == 0 || machine == "i386" || machine == "amd64" ||  machine.compare(0, 3, "x86", 3) == 0)
+        kernelCpuFamily = "x86";
+      else if (machine.compare(0, 3, "ppc", 3) == 0 || machine.compare(0, 5, "power", 5) == 0)
+        kernelCpuFamily = "PowerPC";
+    }
 #endif
+    if (kernelCpuFamily.empty())
+      kernelCpuFamily = "unknown CPU family";
   }
-#endif
-  return "unknown CPU family";
+  return kernelCpuFamily;
 }
 
 int CSysInfo::GetXbmcBitness(void)
