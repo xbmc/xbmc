@@ -150,6 +150,12 @@ class CVideoReferenceClock : public CThread
 
     int64_t m_LastVBlankTime;  //timestamp of the last vblank, used for calculating how many vblanks happened
                                //not the same as m_VblankTime
+#elif defined(TARGET_RASPBERRY_PI)
+    bool SetupRPi();
+    void RunRPi();
+    void CleanupRPi();
+    int64_t m_LastVBlankTime;  //timestamp of the last vblank, used for calculating how many vblanks happened
+                               //not the same as m_VblankTime
 #endif
 };
 

@@ -57,6 +57,7 @@ public:
   // stride can be null for packed output
   unsigned char *CaptureDisplay(int width, int height, int *stride, bool swap_red_blue, bool video_only = true);
   DllOMX *GetDllOMX() { return m_OMX ? m_OMX->GetDll() : NULL; }
+  void WaitVsync();
 
 private:
   DllBcmHost *m_DllBcmHost;
@@ -69,6 +70,8 @@ private:
   bool       m_codec_mpg2_enabled;
   bool       m_codec_wvc1_enabled;
   COMXCore   *m_OMX;
+  DISPMANX_RESOURCE_HANDLE_T m_resource;
+  DISPMANX_ELEMENT_HANDLE_T m_element;
   class DllLibOMXCore;
   CCriticalSection m_critSection;
 };
