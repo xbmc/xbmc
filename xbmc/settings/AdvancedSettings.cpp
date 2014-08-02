@@ -128,7 +128,7 @@ void CAdvancedSettings::Initialize()
   m_audioDefaultPlayer = "paplayer";
   m_audioPlayCountMinimumPercent = 90.0f;
 
-  m_videoSubsDelayRange = 10;
+  m_videoSubsDelayRange = 60;
   m_videoAudioDelayRange = 10;
   m_videoSmallStepBackSeconds = 7;
   m_videoSmallStepBackTries = 3;
