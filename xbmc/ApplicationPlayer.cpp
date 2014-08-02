@@ -64,9 +64,6 @@ void CApplicationPlayer::ClosePlayerGapless(PLAYERCOREID newCore)
     return;
 
   bool gaplessSupported = (m_eCurrentPlayer == EPC_DVDPLAYER || m_eCurrentPlayer == EPC_PAPLAYER);
-#if defined(HAS_OMXPLAYER)
-  gaplessSupported = gaplessSupported || (m_eCurrentPlayer == EPC_OMXPLAYER);
-#endif            
   gaplessSupported = gaplessSupported && (m_eCurrentPlayer == newCore);
   if (!gaplessSupported)
   {
