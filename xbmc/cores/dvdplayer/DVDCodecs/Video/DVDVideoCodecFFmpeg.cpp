@@ -210,7 +210,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
       break;
     }
   }
-  else if (hints.codec == AV_CODEC_ID_HEVC)
+  else if (hints.codec == AV_CODEC_ID_HEVC
+        || hints.codec == AV_CODEC_ID_VP9)
     m_isSWCodec = true;
 
   if(pCodec == NULL)
@@ -295,7 +296,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   if( num_threads > 1 && !hints.software && m_pHardware == NULL // thumbnail extraction fails when run threaded
   && ( pCodec->id == AV_CODEC_ID_H264
     || pCodec->id == AV_CODEC_ID_MPEG4
-    || pCodec->id == AV_CODEC_ID_HEVC))
+    || pCodec->id == AV_CODEC_ID_HEVC
+    || pCodec->id == AV_CODEC_ID_VP9))
     m_pCodecContext->thread_count = num_threads;
 
   if (avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
