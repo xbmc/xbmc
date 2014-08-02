@@ -86,16 +86,6 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     items.SetProperty("reponame",g_localizeStrings.Get(24043));
     items.SetLabel(g_localizeStrings.Get(24043));
   }
-  else if (path.GetHostName() == "check")
-  {
-    reposAsFolders = false;
-    groupAddons = false;
-    // force a refresh
-    CAddonInstaller::Get().UpdateRepos(true, true);
-    CAddonMgr::Get().GetAllOutdatedAddons(addons);
-    items.SetProperty("reponame",g_localizeStrings.Get(24055));
-    items.SetLabel(g_localizeStrings.Get(24055));
-  }
   else if (path.GetHostName() == "repos")
   {
     groupAddons = false;
@@ -214,8 +204,7 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     item->SetLabel(g_localizeStrings.Get(24032));
     items.Add(item);
   }
-  else if ((path.GetHostName() == "outdated" ||
-            path.GetHostName() == "check") && items.Size() > 1)
+  else if (path.GetHostName() == "outdated" && items.Size() > 1)
   {
     CFileItemPtr item(new CFileItem("addons://update_all/", true));
     item->SetLabel(g_localizeStrings.Get(24122));
