@@ -18,6 +18,10 @@ endif()
 get_filename_component(CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}" ABSOLUTE)
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_INSTALL_PREFIX})
 
+if(NOT DEPENDS_TO_BUILD)
+  set(DEPENDS_TO_BUILD "all")
+endif()
+
 function(add_internal id url inputfile)
   externalproject_add(${id}
                       URL ${url}
@@ -41,7 +45,11 @@ foreach(file ${download_input_files})
     get_filename_component(dir ${file} PATH)
     string(REPLACE " " ";" def ${def})
     list(GET def 0 id)
-    list(GET def 1 url)
-    add_internal(${id} ${url} ${dir}/install.txt)
+
+    list(FIND DEPENDS_TO_BUILD ${id} idx)
+    if(idx GREATER -1 OR DEPENDS_TO_BUILD STREQUAL "all")
+      list(GET def 1 url)
+      add_internal(${id} ${url} ${dir}/install.txt)
+    endif()
   endif()
 endforeach()
