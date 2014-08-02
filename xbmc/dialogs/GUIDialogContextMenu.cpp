@@ -276,8 +276,6 @@ void CGUIDialogContextMenu::GetContextButtons(const std::string &type, const CFi
     }
     if (!GetDefaultShareNameByType(type).empty())
       buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // Clear Default
-
-    buttons.Add(CONTEXT_BUTTON_ADD_SOURCE, 1026); // Add Source
   }
   if (share && LOCK_MODE_EVERYONE != CProfilesManager::Get().GetMasterProfile().getLockMode())
   {
