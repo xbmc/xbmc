@@ -182,6 +182,7 @@ protected:
   typedef struct omx_bitstream_ctx {
       uint8_t  length_size;
       uint8_t  first_idr;
+      uint8_t  idr_sps_pps_seen;
       uint8_t *sps_pps_data;
       uint32_t size;
   } omx_bitstream_ctx;

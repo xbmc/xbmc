@@ -645,6 +645,7 @@ pps:
   m_sps_pps_context.sps_pps_data = out;
   m_sps_pps_context.size = total_size;
   m_sps_pps_context.first_idr = 1;
+  m_sps_pps_context.idr_sps_pps_seen = 0;
 
   return true;
 }
@@ -677,8 +678,12 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
     if (buf + nal_size > buf_end || nal_size < 0)
       goto fail;
 
-    // prepend only to the first type 5 NAL unit of an IDR picture
-    if (m_sps_pps_context.first_idr && unit_type == 5)
+    // Don't add sps/pps if the unit already contain them
+    if (m_sps_pps_context.first_idr && (unit_type == 7 || unit_type == 8))
+      m_sps_pps_context.idr_sps_pps_seen = 1;
+
+      // prepend only to the first access unit of an IDR picture, if no sps/pps already present
+    if (m_sps_pps_context.first_idr && unit_type == 5 && !m_sps_pps_context.idr_sps_pps_seen)
     {
       BitstreamAllocAndCopy(poutbuf, poutbuf_size,
         m_sps_pps_context.sps_pps_data, m_sps_pps_context.size, buf, nal_size);
@@ -688,7 +693,10 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
     {
       BitstreamAllocAndCopy(poutbuf, poutbuf_size, NULL, 0, buf, nal_size);
       if (!m_sps_pps_context.first_idr && unit_type == 1)
+      {
           m_sps_pps_context.first_idr = 1;
+          m_sps_pps_context.idr_sps_pps_seen = 0;
+      }
     }
 
     buf += nal_size;
