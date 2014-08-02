@@ -195,6 +195,8 @@ std::string CGUIWindowPrograms::GetStartFolder(const std::string &dir)
   std::string lower(dir); StringUtils::ToLower(lower);
   if (lower == "plugins" || lower == "addons")
     return "addons://sources/executable/";
+  else if (lower == "androidapps")
+    return "androidapp://sources/apps/";
     
   SetupShares();
   VECSOURCES shares;
