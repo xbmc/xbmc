@@ -637,16 +637,15 @@ bool CAddonInstallJob::OnPreInstall()
 
   if (m_addon->Type() == ADDON_SERVICE)
   {
-    bool running = !CAddonMgr::Get().IsAddonDisabled(m_addon->ID()); //grab a current state
-    CAddonMgr::Get().DisableAddon(m_addon->ID(),false); // enable it so we can remove it??
-    // regrab from manager to have the correct path set
-    AddonPtr addon;
-    ADDON::CAddonMgr::Get().GetAddon(m_addon->ID(), addon);
-    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(addon);
-    if (service)
-      service->Stop();
-    CAddonMgr::Get().RemoveAddon(m_addon->ID()); // remove it
-    return running;
+    // make sure the addon is stopped
+    AddonPtr localAddon; // need to grab the local addon so we have the correct library path to stop
+    if (CAddonMgr::Get().GetAddon(m_addon->ID(), localAddon, ADDON_SERVICE, false))
+    {
+      boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(localAddon);
+      if (service)
+        service->Stop();
+    }
+    return !CAddonMgr::Get().IsAddonDisabled(m_addon->ID());
   }
 
   if (m_addon->Type() == ADDON_PVRDLL)
@@ -768,15 +767,15 @@ void CAddonInstallJob::OnPostInstall(bool reloadAddon)
 
   if (m_addon->Type() == ADDON_SERVICE)
   {
-    CAddonMgr::Get().DisableAddon(m_addon->ID(),!reloadAddon); //return it into state it was before OnPreInstall()
     if (reloadAddon) // reload/start it if it was running
     {
-      // regrab from manager to have the correct path set
-      AddonPtr addon; 
-      CAddonMgr::Get().GetAddon(m_addon->ID(), addon);
-      boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(addon);
-      if (service)
-        service->Start();
+      AddonPtr localAddon; // need to grab the local addon so we have the correct library path to stop
+      if (CAddonMgr::Get().GetAddon(m_addon->ID(), localAddon, ADDON_SERVICE, false))
+      {
+        boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(localAddon);
+        if (service)
+          service->Start();
+      }
     }
   }
 
