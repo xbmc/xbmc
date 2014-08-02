@@ -56,6 +56,8 @@ namespace XBMCAddon
 	invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onScanFinished,library));
 	invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onDatabaseUpdated,library));
       }
+      inline void    OnCleanStarted(const String &library) { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onCleanStarted,library)); }
+      inline void    OnCleanFinished(const String &library) { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onCleanFinished,library)); }
       inline void    OnAbortRequested() { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onAbortRequested)); }
       inline void    OnNotification(const String &sender, const String &method, const String &data) { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor,const String,const String,const String>(this,&Monitor::onNotification,sender,method,data)); }
 
@@ -124,6 +126,24 @@ namespace XBMCAddon
        * onDatabaseUpdated(database) -- Deprecated, use onScanFinished().
        */
       virtual void    onDatabaseUpdated(const String database) { XBMC_TRACE; }
+
+      /**
+       * onCleanStarted(library) -- onCleanStarted method.\n
+       * \n
+       * library : video/music as string\n
+       * \n
+       * Will be called when library clean has started and return video or music to indicate which library is being cleaned\n
+       */
+      virtual void    onCleanStarted(const String library) { XBMC_TRACE; }
+
+      /**
+       * onCleanFinished(library) -- onCleanFinished method.\n
+       * \n
+       * library : video/music as string\n
+       * \n
+       * Will be called when library clean has ended and return video or music to indicate which library has been cleaned\n
+       */
+      virtual void    onCleanFinished(const String library) { XBMC_TRACE; }
 
       /**
        * onAbortRequested() -- onAbortRequested method.\n
