@@ -434,7 +434,7 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(CSettingGroup *group, cons
       for (int i = 0; i < 3; ++i)
         options.push_back(make_pair(i, 13320 + i));
 
-      m_audioStream = -CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream - 1;
+      m_audioStream = -g_application.m_pPlayer->GetAudioStream() - 1;
       m_audioStreamStereoMode = true;
       AddSpinner(group, settingId, 460, 0, m_audioStream, options);
       return;

@@ -21,6 +21,7 @@
 #include "ApplicationPlayer.h"
 #include "cores/IPlayer.h"
 #include "Application.h"
+#include "settings/MediaSettings.h"
 
 #define VOLUME_MINIMUM 0.0f        // -60dB
 #define VOLUME_MAXIMUM 1.0f        // 0dB
@@ -499,6 +500,7 @@ void CApplicationPlayer::SetAudioStream(int iStream)
     player->SetAudioStream(iStream);
     m_iAudioStream = iStream;
     m_audioStreamUpdate.Set(1000);
+    CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream = iStream;
   }
 }
 
