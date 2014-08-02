@@ -1,0 +1,16 @@
+* New
+  - Trailers & extras are now available in Preplay Window
+  - Cinema Trailers before playback (see Preferences > Playback > Extras). 
+  - Play Queue items can now be removed from Play Queue on screen display
+  - Support page for trailers / extras can be found here :
+	https://support.plex.tv/hc/en-us/articles/202934883 
+	https://support.plex.tv/hc/en-us/articles/202934863
+
+* Fixes
+  - Fix Play Queue contextual menus depending on already existing Play Queue
+  - Fix Home Window fanouts positions are now restored properly
+  - Fix Sections list item selection is now restored properly 
+  - Fix ASS subtitles now show up properly when overriden with PHT fonts
+  - Fix Channels messages dialog won’t show error message any more.
+  - Fix Preferences browsing made easier.
+  - Various skin fixes.
