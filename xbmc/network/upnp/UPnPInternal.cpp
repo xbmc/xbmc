@@ -301,7 +301,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     for (unsigned int index = 0; index < tag.m_studio.size(); index++)
         object.m_People.publisher.Add(tag.m_studio[index].c_str());
 
-    object.m_XbmcInfo.date_added = tag.m_dateAdded.GetAsDBDate().c_str();
+    object.m_XbmcInfo.date_added = tag.m_dateAdded.GetAsW3CDate().c_str();
     object.m_XbmcInfo.rating = tag.m_fRating;
     object.m_XbmcInfo.votes = tag.m_strVotes;
 
@@ -407,7 +407,7 @@ BuildObject(CFileItem&                    item,
 
         // set date
         if (object->m_Date.IsEmpty() && item.m_dateTime.IsValid()) {
-            object->m_Date = item.m_dateTime.GetAsDBDate().c_str();
+            object->m_Date = item.m_dateTime.GetAsW3CDate().c_str();
         }
 
         if (upnp_server) {
@@ -515,7 +515,7 @@ BuildObject(CFileItem&                    item,
                   if(!tag.m_premiered.IsValid() && tag.m_iYear)
                     container->m_Date = NPT_String::FromInteger(tag.m_iYear) + "-01-01";
                   else
-                    container->m_Date = tag.m_premiered.GetAsDBDate().c_str();
+                    container->m_Date = tag.m_premiered.GetAsW3CDate().c_str();
 
                   for (unsigned int index = 0; index < tag.m_genre.size(); index++)
                     container->m_Affiliation.genres.Add(tag.m_genre.at(index).c_str());
@@ -703,7 +703,7 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
     for (unsigned int index = 0; index < object.m_People.publisher.GetItemCount(); index++)
         tag.m_studio.push_back(object.m_People.publisher.GetItem(index)->GetChars());
 
-    tag.m_dateAdded.SetFromDateString((const char*)object.m_XbmcInfo.date_added);
+    tag.m_dateAdded.SetFromW3CDate((const char*)object.m_XbmcInfo.date_added);
     tag.m_fRating = object.m_XbmcInfo.rating;
     tag.m_strVotes = object.m_XbmcInfo.votes;
 
