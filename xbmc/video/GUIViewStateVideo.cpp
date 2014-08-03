@@ -287,12 +287,17 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
 
         const CViewState *viewState = CViewStateSettings::Get().Get("videonavtitles");
         if (params.GetSetId() > -1)
+        {
           SetSortMethod(SortByYear);
+          SetSortOrder(SortOrderAscending);
+        }
         else
+        {
           SetSortMethod(viewState->m_sortDescription);
+          SetSortOrder(viewState->m_sortDescription.sortOrder);
+        }
 
         SetViewAsControl(viewState->m_viewMode);
-        SetSortOrder(viewState->m_sortDescription.sortOrder);
       }
       break;
       case NODE_TYPE_TITLE_MUSICVIDEOS:
