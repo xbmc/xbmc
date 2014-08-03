@@ -179,7 +179,6 @@ public:
                  int iTimesPlayed, int iStartOffset, int iEndOffset,
                  const CDateTime& dtLastPlayed,
                  char rating, int iKaraokeNumber);
-  // bool DeleteSong(int idSong);
 
   //// Misc Song
   bool GetSongByFileName(const CStdString& strFileName, CSong& song, int startOffset = 0);
@@ -223,7 +222,6 @@ public:
                    const CStdString& strImage, const CStdString& strLabel,
                    const CStdString& strType,
                    int iRating, int iYear, bool bCompilation);
-  bool DeleteAlbum(int idAlbum);
   bool ClearAlbumLastScrapedTime(int idAlbum);
   bool HasAlbumBeenScraped(int idAlbum);
   int  AddAlbumInfoSong(int idAlbum, const CSong& song);
@@ -255,7 +253,6 @@ public:
                     const CStdString& strBiography, const CStdString& strDied,
                     const CStdString& strDisbanded, const CStdString& strYearsActive,
                     const CStdString& strImage, const CStdString& strFanart);
-  bool DeleteArtist(int idArtist);
   bool HasArtistBeenScraped(int idArtist);
   bool ClearArtistLastScrapedTime(int idArtist);
   int  AddArtistDiscography(int idArtist, const CStdString& strAlbum, const CStdString& strYear);
