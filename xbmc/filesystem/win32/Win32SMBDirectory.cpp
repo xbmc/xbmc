@@ -24,6 +24,7 @@
 #include "FileItem.h"
 #include "win32/WIN32Util.h"
 #include "utils/SystemInfo.h"
+#define NO_GLOBAL_CHARSETCONVERTER 1
 #include "utils/CharsetConverter.h"
 #include "URL.h"
 #include "utils/log.h"
@@ -153,8 +154,8 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     if (itemNameW == L"." || itemNameW == L".." || itemNameW.empty())
       continue;
     
-    std::string itemName;
-    if (!g_charsetConverter.wToUTF8(itemNameW, itemName, true) || itemName.empty())
+    std::string itemName(CCharsetConverter::simpleWToUtf8(itemNameW, true));
+    if (itemName.empty())
     {
       CLog::Log(LOGERROR, "%s: Can't convert wide string item name to UTF-8", __FUNCTION__);
       continue;
@@ -255,12 +256,11 @@ bool CWin32SMBDirectory::RealExists(const CURL& url, bool tryToConnect)
   {
     if (!url.GetShareName().empty())
     {
-      std::wstring serverNameW;
-      std::wstring shareNameW;
+      std::wstring serverNameW(CCharsetConverter::simpleUtf8ToW("\\\\" + url.GetHostName(), true));
+      std::wstring shareNameW(CCharsetConverter::simpleUtf8ToW(url.GetShareName(), true));
       SHARE_INFO_1* info = NULL;
       // try fast way
-      if (g_charsetConverter.utf8ToW("\\\\" + url.GetHostName(), serverNameW, false, false, true) &&
-          g_charsetConverter.utf8ToW(url.GetShareName(), shareNameW, false, false, true) &&
+      if (!serverNameW.empty() && !shareNameW.empty() &&
           NetShareGetInfo((LPWSTR)serverNameW.c_str(), (LPWSTR)shareNameW.c_str(), 1, (LPBYTE*)&info) == NERR_Success)
       {
         const bool ret = ((info->shi1_type & STYPE_MASK) == STYPE_DISKTREE);
@@ -351,8 +351,8 @@ bool CWin32SMBDirectory::GetNetworkResources(const CURL& basePath, CFileItemList
   if (basePathStr.back() != '/')
     basePathStr.push_back('/');
 
-  std::wstring remoteName;
-  if (!basePathStr.empty() && !g_charsetConverter.utf8ToW("\\\\" + basePath.GetHostName(), remoteName, false, false, true))
+  std::wstring remoteName(CCharsetConverter::simpleUtf8ToW("\\\\" + hostName, true));
+  if (remoteName.empty())
   {
     CLog::Log(LOGERROR, "%s: can't convert host name \"%s\" to wide character form", __FUNCTION__, basePath.GetHostName().c_str());
     return false;
@@ -402,14 +402,11 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
   {
     if (basePathToScanPtr)
     {
-      std::string containerName;
-      g_charsetConverter.wToUTF8(basePathToScanPtr->lpRemoteName, containerName);
+      std::string containerName(CCharsetConverter::simpleWToUtf8(basePathToScanPtr->lpRemoteName, false));
       std::string providerName;
       if (basePathToScanPtr->lpProvider && basePathToScanPtr->lpProvider[0] != 0)
-      {
-        g_charsetConverter.wToUTF8(basePathToScanPtr->lpProvider, providerName);
-        providerName = " (provider \"" + providerName + "\")";
-      }
+        providerName = " (provider \"" + CCharsetConverter::simpleWToUtf8(basePathToScanPtr->lpProvider, false) + "\")";
+
       CLog::Log(LOGNOTICE, "%s: Can't open network enumeration for \"%s\"%s. Error: %lu", __FUNCTION__, containerName.c_str(), providerName.c_str(), (unsigned long)result);
     }
     else
@@ -448,8 +445,8 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
             std::wstring remoteName(curResource.lpRemoteName);
             if (remoteName.length() > 2 && remoteName.compare(0, 2, L"\\\\", 2) == 0)
             {
-              std::string remoteNameUtf8;
-              if (g_charsetConverter.wToUTF8(remoteName.substr(2), remoteNameUtf8, true) && !remoteNameUtf8.empty())
+              std::string remoteNameUtf8(CCharsetConverter::simpleWToUtf8(remoteName.substr(2), true));
+              if (!remoteNameUtf8.empty())
               {
                 CFileItemPtr pItem(new CFileItem(remoteNameUtf8));
                 pItem->SetPath(urlPrefixForItems + remoteNameUtf8 + '/');
@@ -479,8 +476,8 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
               const size_t slashPos = serverShareName.rfind('\\');
               if (slashPos < serverShareName.length() - 1) // slash must be not on last position
               {
-                std::string shareNameUtf8;
-                if (g_charsetConverter.wToUTF8(serverShareName.substr(slashPos + 1), shareNameUtf8, true) && !shareNameUtf8.empty())
+                std::string shareNameUtf8(CCharsetConverter::simpleWToUtf8(serverShareName.substr(slashPos + 1), true));
+                if (!shareNameUtf8.empty())
                 {
                   CFileItemPtr pItem(new CFileItem(shareNameUtf8));
                   pItem->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
@@ -510,11 +507,8 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
           if (curResource.lpRemoteName != NULL && curResource.lpRemoteName[0] != 0)
           {
             if (!localGetNetworkResources(&curResource, urlPrefixForItems, items, false))
-            {
-              std::string remoteName;
-              g_charsetConverter.wToUTF8(curResource.lpRemoteName, remoteName);
-              CLog::Log(LOGNOTICE, "%s: Can't get servers from \"%s\", skipping", __FUNCTION__, remoteName.c_str());
-            }
+              CLog::Log(LOGNOTICE, "%s: Can't get servers from \"%s\", skipping", __FUNCTION__, 
+                          CCharsetConverter::simpleWToUtf8(curResource.lpRemoteName, false).c_str());
           }
           else
             CLog::Log(LOGERROR, "%s: Skipping container with empty remote name", __FUNCTION__);
@@ -529,12 +523,12 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
   {
     if (basePathToScanPtr && basePathToScanPtr->lpRemoteName)
     {
-      std::string remName;
-      g_charsetConverter.wToUTF8(basePathToScanPtr->lpRemoteName, remName);
       if (errorFlag)
-        CLog::Log(LOGERROR, "%s: Error loading content for \"%s\"", __FUNCTION__, remName.c_str());
+        CLog::Log(LOGERROR, "%s: Error loading content for \"%s\"", __FUNCTION__,
+                    CCharsetConverter::simpleWToUtf8(basePathToScanPtr->lpRemoteName, false).c_str());
       else
-        CLog::Log(LOGERROR, "%s: Error (%lu) loading content for \"%s\"", __FUNCTION__, (unsigned long)result, remName.c_str());
+        CLog::Log(LOGERROR, "%s: Error (%lu) loading content for \"%s\"", __FUNCTION__, (unsigned long)result,
+                    CCharsetConverter::simpleWToUtf8(basePathToScanPtr->lpRemoteName, false).c_str());
     }
     else
     {
@@ -576,17 +570,21 @@ static bool localGetShares(const std::wstring& serverNameToScan, const std::stri
         SHARE_INFO_1& curShare = shareInfos[i];
         if ((curShare.shi1_type & STYPE_MASK) == STYPE_DISKTREE)
         {
-          std::string shareNameUtf8;
-          if (curShare.shi1_netname && curShare.shi1_netname[0] &&
-              g_charsetConverter.wToUTF8(curShare.shi1_netname, shareNameUtf8, true) && !shareNameUtf8.empty())
+          if (curShare.shi1_netname && curShare.shi1_netname[0])
           {
-            CFileItemPtr pItem(new CFileItem(shareNameUtf8));
-            pItem->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
-            pItem->m_bIsFolder = true;
-            if ((curShare.shi1_type & STYPE_SPECIAL) != 0 || shareNameUtf8.back() == '$')
-              pItem->SetProperty("file:hidden", true);
+            std::string shareNameUtf8(CCharsetConverter::simpleWToUtf8(curShare.shi1_netname, true));
+            if (!shareNameUtf8.empty())
+            {
+              CFileItemPtr pItem(new CFileItem(shareNameUtf8));
+              pItem->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
+              pItem->m_bIsFolder = true;
+              if ((curShare.shi1_type & STYPE_SPECIAL) != 0 || shareNameUtf8.back() == '$')
+                pItem->SetProperty("file:hidden", true);
 
-            items.Add(pItem);
+              items.Add(pItem);
+            }
+            else
+              errorFlag = true;
           }
           else
             errorFlag = true;
@@ -613,8 +611,8 @@ bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCr
     CPasswordManager::GetInstance().AuthenticateURL(url); // set username and password if any
 
   /* convert everything to wide strings */
-  std::wstring serverNameW;
-  if (!g_charsetConverter.utf8ToW(url.GetHostName(), serverNameW, false, false, true))
+  std::wstring serverNameW(CCharsetConverter::simpleUtf8ToW(url.GetHostName(), true));
+  if (serverNameW.empty())
   {
     CLog::Log(LOGERROR, "%s: Can't convert server name \"%s\" to wide string", __FUNCTION__, url.GetHostName().c_str());
     return false;
@@ -626,7 +624,8 @@ bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCr
   if (!url.GetShareName().empty())
   {
     serverShareName = "\\\\" + url.GetHostName() + "\\" + url.GetShareName();
-    if (!g_charsetConverter.utf8ToW(serverShareName, serverShareNameW, false, false, true))
+    serverShareNameW = CCharsetConverter::simpleUtf8ToW(serverShareName, true);
+    if (serverShareNameW.empty())
     {
       CLog::Log(LOGERROR, "%s: Can't convert share name \"%s\" to wide string", __FUNCTION__, serverShareName.c_str());
       return false;
@@ -638,13 +637,13 @@ bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCr
     serverShareNameW = serverNameW;
   }
 
-  std::wstring usernameW;
-  if (!url.GetUserName().empty() && !g_charsetConverter.utf8ToW(url.GetUserName(), usernameW, false, false, true))
+  std::wstring usernameW(CCharsetConverter::simpleUtf8ToW(url.GetUserName(), true));
+  if (!url.GetUserName().empty() && usernameW.empty())
   {
     CLog::Log(LOGERROR, "%s: Can't convert username \"%s\" to wide string", __FUNCTION__, url.GetUserName().c_str());
     return false;
-    std::wstring domainW;
-    if (!url.GetDomain().empty() && !g_charsetConverter.utf8ToW(url.GetDomain(), domainW, false, false, true))
+    std::wstring domainW(CCharsetConverter::simpleUtf8ToW(url.GetDomain(), true));
+    if (!url.GetDomain().empty() && domainW.empty())
     {
       CLog::Log(LOGERROR, "%s: Can't convert domain name \"%s\" to wide string", __FUNCTION__, url.GetDomain().c_str());
       return false;
@@ -653,8 +652,8 @@ bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCr
       usernameW += L'@' + domainW;
   }
 
-  std::wstring passwordW;
-  if (!url.GetPassWord().empty() && !g_charsetConverter.utf8ToW(url.GetPassWord(), passwordW, false, false, true))
+  std::wstring passwordW(CCharsetConverter::simpleUtf8ToW(url.GetPassWord(), true));
+  if (!url.GetPassWord().empty() && passwordW.empty())
   {
     CLog::Log(LOGERROR, "%s: Can't convert password to wide string", __FUNCTION__);
     return false;
