@@ -41,7 +41,7 @@ namespace VIDEO
       iSubepisode = Subepisode;
       isFolder    = Folder;
     }
-    bool operator==(const struct EPISODE& rhs)
+    bool operator==(const struct EPISODE& rhs) const
     {
       return (iSeason     == rhs.iSeason  &&
               iEpisode    == rhs.iEpisode &&
