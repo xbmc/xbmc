@@ -730,6 +730,13 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
       tag.m_director.push_back(object.m_People.directors.GetItem(index)->name.GetChars());
     for (unsigned int index = 0; index < object.m_People.authors.GetItemCount(); index++)
       tag.m_writingCredits.push_back(object.m_People.authors.GetItem(index)->name.GetChars());
+    for (unsigned int index = 0; index < object.m_People.actors.GetItemCount(); index++)
+    {
+      SActorInfo info;
+      info.strName = object.m_People.actors.GetItem(index)->name;
+      info.strRole = object.m_People.actors.GetItem(index)->role;
+      tag.m_cast.push_back(info);
+    }
     tag.m_strTagLine  = object.m_Description.description;
     tag.m_strPlot     = object.m_Description.long_description;
     tag.m_strMPAARating = object.m_Description.rating;
