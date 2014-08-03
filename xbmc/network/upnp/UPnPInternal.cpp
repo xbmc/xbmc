@@ -706,7 +706,9 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
         tag.m_strTitle     = object.m_Title;
         tag.m_premiered    = date;
     }
-    tag.m_iYear       = date.GetYear();
+
+    if (date.IsValid())
+      tag.m_iYear = date.GetYear();
 
     for (unsigned int index = 0; index < object.m_People.publisher.GetItemCount(); index++)
         tag.m_studio.push_back(object.m_People.publisher.GetItem(index)->GetChars());
