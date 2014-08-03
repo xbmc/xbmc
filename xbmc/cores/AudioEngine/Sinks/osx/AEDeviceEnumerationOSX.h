@@ -22,7 +22,13 @@
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioDevice.h"
 
-typedef std::vector< std::pair<AudioDeviceID, CAEDeviceInfo> > CADeviceList;
+struct CADeviceInstance
+{
+  AudioDeviceID audioDeviceId;
+  unsigned int streamIndex;
+  unsigned int sourceId;
+};
+typedef std::vector< std::pair<struct CADeviceInstance, CAEDeviceInfo> > CADeviceList;
 
 typedef enum PassthroughMode
 {
@@ -30,7 +36,7 @@ typedef enum PassthroughMode
   PassthroughModeNative,
   PassthroughModeBitstream
 } EPassthroughMode;
-  
+
 //Hirarchy:
 // Device
 //       - 1..n streams

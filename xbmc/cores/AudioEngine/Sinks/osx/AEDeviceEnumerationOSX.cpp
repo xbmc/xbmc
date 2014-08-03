@@ -195,6 +195,10 @@ CADeviceList AEDeviceEnumerationOSX::GetDeviceInfoList() const
   for (UInt32 streamIdx = 0; streamIdx < numDevices; streamIdx++)
   {
     CAEDeviceInfo deviceInfo;
+    struct CADeviceInstance devInstance;
+    devInstance.audioDeviceId = m_deviceID;
+    devInstance.streamIndex = streamIdx;
+    devInstance.sourceId = INT_MAX;//don't set audio source by default
     
     deviceInfo.m_deviceName = getDeviceNameForStream(streamIdx);
     deviceInfo.m_displayName = m_deviceName;
@@ -204,7 +208,23 @@ CADeviceList AEDeviceEnumerationOSX::GetDeviceInfoList() const
     deviceInfo.m_dataFormats = getFormatListForStream(streamIdx);
     deviceInfo.m_deviceType = m_caStreamInfos[streamIdx].deviceType;
     
-    list.push_back(std::make_pair(m_deviceID, deviceInfo));
+    CoreAudioDataSourceList sourceList;
+    // if this enumerator contains multiple devices with more then 1 source we add :source suffixes to the
+    // device names and overwrite the extraname with the source name
+    if (numDevices == 1 && m_caDevice.GetDataSources(&sourceList) && sourceList.size() > 1)
+    {
+      for (unsigned sourceIdx = 0; sourceIdx < sourceList.size(); sourceIdx++)
+      {
+        std::stringstream sourceIdxStr;
+        sourceIdxStr << sourceIdx;
+        deviceInfo.m_deviceName = getDeviceNameForStream(streamIdx) + ":source" + sourceIdxStr.str();
+        deviceInfo.m_displayNameExtra = m_caDevice.GetDataSourceName(sourceList[sourceIdx]);
+        devInstance.sourceId = sourceList[sourceIdx];
+        list.push_back(std::make_pair(devInstance, deviceInfo));
+      }
+    }
+    else
+      list.push_back(std::make_pair(devInstance, deviceInfo));
   }
   return list;
 }
@@ -272,7 +292,7 @@ CAEChannelInfo AEDeviceEnumerationOSX::getChannelInfoForStream(UInt32 streamIdx)
   else
   {
     //get channel map to match the devices channel layout as set in audio-midi-setup
-    GetAEChannelMap(channelInfo, m_caDevice.GetTotalOutputChannels());
+    GetAEChannelMap(channelInfo, m_caDevice.GetNumChannelsOfStream(streamIdx));
   }
   return channelInfo;
 }
@@ -381,20 +401,28 @@ std::string AEDeviceEnumerationOSX::getDeviceNameForStream(UInt32 streamIdx) con
 }
 
 std::string AEDeviceEnumerationOSX::getExtraDisplayNameForStream(UInt32 streamIdx) const
-{
-  std::string extraDisplayName = "";
-  
+{ 
   // for distinguishing the streams inside one device we add
-  // Stream <number> to the extraDisplayName
+  // the corresponding channels to the extraDisplayName
   // planar devices are ignored here as their streams are
   // the channels not different subdevices
   if (m_caStreamInfos.size() > 1 && !m_isPlanar)
   {
-    std::stringstream streamIdxStr;
-    streamIdxStr << streamIdx;
-    extraDisplayName = "Stream " + streamIdxStr.str();
+    // build a string with the channels for this stream
+    UInt32 startChannel = 0;
+    CCoreAudioStream::GetStartingChannelInDevice(m_caStreamInfos[streamIdx].streamID, startChannel);
+    UInt32 numChannels = m_caDevice.GetNumChannelsOfStream(streamIdx);
+    std::stringstream extraName;
+    extraName << "Channels ";
+    extraName << startChannel;
+    extraName << " - ";
+    extraName << startChannel + numChannels - 1;
+    CLog::Log(LOGNOTICE, "%s adding stream %d as pseudo device with start channel %d and %d channels total", __FUNCTION__, (unsigned int)streamIdx, (unsigned int)startChannel, (unsigned int)numChannels);
+    return extraName.str();
   }
-  return extraDisplayName;
+
+  //for all other devices use the datasource as extraname
+  return m_caDevice.GetCurrentDataSourceName();
 }
 
 float AEDeviceEnumerationOSX::scoreSampleRate(Float64 destinationRate, unsigned int sourceRate) const

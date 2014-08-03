@@ -321,7 +321,7 @@ UInt32 CCoreAudioDevice::GetTotalOutputChannels() const
   return channels;
 }
 
-UInt32 CCoreAudioDevice::GetNumChannelsOfStream(UInt32 streamIdx)
+UInt32 CCoreAudioDevice::GetNumChannelsOfStream(UInt32 streamIdx) const
 {
   UInt32 channels = 0;
   
@@ -622,7 +622,93 @@ bool CCoreAudioDevice::GetPreferredChannelLayoutForStereo(CCoreAudioChannelLayou
   return (ret == noErr);
 }
 
-bool CCoreAudioDevice::GetDataSources(CoreAudioDataSourceList* pList)
+std::string CCoreAudioDevice::GetCurrentDataSourceName() const
+{
+  UInt32 dataSourceId = 0;
+  std::string dataSourceName = "";
+  if(GetDataSource(dataSourceId))
+  {
+    dataSourceName = GetDataSourceName(dataSourceId);
+  }
+  return dataSourceName;
+}
+
+std::string CCoreAudioDevice::GetDataSourceName(UInt32 dataSourceId) const
+{
+  UInt32 propertySize = 0;
+  CFStringRef dataSourceNameCF;
+  std::string dataSourceName;
+  std::string ret = "";
+  
+  if (!m_DeviceId)
+    return ret;
+  
+  AudioObjectPropertyAddress  propertyAddress;
+  propertyAddress.mScope    = kAudioDevicePropertyScopeOutput;
+  propertyAddress.mElement  = 0;
+  propertyAddress.mSelector = kAudioDevicePropertyDataSourceNameForIDCFString;
+
+  AudioValueTranslation translation;
+  translation.mInputData = &dataSourceId;
+  translation.mInputDataSize = sizeof(UInt32);
+  translation.mOutputData = &dataSourceNameCF;
+  translation.mOutputDataSize = sizeof ( CFStringRef );
+  propertySize = sizeof(AudioValueTranslation);
+  OSStatus status = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &propertySize, &translation);
+
+  if (( status == noErr ) && dataSourceNameCF )
+  {
+    if (DarwinCFStringRefToUTF8String(dataSourceNameCF, dataSourceName))
+    {
+      ret = dataSourceName;
+    }
+    CFRelease ( dataSourceNameCF );
+  }
+
+  return ret;
+}
+
+bool CCoreAudioDevice::GetDataSource(UInt32 &dataSourceId) const
+{
+  bool ret = false;
+  
+  if (!m_DeviceId)
+    return false;
+  
+  AudioObjectPropertyAddress  propertyAddress;
+  propertyAddress.mScope    = kAudioDevicePropertyScopeOutput;
+  propertyAddress.mElement  = 0;
+  propertyAddress.mSelector = kAudioDevicePropertyDataSource;
+  
+  UInt32 size = sizeof(dataSourceId);
+  OSStatus status = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &size, &dataSourceId);
+  if(status == noErr)
+    ret = true;
+  
+  return ret;
+}
+
+bool CCoreAudioDevice::SetDataSource(UInt32 &dataSourceId)
+{
+  bool ret = false;
+  
+  if (!m_DeviceId)
+    return false;
+  
+  AudioObjectPropertyAddress  propertyAddress;
+  propertyAddress.mScope    = kAudioDevicePropertyScopeOutput;
+  propertyAddress.mElement  = 0;
+  propertyAddress.mSelector = kAudioDevicePropertyDataSource;
+  
+  UInt32 size = sizeof(dataSourceId);
+  OSStatus status = AudioObjectSetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, size, &dataSourceId);
+  if(status == noErr)
+    ret = true;
+  
+  return ret;
+}
+
+bool CCoreAudioDevice::GetDataSources(CoreAudioDataSourceList* pList) const
 {
   if (!pList || !m_DeviceId)
     return false;
