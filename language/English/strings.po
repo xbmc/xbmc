@@ -2313,6 +2313,7 @@ msgctxt "#550"
 msgid "Sort by: %s"
 msgstr ""
 
+#: xbmc/view/GUIViewState.cpp
 msgctxt "#551"
 msgid "Name"
 msgstr ""

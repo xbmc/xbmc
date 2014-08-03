@@ -257,7 +257,7 @@ int CGUIViewState::GetSortMethodLabel() const
   if (m_currentSortMethod>=0 && m_currentSortMethod<(int)m_sortMethods.size())
     return m_sortMethods[m_currentSortMethod].m_buttonLabel;
 
-  return 103; // Sort By: Name
+  return 551; // default sort method label 'Name'
 }
 
 void CGUIViewState::GetSortMethodLabelMasks(LABEL_MASKS& masks) const
