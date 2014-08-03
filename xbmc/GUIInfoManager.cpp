@@ -1668,7 +1668,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *f
     }
     break;
   case VIDEOPLAYER_SUBTITLES_LANG:
-    if(g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying() && CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn)
+    if(g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->GetSubtitleVisible())
     {
       SPlayerSubtitleStreamInfo info;
       g_application.m_pPlayer->GetSubtitleStreamInfo(g_application.m_pPlayer->GetSubtitle(), info);

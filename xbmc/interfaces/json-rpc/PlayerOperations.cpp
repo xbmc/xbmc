@@ -1538,7 +1538,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
         if (g_application.m_pPlayer->HasPlayer())
         {
           result = CVariant(CVariant::VariantTypeObject);
-          int index = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream;
+          int index = g_application.m_pPlayer->GetSubtitle();
           if (index >= 0)
           {
             SPlayerSubtitleStreamInfo info;

@@ -21,6 +21,7 @@
 #include "ApplicationPlayer.h"
 #include "cores/IPlayer.h"
 #include "Application.h"
+#include "settings/MediaSettings.h"
 
 #define VOLUME_MINIMUM 0.0f        // -60dB
 #define VOLUME_MAXIMUM 1.0f        // 0dB
@@ -517,6 +518,7 @@ void CApplicationPlayer::SetSubtitle(int iStream)
     player->SetSubtitle(iStream);
     m_iSubtitleStream = iStream;
     m_subtitleStreamUpdate.Set(1000);
+    CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = iStream;
   }
 }
 
@@ -524,7 +526,10 @@ void CApplicationPlayer::SetSubtitleVisible(bool bVisible)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)
+  {
     player->SetSubtitleVisible(bVisible);
+    CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = bVisible;
+  }
 }
 
 int  CApplicationPlayer::AddSubtitle(const std::string& strSubPath)
