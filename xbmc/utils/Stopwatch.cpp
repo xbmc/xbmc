@@ -47,52 +47,6 @@ CStopWatch::~CStopWatch()
 {
 }
 
-bool CStopWatch::IsRunning() const
-{
-  return m_isRunning;
-}
-
-void CStopWatch::StartZero()
-{
-  m_startTick = GetTicks();
-  m_isRunning = true;
-}
-
-void CStopWatch::Start()
-{
-  if (!m_isRunning)
-    m_startTick = GetTicks();
-  m_isRunning = true;
-}
-
-void CStopWatch::Stop()
-{
-  if( m_isRunning )
-  {
-    m_stopTick = GetTicks();
-    m_isRunning = false;
-  }
-}
-
-void CStopWatch::Reset()
-{
-  if (m_isRunning)
-    m_startTick = GetTicks();
-  else
-    m_startTick = m_stopTick;
-}
-
-float CStopWatch::GetElapsedSeconds() const
-{
-  int64_t totalTicks = (m_isRunning ? GetTicks() : m_stopTick) - m_startTick;
-  return (float)totalTicks * m_timerPeriod;
-}
-
-float CStopWatch::GetElapsedMilliseconds() const
-{
-  return GetElapsedSeconds() * 1000.0f;
-}
-
 int64_t CStopWatch::GetTicks() const
 {
   if (m_useFrameTime)
