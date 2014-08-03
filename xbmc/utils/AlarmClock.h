@@ -60,7 +60,7 @@ public:
     std::map<std::string,SAlarmClockEvent>::iterator iter;
     if ((iter=m_event.find(strName)) != m_event.end())
     {
-      return iter->second.m_fSecs-iter->second.watch.GetElapsedSeconds();
+      return iter->second.m_fSecs-(iter->second.watch.IsRunning() ? iter->second.watch.GetElapsedSeconds() : 0.f);
     }
 
     return 0.f;

@@ -73,7 +73,7 @@ void CGUIBaseContainer::DoProcess(unsigned int currentTime, CDirtyRegionList &di
 {
   CGUIControl::DoProcess(currentTime, dirtyregions);
 
-  if (m_pageChangeTimer.GetElapsedMilliseconds() > 200)
+  if (m_pageChangeTimer.IsRunning() && m_pageChangeTimer.GetElapsedMilliseconds() > 200)
     m_pageChangeTimer.Stop();
   m_wasReset = false;
 
@@ -1044,7 +1044,7 @@ void CGUIBaseContainer::UpdateScrollOffset(unsigned int currentTime)
 {
   if (m_scroller.Update(currentTime))
     MarkDirtyRegion();
-  else if (m_lastScrollStartTimer.GetElapsedMilliseconds() >= SCROLLING_GAP)
+  else if (m_lastScrollStartTimer.IsRunning() && m_lastScrollStartTimer.GetElapsedMilliseconds() >= SCROLLING_GAP)
   {
     m_scrollTimer.Stop();
     m_lastScrollStartTimer.Stop();
@@ -1162,7 +1162,7 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const
       return layout ? (layout->GetFocusedItem() == (unsigned int)data) : false;
     }
   case CONTAINER_SCROLLING:
-    return (m_scrollTimer.GetElapsedMilliseconds() > std::max(m_scroller.GetDuration(), SCROLLING_THRESHOLD) || m_pageChangeTimer.IsRunning());
+    return ((m_scrollTimer.IsRunning() && m_scrollTimer.GetElapsedMilliseconds() > std::max(m_scroller.GetDuration(), SCROLLING_THRESHOLD)) || m_pageChangeTimer.IsRunning());
   case CONTAINER_ISUPDATING:
     return (m_listProvider) ? m_listProvider->IsUpdating() : false;
   default:

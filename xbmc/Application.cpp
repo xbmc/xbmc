@@ -4704,7 +4704,7 @@ void CApplication::CheckScreenSaverAndDPMS()
     return;
   }
 
-  float elapsed = m_screenSaverTimer.GetElapsedSeconds();
+  float elapsed = m_screenSaverTimer.IsRunning() ? m_screenSaverTimer.GetElapsedSeconds() : 0.f;
 
   // DPMS has priority (it makes the screensaver not needed)
   if (maybeDPMS
@@ -4773,7 +4773,8 @@ void CApplication::CheckShutdown()
     return;
   }
 
-  if ( m_shutdownTimer.GetElapsedSeconds() > CSettings::Get().GetInt("powermanagement.shutdowntime") * 60 )
+  float elapsed = m_shutdownTimer.IsRunning() ? m_shutdownTimer.GetElapsedSeconds() : 0.f;
+  if ( elapsed > CSettings::Get().GetInt("powermanagement.shutdowntime") * 60 )
   {
     // Since it is a sleep instead of a shutdown, let's set everything to reset when we wake up.
     m_shutdownTimer.Stop();
@@ -5247,20 +5248,14 @@ void CApplication::ProcessSlow()
 int CApplication::GlobalIdleTime()
 {
   if(!m_idleTimer.IsRunning())
-  {
-    m_idleTimer.Stop();
     m_idleTimer.StartZero();
-  }
   return (int)m_idleTimer.GetElapsedSeconds();
 }
 
 float CApplication::NavigationIdleTime()
 {
   if (!m_navigationTimer.IsRunning())
-  {
-    m_navigationTimer.Stop();
     m_navigationTimer.StartZero();
-  }
   return m_navigationTimer.GetElapsedSeconds();
 }
 
@@ -5466,8 +5461,7 @@ double CApplication::GetTotalTime() const
 
 void CApplication::StopShutdownTimer()
 {
-  if (m_shutdownTimer.IsRunning())
-    m_shutdownTimer.Stop();
+  m_shutdownTimer.Stop();
 }
 
 void CApplication::ResetShutdownTimers()

@@ -396,7 +396,7 @@ void CGUIEditControl::RecalcLabelPosition()
 
 void CGUIEditControl::ProcessText(unsigned int currentTime)
 {
-  if (m_smsTimer.GetElapsedMilliseconds() > smsDelay)
+  if (m_smsTimer.IsRunning() && m_smsTimer.GetElapsedMilliseconds() > smsDelay)
     UpdateText();
 
   if (m_bInvalidated)
