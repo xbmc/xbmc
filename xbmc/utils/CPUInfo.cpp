@@ -26,11 +26,11 @@
 #if defined(TARGET_DARWIN)
 #include <sys/types.h>
 #include <sys/sysctl.h>
+#if defined(__ppc__) || defined (TARGET_DARWIN_IOS)
+#include <mach-o/arch.h>
+#endif // defined(__ppc__) || defined (TARGET_DARWIN_IOS)
 #ifdef TARGET_DARWIN_OSX
 #include "osx/smc.h"
-#ifdef __ppc__
-#include <mach-o/arch.h>
-#endif
 #endif
 #endif
 
@@ -120,7 +120,7 @@ CCPUInfo::CCPUInfo(void)
       m_cpuCount = 1;
 
   // The model.
-#ifdef __ppc__
+#if defined(__ppc__) || defined (TARGET_DARWIN_IOS)
   const NXArchInfo *info = NXGetLocalArchInfo();
   if (info != NULL)
     m_cpuModel = info->description;
