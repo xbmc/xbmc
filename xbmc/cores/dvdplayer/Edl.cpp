@@ -38,7 +38,6 @@ extern "C"
 
 using namespace std;
 
-#define MPLAYER_EDL_FILENAME "special://temp/xbmc.edl"
 #define COMSKIP_HEADER "FILE PROCESSING COMPLETE"
 #define VIDEOREDO_HEADER "<Version>2"
 #define VIDEOREDO_TAG_CUT "<Cut>"
@@ -58,9 +57,6 @@ CEdl::~CEdl()
 
 void CEdl::Clear()
 {
-  if (CFile::Exists(MPLAYER_EDL_FILENAME))
-    CFile::Delete(MPLAYER_EDL_FILENAME);
-
   m_vecCuts.clear();
   m_vecSceneMarkers.clear();
   m_iTotalCutTime = 0;
@@ -166,10 +162,8 @@ bool CEdl::ReadEditDecisionLists(const std::string& strMovie, const float fFrame
   }
 
   if (bFound)
-  {
     MergeShortCommBreaks();
-    WriteMPlayerEdl();
-  }
+
   return bFound;
 }
 
@@ -755,7 +749,7 @@ bool CEdl::AddCut(Cut& cut)
   return true;
 }
 
-bool CEdl::AddSceneMarker(const int64_t iSceneMarker)
+bool CEdl::AddSceneMarker(const int iSceneMarker)
 {
   Cut cut;
 
@@ -769,58 +763,17 @@ bool CEdl::AddSceneMarker(const int64_t iSceneMarker)
   return true;
 }
 
-bool CEdl::WriteMPlayerEdl()
-{
-  if (!HasCut())
-    return false;
-
-  CFile mplayerEdlFile;
-  if (!mplayerEdlFile.OpenForWrite(MPLAYER_EDL_FILENAME, true))
-  {
-    CLog::Log(LOGERROR, "%s - Error opening MPlayer EDL file for writing: %s", __FUNCTION__,
-              MPLAYER_EDL_FILENAME);
-    return false;
-  }
-
-  std::string strBuffer;
-  for (int i = 0; i < (int)m_vecCuts.size(); i++)
-  {
-    /*
-     * MPlayer doesn't understand the scene marker (2) or commercial break (3) identifiers that XBMC
-     * supports in EDL files.
-     *
-     * http://www.mplayerhq.hu/DOCS/HTML/en/edl.html
-     *
-     * Write out mutes (1) directly. Treat commercial breaks as cuts (everything other than MUTES = 0).
-     */
-    strBuffer += StringUtils::Format("%.3f\t%.3f\t%i\n", (float)(m_vecCuts[i].start / 1000),
-                                               (float)(m_vecCuts[i].end / 1000),
-                                               m_vecCuts[i].action == MUTE ? 1 : 0);
-  }
-  mplayerEdlFile.Write(strBuffer.c_str(), strBuffer.size());
-  mplayerEdlFile.Close();
-
-  CLog::Log(LOGDEBUG, "%s - MPlayer EDL file written to: %s", __FUNCTION__, MPLAYER_EDL_FILENAME);
-
-  return true;
-}
-
-std::string CEdl::GetMPlayerEdl()
-{
-  return MPLAYER_EDL_FILENAME;
-}
-
-bool CEdl::HasCut()
+bool CEdl::HasCut() const
 {
   return !m_vecCuts.empty();
 }
 
-int64_t CEdl::GetTotalCutTime()
+int CEdl::GetTotalCutTime() const
 {
   return m_iTotalCutTime; // ms
 }
 
-int64_t CEdl::RemoveCutTime(int64_t iSeek)
+int CEdl::RemoveCutTime(int iSeek) const
 {
   if (!HasCut())
     return iSeek;
@@ -830,7 +783,7 @@ int64_t CEdl::RemoveCutTime(int64_t iSeek)
    * requested is later than the end of the last recorded cut. For example, when calculating the
    * total duration for display.
    */
-  int64_t iCutTime = 0;
+  int iCutTime = 0;
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
     if (m_vecCuts[i].action == CUT)
@@ -844,12 +797,12 @@ int64_t CEdl::RemoveCutTime(int64_t iSeek)
   return iSeek - iCutTime;
 }
 
-int64_t CEdl::RestoreCutTime(int64_t iClock)
+int CEdl::RestoreCutTime(int iClock) const
 {
   if (!HasCut())
     return iClock;
 
-  int64_t iSeek = iClock;
+  int iSeek = iClock;
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
     if (m_vecCuts[i].action == CUT && iSeek >= m_vecCuts[i].start)
@@ -859,12 +812,12 @@ int64_t CEdl::RestoreCutTime(int64_t iClock)
   return iSeek;
 }
 
-bool CEdl::HasSceneMarker()
+bool CEdl::HasSceneMarker() const
 {
   return !m_vecSceneMarkers.empty();
 }
 
-std::string CEdl::GetInfo()
+std::string CEdl::GetInfo() const
 {
   std::string strInfo;
   if (HasCut())
@@ -898,7 +851,7 @@ std::string CEdl::GetInfo()
   return strInfo.empty() ? "-" : strInfo;
 }
 
-bool CEdl::InCut(const int64_t iSeek, Cut *pCut)
+bool CEdl::InCut(const int iSeek, Cut *pCut) const
 {
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
@@ -916,14 +869,14 @@ bool CEdl::InCut(const int64_t iSeek, Cut *pCut)
   return false;
 }
 
-bool CEdl::GetNextSceneMarker(bool bPlus, const int64_t iClock, int64_t *iSceneMarker)
+bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker) const
 {
   if (!HasSceneMarker())
     return false;
 
-  int64_t iSeek = RestoreCutTime(iClock);
+  int iSeek = RestoreCutTime(iClock);
 
-  int64_t iDiff = 10 * 60 * 60 * 1000; // 10 hours to ms.
+  int iDiff = 10 * 60 * 60 * 1000; // 10 hours to ms.
   bool bFound = false;
 
   if (bPlus) // Find closest scene forwards
@@ -962,7 +915,7 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const int64_t iClock, int64_t *iSceneM
   return bFound;
 }
 
-std::string CEdl::MillisecondsToTimeString(const int64_t iMilliseconds)
+std::string CEdl::MillisecondsToTimeString(const int iMilliseconds)
 {
   std::string strTimeString = StringUtils::SecondsToTimeString((long)(iMilliseconds / 1000), TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
   strTimeString += StringUtils::Format(".%03i", iMilliseconds % 1000);
