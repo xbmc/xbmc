@@ -333,6 +333,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
         if (tag.HasStreamDetails()) {
             const CStreamDetails &details = tag.m_streamDetails;
             resource->m_Resolution = NPT_String::FromInteger(details.GetVideoWidth()) + "x" + NPT_String::FromInteger(details.GetVideoHeight());
+            resource->m_NbAudioChannels = details.GetAudioChannels();
         }
     }
 
@@ -742,6 +743,24 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
       {
         tag.m_resumePoint.totalTimeInSeconds = resource->m_Duration;
         tag.m_resumePoint.timeInSeconds = object.m_MiscInfo.last_position;
+      }
+      if (!resource->m_Resolution.IsEmpty())
+      {
+        int width, height;
+        if (sscanf(resource->m_Resolution, "%dx%d", &width, &height) == 2)
+        {
+          CStreamDetailVideo* detail = new CStreamDetailVideo;
+          detail->m_iWidth = width;
+          detail->m_iHeight = height;
+          detail->m_iDuration = tag.m_duration;
+          tag.m_streamDetails.AddStream(detail);
+        }
+      }
+      if (resource->m_NbAudioChannels > 0)
+      {
+        CStreamDetailAudio* detail = new CStreamDetailAudio;
+        detail->m_iChannels = resource->m_NbAudioChannels;
+        tag.m_streamDetails.AddStream(detail);
       }
     }
     return NPT_SUCCESS;
