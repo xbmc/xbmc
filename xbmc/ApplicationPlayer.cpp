@@ -500,6 +500,7 @@ void CApplicationPlayer::SetAudioStream(int iStream)
     player->SetAudioStream(iStream);
     m_iAudioStream = iStream;
     m_audioStreamUpdate.Set(1000);
+    CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream = iStream;
   }
 }
 

@@ -200,17 +200,15 @@ bool CPlayerController::OnAction(const CAction &action)
         if (g_application.m_pPlayer->GetAudioStreamCount() == 1)
           return true;
 
-        if(CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream < 0)
-          CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream = g_application.m_pPlayer->GetAudioStream();
+        int currentAudio = g_application.m_pPlayer->GetAudioStream();
 
-        CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream++;
-        if (CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream >= g_application.m_pPlayer->GetAudioStreamCount())
-          CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream = 0;
-        g_application.m_pPlayer->SetAudioStream(CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream);    // Set the audio stream to the one selected
+        if (++currentAudio >= g_application.m_pPlayer->GetAudioStreamCount())
+          currentAudio = 0;
+        g_application.m_pPlayer->SetAudioStream(currentAudio);    // Set the audio stream to the one selected
         CStdString aud;
         CStdString lan;
         SPlayerAudioStreamInfo info;
-        g_application.m_pPlayer->GetAudioStreamInfo(CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream, info);
+        g_application.m_pPlayer->GetAudioStreamInfo(currentAudio, info);
         if (!g_LangCodeExpander.Lookup(lan, info.language))
           lan = g_localizeStrings.Get(13205); // Unknown
         if (info.name.empty())
