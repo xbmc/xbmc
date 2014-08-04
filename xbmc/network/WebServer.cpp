@@ -18,6 +18,10 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
+  #include "config.h"
+#endif
+
 #include "WebServer.h"
 #ifdef HAS_WEB_SERVER
 #include "URL.h"
@@ -1048,7 +1052,13 @@ bool CWebServer::GetLastModifiedDateTime(XFILE::CFile *file, CDateTime &lastModi
   if (file->Stat(&statBuffer) != 0)
     return false;
 
-  struct tm *time = localtime((time_t *)&statBuffer.st_mtime);
+  struct tm *time;
+#ifdef HAVE_LOCALTIME_R
+  struct tm result = {};
+  time = localtime_r((time_t*)&statBuffer.st_mtime, &result);
+#else
+  time = localtime((time_t *)&statBuffer.st_mtime);
+#endif
   if (time == NULL)
     return false;
 

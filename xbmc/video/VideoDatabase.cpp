@@ -18,6 +18,10 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
+  #include "config.h"
+#endif
+
 #include "ApplicationMessenger.h"
 #include "threads/SystemClock.h"
 #include "VideoDatabase.h"
@@ -921,7 +925,13 @@ void CVideoDatabase::UpdateFileDateAdded(int idFile, const CStdString& strFileNa
         // make sure the datetime does is not in the future
         if (addedTime <= now)
         {
-          struct tm *time = localtime(&addedTime);
+          struct tm *time;
+#ifdef HAVE_LOCALTIME_R
+          struct tm result = {};
+          time = localtime_r(&addedTime, &result);
+#else
+          time = localtime(&addedTime);
+#endif
           if (time)
             dateAdded = *time;
         }
@@ -1316,7 +1326,13 @@ bool CVideoDatabase::AddPathToTvShow(int idShow, const std::string &path, const 
         // Make sure we have a valid date (i.e. not in the future)
         if ((time_t)buffer.st_ctime <= now)
         {
-          struct tm *time = localtime((const time_t*)&buffer.st_ctime);
+          struct tm *time;
+#ifdef HAVE_LOCALTIME_R
+          struct tm result = {};
+          time = localtime_r((const time_t*)&buffer.st_ctime, &result);
+#else
+          time = localtime((const time_t*)&buffer.st_ctime);
+#endif
           if (time)
             dateAdded = *time;
         }
