@@ -25,6 +25,7 @@
 #include "utils/log.h"
 #include "system.h" // for GetLastError()
 #include "network/WakeOnAccess.h"
+#include "Util.h"
 
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"
@@ -552,8 +553,6 @@ string MysqlDatabase::vprepare(const char *format, va_list args)
 #define etSQLESCAPE3 15 /* %w -> Strings with '\"' doubled */
 
 #define etINVALID     0 /* Any unrecognized conversion type */
-
-#define ARRAY_SIZE(X)    ((int)(sizeof(X)/sizeof(X[0])))
 
 /*
 ** An "etByte" is an 8-bit unsigned value.

@@ -37,6 +37,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "URL.h"
+#include "Util.h"
 #include <vector>
 #include <string.h>
 #include <ostream>
@@ -92,7 +93,7 @@ static const TypeMapping types[] =
 
 const std::string TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 {
-  for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
+  for (unsigned int index=0; index < ARRAY_SIZE(types); ++index)
   {
     const TypeMapping &map = types[index];
     if (type == map.type)
@@ -108,7 +109,7 @@ const std::string TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 
 TYPE TranslateType(const std::string &string)
 {
-  for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
+  for (unsigned int index=0; index < ARRAY_SIZE(types); ++index)
   {
     const TypeMapping &map = types[index];
     if (string == map.name)
@@ -119,7 +120,7 @@ TYPE TranslateType(const std::string &string)
 
 const std::string GetIcon(const ADDON::TYPE& type)
 {
-  for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
+  for (unsigned int index=0; index < ARRAY_SIZE(types); ++index)
   {
     const TypeMapping &map = types[index];
     if (type == map.type)

@@ -23,6 +23,7 @@
 #include "LangInfo.h"
 #include "utils/log.h" 
 #include "utils/StringUtils.h"
+#include "Util.h"
 
 #define MAKECODE(a, b, c, d)  ((((long)(a))<<24) | (((long)(b))<<16) | (((long)(c))<<8) | (long)(d))
 #define MAKETWOCHARCODE(a, b) ((((long)(a))<<8) | (long)(b)) 
@@ -150,7 +151,7 @@ bool CLangCodeExpander::ConvertTwoToThreeCharCode(std::string& strThreeCharCode,
     StringUtils::ToLower(strTwoCharCodeLower);
     StringUtils::Trim(strTwoCharCodeLower);
 
-    for (unsigned int index = 0; index < sizeof(CharCode2To3) / sizeof(CharCode2To3[0]); ++index)
+    for (unsigned int index = 0; index < ARRAY_SIZE(CharCode2To3); ++index)
     {
       if (strTwoCharCodeLower == CharCode2To3[index].old)
       {
@@ -176,7 +177,7 @@ bool CLangCodeExpander::ConvertToThreeCharCode(std::string& strThreeCharCode, co
   else if (strCharCode.size() == 3)
   {
     std::string charCode(strCharCode); StringUtils::ToLower(charCode);
-    for (unsigned int index = 0; index < sizeof(CharCode2To3) / sizeof(CharCode2To3[0]); ++index)
+    for (unsigned int index = 0; index < ARRAY_SIZE(CharCode2To3); ++index)
     {
       if (charCode == CharCode2To3[index].id ||
            (checkWin32Locales && CharCode2To3[index].win_id != NULL && charCode == CharCode2To3[index].win_id) )
@@ -185,7 +186,7 @@ bool CLangCodeExpander::ConvertToThreeCharCode(std::string& strThreeCharCode, co
         return true;
       }
     }
-    for (unsigned int index = 0; index < sizeof(RegionCode2To3) / sizeof(RegionCode2To3[0]); ++index)
+    for (unsigned int index = 0; index < ARRAY_SIZE(RegionCode2To3); ++index)
     {
       if (charCode == RegionCode2To3[index].id)
       {
@@ -228,7 +229,7 @@ bool CLangCodeExpander::ConvertLinuxToWindowsRegionCodes(const std::string& strT
   std::string strLower( strTwoCharCode );
   StringUtils::ToLower(strLower);
   StringUtils::Trim(strLower);
-  for (unsigned int index = 0; index < sizeof(RegionCode2To3) / sizeof(RegionCode2To3[0]); ++index)
+  for (unsigned int index = 0; index < ARRAY_SIZE(RegionCode2To3); ++index)
   {
     if (strLower == RegionCode2To3[index].old)
     {
@@ -247,7 +248,7 @@ bool CLangCodeExpander::ConvertWindowsToGeneralCharCode(const std::string& strWi
 
   std::string strLower(strWindowsCharCode);
   StringUtils::ToLower(strLower);
-  for (unsigned int index = 0; index < sizeof(CharCode2To3) / sizeof(CharCode2To3[0]); ++index)
+  for (unsigned int index = 0; index < ARRAY_SIZE(CharCode2To3); ++index)
   {
     if ((CharCode2To3[index].win_id && strLower == CharCode2To3[index].win_id) ||
          strLower == CharCode2To3[index].id)
@@ -278,7 +279,7 @@ bool CLangCodeExpander::ConvertToTwoCharCode(std::string& code, const std::strin
   else if (lang.length() == 3)
   {
     std::string lower(lang); StringUtils::ToLower(lower);
-    for (unsigned int index = 0; index < sizeof(CharCode2To3) / sizeof(CharCode2To3[0]); ++index)
+    for (unsigned int index = 0; index < ARRAY_SIZE(CharCode2To3); ++index)
     {
       if (lower == CharCode2To3[index].id || (CharCode2To3[index].win_id && lower == CharCode2To3[index].win_id))
       {
@@ -287,7 +288,7 @@ bool CLangCodeExpander::ConvertToTwoCharCode(std::string& code, const std::strin
       }
     }
 
-    for (unsigned int index = 0; index < sizeof(RegionCode2To3) / sizeof(RegionCode2To3[0]); ++index)
+    for (unsigned int index = 0; index < ARRAY_SIZE(RegionCode2To3); ++index)
     {
       if (lower == RegionCode2To3[index].id)
       {

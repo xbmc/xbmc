@@ -72,7 +72,7 @@ void xbmc::PointerProcessor::Button(uint32_t serial,
     { WaylandRightButton, 3 }
   };
 
-  size_t buttonTableSize = sizeof(buttonTable) / sizeof(buttonTable[0]);
+  size_t buttonTableSize = ARRAY_SIZE(buttonTable);
 
   /* Find the xbmc button number that corresponds to the evdev
    * button that we just received. There may be some buttons we don't
