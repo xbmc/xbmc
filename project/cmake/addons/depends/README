@@ -40,6 +40,8 @@ specific paths:
     absolute representation of ../../.. starting from this directory).
   * ARCH_DEFINES specifies the platform-specific C/C++ preprocessor defines
     (defaults to empty).
+  * DEPENDS_TO_BUILD is a quoted, space delimited list of <dependency>s that
+    you want to build (default is "all").
 
 To trigger the cmake-based buildsystem the following command must be executed
 with <path> being the path to this directory (absolute or relative, allowing for
