@@ -918,8 +918,9 @@ int CSysInfo::GetKernelBitness(void)
       std::string machine(un.machine);
       if (machine == "x86_64" || machine == "amd64" || machine == "arm64" || machine == "aarch64" || machine == "ppc64" ||
           machine == "ia64" || machine == "mips64")
-          kernelBitness = 64;
-      kernelBitness = 32;
+        kernelBitness = 64;
+      else
+        kernelBitness = 32;
     }
 #endif
     if (kernelBitness == -1)
