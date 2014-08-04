@@ -1512,7 +1512,7 @@ void CGUIPlexMediaWindow::FetchItemPage(int Index)
   // check now if unnecessary fetching jobs should be cancelled
   BOOST_FOREACH(const FetchJobPair p, m_fetchJobs)
   {
-    if ((p.first != startPage) || (p.first != endPage))
+    if ((p.first != startPage) && (p.first != endPage))
       CJobManager::GetInstance().CancelJob(p.second);
   }
 
