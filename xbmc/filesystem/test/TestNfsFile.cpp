@@ -18,6 +18,8 @@
  *
  */
 
+#include "system.h"
+#if defined(HAS_FILESYSTEM_NFS)
 #include "filesystem/NFSFile.h"
 #include "test/TestUtils.h"
 
@@ -94,3 +96,4 @@ TEST_P(TestNfs, splitUrlIntoExportAndPath)
 }
 
 INSTANTIATE_TEST_CASE_P(NfsFile, TestNfs, ValuesIn(g_TestData));
+#endif//HAS_FILESYSTEM_NFS
