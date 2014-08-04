@@ -287,6 +287,8 @@ namespace XBMCAddon
             item->GetVideoInfoTag()->m_iTrack = strtol(value.c_str(), NULL, 10);
           else if (key == "count")
             item->m_iprogramCount = strtol(value.c_str(), NULL, 10);
+          else if (key == "position")
+            item->m_iPosition = strtol(value.c_str(), NULL, 10);
           else if (key == "rating")
             item->GetVideoInfoTag()->m_fRating = (float)strtod(value.c_str(), NULL);
           else if (key == "size")
@@ -412,6 +414,8 @@ namespace XBMCAddon
             item->GetMusicInfoTag()->SetTrackNumber(strtol(value.c_str(), NULL, 10));
           else if (key == "count")
             item->m_iprogramCount = strtol(value.c_str(), NULL, 10);
+          else if (key == "position")
+            item->m_iPosition = strtol(value.c_str(), NULL, 10);
           else if (key == "size")
             item->m_dwSize = (int64_t)strtoll(value.c_str(), NULL, 10);
           else if (key == "duration")
@@ -478,6 +482,8 @@ namespace XBMCAddon
 
           if (key == "count")
             item->m_iprogramCount = strtol(value.c_str(), NULL, 10);
+          else if (key == "position")
+            item->m_iPosition = strtol(value.c_str(), NULL, 10);
           else if (key == "size")
             item->m_dwSize = (int64_t)strtoll(value.c_str(), NULL, 10);
           else if (key == "title")

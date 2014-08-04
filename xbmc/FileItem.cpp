@@ -443,6 +443,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_extrainfo = item.m_extrainfo;
   m_specialSort = item.m_specialSort;
   m_bIsAlbum = item.m_bIsAlbum;
+  m_iPosition = item.m_iPosition;
   return *this;
 }
 
@@ -471,6 +472,7 @@ void CFileItem::Initialize()
   m_iHasLock = 0;
   m_bCanQueue=true;
   m_specialSort = SortSpecialNone;
+  m_iPosition = 0;
 }
 
 void CFileItem::Reset()
@@ -538,6 +540,7 @@ void CFileItem::Archive(CArchive& ar)
     ar << m_mimetype;
     ar << m_extrainfo;
     ar << m_specialSort;
+    ar << m_iPosition;
 
     if (m_musicInfoTag)
     {
@@ -588,6 +591,7 @@ void CFileItem::Archive(CArchive& ar)
     ar >> m_extrainfo;
     ar >> temp;
     m_specialSort = (SortSpecial)temp;
+    ar >> m_iPosition;
 
     int iType;
     ar >> iType;
@@ -1655,6 +1659,7 @@ void CFileItemList::Add(const CFileItemPtr &pItem)
 {
   CSingleLock lock(m_lock);
 
+  pItem->m_iPosition = m_items.size();
   m_items.push_back(pItem);
   if (m_fastLookup)
   {
@@ -1666,14 +1671,26 @@ void CFileItemList::AddFront(const CFileItemPtr &pItem, int itemPosition)
 {
   CSingleLock lock(m_lock);
 
+  // validate the position at which the item will be inserted
   if (itemPosition >= 0)
-  {
-    m_items.insert(m_items.begin()+itemPosition, pItem);
-  }
+    itemPosition = std::min(itemPosition, (int)m_items.size());
+  else if (itemPosition < 0)
+    itemPosition = std::max(0, (int)m_items.size() + itemPosition);
+
+  // insert the item
+  m_items.insert(m_items.begin() + itemPosition, pItem);
+
+  // if the item wasn't inserted at the end, set its position to
+  // the value of the item that was previously at this position
+  if (itemPosition < (int)m_items.size() - 1)
+    pItem->m_iPosition = m_items[itemPosition + 1]->m_iPosition;
   else
-  {
-    m_items.insert(m_items.begin()+(m_items.size()+itemPosition), pItem);
-  }
+    pItem->m_iPosition = itemPosition;
+
+  // update the position of the items after the just inserted one
+  for (IVECFILEITEMS it = m_items.begin() + itemPosition + 1; it != m_items.end(); ++it)
+    (*it)->m_iPosition++;
+
   if (m_fastLookup)
   {
     m_map.insert(MAPFILEITEMSPAIR(pItem->GetPath(), pItem));
@@ -1684,11 +1701,12 @@ void CFileItemList::Remove(CFileItem* pItem)
 {
   CSingleLock lock(m_lock);
 
-  for (IVECFILEITEMS it = m_items.begin(); it != m_items.end(); ++it)
+  std::vector<CFileItemPtr>::const_iterator removed = m_items.end();
+  for (std::vector<CFileItemPtr>::const_iterator it = m_items.begin(); it != m_items.end(); ++it)
   {
     if (pItem == it->get())
     {
-      m_items.erase(it);
+      removed = m_items.erase(it);
       if (m_fastLookup)
       {
         m_map.erase(pItem->GetPath());
@@ -1696,20 +1714,27 @@ void CFileItemList::Remove(CFileItem* pItem)
       break;
     }
   }
+
+  // update the position of the items after the just removed one by decrementing their position value
+  for (std::vector<CFileItemPtr>::const_iterator it = removed; it != m_items.end(); ++it)
+    (*it)->m_iPosition--;
 }
 
 void CFileItemList::Remove(int iItem)
 {
   CSingleLock lock(m_lock);
 
-  if (iItem >= 0 && iItem < (int)Size())
+  if (iItem >= 0 && iItem < (int)m_items.size())
   {
-    CFileItemPtr pItem = *(m_items.begin() + iItem);
     if (m_fastLookup)
     {
-      m_map.erase(pItem->GetPath());
+      m_map.erase(m_items[iItem]->GetPath());
     }
-    m_items.erase(m_items.begin() + iItem);
+    std::vector<CFileItemPtr>::const_iterator removed = m_items.erase(m_items.begin() + iItem);
+
+    // update the position of the items after the just removed one
+    for (std::vector<CFileItemPtr>::const_iterator it = removed; it != m_items.end(); ++it)
+      (*it)->m_iPosition--;
   }
 }
 
