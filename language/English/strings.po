@@ -5062,30 +5062,25 @@ msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
 msgstr ""
 
-#: xbmc\linux\HALManager.cpp
 #: xbmc\storage\MediaManager.cpp
 msgctxt "#13021"
 msgid "Mounted removable harddrive"
 msgstr ""
 
-#: xbmc\linux\HALManager.cpp
 #: xbmc\storage\MediaManager.cpp
 msgctxt "#13022"
 msgid "Unsafe device removal"
 msgstr ""
 
-#: xbmc\linux\HALManager.cpp
 #: xbmc\storage\MediaManager.cpp
 msgctxt "#13023"
 msgid "Successfully removed device"
 msgstr ""
 
-#: xbmc\linux\HALManager.cpp
 msgctxt "#13024"
 msgid "Joystick plugged"
 msgstr ""
 
-#: xbmc\linux\HALManager.cpp
 msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr ""
