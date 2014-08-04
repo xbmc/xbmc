@@ -92,7 +92,8 @@ typedef enum {
   SortByRandom,
   SortByChannel,
   SortByChannelNumber,
-  SortByDateTaken
+  SortByDateTaken,
+  SortByUnsorted
 } SortBy;
 
 typedef struct SortDescription {

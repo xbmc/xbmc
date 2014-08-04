@@ -644,6 +644,7 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
   case FieldProgramCount: sortable[FieldProgramCount] = m_iprogramCount; break;
   case FieldBitrate:      sortable[FieldBitrate] = m_dwSize; break;
   case FieldTitle:        sortable[FieldTitle] = m_strTitle; break;
+  case FieldPosition:     sortable[FieldPosition] = m_iPosition; break;
   // If there's ever a need to convert more properties from CGUIListItem it might be
   // worth to make CGUIListItem  implement ISortable as well and call it from here
   default: break;

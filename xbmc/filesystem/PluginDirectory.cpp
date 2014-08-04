@@ -330,7 +330,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const s
       }
     case SORT_METHOD_UNSORTED:
       {
-        dir->m_listItems->AddSortMethod(SortByNone, 571, LABEL_MASKS("%T", label2Mask));
+        dir->m_listItems->AddSortMethod(SortByUnsorted, 571, LABEL_MASKS("%T", label2Mask));
         break;
       }
     case SORT_METHOD_NONE:
