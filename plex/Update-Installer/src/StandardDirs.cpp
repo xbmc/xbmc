@@ -34,7 +34,7 @@ std::string StandardDirs::homeDir()
 std::string StandardDirs::appDataPath(const std::string& organizationName,
                         const std::string& appName)
 {
-#ifdef PLATFORM_LINUX
+#if defined(PLATFORM_LINUX) || defined(PLATFORM_FREEBSD)
 	std::string xdgDataHome = notNullString(getenv("XDG_DATA_HOME"));
 	if (xdgDataHome.empty())
 	{

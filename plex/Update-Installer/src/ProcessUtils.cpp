@@ -17,6 +17,11 @@
 #include <errno.h>
 #endif
 
+#ifdef PLATFORM_FREEBSD
+#include <sys/sysctl.h>
+#include <sys/types.h>
+#endif
+
 #ifdef PLATFORM_MAC
 #include <Security/Security.h>
 #include <mach-o/dyld.h>
@@ -87,7 +92,7 @@ int ProcessUtils::runElevated(const std::string& executable,
 #elif defined(PLATFORM_MAC)
 	(void)task;
 	return runElevatedMac(executable,args);
-#elif defined(PLATFORM_LINUX)
+#elif defined(PLATFORM_LINUX) || defined(PLATFORM_FREEBSD)
 	return runElevatedLinux(executable,args,task);
 #endif
 }
@@ -122,7 +127,7 @@ bool ProcessUtils::waitForProcess(PLATFORM_PID pid)
 #endif
 }
 
-#ifdef PLATFORM_LINUX
+#if defined(PLATFORM_LINUX) || defined(PLATFORM_FREEBSD)
 int ProcessUtils::runElevatedLinux(const std::string& executable,
                                    const std::list<std::string>& args,
                                    const std::string& _task)
@@ -477,7 +482,23 @@ int ProcessUtils::runWindows(const std::string& _executable,
 		
 std::string ProcessUtils::currentProcessPath()
 {
-#ifdef PLATFORM_LINUX
+#if defined(PLATFORM_FREEBSD)
+	static char cmdline[PATH_MAX];
+	int mib[4];
+
+	mib[0] = CTL_KERN;
+	mib[1] = KERN_PROC;
+	mib[2] = KERN_PROC_ARGS;
+	mib[3] = getpid();
+
+	size_t len = sizeof(cmdline);
+	if (sysctl(mib, 4, &cmdline, &len, NULL, 0) == -1)
+	{
+		LOG(Error, "Could not get command line path!");
+		return "";
+	}
+	return std::string(cmdline);
+#elif defined(PLATFORM_LINUX)
 	std::string path = FileUtils::canonicalPath("/proc/self/exe");
 	LOG(Info,"Current process path " + path);
 	return path;

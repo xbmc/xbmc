@@ -29,7 +29,7 @@ inline std::string AppInfo::name()
 
 inline std::string AppInfo::appName()
 {
-	return "Plex Home Theater";
+	return APPNAME;
 }
 
 inline std::string AppInfo::organizationName()

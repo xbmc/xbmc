@@ -18,7 +18,7 @@ set (HEADERS
  zip.h
 )
 
-if (APPLE)
+if (APPLE OR CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
 	# Mac OS X does not have fopen64()
 	# and several related functions as the standard fopen()
 	# calls are 64bit
