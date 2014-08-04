@@ -182,8 +182,7 @@ string ByProgramCount(SortAttribute attributes, const SortItem &values)
 
 string ByPlaylistOrder(SortAttribute attributes, const SortItem &values)
 {
-  // TODO: Playlist order is hacked into program count variable (not nice, but ok until 2.0)
-  return ByProgramCount(attributes, values);
+  return ByUnsorted(attributes, values);
 }
 
 string ByGenre(SortAttribute attributes, const SortItem &values)
@@ -600,7 +599,7 @@ map<SortBy, Fields> fillSortingFields()
   sortingFields[SortByVotes].insert(FieldVotes);
   sortingFields[SortByTop250].insert(FieldTop250);
   sortingFields[SortByProgramCount].insert(FieldProgramCount);
-  sortingFields[SortByPlaylistOrder].insert(FieldProgramCount);
+  sortingFields[SortByPlaylistOrder].insert(FieldPosition);
   sortingFields[SortByEpisodeNumber].insert(FieldEpisodeNumber);
   sortingFields[SortByEpisodeNumber].insert(FieldSeason);
   sortingFields[SortByEpisodeNumber].insert(FieldEpisodeNumberSpecialSort);

@@ -3499,8 +3499,6 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const Filter &fi
       {
         CFileItemPtr item(new CFileItem);
         GetFileItemFromDataset(record, item.get(), musicUrl);
-        // HACK for sorting by database returned order
-        item->m_iprogramCount = ++count;
         items.Add(item);
       }
       catch (...)

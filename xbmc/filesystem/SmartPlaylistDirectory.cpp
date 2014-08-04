@@ -285,13 +285,6 @@ namespace XFILE
     if (items.Size() > 1 && !group.empty())
       items.Sort(SortByLabel, SortOrderAscending, SortAttributeIgnoreArticle);
 
-    // go through and set the playlist order
-    for (int i = 0; i < items.Size(); i++)
-    {
-      CFileItemPtr item = items[i];
-      item->m_iprogramCount = i;  // hack for playlist order
-    }
-
     if (playlist.GetType() == "mixed")
       return success || success2;
     else if (playlist.GetType() == "musicvideos")

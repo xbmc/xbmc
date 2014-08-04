@@ -82,9 +82,9 @@ void CPlayList::Add(const CFileItemPtr &item, int iPosition, int iOrder)
   if (iPosition < 0 || iPosition >= iOldSize)
     iPosition = iOldSize;
   if (iOrder < 0 || iOrder >= iOldSize)
-    item->m_iprogramCount = iOldSize;
+    item->m_iPosition = iOldSize;
   else
-    item->m_iprogramCount = iOrder;
+    item->m_iPosition = iOrder;
 
   // videodb files are not supported by the filesystem as yet
   if (item->IsVideoDb())
@@ -100,7 +100,7 @@ void CPlayList::Add(const CFileItemPtr &item, int iPosition, int iOrder)
   // set 'IsPlayable' property - needed for properly handling plugin:// URLs
   item->SetProperty("IsPlayable", true);
 
-  //CLog::Log(LOGDEBUG,"%s item:(%02i/%02i)[%s]", __FUNCTION__, iPosition, item->m_iprogramCount, item->GetPath().c_str());
+  //CLog::Log(LOGDEBUG,"%s item:(%02i/%02i)[%s]", __FUNCTION__, iPosition, item->m_iPosition, item->GetPath().c_str());
   if (iPosition == iOldSize)
     m_vecItems.push_back(item);
   else
@@ -187,10 +187,10 @@ void CPlayList::DecrementOrder(int iOrder)
   while (it != m_vecItems.end())
   {
     CFileItemPtr item = *it;
-    if (item->m_iprogramCount > iOrder)
+    if (item->m_iPosition > iOrder)
     {
-      //CLog::Log(LOGDEBUG,"%s fixing item at order %i", __FUNCTION__, item->m_iprogramCount);
-      item->m_iprogramCount--;
+      //CLog::Log(LOGDEBUG,"%s fixing item at order %i", __FUNCTION__, item->m_iPosition);
+      item->m_iPosition--;
     }
     ++it;
   }
@@ -206,10 +206,10 @@ void CPlayList::IncrementOrder(int iPosition, int iOrder)
   while (it != m_vecItems.end())
   {
     CFileItemPtr item = *it;
-    if (item->m_iprogramCount >= iOrder)
+    if (item->m_iPosition >= iOrder)
     {
-      //CLog::Log(LOGDEBUG,"%s fixing item at order %i", __FUNCTION__, item->m_iprogramCount);
-      item->m_iprogramCount++;
+      //CLog::Log(LOGDEBUG,"%s fixing item at order %i", __FUNCTION__, item->m_iPosition);
+      item->m_iPosition++;
     }
     ++it;
   }
@@ -283,7 +283,7 @@ struct SSortPlayListItem
 {
   static bool PlaylistSort(const CFileItemPtr &left, const CFileItemPtr &right)
   {
-    return (left->m_iprogramCount <= right->m_iprogramCount);
+    return (left->m_iPosition <= right->m_iPosition);
   }
 };
 
@@ -310,7 +310,7 @@ void CPlayList::Remove(const std::string& strFileName)
     CFileItemPtr item = *it;
     if (item->GetPath() == strFileName)
     {
-      iOrder = item->m_iprogramCount;
+      iOrder = item->m_iPosition;
       it = m_vecItems.erase(it);
       AnnounceRemove(position);
       //CLog::Log(LOGDEBUG,"PLAYLIST, removing item at order %i", iPos);
@@ -328,7 +328,7 @@ int CPlayList::FindOrder(int iOrder) const
 {
   for (int i = 0; i < size(); i++)
   {
-    if (m_vecItems[i]->m_iprogramCount == iOrder)
+    if (m_vecItems[i]->m_iPosition == iOrder)
       return i;
   }
   return -1;
@@ -340,7 +340,7 @@ void CPlayList::Remove(int position)
   int iOrder = -1;
   if (position >= 0 && position < (int)m_vecItems.size())
   {
-    iOrder = m_vecItems[position]->m_iprogramCount;
+    iOrder = m_vecItems[position]->m_iPosition;
     m_vecItems.erase(m_vecItems.begin() + position);
   }
   DecrementOrder(iOrder);
@@ -397,8 +397,8 @@ bool CPlayList::Swap(int position1, int position2)
   if (!IsShuffled())
   {
     // swap the ordinals before swapping the items!
-    //CLog::Log(LOGDEBUG,"PLAYLIST swapping items at orders (%i, %i)",m_vecItems[position1]->m_iprogramCount,m_vecItems[position2]->m_iprogramCount);
-    std::swap(m_vecItems[position1]->m_iprogramCount, m_vecItems[position2]->m_iprogramCount);
+    //CLog::Log(LOGDEBUG,"PLAYLIST swapping items at orders (%i, %i)",m_vecItems[position1]->m_iPosition,m_vecItems[position2]->m_iPosition);
+    std::swap(m_vecItems[position1]->m_iPosition, m_vecItems[position2]->m_iPosition);
   }
 
   // swap the items
