@@ -136,3 +136,149 @@ const TestFileData BaseMovies[] = {{ "c:\\dir\\filename.avi", false, "c:\\dir\\f
                                    { "/home/user/movies/movie_name/BDMV/index.bdmv", true, "/home/user/movies/movie_name/" }};
 
 INSTANTIATE_TEST_CASE_P(BaseNameMovies, TestFileItemBasePath, ValuesIn(BaseMovies));
+
+TEST(TestFileItemList, PositionAfterAdd)
+{
+  CFileItemList items;
+
+  items.Add(CFileItemPtr(new CFileItem()));
+  EXPECT_EQ(0, items.Get(0)->m_iPosition);
+
+  items.Add(CFileItemPtr(new CFileItem()));
+  EXPECT_EQ(0, items.Get(0)->m_iPosition);
+  EXPECT_EQ(1, items.Get(1)->m_iPosition);
+}
+
+TEST(TestFileItemList, PositionAfterAddFront)
+{
+  CFileItemList items;
+
+  // simple AddFront() to index 0
+  items.AddFront(CFileItemPtr(new CFileItem()), 0);
+  EXPECT_EQ(0, items.Get(0)->m_iPosition);
+  items.Clear();
+
+  // AddFront() to index 5 (even though there are not 5 items in the list)
+  items.AddFront(CFileItemPtr(new CFileItem()), 5);
+  EXPECT_EQ(0, items.Get(0)->m_iPosition);
+  items.Clear();
+
+  // AddFront() to index -5 (even though there are not 5 items in the list)
+  items.AddFront(CFileItemPtr(new CFileItem()), -5);
+  EXPECT_EQ(0, items.Get(0)->m_iPosition);
+  items.Clear();
+
+  // AddFront() to index 0 moving the existing item to index 1
+  items.Add(CFileItemPtr(new CFileItem("first")));
+  EXPECT_EQ(0, items.Get(0)->m_iPosition);
+  items.AddFront(CFileItemPtr(new CFileItem("second")), 0);
+  EXPECT_EQ(0, items.Get(0)->m_iPosition);
+  EXPECT_STREQ("second", items.Get(0)->GetLabel().c_str());
+  EXPECT_EQ(1, items.Get(1)->m_iPosition);
+  EXPECT_STREQ("first", items.Get(1)->GetLabel().c_str());
+
+  // AddFront() to index 1 leaving the existing item at index 0 and moving the item from index 1 to index 2
+  items.AddFront(CFileItemPtr(new CFileItem("third")), 1);
+  EXPECT_EQ(0, items.Get(0)->m_iPosition);
+  EXPECT_STREQ("second", items.Get(0)->GetLabel().c_str());
+  EXPECT_EQ(1, items.Get(1)->m_iPosition);
+  EXPECT_STREQ("third", items.Get(1)->GetLabel().c_str());
+  EXPECT_EQ(2, items.Get(2)->m_iPosition);
+  EXPECT_STREQ("first", items.Get(2)->GetLabel().c_str());
+
+  // AddFront() to index -1 leaving the existing items at index 0 and 1 and moving the item from index 2 to index 3
+  items.AddFront(CFileItemPtr(new CFileItem("fourth")), -1);
+  EXPECT_EQ(0, items.Get(0)->m_iPosition);
+  EXPECT_STREQ("second", items.Get(0)->GetLabel().c_str());
+  EXPECT_EQ(1, items.Get(1)->m_iPosition);
+  EXPECT_STREQ("third", items.Get(1)->GetLabel().c_str());
+  EXPECT_EQ(2, items.Get(2)->m_iPosition);
+  EXPECT_STREQ("fourth", items.Get(2)->GetLabel().c_str());
+  EXPECT_EQ(3, items.Get(3)->m_iPosition);
+  EXPECT_STREQ("first", items.Get(3)->GetLabel().c_str());
+
+  // AddFront() to index -4 moving the item from indexes 1-3 to indexes 2-4
+  items.AddFront(CFileItemPtr(new CFileItem("fifth")), -4);
+  EXPECT_EQ(0, items.Get(0)->m_iPosition);
+  EXPECT_STREQ("fifth", items.Get(0)->GetLabel().c_str());
+  EXPECT_EQ(1, items.Get(1)->m_iPosition);
+  EXPECT_STREQ("second", items.Get(1)->GetLabel().c_str());
+  EXPECT_EQ(2, items.Get(2)->m_iPosition);
+  EXPECT_STREQ("third", items.Get(2)->GetLabel().c_str());
+  EXPECT_EQ(3, items.Get(3)->m_iPosition);
+  EXPECT_STREQ("fourth", items.Get(3)->GetLabel().c_str());
+  EXPECT_EQ(4, items.Get(4)->m_iPosition);
+  EXPECT_STREQ("first", items.Get(4)->GetLabel().c_str());
+}
+
+TEST(TestFileItemList, PositionAfterRemove)
+{
+  CFileItemList items;
+  CFileItemPtr third(new CFileItem("third"));
+
+  items.Add(CFileItemPtr(new CFileItem("first")));
+  items.Add(CFileItemPtr(new CFileItem("second")));
+  items.Add(third);
+  items.Add(CFileItemPtr(new CFileItem("fourth")));
+  items.Add(CFileItemPtr(new CFileItem("fifth")));
+  EXPECT_EQ(0, items.Get(0)->m_iPosition);
+  EXPECT_STREQ("first", items.Get(0)->GetLabel().c_str());
+  EXPECT_EQ(1, items.Get(1)->m_iPosition);
+  EXPECT_STREQ("second", items.Get(1)->GetLabel().c_str());
+  EXPECT_EQ(2, items.Get(2)->m_iPosition);
+  EXPECT_STREQ("third", items.Get(2)->GetLabel().c_str());
+  EXPECT_EQ(3, items.Get(3)->m_iPosition);
+  EXPECT_STREQ("fourth", items.Get(3)->GetLabel().c_str());
+  EXPECT_EQ(4, items.Get(4)->m_iPosition);
+  EXPECT_STREQ("fifth", items.Get(4)->GetLabel().c_str());
+
+  // remove invalid indexes
+  items.Remove(-1);
+  items.Remove(items.Size());
+  EXPECT_EQ(0, items.Get(0)->m_iPosition);
+  EXPECT_STREQ("first", items.Get(0)->GetLabel().c_str());
+  EXPECT_EQ(1, items.Get(1)->m_iPosition);
+  EXPECT_STREQ("second", items.Get(1)->GetLabel().c_str());
+  EXPECT_EQ(2, items.Get(2)->m_iPosition);
+  EXPECT_STREQ("third", items.Get(2)->GetLabel().c_str());
+  EXPECT_EQ(3, items.Get(3)->m_iPosition);
+  EXPECT_STREQ("fourth", items.Get(3)->GetLabel().c_str());
+  EXPECT_EQ(4, items.Get(4)->m_iPosition);
+  EXPECT_STREQ("fifth", items.Get(4)->GetLabel().c_str());
+
+  // remove the last item
+  items.Remove(items.Size() - 1);
+  EXPECT_EQ(0, items.Get(0)->m_iPosition);
+  EXPECT_STREQ("first", items.Get(0)->GetLabel().c_str());
+  EXPECT_EQ(1, items.Get(1)->m_iPosition);
+  EXPECT_STREQ("second", items.Get(1)->GetLabel().c_str());
+  EXPECT_EQ(2, items.Get(2)->m_iPosition);
+  EXPECT_STREQ("third", items.Get(2)->GetLabel().c_str());
+  EXPECT_EQ(3, items.Get(3)->m_iPosition);
+  EXPECT_STREQ("fourth", items.Get(3)->GetLabel().c_str());
+
+  // remove the third item
+  items.Remove(third.get());
+  EXPECT_EQ(0, items.Get(0)->m_iPosition);
+  EXPECT_STREQ("first", items.Get(0)->GetLabel().c_str());
+  EXPECT_EQ(1, items.Get(1)->m_iPosition);
+  EXPECT_STREQ("second", items.Get(1)->GetLabel().c_str());
+  EXPECT_EQ(2, items.Get(2)->m_iPosition);
+  EXPECT_STREQ("fourth", items.Get(2)->GetLabel().c_str());
+
+  // remove the first item
+  items.Remove(0);
+  EXPECT_EQ(0, items.Get(0)->m_iPosition);
+  EXPECT_STREQ("second", items.Get(0)->GetLabel().c_str());
+  EXPECT_EQ(1, items.Get(1)->m_iPosition);
+  EXPECT_STREQ("fourth", items.Get(1)->GetLabel().c_str());
+
+  // remove the first item
+  items.Remove(0);
+  EXPECT_EQ(0, items.Get(0)->m_iPosition);
+  EXPECT_STREQ("fourth", items.Get(0)->GetLabel().c_str());
+
+  // remove the first item
+  items.Remove(0);
+  EXPECT_TRUE(items.IsEmpty());
+}
