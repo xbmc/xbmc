@@ -105,7 +105,9 @@ ADD_MSVC_PRECOMPILED_HEADER("pch_plex.h" "pch_plex.cpp" PLEX_ALL_SRCS)
 
 # build all plex related source files
 add_library(PlexMain OBJECT ${PLEX_ALL_SRCS})
-add_dependencies(PlexMain ffmpeg)
+if(USE_INTERNAL_FFMPEG)
+  add_dependencies(PlexMain ffmpeg)
+endif(USE_INTERNAL_FFMPEG)
 
 # build test cases
 if(ENABLE_TESTING)
@@ -158,7 +160,6 @@ if(ENABLE_DUMP_SYMBOLS)
   add_custom_target(symbols DEPENDS ${PLEX_TARGET_NAME}_symbols)
 endif(ENABLE_DUMP_SYMBOLS)
 
-add_dependencies(${PLEX_TARGET_NAME} git_revision.h)
 target_link_libraries(${PLEX_TARGET_NAME} xbmc pcre ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
 
 if(TARGET_WIN32)
