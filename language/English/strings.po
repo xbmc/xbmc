@@ -7392,8 +7392,14 @@ msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr ""
 
+#. Label of the button / context menu entry to find similar programs in the PVR EPG data 
+#: skin.confluence
+#: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
+#: xbmc/pvr/windows/GUIWindowPVRTimers.cpp
 msgctxt "#19003"
-msgid "Find similar programs"
+msgid "Find similar"
 msgstr ""
 
 #: xbmc/epg/EpgContainer.cpp
