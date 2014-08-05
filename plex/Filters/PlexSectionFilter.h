@@ -16,6 +16,7 @@ class CPlexSectionFilter
 {
   public:
     CPlexSectionFilter(const CURL& sectionUrl);
+    virtual ~CPlexSectionFilter() {}
     virtual bool loadFilters();
     virtual CURL addFiltersToUrl(const CURL& baseUrl);
     virtual bool hasActiveSecondaryFilters() const;
@@ -137,6 +138,7 @@ class CPlexMyPlexPlaylistFilter : public CPlexSectionFilter
 {
   public:
     CPlexMyPlexPlaylistFilter(const CURL& sectionUrl);
+    virtual ~CPlexMyPlexPlaylistFilter() {}
 
     virtual CURL addFiltersToUrl(const CURL& baseUrl);
     virtual void loadFilterValues(CPlexSecondaryFilterPtr secFilter) { };

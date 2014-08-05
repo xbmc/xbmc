@@ -85,6 +85,7 @@ public:
   {
 
   }
+  virtual ~CPlexPlayQueueManager() {}
 
   bool create(const CFileItem& container, const CStdString& uri = "",
               const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions());

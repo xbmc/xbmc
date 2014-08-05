@@ -25,6 +25,7 @@ class CPlexFilterManager : public IJobCallback
 {
   public:
     CPlexFilterManager();
+    virtual ~CPlexFilterManager() {}
     void loadFilterForSection(const std::string& sectionUrl, bool forceReload = false);
     CPlexSectionFilterPtr getFilterForSection(const std::string& sectionUrl);
 

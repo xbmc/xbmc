@@ -65,7 +65,7 @@ void CPlexAutoUpdate::CheckInstalledVersion()
 
     std::string version, packageHash, fromVersion;
     bool isDelta;
-    bool success;
+    bool success = true;
 
     if (GetUpdateInfo(version, isDelta, packageHash, fromVersion))
     {

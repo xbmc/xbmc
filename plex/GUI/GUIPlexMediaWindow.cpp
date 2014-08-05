@@ -371,7 +371,7 @@ void CGUIPlexMediaWindow::OnFilterButton(int filterButtonId)
     catch (...) { return; }
 
     int id = SORT_BUTTONS_START;
-    CGUIFilterOrderButtonControl::FilterOrderButtonState state;
+    CGUIFilterOrderButtonControl::FilterOrderButtonState state = CGUIFilterOrderButtonControl::ASCENDING;
 
     BOOST_FOREACH(PlexStringPair p, sortOrders)
     {

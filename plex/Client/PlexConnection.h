@@ -35,6 +35,7 @@ public:
 
   CPlexConnection() {}
   CPlexConnection(int type, const CStdString& host, int port, const CStdString& schema="http", const CStdString& token="");
+  virtual ~CPlexConnection() {}
 
   static CStdString ConnectionTypeName(ConnectionType type);
   static CStdString ConnectionStateName(ConnectionState state);
