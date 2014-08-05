@@ -24,7 +24,7 @@ if(COMPRESS_TEXTURES AND NOT TARGET_RPI)
   )
   add_custom_target(CompressTextures ALL DEPENDS Textures_Plex.xbt)
   set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt PROPERTIES GENERATED true MACOSX_PACKAGE_LOCATION Resources/XBMC/addons/skin.plex/Media)
-  set(CONFIG_BUNDLED_FILES ${CONFIG_BUNDLED_FILES} ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt)
+  set_property(GLOBAL APPEND PROPERTY CONFIG_BUNDLED_FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt)
 
   if(NOT TARGET_OSX)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt DESTINATION ${RESOURCEPATH}/addons/skin.plex/Media RENAME Textures.xbt COMPONENT RUNTIME)

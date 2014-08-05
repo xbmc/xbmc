@@ -24,7 +24,7 @@ OPTION(ENABLE_AUTOUPDATE "Enable the cool autoupdate system" ON)
 
 OPTION(USE_PAGING "Enable media section paging" OFF)
 if(USE_PAGING)
-add_definitions(USE_PAGING=1)
+  add_definitions(-DUSE_PAGING=1)
 endif(USE_PAGING)
 
 if(NOT TARGET_RPI)
