@@ -53,6 +53,7 @@ public:
   bool GetCodecMpg2() { return m_codec_mpg2_enabled; }
   bool GetCodecWvc1() { return m_codec_wvc1_enabled; }
   void GetDisplaySize(int &width, int &height);
+  int GetGUIResolutionLimit() { return m_gui_resolution_limit; }
   // stride can be null for packed output
   unsigned char *CaptureDisplay(int width, int height, int *stride, bool swap_red_blue, bool video_only = true);
   DllOMX *GetDllOMX() { return m_OMX ? m_OMX->GetDll() : NULL; }
@@ -64,6 +65,7 @@ private:
   bool       m_omx_image_init;
   int        m_arm_mem;
   int        m_gpu_mem;
+  int        m_gui_resolution_limit;
   bool       m_codec_mpg2_enabled;
   bool       m_codec_wvc1_enabled;
   COMXCore   *m_OMX;
