@@ -126,7 +126,10 @@ public:
   void SendMessage(CDVDMsg* pMsg, int priority = 0)     { m_messageQueue.Put(pMsg, priority); }
 
   void SetVolume(float fVolume)                         { m_dvdAudio.SetVolume(fVolume); }
+  void SetMute(bool bOnOff)                             { }
   void SetDynamicRangeCompression(long drc)             { m_dvdAudio.SetDynamicRangeCompression(drc); }
+  float GetDynamicRangeAmplification() const            { return 0.0f; }
+
 
   std::string GetPlayerInfo();
   int GetAudioBitrate();
@@ -140,6 +143,7 @@ public:
   double GetCurrentPts()                            { CSingleLock lock(m_info_section); return m_info.pts; }
 
   bool IsStalled() const                            { return m_stalled;  }
+  bool IsEOS()                                      { return false; }
   bool IsPassthrough() const;
 protected:
 

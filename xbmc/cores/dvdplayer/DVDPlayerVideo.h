@@ -77,6 +77,7 @@ public:
   void SetSubtitleDelay(double delay)                      { m_iSubtitleDelay = delay; }
 
   bool IsStalled() const                            { return m_stalled; }
+  bool IsEOS()                                      { return false; }
 
   double GetCurrentPts()                           { return m_iCurrentPts; }
 
