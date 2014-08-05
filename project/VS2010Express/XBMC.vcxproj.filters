@@ -5989,6 +5989,9 @@
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32SMBDirectory.h">
       <Filter>filesystem\win32</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\params_check_macros.h">
+      <Filter>utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
