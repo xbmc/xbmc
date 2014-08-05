@@ -132,7 +132,7 @@ void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
 {
   items.Clear();
 
-  CFileItemPtr item(new CFileItem("pvr://guide/searchresults/search.epg", true));
+  CFileItemPtr item(new CFileItem("pvr://guide/searchresults/search/", true));
   item->SetLabel(g_localizeStrings.Get(19140));
   item->SetLabelPreformated(true);
   item->SortsOnTop();
@@ -181,7 +181,7 @@ bool CGUIWindowPVRSearch::OnMessage(CGUIMessage &message)
           case ACTION_SELECT_ITEM:
           case ACTION_MOUSE_LEFT_CLICK:
           {
-            if (URIUtils::PathEquals(pItem->GetPath(), "pvr://guide/searchresults/search.epg"))
+            if (URIUtils::PathEquals(pItem->GetPath(), "pvr://guide/searchresults/search/"))
               OpenDialogSearch();
             else
                ShowEPGInfo(pItem.get());
