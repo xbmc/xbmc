@@ -109,10 +109,6 @@ for l in $libs; do
   strip -S $l 
 done
 
-for l in $libs; do
-  codesign --force --sign "Developer ID Application: Plex Inc." $l
-done
-
 echo "Packing xbmc-depends"
 echo gtar --xz -cf $DEPDIR/built-depends/$outputdir-xbmc-$DEPEND_HASH.tar.xz $outputdir
 gtar --xz -cf $DEPDIR/built-depends/$outputdir-xbmc-$DEPEND_HASH.tar.xz $outputdir
