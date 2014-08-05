@@ -403,7 +403,7 @@ bool CPVRTimers::GetDirectory(const std::string& strPath, CFileItemList &items) 
   {
     bool bRadio = (dirs.at(2) == "radio");
 
-    CFileItemPtr item(new CFileItem("pvr://timers/add.timer", true));
+    CFileItemPtr item(new CFileItem("pvr://timers/addtimer/", true));
     item->SetLabel(g_localizeStrings.Get(19026));
     item->SetLabelPreformated(true);
     item->SortsOnTop();

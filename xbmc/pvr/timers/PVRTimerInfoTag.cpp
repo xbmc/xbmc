@@ -308,7 +308,7 @@ std::string CPVRTimerInfoTag::GetStatus() const
 {
   std::string strReturn = g_localizeStrings.Get(305);
   CSingleLock lock(m_critSection);
-  if (m_strFileNameAndPath == "pvr://timers/add.timer")
+  if (URIUtils::PathEquals(m_strFileNameAndPath, "pvr://timers/addtimer/"))
     strReturn = g_localizeStrings.Get(19026);
   else if (m_state == PVR_TIMER_STATE_CANCELLED || m_state == PVR_TIMER_STATE_ABORTED)
     strReturn = g_localizeStrings.Get(13106);

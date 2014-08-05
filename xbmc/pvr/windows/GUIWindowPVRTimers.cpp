@@ -66,7 +66,7 @@ void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &but
 
   /* Check for a empty file item list, means only a
      file item with the name "Add timer..." is present */
-  if (pItem->GetPath() == "pvr://timers/add.timer")
+  if (URIUtils::PathEquals(pItem->GetPath(), "pvr://timers/addtimer/"))
   {
     buttons.Add(CONTEXT_BUTTON_ADD, 19056);             /* new timer */
   }
@@ -294,7 +294,7 @@ bool CGUIWindowPVRTimers::ActionShowTimer(CFileItem *item)
   /* Check if "Add timer..." entry is pressed by OK, if yes
      create a new timer and open settings dialog, otherwise
      open settings for selected timer entry */
-  if (item->GetPath() == "pvr://timers/add.timer")
+  if (URIUtils::PathEquals(item->GetPath(), "pvr://timers/addtimer/"))
   {
     bReturn = ShowNewTimerDialog();
   }
