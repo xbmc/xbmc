@@ -270,7 +270,11 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
         if (tag.m_type == MediaTypeMusicVideo) {
           object.m_ObjectClass.type = "object.item.videoItem.musicVideoClip";
           object.m_Creator = StringUtils::Join(tag.m_artist, g_advancedSettings.m_videoItemSeparator).c_str();
+          for (std::vector<std::string>::const_iterator itArtist = tag.m_artist.begin(); itArtist != tag.m_artist.end(); ++itArtist)
+              object.m_People.artists.Add(itArtist->c_str());
+          object.m_Affiliation.album = tag.m_strAlbum;
           object.m_Title = tag.m_strTitle;
+          object.m_Date = CDateTime(tag.m_iYear, 0, 0, 0, 0, 0).GetAsW3CDate().c_str();
           object.m_ReferenceID = NPT_String::Format("videodb://musicvideos/titles/%i", tag.m_iDbId);
         } else if (tag.m_type == MediaTypeMovie) {
           object.m_ObjectClass.type = "object.item.videoItem.movie";
@@ -301,7 +305,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     for (unsigned int index = 0; index < tag.m_studio.size(); index++)
         object.m_People.publisher.Add(tag.m_studio[index].c_str());
 
-    object.m_XbmcInfo.date_added = tag.m_dateAdded.GetAsDBDate().c_str();
+    object.m_XbmcInfo.date_added = tag.m_dateAdded.GetAsW3CDate().c_str();
     object.m_XbmcInfo.rating = tag.m_fRating;
     object.m_XbmcInfo.votes = tag.m_strVotes;
 
@@ -329,6 +333,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
         if (tag.HasStreamDetails()) {
             const CStreamDetails &details = tag.m_streamDetails;
             resource->m_Resolution = NPT_String::FromInteger(details.GetVideoWidth()) + "x" + NPT_String::FromInteger(details.GetVideoHeight());
+            resource->m_NbAudioChannels = details.GetAudioChannels();
         }
     }
 
@@ -407,7 +412,7 @@ BuildObject(CFileItem&                    item,
 
         // set date
         if (object->m_Date.IsEmpty() && item.m_dateTime.IsValid()) {
-            object->m_Date = item.m_dateTime.GetAsDBDate().c_str();
+            object->m_Date = item.m_dateTime.GetAsW3CDate().c_str();
         }
 
         if (upnp_server) {
@@ -515,7 +520,7 @@ BuildObject(CFileItem&                    item,
                   if(!tag.m_premiered.IsValid() && tag.m_iYear)
                     container->m_Date = NPT_String::FromInteger(tag.m_iYear) + "-01-01";
                   else
-                    container->m_Date = tag.m_premiered.GetAsDBDate().c_str();
+                    container->m_Date = tag.m_premiered.GetAsW3CDate().c_str();
 
                   for (unsigned int index = 0; index < tag.m_genre.size(); index++)
                     container->m_Affiliation.genres.Add(tag.m_genre.at(index).c_str());
@@ -691,6 +696,9 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
     }
     else if(object.m_ObjectClass.type == "object.item.videoItem.musicVideoClip") {
         tag.m_type = MediaTypeMusicVideo;
+        for (unsigned int index = 0; index < object.m_People.artists.GetItemCount(); index++)
+            tag.m_artist.push_back(object.m_People.artists.GetItem(index)->name.GetChars());
+        tag.m_strAlbum = object.m_Affiliation.album;
     }
     else
     {
@@ -698,12 +706,14 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
         tag.m_strTitle     = object.m_Title;
         tag.m_premiered    = date;
     }
-    tag.m_iYear       = date.GetYear();
+
+    if (date.IsValid())
+      tag.m_iYear = date.GetYear();
 
     for (unsigned int index = 0; index < object.m_People.publisher.GetItemCount(); index++)
         tag.m_studio.push_back(object.m_People.publisher.GetItem(index)->GetChars());
 
-    tag.m_dateAdded.SetFromDateString((const char*)object.m_XbmcInfo.date_added);
+    tag.m_dateAdded.SetFromW3CDate((const char*)object.m_XbmcInfo.date_added);
     tag.m_fRating = object.m_XbmcInfo.rating;
     tag.m_strVotes = object.m_XbmcInfo.votes;
 
@@ -720,6 +730,13 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
       tag.m_director.push_back(object.m_People.directors.GetItem(index)->name.GetChars());
     for (unsigned int index = 0; index < object.m_People.authors.GetItemCount(); index++)
       tag.m_writingCredits.push_back(object.m_People.authors.GetItem(index)->name.GetChars());
+    for (unsigned int index = 0; index < object.m_People.actors.GetItemCount(); index++)
+    {
+      SActorInfo info;
+      info.strName = object.m_People.actors.GetItem(index)->name;
+      info.strRole = object.m_People.actors.GetItem(index)->role;
+      tag.m_cast.push_back(info);
+    }
     tag.m_strTagLine  = object.m_Description.description;
     tag.m_strPlot     = object.m_Description.long_description;
     tag.m_strMPAARating = object.m_Description.rating;
@@ -735,6 +752,24 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
       {
         tag.m_resumePoint.totalTimeInSeconds = resource->m_Duration;
         tag.m_resumePoint.timeInSeconds = object.m_MiscInfo.last_position;
+      }
+      if (!resource->m_Resolution.IsEmpty())
+      {
+        int width, height;
+        if (sscanf(resource->m_Resolution, "%dx%d", &width, &height) == 2)
+        {
+          CStreamDetailVideo* detail = new CStreamDetailVideo;
+          detail->m_iWidth = width;
+          detail->m_iHeight = height;
+          detail->m_iDuration = tag.m_duration;
+          tag.m_streamDetails.AddStream(detail);
+        }
+      }
+      if (resource->m_NbAudioChannels > 0)
+      {
+        CStreamDetailAudio* detail = new CStreamDetailAudio;
+        detail->m_iChannels = resource->m_NbAudioChannels;
+        tag.m_streamDetails.AddStream(detail);
       }
     }
     return NPT_SUCCESS;

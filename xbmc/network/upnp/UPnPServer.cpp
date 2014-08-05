@@ -983,6 +983,13 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
       itemsall.Append(items);
       items.Clear();
 
+      if (!database.GetMusicVideosByWhere("videodb://musicvideos/titles/", "", items)) {
+        action->SetError(800, "Internal Error");
+        return NPT_SUCCESS;
+      }
+      itemsall.Append(items);
+      items.Clear();
+
       return BuildResponse(action, itemsall, filter, starting_index, requested_count, sort_criteria, context, NULL);
   } else if (NPT_String(search_criteria).Find("object.item.imageItem") >= 0) {
       CFileItemList items;
