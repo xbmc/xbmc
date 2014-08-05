@@ -104,7 +104,7 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
   uint32_t now = CTimeUtils::GetFrameTime();
   bool bNothingDown = true;
   
-  for (int i = 0; i < 5; i++)
+  for (int i = 0; i < MOUSE_MAX_BUTTON; i++)
   {
     bClick[i] = false;
     bDoubleClick[i] = false;
