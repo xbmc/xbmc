@@ -79,7 +79,7 @@ public:
   void SetState(MOUSE_STATE state) { m_pointerState = state; };
   void SetEnabled(bool enabled = true);
   MOUSE_STATE GetState() const { return m_pointerState; };
-  uint32_t GetAction() const;
+  uint32_t GetKey() const;
 
   int GetHold(int ButtonID) const;
   inline int GetX(void) const { return m_mouseState.x; }
@@ -170,8 +170,9 @@ private:
   bool bClick[MOUSE_MAX_BUTTON];
   bool bDoubleClick[MOUSE_MAX_BUTTON];
   int  bHold[MOUSE_MAX_BUTTON];
+  bool bLongClick[MOUSE_MAX_BUTTON];
 
-  uint32_t m_Action;
+  uint32_t m_Key;
 };
 
 extern CMouseStat g_Mouse;
