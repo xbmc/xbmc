@@ -381,7 +381,7 @@ bool CPlexMediaDecisionJob::DoWork()
   /* check if we got some httpHeaders from indirected item */
   if (mediaItem->HasProperty("httpHeaders"))
     m_choosenMedia.SetProperty("httpHeaders", mediaItem->GetProperty("httpHeaders"));
-
+  
   /* FIXME: we really need to handle multiple parts */
   if (mediaItem->m_mediaParts.size() > 1)
   {

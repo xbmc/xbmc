@@ -18,7 +18,7 @@
 class CPlexMediaDecisionJob : public CJob
 {
 public:
-  CPlexMediaDecisionJob(const CFileItem& item) : m_item(item), m_success(false), m_bStop(false)
+  CPlexMediaDecisionJob(const CFileItem& item) : m_item(item), m_bStop(false)
   {
   }
   virtual void Cancel();
@@ -33,7 +33,6 @@ private:
   CStdString GetPartURL(CFileItemPtr mediaPart);
   void AddHeaders();
 
-  bool m_success;
   XFILE::CPlexDirectory m_dir;
   XFILE::CCurlFile m_http;
 
