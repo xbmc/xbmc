@@ -38,7 +38,7 @@
 #include "linux/DllBCM.h"
 #include "cores/VideoRenderers/RenderManager.h"
 
-class OMXPlayerVideo : public CThread, public IDVDStreamPlayer
+class OMXPlayerVideo : public CThread, public IDVDStreamPlayerVideo
 {
 protected:
   CDVDMessageQueue          m_messageQueue;

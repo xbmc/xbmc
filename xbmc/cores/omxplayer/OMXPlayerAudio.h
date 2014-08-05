@@ -36,7 +36,7 @@
 #include "utils/BitstreamStats.h"
 #include "xbmc/linux/DllBCM.h"
 
-class OMXPlayerAudio : public CThread, public IDVDStreamPlayer
+class OMXPlayerAudio : public CThread, public IDVDStreamPlayerAudio
 {
 protected:
   CDVDMessageQueue      m_messageQueue;
