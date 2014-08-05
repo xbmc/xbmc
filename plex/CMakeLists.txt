@@ -105,7 +105,7 @@ ADD_MSVC_PRECOMPILED_HEADER("pch_plex.h" "pch_plex.cpp" PLEX_ALL_SRCS)
 # build all plex related source files
 add_library(PlexMain OBJECT ${PLEX_ALL_SRCS})
 if(USE_INTERNAL_FFMPEG)
-  add_dependencies(PlexMain ffmpeg)
+  add_dependencies(PlexMain ffmpeg Update-Installer)
 endif(USE_INTERNAL_FFMPEG)
 
 # build test cases
@@ -150,7 +150,6 @@ if(TARGET_COMMON_DARWIN)
                                                    ${BUNDLED_FILES}
                                                    ${CONFIG_PLEX_INSTALL_LIBRARIES})
   set_target_properties(${PLEX_TARGET_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${plexdir}/Resources/Info.plist.in")
-  add_dependencies(${PLEX_TARGET_NAME} Update-Installer)
   set(MACOSX_BUNDLE_LONG_VERSION_STRING "${PLEX_VERSION_STRING}")
   set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${PLEX_VERSION_STRING_SHORT}")
   set(MACOSX_BUNDLE_BUNDLE_VERSION "${PLEX_VERSION_STRING}")
