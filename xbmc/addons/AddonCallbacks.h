@@ -22,7 +22,6 @@
 #include "cores/dvdplayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "addons/include/xbmc_pvr_types.h"
 #include "addons/include/xbmc_codec_types.h"
-#include "../../addons/library.xbmc.addon/libXBMC_addon.h"
 #include "../../addons/library.xbmc.gui/libXBMC_gui.h"
 
 typedef void (*AddOnLogCallback)(void *addonData, const ADDON::addon_log_t loglevel, const char *msg);

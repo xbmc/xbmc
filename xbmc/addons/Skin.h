@@ -27,7 +27,6 @@
 #include "guilib/GUIIncludes.h"    // needed for the GUIInclude member
 #define CREDIT_LINE_LENGTH 50
 
-class TiXmlNode;
 class CSetting;
 
 namespace ADDON

@@ -20,11 +20,9 @@
  *
  */
 
-#include "threads/CriticalSection.h"
 #include "utils/StdString.h"
 #include "guilib/WindowIDs.h"
 #include "threads/Thread.h"
-#include "threads/Event.h"
 #include <boost/shared_ptr.hpp>
 
 #include <queue>

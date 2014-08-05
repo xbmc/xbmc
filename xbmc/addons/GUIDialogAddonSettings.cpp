@@ -51,6 +51,7 @@
 #include "utils/log.h"
 #include "Util.h"
 #include "URL.h"
+#include "utils/XMLUtils.h"
 
 using namespace std;
 using namespace ADDON;
