@@ -104,6 +104,10 @@ ADD_MSVC_PRECOMPILED_HEADER("pch_plex.h" "pch_plex.cpp" PLEX_ALL_SRCS)
 
 # build all plex related source files
 add_library(PlexMain OBJECT ${PLEX_ALL_SRCS})
+set_target_properties(PlexMain PROPERTIES
+  XCODE_ATTRIBUTE_GCC_PREFIX_HEADER ${plexdir}/pch_plex.h
+  XCODE_ATTRIBUTE_GCC_PRECOMPILE_PREFIX_HEADER true
+  XCODE_ATTRIBUTE_GCC_INCREASE_PRECOMPILED_HEADER_SHARING true)
 if(USE_INTERNAL_FFMPEG)
   add_dependencies(PlexMain ffmpeg Update-Installer)
 endif(USE_INTERNAL_FFMPEG)
