@@ -185,7 +185,7 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
         CViewState state;
         state.m_viewMode = viewMode;
 
-        db.SetViewState(m_sectionRoot.Get(), GetID(), state, g_guiSettings.GetString("lookandfeel.skin"));
+        db.SetViewState(GetLevelURL(), GetID(), state, g_guiSettings.GetString("lookandfeel.skin"));
         db.Close();
       }
 
@@ -1092,7 +1092,7 @@ void CGUIPlexMediaWindow::UpdateButtons()
   if (db.Open())
   {
     CViewState state;
-    if (db.GetViewState(m_sectionRoot.Get(), GetID(), state, g_guiSettings.GetString("lookandfeel.skin")))
+    if (db.GetViewState(GetLevelURL(), GetID(), state, g_guiSettings.GetString("lookandfeel.skin")))
     {
       CLog::Log(LOGDEBUG, "GUIPlexMediaWindow::UpdateButtons got viewMode from db: %d", state.m_viewMode);
       viewMode = state.m_viewMode;
@@ -1106,7 +1106,7 @@ void CGUIPlexMediaWindow::UpdateButtons()
     {
       CViewState state;
       state.m_viewMode = viewMode;
-      db.SetViewState(m_sectionRoot.Get(), GetID(), state, g_guiSettings.GetString("lookandfeel.skin"));
+      db.SetViewState(GetLevelURL(), GetID(), state, g_guiSettings.GetString("lookandfeel.skin"));
       CLog::Log(LOGDEBUG, "GUIPlexMediaWindow::UpdateButtons storing viewMode to db: %d", state.m_viewMode);
     }
   }
@@ -1529,3 +1529,22 @@ void CGUIPlexMediaWindow::FetchItemPage(int Index)
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CStdString CGUIPlexMediaWindow::GetLevelURL()
+{
+  int level = 1;
+  CStdString viewGroup = m_vecItems->GetProperty("viewGroup").asString();
+  
+  if ((viewGroup == "episode") || (viewGroup == "track"))
+    level = 3;
+  else if ((viewGroup == "season") || (viewGroup == "album"))
+    level = 2;
+  else if ((viewGroup == "movie") || (viewGroup == "artist"))
+    level = 1;
+  else
+    level = 0;
+  
+  CStdString levelUrl = m_sectionRoot.Get() + "/level/";
+  levelUrl += boost::lexical_cast<std::string>(level);
+  return  levelUrl;
+}

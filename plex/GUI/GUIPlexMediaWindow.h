@@ -120,6 +120,7 @@ private:
     bool UnwatchedEnabled() const;
     std::string GetFilteredURI(const CFileItem &item) const;
 
+    CStdString GetLevelURL();
 
     bool m_hasAdvancedFilters;
     CCriticalSection m_filterValuesSection;
