@@ -1001,17 +1001,22 @@ bool CApplication::CreateGUI()
 
   if (g_advancedSettings.m_splashImage)
   {
-    CStdString strUserSplash = "special://home/media/Splash.png";
-    if (CFile::Exists(strUserSplash))
+    std::string strSplash = "special://xbmc/media/Splash.png";
+    if (CFile::Exists("special://home/media/Splash.gif"))
+      strSplash = "special://home/media/Splash.gif";
+    if (CFile::Exists("special://home/media/Splash.png"))// user png wins over gif
+      strSplash = "special://home/media/Splash.png";
+    
+    if (URIUtils::PathStarts(strSplash, "special://home"))
     {
-      CLog::Log(LOGINFO, "load user splash image: %s", CSpecialProtocol::TranslatePath(strUserSplash).c_str());
-      m_splash = new CSplash(strUserSplash);
+      CLog::Log(LOGINFO, "load user splash image: %s", CSpecialProtocol::TranslatePath(strSplash).c_str());
     }
     else
     {
-      CLog::Log(LOGINFO, "load default splash image: %s", CSpecialProtocol::TranslatePath("special://xbmc/media/Splash.png").c_str());
-      m_splash = new CSplash("special://xbmc/media/Splash.png");
+      CLog::Log(LOGINFO, "load default splash image: %s", CSpecialProtocol::TranslatePath(strSplash).c_str());
     }
+
+    m_splash = new CSplash(strSplash);
     m_splash->Show();
   }
 
