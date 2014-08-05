@@ -43,7 +43,7 @@ set(CMAKE_REQUIRED_FLAGS "-D__LINUX_USER__")
 
 ######################### Check if we are running within XCode
 if(DEFINED XCODE_VERSION)
-  message("Building with XCode Generator")
+  message(STATUS "Building with XCode Generator")
   set(USING_XCODE 1)
 endif()
 

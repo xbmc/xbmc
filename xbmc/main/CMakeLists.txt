@@ -1,7 +1,4 @@
-set(main_SRCS main.cpp)
-if(TARGET_COMMON_DARWIN)
-  list(APPEND main_SRCS osx/SDLMain.mm)
-  list(APPEND main_SRCS osx/SDLMain.h)
-endif(TARGET_COMMON_DARWIN)
-
-add_library(xbmcmain OBJECT ${main_SRCS})
+if(NOT TARGET_COMMON_DARWIN)
+  set(main_SRCS main.cpp)
+  add_library(xbmcmain OBJECT ${main_SRCS})
+endif(NOT TARGET_COMMON_DARWIN)

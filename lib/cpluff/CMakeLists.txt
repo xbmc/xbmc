@@ -91,7 +91,15 @@ else(TARGET_WIN32)
   set(libcpluff_srcs ${libcpluff_srcs} libcpluff/thread_posix.c)
   if(TARGET_COMMON_DARWIN)
     add_library(cpluff-${ARCH} MODULE ${libcpluff_srcs})
-    install(TARGETS cpluff-${ARCH} DESTINATION ${RESOURCEPATH}/system COMPONENT RUNTIME)
+
+    set_target_properties(cpluff-${ARCH} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plex/${RESOURCEPATH}/system)
+    if(USING_XCODE)
+      set_target_properties(cpluff-${ARCH} PROPERTIES
+                            LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/plex/Debug/${RESOURCEPATH}/system
+                            LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_BINARY_DIR}/plex/RelWithDebInfo/${RESOURCEPATH}/system
+                            LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/plex/Release/${RESOURCEPATH}/system
+      )
+    endif(USING_XCODE)
   elseif(TARGET_POSIX)
     add_library(cpluff-${ARCH} SHARED ${libcpluff_srcs})
     install(TARGETS cpluff-${ARCH} DESTINATION ${BINPATH}/system COMPONENT RUNTIME)

@@ -30,9 +30,8 @@ if(ENABLE_AUTOUPDATE)
     )
   endif(NOT TARGET_RPI)
   if(TARGET_OSX)
-    install(FILES ${CMAKE_BINARY_DIR}/update_installer/updater
-            PERMISSIONS WORLD_READ WORLD_EXECUTE OWNER_WRITE OWNER_EXECUTE OWNER_READ GROUP_EXECUTE GROUP_READ
-            DESTINATION ${EXECUTABLE_NAME}.app/Contents/Resources/XBMC/tools)
+    set_source_files_properties(${CMAKE_BINARY_DIR}/update_installer/updater PROPERTIES GENERATED true MACOSX_PACKAGE_LOCATION Resources/XBMC/tools)
+    set_property(GLOBAL APPEND PROPERTY CONFIG_BUNDLED_FILES ${CMAKE_BINARY_DIR}/update_installer/updater)
   else(TARGET_OSX)
     install(FILES ${CMAKE_BINARY_DIR}/update_installer/updater.exe
             PERMISSIONS WORLD_READ WORLD_EXECUTE OWNER_WRITE OWNER_EXECUTE OWNER_READ GROUP_EXECUTE GROUP_READ
@@ -139,15 +138,26 @@ if(NOT LIZARD MATCHES "-NOTFOUND")
   add_custom_target(lizard-warnings DEPENDS lizard-stdout)
 endif(NOT LIZARD MATCHES "-NOTFOUND")
 
+include(CMakeResources.cmake)
+
+# main target
 if(TARGET_COMMON_DARWIN)
-  add_executable(${PLEX_TARGET_NAME} MACOSX_BUNDLE $<TARGET_OBJECTS:PlexMain> $<TARGET_OBJECTS:xbmcmain>)
+  get_property(BUNDLED_FILES GLOBAL PROPERTY CONFIG_BUNDLED_FILES)
+  add_executable(${PLEX_TARGET_NAME} MACOSX_BUNDLE ${root}/xbmc/main/main.cpp
+                                                   ${root}/xbmc/main/osx/SDLMain.mm
+                                                   ${root}/xbmc/main/osx/SDLMain.h
+                                                   $<TARGET_OBJECTS:PlexMain>
+                                                   ${BUNDLED_FILES}
+                                                   ${CONFIG_PLEX_INSTALL_LIBRARIES})
   set_target_properties(${PLEX_TARGET_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${plexdir}/Resources/Info.plist.in")
   add_dependencies(${PLEX_TARGET_NAME} Update-Installer)
   set(MACOSX_BUNDLE_LONG_VERSION_STRING "${PLEX_VERSION_STRING}")
   set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${PLEX_VERSION_STRING_SHORT}")
   set(MACOSX_BUNDLE_BUNDLE_VERSION "${PLEX_VERSION_STRING}")
+  install(TARGETS ${PLEX_TARGET_NAME} BUNDLE DESTINATION . COMPONENT RUNTIME)
 else()
   add_executable(${PLEX_TARGET_NAME} WIN32 $<TARGET_OBJECTS:PlexMain> $<TARGET_OBJECTS:xbmcmain> ${WIN32_SRC} Resources/Plex.rc Resources/Plex.rc2)
+  install(TARGETS ${PLEX_TARGET_NAME} RUNTIME DESTINATION ${BINPATH} COMPONENT RUNTIME)
 endif()
 
 # Set the correct binary name
@@ -175,109 +185,12 @@ if(ENABLE_PYTHON)
 endif(ENABLE_PYTHON)
 
 
-# find all image files in the skin
-file(GLOB MEDIA_IMAGES_PLEX_SKIN ${root}/addons/skin.plex/Media/*.png ${root}/addons/skin.plex/Media/*.gif)
-
-if(COMPRESS_TEXTURES AND NOT TARGET_RPI)
-  # Build the packed textures
-  if(WIN32)
-    set(WORKDIR ${root}/tools/TexturePacker)
-  else(WIN32)
-    set(WORKDIR ${CMAKE_CURRENT_BINARY_DIR})
-  endif(WIN32)
-
-  if(TEXTUREPACKERPATH)
-    set(TEXTUREPACKER_EXE ${TEXTUREPACKERPATH})
-  else(TEXTUREPACKERPATH)
-    set(TEXTUREPACKER_EXE $<TARGET_FILE:TexturePacker>)
-  endif(TEXTUREPACKERPATH)
-
-  add_custom_command(
-    OUTPUT Textures_Plex.xbt
-    COMMAND ${TEXTUREPACKER_EXE} -input ${root}/addons/skin.plex/Media -output ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt
-    MAIN_DEPENDENCY ${MEDIA_IMAGES_PLEX_SKIN}
-    DEPENDS TexturePacker
-    WORKING_DIRECTORY ${WORKDIR}
-  )
-  add_custom_target(CompressTextures ALL DEPENDS Textures_Plex.xbt)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt DESTINATION ${RESOURCEPATH}/addons/skin.plex/Media RENAME Textures.xbt COMPONENT RUNTIME)
-
-  set(EXCLUDE_TEXTURES "skin.plex/Media/*")
-else()
-  set(EXCLUDE_TEXTURES ^foo)
-endif()
-
 # Set some variables we need to configure the CMakeCompleteBundle file
 set(PLEXDIR ${plexdir})
 set(ROOTDIR ${root})
 set(DEPENDDIR ${dependdir})
 configure_file(CMakeCompleteBundle.cmake.in CMakeCompleteBundle.cmake @ONLY)
 
-if(TARGET_COMMON_DARWIN OR TARGET_WIN32)
-  install(FILES ${CONFIG_PLEX_INSTALL_LIBRARIES} DESTINATION ${LIBPATH} COMPONENT RUNTIME)
-endif()
-
-if(TARGET_COMMON_DARWIN)
-  install(TARGETS ${PLEX_TARGET_NAME} BUNDLE DESTINATION . COMPONENT RUNTIME)
-  install(FILES ${plexdir}/Resources/Plex.icns DESTINATION ${EXECUTABLE_NAME}.app/Contents/Resources COMPONENT RUNTIME)
-  install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${EXECUTABLE_NAME}.app/Contents/Resources COMPONENT RUNTIME)
-else(TARGET_COMMON_DARWIN)
-  install(TARGETS ${PLEX_TARGET_NAME} RUNTIME DESTINATION ${BINPATH} COMPONENT RUNTIME)
-  install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
-endif(TARGET_COMMON_DARWIN)
-
-if(NOT DEFINED PLEX_SPLASH)
-  if(TARGET_RPI)
-    set(PLEX_SPLASH Splash-RPI.png)
-  else(TARGET_RPI)
-    set(PLEX_SPLASH Splash.png)
-  endif(TARGET_RPI)
-endif(NOT DEFINED PLEX_SPLASH)
-
-
-install(DIRECTORY ${root}/media ${root}/sounds ${root}/language DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
-        PATTERN ${PLEX_SPLASH} EXCLUDE
-        PATTERN Credits.html EXCLUDE)
-
-install(DIRECTORY ${root}/system DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
-        PATTERN python EXCLUDE
-        PATTERN playercorefactory.xml EXCLUDE
-        PATTERN peripherals.xml EXCLUDE)
-
-
-install(DIRECTORY ${root}/addons DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
-        PATTERN skin.confluence EXCLUDE
-        PATTERN skin.touched EXCLUDE
-        REGEX screensaver.rsxs* EXCLUDE
-        REGEX library.* EXCLUDE
-        REGEX metadata.* EXCLUDE
-        REGEX weather.* EXCLUDE
-        PATTERN repository.xbmc.org EXCLUDE
-        REGEX ${EXCLUDE_TEXTURES} EXCLUDE
-        PATTERN .git EXCLUDE
-        PATTERN xbmc.python EXCLUDE
-)
-
-install(FILES ${plexdir}/Resources/${PLEX_SPLASH} DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME RENAME ${PLEX_SPLASH})
-
-install(DIRECTORY ${plexdir}/addons DESTINATION DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
-install(FILES ${plexdir}/Resources/plex-icon-120.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
-install(FILES ${plexdir}/Resources/plex-icon-256.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
-install(FILES ${plexdir}/Resources/SlideshowOverlay.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
-install(FILES ${plexdir}/Resources/peripherals.xml ${plexdir}/Resources/playercorefactory.xml DESTINATION ${RESOURCEPATH}/system COMPONENT RUNTIME)
-
-if(TARGET_OSX)
-  install(FILES ${plexdir}/Resources/com.plexapp.ht.helper.plist DESTINATION ${RESOURCEPATH}/tools/darwin/runtime COMPONENT RUNTIME)
-elseif(TARGET_WIN32)
-  install(FILES ${root}/system/zlib1.dll DESTINATION ${BINPATH} COMPONENT RUNTIME)
-  install(FILES ${root}/project/Win32BuildSetup/dependencies/libcdio-13.dll DESTINATION ${BINPATH} COMPONENT RUNTIME)
-  install(FILES ${plexdir}/build/dependencies/vcredist/2012/vcredist_x86.exe DESTINATION ${BINPATH}/Dependencies COMPONENT VCREDIST RENAME vcredist_2012_x86.exe)
-  install(FILES ${plexdir}/build/dependencies/vcredist/2010/vcredist_x86.exe DESTINATION ${BINPATH}/Dependencies COMPONENT VCREDIST RENAME vcredist_2010_x86.exe)
-  install(DIRECTORY ${plexdir}/build/dependencies/dxsetup DESTINATION ${BINPATH}/Dependencies COMPONENT QDXSETUP)
-  install(FILES ${root}/project/Win32BuildSetup/dependencies/glew32.dll DESTINATION ${BINPATH} COMPONENT RUNTIME)
-  install(FILES ${root}/project/Win32BuildSetup/dependencies/libiconv-2.dll DESTINATION ${BINPATH} COMPONENT RUNTIME)
-  install(FILES ${plexdir}/Resources/Plex.ico ${plexdir}/Resources/PlexBanner.bmp DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
-endif()
 
 if(CREATE_BUNDLE)
   if(TARGET_COMMON_DARWIN OR TARGET_WIN32)

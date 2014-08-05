@@ -16,5 +16,4 @@ target_link_libraries(PlexHTHelper
   ${CONFIG_LIBRARY_STDC++}
   ${CONFIG_LIBRARY_CARBON}
 )
-
-install(TARGETS PlexHTHelper DESTINATION "Plex Home Theater.app/Contents/Resources/XBMC/tools/darwin/runtime")
+set_target_properties(PlexHTHelper PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plex/${RESOURCEPATH}/tools/darwin/runtime)

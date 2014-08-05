@@ -52,15 +52,27 @@ endif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "
 set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${PLEX_LINK_WRAPPED}")
 find_program(ZIP zip)
 
-if(ZIP)
+if(ZIP AND NOT USING_XCODE)
+  set(OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR})
+  if(TARGET_COMMON_DARWIN)
+    set(OUTPUT_DIR ${CMAKE_BINARY_DIR}/plex/${RESOURCEPATH}/addons/visualization.projectm/resources)
+  endif(TARGET_COMMON_DARWIN)
+
   add_custom_command(
-    OUTPUT presets.zip
-    COMMAND ${ZIP} -q -j presets.zip ${CMAKE_CURRENT_SOURCE_DIR}/libprojectM/presets/*
+    OUTPUT ${OUTPUT_DIR}/presets.zip
+    COMMAND ${ZIP} -q -j ${OUTPUT_DIR}/presets.zip ${CMAKE_CURRENT_SOURCE_DIR}/libprojectM/presets/*
   )
-  add_custom_target(ProjectMPresets ALL DEPENDS presets.zip)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/presets.zip DESTINATION ${RESOURCEPATH}/addons/visualization.projectm/resources COMPONENT RUNTIME)
+  add_custom_target(ProjectMPresets ALL DEPENDS ${OUTPUT_DIR}/presets.zip)
+
+  if(NOT TARGET_COMMON_DARWIN)
+    install(FILES ${OUTPUT_DIR}/presets.zip DESTINATION ${RESOURCEPATH}/addons/visualization.projectm/resources COMPONENT RUNTIME)
+  endif(NOT TARGET_COMMON_DARWIN)
 endif()
 
 add_library(projectM MODULE ${src})
 target_link_libraries(projectM wrapper ${CONFIG_LIBRARY_OPENGL})
-install(TARGETS projectM DESTINATION ${RESOURCEPATH}/addons/visualization.projectm COMPONENT RUNTIME)
+if(TARGET_COMMON_DARWIN)
+  set_target_properties(projectM PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plex/${RESOURCEPATH}/addons/visualization.projectm)
+else()
+  install(TARGETS projectM DESTINATION ${RESOURCEPATH}/addons/visualization.projectm COMPONENT RUNTIME)
+endif()
