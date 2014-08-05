@@ -2433,7 +2433,6 @@ bool CLinuxRendererGL::UploadVDPAUTexture(int index)
 #ifdef HAVE_LIBVDPAU
   VDPAU::CVdpauRenderPicture *vdpau = m_buffers[index].vdpau;
 
-  YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANE &plane = fields[FIELD_FULL][0];
 

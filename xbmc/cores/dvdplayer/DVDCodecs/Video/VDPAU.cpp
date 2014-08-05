@@ -435,17 +435,6 @@ VdpVideoSurface CVideoSurfaces::GetFree(VdpVideoSurface surf)
   return VDP_INVALID_HANDLE;
 }
 
-VdpVideoSurface CVideoSurfaces::GetAtIndex(int idx)
-{
-  if (idx >= m_state.size())
-    return VDP_INVALID_HANDLE;
-
-  std::map<VdpVideoSurface, int>::iterator it = m_state.begin();
-  for(int i = 0; i < idx; i++)
-    ++it;
-  return it->first;
-}
-
 VdpVideoSurface CVideoSurfaces::RemoveNext(bool skiprender)
 {
   CSingleLock lock(m_section);
@@ -999,7 +988,6 @@ void CDecoder::FFReleaseBuffer(void *opaque, uint8_t *data)
   CDecoder *vdp = (CDecoder*)((CDVDVideoCodecFFmpeg*)opaque)->GetHardware();
 
   VdpVideoSurface surf;
-  unsigned int i;
 
   CSingleLock lock(vdp->m_DecoderSection);
 
