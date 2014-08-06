@@ -4646,6 +4646,7 @@
 		AE89ACA51621DAB800E17DBC /* DVDDemuxBXA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDDemuxBXA.h; sourceTree = "<group>"; };
 		AEC0083015ACAC6E0099888C /* TagLoaderTagLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagLoaderTagLib.cpp; sourceTree = "<group>"; };
 		AEC0083315ACAC7C0099888C /* TagLoaderTagLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagLoaderTagLib.h; sourceTree = "<group>"; };
+		B542632E19917D3500726998 /* params_check_macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = params_check_macros.h; sourceTree = "<group>"; };
 		C807114B135DB5CC002F601B /* InputOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputOperations.cpp; sourceTree = "<group>"; };
 		C807114C135DB5CC002F601B /* InputOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputOperations.h; sourceTree = "<group>"; };
 		C8482874156CFCD8005A996F /* PVRClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRClient.cpp; sourceTree = "<group>"; };
@@ -9656,6 +9657,7 @@
 		E38E1E220D25F9FD00618676 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				B542632E19917D3500726998 /* params_check_macros.h */,
 				F5CC22FB18150065006B5E91 /* ActorProtocol.cpp */,
 				F5CC22FC18150065006B5E91 /* ActorProtocol.h */,
 				E38E1E230D25F9FD00618676 /* AlarmClock.cpp */,

@@ -35,6 +35,7 @@
 
 #include "XBDateTime.h"
 #include "utils/StdString.h"
+#include "utils/params_check_macros.h"
 
 class StringUtils
 {
@@ -50,10 +51,10 @@ public:
   \param ... variable number of value type arguments
   \return Formatted string
   */
-  static std::string Format(const char *fmt, ...);
-  static std::string FormatV(const char *fmt, va_list args);
-  static std::wstring Format(const wchar_t *fmt, ...);
-  static std::wstring FormatV(const wchar_t *fmt, va_list args);
+  static std::string Format(PRINTF_FORMAT_STRING const char *fmt, ...) PARAM1_PRINTF_FORMAT;
+  static std::string FormatV(PRINTF_FORMAT_STRING const char *fmt, va_list args);
+  static std::wstring Format(PRINTF_FORMAT_STRING const wchar_t *fmt, ...);
+  static std::wstring FormatV(PRINTF_FORMAT_STRING const wchar_t *fmt, va_list args);
   static void ToUpper(std::string &str);
   static void ToUpper(std::wstring &str);
   static void ToLower(std::string &str);

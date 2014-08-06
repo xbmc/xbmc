@@ -977,6 +977,7 @@
     <ClInclude Include="..\..\xbmc\utils\IRssObserver.h" />
     <ClInclude Include="..\..\xbmc\utils\IXmlDeserializable.h" />
     <ClInclude Include="..\..\xbmc\utils\LegacyPathTranslation.h" />
+    <ClInclude Include="..\..\xbmc\utils\params_check_macros.h" />
     <ClInclude Include="..\..\xbmc\utils\RssManager.h" />
     <ClInclude Include="..\..\xbmc\utils\StringValidation.h" />
     <ClInclude Include="..\..\xbmc\utils\Utf8Utils.h" />
