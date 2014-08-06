@@ -30,7 +30,11 @@ CUrlOptions CPlexTimeline::getTimeline(bool forServer)
 
     options.AddOption("time", time);
 
-    options.AddOption("ratingKey", m_item->GetProperty("ratingKey").asString());
+    if (m_item->HasProperty("ratingKey"))
+      options.AddOption("ratingKey", m_item->GetProperty("ratingKey").asString());
+    else if (m_item->HasProperty("url"))
+      options.AddOption("ratingKey", m_item->GetProperty("url").asString());
+    
     options.AddOption("key", m_item->GetProperty("unprocessed_key").asString());
 
     CStdString container = m_item->GetProperty("containerKey").asString();
