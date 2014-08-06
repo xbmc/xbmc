@@ -137,6 +137,7 @@ public:
   virtual void FrameMove(bool processEvents, bool processGUI = true);
   virtual void Render();
   virtual bool RenderNoPresent();
+  virtual bool RenderSplash();
   virtual void Preflight();
   virtual bool Create();
   virtual bool Cleanup();
@@ -484,6 +485,7 @@ protected:
   void VolumeChanged() const;
 
   PlayBackRet PlayStack(const CFileItem& item, bool bRestart);
+  bool ProcessSplash(unsigned int frameTime);
   bool ExecuteInputAction(const CAction &action);
   
 
