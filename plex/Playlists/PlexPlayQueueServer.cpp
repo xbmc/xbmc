@@ -225,6 +225,13 @@ void CPlexPlayQueueServer::OnJobComplete(unsigned int jobID, bool success, CJob*
       m_list->Get(0)->SetProperty("avoidPrompts", true);
       PlexUtils::SetItemResumeOffset(m_list->Get(0), fj->m_options.resumeOffset);
     }
+    
+    // we remove also prompts for trailers
+    for (int i=0; i<m_list->Size(); i++)
+    {
+      if (m_list->Get(i)->HasProperty("extraType"))
+        m_list->Get(i)->SetProperty("avoidPrompts", true);
+    }
 
     CApplicationMessenger::Get().PlexUpdatePlayQueue(type, fj->m_options.startPlaying);
   }
