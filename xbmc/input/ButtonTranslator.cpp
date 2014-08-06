@@ -249,6 +249,7 @@ static const ActionMapping actions[] =
         {"rightclick"        , ACTION_MOUSE_RIGHT_CLICK},
         {"middleclick"       , ACTION_MOUSE_MIDDLE_CLICK},
         {"doubleclick"       , ACTION_MOUSE_DOUBLE_CLICK},
+        {"longclick"         , ACTION_MOUSE_LONG_CLICK},
         {"wheelup"           , ACTION_MOUSE_WHEEL_UP},
         {"wheeldown"         , ACTION_MOUSE_WHEEL_DOWN},
         {"mousedrag"         , ACTION_MOUSE_DRAG},
@@ -396,16 +397,18 @@ static const ActionMapping windows[] =
         {"mediafilter"              , WINDOW_DIALOG_MEDIA_FILTER},
         {"addon"                    , WINDOW_ADDON_START}};
 
-static const ActionMapping mousecommands[] =
+static const ActionMapping mousekeys[] =
 {
-  { "leftclick",   ACTION_MOUSE_LEFT_CLICK },
-  { "rightclick",  ACTION_MOUSE_RIGHT_CLICK },
-  { "middleclick", ACTION_MOUSE_MIDDLE_CLICK },
-  { "doubleclick", ACTION_MOUSE_DOUBLE_CLICK },
-  { "wheelup",     ACTION_MOUSE_WHEEL_UP },
-  { "wheeldown",   ACTION_MOUSE_WHEEL_DOWN },
-  { "mousedrag",   ACTION_MOUSE_DRAG },
-  { "mousemove",   ACTION_MOUSE_MOVE }
+  { "click",       KEY_MOUSE_CLICK },
+  { "leftclick",   KEY_MOUSE_CLICK },
+  { "rightclick",  KEY_MOUSE_RIGHTCLICK },
+  { "middleclick", KEY_MOUSE_MIDDLECLICK },
+  { "doubleclick", KEY_MOUSE_DOUBLE_CLICK },
+  { "longclick",   KEY_MOUSE_LONG_CLICK },
+  { "wheelup",     KEY_MOUSE_WHEEL_UP },
+  { "wheeldown",   KEY_MOUSE_WHEEL_DOWN },
+  { "mousedrag",   KEY_MOUSE_DRAG },
+  { "mousemove",   KEY_MOUSE_MOVE }
 };
 
 static const ActionMapping touchcommands[] =
@@ -1022,11 +1025,10 @@ int CButtonTranslator::GetActionCode(int window, const CKey &key, std::string &s
     return 0;
   buttonMap::const_iterator it2 = (*it).second.find(code);
   int action = 0;
-  while (it2 != (*it).second.end())
+  if (it2 != (*it).second.end())
   {
     action = (*it2).second.id;
     strAction = (*it2).second.strID;
-    it2 = (*it).second.end();
   }
 #ifdef TARGET_POSIX
   // Some buttoncodes changed in Hardy
@@ -1034,12 +1036,11 @@ int CButtonTranslator::GetActionCode(int window, const CKey &key, std::string &s
   {
     CLog::Log(LOGDEBUG, "%s: Trying Hardy keycode for %#04x", __FUNCTION__, code);
     code &= ~0x0F00;
-    buttonMap::const_iterator it2 = (*it).second.find(code);
-    while (it2 != (*it).second.end())
+    it2 = (*it).second.find(code);
+    if (it2 != (*it).second.end())
     {
       action = (*it2).second.id;
       strAction = (*it2).second.strID;
-      it2 = (*it).second.end();
     }
   }
 #endif
@@ -1110,7 +1111,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
         else if (type == "keyboard")
             buttonCode = TranslateKeyboardButton(pButton);
         else if (type == "mouse")
-            buttonCode = TranslateMouseCommand(pButton->Value());
+            buttonCode = TranslateMouseCommand(pButton);
         else if (type == "appcommand")
             buttonCode = TranslateAppCommand(pButton->Value());
 
@@ -1438,18 +1439,40 @@ uint32_t CButtonTranslator::TranslateAppCommand(const char *szButton)
   return 0;
 }
 
-uint32_t CButtonTranslator::TranslateMouseCommand(const char *szButton)
+uint32_t CButtonTranslator::TranslateMouseCommand(TiXmlElement *pButton)
 {
-  std::string strMouseCommand = szButton;
-  StringUtils::ToLower(strMouseCommand);
+  uint32_t buttonId = 0;
 
-  for (unsigned int i = 0; i < sizeof(mousecommands)/sizeof(mousecommands[0]); i++)
-    if (strMouseCommand == mousecommands[i].name)
-      return mousecommands[i].action | KEY_MOUSE;
+  if (pButton)
+  {
+    std::string szKey = pButton->ValueStr();
+    if (!szKey.empty())
+    {
+      StringUtils::ToLower(szKey);
+      for (unsigned int i = 0; i < sizeof(mousekeys)/sizeof(mousekeys[0]); i++)
+      {
+        if (szKey == mousekeys[i].name)
+        {
+          buttonId = mousekeys[i].action;
+          break;
+        }
+      }
+      if (!buttonId)
+      {
+        CLog::Log(LOGERROR, "Unknown mouse action (%s), skipping", pButton->Value());
+      }
+      else
+      {
+        int id = 0;
+        if ((pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS) && id>=0 && id<=4)
+        {
+          buttonId += id;
+        }
+      }
+    }
+  }
 
-  CLog::Log(LOGERROR, "%s: Can't find mouse command %s", __FUNCTION__, szButton);
-
-  return 0;
+  return buttonId;
 }
 
 void CButtonTranslator::Clear()

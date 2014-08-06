@@ -3121,8 +3121,8 @@ bool CApplication::ProcessMouse()
     return false;
 
   // Get the mouse command ID
-  uint32_t mousecommand = g_Mouse.GetAction();
-  if (mousecommand == ACTION_NOOP)
+  uint32_t mousekey = g_Mouse.GetKey();
+  if (mousekey == KEY_MOUSE_NOOP)
     return true;
 
   // Reset the screensaver and idle timers
@@ -3133,7 +3133,7 @@ bool CApplication::ProcessMouse()
 
   // Retrieve the corresponding action
   int iWin = GetActiveWindowID();
-  CKey key(mousecommand | KEY_MOUSE, (unsigned int) 0);
+  CKey key(mousekey, (unsigned int) 0);
   CAction mouseaction = CButtonTranslator::GetInstance().GetAction(iWin, key);
 
   // Deactivate mouse if non-mouse action
@@ -3150,7 +3150,7 @@ bool CApplication::ProcessMouse()
   // handled this mouse action
   if (!mouseaction.GetID())
   {
-    CLog::Log(LOGDEBUG, "%s: unknown mouse command %d", __FUNCTION__, mousecommand);
+    CLog::Log(LOGDEBUG, "%s: unknown mouse command %d", __FUNCTION__, mousekey);
     return false;
   }
 

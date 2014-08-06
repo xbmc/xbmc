@@ -42,6 +42,8 @@
 #define MOUSE_DOUBLE_CLICK_LENGTH 500L
 #define MOUSE_ACTIVE_LENGTH   5000L
 
+#define MOUSE_MAX_BUTTON 5
+
 enum MOUSE_STATE { MOUSE_STATE_NORMAL = 1, MOUSE_STATE_FOCUS, MOUSE_STATE_DRAG, MOUSE_STATE_CLICK };
 enum MOUSE_BUTTON { MOUSE_LEFT_BUTTON = 0, MOUSE_RIGHT_BUTTON, MOUSE_MIDDLE_BUTTON, MOUSE_EXTRA_BUTTON1, MOUSE_EXTRA_BUTTON2 };
 
@@ -53,7 +55,7 @@ struct MouseState
   int16_t dx;         // change in x
   int16_t dy;         // change in y
   int8_t dz;          // change in z (wheel)
-  bool button[5];     // current state of the buttons
+  bool button[MOUSE_MAX_BUTTON];     // current state of the buttons
   bool active;        // true if the mouse is active
 };
 
@@ -77,7 +79,7 @@ public:
   void SetState(MOUSE_STATE state) { m_pointerState = state; };
   void SetEnabled(bool enabled = true);
   MOUSE_STATE GetState() const { return m_pointerState; };
-  uint32_t GetAction() const;
+  uint32_t GetKey() const;
 
   int GetHold(int ButtonID) const;
   inline int GetX(void) const { return m_mouseState.x; }
@@ -155,7 +157,7 @@ private:
   MOUSE_STATE m_pointerState;
   MouseState m_mouseState;
   bool m_mouseEnabled;
-  CButtonState m_buttonState[5];
+  CButtonState m_buttonState[MOUSE_MAX_BUTTON];
 
   int m_maxX;
   int m_maxY;
@@ -165,11 +167,12 @@ private:
   // active/click timers
   unsigned int m_lastActiveTime;
 
-  bool bClick[5];
-  bool bDoubleClick[5];
-  int  bHold[5];
+  bool bClick[MOUSE_MAX_BUTTON];
+  bool bDoubleClick[MOUSE_MAX_BUTTON];
+  int  bHold[MOUSE_MAX_BUTTON];
+  bool bLongClick[MOUSE_MAX_BUTTON];
 
-  uint32_t m_Action;
+  uint32_t m_Key;
 };
 
 extern CMouseStat g_Mouse;

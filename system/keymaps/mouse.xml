@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--  Button Ids:                                                                             -->
+<!--    0: left                                                                               -->
+<!--    1: right                                                                              -->
+<!--    2: middle                                                                             -->
+<!--    3/4: extra                                                                            -->
+
 <keymap>
   <global>
     <mouse>
       <leftclick>leftclick</leftclick>
-      <middleclick>middleclick</middleclick>
       <rightclick>rightclick</rightclick>
-      <doubleclick>doubleclick</doubleclick>
+      <middleclick>middleclick</middleclick>
+      <doubleclick id="0">doubleclick</doubleclick>
+      <longclick id="0">contextmenu</longclick>
+
       <wheeldown>wheeldown</wheeldown>
       <wheelup>wheelup</wheelup>
       <mousedrag>mousedrag</mousedrag>
