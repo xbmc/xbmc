@@ -34,8 +34,10 @@
 #include "guilib/GraphicContext.h"
 #include "cores/IPlayer.h"
 
-#ifdef HAS_SDL
+#if SDL_VERSION == 1
 #include <SDL/SDL_stdinc.h>
+#elif SDL_VERSION == 2
+#include <SDL2/SDL_stdinc.h>
 #else
 #define SDL_memset4(dst, val, len)		\
 do {						\

@@ -233,6 +233,8 @@ bool CWinEventsSDL::MessagePump()
       case SDL_JOYAXISMOTION:
       case SDL_JOYBALLMOTION:
       case SDL_JOYHATMOTION:
+      case SDL_JOYDEVICEADDED:
+      case SDL_JOYDEVICEREMOVED:
         g_Joystick.Update(event);
         ret = true;
         break;
