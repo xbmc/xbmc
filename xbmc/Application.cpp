@@ -1479,9 +1479,6 @@ bool CApplication::Initialize()
       return false;
     }
 
-    if (g_advancedSettings.m_splashImage)
-      SAFE_DELETE(m_splash);
-
     if (CSettings::Get().GetBool("masterlock.startuplock") &&
         CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
        !CProfilesManager::Get().GetMasterProfile().getLockCode().empty())
@@ -1545,6 +1542,8 @@ bool CApplication::Initialize()
   g_Joystick.SetEnabled(CSettings::Get().GetBool("input.enablejoystick") &&
                     CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0 );
 #endif
+  
+  ProcessSplash(0);// closes the splash screen if it is finished/non-animated
 
   return true;
 }
@@ -2192,7 +2191,10 @@ bool CApplication::RenderNoPresent()
 
   }
 
-  bool hasRendered = g_windowManager.Render();
+  //handle possible animated splash screen
+  bool hasRendered = RenderSplash();
+  if (!hasRendered)
+    hasRendered = g_windowManager.Render();
 
   g_graphicsContext.Unlock();
 
@@ -2988,6 +2990,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     ProcessGamepad(frameTime);
     ProcessEventServer(frameTime);
     ProcessPeripherals(frameTime);
+    ProcessSplash(CTimeUtils::GetFrameTime());
     if (processGUI && m_renderGUI)
     {
       m_pInertialScrollingHandler->ProcessInertialScroll(frameTime);
@@ -3116,6 +3119,34 @@ bool CApplication::ProcessPeripherals(float frameTime)
   if (g_peripherals.GetNextKeypress(frameTime, key))
     return OnKey(key);
   return false;
+}
+
+bool CApplication::ProcessSplash(unsigned int frameTime)
+{
+  //handle possible animated splash screen
+  if (m_splash && g_advancedSettings.m_splashImage)
+  {
+    if (m_splash->IsFinished())
+    {
+      SAFE_DELETE(m_splash);
+    }
+    else 
+    {
+      m_splash->Process(frameTime);
+    }
+  }
+  return m_splash != NULL;
+}
+
+bool CApplication::RenderSplash()
+{
+  bool rendered = false;
+  if (m_splash && g_advancedSettings.m_splashImage)
+  {
+    m_splash->Render();
+    rendered = true;
+  }
+  return rendered;
 }
 
 bool CApplication::ProcessMouse()

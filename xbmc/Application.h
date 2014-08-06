@@ -134,6 +134,7 @@ public:
   virtual void FrameMove(bool processEvents, bool processGUI = true);
   virtual void Render();
   virtual bool RenderNoPresent();
+  virtual bool RenderSplash();
   virtual void Preflight();
   virtual bool Create();
   virtual bool Cleanup();
@@ -448,6 +449,7 @@ protected:
   bool ProcessGamepad(float frameTime);
   bool ProcessEventServer(float frameTime);
   bool ProcessPeripherals(float frameTime);
+  bool ProcessSplash(unsigned int frameTime);
   bool ProcessJoystickEvent(const std::string& joystickName, int button, short inputType, float fAmount, unsigned int holdTime = 0);
   bool ExecuteInputAction(const CAction &action);
   int  GetActiveWindowID(void);
