@@ -116,17 +116,29 @@ foreach(addon ${addons})
           file(REMOVE_RECURSE "${CMAKE_INSTALL_PREFIX}/${id}/")
         endif()
 
-        # get the URL and revision of the addon
-        list(GET def 1 url)
-        list(GET def 2 revision)
+        # prepare the setup of the call to externalproject_add()
+        set(EXTERNALPROJECT_SETUP INSTALL_DIR "${CMAKE_INSTALL_PREFIX}"
+                                  CMAKE_ARGS ${BUILD_ARGS})
 
-        # add the addon as an external project for automatic building
-        externalproject_add(${id}
-                          GIT_REPOSITORY ${url}
-                          GIT_TAG ${revision}
-                          INSTALL_DIR "${CMAKE_INSTALL_PREFIX}"
-                          CMAKE_ARGS ${BUILD_ARGS}
-                         )
+        # get the URL and revision of the addon
+        list(LENGTH def deflength)
+        list(GET def 1 url)
+        # check if there's a third parameter in the file
+        if(deflength GREATER 2)
+          # the third parameter is considered as a revision of a git repository
+          list(GET def 2 revision)
+
+          externalproject_add(${id}
+                              GIT_REPOSITORY ${url}
+                              GIT_TAG ${revision}
+                              "${EXTERNALPROJECT_SETUP}"
+                             )
+        else()
+          externalproject_add(${id}
+                              URL ${url}
+                              "${EXTERNALPROJECT_SETUP}"
+                             )
+        endif()
       endif()
     endif()
   endif()
