@@ -35,10 +35,10 @@ namespace PVR
     void OnWindowLoaded();
     void GetContextButtons(int itemNumber, CContextButtons &buttons);
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+    bool OnContextButton(const CFileItem &item, CONTEXT_BUTTON button);
 
   protected:
     void OnPrepareFileItems(CFileItemList &items);
-    virtual bool OnContextButton(const CFileItem &item, CONTEXT_BUTTON button);
 
   private:
     bool OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON button);
