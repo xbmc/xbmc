@@ -121,15 +121,11 @@ macro(plex_find_library lib framework nodefaultpath searchpath addtolinklist)
       # set the SONAME variable, needed for DllPaths_generated.h
       set(${LIBN}_SONAME ${FNAME} CACHE string "the soname for the current library")
       set(LIB${LIBN}_SONAME ${FNAME} CACHE string "the soname for the current library")
-      
+
       # set the HAVE_LIBX variable
-      set(HAVE_LIB${LIBN} 1 CACHE string "the HAVE_LIBX variable")
-      
-      # if this is a framework we need to mark it as advanced
-      if(${framework})
-        mark_as_advanced(CONFIG_LIBRARY_${LIBN})
-      endif()
-      
+      set(HAVE_LIB${LIBN} 1 CACHE string "the HAVE_LIBX variable")      
+      mark_as_advanced(FORCE CONFIG_LIBRARY_${LIBN} HAVE_LIB${LIBN} ${LIBN}_SONAME LIB${LIBNAME}_SONAME)
+    
       if(${addtolinklist})
         list(APPEND CONFIG_PLEX_LINK_LIBRARIES ${l})
       else()
@@ -208,6 +204,7 @@ macro(plex_find_header header hintpath)
 
   if(NOT v MATCHES "NOTFOUND")
     set(${_HAVE_VAR} 1 CACHE STRING "Have this header?")
+    mark_as_advanced(FORCE ${_HAVE_VAR})
     if(NOT QUIET_FIND)
       message(STATUS "Looking for include file ${header} - found")
     endif()

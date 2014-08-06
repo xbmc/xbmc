@@ -81,7 +81,7 @@ class CPlexPlayQueueManager
   FRIEND_TEST(PlayQueueManagerTest, ReconcilePlayQueueChanges_largedataset);
 
 public:
-  CPlexPlayQueueManager() : m_playQueueVersion(0), m_playQueueType(PLEX_MEDIA_TYPE_UNKNOWN)
+  CPlexPlayQueueManager() : m_playQueueType(PLEX_MEDIA_TYPE_UNKNOWN), m_playQueueVersion(0)
   {
 
   }

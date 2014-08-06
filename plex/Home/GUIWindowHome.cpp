@@ -530,7 +530,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       // Add eventually the PQ Menu if we dont have it yet
       UpdateSections();
 
-      RefreshSection("plexserver://playqueue/", CPlexSectionFanout::SECTION_TYPE_PLAYQUEUE);
+      RefreshSection("plexserver://playlists/", CPlexSectionFanout::SECTION_TYPE_PLAYQUEUE);
       return true;
     }
       
@@ -546,7 +546,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       else if (message.GetMessage() == GUI_MSG_PLEX_SERVER_DATA_LOADED)
         RefreshSectionsForServer(message.GetStringParam());
 
-      RefreshSection("plexserver://playqueue/", CPlexSectionFanout::SECTION_TYPE_PLAYQUEUE);
+      RefreshSection("plexserver://playlists/", CPlexSectionFanout::SECTION_TYPE_PLAYQUEUE);
 
       break;
     }
@@ -688,7 +688,7 @@ bool CGUIWindowHome::OnClick(const CGUIMessage& message)
   }
   else
   {
-    if (iAction == ACTION_PLAYER_PLAY && GetCurrentItemName() == "plexserver://playqueue/")
+    if (iAction == ACTION_PLAYER_PLAY && GetCurrentItemName() == "plexserver://playlists/")
     {
       g_plexApplication.playQueueManager->playCurrentId(-1);
       return true;
@@ -784,7 +784,7 @@ void CGUIWindowHome::UpdateSections()
   bool haveShared = false;
   bool haveChannels = false;
   bool haveUpdate = false;
-  bool havePlayQueue = false;
+  bool havePlaylists = false;
 
   for (int i = 0; i < oldList.size(); i ++)
   {
@@ -807,13 +807,10 @@ void CGUIWindowHome::UpdateSections()
         else
           listUpdated = true;
       }
-      else if (item->HasProperty("playqueue"))
+      else if (item->HasProperty("playlists"))
       {
-        havePlayQueue = true;
-        if (GetPlayQueueType() != PLAYLIST_NONE)
-          newList.push_back(item);
-        else
-          listUpdated = true;
+        havePlaylists = true;
+        listUpdated = true;
       }
       else if (item->HasProperty("plexupdate"))
       {
@@ -911,8 +908,8 @@ void CGUIWindowHome::UpdateSections()
     listUpdated = true;
   }
 
-  if (!havePlayQueue)
-    AddPlayQueue(newList, listUpdated);
+  if (!havePlaylists)
+    AddPlaylists(newList, listUpdated);
 
   if (listUpdated)
   {
@@ -923,27 +920,16 @@ void CGUIWindowHome::UpdateSections()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIWindowHome::AddPlayQueue(std::vector<CGUIListItemPtr>& list, bool& updated)
+void CGUIWindowHome::AddPlaylists(std::vector<CGUIListItemPtr>& list, bool& updated)
 {
-  int type = g_plexApplication.playQueueManager->getCurrentPlayQueuePlaylist();
-  if (type == PLAYLIST_NONE)
-    return;
-
-  CFileItemList pq;
-  if (!g_plexApplication.playQueueManager->getCurrentPlayQueue(pq))
-    return;
-
-  if (pq.Size() < 1)
-    return;
-
   updated = true;
 
   CGUIStaticItemPtr item = CGUIStaticItemPtr(new CGUIStaticItem);
-  CStdString path("plexserver://playqueue/");
+  CStdString path("plexserver://playlists/");
 
-  item->SetLabel("Play Queue");
-  item->SetProperty("playqueue", true);
-  item->SetPath("XBMC.ActivateWindow(PlexPlayQueue," + path + ",return)");
+  item->SetLabel("Playlists");
+  item->SetProperty("playlists", true);
+  item->SetPath("XBMC.ActivateWindow(PlexPlaylistSelection," + path + ",return)");
   item->SetClickActions(CGUIAction("", item->GetPath()));
   item->SetProperty("sectionPath", path);
   item->SetProperty("navigateDirectly", true);

@@ -371,6 +371,7 @@
 #include "plex/GUI/GUIDialogPlexError.h"
 #include "plex/GUI/GUIDialogPlexGlobalCacher.h"
 #include "plex/GUI/GUIDialogPlexVideoOSD.h"
+#include "plex/GUI/GUIWindowPlexPlaylistSelection.h"
 /* END PLEX */
 
 #if defined(TARGET_ANDROID)
@@ -1535,6 +1536,7 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIDialogPlexPlayQueue);
     g_windowManager.Add(new CGUIDialogPlexGlobalCacher);
     g_windowManager.Add(new CGUIDialogPlexVideoOSD);
+    g_windowManager.Add(new CGUIWindowPlexPlaylistSelection);
     /* END PLEX */
 
     /* window id's 3000 - 3100 are reserved for python */
@@ -3604,6 +3606,7 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_PLEX_STARTUP_HELPER);
     g_windowManager.Delete(WINDOW_PLEX_PLAY_QUEUE);
     g_windowManager.Delete(WINDOW_DIALOG_PLEX_PLAYQUEUE);
+    g_windowManager.Delete(WINDOW_PLEX_PLAYLIST_SELECTION);
     /* END PLEX */
 
     g_windowManager.Delete(WINDOW_MUSIC_PLAYLIST);

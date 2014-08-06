@@ -77,7 +77,7 @@ private:
   bool OnClick(const CGUIMessage& message);
   void OnSectionLoaded(const CGUIMessage& message);
 
-  void AddPlayQueue(std::vector<CGUIListItemPtr>& list, bool& updated);
+  void AddPlaylists(std::vector<CGUIListItemPtr>& list, bool& updated);
   int GetPlayQueueType();
 
   void OnJobComplete(unsigned int jobID, bool success, CJob *job);

@@ -111,6 +111,7 @@ enum ePlexMediaFilterTypes
 #define WINDOW_PLEX_STARTUP_HELPER        10093
 #define WINDOW_PLEX_PLAY_QUEUE            10094
 #define WINDOW_MYPLEX_LOGIN                 10203
+#define WINDOW_PLEX_PLAYLIST_SELECTION    10204
 
 // Dialogs.
 #define WINDOW_DIALOG_RATING                10200

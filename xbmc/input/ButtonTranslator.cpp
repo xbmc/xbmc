@@ -265,6 +265,7 @@ static const ActionMapping windows[] =
         {"plexaudiopicker"          , WINDOW_DIALOG_PLEX_AUDIO_PICKER },        
         {"plexplayqueue"            , WINDOW_PLEX_PLAY_QUEUE },
         {"plexextras"               , WINDOW_DIALOG_PLEX_EXTRAS },
+        {"plexplaylistselection"    , WINDOW_PLEX_PLAYLIST_SELECTION },
         /* END PLEX */
         {"programs"                 , WINDOW_PROGRAMS},
         {"pictures"                 , WINDOW_PICTURES},

@@ -37,7 +37,8 @@ public:
     SECTION_TYPE_QUEUE,
     SECTION_TYPE_GLOBAL_FANART,
     SECTION_TYPE_CHANNELS,
-    SECTION_TYPE_PLAYQUEUE
+    SECTION_TYPE_PLAYQUEUE,
+    SECTION_TYPE_PLAYLISTS
   };
 
   CPlexSectionFanout(const CStdString& url, SectionTypes sectionType, bool useGlobalSlideshow);
