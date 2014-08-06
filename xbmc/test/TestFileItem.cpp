@@ -149,36 +149,36 @@ TEST(TestFileItemList, PositionAfterAdd)
   EXPECT_EQ(1, items.Get(1)->m_iPosition);
 }
 
-TEST(TestFileItemList, PositionAfterAddFront)
+TEST(TestFileItemList, PositionAfterInsert)
 {
   CFileItemList items;
 
-  // simple AddFront() to index 0
-  items.AddFront(CFileItemPtr(new CFileItem()), 0);
+  // simple Insert() to index 0
+  items.Insert(CFileItemPtr(new CFileItem()), 0);
   EXPECT_EQ(0, items.Get(0)->m_iPosition);
   items.Clear();
 
-  // AddFront() to index 5 (even though there are not 5 items in the list)
-  items.AddFront(CFileItemPtr(new CFileItem()), 5);
+  // Insert() to index 5 (even though there are not 5 items in the list)
+  items.Insert(CFileItemPtr(new CFileItem()), 5);
   EXPECT_EQ(0, items.Get(0)->m_iPosition);
   items.Clear();
 
-  // AddFront() to index -5 (even though there are not 5 items in the list)
-  items.AddFront(CFileItemPtr(new CFileItem()), -5);
+  // Insert() to index -5 (even though there are not 5 items in the list)
+  items.Insert(CFileItemPtr(new CFileItem()), -5);
   EXPECT_EQ(0, items.Get(0)->m_iPosition);
   items.Clear();
 
-  // AddFront() to index 0 moving the existing item to index 1
+  // Insert() to index 0 moving the existing item to index 1
   items.Add(CFileItemPtr(new CFileItem("first")));
   EXPECT_EQ(0, items.Get(0)->m_iPosition);
-  items.AddFront(CFileItemPtr(new CFileItem("second")), 0);
+  items.Insert(CFileItemPtr(new CFileItem("second")), 0);
   EXPECT_EQ(0, items.Get(0)->m_iPosition);
   EXPECT_STREQ("second", items.Get(0)->GetLabel().c_str());
   EXPECT_EQ(1, items.Get(1)->m_iPosition);
   EXPECT_STREQ("first", items.Get(1)->GetLabel().c_str());
 
-  // AddFront() to index 1 leaving the existing item at index 0 and moving the item from index 1 to index 2
-  items.AddFront(CFileItemPtr(new CFileItem("third")), 1);
+  // Insert() to index 1 leaving the existing item at index 0 and moving the item from index 1 to index 2
+  items.Insert(CFileItemPtr(new CFileItem("third")), 1);
   EXPECT_EQ(0, items.Get(0)->m_iPosition);
   EXPECT_STREQ("second", items.Get(0)->GetLabel().c_str());
   EXPECT_EQ(1, items.Get(1)->m_iPosition);
@@ -186,8 +186,8 @@ TEST(TestFileItemList, PositionAfterAddFront)
   EXPECT_EQ(2, items.Get(2)->m_iPosition);
   EXPECT_STREQ("first", items.Get(2)->GetLabel().c_str());
 
-  // AddFront() to index -1 leaving the existing items at index 0 and 1 and moving the item from index 2 to index 3
-  items.AddFront(CFileItemPtr(new CFileItem("fourth")), -1);
+  // Insert() to index -1 leaving the existing items at index 0 and 1 and moving the item from index 2 to index 3
+  items.Insert(CFileItemPtr(new CFileItem("fourth")), -1);
   EXPECT_EQ(0, items.Get(0)->m_iPosition);
   EXPECT_STREQ("second", items.Get(0)->GetLabel().c_str());
   EXPECT_EQ(1, items.Get(1)->m_iPosition);
@@ -197,8 +197,8 @@ TEST(TestFileItemList, PositionAfterAddFront)
   EXPECT_EQ(3, items.Get(3)->m_iPosition);
   EXPECT_STREQ("first", items.Get(3)->GetLabel().c_str());
 
-  // AddFront() to index -4 moving the item from indexes 1-3 to indexes 2-4
-  items.AddFront(CFileItemPtr(new CFileItem("fifth")), -4);
+  // Insert() to index -4 moving the item from indexes 1-3 to indexes 2-4
+  items.Insert(CFileItemPtr(new CFileItem("fifth")), -4);
   EXPECT_EQ(0, items.Get(0)->m_iPosition);
   EXPECT_STREQ("fifth", items.Get(0)->GetLabel().c_str());
   EXPECT_EQ(1, items.Get(1)->m_iPosition);

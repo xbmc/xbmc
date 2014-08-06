@@ -1668,7 +1668,7 @@ void CFileItemList::Add(const CFileItemPtr &pItem)
   }
 }
 
-void CFileItemList::AddFront(const CFileItemPtr &pItem, int itemPosition)
+void CFileItemList::Insert(const CFileItemPtr &pItem, int itemPosition)
 {
   CSingleLock lock(m_lock);
 

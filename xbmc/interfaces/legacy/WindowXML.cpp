@@ -178,11 +178,11 @@ namespace XBMCAddon
           }
           else if (position <  -1 &&  !(position*-1 < A(m_vecItems)->Size()))
           {
-            A(m_vecItems)->AddFront(fileItem,0);
+            A(m_vecItems)->Insert(fileItem, 0);
           }
           else
           {
-            A(m_vecItems)->AddFront(fileItem,position);
+            A(m_vecItems)->Insert(fileItem, position);
           }
           A(m_viewControl).SetItems(*(A(m_vecItems)));
           A(UpdateButtons());

@@ -383,7 +383,7 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
         pItem->SetPath(strParentPath);
         pItem->m_bIsFolder = true;
         pItem->m_bIsShareOrDrive = false;
-        items.AddFront(pItem, 0);
+        items.Insert(pItem, 0);
       }
     }
     else
@@ -394,7 +394,7 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
       pItem->SetPath("");
       pItem->m_bIsShareOrDrive = false;
       pItem->m_bIsFolder = true;
-      items.AddFront(pItem, 0);
+      items.Insert(pItem, 0);
       strParentPath = "";
     }
 

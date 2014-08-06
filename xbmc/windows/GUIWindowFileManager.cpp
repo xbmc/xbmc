@@ -474,7 +474,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     pItem->SetPath(m_rootDir.IsSource(strDirectory) ? "" : strParentPath);
     pItem->m_bIsFolder = true;
     pItem->m_bIsShareOrDrive = false;
-    m_vecItems[iList]->AddFront(pItem, 0);
+    m_vecItems[iList]->Insert(pItem, 0);
   }
 
   m_strParentPath[iList] = (m_rootDir.IsSource(strDirectory) ? "" : strParentPath);

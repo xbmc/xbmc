@@ -352,7 +352,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory,
       pItem->SetPath(m_history.GetParentPath());
       pItem->m_bIsFolder = true;
       pItem->m_bIsShareOrDrive = false;
-      items.AddFront(pItem, 0);
+      items.Insert(pItem, 0);
     }
 
   }
