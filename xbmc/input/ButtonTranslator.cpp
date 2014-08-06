@@ -243,6 +243,7 @@ static const ActionMapping actions[] =
         {"clearfilters"         , ACTION_CLEAR_FILTERS},
         {"cycleprimaryfilter"   , ACTION_PLEX_CYCLE_PRIMARY_FILTER},
         {"toggleunwatchedfilter", ACTION_PLEX_TOGGLE_UNWATCHED_FILTER},
+        {"playtrailer"          , ACTION_PLEX_PLAY_TRAILER},
         /* END PLEX */
 
         // Do nothing action

@@ -85,6 +85,8 @@
 #include "PlexPlayQueueManager.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/GUISettings.h"
+#include "GUI/GUIPlexDefaultActionHandler.h"
+
 
 using namespace std;
 using namespace XFILE;
@@ -138,6 +140,9 @@ bool CGUIWindowHome::OnAction(const CAction &action)
     
     return true;
   }
+  
+  if (CGUIPlexDefaultActionHandler::OnAction(action, GetCurrentFanoutItem()))
+    return true;
   
   bool ret = CGUIWindow::OnAction(action);
   

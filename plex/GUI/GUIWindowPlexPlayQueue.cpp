@@ -4,6 +4,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "GUIUserMessages.h"
 #include "Application.h"
+#include "GUIPlexDefaultActionHandler.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowPlexPlayQueue::OnSelect(int iItem)
@@ -198,6 +199,9 @@ bool CGUIWindowPlexPlayQueue::OnAction(const CAction &action)
   // record selected item before processing
   int oldSelectedID = m_viewControl.GetSelectedItem();
 
+  if (CGUIPlexDefaultActionHandler::OnAction(action, m_vecItems->Get(m_viewControl.GetSelectedItem())))
+    return true;
+  
   bool ret = CGUIPlexMediaWindow::OnAction(action);
 
   // handle cursor move if we are in editmode for PQ

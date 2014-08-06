@@ -46,6 +46,8 @@
 #include "LocalizeStrings.h"
 #include "DirectoryCache.h"
 #include "music/tags/MusicInfoTag.h"
+#include "plex/FileSystem/PlexExtraDataLoader.h"
+#include "GUIPlexDefaultActionHandler.h"
 
 #define XMIN(a,b) ((a)<(b)?(a):(b))
 
@@ -536,6 +538,9 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
     }
   }
 
+  if (CGUIPlexDefaultActionHandler::OnAction(action, m_vecItems->Get(m_viewControl.GetSelectedItem())))
+    return true;
+  
   bool ret = CGUIMediaWindow::OnAction(action);
 
 #ifdef USE_PAGING
