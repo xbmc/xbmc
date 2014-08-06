@@ -1,5 +1,7 @@
+#pragma once
+
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,10 +20,20 @@
  *
  */
 
-#ifndef STAT_UTF8_H__
-#define STAT_UTF8_H__
+#include "utils/IPlatformInterfaceForCLog.h"
 
-#define stat64_utf8 stat64
+struct FILEWRAP; // forward declaration, wrapper for FILE
 
-#endif //STAT_UTF8_H__
-
+class CPosixInterfaceForCLog : IPlatformInterfaceForCLog
+{
+public:
+  CPosixInterfaceForCLog();
+  ~CPosixInterfaceForCLog();
+  bool OpenLogFile(const std::string& logFilename, const std::string& backupOldLogToFilename);
+  void CloseLogFile(void);
+  bool WriteStringToLog(const std::string& logString);
+  void PrintDebugString(const std::string& debugString);
+  static void GetCurrentLocalTime(int& hour, int& minute, int& second);
+private:
+  FILEWRAP* m_file;
+};

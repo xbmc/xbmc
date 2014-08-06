@@ -974,6 +974,7 @@
     <ClInclude Include="..\..\xbmc\utils\auto_buffer.h" />
     <ClInclude Include="..\..\xbmc\utils\BooleanLogic.h" />
     <ClInclude Include="..\..\xbmc\utils\CharsetDetection.h" />
+    <ClInclude Include="..\..\xbmc\utils\IPlatformInterfaceForCLog.h" />
     <ClInclude Include="..\..\xbmc\utils\IRssObserver.h" />
     <ClInclude Include="..\..\xbmc\utils\IXmlDeserializable.h" />
     <ClInclude Include="..\..\xbmc\utils\LegacyPathTranslation.h" />
@@ -982,6 +983,7 @@
     <ClInclude Include="..\..\xbmc\utils\Utf8Utils.h" />
     <ClInclude Include="..\..\xbmc\utils\uXstrings.h" />
     <ClInclude Include="..\..\xbmc\utils\Vector.h" />
+    <ClInclude Include="..\..\xbmc\utils\win32\Win32InterfaceForCLog.h" />
     <ClInclude Include="..\..\xbmc\utils\XSLTUtils.h" />
     <ClInclude Include="..\..\xbmc\video\FFmpegVideoDecoder.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\swig.h" />
@@ -1125,6 +1127,7 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\Utf8Utils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Vector.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\win32\Win32InterfaceForCLog.cpp" />
     <ClCompile Include="..\..\xbmc\utils\XSLTUtils.cpp" />
     <ClCompile Include="..\..\xbmc\video\PlayerController.cpp" />
     <ClCompile Include="..\..\xbmc\video\VideoThumbLoader.cpp" />
@@ -1433,8 +1436,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\stat_utf8.cpp" />
-    <ClCompile Include="..\..\xbmc\win32\stdio_utf8.cpp" />
     <ClCompile Include="..\..\xbmc\win32\strverscmp.cpp" />
     <ClCompile Include="..\..\xbmc\win32\Win32DelayedDllLoad.cpp" />
     <ClCompile Include="..\..\xbmc\win32\WIN32Util.cpp" />
@@ -2127,8 +2128,6 @@
     <ClInclude Include="..\..\xbmc\XBDateTime.h" />
     <ClInclude Include="..\..\xbmc\XbmcContext.h" />
     <ClInclude Include="..\..\xbmc\win32\PlatformInclude.h" />
-    <ClInclude Include="..\..\xbmc\win32\stat_utf8.h" />
-    <ClInclude Include="..\..\xbmc\win32\stdio_utf8.h" />
     <ClInclude Include="..\..\xbmc\win32\WIN32Util.h" />
     <ClInclude Include="..\..\xbmc\win32\WindowHelper.h" />
     <ClInclude Include="..\..\xbmc\cores\DummyVideoPlayer.h" />

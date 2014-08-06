@@ -564,6 +564,12 @@ bool DarwinCFStringRefToStringWithEncoding(CFStringRef source, std::string &dest
   return true;
 }
 
+void DarwinPrintDebugString(std::string debugString)
+{
+  NSLog(@"Debug Print: %s", debugString.c_str());
+}
+
+
 bool DarwinCFStringRefToString(CFStringRef source, std::string &destination)
 {
   return DarwinCFStringRefToStringWithEncoding(source, destination, CFStringGetSystemEncoding());

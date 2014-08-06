@@ -1110,6 +1110,9 @@
 		AE84CB5A15A5B8A600A3810E /* TagLibVFSStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE84CB5915A5B8A600A3810E /* TagLibVFSStream.cpp */; };
 		AE89ACA61621DAB800E17DBC /* DVDDemuxBXA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE89ACA41621DAB800E17DBC /* DVDDemuxBXA.cpp */; };
 		AEC0083115ACAC6E0099888C /* TagLoaderTagLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AEC0083015ACAC6E0099888C /* TagLoaderTagLib.cpp */; };
+		B542632B197D353B00726998 /* PosixInterfaceForCLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5426329197D353B00726998 /* PosixInterfaceForCLog.cpp */; };
+		B542632C197D353B00726998 /* PosixInterfaceForCLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5426329197D353B00726998 /* PosixInterfaceForCLog.cpp */; };
+		B542632D197D353B00726998 /* PosixInterfaceForCLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5426329197D353B00726998 /* PosixInterfaceForCLog.cpp */; };
 		C807114D135DB5CC002F601B /* InputOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C807114B135DB5CC002F601B /* InputOperations.cpp */; };
 		C84828C0156CFCD8005A996F /* PVRClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8482874156CFCD8005A996F /* PVRClient.cpp */; };
 		C84828C1156CFCD8005A996F /* PVRClients.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8482876156CFCD8005A996F /* PVRClients.cpp */; };
@@ -3709,8 +3712,6 @@
 		0E3036EB1760F68A00D93596 /* FavouritesDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavouritesDirectory.h; sourceTree = "<group>"; };
 		180F6C7F17CE9A5700127892 /* smc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = smc.h; sourceTree = "<group>"; };
 		180F6C8017CE9A5700127892 /* smc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = smc.c; sourceTree = "<group>"; };
-		18308CB41303370800AA309E /* stat_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stat_utf8.h; sourceTree = "<group>"; };
-		18308CB51303370800AA309E /* stdio_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdio_utf8.h; sourceTree = "<group>"; };
 		183FDF8811AF0B0500B81E9C /* PluginSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PluginSource.cpp; sourceTree = "<group>"; };
 		183FDF8911AF0B0500B81E9C /* PluginSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PluginSource.h; sourceTree = "<group>"; };
 		18404DA51396C31B00863BBA /* SlingboxLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = SlingboxLib.a; path = lib/SlingboxLib/SlingboxLib.a; sourceTree = "<group>"; };
@@ -4646,6 +4647,9 @@
 		AE89ACA51621DAB800E17DBC /* DVDDemuxBXA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDDemuxBXA.h; sourceTree = "<group>"; };
 		AEC0083015ACAC6E0099888C /* TagLoaderTagLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagLoaderTagLib.cpp; sourceTree = "<group>"; };
 		AEC0083315ACAC7C0099888C /* TagLoaderTagLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagLoaderTagLib.h; sourceTree = "<group>"; };
+		B5426321197D174100726998 /* IPlatformInterfaceForCLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPlatformInterfaceForCLog.h; sourceTree = "<group>"; };
+		B5426329197D353B00726998 /* PosixInterfaceForCLog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PosixInterfaceForCLog.cpp; sourceTree = "<group>"; };
+		B542632A197D353B00726998 /* PosixInterfaceForCLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PosixInterfaceForCLog.h; sourceTree = "<group>"; };
 		C807114B135DB5CC002F601B /* InputOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputOperations.cpp; sourceTree = "<group>"; };
 		C807114C135DB5CC002F601B /* InputOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputOperations.h; sourceTree = "<group>"; };
 		C8482874156CFCD8005A996F /* PVRClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRClient.cpp; sourceTree = "<group>"; };
@@ -7930,6 +7934,15 @@
 			path = media;
 			sourceTree = "<group>";
 		};
+		B5426323197D2AB300726998 /* posix */ = {
+			isa = PBXGroup;
+			children = (
+				B5426329197D353B00726998 /* PosixInterfaceForCLog.cpp */,
+				B542632A197D353B00726998 /* PosixInterfaceForCLog.h */,
+			);
+			path = posix;
+			sourceTree = "<group>";
+		};
 		C6859E96029091FE04C91782 /* docs */ = {
 			isa = PBXGroup;
 			children = (
@@ -9596,8 +9609,6 @@
 				E38E1D790D25F9FD00618676 /* PlatformInclude.h */,
 				F5E56BA51082A675006E788A /* PosixMountProvider.cpp */,
 				F5E56BA41082A675006E788A /* PosixMountProvider.h */,
-				18308CB41303370800AA309E /* stat_utf8.h */,
-				18308CB51303370800AA309E /* stdio_utf8.h */,
 				E38E1D7D0D25F9FD00618676 /* XFileUtils.cpp */,
 				E38E1D7E0D25F9FD00618676 /* XFileUtils.h */,
 				E38E1D7F0D25F9FD00618676 /* XHandle.cpp */,
@@ -9656,6 +9667,7 @@
 		E38E1E220D25F9FD00618676 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				B5426321197D174100726998 /* IPlatformInterfaceForCLog.h */,
 				F5CC22FB18150065006B5E91 /* ActorProtocol.cpp */,
 				F5CC22FC18150065006B5E91 /* ActorProtocol.h */,
 				E38E1E230D25F9FD00618676 /* AlarmClock.cpp */,
@@ -9816,6 +9828,7 @@
 				AE4E87A617354C4A00D15206 /* XSLTUtils.h */,
 				18B7C9811294385F009E7A26 /* XMLUtils.cpp */,
 				18B7C9821294385F009E7A26 /* XMLUtils.h */,
+				B5426323197D2AB300726998 /* posix */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -10316,7 +10329,7 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0510;
 			};
 			buildConfigurationList = 1DEB924B08733DCA0010E9CD /* Build configuration list for PBXProject "XBMC" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -10891,6 +10904,7 @@
 				E38E22800D25F9FE00618676 /* MusicInfoScanner.cpp in Sources */,
 				E38E22970D25F9FE00618676 /* NfoFile.cpp in Sources */,
 				E38E22A00D25F9FE00618676 /* PartyModeManager.cpp in Sources */,
+				B542632B197D353B00726998 /* PosixInterfaceForCLog.cpp in Sources */,
 				E38E22A10D25F9FE00618676 /* Picture.cpp in Sources */,
 				E38E22A20D25F9FE00618676 /* PictureInfoLoader.cpp in Sources */,
 				E38E22A30D25F9FE00618676 /* PictureInfoTag.cpp in Sources */,
@@ -11979,6 +11993,7 @@
 				DFF0F19817528350002DA3A4 /* DVDPlayerAudio.cpp in Sources */,
 				DFF0F19917528350002DA3A4 /* DVDPlayerSubtitle.cpp in Sources */,
 				DFF0F19A17528350002DA3A4 /* DVDPlayerTeletext.cpp in Sources */,
+				B542632D197D353B00726998 /* PosixInterfaceForCLog.cpp in Sources */,
 				DFF0F19B17528350002DA3A4 /* DVDPlayerVideo.cpp in Sources */,
 				DFF0F19C17528350002DA3A4 /* DVDStreamInfo.cpp in Sources */,
 				DFF0F19D17528350002DA3A4 /* DVDTSCorrection.cpp in Sources */,
@@ -13215,6 +13230,7 @@
 				E499122B174E5D6100741B6D /* qry_dat.cpp in Sources */,
 				E499122C174E5D6100741B6D /* sqlitedataset.cpp in Sources */,
 				E499122D174E5D6800741B6D /* Epg.cpp in Sources */,
+				B542632C197D353B00726998 /* PosixInterfaceForCLog.cpp in Sources */,
 				E499122E174E5D6800741B6D /* EpgContainer.cpp in Sources */,
 				E499122F174E5D6800741B6D /* EpgDatabase.cpp in Sources */,
 				E4991230174E5D6800741B6D /* EpgInfoTag.cpp in Sources */,
