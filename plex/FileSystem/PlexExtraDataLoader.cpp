@@ -17,17 +17,45 @@ CPlexExtraDataLoader::CPlexExtraDataLoader()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexExtraDataLoader::loadDataForItem(CFileItemPtr pItem, ExtraDataType type)
 {
+  if (!pItem)
+    return;
+
   m_path = pItem->GetPath();
   m_type = type;
-  CURL url(m_path);
+  CURL url = getItemURL(pItem, type);
 
+  CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(url), this);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexExtraDataLoader::getDataForItem(CFileItemPtr pItem, ExtraDataType type)
+{
+  if (!pItem)
+    return false;
+  
+  XFILE::CPlexDirectory dir;
+  CURL url = getItemURL(pItem, type);
+  
+  m_items = CFileItemListPtr(new CFileItemList());
+  
+  return dir.GetDirectory(url, *m_items);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CURL CPlexExtraDataLoader::getItemURL(CFileItemPtr pItem, CPlexExtraDataLoader::ExtraDataType type)
+{
+  if (!pItem)
+    return CURL();
+  
+  CURL url(pItem->GetPath());
+  
   PlexUtils::AppendPathToURL(url, "extras");
-
+  
   url.SetOptions("");
   if (type != NONE)
     url.SetOption("extratype", boost::lexical_cast<std::string>((int)type));
-
-  CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(url), this);
+  
+  return url;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
