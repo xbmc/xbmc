@@ -6,6 +6,7 @@
 #include "boost/lexical_cast.hpp"
 #include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
+#include "PlexApplication.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexExtraDataLoader::CPlexExtraDataLoader()
@@ -33,12 +34,11 @@ bool CPlexExtraDataLoader::getDataForItem(CFileItemPtr pItem, ExtraDataType type
   if (!pItem)
     return false;
   
-  XFILE::CPlexDirectory dir;
+  m_path = pItem->GetPath();
+  m_type = type;
   CURL url = getItemURL(pItem, type);
-  
-  m_items = CFileItemListPtr(new CFileItemList());
-  
-  return dir.GetDirectory(url, *m_items);
+
+  return g_plexApplication.busy.blockWaitingForJob(new CPlexDirectoryFetchJob(url), this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
