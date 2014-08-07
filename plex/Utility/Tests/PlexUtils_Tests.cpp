@@ -291,6 +291,14 @@ TEST(PlexUtilsGetPlexContent, mixedMediaInternalURL)
   EXPECT_EQ("mixedcontent", PlexUtils::GetPlexContent(item));
 }
 
+TEST(PlexUtilsGetPlexContent, playlists)
+{
+  CFileItemList item;
+  EXPECT_TRUE(PlexTestUtils::listFromXML(testItem_playlistAll, item));
+  item.SetProperty("key", "plexserver://playlists/");
+  EXPECT_EQ("playlists", PlexUtils::GetPlexContent(item));
+}
+
 class PlexUtilsGetPrettyMediaItemNameTest : public ::testing::Test
 {
 public:
