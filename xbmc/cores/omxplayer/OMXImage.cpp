@@ -1896,7 +1896,8 @@ bool COMXImageReEnc::ReEncode(COMXImageFile &srcFile, unsigned int maxWidth, uns
 
       if (nDestSize + m_encoded_buffer->nFilledLen > m_nDestAllocSize)
       {
-         m_nDestAllocSize = std::max(1024U*1024U, m_nDestAllocSize*2);
+         while (nDestSize + m_encoded_buffer->nFilledLen > m_nDestAllocSize)
+           m_nDestAllocSize = std::max(1024U*1024U, m_nDestAllocSize*2);
          m_pDestBuffer = realloc(m_pDestBuffer, m_nDestAllocSize);
       }
       memcpy((char *)m_pDestBuffer + nDestSize, m_encoded_buffer->pBuffer, m_encoded_buffer->nFilledLen);
