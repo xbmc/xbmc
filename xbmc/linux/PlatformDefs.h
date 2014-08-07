@@ -133,11 +133,11 @@
 #define XXLog(a,b) printf("%s", (b))
 
 #ifndef INSTALL_PATH
-#define INSTALL_PATH    "/usr/share/xbmc"
+#define INSTALL_PATH    "/usr/share/kodi"
 #endif
 
 #ifndef BIN_INSTALL_PATH
-#define BIN_INSTALL_PATH "/usr/lib/xbmc"
+#define BIN_INSTALL_PATH "/usr/lib/kodi"
 #endif
 
 #define CONST   const
