@@ -2314,6 +2314,75 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
   return -1;
 }
 
+int CVideoDatabase::UpdateDetailsForMovie(int idMovie, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, const std::set<std::string> &updatedDetails)
+{
+  if (idMovie < 0)
+    return idMovie;
+
+  try
+  {
+    CLog::Log(LOGDEBUG, "%s: Starting updates for movie %i", __FUNCTION__, idMovie);
+
+    BeginTransaction();
+
+    // process the link table updates
+    if (updatedDetails.find("genre") != updatedDetails.end())
+      UpdateLinkTable(idMovie, "movie", "genre", details.m_genre);
+    if (updatedDetails.find("studio") != updatedDetails.end())
+      UpdateLinkTable(idMovie, "movie", "studio", details.m_studio);
+    if (updatedDetails.find("country") != updatedDetails.end())
+      UpdateLinkTable(idMovie, "movie", "country", details.m_country);
+    if (updatedDetails.find("director") != updatedDetails.end())
+      UpdateActorLinkTable(idMovie, "movie", "director", details.m_director);
+    if (updatedDetails.find("writer") != updatedDetails.end())
+      UpdateActorLinkTable(idMovie, "movie", "writer", details.m_writingCredits);
+    if (updatedDetails.find("tag") != updatedDetails.end())
+    {
+      RemoveTagsFromItem(idMovie, "movie");
+      for (unsigned int i = 0; i < details.m_tags.size(); i++)
+        AddTagToItem(idMovie, AddTag(details.m_tags[i]), "movie");
+    }
+    if (updatedDetails.find("art.altered") != updatedDetails.end())
+      SetArtForItem(idMovie, "movie", artwork);
+
+    // track if the set was updated
+    int idSet = 0;
+    if (updatedDetails.find("set") != updatedDetails.end())
+    { // set
+      idSet = -1;
+      if (!details.m_strSet.empty())
+      {
+        idSet = AddSet(details.m_strSet);
+        // add art if not available
+        map<string, string> setArt;
+        if (!GetArtForItem(idSet, "set", setArt))
+          SetArtForItem(idSet, "set", artwork);
+      }
+    }
+
+    // and update the movie table
+    std::string sql = "update movie set " + GetValueString(details, VIDEODB_ID_MIN, VIDEODB_ID_MAX, DbMovieOffsets);
+    if (idSet > 0)
+      sql += PrepareSQL(", idSet = %i", idSet);
+    else if (idSet < 0)
+      sql += ", idSet = NULL";
+    sql += PrepareSQL(" where idMovie=%i", idMovie);
+    m_pDS->exec(sql);
+
+    CommitTransaction();
+
+    CLog::Log(LOGDEBUG, "%s: Finished updates for movie %i", __FUNCTION__, idMovie);
+
+    return idMovie;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idMovie);
+  }
+  RollbackTransaction();
+  return -1;
+}
+
 int CVideoDatabase::SetDetailsForMovieSet(const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idSet /* = -1 */)
 {
   if (details.m_strTitle.empty())
