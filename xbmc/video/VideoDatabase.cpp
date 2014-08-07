@@ -1604,6 +1604,38 @@ void CVideoDatabase::RemoveFromLinkTable(const char *table, const char *firstFie
   }
 }
 
+void CVideoDatabase::UpdateLinkTable(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values)
+{
+  std::string sql = PrepareSQL("delete from %slink%s where id%s=%i", field.c_str(), mediaType.c_str(), mediaType.c_str(), mediaId);
+  m_pDS->exec(sql);
+
+  for (std::vector<std::string>::const_iterator i = values.begin(); i != values.end(); ++i)
+  {
+    if (!i->empty())
+    {
+      int idValue = AddToTable(field, "id" + field, "str" + field, *i);
+      if (idValue > -1)
+        AddToLinkTable((field + "link" + mediaType).c_str(), ("id" + field).c_str(), idValue, ("id" + mediaType).c_str(), mediaId);
+    }
+  }
+}
+
+void CVideoDatabase::UpdateActorLinkTable(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values)
+{
+  std::string sql = PrepareSQL("delete from %slink%s where id%s=%i", field.c_str(), mediaType.c_str(), mediaType.c_str(), mediaId);
+  m_pDS->exec(sql);
+
+  for (std::vector<std::string>::const_iterator i = values.begin(); i != values.end(); ++i)
+  {
+    if (!i->empty())
+    {
+      int idValue = AddActor(*i, "");
+      if (idValue > -1)
+        AddToLinkTable((field + "link" + mediaType).c_str(), ("id" + field).c_str(), idValue, ("id" + mediaType).c_str(), mediaId);
+    }
+  }
+}
+
 //****Tags****
 void CVideoDatabase::AddTagToItem(int idMovie, int idTag, const std::string &type)
 {
