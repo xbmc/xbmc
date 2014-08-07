@@ -95,6 +95,8 @@ public:
   const CStdString& GetFileName() const;
   float GetTextureWidth() const;
   float GetTextureHeight() const;
+  
+  bool AnimFinishedOnce(){ return m_texture.AnimFinishedOnce() || !m_isAnimated; }
 
   virtual CRect CalcRenderRegion() const;
 
@@ -122,5 +124,6 @@ protected:
   unsigned int m_crossFadeTime;
   unsigned int m_currentFadeTime;
   unsigned int m_lastRenderTime;
+  bool m_isAnimated;
 };
 #endif

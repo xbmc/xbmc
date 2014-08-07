@@ -39,6 +39,9 @@ public:
   void Show();
   void Show(const std::string& message);
   void Hide();
+  bool IsFinished();
+  virtual void Render();
+  void Process(unsigned int frameTime);
 
 private:
   virtual void Process();
@@ -51,6 +54,7 @@ private:
   CGUITextLayout* m_messageLayout;
   CGUIImage* m_image;
   bool m_layoutWasLoading;
+  std::string m_message;
 #ifdef HAS_DX
   D3DGAMMARAMP newRamp;
   D3DGAMMARAMP oldRamp;

@@ -57,28 +57,60 @@ void CSplash::Show()
   Show("");
 }
 
+bool CSplash::IsFinished()
+{
+  bool finished = true;
+
+  if (m_image)
+  {
+    finished = m_image->AnimFinishedOnce();
+  }
+  return finished;
+}
+
 void CSplash::Show(const std::string& message)
 {
-  g_graphicsContext.Lock();
-  g_graphicsContext.Clear();
-
+  m_message = message;
   RESOLUTION_INFO res(1280,720,0);
-  g_graphicsContext.SetRenderingResolution(res, true);  
   if (!m_image)
   {
-    m_image = new CGUIImage(0, 0, 0, 0, 1280, 720, CTextureInfo(m_ImageName));
+    
+    m_image = new CGUIImage(0, 0, 0, 0, res.iWidth, res.iHeight, CTextureInfo(m_ImageName));
     m_image->SetAspectRatio(CAspectRatio::AR_CENTER);
   }
 
+  g_graphicsContext.Lock();
+
   //render splash image
   g_Windowing.BeginRender();
-
-  m_image->AllocResources();
-  m_image->Render();
+  Render();
   m_image->FreeResources();
+  //show it on screen
+  g_Windowing.EndRender();
+  CDirtyRegionList dirty;
+  g_graphicsContext.Flip(dirty);
+  g_graphicsContext.Unlock();
+  
+}
 
+void CSplash::Hide()
+{
+}
+
+void CSplash::Render()
+{
+  RESOLUTION_INFO res(1280,720,0);
+  g_graphicsContext.Clear();
+  g_graphicsContext.SetRenderingResolution(res, true);
+
+  if (m_image)
+  {
+    m_image->AllocResources();
+    m_image->Render();
+  }
+  
   // render message
-  if (!message.empty())
+  if (!m_message.empty())
   {
     if (!m_layoutWasLoading)
     {
@@ -90,8 +122,8 @@ void CSplash::Show(const std::string& message)
     }
     if (m_messageLayout)
     {
-      m_messageLayout->Update(message, 1150, false, true);
 
+      m_messageLayout->Update(m_message, 1150, false, true);
       float textWidth, textHeight;
       m_messageLayout->GetTextExtent(textWidth, textHeight);
       // ideally place text in center of empty area below splash image
@@ -102,16 +134,13 @@ void CSplash::Show(const std::string& message)
       m_messageLayout->RenderOutline(640, y, 0, 0xFF000000, XBFONT_CENTER_X, 1280);
     }
   }
-
-  //show it on screen
-  g_Windowing.EndRender();
-  CDirtyRegionList dirty;
-  g_graphicsContext.Flip(dirty);
-  g_graphicsContext.Unlock();
 }
 
-void CSplash::Hide()
+void CSplash::Process(unsigned int frameTime)
 {
+  static CDirtyRegionList emptyList;
+  if (m_image)
+    m_image->Process(frameTime, emptyList);
 }
 
 void CSplash::Process()
