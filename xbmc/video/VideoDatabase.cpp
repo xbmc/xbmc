@@ -4143,14 +4143,18 @@ void CVideoDatabase::SetArtForItem(int mediaId, const MediaType &mediaType, cons
     if (artType.find('.') != string::npos)
       return;
 
-    CStdString sql = PrepareSQL("SELECT art_id FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str());
+    CStdString sql = PrepareSQL("SELECT art_id,url FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str());
     m_pDS->query(sql.c_str());
     if (!m_pDS->eof())
     { // update
       int artId = m_pDS->fv(0).get_asInt();
+      std::string oldUrl = m_pDS->fv(1).get_asString();
       m_pDS->close();
-      sql = PrepareSQL("UPDATE art SET url='%s' where art_id=%d", url.c_str(), artId);
-      m_pDS->exec(sql.c_str());
+      if (oldUrl != url)
+      {
+        sql = PrepareSQL("UPDATE art SET url='%s' where art_id=%d", url.c_str(), artId);
+        m_pDS->exec(sql.c_str());
+      }
     }
     else
     { // insert
