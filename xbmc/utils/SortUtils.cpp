@@ -325,7 +325,7 @@ string ByVideoCodec(SortAttribute attributes, const SortItem &values)
 
 string ByVideoAspectRatio(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("%f %s", values.at(FieldVideoAspectRatio).asString().c_str(), ByLabel(attributes, values).c_str());
+  return StringUtils::Format("%.03f %s", values.at(FieldVideoAspectRatio).asFloat(), ByLabel(attributes, values).c_str());
 }
 
 string ByAudioChannels(SortAttribute attributes, const SortItem &values)
