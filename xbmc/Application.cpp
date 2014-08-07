@@ -438,7 +438,7 @@ CApplication::CApplication(void)
   m_bTestMode = false;
 
   m_muted = false;
-  m_volumeLevel = 1.0f;
+  m_volumeLevel = VOLUME_MAXIMUM;
 }
 
 CApplication::~CApplication(void)
