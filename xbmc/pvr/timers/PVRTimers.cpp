@@ -406,7 +406,7 @@ bool CPVRTimers::GetDirectory(const std::string& strPath, CFileItemList &items) 
     CFileItemPtr item(new CFileItem("pvr://timers/addtimer/", true));
     item->SetLabel(g_localizeStrings.Get(19026));
     item->SetLabelPreformated(true);
-    item->SortsOnTop();
+    item->SetSpecialSort(SortSpecialOnTop);
     items.Add(item);
 
     CSingleLock lock(m_critSection);
