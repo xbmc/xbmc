@@ -33,7 +33,7 @@
 				<onright>601</onright>
 				<onup>300</onup>
 				<ondown>200</ondown>
-				<onclick>XBMC.PlayerControl(Previous)</onclick>
+				<onclick>PlayerControl(Previous)</onclick>
 				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="601">
@@ -48,7 +48,7 @@
 				<onright>603</onright>
 				<onup>300</onup>
 				<ondown>200</ondown>
-				<onclick>XBMC.PlayerControl(Rewind)</onclick>
+				<onclick>PlayerControl(Rewind)</onclick>
 				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="togglebutton" id="603">
@@ -66,7 +66,7 @@
 				<onright>602</onright>
 				<onup>300</onup>
 				<ondown>200</ondown>
-				<onclick>XBMC.PlayerControl(Play)</onclick>
+				<onclick>PlayerControl(Play)</onclick>
 				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="602">
@@ -82,7 +82,7 @@
 				<onup>300</onup>
 				<ondown>200</ondown>
 				<onclick>down</onclick>
-				<onclick>XBMC.PlayerControl(Stop)</onclick>
+				<onclick>PlayerControl(Stop)</onclick>
 				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="604">
@@ -97,7 +97,7 @@
 				<onright>605</onright>
 				<onup>300</onup>
 				<ondown>200</ondown>
-				<onclick>XBMC.PlayerControl(Forward)</onclick>
+				<onclick>PlayerControl(Forward)</onclick>
 				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="605">
@@ -112,7 +112,7 @@
 				<onright>606</onright>
 				<onup>300</onup>
 				<ondown>200</ondown>
-				<onclick>XBMC.PlayerControl(Next)</onclick>
+				<onclick>PlayerControl(Next)</onclick>
 				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="606">
@@ -127,7 +127,7 @@
 				<onright>607</onright>
 				<onup>300</onup>
 				<ondown>200</ondown>
-				<onclick>XBMC.PlayerControl(record)</onclick>
+				<onclick>PlayerControl(record)</onclick>
 				<enable>Player.CanRecord</enable>
 				<animation effect="fade" start="100" end="30" time="100" condition="!Player.CanRecord">Conditional</animation>
 				<visible>!VideoPlayer.Content(LiveTV)</visible>
@@ -142,7 +142,7 @@
 					<label>-</label>
 					<texturefocus>-</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<onclick>XBMC.PlayerControl(Repeat)</onclick>
+					<onclick>PlayerControl(Repeat)</onclick>
 					<onleft>606</onleft>
 					<onright>608</onright>
 					<onup>100</onup>
@@ -220,7 +220,7 @@
 					<usealttexture>Playlist.IsRandom</usealttexture>
 					<alttexturefocus>OSDRandomOnFO.png</alttexturefocus>
 					<alttexturenofocus>OSDRandomOnNF.png</alttexturenofocus>
-					<onclick>XBMC.PlayerControl(Random)</onclick>
+					<onclick>PlayerControl(Random)</onclick>
 					<onleft>607</onleft>
 					<onright>609</onright>
 					<onup>100</onup>
@@ -243,10 +243,10 @@
 					<onup>100</onup>
 					<ondown>100</ondown>
 					<onclick>Close</onclick>
-					<onclick>XBMC.RunScript($INFO[Skin.String(LyricScript_Path)])</onclick>
+					<onclick>RunScript($INFO[Skin.String(LyricScript_Path)])</onclick>
 					<altclick>Skin.SetAddon(LyricScript_Path,xbmc.python.lyrics)</altclick>
 					<altclick>Close</altclick>
-					<altclick>XBMC.RunScript($INFO[Skin.String(LyricScript_Path)])</altclick>
+					<altclick>RunScript($INFO[Skin.String(LyricScript_Path)])</altclick>
 					<usealttexture>IsEmpty(Skin.String(LyricScript_Path))</usealttexture>
 					<visible>Player.HasAudio</visible>
 					<visible>!VideoPlayer.Content(LiveTV)</visible>
@@ -270,7 +270,7 @@
 				<onright>702</onright>
 				<onup>300</onup>
 				<ondown>200</ondown>
-				<onclick>XBMC.PlayerControl(Rewind)</onclick>
+				<onclick>PlayerControl(Rewind)</onclick>
 				<visible>VideoPlayer.Content(LiveTV)</visible>
 				<enable>Player.SeekEnabled</enable>
 				<animation effect="fade" start="100" end="50" time="100" condition="true">Conditional</animation>
@@ -288,7 +288,7 @@
 				<onup>300</onup>
 				<ondown>200</ondown>
 				<onclick>down</onclick>
-				<onclick>XBMC.PlayerControl(Stop)</onclick>
+				<onclick>PlayerControl(Stop)</onclick>
 				<visible>VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="togglebutton" id="703">
@@ -306,7 +306,7 @@
 				<onright>704</onright>
 				<onup>300</onup>
 				<ondown>200</ondown>
-				<onclick>XBMC.PlayerControl(Play)</onclick>
+				<onclick>PlayerControl(Play)</onclick>
 				<visible>VideoPlayer.Content(LiveTV)</visible>
 				<enable>false</enable>
 				<enable>Player.PauseEnabled</enable>
@@ -324,7 +324,7 @@
 				<onright>700</onright>
 				<onup>300</onup>
 				<ondown>200</ondown>
-				<onclick>XBMC.PlayerControl(Forward)</onclick>
+				<onclick>PlayerControl(Forward)</onclick>
 				<visible>VideoPlayer.Content(LiveTV)</visible>
 				<enable>Player.SeekEnabled</enable>
 				<animation effect="fade" start="100" end="50" time="100" condition="true">Conditional</animation>
@@ -371,7 +371,7 @@
 				<onright>701</onright>
 				<onup>300</onup>
 				<ondown>200</ondown>
-				<onclick>XBMC.PlayerControl(record)</onclick>
+				<onclick>PlayerControl(record)</onclick>
 				<enable>Player.CanRecord</enable>
 				<animation effect="fade" start="100" end="30" time="100" condition="!Player.CanRecord">Conditional</animation>
 				<visible>VideoPlayer.Content(LiveTV)</visible>
