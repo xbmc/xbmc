@@ -1,81 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window type="dialog">
-	<include>dialogeffect</include>
-	<coordinates>
-		<system>1</system>
-		<left>415</left>
-		<top>275</top>
-	</coordinates>
-	<controls>
-		<control type="group">
-			<control type="image">
-				<left>0</left>
-				<top>0</top>
-				<width>450</width>
-				<height>170</height>
-				<texture border="40">DialogBack.png</texture>
-			</control>
-			<control type="image">
-				<description>Dialog Header image</description>
-				<left>40</left>
-				<top>16</top>
-				<width>370</width>
-				<height>40</height>
-				<texture>dialogheader.png</texture>
-			</control>
-			<control type="label" id="1">
-				<description>header label</description>
-				<left>40</left>
-				<top>20</top>
-				<width>370</width>
-				<height>30</height>
-				<font>font13_title</font>
-				<label>$LOCALIZE[31321]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<textcolor>selected</textcolor>
-				<shadowcolor>black</shadowcolor>
-			</control>
-			<control type="button">
-				<description>Close Window button</description>
-				<left>360</left>
-				<top>15</top>
-				<width>64</width>
-				<height>32</height>
-				<label>-</label>
-				<font>-</font>
-				<onclick>PreviousMenu</onclick>
-				<texturefocus>DialogCloseButton-focus.png</texturefocus>
-				<texturenofocus>DialogCloseButton.png</texturenofocus>
-				<onleft>10</onleft>
-				<onright>10</onright>
-				<onup>10</onup>
-				<ondown>10</ondown>
-				<visible>system.getbool(input.enablemouse)</visible>
-			</control>
-			<control type="label" id="401">
-				<description>Song Number Label</description>
-				<left>30</left>
-				<top>70</top>
-				<width>390</width>
-				<height>30</height>
-				<font>font28_title</font>
-				<textcolor>white</textcolor>
-				<align>center</align>
-				<aligny>center</aligny>
-			</control>
-			<control type="label" id="402">
-				<description>Song Name Label</description>
-				<left>30</left>
-				<top>120</top>
-				<width>390</width>
-				<height>20</height>
-				<font>font24</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<textcolor>blue</textcolor>
-				<scroll>true</scroll>
-			</control>
-		</control>
-	</controls>
+  <include>dialogeffect</include>
+  <coordinates>
+    <system>1</system>
+    <left>415</left>
+    <top>275</top>
+  </coordinates>
+  <controls>
+    <control type="group">
+      <control type="image">
+        <left>0</left>
+        <top>0</top>
+        <width>450</width>
+        <height>170</height>
+        <texture border="40">DialogBack.png</texture>
+      </control>
+      <control type="image">
+        <description>Dialog Header image</description>
+        <left>40</left>
+        <top>16</top>
+        <width>370</width>
+        <height>40</height>
+        <texture>dialogheader.png</texture>
+      </control>
+      <control type="label" id="1">
+        <description>header label</description>
+        <left>40</left>
+        <top>20</top>
+        <width>370</width>
+        <height>30</height>
+        <font>font13_title</font>
+        <label>$LOCALIZE[31321]</label>
+        <align>center</align>
+        <aligny>center</aligny>
+        <textcolor>selected</textcolor>
+        <shadowcolor>black</shadowcolor>
+      </control>
+      <control type="button">
+        <description>Close Window button</description>
+        <left>360</left>
+        <top>15</top>
+        <width>64</width>
+        <height>32</height>
+        <label>-</label>
+        <font>-</font>
+        <onclick>PreviousMenu</onclick>
+        <texturefocus>DialogCloseButton-focus.png</texturefocus>
+        <texturenofocus>DialogCloseButton.png</texturenofocus>
+        <onleft>10</onleft>
+        <onright>10</onright>
+        <onup>10</onup>
+        <ondown>10</ondown>
+        <visible>system.getbool(input.enablemouse)</visible>
+      </control>
+      <control type="label" id="401">
+        <description>Song Number Label</description>
+        <left>30</left>
+        <top>70</top>
+        <width>390</width>
+        <height>30</height>
+        <font>font28_title</font>
+        <textcolor>white</textcolor>
+        <align>center</align>
+        <aligny>center</aligny>
+      </control>
+      <control type="label" id="402">
+        <description>Song Name Label</description>
+        <left>30</left>
+        <top>120</top>
+        <width>390</width>
+        <height>20</height>
+        <font>font24</font>
+        <align>center</align>
+        <aligny>center</aligny>
+        <textcolor>blue</textcolor>
+        <scroll>true</scroll>
+      </control>
+    </control>
+  </controls>
 </window>

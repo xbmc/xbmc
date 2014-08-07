@@ -1,90 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<defaultcontrol always="true">1</defaultcontrol>
-	<coordinates>
-		<system>1</system>
-		<left>335</left>
-		<top>235</top>
-	</coordinates>
-	<include>dialogeffect</include>
-	<controls>
-		<control type="image">
-			<left>0</left>
-			<top>0</top>
-			<width>610</width>
-			<height>230</height>
-			<texture border="40">DialogBack.png</texture>
-		</control>
-		<control type="image">
-			<description>Dialog Header image</description>
-			<left>40</left>
-			<top>16</top>
-			<width>530</width>
-			<height>40</height>
-			<texture>dialogheader.png</texture>
-		</control>
-		<control type="label" id="1">
-			<description>header label</description>
-			<left>40</left>
-			<top>20</top>
-			<width>530</width>
-			<height>30</height>
-			<font>font13_title</font>
-			<label>$LOCALIZE[13406]</label>
-			<align>center</align>
-			<aligny>center</aligny>
-			<textcolor>selected</textcolor>
-			<shadowcolor>black</shadowcolor>
-		</control>
-		<control type="button">
-			<description>Close Window button</description>
-			<left>520</left>
-			<top>15</top>
-			<width>64</width>
-			<height>32</height>
-			<label>-</label>
-			<font>-</font>
-			<onclick>PreviousMenu</onclick>
-			<texturefocus>DialogCloseButton-focus.png</texturefocus>
-			<texturenofocus>DialogCloseButton.png</texturenofocus>
-			<onleft>10</onleft>
-			<onright>10</onright>
-			<onup>10</onup>
-			<ondown>10</ondown>
-			<visible>system.getbool(input.enablemouse)</visible>
-		</control>
-		<control type="label" id="2">
-			<description>dialog line 1</description>
-			<left>30</left>
-			<top>70</top>
-			<width>550</width>
-			<height>30</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<label>-</label>
-			<font>font13</font>
-		</control>
-		<control type="label" id="3">
-			<description>dialog line 2</description>
-			<left>30</left>
-			<top>95</top>
-			<width>550</width>
-			<height>30</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<label>-</label>
-			<font>font13</font>
-		</control>
-		<control type="label" id="4">
-			<description>dialog line 3</description>
-			<left>30</left>
-			<top>130</top>
-			<width>550</width>
-			<height>30</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<label>-</label>
-			<font>font35_title</font>
-		</control>
-	</controls>
+  <defaultcontrol always="true">1</defaultcontrol>
+  <coordinates>
+    <system>1</system>
+    <left>335</left>
+    <top>235</top>
+  </coordinates>
+  <include>dialogeffect</include>
+  <controls>
+    <control type="image">
+      <left>0</left>
+      <top>0</top>
+      <width>610</width>
+      <height>230</height>
+      <texture border="40">DialogBack.png</texture>
+    </control>
+    <control type="image">
+      <description>Dialog Header image</description>
+      <left>40</left>
+      <top>16</top>
+      <width>530</width>
+      <height>40</height>
+      <texture>dialogheader.png</texture>
+    </control>
+    <control type="label" id="1">
+      <description>header label</description>
+      <left>40</left>
+      <top>20</top>
+      <width>530</width>
+      <height>30</height>
+      <font>font13_title</font>
+      <label>$LOCALIZE[13406]</label>
+      <align>center</align>
+      <aligny>center</aligny>
+      <textcolor>selected</textcolor>
+      <shadowcolor>black</shadowcolor>
+    </control>
+    <control type="button">
+      <description>Close Window button</description>
+      <left>520</left>
+      <top>15</top>
+      <width>64</width>
+      <height>32</height>
+      <label>-</label>
+      <font>-</font>
+      <onclick>PreviousMenu</onclick>
+      <texturefocus>DialogCloseButton-focus.png</texturefocus>
+      <texturenofocus>DialogCloseButton.png</texturenofocus>
+      <onleft>10</onleft>
+      <onright>10</onright>
+      <onup>10</onup>
+      <ondown>10</ondown>
+      <visible>system.getbool(input.enablemouse)</visible>
+    </control>
+    <control type="label" id="2">
+      <description>dialog line 1</description>
+      <left>30</left>
+      <top>70</top>
+      <width>550</width>
+      <height>30</height>
+      <align>left</align>
+      <aligny>center</aligny>
+      <label>-</label>
+      <font>font13</font>
+    </control>
+    <control type="label" id="3">
+      <description>dialog line 2</description>
+      <left>30</left>
+      <top>95</top>
+      <width>550</width>
+      <height>30</height>
+      <align>left</align>
+      <aligny>center</aligny>
+      <label>-</label>
+      <font>font13</font>
+    </control>
+    <control type="label" id="4">
+      <description>dialog line 3</description>
+      <left>30</left>
+      <top>130</top>
+      <width>550</width>
+      <height>30</height>
+      <align>left</align>
+      <aligny>center</aligny>
+      <label>-</label>
+      <font>font35_title</font>
+    </control>
+  </controls>
 </window>
