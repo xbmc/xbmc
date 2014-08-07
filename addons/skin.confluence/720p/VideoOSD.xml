@@ -570,7 +570,7 @@
 				<texturenofocus border="25,5,25,5">SubMenuBack-MiddleNF.png</texturenofocus>
 				<pulseonselect>false</pulseonselect>
 				<label>209</label>
-				<onclick>NextSubtitle</onclick>
+				<onclick>CycleSubtitle</onclick>
 				<visible>VideoPlayer.HasSubtitles + VideoPlayer.SubtitlesEnabled</visible>
 			</control>
 			<control type="radiobutton" id="404">
