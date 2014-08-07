@@ -63,7 +63,7 @@
 				<aspectratio>stretch</aspectratio>
 				<texture border="20">KeyboardEditArea.png</texture>
 			</control>
-			<control type="label" id="310">
+			<control type="edit" id="312">
 				<description>Edit Text</description>
 				<left>55</left>
 				<top>60</top>
@@ -72,6 +72,8 @@
 				<font>font13</font>
 				<align>center</align>
 				<aligny>center</aligny>
+				<texturefocus>-</texturefocus>
+				<texturenofocus>-</texturenofocus>
 			</control>
 			<control type="image">
 				<left>130</left>
