@@ -6882,7 +6882,9 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr ""
 
-#empty string with id 15110
+msgctxt "#15110"
+msgid "Larger font size"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#15111"
