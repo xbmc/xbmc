@@ -932,6 +932,10 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   else if(pic.format == RENDER_FMT_MEDIACODEC)
     m_pRenderer->AddProcessor(pic.mediacodec, index);
 #endif
+#ifdef HAS_IMXVPU
+  else if(pic.format == RENDER_FMT_IMXMAP)
+    m_pRenderer->AddProcessor(pic.IMXBuffer, index);
+#endif
 
   m_pRenderer->ReleaseImage(index, false);
 
