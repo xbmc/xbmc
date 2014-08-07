@@ -34,6 +34,7 @@
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 #include "XBIRRemote.h"
+#include "Util.h"
 
 #if defined(TARGET_WINDOWS)
 #include "input/windows/WINJoystick.h"
@@ -541,7 +542,7 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
   };
   bool success = false;
 
-  for (unsigned int dirIndex = 0; dirIndex < sizeof(DIRS_TO_CHECK)/sizeof(DIRS_TO_CHECK[0]); ++dirIndex)
+  for (unsigned int dirIndex = 0; dirIndex < ARRAY_SIZE(DIRS_TO_CHECK); ++dirIndex)
   {
     if (XFILE::CDirectory::Exists(DIRS_TO_CHECK[dirIndex]))
     {
@@ -984,7 +985,7 @@ void CButtonTranslator::GetWindows(std::vector<std::string> &windowList)
 
 int CButtonTranslator::GetFallbackWindow(int windowID)
 {
-  for (unsigned int index = 0; index < sizeof(fallbackWindows) / sizeof(fallbackWindows[0]); ++index)
+  for (unsigned int index = 0; index < ARRAY_SIZE(fallbackWindows); ++index)
   {
     if (fallbackWindows[index].origin == windowID)
       return fallbackWindows[index].target;
@@ -1158,7 +1159,7 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, int &action)
   if (CBuiltins::HasCommand(strAction)) 
     action = ACTION_BUILT_IN_FUNCTION;
 
-  for (unsigned int index=0;index < sizeof(actions)/sizeof(actions[0]);++index)
+  for (unsigned int index=0;index < ARRAY_SIZE(actions);++index)
   {
     if (strAction == actions[index].name)
     {
@@ -1178,7 +1179,7 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, int &action)
 
 std::string CButtonTranslator::TranslateWindow(int windowID)
 {
-  for (unsigned int index = 0; index < sizeof(windows) / sizeof(windows[0]); ++index)
+  for (unsigned int index = 0; index < ARRAY_SIZE(windows); ++index)
   {
     if (windows[index].action == windowID)
       return windows[index].name;
@@ -1211,7 +1212,7 @@ int CButtonTranslator::TranslateWindow(const std::string &window)
   }
 
   // run through the window structure
-  for (unsigned int index = 0; index < sizeof(windows) / sizeof(windows[0]); ++index)
+  for (unsigned int index = 0; index < ARRAY_SIZE(windows); ++index)
   {
     if (strWindow == windows[index].name)
       return windows[index].action;
@@ -1430,7 +1431,7 @@ uint32_t CButtonTranslator::TranslateAppCommand(const char *szButton)
   std::string strAppCommand = szButton;
   StringUtils::ToLower(strAppCommand);
 
-  for (int i = 0; i < sizeof(appcommands)/sizeof(appcommands[0]); i++)
+  for (int i = 0; i < ARRAY_SIZE(appcommands); i++)
     if (strAppCommand == appcommands[i].name)
       return appcommands[i].action | KEY_APPCOMMAND;
 
@@ -1450,7 +1451,7 @@ uint32_t CButtonTranslator::TranslateMouseCommand(TiXmlElement *pButton)
     if (!szKey.empty())
     {
       StringUtils::ToLower(szKey);
-      for (unsigned int i = 0; i < sizeof(mousekeys)/sizeof(mousekeys[0]); i++)
+      for (unsigned int i = 0; i < ARRAY_SIZE(mousekeys); i++)
       {
         if (szKey == mousekeys[i].name)
         {
@@ -1511,7 +1512,7 @@ uint32_t CButtonTranslator::TranslateTouchCommand(TiXmlElement *pButton, CButton
     strTouchCommand += attrVal;
 
   uint32_t actionId = ACTION_NONE;
-  for (unsigned int i = 0; i < sizeof(touchcommands)/sizeof(touchcommands[0]); i++)
+  for (unsigned int i = 0; i < ARRAY_SIZE(touchcommands); i++)
   {
     if (strTouchCommand == touchcommands[i].name)
     {

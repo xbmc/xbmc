@@ -852,7 +852,7 @@ void CWinRenderer::ScaleFixedPipeline()
   };
 
   // Compensate for D3D coordinates system
-  for(int i = 0; i < sizeof(vertex)/sizeof(vertex[0]); i++)
+  for(int i = 0; i < ARRAY_SIZE(vertex); i++)
   {
     vertex[i].x -= 0.5f;
     vertex[i].y -= 0.5f;

@@ -29,6 +29,7 @@
 #include "YUV2RGBShader.h"
 #include "win32/WIN32Util.h"
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "Util.h"
 
 CYUV2RGBMatrix::CYUV2RGBMatrix()
 {
@@ -408,7 +409,7 @@ void CYUV2RGBShader::SetShaderParameters(YUVBuffer* YUVbuf)
     m_effect.SetTexture("g_UTexture", m_YUVPlanes[1]);
   if (YUVbuf->GetActivePlanes() > 2)
     m_effect.SetTexture("g_VTexture", m_YUVPlanes[2]);
-  m_effect.SetFloatArray("g_StepXY", m_texSteps, sizeof(m_texSteps)/sizeof(m_texSteps[0]));
+  m_effect.SetFloatArray("g_StepXY", m_texSteps, ARRAY_SIZE(m_texSteps));
 }
 
 bool CYUV2RGBShader::UploadToGPU(YUVBuffer* YUVbuf)
@@ -567,7 +568,7 @@ void CConvolutionShader1Pass::Render(CD3DTexture &sourceTexture,
 {
   PrepareParameters(sourceWidth, sourceHeight, sourceRect, destRect);
   float texSteps[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
-  SetShaderParameters(sourceTexture, &texSteps[0], sizeof(texSteps)/sizeof(texSteps[0]));
+  SetShaderParameters(sourceTexture, &texSteps[0], ARRAY_SIZE(texSteps));
   Execute(NULL,4);
 }
 
@@ -704,7 +705,7 @@ void CConvolutionShaderSeparable::Render(CD3DTexture &sourceTexture,
   PrepareParameters(sourceWidth, sourceHeight, destWidth, destHeight, sourceRect, destRect);
   float texSteps1[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
   float texSteps2[] = { 1.0f/(float)destWidth, 1.0f/(float)(sourceHeight)};
-  SetShaderParameters(sourceTexture, &texSteps1[0], sizeof(texSteps1)/sizeof(texSteps1[0]), &texSteps2[0], sizeof(texSteps2)/sizeof(texSteps2[0]));
+  SetShaderParameters(sourceTexture, &texSteps1[0], ARRAY_SIZE(texSteps1), &texSteps2[0], ARRAY_SIZE(texSteps2));
 
   // This part should be cleaned up, but how?
   std::vector<LPDIRECT3DSURFACE9> rts;

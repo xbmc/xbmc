@@ -31,6 +31,7 @@
 
 #include "windowing/DllXKBCommon.h"
 #include "XKBCommonKeymap.h"
+#include "Util.h"
 
 struct xkb_context *
 CXKBKeymap::CreateXKBContext(IDllXKBCommon &xkbCommonLibrary)
@@ -266,7 +267,7 @@ uint32_t CXKBKeymap::ActiveXBMCModifiers() const
     { m_internalModeIndex, XBMCKMOD_MODE }
   };
 
-  size_t modTableSize = sizeof(modTable) / sizeof(modTable[0]);
+  size_t modTableSize = ARRAY_SIZE(modTable);
 
   for (size_t i = 0; i < modTableSize; ++i)
   {

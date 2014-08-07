@@ -52,6 +52,7 @@
 #include "GUIUserMessages.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
+#include "Util.h"
 
 #ifdef TARGET_WINDOWS
 
@@ -64,8 +65,6 @@ HWND g_hWnd = NULL;
 #endif
 
 #define ROTATE_ANGLE_DEGREE(arg) GID_ROTATE_ANGLE_FROM_ARGUMENT(LODWORD(arg)) * 180 / M_PI
-
-#define XBMC_arraysize(array)	(sizeof(array)/sizeof(array[0]))
 
 /* Masks for processing the windows KEYDOWN and KEYUP messages */
 #define REPEATED_KEYMASK  (1<<30)
@@ -99,7 +98,7 @@ void DIB_InitOSKeymap()
   LoadKeyboardLayout(current_layout, KLF_ACTIVATE);
 
   /* Map the VK keysyms */
-  for (int i = 0; i < XBMC_arraysize(VK_keymap); ++i)
+  for (int i = 0; i < ARRAY_SIZE(VK_keymap); ++i)
     VK_keymap[i] = XBMCK_UNKNOWN;
 
   VK_keymap[VK_BACK] = XBMCK_BACKSPACE;
@@ -337,7 +336,7 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
     {
       keysym->unicode = vkey - VK_NUMPAD0 + '0';
     }
-    else if (ToUnicode((UINT)vkey, scancode, keystate, (LPWSTR)wchars, sizeof(wchars)/sizeof(wchars[0]), 0) > 0)
+    else if (ToUnicode((UINT)vkey, scancode, keystate, (LPWSTR)wchars, ARRAY_SIZE(wchars), 0) > 0)
     {
       keysym->unicode = wchars[0];
     }

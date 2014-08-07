@@ -25,6 +25,7 @@
 #include "utils/log.h"
 #include "system.h" // for GetLastError()
 #include "network/WakeOnAccess.h"
+#include "Util.h"
 
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"
@@ -553,8 +554,6 @@ string MysqlDatabase::vprepare(const char *format, va_list args)
 
 #define etINVALID     0 /* Any unrecognized conversion type */
 
-#define ARRAY_SIZE(X)    ((int)(sizeof(X)/sizeof(X[0])))
-
 /*
 ** An "etByte" is an 8-bit unsigned value.
 */
@@ -742,6 +741,7 @@ void MysqlDatabase::mysqlVXPrintf(
   etByte flag_rtz;           /* True if trailing zeros should be removed */
   etByte flag_exp;           /* True to force display of the exponent */
   int nsd;                   /* Number of significant digits returned */
+  size_t idx2;
 
   length = 0;
   bufpt = 0;
@@ -825,9 +825,9 @@ void MysqlDatabase::mysqlVXPrintf(
     /* Fetch the info entry for the field */
     infop = &fmtinfo[0];
     xtype = etINVALID;
-    for(idx=0; idx<ARRAY_SIZE(fmtinfo); idx++){
-      if( c==fmtinfo[idx].fmttype ){
-        infop = &fmtinfo[idx];
+    for(idx2=0; idx2<ARRAY_SIZE(fmtinfo); idx2++){
+      if( c==fmtinfo[idx2].fmttype ){
+        infop = &fmtinfo[idx2];
         if( useExtended || (infop->flags & FLAG_INTERN)==0 ){
           xtype = infop->type;
         }else{

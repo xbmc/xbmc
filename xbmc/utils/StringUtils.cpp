@@ -32,6 +32,7 @@
 #include "StringUtils.h"
 #include "utils/RegExp.h"
 #include "utils/fstrcmp.h"
+#include "Util.h"
 #include <locale>
 
 #include <math.h>
@@ -919,7 +920,7 @@ CStdString StringUtils::SizeToString(int64_t size)
   const char prefixes[] = {' ','k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'};
   unsigned int i = 0;
   double s = (double)size;
-  while (i < sizeof(prefixes)/sizeof(prefixes[0]) && s >= 1000.0)
+  while (i < ARRAY_SIZE(prefixes) && s >= 1000.0)
   {
     s /= 1024.0;
     i++;

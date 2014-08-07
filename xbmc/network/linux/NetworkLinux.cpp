@@ -581,12 +581,12 @@ bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::strin
   mib[4] = NET_RT_FLAGS;
   mib[5] = RTF_LLINFO;
   
-  if (sysctl(mib, sizeof(mib) / sizeof(mib[0]), NULL, &needed, NULL, 0) == 0)
+  if (sysctl(mib, ARRAY_SIZE(mib), NULL, &needed, NULL, 0) == 0)
   {   
     buf = (char*)malloc(needed);
     if (buf)
     {      
-      if (sysctl(mib, sizeof(mib) / sizeof(mib[0]), buf, &needed, NULL, 0) == 0)
+      if (sysctl(mib, ARRAY_SIZE(mib), buf, &needed, NULL, 0) == 0)
       {        
         for (next = buf; next < buf + needed; next += rtm->rtm_msglen) 
         {
