@@ -53,7 +53,7 @@ public:
   static void SetExtraLogLevels(int level);
   static bool IsLogLevelLogged(int loglevel);
 
-private:
+protected:
   class CLogGlobals
   {
   public:
