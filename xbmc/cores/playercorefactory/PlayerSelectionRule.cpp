@@ -96,7 +96,7 @@ int CPlayerSelectionRule::GetTristate(const char* szValue)
 
 bool CPlayerSelectionRule::CompileRegExp(const std::string& str, CRegExp& regExp)
 {
-  return !str.empty() > 0 && regExp.RegComp(str.c_str());
+  return !str.empty() && regExp.RegComp(str.c_str());
 }
 
 bool CPlayerSelectionRule::MatchesRegExp(const std::string& str, CRegExp& regExp)
