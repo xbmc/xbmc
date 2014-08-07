@@ -47,6 +47,7 @@
 #include "XMLChoice.h"
 #include "AdvancedSettings.h"
 #include "PlexDirectoryCache.h"
+#include "Client/PlexServerVersion.h"
 
 
 using namespace XFILE;
@@ -124,6 +125,10 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
   else if (url.GetHostName() == "playqueue")
   {
     return GetPlayQueueDirectory(fileItems);
+  }
+  else if (url.GetHostName() == "playlists")
+  {
+    return GetPlaylistsDirectory(fileItems);
   }
 
   if (boost::starts_with(m_url.GetFileName(), "library/metadata") && !boost::ends_with(m_url.GetFileName(), "children") && !boost::ends_with(m_url.GetFileName(), "extras"))
@@ -876,6 +881,32 @@ bool CPlexDirectory::GetOnlineChannelDirectory(CFileItemList &items)
     items.SetPath("plexserver://channeldirectory");
   
   return success;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexDirectory::GetPlaylistsDirectory(CFileItemList &items)
+{
+  CPlexServerVersion playlistVersion("0.9.9.12.0");
+  PlexServerList list = g_plexApplication.serverManager->GetAllServers(CPlexServerManager::SERVER_OWNED);
+  BOOST_FOREACH(CPlexServerPtr server, list)
+  {
+    CPlexServerVersion version(server->GetVersion());
+    if (version > playlistVersion)
+    {
+      CURL plURL = server->BuildPlexURL("/playlists/all");
+      plURL.SetOption("type", boost::lexical_cast<std::string>(PLEX_MEDIA_FILTER_TYPE_PLAYLISTITEM));
+      plURL.SetOption("sort", "lastViewedAt");
+      
+      CFileItemList plList;
+      
+      if (GetDirectory(plURL, plList))
+        items.Append(plList);
+      else
+        CLog::Log(LOGWARNING, "CPlexDirectory::GetPlaylistsDirectory - failed to fetch playlists from %s", server->toString().c_str());
+    }
+  }
+  
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

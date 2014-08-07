@@ -810,7 +810,7 @@ void CGUIWindowHome::UpdateSections()
       else if (item->HasProperty("playlists"))
       {
         havePlaylists = true;
-        listUpdated = true;
+        newList.push_back(item);
       }
       else if (item->HasProperty("plexupdate"))
       {

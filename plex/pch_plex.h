@@ -37,7 +37,6 @@
 // anything below here should be headers that very rarely (hopefully never)
 // change yet are included almost everywhere.
 #include "utils/StdString.h"
-#include "PlexTypes.h"
 #endif
 
 #endif

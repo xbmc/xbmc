@@ -641,4 +641,11 @@ const char testItem_playQueueVideoMovie[] =
     "</Video>"
     "</MediaContainer>";
 
+const char testItem_playlistAll[] =
+  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+  "<MediaContainer size=\"1\">"
+  "<Playlist ratingKey=\"26966\" key=\"/playlists/26966/items\" type=\"playlist\" title=\"EBM\" summary=\"\" smart=\"0\" playlistType=\"audio\" composite=\"/playlists/26966/composite/1407240940\" duration=\"29636211\" leafCount=\"92\" addedAt=\"1407240911\" updatedAt=\"1407240940\">"
+  "</Playlist>"
+  "</MediaContainer>";
+
 #endif // PLEXTESTITEMS_H
