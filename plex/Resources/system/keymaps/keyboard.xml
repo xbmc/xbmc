@@ -39,7 +39,6 @@
     <keyboard>
       <p>Play</p>
       <q>Queue</q>
-      <f>FastForward</f>
       <r>Rewind</r>
       <left>Left</left>
       <right>Right</right>
@@ -54,8 +53,9 @@
       <backspace>Back</backspace>
       <key id='65446'>Back</key>
       <m>ActivateWindow(PlayerControls)</m>
-      <s>ActivateWindow(shutdownmenu)</s>
-      <escape>PreviousMenu</escape>
+      <!--<s>ActivateWindow(shutdownmenu)</s>-->
+      <!--<escape>PreviousMenu</escape>-->
+      <escape>ParentDir</escape>
       <i>Info</i>
       <menu>ContextMenu</menu>
       <c>ContextMenu</c>
@@ -97,11 +97,13 @@
       <power>ActivateWindow(shutdownmenu)</power>
       <sleep>ActivateWindow(shutdownmenu)</sleep>
       <!-- PVR windows -->
+      <!-- PLEX remove PVR stuff 
       <e>XBMC.ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</e>
       <h>XBMC.ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</h>
       <j>XBMC.ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</j>
       <k>XBMC.ActivateWindowAndFocus(MyPVR, 34,0, 13,0)</k>
       <b>XBMC.ActivateWindowAndFocus(MyPVR, 35,0, 14,0)</b>
+      -->
       <!-- Multimedia keyboard keys -->
       <browser_back>Back</browser_back>
       <browser_forward/>
@@ -137,18 +139,20 @@
       <f10>VolumeUp</f10>                 <!-- MCE Vol up -->
       <f9>VolumeDown</f9>                 <!-- MCE Vol down -->
       <f8>Mute</f8>                       <!-- MCE mute -->
-      <g mod="ctrl">ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</g>  <!-- MCE Guide -->
+      <!-- <g mod="ctrl">ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</g>  <!-- MCE Guide --> -->
       <m mod="ctrl">ActivateWindow(music)</m>    <!-- MCE My music -->
       <i mod="ctrl">ActivateWindow(pictures)</i> <!-- MCE My pictures -->
       <e mod="ctrl">ActivateWindow(video)</e>    <!-- MCE videos -->
       <m mod="ctrl,shift">PlayerControl(ShowVideoMenu)</m>         <!-- MCE DVD menu -->
-      <o mod="ctrl">ActivateWindowAndFocus(MyPVR, 34,0, 13,0)</o>  <!-- MCE Recorded TV -->
-      <t mod="ctrl">ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</t>  <!-- MCE Live TV  -->
-      <t mod="ctrl,shift">ActivateWindow(MyPVR)</t>                <!-- MCE My TV -->
-      <a mod="ctrl">ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</a>  <!-- MCE My Radio -->
+      <!-- <o mod="ctrl">ActivateWindowAndFocus(MyPVR, 34,0, 13,0)</o>  <!-- MCE Recorded TV -->
+      <!-- <t mod="ctrl">ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</t>  <!-- MCE Live TV  --> -->
+      <!-- <t mod="ctrl,shift">ActivateWindow(MyPVR)</t>                <!-- MCE My TV --> -->
+      <!-- <a mod="ctrl">ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</a>  <!-- MCE My Radio --> --> -->
       <!-- MCE keypresses without an obvious use in XBMC -->
       <u mod="ctrl">Notification(MCEKeypress, DVD subtitle, 3)</u>
       <a mod="ctrl,shift">Notification(MCEKeypress, DVD audio, 3)</a>
+      <h>ActivateWindow(Home)</h>
+	  <t>playtrailer</t> 
     </keyboard>
   </global>
   <LoginScreen>
@@ -160,6 +164,7 @@
     <keyboard>
       <i>info</i>
       <end mod="ctrl">XBMC.ShutDown()</end>
+      <space>Play</space>
     </keyboard>
   </Home>
   <VirtualKeyboard>
@@ -182,6 +187,11 @@
       <r>Rename</r>
     </keyboard>
   </MyFiles>
+  <MyPictures>
+    <keyboard>
+      <escape>ParentDir</escape>
+    </keyboard>
+  </MyPictures>
   <MyMusicPlaylist>
     <keyboard>
       <space>Back</space>
@@ -202,6 +212,7 @@
       <space>Playlist</space>
       <q>Queue</q>
       <delete>Delete</delete>
+      <escape>ParentDir</escape>
     </keyboard>
   </MyMusicFiles>
   <MyMusicLibrary>
@@ -216,31 +227,59 @@
       <r>Rewind</r>
       <period>StepForward</period>
       <comma>StepBack</comma>
-      <backspace>Fullscreen</backspace>
+      <!--<backspace>Fullscreen</backspace>-->
       <quote>SmallStepBack</quote>
-      <opensquarebracket>BigStepForward</opensquarebracket>
-      <closesquarebracket>BigStepBack</closesquarebracket>
+      <!--<opensquarebracket>BigStepForward</opensquarebracket>
+      <closesquarebracket>BigStepBack</closesquarebracket>-->
       <return>OSD</return>
       <enter>OSD</enter>
       <m>OSD</m>
+      <!--
       <i>Info</i>
       <o>CodecInfo</o>
+      -->
       <z>AspectRatio</z>
+      <!--
       <t>ShowSubtitles</t>
       <t mod="ctrl">SubtitleAlign</t>
       <l>NextSubtitle</l>
+      -->
       <left>StepBack</left>
       <right>StepForward</right>
       <up>BigStepForward</up>
       <down>BigStepBack</down>
+      <!--
       <a>AudioDelay</a>
       <escape>Fullscreen</escape>
       <c>Playlist</c>
       <v>XBMC.ActivateWindow(Teletext)</v>
+      -->
       <up mod="ctrl">SubtitleShiftUp</up>
       <down mod="ctrl">SubtitleShiftDown</down>
+
       <pageup>SkipNext</pageup>
       <pagedown>SkipPrevious</pagedown>
+
+      <!-- PLEX -->
+      <backspace>SmallStepBack</backspace>
+      <opensquarebracket>BigStepBack</opensquarebracket>
+      <closesquarebracket>BigStepForward</closesquarebracket>
+      <return>Pause</return>
+      <i>CodecInfo</i>
+      <o>ShowTime</o>
+      <s>ShowSubtitles</s>
+      <s mod="ctrl">SubtitleAlign</s>
+      <l>NextSubtitle</l>
+      <a>AudioNextLanguage</a>
+      <f1>OSD</f1>
+      <f2>Rewind</f2>
+      <f3>FastForward</f3>
+      <f4>VolumeUp</f4>
+      <f5>VolumeDown</f5>
+      <f6>Info</f6>
+      <f7>Stop</f7>
+      <escape>Stop</escape> 
+      <!-- END PLEX -->
     </keyboard>
   </FullscreenVideo>
   <VideoTimeSeek>
@@ -258,6 +297,7 @@
       <i>Back</i>
       <d mod="ctrl">Back</d>
       <m>OSD</m>
+      <escape>Close</escape>
     </keyboard>
   </FullscreenInfo>
   <PlayerControls>
@@ -286,8 +326,8 @@
       <o>CodecInfo</o>
       <l>LockPreset</l>
       <escape>FullScreen</escape>
-      <g>XBMC.ActivateWindow(PVROSDGuide)</g>
-      <c>XBMC.ActivateWindow(PVROSDChannels)</c>
+      <!-- <g>XBMC.ActivateWindow(PVROSDGuide)</g> -->
+      <!-- <c>XBMC.ActivateWindow(PVROSDChannels)</c> -->
     </keyboard>
   </Visualisation>
   <MusicOSD>
@@ -361,6 +401,8 @@
       <enter>NextCalibration</enter>
       <d>ResetCalibration</d>
       <r>NextResolution</r>
+      <backspace>PreviousMenu</backspace>
+      <escape>PreviousMenu</escape>
     </keyboard>
   </ScreenCalibration>
   <GUICalibration>
@@ -368,6 +410,8 @@
       <return>NextCalibration</return>
       <enter>NextCalibration</enter>
       <d>ResetCalibration</d>
+      <backspace>PreviousMenu</backspace>
+      <escape>PreviousMenu</escape>
     </keyboard>
   </GUICalibration>
   <VideoOSD>
@@ -380,8 +424,14 @@
   </VideoOSD>
   <VideoMenu>
     <keyboard>
+      <!--
       <opensquarebracket>BigStepForward</opensquarebracket>
       <closesquarebracket>BigStepBack</closesquarebracket>
+      -->
+      
+      <opensquarebracket>BigStepBack</opensquarebracket>
+      <closesquarebracket>BigStepForward</closesquarebracket>
+      
       <m>OSD</m>
       <i>Info</i>
       <o>CodecInfo</o>
@@ -418,6 +468,9 @@
       <delete>Delete</delete>
       <space>Playlist</space>
       <w>ToggleWatched</w>
+      <f>CyclePrimaryFilter</f>
+      <f mod="ctrl">ClearFilters</f>
+      <u>ToggleUnwatchedFilter</u>
     </keyboard>
   </MyVideoLibrary>
   <MyVideoFiles>
@@ -425,6 +478,7 @@
       <space>Playlist</space>
       <q>Queue</q>
       <w>ToggleWatched</w>
+      <escape>Playlist</escape>
     </keyboard>
   </MyVideoFiles>
   <MyVideoPlaylist>
@@ -433,6 +487,7 @@
       <delete>Delete</delete>
       <u>MoveItemUp</u>
       <d>MoveItemDown</d>
+      <escape>Playlist</escape>
     </keyboard>
   </MyVideoPlaylist>
   <MyPictures>
@@ -444,6 +499,7 @@
     <keyboard>
       <c>Back</c>
       <menu>Back</menu>
+      <escape>Close</escape>
     </keyboard>
   </ContextMenu>
   <Scripts>
@@ -455,11 +511,13 @@
     <keyboard>
       <i>Back</i>
       <d mod="ctrl">Back</d>
+      <escape>Close</escape>
     </keyboard>
   </MusicInformation>
   <MovieInformation>
     <keyboard>
       <i>Back</i>
+      <escape>Close</escape>
     </keyboard>
   </MovieInformation>
   <PictureInfo>
@@ -538,11 +596,23 @@
   <AddonInformation>
     <keyboard>
       <i>Back</i>
+      <escape>Close</escape>
     </keyboard>
   </AddonInformation>
   <AddonSettings>
     <keyboard>
       <delete>Delete</delete>
+      <escape>Close</escape>
     </keyboard>
   </AddonSettings>
+  <FilterDialog>
+    <f>CyclePrimaryFilter</f>
+    <f mod="ctrl">ClearFilters</f>
+    <u>ToggleUnwatchedFilter</u>
+  </FilterDialog>
+  <PlexSearch>
+    <keyboard>
+      <escape>PreviousMenu</escape>
+    </keyboard>
+  </PlexSearch>
 </keymap>

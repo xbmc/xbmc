@@ -1,0 +1,325 @@
+<!-- This file contains the mapping of keys (gamepad, remote, and keyboard) to actions within XBMC -->
+<!-- The <global> section is a fall through - they will only be used if the button is not          -->
+<!-- used in the current window's section.  Note that there is only handling                       -->
+<!-- for a single action per button at this stage.                                                 -->
+<!-- For joystick/gamepad configuration under linux/win32, see below as it differs from xbox       -->
+<!-- gamepads.                                                                                     -->
+
+<!-- The format is:                      -->
+<!--    <device>                         -->
+<!--      <button>action</button>        -->
+<!--    </device>                        -->
+
+<!-- To map keys from other remotes using the RCA protocol, you may add <universalremote> blocks -->
+<!-- In this case, the tags used are <obc#> where # is the original button code (OBC) of the key -->
+<!-- You set it up by adding a <universalremote> block to the window or <global> section:       -->
+<!--    <universalremote>             -->
+<!--       <obc45>Stop</obc45>         -->
+<!--    </universalremote>            -->
+
+<!-- Note that the action can be a built-in function.                 -->
+<!--  eg <B>XBMC.ActivateWindow(MyMusic)</B>                         -->
+<!-- would automatically go to My Music on the press of the B button. -->
+
+<!-- Joysticks / Gamepads:                                                                    -->
+<!--   See the sample PS3 controller configuration below for the format.                      -->
+<!--                                                                                          -->
+<!--  Joystick Name:                                                                          -->
+<!--   Do 'cat /proc/bus/input/devices' or see your xbmc log file  to find the names of       -->
+<!--   detected joysticks. The name used in the configuration should match the detected name. -->
+<!--                                                                                          -->
+<!--  Button Ids:                                                                             -->
+<!--   'id' is the button ID used by SDL. Joystick button ids of connected joysticks appear   -->
+<!--   in xbmc.log when they are pressed. Use your log to map custom buttons to actions.      -->
+<!--                                                                                          -->
+<!--  Axis Ids / Analog Controls                                                              -->
+<!--   Coming soon.                                                                           -->
+<keymap>
+  <global>
+    <gamepad>
+      <A>Select</A>
+      <B>Back</B>
+      <X>FullScreen</X>
+      <Y>Queue</Y>
+      <white>ContextMenu</white>
+      <black/>
+      <start>XBMC.ActivateWindow(PlayerControls)</start>
+      <back>PreviousMenu</back>
+      <dpadleft>Left</dpadleft>
+      <dpadright>Right</dpadright>
+      <dpadup>Up</dpadup>
+      <dpaddown>Down</dpaddown>
+      <leftthumbbutton>Screenshot</leftthumbbutton>
+      <rightthumbbutton>XBMC.ActivateWindow(ShutdownMenu)</rightthumbbutton>
+      <leftanalogtrigger>ScrollUp</leftanalogtrigger>
+      <rightanalogtrigger>ScrollDown</rightanalogtrigger>
+      <rightthumbstickleft>AnalogSeekBack</rightthumbstickleft>
+      <rightthumbstickright>AnalogSeekForward</rightthumbstickright>
+      <rightthumbstickup>VolumeUp</rightthumbstickup>
+      <rightthumbstickdown>VolumeDown</rightthumbstickdown>
+    </gamepad>
+  </global>
+  <Home>
+    <gamepad>
+      <black>XBMC.Skin.ToggleSetting(HomeViewToggle)</black>
+    </gamepad>
+  </Home>
+  <MyFiles>
+    <gamepad>
+      <Y>Highlight</Y>
+    </gamepad>
+  </MyFiles>
+  <MyMusicPlaylist>
+    <gamepad>
+      <Y>Delete</Y>
+      <black>Back</black>
+    </gamepad>
+  </MyMusicPlaylist>
+  <MyMusicPlaylistEditor>
+    <gamepad>
+      <Y>Queue</Y>
+    </gamepad>
+  </MyMusicPlaylistEditor>
+  <MyMusicFiles>
+    <gamepad>
+      <Y>Queue</Y>
+      <black>Playlist</black>
+    </gamepad>
+  </MyMusicFiles>
+  <MyMusicLibrary>
+    <gamepad>
+      <Y>Queue</Y>
+      <black>Playlist</black>
+    </gamepad>
+  </MyMusicLibrary>
+  <FullscreenVideo>
+    <gamepad>
+      <A>Pause</A>
+      <B>Stop</B>
+      <Y>AspectRatio</Y>
+      <black>CodecInfo</black>
+      <white>Info</white>
+      <back>SmallStepBack</back>
+      <start>OSD</start>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
+      <dpadleft>StepBack</dpadleft>
+      <dpadright>StepForward</dpadright>
+      <dpadup>BigStepForward</dpadup>
+      <dpaddown>BigStepBack</dpaddown>
+    </gamepad>
+  </FullscreenVideo>
+  <FullscreenLiveTV>
+    <gamepad>
+      <dpadleft>PreviousChannelGroup</dpadleft>
+      <dpadright>NextChannelGroup</dpadright>
+      <dpadup>ChannelUp</dpadup>
+      <dpaddown>ChannelDown</dpaddown>
+    </gamepad>
+  </FullscreenLiveTV>
+  <FullscreenInfo>
+    <gamepad>
+      <start>OSD</start>
+      <black>CodecInfo</black>
+      <white>Back</white>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
+    </gamepad>
+  </FullscreenInfo>
+  <PlayerControls>
+    <gamepad>
+      <start>Back</start>
+    </gamepad>
+  </PlayerControls>
+  <Visualisation>
+    <gamepad>
+      <A>Pause</A>
+      <B>Stop</B>
+      <Y>XBMC.ActivateWindow(VisualisationPresetList)</Y>
+      <black>CodecInfo</black>
+      <white>Info</white>
+      <start>OSD</start>
+      <back>LockPreset</back>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
+      <dpadleft>SkipPrevious</dpadleft>
+      <dpadright>SkipNext</dpadright>
+      <dpadup>NextPreset</dpadup>
+      <dpaddown>PreviousPreset</dpaddown>
+    </gamepad>
+  </Visualisation>
+  <MusicOSD>
+    <gamepad>
+      <start>Back</start>
+      <black>CodecInfo</black>
+      <white>Info</white>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
+    </gamepad>
+  </MusicOSD>
+  <VisualisationSettings>
+    <gamepad>
+      <start>Back</start>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
+    </gamepad>
+  </VisualisationSettings>
+  <VisualisationPresetList>
+    <gamepad>
+      <start>Back</start>
+      <Y>Back</Y>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
+    </gamepad>
+  </VisualisationPresetList>
+  <SlideShow>
+    <gamepad>
+      <A>Pause</A>
+      <B>Stop</B>
+      <Y>Rotate</Y>
+      <X>ZoomNormal</X>
+      <black>CodecInfo</black>
+      <white>Info</white>
+      <righttrigger>NextPicture</righttrigger>
+      <lefttrigger>PreviousPicture</lefttrigger>
+      <dpadleft>PreviousPicture</dpadleft>
+      <dpadright>NextPicture</dpadright>
+      <dpadup>ZoomIn</dpadup>
+      <dpaddown>ZoomOut</dpaddown>
+      <leftthumbstick>AnalogMove</leftthumbstick>
+      <back>Stop</back>
+    </gamepad>
+  </SlideShow>
+  <ScreenCalibration>
+    <gamepad>
+      <leftthumbstick>AnalogMove</leftthumbstick>
+      <A>NextCalibration</A>
+      <black>ResetCalibration</black>
+      <white>NextResolution</white>
+    </gamepad>
+  </ScreenCalibration>
+  <GUICalibration>
+    <gamepad>
+      <leftthumbstick>AnalogMove</leftthumbstick>
+      <A>NextCalibration</A>
+      <black>ResetCalibration</black>
+    </gamepad>
+  </GUICalibration>
+  <VideoOSD>
+    <gamepad>
+      <start>Back</start>
+      <black>CodecInfo</black>
+      <white>Info</white>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
+    </gamepad>
+  </VideoOSD>
+  <VideoMenu>
+    <gamepad>
+      <Y>AspectRatio</Y>
+      <B>Stop</B>
+      <start>OSD</start>
+      <white>Info</white>
+      <black>CodecInfo</black>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
+    </gamepad>
+  </VideoMenu>
+  <OSDVideoSettings>
+    <gamepad>
+      <X/>
+      <Y>AspectRatio</Y>
+      <start>Back</start>
+      <black>CodecInfo</black>
+      <white>Info</white>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
+    </gamepad>
+  </OSDVideoSettings>
+  <OSDAudioSettings>
+    <gamepad>
+      <X/>
+      <Y>AspectRatio</Y>
+      <start>Back</start>
+      <black>CodecInfo</black>
+      <white>Info</white>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
+    </gamepad>
+  </OSDAudioSettings>
+  <VideoBookmarks>
+    <gamepad>
+      <X/>
+      <Y>Delete</Y>
+      <start>Back</start>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
+    </gamepad>
+  </VideoBookmarks>
+  <MyVideoLibrary>
+    <gamepad>
+      <black>Delete</black>
+    </gamepad>
+  </MyVideoLibrary>
+  <MyVideoFiles>
+    <gamepad>
+      <Y>Queue</Y>
+      <black>Playlist</black>
+    </gamepad>
+  </MyVideoFiles>
+  <MyVideoPlaylist>
+    <gamepad>
+      <Y>Delete</Y>
+      <black>Back</black>
+    </gamepad>
+  </MyVideoPlaylist>
+  <VirtualKeyboard>
+    <gamepad>
+      <start>Enter</start>
+      <B>BackSpace</B>
+      <Y>Shift</Y>
+      <X>Symbols</X>
+      <lefttrigger>CursorLeft</lefttrigger>
+      <righttrigger>CursorRight</righttrigger>
+    </gamepad>
+  </VirtualKeyboard>
+  <ContextMenu>
+    <gamepad>
+      <white>Back</white>
+    </gamepad>
+  </ContextMenu>
+  <Scripts>
+    <gamepad>
+      <black>info</black>
+    </gamepad>
+  </Scripts>
+  <NumericInput>
+    <gamepad>
+      <B>BackSpace</B>
+      <start>Enter</start>
+      <lefttrigger>SkipPrevious</lefttrigger>
+      <righttrigger>SkipNext</righttrigger>
+    </gamepad>
+  </NumericInput>
+  <GamepadInput>
+    <gamepad>
+      <start>Stop</start>      <!-- Enter Password -->
+    </gamepad>
+  </GamepadInput>
+  <LockSettings>
+    <gamepad>
+      <start>Back</start>
+    </gamepad>
+  </LockSettings>
+  <ProfileSettings>
+    <gamepad>
+      <start>Back</start>
+    </gamepad>
+  </ProfileSettings>
+  <PictureInfo>
+    <gamepad>
+      <dpadleft>PreviousPicture</dpadleft>
+      <dpadright>NextPicture</dpadright>
+    </gamepad>
+  </PictureInfo>
+</keymap>

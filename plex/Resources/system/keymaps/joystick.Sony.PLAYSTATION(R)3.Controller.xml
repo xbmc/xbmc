@@ -1,0 +1,62 @@
+<!-- This file contains the mapping of keys (gamepad, remote, and keyboard) to actions within XBMC -->
+<!-- The <global> section is a fall through - they will only be used if the button is not          -->
+<!-- used in the current window's section.  Note that there is only handling                       -->
+<!-- for a single action per button at this stage.                                                 -->
+<!-- For joystick/gamepad configuration under linux/win32, see below as it differs from xbox       -->
+<!-- gamepads.                                                                                     -->
+
+<!-- The format is:                      -->
+<!--    <device>                         -->
+<!--      <button>action</button>        -->
+<!--    </device>                        -->
+
+<!-- To map keys from other remotes using the RCA protocol, you may add <universalremote> blocks -->
+<!-- In this case, the tags used are <obc#> where # is the original button code (OBC) of the key -->
+<!-- You set it up by adding a <universalremote> block to the window or <global> section:       -->
+<!--    <universalremote>             -->
+<!--       <obc45>Stop</obc45>         -->
+<!--    </universalremote>            -->
+
+<!-- Note that the action can be a built-in function.                 -->
+<!--  eg <B>XBMC.ActivateWindow(MyMusic)</B>                         -->
+<!-- would automatically go to My Music on the press of the B button. -->
+
+<!-- Joysticks / Gamepads:                                                                    -->
+<!--   See the sample PS3 controller configuration below for the format.                      -->
+<!--                                                                                          -->
+<!--  Joystick Name:                                                                          -->
+<!--   Do 'cat /proc/bus/input/devices' or see your xbmc log file  to find the names of       -->
+<!--   detected joysticks. The name used in the configuration should match the detected name. -->
+<!--                                                                                          -->
+<!--  Button Ids:                                                                             -->
+<!--   'id' is the button ID used by SDL. Joystick button ids of connected joysticks appear   -->
+<!--   in xbmc.log when they are pressed. Use your log to map custom buttons to actions.      -->
+<!--                                                                                          -->
+<!--  Axis Ids / Analog Controls                                                              -->
+<!--   Coming soon.                                                                           -->
+<keymap>
+  <global>
+    <joystick name="Sony PLAYSTATION(R)3 Controller">
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>
+      <button id="15">Select</button>
+      <button id="14">Back</button>
+      <button id="16">FullScreen</button>
+      <button id="13">Queue</button>
+      <button id="11">PreviousMenu</button>
+      <button id="8">Left</button>
+      <button id="6">Right</button>
+      <button id="5">Up</button>
+      <button id="7">Down</button>
+      <button id="2">Screenshot</button>
+      <button id="3">XBMC.ActivateWindow(ShutdownMenu)</button>
+      <button id="4">XBMC.ActivateWindow(PlayerControls)</button>
+      <axis limit="+1" id="4">VolumeDown</axis>
+      <axis limit="-1" id="4">VolumeUp</axis>
+      <axis limit="+1" id="1">AnalogSeekForward</axis>
+      <axis limit="-1" id="1">AnalogSeekBack</axis>
+      <axis limit="+1" id="13">ScrollUp</axis>
+      <axis limit="+1" id="14">ScrollDown</axis>
+    </joystick>
+  </global>
+</keymap>

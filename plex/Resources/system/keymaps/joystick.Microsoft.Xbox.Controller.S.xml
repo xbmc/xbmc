@@ -1,0 +1,384 @@
+<!-- This file contains the mapping of keys (gamepad, remote, and keyboard) to actions within XBMC -->
+<!-- The <global> section is a fall through - they will only be used if the button is not          -->
+<!-- used in the current window's section.  Note that there is only handling                       -->
+<!-- for a single action per button at this stage.                                                 -->
+<!-- For joystick/gamepad configuration under linux/win32, see below as it differs from xbox       -->
+<!-- gamepads.                                                                                     -->
+
+<!-- The format is:                      -->
+<!--    <device>                         -->
+<!--      <button>action</button>        -->
+<!--    </device>                        -->
+
+<!-- To map keys from other remotes using the RCA protocol, you may add <universalremote> blocks -->
+<!-- In this case, the tags used are <obc#> where # is the original button code (OBC) of the key -->
+<!-- You set it up by adding a <universalremote> block to the window or <global> section:       -->
+<!--    <universalremote>             -->
+<!--       <obc45>Stop</obc45>         -->
+<!--    </universalremote>            -->
+
+<!-- Note that the action can be a built-in function.                 -->
+<!--  eg <B>XBMC.ActivateWindow(MyMusic)</B>                         -->
+<!-- would automatically go to My Music on the press of the B button. -->
+
+<!-- Joysticks / Gamepads:                                                                    -->
+<!--   See the sample PS3 controller configuration below for the format.                      -->
+<!--                                                                                          -->
+<!--  Joystick Name:                                                                          -->
+<!--   Do 'cat /proc/bus/input/devices' or see your xbmc log file  to find the names of       -->
+<!--   detected joysticks. The name used in the configuration should match the detected name. -->
+<!--                                                                                          -->
+<!--  Button Ids:                                                                             -->
+<!--   'id' is the button ID used by SDL. Joystick button ids of connected joysticks appear   -->
+<!--   in xbmc.log when they are pressed. Use your log to map custom buttons to actions.      -->
+<!--                                                                                          -->
+<!--  Axis Ids / Analog Controls                                                              -->
+<!--   Coming soon.                                                                           -->
+<keymap>
+  <global>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="1">Select</button>
+      <button id="2">Back</button>
+      <button id="3"/>
+      <button id="4">FullScreen</button>
+      <button id="5">Queue</button>
+      <button id="6">ContextMenu</button>
+      <button id="7"/>
+      <button id="8"/>
+      <button id="9">XBMC.ActivateWindow(PlayerControls)</button>
+      <button id="10"/>
+      <button id="11">Screenshot</button>
+      <button id="12">XBMC.ActivateWindow(ShutdownMenu)</button>
+      <button id="13">Up</button>
+      <button id="14">Right</button>
+      <button id="15">Down</button>
+      <button id="16">Left</button>
+      <button id="17">PreviousMenu</button>
+      <axis limit="-1" id="5">VolumeDown</axis>
+      <axis limit="+1" id="5">VolumeUp</axis>
+      <axis limit="-1" id="4">AnalogSeekBack</axis>
+      <axis limit="+1" id="4">AnalogSeekForward</axis>
+      <axis limit="0" id="3">ScrollUp</axis>
+      <axis limit="0" id="6">ScrollDown</axis>
+    </joystick>
+  </global>
+  <Home>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="3">XBMC.Skin.ToggleSetting(HomeViewToggle)</button>
+    </joystick>
+  </Home>
+  <MyFiles>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="5">Highlight</button>
+    </joystick>
+  </MyFiles>
+  <MyMusicPlaylist>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="3">Back</button>
+      <button id="5">Delete</button>
+    </joystick>
+  </MyMusicPlaylist>
+  <MyMusicFiles>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="3">Playlist</button>
+      <button id="5">Queue</button>
+    </joystick>
+  </MyMusicFiles>
+  <MyMusicLibrary>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="3">Playlist</button>
+      <button id="5">Queue</button>
+    </joystick>
+  </MyMusicLibrary>
+  <FullscreenVideo>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="1">Pause</button>
+      <button id="2">Stop</button>
+      <button id="3">CodecInfo</button>
+      <button id="5">AspectRatio</button>
+      <button id="6">Info</button>
+      <button id="9">OSD</button>
+      <button id="13">BigStepForward</button>
+      <button id="14">StepForward</button>
+      <button id="15">BigStepBack</button>
+      <button id="16">StepBack</button>
+      <button id="17">SmallStepBack</button>
+      <axis limit="0" id="3">AnalogRewind</axis>
+      <axis limit="0" id="6">AnalogFastForward</axis>
+    </joystick>
+  </FullscreenVideo>
+  <FullscreenLiveTV>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="13">ChannelUp</button>
+      <button id="14">NextChannelGroup</button>
+      <button id="15">ChannelDown</button>
+      <button id="16">PreviousChannelGroup</button>
+    </joystick>
+  </FullscreenLiveTV>
+  <FullscreenInfo>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="3">CodecInfo</button>
+      <button id="6">Back</button>
+      <button id="9">OSD</button>
+      <axis limit="0" id="3">AnalogRewind</axis>
+      <axis limit="0" id="6">AnalogFastForward</axis>
+    </joystick>
+  </FullscreenInfo>
+  <PlayerControls>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="9">Back</button>
+    </joystick>
+  </PlayerControls>
+  <Visualisation>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="1">Pause</button>
+      <button id="2">Stop</button>
+      <button id="3">CodecInfo</button>
+      <button id="5">XBMC.ActivateWindow(VisualisationPresetList)</button>
+      <button id="6">Info</button>
+      <button id="9">OSD</button>
+      <button id="13">NextPreset</button>
+      <button id="14">SkipNext</button>
+      <button id="15">PreviousPreset</button>
+      <button id="16">SkipPrevious</button>
+      <axis limit="0" id="3">AnalogRewind</axis>
+      <axis limit="0" id="6">AnalogFastForward</axis>
+    </joystick>
+  </Visualisation>
+  <MusicOSD>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="19">Back</button>
+      <button id="3">CodecInfo</button>
+      <button id="6">Info</button>
+    </joystick>
+  </MusicOSD>
+  <VisualisationSettings>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="3">Back</button>
+      <button id="9">Back</button>
+    </joystick>
+  </VisualisationSettings>
+  <VisualisationPresetList>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="3">Back</button>
+      <button id="5">Back</button>
+      <button id="9">Back</button>
+    </joystick>
+  </VisualisationPresetList>
+  <SlideShow>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="1">Pause</button>
+      <button id="2">Stop</button>
+      <button id="3">CodecInfo</button>
+      <button id="4">ZoomNormal</button>
+      <button id="5">Rotate</button>
+      <button id="6">Info</button>
+      <button id="13">ZoomIn</button>
+      <button id="14">NextPicture</button>
+      <button id="15">ZoomOut</button>
+      <button id="16">PreviousPicture</button>
+      <button id="17">Stop</button>
+    </joystick>
+  </SlideShow>
+  <ScreenCalibration>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="1">NextCalibration</button>
+      <button id="3">ResetCalibration</button>
+      <button id="6">NextResolution</button>
+    </joystick>
+  </ScreenCalibration>
+  <GUICalibration>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="1">NextCalibration</button>
+      <button id="3">ResetCalibration</button>
+      <button id="6">NextResolution</button>
+    </joystick>
+  </GUICalibration>
+  <VideoOSD>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="9">Back</button>
+    </joystick>
+  </VideoOSD>
+  <VideoMenu>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="5">AspectRatio</button>
+      <button id="2">Stop</button>
+      <button id="9">OSD</button>
+      <button id="6">Info</button>
+      <button id="3">CodecInfo</button>
+    </joystick>
+  </VideoMenu>
+  <OSDVideoSettings>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="4"/>
+      <button id="5">AspectRatio</button>
+      <button id="19">Back</button>
+    </joystick>
+  </OSDVideoSettings>
+  <OSDAudioSettings>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="4"/>
+      <button id="5">AspectRatio</button>
+      <button id="19">Back</button>
+    </joystick>
+  </OSDAudioSettings>
+  <VideoBookmarks>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="4"/>
+      <button id="5">Delete</button>
+      <button id="19">Back</button>
+    </joystick>
+  </VideoBookmarks>
+  <MyVideoLibrary>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="3">Delete</button>
+    </joystick>
+  </MyVideoLibrary>
+  <MyVideoFiles>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="5">Queue</button>
+      <button id="3">Playlist</button>
+    </joystick>
+  </MyVideoFiles>
+  <MyVideoPlaylist>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="5">Delete</button>
+      <button id="3">Back</button>
+    </joystick>
+  </MyVideoPlaylist>
+  <VirtualKeyboard>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="9">Enter</button>
+      <button id="2">BackSpace</button>
+      <button id="5">Shift</button>
+      <button id="4">Symbols</button>
+    </joystick>
+  </VirtualKeyboard>
+  <ContextMenu>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="6">Back</button>
+    </joystick>
+  </ContextMenu>
+  <Scripts>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="3">info</button>
+    </joystick>
+  </Scripts>
+  <NumericInput>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="2">BackSpace</button>
+      <button id="9">Enter</button>
+    </joystick>
+  </NumericInput>
+  <GamepadInput>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="9">Stop</button>      <!-- Enter Password -->
+    </joystick>
+  </GamepadInput>
+  <LockSettings>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="9">Back</button>
+    </joystick>
+  </LockSettings>
+  <ProfileSettings>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="9">Back</button>
+    </joystick>
+  </ProfileSettings>
+</keymap>

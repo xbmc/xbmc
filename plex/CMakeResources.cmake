@@ -81,8 +81,9 @@ if(TARGET_COMMON_DARWIN)
   set_bundle_dir(SOURCES ${root}/media DEST Resources/XBMC/media EXCLUDE .*/Splash.png Credits.html)
   set_bundle_dir(SOURCES ${root}/sounds DEST Resources/XBMC/sounds)
   set_bundle_dir(SOURCES ${root}/language DEST Resources/XBMC/language)
-  set_bundle_dir(SOURCES ${root}/system DEST Resources/XBMC/system EXCLUDE .*/python/.* .*/playercorefactory.xml .*/peripherals.xml)
+  set_bundle_dir(SOURCES ${root}/system DEST Resources/XBMC/system EXCLUDE .*/keymaps.* .*/python/.* .*/playercorefactory.xml .*/peripherals.xml)
   set_bundle_dir(SOURCES ${plexdir}/addons DEST Resources/XBMC/addons)
+  set_bundle_dir(SOURCES ${plexdir}/Resources/system DEST Resources/XBMC/system)
 
   set_bundle_dir(SOURCES ${root}/addons
                  DEST Resources/XBMC/addons
@@ -102,7 +103,6 @@ if(TARGET_COMMON_DARWIN)
   set_source_files_properties(${RESOURCE_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 
   set_source_files_properties(${plexdir}/Resources/com.plexapp.ht.helper.plist PROPERTIES MACOSX_PACKAGE_LOCATION Resources/XBMC/tools/darwin/runtime)
-  set_source_files_properties(${plexdir}/Resources/playercorefactory.xml ${plexdir}/Resources/peripherals.xml PROPERTIES MACOSX_PACKAGE_LOCATION Resources/XBMC/system)
 
   set(MEDIA_FILES
     ${plexdir}/Resources/${PLEX_SPLASH}
@@ -118,8 +118,6 @@ if(TARGET_COMMON_DARWIN)
     ${RESOURCE_FILES}
     ${MEDIA_FILES}
     ${plexdir}/Resources/com.plexapp.ht.helper.plist
-    ${plexdir}/Resources/playercorefactory.xml
-    ${plexdir}/Resources/peripherals.xml
   )
 
 else(TARGET_COMMON_DARWIN)

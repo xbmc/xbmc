@@ -1,0 +1,215 @@
+<!-- This file contains the mapping of keys (gamepad, remote, and keyboard) to actions within XBMC -->
+<!-- The <global> section is a fall through - they will only be used if the button is not          -->
+<!-- used in the current window's section.  Note that there is only handling                       -->
+<!-- for a single action per button at this stage.                                                 -->
+<!-- For joystick/gamepad configuration under linux/win32, see below as it differs from xbox       -->
+<!-- gamepads.                                                                                     -->
+
+<!-- The format is:                      -->
+<!--    <device>                         -->
+<!--      <button>action</button>        -->
+<!--    </device>                        -->
+
+<!-- To map keys from other remotes using the RCA protocol, you may add <universalremote> blocks -->
+<!-- In this case, the tags used are <obc#> where # is the original button code (OBC) of the key -->
+<!-- You set it up by adding a <universalremote> block to the window or <global> section:       -->
+<!--    <universalremote>             -->
+<!--       <obc45>Stop</obc45>         -->
+<!--    </universalremote>            -->
+
+<!-- Note that the action can be a built-in function.                 -->
+<!--  eg <B>XBMC.ActivateWindow(MyMusic)</B>                         -->
+<!-- would automatically go to My Music on the press of the B button. -->
+
+<!-- Joysticks / Gamepads:                                                                    -->
+<!--   See the sample PS3 controller configuration below for the format.                      -->
+<!--                                                                                          -->
+<!--  Joystick Name:                                                                          -->
+<!--   Do 'cat /proc/bus/input/devices' or see your xbmc log file  to find the names of       -->
+<!--   detected joysticks. The name used in the configuration should match the detected name. -->
+<!--                                                                                          -->
+<!--  Button Ids:                                                                             -->
+<!--   'id' is the button ID used by SDL. Joystick button ids of connected joysticks appear   -->
+<!--   in xbmc.log when they are pressed. Use your log to map custom buttons to actions.      -->
+<!--                                                                                          -->
+<!--  Axis Ids / Analog Controls                                                              -->
+<!--   Coming soon.                                                                           -->
+<keymap>
+  <global>
+    <joystick name="WiiRemote">
+      <button id="1">Up</button>
+      <button id="2">Down</button>
+      <button id="3">Left</button>
+      <button id="4">Right</button>
+      <button id="5">Select</button>
+      <button id="6">Back</button>
+      <button id="7">VolumeDown</button>
+      <button id="8">XBMC.ActivateWindow(Home)</button>
+      <button id="9">VolumeUp</button>
+      <button id="10">ContextMenu</button>
+      <button id="11">XBMC.ActivateWindow(PlayerControls)</button>
+    </joystick>
+  </global>
+  <Home>
+    <joystick name="WiiRemote">
+      <button id="8">Fullscreen</button>
+      <button id="10">XBMC.ActivateWindow(Favourites)</button>
+      <button id="11">XBMC.ActivateWindow(ShutdownMenu)</button>
+    </joystick>
+  </Home>
+  <MyFiles>
+    <joystick name="WiiRemote">
+      <button id="7">Move</button>
+      <button id="9">Copy</button>
+      <button id="11">Highlight</button>
+    </joystick>
+  </MyFiles>
+  <MyMusicPlaylist>
+    <joystick name="WiiRemote">
+      <button id="7">MoveItemUp</button>
+      <button id="9">MoveItemDown</button>
+      <button id="11">Delete</button>
+    </joystick>
+  </MyMusicPlaylist>
+  <MyMusicPlaylistEditor>
+    <joystick name="WiiRemote">
+      <button id="7">MoveItemUp</button>
+      <button id="9">MoveItemDown</button>
+      <button id="11">Delete</button>
+    </joystick>
+  </MyMusicPlaylistEditor>
+  <MyMusicFiles>
+    <joystick name="WiiRemote">
+      <button id="11">Playlist</button>
+    </joystick>
+  </MyMusicFiles>
+  <MyMusicLibrary>
+    <joystick name="WiiRemote">
+      <button id="11">Playlist</button>
+    </joystick>
+  </MyMusicLibrary>
+  <FullscreenVideo>
+    <joystick name="WiiRemote">
+      <button id="1">Pause</button>
+      <button id="2">Stop</button>
+      <button id="3">StepBack</button>
+      <button id="4">StepForward</button>
+      <button id="5">OSD</button>
+      <button id="6">Info</button>
+      <button id="10">CodecInfo</button>
+      <button id="11">AspectRatio</button>
+    </joystick>
+  </FullscreenVideo>
+  <FullscreenLiveTV>
+    <joystick name="WiiRemote">
+      <button id="3">ChannelDown</button>
+      <button id="4">ChannelUp</button>
+    </joystick>
+  </FullscreenLiveTV>
+  <FullscreenInfo>
+    <joystick name="WiiRemote">
+      <button id="5">CodecInfo</button>
+    </joystick>
+  </FullscreenInfo>
+  <Visualisation>
+    <joystick name="WiiRemote">
+      <button id="1">Pause</button>
+      <button id="2">Stop</button>
+      <button id="3">SkipNext</button>
+      <button id="4">SkipPrevious</button>
+      <button id="5">OSD</button>
+      <button id="6">Info</button>
+      <button id="8">XBMC.ActivateWindow(music)</button>
+      <button id="10">IncreaseRating</button>
+      <button id="11">DecreaseRating</button>
+    </joystick>
+  </Visualisation>
+  <MusicOSD>
+    <joystick name="WiiRemote">
+      <button id="10">CodecInfo</button>
+      <button id="11">Info</button>
+    </joystick>
+  </MusicOSD>
+  <VisualisationSettings>
+    <joystick name="WiiRemote">
+      <button id="10">XBMC.ActivateWindow(VisualisationPresetList)</button>
+      <button id="11">XBMC.ActivateWindow(MusicPlaylist)</button>
+    </joystick>
+  </VisualisationSettings>
+  <SlideShow>
+    <joystick name="WiiRemote">
+      <button id="1">Pause</button>
+      <button id="2">Stop</button>
+      <button id="3">PreviousPicture</button>
+      <button id="4">NextPicture</button>
+      <button id="5">CodecInfo</button>
+      <button id="6">Info</button>
+      <button id="10">ZoomIn</button>
+      <button id="11">ZoomOut</button>
+    </joystick>
+  </SlideShow>
+  <ScreenCalibration>
+    <joystick name="WiiRemote">
+      <button id="5">NextCalibration</button>
+      <button id="10">NextResolution</button>
+      <button id="11">ResetResolution</button>
+    </joystick>
+  </ScreenCalibration>
+  <VideoMenu>
+    <joystick name="WiiRemote">
+      <button id="5">Select</button>
+      <button id="10">Info</button>
+      <button id="11">AspectRatio</button>
+    </joystick>
+  </VideoMenu>
+  <VideoBookmarks>
+    <joystick name="WiiRemote">
+      <button id="11">Delete</button>
+    </joystick>
+  </VideoBookmarks>
+  <MyVideoLibrary>
+    <joystick name="WiiRemote">
+      <button id="11">Playlist</button>
+    </joystick>
+  </MyVideoLibrary>
+  <MyVideoFiles>
+    <joystick name="WiiRemote">
+      <button id="11">Playlist</button>
+    </joystick>
+  </MyVideoFiles>
+  <MyVideoPlaylist>
+    <joystick name="WiiRemote">
+      <button id="7">MoveItemDown</button>
+      <button id="9">MoveItemUp</button>
+      <button id="11">Delete</button>
+    </joystick>
+  </MyVideoPlaylist>
+  <VirtualKeyboard>
+    <joystick name="WiiRemote">
+      <button id="6">Shift</button>
+      <button id="7">CursorLeft</button>
+      <button id="9">CursorRight</button>
+      <button id="10">Symbols</button>
+      <button id="11">BackSpace</button>
+    </joystick>
+  </VirtualKeyboard>
+  <Scripts>
+    <joystick name="WiiRemote">
+      <button id="11">info</button>
+    </joystick>
+  </Scripts>
+  <NumericInput>
+    <joystick name="WiiRemote">
+      <button id="7">SkipPrevious</button>
+      <button id="9">SkipNext</button>
+      <button id="10">Enter</button>
+      <button id="11">BackSpace</button>
+    </joystick>
+  </NumericInput>
+  <PictureInfo>
+    <joystick name="WiiRemote">
+      <button id="3">PreviousPicture</button>
+      <button id="4">NextPicture</button>
+    </joystick>
+  </PictureInfo>
+</keymap>
