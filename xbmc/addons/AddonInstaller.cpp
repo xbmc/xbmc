@@ -19,7 +19,6 @@
  */
 
 #include "AddonInstaller.h"
-#include "Service.h"
 #include "utils/log.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
@@ -40,7 +39,6 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "URL.h"
-#include "pvr/PVRManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -628,32 +626,7 @@ bool CAddonInstallJob::DownloadPackage(const std::string &path, const std::strin
 
 bool CAddonInstallJob::OnPreInstall()
 {
-  // check whether this is an active skin - we need to unload it if so
-  if (CSettings::Get().GetString("lookandfeel.skin") == m_addon->ID())
-  {
-    CApplicationMessenger::Get().ExecBuiltIn("UnloadSkin", true);
-    return true;
-  }
-
-  if (m_addon->Type() == ADDON_SERVICE)
-  {
-    // make sure the addon is stopped
-    AddonPtr localAddon; // need to grab the local addon so we have the correct library path to stop
-    if (CAddonMgr::Get().GetAddon(m_addon->ID(), localAddon, ADDON_SERVICE, false))
-    {
-      boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(localAddon);
-      if (service)
-        service->Stop();
-    }
-    return !CAddonMgr::Get().IsAddonDisabled(m_addon->ID());
-  }
-
-  if (m_addon->Type() == ADDON_PVRDLL)
-  {
-    // stop the pvr manager, so running pvr add-ons are stopped and closed
-    PVR::CPVRManager::Get().Stop();
-  }
-  return false;
+  return m_addon->OnPreInstall();
 }
 
 bool CAddonInstallJob::DeleteAddon(const std::string &addonFolder)
@@ -747,50 +720,8 @@ void CAddonInstallJob::OnPostInstall(bool reloadAddon)
                                           TOAST_DISPLAY_TIME,false,
                                           TOAST_DISPLAY_TIME);
   }
-  if (m_addon->Type() == ADDON_SKIN)
-  {
-    if (reloadAddon || (!m_update && CGUIDialogYesNo::ShowAndGetInput(m_addon->Name(),
-                                                        g_localizeStrings.Get(24099),"","")))
-    {
-      CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
-      if (toast)
-      {
-        toast->ResetTimer();
-        toast->Close(true);
-      }
-      if (CSettings::Get().GetString("lookandfeel.skin") == m_addon->ID())
-        CApplicationMessenger::Get().ExecBuiltIn("ReloadSkin", true);
-      else
-        CSettings::Get().SetString("lookandfeel.skin",m_addon->ID().c_str());
-    }
-  }
 
-  if (m_addon->Type() == ADDON_SERVICE)
-  {
-    if (reloadAddon) // reload/start it if it was running
-    {
-      AddonPtr localAddon; // need to grab the local addon so we have the correct library path to stop
-      if (CAddonMgr::Get().GetAddon(m_addon->ID(), localAddon, ADDON_SERVICE, false))
-      {
-        boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(localAddon);
-        if (service)
-          service->Start();
-      }
-    }
-  }
-
-  if (m_addon->Type() == ADDON_REPOSITORY)
-  {
-    VECADDONS addons;
-    addons.push_back(m_addon);
-    CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(addons), &CAddonInstaller::Get());
-  }
-
-  if (m_addon->Type() == ADDON_PVRDLL)
-  {
-    // (re)start the pvr manager
-    PVR::CPVRManager::Get().Start(true);
-  }
+  m_addon->OnPostInstall(reloadAddon, m_update);
 }
 
 void CAddonInstallJob::ReportInstallError(const std::string& addonID,
@@ -830,17 +761,7 @@ CAddonUnInstallJob::CAddonUnInstallJob(const AddonPtr &addon)
 
 bool CAddonUnInstallJob::DoWork()
 {
-  if (m_addon->Type() == ADDON_PVRDLL)
-  {
-    // stop the pvr manager, so running pvr add-ons are stopped and closed
-    PVR::CPVRManager::Get().Stop();
-  }
-  if (m_addon->Type() == ADDON_SERVICE)
-  {
-    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(m_addon);
-    if (service)
-      service->Stop();
-  }
+  m_addon->OnPreUnInstall();
 
   AddonPtr repoPtr = CAddonInstallJob::GetRepoForAddon(m_addon);
   RepositoryPtr therepo = boost::dynamic_pointer_cast<CRepository>(repoPtr);
@@ -865,13 +786,6 @@ bool CAddonUnInstallJob::DoWork()
 
 void CAddonUnInstallJob::OnPostUnInstall()
 {
-  if (m_addon->Type() == ADDON_REPOSITORY)
-  {
-    CAddonDatabase database;
-    database.Open();
-    database.DeleteRepository(m_addon->ID());
-  }
-
   bool bSave(false);
   CFileItemList items;
   XFILE::CFavouritesDirectory::Load(items);
@@ -887,9 +801,5 @@ void CAddonUnInstallJob::OnPostUnInstall()
   if (bSave)
     CFavouritesDirectory::Save(items);
 
-  if (m_addon->Type() == ADDON_PVRDLL)
-  {
-    if (CSettings::Get().GetBool("pvrmanager.enabled"))
-      PVR::CPVRManager::Get().Start(true);
-  }
+  m_addon->OnPostUnInstall();
 }

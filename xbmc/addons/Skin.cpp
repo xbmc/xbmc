@@ -22,14 +22,18 @@
 #include "AddonManager.h"
 #include "LangInfo.h"
 #include "Util.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "ApplicationMessenger.h"
 
 // fallback for new skin resolution code
 #include "filesystem/Directory.h"
@@ -273,6 +277,34 @@ bool CSkinInfo::IsInUse() const
 const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const std::string& name, int context)
 {
   return m_includes.CreateSkinVariable(name, context);
+}
+
+bool CSkinInfo::OnPreInstall()
+{
+  // check whether this is an active skin - we need to unload it if so
+  if (IsInUse())
+  {
+    CApplicationMessenger::Get().ExecBuiltIn("UnloadSkin", true);
+    return true;
+  }
+  return false;
+}
+
+void CSkinInfo::OnPostInstall(bool restart, bool update)
+{
+  if (restart || (!update && CGUIDialogYesNo::ShowAndGetInput(Name(), g_localizeStrings.Get(24099),"","")))
+  {
+    CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+    if (toast)
+    {
+      toast->ResetTimer();
+      toast->Close(true);
+    }
+    if (CSettings::Get().GetString("lookandfeel.skin") == ID())
+      CApplicationMessenger::Get().ExecBuiltIn("ReloadSkin", true);
+    else
+      CSettings::Get().SetString("lookandfeel.skin", ID());
+  }
 }
 
 void CSkinInfo::SettingOptionsSkinColorsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)

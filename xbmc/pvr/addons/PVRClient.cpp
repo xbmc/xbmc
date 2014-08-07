@@ -21,6 +21,7 @@
 #include "Application.h"
 #include "PVRClient.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #include "epg/Epg.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/timers/PVRTimers.h"
@@ -54,6 +55,65 @@ CPVRClient::~CPVRClient(void)
 {
   Destroy();
   SAFE_DELETE(m_pInfo);
+}
+
+void CPVRClient::OnDisabled()
+{
+  // restart the PVR manager if we're disabling a client
+  if (CPVRManager::Get().IsStarted())
+    CPVRManager::Get().Start(true);
+}
+
+void CPVRClient::OnEnabled()
+{
+  // restart the PVR manager if we're enabling a client
+  CPVRManager::Get().Start(true);
+}
+
+AddonPtr CPVRClient::GetRunningInstance() const
+{
+  if (g_PVRManager.IsStarted())
+  {
+    AddonPtr pvrAddon;
+    if (g_PVRClients->GetClient(ID(), pvrAddon))
+      return pvrAddon;
+  }
+  return CAddon::GetRunningInstance();
+}
+
+bool CPVRClient::OnPreInstall()
+{
+  // stop the pvr manager, so running pvr add-ons are stopped and closed
+  PVR::CPVRManager::Get().Stop();
+  return false;
+}
+
+void CPVRClient::OnPostInstall(bool restart, bool update)
+{
+  // (re)start the pvr manager
+  PVR::CPVRManager::Get().Start(true);
+}
+
+void CPVRClient::OnPreUnInstall()
+{
+  // stop the pvr manager, so running pvr add-ons are stopped and closed
+  PVR::CPVRManager::Get().Stop();
+}
+
+void CPVRClient::OnPostUnInstall()
+{
+  if (CSettings::Get().GetBool("pvrmanager.enabled"))
+    PVR::CPVRManager::Get().Start(true);
+}
+
+bool CPVRClient::CanInstall(const std::string &referer)
+{
+  if (!PVR::CPVRManager::Get().InstallAddonAllowed(ID()))
+  {
+    PVR::CPVRManager::Get().MarkAsOutdated(ID(), referer);
+    return false;
+  }
+  return CAddon::CanInstall(referer);
 }
 
 void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)

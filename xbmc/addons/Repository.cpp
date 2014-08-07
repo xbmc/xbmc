@@ -26,9 +26,9 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/File.h"
 #include "filesystem/PluginDirectory.h"
-#include "pvr/PVRManager.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
+#include "utils/JobManager.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
@@ -210,6 +210,21 @@ VECADDONS CRepository::Parse(const DirInfo& dir)
   return result;
 }
 
+void CRepository::OnPostInstall(bool restart, bool update)
+{
+  VECADDONS addons;
+  AddonPtr repo(new CRepository(*this));
+  addons.push_back(repo);
+  CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(addons), &CAddonInstaller::Get());
+}
+
+void CRepository::OnPostUnInstall()
+{
+  CAddonDatabase database;
+  database.Open();
+  database.DeleteRepository(ID());
+}
+
 CRepositoryUpdateJob::CRepositoryUpdateJob(const VECADDONS &repos)
   : m_repos(repos)
 {
@@ -282,10 +297,7 @@ bool CRepositoryUpdateJob::DoWork()
         if (URIUtils::IsInternetStream(newAddon->Path()))
           referer = StringUtils::Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().asString().c_str());
 
-        if (newAddon->Type() == ADDON_PVRDLL &&
-            !PVR::CPVRManager::Get().InstallAddonAllowed(newAddon->ID()))
-          PVR::CPVRManager::Get().MarkAsOutdated(addon->ID(), referer);
-        else
+        if (!newAddon->CanInstall(referer))
           CAddonInstaller::Get().Install(addon->ID(), true, referer);
       }
       else

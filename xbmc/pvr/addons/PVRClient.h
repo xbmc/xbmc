@@ -58,6 +58,15 @@ namespace PVR
     CPVRClient(const cp_extension_t *ext);
     ~CPVRClient(void);
 
+    virtual void OnDisabled();
+    virtual void OnEnabled();
+    virtual ADDON::AddonPtr GetRunningInstance() const;
+    virtual bool OnPreInstall();
+    virtual void OnPostInstall(bool restart, bool update);
+    virtual void OnPreUnInstall();
+    virtual void OnPostUnInstall();
+    virtual bool CanInstall(const std::string &referer);
+
     /** @name PVR add-on methods */
     //@{
 
