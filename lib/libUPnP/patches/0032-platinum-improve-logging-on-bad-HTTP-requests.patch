@@ -1,0 +1,150 @@
+From bf8934a1f074c14b21359978821957520ed66eb4 Mon Sep 17 00:00:00 2001
+From: montellese <montellese@xbmc.org>
+Date: Thu, 7 Aug 2014 21:28:38 +0200
+Subject: [PATCH] platinum: improve logging on bad HTTP requests
+
+---
+ lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp | 77 ++++++++++++++++++----
+ 1 file changed, 63 insertions(+), 14 deletions(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp b/lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp
+index 4d9524b..6fbe7a7 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp
++++ b/lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp
+@@ -510,10 +510,10 @@ PLT_DeviceHost::ProcessHttpPostRequest(NPT_HttpRequest&              request,
+ #endif
+ 
+     if (NPT_FAILED(FindServiceByControlURL(url, service, true)))
+-        goto bad_request;
++        goto bad_request_find_service;
+ 
+     if (!request.GetHeaders().GetHeaderValue("SOAPAction"))
+-        goto bad_request;
++        goto bad_request_soap_header_value;
+ 
+     // extract the soap action name from the header
+     soap_action_header = *request.GetHeaders().GetHeaderValue("SOAPAction");
+@@ -522,45 +522,45 @@ PLT_DeviceHost::ProcessHttpPostRequest(NPT_HttpRequest&              request,
+     
+     components = soap_action_header.Split("#");
+     if (components.GetItemCount() != 2)
+-        goto bad_request;
++        goto bad_request_soap_action_header;
+     
+     soap_action_name = *components.GetItem(1);
+-    
++
+     // read the xml body and parse it
+     if (NPT_FAILED(PLT_HttpHelper::ParseBody(request, xml)))
+-        goto bad_request;
++        goto bad_request_body_parse_error;
+ 
+     // check envelope
+     if (xml->GetTag().Compare("Envelope", true))
+-        goto bad_request;
++        goto bad_request_no_envelope;
+ 
+ #if defined(PLATINUM_UPNP_SPECS_STRICT)
+     // check namespace
+     if (!xml->GetNamespace() || xml->GetNamespace()->Compare("http://schemas.xmlsoap.org/soap/envelope/"))
+-        goto bad_request;
++        goto bad_request_upnp_not_strict;
+ 
+     // check encoding
+     attr = xml->GetAttribute("encodingStyle", "http://schemas.xmlsoap.org/soap/envelope/");
+     if (!attr || attr->Compare("http://schemas.xmlsoap.org/soap/encoding/"))
+-        goto bad_request;
++        goto bad_request_bad_encoding;
+ #endif
+ 
+     // read action
+     soap_body = PLT_XmlHelper::GetChild(xml, "Body");
+     if (soap_body == NULL)
+-        goto bad_request;
++        goto bad_request_soap_body;
+ 
+     PLT_XmlHelper::GetChild(soap_body, soap_action);
+     if (soap_action == NULL)
+-        goto bad_request;
++        goto bad_request_soap_action_body;
+ 
+     // verify action name is identical to SOAPACTION header*/
+     if (soap_action->GetTag().Compare(soap_action_name, true))
+-        goto bad_request;
++        goto bad_request_action_mismatch;
+ 
+     // verify namespace
+     if (!soap_action->GetNamespace() || soap_action->GetNamespace()->Compare(service->GetServiceType()))
+-        goto bad_request;
++        goto bad_request_bad_namespace;
+ 
+     // create a buffer for our response body and call the service
+     if ((action_desc = service->FindActionDesc(soap_action_name)) == NULL) {
+@@ -646,8 +646,58 @@ done:
+     return NPT_SUCCESS;
+ 
+ bad_request:
+-    delete xml;
++    // generic 500 now unused
+     response.SetStatus(500, "Bad Request");
++    goto bad_request_end;
++
++bad_request_find_service:
++    response.SetStatus(500, "Bad Request: Service by URL");
++    goto bad_request_end;
++
++bad_request_soap_header_value:
++    response.SetStatus(500, "Bad Request: SOAP Header");
++    goto bad_request_end;
++
++bad_request_soap_action_header:
++    response.SetStatus(500, "Bad Request: SOAP Action in Header");
++    goto bad_request_end;
++
++bad_request_body_parse_error:
++    response.SetStatus(500, "Bad Request: Error Parsing XML Body");
++    goto bad_request_end;
++
++bad_request_no_envelope:
++    response.SetStatus(500, "Bad Request: SOAP Envelope");
++    goto bad_request_end;
++
++#if defined(PLATINUM_UPNP_SPECS_STRICT)
++bad_request_upnp_not_strict:
++    response.SetStatus(500, "Bad Request: SOAP not Strict");
++    goto bad_request_end;
++
++bad_request_bad_encoding:
++    response.SetStatus(500, "Bad Request: SOAP Encoding");
++    goto bad_request_end;
++#endif
++
++bad_request_soap_body:
++    response.SetStatus(500, "Bad Request: SOAP Body");
++    goto bad_request_end;
++
++bad_request_soap_action_body:
++    response.SetStatus(500, "Bad Request: SOAP Action in Body");
++    goto bad_request_end;
++
++bad_request_action_mismatch:
++    response.SetStatus(500, "Bad Request: SOAP Action Mismatch");
++    goto bad_request_end;
++
++bad_request_bad_namespace:
++    response.SetStatus(500, "Bad Request: Bad Namespace");
++    goto bad_request_end;
++
++bad_request_end:
++    delete xml;
+     return NPT_SUCCESS;
+ }
+ 
+@@ -896,4 +946,3 @@ PLT_DeviceHost::OnAction(PLT_ActionReference&          action,
+     action->SetError(401, "Invalid Action");
+     return NPT_FAILURE;
+ }
+-
+-- 
+1.7.11.msysgit.0
+
