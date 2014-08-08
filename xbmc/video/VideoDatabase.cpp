@@ -8019,8 +8019,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     sql = "SELECT tvshow.idShow FROM tvshow "
             "JOIN tvshowlinkpath ON tvshow.idShow = tvshowlinkpath.idShow "
             "JOIN path ON path.idPath = tvshowlinkpath.idPath "
-          "WHERE NOT EXISTS (SELECT 1 FROM episode WHERE episode.idShow = tvshow.idShow) "
-            "AND (path.strContent IS NULL OR path.strContent = '')";
+          "WHERE NOT EXISTS (SELECT 1 FROM episode WHERE episode.idShow = tvshow.idShow)";
     m_pDS->query(sql.c_str());
     while (!m_pDS->eof())
     {
