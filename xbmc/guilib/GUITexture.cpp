@@ -76,7 +76,7 @@ CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float heig
 
   // anim gifs
   m_currentFrame = 0;
-  m_frameCounter = (unsigned int) -1;
+  m_lasttime = 0;
   m_currentLoop = 0;
 
   m_allocateDynamically = false;
@@ -115,7 +115,6 @@ CGUITextureBase::CGUITextureBase(const CGUITextureBase &right) :
   m_diffuseScaleV = 1.0f;
 
   m_currentFrame = 0;
-  m_frameCounter = (unsigned int) -1;
   m_currentLoop = 0;
 
   m_isAllocated = NO;
@@ -140,7 +139,6 @@ bool CGUITextureBase::AllocateOnDemand()
     // reset animated textures (animgifs)
     m_currentLoop = 0;
     m_currentFrame = 0;
-    m_frameCounter = 0;
   }
 
   return false;
@@ -153,7 +151,7 @@ bool CGUITextureBase::Process(unsigned int currentTime)
   changed |= AllocateOnDemand();
 
   if (m_texture.size() > 1)
-    changed |= UpdateAnimFrame();
+    changed |= UpdateAnimFrame(currentTime);
 
   if (m_invalid)
     changed |= CalculateSize();
@@ -296,7 +294,6 @@ bool CGUITextureBase::AllocResources()
     return false; // already have our texture
 
   // reset our animstate
-  m_frameCounter = 0;
   m_currentFrame = 0;
   m_currentLoop = 0;
 
@@ -491,16 +488,13 @@ void CGUITextureBase::SetInvalid()
   m_invalid = true;
 }
 
-bool CGUITextureBase::UpdateAnimFrame()
+bool CGUITextureBase::UpdateAnimFrame(unsigned int currentTime)
 {
   bool changed = false;
+  unsigned int delay = m_texture.m_delays[m_currentFrame]/2;//fixme - its to slow if not divided by 2!
 
-  m_frameCounter++;
-  unsigned int delay = m_texture.m_delays[m_currentFrame];
-  if (!delay) delay = 100;
-  if (m_frameCounter * 40 >= delay)
+  if ((currentTime - m_lasttime) >= delay)
   {
-    m_frameCounter = 0;
     if (m_currentFrame + 1 >= m_texture.size())
     {
       if (m_texture.m_loops > 0)
@@ -509,6 +503,7 @@ bool CGUITextureBase::UpdateAnimFrame()
         {
           m_currentLoop++;
           m_currentFrame = 0;
+          m_lasttime = currentTime;
           changed = true;
         }
       }
@@ -516,12 +511,14 @@ bool CGUITextureBase::UpdateAnimFrame()
       {
         // 0 == loop forever
         m_currentFrame = 0;
+        m_lasttime = currentTime;
         changed = true;
       }
     }
     else
     {
       m_currentFrame++;
+      m_lasttime = currentTime;
       changed = true;
     }
   }
