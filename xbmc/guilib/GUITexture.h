@@ -122,6 +122,7 @@ public:
   bool IsAllocated() const { return m_isAllocated != NO; };
   bool FailedToAlloc() const { return m_isAllocated == NORMAL_FAILED || m_isAllocated == LARGE_FAILED; };
   bool ReadyToRender() const;
+  bool AnimFinishedOnce() const { return m_loopedOnce; };
 protected:
   bool CalculateSize();
   void LoadDiffuseImage();
@@ -154,6 +155,7 @@ protected:
   float m_texCoordsScaleU, m_texCoordsScaleV; // scale factor for pixel->texture coordinates
 
   // animations
+  bool m_loopedOnce;
   int m_currentLoop;
   unsigned int m_currentFrame;
   uint32_t m_lasttime;

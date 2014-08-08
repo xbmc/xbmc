@@ -78,6 +78,7 @@ CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float heig
   m_currentFrame = 0;
   m_lasttime = 0;
   m_currentLoop = 0;
+  m_loopedOnce = false;
 
   m_allocateDynamically = false;
   m_isAllocated = NO;
@@ -116,6 +117,7 @@ CGUITextureBase::CGUITextureBase(const CGUITextureBase &right) :
 
   m_currentFrame = 0;
   m_currentLoop = 0;
+  m_loopedOnce = false;
 
   m_isAllocated = NO;
   m_invalid = true;
@@ -138,6 +140,7 @@ bool CGUITextureBase::AllocateOnDemand()
       FreeResources();
     // reset animated textures (animgifs)
     m_currentLoop = 0;
+    m_loopedOnce = false;
     m_currentFrame = 0;
   }
 
@@ -296,6 +299,7 @@ bool CGUITextureBase::AllocResources()
   // reset our animstate
   m_currentFrame = 0;
   m_currentLoop = 0;
+  m_loopedOnce = false;
 
   bool changed = false;
   bool useLarge = m_info.useLarge || !g_TextureManager.CanLoad(m_info.filename);
@@ -355,6 +359,9 @@ bool CGUITextureBase::AllocResources()
 
   // call our implementation
   Allocate();
+  
+  if (m_texture.size() < 2)// no animation
+    m_loopedOnce = true;
 
   return changed;
 }
@@ -469,6 +476,7 @@ void CGUITextureBase::FreeResources(bool immediately /* = false */)
 
   m_currentFrame = 0;
   m_currentLoop = 0;
+  m_loopedOnce = false;
   m_texCoordsScaleU = 1.0f;
   m_texCoordsScaleV = 1.0f;
 
@@ -503,6 +511,7 @@ bool CGUITextureBase::UpdateAnimFrame(unsigned int currentTime)
         {
           m_currentLoop++;
           m_currentFrame = 0;
+          m_loopedOnce = true;
           m_lasttime = currentTime;
           changed = true;
         }
@@ -511,6 +520,7 @@ bool CGUITextureBase::UpdateAnimFrame(unsigned int currentTime)
       {
         // 0 == loop forever
         m_currentFrame = 0;
+        m_loopedOnce = true;
         m_lasttime = currentTime;
         changed = true;
       }
