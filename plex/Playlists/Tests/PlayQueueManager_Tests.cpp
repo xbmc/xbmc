@@ -93,16 +93,6 @@ protected:
   CPlexPlayQueueManager manager;
 };
 
-#if 0
-TEST_F(PlayQueueManagerTest, GetPlaylistFromString_basic)
-{
-  EXPECT_EQ(PLAYLIST_MUSIC, manager.getPlaylistFromString("audio"));
-  EXPECT_EQ(PLAYLIST_VIDEO, manager.getPlaylistFromString("video"));
-  EXPECT_EQ(PLAYLIST_PICTURE, manager.getPlaylistFromString("photo"));
-  EXPECT_EQ(PLAYLIST_NONE, manager.getPlaylistFromString("bar"));
-}
-#endif
-
 #define newItem(list, a)                                                                           \
   {                                                                                                \
     CFileItemPtr item = CFileItemPtr(new CFileItem());                                            \

@@ -890,6 +890,7 @@ bool CPlexDirectory::GetOnlineChannelDirectory(CFileItemList &items)
 bool CPlexDirectory::GetPlaylistsDirectory(CFileItemList &items)
 {
   items.SetPlexDirectoryType(PLEX_DIR_TYPE_PLAYLIST);
+  items.SetProperty("PlexContent", PlexUtils::GetPlexContent(items));
   items.SetPath("plexserver://playlists/");
   items.AddSortMethod(SORT_METHOD_NONE, 553, LABEL_MASKS());
   
@@ -900,11 +901,23 @@ bool CPlexDirectory::GetPlaylistsDirectory(CFileItemList &items)
     item->SetPath("plexserver://playqueue");
 
     if (pqType == PLEX_MEDIA_TYPE_MUSIC)
+    {
       item->SetLabel("Music Queue");
+      item->SetProperty("type", "musicplayqueue");
+    }
     else if (pqType == PLEX_MEDIA_TYPE_VIDEO)
+    {
       item->SetLabel("Video Queue");
+      item->SetProperty("type", "videoplayqueue");
+    }
+    else if (pqType == PLEX_MEDIA_TYPE_PHOTO)
+    {
+      item->SetLabel("Photo Queue");
+      item->SetProperty("type", "photoplayqueue");
+    }
     
-    item->SetProperty("type", "playqueue");
+    item->SetPlexDirectoryType(PLEX_DIR_TYPE_PLAYLIST);
+    item->SetProperty("PlexContent", PlexUtils::GetPlexContent(*item));
     
     if (g_plexApplication.serverManager->GetBestServer())
     {
@@ -932,10 +945,15 @@ bool CPlexDirectory::GetPlaylistsDirectory(CFileItemList &items)
       {
         for (int i = 0; i < plList.Size(); i ++)
         {
-          plList.Get(i)->SetProperty("serverName", server->GetName());
-          plList.Get(i)->SetProperty("serverOwner", server->GetOwner());
-          plList.Get(i)->SetProperty("type", "playlist");
-          items.Add(plList.Get(i));
+          CFileItemPtr item = plList.Get(i);
+          if (!item)
+            continue;
+          
+          item->SetProperty("serverName", server->GetName());
+          item->SetProperty("serverOwner", server->GetOwner());
+          item->SetProperty("type", item->GetProperty("playlistType").asString() + "playlist");
+          item->SetProperty("PlexContent", PlexUtils::GetPlexContent(*item));
+          items.Add(item);
         }
       }
       else

@@ -3,6 +3,7 @@
 #include "PlexDirectory.h"
 #include "PlexApplication.h"
 #include "Client/PlexServerManager.h"
+#include "Playlists/PlexPlayQueueManager.h"
 
 const char playQueueXMLNoMixed[] =
     "<?xml version=\"1.0\" ?>"
@@ -128,6 +129,34 @@ TEST(PlexDirectoryOverflowTest, exactly1024)
   EXPECT_STREQ(randomdata, list.GetProperty("id").asString().c_str());
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+class PlexPlayQueueManagerFakeVideo : public CPlexPlayQueueManager
+{
+public:
+  ePlexMediaType getCurrentPlayQueueType() const
+  {
+    return PLEX_MEDIA_TYPE_VIDEO;
+  }
+};
+
+class PlexDirectoryPlaylistTests : public ::testing::Test
+{
+public:
+  virtual void SetUp()
+  {
+    CPlexServerPtr server1 = PlexTestUtils::serverWithConnection();
+    server1->SetVersion("0.9.9.13.0-abc123");
+    g_plexApplication.serverManager = CPlexServerManagerPtr(new CPlexServerManager(server1));
+    g_plexApplication.playQueueManager = CPlexPlayQueueManagerPtr(new PlexPlayQueueManagerFakeVideo);
+  }
+  
+  virtual void TearDown()
+  {
+    g_plexApplication.serverManager.reset();
+    g_plexApplication.playQueueManager.reset();
+  }
+};
+
 TEST(PlexDirectoryPlaylists, allParse)
 {
   PlexDirectoryFakeDataTest dir(testItem_playlistAll);
@@ -138,37 +167,42 @@ TEST(PlexDirectoryPlaylists, allParse)
   EXPECT_EQ(PLEX_DIR_TYPE_PLAYLIST, list.Get(0)->GetPlexDirectoryType());
 }
 
-TEST(PlexDirectoryPlaylists, twoServers)
+TEST_F(PlexDirectoryPlaylistTests, twoServers)
 {
   PlexDirectoryFakeDataTest dir(testItem_playlistAll);
 
-  CPlexServerPtr server1 = PlexTestUtils::serverWithConnection();
-  server1->SetVersion("0.9.9.13.0-abc123"); // we need to have a version higher than 0.9.9.13 for it to work.
   CPlexServerPtr server2 = PlexTestUtils::serverWithConnection("abc321", "10.0.0.2");
   server2->SetVersion("0.9.9.13.0-abc123");
-  
-  g_plexApplication.serverManager = CPlexServerManagerPtr(new CPlexServerManager(server1));
   g_plexApplication.serverManager->MergeServer(server2);
 
   CFileItemList list;
   EXPECT_TRUE(dir.GetDirectory("plexserver://playlists", list));
-  EXPECT_EQ(2, list.Size());
+  EXPECT_EQ(3, list.Size());
 }
 
-TEST(PlexDirectoryPlaylists, oneOldServer)
+TEST_F(PlexDirectoryPlaylistTests, oneOldServer)
 {
   PlexDirectoryFakeDataTest dir(testItem_playlistAll);
   
-  CPlexServerPtr server1 = PlexTestUtils::serverWithConnection();
-  server1->SetVersion("0.9.9.10.0-abc123"); // to old
-
   CPlexServerPtr server2 = PlexTestUtils::serverWithConnection();
-  server2->SetVersion("0.9.9.13.0-abc123"); // to old
-
-  g_plexApplication.serverManager = CPlexServerManagerPtr(new CPlexServerManager(server1));
+  server2->SetVersion("0.9.9.10.0-abc123"); // to old
   g_plexApplication.serverManager->MergeServer(server2);
   
   CFileItemList list;
   EXPECT_TRUE(dir.GetDirectory("plexserver://playlists", list));
   EXPECT_EQ(1, list.Size());
+}
+
+
+TEST_F(PlexDirectoryPlaylistTests, playQueueType)
+{
+  PlexDirectoryFakeDataTest dir(testItem_playlistAll);
+  
+  CFileItemList list;
+  EXPECT_TRUE(dir.GetDirectory("plexserver://playlists", list));
+  
+  CFileItemPtr item = list.Get(0);
+  EXPECT_TRUE(item);
+  
+  EXPECT_STREQ("videoplayqueue", item->GetProperty("type").asString().c_str());
 }

@@ -119,7 +119,7 @@ if(ENABLE_TESTING)
     message(STATUS "Adding test case ${cases}")
     list(APPEND TEST_CASES_OBJS $<TARGET_OBJECTS:${cases}>)
   endforeach(cases ${TEST_CASES})
-  add_executable(PlexHomeTheaterTests ${TEST_CASES_OBJS} $<TARGET_OBJECTS:xbmctest> $<TARGET_OBJECTS:PlexMain> $<TARGET_OBJECTS:PlexTestingUtils>)
+  add_executable(PlexHomeTheaterTests ${TEST_CASES_OBJS} $<TARGET_OBJECTS:xbmctest> $<TARGET_OBJECTS:PlexMain> Tests/PlexTestUtils.cpp Tests/PlexTestUtils.h)
   target_link_libraries(PlexHomeTheaterTests xbmc pcre gtest gmock ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
   add_test(PlexHomeTheaterTests ${EXECUTABLE_OUTPUT_PATH}/PlexHomeTheaterTests --gtest_output=xml:${CMAKE_CURRENT_BINARY_DIR}/PlexHomeTheaterTests.xml --gtest_color=yes)
 
