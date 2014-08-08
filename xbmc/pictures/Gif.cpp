@@ -31,18 +31,31 @@ class Gifreader
 {
 public:
   unsigned char* buffer;
+  unsigned int buffSize;
   unsigned int readPosition;
 
-  Gifreader() : buffer(NULL), readPosition(0) {}
+  Gifreader() : buffer(NULL), buffSize(0), readPosition(0) {}
 };
 
 int ReadFromMemory(GifFileType* gif, GifByteType* gifbyte, int len)
 {
   unsigned int alreadyRead = ((Gifreader*)gif->UserData)->readPosition;
-  unsigned char* src = ((Gifreader*)gif->UserData)->buffer + alreadyRead;
-  memcpy(gifbyte, src, len);
-  ((Gifreader*)gif->UserData)->readPosition += len; 
-  return len;
+  unsigned int buffSizeLeft = ((Gifreader*)gif->UserData)->buffSize - alreadyRead;
+  int readBytes = len;
+
+  if (len <= 0)
+    readBytes = 0;
+
+  if (len > buffSizeLeft)
+    readBytes = buffSizeLeft;
+
+  if (readBytes > 0)
+  {
+    unsigned char* src = ((Gifreader*)gif->UserData)->buffer + alreadyRead;
+    memcpy(gifbyte, src, readBytes);
+    ((Gifreader*)gif->UserData)->readPosition += readBytes;
+  }
+  return readBytes;
 }
 
 int ReadFromVfs(GifFileType* gif, GifByteType* gifbyte, int len)
@@ -474,6 +487,7 @@ bool Gif::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsig
 
   Gifreader reader;
   reader.buffer = buffer;
+  reader.buffSize = bufSize;
 
   int err = 0;
 #if GIFLIB_MAJOR == 4
