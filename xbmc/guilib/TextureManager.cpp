@@ -363,14 +363,14 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
         return emptyTexture;
       }
 
-      pMap = new CTextureMap(strTextureName, gif.Width(), gif.Height(), gif.m_loops);
+      pMap = new CTextureMap(strTextureName, gif.Width(), gif.Height(), gif.GetNumLoops());
       
-      for (std::vector<GifFrame>::iterator frame = gif.m_frames.begin(); frame != gif.m_frames.end(); ++frame)
+      for (std::vector<GifFrame>::iterator frame = gif.GetFrames().begin(); frame != gif.GetFrames().end(); ++frame)
       {
         CTexture *glTexture = new CTexture();
         if (glTexture)
         {
-          glTexture->LoadFromMemory(gif.Width(), gif.Height(), gif.m_pitch, XB_FMT_A8R8G8B8, false, frame->m_pImage );
+          glTexture->LoadFromMemory(gif.Width(), gif.Height(), gif.GetPitch(), XB_FMT_A8R8G8B8, false, frame->m_pImage );
           pMap->Add(glTexture, frame->m_delay);
         }
       }

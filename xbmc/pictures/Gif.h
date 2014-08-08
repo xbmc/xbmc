@@ -68,19 +68,22 @@ public:
   bool LoadGifMetaData(const char* file);
   bool LoadGif(const char* file);
 
+  virtual bool LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height);
+  virtual bool Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format);
+  virtual bool CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile, 
+                                          unsigned char* &bufferout, unsigned int &bufferoutSize);
+  bool IsAnimated(const char* file);
+  std::vector<GifFrame>& GetFrames() { return m_frames; }
+  unsigned int GetPitch() const { return m_pitch; }
+  unsigned int GetNumLoops() const { return m_loops; }
+
+private:
   std::vector<GifFrame> m_frames;
   unsigned int    m_imageSize;
   unsigned int    m_pitch;
   unsigned int    m_loops;
   unsigned int    m_numFrames;
 
-  virtual bool LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height);
-  virtual bool Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format);
-  virtual bool CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile, 
-                                          unsigned char* &bufferout, unsigned int &bufferoutSize);
-  bool IsAnimated(const char* file);
-
-private:
   DllLibGif       m_dll;
   std::string     m_filename;
   GifFileType*    m_gif;
