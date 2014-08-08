@@ -1393,8 +1393,6 @@ void CGUIPlexMediaWindow::AddFilters()
         SET_CONTROL_HIDDEN(SORT_LABEL);
       }
     }
-
-    Update(m_sectionRoot.Get(), false, true);
   }
 
 #ifdef USE_PAGING
