@@ -951,8 +951,15 @@ bool CPlexDirectory::GetPlaylistsDirectory(CFileItemList &items)
           
           item->SetProperty("serverName", server->GetName());
           item->SetProperty("serverOwner", server->GetOwner());
-          item->SetProperty("type", item->GetProperty("playlistType").asString() + "playlist");
           item->SetProperty("PlexContent", PlexUtils::GetPlexContent(*item));
+
+          // we expect music instead of audio in the skin
+          std::string type = item->GetProperty("playlistType").asString();
+          if (type == "audio")
+            type = "music";
+          
+          item->SetProperty("type", type + "playlist");
+          
           items.Add(item);
         }
       }
