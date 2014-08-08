@@ -22,8 +22,14 @@
 
 #include "guilib/iimage.h"
 #include "DllLibGif.h"
-#include "guilib/Texture.h"
+#include <vector>
 
+namespace XFILE
+{
+  class CFile;
+};
+
+struct COLOR;
 class GifFrame 
 {
   friend class Gif;
@@ -41,12 +47,11 @@ public:
 private:
 
   unsigned int    m_imageSize;
-  unsigned int    m_ColorTableSize;
   unsigned int    m_height;
   unsigned int    m_width;
   unsigned int    m_top;
   unsigned int    m_left;
-  COLOR* m_pPalette;
+  std::vector<COLOR>   m_palette;
   unsigned int m_disposal;
   int m_transparent;
 };
@@ -80,15 +85,16 @@ private:
   std::string     m_filename;
   GifFileType*    m_gif;
   bool            m_hasBackground;
-  COLOR           m_backColor;
-  COLOR*          m_pGlobalPalette;
-  unsigned int    m_gloabalPaletteSize;
+  COLOR*          m_backColor;
+  std::vector<COLOR> m_globalPalette;
   unsigned char*  m_pTemplate;
   int             m_isAnimated;
+  XFILE::CFile*   m_gifFile;
 
   void InitTemplateAndColormap();
   bool LoadGifMetaData(GifFileType* file);
-  static void ConvertColorTable(COLOR* dest, ColorMapObject* src, unsigned int size);  
+  static void ConvertColorTable(std::vector<COLOR> &dest, ColorMapObject* src, unsigned int size);
+  bool gcbToFrame(GifFrame &frame, unsigned int imgIdx);
   bool ExtractFrames(unsigned int count);
   void SetFrameAreaToBack(unsigned char* dest, const GifFrame &frame);
   void ConstructFrame(GifFrame &frame, const unsigned char* src) const;
