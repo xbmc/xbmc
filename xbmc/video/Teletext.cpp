@@ -1452,6 +1452,8 @@ void CTeletextDecoder::DoRenderPage(int startrow, int national_subset_bak)
       break;
     }
   }
+  m_RenderInfo.FontWidth_Normal = m_RenderInfo.Width / (m_RenderInfo.nofirst ? 39 : 40);
+  SetFontWidth(m_RenderInfo.FontWidth_Normal);
 
   if (m_RenderInfo.TranspMode || m_RenderInfo.Boxed)
   {
