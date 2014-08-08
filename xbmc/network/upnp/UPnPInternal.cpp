@@ -274,12 +274,12 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
               object.m_People.artists.Add(itArtist->c_str());
           object.m_Affiliation.album = tag.m_strAlbum;
           object.m_Title = tag.m_strTitle;
-          object.m_Date = CDateTime(tag.m_iYear, 0, 0, 0, 0, 0).GetAsW3CDate().c_str();
+          object.m_Date = CDateTime(tag.m_iYear, 1, 1, 0, 0, 0).GetAsW3CDate().c_str();
           object.m_ReferenceID = NPT_String::Format("videodb://musicvideos/titles/%i", tag.m_iDbId);
         } else if (tag.m_type == MediaTypeMovie) {
           object.m_ObjectClass.type = "object.item.videoItem.movie";
           object.m_Title = tag.m_strTitle;
-          object.m_Date = CDateTime(tag.m_iYear, 0, 0, 0, 0, 0).GetAsW3CDate().c_str();
+          object.m_Date = CDateTime(tag.m_iYear, 1, 1, 0, 0, 0).GetAsW3CDate().c_str();
           object.m_ReferenceID = NPT_String::Format("videodb://movies/titles/%i", tag.m_iDbId);
         } else {
           object.m_ObjectClass.type = "object.item.videoItem.videoBroadcast";
@@ -517,8 +517,8 @@ BuildObject(CFileItem&                    item,
                   container->m_Recorded.episode_number = tag.m_iEpisode;
                   container->m_MiscInfo.play_count = tag.m_playCount;
                   container->m_Title = tag.m_strTitle;
-                  if(!tag.m_premiered.IsValid() && tag.m_iYear)
-                    container->m_Date = NPT_String::FromInteger(tag.m_iYear) + "-01-01";
+                  if (!tag.m_premiered.IsValid() && tag.m_iYear)
+                    container->m_Date = CDateTime(tag.m_iYear, 1, 1, 0, 0, 0).GetAsW3CDateTime().c_str();
                   else
                     container->m_Date = tag.m_premiered.GetAsW3CDate().c_str();
 
