@@ -889,6 +889,32 @@ bool CPlexDirectory::GetOnlineChannelDirectory(CFileItemList &items)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexDirectory::GetPlaylistsDirectory(CFileItemList &items)
 {
+  items.SetPlexDirectoryType(PLEX_DIR_TYPE_PLAYLIST);
+  items.SetPath("plexserver://playlists/");
+  items.AddSortMethod(SORT_METHOD_NONE, 553, LABEL_MASKS());
+  
+  ePlexMediaType pqType = g_plexApplication.playQueueManager->getCurrentPlayQueueType();
+  if (pqType != PLEX_MEDIA_TYPE_UNKNOWN)
+  {
+    CFileItemPtr item = CFileItemPtr(new CFileItem);
+    item->SetPath("plexserver://playqueue");
+
+    if (pqType == PLEX_MEDIA_TYPE_MUSIC)
+      item->SetLabel("Music Queue");
+    else if (pqType == PLEX_MEDIA_TYPE_VIDEO)
+      item->SetLabel("Video Queue");
+    
+    item->SetProperty("type", "playqueue");
+    
+    if (g_plexApplication.serverManager->GetBestServer())
+    {
+      item->SetProperty("serverName", g_plexApplication.serverManager->GetBestServer()->GetName());
+      item->SetProperty("serverOwner", g_plexApplication.serverManager->GetBestServer()->GetOwner());
+    }
+    
+    items.Add(item);
+  }
+  
   CPlexServerVersion playlistVersion("0.9.9.12.0");
   PlexServerList list = g_plexApplication.serverManager->GetAllServers(CPlexServerManager::SERVER_OWNED);
   BOOST_FOREACH(CPlexServerPtr server, list)
@@ -903,9 +929,19 @@ bool CPlexDirectory::GetPlaylistsDirectory(CFileItemList &items)
       CFileItemList plList;
       
       if (GetDirectory(plURL, plList))
-        items.Append(plList);
+      {
+        for (int i = 0; i < plList.Size(); i ++)
+        {
+          plList.Get(i)->SetProperty("serverName", server->GetName());
+          plList.Get(i)->SetProperty("serverOwner", server->GetOwner());
+          plList.Get(i)->SetProperty("type", "playlist");
+          items.Add(plList.Get(i));
+        }
+      }
       else
+      {
         CLog::Log(LOGWARNING, "CPlexDirectory::GetPlaylistsDirectory - failed to fetch playlists from %s", server->toString().c_str());
+      }
     }
   }
   
