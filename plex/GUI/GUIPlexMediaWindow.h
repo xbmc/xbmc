@@ -139,6 +139,7 @@ private:
     std::map<std::string, bool> m_contentMatch;
     EPlexDirectoryType m_directoryType;
 
+    CCriticalSection m_fetchMapsSection;
     FetchPages m_fetchedPages;
     FetchJobMap m_fetchJobs;
 };

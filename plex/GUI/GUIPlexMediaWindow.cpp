@@ -560,8 +560,8 @@ bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItem
 {
   CURL u(strDirectory);
 #ifdef USE_PAGING
-  u.SetProtocolOption("containerStart", "0");
-  u.SetProtocolOption("containerSize", boost::lexical_cast<std::string>(PLEX_DEFAULT_PAGE_SIZE));
+  u.SetOption("X-Plex-Container-Start", "0");
+  u.SetOption("X-Plex-Container-Size", boost::lexical_cast<std::string>(PLEX_DEFAULT_PAGE_SIZE));
 #endif
 
   if (u.GetProtocol() == "plexserver" &&
@@ -998,6 +998,11 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFromFilter)
 {
+  CSingleLock lock(m_fetchMapsSection);
+  m_fetchedPages.clear();
+  m_fetchJobs.clear();
+  lock.Leave();
+
   CURL newUrl = GetRealDirectoryUrl(strDirectory);
   if (newUrl.Get().empty())
     return false;
@@ -1507,6 +1512,8 @@ bool CGUIPlexMediaWindow::MatchUniformProperty(const CStdString& property)
 //////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIPlexMediaWindow::FetchItemPage(int Index)
 {
+  CSingleLock lock(m_fetchMapsSection);
+  
   // find the item range we need
   int NeededRangeStart = Index - PLEX_DEFAULT_PAGE_SIZE / 2;
   int NeededRangeEnd = Index + PLEX_DEFAULT_PAGE_SIZE / 2;
@@ -1516,12 +1523,20 @@ void CGUIPlexMediaWindow::FetchItemPage(int Index)
 
   CLog::Log(LOGDEBUG,"CGUIPlexMediaWindow::FetchItemPage for index = %d / %lld, Page (%d-%d)", Index,m_vecItems->GetProperty("totalSize").asInteger(), startPage, endPage);
 
+  std::set<int> jobsToRemove;
   // check now if unnecessary fetching jobs should be cancelled
-  BOOST_FOREACH(const FetchJobPair p, m_fetchJobs)
+  BOOST_FOREACH(FetchJobPair p, m_fetchJobs)
   {
     if ((p.first != startPage) && (p.first != endPage))
+    {
+      jobsToRemove.insert(p.first);
       CJobManager::GetInstance().CancelJob(p.second);
+    }
   }
+  
+  // now remove them from the list
+  for (std::set<int>::iterator it = jobsToRemove.begin(); it!=jobsToRemove.end(); ++it)
+    m_fetchJobs.erase(*it);
 
   // now we check if both pages are cached, if its not the case then we need to cache them
   if (m_fetchedPages.find(startPage) == m_fetchedPages.end())
