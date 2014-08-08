@@ -410,6 +410,8 @@ namespace XBMCAddon
           // TODO: add the rest of the infolabels
           if (key == "tracknumber")
             item->GetMusicInfoTag()->SetTrackNumber(strtol(value.c_str(), NULL, 10));
+          else if (key == "discnumber")
+            item->GetMusicInfoTag()->SetPartOfSet(strtol(value.c_str(), NULL, 10));
           else if (key == "count")
             item->m_iprogramCount = strtol(value.c_str(), NULL, 10);
           else if (key == "size")

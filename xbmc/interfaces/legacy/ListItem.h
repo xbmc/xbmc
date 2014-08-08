@@ -229,6 +229,7 @@ namespace XBMCAddon
        *     - dateadded     : string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)
        * - Music Values:
        *     - tracknumber   : integer (8)
+       *     - discnumber    : integer (2)
        *     - duration      : integer (245) - duration in seconds
        *     - year          : integer (1998)
        *     - genre         : string (Rock)
