@@ -21,6 +21,9 @@ void CPlexExtraDataLoader::loadDataForItem(CFileItemPtr pItem, ExtraDataType typ
   if (!pItem)
     return;
 
+  if (!pItem->IsPlexMediaServerLibrary())
+    return;
+  
   m_path = pItem->GetPath();
   m_type = type;
   CURL url = getItemURL(pItem, type);
@@ -34,6 +37,9 @@ bool CPlexExtraDataLoader::getDataForItem(CFileItemPtr pItem, ExtraDataType type
   if (!pItem)
     return false;
   
+  if (!pItem->IsPlexMediaServerLibrary())
+    return false;
+
   m_path = pItem->GetPath();
   m_type = type;
   CURL url = getItemURL(pItem, type);
