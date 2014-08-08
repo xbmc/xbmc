@@ -140,3 +140,44 @@ TEST(PlexServerConnectionTest, testDelayedResponse)
   EXPECT_TRUE(server->UpdateReachability());
   EXPECT_STREQ(server->GetActiveConnectionURL().Get(), "http://10.0.0.2:32400/");
 }
+
+TEST(PlexServerMerge, basic)
+{
+  CPlexServerPtr server = PlexTestUtils::serverWithConnection();
+  CPlexServerPtr server2 = PlexTestUtils::serverWithConnection();
+  server2->SetName("test name");
+  
+  CPlexConnectionPtr conn = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MYPLEX, "10.10.10.10", 32400, "http", "token"));
+  server2->AddConnection(conn);
+  
+  server->Merge(server2);
+  
+  EXPECT_STREQ("test name", server->GetName());
+  EXPECT_STREQ("token", server->GetAccessToken());
+  
+  std::vector<CPlexConnectionPtr> connections;
+  server->GetConnections(connections);
+  EXPECT_EQ(2, connections.size());
+}
+
+
+// This test simulates a normal connection merging. A server that has been discovered by local GDM
+// and then adds a myplex connection with a token. We expect it to have the myPlex token after all is
+// done
+TEST(PlexServerMerge, mergedConnection)
+{
+  CPlexConnectionPtr conn = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_DISCOVERED,
+                                                                   "10.0.0.1", 32400));
+  CPlexServerPtr server = PlexTestUtils::serverWithConnection(conn);
+
+  conn = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MYPLEX,
+                                                "10.0.0.1", 32400, "http", "token2"));
+  CPlexServerPtr server2 = PlexTestUtils::serverWithConnection(conn);
+  
+  server->Merge(server2);
+  EXPECT_EQ("token2", server->GetAccessToken());
+  
+  std::vector<CPlexConnectionPtr> connections;
+  server->GetConnections(connections);
+  EXPECT_EQ(2, connections.size());
+}

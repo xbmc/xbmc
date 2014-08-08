@@ -41,3 +41,11 @@ CPlexServerPtr PlexTestUtils::serverWithConnection(const std::string& uuid, cons
   
   return server;
 }
+
+CPlexServerPtr PlexTestUtils::serverWithConnection(const CPlexConnectionPtr& connection)
+{
+  CPlexServerPtr server = CPlexServerPtr(new CPlexServer("uuid", "test server", true));
+  server->AddConnection(connection);
+  server->SetActiveConnection(connection);
+  return server;
+}

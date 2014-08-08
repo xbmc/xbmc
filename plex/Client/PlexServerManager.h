@@ -70,7 +70,7 @@ private:
   CPlexServerPtr _nodeServer;
   bool m_stopped;
 
-  void NotifyAboutServer(CPlexServerPtr server, bool added = true);
+  virtual void NotifyAboutServer(CPlexServerPtr server, bool added = true);
 
   CCriticalSection m_serverManagerLock;
   CPlexServerPtr m_bestServer;

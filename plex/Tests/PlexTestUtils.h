@@ -36,6 +36,7 @@ namespace PlexTestUtils
   bool listFromXML(const CStdString& xml, CFileItemList& list);
   CPlexServerPtr serverWithConnection(const std::string& uuid = "abc123",
                                       const std::string& host = "10.0.0.1");
+  CPlexServerPtr serverWithConnection(const CPlexConnectionPtr& connection);
 }
 
 #endif // PLEXTESTUTILS_H
