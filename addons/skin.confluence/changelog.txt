@@ -1,3 +1,6 @@
+[B]2.5.0[/B]
+- Kodi name change
+
 [B]2.4.0[/B]
 - Set minimum GUI version to 5.2.0
 - Rewrite of the PVR section 

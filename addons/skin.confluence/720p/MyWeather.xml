@@ -836,7 +836,7 @@
 					<description>Custom Weather Script Button</description>
 					<label>$INFO[Skin.String(WeatherScript_Label)]</label>
 					<onclick>SetFocus(50)</onclick>
-					<onclick>XBMC.RunScript($INFO[Skin.String(WeatherScript_Path)])</onclick>
+					<onclick>RunScript($INFO[Skin.String(WeatherScript_Path)])</onclick>
 					<onclick>SetFocus(50)</onclick>
 					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>

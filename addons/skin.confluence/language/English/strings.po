@@ -1,7 +1,7 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team XBMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
@@ -542,7 +542,7 @@ msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG
 msgstr ""
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr ""
 
 msgctxt "#31411"
@@ -564,7 +564,7 @@ msgid "Login"
 msgstr ""
 
 msgctxt "#31421"
-msgid "Select your XBMC user Profile[CR]to login and continue"
+msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr ""
 
 msgctxt "#31422"
