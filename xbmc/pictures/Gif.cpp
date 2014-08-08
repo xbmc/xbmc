@@ -335,13 +335,14 @@ bool Gif::ExtractFrames(unsigned int count)
   if (!m_gif)
     return false;
 
+  if (!m_pTemplate)
+  {
+    CLog::Log(LOGDEBUG, "Gif::ExtractFrames(): No frame template available");
+    return false;
+  }
+
   for (unsigned int i = 0; i < count; i++)
   {
-    if (!m_pTemplate)
-    {
-      CLog::Log(LOGDEBUG, "Gif::ExtractFrames(): No frame template available");
-      return false;
-    }
     GifFrame frame;
     SavedImage savedImage = m_gif->SavedImages[i];
     GifImageDesc imageDesc = m_gif->SavedImages[i].ImageDesc;
