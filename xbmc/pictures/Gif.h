@@ -30,10 +30,10 @@ namespace XFILE
 };
 
 struct COLOR;
-class GifFrame 
+class GifFrame
 {
   friend class Gif;
-public: 
+public:
 
   GifFrame();
   virtual ~GifFrame();
@@ -70,7 +70,7 @@ public:
 
   virtual bool LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height);
   virtual bool Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format);
-  virtual bool CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile, 
+  virtual bool CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile,
                                           unsigned char* &bufferout, unsigned int &bufferoutSize);
   bool IsAnimated(const char* file);
   std::vector<GifFrame>& GetFrames() { return m_frames; }

@@ -86,7 +86,7 @@ Gif::Gif() :
 
 Gif::~Gif()
 {
-  if (m_dll.IsLoaded()) 
+  if (m_dll.IsLoaded())
   {
     int err = m_dll.DGifCloseFile(m_gif);
     if (err == D_GIF_ERR_CLOSE_FAILED)
@@ -213,7 +213,7 @@ bool Gif::LoadGifMetaData(const char* file)
       CLog::Log(LOGERROR, "Gif::LoadGif(): Could not open file %s (reasons unknown)", m_filename.c_str());
     return false;
   }
-  return LoadGifMetaData(m_gif);  
+  return LoadGifMetaData(m_gif);
 }
 
 bool Gif::LoadGif(const char* file)
@@ -224,7 +224,7 @@ bool Gif::LoadGif(const char* file)
 
   try
   {
-    InitTemplateAndColormap(); 
+    InitTemplateAndColormap();
 
     return ExtractFrames(m_numFrames);
   }
@@ -244,7 +244,7 @@ bool Gif::IsAnimated(const char* file)
   if (m_isAnimated < 0)
   {
     m_isAnimated = 0;
-    
+
     GifFileType *gif = NULL;
     XFILE::CFile gifFile;
     int err = 0;
@@ -256,7 +256,7 @@ bool Gif::IsAnimated(const char* file)
       gif = m_dll.DGifOpen(&gifFile, ReadFromVfs, &err);
 #endif
     }
-    
+
     if (gif)
     {
       if (m_dll.DGifSlurp(gif) && gif->ImageCount > 1)
@@ -382,7 +382,7 @@ bool Gif::ExtractFrames(unsigned int count)
 
     if(!PrepareTemplate(frame))
       return false;
-   
+
     m_frames.push_back(frame);
   }
   return true;
@@ -518,7 +518,7 @@ bool Gif::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsig
 
   try
   {
-    InitTemplateAndColormap(); 
+    InitTemplateAndColormap();
 
     if (!ExtractFrames(m_numFrames))
       return false;
@@ -528,15 +528,15 @@ bool Gif::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsig
     CLog::Log(LOGERROR, "Gif::LoadImageFromMemory(): Out of memory while extracting gif frames - %s", ba.what());
     Release();
     return false;
-  }  
+  }
 
   return true;
 }
 
 bool Gif::Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format)
 {
-  if (m_width == 0 || m_height == 0 
-    || !m_dll.IsLoaded() || !m_gif 
+  if (m_width == 0 || m_height == 0
+    || !m_dll.IsLoaded() || !m_gif
     || format != XB_FMT_A8R8G8B8 || !m_numFrames)
     return false;
 
@@ -546,7 +546,7 @@ bool Gif::Decode(const unsigned char *pixels, unsigned int pitch, unsigned int f
   if (pitch == m_pitch)
     memcpy(dst, src, m_imageSize);
   else
-  {    
+  {
     for (unsigned int y = 0; y < m_height; y++)
     {
       memcpy(dst, src, m_pitch);
@@ -557,7 +557,7 @@ bool Gif::Decode(const unsigned char *pixels, unsigned int pitch, unsigned int f
   return true;
 }
 
-bool Gif::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile, 
+bool Gif::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile,
                                      unsigned char* &bufferout, unsigned int &bufferoutSize)
 {
   CLog::Log(LOGERROR, "Gif::CreateThumbnailFromSurface(): Not implemented. Something went wrong, we don't store thumbnails as gifs!");
