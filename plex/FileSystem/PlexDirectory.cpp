@@ -783,7 +783,6 @@ bool CPlexDirectory::IsFolder(const CFileItemPtr& item, XML_ELEMENT* element)
     case PLEX_DIR_TYPE_MEDIA:
     case PLEX_DIR_TYPE_CLIP:
     case PLEX_DIR_TYPE_TRACK:
-    case PLEX_DIR_TYPE_PLAYLIST:
       return false;
       break;
     default:
