@@ -28,6 +28,7 @@
 #include "DVDStreamInfo.h"
 #include "OMXVideo.h"
 #include "threads/Thread.h"
+#include "IDVDPlayer.h"
 
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDCodecs/Video/DVDVideoCodec.h"
@@ -37,7 +38,7 @@
 #include "linux/DllBCM.h"
 #include "cores/VideoRenderers/RenderManager.h"
 
-class OMXPlayerVideo : public CThread
+class OMXPlayerVideo : public CThread, public IDVDStreamPlayer
 {
 protected:
   CDVDMessageQueue          m_messageQueue;
@@ -78,6 +79,7 @@ protected:
 
   void ProcessOverlays(double pts);
   double NextOverlay(double pts);
+  bool OpenStream(CDVDStreamInfo &hints, COMXVideo *codec);
 
   virtual void OnStartup();
   virtual void OnExit();
@@ -87,17 +89,17 @@ public:
   OMXPlayerVideo(OMXClock *av_clock, CDVDOverlayContainer* pOverlayContainer, CDVDMessageQueue& parent);
   ~OMXPlayerVideo();
   bool OpenStream(CDVDStreamInfo &hints);
-  bool OpenStream(CDVDStreamInfo &hints, COMXVideo *codec);
   void SendMessage(CDVDMsg* pMsg, int priority = 0) { m_messageQueue.Put(pMsg, priority); }
   bool AcceptsData() const                          { return !m_messageQueue.IsFull(); }
   bool HasData() const                              { return m_messageQueue.GetDataSize() > 0; }
   bool IsInited() const                             { return m_messageQueue.IsInited(); }
   void WaitForBuffers()                             { m_messageQueue.WaitUntilEmpty(); }
   int  GetLevel() const                             { return m_messageQueue.GetLevel(); }
-  bool IsStalled()                                  { return m_stalled;  }
+  bool IsStalled() const                            { return m_stalled;  }
   bool IsEOS();
-  bool CloseStream(bool bWaitForBuffers);
+  void CloseStream(bool bWaitForBuffers);
   void Output(double pts, bool bDropPacket);
+  bool StepFrame();
   void Flush();
   bool OpenDecoder();
   int  GetDecoderBufferSize();
@@ -122,6 +124,7 @@ public:
   void SetFlags(unsigned flags)                     { m_flags = flags; };
   int GetFreeSpace();
   void  SetVideoRect(const CRect &SrcRect, const CRect &DestRect);
+  void GetVideoRect(CRect& SrcRect, CRect& DestRect) const { g_renderManager.GetVideoRect(SrcRect, DestRect); }
   static void RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect);
   void ResolutionUpdateCallBack(uint32_t width, uint32_t height, float framerate, float pixel_aspect);
   static void ResolutionUpdateCallBack(void *ctx, uint32_t width, uint32_t height, float framerate, float pixel_aspect);

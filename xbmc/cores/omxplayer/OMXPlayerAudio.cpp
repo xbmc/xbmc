@@ -149,7 +149,7 @@ void OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec)
   m_format.m_channelLayout = 0;
 }
 
-bool OMXPlayerAudio::CloseStream(bool bWaitForBuffers)
+void OMXPlayerAudio::CloseStream(bool bWaitForBuffers)
 {
   // wait until buffers are empty
   if (bWaitForBuffers && m_speed > 0) m_messageQueue.WaitUntilEmpty();
@@ -172,8 +172,6 @@ bool OMXPlayerAudio::CloseStream(bool bWaitForBuffers)
 
   m_speed         = DVD_PLAYSPEED_NORMAL;
   m_started       = false;
-
-  return true;
 }
 
 void OMXPlayerAudio::OnStartup()
@@ -499,7 +497,7 @@ void OMXPlayerAudio::WaitForBuffers()
     Sleep((int)(1000 * (delay - 0.5)));
 }
 
-bool OMXPlayerAudio::Passthrough() const
+bool OMXPlayerAudio::IsPassthrough() const
 {
   return m_passthrough;
 }
@@ -627,27 +625,6 @@ void OMXPlayerAudio::SubmitEOS()
 bool OMXPlayerAudio::IsEOS()
 {
   return m_bad_state || m_omxAudio.IsEOS();
-}
-
-void OMXPlayerAudio::WaitCompletion()
-{
-  unsigned int nTimeOut = AUDIO_BUFFER_SECONDS * 1000;
-  while(nTimeOut)
-  {
-    if(IsEOS())
-    {
-      CLog::Log(LOGDEBUG, "%s::%s - got eos\n", CLASSNAME, __func__);
-      break;
-    }
-
-    if(nTimeOut == 0)
-    {
-      CLog::Log(LOGERROR, "%s::%s - wait for eos timed out\n", CLASSNAME, __func__);
-      break;
-    }
-    Sleep(50);
-    nTimeOut -= 50;
-  }
 }
 
 void OMXPlayerAudio::SetSpeed(int speed)

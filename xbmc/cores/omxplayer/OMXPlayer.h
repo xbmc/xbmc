@@ -94,6 +94,7 @@ public:
     started = false;
     startpts  = DVD_NOPTS_VALUE;
   }
+
   double dts_end()
   {
     if(dts == DVD_NOPTS_VALUE)
@@ -109,7 +110,7 @@ typedef struct
   StreamType   type;
   int          type_index;
   std::string  filename;
-  std::string  filename2;  // for vobsub subtitles, 2 files are necessary (idx/sub) 
+  std::string  filename2;  // for vobsub subtitles, 2 files are necessary (idx/sub)
   std::string  language;
   std::string  name;
   CDemuxStream::EFlags flags;
@@ -164,21 +165,19 @@ public:
 class COMXPlayer : public IPlayer, public CThread, public IDVDPlayer
 {
 public:
-
-  COMXPlayer(IPlayerCallback &callback);
+  COMXPlayer(IPlayerCallback& callback);
   virtual ~COMXPlayer();
-  
-  virtual bool  OpenFile(const CFileItem &file, const CPlayerOptions &options);
-  virtual bool  CloseFile(bool reopen = false);
-  virtual bool  IsPlaying() const;
-  virtual void  Pause();
-  virtual bool  IsPaused() const;
-  virtual bool  HasVideo() const;
-  virtual bool  HasAudio() const;
-  virtual bool  IsPassthrough() const;
-  virtual bool  CanSeek();
+  virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
+  virtual bool CloseFile(bool reopen = false);
+  virtual bool IsPlaying() const;
+  virtual void Pause();
+  virtual bool IsPaused() const;
+  virtual bool HasVideo() const;
+  virtual bool HasAudio() const;
+  virtual bool IsPassthrough() const;
+  virtual bool CanSeek();
   virtual void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride);
-  virtual bool  SeekScene(bool bPlus = true);
+  virtual bool SeekScene(bool bPlus = true);
   virtual void SeekPercentage(float iPercent);
   virtual float GetPercentage();
   virtual float GetCachePercentage();
@@ -186,8 +185,8 @@ public:
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) { m_omxPlayerAudio.RegisterAudioCallback(pCallback); }
   virtual void UnRegisterAudioCallback()                        { m_omxPlayerAudio.UnRegisterAudioCallback(); }
   virtual void SetVolume(float nVolume)                         { m_omxPlayerAudio.SetVolume(nVolume); }
-  virtual void SetMute(bool bOnOff)                             { m_omxPlayerAudio.SetMute(bOnOff); }
   virtual void SetDynamicRangeCompression(long drc)             { m_omxPlayerAudio.SetDynamicRangeCompression(drc); }
+  virtual void SetMute(bool bOnOff)                             { m_omxPlayerAudio.SetMute(bOnOff); }
   virtual bool ControlsVolume() {return true;}
   virtual void GetAudioInfo(std::string &strAudioInfo);
   virtual void GetVideoInfo(std::string &strVideoInfo);
@@ -199,48 +198,48 @@ public:
   virtual void SetAVDelay(float fValue = 0.0f);
   virtual float GetAVDelay();
 
-  virtual void  SetSubTitleDelay(float fValue = 0.0f);
+  virtual void SetSubTitleDelay(float fValue = 0.0f);
   virtual float GetSubTitleDelay();
-  virtual int   GetSubtitleCount();
-  virtual int   GetSubtitle();
-  virtual void  GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info);
-  virtual void  SetSubtitle(int iStream);
-  virtual bool  GetSubtitleVisible();
-  virtual void  SetSubtitleVisible(bool bVisible);
-  virtual int   AddSubtitle(const std::string& strSubPath);
+  virtual int GetSubtitleCount();
+  virtual int GetSubtitle();
+  virtual void GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info);
+  virtual void SetSubtitle(int iStream);
+  virtual bool GetSubtitleVisible();
+  virtual void SetSubtitleVisible(bool bVisible);
+  virtual int  AddSubtitle(const std::string& strSubPath);
 
-  virtual int   GetAudioStreamCount();
-  virtual int   GetAudioStream();
-  virtual void  SetAudioStream(int iStream);
+  virtual int GetAudioStreamCount();
+  virtual int GetAudioStream();
+  virtual void SetAudioStream(int iStream);
 
   virtual TextCacheStruct_t* GetTeletextCache();
-  virtual void  LoadPage(int p, int sp, unsigned char* buffer);
+  virtual void LoadPage(int p, int sp, unsigned char* buffer);
 
-  virtual int   GetChapterCount();
-  virtual int   GetChapter();
-  virtual void  GetChapterName(std::string& strChapterName);
-  virtual int   SeekChapter(int iChapter);
+  virtual int  GetChapterCount();
+  virtual int  GetChapter();
+  virtual void GetChapterName(std::string& strChapterName);
+  virtual int  SeekChapter(int iChapter);
 
   virtual void SeekTime(int64_t iTime);
   virtual int64_t GetTime();
   virtual int64_t GetTotalTime();
-  virtual void ToFFRW(int iSpeed );
+  virtual void ToFFRW(int iSpeed);
   virtual bool OnAction(const CAction &action);
   virtual bool HasMenu();
+
   virtual int GetSourceBitrate();
   virtual void GetVideoStreamInfo(SPlayerVideoStreamInfo &info);
-
   virtual bool GetStreamDetails(CStreamDetails &details);
   virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
 
   virtual std::string GetPlayerState();
   virtual bool SetPlayerState(std::string state);
-  
+
   virtual std::string GetPlayingTitle();
 
   virtual bool SwitchChannel(const PVR::CPVRChannel &channel);
   virtual bool CachePVRStream(void) const;
-  
+
   enum ECacheState
   { CACHESTATE_DONE = 0
   , CACHESTATE_FULL     // player is filling up the demux queue
@@ -250,10 +249,10 @@ public:
   , CACHESTATE_FLUSH    // temporary state player will choose startup between init or full
   };
 
-  virtual bool  IsCaching() const                                 { return m_caching == CACHESTATE_FULL || m_caching == CACHESTATE_PVR; }
-  virtual int   GetCacheLevel() const;
+  virtual bool IsCaching() const { return m_caching == CACHESTATE_FULL || m_caching == CACHESTATE_PVR; }
+  virtual int GetCacheLevel() const ;
 
-  virtual int  OnDVDNavResult(void* pData, int iMessage);
+  virtual int OnDVDNavResult(void* pData, int iMessage);
 
   virtual void  GetRenderFeatures(std::vector<int> &renderFeatures);
   virtual void  GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods);
@@ -264,31 +263,25 @@ public:
 protected:
   friend class COMXSelectionStreams;
 
-  class OMXStreamLock : public CSingleLock
-  {
-  public:
-    inline OMXStreamLock(COMXPlayer* comxplayer) : CSingleLock(comxplayer->m_critStreamSection) {}
-  };
+  virtual void OnStartup();
+  virtual void OnExit();
+  virtual void Process();
 
-  virtual void  OnStartup();
-  virtual void  OnExit();
-  virtual void  Process();
-
-  bool OpenAudioStream(int iStream, int source, bool reset = true);
-  bool OpenVideoStream(int iStream, int source, bool reset = true);
-  bool OpenSubtitleStream(int iStream, int source);
+  bool OpenStream(COMXCurrentStream& current, int iStream, int source, bool reset = true);
+  bool OpenStreamPlayer(COMXCurrentStream& current, CDVDStreamInfo& hint, bool reset);
+  bool OpenAudioStream(CDVDStreamInfo& hint, bool reset = true);
+  bool OpenVideoStream(CDVDStreamInfo& hint, bool reset = true);
+  bool OpenSubtitleStream(CDVDStreamInfo& hint);
+  bool OpenTeletextStream(CDVDStreamInfo& hint);
 
   /** \brief Switches forced subtitles to forced subtitles matching the language of the current audio track.
   *          If these are not available, subtitles are disabled.
   *   \return true if the subtitles were changed, false otherwise.
   */
   bool AdaptForcedSubtitles();
-  bool OpenTeletextStream(int iStream, int source);
-  bool CloseAudioStream(bool bWaitForBuffers);
-  bool CloseVideoStream(bool bWaitForBuffers);
-  bool CloseSubtitleStream(bool bKeepOverlays);
-  bool CloseTeletextStream(bool bWaitForBuffers);
+  bool CloseStream(COMXCurrentStream& current, bool bWaitForBuffers);
 
+  bool CheckIsCurrent(COMXCurrentStream& current, CDemuxStream* stream, DemuxPacket* pkg);
   void ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket);
@@ -305,46 +298,51 @@ protected:
    */
   void SetPlaySpeed(int iSpeed);
   int GetPlaySpeed()                                                { return m_playSpeed; }
-  void    SetCaching(ECacheState state);
+  void SetCaching(ECacheState state);
 
   int64_t GetTotalTimeInMsec();
 
-  double  GetQueueTime();
-  bool    GetCachingTimes(double& play_left, double& cache_left, double& file_offset);
+  double GetQueueTime();
+  bool GetCachingTimes(double& play_left, double& cache_left, double& file_offset);
 
 
   void FlushBuffers(bool queued, double pts = DVD_NOPTS_VALUE, bool accurate = true);
 
-
-  void  HandleMessages();
-  void    HandlePlaySpeed();
-  bool  IsInMenu() const;
+  void HandleMessages();
+  void HandlePlaySpeed();
+  bool IsInMenu() const;
 
   void SynchronizePlayers(unsigned int sources);
   void SynchronizeDemuxer(unsigned int timeout);
   void CheckAutoSceneSkip();
   void CheckContinuity(COMXCurrentStream& current, DemuxPacket* pPacket);
   bool CheckSceneSkip(COMXCurrentStream& current);
-  bool CheckPlayerInit(COMXCurrentStream& current, unsigned int source);
+  bool CheckPlayerInit(COMXCurrentStream& current);
   bool CheckStartCaching(COMXCurrentStream& current);
   void UpdateCorrection(DemuxPacket* pkt, double correction);
   void UpdateTimestamps(COMXCurrentStream& current, DemuxPacket* pPacket);
+  IDVDStreamPlayer* GetStreamPlayer(unsigned int player);
   void SendPlayerMessage(CDVDMsg* pMsg, unsigned int target);
+
   bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);
   bool IsValidStream(COMXCurrentStream& stream);
   bool IsBetterStream(COMXCurrentStream& current, CDemuxStream* stream);
+  void CheckBetterStream(COMXCurrentStream& current, CDemuxStream* stream);
+  void CheckStreamChanges(COMXCurrentStream& current, CDemuxStream* stream);
   bool CheckDelayedChannelEntry(void);
+
   bool OpenInputStream();
   bool OpenDemuxStream();
   void OpenDefaultStreams(bool reset = true);
 
   void UpdateApplication(double timeout);
   void UpdatePlayState(double timeout);
+  void UpdateClockMaster();
   double m_UpdateApplication;
 
   bool m_bAbortRequest;
 
-  std::string           m_filename; // holds the actual filename
+  std::string  m_filename; // holds the actual filename
   std::string  m_mimetype;  // hold a hint to what content file contains (mime type)
   ECacheState  m_caching;
   CFileItem    m_item;
@@ -388,9 +386,7 @@ protected:
 
   CDVDInputStream* m_pInputStream;  // input stream for current playing file
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
-  CDVDDemux*            m_pSubtitleDemuxer;
-
-  std::string m_lastSub;
+  CDVDDemux* m_pSubtitleDemuxer;
 
   struct SDVDInfo
   {
@@ -481,7 +477,6 @@ protected:
   CCriticalSection m_StateSection;
 
   CEvent m_ready;
-  CCriticalSection m_critStreamSection; // need to have this lock when switching streams (audio / video)
 
   CEdl m_Edl;
 
@@ -504,7 +499,7 @@ protected:
 
   } m_EdlAutoSkipMarkers;
 
-  CPlayerOptions          m_PlayerOptions;
+  CPlayerOptions m_PlayerOptions;
 
   bool m_HasVideo;
   bool m_HasAudio;

@@ -46,10 +46,9 @@ public:
   virtual ~CDVDPlayerVideo();
 
   bool OpenStream(CDVDStreamInfo &hint);
-  void OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec);
   void CloseStream(bool bWaitForBuffers);
 
-  void StepFrame();
+  bool StepFrame();
   void Flush();
 
   // waits until all available data has been rendered
@@ -57,7 +56,7 @@ public:
   void WaitForBuffers()                             { m_messageQueue.WaitUntilEmpty(); }
   bool AcceptsData() const                          { return !m_messageQueue.IsFull(); }
   bool HasData() const                              { return m_messageQueue.GetDataSize() > 0; }
-  int  GetLevel();
+  int  GetLevel() const;
   bool IsInited() const                             { return m_messageQueue.IsInited(); }
   void SendMessage(CDVDMsg* pMsg, int priority = 0) { m_messageQueue.Put(pMsg, priority); }
 
@@ -67,7 +66,7 @@ public:
   void EnableFullscreen(bool bEnable)               { m_bAllowFullscreen = bEnable; }
 
 #ifdef HAS_VIDEO_PLAYBACK
-  void GetVideoRect(CRect& SrcRect, CRect& DestRect)  { g_renderManager.GetVideoRect(SrcRect, DestRect); }
+  void GetVideoRect(CRect& SrcRect, CRect& DestRect) const { g_renderManager.GetVideoRect(SrcRect, DestRect); }
   float GetAspectRatio()                            { return g_renderManager.GetAspectRatio(); }
 #endif
 
@@ -78,12 +77,9 @@ public:
   void SetSubtitleDelay(double delay)                      { m_iSubtitleDelay = delay; }
 
   bool IsStalled() const                            { return m_stalled; }
-  int GetNrOfDroppedFrames()                        { return m_iDroppedFrames; }
-
-  bool InitializedOutputDevice();
+  bool IsEOS()                                      { return false; }
 
   double GetCurrentPts()                           { return m_iCurrentPts; }
-  int    GetPullupCorrection()                     { return m_pullupCorrection.GetPatternLength(); }
 
   double GetOutputDelay(); /* returns the expected delay, from that a packet is put in queue */
   std::string GetPlayerInfo();
@@ -115,6 +111,7 @@ protected:
   void ProcessOverlays(DVDVideoPicture* pSource, double pts);
 #endif
   void ProcessVideoUserData(DVDVideoUserData* pVideoUserData, double pts);
+  void OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec);
 
   CDVDMessageQueue m_messageQueue;
   CDVDMessageQueue& m_messageParent;
