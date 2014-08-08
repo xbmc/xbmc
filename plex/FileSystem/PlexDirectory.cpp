@@ -812,7 +812,7 @@ bool CPlexDirectory::GetSharedServerDirectory(CFileItemList &items)
 
     item->SetLabel2(server->GetOwner());
     item->SetProperty("machineIdentifier", server->GetUUID());
-    item->SetProperty("sourceTitle", server->GetOwner());
+    item->SetProperty("serverOwner", server->GetOwner());
     item->SetProperty("serverName", server->GetName());
     item->SetPlexDirectoryType(sectionItem->GetPlexDirectoryType());
 

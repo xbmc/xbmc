@@ -378,8 +378,8 @@ void CGUIWindowPlexSearch::ProcessResults(CFileItemList* results)
 
     if (item && server)
     {
-      item->SetProperty("plexServerName", server->GetName());
-      item->SetProperty("plexServerOwner", server->GetOwner());
+      item->SetProperty("serverName", server->GetName());
+      item->SetProperty("serverOwner", server->GetOwner());
     }
 
     if (item && m_resultMap.find(item->GetPlexDirectoryType()) != m_resultMap.end())
