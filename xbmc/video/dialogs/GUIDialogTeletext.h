@@ -41,4 +41,7 @@ protected:
   CBaseTexture*       m_pTxtTexture;      /* Texture info class to render to screen */
   CRect               m_vertCoords;       /* Coordinates of teletext field on screen */
   CTeletextDecoder    m_TextDecoder;      /* Decoding class for teletext code */
+
+private:
+  void SetCoordinates();
 };
