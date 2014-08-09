@@ -479,7 +479,8 @@ void CAESinkALSA::GetAESParams(AEAudioFormat format, std::string& params)
 
   params += ",AES1=0x82,AES2=0x00";
 
-       if (format.m_sampleRate == 192000) params += ",AES3=0x0e";
+  if (m_passthrough && format.m_channelLayout.Count() == 8) params += ",AES3=0x09";
+  else if (format.m_sampleRate == 192000) params += ",AES3=0x0e";
   else if (format.m_sampleRate == 176400) params += ",AES3=0x0c";
   else if (format.m_sampleRate ==  96000) params += ",AES3=0x0a";
   else if (format.m_sampleRate ==  88200) params += ",AES3=0x08";
