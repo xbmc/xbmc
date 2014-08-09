@@ -188,10 +188,8 @@ void CVideoDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
 
   CLog::Log(LOGINFO, "create tag table");
-  m_pDS->exec("CREATE TABLE tag (idTag integer primary key, strTag text)");
-
-  CLog::Log(LOGINFO, "create taglinks table");
-  m_pDS->exec("CREATE TABLE taglinks (idTag integer, idMedia integer, media_type TEXT)");
+  m_pDS->exec("CREATE TABLE tag (tag_id integer primary key, name TEXT)");
+  m_pDS->exec("CREATE TABLE tag_link (tag_id integer, media_id integer, media_type TEXT)");
 }
 
 void CVideoDatabase::CreateLinkIndex(const char *table)
@@ -258,11 +256,7 @@ void CVideoDatabase::CreateAnalytics()
   m_pDS->exec("CREATE INDEX ix_seasons ON seasons (idShow, season)");
   m_pDS->exec("CREATE INDEX ix_art ON art(media_id, media_type(20), type(20))");
 
-  m_pDS->exec("CREATE UNIQUE INDEX ix_tag_1 ON tag (strTag(255))");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_taglinks_1 ON taglinks (idTag, media_type(20), idMedia)");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_taglinks_2 ON taglinks (idMedia, media_type(20), idTag)");
-  m_pDS->exec("CREATE INDEX ix_taglinks_3 ON taglinks (media_type(20))");
-
+  CreateLinkIndex("tag");
   CreateLinkIndex("actor");
   CreateForeignLinkIndex("director", "actor");
   CreateForeignLinkIndex("writer", "actor");
@@ -280,7 +274,7 @@ void CVideoDatabase::CreateAnalytics()
               "DELETE FROM writer_link WHERE media_id=old.idMovie AND media_type='movie'; "
               "DELETE FROM movielinktvshow WHERE idMovie=old.idMovie; "
               "DELETE FROM art WHERE media_id=old.idMovie AND media_type='movie'; "
-              "DELETE FROM taglinks WHERE idMedia=old.idMovie AND media_type='movie'; "
+              "DELETE FROM tag_link WHERE media_id=old.idMovie AND media_type='movie'; "
               "END");
   m_pDS->exec("CREATE TRIGGER delete_tvshow AFTER DELETE ON tvshow FOR EACH ROW BEGIN "
               "DELETE FROM actor_link WHERE media_id=old.idShow AND media_type='tvshow'; "
@@ -290,7 +284,7 @@ void CVideoDatabase::CreateAnalytics()
               "DELETE FROM movielinktvshow WHERE idShow=old.idShow; "
               "DELETE FROM seasons WHERE idShow=old.idShow; "
               "DELETE FROM art WHERE media_id=old.idShow AND media_type='tvshow'; "
-              "DELETE FROM taglinks WHERE idMedia=old.idShow AND media_type='tvshow'; "
+              "DELETE FROM tag_link WHERE media_id=old.idShow AND media_type='tvshow'; "
               "END");
   m_pDS->exec("CREATE TRIGGER delete_musicvideo AFTER DELETE ON musicvideo FOR EACH ROW BEGIN "
               "DELETE FROM actor_link WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
@@ -298,7 +292,7 @@ void CVideoDatabase::CreateAnalytics()
               "DELETE FROM genre_link WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
               "DELETE FROM studio_link WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
               "DELETE FROM art WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
-              "DELETE FROM taglinks WHERE idMedia=old.idMVideo AND media_type='musicvideo'; "
+              "DELETE FROM tag_link WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
               "END");
   m_pDS->exec("CREATE TRIGGER delete_episode AFTER DELETE ON episode FOR EACH ROW BEGIN "
               "DELETE FROM actor_link WHERE media_id=old.idEpisode AND media_type='episode'; "
@@ -315,8 +309,8 @@ void CVideoDatabase::CreateAnalytics()
   m_pDS->exec("CREATE TRIGGER delete_person AFTER DELETE ON actor FOR EACH ROW BEGIN "
               "DELETE FROM art WHERE media_id=old.actor_id AND media_type IN ('actor','artist','writer','director'); "
               "END");
-  m_pDS->exec("CREATE TRIGGER delete_tag AFTER DELETE ON taglinks FOR EACH ROW BEGIN "
-              "DELETE FROM tag WHERE idTag=old.idTag AND idTag NOT IN (SELECT DISTINCT idTag FROM taglinks); "
+  m_pDS->exec("CREATE TRIGGER delete_tag AFTER DELETE ON tag_link FOR EACH ROW BEGIN "
+              "DELETE FROM tag WHERE tag_id=old.tag_id AND tag_id NOT IN (SELECT DISTINCT tag_id FROM tag_link); "
               "END");
 
   CreateViews();
@@ -1415,12 +1409,12 @@ int CVideoDatabase::AddSet(const CStdString& strSet)
   return AddToTable("sets", "idSet", "strSet", strSet);
 }
 
-int CVideoDatabase::AddTag(const std::string& tag)
+int CVideoDatabase::AddTag(const std::string& name)
 {
-  if (tag.empty())
+  if (name.empty())
     return -1;
 
-  return AddToTable("tag", "idTag", "strTag", tag);
+  return AddToTable("tag", "tag_id", "name", name);
 }
 
 int CVideoDatabase::AddActor(const CStdString& name, const CStdString& thumbURLs, const CStdString &thumb)
@@ -1565,28 +1559,28 @@ void CVideoDatabase::UpdateActorLinksToItem(int mediaId, const std::string& medi
 }
 
 //****Tags****
-void CVideoDatabase::AddTagToItem(int idMovie, int idTag, const std::string &type)
+void CVideoDatabase::AddTagToItem(int media_id, int tag_id, const std::string &type)
 {
   if (type.empty())
     return;
 
-  AddToLinkTable("taglinks", "idTag", idTag, "idMedia", idMovie, "media_type", type.c_str());
+  AddToLinkTable("tag_link", "tag_id", tag_id, "media_id", media_id, "media_type", type.c_str());
 }
 
-void CVideoDatabase::RemoveTagFromItem(int idItem, int idTag, const std::string &type)
+void CVideoDatabase::RemoveTagFromItem(int media_id, int tag_id, const std::string &type)
 {
   if (type.empty())
     return;
 
-  RemoveFromLinkTable("taglinks", "idTag", idTag, "idMedia", idItem, "media_type", type.c_str());
+  RemoveFromLinkTable("tag_link", "tag_id", tag_id, "media_id", media_id, "media_type", type.c_str());
 }
 
-void CVideoDatabase::RemoveTagsFromItem(int idItem, const std::string &type)
+void CVideoDatabase::RemoveTagsFromItem(int media_id, const std::string &type)
 {
   if (type.empty())
     return;
 
-  m_pDS2->exec(PrepareSQL("DELETE FROM taglinks WHERE idMedia=%d AND media_type='%s'", idItem, type.c_str()));
+  m_pDS2->exec(PrepareSQL("DELETE FROM tag_link WHERE media_id=%d AND media_type='%s'", media_id, type.c_str()));
 }
 
 //****Actors****
@@ -2068,6 +2062,7 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     AddLinksToItem(idMovie, MediaTypeMovie, "genre", details.m_genre);
     AddLinksToItem(idMovie, MediaTypeMovie, "studio", details.m_studio);
     AddLinksToItem(idMovie, MediaTypeMovie, "country", details.m_country);
+    AddLinksToItem(idMovie, MediaTypeMovie, "tag", details.m_tags);
     AddActorLinksToItem(idMovie, MediaTypeMovie, "director", details.m_director);
     AddActorLinksToItem(idMovie, MediaTypeMovie, "writer", details.m_writingCredits);
 
@@ -2080,13 +2075,6 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
       map<string, string> setArt;
       if (!GetArtForItem(idSet, MediaTypeVideoCollection, setArt))
         SetArtForItem(idSet, MediaTypeVideoCollection, artwork);
-    }
-
-    // add tags...
-    for (unsigned int i = 0; i < details.m_tags.size(); i++)
-    {
-      int idTag = AddTag(details.m_tags[i]);
-      AddTagToItem(idMovie, idTag, MediaTypeMovie);
     }
 
     if (details.HasStreamDetails())
@@ -2154,16 +2142,12 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie, const CVideoInfoTag& deta
       UpdateLinksToItem(idMovie, MediaTypeMovie, "studio", details.m_studio);
     if (updatedDetails.find("country") != updatedDetails.end())
       UpdateLinksToItem(idMovie, MediaTypeMovie, "country", details.m_country);
+    if (updatedDetails.find("tag") != updatedDetails.end())
+      UpdateLinksToItem(idMovie, MediaTypeMovie, "tag", details.m_tags);
     if (updatedDetails.find("director") != updatedDetails.end())
       UpdateActorLinksToItem(idMovie, MediaTypeMovie, "director", details.m_director);
     if (updatedDetails.find("writer") != updatedDetails.end())
       UpdateActorLinksToItem(idMovie, MediaTypeMovie, "writer", details.m_writingCredits);
-    if (updatedDetails.find("tag") != updatedDetails.end())
-    {
-      RemoveTagsFromItem(idMovie, MediaTypeMovie);
-      for (unsigned int i = 0; i < details.m_tags.size(); i++)
-        AddTagToItem(idMovie, AddTag(details.m_tags[i]), MediaTypeMovie);
-    }
     if (updatedDetails.find("art.altered") != updatedDetails.end())
       SetArtForItem(idMovie, MediaTypeMovie, artwork);
 
@@ -2299,14 +2283,8 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow, const CVideoInfoTag &d
   AddCast(idTvShow, "tvshow", details.m_cast);
   AddLinksToItem(idTvShow, MediaTypeTvShow, "genre", details.m_genre);
   AddLinksToItem(idTvShow, MediaTypeTvShow, "studio", details.m_studio);
+  AddLinksToItem(idTvShow, MediaTypeTvShow, "tag", details.m_tags);
   AddActorLinksToItem(idTvShow, MediaTypeTvShow, "director", details.m_director);
-
-  // add tags...
-  for (unsigned int i = 0; i < details.m_tags.size(); i++)
-  {
-    int idTag = AddTag(details.m_tags[i]);
-    AddTagToItem(idTvShow, idTag, MediaTypeTvShow);
-  }
 
   // add "all seasons" - the rest are added in SetDetailsForEpisode
   AddSeason(idTvShow, -1);
@@ -2491,13 +2469,7 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
     AddActorLinksToItem(idMVideo, MediaTypeMusicVideo, "director", details.m_director);
     AddLinksToItem(idMVideo, MediaTypeMusicVideo, "genre", details.m_genre);
     AddLinksToItem(idMVideo, MediaTypeMusicVideo, "studio", details.m_studio);
-
-    // add tags...
-    for (unsigned int i = 0; i < details.m_tags.size(); i++)
-    {
-      int idTag = AddTag(details.m_tags[i]);
-      AddTagToItem(idMVideo, idTag, MediaTypeMusicVideo);
-    }
+    AddLinksToItem(idMVideo, MediaTypeMusicVideo, "tag", details.m_tags);
 
     if (details.HasStreamDetails())
       SetStreamDetailsForFileId(details.m_streamDetails, GetFileId(strFilenameAndPath));
@@ -3264,7 +3236,7 @@ void CVideoDatabase::DeleteTag(int idTag, VIDEODB_CONTENT_TYPE mediaType)
       return;
 
     CStdString strSQL;
-    strSQL = PrepareSQL("DELETE FROM taglinks WHERE idTag = %i AND media_type = '%s'", idTag, type.c_str());
+    strSQL = PrepareSQL("DELETE FROM tag_link WHERE tag_id = %i AND media_type = '%s'", idTag, type.c_str());
     m_pDS->exec(strSQL.c_str());
   }
   catch (...)
@@ -3521,18 +3493,10 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
   if (getDetails)
   {
     GetCast(details.m_iDbId, "movie", details.m_cast);
+    GetTags(details.m_iDbId, MediaTypeMovie, details.m_tags);
 
     castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
     details.m_strPictureURL.Parse();
-
-    // get tags
-    CStdString strSQL = PrepareSQL("SELECT tag.strTag FROM tag, taglinks WHERE taglinks.idMedia = %i AND taglinks.media_type = 'movie' AND taglinks.idTag = tag.idTag ORDER BY tag.idTag", idMovie);
-    m_pDS2->query(strSQL.c_str());
-    while (!m_pDS2->eof())
-    {
-      details.m_tags.push_back(m_pDS2->fv("tag.strTag").get_asString());
-      m_pDS2->next();
-    }
 
     // create tvshowlink string
     vector<int> links;
@@ -3587,15 +3551,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   if (getDetails)
   {
     GetCast(details.m_iDbId, "tvshow", details.m_cast);
-
-    // get tags
-    CStdString strSQL = PrepareSQL("SELECT tag.strTag FROM tag, taglinks WHERE taglinks.idMedia = %i AND taglinks.media_type = 'tvshow' AND taglinks.idTag = tag.idTag ORDER BY tag.idTag", idTvShow);
-    m_pDS2->query(strSQL.c_str());
-    while (!m_pDS2->eof())
-    {
-      details.m_tags.push_back(m_pDS2->fv("tag.strTag").get_asString());
-      m_pDS2->next();
-    }
+    GetTags(details.m_iDbId, MediaTypeTvShow, details.m_tags);
 
     castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
     details.m_strPictureURL.Parse();
@@ -3703,15 +3659,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
 
   if (getDetails)
   {
-    // get tags
-    CStdString strSQL = PrepareSQL("SELECT tag.strTag FROM tag, taglinks WHERE taglinks.idMedia = %i AND taglinks.media_type = 'musicvideo' AND taglinks.idTag = tag.idTag ORDER BY tag.idTag", idMVideo);
-    m_pDS2->query(strSQL.c_str());
-    while (!m_pDS2->eof())
-    {
-      details.m_tags.push_back(m_pDS2->fv("tag.strTag").get_asString());
-      m_pDS2->next();
-    }
-    m_pDS2->close();
+    GetTags(details.m_iDbId, MediaTypeMusicVideo, details.m_tags);
 
     details.m_strPictureURL.Parse();
 
@@ -3762,6 +3710,28 @@ void CVideoDatabase::GetCast(int media_id, const std::string &media_type, vector
         info.thumb = m_pDS2->fv(4).get_asString();
         cast.push_back(info);
       }
+      m_pDS2->next();
+    }
+    m_pDS2->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%i,%s) failed", __FUNCTION__, media_id, media_type.c_str());
+  }
+}
+
+void CVideoDatabase::GetTags(int media_id, const std::string &media_type, std::vector<std::string> &tags)
+{
+  try
+  {
+    if (!m_pDB.get()) return;
+    if (!m_pDS2.get()) return;
+
+    std::string sql = PrepareSQL("SELECT tag.name FROM tag, tag_link WHERE tag_link.media_id = %i AND tag_link.media_type = '%s' AND tag_link.tag_id = tag.tag_id ORDER BY tag.tag_id", media_id, media_type.c_str());
+    m_pDS2->query(sql);
+    while (!m_pDS2->eof())
+    {
+      tags.push_back(m_pDS2->fv(0).get_asString());
       m_pDS2->next();
     }
     m_pDS2->close();
@@ -4630,6 +4600,15 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("INSERT INTO countrynew(country_id, name) SELECT idCountry,strCountry FROM country");
     m_pDS->exec("DROP TABLE IF EXISTS country");
     m_pDS->exec("ALTER TABLE countrynew RENAME TO country");
+
+    // tags
+    m_pDS->exec("CREATE TABLE tag_link(tag_id INTEGER, media_id INTEGER, media_type TEXT)");
+    m_pDS->exec("INSERT INTO tag_link(tag_id, media_id, media_type) SELECT idTag,idMedia,media_type FROM taglinks");
+    m_pDS->exec("DROP TABLE IF EXISTS taglinks");
+    m_pDS->exec("CREATE TABLE tagnew(tag_id INTEGER PRIMARY KEY, name TEXT)");
+    m_pDS->exec("INSERT INTO tagnew(tag_id, name) SELECT idTag,strTag FROM tag");
+    m_pDS->exec("DROP TABLE IF EXISTS tag");
+    m_pDS->exec("ALTER TABLE tagnew RENAME TO tag");
   }
 }
 
@@ -5161,21 +5140,21 @@ bool CVideoDatabase::GetTagsNav(const CStdString& strBaseDir, CFileItemList& ite
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = "SELECT %s FROM taglinks ";
+    CStdString strSQL = "SELECT %s FROM tag_link ";
 
     Filter extFilter = filter;
-    extFilter.fields = "tag.idTag, tag.strTag";
-    extFilter.AppendJoin("JOIN tag ON tag.idTag = taglinks.idTag");
+    extFilter.fields = "tag.tag_id, tag.name";
+    extFilter.AppendJoin("JOIN tag ON tag.tag_id = tag_link.tag_id");
 
     if (idContent == (int)VIDEODB_CONTENT_MOVIES)
-      extFilter.AppendJoin("JOIN movieview ON movieview.idMovie = taglinks.idMedia");
+      extFilter.AppendJoin("JOIN movieview ON movieview.idMovie = tag_link.media_id");
 
-    extFilter.AppendWhere(PrepareSQL("taglinks.media_type = '%s'", mediaType.c_str()));
-    extFilter.AppendGroup("taglinks.idTag");
+    extFilter.AppendWhere(PrepareSQL("tag_link.media_type = '%s'", mediaType.c_str()));
+    extFilter.AppendGroup("tag_link.tag_id");
 
     if (countOnly)
     {
-      extFilter.fields = "COUNT(DISTINCT taglinks.idTag)";
+      extFilter.fields = "COUNT(DISTINCT tag_link.tag_id)";
       extFilter.group.clear();
       extFilter.order.clear();
     }
@@ -6512,7 +6491,7 @@ CStdString CVideoDatabase::GetSetById(int id)
 
 CStdString CVideoDatabase::GetTagById(int id)
 {
-  return GetSingleValue("tag", "strTag", PrepareSQL("idTag = %i", id));
+  return GetSingleValue("tag", "name", PrepareSQL("tag_id = %i", id));
 }
 
 CStdString CVideoDatabase::GetPersonById(int id)
@@ -9339,15 +9318,15 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
     option = options.find("tagid");
     if (option != options.end())
     {
-      filter.AppendJoin(PrepareSQL("join taglinks on taglinks.idMedia = movieview.idMovie AND taglinks.media_type = 'movie'"));
-      filter.AppendWhere(PrepareSQL("taglinks.idTag = %i", (int)option->second.asInteger()));
+      filter.AppendJoin(PrepareSQL("JOIN tag_link ON tag_link.media_id = movieview.idMovie AND tag_link.media_type = 'movie'"));
+      filter.AppendWhere(PrepareSQL("tag_link.tag_id = %i", (int)option->second.asInteger()));
     }
 
     option = options.find("tag");
     if (option != options.end())
     {
-      filter.AppendJoin(PrepareSQL("join taglinks on taglinks.idMedia = movieview.idMovie AND taglinks.media_type = 'movie' join tag on tag.idTag = taglinks.idTag"));
-      filter.AppendWhere(PrepareSQL("tag.strTag like '%s'", option->second.asString().c_str()));
+      filter.AppendJoin(PrepareSQL("JOIN tag_link ON tag_link.media_id = movieview.idMovie AND tag_link.media_type = 'movie' JOIN tag ON tag.tag_id = tag_link.tag_id"));
+      filter.AppendWhere(PrepareSQL("tag.name like '%s'", option->second.asString().c_str()));
     }
   }
   else if (type == "tvshows")
@@ -9410,15 +9389,15 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
       option = options.find("tagid");
       if (option != options.end())
       {
-        filter.AppendJoin(PrepareSQL("join taglinks on taglinks.idMedia = tvshowview.idShow AND taglinks.media_type = 'tvshow'"));
-        filter.AppendWhere(PrepareSQL("taglinks.idTag = %i", (int)option->second.asInteger()));
+        filter.AppendJoin(PrepareSQL("JOIN tag_link ON tag_link.media_id = tvshowview.idShow AND tag_link.media_type = 'tvshow'"));
+        filter.AppendWhere(PrepareSQL("tag_link.tag_id = %i", (int)option->second.asInteger()));
       }
 
       option = options.find("tag");
       if (option != options.end())
       {
-        filter.AppendJoin(PrepareSQL("join taglinks on taglinks.idMedia = tvshowview.idShow AND taglinks.media_type = 'tvshow' join tag on tag.idTag = taglinks.idTag"));
-        filter.AppendWhere(PrepareSQL("tag.strTag like '%s'", option->second.asString().c_str()));
+        filter.AppendJoin(PrepareSQL("JOIN tag_link ON tag_link.media_id = tvshowview.idShow AND tag_link.media_type = 'tvshow' JOIN tag ON tag.tag_id = tag_link.tag_id"));
+        filter.AppendWhere(PrepareSQL("tag.name like '%s'", option->second.asString().c_str()));
       }
     }
     else if (itemType == "seasons")
@@ -9631,15 +9610,15 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
     option = options.find("tagid");
     if (option != options.end())
     {
-      filter.AppendJoin(PrepareSQL("join taglinks on taglinks.idMedia = musicvideoview.idMVideo AND taglinks.media_type = 'musicvideo'"));
-      filter.AppendWhere(PrepareSQL("taglinks.idTag = %i", (int)option->second.asInteger()));
+      filter.AppendJoin(PrepareSQL("JOIN tag_link ON tag_link.media_id = musicvideoview.idMVideo AND tag_link.media_type = 'musicvideo'"));
+      filter.AppendWhere(PrepareSQL("tag_link.tag_id = %i", (int)option->second.asInteger()));
     }
 
     option = options.find("tag");
     if (option != options.end())
     {
-      filter.AppendJoin(PrepareSQL("join taglinks on taglinks.idMedia = musicvideoview.idMVideo AND taglinks.media_type = 'musicvideo' join tag on tag.idTag = taglinks.idTag"));
-      filter.AppendWhere(PrepareSQL("tag.strTag like '%s'", option->second.asString().c_str()));
+      filter.AppendJoin(PrepareSQL("JOIN tag_link ON tag_link.media_id = musicvideoview.idMVideo AND tag_link.media_type = 'musicvideo' JOIN tag ON tag.tag_id = tag_link.tag_id"));
+      filter.AppendWhere(PrepareSQL("tag.name like '%s'", option->second.asString().c_str()));
     }
   }
   else
