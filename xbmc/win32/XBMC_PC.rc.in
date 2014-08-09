@@ -69,13 +69,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "Team XBMC"
-            VALUE "FileDescription", "XBMC"
+            VALUE "CompanyName", "@COMPANY_NAME@"
+            VALUE "FileDescription", "@APP_NAME@"
             VALUE "FileVersion", "@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@-@APP_VERSION_TAG@"
             VALUE "InternalName", "XBMC.exe"
             VALUE "LegalCopyright", "Copyright (c) Team XBMC.  All rights reserved."
             VALUE "OriginalFilename", "XBMC.exe"
-            VALUE "ProductName", "XBMC for Windows"
+            VALUE "ProductName", "@APP_NAME@ for Windows"
             VALUE "ProductVersion", "@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@-@APP_VERSION_TAG@"
         END
     END
