@@ -148,7 +148,6 @@ or insert() operations default = false) */
   virtual int  exec (const std::string &sql);
   virtual const void* getExecRes();
 /* as open, but with our query exept Sql */
-  virtual bool query(const char *query);
   virtual bool query(const std::string &query);
 /* func. closes a query */
   virtual void close(void);
