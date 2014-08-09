@@ -529,16 +529,8 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
   {
     PlayAll(true);
   }
-  else if (action.GetID() == ACTION_QUEUE_ITEM)
-  {
-    if (m_viewControl.GetSelectedItem() != -1)
-    {
-      CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
-      g_plexApplication.playQueueManager->QueueItem(pItem, false);
-    }
-  }
 
-  if (CGUIPlexDefaultActionHandler::OnAction(action, m_vecItems->Get(m_viewControl.GetSelectedItem())))
+  if (g_plexApplication.defaultActionHandler->OnAction(WINDOW_VIDEO_NAV, action, m_vecItems->Get(m_viewControl.GetSelectedItem())))
     return true;
   
   bool ret = CGUIMediaWindow::OnAction(action);
@@ -786,22 +778,10 @@ void CGUIPlexMediaWindow::GetContextButtons(int itemNumber, CContextButtons &but
   if (!item)
     return;
 
-  if (g_application.IsPlaying())
-    buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
 
   buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208);
-
-  CFileItemList pqlist;
-  g_plexApplication.playQueueManager->getCurrentPlayQueue(pqlist);
-
-  if (pqlist.Size())
-    buttons.Add(CONTEXT_BUTTON_PLAY_ONLY_THIS, 52602);
-  else
-    buttons.Add(CONTEXT_BUTTON_PLAY_ONLY_THIS, 52607);
-
-  ePlexMediaType itemType = PlexUtils::GetMediaTypeFromItem(*m_vecItems);
-  if (g_plexApplication.playQueueManager->getCurrentPlayQueueType() == itemType)
-    buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 52603);
+  
+  g_plexApplication.defaultActionHandler->GetContextButtons(WINDOW_VIDEO_NAV, item, buttons);
 
   if (m_vecItems->Size())
     buttons.Add(CONTEXT_BUTTON_SHUFFLE, 52600);
@@ -816,17 +796,6 @@ void CGUIPlexMediaWindow::GetContextButtons(int itemNumber, CContextButtons &but
       buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);
   }
 
-  EPlexDirectoryType dirType = item->GetPlexDirectoryType();
-
-  if (item->IsPlexMediaServerLibrary() &&
-      (item->IsRemoteSharedPlexMediaServerLibrary() == false) &&
-      (dirType == PLEX_DIR_TYPE_EPISODE || dirType == PLEX_DIR_TYPE_MOVIE ||
-       dirType == PLEX_DIR_TYPE_VIDEO || dirType == PLEX_DIR_TYPE_TRACK))
-  {
-    CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(item->GetProperty("plexserver").asString());
-    if (server && server->SupportsDeletion())
-      buttons.Add(CONTEXT_BUTTON_DELETE, 117);
-  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -838,11 +807,6 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   switch(button)
   {
-    case CONTEXT_BUTTON_NOW_PLAYING:
-    {
-      m_navHelper.navigateToNowPlaying();
-      break;
-    }
     case CONTEXT_BUTTON_SHUFFLE:
     {
       PlayAll(true);
@@ -867,12 +831,6 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       break;
     }
 
-    case CONTEXT_BUTTON_QUEUE_ITEM:
-    case CONTEXT_BUTTON_PLAY_ONLY_THIS:
-    {
-      g_plexApplication.playQueueManager->QueueItem(item, button == CONTEXT_BUTTON_PLAY_ONLY_THIS);
-      break;
-    }
 
     case CONTEXT_BUTTON_MARK_WATCHED:
     case CONTEXT_BUTTON_MARK_UNWATCHED:
@@ -887,20 +845,13 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       break;
     }
 
-    case CONTEXT_BUTTON_DELETE:
-    {
-      bool canceled;
-      if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(750), g_localizeStrings.Get(125), "", "", canceled))
-      {
-        g_plexApplication.mediaServerClient->deleteItem(item);
-        g_directoryCache.ClearSubPaths(m_vecItems->GetPath());
-      }
-      break;
-    }
 
     default:
       break;
   }
+  
+  if (g_plexApplication.defaultActionHandler->OnAction(WINDOW_VIDEO_NAV, button, item))
+    return true;
 
   return true;
 }
