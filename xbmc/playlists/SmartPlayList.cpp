@@ -757,7 +757,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
     table = "movieview";
 
     if (m_field == FieldGenre)
-      query = negate + " EXISTS (SELECT 1 FROM genrelinkmovie JOIN genre ON genre.idGenre=genrelinkmovie.idGenre WHERE genrelinkmovie.idMovie = " + GetField(FieldId, strType) + " AND genre.strGenre" + parameter + ")";
+      query = negate + FormatLinkQuery("genre", "genre", MediaTypeMovie, GetField(FieldId, strType), parameter);
     else if (m_field == FieldDirector)
       query = negate + FormatLinkQuery("director", "actor", MediaTypeMovie, GetField(FieldId, strType), parameter);
     else if (m_field == FieldActor)
@@ -765,9 +765,9 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
     else if (m_field == FieldWriter)
       query = negate + FormatLinkQuery("writer", "actor", MediaTypeMovie, GetField(FieldId, strType), parameter);
     else if (m_field == FieldStudio)
-      query = negate + " EXISTS (SELECT 1 FROM studiolinkmovie JOIN studio ON studio.idStudio=studiolinkmovie.idStudio WHERE studiolinkmovie.idMovie = " + GetField(FieldId, strType) + " AND studio.strStudio" + parameter + ")";
+      query = negate + FormatLinkQuery("studio", "studio", MediaTypeMovie, GetField(FieldId, strType), parameter);
     else if (m_field == FieldCountry)
-      query = negate + " EXISTS (SELECT 1 FROM countrylinkmovie JOIN country ON country.idCountry=countrylinkmovie.idCountry WHERE countrylinkmovie.idMovie = " + GetField(FieldId, strType) + " AND country.strCountry" + parameter + ")";
+      query = negate + FormatLinkQuery("country", "country", MediaTypeMovie, GetField(FieldId, strType), parameter);
     else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
       query = GetField(m_field, strType) + " IS NULL OR " + GetField(m_field, strType) + parameter;
     else if (m_field == FieldTag)
@@ -778,11 +778,11 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
     table = "musicvideoview";
 
     if (m_field == FieldGenre)
-      query = negate + " EXISTS (SELECT 1 FROM genrelinkmusicvideo JOIN genre ON genre.idGenre=genrelinkmusicvideo.idGenre WHERE genrelinkmusicvideo.idMVideo = " + GetField(FieldId, strType) + " AND genre.strGenre" + parameter + ")";
+      query = negate + FormatLinkQuery("genre", "genre", MediaTypeMusicVideo, GetField(FieldId, strType), parameter);
     else if (m_field == FieldArtist || m_field == FieldAlbumArtist)
       query = negate + FormatLinkQuery("artist", "actor", MediaTypeMusicVideo, GetField(FieldId, strType), parameter);
     else if (m_field == FieldStudio)
-      query = negate + " EXISTS (SELECT 1 FROM studiolinkmusicvideo JOIN studio ON studio.idStudio=studiolinkmusicvideo.idStudio WHERE studiolinkmusicvideo.idMVideo = " + GetField(FieldId, strType) + " AND studio.strStudio" + parameter + ")";
+      query = negate + FormatLinkQuery("studio", "studio", MediaTypeMusicVideo, GetField(FieldId, strType), parameter);
     else if (m_field == FieldDirector)
       query = negate + FormatLinkQuery("director", "actor", MediaTypeMusicVideo, GetField(FieldId, strType), parameter);
     else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
@@ -795,13 +795,13 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
     table = "tvshowview";
 
     if (m_field == FieldGenre)
-      query = negate + " EXISTS (SELECT 1 FROM genrelinktvshow JOIN genre ON genre.idGenre=genrelinktvshow.idGenre WHERE genrelinktvshow.idShow = " + GetField(FieldId, strType) + " AND genre.strGenre" + parameter + ")";
+      query = negate + FormatLinkQuery("genre", "genre", MediaTypeTvShow, GetField(FieldId, strType), parameter);
     else if (m_field == FieldDirector)
       query = negate + FormatLinkQuery("director", "actor", MediaTypeTvShow, GetField(FieldId, strType), parameter);
     else if (m_field == FieldActor)
       query = negate + FormatLinkQuery("actor", "actor", MediaTypeTvShow, GetField(FieldId, strType), parameter);
     else if (m_field == FieldStudio)
-      query = negate + " (" + GetField(m_field, strType) + parameter + ")";
+      query = negate + FormatLinkQuery("studio", "studio", MediaTypeTvShow, GetField(FieldId, strType), parameter);
     else if (m_field == FieldMPAA)
       query = negate + " (" + GetField(m_field, strType) + parameter + ")";
     else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
@@ -816,7 +816,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
     table = "episodeview";
 
     if (m_field == FieldGenre)
-      query = negate + " EXISTS (SELECT 1 FROM genrelinktvshow JOIN genre ON genre.idGenre=genrelinktvshow.idGenre WHERE genrelinktvshow.idShow = " + table + ".idShow AND genre.strGenre" + parameter + ")";
+      query = negate + FormatLinkQuery("genre", "genre", MediaTypeTvShow, (table + ".idShow").c_str(), parameter);
     else if (m_field == FieldDirector)
       query = negate + FormatLinkQuery("director", "actor", MediaTypeEpisode, GetField(FieldId, strType), parameter);
     else if (m_field == FieldActor)
@@ -826,7 +826,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
     else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
       query = GetField(m_field, strType) + " IS NULL OR " + GetField(m_field, strType) + parameter;
     else if (m_field == FieldStudio)
-      query = negate + " (" + GetField(m_field, strType) + parameter + ")";
+      query = negate + FormatLinkQuery("studio", "studio", MediaTypeTvShow, (table + ".idShow").c_str(), parameter);
     else if (m_field == FieldMPAA)
       query = negate + " (" + GetField(m_field, strType) +  parameter + ")";
   }
