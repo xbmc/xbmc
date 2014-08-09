@@ -62,10 +62,7 @@ void CGUIWindowPlexPlayQueue::GetContextButtons(int itemNumber, CContextButtons&
   if (!item)
     return;
 
-  if (PlexUtils::IsPlayingPlaylist())
-    buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
-  buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 1210);
-  buttons.Add(CONTEXT_BUTTON_CLEAR, 192);
+  g_plexApplication.defaultActionHandler->GetContextButtons(WINDOW_PLEX_PLAY_QUEUE, item, buttons);
 
   if (!g_application.IsPlaying())
     buttons.Add(CONTEXT_BUTTON_EDIT, 52608);
@@ -149,24 +146,10 @@ bool CGUIWindowPlexPlayQueue::OnContextButton(int itemNumber, CONTEXT_BUTTON but
   if (!item)
     return false;
 
+  g_plexApplication.defaultActionHandler->OnAction(WINDOW_PLEX_PLAY_QUEUE, button, item);
+  
   switch (button)
   {
-    case CONTEXT_BUTTON_NOW_PLAYING:
-    {
-      CPlexNavigationHelper::navigateToNowPlaying();
-      break;
-    }
-    case CONTEXT_BUTTON_REMOVE_SOURCE:
-    {
-      g_plexApplication.playQueueManager->removeItem(item);
-      break;
-    }
-    case CONTEXT_BUTTON_CLEAR:
-    {
-      g_plexApplication.playQueueManager->clear();
-      OnBack(ACTION_NAV_BACK);
-      break;
-    }
     case CONTEXT_BUTTON_EDIT:
     {
       // toggle edit mode
@@ -184,14 +167,6 @@ bool CGUIWindowPlexPlayQueue::OnContextButton(int itemNumber, CONTEXT_BUTTON but
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowPlexPlayQueue::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_DELETE_ITEM)
-  {
-    int i = m_viewControl.GetSelectedItem();
-    CFileItemPtr item = m_vecItems->Get(i);
-    if (item)
-      g_plexApplication.playQueueManager->removeItem(item);
-    return true;
-  }
 
   // Long OK press, we wanna handle PQ EditMode
   if (action.GetID() == ACTION_SHOW_GUI)
@@ -215,7 +190,7 @@ bool CGUIWindowPlexPlayQueue::OnAction(const CAction &action)
   // record selected item before processing
   int oldSelectedID = m_viewControl.GetSelectedItem();
 
-  if (CGUIPlexDefaultActionHandler::OnAction(action, m_vecItems->Get(m_viewControl.GetSelectedItem())))
+  if (g_plexApplication.defaultActionHandler->OnAction(WINDOW_PLEX_PLAY_QUEUE, action, m_vecItems->Get(m_viewControl.GetSelectedItem())))
     return true;
   
   bool ret = CGUIPlexMediaWindow::OnAction(action);
