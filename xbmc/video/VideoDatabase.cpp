@@ -3965,6 +3965,29 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
   return details;
 }
 
+class CStats
+{
+public:
+  CStats() : n(0), m(0), s2(0) {}
+
+  void add_data(float x)
+  {
+    n++;
+    double delta = x - m;
+    m += delta/n;
+    s2 = s2 + delta*(x - m);
+  }
+  float mean() const { return m; }
+  float sd() const { return sqrt(var()); };
+  float ci() const { return 1.96f * sqrt(var() / n); }
+private:
+  float var() const { return s2 / (n-1); }
+
+  unsigned int n;
+  double       m;
+  double       s2;
+};
+
 void CVideoDatabase::GetCast(const CStdString &table, const CStdString &table_id, int type_id, vector<SActorInfo> &cast)
 {
   try
@@ -3972,6 +3995,10 @@ void CVideoDatabase::GetCast(const CStdString &table, const CStdString &table_id
     if (!m_pDB.get()) return;
     if (!m_pDS2.get()) return;
 
+    static CStats o, n, d;
+    CStopWatch timer; timer.Start();
+    for (unsigned int i = 0; i < 1000; i++)
+    {
     CStdString sql = PrepareSQL("SELECT actors.strActor,"
                                 "  actorlink%s.strRole,"
                                 "  actorlink%s.iOrder,"
@@ -3985,6 +4012,11 @@ void CVideoDatabase::GetCast(const CStdString &table, const CStdString &table_id
                                 "WHERE actorlink%s.%s=%i "
                                 "ORDER BY actorlink%s.iOrder",table.c_str(), table.c_str(), table.c_str(), table.c_str(), table.c_str(), table_id.c_str(), type_id, table.c_str());
     m_pDS2->query(sql.c_str());
+    }
+    float t = timer.GetElapsedMilliseconds();
+    o.add_data(t);
+    timer.StartZero();
+    for (unsigned int i = 0; i < 1000; i++)
     {
     std::string sql = PrepareSQL("SELECT actors.strActor,"
                                  "  actorlinks.strRole,"
@@ -4000,6 +4032,11 @@ void CVideoDatabase::GetCast(const CStdString &table, const CStdString &table_id
                                  "ORDER BY actorlinks.iOrder", type_id, table.c_str());
     m_pDS2->query(sql);
     }
+    n.add_data(timer.GetElapsedMilliseconds());
+    d.add_data(timer.GetElapsedMilliseconds() - t);
+
+    CLog::Log(LOGDEBUG, "Time to retrieve cast: old (%f +/- %f) ms, new (%f +/- %f), diff (%f +/- %f)  ms", o.mean(), o.ci(), n.mean(), n.ci(), d.mean(), d.ci());
+
     while (!m_pDS2->eof())
     {
       SActorInfo info;
