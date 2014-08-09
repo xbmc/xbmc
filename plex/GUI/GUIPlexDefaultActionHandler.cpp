@@ -50,7 +50,7 @@ CGUIPlexDefaultActionHandler::CGUIPlexDefaultActionHandler()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIPlexDefaultActionHandler::GetContextButtons(int windowID, CFileItemPtr item, CContextButtons& buttons)
+void CGUIPlexDefaultActionHandler::GetContextButtons(int windowID, CFileItemPtr item, CFileItemListPtr container, CContextButtons& buttons)
 {
   // check if the action is supported
   for (ActionsSettingListIterator it = m_ActionSettings.begin(); it != m_ActionSettings.end(); ++it)
@@ -58,13 +58,13 @@ void CGUIPlexDefaultActionHandler::GetContextButtons(int windowID, CFileItemPtr 
     ActionWindowSettingsMapIterator itwin = it->WindowSettings.find(windowID);
     if ((itwin != it->WindowSettings.end()) && (itwin->second.contextMenuVisisble))
     {
-      GetContextButtonsForAction(it->actionID, item, buttons);
+      GetContextButtonsForAction(it->actionID, item, container, buttons);
     }
   }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileItemPtr item)
+bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileItemPtr item, CFileItemListPtr container)
 {
   CGUIWindow* window = g_windowManager.GetWindow(windowID);
   int actionID = action.GetID();
@@ -173,7 +173,7 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIPlexDefaultActionHandler::GetContextButtonsForAction(int actionID, CFileItemPtr item,
-                                                              CContextButtons& buttons)
+                                                              CFileItemListPtr container, CContextButtons& buttons)
 {
   switch (actionID)
   {

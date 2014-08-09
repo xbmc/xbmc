@@ -62,7 +62,7 @@ void CGUIWindowPlexPlayQueue::GetContextButtons(int itemNumber, CContextButtons&
   if (!item)
     return;
 
-  g_plexApplication.defaultActionHandler->GetContextButtons(WINDOW_PLEX_PLAY_QUEUE, item, buttons);
+  g_plexApplication.defaultActionHandler->GetContextButtons(WINDOW_PLEX_PLAY_QUEUE, item, m_vecItems, buttons);
 
   if (!g_application.IsPlaying())
     buttons.Add(CONTEXT_BUTTON_EDIT, 52608);
@@ -146,7 +146,7 @@ bool CGUIWindowPlexPlayQueue::OnContextButton(int itemNumber, CONTEXT_BUTTON but
   if (!item)
     return false;
 
-  g_plexApplication.defaultActionHandler->OnAction(WINDOW_PLEX_PLAY_QUEUE, button, item);
+  g_plexApplication.defaultActionHandler->OnAction(WINDOW_PLEX_PLAY_QUEUE, button, item, m_vecItems);
   
   switch (button)
   {
@@ -190,7 +190,7 @@ bool CGUIWindowPlexPlayQueue::OnAction(const CAction &action)
   // record selected item before processing
   int oldSelectedID = m_viewControl.GetSelectedItem();
 
-  if (g_plexApplication.defaultActionHandler->OnAction(WINDOW_PLEX_PLAY_QUEUE, action, m_vecItems->Get(m_viewControl.GetSelectedItem())))
+  if (g_plexApplication.defaultActionHandler->OnAction(WINDOW_PLEX_PLAY_QUEUE, action, m_vecItems->Get(m_viewControl.GetSelectedItem()), m_vecItems))
     return true;
   
   bool ret = CGUIPlexMediaWindow::OnAction(action);

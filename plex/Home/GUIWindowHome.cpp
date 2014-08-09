@@ -141,7 +141,7 @@ bool CGUIWindowHome::OnAction(const CAction &action)
     return true;
   }
   
-  if (g_plexApplication.defaultActionHandler->OnAction(WINDOW_HOME, action, GetCurrentFanoutItem()))
+  if (g_plexApplication.defaultActionHandler->OnAction(WINDOW_HOME, action, GetCurrentFanoutItem(), CFileItemListPtr()))
     return true;
   
   bool ret = CGUIWindow::OnAction(action);
@@ -279,7 +279,7 @@ void CGUIWindowHome::GetContextMenu(CContextButtons& buttons)
   }
   else if (fileItem != NULL)
   {
-    g_plexApplication.defaultActionHandler->GetContextButtons(WINDOW_HOME, fileItem, buttons);
+    g_plexApplication.defaultActionHandler->GetContextButtons(WINDOW_HOME, fileItem, CFileItemListPtr(), buttons);
 
     if (controlId == CONTENT_LIST_ON_DECK ||
         controlId == CONTENT_LIST_RECENTLY_ADDED ||
@@ -382,7 +382,7 @@ bool CGUIWindowHome::OnPopupMenu()
   if (choice == -1)
     return false;
 
-  if (g_plexApplication.defaultActionHandler->OnAction(WINDOW_HOME, choice, GetCurrentFanoutItem()))
+  if (g_plexApplication.defaultActionHandler->OnAction(WINDOW_HOME, choice, GetCurrentFanoutItem(), CFileItemListPtr()))
     return true;
   
   switch (choice)

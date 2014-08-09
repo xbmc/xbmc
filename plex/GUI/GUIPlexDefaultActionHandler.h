@@ -35,11 +35,11 @@ class CGUIPlexDefaultActionHandler
 public:
   CGUIPlexDefaultActionHandler();
 
-  bool OnAction(int windowID, CAction action, CFileItemPtr item);
-  void GetContextButtons(int windowID, CFileItemPtr item, CContextButtons& buttons);
+  bool OnAction(int windowID, CAction action, CFileItemPtr item, CFileItemListPtr container);
+  void GetContextButtons(int windowID, CFileItemPtr item, CFileItemListPtr container, CContextButtons& buttons);
 
 private:
-  void GetContextButtonsForAction(int actionID, CFileItemPtr item, CContextButtons& buttons);
+  void GetContextButtonsForAction(int actionID, CFileItemPtr item, CFileItemListPtr container, CContextButtons& buttons);
   ActionsSettingList m_ActionSettings;
   CPlexNavigationHelper m_navHelper;
 };

@@ -530,7 +530,7 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
     PlayAll(true);
   }
 
-  if (g_plexApplication.defaultActionHandler->OnAction(WINDOW_VIDEO_NAV, action, m_vecItems->Get(m_viewControl.GetSelectedItem())))
+  if (g_plexApplication.defaultActionHandler->OnAction(WINDOW_VIDEO_NAV, action, m_vecItems->Get(m_viewControl.GetSelectedItem()), m_vecItems))
     return true;
   
   bool ret = CGUIMediaWindow::OnAction(action);
@@ -781,7 +781,7 @@ void CGUIPlexMediaWindow::GetContextButtons(int itemNumber, CContextButtons &but
 
   buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208);
   
-  g_plexApplication.defaultActionHandler->GetContextButtons(WINDOW_VIDEO_NAV, item, buttons);
+  g_plexApplication.defaultActionHandler->GetContextButtons(WINDOW_VIDEO_NAV, item, m_vecItems, buttons);
 
   if (m_vecItems->Size())
     buttons.Add(CONTEXT_BUTTON_SHUFFLE, 52600);
@@ -850,7 +850,7 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       break;
   }
   
-  if (g_plexApplication.defaultActionHandler->OnAction(WINDOW_VIDEO_NAV, button, item))
+  if (g_plexApplication.defaultActionHandler->OnAction(WINDOW_VIDEO_NAV, button, item, m_vecItems))
     return true;
 
   return true;
