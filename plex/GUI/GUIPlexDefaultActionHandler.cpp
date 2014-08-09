@@ -22,9 +22,9 @@ CGUIPlexDefaultActionHandler::CGUIPlexDefaultActionHandler()
   m_ActionSettings.push_back(*action);
   
   action = new ACTION_SETTING(ACTION_PLEX_PLAY_TRAILER);
-  action->WindowSettings[WINDOW_HOME].contextMenuVisisble = false;
-  action->WindowSettings[WINDOW_PLEX_PLAY_QUEUE].contextMenuVisisble = false;
-  action->WindowSettings[WINDOW_VIDEO_NAV].contextMenuVisisble = false;
+  action->WindowSettings[WINDOW_HOME].contextMenuVisisble = true;
+  action->WindowSettings[WINDOW_PLEX_PLAY_QUEUE].contextMenuVisisble = true;
+  action->WindowSettings[WINDOW_VIDEO_NAV].contextMenuVisisble = true;
   m_ActionSettings.push_back(*action);
 
   action = new ACTION_SETTING(ACTION_QUEUE_ITEM);
@@ -97,16 +97,13 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
         if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE)
         {
           CPlexExtraDataLoader loader;
-
-          if (loader.getDataForItem(item))
+          if (loader.getDataForItem(item) && loader.getItems()->Size())
           {
-            if (loader.getItems()->Size())
-            {
-              /// we dont want quality selection menu for trailers
-              CFileItem trailerItem(*loader.getItems()->Get(0));
-              trailerItem.SetProperty("avoidPrompts", true);
-              g_application.PlayFile(trailerItem, true);
-            }
+            /// we dont want quality selection menu for trailers
+            CFileItem trailerItem(*loader.getItems()->Get(0));
+            trailerItem.SetProperty("avoidPrompts", true);
+            g_application.PlayFile(trailerItem, true);
+            
           }
         }
         return true;
@@ -180,6 +177,15 @@ void CGUIPlexDefaultActionHandler::GetContextButtonsForAction(int actionID, CFil
 {
   switch (actionID)
   {
+    case ACTION_PLEX_PLAY_TRAILER:
+      if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE)
+      {
+        CPlexExtraDataLoader loader;
+        if (loader.getDataForItem(item) && loader.getItems()->Size())
+          buttons.Add(actionID, 44550);
+      }
+      break;
+      
     case ACTION_PLEX_NOW_PLAYING:
       if (g_application.IsPlaying())
         buttons.Add(actionID, 13350);

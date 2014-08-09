@@ -924,6 +924,11 @@ msgctxt "#44506"
 msgid "Scene"
 msgstr "Scene"
 
+### other Extras related strings
+msgctxt "#44550"
+msgid "Play Trailer"
+msgstr "Play Trailer"
+
 #### These are error strings shown from channels
 #### errorcode + 50000
 msgctxt "#52000"
