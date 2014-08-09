@@ -326,6 +326,9 @@
 #define ACTION_PLEX_MOVE_NEXT_ITEM    307
 #define ACTION_PLEX_MOVE_PREV_ITEM    308
 #define ACTION_PLEX_PLAY_TRAILER      309
+#define ACTION_PLEX_NOW_PLAYING       310
+#define ACTION_PLEX_PQ_CLEAR          311
+#define ACTION_PLEX_PQ_ADDUPTONEXT    312
 /* END PLEX */
 
 // Window ID defines to make the code a bit more readable

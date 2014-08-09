@@ -35,6 +35,7 @@
 #include "Client/PlexTranscoderClient.h"
 #include "music/tags/MusicInfoTag.h"
 #include "FileSystem/PlexDirectoryCache.h"
+#include "GUI/GUIPlexDefaultActionHandler.h"
 
 #include "network/UdpClient.h"
 #include "DNSNameCache.h"
@@ -69,6 +70,7 @@ void PlexApplication::Start()
   extraInfo = new CPlexExtraInfoLoader;
   playQueueManager = CPlexPlayQueueManagerPtr(new CPlexPlayQueueManager);
   directoryCache = CPlexDirectoryCachePtr(new CPlexDirectoryCache);
+  defaultActionHandler = CGUIPlexDefaultActionHandlerPtr(new CGUIPlexDefaultActionHandler);
 
   serverManager->load();
 
@@ -297,6 +299,7 @@ void PlexApplication::Shutdown()
   CPlexTranscoderClient::DeleteInstance();
 
   directoryCache.reset();
+  defaultActionHandler.reset();
 
   OnTimeout();
 

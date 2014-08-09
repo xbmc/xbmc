@@ -71,6 +71,8 @@ typedef boost::shared_ptr<CPlexPlayQueueManager> CPlexPlayQueueManagerPtr;
 class CPlexDirectoryCache;
 typedef boost::shared_ptr<CPlexDirectoryCache> CPlexDirectoryCachePtr;
 
+class CGUIPlexDefaultActionHandler;
+typedef boost::shared_ptr<CGUIPlexDefaultActionHandler> CGUIPlexDefaultActionHandlerPtr;
 ///
 /// The hub of all Plex goodness.
 ///
@@ -123,6 +125,7 @@ public:
   CPlexPlayQueueManagerPtr playQueueManager;
   CPlexBusyIndicator busy;
   CPlexDirectoryCachePtr directoryCache;
+  CGUIPlexDefaultActionHandlerPtr defaultActionHandler;
 
   void setNetworkLogging(bool);
   void OnTimeout();
