@@ -771,7 +771,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
     else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
       query = GetField(m_field, strType) + " IS NULL OR " + GetField(m_field, strType) + parameter;
     else if (m_field == FieldTag)
-      query = negate + " EXISTS (SELECT 1 FROM taglinks JOIN tag ON tag.idTag = taglinks.idTag WHERE taglinks.idMedia = " + GetField(FieldId, strType) + " AND tag.strTag" + parameter + " AND taglinks.media_type = 'movie')";
+      query = negate + FormatLinkQuery("tag", "tag", MediaTypeMovie, GetField(FieldId, strType), parameter);
   }
   else if (strType == "musicvideos")
   {
@@ -788,7 +788,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
     else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
       query = GetField(m_field, strType) + " IS NULL OR " + GetField(m_field, strType) + parameter;
     else if (m_field == FieldTag)
-      query = negate + " EXISTS (SELECT 1 FROM taglinks JOIN tag ON tag.idTag = taglinks.idTag WHERE taglinks.idMedia = " + GetField(FieldId, strType) + " AND tag.strTag" + parameter + " AND taglinks.media_type = 'musicvideo')";
+      query = negate + FormatLinkQuery("tag", "tag", MediaTypeMusicVideo, GetField(FieldId, strType), parameter);
   }
   else if (strType == "tvshows")
   {
@@ -809,7 +809,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
     else if (m_field == FieldPlaycount)
       query = "CASE WHEN COALESCE(" + GetField(FieldNumberOfEpisodes, strType) + " - " + GetField(FieldNumberOfWatchedEpisodes, strType) + ", 0) > 0 THEN 0 ELSE 1 END " + parameter;
     else if (m_field == FieldTag)
-      query = negate + " EXISTS (SELECT 1 FROM taglinks JOIN tag ON tag.idTag = taglinks.idTag WHERE taglinks.idMedia = " + GetField(FieldId, strType) + " AND tag.strTag" + parameter + " AND taglinks.media_type = 'tvshow')";
+      query = negate + FormatLinkQuery("tag", "tag", MediaTypeTvShow, GetField(FieldId, strType), parameter);
   }
   else if (strType == "episodes")
   {

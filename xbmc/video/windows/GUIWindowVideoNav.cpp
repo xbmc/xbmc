@@ -1079,7 +1079,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
     if (localizedType.empty())
       return true;
 
-    if (!videodb.GetSingleValue("tag", "tag.idTag", videodb.PrepareSQL("tag.strTag = '%s' AND tag.idTag IN (SELECT taglinks.idTag FROM taglinks WHERE taglinks.media_type = '%s')", strTag.c_str(), mediaType.c_str())).empty())
+    if (!videodb.GetSingleValue("tag", "tag.tag_id", videodb.PrepareSQL("tag.name = '%s' AND tag.tag_id IN (SELECT tag_link.tag_id FROM tag_link WHERE tag_link.media_type = '%s')", strTag.c_str(), mediaType.c_str())).empty())
     {
       CStdString strError = StringUtils::Format(g_localizeStrings.Get(20463).c_str(), strTag.c_str());
       CGUIDialogOK::ShowAndGetInput(20462, "", strError, "");
