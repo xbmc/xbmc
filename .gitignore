@@ -195,11 +195,6 @@ lib/cpluff/stamp-h1
 /lib/enca/libenca_win32/Debug
 /lib/enca/libenca_win32/Release
 
-# /lib/freetype
-/lib/freetype/objs/debug_mt
-/lib/freetype/objs/release_mt
-/lib/freetype/objs/win32
-
 # /lib/fribidi
 /lib/fribidi/libfridibidi/Debug
 /lib/fribidi/libfridibidi/Release
@@ -371,17 +366,6 @@ lib/cpluff/stamp-h1
 /project/BuildDependencies/bin/doxygen
 /project/BuildDependencies/bin/json-rpc
 
-# /project/VS2008Express
-/project/VS2008Express/Debug
-/project/VS2008Express/Release
-/project/VS2008Express/XBMC
-/project/VS2008Express/glib
-/project/VS2008Express/guilib
-/project/VS2008Express/libPlatinum
-/project/VS2008Express/libs
-/project/VS2008Express/objs
-/project/VS2008Express/UnrarXLib
-
 # /project/VS2010Express
 /project/VS2010Express/Debug
 /project/VS2010Express/Release
@@ -400,7 +384,6 @@ lib/cpluff/stamp-h1
 
 # /skin/
 /skin/Confluence/media/Textures.xbt
-/skin/PM3.HD/media/Textures.xbt
 
 # /system
 /system/cpluff.dll
@@ -464,9 +447,6 @@ lib/cpluff/stamp-h1
 /system/players/paplayer/libFLAC.dll
 /system/players/paplayer/xbmc_asap.dll
 
-# /system/players/dsplayer
-/system/players/dsplayer/libsubs.dll
-
 # /system
 /system/profiles.xml
 
@@ -489,33 +469,6 @@ lib/cpluff/stamp-h1
 
 # /skin/Confluence/
 /skin/Confluence/BUILD
-
-# /skin/PM3.HD/
-/skin/PM3.HD/BUILD
-
-# /skin/PM3.HD/media/
-/skin/PM3.HD/media/*.db
-
-# /skin/PM3.HD/media/Apple Movie Trailers/
-/skin/PM3.HD/media/Apple Movie Trailers/*.db
-
-# /skin/PM3.HD/media/busy/
-/skin/PM3.HD/media/busy/*.db
-
-# /skin/PM3.HD/media/flagging/aspectratio/
-/skin/PM3.HD/media/flagging/aspectratio/Thumbs.db
-
-# /skin/PM3.HD/media/flagging/audio/
-/skin/PM3.HD/media/flagging/audio/Thumbs.db
-
-# /skin/PM3.HD/media/flagging/video/
-/skin/PM3.HD/media/flagging/video/Thumbs.db
-
-# /tools/Changelog/
-/tools/Changelog/Changelog.txt
-/tools/Changelog/svn_log.xml
-/tools/Changelog/Release
-/tools/Changelog/Debug
 
 # /tools/EventClients/
 /tools/EventClients/*.pyc
@@ -541,23 +494,12 @@ lib/cpluff/stamp-h1
 /tools/TexturePacker/Makefile
 /tools/TexturePacker/*.dll
 
-# /tools/XBMCTex/
-/tools/XBMCTex/Makefile
-
 # /userdata/
 /userdata/Database
 /userdata/playlists
 /userdata/Thumbnails
 /userdata/cache
 /userdata/guisettings.xml
-/userdata/avpacksettings.xml
-
-# /visualisations/
-/visualisations/Goom.vis
-/visualisations/ProjectM.vis
-/visualisations/Waveform.vis
-/visualisations/opengl_spectrum.vis
-/visualisations/projectM/
 
 # /xbmc/
 /xbmc/config.h
@@ -584,7 +526,6 @@ lib/cpluff/stamp-h1
 
 # /xbmc/cores/
 /xbmc/cores/AudioEngine/Makefile
-/xbmc/cores/amlplayer/Makefile
 /xbmc/cores/DllLoader/exports/build_wrapper.sh
 /xbmc/cores/DllLoader/exports/wrapper.def
 /xbmc/cores/DllLoader/Makefile
@@ -718,6 +659,7 @@ lib/cpluff/stamp-h1
 /xbmc/visualizations/DirectXSpectrum/Debug (DirectX)
 /xbmc/visualizations/DirectXSpectrum/Release (DirectX)
 /xbmc/visualizations/EGLHelpers/Makefile
+/xbmc/visualizations/fishBMC/Makefile
 /xbmc/visualizations/Goom/Makefile
 /xbmc/visualizations/Goom/goom2k4-0/aclocal.m4
 /xbmc/visualizations/Goom/goom2k4-0/configure
@@ -740,14 +682,12 @@ lib/cpluff/stamp-h1
 /xbmc/visualizations/WaveForm/Makefile
 /xbmc/visualizations/WaveForm/Debug (DirectX)
 /xbmc/visualizations/WaveForm/Release (DirectX)
-/xbmc/visualizations/iTunes/Makefile
 /xbmc/visualizations/XBMCProjectM/Makefile
 /xbmc/visualizations/XBMCProjectM/libprojectM/Makefile
 /xbmc/visualizations/XBMCProjectM/libprojectM/CMakeCache.txt
 /xbmc/visualizations/XBMCProjectM/libprojectM/CMakeFiles/
 /xbmc/visualizations/XBMCProjectM/libprojectM/cmake_install.cmake
 /xbmc/visualizations/XBMCProjectM/libprojectM/config.inp
-/xbmc/visualizations/fishBMC/Makefile
 
 #/xbmc/win32/
 /xbmc/win32/XBMC_PC.rc
@@ -761,20 +701,6 @@ lib/cpluff/stamp-h1
 /xbmc/windowing/tests/wayland/xbmc_wayland_test_protocol.c
 /xbmc/windowing/tests/wayland/xbmc_wayland_test_server_protocol.h
 /xbmc/windowing/tests/wayland/Makefile
-
-# /lib/ffmpeg/
-/lib/ffmpeg/config.h
-/lib/ffmpeg/config.err
-/lib/ffmpeg/config.mak
-/lib/ffmpeg/ffprobe
-/lib/ffmpeg/ffprobe_g
-/lib/ffmpeg/.version
-/lib/ffmpeg/version.h
-/lib/ffmpeg/libavutil/avconfig.h
-/lib/ffmpeg/doc/ffmpeg.pod
-/lib/ffmpeg/doc/ffplay.pod
-/lib/ffmpeg/doc/*.html
-/lib/ffmpeg/doc/*.1
 
 # /lib/libdvd/
 /lib/libdvd/Makefile
@@ -933,144 +859,6 @@ lib/cpluff/stamp-h1
 /lib/xbadpcm/Makefile
 /lib/xbadpcm/adpcm.lib
 
-# /lib/libflac/flac-1.2.1/
-/lib/libflac/flac-1.2.1/Makefilee
-/lib/libflac/flac-1.2.1/config.log
-/lib/libflac/flac-1.2.1/config.h
-/lib/libflac/flac-1.2.1/config.status
-/lib/libflac/flac-1.2.1/libtool-disable-static
-/lib/libflac/flac-1.2.1/stamp-h1
-/lib/libflac/flac-1.2.1/configure.lineno
-/lib/libflac/flac-1.2.1/config.cache
-/lib/libflac/flac-1.2.1/Makefile
-/lib/libflac/flac-1.2.1/libtool
-
-/lib/libflac/Makefile
-/lib/libflac/flac-1.2.1/include/test_libs_common/Makefile
-/lib/libflac/flac-1.2.1/src/libFLAC/ppc/Makefile
-/lib/libflac/flac-1.2.1/src/libFLAC/ppc/as/Makefile
-/lib/libflac/flac-1.2.1/src/libFLAC/ppc/gas/Makefile
-/lib/libflac/flac-1.2.1/src/flac/flac
-/lib/libflac/flac-1.2.1/src/metaflac/metaflac
-
-# /lib/libflac/flac-1.2.1/build/
-/lib/libflac/flac-1.2.1/build/Makefile
-
-# /lib/libflac/flac-1.2.1/include/
-/lib/libflac/flac-1.2.1/include/Makefile
-
-# /lib/libflac/flac-1.2.1/include/FLAC/
-/lib/libflac/flac-1.2.1/include/FLAC/Makefile
-
-# /lib/libflac/flac-1.2.1/include/FLAC++/
-/lib/libflac/flac-1.2.1/include/FLAC++/Makefile
-
-# /lib/libflac/flac-1.2.1/include/share/
-/lib/libflac/flac-1.2.1/include/share/Makefile
-
-# /lib/libflac/flac-1.2.1/include/share/grabbag/
-/lib/libflac/flac-1.2.1/include/share/grabbag/Makefile
-
-
-# /lib/libflac/flac-1.2.1/m4/
-/lib/libflac/flac-1.2.1/m4/Makefile
-
-# /lib/libflac/flac-1.2.1/obj/
-/lib/libflac/flac-1.2.1/obj/Makefile
-
-# /lib/libflac/flac-1.2.1/obj/debug/
-/lib/libflac/flac-1.2.1/obj/debug/Makefile
-
-# /lib/libflac/flac-1.2.1/obj/debug/bin/
-/lib/libflac/flac-1.2.1/obj/debug/bin/Makefile
-
-# /lib/libflac/flac-1.2.1/obj/debug/lib/
-/lib/libflac/flac-1.2.1/obj/debug/lib/Makefile
-
-# /lib/libflac/flac-1.2.1/obj/release/
-/lib/libflac/flac-1.2.1/obj/release/Makefile
-
-# /lib/libflac/flac-1.2.1/obj/release/bin/
-/lib/libflac/flac-1.2.1/obj/release/bin/Makefile
-
-# /lib/libflac/flac-1.2.1/obj/release/lib/
-/lib/libflac/flac-1.2.1/obj/release/lib/Makefile
-
-# /lib/libflac/flac-1.2.1/src/
-/lib/libflac/flac-1.2.1/src/Makefile
-
-# /lib/libflac/flac-1.2.1/src/flac/
-/lib/libflac/flac-1.2.1/src/flac/Makefile
-
-# /lib/libflac/flac-1.2.1/src/libFLAC/
-/lib/libflac/flac-1.2.1/src/libFLAC/Makefile
-
-# /lib/libflac/flac-1.2.1/src/libFLAC/ia32/
-/lib/libflac/flac-1.2.1/src/libFLAC/ia32/Makefile
-
-# /lib/libflac/flac-1.2.1/src/libFLAC/include/
-/lib/libflac/flac-1.2.1/src/libFLAC/include/Makefile
-
-# /lib/libflac/flac-1.2.1/src/libFLAC/include/private/
-/lib/libflac/flac-1.2.1/src/libFLAC/include/private/Makefile
-
-# /lib/libflac/flac-1.2.1/src/libFLAC/include/protected/
-/lib/libflac/flac-1.2.1/src/libFLAC/include/protected/Makefile
-
-# /lib/libflac/flac-1.2.1/src/libFLAC++/
-/lib/libflac/flac-1.2.1/src/libFLAC++/Makefile
-
-# /lib/libflac/flac-1.2.1/src/metaflac/
-/lib/libflac/flac-1.2.1/src/metaflac/Makefile
-
-# /lib/libflac/flac-1.2.1/src/monkeys_audio_utilities/
-/lib/libflac/flac-1.2.1/src/monkeys_audio_utilities/Makefile
-
-# /lib/libflac/flac-1.2.1/src/monkeys_audio_utilities/flac_mac/
-/lib/libflac/flac-1.2.1/src/monkeys_audio_utilities/flac_mac/Makefile
-
-# /lib/libflac/flac-1.2.1/src/monkeys_audio_utilities/flac_ren/
-/lib/libflac/flac-1.2.1/src/monkeys_audio_utilities/flac_ren/Makefile
-
-# /lib/libflac/flac-1.2.1/src/plugin_common/
-/lib/libflac/flac-1.2.1/src/plugin_common/Makefile
-
-# /lib/libflac/flac-1.2.1/src/plugin_winamp2/
-/lib/libflac/flac-1.2.1/src/plugin_winamp2/Makefile
-
-# /lib/libflac/flac-1.2.1/src/plugin_winamp2/include/
-/lib/libflac/flac-1.2.1/src/plugin_winamp2/include/Makefile
-
-# /lib/libflac/flac-1.2.1/src/plugin_winamp2/include/winamp2/
-/lib/libflac/flac-1.2.1/src/plugin_winamp2/include/winamp2/Makefile
-
-# /lib/libflac/flac-1.2.1/src/plugin_xmms/
-/lib/libflac/flac-1.2.1/src/plugin_xmms/Makefile
-
-# /lib/libflac/flac-1.2.1/src/share/
-/lib/libflac/flac-1.2.1/src/share/Makefile
-
-# /lib/libflac/flac-1.2.1/src/share/getopt/
-/lib/libflac/flac-1.2.1/src/share/getopt/Makefile
-
-# /lib/libflac/flac-1.2.1/src/share/grabbag/
-/lib/libflac/flac-1.2.1/src/share/grabbag/Makefile
-
-# /lib/libflac/flac-1.2.1/src/share/replaygain_analysis/
-/lib/libflac/flac-1.2.1/src/share/replaygain_analysis/Makefile
-
-# /lib/libflac/flac-1.2.1/src/share/replaygain_synthesis/
-/lib/libflac/flac-1.2.1/src/share/replaygain_synthesis/Makefile
-
-# /lib/libflac/flac-1.2.1/src/share/replaygain_synthesis/include/
-/lib/libflac/flac-1.2.1/src/share/replaygain_synthesis/include/Makefile
-
-# /lib/libflac/flac-1.2.1/src/share/replaygain_synthesis/include/private/
-/lib/libflac/flac-1.2.1/src/share/replaygain_synthesis/include/private/Makefile
-
-# /lib/libflac/flac-1.2.1/src/share/utf8/
-/lib/libflac/flac-1.2.1/src/share/utf8/Makefile
-
 # /lib/nosefart/
 /lib/nosefart/Makefile
 /lib/nosefart/NoseFart.lib
@@ -1112,103 +900,6 @@ lib/cpluff/stamp-h1
 
 #/lib/win32/ffmpeg
 /lib/win32/ffmpeg/
-
-# /lib/win32/libmms_win32/
-/lib/win32/libmms_win32/msvc++/Debug
-/lib/win32/libmms_win32/msvc++/Release
-
-# /lib/win32/sqlite
-/lib/win32/sqlite/libsqlite_win32/Debug
-/lib/win32/sqlite/libsqlite_win32/Release
-
-# /lib/win32/vorbisfile/libvorbis/
-/lib/win32/vorbisfile/libvorbis/config.log
-/lib/win32/vorbisfile/libvorbis/config.h
-/lib/win32/vorbisfile/libvorbis/Makefile
-/lib/win32/vorbisfile/libvorbis/libvorbis.spec
-/lib/win32/vorbisfile/libvorbis/config.status
-/lib/win32/vorbisfile/libvorbis/stamp-h1
-/lib/win32/vorbisfile/libvorbis/configure.lineno
-/lib/win32/vorbisfile/libvorbis/libtool
-
-# /lib/win32/vorbisfile/libvorbis/doc/
-/lib/win32/vorbisfile/libvorbis/doc/Makefile
-
-# /lib/win32/vorbisfile/libvorbis/doc/vorbisenc/
-/lib/win32/vorbisfile/libvorbis/doc/vorbisenc/Makefile
-
-# /lib/win32/vorbisfile/libvorbis/doc/vorbisfile/
-/lib/win32/vorbisfile/libvorbis/doc/vorbisfile/Makefile
-
-# /lib/win32/vorbisfile/libvorbis/examples/
-/lib/win32/vorbisfile/libvorbis/examples/Makefile
-
-# /lib/win32/vorbisfile/libvorbis/include/
-/lib/win32/vorbisfile/libvorbis/include/Makefile
-
-# /lib/win32/vorbisfile/libvorbis/include/vorbis/
-/lib/win32/vorbisfile/libvorbis/include/vorbis/Makefile
-
-# /lib/win32/vorbisfile/libvorbis/lib/
-/lib/win32/vorbisfile/libvorbis/lib/Makefile
-
-# /lib/win32/vorbisfile/libvorbis/lib/books/
-/lib/win32/vorbisfile/libvorbis/lib/books/Makefile
-
-# /lib/win32/vorbisfile/libvorbis/lib/books/coupled/
-/lib/win32/vorbisfile/libvorbis/lib/books/coupled/Makefile
-
-# /lib/win32/vorbisfile/libvorbis/lib/books/floor/
-/lib/win32/vorbisfile/libvorbis/lib/books/floor/Makefile
-
-# /lib/win32/vorbisfile/libvorbis/lib/books/uncoupled/
-/lib/win32/vorbisfile/libvorbis/lib/books/uncoupled/Makefile
-
-# /lib/win32/vorbisfile/libvorbis/lib/modes/
-/lib/win32/vorbisfile/libvorbis/lib/modes/Makefile
-
-# /lib/win32/vorbisfile/libvorbis/vq/
-/lib/win32/vorbisfile/libvorbis/vq/Makefile
-
-# /lib/win32/vorbisfile/libvorbis/win32/
-/lib/win32/vorbisfile/libvorbis/win32/VS2008/libvorbis/Debug
-/lib/win32/vorbisfile/libvorbis/win32/VS2008/libvorbis/Release
-/lib/win32/vorbisfile/libvorbis/win32/VS2008/libvorbisfile/Debug
-/lib/win32/vorbisfile/libvorbis/win32/VS2008/libvorbisfile/Release
-
-# /lib/win32/vorbisfile/ogg/
-/lib/win32/vorbisfile/ogg/config.log
-/lib/win32/vorbisfile/ogg/config.h
-/lib/win32/vorbisfile/ogg/Makefile
-/lib/win32/vorbisfile/ogg/config.status
-/lib/win32/vorbisfile/ogg/stamp-h1
-/lib/win32/vorbisfile/ogg/libogg.spec
-/lib/win32/vorbisfile/ogg/configure.lineno
-/lib/win32/vorbisfile/ogg/libtool
-/lib/win32/vorbisfile/ogg/win32/Static_Debug/
-
-# /lib/win32/vorbisfile/ogg/doc/
-/lib/win32/vorbisfile/ogg/doc/Makefile
-
-# /lib/win32/vorbisfile/ogg/doc/libogg/
-/lib/win32/vorbisfile/ogg/doc/libogg/Makefile
-
-# /lib/win32/vorbisfile/ogg/include/
-/lib/win32/vorbisfile/ogg/include/Makefile
-
-# /lib/win32/vorbisfile/ogg/include/ogg/
-/lib/win32/vorbisfile/ogg/include/ogg/config_types.h
-/lib/win32/vorbisfile/ogg/include/ogg/Makefile
-
-# /lib/win32/vorbisfile/ogg/src/
-/lib/win32/vorbisfile/ogg/src/Makefile
-/lib/win32/vorbisfile/ogg/src/test_bitwise
-/lib/win32/vorbisfile/ogg/src/test_framing
-
-# /lib/win32/vorbisfile/ogg/win32/
-/lib/win32/vorbisfile/ogg/win32/Makefile
-/lib/win32/vorbisfile/ogg/win32/Static_Debug
-/lib/win32/vorbisfile/ogg/win32/Static_Release
 
 # /lib/cmyth/
 /lib/cmyth/Makefile.depend
