@@ -73,13 +73,6 @@
 #define DLL_PATH_OGG           "@OGG_SONAME@"
 #define DLL_PATH_VORBIS        "@VORBIS_SONAME@"
 
-/* broadcom crystalhd */
-#if defined(TARGET_DARWIN)
-#define DLL_PATH_LIBCRYSTALHD  "libcrystalhd.dylib"
-#else
-#define DLL_PATH_LIBCRYSTALHD  "@CRYSTALHD_SONAME@"
-#endif
-
 /* libbluray */
 #define DLL_PATH_LIBBLURAY     "@BLURAY_SONAME@"
 

@@ -156,9 +156,6 @@
 #ifdef HAS_AIRTUNES
 #include "network/AirTunesServer.h"
 #endif
-#if defined(HAVE_LIBCRYSTALHD)
-#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
-#endif
 #include "interfaces/AnnouncementManager.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/dialogs/GUIDialogPeripheralManager.h"
@@ -1522,10 +1519,6 @@ bool CApplication::Initialize()
   }
 
   m_slowTimer.StartZero();
-
-#if defined(HAVE_LIBCRYSTALHD)
-  CCrystalHD::GetInstance();
-#endif
 
   CAddonMgr::Get().StartServices(true);
 
@@ -3614,10 +3607,6 @@ void CApplication::Stop(int exitCode)
 #if defined(TARGET_DARWIN_OSX)
     if (XBMCHelper::GetInstance().IsAlwaysOn() == false)
       XBMCHelper::GetInstance().Stop();
-#endif
-
-#if defined(HAVE_LIBCRYSTALHD)
-    CCrystalHD::RemoveInstance();
 #endif
 
     g_mediaManager.Stop();

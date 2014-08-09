@@ -37,9 +37,6 @@
 #include "Video/DVDVideoCodecOpenMax.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
 #include "Video/DVDVideoCodecStageFright.h"
-#if defined(HAVE_LIBCRYSTALHD)
-#include "Video/DVDVideoCodecCrystalHD.h"
-#endif
 #if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
 #include "Video/DVDVideoCodecAmlogic.h"
@@ -149,11 +146,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
 #elif defined(TARGET_DARWIN)
   hwSupport += "VideoToolBoxDecoder:no ";
 #endif
-#ifdef HAVE_LIBCRYSTALHD
-  hwSupport += "CrystalHD:yes ";
-#else
-  hwSupport += "CrystalHD:no ";
-#endif
 #if defined(HAS_LIBAMCODEC)
   hwSupport += "AMCodec:yes ";
 #else
@@ -227,30 +219,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
           if (hint.codec == AV_CODEC_ID_H264 && hint.ptsinvalid)
             break;
           if ( (pCodec = OpenCodec(new CDVDVideoCodecVideoToolBox(), hint, options)) ) return pCodec;
-        break;
-        default:
-        break;
-      }
-    }
-  }
-#endif
-
-#if defined(HAVE_LIBCRYSTALHD)
-  if (!hint.software && CSettings::Get().GetBool("videoplayer.usechd"))
-  {
-    if (CCrystalHD::GetInstance()->DevicePresent())
-    {
-      switch(hint.codec)
-      {
-        case AV_CODEC_ID_VC1:
-        case AV_CODEC_ID_WMV3:
-        case AV_CODEC_ID_H264:
-        case AV_CODEC_ID_MPEG2VIDEO:
-          if (hint.codec == AV_CODEC_ID_H264 && hint.ptsinvalid)
-            break;
-          if (hint.codec == AV_CODEC_ID_MPEG2VIDEO && hint.width <= 720)
-            break;
-          if ( (pCodec = OpenCodec(new CDVDVideoCodecCrystalHD(), hint, options)) ) return pCodec;
         break;
         default:
         break;
