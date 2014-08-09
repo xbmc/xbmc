@@ -141,7 +141,7 @@ bool CGUIWindowHome::OnAction(const CAction &action)
     return true;
   }
   
-  if (CGUIPlexDefaultActionHandler::OnAction(action, GetCurrentFanoutItem()))
+  if (g_plexApplication.defaultActionHandler->OnAction(WINDOW_HOME, action, GetCurrentFanoutItem()))
     return true;
   
   bool ret = CGUIWindow::OnAction(action);
@@ -260,22 +260,9 @@ void CGUIWindowHome::GetItemContextMenu(CContextButtons& buttons, const CFileIte
       buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);
   }
 
-  CFileItemList pqlist;
-  g_plexApplication.playQueueManager->getCurrentPlayQueue(pqlist);
-
-  if (pqlist.Size())
-    buttons.Add(CONTEXT_BUTTON_PLAY_ONLY_THIS, 52602);
-  else
-    buttons.Add(CONTEXT_BUTTON_PLAY_ONLY_THIS, 52607);
-
-  ePlexMediaType itemType = PlexUtils::GetMediaTypeFromItem(item);
-  if (g_plexApplication.playQueueManager->getCurrentPlayQueueType() == itemType)
-    buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 52603);
-
-  CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(item.GetProperty("plexserver").asString());
-  if (server && server->SupportsDeletion())
-    buttons.Add(CONTEXT_BUTTON_DELETE, 117);
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowHome::GetContextMenu(CContextButtons& buttons)
@@ -292,9 +279,7 @@ void CGUIWindowHome::GetContextMenu(CContextButtons& buttons)
   }
   else if (fileItem != NULL)
   {
-
-    if (PlexUtils::IsPlayingPlaylist())
-      buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
+    g_plexApplication.defaultActionHandler->GetContextButtons(WINDOW_HOME, fileItem, buttons);
 
     if (controlId == CONTENT_LIST_ON_DECK ||
         controlId == CONTENT_LIST_RECENTLY_ADDED ||
@@ -384,12 +369,6 @@ void CGUIWindowHome::HandleItemDelete()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIWindowHome::RemoveFromPlayQueue()
-{
-  CFileItemPtr fileItem = GetCurrentFanoutItem();
-  if (fileItem)
-    g_plexApplication.playQueueManager->removeItem(fileItem);
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowHome::OnPopupMenu()
@@ -403,6 +382,9 @@ bool CGUIWindowHome::OnPopupMenu()
   if (choice == -1)
     return false;
 
+  if (g_plexApplication.defaultActionHandler->OnAction(WINDOW_HOME, choice, GetCurrentFanoutItem()))
+    return true;
+  
   switch (choice)
   {
     case CONTEXT_BUTTON_SLEEP:
@@ -420,34 +402,6 @@ bool CGUIWindowHome::OnPopupMenu()
       ChangeWatchState(choice);
       break;
 
-    case CONTEXT_BUTTON_DELETE:
-      HandleItemDelete();
-      break;
-
-    case CONTEXT_BUTTON_REMOVE_SOURCE:
-      RemoveFromPlayQueue();
-      break;
-
-    case CONTEXT_BUTTON_NOW_PLAYING:
-      m_navHelper.navigateToNowPlaying();
-      break;
-
-    case CONTEXT_BUTTON_CLEAR:
-      g_plexApplication.playQueueManager->clear();
-      UpdateSections();
-      break;
-
-    case CONTEXT_BUTTON_QUEUE_ITEM:
-    case CONTEXT_BUTTON_PLAY_ONLY_THIS:
-    {
-      CFileItemPtr item = GetCurrentFanoutItem();
-      if (item)
-      {
-        g_plexApplication.playQueueManager->QueueItem(item, choice == CONTEXT_BUTTON_PLAY_ONLY_THIS);
-        UpdateSections();
-      }
-      break;
-    }
 
     default:
       CLog::Log(LOGWARNING, "CGUIWindowHome::OnPopupMenu can't handle choice %d", choice);
