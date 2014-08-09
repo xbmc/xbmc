@@ -69,6 +69,13 @@ bool CGUIDialogTeletext::OnMessage(CGUIMessage& message)
       return true;
     }
   }
+  else if (message.GetMessage() == GUI_MSG_NOTIFY_ALL)
+  {
+    if (message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
+    {
+      SetCoordinates();
+    }
+  }
   return CGUIDialog::OnMessage(message);
 }
 
@@ -112,31 +119,11 @@ void CGUIDialogTeletext::Render()
 
 void CGUIDialogTeletext::OnInitWindow()
 {
-  float left, right, top, bottom;
-
   teletextFadeAmount  = 0;
   m_bClose            = false;
   m_windowLoaded      = true;
 
-  g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
-  if (CSettings::Get().GetBool("videoplayer.teletextscale"))
-  {
-    /* Fixed aspect ratio to 4:3 for teletext */
-    left = g_graphicsContext.ScaleFinalXCoord((float)(m_coordsRes.iWidth-m_coordsRes.iHeight*4/3)/2, 0);
-    right = g_graphicsContext.ScaleFinalXCoord((float)m_coordsRes.iWidth-left, 0);
-  }
-  else
-  { 
-    left = g_graphicsContext.ScaleFinalXCoord(0, 0);
-    right = g_graphicsContext.ScaleFinalXCoord((float)m_coordsRes.iWidth, 0);
-  }
-  top = g_graphicsContext.ScaleFinalYCoord(0, 0);
-  bottom = g_graphicsContext.ScaleFinalYCoord(0, (float)m_coordsRes.iHeight);
-
-  m_vertCoords.SetRect(left,
-                       top,
-                       right,
-                       bottom);
+  SetCoordinates();
 
   if (!m_TextDecoder.InitDecoder())
   {
@@ -163,4 +150,38 @@ void CGUIDialogTeletext::OnDeinitWindow(int nextWindowID)
   m_pTxtTexture = NULL;
 
   CGUIDialog::OnDeinitWindow(nextWindowID);
+}
+
+void CGUIDialogTeletext::SetCoordinates()
+{
+  float left, right, top, bottom;
+
+  g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
+
+  left = g_graphicsContext.ScaleFinalXCoord(0, 0);
+  right = g_graphicsContext.ScaleFinalXCoord((float)m_coordsRes.iWidth, 0);
+  top = g_graphicsContext.ScaleFinalYCoord(0, 0);
+  bottom = g_graphicsContext.ScaleFinalYCoord(0, (float)m_coordsRes.iHeight);
+
+  if (CSettings::Get().GetBool("videoplayer.teletextscale"))
+  {
+    /* Fixed aspect ratio to 4:3 for teletext */
+    float width = right - left;
+    float height = bottom - top;
+    if (width / 4 > height / 3)
+    {
+      left = (width - height * 4 / 3) / 2;
+      right = width - left;
+    }
+    else
+    {
+      top = (height - width * 3 / 4) / 2;
+      bottom = height - top;
+    }
+  }
+
+  m_vertCoords.SetRect(left,
+    top,
+    right,
+    bottom);
 }
