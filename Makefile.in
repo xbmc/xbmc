@@ -601,12 +601,15 @@ endif
 
 install-scripts:
 	@install -d $(DESTDIR)$(bindir)
-	@install tools/Linux/xbmc.sh $(DESTDIR)$(bindir)/xbmc
-	@install tools/Linux/xbmc-standalone.sh $(DESTDIR)$(bindir)/xbmc-standalone
-	@install -d $(DESTDIR)$(datarootdir)/xbmc
-	@install -m 0644 tools/Linux/FEH.py $(DESTDIR)$(datarootdir)/xbmc/FEH.py
+	@install tools/Linux/kodi.sh $(DESTDIR)$(bindir)/kodi
+	@cd $(DESTDIR)$(bindir) && ln -s kodi xbmc
+	@install tools/Linux/kodi-standalone.sh $(DESTDIR)$(bindir)/kodi-standalone
+	@cd $(DESTDIR)$(bindir) && ln -s kodi-standalone xbmc-standalone
+	@install -d $(DESTDIR)$(datarootdir)/kodi
+	@install -m 0644 tools/Linux/FEH.py $(DESTDIR)$(datarootdir)/kodi/FEH.py
 	@install -d $(DESTDIR)$(datarootdir)/xsessions
-	@install -m 0644 tools/Linux/xbmc-xsession.desktop $(DESTDIR)$(datarootdir)/xsessions/XBMC.desktop
+	@install -m 0644 tools/Linux/kodi-xsession.desktop $(DESTDIR)$(datarootdir)/xsessions/kodi.desktop
+	@cd $(DESTDIR)$(datarootdir)/xsessions && ln -s kodi.desktop xbmc.desktop
 
 install-datas: install-scripts
 	@echo "Copying support and legal files..."
