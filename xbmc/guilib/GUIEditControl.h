@@ -72,6 +72,8 @@ public:
 
   virtual CStdString GetLabel2() const;
 
+  void SetShowCursorAlways(bool always) { m_cursorShowAlways = always; }
+
   unsigned int GetCursorPosition() const;
   void SetCursorPosition(unsigned int iPosition);
 
@@ -85,10 +87,12 @@ public:
   virtual void SetInputValidation(StringValidation::Validator inputValidator, void *data = NULL);
 
 protected:
+  virtual void SetFocus(bool focus);
   virtual void ProcessText(unsigned int currentTime);
   virtual void RenderText();
   virtual CGUILabel::COLOR GetTextColor() const;
   CStdStringW GetDisplayedText() const;
+  bool SetStyledText(const CStdStringW &text);
   void RecalcLabelPosition();
   void ValidateCursor();
   void UpdateText(bool sendUpdate = true);
@@ -115,6 +119,7 @@ protected:
 
   unsigned int m_cursorPos;
   unsigned int m_cursorBlink;
+  bool         m_cursorShowAlways;
 
   int m_inputHeading;
   INPUT_TYPE m_inputType;
@@ -129,6 +134,10 @@ protected:
   unsigned int m_smsKeyIndex;
   unsigned int m_smsLastKey;
   CStopWatch   m_smsTimer;
+
+  std::wstring m_edit;
+  int          m_editOffset;
+  int          m_editLength;
 
   static const char*        smsLetters[10];
   static const unsigned int smsDelay;

@@ -2461,35 +2461,31 @@ bool CApplication::OnKey(const CKey& key)
     }
     if (useKeyboard)
     {
-      action = CAction(0); // reset our action
-      if (CSettings::Get().GetBool("input.remoteaskeyboard"))
+      // use the virtualkeyboard section of the keymap, and send keyboard-specific or navigation
+      // actions through if that's what they are
+      CAction action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key);
+      if (!(action.GetID() == ACTION_MOVE_LEFT ||
+            action.GetID() == ACTION_MOVE_RIGHT ||
+            action.GetID() == ACTION_MOVE_UP ||
+            action.GetID() == ACTION_MOVE_DOWN ||
+            action.GetID() == ACTION_SELECT_ITEM ||
+            action.GetID() == ACTION_ENTER ||
+            action.GetID() == ACTION_PREVIOUS_MENU ||
+            action.GetID() == ACTION_NAV_BACK))
       {
-        // users remote is executing keyboard commands, so use the virtualkeyboard section of keymap.xml
-        // and send those rather than actual keyboard presses.  Only for navigation-type commands though
-        action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key);
-        if (!(action.GetID() == ACTION_MOVE_LEFT ||
-              action.GetID() == ACTION_MOVE_RIGHT ||
-              action.GetID() == ACTION_MOVE_UP ||
-              action.GetID() == ACTION_MOVE_DOWN ||
-              action.GetID() == ACTION_SELECT_ITEM ||
-              action.GetID() == ACTION_ENTER ||
-              action.GetID() == ACTION_PREVIOUS_MENU ||
-              action.GetID() == ACTION_NAV_BACK))
-        {
-          // the action isn't plain navigation - check for a keyboard-specific keymap
-          action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, false);
-          if (!(action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9) ||
-                action.GetID() == ACTION_BACKSPACE ||
-                action.GetID() == ACTION_SHIFT ||
-                action.GetID() == ACTION_SYMBOLS ||
-                action.GetID() == ACTION_CURSOR_LEFT ||
-                action.GetID() == ACTION_CURSOR_RIGHT)
-            action = CAction(0); // don't bother with this action
-        }
+        // the action isn't plain navigation - check for a keyboard-specific keymap
+        action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, false);
+        if (!(action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9) ||
+              action.GetID() == ACTION_BACKSPACE ||
+              action.GetID() == ACTION_SHIFT ||
+              action.GetID() == ACTION_SYMBOLS ||
+              action.GetID() == ACTION_CURSOR_LEFT ||
+              action.GetID() == ACTION_CURSOR_RIGHT)
+          action = CAction(0); // don't bother with this action
       }
+      // else pass the keys through directly
       if (!action.GetID())
       {
-        // keyboard entry - pass the keys through directly
         if (key.GetFromService())
           action = CAction(key.GetButtonCode() != KEY_INVALID ? key.GetButtonCode() : 0, key.GetUnicode());
         else
