@@ -1604,6 +1604,38 @@ void CVideoDatabase::RemoveFromLinkTable(const char *table, const char *firstFie
   }
 }
 
+void CVideoDatabase::UpdateLinkTable(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values)
+{
+  std::string sql = PrepareSQL("delete from %slink%s where id%s=%i", field.c_str(), mediaType.c_str(), mediaType.c_str(), mediaId);
+  m_pDS->exec(sql);
+
+  for (std::vector<std::string>::const_iterator i = values.begin(); i != values.end(); ++i)
+  {
+    if (!i->empty())
+    {
+      int idValue = AddToTable(field, "id" + field, "str" + field, *i);
+      if (idValue > -1)
+        AddToLinkTable((field + "link" + mediaType).c_str(), ("id" + field).c_str(), idValue, ("id" + mediaType).c_str(), mediaId);
+    }
+  }
+}
+
+void CVideoDatabase::UpdateActorLinkTable(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values)
+{
+  std::string sql = PrepareSQL("delete from %slink%s where id%s=%i", field.c_str(), mediaType.c_str(), mediaType.c_str(), mediaId);
+  m_pDS->exec(sql);
+
+  for (std::vector<std::string>::const_iterator i = values.begin(); i != values.end(); ++i)
+  {
+    if (!i->empty())
+    {
+      int idValue = AddActor(*i, "");
+      if (idValue > -1)
+        AddToLinkTable((field + "link" + mediaType).c_str(), ("id" + field).c_str(), idValue, ("id" + mediaType).c_str(), mediaId);
+    }
+  }
+}
+
 //****Tags****
 void CVideoDatabase::AddTagToItem(int idMovie, int idTag, const std::string &type)
 {
@@ -2277,6 +2309,75 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
   catch (...)
   {
     CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+  }
+  RollbackTransaction();
+  return -1;
+}
+
+int CVideoDatabase::UpdateDetailsForMovie(int idMovie, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, const std::set<std::string> &updatedDetails)
+{
+  if (idMovie < 0)
+    return idMovie;
+
+  try
+  {
+    CLog::Log(LOGDEBUG, "%s: Starting updates for movie %i", __FUNCTION__, idMovie);
+
+    BeginTransaction();
+
+    // process the link table updates
+    if (updatedDetails.find("genre") != updatedDetails.end())
+      UpdateLinkTable(idMovie, "movie", "genre", details.m_genre);
+    if (updatedDetails.find("studio") != updatedDetails.end())
+      UpdateLinkTable(idMovie, "movie", "studio", details.m_studio);
+    if (updatedDetails.find("country") != updatedDetails.end())
+      UpdateLinkTable(idMovie, "movie", "country", details.m_country);
+    if (updatedDetails.find("director") != updatedDetails.end())
+      UpdateActorLinkTable(idMovie, "movie", "director", details.m_director);
+    if (updatedDetails.find("writer") != updatedDetails.end())
+      UpdateActorLinkTable(idMovie, "movie", "writer", details.m_writingCredits);
+    if (updatedDetails.find("tag") != updatedDetails.end())
+    {
+      RemoveTagsFromItem(idMovie, "movie");
+      for (unsigned int i = 0; i < details.m_tags.size(); i++)
+        AddTagToItem(idMovie, AddTag(details.m_tags[i]), "movie");
+    }
+    if (updatedDetails.find("art.altered") != updatedDetails.end())
+      SetArtForItem(idMovie, "movie", artwork);
+
+    // track if the set was updated
+    int idSet = 0;
+    if (updatedDetails.find("set") != updatedDetails.end())
+    { // set
+      idSet = -1;
+      if (!details.m_strSet.empty())
+      {
+        idSet = AddSet(details.m_strSet);
+        // add art if not available
+        map<string, string> setArt;
+        if (!GetArtForItem(idSet, "set", setArt))
+          SetArtForItem(idSet, "set", artwork);
+      }
+    }
+
+    // and update the movie table
+    std::string sql = "update movie set " + GetValueString(details, VIDEODB_ID_MIN, VIDEODB_ID_MAX, DbMovieOffsets);
+    if (idSet > 0)
+      sql += PrepareSQL(", idSet = %i", idSet);
+    else if (idSet < 0)
+      sql += ", idSet = NULL";
+    sql += PrepareSQL(" where idMovie=%i", idMovie);
+    m_pDS->exec(sql);
+
+    CommitTransaction();
+
+    CLog::Log(LOGDEBUG, "%s: Finished updates for movie %i", __FUNCTION__, idMovie);
+
+    return idMovie;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idMovie);
   }
   RollbackTransaction();
   return -1;
@@ -4042,14 +4143,18 @@ void CVideoDatabase::SetArtForItem(int mediaId, const MediaType &mediaType, cons
     if (artType.find('.') != string::npos)
       return;
 
-    CStdString sql = PrepareSQL("SELECT art_id FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str());
+    CStdString sql = PrepareSQL("SELECT art_id,url FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str());
     m_pDS->query(sql.c_str());
     if (!m_pDS->eof())
     { // update
       int artId = m_pDS->fv(0).get_asInt();
+      std::string oldUrl = m_pDS->fv(1).get_asString();
       m_pDS->close();
-      sql = PrepareSQL("UPDATE art SET url='%s' where art_id=%d", url.c_str(), artId);
-      m_pDS->exec(sql.c_str());
+      if (oldUrl != url)
+      {
+        sql = PrepareSQL("UPDATE art SET url='%s' where art_id=%d", url.c_str(), artId);
+        m_pDS->exec(sql.c_str());
+      }
     }
     else
     { // insert

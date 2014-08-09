@@ -492,13 +492,10 @@ JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const std::string &method, ITransp
   CDateTime lastPlayed = infos.m_lastPlayed;
 
   std::set<std::string> removedArtwork;
-  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork);
+  std::set<std::string> updatedDetails;
+  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork, updatedDetails);
 
-  // we need to manually remove tags/taglinks for now because they aren't replaced
-  // due to scrapers not supporting them
-  videodatabase.RemoveTagsFromItem(id, MediaTypeMovie);
-
-  if (videodatabase.SetDetailsForMovie(infos.m_strFileNameAndPath, infos, artwork, id) <= 0)
+  if (videodatabase.UpdateDetailsForMovie(id, infos, artwork, updatedDetails) <= 0)
     return InternalError;
 
   if (!videodatabase.RemoveArtForItem(infos.m_iDbId, MediaTypeMovie, removedArtwork))
@@ -514,7 +511,7 @@ JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const std::string &method, ITransp
 
   UpdateResumePoint(parameterObject, infos, videodatabase);
 
-  CJSONRPCUtils::NotifyItemUpdated();
+  CJSONRPCUtils::NotifyItemUpdated(infos);
   return ACK;
 }
 
@@ -539,7 +536,8 @@ JSONRPC_STATUS CVideoLibrary::SetMovieSetDetails(const std::string &method, ITra
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
 
   std::set<std::string> removedArtwork;
-  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork);
+  std::set<std::string> updatedDetails;
+  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork, updatedDetails);
 
   if (videodatabase.SetDetailsForMovieSet(infos, artwork, id) <= 0)
     return InternalError;
@@ -571,7 +569,8 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const std::string &method, ITrans
   videodatabase.GetTvShowSeasonArt(infos.m_iDbId, seasonArt);
 
   std::set<std::string> removedArtwork;
-  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork);
+  std::set<std::string> updatedDetails;
+  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork, updatedDetails);
 
   // we need to manually remove tags/taglinks for now because they aren't replaced
   // due to scrapers not supporting them
@@ -608,7 +607,8 @@ JSONRPC_STATUS CVideoLibrary::SetSeasonDetails(const std::string &method, ITrans
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
 
   std::set<std::string> removedArtwork;
-  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork);
+  std::set<std::string> updatedDetails;
+  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork, updatedDetails);
 
   if (videodatabase.SetDetailsForSeason(infos, artwork, infos.m_iIdShow, id) <= 0)
     return InternalError;
@@ -651,7 +651,8 @@ JSONRPC_STATUS CVideoLibrary::SetEpisodeDetails(const std::string &method, ITran
   CDateTime lastPlayed = infos.m_lastPlayed;
 
   std::set<std::string> removedArtwork;
-  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork);
+  std::set<std::string> updatedDetails;
+  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork, updatedDetails);
 
   if (videodatabase.SetDetailsForEpisode(infos.m_strFileNameAndPath, infos, artwork, tvshowid, id) <= 0)
     return InternalError;
@@ -697,7 +698,8 @@ JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const std::string &method, IT
   CDateTime lastPlayed = infos.m_lastPlayed;
 
   std::set<std::string> removedArtwork;
-  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork);
+  std::set<std::string> updatedDetails;
+  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork, updatedDetails);
 
   // we need to manually remove tags/taglinks for now because they aren't replaced
   // due to scrapers not supporting them
@@ -983,7 +985,16 @@ void CVideoLibrary::UpdateResumePoint(const CVariant &parameterObject, CVideoInf
   }
 }
 
-void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTag& details, std::map<std::string, std::string> &artwork, std::set<std::string> &removedArtwork)
+void CVideoLibrary::UpdateVideoTagField(const CVariant& parameterObject, const std::string& fieldName, std::vector<std::string>& fieldValue, std::set<std::string>& updatedDetails)
+{
+  if (ParameterNotNull(parameterObject, fieldName))
+  {
+    CopyStringArray(parameterObject[fieldName], fieldValue);
+    updatedDetails.insert(fieldName);
+  }
+}
+
+void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTag& details, std::map<std::string, std::string> &artwork, std::set<std::string> &removedArtwork, std::set<std::string> &updatedDetails)
 {
   if (ParameterNotNull(parameterObject, "title"))
     details.m_strTitle = parameterObject["title"].asString();
@@ -991,20 +1002,16 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
     details.m_playCount = (int)parameterObject["playcount"].asInteger();
   if (ParameterNotNull(parameterObject, "runtime"))
     details.m_duration = (int)parameterObject["runtime"].asInteger();
-  if (ParameterNotNull(parameterObject, "director"))
-    CopyStringArray(parameterObject["director"], details.m_director);
-  if (ParameterNotNull(parameterObject, "studio"))
-    CopyStringArray(parameterObject["studio"], details.m_studio);
+  UpdateVideoTagField(parameterObject, "director", details.m_director, updatedDetails);
+  UpdateVideoTagField(parameterObject, "studio", details.m_studio, updatedDetails);
   if (ParameterNotNull(parameterObject, "year"))
     details.m_iYear = (int)parameterObject["year"].asInteger();
   if (ParameterNotNull(parameterObject, "plot"))
     details.m_strPlot = parameterObject["plot"].asString();
   if (ParameterNotNull(parameterObject, "album"))
     details.m_strAlbum = parameterObject["album"].asString();
-  if (ParameterNotNull(parameterObject, "artist"))
-    CopyStringArray(parameterObject["artist"], details.m_artist);
-  if (ParameterNotNull(parameterObject, "genre"))
-    CopyStringArray(parameterObject["genre"], details.m_genre);
+  UpdateVideoTagField(parameterObject, "artist", details.m_artist, updatedDetails);
+  UpdateVideoTagField(parameterObject, "genre", details.m_genre, updatedDetails);
   if (ParameterNotNull(parameterObject, "track"))
     details.m_iTrack = (int)parameterObject["track"].asInteger();
   if (ParameterNotNull(parameterObject, "rating"))
@@ -1035,10 +1042,8 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
     details.m_strTagLine = parameterObject["tagline"].asString();
   if (ParameterNotNull(parameterObject, "plotoutline"))
     details.m_strPlotOutline = parameterObject["plotoutline"].asString();
-  if (ParameterNotNull(parameterObject, "writer"))
-    CopyStringArray(parameterObject["writer"], details.m_writingCredits);
-  if (ParameterNotNull(parameterObject, "country"))
-    CopyStringArray(parameterObject["country"], details.m_country);
+  UpdateVideoTagField(parameterObject, "writer", details.m_writingCredits, updatedDetails);
+  UpdateVideoTagField(parameterObject, "country", details.m_country, updatedDetails);
   if (ParameterNotNull(parameterObject, "top250"))
     details.m_iTop250 = (int)parameterObject["top250"].asInteger();
   if (ParameterNotNull(parameterObject, "sorttitle"))
@@ -1046,22 +1051,33 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "episodeguide"))
     details.m_strEpisodeGuide = parameterObject["episodeguide"].asString();
   if (ParameterNotNull(parameterObject, "set"))
+  {
     details.m_strSet = parameterObject["set"].asString();
-  if (ParameterNotNull(parameterObject, "showlink"))
-    CopyStringArray(parameterObject["showlink"], details.m_showLink);
+    updatedDetails.insert("set");
+  }
+  UpdateVideoTagField(parameterObject, "showlink", details.m_showLink, updatedDetails);
+  UpdateVideoTagField(parameterObject, "tag", details.m_tags, updatedDetails);
   if (ParameterNotNull(parameterObject, "thumbnail"))
+  {
     artwork["thumb"] = parameterObject["thumbnail"].asString();
+    updatedDetails.insert("art.altered");
+  }
   if (ParameterNotNull(parameterObject, "fanart"))
+  {
     artwork["fanart"] = parameterObject["fanart"].asString();
-  if (ParameterNotNull(parameterObject, "tag"))
-    CopyStringArray(parameterObject["tag"], details.m_tags);
+    updatedDetails.insert("art.altered");
+  }
+
   if (ParameterNotNull(parameterObject, "art"))
   {
     CVariant art = parameterObject["art"];
     for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); artIt++)
     {
       if (artIt->second.isString() && !artIt->second.asString().empty())
+      {
         artwork[artIt->first] = CTextureUtils::UnwrapImageURL(artIt->second.asString());
+        updatedDetails.insert("art.altered");
+      }
       else if (artIt->second.isNull())
       {
         artwork.erase(artIt->first);
