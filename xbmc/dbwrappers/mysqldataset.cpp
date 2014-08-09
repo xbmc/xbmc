@@ -1471,7 +1471,7 @@ const void* MysqlDataset::getExecRes() {
 }
 
 
-bool MysqlDataset::query(const char *query) {
+bool MysqlDataset::query(const std::string &query) {
   if(!handle()) throw DbErrors("No Database Connection");
   std::string qry = query;
   int fs = qry.find("select");
@@ -1566,10 +1566,6 @@ bool MysqlDataset::query(const char *query) {
   ds_state = dsSelect;
   this->first();
   return true;
-}
-
-bool MysqlDataset::query(const string &q) {
-  return query(q.c_str());
 }
 
 void MysqlDataset::open(const string &sql) {
