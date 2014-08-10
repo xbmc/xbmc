@@ -427,11 +427,7 @@ void CGUIPlexMediaWindow::OnFilterSelected(const std::string &filterKey, int fil
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_PLAYER_PLAY)
-  {
-    return OnPlayMedia(m_viewControl.GetSelectedItem());
-  }
-  else if (action.GetID() == ACTION_CLEAR_FILTERS ||
+  if (action.GetID() == ACTION_CLEAR_FILTERS ||
            action.GetID() == ACTION_PLEX_TOGGLE_UNWATCHED_FILTER ||
            action.GetID() == ACTION_PLEX_CYCLE_PRIMARY_FILTER)
   {
@@ -520,14 +516,6 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
       if (pItem && pItem->GetVideoInfoTag()->m_playCount > 0)
         return OnContextButton(m_viewControl.GetSelectedItem(), CONTEXT_BUTTON_MARK_UNWATCHED);
     }
-  }
-  else if (action.GetID() == ACTION_PLEX_PLAY_ALL)
-  {
-    PlayAll(false);
-  }
-  else if (action.GetID() == ACTION_PLEX_SHUFFLE_ALL)
-  {
-    PlayAll(true);
   }
 
   if (g_plexApplication.defaultActionHandler->OnAction(WINDOW_VIDEO_NAV, action, m_vecItems->Get(m_viewControl.GetSelectedItem()), m_vecItems))
@@ -749,24 +737,7 @@ bool CGUIPlexMediaWindow::OnPlayMedia(int iItem)
   CFileItemPtr item = m_vecItems->Get(iItem);
   if (!item)
     return false;
-
-  if (IsPhotoContainer())
-  {
-    if (item->m_bIsFolder)
-      CApplicationMessenger::Get().PictureSlideShow(item->GetPath(), false);
-    else
-      CApplicationMessenger::Get().PictureSlideShow(m_vecItems->GetPath(), false, item->GetPath());
-  }
-  else if (IsMusicContainer() && !item->m_bIsFolder)
-  {
-    PlayAll(false, item);
-  }
-  else
-  {
-    std::string uri = GetFilteredURI(*item);
-
-    g_plexApplication.playQueueManager->create(*item, uri);
-  }
+  g_plexApplication.defaultActionHandler->OnAction(WINDOW_VIDEO_NAV, CAction(ACTION_PLAYER_PLAY), item, m_vecItems);
 
   return true;
 }
@@ -779,12 +750,9 @@ void CGUIPlexMediaWindow::GetContextButtons(int itemNumber, CContextButtons &but
     return;
 
 
-  buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208);
   
   g_plexApplication.defaultActionHandler->GetContextButtons(WINDOW_VIDEO_NAV, item, m_vecItems, buttons);
 
-  if (m_vecItems->Size())
-    buttons.Add(CONTEXT_BUTTON_SHUFFLE, 52600);
 
   if (IsVideoContainer() && item->IsPlexMediaServerLibrary())
   {
@@ -807,29 +775,7 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   switch(button)
   {
-    case CONTEXT_BUTTON_SHUFFLE:
-    {
-      PlayAll(true);
-      break;
-    }
 
-    case CONTEXT_BUTTON_PLAY_PARTYMODE:
-    {
-      PlayAll(false);
-      break;
-    }
-
-    case CONTEXT_BUTTON_PLAY_AND_QUEUE:
-    {
-      PlayAll(false, item);
-      break;
-    }
-
-    case CONTEXT_BUTTON_PLAY_ITEM:
-    {
-      OnAction(ACTION_PLAYER_PLAY);
-      break;
-    }
 
 
     case CONTEXT_BUTTON_MARK_WATCHED:
@@ -868,80 +814,6 @@ bool CGUIPlexMediaWindow::UnwatchedEnabled() const
   return false;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-std::string CGUIPlexMediaWindow::GetFilteredURI(const CFileItem& item) const
-{
-  CURL itemUrl(item.GetPath());
-  CURL uri("plexserver://plex");
-
-  // first we check if this is the root, in that case we want to
-  // apply all our sorting and filtering that we have going on.
-  if (itemUrl.GetUrlWithoutOptions() == m_startDirectory && m_sectionFilter)
-  {
-    uri.SetFileName(m_sectionRoot.GetFileName());
-    uri = m_sectionFilter->addFiltersToUrl(uri);
-    if (uri.HasOption("unwatchedLeaves"))
-    {
-      uri.SetOption("unwatched", uri.GetOption("unwatchedLeaves"));
-      uri.RemoveOption("unwatchedLeaves");
-    }
-  }
-  else
-  {
-    uri.SetFileName(itemUrl.GetFileName());
-    // now forward the unwatched filter if set.
-    if (UnwatchedEnabled())
-      uri.SetOption("unwatched", "1");
-  }
-
-  if (item.GetPlexDirectoryType() == PLEX_DIR_TYPE_SHOW ||
-      (item.GetPlexDirectoryType() == PLEX_DIR_TYPE_SEASON && item.HasProperty("size")))
-  {
-    std::string fname = uri.GetFileName();
-    boost::replace_last(fname, "/children", "/allLeaves");
-    uri.SetFileName(fname);
-  }
-
-  // set sourceType
-  if (item.m_bIsFolder)
-  {
-    CStdString sourceType = boost::lexical_cast<CStdString>(PlexUtils::GetFilterType(item));
-    uri.SetOption("sourceType", sourceType);
-  }
-
-  return CPlexPlayQueueManager::getURIFromItem(item, uri.Get().substr(17, std::string::npos));
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIPlexMediaWindow::PlayAll(bool shuffle, const CFileItemPtr& fromHere)
-{
-  if (IsPhotoContainer())
-  {
-    // Photos are handled a bit different
-    CApplicationMessenger::Get().PictureSlideShow(m_vecItems->GetPath(), false,
-                                                  fromHere ? fromHere->GetPath() : "", shuffle);
-    return;
-  }
-
-  CPlexServerPtr server;
-  if (m_vecItems->HasProperty("plexServer"))
-    server = g_plexApplication.serverManager->FindByUUID(m_vecItems->GetProperty("plexServer").asString());
-
-  CStdString fromHereKey;
-  if (fromHere)
-    fromHereKey = fromHere->GetProperty("key").asString();
-
-  // take out the plexserver://plex part from above when passing it down
-  CStdString uri = GetFilteredURI(*m_vecItems);
-
-  CPlexPlayQueueOptions options;
-  options.startItemKey = fromHereKey;
-  options.startPlaying = true;
-  options.shuffle = shuffle;
-  options.showPrompts = true;
-
-  g_plexApplication.playQueueManager->create(*m_vecItems, uri, options);
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPath)
@@ -1111,16 +983,6 @@ bool CGUIPlexMediaWindow::IsMusicContainer() const
   return (dirType == PLEX_DIR_TYPE_ALBUM || dirType == PLEX_DIR_TYPE_ARTIST || dirType == PLEX_DIR_TYPE_TRACK);
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CGUIPlexMediaWindow::IsPhotoContainer() const
-{
-  EPlexDirectoryType dirType = m_vecItems->GetPlexDirectoryType();
-
-  if (dirType == PLEX_DIR_TYPE_CHANNEL && m_vecItems->Get(0))
-    dirType = m_vecItems->Get(0)->GetPlexDirectoryType();
-
-  return (dirType == PLEX_DIR_TYPE_PHOTOALBUM | dirType == PLEX_DIR_TYPE_PHOTO);
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CURL CGUIPlexMediaWindow::GetUrlWithParentArgument(const CURL &originalUrl)
