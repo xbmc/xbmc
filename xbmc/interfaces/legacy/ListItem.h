@@ -348,6 +348,14 @@ namespace XBMCAddon
       void setMimeType(const String& mimetype);
 
       /**
+       * setSubtitles() -- Sets subtitles for this listitem.\n
+       *
+       * example:
+       *   - listitem.setSubtitles(['special://temp/example.srt', 'http://example.com/example.srt'])
+       */
+      void setSubtitles(const std::vector<String>& subtitleFiles);
+
+      /**
        * getdescription() -- Returns the description of this PlayListItem.\n
        */
       String getdescription();

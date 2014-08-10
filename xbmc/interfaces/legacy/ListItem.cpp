@@ -591,5 +591,16 @@ namespace XBMCAddon
       if (replaceItems)
         item->SetProperty("pluginreplacecontextitems", replaceItems);
     } // end addContextMenuItems
+
+    void ListItem::setSubtitles(const std::vector<String>& paths)
+    {
+      LOCKGUI;
+      unsigned int i = 1;
+      for (std::vector<String>::const_iterator it = paths.begin(); it != paths.end(); ++it, i++)
+      {
+        String property = StringUtils::Format("subtitle:%u", i);
+        item->SetProperty(property, *it);
+      }
+    }
   }
 }
