@@ -804,15 +804,15 @@ protected:
   int GetMatchingTvShow(const CVideoInfoTag &show);
 
   // link functions - these two do all the work
-  void AddLinkToActor(const char *table, int actorID, const char *secondField, int secondID, const CStdString &role, int order);
+  void AddLinkToActor(int mediaId, const char *mediaType, int actorId, const CStdString &role, int order);
   void AddToLinkTable(const char *table, const char *firstField, int firstID, const char *secondField, int secondID, const char *typeField = NULL, const char *type = NULL);
   void RemoveFromLinkTable(const char *table, const char *firstField, int firstID, const char *secondField, int secondID, const char *typeField = NULL, const char *type = NULL);
   void UpdateLinkTable(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
 
   void AddActorLinksToItem(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
   void UpdateActorLinksToItem(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
-  void AddCast(int idMedia, const char *table, const char *field, const std::vector<SActorInfo> &cast);
 
+  void AddCast(int mediaId, const char *mediaType, const std::vector<SActorInfo> &cast);
   void AddGenreToMovie(int idMovie, int idGenre);
   void AddGenreToTvShow(int idTvShow, int idGenre);
   void AddGenreToMusicVideo(int idMVideo, int idGenre);
