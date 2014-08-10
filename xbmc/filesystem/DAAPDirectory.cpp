@@ -205,11 +205,7 @@ bool CDAAPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
               pItem->GetMusicInfoTag()->SetTitle(m_currentSongItems[idx].itemname);
               pItem->GetMusicInfoTag()->SetArtist(m_currentSongItems[idx].songartist);
               pItem->GetMusicInfoTag()->SetAlbum(m_currentSongItems[idx].songalbum);
-
-              //pItem->m_musicInfoTag.SetTrackNumber(m_currentSongItems[idx].songtracknumber);
               pItem->GetMusicInfoTag()->SetTrackNumber(m_thisHost->dbplaylists->playlists[c].items[j].songid);
-              //pItem->m_musicInfoTag.SetTrackNumber(j+1);
-              //pItem->m_musicInfoTag.SetPartOfSet(m_currentSongItems[idx].songdiscnumber);
               pItem->GetMusicInfoTag()->SetDuration((int) (m_currentSongItems[idx].songtime / 1000));
               pItem->GetMusicInfoTag()->SetLoaded(true);
 
@@ -296,7 +292,7 @@ bool CDAAPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             pItem->GetMusicInfoTag()->SetAlbum(m_selectedAlbum);
 
             pItem->GetMusicInfoTag()->SetTrackNumber(m_currentSongItems[c].songtracknumber);
-            pItem->GetMusicInfoTag()->SetPartOfSet(m_currentSongItems[c].songdiscnumber);
+            pItem->GetMusicInfoTag()->SetDiscNumber(m_currentSongItems[c].songdiscnumber);
             pItem->GetMusicInfoTag()->SetDuration((int) (m_currentSongItems[c].songtime / 1000));
             pItem->GetMusicInfoTag()->SetLoaded(true);
 

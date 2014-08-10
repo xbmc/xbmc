@@ -278,7 +278,7 @@ bool CTagLoaderTagLib::ParseASF(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
       else
         tag.SetTrackNumber(atoi(it->second.front().toString().toCString(true)));
     }
-    else if (it->first == "WM/PartOfSet")                tag.SetPartOfSet(atoi(it->second.front().toString().toCString(true)));
+    else if (it->first == "WM/PartOfSet")                tag.SetDiscNumber(atoi(it->second.front().toString().toCString(true)));
     else if (it->first == "WM/Genre")                    SetGenre(tag, GetASFStringList(it->second));
     else if (it->first == "WM/AlbumArtistSortOrder")     {} // Known unsupported, supress warnings
     else if (it->first == "WM/ArtistSortOrder")          {} // Known unsupported, supress warnings
@@ -362,7 +362,7 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
     else if (it->first == "TIT2")   tag.SetTitle(it->second.front()->toString().to8Bit(true));
     else if (it->first == "TCON")   SetGenre(tag, GetID3v2StringList(it->second));
     else if (it->first == "TRCK")   tag.SetTrackNumber(strtol(it->second.front()->toString().toCString(true), NULL, 10));
-    else if (it->first == "TPOS")   tag.SetPartOfSet(strtol(it->second.front()->toString().toCString(true), NULL, 10));
+    else if (it->first == "TPOS")   tag.SetDiscNumber(strtol(it->second.front()->toString().toCString(true), NULL, 10));
     else if (it->first == "TYER")   tag.SetYear(strtol(it->second.front()->toString().toCString(true), NULL, 10));
     else if (it->first == "TCMP")   tag.SetCompilation((strtol(it->second.front()->toString().toCString(true), NULL, 10) == 0) ? false : true);
     else if (it->first == "TENC")   {} // EncodedBy
@@ -491,7 +491,7 @@ bool CTagLoaderTagLib::ParseAPETag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTa
     else if (it->first == "ALBUM")                     tag.SetAlbum(it->second.toString().to8Bit(true));
     else if (it->first == "TITLE")                     tag.SetTitle(it->second.toString().to8Bit(true));
     else if (it->first == "TRACKNUMBER" || it->first == "TRACK") tag.SetTrackNumber(it->second.toString().toInt());
-    else if (it->first == "DISCNUMBER" || it->first == "DISC") tag.SetPartOfSet(it->second.toString().toInt());
+    else if (it->first == "DISCNUMBER" || it->first == "DISC") tag.SetDiscNumber(it->second.toString().toInt());
     else if (it->first == "YEAR")                      tag.SetYear(it->second.toString().toInt());
     else if (it->first == "GENRE")                     SetGenre(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "COMMENT")                   tag.SetComment(it->second.toString().to8Bit(true));
@@ -530,7 +530,7 @@ bool CTagLoaderTagLib::ParseXiphComment(Ogg::XiphComment *xiph, EmbeddedArt *art
     else if (it->first == "ALBUM")                     tag.SetAlbum(it->second.front().to8Bit(true));
     else if (it->first == "TITLE")                     tag.SetTitle(it->second.front().to8Bit(true));
     else if (it->first == "TRACKNUMBER")               tag.SetTrackNumber(it->second.front().toInt());
-    else if (it->first == "DISCNUMBER")                tag.SetPartOfSet(it->second.front().toInt());
+    else if (it->first == "DISCNUMBER")                tag.SetDiscNumber(it->second.front().toInt());
     else if (it->first == "YEAR")                      tag.SetYear(it->second.front().toInt());
     else if (it->first == "DATE")                      tag.SetYear(it->second.front().toInt());
     else if (it->first == "GENRE")                     SetGenre(tag, StringListToVectorString(it->second));
@@ -623,7 +623,7 @@ bool CTagLoaderTagLib::ParseMP4Tag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTa
     else if (it->first == "\251cmt") tag.SetComment(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "cpil")    tag.SetCompilation(it->second.toBool());
     else if (it->first == "trkn")    tag.SetTrackNumber(it->second.toIntPair().first);
-    else if (it->first == "disk")    tag.SetPartOfSet(it->second.toIntPair().first);
+    else if (it->first == "disk")    tag.SetDiscNumber(it->second.toIntPair().first);
     else if (it->first == "\251day") tag.SetYear(it->second.toStringList().front().toInt());
     else if (it->first == "----:com.apple.iTunes:replaygain_track_gain")
       tag.SetReplayGainTrackGain((int)(atof(it->second.toStringList().front().toCString()) * 100 + 0.5));

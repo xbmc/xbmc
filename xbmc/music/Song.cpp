@@ -70,7 +70,7 @@ CSong::CSong(CFileItem& item)
   strComment = tag.GetComment();
   rating = tag.GetRating();
   iYear = stTime.wYear;
-  iTrack = tag.GetTrackAndDiskNumber();
+  iTrack = tag.GetTrackAndDiscNumber();
   iDuration = tag.GetDuration();
   bCompilation = tag.GetCompilation();
   embeddedArt = tag.GetCoverArtInfo();
