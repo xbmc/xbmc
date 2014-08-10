@@ -16119,7 +16119,55 @@ msgctxt "#37031"
 msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
 msgstr ""
 
-#empty strings from id 37032 to 38009
+#. Title of category #37032 Settings -> Video -> Accessibility
+#: system/settings/settings.xml
+msgctxt "#37032"
+msgid "Accessibility"
+msgstr ""
+
+#. Description of category #37032 Settings -> Video -> Accessibility
+#: system/settings/settings.xml
+msgctxt "#37033"
+msgid "Video playback related accessibility settings, e.g., "Prefer subtitles for the hearing impaired""
+msgstr ""
+
+#. Setting #37034 Settings -> Video -> Accessibility 
+#: system/settings/settings.xml
+msgctxt "#37034"
+msgid "Prefer audio stream for the visually impaired"
+msgstr ""
+
+#. Description of setting #37034 Settings -> Video -> Accessibility 
+#: system/settings/settings.xml
+msgctxt "#37035"
+msgid "Prefer the audio stream for the visually impaired to other audio streams of the same language"
+msgstr ""
+
+#. Setting #37036 Settings -> Video -> Accessibility 
+#: system/settings/settings.xml
+msgctxt "#37036"
+msgid "Prefer audio stream for the hearing impaired"
+msgstr ""
+
+#. Description of setting #37036 Settings -> Video -> Accessibility 
+#: system/settings/settings.xml
+msgctxt "#37037"
+msgid "Prefer the audio stream for the hearing impaired to other audio streams of the same language"
+msgstr ""
+
+#. Setting #37038 Settings -> Video -> Accessibility 
+#: system/settings/settings.xml
+msgctxt "#37038"
+msgid "Prefer subtitles for the hearing impaired"
+msgstr ""
+
+#. Description of setting #37038 Settings -> Video -> Accessibility 
+#: system/settings/settings.xml
+msgctxt "#37039"
+msgid "Prefer the subtitle stream for the hearing impaired to other subtitle streams of the same language"
+msgstr ""
+
+#empty strings from id 37040 to 38009
 
 #: system/settings/rbp.xml
 msgctxt "#38010"
