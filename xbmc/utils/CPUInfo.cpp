@@ -223,7 +223,7 @@ CCPUInfo::CCPUInfo(void)
   {
     for (size_t i = 0; i < m_cores.size(); i++)
     {
-      if (PdhAddEnglishCounterW(m_cpuQueryLoad, StringUtils::Format(L"\\Processor(%d)\\%% Idle Time", int(i)).c_str(), 0, &m_cores[i].m_coreCounter) != ERROR_SUCCESS)
+      if (PdhAddEnglishCounterW(m_cpuQueryLoad, StringUtils::Format(L"\\Processor(%d)\\%% Processor Time", int(i)).c_str(), 0, &m_cores[i].m_coreCounter) != ERROR_SUCCESS)
         m_cores[i].m_coreCounter = NULL;
     }
   }
@@ -507,12 +507,11 @@ float CCPUInfo::getCPUFrequency()
 #elif defined TARGET_WINDOWS
   if (m_cpuFreqCounter && PdhCollectQueryData(m_cpuQueryFreq) == ERROR_SUCCESS)
   {
-    PDH_RAW_COUNTER cnt;
-    DWORD cntType;
-    if (PdhGetRawCounterValue(m_cpuFreqCounter, &cntType, &cnt) == ERROR_SUCCESS &&
-        (cnt.CStatus == PDH_CSTATUS_VALID_DATA || cnt.CStatus == PDH_CSTATUS_NEW_DATA))
+    PDH_FMT_COUNTERVALUE cnt;
+    if (PdhGetFormattedCounterValue(m_cpuFreqCounter, PDH_FMT_DOUBLE | PDH_FMT_NOCAP100, NULL, &cnt) == ERROR_SUCCESS &&
+       (cnt.CStatus == PDH_CSTATUS_VALID_DATA || cnt.CStatus == PDH_CSTATUS_NEW_DATA))
     {
-      return float(cnt.FirstValue/1000.0);
+      return float(cnt.doubleValue);
     }
   }
   
@@ -642,24 +641,11 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
     for (std::map<int, CoreInfo>::iterator it = m_cores.begin(); it != m_cores.end(); ++it)
     {
       CoreInfo& curCore = it->second; // simplify usage
-      PDH_RAW_COUNTER cnt;
-      DWORD cntType;
-      if (curCore.m_coreCounter && PdhGetRawCounterValue(curCore.m_coreCounter, &cntType, &cnt) == ERROR_SUCCESS &&
+	  PDH_FMT_COUNTERVALUE cnt;
+	  if (curCore.m_coreCounter && PdhGetFormattedCounterValue(curCore.m_coreCounter, PDH_FMT_DOUBLE | PDH_FMT_NOCAP100, NULL, &cnt) == ERROR_SUCCESS &&
           (cnt.CStatus == PDH_CSTATUS_VALID_DATA || cnt.CStatus == PDH_CSTATUS_NEW_DATA))
       {
-        const LONGLONG coreTotal = cnt.SecondValue,
-                       coreIdle  = cnt.FirstValue;
-        const LONGLONG deltaTotal = coreTotal - curCore.m_total,
-                       deltaIdle  = coreIdle - curCore.m_idle;
-        const double load = (double(deltaTotal - deltaIdle) * 100.0) / double(deltaTotal);
-        
-        // win32 has some problems with calculation of load if load close to zero
-        curCore.m_fPct = (load < 0) ? 0 : load;
-        if (load >= 0 || deltaTotal > 5 * 10 * 1000 * 1000) // do not update (smooth) values for 5 seconds on negative loads
-        {
-          curCore.m_total = coreTotal;
-          curCore.m_idle = coreIdle;
-        }
+		curCore.m_fPct = cnt.doubleValue;
       }
       else
         curCore.m_fPct = double(m_lastUsedPercentage); // use CPU average as fallback
