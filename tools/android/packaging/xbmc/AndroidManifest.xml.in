@@ -12,6 +12,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 	
     <application android:icon="@drawable/ic_launcher" android:debuggable="true" android:label="@string/app_name" android:hasCode="true">
         <activity
@@ -24,6 +26,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
