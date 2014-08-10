@@ -24,20 +24,25 @@ else()
 endif()
 get_filename_component(APP_ROOT "${APP_ROOT}" ABSOLUTE)
 
-if(NOT WIN32)
-  if(NOT DEPENDS_PATH)
-    set(DEPENDS_PATH "${PROJECT_SOURCE_DIR}/output/depends")
-  else()
-    file(TO_CMAKE_PATH "${DEPENDS_PATH}" DEPENDS_PATH)
-  endif()
+if(NOT BUILD_DIR)
+    set(BUILD_DIR "${CMAKE_BINARY_DIR}/build")
+else()
+  file(TO_CMAKE_PATH "${BUILD_DIR}" BUILD_DIR)
+endif()
+get_filename_component(BUILD_DIR "${BUILD_DIR}" ABSOLUTE)
 
-  # make sure CMAKE_PREFIX_PATH is set
-  if(NOT CMAKE_PREFIX_PATH)
-    set(CMAKE_PREFIX_PATH "${DEPENDS_PATH}")
-  else()
-    file(TO_CMAKE_PATH "${CMAKE_PREFIX_PATH}" CMAKE_PREFIX_PATH)
-    list(APPEND CMAKE_PREFIX_PATH "${DEPENDS_PATH}")
-  endif()
+if(NOT DEPENDS_PATH)
+  set(DEPENDS_PATH "${BUILD_DIR}/depends")
+else()
+  file(TO_CMAKE_PATH "${DEPENDS_PATH}" DEPENDS_PATH)
+endif()
+
+# make sure CMAKE_PREFIX_PATH is set
+if(NOT CMAKE_PREFIX_PATH)
+  set(CMAKE_PREFIX_PATH "${DEPENDS_PATH}")
+else()
+  file(TO_CMAKE_PATH "${CMAKE_PREFIX_PATH}" CMAKE_PREFIX_PATH)
+  list(APPEND CMAKE_PREFIX_PATH "${DEPENDS_PATH}")
 endif()
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT OR NOT CMAKE_INSTALL_PREFIX)
@@ -47,6 +52,7 @@ list(APPEND CMAKE_PREFIX_PATH ${CMAKE_INSTALL_PREFIX})
 
 set(BUILD_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
                -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+               -DPACKAGE_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig
                -DCMAKE_BUILD_TYPE=Release
                -DCMAKE_USER_MAKE_RULES_OVERRIDE=${CMAKE_USER_MAKE_RULES_OVERRIDE}
                -DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX=${CMAKE_USER_MAKE_RULES_OVERRIDE_CXX}
@@ -81,6 +87,8 @@ if(NOT WIN32)
   # include prepare-env.cmake which contains the logic to install the addon header bindings etc
   include(prepare-env)
 endif()
+
+add_subdirectory(depends)
 
 ### get and build all the binary addons
 # look for all the addons to be built
@@ -132,30 +140,63 @@ foreach(addon ${addons})
           file(REMOVE_RECURSE "${CMAKE_INSTALL_PREFIX}/${id}/")
         endif()
 
-        # prepare the setup of the call to externalproject_add()
-        set(EXTERNALPROJECT_SETUP INSTALL_DIR "${CMAKE_INSTALL_PREFIX}"
-                                  CMAKE_ARGS ${BUILD_ARGS})
-
         # get the URL and revision of the addon
         list(LENGTH def deflength)
         list(GET def 1 url)
-        # check if there's a third parameter in the file
-        if(deflength GREATER 2)
-          # the third parameter is considered as a revision of a git repository
-          list(GET def 2 revision)
+        list(GET def 2 revision)
 
-          externalproject_add(${id}
-                              GIT_REPOSITORY ${url}
-                              GIT_TAG ${revision}
-                              "${EXTERNALPROJECT_SETUP}"
-                             )
-        else()
-          externalproject_add(${id}
-                              URL ${url}
-                              "${EXTERNALPROJECT_SETUP}"
-                             )
+        # download and extract all addons
+        if(deflength GREATER 2)
+          # if there is a 3rd parameter in the file, we consider it a git revision
+          # Note: downloading specific revisions via http in the format below is probably github specific
+          # if we ever use other repositories, this might need adapting
+          set(url ${url}/archive/${revision}.tar.gz)
         endif()
+        if(NOT EXISTS ${BUILD_DIR}/download/${id}.tar.gz)
+          file(DOWNLOAD "${url}" "${BUILD_DIR}/download/${id}.tar.gz" STATUS dlstatus LOG dllog SHOW_PROGRESS)
+          list(GET dlstatus 0 retcode)
+          if(NOT ${retcode} EQUAL 0)
+            message(FATAL_ERROR "ERROR downloading ${url} - status: ${dlstatus} log: ${dllog}")
+          endif()
+        endif()
+        if(EXISTS "${BUILD_DIR}/${id}")
+          file(REMOVE_RECURSE "${BUILD_DIR}/${id}")
+        endif()
+        execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzvf ${BUILD_DIR}/download/${id}.tar.gz
+                        WORKING_DIRECTORY ${BUILD_DIR})
+        file(GLOB extract_dir "${BUILD_DIR}/${id}-${revision}*")
+        if(extract_dir STREQUAL "")
+          message(FATAL_ERROR "Error extracting ${BUILD_DIR}/download/${id}.tar.gz")
+        else()
+          file(RENAME "${extract_dir}" "${BUILD_DIR}/${id}")
+        endif()
+
+        list(APPEND downloaded_addons ${id})
+
       endif()
+    endif()
+  endif()
+endforeach()
+
+foreach(id ${downloaded_addons})
+  externalproject_add(${id}
+                      SOURCE_DIR ${BUILD_DIR}/${id}
+                      INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+                      CMAKE_ARGS ${BUILD_ARGS})
+
+  # on win32 we need to add the "kodi" dependency to every addon
+  if (WIN32)
+    add_dependencies(${id} kodi)
+  endif()
+
+  set(${id}_DEPENDS_DIR ${BUILD_DIR}/${id}/depends)
+
+  if(EXISTS ${${id}_DEPENDS_DIR})
+    include(${APP_ROOT}/project/cmake/scripts/common/handle-depends.cmake)
+    add_addon_depends(${id} ${${id}_DEPENDS_DIR})
+    if (${id}_DEPS AND NOT "${${id}_DEPS}" STREQUAL "")
+      message(STATUS "${id} DEPENDENCIES: ${${id}_DEPS}")
+      add_dependencies(${id} ${${id}_DEPS})
     endif()
   endif()
 endforeach()
