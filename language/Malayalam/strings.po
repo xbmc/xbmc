@@ -1,11 +1,11 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main\n"
+"Project-Id-Version: Kodi Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Malayalam (http://www.transifex.com/projects/p/xbmc-main/language/ml/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,8 +38,8 @@ msgid "Settings"
 msgstr "പണിപ്പലക"
 
 msgctxt "#6"
-msgid "XBMC SVN"
-msgstr "XBMC SVN"
+msgid "Kodi SVN"
+msgstr "Kodi SVN"
 
 msgctxt "#7"
 msgid "File manager"
@@ -51,7 +51,7 @@ msgstr "കാലാവസ്ഥ"
 
 msgctxt "#9"
 msgid "xbmc media center"
-msgstr "XBMC മാധ്യമ സങ്കേതം"
+msgstr "Kodi മാധ്യമ സങ്കേതം"
 
 msgctxt "#11"
 msgid "Monday"

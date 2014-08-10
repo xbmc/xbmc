@@ -1,11 +1,11 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main\n"
+"Project-Id-Version: Kodi Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Chinese (Traditional) (http://www.transifex.com/projects/p/xbmc-main/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,8 +38,8 @@ msgid "Settings"
 msgstr "系統設定"
 
 msgctxt "#6"
-msgid "XBMC SVN"
-msgstr "XBMC SVN"
+msgid "Kodi SVN"
+msgstr "Kodi SVN"
 
 msgctxt "#7"
 msgid "File manager"
@@ -910,8 +910,8 @@ msgid "Scripts output"
 msgstr "腳本輸出"
 
 msgctxt "#263"
-msgid "Allow control of XBMC via HTTP"
-msgstr "允許通過 HTTP 控制 XBMC"
+msgid "Allow control of Kodi via HTTP"
+msgstr "允許通過 HTTP 控制 Kodi"
 
 msgctxt "#264"
 msgid "Record"
@@ -1738,8 +1738,8 @@ msgid "Audio options"
 msgstr "音效設定"
 
 msgctxt "#482"
-msgid "About XBMC"
-msgstr "關於 XBMC"
+msgid "About Kodi"
+msgstr "關於 Kodi"
 
 msgctxt "#485"
 msgid "Delete album"
@@ -2702,8 +2702,8 @@ msgid "Remote control"
 msgstr "遠端遙控"
 
 msgctxt "#791"
-msgid "Allow programs on this system to control XBMC"
-msgstr "允許這個系統的程式控制XBMC"
+msgid "Allow programs on this system to control Kodi"
+msgstr "允許這個系統的程式控制Kodi"
 
 msgctxt "#792"
 msgid "Port"
@@ -2714,7 +2714,7 @@ msgid "Port range"
 msgstr "遠端伺服器埠號範圍"
 
 msgctxt "#794"
-msgid "Allow programs on other systems to control XBMC"
+msgid "Allow programs on other systems to control Kodi"
 msgstr "允許其他電腦連接"
 
 msgctxt "#795"
@@ -2778,8 +2778,8 @@ msgid "Unable to connect"
 msgstr "無法連線"
 
 msgctxt "#1002"
-msgid "XBMC was unable to connect to the network location."
-msgstr "XBMC 無法連線到網路。"
+msgid "Kodi was unable to connect to the network location."
+msgstr "Kodi 無法連線到網路。"
 
 msgctxt "#1003"
 msgid "This could be due to the network not being connected."
@@ -3130,8 +3130,8 @@ msgid "Allow volume control"
 msgstr "允許音量控制"
 
 msgctxt "#1270"
-msgid "Allow XBMC to receive AirPlay content"
-msgstr "允許XBMC接收AirPlay內容"
+msgid "Allow Kodi to receive AirPlay content"
+msgstr "允許Kodi接收AirPlay內容"
 
 msgctxt "#1271"
 msgid "Device name"
@@ -4254,12 +4254,12 @@ msgid "Active connections detected!"
 msgstr "主動偵測連接！"
 
 msgctxt "#13141"
-msgid "If you proceed, you might not be able to control XBMC"
+msgid "If you proceed, you might not be able to control Kodi"
 msgstr "如果繼續此操作，你也許會再也不能控制"
 
 msgctxt "#13142"
 msgid "any longer. Are you sure you want to stop the Event server?"
-msgstr "XBMC。你是否確定停止事件伺服器？"
+msgstr "Kodi。你是否確定停止事件伺服器？"
 
 msgctxt "#13144"
 msgid "Change Apple Remote mode?"
@@ -4270,8 +4270,8 @@ msgid "If you are currently using the Apple Remote to control"
 msgstr "如果你正使用 Apple 遙控器來控制"
 
 msgctxt "#13146"
-msgid "XBMC, changing this setting might affect your ability"
-msgstr "XBMC，更改此設定可能會影響到你"
+msgid "Kodi, changing this setting might affect your ability"
+msgstr "Kodi，更改此設定可能會影響到你"
 
 msgctxt "#13147"
 msgid "to continue controlling it. Do you want to proceed?"
@@ -4498,8 +4498,8 @@ msgid "Do you wish to reboot your system"
 msgstr "你要將系統重新啟動"
 
 msgctxt "#13309"
-msgid "instead of just XBMC?"
-msgstr "以重新啟動 XBMC 嗎？"
+msgid "instead of just Kodi?"
+msgstr "以重新啟動 Kodi 嗎？"
 
 msgctxt "#13310"
 msgid "Zoom effect"
@@ -5082,8 +5082,8 @@ msgid "Apple remote"
 msgstr "Apple 遙控器"
 
 msgctxt "#13602"
-msgid "Allow start of XBMC using the remote"
-msgstr "允許用遙控器啟動 XBMC"
+msgid "Allow start of Kodi using the remote"
+msgstr "允許用遙控器啟動 Kodi"
 
 msgctxt "#13603"
 msgid "Sequence delay time"
@@ -5254,8 +5254,8 @@ msgid "Network settings changed"
 msgstr "網路設定已改變"
 
 msgctxt "#14039"
-msgid "XBMC requires to restart to change your"
-msgstr "XBMC 需要重新啟動以改變你的"
+msgid "Kodi requires to restart to change your"
+msgstr "Kodi 需要重新啟動以改變你的"
 
 msgctxt "#14040"
 msgid "network setup.  Would you like to restart now?"
@@ -6726,8 +6726,8 @@ msgid "Enter the name of the new channel"
 msgstr "輸入新頻道的名稱"
 
 msgctxt "#19209"
-msgid "XBMC virtual backend"
-msgstr "XBMC 虛擬後端"
+msgid "Kodi virtual backend"
+msgstr "Kodi 虛擬後端"
 
 msgctxt "#19210"
 msgid "Client"
@@ -7418,8 +7418,8 @@ msgid "Screenshots"
 msgstr "螢幕擷圖"
 
 msgctxt "#20009"
-msgid "Use XBMC"
-msgstr "使用 XBMC"
+msgid "Use Kodi"
+msgstr "使用 Kodi"
 
 msgctxt "#20011"
 msgid "Music playlists"
@@ -8322,7 +8322,7 @@ msgid "Do you want to remove all items within"
 msgstr "你要從資料庫中"
 
 msgctxt "#20341"
-msgid "this path from the XBMC library?"
+msgid "this path from the Kodi library?"
 msgstr "移除此路徑內所有項目？"
 
 msgctxt "#20342"
@@ -9530,8 +9530,8 @@ msgid "Reference service"
 msgstr "參考服務"
 
 msgctxt "#21881"
-msgid "Allow control of XBMC via UPnP"
-msgstr "允許通過 UPnP 控制 XBMC"
+msgid "Allow control of Kodi via UPnP"
+msgstr "允許通過 UPnP 控制 Kodi"
 
 msgctxt "#21882"
 msgid "Attempt to skip introduction before DVD menu"
@@ -10550,12 +10550,12 @@ msgid "This version of %s requires an"
 msgstr "運行此版本的 %s 需要"
 
 msgctxt "#33075"
-msgid "XBMC revision of %s or greater to run."
-msgstr "XBMC 為 %s 或更高版本。"
+msgid "Kodi revision of %s or greater to run."
+msgstr "Kodi 為 %s 或更高版本。"
 
 msgctxt "#33076"
-msgid "Please update XBMC."
-msgstr "請更新 XBMC。"
+msgid "Please update Kodi."
+msgstr "請更新 Kodi。"
 
 msgctxt "#33077"
 msgid "No data found!"
@@ -10886,12 +10886,12 @@ msgid "Could not open the adaptor"
 msgstr "無法開啟配接器"
 
 msgctxt "#36007"
-msgid "Devices to power on when starting XBMC"
-msgstr "開啟 XBMC 時打開這台電視"
+msgid "Devices to power on when starting Kodi"
+msgstr "開啟 Kodi 時打開這台電視"
 
 msgctxt "#36008"
-msgid "Devices to power off when stopping XBMC"
-msgstr "當停止 XBMC 時關閉裝置"
+msgid "Devices to power off when stopping Kodi"
+msgstr "當停止 Kodi 時關閉裝置"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
@@ -10930,8 +10930,8 @@ msgid "Connected to HDMI device"
 msgstr "已連接到 HDMI 裝置"
 
 msgctxt "#36020"
-msgid "Make XBMC the active source when starting"
-msgstr "啟動時讓 XBMC 變成作用中的來源"
+msgid "Make Kodi the active source when starting"
+msgstr "啟動時讓 Kodi 變成作用中的來源"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
@@ -10950,8 +10950,8 @@ msgid "Failed to set the new configuration. Please check your settings."
 msgstr "無法套用新的設定。請檢查你的設定。"
 
 msgctxt "#36025"
-msgid "Send 'inactive source' command when stopping XBMC"
-msgstr "關閉 XBMC 時送出 \"非作用中來源\" 的命令"
+msgid "Send 'inactive source' command when stopping Kodi"
+msgstr "關閉 Kodi 時送出 \"非作用中來源\" 的命令"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
@@ -11006,8 +11006,8 @@ msgid "TV and AVR device (explicit)"
 msgstr "電視和 AVR 裝置 (外接式)"
 
 msgctxt "#36040"
-msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
-msgstr "未支援的 libECE 介面版本。版本 %x 小於 XBMC 所支援的版本(%x)"
+msgid "Unsupported libCEC interface version. %x is lower than the version Kodi supports (%x)"
+msgstr "未支援的 libECE 介面版本。版本 %x 小於 Kodi 所支援的版本(%x)"
 
 msgctxt "#36041"
 msgid "* Item folder"
@@ -11042,8 +11042,8 @@ msgid "Resize the view of the user interface."
 msgstr "重新調整使用者介面的外觀。"
 
 msgctxt "#36109"
-msgid "Select the media window that XBMC displays on startup."
-msgstr "選擇XBMC啟動時要顯示的媒體視窗"
+msgid "Select the media window that Kodi displays on startup."
+msgstr "選擇Kodi啟動時要顯示的媒體視窗"
 
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
@@ -11118,8 +11118,8 @@ msgid "Set the amount of idle time required before displaying the screensaver."
 msgstr "設定螢幕保護程式啟動前的待機時間"
 
 msgctxt "#36130"
-msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
-msgstr "選擇螢幕保護程式。 當以全螢幕播放影片時，影片被暫停或對話盒被啟動的話， XBMC 會強制啟動 'Dim' 螢幕保護程式。"
+msgid "Select the screensaver. Kodi will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
+msgstr "選擇螢幕保護程式。 當以全螢幕播放影片時，影片被暫停或對話盒被啟動的話， Kodi 會強制啟動 'Dim' 螢幕保護程式。"
 
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
@@ -11130,8 +11130,8 @@ msgid "Preview the selected screensaver."
 msgstr "預覽選擇的螢幕保護程式。"
 
 msgctxt "#36133"
-msgid "If music is being played, XBMC will start the selected visualisation instead of displaying the screensaver."
-msgstr "如果正在撥放音樂，XBMC 將會啟動所選的視覺效果來取代原本的螢幕保護程式。"
+msgid "If music is being played, Kodi will start the selected visualisation instead of displaying the screensaver."
+msgstr "如果正在撥放音樂，Kodi 將會啟動所選的視覺效果來取代原本的螢幕保護程式。"
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
@@ -11170,8 +11170,8 @@ msgid "Remove the TV show season node, toggles between 'If only one season' (def
 msgstr "移除電視節目的季度節點，可以在 '如果只有一季' (預設值)、'總是' 和 '永不' 之間切換。"
 
 msgctxt "#36146"
-msgid "Check for new media files on XBMC startup."
-msgstr "XBMC 啟動時檢查新的媒體檔案。"
+msgid "Check for new media files on Kodi startup."
+msgstr "Kodi 啟動時檢查新的媒體檔案。"
 
 msgctxt "#36147"
 msgid "Hide the library scanning progress bar during scans."
@@ -11338,16 +11338,16 @@ msgid "Default scraper used for adding music videos to your library."
 msgstr "新增音樂錄影帶時要使用的預設站台。"
 
 msgctxt "#36203"
-msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
-msgstr "啟用 XBMC 中的個人影片錄影機 (Personal Video Recorder, PVR)功能。需要至少安裝一個 PVR 附加元件。"
+msgid "Enable the Personal Video Recorder (PVR) features in Kodi. This requires that at least one PVR Add-on is installed."
+msgstr "啟用 Kodi 中的個人影片錄影機 (Personal Video Recorder, PVR)功能。需要至少安裝一個 PVR 附加元件。"
 
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "從 PVR 後端匯入頻道群組 (如果支援的話)。 如果使用者建立的頻道群組在後端找不到的話將會被刪除。"
 
 msgctxt "#36206"
-msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
-msgstr "使用後端的頻道號碼而非透過 XBMC 手動設定的頻道號碼。"
+msgid "Use numbering from the backend, instead of configuring them manually over Kodi."
+msgstr "使用後端的頻道號碼而非透過 Kodi 手動設定的頻道號碼。"
 
 msgctxt "#36207"
 msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
@@ -11394,8 +11394,8 @@ msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "當播放電視時不要匯入電子節目表以節省 CPU 資源。"
 
 msgctxt "#36223"
-msgid "By default, EPG data is stored in a local database to speed up importing when XBMC is restarted."
-msgstr "為了加快 XBMC 重新啟動的速度，電子節目表的資料預設存放在本地的資料庫。"
+msgid "By default, EPG data is stored in a local database to speed up importing when Kodi is restarted."
+msgstr "為了加快 Kodi 重新啟動的速度，電子節目表的資料預設存放在本地的資料庫。"
 
 msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
@@ -11450,8 +11450,8 @@ msgid "Select the default artist information source. See the Add-ons Manager for
 msgstr "選擇預設的專輯資訊來源。附加元件管理員中有更多選項。"
 
 msgctxt "#36259"
-msgid "Check for new and removed media files on XBMC startup."
-msgstr "在 XBMC 啟動時檢查新增或被移除的媒體檔案。"
+msgid "Check for new and removed media files on Kodi startup."
+msgstr "在 Kodi 啟動時檢查新增或被移除的媒體檔案。"
 
 msgctxt "#36260"
 msgid "No info available yet."
@@ -11470,8 +11470,8 @@ msgid "Category containing settings for how music playback is handled."
 msgstr "此分類包含如何處理音樂播放的設定。"
 
 msgctxt "#36267"
-msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
-msgstr "XBMC 會讀取音樂檔案中經過如 MP3Gain 等程式編碼過的回放增益資訊，並依此來調整輸出的音量。"
+msgid "Kodi will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
+msgstr "Kodi 會讀取音樂檔案中經過如 MP3Gain 等程式編碼過的回放增益資訊，並依此來調整輸出的音量。"
 
 msgctxt "#36270"
 msgid "Reduce the volume of the file if clipping will occur."
@@ -11522,8 +11522,8 @@ msgid "Category containing the settings for how karaoke is handled."
 msgstr "此分類包含如何處理卡啦 OK 的設定。"
 
 msgctxt "#36293"
-msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
-msgstr "當播放音樂的時候，XBMC 會尋找符合的 .cdg 檔案，並顯示它的圖片。"
+msgid "When playing any music file, Kodi will look for a matching .cdg file and display its graphics."
+msgstr "當播放音樂的時候，Kodi 會尋找符合的 .cdg 檔案，並顯示它的圖片。"
 
 msgctxt "#36295"
 msgid "Select the font type used during karaoke."
@@ -11606,8 +11606,8 @@ msgid "Category containing settings used for all services."
 msgstr "此分類包含全部服務相關的設定。"
 
 msgctxt "#36321"
-msgid "Display name of the XBMC installation when using various network services."
-msgstr "當使用各種網路服務時，用來表示這個 XBMC 的名稱。"
+msgid "Display name of the Kodi installation when using various network services."
+msgstr "當使用各種網路服務時，用來表示這個 Kodi 的名稱。"
 
 msgctxt "#36322"
 msgid "Category containing settings for how the UPnP service is handled."
@@ -11626,16 +11626,16 @@ msgid "Enable the UPnP client. This allows you to stream media from any UPnP ser
 msgstr "啟用 UPnP 客戶端。這將允許你從任何 UPnP 伺服器串流媒體且包含播放控制的功能。"
 
 msgctxt "#36326"
-msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from XBMC."
-msgstr "啟用 UPnP 控制點。這將允許你從任何 UPnP 伺服器串流媒體且可以從 XBMC 做播放控制。"
+msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from Kodi."
+msgstr "啟用 UPnP 控制點。這將允許你從任何 UPnP 伺服器串流媒體且可以從 Kodi 做播放控制。"
 
 msgctxt "#36327"
 msgid "Category containing settings for how the webserver service is handled."
 msgstr "此分類包含如何處理網頁伺服器服務的設定。"
 
 msgctxt "#36328"
-msgid "Enable remote users to control XBMC through the built-in webserver."
-msgstr "讓遠端使用者可以透過內建的網頁伺服器控制 XBMC"
+msgid "Enable remote users to control Kodi through the built-in webserver."
+msgstr "讓遠端使用者可以透過內建的網頁伺服器控制 Kodi"
 
 msgctxt "#36329"
 msgid "Define the webserver port."
@@ -11658,8 +11658,8 @@ msgid "Category containing settings for how the remote control service is handle
 msgstr "此分類包含如何處理遠端遙控服務的設定。"
 
 msgctxt "#36334"
-msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
-msgstr "允許這個電腦上的程式透過網路介面或者 JSON-RPC 介面協定控制 XBMC。"
+msgid "Allow programs on this computer to control Kodi via the Web Interface or the JSON-RPC interface protocol."
+msgstr "允許這個電腦上的程式透過網路介面或者 JSON-RPC 介面協定控制 Kodi。"
 
 msgctxt "#36335"
 msgid "Define the remote control port."
@@ -11674,8 +11674,8 @@ msgid "Define the maximum number of clients that can connect."
 msgstr "設定客戶端連線數的最大值。"
 
 msgctxt "#36338"
-msgid "Allow programs on the network to control XBMC."
-msgstr "允許網路上的程式控制XBMC"
+msgid "Allow programs on the network to control Kodi."
+msgstr "允許網路上的程式控制Kodi"
 
 msgctxt "#36339"
 msgid "Initial repeat delay (ms)."
@@ -11690,12 +11690,12 @@ msgid "Category containing settings for how the zeroconf network discovery servi
 msgstr "此分類包含如何處理 AirPlay 所需要的 zeroconf 網路發現服務的設定。"
 
 msgctxt "#36342"
-msgid "Allows applications on the network to discover XBMC's running services."
-msgstr "允許網路上的應用程式發現 XBMC 正在執行的服務。"
+msgid "Allows applications on the network to discover Kodi's running services."
+msgstr "允許網路上的應用程式發現 Kodi 正在執行的服務。"
 
 msgctxt "#36343"
-msgid "Allows XBMC to receive content from other AirPlay devices or applications."
-msgstr "允許 XBMC 接收其他 AirPlay 裝置或應用程式的內容。"
+msgid "Allows Kodi to receive content from other AirPlay devices or applications."
+msgstr "允許 Kodi 接收其他 AirPlay 裝置或應用程式的內容。"
 
 msgctxt "#36344"
 msgid "Enable AirPlay password protection."
@@ -11718,20 +11718,20 @@ msgid "If a WINS server is running on the network, enter its workgroup name here
 msgstr "如果網路上有 WINS 伺服器，在這裡輸入它的工作群組名稱，否則維持空白。"
 
 msgctxt "#36351"
-msgid "Display XBMC in a window, or fullscreen on the selected screen."
-msgstr "在所選的螢幕上以視窗或全螢幕顯示 XBMC。"
+msgid "Display Kodi in a window, or fullscreen on the selected screen."
+msgstr "在所選的螢幕上以視窗或全螢幕顯示 Kodi。"
 
 msgctxt "#36352"
 msgid "Changes the resolution that the user interface is displayed in."
 msgstr "修改顯示使用者介面的解析度。"
 
 msgctxt "#36354"
-msgid "Display XBMC in a fullscreen window. The main benefit is for multi-screen configurations, so that XBMC can be used without minimising other applications. This uses more resources so playback may be less smooth."
-msgstr "將 XBMC 顯示在一個全螢幕的視窗中。主要好處是在有多螢幕的情況下，不用將其他應用程式最小化就可以使用 XBMC。這會使用稍微多一點資源，且播放時可能會稍微不那麼流暢。"
+msgid "Display Kodi in a fullscreen window. The main benefit is for multi-screen configurations, so that Kodi can be used without minimising other applications. This uses more resources so playback may be less smooth."
+msgstr "將 Kodi 顯示在一個全螢幕的視窗中。主要好處是在有多螢幕的情況下，不用將其他應用程式最小化就可以使用 Kodi。這會使用稍微多一點資源，且播放時可能會稍微不那麼流暢。"
 
 msgctxt "#36355"
-msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
-msgstr "在多螢幕設置中，用來顯示 XBMC 以外的螢幕會變全黑。"
+msgid "In a multi-screen configuration, the screens where Kodi is not displayed are blacked out."
+msgstr "在多螢幕設置中，用來顯示 Kodi 以外的螢幕會變全黑。"
 
 msgctxt "#36359"
 msgid "Use limited colour range (16-235) instead of full colour range (0-255). Limited range should be used if your display is a regular HDMI TV and doesn't have a PC or other mode to display full range colour, however if your display is a PC monitor then leave this disabled to get proper blacks."
@@ -11778,8 +11778,8 @@ msgid "Configure any attached peripheral devices."
 msgstr "設定已連接的週邊裝置。"
 
 msgctxt "#36378"
-msgid "Use a joystick to control XBMC."
-msgstr "使用遊戲手把控制 XBMC。"
+msgid "Use a joystick to control Kodi."
+msgstr "使用遊戲手把控制 Kodi。"
 
 msgctxt "#36379"
 msgid "Category containing settings for internet access."
@@ -11818,12 +11818,12 @@ msgid "Turn off display when idle. Useful for TVs that turn off when there is no
 msgstr "閒置時關閉顯示器。當電視偵測不到訊號時，會自"
 
 msgctxt "#36389"
-msgid "Define how long XBMC should idle before shutting down."
-msgstr "設定 XBMC 要在閒置多久的時間之後關閉。"
+msgid "Define how long Kodi should idle before shutting down."
+msgstr "設定 Kodi 要在閒置多久的時間之後關閉。"
 
 msgctxt "#36390"
-msgid "Define what action XBMC should do when it has been idle for a long period of time."
-msgstr "設定 XBMC 在長時間閒置時要執行的動作。"
+msgid "Define what action Kodi should do when it has been idle for a long period of time."
+msgstr "設定 Kodi 在長時間閒置時要執行的動作。"
 
 msgctxt "#36391"
 msgid "Category containing settings for debugging functions."
@@ -11834,8 +11834,8 @@ msgid "Turn debug logging on or off. Useful for troubleshooting."
 msgstr "開啟或關閉除厝訊息。找問題時很有用。"
 
 msgctxt "#36393"
-msgid "Folder used to save screenshots taken within XBMC."
-msgstr "用來存放 XBMC 截圖的資料夾。"
+msgid "Folder used to save screenshots taken within Kodi."
+msgstr "用來存放 Kodi 截圖的資料夾。"
 
 msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
@@ -11850,12 +11850,12 @@ msgid "Define the PIN code used for the master lock."
 msgstr "設定管理員密碼。"
 
 msgctxt "#36397"
-msgid "If enabled, the master lock code is required to unlock XBMC on startup."
-msgstr "如果啟用的話，當 XBMC 啟動時會要求輸入管理員密碼。"
+msgid "If enabled, the master lock code is required to unlock Kodi on startup."
+msgstr "如果啟用的話，當 Kodi 啟動時會要求輸入管理員密碼。"
 
 msgctxt "#36398"
-msgid "Define the maximum number of retries before XBMC is closed down."
-msgstr "設定最多重試次數，達到這個次數 XBMC 將會關閉。"
+msgid "Define the maximum number of retries before Kodi is closed down."
+msgstr "設定最多重試次數，達到這個次數 Kodi 將會關閉。"
 
 msgctxt "#36399"
 msgid "Category containing settings for the cache function."
@@ -11930,8 +11930,8 @@ msgid "Specify the type of remote used."
 msgstr "指定使用的遙控器種類。"
 
 msgctxt "#36417"
-msgid "Always run an XBMC helper so that the remote can be used to start XBMC."
-msgstr "永遠在背景執行一個 XBMC 小幫手，讓遙控器可以被用來啟動 XBMC。"
+msgid "Always run an Kodi helper so that the remote can be used to start Kodi."
+msgstr "永遠在背景執行一個 Kodi 小幫手，讓遙控器可以被用來啟動 Kodi。"
 
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
@@ -12091,7 +12091,7 @@ msgstr "設定 3D 立體影片中字幕的視覺深度。愈高的值字幕感�
 
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
-msgstr "限制使用者介面的解析度以節省記憶體。這不會影響影片播放。使用 1080 為不限制。需要重新啟動 XBMC。"
+msgstr "限制使用者介面的解析度以節省記憶體。這不會影響影片播放。使用 1080 為不限制。需要重新啟動 Kodi。"
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."

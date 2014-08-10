@@ -1,11 +1,11 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main\n"
+"Project-Id-Version: Kodi Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Korean (http://www.transifex.com/projects/p/xbmc-main/language/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,8 +38,8 @@ msgid "Settings"
 msgstr "설정"
 
 msgctxt "#6"
-msgid "XBMC SVN"
-msgstr "XBMC SVN"
+msgid "Kodi SVN"
+msgstr "Kodi SVN"
 
 msgctxt "#7"
 msgid "File manager"
@@ -51,7 +51,7 @@ msgstr "날씨"
 
 msgctxt "#9"
 msgid "xbmc media center"
-msgstr "XBMC 미디어 센터"
+msgstr "Kodi 미디어 센터"
 
 msgctxt "#11"
 msgid "Monday"
@@ -914,8 +914,8 @@ msgid "Scripts output"
 msgstr "스크립트 출력"
 
 msgctxt "#263"
-msgid "Allow control of XBMC via HTTP"
-msgstr "HTTP를 통해 XBMC 제어 허용"
+msgid "Allow control of Kodi via HTTP"
+msgstr "HTTP를 통해 Kodi 제어 허용"
 
 msgctxt "#264"
 msgid "Record"
@@ -1750,8 +1750,8 @@ msgid "Audio options"
 msgstr "오디오 옵션"
 
 msgctxt "#482"
-msgid "About XBMC"
-msgstr "XBMC 정보"
+msgid "About Kodi"
+msgstr "Kodi 정보"
 
 msgctxt "#485"
 msgid "Delete album"
@@ -2714,8 +2714,8 @@ msgid "Remote control"
 msgstr "원격 제어"
 
 msgctxt "#791"
-msgid "Allow programs on this system to control XBMC"
-msgstr "이 시스템의 프로그램이 XBMC를 제어하는 것을 허용"
+msgid "Allow programs on this system to control Kodi"
+msgstr "이 시스템의 프로그램이 Kodi를 제어하는 것을 허용"
 
 msgctxt "#792"
 msgid "Port"
@@ -2726,8 +2726,8 @@ msgid "Port range"
 msgstr "포트 범위"
 
 msgctxt "#794"
-msgid "Allow programs on other systems to control XBMC"
-msgstr "다른 시스템의 프로그램이 XBMC를 제어하는 것을 허용"
+msgid "Allow programs on other systems to control Kodi"
+msgstr "다른 시스템의 프로그램이 Kodi를 제어하는 것을 허용"
 
 msgctxt "#795"
 msgid "Initial repeat delay (ms)"
@@ -2790,8 +2790,8 @@ msgid "Unable to connect"
 msgstr "연결할 수 없음"
 
 msgctxt "#1002"
-msgid "XBMC was unable to connect to the network location."
-msgstr "XBMC가 네트워크 위치에 연결할 수 없습니다."
+msgid "Kodi was unable to connect to the network location."
+msgstr "Kodi가 네트워크 위치에 연결할 수 없습니다."
 
 msgctxt "#1003"
 msgid "This could be due to the network not being connected."
@@ -3142,8 +3142,8 @@ msgid "Allow volume control"
 msgstr "음량 제어 허용"
 
 msgctxt "#1270"
-msgid "Allow XBMC to receive AirPlay content"
-msgstr "XBMC가 AirPlay 콘텐츠를 수신하도록 허용"
+msgid "Allow Kodi to receive AirPlay content"
+msgstr "Kodi가 AirPlay 콘텐츠를 수신하도록 허용"
 
 msgctxt "#1271"
 msgid "Device name"
@@ -4270,8 +4270,8 @@ msgid "Active connections detected!"
 msgstr "활성 연결 감지됨!"
 
 msgctxt "#13141"
-msgid "If you proceed, you might not be able to control XBMC"
-msgstr "진행할 경우, XBMC를 제어할 수 없음"
+msgid "If you proceed, you might not be able to control Kodi"
+msgstr "진행할 경우, Kodi를 제어할 수 없음"
 
 msgctxt "#13142"
 msgid "any longer. Are you sure you want to stop the Event server?"
@@ -4283,11 +4283,11 @@ msgstr "애플 리모트 모드를 변경 하시겠습니까?"
 
 msgctxt "#13145"
 msgid "If you are currently using the Apple Remote to control"
-msgstr "만약 현재 XBMC 를 제어하는데 애플 리모트를"
+msgstr "만약 현재 Kodi 를 제어하는데 애플 리모트를"
 
 msgctxt "#13146"
-msgid "XBMC, changing this setting might affect your ability"
-msgstr "사용한다면, 이 설정의 변경은  XBMC 를 제어하는데"
+msgid "Kodi, changing this setting might affect your ability"
+msgstr "사용한다면, 이 설정의 변경은  Kodi 를 제어하는데"
 
 msgctxt "#13147"
 msgid "to continue controlling it. Do you want to proceed?"
@@ -4511,10 +4511,10 @@ msgstr "트랙 이름 템플릿"
 
 msgctxt "#13308"
 msgid "Do you wish to reboot your system"
-msgstr "XBMC만 재시작하는 대신에"
+msgstr "Kodi만 재시작하는 대신에"
 
 msgctxt "#13309"
-msgid "instead of just XBMC?"
+msgid "instead of just Kodi?"
 msgstr "시스템을 재시작하기를 원하십니까?"
 
 msgctxt "#13310"
@@ -5130,8 +5130,8 @@ msgid "Apple remote"
 msgstr "애플 리모트"
 
 msgctxt "#13602"
-msgid "Allow start of XBMC using the remote"
-msgstr "리모트를 사용하여 XBMC 시작 허용"
+msgid "Allow start of Kodi using the remote"
+msgstr "리모트를 사용하여 Kodi 시작 허용"
 
 msgctxt "#13603"
 msgid "Sequence delay time"
@@ -5302,8 +5302,8 @@ msgid "Network settings changed"
 msgstr "네트워크 설정이 변경되었습니다"
 
 msgctxt "#14039"
-msgid "XBMC requires to restart to change your"
-msgstr "다음 설정을 변경하려면 XBMC를 다시 시작하여야 합니다: "
+msgid "Kodi requires to restart to change your"
+msgstr "다음 설정을 변경하려면 Kodi를 다시 시작하여야 합니다: "
 
 msgctxt "#14040"
 msgid "network setup.  Would you like to restart now?"
@@ -6790,8 +6790,8 @@ msgid "Enter the name of the new channel"
 msgstr "새 채널 이름 입력"
 
 msgctxt "#19209"
-msgid "XBMC virtual backend"
-msgstr "XBMC 가상 백엔드"
+msgid "Kodi virtual backend"
+msgstr "Kodi 가상 백엔드"
 
 msgctxt "#19210"
 msgid "Client"
@@ -7486,8 +7486,8 @@ msgid "Screenshots"
 msgstr "스크린샷"
 
 msgctxt "#20009"
-msgid "Use XBMC"
-msgstr "XBMC 사용"
+msgid "Use Kodi"
+msgstr "Kodi 사용"
 
 msgctxt "#20011"
 msgid "Music playlists"
@@ -8395,10 +8395,10 @@ msgstr "감독"
 
 msgctxt "#20340"
 msgid "Do you want to remove all items within"
-msgstr "XBMC 라이브러리에서 이 경로의"
+msgstr "Kodi 라이브러리에서 이 경로의"
 
 msgctxt "#20341"
-msgid "this path from the XBMC library?"
+msgid "this path from the Kodi library?"
 msgstr "모든 항목을 제거 하시겠습니까?"
 
 msgctxt "#20342"
@@ -9610,8 +9610,8 @@ msgid "Reference service"
 msgstr "참고 업무"
 
 msgctxt "#21881"
-msgid "Allow control of XBMC via UPnP"
-msgstr "UPnP를 통해 XBMC 제어 허용"
+msgid "Allow control of Kodi via UPnP"
+msgstr "UPnP를 통해 Kodi 제어 허용"
 
 msgctxt "#21882"
 msgid "Attempt to skip introduction before DVD menu"
@@ -10630,12 +10630,12 @@ msgid "This version of %s requires an"
 msgstr "이 버전의 %s 는 실행하려면"
 
 msgctxt "#33075"
-msgid "XBMC revision of %s or greater to run."
-msgstr "실행에 XBMC 리비전 %s 또는 이상이 필요합니다."
+msgid "Kodi revision of %s or greater to run."
+msgstr "실행에 Kodi 리비전 %s 또는 이상이 필요합니다."
 
 msgctxt "#33076"
-msgid "Please update XBMC."
-msgstr "XBMC 를 업데이트 하세요."
+msgid "Please update Kodi."
+msgstr "Kodi 를 업데이트 하세요."
 
 msgctxt "#33077"
 msgid "No data found!"
@@ -10970,12 +10970,12 @@ msgid "Could not open the adaptor"
 msgstr "어댑터를 열 수 없습니다"
 
 msgctxt "#36007"
-msgid "Devices to power on when starting XBMC"
-msgstr "XBMC를 시작할 때 TV 켜기"
+msgid "Devices to power on when starting Kodi"
+msgstr "Kodi를 시작할 때 TV 켜기"
 
 msgctxt "#36008"
-msgid "Devices to power off when stopping XBMC"
-msgstr "XBMC 종료시 장치 전원 끄기"
+msgid "Devices to power off when stopping Kodi"
+msgstr "Kodi 종료시 장치 전원 끄기"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
@@ -11014,8 +11014,8 @@ msgid "Connected to HDMI device"
 msgstr "HDMI 장치에 연결 됨"
 
 msgctxt "#36020"
-msgid "Make XBMC the active source when starting"
-msgstr "시작할 때 XBMC를 활성 소스로"
+msgid "Make Kodi the active source when starting"
+msgstr "시작할 때 Kodi를 활성 소스로"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
@@ -11034,8 +11034,8 @@ msgid "Failed to set the new configuration. Please check your settings."
 msgstr "설정이 적용되지 않았습니다. 설정을 확인하세요."
 
 msgctxt "#36025"
-msgid "Send 'inactive source' command when stopping XBMC"
-msgstr "XBMC를 종료할 때 '비활성 소스' 명령 보내기"
+msgid "Send 'inactive source' command when stopping Kodi"
+msgstr "Kodi를 종료할 때 '비활성 소스' 명령 보내기"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
@@ -11090,8 +11090,8 @@ msgid "TV and AVR device (explicit)"
 msgstr "TV와 리시버 장치"
 
 msgctxt "#36040"
-msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
-msgstr "지원하지 않는 libCEC 버전. %x 는 XBMC가 지원하는 것보다 낮은 버전입니다 (%x)"
+msgid "Unsupported libCEC interface version. %x is lower than the version Kodi supports (%x)"
+msgstr "지원하지 않는 libCEC 버전. %x 는 Kodi가 지원하는 것보다 낮은 버전입니다 (%x)"
 
 msgctxt "#36041"
 msgid "* Item folder"
@@ -11110,8 +11110,8 @@ msgid "Category containing all Skin related settings."
 msgstr "스킨과 관련된 설정을 포함하는 범주"
 
 msgctxt "#36103"
-msgid "Select the skin for the user interface. This will define the look and feel of XBMC."
-msgstr "사용자 인터페이스를 위한 스킨을 설정합니다. 스킨은 XBMC의 룩 앤 필을 결정합니다."
+msgid "Select the skin for the user interface. This will define the look and feel of Kodi."
+msgstr "사용자 인터페이스를 위한 스킨을 설정합니다. 스킨은 Kodi의 룩 앤 필을 결정합니다."
 
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
@@ -11134,8 +11134,8 @@ msgid "Resize the view of the user interface."
 msgstr "사용자 인터페이스의 보기 배율을 변경합니다."
 
 msgctxt "#36109"
-msgid "Select the media window that XBMC displays on startup."
-msgstr "XBMC를 시작할 때 표시할 미디어 화면을 선택합니다."
+msgid "Select the media window that Kodi displays on startup."
+msgstr "Kodi를 시작할 때 표시할 미디어 화면을 선택합니다."
 
 msgctxt "#36110"
 msgid "Select or disable the sound scheme used in the user interface."
@@ -11218,7 +11218,7 @@ msgid "Set the amount of idle time required before displaying the screensaver."
 msgstr "화면보호기가 표시되는데 필요한 유휴 시간을 설정하세요."
 
 msgctxt "#36130"
-msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
+msgid "Select the screensaver. Kodi will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
 msgstr "화면보호기를 선택합니다. 전체화면 비디오 재생이 일시정지되거나 대화상자가 활성화된 상태에서는 'Dim' 화면보호기가 강제 실행됩니다."
 
 msgctxt "#36131"
@@ -11230,8 +11230,8 @@ msgid "Preview the selected screensaver."
 msgstr "선택한 화면보호기 미리보기."
 
 msgctxt "#36133"
-msgid "If music is being played, XBMC will start the selected visualisation instead of displaying the screensaver."
-msgstr "음악이 재생중인 경우 XBMC는 화면보호기 대신, 선택한 시각화를 실행합니다."
+msgid "If music is being played, Kodi will start the selected visualisation instead of displaying the screensaver."
+msgstr "음악이 재생중인 경우 Kodi는 화면보호기 대신, 선택한 시각화를 실행합니다."
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
@@ -11278,8 +11278,8 @@ msgid "Group movies into 'Movie sets' when browsing the movie library."
 msgstr "영화 라이브러리를 탐색할 때 '시리즈 영화'로 영화를 묶어 줍니다."
 
 msgctxt "#36146"
-msgid "Check for new media files on XBMC startup."
-msgstr "XBMC를 시작할 때 새 미미어를 확인합니다."
+msgid "Check for new media files on Kodi startup."
+msgstr "Kodi를 시작할 때 새 미미어를 확인합니다."
 
 msgctxt "#36147"
 msgid "Hide the library scanning progress bar during scans."
@@ -11494,20 +11494,20 @@ msgid "Category for general settings for PVR/Live TV features."
 msgstr "PVR/TV 시청과 관련된 일반 설정 범주입니다."
 
 msgctxt "#36203"
-msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
-msgstr "XBMC의 PVR 기능을 사용합니다. 하나 이상의 PVR 애드온이 설치되어 있어야 합니다."
+msgid "Enable the Personal Video Recorder (PVR) features in Kodi. This requires that at least one PVR Add-on is installed."
+msgstr "Kodi의 PVR 기능을 사용합니다. 하나 이상의 PVR 애드온이 설치되어 있어야 합니다."
 
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "PVR 백엔드에서 채널 그룹을 가져옵니다. 백엔드에서 그룹이 발견되지 않으면 사용자가 만든 그룹을 지웁니다."
 
 msgctxt "#36205"
-msgid "Sort the channels by channel number on the backend, but use XBMC's own numbering for channels."
-msgstr "XBMC 자체 채널 번호를 사용하지만 백엔드 채널 번호 순서로 채널을 정렬합니다."
+msgid "Sort the channels by channel number on the backend, but use Kodi's own numbering for channels."
+msgstr "Kodi 자체 채널 번호를 사용하지만 백엔드 채널 번호 순서로 채널을 정렬합니다."
 
 msgctxt "#36206"
-msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
-msgstr "XBMC에서 수동으로 채널 번호를 설정하지 않고 백엔드의 채널 번호를 사용합니다."
+msgid "Use numbering from the backend, instead of configuring them manually over Kodi."
+msgstr "Kodi에서 수동으로 채널 번호를 설정하지 않고 백엔드의 채널 번호를 사용합니다."
 
 msgctxt "#36207"
 msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
@@ -11522,8 +11522,8 @@ msgid "Delete channel/EPG database and reimport the data from the backend afterw
 msgstr "채널/EPG 데이터베이스를 삭제한 후 백엔드에서 데이터를 다시 가져옵니다."
 
 msgctxt "#36210"
-msgid "Prevent the 'connection lost' notification window from displaying when XBMC is unable to talk to the PVR backend server."
-msgstr "XBMC가 PVR 백엔드 서버에 연결할 수 없을 때 '연결 끊어짐' 알림 창을 표시하지 않습니다."
+msgid "Prevent the 'connection lost' notification window from displaying when Kodi is unable to talk to the PVR backend server."
+msgstr "Kodi가 PVR 백엔드 서버에 연결할 수 없을 때 '연결 끊어짐' 알림 창을 표시하지 않습니다."
 
 msgctxt "#36211"
 msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
@@ -11570,16 +11570,16 @@ msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "TV 재생 중에는 CPU 사용을 최소화 하기 위해 EPG 데이터를 가져오지 않습니다."
 
 msgctxt "#36223"
-msgid "By default, EPG data is stored in a local database to speed up importing when XBMC is restarted."
-msgstr "기본적으로, XBMC를 시작할 때 데이터를 가져오는 속도를 향상 시키기 위하여 EPG 데이터를 로컬 데이터베이스에 저장합니다."
+msgid "By default, EPG data is stored in a local database to speed up importing when Kodi is restarted."
+msgstr "기본적으로, Kodi를 시작할 때 데이터를 가져오는 속도를 향상 시키기 위하여 EPG 데이터를 로컬 데이터베이스에 저장합니다."
 
 msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "채널의 EPG 데이터를 찾지 못하는 경우에 보여주는 \"정보 없음\" 표시를 숨김."
 
 msgctxt "#36225"
-msgid "Delete the EPG database in XBMC and reimport the data afterwards from the backend."
-msgstr "EPG 데이터베이스를 XBMC에서 삭제한 후 백엔드에서 데이터를 다시 가져옵니다."
+msgid "Delete the EPG database in Kodi and reimport the data afterwards from the backend."
+msgstr "EPG 데이터베이스를 Kodi에서 삭제한 후 백엔드에서 데이터를 다시 가져옵니다."
 
 msgctxt "#36226"
 msgid "Category for PVR playback and channel switching settings."
@@ -11598,7 +11598,7 @@ msgid "Display signal quality information in the codec information window (if su
 msgstr "코덱 정보 윈도우에서 신호 품질을 표시합니다 (애드온과 백엔드가 지원하는 경우)."
 
 msgctxt "#36230"
-msgid "How long XBMC will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
+msgid "How long Kodi will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
 msgstr "채널이 수신되지 않을 때 채널을 변경하기 전 기다리는 시간입니다. 가끔 신호가 끊어지는 전파 방송에 유용합니다."
 
 msgctxt "#36231"
@@ -11666,12 +11666,12 @@ msgid "Ask for the pin code again when trying to access a parental locked channe
 msgstr "자녀보호 채널에 접근할 때 비밀번호를 입력하여야 하고 입력 후 정해진 시간 동안 비밀번호를 다시 요청하지 않습니다."
 
 msgctxt "#36251"
-msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
-msgstr "XBMC에서 PVR 설정이 가능하도록 PVR 백엔드가 지원하는 경우 특정 PVR 설정과 관련된 범주입니다."
+msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
+msgstr "Kodi에서 PVR 설정이 가능하도록 PVR 백엔드가 지원하는 경우 특정 PVR 설정과 관련된 범주입니다."
 
 msgctxt "#36252"
-msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
-msgstr "이 옵션은 XBMC에서 PVR 설정이 가능하도록 PVR 백엔드가 지원하는 경우 특정 PVR 관련 설정을 제공합니다."
+msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
+msgstr "이 옵션은 Kodi에서 PVR 설정이 가능하도록 PVR 백엔드가 지원하는 경우 특정 PVR 관련 설정을 제공합니다."
 
 msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."
@@ -11698,8 +11698,8 @@ msgid "Select the default artist information source. See the Add-ons Manager for
 msgstr "아티스트 정보의 기본 소스. 옵션은 애드온 관리자를 보세요."
 
 msgctxt "#36259"
-msgid "Check for new and removed media files on XBMC startup."
-msgstr "XBMC를 시작할 때 추가되거나 삭제된 미디어를 확인합니다."
+msgid "Check for new and removed media files on Kodi startup."
+msgstr "Kodi를 시작할 때 추가되거나 삭제된 미디어를 확인합니다."
 
 msgctxt "#36260"
 msgid "No info available yet."
@@ -11718,7 +11718,7 @@ msgid "Category containing settings for how music playback is handled."
 msgstr "음악 재생과 관련된 설정을 포함합니다."
 
 msgctxt "#36265"
-msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
+msgid "Kodi automatically plays the next item in the current folder. For example, in Files View: After a track has been played, Kodi would automatically play the next track in the same folder."
 msgstr "현재 폴더의 다음 항목을 자동으로 재생합니다. 예를들면, 파일 보기에서 한 개의 트랙이 재생 완료되면 같은 폴더의 다음 트랙을 자동으로 재생합니다."
 
 msgctxt "#36266"
@@ -11726,7 +11726,7 @@ msgid "When songs are selected they are queued instead of playback starting imme
 msgstr "트랙을 선택할 때 즉시 재생하지 않고 대기열에 추가합니다."
 
 msgctxt "#36267"
-msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
+msgid "Kodi will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
 msgstr "MP3Gain 같은 프로그램으로 인코딩된 음악 파일에서 리플레이 게인 정보를 읽고 그에 맞춰 사운드 레벨을 노멀라이징합니다."
 
 msgctxt "#36268"
@@ -11782,7 +11782,7 @@ msgid "Used for formatting the second column in library lists."
 msgstr "라이브러리 목록의 두 번째 열 형식에 사용됩니다."
 
 msgctxt "#36281"
-msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
+msgid "Kodi will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
 msgstr "원격 공유와 광학 미디어에서 썸네일을 검색합니다. 이 기능은 때때로 네트워크 폴더의 리스팅 속도를 느리게 합니다."
 
 msgctxt "#36282"
@@ -11830,7 +11830,7 @@ msgid "Category containing the settings for how karaoke is handled."
 msgstr "노래방 관련 설정을 포함합니다."
 
 msgctxt "#36293"
-msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
+msgid "When playing any music file, Kodi will look for a matching .cdg file and display its graphics."
 msgstr "음악을 재생할 때 음악의 .cdg 파일을 찾아서 보여줍니다."
 
 msgctxt "#36294"
@@ -11934,8 +11934,8 @@ msgid "Category containing settings used for all services."
 msgstr "모든 서비스에 사용되는 설정을 포함합니다."
 
 msgctxt "#36321"
-msgid "Display name of the XBMC installation when using various network services."
-msgstr "다양한 네트워크 서비스를 사용할 때 표시되는 XBMC 이름입니다."
+msgid "Display name of the Kodi installation when using various network services."
+msgstr "다양한 네트워크 서비스를 사용할 때 표시되는 Kodi 이름입니다."
 
 msgctxt "#36322"
 msgid "Category containing settings for how the UPnP service is handled."
@@ -11951,19 +11951,19 @@ msgstr "수동이나 자동으로 라이브러리가 업데이트 되었을 때 
 
 msgctxt "#36325"
 msgid "Enable the UPnP client. This allows you to stream media from any UPnP server with a control point and control playback from that server."
-msgstr "UPnP 클라이언트를 활성화합니다. UPnP 컨트롤 포인트를 이용해 UPnP 서버로부터 XBMC로 미디어를 스트리밍하고 재생을 제어할 수 있도록 합니다."
+msgstr "UPnP 클라이언트를 활성화합니다. UPnP 컨트롤 포인트를 이용해 UPnP 서버로부터 Kodi로 미디어를 스트리밍하고 재생을 제어할 수 있도록 합니다."
 
 msgctxt "#36326"
-msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from XBMC."
-msgstr "UPnP 컨트롤 포인트를 활성화합니다. XBMC에서 UPnP 장치로 미디어를 스트리밍하고 재생을 제어하도록 합니다."
+msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from Kodi."
+msgstr "UPnP 컨트롤 포인트를 활성화합니다. Kodi에서 UPnP 장치로 미디어를 스트리밍하고 재생을 제어하도록 합니다."
 
 msgctxt "#36327"
 msgid "Category containing settings for how the webserver service is handled."
 msgstr "웹 서버 서비스와 관련된 설정을 포함합니다."
 
 msgctxt "#36328"
-msgid "Enable remote users to control XBMC through the built-in webserver."
-msgstr "원격 사용자가 내장 웹서버를 통해 XBMC를 제어할 수 있게 허용합니다."
+msgid "Enable remote users to control Kodi through the built-in webserver."
+msgstr "원격 사용자가 내장 웹서버를 통해 Kodi를 제어할 수 있게 허용합니다."
 
 msgctxt "#36329"
 msgid "Define the webserver port."
@@ -11986,8 +11986,8 @@ msgid "Category containing settings for how the remote control service is handle
 msgstr "원격 제어 서비스와 관련된 설정을 포함합니다."
 
 msgctxt "#36334"
-msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
-msgstr "이 시스템의 프로그램이 웹 인터페이스 또는 JSON-RPC 인터페이스 프로토콜을 통해 XBMC를 제어하는 것을 허용합니다."
+msgid "Allow programs on this computer to control Kodi via the Web Interface or the JSON-RPC interface protocol."
+msgstr "이 시스템의 프로그램이 웹 인터페이스 또는 JSON-RPC 인터페이스 프로토콜을 통해 Kodi를 제어하는 것을 허용합니다."
 
 msgctxt "#36335"
 msgid "Define the remote control port."
@@ -12002,8 +12002,8 @@ msgid "Define the maximum number of clients that can connect."
 msgstr "연결 가능한 클라이언트 수를 설정합니다."
 
 msgctxt "#36338"
-msgid "Allow programs on the network to control XBMC."
-msgstr "네트워크에 있는 프로그램이 XBMC를 제어하는 것을 허용합니다."
+msgid "Allow programs on the network to control Kodi."
+msgstr "네트워크에 있는 프로그램이 Kodi를 제어하는 것을 허용합니다."
 
 msgctxt "#36339"
 msgid "Initial repeat delay (ms)."
@@ -12018,12 +12018,12 @@ msgid "Category containing settings for how the zeroconf network discovery servi
 msgstr "zeroconf 네트워크 탐색 서비스와 관련된 설정을 포함합니다. AirPlay에 필요합니다."
 
 msgctxt "#36342"
-msgid "Allows applications on the network to discover XBMC's running services."
-msgstr "네크워크에 있는 애플리케이션이 XBMC에서 실행중인 서비스를 감지하도록 허용합니다."
+msgid "Allows applications on the network to discover Kodi's running services."
+msgstr "네크워크에 있는 애플리케이션이 Kodi에서 실행중인 서비스를 감지하도록 허용합니다."
 
 msgctxt "#36343"
-msgid "Allows XBMC to receive content from other AirPlay devices or applications."
-msgstr "다른 AirPlay 장치나 애플리케이션의 콘텐츠를 XBMC가 수신하도록 허용합니다."
+msgid "Allows Kodi to receive content from other AirPlay devices or applications."
+msgstr "다른 AirPlay 장치나 애플리케이션의 콘텐츠를 Kodi가 수신하도록 허용합니다."
 
 msgctxt "#36344"
 msgid "Enable AirPlay password protection."
@@ -12046,16 +12046,16 @@ msgid "If a WINS server is running on the network, enter its workgroup name here
 msgstr "네트워크에 WINS 서버가 동작중이면 여기에 워크그룹 이름을 입력합니다. 그렇지 않으면 빈 칸으로 두세요."
 
 msgctxt "#36349"
-msgid "Section that contains the System related settings for the device XBMC is installed on."
-msgstr "XBMC가 설치된 장치의 시스템과 관련된 설정을 포함합니다."
+msgid "Section that contains the System related settings for the device Kodi is installed on."
+msgstr "Kodi가 설치된 장치의 시스템과 관련된 설정을 포함합니다."
 
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
 msgstr "공유 폴더 또는 서비스 접속을 시도하기 전에 'Wake-On-Lan' 신호를 서버에 자동으로 보냅니다."
 
 msgctxt "#36351"
-msgid "Display XBMC in a window, or fullscreen on the selected screen."
-msgstr "선택한 화면에 XBMC를 윈도우 또는 전체 화면으로 표시합니다."
+msgid "Display Kodi in a window, or fullscreen on the selected screen."
+msgstr "선택한 화면에 Kodi를 윈도우 또는 전체 화면으로 표시합니다."
 
 msgctxt "#36352"
 msgid "Changes the resolution that the user interface is displayed in."
@@ -12066,12 +12066,12 @@ msgid "Changes the refresh rate that the user interface is displayed in."
 msgstr "사용자 인터페이스가 표시될 재생률을 변경합니다."
 
 msgctxt "#36354"
-msgid "Display XBMC in a fullscreen window. The main benefit is for multi-screen configurations, so that XBMC can be used without minimising other applications. This uses more resources so playback may be less smooth."
-msgstr "XBMC를 전체화면 창으로 보여줍니다. 다중 모니터 환경에서 다른 프로그램을 최소화하지 않고 XBMC를 사용할 수 있습니다. 더 많은 리소스를 사용하므로 재생이 덜 부드러울 수 있습니다."
+msgid "Display Kodi in a fullscreen window. The main benefit is for multi-screen configurations, so that Kodi can be used without minimising other applications. This uses more resources so playback may be less smooth."
+msgstr "Kodi를 전체화면 창으로 보여줍니다. 다중 모니터 환경에서 다른 프로그램을 최소화하지 않고 Kodi를 사용할 수 있습니다. 더 많은 리소스를 사용하므로 재생이 덜 부드러울 수 있습니다."
 
 msgctxt "#36355"
-msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
-msgstr "다중 모니터 구성에서, XBMC를 표시하지 않는 화면을 검은 화면으로 처리합니다."
+msgid "In a multi-screen configuration, the screens where Kodi is not displayed are blacked out."
+msgstr "다중 모니터 구성에서, Kodi를 표시하지 않는 화면을 검은 화면으로 처리합니다."
 
 msgctxt "#36356"
 msgid "Eliminate vertical tearing."
@@ -12158,12 +12158,12 @@ msgid "When activated, your keyboard arrows will move the selection on the virtu
 msgstr "옵션을 선택하면, 키보드 화살표를 눌렀을 때 가상 키보드의 자판 사이를 이동합니다. 선택하지 않으면, 가상 키보드 문자열 입력 커서를 움직입니다."
 
 msgctxt "#36377"
-msgid "Use a mouse or touch screen device to control XBMC. Note: disabling will cause you to lose control over XBMC when no keyboard or remote is present."
-msgstr "마우스나 터치 스크린 장치로 XBMC를 제어합니다. 중요: 키보드 또는 리모트 컨트롤러가 없는 경우에 이 옵션을 끄면 XBMC를 제어하지 못하게 됩니다."
+msgid "Use a mouse or touch screen device to control Kodi. Note: disabling will cause you to lose control over Kodi when no keyboard or remote is present."
+msgstr "마우스나 터치 스크린 장치로 Kodi를 제어합니다. 중요: 키보드 또는 리모트 컨트롤러가 없는 경우에 이 옵션을 끄면 Kodi를 제어하지 못하게 됩니다."
 
 msgctxt "#36378"
-msgid "Use a joystick to control XBMC."
-msgstr "조이스틱으로 XBMC를 제어합니다."
+msgid "Use a joystick to control Kodi."
+msgstr "조이스틱으로 Kodi를 제어합니다."
 
 msgctxt "#36379"
 msgid "Category containing settings for internet access."
@@ -12194,8 +12194,8 @@ msgid "Configure the proxy server password."
 msgstr "프록시 서버 비밀번호를 설정합니다."
 
 msgctxt "#36386"
-msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
-msgstr "제한된 대역폭을 사용해야 하는 경우 XBMC가 설정한 최대치를 넘지 않도록 합니다."
+msgid "If you have limited bandwidth available, Kodi will try to keep within these limits."
+msgstr "제한된 대역폭을 사용해야 하는 경우 Kodi가 설정한 최대치를 넘지 않도록 합니다."
 
 msgctxt "#36387"
 msgid "Category containing settings for power saving."
@@ -12206,11 +12206,11 @@ msgid "Turn off display when idle. Useful for TVs that turn off when there is no
 msgstr "유휴상태일 때 디스플레이를 끕니다. 화면 신호가 없을 때 전원이 꺼지는 TV에 유용합니다."
 
 msgctxt "#36389"
-msgid "Define how long XBMC should idle before shutting down."
+msgid "Define how long Kodi should idle before shutting down."
 msgstr "설정한 시간동안 유휴상태가 계속되면 아래 옵션에서 선택한 종료기능이 동작합니다."
 
 msgctxt "#36390"
-msgid "Define what action XBMC should do when it has been idle for a long period of time."
+msgid "Define what action Kodi should do when it has been idle for a long period of time."
 msgstr "위 옵션에서 설정한 시간동안 유휴상태가 계속되면 선택한 종료기능이 동작합니다."
 
 msgctxt "#36391"
@@ -12222,8 +12222,8 @@ msgid "Turn debug logging on or off. Useful for troubleshooting."
 msgstr "디버그 로깅을 켜거나 끕니다. 문제해결에 유용합니다."
 
 msgctxt "#36393"
-msgid "Folder used to save screenshots taken within XBMC."
-msgstr "XBMC에서 캡처한 스크린샷을 저장할 폴더"
+msgid "Folder used to save screenshots taken within Kodi."
+msgstr "Kodi에서 캡처한 스크린샷을 저장할 폴더"
 
 msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
@@ -12238,8 +12238,8 @@ msgid "Define the PIN code used for the master lock."
 msgstr "마스터 잠금에 사용할 PIN 코드를 설정합니다."
 
 msgctxt "#36397"
-msgid "If enabled, the master lock code is required to unlock XBMC on startup."
-msgstr "옵션을 켜면, XBMC를 시작할 때 마스터 잠금 코드를 입력해야 합니다."
+msgid "If enabled, the master lock code is required to unlock Kodi on startup."
+msgstr "옵션을 켜면, Kodi를 시작할 때 마스터 잠금 코드를 입력해야 합니다."
 
 msgctxt "#36399"
 msgid "Category containing settings for the cache function."
@@ -12314,8 +12314,8 @@ msgid "Specify the type of remote used."
 msgstr "사용하는 리모트 종류를 설정합니다."
 
 msgctxt "#36417"
-msgid "Always run an XBMC helper so that the remote can be used to start XBMC."
-msgstr "리모컨으로 XBMC 를 실행할 수 있게 XBMC helper 를 항상 실행합니다."
+msgid "Always run an Kodi helper so that the remote can be used to start Kodi."
+msgstr "리모컨으로 Kodi 를 실행할 수 있게 Kodi helper 를 항상 실행합니다."
 
 msgctxt "#36418"
 msgid "Specify the delay between button sequences on a universal remote."

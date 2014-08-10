@@ -1,11 +1,11 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main\n"
+"Project-Id-Version: Kodi Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Malay (http://www.transifex.com/projects/p/xbmc-main/language/ms/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,8 +38,8 @@ msgid "Settings"
 msgstr "Seting"
 
 msgctxt "#6"
-msgid "XBMC SVN"
-msgstr "XBMC SVN"
+msgid "Kodi SVN"
+msgstr "Kodi SVN"
 
 msgctxt "#7"
 msgid "File manager"
@@ -846,8 +846,8 @@ msgid "Scripts output"
 msgstr "Output skrip"
 
 msgctxt "#263"
-msgid "Allow control of XBMC via HTTP"
-msgstr "Benarkan kawalan XBMC melalui HTTP"
+msgid "Allow control of Kodi via HTTP"
+msgstr "Benarkan kawalan Kodi melalui HTTP"
 
 msgctxt "#264"
 msgid "Record"
