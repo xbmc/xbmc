@@ -334,6 +334,26 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
   if (g_application.CurrentFileItem().IsStack())
     url.SetOption("stack", "1");
 
+  std::string preferredLanguage = CSettings::Get().GetString("locale.subtitlelanguage");
+
+  if(StringUtils::EqualsNoCase(preferredLanguage, "original"))
+  {
+    SPlayerAudioStreamInfo info;
+    CStdString strLanguage;
+
+    int currentAudio = g_application.m_pPlayer->GetAudioStream();
+    g_application.m_pPlayer->GetAudioStreamInfo(currentAudio, info);
+
+    if (!g_LangCodeExpander.Lookup(strLanguage, info.language))
+      strLanguage = "Unknown";
+
+    preferredLanguage = strLanguage;
+  }
+  else if (StringUtils::EqualsNoCase(preferredLanguage, "default"))
+    preferredLanguage = CSettings::Get().GetString("locale.language");
+
+  url.SetOption("preferredlanguage", preferredLanguage);
+
   AddJob(new CSubtitlesJob(url, ""));
 }
 
