@@ -1638,20 +1638,30 @@ void CVideoDatabase::UpdateLinkTable(int mediaId, const std::string& mediaType, 
   }
 }
 
-void CVideoDatabase::UpdateActorLinkTable(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values)
+void CVideoDatabase::AddActorLinksToItem(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values)
 {
-  std::string sql = PrepareSQL("delete from %slink%s where id%s=%i", field.c_str(), mediaType.c_str(), mediaType.c_str(), mediaId);
-  m_pDS->exec(sql);
-
   for (std::vector<std::string>::const_iterator i = values.begin(); i != values.end(); ++i)
   {
     if (!i->empty())
     {
       int idValue = AddActor(*i, "");
       if (idValue > -1)
-        AddToLinkTable((field + "link" + mediaType).c_str(), ("id" + field).c_str(), idValue, ("id" + mediaType).c_str(), mediaId);
+      {
+        if (mediaType == "musicvideo") // musicvideo links use idMVideo rather than idMusicVideo
+          AddToLinkTable((field + "link" + mediaType).c_str(), ("id" + field).c_str(), idValue, "idMVideo", mediaId);
+        else
+          AddToLinkTable((field + "link" + mediaType).c_str(), ("id" + field).c_str(), idValue, ("id" + mediaType).c_str(), mediaId);
+      }
     }
   }
+}
+
+void CVideoDatabase::UpdateActorLinksToItem(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values)
+{
+  std::string sql = PrepareSQL("delete from %slink%s where id%s=%i", field.c_str(), mediaType.c_str(), mediaType.c_str(), mediaId);
+  m_pDS->exec(sql);
+
+  AddActorLinksToItem(mediaId, mediaType, field, values);
 }
 
 //****Tags****
@@ -1691,42 +1701,6 @@ void CVideoDatabase::AddCast(int idMedia, const char *table, const char *field, 
     int idActor = AddActor(it->strName, it->thumbUrl.m_xml, it->thumb);
     AddLinkToActor(table, idActor, field, idMedia, it->strRole, it->order >= 0 ? it->order : ++order);
   }
-}
-
-void CVideoDatabase::AddArtistToMusicVideo(int idMVideo, int idArtist)
-{
-  AddToLinkTable("artistlinkmusicvideo", "idArtist", idArtist, "idMVideo", idMVideo);
-}
-
-//****Directors + Writers****
-void CVideoDatabase::AddDirectorToMovie(int idMovie, int idDirector)
-{
-  AddToLinkTable("directorlinkmovie", "idDirector", idDirector, "idMovie", idMovie);
-}
-
-void CVideoDatabase::AddDirectorToTvShow(int idTvShow, int idDirector)
-{
-  AddToLinkTable("directorlinktvshow", "idDirector", idDirector, "idShow", idTvShow);
-}
-
-void CVideoDatabase::AddWriterToEpisode(int idEpisode, int idWriter)
-{
-  AddToLinkTable("writerlinkepisode", "idWriter", idWriter, "idEpisode", idEpisode);
-}
-
-void CVideoDatabase::AddWriterToMovie(int idMovie, int idWriter)
-{
-  AddToLinkTable("writerlinkmovie", "idWriter", idWriter, "idMovie", idMovie);
-}
-
-void CVideoDatabase::AddDirectorToEpisode(int idEpisode, int idDirector)
-{
-  AddToLinkTable("directorlinkepisode", "idDirector", idDirector, "idEpisode", idEpisode);
-}
-
-void CVideoDatabase::AddDirectorToMusicVideo(int idMVideo, int idDirector)
-{
-  AddToLinkTable("directorlinkmusicvideo", "idDirector", idDirector, "idMVideo", idMVideo);
 }
 
 //****Studios****
@@ -2162,10 +2136,6 @@ bool CVideoDatabase::GetFileInfo(const CStdString& strFilenameAndPath, CVideoInf
 
 void CVideoDatabase::AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details, vector<int>& vecDirectors, vector<int>& vecGenres, vector<int>& vecStudios)
 {
-  // add all directors
-  for (unsigned int i = 0; i < details.m_director.size(); i++)
-    vecDirectors.push_back(AddActor(details.m_director[i],""));
-
   // add all genres
   for (unsigned int i = 0; i < details.m_genre.size(); i++)
     vecGenres.push_back(AddGenre(details.m_genre[i]));
@@ -2250,17 +2220,12 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     for (unsigned int i = 0; i < vecGenres.size(); ++i)
       AddGenreToMovie(idMovie, vecGenres[i]);
 
-    for (unsigned int i = 0; i < vecDirectors.size(); ++i)
-      AddDirectorToMovie(idMovie, vecDirectors[i]);
-
     for (unsigned int i = 0; i < vecStudios.size(); ++i)
       AddStudioToMovie(idMovie, vecStudios[i]);
 
-    // add writers...
-    for (unsigned int i = 0; i < details.m_writingCredits.size(); i++)
-      AddWriterToMovie(idMovie, AddActor(details.m_writingCredits[i],""));
-
     AddCast(idMovie, "movie", "movie", details.m_cast);
+    AddActorLinksToItem(idMovie, MediaTypeMovie, "director", details.m_director);
+    AddActorLinksToItem(idMovie, MediaTypeMovie, "writer", details.m_writingCredits);
 
     // add set...
     int idSet = -1;
@@ -2344,23 +2309,23 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie, const CVideoInfoTag& deta
 
     // process the link table updates
     if (updatedDetails.find("genre") != updatedDetails.end())
-      UpdateLinkTable(idMovie, "movie", "genre", details.m_genre);
+      UpdateLinksToItem(idMovie, "movie", "genre", details.m_genre);
     if (updatedDetails.find("studio") != updatedDetails.end())
-      UpdateLinkTable(idMovie, "movie", "studio", details.m_studio);
+      UpdateLinksToItem(idMovie, "movie", "studio", details.m_studio);
     if (updatedDetails.find("country") != updatedDetails.end())
-      UpdateLinkTable(idMovie, "movie", "country", details.m_country);
+      UpdateLinksToItem(idMovie, "movie", "country", details.m_country);
     if (updatedDetails.find("director") != updatedDetails.end())
-      UpdateActorLinkTable(idMovie, "movie", "director", details.m_director);
+      UpdateActorLinksToItem(idMovie, MediaTypeMovie, "director", details.m_director);
     if (updatedDetails.find("writer") != updatedDetails.end())
-      UpdateActorLinkTable(idMovie, "movie", "writer", details.m_writingCredits);
+      UpdateActorLinksToItem(idMovie, MediaTypeMovie, "writer", details.m_writingCredits);
     if (updatedDetails.find("tag") != updatedDetails.end())
     {
-      RemoveTagsFromItem(idMovie, "movie");
+      RemoveTagsFromItem(idMovie, MediaTypeMovie);
       for (unsigned int i = 0; i < details.m_tags.size(); i++)
-        AddTagToItem(idMovie, AddTag(details.m_tags[i]), "movie");
+        AddTagToItem(idMovie, AddTag(details.m_tags[i]), MediaTypeMovie);
     }
     if (updatedDetails.find("art.altered") != updatedDetails.end())
-      SetArtForItem(idMovie, "movie", artwork);
+      SetArtForItem(idMovie, MediaTypeMovie, artwork);
 
     // track if the set was updated
     int idSet = 0;
@@ -2502,8 +2467,7 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow, const CVideoInfoTag &d
   for (i = 0; i < vecGenres.size(); ++i)
     AddGenreToTvShow(idTvShow, vecGenres[i]);
 
-  for (i = 0; i < vecDirectors.size(); ++i)
-    AddDirectorToTvShow(idTvShow, vecDirectors[i]);
+  AddActorLinksToItem(idTvShow, MediaTypeTvShow, "director", details.m_director);
 
   for (i = 0; i < vecStudios.size(); ++i)
     AddStudioToTvShow(idTvShow, vecStudios[i]);
@@ -2596,21 +2560,9 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
       }
     }
 
-    vector<int> vecDirectors;
-    vector<int> vecGenres;
-    vector<int> vecStudios;
-    AddGenreAndDirectorsAndStudios(details,vecDirectors,vecGenres,vecStudios);
-
     AddCast(idEpisode, "episode", "episode", details.m_cast);
-
-    // add writers...
-    for (unsigned int i = 0; i < details.m_writingCredits.size(); i++)
-      AddWriterToEpisode(idEpisode, AddActor(details.m_writingCredits[i],""));
-
-    for (unsigned int i = 0; i < vecDirectors.size(); ++i)
-    {
-      AddDirectorToEpisode(idEpisode, vecDirectors[i]);
-    }
+    AddActorLinksToItem(idEpisode, MediaTypeEpisode, "director", details.m_director);
+    AddActorLinksToItem(idEpisode, MediaTypeEpisode, "writer", details.m_writingCredits);
 
     if (details.HasStreamDetails())
     {
@@ -2711,17 +2663,7 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
     vector<int> vecStudios;
     AddGenreAndDirectorsAndStudios(details,vecDirectors,vecGenres,vecStudios);
 
-    // add artists...
-    if (!details.m_artist.empty())
-    {
-      for (unsigned int i = 0; i < details.m_artist.size(); i++)
-      {
-        CStdString artist = details.m_artist[i];
-        StringUtils::Trim(artist);
-        int idArtist = AddActor(artist,"");
-        AddArtistToMusicVideo(idMVideo, idArtist);
-      }
-    }
+    AddActorLinksToItem(idMVideo, MediaTypeMusicVideo, "artist", details.m_artist);
 
     unsigned int i;
     for (i = 0; i < vecGenres.size(); ++i)
@@ -2729,10 +2671,7 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
       AddGenreToMusicVideo(idMVideo, vecGenres[i]);
     }
 
-    for (i = 0; i < vecDirectors.size(); ++i)
-    {
-      AddDirectorToMusicVideo(idMVideo, vecDirectors[i]);
-    }
+    AddActorLinksToItem(idMVideo, MediaTypeMusicVideo, "director", details.m_director);
 
     for (i = 0; i < vecStudios.size(); ++i)
     {
