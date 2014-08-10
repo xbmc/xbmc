@@ -28,7 +28,21 @@ class CJNIAudioFormat
     static void PopulateStaticFields();
 
     static int ENCODING_PCM_16BIT;
+
     static int CHANNEL_OUT_STEREO;
+    static int CHANNEL_OUT_5POINT1;
+
+    static int CHANNEL_OUT_FRONT_LEFT;
+    static int CHANNEL_OUT_FRONT_LEFT_OF_CENTER;
+    static int CHANNEL_OUT_FRONT_CENTER;
+    static int CHANNEL_OUT_FRONT_RIGHT_OF_CENTER;
+    static int CHANNEL_OUT_FRONT_RIGHT;
+    static int CHANNEL_OUT_LOW_FREQUENCY;
+    static int CHANNEL_OUT_BACK_LEFT;
+    static int CHANNEL_OUT_BACK_CENTER;
+    static int CHANNEL_OUT_BACK_RIGHT;
+
+    static int CHANNEL_INVALID;
 };
 
 };

@@ -19,6 +19,8 @@
  *
  */
 
+#include <stdexcept>
+
 #include "JNIBase.h"
 #include "ByteBuffer.h"
 
@@ -30,7 +32,7 @@ class CJNIAudioTrack : public CJNIBase
   jharray m_buffer;
 
   public:
-    CJNIAudioTrack(int streamType, int sampleRateInHz, int channelConfig, int audioFormat, int bufferSizeInBytes, int mode);
+    CJNIAudioTrack(int streamType, int sampleRateInHz, int channelConfig, int audioFormat, int bufferSizeInBytes, int mode) throw(std::invalid_argument);
 
     void  play();
     void  stop();
