@@ -21,7 +21,6 @@
 #include "interfaces/AnnouncementManager.h"
 #include "input/XBMC_vkeys.h"
 #include "guilib/GUIEditControl.h"
-#include "guilib/GUILabelControl.h" // for backward compatibility
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
@@ -33,7 +32,6 @@
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "ApplicationMessenger.h"
-#include "addons/Skin.h" // for backward compatibility
 
 #define BUTTON_ID_OFFSET      100
 #define BUTTONS_PER_ROW        20
@@ -50,7 +48,6 @@
 #define CTL_BUTTON_CLEAR      308
 #define CTL_BUTTON_LAYOUT     309
 
-#define CTL_LABEL_EDIT        310 // backward compatibility
 #define CTL_LABEL_HEADING     311
 #define CTL_EDIT              312
 
@@ -75,23 +72,8 @@ CGUIDialogKeyboardGeneric::CGUIDialogKeyboardGeneric()
 
 void CGUIDialogKeyboardGeneric::OnWindowLoaded()
 {
-  CGUIEditControl *edit = (CGUIEditControl *)GetControl(CTL_EDIT);
-  if (!edit && g_SkinInfo && g_SkinInfo->APIVersion() < ADDON::AddonVersion("5.2.0"))
-  {
-    // backward compatibility: convert label to edit control
-    CGUILabelControl *label = (CGUILabelControl *)GetControl(CTL_LABEL_EDIT);
-    if (label && label->GetControlType() == CGUIControl::GUICONTROL_LABEL)
-    {
-      // create a new edit control positioned in the same spot
-      edit = new CGUIEditControl(label->GetParentID(), CTL_EDIT, label->GetXPosition(), label->GetYPosition(),
-                                 label->GetWidth(), label->GetHeight(), CTextureInfo(), CTextureInfo(),
-                                 label->GetLabelInfo(), "");
-      AddControl(edit);
-      m_defaultControl = CTL_EDIT;
-      m_defaultAlways  = true;
-    }
-  }
   // show the cursor always
+  CGUIEditControl *edit = (CGUIEditControl *)GetControl(CTL_EDIT);
   if (edit)
     edit->SetShowCursorAlways(true);
 
