@@ -40,6 +40,13 @@ public:
 
 private:
   void GetContextButtonsForAction(int actionID, CFileItemPtr item, CFileItemListPtr container, CContextButtons& buttons);
+  std::string GetFilteredURI(const CFileItem& item) const;
+  bool PlayMedia(CFileItemPtr item, CFileItemListPtr container);
+  void PlayAll(CFileItemListPtr container, bool shuffle, const CFileItemPtr& fromHere = CFileItemPtr());
+  
+  bool IsPhotoContainer(CFileItemListPtr container) const;
+  bool IsMusicContainer(CFileItemListPtr container) const;
+  
   ActionsSettingList m_ActionSettings;
   CPlexNavigationHelper m_navHelper;
 };

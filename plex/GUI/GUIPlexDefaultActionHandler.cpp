@@ -9,11 +9,26 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "GUIBaseContainer.h"
 #include "Client/PlexServerManager.h"
+#include "ApplicationMessenger.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CGUIPlexDefaultActionHandler::CGUIPlexDefaultActionHandler()
 {
   ACTION_SETTING* action;
+  
+  action = new ACTION_SETTING(ACTION_PLAYER_PLAY);
+  action->WindowSettings[WINDOW_HOME].contextMenuVisisble = false;
+  action->WindowSettings[WINDOW_PLEX_PLAY_QUEUE].contextMenuVisisble = true;
+  action->WindowSettings[WINDOW_VIDEO_NAV].contextMenuVisisble = true;
+  m_ActionSettings.push_back(*action);
+  
+  action = new ACTION_SETTING(ACTION_PLEX_PLAY_ALL);
+  action->WindowSettings[WINDOW_VIDEO_NAV].contextMenuVisisble = false;
+  m_ActionSettings.push_back(*action);
+  
+  action = new ACTION_SETTING(ACTION_PLEX_SHUFFLE_ALL);
+  action->WindowSettings[WINDOW_VIDEO_NAV].contextMenuVisisble = true;
+  m_ActionSettings.push_back(*action);
 
   action = new ACTION_SETTING(ACTION_PLEX_NOW_PLAYING);
   action->WindowSettings[WINDOW_HOME].contextMenuVisisble = true;
@@ -92,6 +107,11 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
     // actions that require an item
     switch (actionID)
     {
+      case ACTION_PLAYER_PLAY:
+        PlayMedia(item, container);
+        return true;
+        break;
+        
       case ACTION_PLEX_PLAY_TRAILER:
 
         if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE)
@@ -166,6 +186,17 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
       m_navHelper.navigateToNowPlaying();
       return true;
       break;
+      
+    case ACTION_PLEX_PLAY_ALL:
+      PlayAll(container, false);
+      return true;
+      break;
+      
+    case ACTION_PLEX_SHUFFLE_ALL:
+      PlayAll(container, true);
+      return true;
+      break;
+      
   }
 
   return false;
@@ -177,6 +208,10 @@ void CGUIPlexDefaultActionHandler::GetContextButtonsForAction(int actionID, CFil
 {
   switch (actionID)
   {
+    case ACTION_PLAYER_PLAY:
+      buttons.Add(actionID, 208);
+      break;
+      
     case ACTION_PLEX_PLAY_TRAILER:
       if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE)
       {
@@ -190,6 +225,11 @@ void CGUIPlexDefaultActionHandler::GetContextButtonsForAction(int actionID, CFil
       if (g_application.IsPlaying())
         buttons.Add(actionID, 13350);
       break;
+      
+    case ACTION_PLEX_SHUFFLE_ALL:
+      if (container->Size())
+        buttons.Add(actionID, 52600);
+
 
     case ACTION_PLEX_PQ_CLEAR:
       if (item->HasProperty("playQueueItemID"))
@@ -238,4 +278,123 @@ void CGUIPlexDefaultActionHandler::GetContextButtonsForAction(int actionID, CFil
       break;
     }
   }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIPlexDefaultActionHandler::PlayMedia(CFileItemPtr item, CFileItemListPtr container)
+{
+  if (!item)
+    return false;
+
+  if (IsPhotoContainer(container))
+  {
+    if (item->m_bIsFolder)
+      CApplicationMessenger::Get().PictureSlideShow(item->GetPath(), false);
+    else
+      CApplicationMessenger::Get().PictureSlideShow(container->GetPath(), false, item->GetPath());
+  }
+  else if (IsMusicContainer(container) && !item->m_bIsFolder)
+  {
+    PlayAll(container, false, item);
+  }
+  else
+  {
+    std::string uri = GetFilteredURI(*item);
+
+    g_plexApplication.playQueueManager->create(*item, uri);
+  }
+
+  return true;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexDefaultActionHandler::PlayAll(CFileItemListPtr container, bool shuffle,
+                                           const CFileItemPtr& fromHere)
+{
+  if (IsPhotoContainer(container))
+  {
+    // Photos are handled a bit different
+    CApplicationMessenger::Get().PictureSlideShow(container->GetPath(), false,
+                                                  fromHere ? fromHere->GetPath() : "", shuffle);
+    return;
+  }
+
+  CPlexServerPtr server;
+  if (container->HasProperty("plexServer"))
+    server =
+    g_plexApplication.serverManager->FindByUUID(container->GetProperty("plexServer").asString());
+
+  CStdString fromHereKey;
+  if (fromHere)
+    fromHereKey = fromHere->GetProperty("key").asString();
+
+  // take out the plexserver://plex part from above when passing it down
+  CStdString uri = GetFilteredURI(*container);
+
+  CPlexPlayQueueOptions options;
+  options.startItemKey = fromHereKey;
+  options.startPlaying = true;
+  options.shuffle = shuffle;
+  options.showPrompts = true;
+
+  g_plexApplication.playQueueManager->create(*container, uri, options);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+std::string CGUIPlexDefaultActionHandler::GetFilteredURI(const CFileItem& item) const
+{
+  CURL itemUrl(item.GetPath());
+  
+  itemUrl.SetProtocol("plexserver");
+  itemUrl.SetHostName("plex");
+  
+  if (itemUrl.HasOption("unwatchedLeaves"))
+  {
+    itemUrl.SetOption("unwatched", itemUrl.GetOption("unwatchedLeaves"));
+    itemUrl.RemoveOption("unwatchedLeaves");
+  }
+
+  if (item.GetPlexDirectoryType() == PLEX_DIR_TYPE_SHOW ||
+      (item.GetPlexDirectoryType() == PLEX_DIR_TYPE_SEASON && item.HasProperty("size")))
+  {
+    std::string fname = itemUrl.GetFileName();
+    boost::replace_last(fname, "/children", "/allLeaves");
+    itemUrl.SetFileName(fname);
+  }
+
+  // set sourceType
+  if (item.m_bIsFolder)
+  {
+    CStdString sourceType = boost::lexical_cast<CStdString>(PlexUtils::GetFilterType(item));
+    itemUrl.SetOption("sourceType", sourceType);
+  }
+
+  return CPlexPlayQueueManager::getURIFromItem(item,itemUrl.Get().substr(17, std::string::npos));
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIPlexDefaultActionHandler::IsPhotoContainer(CFileItemListPtr container) const
+{
+  if (!container)
+    return false;
+  
+  EPlexDirectoryType dirType = container->GetPlexDirectoryType();
+
+  if (dirType == PLEX_DIR_TYPE_CHANNEL && container->Get(0))
+    dirType = container->Get(0)->GetPlexDirectoryType();
+
+  return (dirType == PLEX_DIR_TYPE_PHOTOALBUM | dirType == PLEX_DIR_TYPE_PHOTO);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIPlexDefaultActionHandler::IsMusicContainer(CFileItemListPtr container) const
+{
+  if (!container)
+    return false;
+
+  EPlexDirectoryType dirType = container->GetPlexDirectoryType();
+  if (dirType == PLEX_DIR_TYPE_CHANNEL && container->Get(0))
+    dirType = container->Get(0)->GetPlexDirectoryType();
+  return (dirType == PLEX_DIR_TYPE_ALBUM || dirType == PLEX_DIR_TYPE_ARTIST ||
+          dirType == PLEX_DIR_TYPE_TRACK);
 }
