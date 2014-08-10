@@ -658,22 +658,22 @@ std::string CSmartPlaylistRule::GetBooleanQuery(const std::string &negate, const
   if (strType == "movies")
   {
     if (m_field == FieldInProgress)
-      return "movieview.idFile " + negate + " IN (SELECT DISTINCT idFile FROM bookmark WHERE type = 1)";
+      return "movie_view.idFile " + negate + " IN (SELECT DISTINCT idFile FROM bookmark WHERE type = 1)";
     else if (m_field == FieldTrailer)
       return negate + GetField(m_field, strType) + "!= ''";
   }
   else if (strType == "episodes")
   {
     if (m_field == FieldInProgress)
-      return "episodeview.idFile " + negate + " IN (SELECT DISTINCT idFile FROM bookmark WHERE type = 1)";
+      return "episode_view.idFile " + negate + " IN (SELECT DISTINCT idFile FROM bookmark WHERE type = 1)";
   }
   else if (strType == "tvshows")
   {
     if (m_field == FieldInProgress)
       return negate + " ("
-                          "(tvshowview.watchedcount > 0 AND tvshowview.watchedcount < tvshowview.totalCount) OR "
-                          "(tvshowview.watchedcount = 0 AND EXISTS "
-                            "(SELECT 1 FROM episodeview WHERE episodeview.idShow = " + GetField(FieldId, strType) + " AND episodeview.resumeTimeInSeconds > 0)"
+                          "(tvshow_view.watchedcount > 0 AND tvshow_view.watchedcount < tvshow_view.totalCount) OR "
+                          "(tvshow_view.watchedcount = 0 AND EXISTS "
+                            "(SELECT 1 FROM episode_view WHERE episode_view.idShow = " + GetField(FieldId, strType) + " AND episode_view.resumeTimeInSeconds > 0)"
                           ")"
                        ")";
   }
@@ -754,7 +754,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
   }
   else if (strType == "movies")
   {
-    table = "movieview";
+    table = "movie_view";
 
     if (m_field == FieldGenre)
       query = negate + FormatLinkQuery("genre", "genre", MediaTypeMovie, GetField(FieldId, strType), parameter);
@@ -775,7 +775,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
   }
   else if (strType == "musicvideos")
   {
-    table = "musicvideoview";
+    table = "musicvideo_view";
 
     if (m_field == FieldGenre)
       query = negate + FormatLinkQuery("genre", "genre", MediaTypeMusicVideo, GetField(FieldId, strType), parameter);
@@ -792,7 +792,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
   }
   else if (strType == "tvshows")
   {
-    table = "tvshowview";
+    table = "tvshow_view";
 
     if (m_field == FieldGenre)
       query = negate + FormatLinkQuery("genre", "genre", MediaTypeTvShow, GetField(FieldId, strType), parameter);
@@ -813,7 +813,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
   }
   else if (strType == "episodes")
   {
-    table = "episodeview";
+    table = "episode_view";
 
     if (m_field == FieldGenre)
       query = negate + FormatLinkQuery("genre", "genre", MediaTypeTvShow, (table + ".idShow").c_str(), parameter);
