@@ -9192,6 +9192,27 @@ bool CVideoDatabase::GetItemsForPath(const CStdString &content, const CStdString
   return items.Size() > 0;
 }
 
+void CVideoDatabase::AppendIdLinkFilter(const char* field, const char *table, const MediaType& mediaType, const char *view, const char *viewKey, const CUrlOptions::UrlOptions& options, Filter &filter)
+{
+  CUrlOptions::UrlOptions::const_iterator option = options.find((std::string)field + "id");
+  if (option == options.end())
+    return;
+
+  filter.AppendJoin(PrepareSQL("JOIN %s_link ON %s_link.media_id=%sview.%s AND %s_link.media_type='%s'", field, field, view, viewKey, field, mediaType.c_str()));
+  filter.AppendWhere(PrepareSQL("%s_link.%s_id = %i", field, table, (int)option->second.asInteger()));
+}
+
+void CVideoDatabase::AppendLinkFilter(const char* field, const char *table, const MediaType& mediaType, const char *view, const char *viewKey, const CUrlOptions::UrlOptions& options, Filter &filter)
+{
+  CUrlOptions::UrlOptions::const_iterator option = options.find(field);
+  if (option == options.end())
+    return;
+
+  filter.AppendJoin(PrepareSQL("JOIN %s_link ON %s_link.media_id=%sview.%s AND %s_link.media_type='%s'", field, field, view, viewKey, field, mediaType.c_str()));
+  filter.AppendJoin(PrepareSQL("JOIN %s ON %s.%s_id=%s_link.%s_id", table, table, field, table));
+  filter.AppendWhere(PrepareSQL("%s.name like '%s'", table, option->second.asString().c_str()));
+}
+
 bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription &sorting)
 {
   if (!videoUrl.IsValid())
@@ -9204,79 +9225,24 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
 
   if (type == "movies")
   {
-    option = options.find("genreid");
-    if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("JOIN genre_link ON genre_link.media_id=movieview.idMovie AND genre_link.media_type='movie'"));
-      filter.AppendWhere(PrepareSQL("genre_link.genre_id = %i", (int)option->second.asInteger()));
-    }
+    AppendIdLinkFilter("genre", "genre", "movie", "movie", "idMovie", options, filter);
+    AppendLinkFilter("genre", "genre", "movie", "movie", "idMovie", options, filter);
 
-    option = options.find("genre");
-    if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("JOIN genre_link ON genre_link.media_id=movieview.idMovie AND genre_link.media_type='movie' JOIN genre ON genre.genre_id=genre_link.genre_id"));
-      filter.AppendWhere(PrepareSQL("genre.name like '%s'", option->second.asString().c_str()));
-    }
+    AppendIdLinkFilter("country", "country", "movie", "movie", "idMovie", options, filter);
+    AppendLinkFilter("country", "country", "movie", "movie", "idMovie", options, filter);
 
-    option = options.find("countryid");
-    if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("JOIN country_link ON country_link.media_id=movieview.idMovie AND country_link.media_type='movie'"));
-      filter.AppendWhere(PrepareSQL("country_link.country_id = %i", (int)option->second.asInteger()));
-    }
+    AppendIdLinkFilter("studio", "studio", "movie", "movie", "idMovie", options, filter);
+    AppendLinkFilter("studio", "studio", "movie", "movie", "idMovie", options, filter);
 
-    option = options.find("country");
-    if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("JOIN country_link ON country_link.media_id=movieview.idMovie AND country_link.media_type='movie' JOIN country ON country.country_id=country_link.country_id"));
-      filter.AppendWhere(PrepareSQL("country.name like '%s'", option->second.asString().c_str()));
-    }
-
-    option = options.find("studioid");
-    if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("JOIN studio_link ON studio_link.media_id=movieview.idMovie AND studio_link.media_type='movie'"));
-      filter.AppendWhere(PrepareSQL("studio_link.studio_id = %i", (int)option->second.asInteger()));
-    }
-
-    option = options.find("studio");
-    if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("JOIN studio_link ON studio_link.media_id=movieview.idMovie AND studio_link.media_type='movie' JOIN studio ON studio.studio_id=studio_link.studio_id"));
-      filter.AppendWhere(PrepareSQL("studio.name like '%s'", option->second.asString().c_str()));
-    }
-
-    option = options.find("directorid");
-    if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("JOIN director_link ON director_link.media_id=movieview.idMovie AND director_link.media_type='movie'"));
-      filter.AppendWhere(PrepareSQL("director_link.actor_id = %i", (int)option->second.asInteger()));
-    }
-
-    option = options.find("director");
-    if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("JOIN director_link ON director_link.media_id=movieview.idMovie AND director_link.media_type='movie' JOIN actor ON actor.actor_id = director_link.actor_id"));
-      filter.AppendWhere(PrepareSQL("actor.name LIKE '%s'", option->second.asString().c_str()));
-    }
+    AppendIdLinkFilter("director", "actor", "movie", "movie", "idMovie", options, filter);
+    AppendLinkFilter("director", "actor", "movie", "movie", "idMovie", options, filter);
 
     option = options.find("year");
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("movieview.c%02d = '%i'", VIDEODB_ID_YEAR, (int)option->second.asInteger()));
 
-    option = options.find("actorid");
-    if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("JOIN actor_link ON actor_link.media_id=movieview.idMovie AND actor_link.media_type='movie'"));
-      filter.AppendWhere(PrepareSQL("actor_link.actor_id=%i", (int)option->second.asInteger()));
-    }
-
-    option = options.find("actor");
-    if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("JOIN actor_link ON actor_link.media_id=movieview.idMovie AND actor_link.media_type='movie' JOIN actor ON actor.actor_id=actor_link.actor_id"));
-      filter.AppendWhere(PrepareSQL("actor.name LIKE '%s'", option->second.asString().c_str()));
-    }
+    AppendIdLinkFilter("actor", "actor", "movie", "movie", "idMovie", options, filter);
+    AppendLinkFilter("actor", "actor", "movie", "movie", "idMovie", options, filter);
 
     option = options.find("setid");
     if (option != options.end())
@@ -9289,90 +9255,30 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
       filter.AppendWhere(PrepareSQL("sets.strSet like '%s'", option->second.asString().c_str()));
     }
 
-    option = options.find("tagid");
-    if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("JOIN tag_link ON tag_link.media_id = movieview.idMovie AND tag_link.media_type = 'movie'"));
-      filter.AppendWhere(PrepareSQL("tag_link.tag_id = %i", (int)option->second.asInteger()));
-    }
-
-    option = options.find("tag");
-    if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("JOIN tag_link ON tag_link.media_id = movieview.idMovie AND tag_link.media_type = 'movie' JOIN tag ON tag.tag_id = tag_link.tag_id"));
-      filter.AppendWhere(PrepareSQL("tag.name like '%s'", option->second.asString().c_str()));
-    }
+    AppendIdLinkFilter("tag", "tag", "movie", "movie", "idMovie", options, filter);
+    AppendLinkFilter("tag", "tag", "movie", "movie", "idMovie", options, filter);
   }
   else if (type == "tvshows")
   {
     if (itemType == "tvshows")
     {
-      option = options.find("genreid");
-      if (option != options.end())
-      {
-        filter.AppendJoin(PrepareSQL("JOIN genre_link ON genre_link.media_id=tvshowview.idShow AND genre_link.media_type='tvshow'"));
-        filter.AppendWhere(PrepareSQL("genre_link.genre_id = %i", (int)option->second.asInteger()));
-      }
+      AppendIdLinkFilter("genre", "genre", "tvshow", "tvshow", "idShow", options, filter);
+      AppendLinkFilter("genre", "genre", "tvshow", "tvshow", "idShow", options, filter);
 
-      option = options.find("genre");
-      if (option != options.end())
-      {
-        filter.AppendJoin(PrepareSQL("JOIN genre_link ON genre_link.media_id=tvshowview.idShow AND genre_link.media_type='tvshow' JOIN genre ON genre.genre_id=genre_link.genre_id"));
-        filter.AppendWhere(PrepareSQL("genre.name like '%s'", option->second.asString().c_str()));
-      }
+      AppendIdLinkFilter("studio", "studio", "tvshow", "tvshow", "idShow", options, filter);
+      AppendLinkFilter("studio", "studio", "tvshow", "tvshow", "idShow", options, filter);
 
-      option = options.find("studioid");
-      if (option != options.end())
-      {
-        filter.AppendJoin(PrepareSQL("JOIN studio_link ON studio_link.media_id=tvshowview.idShow AND studio_link.media_type='tvshow'"));
-        filter.AppendWhere(PrepareSQL("studio_link.studio_id = %i", (int)option->second.asInteger()));
-      }
-
-      option = options.find("studio");
-      if (option != options.end())
-      {
-        filter.AppendJoin(PrepareSQL("JOIN studio_link ON studio_link.media_id=tvshowview.idShow AND studio_link.media_type='tvshow' JOIN studio ON studio.studio_id=studio_link.studio_id"));
-        filter.AppendWhere(PrepareSQL("studio.name like '%s'", option->second.asString().c_str()));
-      }
-
-      option = options.find("directorid");
-      if (option != options.end())
-      {
-        filter.AppendJoin(PrepareSQL("JOIN director_link ON director_link.media_id=tvshowview.idShow AND director_link.media_type='tvshow'"));
-        filter.AppendWhere(PrepareSQL("director_link.actor_id = %i", (int)option->second.asInteger()));
-      }
+      AppendIdLinkFilter("director", "actor", "tvshow", "tvshow", "idShow", options, filter);
 
       option = options.find("year");
       if (option != options.end())
         filter.AppendWhere(PrepareSQL("tvshowview.c%02d like '%%%i%%'", VIDEODB_ID_TV_PREMIERED, (int)option->second.asInteger()));
 
-      option = options.find("actorid");
-      if (option != options.end())
-      {
-        filter.AppendJoin(PrepareSQL("JOIN actor_link ON actor_link.media_id = tvshowview.idShow AND actor_link.media_type = 'tvshow'"));
-        filter.AppendWhere(PrepareSQL("actor_link.actor_id = %i", (int)option->second.asInteger()));
-      }
+      AppendIdLinkFilter("actor", "actor", "tvshow", "tvshow", "idShow", options, filter);
+      AppendLinkFilter("actor", "actor", "tvshow", "tvshow", "idShow", options, filter);
 
-      option = options.find("actor");
-      if (option != options.end())
-      {
-        filter.AppendJoin(PrepareSQL("JOIN actor_link ON actor_link.media_id = tvshowview.idShow AND actor_link.media_type = 'tvshow' JOIN actor ON actor.actor_id = actor_link.actor_id"));
-        filter.AppendWhere(PrepareSQL("actor.name LIKE '%s'", option->second.asString().c_str()));
-      }
-
-      option = options.find("tagid");
-      if (option != options.end())
-      {
-        filter.AppendJoin(PrepareSQL("JOIN tag_link ON tag_link.media_id = tvshowview.idShow AND tag_link.media_type = 'tvshow'"));
-        filter.AppendWhere(PrepareSQL("tag_link.tag_id = %i", (int)option->second.asInteger()));
-      }
-
-      option = options.find("tag");
-      if (option != options.end())
-      {
-        filter.AppendJoin(PrepareSQL("JOIN tag_link ON tag_link.media_id = tvshowview.idShow AND tag_link.media_type = 'tvshow' JOIN tag ON tag.tag_id = tag_link.tag_id"));
-        filter.AppendWhere(PrepareSQL("tag.name like '%s'", option->second.asString().c_str()));
-      }
+      AppendIdLinkFilter("tag", "tag", "tvshow", "tvshow", "idShow", options, filter);
+      AppendLinkFilter("tag", "tag", "tvshow", "tvshow", "idShow", options, filter);
     }
     else if (itemType == "seasons")
     {
@@ -9380,30 +9286,15 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
       if (option != options.end())
         filter.AppendWhere(PrepareSQL("seasonview.idShow = %i", (int)option->second.asInteger()));
 
-      option = options.find("genreid");
-      if (option != options.end())
-      {
-        filter.AppendJoin(PrepareSQL("JOIN genre_link ON genre_link.media_id=seasonview.idShow AND genre_link.media_type='tvshow'"));
-        filter.AppendWhere(PrepareSQL("genre_link.genre_id = %i", (int)option->second.asInteger()));
-      }
+      AppendIdLinkFilter("genre", "genre", "tvshow", "season", "idShow", options, filter);
 
-      option = options.find("directorid");
-      if (option != options.end())
-      {
-        filter.AppendJoin(PrepareSQL("JOIN director_link ON director_link.media_id=seasonview.idShow AND director_link.media_type='tvshow'"));
-        filter.AppendWhere(PrepareSQL("director_link.actor_id = %i", (int)option->second.asInteger()));
-      }
-      
+      AppendIdLinkFilter("director", "actor", "tvshow", "season", "idShow", options, filter);
+
       option = options.find("year");
       if (option != options.end())
         filter.AppendWhere(PrepareSQL("seasonview.premiered like '%%%i%%'", (int)option->second.asInteger()));
 
-      option = options.find("actorid");
-      if (option != options.end())
-      {
-        filter.AppendJoin(PrepareSQL("JOIN actor_link ON actor_link.media_id = seasonview.idShow AND actor_link.media_type = 'tvshow'"));
-        filter.AppendWhere(PrepareSQL("actor_link.actor_id = %i", (int)option->second.asInteger()));
-      }
+      AppendIdLinkFilter("actor", "actor", "tvshow", "season", "idShow", options, filter);
     }
     else if (itemType == "episodes")
     {
@@ -9421,37 +9312,11 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
       {
         bool condition = false;
 
-        option = options.find("genreid");
-        if (option != options.end())
-        {
-          condition = true;
-          filter.AppendJoin(PrepareSQL("JOIN genre_link ON genre_link.media_id=episodeview.idShow AND genre_link.media_type='tvshow'"));
-          filter.AppendWhere(PrepareSQL("genre_link.genre_id = %i", (int)option->second.asInteger()));
-        }
+        AppendIdLinkFilter("genre", "genre", "tvshow", "episode", "idShow", options, filter);
+        AppendLinkFilter("genre", "genre", "tvshow", "episode", "idShow", options, filter);
 
-        option = options.find("genre");
-        if (option != options.end())
-        {
-          condition = true;
-          filter.AppendJoin(PrepareSQL("JOIN genre_link ON genre_link.media_id=episodeview.idShow AND genre_link.media_type='tvshow' JOIN genre ON genre.genre_id=genre_link.genre_id"));
-          filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and genre.name like '%s'", idShow, option->second.asString().c_str()));
-        }
-
-        option = options.find("directorid");
-        if (option != options.end())
-        {
-          condition = true;
-          filter.AppendJoin(PrepareSQL("JOIN director_link ON director_link.media_id=episodeview.idShow AND director_link.media_type='tvshow'"));
-          filter.AppendWhere(PrepareSQL("director_link.actor_id = %i", (int)option->second.asInteger()));
-        }
-
-        option = options.find("director");
-        if (option != options.end())
-        {
-          condition = true;
-          filter.AppendJoin(PrepareSQL("JOIN director_link ON director_link.media_id=episodeview.idShow AND director_link.media_type='tvshow' JOIN actor ON actor.actor_id = director_link.actor_id"));
-          filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and actor.name LIKE '%s'", idShow, option->second.asString().c_str()));
-        }
+        AppendIdLinkFilter("director", "actor", "tvshow", "episode", "idShow", options, filter);
+        AppendLinkFilter("director", "actor", "tvshow", "episode", "idShow", options, filter);
       
         option = options.find("year");
         if (option != options.end())
@@ -9460,21 +9325,8 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
           filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and episodeview.premiered like '%%%i%%'", idShow, (int)option->second.asInteger()));
         }
 
-        option = options.find("actorid");
-        if (option != options.end())
-        {
-          condition = true;
-          filter.AppendJoin(PrepareSQL("JOIN actor_link ON actor_link.media_id = episodeview.idShow AND actor_link.media_type = 'tvshow'"));
-          filter.AppendWhere(PrepareSQL("episodeview.idShow = %i AND actor_link.actor_id = %i", idShow, (int)option->second.asInteger()));
-        }
-
-        option = options.find("actor");
-        if (option != options.end())
-        {
-          condition = true;
-          filter.AppendJoin(PrepareSQL("JOIN actor_link ON actor_link.media_id = episodeview.idShow AND actor_link.media_type = 'tvshow' JOIN actor ON actor.actor_id = actor_link.actor_id"));
-          filter.AppendWhere(PrepareSQL("episodeview.idShow = %i AND actor.name = '%s'", idShow, option->second.asString().c_str()));
-        }
+        AppendIdLinkFilter("actor", "actor", "tvshow", "episode", "idShow", options, filter);
+        AppendLinkFilter("actor", "actor", "tvshow", "episode", "idShow", options, filter);
 
         if (!condition)
           filter.AppendWhere(PrepareSQL("episodeview.idShow = %i", idShow));
@@ -9494,65 +9346,21 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
         if (option != options.end())
           filter.AppendWhere(PrepareSQL("episodeview.premiered like '%%%i%%'", (int)option->second.asInteger()));
 
-        option = options.find("directorid");
-        if (option != options.end())
-        {
-          filter.AppendJoin(PrepareSQL("JOIN director_link ON director_link.media_id=episodeview.idEpisode AND director_link.media_type='episode'"));
-          filter.AppendWhere(PrepareSQL("director_link.actor_id = %i", (int)option->second.asInteger()));
-        }
-
-        option = options.find("director");
-        if (option != options.end())
-        {
-          filter.AppendJoin(PrepareSQL("JOIN director_link ON director_link.media_id=episodeview.idEpisode AND director_link.media_type='episode' JOIN actor ON actor.actor_id = director_link.actor_id"));
-          filter.AppendWhere(PrepareSQL("actor.name LIKE '%s'", option->second.asString().c_str()));
-        }
+        AppendIdLinkFilter("director", "actor", "episode", "episode", "idEpisode", options, filter);
+        AppendLinkFilter("director", "actor", "episode", "episode", "idEpisode", options, filter);
       }
     }
   }
   else if (type == "musicvideos")
   {
-    option = options.find("genreid");
-    if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("JOIN genre_link ON genre_link.media_id=musicvideoview.idMVideo AND genre_link.media_type='musicvideo'"));
-      filter.AppendWhere(PrepareSQL("genre_link.genre_id = %i", (int)option->second.asInteger()));
-    }
+    AppendIdLinkFilter("genre", "genre", "musicvideo", "musicvideo", "idMVideo", options, filter);
+    AppendLinkFilter("genre", "genre", "musicvideo", "musicvideo", "idMVideo", options, filter);
 
-    option = options.find("genre");
-    if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("JOIN genre_link ON genre_link.media_id=musicvideoview.idMVideo AND genre_link.media_type='musicvideo' JOIN genre ON genre.genre_id=genre_link.genre_id"));
-      filter.AppendWhere(PrepareSQL("genre.name like '%s'", option->second.asString().c_str()));
-    }
+    AppendIdLinkFilter("studio", "studio", "musicvideo", "musicvideo", "idMVideo", options, filter);
+    AppendLinkFilter("studio", "studio", "musicvideo", "musicvideo", "idMVideo", options, filter);
 
-    option = options.find("studioid");
-    if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("JOIN studio_link ON studio_link.media_id=musicvideoview.idMVideo AND studio_link.media_type='musicvideo'"));
-      filter.AppendWhere(PrepareSQL("studio_link.studio_id = %i", (int)option->second.asInteger()));
-    }
-
-    option = options.find("studio");
-    if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("JOIN studio_link ON studio_link.media_id=musicvideoview.idMVideo AND studio_link.media_type='musicvideo' JOIN studio ON studio.studio_id=studio_link.studio_id"));
-      filter.AppendWhere(PrepareSQL("studio.name like '%s'", option->second.asString().c_str()));
-    }
-
-    option = options.find("directorid");
-    if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("JOIN director_link ON director_link.media_id=musicvideoview.idMVideo AND director_link.media_type='musicvideo'"));
-      filter.AppendWhere(PrepareSQL("director_link.actor_id = %i", (int)option->second.asInteger()));
-    }
-
-    option = options.find("director");
-    if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("JOIN director_link ON director_link.media_id=musicvideoview.idMVideo AND director_link.media_type='musicvideo' JOIN actor ON actor.actor_id = director_link.actor_id"));
-      filter.AppendWhere(PrepareSQL("actor.name LIKE '%s'", option->second.asString().c_str()));
-    }
+    AppendIdLinkFilter("director", "actor", "musicvideo", "musicvideo", "idMVideo", options, filter);
+    AppendLinkFilter("director", "actor", "musicvideo", "musicvideo", "idMVideo", options, filter);
 
     option = options.find("year");
     if (option != options.end())
@@ -9581,19 +9389,8 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("musicvideoview.c%02d = (select c%02d from musicvideo where idMVideo = %i)", VIDEODB_ID_MUSICVIDEO_ALBUM, VIDEODB_ID_MUSICVIDEO_ALBUM, (int)option->second.asInteger()));
 
-    option = options.find("tagid");
-    if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("JOIN tag_link ON tag_link.media_id = musicvideoview.idMVideo AND tag_link.media_type = 'musicvideo'"));
-      filter.AppendWhere(PrepareSQL("tag_link.tag_id = %i", (int)option->second.asInteger()));
-    }
-
-    option = options.find("tag");
-    if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("JOIN tag_link ON tag_link.media_id = musicvideoview.idMVideo AND tag_link.media_type = 'musicvideo' JOIN tag ON tag.tag_id = tag_link.tag_id"));
-      filter.AppendWhere(PrepareSQL("tag.name like '%s'", option->second.asString().c_str()));
-    }
+    AppendIdLinkFilter("tag", "tag", "musicvideo", "musicvideo", "idMVideo", options, filter);
+    AppendLinkFilter("tag", "tag", "musicvideo", "musicvideo", "idMVideo", options, filter);
   }
   else
     return false;
