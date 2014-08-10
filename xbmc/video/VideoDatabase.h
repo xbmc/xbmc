@@ -808,17 +808,10 @@ protected:
   void AddToLinkTable(const char *table, const char *firstField, int firstID, const char *secondField, int secondID, const char *typeField = NULL, const char *type = NULL);
   void RemoveFromLinkTable(const char *table, const char *firstField, int firstID, const char *secondField, int secondID, const char *typeField = NULL, const char *type = NULL);
   void UpdateLinkTable(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
-  void UpdateActorLinkTable(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
 
+  void AddActorLinksToItem(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
+  void UpdateActorLinksToItem(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
   void AddCast(int idMedia, const char *table, const char *field, const std::vector<SActorInfo> &cast);
-  void AddArtistToMusicVideo(int lMVideo, int idArtist);
-
-  void AddDirectorToMovie(int idMovie, int idDirector);
-  void AddDirectorToTvShow(int idTvShow, int idDirector);
-  void AddDirectorToEpisode(int idEpisode, int idDirector);
-  void AddDirectorToMusicVideo(int lMVideo, int idDirector);
-  void AddWriterToEpisode(int idEpisode, int idWriter);
-  void AddWriterToMovie(int idMovie, int idWriter);
 
   void AddGenreToMovie(int idMovie, int idGenre);
   void AddGenreToTvShow(int idTvShow, int idGenre);
