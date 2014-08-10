@@ -4230,6 +4230,11 @@ CStdString CGUIInfoManager::GetBuild()
   return StringUtils::Format("%s", __DATE__);
 }
 
+CStdString CGUIInfoManager::GetAppName()
+{
+  return CCompileInfo::GetAppName();
+}
+
 void CGUIInfoManager::SetDisplayAfterSeek(unsigned int timeOut, int seekOffset)
 {
   g_infoManager.m_performingSeek = false;
