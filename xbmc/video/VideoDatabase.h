@@ -857,6 +857,9 @@ private:
    */
   int RunQuery(const CStdString &sql);
 
+  void AppendIdFilter(const char* field, const char *table, const char *mediaType, const char *view, const char *viewKey, const CUrlOptions::UrlOptions& options, Filter &filter);
+  void AppendFilter(const char* field, const char *table, const char *mediaType, const char *view, const char *viewKey, const CUrlOptions::UrlOptions& options, Filter &filter);
+
   /*! \brief Determine whether the path is using lookup using folders
    \param path the path to check
    \param shows whether this path is from a tvshow (defaults to false)
