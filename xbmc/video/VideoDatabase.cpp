@@ -239,6 +239,21 @@ void CVideoDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE taglinks (idTag integer, idMedia integer, media_type TEXT)");
 }
 
+void CVideoDatabase::CreateLinkIndex(const char *table)
+{
+  m_pDS->exec(PrepareSQL("CREATE UNIQUE INDEX ix_%s_1 ON %s (name(255))", table, table));
+  m_pDS->exec(PrepareSQL("CREATE UNIQUE INDEX ix_%s_link_1 ON %s_link (%s_id, media_type(20), media_id)", table, table, table));
+  m_pDS->exec(PrepareSQL("CREATE UNIQUE INDEX ix_%s_link_2 ON %s_link (media_id, media_type(20), %s_id)", table, table, table));
+  m_pDS->exec(PrepareSQL("CREATE INDEX ix_%s_link_3 ON %s_link (media_type(20))", table, table));
+}
+
+void CVideoDatabase::CreateForeignLinkIndex(const char *table, const char *foreignkey)
+{
+  m_pDS->exec(PrepareSQL("CREATE UNIQUE INDEX ix_%s_link_1 ON %s_link (%s_id, media_type(20), media_id)", table, table, foreignkey));
+  m_pDS->exec(PrepareSQL("CREATE UNIQUE INDEX ix_%s_link_2 ON %s_link (media_id, media_type(20), %s_id)", table, table, foreignkey));
+  m_pDS->exec(PrepareSQL("CREATE INDEX ix_%s_link_3 ON %s_link (media_type(20))", table, table));
+}
+
 void CVideoDatabase::CreateAnalytics()
 {
   /* indexes should be added on any columns that are used in in  */
