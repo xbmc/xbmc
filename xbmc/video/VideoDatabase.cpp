@@ -1510,25 +1510,14 @@ int CVideoDatabase::AddActor(const CStdString& name, const CStdString& thumbURLs
 
 
 
-void CVideoDatabase::AddLinkToActor(const char *table, int actorID, const char *field, int secondID, const CStdString &role, int order)
+void CVideoDatabase::AddLinkToActor(int mediaId, const char *mediaType, int actorId, const CStdString &role, int order)
 {
-  try
-  {
-    if (NULL == m_pDB.get()) return ;
-    if (NULL == m_pDS.get()) return ;
+  std::string sql=PrepareSQL("SELECT 1 FROM actor_link WHERE actor_id=%i AND media_id=%i AND media_type='%s'", actorId, mediaId, mediaType);
 
-    std::string sql=PrepareSQL("SELECT 1 FROM actor_link WHERE actor_id=%i AND media_id=%i AND media_type='%s'", actorID, secondID, table);
-    m_pDS->query(sql);
-    if (m_pDS->num_rows() == 0)
-    { // doesnt exists, add it
-      sql = PrepareSQL("INSERT INTO actor_link (actor_id, media_id, media_type, role, cast_order) VALUES(%i,%i,'%s','%s',%i)", actorID, secondID, table, role.c_str(), order);
-      m_pDS->exec(sql);
-    }
-    m_pDS->close();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  if (GetSingleValue(sql).empty())
+  { // doesnt exists, add it
+    sql = PrepareSQL("INSERT INTO actor_link (actor_id, media_id, media_type, role, cast_order) VALUES(%i,%i,'%s','%s',%i)", actorId, mediaId, mediaType, role.c_str(), order);
+    ExecuteQuery(sql);
   }
 }
 
@@ -1641,7 +1630,7 @@ void CVideoDatabase::RemoveTagsFromItem(int idItem, const std::string &type)
 }
 
 //****Actors****
-void CVideoDatabase::AddCast(int idMedia, const char *table, const char *field, const std::vector< SActorInfo > &cast)
+void CVideoDatabase::AddCast(int mediaId, const char *mediaType, const std::vector< SActorInfo > &cast)
 {
   if (cast.empty())
     return;
@@ -1650,7 +1639,7 @@ void CVideoDatabase::AddCast(int idMedia, const char *table, const char *field, 
   for (CVideoInfoTag::iCast it = cast.begin(); it != cast.end(); ++it)
   {
     int idActor = AddActor(it->strName, it->thumbUrl.m_xml, it->thumb);
-    AddLinkToActor(table, idActor, field, idMedia, it->strRole, it->order >= 0 ? it->order : ++order);
+    AddLinkToActor(mediaId, mediaType, idActor, it->strRole, it->order >= 0 ? it->order : ++order);
   }
 }
 
@@ -2174,7 +2163,7 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     for (unsigned int i = 0; i < vecStudios.size(); ++i)
       AddStudioToMovie(idMovie, vecStudios[i]);
 
-    AddCast(idMovie, "movie", "movie", details.m_cast);
+    AddCast(idMovie, "movie", details.m_cast);
     AddActorLinksToItem(idMovie, MediaTypeMovie, "director", details.m_director);
     AddActorLinksToItem(idMovie, MediaTypeMovie, "writer", details.m_writingCredits);
 
@@ -2412,7 +2401,7 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow, const CVideoInfoTag &d
   vector<int> vecStudios;
   AddGenreAndDirectorsAndStudios(details,vecDirectors,vecGenres,vecStudios);
 
-  AddCast(idTvShow, "tvshow", "show", details.m_cast);
+  AddCast(idTvShow, "tvshow", details.m_cast);
 
   unsigned int i;
   for (i = 0; i < vecGenres.size(); ++i)
@@ -2511,7 +2500,7 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
       }
     }
 
-    AddCast(idEpisode, "episode", "episode", details.m_cast);
+    AddCast(idEpisode, "episode", details.m_cast);
     AddActorLinksToItem(idEpisode, MediaTypeEpisode, "director", details.m_director);
     AddActorLinksToItem(idEpisode, MediaTypeEpisode, "writer", details.m_writingCredits);
 
