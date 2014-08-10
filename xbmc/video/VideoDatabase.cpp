@@ -9250,10 +9250,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
 
     option = options.find("set");
     if (option != options.end())
-    {
-      filter.AppendJoin(PrepareSQL("join setlinkmovie on setlinkmovie.idMovie = movieview.idMovie join sets on sets.idSet = setlinkmovie.idSet"));
-      filter.AppendWhere(PrepareSQL("sets.strSet like '%s'", option->second.asString().c_str()));
-    }
+      filter.AppendWhere(PrepareSQL("movieview.strSet LIKE '%s'", option->second.asString().c_str()));
 
     AppendIdLinkFilter("tag", "tag", "movie", "movie", "idMovie", options, filter);
     AppendLinkFilter("tag", "tag", "movie", "movie", "idMovie", options, filter);
