@@ -80,6 +80,9 @@
 
 #define CONTROL_LABELFILES          12
 
+#define CONTROL_VIEW_START          50
+#define CONTROL_VIEW_END            59
+
 #define PROPERTY_PATH_DB            "path.db"
 #define PROPERTY_SORT_ORDER         "sort.order"
 #define PROPERTY_SORT_ASCENDING     "sort.ascending"
@@ -106,9 +109,6 @@ CGUIMediaWindow::~CGUIMediaWindow()
   delete m_vecItems;
   delete m_unfilteredItems;
 }
-
-#define CONTROL_VIEW_START        50
-#define CONTROL_VIEW_END          59
 
 void CGUIMediaWindow::LoadAdditionalTags(TiXmlElement *root)
 {
