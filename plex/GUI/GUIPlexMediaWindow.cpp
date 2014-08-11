@@ -506,17 +506,6 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
       }
     }
   }
-  else if (action.GetID() == ACTION_TOGGLE_WATCHED)
-  {
-    if (m_viewControl.GetSelectedItem() != -1)
-    {
-      CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
-      if (pItem && pItem->GetVideoInfoTag()->m_playCount == 0)
-        return OnContextButton(m_viewControl.GetSelectedItem(), CONTEXT_BUTTON_MARK_WATCHED);
-      if (pItem && pItem->GetVideoInfoTag()->m_playCount > 0)
-        return OnContextButton(m_viewControl.GetSelectedItem(), CONTEXT_BUTTON_MARK_UNWATCHED);
-    }
-  }
 
   if (g_plexApplication.defaultActionHandler->OnAction(WINDOW_VIDEO_NAV, action, m_vecItems->Get(m_viewControl.GetSelectedItem()), m_vecItems))
     return true;
@@ -754,15 +743,6 @@ void CGUIPlexMediaWindow::GetContextButtons(int itemNumber, CContextButtons &but
   g_plexApplication.defaultActionHandler->GetContextButtons(WINDOW_VIDEO_NAV, item, m_vecItems, buttons);
 
 
-  if (IsVideoContainer() && item->IsPlexMediaServerLibrary())
-  {
-    CStdString viewOffset = item->GetProperty("viewOffset").asString();
-
-    if (item->GetVideoInfoTag()->m_playCount > 0 || viewOffset.size() > 0)
-      buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104);
-    if (item->GetVideoInfoTag()->m_playCount == 0 || viewOffset.size() > 0)
-      buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);
-  }
 
 }
 
@@ -773,28 +753,6 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   if (!item)
     return false;
 
-  switch(button)
-  {
-
-
-
-    case CONTEXT_BUTTON_MARK_WATCHED:
-    case CONTEXT_BUTTON_MARK_UNWATCHED:
-    {
-      bool reload = m_sectionFilter->needRefreshOnStateChange();
-
-      if (button == CONTEXT_BUTTON_MARK_WATCHED)
-        item->MarkAsWatched(reload);
-      else item->MarkAsUnWatched(reload);
-
-      g_directoryCache.ClearSubPaths(m_vecItems->GetPath());
-      break;
-    }
-
-
-    default:
-      break;
-  }
   
   if (g_plexApplication.defaultActionHandler->OnAction(WINDOW_VIDEO_NAV, button, item, m_vecItems))
     return true;
