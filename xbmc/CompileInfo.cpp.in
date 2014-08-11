@@ -36,6 +36,11 @@ int CCompileInfo::GetMinor()
   return @APP_VERSION_MINOR@;
 }
 
+const char* CCompileInfo::GetAppName()
+{
+  return "@APP_NAME@";
+}
+
 const char* CCompileInfo::GetSuffix()
 {
   return "@APP_VERSION_TAG@";

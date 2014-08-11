@@ -785,6 +785,7 @@ public:
   int GetTotalPlayTime() const;
   CStdString GetCurrentPlayTimeRemaining(TIME_FORMAT format) const;
   std::string GetVersionShort(void);
+  CStdString GetAppName();
   CStdString GetVersion();
   CStdString GetBuild();
 
