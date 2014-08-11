@@ -1470,50 +1470,24 @@ void CVideoDatabase::AddLinkToActor(int mediaId, const char *mediaType, int acto
   }
 }
 
-void CVideoDatabase::AddToLinkTable(const char *table, const char *firstField, int firstID, const char *secondField, int secondID, const char *typeField /* = NULL */, const char *type /* = NULL */)
+void CVideoDatabase::AddToLinkTable(int mediaId, const std::string& mediaType, const std::string& table, int valueId, const char *foreignKey)
 {
-  try
-  {
-    if (NULL == m_pDB.get()) return ;
-    if (NULL == m_pDS.get()) return ;
+  const char *key = foreignKey ? foreignKey : table.c_str();
+  std::string sql = PrepareSQL("SELECT 1 FROM %s_link WHERE %s_id=%i AND media_id=%i AND media_type='%s'", table.c_str(), key, valueId, mediaId, mediaType.c_str());
 
-    CStdString strSQL = PrepareSQL("select * from %s where %s=%i and %s=%i", table, firstField, firstID, secondField, secondID);
-    if (typeField != NULL && type != NULL)
-      strSQL += PrepareSQL(" and %s='%s'", typeField, type);
-    m_pDS->query(strSQL.c_str());
-    if (m_pDS->num_rows() == 0)
-    {
-      // doesnt exists, add it
-      if (typeField == NULL || type == NULL)
-        strSQL = PrepareSQL("insert into %s (%s,%s) values(%i,%i)", table, firstField, secondField, firstID, secondID);
-      else
-        strSQL = PrepareSQL("insert into %s (%s,%s,%s) values(%i,%i,'%s')", table, firstField, secondField, typeField, firstID, secondID, type);
-      m_pDS->exec(strSQL.c_str());
-    }
-    m_pDS->close();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  if (GetSingleValue(sql).empty())
+  { // doesnt exists, add it
+    sql = PrepareSQL("INSERT INTO %s_link (%s_id,media_id,media_type) VALUES(%i,%i,'%s')", table.c_str(), key, valueId, mediaId, mediaType.c_str());
+    ExecuteQuery(sql);
   }
 }
 
-void CVideoDatabase::RemoveFromLinkTable(const char *table, const char *firstField, int firstID, const char *secondField, int secondID, const char *typeField /* = NULL */, const char *type /* = NULL */)
+void CVideoDatabase::RemoveFromLinkTable(int mediaId, const std::string& mediaType, const std::string& table, int valueId, const char *foreignKey)
 {
-  try
-  {
-    if (NULL == m_pDB.get()) return ;
-    if (NULL == m_pDS.get()) return ;
+  const char *key = foreignKey ? foreignKey : table.c_str();
+  std::string sql = PrepareSQL("DELETE FROM %s_link WHERE %s_id=%i AND media_id=%i AND media_type='%s'", table.c_str(), key, valueId, mediaId, mediaType.c_str());
 
-    CStdString strSQL = PrepareSQL("DELETE FROM %s WHERE %s = %i AND %s = %i", table, firstField, firstID, secondField, secondID);
-    if (typeField != NULL && type != NULL)
-      strSQL += PrepareSQL(" AND %s='%s'", typeField, type);
-    m_pDS->exec(strSQL.c_str());
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
+  ExecuteQuery(sql);
 }
 
 void CVideoDatabase::AddLinksToItem(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values)
@@ -1524,7 +1498,7 @@ void CVideoDatabase::AddLinksToItem(int mediaId, const std::string& mediaType, c
     {
       int idValue = AddToTable(field, field + "_id", "name", *i);
       if (idValue > -1)
-        AddToLinkTable((field + "_link").c_str(), (field + "_id").c_str(), idValue, "media_id", mediaId, "media_type", mediaType.c_str());
+        AddToLinkTable(mediaId, mediaType, field, idValue);
     }
   }
 }
@@ -1545,7 +1519,7 @@ void CVideoDatabase::AddActorLinksToItem(int mediaId, const std::string& mediaTy
     {
       int idValue = AddActor(*i, "");
       if (idValue > -1)
-        AddToLinkTable((field + "_link").c_str(), "actor_id", idValue, "media_id", mediaId, "media_type", mediaType.c_str());
+        AddToLinkTable(mediaId, mediaType, field, idValue, "actor");
     }
   }
 }
@@ -1564,7 +1538,7 @@ void CVideoDatabase::AddTagToItem(int media_id, int tag_id, const std::string &t
   if (type.empty())
     return;
 
-  AddToLinkTable("tag_link", "tag_id", tag_id, "media_id", media_id, "media_type", type.c_str());
+  AddToLinkTable(media_id, type, "tag", tag_id);
 }
 
 void CVideoDatabase::RemoveTagFromItem(int media_id, int tag_id, const std::string &type)
@@ -1572,7 +1546,7 @@ void CVideoDatabase::RemoveTagFromItem(int media_id, int tag_id, const std::stri
   if (type.empty())
     return;
 
-  RemoveFromLinkTable("tag_link", "tag_id", tag_id, "media_id", media_id, "media_type", type.c_str());
+  RemoveFromLinkTable(media_id, type, "tag", tag_id);
 }
 
 void CVideoDatabase::RemoveTagsFromItem(int media_id, const std::string &type)
