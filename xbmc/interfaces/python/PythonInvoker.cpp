@@ -188,11 +188,14 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   URIUtils::RemoveSlashAtEnd(scriptDir);
   addPath(scriptDir);
 
-  // add on any addon modules the user has installed
-  ADDON::VECADDONS addons;
-  ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_SCRIPT_MODULE, addons);
-  for (unsigned int i = 0; i < addons.size(); ++i)
-    addPath(CSpecialProtocol::TranslatePath(addons[i]->LibPath()));
+  // add addon module dependecies
+  ADDON::ADDONDEPS deps = m_addon.get()->GetDeps();
+  for (ADDON::ADDONDEPS::const_iterator it = deps.begin(); it != deps.end(); ++it)
+  {
+    ADDON::AddonPtr addon;
+    if (ADDON::CAddonMgr::Get().GetAddon(it->first, addon, ADDON::ADDON_SCRIPT_MODULE))
+      addPath(CSpecialProtocol::TranslatePath(addon->LibPath()));
+  }
 
   // we want to use sys.path so it includes site-packages
   // if this fails, default to using Py_GetPath
