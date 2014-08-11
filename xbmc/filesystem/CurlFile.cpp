@@ -902,8 +902,15 @@ bool CCurlFile::Download(const std::string& strURL, const std::string& strFileNa
 // Detect whether we are "online" or not! Very simple and dirty!
 bool CCurlFile::IsInternet()
 {
-  CURL url("http://www.google.com");
+  CURL url("http://www.msftncsi.com/ncsi.txt");
   bool found = Exists(url);
+  if (!found)
+  {
+    // fallback
+    Close();
+    url.Parse("http://www.w3.org/");
+    found = Exists(url);
+  }
   Close();
 
   return found;
