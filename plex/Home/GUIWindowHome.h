@@ -76,6 +76,7 @@ private:
   void OpenItem(CFileItemPtr item);
   bool OnClick(const CGUIMessage& message);
   void OnSectionLoaded(const CGUIMessage& message);
+  void OnWatchStateChanged(const CGUIMessage& message);
 
   void AddPlaylists(std::vector<CGUIListItemPtr>& list, bool& updated);
   int GetPlayQueueType();

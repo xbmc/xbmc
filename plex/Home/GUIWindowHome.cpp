@@ -249,16 +249,6 @@ void CGUIWindowHome::GetSleepContextMenu(CContextButtons& buttons)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowHome::GetItemContextMenu(CContextButtons& buttons, const CFileItem& item)
 {
-  if ((item.GetProperty("HasWatchedState").asBoolean() ||
-      item.HasProperty("ratingKey")) && item.HasVideoInfoTag())
-  {
-    CStdString viewOffset = item.GetProperty("viewOffset").asString();
-
-    if (item.GetVideoInfoTag()->m_playCount > 0 || viewOffset.size() > 0)
-      buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104);
-    if (item.GetVideoInfoTag()->m_playCount == 0 || viewOffset.size() > 0)
-      buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);
-  }
 
 }
 
@@ -289,60 +279,6 @@ void CGUIWindowHome::GetContextMenu(CContextButtons& buttons)
  }
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIWindowHome::ChangeWatchState(int choice)
-{
-  CFileItemPtr fileItem = GetCurrentFanoutItem();
-  if (!fileItem)
-    return;
-
-  int controlId = GetFocusedControl()->GetID();
-  CGUIBaseContainer *container = (CGUIBaseContainer*)GetControl(controlId);
-  std::vector<CGUIListItemPtr> items = container->GetItems();
-
-  int indexInContainer = std::distance(items.begin(),
-                                       std::find(items.begin(), items.end(), fileItem));
-
-  CGUIMessage msg(GUI_MSG_LIST_REMOVE_ITEM, GetID(), controlId, indexInContainer+1, 0);
-
-  if (choice == CONTEXT_BUTTON_MARK_UNWATCHED)
-  {
-    bool sendMsg = false;
-
-    if (controlId == CONTENT_LIST_ON_DECK &&
-        fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE)
-    {
-      OnMessage(msg);
-    }
-    else if (controlId == CONTENT_LIST_ON_DECK &&
-             fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE)
-    {
-      SectionNeedsRefresh(GetCurrentItemName());
-      sendMsg = true;
-    }
-
-    fileItem->MarkAsUnWatched(sendMsg);
-  }
-  else if (choice == CONTEXT_BUTTON_MARK_WATCHED)
-  {
-    bool sendMsg = false;
-    if (controlId == CONTENT_LIST_RECENTLY_ADDED ||
-        (controlId == CONTENT_LIST_ON_DECK &&
-         fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE))
-    {
-      OnMessage(msg);
-    }
-
-    else if (controlId == CONTENT_LIST_ON_DECK &&
-             fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE)
-    {
-      SectionNeedsRefresh(GetCurrentItemName());
-      sendMsg = true;
-    }
-
-    fileItem->MarkAsWatched(sendMsg);
-  }
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowHome::HandleItemDelete()
@@ -367,8 +303,6 @@ void CGUIWindowHome::HandleItemDelete()
     OnMessage(msg);
   }
 }
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowHome::OnPopupMenu()
@@ -397,10 +331,6 @@ bool CGUIWindowHome::OnPopupMenu()
       CApplicationMessenger::Get().Shutdown();
       break;
 
-    case CONTEXT_BUTTON_MARK_UNWATCHED:
-    case CONTEXT_BUTTON_MARK_WATCHED:
-      ChangeWatchState(choice);
-      break;
 
 
     default:
@@ -486,6 +416,11 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     case GUI_MSG_PLEX_SECTION_LOADED:
       OnSectionLoaded(message);
       return true;
+      
+    case GUI_MSG_PLEX_ITEM_WATCHEDSTATE_CHANGED:
+      OnWatchStateChanged(message);
+      return true;
+      break;
 
     case GUI_MSG_CLICKED:
       if (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_PLAYER_PLAY)
@@ -620,6 +555,53 @@ bool CGUIWindowHome::OnClick(const CGUIMessage& message)
   }
 
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowHome::OnWatchStateChanged(const CGUIMessage& message)
+{
+  CFileItemPtr fileItem = GetCurrentFanoutItem();
+  if (!fileItem)
+    return;
+  
+  int controlId = GetFocusedControl()->GetID();
+  CGUIBaseContainer *container = (CGUIBaseContainer*)GetControl(controlId);
+  std::vector<CGUIListItemPtr> items = container->GetItems();
+  
+  int indexInContainer = std::distance(items.begin(),
+                                       std::find(items.begin(), items.end(), fileItem));
+  
+  CGUIMessage msg(GUI_MSG_LIST_REMOVE_ITEM, GetID(), controlId, indexInContainer+1, 0);
+  
+  if (message.GetParam1() == ACTION_MARK_AS_UNWATCHED)
+  {
+    if (controlId == CONTENT_LIST_ON_DECK &&
+        fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE)
+    {
+      OnMessage(msg);
+    }
+    else if (controlId == CONTENT_LIST_ON_DECK &&
+             fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE)
+    {
+      SectionNeedsRefresh(GetCurrentItemName());
+    }
+    
+  }
+  else if (message.GetParam1() == ACTION_MARK_AS_WATCHED)
+  {
+    if (controlId == CONTENT_LIST_RECENTLY_ADDED ||
+        (controlId == CONTENT_LIST_ON_DECK &&
+         fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE))
+    {
+      OnMessage(msg);
+    }
+    
+    else if (controlId == CONTENT_LIST_ON_DECK &&
+             fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE)
+    {
+      SectionNeedsRefresh(GetCurrentItemName());
+    }
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
