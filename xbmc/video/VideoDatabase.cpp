@@ -123,17 +123,11 @@ void CVideoDatabase::CreateTables()
   columns += ", idSet integer)";
   m_pDS->exec(columns.c_str());
 
-  CLog::Log(LOGINFO, "create actorlinkmovie table");
-  m_pDS->exec("CREATE TABLE actorlinkmovie ( idActor integer, idMovie integer, strRole text, iOrder integer)\n");
-
-  CLog::Log(LOGINFO, "create directorlinkmovie table");
-  m_pDS->exec("CREATE TABLE directorlinkmovie ( idDirector integer, idMovie integer)\n");
-
-  CLog::Log(LOGINFO, "create writerlinkmovie table");
-  m_pDS->exec("CREATE TABLE writerlinkmovie ( idWriter integer, idMovie integer)\n");
-
-  CLog::Log(LOGINFO, "create actors table");
-  m_pDS->exec("CREATE TABLE actors ( idActor integer primary key, strActor text, strThumb text )\n");
+  CLog::Log(LOGINFO, "create actor table");
+  m_pDS->exec("CREATE TABLE actor ( actor_id INTEGER PRIMARY KEY, name TEXT, art_urls TEXT )");
+  m_pDS->exec("CREATE TABLE actor_link(actor_id INTEGER, media_id INTEGER, media_type TEXT, role TEXT, cast_order INTEGER)");
+  m_pDS->exec("CREATE TABLE director_link(actor_id INTEGER, media_id INTEGER, media_type TEXT)");
+  m_pDS->exec("CREATE TABLE writer_link(actor_id INTEGER, media_id INTEGER, media_type TEXT)");
 
   CLog::Log(LOGINFO, "create path table");
   m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strContent text, strScraper text, strHash text, scanRecursive integer, useFolderNames bool, strSettings text, noUpdate bool, exclude bool, dateAdded text, idParentPath integer)");
@@ -149,12 +143,6 @@ void CVideoDatabase::CreateTables()
 
   columns += ")";
   m_pDS->exec(columns.c_str());
-
-  CLog::Log(LOGINFO, "create directorlinktvshow table");
-  m_pDS->exec("CREATE TABLE directorlinktvshow ( idDirector integer, idShow integer)\n");
-
-  CLog::Log(LOGINFO, "create actorlinktvshow table");
-  m_pDS->exec("CREATE TABLE actorlinktvshow ( idActor integer, idShow integer, strRole text, iOrder integer)\n");
 
   CLog::Log(LOGINFO, "create studiolinktvshow table");
   m_pDS->exec("CREATE TABLE studiolinktvshow ( idStudio integer, idShow integer)\n");
@@ -177,15 +165,6 @@ void CVideoDatabase::CreateTables()
   CLog::Log(LOGINFO, "create tvshowlinkpath table");
   m_pDS->exec("CREATE TABLE tvshowlinkpath (idShow integer, idPath integer)\n");
 
-  CLog::Log(LOGINFO, "create actorlinkepisode table");
-  m_pDS->exec("CREATE TABLE actorlinkepisode ( idActor integer, idEpisode integer, strRole text, iOrder integer)\n");
-
-  CLog::Log(LOGINFO, "create directorlinkepisode table");
-  m_pDS->exec("CREATE TABLE directorlinkepisode ( idDirector integer, idEpisode integer)\n");
-
-  CLog::Log(LOGINFO, "create writerlinkepisode table");
-  m_pDS->exec("CREATE TABLE writerlinkepisode ( idWriter integer, idEpisode integer)\n");
-
   CLog::Log(LOGINFO, "create genrelinktvshow table");
   m_pDS->exec("CREATE TABLE genrelinktvshow ( idGenre integer, idShow integer)\n");
 
@@ -206,17 +185,11 @@ void CVideoDatabase::CreateTables()
   columns += ")";
   m_pDS->exec(columns.c_str());
 
-  CLog::Log(LOGINFO, "create artistlinkmusicvideo table");
-  m_pDS->exec("CREATE TABLE artistlinkmusicvideo ( idArtist integer, idMVideo integer)\n");
-
   CLog::Log(LOGINFO, "create genrelinkmusicvideo table");
   m_pDS->exec("CREATE TABLE genrelinkmusicvideo ( idGenre integer, idMVideo integer)\n");
 
   CLog::Log(LOGINFO, "create studiolinkmusicvideo table");
   m_pDS->exec("CREATE TABLE studiolinkmusicvideo ( idStudio integer, idMVideo integer)\n");
-
-  CLog::Log(LOGINFO, "create directorlinkmusicvideo table");
-  m_pDS->exec("CREATE TABLE directorlinkmusicvideo ( idDirector integer, idMVideo integer)\n");
 
   CLog::Log(LOGINFO, "create streaminfo table");
   m_pDS->exec("CREATE TABLE streamdetails (idFile integer, iStreamType integer, "
@@ -263,9 +236,9 @@ void CVideoDatabase::CreateAnalytics()
 
   /* order of indexes are important, for an index to be considered all  */
   /* columns up to the column in question have to have been specified   */
-  /* select * from actorlinkmovie where idMovie = 1, can not take       */
-  /* advantage of a index that has been created on ( idGenre, idMovie ) */
-  /*, hower on on ( idMovie, idGenre ) will be considered for use       */
+  /* select * from foolink where foo_id = 1, can not take               */
+  /* advantage of a index that has been created on ( bar_id, foo_id )   */
+  /* however an index on ( foo_id, bar_id ) will be considered for use  */
 
   CLog::Log(LOGINFO, "%s - creating indicies", __FUNCTION__);
   m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile, type)");
@@ -281,19 +254,9 @@ void CVideoDatabase::CreateAnalytics()
   m_pDS->exec("CREATE UNIQUE INDEX ix_countrylinkmovie_2 ON countrylinkmovie ( idMovie, idCountry)\n");
   m_pDS->exec("CREATE UNIQUE INDEX ix_movie_file_1 ON movie (idFile, idMovie)");
   m_pDS->exec("CREATE UNIQUE INDEX ix_movie_file_2 ON movie (idMovie, idFile)");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_actorlinkmovie_1 ON actorlinkmovie ( idActor, idMovie )\n");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_actorlinkmovie_2 ON actorlinkmovie ( idMovie, idActor )\n");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_directorlinkmovie_1 ON directorlinkmovie ( idDirector, idMovie )\n");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_directorlinkmovie_2 ON directorlinkmovie ( idMovie, idDirector )\n");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_writerlinkmovie_1 ON writerlinkmovie ( idWriter, idMovie )\n");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_writerlinkmovie_2 ON writerlinkmovie ( idMovie, idWriter )\n");
   m_pDS->exec("CREATE UNIQUE INDEX ix_studiolinkmovie_1 ON studiolinkmovie ( idStudio, idMovie)\n");
   m_pDS->exec("CREATE UNIQUE INDEX ix_studiolinkmovie_2 ON studiolinkmovie ( idMovie, idStudio)\n");
 
-  m_pDS->exec("CREATE UNIQUE INDEX ix_directorlinktvshow_1 ON directorlinktvshow ( idDirector, idShow )\n");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_directorlinktvshow_2 ON directorlinktvshow ( idShow, idDirector )\n");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_actorlinktvshow_1 ON actorlinktvshow ( idActor, idShow )\n");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_actorlinktvshow_2 ON actorlinktvshow ( idShow, idActor )\n");
   m_pDS->exec("CREATE UNIQUE INDEX ix_studiolinktvshow_1 ON studiolinktvshow ( idStudio, idShow)\n");
   m_pDS->exec("CREATE UNIQUE INDEX ix_studiolinktvshow_2 ON studiolinktvshow ( idShow, idStudio)\n");
   m_pDS->exec("CREATE UNIQUE INDEX ix_tvshowlinkpath_1 ON tvshowlinkpath ( idShow, idPath )\n");
@@ -309,25 +272,15 @@ void CVideoDatabase::CreateAnalytics()
   m_pDS->exec(createColIndex.c_str());
   m_pDS->exec("CREATE INDEX ix_episode_show1 on episode(idEpisode,idShow)");
   m_pDS->exec("CREATE INDEX ix_episode_show2 on episode(idShow,idEpisode)");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_actorlinkepisode_1 ON actorlinkepisode ( idActor, idEpisode )\n");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_actorlinkepisode_2 ON actorlinkepisode ( idEpisode, idActor )\n");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_directorlinkepisode_1 ON directorlinkepisode ( idDirector, idEpisode )\n");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_directorlinkepisode_2 ON directorlinkepisode ( idEpisode, idDirector )\n");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_writerlinkepisode_1 ON writerlinkepisode ( idWriter, idEpisode )\n");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_writerlinkepisode_2 ON writerlinkepisode ( idEpisode, idWriter )\n");
   m_pDS->exec("CREATE UNIQUE INDEX ix_genrelinktvshow_1 ON genrelinktvshow ( idGenre, idShow)\n");
   m_pDS->exec("CREATE UNIQUE INDEX ix_genrelinktvshow_2 ON genrelinktvshow ( idShow, idGenre)\n");
 
   m_pDS->exec("CREATE UNIQUE INDEX ix_musicvideo_file_1 on musicvideo (idMVideo, idFile)");
   m_pDS->exec("CREATE UNIQUE INDEX ix_musicvideo_file_2 on musicvideo (idFile, idMVideo)");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_artistlinkmusicvideo_1 ON artistlinkmusicvideo ( idArtist, idMVideo)\n");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_artistlinkmusicvideo_2 ON artistlinkmusicvideo ( idMVideo, idArtist)\n");
   m_pDS->exec("CREATE UNIQUE INDEX ix_genrelinkmusicvideo_1 ON genrelinkmusicvideo ( idGenre, idMVideo)\n");
   m_pDS->exec("CREATE UNIQUE INDEX ix_genrelinkmusicvideo_2 ON genrelinkmusicvideo ( idMVideo, idGenre)\n");
   m_pDS->exec("CREATE UNIQUE INDEX ix_studiolinkmusicvideo_1 ON studiolinkmusicvideo ( idStudio, idMVideo)\n");
   m_pDS->exec("CREATE UNIQUE INDEX ix_studiolinkmusicvideo_2 ON studiolinkmusicvideo ( idMVideo, idStudio)\n");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_directorlinkmusicvideo_1 ON directorlinkmusicvideo ( idDirector, idMVideo )\n");
-  m_pDS->exec("CREATE UNIQUE INDEX ix_directorlinkmusicvideo_2 ON directorlinkmusicvideo ( idMVideo, idDirector )\n");
 
   m_pDS->exec("CREATE INDEX ixMovieBasePath ON movie ( c23(12) )");
   m_pDS->exec("CREATE INDEX ixMusicVideoBasePath ON musicvideo ( c14(12) )");
@@ -342,21 +295,25 @@ void CVideoDatabase::CreateAnalytics()
   m_pDS->exec("CREATE UNIQUE INDEX ix_taglinks_2 ON taglinks (idMedia, media_type(20), idTag)");
   m_pDS->exec("CREATE INDEX ix_taglinks_3 ON taglinks (media_type(20))");
 
+  CreateLinkIndex("actor");
+  CreateForeignLinkIndex("director", "actor");
+  CreateForeignLinkIndex("writer", "actor");
+
   CLog::Log(LOGINFO, "%s - creating triggers", __FUNCTION__);
   m_pDS->exec("CREATE TRIGGER delete_movie AFTER DELETE ON movie FOR EACH ROW BEGIN "
               "DELETE FROM genrelinkmovie WHERE idMovie=old.idMovie; "
-              "DELETE FROM actorlinkmovie WHERE idMovie=old.idMovie; "
-              "DELETE FROM directorlinkmovie WHERE idMovie=old.idMovie; "
+              "DELETE FROM actor_link WHERE media_id=old.idMovie AND media_type='movie'; "
+              "DELETE FROM director_link WHERE media_id=old.idMovie AND media_type='movie'; "
               "DELETE FROM studiolinkmovie WHERE idMovie=old.idMovie; "
               "DELETE FROM countrylinkmovie WHERE idMovie=old.idMovie; "
-              "DELETE FROM writerlinkmovie WHERE idMovie=old.idMovie; "
+              "DELETE FROM writer_link WHERE media_id=old.idMovie AND media_type='movie'; "
               "DELETE FROM movielinktvshow WHERE idMovie=old.idMovie; "
               "DELETE FROM art WHERE media_id=old.idMovie AND media_type='movie'; "
               "DELETE FROM taglinks WHERE idMedia=old.idMovie AND media_type='movie'; "
               "END");
   m_pDS->exec("CREATE TRIGGER delete_tvshow AFTER DELETE ON tvshow FOR EACH ROW BEGIN "
-              "DELETE FROM actorlinktvshow WHERE idShow=old.idShow; "
-              "DELETE FROM directorlinktvshow WHERE idShow=old.idShow; "
+              "DELETE FROM actor_link WHERE media_id=old.idShow AND media_type='tvshow'; "
+              "DELETE FROM director_link WHERE media_id=old.idShow AND media_type='tvshow'; "
               "DELETE FROM tvshowlinkpath WHERE idShow=old.idShow; "
               "DELETE FROM genrelinktvshow WHERE idShow=old.idShow; "
               "DELETE FROM movielinktvshow WHERE idShow=old.idShow; "
@@ -365,17 +322,17 @@ void CVideoDatabase::CreateAnalytics()
               "DELETE FROM taglinks WHERE idMedia=old.idShow AND media_type='tvshow'; "
               "END");
   m_pDS->exec("CREATE TRIGGER delete_musicvideo AFTER DELETE ON musicvideo FOR EACH ROW BEGIN "
-              "DELETE FROM artistlinkmusicvideo WHERE idMVideo=old.idMVideo; "
-              "DELETE FROM directorlinkmusicvideo WHERE idMVideo=old.idMVideo; "
+              "DELETE FROM actor_link WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
+              "DELETE FROM director_link WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
               "DELETE FROM genrelinkmusicvideo WHERE idMVideo=old.idMVideo; "
               "DELETE FROM studiolinkmusicvideo WHERE idMVideo=old.idMVideo; "
               "DELETE FROM art WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
               "DELETE FROM taglinks WHERE idMedia=old.idMVideo AND media_type='musicvideo'; "
               "END");
   m_pDS->exec("CREATE TRIGGER delete_episode AFTER DELETE ON episode FOR EACH ROW BEGIN "
-              "DELETE FROM actorlinkepisode WHERE idEpisode=old.idEpisode; "
-              "DELETE FROM directorlinkepisode WHERE idEpisode=old.idEpisode; "
-              "DELETE FROM writerlinkepisode WHERE idEpisode=old.idEpisode; "
+              "DELETE FROM actor_link WHERE media_id=old.idEpisode AND media_type='episode'; "
+              "DELETE FROM director_link WHERE media_id=old.idEpisode AND media_type='episode'; "
+              "DELETE FROM writer_link WHERE media_id=old.idEpisode AND media_type='episode'; "
               "DELETE FROM art WHERE media_id=old.idEpisode AND media_type='episode'; "
               "END");
   m_pDS->exec("CREATE TRIGGER delete_season AFTER DELETE ON seasons FOR EACH ROW BEGIN "
@@ -384,8 +341,8 @@ void CVideoDatabase::CreateAnalytics()
   m_pDS->exec("CREATE TRIGGER delete_set AFTER DELETE ON sets FOR EACH ROW BEGIN "
               "DELETE FROM art WHERE media_id=old.idSet AND media_type='set'; "
               "END");
-  m_pDS->exec("CREATE TRIGGER delete_person AFTER DELETE ON actors FOR EACH ROW BEGIN "
-              "DELETE FROM art WHERE media_id=old.idActor AND media_type IN ('actor','artist','writer','director'); "
+  m_pDS->exec("CREATE TRIGGER delete_person AFTER DELETE ON actor FOR EACH ROW BEGIN "
+              "DELETE FROM art WHERE media_id=old.actor_id AND media_type IN ('actor','artist','writer','director'); "
               "END");
   m_pDS->exec("CREATE TRIGGER delete_tag AFTER DELETE ON taglinks FOR EACH ROW BEGIN "
               "DELETE FROM tag WHERE idTag=old.idTag AND idTag NOT IN (SELECT DISTINCT idTag FROM taglinks); "
@@ -1511,31 +1468,31 @@ int CVideoDatabase::AddCountry(const CStdString& strCountry)
   return AddToTable("country", "idCountry", "strCountry", strCountry);
 }
 
-int CVideoDatabase::AddActor(const CStdString& strActor, const CStdString& thumbURLs, const CStdString &thumb)
+int CVideoDatabase::AddActor(const CStdString& name, const CStdString& thumbURLs, const CStdString &thumb)
 {
   try
   {
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
     int idActor = -1;
-    CStdString strSQL=PrepareSQL("select idActor from actors where strActor like '%s'", strActor.c_str());
+    CStdString strSQL=PrepareSQL("select actor_id from actor where name like '%s'", name.c_str());
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
       // doesnt exists, add it
-      strSQL=PrepareSQL("insert into actors (idActor, strActor, strThumb) values( NULL, '%s','%s')", strActor.c_str(),thumbURLs.c_str());
+      strSQL=PrepareSQL("insert into actor (actor_id, name, art_urls) values( NULL, '%s','%s')", name.c_str(),thumbURLs.c_str());
       m_pDS->exec(strSQL.c_str());
       idActor = (int)m_pDS->lastinsertid();
     }
     else
     {
-      idActor = m_pDS->fv("idActor").get_asInt();
+      idActor = m_pDS->fv(0).get_asInt();
       m_pDS->close();
       // update the thumb url's
       if (!thumbURLs.empty())
       {
-        strSQL=PrepareSQL("update actors set strThumb='%s' where idActor=%i",thumbURLs.c_str(),idActor);
+        strSQL=PrepareSQL("update actor set art_urls='%s' where actor_id=%i",thumbURLs.c_str(),idActor);
         m_pDS->exec(strSQL.c_str());
       }
     }
@@ -1546,7 +1503,7 @@ int CVideoDatabase::AddActor(const CStdString& strActor, const CStdString& thumb
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strActor.c_str() );
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, name.c_str() );
   }
   return -1;
 }
@@ -1560,13 +1517,12 @@ void CVideoDatabase::AddLinkToActor(const char *table, int actorID, const char *
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
-    CStdString strSQL=PrepareSQL("select * from actorlink%s where idActor=%i and id%s=%i", table, actorID, field, secondID);
-    m_pDS->query(strSQL.c_str());
+    std::string sql=PrepareSQL("SELECT 1 FROM actor_link WHERE actor_id=%i AND media_id=%i AND media_type='%s'", actorID, secondID, table);
+    m_pDS->query(sql);
     if (m_pDS->num_rows() == 0)
-    {
-      // doesnt exists, add it
-      strSQL=PrepareSQL("insert into actorlink%s (idActor, id%s, strRole, iOrder) values(%i,%i,'%s',%i)", table, field, actorID, secondID, role.c_str(), order);
-      m_pDS->exec(strSQL.c_str());
+    { // doesnt exists, add it
+      sql = PrepareSQL("INSERT INTO actor_link (actor_id, media_id, media_type, role, cast_order) VALUES(%i,%i,'%s','%s',%i)", actorID, secondID, table, role.c_str(), order);
+      m_pDS->exec(sql);
     }
     m_pDS->close();
   }
@@ -1646,19 +1602,14 @@ void CVideoDatabase::AddActorLinksToItem(int mediaId, const std::string& mediaTy
     {
       int idValue = AddActor(*i, "");
       if (idValue > -1)
-      {
-        if (mediaType == "musicvideo") // musicvideo links use idMVideo rather than idMusicVideo
-          AddToLinkTable((field + "link" + mediaType).c_str(), ("id" + field).c_str(), idValue, "idMVideo", mediaId);
-        else
-          AddToLinkTable((field + "link" + mediaType).c_str(), ("id" + field).c_str(), idValue, ("id" + mediaType).c_str(), mediaId);
-      }
+        AddToLinkTable((field + "_link").c_str(), "actor_id", idValue, "media_id", mediaId, "media_type", mediaType.c_str());
     }
   }
 }
 
 void CVideoDatabase::UpdateActorLinksToItem(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values)
 {
-  std::string sql = PrepareSQL("delete from %slink%s where id%s=%i", field.c_str(), mediaType.c_str(), mediaType.c_str(), mediaId);
+  std::string sql = PrepareSQL("DELETE FROM %s_link WHERE media_id=%i AND media_type='%s'", field.c_str(), mediaId, mediaType.c_str());
   m_pDS->exec(sql);
 
   AddActorLinksToItem(mediaId, mediaType, field, values);
@@ -1838,10 +1789,10 @@ void CVideoDatabase::DeleteDetailsForTvShow(int idTvShow)
     strSQL=PrepareSQL("delete from genrelinktvshow where idShow=%i", idTvShow);
     m_pDS->exec(strSQL.c_str());
 
-    strSQL=PrepareSQL("delete from actorlinktvshow where idShow=%i", idTvShow);
+    strSQL=PrepareSQL("DELETE FROM actor_link WHERE media_id=%i AND media_type='tvshow'", idTvShow);
     m_pDS->exec(strSQL.c_str());
 
-    strSQL=PrepareSQL("delete from directorlinktvshow where idShow=%i", idTvShow);
+    strSQL=PrepareSQL("DELETE FROM director_link WHERE media_id=%i AND media_type='tvshow'", idTvShow);
     m_pDS->exec(strSQL.c_str());
 
     strSQL=PrepareSQL("delete from studiolinktvshow where idShow=%i", idTvShow);
@@ -1866,37 +1817,37 @@ void CVideoDatabase::DeleteDetailsForTvShow(int idTvShow)
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetMoviesByActor(const CStdString& strActor, CFileItemList& items)
+void CVideoDatabase::GetMoviesByActor(const CStdString& name, CFileItemList& items)
 {
   Filter filter;
-  filter.join  = "LEFT JOIN actorlinkmovie ON actorlinkmovie.idMovie=movieview.idMovie "
-                 "LEFT JOIN actors a ON a.idActor=actorlinkmovie.idActor "
-                 "LEFT JOIN directorlinkmovie ON directorlinkmovie.idMovie=movieview.idMovie "
-                 "LEFT JOIN actors d ON d.idActor=directorlinkmovie.idDirector";
-  filter.where = PrepareSQL("a.strActor='%s' OR d.strActor='%s'", strActor.c_str(), strActor.c_str());
+  filter.join  = "LEFT JOIN actor_link ON actor_link.media_id=movieview.idMovie AND actor_link.media_type='movie' "
+                 "LEFT JOIN actor a ON a.actor_id=actor_link.actor_id "
+                 "LEFT JOIN director_link ON director_link.media_id=movieview.idMovie AND director_link.media_type='movie' "
+                 "LEFT JOIN actor d ON d.actor_id=director_link.actor_id";
+  filter.where = PrepareSQL("a.name='%s' OR d.name='%s'", name.c_str(), name.c_str());
   filter.group = "movieview.idMovie";
   GetMoviesByWhere("videodb://movies/titles/", filter, items);
 }
 
-void CVideoDatabase::GetTvShowsByActor(const CStdString& strActor, CFileItemList& items)
+void CVideoDatabase::GetTvShowsByActor(const CStdString& name, CFileItemList& items)
 {
   Filter filter;
-  filter.join  = "LEFT JOIN actorlinktvshow ON actorlinktvshow.idShow=tvshowview.idShow "
-                 "LEFT JOIN actors a ON a.idActor=actorlinktvshow.idActor "
-                 "LEFT JOIN directorlinktvshow ON directorlinktvshow.idShow=tvshowview.idShow "
-                 "LEFT JOIN actors d ON d.idActor=directorlinktvshow.idDirector";
-  filter.where = PrepareSQL("a.strActor='%s' OR d.strActor='%s'", strActor.c_str(), strActor.c_str());
+  filter.join  = "LEFT JOIN actor_link ON actor_link.media_id=tvshowview.idShow AND actor_link.media_type='tvshow' "
+                 "LEFT JOIN actor a ON a.actor_id=actor_link.actor_id "
+                 "LEFT JOIN director_link ON director_link.media_id=tvshowview.idShow AND director_link.media_type='tvshow' "
+                 "LEFT JOIN actor d ON d.actor_id=director_link.actor_id";
+  filter.where = PrepareSQL("a.name='%s' OR d.name='%s'", name.c_str(), name.c_str());
   GetTvShowsByWhere("videodb://tvshows/titles/", filter, items);
 }
 
-void CVideoDatabase::GetEpisodesByActor(const CStdString& strActor, CFileItemList& items)
+void CVideoDatabase::GetEpisodesByActor(const CStdString& name, CFileItemList& items)
 {
   Filter filter;
-  filter.join  = "LEFT JOIN actorlinkepisode ON actorlinkepisode.idEpisode=episodeview.idEpisode "
-                 "LEFT JOIN actors a ON a.idActor=actorlinkepisode.idActor "
-                 "LEFT JOIN directorlinkepisode ON directorlinkepisode.idEpisode=episodeview.idEpisode "
-                 "LEFT JOIN actors d ON d.idActor=directorlinkepisode.idDirector";
-  filter.where = PrepareSQL("a.strActor='%s' OR d.strActor='%s'", strActor.c_str(), strActor.c_str());
+  filter.join  = "LEFT JOIN actor_link ON actor_link.media_id=episodeview.idEpisode AND actor_link.media_type='episode' "
+                 "LEFT JOIN actor a ON a.actor_id=actor_link.actor_id "
+                 "LEFT JOIN director_link ON director_link.media_id=episodeview.idEpisode AND director_link.media_type='episode' "
+                 "LEFT JOIN actor d ON d.actor_id=director_link.actor_id";
+  filter.where = PrepareSQL("a.name='%s' OR d.name='%s'", name.c_str(), name.c_str());
   filter.group = "episodeview.idEpisode";
   GetEpisodesByWhere("videodb://tvshows/titles/", filter, items);
 }
@@ -1911,9 +1862,9 @@ void CVideoDatabase::GetMusicVideosByArtist(const CStdString& strArtist, CFileIt
 
     CStdString strSQL;
     if (strArtist.empty())  // TODO: SMARTPLAYLISTS what is this here for???
-      strSQL=PrepareSQL("select distinct * from musicvideoview join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo=musicvideoview.idMVideo join actors on actors.idActor=artistlinkmusicvideo.idArtist");
+      strSQL=PrepareSQL("select distinct * from musicvideoview join actor_link on actor_link.media_id=musicvideoview.idMVideo AND actor_link.media_type='musicvideo' join actor on actor.actor_id=actor_link.actor_id");
     else
-      strSQL=PrepareSQL("select * from musicvideoview join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo=musicvideoview.idMVideo join actors on actors.idActor=artistlinkmusicvideo.idArtist where actors.strActor='%s'", strArtist.c_str());
+      strSQL=PrepareSQL("select * from musicvideoview join actor_link on actor_link.media_id=musicvideoview.idMVideo AND actor_link.media_type='musicvideo' join actor on actor.actor_id=actor_link.actor_id where actor.name='%s'", strArtist.c_str());
     m_pDS->query( strSQL.c_str() );
 
     while (!m_pDS->eof())
@@ -2663,7 +2614,7 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
     vector<int> vecStudios;
     AddGenreAndDirectorsAndStudios(details,vecDirectors,vecGenres,vecStudios);
 
-    AddActorLinksToItem(idMVideo, MediaTypeMusicVideo, "artist", details.m_artist);
+    AddActorLinksToItem(idMVideo, MediaTypeMusicVideo, "actor", details.m_artist);
 
     unsigned int i;
     for (i = 0; i < vecGenres.size(); ++i)
@@ -3131,10 +3082,10 @@ void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */)
     strSQL=PrepareSQL("delete from genrelinkmovie where idMovie=%i", idMovie);
     m_pDS->exec(strSQL.c_str());
 
-    strSQL=PrepareSQL("delete from actorlinkmovie where idMovie=%i", idMovie);
+    strSQL=PrepareSQL("DELETE FROM actor_link WHERE media_id=%i AND media_type='movie'", idMovie);
     m_pDS->exec(strSQL.c_str());
 
-    strSQL=PrepareSQL("delete from directorlinkmovie where idMovie=%i", idMovie);
+    strSQL=PrepareSQL("DELETE FROM director_link WHERE media_id=%i AND media_type='movie'", idMovie);
     m_pDS->exec(strSQL.c_str());
 
     strSQL=PrepareSQL("delete from studiolinkmovie where idMovie=%i", idMovie);
@@ -3143,7 +3094,7 @@ void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */)
     strSQL=PrepareSQL("delete from countrylinkmovie where idMovie=%i", idMovie);
     m_pDS->exec(strSQL.c_str());
 
-    strSQL=PrepareSQL("delete from writerlinkmovie where idMovie=%i", idMovie);
+    strSQL=PrepareSQL("DELETE FROM writer_link WHERE media_id=%i AND media_type='movie'", idMovie);
     m_pDS->exec(strSQL.c_str());
 
     // keep the movie table entry, linking to tv shows, and bookmarks
@@ -3300,13 +3251,13 @@ void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
       AnnounceRemove(MediaTypeEpisode, idEpisode);
 
     CStdString strSQL;
-    strSQL=PrepareSQL("delete from actorlinkepisode where idEpisode=%i", idEpisode);
+    strSQL=PrepareSQL("DELETE FROM actor_link WHERE media_id=%i AND media_type='episode'", idEpisode);
     m_pDS->exec(strSQL.c_str());
 
-    strSQL=PrepareSQL("delete from directorlinkepisode where idEpisode=%i", idEpisode);
+    strSQL=PrepareSQL("DELETE FROM director_link WHERE media_id=%i AND media_type='episode'", idEpisode);
     m_pDS->exec(strSQL.c_str());
 
-    strSQL=PrepareSQL("delete from writerlinkepisode where idEpisode=%i", idEpisode);
+    strSQL=PrepareSQL("DELETE FROM writer_link WHERE media_id=%i AND media_type='episode'", idEpisode);
     m_pDS->exec(strSQL.c_str());
 
     // keep episode table entry and bookmarks so we can update the data in place
@@ -3347,10 +3298,10 @@ void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
     strSQL=PrepareSQL("delete from genrelinkmusicvideo where idMVideo=%i", idMVideo);
     m_pDS->exec(strSQL.c_str());
 
-    strSQL=PrepareSQL("delete from artistlinkmusicvideo where idMVideo=%i", idMVideo);
+    strSQL=PrepareSQL("DELETE FROM actor_link WHERE media_id=%i AND media_type='musicvideo'", idMVideo);
     m_pDS->exec(strSQL.c_str());
 
-    strSQL=PrepareSQL("delete from directorlinkmusicvideo where idMVideo=%i", idMVideo);
+    strSQL=PrepareSQL("DELETE FROM director_link WHERE media_id=%i AND media_type='musicvideo'", idMVideo);
     m_pDS->exec(strSQL.c_str());
 
     strSQL=PrepareSQL("delete from studiolinkmusicvideo where idMVideo=%i", idMVideo);
@@ -3706,7 +3657,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
 
   if (getDetails)
   {
-    GetCast("movie", "idMovie", details.m_iDbId, details.m_cast);
+    GetCast(details.m_iDbId, "movie", details.m_cast);
 
     castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
     details.m_strPictureURL.Parse();
@@ -3772,7 +3723,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
 
   if (getDetails)
   {
-    GetCast("tvshow", "idShow", details.m_iDbId, details.m_cast);
+    GetCast(details.m_iDbId, "tvshow", details.m_cast);
 
     // get tags
     CStdString strSQL = PrepareSQL("SELECT tag.strTag FROM tag, taglinks WHERE taglinks.idMedia = %i AND taglinks.media_type = 'tvshow' AND taglinks.idTag = tag.idTag ORDER BY tag.idTag", idTvShow);
@@ -3841,8 +3792,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
 
   if (getDetails)
   {
-    GetCast("episode", "idEpisode", details.m_iDbId, details.m_cast);
-    GetCast("tvshow", "idShow", details.m_iIdShow, details.m_cast);
+    GetCast(details.m_iDbId, "episode", details.m_cast);
+    GetCast(details.m_iIdShow, "tvshow", details.m_cast);
 
     castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
     details.m_strPictureURL.Parse();
@@ -3907,26 +3858,26 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
   return details;
 }
 
-void CVideoDatabase::GetCast(const CStdString &table, const CStdString &table_id, int type_id, vector<SActorInfo> &cast)
+void CVideoDatabase::GetCast(int media_id, const std::string &media_type, vector<SActorInfo> &cast)
 {
   try
   {
     if (!m_pDB.get()) return;
     if (!m_pDS2.get()) return;
 
-    CStdString sql = PrepareSQL("SELECT actors.strActor,"
-                                "  actorlink%s.strRole,"
-                                "  actorlink%s.iOrder,"
-                                "  actors.strThumb,"
-                                "  art.url "
-                                "FROM actorlink%s"
-                                "  JOIN actors ON"
-                                "    actorlink%s.idActor=actors.idActor"
-                                "  LEFT JOIN art ON"
-                                "    art.media_id=actors.idActor AND art.media_type='actor' AND art.type='thumb' "
-                                "WHERE actorlink%s.%s=%i "
-                                "ORDER BY actorlink%s.iOrder",table.c_str(), table.c_str(), table.c_str(), table.c_str(), table.c_str(), table_id.c_str(), type_id, table.c_str());
-    m_pDS2->query(sql.c_str());
+    std::string sql = PrepareSQL("SELECT actor.name,"
+                                 "  actor_link.role,"
+                                 "  actor_link.cast_order,"
+                                 "  actor.art_urls,"
+                                 "  art.url "
+                                 "FROM actor_link"
+                                 "  JOIN actor ON"
+                                 "    actor_link.actor_id=actor.actor_id"
+                                 "  LEFT JOIN art ON"
+                                 "    art.media_id=actor.actor_id AND art.media_type='actor' AND art.type='thumb' "
+                                 "WHERE actor_link.media_id=%i AND actor_link.media_type='%s'"
+                                 "ORDER BY actor_link.cast_order", media_id, media_type.c_str());
+    m_pDS2->query(sql);
     while (!m_pDS2->eof())
     {
       SActorInfo info;
@@ -3954,7 +3905,7 @@ void CVideoDatabase::GetCast(const CStdString &table, const CStdString &table_id
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%s,%s,%i) failed", __FUNCTION__, table.c_str(), table_id.c_str(), type_id);
+    CLog::Log(LOGERROR, "%s(%i,%s) failed", __FUNCTION__, media_id, media_type.c_str());
   }
 }
 
@@ -4747,6 +4698,41 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("DELETE from art WHERE media_type='tvshow' AND NOT EXISTS (SELECT 1 FROM tvshow WHERE tvshow.idShow = art.media_id)");
     m_pDS->exec("DELETE from art WHERE media_type='season' AND NOT EXISTS (SELECT 1 FROM seasons WHERE seasons.idSeason = art.media_id)");
   }
+  if (iVersion < 91)
+  { // create actor link table
+    m_pDS->exec("CREATE TABLE actor_link(actor_id INT, media_id INT, media_type TEXT, role TEXT, cast_order INT)");
+    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT idActor,idMovie,'movie',strRole,iOrder from actorlinkmovie");
+    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT idActor,idShow,'tvshow',strRole,iOrder from actorlinktvshow");
+    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT idActor,idEpisode,'episode',strRole,iOrder from actorlinkepisode");
+    m_pDS->exec("DROP TABLE IF EXISTS actorlinkmovie");
+    m_pDS->exec("DROP TABLE IF EXISTS actorlinktvshow");
+    m_pDS->exec("DROP TABLE IF EXISTS actorlinkepisode");
+    m_pDS->exec("CREATE TABLE actor(actor_id INTEGER PRIMARY KEY, name TEXT, art_urls TEXT)");
+    m_pDS->exec("INSERT INTO actor(actor_id, name, art_urls) SELECT idActor,strActor,strThumb FROM actors");
+    m_pDS->exec("DROP TABLE IF EXISTS actors");
+
+    // directors
+    m_pDS->exec("CREATE TABLE director_link(actor_id INTEGER, media_id INTEGER, media_type TEXT)");
+    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT idDirector,idMovie,'movie' FROM directorlinkmovie");
+    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT idDirector,idShow,'tvshow' FROM directorlinktvshow");
+    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT idDirector,idEpisode,'episode' FROM directorlinkepisode");
+    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT idDirector,idMVideo,'musicvideo' FROM directorlinkmusicvideo");
+    m_pDS->exec("DROP TABLE IF EXISTS directorlinkmovie");
+    m_pDS->exec("DROP TABLE IF EXISTS directorlinktvshow");
+    m_pDS->exec("DROP TABLE IF EXISTS directorlinkepisode");
+    m_pDS->exec("DROP TABLE IF EXISTS directorlinkmusicvideo");
+
+    // writers
+    m_pDS->exec("CREATE TABLE writer_link(actor_id INTEGER, media_id INTEGER, media_type TEXT)");
+    m_pDS->exec("INSERT INTO writer_link(actor_id, media_id, media_type) SELECT idWriter,idMovie,'movie' FROM writerlinkmovie");
+    m_pDS->exec("INSERT INTO writer_link(actor_id, media_id, media_type) SELECT idWriter,idEpisode,'episode' FROM writerlinkepisode");
+    m_pDS->exec("DROP TABLE IF EXISTS writerlinkmovie");
+    m_pDS->exec("DROP TABLE IF EXISTS writerlinkepisode");
+
+    // music artist
+    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type) SELECT idArtist,idMVideo,'musicvideo' FROM artistlinkmusicvideo");
+    m_pDS->exec("DROP TABLE IF EXISTS artistlinkmusicvideo");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
@@ -5389,9 +5375,9 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
 
     CStdString strSQL = "select %s from musicvideoview ";
     Filter extFilter = filter;
-    extFilter.fields = PrepareSQL("musicvideoview.c%02d, musicvideoview.idMVideo, actors.strActor", VIDEODB_ID_MUSICVIDEO_ALBUM);
-    extFilter.AppendJoin(PrepareSQL("join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo = musicvideoview.idMVideo"));
-    extFilter.AppendJoin(PrepareSQL("join actors on actors.idActor = artistlinkmusicvideo.idArtist"));
+    extFilter.fields = PrepareSQL("musicvideoview.c%02d, musicvideoview.idMVideo, actor.name", VIDEODB_ID_MUSICVIDEO_ALBUM);
+    extFilter.AppendJoin(PrepareSQL("JOIN actor_link ON actor_link.media_id=musicvideoview.idMVideo AND actor_link.media_type='musicvideo'"));
+    extFilter.AppendJoin(PrepareSQL("JOIN actor ON actor.actor_id = actor_link.actor_id"));
     if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
       extFilter.fields += ", path.strPath";
@@ -5532,7 +5518,7 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
   return false;
 }
 
-bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& items, const CStdString &type, int idContent /* = -1 */, const Filter &filter /* = Filter() */, bool countOnly /* = false */)
+bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& items, const char *type, int idContent /* = -1 */, const Filter &filter /* = Filter() */, bool countOnly /* = false */)
 {
   if (NULL == m_pDB.get()) return false;
   if (NULL == m_pDS.get()) return false;
@@ -5553,72 +5539,88 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
     Filter extFilter = filter;
     if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
+      std::string view, view_id, media_type, extraField;
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
-        strSQL = "select %s from actors ";
-        extFilter.fields = "actors.idActor, actors.strActor, actors.strThumb, path.strPath, files.playCount";
-        extFilter.AppendJoin(PrepareSQL("join %slinkmovie on actors.idActor = %slinkmovie.id%s join movieview on %slinkmovie.idMovie = movieview.idMovie join files on files.idFile = movieview.idFile join path on path.idPath = files.idPath",
-                                        type.c_str(), type.c_str(), type.c_str(), type.c_str()));
+        view       = MediaTypeMovie;
+        view_id    = "idMovie";
+        media_type = MediaTypeMovie;
+        extraField = "files.playCount";
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
       {
-        strSQL = "select %s from actors ";
-        extFilter.fields = "actors.idActor, actors.strActor, actors.strThumb, path.strPath";
-        extFilter.AppendJoin(PrepareSQL("join %slinktvshow on actors.idActor = %slinktvshow.id%s join episodeview on %slinktvshow.idShow = episodeview.idShow join files on files.idFile = episodeview.idFile join path on path.idPath = files.idPath",
-                                        type.c_str(), type.c_str(), type.c_str(), type.c_str()));
+        view       = MediaTypeEpisode;
+        view_id    = "idShow";
+        media_type = MediaTypeTvShow;
       }
       else if (idContent == VIDEODB_CONTENT_EPISODES)
       {
-        strSQL = "select %s from actors ";
-        extFilter.fields = "actors.idActor, actors.strActor, actors.strThumb, path.strPath, files.playCount";
-        extFilter.AppendJoin(PrepareSQL("join %slinkepisode on actors.idActor = %slinkepisode.id%s join episodeview on %slinkepisode.idEpisode = episodeview.idEpisode join files on files.idFile = episodeview.idFile join path on path.idPath = files.idPath",
-                                        type.c_str(), type.c_str(), type.c_str(), type.c_str()));
+        view       = MediaTypeEpisode;
+        view_id    = "idEpisode";
+        media_type = MediaTypeEpisode;
+        extraField = "files.playCount";
       }
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
       {
-        strSQL = "select %s from actors ";
-        extFilter.fields = "actors.idActor, actors.strActor, actors.strThumb, path.strPath, files.playCount";
-        extFilter.AppendJoin(PrepareSQL("join %slinkmusicvideo on actors.idActor = %slinkmusicvideo.id%s join musicvideoview on %slinkmusicvideo.idMVideo = musicvideoview.idMVideo join files on files.idFile = musicvideoview.idFile join path on path.idPath = files.idPath",
-                                        type.c_str(), type.c_str(), type.c_str(), type.c_str()));
+        view       = MediaTypeMusicVideo;
+        view_id    = "idMVideo";
+        media_type = MediaTypeMusicVideo;
+        extraField = "files.playCount";
       }
       else
         return false;
+
+      strSQL = "SELECT %s FROM actor ";
+      extFilter.fields = "actor.actor_id, actor.name, actor.art_urls, path.strPath";
+      extFilter.AppendField(extraField);
+      extFilter.AppendJoin(PrepareSQL("JOIN %s_link ON actor.actor_id = %s_link.actor_id", type, type));
+      extFilter.AppendJoin(PrepareSQL("JOIN %sview ON %s_link.media_id = %sview.%s AND %s_link.media_type='%s'", view.c_str(), type, view.c_str(), view_id.c_str(), type, media_type.c_str()));
+      extFilter.AppendJoin(PrepareSQL("JOIN files ON files.idFile = %sview.idFile", view.c_str()));
+      extFilter.AppendJoin("JOIN path ON path.idPath = files.idPath");
     }
     else
     {
+      std::string view, view_id, media_type, extraField, extraJoin;
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
-        strSQL ="select %s from actors ";
-        extFilter.fields = "actors.idActor, actors.strActor, actors.strThumb, count(1), count(files.playCount)";
-        extFilter.AppendJoin(PrepareSQL("join %slinkmovie on actors.idActor = %slinkmovie.id%s join movieview on %slinkmovie.idMovie = movieview.idMovie join files on files.idFile = movieview.idFile",
-                                        type.c_str(), type.c_str(), type.c_str(), type.c_str()));
-        extFilter.AppendGroup("actors.idActor");
+        view       = MediaTypeMovie;
+        view_id    = "idMovie";
+        media_type = MediaTypeMovie;
+        extraField = "count(1), count(files.playCount)";
+        extraJoin  = PrepareSQL(" JOIN files ON files.idFile=%sview.idFile", view.c_str());
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
       {
-        strSQL = "select %s " + PrepareSQL("from actors, %slinktvshow, tvshowview ", type.c_str());
-        extFilter.fields = "distinct actors.idActor, actors.strActor, actors.strThumb";
-        extFilter.AppendWhere(PrepareSQL("actors.idActor = %slinktvshow.id%s and %slinktvshow.idShow = tvshowview.idShow",
-                                         type.c_str(), type.c_str(), type.c_str()));
+        view       = MediaTypeTvShow;
+        view_id    = "idShow";
+        media_type = MediaTypeTvShow;
       }
       else if (idContent == VIDEODB_CONTENT_EPISODES)
       {
-        strSQL = "select %s " + PrepareSQL("from %slinkepisode, actors, episodeview, files ", type.c_str());
-        extFilter.fields = "actors.idActor, actors.strActor, actors.strThumb, count(1), count(files.playCount)";
-        extFilter.AppendWhere(PrepareSQL("actors.idActor = %slinkepisode.id%s and %slinkepisode.idEpisode = episodeview.idEpisode and files.idFile = episodeview.idFile",
-                                         type.c_str(), type.c_str(), type.c_str()));
-        extFilter.AppendGroup("actors.idActor");
+        view       = MediaTypeEpisode;
+        view_id    = "idEpisode";
+        media_type = MediaTypeEpisode;
+        extraField = "count(1), count(files.playCount)";
+        extraJoin  = PrepareSQL("JOIN files ON files.idFile = %sview.idFile", view.c_str());
       }
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
       {
-        strSQL = "select %s from actors ";
-        extFilter.fields = "actors.idActor, actors.strActor, actors.strThumb, count(1), count(files.playCount)";
-        extFilter.AppendJoin(PrepareSQL("join %slinkmusicvideo on actors.idActor = %slinkmusicvideo.id%s join musicvideoview on %slinkmusicvideo.idMVideo = musicvideoview.idMVideo join files on files.idFile = musicvideoview.idFile",
-                                        type.c_str(), type.c_str(), type.c_str(), type.c_str()));
-        extFilter.AppendGroup("actors.idActor");
+        view       = MediaTypeMusicVideo;
+        view_id    = "idMVideo";
+        media_type = MediaTypeMusicVideo;
+        extraField = "count(1), count(files.playCount)";
+        extraJoin  = PrepareSQL("JOIN files ON files.idFile = %sview.idFile", view.c_str());
       }
       else
         return false;
+
+      strSQL ="SELECT %s FROM actor ";
+      extFilter.fields = "actor.actor_id, actor.name, actor.art_urls";
+      extFilter.AppendField(extraField);
+      extFilter.AppendJoin(PrepareSQL("JOIN %s_link on actor.actor_id = %s_link.actor_id", type, type));
+      extFilter.AppendJoin(PrepareSQL("JOIN %sview on %s_link.media_id = %sview.%s AND %s_link.media_type='%s'", view.c_str(), type, view.c_str(), view_id.c_str(), type, media_type.c_str()));
+      extFilter.AppendJoin(extraJoin);
+      extFilter.AppendGroup("actor.actor_id");
     }
 
     if (countOnly)
@@ -6600,7 +6602,7 @@ CStdString CVideoDatabase::GetTagById(int id)
 
 CStdString CVideoDatabase::GetPersonById(int id)
 {
-  return GetSingleValue("actors", "strActor", PrepareSQL("idActor=%i", id));
+  return GetSingleValue("actor", "name", PrepareSQL("actor_id=%i", id));
 }
 
 CStdString CVideoDatabase::GetStudioById(int id)
@@ -7046,9 +7048,9 @@ void CVideoDatabase::GetMovieActorsByName(const CStdString& strSearch, CFileItem
     if (NULL == m_pDS.get()) return;
 
     if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-      strSQL=PrepareSQL("select actors.idActor,actors.strActor,path.strPath from actorlinkmovie,actors,movie,files,path where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idMovie=movie.idMovie and files.idFile=movie.idFile and files.idPath=path.idPath and actors.strActor like '%%%s%%'",strSearch.c_str());
+      strSQL=PrepareSQL("select actor.actor_id,actor.name,path.strPath from actor_link,actor,movie,files,path where actor.actor_id=actor_link.actor_id and actor_link.media_id=movie.idMovie and actor_link.media_type='movie' and files.idFile=movie.idFile and files.idPath=path.idPath and actor.name like '%%%s%%'",strSearch.c_str());
     else
-      strSQL=PrepareSQL("select distinct actors.idActor,actors.strActor from actorlinkmovie,actors,movie where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idMovie=movie.idMovie and actors.strActor like '%%%s%%'",strSearch.c_str());
+      strSQL=PrepareSQL("select distinct actor.actor_id,actor.name from actor_link,actor,movie where actor.actor_id=actor_link.actor_id and actor_link.media_id=movie.idMovie and actor_link.media_type='movie' and actor.name like '%%%s%%'",strSearch.c_str());
     m_pDS->query( strSQL.c_str() );
 
     while (!m_pDS->eof())
@@ -7060,8 +7062,8 @@ void CVideoDatabase::GetMovieActorsByName(const CStdString& strSearch, CFileItem
           continue;
         }
 
-      CFileItemPtr pItem(new CFileItem(m_pDS->fv("actors.strActor").get_asString()));
-      CStdString strDir = StringUtils::Format("%i/", m_pDS->fv("actors.idActor").get_asInt());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()));
+      CStdString strDir = StringUtils::Format("%i/", m_pDS->fv(0).get_asInt());
       pItem->SetPath("videodb://movies/actors/"+ strDir);
       pItem->m_bIsFolder=true;
       items.Add(pItem);
@@ -7085,9 +7087,9 @@ void CVideoDatabase::GetTvShowsActorsByName(const CStdString& strSearch, CFileIt
     if (NULL == m_pDS.get()) return;
 
     if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-      strSQL=PrepareSQL("select actors.idActor,actors.strActor,path.strPath from actorlinktvshow,actors,tvshow,path,tvshowlinkpath where actors.idActor=actorlinktvshow.idActor and actorlinktvshow.idShow=tvshow.idShow and tvshowlinkpath.idPath=tvshow.idShow and tvshowlinkpath.idPath=path.idPath and actors.strActor like '%%%s%%'",strSearch.c_str());
+      strSQL=PrepareSQL("select actor.actor_id,actor.name,path.strPath from actor_link,actor,tvshow,path,tvshowlinkpath where actor.actor_id=actor_link.actor_id and actor_link.media_id=tvshow.idShow and actor_link.media_type='tvshow' and tvshowlinkpath.idPath=tvshow.idShow and tvshowlinkpath.idPath=path.idPath and actor.name like '%%%s%%'",strSearch.c_str());
     else
-      strSQL=PrepareSQL("select distinct actors.idActor,actors.strActor from actorlinktvshow,actors,tvshow where actors.idActor=actorlinktvshow.idActor and actorlinktvshow.idShow=tvshow.idShow and actors.strActor like '%%%s%%'",strSearch.c_str());
+      strSQL=PrepareSQL("select distinct actor.actor_id,actor.name from actor_link,actor,tvshow where actor.actor_id=actor_link.actor_id and actor_link.media_id=tvshow.idShow and actor_link.media_type='tvshow' and actor.name like '%%%s%%'",strSearch.c_str());
     m_pDS->query( strSQL.c_str() );
 
     while (!m_pDS->eof())
@@ -7099,8 +7101,8 @@ void CVideoDatabase::GetTvShowsActorsByName(const CStdString& strSearch, CFileIt
           continue;
         }
 
-      CFileItemPtr pItem(new CFileItem(m_pDS->fv("actors.strActor").get_asString()));
-      CStdString strDir = StringUtils::Format("%i/", m_pDS->fv("actors.idActor").get_asInt());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()));
+      CStdString strDir = StringUtils::Format("%i/", m_pDS->fv(0).get_asInt());
       pItem->SetPath("videodb://tvshows/actors/"+ strDir);
       pItem->m_bIsFolder=true;
       items.Add(pItem);
@@ -7125,11 +7127,11 @@ void CVideoDatabase::GetMusicVideoArtistsByName(const CStdString& strSearch, CFi
 
     CStdString strLike;
     if (!strSearch.empty())
-      strLike = "and actors.strActor like '%%%s%%'";
+      strLike = "and actor.name like '%%%s%%'";
     if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-      strSQL=PrepareSQL("select actors.idActor,actors.strActor,path.strPath from artistlinkmusicvideo,actors,musicvideo,files,path where actors.idActor=artistlinkmusicvideo.idArtist and artistlinkmusicvideo.idMVideo=musicvideo.idMVideo and files.idFile=musicvideo.idFile and files.idPath=path.idPath "+strLike,strSearch.c_str());
+      strSQL=PrepareSQL("select actor.actor_id,actor.name,path.strPath from actor_link,actor,musicvideo,files,path where actor.actor_id=actor_link.actor.id and actor_link.media_id=musicvideo.idMVideo AND actor_link.media_type='musicvideo' and files.idFile=musicvideo.idFile and files.idPath=path.idPath "+strLike,strSearch.c_str());
     else
-      strSQL=PrepareSQL("select distinct actors.idActor,actors.strActor from artistlinkmusicvideo,actors where actors.idActor=artistlinkmusicvideo.idArtist "+strLike,strSearch.c_str());
+      strSQL=PrepareSQL("select distinct actor.actor_id,actor.name from actor_link,actor where actor.actor_id=actor_link.actor_id AND actor_link.media_type='musicvideo' "+strLike,strSearch.c_str());
     m_pDS->query( strSQL.c_str() );
 
     while (!m_pDS->eof())
@@ -7141,8 +7143,8 @@ void CVideoDatabase::GetMusicVideoArtistsByName(const CStdString& strSearch, CFi
           continue;
         }
 
-      CFileItemPtr pItem(new CFileItem(m_pDS->fv("actors.strActor").get_asString()));
-      CStdString strDir = StringUtils::Format("%i/", m_pDS->fv("actors.idActor").get_asInt());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()));
+      CStdString strDir = StringUtils::Format("%i/", m_pDS->fv(0).get_asInt());
       pItem->SetPath("videodb://musicvideos/artists/"+ strDir);
       pItem->m_bIsFolder=true;
       items.Add(pItem);
@@ -7449,16 +7451,16 @@ int CVideoDatabase::GetMatchingMusicVideo(const CStdString& strArtist, const CSt
     if (strAlbum.empty() && strTitle.empty())
     { // we want to return matching artists only
       if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-        strSQL=PrepareSQL("select distinct actors.idActor,path.strPath from artistlinkmusicvideo,actors,musicvideo,files,path where actors.idActor=artistlinkmusicvideo.idArtist and artistlinkmusicvideo.idMVideo=musicvideo.idMVideo and files.idFile=musicvideo.idFile and files.idPath=path.idPath and actors.strActor like '%s'",strArtist.c_str());
+        strSQL=PrepareSQL("select distinct actor.actor_id,path.strPath from actor_link,actor,musicvideo,files,path where actor.actor_id=actor_link.actor_id and actor_link.media_id=musicvideo.idMVideo AND actor_link.media_type='musicvideo' and files.idFile=musicvideo.idFile and files.idPath=path.idPath and actor.name like '%s'",strArtist.c_str());
       else
-        strSQL=PrepareSQL("select distinct actors.idActor from artistlinkmusicvideo,actors where actors.idActor=artistlinkmusicvideo.idArtist and actors.strActor like '%s'",strArtist.c_str());
+        strSQL=PrepareSQL("select distinct actor.actor_id from actor_link,actor where actor.actor_id=actor_link.actor_id AND actor_link.media_type='musicvideo' and actor.name like '%s'",strArtist.c_str());
     }
     else
     { // we want to return the matching musicvideo
       if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-        strSQL = PrepareSQL("select musicvideo.idMVideo from musicvideo,files,path,artistlinkmusicvideo,actors where files.idFile=musicvideo.idFile and files.idPath=path.idPath and musicvideo.c%02d like '%s' and musicvideo.c%02d like '%s' and artistlinkmusicvideo.idMVideo=musicvideo.idMVideo and artistlinkmusicvideo.idArtist=actors.idActor and actors.strActor like '%s'",VIDEODB_ID_MUSICVIDEO_ALBUM,strAlbum.c_str(),VIDEODB_ID_MUSICVIDEO_TITLE,strTitle.c_str(),strArtist.c_str());
+        strSQL = PrepareSQL("select musicvideo.idMVideo from musicvideo,files,path,actor_link,actor where files.idFile=musicvideo.idFile and files.idPath=path.idPath and musicvideo.c%02d like '%s' and musicvideo.c%02d like '%s' and actor_link.media_id=musicvideo.idMVideo AND actor_link.media_type='musicvideo' and actor_link.actor_id=actor.actor_id and actor.name like '%s'",VIDEODB_ID_MUSICVIDEO_ALBUM,strAlbum.c_str(),VIDEODB_ID_MUSICVIDEO_TITLE,strTitle.c_str(),strArtist.c_str());
       else
-        strSQL = PrepareSQL("select musicvideo.idMVideo from musicvideo join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo=musicvideo.idMVideo join actors on actors.idActor=artistlinkmusicvideo.idArtist where musicvideo.c%02d like '%s' and musicvideo.c%02d like '%s' and actors.strActor like '%s'",VIDEODB_ID_MUSICVIDEO_ALBUM,strAlbum.c_str(),VIDEODB_ID_MUSICVIDEO_TITLE,strTitle.c_str(),strArtist.c_str());
+        strSQL = PrepareSQL("select musicvideo.idMVideo from musicvideo join actor_link on actor_link.media_id=musicvideo.idMVideo AND actor_link.media_type='musicvideo' join actor on actor.actor_id=actor_link.actor_id where musicvideo.c%02d like '%s' and musicvideo.c%02d like '%s' and actor.name like '%s'",VIDEODB_ID_MUSICVIDEO_ALBUM,strAlbum.c_str(),VIDEODB_ID_MUSICVIDEO_TITLE,strTitle.c_str(),strArtist.c_str());
     }
     m_pDS->query( strSQL.c_str() );
 
@@ -7750,9 +7752,9 @@ void CVideoDatabase::GetMovieDirectorsByName(const CStdString& strSearch, CFileI
     if (NULL == m_pDS.get()) return;
 
     if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-      strSQL = PrepareSQL("select distinct directorlinkmovie.idDirector,actors.strActor,path.strPath from movie,files,path,actors,directorlinkmovie where files.idFile=movie.idFile and files.idPath=path.idPath and directorlinkmovie.idMovie=movie.idMovie and directorlinkmovie.idDirector=actors.idActor and actors.strActor like '%%%s%%'",strSearch.c_str());
+      strSQL = PrepareSQL("select distinct director_link.actor_id,actor.name,path.strPath from movie,files,path,actor,director_link where files.idFile=movie.idFile and files.idPath=path.idPath and director_link.media_id=movie.idMovie AND director_link.media_type='movie' and director_link.actor_id=actor.actor_id and actor.name like '%%%s%%'",strSearch.c_str());
     else
-      strSQL = PrepareSQL("select distinct directorlinkmovie.idDirector,actors.strActor from movie,actors,directorlinkmovie where directorlinkmovie.idMovie=movie.idMovie and directorlinkmovie.idDirector=actors.idActor and actors.strActor like '%%%s%%'",strSearch.c_str());
+      strSQL = PrepareSQL("select distinct director_link.actor_id,actor.name from movie,actor,director_link where director_link.media_id=movie.idMovie AND director_link.media_type='movie' and director_link.actor_id=actor.actor_id and actor.name like '%%%s%%'",strSearch.c_str());
 
     m_pDS->query( strSQL.c_str() );
 
@@ -7765,8 +7767,8 @@ void CVideoDatabase::GetMovieDirectorsByName(const CStdString& strSearch, CFileI
           continue;
         }
 
-      CStdString strDir = StringUtils::Format("%i/", m_pDS->fv("directorlinkmovie.idDirector").get_asInt());
-      CFileItemPtr pItem(new CFileItem(m_pDS->fv("actors.strActor").get_asString()));
+      CStdString strDir = StringUtils::Format("%i/", m_pDS->fv(0).get_asInt());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()));
 
       pItem->SetPath("videodb://movies/directors/"+ strDir);
       pItem->m_bIsFolder=true;
@@ -7791,9 +7793,9 @@ void CVideoDatabase::GetTvShowsDirectorsByName(const CStdString& strSearch, CFil
     if (NULL == m_pDS.get()) return;
 
     if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-      strSQL = PrepareSQL("select distinct directorlinktvshow.idDirector,actors.strActor,path.strPath from tvshow,path,actors,directorlinktvshow,tvshowlinkpath where tvshowlinkpath.idPath=path.idPath and tvshowlinkpath.idShow=tvshow.idShow and directorlinktvshow.idShow=tvshow.idShow and directorlinktvshow.idDirector=actors.idActor and actors.strActor like '%%%s%%'",strSearch.c_str());
+      strSQL = PrepareSQL("select distinct director_link.actor_id,actor.name,path.strPath from tvshow,path,actor,director_link,tvshowlinkpath where tvshowlinkpath.idPath=path.idPath and tvshowlinkpath.idShow=tvshow.idShow and director_link.media_id=tvshow.idShow AND director_link.media_type='tvshow' and director_link.actor_id=actor.actor_id and actor.name like '%%%s%%'",strSearch.c_str());
     else
-      strSQL = PrepareSQL("select distinct directorlinktvshow.idDirector,actors.strActor from tvshow,actors,directorlinktvshow where directorlinktvshow.idShow=tvshow.idShow and directorlinktvshow.idDirector=actors.idActor and actors.strActor like '%%%s%%'",strSearch.c_str());
+      strSQL = PrepareSQL("select distinct director_link.actor_id,actor.name from tvshow,actor,director_link where director_link.media_id=tvshow.idShow AND director_link.media_type='tvshow' and director_link.actor_id=actor.actor_id and actor.name like '%%%s%%'",strSearch.c_str());
 
     m_pDS->query( strSQL.c_str() );
 
@@ -7806,10 +7808,10 @@ void CVideoDatabase::GetTvShowsDirectorsByName(const CStdString& strSearch, CFil
           continue;
         }
 
-      CStdString strDir = StringUtils::Format("%i/", m_pDS->fv("directorlinktvshow.idDirector").get_asInt());
-      CFileItemPtr pItem(new CFileItem(m_pDS->fv("actors.strActor").get_asString()));
+      CStdString strDir = StringUtils::Format("%i/", m_pDS->fv(0).get_asInt());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()));
 
-      pItem->SetPath("videodb://tvshows/studios/"+ strDir);
+      pItem->SetPath("videodb://tvshows/directors/"+ strDir);
       pItem->m_bIsFolder=true;
       items.Add(pItem);
       m_pDS->next();
@@ -7832,9 +7834,9 @@ void CVideoDatabase::GetMusicVideoDirectorsByName(const CStdString& strSearch, C
     if (NULL == m_pDS.get()) return;
 
     if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-      strSQL = PrepareSQL("select distinct directorlinkmusicvideo.idDirector,actors.strActor,path.strPath from musicvideo,files,path,actors,directorlinkmusicvideo where files.idFile=musicvideo.idFile and files.idPath=path.idPath and directorlinkmusicvideo.idMVideo=musicvideo.idMVideo and directorlinkmusicvideo.idDirector=actors.idActor and actors.strActor like '%%%s%%'",strSearch.c_str());
+      strSQL = PrepareSQL("select distinct director_link.actor_id,actor.name,path.strPath from musicvideo,files,path,actor,director_link where files.idFile=musicvideo.idFile and files.idPath=path.idPath and director_link.media_id=musicvideo.idMVideo AND director_link.media_type='musicvideo' and director_link.actor_id=actor.actor_id and actor.name like '%%%s%%'",strSearch.c_str());
     else
-      strSQL = PrepareSQL("select distinct directorlinkmusicvideo.idDirector,actors.strActor from musicvideo,actors,directorlinkmusicvideo where directorlinkmusicvideo.idMVideo=musicvideo.idMVideo and directorlinkmusicvideo.idDirector=actors.idActor and actors.strActor like '%%%s%%'",strSearch.c_str());
+      strSQL = PrepareSQL("select distinct director_link.actor_id,actor.name from musicvideo,actor,director_link where director_link.media_id=musicvideo.idMVideo AND director_link.media_type='musicvideo' and director_link.actor_id=actor.actor_id and actor.name like '%%%s%%'",strSearch.c_str());
 
     m_pDS->query( strSQL.c_str() );
 
@@ -7847,8 +7849,8 @@ void CVideoDatabase::GetMusicVideoDirectorsByName(const CStdString& strSearch, C
           continue;
         }
 
-      CStdString strDir = StringUtils::Format("%i/", m_pDS->fv("directorlinkmusicvideo.idDirector").get_asInt());
-      CFileItemPtr pItem(new CFileItem(m_pDS->fv("actors.strActor").get_asString()));
+      CStdString strDir = StringUtils::Format("%i/", m_pDS->fv(0).get_asInt());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()));
 
       pItem->SetPath("videodb://musicvideos/albums/"+ strDir);
       pItem->m_bIsFolder=true;
@@ -8161,17 +8163,10 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s: Cleaning actor table of actors, directors and writers", __FUNCTION__);
-    sql = "DELETE FROM actors "
-            "WHERE NOT EXISTS (SELECT 1 FROM actorlinkmovie WHERE actorlinkmovie.idActor = actors.idActor) "
-              "AND NOT EXISTS (SELECT 1 FROM directorlinkmovie WHERE directorlinkmovie.idDirector = actors.idActor) "
-              "AND NOT EXISTS (SELECT 1 FROM writerlinkmovie WHERE writerlinkmovie.idWriter = actors.idActor) "
-              "AND NOT EXISTS (SELECT 1 FROM actorlinktvshow WHERE actorlinktvshow.idActor = actors.idActor) "
-              "AND NOT EXISTS (SELECT 1 FROM actorlinkepisode WHERE actorlinkepisode.idActor = actors.idActor) "
-              "AND NOT EXISTS (SELECT 1 FROM directorlinktvshow WHERE directorlinktvshow.idDirector = actors.idActor) "
-              "AND NOT EXISTS (SELECT 1 FROM directorlinkepisode WHERE directorlinkepisode.idDirector = actors.idActor) "
-              "AND NOT EXISTS (SELECT 1 FROM writerlinkepisode WHERE writerlinkepisode.idWriter = actors.idActor) "
-              "AND NOT EXISTS (SELECT 1 FROM artistlinkmusicvideo WHERE artistlinkmusicvideo.idArtist = actors.idActor) "
-              "AND NOT EXISTS (SELECT 1 FROM directorlinkmusicvideo WHERE directorlinkmusicvideo.idDirector = actors.idActor)";
+    sql = "DELETE FROM actor "
+            "WHERE NOT EXISTS (SELECT 1 FROM actor_link WHERE actor_link.actor_id = actor.actor_id) "
+              "AND NOT EXISTS (SELECT 1 FROM director_link WHERE director_link.actor_id = actor.actor_id) "
+              "AND NOT EXISTS (SELECT 1 FROM writer_link WHERE writer_link.actor_id = actor.actor_id)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s: Cleaning studio table", __FUNCTION__);
@@ -9390,15 +9385,15 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
     option = options.find("directorid");
     if (option != options.end())
     {
-      filter.AppendJoin(PrepareSQL("join directorlinkmovie on directorlinkmovie.idMovie = movieview.idMovie"));
-      filter.AppendWhere(PrepareSQL("directorlinkmovie.idDirector = %i", (int)option->second.asInteger()));
+      filter.AppendJoin(PrepareSQL("JOIN director_link ON director_link.media_id=movieview.idMovie AND director_link.media_type='movie'"));
+      filter.AppendWhere(PrepareSQL("director_link.actor_id = %i", (int)option->second.asInteger()));
     }
 
     option = options.find("director");
     if (option != options.end())
     {
-      filter.AppendJoin(PrepareSQL("join directorlinkmovie on directorlinkmovie.idMovie = movieview.idMovie join actors on actors.idActor = directorlinkmovie.idDirector"));
-      filter.AppendWhere(PrepareSQL("actors.strActor like '%s'", option->second.asString().c_str()));
+      filter.AppendJoin(PrepareSQL("JOIN director_link ON director_link.media_id=movieview.idMovie AND director_link.media_type='movie' JOIN actor ON actor.actor_id = director_link.actor_id"));
+      filter.AppendWhere(PrepareSQL("actor.name LIKE '%s'", option->second.asString().c_str()));
     }
 
     option = options.find("year");
@@ -9408,15 +9403,15 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
     option = options.find("actorid");
     if (option != options.end())
     {
-      filter.AppendJoin(PrepareSQL("join actorlinkmovie on actorlinkmovie.idMovie = movieview.idMovie"));
-      filter.AppendWhere(PrepareSQL("actorlinkmovie.idActor = %i", (int)option->second.asInteger()));
+      filter.AppendJoin(PrepareSQL("JOIN actor_link ON actor_link.media_id=movieview.idMovie AND actor_link.media_type='movie'"));
+      filter.AppendWhere(PrepareSQL("actor_link.actor_id=%i", (int)option->second.asInteger()));
     }
 
     option = options.find("actor");
     if (option != options.end())
     {
-      filter.AppendJoin(PrepareSQL("join actorlinkmovie on actorlinkmovie.idMovie = movieview.idMovie join actors on actors.idActor = actorlinkmovie.idActor"));
-      filter.AppendWhere(PrepareSQL("actors.strActor like '%s'", option->second.asString().c_str()));
+      filter.AppendJoin(PrepareSQL("JOIN actor_link ON actor_link.media_id=movieview.idMovie AND actor_link.media_type='movie' JOIN actor ON actor.actor_id=actor_link.actor_id"));
+      filter.AppendWhere(PrepareSQL("actor.name LIKE '%s'", option->second.asString().c_str()));
     }
 
     option = options.find("setid");
@@ -9479,8 +9474,8 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
       option = options.find("directorid");
       if (option != options.end())
       {
-        filter.AppendJoin(PrepareSQL("join directorlinktvshow on directorlinktvshow.idShow = tvshowview.idShow"));
-        filter.AppendWhere(PrepareSQL("directorlinktvshow.idDirector = %i", (int)option->second.asInteger()));
+        filter.AppendJoin(PrepareSQL("JOIN director_link ON director_link.media_id=tvshowview.idShow AND director_link.media_type='tvshow'"));
+        filter.AppendWhere(PrepareSQL("director_link.actor_id = %i", (int)option->second.asInteger()));
       }
 
       option = options.find("year");
@@ -9490,15 +9485,15 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
       option = options.find("actorid");
       if (option != options.end())
       {
-        filter.AppendJoin(PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow = tvshowview.idShow"));
-        filter.AppendWhere(PrepareSQL("actorlinktvshow.idActor = %i", (int)option->second.asInteger()));
+        filter.AppendJoin(PrepareSQL("JOIN actor_link ON actor_link.media_id = tvshowview.idShow AND actor_link.media_type = 'tvshow'"));
+        filter.AppendWhere(PrepareSQL("actor_link.actor_id = %i", (int)option->second.asInteger()));
       }
 
       option = options.find("actor");
       if (option != options.end())
       {
-        filter.AppendJoin(PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow = tvshowview.idShow join actors on actors.idActor = actorlinktvshow.idActor"));
-        filter.AppendWhere(PrepareSQL("actors.strActor like '%s'", option->second.asString().c_str()));
+        filter.AppendJoin(PrepareSQL("JOIN actor_link ON actor_link.media_id = tvshowview.idShow AND actor_link.media_type = 'tvshow' JOIN actor ON actor.actor_id = actor_link.actor_id"));
+        filter.AppendWhere(PrepareSQL("actor.name LIKE '%s'", option->second.asString().c_str()));
       }
 
       option = options.find("tagid");
@@ -9531,8 +9526,8 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
       option = options.find("directorid");
       if (option != options.end())
       {
-        filter.AppendJoin(PrepareSQL("join directorlinktvshow on directorlinktvshow.idShow = seasonview.idShow"));
-        filter.AppendWhere(PrepareSQL("directorlinktvshow.idDirector = %i", (int)option->second.asInteger()));
+        filter.AppendJoin(PrepareSQL("JOIN director_link ON director_link.media_id=seasonview.idShow AND director_link.media_type='tvshow'"));
+        filter.AppendWhere(PrepareSQL("director_link.actor_id = %i", (int)option->second.asInteger()));
       }
       
       option = options.find("year");
@@ -9542,8 +9537,8 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
       option = options.find("actorid");
       if (option != options.end())
       {
-        filter.AppendJoin(PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow = seasonview.idShow"));
-        filter.AppendWhere(PrepareSQL("actorlinktvshow.idActor = %i", (int)option->second.asInteger()));
+        filter.AppendJoin(PrepareSQL("JOIN actor_link ON actor_link.media_id = seasonview.idShow AND actor_link.media_type = 'tvshow'"));
+        filter.AppendWhere(PrepareSQL("actor_link.actor_id = %i", (int)option->second.asInteger()));
       }
     }
     else if (itemType == "episodes")
@@ -9582,16 +9577,16 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
         if (option != options.end())
         {
           condition = true;
-          filter.AppendJoin(PrepareSQL("join directorlinktvshow on directorlinktvshow.idShow = episodeview.idShow"));
-          filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and directorlinktvshow.idDirector = %i", idShow, (int)option->second.asInteger()));
+          filter.AppendJoin(PrepareSQL("JOIN director_link ON director_link.media_id=episodeview.idShow AND director_link.media_type='tvshow'"));
+          filter.AppendWhere(PrepareSQL("director_link.actor_id = %i", (int)option->second.asInteger()));
         }
 
         option = options.find("director");
         if (option != options.end())
         {
           condition = true;
-          filter.AppendJoin(PrepareSQL("join directorlinktvshow on directorlinktvshow.idShow = episodeview.idShow join actors on actors.idActor = directorlinktvshow.idDirector"));
-          filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and actors.strActor like '%s'", idShow, option->second.asString().c_str()));
+          filter.AppendJoin(PrepareSQL("JOIN director_link ON director_link.media_id=episodeview.idShow AND director_link.media_type='tvshow' JOIN actor ON actor.actor_id = director_link.actor_id"));
+          filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and actor.name LIKE '%s'", idShow, option->second.asString().c_str()));
         }
       
         option = options.find("year");
@@ -9605,16 +9600,16 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
         if (option != options.end())
         {
           condition = true;
-          filter.AppendJoin(PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow = episodeview.idShow"));
-          filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and actorlinktvshow.idActor = %i", idShow, (int)option->second.asInteger()));
+          filter.AppendJoin(PrepareSQL("JOIN actor_link ON actor_link.media_id = episodeview.idShow AND actor_link.media_type = 'tvshow'"));
+          filter.AppendWhere(PrepareSQL("episodeview.idShow = %i AND actor_link.actor_id = %i", idShow, (int)option->second.asInteger()));
         }
 
         option = options.find("actor");
         if (option != options.end())
         {
           condition = true;
-          filter.AppendJoin(PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow = episodeview.idShow join actors on actors.idActor = actorlinktvshow.idActor"));
-          filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and actors.strActor = '%s'", idShow, option->second.asString().c_str()));
+          filter.AppendJoin(PrepareSQL("JOIN actor_link ON actor_link.media_id = episodeview.idShow AND actor_link.media_type = 'tvshow' JOIN actor ON actor.actor_id = actor_link.actor_id"));
+          filter.AppendWhere(PrepareSQL("episodeview.idShow = %i AND actor.name = '%s'", idShow, option->second.asString().c_str()));
         }
 
         if (!condition)
@@ -9638,15 +9633,15 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
         option = options.find("directorid");
         if (option != options.end())
         {
-          filter.AppendJoin(PrepareSQL("join directorlinkepisode on directorlinkepisode.idEpisode = episodeview.idEpisode"));
-          filter.AppendWhere(PrepareSQL("directorlinkepisode.idDirector = %i", (int)option->second.asInteger()));
+          filter.AppendJoin(PrepareSQL("JOIN director_link ON director_link.media_id=episodeview.idEpisode AND director_link.media_type='episode'"));
+          filter.AppendWhere(PrepareSQL("director_link.actor_id = %i", (int)option->second.asInteger()));
         }
 
         option = options.find("director");
         if (option != options.end())
         {
-          filter.AppendJoin(PrepareSQL("join directorlinkepisode on directorlinkepisode.idEpisode = episodeview.idEpisode join actors on actors.idActor = directorlinktvshow.idDirector"));
-          filter.AppendWhere(PrepareSQL("actors.strActor = %s", option->second.asString().c_str()));
+          filter.AppendJoin(PrepareSQL("JOIN director_link ON director_link.media_id=episodeview.idEpisode AND director_link.media_type='episode' JOIN actor ON actor.actor_id = director_link.actor_id"));
+          filter.AppendWhere(PrepareSQL("actor.name LIKE '%s'", option->second.asString().c_str()));
         }
       }
     }
@@ -9684,15 +9679,15 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
     option = options.find("directorid");
     if (option != options.end())
     {
-      filter.AppendJoin(PrepareSQL("join directorlinkmusicvideo on directorlinkmusicvideo.idMVideo = musicvideoview.idMVideo"));
-      filter.AppendWhere(PrepareSQL("directorlinkmusicvideo.idDirector = %i", (int)option->second.asInteger()));
+      filter.AppendJoin(PrepareSQL("JOIN director_link ON director_link.media_id=musicvideoview.idMVideo AND director_link.media_type='musicvideo'"));
+      filter.AppendWhere(PrepareSQL("director_link.actor_id = %i", (int)option->second.asInteger()));
     }
 
     option = options.find("director");
     if (option != options.end())
     {
-      filter.AppendJoin(PrepareSQL("join directorlinkmusicvideo on directorlinkmusicvideo.idMVideo = musicvideoview.idMVideo join actors on actors.idActor = directorlinkmusicvideo.idDirector"));
-      filter.AppendWhere(PrepareSQL("actors.strActor like '%s'", option->second.asString().c_str()));
+      filter.AppendJoin(PrepareSQL("JOIN director_link ON director_link.media_id=musicvideoview.idMVideo AND director_link.media_type='musicvideo' JOIN actor ON actor.actor_id = director_link.actor_id"));
+      filter.AppendWhere(PrepareSQL("actor.name LIKE '%s'", option->second.asString().c_str()));
     }
 
     option = options.find("year");
@@ -9703,8 +9698,8 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
     if (option != options.end())
     {
       if (itemType != "albums")
-        filter.AppendJoin(PrepareSQL("join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo = musicvideoview.idMVideo"));
-      filter.AppendWhere(PrepareSQL("artistlinkmusicvideo.idArtist = %i", (int)option->second.asInteger()));
+        filter.AppendJoin(PrepareSQL("JOIN actor_link ON actor_link.media_id=musicvideoview.idMVideo AND actor_link.media_type='musicvideo'"));
+      filter.AppendWhere(PrepareSQL("actor_link.actor_id = %i", (int)option->second.asInteger()));
     }
 
     option = options.find("artist");
@@ -9712,10 +9707,10 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
     {
       if (itemType != "albums")
       {
-        filter.AppendJoin(PrepareSQL("join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo = musicvideoview.idMVideo"));
-        filter.AppendJoin(PrepareSQL("join actors on actors.idActor = artistlinkmusicvideo.idArtist"));
+        filter.AppendJoin(PrepareSQL("JOIN actor_link ON actor_link.media_id=musicvideoview.idMVideo AND actor_link.media_type='musicvideo'"));
+        filter.AppendJoin(PrepareSQL("JOIN actor ON actor.actor_id=actor_link.actor_id"));
       }
-      filter.AppendWhere(PrepareSQL("actors.strActor like '%s'", option->second.asString().c_str()));
+      filter.AppendWhere(PrepareSQL("actor.name LIKE '%s'", option->second.asString().c_str()));
     }
 
     option = options.find("albumid");
