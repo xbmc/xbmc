@@ -779,10 +779,7 @@ protected:
   int GetFileId(const CStdString& url);
 
   int AddToTable(const CStdString& table, const CStdString& firstField, const CStdString& secondField, const CStdString& value);
-  int AddGenre(const CStdString& strGenre1);
   int AddActor(const CStdString& strActor, const CStdString& thumbURL, const CStdString &thumb = "");
-  int AddCountry(const CStdString& strCountry);
-  int AddStudio(const CStdString& strStudio1);
 
   int AddTvShow();
   int AddMusicVideo(const CStdString& strFilenameAndPath);
@@ -807,23 +804,13 @@ protected:
   void AddLinkToActor(int mediaId, const char *mediaType, int actorId, const CStdString &role, int order);
   void AddToLinkTable(const char *table, const char *firstField, int firstID, const char *secondField, int secondID, const char *typeField = NULL, const char *type = NULL);
   void RemoveFromLinkTable(const char *table, const char *firstField, int firstID, const char *secondField, int secondID, const char *typeField = NULL, const char *type = NULL);
-  void UpdateLinkTable(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
 
+  void AddLinksToItem(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
+  void UpdateLinksToItem(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
   void AddActorLinksToItem(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
   void UpdateActorLinksToItem(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
 
   void AddCast(int mediaId, const char *mediaType, const std::vector<SActorInfo> &cast);
-  void AddGenreToMovie(int idMovie, int idGenre);
-  void AddGenreToTvShow(int idTvShow, int idGenre);
-  void AddGenreToMusicVideo(int idMVideo, int idGenre);
-
-  void AddStudioToMovie(int idMovie, int idStudio);
-  void AddStudioToTvShow(int idTvShow, int idStudio);
-  void AddStudioToMusicVideo(int idMVideo, int idStudio);
-
-  void AddCountryToMovie(int idMovie, int idCountry);
-
-  void AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details, std::vector<int>& vecDirectors, std::vector<int>& vecGenres, std::vector<int>& vecStudios);
 
   void DeleteStreamDetails(int idFile);
   CVideoInfoTag GetDetailsByTypeAndId(VIDEODB_CONTENT_TYPE type, int id);
