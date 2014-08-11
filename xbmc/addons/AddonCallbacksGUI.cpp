@@ -1466,11 +1466,11 @@ void CGUIAddonWindow::AddItem(CFileItemPtr fileItem, int itemPosition)
   }
   else if (itemPosition <  -1 &&  !(itemPosition-1 < m_vecItems->Size()))
   {
-    m_vecItems->AddFront(fileItem,0);
+    m_vecItems->Insert(fileItem, 0);
   }
   else
   {
-    m_vecItems->AddFront(fileItem,itemPosition);
+    m_vecItems->Insert(fileItem, itemPosition);
   }
   m_viewControl.SetItems(*m_vecItems);
   UpdateButtons();

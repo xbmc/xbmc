@@ -381,9 +381,10 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
       {
         CFileItemPtr pItem(new CFileItem(".."));
         pItem->SetPath(strParentPath);
+        pItem->SetSpecialSort(SortSpecialOnTop);
         pItem->m_bIsFolder = true;
         pItem->m_bIsShareOrDrive = false;
-        items.AddFront(pItem, 0);
+        items.Add(pItem);
       }
     }
     else
@@ -392,9 +393,10 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
       // add parent path to the virtual directory
       CFileItemPtr pItem(new CFileItem(".."));
       pItem->SetPath("");
+      pItem->SetSpecialSort(SortSpecialOnTop);
       pItem->m_bIsShareOrDrive = false;
       pItem->m_bIsFolder = true;
-      items.AddFront(pItem, 0);
+      items.Add(pItem);
       strParentPath = "";
     }
 

@@ -55,7 +55,6 @@ bool CPlaylistDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     CFileItemPtr item = playlist[i];
     item->SetProperty("playlistposition", i);
     item->SetProperty("playlisttype", playlistTyp);
-    //item->m_iprogramCount = i; // the programCount is set as items are added!
     items.Add(item);
   }
 

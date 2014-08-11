@@ -476,7 +476,7 @@ void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo, bool bNotify /* = f
     int iOrder = -1;
     CPlayList &playlist = GetPlaylist(iPlaylist);
     if (m_iCurrentSong >= 0 && m_iCurrentSong < playlist.size())
-      iOrder = playlist[m_iCurrentSong]->m_iprogramCount;
+      iOrder = playlist[m_iCurrentSong]->m_iPosition;
 
     // shuffle or unshuffle as necessary
     if (bYesNo)

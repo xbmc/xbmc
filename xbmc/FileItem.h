@@ -460,6 +460,7 @@ public:
   std::string m_strLockCode;
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
   int m_iBadPwdCount;
+  unsigned int m_iPosition;
 
 private:
   /*! \brief initialize all members of this class (not CGUIListItem members) to default values.
@@ -545,7 +546,7 @@ public:
   void Clear();
   void ClearItems();
   void Add(const CFileItemPtr &pItem);
-  void AddFront(const CFileItemPtr &pItem, int itemPosition);
+  void Insert(const CFileItemPtr &pItem, int itemPosition);
   void Remove(CFileItem* pItem);
   void Remove(int iItem);
   CFileItemPtr Get(int iItem);

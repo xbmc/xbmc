@@ -135,11 +135,11 @@ bool CLibraryDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       item->SetLabel(label);
       if (!icon.empty() && g_TextureManager.HasTexture(icon))
         item->SetIconImage(icon);
-      item->m_iprogramCount = order;
       items.Add(item);
+      item->m_iPosition = order;
     }
   }
-  items.Sort(SortByPlaylistOrder, SortOrderAscending);
+  items.Sort(SortByUnsorted, SortOrderAscending);
   return true;
 }
 

@@ -59,6 +59,7 @@ typedef enum {
   FieldVirtualFolder,
   FieldRandom,
   FieldDateTaken,
+  FieldPosition,
 
   // fields retrievable from the database
   FieldId,

@@ -56,6 +56,11 @@ string ArrayToString(SortAttribute attributes, const CVariant &variant, const st
   return "";
 }
 
+string ByUnsorted(SortAttribute attributes, const SortItem &values)
+{
+  return values.at(FieldPosition).asString();
+}
+
 string ByLabel(SortAttribute attributes, const SortItem &values)
 {
   if (attributes & SortAttributeIgnoreArticle)
@@ -177,8 +182,7 @@ string ByProgramCount(SortAttribute attributes, const SortItem &values)
 
 string ByPlaylistOrder(SortAttribute attributes, const SortItem &values)
 {
-  // TODO: Playlist order is hacked into program count variable (not nice, but ok until 2.0)
-  return ByProgramCount(attributes, values);
+  return ByUnsorted(attributes, values);
 }
 
 string ByGenre(SortAttribute attributes, const SortItem &values)
@@ -555,6 +559,7 @@ map<SortBy, SortUtils::SortPreparator> fillPreparators()
   preparators[SortByChannel]                  = ByChannel;
   preparators[SortByChannelNumber]            = ByChannelNumber;
   preparators[SortByDateTaken]                = ByDateTaken;
+  preparators[SortByUnsorted]                 = ByUnsorted;
 
   return preparators;
 }
@@ -594,7 +599,7 @@ map<SortBy, Fields> fillSortingFields()
   sortingFields[SortByVotes].insert(FieldVotes);
   sortingFields[SortByTop250].insert(FieldTop250);
   sortingFields[SortByProgramCount].insert(FieldProgramCount);
-  sortingFields[SortByPlaylistOrder].insert(FieldProgramCount);
+  sortingFields[SortByPlaylistOrder].insert(FieldPosition);
   sortingFields[SortByEpisodeNumber].insert(FieldEpisodeNumber);
   sortingFields[SortByEpisodeNumber].insert(FieldSeason);
   sortingFields[SortByEpisodeNumber].insert(FieldEpisodeNumberSpecialSort);
@@ -628,6 +633,7 @@ map<SortBy, Fields> fillSortingFields()
   sortingFields[SortByChannel].insert(FieldChannelName);
   sortingFields[SortByChannelNumber].insert(FieldChannelNumber);
   sortingFields[SortByDateTaken].insert(FieldDateTaken);
+  sortingFields[SortByUnsorted].insert(FieldPosition);
   sortingFields.insert(pair<SortBy, Fields>(SortByRandom, Fields()));
 
   return sortingFields;
@@ -841,6 +847,7 @@ const sort_map table[] = {
   { SortByChannel,                  SORT_METHOD_CHANNEL_NUMBER,               SortAttributeNone,          549 },
   { SortByDateTaken,                SORT_METHOD_DATE_TAKEN,                   SortAttributeIgnoreFolders, 577 },
   { SortByNone,                     SORT_METHOD_NONE,                         SortAttributeNone,          16018 },
+  { SortByUnsorted,                 SORT_METHOD_UNSORTED,                     SortAttributeIgnoreFolders, 571 },
   // the following have no corresponding SORT_METHOD_*
   { SortByAlbumType,                SORT_METHOD_NONE,                         SortAttributeNone,          564 },
   { SortByVotes,                    SORT_METHOD_NONE,                         SortAttributeNone,          205 },

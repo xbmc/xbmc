@@ -2427,7 +2427,9 @@ msgctxt "#570"
 msgid "Date added"
 msgstr ""
 
+#. Sort By: <sort method>
 #: xbmc/playlists/SmartPlaylist.cpp
+#: xbmc/utils/SortUtils.cpp
 msgctxt "#571"
 msgid "Default"
 msgstr ""

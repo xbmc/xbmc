@@ -229,7 +229,7 @@ void CPVRRecordings::GetSubDirectories(const std::string &strBase, CFileItemList
       if(pItem->m_dateTime < results->Get(i)->m_dateTime)
         pItem->m_dateTime = results->Get(i)->m_dateTime;
     }
-    results->AddFront(pItem, 0);
+    results->Add(pItem);
   }
 }
 

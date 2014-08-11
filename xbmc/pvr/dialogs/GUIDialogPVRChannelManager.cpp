@@ -521,7 +521,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel(CGUIMessage &message)
             channel->SetProperty("ClientName", g_localizeStrings.Get(19209));
             channel->SetProperty("ParentalLocked", false);
 
-            m_channelItems->AddFront(channel, m_iSelected);
+            m_channelItems->Insert(channel, m_iSelected);
             m_viewControl.SetItems(*m_channelItems);
             Renumber();
           }

@@ -53,7 +53,6 @@ namespace XFILE
       for (int i = 0; i < (int)playlist.size(); ++i)
       {
         CFileItemPtr item = playlist[i];
-        item->m_iprogramCount = i;  // hack for playlist order
         items.Add(item);
       }
     }

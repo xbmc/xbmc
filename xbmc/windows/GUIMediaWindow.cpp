@@ -681,9 +681,10 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
   {
     CFileItemPtr pItem(new CFileItem(".."));
     pItem->SetPath(strParentPath);
+    pItem->SetSpecialSort(SortSpecialOnTop);
     pItem->m_bIsFolder = true;
     pItem->m_bIsShareOrDrive = false;
-    items.AddFront(pItem, 0);
+    items.Add(pItem);
   }
 
   int iWindow = GetID();
@@ -1790,9 +1791,10 @@ void CGUIMediaWindow::OnFilterItems(const std::string &filter)
   {
     CFileItemPtr pItem(new CFileItem(".."));
     pItem->SetPath(m_history.GetParentPath());
+    pItem->SetSpecialSort(SortSpecialOnTop);
     pItem->m_bIsFolder = true;
     pItem->m_bIsShareOrDrive = false;
-    m_vecItems->AddFront(pItem, 0);
+    m_vecItems->Add(pItem);
   }
 
   // and update our view control + buttons
