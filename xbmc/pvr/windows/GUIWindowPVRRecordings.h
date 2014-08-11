@@ -34,6 +34,7 @@ namespace PVR
 
     static std::string GetResumeString(const CFileItem& item);
 
+    void OnWindowLoaded();
     bool OnMessage(CGUIMessage& message);
     bool OnAction(const CAction &action);
     void GetContextButtons(int itemNumber, CContextButtons &buttons);
@@ -44,7 +45,7 @@ namespace PVR
 
   protected:
     std::string GetDirectoryPath(void);
-    virtual void AfterUpdate(CFileItemList& items);
+    void OnPrepareFileItems(CFileItemList &items);
 
   private:
     bool OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button);

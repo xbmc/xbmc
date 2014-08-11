@@ -24,6 +24,9 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 
 #define CONTROL_BTNVIEWASICONS            2
+#define CONTROL_BTNSORTBY                 3
+#define CONTROL_BTNSORTASC                4
+#define CONTROL_BTNGROUPITEMS             5
 #define CONTROL_BTNCHANNELGROUPS          28
 
 #define CONTROL_LABEL_HEADER1             29
