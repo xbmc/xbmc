@@ -191,13 +191,21 @@ CStdString CPlexPlayQueueManager::getURIFromItem(const CFileItem& item, const CS
   if (item.m_bIsFolder)
     itemDirStr = "directory";
 
+  CStdString librarySectionUUID;
   if (!item.HasProperty("librarySectionUUID"))
   {
-    CLog::Log(LOGWARNING,
-              "CPlexPlayQueueManager::getURIFromItem item %s doesn't have a section UUID",
-              item.GetPath().c_str());
-    return "";
+    if (!item.HasProperty("extraType"))
+    {
+      CLog::Log(LOGWARNING,
+                "CPlexPlayQueueManager::getURIFromItem item %s doesn't have a section UUID",
+                item.GetPath().c_str());
+      return "";
+    }
+    else
+      librarySectionUUID = "extras";
   }
+  else
+    librarySectionUUID = item.GetProperty("librarySectionUUID").asString();
 
   CStdString realURI;
   if (uri.empty())
@@ -211,7 +219,7 @@ CStdString CPlexPlayQueueManager::getURIFromItem(const CFileItem& item, const CS
   }
 
   CStdString ret;
-  ret.Format("library://%s/%s/%s", item.GetProperty("librarySectionUUID").asString(), itemDirStr,
+  ret.Format("library://%s/%s/%s", librarySectionUUID, itemDirStr,
              realURI);
 
   return ret;
