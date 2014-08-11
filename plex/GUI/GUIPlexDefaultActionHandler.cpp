@@ -10,6 +10,8 @@
 #include "GUIBaseContainer.h"
 #include "Client/PlexServerManager.h"
 #include "ApplicationMessenger.h"
+#include "VideoInfoTag.h"
+#include "GUIMessage.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CGUIPlexDefaultActionHandler::CGUIPlexDefaultActionHandler()
@@ -50,6 +52,21 @@ CGUIPlexDefaultActionHandler::CGUIPlexDefaultActionHandler()
   action = new ACTION_SETTING(ACTION_PLEX_PQ_ADDUPTONEXT);
   action->WindowSettings[WINDOW_HOME].contextMenuVisisble = true;
   action->WindowSettings[WINDOW_VIDEO_NAV].contextMenuVisisble = true;
+  m_ActionSettings.push_back(*action);
+  
+  action = new ACTION_SETTING(ACTION_MARK_AS_WATCHED);
+  action->WindowSettings[WINDOW_HOME].contextMenuVisisble = true;
+  action->WindowSettings[WINDOW_VIDEO_NAV].contextMenuVisisble = true;
+  m_ActionSettings.push_back(*action);
+  
+  action = new ACTION_SETTING(ACTION_MARK_AS_UNWATCHED);
+  action->WindowSettings[WINDOW_HOME].contextMenuVisisble = true;
+  action->WindowSettings[WINDOW_VIDEO_NAV].contextMenuVisisble = true;
+  m_ActionSettings.push_back(*action);
+  
+  action = new ACTION_SETTING(ACTION_TOGGLE_WATCHED);
+  action->WindowSettings[WINDOW_HOME].contextMenuVisisble = false;
+  action->WindowSettings[WINDOW_VIDEO_NAV].contextMenuVisisble = false;
   m_ActionSettings.push_back(*action);
 
   action = new ACTION_SETTING(ACTION_PLEX_PQ_CLEAR);
@@ -129,6 +146,34 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
         return true;
         break;
 
+      case ACTION_MARK_AS_WATCHED:
+        if (item->IsVideo() && item->IsPlexMediaServerLibrary())
+        {
+          item->MarkAsWatched(true);
+          g_windowManager.SendMessage(GUI_MSG_PLEX_ITEM_WATCHEDSTATE_CHANGED, 0, windowID, actionID, 0);
+          return true;
+        }
+        break;
+        
+      case ACTION_MARK_AS_UNWATCHED:
+        if (item->IsVideo() && item->IsPlexMediaServerLibrary())
+        {
+          item->MarkAsUnWatched(true);
+          g_windowManager.SendMessage(GUI_MSG_PLEX_ITEM_WATCHEDSTATE_CHANGED, 0, windowID, actionID, 0);
+          return true;
+        }
+        break;
+        
+      case ACTION_TOGGLE_WATCHED:
+        if (item->IsVideo() && item->IsPlexMediaServerLibrary())
+        {
+          if (item->GetVideoInfoTag()->m_playCount == 0)
+            return OnAction(windowID, ACTION_MARK_AS_WATCHED, item, container);
+          if (item->GetVideoInfoTag()->m_playCount > 0)
+            return OnAction(windowID, ACTION_MARK_AS_UNWATCHED, item, container);
+          break;
+        }
+        
       case ACTION_PLEX_PQ_CLEAR:
         if (item->HasProperty("playQueueItemID"))
         {
@@ -229,7 +274,31 @@ void CGUIPlexDefaultActionHandler::GetContextButtonsForAction(int actionID, CFil
     case ACTION_PLEX_SHUFFLE_ALL:
       if (container->Size())
         buttons.Add(actionID, 52600);
+      break;
 
+    case ACTION_MARK_AS_WATCHED:
+    {
+      if (item->IsVideo() && item->IsPlexMediaServerLibrary())
+      {
+        CStdString viewOffset = item->GetProperty("viewOffset").asString();
+        
+        if (item->GetVideoInfoTag()->m_playCount == 0 || viewOffset.size() > 0)
+          buttons.Add(actionID, 16103);
+        break;
+      }
+    }
+      
+    case ACTION_MARK_AS_UNWATCHED:
+    {
+      if (item->IsVideo() && item->IsPlexMediaServerLibrary())
+      {
+        CStdString viewOffset = item->GetProperty("viewOffset").asString();
+        
+        if (item->GetVideoInfoTag()->m_playCount > 0 || viewOffset.size() > 0)
+          buttons.Add(actionID, 16104);
+        break;
+      }
+    }
 
     case ACTION_PLEX_PQ_CLEAR:
       if (item->HasProperty("playQueueItemID"))
@@ -398,3 +467,24 @@ bool CGUIPlexDefaultActionHandler::IsMusicContainer(CFileItemListPtr container) 
   return (dirType == PLEX_DIR_TYPE_ALBUM || dirType == PLEX_DIR_TYPE_ARTIST ||
           dirType == PLEX_DIR_TYPE_TRACK);
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIPlexDefaultActionHandler::IsVideoContainer(CFileItemListPtr container) const
+{
+  if (!container)
+    return false;
+  
+  EPlexDirectoryType dirType = container->GetPlexDirectoryType();
+  
+  if (dirType == PLEX_DIR_TYPE_CHANNEL && container->Get(0))
+    dirType = container->Get(0)->GetPlexDirectoryType();
+  
+  return (dirType == PLEX_DIR_TYPE_MOVIE    ||
+          dirType == PLEX_DIR_TYPE_SHOW     ||
+          dirType == PLEX_DIR_TYPE_SEASON   ||
+          dirType == PLEX_DIR_TYPE_PLAYLIST ||
+          dirType == PLEX_DIR_TYPE_EPISODE  ||
+          dirType == PLEX_DIR_TYPE_VIDEO    ||
+          dirType == PLEX_DIR_TYPE_CLIP);
+}
+
