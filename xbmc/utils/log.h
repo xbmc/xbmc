@@ -59,6 +59,7 @@ public:
   static int  GetLogLevel();
 
   /* PLEX */
+  static bool InitStdErr();
   static void FatalError(const char* format, ...);
   /* END PLEX */
 private:

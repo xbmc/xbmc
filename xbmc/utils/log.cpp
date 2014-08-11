@@ -154,6 +154,19 @@ void CLog::Log(int loglevel, const char *format, ... )
   }
 }
 
+/* PLEX */
+bool CLog::InitStdErr()
+{
+  CSingleLock waitLock(critSec);
+  if (!m_file)
+  {
+    m_file = stderr;
+  }
+  
+  return m_file != NULL;
+}
+/* END PLEX */
+
 bool CLog::Init(const char* path)
 {
   CSingleLock waitLock(critSec);

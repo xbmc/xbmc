@@ -28,6 +28,10 @@
 #include "settings/GUISettings.h"
 #include "Util.h"
 
+/* PLEX */
+#include "log.h"
+/* END PLEX */
+
 #include <cstdio>
 #include <cstdlib>
 #include <climits>
@@ -37,6 +41,12 @@ void TestBasicEnvironment::SetUp()
   char *tmp;
   CStdString xbmcTempPath;
   XFILE::CFile *f;
+  
+  /* PLEX */
+  const char* env = getenv("TEST_LOGGING");
+  if (env && strcasecmp(env, "1") == 0)
+    CLog::InitStdErr();
+  /* END PLEX */
 
   /* NOTE: The below is done to fix memleak warning about unitialized variable
    * in xbmcutil::GlobalsSingleton<CAdvancedSettings>::getInstance().
