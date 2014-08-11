@@ -327,6 +327,10 @@ void CVideoDatabase::CreateAnalytics()
   m_pDS->exec("CREATE UNIQUE INDEX ix_taglinks_2 ON taglinks (idMedia, media_type(20), idTag)");
   m_pDS->exec("CREATE INDEX ix_taglinks_3 ON taglinks (media_type(20))");
 
+  m_pDS->exec("CREATE UNIQUE INDEX ix_actorlinks_1 ON actorlinks (idActor, media_type(20), media_id)");
+  m_pDS->exec("CREATE UNIQUE INDEX ix_actorlinks_2 ON actorlinks (media_id, media_type(20), idActor)");
+  m_pDS->exec("CREATE INDEX ix_actorlinks_3 ON actorlinks (media_type(20))");
+
   CLog::Log(LOGINFO, "%s - creating triggers", __FUNCTION__);
   m_pDS->exec("CREATE TRIGGER delete_movie AFTER DELETE ON movie FOR EACH ROW BEGIN "
               "DELETE FROM genrelinkmovie WHERE idMovie=old.idMovie; "
@@ -1549,6 +1553,14 @@ void CVideoDatabase::AddLinkToActor(const char *table, int actorID, const char *
       // doesnt exists, add it
       strSQL=PrepareSQL("insert into actorlink%s (idActor, id%s, strRole, iOrder) values(%i,%i,'%s',%i)", table, field, actorID, secondID, role.c_str(), order);
       m_pDS->exec(strSQL.c_str());
+    }
+    m_pDS->close();
+    std::string sql=PrepareSQL("select 1 from actorlinks where idActor=%i and media_id=%i and media_type='%s'", actorID, secondID, table);
+    m_pDS->query(sql);
+    if (m_pDS->num_rows() == 0)
+    { // doesnt exists, add it
+      sql = PrepareSQL("insert into actorlinks (idActor, media_id, media_type, strRole, iOrder) values(%i,%i,'%s','%s',%i)", actorID, secondID, table, role.c_str(), order);
+      m_pDS->exec(sql);
     }
     m_pDS->close();
   }
@@ -3953,6 +3965,29 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
   return details;
 }
 
+class CStats
+{
+public:
+  CStats() : n(0), m(0), s2(0) {}
+
+  void add_data(float x)
+  {
+    n++;
+    double delta = x - m;
+    m += delta/n;
+    s2 = s2 + delta*(x - m);
+  }
+  float mean() const { return m; }
+  float sd() const { return sqrt(var()); };
+  float ci() const { return 1.96f * sqrt(var() / n); }
+private:
+  float var() const { return s2 / (n-1); }
+
+  unsigned int n;
+  double       m;
+  double       s2;
+};
+
 void CVideoDatabase::GetCast(const CStdString &table, const CStdString &table_id, int type_id, vector<SActorInfo> &cast)
 {
   try
@@ -3960,6 +3995,10 @@ void CVideoDatabase::GetCast(const CStdString &table, const CStdString &table_id
     if (!m_pDB.get()) return;
     if (!m_pDS2.get()) return;
 
+    static CStats o, n, d;
+    CStopWatch timer; timer.Start();
+    for (unsigned int i = 0; i < 1000; i++)
+    {
     CStdString sql = PrepareSQL("SELECT actors.strActor,"
                                 "  actorlink%s.strRole,"
                                 "  actorlink%s.iOrder,"
@@ -3973,6 +4012,31 @@ void CVideoDatabase::GetCast(const CStdString &table, const CStdString &table_id
                                 "WHERE actorlink%s.%s=%i "
                                 "ORDER BY actorlink%s.iOrder",table.c_str(), table.c_str(), table.c_str(), table.c_str(), table.c_str(), table_id.c_str(), type_id, table.c_str());
     m_pDS2->query(sql.c_str());
+    }
+    float t = timer.GetElapsedMilliseconds();
+    o.add_data(t);
+    timer.StartZero();
+    for (unsigned int i = 0; i < 1000; i++)
+    {
+    std::string sql = PrepareSQL("SELECT actors.strActor,"
+                                 "  actorlinks.strRole,"
+                                 "  actorlinks.iOrder,"
+                                 "  actors.strThumb,"
+                                 "  art.url "
+                                 "FROM actorlinks"
+                                 "  JOIN actors ON"
+                                 "    actorlinks.idActor=actors.idActor"
+                                 "  LEFT JOIN art ON"
+                                 "    art.media_id=actors.idActor AND art.media_type='actor' AND art.type='thumb' "
+                                 "WHERE actorlinks.media_id=%i AND actorlinks.media_type='%s'"
+                                 "ORDER BY actorlinks.iOrder", type_id, table.c_str());
+    m_pDS2->query(sql);
+    }
+    n.add_data(timer.GetElapsedMilliseconds());
+    d.add_data(timer.GetElapsedMilliseconds() - t);
+
+    CLog::Log(LOGDEBUG, "Time to retrieve cast: old (%f +/- %f) ms, new (%f +/- %f), diff (%f +/- %f)  ms", o.mean(), o.ci(), n.mean(), n.ci(), d.mean(), d.ci());
+
     while (!m_pDS2->eof())
     {
       SActorInfo info;
@@ -4793,11 +4857,19 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("DELETE from art WHERE media_type='tvshow' AND NOT EXISTS (SELECT 1 FROM tvshow WHERE tvshow.idShow = art.media_id)");
     m_pDS->exec("DELETE from art WHERE media_type='season' AND NOT EXISTS (SELECT 1 FROM seasons WHERE seasons.idSeason = art.media_id)");
   }
+  if (iVersion < 90)
+  { // test whether a single actor link table is going to be reasonable
+    m_pDS->exec("CREATE TABLE actorlinks (idActor integer, media_id integer, media_type TEXT, strRole text, iOrder integer)");
+    // and fill it
+    m_pDS->exec("INSERT into actorlinks(idActor, media_id, media_type, strRole, iOrder) SELECT idActor,idMovie,'movie',strRole,iOrder from actorlinkmovie");
+    m_pDS->exec("INSERT into actorlinks(idActor, media_id, media_type, strRole, iOrder) SELECT idActor,idShow,'tvshow',strRole,iOrder from actorlinktvshow");
+    m_pDS->exec("INSERT into actorlinks(idActor, media_id, media_type, strRole, iOrder) SELECT idActor,idEpisode,'episode',strRole,iOrder from actorlinkepisode");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 89;
+  return 90;
 }
 
 bool CVideoDatabase::LookupByFolders(const CStdString &path, bool shows)
