@@ -1132,6 +1132,9 @@
     <ClCompile Include="..\..\xbmc\input\ButtonTranslator.cpp">
       <Filter>input</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\KeyboardLayout.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\input\KeyboardLayoutConfiguration.cpp">
       <Filter>input</Filter>
     </ClCompile>
@@ -4027,6 +4030,9 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\ButtonTranslator.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\KeyboardLayout.h">
       <Filter>input</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\KeyboardLayoutConfiguration.h">

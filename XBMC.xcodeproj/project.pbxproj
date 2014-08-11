@@ -1087,6 +1087,9 @@
 		7CF34D9F1930264A00D543C5 /* AudioEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF34D9D1930264A00D543C5 /* AudioEncoder.cpp */; };
 		7CF34DA01930264A00D543C5 /* AudioEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF34D9D1930264A00D543C5 /* AudioEncoder.cpp */; };
 		7CF34DA11930264A00D543C5 /* AudioEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF34D9D1930264A00D543C5 /* AudioEncoder.cpp */; };
+		7CF80DC919710DC2003B2B34 /* KeyboardLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF80DC719710DC2003B2B34 /* KeyboardLayout.cpp */; };
+		7CF80DCA19710DC2003B2B34 /* KeyboardLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF80DC719710DC2003B2B34 /* KeyboardLayout.cpp */; };
+		7CF80DCB19710DC2003B2B34 /* KeyboardLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF80DC719710DC2003B2B34 /* KeyboardLayout.cpp */; };
 		810C9FA90D67D1FB0095F5DD /* MythDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9FA50D67D1FB0095F5DD /* MythDirectory.cpp */; };
 		810C9FAA0D67D1FB0095F5DD /* MythFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9FA70D67D1FB0095F5DD /* MythFile.cpp */; };
 		815EE6350E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE6330E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp */; };
@@ -4590,6 +4593,8 @@
 		7CF1FB0A123B1AF000B2CBCB /* Variant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Variant.h; sourceTree = "<group>"; };
 		7CF34D9D1930264A00D543C5 /* AudioEncoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioEncoder.cpp; sourceTree = "<group>"; };
 		7CF34D9E1930264A00D543C5 /* AudioEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioEncoder.h; sourceTree = "<group>"; };
+		7CF80DC719710DC2003B2B34 /* KeyboardLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyboardLayout.cpp; sourceTree = "<group>"; };
+		7CF80DC819710DC2003B2B34 /* KeyboardLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardLayout.h; sourceTree = "<group>"; };
 		810C9FA50D67D1FB0095F5DD /* MythDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MythDirectory.cpp; sourceTree = "<group>"; };
 		810C9FA60D67D1FB0095F5DD /* MythDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MythDirectory.h; sourceTree = "<group>"; };
 		810C9FA70D67D1FB0095F5DD /* MythFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MythFile.cpp; sourceTree = "<group>"; };
@@ -6708,6 +6713,8 @@
 				18B7C8CC12942546009E7A26 /* ButtonTranslator.h */,
 				DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */,
 				DFAB049713F8376700B70BFB /* InertialScrollingHandler.h */,
+				7CF80DC719710DC2003B2B34 /* KeyboardLayout.cpp */,
+				7CF80DC819710DC2003B2B34 /* KeyboardLayout.h */,
 				18B7C8CD12942546009E7A26 /* KeyboardLayoutConfiguration.cpp */,
 				18B7C8CE12942546009E7A26 /* KeyboardLayoutConfiguration.h */,
 				18B7C8CF12942546009E7A26 /* KeyboardStat.cpp */,
@@ -11804,6 +11811,7 @@
 				7C525DF5195E2D8100BE3482 /* SaveFileStateJob.cpp in Sources */,
 				7C908894196358A8003D0619 /* auto_buffer.cpp in Sources */,
 				7CF34D9F1930264A00D543C5 /* AudioEncoder.cpp in Sources */,
+				7CF80DC919710DC2003B2B34 /* KeyboardLayout.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12992,6 +13000,7 @@
 				7C525DF7195E2D8100BE3482 /* SaveFileStateJob.cpp in Sources */,
 				7C908896196358A8003D0619 /* auto_buffer.cpp in Sources */,
 				7CF34DA11930264A00D543C5 /* AudioEncoder.cpp in Sources */,
+				7CF80DCB19710DC2003B2B34 /* KeyboardLayout.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14182,6 +14191,7 @@
 				7C525DF6195E2D8100BE3482 /* SaveFileStateJob.cpp in Sources */,
 				7C908895196358A8003D0619 /* auto_buffer.cpp in Sources */,
 				7CF34DA01930264A00D543C5 /* AudioEncoder.cpp in Sources */,
+				7CF80DCA19710DC2003B2B34 /* KeyboardLayout.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

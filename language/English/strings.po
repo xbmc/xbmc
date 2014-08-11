@@ -1300,7 +1300,13 @@ msgctxt "#309"
 msgid "User interface language"
 msgstr ""
 
-#empty strings from id 310 to 311
+#. Setting in international settings
+#: system/settings/settings.xml
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr ""
+
+#empty string with id 311
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -15354,9 +15360,14 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
+
+#. Description for international setting #310: Keyboard layouts
+#: system/settings/settings.xml
+msgctxt "#36432"
+msgid "Select virtual keyboard layouts."
 msgstr ""
 
-#empty strings from id 36432 to 36499
+#empty strings from id 36433 to 36499
 #end reservation
 
 #: system/settings/settings.xml

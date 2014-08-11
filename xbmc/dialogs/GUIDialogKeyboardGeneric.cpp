@@ -21,7 +21,6 @@
 #include "interfaces/AnnouncementManager.h"
 #include "input/XBMC_vkeys.h"
 #include "guilib/GUIEditControl.h"
-#include "guilib/GUILabelControl.h" // for backward compatibility
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
@@ -29,12 +28,14 @@
 #include "GUIDialogNumeric.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogKeyboardGeneric.h"
+#include "settings/Settings.h"
 #include "utils/RegExp.h"
+#include "utils/StringUtils.h"
 #include "ApplicationMessenger.h"
-#include "addons/Skin.h" // for backward compatibility
 
-// Symbol mapping (based on MS virtual keyboard - may need improving)
-static char symbol_map[37] = ")!@#$%^&*([]{}-_=+;:\'\",.<>/?\\|`~    ";
+#define BUTTON_ID_OFFSET      100
+#define BUTTONS_PER_ROW        20
+#define BUTTONS_MAX_ROWS        4
 
 #define CTL_BUTTON_DONE       300
 #define CTL_BUTTON_CANCEL     301
@@ -45,15 +46,13 @@ static char symbol_map[37] = ")!@#$%^&*([]{}-_=+;:\'\",.<>/?\\|`~    ";
 #define CTL_BUTTON_RIGHT      306
 #define CTL_BUTTON_IP_ADDRESS 307
 #define CTL_BUTTON_CLEAR      308
+#define CTL_BUTTON_LAYOUT     309
 
-#define CTL_LABEL_EDIT        310 // backward compatibility
 #define CTL_LABEL_HEADING     311
 #define CTL_EDIT              312
 
 #define CTL_BUTTON_BACKSPACE    8
-
-static char symbolButtons[] = "._-@/\\";
-#define NUM_SYMBOLS sizeof(symbolButtons) - 1
+#define CTL_BUTTON_SPACE       32
 
 #define SEARCH_DELAY         1000
 
@@ -66,29 +65,15 @@ CGUIDialogKeyboardGeneric::CGUIDialogKeyboardGeneric()
   m_bShift = false;
   m_hiddenInput = false;
   m_keyType = LOWER;
+  m_currentLayout = 0;
   m_strHeading = "";
   m_loadType = KEEP_IN_MEMORY;
 }
 
 void CGUIDialogKeyboardGeneric::OnWindowLoaded()
 {
-  CGUIEditControl *edit = (CGUIEditControl *)GetControl(CTL_EDIT);
-  if (!edit && g_SkinInfo && g_SkinInfo->APIVersion() < ADDON::AddonVersion("5.2.0"))
-  {
-    // backward compatibility: convert label to edit control
-    CGUILabelControl *label = (CGUILabelControl *)GetControl(CTL_LABEL_EDIT);
-    if (label && label->GetControlType() == CGUIControl::GUICONTROL_LABEL)
-    {
-      // create a new edit control positioned in the same spot
-      edit = new CGUIEditControl(label->GetParentID(), CTL_EDIT, label->GetXPosition(), label->GetYPosition(),
-                                 label->GetWidth(), label->GetHeight(), CTextureInfo(), CTextureInfo(),
-                                 label->GetLabelInfo(), "");
-      AddControl(edit);
-      m_defaultControl = CTL_EDIT;
-      m_defaultAlways  = true;
-    }
-  }
   // show the cursor always
+  CGUIEditControl *edit = (CGUIEditControl *)GetControl(CTL_EDIT);
   if (edit)
     edit->SetShowCursorAlways(true);
 
@@ -100,6 +85,20 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
   CGUIDialog::OnInitWindow();
 
   m_bIsConfirmed = false;
+
+  // fill in the keyboard layouts
+  m_currentLayout = 0;
+  m_layouts.clear();
+  std::vector<CKeyboardLayout> keyLayouts = CKeyboardLayout::LoadLayouts();
+  const CSetting *setting = CSettings::Get().GetSetting("locale.keyboardlayouts");
+  std::vector<std::string> layouts;
+  if (setting)
+    layouts = StringUtils::Split(setting->ToString(), "|");
+  for (std::vector<CKeyboardLayout>::const_iterator j = keyLayouts.begin(); j != keyLayouts.end(); ++j)
+  {
+    if (std::find(layouts.begin(), layouts.end(), j->GetName()) != layouts.end())
+      m_layouts.push_back(*j);
+  }
 
   // set alphabetic (capitals)
   UpdateButtons();
@@ -193,6 +192,9 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
           m_keyType = LOWER;
         UpdateButtons();
         break;
+      case CTL_BUTTON_LAYOUT:
+        OnLayout();
+        break;
       case CTL_BUTTON_SYMBOLS:
         OnSymbols();
         break;
@@ -263,17 +265,16 @@ const std::string &CGUIDialogKeyboardGeneric::GetText() const
   return m_text;
 }
 
-void CGUIDialogKeyboardGeneric::Character(char ch)
+void CGUIDialogKeyboardGeneric::Character(const std::string &ch)
 {
-  if (!ch) return;
+  if (ch.empty()) return;
 
-  std::string character(1, ch);
   // send text to edit control
   CGUIControl *edit = GetControl(CTL_EDIT);
   if (edit)
   {
     CGUIMessage msg(GUI_MSG_INPUT_TEXT, GetID(), CTL_EDIT);
-    msg.SetLabel(character);
+    msg.SetLabel(ch);
     edit->OnMessage(msg);
   }
 }
@@ -292,49 +293,21 @@ void CGUIDialogKeyboardGeneric::OnClickButton(int iButtonControl)
   {
     Backspace();
   }
-  else
-    Character(GetCharacter(iButtonControl));
-}
-
-char CGUIDialogKeyboardGeneric::GetCharacter(int iButton)
-{
-  // First the numbers
-  if (iButton >= 48 && iButton <= 57)
+  else if (iButtonControl == CTL_BUTTON_SPACE)
   {
-    if (m_keyType == SYMBOLS)
+    Character(" ");
+  }
+  else
+  {
+    const CGUIControl* pButton = GetControl(iButtonControl);
+    if (pButton)
     {
-      OnSymbols();
-      return symbol_map[iButton -48];
+      Character(pButton->GetDescription());
+      // reset the shift and symbol keys
+      if (m_bShift) OnShift();
+      if (m_keyType == SYMBOLS) OnSymbols();
     }
-    else
-      return (char)iButton;
   }
-  else if (iButton == 32) // space
-    return (char)iButton;
-  else if (iButton >= 65 && iButton < 91)
-  {
-    if (m_keyType == SYMBOLS)
-    { // symbol
-      OnSymbols();
-      return symbol_map[iButton - 65 + 10];
-    }
-    if ((m_keyType == CAPS && m_bShift) || (m_keyType == LOWER && !m_bShift))
-    { // make lower case
-      iButton += 32;
-    }
-    if (m_bShift)
-    { // turn off the shift key
-      OnShift();
-    }
-    return (char) iButton;
-  }
-  else
-  { // check for symbols
-    for (unsigned int i = 0; i < NUM_SYMBOLS; i++)
-      if (iButton == symbolButtons[i])
-        return (char)iButton;
-  }
-  return 0;
 }
 
 void CGUIDialogKeyboardGeneric::UpdateButtons()
@@ -343,47 +316,35 @@ void CGUIDialogKeyboardGeneric::UpdateButtons()
   SET_CONTROL_SELECTED(GetID(), CTL_BUTTON_CAPS, m_keyType == CAPS);
   SET_CONTROL_SELECTED(GetID(), CTL_BUTTON_SYMBOLS, m_keyType == SYMBOLS);
 
-  char szLabel[2];
-  szLabel[0] = 32;
-  szLabel[1] = 0;
-  std::string aLabel = szLabel;
+  if (m_currentLayout >= m_layouts.size())
+    m_currentLayout = 0;
+  CKeyboardLayout layout = m_layouts.empty() ? CKeyboardLayout() : m_layouts[m_currentLayout];
+  SET_CONTROL_LABEL(CTL_BUTTON_LAYOUT, layout.GetName());
 
-  // set numerals
-  for (int iButton = 48; iButton <= 57; iButton++)
+  unsigned int modifiers = CKeyboardLayout::MODIFIER_KEY_NONE;
+  if ((m_keyType == CAPS && !m_bShift) || (m_keyType == LOWER && m_bShift))
+    modifiers |= CKeyboardLayout::MODIFIER_KEY_SHIFT;
+  if (m_keyType == SYMBOLS)
   {
-    if (m_keyType == SYMBOLS)
-      aLabel[0] = symbol_map[iButton - 48];
-    else
-      aLabel[0] = iButton;
-    SetControlLabel(iButton, aLabel);
+    modifiers |= CKeyboardLayout::MODIFIER_KEY_SYMBOL;
+    if (m_bShift)
+      modifiers |= CKeyboardLayout::MODIFIER_KEY_SHIFT;
   }
 
-  // set correct alphabet characters...
-
-  for (int iButton = 65; iButton <= 90; iButton++)
+  for (unsigned int row = 0; row < BUTTONS_MAX_ROWS; row++)
   {
-    // set the correct case...
-    if ((m_keyType == CAPS && m_bShift) || (m_keyType == LOWER && !m_bShift))
-    { // make lower case
-      aLabel[0] = iButton + 32;
-    }
-    else if (m_keyType == SYMBOLS)
+    for (unsigned int column = 0; column < BUTTONS_PER_ROW; column++)
     {
-      aLabel[0] = symbol_map[iButton - 65 + 10];
+      int buttonID = (row * BUTTONS_PER_ROW) + column + BUTTON_ID_OFFSET;
+      std::string label = layout.GetCharAt(row, column, modifiers);
+      SetControlLabel(buttonID, label);
+      if (!label.empty())
+        SET_CONTROL_VISIBLE(buttonID);
+      else
+        SET_CONTROL_HIDDEN(buttonID);
     }
-    else
-    {
-      aLabel[0] = iButton;
-    }
-    SetControlLabel(iButton, aLabel);
-  }
-  for (unsigned int i = 0; i < NUM_SYMBOLS; i++)
-  {
-    aLabel[0] = symbolButtons[i];
-    SetControlLabel(symbolButtons[i], aLabel);
   }
 }
-
 
 void CGUIDialogKeyboardGeneric::OnDeinitWindow(int nextWindowID)
 {
@@ -400,6 +361,14 @@ void CGUIDialogKeyboardGeneric::MoveCursor(int iAmount)
   CGUIControl *edit = GetControl(CTL_EDIT);
   if (edit)
     edit->OnAction(CAction(iAmount < 0 ? ACTION_CURSOR_LEFT : ACTION_CURSOR_RIGHT));
+}
+
+void CGUIDialogKeyboardGeneric::OnLayout()
+{
+  m_currentLayout++;
+  if (m_currentLayout >= m_layouts.size())
+    m_currentLayout = 0;
+  UpdateButtons();
 }
 
 void CGUIDialogKeyboardGeneric::OnSymbols()

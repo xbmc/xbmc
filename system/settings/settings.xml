@@ -142,6 +142,19 @@
           </dependencies>
           <control type="list" format="string" />
         </setting>
+        <setting id="locale.keyboardlayouts" type="list[string]" label="310" help="36432">
+          <level>1</level>
+          <default>QWERTY</default>
+          <constraints>
+            <options>keyboardlayouts</options>
+            <delimiter>|</delimiter>
+            <minimumItems>1</minimumItems>
+            <maximumItems>3</maximumItems>
+          </constraints>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+          </control>
+        </setting>
       </group>
       <group id="2">
         <setting id="locale.timezonecountry" type="string" label="14079" help="36117">
