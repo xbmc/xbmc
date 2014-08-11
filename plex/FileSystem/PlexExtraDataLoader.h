@@ -28,6 +28,7 @@ private:
   string m_path;
   ExtraDataType m_type;
   CFileItemListPtr m_items;
+  CCriticalSection m_itemMapLock;
 };
 
 #endif // PLEXEXTRAINFOLOADER_H

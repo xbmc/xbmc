@@ -10,6 +10,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexExtraDataLoader::CPlexExtraDataLoader()
 {
+  CSingleLock lock(m_itemMapLock);
   m_items = CFileItemListPtr(new CFileItemList());
   m_type = NONE;
 }
@@ -33,6 +34,8 @@ void CPlexExtraDataLoader::loadDataForItem(CFileItemPtr pItem, ExtraDataType typ
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexExtraDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
+  CSingleLock lock(m_itemMapLock);
+  
   // grab the job
   CPlexDirectoryFetchJob* fjob = static_cast<CPlexDirectoryFetchJob*>(job);
   if (!fjob)
