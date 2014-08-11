@@ -25,6 +25,7 @@
 #include "guilib/GUIControl.h"
 #include "guilib/GUIListItemLayout.h"
 #include "guilib/IGUIContainer.h"
+#include "pvr/channels/PVRChannel.h"
 
 namespace EPG
 {
@@ -66,6 +67,7 @@ namespace EPG
     virtual int GetSelectedItem() const;
     const int GetSelectedChannel() { return m_channelCursor + m_channelOffset; }
     void SetSelectedChannel(int channelIndex);
+    PVR::CPVRChannel* GetChannel(int iIndex);
     virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
 
     virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);

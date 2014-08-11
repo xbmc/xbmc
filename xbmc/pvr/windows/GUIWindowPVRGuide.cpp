@@ -102,6 +102,22 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
     buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
 }
 
+void CGUIWindowPVRGuide::OnDeinitWindow(int nextWindowID)
+{
+  if (m_viewControl.GetCurrentControl() == GUIDE_VIEW_TIMELINE)
+  {
+    CGUIEPGGridContainer *epgGridContainer = (CGUIEPGGridContainer*) GetControl(m_viewControl.GetCurrentControl());
+    if (epgGridContainer)
+    {
+      CPVRChannel* channel = epgGridContainer->GetChannel(epgGridContainer->GetSelectedChannel());
+      if (channel != NULL)
+        m_selectedItemPath.at(m_bRadio) = channel->Path();
+    }
+  }
+  else
+    CGUIWindowPVRBase::OnDeinitWindow(nextWindowID);
+}
+
 bool CGUIWindowPVRGuide::OnAction(const CAction &action)
 {
   switch (action.GetID())
@@ -277,6 +293,7 @@ void CGUIWindowPVRGuide::UpdateViewNow()
   }
 
   m_viewControl.SetItems(*m_vecItems);
+  m_viewControl.SetSelectedItem(m_selectedItemPath.at(m_bRadio));
 }
 
 void CGUIWindowPVRGuide::UpdateViewNext()
@@ -297,11 +314,15 @@ void CGUIWindowPVRGuide::UpdateViewNext()
   }
 
   m_viewControl.SetItems(*m_vecItems);
+  m_viewControl.SetSelectedItem(m_selectedItemPath.at(m_bRadio));
 }
 
 void CGUIWindowPVRGuide::UpdateViewTimeline()
 {
   CGUIEPGGridContainer* epgGridContainer = (CGUIEPGGridContainer*) GetControl(m_viewControl.GetCurrentControl());
+  if (!epgGridContainer)
+    return;
+
   CPVRChannelGroupPtr group = GetGroup();
 
   if (m_bUpdateRequired || m_cachedTimeline->IsEmpty() || *m_cachedChannelGroup != *group)
@@ -338,18 +359,8 @@ void CGUIWindowPVRGuide::UpdateViewTimeline()
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, GetGroup()->GroupName());
   
   m_viewControl.SetItems(*m_vecItems);
-}
 
-bool CGUIWindowPVRGuide::SelectPlayingFile(void)
-{
-  if (m_viewControl.GetCurrentControl() == GUIDE_VIEW_TIMELINE)
-  {
-    CGUIEPGGridContainer* epgGridContainer = (CGUIEPGGridContainer*) GetControl(m_viewControl.GetCurrentControl());
-    if (epgGridContainer && g_PVRManager.IsPlaying())
-      epgGridContainer->SetChannel(g_application.CurrentFile());
-    return true;
-  }
-  return false;
+  epgGridContainer->SetChannel(m_selectedItemPath.at(m_bRadio));
 }
 
 bool CGUIWindowPVRGuide::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
