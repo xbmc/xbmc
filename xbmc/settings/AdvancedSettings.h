@@ -193,7 +193,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_DXVANoDeintProcForProgressive;
     int  m_videoFpsDetect;
     int  m_videoBusyDialogDelay_ms;
-    bool m_videoDisableSWMultithreading;
     StagefrightConfig m_stagefrightConfig;
     bool m_mediacodecForceSoftwareRendring;
 
