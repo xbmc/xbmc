@@ -46,8 +46,17 @@ namespace XbmcThreads
 
   public:
     inline ConditionVariable() 
-    { 
-      pthread_cond_init(&cond,NULL); 
+    {
+      /* PLEX */
+#ifdef HAVE_PTHREAD_CONDATTR_SETCLOCK
+      pthread_condattr_t attr;
+      pthread_condattr_init(&attr);
+      pthread_condattr_setclock(&attr, CLOCK_MONOTONIC);
+      pthread_cond_init(&cond, &attr);
+#else
+      /* END PLEX */
+      pthread_cond_init(&cond,NULL);
+#endif
     }
 
     inline ~ConditionVariable() 

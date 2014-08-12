@@ -53,6 +53,7 @@ set(functions
   tzset
   utime
   vprintf
+  pthread_condattr_setclock
 )
 
 foreach(func ${functions})
