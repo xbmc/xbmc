@@ -89,12 +89,17 @@ Gif::~Gif()
 {
   if (m_dll.IsLoaded())
   {
-    int err = m_dll.DGifCloseFile(m_gif);
-    if (err == D_GIF_ERR_CLOSE_FAILED)
-    {
+    int err = 0;
+    int reason = 0;
+#if GIFLIB_MAJOR == 5
+    err = m_dll.DGifCloseFile(m_gif, &reason);
+#else
+    err = m_dll.DGifCloseFile(m_gif);
+    free(m_gif);
+#endif
+    if (err == GIF_ERROR)
       CLog::Log(LOGDEBUG, "Gif::~Gif(): D_GIF_ERR_CLOSE_FAILED");
-      free(m_gif);
-    }
+
     m_dll.Unload();
     Release();
   }
@@ -262,7 +267,12 @@ bool Gif::IsAnimated(const char* file)
     {
       if (m_dll.DGifSlurp(gif) && gif->ImageCount > 1)
         m_isAnimated = 1;
+#if GIFLIB_MAJOR == 5
+      int err = 0;
+      m_dll.DGifCloseFile(gif, &err);
+#else
       m_dll.DGifCloseFile(gif);
+#endif
       gifFile.Close();
     }
   }

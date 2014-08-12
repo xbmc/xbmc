@@ -47,19 +47,20 @@ class DllLibGifInterface
 {
 public:
     virtual ~DllLibGifInterface() {}
-#if GIFLIB_MAJOR == 4
+#if GIFLIB_MAJOR == 5
+    virtual const char* GifErrorString(int ErrorCode) = 0;
+    virtual GifFileType* DGifOpenFileName(const char *GifFileName, int *Error) = 0;
+    virtual GifFileType *DGifOpen(void *userPtr, InputFunc readFunc, int *Error) = 0;
+    virtual int DGifSavedExtensionToGCB(GifFileType *GifFile, int ImageIndex, GraphicsControlBlock *GCB) = 0;
+    virtual int DGifCloseFile(GifFileType* GifFile, int *Error)=0;
+#else
     virtual char* GifErrorString() = 0;
     virtual GifFileType* DGifOpenFileName(const char *GifFileName) = 0;
     virtual GifFileType *DGifOpen(void *userPtr, InputFunc readFunc)=0;
     virtual int DGifGetExtension(GifFileType * GifFile, int *GifExtCode, GifByteType ** GifExtension) = 0;
     virtual int DGifGetExtensionNext(GifFileType * GifFile, GifByteType ** GifExtension) = 0;
-#else
-    virtual char* GifErrorString(int ErrorCode) = 0;
-    virtual GifFileType* DGifOpenFileName(const char *GifFileName, int *Error) = 0;
-    virtual GifFileType *DGifOpen(void *userPtr, InputFunc readFunc, int *Error) = 0;
-    virtual int DGifSavedExtensionToGCB(GifFileType *GifFile, int ImageIndex, GraphicsControlBlock *GCB) = 0;
-#endif
     virtual int DGifCloseFile(GifFileType* GifFile)=0;
+#endif
     virtual int DGifSlurp(GifFileType* GifFile)=0;
 };
 
@@ -67,19 +68,20 @@ class DllLibGif : public DllDynamic, DllLibGifInterface
 {
   DECLARE_DLL_WRAPPER(DllLibGif, DLL_PATH_LIBGIF)
 
-#if GIFLIB_MAJOR == 4
+#if GIFLIB_MAJOR == 5
+  DEFINE_METHOD1(const char*, GifErrorString, (int p1))
+  DEFINE_METHOD2(GifFileType*, DGifOpenFileName, (const char *p1, int *p2))
+  DEFINE_METHOD3(GifFileType*, DGifOpen, (void *p1, InputFunc p2, int *p3))
+  DEFINE_METHOD3(int, DGifSavedExtensionToGCB, (GifFileType *p1, int p2, GraphicsControlBlock *p3))
+  DEFINE_METHOD2(int, DGifCloseFile, (GifFileType* p1, int *p2))
+#else
   DEFINE_METHOD0(char*, GifErrorString)
   DEFINE_METHOD1(GifFileType*, DGifOpenFileName, (const char *p1))
   DEFINE_METHOD2(GifFileType*, DGifOpen, (void *p1, InputFunc p2))
   DEFINE_METHOD3(int, DGifGetExtension, (GifFileType *p1, int *p2, GifByteType **p3))
   DEFINE_METHOD2(int, DGifGetExtensionNext, (GifFileType *p1, GifByteType **p2))
-#else
-  DEFINE_METHOD1(char*, GifErrorString, (int p1))
-  DEFINE_METHOD2(GifFileType*, DGifOpenFileName, (const char *p1, int *p2))
-  DEFINE_METHOD3(GifFileType*, DGifOpen, (void *p1, InputFunc p2, int *p3))
-  DEFINE_METHOD3(int, DGifSavedExtensionToGCB, (GifFileType *p1, int p2, GraphicsControlBlock *p3))
-#endif
   DEFINE_METHOD1(int, DGifCloseFile, (GifFileType* p1))
+#endif
   DEFINE_METHOD1(int, DGifSlurp, (GifFileType* p1))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(GifErrorString)
