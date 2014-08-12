@@ -216,6 +216,11 @@ void CPlexServerManager::ServerRefreshComplete(int connectionType)
   {
     CLog::Log(LOGDEBUG, "CPlexServerManager::ServerRefreshComplete removing server %s", uuid.c_str());
     NotifyAboutServer(m_serverMap.find(uuid)->second, false);
+    
+    // if this is currently the best we have, let's remove that.
+    if (m_bestServer->GetUUID() == uuid)
+      ClearBestServer();
+    
     m_serverMap.erase(uuid);
   }
 }
