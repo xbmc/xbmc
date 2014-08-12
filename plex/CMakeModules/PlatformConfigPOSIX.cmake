@@ -44,6 +44,10 @@ if(NOT TARGET_RPI)
 endif()
 set(HAS_LIBRTMP 1)
 
+include(CheckCXXSymbolExists)
+set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
+CHECK_CXX_SYMBOL_EXISTS("pthread_condattr_setclock" "pthread.h" HAVE_PTHREAD_CONDATTR_SETCLOCK)
+
 if(NOT USE_INTERNAL_FFMPEG)
   add_definitions(-DUSE_EXTERNAL_FFMPEG)
 else()
