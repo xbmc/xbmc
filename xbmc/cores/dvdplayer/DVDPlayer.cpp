@@ -1108,6 +1108,8 @@ void CDVDPlayer::Process()
     return;
   }
 #else
+  m_EndPlaybackRequest = false;
+
   try
   {
     if (!OpenInputStream())
@@ -2186,7 +2188,7 @@ void CDVDPlayer::OnExit()
   // if we didn't stop playing, advance to the next item in xbmc's playlist
   if(m_PlayerOptions.identify == false)
   {
-    if (m_bAbortRequest)
+    if (m_bAbortRequest && !m_EndPlaybackRequest)
       m_callback.OnPlayBackStopped();
     else
       m_callback.OnPlayBackEnded();
@@ -2640,7 +2642,29 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
     }
   }
 
+  /* PLEX */
   int64_t seek;
+#ifdef __PLEX__
+  if (bLargeStep)
+    seek = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;
+  else
+    seek = bPlus ? g_advancedSettings.m_videoTimeSeekForward : g_advancedSettings.m_videoTimeSeekBackward;
+  seek *= 1000;
+  
+  // if we are over movie length, then just move one sec before the end
+  // that's the maximum seek offset DVDPlayer will take into account.
+  if (seek + GetTime() > GetTotalTimeInMsec())
+  {
+    m_EndPlaybackRequest = true;
+    //seek = GetTotalTimeInMsec() - 1000;
+    CloseFile();
+    //return;
+  }
+  else
+  {
+    seek += GetTime();
+  }
+#else
   if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2000*g_advancedSettings.m_videoTimeSeekForwardBig)
   {
     if (bLargeStep)
@@ -2659,7 +2683,8 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
       percent = bPlus ? g_advancedSettings.m_videoPercentSeekForward : g_advancedSettings.m_videoPercentSeekBackward;
     seek = (int64_t)(GetTotalTimeInMsec()*(GetPercentage()+percent)/100);
   }
-
+#endif
+  /* END PLEX */
   bool restore = true;
   if (m_Edl.HasCut())
   {

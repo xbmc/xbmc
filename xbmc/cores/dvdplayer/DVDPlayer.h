@@ -401,6 +401,10 @@ protected:
 
   bool m_bAbortRequest;
 
+  /* PLEX */
+  bool m_EndPlaybackRequest;
+  /* END PLEX */
+  
   std::string  m_filename; // holds the actual filename
   std::string  m_mimetype;  // hold a hint to what content file contains (mime type)
   ECacheState  m_caching;
