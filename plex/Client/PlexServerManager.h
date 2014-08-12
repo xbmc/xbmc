@@ -40,19 +40,19 @@ public:
   void ClearBestServer();
 
   CPlexServerPtr FindByUUID(const CStdString &uuid);
-  CPlexServerPtr FindFromItem(CFileItemPtr item);
+  CPlexServerPtr FindFromItem(const CFileItemPtr& item);
   CPlexServerPtr FindFromItem(const CFileItem& item);
 
   PlexServerList GetAllServers(CPlexServerOwnedModifier modifier = SERVER_ALL) const;
 
-  void UpdateFromConnectionType(PlexServerList servers, int connectionType);
-  void UpdateFromDiscovery(CPlexServerPtr server);
+  virtual void UpdateFromConnectionType(const PlexServerList& servers, int connectionType);
+  void UpdateFromDiscovery(const CPlexServerPtr& server);
   void MarkServersAsRefreshing();
-  CPlexServerPtr MergeServer(CPlexServerPtr server);
+  CPlexServerPtr MergeServer(const CPlexServerPtr& server);
   void ServerRefreshComplete(int connectionType);
-  void UpdateReachability(bool force = false);
+  virtual void UpdateReachability(bool force = false);
 
-  void ServerReachabilityDone(CPlexServerPtr server, bool success=false);
+  void ServerReachabilityDone(const CPlexServerPtr& server, bool success=false);
   bool HasAnyServerWithActiveConnection() const;
 
   void save();
@@ -70,7 +70,7 @@ private:
   CPlexServerPtr _nodeServer;
   bool m_stopped;
 
-  virtual void NotifyAboutServer(CPlexServerPtr server, bool added = true);
+  virtual void NotifyAboutServer(const CPlexServerPtr& server, bool added = true);
 
   CCriticalSection m_serverManagerLock;
   CPlexServerPtr m_bestServer;

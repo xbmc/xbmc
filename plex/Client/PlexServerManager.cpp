@@ -74,7 +74,7 @@ CPlexServerPtr CPlexServerManager::FindFromItem(const CFileItem& item)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CPlexServerPtr CPlexServerManager::FindFromItem(CFileItemPtr item)
+CPlexServerPtr CPlexServerManager::FindFromItem(const CFileItemPtr& item)
 {
   if (!item)
     return CPlexServerPtr();
@@ -150,7 +150,7 @@ void CPlexServerManager::MarkServersAsRefreshing()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexServerManager::UpdateFromConnectionType(PlexServerList servers, int connectionType)
+void CPlexServerManager::UpdateFromConnectionType(const PlexServerList& servers, int connectionType)
 {
   if (m_stopped) return;
   
@@ -168,7 +168,7 @@ void CPlexServerManager::UpdateFromConnectionType(PlexServerList servers, int co
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexServerManager::UpdateFromDiscovery(CPlexServerPtr server)
+void CPlexServerManager::UpdateFromDiscovery(const CPlexServerPtr& server)
 {
   if (m_stopped) return;
   
@@ -180,7 +180,7 @@ void CPlexServerManager::UpdateFromDiscovery(CPlexServerPtr server)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CPlexServerPtr CPlexServerManager::MergeServer(CPlexServerPtr server)
+CPlexServerPtr CPlexServerManager::MergeServer(const CPlexServerPtr& server)
 {
   CSingleLock lk(m_serverManagerLock);
 
@@ -275,7 +275,7 @@ void CPlexServerManager::ClearBestServer()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexServerManager::ServerReachabilityDone(CPlexServerPtr server, bool success)
+void CPlexServerManager::ServerReachabilityDone(const CPlexServerPtr& server, bool success)
 {
   int reachThreads = 0;
 
@@ -320,7 +320,7 @@ void CPlexServerManager::ServerReachabilityDone(CPlexServerPtr server, bool succ
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexServerManager::NotifyAboutServer(CPlexServerPtr server, bool added)
+void CPlexServerManager::NotifyAboutServer(const CPlexServerPtr& server, bool added)
 {
   CGUIMessage msg(GUI_MSG_PLEX_SERVER_NOTIFICATION, 0, 0, added ? 1 : 0);
   msg.SetStringParam(server->GetUUID());
