@@ -2,7 +2,7 @@
 <addon id="screensaver.xbmc.builtin.dim"
        name="Dim"
        version="1.0.20"
-       provider-name="Team XBMC">
+       provider-name="Team-Kodi">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
     <summary lang="af">Sluimerskerm wat jou skerm verdof</summary>

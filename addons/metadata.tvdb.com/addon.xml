@@ -2,7 +2,7 @@
 <addon id="metadata.tvdb.com"
        name="The TVDB"
        version="1.5.7"
-       provider-name="Team XBMC">
+       provider-name="Team-Kodi">
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
   </requires>

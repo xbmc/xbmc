@@ -2,7 +2,7 @@
 <addon id="metadata.album.universal"
        name="Universal Album Scraper"
        version="2.2.5"
-       provider-name="Olympia, Team XBMC">
+       provider-name="Olympia, Team-Kodi">
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
     <import addon="metadata.common.allmusic.com" version="3.0.2"/>

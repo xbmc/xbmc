@@ -3,7 +3,7 @@
   id="screensaver.rsxs.euphoria"
   version="1.0.20"
   name="Euphoria"
-  provider-name="mogumbo, Team XBMC">
+  provider-name="mogumbo, Team-Kodi">
   <requires>
     <c-pluff version="0.1"/>
   </requires>
