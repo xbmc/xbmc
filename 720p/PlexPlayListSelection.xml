@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<window id="10094">
+	<defaultcontrol>58</defaultcontrol>
+	<views>57,58</views>
+	<allowoverlay>yes</allowoverlay>
+	<onload>Skin.SetString(SectionType,playlists)</onload>
+	<onunload>Skin.Reset(SectionType)</onunload>
+	<controls>
+		<control type="largeimage">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<aspectratio>scale</aspectratio>
+			<texture background="true">$INFO[ListItem.CompositeImage(width=1280;height=720;cols=3;rows=2)]</texture>
+		</control>
+		<include>BGOverlay</include>
+		<control type="group">
+			<include>BGGrainy</include>
+			<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
+		</control>
+		<!-- list -->
+		<control type="group">
+			<include>FadeDialog</include>
+			<include>rightSideSlide</include>
+			<include>ListItemFullInfoLeftSlide</include>
+			<control type="largeimage">
+				<posy>0</posy>
+				<posx>465</posx>
+				<width>1280</width>
+				<height>720</height>
+				<aspectratio aligny="top">stretch</aspectratio>
+				<texture background="true">black.png</texture>
+				<visible>Control.IsVisible(58)</visible>
+				<animation effect="fade" end="40" time="0" condition="true">Conditional</animation>
+			</control>			
+			<!-- selected item bg -->
+			<control type="image">
+				<posx>465</posx>
+				<posy>330</posy>
+				<width>1000</width>
+				<height>101</height>
+				<include>Base</include>
+				<animation effect="fade" start="0" end="10" time="400" condition="true">Conditional</animation>
+				<visible>Control.IsVisible(58)</visible>
+			</control>
+			<control type="group" id="777">
+				<control type="fixedlist" id="58">
+					<viewtype label="PqPlList">panel</viewtype>
+					<!--><visible>!Container.PlexContent(Movie) + !Container.PlexContent(Episode) + !Container.PlexContent(Folders) + !Container.PlexContent(Clip) + !Container.PlexContent(Clips)</visible>-->
+					<posy>31</posy>
+					<posx>505</posx>
+					<width>805</width>
+					<height>655</height>
+					<onright>Container.NextViewMode</onright>
+					<onleft>58</onleft>
+					<onup>58</onup>
+					<ondown>58</ondown>
+					<focusposition>6</focusposition>
+					<wraparound>true</wraparound>
+					<scrolltime>200</scrolltime>
+					<pagecontrol>61</pagecontrol>
+					<!-- movies & tv shows -->
+					<itemlayout height="50">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>1150</width>
+							<height>50</height>
+							<texture border="5">border-bottom-grey.png</texture>
+						</control>
+						<include>ListMovieTVUnwatchedOverlay</include>
+						<control type="label">
+							<width>840</width>
+							<height>50</height>
+							<info>ListItem.Label</info>
+							<font>Regular-20</font>
+							<include>White2</include>
+							<textoffsetx>80</textoffsetx>
+						</control>
+					</itemlayout>
+					<focusedlayout height="100">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>1150</width>
+							<height>100</height>
+							<texture border="10">-black-bottom-grey.png</texture>
+							<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
+						</control>
+						<control type="group">
+							<posx>28</posx>
+							<posy>-40</posy>
+							<include>ListSelectedArt</include>
+							<animation type="Focus" reversible="false">
+								<effect type="zoom" center="150,0" start="85" end="100" time="200" tween="Linear" easing="out"/>
+								<effect type="fade" start="0" end="100" time="650"/>
+							</animation>
+						</control>
+						<control type="group">
+							<posy>25</posy>
+							<include>ListMovieTVUnwatchedOverlay</include>
+							<animation type="Focus" reversible="false">
+								<effect type="zoom" center="150,0" start="85" end="100" time="200" tween="Linear" easing="out"/>
+								<effect type="fade" start="0" end="100" time="650"/>
+							</animation>
+						</control>
+						<control type="label">
+							<posx>135</posx>
+							<posy>3</posy>
+							<width>600</width>
+							<height>100</height>
+							<info>ListItem.Label</info>
+							<aligny>center</aligny>
+							<font>Bold-32</font>
+							<textcolor>orange</textcolor>
+							<shadowcolor>FF222222</shadowcolor>
+							<animation type="Focus" reversible="false">
+								<effect type="zoom" center="0,0" start="90" end="100" time="200" tween="Linear" easing="out"/>
+								<effect type="fade" start="0" end="100" time="450"/>
+							</animation>
+						</control>
+					</focusedlayout>
+					</control>
+			</control>
+		</control>
+		<!-- panel -->		
+		<include>PqPlPanel</include>
+		<include>debugInfos</include>
+		<include>Grid</include>
+		<include>WindowFade</include>
+		<include>Non16x9Cache</include>
+	</controls>
+</window>

@@ -1,5 +1,160 @@
 <?xml version="1.0"?>
 <includes>
+	<!-- playqueues / playlists -->
+	<include name="PqPlMainBG">
+		<control type="largeimage">
+			<include>FullScreenScaled</include>
+			<texture background="true">$INFO[ListItem.CompositeImage(width=1280;height=720;cols=3;rows=2)]</texture>
+		</control>
+		<include>BGOverlay</include>
+		<control type="group">
+			<include>BGGrainy</include>
+			<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
+		</control>
+	</include>
+	<include name="PqPlComp">
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>264</width>
+			<height>264</height>
+			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>238</width>
+			<height>238</height>
+			<texture fallback="default-square-big.png" background="true" diffuse="mask-square-big.png">$INFO[ListItem.CompositeImage(width=720;height=720;cols=2;rows=2)]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="middle">scale</aspectratio>
+			<visible>ListItem.Type(musicplaylist) | ListItem.Type(musicplayqueue)</visible>
+		</control>		
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>238</width>
+			<height>238</height>
+			<texture fallback="default-square-big.png" background="true" diffuse="mask-square-big.png">$INFO[ListItem.CompositeImage(width=720;height=720;cols=3;rows=2)]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="middle">scale</aspectratio>
+			<visible>ListItem.Type(videoplaylist) | ListItem.Type(videoplayqueue)</visible>
+		</control>
+	</include>
+	<include name="PqPlCompSelectedBorder">
+		<control type="image">
+			<width>244</width>
+			<height>244</height>
+			<include>Border</include>
+		</control>
+	</include>
+	<include name="PqPlCompTitle">
+		<posy>255</posy>
+		<posx>23</posx>
+		<width>238</width>
+		<height>30</height>
+		<align>left</align>
+		<aligny>center</aligny>
+		<label>$INFO[ListItem.Label]</label>
+		<font>Regular-14</font>
+		<shadowcolor>ff222222</shadowcolor>
+	</include>	
+	<include name="PqPlCompTitle2">
+		<posy>280</posy>
+		<posx>23</posx>
+		<width>238</width>
+		<height>30</height>
+		<align>left</align>
+		<aligny>center</aligny>
+		<label>$INFO[ListItem.Property(serverName)]</label>
+		<textcolor>greyLighter</textcolor>
+		<font>Regular-14</font>
+		<shadowcolor>ff222222</shadowcolor>
+	</include>	
+	<include name="PqPlPanel">
+		<control type="group">
+			<!-- main list -->
+			<control type="group" id="777">
+				<control type="panel" id="57">
+					<viewtype label="PqPlPanel">list</viewtype>
+					<onup>57</onup>
+					<ondown>57</ondown>
+					<onright>Container.NextViewMode</onright>
+					<onleft>57</onleft>
+					<orientation>vertical</orientation>
+					<posx>53</posx>
+					<posy>27</posy>
+					<width>1300</width>
+					<height>670</height>
+					<itemlayout width="304" height="335">
+						<include>PqPlComp</include>
+						<control type="label">
+							<include>PqPlCompTitle</include>
+						</control>
+						<control type="label">
+							<include>PqPlCompTitle2</include>
+						</control>
+					</itemlayout>
+					<focusedlayout width="223" height="335">
+						<include>PqPlComp</include>
+						<control type="label">
+							<include>PqPlCompTitle</include>
+							<textcolor>orangeLight</textcolor>
+						</control>
+						<control type="label">
+							<include>PqPlCompTitle2</include>
+						</control>
+						<include>PqPlCompSelectedBorder</include>
+					</focusedlayout>
+				</control>
+			</control>
+			<!-- right side thumbs -->
+		<!--<control type="group">
+				<posx>800</posx>
+				<posy>300</posy>
+				<visible>!Container.OnNext + !Container.OnPrevious</visible>
+				<animation effect="fade" start="0" end="100" time="1000" delay="300" condition="Control.HasFocus(56)" reversible="false">Conditional</animation>
+				<animation effect="fade" start="0" end="100" time="2000" delay="0">WindowOpen</animation>
+				<animation effect="fade" start="0" end="100" time="400" delay="0">Visible</animation>
+				<animation effect="fade" start="0" end="0" time="0">Hidden</animation>
+				<control type="grouplist">
+					<orientation>horizontal</orientation>
+					<itemgap>16</itemgap>					
+					<control type="image">
+						<width max="200">auto</width>
+						<height>350</height>
+						<bordertexture border="14">bigPosterFrameShadow.png</bordertexture>
+						<bordersize>9</bordersize>
+						<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem(0).Thumb0]</texture>
+						<aspectratio scalediffuse="true" align="center" aligny="center">keep</aspectratio>
+						<visible>!IsEmpty(ListItem(0).Thumb0)</visible>
+					</control>
+					<control type="grouplist">
+						<orientation>vertical</orientation>
+						<itemgap>16</itemgap>
+						<control type="image">
+							<width max="175">auto</width>
+							<height>175</height>
+							<bordertexture border="14">bigPosterFrameShadow.png</bordertexture>
+							<bordersize>9</bordersize>
+							<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem(0).Thumb1]</texture>
+							<aspectratio scalediffuse="true" align="center" aligny="top">keep</aspectratio>
+							<visible>!IsEmpty(ListItem(0).Thumb1)</visible>
+						</control>
+						<control type="image">
+							<width max="175">auto</width>
+							<height>175</height>
+							<bordertexture border="14">bigPosterFrameShadow.png</bordertexture>
+							<bordersize>9</bordersize>
+							<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem(0).Thumb2]</texture>
+							<aspectratio scalediffuse="true" align="center" aligny="bottom">keep</aspectratio>
+							<visible>!IsEmpty(ListItem(0).Thumb2)</visible>
+						</control>
+					</control>
+				</control>
+			</control>
+		-->
+		</control>
+	</include>
+	<!-- playqueue / playlist -->
 	<variable name="PlayQueueTitle">
 		<value condition="!Container.UniformProperty(Artist)">$INFO[ListItem.Label][COLOR=FFCCCCCC]$INFO[ListItem.Artist, &#xB7; ][/COLOR]</value>
 		<value condition="Container.UniformProperty(Artist) + !Container.UniformProperty(Album)">$INFO[ListItem.Label]$INFO[ListItem.Album, &#xB7; ]</value>

@@ -91,6 +91,12 @@
 		<value condition="ListItem.Type(photo)">photo</value>
 		<value condition="ListItem.Type(photos)">photos</value>
 		<value condition="ListItem.Type(photoalbum)">photoalbum</value>
+		<value condition="ListItem.Type(photoplayqueue)">photoplayqueue</value>
+		<value condition="ListItem.Type(videoplayqueue)">videoplayqueue</value>
+		<value condition="ListItem.Type(musicplayqueue)">musicplayqueue</value>
+		<value condition="ListItem.Type(photoplaylist)">photoplaylist</value>
+		<value condition="ListItem.Type(videoplaylist)">videoplaylist</value>
+		<value condition="ListItem.Type(musicplaylist)">musicplaylist</value>
 		<value/>
 	</variable>
 	<variable name="ItemStatus">
