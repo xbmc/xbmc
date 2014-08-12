@@ -58,7 +58,7 @@
 		<height>30</height>
 		<align>center</align>
 		<aligny>center</aligny>
-		<label>$INFO[ListItem.Property(sourceTitle)] &#xB7; $INFO[ListItem.Property(serverName)]</label>
+		<label>$INFO[ListItem.Property(serverOwner)] &#xB7; $INFO[ListItem.Property(serverName)]</label>
 		<textcolor>greyLighter</textcolor>
 		<font>Regular-17</font>
 		<shadowcolor>FF222222</shadowcolor>
