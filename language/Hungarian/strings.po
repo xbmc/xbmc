@@ -1,11 +1,11 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main\n"
+"Project-Id-Version: Kodi Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Hungarian (http://www.transifex.com/projects/p/xbmc-main/language/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,8 +38,8 @@ msgid "Settings"
 msgstr "Beállítások"
 
 msgctxt "#6"
-msgid "XBMC SVN"
-msgstr "XBMC SVN"
+msgid "Kodi SVN"
+msgstr "Kodi SVN"
 
 msgctxt "#7"
 msgid "File manager"
@@ -914,8 +914,8 @@ msgid "Scripts output"
 msgstr "Programok kimenete"
 
 msgctxt "#263"
-msgid "Allow control of XBMC via HTTP"
-msgstr "XBMC távoli vezérelhetősége HTTP-n"
+msgid "Allow control of Kodi via HTTP"
+msgstr "Kodi távoli vezérelhetősége HTTP-n"
 
 msgctxt "#264"
 msgid "Record"
@@ -1750,8 +1750,8 @@ msgid "Audio options"
 msgstr "Hangbeállítások"
 
 msgctxt "#482"
-msgid "About XBMC"
-msgstr "Az XBMC-ről"
+msgid "About Kodi"
+msgstr "Az Kodi-ről"
 
 msgctxt "#485"
 msgid "Delete album"
@@ -2714,8 +2714,8 @@ msgid "Remote control"
 msgstr "Távirányító"
 
 msgctxt "#791"
-msgid "Allow programs on this system to control XBMC"
-msgstr "XBMC irányítható az ezen a rendszeren futó programokkal"
+msgid "Allow programs on this system to control Kodi"
+msgstr "Kodi irányítható az ezen a rendszeren futó programokkal"
 
 msgctxt "#792"
 msgid "Port"
@@ -2726,8 +2726,8 @@ msgid "Port range"
 msgstr "Port tartomány"
 
 msgctxt "#794"
-msgid "Allow programs on other systems to control XBMC"
-msgstr "XBMC irányítható a más rendszereken futó programokkal is"
+msgid "Allow programs on other systems to control Kodi"
+msgstr "Kodi irányítható a más rendszereken futó programokkal is"
 
 msgctxt "#795"
 msgid "Initial repeat delay (ms)"
@@ -2790,7 +2790,7 @@ msgid "Unable to connect"
 msgstr "Kapcsolódás sikertelen"
 
 msgctxt "#1002"
-msgid "XBMC was unable to connect to the network location."
+msgid "Kodi was unable to connect to the network location."
 msgstr "Sikertelen csatlakozás a hálózati helyhez."
 
 msgctxt "#1003"
@@ -3142,8 +3142,8 @@ msgid "Allow volume control"
 msgstr "Hangerőszabályozás engedélyezése"
 
 msgctxt "#1270"
-msgid "Allow XBMC to receive AirPlay content"
-msgstr "AirPlay tartalom vételének engedélyezése az XBMC számára"
+msgid "Allow Kodi to receive AirPlay content"
+msgstr "AirPlay tartalom vételének engedélyezése az Kodi számára"
 
 msgctxt "#1271"
 msgid "Device name"
@@ -4278,8 +4278,8 @@ msgid "Active connections detected!"
 msgstr "Aktív kapcsolatok észlelhetők!"
 
 msgctxt "#13141"
-msgid "If you proceed, you might not be able to control XBMC"
-msgstr "Továbblépés esetén az XBMC esetleg nem lesz irányítható."
+msgid "If you proceed, you might not be able to control Kodi"
+msgstr "Továbblépés esetén az Kodi esetleg nem lesz irányítható."
 
 msgctxt "#13142"
 msgid "any longer. Are you sure you want to stop the Event server?"
@@ -4294,7 +4294,7 @@ msgid "If you are currently using the Apple Remote to control"
 msgstr "Ha jelenleg az Apple távirányító van használatban,"
 
 msgctxt "#13146"
-msgid "XBMC, changing this setting might affect your ability"
+msgid "Kodi, changing this setting might affect your ability"
 msgstr "ennek a beállításnak a használata a távirányítás"
 
 msgctxt "#13147"
@@ -4522,8 +4522,8 @@ msgid "Do you wish to reboot your system"
 msgstr "Teljes rendszer újraindítása"
 
 msgctxt "#13309"
-msgid "instead of just XBMC?"
-msgstr "csak az XBMC helyett?"
+msgid "instead of just Kodi?"
+msgstr "csak az Kodi helyett?"
 
 msgctxt "#13310"
 msgid "Zoom effect"
@@ -5142,8 +5142,8 @@ msgid "Apple remote"
 msgstr "Apple távirányító"
 
 msgctxt "#13602"
-msgid "Allow start of XBMC using the remote"
-msgstr "XBMC indítható legyen távirányítóval"
+msgid "Allow start of Kodi using the remote"
+msgstr "Kodi indítható legyen távirányítóval"
 
 msgctxt "#13603"
 msgid "Sequence delay time"
@@ -5314,8 +5314,8 @@ msgid "Network settings changed"
 msgstr "A hálózati beállítások megváltoztatva"
 
 msgctxt "#14039"
-msgid "XBMC requires to restart to change your"
-msgstr "Az XBMC-t újra kell indítani, a hálózati beállítások"
+msgid "Kodi requires to restart to change your"
+msgstr "Az Kodi-t újra kell indítani, a hálózati beállítások"
 
 msgctxt "#14040"
 msgid "network setup.  Would you like to restart now?"
@@ -6806,8 +6806,8 @@ msgid "Enter the name of the new channel"
 msgstr "Add meg az új csatorna nevét"
 
 msgctxt "#19209"
-msgid "XBMC virtual backend"
-msgstr "XBMC virtuális háttér-kiszolgáló"
+msgid "Kodi virtual backend"
+msgstr "Kodi virtuális háttér-kiszolgáló"
 
 msgctxt "#19210"
 msgid "Client"
@@ -7502,8 +7502,8 @@ msgid "Screenshots"
 msgstr "Képernyőmentések "
 
 msgctxt "#20009"
-msgid "Use XBMC"
-msgstr "XBMC használata"
+msgid "Use Kodi"
+msgstr "Kodi használata"
 
 msgctxt "#20011"
 msgid "Music playlists"
@@ -8414,8 +8414,8 @@ msgid "Do you want to remove all items within"
 msgstr "A megadott elérési út minden elemének"
 
 msgctxt "#20341"
-msgid "this path from the XBMC library?"
-msgstr "eltávolítása az XBMC médiatárból?"
+msgid "this path from the Kodi library?"
+msgstr "eltávolítása az Kodi médiatárból?"
 
 msgctxt "#20342"
 msgid "Movies"
@@ -9626,8 +9626,8 @@ msgid "Reference service"
 msgstr "Referencia szolgáltatás"
 
 msgctxt "#21881"
-msgid "Allow control of XBMC via UPnP"
-msgstr "XBMC távoli vezérelhetősége UPnP-n keresztül"
+msgid "Allow control of Kodi via UPnP"
+msgstr "Kodi távoli vezérelhetősége UPnP-n keresztül"
 
 msgctxt "#21882"
 msgid "Attempt to skip introduction before DVD menu"
@@ -10646,12 +10646,12 @@ msgid "This version of %s requires an"
 msgstr "A(z) %s ezen verziójához"
 
 msgctxt "#33075"
-msgid "XBMC revision of %s or greater to run."
-msgstr "%s vagy magasabb XBMC verzió szükséges."
+msgid "Kodi revision of %s or greater to run."
+msgstr "%s vagy magasabb Kodi verzió szükséges."
 
 msgctxt "#33076"
-msgid "Please update XBMC."
-msgstr "Frissítsd az XBMC-t."
+msgid "Please update Kodi."
+msgstr "Frissítsd az Kodi-t."
 
 msgctxt "#33077"
 msgid "No data found!"
@@ -10986,12 +10986,12 @@ msgid "Could not open the adaptor"
 msgstr "Adapter megnyitása sikertelen"
 
 msgctxt "#36007"
-msgid "Devices to power on when starting XBMC"
-msgstr "TV bekapcsolása XBMC elindításával"
+msgid "Devices to power on when starting Kodi"
+msgstr "TV bekapcsolása Kodi elindításával"
 
 msgctxt "#36008"
-msgid "Devices to power off when stopping XBMC"
-msgstr "TV kikapcsolása XBMC leállításával"
+msgid "Devices to power off when stopping Kodi"
+msgstr "TV kikapcsolása Kodi leállításával"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
@@ -11030,8 +11030,8 @@ msgid "Connected to HDMI device"
 msgstr "HDMI eszközhöz csatlakoztatva"
 
 msgctxt "#36020"
-msgid "Make XBMC the active source when starting"
-msgstr "Az XBMC az aktív forrás a kezdésnél"
+msgid "Make Kodi the active source when starting"
+msgstr "Az Kodi az aktív forrás a kezdésnél"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
@@ -11050,8 +11050,8 @@ msgid "Failed to set the new configuration. Please check your settings."
 msgstr "Az új konfiguráció sikertelen volt, kérlek ellenőrizd a beállításaidat."
 
 msgctxt "#36025"
-msgid "Send 'inactive source' command when stopping XBMC"
-msgstr "'inaktív forrás' parancs küldése XBMC leállításakor"
+msgid "Send 'inactive source' command when stopping Kodi"
+msgstr "'inaktív forrás' parancs küldése Kodi leállításakor"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
@@ -11106,8 +11106,8 @@ msgid "TV and AVR device (explicit)"
 msgstr "TV és AVR eszköz"
 
 msgctxt "#36040"
-msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
-msgstr "Nem támogatott libCEC interfész verzió. A meglévő verzió (%x) alacsonyabb mint az XBMC által támogatott (%x)"
+msgid "Unsupported libCEC interface version. %x is lower than the version Kodi supports (%x)"
+msgstr "Nem támogatott libCEC interfész verzió. A meglévő verzió (%x) alacsonyabb mint az Kodi által támogatott (%x)"
 
 msgctxt "#36041"
 msgid "* Item folder"
@@ -11126,8 +11126,8 @@ msgid "Category containing all Skin related settings."
 msgstr "Kategória amely a Felszín beállításait tartalmazza."
 
 msgctxt "#36103"
-msgid "Select the skin for the user interface. This will define the look and feel of XBMC."
-msgstr "Válassza ki a felhasználói felület felszínét. Ez meghatározza a az XBMC kinézetét és kezelését."
+msgid "Select the skin for the user interface. This will define the look and feel of Kodi."
+msgstr "Válassza ki a felhasználói felület felszínét. Ez meghatározza a az Kodi kinézetét és kezelését."
 
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
@@ -11150,8 +11150,8 @@ msgid "Resize the view of the user interface."
 msgstr "A felhasználói felület nézetének átméretezése."
 
 msgctxt "#36109"
-msgid "Select the media window that XBMC displays on startup."
-msgstr "Az XBMC indulásakor megjelenő médiaablak választása."
+msgid "Select the media window that Kodi displays on startup."
+msgstr "Az Kodi indulásakor megjelenő médiaablak választása."
 
 msgctxt "#36110"
 msgid "Select or disable the sound scheme used in the user interface."
@@ -11234,8 +11234,8 @@ msgid "Set the amount of idle time required before displaying the screensaver."
 msgstr "A képernyőkímélő aktiválódásához szükséges időintervallum megadása."
 
 msgctxt "#36130"
-msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
-msgstr "Képernyővédő kiválasztása. XBMC elindítja a képernyővédőt ha egy teljesképernyős videó lejátszása szünetel, vagy egy dialógusablak aktív."
+msgid "Select the screensaver. Kodi will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
+msgstr "Képernyővédő kiválasztása. Kodi elindítja a képernyővédőt ha egy teljesképernyős videó lejátszása szünetel, vagy egy dialógusablak aktív."
 
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
@@ -11246,8 +11246,8 @@ msgid "Preview the selected screensaver."
 msgstr "Képernyővédő előnézete."
 
 msgctxt "#36133"
-msgid "If music is being played, XBMC will start the selected visualisation instead of displaying the screensaver."
-msgstr "Zenelejátszás esetén az XBMC a kiválasztott vizualizációt indítja el a képernyővédő helyett."
+msgid "If music is being played, Kodi will start the selected visualisation instead of displaying the screensaver."
+msgstr "Zenelejátszás esetén az Kodi a kiválasztott vizualizációt indítja el a képernyővédő helyett."
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
@@ -11294,8 +11294,8 @@ msgid "Group movies into 'Movie sets' when browsing the movie library."
 msgstr "Csoportosítsa a filmeket 'filmgyűjteményekbe' a médiatár böngészésekor."
 
 msgctxt "#36146"
-msgid "Check for new media files on XBMC startup."
-msgstr "Új állományok keresése az XBMC indulásakor."
+msgid "Check for new media files on Kodi startup."
+msgstr "Új állományok keresése az Kodi indulásakor."
 
 msgctxt "#36147"
 msgid "Hide the library scanning progress bar during scans."
@@ -11394,8 +11394,8 @@ msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "Kiválasztja a nagyítási értéket, ami a 4:3-as videót szélesvásznú kijelzőhöz igazítja."
 
 msgctxt "#36172"
-msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
-msgstr "A VDPAU studió szintű konverzió lehetővé teszi hogy az olyan haladó programok mint az XBMC befolyásolja a színtér konverziót."
+msgid "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
+msgstr "A VDPAU studió szintű konverzió lehetővé teszi hogy az olyan haladó programok mint az Kodi befolyásolja a színtér konverziót."
 
 msgctxt "#36173"
 msgid "Enable upscaling using VDPAU."
@@ -11518,7 +11518,7 @@ msgid "Category for general settings for PVR/Live TV features."
 msgstr "Kategória a PVR/Élő TV általános beállításaival."
 
 msgctxt "#36203"
-msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
+msgid "Enable the Personal Video Recorder (PVR) features in Kodi. This requires that at least one PVR Add-on is installed."
 msgstr "Videófelvevő funkciók (PVR) engedélyezése. Ehhez legalább egy telepített PVR kiegészítő szükséges."
 
 msgctxt "#36204"
@@ -11526,12 +11526,12 @@ msgid "Import channel groups from the PVR backend (if supported). Will delete us
 msgstr "Csatorna csoportok importálása a PVR háttérszolgáltatásból (ha támogatott). A felhasználói csoportok törlésre kerülnek ha nem találhatóak meg a háttérszolgáltatásban."
 
 msgctxt "#36205"
-msgid "Sort the channels by channel number on the backend, but use XBMC's own numbering for channels."
-msgstr "A csatornák rendezése a háttérszolgáltatás csatornakiosztása szerint, de az XBMC saját sorszámozását használja."
+msgid "Sort the channels by channel number on the backend, but use Kodi's own numbering for channels."
+msgstr "A csatornák rendezése a háttérszolgáltatás csatornakiosztása szerint, de az Kodi saját sorszámozását használja."
 
 msgctxt "#36206"
-msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
-msgstr "Sorszámozás használata a háttérszolgáltatásból, az XBMC-n belüli kézi sorszámozás használata helyett. "
+msgid "Use numbering from the backend, instead of configuring them manually over Kodi."
+msgstr "Sorszámozás használata a háttérszolgáltatásból, az Kodi-n belüli kézi sorszámozás használata helyett. "
 
 msgctxt "#36207"
 msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
@@ -11546,8 +11546,8 @@ msgid "Delete channel/EPG database and reimport the data from the backend afterw
 msgstr "Csatorna/EPG adatbázis törlése, ezt követően a hátérszolgáltatásból való újraimportálása."
 
 msgctxt "#36210"
-msgid "Prevent the 'connection lost' notification window from displaying when XBMC is unable to talk to the PVR backend server."
-msgstr "Megakadályozza, hogy a \"kapcsolat megszakadt' figyelmeztetés megjelenjen, amikor az XBMC nem képes kommunikálni a PVR háttérkiszolgálóval."
+msgid "Prevent the 'connection lost' notification window from displaying when Kodi is unable to talk to the PVR backend server."
+msgstr "Megakadályozza, hogy a \"kapcsolat megszakadt' figyelmeztetés megjelenjen, amikor az Kodi nem képes kommunikálni a PVR háttérkiszolgálóval."
 
 msgctxt "#36211"
 msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
@@ -11598,16 +11598,16 @@ msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "EPG adat importálás mellőzése TV nézés közben a CPU terhelés minimalizálásához."
 
 msgctxt "#36223"
-msgid "By default, EPG data is stored in a local database to speed up importing when XBMC is restarted."
-msgstr "Alapértelmezésben az EPG adat tárolásra kerül egy helyi adatbázisban az importálás gyorsításához ha az XBMC újraindításra kerül."
+msgid "By default, EPG data is stored in a local database to speed up importing when Kodi is restarted."
+msgstr "Alapértelmezésben az EPG adat tárolásra kerül egy helyi adatbázisban az importálás gyorsításához ha az Kodi újraindításra kerül."
 
 msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "A \"nem található információ\" címkék elrejtése ha az adott csatornához nincs elérhető EPG adat."
 
 msgctxt "#36225"
-msgid "Delete the EPG database in XBMC and reimport the data afterwards from the backend."
-msgstr "Az EPG adatbázis törlése az XBMC-ből, és az adatok újraimportálása a háttérkiszolgálóktól."
+msgid "Delete the EPG database in Kodi and reimport the data afterwards from the backend."
+msgstr "Az EPG adatbázis törlése az Kodi-ből, és az adatok újraimportálása a háttérkiszolgálóktól."
 
 msgctxt "#36226"
 msgid "Category for PVR playback and channel switching settings."
@@ -11626,8 +11626,8 @@ msgid "Display signal quality information in the codec information window (if su
 msgstr "Jelminőség kijelzése a kodekinformácós ablakban (ha a kiegészítő és a háttérszolgáltatás is támogatja)"
 
 msgctxt "#36230"
-msgid "How long XBMC will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
-msgstr "Az XBMC milyen hosszan várjon a csatornaváltásra, ha a csatornavétel nem elérhető. Hasznos azoknál a csatornáknál, melyek időszakosan gyengébben foghatók."
+msgid "How long Kodi will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
+msgstr "Az Kodi milyen hosszan várjon a csatornaváltásra, ha a csatornavétel nem elérhető. Hasznos azoknál a csatornáknál, melyek időszakosan gyengébben foghatók."
 
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
@@ -11670,8 +11670,8 @@ msgid "Category for PVR power management settings, such as when to wake the PVR 
 msgstr "Kategória a PVR energiagazdálkodás beállításaival, mint például hogy mikor kerüljön felébresztésre a PVR háttérkiszolgáló."
 
 msgctxt "#36241"
-msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
-msgstr "\"ébresztési parancs\" végrehajtása mialatt az XBMC nem fut, vagy hibernált módba került. A következő időzített felvétel időbélyegzője kerül átadásra mint paraméter."
+msgid "Execute the \"wakeup command\" below when Kodi exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgstr "\"ébresztési parancs\" végrehajtása mialatt az Kodi nem fut, vagy hibernált módba került. A következő időzített felvétel időbélyegzője kerül átadásra mint paraméter."
 
 msgctxt "#36242"
 msgid "The command will not be executed when a recording will be started within this timeout."
@@ -11710,12 +11710,12 @@ msgid "Ask for the pin code again when trying to access a parental locked channe
 msgstr "Kód ismételt kérése zárolt csatorna eléréséhez ha eltelt ennyi idő a kód utolsó beadása óta."
 
 msgctxt "#36251"
-msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
-msgstr "Kategória a PVR háttérkiszolgálóval kapcsolatos bármilyen egyedi beállításával, ha a PVR háttérkiszolgáló, támogatja annak megváltoztatását az XBMC-ben."
+msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
+msgstr "Kategória a PVR háttérkiszolgálóval kapcsolatos bármilyen egyedi beállításával, ha a PVR háttérkiszolgáló, támogatja annak megváltoztatását az Kodi-ben."
 
 msgctxt "#36252"
-msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
-msgstr "Ez a lehetőség odaugrik a PVR háttér kiszolgáló egyedi beállításaihoz, ha a PVR háttérkiszolgáló támogatja azok megváltoztatását az XBMC-ben."
+msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
+msgstr "Ez a lehetőség odaugrik a PVR háttér kiszolgáló egyedi beállításaihoz, ha a PVR háttérkiszolgáló támogatja azok megváltoztatását az Kodi-ben."
 
 msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."
@@ -11742,8 +11742,8 @@ msgid "Select the default artist information source. See the Add-ons Manager for
 msgstr "Alapértelmezett előadóadatbázis-forrás kiválasztása. Lásd a kiegészítőkezelőt a beállításokhoz."
 
 msgctxt "#36259"
-msgid "Check for new and removed media files on XBMC startup."
-msgstr "Új és eltávolított állományok keresése az XBMC indulásakor."
+msgid "Check for new and removed media files on Kodi startup."
+msgstr "Új és eltávolított állományok keresése az Kodi indulásakor."
 
 msgctxt "#36260"
 msgid "No info available yet."
@@ -11762,16 +11762,16 @@ msgid "Category containing settings for how music playback is handled."
 msgstr "Kategória ami a zene lejátszással kapcsolatos beállításokat tartalmazza."
 
 msgctxt "#36265"
-msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
-msgstr "Az XBMC automatikusan lejátssza a következő elemet az aktuális könyvtárban. Például Fájl nézet: Miután a szám lejátszásra került, az XBMC automatikusan lejátssza a következő számot ugyanabban az alkönyvtárban. "
+msgid "Kodi automatically plays the next item in the current folder. For example, in Files View: After a track has been played, Kodi would automatically play the next track in the same folder."
+msgstr "Az Kodi automatikusan lejátssza a következő elemet az aktuális könyvtárban. Például Fájl nézet: Miután a szám lejátszásra került, az Kodi automatikusan lejátssza a következő számot ugyanabban az alkönyvtárban. "
 
 msgctxt "#36266"
 msgid "When songs are selected they are queued instead of playback starting immediately."
 msgstr "Mikor egy zeneszám kiválasztásra kerül, akkor a lejátszási sor végéhez adódik, nem kerül azonnal lejátszásra."
 
 msgctxt "#36267"
-msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
-msgstr "Az XBMC beolvassa az olyan programokkal mint az MP3Gain az audiofájlokba kódolt VisszajátszásSzint információt hogy ezzel pontosabb hangerőkiegyenlítést végezzen."
+msgid "Kodi will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
+msgstr "Az Kodi beolvassa az olyan programokkal mint az MP3Gain az audiofájlokba kódolt VisszajátszásSzint információt hogy ezzel pontosabb hangerőkiegyenlítést végezzen."
 
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
@@ -11826,8 +11826,8 @@ msgid "Used for formatting the second column in library lists."
 msgstr "A médiatár listák második oszlopának formázásához használható."
 
 msgctxt "#36281"
-msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
-msgstr "XBMC bélyegképeket készít a távoli megosztásokról és optikai lemezekről. Lassíthatja a hálózati könyvtárak listázását."
+msgid "Kodi will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
+msgstr "Kodi bélyegképeket készít a távoli megosztásokról és optikai lemezekről. Lassíthatja a hálózati könyvtárak listázását."
 
 msgctxt "#36282"
 msgid "Category containing settings for how CDs are handled."
@@ -11874,8 +11874,8 @@ msgid "Category containing the settings for how karaoke is handled."
 msgstr "Kategória a karaoke kezelés beállítási lehetőségeivel."
 
 msgctxt "#36293"
-msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
-msgstr "Zenelejátszás alatt az XBMC keresi a .cdg fájlt, is megmutatja a kapcsolódó grafikát."
+msgid "When playing any music file, Kodi will look for a matching .cdg file and display its graphics."
+msgstr "Zenelejátszás alatt az Kodi keresi a .cdg fájlt, is megmutatja a kapcsolódó grafikát."
 
 msgctxt "#36294"
 msgid "Show song selection dialog once the last song in the queue has been played."
@@ -11986,8 +11986,8 @@ msgid "Category containing settings used for all services."
 msgstr "Kategória a szolgáltatások beállítási lehetőségeivel."
 
 msgctxt "#36321"
-msgid "Display name of the XBMC installation when using various network services."
-msgstr "XBMC telepítés nevének kijelzése mikor több hálózati szolgáltatás van használatban."
+msgid "Display name of the Kodi installation when using various network services."
+msgstr "Kodi telepítés nevének kijelzése mikor több hálózati szolgáltatás van használatban."
 
 msgctxt "#36322"
 msgid "Category containing settings for how the UPnP service is handled."
@@ -12006,16 +12006,16 @@ msgid "Enable the UPnP client. This allows you to stream media from any UPnP ser
 msgstr "UPnP kliens engedélyezése. Ez lehetővé teszi egy UPnP kiszolgálóról a lejátszást, és a lejátszás vezérlését arról kiszolgálóról."
 
 msgctxt "#36326"
-msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from XBMC."
-msgstr "UPnP vezérlő pont engedélyezése. Ez lehetővé teszi az anyagok sugárzását bármely UPnP kliens részére és a lejátszás vezérlését az XBMC-ből."
+msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from Kodi."
+msgstr "UPnP vezérlő pont engedélyezése. Ez lehetővé teszi az anyagok sugárzását bármely UPnP kliens részére és a lejátszás vezérlését az Kodi-ből."
 
 msgctxt "#36327"
 msgid "Category containing settings for how the webserver service is handled."
 msgstr "Kategória a webkiszolgáló szolgáltatások beállítási lehetőségeivel."
 
 msgctxt "#36328"
-msgid "Enable remote users to control XBMC through the built-in webserver."
-msgstr "Távoli kliensek számára az XBMC vezérlésének engedélyezése a beépített webkiszolgálón keresztül."
+msgid "Enable remote users to control Kodi through the built-in webserver."
+msgstr "Távoli kliensek számára az Kodi vezérlésének engedélyezése a beépített webkiszolgálón keresztül."
 
 msgctxt "#36329"
 msgid "Define the webserver port."
@@ -12038,8 +12038,8 @@ msgid "Category containing settings for how the remote control service is handle
 msgstr "Kategória a távvezérlési-szolgáltatás beállításaival."
 
 msgctxt "#36334"
-msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
-msgstr "Az XBMC erre a gépre telepített programokkal való vezérlésének engedélyezése a Webkiszolgálón vagy az JSON-RPC illesztőn keresztül."
+msgid "Allow programs on this computer to control Kodi via the Web Interface or the JSON-RPC interface protocol."
+msgstr "Az Kodi erre a gépre telepített programokkal való vezérlésének engedélyezése a Webkiszolgálón vagy az JSON-RPC illesztőn keresztül."
 
 msgctxt "#36335"
 msgid "Define the remote control port."
@@ -12054,8 +12054,8 @@ msgid "Define the maximum number of clients that can connect."
 msgstr "Meghatározza a kapcsolódó kliensek maximális számát."
 
 msgctxt "#36338"
-msgid "Allow programs on the network to control XBMC."
-msgstr "Az XBMC vezérlésének engedélyezése a hálózaton lévő programok számára."
+msgid "Allow programs on the network to control Kodi."
+msgstr "Az Kodi vezérlésének engedélyezése a hálózaton lévő programok számára."
 
 msgctxt "#36339"
 msgid "Initial repeat delay (ms)."
@@ -12070,12 +12070,12 @@ msgid "Category containing settings for how the zeroconf network discovery servi
 msgstr "Kategória a zeroconf hálózati felderítési szolgáltatás beállításaival, amely az AirPlay használatához szükséges."
 
 msgctxt "#36342"
-msgid "Allows applications on the network to discover XBMC's running services."
-msgstr "Megengedi a hálózat más rendszereinek, hogy észleljék az XBMC-n futó szolgáltatásokat."
+msgid "Allows applications on the network to discover Kodi's running services."
+msgstr "Megengedi a hálózat más rendszereinek, hogy észleljék az Kodi-n futó szolgáltatásokat."
 
 msgctxt "#36343"
-msgid "Allows XBMC to receive content from other AirPlay devices or applications."
-msgstr "AirPlay tartalom vételének engedélyezése az XBMC számára."
+msgid "Allows Kodi to receive content from other AirPlay devices or applications."
+msgstr "AirPlay tartalom vételének engedélyezése az Kodi számára."
 
 msgctxt "#36344"
 msgid "Enable AirPlay password protection."
@@ -12098,16 +12098,16 @@ msgid "If a WINS server is running on the network, enter its workgroup name here
 msgstr "Ha fut WINS kiszolgáló a hálózaton, add meg az munkacsoport nevét, ellenkező esetben hagyd üresen."
 
 msgctxt "#36349"
-msgid "Section that contains the System related settings for the device XBMC is installed on."
-msgstr "Csoport amely az XBMC-t futtató eszköz rendszerbeállításait tartalmazza."
+msgid "Section that contains the System related settings for the device Kodi is installed on."
+msgstr "Csoport amely az Kodi-t futtató eszköz rendszerbeállításait tartalmazza."
 
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
 msgstr "Automatikus 'Wake-On-Lan\" küldése a szerver(ek)nek a megosztás vagy szolgáltatás elérése előtt."
 
 msgctxt "#36351"
-msgid "Display XBMC in a window, or fullscreen on the selected screen."
-msgstr "Az XBMC megjelenítése ablakban, vagy teljes képernyőn a kiválasztott megjelenítőn."
+msgid "Display Kodi in a window, or fullscreen on the selected screen."
+msgstr "Az Kodi megjelenítése ablakban, vagy teljes képernyőn a kiválasztott megjelenítőn."
 
 msgctxt "#36352"
 msgid "Changes the resolution that the user interface is displayed in."
@@ -12118,12 +12118,12 @@ msgid "Changes the refresh rate that the user interface is displayed in."
 msgstr "A felhasználói felület frissítési frekvenciáját változtatja meg."
 
 msgctxt "#36354"
-msgid "Display XBMC in a fullscreen window. The main benefit is for multi-screen configurations, so that XBMC can be used without minimising other applications. This uses more resources so playback may be less smooth."
-msgstr "Az XBMC megjelenítése teljes képernyő méretű ablakban. A fő előny többképernyős módban jelentkezik, ahol így nem kell minimalizálni a többi alkalmazást. Ez a mód több erőforrást igényel és emiatt lehet, hogy a lejátszás kevésbé lesz folyamatos."
+msgid "Display Kodi in a fullscreen window. The main benefit is for multi-screen configurations, so that Kodi can be used without minimising other applications. This uses more resources so playback may be less smooth."
+msgstr "Az Kodi megjelenítése teljes képernyő méretű ablakban. A fő előny többképernyős módban jelentkezik, ahol így nem kell minimalizálni a többi alkalmazást. Ez a mód több erőforrást igényel és emiatt lehet, hogy a lejátszás kevésbé lesz folyamatos."
 
 msgctxt "#36355"
-msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
-msgstr "Több képernyős konfigurációban azon kijelzők elfeketítése ahol nincs XBMC megjelenítés."
+msgid "In a multi-screen configuration, the screens where Kodi is not displayed are blacked out."
+msgstr "Több képernyős konfigurációban azon kijelzők elfeketítése ahol nincs Kodi megjelenítés."
 
 msgctxt "#36356"
 msgid "Eliminate vertical tearing."
@@ -12210,12 +12210,12 @@ msgid "When activated, your keyboard arrows will move the selection on the virtu
 msgstr "Mikor aktiválva van a kurzornyilak a virtuális gombsoron mozgatják a kiválasztást. Mikor kikapcsolt akkor kurzort mozgatja."
 
 msgctxt "#36377"
-msgid "Use a mouse or touch screen device to control XBMC. Note: disabling will cause you to lose control over XBMC when no keyboard or remote is present."
-msgstr "Egér vagy érintőképernyő használata az XBMC irányításához. Megjegyzés: kikapcsolása azt eredményezheti hogy elveszíti az irányítás lehetőségét ha a billentyűzet vagy távvezérlő nem elérhető."
+msgid "Use a mouse or touch screen device to control Kodi. Note: disabling will cause you to lose control over Kodi when no keyboard or remote is present."
+msgstr "Egér vagy érintőképernyő használata az Kodi irányításához. Megjegyzés: kikapcsolása azt eredményezheti hogy elveszíti az irányítás lehetőségét ha a billentyűzet vagy távvezérlő nem elérhető."
 
 msgctxt "#36378"
-msgid "Use a joystick to control XBMC."
-msgstr "Joystick használata az XBMC irányításához."
+msgid "Use a joystick to control Kodi."
+msgstr "Joystick használata az Kodi irányításához."
 
 msgctxt "#36379"
 msgid "Category containing settings for internet access."
@@ -12246,8 +12246,8 @@ msgid "Configure the proxy server password."
 msgstr "Proxy szerver jelszó megadása."
 
 msgctxt "#36386"
-msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
-msgstr "Ha az elérhető sávszélesség limitált akkor az XBMC próbál ehhez az értékhez igazodni."
+msgid "If you have limited bandwidth available, Kodi will try to keep within these limits."
+msgstr "Ha az elérhető sávszélesség limitált akkor az Kodi próbál ehhez az értékhez igazodni."
 
 msgctxt "#36387"
 msgid "Category containing settings for power saving."
@@ -12258,12 +12258,12 @@ msgid "Turn off display when idle. Useful for TVs that turn off when there is no
 msgstr "Képernyő kikapcsolása tétlenség esetén. Hasznos lehet olyan televíziók esetén amik kikapcsolnak ha nem érzékelnek jelet a bemeneten, de magát a gépet nem akarjuk elaltatni/kikapcsolni."
 
 msgctxt "#36389"
-msgid "Define how long XBMC should idle before shutting down."
-msgstr "Mennyi ideig legyen tétlen az XBMC mielőtt kikapcsolásra kerüljön."
+msgid "Define how long Kodi should idle before shutting down."
+msgstr "Mennyi ideig legyen tétlen az Kodi mielőtt kikapcsolásra kerüljön."
 
 msgctxt "#36390"
-msgid "Define what action XBMC should do when it has been idle for a long period of time."
-msgstr "Adja meg mi történjen ha az XBMC tartósan tétlen."
+msgid "Define what action Kodi should do when it has been idle for a long period of time."
+msgstr "Adja meg mi történjen ha az Kodi tartósan tétlen."
 
 msgctxt "#36391"
 msgid "Category containing settings for debugging functions."
@@ -12274,8 +12274,8 @@ msgid "Turn debug logging on or off. Useful for troubleshooting."
 msgstr "Debug információk naplózásának ki- bekapcsolása.  Hasznos hibakeresés esetén."
 
 msgctxt "#36393"
-msgid "Folder used to save screenshots taken within XBMC."
-msgstr "Könyvtár megadása az XBMC képernyőmentéseihez."
+msgid "Folder used to save screenshots taken within Kodi."
+msgstr "Könyvtár megadása az Kodi képernyőmentéseihez."
 
 msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
@@ -12290,12 +12290,12 @@ msgid "Define the PIN code used for the master lock."
 msgstr "Az általános zároláshoz használt PIN kód megadása."
 
 msgctxt "#36397"
-msgid "If enabled, the master lock code is required to unlock XBMC on startup."
-msgstr "Ha engedélyezett akkor mester-kód megadása szükséges az XBMC elindulásakor."
+msgid "If enabled, the master lock code is required to unlock Kodi on startup."
+msgstr "Ha engedélyezett akkor mester-kód megadása szükséges az Kodi elindulásakor."
 
 msgctxt "#36398"
-msgid "Define the maximum number of retries before XBMC is closed down."
-msgstr "Adja meg a próbálkozások maximális számát mielőtt az XBMC zárolásra kerül."
+msgid "Define the maximum number of retries before Kodi is closed down."
+msgstr "Adja meg a próbálkozások maximális számát mielőtt az Kodi zárolásra kerül."
 
 msgctxt "#36399"
 msgid "Category containing settings for the cache function."
@@ -12370,8 +12370,8 @@ msgid "Specify the type of remote used."
 msgstr "A távkapcsoló típusának meghatározása."
 
 msgctxt "#36417"
-msgid "Always run an XBMC helper so that the remote can be used to start XBMC."
-msgstr "Minden esetben használjon XBMC segítőt hogy a távkapcsoló alkalmas legyen az XBMC elindítására."
+msgid "Always run an Kodi helper so that the remote can be used to start Kodi."
+msgstr "Minden esetben használjon Kodi segítőt hogy a távkapcsoló alkalmas legyen az Kodi elindítására."
 
 msgctxt "#36418"
 msgid "Specify the delay between button sequences on a universal remote."
@@ -12534,8 +12534,8 @@ msgid "Set playback mode of stereoscopic 3D videos."
 msgstr "A sztereógráf 3D videók lejátszási módjának beállítása."
 
 msgctxt "#36538"
-msgid "Prevents XBMC exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Megakadályozza, hogy az XBMC kilépjen a szereográf 3D módból, amikor a lejátszás megáll, mivel nem minden TV érzékeli a 3D -> 2D módváltást a nézettípus TV-n történő váltása nélkül."
+msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
+msgstr "Megakadályozza, hogy az Kodi kilépjen a szereográf 3D módból, amikor a lejátszás megáll, mivel nem minden TV érzékeli a 3D -> 2D módváltást a nézettípus TV-n történő váltása nélkül."
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."

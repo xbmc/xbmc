@@ -3,7 +3,7 @@
   id="visualization.milkdrop"
   version="1.0.20"
   name="MilkDrop"
-  provider-name="Team XBMC">
+  provider-name="Team-Kodi">
   <extension
     point="xbmc.player.musicviz"
     library_windx="MilkDrop_win32dx.vis"/>

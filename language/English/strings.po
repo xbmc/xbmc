@@ -1,11 +1,11 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main\n"
+"Project-Id-Version: Kodi Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: English (http://www.transifex.com/projects/p/xbmc-main/language/en/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -50,7 +50,7 @@ msgstr ""
 #: Unknown
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#6"
-msgid "XBMC SVN"
+msgid "Kodi SVN"
 msgstr ""
 
 #: Used in Confluence
@@ -1108,7 +1108,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#263"
-msgid "Allow control of XBMC via HTTP"
+msgid "Allow control of Kodi via HTTP"
 msgstr ""
 
 msgctxt "#264"
@@ -2048,7 +2048,7 @@ msgid "Audio options"
 msgstr ""
 
 msgctxt "#482"
-msgid "About XBMC"
+msgid "About Kodi"
 msgstr ""
 
 #empty strings from id 483 to 484
@@ -3252,7 +3252,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#791"
-msgid "Allow programs on this system to control XBMC"
+msgid "Allow programs on this system to control Kodi"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -3267,7 +3267,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#794"
-msgid "Allow programs on other systems to control XBMC"
+msgid "Allow programs on other systems to control Kodi"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -3345,7 +3345,7 @@ msgid "Unable to connect"
 msgstr ""
 
 msgctxt "#1002"
-msgid "XBMC was unable to connect to the network location."
+msgid "Kodi was unable to connect to the network location."
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
@@ -3763,7 +3763,7 @@ msgid "Allow volume control"
 msgstr ""
 
 msgctxt "#1270"
-msgid "Allow XBMC to receive AirPlay content"
+msgid "Allow Kodi to receive AirPlay content"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -5283,7 +5283,7 @@ msgstr ""
 
 #: xbmc\network\NetworkServices.cpp
 msgctxt "#13141"
-msgid "If you proceed, you might not be able to control XBMC"
+msgid "If you proceed, you might not be able to control Kodi"
 msgstr ""
 
 #: xbmc\network\NetworkServices.cpp
@@ -5305,7 +5305,7 @@ msgstr ""
 
 #: xbmc\osx\XBMCHelper.cpp
 msgctxt "#13146"
-msgid "XBMC, changing this setting might affect your ability"
+msgid "Kodi, changing this setting might affect your ability"
 msgstr ""
 
 #: xbmc\osx\XBMCHelper.cpp
@@ -5587,7 +5587,7 @@ msgid "Do you wish to reboot your system"
 msgstr ""
 
 msgctxt "#13309"
-msgid "instead of just XBMC?"
+msgid "instead of just Kodi?"
 msgstr ""
 
 msgctxt "#13310"
@@ -6314,7 +6314,7 @@ msgstr ""
 
 #: system/settings/darwin.xml
 msgctxt "#13602"
-msgid "Allow start of XBMC using the remote"
+msgid "Allow start of Kodi using the remote"
 msgstr ""
 
 #: system/settings/darwin.xml
@@ -6517,7 +6517,7 @@ msgid "Network settings changed"
 msgstr ""
 
 msgctxt "#14039"
-msgid "XBMC requires to restart to change your"
+msgid "Kodi requires to restart to change your"
 msgstr ""
 
 msgctxt "#14040"
@@ -8270,7 +8270,7 @@ msgid "Enter the name of the new channel"
 msgstr ""
 
 msgctxt "#19209"
-msgid "XBMC virtual backend"
+msgid "Kodi virtual backend"
 msgstr ""
 
 msgctxt "#19210"
@@ -9140,7 +9140,7 @@ msgid "Screenshots"
 msgstr ""
 
 msgctxt "#20009"
-msgid "Use XBMC"
+msgid "Use Kodi"
 msgstr ""
 
 #empty string with id 20010
@@ -10171,7 +10171,7 @@ msgid "Do you want to remove all items within"
 msgstr ""
 
 msgctxt "#20341"
-msgid "this path from the XBMC library?"
+msgid "this path from the Kodi library?"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
@@ -11548,7 +11548,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21881"
-msgid "Allow control of XBMC via UPnP"
+msgid "Allow control of Kodi via UPnP"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -12841,12 +12841,12 @@ msgstr ""
 
 #: Unknown
 msgctxt "#33075"
-msgid "XBMC revision of %s or greater to run."
+msgid "Kodi revision of %s or greater to run."
 msgstr ""
 
 #: Unknown
 msgctxt "#33076"
-msgid "Please update XBMC."
+msgid "Please update Kodi."
 msgstr ""
 
 #: Unknown
@@ -13299,12 +13299,12 @@ msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36007"
-msgid "Devices to power on when starting XBMC"
+msgid "Devices to power on when starting Kodi"
 msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36008"
-msgid "Devices to power off when stopping XBMC"
+msgid "Devices to power off when stopping Kodi"
 msgstr ""
 
 #: system/peripherals.xml
@@ -13356,7 +13356,7 @@ msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36020"
-msgid "Make XBMC the active source when starting"
+msgid "Make Kodi the active source when starting"
 msgstr ""
 
 #: system/peripherals.xml
@@ -13381,7 +13381,7 @@ msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36025"
-msgid "Send 'inactive source' command when stopping XBMC"
+msgid "Send 'inactive source' command when stopping Kodi"
 msgstr ""
 
 #: system/peripherals.xml
@@ -13461,7 +13461,7 @@ msgstr ""
 
 #: xbmc/peripherals/devices/peripheralcecadapter.cpp
 msgctxt "#36040"
-msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
+msgid "Unsupported libCEC interface version. %x is lower than the version Kodi supports (%x)"
 msgstr ""
 
 #: xbmc/video/dialogs/guidialogvideoinfo.cpp
@@ -13493,7 +13493,7 @@ msgstr ""
 #. Description of setting "Appearance -> Skin -> Skin" with label #166
 #: system/settings/settings.xml
 msgctxt "#36103"
-msgid "Select the skin for the user interface. This will define the look and feel of XBMC."
+msgid "Select the skin for the user interface. This will define the look and feel of Kodi."
 msgstr ""
 
 #. Description of setting "Appearance -> Skin -> Settings" with label #21417
@@ -13529,7 +13529,7 @@ msgstr ""
 #. Description of setting "Appearance -> Skin -> Startup window" with label #512
 #: system/settings/settings.xml
 msgctxt "#36109"
-msgid "Select the media window that XBMC displays on startup."
+msgid "Select the media window that Kodi displays on startup."
 msgstr ""
 
 #. Description of setting "Appearance -> Skin -> Navigation sounds" with label #15108
@@ -13655,7 +13655,7 @@ msgstr ""
 #. Description of setting "Appearance -> Screensaver -> Screensaver mode" with label #356
 #: system/settings/settings.xml
 msgctxt "#36130"
-msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
+msgid "Select the screensaver. Kodi will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
 msgstr ""
 
 #. #. Description of setting "Appearance -> Screensaver -> Settings" with label #21417
@@ -13673,7 +13673,7 @@ msgstr ""
 #. Description of setting "Appearance -> Screensaver -> Use visualisation if playing audio" with label #13392
 #: system/settings/settings.xml
 msgctxt "#36133"
-msgid "If music is being played, XBMC will start the selected visualisation instead of displaying the screensaver."
+msgid "If music is being played, Kodi will start the selected visualisation instead of displaying the screensaver."
 msgstr ""
 
 #. Description of setting "Appearance -> Screensaver -> Use dim if paused during video playback" with label #22014
@@ -13744,7 +13744,7 @@ msgstr ""
 #. Description of setting "Videos -> Library -> Update library on startup" with label #22000
 #: system/settings/settings.xml
 msgctxt "#36146"
-msgid "Check for new media files on XBMC startup."
+msgid "Check for new media files on Kodi startup."
 msgstr ""
 
 #. Description of setting "Videos -> Library -> Hide progress of library updates" with label #22001
@@ -13898,7 +13898,7 @@ msgstr ""
 #. Description of setting "Videos -> Playback -> VDPAU Studio level colour conversion" with label #13122
 #: system/settings/settings.xml
 msgctxt "#36172"
-msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
+msgid "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
 msgstr ""
 
 #. Description of setting "Videos -> Playback -> VDPAU HQ Upscaling level" with label #13121
@@ -14076,7 +14076,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36203"
-msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
+msgid "Enable the Personal Video Recorder (PVR) features in Kodi. This requires that at least one PVR Add-on is installed."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14086,12 +14086,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36205"
-msgid "Sort the channels by channel number on the backend, but use XBMC's own numbering for channels."
+msgid "Sort the channels by channel number on the backend, but use Kodi's own numbering for channels."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36206"
-msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
+msgid "Use numbering from the backend, instead of configuring them manually over Kodi."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14111,7 +14111,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36210"
-msgid "Prevent the 'connection lost' notification window from displaying when XBMC is unable to talk to the PVR backend server."
+msgid "Prevent the 'connection lost' notification window from displaying when Kodi is unable to talk to the PVR backend server."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14167,7 +14167,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36223"
-msgid "By default, EPG data is stored in a local database to speed up importing when XBMC is restarted."
+msgid "By default, EPG data is stored in a local database to speed up importing when Kodi is restarted."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14177,7 +14177,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36225"
-msgid "Delete the EPG database in XBMC and reimport the data afterwards from the backend."
+msgid "Delete the EPG database in Kodi and reimport the data afterwards from the backend."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14202,7 +14202,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36230"
-msgid "How long XBMC will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
+msgid "How long Kodi will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14257,7 +14257,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36241"
-msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgid "Execute the \"wakeup command\" below when Kodi exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14307,12 +14307,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36251"
-msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
+msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36252"
-msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
+msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
 msgstr ""
 
 #. Description of settings section "Music" with label #2
@@ -14354,7 +14354,7 @@ msgstr ""
 #. Description of setting "Music -> Library -> Update library on startup" with label #22000
 #: system/settings/settings.xml
 msgctxt "#36259"
-msgid "Check for new and removed media files on XBMC startup."
+msgid "Check for new and removed media files on Kodi startup."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14385,7 +14385,7 @@ msgstr ""
 #. Description of setting "Music -> Playback -> Play the next song automatically" with label #489
 #: system/settings/settings.xml
 msgctxt "#36265"
-msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
+msgid "Kodi automatically plays the next item in the current folder. For example, in Files View: After a track has been played, Kodi would automatically play the next track in the same folder."
 msgstr ""
 
 #. Description of setting "Music -> Playback -> Queue songs on selection" with label #14084
@@ -14397,7 +14397,7 @@ msgstr ""
 #. Description of setting "Music -> Playback -> ReplayGain volume adjustments" with label #638
 #: system/settings/settings.xml
 msgctxt "#36267"
-msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
+msgid "Kodi will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
 msgstr ""
 
 #. Description of setting "Music -> Playback -> PreAmp Level - ReplayGained files" with label #641
@@ -14481,7 +14481,7 @@ msgstr ""
 #. Description of setting "Music -> File lists -> Search for thumbnails on remote shares" with label #14059
 #: system/settings/settings.xml
 msgctxt "#36281"
-msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
+msgid "Kodi will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
 msgstr ""
 
 #. Description of settings category "Music -> Audio CDs" with label #620
@@ -14553,7 +14553,7 @@ msgstr ""
 #. Description of setting "Music -> Karaoke -> Enable karaoke support" with label #13323
 #: system/settings/settings.xml
 msgctxt "#36293"
-msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
+msgid "When playing any music file, Kodi will look for a matching .cdg file and display its graphics."
 msgstr ""
 
 #. Description of setting "Music -> Karaoke -> Show song selector automatically" with label #22037
@@ -14718,7 +14718,7 @@ msgstr ""
 #. Description of settings category "Services -> General -> Device name" with label #1271
 #: system/settings/settings.xml
 msgctxt "#36321"
-msgid "Display name of the XBMC installation when using various network services."
+msgid "Display name of the Kodi installation when using various network services."
 msgstr ""
 
 #. Description of settings category "Services -> UPnP" with label #20187
@@ -14739,7 +14739,7 @@ msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
 msgstr ""
 
-#. Description of setting "Services -> UPnP -> Allow control of XBMC via UPnP" with label #21881
+#. Description of setting "Services -> UPnP -> Allow control of Kodi via UPnP" with label #21881
 #: system/settings/settings.xml
 msgctxt "#36325"
 msgid "Enable the UPnP client. This allows you to stream media from any UPnP server with a control point and control playback from that server."
@@ -14748,7 +14748,7 @@ msgstr ""
 #. Description of setting "Services -> UPnP -> Look for remote UPnP players" with label #21361
 #: system/settings/settings.xml
 msgctxt "#36326"
-msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from XBMC."
+msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from Kodi."
 msgstr ""
 
 #. Description of settings category "Services -> Webserver" with label #20187
@@ -14757,10 +14757,10 @@ msgctxt "#36327"
 msgid "Category containing settings for how the webserver service is handled."
 msgstr ""
 
-#. Description of setting "Services -> Webserver -> Allow control of XBMC via HTTP" with label #263
+#. Description of setting "Services -> Webserver -> Allow control of Kodi via HTTP" with label #263
 #: system/settings/settings.xml
 msgctxt "#36328"
-msgid "Enable remote users to control XBMC through the built-in webserver."
+msgid "Enable remote users to control Kodi through the built-in webserver."
 msgstr ""
 
 #. Description of setting "Services -> Webserver -> Port" with label #730
@@ -14793,10 +14793,10 @@ msgctxt "#36333"
 msgid "Category containing settings for how the remote control service is handled."
 msgstr ""
 
-#. Description of setting "Services -> Remote Control -> Allow programs on this system to control XBMC" with label #791
+#. Description of setting "Services -> Remote Control -> Allow programs on this system to control Kodi" with label #791
 #: system/settings/settings.xml
 msgctxt "#36334"
-msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
+msgid "Allow programs on this computer to control Kodi via the Web Interface or the JSON-RPC interface protocol."
 msgstr ""
 
 #. Description of setting "Services -> Remote Control -> Port" with label #792
@@ -14817,10 +14817,10 @@ msgctxt "#36337"
 msgid "Define the maximum number of clients that can connect."
 msgstr ""
 
-#. Description of setting "Services -> Remote Control -> Allow programs on other systems to control XBMC" with label #794
+#. Description of setting "Services -> Remote Control -> Allow programs on other systems to control Kodi" with label #794
 #: system/settings/settings.xml
 msgctxt "#36338"
-msgid "Allow programs on the network to control XBMC."
+msgid "Allow programs on the network to control Kodi."
 msgstr ""
 
 #. Description of setting "Services -> Remote Control -> Initial repeat delay (ms)" with label #795
@@ -14844,13 +14844,13 @@ msgstr ""
 #. Description of setting "Services -> Zeroconf -> Announce these services to other systems via Zeroconf"  with label #1260
 #: system/settings/settings.xml
 msgctxt "#36342"
-msgid "Allows applications on the network to discover XBMC's running services."
+msgid "Allows applications on the network to discover Kodi's running services."
 msgstr ""
 
-#. Description of setting "Services -> AirPlay -> Allow XBMC to receive AirPlay content" with label #1270
+#. Description of setting "Services -> AirPlay -> Allow Kodi to receive AirPlay content" with label #1270
 #: system/settings/settings.xml
 msgctxt "#36343"
-msgid "Allows XBMC to receive content from other AirPlay devices or applications."
+msgid "Allows Kodi to receive content from other AirPlay devices or applications."
 msgstr ""
 
 #. Description of setting "Services -> AirPlay -> Use password protection" with label #1272
@@ -14886,7 +14886,7 @@ msgstr ""
 #. Description of settings section "System" with label #13000
 #: system/settings/settings.xml
 msgctxt "#36349"
-msgid "Section that contains the System related settings for the device XBMC is installed on."
+msgid "Section that contains the System related settings for the device Kodi is installed on."
 msgstr ""
 
 #. Description of setting "System -> Power saving -> Try to wake remote servers on access" with label #13026
@@ -14898,7 +14898,7 @@ msgstr ""
 #. Description of setting "System -> Video output -> Display Mode" with label #21373
 #: system/settings/settings.xml
 msgctxt "#36351"
-msgid "Display XBMC in a window, or fullscreen on the selected screen."
+msgid "Display Kodi in a window, or fullscreen on the selected screen."
 msgstr ""
 
 #. Description of setting "System -> Video output -> Resolution" with label #169
@@ -14916,13 +14916,13 @@ msgstr ""
 #. Description of setting "System -> Video output -> Use a fullscreen window rather than true fullscreen" with label #14083
 #: system/settings/settings.xml
 msgctxt "#36354"
-msgid "Display XBMC in a fullscreen window. The main benefit is for multi-screen configurations, so that XBMC can be used without minimising other applications. This uses more resources so playback may be less smooth."
+msgid "Display Kodi in a fullscreen window. The main benefit is for multi-screen configurations, so that Kodi can be used without minimising other applications. This uses more resources so playback may be less smooth."
 msgstr ""
 
 #. Description of setting "System -> Video output -> Blank other displays" with label #13130
 #: system/settings/settings.xml
 msgctxt "#36355"
-msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
+msgid "In a multi-screen configuration, the screens where Kodi is not displayed are blacked out."
 msgstr ""
 
 #. Description of setting "System -> Video output -> Vertical blank sync" with label #13105
@@ -15052,13 +15052,13 @@ msgstr ""
 #. Description of setting "System -> Input devices -> Enable mouse and Touch Screen support" with label #21369
 #: system/settings/settings.xml
 msgctxt "#36377"
-msgid "Use a mouse or touch screen device to control XBMC. Note: disabling will cause you to lose control over XBMC when no keyboard or remote is present."
+msgid "Use a mouse or touch screen device to control Kodi. Note: disabling will cause you to lose control over Kodi when no keyboard or remote is present."
 msgstr ""
 
 #. Description of setting "System -> Input devices -> Enable joystick and gamepad support" with label #35100
 #: system/settings/settings.xml
 msgctxt "#36378"
-msgid "Use a joystick to control XBMC."
+msgid "Use a joystick to control Kodi."
 msgstr ""
 
 #. Description of settings category "System -> Internet access" with label #798
@@ -15106,7 +15106,7 @@ msgstr ""
 #. Description of setting "System -> Internet access -> Internet connection bandwidth limitation" with label #14041
 #: system/settings/settings.xml
 msgctxt "#36386"
-msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
+msgid "If you have limited bandwidth available, Kodi will try to keep within these limits."
 msgstr ""
 
 #. Description of settings category "System -> Power saving" with label #14095
@@ -15124,13 +15124,13 @@ msgstr ""
 #. Description of setting "System -> Power saving -> Shutdown function timer" with label #357
 #: system/settings/settings.xml
 msgctxt "#36389"
-msgid "Define how long XBMC should idle before shutting down."
+msgid "Define how long Kodi should idle before shutting down."
 msgstr ""
 
 #. Description of setting "System -> Power saving -> Shutdown function" with label #13008
 #: system/settings/settings.xml
 msgctxt "#36390"
-msgid "Define what action XBMC should do when it has been idle for a long period of time."
+msgid "Define what action Kodi should do when it has been idle for a long period of time."
 msgstr ""
 
 #. Description of settings category "System -> Debugging" with label #14092
@@ -15148,7 +15148,7 @@ msgstr ""
 #. Description of setting "System -> Debugging -> Screenshot folder" with label #20004
 #: system/settings/settings.xml
 msgctxt "#36393"
-msgid "Folder used to save screenshots taken within XBMC."
+msgid "Folder used to save screenshots taken within Kodi."
 msgstr ""
 
 #. Description of setting "System -> Debugging -> Enable component-specific logging" with label #666
@@ -15172,13 +15172,13 @@ msgstr ""
 #. Description of setting "System -> Master lock -> Ask for master lock code on startup" with label #20076
 #: system/settings/settings.xml
 msgctxt "#36397"
-msgid "If enabled, the master lock code is required to unlock XBMC on startup."
+msgid "If enabled, the master lock code is required to unlock Kodi on startup."
 msgstr ""
 
 #. Description of setting "System -> Master lock -> Max Retries" with label #20076
 #: system/settings/settings.xml
 msgctxt "#36398"
-msgid "Define the maximum number of retries before XBMC is closed down."
+msgid "Define the maximum number of retries before Kodi is closed down."
 msgstr ""
 
 #. Description of settings category "System -> Cache" with label #439
@@ -15283,10 +15283,10 @@ msgctxt "#36416"
 msgid "Specify the type of remote used."
 msgstr ""
 
-#. Description of setting "System -> Input Devices -> Allow start of XBMC with remote" with label #13602
+#. Description of setting "System -> Input Devices -> Allow start of Kodi with remote" with label #13602
 #: system/settings/settings.xml
 msgctxt "#36417"
-msgid "Always run an XBMC helper so that the remote can be used to start XBMC."
+msgid "Always run an Kodi helper so that the remote can be used to start Kodi."
 msgstr ""
 
 #. Description of setting "System -> Input Devices -> Sequence delay time" with label #13603
@@ -15525,7 +15525,7 @@ msgstr ""
 #. Description of setting "Videos -> Playback -> Disable stereoscopic mode when playback is stopped" with label #36526
 #: system/settings/settings.xml
 msgctxt "#36538"
-msgid "Prevents XBMC exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
+msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
 msgstr ""
 
 #. Description of setting "System -> Video output -> Stereoscopic mode (current)" with label #36500

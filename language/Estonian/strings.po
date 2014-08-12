@@ -1,11 +1,11 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main\n"
+"Project-Id-Version: Kodi Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Estonian (http://www.transifex.com/projects/p/xbmc-main/language/et/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,8 +38,8 @@ msgid "Settings"
 msgstr "Seaded"
 
 msgctxt "#6"
-msgid "XBMC SVN"
-msgstr "XBMC SVN"
+msgid "Kodi SVN"
+msgstr "Kodi SVN"
 
 msgctxt "#7"
 msgid "File manager"
@@ -906,8 +906,8 @@ msgid "Scripts output"
 msgstr "Skriptide väljund"
 
 msgctxt "#263"
-msgid "Allow control of XBMC via HTTP"
-msgstr "Luba XBMC juhtimist üle HTTP"
+msgid "Allow control of Kodi via HTTP"
+msgstr "Luba Kodi juhtimist üle HTTP"
 
 msgctxt "#264"
 msgid "Record"
@@ -1710,8 +1710,8 @@ msgid "Audio options"
 msgstr "Audio valikud"
 
 msgctxt "#482"
-msgid "About XBMC"
-msgstr "XBMC teave"
+msgid "About Kodi"
+msgstr "Kodi teave"
 
 msgctxt "#485"
 msgid "Delete album"
@@ -2646,8 +2646,8 @@ msgid "Remote control"
 msgstr "Kaugjuhtimine"
 
 msgctxt "#791"
-msgid "Allow programs on this system to control XBMC"
-msgstr "Luba süsteemi programmidel XBMC-d kontrollida"
+msgid "Allow programs on this system to control Kodi"
+msgstr "Luba süsteemi programmidel Kodi-d kontrollida"
 
 msgctxt "#792"
 msgid "Port"
@@ -2658,8 +2658,8 @@ msgid "Port range"
 msgstr "Pordi vahemik"
 
 msgctxt "#794"
-msgid "Allow programs on other systems to control XBMC"
-msgstr "Luba süsteemivälistel programmidel XBMC-d juhtida"
+msgid "Allow programs on other systems to control Kodi"
+msgstr "Luba süsteemivälistel programmidel Kodi-d juhtida"
 
 msgctxt "#795"
 msgid "Initial repeat delay (ms)"
@@ -2722,8 +2722,8 @@ msgid "Unable to connect"
 msgstr "Ei saa ühendust"
 
 msgctxt "#1002"
-msgid "XBMC was unable to connect to the network location."
-msgstr "XBMC-l ei õnnestunud võrgukohaga ühenduse loomine."
+msgid "Kodi was unable to connect to the network location."
+msgstr "Kodi-l ei õnnestunud võrgukohaga ühenduse loomine."
 
 msgctxt "#1003"
 msgid "This could be due to the network not being connected."
@@ -3066,8 +3066,8 @@ msgid "Announce these services to other systems via Zeroconf"
 msgstr "Teavita nendest teenustest teistele süsteemidele Zeroconf'i kaudu"
 
 msgctxt "#1270"
-msgid "Allow XBMC to receive AirPlay content"
-msgstr "Luba XBMC-l vastu võtta AirPlay sisu"
+msgid "Allow Kodi to receive AirPlay content"
+msgstr "Luba Kodi-l vastu võtta AirPlay sisu"
 
 msgctxt "#1271"
 msgid "Device name"
@@ -4166,8 +4166,8 @@ msgid "Active connections detected!"
 msgstr "Tuvastati aktiivseid ühendusi!"
 
 msgctxt "#13141"
-msgid "If you proceed, you might not be able to control XBMC"
-msgstr "Jätkates võid kaotada kontrolli XBMC üle."
+msgid "If you proceed, you might not be able to control Kodi"
+msgstr "Jätkates võid kaotada kontrolli Kodi üle."
 
 msgctxt "#13142"
 msgid "any longer. Are you sure you want to stop the Event server?"
@@ -4182,8 +4182,8 @@ msgid "If you are currently using the Apple Remote to control"
 msgstr "Kui sa hetkel kasutad Apple'i pulti, et juhtida"
 
 msgctxt "#13146"
-msgid "XBMC, changing this setting might affect your ability"
-msgstr "XBMC-d, siis selle seade muutmine võib mõjutada"
+msgid "Kodi, changing this setting might affect your ability"
+msgstr "Kodi-d, siis selle seade muutmine võib mõjutada"
 
 msgctxt "#13147"
 msgid "to continue controlling it. Do you want to proceed?"
@@ -4410,8 +4410,8 @@ msgid "Do you wish to reboot your system"
 msgstr "Kas sa soovid süsteemi alglaadimist"
 
 msgctxt "#13309"
-msgid "instead of just XBMC?"
-msgstr "XBMC-st väljumise asemel?"
+msgid "instead of just Kodi?"
+msgstr "Kodi-st väljumise asemel?"
 
 msgctxt "#13310"
 msgid "Zoom effect"
@@ -4938,8 +4938,8 @@ msgid "Apple remote"
 msgstr "Apple'i pult"
 
 msgctxt "#13602"
-msgid "Allow start of XBMC using the remote"
-msgstr "Luba XBMC käivitamine puldiga"
+msgid "Allow start of Kodi using the remote"
+msgstr "Luba Kodi käivitamine puldiga"
 
 msgctxt "#13603"
 msgid "Sequence delay time"
@@ -5082,8 +5082,8 @@ msgid "Network settings changed"
 msgstr "Võrguseaded muudetud"
 
 msgctxt "#14039"
-msgid "XBMC requires to restart to change your"
-msgstr "XBMC vajab võrguseadete muutmiseks"
+msgid "Kodi requires to restart to change your"
+msgstr "Kodi vajab võrguseadete muutmiseks"
 
 msgctxt "#14040"
 msgid "network setup.  Would you like to restart now?"
@@ -6506,8 +6506,8 @@ msgid "Enter the name of the new channel"
 msgstr "Sisesta uue kanali nimi"
 
 msgctxt "#19209"
-msgid "XBMC virtual backend"
-msgstr "XBMC virtuaalne põhi"
+msgid "Kodi virtual backend"
+msgstr "Kodi virtuaalne põhi"
 
 msgctxt "#19210"
 msgid "Client"
@@ -7158,8 +7158,8 @@ msgid "Screenshots"
 msgstr "Kuvatõmmised"
 
 msgctxt "#20009"
-msgid "Use XBMC"
-msgstr "Kasuta XBMC-d"
+msgid "Use Kodi"
+msgstr "Kasuta Kodi-d"
 
 msgctxt "#20011"
 msgid "Music playlists"
@@ -8051,11 +8051,11 @@ msgstr "Režissöör"
 
 msgctxt "#20340"
 msgid "Do you want to remove all items within"
-msgstr "Kas soovid XBMC failikogust eemaldada"
+msgstr "Kas soovid Kodi failikogust eemaldada"
 
 msgctxt "#20341"
-msgid "this path from the XBMC library?"
-msgstr "see rada XBMC teegist?"
+msgid "this path from the Kodi library?"
+msgstr "see rada Kodi teegist?"
 
 msgctxt "#20342"
 msgid "Movies"
@@ -9238,8 +9238,8 @@ msgid "Reference service"
 msgstr "Teatmeteenindus"
 
 msgctxt "#21881"
-msgid "Allow control of XBMC via UPnP"
-msgstr "Luba XBMC juhtimine üle UPnP"
+msgid "Allow control of Kodi via UPnP"
+msgstr "Luba Kodi juhtimine üle UPnP"
 
 msgctxt "#21882"
 msgid "Attempt to skip introduction before DVD menu"
@@ -10138,12 +10138,12 @@ msgid "This version of %s requires an"
 msgstr "%s versioon vajab töötamiseks"
 
 msgctxt "#33075"
-msgid "XBMC revision of %s or greater to run."
-msgstr "XBMC versiooni %s või suuremat."
+msgid "Kodi revision of %s or greater to run."
+msgstr "Kodi versiooni %s või suuremat."
 
 msgctxt "#33076"
-msgid "Please update XBMC."
-msgstr "Palun uuenda XBMC-d."
+msgid "Please update Kodi."
+msgstr "Palun uuenda Kodi-d."
 
 msgctxt "#33077"
 msgid "No data found!"
@@ -10454,12 +10454,12 @@ msgid "Enable switch side commands"
 msgstr "Luba pooli vahetavaid käske"
 
 msgctxt "#36007"
-msgid "Devices to power on when starting XBMC"
-msgstr "Seadmed, mis XBMC alustamisel sisse lülitada"
+msgid "Devices to power on when starting Kodi"
+msgstr "Seadmed, mis Kodi alustamisel sisse lülitada"
 
 msgctxt "#36008"
-msgid "Devices to power off when stopping XBMC"
-msgstr "Seadmed, mis XBMC sulgemisel välja lülitada"
+msgid "Devices to power off when stopping Kodi"
+msgstr "Seadmed, mis Kodi sulgemisel välja lülitada"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
@@ -10490,8 +10490,8 @@ msgid "Connected to HDMI device"
 msgstr "Ühendus HDMI seadmesse loodud"
 
 msgctxt "#36020"
-msgid "Make XBMC the active source when starting"
-msgstr "Alustamisel tee XBMC aktiivseks allikaks"
+msgid "Make Kodi the active source when starting"
+msgstr "Alustamisel tee Kodi aktiivseks allikaks"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
@@ -10510,8 +10510,8 @@ msgid "Failed to set the new configuration. Please check your settings."
 msgstr "Uue konfiguratsiooni seadmine ebaõnnestus. Palun kontrolli oma seaded üle."
 
 msgctxt "#36025"
-msgid "Send 'inactive source' command when stopping XBMC"
-msgstr "XBMC sulgemisel edasta käsk 'allikas pole aktiive'"
+msgid "Send 'inactive source' command when stopping Kodi"
+msgstr "Kodi sulgemisel edasta käsk 'allikas pole aktiive'"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
@@ -10558,8 +10558,8 @@ msgid "TV and AVR device (explicit)"
 msgstr "TV ja AVR seade (määratud)"
 
 msgctxt "#36040"
-msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
-msgstr "Toetuseta libCEC kasutajaliidese versioon. %x on madalam kui XBMC toetatud versioon (%x)"
+msgid "Unsupported libCEC interface version. %x is lower than the version Kodi supports (%x)"
+msgstr "Toetuseta libCEC kasutajaliidese versioon. %x on madalam kui Kodi toetatud versioon (%x)"
 
 msgctxt "#36041"
 msgid "* Item folder"
@@ -10578,8 +10578,8 @@ msgid "Change the colours of your selected skin."
 msgstr "Vaheta valitud rüü värve."
 
 msgctxt "#36109"
-msgid "Select the media window that XBMC displays on startup."
-msgstr "Vali XBMC käivitamisel avatav meediaaken."
+msgid "Select the media window that Kodi displays on startup."
+msgstr "Vali Kodi käivitamisel avatav meediaaken."
 
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
@@ -10666,8 +10666,8 @@ msgid "Group movies into 'Movie sets' when browsing the movie library."
 msgstr "Grupeeri filmiteegis liikudes filmid settidesse."
 
 msgctxt "#36146"
-msgid "Check for new media files on XBMC startup."
-msgstr "Otsi XBMC käivitudes uusi faile."
+msgid "Check for new media files on Kodi startup."
+msgstr "Otsi Kodi käivitudes uusi faile."
 
 msgctxt "#36147"
 msgid "Hide the library scanning progress bar during scans."
@@ -10762,8 +10762,8 @@ msgid "Import channel groups from the PVR backend (if supported). Will delete us
 msgstr "Impordi kanaligrupid PVR põhirakendusest (kui võimalik). Kasutaja loodud grupid kustutatakse, kui neid põhirakendusest ei leita."
 
 msgctxt "#36206"
-msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
-msgstr "Käsitsi XBMC konfigureerimise asemel kasuta põhirakenduse numeratsiooni."
+msgid "Use numbering from the backend, instead of configuring them manually over Kodi."
+msgstr "Käsitsi Kodi konfigureerimise asemel kasuta põhirakenduse numeratsiooni."
 
 msgctxt "#36207"
 msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
@@ -10782,8 +10782,8 @@ msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "Ära impordi saatekava TV vaatamise ajal, sellega vähendad protsessori koormust."
 
 msgctxt "#36223"
-msgid "By default, EPG data is stored in a local database to speed up importing when XBMC is restarted."
-msgstr "XBMC käivitamise kiirendamiseks salvestatakse saatekava andmed vaikimisi kohalikus andmebaasis."
+msgid "By default, EPG data is stored in a local database to speed up importing when Kodi is restarted."
+msgstr "Kodi käivitamise kiirendamiseks salvestatakse saatekava andmed vaikimisi kohalikus andmebaasis."
 
 msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
@@ -10802,7 +10802,7 @@ msgid "Display a notification when timers are added, finished or removed by the 
 msgstr "Näita teadet, kui põhirakendus lisab, muudab või kustutab taimereid."
 
 msgctxt "#36241"
-msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgid "Execute the \"wakeup command\" below when Kodi exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
 msgstr "Käivita allolev \"äratuskäsklus\", kui XBCM suletakse või läheb unerežiimi. Järgmise plaanitud salvestuse aeg antakse parameetrina kaasa."
 
 msgctxt "#36245"
@@ -10834,7 +10834,7 @@ msgid "Select the default artist information source. See the Add-ons Manager for
 msgstr "Vali vaikimisi artistiinfo allikas. Vaata võimalikke variante lisamoodulite haldurist."
 
 msgctxt "#36259"
-msgid "Check for new and removed media files on XBMC startup."
+msgid "Check for new and removed media files on Kodi startup."
 msgstr "Kontrolli uusi ja kustutatud faile XBCM käivitamisel."
 
 msgctxt "#36260"
@@ -10850,8 +10850,8 @@ msgid "Import a XML file into the Music Library database."
 msgstr "Impordi XML fail muusikateegi andmebaasi."
 
 msgctxt "#36265"
-msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
-msgstr "XBMC esitab automaatselt järgmise jooksvas kaustas asuva faili. Näiteks failide vaates: peale loo lõppemist esitab XBMC automaatselt järgmise jooksvas kaustas asuva loo."
+msgid "Kodi automatically plays the next item in the current folder. For example, in Files View: After a track has been played, Kodi would automatically play the next track in the same folder."
+msgstr "Kodi esitab automaatselt järgmise jooksvas kaustas asuva faili. Näiteks failide vaates: peale loo lõppemist esitab Kodi automaatselt järgmise jooksvas kaustas asuva loo."
 
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
@@ -10870,8 +10870,8 @@ msgid "Read the tag information from song files. For large directories this can 
 msgstr "Loe märgendite info lugude failidest. Suurte, eriti võrgus asuvate, kaustade puhul võib lugemine aeglasemaks minna."
 
 msgctxt "#36281"
-msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
-msgstr "XBMC otsib pisipilte välisvõrgust ja optilistelt seadmetelt. See võib aeglustada võrgukaustade kuvamist."
+msgid "Kodi will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
+msgstr "Kodi otsib pisipilte välisvõrgust ja optilistelt seadmetelt. See võib aeglustada võrgukaustade kuvamist."
 
 msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
@@ -10902,8 +10902,8 @@ msgid "Auto eject disc after rip is complete."
 msgstr "Väljasta plaat peale rippimise lõppu."
 
 msgctxt "#36293"
-msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
-msgstr "Muusikafailide esitamisel otsib XBMC sobivat .cdg faili ning näitab selle sisu."
+msgid "When playing any music file, Kodi will look for a matching .cdg file and display its graphics."
+msgstr "Muusikafailide esitamisel otsib Kodi sobivat .cdg faili ning näitab selle sisu."
 
 msgctxt "#36301"
 msgid "No info available yet."
@@ -10954,16 +10954,16 @@ msgid "Specify the default weather information source. See the Add-ons Manager f
 msgstr "Vali vaikimisi ilmateate allikas. Vaata võimalikke variante lisamoodulite haldurist."
 
 msgctxt "#36321"
-msgid "Display name of the XBMC installation when using various network services."
-msgstr "Kuva XBMC paigalduse nimi võrguteenuste kasutamisel."
+msgid "Display name of the Kodi installation when using various network services."
+msgstr "Kuva Kodi paigalduse nimi võrguteenuste kasutamisel."
 
 msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
 msgstr "Teavita UPnP kliente igast teegiuuendusest."
 
 msgctxt "#36328"
-msgid "Enable remote users to control XBMC through the built-in webserver."
-msgstr "Luba kasutajatel XBMC juhtimine läbi sisseehitatud veebiserveri."
+msgid "Enable remote users to control Kodi through the built-in webserver."
+msgstr "Luba kasutajatel Kodi juhtimine läbi sisseehitatud veebiserveri."
 
 msgctxt "#36329"
 msgid "Define the webserver port."
@@ -10978,16 +10978,16 @@ msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Vali lisamoodulite halduri abil paigaldatud veebiliideste vahel."
 
 msgctxt "#36334"
-msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
-msgstr "Luba sellel arvutil olevatel programmidel XBMC juhtimine veebiliidese või JSON-RPC protokolli abil."
+msgid "Allow programs on this computer to control Kodi via the Web Interface or the JSON-RPC interface protocol."
+msgstr "Luba sellel arvutil olevatel programmidel Kodi juhtimine veebiliidese või JSON-RPC protokolli abil."
 
 msgctxt "#36338"
-msgid "Allow programs on the network to control XBMC."
-msgstr "Luba võrgus olevatel rakendustel XBMC-d kontrollida."
+msgid "Allow programs on the network to control Kodi."
+msgstr "Luba võrgus olevatel rakendustel Kodi-d kontrollida."
 
 msgctxt "#36355"
-msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
-msgstr "Pimenda mitme ekraani kasutamisel need ekraanid, kus XBMC-d ei kasutata."
+msgid "In a multi-screen configuration, the screens where Kodi is not displayed are blacked out."
+msgstr "Pimenda mitme ekraani kasutamisel need ekraanid, kus Kodi-d ei kasutata."
 
 msgctxt "#36356"
 msgid "Eliminate vertical tearing."
@@ -11002,12 +11002,12 @@ msgid "Configure how interface sounds are handled, such as menu navigation and i
 msgstr "Seadista kuidas kasutajaliidese, näiteks menüü navigatsiooni ja oluliste teadete, helisid käsitletakse."
 
 msgctxt "#36377"
-msgid "Use a mouse or touch screen device to control XBMC. Note: disabling will cause you to lose control over XBMC when no keyboard or remote is present."
-msgstr "Kasuta XBMC juhtimiseks hiirt või puuteekraaniga seadet. Märkus : Valiku deaktiveerimisega kaotate, klaviatuuri või kaugjuhtimispuldi puudumisel, võimaluse programmi juhtida."
+msgid "Use a mouse or touch screen device to control Kodi. Note: disabling will cause you to lose control over Kodi when no keyboard or remote is present."
+msgstr "Kasuta Kodi juhtimiseks hiirt või puuteekraaniga seadet. Märkus : Valiku deaktiveerimisega kaotate, klaviatuuri või kaugjuhtimispuldi puudumisel, võimaluse programmi juhtida."
 
 msgctxt "#36378"
-msgid "Use a joystick to control XBMC."
-msgstr "Kasuta XBMC kontrollimiseks juhtkangi."
+msgid "Use a joystick to control Kodi."
+msgstr "Kasuta Kodi kontrollimiseks juhtkangi."
 
 msgctxt "#36380"
 msgid "If your internet connection uses a proxy, configure it here."
@@ -11038,8 +11038,8 @@ msgid "Turn debug logging on or off. Useful for troubleshooting."
 msgstr "Lülita silumis logi sisse või välja. Kasulik vigade leidmisel."
 
 msgctxt "#36393"
-msgid "Folder used to save screenshots taken within XBMC."
-msgstr "XBMC-ga tehtud ekraanitõmmiste salvestamise kaust"
+msgid "Folder used to save screenshots taken within Kodi."
+msgstr "Kodi-ga tehtud ekraanitõmmiste salvestamise kaust"
 
 msgctxt "#36410"
 msgid "No info available yet."

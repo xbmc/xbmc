@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.metadata" version="2.1.0" provider-name="Team XBMC">
+<addon id="xbmc.metadata" version="2.1.0" provider-name="Team-Kodi">
   <backwards-compatibility abi="1.0"/>
   <requires>
     <import addon="xbmc.core" version="0.1.0"/>

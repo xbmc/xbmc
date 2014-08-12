@@ -2,7 +2,7 @@
 <addon id="metadata.common.amazon.de"
        name="Amazon.de Scraper Library"
        version="1.0.2"
-       provider-name="Team XBMC">
+       provider-name="Team-Kodi">
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
   </requires>

@@ -1,11 +1,11 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main\n"
+"Project-Id-Version: Kodi Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Maltese (http://www.transifex.com/projects/p/xbmc-main/language/mt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -730,7 +730,7 @@ msgid "Scripts output"
 msgstr "Output tal-iskripts"
 
 msgctxt "#263"
-msgid "Allow control of XBMC via HTTP"
+msgid "Allow control of Kodi via HTTP"
 msgstr "HTTP server:"
 
 msgctxt "#264"
@@ -1474,8 +1474,8 @@ msgid "Audio options"
 msgstr "Opzjoni Awdjo"
 
 msgctxt "#482"
-msgid "About XBMC"
-msgstr "Dwar XBMC"
+msgid "About Kodi"
+msgstr "Dwar Kodi"
 
 msgctxt "#485"
 msgid "Delete album"
@@ -2242,7 +2242,7 @@ msgid "Remote control"
 msgstr "Remote Events"
 
 msgctxt "#791"
-msgid "Allow programs on this system to control XBMC"
+msgid "Allow programs on this system to control Kodi"
 msgstr "Attiva Remote Events"
 
 msgctxt "#792"
@@ -2254,7 +2254,7 @@ msgid "Port range"
 msgstr "Port Range tar-Remote Events"
 
 msgctxt "#794"
-msgid "Allow programs on other systems to control XBMC"
+msgid "Allow programs on other systems to control Kodi"
 msgstr "Irċievi events minn kompjuters oħra"
 
 msgctxt "#998"
@@ -2270,8 +2270,8 @@ msgid "Unable to connect"
 msgstr "Unable to connect"
 
 msgctxt "#1002"
-msgid "XBMC was unable to connect to the network location."
-msgstr "XBMC ma rnexxielux jaqbad mad-destinazzjoni tan-network."
+msgid "Kodi was unable to connect to the network location."
+msgstr "Kodi ma rnexxielux jaqbad mad-destinazzjoni tan-network."
 
 msgctxt "#1003"
 msgid "This could be due to the network not being connected."
@@ -3358,8 +3358,8 @@ msgid "Do you wish to reboot your system"
 msgstr "Tixtieq tirributja l-xbox"
 
 msgctxt "#13309"
-msgid "instead of just XBMC?"
-msgstr "minflok l-XBMC biss?"
+msgid "instead of just Kodi?"
+msgstr "minflok l-Kodi biss?"
 
 msgctxt "#13310"
 msgid "Zoom effect"
@@ -3818,8 +3818,8 @@ msgid "Network settings changed"
 msgstr "Settings tan-network mibdula"
 
 msgctxt "#14039"
-msgid "XBMC requires to restart to change your"
-msgstr "XBMC tinhtieg reboot biex jigu affettwati"
+msgid "Kodi requires to restart to change your"
+msgstr "Kodi tinhtieg reboot biex jigu affettwati"
 
 msgctxt "#14040"
 msgid "network setup.  Would you like to restart now?"
@@ -4278,8 +4278,8 @@ msgid "Screenshots"
 msgstr "Screenshots"
 
 msgctxt "#20009"
-msgid "Use XBMC"
-msgstr "Uża XBMC"
+msgid "Use Kodi"
+msgstr "Uża Kodi"
 
 msgctxt "#20011"
 msgid "Music playlists"
@@ -5066,7 +5066,7 @@ msgid "Do you want to remove all items within"
 msgstr "Trid tneħħi l-affarijiet kollha li qiegħdin ġo"
 
 msgctxt "#20341"
-msgid "this path from the XBMC library?"
+msgid "this path from the Kodi library?"
 msgstr "dan il-path min ġewwa d-database?"
 
 msgctxt "#20342"
@@ -5802,7 +5802,7 @@ msgid "Reference service"
 msgstr "Servizz ta' Riferenza"
 
 msgctxt "#21881"
-msgid "Allow control of XBMC via UPnP"
+msgid "Allow control of Kodi via UPnP"
 msgstr "Attiva UPnP Renderer"
 
 msgctxt "#21882"

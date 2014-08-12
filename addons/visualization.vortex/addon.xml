@@ -3,7 +3,7 @@
   id="visualization.vortex"
   version="1.0.8"
   name="Vortex"
-  provider-name="Team XBMC">
+  provider-name="Team-Kodi">
   <extension
     point="xbmc.player.musicviz"
     library_windx="Vortex_win32dx.vis"/>

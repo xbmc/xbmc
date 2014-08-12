@@ -3,7 +3,7 @@
   id="visualization.dxspectrum"
   version="1.0.20"
   name="DirectX Spectrum"
-  provider-name="Team XBMC">
+  provider-name="Team-Kodi">
   <extension
     point="xbmc.player.musicviz"
     library_windx="Spectrum_win32dx.vis"/>

@@ -3,7 +3,7 @@
   id="visualization.glspectrum"
   version="1.0.20"
   name="OpenGL Spectrum"
-  provider-name="Team XBMC">
+  provider-name="Team-Kodi">
   <extension
     point="xbmc.player.musicviz"
     library_linux="opengl_spectrum.vis"

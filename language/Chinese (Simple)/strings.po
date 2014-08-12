@@ -1,11 +1,11 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main\n"
+"Project-Id-Version: Kodi Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Chinese (Simple) (http://www.transifex.com/projects/p/xbmc-main/language/zh/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,8 +38,8 @@ msgid "Settings"
 msgstr "设置"
 
 msgctxt "#6"
-msgid "XBMC SVN"
-msgstr "XBMC SVN"
+msgid "Kodi SVN"
+msgstr "Kodi SVN"
 
 msgctxt "#7"
 msgid "File manager"
@@ -51,7 +51,7 @@ msgstr "天气"
 
 msgctxt "#9"
 msgid "xbmc media center"
-msgstr "XBMC 媒体中心"
+msgstr "Kodi 媒体中心"
 
 msgctxt "#11"
 msgid "Monday"
@@ -914,8 +914,8 @@ msgid "Scripts output"
 msgstr "脚本输出"
 
 msgctxt "#263"
-msgid "Allow control of XBMC via HTTP"
-msgstr "允许通过 HTTP 控制 XBMC"
+msgid "Allow control of Kodi via HTTP"
+msgstr "允许通过 HTTP 控制 Kodi"
 
 msgctxt "#264"
 msgid "Record"
@@ -1750,8 +1750,8 @@ msgid "Audio options"
 msgstr "音频选项"
 
 msgctxt "#482"
-msgid "About XBMC"
-msgstr "关于 XBMC"
+msgid "About Kodi"
+msgstr "关于 Kodi"
 
 msgctxt "#485"
 msgid "Delete album"
@@ -2714,8 +2714,8 @@ msgid "Remote control"
 msgstr "远程控制"
 
 msgctxt "#791"
-msgid "Allow programs on this system to control XBMC"
-msgstr "允许本机程序控制 XBMC"
+msgid "Allow programs on this system to control Kodi"
+msgstr "允许本机程序控制 Kodi"
 
 msgctxt "#792"
 msgid "Port"
@@ -2726,8 +2726,8 @@ msgid "Port range"
 msgstr "端口范围"
 
 msgctxt "#794"
-msgid "Allow programs on other systems to control XBMC"
-msgstr "允许异地程序控制 XBMC"
+msgid "Allow programs on other systems to control Kodi"
+msgstr "允许异地程序控制 Kodi"
 
 msgctxt "#795"
 msgid "Initial repeat delay (ms)"
@@ -2790,8 +2790,8 @@ msgid "Unable to connect"
 msgstr "无法连接"
 
 msgctxt "#1002"
-msgid "XBMC was unable to connect to the network location."
-msgstr "XBMC 无法连接到此网络位置。"
+msgid "Kodi was unable to connect to the network location."
+msgstr "Kodi 无法连接到此网络位置。"
 
 msgctxt "#1003"
 msgid "This could be due to the network not being connected."
@@ -3142,8 +3142,8 @@ msgid "Allow volume control"
 msgstr "允许音量控制"
 
 msgctxt "#1270"
-msgid "Allow XBMC to receive AirPlay content"
-msgstr "允许 XBMC 接收 AirPlay 内容"
+msgid "Allow Kodi to receive AirPlay content"
+msgstr "允许 Kodi 接收 AirPlay 内容"
 
 msgctxt "#1271"
 msgid "Device name"
@@ -4278,12 +4278,12 @@ msgid "Active connections detected!"
 msgstr "检测到活动连接！"
 
 msgctxt "#13141"
-msgid "If you proceed, you might not be able to control XBMC"
+msgid "If you proceed, you might not be able to control Kodi"
 msgstr "如果继续此操作，可能会无法控制你的"
 
 msgctxt "#13142"
 msgid "any longer. Are you sure you want to stop the Event server?"
-msgstr "XBMC，你是否确认要停止事件服务器？"
+msgstr "Kodi，你是否确认要停止事件服务器？"
 
 msgctxt "#13144"
 msgid "Change Apple Remote mode?"
@@ -4294,8 +4294,8 @@ msgid "If you are currently using the Apple Remote to control"
 msgstr "如果你现在正在使用苹果遥控器"
 
 msgctxt "#13146"
-msgid "XBMC, changing this setting might affect your ability"
-msgstr "控制 XBMC，修改这些设置将影响对"
+msgid "Kodi, changing this setting might affect your ability"
+msgstr "控制 Kodi，修改这些设置将影响对"
 
 msgctxt "#13147"
 msgid "to continue controlling it. Do you want to proceed?"
@@ -4522,8 +4522,8 @@ msgid "Do you wish to reboot your system"
 msgstr "你想重新启动系统"
 
 msgctxt "#13309"
-msgid "instead of just XBMC?"
-msgstr "而不仅仅是 XBMC 吗？"
+msgid "instead of just Kodi?"
+msgstr "而不仅仅是 Kodi 吗？"
 
 msgctxt "#13310"
 msgid "Zoom effect"
@@ -5142,8 +5142,8 @@ msgid "Apple remote"
 msgstr "苹果遥控器"
 
 msgctxt "#13602"
-msgid "Allow start of XBMC using the remote"
-msgstr "允许用遥控器启动 XBMC"
+msgid "Allow start of Kodi using the remote"
+msgstr "允许用遥控器启动 Kodi"
 
 msgctxt "#13603"
 msgid "Sequence delay time"
@@ -5314,8 +5314,8 @@ msgid "Network settings changed"
 msgstr "网络设置已改变"
 
 msgctxt "#14039"
-msgid "XBMC requires to restart to change your"
-msgstr "XBMC 需要重启以改变你的网络设置。"
+msgid "Kodi requires to restart to change your"
+msgstr "Kodi 需要重启以改变你的网络设置。"
 
 msgctxt "#14040"
 msgid "network setup.  Would you like to restart now?"
@@ -6806,8 +6806,8 @@ msgid "Enter the name of the new channel"
 msgstr "输入新频道名称"
 
 msgctxt "#19209"
-msgid "XBMC virtual backend"
-msgstr "XBMC 虚拟后端"
+msgid "Kodi virtual backend"
+msgstr "Kodi 虚拟后端"
 
 msgctxt "#19210"
 msgid "Client"
@@ -7502,8 +7502,8 @@ msgid "Screenshots"
 msgstr "屏幕截图"
 
 msgctxt "#20009"
-msgid "Use XBMC"
-msgstr "使用 XBMC"
+msgid "Use Kodi"
+msgstr "使用 Kodi"
 
 msgctxt "#20011"
 msgid "Music playlists"
@@ -8411,10 +8411,10 @@ msgstr "导演"
 
 msgctxt "#20340"
 msgid "Do you want to remove all items within"
-msgstr "是否从 XBMC 资料库中移除"
+msgstr "是否从 Kodi 资料库中移除"
 
 msgctxt "#20341"
-msgid "this path from the XBMC library?"
+msgid "this path from the Kodi library?"
 msgstr "所有位于该路径的项目？"
 
 msgctxt "#20342"
@@ -9626,8 +9626,8 @@ msgid "Reference service"
 msgstr "索引服务"
 
 msgctxt "#21881"
-msgid "Allow control of XBMC via UPnP"
-msgstr "允许通过 UPnP 控制 XBMC"
+msgid "Allow control of Kodi via UPnP"
+msgstr "允许通过 UPnP 控制 Kodi"
 
 msgctxt "#21882"
 msgid "Attempt to skip introduction before DVD menu"
@@ -10646,12 +10646,12 @@ msgid "This version of %s requires an"
 msgstr "运行此版本的 %s 需要"
 
 msgctxt "#33075"
-msgid "XBMC revision of %s or greater to run."
-msgstr "XBMC 为 %s 或更高版本。"
+msgid "Kodi revision of %s or greater to run."
+msgstr "Kodi 为 %s 或更高版本。"
 
 msgctxt "#33076"
-msgid "Please update XBMC."
-msgstr "请升级 XBMC。"
+msgid "Please update Kodi."
+msgstr "请升级 Kodi。"
 
 msgctxt "#33077"
 msgid "No data found!"
@@ -10986,12 +10986,12 @@ msgid "Could not open the adaptor"
 msgstr "无法打开适配器"
 
 msgctxt "#36007"
-msgid "Devices to power on when starting XBMC"
-msgstr "启动 XBMC 时开启的设备"
+msgid "Devices to power on when starting Kodi"
+msgstr "启动 Kodi 时开启的设备"
 
 msgctxt "#36008"
-msgid "Devices to power off when stopping XBMC"
-msgstr "退出 XBMC 时关闭的设备"
+msgid "Devices to power off when stopping Kodi"
+msgstr "退出 Kodi 时关闭的设备"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
@@ -11030,8 +11030,8 @@ msgid "Connected to HDMI device"
 msgstr "已连接到 HDMI 设备"
 
 msgctxt "#36020"
-msgid "Make XBMC the active source when starting"
-msgstr "启动时让 XBMC 为活动源"
+msgid "Make Kodi the active source when starting"
+msgstr "启动时让 Kodi 为活动源"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
@@ -11050,8 +11050,8 @@ msgid "Failed to set the new configuration. Please check your settings."
 msgstr "新配置设定失败，请检查设置。"
 
 msgctxt "#36025"
-msgid "Send 'inactive source' command when stopping XBMC"
-msgstr "停止 XBMC 时发送“非活动源”命令"
+msgid "Send 'inactive source' command when stopping Kodi"
+msgstr "停止 Kodi 时发送“非活动源”命令"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
@@ -11106,8 +11106,8 @@ msgid "TV and AVR device (explicit)"
 msgstr "电视和 AVR 设备（详情）"
 
 msgctxt "#36040"
-msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
-msgstr "不支持的 libCEC 接口版本，%x 低于 XBMC 支持的版本（%x）"
+msgid "Unsupported libCEC interface version. %x is lower than the version Kodi supports (%x)"
+msgstr "不支持的 libCEC 接口版本，%x 低于 Kodi 支持的版本（%x）"
 
 msgctxt "#36041"
 msgid "* Item folder"
@@ -11126,8 +11126,8 @@ msgid "Category containing all Skin related settings."
 msgstr "包含与皮肤相关的所有设置的功能区。"
 
 msgctxt "#36103"
-msgid "Select the skin for the user interface. This will define the look and feel of XBMC."
-msgstr "选择用户界面的皮肤。这将决定 XBMC 的外观。"
+msgid "Select the skin for the user interface. This will define the look and feel of Kodi."
+msgstr "选择用户界面的皮肤。这将决定 Kodi 的外观。"
 
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
@@ -11150,8 +11150,8 @@ msgid "Resize the view of the user interface."
 msgstr "调整用户界面大小。"
 
 msgctxt "#36109"
-msgid "Select the media window that XBMC displays on startup."
-msgstr "选择 XBMC 启动时显示的媒体窗口。"
+msgid "Select the media window that Kodi displays on startup."
+msgstr "选择 Kodi 启动时显示的媒体窗口。"
 
 msgctxt "#36110"
 msgid "Select or disable the sound scheme used in the user interface."
@@ -11234,8 +11234,8 @@ msgid "Set the amount of idle time required before displaying the screensaver."
 msgstr "设置显示屏幕保护所需的空闲时间。"
 
 msgctxt "#36130"
-msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
-msgstr "选择屏幕保护。当全屏视频播放暂停或对话框开启时，XBMC 将强制使用“Dim”屏幕保护。"
+msgid "Select the screensaver. Kodi will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
+msgstr "选择屏幕保护。当全屏视频播放暂停或对话框开启时，Kodi 将强制使用“Dim”屏幕保护。"
 
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
@@ -11246,8 +11246,8 @@ msgid "Preview the selected screensaver."
 msgstr "预览选定的屏幕保护。"
 
 msgctxt "#36133"
-msgid "If music is being played, XBMC will start the selected visualisation instead of displaying the screensaver."
-msgstr "音乐播放时，XBMC 将显示选定的可视化效果而非屏幕保护。"
+msgid "If music is being played, Kodi will start the selected visualisation instead of displaying the screensaver."
+msgstr "音乐播放时，Kodi 将显示选定的可视化效果而非屏幕保护。"
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
@@ -11294,8 +11294,8 @@ msgid "Group movies into 'Movie sets' when browsing the movie library."
 msgstr "浏览电影资料库时将电影按影片集分组"
 
 msgctxt "#36146"
-msgid "Check for new media files on XBMC startup."
-msgstr "XBMC 启动时检查新媒体文件。"
+msgid "Check for new media files on Kodi startup."
+msgstr "Kodi 启动时检查新媒体文件。"
 
 msgctxt "#36147"
 msgid "Hide the library scanning progress bar during scans."
@@ -11394,8 +11394,8 @@ msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "选择在宽屏显示屏显示4:3视频的缩放级别。"
 
 msgctxt "#36172"
-msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
-msgstr "VDPAU 演播室级色彩转换为象 XBMC 这样的高级应用提供一个支配色彩空间转换的途径。"
+msgid "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
+msgstr "VDPAU 演播室级色彩转换为象 Kodi 这样的高级应用提供一个支配色彩空间转换的途径。"
 
 msgctxt "#36173"
 msgid "Enable upscaling using VDPAU."
@@ -11518,20 +11518,20 @@ msgid "Category for general settings for PVR/Live TV features."
 msgstr "PVR/直播电视功能常用设置功能区。"
 
 msgctxt "#36203"
-msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
-msgstr "启用 XBMC 的个人视频录像机（PVR）功能。需要至少安装有一个 PVR 插件。"
+msgid "Enable the Personal Video Recorder (PVR) features in Kodi. This requires that at least one PVR Add-on is installed."
+msgstr "启用 Kodi 的个人视频录像机（PVR）功能。需要至少安装有一个 PVR 插件。"
 
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "从PVR后端（如果支持）导入频道组。这将删除用户创建但后端中没有的组。"
 
 msgctxt "#36205"
-msgid "Sort the channels by channel number on the backend, but use XBMC's own numbering for channels."
-msgstr "按后端频道号排序频道，但使用 XBMC 的频道编号。"
+msgid "Sort the channels by channel number on the backend, but use Kodi's own numbering for channels."
+msgstr "按后端频道号排序频道，但使用 Kodi 的频道编号。"
 
 msgctxt "#36206"
-msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
-msgstr "使用后端编号取代 XBMC 中人工设置的编号。"
+msgid "Use numbering from the backend, instead of configuring them manually over Kodi."
+msgstr "使用后端编号取代 Kodi 中人工设置的编号。"
 
 msgctxt "#36207"
 msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
@@ -11546,8 +11546,8 @@ msgid "Delete channel/EPG database and reimport the data from the backend afterw
 msgstr "删除频道/电子节目单数据库，然后从后端重新导入数据。"
 
 msgctxt "#36210"
-msgid "Prevent the 'connection lost' notification window from displaying when XBMC is unable to talk to the PVR backend server."
-msgstr "阻止当 XBMC 无法与 PVR 后端服务器会话时显示“连接丢失”提示窗。"
+msgid "Prevent the 'connection lost' notification window from displaying when Kodi is unable to talk to the PVR backend server."
+msgstr "阻止当 Kodi 无法与 PVR 后端服务器会话时显示“连接丢失”提示窗。"
 
 msgctxt "#36211"
 msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
@@ -11598,16 +11598,16 @@ msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "请勿在播放电视时导入电子节目单数据，以减少 CPU 占用。"
 
 msgctxt "#36223"
-msgid "By default, EPG data is stored in a local database to speed up importing when XBMC is restarted."
-msgstr "默认情况下，电子节目单数据保存在本地数据库以提高 XBMC 启动时导入速度。"
+msgid "By default, EPG data is stored in a local database to speed up importing when Kodi is restarted."
+msgstr "默认情况下，电子节目单数据保存在本地数据库以提高 Kodi 启动时导入速度。"
 
 msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "隐藏当某频道未取得电子节目单数据时的“无可用信息”标签。"
 
 msgctxt "#36225"
-msgid "Delete the EPG database in XBMC and reimport the data afterwards from the backend."
-msgstr "删除 XBMC 的电子节目单数据库并重新从后端导入数据。"
+msgid "Delete the EPG database in Kodi and reimport the data afterwards from the backend."
+msgstr "删除 Kodi 的电子节目单数据库并重新从后端导入数据。"
 
 msgctxt "#36226"
 msgid "Category for PVR playback and channel switching settings."
@@ -11626,8 +11626,8 @@ msgid "Display signal quality information in the codec information window (if su
 msgstr "在编码信息窗显示信号质量信息（如果插件和后端支持）。"
 
 msgctxt "#36230"
-msgid "How long XBMC will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
-msgstr "当频道未接收到时 XBMC 改变频道的等待时长。针对那些常失去信号强度的无线传输频道。"
+msgid "How long Kodi will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
+msgstr "当频道未接收到时 Kodi 改变频道的等待时长。针对那些常失去信号强度的无线传输频道。"
 
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
@@ -11670,8 +11670,8 @@ msgid "Category for PVR power management settings, such as when to wake the PVR 
 msgstr "PVR 电源管理设置功能区，如何时唤醒 PVR 后端服务器。"
 
 msgctxt "#36241"
-msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
-msgstr "在 XBMC 退出或进入休眠模式时执行下面的“唤醒命令​​”。下一个预约录像的时间戳作为参数传递。"
+msgid "Execute the \"wakeup command\" below when Kodi exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgstr "在 Kodi 退出或进入休眠模式时执行下面的“唤醒命令​​”。下一个预约录像的时间戳作为参数传递。"
 
 msgctxt "#36242"
 msgid "The command will not be executed when a recording will be started within this timeout."
@@ -11710,12 +11710,12 @@ msgid "Ask for the pin code again when trying to access a parental locked channe
 msgstr "当试图访问家长锁定频道且在此时长内未询问PIN码时再次询问PIN码。"
 
 msgctxt "#36251"
-msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
-msgstr "PVR 后端特殊设置功能区，如果 PVR 后端支持改变 XBMC 中的这些设置。"
+msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
+msgstr "PVR 后端特殊设置功能区，如果 PVR 后端支持改变 Kodi 中的这些设置。"
 
 msgctxt "#36252"
-msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
-msgstr "此选项针对你的 PVR 后端的特殊设置功能区，如果 PVR 后端支持改变 XBMC 中的这些设置。"
+msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
+msgstr "此选项针对你的 PVR 后端的特殊设置功能区，如果 PVR 后端支持改变 Kodi 中的这些设置。"
 
 msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."
@@ -11742,8 +11742,8 @@ msgid "Select the default artist information source. See the Add-ons Manager for
 msgstr "选择默认歌手资料来源。选项见插件管理。"
 
 msgctxt "#36259"
-msgid "Check for new and removed media files on XBMC startup."
-msgstr "XBMC 启动时检查新增和已移除的媒体文件。"
+msgid "Check for new and removed media files on Kodi startup."
+msgstr "Kodi 启动时检查新增和已移除的媒体文件。"
 
 msgctxt "#36260"
 msgid "No info available yet."
@@ -11762,16 +11762,16 @@ msgid "Category containing settings for how music playback is handled."
 msgstr "包含音乐播放处理相关设置的功能区。"
 
 msgctxt "#36265"
-msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
-msgstr "XBMC 自动播放当前文件夹中的下一项目。如，在文件视图：一首歌曲播放完成后，XBMC 将自动播放同一文件夹中的下一首歌。"
+msgid "Kodi automatically plays the next item in the current folder. For example, in Files View: After a track has been played, Kodi would automatically play the next track in the same folder."
+msgstr "Kodi 自动播放当前文件夹中的下一项目。如，在文件视图：一首歌曲播放完成后，Kodi 将自动播放同一文件夹中的下一首歌。"
 
 msgctxt "#36266"
 msgid "When songs are selected they are queued instead of playback starting immediately."
 msgstr "当歌曲被选定时进入播放队列而非立即播放。"
 
 msgctxt "#36267"
-msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
-msgstr "XBMC 会读取类似 MP3Gain 程序编码到你的音频文件中的回放增益信息，并以此来调整正常音量水平。"
+msgid "Kodi will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
+msgstr "Kodi 会读取类似 MP3Gain 程序编码到你的音频文件中的回放增益信息，并以此来调整正常音量水平。"
 
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
@@ -11826,8 +11826,8 @@ msgid "Used for formatting the second column in library lists."
 msgstr "用于规定资料库列表第二列的格式。"
 
 msgctxt "#36281"
-msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
-msgstr "XBMC 将搜索远程共享和光学介质上的缩略图。这通常会减慢网络文件夹显示速度。"
+msgid "Kodi will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
+msgstr "Kodi 将搜索远程共享和光学介质上的缩略图。这通常会减慢网络文件夹显示速度。"
 
 msgctxt "#36282"
 msgid "Category containing settings for how CDs are handled."
@@ -11874,8 +11874,8 @@ msgid "Category containing the settings for how karaoke is handled."
 msgstr "包含卡拉 OK 处理相关设置的功能区。"
 
 msgctxt "#36293"
-msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
-msgstr "当播放音乐文件时，XBMC 将查找相应的 .cdg 文件并显示其中的图像。"
+msgid "When playing any music file, Kodi will look for a matching .cdg file and display its graphics."
+msgstr "当播放音乐文件时，Kodi 将查找相应的 .cdg 文件并显示其中的图像。"
 
 msgctxt "#36294"
 msgid "Show song selection dialog once the last song in the queue has been played."
@@ -11986,8 +11986,8 @@ msgid "Category containing settings used for all services."
 msgstr "包含所有服务相关设置的功能区。"
 
 msgctxt "#36321"
-msgid "Display name of the XBMC installation when using various network services."
-msgstr "XBMC 在网络中显示的名称。"
+msgid "Display name of the Kodi installation when using various network services."
+msgstr "Kodi 在网络中显示的名称。"
 
 msgctxt "#36322"
 msgid "Category containing settings for how the UPnP service is handled."
@@ -12006,16 +12006,16 @@ msgid "Enable the UPnP client. This allows you to stream media from any UPnP ser
 msgstr "启用 UPnP 客户端。这将允许你通过一个控制点从任何 UPnP 服务器获取流媒体并控制播放。"
 
 msgctxt "#36326"
-msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from XBMC."
-msgstr "启用 UPnP 控制点。这将允许你向任何 UPnP 客户端传送流媒体并用 XBMC 控制播放。"
+msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from Kodi."
+msgstr "启用 UPnP 控制点。这将允许你向任何 UPnP 客户端传送流媒体并用 Kodi 控制播放。"
 
 msgctxt "#36327"
 msgid "Category containing settings for how the webserver service is handled."
 msgstr "包含 web 服务器服务处理相关设置的功能区。"
 
 msgctxt "#36328"
-msgid "Enable remote users to control XBMC through the built-in webserver."
-msgstr "允许远程用户通过内建的 web 服务器控制 XBMC。"
+msgid "Enable remote users to control Kodi through the built-in webserver."
+msgstr "允许远程用户通过内建的 web 服务器控制 Kodi。"
 
 msgctxt "#36329"
 msgid "Define the webserver port."
@@ -12038,8 +12038,8 @@ msgid "Category containing settings for how the remote control service is handle
 msgstr "包含远程控制服务处理相关设置的功能区。"
 
 msgctxt "#36334"
-msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
-msgstr "允许本机程序通过 Web 接口或 JSON-RPC 接口协议控制 XBMC。"
+msgid "Allow programs on this computer to control Kodi via the Web Interface or the JSON-RPC interface protocol."
+msgstr "允许本机程序通过 Web 接口或 JSON-RPC 接口协议控制 Kodi。"
 
 msgctxt "#36335"
 msgid "Define the remote control port."
@@ -12054,8 +12054,8 @@ msgid "Define the maximum number of clients that can connect."
 msgstr "定义可连接的最大客户端数。"
 
 msgctxt "#36338"
-msgid "Allow programs on the network to control XBMC."
-msgstr "允许程序通过网络远程控制 XBMC。"
+msgid "Allow programs on the network to control Kodi."
+msgstr "允许程序通过网络远程控制 Kodi。"
 
 msgctxt "#36339"
 msgid "Initial repeat delay (ms)."
@@ -12070,12 +12070,12 @@ msgid "Category containing settings for how the zeroconf network discovery servi
 msgstr "包含 Zeroconf 网络发现服务处理相关设置的功能区， AirPlay 需要此服务。"
 
 msgctxt "#36342"
-msgid "Allows applications on the network to discover XBMC's running services."
-msgstr "允许网络上的应用发现 XBMC 运行的服务。"
+msgid "Allows applications on the network to discover Kodi's running services."
+msgstr "允许网络上的应用发现 Kodi 运行的服务。"
 
 msgctxt "#36343"
-msgid "Allows XBMC to receive content from other AirPlay devices or applications."
-msgstr "允许 XBMC 接收来自其它 AirPlay 设备或应用的内容。"
+msgid "Allows Kodi to receive content from other AirPlay devices or applications."
+msgstr "允许 Kodi 接收来自其它 AirPlay 设备或应用的内容。"
 
 msgctxt "#36344"
 msgid "Enable AirPlay password protection."
@@ -12098,16 +12098,16 @@ msgid "If a WINS server is running on the network, enter its workgroup name here
 msgstr "如果网络中有运行的 WINS 服务器，在此输入它的工作组名称。否则留空。"
 
 msgctxt "#36349"
-msgid "Section that contains the System related settings for the device XBMC is installed on."
-msgstr "包含与安装 XBMC 的设备的系统相关设置的区域。"
+msgid "Section that contains the System related settings for the device Kodi is installed on."
+msgstr "包含与安装 Kodi 的设备的系统相关设置的区域。"
 
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
 msgstr "访问共享文件或服务前自动向服务器发送“网络唤醒”。"
 
 msgctxt "#36351"
-msgid "Display XBMC in a window, or fullscreen on the selected screen."
-msgstr "以窗口方式显示 XBMC，或者在选定的屏幕全屏显示。"
+msgid "Display Kodi in a window, or fullscreen on the selected screen."
+msgstr "以窗口方式显示 Kodi，或者在选定的屏幕全屏显示。"
 
 msgctxt "#36352"
 msgid "Changes the resolution that the user interface is displayed in."
@@ -12118,12 +12118,12 @@ msgid "Changes the refresh rate that the user interface is displayed in."
 msgstr "改变用户界面显示的刷新率。"
 
 msgctxt "#36354"
-msgid "Display XBMC in a fullscreen window. The main benefit is for multi-screen configurations, so that XBMC can be used without minimising other applications. This uses more resources so playback may be less smooth."
-msgstr "在全屏窗口显示 XBMC。在多屏配置情况下，可以在使用 XBMC 的同时无需将其它应用窗口最小化。这要占用更多的资源并轻微影响播放的流畅度。"
+msgid "Display Kodi in a fullscreen window. The main benefit is for multi-screen configurations, so that Kodi can be used without minimising other applications. This uses more resources so playback may be less smooth."
+msgstr "在全屏窗口显示 Kodi。在多屏配置情况下，可以在使用 Kodi 的同时无需将其它应用窗口最小化。这要占用更多的资源并轻微影响播放的流畅度。"
 
 msgctxt "#36355"
-msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
-msgstr "在多屏配置下，让非 XBMC 显示的屏幕黑屏。"
+msgid "In a multi-screen configuration, the screens where Kodi is not displayed are blacked out."
+msgstr "在多屏配置下，让非 Kodi 显示的屏幕黑屏。"
 
 msgctxt "#36356"
 msgid "Eliminate vertical tearing."
@@ -12210,12 +12210,12 @@ msgid "When activated, your keyboard arrows will move the selection on the virtu
 msgstr "激活时，键盘方向键控制在虚拟键盘按键间移动。停用时，键盘方向键控制输入文本中的光标移动。"
 
 msgctxt "#36377"
-msgid "Use a mouse or touch screen device to control XBMC. Note: disabling will cause you to lose control over XBMC when no keyboard or remote is present."
-msgstr "使用鼠标或触摸屏设备来控制 XBMC。注：在没有键盘或遥控器的情况下禁用会导致你失去对 XBMC 的控制。"
+msgid "Use a mouse or touch screen device to control Kodi. Note: disabling will cause you to lose control over Kodi when no keyboard or remote is present."
+msgstr "使用鼠标或触摸屏设备来控制 Kodi。注：在没有键盘或遥控器的情况下禁用会导致你失去对 Kodi 的控制。"
 
 msgctxt "#36378"
-msgid "Use a joystick to control XBMC."
-msgstr "用游戏手柄控制 XBMC。"
+msgid "Use a joystick to control Kodi."
+msgstr "用游戏手柄控制 Kodi。"
 
 msgctxt "#36379"
 msgid "Category containing settings for internet access."
@@ -12246,8 +12246,8 @@ msgid "Configure the proxy server password."
 msgstr "设置代理服务器密码。"
 
 msgctxt "#36386"
-msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
-msgstr "如果你使用的带宽有限制，XBMC将使流量保持在限额内。"
+msgid "If you have limited bandwidth available, Kodi will try to keep within these limits."
+msgstr "如果你使用的带宽有限制，Kodi将使流量保持在限额内。"
 
 msgctxt "#36387"
 msgid "Category containing settings for power saving."
@@ -12258,12 +12258,12 @@ msgid "Turn off display when idle. Useful for TVs that turn off when there is no
 msgstr "空闲时关闭显示器。用于可在未检测到显示信号时关闭的电视。"
 
 msgctxt "#36389"
-msgid "Define how long XBMC should idle before shutting down."
-msgstr "定义 XBMC 空闲多长时间后关机。"
+msgid "Define how long Kodi should idle before shutting down."
+msgstr "定义 Kodi 空闲多长时间后关机。"
 
 msgctxt "#36390"
-msgid "Define what action XBMC should do when it has been idle for a long period of time."
-msgstr "定义 XBMC 长时间空闲的情况下执行的动作。"
+msgid "Define what action Kodi should do when it has been idle for a long period of time."
+msgstr "定义 Kodi 长时间空闲的情况下执行的动作。"
 
 msgctxt "#36391"
 msgid "Category containing settings for debugging functions."
@@ -12274,8 +12274,8 @@ msgid "Turn debug logging on or off. Useful for troubleshooting."
 msgstr "开启或关闭调试日志信息显示。用于分析定位程序错误。"
 
 msgctxt "#36393"
-msgid "Folder used to save screenshots taken within XBMC."
-msgstr "用于保存 XBMC 内置截屏功能截取图片的目录。"
+msgid "Folder used to save screenshots taken within Kodi."
+msgstr "用于保存 Kodi 内置截屏功能截取图片的目录。"
 
 msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
@@ -12290,12 +12290,12 @@ msgid "Define the PIN code used for the master lock."
 msgstr "定义用于管理员锁定的 PIN 码。"
 
 msgctxt "#36397"
-msgid "If enabled, the master lock code is required to unlock XBMC on startup."
-msgstr "如启用，XBMC 启动时需要输入管理员锁定码以解锁。"
+msgid "If enabled, the master lock code is required to unlock Kodi on startup."
+msgstr "如启用，Kodi 启动时需要输入管理员锁定码以解锁。"
 
 msgctxt "#36398"
-msgid "Define the maximum number of retries before XBMC is closed down."
-msgstr "定义 XBMC 关闭前的最大重试次数。"
+msgid "Define the maximum number of retries before Kodi is closed down."
+msgstr "定义 Kodi 关闭前的最大重试次数。"
 
 msgctxt "#36399"
 msgid "Category containing settings for the cache function."
@@ -12370,8 +12370,8 @@ msgid "Specify the type of remote used."
 msgstr "指定使用的遥控器类型。"
 
 msgctxt "#36417"
-msgid "Always run an XBMC helper so that the remote can be used to start XBMC."
-msgstr "始终运行 XBMC helper 使遥控器可启动 XBMC。"
+msgid "Always run an Kodi helper so that the remote can be used to start Kodi."
+msgstr "始终运行 Kodi helper 使遥控器可启动 Kodi。"
 
 msgctxt "#36418"
 msgid "Specify the delay between button sequences on a universal remote."
@@ -12534,8 +12534,8 @@ msgid "Set playback mode of stereoscopic 3D videos."
 msgstr "设置立体 3D 视频播放模式。"
 
 msgctxt "#36538"
-msgid "Prevents XBMC exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "阻止 XBMC 在播放停止时退出立体 3D 模式，主要针对一些电视无法自动识别并从 3D 切换到 2D 模式。"
+msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
+msgstr "阻止 Kodi 在播放停止时退出立体 3D 模式，主要针对一些电视无法自动识别并从 3D 切换到 2D 模式。"
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."

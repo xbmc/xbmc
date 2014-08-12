@@ -1,11 +1,11 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main\n"
+"Project-Id-Version: Kodi Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Danish (http://www.transifex.com/projects/p/xbmc-main/language/da/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,8 +38,8 @@ msgid "Settings"
 msgstr "Indstillinger"
 
 msgctxt "#6"
-msgid "XBMC SVN"
-msgstr "XBMC SVN"
+msgid "Kodi SVN"
+msgstr "Kodi SVN"
 
 msgctxt "#7"
 msgid "File manager"
@@ -914,8 +914,8 @@ msgid "Scripts output"
 msgstr "Resultat af scriptkørsel"
 
 msgctxt "#263"
-msgid "Allow control of XBMC via HTTP"
-msgstr "Tillad styring af XBMC via HTTP"
+msgid "Allow control of Kodi via HTTP"
+msgstr "Tillad styring af Kodi via HTTP"
 
 msgctxt "#264"
 msgid "Record"
@@ -1750,8 +1750,8 @@ msgid "Audio options"
 msgstr "Lydindstillinger"
 
 msgctxt "#482"
-msgid "About XBMC"
-msgstr "Om XBMC"
+msgid "About Kodi"
+msgstr "Om Kodi"
 
 msgctxt "#485"
 msgid "Delete album"
@@ -2714,8 +2714,8 @@ msgid "Remote control"
 msgstr "Fjernbetjening"
 
 msgctxt "#791"
-msgid "Allow programs on this system to control XBMC"
-msgstr "Tillad programmer på dette system at styre XBMC"
+msgid "Allow programs on this system to control Kodi"
+msgstr "Tillad programmer på dette system at styre Kodi"
 
 msgctxt "#792"
 msgid "Port"
@@ -2726,8 +2726,8 @@ msgid "Port range"
 msgstr "Portområde"
 
 msgctxt "#794"
-msgid "Allow programs on other systems to control XBMC"
-msgstr "Tillad programmer på andre systemer at styre XBMC"
+msgid "Allow programs on other systems to control Kodi"
+msgstr "Tillad programmer på andre systemer at styre Kodi"
 
 msgctxt "#795"
 msgid "Initial repeat delay (ms)"
@@ -2790,8 +2790,8 @@ msgid "Unable to connect"
 msgstr "Kan ikke forbinde"
 
 msgctxt "#1002"
-msgid "XBMC was unable to connect to the network location."
-msgstr "XBMC kunne ikke forbinde til netværksstedet."
+msgid "Kodi was unable to connect to the network location."
+msgstr "Kodi kunne ikke forbinde til netværksstedet."
 
 msgctxt "#1003"
 msgid "This could be due to the network not being connected."
@@ -3142,8 +3142,8 @@ msgid "Allow volume control"
 msgstr "Tillad lydstyrkekontrol"
 
 msgctxt "#1270"
-msgid "Allow XBMC to receive AirPlay content"
-msgstr "Tillad XBMC at modtage Airplay-indhold"
+msgid "Allow Kodi to receive AirPlay content"
+msgstr "Tillad Kodi at modtage Airplay-indhold"
 
 msgctxt "#1271"
 msgid "Device name"
@@ -4278,8 +4278,8 @@ msgid "Active connections detected!"
 msgstr "Der er fundet aktive forbindelser!"
 
 msgctxt "#13141"
-msgid "If you proceed, you might not be able to control XBMC"
-msgstr "Hvis du fortsætter, kan du måske ikke længere styre XBMC"
+msgid "If you proceed, you might not be able to control Kodi"
+msgstr "Hvis du fortsætter, kan du måske ikke længere styre Kodi"
 
 msgctxt "#13142"
 msgid "any longer. Are you sure you want to stop the Event server?"
@@ -4291,10 +4291,10 @@ msgstr "Skift tilstand for Apple-fjernbetjeningen?"
 
 msgctxt "#13145"
 msgid "If you are currently using the Apple Remote to control"
-msgstr "Hvis du bruger Apple-fjernbetjeningen til at styre XBMC med i øjeblikket,"
+msgstr "Hvis du bruger Apple-fjernbetjeningen til at styre Kodi med i øjeblikket,"
 
 msgctxt "#13146"
-msgid "XBMC, changing this setting might affect your ability"
+msgid "Kodi, changing this setting might affect your ability"
 msgstr "kan ændring af denne indstilling muligvis påvirke din mulighed"
 
 msgctxt "#13147"
@@ -4522,8 +4522,8 @@ msgid "Do you wish to reboot your system"
 msgstr "Vil du genstarte dit system"
 
 msgctxt "#13309"
-msgid "instead of just XBMC?"
-msgstr "i stedet for kun XBMC?"
+msgid "instead of just Kodi?"
+msgstr "i stedet for kun Kodi?"
 
 msgctxt "#13310"
 msgid "Zoom effect"
@@ -5142,8 +5142,8 @@ msgid "Apple remote"
 msgstr "Apple-fjernbetjening"
 
 msgctxt "#13602"
-msgid "Allow start of XBMC using the remote"
-msgstr "Tillad start af XBMC med fjernbetjeningen"
+msgid "Allow start of Kodi using the remote"
+msgstr "Tillad start af Kodi med fjernbetjeningen"
 
 msgctxt "#13603"
 msgid "Sequence delay time"
@@ -5314,8 +5314,8 @@ msgid "Network settings changed"
 msgstr "Netværksindstillingerne er ændret"
 
 msgctxt "#14039"
-msgid "XBMC requires to restart to change your"
-msgstr "Genstart XBMC for at ændre din"
+msgid "Kodi requires to restart to change your"
+msgstr "Genstart Kodi for at ændre din"
 
 msgctxt "#14040"
 msgid "network setup.  Would you like to restart now?"
@@ -6806,8 +6806,8 @@ msgid "Enter the name of the new channel"
 msgstr "Indtast navnet på den nye kanal"
 
 msgctxt "#19209"
-msgid "XBMC virtual backend"
-msgstr "XBMC virtuel backend"
+msgid "Kodi virtual backend"
+msgstr "Kodi virtuel backend"
 
 msgctxt "#19210"
 msgid "Client"
@@ -7502,8 +7502,8 @@ msgid "Screenshots"
 msgstr "Skærmbilleder"
 
 msgctxt "#20009"
-msgid "Use XBMC"
-msgstr "Brug XBMC"
+msgid "Use Kodi"
+msgstr "Brug Kodi"
 
 msgctxt "#20011"
 msgid "Music playlists"
@@ -8414,8 +8414,8 @@ msgid "Do you want to remove all items within"
 msgstr "Vil du fjerne alle emner i"
 
 msgctxt "#20341"
-msgid "this path from the XBMC library?"
-msgstr "denne sti fra XBMC-biblioteket?"
+msgid "this path from the Kodi library?"
+msgstr "denne sti fra Kodi-biblioteket?"
 
 msgctxt "#20342"
 msgid "Movies"
@@ -9626,8 +9626,8 @@ msgid "Reference service"
 msgstr "Henvisningstjeneste"
 
 msgctxt "#21881"
-msgid "Allow control of XBMC via UPnP"
-msgstr "Tillad styring af XBMC ved hjælp af UPnP"
+msgid "Allow control of Kodi via UPnP"
+msgstr "Tillad styring af Kodi ved hjælp af UPnP"
 
 msgctxt "#21882"
 msgid "Attempt to skip introduction before DVD menu"
@@ -10646,12 +10646,12 @@ msgid "This version of %s requires an"
 msgstr "Denne version af %s kræver en"
 
 msgctxt "#33075"
-msgid "XBMC revision of %s or greater to run."
-msgstr "XBMC revisionen af %s eller nyere for at køre."
+msgid "Kodi revision of %s or greater to run."
+msgstr "Kodi revisionen af %s eller nyere for at køre."
 
 msgctxt "#33076"
-msgid "Please update XBMC."
-msgstr "Opdater venligst XBMC."
+msgid "Please update Kodi."
+msgstr "Opdater venligst Kodi."
 
 msgctxt "#33077"
 msgid "No data found!"
@@ -10986,12 +10986,12 @@ msgid "Could not open the adaptor"
 msgstr "Kunne ikke åbne adapteren"
 
 msgctxt "#36007"
-msgid "Devices to power on when starting XBMC"
-msgstr "Enheder, der skal tændes, når XBMC startes"
+msgid "Devices to power on when starting Kodi"
+msgstr "Enheder, der skal tændes, når Kodi startes"
 
 msgctxt "#36008"
-msgid "Devices to power off when stopping XBMC"
-msgstr "Enheder, der skal slukkes, når XBMC slukkes"
+msgid "Devices to power off when stopping Kodi"
+msgstr "Enheder, der skal slukkes, når Kodi slukkes"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
@@ -11030,8 +11030,8 @@ msgid "Connected to HDMI device"
 msgstr "Forbundet til HDMI-enhed"
 
 msgctxt "#36020"
-msgid "Make XBMC the active source when starting"
-msgstr "Gør XBMC til den aktive kilde ved opstart"
+msgid "Make Kodi the active source when starting"
+msgstr "Gør Kodi til den aktive kilde ved opstart"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
@@ -11050,8 +11050,8 @@ msgid "Failed to set the new configuration. Please check your settings."
 msgstr "Kunne ikke gemme den nye konfiguration. Kontroller venligst dine indstillinger."
 
 msgctxt "#36025"
-msgid "Send 'inactive source' command when stopping XBMC"
-msgstr "Send 'inaktiv kilde' kommando, når XBMC stoppes"
+msgid "Send 'inactive source' command when stopping Kodi"
+msgstr "Send 'inaktiv kilde' kommando, når Kodi stoppes"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
@@ -11106,8 +11106,8 @@ msgid "TV and AVR device (explicit)"
 msgstr "TV og AVR enhed (eksplicit)"
 
 msgctxt "#36040"
-msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
-msgstr "libCEC interface-versionen er ikke understøttet. %x er lavere end versionen, som XBMC understøtter (%x)"
+msgid "Unsupported libCEC interface version. %x is lower than the version Kodi supports (%x)"
+msgstr "libCEC interface-versionen er ikke understøttet. %x er lavere end versionen, som Kodi understøtter (%x)"
 
 msgctxt "#36041"
 msgid "* Item folder"
@@ -11126,8 +11126,8 @@ msgid "Category containing all Skin related settings."
 msgstr "Kategori indeholdende alle Skin-indstillnger."
 
 msgctxt "#36103"
-msgid "Select the skin for the user interface. This will define the look and feel of XBMC."
-msgstr "Vælg skin i brugergrænsefladen. Dette vil definere udseendet og fornemmelsen af ​​XBMC."
+msgid "Select the skin for the user interface. This will define the look and feel of Kodi."
+msgstr "Vælg skin i brugergrænsefladen. Dette vil definere udseendet og fornemmelsen af ​​Kodi."
 
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
@@ -11150,8 +11150,8 @@ msgid "Resize the view of the user interface."
 msgstr "Resize visningen af brugergrænsefladen."
 
 msgctxt "#36109"
-msgid "Select the media window that XBMC displays on startup."
-msgstr "Vælg medievinduet XBMC skal vise ved opstart."
+msgid "Select the media window that Kodi displays on startup."
+msgstr "Vælg medievinduet Kodi skal vise ved opstart."
 
 msgctxt "#36110"
 msgid "Select or disable the sound scheme used in the user interface."
@@ -11234,8 +11234,8 @@ msgid "Set the amount of idle time required before displaying the screensaver."
 msgstr "Sæt den ønskede ventetid, før pauseskærmen vises."
 
 msgctxt "#36130"
-msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
-msgstr "Vælg pauseskærmen. XBMC vil tvinge 'Nedton' pauseskærmen når video playback i fuldskærm pauses eller en dialog boks er aktiv."
+msgid "Select the screensaver. Kodi will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
+msgstr "Vælg pauseskærmen. Kodi vil tvinge 'Nedton' pauseskærmen når video playback i fuldskærm pauses eller en dialog boks er aktiv."
 
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
@@ -11246,8 +11246,8 @@ msgid "Preview the selected screensaver."
 msgstr "Vis den valgte pauseskærm."
 
 msgctxt "#36133"
-msgid "If music is being played, XBMC will start the selected visualisation instead of displaying the screensaver."
-msgstr "Hvis musik afspilles starter XBMC den valgte visualisation i stedet for pauseskærmen."
+msgid "If music is being played, Kodi will start the selected visualisation instead of displaying the screensaver."
+msgstr "Hvis musik afspilles starter Kodi den valgte visualisation i stedet for pauseskærmen."
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
@@ -11294,8 +11294,8 @@ msgid "Group movies into 'Movie sets' when browsing the movie library."
 msgstr "Gruppér film i 'Sæt' når filmbiblioteket vises."
 
 msgctxt "#36146"
-msgid "Check for new media files on XBMC startup."
-msgstr "Kig efter nye mediefiler når XBMC startes."
+msgid "Check for new media files on Kodi startup."
+msgstr "Kig efter nye mediefiler når Kodi startes."
 
 msgctxt "#36147"
 msgid "Hide the library scanning progress bar during scans."
@@ -11394,8 +11394,8 @@ msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "Vælg hvilket zoomniveau som 4:3 videoer bliver vist med på widescreen-tv."
 
 msgctxt "#36172"
-msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
-msgstr "VDPAU studie-niveau konversion giver en måde avancerede applikationer så som XBMC at influerer på farvepalette konversionen."
+msgid "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
+msgstr "VDPAU studie-niveau konversion giver en måde avancerede applikationer så som Kodi at influerer på farvepalette konversionen."
 
 msgctxt "#36173"
 msgid "Enable upscaling using VDPAU."
@@ -11518,20 +11518,20 @@ msgid "Category for general settings for PVR/Live TV features."
 msgstr "Kategori til generelle indstillinger for PVR/Live TV funktioner."
 
 msgctxt "#36203"
-msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
-msgstr "Aktiver Personal Video Recorder (PVR) funktioner i XBMC. Dette kræver, at mindst en PVR add-on er installeret."
+msgid "Enable the Personal Video Recorder (PVR) features in Kodi. This requires that at least one PVR Add-on is installed."
+msgstr "Aktiver Personal Video Recorder (PVR) funktioner i Kodi. Dette kræver, at mindst en PVR add-on er installeret."
 
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "importere kanalgrupper fra PVR-backend (hvis det er supporteret). Det vil slette brugeroprettet grupper, hvis de ikke er fundet på backend."
 
 msgctxt "#36205"
-msgid "Sort the channels by channel number on the backend, but use XBMC's own numbering for channels."
-msgstr "Sorter kanalerne efter kanalnummer på backend, men brug XBMC egen nummerering afkanaler."
+msgid "Sort the channels by channel number on the backend, but use Kodi's own numbering for channels."
+msgstr "Sorter kanalerne efter kanalnummer på backend, men brug Kodi egen nummerering afkanaler."
 
 msgctxt "#36206"
-msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
-msgstr "Anvend kanalnumre fra backend i stedet for at indstilel dem manuelt i XBMC."
+msgid "Use numbering from the backend, instead of configuring them manually over Kodi."
+msgstr "Anvend kanalnumre fra backend i stedet for at indstilel dem manuelt i Kodi."
 
 msgctxt "#36207"
 msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
@@ -11546,8 +11546,8 @@ msgid "Delete channel/EPG database and reimport the data from the backend afterw
 msgstr "Slet kanal/EPG database og genimportere data fra back-end bagefter."
 
 msgctxt "#36210"
-msgid "Prevent the 'connection lost' notification window from displaying when XBMC is unable to talk to the PVR backend server."
-msgstr "Undgå at 'forbindelse tabt' notifikationen vises når XBMC ikke kan kommunikere med PVR backend serveren."
+msgid "Prevent the 'connection lost' notification window from displaying when Kodi is unable to talk to the PVR backend server."
+msgstr "Undgå at 'forbindelse tabt' notifikationen vises når Kodi ikke kan kommunikere med PVR backend serveren."
 
 msgctxt "#36211"
 msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
@@ -11598,16 +11598,16 @@ msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "Importer ikke EPG data mens TV vises for at minimerer CPU forbrug."
 
 msgctxt "#36223"
-msgid "By default, EPG data is stored in a local database to speed up importing when XBMC is restarted."
-msgstr "Normalt er EPG data gemt i en lokal database for hurtig visning når XBMC genstartes."
+msgid "By default, EPG data is stored in a local database to speed up importing when Kodi is restarted."
+msgstr "Normalt er EPG data gemt i en lokal database for hurtig visning når Kodi genstartes."
 
 msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Skjul \"Ingen information tilgængelig\" beskeden når der ikke findes EPG data for kanal."
 
 msgctxt "#36225"
-msgid "Delete the EPG database in XBMC and reimport the data afterwards from the backend."
-msgstr "Slet EPG database i XBMC og genimporter data bagefter fra backend."
+msgid "Delete the EPG database in Kodi and reimport the data afterwards from the backend."
+msgstr "Slet EPG database i Kodi og genimporter data bagefter fra backend."
 
 msgctxt "#36226"
 msgid "Category for PVR playback and channel switching settings."
@@ -11626,7 +11626,7 @@ msgid "Display signal quality information in the codec information window (if su
 msgstr "Vis signal kvalitetsoplysninger i codec-information vinduet (hvis det understøttes af add-on og backend)."
 
 msgctxt "#36230"
-msgid "How long XBMC will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
+msgid "How long Kodi will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
 msgstr "Hvor længe XMBC venter med at skifte kanal hvis kanalen ikke kan modtages. Brugbart til over-the-air kanaler der sommetider mister signal styrke."
 
 msgctxt "#36231"
@@ -11670,8 +11670,8 @@ msgid "Category for PVR power management settings, such as when to wake the PVR 
 msgstr "Kategori til PVR strømhåndtering, f.eks. hvornår PVR backend serveren skal vækkes."
 
 msgctxt "#36241"
-msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
-msgstr "Udfør \"Vågn-op komandoen\" nedenfor, når XBMC afsluttes eller går i dvale tilstand. Tidspunkt for næste planlagte optagelse tilføjes som parameter."
+msgid "Execute the \"wakeup command\" below when Kodi exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgstr "Udfør \"Vågn-op komandoen\" nedenfor, når Kodi afsluttes eller går i dvale tilstand. Tidspunkt for næste planlagte optagelse tilføjes som parameter."
 
 msgctxt "#36242"
 msgid "The command will not be executed when a recording will be started within this timeout."
@@ -11710,12 +11710,12 @@ msgid "Ask for the pin code again when trying to access a parental locked channe
 msgstr "Bed om pinkoden igen når en forældrelåst kanal tilgås, og ikke pinkoden ikke tidligere har været efterspurgt."
 
 msgctxt "#36251"
-msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
-msgstr "Kategori til PVR backend specifikke indstillinger hvis denne understøtter skift af indstillinger i XBMC."
+msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
+msgstr "Kategori til PVR backend specifikke indstillinger hvis denne understøtter skift af indstillinger i Kodi."
 
 msgctxt "#36252"
-msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
-msgstr "Denne option giver dig de PVR backend specifikke settings hvis denne understøtter skift af disse i XBMC. "
+msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
+msgstr "Denne option giver dig de PVR backend specifikke settings hvis denne understøtter skift af disse i Kodi. "
 
 msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."
@@ -11742,8 +11742,8 @@ msgid "Select the default artist information source. See the Add-ons Manager for
 msgstr "Vælg standard artist information kilde. Se Add-on håndtering for muligheder."
 
 msgctxt "#36259"
-msgid "Check for new and removed media files on XBMC startup."
-msgstr "Tjek for nye, fjernede og ændrede medie filer når XBMC startes."
+msgid "Check for new and removed media files on Kodi startup."
+msgstr "Tjek for nye, fjernede og ændrede medie filer når Kodi startes."
 
 msgctxt "#36260"
 msgid "No info available yet."
@@ -11762,16 +11762,16 @@ msgid "Category containing settings for how music playback is handled."
 msgstr "Kategori indeholdende indstillinger for musik afspilning."
 
 msgctxt "#36265"
-msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
-msgstr "XBMC afspiller automatisk den næste fil i den nuværende mappe. For eksempel i \"Fil visning: Efter et nummer er blevet afspillet, afspiller XBMC automatisk den næste fil i den samme mappe."
+msgid "Kodi automatically plays the next item in the current folder. For example, in Files View: After a track has been played, Kodi would automatically play the next track in the same folder."
+msgstr "Kodi afspiller automatisk den næste fil i den nuværende mappe. For eksempel i \"Fil visning: Efter et nummer er blevet afspillet, afspiller Kodi automatisk den næste fil i den samme mappe."
 
 msgctxt "#36266"
 msgid "When songs are selected they are queued instead of playback starting immediately."
 msgstr "Smid sange på kø når de vælges, fremfor straks at starte afspilning."
 
 msgctxt "#36267"
-msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
-msgstr "XBMC læser ReplayGain information som er encoded i dine lydfiler ved hjælp af et program, så som MP3Gain, og normaliserer lyd niveauerne derefter."
+msgid "Kodi will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
+msgstr "Kodi læser ReplayGain information som er encoded i dine lydfiler ved hjælp af et program, så som MP3Gain, og normaliserer lyd niveauerne derefter."
 
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
@@ -11826,8 +11826,8 @@ msgid "Used for formatting the second column in library lists."
 msgstr "Brugt til formatering af den anden kolonne i bibliotekslister."
 
 msgctxt "#36281"
-msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
-msgstr "XBMC vil søge efter miniature på netværks drev eller CD/DVD. Dette kan gøre indlæsning langsom over netværk."
+msgid "Kodi will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
+msgstr "Kodi vil søge efter miniature på netværks drev eller CD/DVD. Dette kan gøre indlæsning langsom over netværk."
 
 msgctxt "#36282"
 msgid "Category containing settings for how CDs are handled."
@@ -11874,7 +11874,7 @@ msgid "Category containing the settings for how karaoke is handled."
 msgstr "Kategori indeholdende indstillinger for karaoke."
 
 msgctxt "#36293"
-msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
+msgid "When playing any music file, Kodi will look for a matching .cdg file and display its graphics."
 msgstr "Ved afspilning af musik vil eventuelle .cdg filer vises."
 
 msgctxt "#36294"
@@ -11986,8 +11986,8 @@ msgid "Category containing settings used for all services."
 msgstr "Kategori indeholdende indstillinger for alle services."
 
 msgctxt "#36321"
-msgid "Display name of the XBMC installation when using various network services."
-msgstr "Display navnet på XBMC installation ved brug af forskellige nettjenester."
+msgid "Display name of the Kodi installation when using various network services."
+msgstr "Display navnet på Kodi installation ved brug af forskellige nettjenester."
 
 msgctxt "#36322"
 msgid "Category containing settings for how the UPnP service is handled."
@@ -12006,16 +12006,16 @@ msgid "Enable the UPnP client. This allows you to stream media from any UPnP ser
 msgstr "Aktiver UPnP klienten. Dette tillader at du kan streame indhold fra enhver UPnP server med et control point og kontrollere afspilning fra denne server."
 
 msgctxt "#36326"
-msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from XBMC."
-msgstr "Aktiver UPnP control point. Dette tillader at du kan streame indhold til enhver UPnP klient og kontrollere afspilning fra XBMC."
+msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from Kodi."
+msgstr "Aktiver UPnP control point. Dette tillader at du kan streame indhold til enhver UPnP klient og kontrollere afspilning fra Kodi."
 
 msgctxt "#36327"
 msgid "Category containing settings for how the webserver service is handled."
 msgstr "Kategori indeholdende indstillinger for webserveren."
 
 msgctxt "#36328"
-msgid "Enable remote users to control XBMC through the built-in webserver."
-msgstr "Aktivere muligheden for at fjernstyre XBMC via den indbyggede webserver."
+msgid "Enable remote users to control Kodi through the built-in webserver."
+msgstr "Aktivere muligheden for at fjernstyre Kodi via den indbyggede webserver."
 
 msgctxt "#36329"
 msgid "Define the webserver port."
@@ -12038,8 +12038,8 @@ msgid "Category containing settings for how the remote control service is handle
 msgstr "Kategori indeholdende indstillinger for fjernbetjenings servicen."
 
 msgctxt "#36334"
-msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
-msgstr "Tillad programmer på denne computer at styre XBMC via webinterfacet eller JSON-RPC interface protokol."
+msgid "Allow programs on this computer to control Kodi via the Web Interface or the JSON-RPC interface protocol."
+msgstr "Tillad programmer på denne computer at styre Kodi via webinterfacet eller JSON-RPC interface protokol."
 
 msgctxt "#36335"
 msgid "Define the remote control port."
@@ -12054,8 +12054,8 @@ msgid "Define the maximum number of clients that can connect."
 msgstr "Definer det maksimale antal klienter som kan forbinde sig. "
 
 msgctxt "#36338"
-msgid "Allow programs on the network to control XBMC."
-msgstr "Tillad programmer på netværket til at styre XBMC."
+msgid "Allow programs on the network to control Kodi."
+msgstr "Tillad programmer på netværket til at styre Kodi."
 
 msgctxt "#36339"
 msgid "Initial repeat delay (ms)."
@@ -12070,12 +12070,12 @@ msgid "Category containing settings for how the zeroconf network discovery servi
 msgstr "Kategori indeholdende indstillinger for hvordan Zeroconf discovery servicen håndteres. Dette er påkrævet for AirPlay."
 
 msgctxt "#36342"
-msgid "Allows applications on the network to discover XBMC's running services."
+msgid "Allows applications on the network to discover Kodi's running services."
 msgstr "Tillad at applikationer på netværket kan opdage XMBCs services."
 
 msgctxt "#36343"
-msgid "Allows XBMC to receive content from other AirPlay devices or applications."
-msgstr "Tillad at XBMC kan modtage indhold fra andre AirPlay enheder og applikationer."
+msgid "Allows Kodi to receive content from other AirPlay devices or applications."
+msgstr "Tillad at Kodi kan modtage indhold fra andre AirPlay enheder og applikationer."
 
 msgctxt "#36344"
 msgid "Enable AirPlay password protection."
@@ -12098,16 +12098,16 @@ msgid "If a WINS server is running on the network, enter its workgroup name here
 msgstr "Hvis der kører en WINS server på netværket, angiv dens workgroup navn her. Ellers, efterlad dette blankt."
 
 msgctxt "#36349"
-msgid "Section that contains the System related settings for the device XBMC is installed on."
-msgstr "Afsnit som indeholder system-relaterede indstillinger for enheden som XBMC er installeret på."
+msgid "Section that contains the System related settings for the device Kodi is installed on."
+msgstr "Afsnit som indeholder system-relaterede indstillinger for enheden som Kodi er installeret på."
 
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
 msgstr "Send automatisk 'Wake-On-Lan' til server(er) lige før der forbindes til delte filer og services."
 
 msgctxt "#36351"
-msgid "Display XBMC in a window, or fullscreen on the selected screen."
-msgstr "Vis XBMC i et vindue, eller fuldskærms-mode på den valgte skærm."
+msgid "Display Kodi in a window, or fullscreen on the selected screen."
+msgstr "Vis Kodi i et vindue, eller fuldskærms-mode på den valgte skærm."
 
 msgctxt "#36352"
 msgid "Changes the resolution that the user interface is displayed in."
@@ -12118,12 +12118,12 @@ msgid "Changes the refresh rate that the user interface is displayed in."
 msgstr "Ændrer opdateringshastighed, som brugergrænsefladen vises med."
 
 msgctxt "#36354"
-msgid "Display XBMC in a fullscreen window. The main benefit is for multi-screen configurations, so that XBMC can be used without minimising other applications. This uses more resources so playback may be less smooth."
-msgstr "Vise XBMC i en fuldskærm vindue. Den største fordel er for multi-screen-konfigurationer, så XBMC kan bruges uden at minimere andre applikationer. Dette bruger flere ressourcer, så afspilningen kan være mindre jævn."
+msgid "Display Kodi in a fullscreen window. The main benefit is for multi-screen configurations, so that Kodi can be used without minimising other applications. This uses more resources so playback may be less smooth."
+msgstr "Vise Kodi i en fuldskærm vindue. Den største fordel er for multi-screen-konfigurationer, så Kodi kan bruges uden at minimere andre applikationer. Dette bruger flere ressourcer, så afspilningen kan være mindre jævn."
 
 msgctxt "#36355"
-msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
-msgstr "I en flerskærmskonfiguration, vil de skærme hvor XBMC ikke bliver vist, sorte."
+msgid "In a multi-screen configuration, the screens where Kodi is not displayed are blacked out."
+msgstr "I en flerskærmskonfiguration, vil de skærme hvor Kodi ikke bliver vist, sorte."
 
 msgctxt "#36356"
 msgid "Eliminate vertical tearing."
@@ -12210,12 +12210,12 @@ msgid "When activated, your keyboard arrows will move the selection on the virtu
 msgstr "Når det er aktivt, vil dine tastaturpile flytte valget på det virtuelle tastatur. Når det ikke er aktivt, vil de flytte markøren fra din tekst."
 
 msgctxt "#36377"
-msgid "Use a mouse or touch screen device to control XBMC. Note: disabling will cause you to lose control over XBMC when no keyboard or remote is present."
-msgstr "Brug en mus eller en smartphone til at kontrollere XBMC. Note: Deaktivering vil resultere i mistet kontrolt over XBMC når der ikke er  keyboard eller fjernbjetjening til stede."
+msgid "Use a mouse or touch screen device to control Kodi. Note: disabling will cause you to lose control over Kodi when no keyboard or remote is present."
+msgstr "Brug en mus eller en smartphone til at kontrollere Kodi. Note: Deaktivering vil resultere i mistet kontrolt over Kodi når der ikke er  keyboard eller fjernbjetjening til stede."
 
 msgctxt "#36378"
-msgid "Use a joystick to control XBMC."
-msgstr "Bruge et joystick til at styre XBMC."
+msgid "Use a joystick to control Kodi."
+msgstr "Bruge et joystick til at styre Kodi."
 
 msgctxt "#36379"
 msgid "Category containing settings for internet access."
@@ -12246,8 +12246,8 @@ msgid "Configure the proxy server password."
 msgstr "Konfigurer proxy server password."
 
 msgctxt "#36386"
-msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
-msgstr "Hvis du har begrænset båndbredde til rådighed, vil XBMC forsøge at holde sig inden for disse grænser."
+msgid "If you have limited bandwidth available, Kodi will try to keep within these limits."
+msgstr "Hvis du har begrænset båndbredde til rådighed, vil Kodi forsøge at holde sig inden for disse grænser."
 
 msgctxt "#36387"
 msgid "Category containing settings for power saving."
@@ -12258,12 +12258,12 @@ msgid "Turn off display when idle. Useful for TVs that turn off when there is no
 msgstr "Sluk skærmen når den er idle. BRugbar for TV der slukker når de ikke modtager et signal."
 
 msgctxt "#36389"
-msgid "Define how long XBMC should idle before shutting down."
-msgstr "Definer, hvor længe XBMC skal være inaktiv, før lukker ned."
+msgid "Define how long Kodi should idle before shutting down."
+msgstr "Definer, hvor længe Kodi skal være inaktiv, før lukker ned."
 
 msgctxt "#36390"
-msgid "Define what action XBMC should do when it has been idle for a long period of time."
-msgstr "Bestem hvilken handling XBMC skal foretage når den er inaktiv i lang tid."
+msgid "Define what action Kodi should do when it has been idle for a long period of time."
+msgstr "Bestem hvilken handling Kodi skal foretage når den er inaktiv i lang tid."
 
 msgctxt "#36391"
 msgid "Category containing settings for debugging functions."
@@ -12274,8 +12274,8 @@ msgid "Turn debug logging on or off. Useful for troubleshooting."
 msgstr "Tænd og sluk for debug logging. Brugbar ifm. fejldiagnosticering."
 
 msgctxt "#36393"
-msgid "Folder used to save screenshots taken within XBMC."
-msgstr "Mappe der bruges til at gemme skærmbilleder taget inde i XBMC"
+msgid "Folder used to save screenshots taken within Kodi."
+msgstr "Mappe der bruges til at gemme skærmbilleder taget inde i Kodi"
 
 msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
@@ -12290,12 +12290,12 @@ msgid "Define the PIN code used for the master lock."
 msgstr "Definer PIN kode, der bruges til master lås."
 
 msgctxt "#36397"
-msgid "If enabled, the master lock code is required to unlock XBMC on startup."
-msgstr "Hvis aktiveret, er master lock kode påkrævet for at oplåse XBMC ved opstart."
+msgid "If enabled, the master lock code is required to unlock Kodi on startup."
+msgstr "Hvis aktiveret, er master lock kode påkrævet for at oplåse Kodi ved opstart."
 
 msgctxt "#36398"
-msgid "Define the maximum number of retries before XBMC is closed down."
-msgstr "Definer det maksimale antal forsøg, før XBMC lukkes ned."
+msgid "Define the maximum number of retries before Kodi is closed down."
+msgstr "Definer det maksimale antal forsøg, før Kodi lukkes ned."
 
 msgctxt "#36399"
 msgid "Category containing settings for the cache function."
@@ -12370,8 +12370,8 @@ msgid "Specify the type of remote used."
 msgstr "Angiv typen af fjernbetjening der benyttes."
 
 msgctxt "#36417"
-msgid "Always run an XBMC helper so that the remote can be used to start XBMC."
-msgstr "Kør altid en XBMC hjælper så fjernbetjeningen kan bruges til at starte XBMC."
+msgid "Always run an Kodi helper so that the remote can be used to start Kodi."
+msgstr "Kør altid en Kodi hjælper så fjernbetjeningen kan bruges til at starte Kodi."
 
 msgctxt "#36418"
 msgid "Specify the delay between button sequences on a universal remote."
@@ -12534,8 +12534,8 @@ msgid "Set playback mode of stereoscopic 3D videos."
 msgstr "Indstil afspilningsmode for stereoskopiske 3D videoer."
 
 msgctxt "#36538"
-msgid "Prevents XBMC exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Forhindrer at XBMC forlader stereoskopisk 3D mode når afspilning standser. Nødvendig fordi ikke alle TV automatisk skifter tilbage til 2D mode (uden at det skiftet manuelt på TV'et). "
+msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
+msgstr "Forhindrer at Kodi forlader stereoskopisk 3D mode når afspilning standser. Nødvendig fordi ikke alle TV automatisk skifter tilbage til 2D mode (uden at det skiftet manuelt på TV'et). "
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
