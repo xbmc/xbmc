@@ -21,6 +21,7 @@
 #if defined(HAS_GIFLIB)
 #include "Gif.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "guilib/Texture.h"
 #include "filesystem/File.h"
 #include <algorithm>
@@ -95,10 +96,11 @@ Gif::~Gif()
     err = m_dll.DGifCloseFile(m_gif, &reason);
 #else
     err = m_dll.DGifCloseFile(m_gif);
+    reason = m_dll.GifLastError();
     free(m_gif);
 #endif
     if (err == GIF_ERROR)
-      CLog::Log(LOGDEBUG, "Gif::~Gif(): D_GIF_ERR_CLOSE_FAILED");
+      PrettyPrintError(StringUtils::Format("Gif::~Gif(): closing file %s failed", memOrFile().c_str()), reason);
 
     m_dll.Unload();
     Release();
@@ -136,15 +138,13 @@ bool Gif::LoadGifMetaData(GifFileType* file)
 
   if (!m_dll.DGifSlurp(m_gif))
   {
-#if GIFLIB_MAJOR == 4
-    char* error = m_dll.GifErrorString();
+    int reason = 0;
+#if GIFLIB_MAJOR == 5
+    reason =  m_gif->Error;
 #else
-    char* error = m_dll.GifErrorString(m_gif->Error);
+    reason = m_dll.GifLastError();
 #endif
-    if (error)
-      CLog::Log(LOGERROR, "Gif::LoadGif(): Could not read file %s - %s", m_filename.c_str(), error);
-    else
-      CLog::Log(LOGERROR, "Gif::LoadGif(): Could not read file %s (reasons unknown)", m_filename.c_str());
+    PrettyPrintError(StringUtils::Format("Gif::LoadGif(): Could not read file %s", memOrFile().c_str()), reason);
     return false;
   }
 
@@ -152,7 +152,7 @@ bool Gif::LoadGifMetaData(GifFileType* file)
   m_width  = m_gif->SWidth;
   if (!m_height || !m_width)
   {
-    CLog::Log(LOGERROR, "Gif::LoadGif(): Zero sized image. File %s", m_filename.c_str());
+    CLog::Log(LOGERROR, "Gif::LoadGif(): Zero sized image. File %s", memOrFile().c_str());
     return false;
   }
 
@@ -175,7 +175,7 @@ bool Gif::LoadGifMetaData(GifFileType* file)
   }
   else
   {
-    CLog::Log(LOGERROR, "Gif::LoadGif(): No images found in file %s", m_filename.c_str());
+    CLog::Log(LOGERROR, "Gif::LoadGif(): No images found in file %s", memOrFile().c_str());
     return false;
   }
 
@@ -186,7 +186,7 @@ bool Gif::LoadGifMetaData(GifFileType* file)
   {
     // at least 1 image
     m_numFrames = std::max(1U, GIF_MAX_MEMORY / m_imageSize);
-    CLog::Log(LOGERROR, "Gif::LoadGif(): Memory consumption too high: %lu bytes. Restricting animation to %u. File %s", memoryUsage, m_numFrames, m_filename.c_str());
+    CLog::Log(LOGERROR, "Gif::LoadGif(): Memory consumption too high: %lu bytes. Restricting animation to %u. File %s", memoryUsage, m_numFrames, memOrFile().c_str());
   }
 
   return true;
@@ -200,25 +200,24 @@ bool Gif::LoadGifMetaData(const char* file)
   int err = 0;
   m_gifFile->Close();
   if (m_gifFile->Open(file))
-#if GIFLIB_MAJOR == 4
-    m_gif = m_dll.DGifOpen(m_gifFile, ReadFromVfs);
-#else
-    m_gif = m_dll.DGifOpen(m_gifFile, ReadFromVfs, &err);
-#endif
-
-  if (!m_gif)
   {
-#if GIFLIB_MAJOR == 4
-    char* error = m_dll.GifErrorString();
+    int err = 0;
+#if GIFLIB_MAJOR == 5
+    m_gif = m_dll.DGifOpen(m_gifFile, ReadFromVfs, &err);
 #else
-    char* error = m_dll.GifErrorString(err);
+    m_gif = m_dll.DGifOpen(m_gifFile, ReadFromVfs);
+    if (!m_gif)
+      err = m_dll.GifLastError();
 #endif
-    if (error)
-      CLog::Log(LOGERROR, "Gif::LoadGif(): Could not open file %s - %s", m_filename.c_str(), error);
-    else
-      CLog::Log(LOGERROR, "Gif::LoadGif(): Could not open file %s (reasons unknown)", m_filename.c_str());
-    return false;
+    if (!m_gif)
+    {
+      PrettyPrintError(StringUtils::Format("Gif::LoadGif(): Could not open file %s", memOrFile().c_str()), err);
+      return false;
+    }
   }
+  else
+    return false;
+
   return LoadGifMetaData(m_gif);
 }
 
@@ -236,7 +235,7 @@ bool Gif::LoadGif(const char* file)
   }
   catch (std::bad_alloc& ba)
   {
-    CLog::Log(LOGERROR, "Gif::Load(): Out of memory while reading file %s - %s", m_filename.c_str(), ba.what());
+    CLog::Log(LOGERROR, "Gif::Load(): Out of memory while reading file %s - %s", memOrFile().c_str(), ba.what());
     Release();
     return false;
   }
@@ -256,10 +255,13 @@ bool Gif::IsAnimated(const char* file)
     int err = 0;
     if (gifFile.Open(file))
     {
-#if GIFLIB_MAJOR == 4
-      gif = m_dll.DGifOpen(&gifFile, ReadFromVfs);
+      int err = 0;
+#if GIFLIB_MAJOR == 5
+      gif = m_dll.DGifOpen(&gifFile, ReadFromMemory, &err);
 #else
-      gif = m_dll.DGifOpen(&gifFile, ReadFromVfs, &err);
+      gif = m_dll.DGifOpen(&gifFile, ReadFromMemory);
+      if (!gif)
+        err = m_dll.GifLastError();
 #endif
     }
 
@@ -267,13 +269,23 @@ bool Gif::IsAnimated(const char* file)
     {
       if (m_dll.DGifSlurp(gif) && gif->ImageCount > 1)
         m_isAnimated = 1;
-#if GIFLIB_MAJOR == 5
+
       int err = 0;
-      m_dll.DGifCloseFile(gif, &err);
+      int reason = 0;
+#if GIFLIB_MAJOR == 5
+      err = m_dll.DGifCloseFile(gif, &err);
 #else
-      m_dll.DGifCloseFile(gif);
+      err = m_dll.DGifCloseFile(gif);
+      reason = m_dll.GifLastError();
+      free(m_gif);
 #endif
+      if (err == GIF_ERROR)
+        PrettyPrintError(StringUtils::Format("Gif::~Gif(): closing file %s failed", memOrFile().c_str()), reason);
       gifFile.Close();
+    }
+    else
+    {
+      PrettyPrintError(StringUtils::Format("Gif::LoadGif(): Could not open file %s", memOrFile().c_str()), err);
     }
   }
   return m_isAnimated > 0;
@@ -324,11 +336,8 @@ bool Gif::gcbToFrame(GifFrame &frame, unsigned int imgIdx)
   GraphicsControlBlock gcb;
   if (!m_dll.DGifSavedExtensionToGCB(m_gif, imgIdx, &gcb))
   {
-    char* error = m_dll.GifErrorString(m_gif->Error);
-    if (error)
-      CLog::Log(LOGERROR, "Gif::ExtractFrames(): Could not read GraphicsControlBlock of frame %d - %s", imgIdx, error);
-    else
-      CLog::Log(LOGERROR, "Gif::ExtractFrames(): Could not read GraphicsControlBlock of frame %d (reasons unknown)", imgIdx);
+    PrettyPrintError(StringUtils::Format("Gif::ExtractFrames(): Could not read GraphicsControlBlock of frame %d in file %s",
+      imgIdx, memOrFile().c_str()), m_gif->Error);
     return false;
   }
   // delay in ms
@@ -504,20 +513,14 @@ bool Gif::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsig
   int err = 0;
 #if GIFLIB_MAJOR == 4
   m_gif = m_dll.DGifOpen((void *)&reader, (InputFunc)&ReadFromMemory);
+  if (!m_gif)
+    err = m_dll.GifLastError();
 #else
   m_gif = m_dll.DGifOpen((void *)&reader, (InputFunc)&ReadFromMemory, &err);
 #endif
   if (!m_gif)
   {
-#if GIFLIB_MAJOR == 4
-    char* error = m_dll.GifErrorString();
-#else
-    char* error = m_dll.GifErrorString(err);
-#endif
-    if (error)
-      CLog::Log(LOGERROR, "Gif::LoadImageFromMemory(): Could not open gif from memory - %s", error);
-    else
-      CLog::Log(LOGERROR, "Gif::LoadImageFromMemory(): Could not open gif from memory (reasons unknown)");
+    PrettyPrintError(StringUtils::Format("Gif::LoadGif(): Could not open file %s", memOrFile().c_str()), err);
     return false;
   }
 
@@ -573,6 +576,21 @@ bool Gif::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width
 {
   CLog::Log(LOGERROR, "Gif::CreateThumbnailFromSurface(): Not implemented. Something went wrong, we don't store thumbnails as gifs!");
   return false;
+}
+
+void Gif::PrettyPrintError(std::string messageTemplate, int reason)
+{
+  const char* error = m_dll.GifErrorString(reason);
+  std::string message;
+  if (error)
+  {
+    message = StringUtils::Format(messageTemplate.append(" - %s").c_str(), error);
+  }
+  else
+  {
+    message = messageTemplate.append(" (reason unknown)");
+  }
+  CLog::Log(LOGERROR, message.c_str());
 }
 
 GifFrame::GifFrame() :
