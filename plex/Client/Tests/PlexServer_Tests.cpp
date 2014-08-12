@@ -179,5 +179,5 @@ TEST(PlexServerMerge, mergedConnection)
   
   std::vector<CPlexConnectionPtr> connections;
   server->GetConnections(connections);
-  EXPECT_EQ(2, connections.size());
+  EXPECT_EQ(1, connections.size());
 }

@@ -110,3 +110,35 @@ TEST_F(PlexServerManagerTest, updateFromTwoSources)
 
   EXPECT_STREQ("token-myplex", serverMgr->GetBestServer()->GetAccessToken());
 }
+
+TEST_F(PlexServerManagerTest, plexLocalAddressDuplicate)
+{
+  CPlexConnectionPtr conn = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_DISCOVERED,
+                                                                   "10.10.10.10", 32400));
+  CPlexServerPtr localServer = PlexTestUtils::serverWithConnection(conn);
+  PlexServerList list;
+  list.push_back(localServer);
+
+  EXPECT_CALL(*serverMgr, NotifyAboutServer(localServer, true)).Times(1);
+  EXPECT_CALL(*serverMgr, UpdateReachability(false)).Times(2);
+
+  serverMgr->UpdateFromDiscovery(localServer);
+  serverMgr->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_DISCOVERED);
+
+  conn = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MYPLEX,
+                                                "10.10.10.10", 32400, "http", "token"));
+  CPlexServerPtr localAddressServer = PlexTestUtils::serverWithConnection(conn);
+  list.clear();
+  list.push_back(localAddressServer);
+
+  serverMgr->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MYPLEX);
+
+  CPlexServerPtr bestServer = serverMgr->GetBestServer();
+  EXPECT_TRUE(bestServer);
+  EXPECT_STREQ(bestServer->GetAccessToken(), "token");
+
+  std::vector<CPlexConnectionPtr> conns;
+  bestServer->GetConnections(conns);
+
+  EXPECT_EQ(1, conns.size());
+}

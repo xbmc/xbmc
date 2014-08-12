@@ -73,8 +73,12 @@ void
 CPlexConnection::Merge(CPlexConnectionPtr otherConnection)
 {
   m_url = otherConnection->m_url;
-  m_token = otherConnection->m_token;
   m_type |= otherConnection->m_type;
+
+  if (m_token.empty())
+    m_token = otherConnection->m_token;
+  else if (!otherConnection->m_token.empty())
+    m_token = otherConnection->m_token;
 
   m_refreshed = true;
 }
@@ -87,7 +91,13 @@ bool CPlexConnection::Equals(const CPlexConnectionPtr &other)
   CStdString url2 = other->m_url.Get();
 
   bool uriMatches = url1.Equals(url2);
-  bool tokenMatches = m_token.Equals(other->m_token);
+  bool tokenMatches;
+  if (m_token.empty() && !other->m_token.empty())
+    tokenMatches = true;
+  else if (!m_token.empty() && other->m_token.empty())
+    tokenMatches = true;
+  else
+    tokenMatches = (m_token == other->m_token);
 
   return (uriMatches && tokenMatches);
 }
