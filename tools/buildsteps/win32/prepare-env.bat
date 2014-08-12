@@ -23,3 +23,7 @@ IF EXIST %WORKSPACE%\project\BuildDependencies\msys rmdir %WORKSPACE%\project\Bu
 IF EXIST %WORKSPACE%\project\VS2010Express\XBMC rmdir %WORKSPACE%\project\VS2010Express\XBMC /S /Q
 IF EXIST %WORKSPACE%\project\VS2010Express\objs rmdir %WORKSPACE%\project\VS2010Express\objs /S /Q
 IF EXIST %WORKSPACE%\project\VS2010Express\libs rmdir %WORKSPACE%\project\VS2010Express\libs /S /Q
+
+rem fetch submodules
+IF EXIST "%WORKSPACE%\addons\skin.touched" rmdir "%WORKSPACE%\addons\skin.touched" /S /Q || exit /b 10
+git submodule update --init "%WORKSPACE%\addons\skin.touched" || exit /b 30
