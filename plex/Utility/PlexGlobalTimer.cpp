@@ -174,8 +174,10 @@ void CPlexGlobalTimer::Process()
       lk.lock();
       if (!m_running)
         return;
+      
+      int64_t didSleep = p.first - XbmcThreads::SystemClockMillis();
 
-      CLog::Log(LOGDEBUG, "CPlexGlobalTimer::Process firing callback %s", p.second->TimerName().c_str());
+      CLog::Log(LOGDEBUG, "CPlexGlobalTimer::Process firing callback %s - spent %lld in queue", p.second->TimerName().c_str(), didSleep);
       m_timeouts.erase(m_timeouts.begin());
       DumpDebug();
       CJobManager::GetInstance().AddJob(new CPlexGlobalTimerJob(p.second), NULL, CJob::PRIORITY_HIGH);
