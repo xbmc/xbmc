@@ -64,7 +64,7 @@ public:
 
   void Unload(const CStdString& strFontName);
   void LoadFonts(const std::string &fontSet);
-  CGUIFont* LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, bool border = false, float lineSpacing = 1.0f, float aspect = 1.0f, const RESOLUTION_INFO *res = NULL, bool preserveAspect = false);
+  CGUIFont* LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, bool border = false, float lineSpacing = 1.0f, float aspect = 1.0f, const RESOLUTION_INFO *res = NULL, bool preserveAspect = false, bool subtitle = false);
   CGUIFont* GetFont(const CStdString& strFontName, bool fallback = true);
 
   /*! \brief return a default font

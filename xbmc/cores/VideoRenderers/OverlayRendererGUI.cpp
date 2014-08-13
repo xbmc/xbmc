@@ -62,14 +62,14 @@ static CGUITextLayout* GetFontLayout()
                                                     , 0
                                                     , CSettings::Get().GetInt("subtitles.height")
                                                     , CSettings::Get().GetInt("subtitles.style")
-                                                    , false, 1.0f, 1.0f, &pal, true);
+                                                    , false, 1.0f, 1.0f, &pal, true, true);
     CGUIFont *border_font   = g_fontManager.LoadTTF("__subtitleborder__"
                                                     , font_path
                                                     , 0xFF000000
                                                     , 0
                                                     , CSettings::Get().GetInt("subtitles.height")
                                                     , CSettings::Get().GetInt("subtitles.style")
-                                                    , true, 1.0f, 1.0f, &pal, true);
+                                                    , true, 1.0f, 1.0f, &pal, true, true);
     if (!subtitle_font || !border_font)
       CLog::Log(LOGERROR, "CGUIWindowFullScreen::OnMessage(WINDOW_INIT) - Unable to load subtitle font");
     else

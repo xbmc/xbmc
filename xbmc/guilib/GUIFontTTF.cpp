@@ -48,6 +48,7 @@ using namespace std;
 
 #define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
+#define MAX_LINES_FOR_SUBTITLES 10 // set max lines for subtitles font to avoid reallocation texture during play
 
 int CGUIFontTTFBase::justification_word_weight = 6;   // weight of word spacing over letter spacing when justifying.
                                                   // A larger number means more of the "dead space" is placed between
@@ -156,6 +157,8 @@ CGUIFontTTFBase::CGUIFontTTFBase(const CStdString& strFileName)
   m_color = 0;
   m_vertex_count = 0;
   m_nTexture = 0;
+  m_keepGlyphs = false;
+  m_textureHeightMax = 0;
 }
 
 CGUIFontTTFBase::~CGUIFontTTFBase(void)
@@ -213,6 +216,10 @@ void CGUIFontTTFBase::Clear()
   free(m_vertex);
   m_vertex = NULL;
   m_vertex_count = 0;
+
+  for (std::map<character_t, FT_Glyph>::iterator it = m_glyphs.begin(); it != m_glyphs.end(); ++it)
+    FT_Done_Glyph(it->second);
+  m_glyphs.clear();
 }
 
 bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float aspect, float lineSpacing, bool border)
@@ -547,34 +554,52 @@ CGUIFontTTFBase::Character* CGUIFontTTFBase::GetCharacter(character_t chr)
 
 bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *ch)
 {
-  int glyph_index = FT_Get_Char_Index( m_face, letter );
-
   FT_Glyph glyph = NULL;
-  if (FT_Load_Glyph( m_face, glyph_index, FT_LOAD_TARGET_LIGHT ))
+
+  if (m_keepGlyphs)
   {
-    CLog::Log(LOGDEBUG, "%s Failed to load glyph %x", __FUNCTION__, letter);
-    return false;
+    character_t ch = (style << 16) | letter;
+    std::map<character_t, FT_Glyph>::iterator it = m_glyphs.find(ch);
+    if (it != m_glyphs.end()) glyph = it->second;
   }
-  // make bold if applicable
-  if (style & FONT_STYLE_BOLD)
-    EmboldenGlyph(m_face->glyph);
-  // and italics if applicable
-  if (style & FONT_STYLE_ITALICS)
-    ObliqueGlyph(m_face->glyph);
-  // grab the glyph
-  if (FT_Get_Glyph(m_face->glyph, &glyph))
+
+  if (!glyph)
   {
-    CLog::Log(LOGDEBUG, "%s Failed to get glyph %x", __FUNCTION__, letter);
-    return false;
+    int glyph_index = FT_Get_Char_Index(m_face, letter);
+
+    if (FT_Load_Glyph(m_face, glyph_index, FT_LOAD_TARGET_LIGHT))
+    {
+      CLog::Log(LOGDEBUG, "%s Failed to load glyph %x", __FUNCTION__, letter);
+      return false;
+    }
+    // make bold if applicable
+    if (style & FONT_STYLE_BOLD)
+      EmboldenGlyph(m_face->glyph);
+    // and italics if applicable
+    if (style & FONT_STYLE_ITALICS)
+      ObliqueGlyph(m_face->glyph);
+    // grab the glyph
+    if (FT_Get_Glyph(m_face->glyph, &glyph))
+    {
+      CLog::Log(LOGDEBUG, "%s Failed to get glyph %x", __FUNCTION__, letter);
+      return false;
+    }
+    if (m_stroker)
+      FT_Glyph_StrokeBorder(&glyph, m_stroker, 0, 1);
+    // render the glyph
+    if (FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, NULL, 1))
+    {
+      CLog::Log(LOGDEBUG, "%s Failed to render glyph %x to a bitmap", __FUNCTION__, letter);
+      return false;
+    }
   }
-  if (m_stroker)
-    FT_Glyph_StrokeBorder(&glyph, m_stroker, 0, 1);
-  // render the glyph
-  if (FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, NULL, 1))
+
+  if (m_keepGlyphs)
   {
-    CLog::Log(LOGDEBUG, "%s Failed to render glyph %x to a bitmap", __FUNCTION__, letter);
-    return false;
+    character_t ch = (style << 16) | letter;
+    m_glyphs[ch] = glyph;
   }
+
   FT_BitmapGlyph bitGlyph = (FT_BitmapGlyph)glyph;
   FT_Bitmap bitmap = bitGlyph->bitmap;
   bool isEmptyGlyph = (bitmap.width == 0 || bitmap.rows == 0);
@@ -592,15 +617,24 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
       if (bitGlyph->left < 0)
         m_posX += -bitGlyph->left;
 
-      if(m_posY + GetTextureLineHeight() >= m_textureHeight)
+      if (m_posY + GetTextureLineHeight() >= m_textureHeight)
       {
+        if (m_keepGlyphs && m_textureHeight >= m_textureHeightMax)
+          return false;
+
         // create the new larger texture
-        unsigned int newHeight = m_posY + GetTextureLineHeight();
+        unsigned int newHeight;
+        
+        if (m_keepGlyphs)
+          newHeight = m_textureHeightMax;
+        else
+          newHeight = m_posY + GetTextureLineHeight();
+
         // check for max height
         if (newHeight > g_Windowing.GetMaxTextureSize())
         {
           CLog::Log(LOGDEBUG, "%s: New cache texture is too large (%u > %u pixels long)", __FUNCTION__, newHeight, g_Windowing.GetMaxTextureSize());
-          FT_Done_Glyph(glyph);
+          if (!m_keepGlyphs) FT_Done_Glyph(glyph);
           return false;
         }
 
@@ -608,7 +642,7 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
         newTexture = ReallocTexture(newHeight);
         if(newTexture == NULL)
         {
-          FT_Done_Glyph(glyph);
+          if (!m_keepGlyphs) FT_Done_Glyph(glyph);
           CLog::Log(LOGDEBUG, "%s: Failed to allocate new texture of height %u", __FUNCTION__, newHeight);
           return false;
         }
@@ -618,7 +652,7 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
 
     if(m_texture == NULL)
     {
-      FT_Done_Glyph(glyph);
+      if (!m_keepGlyphs) FT_Done_Glyph(glyph);
       CLog::Log(LOGDEBUG, "%s: no texture to cache character to", __FUNCTION__);
       return false;
     }
@@ -631,7 +665,7 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
   ch->top = isEmptyGlyph ? 0 : ((float)m_posY + ch->offsetY);
   ch->right = ch->left + bitmap.width;
   ch->bottom = ch->top + bitmap.rows;
-  ch->advance = (float)MathUtils::round_int( (float)m_face->glyph->advance.x / 64 );
+  ch->advance = (float)MathUtils::round_int( (float)glyph->advance.x / 65536 );
 
   // we need only render if we actually have some pixels
   if (!isEmptyGlyph)
@@ -648,7 +682,8 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
   m_numChars++;
 
   // free the glyph
-  FT_Done_Glyph(glyph);
+  if (!m_keepGlyphs)
+    FT_Done_Glyph(glyph);
 
   return true;
 }
@@ -861,4 +896,9 @@ void CGUIFontTTFBase::EmboldenGlyph(FT_GlyphSlot slot)
   slot->metrics.vertAdvance  += dy;
 }
 
+void CGUIFontTTFBase::KeepGlyphs()
+{
+  m_keepGlyphs = true;
+  m_textureHeightMax = GetTextureLineHeight() * MAX_LINES_FOR_SUBTITLES;
+}
 
