@@ -54,8 +54,8 @@ msgstr "Exibir análise do áudio"
 
 msgctxt "#30050"
 msgid "%2.0f secs"
-msgstr "%2.0f seg."
+msgstr "%2.0f segundos"
 
 msgctxt "#30051"
 msgid "%2.0f fps"
-msgstr "%2.0f ips"
+msgstr "%2.0f fps"

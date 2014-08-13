@@ -46,7 +46,7 @@ msgstr "Εμφάνιση FPS"
 
 msgctxt "#30007"
 msgid "Show debug console"
-msgstr "Εμφάνιση κονσόλας εντοπισμού σφαλμάτων"
+msgstr "Κονσόλα εντοπισμού σφαλμάτων"
 
 msgctxt "#30008"
 msgid "Show audio analysis"

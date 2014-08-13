@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.fishbmc"
-  version="4.0.14"
+  version="4.0.15"
   name="FishBMC"
   provider-name="26elf">
   <extension
@@ -49,6 +49,7 @@
     <summary lang="sv">Visualisering bestående av vågor- och blur-effekter</summary>
     <summary lang="ta_IN">அலைகள் மற்றும் தெளிவின்மை விளைவுகள் காண்பிக்கும் காட்சி அமைப்பு</summary>
     <summary lang="tg">Таҷассум бо шамоиши мавҷҳо ва таъсирҳои хирагӣ</summary>
+    <summary lang="tr">Görselleştirme Dalga ve Bulanıklık Efektlerini gösteriyor</summary>
     <summary lang="vi">Hiển thị sử dụng hiệu ứng Sóng và Làm mờ</summary>
     <summary lang="zh">呈现波浪和模糊效果的可视化效果</summary>
     <description lang="af">fishBMC is gebasseer op fische, 'n onafhanklike klank visulasasie program. Die basiese prinsiep is: teken die golflente en smeer die tekening langs Vooraf gedefinieerde vektore. fische sluit ook gevorderde tempo ondekking in, wat 'n besondere visuele ervaring verseker.</description>
@@ -126,6 +127,7 @@
     <disclaimer lang="sv">Om detta skulle förstöra något så kan du behålla resterna.</disclaimer>
     <disclaimer lang="ta_IN">எதையாவது இது உடைக்குமேயானால், உடைந்த துகல்கள் உங்களுடையது.</disclaimer>
     <disclaimer lang="tg">Агар ин чизеро вайрон кунад, шумо қисмҳоро мегиред.</disclaimer>
+    <disclaimer lang="tr">Eğer bu bir şeyi bozarsa, sorumluluk size aittir.</disclaimer>
     <disclaimer lang="zh">用者责任自负。</disclaimer>
     <platform>linux osx</platform>
   </extension>

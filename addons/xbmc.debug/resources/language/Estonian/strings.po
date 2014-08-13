@@ -43,3 +43,7 @@ msgstr "DBUS kutsete detailne logimine"
 msgctxt "#30006"
 msgid "Verbose logging for JSON-RPC requests"
 msgstr "JSON-RPC päringute detailne logimine"
+
+msgctxt "#30007"
+msgid "Verbose logging for AUDIO component"
+msgstr "AUDIO komponendi detailne logimine"

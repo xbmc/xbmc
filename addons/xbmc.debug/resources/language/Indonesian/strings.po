@@ -39,3 +39,11 @@ msgstr "Pencatatan log terinci bagi pustaka RTMP"
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
 msgstr "Pencatatan log terinci bagi pemanggilan DBUS"
+
+msgctxt "#30006"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Pencatatan terinci untuk permintaan JSON-RPC"
+
+msgctxt "#30007"
+msgid "Verbose logging for AUDIO component"
+msgstr "Pencatatan log terperinci untuk komponen AUDIO"
