@@ -1,6 +1,0 @@
-[Desktop Entry]
-Name=KODI
-Comment=This session will start KODI Media Center
-Exec=kodi-standalone
-TryExec=kodi-standalone
-Type=Application

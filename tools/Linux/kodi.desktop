@@ -2,9 +2,9 @@
 Version=1.0
 Name=KODI Media Center
 GenericName=Media Center
-Comment=Manage and view your media 
-Exec=xbmc
-Icon=xbmc
+Comment=Manage and view your media
+Exec=kodi
+Icon=kodi
 Terminal=false
 Type=Application
 Categories=AudioVideo;Video;Player;TV;
@@ -13,10 +13,10 @@ Actions=Fullscreen;Standalone;
 
 [Desktop Action Fullscreen]
 Name=Open in fullscreen
-Exec=xbmc -fs
+Exec=kodi -fs
 OnlyShowIn=Unity;
 
 [Desktop Action Standalone]
 Name=Open in standalone mode
-Exec=xbmc --standalone
+Exec=kodi --standalone
 OnlyShowIn=Unity;
