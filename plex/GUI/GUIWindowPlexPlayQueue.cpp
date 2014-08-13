@@ -171,7 +171,8 @@ bool CGUIWindowPlexPlayQueue::OnContextButton(int itemNumber, CONTEXT_BUTTON but
     {
       // toggle edit mode
        if (!g_application.IsPlaying())
-        m_vecItems->SetProperty("PlexEditMode", m_vecItems->GetProperty("PlexEditMode").asString() == "1" ? "" : "1");
+        m_vecItems->SetProperty("PlexEditMode",
+                                m_vecItems->GetProperty("PlexEditMode").asString() == "1" ? "" : "1");
       break;
     }
     default:
@@ -205,7 +206,8 @@ bool CGUIWindowPlexPlayQueue::OnAction(const CAction &action)
     int iSelected = m_viewControl.GetSelectedItem();
     if (iSelected >= 0 && iSelected < (int)m_vecItems->Size())
     {
-      g_plexApplication.playQueueManager->moveItem(m_vecItems->Get(iSelected), action.GetID() == ACTION_MOVE_ITEM_UP ? 1 : -1);
+      g_plexApplication.playQueueManager->moveItem(m_vecItems->Get(iSelected),
+                                                   action.GetID() == ACTION_MOVE_ITEM_UP ? 1 : -1);
       return true;
     }
   }
@@ -232,7 +234,8 @@ bool CGUIWindowPlexPlayQueue::OnAction(const CAction &action)
         m_viewControl.SetSelectedItem(oldSelectedID);
 
         if (oldSelectedID != newSelectedID)
-          g_plexApplication.playQueueManager->moveItem(m_vecItems->Get(oldSelectedID), newSelectedID - oldSelectedID);
+          g_plexApplication.playQueueManager->moveItem(m_vecItems->Get(oldSelectedID),
+                                                       newSelectedID - oldSelectedID);
         break;
     }
 
