@@ -86,7 +86,9 @@ msgctxt "#31029"
 msgid "Fanart"
 msgstr ""
 
-#empty string with id 31030
+msgctxt "#31030"
+msgid "Low list"
+msgstr ""
 
 msgctxt "#31031"
 msgid "Pic Thumbs"
