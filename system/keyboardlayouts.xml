@@ -14,7 +14,7 @@
       <row>ZXCVBNM</row>
     </keyboard>
     <keyboard modifiers="symbol,shift+symbol">
-      <row>)!@#$%^&*(</row>
+      <row>)!@#$%^&amp;*(</row>
       <row>[]{}-_=+;:</row>
       <row>'",.&lt;&gt;/?\|</row>
       <row>`~</row>
@@ -34,7 +34,7 @@
       <row>UVWXYZ</row>
     </keyboard>
     <keyboard modifiers="symbol,shift+symbol">
-      <row>)!@#$%^&*(</row>
+      <row>)!@#$%^&amp;*(</row>
       <row>[]{}-_=+;:</row>
       <row>'",.&lt;&gt;/?\|</row>
       <row>`~</row>
@@ -54,7 +54,7 @@
       <row>ЯЧСМИТЬБЮ</row>
     </keyboard>
     <keyboard modifiers="symbol,shift+symbol">
-      <row>)!@#$%^&*(</row>
+      <row>)!@#$%^&amp;*(</row>
       <row>[]{}-_=+;:</row>
       <row>'",.&lt;&gt;/?\|</row>
       <row>`~</row>
@@ -74,7 +74,7 @@
       <row>ХЦЧШЩЪЫЬЭЮЯ</row>
     </keyboard>
     <keyboard modifiers="symbol,shift+symbol">
-      <row>)!@#$%^&*(</row>
+      <row>)!@#$%^&amp;*(</row>
       <row>[]{}-_=+;:</row>
       <row>'",.&lt;&gt;/?\|</row>
       <row>`~</row>
