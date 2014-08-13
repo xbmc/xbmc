@@ -2,7 +2,7 @@
 <window>
 	<defaultcontrol always="true">50</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
-	<views>50,51,500,550,551,560,501,508,504,503,515,505,511</views>
+	<views>50,51,500,550,551,560,501,508,504,503,515,505,511,520</views>
 	<onload condition="!Skin.HasSetting(FirstTimeRun)">ActivateWindow(1112)</onload>
 	<onload condition="Skin.HasSetting(ActivateTvTunes) + System.HasAddon(script.tvtunes)">XBMC.RunScript(script.tvtunes,backend=True)</onload>
 	<controls>
@@ -18,6 +18,7 @@
 			<include>MediaListView3</include> <!-- view id = 503 -->
 			<include>MediaListView2</include> <!-- view id = 504 -->
 			<include>MediaListView4</include> <!-- view id = 515 -->
+			<include>MediaListView3_Lowlist</include> <!-- view id = 520 -->
 			<include>WideIconView</include> <!-- view id = 505 -->
 			<include>MusicVideoInfoListView</include> <!-- view id = 511 -->
 			<include>AddonInfoListView1</include> <!-- view id = 550 -->
