@@ -88,6 +88,14 @@ public:
   const std::string &GetLabel(int contextWindow, bool preferImage = false, std::string *fallback = NULL) const;
 
   /*!
+   \brief Gets the label and returns it as an int value
+   \param contextWindow the context in which to evaluate the expression.
+   \return int value.
+   \sa GetLabel
+   */
+  int GetIntValue(int contextWindow) const;
+
+  /*!
    \brief Gets a label (or image) for a given listitem from the info manager.
    \param item listitem in question.
    \param preferImage caller is specifically wanting an image rather than a label. Defaults to false.
