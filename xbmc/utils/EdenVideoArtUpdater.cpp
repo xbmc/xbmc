@@ -198,7 +198,7 @@ void CEdenVideoArtUpdater::Process()
 
     // now episodes...
     CFileItemList items2;
-    db.GetEpisodesByWhere("videodb://tvshows/titles/-1/-1/", db.PrepareSQL("episodeview.idShow=%d", item->GetVideoInfoTag()->m_iDbId), items2);
+    db.GetEpisodesByWhere("videodb://tvshows/titles/-1/-1/", db.PrepareSQL("episode_view.idShow=%d", item->GetVideoInfoTag()->m_iDbId), items2);
     for (int j = 0; j < items2.Size(); j++)
     {
       handle->SetProgress(j, items2.Size());
