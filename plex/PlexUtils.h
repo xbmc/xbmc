@@ -69,6 +69,8 @@ namespace PlexUtils
 
   CFileItemPtr GetItemWithKey(const CFileItemList& list, const std::string& key);
   void PauseRendering(bool bPause, bool bUseWaitDialog);
+  int GetItemListID(const CFileItemPtr& item);
+  int GetItemListID(const CFileItem& item);
 }
 
 #if defined(HAVE_EXECINFO_H)

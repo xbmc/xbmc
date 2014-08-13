@@ -239,7 +239,7 @@ bool CPlexPlayQueueManager::reconcilePlayQueueChanges(int playlistType, const CF
   {
     int listItemId = -1;
     if (playlistCursor < playlist.size())
-      listItemId = playlist[playlistCursor]->GetMusicInfoTag()->GetDatabaseId();
+      listItemId = PlexUtils::GetItemListID(playlist[playlistCursor]);
 
     if (listCursor >= list.Size())
     {
@@ -248,7 +248,7 @@ bool CPlexPlayQueueManager::reconcilePlayQueueChanges(int playlistType, const CF
       break;
     }
 
-    int serverItemId = list.Get(listCursor)->GetMusicInfoTag()->GetDatabaseId();
+    int serverItemId = PlexUtils::GetItemListID(list.Get(listCursor));
 
     if (!firstCommon && listItemId != -1)
     {

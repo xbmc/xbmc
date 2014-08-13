@@ -131,7 +131,7 @@ void CPlexPlayQueueLocal::OnJobComplete(unsigned int jobID, bool success, CJob* 
     {
       CFileItemPtr item = PlexUtils::GetItemWithKey(*m_list, fj->m_options.startItemKey);
       if (item && item->HasMusicInfoTag())
-        m_list->SetProperty("playQueueSelectedItemID", item->GetMusicInfoTag()->GetDatabaseId());
+        m_list->SetProperty("playQueueSelectedItemID", PlexUtils::GetItemListID(item));
     }
 
     if (m_list->HasProperty("ratingKey"))

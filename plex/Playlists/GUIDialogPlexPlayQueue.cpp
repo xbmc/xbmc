@@ -61,7 +61,7 @@ void CGUIDialogPlexPlayQueue::LoadPlayQueue()
   if (PlexUtils::IsPlayingPlaylist())
   {
     if (g_application.CurrentFileItemPtr() && g_application.CurrentFileItemPtr()->HasMusicInfoTag())
-      currentItemId = g_application.CurrentFileItemPtr()->GetMusicInfoTag()->GetDatabaseId();
+      currentItemId = PlexUtils::GetItemListID(g_application.CurrentFileItemPtr());
   }
 
   // clear items & view control in case we're updating
@@ -76,7 +76,7 @@ void CGUIDialogPlexPlayQueue::LoadPlayQueue()
       CFileItemPtr item = list.Get(i);
       if (item)
       {
-        if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() == currentItemId)
+        if (item->HasMusicInfoTag() && PlexUtils::GetItemListID(item) == currentItemId)
         {
           playingItemIdx = i;
           item->Select(true);
@@ -115,7 +115,7 @@ void CGUIDialogPlexPlayQueue::ItemSelected()
 
       // select the new one
       item->Select(true);
-      g_plexApplication.playQueueManager->playCurrentId(item->GetMusicInfoTag()->GetDatabaseId());
+      g_plexApplication.playQueueManager->playCurrentId(PlexUtils::GetItemListID(item));
     }
   }
 }

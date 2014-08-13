@@ -661,7 +661,7 @@ bool CGUIWindowHome::OnClick(const CGUIMessage& message)
         (currentContainer == CONTENT_LIST_PLAYQUEUE_MUSIC ||
          currentContainer == CONTENT_LIST_PLAYQUEUE_VIDEO))
     {
-      g_plexApplication.playQueueManager->playCurrentId(fileItem->GetMusicInfoTag()->GetDatabaseId());
+      g_plexApplication.playQueueManager->playCurrentId(PlexUtils::GetItemListID(fileItem));
     }
     else
     {

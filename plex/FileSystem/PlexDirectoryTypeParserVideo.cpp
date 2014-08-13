@@ -169,21 +169,20 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
   item.SetProperty("selectedAudioStream", PlexUtils::GetPrettyStreamName(item, true));
   item.SetProperty("selectedSubtitleStream", PlexUtils::GetPrettyStreamName(item, false));
 
-  // We misuse the MusicInfoTag a bit here so we can call PlayListPlayer::PlaySongId()
   if (item.HasProperty("playQueueItemID"))
   {
-    item.GetMusicInfoTag()->SetDatabaseId(item.GetProperty("playQueueItemID").asInteger(), "video");
+    item.GetVideoInfoTag()->m_iDbId = item.GetProperty("playQueueItemID").asInteger();
   }
   else if (item.HasProperty("ratingKey"))
   {
-    item.GetMusicInfoTag()->SetDatabaseId(item.GetProperty("ratingKey").asInteger(), "video");
+    item.GetVideoInfoTag()->m_iDbId = item.GetProperty("ratingKey").asInteger();
   }
   else
   {
     int id = mediaContainer.GetProperty("__containerItemIndex").asInteger(0);
     // ok, this is probably a channel, we still need a pretty unique id, so let's
     // just try to get unique id for this certain container
-    item.GetMusicInfoTag()->SetDatabaseId(id, "video");
+    item.GetVideoInfoTag()->m_iDbId = id;
     mediaContainer.SetProperty("__containerItemIndex", ++ id);
   }
   

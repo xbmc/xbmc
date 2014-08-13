@@ -27,6 +27,8 @@
 #include "GUI/GUIPlexMediaWindow.h"
 #include "Application.h"
 #include "threads/Atomics.h"
+#include "music/tags/MusicInfoTag.h"
+#include "video/VideoInfoTag.h"
 
 #include "File.h"
 
@@ -1030,4 +1032,20 @@ void PlexUtils::PauseRendering(bool bPause, bool bUseWaitDialog)
   }
 
   g_application.SetRenderGUI(pauseRequestCount == 0);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+int PlexUtils::GetItemListID(const CFileItem& item)
+{
+  if (item.HasMusicInfoTag())
+    return item.GetMusicInfoTag()->GetDatabaseId();
+  else if (item.HasVideoInfoTag())
+    return item.GetVideoInfoTag()->m_iDbId;
+  return -1;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+int PlexUtils::GetItemListID(const CFileItemPtr& item)
+{
+  return GetItemListID(*item);
 }

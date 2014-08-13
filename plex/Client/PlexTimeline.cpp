@@ -14,6 +14,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "PlexPlayQueueManager.h"
 #include "music/tags/MusicInfoTag.h"
+#include "video/VideoInfoTag.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CUrlOptions CPlexTimeline::getTimeline(bool forServer)
@@ -62,8 +63,9 @@ CUrlOptions CPlexTimeline::getTimeline(bool forServer)
     {
       try
       {
-        std::string pqid = boost::lexical_cast<std::string>(m_item->GetMusicInfoTag()->GetDatabaseId());
-        options.AddOption("playQueueItemID", pqid);
+        std::string pqid = boost::lexical_cast<std::string>(PlexUtils::GetItemListID(m_item));
+        if (pqid != "-1")
+          options.AddOption("playQueueItemID", pqid);
       }
       catch (...)
       {

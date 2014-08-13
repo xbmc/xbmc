@@ -120,9 +120,9 @@ TEST_F(PlayQueueManagerTest, ReconcilePlayQueueChanges_basic)
 
   PLAYLIST::CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
   EXPECT_EQ(playlist.size(), 3);
-  EXPECT_EQ(playlist[0]->GetMusicInfoTag()->GetDatabaseId(), 2);
-  EXPECT_EQ(playlist[1]->GetMusicInfoTag()->GetDatabaseId(), 3);
-  EXPECT_EQ(playlist[2]->GetMusicInfoTag()->GetDatabaseId(), 4);
+  EXPECT_EQ(PlexUtils::GetItemListID(playlist[0]), 2);
+  EXPECT_EQ(PlexUtils::GetItemListID(playlist[1]), 3);
+  EXPECT_EQ(PlexUtils::GetItemListID(playlist[2]), 4);
 }
 
 TEST_F(PlayQueueManagerTest, ReconcilePlayQueueChanges_noMatching)
@@ -139,8 +139,8 @@ TEST_F(PlayQueueManagerTest, ReconcilePlayQueueChanges_noMatching)
   manager.reconcilePlayQueueChanges(PLAYLIST_VIDEO, list);
   PLAYLIST::CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
   EXPECT_EQ(playlist.size(), 2);
-  EXPECT_EQ(playlist[0]->GetMusicInfoTag()->GetDatabaseId(), 2);
-  EXPECT_EQ(playlist[1]->GetMusicInfoTag()->GetDatabaseId(), 3);
+  EXPECT_EQ(PlexUtils::GetItemListID(playlist[0]), 2);
+  EXPECT_EQ(PlexUtils::GetItemListID(playlist[1]), 3);
 }
 
 TEST_F(PlayQueueManagerTest, ReconcilePlayQueueChanges_gapInMiddle)
@@ -158,9 +158,9 @@ TEST_F(PlayQueueManagerTest, ReconcilePlayQueueChanges_gapInMiddle)
   manager.reconcilePlayQueueChanges(PLAYLIST_VIDEO, list);
   PLAYLIST::CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
   EXPECT_EQ(playlist.size(), 3);
-  EXPECT_EQ(playlist[0]->GetMusicInfoTag()->GetDatabaseId(), 1);
-  EXPECT_EQ(playlist[1]->GetMusicInfoTag()->GetDatabaseId(), 2);
-  EXPECT_EQ(playlist[2]->GetMusicInfoTag()->GetDatabaseId(), 4);
+  EXPECT_EQ(PlexUtils::GetItemListID(playlist[0]), 1);
+  EXPECT_EQ(PlexUtils::GetItemListID(playlist[1]), 2);
+  EXPECT_EQ(PlexUtils::GetItemListID(playlist[2]), 4);
 }
 
 TEST_F(PlayQueueManagerTest, ReconcilePlayQueueChanges_largedataset)
@@ -180,7 +180,7 @@ TEST_F(PlayQueueManagerTest, ReconcilePlayQueueChanges_largedataset)
   PLAYLIST::CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
   EXPECT_EQ(playlist.size(), 100);
   for (int i = 60; i < 160; i++)
-    EXPECT_EQ(playlist[i - 60]->GetMusicInfoTag()->GetDatabaseId(), i);
+    EXPECT_EQ(PlexUtils::GetItemListID(playlist[i - 60]), i);
 }
 
 TEST_F(PlayQueueManagerTest, GetPlaylistFromType_basic)
