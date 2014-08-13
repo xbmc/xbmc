@@ -2231,7 +2231,7 @@ msgstr "Audio-CDs"
 
 msgctxt "#621"
 msgid "Encoder"
-msgstr "Wiedergabeliste"
+msgstr "Encoder"
 
 msgctxt "#622"
 msgid "Quality"
@@ -9787,7 +9787,7 @@ msgstr "Aufnahmen nach Titel"
 
 msgctxt "#22020"
 msgid "Guide"
-msgstr "Handbuch"
+msgstr "Guide"
 
 msgctxt "#22021"
 msgid "Allowed error in aspect ratio to minimise black bars"

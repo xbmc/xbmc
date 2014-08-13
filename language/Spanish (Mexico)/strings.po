@@ -1081,6 +1081,10 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Lenguaje original del flujo"
 
+msgctxt "#309"
+msgid "User interface language"
+msgstr "Idioma de la interfaz de usuario"
+
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=auto)"
@@ -10284,6 +10288,18 @@ msgstr "Cadena de búsqueda manual"
 msgctxt "#24121"
 msgid "Enter search string"
 msgstr "Introduzca la cadena de búsqueda"
+
+msgctxt "#24122"
+msgid "Update all"
+msgstr "Actualizar todo"
+
+msgctxt "#24124"
+msgid "Next to the video"
+msgstr "Al lado del vídeo"
+
+msgctxt "#24125"
+msgid "Custom location"
+msgstr "Ubicación personalizada"
 
 msgctxt "#25000"
 msgid "Notifications"

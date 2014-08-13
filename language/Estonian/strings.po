@@ -1077,6 +1077,10 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Algvoo keel"
 
+msgctxt "#309"
+msgid "User interface language"
+msgstr "Kasutajaliides keel"
+
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=auto)"
@@ -1177,9 +1181,17 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Kaadrisageduse konverteerimine"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "Väljundi seadistamine"
+
 msgctxt "#338"
 msgid "Fixed"
 msgstr "Fikseeritud"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "Optimeeritud"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -1593,6 +1605,10 @@ msgctxt "#447"
 msgid "Autorun media"
 msgstr "Automaatne avamine"
 
+msgctxt "#448"
+msgid "Dolby Digital Plus (E-AC3) capable receiver"
+msgstr "Dolby Digital Plus'i (E-AC3) toetav resiiver"
+
 msgctxt "#449"
 msgid "Enabled"
 msgstr "Lubatud"
@@ -1628,6 +1644,10 @@ msgstr "Režiim"
 msgctxt "#457"
 msgid "Switch view"
 msgstr "Vaheta vaadet"
+
+msgctxt "#458"
+msgid "Limit sampling rate (kHz)"
+msgstr "Piira sämplimissagedus (kHz)"
 
 msgctxt "#459"
 msgid "Subs"
@@ -3065,6 +3085,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Teavita nendest teenustest teistele süsteemidele Zeroconf'i kaudu"
 
+msgctxt "#1269"
+msgid "Allow volume control"
+msgstr "Luba helivaljuse juhtimine"
+
 msgctxt "#1270"
 msgid "Allow XBMC to receive AirPlay content"
 msgstr "Luba XBMC-l vastu võtta AirPlay sisu"
@@ -3461,6 +3485,14 @@ msgctxt "#10039"
 msgid "Expert"
 msgstr "Ekspert"
 
+msgctxt "#10040"
+msgid "Add-on browser"
+msgstr "Lisamoodulite sirvija"
+
+msgctxt "#10041"
+msgid "Reset above settings to default"
+msgstr "Taasta ülaltoodud seadete vaikeväärtused"
+
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
 msgstr "Oled kindel, et soovid selle kategooria seaded lähtestada?"
@@ -3472,6 +3504,14 @@ msgstr "Abi"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "Abi pole saadaval"
+
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr "Taasta kõikide nähtavate seadete vaikeväärused."
+
+msgctxt "#10046"
+msgid "No categories available"
+msgstr "Kategooriad puuduvad"
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
@@ -4849,9 +4889,21 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Luba riistvaraline kiirendus (MediaCodec)"
 
+msgctxt "#13440"
+msgid "Allow multi threaded software decoding"
+msgstr "Luba mitmelõimeline tarkvaraline dekodeerimine"
+
+msgctxt "#13454"
+msgid "Decoding method"
+msgstr "Dekodeerimise meetod"
+
 msgctxt "#13455"
 msgid "Software"
 msgstr "Tarkvara"
+
+msgctxt "#13456"
+msgid "Hardware accelerated"
+msgstr "Riistvaraline kiirendus"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5061,9 +5113,25 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Video vahemälu - DVD-ROM"
 
+msgctxt "#14027"
+msgid "Video cache - Local Network"
+msgstr "Video puhver - kohtvõrk"
+
+msgctxt "#14028"
+msgid "Video cache - Internet"
+msgstr "Video puhver - Internet"
+
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Heli vahemälu - DVD-ROM"
+
+msgctxt "#14031"
+msgid "Audio cache - Local Network"
+msgstr "Audio puhver - kohtvõrk"
+
+msgctxt "#14032"
+msgid "Audio cache - Internet"
+msgstr "Audio puhver - Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -5076,6 +5144,10 @@ msgstr "Kohtvõrk"
 msgctxt "#14036"
 msgid "Services"
 msgstr "Teenused"
+
+msgctxt "#14037"
+msgid "DVD cache - Local Network"
+msgstr "DVD puhver - kohtvõrk"
 
 msgctxt "#14038"
 msgid "Network settings changed"
@@ -5308,6 +5380,10 @@ msgstr "CD rippimise lõpetamisel ava kettaseade"
 msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "Peata CD rippimine"
+
+msgctxt "#14101"
+msgid "Acceleration"
+msgstr "Kiirendus"
 
 msgctxt "#15014"
 msgid "Keep"
@@ -6365,6 +6441,10 @@ msgctxt "#19170"
 msgid "Timeout when starting playback"
 msgstr "Taasesituse aegumine"
 
+msgctxt "#19171"
+msgid "Start playback minimised"
+msgstr "Alusta taasesitus vähendatuna"
+
 msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr "Kohese salvestuse kestvus"
@@ -6432,6 +6512,10 @@ msgstr "Elektroonilisele saatekavale tehakse algseadistust"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "Käivitamisel jätka viimase kanaliga"
+
+msgctxt "#19190"
+msgid "Minimised"
+msgstr "Vähendatud"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6553,9 +6637,17 @@ msgctxt "#19220"
 msgid "Channels in"
 msgstr "Kanalid"
 
+msgctxt "#19221"
+msgid "Synchronise channel groups with backend(s)"
+msgstr "Sünkrooni kanali grupid põhja(de)ga"
+
 msgctxt "#19222"
 msgid "EPG"
 msgstr "Elektrooniline saatekava"
+
+msgctxt "#19223"
+msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
+msgstr "Ei suutnud võimaldada ühtegi PVR lisamoodulit. Kontrolli seadeid või vaata logifaili lisainfo saamiseks."
 
 msgctxt "#19224"
 msgid "Recording aborted"
@@ -6581,6 +6673,10 @@ msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
 msgstr "Sulge kanali OSD pärast kanali vahetust"
 
+msgctxt "#19230"
+msgid "Prevent EPG updates during playback"
+msgstr "Keela elektroonilise saatekava uuendused taasesituse ajal"
+
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
 msgstr "Kasuta alati põhja(de) kanalijärjestust"
@@ -6592,6 +6688,10 @@ msgstr "Puhasta otsingutulemused"
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Näita teadet taimeri uuendamisel "
+
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
+msgstr "Kasuta põhja poolt omistatud kanali numbreid (töötab ainult 1 lubatud PVR põhja korral)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -6613,9 +6713,17 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Taustaprotsesside käivitus"
 
+msgctxt "#19240"
+msgid "No PVR Add-on enabled"
+msgstr "Ühtegi PVR lisamoodulit ei ole lubatud"
+
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "PVR haldur lubati ilma ühegi"
+
+msgctxt "#19242"
+msgid "enabled PVR Add-on. Enable at least one Add-on"
+msgstr "lubatud PVR lisamoodul. Võimalda vähemalt üks lisamoodul"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6729,9 +6837,17 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Kõik salvestised"
 
+msgctxt "#19271"
+msgid "No PVR Add-ons could be found"
+msgstr "Ei leidnud ühtegi PVR lisamoodulist"
+
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Sa vajad tuunerit, põhja tarkvara, ja"
+
+msgctxt "#19273"
+msgid "Add-on for the backend to be able to use PVR."
+msgstr "Lisamoodul põhja jaoks, et kasutada PVR'i."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -7080,6 +7196,10 @@ msgstr "Eriomadused"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Algupärane keel"
+
+msgctxt "#19662"
+msgid "Black & White"
+msgstr "Mustvalge"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -8973,6 +9093,10 @@ msgctxt "#21459"
 msgid "mixed"
 msgstr "segatud"
 
+msgctxt "#21460"
+msgid "Subtitle position on screen"
+msgstr "Subtiitrite asukoht ekraanil"
+
 msgctxt "#21461"
 msgid "Fixed"
 msgstr "Fikseeritud"
@@ -9693,9 +9817,21 @@ msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Lisamoodulil puudub korrektne struktuur"
 
+msgctxt "#24046"
+msgid "%s is used by the following installed Add-on(s)"
+msgstr "%s on kasutusel järgmis(t)e paigaldatud lisamooduli(te) poolt"
+
+msgctxt "#24047"
+msgid "This Add-on cannot be uninstalled"
+msgstr "Seda lisamoodulit ei saa eemaldada"
+
 msgctxt "#24048"
 msgid "Rollback"
 msgstr "Tagasipööre"
+
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr "Kokkusobimatu"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
@@ -9801,6 +9937,10 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "Lukusta lisamoodulite haldur"
 
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr "Seda lisamoodulit ei saa keelata"
+
 msgctxt "#24094"
 msgid "(current)"
 msgstr "(käibiv)"
@@ -9808,6 +9948,10 @@ msgstr "(käibiv)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(blokeeritud)"
+
+msgctxt "#24096"
+msgid "Add-on is incompatible or has been marked broken in repository."
+msgstr "Lisamoodul ei ole kokkusobiv või on hoidlas märgitud vigaseks"
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9837,6 +9981,14 @@ msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "Rüül puuduvad mõned failid"
 
+msgctxt "#24105"
+msgid "Pause when searching for subtitles"
+msgstr "Peata taasesitus subtiitrite otsimise ajaks"
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Otsin subtiitreid ..."
+
 msgctxt "#24108"
 msgid "%d subtitles found"
 msgstr "Leiti %d subtiitrit"
@@ -9849,9 +10001,21 @@ msgctxt "#24110"
 msgid "Downloading subtitles ..."
 msgstr "Subtiitrite allalaadimine…"
 
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "Subtiitrite allalaadmine ebaõnnestus"
+
+msgctxt "#24115"
+msgid "Subtitle storage location"
+msgstr "Subtiitrite salvestamise asukoht"
+
 msgctxt "#24121"
 msgid "Enter search string"
 msgstr "Sisesta otsingusõna"
+
+msgctxt "#24122"
+msgid "Update all"
+msgstr "Uuenda kõik"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -9876,6 +10040,10 @@ msgstr "Pealkiri: %d"
 msgctxt "#25006"
 msgid "Select playback item"
 msgstr "Vali esitatav nimetus"
+
+msgctxt "#25007"
+msgid "Chapters: %u - duration: %s"
+msgstr "Peatükk: %u - kestus: %s"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -9952,6 +10120,10 @@ msgstr "Küsi allalaadimise kinnitust enne video mängimist"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Klipid"
+
+msgctxt "#33017"
+msgid "Restart plug-in to enable"
+msgstr "Võimaldamiseks taaskäivita lisamoodul"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10433,6 +10605,10 @@ msgctxt "#35504"
 msgid "Product ID"
 msgstr "Tootetunnus (ID)"
 
+msgctxt "#36000"
+msgid "Pulse-Eight CEC adaptor"
+msgstr "Pulse-Eight CEC adapter"
+
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
 msgstr "Pulse-Eight Nyxboard"
@@ -10452,6 +10628,10 @@ msgstr "Vajuta \"kasutaja\" nuppu käsk"
 msgctxt "#36005"
 msgid "Enable switch side commands"
 msgstr "Luba pooli vahetavaid käske"
+
+msgctxt "#36006"
+msgid "Could not open the adaptor"
+msgstr "Ei suutnud avada adapterit"
 
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
@@ -10473,6 +10653,10 @@ msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "Ei õnnestunud tuvastada CEC COM-porti. Määra see manuaalselt."
 
+msgctxt "#36012"
+msgid "Could not initialise the CEC adaptor. Please check your settings."
+msgstr "Ei suutnud initsialiseerida CEC adapterit. Palun kontrolli seadeid."
+
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "HDMI pordi number"
@@ -10480,6 +10664,10 @@ msgstr "HDMI pordi number"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Ühendatud"
+
+msgctxt "#36017"
+msgid "Could not initialise the CEC adaptor: libCEC was not found on your system."
+msgstr "Ei suutnud initsialiseerida CEC adapterit. Ei suutnud leida masinast libCEC'd."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10532,6 +10720,14 @@ msgstr "Kui teler on välja lülitatud"
 msgctxt "#36030"
 msgid "Connection lost"
 msgstr "Ühendus kadus"
+
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adaptor"
+msgstr "Kasutajal puuduvad õigused CEC adapteri avamiseks"
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adaptor"
+msgstr "Port on hõivatud. Ainult üks programm saab pöörduda CEC adapteri poole"
 
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
@@ -10588,6 +10784,10 @@ msgstr "Lülita see välja RSS uudisvoo eemaldamiseks."
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Redigeeri RSS vooge."
+
+msgctxt "#36114"
+msgid "Chooses the language of the user interface."
+msgstr "Vali kasutajaliidese keel."
 
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
@@ -10649,6 +10849,10 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Info pole veel saadaval."
 
+msgctxt "#36140"
+msgid "Enable the video library."
+msgstr "Võimalda video teek."
+
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
 msgstr "Näita veel vaatamata videote süžeed."
@@ -10684,6 +10888,10 @@ msgstr "Ekspordi videoteegi andmebaas XML failidesse. Valikuliselt kirjutatakse 
 msgctxt "#36150"
 msgid "Import a XML file into the Video Library database."
 msgstr "Impordi XML fail videoteegi andmebaasi."
+
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list."
+msgstr "Luba nimekirjast järgmise faili automaatne taasesitus."
 
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."

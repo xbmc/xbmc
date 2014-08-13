@@ -11373,9 +11373,25 @@ msgctxt "#36331"
 msgid "Define the webserver password."
 msgstr "הגדר סיסמא לשרת ה-WEB שלך."
 
+msgctxt "#36335"
+msgid "Define the remote control port."
+msgstr "הגדר את פורט השלט הרחוק"
+
+msgctxt "#36336"
+msgid "Define the remote control port range."
+msgstr "הגדרת תווך פורטים לשלט הרחוק"
+
 msgctxt "#36339"
 msgid "Initial repeat delay (ms)."
 msgstr "חוזר על עיכוב ראשוני (ms)"
+
+msgctxt "#36344"
+msgid "Enable AirPlay password protection."
+msgstr "הפעל הגנת סיסמה לשירות האייר פליי."
+
+msgctxt "#36345"
+msgid "Sets the AirPlay password."
+msgstr "הגדר את סיסמת האייר פליי"
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -11521,6 +11537,10 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "מבוסס חומרה"
 
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic videos."
+msgstr "מצב ניגון של וידאו סטראוסקופי"
+
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "שאל אותי"
@@ -11564,6 +11584,10 @@ msgstr "מצב סטריאוסקופי של וידאו"
 msgctxt "#36536"
 msgid "Stereoscopic mode inverted"
 msgstr "מצב סטיראוסקופי הפוך"
+
+msgctxt "#36540"
+msgid "The preferred stereoscopic 3D mode."
+msgstr "מצב 3D סטראוסקופי מעודף."
 
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."

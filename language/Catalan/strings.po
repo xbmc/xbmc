@@ -10321,6 +10321,10 @@ msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr "Capítols: %u - durada: %s"
 
+msgctxt "#25009"
+msgid "The menu of this Blu-ray is not supported"
+msgstr "El menú d'aquest Blu-ray no s'admet"
+
 msgctxt "#29800"
 msgid "Library Mode"
 msgstr "Mode biblioteca"
@@ -11053,6 +11057,10 @@ msgctxt "#36042"
 msgid "Use limited colour range (16-235)"
 msgstr "Utilitza una gamma de colors limitada (16-235)"
 
+msgctxt "#36101"
+msgid "Change the look and feel of the user interface."
+msgstr "Canvia l'aspecte de la interfície d'usuari."
+
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
 msgstr "Canviar la configuració específica de la pell. Les opcions disponibles depenen de la pell utilitzada."
@@ -11317,6 +11325,10 @@ msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Mostra l'stream del canal seleccionat en una caixa petita en comptes de a pantalla completa."
 
+msgctxt "#36228"
+msgid "Continue with the last viewed channel on startup."
+msgstr "Continua amb l'últim canal vist en l'inici."
+
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Al pressionar un número dins el mode de pantalla completa canviarà automàticament al canal introduït, al cap d'1 segon."
@@ -11328,6 +11340,10 @@ msgstr "Mostra una notificació quan s'agreguen, acaben, o eliminen temporitzado
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
 msgstr "Executa la comanda \"wakeup\" de sota quan es tanca l'XBMC o està entrant en el mode d'hibernació. La data i hora de la següent gravació programada es passa com a paràmetre."
+
+msgctxt "#36243"
+msgid "The command to execute."
+msgstr "La comanda a executar."
 
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
@@ -11441,6 +11457,18 @@ msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
 msgstr "L'XBMC buscarà un arxiu .cdg coincident i mostrarà els seus gràfics durant la reproducció de qualsevol arxiu de música."
 
+msgctxt "#36296"
+msgid "Select the size of the font used during karaoke."
+msgstr "Seleccioneu la mida de la font utilitzada durant el karaoke."
+
+msgctxt "#36297"
+msgid "Select the font colour used during karaoke."
+msgstr "Seleccioneu el color de la font utilitzada durant el karaoke."
+
+msgctxt "#36298"
+msgid "Select the character set used during karaoke."
+msgstr "Seleccioneu el joc de caràcters utilitzat durant el karaoke."
+
 msgctxt "#36301"
 msgid "No info available yet."
 msgstr "No hi ha informació disponible"
@@ -11509,6 +11537,10 @@ msgctxt "#36330"
 msgid "Define the webserver username."
 msgstr "Definiu l'usuari del servidor web."
 
+msgctxt "#36331"
+msgid "Define the webserver password."
+msgstr "Definiu la contrasenya del servidor web."
+
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Selecciona una de les interfícies web instal·lades a través de l'Administrador de Complements."
@@ -11517,9 +11549,25 @@ msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
 msgstr "Permet que altres programes d'aquest ordinador puguin controlar l'XBMC a través de la interfície web o el protocol d'interfície JSON-RPC."
 
+msgctxt "#36335"
+msgid "Define the remote control port."
+msgstr "Definiu el port de control remot."
+
+msgctxt "#36336"
+msgid "Define the remote control port range."
+msgstr "Definiu el rang de ports de control remot."
+
+msgctxt "#36337"
+msgid "Define the maximum number of clients that can connect."
+msgstr "Definiu el nombre màxim de clients que poden connectar-se."
+
 msgctxt "#36338"
 msgid "Allow programs on the network to control XBMC."
 msgstr "Permetre a programes de la xarxa que controlin l'XBMC."
+
+msgctxt "#36344"
+msgid "Enable AirPlay password protection."
+msgstr "Habilita la protecció amb contrasenya de l'AirPlay."
 
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."

@@ -9215,7 +9215,7 @@ msgstr "Nieuwe regel..."
 
 msgctxt "#21424"
 msgid "Items must match"
-msgstr "Items gelijk aan"
+msgstr "Items moeten overeenkomen"
 
 msgctxt "#21425"
 msgid "all of the rules"

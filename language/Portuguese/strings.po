@@ -587,7 +587,7 @@ msgstr "Taxa de actualização do ecrã igual à do vídeo"
 
 msgctxt "#171"
 msgid "Sort title"
-msgstr "Título para ordenação"
+msgstr "Título para lista"
 
 msgctxt "#172"
 msgid "Release date"
@@ -5847,7 +5847,7 @@ msgstr "Gerir..."
 
 msgctxt "#16107"
 msgid "Edit sort title"
-msgstr "Editar título para ordenação"
+msgstr "Editar título para lista"
 
 msgctxt "#16200"
 msgid "Operation was aborted"

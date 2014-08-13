@@ -8207,7 +8207,7 @@ msgstr "Remplacer les balises des pièces par les informations en ligne"
 
 msgctxt "#20221"
 msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
-msgstr "Un fois activé, toute information téléchargée pour les albums et les artistes écrasera tout le contenu des balises, tel que genre, année, artiste, etc... Utile si vous avez des identifiants MusicBrainz dans vos balises."
+msgstr "Un fois activé, toute information téléchargée pour les albums et les artistes écrasera tout le contenu des balises, tel que genre, année, artiste, etc. Utile si vous avez des identifiants MusicBrainz dans vos balises."
 
 msgctxt "#20240"
 msgid "Android music"
@@ -11535,7 +11535,7 @@ msgstr "Utiliser la numérotation de l'arrière-plan au lieu de la configurer ma
 
 msgctxt "#36207"
 msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
-msgstr "Ouvrir le gestionnaire de chaînes, ce qui permet de modifier l'ordre des chaînes, leurs noms, icônes, etc..."
+msgstr "Ouvrir le gestionnaire de chaînes, ce qui permet de modifier l'ordre des chaînes, leurs noms, icônes, etc."
 
 msgctxt "#36208"
 msgid "Instruct the backend to search for channels (if supported)."
@@ -11927,7 +11927,7 @@ msgstr "Catégorie contenant des paramètres sur la gestion des listes de fichie
 
 msgctxt "#36306"
 msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
-msgstr "Si les information EXIF existent (date, heure, appareil-photo utilisé, etc...), elles seront affichées."
+msgstr "Si les information EXIF existent (date, heure, appareil-photo utilisé, etc.), elles seront affichées."
 
 msgctxt "#36307"
 msgid "Automatically generate picture thumbnails when entering picture folder."

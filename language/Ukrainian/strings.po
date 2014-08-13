@@ -1081,6 +1081,10 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Мова потоку за промовчанням"
 
+msgctxt "#309"
+msgid "User interface language"
+msgstr "Мова інтерфейсу"
+
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=авто)"
@@ -4969,6 +4973,30 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Дозволити апаратне прискорення (MediaCodec)"
 
+msgctxt "#13441"
+msgid "Use Mpeg-2 VDPAU"
+msgstr "Використовувати Mpeg-2 VDPAU"
+
+msgctxt "#13443"
+msgid "Use Mpeg-4 VDPAU"
+msgstr "Використовувати Mpeg-4 VDPAU"
+
+msgctxt "#13445"
+msgid "Use VC-1 VDPAU"
+msgstr "Використовувати VC-1 VDPAU"
+
+msgctxt "#13447"
+msgid "Use Mpeg-2 VAAPI"
+msgstr "Використовувати Mpeg-2 VAAPI"
+
+msgctxt "#13449"
+msgid "Use Mpeg-4 VAAPI"
+msgstr "Використовувати Mpeg-4 VAAPI"
+
+msgctxt "#13451"
+msgid "Use VC-1 VAAPI"
+msgstr "Використовувати VC-1 VAAPI"
+
 msgctxt "#13455"
 msgid "Software"
 msgstr "Програмний"
@@ -5444,6 +5472,10 @@ msgstr "Відкривати лоток CD після закінчення оц�
 msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "Зупинити оцифровування CD"
+
+msgctxt "#14101"
+msgid "Acceleration"
+msgstr "Прискорення"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -6148,6 +6180,10 @@ msgstr "У кінець"
 msgctxt "#19065"
 msgid "Default EPG window"
 msgstr "Вікно EPG за промовчанням"
+
+msgctxt "#19066"
+msgid "Channel icons"
+msgstr "Значки каналів"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
@@ -6961,6 +6997,18 @@ msgctxt "#19281"
 msgid "Confirm channel switches by pressing OK"
 msgstr "Підтверджувати переключення каналів натисканням ОК"
 
+msgctxt "#19282"
+msgid "Current icon"
+msgstr "ПОточний значок"
+
+msgctxt "#19283"
+msgid "No icon"
+msgstr "Немає значка"
+
+msgctxt "#19284"
+msgid "Choose icon"
+msgstr "Обрати значок"
+
 msgctxt "#19499"
 msgid "Other/Unknown"
 msgstr "Інше/невідомо"
@@ -7245,6 +7293,10 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Авто/мото"
 
+msgctxt "#19648"
+msgid "Fitness & Health"
+msgstr "Здоров'я та фітнес"
+
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Кулінарія"
@@ -7264,6 +7316,10 @@ msgstr "Особливі властивості"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Оригінальна мова"
+
+msgctxt "#19662"
+msgid "Black & White"
+msgstr "Ч-Б"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -8173,6 +8229,10 @@ msgctxt "#20321"
 msgid "Scanning albums using %s"
 msgstr "Сканування альбомів за допомогою %s"
 
+msgctxt "#20323"
+msgid "Movie plot"
+msgstr "Сюжет фільму"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "Відтворити частину…"
@@ -8184,6 +8244,10 @@ msgstr "Скидання калібрування"
 msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "Калібрувальні значення для %s буде скинуто"
+
+msgctxt "#20327"
+msgid "to its default values."
+msgstr "до значень за промовчанням"
 
 msgctxt "#20328"
 msgid "Browse for destination"
@@ -8813,6 +8877,10 @@ msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
 msgstr "Ігнорувати шрифти субтитрів ASS/SSA"
 
+msgctxt "#21369"
+msgid "Enable mouse and touch screen support"
+msgstr "Увімкнути мишу та сенсорний екран"
+
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
 msgstr "Звуки інтерфейсу під час відтворення"
@@ -9168,6 +9236,10 @@ msgstr "Групування"
 msgctxt "#21459"
 msgid "mixed"
 msgstr "мікс"
+
+msgctxt "#21460"
+msgid "Subtitle position on screen"
+msgstr "Положення субтитрів"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -10101,9 +10173,17 @@ msgctxt "#24114"
 msgid "No subtitle services installed"
 msgstr "Служби субтитрів не встановлено"
 
+msgctxt "#24120"
+msgid "Manual search string"
+msgstr "Додати вручну"
+
 msgctxt "#24121"
 msgid "Enter search string"
 msgstr "Рядок пошуку"
+
+msgctxt "#24122"
+msgid "Update all"
+msgstr "Оновити все"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -11057,6 +11137,10 @@ msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
 msgstr "Видаляє назву, жанр, тощо з подання бібліотеки. Вибір категорії доставить вас прямо до подання назв."
 
+msgctxt "#36190"
+msgid "Override ASS/SSA subtitles fonts."
+msgstr "Ігнорувати шрифти субтитрів ASS/SSA"
+
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
 msgstr "Вибрати папку для субтитрів. Папка може бути на мережному диску."
@@ -11485,6 +11569,10 @@ msgctxt "#36426"
 msgid "Switch to channel"
 msgstr "Переключитися на канал"
 
+msgctxt "#36427"
+msgid "Show information"
+msgstr "Показати відомості"
+
 msgctxt "#36428"
 msgid "Record"
 msgstr "Запис"
@@ -11640,3 +11728,11 @@ msgstr "Виведення звуку на два виходи"
 msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Підвищувати гучність центрального каналу при мікшуванні"
+
+msgctxt "#37022"
+msgid "UPnP Player"
+msgstr "Програвач UPnP"
+
+msgctxt "#37023"
+msgid "Do you wish to stop playback on the remote device?"
+msgstr "Ви хочете зупинити відтворення на віддаленому пристрої?"

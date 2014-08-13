@@ -1279,7 +1279,7 @@ msgstr "Wszystkie albumy"
 
 msgctxt "#359"
 msgid "Recently added albums"
-msgstr "Albumy ostatnio dodane"
+msgstr "Ostatnio dodane albumy"
 
 msgctxt "#360"
 msgid "Screensaver"
@@ -1623,7 +1623,7 @@ msgstr "DVD"
 
 msgctxt "#447"
 msgid "Autorun media"
-msgstr "Odtwarzaj automatyczne"
+msgstr "Odtwarzaj automatycznie"
 
 msgctxt "#448"
 msgid "Dolby Digital Plus (E-AC3) capable receiver"
@@ -1863,7 +1863,7 @@ msgstr "Gatunek"
 
 msgctxt "#517"
 msgid "Recently played albums"
-msgstr "Albumy ostatnio odtwarzane"
+msgstr "Ostatnio odtwarzane albumy"
 
 msgctxt "#518"
 msgid "Launch"
@@ -5631,7 +5631,7 @@ msgstr "Niepołączony"
 
 msgctxt "#15213"
 msgid "Play using..."
-msgstr "Użyj do odtwarzania..."
+msgstr "Odtwórz używając…"
 
 msgctxt "#15214"
 msgid "Use smoothed A/V synchronisation"
@@ -5919,11 +5919,11 @@ msgstr "Sinc (programowo)"
 
 msgctxt "#16310"
 msgid "Temporal"
-msgstr "Czasowo"
+msgstr "Temporal"
 
 msgctxt "#16311"
 msgid "Temporal/Spatial"
-msgstr "czasowy/przestrzenny"
+msgstr "Temporal/Spatial"
 
 msgctxt "#16312"
 msgid "(VDPAU)Noise Reduction"
@@ -5935,7 +5935,7 @@ msgstr "(VDPAU)Ostrość"
 
 msgctxt "#16314"
 msgid "Inverse Telecine"
-msgstr "Odwrócone Telecine"
+msgstr "Inverse Telecine"
 
 msgctxt "#16315"
 msgid "Lanczos3 optimised"
@@ -6275,7 +6275,7 @@ msgstr "Ikony kanałów"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
-msgstr "To zdarzenie już było nagrywane."
+msgstr "To zdarzenie jest już nagrywane."
 
 msgctxt "#19068"
 msgid "This recording could not be deleted. Check the log for details."
@@ -6523,7 +6523,7 @@ msgstr "Wyrażenie wyszukiwania"
 
 msgctxt "#19134"
 msgid "Include description"
-msgstr "Zawiera opis"
+msgstr "Uwzględnij opis"
 
 msgctxt "#19135"
 msgid "Case sensitive"
@@ -6935,7 +6935,7 @@ msgstr "Brak aktywnego klienta TV"
 
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
-msgstr "Menedżer TV został uruchomiony bez żadnej aktywnej"
+msgstr "Menedżer TV został uruchomiony bez żadnego aktywnego"
 
 msgctxt "#19242"
 msgid "enabled PVR Add-on. Enable at least one Add-on"
@@ -8431,7 +8431,7 @@ msgstr "Zawartość folderu"
 
 msgctxt "#20345"
 msgid "Run automated scan"
-msgstr "Uruchom automatyczne skanowanie"
+msgstr "Uruchom skanowanie automatyczne"
 
 msgctxt "#20346"
 msgid "Scan recursively"
@@ -8591,11 +8591,11 @@ msgstr "Usuń łącze do serialu"
 
 msgctxt "#20386"
 msgid "Recently added movies"
-msgstr "Filmy ostatnio dodane"
+msgstr "Ostatnio dodane filmy"
 
 msgctxt "#20387"
 msgid "Recently added episodes"
-msgstr "Odcinki ostatnio dodane"
+msgstr "Ostatnio dodane odcinki"
 
 msgctxt "#20388"
 msgid "Studios"
@@ -8667,11 +8667,11 @@ msgstr "Usuń zakładkę"
 
 msgctxt "#20405"
 msgid "Remove episode bookmark"
-msgstr "Odcinek - usuń zakładkę"
+msgstr "Usuń zakładkę odcinka"
 
 msgctxt "#20406"
 msgid "Set episode bookmark"
-msgstr "Odcinek - ustaw zakładkę"
+msgstr "Ustaw zakładkę odcinka"
 
 msgctxt "#20407"
 msgid "Scraper settings"
@@ -8755,7 +8755,7 @@ msgstr "Eksportować do pojedynczego pliku"
 
 msgctxt "#20427"
 msgid "files per entry?"
-msgstr "czy rozdzielić pliki?"
+msgstr "czy do osobnych plików?"
 
 msgctxt "#20428"
 msgid "Single file"
@@ -8763,7 +8763,7 @@ msgstr "Jeden plik"
 
 msgctxt "#20429"
 msgid "Separate"
-msgstr "Oddziel"
+msgstr "Oddzielne"
 
 msgctxt "#20430"
 msgid "Export thumbnails and fanart?"
@@ -8975,7 +8975,7 @@ msgstr "Zakładka utworzona"
 
 msgctxt "#21363"
 msgid "Episode Bookmark created"
-msgstr "Zakładka epizodu utworzona"
+msgstr "Zakładka odcinku utworzona"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -12643,7 +12643,7 @@ msgstr "Aktywuje klawisze systemowe takie, jak PrintScreen, Alt-Tab i regulacji 
 
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"
-msgstr "Aktywuj większą głębię koloru grafik"
+msgstr "Używaj powiększonej głębi koloru grafik"
 
 msgctxt "#37021"
 msgid "Set GUI resolution limit"

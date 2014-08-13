@@ -8003,7 +8003,7 @@ msgstr "Isključivanje za 120 minuta"
 
 msgctxt "#20150"
 msgid "Custom shutdown timer"
-msgstr "Samoisključivanje susatava"
+msgstr "Samoisključivanje sustava"
 
 msgctxt "#20151"
 msgid "Cancel shutdown timer"

@@ -859,7 +859,7 @@ msgstr "Kalba"
 
 msgctxt "#249"
 msgid "Music"
-msgstr "muzikos"
+msgstr "Muzika"
 
 msgctxt "#250"
 msgid "Visualisation"
@@ -1027,7 +1027,7 @@ msgstr "Dinaminė diapazono kompresija"
 
 msgctxt "#291"
 msgid "Video"
-msgstr "vaizdo"
+msgstr "Vaizdas"
 
 msgctxt "#292"
 msgid "Audio"
@@ -1095,7 +1095,7 @@ msgstr "(0=auto)"
 
 msgctxt "#313"
 msgid "Cleaning database"
-msgstr "Valoma duomenų bazė"
+msgstr "Duomenų bazės valymas"
 
 msgctxt "#314"
 msgid "Preparing..."
@@ -2551,7 +2551,7 @@ msgstr "Geltona"
 
 msgctxt "#744"
 msgid "Files"
-msgstr "failų"
+msgstr "Failai"
 
 msgctxt "#745"
 msgid "No scanned information for this view"
@@ -2859,7 +2859,7 @@ msgstr "Įveskite vartotojo vardą"
 
 msgctxt "#1020"
 msgid "Add %s source"
-msgstr "Pridėti %s šaltinį"
+msgstr "Pridėti šaltinį: %s"
 
 msgctxt "#1021"
 msgid "Enter the paths or browse for the media locations."
@@ -3047,7 +3047,7 @@ msgstr "Video"
 
 msgctxt "#1213"
 msgid "Pictures"
-msgstr "nuotraukų"
+msgstr "Nuotraukos"
 
 msgctxt "#1214"
 msgid "Files"
