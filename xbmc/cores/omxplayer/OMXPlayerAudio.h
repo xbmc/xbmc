@@ -63,7 +63,6 @@ protected:
 
   bool                      m_buffer_empty;
   bool                      m_flush;
-  int                       m_nChannels;
   bool                      m_DecoderOpen;
 
   bool                      m_bad_state;
@@ -108,6 +107,7 @@ public:
   float GetDynamicRangeAmplification() const             { return m_omxAudio.GetDynamicRangeAmplification(); }
   void SetSpeed(int iSpeed);
   int  GetAudioBitrate();
+  int GetAudioChannels();
   std::string GetPlayerInfo();
 
   bool BadState() { return m_bad_state; }

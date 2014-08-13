@@ -233,7 +233,7 @@ public:
   virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
 
   virtual std::string GetPlayerState();
-  virtual bool SetPlayerState(std::string state);
+  virtual bool SetPlayerState(const std::string& state);
 
   virtual std::string GetPlayingTitle();
 

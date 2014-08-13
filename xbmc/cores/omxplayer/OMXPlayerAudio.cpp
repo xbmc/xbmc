@@ -77,7 +77,6 @@ OMXPlayerAudio::OMXPlayerAudio(OMXClock *av_clock, CDVDMessageQueue& parent)
   m_stalled       = false;
   m_audioClock    = DVD_NOPTS_VALUE;
   m_buffer_empty  = false;
-  m_nChannels     = 0;
   m_DecoderOpen   = false;
   m_bad_state     = false;
   m_hints_current.Clear();
@@ -141,7 +140,6 @@ void OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec)
   m_silence         = false;
   m_started         = false;
   m_flush           = false;
-  m_nChannels       = 0;
   m_stalled         = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_use_hw_decode   = g_advancedSettings.m_omxHWAudioDecode;
   m_format.m_dataFormat    = GetDataFormat(m_hints);
@@ -552,7 +550,6 @@ AEDataFormat OMXPlayerAudio::GetDataFormat(CDVDStreamInfo hints)
 
 bool OMXPlayerAudio::OpenDecoder()
 {
-  m_nChannels   = m_hints.channels;
   m_passthrough = false;
   m_hw_decode   = false;
 
@@ -587,7 +584,7 @@ bool OMXPlayerAudio::OpenDecoder()
   else
   {
     CLog::Log(LOGINFO, "Audio codec %s channels %d samplerate %d bitspersample %d\n",
-      m_codec_name.c_str(), m_nChannels, m_hints.samplerate, m_hints.bitspersample);
+      m_codec_name.c_str(), m_hints.channels, m_hints.samplerate, m_hints.bitspersample);
   }
 
   m_started = false;
@@ -638,6 +635,11 @@ void OMXPlayerAudio::SetSpeed(int speed)
 int OMXPlayerAudio::GetAudioBitrate()
 {
   return (int)m_audioStats.GetBitrate();
+}
+
+int OMXPlayerAudio::GetAudioChannels()
+{
+  return m_hints.channels;
 }
 
 std::string OMXPlayerAudio::GetPlayerInfo()
