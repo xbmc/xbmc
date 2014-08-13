@@ -17,6 +17,7 @@ public:
   bool Update(const CStdString &strDirectory, bool updateFilterPath);
   bool OnAction(const CAction &action);
   bool isItemPlaying(CFileItemPtr item);
+  bool isPQ() const;
 };
 
 #endif // GUIWINDOWPLEXPLAYQUEUE_H

@@ -13,15 +13,29 @@ bool CGUIWindowPlexPlayQueue::OnSelect(int iItem)
   if (!item)
     return false;
 
-  if (item->HasMusicInfoTag())
+  if (isPQ())
   {
-    g_plexApplication.playQueueManager->playCurrentId(item->GetMusicInfoTag()->GetDatabaseId());
-    return true;
+    g_plexApplication.playQueueManager->playCurrentId(PlexUtils::GetItemListID(item));
+  }
+  else
+  {
+    CPlexPlayQueueOptions options;
+    options.startPlaying = true;
+    options.startItemKey = item->GetProperty("key").asString();
+    g_plexApplication.playQueueManager->create(*m_vecItems, "", options);
   }
 
-  return false;
+  return true;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIWindowPlexPlayQueue::isPQ() const
+{
+  if (m_vecItems->GetPath() == "plexserver://playqueue" ||
+      m_vecItems->GetPath() == "plexserver://playqueue/")
+    return true;
+  return false;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowPlexPlayQueue::isItemPlaying(CFileItemPtr item)
@@ -31,10 +45,10 @@ bool CGUIWindowPlexPlayQueue::isItemPlaying(CFileItemPtr item)
   if (PlexUtils::IsPlayingPlaylist() && g_application.CurrentFileItemPtr())
   {
     if (g_application.CurrentFileItemPtr()->HasMusicInfoTag())
-      playingID = g_application.CurrentFileItemPtr()->GetMusicInfoTag()->GetDatabaseId();
+      playingID = PlexUtils::GetItemListID(g_application.CurrentFileItemPtr());
 
     if (item->HasMusicInfoTag())
-      if ((playingID > 0) && (playingID == item->GetMusicInfoTag()->GetDatabaseId()))
+      if ((playingID > 0) && (playingID == PlexUtils::GetItemListID(item)))
         return true;
   }
 
