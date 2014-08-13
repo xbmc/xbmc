@@ -22,7 +22,7 @@ endif(ENABLE_TESTING)
 
 OPTION(ENABLE_AUTOUPDATE "Enable the cool autoupdate system" ON)
 
-OPTION(USE_PAGING "Enable media section paging" OFF)
+OPTION(USE_PAGING "Enable media section paging" ON)
 if(USE_PAGING)
   add_definitions(-DUSE_PAGING=1)
 endif(USE_PAGING)
