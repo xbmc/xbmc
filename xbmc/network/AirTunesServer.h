@@ -76,7 +76,6 @@ private:
 	    static void  audio_set_metadata(void *cls, void *session, const void *buffer, int buflen);
 	    static void  audio_set_coverart(void *cls, void *session, const void *buffer, int buflen);
       static void  audio_process(void *cls, void *session, const void *buffer, int buflen);
-      static void  audio_flush(void *cls, void *session);
       static void  audio_destroy(void *cls, void *session);
     };
 };
