@@ -484,9 +484,21 @@ msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr "Lokaalsed subtiitrid on saadaval"
 
+msgctxt "#31420"
+msgid "Login"
+msgstr "Logi sisse"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Vali enda XBMC profiil[CR]ja jätka"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Käivitumisel näita või peida sisselogimiseekraan."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Vali profiil, mida kasutada käivitumisel, kui sisselogimise ekraan on keelatud."
 
 msgctxt "#31501"
 msgid "Scheduled Time"

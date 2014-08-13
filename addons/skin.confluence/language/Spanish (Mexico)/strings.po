@@ -116,6 +116,10 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "BUSQUEDA"
 
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Preajustes de Visualización"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Hora de Finalización"

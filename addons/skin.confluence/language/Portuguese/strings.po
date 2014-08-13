@@ -122,7 +122,7 @@ msgstr "Pré-selecções de Visualização"
 
 msgctxt "#31049"
 msgid "End Time"
-msgstr "Termina às"
+msgstr "Fim às"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
