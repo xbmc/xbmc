@@ -50,7 +50,7 @@ msgid "Weather"
 msgstr "Обу ҳаво"
 
 msgctxt "#9"
-msgid "xbmc media center"
+msgid "Kodi media center"
 msgstr "Маркази мултимедиаи xbmc"
 
 msgctxt "#11"

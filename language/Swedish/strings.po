@@ -50,8 +50,8 @@ msgid "Weather"
 msgstr "Väder"
 
 msgctxt "#9"
-msgid "xbmc media center"
-msgstr "xbmc media center"
+msgid "Kodi media center"
+msgstr "Kodi media center"
 
 msgctxt "#11"
 msgid "Monday"
@@ -11607,7 +11607,7 @@ msgstr "Göm \"ingen information tillgänglig\"-etiketter när ingen EPG-data ka
 
 msgctxt "#36225"
 msgid "Delete the EPG database in Kodi and reimport the data afterwards from the backend."
-msgstr "Ta bort EPG-databasen i xbmc och återimportera datan från backenden efteråt."
+msgstr "Ta bort EPG-databasen i Kodi och återimportera datan från backenden efteråt."
 
 msgctxt "#36226"
 msgid "Category for PVR playback and channel switching settings."

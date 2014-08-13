@@ -64,7 +64,7 @@ msgstr ""
 
 #: Unknown
 msgctxt "#9"
-msgid "xbmc media center"
+msgid "Kodi media center"
 msgstr ""
 
 #empty string with id 10

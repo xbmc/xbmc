@@ -50,8 +50,8 @@ msgid "Weather"
 msgstr "Huarere"
 
 msgctxt "#9"
-msgid "xbmc media center"
-msgstr "xbmc pāpāho takuahi"
+msgid "Kodi media center"
+msgstr "Kodi pāpāho takuahi"
 
 msgctxt "#11"
 msgid "Monday"

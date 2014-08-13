@@ -50,8 +50,8 @@ msgid "Weather"
 msgstr "天氣"
 
 msgctxt "#9"
-msgid "xbmc media center"
-msgstr "xbmc 媒體中心"
+msgid "Kodi media center"
+msgstr "Kodi 媒體中心"
 
 msgctxt "#11"
 msgid "Monday"

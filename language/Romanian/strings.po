@@ -50,7 +50,7 @@ msgid "Weather"
 msgstr "Meteo"
 
 msgctxt "#9"
-msgid "xbmc media center"
+msgid "Kodi media center"
 msgstr "centru media xbmc"
 
 msgctxt "#11"

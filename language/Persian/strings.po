@@ -46,7 +46,7 @@ msgid "Weather"
 msgstr "آب و هوا"
 
 msgctxt "#9"
-msgid "xbmc media center"
+msgid "Kodi media center"
 msgstr "مدیاسنتر Kodi "
 
 msgctxt "#11"
