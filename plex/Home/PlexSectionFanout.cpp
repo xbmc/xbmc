@@ -58,44 +58,6 @@ CStdString CPlexSectionFanout::GetBestServerUrl(const CStdString& extraUrl)
   return local->BuildPlexURL(extraUrl).Get();
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexSectionFanout::ShowPlayQueue()
-{
-  CFileItemList pqList;
-  if (!g_plexApplication.playQueueManager->getCurrentPlayQueue(pqList))
-    return;
-
-  int type = g_plexApplication.playQueueManager->getCurrentPlayQueuePlaylist();
-
-  int listType = (type == PLAYLIST_VIDEO) ?
-                   CONTENT_LIST_PLAYQUEUE_VIDEO : CONTENT_LIST_PLAYQUEUE_MUSIC;
-
-  std::pair<int, CFileItemList*> p;
-  BOOST_FOREACH(p, m_fileLists)
-    delete p.second;
-
-  m_fileLists.clear();
-
-  CFileItemList* list = new CFileItemList;
-  list->Copy(pqList, false);
-
-  int currentPos = g_playlistPlayer.GetCurrentSong();
-  if (currentPos == -1)
-    currentPos = pqList.GetProperty("playQueueSelectedItemOffset").asInteger(0);
-
-  for (int i = currentPos; i < pqList.Size(); i ++)
-    list->Add(pqList.Get(i));
-
-  m_fileLists[listType] = list;
-
-  CLog::Log(LOGDEBUG, "CPlexSectionFanout::ShowPlayQueue showing playqueue %d with %d items",
-            listType, list->Size());
-
-  CGUIMessage msg(GUI_MSG_PLEX_SECTION_LOADED, WINDOW_HOME, 300, m_sectionType);
-  msg.SetStringParam(m_url.Get());
-  g_windowManager.SendThreadMessage(msg);
-}
-
 //////////////////////////////////////////////////////////////////////////////
 void CPlexSectionFanout::Refresh()
 {
@@ -107,10 +69,10 @@ void CPlexSectionFanout::Refresh()
 
   CURL trueUrl(m_url);
 
-  if (trueUrl.GetProtocol() == "plexserver" &&
-      trueUrl.GetHostName() == "playqueue")
+  if (m_sectionType == SECTION_TYPE_PLAYLISTS)
   {
-    ShowPlayQueue();
+    if (!g_advancedSettings.m_bHideFanouts)
+      m_outstandingJobs.push_back(LoadSection(CURL("plexserver://playlists"), CONTENT_LIST_PLAYLISTS));
   }
   else if (m_sectionType == SECTION_TYPE_QUEUE)
   {
@@ -126,8 +88,8 @@ void CPlexSectionFanout::Refresh()
   else if (m_sectionType == SECTION_TYPE_CHANNELS)
   {
     if (!g_advancedSettings.m_bHideFanouts)
-      m_outstandingJobs.push_back(
-      LoadSection(GetBestServerUrl("channels/recentlyViewed"), CONTENT_LIST_RECENTLY_ACCESSED));
+      m_outstandingJobs.push_back(LoadSection(GetBestServerUrl("channels/recentlyViewed"),
+                                              CONTENT_LIST_RECENTLY_ACCESSED));
   }
 
   else
@@ -310,7 +272,7 @@ void CPlexSectionFanout::Show()
 //////////////////////////////////////////////////////////////////////////////
 bool CPlexSectionFanout::NeedsRefresh()
 {
-  if (m_needsRefresh || m_sectionType == SECTION_TYPE_PLAYQUEUE)
+  if (m_needsRefresh)
   {
     m_needsRefresh = false;
     return true;

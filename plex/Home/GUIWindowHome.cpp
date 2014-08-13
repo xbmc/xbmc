@@ -221,7 +221,7 @@ CFileItemPtr CGUIWindowHome::GetCurrentFanoutItem()
 {
   int focusedControl = GetFocusedControlID();
   if (focusedControl >= CONTENT_LIST_RECENTLY_ADDED &&
-      focusedControl <= CONTENT_LIST_PLAYQUEUE_PHOTO)
+      focusedControl <= CONTENT_LIST_PLAYLISTS)
   {
     CGUIBaseContainer* container = (CGUIBaseContainer*)(GetControl(focusedControl));
     if (container)
@@ -278,14 +278,6 @@ void CGUIWindowHome::GetItemContextMenu(CContextButtons& buttons, const CFileIte
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIWindowHome::GetPlayQueueContextMenu(CContextButtons& buttons, const CFileItem& item)
-{
-  // Remove from Queue
-  buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 1210);
-  buttons.Add(CONTEXT_BUTTON_CLEAR, 192);
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowHome::GetContextMenu(CContextButtons& buttons)
 {
   if (!GetFocusedControl())
@@ -309,12 +301,7 @@ void CGUIWindowHome::GetContextMenu(CContextButtons& buttons)
         controlId == CONTENT_LIST_QUEUE ||
         controlId == CONTENT_LIST_RECOMMENDATIONS)
       GetItemContextMenu(buttons, *fileItem);
-
-    else if (controlId == CONTENT_LIST_PLAYQUEUE_MUSIC ||
-             controlId == CONTENT_LIST_PLAYQUEUE_PHOTO ||
-             controlId == CONTENT_LIST_PLAYQUEUE_VIDEO)
-      GetPlayQueueContextMenu(buttons, *fileItem);
-  }
+ }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -525,15 +512,6 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       return true;
     }
 
-    case GUI_MSG_PLEX_PLAYQUEUE_UPDATED:
-    {
-      // Add eventually the PQ Menu if we dont have it yet
-      UpdateSections();
-
-      RefreshSection("plexserver://playlists/", CPlexSectionFanout::SECTION_TYPE_PLAYQUEUE);
-      return true;
-    }
-      
     case GUI_MSG_WINDOW_RESET:
     case GUI_MSG_PLEX_SERVER_DATA_LOADED:
     case GUI_MSG_PLEX_SERVER_DATA_UNLOADED:
@@ -546,7 +524,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       else if (message.GetMessage() == GUI_MSG_PLEX_SERVER_DATA_LOADED)
         RefreshSectionsForServer(message.GetStringParam());
 
-      RefreshSection("plexserver://playlists/", CPlexSectionFanout::SECTION_TYPE_PLAYQUEUE);
+      RefreshSection("plexserver://playlists/", CPlexSectionFanout::SECTION_TYPE_PLAYLISTS);
 
       break;
     }
@@ -657,33 +635,24 @@ bool CGUIWindowHome::OnClick(const CGUIMessage& message)
 
   if (fileItem)
   {
-    if (fileItem->HasMusicInfoTag() &&
-        (currentContainer == CONTENT_LIST_PLAYQUEUE_MUSIC ||
-         currentContainer == CONTENT_LIST_PLAYQUEUE_VIDEO))
+    if (iAction == ACTION_SELECT_ITEM && PlexUtils::CurrentSkinHasPreplay() &&
+        fileItem->GetPlexDirectoryType() != PLEX_DIR_TYPE_PHOTO)
     {
-      g_plexApplication.playQueueManager->playCurrentId(PlexUtils::GetItemListID(fileItem));
+      OpenItem(fileItem);
+    }
+    else if (fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTO ||
+             fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTOALBUM)
+    {
+      if (fileItem->HasProperty("parentKey"))
+        CApplicationMessenger::Get().PictureSlideShow(fileItem->GetProperty("parentKey").asString(),
+                                                      false,
+                                                      fileItem->GetPath());
+      else
+        CApplicationMessenger::Get().PictureShow(fileItem->GetPath());
     }
     else
     {
-      if (iAction == ACTION_SELECT_ITEM && PlexUtils::CurrentSkinHasPreplay() &&
-          fileItem->GetPlexDirectoryType() != PLEX_DIR_TYPE_PHOTO)
-      {
-        OpenItem(fileItem);
-      }
-      else if (fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTO ||
-               fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTOALBUM)
-      {
-        if (fileItem->HasProperty("parentKey"))
-          CApplicationMessenger::Get().PictureSlideShow(fileItem->GetProperty("parentKey").asString(),
-                                                        false,
-                                                        fileItem->GetPath());
-        else
-          CApplicationMessenger::Get().PictureShow(fileItem->GetPath());
-      }
-      else
-      {
-        g_plexApplication.playQueueManager->create(*fileItem);
-      }
+      g_plexApplication.playQueueManager->create(*fileItem);
     }
   }
   else
@@ -934,7 +903,7 @@ void CGUIWindowHome::AddPlaylists(std::vector<CGUIListItemPtr>& list, bool& upda
   item->SetProperty("sectionPath", path);
   item->SetProperty("navigateDirectly", true);
 
-  AddSection(path, CPlexSectionFanout::SECTION_TYPE_PLAYQUEUE, true);
+  AddSection(path, CPlexSectionFanout::SECTION_TYPE_PLAYLISTS, true);
 
   list.push_back(item);
 }
@@ -948,9 +917,7 @@ void CGUIWindowHome::HideAllLists()
                    CONTENT_LIST_RECENTLY_ADDED,
                    CONTENT_LIST_QUEUE,
                    CONTENT_LIST_RECOMMENDATIONS,
-                   CONTENT_LIST_PLAYQUEUE_MUSIC,
-                   CONTENT_LIST_PLAYQUEUE_PHOTO,
-                   CONTENT_LIST_PLAYQUEUE_VIDEO};
+                   CONTENT_LIST_PLAYLISTS};
 
   BOOST_FOREACH(int id, lists)
   {
