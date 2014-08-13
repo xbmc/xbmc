@@ -811,14 +811,14 @@
 	</variable>
 	<variable name="SearchItemFullInfoSource">
 		<!-- movie -->
-		<value condition="ControlGroup(7001).HasFocus + !IsEmpty(Container(9001).ListItem.Property(plexServerOwner))">$INFO[Container(9001).ListItem.Property(plexServerOwner)] [COLOR=orange]&#xB7;[/COLOR] $INFO[Container(9001).ListItem.Property(plexServerName)]</value>
-		<value condition="ControlGroup(7001).HasFocus + IsEmpty(Container(9001).ListItem.Property(plexServerOwner))">$INFO[Container(9001).ListItem.Property(plexServerName)]</value>
+		<value condition="ControlGroup(7001).HasFocus + !IsEmpty(Container(9001).ListItem.Property(ServerOwner))">$INFO[Container(9001).ListItem.Property(ServerOwner)] [COLOR=orange]&#xB7;[/COLOR] $INFO[Container(9001).ListItem.Property(ServerName)]</value>
+		<value condition="ControlGroup(7001).HasFocus + IsEmpty(Container(9001).ListItem.Property(ServerOwner))">$INFO[Container(9001).ListItem.Property(ServerName)]</value>
 		<!-- tv show -->
-		<value condition="ControlGroup(7002).HasFocus + !IsEmpty(Container(9002).ListItem.Property(plexServerOwner))">$INFO[Container(9002).ListItem.Property(plexServerOwner)] [COLOR=orange]&#xB7;[/COLOR] $INFO[Container(9002).ListItem.Property(plexServerName)]</value>
-		<value condition="ControlGroup(7002).HasFocus + IsEmpty(Container(9002).ListItem.Property(plexServerOwner))">$INFO[Container(9002).ListItem.Property(plexServerName)]</value>
+		<value condition="ControlGroup(7002).HasFocus + !IsEmpty(Container(9002).ListItem.Property(ServerOwner))">$INFO[Container(9002).ListItem.Property(ServerOwner)] [COLOR=orange]&#xB7;[/COLOR] $INFO[Container(9002).ListItem.Property(ServerName)]</value>
+		<value condition="ControlGroup(7002).HasFocus + IsEmpty(Container(9002).ListItem.Property(ServerOwner))">$INFO[Container(9002).ListItem.Property(ServerName)]</value>
 		<!-- tv episode -->
-		<value condition="ControlGroup(7004).HasFocus + !IsEmpty(Container(9004).ListItem.Property(plexServerOwner))">$INFO[Container(9004).ListItem.Property(plexServerOwner)] [COLOR=orange]&#xB7;[/COLOR] $INFO[Container(9004).ListItem.Property(plexServerName)]</value>
-		<value condition="ControlGroup(7004).HasFocus + IsEmpty(Container(9004).ListItem.Property(plexServerOwner))">$INFO[Container(9004).ListItem.Property(plexServerName)]</value>
+		<value condition="ControlGroup(7004).HasFocus + !IsEmpty(Container(9004).ListItem.Property(ServerOwner))">$INFO[Container(9004).ListItem.Property(ServerOwner)] [COLOR=orange]&#xB7;[/COLOR] $INFO[Container(9004).ListItem.Property(ServerName)]</value>
+		<value condition="ControlGroup(7004).HasFocus + IsEmpty(Container(9004).ListItem.Property(ServerOwner))">$INFO[Container(9004).ListItem.Property(ServerName)]</value>
 	</variable>
 	<variable name="SearchItemFullInfoPlot">
 		<!-- movie -->

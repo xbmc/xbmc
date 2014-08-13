@@ -908,7 +908,7 @@
 		<!-- video play queue -->
 		<control type="group">
 			<control type="group" id="777">
-				<visible>Container.PlexContent(MixedContent) | Container.PlexContent(Episodes) | Container.PlexContent(clips) | Container.PlexContent(clip) | [Container.PlexContent(channel) + System.PlexPlayQueue(Video)] | Container.PlexContent(Movies)</visible>
+				<visible>Container.PlexContent(MixedContent) | Container.PlexContent(Episode) | Container.PlexContent(Episodes) | Container.PlexContent(clip) | Container.PlexContent(clips) | [Container.PlexContent(channel) + System.PlexPlayQueue(Video)] | Container.PlexContent(Movie) | Container.PlexContent(Movies)</visible>
 				<include>FadeDialog</include>
 				<include>rightSideSlide</include>
 				<control type="group">
@@ -1233,7 +1233,7 @@
 				<!-- main list -->
 				<control type="group" id="555">
 					<control type="panel" id="61">
-						<visible>Container.PlexContent(MixedContent) | Container.PlexContent(Episodes) | Container.PlexContent(clip) | Container.PlexContent(clips) | [Container.PlexContent(channel) + System.PlexPlayQueue(Video)] | Container.PlexContent(Movies)</visible>
+						<visible>Container.PlexContent(MixedContent) | Container.PlexContent(Episode) | Container.PlexContent(Episodes) | Container.PlexContent(clip) | Container.PlexContent(clips) | [Container.PlexContent(channel) + System.PlexPlayQueue(Video)] | Container.PlexContent(Movie) | Container.PlexContent(Movies)</visible>
 						<viewtype label="VideoPlayQueue">panel</viewtype>
 						<onup>61</onup>
 						<ondown>61</ondown>
@@ -1424,7 +1424,7 @@
 								<visible>!IsEmpty(ListItem.Art(sourceIcon))</visible>
 							</control>-->
 						</focusedlayout>
-						<itemlayout condition="Container.PlexContent(Movies)" width="233" height="335">
+						<itemlayout condition="Container.PlexContent(Movie) | Container.PlexContent(Movies)" width="233" height="335">
 							<include>TVPoster</include>
 							<control type="image">
 								<posx>162</posx>
@@ -1446,7 +1446,7 @@
 								<shadowcolor>FF222222</shadowcolor>
 							</control>
 						</itemlayout>
-						<focusedlayout condition="Container.PlexContent(Movies)" width="233" height="335">
+						<focusedlayout condition="Container.PlexContent(Movie) | Container.PlexContent(Movies)" width="233" height="335">
 							<include>TVPoster</include>
 							<control type="image">
 								<posx>162</posx>

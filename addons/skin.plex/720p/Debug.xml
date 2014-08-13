@@ -91,6 +91,12 @@
 		<value condition="ListItem.Type(photo)">photo</value>
 		<value condition="ListItem.Type(photos)">photos</value>
 		<value condition="ListItem.Type(photoalbum)">photoalbum</value>
+		<value condition="ListItem.Type(photoplayqueue)">photoplayqueue</value>
+		<value condition="ListItem.Type(videoplayqueue)">videoplayqueue</value>
+		<value condition="ListItem.Type(musicplayqueue)">musicplayqueue</value>
+		<value condition="ListItem.Type(photoplaylist)">photoplaylist</value>
+		<value condition="ListItem.Type(videoplaylist)">videoplaylist</value>
+		<value condition="ListItem.Type(musicplaylist)">musicplaylist</value>
 		<value/>
 	</variable>
 	<variable name="ItemStatus">
@@ -498,15 +504,11 @@
 				</control>
 				<control type="label">
 					<include>debugFont</include>
-					<label>ListItem.Property(plexServerName) : [COLOR=orangeLight]$INFO[ListItem.Property(plexServerName)][/COLOR]</label>
-				</control>
-				<control type="label">
-					<include>debugFont</include>
-					<label>ListItem.Property(plexServerOwner) : [COLOR=orangeLight]$INFO[ListItem.Property(plexServerOwner)][/COLOR]</label>
-				</control>
-				<control type="label">
-					<include>debugFont</include>
 					<label>ListItem.Property(ServerName) : [COLOR=orangeLight]$INFO[ListItem.Property(ServerName)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.Property(ServerOwner) : [COLOR=orangeLight]$INFO[ListItem.Property(ServerOwner)][/COLOR]</label>
 				</control>
 				<control type="label">
 					<include>debugFont</include>
