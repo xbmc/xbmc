@@ -263,12 +263,6 @@ void  CAirTunesServer::AudioOutputFunctions::audio_process(void *cls, void *sess
   }
 }
 
-void  CAirTunesServer::AudioOutputFunctions::audio_flush(void *cls, void *session)
-{
-  XFILE::CPipeFile *pipe=(XFILE::CPipeFile *)cls;
-  pipe->Flush();
-}
-
 void  CAirTunesServer::AudioOutputFunctions::audio_destroy(void *cls, void *session)
 {
   XFILE::CPipeFile *pipe=(XFILE::CPipeFile *)cls;
@@ -445,7 +439,6 @@ bool CAirTunesServer::Initialize(const std::string &password)
     ao.audio_set_metadata   = AudioOutputFunctions::audio_set_metadata;
     ao.audio_set_coverart   = AudioOutputFunctions::audio_set_coverart;
     ao.audio_process        = AudioOutputFunctions::audio_process;
-    ao.audio_flush          = AudioOutputFunctions::audio_flush;
     ao.audio_destroy        = AudioOutputFunctions::audio_destroy;
     m_pLibShairplay->EnableDelayedUnload(false);
     m_pRaop = m_pLibShairplay->raop_init(1, &ao, RSA_KEY);//1 - we handle one client at a time max
