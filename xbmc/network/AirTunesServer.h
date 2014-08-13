@@ -57,6 +57,7 @@ private:
   void Deinitialize();
   static void RefreshCoverArt();
   static void RefreshMetadata();
+  static void ResetMetadata();
 
   int m_port;
   static DllLibShairplay *m_pLibShairplay;//the lib
