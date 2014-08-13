@@ -1326,7 +1326,8 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
     // switch successful
     bSwitched = true;
 
-    // save previous and load new channel's settings
+    // save previous and load new channel's settings (view mode is updated in 
+    // the player)
     g_application.SaveFileState();
     g_application.LoadVideoSettings(channel.Path());
     
