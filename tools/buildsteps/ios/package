@@ -5,9 +5,9 @@ XBMC_PLATFORM_DIR=ios
 #ensure that dpkg tools are used from our toolchain
 export PATH=$XBMC_DEPENDS_ROOT/buildtools-native/bin/:$PATH
 
-cd $WORKSPACE/tools/darwin/packaging/xbmc-ios/;sh mkdeb-xbmc-ios.sh $Configuration
+cd $WORKSPACE/tools/darwin/packaging/ios/;sh mkdeb-ios.sh $Configuration
 
 #rename for upload
-#e.x. xbmc-20130314-8c2fb31-Frodo-ios.deb
-UPLOAD_FILENAME="xbmc-$(getBuildRevDateStr)-ios.deb"
+#e.x. kodi-20130314-8c2fb31-Frodo-ios.deb
+UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-ios.deb"
 mv *.deb $UPLOAD_FILENAME

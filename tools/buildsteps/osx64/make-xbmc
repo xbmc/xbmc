@@ -4,5 +4,5 @@ XBMC_PLATFORM_DIR=osx64
 
 cd $WORKSPACE;make -j$BUILDTHREADS xcode_depends
 
-cd $WORKSPACE;xcodebuild -sdk macosx$SDK_VERSION -project XBMC.xcodeproj -target XBMC.app ONLY_ACTIVE_ARCH=YES \
+cd $WORKSPACE;xcodebuild -sdk macosx$SDK_VERSION -project Kodi.xcodeproj -target Kodi.app ONLY_ACTIVE_ARCH=YES \
    ARCHS=x86_64 VALID_ARCHS=x86_64 XBMC_DEPENDS_ROOT=$XBMC_DEPENDS_ROOT -configuration $Configuration build
