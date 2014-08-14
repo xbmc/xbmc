@@ -142,6 +142,10 @@ msgctxt "#13185"
 msgid "SD"
 msgstr "SD"
 
+msgctxt "#13190"
+msgid "Auto"
+msgstr "Auto"
+
 #empty strings from id 13186 to 13308
 
 msgctxt "#13309"

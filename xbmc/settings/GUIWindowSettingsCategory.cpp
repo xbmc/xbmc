@@ -2708,7 +2708,7 @@ void CGUIWindowSettingsCategory::FillInCharSets(CSetting *pSetting)
 
   sort(vecCharsets.begin(), vecCharsets.end(), sortstringbyname());
 
-  vecCharsets.insert(vecCharsets.begin(), g_localizeStrings.Get(13278)); // "Default"
+  vecCharsets.insert(vecCharsets.begin(), g_localizeStrings.Get(13190)); // "Auto"
 
   bool bIsAuto=(pSettingString->GetData()=="DEFAULT");
 
