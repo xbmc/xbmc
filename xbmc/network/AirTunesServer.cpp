@@ -88,6 +88,19 @@ std::map<std::string, std::string> decodeDMAP(const char *buffer, unsigned int s
   return result;
 }
 
+void CAirTunesServer::ResetMetadata()
+{
+  CSingleLock lock(m_metadataLock);
+
+  XFILE::CFile::Delete(TMP_COVERART_PATH);
+  RefreshCoverArt();
+
+  m_metadata[0] = "";
+  m_metadata[1] = "AirPlay";
+  m_metadata[2] = "";
+  RefreshMetadata();
+}
+
 void CAirTunesServer::RefreshMetadata()
 {
   CSingleLock lock(m_metadataLock);
@@ -229,6 +242,11 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
   m_streamStarted = true;
 
   CApplicationMessenger::Get().PlayFile(item);
+
+  // Not all airplay streams will provide metadata (e.g. if using mirroring,
+  // no metadata will be sent).  If there *is* metadata, it will be received
+  // in a later call to audio_set_metadata/audio_set_coverart.
+  ResetMetadata();
 
   return session;//session
 }
