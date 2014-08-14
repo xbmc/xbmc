@@ -264,7 +264,7 @@ bool CPlexTranscoderClient::ShouldTranscode(CPlexServerPtr server, const CFileIt
   if (g_guiSettings.GetBool("plexmediaserver.forcetranscode"))
     return transcodeSetting != 0;
   else
-    return transcodeSetting < bitrate;
+    return transcodeSetting ? transcodeSetting < bitrate : false;
   
   return false;
 }
