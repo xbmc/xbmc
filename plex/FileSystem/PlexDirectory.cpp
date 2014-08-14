@@ -924,6 +924,13 @@ bool CPlexDirectory::GetPlaylistsDirectory(CFileItemList &items)
       item->SetProperty("serverName", g_plexApplication.serverManager->GetBestServer()->GetName());
       item->SetProperty("serverOwner", g_plexApplication.serverManager->GetBestServer()->GetOwner());
     }
+
+    CFileItemList list;
+    if (g_plexApplication.playQueueManager->getCurrentPlayQueue(list) && list.Get(0))
+    {
+      item->SetArt(PLEX_ART_THUMB, list.Get(0)->GetArt(PLEX_ART_THUMB));
+      item->SetArt(PLEX_ART_FANART, list.Get(0)->GetArt(PLEX_ART_FANART));
+    }
     
     items.Add(item);
   }
