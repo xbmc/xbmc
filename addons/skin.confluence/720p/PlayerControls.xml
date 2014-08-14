@@ -243,6 +243,7 @@
 					<onup>100</onup>
 					<ondown>100</ondown>
 					<onclick>Close</onclick>
+					<onclick>ActivateWindow(Visualisation)</onclick>
 					<onclick>RunScript($INFO[Skin.String(LyricScript_Path)])</onclick>
 					<altclick>Skin.SetAddon(LyricScript_Path,xbmc.python.lyrics)</altclick>
 					<altclick>Close</altclick>
