@@ -6004,6 +6004,9 @@
     <ClInclude Include="..\..\xbmc\utils\MarkWatchedJob.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\DiscSettings.h">
+      <Filter>settings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">

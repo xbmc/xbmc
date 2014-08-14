@@ -939,6 +939,7 @@
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsBase.h" />
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsManagerBase.h" />
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsManualBase.h" />
+    <ClInclude Include="..\..\xbmc\settings\DiscSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\DisplaySettings.h" />
     <ClInclude Include="..\..\xbmc\settings\lib\ISetting.h" />
     <ClInclude Include="..\..\xbmc\settings\lib\ISettingCallback.h" />
