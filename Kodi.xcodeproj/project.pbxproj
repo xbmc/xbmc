@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXAggregateTarget section */
-		6E2FACBA0E26DF7A00DF79EA /* XBMC.app */ = {
+		6E2FACBA0E26DF7A00DF79EA /* Kodi.app */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = 6E2FACC10E26DFA300DF79EA /* Build configuration list for PBXAggregateTarget "XBMC.app" */;
+			buildConfigurationList = 6E2FACC10E26DFA300DF79EA /* Build configuration list for PBXAggregateTarget "Kodi.app" */;
 			buildPhases = (
 				F5DEC3580E6DEBB2005A4E24 /* copy root files */,
 				6E2FACC70E26E22400DF79EA /* copy frameworks */,
@@ -19,8 +19,8 @@
 			dependencies = (
 				6E2FACC40E26E08100DF79EA /* PBXTargetDependency */,
 			);
-			name = XBMC.app;
-			productName = XBMC.app;
+			name = Kodi.app;
+			productName = Kodi.app;
 		};
 /* End PBXAggregateTarget section */
 
@@ -1211,6 +1211,8 @@
 		DF3C3C0E1752A7EE000989C3 /* IOSEAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = E49910D7174E4A6400741B6D /* IOSEAGLView.mm */; };
 		DF3C3C0F1752A7EE000989C3 /* IOSExternalTouchController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E49910D9174E4A6400741B6D /* IOSExternalTouchController.mm */; };
 		DF3C3C101752A7EE000989C3 /* IOSScreenManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = E49910DB174E4A6400741B6D /* IOSScreenManager.mm */; };
+		DF3E5EFA199D41300039675D /* kodiclientwrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = DF3E5EF9199D41300039675D /* kodiclientwrapper.mm */; };
+		DF3E5EFD199D4B340039675D /* KodiController.mm in Sources */ = {isa = PBXBuildFile; fileRef = DF3E5EFC199D4B340039675D /* KodiController.mm */; };
 		DF402A581644613B001C56B8 /* AddonModuleXbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1ACFD115FCE50700E10810 /* AddonModuleXbmc.cpp */; };
 		DF402A591644613B001C56B8 /* AddonModuleXbmcaddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1ACFD515FCE50700E10810 /* AddonModuleXbmcaddon.cpp */; };
 		DF402A5A1644613B001C56B8 /* AddonModuleXbmcgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1ACFD915FCE50700E10810 /* AddonModuleXbmcgui.cpp */; };
@@ -2252,11 +2254,8 @@
 		DFF0F48917528350002DA3A4 /* cc_decoder.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E15350D25F9F900618676 /* cc_decoder.c */; };
 		DFF0F48A17528350002DA3A4 /* yuv2rgb.neon.S in Sources */ = {isa = PBXBuildFile; fileRef = E4991595174E70BF00741B6D /* yuv2rgb.neon.S */; };
 		DFF0F49D1752838E002DA3A4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DFF0F4901752838E002DA3A4 /* InfoPlist.strings */; };
-		DFF0F49F1752838E002DA3A4 /* XBMCAppliance.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFF0F4951752838E002DA3A4 /* XBMCAppliance.mm */; };
-		DFF0F4A11752838E002DA3A4 /* xbmcclientwrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFF0F4991752838E002DA3A4 /* xbmcclientwrapper.mm */; };
-		DFF0F4A21752838E002DA3A4 /* XBMCController.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFF0F49B1752838E002DA3A4 /* XBMCController.mm */; };
+		DFF1FE23199D2FFF0008211F /* KodiAppliance.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFC8B7CE199C2B3A00424777 /* KodiAppliance.mm */; };
 		DFFA43FF19104C0800C3923B /* AppIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = DFFA43D019104BFA00C3923B /* AppIcon.png */; };
-		DFFA440019104C0800C3923B /* XBMC.png in Resources */ = {isa = PBXBuildFile; fileRef = DFFA43D119104BFA00C3923B /* XBMC.png */; };
 		DFFA440119104C1300C3923B /* AppIcon29x29.png in Resources */ = {isa = PBXBuildFile; fileRef = DFFA43D619104BFA00C3923B /* AppIcon29x29.png */; };
 		DFFA440219104C1300C3923B /* AppIcon29x29@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DFFA43D719104BFA00C3923B /* AppIcon29x29@2x.png */; };
 		DFFA440319104C1300C3923B /* AppIcon40x40.png in Resources */ = {isa = PBXBuildFile; fileRef = DFFA43D819104BFA00C3923B /* AppIcon40x40.png */; };
@@ -3709,7 +3708,7 @@
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 8DD76F740486A8DE00D96B5E;
-			remoteInfo = XBMC;
+			remoteInfo = Kodi;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -4648,7 +4647,7 @@
 		88ACB01D0DCF409E0083CFDF /* ASAPCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASAPCodec.h; sourceTree = "<group>"; };
 		88ACB01E0DCF409E0083CFDF /* DllASAP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllASAP.h; sourceTree = "<group>"; };
 		88ECB6580DE013C4003396A7 /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = /System/Library/Frameworks/DiskArbitration.framework; sourceTree = "<absolute>"; };
-		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
+		8DD76F7E0486A8DE00D96B5E /* Kodi */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Kodi; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XSLTUtils.cpp; sourceTree = "<group>"; };
 		AE4E87A617354C4A00D15206 /* XSLTUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XSLTUtils.h; sourceTree = "<group>"; };
 		AE84CB5915A5B8A600A3810E /* TagLibVFSStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagLibVFSStream.cpp; sourceTree = "<group>"; };
@@ -4892,6 +4891,11 @@
 		DF3C3D1D1752BED3000989C3 /* genoutputdirlink.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = genoutputdirlink.command; sourceTree = "<group>"; };
 		DF3C3D1E1752BED3000989C3 /* makepythoninterface.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = makepythoninterface.command; sourceTree = "<group>"; };
 		DF3C3D1F1752BED3000989C3 /* updateversioninfo-osx.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "updateversioninfo-osx.command"; sourceTree = "<group>"; };
+		DF3E5EF5199D400B0039675D /* kodiclientwrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodiclientwrapper.h; sourceTree = "<group>"; };
+		DF3E5EF8199D41300039675D /* kodiclient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodiclient.h; sourceTree = "<group>"; };
+		DF3E5EF9199D41300039675D /* kodiclientwrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = kodiclientwrapper.mm; sourceTree = "<group>"; };
+		DF3E5EFB199D4B340039675D /* KodiController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KodiController.h; sourceTree = "<group>"; };
+		DF3E5EFC199D4B340039675D /* KodiController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = KodiController.mm; sourceTree = "<group>"; };
 		DF404A3416B9896C00D8023E /* cximage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cximage.cpp; sourceTree = "<group>"; };
 		DF404A3516B9896C00D8023E /* cximage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cximage.h; sourceTree = "<group>"; };
 		DF404A3616B9896C00D8023E /* iimage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iimage.h; sourceTree = "<group>"; };
@@ -5048,6 +5052,9 @@
 		DFBB4317178B5E6F006CC20A /* CompileInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CompileInfo.cpp; sourceTree = "<group>"; };
 		DFBB4318178B5E6F006CC20A /* CompileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompileInfo.h; sourceTree = "<group>"; };
 		DFBE803D15F7D72100D7D102 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		DFC8B7CC199C1EC100424777 /* TopShelf.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TopShelf.png; sourceTree = "<group>"; };
+		DFC8B7CD199C2B3A00424777 /* KodiAppliance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KodiAppliance.h; sourceTree = "<group>"; };
+		DFC8B7CE199C2B3A00424777 /* KodiAppliance.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = KodiAppliance.mm; sourceTree = "<group>"; };
 		DFCA6ABB152245CD000BFAAE /* HTTPJsonRpcHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPJsonRpcHandler.cpp; sourceTree = "<group>"; };
 		DFCA6ABC152245CD000BFAAE /* HTTPJsonRpcHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPJsonRpcHandler.h; sourceTree = "<group>"; };
 		DFCA6ABD152245CD000BFAAE /* HTTPVfsHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPVfsHandler.cpp; sourceTree = "<group>"; };
@@ -5098,17 +5105,9 @@
 		DFF0ECA8175282EA002DA3A4 /* README.ios */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.ios; path = docs/README.ios; sourceTree = "<group>"; };
 		DFF0F4911752838E002DA3A4 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		DFF0F4921752838E002DA3A4 /* substrate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = substrate.h; sourceTree = "<group>"; };
-		DFF0F4941752838E002DA3A4 /* XBMCAppliance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCAppliance.h; sourceTree = "<group>"; };
-		DFF0F4951752838E002DA3A4 /* XBMCAppliance.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = XBMCAppliance.mm; sourceTree = "<group>"; };
 		DFF0F4961752838E002DA3A4 /* XBMCATV2-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "XBMCATV2-Info.plist"; sourceTree = "<group>"; };
-		DFF0F4971752838E002DA3A4 /* xbmcclient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmcclient.h; sourceTree = "<group>"; };
-		DFF0F4981752838E002DA3A4 /* xbmcclientwrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmcclientwrapper.h; sourceTree = "<group>"; };
-		DFF0F4991752838E002DA3A4 /* xbmcclientwrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = xbmcclientwrapper.mm; sourceTree = "<group>"; };
-		DFF0F49A1752838E002DA3A4 /* XBMCController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCController.h; sourceTree = "<group>"; };
-		DFF0F49B1752838E002DA3A4 /* XBMCController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = XBMCController.mm; sourceTree = "<group>"; };
 		DFF0F49C1752838E002DA3A4 /* XBMCDebugHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCDebugHelpers.h; sourceTree = "<group>"; };
 		DFFA43D019104BFA00C3923B /* AppIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AppIcon.png; sourceTree = "<group>"; };
-		DFFA43D119104BFA00C3923B /* XBMC.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = XBMC.png; sourceTree = "<group>"; };
 		DFFA43D319104BFA00C3923B /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iTunesArtwork.png; sourceTree = "<group>"; };
 		DFFA43D419104BFA00C3923B /* iTunesArtwork@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iTunesArtwork@2x.png"; sourceTree = "<group>"; };
 		DFFA43D619104BFA00C3923B /* AppIcon29x29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AppIcon29x29.png; sourceTree = "<group>"; };
@@ -5149,7 +5148,7 @@
 		DFFA43FC19104BFA00C3923B /* icon_32x32@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_32x32@2x.png"; sourceTree = "<group>"; };
 		DFFA43FD19104BFA00C3923B /* icon_512x512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_512x512.png; sourceTree = "<group>"; };
 		DFFA43FE19104BFA00C3923B /* icon_512x512@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_512x512@2x.png"; sourceTree = "<group>"; };
-		DFFC52CB17527B3100C937AB /* XBMC.frappliance */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XBMC.frappliance; sourceTree = BUILT_PRODUCTS_DIR; };
+		DFFC52CB17527B3100C937AB /* Kodi.frappliance */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Kodi.frappliance; sourceTree = BUILT_PRODUCTS_DIR; };
 		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
 		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxVobsub.cpp; sourceTree = "<group>"; };
@@ -5925,7 +5924,7 @@
 		E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfOSX.h; sourceTree = "<group>"; };
 		E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfOSX.cpp; sourceTree = "<group>"; };
 		E47252BF175115F9001C1AAA /* Codesign.command */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = Codesign.command; sourceTree = "<group>"; };
-		E4991089174D0D2600741B6D /* XBMC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XBMC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4991089174D0D2600741B6D /* Kodi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kodi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E499108B174D0D2600741B6D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		E499108D174D0D2600741B6D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		E499108F174D0D2600741B6D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
@@ -6376,7 +6375,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		08FB7794FE84155DC02AAC07 /* XBMC */ = {
+		08FB7794FE84155DC02AAC07 /* Kodi */ = {
 			isa = PBXGroup;
 			children = (
 				08FB7795FE84155DC02AAC07 /* Source */,
@@ -6387,7 +6386,7 @@
 				E499108A174D0D2600741B6D /* Frameworks */,
 				19C28FBDFE9D53C911CA2CBB /* Products */,
 			);
-			name = XBMC;
+			name = Kodi;
 			sourceTree = "<group>";
 		};
 		08FB7795FE84155DC02AAC07 /* Source */ = {
@@ -6785,9 +6784,9 @@
 		19C28FBDFE9D53C911CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8DD76F7E0486A8DE00D96B5E /* XBMC */,
-				E4991089174D0D2600741B6D /* XBMC.app */,
-				DFFC52CB17527B3100C937AB /* XBMC.frappliance */,
+				8DD76F7E0486A8DE00D96B5E /* Kodi */,
+				E4991089174D0D2600741B6D /* Kodi.app */,
+				DFFC52CB17527B3100C937AB /* Kodi.frappliance */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -8422,15 +8421,15 @@
 			isa = PBXGroup;
 			children = (
 				DFF0F4901752838E002DA3A4 /* InfoPlist.strings */,
+				DFC8B7CD199C2B3A00424777 /* KodiAppliance.h */,
+				DFC8B7CE199C2B3A00424777 /* KodiAppliance.mm */,
+				DF3E5EF8199D41300039675D /* kodiclient.h */,
+				DF3E5EF5199D400B0039675D /* kodiclientwrapper.h */,
+				DF3E5EF9199D41300039675D /* kodiclientwrapper.mm */,
+				DF3E5EFB199D4B340039675D /* KodiController.h */,
+				DF3E5EFC199D4B340039675D /* KodiController.mm */,
 				DFF0F4921752838E002DA3A4 /* substrate.h */,
-				DFF0F4941752838E002DA3A4 /* XBMCAppliance.h */,
-				DFF0F4951752838E002DA3A4 /* XBMCAppliance.mm */,
 				DFF0F4961752838E002DA3A4 /* XBMCATV2-Info.plist */,
-				DFF0F4971752838E002DA3A4 /* xbmcclient.h */,
-				DFF0F4981752838E002DA3A4 /* xbmcclientwrapper.h */,
-				DFF0F4991752838E002DA3A4 /* xbmcclientwrapper.mm */,
-				DFF0F49A1752838E002DA3A4 /* XBMCController.h */,
-				DFF0F49B1752838E002DA3A4 /* XBMCController.mm */,
 				DFF0F49C1752838E002DA3A4 /* XBMCDebugHelpers.h */,
 			);
 			path = atv2;
@@ -8450,8 +8449,8 @@
 		DFFA43CF19104BFA00C3923B /* atv2 */ = {
 			isa = PBXGroup;
 			children = (
+				DFC8B7CC199C1EC100424777 /* TopShelf.png */,
 				DFFA43D019104BFA00C3923B /* AppIcon.png */,
-				DFFA43D119104BFA00C3923B /* XBMC.png */,
 			);
 			path = atv2;
 			sourceTree = "<group>";
@@ -10281,9 +10280,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8DD76F740486A8DE00D96B5E /* XBMC */ = {
+		8DD76F740486A8DE00D96B5E /* Kodi */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "XBMC" */;
+			buildConfigurationList = 1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "Kodi" */;
 			buildPhases = (
 				F502C011160F378F00C96C76 /* Make interface-python */,
 				8DD76F760486A8DE00D96B5E /* Sources */,
@@ -10294,15 +10293,15 @@
 			);
 			dependencies = (
 			);
-			name = XBMC;
+			name = Kodi;
 			productInstallPath = "$(HOME)/bin";
-			productName = XBMC;
-			productReference = 8DD76F7E0486A8DE00D96B5E /* XBMC */;
+			productName = Kodi;
+			productReference = 8DD76F7E0486A8DE00D96B5E /* Kodi */;
 			productType = "com.apple.product-type.tool";
 		};
-		DFFC52CA17527B3100C937AB /* XBMC-ATV2 */ = {
+		DFFC52CA17527B3100C937AB /* Kodi-ATV2 */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DFFC52CE17527B4F00C937AB /* Build configuration list for PBXNativeTarget "XBMC-ATV2" */;
+			buildConfigurationList = DFFC52CE17527B4F00C937AB /* Build configuration list for PBXNativeTarget "Kodi-ATV2" */;
 			buildPhases = (
 				DFFC52C617527B3100C937AB /* Resources */,
 				DFF0EB3017527FDE002DA3A4 /* Make interface-python */,
@@ -10316,14 +10315,14 @@
 			);
 			dependencies = (
 			);
-			name = "XBMC-ATV2";
-			productName = "XBMC-ATV2";
-			productReference = DFFC52CB17527B3100C937AB /* XBMC.frappliance */;
+			name = "Kodi-ATV2";
+			productName = "Kodi-ATV2";
+			productReference = DFFC52CB17527B3100C937AB /* Kodi.frappliance */;
 			productType = "com.apple.product-type.bundle";
 		};
-		E4991088174D0D2600741B6D /* XBMC-iOS */ = {
+		E4991088174D0D2600741B6D /* Kodi-iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E49910A5174D0D2600741B6D /* Build configuration list for PBXNativeTarget "XBMC-iOS" */;
+			buildConfigurationList = E49910A5174D0D2600741B6D /* Build configuration list for PBXNativeTarget "Kodi-iOS" */;
 			buildPhases = (
 				E49910C1174D1F6600741B6D /* Make interface-python */,
 				E4991085174D0D2600741B6D /* Sources */,
@@ -10338,9 +10337,9 @@
 			);
 			dependencies = (
 			);
-			name = "XBMC-iOS";
-			productName = "XBMC-iOS";
-			productReference = E4991089174D0D2600741B6D /* XBMC.app */;
+			name = "Kodi-iOS";
+			productName = "Kodi-iOS";
+			productReference = E4991089174D0D2600741B6D /* Kodi.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -10351,7 +10350,7 @@
 			attributes = {
 				LastUpgradeCheck = 0430;
 			};
-			buildConfigurationList = 1DEB924B08733DCA0010E9CD /* Build configuration list for PBXProject "XBMC" */;
+			buildConfigurationList = 1DEB924B08733DCA0010E9CD /* Build configuration list for PBXProject "Kodi" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -10362,14 +10361,14 @@
 				German,
 				en,
 			);
-			mainGroup = 08FB7794FE84155DC02AAC07 /* XBMC */;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* Kodi */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8DD76F740486A8DE00D96B5E /* XBMC */,
-				6E2FACBA0E26DF7A00DF79EA /* XBMC.app */,
-				E4991088174D0D2600741B6D /* XBMC-iOS */,
-				DFFC52CA17527B3100C937AB /* XBMC-ATV2 */,
+				8DD76F740486A8DE00D96B5E /* Kodi */,
+				6E2FACBA0E26DF7A00DF79EA /* Kodi.app */,
+				E4991088174D0D2600741B6D /* Kodi-iOS */,
+				DFFC52CA17527B3100C937AB /* Kodi-ATV2 */,
 			);
 		};
 /* End PBXProject section */
@@ -10381,7 +10380,6 @@
 			files = (
 				DFF0F49D1752838E002DA3A4 /* InfoPlist.strings in Resources */,
 				DFFA43FF19104C0800C3923B /* AppIcon.png in Resources */,
-				DFFA440019104C0800C3923B /* XBMC.png in Resources */,
 				7CCDA1AE192753E30074CF51 /* process_scpds.sh in Resources */,
 				7CCDA1B9192753E30074CF51 /* X_MS_MediaReceiverRegistrarSCPD.xml in Resources */,
 				7CCDA1C4192753E30074CF51 /* AVTransportSCPD.xml in Resources */,
@@ -12303,6 +12301,7 @@
 				DFF0F2BE17528350002DA3A4 /* Shader.cpp in Sources */,
 				DFF0F2BF17528350002DA3A4 /* Texture.cpp in Sources */,
 				DFF0F2C017528350002DA3A4 /* TextureBundle.cpp in Sources */,
+				DF3E5EFA199D41300039675D /* kodiclientwrapper.mm in Sources */,
 				DFF0F2C117528350002DA3A4 /* TextureBundleXBT.cpp in Sources */,
 				DFF0F2C217528350002DA3A4 /* TextureBundleXPR.cpp in Sources */,
 				DFF0F2C317528350002DA3A4 /* TextureDX.cpp in Sources */,
@@ -12430,6 +12429,7 @@
 				DFF0F33E17528350002DA3A4 /* Network.cpp in Sources */,
 				DFF0F33F17528350002DA3A4 /* NetworkServices.cpp in Sources */,
 				DFF0F34017528350002DA3A4 /* Socket.cpp in Sources */,
+				DF3E5EFD199D4B340039675D /* KodiController.mm in Sources */,
 				DFF0F34117528350002DA3A4 /* TCPServer.cpp in Sources */,
 				DFF0F34217528350002DA3A4 /* UdpClient.cpp in Sources */,
 				DFF0F34317528350002DA3A4 /* WakeOnAccess.cpp in Sources */,
@@ -12689,6 +12689,7 @@
 				DFF0F45517528350002DA3A4 /* Addon.cpp in Sources */,
 				DFF0F45617528350002DA3A4 /* AddonCallback.cpp in Sources */,
 				DFF0F45717528350002DA3A4 /* AddonClass.cpp in Sources */,
+				DFF1FE23199D2FFF0008211F /* KodiAppliance.mm in Sources */,
 				DFF0F45817528350002DA3A4 /* AddonUtils.cpp in Sources */,
 				DFF0F45917528350002DA3A4 /* CallbackFunction.cpp in Sources */,
 				DFF0F45A17528350002DA3A4 /* CallbackHandler.cpp in Sources */,
@@ -12738,9 +12739,6 @@
 				DFF0F48817528350002DA3A4 /* fstrcmp.c in Sources */,
 				DFF0F48917528350002DA3A4 /* cc_decoder.c in Sources */,
 				DFF0F48A17528350002DA3A4 /* yuv2rgb.neon.S in Sources */,
-				DFF0F49F1752838E002DA3A4 /* XBMCAppliance.mm in Sources */,
-				DFF0F4A11752838E002DA3A4 /* xbmcclientwrapper.mm in Sources */,
-				DFF0F4A21752838E002DA3A4 /* XBMCController.mm in Sources */,
 				DF3C3C0E1752A7EE000989C3 /* IOSEAGLView.mm in Sources */,
 				DF3C3C0F1752A7EE000989C3 /* IOSExternalTouchController.mm in Sources */,
 				DF3C3C101752A7EE000989C3 /* IOSScreenManager.mm in Sources */,
@@ -14250,7 +14248,7 @@
 /* Begin PBXTargetDependency section */
 		6E2FACC40E26E08100DF79EA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 8DD76F740486A8DE00D96B5E /* XBMC */;
+			target = 8DD76F740486A8DE00D96B5E /* Kodi */;
 			targetProxy = 6E2FACC30E26E08100DF79EA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -14332,7 +14330,7 @@
 					"$(OTHER_CFLAGS)",
 					"-Wreorder",
 				);
-				PRODUCT_NAME = XBMC;
+				PRODUCT_NAME = Kodi;
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "";
 				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
@@ -14398,7 +14396,7 @@
 					"$(OTHER_CFLAGS)",
 					"-Wreorder",
 				);
-				PRODUCT_NAME = XBMC;
+				PRODUCT_NAME = Kodi;
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "";
 				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
@@ -14437,7 +14435,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = XBMC.app;
+				PRODUCT_NAME = Kodi.app;
 				SDKROOT = macosx;
 				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
 			};
@@ -14451,7 +14449,7 @@
 					x86_64,
 				);
 				COPY_PHASE_STRIP = YES;
-				PRODUCT_NAME = XBMC.app;
+				PRODUCT_NAME = Kodi.app;
 				SDKROOT = macosx;
 				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
 				ZERO_LINK = NO;
@@ -14507,7 +14505,7 @@
 				);
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PREBINDING = NO;
-				PRODUCT_NAME = XBMC;
+				PRODUCT_NAME = Kodi;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "2,3";
 				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
@@ -14568,7 +14566,7 @@
 				);
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PREBINDING = NO;
-				PRODUCT_NAME = XBMC;
+				PRODUCT_NAME = Kodi;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "2,3";
 				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
@@ -14662,7 +14660,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "XBMC" */ = {
+		1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "Kodi" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB924808733DCA0010E9CD /* Debug */,
@@ -14671,7 +14669,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1DEB924B08733DCA0010E9CD /* Build configuration list for PBXProject "XBMC" */ = {
+		1DEB924B08733DCA0010E9CD /* Build configuration list for PBXProject "Kodi" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB924C08733DCA0010E9CD /* Debug */,
@@ -14680,7 +14678,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6E2FACC10E26DFA300DF79EA /* Build configuration list for PBXAggregateTarget "XBMC.app" */ = {
+		6E2FACC10E26DFA300DF79EA /* Build configuration list for PBXAggregateTarget "Kodi.app" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6E2FACBB0E26DF7A00DF79EA /* Debug */,
@@ -14689,7 +14687,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DFFC52CE17527B4F00C937AB /* Build configuration list for PBXNativeTarget "XBMC-ATV2" */ = {
+		DFFC52CE17527B4F00C937AB /* Build configuration list for PBXNativeTarget "Kodi-ATV2" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DFFC52CC17527B3100C937AB /* Debug */,
@@ -14698,7 +14696,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E49910A5174D0D2600741B6D /* Build configuration list for PBXNativeTarget "XBMC-iOS" */ = {
+		E49910A5174D0D2600741B6D /* Build configuration list for PBXNativeTarget "Kodi-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E49910A3174D0D2600741B6D /* Debug */,
