@@ -1,6 +1,6 @@
+#include "PlexTest.h"
 #include "PlexApplication.h"
 #include "FileSystem/PlexDirectoryCache.h"
-#include "gtest/gtest.h"
 
 class PlexCacheDirectoryTests : public ::testing::Test
 {
