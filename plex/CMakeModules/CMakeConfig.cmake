@@ -137,6 +137,9 @@ endif(HAVE_BREAKPAD)
 # check some compiler Intrinsics
 find_package(Intrinsics)
 
+# check for the python executable, which we need to create the AutoUpdate
+find_package(PythonInterp)
+
 # this file is not needed on windows
 if(NOT WIN32)
   configure_file(${plexdir}/config.h.in ${CMAKE_BINARY_DIR}/xbmc/config.h)
