@@ -724,7 +724,7 @@ bool CDVDPlayer::OpenInputStream()
                     CFile::Exists(path));
           
           CURL newUrl(stream->GetProperty("key").asString());
-          newUrl.SetOption("encoding", "utf-8");
+          newUrl.SetOption("encoding", g_langInfo.GetSubtitleCharSet());
 
           if (CFile::Exists(path) || CFile::Cache(newUrl.Get(), path))
           {
