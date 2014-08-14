@@ -18,8 +18,8 @@ function(GENERATE_BREAKPAD_SYMBOLS APP)
     # first we need the dsyms file
     GENERATE_DSYMS(${APP})
     get_target_property(TARGET_FNAME ${APP} OUTPUT_NAME)
-    set(DEPENDENCY ${APP}_dsym)
-    set(TARGETFILE ${TARGET_FNAME}.dSYM)
+    set(DEPENDENCY ${APP}_dsym ${APP})
+    set(DSYMTARGET ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_FNAME}.dSYM)
   endif(TARGET_OSX)
 
   if(NOT TARGET_WIN32)
@@ -28,7 +28,7 @@ function(GENERATE_BREAKPAD_SYMBOLS APP)
     endif(TARGET_OSX)
     add_custom_command(
       OUTPUT ${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}${ARCH}.symbols.bz2
-      COMMAND ${PROJECT_SOURCE_DIR}/plex/scripts/dump_syms.sh "${DUMP_SYMS}" "${BZIP2}" "${TARGETFILE}" "${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}${ARCH}.symbols.bz2"
+      COMMAND ${PROJECT_SOURCE_DIR}/plex/scripts/dump_syms.sh "${DUMP_SYMS}" "${BZIP2}" "${TARGETFILE}" "${DSYMTARGET}" "${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}${ARCH}.symbols.bz2"
       DEPENDS ${DEPENDENCY}
     )
 	  add_custom_target(${APP}_symbols DEPENDS ${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}${ARCH}.symbols.bz2)
