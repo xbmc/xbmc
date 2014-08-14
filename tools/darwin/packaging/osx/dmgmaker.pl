@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-#   Copyright (C) 2008-2013 Team XBMC
+#   Copyright (C) 2008-2013 Team Kodi
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -74,8 +74,8 @@ if (! defined $ARGV[0]) {
 
 if ( $ARGV[0] eq "-c" ) {
     die("TODO: -c\n");
-    #make_dmg(make_mpkg(), "XBMC Atlantis - 8.10", "XBMC Media Center");
+    #make_dmg(make_mpkg(), "Kodi Atlantis - 8.10", "Kodi Media Center");
     exit;
 }
 
-make_dmg($ARGV[0], $ARGV[1], "XBMC");
+make_dmg($ARGV[0], $ARGV[1], "Kodi");
