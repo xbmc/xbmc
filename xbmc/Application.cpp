@@ -299,6 +299,7 @@
 #endif
 #ifdef TARGET_DARWIN
 #include "osx/DarwinUtils.h"
+#include "CompileInfo.h"
 #endif
 
 
@@ -560,7 +561,7 @@ extern "C" void __stdcall cleanup_emu_environ();
 
 //
 // Utility function used to copy files from the application bundle
-// over to the user data directory in Application Support/XBMC.
+// over to the user data directory in Application Support/Kodi.
 //
 static void CopyUserDataIfNeeded(const CStdString &strPath, const CStdString &file)
 {
@@ -1150,19 +1151,19 @@ bool CApplication::InitDirectoriesOSX()
   else
     userName = "root";
 
-  CStdString userHome;
+  std::string userHome;
   if (getenv("HOME"))
     userHome = getenv("HOME");
   else
     userHome = "/root";
 
-  CStdString xbmcPath;
-  CUtil::GetHomePath(xbmcPath);
-  setenv("XBMC_HOME", xbmcPath.c_str(), 0);
+  std::string appPath;
+  CUtil::GetHomePath(appPath);
+  setenv("XBMC_HOME", appPath.c_str(), 0);
 
 #if defined(TARGET_DARWIN_IOS)
   CStdString fontconfigPath;
-  fontconfigPath = xbmcPath + "/system/players/dvdplayer/etc/fonts/fonts.conf";
+  fontconfigPath = appPath + "/system/players/dvdplayer/etc/fonts/fonts.conf";
   setenv("FONTCONFIG_FILE", fontconfigPath.c_str(), 0);
 #endif
 
@@ -1174,29 +1175,33 @@ bool CApplication::InitDirectoriesOSX()
   if (m_bPlatformDirectories)
   {
     // map our special drives
-    CSpecialProtocol::SetXBMCBinPath(xbmcPath);
-    CSpecialProtocol::SetXBMCPath(xbmcPath);
+    CSpecialProtocol::SetXBMCBinPath(appPath);
+    CSpecialProtocol::SetXBMCPath(appPath);
     #if defined(TARGET_DARWIN_IOS)
-      CSpecialProtocol::SetHomePath(userHome + "/" + CStdString(CDarwinUtils::GetAppRootFolder()) + "/XBMC");
-      CSpecialProtocol::SetMasterProfilePath(userHome + "/" + CStdString(CDarwinUtils::GetAppRootFolder()) + "/XBMC/userdata");
+      std::string appName = CCompileInfo::GetAppName();
+      CSpecialProtocol::SetHomePath(userHome + "/" + CDarwinUtils::GetAppRootFolder() + "/" + appName);
+      CSpecialProtocol::SetMasterProfilePath(userHome + "/" + CDarwinUtils::GetAppRootFolder() + "/" + appName + "/userdata");
     #else
-      CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/XBMC");
-      CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/XBMC/userdata");
+      std::string appName = CCompileInfo::GetAppName();
+      CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/" + appName);
+      CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/" + appName + "/userdata");
     #endif
 
+    std::string dotLowerAppName = "." + appName;
+    StringUtils::ToLower(dotLowerAppName);
     // location for temp files
     #if defined(TARGET_DARWIN_IOS)
-      CStdString strTempPath = URIUtils::AddFileToFolder(userHome,  CStdString(CDarwinUtils::GetAppRootFolder()) + "/XBMC/temp");
+      std::string strTempPath = URIUtils::AddFileToFolder(userHome,  std::string(CDarwinUtils::GetAppRootFolder()) + "/" + appName + "/temp");
     #else
-      CStdString strTempPath = URIUtils::AddFileToFolder(userHome, ".xbmc/");
+      std::string strTempPath = URIUtils::AddFileToFolder(userHome, dotLowerAppName + "/");
       CDirectory::Create(strTempPath);
-      strTempPath = URIUtils::AddFileToFolder(userHome, ".xbmc/temp");
+      strTempPath = URIUtils::AddFileToFolder(userHome, dotLowerAppName + "/temp");
     #endif
     CSpecialProtocol::SetTempPath(strTempPath);
 
     // xbmc.log file location
     #if defined(TARGET_DARWIN_IOS)
-      strTempPath = userHome + "/" + CStdString(CDarwinUtils::GetAppRootFolder());
+      strTempPath = userHome + "/" + std::string(CDarwinUtils::GetAppRootFolder());
     #else
       strTempPath = userHome + "/Library/Logs";
     #endif
@@ -1207,15 +1212,15 @@ bool CApplication::InitDirectoriesOSX()
   }
   else
   {
-    URIUtils::AddSlashAtEnd(xbmcPath);
-    g_advancedSettings.m_logFolder = xbmcPath;
+    URIUtils::AddSlashAtEnd(appPath);
+    g_advancedSettings.m_logFolder = appPath;
 
-    CSpecialProtocol::SetXBMCBinPath(xbmcPath);
-    CSpecialProtocol::SetXBMCPath(xbmcPath);
-    CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data"));
-    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data/userdata"));
+    CSpecialProtocol::SetXBMCBinPath(appPath);
+    CSpecialProtocol::SetXBMCPath(appPath);
+    CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(appPath, "portable_data"));
+    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(appPath, "portable_data/userdata"));
 
-    CStdString strTempPath = URIUtils::AddFileToFolder(xbmcPath, "portable_data/temp");
+    CStdString strTempPath = URIUtils::AddFileToFolder(appPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
 
     URIUtils::AddSlashAtEnd(strTempPath);

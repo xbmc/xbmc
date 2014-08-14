@@ -45,7 +45,7 @@
 #include <libsmbclient.h>
 
 #if defined(TARGET_DARWIN)
-#define XBMC_SMB_MOUNT_PATH "Library/Application Support/XBMC/Mounts/"
+#define XBMC_SMB_MOUNT_PATH "Library/Application Support/Kodi/Mounts/"
 #else
 #define XBMC_SMB_MOUNT_PATH "/media/xbmc/smb/"
 #endif

@@ -24,6 +24,7 @@
 #include "DllPaths.h"
 #include "GUIUserMessages.h"
 #include "utils/log.h"
+#include "CompileInfo.h"
 
 #undef BOOL
 
@@ -299,20 +300,21 @@ int  CDarwinUtils::GetFrameworkPath(bool forPython, char* path, uint32_t *pathsi
   path[0] = 0;
   *pathsize = 0;
 
-  // a) XBMC frappliance running under ATV2
-  Class XBMCfrapp = NSClassFromString(@"XBMCATV2Detector");
-  if (XBMCfrapp != NULL)
+  // a) Kodi frappliance running under ATV2
+  Class Frapp = NSClassFromString(@"AppATV2Detector");
+  if (Frapp != NULL)
   {
-    pathname = [[NSBundle bundleForClass:XBMCfrapp] pathForResource:@"Frameworks" ofType:@""];
+    pathname = [[NSBundle bundleForClass:Frapp] pathForResource:@"Frameworks" ofType:@""];
     strcpy(path, [pathname UTF8String]);
     *pathsize = strlen(path);
     //CLog::Log(LOGDEBUG, "DarwinFrameworkPath(a) -> %s", path);
     return 0;
   }
 
-  // b) XBMC application running under IOS
+  // b) Kodi application running under IOS
   pathname = [[NSBundle mainBundle] executablePath];
-  if (pathname && strstr([pathname UTF8String], "XBMC.app/XBMC"))
+  std::string appName = std::string(CCompileInfo::GetAppName()) + ".app/" + std::string(CCompileInfo::GetAppName());
+  if (pathname && strstr([pathname UTF8String], appName.c_str()))
   {
     strcpy(path, [pathname UTF8String]);
     // Move backwards to last "/"
@@ -324,7 +326,7 @@ int  CDarwinUtils::GetFrameworkPath(bool forPython, char* path, uint32_t *pathsi
     return 0;
   }
 
-  // d) XBMC application running under OSX
+  // d) Kodi application running under OSX
   pathname = [[NSBundle mainBundle] executablePath];
   if (pathname && strstr([pathname UTF8String], "Contents"))
   {
@@ -345,7 +347,7 @@ int  CDarwinUtils::GetFrameworkPath(bool forPython, char* path, uint32_t *pathsi
     return 0;
   }
 
-  // e) XBMC OSX binary running under xcode or command-line
+  // e) Kodi OSX binary running under xcode or command-line
   // but only if it's not for python. In this case, let python
   // use it's internal compiled paths.
   if (!forPython)
@@ -366,19 +368,20 @@ int  CDarwinUtils::GetExecutablePath(char* path, uint32_t *pathsize)
   // see if we can figure out who we are
   NSString *pathname;
 
-  // a) XBMC frappliance running under ATV2
-  Class XBMCfrapp = NSClassFromString(@"XBMCATV2Detector");
-  if (XBMCfrapp != NULL)
+  // a) Kodi frappliance running under ATV2
+  Class Frapp = NSClassFromString(@"AppATV2Detector");
+  if (Frapp != NULL)
   {
-    pathname = [[NSBundle bundleForClass:XBMCfrapp] pathForResource:@"XBMC" ofType:@""];
+    NSString *appName = [NSString stringWithUTF8String:CCompileInfo::GetAppName()];
+    pathname = [[NSBundle bundleForClass:Frapp] pathForResource:appName ofType:@""];
     strcpy(path, [pathname UTF8String]);
     *pathsize = strlen(path);
     //CLog::Log(LOGDEBUG, "DarwinExecutablePath(a) -> %s", path);
     return 0;
   }
 
-  // b) XBMC application running under IOS
-  // c) XBMC application running under OSX
+  // b) Kodi application running under IOS
+  // c) Kodi application running under OSX
   pathname = [[NSBundle mainBundle] executablePath];
   strcpy(path, [pathname UTF8String]);
   *pathsize = strlen(path);
@@ -438,7 +441,7 @@ bool CDarwinUtils::HasVideoToolboxDecoder(void)
 
   if (DecoderAvailable == -1)
   {
-    Class XBMCfrapp = NSClassFromString(@"XBMCATV2Detector");
+    Class XBMCfrapp = NSClassFromString(@"AppATV2Detector");
     if (XBMCfrapp != NULL)
     {
       // atv2 has seatbelt profile key removed so nothing to do here

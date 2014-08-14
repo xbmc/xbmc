@@ -23,6 +23,7 @@
 #if defined(TARGET_DARWIN)
 #include <sys/param.h>
 #include <mach-o/dyld.h>
+#include "CompileInfo.h"
 #endif
 
 #if defined(TARGET_FREEBSD)
@@ -445,10 +446,12 @@ void CUtil::GetHomePath(std::string& strPath, const std::string& strTarget)
         given_path[n] = '\0';
 
       #if defined(TARGET_DARWIN_IOS)
-        strcat(given_path, "/XBMCData/XBMCHome/");
+        strcat(given_path, "/AppData/AppHome/");
       #else
         // Assume local path inside application bundle.
-        strcat(given_path, "../Resources/XBMC/");
+        strcat(given_path, "../Resources/");
+        strcat(given_path, CCompileInfo::GetAppName());
+        strcat(given_path, "/");
       #endif
 
       // Convert to real path.
