@@ -58,8 +58,8 @@ typedef enum{
 	ATV_INVALID_BUTTON
 } eATVClientEvent;
 
-@interface XBMCClientWrapper : NSObject{
-	struct XBMCClientWrapperImpl* mp_impl;
+@interface KodiClientWrapper : NSObject{
+	struct KodiClientWrapperImpl* mp_impl;
 }
 - (id) initWithUniversalMode:(bool) f_yes_no serverAddress:(NSString*) fp_server;
 - (void) setUniversalModeTimeout:(double) f_timeout;

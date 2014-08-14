@@ -25,9 +25,9 @@
  * functions for subclassing and adding methods to our instances during runtime (hooking).
  * 
  * 1. For implementing a method of a base class:
- *  a) declare it in the form <XBMCController$nameOfMethod> like the others 
- *  b) these methods need to be static and have XBMCController* self, SEL _cmd (replace XBMCAppliance with the class the method gets implemented for) as minimum params. 
- *  c) add the method to the XBMCController.h for getting rid of the compiler warnings of unresponsive selectors (declare the method like done in the baseclass).
+ *  a) declare it in the form <KodiController$nameOfMethod> like the others
+ *  b) these methods need to be static and have KodiController* self, SEL _cmd (replace ATV2Appliance with the class the method gets implemented for) as minimum params.
+ *  c) add the method to the KodiController.h for getting rid of the compiler warnings of unresponsive selectors (declare the method like done in the baseclass).
  *  d) in initControllerRuntimeClasses exchange the base class implementation with ours by calling MSHookMessageEx
  *  e) if we need to call the base class implementation as well we have to save the original implementation (see brEventAction$Orig for reference)
  *
@@ -63,7 +63,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-#import "XBMCController.h"
+#import "KodiController.h"
 #import "XBMCDebugHelpers.h"
 
 #import "IOSEAGLView.h"
@@ -214,7 +214,7 @@ typedef enum {
 }BREventOriginiator;
 
 
-XBMCController *g_xbmcController;
+KodiController *g_xbmcController;
 
 //--------------------------------------------------------------
 // so we don't have to include AppleTV.frameworks/PrivateHeaders/ATVSettingsFacade.h
@@ -234,11 +234,11 @@ extern NSString* kBRScreenSaverDismissed;
 //--------------------------------------------------------------
 // SECTIONCOMMENT
 // orig method handlers we wanna call in hooked methods ([super method])
-static BOOL (*XBMCController$brEventAction$Orig)(XBMCController*, SEL, BREvent*);
-static id (*XBMCController$init$Orig)(XBMCController*, SEL);
-static void (*XBMCController$dealloc$Orig)(XBMCController*, SEL);
-static void (*XBMCController$controlWasActivated$Orig)(XBMCController*, SEL);
-static void (*XBMCController$controlWasDeactivated$Orig)(XBMCController*, SEL);
+static BOOL (*KodiController$brEventAction$Orig)(KodiController*, SEL, BREvent*);
+static id (*KodiController$init$Orig)(KodiController*, SEL);
+static void (*KodiController$dealloc$Orig)(KodiController*, SEL);
+static void (*KodiController$controlWasActivated$Orig)(KodiController*, SEL);
+static void (*KodiController$controlWasDeactivated$Orig)(KodiController*, SEL);
 
 // SECTIONCOMMENT
 // classes we need multiple times
@@ -250,7 +250,7 @@ int padding[16];//obsolete? - was commented with "credit is due here to Sapphire
 //--------------------------------------------------------------
 // SECTIONCOMMENT
 // since we can't inject ivars we need to use associated objects
-// these are the keys for XBMCController
+// these are the keys for KodiController
 static char timerKey;
 static char glviewKey;
 static char screensaverKey;
@@ -259,49 +259,49 @@ static char systemsleepKey;
 //
 //
 // SECTIONCOMMENT
-//implementation XBMCController
+//implementation KodiController
  
-static id XBMCController$keyTimer(XBMCController* self, SEL _cmd) 
+static id KodiController$keyTimer(KodiController* self, SEL _cmd) 
 { 
   return objc_getAssociatedObject(self, &timerKey);
 }
 
-static void XBMCController$setKeyTimer(XBMCController* self, SEL _cmd, id timer) 
+static void KodiController$setKeyTimer(KodiController* self, SEL _cmd, id timer) 
 { 
   objc_setAssociatedObject(self, &timerKey, timer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-static id XBMCController$glView(XBMCController* self, SEL _cmd) 
+static id KodiController$glView(KodiController* self, SEL _cmd) 
 { 
   return objc_getAssociatedObject(self, &glviewKey);
 }
 
-static void XBMCController$setGlView(XBMCController* self, SEL _cmd, id view) 
+static void KodiController$setGlView(KodiController* self, SEL _cmd, id view) 
 { 
   objc_setAssociatedObject(self, &glviewKey, view, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-static id XBMCController$systemScreenSaverTimeout(XBMCController* self, SEL _cmd) 
+static id KodiController$systemScreenSaverTimeout(KodiController* self, SEL _cmd) 
 { 
   return objc_getAssociatedObject(self, &screensaverKey);
 }
 
-static void XBMCController$setSystemScreenSaverTimeout(XBMCController* self, SEL _cmd, id timeout) 
+static void KodiController$setSystemScreenSaverTimeout(KodiController* self, SEL _cmd, id timeout) 
 { 
   objc_setAssociatedObject(self, &screensaverKey, timeout, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-static id XBMCController$systemSleepTimeout(XBMCController* self, SEL _cmd) 
+static id KodiController$systemSleepTimeout(KodiController* self, SEL _cmd) 
 { 
   return objc_getAssociatedObject(self, &systemsleepKey);
 }
 
-static void XBMCController$setSystemSleepTimeout(XBMCController* self, SEL _cmd, id timeout) 
+static void KodiController$setSystemSleepTimeout(KodiController* self, SEL _cmd, id timeout) 
 { 
   objc_setAssociatedObject(self, &systemsleepKey, timeout, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-static void XBMCController$applicationDidExit(XBMCController* self, SEL _cmd) 
+static void KodiController$applicationDidExit(KodiController* self, SEL _cmd) 
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
 
@@ -311,38 +311,38 @@ static void XBMCController$applicationDidExit(XBMCController* self, SEL _cmd)
   [[self stack] popController];
 }
 
-static void XBMCController$initDisplayLink(XBMCController* self, SEL _cmd) 
+static void KodiController$initDisplayLink(KodiController* self, SEL _cmd) 
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
 
   [[self glView] initDisplayLink];
 }
 
-static void XBMCController$deinitDisplayLink(XBMCController* self, SEL _cmd) 
+static void KodiController$deinitDisplayLink(KodiController* self, SEL _cmd) 
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
 
   [[self glView] deinitDisplayLink];
 }
 
-static double XBMCController$getDisplayLinkFPS(XBMCController* self, SEL _cmd) 
+static double KodiController$getDisplayLinkFPS(KodiController* self, SEL _cmd) 
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
 
   return [[self glView] getDisplayLinkFPS];
 }
 
-static void XBMCController$setFramebuffer(XBMCController* self, SEL _cmd) 
+static void KodiController$setFramebuffer(KodiController* self, SEL _cmd) 
 {   
   [[self glView] setFramebuffer];
 }
 
-static bool XBMCController$presentFramebuffer(XBMCController* self, SEL _cmd) 
+static bool KodiController$presentFramebuffer(KodiController* self, SEL _cmd) 
 {    
   return [[self glView] presentFramebuffer];
 }
 
-static CGSize XBMCController$getScreenSize(XBMCController* self, SEL _cmd) 
+static CGSize KodiController$getScreenSize(KodiController* self, SEL _cmd) 
 {
   CGSize screensize;
   screensize.width  = [BRWindowCls interfaceFrame].size.width;
@@ -352,15 +352,15 @@ static CGSize XBMCController$getScreenSize(XBMCController* self, SEL _cmd)
   return screensize;
 }
 
-static void XBMCController$sendKey(XBMCController* self, SEL _cmd, XBMCKey key) 
+static void KodiController$sendKey(KodiController* self, SEL _cmd, XBMCKey key) 
 {
   //empty because its not used here. Only implemented for getting rid
   //of "may not respond to selector" compile warnings in IOSExternalTouchController
 }
 
-static id XBMCController$init(XBMCController* self, SEL _cmd) 
+static id KodiController$init(KodiController* self, SEL _cmd) 
 {
-  if((self = XBMCController$init$Orig(self, _cmd)) != nil)  
+  if((self = KodiController$init$Orig(self, _cmd)) != nil)  
   {
     //NSLog(@"%s", __PRETTY_FUNCTION__);
 
@@ -383,7 +383,7 @@ static id XBMCController$init(XBMCController* self, SEL _cmd)
   return self;
 }
 
-static void XBMCController$dealloc(XBMCController* self, SEL _cmd) 
+static void KodiController$dealloc(KodiController* self, SEL _cmd) 
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
   [[self glView] stopAnimation];
@@ -394,14 +394,14 @@ static void XBMCController$dealloc(XBMCController* self, SEL _cmd)
   center = [NSNotificationCenter defaultCenter];
   [center removeObserver: self];
 
-  XBMCController$dealloc$Orig(self, _cmd);
+  KodiController$dealloc$Orig(self, _cmd);
 }
 
-static void XBMCController$controlWasActivated(XBMCController* self, SEL _cmd) 
+static void KodiController$controlWasActivated(KodiController* self, SEL _cmd) 
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
 
-  XBMCController$controlWasActivated$Orig(self, _cmd);
+  KodiController$controlWasActivated$Orig(self, _cmd);
 
   [self disableSystemSleep];
   [self disableScreenSaver];
@@ -413,7 +413,7 @@ static void XBMCController$controlWasActivated(XBMCController* self, SEL _cmd)
   [[self glView] startAnimation];
 }
 
-static void XBMCController$controlWasDeactivated(XBMCController* self, SEL _cmd) 
+static void KodiController$controlWasDeactivated(KodiController* self, SEL _cmd) 
 {
   NSLog(@"XBMC was forced by FrontRow to exit via controlWasDeactivated");
 
@@ -423,16 +423,16 @@ static void XBMCController$controlWasDeactivated(XBMCController* self, SEL _cmd)
   [self enableScreenSaver];
   [self enableSystemSleep];
 
-  XBMCController$controlWasDeactivated$Orig(self, _cmd);
+  KodiController$controlWasDeactivated$Orig(self, _cmd);
 }
 
-static BOOL XBMCController$recreateOnReselect(XBMCController* self, SEL _cmd) 
+static BOOL KodiController$recreateOnReselect(KodiController* self, SEL _cmd) 
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
   return YES;
 }
 
-static void XBMCController$ATVClientEventFromBREvent(XBMCController* self, SEL _cmd, BREvent* f_event, bool * isRepeatable, bool * isPressed, int * result) 
+static void KodiController$ATVClientEventFromBREvent(KodiController* self, SEL _cmd, BREvent* f_event, bool * isRepeatable, bool * isPressed, int * result) 
 {
   if(f_event == nil)// paranoia
     return;
@@ -719,7 +719,7 @@ static void XBMCController$ATVClientEventFromBREvent(XBMCController* self, SEL _
   }
 }
 
-static void XBMCController$setUserEvent(XBMCController* self, SEL _cmd, int eventId, unsigned int holdTime) 
+static void KodiController$setUserEvent(KodiController* self, SEL _cmd, int eventId, unsigned int holdTime) 
 {
   
   XBMC_Event newEvent;
@@ -731,7 +731,7 @@ static void XBMCController$setUserEvent(XBMCController* self, SEL _cmd, int even
   CWinEvents::MessagePush(&newEvent);
 }
 
-static unsigned int XBMCController$appleModKeyToXbmcModKey(XBMCController* self, SEL _cmd, unsigned int appleModifier)
+static unsigned int KodiController$appleModKeyToXbmcModKey(KodiController* self, SEL _cmd, unsigned int appleModifier)
 {
   unsigned int xbmcModifier = XBMCKMOD_NONE;
   // shift left
@@ -759,7 +759,7 @@ static unsigned int XBMCController$appleModKeyToXbmcModKey(XBMCController* self,
   return xbmcModifier;
 }
 
-static BOOL XBMCController$brEventAction(XBMCController* self, SEL _cmd, BREvent* event) 
+static BOOL KodiController$brEventAction(KodiController* self, SEL _cmd, BREvent* event) 
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
 
@@ -877,13 +877,13 @@ static BOOL XBMCController$brEventAction(XBMCController* self, SEL _cmd, BREvent
   }
   else
   {
-    return XBMCController$brEventAction$Orig(self, _cmd, event);
+    return KodiController$brEventAction$Orig(self, _cmd, event);
   }
 }
 
 #pragma mark -
 #pragma mark private helper methods
-static void XBMCController$startKeyPressTimer(XBMCController* self, SEL _cmd, int keyId) 
+static void KodiController$startKeyPressTimer(KodiController* self, SEL _cmd, int keyId) 
 { 
   NSNumber *number = [NSNumber numberWithInt:keyId];
   NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:[NSDate date], @"StartDate", 
@@ -907,7 +907,7 @@ static void XBMCController$startKeyPressTimer(XBMCController* self, SEL _cmd, in
   [self setKeyTimer:timer];
 } 
 
-static void XBMCController$stopKeyPressTimer(XBMCController* self, SEL _cmd) 
+static void KodiController$stopKeyPressTimer(KodiController* self, SEL _cmd) 
 {
   if([self keyTimer] != nil)
   {
@@ -917,7 +917,7 @@ static void XBMCController$stopKeyPressTimer(XBMCController* self, SEL _cmd)
   }
 }
 
-static void XBMCController$keyPressTimerCallback(XBMCController* self, SEL _cmd, NSTimer* theTimer)  
+static void KodiController$keyPressTimerCallback(KodiController* self, SEL _cmd, NSTimer* theTimer)  
 { 
   //if queue is empty - skip this timer event
   //for letting it process
@@ -933,7 +933,7 @@ static void XBMCController$keyPressTimerCallback(XBMCController* self, SEL _cmd,
   [self setUserEvent:keyId withHoldTime:(unsigned int)holdTime];
 } 
 
-static void XBMCController$observeDefaultCenterStuff(XBMCController* self, SEL _cmd, NSNotification * notification) 
+static void KodiController$observeDefaultCenterStuff(KodiController* self, SEL _cmd, NSNotification * notification) 
 {
   //NSLog(@"default: %@", [notification name]);
 
@@ -947,7 +947,7 @@ static void XBMCController$observeDefaultCenterStuff(XBMCController* self, SEL _
   //  [m_glView startAnimation];
 }
 
-static void XBMCController$disableSystemSleep(XBMCController* self, SEL _cmd) 
+static void KodiController$disableSystemSleep(KodiController* self, SEL _cmd) 
 {
   Class ATVSettingsFacadeCls = objc_getClass("ATVSettingsFacade");
   XBMCSettingsFacade *single = (XBMCSettingsFacade *)[ATVSettingsFacadeCls singleton];
@@ -959,7 +959,7 @@ static void XBMCController$disableSystemSleep(XBMCController* self, SEL _cmd)
   [single flushDiskChanges];
 }
 
-static void XBMCController$enableSystemSleep(XBMCController* self, SEL _cmd) 
+static void KodiController$enableSystemSleep(KodiController* self, SEL _cmd) 
 {
   Class ATVSettingsFacadeCls = objc_getClass("ATVSettingsFacade");
   int timeoutInt = [[self systemSleepTimeout] intValue];
@@ -967,7 +967,7 @@ static void XBMCController$enableSystemSleep(XBMCController* self, SEL _cmd)
   [[ATVSettingsFacadeCls singleton] flushDiskChanges];
 }
 
-static void XBMCController$disableScreenSaver(XBMCController* self, SEL _cmd) 
+static void KodiController$disableScreenSaver(KodiController* self, SEL _cmd) 
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
   //store screen saver state and disable it
@@ -984,7 +984,7 @@ static void XBMCController$disableScreenSaver(XBMCController* self, SEL _cmd)
   // breaks in 4.2.1 [[BRBackgroundTaskManager singleton] holdOffBackgroundTasks];
 }
 
-static void XBMCController$enableScreenSaver(XBMCController* self, SEL _cmd) 
+static void KodiController$enableScreenSaver(KodiController* self, SEL _cmd) 
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
   //reset screen saver to user settings
@@ -1287,7 +1287,7 @@ static void XBMCController$enableScreenSaver(XBMCController* self, SEL _cmd)
 }*/
 
 //--------------------------------------------------------------
-static void XBMCController$pauseAnimation(XBMCController* self, SEL _cmd) 
+static void KodiController$pauseAnimation(KodiController* self, SEL _cmd) 
 {
   XBMC_Event newEvent;
   memset(&newEvent, 0, sizeof(XBMC_Event));
@@ -1300,7 +1300,7 @@ static void XBMCController$pauseAnimation(XBMCController* self, SEL _cmd)
   [[self glView] pauseAnimation];
 }
 //--------------------------------------------------------------
-static void XBMCController$resumeAnimation(XBMCController* self, SEL _cmd) 
+static void KodiController$resumeAnimation(KodiController* self, SEL _cmd) 
 {  
   NSLog(@"%s", __PRETTY_FUNCTION__);
 
@@ -1314,26 +1314,26 @@ static void XBMCController$resumeAnimation(XBMCController* self, SEL _cmd)
   [[self glView] resumeAnimation];
 }
 //--------------------------------------------------------------
-static void XBMCController$startAnimation(XBMCController* self, SEL _cmd) 
+static void KodiController$startAnimation(KodiController* self, SEL _cmd) 
 {
   NSLog(@"%s", __PRETTY_FUNCTION__);
 
   [[self glView] startAnimation];
 }
 //--------------------------------------------------------------
-static void XBMCController$stopAnimation(XBMCController* self, SEL _cmd) 
+static void KodiController$stopAnimation(KodiController* self, SEL _cmd) 
 {
   NSLog(@"%s", __PRETTY_FUNCTION__);
 
   [[self glView] stopAnimation];
 }
 //--------------------------------------------------------------
-static bool XBMCController$changeScreen(XBMCController* self, SEL _cmd, unsigned int screenIdx, UIScreenMode * mode) 
+static bool KodiController$changeScreen(KodiController* self, SEL _cmd, unsigned int screenIdx, UIScreenMode * mode) 
 {
   return [[IOSScreenManager sharedInstance] changeScreen: screenIdx withMode: mode];
 }
 //--------------------------------------------------------------
-static void XBMCController$activateScreen(XBMCController* self, SEL _cmd, UIScreen * screen, UIInterfaceOrientation newOrientation) 
+static void KodiController$activateScreen(KodiController* self, SEL _cmd, UIScreen * screen, UIInterfaceOrientation newOrientation) 
 {
 }
 
@@ -1348,61 +1348,61 @@ static __attribute__((constructor)) void initControllerRuntimeClasses()
   char _typeEncoding[1024];
   unsigned int i = 0;
 
-  // subclass BRController into XBMCController
-  Class XBMCControllerCls = objc_allocateClassPair(objc_getClass("BRController"), "XBMCController", 0);
+  // subclass BRController into KodiController
+  Class KodiControllerCls = objc_allocateClassPair(objc_getClass("BRController"), "KodiController", 0);
   // add our custom methods which are not part of the baseclass
-  // XBMCController::keyTimer
-  class_addMethod(XBMCControllerCls, @selector(keyTimer), (IMP)&XBMCController$keyTimer, "@@:");
-  // XBMCController::setKeyTimer
-  class_addMethod(XBMCControllerCls, @selector(setKeyTimer:), (IMP)&XBMCController$setKeyTimer, "v@:@");
-  // XBMCController::glView
-  class_addMethod(XBMCControllerCls, @selector(glView), (IMP)&XBMCController$glView, "@@:");
-  // XBMCController::setGlView
-  class_addMethod(XBMCControllerCls, @selector(setGlView:), (IMP)&XBMCController$setGlView, "v@:@");
-  // XBMCController::systemScreenSaverTimeout
-  class_addMethod(XBMCControllerCls, @selector(systemScreenSaverTimeout), (IMP)&XBMCController$systemScreenSaverTimeout, "@@:");
-  // XBMCController::setSystemScreenSaverTimeout
-  class_addMethod(XBMCControllerCls, @selector(setSystemScreenSaverTimeout:), (IMP)&XBMCController$setSystemScreenSaverTimeout, "v@:@");
-  // XBMCController::systemSleepTimeout
-  class_addMethod(XBMCControllerCls, @selector(systemSleepTimeout), (IMP)&XBMCController$systemSleepTimeout, "@@:");
-  // XBMCController::setSystemSleepTimeout
-  class_addMethod(XBMCControllerCls, @selector(setSystemSleepTimeout:), (IMP)&XBMCController$setSystemSleepTimeout, "v@:@");
-  // XBMCController::applicationDidExit
-  class_addMethod(XBMCControllerCls, @selector(applicationDidExit), (IMP)&XBMCController$applicationDidExit, "v@:");
-  // XBMCController::initDisplayLink
-  class_addMethod(XBMCControllerCls, @selector(initDisplayLink), (IMP)&XBMCController$initDisplayLink, "v@:");
-  // XBMCController::deinitDisplayLink
-  class_addMethod(XBMCControllerCls, @selector(deinitDisplayLink), (IMP)&XBMCController$deinitDisplayLink, "v@:");
-  // XBMCController::getDisplayLinkFPS
-  class_addMethod(XBMCControllerCls, @selector(getDisplayLinkFPS), (IMP)&XBMCController$getDisplayLinkFPS, "d@:");
-  // XBMCController::setFramebuffer
-  class_addMethod(XBMCControllerCls, @selector(setFramebuffer), (IMP)&XBMCController$setFramebuffer, "v@:");
-  // XBMCController::presentFramebuffer
-  class_addMethod(XBMCControllerCls, @selector(presentFramebuffer), (IMP)&XBMCController$presentFramebuffer, "B@:");
-  // XBMCController::setUserEvent
-  class_addMethod(XBMCControllerCls, @selector(setUserEvent:withHoldTime:), (IMP)&XBMCController$setUserEvent, "v@:iI");  
-  // XBMCController::appleModKeyToXbmcModKey
-  class_addMethod(XBMCControllerCls, @selector(appleModKeyToXbmcModKey:), (IMP)&XBMCController$appleModKeyToXbmcModKey, "I@:I");
-  // XBMCController::startKeyPressTimer
-  class_addMethod(XBMCControllerCls, @selector(startKeyPressTimer:), (IMP)&XBMCController$startKeyPressTimer, "v@:i");  
-  // XBMCController::stopKeyPressTimer
-  class_addMethod(XBMCControllerCls, @selector(stopKeyPressTimer), (IMP)&XBMCController$stopKeyPressTimer, "v@:");
-  // XBMCController::disableSystemSleep
-  class_addMethod(XBMCControllerCls, @selector(disableSystemSleep), (IMP)&XBMCController$disableSystemSleep, "v@:");
-  // XBMCController__enableSystemSleep
-  class_addMethod(XBMCControllerCls, @selector(enableSystemSleep), (IMP)&XBMCController$enableSystemSleep, "v@:");
-  // XBMCController::disableScreenSaver
-  class_addMethod(XBMCControllerCls, @selector(disableScreenSaver), (IMP)&XBMCController$disableScreenSaver, "v@:");
-  // XBMCController::enableScreenSaver
-  class_addMethod(XBMCControllerCls, @selector(enableScreenSaver), (IMP)&XBMCController$enableScreenSaver, "v@:");
-  // XBMCController::pauseAnimation
-  class_addMethod(XBMCControllerCls, @selector(pauseAnimation), (IMP)&XBMCController$pauseAnimation, "v@:");
-  // XBMCController::resumeAnimation
-  class_addMethod(XBMCControllerCls, @selector(resumeAnimation), (IMP)&XBMCController$resumeAnimation, "v@:");
-  // XBMCController::startAnimation
-  class_addMethod(XBMCControllerCls, @selector(startAnimation), (IMP)&XBMCController$startAnimation, "v@:");
-  // XBMCController::stopAnimation
-  class_addMethod(XBMCControllerCls, @selector(stopAnimation), (IMP)&XBMCController$stopAnimation, "v@:");
+  // KodiController::keyTimer
+  class_addMethod(KodiControllerCls, @selector(keyTimer), (IMP)&KodiController$keyTimer, "@@:");
+  // KodiController::setKeyTimer
+  class_addMethod(KodiControllerCls, @selector(setKeyTimer:), (IMP)&KodiController$setKeyTimer, "v@:@");
+  // KodiController::glView
+  class_addMethod(KodiControllerCls, @selector(glView), (IMP)&KodiController$glView, "@@:");
+  // KodiController::setGlView
+  class_addMethod(KodiControllerCls, @selector(setGlView:), (IMP)&KodiController$setGlView, "v@:@");
+  // KodiController::systemScreenSaverTimeout
+  class_addMethod(KodiControllerCls, @selector(systemScreenSaverTimeout), (IMP)&KodiController$systemScreenSaverTimeout, "@@:");
+  // KodiController::setSystemScreenSaverTimeout
+  class_addMethod(KodiControllerCls, @selector(setSystemScreenSaverTimeout:), (IMP)&KodiController$setSystemScreenSaverTimeout, "v@:@");
+  // KodiController::systemSleepTimeout
+  class_addMethod(KodiControllerCls, @selector(systemSleepTimeout), (IMP)&KodiController$systemSleepTimeout, "@@:");
+  // KodiController::setSystemSleepTimeout
+  class_addMethod(KodiControllerCls, @selector(setSystemSleepTimeout:), (IMP)&KodiController$setSystemSleepTimeout, "v@:@");
+  // KodiController::applicationDidExit
+  class_addMethod(KodiControllerCls, @selector(applicationDidExit), (IMP)&KodiController$applicationDidExit, "v@:");
+  // KodiController::initDisplayLink
+  class_addMethod(KodiControllerCls, @selector(initDisplayLink), (IMP)&KodiController$initDisplayLink, "v@:");
+  // KodiController::deinitDisplayLink
+  class_addMethod(KodiControllerCls, @selector(deinitDisplayLink), (IMP)&KodiController$deinitDisplayLink, "v@:");
+  // KodiController::getDisplayLinkFPS
+  class_addMethod(KodiControllerCls, @selector(getDisplayLinkFPS), (IMP)&KodiController$getDisplayLinkFPS, "d@:");
+  // KodiController::setFramebuffer
+  class_addMethod(KodiControllerCls, @selector(setFramebuffer), (IMP)&KodiController$setFramebuffer, "v@:");
+  // KodiController::presentFramebuffer
+  class_addMethod(KodiControllerCls, @selector(presentFramebuffer), (IMP)&KodiController$presentFramebuffer, "B@:");
+  // KodiController::setUserEvent
+  class_addMethod(KodiControllerCls, @selector(setUserEvent:withHoldTime:), (IMP)&KodiController$setUserEvent, "v@:iI");  
+  // KodiController::appleModKeyToXbmcModKey
+  class_addMethod(KodiControllerCls, @selector(appleModKeyToXbmcModKey:), (IMP)&KodiController$appleModKeyToXbmcModKey, "I@:I");
+  // KodiController::startKeyPressTimer
+  class_addMethod(KodiControllerCls, @selector(startKeyPressTimer:), (IMP)&KodiController$startKeyPressTimer, "v@:i");  
+  // KodiController::stopKeyPressTimer
+  class_addMethod(KodiControllerCls, @selector(stopKeyPressTimer), (IMP)&KodiController$stopKeyPressTimer, "v@:");
+  // KodiController::disableSystemSleep
+  class_addMethod(KodiControllerCls, @selector(disableSystemSleep), (IMP)&KodiController$disableSystemSleep, "v@:");
+  // KodiController__enableSystemSleep
+  class_addMethod(KodiControllerCls, @selector(enableSystemSleep), (IMP)&KodiController$enableSystemSleep, "v@:");
+  // KodiController::disableScreenSaver
+  class_addMethod(KodiControllerCls, @selector(disableScreenSaver), (IMP)&KodiController$disableScreenSaver, "v@:");
+  // KodiController::enableScreenSaver
+  class_addMethod(KodiControllerCls, @selector(enableScreenSaver), (IMP)&KodiController$enableScreenSaver, "v@:");
+  // KodiController::pauseAnimation
+  class_addMethod(KodiControllerCls, @selector(pauseAnimation), (IMP)&KodiController$pauseAnimation, "v@:");
+  // KodiController::resumeAnimation
+  class_addMethod(KodiControllerCls, @selector(resumeAnimation), (IMP)&KodiController$resumeAnimation, "v@:");
+  // KodiController::startAnimation
+  class_addMethod(KodiControllerCls, @selector(startAnimation), (IMP)&KodiController$startAnimation, "v@:");
+  // KodiController::stopAnimation
+  class_addMethod(KodiControllerCls, @selector(stopAnimation), (IMP)&KodiController$stopAnimation, "v@:");
 
   i = 0;
   memcpy(_typeEncoding + i, @encode(CGSize), strlen(@encode(CGSize)));
@@ -1412,8 +1412,8 @@ static __attribute__((constructor)) void initControllerRuntimeClasses()
   _typeEncoding[i] = ':';
   i += 1;
   _typeEncoding[i] = '\0';
-  // XBMCController::getScreenSize
-  class_addMethod(XBMCControllerCls, @selector(getScreenSize), (IMP)&XBMCController$getScreenSize, _typeEncoding);
+  // KodiController::getScreenSize
+  class_addMethod(KodiControllerCls, @selector(getScreenSize), (IMP)&KodiController$getScreenSize, _typeEncoding);
 
   i = 0;
   _typeEncoding[i] = 'v';
@@ -1425,8 +1425,8 @@ static __attribute__((constructor)) void initControllerRuntimeClasses()
   memcpy(_typeEncoding + i, @encode(XBMCKey), strlen(@encode(XBMCKey)));
   i += strlen(@encode(XBMCKey));
   _typeEncoding[i] = '\0';
-  // XBMCController::sendKey
-  class_addMethod(XBMCControllerCls, @selector(sendKey:), (IMP)&XBMCController$sendKey, _typeEncoding);
+  // KodiController::sendKey
+  class_addMethod(KodiControllerCls, @selector(sendKey:), (IMP)&KodiController$sendKey, _typeEncoding);
  
   i = 0;
   _typeEncoding[i] = 'v';
@@ -1447,8 +1447,8 @@ static __attribute__((constructor)) void initControllerRuntimeClasses()
   _typeEncoding[i + 1] = 'i';
   i += 2;
   _typeEncoding[i] = '\0';
-  // XBMCController::ATVClientEventFromBREvent
-  class_addMethod(XBMCControllerCls, @selector(ATVClientEventFromBREvent:Repeatable:ButtonState:Result:), (IMP)&XBMCController$ATVClientEventFromBREvent, _typeEncoding);
+  // KodiController::ATVClientEventFromBREvent
+  class_addMethod(KodiControllerCls, @selector(ATVClientEventFromBREvent:Repeatable:ButtonState:Result:), (IMP)&KodiController$ATVClientEventFromBREvent, _typeEncoding);
 
   i = 0;
   _typeEncoding[i] = 'v';
@@ -1460,8 +1460,8 @@ static __attribute__((constructor)) void initControllerRuntimeClasses()
   memcpy(_typeEncoding + i, @encode(NSTimer*), strlen(@encode(NSTimer*)));
   i += strlen(@encode(NSTimer*));
   _typeEncoding[i] = '\0';
-  // XBMCController::keyPressTimerCallback
-  class_addMethod(XBMCControllerCls, @selector(keyPressTimerCallback:), (IMP)&XBMCController$keyPressTimerCallback, _typeEncoding);
+  // KodiController::keyPressTimerCallback
+  class_addMethod(KodiControllerCls, @selector(keyPressTimerCallback:), (IMP)&KodiController$keyPressTimerCallback, _typeEncoding);
  
   i = 0;
   _typeEncoding[i] = 'v';
@@ -1473,8 +1473,8 @@ static __attribute__((constructor)) void initControllerRuntimeClasses()
   memcpy(_typeEncoding + i, @encode(NSNotification *), strlen(@encode(NSNotification *)));
   i += strlen(@encode(NSNotification *));
   _typeEncoding[i] = '\0';
-  // XBMCController:observeDefaultCenterStuff
-  class_addMethod(XBMCControllerCls, @selector(observeDefaultCenterStuff:), (IMP)&XBMCController$observeDefaultCenterStuff, _typeEncoding);
+  // KodiController:observeDefaultCenterStuff
+  class_addMethod(KodiControllerCls, @selector(observeDefaultCenterStuff:), (IMP)&KodiController$observeDefaultCenterStuff, _typeEncoding);
 
   i = 0;
   _typeEncoding[i] = 'B';
@@ -1488,8 +1488,8 @@ static __attribute__((constructor)) void initControllerRuntimeClasses()
   memcpy(_typeEncoding + i, @encode(UIScreenMode *), strlen(@encode(UIScreenMode *)));
   i += strlen(@encode(UIScreenMode *));
   _typeEncoding[i] = '\0';
-  // XBMCController::changeScreen
-  class_addMethod(XBMCControllerCls, @selector(changeScreen:withMode:), (IMP)&XBMCController$changeScreen, _typeEncoding);
+  // KodiController::changeScreen
+  class_addMethod(KodiControllerCls, @selector(changeScreen:withMode:), (IMP)&KodiController$changeScreen, _typeEncoding);
 
   i = 0;
   _typeEncoding[i] = 'v';
@@ -1503,25 +1503,25 @@ static __attribute__((constructor)) void initControllerRuntimeClasses()
   _typeEncoding[i] = 'I';
   i += 1;
   _typeEncoding[i] = '\0';
-  // XBMCController::activateScreen$
-  class_addMethod(XBMCControllerCls, @selector(activateScreen:withOrientation:), (IMP)&XBMCController$activateScreen, _typeEncoding);
+  // KodiController::activateScreen$
+  class_addMethod(KodiControllerCls, @selector(activateScreen:withOrientation:), (IMP)&KodiController$activateScreen, _typeEncoding);
 
   // and hook up our methods (implementation of the base class methods)
-  // XBMCController::brEventAction
-  MSHookMessageEx(XBMCControllerCls, @selector(brEventAction:), (IMP)&XBMCController$brEventAction, (IMP*)&XBMCController$brEventAction$Orig); 
-  // XBMCController::init
-  MSHookMessageEx(XBMCControllerCls, @selector(init), (IMP)&XBMCController$init, (IMP*)&XBMCController$init$Orig);
-  // XBMCController::dealloc
-  MSHookMessageEx(XBMCControllerCls, @selector(dealloc), (IMP)&XBMCController$dealloc, (IMP*)&XBMCController$dealloc$Orig);
-  // XBMCController::controlWasActivated
-  MSHookMessageEx(XBMCControllerCls, @selector(controlWasActivated), (IMP)&XBMCController$controlWasActivated, (IMP*)&XBMCController$controlWasActivated$Orig);
-  // XBMCController::controlWasDeactivated
-  MSHookMessageEx(XBMCControllerCls, @selector(controlWasDeactivated), (IMP)&XBMCController$controlWasDeactivated, (IMP*)&XBMCController$controlWasDeactivated$Orig);
-  // XBMCController::recreateOnReselect
-  MSHookMessageEx(XBMCControllerCls, @selector(recreateOnReselect), (IMP)&XBMCController$recreateOnReselect, nil);
+  // KodiController::brEventAction
+  MSHookMessageEx(KodiControllerCls, @selector(brEventAction:), (IMP)&KodiController$brEventAction, (IMP*)&KodiController$brEventAction$Orig); 
+  // KodiController::init
+  MSHookMessageEx(KodiControllerCls, @selector(init), (IMP)&KodiController$init, (IMP*)&KodiController$init$Orig);
+  // KodiController::dealloc
+  MSHookMessageEx(KodiControllerCls, @selector(dealloc), (IMP)&KodiController$dealloc, (IMP*)&KodiController$dealloc$Orig);
+  // KodiController::controlWasActivated
+  MSHookMessageEx(KodiControllerCls, @selector(controlWasActivated), (IMP)&KodiController$controlWasActivated, (IMP*)&KodiController$controlWasActivated$Orig);
+  // KodiController::controlWasDeactivated
+  MSHookMessageEx(KodiControllerCls, @selector(controlWasDeactivated), (IMP)&KodiController$controlWasDeactivated, (IMP*)&KodiController$controlWasDeactivated$Orig);
+  // KodiController::recreateOnReselect
+  MSHookMessageEx(KodiControllerCls, @selector(recreateOnReselect), (IMP)&KodiController$recreateOnReselect, nil);
 
   // and register the class to the runtime
-  objc_registerClassPair(XBMCControllerCls);
+  objc_registerClassPair(KodiControllerCls);
   
   // save this as static for referencing it in multiple methods
   BRWindowCls = objc_getClass("BRWindow");

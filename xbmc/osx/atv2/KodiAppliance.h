@@ -20,12 +20,12 @@
 
 #import <BackRow/BackRow.h>
 
-@class XBMCTopShelfController;
+@class KodiTopShelfController;
 
 //--------------------------------------------------------------
-@interface XBMCAppliance : BRBaseAppliance {
+@interface KodiAppliance : BRBaseAppliance {
   NSArray *_applianceCategories;
-  XBMCTopShelfController *_topShelfController;
+  KodiTopShelfController *_topShelfController;
 }
 @property(nonatomic, readonly, retain) id topShelfController;
 

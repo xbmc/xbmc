@@ -44,7 +44,7 @@
 #import <OpenGLES/ES2/glext.h>
 #import "IOSEAGLView.h"
 #if defined(TARGET_DARWIN_IOS_ATV2)
-#import "xbmc/osx/atv2/XBMCController.h"
+#import "xbmc/osx/atv2/KodiController.h"
 #elif defined(TARGET_DARWIN_IOS)
 #import "xbmc/osx/ios/XBMCController.h"
 #endif

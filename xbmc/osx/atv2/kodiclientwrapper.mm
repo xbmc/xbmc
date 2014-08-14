@@ -29,9 +29,9 @@
 #include <sys/sysctl.h>
 #import <Foundation/Foundation.h>
 
-#include "xbmcclient.h"
+#include "kodiclient.h"
 #include "XBMCDebugHelpers.h"
-#include "xbmcclientwrapper.h"
+#include "KodiClientWrapper.h"
 
 //helper class for easy EventSequence handling
 class XBMCClientEventSequence{
@@ -83,7 +83,7 @@ private:
 typedef std::map<eATVClientEvent, CPacketBUTTON*> tEventMap;
 typedef std::map<XBMCClientEventSequence, CPacketBUTTON*> tSequenceMap;
 
-class  XBMCClientWrapperImpl{
+class  KodiClientWrapperImpl{
 	tEventMap m_event_map;
   tSequenceMap m_sequence_map;
   
@@ -103,15 +103,15 @@ class  XBMCClientWrapperImpl{
   bool isStartToken(eATVClientEvent f_event);
   static void timerCallBack (CFRunLoopTimerRef timer, void *info);
 public:
-  XBMCClientWrapperImpl(bool f_universal_mode, const std::string& fcr_address = "localhost");
-  ~XBMCClientWrapperImpl();
+  KodiClientWrapperImpl(bool f_universal_mode, const std::string& fcr_address = "localhost");
+  ~KodiClientWrapperImpl();
   void setUniversalModeTimeout(double f_timeout){
     m_sequence_timeout = f_timeout;
   }
   void handleEvent(eATVClientEvent f_event);   
 };
 
-void XBMCClientWrapperImpl::timerCallBack (CFRunLoopTimerRef timer, void *info)
+void KodiClientWrapperImpl::timerCallBack (CFRunLoopTimerRef timer, void *info)
 {
 	if (!info)
 	{
@@ -119,12 +119,12 @@ void XBMCClientWrapperImpl::timerCallBack (CFRunLoopTimerRef timer, void *info)
 		return;
 	}
 	
-	XBMCClientWrapperImpl *p_impl = (XBMCClientWrapperImpl *)info;
+	KodiClientWrapperImpl *p_impl = (KodiClientWrapperImpl *)info;
 	p_impl->sendSequence();
 	p_impl->resetTimer();
 }
 
-void XBMCClientWrapperImpl::resetTimer(){
+void KodiClientWrapperImpl::resetTimer(){
 	if (m_timer)
 	{
 		CFRunLoopRemoveTimer(CFRunLoopGetCurrent(), m_timer, kCFRunLoopCommonModes);
@@ -134,7 +134,7 @@ void XBMCClientWrapperImpl::resetTimer(){
 	}
 }  
 
-void XBMCClientWrapperImpl::restartTimer(){
+void KodiClientWrapperImpl::restartTimer(){
 	if (m_timer)
     resetTimer();	
 
@@ -143,19 +143,19 @@ void XBMCClientWrapperImpl::restartTimer(){
 	CFRunLoopAddTimer(CFRunLoopGetCurrent(), m_timer, kCFRunLoopCommonModes);
 }
 
-XBMCClientWrapperImpl::XBMCClientWrapperImpl(bool f_universal_mode, const std::string& fcr_address): m_address(fcr_address), m_universal_mode(f_universal_mode), m_timer(0), m_sequence_timeout(0.5){
+KodiClientWrapperImpl::KodiClientWrapperImpl(bool f_universal_mode, const std::string& fcr_address): m_address(fcr_address), m_universal_mode(f_universal_mode), m_timer(0), m_sequence_timeout(0.5){
 	//PRINT_SIGNATURE();
 	
   populateEventMap();
   if (m_universal_mode)
   {
-    //DLOG(@"XBMCClientWrapperImpl started in universal mode sending to address %s", fcr_address.c_str());
+    //DLOG(@"KodiClientWrapperImpl started in universal mode sending to address %s", fcr_address.c_str());
     populateSequenceMap();
   }
   /*
   else
   {
-    DLOG(@"XBMCClientWrapperImpl started in normal mode sending to address %s", fcr_address.c_str());
+    DLOG(@"KodiClientWrapperImpl started in normal mode sending to address %s", fcr_address.c_str());
   }
   */
 
@@ -168,20 +168,20 @@ XBMCClientWrapperImpl::XBMCClientWrapperImpl(bool f_universal_mode, const std::s
 	}
 }
 
-XBMCClientWrapperImpl::~XBMCClientWrapperImpl(){
+KodiClientWrapperImpl::~KodiClientWrapperImpl(){
 	//PRINT_SIGNATURE();
   resetTimer();
   shutdown(m_socket, SHUT_RDWR);
 }
 
-bool XBMCClientWrapperImpl::isStartToken(eATVClientEvent f_event){
+bool KodiClientWrapperImpl::isStartToken(eATVClientEvent f_event){
   return f_event==ATV_BUTTON_MENU_H;
 }
 
-void XBMCClientWrapperImpl::sendButton(eATVClientEvent f_event){
+void KodiClientWrapperImpl::sendButton(eATVClientEvent f_event){
   tEventMap::iterator it = m_event_map.find(f_event);
   if(it == m_event_map.end()){
-    ELOG(@"XBMCClientWrapperImpl::sendButton: No mapping defined for button %i", f_event);	
+    ELOG(@"KodiClientWrapperImpl::sendButton: No mapping defined for button %i", f_event);	
     return;
   }
   CPacketBUTTON& packet = *(it->second);
@@ -189,20 +189,20 @@ void XBMCClientWrapperImpl::sendButton(eATVClientEvent f_event){
   packet.Send(m_socket, addr);  
 }
 
-void XBMCClientWrapperImpl::sendSequence(){
+void KodiClientWrapperImpl::sendSequence(){
   tSequenceMap::const_iterator it = m_sequence_map.find(m_sequence);
   if(it != m_sequence_map.end()){
     CPacketBUTTON& packet = *(it->second);
     CAddress addr(m_address.c_str());
     packet.Send(m_socket, addr);      
-    DLOG(@"XBMCClientWrapperImpl::sendSequence: sent sequence %s as button %i", m_sequence.str().c_str(), it->second->GetButtonCode());
+    DLOG(@"KodiClientWrapperImpl::sendSequence: sent sequence %s as button %i", m_sequence.str().c_str(), it->second->GetButtonCode());
   } else {
-    ELOG(@"XBMCClientWrapperImpl::sendSequence: No mapping defined for sequence %s", m_sequence.str().c_str());
+    ELOG(@"KodiClientWrapperImpl::sendSequence: No mapping defined for sequence %s", m_sequence.str().c_str());
   }
   m_sequence.clear();
 }
     
-void XBMCClientWrapperImpl::handleEvent(eATVClientEvent f_event){	
+void KodiClientWrapperImpl::handleEvent(eATVClientEvent f_event){	
   if(!m_universal_mode){
     sendButton(f_event);
   }	else {
@@ -230,7 +230,7 @@ void XBMCClientWrapperImpl::handleEvent(eATVClientEvent f_event){
   }
 }
 
-void XBMCClientWrapperImpl::populateEventMap(){
+void KodiClientWrapperImpl::populateEventMap(){
 	tEventMap& lr_map = m_event_map;
   
 	lr_map.insert(std::make_pair(ATV_BUTTON_PLAY,          new CPacketBUTTON(5, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
@@ -270,7 +270,7 @@ void XBMCClientWrapperImpl::populateEventMap(){
   lr_map.insert(std::make_pair(ATV_GESTURE_SWIPE_DOWN,  new CPacketBUTTON(83, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
 }
 
-void XBMCClientWrapperImpl::populateSequenceMap(){
+void KodiClientWrapperImpl::populateSequenceMap(){
   XBMCClientEventSequence sequence_prefix;
   sequence_prefix << ATV_BUTTON_MENU_H;
   m_sequence_map.insert(std::make_pair(sequence_prefix, new CPacketBUTTON(8, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
@@ -327,7 +327,7 @@ void XBMCClientWrapperImpl::populateSequenceMap(){
   m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_MENU, new CPacketBUTTON(55, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
 }
 
-@implementation XBMCClientWrapper
+@implementation KodiClientWrapper
 - (id) init {
   return [self initWithUniversalMode:false serverAddress:@"localhost"];
 }
@@ -335,7 +335,7 @@ void XBMCClientWrapperImpl::populateSequenceMap(){
 	//PRINT_SIGNATURE();
 	if( ![super init] )
 		return nil; 
-	mp_impl = new XBMCClientWrapperImpl(f_yes_no, [fp_server UTF8String]);
+	mp_impl = new KodiClientWrapperImpl(f_yes_no, [fp_server UTF8String]);
 	return self;
 }
 

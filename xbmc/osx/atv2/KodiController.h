@@ -24,7 +24,7 @@
 #import "IOSSCreenManager.h"
 #include "XBMC_keysym.h"
 
-@interface XBMCController : BRController
+@interface KodiController : BRController
 {
   int padding[16];  // credit is due here to SapphireCompatibilityClasses!!
         
@@ -38,7 +38,7 @@
 
 }
 // message from which our instance is obtained
-//+ (XBMCController*) sharedInstance;
+//+ (KodiController*) sharedInstance;
 
 - (void) applicationDidExit;
 - (void) initDisplayLink;
@@ -74,4 +74,4 @@
 
 @end
 
-extern XBMCController *g_xbmcController;
+extern KodiController *g_xbmcController;

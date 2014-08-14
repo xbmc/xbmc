@@ -25,9 +25,9 @@
  * functions for subclassing and adding methods to our instances during runtime (hooking).
  * 
  * 1. For implementing a method of a base class:
- *  a) declare it in the form <XBMCAppliance$nameOfMethod> like the others 
- *  b) these methods need to be static and have XBMCAppliance* self, SEL _cmd (replace XBMCAppliance with the class the method gets implemented for) as minimum params. 
- *  c) add the method to the XBMCAppliance.h for getting rid of the compiler warnings of unresponsive selectors (declare the method like done in the baseclass).
+ *  a) declare it in the form <KodiAppliance$nameOfMethod> like the others
+ *  b) these methods need to be static and have KodiAppliance* self, SEL _cmd (replace KodiAppliance with the class the method gets implemented for) as minimum params.
+ *  c) add the method to the KodiAppliance.h for getting rid of the compiler warnings of unresponsive selectors (declare the method like done in the baseclass).
  *  d) in initApplianceRuntimeClasses exchange the base class implementation with ours by calling MSHookMessageEx
  *  e) if we need to call the base class implementation as well we have to save the original implementation (see initWithApplianceInfo$Orig for reference)
  *
@@ -51,8 +51,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-#import "XBMCAppliance.h"
-#import "XBMCController.h"
+#import "KodiAppliance.h"
+#import "KodiController.h"
 #include "substrate.h"
 
 // SECTIONCOMMENT
@@ -60,22 +60,22 @@
 static Class BRApplianceCategoryCls;
 
 // category for ios5.x and higher is just a short text before xbmc auto starts
-#define XBMCAppliance_CAT_5andhigher [BRApplianceCategoryCls categoryWithName:@"XBMC is starting..." identifier:@"xbmc" preferredOrder:0]
+#define KodiAppliance_CAT_5andhigher [BRApplianceCategoryCls categoryWithName:@"Kodi is starting..." identifier:@"kodi" preferredOrder:0]
 // category for ios4.x is the menu entry
-#define XBMCAppliance_CAT_4 [BRApplianceCategoryCls categoryWithName:@"XBMC" identifier:@"xbmc" preferredOrder:0]
+#define KodiAppliance_CAT_4 [BRApplianceCategoryCls categoryWithName:@"Kodi" identifier:@"kodi" preferredOrder:0]
 
 // SECTIONCOMMENT
 // forward declaration all referenced classes
-@class XBMCAppliance;
+@class KodiAppliance;
 @class BRTopShelfView;
-@class XBMCApplianceInfo;
+@class KodiApplianceInfo;
 @class BRMainMenuImageControl;
 
 // SECTIONCOMMENT
 // orig method handlers we wanna call in hooked methods
-static id (*XBMCAppliance$initWithApplianceInfo$Orig)(XBMCAppliance*, SEL, id);
-static id (*XBMCAppliance$init$Orig)(XBMCAppliance*, SEL);
-static id (*XBMCAppliance$applianceInfo$Orig)(XBMCAppliance*, SEL);
+static id (*KodiAppliance$initWithApplianceInfo$Orig)(KodiAppliance*, SEL, id);
+static id (*KodiAppliance$init$Orig)(KodiAppliance*, SEL);
+static id (*KodiAppliance$applianceInfo$Orig)(KodiAppliance*, SEL);
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
@@ -87,7 +87,7 @@ static id (*XBMCAppliance$applianceInfo$Orig)(XBMCAppliance*, SEL);
 
 @end
 
-@interface XBMCATV2Detector : NSObject{}
+@interface AppATV2Detector : NSObject{}
 + (BOOL) hasOldGui;
 + (BOOL) isIos5;
 + (BOOL) needsApplianceInfoHack;
@@ -97,10 +97,10 @@ static id (*XBMCAppliance$applianceInfo$Orig)(XBMCAppliance*, SEL);
 //--------------------------------------------------------------
 // We need a real implementation (not a runtime generated one)
 // for getting our NSBundle instance by calling
-// [[NSBundle bundleForClass:objc_getClass("XBMCATV2Detector")]
+// [[NSBundle bundleForClass:objc_getClass("AppATV2Detector")]
 // so we just implement some usefull helpers here
 // and use those
-@implementation XBMCATV2Detector : NSObject{}
+@implementation AppATV2Detector : NSObject{}
 + (BOOL) hasOldGui
 {
   Class cls = NSClassFromString(@"ATVVersionInfo");  
@@ -122,7 +122,7 @@ static id (*XBMCAppliance$applianceInfo$Orig)(XBMCAppliance*, SEL);
 + (BOOL) needsApplianceInfoHack
 {
   // if the runtime base class (BRBaseAppliance) doesn't have the initWithApplianceInfo selector
-  // we need to hack the appliance info in (id) applianceInfo (XBMCAppliance$applianceInfo)
+  // we need to hack the appliance info in (id) applianceInfo (KodiAppliance$applianceInfo)
   if (class_respondsToSelector(objc_getClass("BRBaseAppliance"),@selector(initWithApplianceInfo:)))
     return FALSE;
   return TRUE;
@@ -140,7 +140,7 @@ static id (*XBMCAppliance$applianceInfo$Orig)(XBMCAppliance*, SEL);
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
-@interface XBMCTopShelfController : NSObject
+@interface KodiTopShelfController : NSObject
 {
 }
 - (void) selectCategoryWithIdentifier:(id)identifier;
@@ -152,7 +152,7 @@ static id (*XBMCAppliance$applianceInfo$Orig)(XBMCAppliance*, SEL);
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
-@implementation XBMCTopShelfController
+@implementation KodiTopShelfController
 
 - (void) selectCategoryWithIdentifier:(id)identifier 
 {
@@ -164,11 +164,11 @@ static id (*XBMCAppliance$applianceInfo$Orig)(XBMCAppliance*, SEL);
   id topShelf = [[cls alloc] init];
   
   // diddle the topshelf logo on old gui
-  if ([XBMCATV2Detector hasOldGui])
+  if ([AppATV2Detector hasOldGui])
   {
     Class cls = objc_getClass("BRImage");
     BRImageControl *imageControl = (BRImageControl *)MSHookIvar<id>(topShelf, "_productImage");// hook the productImage so we can diddle with it
-    BRImage *gpImage = [cls imageWithPath:[[NSBundle bundleForClass:[XBMCATV2Detector class]] pathForResource:@"XBMC" ofType:@"png"]];
+    BRImage *gpImage = [cls imageWithPath:[[NSBundle bundleForClass:[AppATV2Detector class]] pathForResource:@"TopShelf" ofType:@"png"]];
     [imageControl setImage:gpImage];
   }
 
@@ -193,7 +193,7 @@ static id (*XBMCAppliance$applianceInfo$Orig)(XBMCAppliance*, SEL);
   BRImageControl *imageControl = (BRImageControl *)MSHookIvar<id>(mainMenuImageControl, "_content");// hook the image so we can diddle with it
   
   // load our logo into it
-  BRImage *gpImage = [BRImageCls imageWithPath:[[NSBundle bundleForClass:[XBMCATV2Detector class]] pathForResource:@"XBMC" ofType:@"png"]];
+  BRImage *gpImage = [BRImageCls imageWithPath:[[NSBundle bundleForClass:[AppATV2Detector class]] pathForResource:@"Kodi" ofType:@"png"]];
   [imageControl setImage:gpImage];
   return topShelf;
 }
@@ -207,32 +207,32 @@ static id (*XBMCAppliance$applianceInfo$Orig)(XBMCAppliance*, SEL);
 //--------------------------------------------------------------
 // SECTIONCOMMENT
 // since we can't inject ivars we need to use associated objects
-// these are the keys for XBMCAppliance
-//implementation XBMCAppliance
+// these are the keys for KodiAppliance
+//implementation KodiAppliance
 static char topShelfControllerKey;
 static char applianceCategoriesKey;
 
-static NSString* XBMCApplianceInfo$key(XBMCApplianceInfo* self, SEL _cmd)
+static NSString* KodiApplianceInfo$key(KodiApplianceInfo* self, SEL _cmd)
 {
-  return [[[NSBundle bundleForClass:objc_getClass("XBMCATV2Detector")] infoDictionary] objectForKey:(NSString*)kCFBundleIdentifierKey];
+  return [[[NSBundle bundleForClass:objc_getClass("AppATV2Detector")] infoDictionary] objectForKey:(NSString*)kCFBundleIdentifierKey];
 }
 
-static NSString* XBMCApplianceInfo$name(XBMCApplianceInfo* self, SEL _cmd)
+static NSString* KodiApplianceInfo$name(KodiApplianceInfo* self, SEL _cmd)
 {
-  return [[[NSBundle bundleForClass:objc_getClass("XBMCATV2Detector")] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
+  return [[[NSBundle bundleForClass:objc_getClass("AppATV2Detector")] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
 }
 
-static id XBMCApplianceInfo$localizedStringsFileName(XBMCApplianceInfo* self, SEL _cmd)
+static id KodiApplianceInfo$localizedStringsFileName(KodiApplianceInfo* self, SEL _cmd)
 {
-  return @"xbmc";
+  return @"kodi";
 }
 
-static void XBMCAppliance$XBMCfixUIDevice(XBMCAppliance* self, SEL _cmd)
+static void KodiAppliance$XBMCfixUIDevice(KodiAppliance* self, SEL _cmd)
 {
   // iOS 5.x has removed the internal load of UIKit in AppleTV app
   // and there is an overlap of some UIKit and AppleTV methods.
   // This voodoo seems to clear up the wonkiness. :)
-  if ([XBMCATV2Detector isIos5])
+  if ([AppATV2Detector isIos5])
  {
     id cd = nil;
 
@@ -256,18 +256,18 @@ static void XBMCAppliance$XBMCfixUIDevice(XBMCAppliance* self, SEL _cmd)
 }
 
 
-static id XBMCAppliance$init(XBMCAppliance* self, SEL _cmd)
+static id KodiAppliance$init(KodiAppliance* self, SEL _cmd)
 {
    //NSLog(@"%s", __PRETTY_FUNCTION__);
-  if ([XBMCATV2Detector needsApplianceInfoHack])
+  if ([AppATV2Detector needsApplianceInfoHack])
   {
     NSLog(@"%s for ios 4", __PRETTY_FUNCTION__);
-    if ((self = XBMCAppliance$init$Orig(self, _cmd))!= nil)
+    if ((self = KodiAppliance$init$Orig(self, _cmd))!= nil)
     {
-      id topShelfControl = [[XBMCTopShelfController alloc] init];
+      id topShelfControl = [[KodiTopShelfController alloc] init];
       [self setTopShelfController:topShelfControl];
       
-      NSArray *catArray = [[NSArray alloc] initWithObjects:XBMCAppliance_CAT_4,nil];
+      NSArray *catArray = [[NSArray alloc] initWithObjects:KodiAppliance_CAT_4,nil];
       [self setApplianceCategories:catArray];
       return self;
     }    
@@ -280,31 +280,31 @@ static id XBMCAppliance$init(XBMCAppliance* self, SEL _cmd)
   return self;
 }
 
-static id XBMCAppliance$identifierForContentAlias(XBMCAppliance* self, SEL _cmd, id contentAlias)
+static id KodiAppliance$identifierForContentAlias(KodiAppliance* self, SEL _cmd, id contentAlias)
 {
-  return@"xbmc";
+  return@"kodi";
 }
 
-static BOOL XBMCAppliance$handleObjectSelection(XBMCAppliance* self, SEL _cmd, id fp8, id fp12)
+static BOOL KodiAppliance$handleObjectSelection(KodiAppliance* self, SEL _cmd, id fp8, id fp12)
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
   return YES;
 }              
 
-static id XBMCAppliance$applianceInfo(XBMCAppliance* self, SEL _cmd)
+static id KodiAppliance$applianceInfo(KodiAppliance* self, SEL _cmd)
 {
   //NSLog(@"%s", __PRETTY_FUNCTION)
   
   // load our plist into memory and merge it with
   // the dict from the baseclass if needed
   // cause ios seems to fail on that somehow (at least on 4.x)
-  if ([XBMCATV2Detector needsApplianceInfoHack] && self != nil)
+  if ([AppATV2Detector needsApplianceInfoHack] && self != nil)
   {
-    id original = XBMCAppliance$applianceInfo$Orig(self, _cmd);
+    id original = KodiAppliance$applianceInfo$Orig(self, _cmd);
     id info =  MSHookIvar<id>(original, "_info");// hook the infoDictionary so we can diddle with it
     
-    NSString *plistPath = [[NSBundle bundleForClass:objc_getClass("XBMCATV2Detector")] pathForResource:@"Info" ofType:@"plist"];
-    NSString *bundlePath = [[NSBundle bundleForClass:objc_getClass("XBMCATV2Detector")] bundlePath];
+    NSString *plistPath = [[NSBundle bundleForClass:objc_getClass("AppATV2Detector")] pathForResource:@"Info" ofType:@"plist"];
+    NSString *bundlePath = [[NSBundle bundleForClass:objc_getClass("AppATV2Detector")] bundlePath];
     NSMutableDictionary *ourInfoDict = [[NSMutableDictionary alloc] initWithContentsOfFile:plistPath];
 
     if (ourInfoDict != nil && bundlePath != nil)
@@ -320,57 +320,57 @@ static id XBMCAppliance$applianceInfo(XBMCAppliance* self, SEL _cmd)
   }
   else
   {
-    Class cls = objc_getClass("XBMCApplianceInfo");
+    Class cls = objc_getClass("KodiApplianceInfo");
     return [[[cls alloc] init] autorelease];
   }
   return nil;
 }
 
 
-static id XBMCAppliance$topShelfController(XBMCAppliance* self, SEL _cmd) 
+static id KodiAppliance$topShelfController(KodiAppliance* self, SEL _cmd)
 { 
   return objc_getAssociatedObject(self, &topShelfControllerKey);
 }
 
 
-static void XBMCAppliance$setTopShelfController(XBMCAppliance* self, SEL _cmd, id topShelfControl) 
+static void KodiAppliance$setTopShelfController(KodiAppliance* self, SEL _cmd, id topShelfControl)
 { 
   objc_setAssociatedObject(self, &topShelfControllerKey, topShelfControl, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-static id XBMCAppliance$applianceCategories(XBMCAppliance* self, SEL _cmd) 
+static id KodiAppliance$applianceCategories(KodiAppliance* self, SEL _cmd)
 {
   return objc_getAssociatedObject(self, &applianceCategoriesKey);
 }
 
-static void XBMCAppliance$setApplianceCategories(XBMCAppliance* self, SEL _cmd, id applianceCategories)
+static void KodiAppliance$setApplianceCategories(KodiAppliance* self, SEL _cmd, id applianceCategories)
 { 
   objc_setAssociatedObject(self, &applianceCategoriesKey, applianceCategories, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-static id XBMCAppliance$initWithApplianceInfo(XBMCAppliance* self, SEL _cmd, id applianceInfo) 
+static id KodiAppliance$initWithApplianceInfo(KodiAppliance* self, SEL _cmd, id applianceInfo)
 { 
   //NSLog(@"%s", __PRETTY_FUNCTION__);
-  if((self = XBMCAppliance$initWithApplianceInfo$Orig(self, _cmd, applianceInfo)) != nil) 
+  if((self = KodiAppliance$initWithApplianceInfo$Orig(self, _cmd, applianceInfo)) != nil)
   {
-    id topShelfControl = [[XBMCTopShelfController alloc] init];
+    id topShelfControl = [[KodiTopShelfController alloc] init];
     [self setTopShelfController:topShelfControl];
 
-    NSArray *catArray = [[NSArray alloc] initWithObjects:XBMCAppliance_CAT_5andhigher,nil];
+    NSArray *catArray = [[NSArray alloc] initWithObjects:KodiAppliance_CAT_5andhigher,nil];
     [self setApplianceCategories:catArray];
   } 
   return self;
 }
 
-static id XBMCAppliance$controllerForIdentifier(XBMCAppliance* self, SEL _cmd, id identifier, id args)
+static id KodiAppliance$controllerForIdentifier(KodiAppliance* self, SEL _cmd, id identifier, id args)
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
   id menuController = nil;
   Class cls = objc_getClass("BRApplication");
-  if ([identifier isEqualToString:@"xbmc"])
+  if ([identifier isEqualToString:@"kodi"])
   {
     [self XBMCfixUIDevice];
-    menuController = [[objc_getClass("XBMCController") alloc] init];
+    menuController = [[objc_getClass("KodiController") alloc] init];
     if (menuController == nil)
       NSLog(@"initialise controller - fail");
   }
@@ -419,48 +419,48 @@ static __attribute__((constructor)) void initApplianceRuntimeClasses()
   // XBMC does so too.
   safeHook(objc_getClass("BRPopUpManager"), @selector(_displayPopUp:), (IMP)&XBMCPopUpManager$_displayPopUp, nil, NO);
   
-  // subclass BRApplianceInfo into XBMCApplianceInfo
-  Class XBMCApplianceInfoCls = objc_allocateClassPair(objc_getClass("BRApplianceInfo"), "XBMCApplianceInfo", 0);
+  // subclass BRApplianceInfo into KodiApplianceInfo
+  Class KodiApplianceInfoCls = objc_allocateClassPair(objc_getClass("BRApplianceInfo"), "KodiApplianceInfo", 0);
 
   // and hook up our methods (implementation of the base class methods)
-  // XBMCApplianceInfo::key
-  safeHook(XBMCApplianceInfoCls,@selector(key), (IMP)&XBMCApplianceInfo$key, nil);
-  // XBMCApplianceInfo::name
-  safeHook(XBMCApplianceInfoCls,@selector(name), (IMP)&XBMCApplianceInfo$name, nil);
-  // XBMCApplianceInfo::localizedStringsFileName
-  safeHook(XBMCApplianceInfoCls,@selector(localizedStringsFileName), (IMP)&XBMCApplianceInfo$localizedStringsFileName, nil);
+  // KodiApplianceInfo::key
+  safeHook(KodiApplianceInfoCls,@selector(key), (IMP)&KodiApplianceInfo$key, nil);
+  // KodiApplianceInfo::name
+  safeHook(KodiApplianceInfoCls,@selector(name), (IMP)&KodiApplianceInfo$name, nil);
+  // KodiApplianceInfo::localizedStringsFileName
+  safeHook(KodiApplianceInfoCls,@selector(localizedStringsFileName), (IMP)&KodiApplianceInfo$localizedStringsFileName, nil);
 
   // and register the class to the runtime
-  objc_registerClassPair(XBMCApplianceInfoCls);
+  objc_registerClassPair(KodiApplianceInfoCls);
 
-  // subclass BRBaseAppliance into XBMCAppliance
-  Class XBMCApplianceCls = objc_allocateClassPair(objc_getClass("BRBaseAppliance"), "XBMCAppliance", 0);
+  // subclass BRBaseAppliance into KodiAppliance
+  Class KodiApplianceCls = objc_allocateClassPair(objc_getClass("BRBaseAppliance"), "KodiAppliance", 0);
   // add our custom methods which are not part of the baseclass
-  // XBMCAppliance::XBMCfixUIDevice
-  class_addMethod(XBMCApplianceCls,@selector(XBMCfixUIDevice), (IMP)XBMCAppliance$XBMCfixUIDevice, "v@:");
-  class_addMethod(XBMCApplianceCls,@selector(setTopShelfController:), (IMP)&XBMCAppliance$setTopShelfController, "v@:@");
-  class_addMethod(XBMCApplianceCls,@selector(setApplianceCategories:), (IMP)&XBMCAppliance$setApplianceCategories, "v@:@");
+  // KodiAppliance::XBMCfixUIDevice
+  class_addMethod(KodiApplianceCls,@selector(XBMCfixUIDevice), (IMP)KodiAppliance$XBMCfixUIDevice, "v@:");
+  class_addMethod(KodiApplianceCls,@selector(setTopShelfController:), (IMP)&KodiAppliance$setTopShelfController, "v@:@");
+  class_addMethod(KodiApplianceCls,@selector(setApplianceCategories:), (IMP)&KodiAppliance$setApplianceCategories, "v@:@");
 
   // and hook up our methods (implementation of the base class methods)
-  // XBMCAppliance::init
-  safeHook(XBMCApplianceCls,@selector(init), (IMP)&XBMCAppliance$init, (IMP*)&XBMCAppliance$init$Orig);
-  // XBMCAppliance::identifierForContentAlias
-  safeHook(XBMCApplianceCls,@selector(identifierForContentAlias:), (IMP)&XBMCAppliance$identifierForContentAlias, nil);
-  // XBMCAppliance::handleObjectSelection
-  safeHook(XBMCApplianceCls,@selector(handleObjectSelection:userInfo:), (IMP)&XBMCAppliance$handleObjectSelection, nil);
-  // XBMCAppliance::applianceInfo
-  safeHook(XBMCApplianceCls,@selector(applianceInfo), (IMP)&XBMCAppliance$applianceInfo, (IMP *)&XBMCAppliance$applianceInfo$Orig);
-  // XBMCAppliance::topShelfController
-  safeHook(XBMCApplianceCls,@selector(topShelfController), (IMP)&XBMCAppliance$topShelfController, nil);
-  // XBMCAppliance::applianceCategories
-  safeHook(XBMCApplianceCls,@selector(applianceCategories), (IMP)&XBMCAppliance$applianceCategories, nil);  
-  // XBMCAppliance::initWithApplianceInfo
-  safeHook(XBMCApplianceCls,@selector(initWithApplianceInfo:), (IMP)&XBMCAppliance$initWithApplianceInfo, (IMP*)&XBMCAppliance$initWithApplianceInfo$Orig);
-  // XBMCAppliance::controllerForIdentifier
-  safeHook(XBMCApplianceCls,@selector(controllerForIdentifier:args:), (IMP)&XBMCAppliance$controllerForIdentifier, nil);
+  // KodiAppliance::init
+  safeHook(KodiApplianceCls,@selector(init), (IMP)&KodiAppliance$init, (IMP*)&KodiAppliance$init$Orig);
+  // KodiAppliance::identifierForContentAlias
+  safeHook(KodiApplianceCls,@selector(identifierForContentAlias:), (IMP)&KodiAppliance$identifierForContentAlias, nil);
+  // KodiAppliance::handleObjectSelection
+  safeHook(KodiApplianceCls,@selector(handleObjectSelection:userInfo:), (IMP)&KodiAppliance$handleObjectSelection, nil);
+  // KodiAppliance::applianceInfo
+  safeHook(KodiApplianceCls,@selector(applianceInfo), (IMP)&KodiAppliance$applianceInfo, (IMP *)&KodiAppliance$applianceInfo$Orig);
+  // KodiAppliance::topShelfController
+  safeHook(KodiApplianceCls,@selector(topShelfController), (IMP)&KodiAppliance$topShelfController, nil);
+  // KodiAppliance::applianceCategories
+  safeHook(KodiApplianceCls,@selector(applianceCategories), (IMP)&KodiAppliance$applianceCategories, nil);
+  // KodiAppliance::initWithApplianceInfo
+  safeHook(KodiApplianceCls,@selector(initWithApplianceInfo:), (IMP)&KodiAppliance$initWithApplianceInfo, (IMP*)&KodiAppliance$initWithApplianceInfo$Orig);
+  // KodiAppliance::controllerForIdentifier
+  safeHook(KodiApplianceCls,@selector(controllerForIdentifier:args:), (IMP)&KodiAppliance$controllerForIdentifier, nil);
 
   // and register the class to the runtime
-  objc_registerClassPair(XBMCApplianceCls);
+  objc_registerClassPair(KodiApplianceCls);
  
   // save this as static for referencing it in the macro at the top of the file
   BRApplianceCategoryCls = objc_getClass("BRApplianceCategory");
