@@ -4,7 +4,7 @@ include ../config.site.mk
 # lib name, version
 BASE_URL=http://nightlies.plexapp.com/plex-media-server-sources
 LIBNAME=breakpad
-VERSION=20130822
+VERSION=20140814
 SOURCE=$(LIBNAME)-$(VERSION)
 FILENAME=v$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
