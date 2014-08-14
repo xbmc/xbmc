@@ -3268,6 +3268,21 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
 
     if (item) // If we got a valid item, do the lookup
       return GetItemImage(item.get(), info.m_info, fallback); // Image prioritizes images over labels (in the case of music item ratings for instance)
+    else
+    {
+       // we dont have a valid item use the selected item
+      CGUIMediaWindow *window = (CGUIMediaWindow*)GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+      {
+        CFileItemPtr item = window->GetCurrentListItem();
+        
+        if (info.m_info == LISTITEM_COMPOSITE_IMAGE)
+        {
+          CStdString args = m_stringParameters[info.GetData1()];
+          return PlexUtils::GetCompositeImageUrl(*item, args);
+        }
+      }
+    }
   }
   else if (info.m_info == PLAYER_TIME)
   {
