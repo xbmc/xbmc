@@ -9,7 +9,7 @@
 	<key>CFBundleDocumentTypes</key>
 	<array/>
 	<key>CFBundleExecutable</key>
-	<string>XBMC</string>
+	<string>@APP_NAME@</string>
 	<key>CFBundleIcons</key>
 	<dict>
 		<key>CFBundlePrimaryIcon</key>
@@ -40,11 +40,11 @@
 		</dict>
 	</dict>
 	<key>CFBundleIdentifier</key>
-	<string>org.xbmc.xbmc-ios</string>
+	<string>org.xbmc.kodi-ios</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>XBMC</string>
+	<string>@APP_NAME@</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

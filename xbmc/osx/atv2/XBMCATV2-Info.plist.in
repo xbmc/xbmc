@@ -3,15 +3,15 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleName</key>
-	<string>XBMC</string>
+	<string>@APP_NAME@</string>
 	<key>DTXcode</key>
 	<string>0324</string>
 	<key>FRApplianceDataSourceType</key>
 	<string>All</string>
 	<key>CFBundleExecutable</key>
-	<string>XBMC</string>
+	<string>@APP_NAME@</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.apple.frontrow.appliance.xbmc</string>
+	<string>com.apple.frontrow.appliance.kodi</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -39,8 +39,8 @@
 	<key>MinimumOSVersion</key>
 	<string>4.1</string>
 	<key>NSPrincipalClass</key>
-	<string>XBMCAppliance</string>
+	<string>KodiAppliance</string>
 	<key>FRApplianceName</key>
-	<string>XBMC</string>
+	<string>@APP_NAME@</string>
 </dict>
 </plist>
