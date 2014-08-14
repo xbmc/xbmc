@@ -3276,7 +3276,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
       {
         CFileItemPtr item = window->GetCurrentListItem();
         
-        if (info.m_info == LISTITEM_COMPOSITE_IMAGE)
+        if ((info.m_info == LISTITEM_COMPOSITE_IMAGE) && (item))
         {
           CStdString args = m_stringParameters[info.GetData1()];
           return PlexUtils::GetCompositeImageUrl(*item, args);
