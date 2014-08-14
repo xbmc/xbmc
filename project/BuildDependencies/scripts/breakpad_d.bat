@@ -3,7 +3,7 @@
 SET LOC_PATH=%CD%
 SET FILES=%LOC_PATH%\breakpad_d.txt
 
-CALL dlextract.bat boost %FILES%
+CALL dlextract.bat breakpad %FILES%
 
 cd %TMP_PATH%
 

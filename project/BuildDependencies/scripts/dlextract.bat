@@ -8,7 +8,7 @@ cd %DL_PATH%
 FOR /F "eol=; tokens=1,2" %%f IN (%2) DO (
 echo %%f %%g
   IF NOT EXIST %%f (
-    %WGET% "%%g/%%f"
+    %WGET% --no-check-certificate "%%g/%%f"
   ) ELSE (
     echo Already have %%f
   )

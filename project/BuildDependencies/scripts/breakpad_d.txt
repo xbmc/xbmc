@@ -1,2 +1,2 @@
 ; filename                          mirror of the file
-breakpad.zip                       https://nightlies.plex.tv/plex-dependencies/plex-home-theater-dependencies/win32/
+breakpad-20140814.zip                       https://nightlies.plex.tv/plex-dependencies/plex-home-theater-dependencies/win32/
