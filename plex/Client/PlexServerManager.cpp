@@ -218,7 +218,7 @@ void CPlexServerManager::ServerRefreshComplete(int connectionType)
     NotifyAboutServer(m_serverMap.find(uuid)->second, false);
     
     // if this is currently the best we have, let's remove that.
-    if (m_bestServer->GetUUID() == uuid)
+    if (m_bestServer && m_bestServer->GetUUID() == uuid)
       ClearBestServer();
     
     m_serverMap.erase(uuid);

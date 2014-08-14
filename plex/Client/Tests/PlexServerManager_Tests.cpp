@@ -77,6 +77,17 @@ TEST_F(PlexServerManagerTest, updateAndRemove)
   EXPECT_FALSE(serverMgr->GetBestServer());
 }
 
+// This caused a nasty crash
+TEST_F(PlexServerManagerTest, updateNoBestServer)
+{
+  CPlexServerPtr server = CPlexServerPtr(new CPlexServer("", "foo", true));
+
+  PlexServerList list;
+  list.push_back(server);
+
+  serverMgr->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MANUAL);
+}
+
 TEST_F(PlexServerManagerTest, updateFromTwoSources)
 {
   // a server that has a GDM connection
