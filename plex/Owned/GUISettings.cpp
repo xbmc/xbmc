@@ -920,6 +920,7 @@ void CGUISettings::Initialize()
   AddInt(NULL, "plexmediaserver.localquality", 52201, 0, 0, 1, INT_MAX, SPIN_CONTROL_INT);
   AddString(qual, "plexmediaserver.remotequalitystr", 52202, g_localizeStrings.Get(42999), BUTTON_CONTROL_MISC_INPUT);
   AddInt(NULL, "plexmediaserver.remotequality", 52201, 0, 0, 1, INT_MAX, SPIN_CONTROL_INT);
+  AddBool(qual, "plexmediaserver.forcetranscode", 52609, false);
 
   // TODO: Hook this up to preferred channel quality picker (should be like 1080p, 720p, 480p, SD)
   AddString(qual, "plexmediaserver.onlinemediaqualitystr", 52203, g_localizeStrings.Get(13181), BUTTON_CONTROL_MISC_INPUT);

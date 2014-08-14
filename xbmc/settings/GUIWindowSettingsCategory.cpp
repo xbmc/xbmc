@@ -2281,6 +2281,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
       g_guiSettings.SetString("plexmediaserver.localqualitystr", CPlexTranscoderClient::GetPrettyBitrate(quality).c_str());
     else
       g_guiSettings.SetString("plexmediaserver.localqualitystr", g_localizeStrings.Get(42999));
+    
+    g_guiSettings.SetBool("plexmediaserver.forcetranscode",
+                          g_guiSettings.GetBool("plexmediaserver.forcetranscode") &&
+                          ((g_guiSettings.GetInt("plexmediaserver.localquality") != 0) ||
+                           (g_guiSettings.GetInt("plexmediaserver.remotequality") != 0)));
   }
   else if (strSetting.Equals("plexmediaserver.remotequalitystr"))
   {
@@ -2290,6 +2295,12 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
       g_guiSettings.SetString("plexmediaserver.remotequalitystr", CPlexTranscoderClient::GetPrettyBitrate(quality).c_str());
     else
       g_guiSettings.SetString("plexmediaserver.remotequalitystr", g_localizeStrings.Get(42999));
+    
+    g_guiSettings.SetBool("plexmediaserver.forcetranscode",
+                          g_guiSettings.GetBool("plexmediaserver.forcetranscode") &&
+                          ((g_guiSettings.GetInt("plexmediaserver.localquality") != 0) ||
+                          (g_guiSettings.GetInt("plexmediaserver.remotequality") != 0)));
+
   }
   else if (strSetting.Equals("plexmediaserver.onlinemediaqualitystr"))
   {

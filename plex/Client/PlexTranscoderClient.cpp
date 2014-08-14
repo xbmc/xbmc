@@ -253,10 +253,20 @@ bool CPlexTranscoderClient::ShouldTranscode(CPlexServerPtr server, const CFileIt
   if (!server || !server->GetActiveConnection())
     return false;
 
+  int bitrate = item.GetProperty("bitrate").asInteger();
+  int transcodeSetting;
+  
   if (server->GetActiveConnection()->IsLocal())
-    return g_guiSettings.GetInt("plexmediaserver.localquality") != 0;
+    transcodeSetting = g_guiSettings.GetInt("plexmediaserver.localquality");
   else
-    return g_guiSettings.GetInt("plexmediaserver.remotequality") != 0;
+    transcodeSetting = g_guiSettings.GetInt("plexmediaserver.remotequality");
+  
+  if (g_guiSettings.GetBool("plexmediaserver.forcetranscode"))
+    return transcodeSetting != 0;
+  else
+    return transcodeSetting < bitrate;
+  
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

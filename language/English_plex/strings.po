@@ -1074,3 +1074,7 @@ msgstr "Queue"
 msgctxt "#52608"
 msgid "Toggle Edit Mode"
 msgstr "Toggle Edit Mode"
+
+msgctxt "#52609"
+msgid "Force Transcode"
+msgstr "Force Transcode"
