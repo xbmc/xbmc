@@ -5440,7 +5440,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
     extFilter.AppendJoin(PrepareSQL("join actors on actors.idActor = artistlinkmusicvideo.idArtist"));
     if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
-      extFilter.fields += " path.strPath";
+      extFilter.fields += ", path.strPath";
       extFilter.AppendJoin("join files on files.idFile = musicvideoview.idFile join path on path.idPath = files.idPath");
     }
 
