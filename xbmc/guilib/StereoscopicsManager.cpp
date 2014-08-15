@@ -477,9 +477,13 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
         
 
       // add choices
-      int idx_preferred = pDlgSelect->Add((CStdString)g_localizeStrings.Get(36530)
+      CStdString labelPreferred = GetLabelForStereoMode(preferred);
+      if (CSettings::Get().GetInt("videoscreen.preferedstereoscopicmode") == RENDER_STEREO_MODE_AUTO)
+        labelPreferred = g_localizeStrings.Get(36532);
+
+      int idx_preferred = pDlgSelect->Add((CStdString)g_localizeStrings.Get(36530) // preferred
                                      + " ("
-                                     + GetLabelForStereoMode(preferred)
+                                     + labelPreferred
                                      + ")");
 
       idx_mono = pDlgSelect->Add( g_localizeStrings.Get(36529) ); // mono / 2d
