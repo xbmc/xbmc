@@ -533,6 +533,11 @@ bool CExternalPlayer::CanSeek()
   return false;
 }
 
+
+void CExternalPlayer::SetEDL(const std::string& path)
+{
+}
+
 void CExternalPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 {
 }

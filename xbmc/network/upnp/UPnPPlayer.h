@@ -47,6 +47,7 @@ public:
   virtual bool IsPaused() const;
   virtual bool HasVideo() const { return false; }
   virtual bool HasAudio() const { return false; }
+  virtual void SetEDL(const std::string& path);
   virtual void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride);
   virtual void SeekPercentage(float fPercent = 0);
   virtual float GetPercentage();

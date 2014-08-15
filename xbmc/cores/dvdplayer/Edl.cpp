@@ -107,15 +107,15 @@ bool CEdl::ReadEditDecisionLists(const std::string& strMovie, const float fFrame
   bool bFound = false;
 
   /*
-   * Only check for edit decision lists if the movie is on the local hard drive, or accessed over a
-   * network share.
+   * Only check for edit decision lists if the movie is on the local hard drive, accessed over a
+   * network share, or the full path is specified for an internet stream.
    */
   if ((URIUtils::IsHD(strMovie)  || 
        URIUtils::IsSmb(strMovie) || 
        URIUtils::IsNfs(strMovie) || 
+       (URIUtils::IsInternetStream(strMovie) && m_fullPathSet) ||
        URIUtils::IsAfp(strMovie))         &&
-      !URIUtils::IsPVRRecording(strMovie) &&
-      !URIUtils::IsInternetStream(strMovie))
+      !URIUtils::IsPVRRecording(strMovie))
   {
     CLog::Log(LOGDEBUG, "%s - Checking for edit decision lists (EDL) on local drive or remote share for: %s",
               __FUNCTION__, strMovie.c_str());
@@ -171,7 +171,11 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
 {
   Clear();
 
-  std::string edlFilename(URIUtils::ReplaceExtension(strMovie, ".edl"));
+  std::string edlFilename;
+  if (!m_fullPathSet)
+    edlFilename = URIUtils::ReplaceExtension(strMovie, ".edl");
+  else
+    edlFilename = m_fullPath;
   if (!CFile::Exists(edlFilename))
     return false;
 
@@ -340,7 +344,13 @@ bool CEdl::ReadComskip(const std::string& strMovie, const float fFramesPerSecond
 {
   Clear();
 
-  std::string comskipFilename(URIUtils::ReplaceExtension(strMovie, ".txt"));
+
+  std::string comskipFilename;
+  if (!m_fullPathSet)
+    comskipFilename = URIUtils::ReplaceExtension(strMovie, ".txt");
+  else
+    comskipFilename = m_fullPath;
+  
   if (!CFile::Exists(comskipFilename))
     return false;
 
@@ -425,7 +435,12 @@ bool CEdl::ReadVideoReDo(const std::string& strMovie)
    */
 
   Clear();
-  std::string videoReDoFilename(URIUtils::ReplaceExtension(strMovie, ".Vprj"));
+
+  std::string videoReDoFilename;
+  if (!m_fullPathSet)
+    videoReDoFilename = URIUtils::ReplaceExtension(strMovie, ".Vprj");
+  else
+    videoReDoFilename = m_fullPath;
   if (!CFile::Exists(videoReDoFilename))
     return false;
 
@@ -511,7 +526,12 @@ bool CEdl::ReadBeyondTV(const std::string& strMovie)
 {
   Clear();
 
-  std::string beyondTVFilename(URIUtils::ReplaceExtension(strMovie, URIUtils::GetExtension(strMovie) + ".chapters.xml"));
+  std::string beyondTVFilename;
+  if (!m_fullPathSet)
+    beyondTVFilename = URIUtils::ReplaceExtension(strMovie, URIUtils::GetExtension(strMovie) + ".chapters.xml");
+  else
+    beyondTVFilename = m_fullPath;
+  
   if (!CFile::Exists(beyondTVFilename))
     return false;
 
@@ -1117,4 +1137,17 @@ void CEdl::MergeShortCommBreaks()
     }
   }
   return;
+}
+
+
+void CEdl::SetFullPath(const std::string& path)
+{
+  m_fullPathSet = true;
+  m_fullPath = path;
+}
+
+void CEdl::ClearFullPath()
+{
+  m_fullPathSet = false;
+  m_fullPath.clear();
 }

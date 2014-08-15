@@ -142,6 +142,7 @@ public:
   void  SetAudioStream(int iStream);
   void  SetAVDelay(float fValue = 0.0f);
   void  SetDynamicRangeCompression(long drc);
+  void  SetEDL(const std::string& path);
   void  SetMute(bool bOnOff);
   bool  SetPlayerState(const std::string& state);
   void  SetSubtitle(int iStream);

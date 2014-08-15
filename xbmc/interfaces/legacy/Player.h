@@ -245,6 +245,13 @@ namespace XBMCAddon
       // Player_SeekTime
       void seekTime(double seekTime) throw(PlayerException);
 
+
+      /**
+       *setEDL(path) -- set the full path for an edl file and enable it
+       */
+      void setEDL(const char* path) throw (PlayerException);
+
+
       /**
        * setSubtitles() -- set subtitle file and enable subtitlesn
        */

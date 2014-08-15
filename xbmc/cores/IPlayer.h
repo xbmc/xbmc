@@ -147,6 +147,7 @@ public:
   virtual void SeekPercentage(float fPercent = 0){}
   virtual float GetPercentage(){ return 0;}
   virtual float GetCachePercentage(){ return 0;}
+  virtual void SetEDL(const std::string& path){};
   virtual void SetMute(bool bOnOff){}
   virtual void SetVolume(float volume){}
   virtual bool ControlsVolume(){ return false;}

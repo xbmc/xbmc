@@ -379,6 +379,15 @@ namespace XBMCAddon
       g_application.SeekTime( pTime );
     }
 
+    void Player::setEDL(const char* path) throw (PlayerException)
+    {
+      XBMC_TRACE
+      if (!g_application.m_pPlayer->IsPlaying())
+        throw PlayerException("XBMC is not playing any media file");
+
+      g_application.m_pPlayer->SetEDL(path);
+    }
+
     void Player::setSubtitles(const char* cLine)
     {
       XBMC_TRACE;

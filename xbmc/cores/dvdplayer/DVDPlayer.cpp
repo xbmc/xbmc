@@ -3868,6 +3868,24 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, s.source, s.id);
 }
 
+void CDVDPlayer::SetEDL(const std::string& path)
+{
+  m_Edl.Clear();
+  m_EdlAutoSkipMarkers.Clear();
+  if (m_CurrentVideo.id >= 0 && m_CurrentVideo.hint.fpsrate > 0 && m_CurrentVideo.hint.fpsscale > 0)
+  {
+    m_Edl.SetFullPath(path);
+    float fFramesPerSecond = (float)m_CurrentVideo.hint.fpsrate / (float)m_CurrentVideo.hint.fpsscale;
+    m_Edl.ReadEditDecisionLists(m_filename, fFramesPerSecond, m_CurrentVideo.hint.height);
+    CLog::Log(LOGNOTICE, "CDVDPlayer: new edl set");
+    m_Edl.ClearFullPath();
+  }
+  else
+  {
+    CLog::Log(LOGWARNING, "CDVDPlayer: There was a problem setting the new edl");
+  }
+}
+
 void CDVDPlayer::UpdatePlayState(double timeout)
 {
   if(m_StateInput.timestamp != 0

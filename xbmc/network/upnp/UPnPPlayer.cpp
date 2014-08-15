@@ -506,6 +506,11 @@ void CUPnPPlayer::SeekPercentage(float percent)
     SeekTime((int64_t)(tot * percent / 100));
 }
 
+
+void CUPnPPlayer::SetEDL(const std::string& path)
+{
+}
+
 void CUPnPPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 {
 }
