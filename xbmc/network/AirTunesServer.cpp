@@ -450,7 +450,7 @@ bool CAirTunesServer::Initialize(const std::string &password)
   if (m_pLibShairplay->Load())
   {
 
-    raop_callbacks_t ao;
+    raop_callbacks_t ao = {};
     ao.cls                  = m_pPipe;
     ao.audio_init           = AudioOutputFunctions::audio_init;
     ao.audio_set_volume     = AudioOutputFunctions::audio_set_volume;
