@@ -510,6 +510,8 @@
             <options>
               <option label="36521">0</option> <!-- ASK     -->
               <option label="36522">1</option> <!-- Preferred mode -->
+              <option label="36509">2</option> <!-- Monoscopic / 2D -->
+              <option label="36028">100</option> <!-- Ignore -->
             </options>
           </constraints>
           <control type="spinner" format="integer" delayed="true"/>
@@ -2294,6 +2296,9 @@
           <constraints>
             <options>preferedstereoscopicviewmodes</options>
           </constraints>
+          <updates>
+            <update type="change" />
+          </updates>
           <control type="list" format="integer"/>
         </setting>
       </group>

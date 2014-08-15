@@ -13427,8 +13427,10 @@ msgctxt "#36027"
 msgid "This device needs servicing"
 msgstr ""
 
+#. Label for a select option
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 #: system/peripherals.xml
+#: system/settings.xml
 msgctxt "#36028"
 msgid "Ignore"
 msgstr ""
