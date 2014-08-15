@@ -2290,7 +2290,7 @@
         </setting>
         <setting id="videoscreen.preferedstereoscopicmode" parent="videoscreen.stereoscopicmode" type="integer" label="36524" help="36540">
           <level>2</level>
-          <default>0</default>
+          <default>100</default> <!-- ENUM RENDER_STEREO_MODE_AUTO -->
           <constraints>
             <options>preferedstereoscopicviewmodes</options>
           </constraints>
