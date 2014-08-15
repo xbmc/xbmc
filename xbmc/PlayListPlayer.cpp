@@ -323,7 +323,7 @@ bool CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
       item->m_lStartOffset = 0;
 
   /* PLEX */
-  if (m_iCurrentPlayList == PLAYLIST_VIDEO && m_bPlayedFirstFile)
+  if (m_iCurrentPlayList == PLAYLIST_VIDEO && m_bPlayedFirstFile && !g_application.CurrentFileItemPtr()->HasProperty("extraType"))
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
                                           g_localizeStrings.Get(13350),
                                           g_application.CurrentFileItemPtr()->GetLabel(), 2500L, false);
