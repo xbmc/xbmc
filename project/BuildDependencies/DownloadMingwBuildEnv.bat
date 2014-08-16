@@ -6,7 +6,7 @@ SET MSYS_INSTALL_PATH="%CD%\msys"
 SET MINGW_INSTALL_PATH="%CD%\msys\mingw"
 
 SET CUR_PATH=%CD%
-SET XBMC_PATH=%CD%\..\..
+SET APP_PATH=%CD%\..\..
 SET TMP_PATH=%CD%\scripts\tmp
 
 rem can't run rmdir and md back to back. access denied error otherwise.
@@ -41,7 +41,7 @@ SET FSTAB=%MINGW_INSTALL_PATH%
 SET FSTAB=%FSTAB:\=/%
 SET FSTAB=%FSTAB:"=%
 ECHO %FSTAB% /mingw>>"%MSYS_INSTALL_PATH%\etc\fstab"
-SET FSTAB=%XBMC_PATH%
+SET FSTAB=%APP_PATH%
 SET FSTAB=%FSTAB:\=/%
 SET FSTAB=%FSTAB:"=%
 ECHO %FSTAB% /xbmc>>"%MSYS_INSTALL_PATH%\etc\fstab"

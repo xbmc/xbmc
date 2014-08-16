@@ -3,7 +3,7 @@
 SETLOCAL
 
 SET CUR_PATH=%CD%
-SET XBMC_PATH=%CD%\..\..
+SET APP_PATH=%CD%\..\..
 SET TMP_PATH=%CD%\scripts\tmp
 
 rem can't run rmdir and md back to back. access denied error otherwise.

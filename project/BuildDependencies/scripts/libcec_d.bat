@@ -10,6 +10,6 @@ cd %TMP_PATH%
 mkdir "%CUR_PATH%\include\libcec"
 xcopy libcec\include\* "%CUR_PATH%\include\libcec\." /E /Q /I /Y
 
-copy libcec\libcec.dll "%XBMC_PATH%\system\."
+copy libcec\libcec.dll "%APP_PATH%\system\."
 
 cd %LOC_PATH%
