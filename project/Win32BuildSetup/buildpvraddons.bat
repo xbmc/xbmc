@@ -1,6 +1,6 @@
 @ECHO OFF
 
-REM Batch file to download and build xbmc-pvr-addons and place them in xbmc's addons folder
+REM Batch file to download and build pvr-addons and place them in application's add-ons folder
 
 SET CUR_DIR=%CD%
 SET EXITCODE=0
@@ -55,7 +55,7 @@ REM get the proper revision
 CALL %GITEXE% checkout %VERSION% > NUL 2>&1
 
 :build
-REM run DownloadBuildDeps.bat of xbmc-pvr-addons
+REM run DownloadBuildDeps.bat of pvr-addons
 CD "project\BuildDependencies"
 CALL DownloadBuildDeps.bat > NUL 2>&1
 CD "%CUR_DIR%"
@@ -70,7 +70,7 @@ IF %errorlevel%==1 (
 
 REM copy the built pvr addons into ADDONS_DIR
 CD "%BUILT_ADDONS_DIR%"
-SET ADDONS_DIR=..\..\..\..\Win32BuildSetup\BUILD_WIN32\Xbmc\xbmc-pvr-addons
+SET ADDONS_DIR=..\..\..\..\Win32BuildSetup\BUILD_WIN32\addons\
 
 REM exclude some files
 ECHO addon.xml.in >  exclude.txt
@@ -92,7 +92,7 @@ RMDIR "%TMP_DIR%" /S /Q > NUL
 GOTO done
 
 :error
-ECHO No git command available. Unable to fetch and build xbmc-pvr-addons.
+ECHO No git command available. Unable to fetch and build pvr-addons.
 SET EXITCODE=1
 
 :fail

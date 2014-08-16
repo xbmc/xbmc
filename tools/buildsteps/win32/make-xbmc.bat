@@ -100,9 +100,9 @@ goto EXE_COMPILE
   ECHO [1] a NEW EXE will be compiled for the BUILD_WIN32
   ECHO [2] existing EXE will be updated (quick mode compile) for the BUILD_WIN32
   ECHO ------------------------------------------------------------
-  set /P XBMC_COMPILE_ANSWER=Compile a new EXE? [1/2]:
-  if /I %XBMC_COMPILE_ANSWER% EQU 1 goto COMPILE_EXE
-  if /I %XBMC_COMPILE_ANSWER% EQU 2 goto COMPILE_NO_CLEAN_EXE
+  set /P APP_COMPILE_ANSWER=Compile a new EXE? [1/2]:
+  if /I %APP_COMPILE_ANSWER% EQU 1 goto COMPILE_EXE
+  if /I %APP_COMPILE_ANSWER% EQU 2 goto COMPILE_NO_CLEAN_EXE
   
 :COMPILE_EXE
   ECHO Wait while preparing the build.
@@ -160,8 +160,8 @@ goto EXE_COMPILE
   goto END
   )
 
-  set /P XBMC_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
-  if /I %XBMC_BUILD_ANSWER% NEQ y goto END
+  set /P APP_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
+  if /I %APP_BUILD_ANSWER% NEQ y goto END
   
   SET log="%WORKSPACE%\project\vs2010express\XBMC\%buildconfig%\objs\" XBMC.log
   

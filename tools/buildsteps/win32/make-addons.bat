@@ -78,7 +78,7 @@ rem determine the proper install path for the built addons
 IF %install% == true (
   SET ADDONS_INSTALL_PATH=%WORKDIR%\addons
 ) ELSE (
-  SET ADDONS_INSTALL_PATH=%WORKDIR%\project\Win32BuildSetup\BUILD_WIN32\Xbmc\xbmc-addons
+  SET ADDONS_INSTALL_PATH=%WORKDIR%\project\Win32BuildSetup\BUILD_WIN32\addons
 )
 
 ECHO --------------------------------------------------

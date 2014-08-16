@@ -95,9 +95,9 @@ set WORKSPACE=%CD%\..\..
   ECHO [1] a NEW EXE will be compiled for the BUILD_WIN32
   ECHO [2] existing EXE will be updated (quick mode compile) for the BUILD_WIN32
   ECHO ------------------------------------------------------------
-  set /P XBMC_COMPILE_ANSWER=Compile a new EXE? [1/2]:
-  if /I %XBMC_COMPILE_ANSWER% EQU 1 set buildmode=clean
-  if /I %XBMC_COMPILE_ANSWER% EQU 2 set buildmode=noclean
+  set /P APP_COMPILE_ANSWER=Compile a new EXE? [1/2]:
+  if /I %APP_COMPILE_ANSWER% EQU 1 set buildmode=clean
+  if /I %APP_COMPILE_ANSWER% EQU 2 set buildmode=noclean
 
   goto COMPILE_MINGW
   
@@ -201,20 +201,20 @@ set WORKSPACE=%CD%\..\..
   Echo addons\skin.touched\>>exclude.txt
   Echo addons\skin.confluence\>>exclude.txt
   
-  md BUILD_WIN32\Xbmc
+  md BUILD_WIN32\application
 
-  xcopy %EXE% BUILD_WIN32\Xbmc > NUL
-  xcopy ..\..\userdata BUILD_WIN32\Xbmc\userdata /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
-  copy ..\..\copying.txt BUILD_WIN32\Xbmc > NUL
-  copy ..\..\LICENSE.GPL BUILD_WIN32\Xbmc > NUL
-  copy ..\..\known_issues.txt BUILD_WIN32\Xbmc > NUL
-  xcopy dependencies\*.* BUILD_WIN32\Xbmc /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  xcopy %EXE% BUILD_WIN32\application > NUL
+  xcopy ..\..\userdata BUILD_WIN32\application\userdata /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
+  copy ..\..\copying.txt BUILD_WIN32\application > NUL
+  copy ..\..\LICENSE.GPL BUILD_WIN32\application > NUL
+  copy ..\..\known_issues.txt BUILD_WIN32\application > NUL
+  xcopy dependencies\*.* BUILD_WIN32\application /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   
-  xcopy ..\..\language BUILD_WIN32\Xbmc\language /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
-  xcopy ..\..\addons BUILD_WIN32\Xbmc\addons /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
-  xcopy ..\..\system BUILD_WIN32\Xbmc\system /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
-  xcopy ..\..\media BUILD_WIN32\Xbmc\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
-  xcopy ..\..\sounds BUILD_WIN32\Xbmc\sounds /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  xcopy ..\..\language BUILD_WIN32\application\language /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  xcopy ..\..\addons BUILD_WIN32\application\addons /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
+  xcopy ..\..\system BUILD_WIN32\application\system /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  xcopy ..\..\media BUILD_WIN32\application\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  xcopy ..\..\sounds BUILD_WIN32\application\sounds /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   
   ECHO ------------------------------------------------------------
   call buildpvraddons.bat
@@ -255,11 +255,11 @@ set WORKSPACE=%CD%\..\..
   TITLE XBMC for Windows Build Script
 
   IF EXIST exclude.txt del exclude.txt  > NUL
-  del /s /q /f BUILD_WIN32\Xbmc\*.so  > NUL
-  del /s /q /f BUILD_WIN32\Xbmc\*.h  > NUL
-  del /s /q /f BUILD_WIN32\Xbmc\*.cpp  > NUL
-  del /s /q /f BUILD_WIN32\Xbmc\*.exp  > NUL
-  del /s /q /f BUILD_WIN32\Xbmc\*.lib  > NUL
+  del /s /q /f BUILD_WIN32\application\*.so  > NUL
+  del /s /q /f BUILD_WIN32\application\*.h  > NUL
+  del /s /q /f BUILD_WIN32\application\*.cpp  > NUL
+  del /s /q /f BUILD_WIN32\application\*.exp  > NUL
+  del /s /q /f BUILD_WIN32\application\*.lib  > NUL
   
   ECHO ------------------------------------------------------------
   ECHO Build Succeeded!
@@ -272,10 +272,10 @@ set WORKSPACE=%CD%\..\..
   ECHO ------------------------------------------------------------
   call getdeploydependencies.bat
   CALL extract_git_rev.bat > NUL
-  SET XBMC_SETUPFILE=XBMCSetup-%GIT_REV%-%BRANCH%.exe
-  SET XBMC_PDBFILE=XBMCSetup-%GIT_REV%-%BRANCH%.pdb
-  ECHO Creating installer %XBMC_SETUPFILE%...
-  IF EXIST %XBMC_SETUPFILE% del %XBMC_SETUPFILE% > NUL
+  SET APP_SETUPFILE=XBMCSetup-%GIT_REV%-%BRANCH%.exe
+  SET APP_PDBFILE=XBMCSetup-%GIT_REV%-%BRANCH%.pdb
+  ECHO Creating installer %APP_SETUPFILE%...
+  IF EXIST %APP_SETUPFILE% del %APP_SETUPFILE% > NUL
   rem get path to makensis.exe from registry, first try tab delim
   FOR /F "tokens=2* delims=	" %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
 
@@ -312,15 +312,15 @@ set WORKSPACE=%CD%\..\..
   )
 
   SET NSISExe=%NSISExePath%\makensis.exe
-  "%NSISExe%" /V1 /X"SetCompressor /FINAL lzma" /Dxbmc_root="%CD%\BUILD_WIN32" /Dxbmc_revision="%GIT_REV%" /Dxbmc_target="%target%" /Dxbmc_branch="%BRANCH%" "XBMC for Windows.nsi"
-  IF NOT EXIST "%XBMC_SETUPFILE%" (
-	  set DIETEXT=Failed to create %XBMC_SETUPFILE%. NSIS installed?
+  "%NSISExe%" /V1 /X"SetCompressor /FINAL lzma" /Dapp_root="%CD%\BUILD_WIN32" /Dapp_revision="%GIT_REV%" /Dapp_target="%target%" /Dapp_branch="%BRANCH%" "XBMC for Windows.nsi"
+  IF NOT EXIST "%APP_SETUPFILE%" (
+	  set DIETEXT=Failed to create %APP_SETUPFILE%. NSIS installed?
 	  goto DIE
   )
-  copy %PDB% %XBMC_PDBFILE% > nul
+  copy %PDB% %APP_PDBFILE% > nul
   ECHO ------------------------------------------------------------
   ECHO Done!
-  ECHO Setup is located at %CD%\%XBMC_SETUPFILE%
+  ECHO Setup is located at %CD%\%APP_SETUPFILE%
   ECHO ------------------------------------------------------------
   GOTO VIEWLOG_EXE
   
@@ -345,8 +345,8 @@ set WORKSPACE=%CD%\..\..
   goto END
   )
 
-  set /P XBMC_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
-  if /I %XBMC_BUILD_ANSWER% NEQ y goto END
+  set /P APP_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
+  if /I %APP_BUILD_ANSWER% NEQ y goto END
   
   SET log="%CD%\..\vs2010express\XBMC\%buildconfig%\objs\" XBMC.log
   
