@@ -327,24 +327,6 @@ namespace XBMCAddon
       String getProperty(const char* key);
 
       /**
-       * addContextMenuItems([(label, action,)*], replaceItems) -- Adds item(s) to the context menu for media lists.\n
-       * \n
-       * items               : list - [(label, action,)*] A list of tuples consisting of label and action pairs.
-       *   - label           : string or unicode - item's label.
-       *   - action          : string or unicode - any built-in function to perform.
-       * replaceItems        : [opt] bool - True=only your items will show/False=your items will be added to context menu(Default).
-       * \n
-       * List of functions - http://wiki.xbmc.org/?title=List_of_Built_In_Functions \n
-       * \n
-       * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
-       *        Once you use a keyword, all following arguments require the keyword.\n
-       * \n
-       * example:
-       *   - listitem.addContextMenuItems([('Theater Showtimes', 'XBMC.RunScript(special://home/scripts/showtimes/default.py,Iron Man)',)])
-       */
-      //    void addContextMenuItems();
-
-      /**
        * setPath(path) -- Sets the listitem's path.\n
        * \n
        * path           : string or unicode - path, activated when item is clicked.\n
@@ -364,6 +346,14 @@ namespace XBMCAddon
        * *If known prehand, this can avoid xbmc doing HEAD requests to http servers to figure out file type.\n
        */
       void setMimeType(const String& mimetype);
+
+      /**
+       * setSubtitles() -- Sets subtitles for this listitem.\n
+       *
+       * example:
+       *   - listitem.setSubtitles(['special://temp/example.srt', 'http://example.com/example.srt'])
+       */
+      void setSubtitles(const std::vector<String>& subtitleFiles);
 
       /**
        * getdescription() -- Returns the description of this PlayListItem.\n
