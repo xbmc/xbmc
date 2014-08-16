@@ -779,6 +779,11 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     if (!mediapath.empty())
     {
       CFileItemPtr item(new CFileItem(mediapath, false));
+      if (StringUtils::EndsWithNoCase(mediapath, "index.bdmv"))
+      {
+        if (!ShowPlaySelection(item))
+          return;
+      }
       queuedItems.Add(item);
       return;
     }
