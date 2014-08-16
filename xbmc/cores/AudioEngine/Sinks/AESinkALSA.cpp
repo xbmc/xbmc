@@ -1343,21 +1343,6 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
             /* snd_hctl_close also closes ctlhandle */
             snd_hctl_close(hctl);
 
-            // regarding data formats we don't trust ELD
-            // push all passthrough formats to the list
-            AEDataFormatList::iterator it;
-            for (enum AEDataFormat i = AE_FMT_MAX; i > AE_FMT_INVALID; i = (enum AEDataFormat)((int)i - 1))
-            {
-              if (!AE_IS_RAW(i))
-                continue;
-              it = find(info.m_dataFormats.begin(), info.m_dataFormats.end(), i);
-              if (it == info.m_dataFormats.end())
-              {
-                info.m_dataFormats.push_back(i);
-                CLog::Log(LOGNOTICE, "CAESinkALSA::%s data format \"%s\" on device \"%s\" seems to be not supported.", __FUNCTION__, CAEUtil::DataFormatToStr(i), device.c_str());
-              }
-            }
-
             if (badHDMI)
             {
               /* 
@@ -1499,6 +1484,23 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
 
     if (snd_pcm_hw_params_test_format(pcmhandle, hwparams, fmt) >= 0)
       info.m_dataFormats.push_back(i);
+  }
+
+  if (info.m_deviceType == AE_DEVTYPE_HDMI)
+  {
+    // regarding data formats we don't trust ELD
+    // push all passthrough formats to the list
+    AEDataFormatList::iterator it;
+    for (enum AEDataFormat i = AE_FMT_MAX; i > AE_FMT_INVALID; i = (enum AEDataFormat)((int)i - 1))
+    {
+      if (!AE_IS_RAW(i))
+        continue;
+      it = find(info.m_dataFormats.begin(), info.m_dataFormats.end(), i);
+      if (it == info.m_dataFormats.end())
+      {
+        info.m_dataFormats.push_back(i);
+      }
+    }
   }
 
   snd_pcm_close(pcmhandle);
