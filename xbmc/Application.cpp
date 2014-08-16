@@ -3724,7 +3724,7 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
   CVideoDatabase dbs;
 
   // case 1: stacked ISOs
-  if (CFileItem(CStackDirectory::GetFirstStackedFile(item.GetPath()),false).IsDVDImage())
+  if (CFileItem(CStackDirectory::GetFirstStackedFile(item.GetPath()),false).IsDiscImage())
   {
     CStackDirectory dir;
     CFileItemList movieList;
@@ -4439,7 +4439,7 @@ void CApplication::UpdateFileState()
       {
         /* Always update streamdetails, except for DVDs where we only update
            streamdetails if title length > 15m (Should yield more correct info) */
-        if (!(m_progressTrackingItem->IsDVDImage() || m_progressTrackingItem->IsDVDFile()) || m_pPlayer->GetTotalTime() > 15*60*1000)
+        if (!(m_progressTrackingItem->IsDiscImage() || m_progressTrackingItem->IsDVDFile()) || m_pPlayer->GetTotalTime() > 15*60*1000)
         {
           CStreamDetails details;
           // Update with stream details from player, if any

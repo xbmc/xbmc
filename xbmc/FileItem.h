@@ -172,7 +172,7 @@ public:
   bool IsAddonsPath() const;
   bool IsSourcesPath() const;
   bool IsNFO() const;
-  bool IsDVDImage() const;
+  bool IsDiscImage() const;
   bool IsOpticalMediaFile() const;
   bool IsDVDFile(bool bVobs = true, bool bIfos = true) const;
   bool IsBDFile() const;

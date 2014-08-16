@@ -939,7 +939,7 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action)
       {
         CStdString itemPath(item->GetPath());
         itemPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
-        if (URIUtils::IsStack(itemPath) && CFileItem(CStackDirectory::GetFirstStackedFile(itemPath),false).IsDVDImage())
+        if (URIUtils::IsStack(itemPath) && CFileItem(CStackDirectory::GetFirstStackedFile(itemPath),false).IsDiscImage())
           choices.Add(SELECT_ACTION_PLAYPART, 20324); // Play Part
       }
 
@@ -1216,7 +1216,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
         if (URIUtils::IsStack(path))
         {
           vector<int> times;
-          if (m_database.GetStackTimes(path,times) || CFileItem(CStackDirectory::GetFirstStackedFile(path),false).IsDVDImage())
+          if (m_database.GetStackTimes(path,times) || CFileItem(CStackDirectory::GetFirstStackedFile(path),false).IsDiscImage())
             buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
         }
 
@@ -1302,7 +1302,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
   if (selectedFile > 0)
   {
     // ISO stack
-    if (CFileItem(CStackDirectory::GetFirstStackedFile(path),false).IsDVDImage())
+    if (CFileItem(CStackDirectory::GetFirstStackedFile(path),false).IsDiscImage())
     {
       CStdString resumeString = CGUIWindowVideoBase::GetResumeString(*(parts[selectedFile - 1].get()));
       stack->m_lStartOffset = 0;
