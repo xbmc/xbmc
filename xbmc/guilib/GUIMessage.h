@@ -156,6 +156,11 @@
 
 #define GUI_MSG_GET_FILENAME   48
 
+/*
+ \brief A request to refresh a container's list content
+ */
+#define GUI_MSG_REFRESH_CONTAINER 49
+
 #define GUI_MSG_USER         1000
 
 /*!
