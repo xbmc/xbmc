@@ -522,32 +522,16 @@ void CLinuxRendererGLES::Update()
 
 void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
-  if (!m_bConfigured) return;
+  if (!m_bConfigured)
+    return;
 
   // if its first pass, just init textures and return
   if (ValidateRenderTarget())
     return;
 
-  if (m_renderMethod & RENDER_BYPASS)
+  if (!IsGuiLayer())
   {
-    ManageDisplay();
-    // if running bypass, then the player might need the src/dst rects
-    // for sizing video playback on a layer other than the gles layer.
-    if (m_RenderUpdateCallBackFn)
-      (*m_RenderUpdateCallBackFn)(m_RenderUpdateCallBackCtx, m_sourceRect, m_destRect);
-
-    CRect old = g_graphicsContext.GetScissors();
-
-    g_graphicsContext.BeginPaint();
-    g_graphicsContext.SetScissors(m_destRect);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glClearColor(0, 0, 0, 0);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    g_graphicsContext.SetScissors(old);
-    g_graphicsContext.EndPaint();
+    RenderUpdateVideo(clear, flags, alpha);
     return;
   }
 
@@ -604,6 +588,26 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   glEnable(GL_BLEND);
 
   g_graphicsContext.EndPaint();
+}
+
+void CLinuxRendererGLES::RenderUpdateVideo(bool clear, DWORD flags, DWORD alpha)
+{
+  if (!m_bConfigured)
+    return;
+
+  if (IsGuiLayer())
+    return;
+
+  if (m_renderMethod & RENDER_BYPASS)
+  {
+    ManageDisplay();
+    // if running bypass, then the player might need the src/dst rects
+    // for sizing video playback on a layer other than the gles layer.
+    if (m_RenderUpdateCallBackFn)
+      (*m_RenderUpdateCallBackFn)(m_RenderUpdateCallBackCtx, m_sourceRect, m_destRect);
+
+    return;
+  }
 }
 
 void CLinuxRendererGLES::FlipPage(int source)
@@ -3129,6 +3133,14 @@ void CLinuxRendererGLES::AddProcessor(CDVDVideoCodecIMXBuffer *buffer, int index
     buffer->Lock();
 }
 #endif
+
+bool CLinuxRendererGLES::IsGuiLayer()
+{
+  if (m_format == RENDER_FMT_BYPASS)
+    return false;
+  else
+    return true;
+}
 
 #endif
 

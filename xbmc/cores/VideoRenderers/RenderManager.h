@@ -60,7 +60,9 @@ public:
   void FrameMove();
   void FrameFinish();
   bool FrameWait(int ms);
-  void Render(bool clear, DWORD flags = 0, DWORD alpha = 255);
+  void Render(bool clear, DWORD flags = 0, DWORD alpha = 255, bool gui = true);
+  bool IsGuiLayer();
+  bool IsVideoLayer();
   void SetupScreenshot();
 
   CRenderCapture* AllocRenderCapture();
@@ -257,6 +259,7 @@ protected:
 
 
   OVERLAY::CRenderer m_overlays;
+  bool m_renderedOverlay;
 
   void RenderCapture(CRenderCapture* capture);
   void RemoveCapture(CRenderCapture* capture);

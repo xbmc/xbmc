@@ -144,6 +144,7 @@ public:
 #endif
 private:
   void RenderPass() const;
+  void RenderEx() const;
 
   void LoadNotOnDemandWindows();
   void UnloadNotOnDemandWindows();

@@ -347,21 +347,6 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   // for sizing video playback on a layer other than the gles layer.
   if (m_RenderUpdateCallBackFn)
     (*m_RenderUpdateCallBackFn)(m_RenderUpdateCallBackCtx, m_sourceRect, m_destRect);
-
-  SetVideoRect(m_sourceRect, m_destRect);
-
-  CRect old = g_graphicsContext.GetScissors();
-
-  g_graphicsContext.BeginPaint();
-  g_graphicsContext.SetScissors(m_destRect);
-
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glClearColor(0, 0, 0, 0);
-  glClear(GL_COLOR_BUFFER_BIT);
-
-  g_graphicsContext.SetScissors(old);
-  g_graphicsContext.EndPaint();
 }
 
 void CMMALRenderer::FlipPage(int source)
