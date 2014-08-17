@@ -191,6 +191,33 @@ static void StreamLatencyUpdateCallback(pa_stream *s, void *userdata)
   pa_threaded_mainloop_signal(m, 0);
 }
 
+
+static void SinkInputInfoCallback(pa_context *c, const pa_sink_input_info *i, int eol, void *userdata)
+{
+  CAESinkPULSE *p = (CAESinkPULSE*) userdata;
+  if (!p || !p->IsInitialized())
+    return;
+
+  if(i && i->has_volume)
+    p->UpdateInternalVolume(i->volume);
+}
+
+static void SinkInputInfoChangedCallback(pa_context *c, pa_subscription_event_type_t t, uint32_t idx, void *userdata)
+{
+  CAESinkPULSE* p = (CAESinkPULSE*) userdata;
+  if (!p || !p->IsInitialized())
+    return;
+  
+   if (idx != pa_stream_get_index(p->GetInternalStream()))
+     return;
+   
+   pa_operation* op = pa_context_get_sink_input_info(c, idx, SinkInputInfoCallback, p);
+   if (op == NULL)
+     CLog::Log(LOGERROR, "PulseAudio: Failed to sync volume");
+   else
+    pa_operation_unref(op);
+}
+
 static void SinkChangedCallback(pa_context *c, pa_subscription_event_type_t t, uint32_t idx, void *userdata)
 {
   CAESinkPULSE* p = (CAESinkPULSE*) userdata;
@@ -235,21 +262,6 @@ struct SinkInfoStruct
   }
 };
 
-struct SinkInputInfoStruct
-{
-  bool is_valid;
-  int mute;
-  int index;
-  pa_cvolume volume;
-  pa_threaded_mainloop *mainloop;
-  SinkInputInfoStruct()
-  {
-    is_valid = false;
-    mute = 0;
-    mainloop = NULL;
-  }
-};
-
 static void SinkInfoCallback(pa_context *c, const pa_sink_info *i, int eol, void *userdata)
 {
   SinkInfoStruct *sinkStruct = (SinkInfoStruct *)userdata;
@@ -262,19 +274,6 @@ static void SinkInfoCallback(pa_context *c, const pa_sink_info *i, int eol, void
     sinkStruct->device_found = true;
   }
   pa_threaded_mainloop_signal(sinkStruct->mainloop, 0);
-}
-
-static void SinkInputInfoCallback(pa_context *c, const pa_sink_input_info *i, int eol, void *userdata)
-{
-  SinkInputInfoStruct *siiStruct = (SinkInputInfoStruct *)userdata;
-  if(i && i->has_volume)
-  {
-    siiStruct->is_valid = true;
-    siiStruct->volume = i->volume;
-    siiStruct->mute = i->mute;
-    siiStruct->index = i->index;
-  }
-  pa_threaded_mainloop_signal(siiStruct->mainloop, 0);
 }
 
 static AEChannel PAChannelToAEChannel(pa_channel_position_t channel)
@@ -458,6 +457,7 @@ CAESinkPULSE::CAESinkPULSE()
   m_Stream = NULL;
   m_Context = NULL;
   m_IsStreamPaused = false;
+  m_volume_needs_update = false;
 }
 
 CAESinkPULSE::~CAESinkPULSE()
@@ -472,6 +472,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
     m_IsAllocated = false;
   }
   m_passthrough = false;
+  m_volume_needs_update = false;
   m_BytesPerSecond = 0;
   m_BufferSize = 0;
   m_Channels = 0;
@@ -495,6 +496,12 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
     pa_operation *op = pa_context_subscribe(m_Context, mask, NULL, this);
     if (op != NULL)
       pa_operation_unref(op);
+   
+    pa_context_set_subscribe_callback(m_Context, SinkInputInfoChangedCallback, this);
+    const pa_subscription_mask_t mask_input = PA_SUBSCRIPTION_MASK_SINK_INPUT;
+    pa_operation* op_sinfo = pa_context_subscribe(m_Context, mask_input, NULL, this);
+    if (op_sinfo != NULL)
+      pa_operation_unref(op_sinfo);
   }
 
   struct pa_channel_map map;
@@ -641,34 +648,6 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
     return false;
   }
 
-  //update local volume if we are in non passthrough mode
-  if (!m_passthrough)
-  {
-    unsigned int sink_input_idx = pa_stream_get_index(m_Stream);
-    SinkInputInfoStruct sii;
-    sii.mainloop = m_MainLoop;
-    bool success = WaitForOperation(pa_context_get_sink_input_info(m_Context, sink_input_idx, SinkInputInfoCallback, &sii), m_MainLoop, "Get Sink Input Info");
-    if(success && sii.is_valid)
-    {
-      // we don't have per channel values so use avg of them
-      pa_volume_t p_vol = pa_cvolume_avg(&sii.volume);
-      // store it internally
-      m_Volume = sii.volume;
-      float sValue = (float) p_vol / PA_VOLUME_NORM;
-      
-      // we don't support amplification that pulse does
-      if (sValue > 1.0f)
-        sValue = 1.0f;
-
-      CLog::Log(LOGDEBUG, "Restored Stream value to %f", sValue);
-      g_application.SetVolume(sValue, false);
-      if (sii.mute && sValue > 0)
-      {
-        CLog::Log(LOGDEBUG, "PulseAudio: Stream is muted - perhaps was a user wish - if volume is changed we unmute");
-      }
-    } 
-  }
-
   const pa_buffer_attr *a;
 
   if (!(a = pa_stream_get_buffer_attr(m_Stream)))
@@ -712,6 +691,7 @@ void CAESinkPULSE::Deinitialize()
   CSingleLock lock(m_sec);
   m_IsAllocated = false;
   m_passthrough = false;
+  m_volume_needs_update = false;
 
   if (m_Stream)
     Drain();
@@ -814,68 +794,59 @@ void CAESinkPULSE::Drain()
   pa_threaded_mainloop_unlock(m_MainLoop);
 }
 
+// This is a helper to get stream info during the PA callbacks
+// it shall never be called from real outside
+pa_stream* CAESinkPULSE::GetInternalStream()
+{
+  return m_Stream;
+}
+
+void CAESinkPULSE::UpdateInternalVolume(pa_cvolume nVol)
+{
+  pa_volume_t o_vol = pa_cvolume_avg(&m_Volume);
+  pa_volume_t n_vol = pa_cvolume_avg(&nVol);
+
+  if (o_vol != n_vol)
+  {
+    pa_cvolume_set(&m_Volume, m_Channels, n_vol);
+    m_volume_needs_update = true;
+  }
+}
+
 void CAESinkPULSE::SetVolume(float volume)
 {
   if (m_IsAllocated && !m_passthrough)
   {
+    pa_threaded_mainloop_lock(m_MainLoop);
     // clamp possibly too large / low values
     float per_cent_volume = std::max(0.0f, std::min(volume, 1.0f));
-
-    pa_threaded_mainloop_lock(m_MainLoop);
-    bool external_change = false;
-    //check if internal volume and sink input volume do not match
+    
+    if (m_volume_needs_update)
+    {
+       m_volume_needs_update = false;
+       pa_volume_t n_vol = pa_cvolume_avg(&m_Volume); 
+       n_vol = std::min(n_vol, PA_VOLUME_NORM);
+       per_cent_volume = (float) n_vol / PA_VOLUME_NORM; 
+       // only update internal volume
+       pa_threaded_mainloop_unlock(m_MainLoop);
+       g_application.SetVolume(per_cent_volume, false);
+       return;
+    }
+    
+    pa_volume_t pavolume = per_cent_volume * PA_VOLUME_NORM;
     unsigned int sink_input_idx = pa_stream_get_index(m_Stream);
-    SinkInputInfoStruct sii;
-    sii.mainloop = m_MainLoop;
-    bool success = WaitForOperation(pa_context_get_sink_input_info(m_Context, sink_input_idx, SinkInputInfoCallback, &sii), m_MainLoop, "Get Sink Input Info");
-    float sValue = 0.0f;
-    if(success && sii.is_valid)
-    {
-      // we don't have per channel values so use avg of them
-      pa_volume_t n_vol = pa_cvolume_avg(&sii.volume);
-      pa_volume_t o_vol = pa_cvolume_avg(&m_Volume);
-
-      sValue = (float) n_vol / PA_VOLUME_NORM;
-      if (sValue > 1.0f)
-        sValue = 1.0f;
-
-      if (n_vol != o_vol)
-      {
-        external_change = true;
-        // update internal volume
-        m_Volume = sii.volume;
-        CLog::Log(LOGDEBUG, "Restored Volume cause of external change to value to %f", sValue);
-        g_application.SetVolume(sValue, false);
-      }
-      // unmute if we should not be muted
-      if (sii.mute && sValue > 0)
-      {
-        pa_operation *op = pa_context_set_sink_input_mute(m_Context, sii.index, 0, NULL, NULL);
-        if (op == NULL)
-          CLog::Log(LOGERROR, "PulseAudio: Failed to unmute the stream");
-        else
-          pa_operation_unref(op);
-      }
-    }
-    else // we don't know stream volume so don't change anything
-    {
-      external_change = true;
-    }
-    if (!external_change)
-    {
-      // we scale this value linearly which is the same what pavucontrol does
-      // user expects the volume to change steadily
-      pa_volume_t pavolume = per_cent_volume * PA_VOLUME_NORM;
-      if ( pavolume <= 0 )
-        pa_cvolume_mute(&m_Volume, m_Channels);
-      else
-        pa_cvolume_set(&m_Volume, m_Channels, pavolume);
+    
+    if ( pavolume <= 0 )
+      pa_cvolume_mute(&m_Volume, m_Channels);
+    else
+      pa_cvolume_set(&m_Volume, m_Channels, pavolume);
+        
       pa_operation *op = pa_context_set_sink_input_volume(m_Context, sink_input_idx, &m_Volume, NULL, NULL);
       if (op == NULL)
         CLog::Log(LOGERROR, "PulseAudio: Failed to set volume");
       else
         pa_operation_unref(op);
-    }
+
     pa_threaded_mainloop_unlock(m_MainLoop);
   }
 }
