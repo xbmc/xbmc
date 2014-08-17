@@ -560,8 +560,11 @@ bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItem
 {
   CURL u(strDirectory);
 #ifdef USE_PAGING
-  u.SetOption("X-Plex-Container-Start", "0");
-  u.SetOption("X-Plex-Container-Size", boost::lexical_cast<std::string>(PLEX_DEFAULT_PAGE_SIZE));
+  if (!boost::algorithm::ends_with(u.GetFileName() , "url/lookup"))
+  {
+    u.SetOption("X-Plex-Container-Start", "0");
+    u.SetOption("X-Plex-Container-Size", boost::lexical_cast<std::string>(PLEX_DEFAULT_PAGE_SIZE));
+  }
 #endif
 
   if (u.GetProtocol() == "plexserver" &&
