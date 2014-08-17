@@ -265,7 +265,22 @@ vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
 {
   vector<Field> fields;
   bool isVideo = false;
-  if (type == "songs")
+  if (type == "mixed")
+  {
+    fields.push_back(FieldGenre);
+    fields.push_back(FieldAlbum);
+    fields.push_back(FieldArtist);
+    fields.push_back(FieldAlbumArtist);
+    fields.push_back(FieldTitle);
+    fields.push_back(FieldYear);
+    fields.push_back(FieldTime);
+    fields.push_back(FieldTrackNumber);
+    fields.push_back(FieldFilename);
+    fields.push_back(FieldPath);
+    fields.push_back(FieldPlaycount);
+    fields.push_back(FieldLastPlayed);
+  }
+  else if (type == "songs")
   {
     fields.push_back(FieldGenre);
     fields.push_back(FieldAlbum);
