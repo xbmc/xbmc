@@ -370,8 +370,13 @@ std::string CDatabaseQueryRule::GetWhereClause(const CDatabase &db, const std::s
   {
     std::string query = '(' + FormatWhereClause(negate, operatorString, *it, db, strType) + ')';
 
-    if (it+1 != m_parameter.end())
-      query += " OR ";
+    if (it + 1 != m_parameter.end())
+    {
+      if (negate.empty())
+        query += " OR ";
+      else
+        query += " AND ";
+    }
 
     wholeQuery += query;
   }
