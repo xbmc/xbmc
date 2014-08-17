@@ -386,6 +386,8 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
       return true;
     }
     break;
+  case ACTION_SHOW_INFO:
+    return CGUIControl::OnInfo();
 
   default:
     if (action.GetID())
