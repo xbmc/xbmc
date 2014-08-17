@@ -368,7 +368,7 @@
 				<left>0</left>
 				<top>0</top>
 				<width>1280</width>
-				<height>140</height>
+				<height>155</height>
 				<texture>black-back.png</texture>
 			</control>
 			<control type="label" id="10">
@@ -398,7 +398,7 @@
 				<left>50</left>
 				<top>100</top>
 				<width>1180</width>
-				<height>30</height>
+				<height>45</height>
 				<align>left</align>
 				<aligny>center</aligny>
 				<font>font12</font>
