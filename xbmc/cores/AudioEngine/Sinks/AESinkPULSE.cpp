@@ -646,7 +646,12 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
       pa_volume_t p_vol = pa_cvolume_avg(&sii.volume);
       // store it internally
       m_Volume = sii.volume;
-      float sValue = (float) pa_sw_volume_to_linear(p_vol);
+      float sValue = (float) p_vol / PA_VOLUME_NORM;
+      
+      // we don't support amplification that pulse does
+      if (sValue > 1.0f)
+        sValue = 1.0f;
+
       CLog::Log(LOGDEBUG, "Restored Stream value to %f", sValue);
       g_application.SetVolume(sValue, false);
       if (sii.mute && sValue > 0)
@@ -824,7 +829,11 @@ void CAESinkPULSE::SetVolume(float volume)
       // we don't have per channel values so use avg of them
       pa_volume_t n_vol = pa_cvolume_avg(&sii.volume);
       pa_volume_t o_vol = pa_cvolume_avg(&m_Volume);
-      sValue = (float) pa_sw_volume_to_linear(n_vol);
+
+      sValue = (float) n_vol / PA_VOLUME_NORM;
+      if (sValue > 1.0f)
+        sValue = 1.0f;
+
       if (n_vol != o_vol)
       {
         external_change = true;
@@ -849,7 +858,9 @@ void CAESinkPULSE::SetVolume(float volume)
     }
     if (!external_change)
     {
-      pa_volume_t pavolume = pa_sw_volume_from_linear(per_cent_volume);
+      // we scale this value linearly which is the same what pavucontrol does
+      // user expects the volume to change steadily
+      pa_volume_t pavolume = per_cent_volume * PA_VOLUME_NORM;
       if ( pavolume <= 0 )
         pa_cvolume_mute(&m_Volume, m_Channels);
       else
