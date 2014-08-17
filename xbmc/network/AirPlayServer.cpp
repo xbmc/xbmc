@@ -718,13 +718,13 @@ void CAirPlayServer::restoreVolume()
 int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
                                                 std::string& responseBody)
 {
-  std::string method = m_httpParser->getMethod();
-  std::string uri = m_httpParser->getUri();
-  std::string queryString = m_httpParser->getQueryString();
-  std::string body = m_httpParser->getBody();
-  std::string contentType = m_httpParser->getValue("content-type");
-  m_sessionId = m_httpParser->getValue("x-apple-session-id");
-  std::string authorization = m_httpParser->getValue("authorization");
+  std::string method = m_httpParser->getMethod() ? m_httpParser->getMethod() : "";
+  std::string uri = m_httpParser->getUri() ? m_httpParser->getUri() : "";
+  std::string queryString = m_httpParser->getQueryString() ? m_httpParser->getQueryString() : "";
+  std::string body = m_httpParser->getBody() ? m_httpParser->getBody() : "";
+  std::string contentType = m_httpParser->getValue("content-type") ? m_httpParser->getValue("content-type") : "";
+  m_sessionId = m_httpParser->getValue("x-apple-session-id") ? m_httpParser->getValue("x-apple-session-id") : "";
+  std::string authorization = m_httpParser->getValue("authorization") ? m_httpParser->getValue("authorization") : "";
   int status = AIRPLAY_STATUS_OK;
   bool needAuth = false;
   
