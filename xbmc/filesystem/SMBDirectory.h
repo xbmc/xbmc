@@ -20,7 +20,7 @@
  */
 
 #include "IDirectory.h"
-#include "SmbFile.h"
+#include "SMBFile.h"
 #include "MediaSource.h"
 
 namespace XFILE
