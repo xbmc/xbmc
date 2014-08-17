@@ -150,6 +150,7 @@ void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool st
   {
     g_application.StopPlaying();
     g_playlistPlayer.SetCurrentPlaylist(playlist);
+    g_playlistPlayer.SetRepeat(playlist, PLAYLIST::REPEAT_NONE);
     if (selectedId == -1)
       g_playlistPlayer.Play(0);
     else
