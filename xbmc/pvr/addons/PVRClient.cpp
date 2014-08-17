@@ -300,6 +300,7 @@ void CPVRClient::WriteClientChannelInfo(const CPVRChannel &xbmcChannel, PVR_CHAN
 
   addonChannel.iUniqueId         = xbmcChannel.UniqueID();
   addonChannel.iChannelNumber    = xbmcChannel.ClientChannelNumber();
+  addonChannel.iSubChannelNumber = xbmcChannel.ClientSubChannelNumber();
   strncpy(addonChannel.strChannelName, xbmcChannel.ClientChannelName().c_str(), sizeof(addonChannel.strChannelName) - 1);
   strncpy(addonChannel.strIconPath, xbmcChannel.IconPath().c_str(), sizeof(addonChannel.strIconPath) - 1);
   addonChannel.iEncryptionSystem = xbmcChannel.EncryptionSystem();

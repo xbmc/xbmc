@@ -75,6 +75,7 @@ void CPVRDatabase::CreateTables()
         // TODO use mapping table
         "iClientId            integer, "
         "iClientChannelNumber integer, "
+        "iClientSubChannelNumber integer, "
         "sInputFormat         varchar(32), "
         "sStreamURL           varchar(255), "
         "iEncryptionSystem    integer, "
@@ -90,6 +91,7 @@ void CPVRDatabase::CreateTables()
   //          "idChannel             integer primary key, "
   //          "idClient              integer, "
   //          "iClientChannelNumber  integer,"
+  //          "iClientSubChannelNumber  integer,"
   //          "sInputFormat          string,"
   //          "sStreamURL            string,"
   //          "iEncryptionSystem     integer"
@@ -111,9 +113,10 @@ void CPVRDatabase::CreateTables()
   CLog::Log(LOGDEBUG, "PVR - %s - creating table 'map_channelgroups_channels'", __FUNCTION__);
   m_pDS->exec(
       "CREATE TABLE map_channelgroups_channels ("
-        "idChannel      integer, "
-        "idGroup        integer, "
-        "iChannelNumber integer"
+        "idChannel         integer, "
+        "idGroup           integer, "
+        "iChannelNumber    integer, "
+        "iSubChannelNumber integer"
       ")"
   );
 
@@ -176,6 +179,14 @@ void CPVRDatabase::UpdateTables(int iVersion)
   
   if (iVersion < 25)
     m_pDS->exec("DROP TABLE IF EXISTS channelsettings");
+
+  if (iVersion < 26)
+  {
+    m_pDS->exec("ALTER TABLE channels ADD iClientSubChannelNumber integer");
+    m_pDS->exec("UPDATE channels SET iClientSubChannelNumber = 0");
+    m_pDS->exec("ALTER TABLE map_channelgroups_channels ADD iSubChannelNumber integer");
+    m_pDS->exec("UPDATE map_channelgroups_channels SET iSubChannelNumber = 0");
+  }
 }
 
 int CPVRDatabase::GetLastChannelId(void)
@@ -242,7 +253,7 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
 
   std::string strQuery = PrepareSQL("SELECT channels.idChannel, channels.iUniqueId, channels.bIsRadio, channels.bIsHidden, channels.bIsUserSetIcon, channels.bIsUserSetName, "
       "channels.sIconPath, channels.sChannelName, channels.bIsVirtual, channels.bEPGEnabled, channels.sEPGScraper, channels.iLastWatched, channels.iClientId, channels.bIsLocked, "
-      "channels.iClientChannelNumber, channels.sInputFormat, channels.sInputFormat, channels.sStreamURL, channels.iEncryptionSystem, map_channelgroups_channels.iChannelNumber, channels.idEpg "
+      "channels.iClientChannelNumber, channels.iClientSubChannelNumber, channels.sInputFormat, channels.sInputFormat, channels.sStreamURL, channels.iEncryptionSystem, map_channelgroups_channels.iChannelNumber, channels.idEpg "
       "FROM map_channelgroups_channels "
       "LEFT JOIN channels ON channels.idChannel = map_channelgroups_channels.idChannel "
       "WHERE map_channelgroups_channels.idGroup = %u", results.IsRadio() ? XBMC_INTERNAL_GROUP_RADIO : XBMC_INTERNAL_GROUP_TV);
@@ -269,7 +280,8 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
         channel->m_strEPGScraper           = m_pDS->fv("sEPGScraper").get_asString();
         channel->m_iLastWatched            = (time_t) m_pDS->fv("iLastWatched").get_asInt();
         channel->m_iClientId               = m_pDS->fv("iClientId").get_asInt();
-        channel->m_iClientChannelNumber    = m_pDS->fv("iClientChannelNumber").get_asInt();
+        channel->m_iClientChannelNumber.channel    = m_pDS->fv("iClientChannelNumber").get_asInt();
+        channel->m_iClientChannelNumber.subchannel = m_pDS->fv("iClientSubChannelNumber").get_asInt();
         channel->m_strInputFormat          = m_pDS->fv("sInputFormat").get_asString();
         channel->m_strStreamURL            = m_pDS->fv("sStreamURL").get_asString();
         channel->m_iClientEncryptionSystem = m_pDS->fv("iEncryptionSystem").get_asInt();
@@ -609,16 +621,16 @@ bool CPVRDatabase::PersistGroupMembers(CPVRChannelGroup &group)
     {
       PVRChannelGroupMember member = group.m_members.at(iChannelPtr);
 
-      std::string strWhereClause = PrepareSQL("idChannel = %u AND idGroup = %u AND iChannelNumber = %u",
-          member.channel->ChannelID(), group.GroupID(), member.iChannelNumber);
+      std::string strWhereClause = PrepareSQL("idChannel = %u AND idGroup = %u AND iChannelNumber = %u AND iSubChannelNumber = %u",
+          member.channel->ChannelID(), group.GroupID(), member.iChannelNumber, member.iSubChannelNumber);
 
       std::string strValue = GetSingleValue("map_channelgroups_channels", "idChannel", strWhereClause);
       if (strValue.empty())
       {
         strQuery = PrepareSQL("REPLACE INTO map_channelgroups_channels ("
-            "idGroup, idChannel, iChannelNumber) "
-            "VALUES (%i, %i, %i);",
-            group.GroupID(), member.channel->ChannelID(), member.iChannelNumber);
+            "idGroup, idChannel, iChannelNumber, iSubChannelNumber) "
+            "VALUES (%i, %i, %i, %i);",
+            group.GroupID(), member.channel->ChannelID(), member.iChannelNumber, member.iSubChannelNumber);
         QueueInsertQuery(strQuery);
       }
     }
@@ -751,11 +763,11 @@ bool CPVRDatabase::Persist(CPVRChannel &channel, bool bQueueWrite /* = false */)
     strQuery = PrepareSQL("INSERT INTO channels ("
         "iUniqueId, bIsRadio, bIsHidden, bIsUserSetIcon, bIsUserSetName, bIsLocked, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
-        "iClientChannelNumber, sInputFormat, sStreamURL, iEncryptionSystem, idEpg) "
-        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, '%s', '%s', %i, %i)",
+        "iClientChannelNumber, iClientSubChannelNumber, sInputFormat, sStreamURL, iEncryptionSystem, idEpg) "
+        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, '%s', '%s', %i, %i)",
         channel.UniqueID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0), (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0), (channel.IsLocked() ? 1 : 0),
         channel.IconPath().c_str(), channel.ChannelName().c_str(), (channel.IsVirtual() ? 1 : 0), (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.LastWatched(), channel.ClientID(),
-        channel.ClientChannelNumber(), channel.InputFormat().c_str(), channel.StreamURL().c_str(), channel.EncryptionSystem(),
+        channel.ClientChannelNumber(), channel.ClientSubChannelNumber(), channel.InputFormat().c_str(), channel.StreamURL().c_str(), channel.EncryptionSystem(),
         channel.EpgID());
   }
   else
@@ -764,11 +776,11 @@ bool CPVRDatabase::Persist(CPVRChannel &channel, bool bQueueWrite /* = false */)
     strQuery = PrepareSQL("REPLACE INTO channels ("
         "iUniqueId, bIsRadio, bIsHidden, bIsUserSetIcon, bIsUserSetName, bIsLocked, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
-        "iClientChannelNumber, sInputFormat, sStreamURL, iEncryptionSystem, idChannel, idEpg) "
-        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, '%s', '%s', %i, %i, %i)",
+        "iClientChannelNumber, iClientSubChannelNumber, sInputFormat, sStreamURL, iEncryptionSystem, idChannel, idEpg) "
+        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, '%s', '%s', %i, %i, %i)",
         channel.UniqueID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0), (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0), (channel.IsLocked() ? 1 : 0),
         channel.IconPath().c_str(), channel.ChannelName().c_str(), (channel.IsVirtual() ? 1 : 0), (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.LastWatched(), channel.ClientID(),
-        channel.ClientChannelNumber(), channel.InputFormat().c_str(), channel.StreamURL().c_str(), channel.EncryptionSystem(), channel.ChannelID(),
+        channel.ClientChannelNumber(), channel.ClientSubChannelNumber(), channel.InputFormat().c_str(), channel.StreamURL().c_str(), channel.EncryptionSystem(), channel.ChannelID(),
         channel.EpgID());
   }
 

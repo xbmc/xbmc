@@ -80,6 +80,7 @@ namespace EPG
 
     int ChannelID(void) const;
     int ChannelNumber(void) const;
+    int SubChannelNumber(void) const;
 
     /*!
      * @brief Channel the channel tag linked to this EPG table.

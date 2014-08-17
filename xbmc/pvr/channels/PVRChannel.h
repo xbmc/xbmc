@@ -42,6 +42,12 @@ namespace PVR
   class CPVRChannel;
   typedef boost::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
 
+  typedef struct
+  {
+    unsigned int channel;
+    unsigned int subchannel;
+  } pvr_channel_num;
+
   /** PVR Channel class */
   class CPVRChannel : public Observable, public ISerializable, public ISortable
   {
@@ -107,6 +113,11 @@ namespace PVR
     int ChannelNumber(void) const;
 
     /*!
+     * @return The sub channel number used by XBMC by the currently active group.
+     */
+    int SubChannelNumber(void) const;
+
+    /*!
      * @return True if this channel is a radio channel, false if not.
      */
     bool IsRadio(void) const { return m_bIsRadio; }
@@ -115,6 +126,21 @@ namespace PVR
      * @return True if this channel is hidden. False if not.
      */
     bool IsHidden(void) const;
+
+    /**
+     * @return True when this is a sub channel, false if it's a main channel
+     */
+    bool IsSubChannel(void) const;
+
+    /**
+     * @return the channel number, formatted as [channel] or [channel].[subchannel]
+     */
+    std::string FormattedChannelNumber(void) const;
+
+    /**
+     * @return True when this channel is marked as sub channel by the add-on, false if it's marked as main channel
+     */
+    bool IsClientSubChannel(void) const;
 
     /*!
      * @brief Set to true to hide this channel. Set to false to unhide it.
@@ -256,34 +282,17 @@ namespace PVR
     /*!
      * @return The channel number on the client.
      */
-    int ClientChannelNumber(void) const;
+    unsigned int ClientChannelNumber(void) const;
 
     /*!
-     * @brief Set the channel number on the client.
-     *
-     * Set the channel number on the client.
-     * It will only be changed in this tag and won't change anything on the client.
-     *
-     * @param iClientChannelNumber The new channel number
-     * @return True if the something changed, false otherwise.
+     * @return The sub channel number on the client (ATSC).
      */
-    bool SetClientChannelNumber(int iClientChannelNumber);
+    unsigned int ClientSubChannelNumber(void) const;
 
     /*!
      * @return The name of this channel on the client.
      */
     std::string ClientChannelName(void) const;
-
-    /*!
-     * @brief Set the name of this channel on the client.
-     *
-     * Set the name of this channel on the client.
-     * It will only be changed in this tag and won't change anything on the client.
-     *
-     * @param strClientChannelName The new channel name
-     * @return True if the something changed, false otherwise.
-     */
-    bool SetClientChannelName(const std::string &strClientChannelName);
 
     /*!
      * @brief The stream input type
@@ -296,13 +305,6 @@ namespace PVR
      * @return The stream input type
      */
     std::string InputFormat(void) const;
-
-    /*!
-     * @brief Set the stream input type
-     * @param strInputFormat The new input format.
-     * @return True if the something changed, false otherwise.
-     */
-    bool SetInputFormat(const std::string &strInputFormat);
 
     /*!
      * @brief The stream URL to access this channel.
@@ -360,13 +362,6 @@ namespace PVR
      * @return Return the encryption system ID for this channel.
      */
     int EncryptionSystem(void) const;
-
-    /*!
-     * @brief Set the encryption ID (CAID) for this channel.
-     * @param iClientEncryptionSystem The new CAID.
-     * @return True if the something changed, false otherwise.
-     */
-    bool SetEncryptionSystem(int iClientEncryptionSystem);
 
     /*!
      * @return A friendly name for the used encryption system.
@@ -462,6 +457,7 @@ namespace PVR
     bool SetEPGScraper(const std::string &strScraper);
 
     void SetCachedChannelNumber(unsigned int iChannelNumber);
+    void SetCachedSubChannelNumber(unsigned int iSubChannelNumber);
 
     bool CanRecord(void) const;
     //@}
@@ -486,6 +482,7 @@ namespace PVR
     time_t           m_iLastWatched;            /*!< last time channel has been watched */
     bool             m_bChanged;                /*!< true if anything in this entry was changed that needs to be persisted */
     unsigned int     m_iCachedChannelNumber;    /*!< the cached channel number in the selected group */
+    unsigned int     m_iCachedSubChannelNumber; /*!< the cached sub channel number in the selected group */
     //@}
 
     /*! @name EPG related channel data
@@ -502,7 +499,7 @@ namespace PVR
     //@{
     int              m_iUniqueId;               /*!< the unique identifier for this channel */
     int              m_iClientId;               /*!< the identifier of the client that serves this channel */
-    int              m_iClientChannelNumber;    /*!< the channel number on the client */
+    pvr_channel_num  m_iClientChannelNumber;    /*!< the channel number on the client */
     std::string      m_strClientChannelName;    /*!< the name of this channel on the client */
     std::string      m_strInputFormat;          /*!< the stream input type based on ffmpeg/libavformat/allformats.c */
     std::string      m_strStreamURL;            /*!< URL of the stream. Use the client to read stream if this is empty */

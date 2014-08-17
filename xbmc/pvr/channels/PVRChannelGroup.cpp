@@ -170,20 +170,22 @@ bool CPVRChannelGroup::Update(void)
   return UpdateGroupEntries(PVRChannels_tmp);
 }
 
-bool CPVRChannelGroup::SetChannelNumber(const CPVRChannel &channel, unsigned int iChannelNumber)
+bool CPVRChannelGroup::SetChannelNumber(const CPVRChannel &channel, unsigned int iChannelNumber, unsigned int iSubChannelNumber /* = 0 */)
 {
   bool bReturn(false);
   CSingleLock lock(m_critSection);
 
-  for (unsigned int iChannelPtr = 0; iChannelPtr < m_members.size(); iChannelPtr++)
+  for (std::vector<PVRChannelGroupMember>::iterator it = m_members.begin(); it != m_members.end(); ++it)
   {
-    if (*m_members.at(iChannelPtr).channel == channel)
+    if (*((*it).channel) == channel)
     {
-      if (m_members.at(iChannelPtr).iChannelNumber != iChannelNumber)
+      if ((*it).iChannelNumber    != iChannelNumber ||
+          (*it).iSubChannelNumber != iSubChannelNumber)
       {
         m_bChanged = true;
         bReturn = true;
-        m_members.at(iChannelPtr).iChannelNumber = iChannelNumber;
+        (*it).iChannelNumber    = iChannelNumber;
+        (*it).iSubChannelNumber = iSubChannelNumber;
       }
       break;
     }
@@ -317,6 +319,8 @@ struct sortByClientChannelNumber
 {
   bool operator()(const PVRChannelGroupMember &channel1, const PVRChannelGroupMember &channel2)
   {
+    if (channel1.channel->ClientChannelNumber() == channel2.channel->ClientChannelNumber())
+      return channel1.channel->ClientSubChannelNumber() < channel2.channel->ClientSubChannelNumber();
     return channel1.channel->ClientChannelNumber() < channel2.channel->ClientChannelNumber();
   }
 };
@@ -325,6 +329,8 @@ struct sortByChannelNumber
 {
   bool operator()(const PVRChannelGroupMember &channel1, const PVRChannelGroupMember &channel2)
   {
+    if (channel1.iChannelNumber == channel2.iChannelNumber)
+      return channel1.iSubChannelNumber < channel2.iSubChannelNumber;
     return channel1.iChannelNumber < channel2.iChannelNumber;
   }
 };
@@ -463,6 +469,22 @@ CFileItemPtr CPVRChannelGroup::GetLastPlayedChannel(unsigned int iCurrentChannel
   return retVal;
 }
 
+unsigned int CPVRChannelGroup::GetSubChannelNumber(const CPVRChannel &channel) const
+{
+  unsigned int iReturn = 0;
+  CSingleLock lock(m_critSection);
+
+  for (std::vector<PVRChannelGroupMember>::const_iterator it = m_members.begin(); it != m_members.end(); ++it)
+  {
+    if ((*it).channel->ChannelID() == channel.ChannelID())
+    {
+      iReturn = (*it).iSubChannelNumber;
+      break;
+    }
+  }
+
+  return iReturn;
+}
 
 unsigned int CPVRChannelGroup::GetChannelNumber(const CPVRChannel &channel) const
 {
@@ -483,14 +505,14 @@ unsigned int CPVRChannelGroup::GetChannelNumber(const CPVRChannel &channel) cons
   return iReturn;
 }
 
-CFileItemPtr CPVRChannelGroup::GetByChannelNumber(unsigned int iChannelNumber) const
+CFileItemPtr CPVRChannelGroup::GetByChannelNumber(unsigned int iChannelNumber, unsigned int iSubChannelNumber /* = 0 */) const
 {
   CSingleLock lock(m_critSection);
 
   for (unsigned int ptr = 0; ptr < m_members.size(); ptr++)
   {
     PVRChannelGroupMember groupMember = m_members.at(ptr);
-    if (groupMember.iChannelNumber == iChannelNumber)
+    if (groupMember.iChannelNumber == iChannelNumber && (iSubChannelNumber == 0 || iSubChannelNumber == groupMember.iSubChannelNumber))
     {
       CFileItemPtr retVal = CFileItemPtr(new CFileItem(*groupMember.channel));
       return retVal;
@@ -917,23 +939,34 @@ bool CPVRChannelGroup::Renumber(void)
 
   CSingleLock lock(m_critSection);
 
-  for (unsigned int iChannelPtr = 0; iChannelPtr < m_members.size();  iChannelPtr++)
+  for (std::vector<PVRChannelGroupMember>::iterator it = m_members.begin(); it != m_members.end(); ++it)
   {
-    unsigned int iCurrentChannelNumber;
-    if (m_members.at(iChannelPtr).channel->IsHidden())
+    unsigned int iCurrentChannelNumber, iSubChannelNumber;
+    if ((*it).channel->IsHidden())
+    {
       iCurrentChannelNumber = 0;
+      iSubChannelNumber     = 0;
+    }
     else if (bUseBackendChannelNumbers)
-      iCurrentChannelNumber = m_members.at(iChannelPtr).channel->ClientChannelNumber();
+    {
+      iCurrentChannelNumber = (*it).channel->ClientChannelNumber();
+      iSubChannelNumber     = (*it).channel->ClientSubChannelNumber();
+    }
     else
+    {
       iCurrentChannelNumber = ++iChannelNumber;
+      iSubChannelNumber     = 0;
+    }
 
-    if (m_members.at(iChannelPtr).iChannelNumber != iCurrentChannelNumber)
+    if ((*it).iChannelNumber    != iCurrentChannelNumber ||
+        (*it).iSubChannelNumber != iSubChannelNumber)
     {
       bReturn = true;
       m_bChanged = true;
     }
 
-    m_members.at(iChannelPtr).iChannelNumber = iCurrentChannelNumber;
+    (*it).iChannelNumber    = iCurrentChannelNumber;
+    (*it).iSubChannelNumber = iSubChannelNumber;
   }
 
   SortByChannelNumber();
@@ -954,7 +987,10 @@ void CPVRChannelGroup::ResetChannelNumberCache(void)
 
   /* set all channel numbers on members of this group */
   for (unsigned int iChannelPtr = 0; iChannelPtr < m_members.size(); iChannelPtr++)
+  {
     m_members.at(iChannelPtr).channel->SetCachedChannelNumber(m_members.at(iChannelPtr).iChannelNumber);
+    m_members.at(iChannelPtr).channel->SetCachedSubChannelNumber(m_members.at(iChannelPtr).iSubChannelNumber);
+  }
 }
 
 bool CPVRChannelGroup::HasChangedChannels(void) const

@@ -579,6 +579,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "nextenddate",      LISTITEM_NEXT_ENDDATE },
                                   { "channelname",      LISTITEM_CHANNEL_NAME },
                                   { "channelnumber",    LISTITEM_CHANNEL_NUMBER },
+                                  { "subchannelnumber", LISTITEM_SUB_CHANNEL_NUMBER },
+                                  { "channelnumberlabel", LISTITEM_CHANNEL_NUMBER_LBL },
                                   { "channelgroup",     LISTITEM_CHANNEL_GROUP },
                                   { "hasepg",           LISTITEM_HAS_EPG },
                                   { "hastimer",         LISTITEM_HASTIMER },
@@ -4954,6 +4956,34 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::s
         number = StringUtils::Format("%i", item->GetPVRTimerInfoTag()->ChannelNumber());
 
       return number;
+    }
+    break;
+  case LISTITEM_SUB_CHANNEL_NUMBER:
+    {
+      CStdString number;
+      if (item->HasPVRChannelInfoTag())
+        number = StringUtils::Format("%i", item->GetPVRChannelInfoTag()->SubChannelNumber());
+      if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->HasPVRChannel())
+        number = StringUtils::Format("%i", item->GetEPGInfoTag()->ChannelTag()->SubChannelNumber());
+      if (item->HasPVRTimerInfoTag())
+        number = StringUtils::Format("%i", item->GetPVRTimerInfoTag()->ChannelTag()->SubChannelNumber());
+
+      return number;
+    }
+    break;
+  case LISTITEM_CHANNEL_NUMBER_LBL:
+    {
+      CPVRChannelPtr channel;
+      if (item->HasPVRChannelInfoTag())
+        channel = CPVRChannelPtr(new CPVRChannel(*item->GetPVRChannelInfoTag()));
+      else if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->HasPVRChannel())
+        channel = item->GetEPGInfoTag()->ChannelTag();
+      else if (item->HasPVRTimerInfoTag())
+        channel = item->GetPVRTimerInfoTag()->ChannelTag();
+
+      return channel ?
+          channel->FormattedChannelNumber() :
+          "";
     }
     break;
   case LISTITEM_CHANNEL_NAME:
