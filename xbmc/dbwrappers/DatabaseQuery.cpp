@@ -377,8 +377,13 @@ CStdString CDatabaseQueryRule::GetWhereClause(const CDatabase &db, const CStdStr
   {
     CStdString query = "(" + FormatWhereClause(negate, operatorString, *it, db, strType) + ")";
 
-    if (it+1 != m_parameter.end())
-      query += " OR ";
+    if (it + 1 != m_parameter.end())
+    {
+      if (negate.empty())
+        query += " OR ";
+      else
+        query += " AND ";
+    }
 
     wholeQuery += query;
   }
