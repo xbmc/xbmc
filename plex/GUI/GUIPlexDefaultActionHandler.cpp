@@ -3,7 +3,7 @@
 #include "PlexExtraDataLoader.h"
 #include "Application.h"
 #include "PlexApplication.h"
-#include "PlayLists/PlexPlayQueueManager.h"
+#include "Playlists/PlexPlayQueueManager.h"
 #include "guilib/GUIWindowManager.h"
 #include <boost/foreach.hpp>
 #include "dialogs/GUIDialogYesNo.h"
