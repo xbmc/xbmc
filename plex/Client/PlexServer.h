@@ -42,6 +42,8 @@ public:
 
   CPlexServer(CPlexConnectionPtr connection);
 
+  virtual ~CPlexServer();
+  
   bool CollectDataFromRoot(const CStdString xmlData);
   CStdString toString() const;
 
@@ -148,6 +150,7 @@ private:
 
   CCriticalSection m_testingLock;
   CEvent m_testEvent;
+  CEvent m_noMoreConnThreads;
 
   CCriticalSection m_connTestThreadLock;
   std::vector<CPlexServerConnTestThread*> m_connTestThreads;

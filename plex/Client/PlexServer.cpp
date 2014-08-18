@@ -60,6 +60,12 @@ CPlexServer::CPlexServer(CPlexConnectionPtr connection)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+CPlexServer::~CPlexServer()
+{
+  CancelReachabilityTests();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexServer::CollectDataFromRoot(const CStdString xmlData)
 {
   CSingleLock lk(m_serverLock);
@@ -203,20 +209,19 @@ bool CPlexServer::UpdateReachability()
   CLog::Log(LOGDEBUG, "CPlexServer::UpdateReachability Updating reachability for %s with %ld connections.", m_name.c_str(), m_connections.size());
 
   m_bestConnection.reset();
-  m_testEvent.Reset();
   m_connectionsLeft = m_connections.size();
   m_complete = false;
 
   vector<CPlexConnectionPtr> sortedConnections = m_connections;
   sort(sortedConnections.begin(), sortedConnections.end(), ConnectionSortFunction);
 
-  CSingleLock lk(m_connTestThreadLock);
-
   if (m_connTestThreads.size() > 0)
   {
     CancelReachabilityTests();
-    m_connTestThreads.clear();
   }
+  
+  CSingleLock lk(m_connTestThreadLock);
+  m_testEvent.Reset();
 
   BOOST_FOREACH(CPlexConnectionPtr conn, sortedConnections)
   {
@@ -253,8 +258,16 @@ void CPlexServer::CancelReachabilityTests()
 {
   CSingleLock lk(m_connTestThreadLock);
 
-  BOOST_FOREACH(CPlexServerConnTestThread* thread, m_connTestThreads)
-    thread->Cancel();
+  m_noMoreConnThreads.Reset();
+  
+  if (m_connTestThreads.size())
+  {
+    BOOST_FOREACH(CPlexServerConnTestThread* thread, m_connTestThreads)
+      thread->Cancel();
+    lk.Leave();
+    
+    m_noMoreConnThreads.WaitMSec(3000);
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -305,6 +318,9 @@ void CPlexServer::OnConnectionTest(CPlexServerConnTestThread* thread, CPlexConne
   {
     m_testEvent.Set();
   }
+  
+  if (m_connTestThreads.size() == 0)
+    m_noMoreConnThreads.Set();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

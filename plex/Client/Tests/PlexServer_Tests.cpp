@@ -139,6 +139,8 @@ TEST(PlexServerConnectionTest, testDelayedResponse)
 
   EXPECT_TRUE(server->UpdateReachability());
   EXPECT_STREQ(server->GetActiveConnectionURL().Get(), "http://10.0.0.2:32400/");
+  
+  server->CancelReachabilityTests();
 }
 
 TEST(PlexServerMerge, basic)
