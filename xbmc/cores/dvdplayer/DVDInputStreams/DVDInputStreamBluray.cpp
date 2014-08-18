@@ -47,8 +47,6 @@ void DllLibbluray::file_close(BD_FILE_H *file)
 {
   if (file)
   {
-    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Closed file (%p)\n", file);
-    
     delete static_cast<CFile*>(file->internal);
     delete file;
   }
