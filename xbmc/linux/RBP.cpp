@@ -21,6 +21,7 @@
 #include "RBP.h"
 #if defined(TARGET_RASPBERRY_PI)
 
+#include <assert.h>
 #include "settings/Settings.h"
 #include "utils/log.h"
 
@@ -32,7 +33,7 @@ CRBP::CRBP()
   m_omx_initialized = false;
   m_DllBcmHost      = new DllBcmHost();
   m_OMX             = new COMXCore();
-  m_element = 0;
+  m_display = DISPMANX_NO_HANDLE;
 }
 
 CRBP::~CRBP()
@@ -53,9 +54,6 @@ bool CRBP::Initialize()
     return false;
 
   m_DllBcmHost->bcm_host_init();
-
-  uint32_t vc_image_ptr;
-  m_resource = vc_dispmanx_resource_create( VC_IMAGE_RGB565, 1, 1, &vc_image_ptr );
 
   m_omx_initialized = m_OMX->Initialize();
   if(!m_omx_initialized)
@@ -104,13 +102,24 @@ void CRBP::LogFirmwareVerison()
   CLog::Log(LOGNOTICE, "Config:\n%s", response);
 }
 
+DISPMANX_DISPLAY_HANDLE_T CRBP::OpenDisplay(uint32_t device)
+{
+  if (m_display == DISPMANX_NO_HANDLE)
+    m_display = vc_dispmanx_display_open( 0 /*screen*/ );
+  return m_display;
+}
+
+void CRBP::CloseDisplay(DISPMANX_DISPLAY_HANDLE_T display)
+{
+  assert(display == m_display);
+  vc_dispmanx_display_close(m_display);
+  m_display = DISPMANX_NO_HANDLE;
+}
+
 void CRBP::GetDisplaySize(int &width, int &height)
 {
-  DISPMANX_DISPLAY_HANDLE_T display;
   DISPMANX_MODEINFO_T info;
-
-  display = vc_dispmanx_display_open( 0 /*screen*/ );
-  if (vc_dispmanx_display_get_info(display, &info) == 0)
+  if (vc_dispmanx_display_get_info(m_display, &info) == 0)
   {
     width = info.width;
     height = info.height;
@@ -120,12 +129,10 @@ void CRBP::GetDisplaySize(int &width, int &height)
     width = 0;
     height = 0;
   }
-  vc_dispmanx_display_close(display );
 }
 
 unsigned char *CRBP::CaptureDisplay(int width, int height, int *pstride, bool swap_red_blue, bool video_only)
 {
-  DISPMANX_DISPLAY_HANDLE_T display;
   DISPMANX_RESOURCE_HANDLE_T resource;
   VC_RECT_T rect;
   unsigned char *image = NULL;
@@ -140,7 +147,6 @@ unsigned char *CRBP::CaptureDisplay(int width, int height, int *pstride, bool sw
   if (!pstride)
     flags |= DISPMANX_SNAPSHOT_PACK;
 
-  display = vc_dispmanx_display_open( 0 /*screen*/ );
   stride = ((width + 15) & ~15) * 4;
   image = new unsigned char [height * stride];
 
@@ -148,45 +154,44 @@ unsigned char *CRBP::CaptureDisplay(int width, int height, int *pstride, bool sw
   {
     resource = vc_dispmanx_resource_create( VC_IMAGE_RGBA32, width, height, &vc_image_ptr );
 
-    vc_dispmanx_snapshot(display, resource, (DISPMANX_TRANSFORM_T)flags);
+    assert(m_display != DISPMANX_NO_HANDLE);
+    vc_dispmanx_snapshot(m_display, resource, (DISPMANX_TRANSFORM_T)flags);
 
     vc_dispmanx_rect_set(&rect, 0, 0, width, height);
     vc_dispmanx_resource_read_data(resource, &rect, image, stride);
     vc_dispmanx_resource_delete( resource );
-    vc_dispmanx_display_close(display );
   }
   if (pstride)
     *pstride = stride;
   return image;
 }
 
-void CRBP::WaitVsync(void)
+
+static void vsync_callback(DISPMANX_UPDATE_HANDLE_T u, void *arg)
 {
-  DISPMANX_DISPLAY_HANDLE_T display = vc_dispmanx_display_open( 0 /*screen*/ );
-  DISPMANX_UPDATE_HANDLE_T update = vc_dispmanx_update_start(0);
+  CEvent *sync = (CEvent *)arg;
+  sync->Set();
+}
 
-  VC_DISPMANX_ALPHA_T alpha = { (DISPMANX_FLAGS_ALPHA_T)(DISPMANX_FLAGS_ALPHA_FROM_SOURCE | DISPMANX_FLAGS_ALPHA_FIXED_ALL_PIXELS), 120, /*alpha 0->255*/ 0 };
-  VC_RECT_T       src_rect;
-  VC_RECT_T       dst_rect;
-  vc_dispmanx_rect_set( &src_rect, 0, 0, 1 << 16, 1 << 16 );
-  vc_dispmanx_rect_set( &dst_rect, 0, 0, 1, 1 );
-
-  if (m_element)
-    vc_dispmanx_element_remove( update, m_element );
-
-  m_element = vc_dispmanx_element_add( update,
-                                            display,
-                                            2000,               // layer
-                                            &dst_rect,
-                                            m_resource,
-                                            &src_rect,
-                                            DISPMANX_PROTECTION_NONE,
-                                            &alpha,
-                                            NULL,             // clamp
-                                            (DISPMANX_TRANSFORM_T)0 );
-
-  vc_dispmanx_update_submit_sync(update);
-  vc_dispmanx_display_close( display );
+void CRBP::WaitVsync()
+{
+  int s;
+  DISPMANX_DISPLAY_HANDLE_T m_display = vc_dispmanx_display_open( 0 /*screen*/ );
+  if (m_display == DISPMANX_NO_HANDLE)
+  {
+    CLog::Log(LOGDEBUG, "CRBP::%s skipping while display closed", __func__);
+    return;
+  }
+  m_vsync.Reset();
+  s = vc_dispmanx_vsync_callback(m_display, vsync_callback, (void *)&m_vsync);
+  if (s == 0)
+  {
+    m_vsync.WaitMSec(1000);
+  }
+  else assert(0);
+  s = vc_dispmanx_vsync_callback(m_display, NULL, NULL);
+  assert(s == 0);
+  vc_dispmanx_display_close( m_display );
 }
 
 
@@ -197,6 +202,9 @@ void CRBP::Deinitialize()
 
   if(m_omx_initialized)
     m_OMX->Deinitialize();
+
+  if (m_display)
+    CloseDisplay(m_display);
 
   m_DllBcmHost->bcm_host_deinit();
 

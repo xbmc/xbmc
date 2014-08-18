@@ -277,7 +277,7 @@ bool CEGLNativeTypeRaspberryPI::SetNativeResolution(const RESOLUTION_INFO &res)
     m_desktopRes = res;
   }
 
-  m_dispman_display = m_DllBcmHost->vc_dispmanx_display_open(0);
+  m_dispman_display = g_RBP.OpenDisplay(0);
 
   m_width   = res.iWidth;
   m_height  = res.iHeight;
@@ -534,7 +534,7 @@ void CEGLNativeTypeRaspberryPI::DestroyDispmaxWindow()
 
   if (m_dispman_display != DISPMANX_NO_HANDLE)
   {
-    m_DllBcmHost->vc_dispmanx_display_close(m_dispman_display);
+    g_RBP.CloseDisplay(m_dispman_display);
     m_dispman_display = DISPMANX_NO_HANDLE;
   }
   DLOG("CEGLNativeTypeRaspberryPI::DestroyDispmaxWindow\n");
