@@ -110,7 +110,8 @@ CPlexServerPtr CPlexServerManager::FindByUUID(const CStdString &uuid)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-PlexServerList CPlexServerManager::GetAllServers(CPlexServerOwnedModifier modifier) const
+PlexServerList CPlexServerManager::GetAllServers(CPlexServerOwnedModifier modifier,
+                                                 bool onlyActive) const
 {
   CSingleLock lk(m_serverManagerLock);
 
@@ -118,6 +119,10 @@ PlexServerList CPlexServerManager::GetAllServers(CPlexServerOwnedModifier modifi
 
   BOOST_FOREACH(PlexServerPair p, m_serverMap)
   {
+    // check if we have a active connection, if the user requested it
+    if (onlyActive && !p.second->GetActiveConnection())
+      continue;
+
     if (modifier == SERVER_OWNED && p.second->GetOwned())
       ret.push_back(p.second);
     else if (modifier == SERVER_SHARED && !p.second->GetOwned())

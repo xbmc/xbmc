@@ -85,6 +85,9 @@ TEST_F(PlexServerManagerTest, updateNoBestServer)
   PlexServerList list;
   list.push_back(server);
 
+  EXPECT_CALL(*serverMgr, NotifyAboutServer(server, false)).Times(1);
+  EXPECT_CALL(*serverMgr, UpdateReachability(false)).Times(1);
+
   serverMgr->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MANUAL);
 }
 
@@ -152,4 +155,62 @@ TEST_F(PlexServerManagerTest, plexLocalAddressDuplicate)
   bestServer->GetConnections(conns);
 
   EXPECT_EQ(1, conns.size());
+}
+
+TEST_F(PlexServerManagerTest, getAllServers)
+{
+  CPlexServerPtr server = PlexTestUtils::serverWithConnection();
+  CPlexServerPtr server2 = PlexTestUtils::serverWithConnection();
+  server2->SetUUID("123abc");
+
+  PlexServerList list;
+  list.push_back(server);
+  list.push_back(server2);
+
+  EXPECT_CALL(*serverMgr, UpdateReachability(false));
+
+  serverMgr->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_DISCOVERED);
+
+  PlexServerList servers = serverMgr->GetAllServers();
+  EXPECT_EQ(2, servers.size());
+}
+
+TEST_F(PlexServerManagerTest, getAllOwnedServers)
+{
+  CPlexServerPtr server = PlexTestUtils::serverWithConnection();
+  CPlexServerPtr server2 = PlexTestUtils::serverWithConnection();
+  server2->SetUUID("123abc");
+  server2->SetOwned(false);
+
+  PlexServerList list;
+  list.push_back(server);
+  list.push_back(server2);
+
+  EXPECT_CALL(*serverMgr, UpdateReachability(false));
+
+  serverMgr->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_DISCOVERED);
+
+  PlexServerList servers = serverMgr->GetAllServers(CPlexServerManager::SERVER_OWNED);
+  EXPECT_EQ(1, servers.size());
+}
+
+TEST_F(PlexServerManagerTest, getAllOwnedActiveServers)
+{
+  CPlexServerPtr server = PlexTestUtils::serverWithConnection();
+
+  // server without connection.
+  CPlexServerPtr server2 = CPlexServerPtr(new CPlexServer("abc3241", "test", true));
+
+  PlexServerList list;
+  list.push_back(server);
+  list.push_back(server2);
+
+  EXPECT_CALL(*serverMgr, UpdateReachability(false));
+  EXPECT_CALL(*serverMgr, NotifyAboutServer(testing::_, testing::_)).Times(testing::AnyNumber());
+
+  serverMgr->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_DISCOVERED);
+
+  PlexServerList servers = serverMgr->GetAllServers(CPlexServerManager::SERVER_OWNED, true);
+  EXPECT_EQ(1, servers.size());
+  EXPECT_TRUE(servers.at(0)->GetOwned());
 }

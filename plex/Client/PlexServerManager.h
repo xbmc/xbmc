@@ -43,7 +43,8 @@ public:
   CPlexServerPtr FindFromItem(const CFileItemPtr& item);
   CPlexServerPtr FindFromItem(const CFileItem& item);
 
-  PlexServerList GetAllServers(CPlexServerOwnedModifier modifier = SERVER_ALL) const;
+  PlexServerList GetAllServers(CPlexServerOwnedModifier modifier = SERVER_ALL,
+                               bool onlyActive = false) const;
 
   virtual void UpdateFromConnectionType(const PlexServerList& servers, int connectionType);
   void UpdateFromDiscovery(const CPlexServerPtr& server);
