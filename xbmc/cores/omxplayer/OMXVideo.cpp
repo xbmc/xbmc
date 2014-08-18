@@ -851,9 +851,10 @@ void COMXVideo::Reset(void)
     return;
 
   m_setStartTime = true;
-  m_omx_decoder.FlushInput();
+  m_omx_decoder.FlushAll();
   if(m_deinterlace)
-    m_omx_image_fx.FlushInput();
+    m_omx_image_fx.FlushAll();
+  m_omx_sched.FlushAll();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
