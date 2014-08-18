@@ -181,3 +181,24 @@ TEST(PlexServerMerge, mergedConnection)
   server->GetConnections(connections);
   EXPECT_EQ(1, connections.size());
 }
+
+TEST(PlexServerBuildURL, noConnections)
+{
+  CPlexServerPtr server = CPlexServerPtr(new CPlexServer("abc123", "test", true));
+  EXPECT_EQ("", (std::string)server->BuildURL("/foo").Get());
+}
+
+TEST(PlexServerBuildURL, noActiveConnection)
+{
+  CPlexServerPtr server = CPlexServerPtr(new CPlexServer("abc123", "test", true));
+  CPlexConnectionPtr conn = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_DISCOVERED, "10.0.0.1", 32400, "http"));
+  server->AddConnection(conn);
+
+  EXPECT_EQ("", (std::string)server->BuildURL("/foo").Get());
+}
+
+TEST(PlexServerBuildURL, working)
+{
+  CPlexServerPtr server = PlexTestUtils::serverWithConnection();
+  EXPECT_EQ("http://10.0.0.1:32400/foo?X-Plex-Token=token", (std::string)server->BuildURL("/foo").Get());
+}
