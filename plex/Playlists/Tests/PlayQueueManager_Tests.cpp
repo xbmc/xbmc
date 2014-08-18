@@ -48,7 +48,7 @@ TEST(PlayQueueManagerGetURIFromItem, missingLibrarySectionUUID)
   item.ClearProperty("librarySectionUUID");
 
   CStdString uri = CPlexPlayQueueManager::getURIFromItem(item);
-  EXPECT_STREQ(uri, "");
+  EXPECT_STREQ(uri, "library://whatever/directory/%2flibrary%2fsections%2f2%2fall");
 }
 
 TEST(PlayQueueManagerGetURIFromItem, badProtocol)
