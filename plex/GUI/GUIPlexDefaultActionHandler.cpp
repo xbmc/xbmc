@@ -175,7 +175,7 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
         }
         
       case ACTION_PLEX_PQ_CLEAR:
-        if (item->HasProperty("playQueueItemID"))
+        if (IsPlayQueueContainer(container))
         {
           g_plexApplication.playQueueManager->clear();
           return true;
@@ -184,7 +184,7 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
 
       case ACTION_DELETE_ITEM:
         // if we are on a PQ item, remove it from PQ
-        if (item->HasProperty("playQueueItemID"))
+        if (IsPlayQueueContainer(container))
         {
           g_plexApplication.playQueueManager->removeItem(item);
           return true;
@@ -301,12 +301,12 @@ void CGUIPlexDefaultActionHandler::GetContextButtonsForAction(int actionID, CFil
     }
 
     case ACTION_PLEX_PQ_CLEAR:
-      if (item->HasProperty("playQueueItemID"))
+      if (IsPlayQueueContainer(container))
         buttons.Add(actionID, 192);
       break;
 
     case ACTION_DELETE_ITEM:
-      if (item->HasProperty("playQueueItemID"))
+      if (IsPlayQueueContainer(container))
       {
         buttons.Add(actionID, 1210);
       }
@@ -487,4 +487,32 @@ bool CGUIPlexDefaultActionHandler::IsVideoContainer(CFileItemListPtr container) 
           dirType == PLEX_DIR_TYPE_VIDEO    ||
           dirType == PLEX_DIR_TYPE_CLIP);
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIPlexDefaultActionHandler::IsPlayListContainer(CFileItemListPtr container) const
+{
+  if (!container)
+    return false;
+  
+  CURL u(container->GetPath());
+  
+  if (boost::algorithm::starts_with(u.GetFileName(),"playlists"))
+    return true;
+  
+  return false;
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIPlexDefaultActionHandler::IsPlayQueueContainer(CFileItemListPtr container) const
+{
+  if (!container)
+    return false;
+  
+  CURL u(container->GetPath());
+  
+  if (u.GetHostName() == "playqueue")
+    return true;
+  
+  return false;
+};
 

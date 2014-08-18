@@ -47,6 +47,8 @@ private:
   bool IsPhotoContainer(CFileItemListPtr container) const;
   bool IsMusicContainer(CFileItemListPtr container) const;
   bool IsVideoContainer(CFileItemListPtr container) const;
+  bool IsPlayQueueContainer(CFileItemListPtr container) const;
+  bool IsPlayListContainer(CFileItemListPtr container) const;
   
   ActionsSettingList m_ActionSettings;
   CPlexNavigationHelper m_navHelper;
