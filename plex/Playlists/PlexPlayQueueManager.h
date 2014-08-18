@@ -13,7 +13,7 @@ class CPlexPlayQueueOptions
 public:
   CPlexPlayQueueOptions(bool playing = true, bool prompts = true, bool doshuffle = false,
                         const std::string& startItem = "")
-    : startPlaying(playing), showPrompts(prompts), shuffle(doshuffle), startItemKey(startItem)
+    : startPlaying(playing), showPrompts(prompts), shuffle(doshuffle), startItemKey(startItem), forceTrailers(false)
   {}
 
   // if the PQ should start playing when it's loaded or created
@@ -30,6 +30,9 @@ public:
 
   // a resume offset of the FIRST item in the PQ
   int64_t resumeOffset;
+  
+  // force trailer queuing
+  bool forceTrailers;
 
   // creation Url Options
   CUrlOptions urlOptions;

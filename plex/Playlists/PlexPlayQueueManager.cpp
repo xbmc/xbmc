@@ -200,7 +200,7 @@ CStdString CPlexPlayQueueManager::getURIFromItem(const CFileItem& item, const CS
       CLog::Log(LOGWARNING,
                 "CPlexPlayQueueManager::getURIFromItem item %s doesn't have a section UUID",
                 item.GetPath().c_str());
-      return "";
+      librarySectionUUID = "whatever";
     }
     else
       librarySectionUUID = "extras";

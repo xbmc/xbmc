@@ -96,7 +96,7 @@ bool CPlexPlayQueueServer::create(const CFileItem& container, const CStdString& 
   if (container.GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE)
   {
     int trailerCount = g_guiSettings.GetInt("videoplayer.playtrailercount");
-    if ((trailerCount) && (container.GetProperty("viewOffset").asInteger() == 0))
+    if ((trailerCount) && ((container.GetProperty("viewOffset").asInteger() == 0) || (options.forceTrailers)))
       u.SetOption("extrasPrefixCount", boost::lexical_cast<std::string>(trailerCount));
   }
 

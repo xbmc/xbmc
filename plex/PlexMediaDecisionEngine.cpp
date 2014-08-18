@@ -26,6 +26,9 @@
 #include "GUI/GUIDialogPlexMedia.h"
 #include "PlayListPlayer.h"
 #include "music/tags/MusicInfoTag.h"
+#include "GUISettings.h"
+#include "PlexPlayQueueManager.h"
+#include "ApplicationMessenger.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexMediaDecisionEngine::checkItemPlayability(const CFileItem& item)
@@ -84,6 +87,20 @@ bool CPlexMediaDecisionEngine::resolveItem(const CFileItem& _item, CFileItem &re
         return false;
       item.SetProperty("selectedMediaItem", selectedMedia);
       offset = CGUIDialogPlexMedia::ProcessResumeChoice(item);
+      
+      // if we have trailers and that we restart movie from beginning, create a new PQ askign for trailers.
+      if (item.HasProperty("viewOffset") && (g_guiSettings.GetInt("videoplayer.playtrailercount") > 0) && (offset == 0))
+      {
+        ePlexMediaType pqType = g_plexApplication.playQueueManager->getCurrentPlayQueueType();
+        if (pqType == PLEX_MEDIA_TYPE_VIDEO)
+        {
+          CPlexPlayQueueOptions pqOptions;
+          pqOptions.startPlaying = true;
+          pqOptions.forceTrailers = true;
+          g_plexApplication.playQueueManager->create(item, "", pqOptions);
+          return false;
+        }
+      }
 
       // we use -2 for "abort"
       if (offset == -2)
