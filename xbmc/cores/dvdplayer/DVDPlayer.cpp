@@ -3774,12 +3774,18 @@ void CDVDPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
     return;
 
   if (index == GetAudioStream())
+  {
     info.bitrate = m_dvdPlayerAudio.GetAudioBitrate();
+    info.channels = m_dvdPlayerAudio.GetAudioChannels();
+  }
   else if (m_pDemuxer)
   {
     CDemuxStreamAudio* stream = m_pDemuxer->GetStreamFromAudioId(index);
     if (stream)
+    {
       info.bitrate = stream->iBitRate;
+      info.channels = stream->iChannels;
+    }
   }
 
   SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, index);
@@ -3797,7 +3803,6 @@ void CDVDPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
     CDemuxStreamAudio* stream = static_cast<CDemuxStreamAudio*>(m_pDemuxer->GetStreamFromAudioId(index));
     if (stream)
     {
-      info.channels = stream->iChannels;
       std::string codecName;
       m_pDemuxer->GetStreamCodecName(stream->iId, codecName);
       info.audioCodecName = codecName;
