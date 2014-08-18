@@ -488,22 +488,6 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
 
   pa_threaded_mainloop_lock(m_MainLoop);
 
-  {
-    // Register Callback for Sink changes
-    CSingleLock lock(m_sec);
-    pa_context_set_subscribe_callback(m_Context, SinkChangedCallback, this);
-    const pa_subscription_mask_t mask = PA_SUBSCRIPTION_MASK_SINK;
-    pa_operation *op = pa_context_subscribe(m_Context, mask, NULL, this);
-    if (op != NULL)
-      pa_operation_unref(op);
-   
-    pa_context_set_subscribe_callback(m_Context, SinkInputInfoChangedCallback, this);
-    const pa_subscription_mask_t mask_input = PA_SUBSCRIPTION_MASK_SINK_INPUT;
-    pa_operation* op_sinfo = pa_context_subscribe(m_Context, mask_input, NULL, this);
-    if (op_sinfo != NULL)
-      pa_operation_unref(op_sinfo);
-  }
-
   struct pa_channel_map map;
   pa_channel_map_init(&map);
 
@@ -663,6 +647,23 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
     m_BufferSize = a->tlength;
 
     format.m_frames = packetSize / frameSize;
+  }
+
+  {
+    CSingleLock lock(m_sec);
+    // Register Callback for Sink changes
+    pa_context_set_subscribe_callback(m_Context, SinkChangedCallback, this);
+    const pa_subscription_mask_t mask = PA_SUBSCRIPTION_MASK_SINK;
+    pa_operation *op = pa_context_subscribe(m_Context, mask, NULL, this);
+    if (op != NULL)
+      pa_operation_unref(op);
+
+    // Register Callback for Sink Info changes - this handles volume
+    pa_context_set_subscribe_callback(m_Context, SinkInputInfoChangedCallback, this);
+    const pa_subscription_mask_t mask_input = PA_SUBSCRIPTION_MASK_SINK_INPUT;
+    pa_operation* op_sinfo = pa_context_subscribe(m_Context, mask_input, NULL, this);
+    if (op_sinfo != NULL)
+      pa_operation_unref(op_sinfo);
   }
 
   pa_threaded_mainloop_unlock(m_MainLoop);
