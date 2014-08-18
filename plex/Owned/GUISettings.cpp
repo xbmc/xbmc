@@ -1395,6 +1395,11 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     SetInt("videoscreen.vsync", VSYNC_ALWAYS);
   }
 #endif
+  /* PLEX */
+  // always show extensions ans this might lead to truncated titles having a "."
+  SetBool("filelists.showextensions", true);
+  /* END PLEX */
+  
  // DXMERGE: This might have been useful?
  // g_videoConfig.SetVSyncMode((VSYNC)GetInt("videoscreen.vsync"));
 
