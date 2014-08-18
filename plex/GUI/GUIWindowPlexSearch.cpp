@@ -101,7 +101,7 @@ void CGUIWindowPlexSearch::OnTimeout()
     return;
 
   CPlexServerManager::CPlexServerOwnedModifier modifier = g_guiSettings.GetBool("myplex.searchsharedlibraries") ? CPlexServerManager::SERVER_ALL : CPlexServerManager::SERVER_OWNED;
-  PlexServerList list = g_plexApplication.serverManager->GetAllServers(modifier);
+  PlexServerList list = g_plexApplication.serverManager->GetAllServers(modifier, true);
 
   CSingleLock lk(m_threadsSection);
   m_currentSearchString = str;

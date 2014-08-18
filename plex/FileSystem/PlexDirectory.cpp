@@ -936,7 +936,7 @@ bool CPlexDirectory::GetPlaylistsDirectory(CFileItemList &items)
   }
   
   CPlexServerVersion playlistVersion("0.9.9.12.0");
-  PlexServerList list = g_plexApplication.serverManager->GetAllServers(CPlexServerManager::SERVER_OWNED);
+  PlexServerList list = g_plexApplication.serverManager->GetAllServers(CPlexServerManager::SERVER_OWNED, true);
   BOOST_FOREACH(CPlexServerPtr server, list)
   {
     CPlexServerVersion version(server->GetVersion());
