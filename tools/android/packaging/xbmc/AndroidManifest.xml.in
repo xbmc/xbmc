@@ -61,7 +61,7 @@
         -->
         <activity
             android:name=".Main"
-            android:configChanges="orientation|keyboard|keyboardHidden|navigation"
+            android:configChanges="orientation|keyboard|keyboardHidden|navigation|touchscreen"
             android:finishOnTaskLaunch="true"
             android:label="XBMC"
             android:launchMode="singleInstance"
