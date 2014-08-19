@@ -232,7 +232,7 @@ int CPlexTranscoderClient::SelectATranscoderQuality(CPlexServerPtr server, int c
 ///////////////////////////////////////////////////////////////////////////////
 std::string CPlexTranscoderClient::GetCurrentBitrate(bool local)
 {
-  return boost::lexical_cast<std::string>(g_guiSettings.GetInt(local ? "plexmediaserver.localquality" : "plexmediaserver.remotequality"));
+  return boost::lexical_cast<std::string>(local ? localBitrate() : remoteBitrate());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -257,11 +257,11 @@ bool CPlexTranscoderClient::ShouldTranscode(CPlexServerPtr server, const CFileIt
   int transcodeSetting;
   
   if (server->GetActiveConnection()->IsLocal())
-    transcodeSetting = g_guiSettings.GetInt("plexmediaserver.localquality");
+    transcodeSetting = localBitrate();
   else
-    transcodeSetting = g_guiSettings.GetInt("plexmediaserver.remotequality");
+    transcodeSetting = remoteBitrate();
   
-  if (g_guiSettings.GetBool("plexmediaserver.forcetranscode"))
+  if (transcodeForced())
     return transcodeSetting != 0;
   else
     return transcodeSetting ? transcodeSetting < bitrate : false;
@@ -349,7 +349,7 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
   /* PHT can render subtitles itself no need to include them in the transcoded video
    * UNLESS it's a embedded subtitle, we can't extract it from the file or UNLESS the
    * user have checked the always transcode subtitles option in settings */
-  if (!g_guiSettings.GetBool("plexmediaserver.transcodesubtitles"))
+  if (!transcodeSubtitles())
   {
     CFileItemPtr subStream = PlexUtils::GetItemSelectedStreamOfType(item, PLEX_STREAM_SUBTITLE);
     if (subStream && subStream->HasProperty("key"))

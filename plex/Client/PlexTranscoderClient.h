@@ -12,6 +12,7 @@
 #include "Client/PlexServer.h"
 #include "FileItem.h"
 #include "URL.h"
+#include "settings/GUISettings.h"
 
 #define PLEX_ONLINE_QUALITY_ALWAYS_ASK 0
 #define PLEX_ONLINE_QUALITY_1080p 1
@@ -22,16 +23,21 @@
 class CPlexTranscoderClient
 {
 private:
-    static CPlexTranscoderClient *_Instance;
+  static CPlexTranscoderClient *_Instance;
 
 public:
-    
-    enum PlexTranscodeMode
-    {
-      PLEX_TRANSCODE_MODE_UNKNOWN = 0,
-      PLEX_TRANSCODE_MODE_HLS = 1,
-      PLEX_TRANSCODE_MODE_MKV = 2
-    };
+
+  enum PlexTranscodeMode
+  {
+    PLEX_TRANSCODE_MODE_UNKNOWN = 0,
+    PLEX_TRANSCODE_MODE_HLS = 1,
+    PLEX_TRANSCODE_MODE_MKV = 2
+  };
+
+  virtual bool transcodeForced() const { return g_guiSettings.GetBool("plexmediaserver.forcetranscode"); }
+  virtual int localBitrate() const { return g_guiSettings.GetInt("plexmediaserver.localquality"); }
+  virtual int remoteBitrate() const { return g_guiSettings.GetInt("plexmediaserver.remotequality"); }
+  static bool transcodeSubtitles() { return g_guiSettings.GetBool("plexmediaserver.transcodesubtitles"); }
 
   CPlexTranscoderClient() {}
   virtual ~CPlexTranscoderClient() {}

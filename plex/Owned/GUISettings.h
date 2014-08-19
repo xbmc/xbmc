@@ -481,7 +481,11 @@ public:
 
   void AddSetting(CSettingsCategory* cat, CSetting* setting);
   void AddBool(CSettingsCategory* cat, const char *strSetting, int iLabel, bool bSetting, int iControlType = CHECKMARK_CONTROL);
+#ifndef __PLEX__
   bool GetBool(const char *strSetting) const;
+#else
+  virtual bool GetBool(const char *strSetting) const;
+#endif
   void SetBool(const char *strSetting, bool bSetting);
   void ToggleBool(const char *strSetting);
 
@@ -493,7 +497,11 @@ public:
   void AddInt(CSettingsCategory* cat, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, int iFormat, int iLabelMin=-1);
   void AddInt(CSettingsCategory* cat, const char *strSetting, int iLabel, int iData, const std::map<int,int>& entries, int iControlType);
   void AddSpin(unsigned int id, int label, int *current, std::vector<std::pair<int, int> > &values);
+#ifndef __PLEX__
   int GetInt(const char *strSetting) const;
+#else
+  virtual int GetInt(const char *strSetting) const;
+#endif
   void SetInt(const char *strSetting, int fSetting);
 
   void AddHex(CSettingsCategory* cat, const char *strSetting, int iLabel, int fSetting, int iMin, int iStep, int iMax, int iControlType, const char *strFormat = NULL);
