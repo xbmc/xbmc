@@ -118,7 +118,7 @@
       <next_track>SkipNext</next_track>
       <prev_track>SkipPrevious</prev_track>
       <stop>Stop</stop>
-      <play_pause>Pause</play_pause>
+      <play_pause>PlayPause</play_pause>
       <fastforward>FastForward</fastforward>
       <rewind>Rewind</rewind>
       <record/>
