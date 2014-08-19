@@ -22,6 +22,7 @@ CGUIPlexDefaultActionHandler::CGUIPlexDefaultActionHandler()
   action->WindowSettings[WINDOW_HOME].contextMenuVisisble = false;
   action->WindowSettings[WINDOW_PLEX_PLAY_QUEUE].contextMenuVisisble = true;
   action->WindowSettings[WINDOW_VIDEO_NAV].contextMenuVisisble = true;
+  action->WindowSettings[WINDOW_PLEX_PLAYLIST_SELECTION].contextMenuVisisble = true;
   m_ActionSettings.push_back(*action);
   
   action = new ACTION_SETTING(ACTION_PLEX_PLAY_ALL);
@@ -36,6 +37,7 @@ CGUIPlexDefaultActionHandler::CGUIPlexDefaultActionHandler()
   action->WindowSettings[WINDOW_HOME].contextMenuVisisble = true;
   action->WindowSettings[WINDOW_PLEX_PLAY_QUEUE].contextMenuVisisble = true;
   action->WindowSettings[WINDOW_VIDEO_NAV].contextMenuVisisble = true;
+  action->WindowSettings[WINDOW_PLEX_PLAYLIST_SELECTION].contextMenuVisisble = true;
   m_ActionSettings.push_back(*action);
   
   action = new ACTION_SETTING(ACTION_PLEX_PLAY_TRAILER);

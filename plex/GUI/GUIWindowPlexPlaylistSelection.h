@@ -15,7 +15,10 @@ class CGUIWindowPlexPlaylistSelection : public CGUIMediaWindow
 {
 public:
   CGUIWindowPlexPlaylistSelection();
-  
+  void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+  bool OnAction(const CAction &action);
+
 private:
   bool OnSelect(int item);
 };
