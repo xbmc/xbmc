@@ -10,6 +10,7 @@ void PlexServerManagerTestUtility::SetUp()
     server = CPlexServerPtr(new CPlexServer("abc123", "test server", true));
     CPlexConnectionPtr conn = CPlexConnectionPtr(new CPlexConnection(
         CPlexConnection::CONNECTION_DISCOVERED, "10.10.10.10", 32400, "http", "token"));
+    server->SetVersion("0.9.9.7.0-abc123");
     server->AddConnection(conn);
   }
 

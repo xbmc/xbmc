@@ -65,16 +65,6 @@ TEST(PlayQueueManagerGetURIFromItem, specifiedUri)
   EXPECT_STREQ(uri, "library://sectionUUID/directory/foobar");
 }
 
-static CPlexServerPtr getServer()
-{
-  CPlexConnectionPtr connection = CPlexConnectionPtr(
-  new CPlexConnection(CPlexConnection::CONNECTION_MANUAL, "10.0.42.200", 32400, "http", "token"));
-  CPlexServerPtr server = CPlexServerPtr(new CPlexServer(connection));
-  server->SetUUID("abc123");
-
-  return server;
-}
-
 class PlayQueueManagerTest : public PlexServerManagerTestUtility
 {
 protected:
@@ -188,4 +178,33 @@ TEST_F(PlayQueueManagerTest, GetPlaylistFromType_basic)
   EXPECT_EQ(manager.getPlaylistFromType(PLEX_MEDIA_TYPE_MUSIC), PLAYLIST_MUSIC);
   EXPECT_EQ(manager.getPlaylistFromType(PLEX_MEDIA_TYPE_VIDEO), PLAYLIST_VIDEO);
   EXPECT_EQ(manager.getPlaylistFromType(PLEX_MEDIA_TYPE_PHOTO), PLAYLIST_NONE);
+}
+
+TEST_F(PlayQueueManagerTest, PlaylistImplementation)
+{
+  CFileItemList list;
+
+  // get the playlist
+  EXPECT_TRUE(PlexTestUtils::listFromXML(testItem_playlistMusic, list));
+  list.SetPath("plexserver://abc123/playlists/123/items");
+  IPlexPlayQueueBasePtr impl = manager.getImpl(list);
+  EXPECT_STREQ("server", impl->implementationName().c_str());
+}
+
+TEST_F(PlayQueueManagerTest, channelImplementation)
+{
+  CFileItemList list;
+
+  EXPECT_TRUE(PlexTestUtils::listFromXML(testItem_channelTwit, list));
+  IPlexPlayQueueBasePtr impl = manager.getImpl(list);
+  EXPECT_STREQ("local", impl->implementationName().c_str());
+}
+
+TEST_F(PlayQueueManagerTest, libraryImplementation)
+{
+  CFileItemList list;
+
+  EXPECT_TRUE(PlexTestUtils::listFromXML(testItem_episodeListManyItems, list));
+  IPlexPlayQueueBasePtr impl = manager.getImpl(list);
+  EXPECT_STREQ("server", impl->implementationName().c_str());
 }

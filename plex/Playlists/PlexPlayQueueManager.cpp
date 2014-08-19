@@ -368,8 +368,9 @@ IPlexPlayQueueBasePtr CPlexPlayQueueManager::getImpl(const CFileItem& container)
               server->toString().c_str(),
               URIUtils::GetFileName(container.GetPath()).c_str());
 
-    if (container.GetProperty("identifier").asString() == "com.plexapp.plugins.library" &&
-        URIUtils::GetFileName(container.GetPath()) != "folder" &&
+    if ((boost::starts_with(container.GetAsUrl().GetFileName(), "playlists") ||
+        (container.GetProperty("identifier").asString() == "com.plexapp.plugins.library" &&
+         URIUtils::GetFileName(container.GetPath()) != "folder")) &&
         CPlexPlayQueueServer::isSupported(server))
     {
       CLog::Log(LOGDEBUG, "CPlexPlayQueueManager::getImpl selecting PlexPlayQueueServer");
