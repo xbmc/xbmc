@@ -382,6 +382,76 @@
 		<animation effect="fade" start="0" end="50" time="400" condition="true">Visible</animation>
 		<animation effect="fade" start="50" end="0" time="300" condition="true">Hidden</animation>
 	</include>
+	<!-- Square Composites -->	
+	<include name="ListItemSquareComposite">
+		<control type="image">
+			<width>152</width>
+			<height>152</height>
+			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<include>PosListItem</include>
+			<width>126</width>
+			<height>126</height>
+			<texture background="true">default-square-small.png</texture>
+		</control>
+		<control type="image">
+			<include>PosListItem</include>
+			<width>126</width>
+			<height>126</height>
+			<texture fallback="default-square-big.png" background="true" diffuse="mask-square-big.png">$INFO[ListItem.CompositeImage(width=720;height=720;cols=2;rows=2)]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="middle">scale</aspectratio>
+			<visible>ListItem.Type(musicplaylist) | ListItem.Type(musicplayqueue)</visible>
+		</control>		
+		<control type="image">
+			<include>PosListItem</include>
+			<width>126</width>
+			<height>126</height>
+			<texture fallback="default-square-big.png" background="true" diffuse="mask-square-big.png">$INFO[ListItem.CompositeImage(width=720;height=720;cols=3;rows=2)]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="middle">scale</aspectratio>
+			<visible>ListItem.Type(videoplaylist) | ListItem.Type(videoplayqueue)</visible>
+		</control>
+	</include>
+	<include name="ListItemSquareCompositeSelectedBorder">
+		<control type="image">
+			<include>PosListItemSelected</include>
+			<width>132</width>
+			<height>132</height>
+			<include>Border</include>
+		</control>
+	</include>
+	<include name="ListItemSquareCompositeCard">
+		<control type="image">
+			<posx>37</posx>
+			<posy>172</posy>
+			<width>126</width>
+			<height>54</height>
+			<include>Card</include>
+			<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
+		</control>
+		<control type="image">
+			<posx>37</posx>
+			<posy>199</posy>
+			<width>126</width>
+			<height>28</height>
+			<include>Card</include>
+			<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
+		</control>
+	</include>
+	<include name="ListItemSquareCompositeTitle">
+		<control type="label">
+			<posy>214</posy>
+			<include>ListItemTitle1</include>
+			<label>$INFO[ListItem.Label]</label>
+		</control>
+	</include>
+	<include name="ListItemSquareCompositeTitleServer">
+		<control type="label">
+			<posy>190</posy>
+			<include>ListItemTitle1</include>
+			<label>$INFO[ListItem.Property(serverName)]</label>
+		</control>
+	</include>
 	<!-- lists -->
 	<include name="HomeLists">
 		<!-- lists -->
@@ -394,11 +464,11 @@
 			<height>720</height>
 			<!-- list titles & bg's & arrows (see includes on top for formatting) -->
 			<control type="group">
-				<!-- "on deck" & "queue" & "play queue video" -->
+				<!-- "on deck" & "queue" -->
 				<control type="group">
-					<!-- with "recently added" or "recommended" or "play queue music" -->
+					<!-- with "recently added" or "recommended" -->
 					<control type="group">
-						<visible>[Control.IsVisible(11000) + Control.IsVisible(11001)] | [Control.IsVisible(11003) + Control.IsVisible(11004)] | [Control.IsVisible(11005) + Control.IsVisible(11006)]</visible>
+						<visible>[Control.IsVisible(11000) + Control.IsVisible(11001)] | [Control.IsVisible(11003) + Control.IsVisible(11004)]</visible>
 						<posy>215</posy>
 						<control type="image">
 							<include>ListBgTop</include>
@@ -429,7 +499,7 @@
 					</control>
 					<!-- alone -->
 					<control type="group">
-						<visible>[!Control.IsVisible(11000) + Control.IsVisible(11001)] | [Control.IsVisible(11003) + !Control.IsVisible(11004)] | [[Control.IsVisible(11005) | Control.IsVisible(11006)] + !Control.IsVisible(11007)]</visible>
+						<visible>[!Control.IsVisible(11000) + Control.IsVisible(11001)] | [Control.IsVisible(11003) + !Control.IsVisible(11004)] | [[Control.IsVisible(11006)] + !Control.IsVisible(11007)]</visible>
 						<posy>320</posy>
 						<control type="image">
 							<include>ListBgTop</include>
@@ -464,12 +534,12 @@
 						</control>
 					</control>
 				</control>
-				<!-- "recently added" & "recently used" & "recommendations" & "play queue music" -->
+				<!-- "recently added" & "recently used" & "recommendations" & "play lists" -->
 				<control type="group">
 					<visible>Control.IsVisible(11000) | Control.IsVisible(11002) | Control.IsVisible(11003) | Control.IsVisible(11004) | !Control.IsVisible(11007)</visible>
-					<!-- with "on deck" or "queue + recommendations" & "play queue video" -->
+					<!-- with "on deck" or "queue + recommendations" -->
 					<control type="group">
-						<visible>Control.IsVisible(11001) | [Control.IsVisible(11003) + Control.IsVisible(11004)] | [Control.IsVisible(11005) + Control.IsVisible(11006)]</visible>
+						<visible>Control.IsVisible(11001) | [Control.IsVisible(11003) + Control.IsVisible(11004)]</visible>
 						<posy>666</posy>
 						<control type="image">
 							<include>ListBgBottom</include>
@@ -495,7 +565,7 @@
 					</control>
 					<!-- alone -->
 					<control type="group">
-						<visible>[Control.IsVisible(11000) + !Control.IsVisible(11001)] | [Control.IsVisible(11003) + !Control.IsVisible(11004)] | [!Control.IsVisible(11003) + Control.IsVisible(11004)] | Control.IsVisible(11002) | [![Control.IsVisible(11005) | Control.IsVisible(11006)] + Control.IsVisible(11007)]</visible>
+						<visible>[Control.IsVisible(11000) + !Control.IsVisible(11001)] | [Control.IsVisible(11003) + !Control.IsVisible(11004)] | [!Control.IsVisible(11003) + Control.IsVisible(11004)] | Control.IsVisible(11002) | Control.IsVisible(11005) | [![Control.IsVisible(11006)] + Control.IsVisible(11007)]</visible>
 						<posy>563</posy>
 						<control type="image">
 							<include>ListBgBottom</include>
@@ -517,6 +587,11 @@
 							<include>ListTitle</include>
 							<label>Recommended</label>
 							<visible>Control.IsVisible(11004) + !Control.IsVisible(11003)</visible>
+						</control>						
+						<control type="label" id="8001">
+							<include>ListTitle</include>
+							<label>Playlists</label>
+							<visible>Control.IsVisible(11005)</visible>
 						</control>
 						<!-- arrow -->
 						<include>ListArrow</include>
@@ -917,6 +992,52 @@
 							</control>
 						</focusedlayout>
 						<height>200</height>
+					</control>
+				</control>
+			</control>
+			<!-- "Playlists" -->
+			<control type="grouplist" id="5400">
+				<visible>true</visible>
+				<posx>0</posx>
+				<posy>226</posy>
+				<width>860</width>
+				<height>720</height>
+				<ondown>300</ondown>
+				<onup>300</onup>
+				<onright>350</onright>
+				<onleft>350</onleft>
+				<orientation>vertical</orientation>
+				<!-- All (11005) -->
+				<control type="group" id="7005">
+					<height>230</height>
+					<control type="fixedlist" id="11005">
+						<visible allowhiddenfocus="false">false</visible>
+						<orientation>horizontal</orientation>
+						<ondown>300</ondown>
+						<onup>300</onup>
+						<onright>-</onright>
+						<onleft>300</onleft>
+						<posx>-6</posx>
+						<posy>100</posy>
+						<width>870</width>
+						<height>330</height>
+						<itemlayout width="140" height="230">
+							<control type="group">
+								<include>ListItemSquareCompositeCard</include>
+								<include>ListItemSquareComposite</include>
+								<include>ListItemSquareCompositeTitleServer</include>
+								<include>ListItemSquareCompositeTitle</include>
+							</control>
+						</itemlayout>
+						<focusedlayout width="140" height="230">
+							<control type="group">
+								<include>ListItemSquareCompositeCard</include>
+								<include>ListItemSquareComposite</include>
+								<include>ListItemSquareCompositeTitleServer</include>
+								<include>ListItemSquareCompositeTitle</include>
+								<include>ListItemSquareCompositeSelectedBorder</include>
+							</control>
+						</focusedlayout>
 					</control>
 				</control>
 			</control>
