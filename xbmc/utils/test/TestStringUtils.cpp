@@ -220,6 +220,7 @@ TEST(TestStringUtils, Split)
 {
   std::vector<std::string> varresults;
 
+  // test overload with string as delimiter
   varresults = StringUtils::Split("g,h,ij,k,lm,,n", ",");
   EXPECT_STREQ("g", varresults.at(0).c_str());
   EXPECT_STREQ("h", varresults.at(1).c_str());
@@ -247,6 +248,20 @@ TEST(TestStringUtils, Split)
 
   EXPECT_EQ(1, StringUtils::Split("a bc  d ef ghi ", "").size());
   EXPECT_STREQ("a bc  d ef ghi ", StringUtils::Split("a bc  d ef ghi ", "").at(0).c_str());
+  
+  // test overload with char as delimiter
+  EXPECT_EQ(4, StringUtils::Split("a bc  d ef ghi ", ' ', 4).size());
+  EXPECT_STREQ("d ef ghi ", StringUtils::Split("a bc  d ef ghi ", ' ', 4).at(3).c_str());
+  EXPECT_EQ(7, StringUtils::Split("a bc  d ef ghi ", ' ').size()) << "Result must be 7 strings including two empty strings";
+  EXPECT_STREQ("bc", StringUtils::Split("a bc  d ef ghi ", ' ').at(1).c_str());
+  EXPECT_STREQ("", StringUtils::Split("a bc  d ef ghi ", ' ').at(2).c_str());
+  EXPECT_STREQ("", StringUtils::Split("a bc  d ef ghi ", ' ').at(6).c_str());
+
+  EXPECT_EQ(1, StringUtils::Split("a bc  d ef ghi ", 'z').size());
+  EXPECT_STREQ("a bc  d ef ghi ", StringUtils::Split("a bc  d ef ghi ", 'z').at(0).c_str());
+
+  EXPECT_EQ(1, StringUtils::Split("a bc  d ef ghi ", "").size());
+  EXPECT_STREQ("a bc  d ef ghi ", StringUtils::Split("a bc  d ef ghi ", 'z').at(0).c_str());
 }
 
 TEST(TestStringUtils, FindNumber)
