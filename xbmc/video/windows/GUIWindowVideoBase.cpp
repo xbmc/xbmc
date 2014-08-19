@@ -207,9 +207,19 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         {
           return OnInfo(iItem);
         }
-        else if (iAction == ACTION_PLAYER_PLAY && !g_application.m_pPlayer->IsPlayingVideo())
+        else if (iAction == ACTION_PLAYER_PLAY)
         {
-          return OnResumeItem(iItem);
+          // if playback is paused or playback speed != 1, return
+          if (g_application.m_pPlayer->IsPlayingVideo())
+          {
+            if (g_application.m_pPlayer->IsPausedPlayback())
+              return false;
+            if (g_application.m_pPlayer->GetPlaySpeed() != 1)
+              return false;
+          }
+
+          // not playing video, or playback speed == 1
+          return OnResumeItem(iItem);          
         }
         else if (iAction == ACTION_DELETE_ITEM)
         {
