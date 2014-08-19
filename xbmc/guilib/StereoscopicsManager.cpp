@@ -454,10 +454,10 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
   if (mode != RENDER_STEREO_MODE_OFF)
     return;
 
-  int playbackMode = CSettings::Get().GetInt("videoplayer.stereoscopicplaybackmode");
+  STEREOSCOPIC_PLAYBACK_MODE playbackMode = (STEREOSCOPIC_PLAYBACK_MODE) CSettings::Get().GetInt("videoplayer.stereoscopicplaybackmode");
   switch (playbackMode)
   {
-  case 0: // Ask
+  case STEREOSCOPIC_PLAYBACK_MODE_ASK: // Ask
     {
       CApplicationMessenger::Get().MediaPause();
 
@@ -506,7 +506,7 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
       CApplicationMessenger::Get().MediaUnPause();
     }
     break;
-  case 1: // Stereoscopic
+  case STEREOSCOPIC_PLAYBACK_MODE_PREFERRED: // Stereoscopic
     SetStereoMode( GetPreferredPlaybackMode() );
     break;
   default:

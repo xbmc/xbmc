@@ -32,6 +32,12 @@
 
 class CAction;
 
+enum STEREOSCOPIC_PLAYBACK_MODE
+{
+  STEREOSCOPIC_PLAYBACK_MODE_ASK,
+  STEREOSCOPIC_PLAYBACK_MODE_PREFERRED,
+};
+
 class CStereoscopicsManager : public ISettingCallback,
                               public IMsgTargetCallback
 {
