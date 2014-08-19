@@ -54,10 +54,13 @@ public:
 class IPlexPlayQueueBase
 {
 public:
+  virtual const std::string implementationName() = 0;
+
   static bool isSupported(const CPlexServerPtr& server)
   {
     return false;
   }
+
   virtual bool create(const CFileItem& container, const CStdString& uri = "",
                       const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions()) = 0;
   virtual bool refreshCurrent() = 0;
@@ -129,10 +132,9 @@ public:
   void removeItem(const CFileItemPtr& item);
   int getCurrentID();
   bool refreshCurrent();
-
+  IPlexPlayQueueBasePtr getImpl(const CFileItem &container);
 
 private:
-  IPlexPlayQueueBasePtr getImpl(const CFileItem &container);
   bool reconcilePlayQueueChanges(int playlistType, const CFileItemList& list);
   void saveCurrentPlayQueue(const CPlexServerPtr& server, const CFileItemList& list);
 

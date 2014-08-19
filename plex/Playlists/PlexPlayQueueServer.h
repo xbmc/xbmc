@@ -31,6 +31,8 @@ public:
     return (!server->IsSecondary() && serverVersion > CPlexServerVersion("0.9.9.6.0-abc123"));
   }
 
+  const std::string implementationName() { return "server"; }
+
   virtual bool create(const CFileItem &container, const CStdString& uri = "",
                       const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions());
   virtual bool refreshCurrent();

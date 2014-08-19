@@ -17,6 +17,8 @@ public:
     return true;
   }
 
+  const std::string implementationName() { return "local"; }
+
   virtual bool create(const CFileItem& container, const CStdString& uri,
                       const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions());
   virtual bool refreshCurrent();
