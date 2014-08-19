@@ -110,6 +110,7 @@ private:
   FILE* m_fProcStat;
   FILE* m_fProcTemperature;
   FILE* m_fCPUFreq;
+  bool m_cpuInfoForFreq;
 #elif defined(TARGET_WINDOWS)
   PDH_HQUERY m_cpuQueryFreq;
   PDH_HQUERY m_cpuQueryLoad;
