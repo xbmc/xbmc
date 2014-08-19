@@ -99,6 +99,7 @@ public:
    \param iMaxStrings (optional) Maximum number of splitted strings
    */
   static std::vector<std::string> Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings = 0);
+  static std::vector<std::string> Split(const std::string& input, const char delimiter, size_t iMaxStrings = 0);
   static int FindNumber(const CStdString& strInput, const CStdString &strFind);
   static int64_t AlphaNumericCompare(const wchar_t *left, const wchar_t *right);
   static long TimeStringToSeconds(const CStdString &timeString);
