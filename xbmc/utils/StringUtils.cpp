@@ -664,6 +664,11 @@ vector<string> StringUtils::Split(const std::string& input, const std::string& d
   vector<string> results;
   if (input.empty())
     return results;
+  if (delimiter.empty())
+  {
+    results.push_back(input);
+    return results;
+  }
 
   size_t iPos = std::string::npos;
   size_t newPos = std::string::npos;
