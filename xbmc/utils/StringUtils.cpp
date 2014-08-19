@@ -1172,3 +1172,26 @@ void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& t
     dataPos = input.find_first_not_of(delimiters, nextDelimPos);
   }
 }
+
+std::vector<std::string> StringUtils::Tokenize(const std::string &input, const char delimiter)
+{
+  std::vector<std::string> tokens;
+  Tokenize(input, tokens, delimiter);
+  return tokens;
+}
+
+void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& tokens, const char delimiter)
+{
+  tokens.clear();
+  // Skip delimiters at beginning.
+  std::string::size_type dataPos = input.find_first_not_of(delimiter);
+  while (dataPos != std::string::npos)
+  {
+    // Find next delimiter
+    const std::string::size_type nextDelimPos = input.find(delimiter, dataPos);
+    // Found a token, add it to the vector.
+    tokens.push_back(input.substr(dataPos, nextDelimPos - dataPos));
+    // Skip delimiters.  Note the "not_of"
+    dataPos = input.find_first_not_of(delimiter, nextDelimPos);
+  }
+}
