@@ -160,11 +160,11 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
 
 #if defined(TARGET_ANDROID)
   std::string systemLibs = getenv("XBMC_ANDROID_SYSTEM_LIBS");
-  vecEnv = StringUtils::Split(systemLibs, ":");
+  vecEnv = StringUtils::Split(systemLibs, ':');
   std::string localLibs = getenv("XBMC_ANDROID_LIBS");
   vecEnv.insert(vecEnv.begin(),localLibs);
 #else
-  vecEnv = StringUtils::Split(ENV_PATH, ";");
+  vecEnv = StringUtils::Split(ENV_PATH, ';');
 #endif
   LibraryLoader* pDll = NULL;
 

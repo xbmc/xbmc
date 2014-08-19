@@ -793,7 +793,7 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t *left, const wchar_t *rig
 
 int StringUtils::DateStringToYYYYMMDD(const CStdString &dateString)
 {
-  vector<string> days = StringUtils::Split(dateString, "-");
+  vector<string> days = StringUtils::Split(dateString, '-');
   if (days.size() == 1)
     return atoi(days[0].c_str());
   else if (days.size() == 2)
@@ -815,7 +815,7 @@ long StringUtils::TimeStringToSeconds(const CStdString &timeString)
   }
   else
   {
-    vector<string> secs = StringUtils::Split(strCopy, ":");
+    vector<string> secs = StringUtils::Split(strCopy, ':');
     int timeInSecs = 0;
     for (unsigned int i = 0; i < 3 && i < secs.size(); i++)
     {

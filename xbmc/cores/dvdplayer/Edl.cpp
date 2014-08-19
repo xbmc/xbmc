@@ -226,7 +226,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
     {
       if (strFields[i].find(":") != std::string::npos) // HH:MM:SS.sss format
       {
-        vector<string> fieldParts = StringUtils::Split(strFields[i], ".");
+        vector<string> fieldParts = StringUtils::Split(strFields[i], '.');
         if (fieldParts.size() == 1) // No ms
         {
           iCutStartEnd[i] = StringUtils::TimeStringToSeconds(fieldParts[0]) * (int64_t)1000; // seconds to ms
