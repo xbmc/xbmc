@@ -52,12 +52,30 @@ public:
 
 TEST_F(PlayQueueServerTest, GetPlayQueueURL_validItem)
 {
-  CURL u = pq->getPlayQueueURL(PLEX_MEDIA_TYPE_MUSIC, "library://abc123/item/library/sections/2/all");
+  CURL u = pq->getPlayQueueURL(PLEX_MEDIA_TYPE_MUSIC, "library://abc123/item/library/sections/2/all", "");
 
   EXPECT_STREQ(u.GetProtocol(), "plexserver");
   EXPECT_STREQ(u.GetHostName(), "abc123");
   EXPECT_STREQ(u.GetFileName(), "playQueues");
   EXPECT_STREQ(u.GetOption("uri"), "library://abc123/item/library/sections/2/all");
+  EXPECT_STREQ(u.GetOption("playlistID"), "");
+  EXPECT_STREQ(u.GetOption("type"), "audio");
+  EXPECT_FALSE(u.HasOption("shuffle"));
+  EXPECT_FALSE(u.HasOption("limit"));
+  EXPECT_FALSE(u.HasOption("continuous"));
+  EXPECT_FALSE(u.HasOption("key"));
+  EXPECT_STREQ(u.GetOption("next"), "0");
+}
+
+TEST_F(PlayQueueServerTest, GetPlayQueueURL_playlistID)
+{
+  CURL u = pq->getPlayQueueURL(PLEX_MEDIA_TYPE_MUSIC, "", "1234");
+  
+  EXPECT_STREQ(u.GetProtocol(), "plexserver");
+  EXPECT_STREQ(u.GetHostName(), "abc123");
+  EXPECT_STREQ(u.GetFileName(), "playQueues");
+  EXPECT_STREQ(u.GetOption("uri"), "");
+  EXPECT_STREQ(u.GetOption("playlistID"), "1234");
   EXPECT_STREQ(u.GetOption("type"), "audio");
   EXPECT_FALSE(u.HasOption("shuffle"));
   EXPECT_FALSE(u.HasOption("limit"));
@@ -70,7 +88,7 @@ TEST_F(PlayQueueServerTest, GetPlayQueueURL_limit)
 {
   CURL u =
   pq->getPlayQueueURL(PLEX_MEDIA_TYPE_VIDEO,
-                     "library://abc123/directory/library/sections/2/all", "korv", true, false, 10);
+                     "library://abc123/directory/library/sections/2/all", "", "korv", true, false, 10);
 
   EXPECT_STREQ(u.GetOption("type"), "video");
   EXPECT_STREQ(u.GetOption("shuffle"), "1");

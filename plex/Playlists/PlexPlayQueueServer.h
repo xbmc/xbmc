@@ -15,6 +15,7 @@ class CPlexPlayQueueServer : public IPlexPlayQueueBase, public IJobCallback,
   friend class PlayQueueServerTest;
 
   FRIEND_TEST(PlayQueueServerTest, GetPlayQueueURL_validItem);
+  FRIEND_TEST(PlayQueueServerTest, GetPlayQueueURL_playlistID);
   FRIEND_TEST(PlayQueueServerTest, GetPlayQueueURL_limit);
   FRIEND_TEST(PlayQueueServerTest, GetPlayQueueURL_haveKey);
   FRIEND_TEST(PlayQueueServerTest, GetPlayQueueURL_hasNext);
