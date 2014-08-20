@@ -1,5 +1,18 @@
 @ECHO OFF
 SETLOCAL ENABLEDELAYEDEXPANSION
+REM setup all paths
+SET cur_dir=%CD%
+SET base_dir=%cur_dir%\..\..
+SET builddeps_dir=%cur_dir%\..\..\project\BuildDependencies
+SET bin_dir=%builddeps_dir%\bin
+SET msys_bin_dir=%builddeps_dir%\msys\bin
+REM read the version values from version.txt
+FOR /f %%i IN ('%msys_bin_dir%\awk.exe "/APP_NAME/ {print $2}" %base_dir%\version.txt') DO SET APP_NAME=%%i
+FOR /f %%i IN ('%msys_bin_dir%\awk.exe "/COMPANY_NAME/ {print $2}" %base_dir%\version.txt') DO SET COMPANY=%%i
+FOR /f %%i IN ('%msys_bin_dir%\awk.exe "/WEBSITE/ {print $2}" %base_dir%\version.txt') DO SET WEBSITE=%%i
+rem Temporary set back to XBMC due to compiling
+SET APP_NAME=XBMC
+
 rem ----Usage----
 rem BuildSetup [clean|noclean]
 rem clean to force a full rebuild
@@ -8,9 +21,9 @@ rem noprompt to avoid all prompts
 rem nomingwlibs to skip building all libs built with mingw
 CLS
 COLOR 1B
-TITLE XBMC for Windows Build Script
+TITLE %APP_NAME% for Windows Build Script
 rem ----PURPOSE----
-rem - Create a working XBMC build with a single click
+rem - Create a working application build with a single click
 rem -------------------------------------------------------------
 rem Config
 rem If you get an error that Visual studio was not found, SET your path for VSNET main executable.
@@ -49,34 +62,14 @@ set WORKSPACE=%CD%\..\..
 	goto DIE
   )
   
-  set EXE= "..\VS2010Express\XBMC\%buildconfig%\XBMC.exe"
-  set PDB= "..\VS2010Express\XBMC\%buildconfig%\XBMC.pdb"
+  set EXE= "..\VS2010Express\XBMC\%buildconfig%\%APP_NAME%.exe"
+  set PDB= "..\VS2010Express\XBMC\%buildconfig%\%APP_NAME%.pdb"
   
   :: sets the BRANCH env var
   call getbranch.bat
 
   rem	CONFIG END
   rem -------------------------------------------------------------
-
-  echo                         :                                                  
-  echo                        :::                                                 
-  echo                        ::::                                                
-  echo                        ::::                                                
-  echo    :::::::       :::::::::::::::::        ::::::      ::::::        :::::::
-  echo    :::::::::   ::::::::::::::::::::     ::::::::::  ::::::::::    :::::::::
-  echo     ::::::::: ::::::::::::::::::::::   ::::::::::::::::::::::::  ::::::::: 
-  echo          :::::::::     :::      ::::: :::::    ::::::::    :::: :::::      
-  echo           ::::::      ::::       :::: ::::      :::::       :::::::        
-  echo           :::::       ::::        :::::::       :::::       ::::::         
-  echo           :::::       :::         ::::::         :::        ::::::         
-  echo           ::::        :::         ::::::        ::::        ::::::         
-  echo           ::::        :::        :::::::        ::::        ::::::         
-  echo          :::::        ::::       :::::::        ::::        ::::::         
-  echo         :::::::       ::::      ::::::::        :::         :::::::        
-  echo     :::::::::::::::    :::::  ::::: :::         :::         :::::::::      
-  echo  :::::::::  :::::::::  :::::::::::  :::         :::         ::: :::::::::  
-  echo  ::::::::    :::::::::  :::::::::   :::         :::         :::  ::::::::  
-  echo ::::::         :::::::    :::::     :            ::          ::    ::::::  
   goto EXE_COMPILE
 
 :EXE_COMPILE
@@ -131,10 +124,10 @@ set WORKSPACE=%CD%\..\..
   ECHO ------------------------------------------------------------
   ECHO Cleaning Solution...
   %NET% %CLEAN_EXE%
-  ECHO Compiling XBMC branch %BRANCH%...
+  ECHO Compiling %APP_NAME% branch %BRANCH%...
   %NET% %OPTS_EXE%
   IF %errorlevel%==1 (
-  	set DIETEXT="XBMC.EXE failed to build!  See %CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
+  	set DIETEXT="%APP_NAME%.EXE failed to build!  See %CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
 	IF %promptlevel%==noprompt (
 		type "%CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
 	)
@@ -148,10 +141,10 @@ set WORKSPACE=%CD%\..\..
 :COMPILE_NO_CLEAN_EXE
   ECHO Wait while preparing the build.
   ECHO ------------------------------------------------------------
-  ECHO Compiling XBMC branch %BRANCH%...
+  ECHO Compiling %APP_NAME% branch %BRANCH%...
   %NET% %OPTS_EXE%
   IF %errorlevel%==1 (
-  	set DIETEXT="XBMC.EXE failed to build!  See %CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
+  	set DIETEXT="%APP_NAME%.EXE failed to build!  See %CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
 	IF %promptlevel%==noprompt (
 		type "%CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
 	)
@@ -252,7 +245,7 @@ set WORKSPACE=%CD%\..\..
   
   rem restore color and title, some scripts mess these up
   COLOR 1B
-  TITLE XBMC for Windows Build Script
+  TITLE %APP_NAME% for Windows Build Script
 
   IF EXIST exclude.txt del exclude.txt  > NUL
   del /s /q /f BUILD_WIN32\application\*.so  > NUL
@@ -272,8 +265,8 @@ set WORKSPACE=%CD%\..\..
   ECHO ------------------------------------------------------------
   call getdeploydependencies.bat
   CALL extract_git_rev.bat > NUL
-  SET APP_SETUPFILE=XBMCSetup-%GIT_REV%-%BRANCH%.exe
-  SET APP_PDBFILE=XBMCSetup-%GIT_REV%-%BRANCH%.pdb
+  SET APP_SETUPFILE=%APP_NAME%Setup-%GIT_REV%-%BRANCH%.exe
+  SET APP_PDBFILE=%APP_NAME%Setup-%GIT_REV%-%BRANCH%.pdb
   ECHO Creating installer %APP_SETUPFILE%...
   IF EXIST %APP_SETUPFILE% del %APP_SETUPFILE% > NUL
   rem get path to makensis.exe from registry, first try tab delim
@@ -312,7 +305,7 @@ set WORKSPACE=%CD%\..\..
   )
 
   SET NSISExe=%NSISExePath%\makensis.exe
-  "%NSISExe%" /V1 /X"SetCompressor /FINAL lzma" /Dapp_root="%CD%\BUILD_WIN32" /Dapp_revision="%GIT_REV%" /Dapp_target="%target%" /Dapp_branch="%BRANCH%" "XBMC for Windows.nsi"
+  "%NSISExe%" /V1 /X"SetCompressor /FINAL lzma" /Dapp_root="%CD%\BUILD_WIN32" /DAPP_NAME="%APP_NAME%" /DCOMPANY="%COMPANY%" /DWEBSITE="%WEBSITE%" /Dapp_revision="%GIT_REV%" /Dapp_target="%target%" /Dapp_branch="%BRANCH%" "XBMC for Windows.nsi"
   IF NOT EXIST "%APP_SETUPFILE%" (
 	  set DIETEXT=Failed to create %APP_SETUPFILE%. NSIS installed?
 	  goto DIE

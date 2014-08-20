@@ -11,10 +11,6 @@
   !include "WinVer.nsh"
   
 ;--------------------------------
-;define global used name
-  !define APP_NAME "XBMC"
-
-;--------------------------------
 ;General
 
   ;Name and file
@@ -48,8 +44,8 @@
   !define MUI_HEADERIMAGE_BITMAP "..\..\tools\windows\packaging\media\installer\header.bmp"
   !define MUI_WELCOMEFINISHPAGE_BITMAP "..\..\tools\windows\packaging\media\installer\welcome-left.bmp"
   !define MUI_COMPONENTSPAGE_SMALLDESC
-  !define MUI_FINISHPAGE_LINK "Please visit http://xbmc.org for more information."
-  !define MUI_FINISHPAGE_LINK_LOCATION "http://xbmc.org"
+  !define MUI_FINISHPAGE_LINK "Please visit ${WEBSITE} for more information."
+  !define MUI_FINISHPAGE_LINK_LOCATION "${WEBSITE}"
   !define MUI_FINISHPAGE_RUN "$INSTDIR\${APP_NAME}.exe"
   !define MUI_FINISHPAGE_RUN_NOTCHECKED
   !define MUI_ABORTWARNING  
@@ -144,7 +140,7 @@ Section "XBMC" SecAPP
     "" "$INSTDIR\Uninstall.exe" 0 SW_SHOWNORMAL \
     "" "Uninstall ${APP_NAME}."
   
-  WriteINIStr "$SMPROGRAMS\$StartMenuFolder\Visit ${APP_NAME} Online.url" "InternetShortcut" "URL" "http://xbmc.org"
+  WriteINIStr "$SMPROGRAMS\$StartMenuFolder\Visit ${APP_NAME} Online.url" "InternetShortcut" "URL" "${WEBSITE}"
   !insertmacro MUI_STARTMENU_WRITE_END  
   
   ;add entry to add/remove programs
@@ -161,11 +157,11 @@ Section "XBMC" SecAPP
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
                  "DisplayIcon" "$INSTDIR\${APP_NAME}.exe,0"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
-                 "Publisher" "Team XBMC"
+                 "Publisher" "${COMPANY}"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
-                 "HelpLink" "http://xbmc.org/support"
+                 "HelpLink" "${WEBSITE}"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
-                 "URLInfoAbout" "http://xbmc.org"
+                 "URLInfoAbout" "${WEBSITE}"
                  
 SectionEnd
 
