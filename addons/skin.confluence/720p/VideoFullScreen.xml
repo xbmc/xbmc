@@ -421,7 +421,7 @@
 		</control>
 		<control type="group">
 			<visible>Player.ShowCodec + VideoPlayer.Content(LiveTV) + system.getbool(pvrplayback.signalquality)</visible>
-			<top>165</top>
+			<top>180</top>
 			<control type="image">
 				<description>media info background image</description>
 				<left>0</left>
