@@ -40,18 +40,23 @@ class UpdateInstaller
 
 		void restartMainApp();
 
-	private:
+private:
 		void cleanup();
 		void revert();
 		void removeBackups();
 		bool checkAccess();
 
 		void installFiles();
+    void patchFiles();
 		void uninstallFiles();
 		void installFile(const UpdateScriptFile& file);
-		void backupFile(const std::string& path);
+    void patchFile(const UpdateScriptPatch& file);
+    void backupFile(const std::string& path, bool move = true);
 		void reportError(const std::string& error);
 		void postInstallUpdate();
+    void updateProgress();
+    void verifyAgainstManifest();
+    void findFiles(const std::string &path, std::vector<std::string> &list);
 
 		std::list<std::string> updaterArgs() const;
 		std::string friendlyErrorForError(const FileUtils::IOException& ex) const;
@@ -66,5 +71,7 @@ class UpdateInstaller
 		std::map<std::string,std::string> m_backups;
 		bool m_forceElevated;
 		bool m_autoClose;
+
+    int m_installed;
 };
 

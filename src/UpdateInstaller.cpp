@@ -5,6 +5,8 @@
 #include "Log.h"
 #include "ProcessUtils.h"
 #include "UpdateObserver.h"
+#include "bspatch.h"
+#include "DirIterator.h"
 
 UpdateInstaller::UpdateInstaller()
 : m_mode(Setup)
@@ -13,6 +15,7 @@ UpdateInstaller::UpdateInstaller()
 , m_observer(0)
 , m_forceElevated(false)
 , m_autoClose(false)
+, m_installed(0)
 {
 }
 
@@ -184,11 +187,17 @@ void UpdateInstaller::run() throw ()
 
 		try
 		{
+      LOG(Info, "Patching files");
+      patchFiles();
+
 			LOG(Info,"Installing new and updated files");
 			installFiles();
 
 			LOG(Info,"Uninstalling removed files");
 			uninstallFiles();
+
+      LOG(Info, "Verifying files against manifest");
+      verifyAgainstManifest();
 
 			LOG(Info,"Removing backups");
 			removeBackups();
@@ -320,21 +329,127 @@ void UpdateInstaller::installFile(const UpdateScriptFile& file)
 	}
 }
 
+void UpdateInstaller::updateProgress()
+{
+  if (m_observer)
+  {
+    int toInstall = static_cast<int>(m_script->filesToInstall().size() + m_script->patches().size());
+    double percentage = ((1.0 * m_installed) / toInstall) > 100.0;
+    m_observer->updateProgress(static_cast<int>(percentage));
+  }
+}
+
+void UpdateInstaller::patchFile(const UpdateScriptPatch& patch)
+{
+  std::string oldFile = m_installDir + '/' + patch.path;
+
+  if (!FileUtils::fileExists(oldFile.c_str()))
+  {
+    throw "Can't find file to patch: " + oldFile;
+  }
+
+  backupFile(oldFile, false);
+  const std::string oldFileHash = FileUtils::sha1FromFile(oldFile.c_str());
+  if (oldFileHash != patch.sourceHash)
+  {
+    throw "File sha1 mismatch, can't patch: " + oldFile;
+  }
+
+  if (!patch.package.empty())
+  {
+    std::string packageFile = m_packageDir + '/' + patch.package + ".zip";
+    if (!FileUtils::fileExists(packageFile.c_str()))
+    {
+      throw "Package file not found: " + packageFile;
+    }
+
+    std::string patchPath = patch.patchPath;
+    std::string patchDir = FileUtils::tempPath() + "__patches" + '/' + patchPath;
+    if (!FileUtils::fileExists(FileUtils::dirname(patchDir.c_str()).c_str()))
+    {
+      FileUtils::mkpath(FileUtils::dirname(patchDir.c_str()).c_str());
+    }
+
+    FileUtils::extractFromZip(packageFile.c_str(), patchPath.c_str(), patchDir.c_str());
+
+    std::string newFilePath = oldFile + ".new";
+
+    if (!bspatch_files(oldFile.c_str(), newFilePath.c_str(), patchDir.c_str()))
+    {
+      throw "bspatch() failed!";
+    }
+
+    std::string newFileHash = FileUtils::sha1FromFile(newFilePath.c_str());
+    if (newFileHash != patch.targetHash)
+    {
+      throw "After patching the hash was all wrong!";
+    }
+
+    FileUtils::moveFile(newFilePath.c_str(), oldFile.c_str());
+    FileUtils::chmod(oldFile.c_str(),patch.targetPerm);
+  }
+}
+
+void UpdateInstaller::patchFiles()
+{
+  std::vector<UpdateScriptPatch>::const_iterator iter = m_script->patches().begin();
+  for (; iter != m_script->patches().end(); iter ++)
+  {
+    patchFile(*iter);
+    ++ m_installed;
+    updateProgress();
+  }
+}
+
 void UpdateInstaller::installFiles()
 {
 	std::vector<UpdateScriptFile>::const_iterator iter = m_script->filesToInstall().begin();
-	int filesInstalled = 0;
 	for (;iter != m_script->filesToInstall().end();iter++)
 	{
 		installFile(*iter);
-		++filesInstalled;
-		if (m_observer)
-		{
-			int toInstallCount = static_cast<int>(m_script->filesToInstall().size());
-			double percentage = ((1.0 * filesInstalled) / toInstallCount) * 100.0;
-			m_observer->updateProgress(static_cast<int>(percentage));
-		}
+    ++ m_installed;
+    updateProgress();
 	}
+}
+
+void UpdateInstaller::findFiles(const std::string& path, std::vector<std::string>& list)
+{
+  DirIterator iter(path.c_str());
+  while (iter.next())
+  {
+    if (iter.isDir())
+    {
+      if (iter.fileName() == "." || iter.fileName() == "..")
+      {
+        continue;
+      }
+      findFiles(iter.filePath(), list);
+    }
+    else
+    {
+      if (!endsWith(iter.fileName(), ".bak"))
+        list.push_back(iter.filePath());
+    }
+  }
+}
+
+void UpdateInstaller::verifyAgainstManifest()
+{
+  std::vector<std::string> files;
+  findFiles(m_installDir, files);
+  std::map<std::string, UpdateScriptFile> fileMap = m_script->filesManifest();
+
+  for (std::vector<std::string>::const_iterator it = files.begin(); it != files.end(); ++ it)
+  {
+    std::string filePath = *it;
+    filePath = filePath.substr(m_installDir.size() + 1);
+
+    if (fileMap.find(filePath) == fileMap.end())
+    {
+      // just make a backup, if everything goes well it will just be removed later.
+      backupFile((m_installDir + '/' + filePath).c_str(), true);
+    }
+  }
 }
 
 void UpdateInstaller::uninstallFiles()
@@ -354,7 +469,7 @@ void UpdateInstaller::uninstallFiles()
 	}
 }
 
-void UpdateInstaller::backupFile(const std::string& path)
+void UpdateInstaller::backupFile(const std::string& path, bool move)
 {
 	if (!FileUtils::fileExists(path.c_str()))
 	{
@@ -364,7 +479,10 @@ void UpdateInstaller::backupFile(const std::string& path)
 	
 	std::string backupPath = path + ".bak";
 	FileUtils::removeFile(backupPath.c_str());
-	FileUtils::moveFile(path.c_str(), backupPath.c_str());
+  if (move)
+    FileUtils::moveFile(path.c_str(), backupPath.c_str());
+  else
+    FileUtils::copyFile(path.c_str(), backupPath.c_str());
 	m_backups[path] = backupPath;
 }
 

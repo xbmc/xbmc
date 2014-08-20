@@ -25,6 +25,8 @@
 #include <libgen.h>
 #endif
 
+#include "sha1.hpp"
+
 FileUtils::IOException::IOException(const std::string& error)
 {
 	init(errno,error);
@@ -175,6 +177,19 @@ void FileUtils::addToZip(const char* archivePath, const char* path, const char* 
 	{
 		throw IOException("Unable to close zip archive");
 	}
+}
+
+const std::string FileUtils::sha1FromFile(const char* filePath) throw (IOException)
+{
+  if (!fileExists(filePath))
+  {
+    throw IOException("Unable to find file: " + std::string(filePath));
+  }
+
+  std::string fileData = readFile(filePath);
+  SHA1::SHA1 hash;
+  hash.update((uint8_t*)fileData.c_str(), fileData.length());
+  return hash.end().hex();
 }
 
 void FileUtils::extractFromZip(const char* zipFilePath, const char* src, const char* dest) throw (IOException)

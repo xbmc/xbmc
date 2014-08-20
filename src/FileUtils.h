@@ -144,6 +144,7 @@ class FileUtils
 		static void chdir(const char* path) throw (IOException);
 
 		/** Returns the current working directory of the application. */
-		static std::string getcwd() throw (IOException);
+    static std::string getcwd() throw (IOException);
+    static const std::string sha1FromFile(const char *filePath) throw (IOException);
 };
 
