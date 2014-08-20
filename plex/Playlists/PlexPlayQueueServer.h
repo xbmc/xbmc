@@ -51,9 +51,9 @@ public:
 
 protected:
   bool sendRequest(const CURL &url, const CStdString &verb, const CPlexPlayQueueOptions& options);
-  CURL getPlayQueueURL(ePlexMediaType type, const std::string& uri, const std::string& key="",
-                       bool shuffle = false, bool continuous = false, int limit = 0,
-                       bool next = false);
+  CURL getPlayQueueURL(ePlexMediaType type, const std::string& uri, const std::string &playlistID,
+                       const std::string& key = "", bool shuffle = false, bool continuous = false,
+                       int limit = 0, bool next = false);
   void OnJobComplete(unsigned int jobID, bool success, CJob *job);
   void reconcilePlayQueueChanges(ePlexMediaType type, const CFileItemList &list);
 

@@ -12,7 +12,7 @@
 using namespace PLAYLIST;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CURL CPlexPlayQueueServer::getPlayQueueURL(ePlexMediaType type, const std::string& uri,
+CURL CPlexPlayQueueServer::getPlayQueueURL(ePlexMediaType type, const std::string& uri, const std::string &playlistID,
                                            const std::string& key, bool shuffle, bool continuous,
                                            int limit, bool next)
 {
@@ -26,8 +26,13 @@ CURL CPlexPlayQueueServer::getPlayQueueURL(ePlexMediaType type, const std::strin
   }
 
   u.SetOption("type", typeStr);
-  u.SetOption("uri", uri);
+    
+  if (!uri.empty())
+    u.SetOption("uri", uri);
 
+  if (!playlistID.empty())
+    u.SetOption("playlistID", playlistID);
+  
   if (!key.empty())
   {
     CStdString keyStr = key;
@@ -78,13 +83,21 @@ bool CPlexPlayQueueServer::create(const CFileItem& container, const CStdString& 
     return false;
 
   CStdString realUri(uri);
+  CStdString playlistID;
   if (realUri.empty())
   {
     // calculate URI from the container item
     realUri = CPlexPlayQueueManager::getURIFromItem(container);
   }
+  
+  // calculate URI from the container item
+  if (container.GetPlexDirectoryType() == PLEX_DIR_TYPE_PLAYLIST)
+  {
+    realUri = "";
+    playlistID = container.GetProperty("ratingkey").asString();
+  }
 
-  CURL u = getPlayQueueURL(type, realUri, options.startItemKey, options.shuffle, false, 0, false);
+  CURL u = getPlayQueueURL(type, realUri, playlistID, options.startItemKey, options.shuffle, false, 0, false);
 
   if (u.Get().empty())
     return false;
