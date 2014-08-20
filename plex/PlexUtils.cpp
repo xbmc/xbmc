@@ -714,6 +714,13 @@ ePlexMediaType PlexUtils::GetMediaTypeFromItem(const CFileItem& item)
     case PLEX_DIR_TYPE_PHOTO:
     case PLEX_DIR_TYPE_PHOTOALBUM:
       return PLEX_MEDIA_TYPE_PHOTO;
+    case PLEX_DIR_TYPE_PLAYLIST:
+      if (item.GetProperty("playlisttype").asString() == "audio")
+        return PLEX_MEDIA_TYPE_MUSIC;
+      else if (item.GetProperty("playlisttype").asString() == "video")
+        return PLEX_MEDIA_TYPE_VIDEO;
+      else
+        return PLEX_MEDIA_TYPE_UNKNOWN;
     default:
       return PLEX_MEDIA_TYPE_UNKNOWN;
   }
