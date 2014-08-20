@@ -98,13 +98,13 @@ TEST_F(PlayQueueServerTest, GetPlayQueueURL_limit)
 
 TEST_F(PlayQueueServerTest, GetPlayQueueURL_haveKey)
 {
-  CURL u = pq->getPlayQueueURL(PLEX_MEDIA_TYPE_MUSIC, "uri", "item");
+  CURL u = pq->getPlayQueueURL(PLEX_MEDIA_TYPE_MUSIC, "uri", "", "item");
   EXPECT_STREQ(u.GetOption("key"), "item");
 }
 
 TEST_F(PlayQueueServerTest, GetPlayQueueURL_hasNext)
 {
-  CURL u = pq->getPlayQueueURL(PLEX_MEDIA_TYPE_MUSIC, "uri", "item", false, false, 0, true);
+  CURL u = pq->getPlayQueueURL(PLEX_MEDIA_TYPE_MUSIC, "uri", "", "item", false, false, 0, true);
   EXPECT_STREQ(u.GetOption("key"), "item");
   EXPECT_STREQ(u.GetOption("next"), "1");
 }
