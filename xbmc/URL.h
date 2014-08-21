@@ -122,6 +122,13 @@ public:
   void SetProtocolOption(const std::string &key, const std::string &value);
   void RemoveProtocolOption(const std::string &key);
 
+#ifdef TARGET_WINDOWS
+  /** \brief Replaces \\ with / after the file extension. For example this is necessary
+  *          for udf paths which are retrived by our udf implementation
+  */
+  static std::string SanitizePath(const CURL& url);
+#endif
+
 protected:
   int m_iPort;
   std::string m_strHostName;

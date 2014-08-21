@@ -41,7 +41,11 @@ bool CUDFDirectory::GetDirectory(const CURL& url,
                                  CFileItemList &items)
 {
   std::string strRoot, strSub;
+#ifdef TARGET_WINDOWS
+  CURL url2(CURL::SanitizePath(url));
+#else
   CURL url2(url);
+#endif
   if (!url2.IsProtocol("udf"))
   { // path to an image
     url2.Reset();
