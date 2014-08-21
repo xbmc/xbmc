@@ -1420,7 +1420,8 @@
           "major": { "type": "integer", "minimum": 0, "required": true },
           "minor": { "type": "integer", "minimum": 0, "required": true },
           "revision": { "type": [ "string", "integer" ] },
-          "tag": { "type": "string", "enum": [ "prealpha", "alpha", "beta", "releasecandidate", "stable" ], "required": true }
+          "tag": { "type": "string", "enum": [ "prealpha", "alpha", "beta", "releasecandidate", "stable" ], "required": true },
+          "tagversion": { "type": "string" }
         }
       }
     }
