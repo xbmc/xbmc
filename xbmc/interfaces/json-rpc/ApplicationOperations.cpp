@@ -124,7 +124,7 @@ JSONRPC_STATUS CApplicationOperations::GetPropertyValue(const std::string &prope
     result["minor"] = CCompileInfo::GetMinor();
     result["revision"] = CCompileInfo::GetSCMID();
     std::string tag = CCompileInfo::GetSuffix();
-    if (StringUtils::EqualsNoCase(tag, "pre"))
+    if (StringUtils::StartsWithNoCase(tag, "alpha"))
       result["tag"] = "alpha";
     else if (StringUtils::StartsWithNoCase(tag, "beta"))
       result["tag"] = "beta";
