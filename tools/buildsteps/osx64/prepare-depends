@@ -9,6 +9,6 @@ cd $WORKSPACE;git clean -xfd -e "tools/depends" -e "addons/pvr.*"
 if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then
   #clean up the rest too
-  cd $WORKSPACE;git clean -xfd
+  cd $WORKSPACE;git clean -xffd
   cd $WORKSPACE/tools/depends/;./bootstrap
 fi
