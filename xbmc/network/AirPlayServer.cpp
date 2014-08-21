@@ -508,11 +508,7 @@ void CAirPlayServer::CTCPClient::PushBuffer(CAirPlayServer *host, const char *bu
       response += responseHeader;
     }
 
-    if (responseBody.size() > 0)
-    {
-      response = StringUtils::Format("%sContent-Length: %ld\r\n", response.c_str(), responseBody.size());
-    }
-    response += "\r\n";
+    response = StringUtils::Format("%sContent-Length: %ld\r\n\r\n", response.c_str(), responseBody.size());
 
     if (responseBody.size() > 0)
     {
