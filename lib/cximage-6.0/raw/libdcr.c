@@ -920,6 +920,8 @@ void DCR_CLASS dcr_lossless_jpeg_load_raw(DCRAW* p)
 			}
 			if (p->raw_width == 3984 && (col -= 2) < 0)
 				col += (row--,p->raw_width);
+			if (row > p->raw_height)
+				longjmp (p->failure, 3);
 			if ((unsigned) (row-p->top_margin) < p->height) {
 				if ((unsigned) (col-p->left_margin) < p->width) {
 					BAYER(row-p->top_margin,col-p->left_margin) = val;
@@ -929,8 +931,6 @@ void DCR_CLASS dcr_lossless_jpeg_load_raw(DCRAW* p)
 			}
 			if (++col >= p->raw_width)
 				col = (row++,0);
-			if (row >= p->raw_height)
-				longjmp (p->failure, 3);
 		}
 	}
 	free (jh.row);
