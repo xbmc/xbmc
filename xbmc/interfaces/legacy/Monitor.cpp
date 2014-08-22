@@ -60,6 +60,12 @@ namespace XBMCAddon
       return false;
     }
 
+    bool Monitor::abortRequested()
+    {
+      XBMC_TRACE;
+      return abortEvent.Signaled();
+    }
+
     Monitor::~Monitor()
     {
       deallocating();

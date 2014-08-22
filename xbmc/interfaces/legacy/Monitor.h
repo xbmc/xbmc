@@ -175,6 +175,11 @@ namespace XBMCAddon
        */
       bool waitForAbort(double timeout = -1);
 
+      /**
+       * abortRequested() -- Returns True if abort has been requested.
+       */
+      bool abortRequested();
+
       virtual ~Monitor();
     };
   }
