@@ -456,9 +456,9 @@
 							</item>
 							<item>
 								<label>$LOCALIZE[563]:</label>
-								<label2>$INFO[ListItem.Rating]</label2>
+								<label2>$INFO[ListItem.RatingAndVotes]</label2>
 								<onclick>noop</onclick>
-								<visible>!IsEmpty(ListItem.Rating)</visible>
+								<visible>!IsEmpty(ListItem.RatingAndVotes)</visible>
 							</item>
 							<item>
 								<label>$LOCALIZE[15311]</label>
@@ -631,9 +631,9 @@
 							</item>
 							<item>
 								<label>$LOCALIZE[563]:</label>
-								<label2>$INFO[ListItem.Rating]</label2>
+								<label2>$INFO[ListItem.RatingAndVotes]</label2>
 								<onclick>noop</onclick>
-								<visible>!IsEmpty(ListItem.Rating)</visible>
+								<visible>!IsEmpty(ListItem.RatingAndVotes)</visible>
 							</item>
 							<item>
 								<label>$LOCALIZE[15311]</label>
