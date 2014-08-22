@@ -447,7 +447,7 @@ void FileUtils::rmdirRecursive(const char* path) throw (IOException)
 		{
 			if (dir.isDir())
 			{
-				rmdir(dir.filePath().c_str());
+        rmdirRecursive(dir.filePath().c_str());
 			}
 			else
 			{
@@ -494,15 +494,63 @@ std::string FileUtils::toUnixPathSeparators(const std::string& str)
 	return result;
 }
 
+void FileUtils::copyTree(const std::string& source, const std::string& destination, std::string root) throw (IOException)
+{
+  if (root.empty())
+    root = source;
+
+  if (*root.rbegin() != '/')
+    root += '/';
+
+
+  LOG(Info, "CopyTree(" + source + "," + destination + "," + root +")");
+
+  DirIterator dir(source.c_str());
+
+  while(dir.next())
+  {
+    if (dir.isDir())
+    {
+      if (dir.fileName() == ".." || dir.fileName() == ".")
+        continue;
+
+      std::string newDir = destination + '/' + dir.filePath().substr(root.length());
+      copyTree(dir.filePath(), newDir);
+    }
+    else
+    {
+      if (!fileExists(destination.c_str()))
+        mkpath(destination.c_str());
+      copyFile(dir.filePath().c_str(), (destination + '/' + dir.fileName()).c_str());
+    }
+  }
+}
+
 std::string FileUtils::tempPath()
 {
 #ifdef PLATFORM_UNIX
-	std::string tmpDir(notNullString(getenv("TMPDIR")));
-	if (tmpDir.empty())
+  std::string tmpDir(notNullString(getenv("TMPDIR")));
+  if (tmpDir.empty())
 	{
 		tmpDir = "/tmp";
 	}
-	return tmpDir;
+
+  if (*tmpDir.rbegin() != '/')
+    tmpDir += '/';
+
+  tmpDir += "plexUpdater.XXXXX";
+  char *templ = (char*)malloc(tmpDir.length() + 1);
+  strlcpy(templ, tmpDir.c_str(), tmpDir.length());
+
+  char *dtemp = mkdtemp(templ);
+  if (dtemp == NULL)
+  {
+    LOG(Error, "Failed to create temp directory " + std::string(templ));
+    return "/tmp";
+  }
+
+  std::string utmpDir(dtemp);
+  return utmpDir;
 #else
 	char buffer[MAX_PATH+1];
 	GetTempPath(MAX_PATH+1,buffer);

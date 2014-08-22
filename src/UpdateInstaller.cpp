@@ -17,6 +17,7 @@ UpdateInstaller::UpdateInstaller()
 , m_autoClose(false)
 , m_installed(0)
 {
+  m_tempDir = FileUtils::tempPath();
 }
 
 void UpdateInstaller::setWaitPid(PLATFORM_PID pid)
@@ -26,17 +27,17 @@ void UpdateInstaller::setWaitPid(PLATFORM_PID pid)
 
 void UpdateInstaller::setInstallDir(const std::string& path)
 {
-	m_installDir = path;
+  m_installDir = path;
+}
+
+void UpdateInstaller::setTargetDir(const std::string &path)
+{
+  m_targetDir = path;
 }
 
 void UpdateInstaller::setPackageDir(const std::string& path)
 {
 	m_packageDir = path;
-}
-
-void UpdateInstaller::setBackupDir(const std::string& path)
-{
-	m_backupDir = path;
 }
 
 void UpdateInstaller::setMode(Mode mode)
@@ -58,7 +59,7 @@ std::list<std::string> UpdateInstaller::updaterArgs() const
 {
 	std::list<std::string> args;
 	args.push_back("--install-dir");
-	args.push_back(m_installDir);
+  args.push_back(m_targetDir);
 	args.push_back("--package-dir");
 	args.push_back(m_packageDir);
 	args.push_back("--script");
@@ -112,7 +113,7 @@ void UpdateInstaller::run() throw ()
 		reportError("Unable to read update script");
 		return;
 	}
-	if (m_installDir.empty())
+  if (m_targetDir.empty())
 	{
 		reportError("No installation directory specified");
 		return;
@@ -147,7 +148,7 @@ void UpdateInstaller::run() throw ()
 		int installStatus = 0;
 		if (m_forceElevated || !checkAccess())
 		{
-			LOG(Info,"Insufficient rights to install app to " + m_installDir + " requesting elevation");
+      LOG(Info,"Insufficient rights to install app to " + m_targetDir + " requesting elevation");
 
 			// start a copy of the updater with admin rights
 			installStatus = ProcessUtils::runElevated(updaterPath,args,AppInfo::name());
@@ -170,9 +171,6 @@ void UpdateInstaller::run() throw ()
 		// restart the main application - this is currently done
 		// regardless of whether the installation succeeds or not
 		restartMainApp();
-
-		// clean up files created by the updater
-		cleanup();
 	}
 	else if (m_mode == Main)
 	{
@@ -187,6 +185,9 @@ void UpdateInstaller::run() throw ()
 
 		try
 		{
+      LOG(Info, "Copy bundle");
+      copyBundle();
+
       LOG(Info, "Patching files");
       patchFiles();
 
@@ -199,11 +200,12 @@ void UpdateInstaller::run() throw ()
       LOG(Info, "Verifying files against manifest");
       verifyAgainstManifest();
 
-			LOG(Info,"Removing backups");
-			removeBackups();
+      LOG(Info, "Moving bundle inplace");
+      FileUtils::moveFile(m_targetDir.c_str(), (m_targetDir + ".bak").c_str());
+      FileUtils::moveFile(m_installDir.c_str(), m_targetDir.c_str());
 
-			postInstallUpdate();
-		}
+      postInstallUpdate();
+    }
 		catch (const FileUtils::IOException& exception)
 		{
 			error = exception.what();
@@ -218,15 +220,6 @@ void UpdateInstaller::run() throw ()
 		{
 			LOG(Error,std::string("Error installing update ") + error);
 
-			try
-			{
-				revert();
-			}
-			catch (const FileUtils::IOException& exception)
-			{
-				LOG(Error,"Error reverting partial update " + std::string(exception.what()));
-			}
-
 			if (m_observer)
 			{
 				if (friendlyError.empty())
@@ -237,6 +230,16 @@ void UpdateInstaller::run() throw ()
 			}
 		}
 
+    try
+    {
+      FileUtils::rmdirRecursive((m_targetDir + ".bak").c_str());
+    }
+    catch (const FileUtils::IOException& exception)
+    {
+      error = exception.what();
+      LOG(Error, std::string("Failed to cleanup: " + m_targetDir + ".bak" + " - " + error));
+    }
+
 		if (m_observer)
 		{
 			m_observer->updateFinished();
@@ -244,42 +247,10 @@ void UpdateInstaller::run() throw ()
 	}
 }
 
-void UpdateInstaller::cleanup()
-{
-	try
-	{
-		FileUtils::rmdirRecursive(m_packageDir.c_str());
-	}
-	catch (const FileUtils::IOException& ex)
-	{
-		LOG(Error,"Error cleaning up updater " + std::string(ex.what()));
-	}
-	LOG(Info,"Updater files removed");
-}
-
-void UpdateInstaller::revert()
-{
-	std::map<std::string,std::string>::const_iterator iter = m_backups.begin();
-	for (;iter != m_backups.end();iter++)
-	{
-		const std::string& installedFile = iter->first;
-		const std::string& backupFile = iter->second;
-
-		if (FileUtils::fileExists(installedFile.c_str()))
-		{
-			FileUtils::removeFile(installedFile.c_str());
-		}
-		FileUtils::moveFile(backupFile.c_str(),installedFile.c_str());
-	}
-}
-
 void UpdateInstaller::installFile(const UpdateScriptFile& file)
 {
 	std::string destPath = m_installDir + '/' + file.path;
 	std::string target = file.linkTarget;
-
-	// backup the existing file if any
-	backupFile(destPath);
 
 	// create the target directory if it does not exist
 	std::string destDir = FileUtils::dirname(destPath.c_str());
@@ -348,7 +319,6 @@ void UpdateInstaller::patchFile(const UpdateScriptPatch& patch)
     throw "Can't find file to patch: " + oldFile;
   }
 
-  backupFile(oldFile, false);
   const std::string oldFileHash = FileUtils::sha1FromFile(oldFile.c_str());
   if (oldFileHash != patch.sourceHash)
   {
@@ -364,7 +334,7 @@ void UpdateInstaller::patchFile(const UpdateScriptPatch& patch)
     }
 
     std::string patchPath = patch.patchPath;
-    std::string patchDir = FileUtils::tempPath() + "__patches" + '/' + patchPath;
+    std::string patchDir = m_tempDir + "/__patches/" + patchPath;
     if (!FileUtils::fileExists(FileUtils::dirname(patchDir.c_str()).c_str()))
     {
       FileUtils::mkpath(FileUtils::dirname(patchDir.c_str()).c_str());
@@ -388,6 +358,13 @@ void UpdateInstaller::patchFile(const UpdateScriptPatch& patch)
     FileUtils::moveFile(newFilePath.c_str(), oldFile.c_str());
     FileUtils::chmod(oldFile.c_str(),patch.targetPerm);
   }
+}
+
+
+void UpdateInstaller::copyBundle()
+{
+  m_installDir = m_tempDir + '/' + FileUtils::fileName(m_targetDir.c_str());
+  FileUtils::copyTree(m_targetDir, m_installDir);
 }
 
 void UpdateInstaller::patchFiles()
@@ -446,8 +423,7 @@ void UpdateInstaller::verifyAgainstManifest()
 
     if (fileMap.find(filePath) == fileMap.end())
     {
-      // just make a backup, if everything goes well it will just be removed later.
-      backupFile((m_installDir + '/' + filePath).c_str(), true);
+      FileUtils::removeFile((m_installDir + '/' + filePath).c_str());
     }
   }
 }
@@ -469,36 +445,9 @@ void UpdateInstaller::uninstallFiles()
 	}
 }
 
-void UpdateInstaller::backupFile(const std::string& path, bool move)
-{
-	if (!FileUtils::fileExists(path.c_str()))
-	{
-		// no existing file to backup
-		return;
-	}
-	
-	std::string backupPath = path + ".bak";
-	FileUtils::removeFile(backupPath.c_str());
-  if (move)
-    FileUtils::moveFile(path.c_str(), backupPath.c_str());
-  else
-    FileUtils::copyFile(path.c_str(), backupPath.c_str());
-	m_backups[path] = backupPath;
-}
-
-void UpdateInstaller::removeBackups()
-{
-	std::map<std::string,std::string>::const_iterator iter = m_backups.begin();
-	for (;iter != m_backups.end();iter++)
-	{
-		const std::string& backupFile = iter->second;
-		FileUtils::removeFile(backupFile.c_str());
-	}
-}
-
 bool UpdateInstaller::checkAccess()
 {
-	std::string testFile = m_installDir + "/update-installer-test-file";
+  std::string testFile = m_targetDir + "/update-installer-test-file";
 
 	try
 	{
@@ -542,7 +491,7 @@ void UpdateInstaller::restartMainApp()
 		{
 			if (iter->isMainBinary)
 			{
-				command = m_installDir + '/' + iter->path;
+        command = m_targetDir + '/' + iter->path;
 			}
 		}
 
@@ -570,7 +519,7 @@ void UpdateInstaller::postInstallUpdate()
 	// touch the application's bundle directory so that
 	// OS X' Launch Services notices any changes in the application's
 	// Info.plist file.
-	FileUtils::touch(m_installDir.c_str());
+  FileUtils::touch(m_targetDir.c_str());
 #endif
 }
 

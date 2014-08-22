@@ -2,8 +2,11 @@ from multiprocessing import Pool
 import os, sys, stat
 import hashlib
 from update import FileElement
+import itertools
 
-def get_file(fpath):
+def get_file(args):
+  fpath, prefix = args[0], args[1]
+
   sha_hash = hashlib.sha1()
   fp = open(fpath, "rb")
   try:
@@ -13,7 +16,7 @@ def get_file(fpath):
     return None
 
   fe = FileElement()
-  fe.name = fpath
+  fe.name = fpath.replace(prefix, "")
   fe.fileHash = sha_hash.hexdigest()
 
   info = os.stat(fpath)
@@ -34,6 +37,6 @@ def get_files(directory):
 
   print "Going to hash %d files" % len(filestohash)
   pool = Pool(processes=4)
-  res = pool.map(get_file, filestohash)
+  res = pool.map(get_file, itertools.izip(filestohash, itertools.repeat(directory)))
 
   return res

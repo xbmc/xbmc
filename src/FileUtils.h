@@ -146,5 +146,6 @@ class FileUtils
 		/** Returns the current working directory of the application. */
     static std::string getcwd() throw (IOException);
     static const std::string sha1FromFile(const char *filePath) throw (IOException);
+    static void copyTree(const std::string &source, const std::string &destination, std::string root = "") throw (IOException);
 };
 

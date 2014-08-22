@@ -16,7 +16,8 @@ if __name__ == "__main__":
   o.add_option("-m", dest="mainbinary", default="Contents/MacOS/Plex Home Theater", type="string")
 
   (options, args) = o.parse_args()
-  package = "%s-%s-%s" % (options.product, options.version, options.platform)
+  basepackage = "%s-%s-%s" % (options.product, options.version, options.platform)
+  package = basepackage + "-full"
 
   if len(args) < 1:
     print "Need directory argument"
@@ -32,13 +33,13 @@ if __name__ == "__main__":
 
   hashes = get_files(directory)
   for h in hashes:
-    h.name = h.name.replace(directory, "")
     if h.name == options.mainbinary:
       h.is_main_binary = "true"
 
     h.package = package
   
   update = Update()
+  update.install = hashes
   update.manifest = hashes
   update.version = 4
   update.targetVersion = options.version
@@ -46,23 +47,23 @@ if __name__ == "__main__":
 
   print "Creating package..."
 
-  zfile = zipfile.ZipFile(package + "-full.zip", "w", zipfile.ZIP_STORED)
+  zfile = zipfile.ZipFile(package + ".zip", "w", zipfile.ZIP_STORED)
   for h in hashes:
     zfile.write(os.path.join(directory, h.name), h.name)
 
   zfile.close()
-  print "%s created" % (package + "-full.zip")
+  print "%s created" % (package + ".zip")
 
-  fpe = get_file(package + "-full.zip")
+  fpe = get_file((package + ".zip", ""))
   pe = PackageElement()
   pe.fileHash = fpe.fileHash
-  pe.name = package + "-full.zip"
+  pe.name = package
   pe.size = fpe.size
 
   update.packages.append(pe)
 
-  manifestfp = file(package+"-manifest.xml", "w")
+  manifestfp = file(basepackage+"-manifest.xml", "w")
   manifestfp.write(update.render(pretty=True))
   manifestfp.close()
 
-  print "%s created" % (package + "-manifest.xml")
+  print "%s created" % (basepackage + "-manifest.xml")

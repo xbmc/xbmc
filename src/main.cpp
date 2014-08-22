@@ -64,14 +64,20 @@ extern unsigned int mac_icns_len;
 
 bool unpackBundle(int argc, char** argv)
 {
-	MacBundle bundle(FileUtils::tempPath(),AppInfo::name());
+  std::string tmp = notNullString(getenv("TMPDIR"));
+  if (tmp.empty())
+  {
+    tmp = "/tmp";
+  }
+
+  MacBundle bundle(tmp, AppInfo::name());
 	std::string currentExePath = ProcessUtils::currentProcessPath();
 
-	if (currentExePath.find(bundle.bundlePath()) != std::string::npos)
-	{
+  if (currentExePath.find(bundle.bundlePath()) != std::string::npos)
+  {
 		// already running from a bundle
 		return false;
-	}
+  }
 	LOG(Info,"Creating bundle " + bundle.bundlePath());
 
 	// create a Mac app bundle
@@ -142,7 +148,7 @@ int main(int argc, char** argv)
 	         + ", mode: " + intToStr(options.mode));
 
 	installer.setMode(options.mode);
-	installer.setInstallDir(options.installDir);
+  installer.setTargetDir(options.installDir);
 	installer.setPackageDir(options.packageDir);
 	installer.setScript(&script);
 	installer.setWaitPid(options.waitPid);

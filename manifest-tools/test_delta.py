@@ -4,10 +4,10 @@ import subprocess, zipfile
 
 def test_delta_exists(env):
   for de in env.get_deltaZipPaths():
-    assert os.path.exists(de)
+    assert os.path.exists(de), "Failed to find delta zip: %s" % de
 
   for dm in env.get_deltaManifestPaths():
-    assert os.path.exists(dm)
+    assert os.path.exists(dm), "Failed to find delta manifest: %s" % dm
 
 def test_delta_manifest_parse(env):
   for dm in env.get_deltaManifestPaths():
@@ -32,8 +32,8 @@ def test_patch_delta(env):
             os.path.join(patchdir, p.patchName)]
     print cmd
     res = subprocess.call(cmd)
-    assert res == 0
-    assert file(os.path.join(targetdir, p.name + ".new")).read() == "This file changes with versions v3.0"
+    assert res == 0, "failed to call bspatch"
+    assert env.get_sha1(os.path.join(targetdir, p.name + ".new")) == p.targetHash, ("Patched file %s failed verification" % p.name)
 
   shutil.rmtree(targetdir)
   shutil.rmtree(patchdir)

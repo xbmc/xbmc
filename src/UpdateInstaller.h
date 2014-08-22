@@ -26,8 +26,8 @@ class UpdateInstaller
 
 		UpdateInstaller();
 		void setInstallDir(const std::string& path);
+    void setTargetDir(const std::string& path);
 		void setPackageDir(const std::string& path);
-		void setBackupDir(const std::string& path);
 		void setMode(Mode mode);
 		void setScript(UpdateScript* script);
 		void setWaitPid(PLATFORM_PID pid);
@@ -41,9 +41,6 @@ class UpdateInstaller
 		void restartMainApp();
 
 private:
-		void cleanup();
-		void revert();
-		void removeBackups();
 		bool checkAccess();
 
 		void installFiles();
@@ -51,24 +48,24 @@ private:
 		void uninstallFiles();
 		void installFile(const UpdateScriptFile& file);
     void patchFile(const UpdateScriptPatch& file);
-    void backupFile(const std::string& path, bool move = true);
 		void reportError(const std::string& error);
 		void postInstallUpdate();
     void updateProgress();
     void verifyAgainstManifest();
     void findFiles(const std::string &path, std::vector<std::string> &list);
+    void copyBundle();
 
 		std::list<std::string> updaterArgs() const;
 		std::string friendlyErrorForError(const FileUtils::IOException& ex) const;
 
 		Mode m_mode;
 		std::string m_installDir;
+    std::string m_targetDir;
 		std::string m_packageDir;
-		std::string m_backupDir;
+    std::string m_tempDir;
 		PLATFORM_PID m_waitPid;
 		UpdateScript* m_script;
 		UpdateObserver* m_observer;
-		std::map<std::string,std::string> m_backups;
 		bool m_forceElevated;
 		bool m_autoClose;
 
