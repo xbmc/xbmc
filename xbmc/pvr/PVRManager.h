@@ -548,6 +548,12 @@ namespace PVR
      */
     bool CreateChannelEpgs(void);
 
+    /*!
+    * @brief get the name of the channel group of the current playing channel
+    * @return name of channel if tv channel is playing
+    */
+    std::string GetPlayingTVGroupName();
+
   protected:
     /*!
      * @brief PVR update and control thread.
