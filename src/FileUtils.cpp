@@ -503,8 +503,6 @@ void FileUtils::copyTree(const std::string& source, const std::string& destinati
     root += '/';
 
 
-  LOG(Info, "CopyTree(" + source + "," + destination + "," + root +")");
-
   DirIterator dir(source.c_str());
 
   while(dir.next())
