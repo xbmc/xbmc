@@ -50,7 +50,7 @@ public:
   void SendMessage(CDVDMsg* pMsg, int priority = 0);
   bool OpenStream(CDVDStreamInfo &hints) { return OpenStream(hints, hints.filename); }
   bool OpenStream(CDVDStreamInfo &hints, std::string& filename);
-  void CloseStream(bool flush);
+  void CloseStream(bool bWaitForBuffers);
 
   bool IsInited() const { return true; }
   bool IsStalled() const { return m_pOverlayContainer->GetSize() == 0; }
