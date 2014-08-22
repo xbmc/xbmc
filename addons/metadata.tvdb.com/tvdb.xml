@@ -73,6 +73,9 @@
 			<RegExp input="$$5" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="4+">
 				<expression>&lt;Rating&gt;([^&lt;]*)&lt;/Rating&gt;</expression>
 			</RegExp>
+			<RegExp input="$$5" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="4+">
+				<expression>&lt;RatingCount&gt;([^&lt;]*)&lt;/RatingCount&gt;</expression>
+			</RegExp>
 			<RegExp input="$$5" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="4+">
 				<expression>&lt;Network&gt;([^&lt;]*)&lt;/Network&gt;</expression>
 			</RegExp>
@@ -277,6 +280,9 @@
 			</RegExp>
 			<RegExp input="$$8" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="4+">
 				<expression>&lt;Rating&gt;([^&lt;]+)&lt;/Rating&gt;</expression>
+			</RegExp>
+			<RegExp input="$$8" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="4+">
+				<expression>&lt;RatingCount&gt;([^&lt;]+)&lt;/RatingCount&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="4+">
 				<expression>&lt;Runtime&gt;([^&lt;]+)&lt;/Runtime&gt;</expression>

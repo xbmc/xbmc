@@ -1,3 +1,6 @@
+v1.5.8
+- Added: retrieve number of votes in GetDetails/GetEpisodeDetails
+
 v1.5.7
 - Fixed: append language to CreateSearchUrl cache file
 
