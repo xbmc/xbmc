@@ -425,6 +425,16 @@ void UpdateInstaller::verifyAgainstManifest()
     {
       FileUtils::removeFile((m_installDir + '/' + filePath).c_str());
     }
+    else
+    {
+      UpdateScriptFile scriptFile = fileMap[filePath];
+      std::string hash = FileUtils::sha1FromFile((m_installDir + '/' + filePath).c_str());
+      if (hash != scriptFile.hash)
+      {
+        LOG(Error, "File " + filePath + " had the wrong hash! Expected: " + scriptFile.hash + ", got: " + hash);
+        throw "Wrong hash on file: " + filePath;
+      }
+    }
   }
 }
 
