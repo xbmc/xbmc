@@ -1,0 +1,18 @@
+###
+# Workaround for joystick hotplugging
+# NEEDS Json over TCP enabled:
+#   System - Settings - Services - Remote Control - Allow programs on this system to control Kodi
+###
+
+# Xbox 360
+ACTION=="add", KERNEL=="js*", DRIVERS=="xpad", RUN+="@BINDIR@/joystick-fix.sh reload"
+ACTION=="remove", KERNEL=="js*", DRIVERS=="xpad", RUN+="@BINDIR@/joystick-fix.sh disable"
+
+# Sony PS3 sixaxis via USB
+ACTION=="add", SUBSYSTEMS=="usb", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="0268", RUN+="@BINDIR@/joystick-fix.sh reload"
+ACTION=="remove", SUBSYSTEMS=="usb", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="0268", RUN+="@BINDIR@/joystick-fix.sh disable"
+
+# Sony PS3 sixaxis via Bluetooth and sixad
+ACTION=="add", SUBSYSTEMS=="input", ATTRS{name}=="PLAYSTATION(R)3 Controller (*)", RUN+="@BINDIR@/joystick-fix.sh reload"
+ACTION=="remove", SUBSYSTEMS=="input", ATTRS{name}=="PLAYSTATION(R)3 Controller (*)", RUN+="@BINDIR@/joystick-fix.sh disable"
+
