@@ -111,6 +111,8 @@ ICodec* CodecFactory::CreateCodec(const std::string& strFileType)
     return new DVDPlayerCodec();
   else if (fileType == "opus")
     return new DVDPlayerCodec();
+  else if (fileType == "dff" || fileType == "dsf")
+    return new DVDPlayerCodec();
 
   return NULL;
 }
