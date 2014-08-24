@@ -776,8 +776,6 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
   bool mouseActive = false;
   float mouseX = 0;
   float mouseY = 0;
-  int x0 = 0;
-  int y0 = 0;
 
   if (m_mainWindow && ((m_bFullScreen != fullscreen) || m_currentOutput.compare(output) != 0 || m_windowDirty))
   {
@@ -825,6 +823,8 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
     Colormap cmap;
     XSetWindowAttributes swa;
     XVisualInfo *vi;
+    int x0 = 0;
+    int y0 = 0;
 
     XOutput *out = g_xrandr.GetOutput(output);
     if (!out)
@@ -942,18 +942,13 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       Atom wmDeleteMessage = XInternAtom(m_dpy, "WM_DELETE_WINDOW", False);
       XSetWMProtocols(m_dpy, m_mainWindow, &wmDeleteMessage, 1);
     }
+
+    // placement of window may follow mouse
+    XWarpPointer(m_dpy, None, m_mainWindow, 0, 0, 0, 0, mouseX*width, mouseY*height);
+
     XMapRaised(m_dpy, m_glWindow);
     XMapRaised(m_dpy, m_mainWindow);
-
-    if (fullscreen)
-      XMoveWindow(m_dpy, m_mainWindow, x0, y0);
-
     XSync(m_dpy,TRUE);
-
-    if (changeWindow && mouseActive)
-    {
-      XWarpPointer(m_dpy, None, m_mainWindow, 0, 0, 0, 0, mouseX*width, mouseY*height);
-    }
 
     CDirtyRegionList dr;
     RefreshGlxContext(m_currentOutput.compare(output) != 0);
