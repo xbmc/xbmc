@@ -32,6 +32,8 @@ extern "C"
 #include <libbluray/overlay.h>
 }
 
+#define MAX_PLAYLIST_ID 99999
+
 class CDVDOverlayImage;
 class DllLibbluray;
 class IDVDPlayer;
