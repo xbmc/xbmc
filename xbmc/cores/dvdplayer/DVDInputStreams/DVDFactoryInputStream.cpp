@@ -160,7 +160,8 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer *pPlayer, 
     CURL finalURL(file);
     XFILE::CPlexFile::BuildHTTPURL(finalURL);
 
-    if (finalURL.GetProtocol() != "https")
+    if (finalURL.GetProtocol() != "https" &&
+        !boost::starts_with(finalURL.GetFileName(), "services/iva/assets"))
       return new CDVDInputStreamFFmpeg();
     else
       return new CDVDInputStreamFile();
