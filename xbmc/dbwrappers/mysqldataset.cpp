@@ -431,7 +431,7 @@ long MysqlDatabase::nextid(const char* sname) {
     CLog::Log(LOGINFO,"Next id is [%.*s] ", (int) lengths[0], row[0]);
     sprintf(sqlcmd,"update %s set nextid=%d where seq_name = '%s'",seq_table,id,sname);
     mysql_free_result(res);
-    if ((last_err = query_with_reconnect(sqlcmd) != 0)) return DB_UNEXPECTED_RESULT;
+    if ((last_err = query_with_reconnect(sqlcmd)) != 0) return DB_UNEXPECTED_RESULT;
     return id;
   }
   return DB_UNEXPECTED_RESULT;
