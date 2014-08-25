@@ -258,6 +258,7 @@ void CPVRGUIInfo::UpdateMisc(void)
   bool       bIsPlayingEncryptedStream = bStarted && g_PVRClients->IsEncrypted();
   bool       bHasTVChannels            = bStarted && g_PVRChannelGroups->GetGroupAllTV()->HasChannels();
   bool       bHasRadioChannels         = bStarted && g_PVRChannelGroups->GetGroupAllRadio()->HasChannels();
+  std::string strPlayingTVGroup        = (bStarted && bIsPlayingTV) ? g_PVRManager.GetPlayingGroup(false)->GroupName() : "";
   
   /* safe to fetch these unlocked, since they're updated from the same thread as this one */
   bool       bHasNonRecordingTimers    = bStarted && m_iTimerAmount - m_iRecordingTimerAmount > 0;
@@ -272,6 +273,7 @@ void CPVRGUIInfo::UpdateMisc(void)
   m_bIsPlayingEncryptedStream = bIsPlayingEncryptedStream;
   m_bHasTVChannels            = bHasTVChannels;
   m_bHasRadioChannels         = bHasRadioChannels;
+  m_strPlayingTVGroup         = strPlayingTVGroup;
 }
 
 bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
@@ -897,4 +899,9 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
     ResetPlayingTag();
     m_iDuration = recording.GetDuration() * 1000;
   }
+}
+
+std::string CPVRGUIInfo::GetPlayingTVGroup()
+{
+  return m_strPlayingTVGroup;
 }

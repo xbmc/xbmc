@@ -77,6 +77,11 @@ namespace PVR
 
     bool GetPlayingTag(EPG::CEpgInfoTag &tag) const;
 
+    /*!
+    * @brief Get playing TV group.
+    */
+    std::string GetPlayingTVGroup();
+
   private:
     void ResetProperties(void);
     void ClearQualityInfo(PVR_SIGNAL_STATUS &qualityInfo);
@@ -162,6 +167,7 @@ namespace PVR
     bool                            m_bIsPlayingEncryptedStream;
     bool                            m_bHasTVChannels;
     bool                            m_bHasRadioChannels;
+    std::string                     m_strPlayingTVGroup;
     //@}
 
     PVR_SIGNAL_STATUS               m_qualityInfo;       /*!< stream quality information */

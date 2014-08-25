@@ -3829,7 +3829,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_CHANNEL_GROUP:
       {
         if (tag && !tag->IsRadio())
-          return g_PVRManager.GetPlayingGroup(false)->GroupName();
+          return g_PVRManager.GetPlayingTVGroupName();
       }
     }
   }

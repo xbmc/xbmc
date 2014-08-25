@@ -1614,3 +1614,8 @@ bool CPVRManager::CreateChannelEpgs(void)
   m_bEpgsCreated = m_channelGroups->CreateChannelEpgs();
   return m_bEpgsCreated;
 }
+
+std::string CPVRManager::GetPlayingTVGroupName()
+{
+  return IsStarted() && m_guiInfo ? m_guiInfo->GetPlayingTVGroup() : "";
+}
