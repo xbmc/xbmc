@@ -140,6 +140,17 @@
       <button id="16">PreviousChannelGroup</button>
     </joystick>
   </FullscreenLiveTV>
+  <FullscreenRadio>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="13">ChannelUp</button>
+      <button id="14">NextChannelGroup</button>
+      <button id="15">ChannelDown</button>
+      <button id="16">PreviousChannelGroup</button>
+    </joystick>
+  </FullscreenRadio>
   <FullscreenInfo>
     <joystick name="Microsoft Xbox Controller S">
       <altname>Mad Catz MicroCON</altname>

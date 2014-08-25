@@ -380,6 +380,7 @@ static const ActionMapping windows[] =
         {"textviewer"               , WINDOW_DIALOG_TEXT_VIEWER},
         {"fullscreenvideo"          , WINDOW_FULLSCREEN_VIDEO},
         {"fullscreenlivetv"         , WINDOW_FULLSCREEN_LIVETV}, // virtual window/keymap section for PVR specific bindings in fullscreen playback (which internally uses WINDOW_FULLSCREEN_VIDEO)
+        {"fullscreenradio"          , WINDOW_FULLSCREEN_RADIO}, // virtual window for fullscreen radio, uses WINDOW_VISUALISATION as fallback
         {"visualisation"            , WINDOW_VISUALISATION},
         {"slideshow"                , WINDOW_SLIDESHOW},
         {"filestackingdialog"       , WINDOW_DIALOG_FILESTACKING},
@@ -429,7 +430,8 @@ static const ActionMapping touchcommands[] =
 static const WindowMapping fallbackWindows[] =
 {
   { WINDOW_FULLSCREEN_LIVETV,          WINDOW_FULLSCREEN_VIDEO },
-  { WINDOW_DIALOG_FULLSCREEN_INFO,     WINDOW_FULLSCREEN_VIDEO }
+  { WINDOW_DIALOG_FULLSCREEN_INFO,     WINDOW_FULLSCREEN_VIDEO },
+  { WINDOW_FULLSCREEN_RADIO,           WINDOW_VISUALISATION    }
 };
 
 #ifdef TARGET_WINDOWS

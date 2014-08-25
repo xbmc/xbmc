@@ -529,6 +529,14 @@
       <down>ChannelDown</down>
     </keyboard>
   </FullscreenLiveTV>
+  <FullscreenRadio>
+    <keyboard>
+      <left>PreviousChannelGroup</left>
+      <right>NextChannelGroup</right>
+      <up>ChannelUp</up>
+      <down>ChannelDown</down>
+    </keyboard>
+  </FullscreenRadio>
   <PVROSDChannels>
     <keyboard>
       <backspace>Close</backspace>

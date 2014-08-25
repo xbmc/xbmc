@@ -181,6 +181,14 @@
       <!-- right      	-->      <button id="4">NextChannelGroup</button>
     </joystick>
   </FullscreenLiveTV>
+  <FullscreenRadio>
+    <joystick name="Harmony">
+      <!-- up       	-->      <button id="1">ChannelUp</button>
+      <!-- down      	-->      <button id="2">ChannelDown</button>
+      <!-- left       	-->      <button id="3">PreviousChannelGroup</button>
+      <!-- right      	-->      <button id="4">NextChannelGroup</button>
+    </joystick>
+  </FullscreenRadio>
   <FullscreenInfo>
     <joystick name="Harmony">
       <!-- Info  	-->      <button id="31">Back</button>

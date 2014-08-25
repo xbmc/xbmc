@@ -112,6 +112,15 @@
     </joystick>
   </FullscreenLiveTV>
 
+  <FullscreenRadio>
+    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
+      <hat    id="1" position="left">PreviousChannelGroup</hat>
+      <hat    id="1" position="right">NextChannelGroup</hat>
+      <hat    id="1" position="up">ChannelUp</hat>
+      <hat    id="1" position="down">ChannelDown</hat>
+    </joystick>
+  </FullscreenRadio>
+
   <VideoOSD>
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>

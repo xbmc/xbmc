@@ -107,6 +107,12 @@
       <button id="4">ChannelUp</button>
     </joystick>
   </FullscreenLiveTV>
+  <FullscreenRadio>
+    <joystick name="WiiRemote">
+      <button id="3">ChannelDown</button>
+      <button id="4">ChannelUp</button>
+    </joystick>
+  </FullscreenRadio>
   <FullscreenInfo>
     <joystick name="WiiRemote">
       <button id="5">CodecInfo</button>
