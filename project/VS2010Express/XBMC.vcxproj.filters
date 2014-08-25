@@ -217,9 +217,6 @@
     <Filter Include="network\websocket">
       <UniqueIdentifier>{88e84682-dede-4bdf-9e33-a8023dd5ac78}</UniqueIdentifier>
     </Filter>
-    <Filter Include="filesystem\windows">
-      <UniqueIdentifier>{1cc693eb-11ad-4f53-8640-198d5ab9bcc8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="network\httprequesthandler">
       <UniqueIdentifier>{9029e610-aa5a-4414-9e96-1d69f03b3bd8}</UniqueIdentifier>
     </Filter>
@@ -1953,12 +1950,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\network\websocket\WebSocketV13.cpp">
       <Filter>network\websocket</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\windows\WINFileSMB.cpp">
-      <Filter>filesystem\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.cpp">
-      <Filter>filesystem\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\GUIOperations.cpp">
       <Filter>interfaces\json-rpc</Filter>
@@ -5239,12 +5230,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\websocket\WebSocketV13.h">
       <Filter>network\websocket</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\windows\WINFileSMB.h">
-      <Filter>filesystem\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.h">
-      <Filter>filesystem\windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\JSONRPCUtils.h">
       <Filter>interfaces\json-rpc</Filter>
