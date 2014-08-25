@@ -1,0 +1,6 @@
+* Fixes
+  - Fixed a bunch of crashes reported for 1.2.1 and 1.2.0
+  - Fixed trailer playback when ffmpeg AVIO was enabled
+  - Fixed trailer playback from Android clients
+  - Make sure that repeat flag is not set for Movie play queues
+  
