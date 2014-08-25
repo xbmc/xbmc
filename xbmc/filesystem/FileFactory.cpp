@@ -36,7 +36,7 @@
 #include "FileReaderFile.h"
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
-#include "windows/WINFileSmb.h"
+#include "win32/Win32SMBFile.h"
 #else
 #include "SMBFile.h"
 #endif
@@ -175,7 +175,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (url.IsProtocol("cmyth")) return new CMythFile();
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
-    else if (url.IsProtocol("smb")) return new CWINFileSMB();
+    else if (url.IsProtocol("smb")) return new CWin32SMBFile();
 #else
     else if (url.IsProtocol("smb")) return new CSMBFile();
 #endif
