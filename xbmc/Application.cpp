@@ -521,46 +521,8 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
         actionId = newEvent.touch.action;
       else
       {
-        int iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
-        // change this if we have a dialog up
-        if (g_windowManager.HasModalDialog())
-        {
-          iWin = g_windowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
-        }
-        if (iWin == WINDOW_DIALOG_FULLSCREEN_INFO)
-        { // fullscreen info dialog - special case
-          CButtonTranslator::GetInstance().TranslateTouchAction(iWin, newEvent.touch.action, newEvent.touch.pointers, actionId);
-          if (actionId <= 0)
-            iWin = WINDOW_FULLSCREEN_VIDEO;  // fallthrough to the main window
-        }
-        if (actionId <= 0)
-        {
-          if (iWin == WINDOW_FULLSCREEN_VIDEO)
-          {
-            // current active window is full screen video.
-            if (g_application.m_pPlayer->IsInMenu())
-            {
-              // if player is in some sort of menu, (ie DVDMENU) map buttons differently
-              CButtonTranslator::GetInstance().TranslateTouchAction(WINDOW_VIDEO_MENU, newEvent.touch.action, newEvent.touch.pointers, actionId);
-            }
-            else if (g_PVRManager.IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
-            {
-              // check for PVR specific keymaps in FULLSCREEN_VIDEO window
-              CButtonTranslator::GetInstance().TranslateTouchAction(WINDOW_FULLSCREEN_LIVETV, newEvent.touch.action, newEvent.touch.pointers, actionId);
-
-              // if no PVR specific action/mapping is found, fall back to default
-              if (actionId <= 0)
-                CButtonTranslator::GetInstance().TranslateTouchAction(iWin, newEvent.touch.action, newEvent.touch.pointers, actionId);
-            }
-            else
-            {
-              // in any other case use the fullscreen window section of keymap.xml to map key->action
-              CButtonTranslator::GetInstance().TranslateTouchAction(iWin, newEvent.touch.action, newEvent.touch.pointers, actionId);
-            }
-          }
-          else  // iWin != WINDOW_FULLSCREEN_VIDEO
-            CButtonTranslator::GetInstance().TranslateTouchAction(iWin, newEvent.touch.action, newEvent.touch.pointers, actionId);
-        }
+        int iWin = g_application.GetActiveWindowID();
+        CButtonTranslator::GetInstance().TranslateTouchAction(iWin, newEvent.touch.action, newEvent.touch.pointers, actionId);
       }
 
       if (actionId <= 0)

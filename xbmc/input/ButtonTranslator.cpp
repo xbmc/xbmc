@@ -905,7 +905,13 @@ bool CButtonTranslator::TranslateTouchAction(int window, int touchAction, int to
 
   action = GetTouchActionCode(window, touchAction);
   if (action <= 0)
-    action = GetTouchActionCode(-1, touchAction);
+  {
+    int fallbackWindow = GetFallbackWindow(window);
+    if (fallbackWindow > -1)
+      action = GetTouchActionCode(fallbackWindow, touchAction);
+    if (action <= 0)
+      action = GetTouchActionCode(-1, touchAction);
+  }
 
   return action > 0;
 }
