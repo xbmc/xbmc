@@ -538,6 +538,22 @@ std::wstring CWIN32Util::ConvertPathToWin32Form(const CURL& url)
   return std::wstring(); // empty string
 }
 
+__time64_t CWIN32Util::fileTimeToTimeT(const FILETIME& ftimeft)
+{
+  if (!ftimeft.dwHighDateTime && !ftimeft.dwLowDateTime)
+    return 0;
+
+  return fileTimeToTimeT((__int64(ftimeft.dwHighDateTime) << 32) + __int64(ftimeft.dwLowDateTime));
+}
+
+__time64_t CWIN32Util::fileTimeToTimeT(const LARGE_INTEGER& ftimeli)
+{
+  if (ftimeli.QuadPart == 0)
+    return 0;
+
+  return fileTimeToTimeT(__int64(ftimeli.QuadPart));
+}
+
 
 void CWIN32Util::ExtendDllPath()
 {
