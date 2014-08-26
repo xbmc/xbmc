@@ -328,7 +328,7 @@ int SqliteDatabase::drop_analytics(void) {
 
   for (size_t i=0; i < res.records.size(); i++) {
     sprintf(sqlcmd,"DROP INDEX '%s'", res.records[i]->at(0).get_asString().c_str());
-    if ((last_err = sqlite3_exec(conn, sqlcmd, NULL, NULL, NULL) != SQLITE_OK)) return DB_UNEXPECTED_RESULT;
+    if ((last_err = sqlite3_exec(conn, sqlcmd, NULL, NULL, NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
   }
   res.clear();
 
@@ -338,7 +338,7 @@ int SqliteDatabase::drop_analytics(void) {
 
   for (size_t i=0; i < res.records.size(); i++) {
     sprintf(sqlcmd,"DROP VIEW '%s'", res.records[i]->at(0).get_asString().c_str());
-    if ((last_err = sqlite3_exec(conn, sqlcmd, NULL, NULL, NULL) != SQLITE_OK)) return DB_UNEXPECTED_RESULT;
+    if ((last_err = sqlite3_exec(conn, sqlcmd, NULL, NULL, NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
   }
   res.clear();
 
@@ -348,7 +348,7 @@ int SqliteDatabase::drop_analytics(void) {
 
   for (size_t i=0; i < res.records.size(); i++) {
     sprintf(sqlcmd,"DROP TRIGGER '%s'", res.records[i]->at(0).get_asString().c_str());
-    if ((last_err = sqlite3_exec(conn, sqlcmd, NULL, NULL, NULL) != SQLITE_OK)) return DB_UNEXPECTED_RESULT;
+    if ((last_err = sqlite3_exec(conn, sqlcmd, NULL, NULL, NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
   }
   // res would be cleared on destruct
 
@@ -383,7 +383,7 @@ long SqliteDatabase::nextid(const char* sname) {
   else {
     id = res.records[0]->at(0).get_asInt()+1;
     sprintf(sqlcmd,"update %s set nextid=%d where seq_name = '%s'",sequence_table.c_str(),id,sname);
-    if ((last_err = sqlite3_exec(conn,sqlcmd,NULL,NULL,NULL) != SQLITE_OK)) return DB_UNEXPECTED_RESULT;
+    if ((last_err = sqlite3_exec(conn,sqlcmd,NULL,NULL,NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
     return id;
   }
   return DB_UNEXPECTED_RESULT;
