@@ -1396,14 +1396,14 @@ else
   DISABLE_PROJECTM=0
 fi
 
-# skin touched
-use_skin_touched=no
+# touch skin
+use_touch_skin=no
 if [[ -f "addons/skin.re-touched/addon.xml" ]]; then 
-  use_skin_touched=yes
-  USE_SKIN_TOUCHED=1
-  AC_DEFINE([HAS_SKIN_TOUCHED], [1], [Whether to build skin touched.])
+  use_touch_skin=yes
+  USE_TOUCH_SKIN=1
+  AC_DEFINE([HAS_TOUCH_SKIN], [1], [Whether to build the touch skin.])
 else
-  USE_SKIN_TOUCHED=0
+  USE_TOUCH_SKIN=0
 fi
 
 # libssh
@@ -2101,10 +2101,10 @@ else
   final_message="$final_message\n  ProjectM:\tNo"
 fi
 
-if test "$use_skin_touched" = "yes"; then
-  final_message="$final_message\n  Skin Touched:\tYes"
+if test "$use_touch_skin" = "yes"; then
+  final_message="$final_message\n  Touch skin:\tYes"
 else
-  final_message="$final_message\n  Skin Touched:\tNo"
+  final_message="$final_message\n  Touch skin:\tNo"
 fi
 
 if test "$use_x11" = "yes"; then
@@ -2466,7 +2466,7 @@ if test "$use_wayland" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES xbmc/windowing/tests/wayland/Makefile"
 fi
 
-if test "$use_skin_touched" = "yes"; then
+if test "$use_touch_skin" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES addons/skin.re-touched/media/Makefile"
 fi
 
@@ -2506,7 +2506,7 @@ AC_SUBST(FFMPEG_LIBDIR)
 AC_SUBST(USE_STATIC_FFMPEG)
 AC_SUBST(GNUTLS_ALL_LIBS)
 AC_SUBST(VORBISENC_ALL_LIBS)
-AC_SUBST(USE_SKIN_TOUCHED)
+AC_SUBST(USE_TOUCH_SKIN)
 AC_SUBST(USE_LIBAV_HACKS)
 AC_SUBST(PYTHON_VERSION)
 AC_SUBST(OUTPUT_FILES)

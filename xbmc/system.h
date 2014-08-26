@@ -272,7 +272,7 @@
 /****************
  * default skin
  ****************/
-#if defined(HAS_SKIN_TOUCHED) && defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
+#if defined(HAS_TOUCH_SKIN) && defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
 #define DEFAULT_SKIN          "skin.re-touched"
 #else
 #define DEFAULT_SKIN          "skin.confluence"

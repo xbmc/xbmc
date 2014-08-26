@@ -40,7 +40,7 @@ ${SYNC} "$SRCROOT/addons/visualization.waveform"      "$TARGET_BUILD_DIR/$TARGET
 ${SYNC} "$SRCROOT/language"   "$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome"
 ${SYNC} "$SRCROOT/media"    "$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome"
 
-# sync skin.touched if it exists
+# sync touch skin if it exists
 if [ -f "$SRCROOT/addons/skin.re-touched/addon.xml" ]; then
 SYNCSKIN_A=${SKINSYNC}
 if [ -f "$SRCROOT/addons/skin.re-touched/media/Textures.xbt" ]; then

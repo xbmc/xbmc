@@ -522,7 +522,7 @@ void CSettings::InitializeVisibility()
 void CSettings::InitializeDefaults()
 {
   // set some default values if necessary
-#if defined(HAS_SKIN_TOUCHED) && defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
+#if defined(HAS_TOUCH_SKIN) && defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
   ((CSettingAddon*)m_settingsManager->GetSetting("lookandfeel.skin"))->SetDefault("skin.re-touched");
 #endif
 

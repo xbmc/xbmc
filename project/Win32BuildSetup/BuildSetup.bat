@@ -244,7 +244,7 @@ set WORKSPACE=%CD%\..\..
   cd %build_path%
   
   IF EXIST  ..\..\addons\skin.re-touched\build.bat (
-    ECHO Building Touched Skin...
+    ECHO Building Touch Skin...
     cd ..\..\addons\skin.re-touched
     call build.bat > NUL
     cd %build_path%
