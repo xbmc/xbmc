@@ -844,7 +844,7 @@ std::string CSmartPlaylistRule::GetField(int field, const std::string &type) con
 
 std::string CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, const std::string& strType, std::set<std::string> &referencedPlaylists) const
 {
-  std::string rule, currentRule;
+  std::string rule;
   
   // translate the combinations into SQL
   for (CDatabaseQueryRuleCombinations::const_iterator it = m_combinations.begin(); it != m_combinations.end(); ++it)

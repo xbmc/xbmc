@@ -978,7 +978,6 @@ bool CGUIControlRangeSetting::OnClick()
 
   CSettingList *settingList = static_cast<CSettingList*>(m_pSetting);
   const SettingPtrList &settingListValues = settingList->GetValue();
-  SettingPtrList settingListValuesCopy(settingListValues.begin(), settingListValues.end());
   if (settingListValues.size() != 2)
     return false;
 

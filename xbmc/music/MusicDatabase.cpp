@@ -1121,7 +1121,6 @@ int  CMusicDatabase::UpdateArtist(int idArtist,
 {
   CScraperUrl thumbURL;
   CFanart fanart;
-  std::vector<std::pair<CStdString,CStdString> > discography;
   if (idArtist < 0)
     return -1;
 
@@ -3904,7 +3903,6 @@ void CMusicDatabase::UpdateTables(int version)
     m_pDS->exec("ALTER TABLE album_artist ADD strArtist text\n");
     m_pDS->exec("ALTER TABLE song_artist ADD strArtist text\n");
     // populate these
-    map<int, string> artists;
     CStdString sql = "select idArtist,strArtist from artist";
     m_pDS->query(sql.c_str());
     while (!m_pDS->eof())

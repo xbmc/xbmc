@@ -37,7 +37,6 @@ JSONRPC_STATUS CSettingsOperations::GetSections(const std::string &method, ITran
 {
   SettingLevel level = (SettingLevel)ParseSettingLevel(parameterObject["level"].asString());
   bool listCategories = !parameterObject["properties"].empty() && parameterObject["properties"][0].asString() == "categories";
-  vector<CSettingSection*> sections;
 
   result["sections"] = CVariant(CVariant::VariantTypeArray);
 

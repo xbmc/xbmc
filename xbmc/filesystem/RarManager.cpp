@@ -327,7 +327,6 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const std::string& str
     strCompare += '/';
   for( pIterator = pFileList; pIterator  ; pIterator ? pIterator = pIterator->next : NULL)
   {
-    std::string strDirDelimiter = (pIterator->item.HostOS==3 ? "/":"\\"); // win32 or unix paths?
     std::string strName;
 
     /* convert to utf8 */

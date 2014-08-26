@@ -346,8 +346,6 @@ void CWinSystemX11::UpdateResolutions()
   CLog::Log(LOGINFO, "Available videomodes (xrandr):");
 
   XOutput *out = g_xrandr.GetOutput(m_userOutput);
-  string modename = "";
-
   if (out != NULL)
   {
     vector<XMode>::iterator modeiter;

@@ -163,7 +163,7 @@ bool CTuxBoxUtil::CreateNewItem(const CFileItem& item, CFileItem& item_new)
 }
 bool CTuxBoxUtil::ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &url, std::string strFilter, std::string strChild)
 {
-  std::string strOptions, strPort;
+  std::string strOptions;
   TiXmlElement *pRootElement =root;
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
@@ -224,7 +224,6 @@ bool CTuxBoxUtil::ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &
 }
 bool CTuxBoxUtil::ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items, CURL &url, std::string& strFilter, std::string& strChild)
 {
-  std::string strPort;
   TiXmlElement *pRootElement = root;
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
@@ -269,7 +268,6 @@ bool CTuxBoxUtil::ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items,
 }
 bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &url, std::string strFilter, std::string strChild)
 {
-  std::string strPort;
   TiXmlElement *pRootElement =root;
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
@@ -415,10 +413,9 @@ bool CTuxBoxUtil::ParseChannelsEnigma2(TiXmlElement *root, CFileItemList &items,
 bool CTuxBoxUtil::ZapToUrl(CURL url, const std::string &pathOption)
 {
   // send Zap
-  std::string strZapUrl, strPostUrl, strZapName, strFilter;
   //Extract the ZAP to Service String
   //Remove the ".ts"
-  strFilter = pathOption.substr(0, pathOption.size() - 3);
+  std::string strFilter = pathOption.substr(0, pathOption.size() - 3);
   //Get the Service Name
 
   // Create ZAP URL
@@ -551,9 +548,9 @@ bool CTuxBoxUtil::GetZapUrl(const std::string& strPath, CFileItem &items )
           vVideoSubChannel.mode= false;
       }
 
-      std::string strStreamURL, strVideoStream;
+      std::string strVideoStream;
       std::string strLabel, strLabel2;
-      std::string strAudioChannelName, strAudioChannelPid;
+      std::string strAudioChannelPid;
       std::string strAPids;
       sAudioChannel sRequestedAudioChannel;
 
@@ -838,7 +835,6 @@ bool CTuxBoxUtil::StreamInformations(TiXmlElement *pRootElement)
   TiXmlNode *pIt = NULL;
   if(pRootElement != NULL)
   {
-    std::string strRoot = pRootElement->Value();
     pNode = pRootElement->FirstChild("frontend");
     if (pNode)
     {

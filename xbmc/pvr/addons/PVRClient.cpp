@@ -353,7 +353,7 @@ bool CPVRClient::CheckAPIVersion(void)
 
 bool CPVRClient::GetAddonProperties(void)
 {
-  std::string strHostName, strBackendName, strConnectionString, strFriendlyName, strBackendVersion;
+  std::string strBackendName, strConnectionString, strFriendlyName, strBackendVersion;
   PVR_ADDON_CAPABILITIES addonCapabilities;
 
   /* get the capabilities */
