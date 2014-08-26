@@ -41,7 +41,7 @@ character itself should NOT be typed as part of the command.
  $ cd $HOME
  $ git clone git://github.com/xbmc/xbmc.git xbmc
  $ cd xbmc
- $ git submodule update --init addons/skin.touched
+ $ git submodule update --init addons/skin.re-touched
 
 -----------------------------------------------------------------------------
 3.0 Install Xcode
