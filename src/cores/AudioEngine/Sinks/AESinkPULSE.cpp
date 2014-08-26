@@ -22,8 +22,10 @@
 #include "AESinkPULSE.h"
 #include "utils/log.h"
 #include "Util.h"
+#include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 
 using namespace std;
 
@@ -808,10 +810,12 @@ void CAESinkPULSE::UpdateInternalVolume(const pa_cvolume* nVol)
   pa_volume_t o_vol = pa_cvolume_avg(&m_Volume);
   pa_volume_t n_vol = pa_cvolume_avg(nVol);
 
-  if (o_vol != n_vol)
+  if (o_vol != n_vol && n_vol <= PA_VOLUME_NORM)
   {
     pa_cvolume_set(&m_Volume, m_Channels, n_vol);
     m_volume_needs_update = true;
+    int action = n_vol > o_vol ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN;
+    CApplicationMessenger::Get().SetVolume(action, (float) n_vol / PA_VOLUME_NORM);
   }
 }
 
