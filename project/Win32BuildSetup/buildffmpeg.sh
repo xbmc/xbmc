@@ -46,9 +46,9 @@ fi
 
 if [ $NUMBER_OF_PROCESSORS > 1 ]; then
   if [ $NUMBER_OF_PROCESSORS > 4 ]; then
-    MAKEFLAGS=-j4
+    MAKEFLAGS=-j6
   else
-    MAKEFLAGS=-j$NUMBER_OF_PROCESSORS
+    MAKEFLAGS=-j`expr $NUMBER_OF_PROCESSORS + $NUMBER_OF_PROCESSORS / 2`
   fi
 fi
 

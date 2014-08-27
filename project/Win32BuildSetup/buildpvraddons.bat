@@ -17,7 +17,7 @@ SET BUILT_ADDONS_DIR=%SOURCE_DIR%\addons
 
 REM check if MSBuild.exe is used because it requires different command line switches
 IF "%msbuildemitsolution%" == "1" (
-  set OPTS_EXE=%SOURCE_DIR%\project\VS2010Express\xbmc-pvr-addons.sln /t:Build /p:Configuration="Release" /property:VCTargetsPath="%MSBUILDROOT%Microsoft.Cpp\v4.0\V120\\"
+  set OPTS_EXE=%SOURCE_DIR%\project\VS2010Express\xbmc-pvr-addons.sln /t:Build /p:Configuration="Release" /property:VCTargetsPath="%MSBUILDROOT%Microsoft.Cpp\v4.0\V120\\" /m
 ) ELSE (
   set OPTS_EXE=%SOURCE_DIR%\project\VS2010Express\xbmc-pvr-addons.sln /build Release
 )
