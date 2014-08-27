@@ -106,18 +106,18 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
   int extraBlockSize = searchSize % blockSize;
   // Signature is on 4 bytes
   // It could be between 2 blocks, so we need to read 3 extra bytes
-  char *buffer = new char[blockSize+3];
+  auto_buffer buffer(blockSize + 3);
   bool found = false;
 
   // Loop through blocks starting at the end of the file (minus ECDREC_SIZE-1)
   for (int nb=1; !found && (nb <= nbBlock); nb++)
   {
     mFile.Seek(fileSize-ECDREC_SIZE+1-(blockSize*nb),SEEK_SET);
-    if (mFile.Read(buffer, blockSize + 3) != blockSize + 3)
+    if (mFile.Read(buffer.get(), blockSize + 3) != blockSize + 3)
       return false;
     for (int i=blockSize-1; !found && (i >= 0); i--)
     {
-      if ( Endian_SwapLE32(*((unsigned int*)(buffer+i))) == ZIP_END_CENTRAL_HEADER )
+      if ( Endian_SwapLE32(*((unsigned int*)(buffer.get()+i))) == ZIP_END_CENTRAL_HEADER )
       {
         // Set current position to start of end of central directory
         mFile.Seek(fileSize-ECDREC_SIZE+1-(blockSize*nb)+i,SEEK_SET);
@@ -130,11 +130,11 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
   if ( !found && (extraBlockSize > 0) )
   {
     mFile.Seek(fileSize-ECDREC_SIZE+1-searchSize,SEEK_SET);
-    if (mFile.Read(buffer, extraBlockSize + 3) != extraBlockSize + 3)
+    if (mFile.Read(buffer.get(), extraBlockSize + 3) != extraBlockSize + 3)
       return false;
     for (int i=extraBlockSize-1; !found && (i >= 0); i--)
     {
-      if ( Endian_SwapLE32(*((unsigned int*)(buffer+i))) == ZIP_END_CENTRAL_HEADER )
+      if ( Endian_SwapLE32(*((unsigned int*)(buffer.get()+i))) == ZIP_END_CENTRAL_HEADER )
       {
         // Set current position to start of end of central directory
         mFile.Seek(fileSize-ECDREC_SIZE+1-searchSize+i,SEEK_SET);
@@ -143,7 +143,7 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
     }
   }
 
-  delete [] buffer;
+  buffer.clear();
 
   if ( !found )
   {
@@ -181,10 +181,11 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
     }
 
     // Get the filename just after the central file header
-    std::string strName;
-    strName.resize(ze.flength);
-    if (mFile.Read(&strName[0], ze.flength) != ze.flength)
+    auto_buffer bufName(ze.flength);
+    if (mFile.Read(bufName.get(), ze.flength) != ze.flength)
       return false;
+    std::string strName(bufName.get(), bufName.size());
+    strName.clear();
     g_charsetConverter.unknownToUTF8(strName);
     ZeroMemory(ze.name, 255);
     strncpy(ze.name, strName.c_str(), strName.size()>254 ? 254 : strName.size());
