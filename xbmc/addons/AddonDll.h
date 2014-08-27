@@ -158,6 +158,9 @@ AddonPtr CAddonDll<TheDll, TheStruct, TheProps>::Clone() const
 template<class TheDll, typename TheStruct, typename TheProps>
 bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
 {
+  if (m_pDll)
+    return true;
+
   std::string strFileName;
   if (!m_bIsChild)
   {
