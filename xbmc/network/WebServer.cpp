@@ -705,8 +705,8 @@ int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
     context->file->Seek(context->writePosition);
 
   // read data from the file
-  unsigned int res = context->file->Read(buf, maximum);
-  if (res == 0)
+  ssize_t res = context->file->Read(buf, maximum);
+  if (res <= 0)
     return -1;
 
   // add the number of read bytes to the number of written bytes

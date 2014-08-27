@@ -26,6 +26,7 @@
 
 #include <sys/stat.h>
 #include <errno.h>
+#include <limits.h>
 
 using namespace std;
 using namespace XFILE;
@@ -69,6 +70,8 @@ ssize_t CUDFFile::Read(void *lpBuf, size_t uiBufSize)
 {
   if (uiBufSize > SSIZE_MAX)
     uiBufSize = SSIZE_MAX;
+  if (uiBufSize > LONG_MAX)
+    uiBufSize = LONG_MAX;
 
   if (!m_bOpened)
     return -1;

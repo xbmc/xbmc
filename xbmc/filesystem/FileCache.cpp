@@ -264,7 +264,7 @@ void CFileCache::Process()
       }
     }
 
-    int iRead = 0;
+    ssize_t iRead = 0;
     if (!cacheReachEOF)
       iRead = m_source.Read(buffer.get(), m_chunkSize);
     if (iRead == 0)

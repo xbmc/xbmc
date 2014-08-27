@@ -59,7 +59,7 @@ namespace XFILE
     char m_szBuffer[65535];     // 64k buffer for compressed data
     char* m_szStringBuffer;
     char* m_szStartOfStringBuffer; // never allocated!
-    int m_iDataInStringBuffer;
+    size_t m_iDataInStringBuffer;
     int m_iRead;
     bool m_bFlush;
     bool m_bCached;

@@ -495,10 +495,10 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
   return -1;
 }
 
-unsigned int CFile::Read(void *lpBuf, int64_t uiBufSize)
+ssize_t CFile::Read(void *lpBuf, size_t uiBufSize)
 {
   if (!m_pFile || !lpBuf)
-    return 0;
+    return -1;
 
   if (uiBufSize > SSIZE_MAX)
     uiBufSize = SSIZE_MAX;
@@ -507,7 +507,7 @@ unsigned int CFile::Read(void *lpBuf, int64_t uiBufSize)
   {
     if(m_flags & READ_TRUNCATED)
     {
-      unsigned int nBytes = m_pBuffer->sgetn(
+      const ssize_t nBytes = m_pBuffer->sgetn(
         (char *)lpBuf, min<streamsize>((streamsize)uiBufSize,
                                                   m_pBuffer->in_avail()));
       if (m_bitStreamStats && nBytes>0)
@@ -516,7 +516,7 @@ unsigned int CFile::Read(void *lpBuf, int64_t uiBufSize)
     }
     else
     {
-      unsigned int nBytes = m_pBuffer->sgetn((char*)lpBuf, uiBufSize);
+      const ssize_t nBytes = m_pBuffer->sgetn((char*)lpBuf, uiBufSize);
       if (m_bitStreamStats && nBytes>0)
         m_bitStreamStats->AddSampleBytes(nBytes);
       return nBytes;
@@ -527,20 +527,24 @@ unsigned int CFile::Read(void *lpBuf, int64_t uiBufSize)
   {
     if(m_flags & READ_TRUNCATED)
     {
-      unsigned int nBytes = m_pFile->Read(lpBuf, uiBufSize);
+      const ssize_t nBytes = m_pFile->Read(lpBuf, uiBufSize);
       if (m_bitStreamStats && nBytes>0)
         m_bitStreamStats->AddSampleBytes(nBytes);
       return nBytes;
     }
     else
     {
-      unsigned int done = 0;
+      ssize_t done = 0;
       while((uiBufSize-done) > 0)
       {
-        int curr = m_pFile->Read((char*)lpBuf+done, uiBufSize-done);
-        if(curr<=0)
-          break;
+        const ssize_t curr = m_pFile->Read((char*)lpBuf+done, uiBufSize-done);
+        if (curr <= 0)
+        {
+          if (curr < 0 && done == 0)
+            return -1;
 
+          break;
+        }
         done+=curr;
       }
       if (m_bitStreamStats && done > 0)
@@ -552,6 +556,7 @@ unsigned int CFile::Read(void *lpBuf, int64_t uiBufSize)
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
+    return -1;
   }
   return 0;
 }

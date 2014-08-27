@@ -350,11 +350,10 @@ ssize_t CZipFile::Read(void* lpBuf, size_t uiBufSize)
       return 0; // we are past eof, this shouldn't happen but test anyway
     }
     ssize_t iResult = mFile.Read(lpBuf,uiBufSize);
-    if (iResult > 0)
-    {
-      m_iZipFilePos += iResult;
-      m_iFilePos += iResult;
-    }
+    if (iResult < 0)
+      return -1;
+    m_iZipFilePos += iResult;
+    m_iFilePos += iResult;
     return iResult;
   }
   else
@@ -441,9 +440,9 @@ bool CZipFile::ReadString(char* szLine, int iLineLength)
 
 bool CZipFile::FillBuffer()
 {
-  unsigned int sToRead = 65535;
+  ssize_t sToRead = 65535;
   if (m_iZipFilePos+65535 > mZipItem.csize)
-    sToRead = static_cast<int>(mZipItem.csize-m_iZipFilePos);
+    sToRead = mZipItem.csize-m_iZipFilePos;
 
   if (sToRead <= 0)
     return false; // eof!

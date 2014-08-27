@@ -82,8 +82,7 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
   }
 
   unsigned int hdr;
-  mFile.Read(&hdr, 4);
-  if( Endian_SwapLE32(hdr) != ZIP_LOCAL_HEADER )
+  if (mFile.Read(&hdr, 4)!=4 || Endian_SwapLE32(hdr) != ZIP_LOCAL_HEADER )
   {
     CLog::Log(LOGDEBUG,"ZipManager: not a zip file!");
     mFile.Close();
@@ -114,7 +113,8 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
   for (int nb=1; !found && (nb <= nbBlock); nb++)
   {
     mFile.Seek(fileSize-ECDREC_SIZE+1-(blockSize*nb),SEEK_SET);
-    mFile.Read(buffer,blockSize+3);
+    if (mFile.Read(buffer, blockSize + 3) != blockSize + 3)
+      return false;
     for (int i=blockSize-1; !found && (i >= 0); i--)
     {
       if ( Endian_SwapLE32(*((unsigned int*)(buffer+i))) == ZIP_END_CENTRAL_HEADER )
@@ -130,7 +130,8 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
   if ( !found && (extraBlockSize > 0) )
   {
     mFile.Seek(fileSize-ECDREC_SIZE+1-searchSize,SEEK_SET);
-    mFile.Read(buffer,extraBlockSize+3);
+    if (mFile.Read(buffer, extraBlockSize + 3) != extraBlockSize + 3)
+      return false;
     for (int i=extraBlockSize-1; !found && (i >= 0); i--)
     {
       if ( Endian_SwapLE32(*((unsigned int*)(buffer+i))) == ZIP_END_CENTRAL_HEADER )
@@ -154,10 +155,12 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
   unsigned int cdirOffset, cdirSize;
   // Get size of the central directory
   mFile.Seek(12,SEEK_CUR);
-  mFile.Read(&cdirSize,4);
+  if (mFile.Read(&cdirSize, 4) != 4)
+    return false;
   cdirSize = Endian_SwapLE32(cdirSize);
   // Get Offset of start of central directory with respect to the starting disk number
-  mFile.Read(&cdirOffset,4);
+  if (mFile.Read(&cdirOffset, 4) != 4)
+    return false;
   cdirOffset = Endian_SwapLE32(cdirOffset);
 
   // Go to the start of central directory
@@ -167,7 +170,8 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
   while (mFile.GetPosition() < cdirOffset + cdirSize)
   {
     SZipEntry ze;
-    mFile.Read(temp,CHDR_SIZE);
+    if (mFile.Read(temp, CHDR_SIZE) != CHDR_SIZE)
+      return false;
     readCHeader(temp, ze);
     if (ze.header != ZIP_CENTRAL_HEADER)
     {
@@ -179,7 +183,8 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
     // Get the filename just after the central file header
     std::string strName;
     strName.resize(ze.flength);
-    mFile.Read(&strName[0], ze.flength);
+    if (mFile.Read(&strName[0], ze.flength) != ze.flength)
+      return false;
     g_charsetConverter.unknownToUTF8(strName);
     ZeroMemory(ze.name, 255);
     strncpy(ze.name, strName.c_str(), strName.size()>254 ? 254 : strName.size());
@@ -197,7 +202,8 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
     // Go to the local file header to get the extra field length
     // !! local header extra field length != central file header extra field length !!
     mFile.Seek(ze.lhdrOffset+28,SEEK_SET);
-    mFile.Read(&(ze.elength),2);
+    if (mFile.Read(&(ze.elength), 2) != 2)
+      return false;
     ze.elength = Endian_SwapLE16(ze.elength);
 
     // Compressed data offset = local header offset + size of local header + filename length + local file header extra field length

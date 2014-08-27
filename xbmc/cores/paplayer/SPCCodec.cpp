@@ -103,7 +103,7 @@ bool SPCCodec::Init(const std::string &strFile, unsigned int filecache)
     return false;
   }
   m_szBuffer = new char[0x10200];
-  if (!file.Read(m_szBuffer,0x10200))
+  if (file.Read(m_szBuffer,0x10200) <= 0)
   {
     delete[] m_szBuffer;
     m_szBuffer = NULL;
