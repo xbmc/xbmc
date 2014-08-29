@@ -677,6 +677,13 @@ void CXBMCApp::SetupEnv()
     setenv("HOME", externalDir.c_str(), 0);
   else
     setenv("HOME", getenv("KODI_TEMP"), 0);
+
+  std::string apkPath = getenv("XBMC_ANDROID_APK");
+  apkPath += "/assets/python2.6";
+  setenv("PYTHONHOME", apkPath.c_str(), 1);
+  setenv("PYTHONPATH", "", 1);
+  setenv("PYTHONOPTIMIZE","", 1);
+  setenv("PYTHONNOUSERSITE", "1", 1);
 }
 
 std::string CXBMCApp::GetFilenameFromIntent(const CJNIIntent &intent)
