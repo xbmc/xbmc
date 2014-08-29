@@ -198,18 +198,42 @@ int CActiveAEResample::Resample(uint8_t **dst_buffer, int dst_samples, uint8_t *
     return 0;
   }
 
-  // shift bits if destination format requires it, swr_resamples aligns to the left
-  // Example:
-  // ALSA uses SNE24NE that means 24 bit load in 32 bit package and 0 dither bits
-  // WASAPI uses SNE24NEMSB which is 24 bit load in 32 bit package and 8 dither bits
-  // dither bits are always assumed from the right
-  // FFmpeg internally calculates with S24NEMSB which means, that we need to shift the
-  // data 8 bits to the right in order to get the correct alignment of 0 dither bits
-  // if we want to use ALSA as output. For WASAPI nothing had to be done.
-  // SNE24NEMSB 1 1 1 0 >> 8 = 0 1 1 1 = SNE24NE
+  // special handling for S24 formats which are carried in S32
   if (m_dst_fmt == AV_SAMPLE_FMT_S32 || m_dst_fmt == AV_SAMPLE_FMT_S32P)
   {
-    if (m_dst_bits != 32 && (m_dst_dither_bits + m_dst_bits) != 32)
+    // S24NE3
+    if (m_dst_bits == 24 && m_dst_dither_bits == -8)
+    {
+      int planes = av_sample_fmt_is_planar(m_dst_fmt) ? m_dst_channels : 1;
+      int samples = ret * m_dst_channels / planes;
+      uint8_t *src, *dst;
+      for (int i=0; i<planes; i++)
+      {
+        src = dst = dst_buffer[i];
+        for (int j=0; j<samples; j++)
+        {
+#ifdef WORDS_BIGENDIAN
+          src++;
+#endif
+          *dst++ = *src++;
+          *dst++ = *src++;
+          *dst++ = *src++;
+#ifndef WORDS_BIGENDIAN
+          src++;
+#endif
+        }
+      }
+    }
+    // shift bits if destination format requires it, swr_resamples aligns to the left
+    // Example:
+    // ALSA uses SNE24NE that means 24 bit load in 32 bit package and 0 dither bits
+    // WASAPI uses SNE24NEMSB which is 24 bit load in 32 bit package and 8 dither bits
+    // dither bits are always assumed from the right
+    // FFmpeg internally calculates with S24NEMSB which means, that we need to shift the
+    // data 8 bits to the right in order to get the correct alignment of 0 dither bits
+    // if we want to use ALSA as output. For WASAPI nothing had to be done.
+    // SNE24NEMSB 1 1 1 0 >> 8 = 0 1 1 1 = SNE24NE
+    else if (m_dst_bits != 32 && (m_dst_dither_bits + m_dst_bits) != 32)
     {
       int planes = av_sample_fmt_is_planar(m_dst_fmt) ? m_dst_channels : 1;
       int samples = ret * m_dst_channels / planes;
@@ -312,6 +336,7 @@ AVSampleFormat CActiveAEResample::GetAVSampleFormat(AEDataFormat format)
   else if (format == AE_FMT_S32NE)  return AV_SAMPLE_FMT_S32;
   else if (format == AE_FMT_S24NE4) return AV_SAMPLE_FMT_S32;
   else if (format == AE_FMT_S24NE4MSB)return AV_SAMPLE_FMT_S32;
+  else if (format == AE_FMT_S24NE3) return AV_SAMPLE_FMT_S32;
   else if (format == AE_FMT_FLOAT)  return AV_SAMPLE_FMT_FLT;
   else if (format == AE_FMT_DOUBLE) return AV_SAMPLE_FMT_DBL;
 
@@ -320,6 +345,7 @@ AVSampleFormat CActiveAEResample::GetAVSampleFormat(AEDataFormat format)
   else if (format == AE_FMT_S32NEP)  return AV_SAMPLE_FMT_S32P;
   else if (format == AE_FMT_S24NE4P) return AV_SAMPLE_FMT_S32P;
   else if (format == AE_FMT_S24NE4MSBP)return AV_SAMPLE_FMT_S32P;
+  else if (format == AE_FMT_S24NE3P) return AV_SAMPLE_FMT_S32P;
   else if (format == AE_FMT_FLOATP)  return AV_SAMPLE_FMT_FLTP;
   else if (format == AE_FMT_DOUBLEP) return AV_SAMPLE_FMT_DBLP;
 
