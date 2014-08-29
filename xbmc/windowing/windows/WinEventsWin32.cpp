@@ -434,7 +434,12 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     case WM_QUIT:
     case WM_DESTROY:
       if (hDeviceNotify)
-        UnregisterDeviceNotification(hDeviceNotify);
+      {
+        if (UnregisterDeviceNotification(hDeviceNotify))
+          hDeviceNotify = 0;
+        else
+          CLog::Log(LOGNOTICE, "%s: UnregisterDeviceNotification failed (%d)", __FUNCTION__, GetLastError());
+      }
       newEvent.type = XBMC_QUIT;
       m_pEventFunc(newEvent);
       break;
