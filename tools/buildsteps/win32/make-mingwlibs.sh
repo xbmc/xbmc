@@ -68,7 +68,7 @@ else
 fi
 
 if [ $NUMBER_OF_PROCESSORS > 1 ]; then
-  MAKEFLAGS=-j$NUMBER_OF_PROCESSORS
+  MAKEFLAGS=-j`expr $NUMBER_OF_PROCESSORS + $NUMBER_OF_PROCESSORS / 2`
 fi
 
 # compile our mingw dlls
