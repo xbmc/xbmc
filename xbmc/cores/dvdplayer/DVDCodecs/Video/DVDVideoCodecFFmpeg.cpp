@@ -702,10 +702,10 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
                                         m_pCodecContext->width,
                                         m_pCodecContext->height,
                                         m_pCodecContext->pix_fmt,
-                                        m_pCodecContext->time_base.num,
-                                        m_pCodecContext->time_base.den,
-                                        m_pCodecContext->sample_aspect_ratio.num,
-                                        m_pCodecContext->sample_aspect_ratio.den);
+                                        m_pCodecContext->time_base.num ? m_pCodecContext->time_base.num : 1,
+                                        m_pCodecContext->time_base.num ? m_pCodecContext->time_base.den : 1,
+                                        m_pCodecContext->sample_aspect_ratio.num != 0 ? m_pCodecContext->sample_aspect_ratio.num : 1,
+                                        m_pCodecContext->sample_aspect_ratio.num != 0 ? m_pCodecContext->sample_aspect_ratio.den : 1);
 
   if ((result = avfilter_graph_create_filter(&m_pFilterIn, srcFilter, "src", args.c_str(), NULL, m_pFilterGraph)) < 0)
   {
