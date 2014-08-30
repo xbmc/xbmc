@@ -795,6 +795,11 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
   float mouseX = 0.5;
   float mouseY = 0.5;
 
+  if (!m_mainWindow)
+  {
+    g_Mouse.SetActive(false);
+  }
+
   if (m_mainWindow && ((m_bFullScreen != fullscreen) || m_currentOutput.compare(output) != 0 || m_windowDirty))
   {
     // set mouse to last known position
