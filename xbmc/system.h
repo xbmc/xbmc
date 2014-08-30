@@ -86,6 +86,10 @@
 #define HAS_IRSERVERSUITE
 #define HAS_FILESYSTEM_SMB
 
+#ifdef HAVE_LIBBLURAY
+  #define HAVE_LIBBLURAY_BDJ
+#endif
+
 #define DECLARE_UNUSED(a,b) a b;
 #endif
 
