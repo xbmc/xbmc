@@ -792,8 +792,8 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
 {
   bool changeWindow = false;
   bool changeSize = false;
-  float mouseX = 0;
-  float mouseY = 0;
+  float mouseX = 0.5;
+  float mouseY = 0.5;
 
   if (m_mainWindow && ((m_bFullScreen != fullscreen) || m_currentOutput.compare(output) != 0 || m_windowDirty))
   {
