@@ -529,10 +529,15 @@ bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItem
 {
   CURL u(strDirectory);
 #ifdef USE_PAGING
+  // find the item range we need
+  int Index = m_viewControl.GetSelectedItem();
+  int NeededRangeStart = Index - PLEX_DEFAULT_PAGE_SIZE / 2;
+  int NeededRangeEnd = Index + PLEX_DEFAULT_PAGE_SIZE / 2;
+  
   if (!boost::algorithm::ends_with(u.GetFileName() , "url/lookup"))
   {
-    u.SetOption("X-Plex-Container-Start", "0");
-    u.SetOption("X-Plex-Container-Size", boost::lexical_cast<std::string>(PLEX_DEFAULT_PAGE_SIZE));
+    u.SetOption("X-Plex-Container-Start", boost::lexical_cast<std::string>(NeededRangeStart));
+    u.SetOption("X-Plex-Container-Size", boost::lexical_cast<std::string>(NeededRangeEnd));
   }
 #endif
 
