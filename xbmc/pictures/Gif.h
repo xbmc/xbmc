@@ -1,0 +1,112 @@
+#pragma once
+
+/*
+ *      Copyright (C) 2005-2014 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
+ *
+ */
+
+#include "guilib/iimage.h"
+#include "DllLibGif.h"
+#include <vector>
+#include <boost/shared_ptr.hpp>
+
+namespace XFILE
+{
+  class CFile;
+};
+
+#pragma pack(1)
+struct GifColor
+{
+  uint8_t b, g, r, a;
+};
+#pragma pack()
+
+
+class GifFrame
+{
+  friend class Gif;
+public:
+
+  GifFrame();
+  virtual ~GifFrame();
+  void Release();
+
+  unsigned char*  m_pImage;
+  unsigned int    m_delay;
+
+private:
+  GifFrame(const GifFrame& src);
+
+  unsigned int    m_imageSize;
+  unsigned int    m_height;
+  unsigned int    m_width;
+  unsigned int    m_top;
+  unsigned int    m_left;
+  std::vector<GifColor> m_palette;
+  unsigned int m_disposal;
+  int m_transparent;
+};
+
+class Gif : public IImage
+{
+public:
+  typedef boost::shared_ptr<GifFrame> FramePtr;
+
+  Gif();
+  virtual ~Gif();
+
+  bool LoadGifMetaData(const char* file);
+  bool LoadGif(const char* file);
+
+  virtual bool LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height);
+  virtual bool Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format);
+  virtual bool CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile,
+                                          unsigned char* &bufferout, unsigned int &bufferoutSize);
+  bool IsAnimated(const char* file);
+  const std::vector<FramePtr>& GetFrames() const { return m_frames; }
+  unsigned int GetPitch() const { return m_pitch; }
+  unsigned int GetNumLoops() const { return m_loops; }
+
+private:
+  std::vector<FramePtr> m_frames;
+  unsigned int    m_imageSize;
+  unsigned int    m_pitch;
+  unsigned int    m_loops;
+  unsigned int    m_numFrames;
+
+  DllLibGif       m_dll;
+  std::string     m_filename;
+  GifFileType*    m_gif;
+  bool            m_hasBackground;
+  GifColor        m_backColor;
+  std::vector<GifColor> m_globalPalette;
+  unsigned char*  m_pTemplate;
+  int             m_isAnimated;
+  XFILE::CFile*   m_gifFile;
+
+  void InitTemplateAndColormap();
+  bool LoadGifMetaData(GifFileType* file);
+  static void ConvertColorTable(std::vector<GifColor> &dest, ColorMapObject* src, unsigned int size);
+  bool gcbToFrame(GifFrame &frame, unsigned int imgIdx);
+  bool ExtractFrames(unsigned int count);
+  void SetFrameAreaToBack(unsigned char* dest, const GifFrame &frame);
+  void ConstructFrame(GifFrame &frame, const unsigned char* src) const;
+  bool PrepareTemplate(const GifFrame &frame);
+  void Release();
+};
