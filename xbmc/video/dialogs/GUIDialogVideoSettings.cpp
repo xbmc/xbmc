@@ -259,6 +259,11 @@ void CGUIDialogVideoSettings::InitializeSettings()
   entries.push_back(make_pair(16320, VS_INTERLACEMETHOD_DXVA_BOB));
   entries.push_back(make_pair(16321, VS_INTERLACEMETHOD_DXVA_BEST));
   entries.push_back(make_pair(16325, VS_INTERLACEMETHOD_AUTO_ION));
+  entries.push_back(make_pair(16327, VS_INTERLACEMETHOD_VAAPI_AUTO));
+  entries.push_back(make_pair(16328, VS_INTERLACEMETHOD_VAAPI_WEAVE));
+  entries.push_back(make_pair(16329, VS_INTERLACEMETHOD_VAAPI_BOB));
+  entries.push_back(make_pair(16330, VS_INTERLACEMETHOD_VAAPI_MOTION_ADAPTIVE));
+  entries.push_back(make_pair(16331, VS_INTERLACEMETHOD_VAAPI_MOTION_COMPENSATED));
 
   /* remove unsupported methods */
   for (StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )

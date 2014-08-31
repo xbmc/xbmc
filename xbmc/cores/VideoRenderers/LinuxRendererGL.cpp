@@ -3530,6 +3530,26 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
   if(m_renderMethod & RENDER_VAAPI)
   {
 #ifdef HAVE_LIBVA
+    if(method == VS_INTERLACEMETHOD_VAAPI_AUTO)
+      return VAAPI::VppSupported();
+
+    if(method == VS_INTERLACEMETHOD_VAAPI_BOB)
+      return VAAPI::DeintSupported(VAAPI::DeinterlacingBob);
+
+    // MADI and MACI still produce problems
+    // disable them completely by now
+    if(g_advancedSettings.m_useVAAPIAdvancedDeinterlacing)
+    {
+      if(method == VS_INTERLACEMETHOD_VAAPI_WEAVE)
+        return VAAPI::DeintSupported(VAAPI::DeinterlacingWeave);
+
+      if(method == VS_INTERLACEMETHOD_VAAPI_MOTION_ADAPTIVE)
+        return VAAPI::DeintSupported(VAAPI::DeinterlacingMotionAdaptive);
+
+      if(method == VS_INTERLACEMETHOD_VAAPI_MOTION_COMPENSATED)
+        return VAAPI::DeintSupported(VAAPI::DeinterlacingMotionCompensated);
+    }
+
     VAAPI::CDisplayPtr disp = m_buffers[m_iYV12RenderBuffer].vaapi.display;
     if(disp)
     {
@@ -3616,6 +3636,14 @@ EINTERLACEMETHOD CLinuxRendererGL::AutoInterlaceMethod()
 
   if(m_renderMethod & RENDER_VDPAU)
     return VS_INTERLACEMETHOD_NONE;
+
+  if(m_renderMethod & RENDER_VAAPI)
+  {
+#ifdef HAVE_LIBVA
+    if(VAAPI::VppSupported())
+      return VS_INTERLACEMETHOD_VAAPI_AUTO;
+#endif
+  }
 
   if(Supports(VS_INTERLACEMETHOD_RENDER_BOB))
     return VS_INTERLACEMETHOD_RENDER_BOB;

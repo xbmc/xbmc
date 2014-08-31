@@ -10,6 +10,7 @@ SRCS += VDPAU.cpp
 endif
 ifeq (@USE_VAAPI@,1)
 SRCS += VAAPI.cpp
+SRCS += VAAPI_VPP.cpp
 endif
 ifeq ($(findstring osx,@ARCH@),osx)
 SRCS += DVDVideoCodecVDA.cpp
