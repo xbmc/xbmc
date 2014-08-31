@@ -44,6 +44,7 @@
     <token>I</token>
     <token>Gli</token>
     <token>Le</token>
+    <token separators="'">L</token>
     <token>Un</token>
     <token>Uno</token>
     <token>Una</token>
