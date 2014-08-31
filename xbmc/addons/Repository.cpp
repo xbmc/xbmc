@@ -297,7 +297,7 @@ bool CRepositoryUpdateJob::DoWork()
         if (URIUtils::IsInternetStream(newAddon->Path()))
           referer = StringUtils::Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().asString().c_str());
 
-        if (!newAddon->CanInstall(referer))
+        if (newAddon->CanInstall(referer))
           CAddonInstaller::Get().Install(addon->ID(), true, referer);
       }
       else
