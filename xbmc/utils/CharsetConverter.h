@@ -164,6 +164,34 @@ public:
   static bool toW(const std::string& stringSrc, std::wstring& wStringDst, const std::string& enc);
   static bool fromW(const std::wstring& wStringSrc, std::string& stringDst, const std::string& enc);
 
+  /**
+   * Convert wchar_t string to UTF-8 string by simplified algorithm.
+   * Static version of converter without any use of global objects, without any locking.
+   * Can be safely used from constructors of global and static objects, during startup
+   * and shutdown.
+   * @param wStringSrc         is source wchar_t string to convert
+   * @param failOnInvalidChar  if set to true function will return empty string if
+   *                           invalid character will be found in source string,
+   *                           if set to false invalid characters will be skipped
+   * @return converted to UTF-8 string or empty string if conversion failed
+   */
+  static std::string simpleWToUtf8(const std::wstring wStringSrc, bool failOnInvalidChar = true);
+  /**
+   * Convert UTF-8 string to wchar_t string by simplified algorithm.
+   * Static version of converter without any use of global objects, without any locking.
+   * Can be safely used from constructors of global and static objects, during startup
+   * and shutdown.
+   * @warning Unlike #utf8ToW, will not compose chars on Darwin
+   * @warning Has stricter UTF-8 sequences checking than #utf8ToW
+   * @param utf8StringSrc          is source UTF-8 string to convert
+   * @param failOnInvalidSequence  if set to true function will return empty string if
+   *                               invalid or unconvertible UTF-8 sequence will be found
+   *                               in source string, if set to false invalid sequence
+   *                               will be skipped
+   * @return converted to wchar_t string or empty string if conversion failed
+   */
+  static std::wstring simpleUtf8ToW(const std::string utf8StringSrc, bool failOnInvalidSequence = true);
+
   static void SettingOptionsCharsetsFiller(const CSetting* setting, std::vector< std::pair<std::string, std::string> >& list, std::string& current, void *data);
 private:
   static void resetUserCharset(void);
@@ -174,6 +202,10 @@ private:
   class CInnerConverter;
 };
 
+// define NO_GLOBAL_CHARSETCONVERTER to prevent declaration and creation of g_charsetConverter
+// without g_charsetConverter static functions of CCharsetConverter can be used
+#ifndef NO_GLOBAL_CHARSETCONVERTER
 XBMC_GLOBAL(CCharsetConverter,g_charsetConverter);
+#endif // NO_GLOBAL_CHARSETCONVERTER
 
 #endif

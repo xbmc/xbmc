@@ -32,6 +32,7 @@
 #include "storage/MediaManager.h"
 #include "windowing/WindowingFactory.h"
 #include "guilib/LocalizeStrings.h"
+#define NO_GLOBAL_CHARSETCONVERTER 1
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "DllPaths_win32.h"
@@ -287,10 +288,9 @@ bool CWIN32Util::XBMCShellExecute(const std::string &strPath, bool bWaitForScrip
     strWorkingDir[iIndex+1] = '\0';
   }
 
-  std::wstring WstrExe, WstrParams, WstrWorkingDir;
-  g_charsetConverter.utf8ToW(strExe, WstrExe);
-  g_charsetConverter.utf8ToW(strParams, WstrParams);
-  g_charsetConverter.utf8ToW(strWorkingDir, WstrWorkingDir);
+  std::wstring WstrExe        (CCharsetConverter::simpleUtf8ToW(strExe, true)),
+               WstrParams     (CCharsetConverter::simpleUtf8ToW(strParams, true)),
+               WstrWorkingDir (CCharsetConverter::simpleUtf8ToW(strWorkingDir, true));
 
   bool ret;
   SHELLEXECUTEINFOW ShExecInfo = {0};
@@ -385,8 +385,7 @@ std::string CWIN32Util::GetSpecialFolder(int csidl)
   if(SUCCEEDED(SHGetFolderPathW(NULL, csidl, NULL, SHGFP_TYPE_CURRENT, buf)))
   {
     buf[bufSize-1] = 0;
-    g_charsetConverter.wToUTF8(buf, strProfilePath);
-    strProfilePath = UncToSmb(strProfilePath);
+    strProfilePath = UncToSmb(CCharsetConverter::simpleWToUtf8(buf, true));
   }
   else
     strProfilePath = "";
@@ -476,32 +475,29 @@ std::wstring CWIN32Util::ConvertPathToWin32Form(const std::string& pathUtf8)
   { // assume local file path in form 'C:\Folder\File.ext'
     std::string formedPath("\\\\?\\"); // insert "\\?\" prefix
     formedPath += URIUtils::CanonicalizePath(URIUtils::FixSlashesAndDups(pathUtf8, '\\'), '\\'); // fix duplicated and forward slashes, resolve relative path
-    convertResult = g_charsetConverter.utf8ToW(formedPath, result, false, false, true);
+    result = CCharsetConverter::simpleUtf8ToW(formedPath, true);
   }
   else if (pathUtf8.compare(0, 8, "\\\\?\\UNC\\", 8) == 0) // pathUtf8 starts from "\\?\UNC\"
   {
     std::string formedPath("\\\\?\\UNC"); // start from "\\?\UNC" prefix
     formedPath += URIUtils::CanonicalizePath(URIUtils::FixSlashesAndDups(pathUtf8.substr(7), '\\'), '\\'); // fix duplicated and forward slashes, resolve relative path, don't touch "\\?\UNC" prefix,
-    convertResult = g_charsetConverter.utf8ToW(formedPath, result, false, false, true); 
+    result = CCharsetConverter::simpleUtf8ToW(formedPath, true);
   }
   else if (pathUtf8.compare(0, 4, "\\\\?\\", 4) == 0) // pathUtf8 starts from "\\?\", but it's not UNC path
   {
     std::string formedPath("\\\\?"); // start from "\\?" prefix
     formedPath += URIUtils::CanonicalizePath(URIUtils::FixSlashesAndDups(pathUtf8.substr(3), '\\'), '\\'); // fix duplicated and forward slashes, resolve relative path, don't touch "\\?" prefix,
-    convertResult = g_charsetConverter.utf8ToW(formedPath, result, false, false, true);
+    result = CCharsetConverter::simpleUtf8ToW(formedPath, true);
   }
   else // pathUtf8 starts from "\\", but not from "\\?\UNC\"
   { // assume UNC path in form '\\server\share\folder\file.ext'
     std::string formedPath("\\\\?\\UNC"); // append "\\?\UNC" prefix
     formedPath += URIUtils::CanonicalizePath(URIUtils::FixSlashesAndDups(pathUtf8), '\\'); // fix duplicated and forward slashes, resolve relative path, transform "\\" prefix to single "\"
-    convertResult = g_charsetConverter.utf8ToW(formedPath, result, false, false, true);
+    result = CCharsetConverter::simpleUtf8ToW(formedPath, true);
   }
 
-  if (!convertResult)
-  {
+  if (result.empty())
     CLog::Log(LOGERROR, "Error converting path \"%s\" to Win32 wide string!", pathUtf8.c_str());
-    return L"";
-  }
 
   return result;
 }
@@ -843,10 +839,9 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
          ( eDriveType == REMOVABLE_DRIVES && ( uDriveType == DRIVE_REMOVABLE )) ||
          ( eDriveType == DVD_DRIVES && ( uDriveType == DRIVE_CDROM ))))
       {
-        //share.strPath = strWdrive;
-        g_charsetConverter.wToUTF8(strWdrive, share.strPath);
-        if( cVolumeName[0] != L'\0' )
-          g_charsetConverter.wToUTF8(cVolumeName, share.strName);
+        share.strPath = CCharsetConverter::simpleWToUtf8(strWdrive, true);
+        if (cVolumeName[0] != L'\0')
+          share.strName = CCharsetConverter::simpleWToUtf8(cVolumeName, true);
         if( uDriveType == DRIVE_CDROM && nResult)
         {
           // Has to be the same as auto mounted devices
@@ -914,10 +909,8 @@ extern "C"
 {
   FILE *fopen_utf8(const char *_Filename, const char *_Mode)
   {
-    CStdStringW wfilename, wmode;
-    g_charsetConverter.utf8ToW(_Filename, wfilename, false);
-    wmode = _Mode;
-    return _wfopen(wfilename.c_str(), wmode.c_str());
+    return _wfopen(CCharsetConverter::simpleUtf8ToW(_Filename).c_str(),
+                   CCharsetConverter::simpleUtf8ToW(_Mode).c_str());
   }
 }
 

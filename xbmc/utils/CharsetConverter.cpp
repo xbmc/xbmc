@@ -18,6 +18,9 @@
  *
  */
 
+#ifndef __STDC_LIMIT_MACROS
+#define __STDC_LIMIT_MACROS 1
+#endif // __STDC_LIMIT_MACROS
 #include "CharsetConverter.h"
 #include "Util.h"
 #include "utils/StringUtils.h"
@@ -30,6 +33,10 @@
 #include "utils/Utf8Utils.h"
 #include "log.h"
 
+#if !defined(WCHAR_MIN) || !defined(WCHAR_MAX)
+#include <wchar.h>
+#include <stddef.h>
+#endif // !defined(WCHAR_MIN) || !defined(WCHAR_MAX)
 #include <errno.h>
 #include <iconv.h>
 
@@ -78,6 +85,57 @@
     #endif
   #endif
 #endif
+
+#if WCHAR_MIN < 0
+  // wchar_t is signed type
+  #if WCHAR_MAX == 0x7FFF
+    #if defined(SIZEOF_WCHAR_T) && SIZEOF_WCHAR_T != 2
+      #error SIZEOF_WCHAR_T specifies size not compatible with WCHAR_MAX value
+    #endif
+    #define WCHAR_SIZE 2
+    typedef uint16_t uwchar; // unsigned wchar_t equivalent
+  #elif WCHAR_MAX == 0x7FFFFFFF || WCHAR_MAX == 2147483647
+    #if defined(SIZEOF_WCHAR_T) && SIZEOF_WCHAR_T != 4
+      #error SIZEOF_WCHAR_T specifies size not compatible with WCHAR_MAX value
+    #endif
+    #define WCHAR_SIZE 4
+    typedef uint32_t uwchar; // unsigned wchar_t equivalent
+  #else  // WCHAR_MAX == 0x7FFFFFFF
+    #error Unknown size of wchar_t
+  #endif // WCHAR_MAX == 0x7FFFFFFF
+#elif defined(WCHAR_MIN) && WCHAR_MIN == 0
+  // wchar_t is unsigned type
+  typedef wchar_t uwchar;
+  #if WCHAR_MAX == 0xFFFF
+    #if defined(SIZEOF_WCHAR_T) && SIZEOF_WCHAR_T != 2
+      #error SIZEOF_WCHAR_T specifies size not compatible with WCHAR_MAX value
+    #endif
+    #define WCHAR_SIZE 2
+  #elif WCHAR_MAX == 0xFFFFFFFF
+    #if defined(SIZEOF_WCHAR_T) && SIZEOF_WCHAR_T != 4
+      #error SIZEOF_WCHAR_T specifies size not compatible with WCHAR_MAX value
+    #endif
+    #define WCHAR_SIZE 4
+  /* next several lines are fallback for "smart" platforms 
+   * that define WCHAR_MAX as ((wchar_t)-1) */
+  #elif SIZEOF_WCHAR_T == 2
+    #define WCHAR_SIZE 2
+  #elif SIZEOF_WCHAR_T == 4
+    #define WCHAR_SIZE 4
+  #else // SIZEOF_WCHAR_T == 4
+    #error Unknown size of wchar_t
+  #endif // SIZEOF_WCHAR_T == 4
+#else // WCHAR_MIN == 0
+  #error Unknown signedness of wchar_t
+#endif // WCHAR_MIN == 0
+
+#if WCHAR_SIZE == 2
+// so far Win32 is the only known platform that use surrogates in wchar_t strings
+#ifdef TARGET_WINDOWS
+#define WCHAR_USE_SURROGATES
+#endif // TARGET_WINDOWS
+#endif // WCHAR_SIZE == 2
+
 
 #define NO_ICONV ((iconv_t)-1)
 
@@ -300,7 +358,7 @@ public:
   static bool customConvert(const std::string& sourceCharset, const std::string& targetCharset, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar = false);
 
   template<class INPUT,class OUTPUT>
-  static bool convert(iconv_t type, int multiplier, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar = false);
+  static bool convert(iconv_t type, int multiplier, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar = false, bool useLog = true);
 
   static CConverterType m_stdConversion[NumberOfStdConversionTypes];
   static CCriticalSection m_critSectionFriBiDi;
@@ -386,7 +444,7 @@ struct charPtrPtrAdapter
 };
 
 template<class INPUT,class OUTPUT>
-bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar /*= false*/)
+bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar /*= false*/, bool useLog /*= true*/)
 {
   if (type == NO_ICONV)
     return false;
@@ -427,8 +485,8 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
         char* newBuf  = (char*)realloc(outBuf, outBufSize);
         if (!newBuf)
         {
-          CLog::Log(LOGSEVERE, "%s realloc failed with errno=%d(%s)",
-                    __FUNCTION__, errno, strerror(errno));
+          if (useLog)
+            CLog::Log(LOGSEVERE, "%s realloc failed with errno=%d(%s)", __FUNCTION__, errno, strerror(errno));
           break;
         }
         outBuf = newBuf;
@@ -460,15 +518,15 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
       }
       else //iconv() had some other error
       {
-        CLog::Log(LOGERROR, "%s: iconv() failed, errno=%d (%s)",
-                  __FUNCTION__, errno, strerror(errno));
+        if (useLog)
+          CLog::Log(LOGERROR, "%s: iconv() failed, errno=%d (%s)", __FUNCTION__, errno, strerror(errno));
       }
     }
     break;
   }
 
   //complete the conversion (reset buffers), otherwise the current data will prefix the data on the next call
-  if (iconv(type, NULL, NULL, &outBufStart, &outBytesAvail) == (size_t)-1)
+  if (iconv(type, NULL, NULL, &outBufStart, &outBytesAvail) == (size_t)-1 && useLog)
     CLog::Log(LOGERROR, "%s failed cleanup errno=%d(%s)", __FUNCTION__, errno, strerror(errno));
 
   if (returnV == (size_t)-1)
@@ -880,6 +938,237 @@ bool CCharsetConverter::utf8logicalToVisualBiDi(const std::string& utf8StringSrc
 
   return CInnerConverter::stdConvert(Utf32ToUtf8, utf32flipped, utf8StringDst, failOnBadString);
 }
+
+std::string CCharsetConverter::simpleWToUtf8(const std::wstring wStringSrc, bool failOnInvalidChar /*= true*/)
+{
+  std::string res;
+
+// Win32 has valid UTF-16 encoding for wchar_t but has __STDC_ISO_10646__ undefined,
+// Darwin use decomposed chars in UTF-8 file names but accept composed chars as input,
+// Android has __STDC_ISO_10646__ undefined for some reason, but use valid Unicode codes
+#if defined(__STDC_ISO_10646__) || defined(TARGET_WINDOWS) || defined(TARGET_DARWIN) || defined(TARGET_ANDROID)
+  // wchar_t use correct Unicode symbols codes
+
+  /* additional checking of correct detection by macro */
+#if WCHAR_SIZE == 2
+  assert(sizeof(wchar_t) == 2);
+#elif WCHAR_SIZE == 4
+  assert(sizeof(wchar_t) >= 4);
+#endif // WCHAR_SIZE == 4
+
+  const size_t len = wStringSrc.length();
+  if (!len)
+    return res; // empty string
+
+  const wchar_t* const wStrC = wStringSrc.c_str(); // null-terminated, wStrC[len] - valid
+  res.reserve(len * 3); // rough average estimate
+  for (size_t p = 0; p < len; p++)
+  {
+    const uwchar wchr = (uwchar)wStrC[p];
+    if (wchr < 0x80)
+      res.push_back((char)wchr);  // one byte UTF-8
+    else if (wchr < 0x800)
+    { // two bytes UTF-8
+      res.push_back((char)(unsigned char)(0xC0 | (wchr >> 6)));
+      res.push_back((char)(unsigned char)(0x80 | (wchr & 0x3F)));
+    }
+    else
+#if WCHAR_SIZE == 4
+          if (wchr < 0x10000)
+#endif // WCHAR_SIZE == 4
+    { // three bytes UTF-8
+      if (wchr < 0xD800 || wchr >= 0xE000)
+      { // not surrogate / real char code
+        res.push_back((char)(unsigned char)(0xE0 | (wchr >> 12)));
+        res.push_back((char)(unsigned char)(0x80 | ((wchr >> 6) & 0x3F)));
+        res.push_back((char)(unsigned char)(0x80 | (wchr & 0x3F)));
+      }
+      else
+      { // surrogate code, wchr >= 0xD800 && wchr < 0xE000
+#if WCHAR_SIZE == 2
+        if (wchr < 0xDC00)
+        { // wchr is valid high surrogate
+          p++; // get low surrogate
+          const uwchar wchr2 = (uwchar)wStrC[p];
+          if (wchr2 < 0xE000 && wchr2 >= 0xDC00)
+          {
+            const uwchar loPrt = (wchr2 - 0xDC00) | (wchr & 0x3F) << 10;
+            const uwchar hiPrt = ((wchr - 0xD800) >> 6) + 1;
+            res.push_back((char)(unsigned char)(0xF0 | (hiPrt >> 2)));
+            res.push_back((char)(unsigned char)(0x80 | (((loPrt >> 12) | (hiPrt << 4)) & 0x3F)));
+            res.push_back((char)(unsigned char)(0x80 | ((loPrt >> 6) & 0x3F)));
+            res.push_back((char)(unsigned char)(0x80 | (loPrt & 0x3F)));
+            continue;
+          }
+          else
+            p--; // try to convert next char as real char
+        }
+#endif // WCHAR_SIZE == 2
+        if (failOnInvalidChar) // got invalid or unpaired surrogate code
+          return std::string(); // empty string
+      }
+    }
+#if WCHAR_SIZE == 4
+    else if (wchr < 0x110000)
+    {
+      res.push_back((char)(unsigned char)(0xF0 | (wchr >> 18)));
+      res.push_back((char)(unsigned char)(0x80 | ((wchr >> 12) & 0x3F)));
+      res.push_back((char)(unsigned char)(0x80 | ((wchr >> 6) & 0x3F)));
+      res.push_back((char)(unsigned char)(0x80 | (wchr & 0x3F)));
+    }
+    else if (failOnInvalidChar) // wchr >= 0x110000
+      return std::string(); //empty string
+#endif // WCHAR_SIZE == 4
+  }
+#else  // !(defined(__STDC_ISO_10646__) || defined(TARGET_WINDOWS))
+  // wchar_t use platform-defined symbols codes
+
+  // implement this conversion locally to ensure that no lock is involved and no CLog function is called
+  if (wStringSrc.empty())
+    return res; // empty string
+
+  iconv_t conv = iconv_open("UTF-8", WCHAR_CHARSET);
+  if (conv == NO_ICONV)
+    return res; // empty string
+
+  const bool convRes = CInnerConverter::convert(conv, CCharsetConverter::m_Utf8CharMaxSize , wStringSrc, res, failOnInvalidChar, false);
+  iconv_close(conv);
+  if (failOnInvalidChar && !convRes)
+    res.clear();
+#endif // !(defined(__STDC_ISO_10646__) || defined(TARGET_WINDOWS))
+
+  return res;
+}
+
+std::wstring CCharsetConverter::simpleUtf8ToW(const std::string utf8StringSrc, bool failOnInvalidSequence /*= true*/)
+{
+  std::wstring res;
+
+// Win32 has valid UTF-16 encoding for wchar_t but has __STDC_ISO_10646__ undefined,
+// Darwin use decomposed chars in UTF-8 file names but this function intentionally doesn't compose chars,
+// Android has __STDC_ISO_10646__ undefined for some reason, but use valid Unicode codes
+#if defined(__STDC_ISO_10646__) || defined(TARGET_WINDOWS) || defined(TARGET_DARWIN) || defined(TARGET_ANDROID)
+  // wchar_t use correct Unicode symbols codes
+
+  const size_t len = utf8StringSrc.length();
+  if (!len)
+    return res; // empty string
+
+  const unsigned char* const strC = (const unsigned char*)utf8StringSrc.c_str(); // null-terminated, strC[len] - valid
+  res.reserve(len); // rough estimate
+  for (size_t p = 0; p < len; p++)
+  {
+    // range checking is based on http://www.unicode.org/versions/Unicode6.2.0/ch03.pdf#G7404, including Table 3-7
+    const unsigned char chr = strC[p];
+    if ((chr & 0x80) == 0)
+    { // one byte sequence
+      res.push_back((wchar_t)chr);
+      continue;
+    }
+    else if ((chr & 0xE0) == 0xC0)
+    { // two bytes sequence
+      if (chr >= 0xC2)
+      { // valid byte in sequence
+        const unsigned char chr2 = strC[++p];
+        if ((chr2 & 0xC0) == 0x80)
+        {
+          res.push_back(((wchar_t)(chr & 0x1F)) << 6 | (chr2 & 0x3F));
+          continue;
+        }
+        else
+          p--; // try to decode as not part of sequence
+      }
+    }
+    else if ((chr & 0xF0) == 0xE0)
+    { // three bytes sequence
+      const unsigned char chr2 = strC[++p];
+      if ((chr2 & 0xC0) == 0x80)
+      {
+        if (chr2 >= 0xA0 || chr > 0xE0)
+        { // valid byte in sequence
+          uwchar wchr = ((uwchar)(chr & 0x0F)) << 12 | ((uwchar)(chr2 & 0x3F)) << 6;
+          const unsigned char chr3 = strC[++p];
+          if ((chr3 & 0xC0) == 0x80)
+          {
+            wchr |= (chr3 & 0x3F);
+            if (!(wchr >= 0xD800 && wchr < 0xE000))
+            { // wide char is in valid range
+              res.push_back((wchar_t)wchr);
+              continue;
+            }
+          }
+          else
+            p--; // try to decode as not part of sequence
+        }
+      }
+      else
+        p--; // try to decode as not part of sequence
+    }
+#if WCHAR_SIZE == 4 || defined(WCHAR_USE_SURROGATES)
+    else if ((chr & 0xF8) == 0xF0)
+    { // four bytes sequence
+      if (chr <= 0xF4)
+      { // valid byte in sequence
+        const unsigned char chr2 = strC[++p];
+        if ((chr2 & 0xC0) == 0x80)
+        {
+          if ((chr2 >= 0x90 || chr > 0xF0) &&
+              (chr != 0xF4 || chr2 < 0x90))
+          { // valid byte in sequence
+            uint32_t wchr = ((uint32_t)(chr & 0x07)) << 18 | ((uint32_t)(chr2 & 0x3F)) << 12;
+            const unsigned char chr3 = strC[++p];
+            if ((chr3 & 0xC0) == 0x80)
+            {
+              wchr |= ((uint32_t)(chr3 & 0x3F)) << 6;
+              const unsigned char chr4 = strC[++p];
+              if ((chr4 & 0xC0) == 0x80)
+              {
+                wchr |= (chr4 & 0x3F);
+#if WCHAR_SIZE == 4
+                res.push_back(((wchar_t)wchr));
+#else  // WCHAR_SIZE != 4
+                res.push_back((wchar_t)((wchr >> 10) - (0x10000 >> 10) + 0xD800));
+                res.push_back((wchar_t)((wchr & 0x3FF) + 0xDC00));
+#endif // WCHAR_SIZE != 4
+                continue;
+              }
+              else
+                p--; // try to decode as not part of sequence
+            }
+            else
+              p--; // try to decode as not part of sequence
+          }
+        }
+        else
+          p--; // try to decode as not part of sequence
+      }
+    }
+#endif // WCHAR_SIZE == 4 || defined(WCHAR_USE_SURROGATES)
+
+    // this can be reached only in case of invalid UTF-8 sequence
+    if (failOnInvalidSequence)
+      return std::wstring(); // empty string
+  }
+#else  // !(defined(__STDC_ISO_10646__) || defined(TARGET_WINDOWS))
+  // wchar_t use platform-defined symbols codes
+
+  // implement this conversion locally to ensure that no lock is involved and no CLog function is called
+  if (utf8StringSrc.empty())
+    return res; // empty string
+
+  iconv_t conv = iconv_open(WCHAR_CHARSET, UTF8_SOURCE);
+  if (conv == NO_ICONV)
+    return res; // empty string
+
+  const bool convRes = CInnerConverter::convert(conv, 1, utf8StringSrc, res, failOnInvalidSequence, false);
+  iconv_close(conv);
+  if (failOnInvalidSequence && !convRes)
+    res.clear();
+#endif // !(defined(__STDC_ISO_10646__) || defined(TARGET_WINDOWS))
+
+  return res;
+}
+
 
 void CCharsetConverter::SettingOptionsCharsetsFiller(const CSetting* setting, std::vector< std::pair<std::string, std::string> >& list, std::string& current, void *data)
 {
