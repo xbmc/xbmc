@@ -94,6 +94,7 @@ protected:
   bool                         m_windowDirty;
   bool                         m_bIsInternalXrr;
   bool                         m_newGlContext;
+  int m_MouseX, m_MouseY;
 
 private:
   bool IsSuitableVisual(XVisualInfo *vInfo);

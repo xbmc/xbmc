@@ -151,7 +151,6 @@ bool CWinSystemX11::DestroyWindow()
   CWinEventsX11Imp::Quit();
 
   XUnmapWindow(m_dpy, m_mainWindow);
-  XSync(m_dpy,TRUE);
   XDestroyWindow(m_dpy, m_glWindow);
   XDestroyWindow(m_dpy, m_mainWindow);
   m_glWindow = 0;
@@ -208,7 +207,6 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
 
 bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-
 #if defined(HAS_XRANDR)
   XOutput out;
   XMode mode;
@@ -248,6 +246,28 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
           currmode.hz != mode.hz || currmode.id != mode.id)
       {
         CLog::Log(LOGNOTICE, "CWinSystemX11::SetFullScreen - calling xrandr");
+
+        // remember last position of mouse
+        Window root_return, child_return;
+        int root_x_return, root_y_return;
+        int win_x_return, win_y_return;
+        unsigned int mask_return;
+        bool isInWin = XQueryPointer(m_dpy, m_mainWindow, &root_return, &child_return,
+                                     &root_x_return, &root_y_return,
+                                     &win_x_return, &win_y_return,
+                                     &mask_return);
+
+        if (isInWin)
+        {
+          m_MouseX = win_x_return;
+          m_MouseY = win_y_return;
+        }
+        else
+        {
+          m_MouseX = -1;
+          m_MouseY = -1;
+        }
+
         OnLostDevice();
         m_bIsInternalXrr = true;
         g_xrandr.SetMode(out, mode);
@@ -659,13 +679,13 @@ bool CWinSystemX11::Restore()
 bool CWinSystemX11::Hide()
 {
   XUnmapWindow(m_dpy, m_mainWindow);
-  XSync(m_dpy, False);
+  XFlush(m_dpy);
   return true;
 }
 bool CWinSystemX11::Show(bool raise)
 {
   XMapWindow(m_dpy, m_mainWindow);
-  XSync(m_dpy, False);
+  XFlush(m_dpy);
   m_minimized = false;
   return true;
 }
@@ -688,7 +708,6 @@ void CWinSystemX11::NotifyXRREvent()
   {
     UpdateResolutions();
   }
-  m_bIsInternalXrr = false;
 
   XOutput *out = g_xrandr.GetOutput(m_userOutput);
   XMode   mode = g_xrandr.GetCurrentMode(m_userOutput);
@@ -773,16 +792,24 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
 {
   bool changeWindow = false;
   bool changeSize = false;
-  bool mouseActive = false;
-  float mouseX = 0;
-  float mouseY = 0;
-  int x0 = 0;
-  int y0 = 0;
+  float mouseX = 0.5;
+  float mouseY = 0.5;
+
+  if (!m_mainWindow)
+  {
+    g_Mouse.SetActive(false);
+  }
 
   if (m_mainWindow && ((m_bFullScreen != fullscreen) || m_currentOutput.compare(output) != 0 || m_windowDirty))
   {
-    mouseActive = g_Mouse.IsActive();
-    if (mouseActive)
+    // set mouse to last known position
+    // we can't trust values after an xrr event
+    if (m_bIsInternalXrr && m_MouseX >= 0 && m_MouseY >= 0)
+    {
+      mouseX = (float)m_MouseX/m_nWidth;
+      mouseY = (float)m_MouseY/m_nHeight;
+    }
+    else if (!m_windowDirty)
     {
       Window root_return, child_return;
       int root_x_return, root_y_return;
@@ -792,15 +819,15 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
                                    &root_x_return, &root_y_return,
                                    &win_x_return, &win_y_return,
                                    &mask_return);
+
       if (isInWin)
       {
         mouseX = (float)win_x_return/m_nWidth;
         mouseY = (float)win_y_return/m_nHeight;
-        g_Mouse.SetActive(false);
       }
-      else
-        mouseActive = false;
     }
+
+    g_Mouse.SetActive(false);
     OnLostDevice();
     DestroyWindow();
     m_windowDirty = true;
@@ -825,6 +852,8 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
     Colormap cmap;
     XSetWindowAttributes swa;
     XVisualInfo *vi;
+    int x0 = 0;
+    int y0 = 0;
 
     XOutput *out = g_xrandr.GetOutput(output);
     if (!out)
@@ -931,7 +960,6 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       class_hints->res_class = (char*)classString.c_str();
       class_hints->res_name = (char*)classString.c_str();
 
-      XSync(m_dpy,False);
       XSetWMProperties(m_dpy, m_mainWindow, &windowName, &iconName,
                             NULL, 0, NULL, wm_hints,
                             class_hints);
@@ -942,18 +970,15 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       Atom wmDeleteMessage = XInternAtom(m_dpy, "WM_DELETE_WINDOW", False);
       XSetWMProtocols(m_dpy, m_mainWindow, &wmDeleteMessage, 1);
     }
+
+    // placement of window may follow mouse
+    XWarpPointer(m_dpy, None, m_mainWindow, 0, 0, 0, 0, mouseX*width, mouseY*height);
+
     XMapRaised(m_dpy, m_glWindow);
     XMapRaised(m_dpy, m_mainWindow);
 
-    if (fullscreen)
-      XMoveWindow(m_dpy, m_mainWindow, x0, y0);
-
-    XSync(m_dpy,TRUE);
-
-    if (changeWindow && mouseActive)
-    {
-      XWarpPointer(m_dpy, None, m_mainWindow, 0, 0, 0, 0, mouseX*width, mouseY*height);
-    }
+    // discard events generated by creating the window, i.e. xrr events
+    XSync(m_dpy, TRUE);
 
     CDirtyRegionList dr;
     RefreshGlxContext(m_currentOutput.compare(output) != 0);
@@ -962,6 +987,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
     g_graphicsContext.Flip(dr);
     g_Windowing.ResetVSync();
     m_windowDirty = false;
+    m_bIsInternalXrr = false;
 
     CSingleLock lock(m_resourceSection);
     // tell any shared resources
