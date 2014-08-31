@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,31 +18,21 @@
  *
  */
 
-#include "system.h"
 #include "log.h"
-#include "stdio_utf8.h"
-#include "stat_utf8.h"
-#include "threads/CriticalSection.h"
+#include "system.h"
 #include "threads/SingleLock.h"
 #include "threads/Thread.h"
-#include "utils/StdString.h"
 #include "utils/StringUtils.h"
-#if defined(TARGET_ANDROID)
-#include "android/activity/XBMCApp.h"
-#elif defined(TARGET_WINDOWS)
-#include "win32/WIN32Util.h"
-#endif
 
-#define critSec XBMC_GLOBAL_USE(CLog::CLogGlobals).critSec
-#define m_file XBMC_GLOBAL_USE(CLog::CLogGlobals).m_file
-#define m_repeatCount XBMC_GLOBAL_USE(CLog::CLogGlobals).m_repeatCount
-#define m_repeatLogLevel XBMC_GLOBAL_USE(CLog::CLogGlobals).m_repeatLogLevel
-#define m_repeatLine XBMC_GLOBAL_USE(CLog::CLogGlobals).m_repeatLine
-#define m_logLevel XBMC_GLOBAL_USE(CLog::CLogGlobals).m_logLevel
-#define m_extraLogLevels XBMC_GLOBAL_USE(CLog::CLogGlobals).m_extraLogLevels
-
-static char levelNames[][8] =
+static const char* const levelNames[] =
 {"DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"};
+
+// add 1 to level number to get index of name
+static const char* const logLevelNames[] =
+{ "LOG_LEVEL_NONE" /*-1*/, "LOG_LEVEL_NORMAL" /*0*/, "LOG_LEVEL_DEBUG" /*1*/, "LOG_LEVEL_DEBUG_FREEMEM" /*2*/ };
+
+// s_globals is used as static global with CLog global variables
+#define s_globals XBMC_GLOBAL_USE(CLog).m_globalInstance
 
 CLog::CLog()
 {}
@@ -52,133 +42,74 @@ CLog::~CLog()
 
 void CLog::Close()
 {
-  
-  CSingleLock waitLock(critSec);
-  if (m_file)
-  {
-    fclose(m_file);
-    m_file = NULL;
-  }
-  m_repeatLine.clear();
+  CSingleLock waitLock(s_globals.critSec);
+  s_globals.m_platform.CloseLogFile();
+  s_globals.m_repeatLine.clear();
 }
 
-void CLog::Log(int loglevel, const char *format, ... )
+void CLog::Log(int loglevel, const char *format, ...)
 {
-  static const char* prefixFormat = "%02.2d:%02.2d:%02.2d T:%" PRIu64" %7s: ";
-  CSingleLock waitLock(critSec);
-  int extras = (loglevel >> LOGMASKBIT) << LOGMASKBIT;
-  loglevel = loglevel & LOGMASK;
-#if !(defined(_DEBUG) || defined(PROFILE))
-  if (m_logLevel > LOG_LEVEL_NORMAL ||
-     (m_logLevel > LOG_LEVEL_NONE && loglevel >= LOGNOTICE))
-#endif
+  if (IsLogLevelLogged(loglevel))
   {
-    if (!m_file)
-      return;
-
-    if (extras != 0 && (m_extraLogLevels & extras) == 0)
-      return;
-
-    SYSTEMTIME time;
-    GetLocalTime(&time);
-
-    CStdString strPrefix, strData;
-
-    strData.reserve(16384);
     va_list va;
     va_start(va, format);
-    strData = StringUtils::FormatV(format,va);
+    LogString(loglevel, StringUtils::FormatV(format, va));
     va_end(va);
-
-    if (m_repeatLogLevel == loglevel && m_repeatLine == strData)
-    {
-      m_repeatCount++;
-      return;
-    }
-    else if (m_repeatCount)
-    {
-      strPrefix = StringUtils::Format(prefixFormat,
-                                      time.wHour,
-                                      time.wMinute,
-                                      time.wSecond,
-                                      (uint64_t)CThread::GetCurrentThreadId(),
-                                      levelNames[m_repeatLogLevel]);
-
-      CStdString strData2 = StringUtils::Format("Previous line repeats %d times."
-                                                LINE_ENDING,
-                                                m_repeatCount);
-      fputs(strPrefix.c_str(), m_file);
-      fputs(strData2.c_str(), m_file);
-      OutputDebugString(strData2);
-      m_repeatCount = 0;
-    }
-    
-    m_repeatLine      = strData;
-    m_repeatLogLevel  = loglevel;
-
-    StringUtils::TrimRight(strData);
-    if (strData.empty())
-      return;
-    
-    OutputDebugString(strData);
-
-    /* fixup newline alignment, number of spaces should equal prefix length */
-    StringUtils::Replace(strData, "\n", LINE_ENDING"                                            ");
-    strData += LINE_ENDING;
-
-    strPrefix = StringUtils::Format(prefixFormat,
-                                    time.wHour,
-                                    time.wMinute,
-                                    time.wSecond,
-                                    (uint64_t)CThread::GetCurrentThreadId(),
-                                    levelNames[loglevel]);
-
-//print to adb
-#if defined(TARGET_ANDROID) && defined(_DEBUG)
-  CXBMCApp::android_printf("%s%s",strPrefix.c_str(), strData.c_str());
-#endif
-
-    fputs(strPrefix.c_str(), m_file);
-    fputs(strData.c_str(), m_file);
-    fflush(m_file);
   }
 }
 
-bool CLog::Init(const char* path)
+void CLog::LogFunction(int loglevel, const char* functionName, const char* format, ...)
 {
-  CSingleLock waitLock(critSec);
-  if (!m_file)
+  if (IsLogLevelLogged(loglevel))
   {
-    // the log folder location is initialized in the CAdvancedSettings
-    // constructor and changed in CApplication::Create()
-    CStdString strLogFile = StringUtils::Format("%sxbmc.log", path);
-    CStdString strLogFileOld = StringUtils::Format("%sxbmc.old.log", path);
-
-#if defined(TARGET_WINDOWS)
-    // the appdata folder might be redirected to an unc share
-    // convert smb to unc path that stat and fopen can handle it
-    strLogFile = CWIN32Util::SmbToUnc(strLogFile);
-    strLogFileOld = CWIN32Util::SmbToUnc(strLogFileOld);
-#endif
-
-    struct stat64 info;
-    if (stat64_utf8(strLogFileOld.c_str(),&info) == 0 &&
-        remove_utf8(strLogFileOld.c_str()) != 0)
-      return false;
-    if (stat64_utf8(strLogFile.c_str(),&info) == 0 &&
-        rename_utf8(strLogFile.c_str(),strLogFileOld.c_str()) != 0)
-      return false;
-
-    m_file = fopen64_utf8(strLogFile.c_str(),"wb");
+    std::string fNameStr;
+    if (functionName && functionName[0])
+      fNameStr.assign(functionName).append(": ");
+    va_list va;
+    va_start(va, format);
+    LogString(loglevel, fNameStr + StringUtils::FormatV(format, va));
+    va_end(va);
   }
+}
 
-  if (m_file)
+void CLog::LogString(int logLevel, const std::string& logString)
+{
+  CSingleLock waitLock(s_globals.critSec);
+  std::string strData(logString);
+  StringUtils::TrimRight(strData);
+  if (!strData.empty())
   {
-    unsigned char BOM[3] = {0xEF, 0xBB, 0xBF};
-    fwrite(BOM, sizeof(BOM), 1, m_file);
-  }
+    if (s_globals.m_repeatLogLevel == logLevel && s_globals.m_repeatLine == strData)
+    {
+      s_globals.m_repeatCount++;
+      return;
+    }
+    else if (s_globals.m_repeatCount)
+    {
+      std::string strData2 = StringUtils::Format("Previous line repeats %d times.",
+                                                s_globals.m_repeatCount);
+      PrintDebugString(strData2);
+      WriteLogString(s_globals.m_repeatLogLevel, strData2);
+      s_globals.m_repeatCount = 0;
+    }
+    
+    s_globals.m_repeatLine = strData;
+    s_globals.m_repeatLogLevel = logLevel;
 
-  return m_file != NULL;
+    PrintDebugString(strData);
+
+    WriteLogString(logLevel, strData);
+  }
+}
+
+bool CLog::Init(const std::string& path)
+{
+  CSingleLock waitLock(s_globals.critSec);
+
+  // the log folder location is initialized in the CAdvancedSettings
+  // constructor and changed in CApplication::Create()
+
+  return s_globals.m_platform.OpenLogFile(path + "xbmc.log", path + "xbmc.old.log");
 }
 
 void CLog::MemDump(char *pData, int length)
@@ -186,13 +117,13 @@ void CLog::MemDump(char *pData, int length)
   Log(LOGDEBUG, "MEM_DUMP: Dumping from %p", pData);
   for (int i = 0; i < length; i+=16)
   {
-    CStdString strLine = StringUtils::Format("MEM_DUMP: %04x ", i);
+    std::string strLine = StringUtils::Format("MEM_DUMP: %04x ", i);
     char *alpha = pData;
     for (int k=0; k < 4 && i + 4*k < length; k++)
     {
       for (int j=0; j < 4 && i + 4*k + j < length; j++)
       {
-        CStdString strFormat = StringUtils::Format(" %02x", (unsigned char)*pData++);
+        std::string strFormat = StringUtils::Format(" %02x", (unsigned char)*pData++);
         strLine += strFormat;
       }
       strLine += " ";
@@ -214,37 +145,71 @@ void CLog::MemDump(char *pData, int length)
 
 void CLog::SetLogLevel(int level)
 {
-  CSingleLock waitLock(critSec);
-  m_logLevel = level;
-  CLog::Log(LOGNOTICE, "Log level changed to %d", m_logLevel);
+  CSingleLock waitLock(s_globals.critSec);
+  if (level >= LOG_LEVEL_NONE && level <= LOG_LEVEL_MAX)
+  {
+    s_globals.m_logLevel = level;
+    CLog::Log(LOGNOTICE, "Log level changed to \"%s\"", logLevelNames[s_globals.m_logLevel + 1]);
+  }
+  else
+    CLog::Log(LOGERROR, "%s: Invalid log level requested: %d", __FUNCTION__, level);
 }
 
 int CLog::GetLogLevel()
 {
-  return m_logLevel;
+  return s_globals.m_logLevel;
 }
 
 void CLog::SetExtraLogLevels(int level)
 {
-  CSingleLock waitLock(critSec);
-  m_extraLogLevels = level;
+  CSingleLock waitLock(s_globals.critSec);
+  s_globals.m_extraLogLevels = level;
 }
 
-void CLog::OutputDebugString(const std::string& line)
+bool CLog::IsLogLevelLogged(int loglevel)
+{
+  const int extras = (loglevel & ~LOGMASK);
+  if (extras != 0 && (s_globals.m_extraLogLevels & extras) == 0)
+    return false;
+
+#if defined(_DEBUG) || defined(PROFILE)
+  return true;
+#else
+  if (s_globals.m_logLevel >= LOG_LEVEL_DEBUG)
+    return true;
+  if (s_globals.m_logLevel <= LOG_LEVEL_NONE)
+    return false;
+
+  // "m_logLevel" is "LOG_LEVEL_NORMAL"
+  return (loglevel & LOGMASK) >= LOGNOTICE;
+#endif
+}
+
+
+void CLog::PrintDebugString(const std::string& line)
 {
 #if defined(_DEBUG) || defined(PROFILE)
-#if defined(TARGET_WINDOWS)
-  // we can't use charsetconverter here as it's initialized later than CLog and deinitialized early
-  int bufSize = MultiByteToWideChar(CP_UTF8, 0, line.c_str(), -1, NULL, 0);
-  CStdStringW wstr (L"", bufSize);
-  if ( MultiByteToWideChar(CP_UTF8, 0, line.c_str(), -1, wstr.GetBuf(bufSize), bufSize) == bufSize )
-  {
-    wstr.RelBuf();
-    ::OutputDebugStringW(wstr.c_str());
-  }
-  else
-#endif // TARGET_WINDOWS
-    ::OutputDebugString(line.c_str());
-  ::OutputDebugString("\n");
-#endif
+  s_globals.m_platform.PrintDebugString(line);
+#endif // defined(_DEBUG) || defined(PROFILE)
+}
+
+bool CLog::WriteLogString(int logLevel, const std::string& logString)
+{
+  static const char* prefixFormat = "%02.2d:%02.2d:%02.2d T:%" PRIu64" %7s: ";
+
+  std::string strData(logString);
+  /* fixup newline alignment, number of spaces should equal prefix length */
+  StringUtils::Replace(strData, "\n", "\n                                            ");
+
+  int hour, minute, second;
+  s_globals.m_platform.GetCurrentLocalTime(hour, minute, second);
+  
+  strData = StringUtils::Format(prefixFormat,
+                                  hour,
+                                  minute,
+                                  second,
+                                  (uint64_t)CThread::GetCurrentThreadId(),
+                                  levelNames[logLevel]) + strData;
+
+  return s_globals.m_platform.WriteStringToLog(strData);
 }

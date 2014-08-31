@@ -178,8 +178,7 @@ void CTextureMap::Dump() const
   if (!m_referenceCount)
     return;   // nothing to see here
 
-  CStdString strLog = StringUtils::Format("  texture:%s has %i frames %i refcount\n", m_textureName.c_str(), m_texture.m_textures.size(), m_referenceCount);
-  OutputDebugString(strLog.c_str());
+  CLog::Log(LOGDEBUG, "%s: texture:%s has %i frames %i refcount", __FUNCTION__, m_textureName.c_str(), m_texture.m_textures.size(), m_referenceCount);
 }
 
 unsigned int CTextureMap::GetMemoryUsage() const
@@ -388,15 +387,6 @@ const CTextureArray& CGUITextureManager::Load(const CStdString& strTextureName, 
       } // of for (int iImage=0; iImage < iImages; iImage++)
     }
 
-#ifdef _DEBUG
-    int64_t end, freq;
-    end = CurrentHostCounter();
-    freq = CurrentHostFrequency();
-    char temp[200];
-    sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end - start) / freq, (bundle >= 0) ? " (bundled)" : "");
-    OutputDebugString(temp);
-#endif
-
     m_vecTextures.push_back(pMap);
     return pMap->GetTexture();
   } // of if (strPath.Right(4).ToLower()==".gif")
@@ -520,8 +510,7 @@ void CGUITextureManager::Cleanup()
 
 void CGUITextureManager::Dump() const
 {
-  CStdString strLog = StringUtils::Format("total texturemaps size:%i\n", m_vecTextures.size());
-  OutputDebugString(strLog.c_str());
+  CLog::Log(LOGDEBUG, "%s: total texturemaps size:%i", __FUNCTION__, m_vecTextures.size());
 
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
   {

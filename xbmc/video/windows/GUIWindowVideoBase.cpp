@@ -688,11 +688,9 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
         }
 
         // got all movie details :-)
-        OutputDebugString("got details\n");
         pDlgProgress->Close();
 
         // now show the imdb info
-        OutputDebugString("show info\n");
 
         // remove directory caches and reload images
         CUtil::DeleteVideoDatabaseDirectoryCache();

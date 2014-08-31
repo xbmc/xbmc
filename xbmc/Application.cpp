@@ -848,7 +848,7 @@ bool CApplication::Create()
   CLog::Log(LOGINFO, "load %s language file, from path: %s", strLanguage.c_str(), strLanguagePath.c_str());
   if (!g_localizeStrings.Load(strLanguagePath, strLanguage))
   {
-    CLog::Log(LOGFATAL, "%s: Failed to load %s language file, from path: %s", __FUNCTION__, strLanguage.c_str(), strLanguagePath.c_str());
+    CLog::LogF(LOGFATAL, "Failed to load %s language file, from path: %s", strLanguage.c_str(), strLanguagePath.c_str());
     return false;
   }
 
@@ -2367,7 +2367,7 @@ bool CApplication::OnKey(const CKey& key)
   {
     bool ret = true;
 
-    CLog::Log(LOGDEBUG, "%s: action %s [%d], toggling state of playing device", __FUNCTION__, action.GetName().c_str(), action.GetID());
+    CLog::LogF(LOGDEBUG, "action %s [%d], toggling state of playing device", action.GetName().c_str(), action.GetID());
     // do not wake up the screensaver right after switching off the playing device
     if (StringUtils::StartsWithNoCase(action.GetName(),"CECToggleState"))
       ret = CApplicationMessenger::Get().CECToggleState();
@@ -2382,7 +2382,7 @@ bool CApplication::OnKey(const CKey& key)
   // allow some keys to be processed while the screensaver is active
   if (WakeUpScreenSaverAndDPMS(processKey) && !processKey)
   {
-    CLog::Log(LOGDEBUG, "%s: %s pressed, screen saver/dpms woken up", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str());
+    CLog::LogF(LOGDEBUG, "%s pressed, screen saver/dpms woken up", g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str());
     return true;
   }
 
@@ -2396,7 +2396,7 @@ bool CApplication::OnKey(const CKey& key)
     action = CButtonTranslator::GetInstance().GetAction(iWin, key);
 
     if (!key.IsAnalogButton())
-      CLog::Log(LOGDEBUG, "%s: %s pressed, trying fullscreen info action %s", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetName().c_str());
+      CLog::LogF(LOGDEBUG, "%s pressed, trying fullscreen info action %s", g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetName().c_str());
 
     if (OnAction(action))
       return true;
@@ -2507,7 +2507,7 @@ bool CApplication::OnKey(const CKey& key)
         }
       }
 
-      CLog::Log(LOGDEBUG, "%s: %s pressed, trying keyboard action %x", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetID());
+      CLog::LogF(LOGDEBUG, "%s pressed, trying keyboard action %x", g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetID());
 
       if (OnAction(action))
         return true;
@@ -2522,7 +2522,7 @@ bool CApplication::OnKey(const CKey& key)
       action = CButtonTranslator::GetInstance().GetAction(iWin, key);
   }
   if (!key.IsAnalogButton())
-    CLog::Log(LOGDEBUG, "%s: %s pressed, action is %s", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetName().c_str());
+    CLog::LogF(LOGDEBUG, "%s pressed, action is %s", g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetName().c_str());
 
   return ExecuteInputAction(action);
 }
@@ -2549,12 +2549,12 @@ bool CApplication::OnAppCommand(const CAction &action)
   // handled this appcommand
   if (!appcmdaction.GetID())
   {
-    CLog::Log(LOGDEBUG, "%s: unknown appcommand %d", __FUNCTION__, appcmd);
+    CLog::LogF(LOGDEBUG, "unknown appcommand %d", appcmd);
     return false;
   }
 
   // Process the appcommand
-  CLog::Log(LOGDEBUG, "%s: appcommand %d, trying action %s", __FUNCTION__, appcmd, appcmdaction.GetName().c_str());
+  CLog::LogF(LOGDEBUG, "appcommand %d, trying action %s", appcmd, appcmdaction.GetName().c_str());
   OnAction(appcmdaction);
 
   // Always return true regardless of whether the action succeeded or not.
@@ -3139,13 +3139,13 @@ bool CApplication::ProcessMouse()
   // handled this mouse action
   if (!mouseaction.GetID())
   {
-    CLog::Log(LOGDEBUG, "%s: unknown mouse command %d", __FUNCTION__, mousekey);
+    CLog::LogF(LOGDEBUG, "unknown mouse command %d", mousekey);
     return false;
   }
 
   // Log mouse actions except for move and noop
   if (mouseaction.GetID() != ACTION_MOUSE_MOVE && mouseaction.GetID() != ACTION_NOOP)
-    CLog::Log(LOGDEBUG, "%s: trying mouse action %s", __FUNCTION__, mouseaction.GetName().c_str());
+    CLog::LogF(LOGDEBUG, "trying mouse action %s", mouseaction.GetName().c_str());
 
   // The action might not be a mouse action. For example wheel moves might
   // be mapped to volume up/down in mouse.xml. In this case we do not want
@@ -3751,18 +3751,18 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
         dbs.Close();
       }
       else
-        CLog::Log(LOGERROR, "%s - Cannot open VideoDatabase", __FUNCTION__);
+        CLog::LogF(LOGERROR, "Cannot open VideoDatabase");
     }
 
     // make sure that the selected part is within the boundaries
     if (selectedFile <= 0)
     {
-      CLog::Log(LOGWARNING, "%s - Selected part %d out of range, playing part 1", __FUNCTION__, selectedFile);
+      CLog::LogF(LOGWARNING, "Selected part %d out of range, playing part 1", selectedFile);
       selectedFile = 1;
     }
     else if (selectedFile > movieList.Size())
     {
-      CLog::Log(LOGWARNING, "%s - Selected part %d out of range, playing part %d", __FUNCTION__, selectedFile, movieList.Size());
+      CLog::LogF(LOGWARNING, "Selected part %d out of range, playing part %d", selectedFile, movieList.Size());
       selectedFile = movieList.Size();
     }
 
@@ -3875,7 +3875,6 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     SaveFileState(true);
 
-    OutputDebugString("new file set audiostream:0\n");
     // Switch to default options
     CMediaSettings::Get().GetCurrentVideoSettings() = CMediaSettings::Get().GetDefaultVideoSettings();
     // see if we have saved options in the database
@@ -3940,7 +3939,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
   //Is TuxBox, this should probably be moved to CTuxBoxFile
   if(item.IsTuxBox())
   {
-    CLog::Log(LOGDEBUG, "%s - TuxBox URL Detected %s",__FUNCTION__, item.GetPath().c_str());
+    CLog::LogF(LOGDEBUG, "TuxBox URL Detected %s",item.GetPath().c_str());
 
     if(g_tuxboxService.IsRunning())
       g_tuxboxService.Stop();
@@ -4100,7 +4099,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
     };
     int dMsgCount = g_windowManager.RemoveThreadMessageByMessageIds(&previousMsgsIgnoredByNewPlaying[0]);
     if (dMsgCount > 0)
-      CLog::Log(LOGDEBUG,"%s : Ignored %d playback thread messages", __FUNCTION__, dMsgCount);
+      CLog::LogF(LOGDEBUG,"Ignored %d playback thread messages", dMsgCount);
   }
 
   // We should restart the player, unless the previous and next tracks are using
@@ -4195,7 +4194,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // play state: none, starting; playing; stopped; ended.
     // last 3 states are set by playback callback, they are all ignored during starting,
     // but we recorded the state, here we can make up the callback for the state.
-    CLog::Log(LOGDEBUG,"%s : OpenFile succeed, play state %d", __FUNCTION__, m_ePlayState);
+    CLog::LogF(LOGDEBUG,"OpenFile succeed, play state %d", m_ePlayState);
     switch (m_ePlayState)
     {
       case PLAY_STATE_PLAYING:
@@ -4237,7 +4236,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
 void CApplication::OnPlayBackEnded()
 {
   CSingleLock lock(m_playStateMutex);
-  CLog::Log(LOGDEBUG,"%s : play state was %d, starting %d", __FUNCTION__, m_ePlayState, m_bPlaybackStarting);
+  CLog::LogF(LOGDEBUG,"play state was %d, starting %d", m_ePlayState, m_bPlaybackStarting);
   m_ePlayState = PLAY_STATE_ENDED;
   if(m_bPlaybackStarting)
     return;
@@ -4259,7 +4258,7 @@ void CApplication::OnPlayBackEnded()
 void CApplication::OnPlayBackStarted()
 {
   CSingleLock lock(m_playStateMutex);
-  CLog::Log(LOGDEBUG,"%s : play state was %d, starting %d", __FUNCTION__, m_ePlayState, m_bPlaybackStarting);
+  CLog::LogF(LOGDEBUG,"play state was %d, starting %d", m_ePlayState, m_bPlaybackStarting);
   m_ePlayState = PLAY_STATE_PLAYING;
   if(m_bPlaybackStarting)
     return;
@@ -4277,7 +4276,7 @@ void CApplication::OnPlayBackStarted()
 void CApplication::OnQueueNextItem()
 {
   CSingleLock lock(m_playStateMutex);
-  CLog::Log(LOGDEBUG,"%s : play state was %d, starting %d", __FUNCTION__, m_ePlayState, m_bPlaybackStarting);
+  CLog::LogF(LOGDEBUG,"play state was %d, starting %d", m_ePlayState, m_bPlaybackStarting);
   if(m_bPlaybackStarting)
     return;
   // informs python script currently running that we are requesting the next track
@@ -4293,7 +4292,7 @@ void CApplication::OnQueueNextItem()
 void CApplication::OnPlayBackStopped()
 {
   CSingleLock lock(m_playStateMutex);
-  CLog::Log(LOGDEBUG,"%s : play state was %d, starting %d", __FUNCTION__, m_ePlayState, m_bPlaybackStarting);
+  CLog::LogF(LOGDEBUG, "play state was %d, starting %d", m_ePlayState, m_bPlaybackStarting);
   m_ePlayState = PLAY_STATE_STOPPED;
   if(m_bPlaybackStarting)
     return;
@@ -5050,7 +5049,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
     {
       //At this point we have given up to translate, so even though
       //there may be insecure information, we log it.
-      CLog::Log(LOGDEBUG,"%s : Tried translating, but failed to understand %s", __FUNCTION__, in_actionStr.c_str());
+      CLog::LogF(LOGDEBUG,"Tried translating, but failed to understand %s", in_actionStr.c_str());
       return false;
     }
   }
@@ -5614,13 +5613,13 @@ void CApplication::UpdateLibraries()
 {
   if (CSettings::Get().GetBool("videolibrary.updateonstartup"))
   {
-    CLog::Log(LOGNOTICE, "%s - Starting video library startup scan", __FUNCTION__);
+    CLog::LogF(LOGNOTICE, "Starting video library startup scan");
     StartVideoScan("");
   }
 
   if (CSettings::Get().GetBool("musiclibrary.updateonstartup"))
   {
-    CLog::Log(LOGNOTICE, "%s - Starting music library startup scan", __FUNCTION__);
+    CLog::LogF(LOGNOTICE, "Starting music library startup scan");
     StartMusicScan("");
   }
 }

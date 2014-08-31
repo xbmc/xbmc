@@ -34,11 +34,7 @@ protected:
   Testlog(){}
   ~Testlog()
   {
-    /* Reset globals used by CLog after each test. */
-    g_log_globalsRef->m_file = NULL;
-    g_log_globalsRef->m_repeatCount = 0;
-    g_log_globalsRef->m_repeatLogLevel = -1;
-    g_log_globalsRef->m_logLevel = LOG_LEVEL_DEBUG;
+    CLog::Close();
   }
 };
 

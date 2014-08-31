@@ -82,7 +82,6 @@ int callback(void* res_ptr,int ncol, char** reslt,char** cols)
 static int busy_callback(void*, int busyCount)
 {
   Sleep(100);
-  OutputDebugString("SQLite collision\n");
   return 1;
 }
 
