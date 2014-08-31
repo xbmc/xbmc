@@ -339,9 +339,11 @@ void CDisplaySettings::SetCurrentResolution(RESOLUTION resolution, bool save /* 
     CSettings::Get().SetString("videoscreen.screenmode", mode.c_str());
   }
 
-  m_currentResolution = resolution;
-
-  SetChanged();
+  if (resolution != m_currentResolution)
+  {
+    m_currentResolution = resolution;
+    SetChanged();
+  }
 }
 
 RESOLUTION CDisplaySettings::GetDisplayResolution() const
