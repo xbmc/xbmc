@@ -780,13 +780,10 @@ AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info,
   if (!info)
     return AddonPtr();
 
-  if (!info->extensions)
+  if (!info->extensions && type.empty())
   { // no extensions, so we need only the dep information
     return AddonPtr(new CAddon(info));
   }
-
-  // FIXME: If we want to support multiple extension points per addon, we'll need to extend this to not just take
-  //        the first extension point (eg use the TYPE information we pass in)
 
   // grab a relevant extension point, ignoring our xbmc.addon.metadata extension point
   for (unsigned int i = 0; i < info->num_extensions; ++i)
