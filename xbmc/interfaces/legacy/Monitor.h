@@ -35,6 +35,7 @@ namespace XBMCAddon
     class Monitor : public AddonCallback
     {
       String Id;
+      CEvent abortEvent;
     public:
       Monitor();
 
@@ -58,10 +59,11 @@ namespace XBMCAddon
       }
       inline void    OnCleanStarted(const String &library) { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onCleanStarted,library)); }
       inline void    OnCleanFinished(const String &library) { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onCleanFinished,library)); }
-      inline void    OnAbortRequested() { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onAbortRequested)); }
       inline void    OnNotification(const String &sender, const String &method, const String &data) { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor,const String,const String,const String>(this,&Monitor::onNotification,sender,method,data)); }
 
       inline const String& GetId() { return Id; }
+
+      void OnAbortRequested();
 #endif
 
       /**
@@ -162,6 +164,21 @@ namespace XBMCAddon
        * Will be called when XBMC receives or sends a notification\n
        */
       virtual void    onNotification(const String sender, const String method, const String data) { XBMC_TRACE; }
+
+      /**
+       * waitForAbort([timeout]) -- Block until abort is requested, or until timeout occurs. If an
+       *                            abort requested have already been made, return immediately.
+       *
+       * Returns True when abort have been requested, False if a timeout is given and the operation times out.
+       *
+       * timeout : [opt] float - timeout in seconds. Default: no timeout.\n
+       */
+      bool waitForAbort(double timeout = -1);
+
+      /**
+       * abortRequested() -- Returns True if abort has been requested.
+       */
+      bool abortRequested();
 
       virtual ~Monitor();
     };

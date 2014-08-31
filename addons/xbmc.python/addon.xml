@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.python" version="2.18.0" provider-name="Team-Kodi">
+<addon id="xbmc.python" version="2.19.0" provider-name="Team-Kodi">
   <backwards-compatibility abi="2.1.0"/>
   <requires>
     <import addon="xbmc.core" version="0.1.0"/>

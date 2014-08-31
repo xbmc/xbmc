@@ -74,6 +74,9 @@ public:
   inline void Reset() { CSingleLock lock(mutex); signaled = false; }
   void Set();
 
+  /** Returns true if Event has been triggered and not reset, false otherwise. */
+  inline bool Signaled() { CSingleLock lock(mutex); return signaled; }
+
   /**
    * This will wait up to 'milliSeconds' milliseconds for the Event
    *  to be triggered. The method will return 'true' if the Event
