@@ -2741,36 +2741,33 @@ bool CApplication::OnAction(const CAction &action)
       return true;
     }
 
-    // pause : pauses current audio song
-    if (action.GetID() == ACTION_PAUSE && m_pPlayer->GetPlaySpeed() == 1)
+    // pause : toggle pause action
+    if (action.GetID() == ACTION_PAUSE)
     {
       m_pPlayer->Pause();
-#ifdef HAS_KARAOKE
+      // go back to normal play speed on unpause
+      if (!m_pPlayer->IsPaused() && m_pPlayer->GetPlaySpeed() != 1)
+        m_pPlayer->SetPlaySpeed(1, g_application.m_muted);
+
+      #ifdef HAS_KARAOKE
       m_pKaraokeMgr->SetPaused( m_pPlayer->IsPaused() );
 #endif
-      if (!m_pPlayer->IsPaused())
-      { // unpaused - set the playspeed back to normal
-        m_pPlayer->SetPlaySpeed(1, g_application.m_muted);
-      }
       g_audioManager.Enable(m_pPlayer->IsPaused());
+      return true;
+    }
+    // play: unpause or set playspeed back to normal
+    if (action.GetID() == ACTION_PLAYER_PLAY)
+    {
+      // if currently paused - unpause
+      if (m_pPlayer->IsPaused())
+        return OnAction(CAction(ACTION_PAUSE));
+      // if we do a FF/RW then go back to normal speed
+      if (m_pPlayer->GetPlaySpeed() != 1)
+        m_pPlayer->SetPlaySpeed(1, g_application.m_muted);
       return true;
     }
     if (!m_pPlayer->IsPaused())
     {
-      // if we do a FF/RW in my music then map PLAY action togo back to normal speed
-      // if we are playing at normal speed, then allow play to pause
-      if (action.GetID() == ACTION_PLAYER_PLAY || action.GetID() == ACTION_PAUSE)
-      {
-        if (m_pPlayer->GetPlaySpeed() != 1)
-        {
-          m_pPlayer->SetPlaySpeed(1, g_application.m_muted);
-        }
-        else
-        {
-          m_pPlayer->Pause();
-        }
-        return true;
-      }
       if (action.GetID() == ACTION_PLAYER_FORWARD || action.GetID() == ACTION_PLAYER_REWIND)
       {
         int iPlaySpeed = m_pPlayer->GetPlaySpeed();
