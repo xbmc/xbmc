@@ -271,6 +271,12 @@ void CPlexMediaServerClient::SendTranscoderPing(CPlexServerPtr server)
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexMediaServerClient::deleteItem(const CFileItemPtr &item)
 {
+  deleteItemFromPath(item->GetPath());
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+void CPlexMediaServerClient::deleteItemFromPath(const CStdString path)
+{
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, g_windowManager.GetActiveWindow());
-  AddJob(new CPlexMediaServerClientJob(item->GetPath(), "DELETE", msg, 16205));
+  AddJob(new CPlexMediaServerClientJob(path, "DELETE", msg, 16205));
 }

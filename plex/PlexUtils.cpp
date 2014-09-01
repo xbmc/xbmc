@@ -1056,3 +1056,30 @@ int PlexUtils::GetItemListID(const CFileItemPtr& item)
 {
   return GetItemListID(*item);
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+std::string PlexUtils::GetPlayListIDfromPath(CStdString plpath)
+{
+  int pos = plpath.Find("playlists/");
+  if (pos > 0)
+  {
+    pos += 10;
+    int endpos = plpath.Find("/", pos);
+    if (endpos)
+      return plpath.Mid(pos, endpos-pos);
+  }
+  
+  return "";
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void PlexUtils::PrintItemProperties(CFileItemPtr item)
+{
+  PropertyMap props = item->GetAllProperties();
+  printf("Item Properties :\n");
+  for (PropertyMap::iterator it = props.begin(); it != props.end(); ++it)
+  {
+    printf("%s : %s\n", it->first.c_str(), it->second.c_str());
+  }
+}
+

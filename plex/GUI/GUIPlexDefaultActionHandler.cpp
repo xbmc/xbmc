@@ -80,6 +80,7 @@ CGUIPlexDefaultActionHandler::CGUIPlexDefaultActionHandler()
   action->WindowSettings[WINDOW_HOME].contextMenuVisisble = true;
   action->WindowSettings[WINDOW_PLEX_PLAY_QUEUE].contextMenuVisisble = true;
   action->WindowSettings[WINDOW_VIDEO_NAV].contextMenuVisisble = true;
+  action->WindowSettings[WINDOW_PLEX_PLAYLIST_SELECTION].contextMenuVisisble = true;
   m_ActionSettings.push_back(*action);
 }
 
@@ -123,6 +124,8 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
 
   if (item)
   {
+    EPlexDirectoryType dirType = item->GetPlexDirectoryType();
+  
     // actions that require an item
     switch (actionID)
     {
@@ -191,6 +194,27 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
           g_plexApplication.playQueueManager->removeItem(item);
           return true;
         }
+        // we're on a playlist, delete it
+        else if (dirType == PLEX_DIR_TYPE_PLAYLIST)
+        {
+          if (!item->GetProperty("smart").asInteger())
+          {
+            CURL plURL(item->GetPath());
+            plURL.SetFileName("/playlists/" + item->GetProperty("ratingKey").asString());
+            g_plexApplication.mediaServerClient->deleteItemFromPath(plURL.Get());
+          }
+        }
+        // we're on a playlist item
+        else if (IsPlayListContainer(container))
+        {
+          if (!container->GetProperty("smart").asInteger())
+          {
+            CURL plURL(item->GetPath());
+            plURL.SetFileName("/playlists/" + PlexUtils::GetPlayListIDfromPath(container->GetPath()) +
+                              "/items/" + item->GetProperty("playlistItemID").asString());
+            g_plexApplication.mediaServerClient->deleteItemFromPath(plURL.Get());
+          }
+        }
         else
         {
           // we're one a regular item, try to delete it
@@ -253,6 +277,9 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
 void CGUIPlexDefaultActionHandler::GetContextButtonsForAction(int actionID, CFileItemPtr item,
                                                               CFileItemListPtr container, CContextButtons& buttons)
 {
+  
+  EPlexDirectoryType dirType = item->GetPlexDirectoryType();
+  
   switch (actionID)
   {
     case ACTION_PLAYER_PLAY:
@@ -312,10 +339,20 @@ void CGUIPlexDefaultActionHandler::GetContextButtonsForAction(int actionID, CFil
       {
         buttons.Add(actionID, 1210);
       }
+      else if (dirType == PLEX_DIR_TYPE_PLAYLIST)
+      {
+        if (!item->GetProperty("smart").asInteger())
+          buttons.Add(actionID, 117);
+      }
+      else if (IsPlayListContainer(container))
+      {
+        PlexUtils::PrintItemProperties(container);
+        
+        if (!container->GetProperty("smart").asInteger())
+          buttons.Add(actionID, 117);
+      }
       else
       {
-        EPlexDirectoryType dirType = item->GetPlexDirectoryType();
-
         if (item->IsPlexMediaServerLibrary() &&
             (item->IsRemoteSharedPlexMediaServerLibrary() == false) &&
             (dirType == PLEX_DIR_TYPE_EPISODE || dirType == PLEX_DIR_TYPE_MOVIE ||

@@ -71,6 +71,9 @@ namespace PlexUtils
   void PauseRendering(bool bPause, bool bUseWaitDialog);
   int GetItemListID(const CFileItemPtr& item);
   int GetItemListID(const CFileItem& item);
+  
+  std::string GetPlayListIDfromPath(CStdString plpath);
+  void PrintItemProperties(CFileItemPtr item);
 }
 
 #if defined(HAVE_EXECINFO_H)
