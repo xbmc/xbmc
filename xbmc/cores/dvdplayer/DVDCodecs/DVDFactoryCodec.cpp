@@ -27,9 +27,6 @@
 #include "Overlay/DVDOverlayCodec.h"
 #include "cores/dvdplayer/DVDCodecs/DVDCodecs.h"
 
-#if defined(TARGET_DARWIN_OSX)
-#include "Video/DVDVideoCodecVDA.h"
-#endif
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
 #include "Video/DVDVideoCodecVideoToolBox.h"
 #endif
@@ -195,16 +192,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
   if (!hint.software && CSettings::Get().GetBool("videoplayer.useamcodec"))
   {
      if ( (pCodec = OpenCodec(new CDVDVideoCodecAmlogic(), hint, options)) ) return pCodec;
-  }
-#endif
-
-#if defined(TARGET_DARWIN_OSX)
-  if (!hint.software && CSettings::Get().GetBool("videoplayer.usevda"))
-  {
-    if (hint.codec == AV_CODEC_ID_H264 && !hint.ptsinvalid)
-    {
-      if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
-    }
   }
 #endif
 

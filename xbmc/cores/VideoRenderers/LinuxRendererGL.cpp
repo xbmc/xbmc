@@ -932,8 +932,21 @@ void CLinuxRendererGL::LoadShaders(int field)
   }
   else if (m_format == RENDER_FMT_CVBREF)
   {
-    CLog::Log(LOGNOTICE, "GL: Using CVBREF render method");
-    m_renderMethod = RENDER_CVREF;
+    if (Cocoa_GetOSVersion() >= 0x1074 && Cocoa_GetOSVersion() < 0x1094)
+    {
+      CLog::Log(LOGNOTICE, "GL: Using CVBREF render method (slow)");
+      // 10.7.4 for Retina Macbooks on Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
+      // 10.8 Mountain Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
+      // upload the old way.
+      // works in 10.9.4
+      m_renderMethod = RENDER_CVREF | RENDER_CVREF_SLOW;
+    }
+    else
+    {
+      CLog::Log(LOGNOTICE, "GL: Using CVBREF render method");
+      m_renderMethod = RENDER_CVREF;
+    }
+
   }
   else
   {
@@ -2604,20 +2617,16 @@ bool CLinuxRendererGL::UploadVAAPITexture(int index)
 bool CLinuxRendererGL::UploadCVRefTexture(int index)
 {
 #ifdef TARGET_DARWIN
+  YUVFIELDS &fields = m_buffers[index].fields;
+  YUVPLANE  &plane  = fields[0][0];
   CVBufferRef cvBufferRef = m_buffers[index].cvBufferRef;
 
   glEnable(m_textureTarget);
 
-  if (cvBufferRef)
+  if (cvBufferRef && plane.flipindex != m_buffers[index].flipindex)
   {
-    YUVFIELDS &fields = m_buffers[index].fields;
-    YUVPLANE  &plane  = fields[0][0];
-
-    if (Cocoa_GetOSVersion() >= 0x1074)
+    if (m_renderMethod & RENDER_CVREF_SLOW)
     {
-      // 10.7.4 for Retina Macbooks on Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
-      // 10.8 Mountain Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
-      // upload the old way.
       CVPixelBufferLockBaseAddress(cvBufferRef, kCVPixelBufferLock_ReadOnly);
 
       GLsizei       texHeight   = CVPixelBufferGetHeight(cvBufferRef);
@@ -2638,7 +2647,7 @@ bool CLinuxRendererGL::UploadCVRefTexture(int index)
       IOSurfaceRef	surface  = CVPixelBufferGetIOSurface(cvBufferRef);
       GLsizei       texWidth = IOSurfaceGetWidth(surface);
       GLsizei       texHeight= IOSurfaceGetHeight(surface);
-      OSType        format_type = CVPixelBufferGetPixelFormatType(cvBufferRef);
+      OSType        format_type = IOSurfaceGetPixelFormat(surface);
 
       glBindTexture(m_textureTarget, plane.id);
 
@@ -2651,9 +2660,6 @@ bool CLinuxRendererGL::UploadCVRefTexture(int index)
 
       glBindTexture(m_textureTarget, 0);
     }
-
-    CVBufferRelease(cvBufferRef);
-    m_buffers[index].cvBufferRef = NULL;
 
     plane.flipindex = m_buffers[index].flipindex;
   }
@@ -2698,25 +2704,28 @@ bool CLinuxRendererGL::CreateCVRefTexture(int index)
   im.cshift_x = 0;
   im.cshift_y = 0;
 
-  plane.texwidth  = NP2(im.width);
-  plane.texheight = NP2(im.height);
+  plane.texwidth  = im.width;
+  plane.texheight = im.height;
   plane.pixpertex_x = 1;
   plane.pixpertex_y = 1;
 
+  if(m_renderMethod & RENDER_POT)
+  {
+    plane.texwidth  = NP2(plane.texwidth);
+    plane.texheight = NP2(plane.texheight);
+  }
+
   glEnable(m_textureTarget);
   glGenTextures(1, &plane.id);
-  if (Cocoa_GetOSVersion() >= 0x1074)
+  if (m_renderMethod & RENDER_CVREF_SLOW)
   {
-    // 10.7.4 for Retina Macbooks on Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
-    // 10.8 Mountain Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
-    // upload the old way.
     glBindTexture(m_textureTarget, plane.id);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // This is necessary for non-power-of-two textures
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, NULL);
+    glTexImage2D(m_textureTarget, 0, GL_RGB, plane.texwidth, plane.texheight, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, NULL);
     glBindTexture(m_textureTarget, 0);
   }
   glDisable(m_textureTarget);
@@ -3549,11 +3558,11 @@ void CLinuxRendererGL::AddProcessor(VAAPI::CVaapiRenderPicture *vaapi, int index
 void CLinuxRendererGL::AddProcessor(struct __CVBuffer *cvBufferRef, int index)
 {
   YUVBUFFER &buf = m_buffers[index];
+  // retain another reference, this way dvdplayer and renderer can issue releases.
+  CVBufferRetain(cvBufferRef);
   if (buf.cvBufferRef)
     CVBufferRelease(buf.cvBufferRef);
   buf.cvBufferRef = cvBufferRef;
-  // retain another reference, this way dvdplayer and renderer can issue releases.
-  CVBufferRetain(buf.cvBufferRef);
 }
 #endif
 

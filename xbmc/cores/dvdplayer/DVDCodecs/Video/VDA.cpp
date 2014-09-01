@@ -32,10 +32,6 @@ extern "C" {
 using namespace std;
 using namespace VDA;
 
-
-static void RelBufferS(void *opaque, uint8_t *data)
-{ ((CDecoder*)((CDVDVideoCodecFFmpeg*)opaque)->GetHardware())->RelBuffer(data); }
-
 static int GetBufferS(AVCodecContext *avctx, AVFrame *pic, int flags)
 {  return ((CDecoder*)((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetHardware())->GetBuffer(avctx, pic, flags); }
 
@@ -51,18 +47,11 @@ CDecoder::~CDecoder()
   free(m_ctx);
 }
 
-void CDecoder::RelBuffer(uint8_t *data)
-{
-  CVPixelBufferRef cv_buffer = (CVPixelBufferRef)data;
-  CVPixelBufferRelease(cv_buffer);
-}
-
 int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
 {
-  pic->data[3] = (uint8_t *)(uintptr_t)1;
-  pic->reordered_opaque = avctx->reordered_opaque;
+  pic->data[0] = (uint8_t *)(uintptr_t)1;
 
-  AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, RelBufferS, avctx->opaque, 0);
+  AVBufferRef *buffer = av_buffer_create(NULL, 0, NULL, avctx->opaque, 0);
   if (!buffer)
   {
     CLog::Log(LOGERROR, "VAAPI::%s - error creating buffer", __FUNCTION__);
@@ -174,7 +163,7 @@ bool CDecoder::Create(AVCodecContext *avctx)
 
   if(status != kVDADecoderNoErr)
   {
-    CLog::Log(LOGERROR, "VDA::CDecoder - Failed to init VDA decoder: %d", status);
+    CLog::Log(LOGERROR, "VDA::CDecoder - Failed to init VDA decoder: %d", (int)status);
     return false;
   }
   return true;
@@ -234,6 +223,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
   m_ctx->format = 'avc1';
   m_ctx->use_sync_decoding = 1;
   m_ctx->cv_pix_fmt_type = kCVPixelFormatType_422YpCbCr8;
+  m_ctx->use_ref_buffer = 1;
 
   if (!Create(avctx))
     return false;
