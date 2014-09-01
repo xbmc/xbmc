@@ -894,47 +894,6 @@ bool CPlexDirectory::GetPlaylistsDirectory(CFileItemList &items)
   items.SetPath("plexserver://playlists/");
   items.AddSortMethod(SORT_METHOD_NONE, 553, LABEL_MASKS());
   
-  ePlexMediaType pqType = g_plexApplication.playQueueManager->getCurrentPlayQueueType();
-  if (pqType != PLEX_MEDIA_TYPE_UNKNOWN)
-  {
-    CFileItemPtr item = CFileItemPtr(new CFileItem);
-    item->SetPath("plexserver://playqueue");
-
-    if (pqType == PLEX_MEDIA_TYPE_MUSIC)
-    {
-      item->SetLabel("Music Queue");
-      item->SetProperty("type", "musicplayqueue");
-    }
-    else if (pqType == PLEX_MEDIA_TYPE_VIDEO)
-    {
-      item->SetLabel("Video Queue");
-      item->SetProperty("type", "videoplayqueue");
-    }
-    else if (pqType == PLEX_MEDIA_TYPE_PHOTO)
-    {
-      item->SetLabel("Photo Queue");
-      item->SetProperty("type", "photoplayqueue");
-    }
-    
-    item->SetPlexDirectoryType(PLEX_DIR_TYPE_PLAYLIST);
-    item->SetProperty("PlexContent", PlexUtils::GetPlexContent(*item));
-    
-    if (g_plexApplication.serverManager->GetBestServer())
-    {
-      item->SetProperty("serverName", g_plexApplication.serverManager->GetBestServer()->GetName());
-      item->SetProperty("serverOwner", g_plexApplication.serverManager->GetBestServer()->GetOwner());
-    }
-
-    CFileItemList list;
-    if (g_plexApplication.playQueueManager->getCurrentPlayQueue(list) && list.Get(0))
-    {
-      item->SetArt(PLEX_ART_THUMB, list.Get(0)->GetArt(PLEX_ART_THUMB));
-      item->SetArt(PLEX_ART_FANART, list.Get(0)->GetArt(PLEX_ART_FANART));
-    }
-    
-    items.Add(item);
-  }
-  
   CPlexServerVersion playlistVersion("0.9.9.12.0");
   PlexServerList list = g_plexApplication.serverManager->GetAllServers(CPlexServerManager::SERVER_OWNED, true);
   BOOST_FOREACH(CPlexServerPtr server, list)
