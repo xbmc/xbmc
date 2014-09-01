@@ -45,7 +45,7 @@
       <!-- hold right -->      <button id="10">Right</button>
 
       <!-- new aluminium remote buttons  -->
-      <!-- play/pause -->      <button id="12">Play</button>
+      <!-- play/pause -->      <button id="12">PlayPause</button>
 
       <!-- Additional buttons via Harmony Apple TV remote profile - these are also the learned buttons on Apple TV 2gen-->
       <!-- pageup     -->      <button id="13">PageUp</button>
