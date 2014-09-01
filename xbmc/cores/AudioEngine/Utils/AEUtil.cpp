@@ -153,6 +153,8 @@ const unsigned int CAEUtil::DataFormatToDitherBits(const enum AEDataFormat dataF
 {
   if (dataFormat == AE_FMT_S24NE4MSB)
     return 8;
+  if (dataFormat == AE_FMT_S24NE3)
+    return -8;
   else
     return 0;
 }
