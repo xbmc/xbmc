@@ -538,6 +538,8 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     m_State.Clear();
     m_UpdateApplication = 0;
     m_offset_pts = 0;
+    m_CurrentAudio.correction = 0.0;
+    m_CurrentVideo.correction = 0.0;
 
     m_PlayerOptions = options;
     m_item     = file;
@@ -1821,12 +1823,20 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
 
   if(correction != 0.0)
   {
-    /* disable detection on next packet on other stream to avoid ping pong-ing */
-    if(m_CurrentAudio.player != current.player) m_CurrentAudio.dts = DVD_NOPTS_VALUE;
-    if(m_CurrentVideo.player != current.player) m_CurrentVideo.dts = DVD_NOPTS_VALUE;
-
-    m_offset_pts += correction;
-    UpdateCorrection(pPacket, correction);
+    current.correction = correction;
+    if (m_CurrentAudio.correction != 0.0 && m_CurrentVideo.correction != 0.0 && fabs(m_CurrentAudio.correction - m_CurrentVideo.correction) < DVD_MSEC_TO_TIME(1000))
+    {
+      m_offset_pts += correction;
+      UpdateCorrection(pPacket, correction);
+      m_CurrentAudio.correction = 0.0;
+      m_CurrentVideo.correction = 0.0;
+    }
+    else
+    {
+      // not sure yet - flags the packets as unknown until we get confirmation on another audio/video packet
+      pPacket->dts = DVD_NOPTS_VALUE;
+      pPacket->pts = DVD_NOPTS_VALUE;
+    }
   }
 }
 
