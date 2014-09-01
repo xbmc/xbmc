@@ -72,6 +72,7 @@ public:
   void NotifyXRREvent();
   void GetConnectedOutputs(std::vector<CStdString> *outputs);
   bool IsCurrentOutput(CStdString output);
+  void RecreateWindow();
 
 protected:
   bool RefreshGlxContext(bool force);

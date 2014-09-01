@@ -693,7 +693,6 @@ bool CWinSystemX11::Show(bool raise)
 void CWinSystemX11::NotifyXRREvent()
 {
   CLog::Log(LOGDEBUG, "%s - notify display reset event", __FUNCTION__);
-  m_windowDirty = true;
 
   CSingleLock lock(g_graphicsContext);
 
@@ -708,6 +707,15 @@ void CWinSystemX11::NotifyXRREvent()
   {
     UpdateResolutions();
   }
+
+  RecreateWindow();
+}
+
+void CWinSystemX11::RecreateWindow()
+{
+  m_windowDirty = true;
+
+  CSingleLock lock(g_graphicsContext);
 
   XOutput *out = g_xrandr.GetOutput(m_userOutput);
   XMode   mode = g_xrandr.GetCurrentMode(m_userOutput);
@@ -733,7 +741,7 @@ void CWinSystemX11::NotifyXRREvent()
 
   if (!found)
   {
-    CLog::Log(LOGERROR, "CWinSystemX11::RefreshWindow - could not find resolution");
+    CLog::Log(LOGERROR, "CWinSystemX11::RecreateWindow - could not find resolution");
     i = RES_DESKTOP;
   }
 
@@ -741,7 +749,6 @@ void CWinSystemX11::NotifyXRREvent()
     g_graphicsContext.SetVideoResolution((RESOLUTION)i, true);
   else
     g_graphicsContext.SetVideoResolution(RES_WINDOW, true);
-
 }
 
 void CWinSystemX11::OnLostDevice()
