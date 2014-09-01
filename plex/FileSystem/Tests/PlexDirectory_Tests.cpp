@@ -177,7 +177,7 @@ TEST_F(PlexDirectoryPlaylistTests, twoServers)
 
   CFileItemList list;
   EXPECT_TRUE(dir.GetDirectory("plexserver://playlists", list));
-  EXPECT_EQ(3, list.Size());
+  EXPECT_EQ(2, list.Size());
 }
 
 TEST_F(PlexDirectoryPlaylistTests, oneOldServer)
@@ -190,11 +190,11 @@ TEST_F(PlexDirectoryPlaylistTests, oneOldServer)
   
   CFileItemList list;
   EXPECT_TRUE(dir.GetDirectory("plexserver://playlists", list));
-  EXPECT_EQ(1, list.Size());
+  EXPECT_EQ(0, list.Size());
 }
 
 
-TEST_F(PlexDirectoryPlaylistTests, playQueueType)
+TEST_F(PlexDirectoryPlaylistTests, musicPlayList)
 {
   PlexDirectoryFakeDataTest dir(testItem_playlistAll);
   
@@ -204,5 +204,5 @@ TEST_F(PlexDirectoryPlaylistTests, playQueueType)
   CFileItemPtr item = list.Get(0);
   EXPECT_TRUE(item);
   
-  EXPECT_STREQ("videoplayqueue", item->GetProperty("type").asString().c_str());
+  EXPECT_STREQ("musicplaylist", item->GetProperty("type").asString().c_str());
 }
