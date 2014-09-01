@@ -1,5 +1,4 @@
-#ifndef _RENDER_FORMATS_H_
-#define _RENDER_FORMATS_H_
+#pragma once
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -20,24 +19,25 @@
  *
  */
 
-enum ERenderFormat {
-  RENDER_FMT_NONE = 0,
-  RENDER_FMT_YUV420P,
-  RENDER_FMT_YUV420P10,
-  RENDER_FMT_YUV420P16,
-  RENDER_FMT_VDPAU,
-  RENDER_FMT_VDPAU_420,
-  RENDER_FMT_NV12,
-  RENDER_FMT_UYVY422,
-  RENDER_FMT_YUYV422,
-  RENDER_FMT_DXVA,
-  RENDER_FMT_VAAPI,
-  RENDER_FMT_VAAPINV12,
-  RENDER_FMT_OMXEGL,
-  RENDER_FMT_CVBREF,
-  RENDER_FMT_BYPASS,
-  RENDER_FMT_EGLIMG,
-  RENDER_FMT_MEDIACODEC,
+#include "DynamicDll.h"
+
+extern "C" {
+
+}
+
+class DllLibSSE4Interface
+{
+public:
+  virtual ~DllLibSSE4Interface() {}
+  virtual void copy_frame(void * pSrc, void * pDest, void * pCacheBlock, UINT width, UINT height, UINT pitch) = 0;
 };
 
-#endif
+class DllLibSSE4 : public DllDynamic, DllLibSSE4Interface
+{
+  DECLARE_DLL_WRAPPER(DllLibSSE4, DLL_PATH_LIBSSE4)
+  DEFINE_METHOD6(void, copy_frame, (void *p1, void *p2, void *p3, UINT p4, UINT p5, UINT p6))
+
+  BEGIN_METHOD_RESOLVE()
+    RESOLVE_METHOD(copy_frame)
+  END_METHOD_RESOLVE()
+};

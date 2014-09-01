@@ -46,7 +46,7 @@ struct DVDCodecAvailableType
 #define FRAME_TYPE_D 4
 
 namespace DXVA { class CSurfaceContext; }
-namespace VAAPI { struct CHolder; }
+namespace VAAPI { class CVaapiRenderPicture; }
 namespace VDPAU { class CVdpauRenderPicture; }
 class COpenMax;
 class COpenMaxVideo;
@@ -75,7 +75,7 @@ struct DVDVideoPicture
       VDPAU::CVdpauRenderPicture* vdpau;
     };
     struct {
-      VAAPI::CHolder* vaapi;
+      VAAPI::CVaapiRenderPicture* vaapi;
     };
 
     struct {

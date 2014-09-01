@@ -827,6 +827,19 @@ elif test "$use_arch" = "arm"; then
   fi
 fi
 
+use_sse4=no
+if test "$ARCH" = "x86_64-linux" || test "$ARCH" = "i486-linux"; then
+    SAVE_CFLAGS="$CFLAGS"
+    CFLAGS="-msse4.1"
+    AC_COMPILE_IFELSE(
+      [AC_LANG_SOURCE([int foo;])],
+      [ use_sse4=yes
+        USE_SSE4=1],
+      [ use_sse=no
+        USE_SSE4=0])
+    CFLAGS="$SAVE_CFLAGS"
+fi
+
 # Checks for library functions.
 AC_FUNC_ALLOCA
 AC_FUNC_CHOWN
@@ -1813,21 +1826,15 @@ if test "x$use_vaapi" != "xno"; then
     USE_VAAPI=0
   else
     initial_val=$use_vaapi
-    AC_CHECK_LIB([va], main, :, use_vaapi=no)
     if test "x$use_vaapi" != "xno"; then
-      AC_CHECK_LIB([va-glx], main, LIBS="-lva -lva-glx $LIBS", use_vaapi=no, -lva)
-    fi
-
-    if test "x$use_vaapi" = "xno"; then
+      PKG_CHECK_MODULES([LIBVA], [libva libva-x11],
+        [INCLUDES="$INCLUDES $LIBVA_CFLAGS"; LIBS="$LIBS $LIBVA_LIBS"; USE_VAAPI=1;
+         AC_DEFINE([HAVE_LIBVA], [1], [Define to 1 if you have the 'vaapi' libraries])],
+        [use_vaapi="no"; USE_VAAPI=0; AC_MSG_RESULT($vaapi_not_found)])
+    else
       if test "x$initial_val" = "xyes"; then
         AC_MSG_ERROR($vaapi_not_found)
-      else
-        AC_MSG_RESULT($vaapi_not_found)
       fi
-      USE_VAAPI=0
-    else
-      AC_DEFINE([HAVE_LIBVA], [1], [Define to 1 if you have the 'vaapi' libraries (-lva AND -lva-glx)])
-      USE_VAAPI=1
     fi
   fi
 else
@@ -2474,6 +2481,10 @@ if test "$use_codec_libstagefright" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS/Makefile"
 fi
 
+if test "$use_sse4" = "yes"; then
+OUTPUT_FILES="$OUTPUT_FILES xbmc/linux/sse4/Makefile"
+fi
+
 OUTPUT_FILES="$OUTPUT_FILES \
   xbmc/interfaces/python/Makefile \
   xbmc/interfaces/python/test/Makefile"
@@ -2550,6 +2561,7 @@ AC_SUBST(GTEST_CONFIGURED)
 AC_SUBST(USE_DOXYGEN)
 AC_SUBST(USE_PVR_ADDONS)
 AC_SUBST(UPNP_DEFINES)
+AC_SUBST(USE_SSE4)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions
