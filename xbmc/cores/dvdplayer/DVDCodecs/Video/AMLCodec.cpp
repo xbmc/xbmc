@@ -1652,6 +1652,16 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   g_renderManager.RegisterRenderUpdateCallBack((const void*)this, RenderUpdateCallBack);
   g_renderManager.RegisterRenderFeaturesCallBack((const void*)this, RenderFeaturesCallBack);
 
+  m_display_rect = g_graphicsContext.GetViewWindow();
+  if (aml_get_device_type() == AML_DEVICE_TYPE_M8)
+  {
+    char mode[256] = {0};
+    aml_get_sysfs_str("/sys/class/display/mode", mode, 255);
+    RESOLUTION_INFO res;
+    if (aml_mode_to_resolution(mode, &res))
+      m_display_rect = CRect(0, 0, res.iScreenWidth, res.iScreenHeight);
+  }
+
 /*
   // if display is set to 1080xxx, then disable deinterlacer for HD content
   // else bandwidth usage is too heavy and it will slow down video decoder.
@@ -2187,31 +2197,26 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
     return;
   }
 
-  CRect gui, display, dst_rect;
+  CRect gui, dst_rect;
   gui = g_graphicsContext.GetViewWindow();
   // when display is at 1080p, we have freescale enabled
   // and that scales all layers into 1080p display including video,
   // so we have to setup video axis for 720p instead of 1080p... Boooo.
-  display = g_graphicsContext.GetViewWindow();
+
   dst_rect = m_dst_rect;
-  if (gui != display)
+  if (gui != m_display_rect)
   {
-    float xscale = display.Width()  / gui.Width();
-    float yscale = display.Height() / gui.Height();
+    float xscale = m_display_rect.Width()  / gui.Width();
+    float yscale = m_display_rect.Height() / gui.Height();
+    if (m_stereo_mode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
+      xscale /= 2.0;
+    else if (m_stereo_mode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
+      yscale /= 2.0;
     dst_rect.x1 *= xscale;
     dst_rect.x2 *= xscale;
     dst_rect.y1 *= yscale;
     dst_rect.y2 *= yscale;
   }
-
-#if 0
-  std::string rectangle = StringUtils::Format("%i,%i,%i,%i",
-    (int)dst_rect.x1, (int)dst_rect.y1,
-    (int)dst_rect.Width(), (int)dst_rect.Height());
-  CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoRect:dst_rect(%s)", rectangle.c_str());
-  CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoRect:m_stereo_mode(%d)", m_stereo_mode);
-  CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoRect:m_stereo_view(%d)", m_stereo_view);
-#endif
 
   if (m_stereo_mode == RENDER_STEREO_MODE_MONO)
   {
@@ -2255,6 +2260,23 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   {
     SetVideo3dMode(MODE_3D_DISABLE);
   }
+
+#if 0
+  std::string s_dst_rect = StringUtils::Format("%i,%i,%i,%i",
+    (int)dst_rect.x1, (int)dst_rect.y1,
+    (int)dst_rect.Width(), (int)dst_rect.Height());
+  std::string s_display = StringUtils::Format("%i,%i,%i,%i",
+    (int)m_display_rect.x1, (int)m_display_rect.y1,
+    (int)m_display_rect.Width(), (int)m_display_rect.Height());
+  std::string s_gui = StringUtils::Format("%i,%i,%i,%i",
+    (int)gui.x1, (int)gui.y1,
+    (int)gui.Width(), (int)gui.Height());
+  CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoRect:display(%s)", s_display.c_str());
+  CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoRect:gui(%s)", s_gui.c_str());
+  CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoRect:dst_rect(%s)", s_dst_rect.c_str());
+  CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoRect:m_stereo_mode(%d)", m_stereo_mode);
+  CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoRect:m_stereo_view(%d)", m_stereo_view);
+#endif
 
   // goofy 0/1 based difference in aml axis coordinates.
   // fix them.
