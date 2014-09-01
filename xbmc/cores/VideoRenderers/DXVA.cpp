@@ -31,7 +31,6 @@
 #include "WinRenderer.h"
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"
-#include "boost/shared_ptr.hpp"
 #include "utils/AutoPtrHandle.h"
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
@@ -138,7 +137,7 @@ static const dxva2_deinterlacetech_t *dxva2_find_deinterlacetech(unsigned flags)
     return NULL;
 }
 
-#define SCOPE(type, var) boost::shared_ptr<type> var##_holder(var, CoTaskMemFree);
+#define SCOPE(type, var) std::shared_ptr<type> var##_holder(var, CoTaskMemFree);
 
 CCriticalSection CProcessor::m_dlSection;
 HMODULE CProcessor::m_dlHandle = NULL;

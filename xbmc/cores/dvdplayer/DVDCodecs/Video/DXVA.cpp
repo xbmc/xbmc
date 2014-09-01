@@ -37,7 +37,6 @@
 #include "../../../VideoRenderers/WinRenderer.h"
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"
-#include "boost/shared_ptr.hpp"
 #include "utils/AutoPtrHandle.h"
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
