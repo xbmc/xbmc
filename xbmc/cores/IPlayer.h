@@ -221,22 +221,24 @@ public:
 
   virtual bool SwitchChannel(const PVR::CPVRChannel &channel) { return false; }
 
+  // Note: the following "OMX" methods are deprecated and will be removed in the future
+  // They should be handled by the video renderer, not the player
   /*!
    \brief If the player uses bypass mode, define its rendering capabilities
    */
-  virtual void GetRenderFeatures(std::vector<int> &renderFeatures) {};
+  virtual void OMXGetRenderFeatures(std::vector<int> &renderFeatures) {};
   /*!
    \brief If the player uses bypass mode, define its deinterlace algorithms
    */
-  virtual void GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods) {};
+  virtual void OMXGetDeinterlaceMethods(std::vector<int> &deinterlaceMethods) {};
   /*!
    \brief If the player uses bypass mode, define how deinterlace is set
    */
-  virtual void GetDeinterlaceModes(std::vector<int> &deinterlaceModes) {};
+  virtual void OMXGetDeinterlaceModes(std::vector<int> &deinterlaceModes) {};
   /*!
    \brief If the player uses bypass mode, define its scaling capabilities
    */
-  virtual void GetScalingMethods(std::vector<int> &scalingMethods) {};
+  virtual void OMXGetScalingMethods(std::vector<int> &scalingMethods) {};
   /*!
    \brief define the audio capabilities of the player (default=all)
    */

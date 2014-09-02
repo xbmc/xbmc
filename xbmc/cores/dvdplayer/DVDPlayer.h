@@ -288,9 +288,12 @@ public:
 
   virtual int OnDVDNavResult(void* pData, int iMessage);
 
-  virtual void GetRenderFeatures(std::vector<int> &renderFeatures);
-  virtual void GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods);
-  virtual void GetDeinterlaceModes(std::vector<int> &deinterlaceModes);
+  // Note: the following "OMX" methods are deprecated and will be removed in the future
+  // They should be handled by the video renderer, not the player
+  virtual void OMXGetRenderFeatures(std::vector<int> &renderFeatures);
+  virtual void OMXGetDeinterlaceMethods(std::vector<int> &deinterlaceMethods);
+  virtual void OMXGetDeinterlaceModes(std::vector<int> &deinterlaceModes);
+
   virtual bool ControlsVolume() {return m_omxplayer_mode;}
 
 protected:

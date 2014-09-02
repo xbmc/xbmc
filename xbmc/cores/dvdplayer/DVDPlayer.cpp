@@ -4420,7 +4420,7 @@ bool CDVDPlayer::CachePVRStream(void) const
       g_advancedSettings.m_bPVRCacheInDvdPlayer;
 }
 
-void CDVDPlayer::GetRenderFeatures(std::vector<int> &renderFeatures)
+void CDVDPlayer::OMXGetRenderFeatures(std::vector<int> &renderFeatures)
 {
   if (m_omxplayer_mode)
   {
@@ -4431,7 +4431,7 @@ void CDVDPlayer::GetRenderFeatures(std::vector<int> &renderFeatures)
   }
 }
 
-void CDVDPlayer::GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods)
+void CDVDPlayer::OMXGetDeinterlaceMethods(std::vector<int> &deinterlaceMethods)
 {
   if (m_omxplayer_mode)
   {
@@ -4439,7 +4439,7 @@ void CDVDPlayer::GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods)
   }
 }
 
-void CDVDPlayer::GetDeinterlaceModes(std::vector<int> &deinterlaceModes)
+void CDVDPlayer::OMXGetDeinterlaceModes(std::vector<int> &deinterlaceModes)
 {
   if (m_omxplayer_mode)
   {

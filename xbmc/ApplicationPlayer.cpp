@@ -621,28 +621,28 @@ void CApplicationPlayer::GetRenderFeatures(std::vector<int> &renderFeatures)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    player->GetRenderFeatures(renderFeatures);
+    player->OMXGetRenderFeatures(renderFeatures);
 }
 
 void CApplicationPlayer::GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    player->GetDeinterlaceMethods(deinterlaceMethods);
+    player->OMXGetDeinterlaceMethods(deinterlaceMethods);
 }
 
 void CApplicationPlayer::GetDeinterlaceModes(std::vector<int> &deinterlaceModes)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    player->GetDeinterlaceModes(deinterlaceModes);
+    player->OMXGetDeinterlaceModes(deinterlaceModes);
 }
 
 void CApplicationPlayer::GetScalingMethods(std::vector<int> &scalingMethods)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    player->GetScalingMethods(scalingMethods);
+    player->OMXGetScalingMethods(scalingMethods);
 }
 
 void CApplicationPlayer::SetPlaySpeed(int iSpeed, bool bApplicationMuted)
