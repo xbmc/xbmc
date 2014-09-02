@@ -677,12 +677,13 @@ void CPVRGUIInfo::UpdateBackendCache(void)
   std::string strBackendChannels;
   int         iActiveClients(0);
 
-  if (!AddonInfoToggle())
-    return;
-
   CPVRClients *clients = g_PVRClients;
   PVR_CLIENTMAP activeClients;
   iActiveClients = clients->GetConnectedClients(activeClients);
+
+  if (iActiveClients > 1 && !AddonInfoToggle())
+    return;
+
   if (iActiveClients > 0)
   {
     PVR_CLIENTMAP_CITR activeClient = activeClients.begin();
