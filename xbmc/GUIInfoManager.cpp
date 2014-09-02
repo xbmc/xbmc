@@ -652,6 +652,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "backendversion",           PVR_BACKEND_VERSION },
                                   { "backendhost",              PVR_BACKEND_HOST },
                                   { "backenddiskspace",         PVR_BACKEND_DISKSPACE },
+                                  { "backenddiskspaceprogr",    PVR_BACKEND_DISKSPACE_PROGR },
                                   { "backendchannels",          PVR_BACKEND_CHANNELS },
                                   { "backendtimers",            PVR_BACKEND_TIMERS },
                                   { "backendrecordings",        PVR_BACKEND_RECORDINGS },
@@ -2158,6 +2159,7 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
     case PVR_PLAYING_PROGRESS:
     case PVR_ACTUAL_STREAM_SIG_PROGR:
     case PVR_ACTUAL_STREAM_SNR_PROGR:
+    case PVR_BACKEND_DISKSPACE_PROGR:
       value = g_PVRManager.TranslateIntInfo(info);
       return true;
     case SYSTEM_BATTERY_LEVEL:

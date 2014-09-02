@@ -153,11 +153,11 @@ namespace PVR
     std::string                     m_strBackendName;
     std::string                     m_strBackendVersion;
     std::string                     m_strBackendHost;
-    std::string                     m_strBackendDiskspace;
     std::string                     m_strBackendTimers;
     std::string                     m_strBackendRecordings;
     std::string                     m_strBackendChannels;
-    std::string                     m_strTotalDiskspace;
+    long long                       m_iBackendUsedDiskspace;
+    long long                       m_iBackendTotalDiskspace;
     unsigned int                    m_iDuration;
 
     bool                            m_bHasNonRecordingTimers;

@@ -3303,7 +3303,13 @@ msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr ""
 
-#empty strings from id 802 to 849
+#. Label of progess bar which shows the available/total space of pvr backend
+#: xbmc/pvr/PVRGUIInfo.cpp
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr ""
+
+#empty strings from id 803 to 849
 
 msgctxt "#850"
 msgid "Invalid port number entered"
