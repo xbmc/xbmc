@@ -56,7 +56,6 @@ def run_bsdiff(data):
 
   arguments = [bsdiff_exe, os.path.join(oBundle.directory, tfile.name),
                os.path.join(tBundle.directory, tfile.name), diffpath]
-  print arguments
   if call(arguments) == 1:
     print "Failed to create patch file from %s" % tfile.name
     raise IOError
@@ -144,7 +143,7 @@ def create_delta(data):
   newUpdate.packages.append(package)
 
   updateManifestPath = newUpdateFileName.replace(".zip", "-manifest.xml.bz2")
-  bz = bz2.BZ2File(updateManifestPath, "w")
+  bz = bz2.BZ2File(os.path.join(output_path, updateManifestPath), "w")
   bz.write(newUpdate.render(pretty=True))
   bz.close()
 
