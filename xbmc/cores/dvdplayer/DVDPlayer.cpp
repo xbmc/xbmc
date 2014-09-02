@@ -2394,7 +2394,11 @@ void CDVDPlayer::SetCaching(ECacheState state)
 
 void CDVDPlayer::SetPlaySpeed(int speed)
 {
-  m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed));
+  if (IsPlaying())
+    m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed));
+  else
+    m_playSpeed = speed;
+
   m_dvdPlayerAudio.SetSpeed(speed);
   m_dvdPlayerVideo.SetSpeed(speed);
   SynchronizeDemuxer(100);
