@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
   packagepath = os.path.join(options.output, package + "-full.zip")
 
-  zfile = zipfile.ZipFile(packagepath, "w", zipfile.ZIP_STORED)
+  zfile = zipfile.ZipFile(packagepath, "w", zipfile.ZIP_DEFLATED)
   for h in hashes:
     zfile.write(os.path.join(directory, h.name), h.name)
 
