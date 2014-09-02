@@ -1,6 +1,7 @@
 from update import Update
 from hashlib import sha1
 import zipfile, os
+from bz2 import BZ2File
 
 def test_exists(env):
   for manifest in env.get_manifestPaths():
@@ -11,7 +12,7 @@ def test_exists(env):
 
 def test_parse_manifest(env):
   for manifest in env.get_manifestPaths():
-    u = Update.parse(file(manifest, "r").read())
+    u = Update.parse(BZ2File(manifest, "r").read())
     assert u.platform == env.PLATFORM
 
     for f in u.manifest:
@@ -23,7 +24,7 @@ def test_parse_manifest(env):
 
 def test_check_zipfiles(env):
   for manifest in env.get_manifestPaths():
-    u = Update.parse(file(manifest, "r").read())
+    u = Update.parse(BZ2File(manifest, "r").read())
     zfile = os.path.join(env.workdir, u.packages[0].name)
     assert u.packages[0].fileHash == env.get_sha1(zfile)
 

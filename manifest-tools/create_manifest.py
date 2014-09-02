@@ -5,6 +5,7 @@ from update import Update, FileElement, PackageElement
 from hashutils import get_files, get_file
 import optparse
 import zipfile
+from bz2 import BZ2File
 
 if __name__ == "__main__":
   o = optparse.OptionParser()
@@ -66,9 +67,9 @@ if __name__ == "__main__":
 
   update.packages.append(pe)
 
-  manifestpath = os.path.join(options.output, package + "-manifest.xml")
+  manifestpath = os.path.join(options.output, package + "-manifest.xml.bz2")
 
-  manifestfp = file(manifestpath, "w")
+  manifestfp = BZ2File(manifestpath, "w")
   manifestfp.write(update.render(pretty=True))
   manifestfp.close()
 

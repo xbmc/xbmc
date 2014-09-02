@@ -19,11 +19,11 @@ class UpdateBundle:
 
   def __init__(self, manifestPath):
     self.manifestPath = manifestPath
-    self.updateElement = Update.parse(file(manifestPath).read())
+    self.updateElement = Update.parse(bz2.BZ2File(manifestPath).read())
 
     rootdir = os.path.dirname(self.manifestPath)
     basename = os.path.basename(self.manifestPath)
-    basename = basename.replace("-manifest.xml", "-full.zip")
+    basename = basename.replace("-manifest.xml.bz2", "-full.zip")
     self.zipfilePath = os.path.join(rootdir, basename)
     print "zipfilePath = %s" % self.zipfilePath
 

@@ -34,7 +34,7 @@ class Environment:
     print "Environment created in %s" % self.workdir 
 
   def get_manifestPaths(self):
-    return [os.path.join(self.workdir, "test-%s-%s-manifest.xml") % (v, self.PLATFORM) for v in self.VERSIONS]
+    return [os.path.join(self.workdir, "test-%s-%s-manifest.xml.bz2") % (v, self.PLATFORM) for v in self.VERSIONS]
 
   def get_zipPaths(self):
     return [os.path.join(self.workdir, "test-%s-%s-full.zip") % (v, self.PLATFORM) for v in self.VERSIONS]
