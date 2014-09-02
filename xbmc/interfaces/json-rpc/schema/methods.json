@@ -147,6 +147,11 @@
             "properties": {
               "channelid": { "$ref": "Library.Id", "required": true }
             }
+          },
+          { "type": "object", "required": true, "additionalProperties": false,
+            "properties": {
+              "recordingid": { "$ref": "Library.Id", "required": true }
+            }
           }
         ]
       },
