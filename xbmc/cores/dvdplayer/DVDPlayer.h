@@ -217,8 +217,6 @@ public:
   virtual float GetPercentage();
   virtual float GetCachePercentage();
 
-  virtual void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdPlayerAudio->RegisterAudioCallback(pCallback); }
-  virtual void UnRegisterAudioCallback()                        { m_dvdPlayerAudio->UnRegisterAudioCallback(); }
   virtual void SetVolume(float nVolume)                         { m_dvdPlayerAudio->SetVolume(nVolume); }
   virtual void SetMute(bool bOnOff)                             { m_dvdPlayerAudio->SetMute(bOnOff); }
   virtual void SetDynamicRangeCompression(long drc)             { m_dvdPlayerAudio->SetDynamicRangeCompression(drc); }

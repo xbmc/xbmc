@@ -25,7 +25,6 @@
 
 template <typename T> class CRectGen;
 typedef CRectGen<float>  CRect;
-class IAudioCallback;
 
 class DVDNavResult;
 
@@ -99,8 +98,6 @@ public:
   bool SetPriority(const int iPriority) { return true; }
   virtual bool OpenStream(CDVDStreamInfo &hints) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
-  virtual void RegisterAudioCallback(IAudioCallback* pCallback) = 0;
-  virtual void UnRegisterAudioCallback() = 0;
   virtual void SetSpeed(int speed) = 0;
   virtual void Flush() = 0;
   virtual void WaitForBuffers() = 0;

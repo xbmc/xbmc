@@ -36,7 +36,6 @@
 
 class CDVDPlayer;
 class CDVDAudioCodec;
-class IAudioCallback;
 class CDVDAudioCodec;
 
 #define DECODE_FLAG_DROP    1
@@ -110,9 +109,6 @@ public:
 
   bool OpenStream(CDVDStreamInfo &hints);
   void CloseStream(bool bWaitForBuffers);
-
-  void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdAudio.RegisterAudioCallback(pCallback); }
-  void UnRegisterAudioCallback()                        { m_dvdAudio.UnRegisterAudioCallback(); }
 
   void SetSpeed(int speed);
   void Flush();

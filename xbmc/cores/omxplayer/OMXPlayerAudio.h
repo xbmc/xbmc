@@ -99,8 +99,6 @@ public:
   double GetCurrentPts() { return m_audioClock; };
   void SubmitEOS();
 
-  void  RegisterAudioCallback(IAudioCallback* pCallback) { m_omxAudio.RegisterAudioCallback(pCallback); }
-  void  UnRegisterAudioCallback()                        { m_omxAudio.UnRegisterAudioCallback(); }
   void SetVolume(float fVolume)                          { m_omxAudio.SetVolume(fVolume); }
   void SetMute(bool bOnOff)                              { m_omxAudio.SetMute(bOnOff); }
   void SetDynamicRangeCompression(long drc)              { m_omxAudio.SetDynamicRangeCompression(drc); }

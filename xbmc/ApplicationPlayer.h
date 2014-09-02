@@ -37,7 +37,6 @@ namespace PVR
   class CPVRChannel;
 }
 
-class IAudioCallback;
 class CAction;
 class CPlayerOptions;
 class CStreamDetails;
@@ -133,7 +132,6 @@ public:
   void  Pause();
   bool  QueueNextFile(const CFileItem &file);
   bool  Record(bool bOnOff);
-  void  RegisterAudioCallback(IAudioCallback* pCallback);
   void  Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false);
   int   SeekChapter(int iChapter);
   void  SeekPercentage(float fPercent = 0);
@@ -150,5 +148,4 @@ public:
   void  SetVolume(float volume);
   bool  SwitchChannel(const PVR::CPVRChannel &channel);
   void  ToFFRW(int iSpeed = 0);
-  void  UnRegisterAudioCallback();
 };

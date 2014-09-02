@@ -116,20 +116,6 @@ bool CApplicationPlayer::HasPlayer() const
   return player != NULL; 
 }
 
-void CApplicationPlayer::RegisterAudioCallback(IAudioCallback* pCallback)
-{
-  boost::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->RegisterAudioCallback(pCallback);
-}
-
-void CApplicationPlayer::UnRegisterAudioCallback()
-{
-  boost::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->UnRegisterAudioCallback();
-}
-
 int CApplicationPlayer::GetChapter()
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
