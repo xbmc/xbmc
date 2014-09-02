@@ -433,7 +433,7 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(CSettingGroup *group, cons
       }*/
       StaticIntegerSettingOptions options;
       for (int i = 0; i < 3; ++i)
-        options.push_back(make_pair(i, 13320 + i));
+        options.push_back(make_pair(13320 + i, i));
 
       m_audioStream = -g_application.m_pPlayer->GetAudioStream() - 1;
       m_audioStreamStereoMode = true;
