@@ -899,9 +899,11 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       CFileItem fileToPlay(location, false);
       fileToPlay.SetProperty("StartPercent", position*100.0f);
       ServerInstance->AnnounceToClients(EVENT_LOADING);
+#ifndef TARGET_RASPBERRY_PI
       // froce to internal dvdplayer cause it is the only
       // one who will work well with airplay
       g_application.m_eForcedNextPlayer = EPC_DVDPLAYER;
+#endif
       CApplicationMessenger::Get().MediaPlay(fileToPlay);
     }
   }

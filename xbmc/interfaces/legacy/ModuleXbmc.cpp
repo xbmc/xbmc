@@ -527,7 +527,11 @@ namespace XBMCAddon
     int getPLAYLIST_MUSIC() { return PLAYLIST_MUSIC; }
     int getPLAYLIST_VIDEO() { return PLAYLIST_VIDEO; }
     int getPLAYER_CORE_AUTO() { return EPC_NONE; }
+#ifdef TARGET_RASPBERRY_PI
+    int getPLAYER_CORE_DVDPLAYER() { return EPC_OMXPLAYER; }
+#else
     int getPLAYER_CORE_DVDPLAYER() { return EPC_DVDPLAYER; }
+#endif
     int getPLAYER_CORE_MPLAYER() { return EPC_MPLAYER; }
     int getPLAYER_CORE_PAPLAYER() { return EPC_PAPLAYER; }
     int getTRAY_OPEN() { return TRAY_OPEN; }
