@@ -63,7 +63,6 @@ namespace XFILE
     CRegExp     tempRE(true, CRegExp::autoUtf8);
     const vector<std::string>& strRegExps = g_advancedSettings.m_videoStackRegExps;
     vector<std::string>::const_iterator itRegExp = strRegExps.begin();
-    vector<pair<int, std::string> > badStacks;
     while (itRegExp != strRegExps.end())
     {
       tempRE.RegComp(*itRegExp);

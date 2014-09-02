@@ -353,7 +353,7 @@ BuildObject(CFileItem&                    item,
 {
     PLT_MediaItemResource resource;
     PLT_MediaObject*      object = NULL;
-    std::string thumb, fanart;
+    std::string thumb;
 
     CLog::Log(LOGDEBUG, "UPnP: Building didl for object '%s'", item.GetPath().c_str());
 

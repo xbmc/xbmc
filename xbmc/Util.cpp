@@ -1866,8 +1866,6 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
     "Subtitle",
     NULL};
   
-  vector<std::string> vecExtensionsCached;
-  
   CFileItem item(strMovie, false);
   if ( item.IsInternetStream()
     || item.IsHDHomeRun()
@@ -1970,7 +1968,6 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
     strLookInPaths.push_back(strPath);
   }
   
-  std::string strLExt;
   std::string strDest;
   std::string strItem;
   

@@ -743,7 +743,6 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
   // check if the path contains a filter and temporarily remove it
   // so that the retrieved list of items is unfiltered
   bool canfilter = CanContainFilter(directory);
-  std::string filter;
   CURL url(directory);
   if (canfilter && url.HasOption("filter"))
     directory = RemoveParameterFromPath(directory, "filter");

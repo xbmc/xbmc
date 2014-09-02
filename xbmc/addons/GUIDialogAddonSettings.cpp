@@ -342,7 +342,6 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
           VECSOURCES localShares;
           if (!shares)
           {
-            VECSOURCES networkShares;
             g_mediaManager.GetLocalDrives(localShares);
             if (!source || strcmpi(source, "local") != 0)
               g_mediaManager.GetNetworkLocations(localShares);
