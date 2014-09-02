@@ -38,6 +38,17 @@ bool CGUIWindowPlexPlayQueue::isPQ() const
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIWindowPlexPlayQueue::isPlayList() const
+{
+  CURL url(m_vecItems->GetPath());
+
+  if (boost::starts_with(url.GetFileName(), "playlists"))
+    return true;
+  else
+    return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowPlexPlayQueue::isItemPlaying(CFileItemPtr item)
 {
   int playingID = -1;
@@ -175,14 +186,30 @@ bool CGUIWindowPlexPlayQueue::OnAction(const CAction &action)
     return true;
   }
 
-  // move directly PQ items without requiring editmode
+  // move directly PQ/PL items without requiring editmode
   if ((action.GetID() == ACTION_MOVE_ITEM_UP) || (action.GetID() == ACTION_MOVE_ITEM_DOWN))
   {
     int iSelected = m_viewControl.GetSelectedItem();
     if (iSelected >= 0 && iSelected < (int)m_vecItems->Size())
     {
-      g_plexApplication.playQueueManager->moveItem(m_vecItems->Get(iSelected),
+      if (isPlayList())
+      {
+        int afterID;
+        if (action.GetID() == ACTION_MOVE_ITEM_UP)
+          afterID = iSelected + 1;
+        else
+          afterID = iSelected - 2;
+        
+        if (afterID < 0)
+          afterID += m_vecItems->Size();
+        
+        g_plexApplication.mediaServerClient->movePlayListItem(m_vecItems->Get(iSelected), m_vecItems->Get(afterID));
+      }
+      else
+      {
+        g_plexApplication.playQueueManager->moveItem(m_vecItems->Get(iSelected),
                                                    action.GetID() == ACTION_MOVE_ITEM_UP ? 1 : -1);
+      }
       return true;
     }
   }
@@ -209,8 +236,27 @@ bool CGUIWindowPlexPlayQueue::OnAction(const CAction &action)
         m_viewControl.SetSelectedItem(oldSelectedID);
 
         if (oldSelectedID != newSelectedID)
-          g_plexApplication.playQueueManager->moveItem(m_vecItems->Get(oldSelectedID),
+        {
+          if (isPlayList())
+          {
+            CFileItemPtr after;
+            
+            if (newSelectedID > oldSelectedID)
+              after = m_vecItems->Get(newSelectedID);
+            else
+            {
+              if (newSelectedID > 0)
+                after = m_vecItems->Get(newSelectedID - 1);
+            }
+          
+            g_plexApplication.mediaServerClient->movePlayListItem(m_vecItems->Get(oldSelectedID), after);
+          }
+          else
+          {
+            g_plexApplication.playQueueManager->moveItem(m_vecItems->Get(oldSelectedID),
                                                        newSelectedID - oldSelectedID);
+          }
+        }
         break;
     }
 

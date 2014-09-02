@@ -18,6 +18,7 @@ public:
   bool OnAction(const CAction &action);
   bool isItemPlaying(CFileItemPtr item);
   bool isPQ() const;
+  bool isPlayList() const;
 };
 
 #endif // GUIWINDOWPLEXPLAYQUEUE_H
