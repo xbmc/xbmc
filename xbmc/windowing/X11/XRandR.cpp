@@ -74,7 +74,7 @@ bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
   CStdString cmd;
   cmd  = getenv("XBMC_BIN_HOME");
   cmd += "/xbmc-xrandr";
-  cmd = StringUtils::Format("%s -q --screen %d --current", cmd.c_str(), screennum);
+  cmd = StringUtils::Format("%s -q --screen %d", cmd.c_str(), screennum);
 
   FILE* file = popen(cmd.c_str(),"r");
   if (!file)
