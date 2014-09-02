@@ -14,11 +14,6 @@ def test_parse_manifest(env):
     u = Update.parse(file(manifest, "r").read())
     assert u.platform == env.PLATFORM
 
-    filemap = u.get_filemap()
-
-    for f in env.files[u.targetVersion]:
-      assert f in filemap, ("File: %s was not in manifest?" % f)
-
     for f in u.manifest:
       filePath = os.path.join(os.path.dirname(manifest), u.targetVersion, f.name)
       assert os.path.exists(filePath)
@@ -29,7 +24,7 @@ def test_parse_manifest(env):
 def test_check_zipfiles(env):
   for manifest in env.get_manifestPaths():
     u = Update.parse(file(manifest, "r").read())
-    zfile = os.path.join(env.workdir, u.packages[0].name + ".zip")
+    zfile = os.path.join(env.workdir, u.packages[0].name)
     assert u.packages[0].fileHash == env.get_sha1(zfile)
 
     filemap = u.get_filemap()

@@ -2,8 +2,10 @@
 
 #include "Log.h"
 #include "StringUtils.h"
+#include "FileUtils.h"
 
 #include "tinyxml/tinyxml.h"
+#include "bzip2/bzlib.h"
 
 std::string elementText(const TiXmlElement* element)
 {
@@ -22,8 +24,47 @@ void UpdateScript::parse(const std::string& path)
 {
   m_path.clear();
 
-  TiXmlDocument document(path);
-  if (document.LoadFile())
+  TiXmlDocument document;
+  bool parsed = false;
+
+  if (endsWith(path, ".bz2"))
+  {
+    std::string finalData = "";
+
+    // Bziped script, let's start by unpacking it.
+    BZFILE* bfp = BZ2_bzopen(path.c_str(), "r");
+    if (bfp)
+    {
+      size_t allocated = 1024 * 1024; // start with one MB
+      char *uncompressedData = (char*)malloc(allocated);
+      int err = BZ_OK;
+
+      while (err == BZ_OK)
+      {
+        int read = BZ2_bzRead(&err, bfp, uncompressedData, (int)allocated);
+        LOG(Info, "BZ2_bzRead returned " + intToStr(read) + " " + intToStr(err));
+        if (read > 0)
+          finalData.append(uncompressedData, (size_t)read);
+      }
+
+      free(uncompressedData);
+    }
+
+    if (finalData.size() > 0)
+    {
+      parsed = document.Parse(finalData.c_str());
+    }
+    else
+    {
+      LOG(Warn, "Failed to uncompress bz2 script");
+    }
+  }
+  else
+  {
+    parsed = document.LoadFile(path);
+  }
+
+  if (parsed)
   {
     m_path = path;
 

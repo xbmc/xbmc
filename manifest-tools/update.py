@@ -11,7 +11,7 @@ class PatchElement(dexml.Model):
   patchHash = fields.String(tagname="patchHash")
 
   targetHash = fields.String(tagname="targetHash")
-  targetSize = fields.Integer(tagname="targetSize")
+  targetSize = fields.String(tagname="targetSize")
   targetPerm = fields.String(tagname="targetPerm")
 
   sourceHash = fields.String(tagname="sourceHash")
@@ -25,28 +25,11 @@ class FileElement(dexml.Model):
 
   name = fields.String(tagname="name")
   fileHash = fields.String(tagname="hash")
-  size = fields.Integer(tagname="size")
+  size = fields.String(tagname="size")
   permissions = fields.String(tagname="permissions")
   package = fields.String(tagname="package")
   included = fields.String(tagname="included")
   is_main_binary = fields.String(tagname="is-main-binary", required=False)
-
-  def whyneq(self, other):
-    errors = []
-
-    if self.name != other.name:
-      errors.append("name [%s != %s]" % (self.name, other.name))
-
-    if self.fileHash != other.fileHash:
-      errors.append("hash")
-
-    if self.size != other.size:
-      errors.append("size")
-
-    if self.permissions != other.permissions:
-      errors.append("permissions")
-
-    return errors
 
   def __eq__(self, other):
     return ((self.name == other.name) and 
@@ -64,7 +47,7 @@ class PackageElement(dexml.Model):
 
   name = fields.String(tagname="name")
   fileHash = fields.String(tagname="hash")
-  size = fields.Integer(tagname="size")
+  size = fields.String(tagname="size")
 
 class Update(dexml.Model):
   class meta:
