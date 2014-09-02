@@ -280,3 +280,20 @@ void CPlexMediaServerClient::deleteItemFromPath(const CStdString path)
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, g_windowManager.GetActiveWindow());
   AddJob(new CPlexMediaServerClientJob(path, "DELETE", msg, 16205));
 }
+
+////////////////////////////////////////////////////////////////////////////////////////
+void CPlexMediaServerClient::movePlayListItem(CFileItemPtr item, CFileItemPtr after)
+{
+  CURL url(item->GetPath());
+  url.SetFileName(item->GetProperty("containerKey").asString() + "/" +
+                  item->GetProperty("playlistItemID").asString() + "/move");
+
+  if (after)
+    url.SetOption("after", after->GetProperty("playlistItemID").asString());
+  else
+    url.SetOption("after", "0");
+
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, g_windowManager.GetActiveWindow());
+  AddJob(new CPlexMediaServerClientJob(url.Get(), "PUT", msg, 16205));
+}
+

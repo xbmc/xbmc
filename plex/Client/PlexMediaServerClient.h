@@ -44,6 +44,8 @@ public:
   void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
   void share(const CFileItemPtr &item, const CStdString &network, const CStdString &message);
+  
+  void movePlayListItem(CFileItemPtr item, CFileItemPtr after);
 
   CURL GetItemURL(CFileItemPtr item);
   void SendTranscoderPing(CPlexServerPtr server);
