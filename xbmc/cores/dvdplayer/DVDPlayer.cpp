@@ -2151,12 +2151,14 @@ void CDVDPlayer::HandleMessages()
             {
               m_dvd.iSelectedSPUStream = -1;
               CloseStream(m_CurrentSubtitle, false);
+              m_messenger.Put(new CDVDMsgPlayerSeek((int)GetTime(), true, true, true, true, true));
             }
           }
           else
           {
             CloseStream(m_CurrentSubtitle, false);
             OpenStream(m_CurrentSubtitle, st.id, st.source);
+            m_messenger.Put(new CDVDMsgPlayerSeek((int)GetTime(), true, true, true, true, true));
           }
         }
       }
