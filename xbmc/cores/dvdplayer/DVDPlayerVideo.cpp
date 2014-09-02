@@ -190,6 +190,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   formats  = g_renderManager.SupportedFormats();
 #endif
 
+  m_pullupCorrection.ResetVFRDetection();
   if(hint.flags & AV_DISPOSITION_ATTACHED_PIC)
     return false;
 
@@ -231,6 +232,7 @@ void CDVDPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
 
   m_bFpsInvalid = (hint.fpsrate == 0 || hint.fpsscale == 0);
 
+  m_pullupCorrection.ResetVFRDetection();
   m_bCalcFrameRate = CSettings::Get().GetBool("videoplayer.usedisplayasclock") ||
                      CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF;
   ResetFrameRateCalc();
@@ -238,7 +240,7 @@ void CDVDPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   m_iDroppedRequest = 0;
   m_iLateFrames = 0;
 
-  if( m_fFrameRate > 100 || m_fFrameRate < 5 )
+  if( m_fFrameRate > 120 || m_fFrameRate < 5 )
   {
     CLog::Log(LOGERROR, "CDVDPlayerVideo::OpenStream - Invalid framerate %d, using forced 25fps and just trust timestamps", (int)m_fFrameRate);
     m_fFrameRate = 25;
@@ -1482,10 +1484,12 @@ void CDVDPlayerVideo::CalcFrameRate()
 
   //see if m_pullupCorrection was able to detect a pattern in the timestamps
   //and is able to calculate the correct frame duration from it
-  double frameduration = m_pullupCorrection.GetFrameDuration();
+  double frameduration;
+  if (m_pullupCorrection.VFRDetection()) frameduration = m_pullupCorrection.GetMinFrameDuration();
+  else frameduration = m_pullupCorrection.GetFrameDuration();
 
-  if (frameduration == DVD_NOPTS_VALUE ||
-      (g_advancedSettings.m_videoFpsDetect == 1 && m_pullupCorrection.GetPatternLength() > 1))
+  if ((frameduration==DVD_NOPTS_VALUE) ||
+      ((g_advancedSettings.m_videoFpsDetect==1) && ((m_pullupCorrection.GetPatternLength()>1) && !m_pullupCorrection.VFRDetection())))
   {
     //reset the stored framerates if no good framerate was detected
     m_fStableFrameRate = 0.0;
