@@ -78,10 +78,10 @@ bool CGUIWindowPlexPlayQueue::Update(const CStdString& strDirectory, bool update
   CStdString plexEditMode = m_vecItems->GetProperty("PlexEditMode").asString();
 
   // retrieve PQ itemID from selection
-  int PQselectItemID = -1;
+  CStdString key;
   int selectedItemID = m_viewControl.GetSelectedItem();
   if (selectedItemID >= 0)
-    PQselectItemID = m_vecItems->Get(selectedItemID)->GetProperty("playQueueItemID").asInteger();
+    key = m_vecItems->Get(selectedItemID)->GetProperty("key").asInteger();
 
   if (CGUIPlexMediaWindow::Update(dirPath, updateFilterPath))
   {
@@ -95,12 +95,12 @@ bool CGUIWindowPlexPlayQueue::Update(const CStdString& strDirectory, bool update
     m_vecItems->SetProperty("PlexEditMode", plexEditMode);
 
     // restore selection if any
-    if (PQselectItemID >= 0)
+    if (!key.IsEmpty())
     {
       // try to restore selection based on PQ itemID
       for (int i = 0; i < m_vecItems->Size(); i++)
       {
-        if ((m_vecItems->Get(i)->GetProperty("playQueueItemID").asInteger() == PQselectItemID) &&
+        if ((m_vecItems->Get(i)->GetProperty("key").asString() == key) &&
             (i != selectedItemID))
         {
           m_viewControl.SetSelectedItem(i);
