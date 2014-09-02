@@ -1371,7 +1371,7 @@ bool CVideoDatabase::AddPathToTvShow(int idShow, const std::string &path, const 
 int CVideoDatabase::AddTvShow()
 {
   if (ExecuteQuery("INSERT INTO tvshow(idShow) VALUES(NULL)"))
-    return m_pDS->lastinsertid();
+    return (int)m_pDS->lastinsertid();
   return -1;
 }
 

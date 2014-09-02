@@ -415,7 +415,7 @@ bool CGUIControlListSetting::GetIntegerItems(const CSetting *setting, CFileItemL
     {
       if (!itValue->isInteger())
         return false;
-      values.insert(itValue->asInteger());
+      values.insert((int)itValue->asInteger());
     }
   }
   else
