@@ -26,6 +26,8 @@
 #include <string>
 #include "cores/VideoRenderers/RenderFormats.h"
 
+
+
 extern "C" {
 #include "libavcodec/avcodec.h"
 }
@@ -53,6 +55,7 @@ class COpenMaxVideo;
 struct OpenMaxVideoBuffer;
 class CDVDVideoCodecStageFright;
 class CDVDMediaCodecInfo;
+class CDVDVideoCodecIMXBuffer;
 typedef void* EGLImageKHR;
 
 
@@ -95,6 +98,11 @@ struct DVDVideoPicture
     struct {
       CDVDMediaCodecInfo *mediacodec;
     };
+
+    struct {
+      CDVDVideoCodecIMXBuffer *IMXBuffer;
+    };
+
   };
 
   unsigned int iFlags;
