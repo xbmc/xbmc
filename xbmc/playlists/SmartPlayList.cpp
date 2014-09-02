@@ -265,7 +265,22 @@ vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
 {
   vector<Field> fields;
   bool isVideo = false;
-  if (type == "songs")
+  if (type == "mixed")
+  {
+    fields.push_back(FieldGenre);
+    fields.push_back(FieldAlbum);
+    fields.push_back(FieldArtist);
+    fields.push_back(FieldAlbumArtist);
+    fields.push_back(FieldTitle);
+    fields.push_back(FieldYear);
+    fields.push_back(FieldTime);
+    fields.push_back(FieldTrackNumber);
+    fields.push_back(FieldFilename);
+    fields.push_back(FieldPath);
+    fields.push_back(FieldPlaycount);
+    fields.push_back(FieldLastPlayed);
+  }
+  else if (type == "songs")
   {
     fields.push_back(FieldGenre);
     fields.push_back(FieldAlbum);
@@ -755,7 +770,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
 
     if (m_field == FieldGenre)
       query = negate + " EXISTS (SELECT 1 FROM genrelinkmusicvideo JOIN genre ON genre.idGenre=genrelinkmusicvideo.idGenre WHERE genrelinkmusicvideo.idMVideo = " + GetField(FieldId, strType) + " AND genre.strGenre" + parameter + ")";
-    else if (m_field == FieldArtist)
+    else if (m_field == FieldArtist || m_field == FieldAlbumArtist)
       query = negate + " EXISTS (SELECT 1 FROM artistlinkmusicvideo JOIN actors ON actors.idActor=artistlinkmusicvideo.idArtist WHERE artistlinkmusicvideo.idMVideo = " + GetField(FieldId, strType) + " AND actors.strActor" + parameter + ")";
     else if (m_field == FieldStudio)
       query = negate + " EXISTS (SELECT 1 FROM studiolinkmusicvideo JOIN studio ON studio.idStudio=studiolinkmusicvideo.idStudio WHERE studiolinkmusicvideo.idMVideo = " + GetField(FieldId, strType) + " AND studio.strStudio" + parameter + ")";
