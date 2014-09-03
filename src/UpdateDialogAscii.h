@@ -23,6 +23,7 @@ class UpdateDialogAscii : public UpdateDialog
 		virtual void updateError(const std::string& errorMessage);
 		virtual void updateProgress(int percentage);
 		virtual void updateFinished();
+    virtual void updateMessage(const std::string &message);
 
 	private:
 		tthread::mutex m_mutex;

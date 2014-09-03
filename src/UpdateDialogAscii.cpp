@@ -60,6 +60,10 @@ void UpdateDialogAscii::updateFinished()
 	UpdateDialog::updateFinished();
 }
 
+void UpdateDialogAscii::updateMessage(const std::string &message)
+{
+}
+
 void UpdateDialogAscii::quit()
 {
 }

@@ -73,11 +73,11 @@ bool unpackBundle(int argc, char** argv)
   MacBundle bundle(tmp, AppInfo::name());
 	std::string currentExePath = ProcessUtils::currentProcessPath();
 
-//  if (currentExePath.find(bundle.bundlePath()) != std::string::npos)
-//  {
+  if (currentExePath.find(bundle.bundlePath()) != std::string::npos)
+  {
 		// already running from a bundle
 		return false;
-//  }
+  }
 	LOG(Info,"Creating bundle " + bundle.bundlePath());
 
 	// create a Mac app bundle
