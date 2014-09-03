@@ -529,13 +529,13 @@ void UpdateInstaller::restartMainApp()
 
     args.push_back("--from-auto-update");
 
-		for (std::vector<UpdateScriptFile>::const_iterator iter = m_script->filesToInstall().begin();
-			iter != m_script->filesToInstall().end();
+    for (std::map<std::string, UpdateScriptFile>::const_iterator iter = m_script->filesManifest().begin();
+      iter != m_script->filesManifest().end();
 			iter++)
 		{
-			if (iter->isMainBinary)
+      if (iter->second.isMainBinary)
 			{
-        command = m_targetDir + '/' + iter->path;
+        command = m_targetDir + '/' + iter->second.path;
 			}
 		}
 
