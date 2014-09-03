@@ -68,8 +68,8 @@ class CPullupCorrection
     double m_ptscorrection;        //the correction needed for the last added pts
     double m_trackingpts;          //tracked pts for smoothing the timestamps
     double m_frameduration;        //frameduration exposed to dvdplayer, used for calculating the fps
-    double m_maxframeduration;     // Max value detected for frame duration (for VFR files case)
-    double m_minframeduration;     // Min value detected for frame duration (for VFR files case)
+    double m_maxframeduration;     //Max value detected for frame duration (for VFR files case)
+    double m_minframeduration;     //Min value detected for frame duration (for VFR files case)
     bool   m_haspattern;           //for the log and detecting VFR files case
     int    m_patternlength;        //for the codec info
     std::string GetPatternStr();    //also for the log

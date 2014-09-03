@@ -1484,12 +1484,12 @@ void CDVDPlayerVideo::CalcFrameRate()
 
   //see if m_pullupCorrection was able to detect a pattern in the timestamps
   //and is able to calculate the correct frame duration from it
-  double frameduration;
-  if (m_pullupCorrection.VFRDetection()) frameduration = m_pullupCorrection.GetMinFrameDuration();
-  else frameduration = m_pullupCorrection.GetFrameDuration();
+  double frameduration = m_pullupCorrection.GetFrameDuration();
+  if (m_pullupCorrection.VFRDetection())
+    frameduration = m_pullupCorrection.GetMinFrameDuration();
 
-  if ((frameduration==DVD_NOPTS_VALUE) ||
-      ((g_advancedSettings.m_videoFpsDetect==1) && ((m_pullupCorrection.GetPatternLength()>1) && !m_pullupCorrection.VFRDetection())))
+  if ((frameduration == DVD_NOPTS_VALUE) ||
+      ((g_advancedSettings.m_videoFpsDetect == 1) && ((m_pullupCorrection.GetPatternLength() > 1) && !m_pullupCorrection.VFRDetection())))
   {
     //reset the stored framerates if no good framerate was detected
     m_fStableFrameRate = 0.0;
