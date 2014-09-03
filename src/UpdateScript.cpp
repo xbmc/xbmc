@@ -4,10 +4,12 @@
 #include "StringUtils.h"
 #include "FileUtils.h"
 
-#include "tinyxml/tinyxml.h"
+#include "tinyxml2/tinyxml2.h"
 #include "bzip2/bzlib.h"
 
-std::string elementText(const TiXmlElement* element)
+using namespace tinyxml2;
+
+std::string elementText(const XMLElement* element)
 {
   if (!element)
   {
@@ -24,8 +26,8 @@ void UpdateScript::parse(const std::string& path)
 {
   m_path.clear();
 
-  TiXmlDocument document;
-  bool parsed = false;
+  XMLDocument document;
+  XMLError error = XML_ERROR_EMPTY_DOCUMENT;
 
   if (endsWith(path, ".bz2"))
   {
@@ -52,7 +54,7 @@ void UpdateScript::parse(const std::string& path)
 
     if (finalData.size() > 0)
     {
-      parsed = document.Parse(finalData.c_str());
+      error = document.Parse(finalData.c_str());
     }
     else
     {
@@ -61,21 +63,21 @@ void UpdateScript::parse(const std::string& path)
   }
   else
   {
-    parsed = document.LoadFile(path);
+    error = document.LoadFile(path.c_str());
   }
 
-  if (parsed)
+  if (error == XML_NO_ERROR)
   {
     m_path = path;
 
     LOG(Info, "Loaded script from " + path);
 
-    const TiXmlElement* updateNode = document.RootElement();
+    const XMLElement* updateNode = document.RootElement();
     parseUpdate(updateNode);
   }
   else
   {
-    LOG(Error, "Unable to load script " + path);
+    LOG(Error, "Unable to load script " + path + ", error code: " + intToStr(error));
   }
 }
 
@@ -84,12 +86,12 @@ bool UpdateScript::isValid() const
   return !m_path.empty();
 }
 
-void UpdateScript::parseUpdate(const TiXmlElement* updateNode)
+void UpdateScript::parseUpdate(const XMLElement* updateNode)
 {
   bool isV2Compatible = strToBool(notNullString(updateNode->Attribute("v2-compatible")));
 
-  const TiXmlElement* depsNode = updateNode->FirstChildElement("dependencies");
-  const TiXmlElement* depFileNode = depsNode->FirstChildElement("file");
+  const XMLElement* depsNode = updateNode->FirstChildElement("dependencies");
+  const XMLElement* depFileNode = depsNode->FirstChildElement("file");
   while (depFileNode)
   {
     m_dependencies.push_back(std::string(depFileNode->GetText()));
@@ -111,14 +113,14 @@ void UpdateScript::parseUpdate(const TiXmlElement* updateNode)
     installNodeName = "install";
   }
 
-  const TiXmlElement* prefixNode = updateNode->FirstChildElement("pathprefix");
+  const XMLElement* prefixNode = updateNode->FirstChildElement("pathprefix");
   if (prefixNode)
     m_pathPrefix = notNullString(prefixNode->GetText());
 
-  const TiXmlElement* installNode = updateNode->FirstChildElement(installNodeName);
+  const XMLElement* installNode = updateNode->FirstChildElement(installNodeName);
   if (installNode)
   {
-    const TiXmlElement* installFileNode = installNode->FirstChildElement("file");
+    const XMLElement* installFileNode = installNode->FirstChildElement("file");
     while (installFileNode)
     {
       m_filesToInstall.push_back(parseFile(installFileNode));
@@ -126,10 +128,10 @@ void UpdateScript::parseUpdate(const TiXmlElement* updateNode)
     }
   }
 
-  const TiXmlElement* manifestNode = updateNode->FirstChildElement("manifest");
+  const XMLElement* manifestNode = updateNode->FirstChildElement("manifest");
   if (manifestNode)
   {
-    const TiXmlElement* manifestFileNode = manifestNode->FirstChildElement("file");
+    const XMLElement* manifestFileNode = manifestNode->FirstChildElement("file");
     while (manifestFileNode)
     {
       UpdateScriptFile file = parseFile(manifestFileNode);
@@ -138,10 +140,10 @@ void UpdateScript::parseUpdate(const TiXmlElement* updateNode)
     }
   }
 
-  const TiXmlElement* patchesNode = updateNode->FirstChildElement("patches");
+  const XMLElement* patchesNode = updateNode->FirstChildElement("patches");
   if (patchesNode)
   {
-    const TiXmlElement* patchesFileNode = patchesNode->FirstChildElement("patch");
+    const XMLElement* patchesFileNode = patchesNode->FirstChildElement("patch");
     while (patchesFileNode)
     {
       m_patchesToInstall.push_back(parsePatch(patchesFileNode));
@@ -149,10 +151,10 @@ void UpdateScript::parseUpdate(const TiXmlElement* updateNode)
     }
   }
 
-  const TiXmlElement* uninstallNode = updateNode->FirstChildElement("uninstall");
+  const XMLElement* uninstallNode = updateNode->FirstChildElement("uninstall");
   if (uninstallNode)
   {
-    const TiXmlElement* uninstallFileNode = uninstallNode->FirstChildElement("file");
+    const XMLElement* uninstallFileNode = uninstallNode->FirstChildElement("file");
     while (uninstallFileNode)
     {
       m_filesToUninstall.push_back(uninstallFileNode->GetText());
@@ -160,10 +162,10 @@ void UpdateScript::parseUpdate(const TiXmlElement* updateNode)
     }
   }
 
-  const TiXmlElement* packagesNode = updateNode->FirstChildElement("packages");
+  const XMLElement* packagesNode = updateNode->FirstChildElement("packages");
   if (packagesNode)
   {
-    const TiXmlElement* packageNode = packagesNode->FirstChildElement("package");
+    const XMLElement* packageNode = packagesNode->FirstChildElement("package");
     while (packageNode)
     {
       m_packages.push_back(parsePackage(packageNode));
@@ -172,7 +174,7 @@ void UpdateScript::parseUpdate(const TiXmlElement* updateNode)
   }
 }
 
-UpdateScriptPatch UpdateScript::parsePatch(const TiXmlElement *element)
+UpdateScriptPatch UpdateScript::parsePatch(const XMLElement *element)
 {
   UpdateScriptPatch patch;
   patch.patchHash = elementText(element->FirstChildElement("patchHash"));
@@ -189,7 +191,7 @@ UpdateScriptPatch UpdateScript::parsePatch(const TiXmlElement *element)
   return patch;
 }
 
-UpdateScriptFile UpdateScript::parseFile(const TiXmlElement* element)
+UpdateScriptFile UpdateScript::parseFile(const XMLElement* element)
 {
   UpdateScriptFile file;
   file.path = elementText(element->FirstChildElement("name"));
@@ -208,7 +210,7 @@ UpdateScriptFile UpdateScript::parseFile(const TiXmlElement* element)
   return file;
 }
 
-UpdateScriptPackage UpdateScript::parsePackage(const TiXmlElement* element)
+UpdateScriptPackage UpdateScript::parsePackage(const XMLElement* element)
 {
   UpdateScriptPackage package;
   package.name = elementText(element->FirstChildElement("name"));

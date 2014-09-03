@@ -4,7 +4,10 @@
 #include <vector>
 #include <map>
 
-class TiXmlElement;
+namespace tinyxml2
+{
+  class XMLElement;
+}
 
 /** Represents a package containing one or more
   * files for an update.
@@ -102,10 +105,10 @@ public:
   const std::map<std::string, UpdateScriptFile>& filesManifest() const;
 
 private:
-  void parseUpdate(const TiXmlElement* element);
-  UpdateScriptPatch parsePatch(const TiXmlElement* element);
-  UpdateScriptFile parseFile(const TiXmlElement* element);
-  UpdateScriptPackage parsePackage(const TiXmlElement* element);
+  void parseUpdate(const tinyxml2::XMLElement* element);
+  UpdateScriptPatch parsePatch(const tinyxml2::XMLElement* element);
+  UpdateScriptFile parseFile(const tinyxml2::XMLElement* element);
+  UpdateScriptPackage parsePackage(const tinyxml2::XMLElement* element);
 
   std::string m_path;
   std::vector<std::string> m_dependencies;

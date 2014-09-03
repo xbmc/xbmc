@@ -1,0 +1,204 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		037AE8A5151E692700E0F29F /* xmltest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 037AE8A3151E692700E0F29F /* xmltest.cpp */; };
+		03F28B53152E9B1B00D4CD90 /* tinyxml2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03F28B4A152E9B1B00D4CD90 /* tinyxml2.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		037AE86D151E685F00E0F29F /* xmltest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = xmltest; sourceTree = BUILT_PRODUCTS_DIR; };
+		037AE8A3151E692700E0F29F /* xmltest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xmltest.cpp; path = ../xmltest.cpp; sourceTree = SOURCE_ROOT; };
+		03F28B4A152E9B1B00D4CD90 /* tinyxml2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml2.cpp; sourceTree = "<group>"; };
+		03F28B4B152E9B1B00D4CD90 /* tinyxml2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml2.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		037AE86B151E685F00E0F29F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		037AE056151CCC5200E0F29F = {
+			isa = PBXGroup;
+			children = (
+				037AE069151CCC7000E0F29F /* Classes */,
+				03F28B60152E9B4C00D4CD90 /* Libraries */,
+				037AE06F151CCCB900E0F29F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		037AE069151CCC7000E0F29F /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				037AE8A3151E692700E0F29F /* xmltest.cpp */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		037AE06F151CCCB900E0F29F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				037AE86D151E685F00E0F29F /* xmltest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		03F28AD7152E9B1B00D4CD90 /* tinyxml2 */ = {
+			isa = PBXGroup;
+			children = (
+				03F28B4A152E9B1B00D4CD90 /* tinyxml2.cpp */,
+				03F28B4B152E9B1B00D4CD90 /* tinyxml2.h */,
+			);
+			name = tinyxml2;
+			path = ..;
+			sourceTree = SOURCE_ROOT;
+		};
+		03F28B60152E9B4C00D4CD90 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				03F28AD7152E9B1B00D4CD90 /* tinyxml2 */,
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		037AE86C151E685F00E0F29F /* xmltest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 037AE873151E687E00E0F29F /* Build configuration list for PBXNativeTarget "xmltest" */;
+			buildPhases = (
+				037AE86A151E685F00E0F29F /* Sources */,
+				037AE86B151E685F00E0F29F /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = xmltest;
+			productName = tinyxml2;
+			productReference = 037AE86D151E685F00E0F29F /* xmltest */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		037AE058151CCC5200E0F29F /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 037AE05B151CCC5200E0F29F /* Build configuration list for PBXProject "tinyxml2" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 037AE056151CCC5200E0F29F;
+			productRefGroup = 037AE06F151CCCB900E0F29F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				037AE86C151E685F00E0F29F /* xmltest */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		037AE86A151E685F00E0F29F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				037AE8A5151E692700E0F29F /* xmltest.cpp in Sources */,
+				03F28B53152E9B1B00D4CD90 /* tinyxml2.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		037AE059151CCC5200E0F29F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)/Debug";
+				COPY_PHASE_STRIP = NO;
+				SYMROOT = build;
+			};
+			name = Debug;
+		};
+		037AE05A151CCC5200E0F29F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Release;
+		};
+		037AE86F151E686000E0F29F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ..;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = xmltest;
+			};
+			name = Debug;
+		};
+		037AE870151E686000E0F29F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ..;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = tinyxml2;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		037AE05B151CCC5200E0F29F /* Build configuration list for PBXProject "tinyxml2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				037AE059151CCC5200E0F29F /* Debug */,
+				037AE05A151CCC5200E0F29F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		037AE873151E687E00E0F29F /* Build configuration list for PBXNativeTarget "xmltest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				037AE86F151E686000E0F29F /* Debug */,
+				037AE870151E686000E0F29F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 037AE058151CCC5200E0F29F /* Project object */;
+}

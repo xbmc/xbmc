@@ -51,7 +51,7 @@ if __name__ == "__main__":
   try: os.makedirs(options.output)
   except: pass
 
-  packagepath = os.path.join(options.output, package + "-full.zip")
+  packagepath = os.path.join(options.output, package + ".zip")
 
   zfile = zipfile.ZipFile(packagepath, "w", zipfile.ZIP_DEFLATED)
   for h in hashes:
@@ -63,12 +63,12 @@ if __name__ == "__main__":
   fpe = get_file(packagepath)
   pe = PackageElement()
   pe.fileHash = fpe.fileHash
-  pe.name = package + "-full.zip"
+  pe.name = package + ".zip"
   pe.size = fpe.size
 
   update.packages.append(pe)
 
-  manifestpath = os.path.join(options.output, package + "-manifest.xml.bz2")
+  manifestpath = os.path.join(options.output, package.replace("-full", "-manifest.xml.bz2"))
 
   manifestfp = BZ2File(manifestpath, "w")
   manifestfp.write(update.render(pretty=True))
