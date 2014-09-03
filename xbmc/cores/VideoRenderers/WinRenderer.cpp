@@ -91,10 +91,13 @@ CWinRenderer::CWinRenderer()
   m_format = RENDER_FMT_NONE;
   m_processor = NULL;
   m_neededBuffers = 0;
+
+  g_Windowing.Register(this);
 }
 
 CWinRenderer::~CWinRenderer()
 {
+  g_Windowing.Unregister(this);
   UnInit();
 }
 
@@ -321,6 +324,7 @@ void CWinRenderer::ReleaseImage(int source, bool preserve)
 
 void CWinRenderer::Reset()
 {
+  PreInit();
 }
 
 void CWinRenderer::Update()

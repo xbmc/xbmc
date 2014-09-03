@@ -137,7 +137,7 @@ struct DXVABuffer : SVideoBuffer
   int64_t           id;
 };
 
-class CWinRenderer : public CBaseRenderer
+class CWinRenderer : public CBaseRenderer, public ID3DResource
 {
 public:
   CWinRenderer();
@@ -158,6 +158,11 @@ public:
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
   virtual bool         IsConfigured() { return m_bConfigured; }
+
+  virtual void OnCreateDevice()  {}
+  virtual void OnDestroyDevice() {}
+  virtual void OnLostDevice()    {}
+  virtual void OnResetDevice()   { CSingleLock lock(m_section); Reset(); }
 
   virtual std::vector<ERenderFormat> SupportedFormats() { return m_formats; }
 
@@ -240,6 +245,7 @@ protected:
   unsigned int         m_destHeight;
 
   int                  m_neededBuffers;
+  CCriticalSection     m_section;
 };
 
 #else
