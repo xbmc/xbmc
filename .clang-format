@@ -1,0 +1,47 @@
+---
+# BasedOnStyle:  LLVM
+AccessModifierOffset: -2
+ConstructorInitializerIndentWidth: 2
+AlignEscapedNewlinesLeft: false
+AlignTrailingComments: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakTemplateDeclarations: false
+AlwaysBreakBeforeMultilineStrings: false
+BreakBeforeBinaryOperators: false
+BreakBeforeTernaryOperators: false
+BreakConstructorInitializersBeforeComma: false
+BinPackParameters: true
+ColumnLimit:     100
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+DerivePointerBinding: false
+ExperimentalAutoDetectBinPacking: false
+IndentCaseLabels: true
+MaxEmptyLinesToKeep: 1
+NamespaceIndentation: All
+ObjCSpaceBeforeProtocolList: true
+PenaltyBreakBeforeFirstCallParameter: 19
+PenaltyBreakComment: 60
+PenaltyBreakString: 1000
+PenaltyBreakFirstLessLess: 120
+PenaltyExcessCharacter: 1000000
+PenaltyReturnTypeOnItsOwnLine: 1000
+PointerBindsToType: true
+SpacesBeforeTrailingComments: 1
+Cpp11BracedListStyle: false
+Standard:        Cpp03
+IndentWidth:     2
+TabWidth:        2
+UseTab:          Never
+BreakBeforeBraces: Allman
+IndentFunctionDeclarationAfterType: false
+SpacesInParentheses: false
+SpacesInAngles:  false
+SpaceInEmptyParentheses: false
+SpacesInCStyleCastParentheses: false
+SpaceAfterControlStatementKeyword: true
+SpaceBeforeAssignmentOperators: true
+ContinuationIndentWidth: 0
+...
+

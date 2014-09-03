@@ -1,10 +1,12 @@
 // Workarounds for iostream symbols that are referenced when building on OS X 10.7 but missing from
 // OS X 10.5's stdlibc++.dylib.
 //
-// In the <iostream> headers these are declared as extern templates but the symbols are not present under 10.5.
+// In the <iostream> headers these are declared as extern templates but the symbols are not present
+// under 10.5.
 // This file forces the compiler to instantiate the templates.
 //
-// see http://stackoverflow.com/questions/3484043/os-x-program-runs-on-dev-machine-crashing-horribly-on-others
+// see
+// http://stackoverflow.com/questions/3484043/os-x-program-runs-on-dev-machine-crashing-horribly-on-others
 
 #include <iostream>
 

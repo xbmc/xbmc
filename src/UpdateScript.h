@@ -15,9 +15,9 @@ namespace tinyxml2
 class UpdateScriptPackage
 {
 public:
-  UpdateScriptPackage()
-    : size(0)
-  {}
+  UpdateScriptPackage() : size(0)
+  {
+  }
 
   std::string name;
   std::string sha1;
@@ -26,10 +26,7 @@ public:
 
   bool operator==(const UpdateScriptPackage& other) const
   {
-    return name == other.name &&
-        sha1 == other.sha1 &&
-        source == other.source &&
-        size == other.size;
+    return name == other.name && sha1 == other.sha1 && source == other.source && size == other.size;
   }
 };
 
@@ -37,7 +34,8 @@ class UpdateScriptPatch
 {
 public:
   UpdateScriptPatch() : targetPerm(0)
-  {}
+  {
+  }
 
   std::string path;
   std::string patchPath;
@@ -53,10 +51,9 @@ public:
 class UpdateScriptFile
 {
 public:
-  UpdateScriptFile()
-    : permissions(0)
-    , isMainBinary(false)
-  {}
+  UpdateScriptFile() : permissions(0), isMainBinary(false)
+  {
+  }
 
   std::string path;
   std::string package;
@@ -73,12 +70,9 @@ public:
 
   bool operator==(const UpdateScriptFile& other) const
   {
-    return hash == other.hash &&
-        path == other.path &&
-        package == other.package &&
-        permissions == other.permissions &&
-        linkTarget == other.linkTarget &&
-        isMainBinary == other.isMainBinary;
+    return hash == other.hash && path == other.path && package == other.package &&
+           permissions == other.permissions && linkTarget == other.linkTarget &&
+           isMainBinary == other.isMainBinary;
   }
 };
 
@@ -120,4 +114,3 @@ private:
 
   std::string m_pathPrefix;
 };
-

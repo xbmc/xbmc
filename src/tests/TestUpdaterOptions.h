@@ -2,7 +2,6 @@
 
 class TestUpdaterOptions
 {
-	public:
-		void testOldFormatArgs();
+public:
+  void testOldFormatArgs();
 };
-

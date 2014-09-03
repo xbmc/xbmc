@@ -8,32 +8,31 @@
   */
 class AppInfo
 {
-	public:
-		// Basic application information
-		static std::string name();
-		static std::string appName();
-		static std::string organizationName();
+public:
+  // Basic application information
+  static std::string name();
+  static std::string appName();
+  static std::string organizationName();
 
-		static std::string logFilePath();
+  static std::string logFilePath();
 
-		/** Returns a message to display to the user in the event
-		  * of a problem installing the update.
-		  */
-		static std::string updateErrorMessage(const std::string& details);
+  /** Returns a message to display to the user in the event
+    * of a problem installing the update.
+    */
+  static std::string updateErrorMessage(const std::string& details);
 };
 
 inline std::string AppInfo::name()
 {
-	return "Plex Updater";
+  return "Plex Updater";
 }
 
 inline std::string AppInfo::appName()
 {
-	return APPNAME;
+  return APPNAME;
 }
 
 inline std::string AppInfo::organizationName()
 {
-	return "Plex Inc.";
+  return "Plex Inc.";
 }
-
