@@ -902,6 +902,10 @@ void PAPlayer::Pause()
   }
 }
 
+void PAPlayer::SetEDL(const std::string& path)
+{
+}
+
 void PAPlayer::SetVolume(float volume)
 {
 

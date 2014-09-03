@@ -207,6 +207,13 @@ bool CApplicationPlayer::ControlsVolume() const
   return (player && player->ControlsVolume());
 }
 
+void CApplicationPlayer::SetEDL(const std::string& path)
+{
+  boost::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->SetEDL(path);
+}
+
 void CApplicationPlayer::SetMute(bool bOnOff)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();

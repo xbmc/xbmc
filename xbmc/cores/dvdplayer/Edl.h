@@ -54,6 +54,8 @@ public:
   int GetTotalCutTime() const;
   int RemoveCutTime(int iSeek) const;
   int RestoreCutTime(int iClock) const;
+  void SetFullPath(const std::string& path);
+  void ClearFullPath();
 
   bool InCut(int iSeek, Cut *pCut = NULL) const;
 
@@ -66,6 +68,8 @@ private:
   int m_iTotalCutTime; // ms
   std::vector<Cut> m_vecCuts;
   std::vector<int> m_vecSceneMarkers;
+  std::string m_fullPath;
+  bool m_fullPathSet;
 
   bool ReadEdl(const std::string& strMovie, const float fFramesPerSecond);
   bool ReadComskip(const std::string& strMovie, const float fFramesPerSecond);
