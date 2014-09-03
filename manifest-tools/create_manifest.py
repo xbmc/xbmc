@@ -40,6 +40,7 @@ if __name__ == "__main__":
     h.package = package
   
   update = Update()
+  update.install = hashes
   update.manifest = hashes
   update.version = 4
   update.targetVersion = options.version
