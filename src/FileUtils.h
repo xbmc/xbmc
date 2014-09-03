@@ -73,6 +73,8 @@ class FileUtils
 		  */
 		static bool fileExists(const char* path) throw (IOException);
 
+    static bool fileIsLink(const char *path) throw (IOException);
+
 		/** Returns the Unix mode flags of @p path.  If @p path is a symlink,
 		  * returns the mode flags of the target.
 		  */
@@ -147,5 +149,6 @@ class FileUtils
     static std::string getcwd() throw (IOException);
     static const std::string sha1FromFile(const char *filePath) throw (IOException);
     static void copyTree(const std::string &source, const std::string &destination, std::string root = "") throw (IOException);
+    static std::string getSymlinkTarget(const char *path) throw (IOException);
 };
 

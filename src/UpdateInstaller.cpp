@@ -183,6 +183,12 @@ void UpdateInstaller::run() throw ()
 		// can be made for a particular problem
 		std::string friendlyError;
 
+    std::string backupDir = m_targetDir;
+    if (endsWith(backupDir, "/"))
+      backupDir = backupDir.substr(0, backupDir.size() - 1);
+
+    backupDir += ".bak";
+
 		try
 		{
       LOG(Info, "Copy bundle");
@@ -201,7 +207,7 @@ void UpdateInstaller::run() throw ()
       verifyAgainstManifest();
 
       LOG(Info, "Moving bundle inplace");
-      FileUtils::moveFile(m_targetDir.c_str(), (m_targetDir + ".bak").c_str());
+      FileUtils::moveFile(m_targetDir.c_str(), backupDir.c_str());
       FileUtils::moveFile(m_installDir.c_str(), m_targetDir.c_str());
 
       postInstallUpdate();
@@ -232,7 +238,8 @@ void UpdateInstaller::run() throw ()
 
     try
     {
-      FileUtils::rmdirRecursive((m_targetDir + ".bak").c_str());
+      if (FileUtils::fileExists(backupDir.c_str()))
+        FileUtils::rmdirRecursive(backupDir.c_str());
     }
     catch (const FileUtils::IOException& exception)
     {

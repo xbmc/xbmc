@@ -79,6 +79,46 @@ FileUtils::IOException::Type FileUtils::IOException::type() const
 #endif
 }
 
+bool FileUtils::fileIsLink(const char* path) throw (IOException)
+{
+#ifdef PLATFORM_UNIX
+  struct stat fileInfo;
+  if (lstat(path, &fileInfo) != 0)
+  {
+    if (errno == ENOENT)
+    {
+      throw IOException("Error, no such file" + std::string(path));
+    }
+    return false;
+  }
+  return S_ISLNK(fileInfo.st_mode);
+#else // let's just pretend that windows don't have symlinks, which is almost true
+  return false;
+#endif
+}
+
+std::string FileUtils::getSymlinkTarget(const char* path) throw (IOException)
+{
+#ifdef PLATFORM_UNIX
+  char target[PATH_MAX];
+
+  if (!fileIsLink(path))
+    return "";
+
+  ssize_t targetLen = readlink(path, target, PATH_MAX);
+  if (targetLen != -1)
+  {
+    std::string ret;
+    ret.append(target, (size_t)targetLen);
+    return ret;
+  }
+
+  return "";
+#else
+  return "";
+#endif
+}
+
 bool FileUtils::fileExists(const char* path) throw (IOException)
 {
 #ifdef PLATFORM_UNIX
@@ -519,7 +559,19 @@ void FileUtils::copyTree(const std::string& source, const std::string& destinati
     {
       if (!fileExists(destination.c_str()))
         mkpath(destination.c_str());
-      copyFile(dir.filePath().c_str(), (destination + '/' + dir.fileName()).c_str());
+      if (fileExists(dir.filePath().c_str()))
+      {
+        if (!fileIsLink(dir.filePath().c_str()))
+        {
+          copyFile(dir.filePath().c_str(), (destination + '/' + dir.fileName()).c_str());
+        }
+        else
+        {
+          LOG(Info, "file " + dir.filePath() + " is a link...");
+          createSymLink((destination + "/" + dir.fileName()).c_str(),
+                        getSymlinkTarget(dir.filePath().c_str()).c_str());
+        }
+      }
     }
   }
 }
