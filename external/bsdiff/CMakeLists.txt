@@ -10,7 +10,6 @@ if(NOT WIN32)
   include_directories(${BZIP2_INCLUDE_DIR})
   add_executable(bsdiff-endsley bsdiff.c)
   add_executable(bspatch-endsley bspatch_cmd.c)
-
   target_link_libraries(bsdiff-endsley ${BZIP2_LIBRARY_RELEASE})
   target_link_libraries(bspatch-endsley ${BZIP2_LIBRARY_RELEASE})
 endif(NOT WIN32)

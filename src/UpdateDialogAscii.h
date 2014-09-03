@@ -13,20 +13,19 @@
   */
 class UpdateDialogAscii : public UpdateDialog
 {
-	public:
-		// implements UpdateDialog
-		virtual void init(int argc, char** argv);
-		virtual void exec();
-		virtual void quit();
+public:
+  // implements UpdateDialog
+  virtual void init(int argc, char** argv);
+  virtual void exec();
+  virtual void quit();
 
-		// implements UpdateObserver
-		virtual void updateError(const std::string& errorMessage);
-		virtual void updateProgress(int percentage);
-		virtual void updateFinished();
-    virtual void updateMessage(const std::string &message);
+  // implements UpdateObserver
+  virtual void updateError(const std::string& errorMessage);
+  virtual void updateProgress(int percentage);
+  virtual void updateFinished();
+  virtual void updateMessage(const std::string& message);
 
-	private:
-		tthread::mutex m_mutex;
-		std::ofstream m_output;
+private:
+  tthread::mutex m_mutex;
+  std::ofstream m_output;
 };
-

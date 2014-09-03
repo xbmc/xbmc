@@ -38,13 +38,12 @@ void UpdateScript::parse(const std::string& path)
     if (bfp)
     {
       size_t allocated = 1024 * 1024; // start with one MB
-      char *uncompressedData = (char*)malloc(allocated);
+      char* uncompressedData = (char*)malloc(allocated);
       int err = BZ_OK;
 
       while (err == BZ_OK)
       {
         int read = BZ2_bzRead(&err, bfp, uncompressedData, (int)allocated);
-        LOG(Info, "BZ2_bzRead returned " + intToStr(read) + " " + intToStr(err));
         if (read > 0)
           finalData.append(uncompressedData, (size_t)read);
       }
@@ -174,7 +173,7 @@ void UpdateScript::parseUpdate(const XMLElement* updateNode)
   }
 }
 
-UpdateScriptPatch UpdateScript::parsePatch(const XMLElement *element)
+UpdateScriptPatch UpdateScript::parsePatch(const XMLElement* element)
 {
   UpdateScriptPatch patch;
   patch.patchHash = elementText(element->FirstChildElement("patchHash"));
@@ -240,12 +239,12 @@ const std::vector<std::string>& UpdateScript::filesToUninstall() const
   return m_filesToUninstall;
 }
 
-const std::vector<UpdateScriptPatch> &UpdateScript::patches() const
+const std::vector<UpdateScriptPatch>& UpdateScript::patches() const
 {
   return m_patchesToInstall;
 }
 
-const std::map<std::string, UpdateScriptFile> &UpdateScript::filesManifest() const
+const std::map<std::string, UpdateScriptFile>& UpdateScript::filesManifest() const
 {
   return m_filesManifest;
 }

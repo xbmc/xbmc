@@ -7,7 +7,6 @@ class UpdateDialog;
  */
 class UpdateDialogGtkFactory
 {
-	public:
-		static UpdateDialog* createDialog();
+public:
+  static UpdateDialog* createDialog();
 };
-
