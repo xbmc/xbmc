@@ -84,6 +84,9 @@
 #ifdef HAS_UPNP
 #include "UPnPFile.h"
 #endif
+#ifdef HAVE_LIBBLURAY
+#include "BlurayFile.h"
+#endif
 #include "PipesManager.h"
 #include "PipeFile.h"
 #include "MusicDatabaseFile.h"
@@ -206,6 +209,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (url.IsProtocol("pipe")) return new CPipeFile();    
 #ifdef HAS_UPNP
     else if (url.IsProtocol("upnp")) return new CUPnPFile();
+#endif
+#ifdef HAVE_LIBBLURAY
+    else if (url.IsProtocol("bluray")) return new CBlurayFile();
 #endif
   }
 

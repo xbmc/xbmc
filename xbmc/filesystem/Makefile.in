@@ -121,6 +121,7 @@ endif
 
 ifeq (@HAVE_LIBBLURAY@,1)
 SRCS += BlurayDirectory.cpp
+SRCS += BlurayFile.cpp
 endif
 
 ifeq (@USE_UPNP@,1)
