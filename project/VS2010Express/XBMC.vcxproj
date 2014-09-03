@@ -300,7 +300,6 @@
     <ClCompile Include="..\..\xbmc\filesystem\FileReaderFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\FTPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\FTPParse.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\HDFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\HDHomeRunDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\HDHomeRunFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\HTSPDirectory.cpp" />
@@ -388,6 +387,7 @@
     <ClCompile Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeGrouped.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\win32\Win32Directory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\win32\Win32SMBDirectory.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\win32\Win32File.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\windows\WINFileSMB.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\VirtualDirectory.cpp" />
@@ -856,6 +856,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeGrouped.h" />
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32Directory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32SMBDirectory.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\win32\Win32File.h" />
     <ClInclude Include="..\..\xbmc\filesystem\windows\WINFileSMB.h" />
     <ClInclude Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.h" />
     <ClInclude Include="..\..\xbmc\guilib\cximage.h" />
@@ -1043,7 +1044,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\FileReaderFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\FTPDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\FTPParse.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\HDFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\HDHomeRunDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\HDHomeRunFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\HTSPDirectory.h" />
