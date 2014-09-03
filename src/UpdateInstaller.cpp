@@ -236,6 +236,11 @@ void UpdateInstaller::run() throw ()
 			}
 		}
 
+    if (m_observer)
+    {
+      m_observer->updateMessage("Finishing up...");
+    }
+
     try
     {
       if (FileUtils::fileExists(backupDir.c_str()))
@@ -312,7 +317,7 @@ void UpdateInstaller::updateProgress()
   if (m_observer)
   {
     int toInstall = static_cast<int>(m_script->filesToInstall().size() + m_script->patches().size());
-    double percentage = ((1.0 * m_installed) / toInstall) > 100.0;
+    double percentage = ((1.0 * m_installed) / toInstall) * 100.0;
     m_observer->updateProgress(static_cast<int>(percentage));
   }
 }
@@ -370,6 +375,10 @@ void UpdateInstaller::patchFile(const UpdateScriptPatch& patch)
 
 void UpdateInstaller::copyBundle()
 {
+  if (m_observer)
+  {
+    m_observer->updateMessage("Creating Backup...");
+  }
   m_installDir = m_tempDir + '/' + FileUtils::fileName(m_targetDir.c_str());
   FileUtils::copyTree(m_targetDir, m_installDir);
 }
@@ -377,6 +386,10 @@ void UpdateInstaller::copyBundle()
 void UpdateInstaller::patchFiles()
 {
   std::vector<UpdateScriptPatch>::const_iterator iter = m_script->patches().begin();
+  if (m_observer)
+  {
+    m_observer->updateMessage("Patching Files...");
+  }
   for (; iter != m_script->patches().end(); iter ++)
   {
     patchFile(*iter);
@@ -387,6 +400,10 @@ void UpdateInstaller::patchFiles()
 
 void UpdateInstaller::installFiles()
 {
+  if (m_observer)
+  {
+    m_observer->updateMessage("Installing Files...");
+  }
 	std::vector<UpdateScriptFile>::const_iterator iter = m_script->filesToInstall().begin();
 	for (;iter != m_script->filesToInstall().end();iter++)
 	{
@@ -423,6 +440,11 @@ void UpdateInstaller::verifyAgainstManifest()
   findFiles(m_installDir, files);
   std::map<std::string, UpdateScriptFile> fileMap = m_script->filesManifest();
 
+  if (m_observer)
+  {
+    m_observer->updateMessage("Verifying Installation...");
+  }
+
   for (std::vector<std::string>::const_iterator it = files.begin(); it != files.end(); ++ it)
   {
     std::string filePath = *it;
@@ -447,7 +469,12 @@ void UpdateInstaller::verifyAgainstManifest()
 
 void UpdateInstaller::uninstallFiles()
 {
-	std::vector<std::string>::const_iterator iter = m_script->filesToUninstall().begin();
+  if (m_observer)
+  {
+    m_observer->updateMessage("Removing Files...");
+  }
+
+  std::vector<std::string>::const_iterator iter = m_script->filesToUninstall().begin();
 	for (;iter != m_script->filesToUninstall().end();iter++)
 	{
 		std::string path = m_installDir + '/' + iter->c_str();

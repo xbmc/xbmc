@@ -567,7 +567,6 @@ void FileUtils::copyTree(const std::string& source, const std::string& destinati
         }
         else
         {
-          LOG(Info, "file " + dir.filePath() + " is a link...");
           createSymLink((destination + "/" + dir.fileName()).c_str(),
                         getSymlinkTarget(dir.filePath().c_str()).c_str());
         }

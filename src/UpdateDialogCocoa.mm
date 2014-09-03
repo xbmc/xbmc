@@ -72,6 +72,12 @@ class UpdateDialogPrivate
 	[dialog->progressLabel setTitleWithMnemonic:message];
 	[message release];
 }
+
+- (void) reportUpdateMessage: (id)arg
+{
+  NSString* str = arg;
+  [dialog->progressLabel setTitleWithMnemonic:str];
+}
 @end
 
 UpdateDialogCocoa::UpdateDialogCocoa()
@@ -119,7 +125,7 @@ void UpdateDialogCocoa::init(int /* argc */, char** /* argv */)
 	[d->window setTitle:[NSString stringWithUTF8String:AppInfo::name().c_str()]];
 
 	d->finishButton = [[NSButton alloc] init];
-	[d->finishButton setTitle:@"Finish"];
+  [d->finishButton setTitle:@"Cancel"];
 	[d->finishButton setButtonType:NSMomentaryLightButton];
 	[d->finishButton setBezelStyle:NSRoundedBezelStyle];
 	[d->finishButton setTarget:d->delegate];
@@ -173,7 +179,14 @@ void UpdateDialogCocoa::updateFinished()
 	[d->delegate performSelectorOnMainThread:@selector(reportUpdateFinished:)
 	             withObject:nil
 	             waitUntilDone:false];
-	UpdateDialog::updateFinished();
+  UpdateDialog::updateFinished();
+}
+
+void UpdateDialogCocoa::updateMessage(const std::string &message)
+{
+  [d->delegate performSelectorOnMainThread:@selector(reportUpdateMessage:)
+               withObject:[NSString stringWithUTF8String:message.c_str()]
+               waitUntilDone:false];
 }
 
 void* UpdateDialogCocoa::createAutoreleasePool()
