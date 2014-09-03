@@ -140,7 +140,7 @@
       <row>`~</row>
     </keyboard>
   </layout>
-  <layout name="עברית QWERTY">
+  <layout name="Hebrew QWERTY">
     <keyboard>
       <row>1234567890</row>
       <row>קראטוןםפ</row>
@@ -160,7 +160,7 @@
       <row>`~</row>
     </keyboard>
   </layout>
-  <layout name="עברית אבג">
+  <layout name="Hebrew ABC">
     <keyboard>
       <row>0123456789</row>
       <row>יטחזוהדגבא</row>
