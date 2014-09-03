@@ -17,7 +17,7 @@ if __name__ == "__main__":
   o.add_option("-m", dest="mainbinary", default="Contents/MacOS/Plex Home Theater", type="string")
 
   (options, args) = o.parse_args()
-  package = "%s-%s-%s" % (options.product, options.version, options.platform)
+  package = "%s-%s-%s-full" % (options.product, options.version, options.platform)
 
   if len(args) < 1:
     print "Need directory argument"
