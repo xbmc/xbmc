@@ -358,7 +358,7 @@ void UpdateInstaller::patchFile(const UpdateScriptPatch& patch)
 
     std::string newFilePath = oldFile + ".new";
 
-    if (!bspatch_files(oldFile.c_str(), newFilePath.c_str(), patchDir.c_str()))
+    if (!FileUtils::patchFile(oldFile.c_str(), newFilePath.c_str(), patchDir.c_str()))
     {
       throw "bspatch() failed!";
     }

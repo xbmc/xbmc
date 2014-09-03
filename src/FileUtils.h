@@ -152,4 +152,5 @@ public:
   static void copyTree(const std::string& source, const std::string& destination,
                        std::string root = "") throw(IOException);
   static std::string getSymlinkTarget(const char* path) throw(IOException);
+  static bool patchFile(const char *oldFile, const char *newFile, const char *patchFile);
 };

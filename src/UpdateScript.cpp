@@ -44,7 +44,6 @@ void UpdateScript::parse(const std::string& path)
       while (err == BZ_OK)
       {
         int read = BZ2_bzRead(&err, bfp, uncompressedData, (int)allocated);
-        LOG(Info, "BZ2_bzRead returned " + intToStr(read) + " " + intToStr(err));
         if (read > 0)
           finalData.append(uncompressedData, (size_t)read);
       }

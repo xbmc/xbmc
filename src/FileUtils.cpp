@@ -26,6 +26,8 @@
 #endif
 
 #include "sha1.hpp"
+#include "bsdiff/bspatch.h"
+#include "bzlib.h"
 
 FileUtils::IOException::IOException(const std::string& error)
 {
@@ -734,4 +736,107 @@ std::string FileUtils::getcwd() throw(IOException)
   }
   return toUnixPathSeparators(std::string(path));
 #endif
+}
+
+static int bz2_read(const struct bspatch_stream* stream, void* buffer, int length)
+{
+  int n;
+  int bz2err;
+  BZFILE* bz2;
+
+  bz2 = (BZFILE*)stream->opaque;
+  n = BZ2_bzRead(&bz2err, bz2, buffer, length);
+  if (n != length)
+    return -1;
+
+  return 0;
+}
+
+bool FileUtils::patchFile(const char* oldFile, const char* newFile, const char* patchFile)
+{
+  if (!fileExists(oldFile) || !fileExists(patchFile))
+  {
+    LOG(Error, "Missing patch or old file!");
+    return false;
+  }
+
+  FILE* patchFd = fopen(patchFile, "r");
+  if (!patchFd)
+  {
+    LOG(Error, "Failed to open patch file!");
+    return false;
+  }
+
+  // BSDIFF header that we need to check
+  uint8_t header[24];
+  if (fread(header, 1, 24, patchFd) != 24)
+  {
+    LOG(Error, "Failed to read patch header...");
+
+    fclose(patchFd);
+    return false;
+  }
+
+  // check header magic
+  if (memcmp(header, "ENDSLEY/BSDIFF43", 16) != 0)
+  {
+    LOG(Error, "Patch did not contain correct header!");
+
+    fclose(patchFd);
+    return false;
+  }
+
+  int64_t newSize = bspatch_offtin(header + 16);
+  if (newSize == 0)
+  {
+    LOG(Error, "Failed to get newsize from patch file");
+
+    fclose(patchFd);
+    return false;
+  }
+
+  uint8_t* newData = (uint8_t*)malloc((size_t)newSize + 1);
+  if (newData == NULL)
+  {
+    LOG(Error, "Failed to allocate " + intToStr(newSize) + " bytes of memory");
+
+    fclose(patchFd);
+    return false;
+  }
+
+  int bz2error;
+  BZFILE* bfp = BZ2_bzReadOpen(&bz2error, patchFd, 0, 0, NULL, 0);
+  if (bfp == NULL)
+  {
+    LOG(Error, "Failed to open BZ file after header.");
+
+    free(newData);
+    fclose(patchFd);
+    return false;
+  }
+
+  std::string oldData = readFile(oldFile);
+
+  struct bspatch_stream stream;
+  stream.read = bz2_read;
+  stream.opaque = (void*)bfp;
+
+  if (bspatch((uint8_t*)oldData.c_str(), (int64_t)oldData.size(), newData, newSize, &stream) != 0)
+  {
+    LOG(Error, "Failed to patch file");
+
+    fclose(patchFd);
+    free(newData);
+    BZ2_bzReadClose(&bz2error, bfp);
+    return false;
+  }
+
+  fclose(patchFd);
+  BZ2_bzReadClose(&bz2error, bfp);
+
+  writeFile(newFile, (const char*)newData, (int)newSize);
+
+  free(newData);
+
+  return true;
 }

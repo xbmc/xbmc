@@ -15,7 +15,7 @@ struct bspatch_stream
 
 int bspatch(const uint8_t* old, int64_t oldsize, uint8_t* newdata, int64_t newsize,
             struct bspatch_stream* stream);
-int bspatch_files(const char* oldFile, const char* newFile, const char* patchFile);
+int64_t bspatch_offtin(uint8_t* buf);
 
 #ifdef __cplusplus
 }
