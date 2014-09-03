@@ -61,6 +61,8 @@
 #if defined(TARGET_DARWIN)
 #include <Availability.h>
 #include <mach-o/arch.h>
+#include <sys/sysctl.h>
+#include "utils/auto_buffer.h"
 #elif defined(TARGET_ANDROID)
 #include <android/api-level.h>
 #include <sys/system_properties.h>
@@ -799,6 +801,14 @@ std::string CSysInfo::GetModelName(void)
     modelName.assign(deviceCStr, (propLen > 0 && propLen <= PROP_VALUE_MAX) ? propLen : 0);
 #elif defined(TARGET_DARWIN_IOS)
     modelName = getIosPlatformString();
+#elif defined(TARGET_DARWIN_OSX)
+    size_t nameLen = 0; // 'nameLen' should include terminating null
+    if (sysctlbyname("hw.model", NULL, &nameLen, NULL, NULL) == 0 && nameLen > 1)
+    {
+      XUTILS::auto_buffer buf(nameLen);
+      if (sysctlbyname("hw.model", buf.get(), &nameLen, NULL, NULL) == 0 && nameLen == buf.size())
+        modelName.assign(buf.get(), nameLen - 1); // assign exactly 'nameLen-1' characters to 'modelName'
+    }
 #elif defined(TARGET_WINDOWS)
     HKEY hKey;
     if (RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"HARDWARE\\DESCRIPTION\\System\\BIOS", 0, KEY_READ, &hKey) == ERROR_SUCCESS)
