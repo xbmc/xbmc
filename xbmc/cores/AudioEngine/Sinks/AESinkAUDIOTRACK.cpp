@@ -294,7 +294,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 double CAESinkAUDIOTRACK::GetLatency()
 {
 #if defined(HAS_LIBAMCODEC)
-  if (aml_present())
+  if (aml_present() && !m_passthrough)
     return 0.250;
 #endif
   return 0.0;
