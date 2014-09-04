@@ -3,6 +3,7 @@
 
 #pragma once
 
+#if defined(HAVE_LIBGL)
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -54,5 +55,6 @@ protected:
 XBMC_GLOBAL_REF(CWinSystemX11GL,g_Windowing);
 #define g_Windowing XBMC_GLOBAL_USE(CWinSystemX11GL)
 
+#endif // HAVE_LIBGL
 
 #endif // WINDOW_SYSTEM_H
