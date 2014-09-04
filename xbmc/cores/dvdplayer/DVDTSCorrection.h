@@ -24,6 +24,7 @@
 #include <vector>
 
 #define DIFFRINGSIZE 120
+#define VFR_DETECTION_THRESHOLD 3
 
 class CPullupCorrection
 {
@@ -31,11 +32,15 @@ class CPullupCorrection
     CPullupCorrection();
     void   Add(double pts);
     void   Flush(); //flush the saved pattern and the ringbuffer
+    void   ResetVFRDetection(void);
 
     double GetCorrection()    { return m_ptscorrection;            }
     int    GetPatternLength() { return m_patternlength;            }
     double GetFrameDuration() { return m_frameduration;            }
+    double GetMaxFrameDuration(void) { return m_maxframeduration;  }
+    double GetMinFrameDuration(void) { return m_minframeduration;  }
     bool   HasFullBuffer()    { return m_ringfill == DIFFRINGSIZE; }
+    bool   VFRDetection(void) { return (m_VFRCounter >= VFR_DETECTION_THRESHOLD); }
 
   private:
     double m_prevpts;                //last pts added
@@ -63,7 +68,10 @@ class CPullupCorrection
     double m_ptscorrection;        //the correction needed for the last added pts
     double m_trackingpts;          //tracked pts for smoothing the timestamps
     double m_frameduration;        //frameduration exposed to dvdplayer, used for calculating the fps
-    bool   m_haspattern;           //for the log
+    double m_maxframeduration;     //Max value detected for frame duration (for VFR files case)
+    double m_minframeduration;     //Min value detected for frame duration (for VFR files case)
+    bool   m_haspattern;           //for the log and detecting VFR files case
     int    m_patternlength;        //for the codec info
+    int    m_VFRCounter;           //retry counter for VFR detection
     std::string GetPatternStr();    //also for the log
 };
