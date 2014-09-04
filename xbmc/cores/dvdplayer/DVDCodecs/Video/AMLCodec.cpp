@@ -1734,6 +1734,10 @@ void CAMLCodec::CloseDecoder()
   SysfsUtils::SetInt("/sys/class/tsync/enable", 1);
 
   ShowMainVideo(false);
+
+  // add a little delay after closing in case
+  // we are reopened too fast.
+  usleep(500 * 1000);
 }
 
 void CAMLCodec::Reset()
