@@ -390,7 +390,7 @@ void CPlexPlayQueueManager::removeItem(const CFileItemPtr &item)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-int CPlexPlayQueueManager::getCurrentID(ePlexMediaType type)
+int CPlexPlayQueueManager::getID(ePlexMediaType type)
 {
   CPlexPlayQueuePtr pq = getPlayQueueOfType(type);
   if (pq)
