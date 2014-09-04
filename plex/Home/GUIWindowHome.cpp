@@ -878,7 +878,10 @@ void CGUIWindowHome::HideAllLists()
                    CONTENT_LIST_RECENTLY_ADDED,
                    CONTENT_LIST_QUEUE,
                    CONTENT_LIST_RECOMMENDATIONS,
-                   CONTENT_LIST_PLAYLISTS};
+                   CONTENT_LIST_PLAYLISTS,
+                   CONTENT_LIST_PLAYQUEUE_AUDIO,
+                   CONTENT_LIST_PLAYQUEUE_VIDEO
+  };
 
   BOOST_FOREACH(int id, lists)
   {
