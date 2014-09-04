@@ -545,12 +545,12 @@ void CPVRGUIInfo::CharInfoSNR(std::string &strValue) const
 
 void CPVRGUIInfo::CharInfoBER(std::string &strValue) const
 {
-  strValue = StringUtils::Format("%08X", m_qualityInfo.iBER);
+  strValue = StringUtils::Format("%08X", (unsigned int) m_qualityInfo.iBER);
 }
 
 void CPVRGUIInfo::CharInfoUNC(std::string &strValue) const
 {
-  strValue = StringUtils::Format("%08X", m_qualityInfo.iUNC);
+  strValue = StringUtils::Format("%08X", (unsigned int) m_qualityInfo.iUNC);
 }
 
 void CPVRGUIInfo::CharInfoFrontendName(std::string &strValue) const

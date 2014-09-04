@@ -27,7 +27,7 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "addons/Skin.h"
-#ifdef _DEBUG
+#ifdef _DEBUG_TEXTURES
 #include "utils/TimeUtils.h"
 #endif
 #include "threads/SystemClock.h"
@@ -319,7 +319,7 @@ const CTextureArray& CGUITextureManager::Load(const CStdString& strTextureName, 
   //Lock here, we will do stuff that could break rendering
   CSingleLock lock(g_graphicsContext);
 
-#ifdef _DEBUG
+#ifdef _DEBUG_TEXTURES
   int64_t start;
   start = CurrentHostCounter();
 #endif

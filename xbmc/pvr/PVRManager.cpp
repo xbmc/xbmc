@@ -545,13 +545,13 @@ bool CPVRManager::SetWakeupCommand(void)
     if (nextEvent.IsValid())
     {
       nextEvent.GetAsTime(iWakeupTime);
-        
-      std::string strExecCommand = StringUtils::Format("%s %d", strWakeupCommand.c_str(), iWakeupTime);
-        
+
+      std::string strExecCommand = StringUtils::Format("%s %li", strWakeupCommand.c_str(), iWakeupTime);
+
       const int iReturn = system(strExecCommand.c_str());
       if (iReturn != 0)
         CLog::Log(LOGERROR, "%s - failed to execute wakeup command '%s': %s (%d)", __FUNCTION__, strExecCommand.c_str(), strerror(iReturn), iReturn);
-        
+
       return iReturn == 0;
     }
   }

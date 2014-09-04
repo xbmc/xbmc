@@ -303,7 +303,7 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     break;
   case 'X': // Bitrate
     if( !item->m_bIsFolder && item->m_dwSize != 0 )
-      value = StringUtils::Format("%i kbps", item->m_dwSize);
+      value = StringUtils::Format("%li kbps", item->m_dwSize);
     break;
    case 'W': // Listeners
     if( !item->m_bIsFolder && music && music->GetListeners() != 0 )

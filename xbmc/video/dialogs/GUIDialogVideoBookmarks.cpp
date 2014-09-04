@@ -158,23 +158,22 @@ void CGUIDialogVideoBookmarks::OnPopupMenu(int item)
 {
   if (item < 0 || item >= m_vecItems->Size())
     return;
-  
+
     // highlight the item
   (*m_vecItems)[item]->Select(true);
-  
+
   CContextButtons choices;
-  
+
   int langID = 20404; //"Remove bookmark"
   if (m_bookmarks[item].type == CBookmark::EPISODE)
     langID = 20405;   //"Remove episode bookmark"
   choices.Add(1, langID); 
 
-  
   int button = CGUIDialogContextMenu::ShowAndGetChoice(choices);
-  
+
     // unhighlight the item
   (*m_vecItems)[item]->Select(false);
-  
+
   if (button == 1)
     Delete(item);
 }
@@ -196,8 +195,8 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
 {
   m_bookmarks.clear();
   CBookmark resumemark;
-  
-    // open the d/b and retrieve the bookmarks for the current movie
+
+  // open the d/b and retrieve the bookmarks for the current movie
   CStdString path = g_application.CurrentFile();
   if (g_application.CurrentFileItem().HasProperty("original_listitem_url") && 
      !URIUtils::IsVideoDb(g_application.CurrentFileItem().GetProperty("original_listitem_url").asString()))
@@ -209,7 +208,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
   /* push in the resume mark first */
   if( videoDatabase.GetResumeBookMark(path, resumemark) )
     m_bookmarks.push_back(resumemark);
-  
+
   videoDatabase.Close();
   m_vecItems->Clear();
     // cycle through each stored bookmark and add it to our list control
@@ -217,10 +216,10 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
   {
     if (m_bookmarks[i].type == CBookmark::RESUME)
       m_bookmarks[i].thumbNailImage = "bookmark-resume.png";
-    
+
     CStdString bookmarkTime;
     if (m_bookmarks[i].type == CBookmark::EPISODE)
-      bookmarkTime = StringUtils::Format("%s %i %s %i", g_localizeStrings.Get(20373).c_str(), m_bookmarks[i].seasonNumber, g_localizeStrings.Get(20359).c_str(), m_bookmarks[i].episodeNumber);
+      bookmarkTime = StringUtils::Format("%s %li %s %li", g_localizeStrings.Get(20373).c_str(), m_bookmarks[i].seasonNumber, g_localizeStrings.Get(20359).c_str(), m_bookmarks[i].episodeNumber);
     else
       bookmarkTime = StringUtils::SecondsToTimeString((long)m_bookmarks[i].timeInSeconds, TIME_FORMAT_HH_MM_SS);
     
