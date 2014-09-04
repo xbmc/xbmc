@@ -72,7 +72,7 @@ bool CPlexPlayQueueLocal::addItem(const CFileItemPtr& item, bool next)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-int CPlexPlayQueueLocal::getCurrentID()
+int CPlexPlayQueueLocal::getID()
 {
   if (m_list)
     return m_list->GetProperty("playQueueID").asInteger();
@@ -156,7 +156,7 @@ void CPlexPlayQueueLocal::OnPlayQueueUpdated(ePlexMediaType type, bool startPlay
 bool CPlexPlayQueueLocal::moveItem(const CFileItemPtr& item, const CFileItemPtr& afteritem)
 {
   if (!item || !item->HasProperty("playQueueItemID") ||
-      (item->GetProperty("playQueueID").asInteger() != getCurrentID()))
+      (item->GetProperty("playQueueID").asInteger() != getID()))
     return false;
 
   // define insert Pos
@@ -164,7 +164,7 @@ bool CPlexPlayQueueLocal::moveItem(const CFileItemPtr& item, const CFileItemPtr&
   if (afteritem)
   {
     if (!afteritem->HasProperty("playQueueItemID") ||
-        (afteritem->GetProperty("playQueueID").asInteger() != getCurrentID()))
+        (afteritem->GetProperty("playQueueID").asInteger() != getID()))
       return false;
     else
       insertPos = m_list->IndexOfItem(afteritem->GetPath());

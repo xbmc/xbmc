@@ -63,7 +63,7 @@ public:
   virtual void removeItem(const CFileItemPtr& item) = 0;
   virtual bool addItem(const CFileItemPtr& item, bool next) = 0;
   virtual bool moveItem(const CFileItemPtr& item, const CFileItemPtr& afteritem) = 0;
-  virtual int getCurrentID() = 0;
+  virtual int getID() = 0;
   virtual void get(const CStdString& playQueueID,
                    const CPlexPlayQueueOptions& = CPlexPlayQueueOptions()) = 0;
   virtual CPlexServerPtr server() const = 0;

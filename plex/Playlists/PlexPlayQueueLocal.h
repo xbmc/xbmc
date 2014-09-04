@@ -27,7 +27,7 @@ public:
   virtual void removeItem(const CFileItemPtr &item);
   virtual bool addItem(const CFileItemPtr &item, bool next);
   virtual bool moveItem(const CFileItemPtr& item, const CFileItemPtr& afteritem);
-  virtual int getCurrentID();
+  virtual int getID();
   virtual void get(const CStdString &playQueueID,
                    const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions());
   virtual CPlexServerPtr server() const

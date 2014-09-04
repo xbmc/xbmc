@@ -119,7 +119,7 @@ void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool st
       playlistItem = pl[0];
   }
 
-  int pqID = pq->getCurrentID();
+  int pqID = pq->getID();
 
   CFileItemList list;
   if (!pq->get(list))
@@ -394,7 +394,7 @@ int CPlexPlayQueueManager::getID(ePlexMediaType type)
 {
   CPlexPlayQueuePtr pq = getPlayQueueOfType(type);
   if (pq)
-    return pq->getCurrentID();
+    return pq->getID();
   return -1;
 }
 
@@ -492,7 +492,7 @@ CPlexPlayQueuePtr CPlexPlayQueueManager::getPlayQueueFromID(int id) const
 {
   for (PlayQueueMap::const_iterator it = m_playQueues.begin(); it != m_playQueues.end(); ++it)
   {
-    if (it->second->getCurrentID() == id)
+    if (it->second->getID() == id)
       return it->second;
   }
   

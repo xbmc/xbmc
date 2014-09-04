@@ -119,7 +119,7 @@ bool CPlexPlayQueueServer::create(const CFileItem& container, const CStdString& 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexPlayQueueServer::refresh()
 {
-  int id = getCurrentID();
+  int id = getID();
 
   CLog::Log(LOGDEBUG, "CPlexPlayQueueServer::refresh refreshing playQueue %d", id);
 
@@ -167,7 +167,7 @@ bool CPlexPlayQueueServer::addItem(const CFileItemPtr& item, bool next)
   {
     CURL u = getPlayQueueURL(PlexUtils::GetMediaTypeFromItem(item), uri, "", "", false, false, 0, next);
     CStdString path;
-    path.Format("/playQueues/%d", getCurrentID());
+    path.Format("/playQueues/%d", getID());
 
     u.SetFileName(path);
 
@@ -180,7 +180,7 @@ bool CPlexPlayQueueServer::addItem(const CFileItemPtr& item, bool next)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-int CPlexPlayQueueServer::getCurrentID()
+int CPlexPlayQueueServer::getID()
 {
   CSingleLock lk(m_mapLock);
   if (m_list)
@@ -260,7 +260,7 @@ bool CPlexPlayQueueServer::moveItem(const CFileItemPtr& item, const CFileItemPtr
 {
 
   if (!item || !item->HasProperty("playQueueItemID") ||
-      (item->GetProperty("playQueueID").asInteger() != getCurrentID()))
+      (item->GetProperty("playQueueID").asInteger() != getID()))
     return false;
 
   // define insert pos
@@ -268,7 +268,7 @@ bool CPlexPlayQueueServer::moveItem(const CFileItemPtr& item, const CFileItemPtr
   if (afteritem)
   {
     if (!afteritem->HasProperty("playQueueItemID") ||
-        (afteritem->GetProperty("playQueueID").asInteger() != getCurrentID()))
+        (afteritem->GetProperty("playQueueID").asInteger() != getID()))
       return false;
     else
       insertID = afteritem->GetProperty("playQueueItemID").asString();
