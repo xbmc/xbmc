@@ -124,8 +124,11 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
   }
   else if (url.GetHostName() == "playqueue")
   {
-    // HACK return video PQ for now
-    return GetPlayQueueDirectory(PLEX_MEDIA_TYPE_VIDEO, fileItems);
+    if (url.GetFileName() == "video")
+      return GetPlayQueueDirectory(PLEX_MEDIA_TYPE_VIDEO, fileItems);
+    
+    if (url.GetFileName() == "audio")
+      return GetPlayQueueDirectory(PLEX_MEDIA_TYPE_MUSIC, fileItems);
   }
   else if (url.GetHostName() == "playlists")
   {

@@ -435,6 +435,10 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       }
 
       break;
+      
+    case GUI_MSG_PLEX_PLAYQUEUE_UPDATED:
+      UpdateSections();
+      break;
   }
 
   return ret;
@@ -679,6 +683,7 @@ void CGUIWindowHome::UpdateSections()
   bool haveChannels = false;
   bool haveUpdate = false;
   bool havePlaylists = false;
+  bool havePlayqueues = false;
 
   for (int i = 0; i < oldList.size(); i ++)
   {
@@ -705,6 +710,14 @@ void CGUIWindowHome::UpdateSections()
       {
         havePlaylists = true;
         newList.push_back(item);
+      }
+      else if (item->HasProperty("playqueues"))
+      {
+        if (g_plexApplication.playQueueManager->getPlayQueuesCount())
+        {
+          havePlayqueues = true;
+          newList.push_back(item);
+        }
       }
       else if (item->HasProperty("plexupdate"))
       {
@@ -804,6 +817,9 @@ void CGUIWindowHome::UpdateSections()
 
   if (!havePlaylists)
     AddPlaylists(newList, listUpdated);
+  
+  if ((!havePlayqueues) && g_plexApplication.playQueueManager->getPlayQueuesCount())
+    AddPlayQueues(newList, listUpdated);
 
   if (listUpdated)
   {
@@ -830,6 +846,26 @@ void CGUIWindowHome::AddPlaylists(std::vector<CGUIListItemPtr>& list, bool& upda
 
   AddSection(path, CPlexSectionFanout::SECTION_TYPE_PLAYLISTS, true);
 
+  list.push_back(item);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowHome::AddPlayQueues(std::vector<CGUIListItemPtr>& list, bool& updated)
+{
+  updated = true;
+  
+  CGUIStaticItemPtr item = CGUIStaticItemPtr(new CGUIStaticItem);
+  CStdString path("plexserver://playQueues/");
+  
+  item->SetLabel("Now Playing");
+  item->SetProperty("playqueues", true);
+  item->SetPath("XBMC.ActivateWindow(PlexPlaylistSelection," + path + ",return)");
+  item->SetClickActions(CGUIAction("", item->GetPath()));
+  item->SetProperty("sectionPath", path);
+  item->SetProperty("navigateDirectly", true);
+  
+  AddSection(path, CPlexSectionFanout::SECTION_TYPE_PLAYQUEUES, true);
+  
   list.push_back(item);
 }
 

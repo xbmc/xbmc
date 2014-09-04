@@ -17,6 +17,8 @@ typedef std::pair<int, CFileItemList*> contentListPair;
 #define CONTENT_LIST_QUEUE             11003
 #define CONTENT_LIST_RECOMMENDATIONS   11004
 #define CONTENT_LIST_PLAYLISTS         11005
+#define CONTENT_LIST_PLAYQUEUE_AUDIO   11006
+#define CONTENT_LIST_PLAYQUEUE_VIDEO   11007
 #define CONTENT_LIST_FANART            12000
 
 #define ARTS_PAGE_SIZE  50
@@ -35,7 +37,8 @@ public:
     SECTION_TYPE_QUEUE,
     SECTION_TYPE_GLOBAL_FANART,
     SECTION_TYPE_CHANNELS,
-    SECTION_TYPE_PLAYLISTS
+    SECTION_TYPE_PLAYLISTS,
+    SECTION_TYPE_PLAYQUEUES
   };
 
   CPlexSectionFanout(const CStdString& url, SectionTypes sectionType, bool useGlobalSlideshow);

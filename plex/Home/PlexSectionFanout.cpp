@@ -74,6 +74,14 @@ void CPlexSectionFanout::Refresh()
     if (!g_advancedSettings.m_bHideFanouts)
       m_outstandingJobs.push_back(LoadSection(CURL("plexserver://playlists"), CONTENT_LIST_PLAYLISTS));
   }
+  else if (m_sectionType == SECTION_TYPE_PLAYQUEUES)
+  {
+    if (!g_advancedSettings.m_bHideFanouts)
+    {
+      m_outstandingJobs.push_back(LoadSection(CURL("plexserver://playqueue/video"), CONTENT_LIST_PLAYQUEUE_VIDEO));
+      m_outstandingJobs.push_back(LoadSection(CURL("plexserver://playqueue/audio"), CONTENT_LIST_PLAYQUEUE_AUDIO));
+    }
+  }
   else if (m_sectionType == SECTION_TYPE_QUEUE)
   {
     if (!g_advancedSettings.m_bHideFanouts)

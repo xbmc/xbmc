@@ -79,6 +79,7 @@ private:
   void OnWatchStateChanged(const CGUIMessage& message);
 
   void AddPlaylists(std::vector<CGUIListItemPtr>& list, bool& updated);
+  void AddPlayQueues(std::vector<CGUIListItemPtr>& list,  bool& updated);
   int GetPlayQueueType();
 
   void OnJobComplete(unsigned int jobID, bool success, CJob *job);
