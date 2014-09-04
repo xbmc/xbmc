@@ -138,7 +138,7 @@ public:
     return 0;
   }
 
-  bool getCurrentPlayQueue(ePlexMediaType type, CFileItemList& list);
+  bool getPlayQueue(ePlexMediaType type, CFileItemList& list);
   bool loadPlayQueue(const CPlexServerPtr& server, const std::string& playQueueID,
                      const CPlexPlayQueueOptions& = CPlexPlayQueueOptions());
   void playId(ePlexMediaType type, int id);

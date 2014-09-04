@@ -943,7 +943,7 @@ bool CPlexDirectory::GetPlaylistsDirectory(CFileItemList &items)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexDirectory::GetPlayQueueDirectory(ePlexMediaType type, CFileItemList& items)
 {
-  g_plexApplication.playQueueManager->getCurrentPlayQueue(type, items);
+  g_plexApplication.playQueueManager->getPlayQueue(type, items);
 
   // we always want to return true here, in *worst* case we will just
   // return a empty list.

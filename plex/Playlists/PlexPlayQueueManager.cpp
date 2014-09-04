@@ -303,7 +303,7 @@ bool CPlexPlayQueueManager::reconcilePlayQueueChanges(int playlistType, const CF
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CPlexPlayQueueManager::getCurrentPlayQueue(ePlexMediaType type, CFileItemList& list)
+bool CPlexPlayQueueManager::getPlayQueue(ePlexMediaType type, CFileItemList& list)
 {
   CPlexPlayQueuePtr pq = getPlayQueueOfType(type);
   if (pq)
