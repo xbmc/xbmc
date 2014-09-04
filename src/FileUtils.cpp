@@ -232,7 +232,7 @@ const std::string FileUtils::sha1FromFile(const char* filePath) throw(IOExceptio
   }
 
   std::string fileData = readFile(filePath);
-  SHA1::SHA1 hash;
+  SHA1 hash;
   hash.update((uint8_t*)fileData.c_str(), fileData.length());
   return hash.end().hex();
 }
@@ -589,7 +589,7 @@ std::string FileUtils::tempPath()
 
   tmpDir += "plexUpdater.XXXXX";
   char* templ = (char*)malloc(tmpDir.length() + 1);
-  strlcpy(templ, tmpDir.c_str(), tmpDir.length());
+  strncpy(templ, tmpDir.c_str(), tmpDir.length());
 
   char* dtemp = mkdtemp(templ);
   if (dtemp == NULL)

@@ -117,6 +117,7 @@ def create_delta(data):
 
   # run bsdiff in parallel, we can't add files to the
   # zip in parallel because it's not thread safe
+  print "Going to run delta on %d files" % len(filestodiff)
   pool = Pool(4)
   newUpdate.patches = pool.map(run_bsdiff, filestodiff)
 
