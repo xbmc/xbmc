@@ -182,7 +182,7 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
       case ACTION_PLEX_PQ_CLEAR:
         if (IsPlayQueueContainer(container) || item->HasProperty("playQueueItemID"))
         {
-          g_plexApplication.playQueueManager->clear();
+          g_plexApplication.playQueueManager->clear(PlexUtils::GetMediaTypeFromItem(item));
           return true;
         }
         break;
