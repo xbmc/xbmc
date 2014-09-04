@@ -54,6 +54,7 @@ namespace PVR
   {
   public:
     virtual void OnInitWindow(void);
+    virtual void OnDeinitWindow(int nextWindowID);
     virtual bool OnMessage(CGUIMessage& message);
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
     virtual bool OnContextButton(const CFileItem &item, CONTEXT_BUTTON button) { return false; };
@@ -88,6 +89,8 @@ namespace PVR
     virtual void ShowEPGInfo(CFileItem *item);
     virtual void ShowRecordingInfo(CFileItem *item);
     virtual bool UpdateEpgForChannel(CFileItem *item);
+
+    static std::map<bool, std::string> m_selectedItemPath;
 
     CCriticalSection m_critSection;
     bool m_bRadio;
