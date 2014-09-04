@@ -143,7 +143,7 @@ public:
   bool moveItem(const CFileItemPtr& item, int offset);
   void removeItem(const CFileItemPtr& item);
   int getID(ePlexMediaType type);
-  bool refreshCurrent(ePlexMediaType type);
+  bool refresh(ePlexMediaType type);
   CPlexPlayQueuePtr getImpl(const CFileItem &container);
 
 private:

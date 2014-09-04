@@ -399,7 +399,7 @@ int CPlexPlayQueueManager::getID(ePlexMediaType type)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CPlexPlayQueueManager::refreshCurrent(ePlexMediaType type)
+bool CPlexPlayQueueManager::refresh(ePlexMediaType type)
 {
   CPlexPlayQueuePtr pq = getPlayQueueOfType(type);
   if (pq)

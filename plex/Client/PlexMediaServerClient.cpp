@@ -83,7 +83,7 @@ void CPlexMediaServerClient::OnJobComplete(unsigned int jobID, bool success, CJo
         ePlexMediaType type = PlexUtils::GetMediaTypeFromItem(item);
         if (g_plexApplication.playQueueManager->getID(type) ==
             item->GetProperty("playQueueID").asInteger())
-          g_plexApplication.playQueueManager->refreshCurrent(type);
+          g_plexApplication.playQueueManager->refresh(type);
       }
     }
   }
