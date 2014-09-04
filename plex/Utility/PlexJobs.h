@@ -20,8 +20,8 @@
 #include "TextureCacheJob.h"
 #include "filesystem/File.h"
 
-class IPlexPlayQueueBase;
-typedef boost::shared_ptr<IPlexPlayQueueBase> IPlexPlayQueueBasePtr;
+class CPlexPlayQueue;
+typedef boost::shared_ptr<CPlexPlayQueue> CPlexPlayQueuePtr;
 
 ////////////////////////////////////////////////////////////////////////////////////////
 class CPlexHTTPFetchJob : public CJob

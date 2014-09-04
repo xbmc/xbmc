@@ -8,7 +8,7 @@
 #include "music/tags/MusicInfoTag.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CPlexPlayQueueLocal::CPlexPlayQueueLocal(const CPlexServerPtr& server) : m_server(server)
+CPlexPlayQueueLocal::CPlexPlayQueueLocal(const CPlexServerPtr& server, ePlexMediaType type, int version) : m_server(server), CPlexPlayQueue(type, version)
 {
   m_list = CFileItemListPtr(new CFileItemList);
   m_list->SetFastLookup(true);

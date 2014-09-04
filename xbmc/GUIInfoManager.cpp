@@ -3164,15 +3164,13 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           CStdString pq = m_stringParameters[info.GetData1()];
           boost::to_lower(pq);
 
-          ePlexMediaType type = g_plexApplication.playQueueManager->getCurrentPlayQueueType();
-          EPlexDirectoryType dirType = g_plexApplication.playQueueManager->getCurrentPlayQueueDirType();
-          if (pq == "music" && type == PLEX_MEDIA_TYPE_MUSIC)
+          if (pq == "music" && g_plexApplication.playQueueManager->getPlayQueueOfType(PLEX_MEDIA_TYPE_MUSIC))
             bReturn = true;
-          else if (pq == "clip" && type == PLEX_MEDIA_TYPE_VIDEO && dirType == PLEX_DIR_TYPE_CLIP)
+          else if (pq == "clip" && g_plexApplication.playQueueManager->getPlayQueueOfType(PLEX_MEDIA_TYPE_VIDEO) && g_plexApplication.playQueueManager->getCurrentPlayQueueDirType(PLEX_MEDIA_TYPE_VIDEO) == PLEX_DIR_TYPE_CLIP)
             bReturn = true;
-          else if (pq == "video" && type == PLEX_MEDIA_TYPE_VIDEO && dirType != PLEX_DIR_TYPE_CLIP)
+          else if (pq == "video" && g_plexApplication.playQueueManager->getPlayQueueOfType(PLEX_MEDIA_TYPE_VIDEO) && g_plexApplication.playQueueManager->getCurrentPlayQueueDirType(PLEX_MEDIA_TYPE_VIDEO) != PLEX_DIR_TYPE_CLIP)
             bReturn = true;
-          else if (pq == "any" && type != PLEX_MEDIA_TYPE_UNKNOWN)
+          else if (pq == "any" && g_plexApplication.playQueueManager->getPlayQueuesCount())
             bReturn = true;
         }
       case VIDEOPLAYER_PLEXCONTENT:

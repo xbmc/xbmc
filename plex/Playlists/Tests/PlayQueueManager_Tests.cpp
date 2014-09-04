@@ -187,7 +187,7 @@ TEST_F(PlayQueueManagerTest, PlaylistImplementation)
   // get the playlist
   EXPECT_TRUE(PlexTestUtils::listFromXML(testItem_playlistMusic, list));
   list.SetPath("plexserver://abc123/playlists/123/items");
-  IPlexPlayQueueBasePtr impl = manager.getImpl(list);
+  CPlexPlayQueuePtr impl = manager.getImpl(list);
   EXPECT_STREQ("server", impl->implementationName().c_str());
 }
 
@@ -196,7 +196,7 @@ TEST_F(PlayQueueManagerTest, channelImplementation)
   CFileItemList list;
 
   EXPECT_TRUE(PlexTestUtils::listFromXML(testItem_channelTwit, list));
-  IPlexPlayQueueBasePtr impl = manager.getImpl(list);
+  CPlexPlayQueuePtr impl = manager.getImpl(list);
   EXPECT_STREQ("local", impl->implementationName().c_str());
 }
 
@@ -205,6 +205,6 @@ TEST_F(PlayQueueManagerTest, libraryImplementation)
   CFileItemList list;
 
   EXPECT_TRUE(PlexTestUtils::listFromXML(testItem_episodeListManyItems, list));
-  IPlexPlayQueueBasePtr impl = manager.getImpl(list);
+  CPlexPlayQueuePtr impl = manager.getImpl(list);
   EXPECT_STREQ("server", impl->implementationName().c_str());
 }

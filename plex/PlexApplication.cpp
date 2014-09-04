@@ -327,12 +327,13 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char* 
     }
     else if (stricmp(message, "OnStop") == 0)
     {
-      if (g_plexApplication.playQueueManager->getCurrentPlayQueueType() == PLEX_MEDIA_TYPE_VIDEO)
+      CPlexPlayQueuePtr pq = g_plexApplication.playQueueManager->getPlayQueueOfType(PLEX_MEDIA_TYPE_VIDEO);
+      if (pq)
       {
         CFileItemList list;
         CFileItemPtr lastItem;
 
-        if (g_plexApplication.playQueueManager->getCurrentPlayQueue(list) && list.Get(list.Size() - 1))
+        if (pq->getCurrent(list) && list.Get(list.Size() - 1))
           lastItem = list.Get(list.Size() - 1);
 
         if (lastItem && lastItem->HasMusicInfoTag() && g_application.CurrentFileItemPtr() &&

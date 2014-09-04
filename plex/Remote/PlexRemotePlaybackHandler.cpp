@@ -362,7 +362,8 @@ CPlexRemoteResponse CPlexRemotePlaybackHandler::refreshPlayQueue(const ArgMap &a
 
   playQueueId = boost::lexical_cast<int>(arguments.find("playQueueID")->second);
 
-  if (g_plexApplication.playQueueManager->getCurrentID() == playQueueId)
-    g_plexApplication.playQueueManager->refreshCurrent();
+  CPlexPlayQueuePtr pq = g_plexApplication.playQueueManager->getPlayQueueFromID(playQueueId);
+    pq->refreshCurrent();
+  
   return CPlexRemoteResponse();
 }

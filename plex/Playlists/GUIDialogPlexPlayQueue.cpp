@@ -20,8 +20,8 @@ bool CGUIDialogPlexPlayQueue::OnMessage(CGUIMessage& message)
     LoadPlayQueue();
 
   // make sure we refresh upon exit, as we might have edited PQ
-  if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
-      g_plexApplication.playQueueManager->refreshCurrent();
+  if ((message.GetMessage() == GUI_MSG_WINDOW_DEINIT) && m_vecList->Size())
+    g_plexApplication.playQueueManager->refreshCurrent(PlexUtils::GetMediaTypeFromItem(m_vecList->Get(0)));
 
   return CGUIDialogSelect::OnMessage(message);
 }
@@ -115,7 +115,7 @@ void CGUIDialogPlexPlayQueue::ItemSelected()
 
       // select the new one
       item->Select(true);
-      g_plexApplication.playQueueManager->playCurrentId(PlexUtils::GetItemListID(item));
+      g_plexApplication.playQueueManager->playId(PlexUtils::GetMediaTypeFromItem(item), PlexUtils::GetItemListID(item));
     }
   }
 }

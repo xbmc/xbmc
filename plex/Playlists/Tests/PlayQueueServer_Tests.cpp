@@ -37,7 +37,7 @@ public:
   virtual void SetUp()
   {
     PlexServerManagerTestUtility::SetUp();
-    pq = new CPlexPlayQueueServer(g_plexApplication.serverManager->FindByUUID("abc123"));
+    pq = new CPlexPlayQueueServer(g_plexApplication.serverManager->FindByUUID("abc123"), PLEX_MEDIA_TYPE_VIDEO, 0);
   }
 
   virtual void TearDown()

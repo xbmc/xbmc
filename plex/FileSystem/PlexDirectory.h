@@ -55,7 +55,7 @@ namespace XFILE
     bool GetOnlineChannelDirectory(CFileItemList& items);
 
     /* plexserver://playqueue */
-    bool GetPlayQueueDirectory(CFileItemList& items);
+    bool GetPlayQueueDirectory(ePlexMediaType type, CFileItemList& items);
     
     /* plexserver://playlists */
     bool GetPlaylistsDirectory(CFileItemList& items);

@@ -369,7 +369,7 @@ void CGUIPlexDefaultActionHandler::GetContextButtonsForAction(int actionID, CFil
     case ACTION_QUEUE_ITEM:
     {
       CFileItemList pqlist;
-      g_plexApplication.playQueueManager->getCurrentPlayQueue(pqlist);
+      g_plexApplication.playQueueManager->getCurrentPlayQueue(PlexUtils::GetMediaTypeFromItem(item), pqlist);
 
       if (pqlist.Size())
         buttons.Add(actionID, 52602);
@@ -381,7 +381,7 @@ void CGUIPlexDefaultActionHandler::GetContextButtonsForAction(int actionID, CFil
     case ACTION_PLEX_PQ_ADDUPTONEXT:
     {
       ePlexMediaType itemType = PlexUtils::GetMediaTypeFromItem(item);
-      if (g_plexApplication.playQueueManager->getCurrentPlayQueueType() == itemType)
+      if (g_plexApplication.playQueueManager->getPlayQueueOfType(itemType))
         buttons.Add(actionID, 52603);
       break;
     }

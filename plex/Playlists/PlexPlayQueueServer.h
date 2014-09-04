@@ -9,8 +9,8 @@
 
 class PlayQueueServerTest;
 
-class CPlexPlayQueueServer : public IPlexPlayQueueBase, public IJobCallback,
-    public boost::enable_shared_from_this<CPlexPlayQueueServer>
+class CPlexPlayQueueServer : public CPlexPlayQueue,
+                             public IJobCallback
 {
   friend class PlayQueueServerTest;
 
@@ -21,7 +21,7 @@ class CPlexPlayQueueServer : public IPlexPlayQueueBase, public IJobCallback,
   FRIEND_TEST(PlayQueueServerTest, GetPlayQueueURL_hasNext);
 
 public:
-  CPlexPlayQueueServer(const CPlexServerPtr& server)
+  CPlexPlayQueueServer(const CPlexServerPtr& server, ePlexMediaType type = PLEX_MEDIA_TYPE_UNKNOWN, int version = 0) : CPlexPlayQueue(type, version)
   {
     m_server = server;
   }

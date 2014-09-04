@@ -124,7 +124,8 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
   }
   else if (url.GetHostName() == "playqueue")
   {
-    return GetPlayQueueDirectory(fileItems);
+    // HACK return video PQ for now
+    return GetPlayQueueDirectory(PLEX_MEDIA_TYPE_VIDEO, fileItems);
   }
   else if (url.GetHostName() == "playlists")
   {
@@ -940,9 +941,9 @@ bool CPlexDirectory::GetPlaylistsDirectory(CFileItemList &items)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CPlexDirectory::GetPlayQueueDirectory(CFileItemList& items)
+bool CPlexDirectory::GetPlayQueueDirectory(ePlexMediaType type, CFileItemList& items)
 {
-  g_plexApplication.playQueueManager->getCurrentPlayQueue(items);
+  g_plexApplication.playQueueManager->getCurrentPlayQueue(type, items);
 
   // we always want to return true here, in *worst* case we will just
   // return a empty list.

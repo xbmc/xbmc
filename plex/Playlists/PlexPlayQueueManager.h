@@ -6,6 +6,7 @@
 #include "Client/PlexServer.h"
 #include "PlexJobs.h"
 #include "gtest/gtest_prod.h"
+#include <map>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 class CPlexPlayQueueOptions
@@ -39,21 +40,14 @@ public:
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-class CPlexPlayQueueFetchJob : public CPlexDirectoryFetchJob
+class CPlexPlayQueue : public boost::enable_shared_from_this<CPlexPlayQueue>
 {
-public:
-  CPlexPlayQueueFetchJob(const CURL& url, const CPlexPlayQueueOptions& options)
-    : CPlexDirectoryFetchJob(url), m_options(options)
-  { }
+private:
+  ePlexMediaType m_Type;
+  int m_Version;
 
-  CPlexPlayQueueOptions m_options;
-  IPlexPlayQueueBasePtr m_caller;
-};
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-class IPlexPlayQueueBase
-{
 public:
+  CPlexPlayQueue(ePlexMediaType type = PLEX_MEDIA_TYPE_UNKNOWN, int version = 0) : m_Type(type), m_Version(version)  {};
   virtual const std::string implementationName() = 0;
 
   static bool isSupported(const CPlexServerPtr& server)
@@ -73,9 +67,36 @@ public:
   virtual void get(const CStdString& playQueueID,
                    const CPlexPlayQueueOptions& = CPlexPlayQueueOptions()) = 0;
   virtual CPlexServerPtr server() const = 0;
+  
+  ePlexMediaType getType() const
+  {
+    return m_Type;
+  }
+  
+  int getVersion() const
+  {
+    return m_Version;
+  }
+  
+  inline void setVersion(int version) { m_Version = version; };
 };
 
-typedef boost::shared_ptr<IPlexPlayQueueBase> IPlexPlayQueueBasePtr;
+typedef boost::shared_ptr<CPlexPlayQueue> CPlexPlayQueuePtr;
+typedef std::map<ePlexMediaType, CPlexPlayQueuePtr> PlayQueueMap;
+typedef std::map<ePlexMediaType, CPlexPlayQueuePtr> PlayQueueMapIterator;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+class CPlexPlayQueueFetchJob : public CPlexDirectoryFetchJob
+{
+public:
+  CPlexPlayQueueFetchJob(const CURL& url, const CPlexPlayQueueOptions& options)
+    : CPlexDirectoryFetchJob(url), m_options(options)
+  { }
+
+  CPlexPlayQueueOptions m_options;
+  CPlexPlayQueuePtr m_caller;
+};
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 class CPlexPlayQueueManager
@@ -87,60 +108,56 @@ class CPlexPlayQueueManager
   FRIEND_TEST(PlayQueueManagerTest, ReconcilePlayQueueChanges_largedataset);
 
 public:
-  CPlexPlayQueueManager() : m_playQueueType(PLEX_MEDIA_TYPE_UNKNOWN), m_playQueueVersion(0)
-  {
-
-  }
+  CPlexPlayQueueManager()
+  { 
+  };
+  
   virtual ~CPlexPlayQueueManager() {}
 
   bool create(const CFileItem& container, const CStdString& uri = "",
               const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions());
   void clear();
+  void clear(ePlexMediaType type);
 
   static CStdString getURIFromItem(const CFileItem& item, const CStdString& uri = "");
   static int getPlaylistFromType(ePlexMediaType type);
 
   void playQueueUpdated(const ePlexMediaType& type, bool startPlaying, int id = -1);
 
-  virtual ePlexMediaType getCurrentPlayQueueType() const
-  {
-    return m_playQueueType;
-  }
-  virtual EPlexDirectoryType getCurrentPlayQueueDirType() const;
+  virtual EPlexDirectoryType getCurrentPlayQueueDirType(ePlexMediaType type) const;
 
+  virtual CPlexPlayQueuePtr getPlayQueueOfType(ePlexMediaType type) const;
+  CPlexPlayQueuePtr getPlayQueueFromID(int id) const;
+  
+  inline int getPlayQueuesCount() { return m_playQueues.size(); }
+  
   int getCurrentPlayQueuePlaylist() const
   {
-    return getPlaylistFromType(m_playQueueType);
+    // TODO : Unhack Here
+    //return getPlaylistFromType(m_playQueueType);
+    return 0;
   }
 
-  bool getCurrentPlayQueue(CFileItemList& list);
+  bool getCurrentPlayQueue(ePlexMediaType type, CFileItemList& list);
   bool loadPlayQueue(const CPlexServerPtr& server, const std::string& playQueueID,
                      const CPlexPlayQueueOptions& = CPlexPlayQueueOptions());
-  void loadSavedPlayQueue();
-  void playCurrentId(int id);
+  void playId(ePlexMediaType type, int id);
   void QueueItem(const CFileItemPtr &item, bool next);
-
-  int getCurrentPlayQueueVersion() const
-  {
-    return m_playQueueVersion;
-  }
 
   /* proxy current implementation */
   bool addItem(const CFileItemPtr& item, bool next);
   bool moveItem(const CFileItemPtr &item, const CFileItemPtr& afteritem);
   bool moveItem(const CFileItemPtr& item, int offset);
   void removeItem(const CFileItemPtr& item);
-  int getCurrentID();
-  bool refreshCurrent();
-  IPlexPlayQueueBasePtr getImpl(const CFileItem &container);
+  int getCurrentID(ePlexMediaType type);
+  bool refreshCurrent(ePlexMediaType type);
+  CPlexPlayQueuePtr getImpl(const CFileItem &container);
 
 private:
   bool reconcilePlayQueueChanges(int playlistType, const CFileItemList& list);
-  void saveCurrentPlayQueue(const CPlexServerPtr& server, const CFileItemList& list);
 
-  IPlexPlayQueueBasePtr m_currentImpl;
-  ePlexMediaType m_playQueueType;
-  int m_playQueueVersion;
+protected:
+  PlayQueueMap m_playQueues;
 };
 
 typedef boost::shared_ptr<CPlexPlayQueueManager> CPlexPlayQueueManagerPtr;

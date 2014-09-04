@@ -546,11 +546,6 @@ bool CGUIWindowHome::OnClick(const CGUIMessage& message)
   }
   else
   {
-    if (iAction == ACTION_PLAYER_PLAY && GetCurrentItemName() == "plexserver://playlists/")
-    {
-      g_plexApplication.playQueueManager->playCurrentId(-1);
-      return true;
-    }
     OpenItem(GetCurrentListItem());
   }
 

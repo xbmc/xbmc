@@ -15,7 +15,7 @@ bool CGUIWindowPlexPlayQueue::OnSelect(int iItem)
 
   if (isPQ())
   {
-    g_plexApplication.playQueueManager->playCurrentId(PlexUtils::GetItemListID(item));
+    g_plexApplication.playQueueManager->playId(PlexUtils::GetMediaTypeFromItem(item), PlexUtils::GetItemListID(item));
   }
   else
   {

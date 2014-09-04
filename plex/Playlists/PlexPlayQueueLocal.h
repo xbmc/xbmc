@@ -6,10 +6,10 @@
 #include "Job.h"
 #include "Client/PlexServer.h"
 
-class CPlexPlayQueueLocal : public IPlexPlayQueueBase, public IJobCallback
+class CPlexPlayQueueLocal : public CPlexPlayQueue, public IJobCallback
 {
 public:
-  CPlexPlayQueueLocal(const CPlexServerPtr& server);
+  CPlexPlayQueueLocal(const CPlexServerPtr& server, ePlexMediaType type = PLEX_MEDIA_TYPE_UNKNOWN, int version = 0);
 
   static bool isSupported(const CPlexServerPtr& server)
   {

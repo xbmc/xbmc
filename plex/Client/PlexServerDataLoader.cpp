@@ -235,10 +235,6 @@ bool CPlexServerDataLoaderJob::DoWork()
     m_sectionList->Add(myPlexSection);
   }
 
-  CURL playQueueURL(g_guiSettings.GetString("system.mostrecentplayqueue"));
-  if (playQueueURL.GetHostName() == m_server->GetUUID())
-    g_plexApplication.playQueueManager->loadSavedPlayQueue();
-
   return true;
 }
 

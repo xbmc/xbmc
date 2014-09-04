@@ -8,7 +8,7 @@ class PlexPlayQueueLocalTests : public ::testing::Test
 public:
   void SetUp()
   {
-    pq = new CPlexPlayQueueLocal(CPlexServerPtr());
+    pq = new CPlexPlayQueueLocal(CPlexServerPtr(), PLEX_MEDIA_TYPE_VIDEO);
   }
 
   void TearDown()
