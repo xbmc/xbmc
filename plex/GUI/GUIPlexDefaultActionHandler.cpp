@@ -405,6 +405,11 @@ bool CGUIPlexDefaultActionHandler::PlayMedia(CFileItemPtr item, CFileItemListPtr
   {
     PlayAll(container, false, item);
   }
+  else if (item->HasProperty("playQueueItemID"))
+  {
+    // we are on a PQ item, play the PQ
+    g_plexApplication.playQueueManager->playId(PlexUtils::GetMediaTypeFromItem(item), -1);
+  }
   else
   {
     std::string uri = GetFilteredURI(*item);
