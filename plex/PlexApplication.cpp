@@ -333,7 +333,7 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char* 
         CFileItemList list;
         CFileItemPtr lastItem;
 
-        if (pq->getCurrent(list) && list.Get(list.Size() - 1))
+        if (pq->get(list) && list.Get(list.Size() - 1))
           lastItem = list.Get(list.Size() - 1);
 
         if (lastItem && lastItem->HasMusicInfoTag() && g_application.CurrentFileItemPtr() &&

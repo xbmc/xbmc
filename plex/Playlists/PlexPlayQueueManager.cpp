@@ -30,7 +30,7 @@ bool CPlexPlayQueueManager::create(const CFileItem& container, const CStdString&
   if (pq && pq->getVersion() > 1 && options.showPrompts)
   {
     CFileItemList list;
-    if (pq->getCurrent(list))
+    if (pq->get(list))
     {
       if (list.HasProperty("playQueueLastAddedItemID"))
       {
@@ -122,7 +122,7 @@ void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool st
   int pqID = pq->getCurrentID();
 
   CFileItemList list;
-  if (!pq->getCurrent(list))
+  if (!pq->get(list))
     return;
 
   int selectedId = id;
@@ -307,7 +307,7 @@ bool CPlexPlayQueueManager::getCurrentPlayQueue(ePlexMediaType type, CFileItemLi
 {
   CPlexPlayQueuePtr pq = getPlayQueueOfType(type);
   if (pq)
-    return pq->getCurrent(list);
+    return pq->get(list);
   return false;
 }
 
@@ -319,7 +319,7 @@ EPlexDirectoryType CPlexPlayQueueManager::getCurrentPlayQueueDirType(ePlexMediaT
   CPlexPlayQueuePtr pq = getPlayQueueOfType(type);
   if (pq)
   {
-    list = pq->getCurrent();
+    list = pq->get();
     if (list)
       return list->GetPlexDirectoryType();
   }
@@ -462,7 +462,7 @@ bool CPlexPlayQueueManager::moveItem(const CFileItemPtr &item, int offset)
   {
      CFileItemListPtr list = CFileItemListPtr(new CFileItemList);
 
-     if (pq->getCurrent(*list))
+     if (pq->get(*list))
      {
        int itemIndex = list->IndexOfItem(item->GetPath());
        int targetpos = ((((itemIndex + offset) % list->Size()) + list->Size()) % list->Size());

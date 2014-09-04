@@ -37,8 +37,8 @@ public:
   virtual bool create(const CFileItem &container, const CStdString& uri = "",
                       const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions());
   virtual bool refreshCurrent();
-  virtual bool getCurrent(CFileItemList& list);
-  virtual const CFileItemList* getCurrent() { return m_list.get(); }
+  virtual bool get(CFileItemList& list);
+  virtual const CFileItemList* get() { return m_list.get(); }
   virtual void removeItem(const CFileItemPtr& item);
   virtual bool addItem(const CFileItemPtr& item, bool next);
   virtual bool moveItem(const CFileItemPtr& item, const CFileItemPtr& afteritem);

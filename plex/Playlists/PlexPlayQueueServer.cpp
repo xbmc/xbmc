@@ -131,7 +131,7 @@ bool CPlexPlayQueueServer::refreshCurrent()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CPlexPlayQueueServer::getCurrent(CFileItemList& list)
+bool CPlexPlayQueueServer::get(CFileItemList& list)
 {
   CSingleLock lk(m_mapLock);
   if (m_list)

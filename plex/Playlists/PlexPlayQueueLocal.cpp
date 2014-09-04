@@ -93,7 +93,7 @@ bool CPlexPlayQueueLocal::refreshCurrent()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CPlexPlayQueueLocal::getCurrent(CFileItemList& list)
+bool CPlexPlayQueueLocal::get(CFileItemList& list)
 {
   if (m_list)
   {
