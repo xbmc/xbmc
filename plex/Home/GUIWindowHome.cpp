@@ -437,7 +437,12 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       break;
       
     case GUI_MSG_PLEX_PLAYQUEUE_UPDATED:
+      
+      // PQ home menu item should be updated in case we have a new or have no more PQ
       UpdateSections();
+      
+      // we also need to refresh the fanouts
+      RefreshSection("plexserver://playQueues/", CPlexSectionFanout::SECTION_TYPE_PLAYQUEUES);
       break;
   }
 
