@@ -855,7 +855,7 @@ int CalculateMinutes( int seconds )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-#if _WIN32_WINNT < 0x0602
+#if _WIN32_WINNT < 0x0602 && !defined(ntohll)
 DWORD64 ntohll(DWORD64 llValue)
 {
     DWORD64 retval = 0;
