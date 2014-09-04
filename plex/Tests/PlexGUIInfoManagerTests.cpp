@@ -6,6 +6,7 @@
 #include "Application.h"
 #include "PlexApplication.h"
 #include "Playlists/PlexPlayQueueManager.h"
+#include "Playlists/PlexPlayQueueServer.h"
 
 class FakeVideoPlayer : public CDVDPlayer
 {
@@ -179,14 +180,14 @@ class PlexPlayQueueManagerFake : public CPlexPlayQueueManager
 {
 public:
   PlexPlayQueueManagerFake(ePlexMediaType type, EPlexDirectoryType dirType)
-    : CPlexPlayQueueManager(), type(type), dirType(dirType)
-  {  }
+    : CPlexPlayQueueManager(), m_type(type), m_dirType(dirType)
+  { m_playQueues[m_type] = CPlexPlayQueuePtr(new CPlexPlayQueueServer(CPlexServerPtr(), m_type, 0)); }
 
-  EPlexDirectoryType getCurrentPlayQueueDirType() const { return dirType; }
-  ePlexMediaType getCurrentPlayQueueType() const { return type; }
-
-  ePlexMediaType type;
-  EPlexDirectoryType dirType;
+  virtual EPlexDirectoryType getCurrentPlayQueueDirType(ePlexMediaType type) const { return m_dirType; }
+  virtual ePlexMediaType getCurrentPlayQueueType(ePlexMediaType type) const { return m_type; }
+ 
+  ePlexMediaType m_type;
+  EPlexDirectoryType m_dirType;
 };
 
 class PlexGUIInfoManagerPlayQueueTest : public PlexGUIInfoManagerTest
