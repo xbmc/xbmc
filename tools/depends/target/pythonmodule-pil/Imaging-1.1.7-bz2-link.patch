@@ -1,0 +1,13 @@
+diff --git a/setup.py b/setup.py
+index 5872f72..372eeaa 100644
+--- a/setup.py
++++ b/setup.py
+@@ -293,7 +293,7 @@ class pil_build_ext(build_ext):
+             if feature.freetype_version == 20:
+                 defs.append(("USE_FREETYPE_2_0", None))
+             exts.append(Extension(
+-                "_imagingft", ["_imagingft.c"], libraries=["freetype"],
++                "_imagingft", ["_imagingft.c"], libraries=["freetype", "bz2", "z"],
+                 define_macros=defs
+                 ))
+ 
