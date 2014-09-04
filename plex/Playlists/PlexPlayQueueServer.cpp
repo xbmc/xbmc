@@ -1,4 +1,4 @@
-#include "PlexPlayQueueServer.h"
+  #include "PlexPlayQueueServer.h"
 #include "PlexUtils.h"
 #include "PlexJobs.h"
 #include "playlists/PlayList.h"
@@ -165,7 +165,7 @@ bool CPlexPlayQueueServer::addItem(const CFileItemPtr& item, bool next)
 
   if (server)
   {
-    CURL u = getPlayQueueURL(PlexUtils::GetMediaTypeFromItem(item), uri, "", false, false, 0, next);
+    CURL u = getPlayQueueURL(PlexUtils::GetMediaTypeFromItem(item), uri, "", "", false, false, 0, next);
     CStdString path;
     path.Format("/playQueues/%d", getCurrentID());
 
