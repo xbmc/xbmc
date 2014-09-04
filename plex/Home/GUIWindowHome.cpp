@@ -221,7 +221,7 @@ CFileItemPtr CGUIWindowHome::GetCurrentFanoutItem()
 {
   int focusedControl = GetFocusedControlID();
   if (focusedControl >= CONTENT_LIST_RECENTLY_ADDED &&
-      focusedControl <= CONTENT_LIST_PLAYLISTS)
+      focusedControl <= CONTENT_LIST_PLAYQUEUE_VIDEO)
   {
     CGUIBaseContainer* container = (CGUIBaseContainer*)(GetControl(focusedControl));
     if (container)
