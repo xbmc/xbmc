@@ -859,8 +859,6 @@ void CGUIWindowHome::AddPlayQueues(std::vector<CGUIListItemPtr>& list, bool& upd
   
   item->SetLabel("Now Playing");
   item->SetProperty("playqueues", true);
-  item->SetPath("XBMC.ActivateWindow(PlexPlaylistSelection," + path + ",return)");
-  item->SetClickActions(CGUIAction("", item->GetPath()));
   item->SetProperty("sectionPath", path);
   item->SetProperty("navigateDirectly", true);
   
