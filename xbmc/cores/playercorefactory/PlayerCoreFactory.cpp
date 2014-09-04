@@ -342,13 +342,6 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     paplayer->m_bPlaysAudio = true;
     m_vecCoreConfigs.push_back(paplayer);
 
-#if defined(HAS_OMXPLAYER)
-    CPlayerCoreConfig* omxplayer = new CPlayerCoreConfig("OMXPlayer", EPC_OMXPLAYER, NULL);
-    omxplayer->m_bPlaysAudio = true;
-    omxplayer->m_bPlaysVideo = true;
-    m_vecCoreConfigs.push_back(omxplayer);
-#endif
-
     for(std::vector<CPlayerSelectionRule *>::iterator it = m_vecCoreSelectionRules.begin(); it != m_vecCoreSelectionRules.end(); ++it)
       delete *it;
     m_vecCoreSelectionRules.clear();

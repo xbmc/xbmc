@@ -36,7 +36,6 @@
 
 class CDVDPlayer;
 class CDVDAudioCodec;
-class IAudioCallback;
 class CDVDAudioCodec;
 
 #define DECODE_FLAG_DROP    1
@@ -102,7 +101,7 @@ public:
   XbmcThreads::EndTime m_timer;
 };
 
-class CDVDPlayerAudio : public CThread, public IDVDStreamPlayer
+class CDVDPlayerAudio : public CThread, public IDVDStreamPlayerAudio
 {
 public:
   CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent);
@@ -110,9 +109,6 @@ public:
 
   bool OpenStream(CDVDStreamInfo &hints);
   void CloseStream(bool bWaitForBuffers);
-
-  void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdAudio.RegisterAudioCallback(pCallback); }
-  void UnRegisterAudioCallback()                        { m_dvdAudio.UnRegisterAudioCallback(); }
 
   void SetSpeed(int speed);
   void Flush();
@@ -146,6 +142,8 @@ public:
   bool IsStalled() const                            { return m_stalled;  }
   bool IsEOS()                                      { return false; }
   bool IsPassthrough() const;
+  double GetDelay() { return 0.0; }
+  double GetCacheTotal() { return 0.0; }
 protected:
 
   virtual void OnStartup();

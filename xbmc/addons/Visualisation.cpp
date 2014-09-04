@@ -109,7 +109,6 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
 
     CreateBuffers();
 
-    g_application.m_pPlayer->RegisterAudioCallback(this);
     CAEFactory::RegisterAudioCallback(this);
 
     return true;
@@ -174,7 +173,6 @@ void CVisualisation::Render()
 
 void CVisualisation::Stop()
 {
-  g_application.m_pPlayer->UnRegisterAudioCallback();
   CAEFactory::UnregisterAudioCallback();
   if (Initialized())
   {

@@ -36,7 +36,7 @@
 #include "utils/BitstreamStats.h"
 #include "xbmc/linux/DllBCM.h"
 
-class OMXPlayerAudio : public CThread, public IDVDStreamPlayer
+class OMXPlayerAudio : public CThread, public IDVDStreamPlayerAudio
 {
 protected:
   CDVDMessageQueue      m_messageQueue;
@@ -63,7 +63,6 @@ protected:
 
   bool                      m_buffer_empty;
   bool                      m_flush;
-  int                       m_nChannels;
   bool                      m_DecoderOpen;
 
   bool                      m_bad_state;
@@ -100,14 +99,13 @@ public:
   double GetCurrentPts() { return m_audioClock; };
   void SubmitEOS();
 
-  void  RegisterAudioCallback(IAudioCallback* pCallback) { m_omxAudio.RegisterAudioCallback(pCallback); }
-  void  UnRegisterAudioCallback()                        { m_omxAudio.UnRegisterAudioCallback(); }
   void SetVolume(float fVolume)                          { m_omxAudio.SetVolume(fVolume); }
   void SetMute(bool bOnOff)                              { m_omxAudio.SetMute(bOnOff); }
   void SetDynamicRangeCompression(long drc)              { m_omxAudio.SetDynamicRangeCompression(drc); }
   float GetDynamicRangeAmplification() const             { return m_omxAudio.GetDynamicRangeAmplification(); }
   void SetSpeed(int iSpeed);
   int  GetAudioBitrate();
+  int GetAudioChannels();
   std::string GetPlayerInfo();
 
   bool BadState() { return m_bad_state; }

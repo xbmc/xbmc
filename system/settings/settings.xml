@@ -752,6 +752,15 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.useomxplayer" type="boolean" label="13458" help="13459">
+          <requirement>HAS_OMXPLAYER</requirement>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">1</dependency>
+          </dependencies>
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.useomx" type="boolean" label="13430" help="36161">
           <requirement>HAVE_LIBOPENMAX</requirement>
           <dependencies>

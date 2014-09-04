@@ -28,8 +28,6 @@ class CDummyVideoPlayer : public IPlayer, public CThread
 public:
   CDummyVideoPlayer(IPlayerCallback& callback);
   virtual ~CDummyVideoPlayer();
-  virtual void RegisterAudioCallback(IAudioCallback* pCallback) {}
-  virtual void UnRegisterAudioCallback()                        {}
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
   virtual bool CloseFile();
   virtual bool IsPlaying() const;

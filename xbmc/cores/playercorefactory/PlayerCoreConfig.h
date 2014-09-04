@@ -24,9 +24,6 @@
 #include "PlayerCoreFactory.h"
 #include "cores/dvdplayer/DVDPlayer.h"
 #include "cores/paplayer/PAPlayer.h"
-#if defined(HAS_OMXPLAYER)
-#include "cores/omxplayer/OMXPlayer.h"
-#endif
 #include "cores/ExternalPlayer/ExternalPlayer.h"
 #ifdef HAS_UPNP
 #include "network/upnp/UPnPPlayer.h"
@@ -97,20 +94,9 @@ public:
     switch(m_eCore)
     {
       case EPC_MPLAYER:
-      // TODO: this hack needs removal until we have a better player selection
-#if defined(HAS_OMXPLAYER)
-      case EPC_DVDPLAYER: 
-        pPlayer = new COMXPlayer(callback); 
-        CLog::Log(LOGINFO, "Created player %s for core %d / OMXPlayer forced as DVDPlayer", "OMXPlayer", m_eCore);
-        break;
-#else
       case EPC_DVDPLAYER: pPlayer = new CDVDPlayer(callback); break;
-#endif
       case EPC_PAPLAYER: pPlayer = new PAPlayer(callback); break;
       case EPC_EXTPLAYER: pPlayer = new CExternalPlayer(callback); break;
-#if defined(HAS_OMXPLAYER)
-      case EPC_OMXPLAYER: pPlayer = new COMXPlayer(callback); break;
-#endif
 #if defined(HAS_UPNP)
       case EPC_UPNPPLAYER: pPlayer = new UPNP::CUPnPPlayer(callback, m_id.c_str()); break;
 #endif

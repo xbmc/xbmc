@@ -40,7 +40,7 @@
 #include "settings/Settings.h"
 #include "utils/TimeUtils.h"
 
-#include "OMXPlayer.h"
+#include "DVDPlayer.h"
 #include "linux/RBP.h"
 #include "cores/AudioEngine/AEFactory.h"
 
@@ -77,7 +77,6 @@ OMXPlayerAudio::OMXPlayerAudio(OMXClock *av_clock, CDVDMessageQueue& parent)
   m_stalled       = false;
   m_audioClock    = DVD_NOPTS_VALUE;
   m_buffer_empty  = false;
-  m_nChannels     = 0;
   m_DecoderOpen   = false;
   m_bad_state     = false;
   m_hints_current.Clear();
@@ -141,7 +140,6 @@ void OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec)
   m_silence         = false;
   m_started         = false;
   m_flush           = false;
-  m_nChannels       = 0;
   m_stalled         = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_use_hw_decode   = g_advancedSettings.m_omxHWAudioDecode;
   m_format.m_dataFormat    = GetDataFormat(m_hints);
@@ -428,15 +426,27 @@ void OMXPlayerAudio::Process()
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_DISPLAYTIME))
     {
-      COMXPlayer::SPlayerState& state = ((CDVDMsgType<COMXPlayer::SPlayerState>*)pMsg)->m_value;
-      double pts = m_audioClock;
-      double stamp = m_av_clock->OMXMediaTime();
+      CDVDPlayer::SPlayerState& state = ((CDVDMsgType<CDVDPlayer::SPlayerState>*)pMsg)->m_value;
 
-      if(state.time_src == COMXPlayer::ETIMESOURCE_CLOCK)
-        state.time      = stamp == 0.0 ? state.time : DVD_TIME_TO_MSEC(stamp + state.time_offset);
+      if (m_speed != DVD_PLAYSPEED_NORMAL && m_speed != DVD_PLAYSPEED_PAUSE)
+      {
+        if(state.time_src == CDVDPlayer::ETIMESOURCE_CLOCK)
+          state.time      = DVD_TIME_TO_MSEC(m_av_clock->GetClock(state.timestamp) + state.time_offset);
+        else
+          state.timestamp = CDVDClock::GetAbsoluteClock();
+      }
       else
-        state.time      = stamp == 0.0 || pts == DVD_NOPTS_VALUE ? state.time : state.time + DVD_TIME_TO_MSEC(stamp - pts);
-      state.timestamp = m_av_clock->GetAbsoluteClock();
+      {
+        double pts = m_audioClock;
+        double stamp = m_av_clock->OMXMediaTime();
+        if(state.time_src == CDVDPlayer::ETIMESOURCE_CLOCK)
+          state.time      = stamp == 0.0 ? state.time : DVD_TIME_TO_MSEC(stamp + state.time_offset);
+        else
+          state.time      = stamp == 0.0 || pts == DVD_NOPTS_VALUE ? state.time : state.time + DVD_TIME_TO_MSEC(stamp - pts);
+        state.timestamp = CDVDClock::GetAbsoluteClock();
+        if (stamp == 0.0) // cause message to be ignored
+          state.player = 0;
+      }
       state.player    = DVDPLAYER_AUDIO;
       m_messageParent.Put(pMsg->Acquire());
     }
@@ -552,7 +562,6 @@ AEDataFormat OMXPlayerAudio::GetDataFormat(CDVDStreamInfo hints)
 
 bool OMXPlayerAudio::OpenDecoder()
 {
-  m_nChannels   = m_hints.channels;
   m_passthrough = false;
   m_hw_decode   = false;
 
@@ -587,7 +596,7 @@ bool OMXPlayerAudio::OpenDecoder()
   else
   {
     CLog::Log(LOGINFO, "Audio codec %s channels %d samplerate %d bitspersample %d\n",
-      m_codec_name.c_str(), m_nChannels, m_hints.samplerate, m_hints.bitspersample);
+      m_codec_name.c_str(), m_hints.channels, m_hints.samplerate, m_hints.bitspersample);
   }
 
   m_started = false;
@@ -638,6 +647,11 @@ void OMXPlayerAudio::SetSpeed(int speed)
 int OMXPlayerAudio::GetAudioBitrate()
 {
   return (int)m_audioStats.GetBitrate();
+}
+
+int OMXPlayerAudio::GetAudioChannels()
+{
+  return m_hints.channels;
 }
 
 std::string OMXPlayerAudio::GetPlayerInfo()
