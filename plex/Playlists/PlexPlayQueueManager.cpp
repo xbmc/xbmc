@@ -312,7 +312,7 @@ bool CPlexPlayQueueManager::getCurrentPlayQueue(ePlexMediaType type, CFileItemLi
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-EPlexDirectoryType CPlexPlayQueueManager::getCurrentPlayQueueDirType(ePlexMediaType type) const
+EPlexDirectoryType CPlexPlayQueueManager::getPlayQueueDirType(ePlexMediaType type) const
 {
   const CFileItemList* list;
   

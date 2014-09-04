@@ -3166,9 +3166,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
 
           if (pq == "music" && g_plexApplication.playQueueManager->getPlayQueueOfType(PLEX_MEDIA_TYPE_MUSIC))
             bReturn = true;
-          else if (pq == "clip" && g_plexApplication.playQueueManager->getPlayQueueOfType(PLEX_MEDIA_TYPE_VIDEO) && g_plexApplication.playQueueManager->getCurrentPlayQueueDirType(PLEX_MEDIA_TYPE_VIDEO) == PLEX_DIR_TYPE_CLIP)
+          else if (pq == "clip" && g_plexApplication.playQueueManager->getPlayQueueOfType(PLEX_MEDIA_TYPE_VIDEO) && g_plexApplication.playQueueManager->getPlayQueueDirType(PLEX_MEDIA_TYPE_VIDEO) == PLEX_DIR_TYPE_CLIP)
             bReturn = true;
-          else if (pq == "video" && g_plexApplication.playQueueManager->getPlayQueueOfType(PLEX_MEDIA_TYPE_VIDEO) && g_plexApplication.playQueueManager->getCurrentPlayQueueDirType(PLEX_MEDIA_TYPE_VIDEO) != PLEX_DIR_TYPE_CLIP)
+          else if (pq == "video" && g_plexApplication.playQueueManager->getPlayQueueOfType(PLEX_MEDIA_TYPE_VIDEO) && g_plexApplication.playQueueManager->getPlayQueueDirType(PLEX_MEDIA_TYPE_VIDEO) != PLEX_DIR_TYPE_CLIP)
             bReturn = true;
           else if (pq == "any" && g_plexApplication.playQueueManager->getPlayQueuesCount())
             bReturn = true;

@@ -124,7 +124,7 @@ public:
 
   void playQueueUpdated(const ePlexMediaType& type, bool startPlaying, int id = -1);
 
-  virtual EPlexDirectoryType getCurrentPlayQueueDirType(ePlexMediaType type) const;
+  virtual EPlexDirectoryType getPlayQueueDirType(ePlexMediaType type) const;
 
   virtual CPlexPlayQueuePtr getPlayQueueOfType(ePlexMediaType type) const;
   CPlexPlayQueuePtr getPlayQueueFromID(int id) const;
