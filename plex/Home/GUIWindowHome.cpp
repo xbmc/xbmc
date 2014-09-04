@@ -723,6 +723,8 @@ void CGUIWindowHome::UpdateSections()
           havePlayqueues = true;
           newList.push_back(item);
         }
+        else
+          listUpdated = true;
       }
       else if (item->HasProperty("plexupdate"))
       {
