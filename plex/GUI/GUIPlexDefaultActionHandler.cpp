@@ -180,7 +180,7 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
         }
         
       case ACTION_PLEX_PQ_CLEAR:
-        if (IsPlayQueueContainer(container))
+        if (IsPlayQueueContainer(container) || item->HasProperty("playQueueItemID"))
         {
           g_plexApplication.playQueueManager->clear();
           return true;
@@ -189,7 +189,7 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
 
       case ACTION_DELETE_ITEM:
         // if we are on a PQ item, remove it from PQ
-        if (IsPlayQueueContainer(container))
+        if (IsPlayQueueContainer(container) || item->HasProperty("playQueueItemID"))
         {
           g_plexApplication.playQueueManager->removeItem(item);
           return true;
@@ -313,8 +313,8 @@ void CGUIPlexDefaultActionHandler::GetContextButtonsForAction(int actionID, CFil
         
         if (item->GetVideoInfoTag()->m_playCount == 0 || viewOffset.size() > 0)
           buttons.Add(actionID, 16103);
-        break;
       }
+      break;
     }
       
     case ACTION_MARK_AS_UNWATCHED:
@@ -325,17 +325,17 @@ void CGUIPlexDefaultActionHandler::GetContextButtonsForAction(int actionID, CFil
         
         if (item->GetVideoInfoTag()->m_playCount > 0 || viewOffset.size() > 0)
           buttons.Add(actionID, 16104);
-        break;
       }
+      break;
     }
 
     case ACTION_PLEX_PQ_CLEAR:
-      if (IsPlayQueueContainer(container))
+      if (IsPlayQueueContainer(container) || item->HasProperty("playQueueItemID"))
         buttons.Add(actionID, 192);
       break;
 
     case ACTION_DELETE_ITEM:
-      if (IsPlayQueueContainer(container))
+      if (IsPlayQueueContainer(container) || item->HasProperty("playQueueItemID"))
       {
         buttons.Add(actionID, 1210);
       }
