@@ -11,8 +11,20 @@
 			<posy>0</posy>
 			<width>1280</width>
 			<height>720</height>
+			<fadetime>400</fadetime>
 			<aspectratio>scale</aspectratio>
-			<texture background="true">$INFO[ListItem.CompositeImage(width=1280;height=720;cols=3;rows=2)]</texture>
+			<texture background="true">$INFO[ListItem.CompositeImage(width=1280;height=720;cols=6;rows=2)]</texture>			
+			<visible>ListItem.Type(videoplaylist) | ListItem.Type(videoplayqueue)</visible>
+		</control>
+		<control type="largeimage">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<fadetime>400</fadetime>
+			<aspectratio>scale</aspectratio>
+			<texture background="true">$INFO[ListItem.CompositeImage(width=1280;height=720;cols=4;rows=2)]</texture>
+			<visible>ListItem.Type(musicplaylist) | ListItem.Type(musicplayqueue)</visible>
 		</control>
 		<include>BGOverlay</include>
 		<control type="group">
