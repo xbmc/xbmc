@@ -57,7 +57,7 @@ public:
 
   virtual bool create(const CFileItem& container, const CStdString& uri = "",
                       const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions()) = 0;
-  virtual bool refreshCurrent() = 0;
+  virtual bool refresh() = 0;
   virtual bool get(CFileItemList& list) = 0;
   virtual const CFileItemList* get() = 0;
   virtual void removeItem(const CFileItemPtr& item) = 0;

@@ -117,11 +117,11 @@ bool CPlexPlayQueueServer::create(const CFileItem& container, const CStdString& 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CPlexPlayQueueServer::refreshCurrent()
+bool CPlexPlayQueueServer::refresh()
 {
   int id = getCurrentID();
 
-  CLog::Log(LOGDEBUG, "CPlexPlayQueueServer::refreshCurrent refreshing playQueue %d", id);
+  CLog::Log(LOGDEBUG, "CPlexPlayQueueServer::refresh refreshing playQueue %d", id);
 
   CStdString path;
   path.Format("/playQueues/%d", id);

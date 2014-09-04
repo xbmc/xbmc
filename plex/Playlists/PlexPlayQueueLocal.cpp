@@ -87,7 +87,7 @@ void CPlexPlayQueueLocal::get(const CStdString& playQueueID, const CPlexPlayQueu
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CPlexPlayQueueLocal::refreshCurrent()
+bool CPlexPlayQueueLocal::refresh()
 {
   return true;
 }

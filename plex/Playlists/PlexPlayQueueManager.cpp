@@ -403,7 +403,7 @@ bool CPlexPlayQueueManager::refreshCurrent(ePlexMediaType type)
 {
   CPlexPlayQueuePtr pq = getPlayQueueOfType(type);
   if (pq)
-    return pq->refreshCurrent();
+    return pq->refresh();
   return false;
 }
 
