@@ -181,6 +181,17 @@
 				<animation effect="fade" start="100" end="0" time="600">Hidden</animation>
 				<visible>ControlGroup(7005).HasFocus | ControlGroup(7003).HasFocus</visible>
 			</control>
+			<!-- playlists -->
+			<control type="largeimage">
+				<include>FullScreenScaled</include>
+				<texture background="true">$INFO[Container(11005).ListItem.CompositeImage(width=1280;height=720;cols=6;rows=2)]</texture>			
+				<visible>ListItem.Type(videoplaylist) | ListItem.Type(videoplayqueue)</visible>
+			</control>
+			<control type="largeimage">
+				<include>FullScreenScaled</include>
+				<texture background="true">$INFO[Container(11005).ListItem.CompositeImage(width=1280;height=720;cols=4;rows=2)]</texture>
+				<visible>ListItem.Type(musicplaylist) | ListItem.Type(musicplayqueue)</visible>
+			</control>
 			<!-- Fanart grainy overlay -->
 			<control type="image">
 				<width>1280</width>
