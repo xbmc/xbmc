@@ -657,12 +657,6 @@ static bool _sortLabels(const CGUIListItemPtr& item1, const CGUIListItemPtr& ite
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-int CGUIWindowHome::GetPlayQueueType()
-{
-  return g_plexApplication.playQueueManager->getCurrentPlayQueuePlaylist();
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowHome::UpdateSections()
 {
   CLog::Log(LOGDEBUG, "CGUIWindowHome::UpdateSections");

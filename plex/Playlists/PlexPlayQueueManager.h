@@ -131,13 +131,6 @@ public:
   
   inline int getPlayQueuesCount() { return m_playQueues.size(); }
   
-  int getCurrentPlayQueuePlaylist() const
-  {
-    // TODO : Unhack Here
-    //return getPlaylistFromType(m_playQueueType);
-    return 0;
-  }
-
   bool getPlayQueue(ePlexMediaType type, CFileItemList& list);
   bool loadPlayQueue(const CPlexServerPtr& server, const std::string& playQueueID,
                      const CPlexPlayQueueOptions& = CPlexPlayQueueOptions());
