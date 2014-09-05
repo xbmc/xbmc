@@ -111,7 +111,7 @@ void CGUIWindowPVRGuide::OnDeinitWindow(int nextWindowID)
     {
       CPVRChannel* channel = epgGridContainer->GetChannel(epgGridContainer->GetSelectedChannel());
       if (channel != NULL)
-        m_selectedItemPath.at(m_bRadio) = channel->Path();
+        m_selectedItemPaths.at(m_bRadio) = channel->Path();
     }
   }
   else
@@ -293,7 +293,7 @@ void CGUIWindowPVRGuide::UpdateViewNow()
   }
 
   m_viewControl.SetItems(*m_vecItems);
-  m_viewControl.SetSelectedItem(m_selectedItemPath.at(m_bRadio));
+  m_viewControl.SetSelectedItem(m_selectedItemPaths.at(m_bRadio));
 }
 
 void CGUIWindowPVRGuide::UpdateViewNext()
@@ -314,7 +314,7 @@ void CGUIWindowPVRGuide::UpdateViewNext()
   }
 
   m_viewControl.SetItems(*m_vecItems);
-  m_viewControl.SetSelectedItem(m_selectedItemPath.at(m_bRadio));
+  m_viewControl.SetSelectedItem(m_selectedItemPaths.at(m_bRadio));
 }
 
 void CGUIWindowPVRGuide::UpdateViewTimeline()
@@ -360,7 +360,7 @@ void CGUIWindowPVRGuide::UpdateViewTimeline()
   
   m_viewControl.SetItems(*m_vecItems);
 
-  epgGridContainer->SetChannel(m_selectedItemPath.at(m_bRadio));
+  epgGridContainer->SetChannel(m_selectedItemPaths.at(m_bRadio));
 }
 
 bool CGUIWindowPVRGuide::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)

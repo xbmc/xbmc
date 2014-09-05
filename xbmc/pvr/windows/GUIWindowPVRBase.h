@@ -90,7 +90,7 @@ namespace PVR
     virtual void ShowRecordingInfo(CFileItem *item);
     virtual bool UpdateEpgForChannel(CFileItem *item);
 
-    static std::map<bool, std::string> m_selectedItemPath;
+    static std::map<bool, std::string> m_selectedItemPaths;
 
     CCriticalSection m_critSection;
     bool m_bRadio;
