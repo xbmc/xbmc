@@ -96,12 +96,24 @@ int ProcessUtils::runElevated(const std::string& executable, const std::list<std
 bool ProcessUtils::waitForProcess(PLATFORM_PID pid)
 {
 #ifdef PLATFORM_UNIX
-  pid_t result = ::waitpid(pid, 0, 0);
-  if (result < 0)
+  while (true)
   {
-    LOG(Error, "waitpid() failed with error: " + std::string(strerror(errno)));
+    int ret = ::kill(pid, 0);
+    if (ret == -1 && errno != ESRCH)
+    {
+      LOG(Error, "waitForProcess - Failed to send signal: " + intToStr(errno));
+      return false;
+    }
+    else if (ret == -1 && errno == ESRCH)
+    {
+      break;
+    }
+    else
+    {
+      usleep(1000 * 10);
+    }
   }
-  return result > 0;
+  return true;
 #elif defined(PLATFORM_WINDOWS)
   HANDLE hProc;
 
