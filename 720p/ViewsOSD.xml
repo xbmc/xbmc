@@ -465,7 +465,7 @@
 				</control>
 				<!-- bottom row -->
 				<control type="group">
-					<posy>76</posy>
+					<posy>78</posy>
 					<!-- time in media -->
 					<control type="label">
 						<width>200</width>
