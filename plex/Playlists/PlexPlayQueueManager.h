@@ -79,6 +79,7 @@ public:
   }
   
   inline void setVersion(int version) { m_Version = version; };
+  inline void setType(ePlexMediaType type) { m_Type = type; };
 };
 
 typedef boost::shared_ptr<CPlexPlayQueue> CPlexPlayQueuePtr;

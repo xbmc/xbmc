@@ -82,6 +82,8 @@ bool CPlexPlayQueueServer::create(const CFileItem& container, const CStdString& 
   if (type == PLEX_MEDIA_TYPE_UNKNOWN)
     return false;
 
+  setType(type);
+  
   CStdString realUri(uri);
   CStdString playlistID;
   if (realUri.empty())
