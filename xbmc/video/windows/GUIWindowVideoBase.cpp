@@ -1455,21 +1455,6 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_RENAME:
     OnRenameItem(itemNumber);
     return true;
-  case CONTEXT_BUTTON_MARK_WATCHED:
-    {
-      int newSelection = m_viewControl.GetSelectedItem() + 1;
-      CGUIDialogVideoInfo::MarkWatched(item, true);
-      m_viewControl.SetSelectedItem(newSelection);
-
-      CUtil::DeleteVideoDatabaseDirectoryCache();
-      Refresh();
-      return true;
-    }
-  case CONTEXT_BUTTON_MARK_UNWATCHED:
-    CGUIDialogVideoInfo::MarkWatched(item, false);
-    CUtil::DeleteVideoDatabaseDirectoryCache();
-    Refresh();
-    return true;
   case CONTEXT_BUTTON_PLAY_AND_QUEUE:
     return OnPlayAndQueueMedia(item);
   case CONTEXT_BUTTON_PLAY_ONLY_THIS:
