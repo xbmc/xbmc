@@ -359,7 +359,6 @@ double CPullupCorrection::CalcFrameDuration()
     //frameduration is not completely correct, use a common one if it's close
     m_minframeduration = CDVDCodecUtils::NormalizeFrameduration(m_minframeduration);
     m_maxframeduration = CDVDCodecUtils::NormalizeFrameduration(m_maxframeduration);
-    CLog::Log(LOGDEBUG, "CPullupCorrection: min frame duration %f, max frame duration %f", m_minframeduration, m_maxframeduration);
 
     //frameduration is not completely correct, use a common one if it's close
     return CDVDCodecUtils::NormalizeFrameduration(frameduration);
