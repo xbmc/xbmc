@@ -149,6 +149,10 @@ void CPlexPlayQueueManager::playQueueUpdated(const ePlexMediaType& type, bool st
 
   pq->setVersion(list.GetProperty("playQueueVersion").asInteger());
 
+  // no more items in that PQ, just remove it
+  if (!list.Size())
+    m_playQueues.erase(type);
+  
   if (hasChanged)
   {
     CGUIMessage msg(GUI_MSG_PLEX_PLAYQUEUE_UPDATED, PLEX_PLAYQUEUE_MANAGER, 0);

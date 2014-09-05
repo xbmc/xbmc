@@ -207,6 +207,14 @@ void CPlexPlayQueueServer::OnJobComplete(unsigned int jobID, bool success, CJob*
     ePlexMediaType type = PlexUtils::GetMediaTypeFromItem(fj->m_items);
     int playlist = CPlexPlayQueueManager::getPlaylistFromType(type);
 
+    // if we are removing items an that there is no more, clear the list and send update message
+    if ((fj->m_dir.getHTTPVerb() == "DELETE") && (!fj->m_items.Size()))
+    {
+      m_list->Clear();
+      CApplicationMessenger::Get().PlexUpdatePlayQueue(getType(), fj->m_options.startPlaying);
+      return;
+    }
+    
     if (playlist == PLAYLIST_NONE)
     {
       CLog::Log(LOGERROR, "CPlexPlayQueueServer::OnJobComplete : The response from the server did not make sense (PlayList Type is Unknown)");

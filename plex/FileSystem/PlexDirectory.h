@@ -76,6 +76,8 @@ namespace XFILE
     {
       m_verb = verb;
     }
+    
+    inline CStdString getHTTPVerb() { return m_verb; };
 
     /* Legacy functions we need to revisit */
     void SetBody(const CStdString& body)
