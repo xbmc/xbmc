@@ -110,7 +110,7 @@ void CGUIWindowPVRBase::OnInitWindow(void)
 
   // use the path of the current playing channel if no previous selection exists
   // to mark the corresponding item in the list as selected
-  if (m_selectedItemPaths.empty() && g_PVRManager.IsPlaying())
+  if (m_selectedItemPaths.at(m_bRadio).empty() && g_PVRManager.IsPlaying())
     m_selectedItemPaths.at(m_bRadio) = g_application.CurrentFile();
 
   CGUIMediaWindow::OnInitWindow();
