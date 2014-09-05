@@ -48,14 +48,14 @@
 using namespace PVR;
 using namespace EPG;
 
-std::map<bool, std::string> CGUIWindowPVRBase::m_selectedItemPath;
+std::map<bool, std::string> CGUIWindowPVRBase::m_selectedItemPaths;
 
 CGUIWindowPVRBase::CGUIWindowPVRBase(bool bRadio, int id, const std::string &xmlFile) :
   CGUIMediaWindow(id, xmlFile.c_str()),
   m_bRadio(bRadio)
 {
-  m_selectedItemPath[false] = "";
-  m_selectedItemPath[true] = "";
+  m_selectedItemPaths[false] = "";
+  m_selectedItemPaths[true] = "";
 }
 
 CGUIWindowPVRBase::~CGUIWindowPVRBase(void)
@@ -110,13 +110,13 @@ void CGUIWindowPVRBase::OnInitWindow(void)
 
   // use the path of the current playing channel if no previous selection exists
   // to mark the corresponding item in the list as selected
-  if (m_selectedItemPath.empty() && g_PVRManager.IsPlaying())
-    m_selectedItemPath.at(m_bRadio) = g_application.CurrentFile();
+  if (m_selectedItemPaths.empty() && g_PVRManager.IsPlaying())
+    m_selectedItemPaths.at(m_bRadio) = g_application.CurrentFile();
 
   CGUIMediaWindow::OnInitWindow();
 
   // mark item as selected by channel path
-  m_viewControl.SetSelectedItem(m_selectedItemPath.at(m_bRadio));
+  m_viewControl.SetSelectedItem(m_selectedItemPaths.at(m_bRadio));
 }
 
 void CGUIWindowPVRBase::OnDeinitWindow(int nextWindowID)
@@ -126,7 +126,7 @@ void CGUIWindowPVRBase::OnDeinitWindow(int nextWindowID)
   {
     CFileItemPtr fileItem = m_vecItems->Get(selectedItem);
     if (fileItem)
-      m_selectedItemPath.at(m_bRadio) = fileItem->GetPath();
+      m_selectedItemPaths.at(m_bRadio) = fileItem->GetPath();
   }
 }
 
