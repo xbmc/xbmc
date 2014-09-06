@@ -38,17 +38,18 @@ public:
   bool OnAction(int windowID, CAction action, CFileItemPtr item, CFileItemListPtr container);
   void GetContextButtons(int windowID, CFileItemPtr item, CFileItemListPtr container, CContextButtons& buttons);
 
+  static bool IsPhotoContainer(CFileItemListPtr container);
+  static bool IsMusicContainer(CFileItemListPtr container);
+  static bool IsVideoContainer(CFileItemListPtr container);
+  static bool IsPlayQueueContainer(CFileItemListPtr container);
+  static bool IsPlayListContainer(CFileItemListPtr container);
+
 private:
   void GetContextButtonsForAction(int actionID, CFileItemPtr item, CFileItemListPtr container, CContextButtons& buttons);
   std::string GetFilteredURI(const CFileItem& item) const;
   bool PlayMedia(CFileItemPtr item, CFileItemListPtr container);
   void PlayAll(CFileItemListPtr container, bool shuffle, const CFileItemPtr& fromHere = CFileItemPtr());
   
-  bool IsPhotoContainer(CFileItemListPtr container) const;
-  bool IsMusicContainer(CFileItemListPtr container) const;
-  bool IsVideoContainer(CFileItemListPtr container) const;
-  bool IsPlayQueueContainer(CFileItemListPtr container) const;
-  bool IsPlayListContainer(CFileItemListPtr container) const;
   
   ActionsSettingList m_ActionSettings;
   CPlexNavigationHelper m_navHelper;

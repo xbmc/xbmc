@@ -486,7 +486,7 @@ std::string CGUIPlexDefaultActionHandler::GetFilteredURI(const CFileItem& item) 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CGUIPlexDefaultActionHandler::IsPhotoContainer(CFileItemListPtr container) const
+bool CGUIPlexDefaultActionHandler::IsPhotoContainer(CFileItemListPtr container)
 {
   if (!container)
     return false;
@@ -500,7 +500,7 @@ bool CGUIPlexDefaultActionHandler::IsPhotoContainer(CFileItemListPtr container) 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CGUIPlexDefaultActionHandler::IsMusicContainer(CFileItemListPtr container) const
+bool CGUIPlexDefaultActionHandler::IsMusicContainer(CFileItemListPtr container)
 {
   if (!container)
     return false;
@@ -513,7 +513,7 @@ bool CGUIPlexDefaultActionHandler::IsMusicContainer(CFileItemListPtr container) 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CGUIPlexDefaultActionHandler::IsVideoContainer(CFileItemListPtr container) const
+bool CGUIPlexDefaultActionHandler::IsVideoContainer(CFileItemListPtr container)
 {
   if (!container)
     return false;
@@ -533,7 +533,7 @@ bool CGUIPlexDefaultActionHandler::IsVideoContainer(CFileItemListPtr container) 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CGUIPlexDefaultActionHandler::IsPlayListContainer(CFileItemListPtr container) const
+bool CGUIPlexDefaultActionHandler::IsPlayListContainer(CFileItemListPtr container)
 {
   if (!container)
     return false;
@@ -547,7 +547,7 @@ bool CGUIPlexDefaultActionHandler::IsPlayListContainer(CFileItemListPtr containe
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CGUIPlexDefaultActionHandler::IsPlayQueueContainer(CFileItemListPtr container) const
+bool CGUIPlexDefaultActionHandler::IsPlayQueueContainer(CFileItemListPtr container) 
 {
   if (!container)
     return false;
