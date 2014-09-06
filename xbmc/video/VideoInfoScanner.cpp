@@ -387,21 +387,15 @@ namespace VIDEO
     if (content == CONTENT_NONE || ignoreFolder)
       return true;
 
+    if (m_handle)
+    {
+      int msg = (content == CONTENT_MOVIES) ? 20317 : (content == CONTENT_MUSICVIDEOS ? 20318 : 20319);
+      m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(msg).c_str(), info->Name().c_str()));
+    }
+
     if (content == CONTENT_MOVIES ||content == CONTENT_MUSICVIDEOS)
-    {
-      if (m_handle)
-      {
-        int str = content == CONTENT_MOVIES ? 20317:20318;
-        m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(str).c_str(), info->Name().c_str()));
-      }
       return ScanMovieFolder(strDirectory, settings, content);
-    }
-    else
-    {
-      if (m_handle)
-        m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20319).c_str(), info->Name().c_str()));
-      return ScanTVFolder(strDirectory, settings.parent_name_root, foundDirectly);
-    }
+    return ScanTVFolder(strDirectory, settings.parent_name_root, foundDirectly);
   }
 
   bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, CONTENT_TYPE content, bool useLocal, CScraperUrl* pURL, bool fetchEpisodes, CGUIDialogProgress* pDlgProgress)
