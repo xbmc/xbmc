@@ -378,11 +378,7 @@ namespace VIDEO
     if (it != m_pathsToScan.end())
       m_pathsToScan.erase(it);
 
-    // load subfolder
-    CFileItemList items;
     bool foundDirectly = false;
-    bool bSkip = false;
-
     SScanSettings settings;
     ScraperPtr info = m_database.GetScraperForPath(strDirectory, settings, foundDirectly);
     CONTENT_TYPE content = info ? info->Content() : CONTENT_NONE;
@@ -391,7 +387,6 @@ namespace VIDEO
     if (content == CONTENT_NONE || ignoreFolder)
       return true;
 
-    CStdString hash, dbHash;
     if (content == CONTENT_MOVIES ||content == CONTENT_MUSICVIDEOS)
     {
       if (m_handle)
