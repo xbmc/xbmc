@@ -328,14 +328,14 @@ namespace VIDEO
       CDirectory::GetDirectory(strDirectory, items, g_advancedSettings.m_videoExtensions);
       items.SetPath(strDirectory);
       GetPathHash(items, hash);
-      bSkip = true;
-      if (!m_database.GetPathHash(strDirectory, dbHash) || dbHash != hash)
+
+      if (m_database.GetPathHash(strDirectory, dbHash) && dbHash == hash)
       {
-        m_database.SetPathHash(strDirectory, hash);
-        bSkip = false;
+        bSkip = true;
+        items.Clear();
       }
       else
-        items.Clear();
+        m_database.SetPathHash(strDirectory, hash);
     }
     else
     {
