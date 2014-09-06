@@ -313,7 +313,7 @@ namespace VIDEO
     return !m_bStop;
   }
 
-  bool CVideoInfoScanner::ScanTVFolder(const CStdString& strDirectory, const SScanSettings& settings, bool foundDirectly)
+  bool CVideoInfoScanner::ScanTVFolder(const CStdString& strDirectory, bool useDirNames, bool foundDirectly)
   {
     const vector<string> &regexps =  g_advancedSettings.m_tvshowExcludeFromScanRegExps;
     if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
@@ -323,7 +323,7 @@ namespace VIDEO
     bool bSkip = false;
     CStdString hash, dbHash;
 
-    if (foundDirectly && !settings.parent_name_root)
+    if (foundDirectly && !useDirNames)
     {
       CDirectory::GetDirectory(strDirectory, items, g_advancedSettings.m_videoExtensions);
       items.SetPath(strDirectory);
@@ -348,7 +348,7 @@ namespace VIDEO
 
     if (!bSkip)
     {
-      if (!RetrieveVideoInfo(items, settings.parent_name_root, CONTENT_TVSHOWS))
+      if (!RetrieveVideoInfo(items, useDirNames, CONTENT_TVSHOWS))
       {
         if (m_bClean)
           m_pathsToClean.insert(m_database.GetPathId(strDirectory));
@@ -405,7 +405,7 @@ namespace VIDEO
     {
       if (m_handle)
         m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20319).c_str(), info->Name().c_str()));
-      return ScanTVFolder(strDirectory, settings, foundDirectly);
+      return ScanTVFolder(strDirectory, settings.parent_name_root, foundDirectly);
     }
   }
 
