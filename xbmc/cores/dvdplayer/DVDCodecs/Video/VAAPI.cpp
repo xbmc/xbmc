@@ -645,6 +645,7 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
     va->m_bufferStats.Get(decoded, processed, render, vpp);
     CLog::Log(LOGERROR, "VAAPI::FFGetBuffer - no surface available - dec: %d, render: %d",
                          decoded, render);
+    va->m_DisplayState = VAAPI_ERROR;
     return -1;
   }
 
