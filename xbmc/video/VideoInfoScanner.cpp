@@ -349,10 +349,7 @@ namespace VIDEO
 
     if (!bSkip)
     {
-      if (RetrieveVideoInfo(items, settings.parent_name_root, CONTENT_TVSHOWS))
-      {
-      }
-      else
+      if (!RetrieveVideoInfo(items, settings.parent_name_root, CONTENT_TVSHOWS))
       {
         if (m_bClean)
           m_pathsToClean.insert(m_database.GetPathId(strDirectory));
