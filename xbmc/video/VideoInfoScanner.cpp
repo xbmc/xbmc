@@ -351,13 +351,6 @@ namespace VIDEO
     {
       if (RetrieveVideoInfo(items, settings.parent_name_root, CONTENT_TVSHOWS))
       {
-        if (!m_bStop && (CONTENT_TVSHOWS == CONTENT_MOVIES || CONTENT_TVSHOWS == CONTENT_MUSICVIDEOS))
-        {
-          m_database.SetPathHash(strDirectory, hash);
-          if (m_bClean)
-            m_pathsToClean.insert(m_database.GetPathId(strDirectory));
-          CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding information from dir %s", CURL::GetRedacted(strDirectory).c_str());
-        }
       }
       else
       {
@@ -366,31 +359,10 @@ namespace VIDEO
         CLog::Log(LOGDEBUG, "VideoInfoScanner: No (new) information was found in dir %s", CURL::GetRedacted(strDirectory).c_str());
       }
     }
-    else if (hash != dbHash && (CONTENT_TVSHOWS == CONTENT_MOVIES || CONTENT_TVSHOWS == CONTENT_MUSICVIDEOS))
-    { // update the hash either way - we may have changed the hash to a fast version
-      m_database.SetPathHash(strDirectory, hash);
-    }
 
     if (m_handle)
       OnDirectoryScanned(strDirectory);
 
-    for (int i = 0; i < items.Size(); ++i)
-    {
-      CFileItemPtr pItem = items[i];
-
-      if (m_bStop)
-        break;
-
-      // if we have a directory item (non-playlist) we then recurse into that folder
-      // do not recurse for tv shows - we have already looked recursively for episodes
-      if (pItem->m_bIsFolder && !pItem->IsParentFolder() && !pItem->IsPlayList() && settings.recurse > 0 && CONTENT_TVSHOWS != CONTENT_TVSHOWS)
-      {
-        if (!DoScan(pItem->GetPath()))
-        {
-          m_bStop = true;
-        }
-      }
-    }
     return !m_bStop;
   }
 
