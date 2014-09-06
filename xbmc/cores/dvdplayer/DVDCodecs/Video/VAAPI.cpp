@@ -2029,9 +2029,6 @@ bool COutput::EnsureBufferPool()
     }
 
     glGenTextures(1, &pic->texture);
-    glBindTexture(m_textureTarget, pic->texture);
-    glXBindTexImageEXT(m_Display, pic->glPixmap, GLX_FRONT_LEFT_EXT, NULL);
-    glBindTexture(m_textureTarget, 0);
 
     pic->avFrame = av_frame_alloc();
     pic->valid = false;
