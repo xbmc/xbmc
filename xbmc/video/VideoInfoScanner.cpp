@@ -219,6 +219,101 @@ namespace VIDEO
     g_windowManager.SendThreadMessage(msg);
   }
 
+  bool CVideoInfoScanner::ScanMovieFolder(const CStdString& strDirectory, const SScanSettings& settings, CONTENT_TYPE content)
+  {
+    const vector<string> &regexps = g_advancedSettings.m_moviesExcludeFromScanRegExps;
+    if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
+      return true;
+
+    CFileItemList items;
+    bool bSkip = false;
+
+    CStdString hash, dbHash;
+    CStdString fastHash = GetFastHash(strDirectory, regexps);
+    if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.empty() && fastHash == dbHash)
+    { // fast hashes match - no need to process anything
+      hash = fastHash;
+    }
+    else
+    { // need to fetch the folder
+      CDirectory::GetDirectory(strDirectory, items, g_advancedSettings.m_videoExtensions);
+      items.Stack();
+
+      // check whether to re-use previously computed fast hash
+      if (!CanFastHash(items, regexps) || fastHash.empty())
+        GetPathHash(items, hash);
+      else
+        hash = fastHash;
+    }
+
+    if (hash == dbHash)
+    { // hash matches - skipping
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change%s", CURL::GetRedacted(strDirectory).c_str(), !fastHash.empty() ? " (fasthash)" : "");
+      bSkip = true;
+    }
+    else if (hash.empty())
+    { // directory empty or non-existent - add to clean list and skip
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' as it's empty or doesn't exist - adding to clean list", CURL::GetRedacted(strDirectory).c_str());
+      if (m_bClean)
+        m_pathsToClean.insert(m_database.GetPathId(strDirectory));
+      bSkip = true;
+    }
+    else if (dbHash.empty())
+    { // new folder - scan
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: Scanning dir '%s' as not in the database", CURL::GetRedacted(strDirectory).c_str());
+    }
+    else
+    { // hash changed - rescan
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '%s' due to change (%s != %s)", CURL::GetRedacted(strDirectory).c_str(), dbHash.c_str(), hash.c_str());
+    }
+
+    if (!bSkip)
+    {
+      if (RetrieveVideoInfo(items, settings.parent_name_root, content))
+      {
+        if (!m_bStop && (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS))
+        {
+          m_database.SetPathHash(strDirectory, hash);
+          if (m_bClean)
+            m_pathsToClean.insert(m_database.GetPathId(strDirectory));
+          CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding information from dir %s", CURL::GetRedacted(strDirectory).c_str());
+        }
+      }
+      else
+      {
+        if (m_bClean)
+          m_pathsToClean.insert(m_database.GetPathId(strDirectory));
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: No (new) information was found in dir %s", CURL::GetRedacted(strDirectory).c_str());
+      }
+    }
+    else if (hash != dbHash && (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS))
+    { // update the hash either way - we may have changed the hash to a fast version
+      m_database.SetPathHash(strDirectory, hash);
+    }
+
+    if (m_handle)
+      OnDirectoryScanned(strDirectory);
+
+    for (int i = 0; i < items.Size(); ++i)
+    {
+      CFileItemPtr pItem = items[i];
+
+      if (m_bStop)
+        break;
+
+      // if we have a directory item (non-playlist) we then recurse into that folder
+      // do not recurse for tv shows - we have already looked recursively for episodes
+      if (pItem->m_bIsFolder && !pItem->IsParentFolder() && !pItem->IsPlayList() && settings.recurse > 0 && content != CONTENT_TVSHOWS)
+      {
+        if (!DoScan(pItem->GetPath()))
+        {
+          m_bStop = true;
+        }
+      }
+    }
+    return !m_bStop;
+  }
+
   bool CVideoInfoScanner::DoScan(const CStdString& strDirectory)
   {
     if (m_handle)
@@ -244,13 +339,6 @@ namespace VIDEO
     ScraperPtr info = m_database.GetScraperForPath(strDirectory, settings, foundDirectly);
     CONTENT_TYPE content = info ? info->Content() : CONTENT_NONE;
 
-    // exclude folders that match our exclude regexps
-    const vector<string> &regexps = content == CONTENT_TVSHOWS ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
-                                                         : g_advancedSettings.m_moviesExcludeFromScanRegExps;
-
-    if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
-      return true;
-
     bool ignoreFolder = !m_scanAll && settings.noupdate;
     if (content == CONTENT_NONE || ignoreFolder)
       return true;
@@ -263,47 +351,14 @@ namespace VIDEO
         int str = content == CONTENT_MOVIES ? 20317:20318;
         m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(str).c_str(), info->Name().c_str()));
       }
-
-      CStdString fastHash = GetFastHash(strDirectory, regexps);
-      if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.empty() && fastHash == dbHash)
-      { // fast hashes match - no need to process anything
-        hash = fastHash;
-      }
-      else
-      { // need to fetch the folder
-        CDirectory::GetDirectory(strDirectory, items, g_advancedSettings.m_videoExtensions);
-        items.Stack();
-
-        // check whether to re-use previously computed fast hash
-        if (!CanFastHash(items, regexps) || fastHash.empty())
-          GetPathHash(items, hash);
-        else
-          hash = fastHash;
-      }
-
-      if (hash == dbHash)
-      { // hash matches - skipping
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change%s", CURL::GetRedacted(strDirectory).c_str(), !fastHash.empty() ? " (fasthash)" : "");
-        bSkip = true;
-      }
-      else if (hash.empty())
-      { // directory empty or non-existent - add to clean list and skip
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' as it's empty or doesn't exist - adding to clean list", CURL::GetRedacted(strDirectory).c_str());
-        if (m_bClean)
-          m_pathsToClean.insert(m_database.GetPathId(strDirectory));
-        bSkip = true;
-      }
-      else if (dbHash.empty())
-      { // new folder - scan
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Scanning dir '%s' as not in the database", CURL::GetRedacted(strDirectory).c_str());
-      }
-      else
-      { // hash changed - rescan
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '%s' due to change (%s != %s)", CURL::GetRedacted(strDirectory).c_str(), dbHash.c_str(), hash.c_str());
-      }
+      return ScanMovieFolder(strDirectory, settings, content);
     }
     else if (content == CONTENT_TVSHOWS)
     {
+      const vector<string> &regexps =  g_advancedSettings.m_tvshowExcludeFromScanRegExps;
+      if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
+        return true;
+
       if (m_handle)
         m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20319).c_str(), info->Name().c_str()));
 

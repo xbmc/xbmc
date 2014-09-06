@@ -125,6 +125,7 @@ namespace VIDEO
   protected:
     virtual void Process();
     bool DoScan(const CStdString& strDirectory);
+    bool ScanMovieFolder(const CStdString& strDirectory, const SScanSettings& settings, CONTENT_TYPE content);
 
     INFO_RET RetrieveInfoForTvShow(CFileItem *pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool useLocal, CScraperUrl* pURL, bool fetchEpisodes, CGUIDialogProgress* pDlgProgress);
     INFO_RET RetrieveInfoForMovie(CFileItem *pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool useLocal, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress);
