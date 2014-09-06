@@ -239,13 +239,19 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
         break;
 
       case ACTION_QUEUE_ITEM:
-        g_plexApplication.playQueueManager->QueueItem(item, true);
-        return true;
+        if (!item->HasProperty("playQueueItemID"))
+        {
+          g_plexApplication.playQueueManager->QueueItem(item, true);
+          return true;
+        }
         break;
 
       case ACTION_PLEX_PQ_ADDUPTONEXT:
-        g_plexApplication.playQueueManager->QueueItem(item, false);
-        return true;
+        if (!item->HasProperty("playQueueItemID"))
+        {
+          g_plexApplication.playQueueManager->QueueItem(item, false);
+          return true;
+        }
         break;
     }
   }
@@ -368,21 +374,27 @@ void CGUIPlexDefaultActionHandler::GetContextButtonsForAction(int actionID, CFil
 
     case ACTION_QUEUE_ITEM:
     {
-      CFileItemList pqlist;
-      g_plexApplication.playQueueManager->getPlayQueue(PlexUtils::GetMediaTypeFromItem(item), pqlist);
-
-      if (pqlist.Size())
-        buttons.Add(actionID, 52602);
-      else
-        buttons.Add(actionID, 52607);
+      if (!item->HasProperty("playQueueItemID"))
+      {
+        CFileItemList pqlist;
+        g_plexApplication.playQueueManager->getPlayQueue(PlexUtils::GetMediaTypeFromItem(item), pqlist);
+        
+        if (pqlist.Size())
+          buttons.Add(actionID, 52602);
+        else
+          buttons.Add(actionID, 52607);
+      }
       break;
     }
 
     case ACTION_PLEX_PQ_ADDUPTONEXT:
     {
-      ePlexMediaType itemType = PlexUtils::GetMediaTypeFromItem(item);
-      if (g_plexApplication.playQueueManager->getPlayQueueOfType(itemType))
-        buttons.Add(actionID, 52603);
+      if (!item->HasProperty("playQueueItemID"))
+      {
+        ePlexMediaType itemType = PlexUtils::GetMediaTypeFromItem(item);
+        if (g_plexApplication.playQueueManager->getPlayQueueOfType(itemType))
+          buttons.Add(actionID, 52603);
+      }
       break;
     }
   }
