@@ -123,6 +123,7 @@ struct CVaapiConfig
   VADisplay dpy;
   VAProfile profile;
   VAConfigAttrib attrib;
+  Display *x11dsp;
 };
 
 /**
@@ -346,6 +347,7 @@ public:
   static bool EnsureContext(CVAAPIContext **ctx, CDecoder *decoder);
   void Release(CDecoder *decoder);
   VADisplay GetDisplay();
+  Display* GetX11Display();
   bool SupportsProfile(VAProfile profile);
   VAConfigAttrib GetAttrib(VAProfile profile);
   VAConfigID CreateConfig(VAProfile profile, VAConfigAttrib attrib);

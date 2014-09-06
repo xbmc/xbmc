@@ -241,6 +241,11 @@ VADisplay CVAAPIContext::GetDisplay()
   return m_display;
 }
 
+Display *CVAAPIContext::GetX11Display()
+{
+  return m_X11dpy;
+}
+
 bool CVAAPIContext::IsValidDecoder(CDecoder *decoder)
 {
   std::vector<CDecoder*>::iterator it;
@@ -930,6 +935,7 @@ bool CDecoder::ConfigVAAPI()
   memset(&m_hwContext, 0, sizeof(vaapi_context));
 
   m_vaapiConfig.dpy = m_vaapiConfig.context->GetDisplay();
+  m_vaapiConfig.x11dsp = m_vaapiConfig.context->GetX11Display();
   m_vaapiConfig.attrib = m_vaapiConfig.context->GetAttrib(m_vaapiConfig.profile);
   if ((m_vaapiConfig.attrib.value & VA_RT_FORMAT_YUV420) == 0)
   {
@@ -1812,7 +1818,7 @@ CVaapiRenderPicture* COutput::ProcessPicture(CVaapiProcessedPicture &pic)
     {
       return NULL;
     }
-    XSync(m_Display, false);
+    XSync(m_config.x11dsp, false);
     glEnable(m_textureTarget);
     glBindTexture(m_textureTarget, retPic->texture);
     glXBindTexImageEXT(m_Display, retPic->glPixmap, GLX_FRONT_LEFT_EXT, NULL);
