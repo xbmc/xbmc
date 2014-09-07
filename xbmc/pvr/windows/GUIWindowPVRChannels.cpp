@@ -50,6 +50,11 @@ CGUIWindowPVRChannels::CGUIWindowPVRChannels(bool bRadio) :
 {
 }
 
+CGUIWindowPVRChannels::~CGUIWindowPVRChannels(void)
+{
+  UnregisterObservers();
+};
+
 void CGUIWindowPVRChannels::ResetObservers(void)
 {
   CSingleLock lock(m_critSection);

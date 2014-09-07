@@ -28,7 +28,7 @@ namespace PVR
   {
   public:
     CGUIWindowPVRChannels(bool bRadio);
-    virtual ~CGUIWindowPVRChannels(void) {};
+    virtual ~CGUIWindowPVRChannels(void);
 
     bool OnMessage(CGUIMessage& message);
     void GetContextButtons(int itemNumber, CContextButtons &buttons);
