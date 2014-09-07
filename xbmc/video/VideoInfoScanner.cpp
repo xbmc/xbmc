@@ -321,22 +321,10 @@ namespace VIDEO
       return true;
 
     CFileItemList items;
-    bool bSkip = false;
-    CStdString hash, dbHash;
-
     if (foundDirectly && !useDirNames)
     {
       CDirectory::GetDirectory(strDirectory, items, g_advancedSettings.m_videoExtensions);
       items.SetPath(strDirectory);
-      GetPathHash(items, hash);
-
-      if (m_database.GetPathHash(strDirectory, dbHash) && dbHash == hash)
-      {
-        bSkip = true;
-        items.Clear();
-      }
-      else
-        m_database.SetPathHash(strDirectory, hash);
     }
     else
     {
@@ -347,14 +335,11 @@ namespace VIDEO
       items.SetPath(URIUtils::GetParentPath(item->GetPath()));
     }
 
-    if (!bSkip)
+    if (!RetrieveVideoInfo(items, useDirNames, CONTENT_TVSHOWS))
     {
-      if (!RetrieveVideoInfo(items, useDirNames, CONTENT_TVSHOWS))
-      {
-        if (m_bClean)
-          m_pathsToClean.insert(m_database.GetPathId(strDirectory));
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: No (new) information was found in dir %s", CURL::GetRedacted(strDirectory).c_str());
-      }
+      if (m_bClean)
+        m_pathsToClean.insert(m_database.GetPathId(strDirectory));
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: No (new) information was found in dir %s", CURL::GetRedacted(strDirectory).c_str());
     }
 
     if (m_handle)
