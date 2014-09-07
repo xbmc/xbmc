@@ -137,7 +137,8 @@ bool CGUIWindowPlexPlayQueue::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_PLEX_PLAYQUEUE_UPDATED:
     {
-      Update("plexserver://playqueue/", false);
+      if (CGUIPlexDefaultActionHandler::IsPlayQueueContainer(m_vecItems))
+        Update(m_vecItems->GetPath(), false);
       return true;
     }
 
