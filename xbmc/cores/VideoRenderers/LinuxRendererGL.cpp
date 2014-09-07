@@ -3350,9 +3350,9 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
     return false;
   }
 
-#ifdef TARGET_DARWIN
-  // YADIF too slow for HD but we have no methods to fall back
-  // to something that works so just turn it off.
+#ifdef TARGET_DARWIN_IOS
+  // iOS has not the power for YADIF - TODO evaluate if its
+  // enough to disable it for TARGET_DARWIN_IOS_ATV2
   if(method == VS_INTERLACEMETHOD_DEINTERLACE)
     return false;
 #endif
