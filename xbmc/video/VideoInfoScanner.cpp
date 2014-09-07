@@ -230,32 +230,33 @@ namespace VIDEO
 
     CStdString hash, dbHash;
     CStdString fastHash = GetFastHash(strDirectory, regexps);
-    if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.empty() && fastHash == dbHash)
+    if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.empty() && fastHash == dbHash && !settings.recurse)
     { // fast hashes match - no need to process anything
       hash = fastHash;
     }
     else
-    { // need to fetch the folder
+    {
+      // We need to fetch directory for either hashing or scanning.
       CDirectory::GetDirectory(strDirectory, items, g_advancedSettings.m_videoExtensions);
       items.Stack();
 
-      // check whether to re-use previously computed fast hash
-      if (!CanFastHash(items, regexps) || fastHash.empty())
-        GetPathHash(items, hash);
-      else
+      // We can still use the fast hash if directory contains no subdirectories
+      if (!fastHash.empty() && CanFastHash(items, regexps))
         hash = fastHash;
+      else
+        GetPathHash(items, hash);
     }
 
-    if (hash == dbHash)
-    { // hash matches - skipping
-      CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change%s", CURL::GetRedacted(strDirectory).c_str(), !fastHash.empty() ? " (fasthash)" : "");
-      bSkip = true;
-    }
-    else if (hash.empty())
+    if (hash.empty())
     { // directory empty or non-existent - add to clean list and skip
-      CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' as it's empty or doesn't exist - adding to clean list", CURL::GetRedacted(strDirectory).c_str());
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change%s", CURL::GetRedacted(strDirectory).c_str(), fastHash == hash ? " (fasthash)" : "");
       if (m_bClean)
         m_pathsToClean.insert(m_database.GetPathId(strDirectory));
+      bSkip = true;
+    }
+    else if (hash == dbHash)
+    { // hash matches - skipping
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change", CURL::GetRedacted(strDirectory).c_str());
       bSkip = true;
     }
     else if (dbHash.empty())
