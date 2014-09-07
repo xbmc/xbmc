@@ -317,7 +317,7 @@ void CCDDARipper::OnJobComplete(unsigned int jobID, bool success, CJob* job)
       CMusicDatabase database;
       database.Open();
       if (source>=0 && database.InsideScannedPath(dir))
-        g_application.StartMusicScan(dir);
+        g_application.StartMusicScan(dir, false);
       database.Close();
     }
     return CJobQueue::OnJobComplete(jobID, success, job);
