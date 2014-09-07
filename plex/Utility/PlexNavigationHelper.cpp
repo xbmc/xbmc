@@ -151,7 +151,9 @@ CStdString CPlexNavigationHelper::navigateToItem(CFileItemPtr item, const CURL &
     else
       window = WINDOW_VIDEO_NAV;
   }
-
+  else if (type == PLEX_DIR_TYPE_PLAYLIST)
+    window = WINDOW_PLEX_PLAY_QUEUE;
+  
   if (windowId != window)
   {
     CLog::Log(LOGDEBUG, "CPlexNavigationHelper::navigateToItem navigating to %s (%s)", originalUrl.c_str(), item->GetLabel().c_str());
