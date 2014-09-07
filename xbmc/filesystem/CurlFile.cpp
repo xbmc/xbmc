@@ -971,7 +971,11 @@ bool CCurlFile::Open(const CURL& url)
 
   char* efurl;
   if (CURLE_OK == g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_EFFECTIVE_URL,&efurl) && efurl)
+  {
+    if (m_url != efurl)
+      CLog::Log(LOGDEBUG,"CCurlFile::Open - effective URL: <%s>", efurl);
     m_url = efurl;
+  }
 
   return true;
 }
