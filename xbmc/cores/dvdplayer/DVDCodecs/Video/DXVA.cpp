@@ -1038,6 +1038,8 @@ void CDecoder::RelBuffer(uint8_t *data)
       break;
     }
   }
+
+  Release();
 }
 
 int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
@@ -1108,6 +1110,8 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   }
   pic->buf[0] = buffer;
   buf->used = true;
+
+  Acquire();
 
   return 0;
 }
