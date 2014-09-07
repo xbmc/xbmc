@@ -71,6 +71,7 @@ public:
   int codecFlags;
   bool canSkipDeint;
   int processCmd;
+  bool isVpp;
 
   void IncDecoded() { CSingleLock l(m_sec); decodedPics++;}
   void DecDecoded() { CSingleLock l(m_sec); decodedPics--;}
@@ -78,14 +79,15 @@ public:
   void DecProcessed() { CSingleLock l(m_sec); processedPics--;}
   void IncRender() { CSingleLock l(m_sec); renderPics++;}
   void DecRender() { CSingleLock l(m_sec); renderPics--;}
-  void Reset() { CSingleLock l(m_sec); decodedPics=0; processedPics=0;renderPics=0;latency=0;}
-  void Get(uint16_t &decoded, uint16_t &processed, uint16_t &render) {CSingleLock l(m_sec); decoded = decodedPics, processed=processedPics, render=renderPics;}
+  void Reset() { CSingleLock l(m_sec); decodedPics=0; processedPics=0;renderPics=0;latency=0;isVpp=false;}
+  void Get(uint16_t &decoded, uint16_t &processed, uint16_t &render, bool &vpp) {CSingleLock l(m_sec); decoded = decodedPics, processed=processedPics, render=renderPics; vpp=isVpp;}
   void SetParams(uint64_t time, int flags) { CSingleLock l(m_sec); latency = time; codecFlags = flags; }
   void GetParams(uint64_t &lat, int &flags) { CSingleLock l(m_sec); lat = latency; flags = codecFlags; }
   void SetCmd(int cmd) { CSingleLock l(m_sec); processCmd = cmd; }
   void GetCmd(int &cmd) { CSingleLock l(m_sec); cmd = processCmd; processCmd = 0; }
   void SetCanSkipDeint(bool canSkip) { CSingleLock l(m_sec); canSkipDeint = canSkip; }
   bool CanSkipDeint() { CSingleLock l(m_sec); if (canSkipDeint) return true; else return false;}
+  void SetVpp(bool vpp) {CSingleLock l(m_sec); isVpp = vpp;}
 private:
   CCriticalSection m_sec;
 };
@@ -121,6 +123,7 @@ struct CVaapiConfig
   VADisplay dpy;
   VAProfile profile;
   VAConfigAttrib attrib;
+  Display *x11dsp;
 };
 
 /**
@@ -268,6 +271,7 @@ protected:
   void Process();
   void StateMachine(int signal, Protocol *port, Message *msg);
   bool HasWork();
+  bool PreferPP();
   void InitCycle();
   CVaapiRenderPicture* ProcessPicture(CVaapiProcessedPicture &pic);
   void QueueReturnPicture(CVaapiRenderPicture *pic);
@@ -343,6 +347,7 @@ public:
   static bool EnsureContext(CVAAPIContext **ctx, CDecoder *decoder);
   void Release(CDecoder *decoder);
   VADisplay GetDisplay();
+  Display* GetX11Display();
   bool SupportsProfile(VAProfile profile);
   VAConfigAttrib GetAttrib(VAProfile profile);
   VAConfigID CreateConfig(VAProfile profile, VAConfigAttrib attrib);
@@ -450,6 +455,7 @@ public:
   virtual void ClearRef(VASurfaceID surf) = 0;
   virtual void Flush() = 0;
   virtual bool Compatible(EINTERLACEMETHOD method) = 0;
+  virtual bool DoesSync() = 0;
 protected:
   CVaapiConfig m_config;
   int m_step;
@@ -468,6 +474,7 @@ public:
   void ClearRef(VASurfaceID surf);
   void Flush();
   bool Compatible(EINTERLACEMETHOD method);
+  bool DoesSync();
 protected:
   CVaapiDecodedPicture m_pic;
 };
@@ -487,6 +494,7 @@ public:
   void ClearRef(VASurfaceID surf);
   void Flush();
   bool Compatible(EINTERLACEMETHOD method);
+  bool DoesSync();
 protected:
   bool CheckSuccess(VAStatus status);
   void Dispose();
@@ -517,6 +525,7 @@ public:
   void ClearRef(VASurfaceID surf);
   void Flush();
   bool Compatible(EINTERLACEMETHOD method);
+  bool DoesSync();
 protected:
   bool CheckSuccess(VAStatus status);
   void Close();

@@ -241,6 +241,11 @@ VADisplay CVAAPIContext::GetDisplay()
   return m_display;
 }
 
+Display *CVAAPIContext::GetX11Display()
+{
+  return m_X11dpy;
+}
+
 bool CVAAPIContext::IsValidDecoder(CDecoder *decoder)
 {
   std::vector<CDecoder*>::iterator it;
@@ -641,9 +646,11 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   if (surf == VA_INVALID_SURFACE)
   {
     uint16_t decoded, processed, render;
-    va->m_bufferStats.Get(decoded, processed, render);
+    bool vpp;
+    va->m_bufferStats.Get(decoded, processed, render, vpp);
     CLog::Log(LOGERROR, "VAAPI::FFGetBuffer - no surface available - dec: %d, render: %d",
                          decoded, render);
+    va->m_DisplayState = VAAPI_ERROR;
     return -1;
   }
 
@@ -712,6 +719,8 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame)
 
   int retval = 0;
   uint16_t decoded, processed, render;
+  int vapipe;
+  bool vpp;
   Message *msg;
   while (m_vaapiOutput.m_controlPort.ReceiveInMessage(&msg))
   {
@@ -723,13 +732,14 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame)
     msg->Release();
   }
 
-  m_bufferStats.Get(decoded, processed, render);
+  m_bufferStats.Get(decoded, processed, render, vpp);
 
   bool hasfree = m_videoSurfaces.HasFree();
   while (!retval)
   {
     // first fill the buffers to keep vaapi busy
-    if (decoded < 3 && processed < 3 && m_videoSurfaces.HasFree())
+    vapipe = vpp ? decoded + processed : decoded;
+    if (vapipe < 4 && m_videoSurfaces.HasFree())
     {
       retval |= VC_BUFFER;
     }
@@ -746,7 +756,7 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame)
         m_presentPicture = *(CVaapiRenderPicture**)msg->data;
         m_presentPicture->vaapi = this;
         m_bufferStats.DecRender();
-        m_bufferStats.Get(decoded, processed, render);
+        m_bufferStats.Get(decoded, processed, render, vpp);
         retval |= VC_PICTURE;
         msg->Release();
         break;
@@ -757,7 +767,7 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame)
     {
       if (msg->signal == COutputControlProtocol::STATS)
       {
-        m_bufferStats.Get(decoded, processed, render);
+        m_bufferStats.Get(decoded, processed, render, vpp);
       }
       else
       {
@@ -767,7 +777,8 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame)
       msg->Release();
     }
 
-    if (decoded < 3 && processed < 3 && m_videoSurfaces.HasFree())
+    vapipe = vpp ? decoded + processed : decoded;
+    if (vapipe < 4 && m_videoSurfaces.HasFree())
     {
       retval |= VC_BUFFER;
     }
@@ -924,6 +935,7 @@ bool CDecoder::ConfigVAAPI()
   memset(&m_hwContext, 0, sizeof(vaapi_context));
 
   m_vaapiConfig.dpy = m_vaapiConfig.context->GetDisplay();
+  m_vaapiConfig.x11dsp = m_vaapiConfig.context->GetX11Display();
   m_vaapiConfig.attrib = m_vaapiConfig.context->GetAttrib(m_vaapiConfig.profile);
   if ((m_vaapiConfig.attrib.value & VA_RT_FORMAT_YUV420) == 0)
   {
@@ -1363,8 +1375,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case COutputControlProtocol::TIMEOUT:
-          if (!m_bufferPool.decodedPics.empty() &&
-               m_bufferPool.processedPics.size() < 4)
+          if (PreferPP())
           {
             m_currentPicture = m_bufferPool.decodedPics.front();
             m_bufferPool.decodedPics.pop_front();
@@ -1643,7 +1654,21 @@ void COutput::Flush()
 bool COutput::HasWork()
 {
   if ((!m_bufferPool.freeRenderPics.empty() && !m_bufferPool.processedPics.empty()) ||
-       !m_bufferPool.decodedPics.empty())
+       (!m_bufferPool.decodedPics.empty() && m_bufferPool.processedPics.size() < 4))
+    return true;
+
+  return false;
+}
+
+bool COutput::PreferPP()
+{
+  if (!m_pp)
+    return true;
+
+  if (!m_bufferPool.decodedPics.empty() && !m_pp->DoesSync() && m_bufferPool.processedPics.size() < 4)
+    return true;
+
+  if (m_bufferPool.freeRenderPics.empty() || m_bufferPool.processedPics.empty())
     return true;
 
   return false;
@@ -1690,9 +1715,15 @@ void COutput::InitCycle()
     {
       if (method == VS_INTERLACEMETHOD_DEINTERLACE ||
           method == VS_INTERLACEMETHOD_RENDER_BOB)
+      {
         m_pp = new CFFmpegPostproc();
+        m_config.stats->SetVpp(false);
+      }
       else
+      {
         m_pp = new CVppPostproc();
+        m_config.stats->SetVpp(true);
+      }
       if (m_pp->PreInit(m_config))
       {
         m_pp->Init(method);
@@ -1717,6 +1748,7 @@ void COutput::InitCycle()
     }
     if (!m_pp)
     {
+      m_config.stats->SetVpp(false);
       if (!CSettings::Get().GetBool("videoplayer.prefervaapirender"))
         m_pp = new CFFmpegPostproc();
       else
@@ -1786,7 +1818,7 @@ CVaapiRenderPicture* COutput::ProcessPicture(CVaapiProcessedPicture &pic)
     {
       return NULL;
     }
-    XSync(m_Display, false);
+    XSync(m_config.x11dsp, false);
     glEnable(m_textureTarget);
     glBindTexture(m_textureTarget, retPic->texture);
     glXBindTexImageEXT(m_Display, retPic->glPixmap, GLX_FRONT_LEFT_EXT, NULL);
@@ -2029,9 +2061,6 @@ bool COutput::EnsureBufferPool()
     }
 
     glGenTextures(1, &pic->texture);
-    glBindTexture(m_textureTarget, pic->texture);
-    glXBindTexImageEXT(m_Display, pic->glPixmap, GLX_FRONT_LEFT_EXT, NULL);
-    glBindTexture(m_textureTarget, 0);
 
     pic->avFrame = av_frame_alloc();
     pic->valid = false;
@@ -2276,6 +2305,11 @@ bool CSkipPostproc::Compatible(EINTERLACEMETHOD method)
   if (method == VS_INTERLACEMETHOD_NONE)
     return true;
 
+  return false;
+}
+
+bool CSkipPostproc::DoesSync()
+{
   return false;
 }
 
@@ -2712,6 +2746,11 @@ bool CVppPostproc::Compatible(EINTERLACEMETHOD method)
   return false;
 }
 
+bool CVppPostproc::DoesSync()
+{
+  return false;
+}
+
 bool CVppPostproc::CheckSuccess(VAStatus status)
 {
   if (status != VA_STATUS_SUCCESS)
@@ -3056,6 +3095,11 @@ bool CFFmpegPostproc::Compatible(EINTERLACEMETHOD method)
     return true;
 
   return false;
+}
+
+bool CFFmpegPostproc::DoesSync()
+{
+  return true;
 }
 
 bool CFFmpegPostproc::CheckSuccess(VAStatus status)
