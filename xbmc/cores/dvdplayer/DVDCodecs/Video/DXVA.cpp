@@ -504,6 +504,13 @@ bool CDXVAContext::CreateSurfaces(int width, int height, D3DFORMAT format, unsig
 
 bool CDXVAContext::CreateDecoder(GUID &inGuid, DXVA2_VideoDesc *format, const DXVA2_ConfigPictureDecode *config, LPDIRECT3DSURFACE9 *surfaces, unsigned int count, IDirectXVideoDecoder **decoder)
 {
+  CSingleLock lock(m_section);
+  std::vector<CDecoder*>::iterator it;
+  for (it = m_decoders.begin(); it != m_decoders.end(); ++it)
+  {
+    (*it)->CloseDXVADecoder();
+  }
+
   HRESULT res = m_service->CreateVideoDecoder(inGuid, format, config, surfaces, count, decoder);
   if (FAILED(res))
   {
@@ -1036,6 +1043,10 @@ void CDecoder::RelBuffer(uint8_t *data)
 int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
 {
   CSingleLock lock(m_section);
+
+  if (!m_decoder)
+    return -1;
+
   if(avctx->coded_width  != m_format.SampleWidth
   || avctx->coded_height != m_format.SampleHeight)
   {
@@ -1106,6 +1117,12 @@ unsigned CDecoder::GetAllowedReferences()
   return m_shared;
 }
 
+
+void CDecoder::CloseDXVADecoder()
+{
+  CSingleLock lock(m_section);
+  SAFE_RELEASE(m_decoder);
+}
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

@@ -97,6 +97,7 @@ public:
 
   static bool      Supports(enum PixelFormat fmt);
 
+  void CloseDXVADecoder();
 
 protected:
   enum EDeviceState
