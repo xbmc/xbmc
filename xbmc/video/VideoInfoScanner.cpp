@@ -64,8 +64,6 @@ namespace VIDEO
     m_handle = NULL;
     m_showDialog = false;
     m_bCanInterrupt = false;
-    m_currentItem = 0;
-    m_itemCount = 0;
     m_bClean = false;
     m_scanAll = false;
   }
@@ -94,10 +92,6 @@ namespace VIDEO
 
       CLog::Log(LOGNOTICE, "VideoInfoScanner: Starting scan ..");
       ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanStarted");
-
-      // Reset progress vars
-      m_currentItem = 0;
-      m_itemCount = -1;
 
       SetPriority(GetMinPriority());
 
@@ -167,7 +161,6 @@ namespace VIDEO
 
   void CVideoInfoScanner::Start(const CStdString& strDirectory, bool scanAll)
   {
-    m_strStartDir = strDirectory;
     m_scanAll = scanAll;
     m_pathsToScan.clear();
     m_pathsToClean.clear();

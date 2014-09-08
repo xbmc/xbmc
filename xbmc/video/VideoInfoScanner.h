@@ -245,13 +245,10 @@ namespace VIDEO
 
     bool m_showDialog;
     CGUIDialogProgressBarHandle* m_handle;
-    int m_currentItem;
-    int m_itemCount;
     bool m_bRunning;
     bool m_bCanInterrupt;
     bool m_bClean;
     bool m_scanAll;
-    CStdString m_strStartDir;
     CVideoDatabase m_database;
     std::set<CStdString> m_pathsToScan;
     std::set<CStdString> m_pathsToCount;
