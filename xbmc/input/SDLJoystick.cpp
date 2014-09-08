@@ -72,6 +72,12 @@ void CJoystick::Initialize()
   // clear old joystick names
   m_JoystickNames.clear();
 
+  for (int i = 0; i < MAX_AXES; i++)
+  {
+    m_RestState[i] = 0;
+    m_IgnoreAxis[i] = false;
+  }
+  
   // any open ones? if so, close them.
   if (m_Joysticks.size()>0)
   {
@@ -91,6 +97,7 @@ void CJoystick::Initialize()
   // any joysticks connected?
   if (SDL_NumJoysticks()>0)
   {
+    int axisCount = 1;
     // load joystick names and open all connected joysticks
     for (int i = 0 ; i<SDL_NumJoysticks() ; i++)
     {
@@ -120,18 +127,31 @@ void CJoystick::Initialize()
         // Details: Total Axis: 3 Total Hats: 0 Total Buttons: 0
         int num_axis = SDL_JoystickNumAxes(joy);
         int num_buttons = SDL_JoystickNumButtons(joy);
+        int num_hats = SDL_JoystickNumHats(joy);
+        std::string joyName = std::string(SDL_JoystickName(i));
         if ((num_axis > 20 && num_buttons > 50) || num_buttons == 0)
         {
           CLog::Log(LOGNOTICE, "Ignoring Joystick %s Axis: %d Buttons: %d: invalid device properties",
-           SDL_JoystickName(i), num_axis, num_buttons);
+           joyName.c_str(), num_axis, num_buttons);
         }
         else
         {
-          m_JoystickNames.push_back(string(SDL_JoystickName(i)));
-          CLog::Log(LOGNOTICE, "Enabled Joystick: %s", SDL_JoystickName(i));
+          m_JoystickNames.push_back(joyName);
+          CLog::Log(LOGNOTICE, "Enabled Joystick: %s", joyName.c_str());
           CLog::Log(LOGNOTICE, "Details: Total Axis: %d Total Hats: %d Total Buttons: %d",
-            num_axis, SDL_JoystickNumHats(joy), num_buttons);
+            num_axis, num_hats, num_buttons);
           m_Joysticks.push_back(joy);
+
+          if (num_axis == 6 && num_buttons == 11 && num_hats == 1 && joyName.find("360") != std::string::npos)
+          {
+            // set rest states of the triggers (axis 2 & 5) to -32768
+            m_RestState[axisCount+2] = -32768;
+            m_RestState[axisCount+5] = -32768;
+            // SDL reports these axis as having value 0 until they are actually touched
+            m_IgnoreAxis[axisCount+2] = true;
+            m_IgnoreAxis[axisCount+5] = true;
+          }
+          axisCount += num_axis;
         }
       }
       else
@@ -221,6 +241,7 @@ void CJoystick::Update()
       else
       {
         m_Amount[axisId] = axisval;  //[-32768 to 32767]
+        m_IgnoreAxis[axisId] &= m_IgnoreAxis[axisId] && axisval == 0;
       }
     }
     m_AxisId = GetAxisWithMaxAmount();
@@ -441,8 +462,8 @@ int CJoystick::GetAxisWithMaxAmount()
   int tempf;
   for (int i = 1 ; i<=m_NumAxes ; i++)
   {
-    tempf = abs(m_Amount[i]);
-    if (tempf>m_DeadzoneRange && tempf>maxAmount)
+    tempf = abs(m_Amount[i] - m_RestState[i]);
+    if (tempf>m_DeadzoneRange && tempf>maxAmount && !m_IgnoreAxis[i])
     {
       maxAmount = tempf;
       axis = i;
@@ -454,10 +475,14 @@ int CJoystick::GetAxisWithMaxAmount()
 
 float CJoystick::GetAmount(int axis)
 {
-  if (m_Amount[axis] > m_DeadzoneRange)
-    return (float)(m_Amount[axis]-m_DeadzoneRange)/(float)(MAX_AXISAMOUNT-m_DeadzoneRange);
-  if (m_Amount[axis] < -m_DeadzoneRange)
-    return (float)(m_Amount[axis]+m_DeadzoneRange)/(float)(MAX_AXISAMOUNT-m_DeadzoneRange);
+  if (m_IgnoreAxis[axis]) 
+    return 0;
+  int amount = m_Amount[axis] - m_RestState[axis];
+  int range = MAX_AXISAMOUNT-m_RestState[axis];
+  if (amount > m_DeadzoneRange)
+    return (float)(amount-m_DeadzoneRange)/(float)(range-m_DeadzoneRange);
+  if (amount < -m_DeadzoneRange)
+    return (float)(amount+m_DeadzoneRange)/(float)(range-m_DeadzoneRange);
   return 0;
 }
 
