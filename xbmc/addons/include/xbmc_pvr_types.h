@@ -75,10 +75,10 @@ struct DemuxPacket;
 #define PVR_STREAM_MAX_STREAMS 20
 
 /* current PVR API version */
-#define XBMC_PVR_API_VERSION "1.9.1"
+#define XBMC_PVR_API_VERSION "1.9.2"
 
 /* min. PVR API version */
-#define XBMC_PVR_MIN_API_VERSION "1.9.1"
+#define XBMC_PVR_MIN_API_VERSION "1.9.2"
 
 #ifdef __cplusplus
 extern "C" {
@@ -225,6 +225,7 @@ extern "C" {
     unsigned int iUniqueId;                                            /*!< @brief (required) unique identifier for this channel */
     bool         bIsRadio;                                             /*!< @brief (required) true if this is a radio channel, false if it's a TV channel */
     unsigned int iChannelNumber;                                       /*!< @brief (optional) channel number of this channel on the backend */
+    unsigned int iSubChannelNumber;                                    /*!< @brief (optional) sub channel number of this channel on the backend (ATSC) */
     char         strChannelName[PVR_ADDON_NAME_STRING_LENGTH];         /*!< @brief (optional) channel name given to this channel */
     char         strInputFormat[PVR_ADDON_INPUT_FORMAT_STRING_LENGTH]; /*!< @brief (optional) input format type. types can be found in ffmpeg/libavformat/allformats.c
                                                                                    leave empty if unknown */

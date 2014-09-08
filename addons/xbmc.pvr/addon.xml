@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.pvr" version="1.9.1" provider-name="Team-Kodi">
-  <backwards-compatibility abi="1.9.0"/>
+<addon id="xbmc.pvr" version="1.9.2" provider-name="Team-Kodi">
   <requires>
     <import addon="xbmc.core" version="0.1.0"/>
   </requires>

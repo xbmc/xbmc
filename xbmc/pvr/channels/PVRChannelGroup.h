@@ -49,6 +49,7 @@ namespace PVR
   {
     CPVRChannelPtr channel;
     unsigned int   iChannelNumber;
+    unsigned int   iSubChannelNumber;
   } PVRChannelGroupMember;
   
   enum EpgDateType
@@ -113,8 +114,9 @@ namespace PVR
      * @brief Change the channelnumber of a group. Used by CGUIDialogPVRChannelManager. Call SortByChannelNumber() and Renumber() after all changes are done.
      * @param channel The channel to change the channel number for.
      * @param iChannelNumber The new channel number.
+     * @param iSubChannelNumber The new sub channel number.
      */
-    bool SetChannelNumber(const CPVRChannel &channel, unsigned int iChannelNumber);
+    bool SetChannelNumber(const CPVRChannel &channel, unsigned int iChannelNumber, unsigned int iSubChannelNumber = 0);
 
     /*!
      * @brief Move a channel from position iOldIndex to iNewIndex.
@@ -270,9 +272,10 @@ namespace PVR
     /*!
      * @brief Get a channel given it's channel number.
      * @param iChannelNumber The channel number.
+     * * @param iSubChannelNumber The sub channel number.
      * @return The channel or NULL if it wasn't found.
      */
-    CFileItemPtr GetByChannelNumber(unsigned int iChannelNumber) const;
+    CFileItemPtr GetByChannelNumber(unsigned int iChannelNumber, unsigned int iSubChannelNumber = 0) const;
 
     /*!
      * @brief Get the channel number in this group of the given channel.
@@ -280,6 +283,13 @@ namespace PVR
      * @return The channel number in this group or 0 if the channel isn't a member of this group.
      */
     unsigned int GetChannelNumber(const CPVRChannel &channel) const;
+
+    /*!
+     * @brief Get the sub channel number in this group of the given channel.
+     * @param channel The channel to get the sub channel number for.
+     * @return The sub channel number in this group or 0 if the channel isn't a member of this group.
+     */
+    unsigned int GetSubChannelNumber(const CPVRChannel &channel) const;
 
     /*!
      * @brief Get the next channel in this group.

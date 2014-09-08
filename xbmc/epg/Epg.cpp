@@ -844,6 +844,12 @@ int CEpg::ChannelNumber(void) const
   return m_pvrChannel ? m_pvrChannel->ChannelNumber() : -1;
 }
 
+int CEpg::SubChannelNumber(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_pvrChannel ? m_pvrChannel->SubChannelNumber() : -1;
+}
+
 void CEpg::SetChannel(PVR::CPVRChannelPtr channel)
 {
   CSingleLock lock(m_critSection);
