@@ -212,13 +212,6 @@ namespace VIDEO
     m_bRunning = false;
   }
 
-  static void OnDirectoryScanned(const CStdString& strDirectory)
-  {
-    CGUIMessage msg(GUI_MSG_DIRECTORY_SCANNED, 0, 0, 0);
-    msg.SetStringParam(strDirectory);
-    g_windowManager.SendThreadMessage(msg);
-  }
-
   bool CVideoInfoScanner::ScanMovieFolder(const CStdString& strDirectory, const SScanSettings& settings, CONTENT_TYPE content)
   {
     const vector<string> &regexps = g_advancedSettings.m_moviesExcludeFromScanRegExps;
@@ -291,9 +284,6 @@ namespace VIDEO
       m_database.SetPathHash(strDirectory, hash);
     }
 
-    if (m_handle)
-      OnDirectoryScanned(strDirectory);
-
     for (int i = 0; i < items.Size(); ++i)
     {
       CFileItemPtr pItem = items[i];
@@ -355,9 +345,6 @@ namespace VIDEO
         CLog::Log(LOGDEBUG, "VideoInfoScanner: No (new) information was found in dir %s", CURL::GetRedacted(strDirectory).c_str());
       }
     }
-
-    if (m_handle)
-      OnDirectoryScanned(strDirectory);
 
     return !m_bStop;
   }
@@ -727,9 +714,6 @@ namespace VIDEO
       if (bSkip)
       {
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change", CURL::GetRedacted(item->GetPath()).c_str());
-        // update our dialog with our progress
-        if (m_handle)
-          OnDirectoryScanned(item->GetPath());
         return false;
       }
 
