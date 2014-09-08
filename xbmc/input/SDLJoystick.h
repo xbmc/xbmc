@@ -25,6 +25,7 @@
 #include "settings/lib/ISettingCallback.h"
 #include <vector>
 #include <string>
+#include <map>
 
 #define JACTIVE_BUTTON 0x00000001
 #define JACTIVE_AXIS   0x00000002
@@ -55,7 +56,7 @@ public:
 
   void Initialize();
   void Reset(bool axis=false);
-  void ResetAxis(int axisId) { m_Amount[axisId] = 0; }
+  void ResetAxis(int axisId) { m_Amount[axisId] = m_RestState[axisId]; }
   void Update();
   void Update(SDL_Event& event);
   bool GetButton (int& id, bool consider_repeat=true);
@@ -69,6 +70,7 @@ public:
   void SetEnabled(bool enabled = true);
   float SetDeadzone(float val);
   bool Reinitialize();
+  void LoadTriggerMap(const std::map<std::string, std::vector<int> >& triggerMap);
 
 private:
   void SetAxisActive(bool active=true) { m_ActiveFlags = active?(m_ActiveFlags|JACTIVE_AXIS):(m_ActiveFlags&(~JACTIVE_AXIS)); }
@@ -81,6 +83,8 @@ private:
   bool ReleaseJoysticks();
 
   int m_Amount[MAX_AXES];
+  int m_RestState[MAX_AXES]; // axis value in rest state (0 for sticks, -32768 for triggers)
+  bool m_IgnoreAxis[MAX_AXES]; // used to ignore triggers until SDL no longer reports 0
   int m_AxisId;
   int m_ButtonId;
   uint8_t m_HatState;
@@ -94,6 +98,7 @@ private:
   uint8_t m_ActiveFlags;
   std::vector<SDL_Joystick*> m_Joysticks;
   std::vector<std::string> m_JoystickNames;
+  std::map<std::string, std::vector<int> > m_TriggerMap;
 };
 
 extern CJoystick g_Joystick;
