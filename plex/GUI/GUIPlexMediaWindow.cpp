@@ -71,12 +71,7 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
     if (dialog && dialog->IsActive())
       dialog->Close();
 
-    // Store the current selected item
-    if (m_vecItems)
-    {
-      CURL u(m_vecItems->GetPath());
-      m_lastSelectedIndex[u.GetUrlWithoutOptions()] = m_viewControl.GetSelectedItem();
-    }
+    SaveSelection();
   }
   else if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
     m_sectionFilter.reset();
@@ -108,12 +103,7 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
       g_plexApplication.timelineManager->RefreshSubscribers();
       m_fetchedPages.clear();
 
-      // Restore selected item for the section
-      int idx = 0;
-      CURL u(m_vecItems->GetPath());
-      if (m_lastSelectedIndex.find(u.GetUrlWithoutOptions()) != m_lastSelectedIndex.end())
-        idx = m_lastSelectedIndex[u.GetUrlWithoutOptions()];
-      m_viewControl.SetSelectedItem(idx);
+      RestoreSelection();
       break;
     }
 
@@ -197,6 +187,28 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
   }
 
   return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexMediaWindow::SaveSelection()
+{
+  // Restore selected item for the section
+  int idx = 0;
+  CURL u(m_vecItems->GetPath());
+  if (m_lastSelectedIndex.find(u.GetUrlWithoutOptions()) != m_lastSelectedIndex.end())
+    idx = m_lastSelectedIndex[u.GetUrlWithoutOptions()];
+  m_viewControl.SetSelectedItem(idx);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexMediaWindow::RestoreSelection()
+{
+  // Store the current selected item
+  if (m_vecItems)
+  {
+    CURL u(m_vecItems->GetPath());
+    m_lastSelectedIndex[u.GetUrlWithoutOptions()] = m_viewControl.GetSelectedItem();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
