@@ -105,7 +105,7 @@ public:
   const int        player;
   // stuff to handle starting after seek
   double   startpts;
-  double   correction;
+  double   originaldts;
 
   CCurrentStream(StreamType t, int i)
     : type(t)
@@ -127,7 +127,7 @@ public:
     inited = false;
     started = false;
     startpts  = DVD_NOPTS_VALUE;
-    correction = 0.0;
+    originaldts = DVD_NOPTS_VALUE;
   }
 
   double dts_end()
