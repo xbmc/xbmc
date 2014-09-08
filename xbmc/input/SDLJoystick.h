@@ -55,7 +55,7 @@ public:
 
   void Initialize();
   void Reset(bool axis=false);
-  void ResetAxis(int axisId) { m_Amount[axisId] = 0; }
+  void ResetAxis(int axisId) { m_Amount[axisId] = m_RestState[axisId]; }
   void Update();
   void Update(SDL_Event& event);
   bool GetButton (int& id, bool consider_repeat=true);
@@ -81,6 +81,8 @@ private:
   bool ReleaseJoysticks();
 
   int m_Amount[MAX_AXES];
+  int m_RestState[MAX_AXES]; // axis value in rest state (0 for sticks, -32768 for triggers)
+  bool m_IgnoreAxis[MAX_AXES]; // used to ignore triggers until SDL no longer reports 0
   int m_AxisId;
   int m_ButtonId;
   uint8_t m_HatState;
