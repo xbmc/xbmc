@@ -1407,7 +1407,11 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case COutputControlProtocol::TIMEOUT:
-          m_pp->AddPicture(m_currentPicture);
+          if (!m_pp->AddPicture(m_currentPicture))
+          {
+            m_state = O_TOP_ERROR;
+            return;
+          }
           CVaapiProcessedPicture outPic;
           if (m_pp->Filter(outPic))
           {
@@ -1662,14 +1666,17 @@ bool COutput::HasWork()
 
 bool COutput::PreferPP()
 {
-  if (!m_pp)
-    return true;
+  if (!m_bufferPool.decodedPics.empty())
+  {
+    if (!m_pp)
+      return true;
 
-  if (!m_bufferPool.decodedPics.empty() && !m_pp->DoesSync() && m_bufferPool.processedPics.size() < 4)
-    return true;
+    if (!m_pp->DoesSync() && m_bufferPool.processedPics.size() < 4)
+      return true;
 
-  if (m_bufferPool.freeRenderPics.empty() || m_bufferPool.processedPics.empty())
-    return true;
+    if (m_bufferPool.freeRenderPics.empty() || m_bufferPool.processedPics.empty())
+      return true;
+  }
 
   return false;
 }
@@ -2125,6 +2132,7 @@ void COutput::ReleaseBufferPool(bool precleanup)
       glDeleteTextures(1, &pic->texture);
       glXDestroyPixmap(m_Display, pic->glPixmap);
       XFreePixmap(m_Display, pic->pixmap);
+      pic->texture = None;
     }
     av_frame_free(&pic->avFrame);
     pic->valid = false;
@@ -2516,6 +2524,7 @@ bool CVppPostproc::AddPicture(CVaapiDecodedPicture &pic)
   m_decodedPics.push_front(pic);
   m_frameCount++;
   m_step = 0;
+  return true;
 }
 
 bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
