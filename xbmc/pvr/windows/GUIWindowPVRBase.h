@@ -53,6 +53,7 @@ namespace PVR
   class CGUIWindowPVRBase : public CGUIMediaWindow, public Observer
   {
   public:
+    virtual ~CGUIWindowPVRBase(void);
     virtual void OnInitWindow(void);
     virtual void OnDeinitWindow(int nextWindowID);
     virtual bool OnMessage(CGUIMessage& message);
@@ -69,7 +70,6 @@ namespace PVR
 
   protected:
     CGUIWindowPVRBase(bool bRadio, int id, const std::string &xmlFile);
-    virtual ~CGUIWindowPVRBase(void);
 
     virtual std::string GetDirectoryPath(void) { return ""; };
     virtual CPVRChannelGroupPtr GetGroup(void);
