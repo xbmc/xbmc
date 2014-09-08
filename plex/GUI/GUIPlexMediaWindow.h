@@ -79,6 +79,9 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback
     void OnFilterSelected(const std::string& filterKey, int filterButtonId);
     static CURL GetRealDirectoryUrl(const CStdString &strDirectory);
 
+    void SaveSelection();
+    void RestoreSelection();
+  
     void CheckPlexFilters(CFileItemList &list);
     void UpdateButtons();
     void PlayAll(bool shuffle, const CFileItemPtr &fromHere = CFileItemPtr());
