@@ -16,18 +16,18 @@ if(COMPRESS_TEXTURES AND NOT TARGET_RPI)
   endif(TEXTUREPACKERPATH)
 
   add_custom_command(
-    OUTPUT Textures_Plex.xbt
-    COMMAND ${TEXTUREPACKER_EXE} -input ${root}/addons/skin.plex/Media -output ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt
+    OUTPUT Textures.xbt
+    COMMAND ${TEXTUREPACKER_EXE} -input ${root}/addons/skin.plex/Media -output ${CMAKE_CURRENT_BINARY_DIR}/Textures.xbt
     MAIN_DEPENDENCY ${MEDIA_IMAGES_PLEX_SKIN}
     DEPENDS TexturePacker
     WORKING_DIRECTORY ${WORKDIR}
   )
-  add_custom_target(CompressTextures ALL DEPENDS Textures_Plex.xbt)
-  set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt PROPERTIES GENERATED true MACOSX_PACKAGE_LOCATION Resources/XBMC/addons/skin.plex/Media)
-  set_property(GLOBAL APPEND PROPERTY CONFIG_BUNDLED_FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt)
+  add_custom_target(CompressTextures ALL DEPENDS Textures.xbt)
+  set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/Textures.xbt PROPERTIES GENERATED true MACOSX_PACKAGE_LOCATION Resources/XBMC/addons/skin.plex/Media)
+  set_property(GLOBAL APPEND PROPERTY CONFIG_BUNDLED_FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures.xbt)
 
   if(NOT TARGET_OSX)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt DESTINATION ${RESOURCEPATH}/addons/skin.plex/Media RENAME Textures.xbt COMPONENT RUNTIME)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures.xbt DESTINATION ${RESOURCEPATH}/addons/skin.plex/Media COMPONENT RUNTIME)
   endif()
 
   set(EXCLUDE_TEXTURES "skin.plex/Media/*")
