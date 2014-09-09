@@ -403,7 +403,6 @@ void OMXPlayerAudio::Process()
       CLog::Log(LOGDEBUG, "COMXPlayerAudio - CDVDMsg::GENERAL_RESET");
       if (m_pAudioCodec)
         m_pAudioCodec->Reset();
-      m_omxAudio.Flush();
       m_started = false;
       m_audioClock = DVD_NOPTS_VALUE;
     }
