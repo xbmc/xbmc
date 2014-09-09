@@ -35,6 +35,8 @@
 class CKey;
 class CAction;
 class TiXmlNode;
+struct AxisConfig;
+typedef std::vector<AxisConfig> AxesConfig; // [<axis, isTrigger, rest state value>]
 
 struct CButtonAction
 {
@@ -94,6 +96,8 @@ public:
   bool TranslateJoystickString(int window, const char* szDevice, int id,
                                short inputType, int& action, std::string& strAction,
                                bool &fullrange);
+
+  const std::map<std::string, AxesConfig>& GetAxesConfigs() { return m_joystickAxesConfigs; };
 #endif
 
   bool TranslateTouchAction(int window, int touchAction, int touchPointers, int &action);
@@ -143,6 +147,7 @@ private:
   std::map<std::string, JoystickMap> m_joystickButtonMap;      // <joy name, button map>
   std::map<std::string, JoystickMap> m_joystickAxisMap;        // <joy name, axis map>
   std::map<std::string, JoystickMap> m_joystickHatMap;        // <joy name, hat map>
+  std::map<std::string, AxesConfig> m_joystickAxesConfigs;     // <joy name, axes config>
 #endif
 
   void MapTouchActions(int windowID, TiXmlNode *pTouch);

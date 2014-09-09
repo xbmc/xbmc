@@ -998,6 +998,11 @@ bool CApplication::CreateGUI()
   if (!CButtonTranslator::GetInstance().Load())
     return false;
 
+#ifdef HAS_SDL_JOYSTICK
+  // Pass the mapping of axis to triggers to g_Joystick
+  g_Joystick.LoadAxesConfigs(CButtonTranslator::GetInstance().GetAxesConfigs());
+#endif
+
   RESOLUTION_INFO info = g_graphicsContext.GetResInfo();
   CLog::Log(LOGINFO, "GUI format %ix%i, Display %s",
             info.iWidth,
@@ -2945,9 +2950,10 @@ bool CApplication::ProcessGamepad(float frameTime)
     return false;
 
   int iWin = GetActiveWindowID();
-  int bid = 0;
+  int keymapId, joyId;
   g_Joystick.Update();
-  if (g_Joystick.GetButton(bid))
+  std::string joyName;
+  if (g_Joystick.GetButton(joyName, joyId))
   {
     // reset Idle Timer
     m_idleTimer.StartZero();
@@ -2955,36 +2961,33 @@ bool CApplication::ProcessGamepad(float frameTime)
     ResetScreenSaver();
     if (WakeUpScreenSaverAndDPMS())
     {
-      g_Joystick.Reset(true);
+      g_Joystick.Reset();
       return true;
     }
 
     int actionID;
     CStdString actionName;
     bool fullrange;
-    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, g_Joystick.GetJoystick().c_str(), bid, JACTIVE_BUTTON, actionID, actionName, fullrange))
+    keymapId = joyId + 1;
+    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joyName.c_str(), keymapId, JACTIVE_BUTTON, actionID, actionName, fullrange))
     {
       CAction action(actionID, 1.0f, 0.0f, actionName);
-      g_Joystick.Reset();
       g_Mouse.SetActive(false);
       return ExecuteInputAction(action);
     }
-    else
-    {
-      g_Joystick.Reset();
-    }
   }
-  if (g_Joystick.GetAxis(bid))
+  if (g_Joystick.GetAxis(joyName, joyId))
   {
-    if (g_Joystick.GetAmount() < 0)
+    keymapId = joyId + 1;
+    if (g_Joystick.GetAmount(joyName, joyId) < 0)
     {
-      bid = -bid;
+      keymapId = -keymapId;
     }
 
     int actionID;
     CStdString actionName;
     bool fullrange;
-    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, g_Joystick.GetJoystick().c_str(), bid, JACTIVE_AXIS, actionID, actionName, fullrange))
+    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joyName.c_str(), keymapId, JACTIVE_AXIS, actionID, actionName, fullrange))
     {
       ResetScreenSaver();
       if (WakeUpScreenSaverAndDPMS())
@@ -2992,19 +2995,16 @@ bool CApplication::ProcessGamepad(float frameTime)
         return true;
       }
 
-      CAction action(actionID, fullrange ? (g_Joystick.GetAmount() + 1.0f)/2.0f : fabs(g_Joystick.GetAmount()), 0.0f, actionName);
-      g_Joystick.Reset();
+      float amount = g_Joystick.GetAmount(joyName, joyId);
+      CAction action(actionID, fullrange ? (amount + 1.0f)/2.0f : fabs(amount), 0.0f, actionName);
       g_Mouse.SetActive(false);
       return ExecuteInputAction(action);
     }
-    else
-    {
-      g_Joystick.ResetAxis(abs(bid));
-    }
   }
   int position = 0;
-  if (g_Joystick.GetHat(bid, position))
+  if (g_Joystick.GetHat(joyName, joyId, position))
   {
+    keymapId = joyId + 1;
     // reset Idle Timer
     m_idleTimer.StartZero();
 
@@ -3019,12 +3019,11 @@ bool CApplication::ProcessGamepad(float frameTime)
     CStdString actionName;
     bool fullrange;
 
-    bid = position<<16|bid;
+    keymapId = position << 16 | keymapId;
 
-    if (bid && CButtonTranslator::GetInstance().TranslateJoystickString(iWin, g_Joystick.GetJoystick().c_str(), bid, JACTIVE_HAT, actionID, actionName, fullrange))
+    if (keymapId && CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joyName.c_str(), keymapId, JACTIVE_HAT, actionID, actionName, fullrange))
     {
       CAction action(actionID, 1.0f, 0.0f, actionName);
-      g_Joystick.Reset();
       g_Mouse.SetActive(false);
       return ExecuteInputAction(action);
     }
@@ -3233,9 +3232,6 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    if (WakeUpScreenSaverAndDPMS())
      return true;
 
-#ifdef HAS_SDL_JOYSTICK
-   g_Joystick.Reset();
-#endif
    g_Mouse.SetActive(false);
 
    int iWin = GetActiveWindowID();

@@ -762,6 +762,7 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
   vector<string> joynames;
   map<int, string> buttonMap;
   map<int, string> axisMap;
+  AxesConfig axesConfig;
   map<int, string> hatMap;
 
   TiXmlElement *pJoy = pJoystick->ToElement();
@@ -811,6 +812,17 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
           axisMap[id] = action;
           axisMap[-id] = action;
         }
+
+        if (windowID == -1) {
+          // in <global> we can override the rest state value of axes and whether they are triggers
+          bool trigger = false;
+          int restStateValue = 0;
+          pButton->QueryBoolAttribute("trigger", &trigger);
+          pButton->QueryIntAttribute("rest", &restStateValue);
+          // if it deviates from the defaults
+          if (trigger || restStateValue != 0)
+            axesConfig.push_back(AxisConfig(id, trigger, restStateValue));
+        }
       }
       else if (type == "hat")
       {
@@ -846,6 +858,8 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
     m_joystickButtonMap[*it][windowID] = buttonMap;
     m_joystickAxisMap[*it][windowID] = axisMap;
     m_joystickHatMap[*it][windowID] = hatMap;
+    if (windowID == -1) 
+      m_joystickAxesConfigs[*it] = axesConfig;
 //    CLog::Log(LOGDEBUG, "Found Joystick map for window %d using %s", windowID, it->c_str());
     it++;
   }
