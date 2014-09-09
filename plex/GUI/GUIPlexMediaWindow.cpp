@@ -192,23 +192,25 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIPlexMediaWindow::SaveSelection()
 {
-  // Restore selected item for the section
-  int idx = 0;
-  CURL u(m_vecItems->GetPath());
-  if (m_lastSelectedIndex.find(u.GetUrlWithoutOptions()) != m_lastSelectedIndex.end())
-    idx = m_lastSelectedIndex[u.GetUrlWithoutOptions()];
-  m_viewControl.SetSelectedItem(idx);
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIPlexMediaWindow::RestoreSelection()
-{
   // Store the current selected item
   if (m_vecItems)
   {
     CURL u(m_vecItems->GetPath());
     m_lastSelectedIndex[u.GetUrlWithoutOptions()] = m_viewControl.GetSelectedItem();
   }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexMediaWindow::RestoreSelection()
+{
+  // Restore selected item for the section
+  int idx = 0;
+  CURL u(m_vecItems->GetPath());
+  if (m_lastSelectedIndex.find(u.GetUrlWithoutOptions()) != m_lastSelectedIndex.end())
+    idx = m_lastSelectedIndex[u.GetUrlWithoutOptions()];
+  m_viewControl.SetSelectedItem(idx);
+  
+  printf("SaveSelection for %s is %d", u.GetUrlWithoutOptions().c_str(), idx);  
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -814,6 +816,8 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
   if (newUrl.Get().empty())
     return false;
 
+  SaveSelection();
+  
   if (strDirectory == m_startDirectory)
   {
     m_sectionRoot = strDirectory;
@@ -856,6 +860,7 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
 
   UpdateSectionTitle();
 
+  RestoreSelection();
   return ret;
 }
 
