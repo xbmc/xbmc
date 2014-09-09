@@ -194,7 +194,7 @@ bool CAddonMgr::CheckUserDirs(const cp_cfg_element_t *settings)
   while (itr != elements.end())
   {
     std::string path = GetExtValue(*itr++, "@path");
-    if (!CFile::Exists(path))
+    if (!CDirectory::Exists(path))
     {
       if (!CUtil::CreateDirectoryEx(path))
       {

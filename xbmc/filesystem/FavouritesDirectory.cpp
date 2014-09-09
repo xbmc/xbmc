@@ -20,6 +20,7 @@
 
 #include "FavouritesDirectory.h"
 #include "File.h"
+#include "Directory.h"
 #include "Util.h"
 #include "profiles/ProfilesManager.h"
 #include "FileItem.h"
@@ -53,7 +54,7 @@ bool CFavouritesDirectory::Exists(const CURL& url)
     return XFILE::CFile::Exists("special://xbmc/system/favourites.xml") 
         || XFILE::CFile::Exists(URIUtils::AddFileToFolder(CProfilesManager::Get().GetProfileUserDataFolder(), "favourites.xml"));
   }
-  return XFILE::CFile::Exists(url); //directly load the given file
+  return XFILE::CDirectory::Exists(url); //directly load the given file
 }
 
 bool CFavouritesDirectory::Load(CFileItemList &items)
