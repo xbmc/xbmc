@@ -45,6 +45,36 @@ protected:
   std::vector<IDirect3DSurface9*> m_heldsurfaces;
 };
 
+typedef HRESULT(__stdcall *DXVA2CreateVideoServicePtr)(IDirect3DDevice9* pDD, REFIID riid, void** ppService);
+class CDecoder;
+class CDXVAContext
+{
+public:
+  static bool EnsureContext(CDXVAContext **ctx, CDecoder *decoder);
+  bool GetInputAndTarget(int codec, GUID &inGuid, D3DFORMAT &outFormat);
+  bool GetConfig(GUID &inGuid, const DXVA2_VideoDesc *format, DXVA2_ConfigPictureDecode &config);
+  bool CreateSurfaces(int width, int height, D3DFORMAT format, unsigned int count, LPDIRECT3DSURFACE9 *surfaces);
+  bool CreateDecoder(GUID &inGuid, DXVA2_VideoDesc *format, const DXVA2_ConfigPictureDecode *config, LPDIRECT3DSURFACE9 *surfaces, unsigned int count, IDirectXVideoDecoder **decoder);
+  void Release(CDecoder *decoder);
+private:
+  CDXVAContext();
+  void Close();
+  bool LoadSymbols();
+  bool CreateContext();
+  void DestroyContext();
+  void QueryCaps();
+  bool IsValidDecoder(CDecoder *decoder);
+  static CDXVAContext *m_context;
+  static CCriticalSection m_section;
+  static HMODULE m_dlHandle;
+  static DXVA2CreateVideoServicePtr m_DXVA2CreateVideoService;
+  IDirectXVideoDecoderService* m_service;
+  int m_refCount;
+  UINT m_input_count;
+  GUID *m_input_list;
+  std::vector<CDecoder*> m_decoders;
+};
+
 class CDecoder
   : public CDVDVideoCodecFFmpeg::IHardwareDecoder
   , public ID3DResource
@@ -67,6 +97,7 @@ public:
 
   static bool      Supports(enum PixelFormat fmt);
 
+  void CloseDXVADecoder();
 
 protected:
   enum EDeviceState
@@ -91,7 +122,6 @@ protected:
     int                age;
   };
 
-  IDirectXVideoDecoderService* m_service;
   IDirectXVideoDecoder*        m_decoder;
   HANDLE                       m_device;
   GUID                         m_input;
@@ -105,6 +135,7 @@ protected:
   struct dxva_context*         m_context;
 
   CSurfaceContext*             m_surface_context;
+  CDXVAContext*                m_dxva_context;
 
   unsigned int                 m_shared;
 
