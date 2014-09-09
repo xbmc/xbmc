@@ -47,7 +47,9 @@
 <!-- 13              D-Pad Right               -->
 <!-- 14              D-Pad Up                  -->
 <!-- 15              D-Pad Down                -->
-<!-- Axis 6 +1/-1    Triggers - malfunctioning -->
+<!-- Axis 3 +1/-1    Triggers left/right (win) -->
+<!-- Axis 3          Left Trigger (linux)      -->
+<!-- Axis 6          Right Trigger (linux)     -->
 
 <!-- Axis Mappings:                   -->
 <!--                                  -->
@@ -153,12 +155,12 @@
       <axis id="1" limit="+1">AnalogSeekForward</axis>
       <axis id="2" limit="-1">AnalogSeekForward</axis>
       <axis id="2" limit="+1">AnalogSeekBack</axis>
+      <axis id="3" trigger="true">ScrollUp</axis>
       <axis id="4" limit="-1">VolumeDown</axis>
       <axis id="4" limit="+1">VolumeUp</axis>
       <axis id="5" limit="-1">VolumeUp</axis>
       <axis id="5" limit="+1">VolumeDown</axis>
-      <axis id="6" limit="-1">ScrollUp</axis>
-      <axis id="6" limit="+1">ScrollDown</axis>
+      <axis id="6" trigger="true">ScrollDown</axis>
       <hat id="1" position="up">Up</hat>
       <hat id="1" position="down">Down</hat>
       <hat id="1" position="left">Left</hat>
@@ -342,8 +344,8 @@
       <button id="13">StepForward</button>
       <button id="14">ChapterOrBigStepForward</button>
       <button id="15">ChapterOrBigStepBack</button>
-      <axis id="6" limit="-1">AnalogRewind</axis>
-      <axis id="6" limit="+1">AnalogFastForward</axis>
+      <axis id="3">AnalogRewind</axis>
+      <axis id="6">AnalogFastForward</axis>
       <hat id="1" position="up">BigStepForward</hat>
       <hat id="1" position="down">BigStepBack</hat>
       <hat id="1" position="left">StepBack</hat>
@@ -434,8 +436,8 @@
       <button id="2">Close</button>
       <button id="3">OSD</button>
       <button id="8">Close</button>
-      <axis id="6" limit="+1">AnalogRewind</axis>
-      <axis id="6" limit="-1">AnalogFastForward</axis>
+      <axis id="3">AnalogRewind</axis>
+      <axis id="6">AnalogFastForward</axis>
     </joystick>
   </FullscreenInfo>
   <PlayerControls>
@@ -530,8 +532,8 @@
       <button id="13">NextPreset</button>
       <button id="14">SkipPrevious</button>
       <button id="15">SkipNext</button>
-      <axis id="6" limit="-1">AnalogRewind</axis>
-      <axis id="6" limit="+1">AnalogFastForward</axis>
+      <axis id="3">AnalogRewind</axis>
+      <axis id="6">AnalogFastForward</axis>
       <hat id="1" position="up">SkipNext</hat>
       <hat id="1" position="down">SkipPrevious</hat>
       <hat id="1" position="left">PreviousPreset</hat>
@@ -696,8 +698,8 @@
       <button id="15">ZoomOut</button>
       <axis id="1">AnalogMove</axis>
       <axis id="2">AnalogMove</axis>
-      <axis id="6" limit="+1">ZoomOut</axis>
-      <axis id="6" limit="-1">ZoomIn</axis>
+      <axis id="3">ZoomOut</axis>
+      <axis id="6">ZoomIn</axis>
       <hat id="1" position="up">ZoomIn</hat>
       <hat id="1" position="down">ZoomOut</hat>
       <hat id="1" position="left">PreviousPicture</hat>
