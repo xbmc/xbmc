@@ -825,7 +825,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
     m_shared = surfaces;
 
   if(avctx->refs > m_refs)
-    m_refs = avctx->refs;
+    m_refs = avctx->refs+2;
 
   if(m_refs == 0)
   {
