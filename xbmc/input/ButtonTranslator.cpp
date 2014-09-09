@@ -760,6 +760,7 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
   vector<string> joynames;
   map<int, string> buttonMap;
   map<int, string> axisMap;
+  map<int, bool> triggerMap;
   map<int, string> hatMap;
 
   TiXmlElement *pJoy = pJoystick->ToElement();
@@ -809,6 +810,13 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
           axisMap[id] = action;
           axisMap[-id] = action;
         }
+
+        // <axis> entries in the <global> section may specify this axis is a trigger instead of a stick
+        if (windowID == -1) {
+          bool trigger = false;
+          pButton->QueryBoolAttribute("trigger", &trigger);
+          triggerMap[id] = trigger;
+        }
       }
       else if (type == "hat")
       {
@@ -843,6 +851,7 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
   {
     m_joystickButtonMap[*it][windowID] = buttonMap;
     m_joystickAxisMap[*it][windowID] = axisMap;
+    m_joystickTriggerMap[*it].insert(triggerMap.begin(), triggerMap.end());
     m_joystickHatMap[*it][windowID] = hatMap;
 //    CLog::Log(LOGDEBUG, "Found Joystick map for window %d using %s", windowID, it->c_str());
     it++;
@@ -892,6 +901,18 @@ bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice
   }
 
   return (action > 0);
+}
+
+void CButtonTranslator::GetTriggerMap(std::map<std::string, std::vector<int> > &triggerList) {
+  // return a map with for each joystick a list of axis that should be considered triggers
+  for (std::map<string, TriggerMap>::iterator it = m_joystickTriggerMap.begin(); it != m_joystickTriggerMap.end(); ++it) {
+    std::vector<int> triggers;
+    for (TriggerMap::iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2) {
+      if (it2->second) // is isTrigger
+        triggers.push_back(it2->first - 1); // - 1 because CJoystick axes start at idx 0
+    }
+    triggerList[it->first] = triggers;
+  }
 }
 
 bool CButtonTranslator::TranslateTouchAction(int window, int touchAction, int touchPointers, int &action)

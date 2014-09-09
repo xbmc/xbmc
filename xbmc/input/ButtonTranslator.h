@@ -94,6 +94,7 @@ public:
   bool TranslateJoystickString(int window, const char* szDevice, int id,
                                short inputType, int& action, std::string& strAction,
                                bool &fullrange);
+  void GetTriggerMap(std::map<std::string, std::vector<int> > &triggerList);
 #endif
 
   bool TranslateTouchAction(int window, int touchAction, int touchPointers, int &action);
@@ -110,6 +111,7 @@ private:
   int GetActionCode(int window, const CKey &key, std::string &strAction) const;
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
   typedef std::map<int, std::map<int, std::string> > JoystickMap; // <window, <button/axis, action> >
+  typedef std::map<int, bool> TriggerMap; // <axis, isTrigger>
   int GetActionCode(int window, int id, const JoystickMap &wmap, std::string &strAction, bool &fullrange) const;
 #endif
   int GetFallbackWindow(int windowID);
@@ -142,7 +144,8 @@ private:
 
   std::map<std::string, JoystickMap> m_joystickButtonMap;      // <joy name, button map>
   std::map<std::string, JoystickMap> m_joystickAxisMap;        // <joy name, axis map>
-  std::map<std::string, JoystickMap> m_joystickHatMap;        // <joy name, hat map>
+  std::map<std::string, TriggerMap> m_joystickTriggerMap;      // <joy name, trigger map>
+  std::map<std::string, JoystickMap> m_joystickHatMap;         // <joy name, hat map>
 #endif
 
   void MapTouchActions(int windowID, TiXmlNode *pTouch);
