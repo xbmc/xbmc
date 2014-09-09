@@ -148,9 +148,7 @@ namespace XBMCAddon
       virtual void    onCleanFinished(const String library) { XBMC_TRACE; }
 
       /**
-       * onAbortRequested() -- onAbortRequested method.\n
-       * \n
-       * Will be called when XBMC requests Abort\n
+       * onAbortRequested() -- Deprecated, use waitForAbort() to be notified about this event.\n
        */
       virtual void    onAbortRequested() { XBMC_TRACE; }
 
