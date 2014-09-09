@@ -1017,6 +1017,13 @@ bool CApplication::CreateGUI()
   if (!CButtonTranslator::GetInstance().Load())
     return false;
 
+#ifdef HAS_SDL_JOYSTICK
+  // Pass the mapping of axis to triggers to g_Joystick
+  std::map<std::string, std::vector<int> > triggerMap;
+  CButtonTranslator::GetInstance().GetTriggerMap(triggerMap);
+  g_Joystick.LoadTriggerMap(triggerMap);
+#endif
+
   RESOLUTION_INFO info = g_graphicsContext.GetResInfo();
   CLog::Log(LOGINFO, "GUI format %ix%i, Display %s",
             info.iWidth,
