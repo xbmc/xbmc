@@ -59,11 +59,13 @@ CGUIPlexDefaultActionHandler::CGUIPlexDefaultActionHandler()
   action = new ACTION_SETTING(ACTION_MARK_AS_WATCHED);
   action->WindowSettings[WINDOW_HOME].contextMenuVisisble = true;
   action->WindowSettings[WINDOW_VIDEO_NAV].contextMenuVisisble = true;
+  action->WindowSettings[WINDOW_PLEX_PLAY_QUEUE].contextMenuVisisble = true;
   m_ActionSettings.push_back(*action);
   
   action = new ACTION_SETTING(ACTION_MARK_AS_UNWATCHED);
   action->WindowSettings[WINDOW_HOME].contextMenuVisisble = true;
   action->WindowSettings[WINDOW_VIDEO_NAV].contextMenuVisisble = true;
+  action->WindowSettings[WINDOW_PLEX_PLAY_QUEUE].contextMenuVisisble = true;
   m_ActionSettings.push_back(*action);
   
   action = new ACTION_SETTING(ACTION_TOGGLE_WATCHED);
@@ -152,7 +154,7 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
         break;
 
       case ACTION_MARK_AS_WATCHED:
-        if (item->IsVideo() && item->IsPlexMediaServerLibrary())
+        if (item->IsVideo() && item->IsPlexMediaServer())
         {
           item->MarkAsWatched(true);
           g_windowManager.SendMessage(GUI_MSG_PLEX_ITEM_WATCHEDSTATE_CHANGED, 0, windowID, actionID, 0);
@@ -161,7 +163,7 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
         break;
         
       case ACTION_MARK_AS_UNWATCHED:
-        if (item->IsVideo() && item->IsPlexMediaServerLibrary())
+        if (item->IsVideo() && item->IsPlexMediaServer())
         {
           item->MarkAsUnWatched(true);
           g_windowManager.SendMessage(GUI_MSG_PLEX_ITEM_WATCHEDSTATE_CHANGED, 0, windowID, actionID, 0);
@@ -170,7 +172,7 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
         break;
         
       case ACTION_TOGGLE_WATCHED:
-        if (item->IsVideo() && item->IsPlexMediaServerLibrary())
+        if (item->IsVideo() && item->IsPlexMediaServer())
         {
           if (item->GetVideoInfoTag()->m_playCount == 0)
             return OnAction(windowID, ACTION_MARK_AS_WATCHED, item, container);
@@ -313,7 +315,7 @@ void CGUIPlexDefaultActionHandler::GetContextButtonsForAction(int actionID, CFil
 
     case ACTION_MARK_AS_WATCHED:
     {
-      if (item->IsVideo() && item->IsPlexMediaServerLibrary())
+      if (item->IsVideo() && item->IsPlexMediaServer())
       {
         CStdString viewOffset = item->GetProperty("viewOffset").asString();
         
@@ -325,7 +327,7 @@ void CGUIPlexDefaultActionHandler::GetContextButtonsForAction(int actionID, CFil
       
     case ACTION_MARK_AS_UNWATCHED:
     {
-      if (item->IsVideo() && item->IsPlexMediaServerLibrary())
+      if (item->IsVideo() && item->IsPlexMediaServer())
       {
         CStdString viewOffset = item->GetProperty("viewOffset").asString();
         
