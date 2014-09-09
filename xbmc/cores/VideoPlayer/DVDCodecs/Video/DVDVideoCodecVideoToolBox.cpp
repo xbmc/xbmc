@@ -1537,6 +1537,7 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
     width = new_width;
     height = height * w_scaler;
   }
+  #if !defined(__LP64__)
   // scale output pictures down to 720p size for display
   if (width > width_clamp)
   {
@@ -1544,6 +1545,7 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
     width = width_clamp;
     height = height * w_scaler;
   }
+  #endif
   #endif
   destinationPixelBufferAttributes = CFDictionaryCreateMutable(
     NULL, // CFAllocatorRef allocator
