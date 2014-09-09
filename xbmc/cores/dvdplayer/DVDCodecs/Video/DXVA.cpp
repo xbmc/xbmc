@@ -246,7 +246,7 @@ void CDXVAContext::Release(CDecoder *decoder)
 
 void CDXVAContext::Close()
 {
-  CLog::Log(LOGNOTICE, "DXVA::Close - closing decoder context");
+  CLog::Log(LOGNOTICE, "%s - closing decoder context.", __FUNCTION__);
   DestroyContext();
 }
 
@@ -310,7 +310,7 @@ void CDXVAContext::QueryCaps()
   HRESULT res = m_service->GetDecoderDeviceGuids(&m_input_count, &m_input_list);
   if (FAILED(res))
   {
-    CLog::Log(LOGNOTICE, "%s - failed getting device guids", __FUNCTION__);
+    CLog::Log(LOGNOTICE, "%s - failed getting device guids.", __FUNCTION__);
     return;
   }
 
@@ -319,9 +319,9 @@ void CDXVAContext::QueryCaps()
     const GUID *g = &m_input_list[i];
     const dxva2_mode_t *mode = dxva2_find_mode(g);
     if (mode)
-      CLog::Log(LOGDEBUG, "DXVA - supports '%s'", mode->name);
+      CLog::Log(LOGDEBUG, "DXVA - supports '%s'.", mode->name);
     else
-      CLog::Log(LOGDEBUG, "DXVA - supports %s", GUIDToString(*g).c_str());
+      CLog::Log(LOGDEBUG, "DXVA - supports %s.", GUIDToString(*g).c_str());
   }
 }
 
@@ -340,11 +340,11 @@ bool CDXVAContext::GetInputAndTarget(int codec, GUID &inGuid, D3DFORMAT &outForm
       if (!IsEqualGUID(m_input_list[i], *mode->guid))
         continue;
 
-      CLog::Log(LOGDEBUG, "DXVA - trying '%s'", mode->name);
+      CLog::Log(LOGDEBUG, "DXVA - trying '%s'.", mode->name);
       HRESULT res = m_service->GetDecoderRenderTargets(m_input_list[i], &output_count, &output_list);
       if (FAILED(res))
       {
-        CLog::Log(LOGNOTICE, "%s - failed getting render targets", __FUNCTION__);
+        CLog::Log(LOGNOTICE, "%s - failed getting render targets.", __FUNCTION__);
         break;
       }
 
@@ -377,7 +377,7 @@ bool CDXVAContext::GetConfig(GUID &inGuid, const DXVA2_VideoDesc *format, DXVA2_
   HRESULT res = m_service->GetDecoderConfigurations(inGuid, format, NULL, &cfg_count, &cfg_list);
   if (FAILED(res))
   {
-    CLog::Log(LOGNOTICE, "%s - failed getting decoder configuration", __FUNCTION__);
+    CLog::Log(LOGNOTICE, "%s - failed getting decoder configuration.", __FUNCTION__);
     return false;
   }
 
@@ -386,7 +386,8 @@ bool CDXVAContext::GetConfig(GUID &inGuid, const DXVA2_VideoDesc *format, DXVA2_
   for (unsigned i = 0; i< cfg_count; i++)
   {
     CLog::Log(LOGDEBUG,
-      "DXVA - config %d: bitstream type %d%s",
+      "%s - config %d: bitstream type %d%s.",
+      __FUNCTION__,
       i,
       cfg_list[i].ConfigBitstreamRaw,
       IsEqualGUID(cfg_list[i].guidConfigBitstreamEncryption, DXVA_NoEncrypt) ? "" : ", encrypted");
@@ -402,7 +403,7 @@ bool CDXVAContext::GetConfig(GUID &inGuid, const DXVA2_VideoDesc *format, DXVA2_
 
   if (!config.ConfigBitstreamRaw)
   {
-    CLog::Log(LOGDEBUG, "DXVA - failed to find a raw input bitstream");
+    CLog::Log(LOGDEBUG, "%s - failed to find a raw input bitstream.", __FUNCTION__);
     return false;
   }
 
@@ -416,7 +417,7 @@ bool CDXVAContext::CreateSurfaces(int width, int height, D3DFORMAT format, unsig
                                           surfaces, NULL);
   if (FAILED(res))
   {
-    CLog::Log(LOGNOTICE, "%s - failed creating surfaces", __FUNCTION__);
+    CLog::Log(LOGNOTICE, "%s - failed creating surfaces.", __FUNCTION__);
     return false;
   }
 
@@ -435,7 +436,7 @@ bool CDXVAContext::CreateDecoder(GUID &inGuid, DXVA2_VideoDesc *format, const DX
   HRESULT res = m_service->CreateVideoDecoder(inGuid, format, config, surfaces, count, decoder);
   if (FAILED(res))
   {
-    CLog::Log(LOGNOTICE, "%s - failed creating decoder", __FUNCTION__);
+    CLog::Log(LOGNOTICE, "%s - failed creating decoder.", __FUNCTION__);
     return false;
   }
 
@@ -579,7 +580,7 @@ static bool CheckCompatibility(AVCodecContext *avctx)
   // Macroblock width incompatibility
   if (HasVP3WidthBug(avctx))
   {
-    CLog::Log(LOGWARNING,"DXVA - width %i is not supported with nVidia VP3 hardware. DXVA will not be used", avctx->coded_width);
+    CLog::Log(LOGWARNING,"%s - width %i is not supported with nVidia VP3 hardware. DXVA will not be used.", __FUNCTION__, avctx->coded_width);
     return false;
   }
 
@@ -604,7 +605,7 @@ static bool CheckCompatibility(AVCodecContext *avctx)
 
   if (checkcompat && !CheckH264L41(avctx))
   {
-      CLog::Log(LOGWARNING, "DXVA - compatibility check: video exceeds L4.1. DXVA will not be used.");
+      CLog::Log(LOGWARNING, "%s - video exceeds L4.1. DXVA will not be used.", __FUNCTION__);
       return false;
   }
 
@@ -621,17 +622,17 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
 
   if(m_state == DXVA_LOST)
   {
-    CLog::Log(LOGDEBUG, "DXVA - device is in lost state, we can't start");
+    CLog::Log(LOGDEBUG, "%s - device is in lost state, we can't start.", __FUNCTION__);
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "DXVA - open decoder");
+  CLog::Log(LOGDEBUG, "%s - open decoder", __FUNCTION__);
   if (!CDXVAContext::EnsureContext(&m_dxva_context, this))
     return false;
 
   if (!m_dxva_context->GetInputAndTarget(avctx->codec_id, m_input, m_format.Format))
   {
-    CLog::Log(LOGDEBUG, "DXVA - unable to find an input/output format combination");
+    CLog::Log(LOGDEBUG, "%s - unable to find an input/output format combination.", __FUNCTION__);
     return false;
   }
 
@@ -735,8 +736,8 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
 
   m_refs = std::min<int>(DXVA2_MAX_SURFACES, std::max<int>(20 + DXVA2_QUEUE_SURFACES, avctx->refs) - m_shared);
 
-  CLog::Log(LOGDEBUG, __FUNCTION__" - source requires %d references", avctx->refs);
-  CLog::Log(LOGDEBUG, __FUNCTION__" - will allocate %d surfaces", m_refs);
+  CLog::Log(LOGDEBUG, "%s - source requires %d references.", __FUNCTION__, avctx->refs);
+  CLog::Log(LOGDEBUG, "%s - will allocate %d surfaces.", __FUNCTION__, m_refs);
 
   DXVA2_ConfigPictureDecode config = {};
   if (!m_dxva_context->GetConfig(m_input, &m_format, config))
@@ -758,7 +759,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
 #ifdef FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO
     m_context->workaround |= FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO;
 #else
-    CLog::Log(LOGWARNING, "DXVA - used Intel ClearVideo decoder, but no support workaround for it in libavcodec");
+    CLog::Log(LOGWARNING, "%s - used Intel ClearVideo decoder, but no support workaround for it in libavcodec.", __FUNCTION__);
 #endif
   }
   else if (AIdentifier.VendorId == PCIV_ATI && IsL41LimitedATI())
@@ -766,7 +767,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
 #ifdef FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG
     m_context->workaround |= FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG;
 #else
-    CLog::Log(LOGWARNING, "DXVA - video card with different scaling list zigzag order detected, but no support in libavcodec");
+    CLog::Log(LOGWARNING, "%s - video card with different scaling list zigzag order detected, but no support in libavcodec.", __FUNCTION__);
 #endif
   }
 
@@ -788,7 +789,7 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
       if(m_buffer[i].surface == (IDirect3DSurface9*)frame->data[3])
         return VC_BUFFER | VC_PICTURE;
     }
-    CLog::Log(LOGWARNING, "DXVA - ignoring invalid surface");
+    CLog::Log(LOGWARNING, "%s - ignoring invalid surface.", __FUNCTION__);
     return VC_BUFFER;
   }
   else
@@ -821,7 +822,7 @@ int CDecoder::Check(AVCodecContext* avctx)
     lock.Enter();
     if(m_state == DXVA_LOST)
     {
-      CLog::Log(LOGERROR, "CDecoder::Check - device didn't reset in reasonable time");
+      CLog::Log(LOGERROR, "%s - device didn't reset in reasonable time.", __FUNCTION__);
       return VC_ERROR;
     }
   }
@@ -831,7 +832,7 @@ int CDecoder::Check(AVCodecContext* avctx)
   {
     if(!Open(avctx, avctx->pix_fmt, m_shared))
     {
-      CLog::Log(LOGERROR, "CDecoder::Check - decoder was not able to reset");
+      CLog::Log(LOGERROR, "%s - decoder was not able to reset.", __FUNCTION__);
       Close();
       return VC_ERROR;
     }
@@ -858,19 +859,19 @@ int CDecoder::Check(AVCodecContext* avctx)
   HRESULT hr;
   if(FAILED( hr = m_decoder->Execute(&params)))
   {
-    CLog::Log(LOGWARNING, "DXVA - failed to get decoder status - 0x%08X", hr);
+    CLog::Log(LOGWARNING, "%s - failed to get decoder status - 0x%08X.", __FUNCTION__, hr);
     return VC_ERROR;
   }
 
   if(avctx->codec_id == AV_CODEC_ID_H264)
   {
     if(status.h264.bStatus)
-      CLog::Log(LOGWARNING, "DXVA - decoder problem of status %d with %d", status.h264.bStatus, status.h264.bBufType);
+      CLog::Log(LOGWARNING, "%s - decoder problem of status %d with %d.", __FUNCTION__, status.h264.bStatus, status.h264.bBufType);
   }
   else
   {
     if(status.vc1.bStatus)
-      CLog::Log(LOGWARNING, "DXVA - decoder problem of status %d with %d", status.vc1.bStatus, status.vc1.bBufType);
+      CLog::Log(LOGWARNING, "%s - decoder problem of status %d with %d.", __FUNCTION__, status.vc1.bStatus, status.vc1.bBufType);
   }
   return 0;
 }
@@ -884,7 +885,7 @@ bool CDecoder::OpenDecoder()
 
   if(m_context->surface_count > m_buffer_count)
   {
-    CLog::Log(LOGDEBUG, "DXVA - allocating %d surfaces", m_context->surface_count - m_buffer_count);
+    CLog::Log(LOGDEBUG, "%s - allocating %d surfaces.", __FUNCTION__, m_context->surface_count - m_buffer_count);
 
     if (!m_dxva_context->CreateSurfaces(m_format.SampleWidth, m_format.SampleHeight, m_format.Format,
                                         m_context->surface_count - 1 - m_buffer_count, m_context->surface + m_buffer_count))
@@ -964,7 +965,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   }
   if (old_unused == -1) 
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - unable to find unused buffer, using oldest");
+    CLog::Log(LOGERROR, "%s - unable to find unused buffer, using oldest.", __FUNCTION__);
     i = old;
   } 
   else 
@@ -973,7 +974,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   LPDIRECT3DSURFACE9 pSurface = m_buffer[i].surface;
   if(!pSurface)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - There is a buffer, but no D3D Surace? WTF?");
+    CLog::Log(LOGERROR, "%s - There is a buffer, but no D3D Surace? WTF?", __FUNCTION__);
     return -1;
   }
 
@@ -990,7 +991,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, RelBufferS, avctx->opaque, 0);
   if (!buffer)
   {
-    CLog::Log(LOGERROR, "DXVA - error creating buffer");
+    CLog::Log(LOGERROR, "%s - error creating buffer.", __FUNCTION__);
     return -1;
   }
   pic->buf[0] = buffer;

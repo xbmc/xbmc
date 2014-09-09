@@ -54,7 +54,7 @@ do { \
   HRESULT res = a; \
   if(FAILED(res)) \
   { \
-    CLog::Log(LOGERROR, __FUNCTION__" - failed executing "#a" at line %d with error %x", __LINE__, res); \
+    CLog::Log(LOGERROR, "%s - failed executing "#a" at line %d with error %x.", __FUNCTION__, __LINE__, res); \
     return false; \
   } \
 } while(0);
@@ -64,7 +64,7 @@ do { \
   HRESULT res = a; \
   if(FAILED(res)) \
   { \
-    CLog::Log(LOGERROR, __FUNCTION__" - failed executing "#a" at line %d with error %x", __LINE__, res); \
+    CLog::Log(LOGERROR, "%s - failed executing "#a" at line %d with error %x.", __FUNCTION__, __LINE__, res); \
   } \
 } while(0);
 
@@ -138,7 +138,7 @@ bool CProcessorHD::PreInit()
 {
   if (!LoadSymbols())
   {
-    CLog::Log(LOGWARNING, __FUNCTION__" - DXVAHD not loaded.");
+    CLog::Log(LOGWARNING, "%s - DXVAHD not loaded.", __FUNCTION__);
     return false;
   }
 
@@ -165,9 +165,9 @@ bool CProcessorHD::PreInit()
   if(FAILED(cvres))
   {
     if(cvres == E_NOINTERFACE)
-      CLog::Log(LOGNOTICE, __FUNCTION__" - The Direct3d device doesn't support DXVA-HD.");
+      CLog::Log(LOGNOTICE, "%s - The Direct3d device doesn't support DXVA-HD.", __FUNCTION__);
     else
-      CLog::Log(LOGERROR, __FUNCTION__" - failed to create DXVAHD device %x", cvres);
+      CLog::Log(LOGERROR, "%s - failed to create DXVAHD device %x.", __FUNCTION__, cvres);
 
     return false;
   }
@@ -176,7 +176,7 @@ bool CProcessorHD::PreInit()
 
   if (m_VPDevCaps.VideoProcessorCount == 0)
   {
-    CLog::Log(LOGWARNING, __FUNCTION__" - unable to find any video processor. GPU drivers doesn't support DXVA-HD.");
+    CLog::Log(LOGWARNING, "%s - unable to find any video processor. GPU drivers doesn't support DXVA-HD.", __FUNCTION__);
     return false;
   }
 
@@ -184,14 +184,14 @@ bool CProcessorHD::PreInit()
   DXVAHD_VPCAPS* pVPCaps = new (std::nothrow) DXVAHD_VPCAPS[ m_VPDevCaps.VideoProcessorCount ];
   if (pVPCaps == NULL)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - unable to create video processor caps array. Out of memory.");
+    CLog::Log(LOGERROR, "%s - unable to create video processor caps array. Out of memory.", __FUNCTION__);
     return false;
   }
 
   HRESULT hr = m_pDXVAHD->GetVideoProcessorCaps( m_VPDevCaps.VideoProcessorCount, pVPCaps );
   if(FAILED(hr))
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - failed get processor caps with error %x.", hr);
+    CLog::Log(LOGERROR, "%s - failed get processor caps with error %x.", __FUNCTION__, hr);
 
     delete [] pVPCaps;
     return false;
@@ -255,7 +255,7 @@ bool CProcessorHD::Open(UINT width, UINT height, unsigned int flags, unsigned in
 
   if (g_advancedSettings.m_DXVANoDeintProcForProgressive)
   {
-    CLog::Log(LOGNOTICE, __FUNCTION__" - Auto deinterlacing mode workaround activated. Deinterlacing processor will be used only for interlaced frames.");
+    CLog::Log(LOGNOTICE, "%s - Auto deinterlacing mode workaround activated. Deinterlacing processor will be used only for interlaced frames.", __FUNCTION__);
   }
 
   if (format == RENDER_FMT_DXVA)
@@ -295,7 +295,7 @@ bool CProcessorHD::OpenProcessor()
 
   SAFE_RELEASE(m_pDXVAVP);
 
-  CLog::Log(LOGDEBUG, __FUNCTION__" - processor selected %s.", GUIDToString(m_device).c_str());
+  CLog::Log(LOGDEBUG, "%s - processor selected %s.", __FUNCTION__, GUIDToString(m_device).c_str());
 
   CHECK(m_pDXVAHD->CreateVideoProcessor(&m_device, &m_pDXVAVP));
 
@@ -370,7 +370,7 @@ REFERENCE_TIME CProcessorHD::Add(DVDVideoPicture* picture)
     {
       if (!m_surfaces)
       {
-        CLog::Log(LOGWARNING, __FUNCTION__" - not initialized.");
+        CLog::Log(LOGWARNING, "%s - processor not initialized.", __FUNCTION__);
         return 0;
       }
 
@@ -425,7 +425,7 @@ REFERENCE_TIME CProcessorHD::Add(DVDVideoPicture* picture)
     
     default:
     {
-      CLog::Log(LOGWARNING, __FUNCTION__" - colorspace not supported by processor, skipping frame.");
+      CLog::Log(LOGWARNING, "%s - colorspace not supported by processor, skipping frame.", __FUNCTION__);
       return 0;
     }
   }
@@ -588,7 +588,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFER
   // no present frame, skip
   if (!isValid)
   {
-    CLog::Log(LOGWARNING, __FUNCTION__" - uncomplete stream data, skipping frame.");
+    CLog::Log(LOGWARNING, "%s - uncomplete stream data, skipping frame.", __FUNCTION__);
     return false;
   }
 
@@ -645,7 +645,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFER
   HRESULT hr = m_pDXVAVP->VideoProcessBltHD(target, frame, 1, &stream_data);
   if(FAILED(hr))
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - failed executing VideoProcessBltHD with error %x", hr);
+    CLog::Log(LOGERROR, "%s - failed executing VideoProcessBltHD with error %x.", __FUNCTION__, hr);
   }
 
   delete [] stream_data.ppPastSurfaces;

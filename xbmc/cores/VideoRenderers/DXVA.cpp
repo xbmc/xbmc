@@ -194,7 +194,7 @@ void CProcessor::Close()
 bool CProcessor::UpdateSize(const DXVA2_VideoDesc& dsc)
 {
   // TODO: print the D3FORMAT text version in log
-  CLog::Log(LOGDEBUG, "DXVA - checking samples array size using %d render target", dsc.Format);
+  CLog::Log(LOGDEBUG, "%s - checking samples array size using %d render target.", __FUNCTION__, dsc.Format);
 
   GUID* deint_guid_list = NULL;
   unsigned guid_count = 0;
@@ -210,7 +210,7 @@ bool CProcessor::UpdateSize(const DXVA2_VideoDesc& dsc)
     if (caps.NumBackwardRefSamples + caps.NumForwardRefSamples > m_size)
     {
       m_size = caps.NumBackwardRefSamples + caps.NumForwardRefSamples;
-      CLog::Log(LOGDEBUG, "DXVA - updated maximum samples count to %d", m_size);
+      CLog::Log(LOGDEBUG, "%s - updated maximum samples count to %d.", __FUNCTION__, m_size);
     }
     m_max_back_refs = std::max(caps.NumBackwardRefSamples, m_max_back_refs);
     m_max_fwd_refs = std::max(caps.NumForwardRefSamples, m_max_fwd_refs);
@@ -246,7 +246,7 @@ bool CProcessor::PreInit()
   {
     dsc.Format = render_targets[i];
     if (!UpdateSize(dsc))
-      CLog::Log(LOGDEBUG, "DXVA - render target not supported by processor");
+      CLog::Log(LOGDEBUG, "%s - render target not supported by processor.", __FUNCTION__);
   }
 
   m_size = m_max_back_refs + 1 + m_max_fwd_refs + 2;  // refs + 1 display + 2 safety frames
@@ -366,7 +366,7 @@ bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int 
   EvaluateQuirkNoDeintProcForProg();
 
   if (g_advancedSettings.m_DXVANoDeintProcForProgressive || m_quirk_nodeintprocforprog)
-    CLog::Log(LOGNOTICE, "DXVA: Auto deinterlacing mode workaround activated. Deinterlacing processor will be used only for interlaced frames.");
+    CLog::Log(LOGNOTICE, "%s - Auto deinterlacing mode workaround activated. Deinterlacing processor will be used only for interlaced frames.", __FUNCTION__);
 
   if (!OpenProcessor())
     return false;
@@ -414,7 +414,7 @@ bool CProcessor::SelectProcessor()
 
   if(guid_count == 0)
   {
-    CLog::Log(LOGDEBUG, "DXVA - unable to find any processors");
+    CLog::Log(LOGDEBUG, "%s - unable to find any processors.", __FUNCTION__);
     return false;
   }
 
@@ -425,16 +425,16 @@ bool CProcessor::SelectProcessor()
 
     if (device)
     {
-      CLog::Log(LOGDEBUG, "DXVA - processor found %s", device->name);
+      CLog::Log(LOGDEBUG, "%s - processor found %s.", __FUNCTION__, device->name);
     }
     else
     {
       CHECK(m_service->GetVideoProcessorCaps(*g, &m_desc, D3DFMT_X8R8G8B8, &m_caps));
       const dxva2_deinterlacetech_t* tech = dxva2_find_deinterlacetech(m_caps.DeinterlaceTechnology);
       if (tech != NULL)
-        CLog::Log(LOGDEBUG, "DXVA - unknown processor %s found, deinterlace technology %s", GUIDToString(*g).c_str(), tech->name);
+        CLog::Log(LOGDEBUG, "%s - unknown processor %s found, deinterlace technology %s.", __FUNCTION__, GUIDToString(*g).c_str(), tech->name);
       else
-        CLog::Log(LOGDEBUG, "DXVA - unknown processor %s found, unknown technology", GUIDToString(*g).c_str());
+        CLog::Log(LOGDEBUG, "%s - unknown processor %s found, unknown technology.", __FUNCTION__, GUIDToString(*g).c_str());
     }
   }
 
@@ -457,9 +457,9 @@ bool CProcessor::OpenProcessor()
 
   const dxva2_device_t* device = dxva2_find_device(&m_device);
   if (device)
-    CLog::Log(LOGDEBUG, "DXVA - processor selected %s", device->name);
+    CLog::Log(LOGDEBUG, "%s - processor selected %s.", __FUNCTION__, device->name);
   else
-    CLog::Log(LOGDEBUG, "DXVA - processor selected %s", GUIDToString(m_device).c_str());
+    CLog::Log(LOGDEBUG, "%s - processor selected %s.", __FUNCTION__, GUIDToString(m_device).c_str());
 
   D3DFORMAT rtFormat = D3DFMT_X8R8G8B8;
   CHECK(m_service->GetVideoProcessorCaps(m_device, &m_desc, rtFormat, &m_caps))
@@ -473,16 +473,16 @@ bool CProcessor::OpenProcessor()
     m_caps.NumBackwardRefSamples = 0;
 
   if (m_caps.DeviceCaps & DXVA2_VPDev_SoftwareDevice)
-    CLog::Log(LOGDEBUG, "DXVA - processor is software device");
+    CLog::Log(LOGDEBUG, "%s - processor is software device.", __FUNCTION__);
 
   if (m_caps.DeviceCaps & DXVA2_VPDev_EmulatedDXVA1)
-    CLog::Log(LOGDEBUG, "DXVA - processor is emulated dxva1");
+    CLog::Log(LOGDEBUG, "%s - processor is emulated dxva1.", __FUNCTION__);
 
-  CLog::Log(LOGDEBUG, "DXVA - processor requires %d past frames and %d future frames", m_caps.NumBackwardRefSamples, m_caps.NumForwardRefSamples);
+  CLog::Log(LOGDEBUG, "%s - processor requires %d past frames and %d future frames.", __FUNCTION__, m_caps.NumBackwardRefSamples, m_caps.NumForwardRefSamples);
 
   if (m_caps.NumBackwardRefSamples + m_caps.NumForwardRefSamples + 3 > m_size)
   {
-    CLog::Log(LOGERROR, "DXVA - used an incorrect number of reference frames creating processor");
+    CLog::Log(LOGERROR, "%s - used an incorrect number of reference frames creating processor.", __FUNCTION__);
     return false;
   }
 
@@ -580,7 +580,7 @@ REFERENCE_TIME CProcessor::Add(DVDVideoPicture* picture)
     
     default:
     {
-      CLog::Log(LOGWARNING, "DXVA - colorspace not supported by processor, skipping frame");
+      CLog::Log(LOGWARNING, "%s - colorspace not supported by processor, skipping frame.", __FUNCTION__);
       return 0;
     }
   }
@@ -738,7 +738,7 @@ bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFEREN
   int offset = 0;
   if(valid < count)
   {
-    CLog::Log(LOGWARNING, __FUNCTION__" - did not find all required samples, adjusting the sample array.");
+    CLog::Log(LOGWARNING, "%s - did not find all required samples, adjusting the sample array.", __FUNCTION__);
 
     for (int i = 0; i < count; i++)
     {
@@ -748,7 +748,7 @@ bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFEREN
     count -= offset;
     if (count == 0)
     {
-      CLog::Log(LOGWARNING, __FUNCTION__" - no usable samples.");
+      CLog::Log(LOGWARNING, "%s - no usable samples.", __FUNCTION__);
       return false;
     }
   }
