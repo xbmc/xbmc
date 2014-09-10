@@ -1038,7 +1038,7 @@ bool CDVDInputStreamBluray::MouseMove(const CPoint &point)
   if (m_bd == NULL || !m_navmode)
     return false;
 
-  if (m_dll->bd_mouse_select(m_bd, -1, point.x, point.y) < 0)
+  if (m_dll->bd_mouse_select(m_bd, -1, (uint16_t)point.x, (uint16_t)point.y) < 0)
   {
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::MouseMove - mouse select failed");
     return false;
@@ -1052,7 +1052,7 @@ bool CDVDInputStreamBluray::MouseClick(const CPoint &point)
   if (m_bd == NULL || !m_navmode)
     return false;
 
-  if (m_dll->bd_mouse_select(m_bd, -1, point.x, point.y) < 0)
+  if (m_dll->bd_mouse_select(m_bd, -1, (uint16_t)point.x, (uint16_t)point.y) < 0)
   {
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::MouseClick - mouse select failed");
     return false;
