@@ -349,7 +349,7 @@ bool CDXVAContext::EnsureContext(CDXVAContext **ctx, CDecoder *decoder)
   {
     m_context->m_refCount++;
     *ctx = m_context;
-    if (!m_context->IsValidDecoder(decoder))
+    if (m_context->IsValidDecoder(decoder))
       m_context->m_decoders.push_back(decoder);
     return true;
   }
