@@ -376,7 +376,8 @@ int CJoystick::GetAxisWithMaxAmount()
   for (int i = 0; i < MAX_AXES; i++)
   {
     int tempf = abs(m_Amount[i] - m_RestState[i]);
-    if (tempf>m_DeadzoneRange && tempf>maxAmount && !m_IgnoreAxis[i])
+    int deadzone = m_RestState[i] == 0 ? m_DeadzoneRange : 0;
+    if (tempf > deadzone && tempf > maxAmount && !m_IgnoreAxis[i])
     {
       maxAmount = tempf;
       axis = i;
@@ -397,10 +398,12 @@ float CJoystick::GetAmount(std::string& joyName, int axisNum)
 
   int amount = m_Amount[axisIdx] - m_RestState[axisIdx];
   int range = MAX_AXISAMOUNT - m_RestState[axisIdx];
-  if (amount > m_DeadzoneRange)
-    return (float)(amount - m_DeadzoneRange) / (float)(range - m_DeadzoneRange);
-  else if (amount < -m_DeadzoneRange)
-    return (float)(amount + m_DeadzoneRange) / (float)(range - m_DeadzoneRange);
+  // deadzones on axes are undesirable
+  int deadzone = m_RestState[axisIdx] == 0 ? m_DeadzoneRange : 0;
+  if (amount > deadzone)
+    return (float)(amount - deadzone) / (float)(range - deadzone);
+  else if (amount < -deadzone)
+    return (float)(amount + deadzone) / (float)(range - deadzone);
 
   return 0;
 }
