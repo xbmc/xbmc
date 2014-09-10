@@ -133,9 +133,6 @@ void CSMB::Init()
         if (g_advancedSettings.m_sambadoscodepage.length() > 0)
           fprintf(f, "\tdos charset = %s\n", g_advancedSettings.m_sambadoscodepage.c_str());
 
-        // if no workgroup string is specified, samba will use the default value 'WORKGROUP'
-        if ( CSettings::Get().GetString("smb.workgroup").length() > 0 )
-          fprintf(f, "\tworkgroup = %s\n", CSettings::Get().GetString("smb.workgroup").c_str());
         fclose(f);
       }
     }
@@ -154,6 +151,8 @@ void CSMB::Init()
     smbc_setOptionOneSharePerServer(m_context, false);
     smbc_setOptionBrowseMaxLmbCount(m_context, 0);
     smbc_setTimeout(m_context, g_advancedSettings.m_sambaclienttimeout * 1000);
+    if (CSettings::Get().GetString("smb.workgroup").length() > 0)
+      smbc_setWorkgroup(m_context, strdup(CSettings::Get().GetString("smb.workgroup").c_str()));
     smbc_setUser(m_context, strdup("guest"));
 #else
     m_context->debug = (g_advancedSettings.CanLogComponent(LOGSAMBA) ? 10 : 0);
@@ -163,6 +162,8 @@ void CSMB::Init()
     m_context->options.one_share_per_server = false;
     m_context->options.browse_max_lmb_count = 0;
     m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;
+    if (CSettings::Get().GetString("smb.workgroup").length() > 0)
+      m_context->workgroup = strdup(CSettings::Get().GetString("smb.workgroup").c_str());
     m_context->user = strdup("guest");
 #endif
 
