@@ -349,6 +349,8 @@ bool CDXVAContext::EnsureContext(CDXVAContext **ctx, CDecoder *decoder)
   {
     m_context->m_refCount++;
     *ctx = m_context;
+    if (!m_context->IsValidDecoder(decoder))
+      m_context->m_decoders.push_back(decoder);
     return true;
   }
   m_context = new CDXVAContext();
@@ -823,7 +825,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
     m_shared = surfaces;
 
   if(avctx->refs > m_refs)
-    m_refs = avctx->refs;
+    m_refs = avctx->refs+2;
 
   if(m_refs == 0)
   {
