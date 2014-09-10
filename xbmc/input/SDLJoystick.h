@@ -55,17 +55,14 @@ public:
   virtual void OnSettingChanged(const CSetting *setting);
 
   void Initialize();
-  void Reset(bool axis=false);
-  void ResetAxis(int axisId) { m_Amount[axisId] = m_RestState[axisId]; }
+  void Reset();
+  void ResetAxis(int axisIdx) { m_Amount[axisIdx] = m_RestState[axisIdx]; }
   void Update();
-  void Update(SDL_Event& event);
-  bool GetButton (int& id, bool consider_repeat=true);
-  bool GetAxis (int &id);
-  bool GetHat (int &id, int &position, bool consider_repeat=true);
-  std::string GetJoystick() { return (m_JoyId>-1)?m_JoystickNames[m_JoyId]:""; }
-  int GetAxisWithMaxAmount();
-  float GetAmount(int axis);
-  float GetAmount() { return GetAmount(m_AxisId); }
+  void Update(SDL_Event& joyEvent);
+  bool GetButton(std::string& joyName, int& id, bool consider_repeat = true);
+  bool GetAxis(std::string& joyName, int& id);
+  bool GetHat(std::string& joyName, int& id, int& position, bool consider_repeat = true);
+  float GetAmount(std::string& joyName, int axisNum);
   bool IsEnabled() const { return m_joystickEnabled; }
   void SetEnabled(bool enabled = true);
   float SetDeadzone(float val);
@@ -73,31 +70,34 @@ public:
   void LoadTriggerMap(const std::map<std::string, std::vector<int> >& triggerMap);
 
 private:
-  void SetAxisActive(bool active=true) { m_ActiveFlags = active?(m_ActiveFlags|JACTIVE_AXIS):(m_ActiveFlags&(~JACTIVE_AXIS)); }
-  void SetButtonActive(bool active=true) { m_ActiveFlags = active?(m_ActiveFlags|JACTIVE_BUTTON):(m_ActiveFlags&(~JACTIVE_BUTTON)); }
-  void SetHatActive(bool active=true) { m_ActiveFlags = active?(m_ActiveFlags|JACTIVE_HAT):(m_ActiveFlags&(~JACTIVE_HAT)); }
-  bool IsButtonActive() { return (m_ActiveFlags & JACTIVE_BUTTON) == JACTIVE_BUTTON; }
-  bool IsAxisActive() { return (m_ActiveFlags & JACTIVE_AXIS) == JACTIVE_AXIS; }
-  bool IsHatActive() { return (m_ActiveFlags & JACTIVE_HAT) == JACTIVE_HAT; }
+  bool IsButtonActive() { return m_ButtonIdx != -1; }
+  bool IsAxisActive() { return m_AxisIdx != -1; }
+  bool IsHatActive() { return m_HatIdx != -1; }
 
   bool ReleaseJoysticks();
+
+  int GetAxisWithMaxAmount();
+  int JoystickIndex(std::string& joyName);
+  int MapAxis(SDL_Joystick* joy, int axisNum); // <joy, axis> --> axisIdx
+  void MapAxis(int axisIdx, SDL_Joystick*& joy, int& axisNum); // axisIdx --> <joy, axis>
+  int MapButton(SDL_Joystick* joy, int buttonNum); // <joy, button> --> buttonIdx
+  void MapButton(int buttonIdx, SDL_Joystick*& joy, int& buttonNum); // buttonIdx --> <joy, button>
+  int MapHat(SDL_Joystick* joy, int hatNum); // <joy, hat> --> hatIdx
+  void MapHat(int hatIdx, SDL_Joystick*& joy, int& hatNum); // hatIdx --> <joy, hat>
 
   int m_Amount[MAX_AXES];
   int m_RestState[MAX_AXES]; // axis value in rest state (0 for sticks, -32768 for triggers)
   bool m_IgnoreAxis[MAX_AXES]; // used to ignore triggers until SDL no longer reports 0
-  int m_AxisId;
-  int m_ButtonId;
-  uint8_t m_HatState;
-  int m_HatId; 
-  int m_JoyId;
-  int m_NumAxes;
+  int m_AxisIdx; // active axis
+  int m_ButtonIdx; // active button
+  uint8_t m_HatState; // state of active hat
+  int m_HatIdx; // active hat
+
   int m_DeadzoneRange;
   bool m_joystickEnabled;
   uint32_t m_pressTicksButton;
   uint32_t m_pressTicksHat;
-  uint8_t m_ActiveFlags;
   std::vector<SDL_Joystick*> m_Joysticks;
-  std::vector<std::string> m_JoystickNames;
   std::map<std::string, std::vector<int> > m_TriggerMap;
 };
 
