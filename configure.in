@@ -190,7 +190,7 @@ vaapi_disabled="== VAAPI support manually disabled. =="
 vtbdecoder_enabled="== VTBDecoder support enabled. =="
 vtbdecoder_disabled="== VTBDecoder support manually disabled. =="
 openmax_disabled="== OpenMax support manually disabled. =="
-openmax_not_found="== Could not find libnvomx. OpenMax support disabled. =="
+openmax_not_found="== Could not find OpenMax headers. OpenMax support disabled. =="
 ssh_not_found="== Could not find libssh. =="
 ssh_disabled="== SSH SFTP disabled. =="
 librtmp_not_found="== Could not find libRTMP. RTMP support disabled. =="
@@ -1881,12 +1881,13 @@ elif test "$target_platform" = "target_raspberry_pi"; then
   AC_MSG_NOTICE($openmax_disabled)
 else
   if test "$use_gles" = "yes" && test "$use_openmax" = "auto"; then
-    PKG_CHECK_MODULES([OPENMAX], [libomxil-bellagio],
-                      USE_OPENMAX=1;[INCLUDES="$INCLUDES $OPENMAX_CFLAGS"; LIBS="$LIBS $OPENMAX_LIBS"],
+
+    AC_CHECK_HEADERS([OMX_Core.h],
+                      USE_OPENMAX=1;[INCLUDES="$INCLUDES $OPENMAX_CFLAGS"; LIBS="$LIBS $OPENMAX_LIBS";AC_DEFINE([HAVE_LIBOPENMAX], [1], [Define to 1 if you have the OpenMax library.])],
                       use_openmax=no;USE_OPENMAX=0;AC_MSG_RESULT($openmax_not_found))
   elif test "$use_gles" = "yes" && test "$use_openmax" = "yes"; then
-    PKG_CHECK_MODULES([OPENMAX], [libomxil-bellagio],
-                      USE_OPENMAX=1;[INCLUDES="$INCLUDES $OPENMAX_CFLAGS"; LIBS="$LIBS $OPENMAX_LIBS"],
+    AC_CHECK_HEADERS([OMX_Core.h],
+                      USE_OPENMAX=1;[INCLUDES="$INCLUDES $OPENMAX_CFLAGS"; LIBS="$LIBS $OPENMAX_LIBS";AC_DEFINE([HAVE_LIBOPENMAX], [1], [Define to 1 if you have the OpenMax library.])],
                       AC_MSG_ERROR($openmax_not_found))
   else
     AC_MSG_NOTICE($openmax_disabled)

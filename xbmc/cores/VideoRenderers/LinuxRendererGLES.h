@@ -213,6 +213,10 @@ protected:
   void DeleteSurfaceTexture(int index);
   bool CreateSurfaceTexture(int index);
 
+  void UploadOpenMaxTexture(int index);
+  void DeleteOpenMaxTexture(int index);
+  bool CreateOpenMaxTexture(int index);
+
   void UploadIMXMAPTexture(int index);
   void DeleteIMXMAPTexture(int index);
   bool CreateIMXMAPTexture(int index);
@@ -281,7 +285,7 @@ protected:
     unsigned  flipindex; /* used to decide if this has been uploaded */
 
 #ifdef HAVE_LIBOPENMAX
-    OpenMaxVideoBuffer *openMaxBuffer;
+    OpenMaxVideoBufferHolder *openMaxBufferHolder;
 #endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
     struct __CVBuffer *cvBufferRef;

@@ -30,6 +30,7 @@
 #include "DVDVideoCodecOpenMax.h"
 #include "OpenMaxVideo.h"
 #include "utils/log.h"
+#include "settings/Settings.h"
 
 #define CLASSNAME "COpenMax"
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,7 +122,7 @@ void CDVDVideoCodecOpenMax::Dispose()
   if (m_omx_decoder)
   {
     m_omx_decoder->Close();
-    delete m_omx_decoder;
+    m_omx_decoder->Release();
     m_omx_decoder = NULL;
   }
   if (m_videobuffer.iFlags & DVP_FLAG_ALLOCATED)
@@ -175,7 +176,7 @@ int CDVDVideoCodecOpenMax::Decode(uint8_t* pData, int iSize, double dts, double 
     return rtn;
   }
   
-  return VC_BUFFER;
+  return m_omx_decoder->Decode(0, 0, 0, 0);
 }
 
 void CDVDVideoCodecOpenMax::Reset(void)
@@ -188,8 +189,15 @@ bool CDVDVideoCodecOpenMax::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   m_omx_decoder->GetPicture(&m_videobuffer);
   *pDvdVideoPicture = m_videobuffer;
 
+  // TODO what's going on here? bool is required as return value.
   return VC_PICTURE | VC_BUFFER;
 }
+
+bool CDVDVideoCodecOpenMax::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
+{
+  return m_omx_decoder->ClearPicture(pDvdVideoPicture);
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 bool CDVDVideoCodecOpenMax::bitstream_convert_init(void *in_extradata, int in_extrasize)

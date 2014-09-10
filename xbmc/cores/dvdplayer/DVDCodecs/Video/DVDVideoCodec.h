@@ -52,7 +52,7 @@ namespace VAAPI { class CVaapiRenderPicture; }
 namespace VDPAU { class CVdpauRenderPicture; }
 class COpenMax;
 class COpenMaxVideo;
-struct OpenMaxVideoBuffer;
+struct OpenMaxVideoBufferHolder;
 class CDVDVideoCodecStageFright;
 class CDVDMediaCodecInfo;
 class CDVDVideoCodecIMXBuffer;
@@ -83,7 +83,7 @@ struct DVDVideoPicture
 
     struct {
       COpenMax *openMax;
-      OpenMaxVideoBuffer *openMaxBuffer;
+      OpenMaxVideoBufferHolder *openMaxBufferHolder;
     };
 
     struct {
