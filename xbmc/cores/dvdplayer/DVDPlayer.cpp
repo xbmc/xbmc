@@ -1323,7 +1323,11 @@ void CDVDPlayer::Process()
         break;
       }
 
-      OpenDefaultStreams();
+      // on channel switch we don't want to close stream players at this
+      // time. we'll get the stream change event later
+      if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) ||
+          !m_SelectionStreams.m_Streams.empty())
+        OpenDefaultStreams();
 
       // never allow first frames after open to be skipped
       if( m_dvdPlayerVideo->IsInited() )
