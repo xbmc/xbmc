@@ -211,13 +211,16 @@ bool CAddonInstaller::PromptForInstall(const std::string &addonID, AddonPtr &add
 
 bool CAddonInstaller::Install(const std::string &addonID, bool force, const std::string &referer, bool background)
 {
-  if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
-    return false;
-
   AddonPtr addon;
   bool addonInstalled = CAddonMgr::Get().GetAddon(addonID, addon, ADDON_UNKNOWN, false);
   if (addonInstalled && !force)
     return true;
+
+  if (referer.empty())
+  {
+    if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
+      return false;
+  }
 
   // check whether we have it available in a repository
   CAddonDatabase database;
