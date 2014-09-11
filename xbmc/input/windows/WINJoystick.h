@@ -21,6 +21,7 @@
 
 #include <vector>
 #include <string>
+#include <map>
 #include <stdint.h>
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
@@ -34,7 +35,7 @@
 #define JACTIVE_HAT_DOWN  0x04
 #define JACTIVE_HAT_LEFT  0x08
 
-#define MAX_AXES 8
+#define MAX_AXES 64
 
 // Class to manage all connected joysticks
 
@@ -47,54 +48,61 @@ public:
   virtual void OnSettingChanged(const CSetting *setting);
 
   void Initialize();
-  void Reset(bool axis=false);
-  void ResetAxis(int axisId) { m_Amount[axisId] = 0; }
+  void Reset();
+  void ResetAxis(int axisIdx) { m_Amount[axisIdx] = m_RestState[axisIdx]; }
   void Update();
-  bool GetButton (int& id, bool consider_repeat=true);
-  bool GetAxis (int &id);
-  bool GetHat (int &id, int &position, bool consider_repeat=true);
-  std::string GetJoystick() { return (m_JoyId>-1)?m_JoystickNames[m_JoyId]:""; }
-  int GetAxisWithMaxAmount();
-  float GetAmount(int axis);
-  float GetAmount() { return GetAmount(m_AxisId); }
+
+  bool GetButton(std::string& joyName, int& id, bool consider_repeat = true);
+  bool GetAxis(std::string& joyName, int& id);
+  bool GetHat(std::string& joyName, int& id, int& position, bool consider_repeat = true);
+  float GetAmount(std::string& joyName, int axisNum);
+
   bool IsEnabled() const { return m_joystickEnabled; }
   void SetEnabled(bool enabled = true);
   float SetDeadzone(float val);
   bool Reinitialize();
   void Acquire();
+  void LoadTriggerMap(const std::map<std::string, std::vector<int> >& triggerMap);
 
 private:
-  void SetAxisActive(bool active=true) { m_ActiveFlags = active?(m_ActiveFlags|JACTIVE_AXIS):(m_ActiveFlags&(~JACTIVE_AXIS)); }
-  void SetButtonActive(bool active=true) { m_ActiveFlags = active?(m_ActiveFlags|JACTIVE_BUTTON):(m_ActiveFlags&(~JACTIVE_BUTTON)); }
-  void SetHatActive(bool active=true) { m_ActiveFlags = active?(m_ActiveFlags|JACTIVE_HAT):(m_ActiveFlags&(~JACTIVE_HAT)); }
-  bool IsButtonActive() { return (m_ActiveFlags & JACTIVE_BUTTON) == JACTIVE_BUTTON; }
-  bool IsAxisActive() { return (m_ActiveFlags & JACTIVE_AXIS) == JACTIVE_AXIS; }
-  bool IsHatActive() { return (m_ActiveFlags & JACTIVE_HAT) == JACTIVE_HAT; }
+  bool IsButtonActive() { return m_ButtonIdx != -1; }
+  bool IsAxisActive() { return m_AxisIdx != -1; }
+  bool IsHatActive() { return m_HatIdx != -1; }
 
   void ReleaseJoysticks();
+
+  int GetAxisWithMaxAmount();
+  int JoystickIndex(std::string& joyName);
+  int JoystickIndex(LPDIRECTINPUTDEVICE8 joy);
+  int MapAxis(LPDIRECTINPUTDEVICE8 joy, int axisNum); // <joy, axis> --> axisIdx
+  void MapAxis(int axisIdx, LPDIRECTINPUTDEVICE8& joy, int& axisNum); // axisIdx --> <joy, axis>
+  int MapButton(LPDIRECTINPUTDEVICE8 joy, int buttonNum); // <joy, button> --> buttonIdx
+  void MapButton(int buttonIdx, LPDIRECTINPUTDEVICE8& joy, int& buttonNum); // buttonIdx --> <joy, button>
+  int MapHat(LPDIRECTINPUTDEVICE8 joy, int hatNum); // <joy, hat> --> hatIdx
+  void MapHat(int hatIdx, LPDIRECTINPUTDEVICE8& joy, int& hatNum); // hatIdx --> <joy, hat>
+
   static BOOL CALLBACK EnumJoysticksCallback( const DIDEVICEINSTANCE* pdidInstance, VOID* pContext );
   static BOOL CALLBACK EnumObjectsCallback( const DIDEVICEOBJECTINSTANCE* pdidoi, VOID* pContext );
 
   int m_Amount[MAX_AXES];
-  int m_AxisId;
-  int m_ButtonId;
-  uint8_t m_HatState;
-  int m_HatId;
-  int m_JoyId;
-  int m_NumAxes;
+  int m_RestState[MAX_AXES]; // axis value in rest state (0 for sticks, -32768 for triggers)
+  bool m_IgnoreAxis[MAX_AXES]; // used to ignore triggers until SDL no longer reports 0
+  int m_AxisIdx; // active axis
+  int m_ButtonIdx; // active button
+  uint8_t m_HatState; // state of active hat
+  int m_HatIdx; // active hat
+
   int m_DeadzoneRange;
   bool m_joystickEnabled;
   uint32_t m_pressTicksButton;
   uint32_t m_pressTicksHat;
-  uint8_t m_ActiveFlags;
-  uint32_t m_lastPressTicks;
-  uint32_t m_lastTicks;
   CCriticalSection m_critSection;
 
   LPDIRECTINPUT8  m_pDI;
-  std::vector<LPDIRECTINPUTDEVICE8> m_pJoysticks;
+  std::vector<LPDIRECTINPUTDEVICE8> m_Joysticks;
   std::vector<std::string> m_JoystickNames;
   std::vector<DIDEVCAPS> m_devCaps;
+  std::map<std::string, std::vector<int> > m_TriggerMap;
 };
 
 extern CJoystick g_Joystick;
