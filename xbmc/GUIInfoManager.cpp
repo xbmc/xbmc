@@ -5951,7 +5951,8 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition, int s
         const CFileItem* fitem = static_cast<const CFileItem*>(item);
         if (fitem->HasMusicInfoTag() && gitem->HasMusicInfoTag())
         {
-          if (fitem->GetMusicInfoTag()->GetDatabaseId() == gitem->GetMusicInfoTag()->GetDatabaseId())
+          if ((fitem->GetMusicInfoTag()->GetDatabaseId() == gitem->GetMusicInfoTag()->GetDatabaseId()) ||
+              (fitem->GetProperty("key").asString() == gitem->GetProperty("key").asString()))
             return true;
           else
             return false;
